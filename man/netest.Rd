@@ -3,8 +3,8 @@
 \alias{netest}
 \title{Dynamic Network Model Estimation}
 \usage{
-netest(nw, formation, dissolution, target.stats, coef.form = NULL, coef.diss,
-  constraints, edapprox = TRUE, set.control.ergm, set.control.stergm,
+netest(nw, formation, dissolution, target.stats, coef.diss, constraints,
+  coef.form = NULL, edapprox = TRUE, set.control.ergm, set.control.stergm,
   verbose = TRUE)
 }
 \arguments{
@@ -20,15 +20,15 @@ supported in \code{EpiModel}.}
 \item{target.stats}{a vector of target statistics for the formation model, with
 one number for each network statistic in the model (see \code{\link{stergm}}).}
 
-\item{coef.form}{A vector of coefficients for the offset terms in the formation
-formula.}
-
 \item{coef.diss}{an object of class \code{disscoef} output from the
 \code{\link{dissolution_coefs}} function.}
 
 \item{constraints}{a right-hand sided formula specifying contraints for the
 modeled network, in the form \code{~...}, where \code{...} are constraint
 terms described in \code{\link{stergm}}. By default, no constraints are set.}
+
+\item{coef.form}{A vector of coefficients for the offset terms in the formation
+formula.}
 
 \item{edapprox}{if \code{TRUE}, use the indirect edges dissolution approximation
 method for the dynamic model fit, otherwise use the more time-intensive
