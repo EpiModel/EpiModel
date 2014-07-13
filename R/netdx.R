@@ -1,5 +1,5 @@
 
-#' @title Dynamic Network Model Diagnostics
+#' @title Dynamic Network Model Diagnostics 
 #'
 #' @description Runs dynamic diagnostics on an ERGM/STERGM estimated through 
 #'              \code{netest}
