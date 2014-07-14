@@ -1,7 +1,6 @@
 
-
 verbose.dcm <- function(x, type, s) {
-  
+
   if (type == "startup") {
     if (x$verbose == TRUE & x$nruns > 1) {
       cat("===============================")
@@ -9,18 +8,18 @@ verbose.dcm <- function(x, type, s) {
       cat("\n===============================\n")
     }
   }
-  
+
   if (type == "progress") {
     if (x$verbose == TRUE & x$nruns > 1) {
       cat("Run = ", s, "/", x$nruns, "\n", sep="")
     }
   }
-  
+
 }
 
 
 verbose.icm <- function(x, type, s, at) {
-  
+
   if (type == "startup") {
     if (x$verbose == TRUE) {
       if (x$nsims == 1) {
@@ -34,7 +33,7 @@ verbose.icm <- function(x, type, s, at) {
       }
     }
   }
-  
+
   if (type == "progress") {
     if (x$control$verbose == TRUE) {
       if (x$control$verbose.int == 0 && at == x$control$nsteps) {
@@ -57,7 +56,7 @@ verbose.icm <- function(x, type, s, at) {
             cat("\nRecoveries:", x$out$ir.flow[at])
           }
           if (x$param$groups == 2) {
-            cat("\nRecoveries:", x$out$ir.flow[at] + 
+            cat("\nRecoveries:", x$out$ir.flow[at] +
                                  x$out$ir.flow.g2[at])
           }
         }
@@ -66,7 +65,7 @@ verbose.icm <- function(x, type, s, at) {
             cat("\nRecoveries:", x$out$is.flow[at])
           }
           if (x$param$groups == 2) {
-            cat("\nRecoveries:", x$out$is.flow[at] + 
+            cat("\nRecoveries:", x$out$is.flow[at] +
                                  x$out$is.flow.g2[at])
           }
         }
@@ -87,16 +86,16 @@ verbose.icm <- function(x, type, s, at) {
         }
         if (x$control$type == "SIR") {
           if (x$param$groups == 1) {
-            cat("\nPopulation:", x$out$s.num[at] + 
-                                 x$out$i.num[at] + 
+            cat("\nPopulation:", x$out$s.num[at] +
+                                 x$out$i.num[at] +
                                  x$out$r.num[at])
           }
           if (x$param$groups == 2) {
-            cat("\nPopulation:", x$out$s.num[at] + 
-                                 x$out$i.num[at] + 
+            cat("\nPopulation:", x$out$s.num[at] +
+                                 x$out$i.num[at] +
                                  x$out$r.num[at] +
-                                 x$out$s.num.g2[at] + 
-                                 x$out$i.num.g2[at] + 
+                                 x$out$s.num.g2[at] +
+                                 x$out$i.num.g2[at] +
                                  x$out$r.num.g2[at])
           }
         }
@@ -104,33 +103,33 @@ verbose.icm <- function(x, type, s, at) {
           if (x$param$groups == 1) {
             cat("\nBirths:", x$out$b.flow[at])
             cat("\nDeaths, susceptibles:", x$out$ds.flow[at])
-            cat("\nDeaths, infecteds:", x$out$di.flow[at]) 
+            cat("\nDeaths, infecteds:", x$out$di.flow[at])
             if (x$control$type == "SIR") {
-              cat("\nDeaths, recovered:", x$out$dr.flow[at]) 
+              cat("\nDeaths, recovered:", x$out$dr.flow[at])
             }
           }
           if (x$param$groups == 2) {
             cat("\nBirths:", x$out$b.flow[at] + x$out$b.flow.g2[at])
-            cat("\nDeaths, susceptible:", x$out$ds.flow[at] + 
+            cat("\nDeaths, susceptible:", x$out$ds.flow[at] +
                                           x$out$ds.flow.g2[at])
-            cat("\nDeaths, infected:", x$out$di.flow[at] + 
-                                       x$out$di.flow.g2[at]) 
+            cat("\nDeaths, infected:", x$out$di.flow[at] +
+                                       x$out$di.flow.g2[at])
             if (x$control$type == "SIR") {
-              cat("\nDeaths, recovered:", x$out$dr.flow[at] + 
-                                          x$out$dr.flow.g2[at]) 
+              cat("\nDeaths, recovered:", x$out$dr.flow[at] +
+                                          x$out$dr.flow.g2[at])
             }
           }
         }
-        cat("\n----------------------------") 
+        cat("\n----------------------------")
       }
     }
   }
-  
+
 }
 
 
 verbose.net <- function(x, type, s, at) {
-  
+
   if (type == "startup") {
     if (x$verbose == TRUE) {
       if (x$nsims == 1) {
@@ -144,12 +143,12 @@ verbose.net <- function(x, type, s, at) {
       }
     }
   }
-  
+
   if (type == "progress") {
     if (x$control$verbose == TRUE) {
       if (x$control$verbose.int == 0 && at == x$control$nsteps) {
         cat("\nSim = ", s, "/", x$control$nsims, sep="")
-      } 
+      }
       if (x$control$verbose.int > 0 && (at %% x$control$verbose.int == 0)) {
         cat("\014")
         cat("\nNetwork Disease Simulation")
@@ -167,7 +166,7 @@ verbose.net <- function(x, type, s, at) {
             cat("\nRecoveries:", x$out$ir.flow[at])
           }
           if (x$param$modes == 2) {
-            cat("\nRecoveries:", x$out$ir.flow[at] + 
+            cat("\nRecoveries:", x$out$ir.flow[at] +
                                  x$out$ir.flow.m2[at])
           }
         }
@@ -176,7 +175,7 @@ verbose.net <- function(x, type, s, at) {
             cat("\nRecoveries:", x$out$is.flow[at])
           }
           if (x$param$modes == 2) {
-            cat("\nRecoveries:", x$out$is.flow[at] + 
+            cat("\nRecoveries:", x$out$is.flow[at] +
                                  x$out$is.flow.m2[at])
           }
         }
@@ -197,16 +196,16 @@ verbose.net <- function(x, type, s, at) {
         }
         if (x$control$type == "SIR") {
           if (x$param$modes == 1) {
-            cat("\nPopulation:", x$out$s.num[at] + 
-                                 x$out$i.num[at] + 
+            cat("\nPopulation:", x$out$s.num[at] +
+                                 x$out$i.num[at] +
                                  x$out$r.num[at])
           }
           if (x$param$modes == 2) {
-            cat("\nPopulation:", x$out$s.num[at] + 
-                                 x$out$i.num[at] + 
+            cat("\nPopulation:", x$out$s.num[at] +
+                                 x$out$i.num[at] +
                                  x$out$r.num[at] +
-                                 x$out$s.num.m2[at] + 
-                                 x$out$i.num.m2[at] + 
+                                 x$out$s.num.m2[at] +
+                                 x$out$i.num.m2[at] +
                                  x$out$r.num.m2[at])
           }
         }
@@ -214,27 +213,27 @@ verbose.net <- function(x, type, s, at) {
           if (x$param$modes == 1) {
             cat("\nBirths:", x$out$b.flow[at])
             cat("\nDeaths, susceptibles:", x$out$ds.flow[at])
-            cat("\nDeaths, infecteds:", x$out$di.flow[at]) 
+            cat("\nDeaths, infecteds:", x$out$di.flow[at])
             if (x$control$type == "SIR") {
-              cat("\nDeaths, recovered:", x$out$dr.flow[at]) 
+              cat("\nDeaths, recovered:", x$out$dr.flow[at])
             }
           }
           if (x$param$modes == 2) {
             cat("\nBirths:", x$out$b.flow[at] + x$out$b.flow.m2[at])
-            cat("\nDeaths, susceptible:", x$out$ds.flow[at] + 
+            cat("\nDeaths, susceptible:", x$out$ds.flow[at] +
                                           x$out$ds.flow.m2[at])
-            cat("\nDeaths, infected:", x$out$di.flow[at] + 
-                                       x$out$di.flow.m2[at]) 
+            cat("\nDeaths, infected:", x$out$di.flow[at] +
+                                       x$out$di.flow.m2[at])
             if (x$control$type == "SIR") {
-              cat("\nDeaths, recovered:", x$out$dr.flow[at] + 
-                                          x$out$dr.flow.m2[at]) 
+              cat("\nDeaths, recovered:", x$out$dr.flow[at] +
+                                          x$out$dr.flow.m2[at])
             }
           }
         }
-        cat("\n----------------------------") 
+        cat("\n----------------------------")
       }
     }
   }
-  
+
 }
 

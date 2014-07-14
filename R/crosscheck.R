@@ -1,22 +1,22 @@
 
 #' @title Cross Checking of Inputs for Deterministic Compartmental Models
-#' 
-#' @description This function checks that the three parameter lists from 
+#'
+#' @description This function checks that the three parameter lists from
 #'              \code{\link{param.dcm}}, \code{\link{init.dcm}}, and
 #'              \code{\link{control.dcm}} are consistent.
-#' 
+#'
 #' @param param an \code{EpiModel} object of class \code{\link{param.dcm}}.
 #' @param init an \code{EpiModel} object of class \code{\link{init.dcm}}.
 #' @param control an \code{EpiModel} object of class \code{\link{control.dcm}}.
-#' 
+#'
 #' @return
 #' This function returns no objects.
-#' 
+#'
 #' @export
 #' @keywords internal
-#' 
+#'
 crosscheck.dcm <- function(param, init, control) {
-  
+
   ## Main class check
   if (class(param) != "param.dcm") {
     stop("param must an object of class param.dcm", call. = FALSE)
@@ -27,39 +27,39 @@ crosscheck.dcm <- function(param, init, control) {
   if (class(control) != "control.dcm") {
     stop("control must an object of class control.dcm", call. = FALSE)
   }
-  
+
   if (is.null(control$new.mod)) {
-  
+
       if (is.null(param$act.rate)) {
         param$act.rate <- 1
       }
       if (is.null(param$vital)) {
-        if (!is.null(param$b.rate) | 
-            !is.null(param$ds.rate) | 
-            !is.null(param$di.rate) | 
+        if (!is.null(param$b.rate) |
+            !is.null(param$ds.rate) |
+            !is.null(param$di.rate) |
             !is.null(param$dr.rate)) {
           param$vital <- TRUE
         } else {
           param$vital <- FALSE
         }
       }
-    
+
       if (is.null(param$trans.rate)) {
         stop("Specify trans.rate in param.dcm", call. = FALSE)
       }
-      
+
       if (any(grepl(".g2", names(param))) == TRUE) {
         param$groups <- 2
       } else {
         param$groups <- 1
       }
-      
-      if (param$groups == 2 && (is.null(param$balance) || 
+
+      if (param$groups == 2 && (is.null(param$balance) ||
                                 !(param$balance %in% c("g1", "g2")))) {
-        stop("Specify balance=\"g1\" or balance=\"g2\" with 2-group models", 
+        stop("Specify balance=\"g1\" or balance=\"g2\" with 2-group models",
              call. = FALSE)
       }
-    
+
     ## Check that rec.rate is supplied for SIR models
     if (control$type %in% c("SIR", "SIS") & is.null(param$rec.rate)) {
       stop("Specify rec.rate in param.dcm", call. = FALSE)
@@ -67,7 +67,7 @@ crosscheck.dcm <- function(param, init, control) {
         stop("Specify rec.rate.g2 in param.dcm", call. = FALSE)
       }
     }
-    
+
     ## Check that r.num is supplied for SIR models
     if (control$type == "SIR" & is.null(init$r.num)) {
       stop("Specify r.num in init.dcm", call. = FALSE)
@@ -75,7 +75,7 @@ crosscheck.dcm <- function(param, init, control) {
         stop("Specify r.num.g2 in init.dcm", call. = FALSE)
       }
     }
-    
+
     ## Check that groups implied by init and params are consistent
     if (any(grepl(".g2", names(init))) == TRUE) {
       init.groups <- 2
@@ -83,46 +83,46 @@ crosscheck.dcm <- function(param, init, control) {
       init.groups <- 1
     }
     if (param$groups == 2 && init.groups == 1) {
-      stop("Group 2 parameters specified in param.dcm, 
-           \rbut missing group 2 initial states in init.dcm", 
+      stop("Group 2 parameters specified in param.dcm,
+           \rbut missing group 2 initial states in init.dcm",
            call. = FALSE)
     }
     if (param$groups == 1 && init.groups == 2) {
-      stop("Group 2 initial stats specified in init.dcm, 
-           but missing group 2 parameters in param.dcm", 
+      stop("Group 2 initial stats specified in init.dcm,
+           but missing group 2 parameters in param.dcm",
            call. = FALSE)
     }
-  
-    
+
+
     if (control$type != "SIR" & any(c("r.num", "r.num.m2") %in% names(init))) {
       stop("Inconsistent initial conditions and model type",
            call. = FALSE)
     }
 
-    
+
     on.exit(assign("param", param, pos = parent.frame()))
   }
 }
 
 
 #' @title Cross Checking of Inputs for Stochastic Individual Contact Models
-#' 
-#' @description This function checks that the three parameter lists from 
+#'
+#' @description This function checks that the three parameter lists from
 #'              \code{\link{param.icm}}, \code{\link{init.icm}}, and
 #'              \code{\link{control.icm}} are consistent.
-#' 
+#'
 #' @param param an \code{EpiModel} object of class \code{\link{param.icm}}.
 #' @param init an \code{EpiModel} object of class \code{\link{init.icm}}.
 #' @param control an \code{EpiModel} object of class \code{\link{control.icm}}.
-#' 
+#'
 #' @return
 #' This function returns no objects.
-#' 
+#'
 #' @export
 #' @keywords internal
-#' 
+#'
 crosscheck.icm <- function(param, init, control) {
-  
+
   ## Main class check
   if (class(param) != "param.icm") {
     stop("param must an object of class param.icm", call. = FALSE)
@@ -133,15 +133,15 @@ crosscheck.icm <- function(param, init, control) {
   if (class(control) != "control.icm") {
     stop("control must an object of class control.icm", call. = FALSE)
   }
-  
+
   ## Check that rec.rate is supplied for SIR models
   if (control$type %in% c("SIR", "SIS") & is.null(param$rec.rate)) {
-    
+
     if (param$groups == 2 & is.null(param$rec.rate.g2)) {
       stop("Specify rec.rate.g2 in param.icm", call. = FALSE)
     }
   }
-  
+
   ## Check that paramets and init are supplied for SIR models
   if (control$type == "SIR") {
     if (is.null(param$rec.rate)) {
@@ -157,7 +157,7 @@ crosscheck.icm <- function(param, init, control) {
       stop("Specify r.num.g2 in init.icm", call. = FALSE)
     }
   }
-  
+
   ## Check that groups implied by init and params are consistent
   if (any(grepl(".g2", names(init))) == TRUE) {
     init.groups <- 2
@@ -165,14 +165,14 @@ crosscheck.icm <- function(param, init, control) {
     init.groups <- 1
   }
   if (param$groups == 2 && init.groups == 1) {
-    stop("Group 2 parameters specified in param.dcm, but missing group 2 initial states in init.icm", 
+    stop("Group 2 parameters specified in param.dcm, but missing group 2 initial states in init.icm",
          call. = FALSE)
   }
   if (param$groups == 1 && init.groups == 2) {
-    stop("Group 2 initial stats specified in init.dcm, but missing group 2 parameters in param.icm", 
+    stop("Group 2 initial stats specified in init.dcm, but missing group 2 parameters in param.icm",
          call. = FALSE)
   }
-  
+
   ## In-place assignment to update param and control
   on.exit(assign("param", param, pos = parent.frame()))
   on.exit(assign("control", control, pos = parent.frame()), add = TRUE)
@@ -180,25 +180,25 @@ crosscheck.icm <- function(param, init, control) {
 
 
 #' @title Cross Checking of Inputs for Stochastic Network Models
-#' 
-#' @description This function checks that the estimation object from 
-#'              \code{\link{netest}} and the three parameter lists from 
+#'
+#' @description This function checks that the estimation object from
+#'              \code{\link{netest}} and the three parameter lists from
 #'              \code{\link{param.net}}, \code{\link{init.net}}, and
 #'              \code{\link{control.net}} are consistent.
-#' 
+#'
 #' @param x an \code{EpiModel} object of class \code{\link{netest}}.
 #' @param param an \code{EpiModel} object of class \code{\link{param.net}}.
 #' @param init an \code{EpiModel} object of class \code{\link{init.net}}.
 #' @param control an \code{EpiModel} object of class \code{\link{control.net}}.
-#' 
+#'
 #' @return
 #' This function returns no objects.
-#' 
+#'
 #' @export
 #' @keywords internal
-#' 
+#'
 crosscheck.net <- function(x, param, init, control) {
-  
+
   ## Main class check
   if (class(x) != "netest"){
     stop("x must be an object of class netest", call. = FALSE)
@@ -212,21 +212,21 @@ crosscheck.net <- function(x, param, init, control) {
   if (class(control) != "control.net") {
     stop("control must an object of class control.net", call. = FALSE)
   }
-  
+
   if (is.null(control$nwstats.formula)) {
     control$nwstats.formula <- x$formation
   }
-  
+
   statOnNw <- "status" %in% get_formula_terms(x$formation)
-  
+
   if (is.null(control$depend)) {
     if (param$vital == TRUE | statOnNw == TRUE) {
       control$depend <- TRUE
     } else {
       control$depend <- FALSE
-    } 
+    }
   }
-    
+
   if (statOnNw == TRUE) {
     nw1 <- sum(get.vertex.attribute(x$fit$network, "status") == 1)
     init1 <- sum(unlist(init[grep("i.num", names(init), value = TRUE)]))
@@ -236,7 +236,7 @@ crosscheck.net <- function(x, param, init, control) {
       Sys.sleep(2)
     }
   }
-    
+
   if (!is.null(init$status.vector)) {
     if (length(init$status.vector) != network.size(x$fit$network)) {
       stop("Length of status.vector is unequal to size of initial network")
@@ -252,14 +252,14 @@ crosscheck.net <- function(x, param, init, control) {
       }
     }
   }
-  
-  
+
+
   bip <- ifelse(is.bipartite(x$fit$network), TRUE, FALSE)
   if (bip == TRUE & is.null(init$i.num.m2)) {
     stop("Specify i.num.m2 for bipartite simulations", call. = FALSE)
   }
-  
-  
+
+
   if (control$type == "SIR") {
     if (is.null(param$rec.rate)) {
       stop("Specify rec.rate in param.net", call. = FALSE)
@@ -274,7 +274,7 @@ crosscheck.net <- function(x, param, init, control) {
       stop("Specify r.num.m2 in init.net", call. = FALSE)
     }
   }
-  
+
   if (bip == TRUE & param$vital == TRUE) {
     if (is.null(param$b.rate.m2)) {
       stop("Specify b.rate.m2 in param.net", call. = FALSE)
@@ -291,14 +291,14 @@ crosscheck.net <- function(x, param, init, control) {
       }
     }
   }
-  
+
 
   if (bip == TRUE & is.null(control$pid.prefix)) {
     control$pid.prefix <- c("F", "M")
   }
-  
-  
-  
+
+
+
   ## In-place assignment to update param and control
   assign("param", param, pos = parent.frame())
   assign("control", control, pos = parent.frame())
