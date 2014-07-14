@@ -644,26 +644,10 @@ plot.icm <- function(x,
   bpal <- c(bpal[2], bpal[1], bpal[3])
 
   # Mean line
-  if (!(missing(mean.col)) && mean.col[1] == "chips") {
-    mean.col <- c(bpal[1], bpal[2], "darkgrey")
-    if (modes == 2 & nocomp == TRUE) {
-      mean.col <- rep(mean.col, times = 2)
-    }
-  }
   if (missing(mean.col)) {
     mean.col <- bpal
   }
   mean.pal <- transco(mean.col, 0.9)
-  if (!(missing(qnts.col)) && qnts.col == "chips") {
-    qnts.col <- c(bpal[1], bpal[2], "darkgrey")
-    if (modes == 2 & nocomp) {
-      if (type == "SIR") {
-        qnts.col <- rep(qnts.col, times = 2)
-      } else {
-        qnts.col <- rep(qnts.col[1:2], times = 2)
-      }
-    }
-  }
 
   # Quantile bands
   if (missing(qnts.col)) {
