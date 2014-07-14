@@ -682,9 +682,11 @@ plot.icm <- function(x,
     if (type == "SIR") {
       mean.pal <- rep(mean.pal, 2)
       qnts.pal <- rep(qnts.pal, 2)
+      sim.pal <- rep(sim.pal, 2)
     } else {
       mean.pal <- rep(mean.pal[1:2], 2)
       qnts.pal <- rep(qnts.pal[1:2], 2)
+      sim.pal <- rep(sim.pal[1:2], 2)
     }
   }
 
