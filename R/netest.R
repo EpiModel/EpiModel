@@ -1,4 +1,4 @@
-#'
+
 #' @title Dynamic Network Model Estimation
 #'
 #' @description Estimates statistical network models using the exponential

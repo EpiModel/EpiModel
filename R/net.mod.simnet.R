@@ -3,21 +3,21 @@
 #'
 #' @description This function simulates a dynamic network over one or multiple
 #'              time steps, to be used in \code{\link{netsim}} models.
-#' 
+#'
 #' @param x an \code{EpiModel} object of class \code{\link{netest}}.
 #' @param nw a \code{networkDynamic} object.
 #' @param nsteps number of time steps to simulate the network over.
 #' @param nsims number of independent network simulations.
 #' @param control an \code{EpiModel} object of class \code{\link{control.net}}.
-#' 
+#'
 #' @export
 #' @keywords netUtils internal
-#' 
+#'
 sim_nets <- function(x, nw, nsteps, control) {
-  
+
   if (x$edapprox == FALSE) {
     suppressWarnings(
-      sim <- simulate(nw, 
+      sim <- simulate(nw,
                       time.slices = nsteps,
                       monitor = control$nwstats.formula,
                       nsim = 1,
@@ -27,11 +27,11 @@ sim_nets <- function(x, nw, nsteps, control) {
   } else {
     suppressWarnings(
       sim <- simulate(nw,
-                      formation = x$formation, 
+                      formation = x$formation,
                       dissolution = x$dissolution,
-                      coef.form = x$coef.form, 
+                      coef.form = x$coef.form,
                       coef.diss = x$coef.diss$coef.crude,
-                      time.slices = nsteps, 
+                      time.slices = nsteps,
                       time.start = 1,
                       time.offset = 0,
                       constraints = x$constraints,
@@ -39,7 +39,7 @@ sim_nets <- function(x, nw, nsteps, control) {
                       nsim = 1,
                       control = control$set.control.stergm))
   }
-  
+
   return(sim)
 }
 
@@ -50,15 +50,15 @@ sim_nets <- function(x, nw, nsteps, control) {
 #'              network models simulated in \code{\link{netsim}} with dependence
 #'              between the epidemic and demographic processes and the network
 #'              structure.
-#' 
+#'
 #' @param x a master object passed through \code{\link{netsim}}.
 #' @param at current time step.
-#' 
+#'
 #' @export
 #' @keywords netUtils internal
-#' 
+#'
 resim_nets <- function(all, at) {
-  
+
   idsActive <- which(all$attr$active == 1)
   anyActive <- ifelse(length(idsActive) > 0, TRUE, FALSE)
   if (all$param$modes == 2) {
@@ -66,7 +66,7 @@ resim_nets <- function(all, at) {
     nActiveM2 <- length(intersect(modeids(all$nw, mode = 2), idsActive))
     anyActive <- ifelse(nActiveM1 > 0 & nActiveM2 > 0, TRUE, FALSE)
   }
-  
+
   # Set up nwstats df
   if (all$control$save.nwstats == TRUE) {
     if (at == 2) {
@@ -74,13 +74,13 @@ resim_nets <- function(all, at) {
       all$stats$nwstats <- as.data.frame(nwstats)
     }
   }
-  
+
   if (anyActive > 0 & all$control$depend == TRUE) {
     suppressWarnings(
       all$nw <- simulate(all$nw,
-                         formation = all$nwparam$formation, 
+                         formation = all$nwparam$formation,
                          dissolution = all$nwparam$dissolution,
-                         coef.form = all$nwparam$coef.form, 
+                         coef.form = all$nwparam$coef.form,
                          coef.diss = all$nwparam$coef.diss$coef.adj,
                          constraints = all$nwparam$constraints,
                          time.start = at,
@@ -88,22 +88,22 @@ resim_nets <- function(all, at) {
                          time.offset = 0,
                          monitor = all$control$nwstats.formula,
                          control = all$control$set.control.stergm))
-    
+
     # Set up nwstats df
     if (all$control$save.nwstats == TRUE) {
       all$stats$nwstats[at, ] <- tail(attributes(all$nw)$stats, 1)
     }
-    
+
     if (all$control$delete.nodes == TRUE) {
       all$nw <- network.extract(all$nw, at = at)
       inactive <- which(all$attr$active == 0)
       all$attr <- deleteAttr(all$attr, inactive)
     }
-  
+
   }
-  
+
 
 
   return(all)
-  
+
 }

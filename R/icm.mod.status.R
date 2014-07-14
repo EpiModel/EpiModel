@@ -1,17 +1,17 @@
 
 #' @title Primary Infection Module for icm
 #'
-#' @description This function simulates the main infection process given the 
+#' @description This function simulates the main infection process given the
 #'              current state of the actors in the system.
-#' 
+#'
 #' @param all master data list object.
 #' @param at current time step.
-#' 
+#'
 #' @export
 #' @keywords internal
 #'
 infection.icm <- function(all, at) {
-  
+
   ## Expected acts
   if (all$param$groups == 1) {
     acts <- round(all$param$act.rate * all$out$num[at-1] / 2)
@@ -24,17 +24,17 @@ infection.icm <- function(all, at) {
       acts <- round(all$param$act.rate.g2 * (all$out$num[at-1] + all$out$num.g2[at-1]) / 2)
     }
   }
-  
-  
+
+
   ## Edgelist
   if (all$param$groups == 1) {
-    p1 <- ssample(which(all$attr$active == 1), acts, replace = TRUE) 
+    p1 <- ssample(which(all$attr$active == 1), acts, replace = TRUE)
     p2 <- ssample(which(all$attr$active == 1), acts, replace = TRUE)
   } else {
     p1 <- ssample(which(all$attr$active == 1 & all$attr$group == 1), acts, replace = TRUE)
     p2 <- ssample(which(all$attr$active == 1 & all$attr$group == 2), acts, replace = TRUE)
   }
-  
+
   if (length(p1) > 0 & length(p2) > 0) {
     del <- data.frame(p1, p2)
     if (all$param$groups == 1) {
@@ -42,16 +42,16 @@ infection.icm <- function(all, at) {
         del$p2 <- ifelse(del$p1 == del$p2, ssample(which(all$attr$active == 1), 1), del$p2)
       }
     }
-    
-    
+
+
     ## Discordant edgelist
     del$p1.stat <- all$attr$status[del$p1]
     del$p2.stat <- all$attr$status[del$p2]
-    serodis <- (del$p1.stat == 0 & del$p2.stat == 1) | 
+    serodis <- (del$p1.stat == 0 & del$p2.stat == 1) |
       (del$p1.stat == 1 & del$p2.stat == 0)
     del <- del[serodis == TRUE, ]
-    
-    
+
+
     ## Transmission on edgelist
     if (nrow(del) > 0) {
       if (all$param$groups == 1) {
@@ -84,8 +84,8 @@ infection.icm <- function(all, at) {
   } else {
     nInf <- nInfg2 <- 0
   }
-  
-  
+
+
   ## Output
   if (at == 2) {
     all$out$si.flow <- c(0, nInf)
@@ -99,57 +99,57 @@ infection.icm <- function(all, at) {
       all$out$si.flow.g2[at] <- nInfg2
     }
   }
-  
+
   return(all)
-  
+
 }
 
 
 #' @title Recovery: icm Module
 #'
 #' @description This function simulates recovery from the infected state
-#'              either to an distinct recovered state (SIR model type) or back 
-#'              to a susceptible state (SIS model type), for use in 
+#'              either to an distinct recovered state (SIR model type) or back
+#'              to a susceptible state (SIS model type), for use in
 #'              \code{\link{icm}}.
-#' 
+#'
 #' @param all master data list object.
 #' @param at current time step.
-#' 
+#'
 #' @export
 #' @keywords internal
 #'
 recovery.icm <- function(all, at) {
-  
+
   # Conditions --------------------------------------------------------------
   if (!(all$control$type %in% c("SIR", "SIS"))) {
     return(all)
   }
-  
-  
+
+
   # Variables ---------------------------------------------------------------
   active <- all$attr$active
   status <- all$attr$status
-  
+
   groups <- all$param$groups
   group <- all$attr$group
-  
+
   type <- all$control$type
   recovState <- ifelse(type == "SIR", 2, 0)
-  
+
   rec.rand <- all$control$rec.rand
   rec.rate <- all$param$rec.rate
   rec.rate.g2 <- all$param$rec.rate.g2
-  
+
   nRecov <- nRecovG2 <- 0
   idsElig <- which(active == 1 & status == 1)
   nElig <- length(idsElig)
-  
+
   if (nElig > 0) {
-    
+
     gElig <- group[idsElig]
     rates <- c(rec.rate, rec.rate.g2)
     ratesElig <- rates[gElig]
-    
+
     if (rec.rand == TRUE) {
       vecRecov <- which(rbinom(nElig, 1, ratesElig) == 1)
       if (length(vecRecov) > 0) {
@@ -168,12 +168,12 @@ recovery.icm <- function(all, at) {
     }
   }
   all$attr$status <- status
-  
-  
+
+
   # Output ------------------------------------------------------------------
   outName <- ifelse(type == "SIR", "ir.flow", "is.flow")
   outName[2] <- paste0(outName, ".g2")
-  
+
   ## Summary statistics
   if (at == 2) {
     all$out[[outName[1]]] <- c(0, nRecov)
@@ -187,7 +187,7 @@ recovery.icm <- function(all, at) {
       all$out[[outName[2]]][at] <- nRecovG2
     }
   }
-  
+
   return(all)
 }
 
