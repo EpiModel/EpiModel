@@ -392,6 +392,9 @@ plot.dcm <- function(x,
     if (lcomp > 1) {
       leg <- "full"
     }
+    if (noy == FALSE) {
+      leg <- "n"
+    }
   } else {
     if (leg == "lim" & nruns < 3) {
       leg <- "full"
