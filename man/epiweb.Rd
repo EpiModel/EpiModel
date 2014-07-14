@@ -18,6 +18,12 @@ and \code{\link{icm}} models with user input on model type, state sizes, and
 parameters. Model output may be plotted, summarized, and saved as raw data
 using the core \code{EpiModel} functionality for these model classes. These
 applications are built using the \code{shiny} package framework.
+
+These apps are also hosted online at Rstudio's shinyapps site here:
+\itemize{
+   \item \strong{DCM:} \url{http://statnet.shinyapps.io/epidcm/}
+   \item \strong{ICM:} \url{http://statnet.shinyapps.io/epiicm/}
+}
 }
 \examples{
 \dontrun{
