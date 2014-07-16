@@ -146,10 +146,10 @@ print.netsim <- function(x, ...) {
 
   cat("\nModel Output")
   cat("\n-----------------------")
-  cat("\nCompartments:", names(x$epi)[grep("num", names(x$epi))], fill = 60)
-  cat("Flows:", names(x$epi)[grep("flow", names(x$epi))], fill = 60)
+  cat("\nCompartments:", names(x$epi)[grep("num", names(x$epi))])
+  cat("\nFlows:", names(x$epi)[grep("flow", names(x$epi))])
   if (!(is.null(x$network))) {
-    cat("Networks:", simnames)
+    cat("\nNetworks:", simnames)
   }
   if (!(is.null(x$stats$transmat))) {
     cat("\nTransmissions:", simnames)
