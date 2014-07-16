@@ -255,7 +255,7 @@ crosscheck.net <- function(x, param, init, control) {
 
 
   bip <- ifelse(is.bipartite(x$fit$network), TRUE, FALSE)
-  if (bip == TRUE & is.null(init$i.num.m2) & !("status.vector" %in% names(init))) {
+  if (bip == TRUE & is.null(init$i.num.m2) & is.null(init$status.vector)) {
     stop("Specify i.num.m2 for bipartite simulations", call. = FALSE)
   }
 
