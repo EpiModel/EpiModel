@@ -48,8 +48,6 @@ Estimates statistical network models using the exponential
              dynamic/temporal models (STERGM).
 }
 \details{
-
-
 \code{netest} is a wrapper function for the \code{ergm} and \code{stergm}
 functions that estimate static and dynamic network models, respectively.
 Network model estimation is the first step in simulating a stochastic network
