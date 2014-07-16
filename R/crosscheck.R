@@ -260,13 +260,15 @@ crosscheck.net <- function(x, param, init, control) {
   }
 
 
-  if (control$type == "SIR") {
+  if (control$type %in% c("SIR", "SIS")) {
     if (is.null(param$rec.rate)) {
       stop("Specify rec.rate in param.net", call. = FALSE)
     }
     if (bip == TRUE & is.null(param$rec.rate.m2)) {
       stop("Specify rec.rate.m2 in param.net", call. = FALSE)
     }
+  }
+  if (control$type == "SIR") {
     if (is.null(init$r.num) & is.null(init$status.vector)) {
       stop("Specify r.num in init.net", call. = FALSE)
     }
