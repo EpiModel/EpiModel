@@ -31,8 +31,6 @@ Solves deterministic compartmental epidemic models for
              infectious disease.
 }
 \details{
-
-
 The \code{dcm} function uses the ordinary differential equation solver in
 the \code{deSolve} package to model disease as a deterministic compartmental
 system. The parameterization for these models follows the standard approach in
