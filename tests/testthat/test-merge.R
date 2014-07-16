@@ -1,6 +1,6 @@
 context("merge")
 
-testthat("merge: works for open sims saving nw stats", {
+test_that("merge: works for open sims saving nw stats", {
   nw <- network.initialize(n = 50, directed = FALSE)
   est <- netest(nw,
                 formation = ~ edges,
