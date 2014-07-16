@@ -177,7 +177,7 @@ print.disscoef <- function(x, ...) {
 #' @export
 print.param.dcm <- function(x, ...) {
 
-  cat("Model Parameters for dcm")
+  cat("DCM Parameters")
   cat("\n===========================\n")
   for (i in seq_along(x)) {
     cat(names(x)[i], "=", x[[i]], fill = 80)
@@ -191,7 +191,7 @@ print.param.icm <- function(x, ...) {
 
   pToPrint <- which(!(names(x) %in% c("vital")))
 
-  cat("Model Parameters for icm")
+  cat("ICM Parameters")
   cat("\n===========================\n")
   for (i in pToPrint) {
     cat(names(x)[i], "=", x[[i]], fill = 80)
@@ -205,7 +205,7 @@ print.param.net <- function(x, ...) {
 
   pToPrint <- which(!(names(x) %in% c("vital")))
 
-  cat("Model Parameters for net")
+  cat("Network Model Parameters")
   cat("\n===========================\n")
   for (i in pToPrint) {
     cat(names(x)[i], "=", x[[i]], fill = 80)
@@ -218,7 +218,7 @@ print.param.net <- function(x, ...) {
 #' @export
 print.init.dcm <- function(x, ...) {
 
-  cat("Initial Conditions for dcm")
+  cat("DCM Initial Conditions")
   cat("\n===========================\n")
   for (i in seq_along(x)) {
     cat(names(x)[i], "=", x[[i]], fill = 80)
@@ -230,7 +230,7 @@ print.init.dcm <- function(x, ...) {
 #' @export
 print.init.icm <- function(x, ...) {
 
-  cat("Initial Conditions for icm")
+  cat("ICM Initial Conditions")
   cat("\n===========================\n")
   for (i in seq_along(x)) {
     cat(names(x)[i], "=", x[[i]], fill = 80)
@@ -242,8 +242,8 @@ print.init.icm <- function(x, ...) {
 #' @export
 print.init.net <- function(x, ...) {
 
-  cat("Initial Conditions for net")
-  cat("\n===========================\n")
+  cat("Network Model Initial Conditions")
+  cat("\n=================================\n")
   for (i in seq_along(x)) {
     cat(names(x)[i], "=", x[[i]], fill = 80)
   }
@@ -256,7 +256,7 @@ print.control.dcm <- function(x, ...) {
 
   pToPrint <- which(!(names(x) %in% c("dt")))
 
-  cat("Control Settings for dcm")
+  cat("DCM Control Settings")
   cat("\n===========================\n")
   for (i in pToPrint) {
     cat(names(x)[i], "=", x[[i]], fill = 80)
@@ -270,7 +270,7 @@ print.control.icm <- function(x, ...) {
 
   pToPrint <- which(!grepl(".FUN", names(x)))
 
-  cat("Control Settings for dcm")
+  cat("ICM Control Settings")
   cat("\n===========================\n")
   for (i in pToPrint) {
     cat(names(x)[i], "=", x[[i]], fill = 80)
@@ -285,8 +285,8 @@ print.control.net <- function(x, ...) {
   pToPrint <- which(!grepl(".FUN", names(x)) &
                     names(x) != "set.control.stergm")
 
-  cat("Control Settings for net")
-  cat("\n===========================\n")
+  cat("Network Model Control Settings")
+  cat("\n===============================\n")
   for (i in pToPrint) {
     if (class(x[[i]]) == "formula") {
       cat(names(x)[i], "= "); cat(paste0(as.character(x[[i]])[1],
