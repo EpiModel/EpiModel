@@ -33,5 +33,6 @@ Imports:
 Suggests:
     knitr,
     ndtv,
-    shiny
+    shiny,
+    testthat
 VignetteBuilder: knitr
