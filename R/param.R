@@ -374,6 +374,10 @@ param.net <- function(trans.rate,
   out <- split_list(out)
 
 
+  ## Eval args
+  out <- eval_list(out)
+
+
   ## Defaults
   if (missing(act.rate)) {
     out$act.rate <- 1
