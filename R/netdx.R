@@ -130,7 +130,9 @@ netdx <- function(x,
                             time.slices = 1,
                             monitor = formation,
                             output = "stats")
-  } else {
+  }
+
+  if (edapprox == TRUE) {
 
     if (missing(set.control.ergm)) {
       set.control.ergm <- control.simulate.ergm()
@@ -139,18 +141,20 @@ netdx <- function(x,
       set.control.stergm <- control.simulate.network()
     }
 
-    fit.sim <- simulate(fit,
-                        control = set.control.ergm)
-    diag.sim <- simulate(fit.sim,
-                         formation = formation,
-                         dissolution = dissolution,
-                         coef.form = coef.form,
-                         coef.diss = coef.diss$coef.crude,
-                         time.slices = nsteps,
-                         constraints = constraints,
-                         monitor = nwstats.formula,
-                         nsim = nsims,
-                         control = set.control.stergm)
+    diag.sim <- list()
+    for (i in 1:nsims) {
+      fit.sim <- simulate(fit, control = set.control.ergm)
+      diag.sim[[i]] <- simulate(fit.sim,
+                           formation = formation,
+                           dissolution = dissolution,
+                           coef.form = coef.form,
+                           coef.diss = coef.diss$coef.crude,
+                           time.slices = nsteps,
+                           constraints = constraints,
+                           monitor = nwstats.formula,
+                           nsim = 1,
+                           control = set.control.stergm)
+    }
     diag.sim.ts <- simulate(nw,
                             formation = formation,
                             dissolution = dissolution,
