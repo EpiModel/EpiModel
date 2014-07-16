@@ -171,12 +171,8 @@ netdx <- function(x,
 
   ## List for stats for each simulation
   stats <- list()
-  if (nsims == 1) {
-    stats[[1]] <- as.matrix(attributes(diag.sim)$stats)[1:nsteps, , drop = FALSE]
-  } else {
-    for (i in 1:length(diag.sim)) {
-      stats[[i]] <- as.matrix(attributes(diag.sim[[i]])$stats)[1:nsteps, , drop = FALSE]
-    }
+  for (i in 1:length(diag.sim)) {
+    stats[[i]] <- as.matrix(attributes(diag.sim[[i]])$stats)[1:nsteps, , drop = FALSE]
   }
 
   ## Merged stats across all simulations
@@ -216,24 +212,22 @@ netdx <- function(x,
     cat("* Calculating duration statistics\n")
   }
 
+
   ## Duration calculations
   sim.df <- list()
-  if (nsims == 1) {
-    sim.df[[1]] <- as.data.frame(diag.sim)
-  } else {
-    for (i in 1:length(diag.sim)) {
-      sim.df[[i]] <- as.data.frame(diag.sim[[i]])
-    }
+  for (i in 1:length(diag.sim)) {
+    sim.df[[i]] <- as.data.frame(diag.sim[[i]])
   }
+
 
   ## Create a merged vector of durations
   ncens <- which(sim.df[[1]]$onset.censored == FALSE &
-                   sim.df[[1]]$terminus.censored == FALSE)
+                 sim.df[[1]]$terminus.censored == FALSE)
   durVec <- sim.df[[1]]$duration[ncens]
   if (nsims > 1) {
     for (i in 1:length(diag.sim)) {
       ncens <- which(sim.df[[i]]$onset.censored == FALSE &
-                       sim.df[[i]]$terminus.censored == FALSE)
+                     sim.df[[i]]$terminus.censored == FALSE)
       durVec <- c(durVec, sim.df[[i]]$duration[ncens])
     }
   }
@@ -252,12 +246,8 @@ netdx <- function(x,
 
   # Calculate mean partnership age from edgelist
   pages <- list()
-  if (nsims == 1) {
-    pages[[1]] <- edgelist_meanage(el = sim.df[[1]])
-  } else {
-    for (i in 1:length(diag.sim)) {
-      pages[[i]] <- edgelist_meanage(el = sim.df[[i]])
-    }
+  for (i in 1:length(diag.sim)) {
+    pages[[i]] <- edgelist_meanage(el = sim.df[[i]])
   }
 
 
