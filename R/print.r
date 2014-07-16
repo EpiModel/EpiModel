@@ -288,7 +288,14 @@ print.control.net <- function(x, ...) {
   cat("Control Settings for net")
   cat("\n===========================\n")
   for (i in pToPrint) {
-    cat(names(x)[i], "=", x[[i]], fill = 80)
+    if (class(x[[i]]) == "formula") {
+      cat(names(x)[i], "= "); cat(paste0(as.character(x[[i]])[1],
+                                         as.character(x[[i]])[2]), "\n")
+    } else if (class(x[[i]]) == "data.frame") {
+      cat(names(x)[i], "= <data.frame>")
+    } else {
+      cat(names(x)[i], "=", x[[i]], fill = 80)
+    }
   }
 
   invisible()
