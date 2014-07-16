@@ -31,8 +31,6 @@ Simulates stochastic individual contact epidemic models for
              infectious disease.
 }
 \details{
-
-
 Individual contact models are intended to be the stochastic microsimulation
 analogs to deterministic compartmental models. ICMs simulate disease spread
 on individual agents in discrete time as a function of processes with stochastic
