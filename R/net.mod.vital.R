@@ -24,6 +24,7 @@ deaths.net <- function(all, at) {
   modes <- all$param$modes
   mode <- idmode(all$nw)
 
+  type <- all$control$type
   d.rand <- all$control$d.rand
 
 
