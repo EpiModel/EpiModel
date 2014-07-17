@@ -312,12 +312,8 @@ control.icm <- function(type,
 #'        function of \code{\link{infection.net}}.
 #' @param recovery.FUN module to simulate disease recovery, with the default
 #'        function of \code{\link{recovery.net}}.
-#' @param deaths_sus.FUN module to simulate death or exit among the susceptibles,
-#'        with the default function of \code{\link{deaths_sus.net}}.
-#' @param deaths_inf.FUN module to simulate death or exit among the infecteds,
-#'        with the default function of \code{\link{deaths_inf.net}}.
-#' @param deaths_rec.FUN module to simulate death or exit among the recovered,
-#'        with the default function of \code{\link{deaths_rec.net}}.
+#' @param deaths.FUN module to simulate death or exit, with the default function
+#'        of \code{\link{deaths.net}}.
 #' @param births.FUN module to simulate births or entries, with the default
 #'        function of \code{\link{births.net}}.
 #' @param resim_nets.FUN module to resimulate the network at each time step,
@@ -418,9 +414,7 @@ control.net <- function(type,
                         initialize.FUN,
                         infection.FUN,
                         recovery.FUN,
-                        deaths_sus.FUN,
-                        deaths_inf.FUN,
-                        deaths_rec.FUN,
+                        deaths.FUN,
                         births.FUN,
                         resim_nets.FUN,
                         get_prev.FUN,
@@ -490,14 +484,8 @@ control.net <- function(type,
   if (is.null(out$recovery.FUN)) {
     out$recovery.FUN <- recovery.net
   }
-  if (is.null(out$deaths_sus.FUN)) {
-    out$deaths_sus.FUN <- deaths_sus.net
-  }
-  if (is.null(out$deaths_inf.FUN)) {
-    out$deaths_inf.FUN <- deaths_inf.net
-  }
-  if (is.null(out$deaths_rec.FUN)) {
-    out$deaths_rec.FUN <- deaths_rec.net
+  if (is.null(out$deaths.FUN)) {
+    out$deaths.FUN <- deaths.net
   }
   if (is.null(out$births.FUN)) {
     out$births.FUN <- births.net

@@ -55,15 +55,11 @@
 #' step to update entries into and exits from the network. These are used in
 #' dependent network models.
 #' \itemize{
-#'  \item \code{\link{deaths_sus.net}}: randomly simulates death for susceptible
-#'        status  nodes given the death rate specified in the \code{ds.rate}
-#'        parameter. This involves deactivating or deleting susceptible nodes.
-#'  \item \code{\link{deaths_inf.net}}: randomly simulates death for infected status
-#'        nodes given the death rate specified in the \code{di.rate} parameter.
-#'        This involves deactivating or deleting infected nodes.
-#'  \item \code{\link{deaths_rec.net}}: randomly simulates death for recovered status
-#'        nodes given the death rate specified in the \code{dr.rate} parameter.
-#'        This involves deactivating or deleting recovered nodes.
+#'  \item \code{\link{deaths.net}}: randomly simulates death for nodes given
+#'        their disease status (susceptible, infected, recovered), and their
+#'        mode-specific death rates specified in \code{param.net}. Deaths
+#'        involve deactivating nodes, which are then deleted from the network
+#'        if \code{delete.nodes=TRUE} is set in \code{control.net}.
 #'  \item \code{\link{births.net}}: randomly simulates new births into the network
 #'        given the current population size and the birth rate specified in the
 #'        \code{b.rate} parameter. This involves adding new nodes into the network.

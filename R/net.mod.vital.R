@@ -1,20 +1,18 @@
 
-#' @title Deaths for Suceptibles: netsim Module
+#' @title Deaths: netsim Module
 #'
-#' @description This function simulates death for those in the susceptible state
-#'              for use in \code{\link{netsim}} simulations.
+#' @description This function simulates death for use in \link{netsim} simulations.
 #'
 #' @param all a list object containing a \code{networkDynamic} object and other
 #'        initialization information passed from \code{\link{netsim}}.
 #' @param at current time step.
 #'
-#' @seealso \code{\link{netsim}}, \code{\link{deaths_inf.net}},
-#'  \code{\link{deaths_rec.net}}
+#' @seealso \code{\link{netsim}}
 #'
 #' @export
 #' @keywords netMod internal
 #'
-deaths_sus.net <- function(all, at) {
+deaths.net <- function(all, at) {
 
   # Conditions --------------------------------------------------------------
   if (all$param$vital == FALSE) {
@@ -23,24 +21,29 @@ deaths_sus.net <- function(all, at) {
 
 
   # Variables ---------------------------------------------------------------
-  nw <- all$nw
-  active <- all$attr$active
-  status <- all$attr$status
-
-  rates <- c(all$param$ds.rate, all$param$ds.rate.m2)
   modes <- all$param$modes
-  mode <- idmode(nw)
+  mode <- idmode(all$nw)
 
-  idsElig <- which(active == 1 & status == 0)
-  nElig <- length(idsElig)
+  type <- all$control$type
+  d.rand <- all$control$d.rand
+
+
+  # Susceptible deaths ------------------------------------------------------
+
+  # Initialize counts and query rates
   nDeaths <- nDeathsM2 <- 0
+  idsElig <- which(all$attr$active == 1 & all$attr$status == 0)
+  nElig <- length(idsElig)
 
-
-  # Process -----------------------------------------------------------------
   if (nElig > 0) {
+
+    # Pull rates by mode
     mElig <- mode[idsElig]
+    rates <- c(all$param$ds.rate, all$param$ds.rate.m2)
     ratesElig <- rates[mElig]
-    if (all$control$d.rand == TRUE) {
+
+    # Stochastic deaths
+    if (d.rand == TRUE) {
       vecDeaths <- which(rbinom(nElig, 1, ratesElig) == 1)
       if (length(vecDeaths) > 0) {
         idsDth <- idsElig[vecDeaths]
@@ -53,7 +56,10 @@ deaths_sus.net <- function(all, at) {
                                       v = idsDth,
                                       deactivate.edges = TRUE)
       }
-    } else {
+    }
+
+    # Deterministic deaths
+    if (d.rand == FALSE) {
       idsDth <- idsDthM2 <- NULL
       nDeaths <- min(round(sum(ratesElig[mElig == 1])), sum(mElig == 1))
       all$attr$active[ssample(idsElig[mElig == 1], nDeaths)] <- 0
@@ -73,8 +79,7 @@ deaths_sus.net <- function(all, at) {
     }
   }
 
-
-  # Output ------------------------------------------------------------------
+  # Output
   if (at == 2) {
     all$out$ds.flow <- c(0, nDeaths)
     if (modes == 2) {
@@ -87,54 +92,23 @@ deaths_sus.net <- function(all, at) {
     }
   }
 
-  return(all)
-}
 
+  # Infected deaths ---------------------------------------------------------
 
-
-#' @title Deaths for Infecteds: netsim Module
-#'
-#' @description This function simulates deaths for infecteds
-#'   for use in \code{\link{netsim}} simulations.
-#'
-#' @param all a list object containing a \code{networkDynamic} object and other
-#'   initialization information passed from \code{\link{netsim}}.
-#' @param at current time step.
-#'
-#' @seealso \code{\link{netsim}}, \code{\link{deaths_sus.net}},
-#'  \code{\link{deaths_rec.net}}
-#'
-#' @export
-#' @keywords netMod internal
-#'
-#'
-deaths_inf.net <- function(all, at) {
-
-  # Conditions --------------------------------------------------------------
-  if (all$param$vital == FALSE) {
-    return(all)
-  }
-
-
-  # Variables ---------------------------------------------------------------
-  nw <- all$nw
-  active <- all$attr$active
-  status <- all$attr$status
-
-  rates <- c(all$param$di.rate, all$param$di.rate.m2)
-  modes <- all$param$modes
-  mode <- idmode(nw)
-
-  idsElig <- which(active == 1 & status == 1)
-  nElig <- length(idsElig)
+  # Initialize counts and query rates
   nDeaths <- nDeathsM2 <- 0
+  idsElig <- which(all$attr$active == 1 & all$attr$status == 1)
+  nElig <- length(idsElig)
 
-
-  # Process -----------------------------------------------------------------
   if (nElig > 0) {
+
+    # Pull rates by mode
     mElig <- mode[idsElig]
+    rates <- c(all$param$di.rate, all$param$di.rate.m2)
     ratesElig <- rates[mElig]
-    if (all$control$d.rand == TRUE) {
+
+    # Stochastic deaths
+    if (d.rand == TRUE) {
       vecDeaths <- which(rbinom(nElig, 1, ratesElig) == 1)
       if (length(vecDeaths) > 0) {
         idsDth <- idsElig[vecDeaths]
@@ -147,7 +121,10 @@ deaths_inf.net <- function(all, at) {
                                       v = idsDth,
                                       deactivate.edges = TRUE)
       }
-    } else {
+    }
+
+    # Deterministic deaths
+    if (d.rand == FALSE) {
       idsDth <- idsDthM2 <- NULL
       nDeaths <- min(round(sum(ratesElig[mElig == 1])), sum(mElig == 1))
       all$attr$active[ssample(idsElig[mElig == 1], nDeaths)] <- 0
@@ -167,8 +144,7 @@ deaths_inf.net <- function(all, at) {
     }
   }
 
-
-  # Output ------------------------------------------------------------------
+  # Output
   if (at == 2) {
     all$out$di.flow <- c(0, nDeaths)
     if (modes == 2) {
@@ -181,100 +157,77 @@ deaths_inf.net <- function(all, at) {
     }
   }
 
-  return(all)
-}
 
+  # Recovered deaths --------------------------------------------------------
+  if (type == "SIR") {
 
-#' @title Deaths for Recovered: netsim Module
-#'
-#' @description This function simulates death for those in the susceptible state
-#'   for use in \code{\link{netsim}} simulations.
-#'
-#' @param all a list object containing a \code{networkDynamic} object and other
-#'   initialization information passed from \code{\link{netsim}}.
-#' @param at current time step.
-#'
-#' @seealso \code{\link{netsim}}, \code{\link{deaths_sus.net}},
-#'  \code{\link{deaths_inf.net}}
-#'
-#' @export
-#' @keywords netMod internal
-#'
-deaths_rec.net <- function(all, at) {
+    # Initialize counts and query rates
+    nDeaths <- nDeathsM2 <- 0
+    idsElig <- which(all$attr$active == 1 & all$attr$status == 2)
+    nElig <- length(idsElig)
 
-  # Conditions --------------------------------------------------------------
-  if (all$param$vital == FALSE | all$control$type != "SIR") {
-    return(all)
-  }
+    if (nElig > 0) {
 
+      # Pull rates by mode
+      mElig <- mode[idsElig]
+      rates <- c(all$param$dr.rate, all$param$dr.rate.m2)
+      ratesElig <- rates[mElig]
 
-  # Variables ---------------------------------------------------------------
-  nw <- all$nw
-  active <- all$attr$active
-  status <- all$attr$status
+      # Stochastic deaths
+      if (d.rand == TRUE) {
+        vecDeaths <- which(rbinom(nElig, 1, ratesElig) == 1)
+        if (length(vecDeaths) > 0) {
+          idsDth <- idsElig[vecDeaths]
+          nDeaths <- sum(mode[idsDth] == 1)
+          nDeathsM2 <- sum(mode[idsDth] == 2)
+          all$attr$active[idsDth] <- 0
+          all$nw <- deactivate.vertices(all$nw,
+                                        onset = at,
+                                        terminus = Inf,
+                                        v = idsDth,
+                                        deactivate.edges = TRUE)
+        }
+      }
 
-  rates <- c(all$param$dr.rate, all$param$dr.rate.m2)
-  modes <- all$param$modes
-  mode <- idmode(nw)
+      # Deterministic deaths
+      if (d.rand == FALSE) {
+        idsDth <- idsDthM2 <- NULL
+        nDeaths <- min(round(sum(ratesElig[mElig == 1])), sum(mElig == 1))
+        all$attr$active[ssample(idsElig[mElig == 1], nDeaths)] <- 0
+        if (modes == 2) {
+          nDeathsM2 <- min(round(sum(ratesElig[mElig == 2])), sum(mElig == 2))
+          all$attr$active[ssample(idsElig[mElig == 2], nDeaths)] <- 0
+        }
+        totDth <- nDeaths + nDeathsM2
+        if (totDth > 0) {
+          allids <- c(idsDth, idsDthM2)
+          all$nw <- deactivate.vertices(all$nw,
+                                        onset = at,
+                                        terminus = Inf,
+                                        v = allids,
+                                        deactivate.edges = TRUE)
+        }
+      }
+    }
 
-  idsElig <- which(active == 1 & status == 2)
-  nElig <- length(idsElig)
-  nDeaths <- nDeathsM2 <- 0
-
-
-  # Process -----------------------------------------------------------------
-  if (nElig > 0) {
-    mElig <- mode[idsElig]
-    ratesElig <- rates[mElig]
-    if (all$control$d.rand == TRUE) {
-      vecDeaths <- which(rbinom(nElig, 1, ratesElig) == 1)
-      if (length(vecDeaths) > 0) {
-        idsDth <- idsElig[vecDeaths]
-        nDeaths <- sum(mode[idsDth] == 1)
-        nDeathsM2 <- sum(mode[idsDth] == 2)
-        all$attr$active[idsDth] <- 0
-        all$nw <- deactivate.vertices(all$nw,
-                                      onset = at,
-                                      terminus = Inf,
-                                      v = idsDth,
-                                      deactivate.edges = TRUE)
+    # Output
+    if (at == 2) {
+      all$out$dr.flow <- c(0, nDeaths)
+      if (modes == 2) {
+        all$out$dr.flow.m2 <- c(0, nDeathsM2)
       }
     } else {
-      idsDth <- idsDthM2 <- NULL
-      nDeaths <- min(round(sum(ratesElig[mElig == 1])), sum(mElig == 1))
-      all$attr$active[ssample(idsElig[mElig == 1], nDeaths)] <- 0
+      all$out$dr.flow[at] <- nDeaths
       if (modes == 2) {
-        nDeathsM2 <- min(round(sum(ratesElig[mElig == 2])), sum(mElig == 2))
-        all$attr$active[ssample(idsElig[mElig == 2], nDeaths)] <- 0
-      }
-      totDth <- nDeaths + nDeathsM2
-      if (totDth > 0) {
-        allids <- c(idsDth, idsDthM2)
-        all$nw <- deactivate.vertices(all$nw,
-                                      onset = at,
-                                      terminus = Inf,
-                                      v = allids,
-                                      deactivate.edges = TRUE)
+        all$out$dr.flow.m2[at] <- nDeathsM2
       }
     }
   }
 
-
-  # Output ------------------------------------------------------------------
-  if (at == 2) {
-    all$out$dr.flow <- c(0, nDeaths)
-    if (modes == 2) {
-      all$out$dr.flow.m2 <- c(0, nDeathsM2)
-    }
-  } else {
-    all$out$dr.flow[at] <- nDeaths
-    if (modes == 2) {
-      all$out$dr.flow.m2[at] <- nDeathsM2
-    }
-  }
 
   return(all)
 }
+
 
 
 #' @title Births: netsim Module
