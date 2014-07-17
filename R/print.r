@@ -177,10 +177,16 @@ print.disscoef <- function(x, ...) {
 #' @export
 print.param.dcm <- function(x, ...) {
 
+  pToPrint <- seq_along(x)
+
   cat("DCM Parameters")
   cat("\n===========================\n")
-  for (i in seq_along(x)) {
-    cat(names(x)[i], "=", x[[i]], fill = 80)
+  for (i in pToPrint) {
+    if (class(x[[i]]) == "numeric" && length(x[[i]]) > 10) {
+      cat(names(x)[i], "=", x[[i]][1:3], "...", fill = 80)
+    } else {
+      cat(names(x)[i], "=", x[[i]], fill = 80)
+    }
   }
 
   invisible()
@@ -194,7 +200,11 @@ print.param.icm <- function(x, ...) {
   cat("ICM Parameters")
   cat("\n===========================\n")
   for (i in pToPrint) {
-    cat(names(x)[i], "=", x[[i]], fill = 80)
+    if (class(x[[i]]) == "numeric" && length(x[[i]]) > 5) {
+      cat(names(x)[i], "=", x[[i]][1:3], "...", fill = 80)
+    } else {
+      cat(names(x)[i], "=", x[[i]], fill = 80)
+    }
   }
 
   invisible()
@@ -208,12 +218,15 @@ print.param.net <- function(x, ...) {
   cat("Network Model Parameters")
   cat("\n===========================\n")
   for (i in pToPrint) {
-    cat(names(x)[i], "=", x[[i]], fill = 80)
+    if (class(x[[i]]) == "numeric" && length(x[[i]]) > 5) {
+      cat(names(x)[i], "=", x[[i]][1:3], "...", fill = 80)
+    } else {
+      cat(names(x)[i], "=", x[[i]], fill = 80)
+    }
   }
 
   invisible()
 }
-
 
 #' @export
 print.init.dcm <- function(x, ...) {
