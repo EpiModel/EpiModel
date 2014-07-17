@@ -165,6 +165,7 @@ netsim <- function(x,
         }
       }
 
+
       ## Infection Module
       all <- do.call(control[["infection.FUN"]], list(all, at))
 
@@ -174,9 +175,7 @@ netsim <- function(x,
 
 
       ## Demographics Modules
-      all <- do.call(control[["deaths_sus.FUN"]], list(all, at))
-      all <- do.call(control[["deaths_inf.FUN"]], list(all, at))
-      all <- do.call(control[["deaths_rec.FUN"]], list(all, at))
+      all <- do.call(control[["deaths.FUN"]], list(all, at))
       all <- do.call(control[["births.FUN"]], list(all, at))
 
 

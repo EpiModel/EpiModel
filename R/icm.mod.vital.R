@@ -25,7 +25,6 @@ deaths.icm <- function(all, at) {
   group <- all$attr$group
 
 
-
   # Susceptible deaths ------------------------------------------------------
   nDeaths <- nDeathsG2 <- 0
   idsElig <- which(all$attr$active == 1 & all$attr$status == 0)
