@@ -5,11 +5,17 @@ NEW FEATURES
 * Added coef.form argument to netest for network model formation formulas with
   offset terms.
 * Allow edge duration of 1 in netest when using the edges dissolution approximation
-  (handles one-off partnerships in network models)
+  (handles one-off partnerships in network models when using the approximation).
+* Death modules for network models are now contained in one function, deaths.net,
+  to facilitate replacement death modules from users. This is also now consistent
+  with the death module for ICMs.
+* Add internal test structure for build checking.
 
 BUG FIXES
 * netdx now simulates from a different starting network at the begining of each
-  dynamic simulation, eliminating correlation at time 1 across simulations
+  dynamic simulation, eliminating correlation at time 1 across simulations.
+* Can now pass status.vector into control.net for bipartite simulations.
+* Several plotting and printing bugs fixed.
 
 
 Version 1.0
