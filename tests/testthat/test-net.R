@@ -28,17 +28,6 @@ test_that("netest works for edges + nodematch model", {
   expect_is(est, "netest")
 })
 
-test_that("netest works for edges + degree(0) model", {
-  nw <- network.initialize(n = 50, directed = FALSE)
-  est <- netest(
-    nw,
-    formation = ~ edges + degree(0),
-    dissolution = ~offset(edges),
-    target.stats = c(25, 10),
-    coef.diss = dissolution_coefs(~offset(edges), 10, 0),
-    verbose = FALSE)
-  expect_is(est, "netest")
-})
 
 
 # netsim ------------------------------------------------------------------
