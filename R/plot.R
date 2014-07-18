@@ -1454,7 +1454,16 @@ plot.netsim <- function(x,
 
   # Epidemic plot -----------------------------------------------------------
   if (type == "sim") {
-    plot.icm(x, ...)
+    if (missing(sim.col) & missing(sim.lwd)) {
+      plot.icm(x, ...)
+    } else if (missing(sim.col) & !missing(sim.lwd)) {
+      plot.icm(x, sim.lwd = sim.lwd, ...)
+    } else if (!missing(sim.col) & missing(sim.lwd)) {
+      plot.icm(x, sim.col = sim.col, ...)
+    } else {
+      plot.icm(x, sim.lwd = sim.lwd, sim.col = sim.col, ...)
+    }
+
   }
 
 
