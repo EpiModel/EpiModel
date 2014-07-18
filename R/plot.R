@@ -664,10 +664,20 @@ plot.icm <- function(x,
   # Sim lines
   if (missing(sim.lwd)) {
     sim.lwd <- rep(0.75, lcomp)
+  } else {
+    if (length(sim.lwd) < lcomp) {
+      sim.lwd <- rep(sim.lwd, lcomp)
+    }
   }
+
   if (missing(sim.col)) {
     sim.col <- bpal
+  } else {
+    if (length(sim.col) < lcomp) {
+      sim.col <- rep(sim.col, lcomp)
+    }
   }
+
   if (missing(sim.alpha) & nsims == 1) {
     sim.alpha <- 0.9
   }
@@ -794,13 +804,13 @@ plot.icm <- function(x,
   if (sim.lines == TRUE) {
     if (nsims == 1) {
       for (j in seq_len(lcomp)) {
-        lines(1:nsteps, x$epi[[y[j]]][, 1], lwd = sim.lwd, col = sim.pal[j])
+        lines(1:nsteps, x$epi[[y[j]]][, 1], lwd = sim.lwd[j], col = sim.pal[j])
       }
     }
     if (nsims > 1) {
       for (j in seq_len(lcomp)) {
         for (i in sims) {
-          lines(1:nsteps, x$epi[[y[j]]][, i], lwd = sim.lwd, col = sim.pal[j])
+          lines(1:nsteps, x$epi[[y[j]]][, i], lwd = sim.lwd[j], col = sim.pal[j])
         }
       }
     }
