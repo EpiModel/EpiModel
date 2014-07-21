@@ -11,7 +11,7 @@ EpiModel provides tools for simulating mathematical models of infectious disease
 
 
 ### Installation
-The current version of EpiModel is 1.0. The software may be downloaded from [http://cran.r-project.org/web/packages/EpiModel/index.html CRAN], and from within R using:
+The current version of EpiModel is 1.0. The software may be downloaded from [CRAN](http://cran.r-project.org/web/packages/EpiModel/index.html), and from within R using:
 ```r
 install.packages("EpiModel")
 ```
