@@ -9,13 +9,16 @@ NEW FEATURES
 * Death modules for network models are now contained in one function, deaths.net,
   to facilitate replacement death modules from users. This is also now consistent
   with the death module for ICMs.
-* Add internal test structure for build checking.
 
 BUG FIXES
 * netdx now simulates from a different starting network at the begining of each
   dynamic simulation, eliminating correlation at time 1 across simulations.
 * Can now pass status.vector into control.net for bipartite simulations.
 * Several plotting and printing bugs fixed.
+
+OTHER
+* Added internal test structure for build checking.
+* Added a help file document for building ICM modules at ?modules.icm.
 
 
 Version 1.0
