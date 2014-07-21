@@ -15,45 +15,43 @@
 }
 }
 \details{
-The \code{EpiModel} package provides functions for building, solving, and
-plotting mathematical models of infectious disease. The goals of the
-package are to provide basic tools for modeling in multiple
-frameworks for pedagogical purposes, and to support users to
-develop and expand these tools using the package's utility functions
-for their own research.
+The EpiModel package provides functions for building, solving, and
+plotting mathematical models of infectious disease. The goals of the package
+are to provide basic tools for modeling in multiple frameworks for pedagogical
+purposes, and to support users in developing and expanding these tools using
+the package's utility functions for their own research.
+}
+\section{Model Classes and Types}{
 
-\code{EpiModel} currently provides functionality for three classes of epidemic
+EpiModel currently provides functionality for three classes of epidemic
 models:
 \itemize{
  \item \strong{Deterministic Compartmental Models:} these continuous-time
-       models are solved using ordinary differential equations. \code{EpiModel}
+       models are solved using ordinary differential equations. EpiModel
        allows for easy specification of sensitivity models to compare multiple
        runs of the same model with different parameter values.
- \item \strong{Stochastic Individual Contact Models:} a novel class of microsimulation
-       models were developed to mirror the deterministic models but add random
-       variation in all components of the transmission dynamics system,
-       from infection to recovery to vital dynamics (births and deaths).
- \item \strong{Stochastic Network Models:} using the underlying statistical framework
-       of dynamic exponential random graph models (ERGMs) recently developed in
-       the \code{Statnet} suite of software in R, our network models
-       simulate partnership formation and dissolution stochastically according to
-       a user-defined statistical model, as well as disease spread on that network.
+ \item \strong{Stochastic Individual Contact Models:} a novel class of
+       microsimulation models were developed to mirror the deterministic models
+       but add random variation in all components of the transmission dynamics
+       system, from infection to recovery to vital dynamics (births and deaths).
+ \item \strong{Stochastic Network Models:} using the underlying statistical
+       framework of dynamic exponential random graph models (ERGMs) recently
+       developed in the \strong{Statnet} suite of software in R, our network
+       models simulate partnership formation and dissolution stochastically
+       according to a user-defined statistical model, as well as disease
+       spread on that network.
  }
- Future additions to the package will expand the varieties of models within
- each of these classes that may be run "out-of-the-box," as well as the
- helper utility functions that support users' own expansion of network
- models specifically.
 
-\code{EpiModel} supports three infectious disease types to be run across all of the
- three classes:
+EpiModel supports three infectious disease types to be run across all
+of the three classes:
  \itemize{
-  \item \strong{Susceptible-Infectious (SI):} a two-state disease in which there
-        is life-long infection without recovery. HIV/AIDS is one example,
+  \item \strong{Susceptible-Infectious (SI):} a two-state disease in which
+        there is life-long infection without recovery. HIV/AIDS is one example,
         although for this case it is more common to model infection stages as
         separate compartments (forthcoming in a future release).
-  \item \strong{Susceptible-Infectious-Recovered (SIR):} a three-stage disease in
-        which one has life-long recovery with immunity after infection. Measles
-        is one example, but modern models for the disease also require
+  \item \strong{Susceptible-Infectious-Recovered (SIR):} a three-stage disease
+        in which one has life-long recovery with immunity after infection.
+        Measles is one example, but modern models for the disease also require
         consideration of vaccination patterns in the population (forthcoming
         in a future release).
   \item \strong{Susceptible-Infectious-Susceptible (SIS):} a two-stage disease
@@ -61,26 +59,56 @@ models:
         infected states throughout life. Examples include bacterial sexually
         transmitted diseases like gonorrhea.
  }
+}
 
-The core functions for parameterizing and solving the three model classes
-are:
+\section{Model Parameterization and Simulation}{
+
+EpiModel uses three model setup functions for each model class to input the
+necessary parameters, initial conditions, and control settings:
+\itemize{
+ \item \code{\link{param.dcm}}, \code{\link{param.icm}}, and
+       \code{\link{param.net}} are used to input epidemic parameters for each
+       of the three model classes. Parameters include the rate of contacts or
+       acts between actors, the transmission per contact, and recovery and
+       demographic rates for models that include those transitions.
+ \item \code{\link{init.dcm}}, \code{\link{init.icm}}, and \code{\link{init.net}}
+       are used to input the initial conditions for each class. The main
+       conditions are limited to the numbers or, if applicaple, the specific
+       agents in the population who are infected or recovered at the simulation
+       outset.
+ \item \code{\link{control.dcm}}, \code{\link{control.icm}}, and
+       \code{\link{control.net}} are used to specify the remaining control
+       settings for each simulation. The core controls for built-in model
+       types include the disease type, number of time steps, and number of
+       simulations. Controls are also used to input new model functions (for
+       DCMs) and new model modules (for ICMs and network models) to allow the
+       user to simulate fully original epidemic models in EpiModel. See the
+       extensive documention linked on the control function help pages for
+       further details.
+}
+
+With the models parameterized, the functions for simulating the epidemic
+model are:
 \itemize{
  \item \code{\link{dcm}} for deterministic compartmental epidemic models.
  \item \code{\link{icm}} for individual contact epidemic models.
- \item \code{\link{netest}} for estimating the statistical models underlying
-       partnership formation and dissolution used in stochastic network epidemic
-       models. This function is a wrapper around the \code{ergm} and \code{stergm}
-       functions in the \code{ergm} and \code{tergm} packages, respectively, with
-       additional diagnostic tables and plots useful for epidemic modeling.
- \item \code{\link{netsim}} for stochastic network epidemic models,
-       with a given network model fit or set of network simulations from
-       \code{\link{netest}}. For models involving dependence of disease
-       trajectories on the network structure (e.g., disease causes death,
-       which dissolves partnerships), it is not necessary to pre-simulate the
-       networks since each disease simulation re-simulates the network at each
-       time step. A help page providing an overview of the internals of
-       \code{\link{netsim}} that may be useful for adapting and expanding the
-       software for novel research is available at \code{\link{modules.net}}.
+ \item Network models are simulated in a three-step process:
+ \enumerate{
+   \item \code{\link{netest}} estimates the statistical models underlying
+         partnership formation and dissolution. This function is a wrapper
+         around the \code{ergm} and \code{stergm} functions in the \code{ergm}
+         and \code{tergm} packages. The current framework for model simulation
+         is one in which key target statistics guiding the formation formula
+         from an egocentric sample of the population is passed along with an
+         estimate of the average duration of edges in the network.
+   \item \code{\link{netdx}} runs diagnostics on the dynamic model fit by
+         simulating the base network over time to ensure the model fits the
+         targets for formation and dissolution.
+   \item \code{\link{netsim}} simulates the stochastic network epidemic models,
+         with a given network model fit in \code{\link{netest}}. Here the
+         function requires this model fit object along with the parameters,
+         initial conditions, and control settings as defined above.
+ }
 }
 }
 \references{
