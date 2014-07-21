@@ -27,13 +27,13 @@ birth rate may be parameterized as a rate per mode 1 person time (with
 mode 1 persons representing females), and with the \code{b.rate.g2}
 rate set as described below.}
 
-\item{ds.rate}{death or exit rate for susceptibles. For bipartite models, it
-is the rate for the mode 1 susceptibles only.}
+\item{ds.rate}{death or exit rate for susceptible. For bipartite models, it
+is the rate for the mode 1 susceptible only.}
 
-\item{di.rate}{death or exit rate for infecteds. For bipartite models, it is
-the rate for the mode 1 infecteds only.}
+\item{di.rate}{death or exit rate for infected. For bipartite models, it is
+the rate for the mode 1 infected only.}
 
-\item{dr.rate}{death or exit rate for recovereds. For bipartite models, it is
+\item{dr.rate}{death or exit rate for recovered. For bipartite models, it is
 the rate for the mode 1 recovered only. This parameter is only used for
 \code{SIR} models.}
 
@@ -52,11 +52,11 @@ the mode 2 rate. The latter is used when, for example, the first mode
 is conceptualized as female, and the female population size determines
 the birth rate. Such births are evenly allocated between the two modes.}
 
-\item{ds.rate.m2}{death or exit rate for mode 2 susceptibles.}
+\item{ds.rate.m2}{death or exit rate for mode 2 susceptible.}
 
-\item{di.rate.m2}{death or exit rate for mode 2 infecteds.}
+\item{di.rate.m2}{death or exit rate for mode 2 infected.}
 
-\item{dr.rate.m2}{death or exit rate for mode 2 recovereds. This parameter is
+\item{dr.rate.m2}{death or exit rate for mode 2 recovered. This parameter is
 only used for \code{SIR} model types.}
 
 \item{...}{additional arguments passed to model.}
@@ -79,7 +79,7 @@ the model parameters entered here and the control settings in
 \code{\link{control.net}}. One-mode and two-mode models are available, where
 the the latter assumes a heterogenous mixing between two distinct partitions
 in the population (e.g., men and women). Specifying any bipartite parameters
-(those with a \code{.m2}) implies the simulation of a bipatite model. All the
+(those with a \code{.m2}) implies the simulation of a bipartite model. All the
 parameters for a desired model type must be specified, even if they are zero.
 }
 \section{The act.rate Parameter}{

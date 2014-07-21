@@ -6,23 +6,23 @@
 init.dcm(s.num, i.num, r.num, s.num.g2, i.num.g2, r.num.g2, ...)
 }
 \arguments{
-\item{s.num}{number of initial susceptibles. For two-group models, this is
+\item{s.num}{number of initial susceptible. For two-group models, this is
 the number of initial group 1 susceptible.}
 
-\item{i.num}{number of initial infecteds. For two-group models, this is the
+\item{i.num}{number of initial infected. For two-group models, this is the
 number of initial group 1 infected.}
 
-\item{r.num}{number of initial recovereds. For two-group models, this is the
+\item{r.num}{number of initial recovered. For two-group models, this is the
 number of initial group 1 recovered. This parameter is only used for
 the \code{SIR} model type.}
 
-\item{s.num.g2}{number of initial susceptibles in group 2. This parameter is
+\item{s.num.g2}{number of initial susceptible in group 2. This parameter is
 only used for two-group models.}
 
-\item{i.num.g2}{number of initial infecteds in group 2. This parameter is only
+\item{i.num.g2}{number of initial infected in group 2. This parameter is only
 used for two-group models.}
 
-\item{r.num.g2}{number of initial recovereds in group 2. This parameter is
+\item{r.num.g2}{number of initial recovered in group 2. This parameter is
 only used for two-group \code{SIR} models.}
 
 \item{...}{additional initial conditions passed to model.}

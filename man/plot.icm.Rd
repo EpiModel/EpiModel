@@ -40,7 +40,7 @@ calculation (see details).}
 \item{mean.lty}{line type for mean lines.}
 
 \item{qnts}{if numeric, plot polygon of simulation quantiles based on the
-range implied by the argument (see details). If \code{FALSE}, supress
+range implied by the argument (see details). If \code{FALSE}, suppress
 polygon from plot.}
 
 \item{qnts.col}{a vector of any standard R color format for polygons.}
@@ -106,7 +106,7 @@ control <- control.icm(type = "SIR", nsteps = 100,
 mod <- icm(param, init, control)
 plot(mod)
 
-## Example 2: Plot only infecteds with specific output from SI model
+## Example 2: Plot only infected with specific output from SI model
 param <- param.icm(trans.rate = 0.25, act.rate = 0.25)
 init <- init.icm(s.num = 500, i.num = 10)
 control <- control.icm(type = "SI", nsteps = 100,

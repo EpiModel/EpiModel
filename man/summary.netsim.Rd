@@ -8,7 +8,7 @@
 \arguments{
 \item{object}{an \code{EpiModel} object of class \code{netsim}.}
 
-\item{at}{timestep for model statistics.}
+\item{at}{time step for model statistics.}
 
 \item{digits}{number of significant digits to print.}
 

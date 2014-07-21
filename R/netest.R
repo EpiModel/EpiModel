@@ -15,7 +15,7 @@
 #'        one number for each network statistic in the model (see \code{\link{stergm}}).
 #' @param coef.diss an object of class \code{disscoef} output from the
 #'        \code{\link{dissolution_coefs}} function.
-#' @param constraints a right-hand sided formula specifying contraints for the
+#' @param constraints a right-hand sided formula specifying constraints for the
 #'        modeled network, in the form \code{~...}, where \code{...} are constraint
 #'        terms described in \code{\link{stergm}}. By default, no constraints are set.
 #' @param coef.form A vector of coefficients for the offset terms in the formation

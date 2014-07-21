@@ -96,7 +96,7 @@ statistics of interest, with the default to the formation formula terms.}
 
 \item{delete.nodes}{if \code{TRUE}, delete inactive nodes from the network
 after each time step, otherwise deactivate them but keep them in the
-network object. Deleting nodes increases computational efficency in
+network object. Deleting nodes increases computational efficiency in
 large network simulations.}
 
 \item{save.transmat}{if \code{TRUE}, save a transmission matrix for each

@@ -21,11 +21,11 @@
 #'        birth rate may be parameterized as a rate per group 1 person time (with
 #'        group 1 persons representing females), and with the \code{b.rate.g2}
 #'        rate set as described below.
-#' @param ds.rate death or exit rate for susceptibles. For two-group models, it
-#'        is the rate for the group 1 susceptibles only.
-#' @param di.rate death or exit rate for infecteds. For two-group models, it is
-#'        the rate for the group 1 infecteds only.
-#' @param dr.rate death or exit rate for recovereds. For two-group models, it is
+#' @param ds.rate death or exit rate for susceptible. For two-group models, it
+#'        is the rate for the group 1 susceptible only.
+#' @param di.rate death or exit rate for infected. For two-group models, it is
+#'        the rate for the group 1 infected only.
+#' @param dr.rate death or exit rate for recovered. For two-group models, it is
 #'        the rate for the group 1 recovered only. This parameter is only used for
 #'        \code{SIR} models.
 #' @param trans.rate.g2 probability of transmission given a transmissible act
@@ -43,9 +43,9 @@
 #'        the group 2 rate. The latter is used when, for example, the first group
 #'        is conceptualized as female, and the female population size determines
 #'        the birth rate. Such births are evenly allocated between the two groups.
-#' @param ds.rate.g2 death or exit rate for group 2 susceptibles.
-#' @param di.rate.g2 death or exit rate for group 2 infecteds.
-#' @param dr.rate.g2 death or exit rate for group 2 recovereds. This parameter is
+#' @param ds.rate.g2 death or exit rate for group 2 susceptible.
+#' @param di.rate.g2 death or exit rate for group 2 infected.
+#' @param dr.rate.g2 death or exit rate for group 2 recovered. This parameter is
 #'        only used for \code{SIR} model types.
 #' @param balance for two-group models, balance the \code{act.rate} to the rate
 #'        set for group 1 (with \code{balance="g1"}) or group 2 (with
@@ -280,11 +280,11 @@ param.icm <- function(trans.rate,
 #'        birth rate may be parameterized as a rate per mode 1 person time (with
 #'        mode 1 persons representing females), and with the \code{b.rate.g2}
 #'        rate set as described below.
-#' @param ds.rate death or exit rate for susceptibles. For bipartite models, it
-#'        is the rate for the mode 1 susceptibles only.
-#' @param di.rate death or exit rate for infecteds. For bipartite models, it is
-#'        the rate for the mode 1 infecteds only.
-#' @param dr.rate death or exit rate for recovereds. For bipartite models, it is
+#' @param ds.rate death or exit rate for susceptible. For bipartite models, it
+#'        is the rate for the mode 1 susceptible only.
+#' @param di.rate death or exit rate for infected. For bipartite models, it is
+#'        the rate for the mode 1 infected only.
+#' @param dr.rate death or exit rate for recovered. For bipartite models, it is
 #'        the rate for the mode 1 recovered only. This parameter is only used for
 #'        \code{SIR} models.
 #' @param trans.rate.m2 probability of transmission given a transmissible act
@@ -299,9 +299,9 @@ param.icm <- function(trans.rate,
 #'        the mode 2 rate. The latter is used when, for example, the first mode
 #'        is conceptualized as female, and the female population size determines
 #'        the birth rate. Such births are evenly allocated between the two modes.
-#' @param ds.rate.m2 death or exit rate for mode 2 susceptibles.
-#' @param di.rate.m2 death or exit rate for mode 2 infecteds.
-#' @param dr.rate.m2 death or exit rate for mode 2 recovereds. This parameter is
+#' @param ds.rate.m2 death or exit rate for mode 2 susceptible.
+#' @param di.rate.m2 death or exit rate for mode 2 infected.
+#' @param dr.rate.m2 death or exit rate for mode 2 recovered. This parameter is
 #'        only used for \code{SIR} model types.
 #' @param ... additional arguments passed to model.
 #'
@@ -319,7 +319,7 @@ param.icm <- function(trans.rate,
 #' \code{\link{control.net}}. One-mode and two-mode models are available, where
 #' the the latter assumes a heterogenous mixing between two distinct partitions
 #' in the population (e.g., men and women). Specifying any bipartite parameters
-#' (those with a \code{.m2}) implies the simulation of a bipatite model. All the
+#' (those with a \code{.m2}) implies the simulation of a bipartite model. All the
 #' parameters for a desired model type must be specified, even if they are zero.
 #'
 #' @section The act.rate Parameter:

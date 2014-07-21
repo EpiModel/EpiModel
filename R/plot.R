@@ -36,7 +36,7 @@
 #'        \code{\link{plot.default}}).
 #'
 #' @details
-#' This function plots epidemiological outcompes from a deterministic
+#' This function plots epidemiological outcomes from a deterministic
 #' compartmental model solved with \code{\link{dcm}}. Depending on the number of
 #' model runs (sensitivity analyses) and number of groups, the default plot is
 #' the fractional proportion of each compartment in the model over time. The
@@ -499,7 +499,7 @@ plot.dcm <- function(x,
 #' @param mean.lwd line width for mean lines.
 #' @param mean.lty line type for mean lines.
 #' @param qnts if numeric, plot polygon of simulation quantiles based on the
-#'        range implied by the argument (see details). If \code{FALSE}, supress
+#'        range implied by the argument (see details). If \code{FALSE}, suppress
 #'        polygon from plot.
 #' @param qnts.col a vector of any standard R color format for polygons.
 #' @param qnts.alpha transparency level for quantile polygons, where 0 =
@@ -557,7 +557,7 @@ plot.dcm <- function(x,
 #' mod <- icm(param, init, control)
 #' plot(mod)
 #'
-#' ## Example 2: Plot only infecteds with specific output from SI model
+#' ## Example 2: Plot only infected with specific output from SI model
 #' param <- param.icm(trans.rate = 0.25, act.rate = 0.25)
 #' init <- init.icm(s.num = 500, i.num = 10)
 #' control <- control.icm(type = "SI", nsteps = 100,

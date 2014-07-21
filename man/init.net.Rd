@@ -6,20 +6,20 @@
 init.net(i.num, r.num, i.num.m2, r.num.m2, status.vector, status.rand, ...)
 }
 \arguments{
-\item{i.num}{number of initial infecteds. For bipartite models, this is the
+\item{i.num}{number of initial infected. For bipartite models, this is the
 number of initial mode 1 infected.}
 
-\item{r.num}{number of initial recovereds. For bipartite models, this is the
+\item{r.num}{number of initial recovered. For bipartite models, this is the
 number of initial mode 1 recovered. This parameter is only used for
 the \code{SIR} model type.}
 
-\item{i.num.m2}{number of initial infecteds in mode 2. This parameter is only
+\item{i.num.m2}{number of initial infected in mode 2. This parameter is only
 used for bipartite models.}
 
-\item{r.num.m2}{number of initial recovereds in mode 2. This parameter is
+\item{r.num.m2}{number of initial recovered in mode 2. This parameter is
 only used for bipartite \code{SIR} models.}
 
-\item{status.vector}{a vector of lenth equal to the size of the input network,
+\item{status.vector}{a vector of length equal to the size of the input network,
 containing the status of each node. Setting status
 here overrides any inputs passed in the \code{.num} arguments and also
 overrides \code{status.rand=TRUE}.}

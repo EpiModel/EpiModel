@@ -252,7 +252,7 @@ summary.icm <- function(object,
   nsteps <- object$control$nsteps
 
   if (missing(at) || (at > nsteps | at < 1)) {
-    stop("Specify a timestep between 1 and ", nsteps)
+    stop("Specify a time step between 1 and ", nsteps)
   }
 
   df.mn <- as.data.frame(object, time = at)
@@ -454,7 +454,7 @@ summary.icm <- function(object,
 #' @description Extracts and prints model statistics simulated with \code{netsim}.
 #'
 #' @param object an \code{EpiModel} object of class \code{netsim}.
-#' @param at timestep for model statistics.
+#' @param at time step for model statistics.
 #' @param digits number of significant digits to print.
 #' @param ... additional summary function arguments.
 #'

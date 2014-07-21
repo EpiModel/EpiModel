@@ -56,7 +56,7 @@ Plots epidemiological data from a deterministic compartment
              epidemic model solved with \code{dcm}.
 }
 \details{
-This function plots epidemiological outcompes from a deterministic
+This function plots epidemiological outcomes from a deterministic
 compartmental model solved with \code{\link{dcm}}. Depending on the number of
 model runs (sensitivity analyses) and number of groups, the default plot is
 the fractional proportion of each compartment in the model over time. The

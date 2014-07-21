@@ -23,7 +23,7 @@ one number for each network statistic in the model (see \code{\link{stergm}}).}
 \item{coef.diss}{an object of class \code{disscoef} output from the
 \code{\link{dissolution_coefs}} function.}
 
-\item{constraints}{a right-hand sided formula specifying contraints for the
+\item{constraints}{a right-hand sided formula specifying constraints for the
 modeled network, in the form \code{~...}, where \code{...} are constraint
 terms described in \code{\link{stergm}}. By default, no constraints are set.}
 

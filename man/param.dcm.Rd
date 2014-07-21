@@ -29,13 +29,13 @@ birth rate may be parameterized as a rate per group 1 person time (with
 group 1 persons representing females), and with the \code{b.rate.g2}
 rate set as described below.}
 
-\item{ds.rate}{death or exit rate for susceptibles. For two-group models, it
-is the rate for the group 1 susceptibles only.}
+\item{ds.rate}{death or exit rate for susceptible. For two-group models, it
+is the rate for the group 1 susceptible only.}
 
-\item{di.rate}{death or exit rate for infecteds. For two-group models, it is
-the rate for the group 1 infecteds only.}
+\item{di.rate}{death or exit rate for infected. For two-group models, it is
+the rate for the group 1 infected only.}
 
-\item{dr.rate}{death or exit rate for recovereds. For two-group models, it is
+\item{dr.rate}{death or exit rate for recovered. For two-group models, it is
 the rate for the group 1 recovered only. This parameter is only used for
 \code{SIR} models.}
 
@@ -58,11 +58,11 @@ the group 2 rate. The latter is used when, for example, the first group
 is conceptualized as female, and the female population size determines
 the birth rate. Such births are evenly allocated between the two groups.}
 
-\item{ds.rate.g2}{death or exit rate for group 2 susceptibles.}
+\item{ds.rate.g2}{death or exit rate for group 2 susceptible.}
 
-\item{di.rate.g2}{death or exit rate for group 2 infecteds.}
+\item{di.rate.g2}{death or exit rate for group 2 infected.}
 
-\item{dr.rate.g2}{death or exit rate for group 2 recovereds. This parameter is
+\item{dr.rate.g2}{death or exit rate for group 2 recovered. This parameter is
 only used for \code{SIR} model types.}
 
 \item{balance}{for two-group models, balance the \code{act.rate} to the rate
