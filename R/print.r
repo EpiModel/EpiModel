@@ -79,13 +79,15 @@ print.netest <- function(x, digits=3, ...) {
   cat("\nModel class:", class(x))
   estmeth <- ifelse(x$edapprox == TRUE, "ERGM with Edges Approximation",
                                         "Full STERGM Fit")
-  cat(paste("\nEsimation Method:", estmeth))
+  cat(paste("\nEstimation Method:", estmeth))
 
-  cat("\n\nERGM Model Form")
+  cat("\n\nModel Form")
   cat("\n-----------------------")
   cat("\nFormation: "); print(x$formation)
-  cat("Dissolution: "); print(x$dissolution)
-  cat("Constraints: "); cat(paste0(as.character(x$constraints)[1],
+  cat("Formation Targets:", x$target.stats)
+  cat("\nDissolution: "); print(x$dissolution)
+  cat("Edge Duration Target:", x$coef.diss$duration)
+  cat("\nConstraints: "); cat(paste0(as.character(x$constraints)[1],
                                    as.character(x$constraints)[2]))
 
   invisible()
