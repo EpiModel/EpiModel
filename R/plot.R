@@ -1370,7 +1370,6 @@ plot.netsim <- function(x,
                         ...) {
 
   # Network plot ------------------------------------------------------------
-
   if (type == "network") {
 
     if (is.null(x$network)) {
@@ -1473,7 +1472,6 @@ plot.netsim <- function(x,
     } else {
       plot.icm(x, sim.lwd = sim.lwd, sim.col = sim.col, ...)
     }
-
   }
 
 
@@ -1515,7 +1513,7 @@ plot.netsim <- function(x,
       plots.joined <- TRUE
     }
     xlim <- c(1, nsteps)
-    if (length(da) > 0 && names(da) %in% "xlim") {
+    if (length(da) > 0 && !is.null(da$xlim)) {
       xlim <- da$xlim
     }
     if (missing(sim.lwd)) {
@@ -1539,14 +1537,33 @@ plot.netsim <- function(x,
     ## Joined Plots
     if (plots.joined == TRUE) {
 
-      # Default legend/ylab/ylim
+      # Default legend
       if (nstats == 1) {
-        plot.leg <- FALSE
-        ylab <- nmstats[outsts]
-      } else {
-        ylab <- "Statistic"
+        if (missing(plot.leg)) {
+          plot.leg <- FALSE
+        }
       }
 
+      # Default ylab
+      if (length(da) > 0 && !is.null(da$ylab)) {
+        ylab <- da$ylab
+      } else {
+        if (nstats == 1) {
+          ylab <- nmstats[outsts]
+        } else {
+          ylab <- "Statistic"
+        }
+      }
+
+      # Default xlab
+      if (length(da) > 0 && !is.null(da$xlab)) {
+        xlab <- da$xlab
+      } else {
+        xlab <- "time"
+      }
+
+
+      # Default ylim
       if (ncol(nwstats[[1]]) == 1) {
         mins <- sapply(nwstats, function(x) apply(x, 2, min))
         maxs <- sapply(nwstats, function(x) apply(x, 2, max))
@@ -1558,13 +1575,13 @@ plot.netsim <- function(x,
       ymax <- max(maxs)
 
       ylim <- c(ymin * 0.8, ymax * 1.2)
-      if (length(da) > 0 && names(da) %in% "ylim") {
+      if (length(da) > 0 && !is.null(da$ylim)) {
         ylim <- da$ylim
       }
 
       # Main plot window
       plot(1, 1, xlim = xlim, ylim = ylim,
-           type = "n", xlab = "time", ylab = ylab, ...)
+           type = "n", xlab = xlab, ylab = ylab)
       for (j in outsts) {
         for (i in sim) {
           lines(x = 1:nsteps,
