@@ -15,4 +15,4 @@ if (!require("devtools")) install.packages("devtools")
 devtools::install_github("smjenness/EpiModel")
 ```
 
-The main website for EpiModel, with tutorials and other supporting files, is [here](http://statnet.org/trac/wiki/EpiModel/).
+The main website for EpiModel, with tutorials and other supporting files, is [here](http://statnet.github.io/EpiModel/).
