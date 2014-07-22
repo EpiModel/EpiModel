@@ -913,10 +913,6 @@ plot.icm <- function(x,
 #'        default colors based on \code{RColorBrewer} color palettes.
 #' @param targ.lwd line width for the line showing the target statistic values.
 #' @param targ.lty line type for the line showing the target statistic values.
-#' @param xlim x-axis scale limits for plot, with defaults based on model time
-#'        steps.
-#' @param ylim y-axis scale limits for plot, with defaults based on the range of
-#'        data. This is always set automatically when \code{plots.joined=TRUE}.
 #' @param plots.joined if \code{TRUE}, combine all target statistics in one plot,
 #'        otherwise use one plot window per target statistic.
 #' @param plot.leg if \code{TRUE}, show legend (only if \code{plots.joined=TRUE})
@@ -1001,8 +997,6 @@ plot.netdx <- function(x,
                        targ.col,
                        targ.lwd = 2,
                        targ.lty = 2,
-                       xlim,
-                       ylim,
                        plots.joined,
                        plot.leg = TRUE,
                        ...
@@ -1026,9 +1020,11 @@ plot.netdx <- function(x,
   }
   nsteps <- x$nsteps
 
+  # Get dotargs
+  da <- list(...)
+
 
   # Formation Plot ----------------------------------------------------------
-
   if (type == "formation") {
 
     ## Stats
@@ -1062,12 +1058,16 @@ plot.netdx <- function(x,
     if (missing(plots.joined)) {
       plots.joined <- ifelse(nstats > 5, FALSE, TRUE)
     }
+
     if (nstats == 1) {
       plots.joined <- TRUE
     }
-    if (missing(xlim)) {
-      xlim <- c(1, nsteps)
+
+    xlim <- c(1, nsteps)
+    if (length(da) > 0 && !is.null(da$xlim)) {
+      xlim <- da$xlim
     }
+
     if (missing(sim.lwd)) {
       if (nsims == 1) {
         sim.lwd <- 1
@@ -1089,16 +1089,37 @@ plot.netdx <- function(x,
     ## Joined Plots
     if (plots.joined == TRUE) {
 
-      # Default legend/ylab/ylim
+      # Default legend
       if (nstats == 1) {
-        plot.leg <- FALSE
-        ylab <- nmstats[outsts]
+        if (missing(plot.leg)) {
+          plot.leg <- FALSE
+        }
+      }
+
+      # Default ylim
+      ylim <- c(min(data) * 0.8, max(data) * 1.2)
+      if (length(da) > 0 && !is.null(da$ylim)) {
+        ylim <- da$ylim
+      }
+
+      # Default ylab
+      if (length(da) > 0 && !is.null(da$ylab)) {
+        ylab <- da$ylab
       } else {
-        ylab <- "Statistic"
+        if (nstats == 1) {
+          ylab <- nmstats[outsts]
+        } else {
+          ylab <- "Statistic"
+        }
       }
-      if (missing(ylim)) {
-        ylim <- c(min(data) * 0.8, max(data) * 1.2)
+
+      # Default xlab
+      if (length(da) > 0 && !is.null(da$xlab)) {
+        xlab <- da$xlab
+      } else {
+        xlab <- "time"
       }
+
       if (missing(targ.col)) {
         if (nstats > 9) {
           targ.col <- brewer_ramp(nstats, "Set1")
@@ -1110,7 +1131,7 @@ plot.netdx <- function(x,
 
       # Main plot window
       plot(1, 1, xlim = xlim, ylim = ylim,
-           type = "n", xlab = "time", ylab = ylab, ...)
+           type = "n", xlab = xlab, ylab = ylab)
       for (j in outsts) {
         dataj <- data[, colnames(data) %in% nmstats[j], drop = FALSE]
         for (i in sim) {
@@ -1162,7 +1183,7 @@ plot.netdx <- function(x,
              xlim = xlim,
              ylim = c(min(dataj) * 0.8, max(dataj) * 1.2),
              type = "n", main = nmstats[j],
-             xlab = "", ylab = "", ...)
+             xlab = "", ylab = "")
         for (i in sim) {
           lines(x = 1:nsteps,
                 y = dataj[, i],
@@ -1182,17 +1203,20 @@ plot.netdx <- function(x,
   }
 
   # Duration plot -----------------------------------------------------------
-
   if (type == "duration") {
 
     pages <- x$pages
 
-    if (missing(xlim)) {
-      xlim <- c(1, nsteps)
+    xlim <- c(1, nsteps)
+    if (length(da) > 0 & !is.null(da$xlim)) {
+     xlim <- da$xlim
     }
-    if (missing(ylim)) {
-      ylim <- c(0, max(sapply(pages, max, na.rm = TRUE)) * 1.2)
+
+    ylim <- c(0, max(sapply(pages, max, na.rm = TRUE)) * 1.2)
+    if (length(da) > 0 & !is.null(da$ylim)) {
+      ylim <- da$ylim
     }
+
     if (missing(sim.lwd)) {
       sim.lwd <- max(c(1-(nsims*0.05), 0.5))
     }
@@ -1204,12 +1228,26 @@ plot.netdx <- function(x,
       targ.col <- "black"
     }
 
+    # Default ylab
+    if (length(da) > 0 && !is.null(da$ylab)) {
+      ylab <- da$ylab
+    } else {
+      ylab <- "Edge Age"
+    }
+
+    # Default xlab
+    if (length(da) > 0 && !is.null(da$xlab)) {
+      xlab <- da$xlab
+    } else {
+      xlab <- "time"
+    }
+
     # Edges only dissolution model
     if (x$dissolution == ~offset(edges)) {
 
       plot(x = 1, y = 1, type = "n",
            xlim = xlim, ylim = ylim,
-           xlab = "time", ylab = "Edge Age", ...)
+           xlab = xlab, ylab = ylab)
       for (i in sim) {
         lines(x = 1:nsteps,
               y = pages[[i]],

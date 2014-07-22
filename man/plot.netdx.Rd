@@ -4,8 +4,8 @@
 \title{Plot Dynamic Network Model Diagnostics}
 \usage{
 \method{plot}{netdx}(x, type = "formation", sim, stats, sim.col, sim.lwd,
-  sim.lty = 1, targ.col, targ.lwd = 2, targ.lty = 2, xlim, ylim,
-  plots.joined, plot.leg = TRUE, ...)
+  sim.lty = 1, targ.col, targ.lwd = 2, targ.lty = 2, plots.joined,
+  plot.leg = TRUE, ...)
 }
 \arguments{
 \item{x}{an \code{EpiModel} object of class \code{netdx}.}
@@ -35,12 +35,6 @@ default colors based on \code{RColorBrewer} color palettes.}
 \item{targ.lwd}{line width for the line showing the target statistic values.}
 
 \item{targ.lty}{line type for the line showing the target statistic values.}
-
-\item{xlim}{x-axis scale limits for plot, with defaults based on model time
-steps.}
-
-\item{ylim}{y-axis scale limits for plot, with defaults based on the range of
-data. This is always set automatically when \code{plots.joined=TRUE}.}
 
 \item{plots.joined}{if \code{TRUE}, combine all target statistics in one plot,
 otherwise use one plot window per target statistic.}
