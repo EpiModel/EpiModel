@@ -28,23 +28,27 @@ install.packages("EpiModel")
 ### Software Tutorials
 
 ##### Main Tutorial
-[EpiModel Tutorial](http://statnet.org/EpiModel/vignette/Tutorial.pdf): this tutorial provides an overview of the functionality of EpiModel, with a focus on using the built-in model types to parameterize and simulate deterministic and stochastic epidemic models.
+[EpiModel Tutorial](http://statnet.org/EpiModel/vignette/Tutorial.pdf): provides an overview of the functionality of EpiModel, with a focus on using the integrated model types to parameterize and simulate deterministic and stochastic epidemic models.
 
 ##### Utilities
-[Network Utility Functions](http://statnet.org/EpiModel/vignette/NetUtils.html): this tutorial shows examples of utility functions within EpiModel that help with the parameterization of stochastic network models.
+[Network Utility Functions](http://statnet.org/EpiModel/vignette/NetUtils.html): shows extended examples of utility functions within EpiModel that help with the parameterization of stochastic network models.
 
 ##### Extending EpiModel
 
-* [Solving New DCMs with EpiModel](http://statnet.org/EpiModel/vignette/NewDCMs.html): this tutorial shows how to build an original deterministic compartmental model by writing a model function and passing new parameters.
-* [Solving New ICMs with EpiModel](http://statnet.org/EpiModel/vignette/NewICMs.html): this tutorial shows how to build an original stochastic individual contact model by writing replacement and supplemental module functions.
-* [Solving New Network Models with EpiModel](http://statnet.org/EpiModel/vignette/NewNet.html): this tutorial shows how to build an original stochastic network model by writing replacement and supplemental module functions.
+* [Solving New DCMs with EpiModel](http://statnet.org/EpiModel/vignette/NewDCMs.html): how to build an original deterministic compartmental model by writing a model function and passing new parameters.
+* [Solving New ICMs with EpiModel](http://statnet.org/EpiModel/vignette/NewICMs.html): how to build an original stochastic individual contact model by writing replacement and supplemental module functions.
+* [Solving New Network Models with EpiModel](http://statnet.org/EpiModel/vignette/NewNet.html): how to build an original stochastic network model by writing replacement and supplemental module functions.
 
 
 ## Workshops / Trainings
 
 ##### Network Modeling for Epidemics
+This 6-day yearly summer course introduces traditional compartmental models for epidemics, the methodology for classical descriptive network analysis, and new statistical methods for network analysis using exponential-family random graph models. The final goal is then to use these methods to develop stochastic network models for epidemics, with a focus on empirical models of HIV/STI transmission and control.
+
 * [NME 2014](http://statnet.org/EpiModel/nme/2014/index.html)
 * [NME 2013](https://statnet.org/trac/wiki/NME2013)
 
 ##### Sunbelt Conference
+Sunbelt is the yearly conference of the International Network for Social Network Analysis. The conference offers several workshops for software tools, and statnet developers have been teaching there for several years. 2014 was the first year featuring an EpiModel workshop.
+
 * [Sunbelt 2014](https://statnet.org/trac/wiki/Sunbelt2014)
