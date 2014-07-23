@@ -19,6 +19,8 @@ BUG FIXES
 OTHER
 * Added internal test structure for build checking.
 * Added a help file document for building ICM modules at ?modules.icm.
+* Expanded and clarified tutorial documentation, available at:
+  http://statnet.github.io/EpiModel
 
 
 Version 1.0
