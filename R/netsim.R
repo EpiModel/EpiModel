@@ -159,7 +159,7 @@ netsim <- function(x,
       um <- which(grepl(".FUN", names(control)) &
                     !(names(control) %in% bim))
       if (length(um) > 0) {
-        for (i in 1:length(um)) {
+        for (i in seq_along(um)) {
           umn <- names(control)[um[i]]
           all <- do.call(control[[umn]], list(all, at))
         }
