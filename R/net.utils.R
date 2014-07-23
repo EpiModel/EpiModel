@@ -973,9 +973,10 @@ copy_toall_attr <- function(all, at) {
 
   otha <- names(all$nw$val[[1]])[!(names(all$nw$val[[1]]) %in% c("na",
                                                                  "vertex.names",
-                                                                 "active"))]
+                                                                 "active",
+                                                                 "testatus.active"))]
   if (length(otha) > 0) {
-    for (i in 1:length(otha)) {
+    for (i in seq_along(otha)) {
       va <- get.vertex.attribute(all$nw, otha[i])
       all$attr[[otha[i]]] <- va
       if (at == 1) {
@@ -1016,7 +1017,8 @@ get_attr_prop <- function(nw, t, only.formula = FALSE) {
 
   nwVal <- names(nw$val[[1]])[!(names(nw$val[[1]]) %in% c("na",
                                                           "vertex.names",
-                                                          "active"))]
+                                                          "active",
+                                                          "testatus.active"))]
   if (only.formula == TRUE) {
     nwVal <- nwVal[which(t %in% nwVal)]
   }

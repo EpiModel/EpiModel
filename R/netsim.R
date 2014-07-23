@@ -156,8 +156,7 @@ netsim <- function(x,
 
       ## User Modules
       bim <- grep(".FUN", names(formals(control.net)), value = TRUE)
-      um <- which(grepl(".FUN", names(control)) &
-                    !(names(control) %in% bim))
+      um <- which(grepl(".FUN", names(control)) & !(names(control) %in% bim))
       if (length(um) > 0) {
         for (i in seq_along(um)) {
           umn <- names(control)[um[i]]

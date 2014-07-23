@@ -256,19 +256,19 @@ births.net <- function(all, at) {
   b.rate <- all$param$b.rate
   b.rate.m2 <- all$param$b.rate.m2
   formation <- all$nwparam$formation
-  nw <- all$nw
   modes <- all$param$modes
   tea.status <- all$control$tea.status
   nOld <- all$out$num[at - 1]
-  nCurr <- network.size(nw)
+  nCurr <- network.size(all$nw)
   b.rand <- all$control$b.rand
+  delete.nodes <- all$control$delete.nodes
 
   nBirths <- nBirthsM2 <- 0
   newNodes <- newNodesM2 <- NULL
 
 
   # Add Nodes ---------------------------------------------------------------
-  if (modes == 1 & nOld > 0) {
+  if (modes == 1 && nOld > 0) {
     if (b.rand == TRUE) {
       nBirths <- sum(rbinom(nOld, 1, b.rate))
     }
@@ -285,69 +285,68 @@ births.net <- function(all, at) {
                                   v = newNodes)
     }
   }
-  if (modes == 2) {
-    if (nOld > 0) {
-      nOldM2 <- all$out$num.m2[at - 1]
-      if (b.rand == TRUE) {
-        if (is.na(b.rate.m2)) {
-          nBirths <- sum(rbinom(nOld, 1, b.rate))
-          nBirthsM2 <- sum(rbinom(nOld, 1, b.rate))
-        } else {
-          nBirths <- sum(rbinom(nOld, 1, b.rate))
-          nBirthsM2 <- sum(rbinom(nOldM2, 1, b.rate.m2))
-        }
+  if (modes == 2 && nOld > 0) {
+    nOldM2 <- all$out$num.m2[at - 1]
+    if (b.rand == TRUE) {
+      if (is.na(b.rate.m2)) {
+        nBirths <- sum(rbinom(nOld, 1, b.rate))
+        nBirthsM2 <- sum(rbinom(nOld, 1, b.rate))
+      } else {
+        nBirths <- sum(rbinom(nOld, 1, b.rate))
+        nBirthsM2 <- sum(rbinom(nOldM2, 1, b.rate.m2))
       }
-      if (b.rand == FALSE) {
-        if (is.na(b.rate.m2)) {
-          nBirths <- round(nOld * b.rate)
-          nBirthsM2 <- round(nOld * b.rate)
-        } else {
-          nBirths <- round(nOld * b.rate)
-          nBirthsM2 <- round(nOldM2 * b.rate.m2)
-        }
+    }
+    if (b.rand == FALSE) {
+      if (is.na(b.rate.m2)) {
+        nBirths <- round(nOld * b.rate)
+        nBirthsM2 <- round(nOld * b.rate)
+      } else {
+        nBirths <- round(nOld * b.rate)
+        nBirthsM2 <- round(nOldM2 * b.rate.m2)
       }
+    }
 
-      nCurrM1 <- length(modeids(nw, 1))
-      nCurrM2 <- length(modeids(nw, 2))
-      prefixes <- unique(substr(nw %v% "vertex.names", 1, 1))
+    nCurrM1 <- length(modeids(all$nw, 1))
+    nCurrM2 <- length(modeids(all$nw, 2))
+    prefixes <- unique(substr(all$nw %v% "vertex.names", 1, 1))
 
-      if (nBirths > 0) {
-        newNodes <- (nCurrM1 + 1):(nCurrM1 + nBirths)
-        if (all$control$delete.nodes == FALSE) {
-          newPids <- paste0(prefixes[1], newNodes)
-          all$nw <- add.vertices(all$nw,
-                                 nv = nBirths,
-                                 last.mode = FALSE,
-                                 vertex.pid = newPids)
-        } else {
-          all$nw <- add.vertices(all$nw,
-                                 nv = nBirths,
-                                 last.mode = FALSE)
-        }
+    if (nBirths > 0) {
+      newNodeIDs <- (nCurrM1 + 1):(nCurrM1 + nBirths)
+      if (delete.nodes == FALSE) {
+        newPids <- paste0(prefixes[1], newNodeIDs)
+        all$nw <- add.vertices(all$nw,
+                               nv = nBirths,
+                               last.mode = FALSE,
+                               vertex.pid = newPids)
+      } else {
+        all$nw <- add.vertices(all$nw,
+                               nv = nBirths,
+                               last.mode = FALSE)
       }
-      if (nBirthsM2 > 0) {
-        newNodesM2 <- (nCurrM2 + 1):(nCurrM2 + nBirthsM2)
-        if (all$control$delete.nodes == FALSE) {
-          newPidsM2 <- paste0(prefixes[2], newNodesM2)
-          all$nw <- add.vertices(all$nw,
-                                 nv = nBirthsM2,
-                                 last.mode = TRUE,
-                                 vertex.pid = newPidsM2)
-        } else {
-          all$nw <- add.vertices(all$nw,
-                                 nv = nBirthsM2,
-                                 last.mode = TRUE)
-        }
-        newSize <- network.size(all$nw)
-        newNodesM2 <- (newSize - nBirthsM2 + 1):newSize
+      newNodes <- newNodeIDs
+    }
+    if (nBirthsM2 > 0) {
+      newNodeIDs <- (nCurrM2 + 1):(nCurrM2 + nBirthsM2)
+      if (delete.nodes == FALSE) {
+        newPids <- paste0(prefixes[2], newNodeIDs)
+        all$nw <- add.vertices(all$nw,
+                               nv = nBirthsM2,
+                               last.mode = TRUE,
+                               vertex.pid = newPids)
+      } else {
+        all$nw <- add.vertices(all$nw,
+                               nv = nBirthsM2,
+                               last.mode = TRUE)
       }
-      newNodes <- c(newNodes, newNodesM2)
-      if (!is.null(newNodes)) {
-        all$nw <- activate.vertices(all$nw,
-                                    onset = at,
-                                    terminus = Inf,
-                                    v = newNodes)
-      }
+      newSize <- network.size(all$nw)
+      newNodesM2 <- (newSize - nBirthsM2 + 1):newSize
+    }
+    newNodes <- c(newNodes, newNodesM2)
+    if (!is.null(newNodes)) {
+      all$nw <- activate.vertices(all$nw,
+                                  onset = at,
+                                  terminus = Inf,
+                                  v = newNodes)
     }
   }
 
