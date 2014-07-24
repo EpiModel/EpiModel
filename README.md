@@ -12,7 +12,7 @@ install.packages("EpiModel")
 To install this development version:
 ```r
 if (!require("devtools")) install.packages("devtools")
-devtools::install_github("smjenness/EpiModel")
+devtools::install_github("statnet/EpiModel")
 ```
 
 The main website for EpiModel, with tutorials and other supporting files, is [here](http://statnet.github.io/EpiModel/).
