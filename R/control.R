@@ -72,26 +72,30 @@ control.dcm <- function(type,
 
 
   ## Defaults and checks
-  if (missing(nsteps)) {
+  if (is.null(out$nsteps)) {
     stop("Specify nsteps")
   }
-  if (missing(dt)) {
+
+  # Respecify dt as sequence vector
+  if (is.null(out$dt)) {
     dt <- 1
   }
   out$dt <- seq(1, nsteps, dt)
-  if (missing(odemethod)) {
+
+  if (is.null(out$odemethod)) {
     out$odemethod <- "rk4"
   }
-  if (missing(new.mod)) {
+  if (is.null(out$new.mod)) {
     out$new.mod <- NULL
   }
-  if (missing(print.mod)) {
+  if (is.null(out$print.mod)) {
     out$print.mod <- FALSE
   }
-  if (missing(verbose)) {
+  if (is.null(out$verbose)) {
     out$verbose <- TRUE
   }
 
+  # Check type for integrated models
   if (is.null(out$new.mod)) {
     if (is.null(out$type) || !(out$type %in% c("SI", "SIS", "SIR"))) {
       stop("Specify type as \"SI\", \"SIS\", or \"SIR\" ")
@@ -211,25 +215,24 @@ control.icm <- function(type,
 
 
   ## Defaults and checks
-  if (missing(rec.rand)) {
-    out$rec.rand <- TRUE
+  if (is.null(out$type) | !(out$type %in% c("SI", "SIS", "SIR"))) {
+    stop("Specify type as \"SI\", \"SIS\", or \"SIR\" ", call. = FALSE)
   }
-  if (missing(b.rand)) {
-    out$b.rand <- TRUE
+  if (is.null(out$nsteps)) {
+    stop("Specify nsteps", call. = FALSE)
   }
-  if (missing(d.rand)) {
-    out$d.rand <- TRUE
-  }
-  if (missing(nsims)) {
+  if (is.null(out$nsims)) {
     out$nsims <- 1
   }
-  if (missing(verbose)) {
-    out$verbose <- TRUE
+  if (is.null(out$rec.rand)) {
+    out$rec.rand <- TRUE
   }
-  if (missing(verbose.int)) {
-    out$verbose.int <- 0
+  if (is.null(out$b.rand)) {
+    out$b.rand <- TRUE
   }
-
+  if (is.null(out$d.rand)) {
+    out$d.rand <- TRUE
+  }
   if (is.null(out$initialize.FUN)) {
     out$initialize.FUN <- initialize.icm
   }
@@ -248,9 +251,11 @@ control.icm <- function(type,
   if (is.null(out$get_prev.FUN)) {
     out$get_prev.FUN <- get_prev.icm
   }
-
-  if (is.null(out$type) | !(out$type %in% c("SI", "SIS", "SIR"))) {
-    stop("Specify type as \"SI\", \"SIS\", or \"SIR\" ")
+  if (is.null(out$verbose)) {
+    out$verbose <- TRUE
+  }
+  if (is.null(out$verbose.int)) {
+    out$verbose.int <- 0
   }
 
 
@@ -440,41 +445,38 @@ control.net <- function(type,
   out <- eval_list(out)
 
 
-  ## Defaults
-  if (missing(nsims)) {
+  ## Defaults and checks
+  if (is.null(out$type) | !(out$type %in% c("SI", "SIS", "SIR"))) {
+    stop("Specify type as \"SI\", \"SIS\", or \"SIR\" ")
+  }
+  if (is.null(out$nsteps)) {
+    stop("Specify nsteps")
+  }
+  if (is.null(out$nsims)) {
     out$nsims <- 1
   }
-
-  if (missing(save.nwstats)) {
-    out$save.nwstats <- TRUE
+  if (is.null(out$rec.rand)) {
+    out$rec.rand <- TRUE
   }
-  if (missing(save.transmat)) {
-    out$save.transmat <- TRUE
+  if (is.null(out$b.rand)) {
+    out$b.rand <- TRUE
   }
-  if (missing(save.network)) {
-    out$save.network <- TRUE
+  if (is.null(out$d.rand)) {
+    out$d.rand <- TRUE
   }
-  if (missing(verbose)) {
-    out$verbose <- TRUE
+  if (is.null(out$tea.status)) {
+    out$tea.status <- TRUE
   }
-  if (missing(verbose.int)) {
-    out$verbose.int <- 1
-  }
-
   if (missing(attr.rules)) {
     out$attr.rules <- list()
   }
-
-  if (missing(tea.status)) {
-    out$tea.status <- TRUE
+  if (!is.null(out$epi.by)) {
+    if (length(out$epi.by) > 1) {
+      stop("Length of epi.by currently limited to 1")
+    } else {
+      out$epi.by <- epi.by
+    }
   }
-  if (missing(delete.nodes)) {
-    out$delete.nodes <- FALSE
-  }
-  if (out$delete.nodes == TRUE) {
-    out$tea.status <- FALSE
-  }
-
   if (is.null(out$initialize.FUN)) {
     out$initialize.FUN <- initialize.net
   }
@@ -496,38 +498,31 @@ control.net <- function(type,
   if (is.null(out$get_prev.FUN)) {
     out$get_prev.FUN <- get_prev.net
   }
-
-  if (missing(rec.rand)) {
-    out$rec.rand <- TRUE
-  }
-  if (missing(b.rand)) {
-    out$b.rand <- TRUE
-  }
-  if (missing(d.rand)) {
-    out$d.rand <- TRUE
-  }
-
-  ## Checks
-  if (is.null(out$type) | !(out$type %in% c("SI", "SIS", "SIR"))) {
-    stop("Specify type as \"SI\", \"SIS\", or \"SIR\" ")
-  }
-  if (missing(nsteps)) {
-    stop("Specify number of time steps in nsteps")
-  }
-
-
-
-  if (!missing(epi.by)) {
-    if (length(epi.by) > 1) {
-      stop("Length of epi.by currently limited to 1")
-    } else {
-      out$epi.by <- epi.by
-    }
-  }
-
   if (is.null(out$set.control.stergm)) {
     out$set.control.stergm <- control.simulate.network(MCMC.burnin.min = 1000)
   }
+  if (is.null(out$save.nwstats)) {
+    out$save.nwstats <- TRUE
+  }
+  if (is.null(out$delete.nodes)) {
+    out$delete.nodes <- FALSE
+  }
+  if (out$delete.nodes == TRUE) {
+    out$tea.status <- FALSE
+  }
+  if (is.null(out$save.transmat)) {
+    out$save.transmat <- TRUE
+  }
+  if (is.null(out$save.network)) {
+    out$save.network <- TRUE
+  }
+  if (is.null(out$verbose)) {
+    out$verbose <- TRUE
+  }
+  if (is.null(out$verbose.int)) {
+    out$verbose.int <- 1
+  }
+
 
   ## Output
   class(out) <- "control.net"

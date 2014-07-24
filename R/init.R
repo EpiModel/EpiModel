@@ -127,7 +127,7 @@ init.icm <- function(s.num,
 
 
   ## Defaults and checks
-  if (missing(status.rand)) {
+  if (is.null(out$status.rand)) {
     out$status.rand <- TRUE
   }
 
@@ -198,13 +198,13 @@ init.net <- function(i.num,
 
 
   ## Defaults and checks
-  if (missing(status.rand)) {
+  if (is.null(out$status.rand)) {
     out$status.rand <- TRUE
   }
-  if (!missing(i.num) & !missing(status.vector)) {
+  if (!is.null(out$i.num) & !is.null(out$status.vector)) {
     stop('Use i.num OR status.vector to set initial infected')
   }
-  if (!missing(status.vector)) {
+  if (!is.null(out$status.vector)) {
     out$status.rand <- FALSE
   }
 

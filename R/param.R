@@ -226,9 +226,6 @@ param.icm <- function(trans.rate,
 
 
   ## Defaults and checks
-  if (is.null(out$groups)) {
-    out$groups <- 1
-  }
   if (is.null(out$act.rate)) {
     out$act.rate <- 1
   }
@@ -243,10 +240,6 @@ param.icm <- function(trans.rate,
     out$groups <- 2
   } else {
     out$groups <- 1
-  }
-
-  if (is.null(out$trans.rate)) {
-    stop("Specify trans.rate")
   }
 
   if (out$groups == 2 && (is.null(out$balance) ||
@@ -378,7 +371,7 @@ param.net <- function(trans.rate,
   out <- eval_list(out)
 
 
-  ## Defaults
+  ## Defaults and checks
   if (missing(act.rate)) {
     out$act.rate <- 1
   }
@@ -387,11 +380,6 @@ param.net <- function(trans.rate,
     out$vital <- TRUE
   } else {
     out$vital <- FALSE
-  }
-
-  ## Parameter check
-  if (missing(trans.rate)) {
-    stop("Specify trans.rate")
   }
 
 
