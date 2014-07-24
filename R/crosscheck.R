@@ -17,7 +17,7 @@
 #'
 crosscheck.dcm <- function(param, init, control) {
 
-  ## Main class check
+  # Main class check --------------------------------------------------------
   if (class(param) != "param.dcm") {
     stop("param must an object of class param.dcm", call. = FALSE)
   }
@@ -28,39 +28,43 @@ crosscheck.dcm <- function(param, init, control) {
     stop("control must an object of class control.dcm", call. = FALSE)
   }
 
+  # Parameter checks for integrated models ----------------------------------
   if (is.null(control$new.mod)) {
 
-      if (is.null(param$act.rate)) {
-        param$act.rate <- 1
-      }
-      if (is.null(param$vital)) {
-        if (!is.null(param$b.rate) |
-            !is.null(param$ds.rate) |
-            !is.null(param$di.rate) |
-            !is.null(param$dr.rate)) {
-          param$vital <- TRUE
-        } else {
-          param$vital <- FALSE
-        }
-      }
-
-      if (is.null(param$trans.rate)) {
-        stop("Specify trans.rate in param.dcm", call. = FALSE)
-      }
-
-      if (any(grepl(".g2", names(param))) == TRUE) {
-        param$groups <- 2
+    ## Defaults
+    if (is.null(param$act.rate)) {
+      param$act.rate <- 1
+    }
+    if (is.null(param$vital)) {
+      if (!is.null(param$b.rate) |
+          !is.null(param$ds.rate) |
+          !is.null(param$di.rate) |
+          !is.null(param$dr.rate)) {
+        param$vital <- TRUE
       } else {
-        param$groups <- 1
+        param$vital <- FALSE
       }
+    }
 
-      if (param$groups == 2 && (is.null(param$balance) ||
+    if (any(grepl(".g2", names(param))) == TRUE) {
+      param$groups <- 2
+    } else {
+      param$groups <- 1
+    }
+
+    if (param$groups == 2 && (is.null(param$balance) ||
                                 !(param$balance %in% c("g1", "g2")))) {
-        stop("Specify balance=\"g1\" or balance=\"g2\" with 2-group models",
-             call. = FALSE)
-      }
+      stop("Specify balance=\"g1\" or balance=\"g2\" with 2-group models",
+           call. = FALSE)
+    }
 
-    ## Check that rec.rate is supplied for SIR models
+    ## Error checks
+    # Specify trans.rate
+    if (is.null(param$trans.rate)) {
+      stop("Specify trans.rate in param.dcm", call. = FALSE)
+    }
+
+    # Check that rec.rate is supplied for SIR models
     if (control$type %in% c("SIR", "SIS") & is.null(param$rec.rate)) {
       stop("Specify rec.rate in param.dcm", call. = FALSE)
       if (param$groups == 2 & is.null(param$rec.rate.g2)) {
@@ -68,7 +72,7 @@ crosscheck.dcm <- function(param, init, control) {
       }
     }
 
-    ## Check that r.num is supplied for SIR models
+    # Check that r.num is supplied for SIR models
     if (control$type == "SIR" & is.null(init$r.num)) {
       stop("Specify r.num in init.dcm", call. = FALSE)
       if (param$groups == 2 & is.null(init$r.num.g2)) {
@@ -76,7 +80,7 @@ crosscheck.dcm <- function(param, init, control) {
       }
     }
 
-    ## Check that groups implied by init and params are consistent
+    # Check that groups implied by init and params are consistent
     if (any(grepl(".g2", names(init))) == TRUE) {
       init.groups <- 2
     } else {
@@ -93,15 +97,14 @@ crosscheck.dcm <- function(param, init, control) {
            call. = FALSE)
     }
 
-
+    # Over-specified initial conditions
     if (control$type != "SIR" & any(c("r.num", "r.num.m2") %in% names(init))) {
-      stop("Inconsistent initial conditions and model type",
+      stop("Specified initial number recovered for non-SIR model",
            call. = FALSE)
     }
-
-
-    on.exit(assign("param", param, pos = parent.frame()))
   }
+
+  on.exit(assign("param", param, pos = parent.frame()))
 }
 
 
@@ -135,21 +138,18 @@ crosscheck.icm <- function(param, init, control) {
   }
 
   ## Check that rec.rate is supplied for SIR models
-  if (control$type %in% c("SIR", "SIS") & is.null(param$rec.rate)) {
-
-    if (param$groups == 2 & is.null(param$rec.rate.g2)) {
-      stop("Specify rec.rate.g2 in param.icm", call. = FALSE)
-    }
-  }
-
-  ## Check that paramets and init are supplied for SIR models
-  if (control$type == "SIR") {
+  if (control$type %in% c("SIR", "SIS")) {
     if (is.null(param$rec.rate)) {
       stop("Specify rec.rate in param.icm", call. = FALSE)
     }
     if (param$groups == 2 & is.null(param$rec.rate.g2)) {
       stop("Specify rec.rate.g2 in param.icm", call. = FALSE)
     }
+  }
+
+
+  ## Check that paramets and init are supplied for SIR models
+  if (control$type == "SIR") {
     if (is.null(init$r.num)) {
       stop("Specify r.num in init.icm", call. = FALSE)
     }
@@ -199,7 +199,7 @@ crosscheck.icm <- function(param, init, control) {
 #'
 crosscheck.net <- function(x, param, init, control) {
 
-  ## Main class check
+  # Main class check --------------------------------------------------------
   if (class(x) != "netest"){
     stop("x must be an object of class netest", call. = FALSE)
   }
@@ -213,12 +213,16 @@ crosscheck.net <- function(x, param, init, control) {
     stop("control must an object of class control.net", call. = FALSE)
   }
 
+
   if (is.null(control$nwstats.formula)) {
     control$nwstats.formula <- x$formation
   }
 
-  statOnNw <- "status" %in% get_formula_terms(x$formation)
+  # Defaults ----------------------------------------------------------------
+  # Is status in network formation formula?
+  statOnNw <- ("status" %in% get_formula_terms(x$formation))
 
+  # Set dependent modeling defaults if vital or status on nw
   if (is.null(control$depend)) {
     if (param$vital == TRUE | statOnNw == TRUE) {
       control$depend <- TRUE
@@ -227,16 +231,27 @@ crosscheck.net <- function(x, param, init, control) {
     }
   }
 
+  bip <- ifelse(is.bipartite(x$fit$network), TRUE, FALSE)
+
+  if (bip == TRUE & is.null(control$pid.prefix)) {
+    control$pid.prefix <- c("F", "M")
+  }
+
+
+  # Checks ------------------------------------------------------------------
+
+  # Check that prevalence in NW attr status and initial conditions match
   if (statOnNw == TRUE) {
     nw1 <- sum(get.vertex.attribute(x$fit$network, "status") == 1)
     init1 <- sum(unlist(init[grep("i.num", names(init), value = TRUE)]))
     if ("i.num" %in% names(init) && nw1 != init1) {
       warning("Overriding init infected settings with network status attribute",
               call. = FALSE, immediate. = TRUE)
-      Sys.sleep(2)
+      if (interactive()) Sys.sleep(3)
     }
   }
 
+  # Check consistency of status vector to network structure
   if (!is.null(init$status.vector)) {
     if (length(init$status.vector) != network.size(x$fit$network)) {
       stop("Length of status.vector is unequal to size of initial network")
@@ -253,13 +268,12 @@ crosscheck.net <- function(x, param, init, control) {
     }
   }
 
-
-  bip <- ifelse(is.bipartite(x$fit$network), TRUE, FALSE)
+  # Bipartite model checks for inital conditions
   if (bip == TRUE & is.null(init$i.num.m2) & is.null(init$status.vector)) {
     stop("Specify i.num.m2 for bipartite simulations", call. = FALSE)
   }
 
-
+  # Recovery rate and initial recovered checks
   if (control$type %in% c("SIR", "SIS")) {
     if (is.null(param$rec.rate)) {
       stop("Specify rec.rate in param.net", call. = FALSE)
@@ -277,6 +291,7 @@ crosscheck.net <- function(x, param, init, control) {
     }
   }
 
+  # Check demographic parameters for bipartite
   if (bip == TRUE & param$vital == TRUE) {
     if (is.null(param$b.rate.m2)) {
       stop("Specify b.rate.m2 in param.net", call. = FALSE)
@@ -293,12 +308,6 @@ crosscheck.net <- function(x, param, init, control) {
       }
     }
   }
-
-
-  if (bip == TRUE & is.null(control$pid.prefix)) {
-    control$pid.prefix <- c("F", "M")
-  }
-
 
 
   ## In-place assignment to update param and control
