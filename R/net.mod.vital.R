@@ -402,6 +402,10 @@ births.net <- function(all, at) {
       all <- split_bip(all, "infTime", NA,
                        nCurrM1, nCurrM2, nBirths, nBirthsM2)
     }
+
+    ## Handles infTime when incoming nodes are infected
+    newNodesInf <- intersect(newNodes, which(all$attr$status == 1))
+    all$attr$infTime[newNodesInf] <- at
   }
 
 
