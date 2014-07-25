@@ -1300,8 +1300,6 @@ plot.netdx <- function(x,
 #'        default colors based on \code{RColorBrewer} color palettes.
 #' @param targ.lwd line width for the line showing the target statistic values.
 #' @param targ.lty line type for the line showing the target statistic values.
-#' @param plots.joined if \code{TRUE}, combine all target statistics in one plot,
-#'        otherwise use one plot window per target statistic.
 #' @param plots.joined if \code{TRUE} and \code{type="formation"}, combine all
 #'        target statistics in one plot, versus one plot per target statistic if
 #'        \code{FALSE}.
