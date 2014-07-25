@@ -273,7 +273,8 @@ crosscheck.net <- function(x, param, init, control) {
   }
 
   # Bipartite model checks for inital conditions
-  if (bip == TRUE & is.null(init$i.num.m2) & is.null(init$status.vector)) {
+  if (bip == TRUE & is.null(init$i.num.m2) &
+        is.null(init$status.vector) & statOnNw == FALSE) {
     stop("Specify i.num.m2 for bipartite simulations", call. = FALSE)
   }
 
