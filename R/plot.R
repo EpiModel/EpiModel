@@ -1122,7 +1122,9 @@ plot.netdx <- function(x,
 
       ## Default target line color
       if (missing(targ.col)) {
-        if (nstats > 9) {
+        if (nstats == 1) {
+          targ.col <- "black"
+        } else if (nstats > 9) {
           targ.col <- brewer_ramp(nstats, "Set1")
         } else {
           targ.col <- brewer.pal(9, "Set1")[1:nstats]
