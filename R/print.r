@@ -307,7 +307,9 @@ print.control.net <- function(x, ...) {
       cat(names(x)[i], "= "); cat(paste0(as.character(x[[i]])[1],
                                          as.character(x[[i]])[2]), "\n")
     } else if (class(x[[i]]) == "data.frame") {
-      cat(names(x)[i], "= <data.frame>")
+      cat(names(x)[i], "= <data.frame>\n")
+    } else if (class(x[[i]]) == "list") {
+      cat(names(x)[i], "= <list>\n")
     } else {
       cat(names(x)[i], "=", x[[i]], fill = 80)
     }
