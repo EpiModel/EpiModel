@@ -931,7 +931,7 @@ plot.icm <- function(x,
 #' \code{\link{edgelist_meanage}} function. The age is used as an estimator of
 #' the average duration of edges in the equilibrium state.
 #'
-#' The \code{plots.joined} argument will control whether the target statistics
+#' The \code{plots.joined} argument will control whether the statistics
 #' in the \code{formation} plot are joined in one plot or plotted separately.
 #' The default is based on the number of network statistics requested. The
 #' layout of the separate plots within the larger plot window is also based on
@@ -1294,6 +1294,12 @@ plot.netdx <- function(x,
 #' @param sim.lwd line width for individual simulation lines, with defaults based
 #'        on number of simulations (more simulations equals thinner lines).
 #' @param sim.lty line type for the individual simulation lines.
+#' @param targ.col vector of standard R colors for target statistic lines, with
+#'        default colors based on \code{RColorBrewer} color palettes.
+#' @param targ.lwd line width for the line showing the target statistic values.
+#' @param targ.lty line type for the line showing the target statistic values.
+#' @param plots.joined if \code{TRUE}, combine all target statistics in one plot,
+#'        otherwise use one plot window per target statistic.
 #' @param plots.joined if \code{TRUE} and \code{type="formation"}, combine all
 #'        target statistics in one plot, versus one plot per target statistic if
 #'        \code{FALSE}.
@@ -1404,6 +1410,9 @@ plot.netsim <- function(x,
                         sim.lwd,
                         sim.col,
                         sim.lty = 1,
+                        targ.col,
+                        targ.lwd = 2,
+                        targ.lty = 2,
                         plots.joined,
                         plot.leg = TRUE,
                         ...) {
@@ -1524,6 +1533,9 @@ plot.netsim <- function(x,
       sim <- 1:x$control$nsims
     }
     nsims <- x$control$nsims
+    if (max(sim) > nsims) {
+      stop("Maximum sim for this object is ", nsims, call. = FALSE)
+    }
 
     ## Find available stats
     nmstats <- names(nwstats[[1]])
@@ -1561,7 +1573,7 @@ plot.netsim <- function(x,
       plots.joined <- TRUE
     }
     xlim <- c(1, nsteps)
-    if (length(da) > 0 && !is.null(da$xlim)) {
+    if (!is.null(da$xlim)) {
       xlim <- da$xlim
     }
     if (missing(sim.lwd)) {
@@ -1585,33 +1597,14 @@ plot.netsim <- function(x,
     ## Joined Plots
     if (plots.joined == TRUE) {
 
-      # Default legend
+      ## Default legend
       if (nstats == 1) {
         if (missing(plot.leg)) {
           plot.leg <- FALSE
         }
       }
 
-      # Default ylab
-      if (length(da) > 0 && !is.null(da$ylab)) {
-        ylab <- da$ylab
-      } else {
-        if (nstats == 1) {
-          ylab <- nmstats[outsts]
-        } else {
-          ylab <- "Statistic"
-        }
-      }
-
-      # Default xlab
-      if (length(da) > 0 && !is.null(da$xlab)) {
-        xlab <- da$xlab
-      } else {
-        xlab <- "time"
-      }
-
-
-      # Default ylim
+      ## Default ylim
       if (ncol(nwstats[[1]]) == 1) {
         mins <- sapply(nwstats, function(x) apply(x, 2, min))
         maxs <- sapply(nwstats, function(x) apply(x, 2, max))
@@ -1621,13 +1614,43 @@ plot.netsim <- function(x,
       }
       ymin <- min(mins)
       ymax <- max(maxs)
-
-      ylim <- c(ymin * 0.8, ymax * 1.2)
-      if (length(da) > 0 && !is.null(da$ylim)) {
+      if (!is.null(da$ylim)) {
         ylim <- da$ylim
+      } else {
+        ylim <- c(ymin * 0.8, ymax * 1.2)
       }
 
-      # Main plot window
+      ## Default ylab
+      if (!is.null(da$ylab)) {
+        ylab <- da$ylab
+      } else {
+        if (nstats == 1) {
+          ylab <- nmstats[outsts]
+        } else {
+          ylab <- "Statistic"
+        }
+      }
+
+      ## Default xlab
+      if (!is.null(da$xlab)) {
+        xlab <- da$xlab
+      } else {
+        xlab <- "time"
+      }
+
+      ## Default target line color
+      if (missing(targ.col)) {
+        if (nstats == 1) {
+          targ.col <- "black"
+        } else if (nstats > 9) {
+          targ.col <- brewer_ramp(nstats, "Set1")
+        } else {
+          targ.col <- brewer.pal(9, "Set1")[1:nstats]
+        }
+      }
+
+
+      ## Main plot window
       plot(1, 1, xlim = xlim, ylim = ylim,
            type = "n", xlab = xlab, ylab = ylab)
       for (j in outsts) {
@@ -1639,8 +1662,8 @@ plot.netsim <- function(x,
         }
         if (j %in% targs) {
           abline(h = m$targets[j],
-                 lty = 2, lwd = 1,
-                 col = "black")
+                 lty = targ.lty, lwd = targ.lwd,
+                 col = targ.col[which(j == outsts)])
         }
       }
       if (plot.leg == TRUE) {
@@ -1672,6 +1695,10 @@ plot.netsim <- function(x,
       mins <- sapply(nwstats, function(x) apply(x, 2, min))
       maxs <- sapply(nwstats, function(x) apply(x, 2, max))
 
+      if (missing(targ.col)) {
+        targ.col <- rep("black", nstats)
+      }
+
       for (j in outsts) {
         ymin <- min(mins[j,])
         ymax <- max(maxs[j,])
@@ -1688,8 +1715,8 @@ plot.netsim <- function(x,
         }
         if (j %in% targs) {
           abline(h = m$targets[j],
-                 lty = 2, lwd = 1,
-                 col = "black")
+                 lty = targ.lty, lwd = targ.lwd,
+                 col = targ.col[which(j == outsts)])
         }
       }
 

@@ -60,7 +60,7 @@ step, up until the maximum time step requested. This is calculated with the
 \code{\link{edgelist_meanage}} function. The age is used as an estimator of
 the average duration of edges in the equilibrium state.
 
-The \code{plots.joined} argument will control whether the target statistics
+The \code{plots.joined} argument will control whether the statistics
 in the \code{formation} plot are joined in one plot or plotted separately.
 The default is based on the number of network statistics requested. The
 layout of the separate plots within the larger plot window is also based on
