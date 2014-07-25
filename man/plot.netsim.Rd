@@ -5,7 +5,8 @@
 \usage{
 \method{plot}{netsim}(x, type = "sim", sim, at = 1, col.status = FALSE,
   shp.bip = NULL, zeromarg = TRUE, stats, sim.lwd, sim.col, sim.lty = 1,
-  plots.joined, plot.leg = TRUE, ...)
+  targ.col, targ.lwd = 2, targ.lty = 2, plots.joined, plot.leg = TRUE,
+  ...)
 }
 \arguments{
 \item{x}{an \code{EpiModel} model object of class \code{netsim}.}
@@ -40,6 +41,13 @@ color palettes.}
 on number of simulations (more simulations equals thinner lines).}
 
 \item{sim.lty}{line type for the individual simulation lines.}
+
+\item{targ.col}{vector of standard R colors for target statistic lines, with
+default colors based on \code{RColorBrewer} color palettes.}
+
+\item{targ.lwd}{line width for the line showing the target statistic values.}
+
+\item{targ.lty}{line type for the line showing the target statistic values.}
 
 \item{plots.joined}{if \code{TRUE} and \code{type="formation"}, combine all
 target statistics in one plot, versus one plot per target statistic if

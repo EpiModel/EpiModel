@@ -164,6 +164,19 @@ saveout.net <- function(all, s, out) {
     }
     if (all$control$save.nwstats == TRUE) {
       names(out$stats$nwstats) <- simnames
+
+      # Pull formation terms
+      formation <- all$nwparam$formation
+      a <- summary(update.formula(all$nw ~ ., formation), at = 1)
+      if (ncol(a) == 1) {
+        attributes(out$stats$nwstats)$formation.terms <- rownames(a)
+      } else {
+        attributes(out$stats$nwstats)$formation.terms <- colnames(a)
+      }
+
+      # Pull target statistics
+      attributes(out$stats$nwstats)$target.stats <- all$nwparam$target.stats
+
     }
     if (all$control$save.transmat == TRUE) {
       names(out$stats$transmat) <- simnames[1:length(out$stats$transmat)]
