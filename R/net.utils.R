@@ -268,7 +268,8 @@ dissolution_coefs <- function(dissolution,
   if (t1.edges == TRUE && form.length == 1) {
     coef.diss <- log(duration[1] - 1)
   } else {
-    stop("Only ~offset(edges) dissolution models currently supported")
+    stop("Only ~offset(edges) dissolution models currently supported",
+         call. = FALSE)
   }
 
   if (d.rate > 0) {
@@ -280,7 +281,10 @@ dissolution_coefs <- function(dissolution,
     prob.either.dying <- 2*d.rate - d.rate^2
 
     prob <- 1 - ((prob.diss - prob.either.dying) / prob.neither.dying)
-    if (prob >= 1) stop("The competing risk of mortality is too high for the given duration. Specify a lower d.rate")
+    if (prob >= 1) {
+      stop("The competing risk of mortality is too high for the given duration. Specify a lower d.rate",
+           call. = FALSE)
+    }
     coef.diss.adj <- logit(prob)
   } else {
     coef.diss.adj <- coef.diss
