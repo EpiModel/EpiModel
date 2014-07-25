@@ -237,6 +237,10 @@ crosscheck.net <- function(x, param, init, control) {
     control$pid.prefix <- c("F", "M")
   }
 
+  if (statOnNw == TRUE && is.null(control$attr.rules$status)) {
+    control$attr.rules$status <- 0
+  }
+
 
   # Checks ------------------------------------------------------------------
 
