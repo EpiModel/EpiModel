@@ -1089,20 +1089,20 @@ plot.netdx <- function(x,
     ## Joined Plots
     if (plots.joined == TRUE) {
 
-      # Default legend
+      ## Default legend
       if (nstats == 1) {
         if (missing(plot.leg)) {
           plot.leg <- FALSE
         }
       }
 
-      # Default ylim
+      ## Default ylim
       ylim <- c(min(data) * 0.8, max(data) * 1.2)
       if (length(da) > 0 && !is.null(da$ylim)) {
         ylim <- da$ylim
       }
 
-      # Default ylab
+      ## Default ylab
       if (length(da) > 0 && !is.null(da$ylab)) {
         ylab <- da$ylab
       } else {
@@ -1113,13 +1113,14 @@ plot.netdx <- function(x,
         }
       }
 
-      # Default xlab
+      ## Default xlab
       if (length(da) > 0 && !is.null(da$xlab)) {
         xlab <- da$xlab
       } else {
         xlab <- "time"
       }
 
+      ## Default target line color
       if (missing(targ.col)) {
         if (nstats > 9) {
           targ.col <- brewer_ramp(nstats, "Set1")
@@ -1129,7 +1130,7 @@ plot.netdx <- function(x,
       }
 
 
-      # Main plot window
+      ## Main plot window
       plot(1, 1, xlim = xlim, ylim = ylim,
            type = "n", xlab = xlab, ylab = ylab)
       for (j in outsts) {
@@ -1538,10 +1539,19 @@ plot.netsim <- function(x,
     outsts <- which(nmstats %in% stats)
     nstats <- length(outsts)
 
+    ## target stats
+    target.stats <- attributes(x$stats$nwstats)$target.stats
+    formation.terms <- attributes(x$stats$nwstats)$formation.terms
 
-    # Get dotargs
+    st <- data.frame(sorder = 1:length(nmstats), names = nmstats)
+    ts <- data.frame(names = formation.terms, targets = target.stats)
+
+    m <- merge(st, ts, all = TRUE)
+    m <- m[do.call("order", m[, "sorder", drop = FALSE]), , drop = FALSE]
+    targs <- which(!is.na(m$targets))
+
+    ## Get dotargs
     da <- list(...)
-
 
     ## Plotting
     if (missing(plots.joined)) {
@@ -1627,6 +1637,11 @@ plot.netsim <- function(x,
                 lty = sim.lty, lwd = sim.lwd,
                 col = sim.col[which(j == outsts)])
         }
+        if (j %in% targs) {
+          abline(h = m$targets[j],
+                 lty = 2, lwd = 1,
+                 col = "black")
+        }
       }
       if (plot.leg == TRUE) {
         legend("topleft", legend = nmstats[outsts],
@@ -1670,6 +1685,11 @@ plot.netsim <- function(x,
                 y = nwstats[[i]][[nmstats[j]]],
                 lwd = sim.lwd, lty = sim.lty,
                 col = sim.col[which(j == outsts)])
+        }
+        if (j %in% targs) {
+          abline(h = m$targets[j],
+                 lty = 2, lwd = 1,
+                 col = "black")
         }
       }
 
