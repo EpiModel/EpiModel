@@ -49,6 +49,7 @@ initialize.net <- function(x, param, init, control) {
   all$nwparam$coef.form <- x$coef.form
   all$nwparam$coef.diss <- x$coef.diss
   all$nwparam$constraints <-  x$constraints
+  all$nwparam$target.stats <- x$target.stats
   if (is.null(x$constraints)) {
     all$nwparam$constraints <- ~ .
   } else {
