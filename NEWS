@@ -9,6 +9,8 @@ NEW FEATURES
 * Death modules for network models are now contained in one function, deaths.net,
   to facilitate replacement death modules from users. This is also now consistent
   with the death module for ICMs.
+* Automated plotting of target statistic lines to plot.netsim formation plots,
+  matching the methods of plot.netdx formation plots.
 
 BUG FIXES
 * netdx now simulates from a different starting network at the begining of each
