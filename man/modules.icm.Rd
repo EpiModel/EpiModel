@@ -35,7 +35,7 @@ function calls, these are reset at the beginning of each simulation.
 }
 }
 
-\section{Status Modification Modules}{
+\section{Disease Status Modification Modules}{
 
 The main disease simulation occurs at each time step given the current state
 of the population at that step. Infection of agents is simulated as a function

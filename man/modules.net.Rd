@@ -38,7 +38,7 @@ function calls, these are reset at the beginning of each individual simulation.
 }
 }
 
-\section{Status Modification Modules}{
+\section{Disease Status Modification Modules}{
 
 The main disease simulation occurs at each time step given the current state
 of the network at that step. Infection of nodes is simulated as a function of

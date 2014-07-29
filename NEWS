@@ -15,7 +15,7 @@ NEW FEATURES
 BUG FIXES
 * netdx now simulates from a different starting network at the begining of each
   dynamic simulation, eliminating correlation at time 1 across simulations.
-* Can now pass status.vector into control.net for bipartite simulations.
+* Can now pass status.vector into init.net for bipartite simulations.
 * Several plotting and printing bugs fixed.
 * Fixed bug in network models for open populations in which an attribute was
   passed to the network in the formation formula (e.g., serostatus mixing models).

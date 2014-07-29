@@ -35,7 +35,7 @@
 #'        \code{\link{netest}}.
 #' }
 #'
-#' @section Status Modification Modules:
+#' @section Disease Status Modification Modules:
 #' The main disease simulation occurs at each time step given the current state
 #' of the network at that step. Infection of nodes is simulated as a function of
 #' attributes of the nodes and the edges. Recovery of nodes is likewise simulated
