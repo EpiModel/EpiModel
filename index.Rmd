@@ -35,9 +35,9 @@ install.packages("EpiModel")
 
 ##### Extending EpiModel
 
-* [Solving New DCMs with EpiModel](http://statnet.org/EpiModel/vignette/NewDCMs.html): how to build an original deterministic compartmental model by writing a model function and passing new parameters.
-* [Solving New ICMs with EpiModel](http://statnet.org/EpiModel/vignette/NewICMs.html): how to build an original stochastic individual contact model by writing replacement and supplemental module functions.
-* [Solving New Network Models with EpiModel](http://statnet.org/EpiModel/vignette/NewNet.html): how to build an original stochastic network model by writing replacement and supplemental module functions.
+* [New DCMs with EpiModel](http://statnet.org/EpiModel/vignette/NewDCMs.html): how to build an original deterministic compartmental model by writing a model function and passing new parameters.
+* [New ICMs with EpiModel](http://statnet.org/EpiModel/vignette/NewICMs.html): how to build an original stochastic individual contact model by writing replacement and supplemental module functions.
+* [New Network Models with EpiModel](http://statnet.org/EpiModel/vignette/NewNet.html): how to build an original stochastic network model by writing replacement and supplemental module functions.
 
 
 ## Workshops / Trainings
