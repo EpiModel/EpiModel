@@ -14,7 +14,7 @@ EpiModel provides tools for simulating mathematical models of infectious disease
 
 ### Installation
 The current software version is **EpiModel v1.0.1**, which may be downloaded from [CRAN](http://cran.r-project.org/web/packages/EpiModel/index.html), and from within R using:
-```r
+```{r, eval=FALSE}
 install.packages("EpiModel")
 ```
 
@@ -23,6 +23,18 @@ install.packages("EpiModel")
 
 * [EpiModel Manual](http://cran.r-project.org/web/packages/EpiModel/EpiModel.pdf): a PDF manual of the help documentation within the package, with entries for the core package functions.
 * [EpiModel News](https://github.com/statnet/EpiModelPreview/releases): major changes were implemented in EpiModel v1.0. This news file (also contained within the package) lists those and more recent changes.
+
+
+### EpiModel Web
+For beginning EpiModel users and those new to mathematical modeling generally, EpiModel includes two web-based applications for simulating epidemics, using the [Shiny](http://shiny.rstudio.com/) framework in R. These applications are included within EpiModel itself for deterministic compartmental models and stochastic individual contact models and may be run, respectively, using:
+```{r, eval=FALSE}
+epiweb(class = "dcm")
+epiweb(class = "icm")
+```
+Alternatively, these applications are hosted online at:
+
+* [Deterministic Compartmental Models](http://statnet.shinyapps.io/epidcm)
+* [Stochastic Individual Contact Models](http://statnet.shinyapps.io/epiicm)
 
 
 ### Software Tutorials
