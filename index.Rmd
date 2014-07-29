@@ -52,7 +52,7 @@ Alternatively, these applications are hosted online at:
 * [New Network Models with EpiModel](http://statnet.org/EpiModel/vignette/NewNet.html): how to build an original stochastic network model by writing replacement and supplemental module functions.
 
 
-## Workshops / Trainings
+### Workshops / Trainings
 
 ##### Network Modeling for Epidemics
 This 6-day yearly summer course introduces traditional compartmental models for epidemics, the methodology for classical descriptive network analysis, and new statistical methods for network analysis using exponential-family random graph models. The final goal is then to use these methods to develop stochastic network models for epidemics, with a focus on empirical models of HIV/STI transmission and control.
@@ -64,3 +64,16 @@ This 6-day yearly summer course introduces traditional compartmental models for 
 Sunbelt is the yearly conference of the International Network for Social Network Analysis. The conference offers several workshops for software tools, and statnet developers have been teaching there for several years. 2014 was the first year featuring an EpiModel workshop.
 
 * [Sunbelt 2014](https://statnet.org/trac/wiki/Sunbelt2014)
+
+
+### Email Lists
+We encourage you to join the email lists for [Statnet](http://mailman2.u.washington.edu/mailman/listinfo/statnet_help) and [EpiModel](http://mailman11.u.washington.edu/mailman/listinfo/epimodel) as a place to ask questions, report bugs, and tell us about your research using these tools.
+
+
+### Support
+This software is supported by grant number R01HD68395 from the National Institute of Child Health and Human Development.
+
+
+### Copyright and Attribution
+These materials are distributed under the GPL-3 license, with the following copyright and attribution requirements listed [here](http://statnet.org/attribution.shtml).
+
