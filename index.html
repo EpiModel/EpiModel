@@ -57,9 +57,13 @@
 				<h2>Installation</h2>
 				<p>
 					The current software version is <strong>EpiModel v1.0.1</strong>, which may be downloaded
-          from <a href="http://cran.r-project.org/web/packages/EpiModel/index.html">CRAN</a>.
-          The preview version of EpiModel is hosted on
-          <a href="https://github.com/statnet/EpiModelPreview">GitHub</a>.
+          from <a href="http://cran.r-project.org/web/packages/EpiModel/index.html">CRAN</a> and
+          can be installed in R through:
+          <pre><code>install.packages("EpiModel")</code></pre>
+          The preview version of EpiModel (usually posted a week ahead of a CRAN release
+          ) is hosted on <a href="https://github.com/statnet/EpiModelPreview">GitHub</a> and
+          may be installed via the devtools package by:
+          <pre><code>devtools::install_github("statnet/EpiModelPreview")</code></pre>
 				</p>
 			</div>
 
@@ -89,8 +93,7 @@
           two web-based applications for simulating epidemics, using the
           <a href="http://shiny.rstudio.com/">Shiny</a> framework in R. These applications are included
           within EpiModel itself for deterministic compartmental models (DCMs) and stochastic individual
-          contact models (ICMs). They are also hosted online at:
-          <br>
+          contact models (ICMs). They are also hosted online:
   				<small>
   					<a href="http://statnet.shinyapps.io/epidcm">DCMs</a>,
   					<a href="http://statnet.shinyapps.io/epiicm">ICMs</a>
@@ -149,7 +152,7 @@
   					<a href="https://statnet.org/trac/wiki/Sunbelt2014">Sunbelt 2014</a>
   				</small>
         </p>
-    </div>
+      </div>
 
 
       <div id="Other">
@@ -174,19 +177,17 @@
         These materials are distributed under the GPL-3 license, with the following copyright and attribution
         requirements listed <a href="http://statnet.org/attribution.shtml">here</a>.
         </p>
-    </div>
+      </div>
 
 		</div>
 		<!-- right part of page -->
 		<div class="hidden-phone">
-
 			<div class="span4">
 				<img style="float: left" src="http://statnet.org/EpiModel/movie.gif" />
 			</div>
 		</div>
-
 	</div>
-	<!-- footer -->
+
 </div>
 
 <script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
