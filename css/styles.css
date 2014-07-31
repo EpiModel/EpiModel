@@ -1,0 +1,25 @@
+body {
+  padding-top: 60px;
+}
+
+@media (max-width: 979px) {
+
+    body {
+        padding-top: 0px;
+    }
+
+    h2 {
+        padding-top: 0 !important;
+        margin-top: 0 !important;
+    }
+
+}
+
+.row {
+    margin-bottom: 20px;
+}
+
+h2 {
+    padding-top: 45px;
+    margin-top: -45px;
+}
