@@ -10,7 +10,11 @@ body {
 
     h2 {
         padding-top: 0 !important;
-        margin-top: 0 !important;
+        margin-top: 10px !important;
+    }
+
+    h4 {
+      margin-top: 10px !important;
     }
 
 }
@@ -21,5 +25,5 @@ body {
 
 h2 {
     padding-top: 45px;
-    margin-top: -45px;
+    margin-top: -35px;
 }
