@@ -973,12 +973,11 @@ split_bip <- function(all, var, val, nCurrM1, nCurrM2, nBirths, nBirthsM2) {
   return(all)
 }
 
-copy_toall_attr <- function(all, at) {
+copy_toall_attr <- function(all, at, t) {
 
-  otha <- names(all$nw$val[[1]])[!(names(all$nw$val[[1]]) %in% c("na",
-                                                                 "vertex.names",
-                                                                 "active",
-                                                                 "testatus.active"))]
+  otha <- names(all$nw$val[[1]])
+  otha <- otha[which(otha %in% t)]
+
   if (length(otha) > 0) {
     for (i in seq_along(otha)) {
       va <- get.vertex.attribute(all$nw, otha[i])
@@ -1013,18 +1012,15 @@ get_formula_terms <- function(formula) {
 
 
 
-get_attr_prop <- function(nw, t, only.formula = FALSE) {
+get_attr_prop <- function(nw, t, only.formula = TRUE) {
 
   if (is.null(t)) {
     return(NULL)
   }
 
-  nwVal <- names(nw$val[[1]])[!(names(nw$val[[1]]) %in% c("na",
-                                                          "vertex.names",
-                                                          "active",
-                                                          "testatus.active"))]
+  nwVal <- names(nw$val[[1]])
   if (only.formula == TRUE) {
-    nwVal <- nwVal[which(t %in% nwVal)]
+    nwVal <- nwVal[which(nwVal %in% t)]
   }
 
   out <- list()

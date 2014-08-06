@@ -71,11 +71,11 @@ initialize.net <- function(x, param, init, control) {
 
 
   ## Pull network val to attr
-  all <- copy_toall_attr(all, at = 1)
+  t <- get_formula_terms(all$nwparam$formation)
+  all <- copy_toall_attr(all, at = 1, t)
 
 
   ## Store current proportions of attr
-  t <- get_formula_terms(all$nwparam$formation)
   all$temp$t1.tab <- get_attr_prop(all$nw, t)
 
 

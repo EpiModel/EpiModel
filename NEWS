@@ -1,6 +1,10 @@
 Version 1.0.2
 ------------------------------------------------------------------------------
 
+BUG FIXES
+* Network models with passed network attributes in the formation formula in open
+  populations now do not generate an error for persistent ID numbers in the latest
+  versions of the tergm and networkDynamic package.
 
 
 Version 1.0.1
