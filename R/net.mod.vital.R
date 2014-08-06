@@ -366,7 +366,7 @@ births.net <- function(all, at) {
     }
 
     # Save any val on attr
-    all <- copy_toall_attr(all, at)
+    all <- copy_toall_attr(all, at, t)
 
     if (tea.status == TRUE) {
       if ("status" %in% t) {
