@@ -44,12 +44,14 @@ test_that("Serosorting model in open population", {
   infIds <- sample(1:n, n*prev)
   nw <- set.vertex.attribute(nw, "status", 0)
   nw <- set.vertex.attribute(nw, "status", 1, infIds)
+  nw <- set.vertex.attribute(nw, "race", rbinom(n, 1, 0.5))
 
-  formation <- ~ edges + nodefactor("status") + nodematch("status")
-  target.stats <- c(18, 3, 15)
+  formation <- ~ edges + nodefactor("status") +
+                 nodematch("status") + nodematch("race")
+  target.stats <- c(18, 3, 15, 10)
 
   dissolution <- ~offset(edges)
-  coef.diss <- dissolution_coefs(dissolution, 50, d.rate = 0.005)
+  coef.diss <- dissolution_coefs(dissolution, 50, d.rate = 0.01)
 
   est <- netest(nw,
                 formation,
@@ -58,8 +60,8 @@ test_that("Serosorting model in open population", {
                 coef.diss,
                 verbose = FALSE)
 
-  param <- param.net(trans.rate = 0.03, b.rate = 0.005,
-                     ds.rate = 0.005, di.rate = 0.005)
+  param <- param.net(trans.rate = 0.03, b.rate = 0.01,
+                     ds.rate = 0.01, di.rate = 0.01)
   init <- init.net()
   control <- control.net(type = "SI", nsteps = 10, nsims = 1,
                          nwstats.formula = ~ edges +
