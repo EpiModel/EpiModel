@@ -171,7 +171,7 @@ print.disscoef <- function(x, ...) {
   cat("Edge Duration:", x$duration)
   cat("\nAdjusted Coefficient:", x$coef.adj)
   cat("\nCrude Coefficient:", x$coef.crude)
-
+  cat("\nDeath rate:", x$d.rate)
   invisible()
 }
 
