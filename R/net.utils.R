@@ -237,6 +237,7 @@ color_tea <- function(nd,
 #'        coefficient for use in STERGM simulations.
 #'  \item \strong{coef.adj:} the crude coefficient adjusted for the impact of
 #'        death on edge persistence, if the \code{d.rate} argument is supplied.
+#'  \item \strong{d.rate:} the death rate, supplied via the \code{d.rate} argument.
 #' }
 #'
 #' @seealso
@@ -295,6 +296,7 @@ dissolution_coefs <- function(dissolution,
   out$duration <- duration
   out$coef.adj <- coef.diss.adj
   out$coef.crude <- coef.diss
+  out$d.rate <- d.rate
 
   class(out) <- "disscoef"
   return(out)

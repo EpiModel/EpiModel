@@ -25,6 +25,7 @@ A list of class \code{disscoef} with the following elements:
        coefficient for use in STERGM simulations.
  \item \strong{coef.adj:} the crude coefficient adjusted for the impact of
        death on edge persistence, if the \code{d.rate} argument is supplied.
+ \item \strong{d.rate:} the death rate, supplied via the \code{d.rate} argument.
 }
 }
 \description{
