@@ -251,7 +251,7 @@ control.icm <- function(type,
   if (is.null(out$get_prev.FUN)) {
     out$get_prev.FUN <- get_prev.icm
   }
-  if (is.null(out$verbose)) {
+  if (missing(verbose)) {
     out$verbose <- TRUE
   }
   if (is.null(out$verbose.int)) {
@@ -516,7 +516,7 @@ control.net <- function(type,
   if (is.null(out$save.network)) {
     out$save.network <- TRUE
   }
-  if (is.null(out$verbose)) {
+  if (missing(verbose)) {
     out$verbose <- TRUE
   }
   if (is.null(out$verbose.int)) {
