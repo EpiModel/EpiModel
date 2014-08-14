@@ -5,7 +5,13 @@ BUG FIXES
 * Network models with passed network attributes in the formation formula in open
   populations now do not generate an error for persistent ID numbers in the latest
   versions of the tergm and networkDynamic package.
+* Fix bug in printing simulation progress in network and ICM class models when
+  verbose is not specified in the control settings.
 
+OTHER
+* The dissolution_coefs function now stores and prints the death/exit rate if one
+  is supplied.
+* Introduction vignette has been updated to list new EpiModel website.
 
 Version 1.0.1
 ------------------------------------------------------------------------------
