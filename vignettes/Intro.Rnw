@@ -12,7 +12,7 @@ vers <- packageVersion("EpiModel")
 \documentclass{article}
 \usepackage{mathpazo}
 \usepackage{geometry}
-\geometry{left=1.45in, right=1.45in,
+\geometry{left=1.4in, right=1.4in,
           top=1.15in, bottom=1.15in}
 \usepackage{xcolor}
 \definecolor{myred}{RGB}{153, 0, 13}
@@ -54,7 +54,7 @@ vers <- packageVersion("EpiModel")
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{document}
-\begin{spacing}{1.25}
+\begin{spacing}{1.2}
 \maketitle
 \thispagestyle{empty}
 
