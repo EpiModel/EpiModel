@@ -79,7 +79,7 @@
 #'
 #' @examples
 #' # Deterministic SIR model with varying act rate
-#' param <- param.dcm(trans.rate = 0.2, act.rate = 1:10,
+#' param <- param.dcm(inf.prob = 0.2, act.rate = 1:10,
 #'                    rec.rate = 1/3, b.rate = 0.011, ds.rate = 0.01,
 #'                    di.rate = 0.03, dr.rate = 0.01)
 #' init <- init.dcm(s.num = 1000, i.num = 1, r.num = 0)
@@ -550,7 +550,7 @@ plot.dcm <- function(x,
 #' @examples
 #' \dontrun{
 #' ## Example 1: Plotting multiple compartment values from SIR model
-#' param <- param.icm(trans.rate = 0.5, act.rate = 0.5, rec.rate = 0.02)
+#' param <- param.icm(inf.prob = 0.5, act.rate = 0.5, rec.rate = 0.02)
 #' init <- init.icm(s.num = 500, i.num = 1, r.num = 0)
 #' control <- control.icm(type = "SIR", nsteps = 100,
 #'                        nsims = 3, verbose = FALSE)
@@ -558,7 +558,7 @@ plot.dcm <- function(x,
 #' plot(mod)
 #'
 #' ## Example 2: Plot only infected with specific output from SI model
-#' param <- param.icm(trans.rate = 0.25, act.rate = 0.25)
+#' param <- param.icm(inf.prob = 0.25, act.rate = 0.25)
 #' init <- init.icm(s.num = 500, i.num = 10)
 #' control <- control.icm(type = "SI", nsteps = 100,
 #'                        nsims = 3, verbose = FALSE)
@@ -1358,7 +1358,7 @@ plot.netdx <- function(x,
 #'               verbose = FALSE)
 #'
 #' # Simulate the epidemic model
-#' param <- param.net(trans.rate = 0.3, trans.rate.m2 = 0.15)
+#' param <- param.net(inf.prob = 0.3, inf.prob.m2 = 0.15)
 #' init <- init.net(i.num = 10, i.num.m2 = 10)
 #' control <- control.net(type = "SI", nsteps = 100, nsims = 5,
 #'                        verbose = FALSE, save.nwstats = TRUE,
@@ -1764,7 +1764,7 @@ plot.netsim <- function(x,
 #' @examples
 #' \dontrun{
 #' ## Example 1: DCM SIR model with varying act.rate
-#' param <- param.dcm(trans.rate = 0.2, act.rate = 5:7,
+#' param <- param.dcm(inf.prob = 0.2, act.rate = 5:7,
 #'                    rec.rate = 1/3, b.rate = 1/90, ds.rate = 1/100,
 #'                    di.rate = 1/35, dr.rate = 1/100)
 #' init <- init.dcm(s.num = 1000, i.num = 1, r.num = 0)
@@ -1773,7 +1773,7 @@ plot.netsim <- function(x,
 #' comp_plot(mod1, at = 25, run = 3)
 #'
 #' ## Example 2: ICM SIR model with 3 simulations
-#' param <- param.icm(trans.rate = 0.2, act.rate = 3, rec.rate = 1/50,
+#' param <- param.icm(inf.prob = 0.2, act.rate = 3, rec.rate = 1/50,
 #'                    b.rate = 1/100, ds.rate = 1/100,
 #'                    di.rate = 1/90, dr.rate = 1/100)
 #' init <- init.icm(s.num = 500, i.num = 1, r.num = 0)

@@ -54,7 +54,7 @@ with EpiModel} tutorial.
 \examples{
 \dontrun{
 ## Example 1: SI Model
-param <- param.icm(trans.rate = 0.2, act.rate = 0.25)
+param <- param.icm(inf.prob = 0.2, act.rate = 0.25)
 init <- init.icm(s.num = 500, i.num = 1)
 control <- control.icm(type = "SI", nsteps = 500, nsims = 10)
 mod1 <- icm(param, init, control)
@@ -62,7 +62,7 @@ mod1
 plot(mod1)
 
 ## Example 2: SIR Model
-param <- param.icm(trans.rate = 0.2, act.rate = 0.25, rec.rate = 1/50)
+param <- param.icm(inf.prob = 0.2, act.rate = 0.25, rec.rate = 1/50)
 init <- init.icm(s.num = 500, i.num = 1, r.num = 0)
 control <- control.icm(type = "SIR", nsteps = 500, nsims = 10)
 mod2 <- icm(param, init, control)
@@ -70,7 +70,7 @@ mod2
 plot(mod2)
 
 ## Example 3: SIS Model
-param <- param.icm(trans.rate = 0.2, act.rate = 0.25, rec.rate = 1/50)
+param <- param.icm(inf.prob = 0.2, act.rate = 0.25, rec.rate = 1/50)
 init <- init.icm(s.num = 500, i.num = 1)
 control <- control.icm(type = "SIS", nsteps = 500, nsims = 10)
 mod3 <- icm(param, init, control)
@@ -78,7 +78,7 @@ mod3
 plot(mod3)
 
 ## Example 4: SI Model with Vital Dynamics (Two-Group)
-param <- param.icm(trans.rate = 0.4,  trans.rate.g2 = 0.1,
+param <- param.icm(inf.prob = 0.4,  inf.prob.g2 = 0.1,
                    act.rate = 0.25, balance = "g1",
                    b.rate = 1/100, b.rate.g2 = NA,
                    ds.rate = 1/100, ds.rate.g2 = 1/100,

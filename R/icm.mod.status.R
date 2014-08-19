@@ -55,9 +55,9 @@ infection.icm <- function(all, at) {
     ## Transmission on edgelist
     if (nrow(del) > 0) {
       if (all$param$groups == 1) {
-        del$tprob <- all$param$trans.rate
+        del$tprob <- all$param$inf.prob
       } else {
-        del$tprob <- ifelse(del$p1.stat == 0, all$param$trans.rate, all$param$trans.rate.g2)
+        del$tprob <- ifelse(del$p1.stat == 0, all$param$inf.prob, all$param$inf.prob.g2)
       }
       del$trans <- rbinom(nrow(del), 1, del$tprob)
       del <- del[del$trans == TRUE, ]

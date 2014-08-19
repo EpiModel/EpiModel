@@ -27,7 +27,7 @@
 #' @export
 #'
 #' @examples
-#' param <- param.icm(trans.rate = 0.2, act.rate = 0.8,)
+#' param <- param.icm(inf.prob = 0.2, act.rate = 0.8)
 #' init <- init.icm(s.num = 1000, i.num = 100)
 #' control <- control.icm(type = "SI", nsteps = 10,
 #'                        nsims = 3, verbose = FALSE)
@@ -136,7 +136,7 @@ merge.icm <- function(x, y, ...) {
 #'               verbose = FALSE)
 #'
 #' # Epidemic models
-#' param <- param.net(trans.rate = 1)
+#' param <- param.net(inf.prob = 1)
 #' init <- init.net(i.num = 1)
 #' control <- control.net(type = "SI", nsteps = 20, nsims = 2,
 #'                        save.nwstats = TRUE,

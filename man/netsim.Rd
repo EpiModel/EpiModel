@@ -87,7 +87,7 @@ est1 <- netest(nw,
                verbose = FALSE)
 
 # Parameters, initial conditions, and controls for model
-param <- param.net(trans.rate = 0.3, trans.rate.m2 = 0.15)
+param <- param.net(inf.prob = 0.3, inf.prob.m2 = 0.15)
 init <- init.net(i.num = 10, i.num.m2 = 10)
 control <- control.net(type = "SI", nsteps = 100, nsims = 5,
                        verbose.int = 0)
@@ -113,7 +113,7 @@ est2 <- netest(nw,
                verbose = FALSE)
 
 # Reset parameters to include demographic rates
-param <- param.net(trans.rate = 0.3, trans.rate.m2 = 0.15,
+param <- param.net(inf.prob = 0.3, inf.prob.m2 = 0.15,
                    rec.rate = 0.02, rec.rate.m2 = 0.02,
                    b.rate = 0.002, b.rate.m2 = NA,
                    ds.rate = 0.001, ds.rate.m2 = 0.001,

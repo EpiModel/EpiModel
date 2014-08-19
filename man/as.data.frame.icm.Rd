@@ -42,7 +42,7 @@ for each time step in the model output.
 }
 \examples{
 ## Stochastic ICM SIS model with 5 simulations
-param <- param.icm(trans.rate = 0.8, act.rate = 2, rec.rate = 0.1)
+param <- param.icm(inf.prob = 0.8, act.rate = 2, rec.rate = 0.1)
 init <- init.icm(s.num = 500, i.num = 1)
 control <- control.icm(type = "SIS", nsteps = 25,
                        nsims = 5, verbose = FALSE)

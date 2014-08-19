@@ -43,8 +43,8 @@ infection.net <- function(all, at) {
     modes <- all$param$modes
     mode <- idmode(all$nw)
 
-    trans.rate <- all$param$trans.rate
-    trans.rate.m2 <- all$param$trans.rate.m2
+    inf.prob <- all$param$inf.prob
+    inf.prob.m2 <- all$param$inf.prob.m2
     act.rate <- all$param$act.rate
 
     nw <- all$nw
@@ -75,19 +75,19 @@ infection.net <- function(all, at) {
         del$infDur[del$infDur == 0] <- 1
 
         # Calculate infection-stage transmission rates
-        ltrans.rate <- length(trans.rate)
-        if (is.null(trans.rate.m2)) {
-          del$transProb <- ifelse(del$infDur <= ltrans.rate,
-                                  trans.rate[del$infDur],
-                                  trans.rate[ltrans.rate])
+        linf.prob <- length(inf.prob)
+        if (is.null(inf.prob.m2)) {
+          del$transProb <- ifelse(del$infDur <= linf.prob,
+                                  inf.prob[del$infDur],
+                                  inf.prob[linf.prob])
         } else {
           del$transProb <- ifelse(del$sus <= nw %n% "bipartite",
-                                  ifelse(del$infDur <= ltrans.rate,
-                                         trans.rate[del$infDur],
-                                         trans.rate[ltrans.rate]),
-                                  ifelse(del$infDur <= ltrans.rate,
-                                         trans.rate.m2[del$infDur],
-                                         trans.rate.m2[ltrans.rate]))
+                                  ifelse(del$infDur <= linf.prob,
+                                         inf.prob[del$infDur],
+                                         inf.prob[linf.prob]),
+                                  ifelse(del$infDur <= linf.prob,
+                                         inf.prob.m2[del$infDur],
+                                         inf.prob.m2[linf.prob]))
         }
 
         # Calculate infection-stage act/contact rates

@@ -31,7 +31,7 @@ in model parameterization in every respect (except number of simulations) and
 binds the results.
 }
 \examples{
-param <- param.icm(trans.rate = 0.2, act.rate = 0.8,)
+param <- param.icm(inf.prob = 0.2, act.rate = 0.8)
 init <- init.icm(s.num = 1000, i.num = 100)
 control <- control.icm(type = "SI", nsteps = 10,
                        nsims = 3, verbose = FALSE)

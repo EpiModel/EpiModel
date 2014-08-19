@@ -98,7 +98,7 @@ with the \code{leg.name} argument.
 }
 \examples{
 # Deterministic SIR model with varying act rate
-param <- param.dcm(trans.rate = 0.2, act.rate = 1:10,
+param <- param.dcm(inf.prob = 0.2, act.rate = 1:10,
                    rec.rate = 1/3, b.rate = 0.011, ds.rate = 0.01,
                    di.rate = 0.03, dr.rate = 0.01)
 init <- init.dcm(s.num = 1000, i.num = 1, r.num = 0)
