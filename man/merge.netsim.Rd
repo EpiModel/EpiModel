@@ -55,7 +55,7 @@ est <- netest(nw,
               verbose = FALSE)
 
 # Epidemic models
-param <- param.net(trans.rate = 1)
+param <- param.net(inf.prob = 1)
 init <- init.net(i.num = 1)
 control <- control.net(type = "SI", nsteps = 20, nsims = 2,
                        save.nwstats = TRUE,

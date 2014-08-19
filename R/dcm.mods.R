@@ -29,7 +29,7 @@ mod_SI_1g_cl <- function(t, t0, parms) {
     num <- s.num + i.num
 
     # varying parameters
-    lambda <- trans.rate * act.rate * i.num / num
+    lambda <- inf.prob * act.rate * i.num / num
 
     # main ODEs
     dS <- -lambda*s.num
@@ -53,7 +53,7 @@ mod_SI_1g_op <- function(t, t0, parms) {
     num <- s.num + i.num
 
     # varying parameters
-    lambda <- trans.rate * act.rate * i.num / num
+    lambda <- inf.prob * act.rate * i.num / num
 
     # main ODEs
     dS <- -lambda*s.num + b.rate*num - ds.rate*s.num
@@ -92,8 +92,8 @@ mod_SI_2g_cl <- function(t, t0, parms) {
     }
 
     # group-specific foi
-    lambda.g1 <- trans.rate * ar.g1 * i.num.g2 / num.g2
-    lambda.g2 <- trans.rate.g2 * ar.g2 * i.num / num.g1
+    lambda.g1 <- inf.prob * ar.g1 * i.num.g2 / num.g2
+    lambda.g2 <- inf.prob.g2 * ar.g2 * i.num / num.g1
 
     # main ODEs
     dSm1 <- -lambda.g1*s.num
@@ -135,8 +135,8 @@ mod_SI_2g_op <- function(t, t0, parms) {
     }
 
     # group-specific foi
-    lambda.g1 <- trans.rate * ar.g1 * i.num.g2 / num.g2
-    lambda.g2 <- trans.rate.g2 * ar.g2 * i.num / num.g1
+    lambda.g1 <- inf.prob * ar.g1 * i.num.g2 / num.g2
+    lambda.g2 <- inf.prob.g2 * ar.g2 * i.num / num.g1
 
     # birth rates
     if (is.na(b.rate.g2)) {
@@ -181,7 +181,7 @@ mod_SIR_1g_cl <- function(t, t0, parms) {
     num <- s.num + i.num + r.num
 
     # varying parameters
-    lambda <- trans.rate * act.rate * i.num / num
+    lambda <- inf.prob * act.rate * i.num / num
 
     # main ODEs
     dS <- -lambda*s.num
@@ -207,7 +207,7 @@ mod_SIR_1g_op <- function(t, t0, parms) {
     num <- s.num + i.num + r.num
 
     # varying parameters
-    lambda <- trans.rate * act.rate * i.num / num
+    lambda <- inf.prob * act.rate * i.num / num
 
     # main ODEs
     dS <- -lambda*s.num + b.rate*num - ds.rate*s.num
@@ -249,8 +249,8 @@ mod_SIR_2g_cl <- function(t, t0, parms) {
     }
 
     # group-specific foi
-    lambda.g1 <- trans.rate * ar.g1 * i.num.g2 / num.g2
-    lambda.g2 <- trans.rate.g2 * ar.g2 * i.num / num.g1
+    lambda.g1 <- inf.prob * ar.g1 * i.num.g2 / num.g2
+    lambda.g2 <- inf.prob.g2 * ar.g2 * i.num / num.g1
 
     # main ODEs
     dSm1 <- -lambda.g1*s.num
@@ -296,8 +296,8 @@ mod_SIR_2g_op <- function(t, t0, parms) {
     }
 
     # group-specific foi
-    lambda.g1 <- trans.rate * ar.g1 * i.num.g2 / num.g2
-    lambda.g2 <- trans.rate.g2 * ar.g2 * i.num / num.g1
+    lambda.g1 <- inf.prob * ar.g1 * i.num.g2 / num.g2
+    lambda.g2 <- inf.prob.g2 * ar.g2 * i.num / num.g1
 
     # birth rates
     if (is.na(b.rate.g2)) {
@@ -348,7 +348,7 @@ mod_SIS_1g_cl <- function(t, t0, parms) {
     num <- s.num + i.num
 
     # varying parameters
-    lambda <- trans.rate * act.rate * i.num / num
+    lambda <- inf.prob * act.rate * i.num / num
 
     # main ODEs
     dS <- -lambda*s.num + rec.rate*i.num
@@ -373,7 +373,7 @@ mod_SIS_1g_op <- function(t, t0, parms) {
     num <- s.num + i.num
 
     # varying parameters
-    lambda <- trans.rate * act.rate * i.num / num
+    lambda <- inf.prob * act.rate * i.num / num
 
     # main ODEs
     dS <- -lambda*s.num + rec.rate*i.num + b.rate*num - ds.rate*s.num
@@ -413,8 +413,8 @@ mod_SIS_2g_cl <- function(t, t0, parms) {
     }
 
     # group-specific foi
-    lambda.g1 <- trans.rate * ar.g1 * i.num.g2/num.g2
-    lambda.g2 <- trans.rate.g2 * ar.g2 * i.num/num.g1
+    lambda.g1 <- inf.prob * ar.g1 * i.num.g2/num.g2
+    lambda.g2 <- inf.prob.g2 * ar.g2 * i.num/num.g1
 
     # main ODEs
     dSm1 <- -lambda.g1*s.num + rec.rate*i.num
@@ -458,8 +458,8 @@ mod_SIS_2g_op <- function(t, t0, parms) {
     }
 
     # group-specific foi
-    lambda.g1 <- trans.rate * ar.g1 * i.num.g2/num.g2
-    lambda.g2 <- trans.rate.g2 * ar.g2 * i.num/num.g1
+    lambda.g1 <- inf.prob * ar.g1 * i.num.g2/num.g2
+    lambda.g2 <- inf.prob.g2 * ar.g2 * i.num/num.g1
 
     # birth rates
     if (is.na(b.rate.g2)) {

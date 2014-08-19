@@ -3,14 +3,13 @@
 \alias{param.net}
 \title{Epidemic Parameters for Stochastic Network Models}
 \usage{
-param.net(trans.rate, act.rate, rec.rate, b.rate, ds.rate, di.rate, dr.rate,
-  trans.rate.m2, rec.rate.m2, b.rate.m2, ds.rate.m2, di.rate.m2, dr.rate.m2,
-  ...)
+param.net(inf.prob, act.rate, rec.rate, b.rate, ds.rate, di.rate, dr.rate,
+  inf.prob.m2, rec.rate.m2, b.rate.m2, ds.rate.m2, di.rate.m2, dr.rate.m2, ...)
 }
 \arguments{
-\item{trans.rate}{probability of transmission given a transmissible act between
+\item{inf.prob}{probability of infection per transmissible act between
 a susceptible and an infected person. In bipartite models, this is the
-probability of transmission to the mode 1 nodes.}
+probability of infection to the mode 1 nodes.}
 
 \item{act.rate}{average number of transmissible acts \emph{per partnership}
 per unit time (see details).}
@@ -37,7 +36,7 @@ the rate for the mode 1 infected only.}
 the rate for the mode 1 recovered only. This parameter is only used for
 \code{SIR} models.}
 
-\item{trans.rate.m2}{probability of transmission given a transmissible act
+\item{inf.prob.m2}{probability of transmission given a transmissible act
 between a susceptible mode 2 person and an infected mode 1 person.
 It is the probability of transmission to mode 2 members.}
 

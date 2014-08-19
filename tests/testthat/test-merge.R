@@ -1,4 +1,4 @@
-context("merge")
+context("Network merging")
 
 test_that("merge: works for open sims saving nw stats", {
   nw <- network.initialize(n = 50, directed = FALSE)
@@ -9,7 +9,7 @@ test_that("merge: works for open sims saving nw stats", {
                 coef.diss = dissolution_coefs(~offset(edges), 10, 0),
                 verbose = FALSE)
 
-  param <- param.net(trans.rate = 0.9, b.rate = 0.01,
+  param <- param.net(inf.prob = 0.9, b.rate = 0.01,
                      ds.rate = 0.01,
                      di.rate = 0.01)
   init <- init.net(i.num = 1)

@@ -57,7 +57,7 @@
 #' @examples
 #' ## Example 1: SI Model (One-Group)
 #' # Set parameters
-#' param <- param.dcm(trans.rate = 0.2, act.rate = 0.25)
+#' param <- param.dcm(inf.prob = 0.2, act.rate = 0.25)
 #' init <- init.dcm(s.num = 500, i.num = 1)
 #' control <- control.dcm(type = "SI", nsteps = 500)
 #' mod1 <- dcm(param, init, control)
@@ -65,7 +65,7 @@
 #' plot(mod1)
 #'
 #' ## Example 2: SIR Model with Vital Dynamics (One-Group)
-#' param <- param.dcm(trans.rate = 0.2, act.rate = 5,
+#' param <- param.dcm(inf.prob = 0.2, act.rate = 5,
 #'                    rec.rate = 1/3, b.rate = 1/90, ds.rate = 1/100,
 #'                    di.rate = 1/35, dr.rate = 1/100)
 #' init <- init.dcm(s.num = 500, i.num = 1, r.num = 0)
@@ -75,7 +75,7 @@
 #' plot(mod2)
 #'
 #' ## Example 3: SIS Model with act.rate Sensitivity Parameter
-#' param <- param.dcm(trans.rate = 0.2, act.rate = seq(0.1, 0.5, 0.1),
+#' param <- param.dcm(inf.prob = 0.2, act.rate = seq(0.1, 0.5, 0.1),
 #'                    rec.rate = 1/50)
 #' init <- init.dcm(s.num = 500, i.num = 1)
 #' control <- control.dcm(type = "SIS", nsteps = 500)
@@ -84,7 +84,7 @@
 #' plot(mod3)
 #'
 #' ## Example 4: SI Model with Vital Dynamics (Two-Group)
-#' param <- param.dcm(trans.rate = 0.4,  trans.rate.g2 = 0.1,
+#' param <- param.dcm(inf.prob = 0.4,  inf.prob.g2 = 0.1,
 #'                    act.rate = 0.25, balance = "g1",
 #'                    b.rate = 1/100, b.rate.g2 = NA,
 #'                    ds.rate = 1/100, ds.rate.g2 = 1/100,

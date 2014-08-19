@@ -4,9 +4,9 @@
 #' @description Sets the epidemic parameters for deterministic compartmental
 #'              models simulated with \code{dcm}.
 #'
-#' @param trans.rate probability of transmission given a transmissible act between
+#' @param inf.prob probability of infection per transmissible act between
 #'        a susceptible and an infected person. In two-group models, this is the
-#'        probability of transmission to the group 1 members.
+#'        probability of infection for the group 1 members.
 #' @param act.rate average number of transmissible acts per person per unit time.
 #'        For two-group models, this is the number of acts per group 1 persons
 #'        per unit time; a balance between the acts in groups 1 and 2 is necessary,
@@ -28,9 +28,9 @@
 #' @param dr.rate death or exit rate for recovered. For two-group models, it is
 #'        the rate for the group 1 recovered only. This parameter is only used for
 #'        \code{SIR} models.
-#' @param trans.rate.g2 probability of transmission given a transmissible act
+#' @param inf.prob.g2 probability of infection per transmissible act
 #'        between a susceptible group 2 person and an infected group 1 person.
-#'        It is the probability of transmission to group 2 members.
+#'        It is the probability of infection to group 2 members.
 #' @param act.rate.g2 average number of transmissible acts per group 2 person per
 #'        unit time; a balance between the acts in groups 1 and 2 is necessary,
 #'        and set using the \code{balance} parameter (see details).
@@ -107,14 +107,14 @@
 #'
 #' @export
 #'
-param.dcm <- function(trans.rate,
+param.dcm <- function(inf.prob,
                       act.rate,
                       rec.rate,
                       b.rate,
                       ds.rate,
                       di.rate,
                       dr.rate,
-                      trans.rate.g2,
+                      inf.prob.g2,
                       act.rate.g2,
                       rec.rate.g2,
                       b.rate.g2,
@@ -196,14 +196,14 @@ param.dcm <- function(trans.rate,
 #'
 #' @export
 #'
-param.icm <- function(trans.rate,
+param.icm <- function(inf.prob,
                       act.rate,
                       rec.rate,
                       b.rate,
                       ds.rate,
                       di.rate,
                       dr.rate,
-                      trans.rate.g2,
+                      inf.prob.g2,
                       act.rate.g2,
                       rec.rate.g2,
                       b.rate.g2,
@@ -247,6 +247,7 @@ param.icm <- function(trans.rate,
     stop("Specify balance=\"g1\" or balance=\"g2\" with 2-group models")
   }
 
+
   ## Output
   class(out) <- "param.icm"
   return(out)
@@ -258,9 +259,9 @@ param.icm <- function(trans.rate,
 #' @description Sets the epidemic parameters for stochastic network models
 #'              simulated with \code{\link{netsim}}.
 #'
-#' @param trans.rate probability of transmission given a transmissible act between
+#' @param inf.prob probability of infection per transmissible act between
 #'        a susceptible and an infected person. In bipartite models, this is the
-#'        probability of transmission to the mode 1 nodes.
+#'        probability of infection to the mode 1 nodes.
 #' @param act.rate average number of transmissible acts \emph{per partnership}
 #'        per unit time (see details).
 #' @param rec.rate average rate of recovery with immunity (in \code{SIR} models)
@@ -280,7 +281,7 @@ param.icm <- function(trans.rate,
 #' @param dr.rate death or exit rate for recovered. For bipartite models, it is
 #'        the rate for the mode 1 recovered only. This parameter is only used for
 #'        \code{SIR} models.
-#' @param trans.rate.m2 probability of transmission given a transmissible act
+#' @param inf.prob.m2 probability of transmission given a transmissible act
 #'        between a susceptible mode 2 person and an infected mode 1 person.
 #'        It is the probability of transmission to mode 2 members.
 #' @param rec.rate.m2 average rate of recovery with immunity (in \code{SIR} models)
@@ -344,14 +345,14 @@ param.icm <- function(trans.rate,
 #'
 #' @export
 #'
-param.net <- function(trans.rate,
+param.net <- function(inf.prob,
                       act.rate,
                       rec.rate,
                       b.rate,
                       ds.rate,
                       di.rate,
                       dr.rate,
-                      trans.rate.m2,
+                      inf.prob.m2,
                       rec.rate.m2,
                       b.rate.m2,
                       ds.rate.m2,

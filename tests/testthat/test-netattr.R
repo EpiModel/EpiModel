@@ -1,4 +1,4 @@
-context("Network Attributes with Births")
+context("Network attributes with births")
 
 test_that("Updating attributes in open populations", {
   nw <- network.initialize(n = 50, bipartite = 25, directed = FALSE)
@@ -19,10 +19,10 @@ test_that("Updating attributes in open populations", {
 
   probs <- c(0.2055, 0.0088, 0.0614, 0)
   durs <- c(3, 100, 9, 10)
-  trans.rates <- rep(probs, durs)
-  trans.ratesf <- trans.rates*2
-  param <- param.net(trans.rate = trans.ratesf, act.rate = 1,
-                     trans.rate.m2 = trans.rates,
+  inf.probs <- rep(probs, durs)
+  inf.probsf <- inf.probs*2
+  param <- param.net(inf.prob = inf.probsf, act.rate = 1,
+                     inf.prob.m2 = inf.probs,
                      b.rate = 0.05, b.rate.m2 = NA,
                      ds.rate = 0.002, ds.rate.m2 = 0.002,
                      di.rate = 0.008, di.rate.m2 = 0.008)
@@ -60,7 +60,7 @@ test_that("Serosorting model in open population", {
                 coef.diss,
                 verbose = FALSE)
 
-  param <- param.net(trans.rate = 0.03, b.rate = 0.01,
+  param <- param.net(inf.prob = 0.03, b.rate = 0.01,
                      ds.rate = 0.01, di.rate = 0.01)
   init <- init.net()
   control <- control.net(type = "SI", nsteps = 10, nsims = 1,

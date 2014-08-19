@@ -30,7 +30,7 @@ size (the sum of compartment sizes), and the size of each flow.
 }
 \examples{
 ## Example 1: One-group SIS model with varying act.rate
-param <- param.dcm(trans.rate = 0.2, act.rate = seq(0.05, 0.5, 0.05),
+param <- param.dcm(inf.prob = 0.2, act.rate = seq(0.05, 0.5, 0.05),
                    rec.rate = 1/50)
 init <- init.dcm(s.num = 500, i.num = 1)
 control <- control.dcm(type = "SIS", nsteps = 500)
@@ -39,7 +39,7 @@ head(as.data.frame(mod1, run = 1))
 head(as.data.frame(mod1, run = 10))
 
 ## Example 2: Two-group SIR model with vital dynamics
-param <- param.dcm(trans.rate = 0.2, trans.rate.g2 = 0.1,
+param <- param.dcm(inf.prob = 0.2, inf.prob.g2 = 0.1,
                    act.rate = 3, balance = "g1",
                    rec.rate = 1/50, rec.rate.g2 = 1/50,
                    b.rate = 1/100, b.rate.g2 = NA,

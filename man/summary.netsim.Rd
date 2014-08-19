@@ -43,8 +43,8 @@ est1 <- netest(nw,
                verbose = FALSE)
 
 # Parameters, initial conditions, and controls for model
-param <- param.net(trans.rate = 0.3,
-                   trans.rate.m2 = 0.15)
+param <- param.net(inf.prob = 0.3,
+                   inf.prob.m2 = 0.15)
 init <- init.net(i.num = 10, i.num.m2 = 10)
 control <- control.net(type = "SI", nsteps = 100,
                        nsims = 5, verbose.int = 0)
