@@ -1,4 +1,4 @@
-context("netattr")
+context("Network Attributes with Births")
 
 test_that("Updating attributes in open populations", {
   nw <- network.initialize(n = 50, bipartite = 25, directed = FALSE)
