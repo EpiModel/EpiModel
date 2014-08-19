@@ -5,15 +5,8 @@
 
   vcurr <- utils::packageVersion("EpiModel")
 
-  msg <- c(
-
-    "\n",
-
-    paste0("============ Loading EpiModel ", vcurr, " ============"),
-
-    "\n"
-
-  )
+  msg <- c("\n",
+           paste0("Loading EpiModel ", vcurr))
 
   packageStartupMessage(msg)
 }
