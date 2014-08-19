@@ -3,14 +3,14 @@
 \alias{param.dcm}
 \title{Epidemic Parameters for Deterministic Compartmental Models}
 \usage{
-param.dcm(trans.rate, act.rate, rec.rate, b.rate, ds.rate, di.rate, dr.rate,
-  trans.rate.g2, act.rate.g2, rec.rate.g2, b.rate.g2, ds.rate.g2, di.rate.g2,
+param.dcm(inf.prob, act.rate, rec.rate, b.rate, ds.rate, di.rate, dr.rate,
+  inf.prob.g2, act.rate.g2, rec.rate.g2, b.rate.g2, ds.rate.g2, di.rate.g2,
   dr.rate.g2, balance, ...)
 }
 \arguments{
-\item{trans.rate}{probability of transmission given a transmissible act between
+\item{inf.prob}{probability of infection per transmissible act between
 a susceptible and an infected person. In two-group models, this is the
-probability of transmission to the group 1 members.}
+probability of infection for the group 1 members.}
 
 \item{act.rate}{average number of transmissible acts per person per unit time.
 For two-group models, this is the number of acts per group 1 persons
@@ -39,9 +39,9 @@ the rate for the group 1 infected only.}
 the rate for the group 1 recovered only. This parameter is only used for
 \code{SIR} models.}
 
-\item{trans.rate.g2}{probability of transmission given a transmissible act
+\item{inf.prob.g2}{probability of infection per transmissible act
 between a susceptible group 2 person and an infected group 1 person.
-It is the probability of transmission to group 2 members.}
+It is the probability of infection to group 2 members.}
 
 \item{act.rate.g2}{average number of transmissible acts per group 2 person per
 unit time; a balance between the acts in groups 1 and 2 is necessary,
