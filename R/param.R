@@ -136,18 +136,6 @@ param.dcm <- function(inf.prob,
   out <- eval_list(out)
 
 
-  ## Deprecated parameters
-  da <- list(...)
-  if (!is.null(da$trans.rate)) {
-    stop("The trans.rate parameter is deprecated. Use the inf.prob parameter instead.",
-         call. = FALSE)
-  }
-  if (!is.null(da$trans.rate.g2)) {
-    stop("The trans.rate.g2 parameter is deprecated. Use the inf.prob.g2 parameter instead.",
-         call. = FALSE)
-  }
-
-
   ## Out
   class(out) <- "param.dcm"
   return(out)
@@ -259,16 +247,6 @@ param.icm <- function(inf.prob,
     stop("Specify balance=\"g1\" or balance=\"g2\" with 2-group models")
   }
 
-  ## Deprecated parameters
-  da <- list(...)
-  if (!is.null(da$trans.rate)) {
-    stop("The trans.rate parameter is deprecated. Use the inf.prob parameter instead.",
-         call. = FALSE)
-  }
-  if (!is.null(da$trans.rate.g2)) {
-    stop("The trans.rate.g2 parameter is deprecated. Use the inf.prob.g2 parameter instead.",
-         call. = FALSE)
-  }
 
   ## Output
   class(out) <- "param.icm"
@@ -403,18 +381,6 @@ param.net <- function(inf.prob,
     out$vital <- TRUE
   } else {
     out$vital <- FALSE
-  }
-
-
-  ## Deprecated parameters
-  da <- list(...)
-  if (!is.null(da$trans.rate)) {
-    stop("The trans.rate parameter is deprecated. Use the inf.prob parameter instead.",
-         call. = FALSE)
-  }
-  if (!is.null(da$trans.rate.m2)) {
-    stop("The trans.rate.m2 parameter is deprecated. Use the inf.prob.m2 parameter instead.",
-         call. = FALSE)
   }
 
 

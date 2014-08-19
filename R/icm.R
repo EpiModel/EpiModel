@@ -109,8 +109,7 @@ icm <- function(param, init, control) {
 
       ## User Modules
       bim <- grep(".FUN", names(formals(control.icm)), value = TRUE)
-      um <- which(grepl(".FUN", names(control)) &
-                    !(names(control) %in% bim))
+      um <- which(grepl(".FUN", names(control)) & !(names(control) %in% bim))
       if (length(um) > 0) {
         for (i in 1:length(um)) {
           umn <- names(control)[um[i]]
