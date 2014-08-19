@@ -59,9 +59,9 @@ crosscheck.dcm <- function(param, init, control) {
     }
 
     ## Error checks
-    # Specify trans.rate
-    if (is.null(param$trans.rate)) {
-      stop("Specify trans.rate in param.dcm", call. = FALSE)
+    # Specify inf.prob
+    if (is.null(param$inf.prob)) {
+      stop("Specify inf.prob in param.dcm", call. = FALSE)
     }
 
     # Check that rec.rate is supplied for SIR models
