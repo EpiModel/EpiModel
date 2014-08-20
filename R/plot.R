@@ -449,14 +449,6 @@ plot.dcm <- function(x,
     }
   }
 
-  ## Mtext
-  if (add == FALSE) {
-    if (nruns > 1 & lcomp > 1) {
-      mt <- paste("Run =", run)
-      mtext(mt, 3, line = 0, cex = 0.75)
-    }
-  }
-
 }
 
 
