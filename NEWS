@@ -3,8 +3,8 @@ Version 1.0.2
 
 NEW FEATURES
 * The trans.rate and trans.rate.g2/m2 parameters have been renamed to inf.prob
-  and inf.prob.g2/m2 to better characterize that they are probabilities of
-  infection.
+  and inf.prob.g2/m2 to better characterize that they are probabilities, rather
+  than rates, and towards infection of persons in that group/mode.
 
 BUG FIXES
 * Network models with passed network attributes in the formation formula in open
@@ -15,6 +15,8 @@ BUG FIXES
 
 OTHER
 * The dissolution_coefs function now stores and prints the death/exit rate.
+* Removed explicit parameters for xlim, ylim, and main from plot.dcm and plot.icm
+  functions, although they still may be passed through the ... argument.
 * Introduction vignette has been updated to list new EpiModel website.
 
 
