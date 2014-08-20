@@ -23,7 +23,7 @@
 #'        full legend, and "lim" for limited legend (see details).
 #' @param leg.name character string to use for legend, with the default
 #'        determined automatically based on the \code{y} input.
-#' @param leg.cex legend scale size (default of 0.8).
+#' @param leg.cex legend scale size.
 #' @param xlim x-axis scale limits for plot, with default based on model time
 #'        steps.
 #' @param ylim y-axis scale limits for plot, with default based on range of data.
@@ -111,7 +111,7 @@ plot.dcm <- function(x,
                      alpha,
                      leg,
                      leg.name,
-                     leg.cex,
+                     leg.cex = 0.8,
                      xlim,
                      ylim,
                      main,
@@ -151,9 +151,6 @@ plot.dcm <- function(x,
   }
   if (missing(alpha)) {
     alpha <- 0.9
-  }
-  if (missing(leg.cex)) {
-    leg.cex <- 0.8
   }
   if (missing(main)) {
     main <- paste("DCM", x$control$type, "Model")
@@ -505,7 +502,7 @@ plot.dcm <- function(x,
 #' @param qnts.alpha transparency level for quantile polygons, where 0 =
 #'        transparent and 1 = opaque (see \code{\link{transco}}).
 #' @param leg if \code{TRUE}, plot default legend.
-#' @param leg.cex legend scale size, with default of 0.8.
+#' @param leg.cex legend scale size.
 #' @param xlim x-axis scale limits for plot, with default based on model time steps.
 #' @param ylim y-axis scale limits for plot, with default based on range of data.
 #' @param main character string for main plot title.
@@ -584,7 +581,7 @@ plot.icm <- function(x,
                      qnts.col,
                      qnts.alpha,
                      leg,
-                     leg.cex,
+                     leg.cex = 0.8,
                      xlim,
                      ylim,
                      main,
@@ -873,9 +870,6 @@ plot.icm <- function(x,
   # Legends -----------------------------------------------------------------
   if (missing(leg)) {
     leg <- FALSE
-  }
-  if (missing(leg.cex)) {
-    leg.cex <- 0.8
   }
   if (leg == TRUE) {
     if (modes == 2 & nocomp) {
