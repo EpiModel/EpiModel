@@ -5,7 +5,7 @@
 \usage{
 \method{plot}{icm}(x, y, popfrac, sim.lines, sims, sim.col, sim.lwd, sim.alpha,
   mean.line = TRUE, mean.extinct = TRUE, mean.col, mean.lwd, mean.lty, qnts,
-  qnts.col, qnts.alpha, leg, leg.cex, xlim, ylim, main, axs, add = FALSE, ...)
+  qnts.col, qnts.alpha, leg, leg.cex = 0.8, axs = "r", add = FALSE, ...)
 }
 \arguments{
 \item{x}{an \code{EpiModel} object of class \code{icm}.}
@@ -50,13 +50,7 @@ transparent and 1 = opaque (see \code{\link{transco}}).}
 
 \item{leg}{if \code{TRUE}, plot default legend.}
 
-\item{leg.cex}{legend scale size, with default of 0.8.}
-
-\item{xlim}{x-axis scale limits for plot, with default based on model time steps.}
-
-\item{ylim}{y-axis scale limits for plot, with default based on range of data.}
-
-\item{main}{character string for main plot title.}
+\item{leg.cex}{legend scale size.}
 
 \item{axs}{plot axis type (see \code{\link{par}} for details), with default
 to \code{"r"}.}
