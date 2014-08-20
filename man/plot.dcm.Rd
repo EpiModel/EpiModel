@@ -3,8 +3,8 @@
 \alias{plot.dcm}
 \title{Plot Data from a Deterministic Compartmental Epidemic Model}
 \usage{
-\method{plot}{dcm}(x, y, popfrac, run, col, lwd, lty, alpha, leg, leg.name,
-  leg.cex = 0.8, axs = "r", add = FALSE, ...)
+\method{plot}{dcm}(x, y, popfrac, run, col, lwd, lty, alpha = 0.9, leg,
+  leg.name, leg.cex = 0.8, axs = "r", add = FALSE, ...)
 }
 \arguments{
 \item{x}{an \code{EpiModel} object of class \code{dcm}.}

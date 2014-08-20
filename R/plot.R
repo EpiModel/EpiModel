@@ -104,7 +104,7 @@ plot.dcm <- function(x,
                      col,
                      lwd,
                      lty,
-                     alpha,
+                     alpha = 0.9,
                      leg,
                      leg.name,
                      leg.cex = 0.8,
@@ -142,13 +142,7 @@ plot.dcm <- function(x,
   groups <- x$param$groups
   type <- x$control$type
 
-  ## Universal defaults
-  if (noleg == TRUE) {
-    leg <- "n"
-  }
-  if (missing(alpha)) {
-    alpha <- 0.9
-  }
+  ## Main title default
   if (is.null(da$main)) {
     main <- paste("DCM", x$control$type, "Model")
   }
