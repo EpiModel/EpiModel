@@ -1,7 +1,7 @@
 Version 1.0.2
 ------------------------------------------------------------------------------
 
-NEW FEATURES
+INTERFACE CHANGES
 * The trans.rate and trans.rate.g2/m2 parameters have been renamed to inf.prob
   and inf.prob.g2/m2 to better characterize that they are probabilities, rather
   than rates, and towards infection of persons in that group/mode.
