@@ -145,6 +145,8 @@ plot.dcm <- function(x,
   ## Main title default
   if (is.null(da$main)) {
     main <- paste("DCM", x$control$type, "Model")
+  } else {
+    main <- da$main
   }
 
 
@@ -183,9 +185,13 @@ plot.dcm <- function(x,
   ## Defaults for ylim, xlim
   if (is.null(da$ylim)) {
     ylim <- c(0, ymax)
+  } else {
+    ylim <- da$ylim
   }
   if (is.null(da$xlim)) {
     xlim <- c(0, nsteps)
+  } else {
+    xlim <- da$xlim
   }
 
 
@@ -222,12 +228,12 @@ plot.dcm <- function(x,
       Time <- Number <- 1
       plot(Time, Number, type = "n", bty = "n",
            xaxs = axs, yaxs = axs, xlim = xlim, ylim = ylim,
-           main = main, ...)
+           main = main)
     } else {
       Time <- Prevalence <- 1
       plot(Time, Prevalence, type = "n", bty = "n",
            xaxs = axs, yaxs = axs, xlim = xlim, ylim = ylim,
-           main = main, ...)
+           main = main)
     }
   }
 
@@ -705,9 +711,13 @@ plot.icm <- function(x,
   # Missing args ------------------------------------------------------------
   if (is.null(da$xlim)) {
     xlim <- c(0, nsteps)
+  } else {
+    xlim <- da$xlim
   }
   if (is.null(da$ylim)) {
     ylim <- c(0, max.prev)
+  } else {
+    ylim <- da$ylim
   }
   if (is.null(da$main)) {
     if (class(x) == "icm") {
@@ -717,6 +727,8 @@ plot.icm <- function(x,
       modclass <- "Network"
     }
     main <- paste(modclass, type, "Model")
+  } else {
+    main <- da$main
   }
 
 
@@ -726,12 +738,12 @@ plot.icm <- function(x,
       Time <- Number <- 1
       plot(Time, Number, type = "n", bty = "n",
            xaxs = axs, yaxs = axs, xlim = xlim, ylim = ylim,
-           main = main, ...)
+           main = main)
     } else {
       Time <- Prevalence <- 1
       plot(Time, Prevalence, type = "n", bty = "n",
            xaxs = axs, yaxs = axs, xlim = xlim, ylim = ylim,
-           main = main, ...)
+           main = main)
     }
   }
 
