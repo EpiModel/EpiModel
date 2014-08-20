@@ -4,7 +4,7 @@
 \title{Plot Data from a Deterministic Compartmental Epidemic Model}
 \usage{
 \method{plot}{dcm}(x, y, popfrac, run, col, lwd, lty, alpha, leg, leg.name,
-  leg.cex = 0.8, xlim, ylim, main, axs, add = FALSE, ...)
+  leg.cex = 0.8, axs = "r", add = FALSE, ...)
 }
 \arguments{
 \item{x}{an \code{EpiModel} object of class \code{dcm}.}
@@ -34,13 +34,6 @@ full legend, and "lim" for limited legend (see details).}
 determined automatically based on the \code{y} input.}
 
 \item{leg.cex}{legend scale size.}
-
-\item{xlim}{x-axis scale limits for plot, with default based on model time
-steps.}
-
-\item{ylim}{y-axis scale limits for plot, with default based on range of data.}
-
-\item{main}{character string for main plot title.}
 
 \item{axs}{plot axis type (see \code{\link{par}} for details), with default
 of "r".}

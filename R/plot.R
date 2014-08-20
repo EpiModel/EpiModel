@@ -24,10 +24,6 @@
 #' @param leg.name character string to use for legend, with the default
 #'        determined automatically based on the \code{y} input.
 #' @param leg.cex legend scale size.
-#' @param xlim x-axis scale limits for plot, with default based on model time
-#'        steps.
-#' @param ylim y-axis scale limits for plot, with default based on range of data.
-#' @param main character string for main plot title.
 #' @param axs plot axis type (see \code{\link{par}} for details), with default
 #'        of "r".
 #' @param add if \code{TRUE}, new plot window is not called and lines are added to
@@ -112,10 +108,7 @@ plot.dcm <- function(x,
                      leg,
                      leg.name,
                      leg.cex = 0.8,
-                     xlim,
-                     ylim,
-                     main,
-                     axs,
+                     axs = "r",
                      add = FALSE,
                      ...) {
 
@@ -127,6 +120,10 @@ plot.dcm <- function(x,
   nolwd <- ifelse(missing(lwd), TRUE, FALSE)
   nolty <- ifelse(missing(lty), TRUE, FALSE)
   noleg <- ifelse(missing(leg), TRUE, FALSE)
+
+
+  ## Dot args
+  da <- list(...)
 
 
   ## Model dimensions
@@ -152,7 +149,7 @@ plot.dcm <- function(x,
   if (missing(alpha)) {
     alpha <- 0.9
   }
-  if (missing(main)) {
+  if (is.null(da$main)) {
     main <- paste("DCM", x$control$type, "Model")
   }
 
@@ -189,15 +186,12 @@ plot.dcm <- function(x,
   }
 
 
-  ## Defaults for ylim, xlim, axs
-  if (missing(ylim)) {
+  ## Defaults for ylim, xlim
+  if (is.null(da$ylim)) {
     ylim <- c(0, ymax)
   }
-  if (missing(xlim)) {
+  if (is.null(da$xlim)) {
     xlim <- c(0, nsteps)
-  }
-  if (missing(axs)) {
-    axs <- "r"
   }
 
 
@@ -503,9 +497,6 @@ plot.dcm <- function(x,
 #'        transparent and 1 = opaque (see \code{\link{transco}}).
 #' @param leg if \code{TRUE}, plot default legend.
 #' @param leg.cex legend scale size.
-#' @param xlim x-axis scale limits for plot, with default based on model time steps.
-#' @param ylim y-axis scale limits for plot, with default based on range of data.
-#' @param main character string for main plot title.
 #' @param axs plot axis type (see \code{\link{par}} for details), with default
 #'        to \code{"r"}.
 #' @param add if \code{TRUE}, new plot window is not called and lines are added to
@@ -582,10 +573,7 @@ plot.icm <- function(x,
                      qnts.alpha,
                      leg,
                      leg.cex = 0.8,
-                     xlim,
-                     ylim,
-                     main,
-                     axs,
+                     axs = "r",
                      add = FALSE,
                      ...) {
 
@@ -607,6 +595,9 @@ plot.icm <- function(x,
   if (class(x) == "netsim") {
     modes <- x$param$modes
   }
+
+  # dotargs
+  da <- list(...)
 
 
   # Compartments ------------------------------------------------------------
@@ -726,13 +717,13 @@ plot.icm <- function(x,
 
 
   # Missing args ------------------------------------------------------------
-  if (missing(xlim)) {
+  if (is.null(da$xlim)) {
     xlim <- c(0, nsteps)
   }
-  if (missing(ylim)) {
+  if (is.null(da$ylim)) {
     ylim <- c(0, max.prev)
   }
-  if (missing(main)) {
+  if (is.null(da$main)) {
     if (class(x) == "icm") {
       modclass <- "ICM"
     }
@@ -740,9 +731,6 @@ plot.icm <- function(x,
       modclass <- "Network"
     }
     main <- paste(modclass, type, "Model")
-  }
-  if (missing(axs)) {
-    axs <- "r"
   }
 
 
