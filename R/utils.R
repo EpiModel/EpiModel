@@ -158,8 +158,6 @@ brewer_ramp <- function(n, plt, delete.lights = TRUE){
 
 
 
-
-
 # Non-Exported Functions --------------------------------------------------
 
 deleteAttr <- function(attrList, ids) {

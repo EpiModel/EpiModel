@@ -130,14 +130,13 @@ est <- netest(nw,
                                               MCMC.interval = 1000))
 est
 
-# Estimate the STERGM directly
-est2 <- netest(nw,
-               formation,
-               dissolution,
-               target.stats,
-               coef.diss,
-               edapprox = FALSE)
-est2
+# To estimate the STERGM directly, use edapprox = FALSE
+# est2 <- netest(nw,
+#                formation,
+#                dissolution,
+#                target.stats,
+#                coef.diss,
+#                edapprox = FALSE)
 }
 }
 \references{
