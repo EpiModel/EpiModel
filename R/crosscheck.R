@@ -186,7 +186,7 @@ crosscheck.icm <- function(param, init, control) {
   ## Deprecated parameters
   bim <- grep(".FUN", names(formals(control.icm)), value = TRUE)
   um <- which(grepl(".FUN", names(control)) & !(names(control) %in% bim))
-  if (length(um) > 0) {
+  if (length(um) == 0 && !is.null(control$type)) {
     if (!is.null(param$trans.rate)) {
       stop("The trans.rate parameter is deprecated. Use the inf.prob parameter instead.",
            call. = FALSE)
@@ -343,7 +343,7 @@ crosscheck.net <- function(x, param, init, control) {
   ## Deprecated parameters
   bim <- grep(".FUN", names(formals(control.net)), value = TRUE)
   um <- which(grepl(".FUN", names(control)) & !(names(control) %in% bim))
-  if (length(um) > 0) {
+  if (length(um) == 0 && !is.null(control$type)) {
     if (!is.null(param$trans.rate)) {
       stop("The trans.rate parameter is deprecated. Use the inf.prob parameter instead.",
            call. = FALSE)
