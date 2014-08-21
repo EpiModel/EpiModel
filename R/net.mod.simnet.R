@@ -67,6 +67,13 @@ resim_nets <- function(all, at) {
     anyActive <- ifelse(nActiveM1 > 0 & nActiveM2 > 0, TRUE, FALSE)
   }
 
+  statOnNw <- ("status" %in% get_formula_terms(all$nwparam$formation))
+  status <- all$attr$status
+  if (statOnNw == TRUE && length(unique(status)) == 1) {
+    stop("Stopping simulation because status in formation formula and no longer any discordant nodes",
+         call. = TRUE)
+  }
+
   # Set up nwstats df
   if (all$control$save.nwstats == TRUE) {
     if (at == 2) {
