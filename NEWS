@@ -5,6 +5,10 @@ INTERFACE CHANGES
 * The trans.rate and trans.rate.g2/m2 parameters have been renamed to inf.prob
   and inf.prob.g2/m2 to better characterize that they are probabilities, rather
   than rates, and towards infection of persons in that group/mode.
+* Added new documentation for newly exported utility functions for network models,
+  mostly used in the birth/entry modules. Now users may directly edit these
+  modules and use the utility functions without explicitly adding them to the
+  global environment.
 
 BUG FIXES
 * Network models with passed network attributes in the formation formula in open
