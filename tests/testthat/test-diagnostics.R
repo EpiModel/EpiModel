@@ -31,3 +31,13 @@ test_that("netdx works for multiple simulations of edges only model", {
   expect_is(dx, "netdx")
 })
 
+test_that("netdx works for expanded monitoring formula", {
+  dx <- netdx(est1, nsims = 2, nsteps = 10, verbose = FALSE,
+              nwstats.formula = ~edges + concurrent)
+  expect_is(dx, "netdx")
+})
+
+test_that("netdx works for reduced monitoring formula", {
+  dx <- netdx(est1, nsims = 2, nsteps = 10, verbose = FALSE,
+              nwstats.formula = ~meandeg)
+  expect_is(dx, "netdx")
