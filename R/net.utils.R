@@ -1097,72 +1097,26 @@ split_bip <- function(all, var, val, nCurrM1, nCurrM2, nBirths, nBirthsM2) {
 }
 
 
-# Unexported Functions ----------------------------------------------------
-
-
-
-copy_toall_attr <- function(all, at, t) {
-
-  otha <- names(all$nw$val[[1]])
-  otha <- otha[which(otha %in% t)]
-
-  if (length(otha) > 0) {
-    for (i in seq_along(otha)) {
-      va <- get.vertex.attribute(all$nw, otha[i])
-      all$attr[[otha[i]]] <- va
-      if (at == 1) {
-        if (!is.null(all$control$epi.by) && all$control$epi.by == otha[i]) {
-          all$temp$epi.by.vals <- unique(va)
-        }
-      }
-    }
-  }
-
-  return(all)
-}
-
-
-
-get_formula_terms <- function(formula) {
-
-  t <- attributes(terms.formula(formula))$term.labels
-  t <- strsplit(t, split = "[\"]")
-  tl <- sapply(t, length)
-  if (all(tl == 1)) {
-    t <- NULL
-  } else {
-    t <- t[tl > 1]
-    t <- unique(sapply(t, function(x) x[2]))
-  }
-
-  return(t)
-}
-
-
-
-get_attr_prop <- function(nw, t, only.formula = TRUE) {
-
-  if (is.null(t)) {
-    return(NULL)
-  }
-
-  nwVal <- names(nw$val[[1]])
-  if (only.formula == TRUE) {
-    nwVal <- nwVal[which(nwVal %in% t)]
-  }
-
-  out <- list()
-  for (i in 1:length(nwVal)) {
-    tab <- prop.table(table(nw %v% nwVal[i]))
-    out[[i]] <- tab
-  }
-  names(out) <- nwVal
-
-  return(out)
-}
-
-
-
+#' @title Updates Vertex Attributes for Incoming Vertices
+#'
+#' @description Updates the vertex attributes on a network for new nodes incoming
+#'              into that network, based on a set of rules for each attribute
+#'              that the user specifies in \code{control.net}.
+#'
+#' @param nw the \code{networkDynamic} object used in \code{netsim} simulations.
+#' @param newNodes vector of nodal IDs for incoming nodes at the current time
+#'        step.
+#' @param rules list of rules, one per attribute to be set, governing how to set
+#'        the values of each attribute.
+#' @param curr.tab current proportional distribution of all vertex attributes.
+#' @param t1.tab proportional distribution of all vertex attributes at the outset
+#'        of the simulation.
+#'
+#' @seealso \code{\link{copy_toall_attr}}, \code{\link{get_attr_prop}},
+#'          \code{\link{update_nwattr}}.
+#' @keywords netUtils internal
+#' @export
+#'
 update_nwattr <- function(nw, newNodes, rules, curr.tab, t1.tab) {
 
   for (i in 1:length(curr.tab)) {
@@ -1208,6 +1162,7 @@ update_nwattr <- function(nw, newNodes, rules, curr.tab, t1.tab) {
 }
 
 
+# Unexported Functions ----------------------------------------------------
 
 # logit transformation of a probability
 logit <- function(x) {
