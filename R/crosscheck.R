@@ -313,10 +313,10 @@ crosscheck.net <- function(x, param, init, control) {
     }
   }
   if (control$type == "SIR") {
-    if (is.null(init$r.num) & is.null(init$status.vector)) {
+    if (is.null(init$r.num) & is.null(init$status.vector) & statOnNw == FALSE) {
       stop("Specify r.num in init.net", call. = FALSE)
     }
-    if (bip == TRUE & is.null(init$r.num.m2) & is.null(init$status.vector)) {
+    if (bip == TRUE & is.null(init$r.num.m2) & is.null(init$status.vector) & statOnNw == FALSE) {
       stop("Specify r.num.m2 in init.net", call. = FALSE)
     }
   }

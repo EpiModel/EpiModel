@@ -14,6 +14,8 @@ BUG FIXES
   verbose is not specified in the control settings.
 * Running netdx diagnostics with offset terms in the formation no longer generates
   an error.
+* Simulating an SIR serosorting network epidemic model (status in the formation
+  formula) no longer stops due to missing r.num in init.net.
 
 OTHER
 * The dissolution_coefs function now stores and prints the death/exit rate.
