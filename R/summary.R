@@ -416,9 +416,9 @@ summary.icm <- function(object,
     }
   } # end SIS summary
 
-  if (groups == 1) colnames(mat) <- c("mean","sd", "perc")
-  if (groups == 2) colnames(mat) <- c("mean:g1", "sd:g1", "perc:g1",
-                                      "mean:g2", "sd:g2", "perc:g2")
+  if (groups == 1) colnames(mat) <- c("mean","sd", "pct")
+  if (groups == 2) colnames(mat) <- c("mean:g1", "sd:g1", "pct:g1",
+                                      "mean:g2", "sd:g2", "pct:g2")
   mat <- round(mat, digits)
 
   ## Print it
@@ -680,9 +680,13 @@ summary.netsim <- function(object,
     }
   }
 
-  if (modes == 1) colnames(mat) <- c("mean","sd", "perc")
-  if (modes == 2) colnames(mat) <- c("mean:m1", "sd:m1", "perc:m1",
-                                      "mean:m2", "sd:m2", "perc:m2")
+  if (modes == 1) {
+    colnames(mat) <- c("mean","sd", "pct")
+  }
+  if (modes == 2) {
+    colnames(mat) <- c("mean:m1", "sd:m1", "pct:m1",
+                       "mean:m2", "sd:m2", "pct:m2")
+  }
   mat <- round(mat, digits)
 
   ## Print it
