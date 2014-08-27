@@ -198,6 +198,43 @@ color_tea <- function(nd,
 
 
 
+#' @title Copies Vertex Attributes in Formation Formula to attr List
+#'
+#' @description Copies the vertex attributes stored on the network object to the
+#'              master attr list in the all data object.
+#'
+#' @param all master data object passed through \code{netsim} simulations.
+#' @param at current time step.
+#' @param t vector of attributes used in formation formula, usually as output of
+#'        \code{\link{get_formula_terms}}.
+#'
+#' @seealso \code{\link{get_formula_terms}}, \code{\link{get_attr_prop}},
+#'          \code{\link{update_nwattr}}.
+#' @keywords netUtils internal
+#' @export
+#'
+copy_toall_attr <- function(all, at, t) {
+
+  otha <- names(all$nw$val[[1]])
+  otha <- otha[which(otha %in% t)]
+
+  if (length(otha) > 0) {
+    for (i in seq_along(otha)) {
+      va <- get.vertex.attribute(all$nw, otha[i])
+      all$attr[[otha[i]]] <- va
+      if (at == 1) {
+        if (!is.null(all$control$epi.by) && all$control$epi.by == otha[i]) {
+          all$temp$epi.by.vals <- unique(va)
+        }
+      }
+    }
+  }
+
+  return(all)
+}
+
+
+
 #' @title Dissolution Coefficients for Stochastic Network Models
 #'
 #' @description Calculates dissolution coefficients, given a dissolution model
