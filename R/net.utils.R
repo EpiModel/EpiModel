@@ -542,6 +542,44 @@ edges_correct <- function(all, at) {
 }
 
 
+#' @title Proportional Table of Vertex Attributes
+#'
+#' @description Calculates the proportional distribution of each vertex attribute
+#'              contained on the network, with a possible limitation to those
+#'              attributes contained in the formation formula only.
+#'
+#' @param nw the \code{networkDynamic} object contained in the \code{netsim}
+#'        simulation.
+#' @param t vector of attributes used in formation formula, usually as output of
+#'        \code{\link{get_formula_terms}}.
+#' @param only.formula limit the tables to those terms only in \code{t}, otherwise
+#'        output proportions for all attributes on the network object.
+#'
+#' @seealso \code{\link{get_formula_terms}}, \code{\link{copy_toall_attr}},
+#'          \code{\link{update_nwattr}}.
+#' @keywords netUtils internal
+#' @export
+#'
+get_attr_prop <- function(nw, t, only.formula = TRUE) {
+
+  if (is.null(t)) {
+    return(NULL)
+  }
+
+  nwVal <- names(nw$val[[1]])
+  if (only.formula == TRUE) {
+    nwVal <- nwVal[which(nwVal %in% t)]
+  }
+
+  out <- list()
+  for (i in 1:length(nwVal)) {
+    tab <- prop.table(table(nw %v% nwVal[i]))
+    out[[i]] <- tab
+  }
+  names(out) <- nwVal
+
+  return(out)
+}
 
 #' @title Get Epidemic Output from netsim Model
 #'
