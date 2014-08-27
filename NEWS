@@ -12,6 +12,8 @@ BUG FIXES
   versions of the tergm and networkDynamic package.
 * Fix bug in printing simulation progress in network and ICM class models when
   verbose is not specified in the control settings.
+* Running netdx diagnostics with offset terms in the formation no longer generates
+  an error.
 
 OTHER
 * The dissolution_coefs function now stores and prints the death/exit rate.
