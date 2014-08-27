@@ -194,9 +194,17 @@ netdx <- function(x,
                             names = names(stats.means),
                             stats.means, stats.sd)
 
+  # Which formation terms are offsets?
+  is.offset.term <- grep(pattern = "offset",
+                         strsplit(as.character(formation), "[+]")[[2]])
 
-  ## Get stats from for target statistics
-  ts.out <- data.frame(names = attributes(diag.sim.ts)$dimnames[[2]],
+
+  ## Get stats from for target statistics, removing offsets
+  ts.attr.names <- attributes(diag.sim.ts)$dimnames[[2]]
+  if (length(is.offset.term > 0)) {
+    ts.attr.names <- ts.attr.names[-is.offset.term]
+  }
+  ts.out <- data.frame(names = ts.attr.names,
                        targets = target.stats)
 
 
