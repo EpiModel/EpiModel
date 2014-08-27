@@ -581,6 +581,36 @@ get_attr_prop <- function(nw, t, only.formula = TRUE) {
   return(out)
 }
 
+#' @title Outputs Formula Terms into a Character Vector
+#'
+#' @description Given a formation formula for a network model, outputs it into
+#'              a character vector of terms to be used in \code{netsim}
+#'              simulations.
+#'
+#' @param formula a right-hand sided formation formula.
+#'
+#' @seealso \code{\link{copy_toall_attr}}, \code{\link{get_attr_prop}},
+#'          \code{\link{update_nwattr}}.
+#' @keywords netUtils internal
+#' @export
+#'
+get_formula_terms <- function(formula) {
+
+  t <- attributes(terms.formula(formula))$term.labels
+  t <- strsplit(t, split = "[\"]")
+  tl <- sapply(t, length)
+  if (all(tl == 1)) {
+    t <- NULL
+  } else {
+    t <- t[tl > 1]
+    t <- unique(sapply(t, function(x) x[2]))
+  }
+
+  return(t)
+}
+
+
+
 #' @title Get Epidemic Output from netsim Model
 #'
 #' @description Provides all active model state sizes from the network at the
