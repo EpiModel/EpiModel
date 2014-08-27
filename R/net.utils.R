@@ -958,8 +958,24 @@ node_active <- function(nw,
 }
 
 
-# Unexported Functions ----------------------------------------------------
-
+#' @title Update Attribute Values for a Bipartite Network
+#'
+#' @description Adds new values for attributes in a bipartite network in which
+#'              there may be births/entries in the first mode, which requires
+#'              splitting the attribute vector into two, adding the new values,
+#'              and re-concatenating the two updated vectors.
+#'
+#' @param all master data object passed through \code{netsim} simulations.
+#' @param var variable to update.
+#' @param val fixed value to set for all incoming nodes.
+#' @param nCurrM1 number currently in mode 1.
+#' @param nCurrM2 number currently in mode 2.
+#' @param nBirths number of births/entries in mode 1.
+#' @param nBirthsM2 number of births/entries in mode2.
+#'
+#' @export
+#' @keywords netUtils internal
+#'
 split_bip <- function(all, var, val, nCurrM1, nCurrM2, nBirths, nBirthsM2) {
 
   oldVarM1 <- all$attr[[var]][1:nCurrM1]
@@ -974,6 +990,11 @@ split_bip <- function(all, var, val, nCurrM1, nCurrM2, nBirths, nBirthsM2) {
 
   return(all)
 }
+
+
+# Unexported Functions ----------------------------------------------------
+
+
 
 copy_toall_attr <- function(all, at, t) {
 
