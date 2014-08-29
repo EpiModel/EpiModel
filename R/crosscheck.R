@@ -276,9 +276,18 @@ crosscheck.net <- function(x, param, init, control) {
     if ("i.num" %in% names(init) && nw1 != init1) {
       warning("Overriding init infected settings with network status attribute",
               call. = FALSE, immediate. = TRUE)
-      if (interactive()) Sys.sleep(3)
+      if (interactive()) Sys.sleep(4)
     }
   }
+
+  # If status not in formation formula but set on original network, state that it
+  #   will be ignored
+  if (statOnNw == FALSE & "status" %in% names(x$fit$network$val[[1]])) {
+    warning("Overriding status vertex attribute on network with init.net conditions",
+            call. = FALSE, immediate. = TRUE)
+    if (interactive()) Sys.sleep(4)
+  }
+
 
   # Check consistency of status vector to network structure
   if (!is.null(init$status.vector)) {
