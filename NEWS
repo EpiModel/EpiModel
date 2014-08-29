@@ -9,6 +9,12 @@ INTERFACE CHANGES
   mostly used in the birth/entry modules. Now users may directly edit these
   modules and use the utility functions without explicitly adding them to the
   global environment.
+* Added warning message for network models in which there is a vertex attribute
+  for status added to the network but not referenced in the formation formula,
+  in which case the initial conditions for status will still be derived from the
+  input for init.net. This does not apply to "serosorting models", which reference
+  status in the formation formula, and which require setting status as a vertex
+  attribute on the network before calling netest.
 
 BUG FIXES
 * Network models with passed network attributes in the formation formula in open
