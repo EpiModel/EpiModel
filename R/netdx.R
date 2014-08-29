@@ -121,11 +121,14 @@ netdx <- function(x,
       set.control.stergm <- control.simulate.stergm()
     }
 
-    diag.sim <- simulate(fit,
-                         time.slices = nsteps,
-                         monitor = nwstats.formula,
-                         nsim = nsims,
-                         control = set.control.stergm)
+    diag.sim <- list()
+    for (i in 1:nsims) {
+      diag.sim[[i]] <- simulate(fit,
+                           time.slices = nsteps,
+                           monitor = nwstats.formula,
+                           nsim = 1,
+                           control = set.control.stergm)
+    }
     diag.sim.ts <- simulate(fit,
                             time.slices = 1,
                             monitor = formation,

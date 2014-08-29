@@ -20,6 +20,8 @@ BUG FIXES
   an error.
 * Simulating an SIR serosorting network epidemic model (status in the formation
   formula) no longer stops due to missing r.num in init.net.
+* Fix bug when calling netdx for one simulation only with a network model fit with
+  the full STERGM method (i.e., using the edapprox = FALSE in netest).
 
 OTHER
 * The dissolution_coefs function now stores and prints the death/exit rate.
