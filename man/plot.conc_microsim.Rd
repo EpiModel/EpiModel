@@ -32,4 +32,5 @@ disease prevalence. Future releases will standardize the plotting options to
 those available with stochastic epidemic models, similar to those in
 \code{\link{plot.icm}}.
 }
+\keyword{internal}
 
