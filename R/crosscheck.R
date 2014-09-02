@@ -263,7 +263,7 @@ crosscheck.net <- function(x, param, init, control) {
   }
 
   if (statOnNw == TRUE && is.null(control$attr.rules$status)) {
-    control$attr.rules$status <- 0
+    control$attr.rules$status <- "s"
   }
 
 
@@ -296,12 +296,12 @@ crosscheck.net <- function(x, param, init, control) {
     }
     svals <- sort(unique(init$status.vector))
     if (control$type == "SIR") {
-      if (any(svals %in% 0:2 == FALSE)) {
-        stop("status.vector contains values other than 0, 1, and 2", call. = FALSE)
+      if (any(svals %in% c("s", "i", "r") == FALSE)) {
+        stop("status.vector contains values other than \"s\", \"i\", and \"r\" ", call. = FALSE)
       }
     } else {
       if (any(svals %in% 0:1 == FALSE)) {
-        stop("status.vector contains values other than 0 and 1", call. = FALSE)
+        stop("status.vector contains values other than \"s\" and \"i\" ", call. = FALSE)
       }
     }
   }

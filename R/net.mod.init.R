@@ -162,46 +162,46 @@ init_status.net <- function(all) {
         status <- rep(NA, num)
         if (type == "SIR") {
           status[which(mode == 1)] <- sample(
-            x = c(0:2),
+            x = c("s", "i", "r"),
             size = nM1,
             replace = TRUE,
             prob = c(1-(i.num/nM1)-(r.num/nM1), i.num/nM1, r.num/nM1))
-          if (sum(status == 1 & mode == 1) == 0 & i.num > 0) {
-            status[sample(which(mode == 1), size = i.num)] <- 1
+          if (sum(status == "i" & mode == 1) == 0 & i.num > 0) {
+            status[sample(which(mode == 1), size = i.num)] <- "i"
           }
-          if (sum(status == 2 & mode == 1) == 0 & r.num > 0) {
-            status[sample(which(mode == 1), size = r.num)] <- 2
+          if (sum(status == "r" & mode == 1) == 0 & r.num > 0) {
+            status[sample(which(mode == 1), size = r.num)] <- "r"
           }
           if (modes == 2) {
             status[which(mode == 2)] <- sample(
-              x = c(0:2),
+              x = c("s", "i", "r"),
               size = nM2,
               replace = TRUE,
               prob = c(1-(i.num.m2/nM2)-(r.num.m2/nM2), i.num.m2/nM2, r.num.m2/nM2))
-            if (sum(status == 1 & mode == 2) == 0 & i.num.m2 > 0) {
-              status[sample(which(mode == 2), size = i.num.m2)] <- 1
+            if (sum(status == "i" & mode == 2) == 0 & i.num.m2 > 0) {
+              status[sample(which(mode == 2), size = i.num.m2)] <- "i"
             }
-            if (sum(status == 2 & mode == 2) == 0 & r.num.m2 > 0) {
-              status[sample(which(mode == 2), size = r.num.m2)] <- 2
+            if (sum(status == "r" & mode == 2) == 0 & r.num.m2 > 0) {
+              status[sample(which(mode == 2), size = r.num.m2)] <- "r"
             }
           }
         } else {
           status[which(mode == 1)] <- sample(
-            x = c(0:1),
+            x = c("s", "i"),
             size = nM1,
             replace = TRUE,
             prob = c(1-(i.num/nM1), i.num/nM1))
-          if (sum(status == 1 & mode == 1) == 0 & i.num > 0) {
-            status[sample(which(mode == 1), size = i.num)] <- 1
+          if (sum(status == "i" & mode == 1) == 0 & i.num > 0) {
+            status[sample(which(mode == 1), size = i.num)] <- "i"
           }
           if (modes == 2) {
             status[which(mode == 2)] <- sample(
-              x = c(0:1),
+              x = c("s", "i"),
               size = nM2,
               replace = TRUE,
               prob = c(1-(i.num.m2/nM2), i.num.m2/nM2))
-            if (sum(status == 1 & mode == 2) == 0 & i.num.m2 > 0) {
-              status[sample(which(mode == 2), size = i.num.m2)] <- 1
+            if (sum(status == "i" & mode == 2) == 0 & i.num.m2 > 0) {
+              status[sample(which(mode == 2), size = i.num.m2)] <- "i"
             }
           }
         }
@@ -209,15 +209,15 @@ init_status.net <- function(all) {
 
       ## Deterministic status
       if (status.rand == FALSE) {
-        status <- rep(0, num)
-        status[sample(which(mode == 1), size = i.num)] <- 1
+        status <- rep("s", num)
+        status[sample(which(mode == 1), size = i.num)] <- "i"
         if (modes == 2) {
-          status[sample(which(mode == 2), size = i.num.m2)] <- 1
+          status[sample(which(mode == 2), size = i.num.m2)] <- "i"
         }
         if (type == "SIR") {
-          status[sample(which(mode == 1 & status == 0), size = r.num)] <- 2
+          status[sample(which(mode == 1 & status == "s"), size = r.num)] <- "r"
           if (modes == 2) {
-            status[sample(which(mode == 2 & status == 0), size = r.num.m2)] <- 2
+            status[sample(which(mode == 2 & status == "s"), size = r.num.m2)] <- "r"
           }
         }
       }
@@ -226,6 +226,9 @@ init_status.net <- function(all) {
     }
   }
   all$attr$status <- status
+
+  # check to remove later
+  stopifnot(all(status %in% c("s", "i", "r")))
 
   ## Save out other attr
   all$attr$active <- rep(1, length(status))
@@ -240,7 +243,7 @@ init_status.net <- function(all) {
 
   # Infection Time ----------------------------------------------------------
   ## Set up inf.time vector
-  idsInf <- which(status == 1)
+  idsInf <- which(status == "i")
   infTime <- rep(NA, length(status))
 
   # If vital=TRUE, infTime is a uniform draw over the duration of infection

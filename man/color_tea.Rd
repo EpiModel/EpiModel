@@ -3,8 +3,8 @@
 \alias{color_tea}
 \title{Creates a TEA Variable for Infection Status for \code{ndtv} Animations}
 \usage{
-color_tea(nd, old.var = "testatus", old.sus = 0, old.inf = 1,
-  old.rec = 2, new.var = "ndtvcol", new.sus, new.inf, new.rec,
+color_tea(nd, old.var = "testatus", old.sus = "s", old.inf = "i",
+  old.rec = "r", new.var = "ndtvcol", new.sus, new.inf, new.rec,
   verbose = TRUE)
 }
 \arguments{
