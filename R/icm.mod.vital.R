@@ -27,7 +27,7 @@ deaths.icm <- function(all, at) {
 
   # Susceptible deaths ------------------------------------------------------
   nDeaths <- nDeathsG2 <- 0
-  idsElig <- which(all$attr$active == 1 & all$attr$status == 0)
+  idsElig <- which(all$attr$active == 1 & all$attr$status == "s")
   nElig <- length(idsElig)
   if (nElig > 0) {
 
@@ -68,7 +68,7 @@ deaths.icm <- function(all, at) {
 
   # Infected Deaths ---------------------------------------------------------
   nDeaths <- nDeathsG2 <- 0
-  idsElig <- which(all$attr$active == 1 & all$attr$status == 1)
+  idsElig <- which(all$attr$active == 1 & all$attr$status == "i")
   nElig <- length(idsElig)
   if (nElig > 0) {
 
@@ -109,7 +109,7 @@ deaths.icm <- function(all, at) {
 
   # Recovered Deaths --------------------------------------------------------
   nDeaths <- nDeathsG2 <- 0
-  idsElig <- which(all$attr$active == 1 & all$attr$status == 2)
+  idsElig <- which(all$attr$active == 1 & all$attr$status == "r")
   nElig <- length(idsElig)
   if (nElig > 0) {
 
@@ -217,7 +217,7 @@ births.icm <- function(all, at) {
   totBirths <- nBirths + nBirthsG2
   all$attr$active <- c(all$attr$active, rep(1, totBirths))
   all$attr$group <- c(all$attr$group, c(rep(1, nBirths), rep(2, nBirthsG2)))
-  all$attr$status <- c(all$attr$status, rep(0, totBirths))
+  all$attr$status <- c(all$attr$status, rep("s", totBirths))
   all$attr$infTime <- c(all$attr$infTime, rep(NA, totBirths))
 
 

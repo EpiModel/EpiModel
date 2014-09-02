@@ -16,15 +16,15 @@ get_prev.icm <- function(all, at) {
   if (at == 1) {
     all$out <- list()
     all$out$s.num <- sum(all$attr$active == 1 &
-                         all$attr$status == 0 &
+                         all$attr$status == "s" &
                          all$attr$group == 1)
     all$out$i.num <- sum(all$attr$active == 1 &
-                         all$attr$status == 1 &
+                         all$attr$status == "i" &
                          all$attr$group == 1)
     all$out$num <- all$out$s.num + all$out$i.num
     if (all$control$type == "SIR") {
       all$out$r.num <- sum(all$attr$active == 1 &
-                           all$attr$status == 2 &
+                           all$attr$status == "r" &
                            all$attr$group ==1)
       all$out$num <- all$out$s.num +
                      all$out$i.num +
@@ -32,15 +32,15 @@ get_prev.icm <- function(all, at) {
     }
     if (all$param$groups == 2) {
       all$out$s.num.g2 <- sum(all$attr$active == 1 &
-                              all$attr$status == 0 &
+                              all$attr$status == "s" &
                               all$attr$group == 2)
       all$out$i.num.g2 <- sum(all$attr$active == 1 &
-                              all$attr$status == 1 &
+                              all$attr$status == "i" &
                               all$attr$group == 2)
       all$out$num.g2 <- all$out$s.num.g2 + all$out$i.num.g2
       if (all$control$type == "SIR") {
         all$out$r.num.g2 <- sum(all$attr$active == 1 &
-                                all$attr$status == 2 &
+                                all$attr$status == "r" &
                                 all$attr$group == 2)
         all$out$num.g2 <- all$out$s.num.g2 +
                           all$out$i.num.g2 +
@@ -49,15 +49,15 @@ get_prev.icm <- function(all, at) {
     }
   } else {
     all$out$s.num[at] <- sum(all$attr$active == 1 &
-                             all$attr$status == 0 &
+                             all$attr$status == "s" &
                              all$attr$group == 1)
     all$out$i.num[at] <- sum(all$attr$active == 1 &
-                             all$attr$status == 1 &
+                             all$attr$status == "i" &
                              all$attr$group == 1)
     all$out$num[at] <- all$out$s.num[at] + all$out$i.num[at]
     if (all$control$type == "SIR") {
       all$out$r.num[at] <- sum(all$attr$active == 1 &
-                               all$attr$status == 2 &
+                               all$attr$status == "r" &
                                all$attr$group ==1)
       all$out$num[at] <- all$out$s.num[at] +
                          all$out$i.num[at] +
@@ -65,15 +65,15 @@ get_prev.icm <- function(all, at) {
     }
     if (all$param$groups == 2) {
       all$out$s.num.g2[at] <- sum(all$attr$active == 1 &
-                                  all$attr$status == 0 &
+                                  all$attr$status == "s" &
                                   all$attr$group == 2)
       all$out$i.num.g2[at] <- sum(all$attr$active == 1 &
-                                  all$attr$status == 1 &
+                                  all$attr$status == "i" &
                                   all$attr$group == 2)
       all$out$num.g2[at] <- all$out$s.num.g2[at] + all$out$i.num.g2[at]
       if (all$control$type == "SIR") {
         all$out$r.num.g2[at] <- sum(all$attr$active == 1 &
-                                    all$attr$status == 2 &
+                                    all$attr$status == "r" &
                                     all$attr$group == 2)
         all$out$num.g2[at] <- all$out$s.num.g2[at] +
                               all$out$i.num.g2[at] +
