@@ -300,7 +300,7 @@ crosscheck.net <- function(x, param, init, control) {
         stop("status.vector contains values other than \"s\", \"i\", and \"r\" ", call. = FALSE)
       }
     } else {
-      if (any(svals %in% 0:1 == FALSE)) {
+      if (any(svals %in% c("s", "i") == FALSE)) {
         stop("status.vector contains values other than \"s\" and \"i\" ", call. = FALSE)
       }
     }
