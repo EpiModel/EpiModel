@@ -104,7 +104,7 @@
 #'  }
 #' }
 #'
-#' @references \url{http://www.statnet.org/trac/wiki/EpiModel}
+#' @references \url{http://statnet.github.io/EpiModel}
 #'
 #' @name EpiModel-package
 #' @aliases EpiModel

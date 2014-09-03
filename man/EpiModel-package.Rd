@@ -112,7 +112,7 @@ model are:
 }
 }
 \references{
-\url{http://www.statnet.org/trac/wiki/EpiModel}
+\url{http://statnet.github.io/EpiModel}
 }
 \keyword{package}
 
