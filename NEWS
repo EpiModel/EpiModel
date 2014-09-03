@@ -1,3 +1,24 @@
+Version 1.0.3
+------------------------------------------------------------------------------
+
+NEW FEATURES
+* Added three new extraction functions for network models (get_network,
+  get_transmat, and get_nwstats) which extract the network objects, transmission
+  matrices, and data frame of network statistics from a completed netsim
+  simulation.
+
+BUG FIXES
+*
+
+OTHER
+* The internal representation of disease status as an individual-level attribute
+  in the stochastic ICM and network models has been changed from number (0, 1, 2)
+  to character ("s", "i", "r"). This has few user implications for running the
+  integrated models, but one is that the status vector passed into the initial
+  conditions functions must now be in this new format. This also impacts the
+  expansion of EpiModel for original models.
+
+
 Version 1.0.2
 ------------------------------------------------------------------------------
 
