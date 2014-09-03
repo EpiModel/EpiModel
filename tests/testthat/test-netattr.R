@@ -42,11 +42,11 @@ test_that("Serosorting model in open population", {
 
   prev <- 0.2
   infIds <- sample(1:n, n*prev)
-  nw <- set.vertex.attribute(nw, "status", 0)
-  nw <- set.vertex.attribute(nw, "status", 1, infIds)
+  nw <- set.vertex.attribute(nw, "status", "s")
+  nw <- set.vertex.attribute(nw, "status", "i", infIds)
   nw <- set.vertex.attribute(nw, "race", rbinom(n, 1, 0.5))
 
-  formation <- ~ edges + nodefactor("status") +
+  formation <- ~ edges + nodefactor("status", base = 1) +
                  nodematch("status") + nodematch("race")
   target.stats <- c(18, 3, 15, 10)
 

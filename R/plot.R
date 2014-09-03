@@ -1462,9 +1462,9 @@ plot.netsim <- function(x,
       }
       pal <- transco(c("firebrick", "steelblue", "seagreen"), 0.75)
       if (tea.status == TRUE) {
-        cols <- ifelse(get.vertex.attribute.active(obj, "testatus", at = at) == 1,
+        cols <- ifelse(get.vertex.attribute.active(obj, "testatus", at = at) == "i",
                        pal[1], pal[2])
-        cols <- ifelse(get.vertex.attribute.active(obj, "testatus", at = at) == 2,
+        cols <- ifelse(get.vertex.attribute.active(obj, "testatus", at = at) == "r",
                        pal[3], cols)
       }
       plot.network(obj,
