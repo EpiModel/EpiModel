@@ -4,9 +4,8 @@
 \title{Plot Data from a Stochastic Network Epidemic Model}
 \usage{
 \method{plot}{netsim}(x, type = "sim", sim, at = 1, col.status = FALSE,
-  shp.bip = NULL, zeromarg = TRUE, stats, sim.lwd, sim.col, sim.lty = 1,
-  targ.col, targ.lwd = 2, targ.lty = 2, plots.joined, plot.leg = TRUE,
-  ...)
+  shp.bip = NULL, stats, sim.lwd, sim.col, sim.lty = 1, targ.col,
+  targ.lwd = 2, targ.lty = 2, plots.joined, plot.leg = TRUE, ...)
 }
 \arguments{
 \item{x}{an \code{EpiModel} model object of class \code{netsim}.}
@@ -25,9 +24,6 @@ status colors (blue = susceptible, red = infected, , green = recovered).}
 \item{shp.bip}{if \code{type="network"} and a bipartite simulation, shapes
 for the mode 2 vertices, with acceptable inputs of "triangle" and
 "square". Mode 1 vertices will be circles.}
-
-\item{zeromarg}{if \code{TRUE} and \code{type="network"}, automatically
-sets plot margins to 0 on all sides.}
 
 \item{stats}{if \code{type="formation"}, network statistics to plot, among
 those specified in \code{nwstats.formula} of \code{\link{control.net}},
@@ -75,9 +71,9 @@ model simulated through \code{\link{netsim}}:
        extraction of that dynamic network at a specific time point. This
        plotting function wraps the \code{\link{plot.network}} function in the
        \code{network} package. Consult the help page for \code{plot.network}
-       for all the plotting parameters. In addition, five plotting parameters
+       for all the plotting parameters. In addition, four plotting parameters
        specific to \code{netsim} plots are available: \code{sim}, \code{at},
-       \code{col.status}, \code{shp.bip}, and \code{zeromarg}.
+       \code{col.status}, and \code{shp.bip}.
  \item \strong{\code{type="formation"}}: summary network statistics related to
        the network model formation are plotted. These plots are similar to the
        formation plots for \code{netdx} objects. When running a \code{netsim}
@@ -120,9 +116,11 @@ plot(mod, type = "sim", popfrac = FALSE)
 plot(mod, type = "sim", y = "si.flow")
 
 # Plot static networks
+par(mar = c(0, 0, 0, 0))
 plot(mod, type = "network")
 
 # Automatic coloring of infected nodes as red
+par(mfrow = c(1, 2))
 plot(mod, type = "network",
      col.status = TRUE, at = 50)
 plot(mod, type = "network",
@@ -134,11 +132,12 @@ plot(mod, type = "network", at = 50,
 plot(mod, type = "network", at = 50,
      col.status = TRUE, shp.bip = "triangle")
 
-# Remove the automatic zero margin to include a title
-plot(mod, type = "network", zeromarg = FALSE,
-     main = "My Network Plot")
+# Include a title
+par(mar = c(1, 1, 2, 1), mfrow = c(1, 1))
+plot(mod, type = "network", main = "My Network Plot")
 
 # Plot formation statistics
+par(mar = c(3, 3, 1, 1), mgp = c(2, 1, 0))
 plot(mod, type = "formation")
 plot(mod, type = "formation", plots.joined = FALSE)
 plot(mod, type = "formation", sim = 2:4)

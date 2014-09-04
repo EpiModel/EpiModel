@@ -7,16 +7,21 @@ NEW FEATURES
   matrices, and data frame of network statistics from a completed netsim
   simulation.
 
-BUG FIXES
-*
-
-OTHER
+INTERFACE CHANGES
 * The internal representation of disease status as an individual-level attribute
   in the stochastic ICM and network models has been changed from number (0, 1, 2)
   to character ("s", "i", "r"). This has few user implications for running the
   integrated models, but one is that the status vector passed into the initial
   conditions functions must now be in this new format. This also impacts the
   expansion of EpiModel for original models.
+* The zeromarg argument has been removed from plot.netsim for static network
+  plots (type = "network") to reduce potential issues with setting default
+  margins on plots. Now they must explicitly be set with standard par options.
+
+BUG FIXES
+*
+
+
 
 
 Version 1.0.2
