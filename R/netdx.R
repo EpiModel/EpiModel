@@ -112,7 +112,7 @@ netdx <- function(x,
   }
 
   if (verbose == TRUE) {
-    cat("* Simulating", nsims, "networks \n")
+    cat("- Simulating", nsims, "networks")
   }
 
   if (edapprox == FALSE) {
@@ -122,12 +122,21 @@ netdx <- function(x,
     }
 
     diag.sim <- list()
+    if (verbose == TRUE) {
+      cat("\n  |")
+    }
     for (i in 1:nsims) {
       diag.sim[[i]] <- simulate(fit,
                            time.slices = nsteps,
                            monitor = nwstats.formula,
                            nsim = 1,
                            control = set.control.stergm)
+      if (verbose == TRUE) {
+        cat("*")
+      }
+    }
+    if (verbose == TRUE) {
+      cat("|")
     }
     diag.sim.ts <- simulate(fit,
                             time.slices = 1,
@@ -145,6 +154,9 @@ netdx <- function(x,
     }
 
     diag.sim <- list()
+    if (verbose == TRUE) {
+      cat("\n  |")
+    }
     for (i in 1:nsims) {
       fit.sim <- simulate(fit, control = set.control.ergm)
       diag.sim[[i]] <- simulate(fit.sim,
@@ -157,6 +169,12 @@ netdx <- function(x,
                            monitor = nwstats.formula,
                            nsim = 1,
                            control = set.control.stergm)
+      if (verbose == TRUE) {
+        cat("*")
+      }
+    }
+    if (verbose == TRUE) {
+      cat("|")
     }
     diag.sim.ts <- simulate(nw,
                             formation = formation,
@@ -169,7 +187,7 @@ netdx <- function(x,
   }
 
   if (verbose == TRUE) {
-    cat("* Calculating formation statistics\n")
+    cat("\n- Calculating formation statistics")
   }
 
   ## List for stats for each simulation
@@ -220,7 +238,7 @@ netdx <- function(x,
 
 
   if (verbose == TRUE) {
-    cat("* Calculating duration statistics\n")
+    cat("\n- Calculating duration statistics")
   }
 
 
@@ -257,8 +275,17 @@ netdx <- function(x,
 
   # Calculate mean partnership age from edgelist
   pages <- list()
+  if (verbose == TRUE) {
+    cat("\n  |")
+  }
   for (i in 1:length(diag.sim)) {
     pages[[i]] <- edgelist_meanage(el = sim.df[[i]])
+    if (verbose == TRUE) {
+      cat("*")
+    }
+  }
+  if (verbose == TRUE) {
+    cat("|")
   }
 
 
