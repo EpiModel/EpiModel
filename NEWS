@@ -6,6 +6,7 @@ NEW FEATURES
   get_transmat, and get_nwstats) which extract the network objects, transmission
   matrices, and data frame of network statistics from a completed netsim
   simulation.
+* Added progress bars for netdx simulations.
 
 INTERFACE CHANGES
 * The internal representation of disease status as an individual-level attribute
