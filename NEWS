@@ -19,9 +19,8 @@ INTERFACE CHANGES
   margins on plots. Now they must explicitly be set with standard par options.
 
 BUG FIXES
-*
-
-
+* Minor updates and bug fixes to the two built-in Shiny applications (accessed
+  via the epiweb function).
 
 
 Version 1.0.2
