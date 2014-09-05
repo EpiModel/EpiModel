@@ -2,19 +2,19 @@ library(EpiModel)
 library(shiny)
 
 shinyServer(function(input, output) {
-  
+
   ## Main reactive functions
   param <- reactive({
     vital <- ifelse(input$b.rate > 0 |
                     input$ds.rate > 0 |
                     input$di.rate > 0 |
                     input$dr.rate > 0, TRUE, FALSE)
-    l <- list(trans.rate = input$trans.rate, 
-              act.rate = input$act.rate, 
-              rec.rate = input$rec.rate, 
-              b.rate = input$b.rate, 
-              ds.rate = input$ds.rate, 
-              di.rate = input$di.rate, 
+    l <- list(inf.prob = input$inf.prob,
+              act.rate = input$act.rate,
+              rec.rate = input$rec.rate,
+              b.rate = input$b.rate,
+              ds.rate = input$ds.rate,
+              di.rate = input$di.rate,
               dr.rate = input$dr.rate,
               groups = 1,
               vital = vital)
@@ -23,11 +23,11 @@ shinyServer(function(input, output) {
   })
   init <- reactive({
     if (input$modtype == "SIR") {
-      l <- list(s.num = input$s.num, 
-                i.num = input$i.num, 
+      l <- list(s.num = input$s.num,
+                i.num = input$i.num,
                 r.num = input$r.num)
     } else {
-      l <- list(s.num = input$s.num, 
+      l <- list(s.num = input$s.num,
                 i.num = input$i.num)
     }
     l$status.rand <- TRUE
@@ -63,35 +63,35 @@ shinyServer(function(input, output) {
   output$MainPlot <- renderPlot({
     par(mar = c(3.5, 3.5, 1.2, 1), mgp = c(2.1, 1, 0))
     if (input$compsel == "Compartment Prevalence") {
-      plot(mod(), 
+      plot(mod(),
            mean.line = input$showmean,
            sim.lines = input$showsims,
            qnts = showqnts(),
            leg = input$showleg,
-           leg.cex = 1.1, 
+           leg.cex = 1.1,
            lwd = 3.5,
            main = "")
     }
     if (input$compsel == "Compartment Size") {
-      plot(mod(), 
-           popfrac = FALSE, 
+      plot(mod(),
+           popfrac = FALSE,
            mean.line = input$showmean,
            sim.lines = input$showsims,
            qnts = showqnts(),
            leg = input$showleg,
-           leg.cex = 1.1, 
+           leg.cex = 1.1,
            lwd = 3.5,
            main = "")
     }
     if (input$compsel == "Disease Incidence") {
-      plot(mod(), 
-           y = "si.flow", 
-           popfrac = FALSE, 
+      plot(mod(),
+           y = "si.flow",
+           popfrac = FALSE,
            mean.line = input$showmean,
            sim.lines = input$showsims,
            qnts = showqnts(),
            leg = input$showleg,
-           leg.cex = 1.1, 
+           leg.cex = 1.1,
            lwd = 3.5,
            main = "")
     }
@@ -102,33 +102,33 @@ shinyServer(function(input, output) {
       pdf(file = file, height = 6, width = 10)
       par(mar = c(3.5, 3.5, 1.2, 1), mgp = c(2.1, 1, 0))
       if (input$compsel == "Compartment Prevalence") {
-        plot(mod(), 
+        plot(mod(),
              mean.line = input$showmean,
              sim.lines = input$showsims,
              qnts = showqnts(),
              leg = input$showleg,
-             leg.cex = 1.1, 
+             leg.cex = 1.1,
              lwd = 3.5)
       }
       if (input$compsel == "Compartment Size") {
-        plot(mod(), 
+        plot(mod(),
              mean.line = input$showmean,
              sim.lines = input$showsims,
              qnts = showqnts(),
              leg = input$showleg,
-             popfrac = FALSE, 
-             leg.cex = 1.1, 
+             popfrac = FALSE,
+             leg.cex = 1.1,
              lwd = 3.5)
       }
       if (input$compsel == "Disease Incidence") {
-        plot(mod(), 
-             y = "si.flow", 
-             popfrac = FALSE, 
+        plot(mod(),
+             y = "si.flow",
+             popfrac = FALSE,
              mean.line = input$showmean,
              sim.lines = input$showsims,
              qnts = showqnts(),
              leg = input$showleg,
-             leg.cex = 1.1, 
+             leg.cex = 1.1,
              lwd = 3.5)
       }
       dev.off()
@@ -138,40 +138,40 @@ shinyServer(function(input, output) {
   ## Summary and Compartment plot tab
   # Outfrom from summary
   output$outSummary <- renderPrint({
-    summary(mod(), 
-            at = input$summTs, 
+    summary(mod(),
+            at = input$summTs,
             digits = input$summDig)
   })
 
   # Comp_plot
   output$CompPlot <- renderPlot({
-    comp_plot(mod(), 
-              at = input$summTs, 
+    comp_plot(mod(),
+              at = input$summTs,
               digits = input$summDig)
   })
-  
+
   # Download for comp_plot
   output$dlCompPlot <- downloadHandler(
     filename = "CompPlot.pdf",
     content = function(file) {
       pdf(file = file, height = 6, width = 10)
-      comp_plot(mod(), 
-                at = input$summTs, 
+      comp_plot(mod(),
+                at = input$summTs,
                 digits = input$summDig)
       dev.off()
     }
   )
-  
-  
+
+
   ## Data tab
   output$simnoControl <- renderUI({
     input$runMod
     maxsims <- isolate(input$nsims)
-    sliderInput(inputId = "datasim", 
-                label = strong("Simulation Number"), 
-                min = 1, 
-                max = maxsims, 
-                value = 1, 
+    sliderInput(inputId = "datasim",
+                label = strong("Simulation Number"),
+                min = 1,
+                max = maxsims,
+                value = 1,
                 step = 1)
   })
   output$outData <- renderDataTable({
@@ -193,9 +193,9 @@ shinyServer(function(input, output) {
       } else if (input$datasel == "Simulations") {
         write.csv(as.data.frame(mod(), out = "vals", sim = input$datasim), file)
       }
-      
+
     }
   )
-  
+
 
 })
