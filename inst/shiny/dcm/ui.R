@@ -87,7 +87,7 @@ shinyUI(pageWithSidebar(
                     value = 0.0)
     )
 
-  ),
+  ), # End sidebarPanel
 
   mainPanel(
     tabsetPanel(
@@ -132,7 +132,7 @@ shinyUI(pageWithSidebar(
              )
            )
          )
-      ),
+      ), # End tabPanel Plot
 
 
       tabPanel("Summary",
@@ -169,7 +169,7 @@ shinyUI(pageWithSidebar(
                           label = "Download Plot"),
            br(),br()
          )
-      ),
+      ), # End tabPanel Summary
 
 
       tabPanel("Data",
@@ -178,21 +178,32 @@ shinyUI(pageWithSidebar(
          br(),br(),
          downloadButton(outputId = "dlData",
                         label = "Download Data")
-      ),
+      ), # End tabPanel Data
 
 
       tabPanel("About",
          p("This application solves and plots a deterministic, compartmental
-            epidemic models. Models here are limited to one-group models, but
-            two-group models are available directly through the dcm function.
-            The underlying modeling software for this application is the",
-            a("EpiModel", href="http://cran.r-project.org/web/packages/EpiModel/index.html"),
-            "package in R. The web application is built with",
-            a("Shiny.", href="http://www.rstudio.com/shiny/")),
+            epidemic models (DCMs). The model simulations are driven by the",
+           a("EpiModel", href = "http://cran.r-project.org/web/packages/EpiModel/index.html"),
+            "package in R."),
+         p("Models here are limited to basic one-group homogenous mixing models with
+            a limited set of parameters, initial conditions, and control settings. More
+            complex models are available in the command-line version of EpiModel. For
+            further details, including more background on the mathematics and theory behind
+            these DCMs, please consult the documentation, tutorials, and workshop materials
+            at the main", a("EpiModel website.", href = "http://statnet.github.io/EpiModel")),
+           p("This web application, built with",
+            a("Shiny", href="http://shiny.rstudio.com/"), "may be lauched via an R session with
+              EpiModel and Shiny installed (see the epiweb function), or directly on any web
+              browser (no R needed)", a("here.", href = "http://statnet.shinyapps.io/epidcm/")),
          br(),
-         strong("Author"), p("Samuel M. Jenness, Department of Epidemiology,
+         strong("Authors"), p("Samuel M. Jenness, Department of Epidemiology,
+                              University of Washington"),
+                            p("Steven M. Goodreau, Department of Anthropology,
+                              University of Washington"),
+                            p("Martina Morris, Departments of Statistics and Sociology,
                               University of Washington")
-      )
+      ) # End tabPanel About
     )
   )
 ))
