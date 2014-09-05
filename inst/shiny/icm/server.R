@@ -138,15 +138,25 @@ shinyServer(function(input, output) {
   ## Summary and Compartment plot tab
   # Outfrom from summary
   output$outSummary <- renderPrint({
+    if (is.na(input$summTs)) {
+      summat <- 1
+    } else {
+      summat <- input$summTs
+    }
     summary(mod(),
-            at = input$summTs,
+            at = summat,
             digits = input$summDig)
   })
 
   # Comp_plot
   output$CompPlot <- renderPlot({
+    if (is.na(input$summTs)) {
+      summat <- 1
+    } else {
+      summat <- input$summTs
+    }
     comp_plot(mod(),
-              at = input$summTs,
+              at = summat,
               digits = input$summDig)
   })
 
