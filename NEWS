@@ -6,7 +6,9 @@ NEW FEATURES
   get_transmat, and get_nwstats) which extract the network objects, transmission
   matrices, and data frame of network statistics from a completed netsim
   simulation.
-* Added progress bars for netdx simulations.
+* For stochastic epidemic plots, added an option mean.smooth. If TRUE, this
+  uses a lowess smoother on the outcome variables of interest. This is helpful
+  in visualization of low-count outcomes like disease incidence.
 * Automatic parallelization of network models is now possible with the
   netsim_parallel function. Note that this is experimental and has not been
   tested extensively across platforms, so bug reports are welcome.
@@ -21,6 +23,8 @@ INTERFACE CHANGES
 * The zeromarg argument has been removed from plot.netsim for static network
   plots (type = "network") to reduce potential issues with setting default
   margins on plots. Now they must explicitly be set with standard par options.
+* Added progress bars for netdx simulations for computationally intensive
+  parts of the simulations.
 
 BUG FIXES
 * Minor updates and bug fixes to the two built-in Shiny applications (accessed
