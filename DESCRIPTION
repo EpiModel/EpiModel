@@ -32,6 +32,7 @@ Imports:
     statnet.common
 Suggests:
     doParallel,
+    doSNOW,
     foreach,
     knitr,
     ndtv,

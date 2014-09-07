@@ -287,6 +287,7 @@ netsim_parallel <- function(x,
       registerDoParallel(cluster.size)
     }
     if (partype == "snow") {
+      suppressPackageStartupMessages(require(doSNOW))
       nodes <- control$nodes
       cores.per.node <- control$cores.per.node
       cl <- makeSOCKcluster(rep(nodes, cores.per.node))
