@@ -277,6 +277,9 @@ netsim_parallel <- function(x,
   if (is.null(partype)) {
     partype <- "parallel"
   }
+  if (partype == "snow") {
+    ncores <- sum(cores.per.node)
+  }
 
   if (nsims > 1 && ncores > 1) {
     suppressPackageStartupMessages(require(foreach))
