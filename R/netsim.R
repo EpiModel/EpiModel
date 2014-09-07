@@ -210,3 +210,93 @@ netsim <- function(x,
 
 }
 
+
+#' @title Stochastic Network Models in Parallel
+#'
+#' @description Simulates stochastic network epidemic models for infectious
+#'              disease in parallel.
+#'
+#' @inheritParams netsim
+#'
+#' @details
+#' This is an experimental implementation of the \code{\link{netsim}} function
+#' that runs model simulations in parallel, using the \code{foreach} and
+#' \code{doParallel} libraries.
+#'
+#' To run models in parallel, add an argument to the control settings called
+#' \code{ncores} that is equal to the number of parallel cores the simulations
+#' should be initiated on. Use \code{\link{detect.cores}} to find the maximum on
+#' any system.
+#'
+#' Due to memory limitations, the network objects are not saved by default
+#' so the control setting \code{save.network} is automatically set to \code{FALSE}.
+#'
+#' This has been tested on Linux, Mac, and Windows but no guarantees are made
+#' that it will work on every platform.
+#'
+#' Note that this function may be folded into \code{\link{netsim}} and deprecated
+#' in the future.
+#'
+#' @keywords model
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' nw <- network.initialize(n = 1000, directed = FALSE)
+#' formation <- ~ edges
+#' target.stats <- 500
+#' dissolution <- ~ offset(edges)
+#' duration <- 50
+#' coef.diss <- dissolution_coefs(dissolution, duration)
+#'
+#' est <- netest(nw,
+#'               formation,
+#'               dissolution,
+#'               target.stats,
+#'               coef.diss,
+#'               verbose = FALSE)
+#'
+#' param <- param.net(inf.prob = 0.25)
+#' init <- init.net(i.num = 50)
+#' control <- control.net(type = "SI", nsteps = 250,
+#'                        nsims = 4, ncores = 4)
+#'
+#' sims <- netsim_parallel(est, param, init, control)
+#' plot(sims)
+#' }
+#'
+netsim_parallel <- function(est, param, init, control) {
+
+  nsims <- control$nsims
+  ncores <- control$ncores
+
+  if (nsims > 1 && ncores > 1) {
+    suppressPackageStartupMessages(require(foreach))
+    suppressPackageStartupMessages(require(doParallel))
+    if (ncores > detectCores()) {
+      stop("Maximum cores number of cores is ", detectCores())
+    }
+    cluster.size <- min(nsims, ncores)
+    registerDoParallel(cluster.size)
+
+    out <- foreach(i = 1:nsims) %dopar% {
+
+      require(EpiModel)
+      control$save.network = FALSE
+      control$verbose = FALSE
+      control$nsims = 1
+
+      netsim(est, param, init, control)
+
+    }
+
+    all <- out[[1]]
+    for (i in 2:length(out)) {
+      all <- merge(all, out[[i]])
+    }
+  } else {
+    all <- netsim(est, param, init, control)
+  }
+
+  return(all)
+}

@@ -31,6 +31,8 @@ Imports:
     RColorBrewer,
     statnet.common
 Suggests:
+    doParallel,
+    foreach,
     knitr,
     ndtv,
     shiny,
