@@ -226,13 +226,13 @@ netsim <- function(x,
 #' To run models in parallel, add an argument to the control settings called
 #' \code{ncores} that is equal to the number of parallel cores the simulations
 #' should be initiated on. Use \code{\link{detectCores}} to find the maximum on
-#' any system.
-#'
-#' Due to memory limitations, the network objects are not saved by default
-#' so the control setting \code{save.network} is automatically set to \code{FALSE}.
+#' a system.
 #'
 #' This has been tested on Linux, Mac, and Windows but no guarantees are made
-#' that it will work on every platform.
+#' that it will work on every platform. It is best-suited to be run in batch
+#' mode. Memory management errors have been encounted when running large simulations
+#' (large networks, long time steps, saving networkDynamic objects) in
+#' interactive environments like Rstudio server.
 #'
 #' Note that this function may be folded into \code{\link{netsim}} and deprecated
 #' in the future.
@@ -286,7 +286,6 @@ netsim_parallel <- function(x,
     out <- foreach(i = 1:nsims) %dopar% {
 
       require(EpiModel)
-      control$save.network = FALSE
       control$verbose = FALSE
       control$nsims = 1
 
