@@ -3,9 +3,12 @@
 \alias{netsim_parallel}
 \title{Stochastic Network Models in Parallel}
 \usage{
-netsim_parallel(est, param, init, control)
+netsim_parallel(x, param, init, control)
 }
 \arguments{
+\item{x}{fitted network model object, as an object of class
+\code{\link{netest}}.}
+
 \item{param}{model parameters, as an object of class \code{\link{param.net}}.}
 
 \item{init}{initial conditions, as an object of class \code{\link{init.net}}.}
@@ -24,7 +27,7 @@ that runs model simulations in parallel, using the \code{foreach} and
 
 To run models in parallel, add an argument to the control settings called
 \code{ncores} that is equal to the number of parallel cores the simulations
-should be initiated on. Use \code{\link{detect.cores}} to find the maximum on
+should be initiated on. Use \code{\link{detectCores}} to find the maximum on
 any system.
 
 Due to memory limitations, the network objects are not saved by default
