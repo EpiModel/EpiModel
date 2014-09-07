@@ -273,12 +273,25 @@ netsim_parallel <- function(x,
 
   nsims <- control$nsims
   ncores <- control$ncores
+  partype <- control$partype
+  if (is.null(partype)) {
+    partype <- "parallel"
+  }
 
   if (nsims > 1 && ncores > 1) {
     suppressPackageStartupMessages(require(foreach))
-    suppressPackageStartupMessages(require(doParallel))
-    cluster.size <- min(nsims, ncores)
-    registerDoParallel(cluster.size)
+
+    if (partype == "parallel") {
+      suppressPackageStartupMessages(require(doParallel))
+      cluster.size <- min(nsims, ncores)
+      registerDoParallel(cluster.size)
+    }
+    if (partype == "snow") {
+      nodes <- control$nodes
+      cores.per.node <- control$cores.per.node
+      cl <- makeSOCKcluster(rep(nodes, cores.per.node))
+      registerDoSNOW(cl)
+    }
 
     out <- foreach(i = 1:nsims) %dopar% {
 
@@ -294,6 +307,11 @@ netsim_parallel <- function(x,
     for (i in 2:length(out)) {
       all <- merge(all, out[[i]])
     }
+
+    if (partype == "snow") {
+      stopCluster(cl)
+    }
+
   } else {
     all <- netsim(x, param, init, control)
   }
