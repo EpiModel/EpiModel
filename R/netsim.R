@@ -277,9 +277,6 @@ netsim_parallel <- function(x,
   if (nsims > 1 && ncores > 1) {
     suppressPackageStartupMessages(require(foreach))
     suppressPackageStartupMessages(require(doParallel))
-    if (ncores > detectCores()) {
-      stop("Maximum cores number of cores is ", detectCores())
-    }
     cluster.size <- min(nsims, ncores)
     registerDoParallel(cluster.size)
 
