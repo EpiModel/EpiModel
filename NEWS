@@ -7,6 +7,9 @@ NEW FEATURES
   matrices, and data frame of network statistics from a completed netsim
   simulation.
 * Added progress bars for netdx simulations.
+* Automatic parallelization of network models is now possible with the
+  netsim_parallel function. Note that this is experimental and has not been
+  tested extensively across platforms, so bug reports are welcome.
 
 INTERFACE CHANGES
 * The internal representation of disease status as an individual-level attribute
