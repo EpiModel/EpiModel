@@ -478,6 +478,7 @@ plot.dcm <- function(x,
 #' @param mean.line if \code{TRUE}, plot mean of simulations across time.
 #' @param mean.extinct if \code{TRUE}, include extinct simulations in mean
 #'        calculation (see details).
+#' @param mean.smooth if \code{TRUE}, use a lowess smoother on the mean line.
 #' @param mean.col a vector of any standard R color format for mean lines.
 #' @param mean.lwd line width for mean lines.
 #' @param mean.lty line type for mean lines.
@@ -543,8 +544,12 @@ plot.dcm <- function(x,
 #' control <- control.icm(type = "SI", nsteps = 100,
 #'                        nsims = 3, verbose = FALSE)
 #' mod2 <- icm(param, init, control)
+#'
+#' # Plot prevalence
 #' plot(mod2, y = "i.num", mean.line = FALSE)
-#' plot(mod2, y = "si.flow", sim.lines = FALSE)
+#'
+#' # Plot incidence
+#' plot(mod2, y = "si.flow", mean.smooth = TRUE)
 #' }
 #'
 plot.icm <- function(x,
@@ -557,6 +562,7 @@ plot.icm <- function(x,
                      sim.alpha,
                      mean.line = TRUE,
                      mean.extinct = TRUE,
+                     mean.smooth = FALSE,
                      mean.col,
                      mean.lwd,
                      mean.lty,
@@ -839,9 +845,15 @@ plot.icm <- function(x,
       for (j in seq_len(lcomp)) {
         if (mean.extinct == TRUE) {
           mean.prev <- apply(x$epi[[y[j]]], 1, mean)
+          if (mean.smooth == TRUE) {
+            mean.prev <- supsmu(x = 1:nsteps, y = mean.prev)$y
+          }
         } else {
           non.extinct <- as.vector(which(apply(x$epi$si.flow, 2, max) > 0))
           mean.prev <- apply(x$epi[[y[j]]][, non.extinct], 1, mean)
+          if (mean.smooth == TRUE) {
+            mean.prev <- supsmu(x = 1:nsteps, y = mean.prev)$y
+          }
         }
         lines(1:nsteps,
               mean.prev,

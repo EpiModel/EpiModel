@@ -4,8 +4,9 @@
 \title{Plot Data from a Stochastic Individual Contact Epidemic Model}
 \usage{
 \method{plot}{icm}(x, y, popfrac, sim.lines, sims, sim.col, sim.lwd, sim.alpha,
-  mean.line = TRUE, mean.extinct = TRUE, mean.col, mean.lwd, mean.lty, qnts,
-  qnts.col, qnts.alpha, leg, leg.cex = 0.8, axs = "r", add = FALSE, ...)
+  mean.line = TRUE, mean.extinct = TRUE, mean.smooth = FALSE, mean.col,
+  mean.lwd, mean.lty, qnts, qnts.col, qnts.alpha, leg, leg.cex = 0.8,
+  axs = "r", add = FALSE, ...)
 }
 \arguments{
 \item{x}{an \code{EpiModel} object of class \code{icm}.}
@@ -32,6 +33,8 @@ and 1 = opaque (see \code{\link{transco}}).}
 
 \item{mean.extinct}{if \code{TRUE}, include extinct simulations in mean
 calculation (see details).}
+
+\item{mean.smooth}{if \code{TRUE}, use a lowess smoother on the mean line.}
 
 \item{mean.col}{a vector of any standard R color format for mean lines.}
 
@@ -106,8 +109,12 @@ init <- init.icm(s.num = 500, i.num = 10)
 control <- control.icm(type = "SI", nsteps = 100,
                        nsims = 3, verbose = FALSE)
 mod2 <- icm(param, init, control)
+
+# Plot prevalence
 plot(mod2, y = "i.num", mean.line = FALSE)
-plot(mod2, y = "si.flow", sim.lines = FALSE)
+
+# Plot incidence
+plot(mod2, y = "si.flow", mean.smooth = TRUE)
 }
 }
 \seealso{
