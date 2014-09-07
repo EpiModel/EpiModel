@@ -260,7 +260,6 @@ init_status.net <- function(all) {
       infTime[idsInf] <- ssample(1:(-round(1/all$param$rec.rate) + 2),
                                  length(idsInf),
                                  replace = TRUE)
-      #TODO: divide this by mode if rec.rate != rec.rate.m2
     }
   }
   all$attr$infTime <- infTime

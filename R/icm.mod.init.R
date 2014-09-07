@@ -160,7 +160,6 @@ init_status.icm <- function(all) {
       infTime[idsInf] <- ssample(1:(-round(1/all$param$rec.rate) + 2),
                                  length(idsInf),
                                  replace = TRUE)
-      #TODO: divide this by group if rec.rate != rec.rate.g2
     }
   }
   all$attr$infTime <- infTime
