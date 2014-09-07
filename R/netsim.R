@@ -290,7 +290,7 @@ netsim_parallel <- function(x,
       control$verbose = FALSE
       control$nsims = 1
 
-      netsim(est, param, init, control)
+      netsim(x, param, init, control)
 
     }
 
@@ -299,7 +299,7 @@ netsim_parallel <- function(x,
       all <- merge(all, out[[i]])
     }
   } else {
-    all <- netsim(est, param, init, control)
+    all <- netsim(x, param, init, control)
   }
 
   return(all)
