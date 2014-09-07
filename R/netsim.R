@@ -225,7 +225,7 @@ netsim <- function(x,
 #'
 #' To run models in parallel, add an argument to the control settings called
 #' \code{ncores} that is equal to the number of parallel cores the simulations
-#' should be initiated on. Use \code{\link{detect.cores}} to find the maximum on
+#' should be initiated on. Use \code{detectCores}} to find the maximum on
 #' any system.
 #'
 #' Due to memory limitations, the network objects are not saved by default
@@ -265,7 +265,11 @@ netsim <- function(x,
 #' plot(sims)
 #' }
 #'
-netsim_parallel <- function(est, param, init, control) {
+netsim_parallel <- function(x,
+                            param,
+                            init,
+                            control
+                            ) {
 
   nsims <- control$nsims
   ncores <- control$ncores
