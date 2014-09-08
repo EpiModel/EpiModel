@@ -57,7 +57,8 @@ infection.icm <- function(all, at) {
       if (all$param$groups == 1) {
         del$tprob <- all$param$inf.prob
       } else {
-        del$tprob <- ifelse(del$p1.stat == 0, all$param$inf.prob, all$param$inf.prob.g2)
+        del$tprob <- ifelse(del$p1.stat == "s", all$param$inf.prob,
+                                                all$param$inf.prob.g2)
       }
       del$trans <- rbinom(nrow(del), 1, del$tprob)
       del <- del[del$trans == TRUE, ]
