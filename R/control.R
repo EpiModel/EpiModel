@@ -332,7 +332,7 @@ control.icm <- function(type,
 #'        with the default function of \code{\link{resim_nets}}.
 #' @param edges_correct.FUN module to adjust the edges coefficient in response
 #'        to changes to the population size, with the default function of
-#'        \code{\link{edges_correct.net}} that preserves mean degree.
+#'        \code{\link{edges_correct}} that preserves mean degree.
 #' @param get_prev.FUN module to calculate disease prevalence at each time step,
 #'        with the default function of \code{\link{get_prev.net}}.
 #' @param verbose.FUN module to print simulation progress to screen, with the
