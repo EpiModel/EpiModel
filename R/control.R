@@ -152,6 +152,10 @@ control.dcm <- function(type,
 #'        0 (the default) prints completion status of entire simulation and
 #'        positive integer \code{x} prints progress after each \code{x} time
 #'        steps.
+#' @param skip.check if \code{TRUE}, skips the error check for parameter values,
+#'        initial conditions, and control settings before running the models.
+#'        This is suggested only if encountering unnecessary errors when running
+#'        new models.
 #' @param ... additional control settings passed to model.
 #'
 #' @details
@@ -200,6 +204,7 @@ control.icm <- function(type,
                         get_prev.FUN,
                         verbose,
                         verbose.int,
+                        skip.check,
                         ...) {
 
   ## Pull parameters
@@ -257,7 +262,9 @@ control.icm <- function(type,
   if (is.null(out$verbose.int)) {
     out$verbose.int <- 0
   }
-
+  if (is.null(out$skip.check)) {
+    out$skip.check <- FALSE
+  }
 
   ## Output
   class(out) <- "control.icm"
@@ -349,6 +356,10 @@ control.icm <- function(type,
 #'        0 prints completion status of entire simulation and positive integer
 #'        \code{x} prints progress after each \code{x} time steps. The default
 #'        is to print progress after each time step.
+#' @param skip.check if \code{TRUE}, skips the error check for parameter values,
+#'        initial conditions, and control settings before running the models.
+#'        This is suggested only if encountering unnecessary errors when running
+#'        new models.
 #' @param ... additional control settings passed to model.
 #'
 #' @details
@@ -431,6 +442,7 @@ control.net <- function(type,
                         save.network,
                         verbose,
                         verbose.int,
+                        skip.check,
                         ...) {
 
   ## Pull parameters
@@ -521,6 +533,9 @@ control.net <- function(type,
   }
   if (is.null(out$verbose.int)) {
     out$verbose.int <- 1
+  }
+  if (is.null(out$skip.check)) {
+    out$skip.check <- FALSE
   }
 
 

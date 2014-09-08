@@ -7,7 +7,7 @@ control.net(type, nsteps, nsims, depend, rec.rand, b.rand, d.rand, tea.status,
   attr.rules, epi.by, pid.prefix, initialize.FUN, infection.FUN, recovery.FUN,
   deaths.FUN, births.FUN, resim_nets.FUN, get_prev.FUN, set.control.stergm,
   save.nwstats, nwstats.formula, delete.nodes, save.transmat, save.network,
-  verbose, verbose.int, ...)
+  verbose, verbose.int, skip.check, ...)
 }
 \arguments{
 \item{type}{disease type to be modeled, with the choice of \code{"SI"} for
@@ -114,6 +114,11 @@ edge configuration at the final time step of each simulation.}
 0 prints completion status of entire simulation and positive integer
 \code{x} prints progress after each \code{x} time steps. The default
 is to print progress after each time step.}
+
+\item{skip.check}{if \code{TRUE}, skips the error check for parameter values,
+initial conditions, and control settings before running the models.
+This is suggested only if encountering unnecessary errors when running
+new models.}
 
 \item{...}{additional control settings passed to model.}
 }
