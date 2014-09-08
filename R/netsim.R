@@ -164,30 +164,26 @@ netsim <- function(x,
         }
       }
 
-
-      ## Infection Module
-      all <- do.call(control[["infection.FUN"]], list(all, at))
+      ## Demographics Modules
+      all <- do.call(control[["deaths.FUN"]], list(all, at))
+      all <- do.call(control[["births.FUN"]], list(all, at))
 
 
       ## Recovery Module
       all <- do.call(control[["recovery.FUN"]], list(all, at))
 
 
-      ## Demographics Modules
-      all <- do.call(control[["deaths.FUN"]], list(all, at))
-      all <- do.call(control[["births.FUN"]], list(all, at))
-
-
       ## Resimulate network
+      all <- do.call(control[["edges_correct.FUN"]], list(all, at))
       all <- do.call(control[["resim_nets.FUN"]], list(all, at))
 
 
-      ## Save Prevalence Vectors
+      ## Infection Module
+      all <- do.call(control[["infection.FUN"]], list(all, at))
+
+
+      ## Save Prevalence
       all <- do.call(control[["get_prev.FUN"]], list(all, at))
-
-
-      ## Popsize Edges Correction
-      all <- do.call(control[["edges_correct.FUN"]], list(all, at))
 
 
       ## Progress Console

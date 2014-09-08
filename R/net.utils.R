@@ -511,27 +511,26 @@ edges_correct <- function(all, at) {
     if (all$param$modes == 1) {
       if (all$control$type %in% c("SI", "SIS")) {
         old.num <- all$out$s.num[at-1] + all$out$i.num[at-1]
-        new.num <- all$out$s.num[at] + all$out$i.num[at]
+        new.num <- sum(all$attr$active == 1)
       }
       if (all$control$type == "SIR") {
         old.num <- all$out$s.num[at-1] + all$out$i.num[at-1] + all$out$r.num[at-1]
-        new.num <- all$out$s.num[at] + all$out$i.num[at] + all$out$r.num[at]
+        new.num <- sum(all$attr$active == 1)
       }
       all$nwparam$coef.form[1] <- all$nwparam$coef.form[1] + log(old.num) - log(new.num)
     }
     if (all$param$modes == 2) {
+      mode <- idmode(all$nw)
       if (all$control$type %in% c("SI", "SIS")) {
         old.num.m1 <- all$out$s.num[at-1] + all$out$i.num[at-1]
         old.num.m2 <- all$out$s.num.m2[at-1] + all$out$i.num.m2[at-1]
-        new.num.m1 <- all$out$s.num[at] + all$out$i.num[at]
-        new.num.m2 <- all$out$s.num.m2[at] + all$out$i.num.m2[at]
       }
       if (all$control$type == "SIR") {
         old.num.m1 <- all$out$s.num[at-1] + all$out$i.num[at-1] + all$out$r.num[at-1]
         old.num.m2 <- all$out$s.num.m2[at-1] + all$out$i.num.m2[at-1] + all$out$r.num.m2[at-1]
-        new.num.m1 <- all$out$s.num[at] + all$out$i.num[at] + all$out$r.num[at]
-        new.num.m2 <- all$out$s.num.m2[at] + all$out$i.num.m2[at] + all$out$r.num.m2[at]
       }
+      new.num.m1 <- sum(all$attr$active == 1 & mode == 1)
+      new.num.m2 <- sum(all$attr$active == 1 & mode == 2)
       all$nwparam$coef.form[1] <- all$nwparam$coef.form[1] +
         log(2*old.num.m1*old.num.m2/(old.num.m1+old.num.m2)) -
         log(2*new.num.m1*new.num.m2/(new.num.m1+new.num.m2))
