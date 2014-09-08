@@ -329,7 +329,10 @@ control.icm <- function(type,
 #' @param births.FUN module to simulate births or entries, with the default
 #'        function of \code{\link{births.net}}.
 #' @param resim_nets.FUN module to resimulate the network at each time step,
-#'        with the default function of \code{\link{resim_nets}}
+#'        with the default function of \code{\link{resim_nets}}.
+#' @param edges_correct.FUN module to adjust the edges coefficient in response
+#'        to changes to the population size, with the default function of
+#'        \code{\link{edges_correct.net}} that preserves mean degree.
 #' @param get_prev.FUN module to calculate disease prevalence at each time step,
 #'        with the default function of \code{\link{get_prev.net}}.
 #' @param verbose.FUN module to print simulation progress to screen, with the
@@ -435,6 +438,7 @@ control.net <- function(type,
                         deaths.FUN,
                         births.FUN,
                         resim_nets.FUN,
+                        edges_correct.FUN,
                         get_prev.FUN,
                         verbose.FUN,
                         set.control.stergm,
@@ -509,6 +513,9 @@ control.net <- function(type,
   }
   if (is.null(out$resim_nets.FUN)) {
     out$resim_nets.FUN <- resim_nets
+  }
+  if (is.null(out$edges_correct.FUN)) {
+    out$edges_correct.FUN <- edges_correct
   }
   if (is.null(out$get_prev.FUN)) {
     out$get_prev.FUN <- get_prev.net

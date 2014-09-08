@@ -5,8 +5,8 @@
 \usage{
 control.net(type, nsteps, nsims, depend, rec.rand, b.rand, d.rand, tea.status,
   attr.rules, epi.by, pid.prefix, initialize.FUN, infection.FUN, recovery.FUN,
-  deaths.FUN, births.FUN, resim_nets.FUN, get_prev.FUN, verbose.FUN,
-  set.control.stergm, save.nwstats, nwstats.formula, delete.nodes,
+  deaths.FUN, births.FUN, resim_nets.FUN, edges_correct.FUN, get_prev.FUN,
+  verbose.FUN, set.control.stergm, save.nwstats, nwstats.formula, delete.nodes,
   save.transmat, save.network, verbose, verbose.int, skip.check, ...)
 }
 \arguments{
@@ -78,7 +78,11 @@ of \code{\link{deaths.net}}.}
 function of \code{\link{births.net}}.}
 
 \item{resim_nets.FUN}{module to resimulate the network at each time step,
-with the default function of \code{\link{resim_nets}}}
+with the default function of \code{\link{resim_nets}}.}
+
+\item{edges_correct.FUN}{module to adjust the edges coefficient in response
+to changes to the population size, with the default function of
+\code{\link{edges_correct.net}} that preserves mean degree.}
 
 \item{get_prev.FUN}{module to calculate disease prevalence at each time step,
 with the default function of \code{\link{get_prev.net}}.}

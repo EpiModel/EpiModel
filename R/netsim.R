@@ -179,15 +179,15 @@ netsim <- function(x,
 
 
       ## Resimulate network
-      all <-  do.call(control[["resim_nets.FUN"]], list(all, at))
+      all <- do.call(control[["resim_nets.FUN"]], list(all, at))
 
 
       ## Save Prevalence Vectors
-      all <-  do.call(control[["get_prev.FUN"]], list(all, at))
+      all <- do.call(control[["get_prev.FUN"]], list(all, at))
 
 
       ## Popsize Edges Correction
-      all <- edges_correct(all, at)
+      all <- do.call(control[["edges_correct.FUN"]], list(all, at))
 
 
       ## Progress Console
