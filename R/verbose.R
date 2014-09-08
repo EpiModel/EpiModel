@@ -128,6 +128,22 @@ verbose.icm <- function(x, type, s, at) {
 }
 
 
+#' @title Progress Print Module for Stochastic Network Models
+#'
+#' @description This function prints progress from stochastic network models
+#'              simulated with \code{netsim} to the console.
+#'
+#' @param x if the \code{type} is "startup", then an object of class
+#'        \code{control.net}, otherwise the all master data object in \code{netsim}
+#'        simulations.
+#' @param type progress type, either of "startup" for starting messages before
+#'        all simulations, or "progress" for time step specific messages.
+#' @param s current simulation number, if type is "progress"
+#' @param at current time step, if type is "progress"
+#'
+#' @export
+#' @keywords internal
+#'
 verbose.net <- function(x, type, s, at) {
 
   if (type == "startup") {

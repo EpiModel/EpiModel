@@ -141,7 +141,7 @@ netsim <- function(x,
                    ) {
 
   crosscheck.net(x, param, init, control)
-  verbose.net(control, type = "startup")
+  do.call(control[["verbose.FUN"]], list(control, type = "startup"))
 
 
   ### SIMULATION LOOP
@@ -164,34 +164,30 @@ netsim <- function(x,
         }
       }
 
-
-      ## Infection Module
-      all <- do.call(control[["infection.FUN"]], list(all, at))
+      ## Demographics Modules
+      all <- do.call(control[["deaths.FUN"]], list(all, at))
+      all <- do.call(control[["births.FUN"]], list(all, at))
 
 
       ## Recovery Module
       all <- do.call(control[["recovery.FUN"]], list(all, at))
 
 
-      ## Demographics Modules
-      all <- do.call(control[["deaths.FUN"]], list(all, at))
-      all <- do.call(control[["births.FUN"]], list(all, at))
-
-
       ## Resimulate network
-      all <-  do.call(control[["resim_nets.FUN"]], list(all, at))
+      all <- do.call(control[["edges_correct.FUN"]], list(all, at))
+      all <- do.call(control[["resim_nets.FUN"]], list(all, at))
 
 
-      ## Save Prevalence Vectors
-      all <-  do.call(control[["get_prev.FUN"]], list(all, at))
+      ## Infection Module
+      all <- do.call(control[["infection.FUN"]], list(all, at))
 
 
-      ## Popsize Edges Correction
-      all <- edges_correct(all, at)
+      ## Save Prevalence
+      all <- do.call(control[["get_prev.FUN"]], list(all, at))
 
 
       ## Progress Console
-      verbose.net(all, type = "progress", s, at)
+      do.call(control[["verbose.FUN"]], list(all, type = "progress", s, at))
 
     }
 

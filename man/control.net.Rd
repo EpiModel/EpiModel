@@ -5,9 +5,9 @@
 \usage{
 control.net(type, nsteps, nsims, depend, rec.rand, b.rand, d.rand, tea.status,
   attr.rules, epi.by, pid.prefix, initialize.FUN, infection.FUN, recovery.FUN,
-  deaths.FUN, births.FUN, resim_nets.FUN, get_prev.FUN, set.control.stergm,
-  save.nwstats, nwstats.formula, delete.nodes, save.transmat, save.network,
-  verbose, verbose.int, ...)
+  deaths.FUN, births.FUN, resim_nets.FUN, edges_correct.FUN, get_prev.FUN,
+  verbose.FUN, set.control.stergm, save.nwstats, nwstats.formula, delete.nodes,
+  save.transmat, save.network, verbose, verbose.int, skip.check, ...)
 }
 \arguments{
 \item{type}{disease type to be modeled, with the choice of \code{"SI"} for
@@ -78,10 +78,17 @@ of \code{\link{deaths.net}}.}
 function of \code{\link{births.net}}.}
 
 \item{resim_nets.FUN}{module to resimulate the network at each time step,
-with the default function of \code{\link{resim_nets}}}
+with the default function of \code{\link{resim_nets}}.}
+
+\item{edges_correct.FUN}{module to adjust the edges coefficient in response
+to changes to the population size, with the default function of
+\code{\link{edges_correct}} that preserves mean degree.}
 
 \item{get_prev.FUN}{module to calculate disease prevalence at each time step,
 with the default function of \code{\link{get_prev.net}}.}
+
+\item{verbose.FUN}{module to print simulation progress to screen, with the
+default function of \code{\link{verbose.net}}.}
 
 \item{set.control.stergm}{control arguments passed to simulate.stergm. See the
 help file for \code{\link{netdx}} for details and examples on specifying
@@ -114,6 +121,11 @@ edge configuration at the final time step of each simulation.}
 0 prints completion status of entire simulation and positive integer
 \code{x} prints progress after each \code{x} time steps. The default
 is to print progress after each time step.}
+
+\item{skip.check}{if \code{TRUE}, skips the error check for parameter values,
+initial conditions, and control settings before running the models.
+This is suggested only if encountering unnecessary errors when running
+new models.}
 
 \item{...}{additional control settings passed to model.}
 }
@@ -149,10 +161,10 @@ value:
        with no variation.
 }
 For example, the rules list
-\code{attr.rules = list(race = "t1", sex = "current", status = 0)}
+\code{attr.rules = list(race = "t1", sex = "current", status = "s")}
 specifies how the race, sex, and status attributes should be set for incoming
 nodes. By default, the rule is "current" for all attributes except status,
-in which case it is 0 (that is, all incoming nodes are susceptible).
+in which case it is "s" (that is, all incoming nodes are susceptible).
 }
 
 \section{New Modules}{

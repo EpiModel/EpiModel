@@ -152,6 +152,10 @@ control.dcm <- function(type,
 #'        0 (the default) prints completion status of entire simulation and
 #'        positive integer \code{x} prints progress after each \code{x} time
 #'        steps.
+#' @param skip.check if \code{TRUE}, skips the error check for parameter values,
+#'        initial conditions, and control settings before running the models.
+#'        This is suggested only if encountering unnecessary errors when running
+#'        new models.
 #' @param ... additional control settings passed to model.
 #'
 #' @details
@@ -200,6 +204,7 @@ control.icm <- function(type,
                         get_prev.FUN,
                         verbose,
                         verbose.int,
+                        skip.check,
                         ...) {
 
   ## Pull parameters
@@ -257,7 +262,9 @@ control.icm <- function(type,
   if (is.null(out$verbose.int)) {
     out$verbose.int <- 0
   }
-
+  if (is.null(out$skip.check)) {
+    out$skip.check <- FALSE
+  }
 
   ## Output
   class(out) <- "control.icm"
@@ -322,9 +329,14 @@ control.icm <- function(type,
 #' @param births.FUN module to simulate births or entries, with the default
 #'        function of \code{\link{births.net}}.
 #' @param resim_nets.FUN module to resimulate the network at each time step,
-#'        with the default function of \code{\link{resim_nets}}
+#'        with the default function of \code{\link{resim_nets}}.
+#' @param edges_correct.FUN module to adjust the edges coefficient in response
+#'        to changes to the population size, with the default function of
+#'        \code{\link{edges_correct}} that preserves mean degree.
 #' @param get_prev.FUN module to calculate disease prevalence at each time step,
 #'        with the default function of \code{\link{get_prev.net}}.
+#' @param verbose.FUN module to print simulation progress to screen, with the
+#'        default function of \code{\link{verbose.net}}.
 #' @param set.control.stergm control arguments passed to simulate.stergm. See the
 #'        help file for \code{\link{netdx}} for details and examples on specifying
 #'        this parameter.
@@ -349,6 +361,10 @@ control.icm <- function(type,
 #'        0 prints completion status of entire simulation and positive integer
 #'        \code{x} prints progress after each \code{x} time steps. The default
 #'        is to print progress after each time step.
+#' @param skip.check if \code{TRUE}, skips the error check for parameter values,
+#'        initial conditions, and control settings before running the models.
+#'        This is suggested only if encountering unnecessary errors when running
+#'        new models.
 #' @param ... additional control settings passed to model.
 #'
 #' @details
@@ -378,10 +394,10 @@ control.icm <- function(type,
 #'        with no variation.
 #' }
 #' For example, the rules list
-#' \code{attr.rules = list(race = "t1", sex = "current", status = 0)}
+#' \code{attr.rules = list(race = "t1", sex = "current", status = "s")}
 #' specifies how the race, sex, and status attributes should be set for incoming
 #' nodes. By default, the rule is "current" for all attributes except status,
-#' in which case it is 0 (that is, all incoming nodes are susceptible).
+#' in which case it is "s" (that is, all incoming nodes are susceptible).
 #'
 #' @section New Modules:
 #' Built-in network models use a set of module functions that specify how the
@@ -422,7 +438,9 @@ control.net <- function(type,
                         deaths.FUN,
                         births.FUN,
                         resim_nets.FUN,
+                        edges_correct.FUN,
                         get_prev.FUN,
+                        verbose.FUN,
                         set.control.stergm,
                         save.nwstats,
                         nwstats.formula,
@@ -431,6 +449,7 @@ control.net <- function(type,
                         save.network,
                         verbose,
                         verbose.int,
+                        skip.check,
                         ...) {
 
   ## Pull parameters
@@ -495,8 +514,14 @@ control.net <- function(type,
   if (is.null(out$resim_nets.FUN)) {
     out$resim_nets.FUN <- resim_nets
   }
+  if (is.null(out$edges_correct.FUN)) {
+    out$edges_correct.FUN <- edges_correct
+  }
   if (is.null(out$get_prev.FUN)) {
     out$get_prev.FUN <- get_prev.net
+  }
+  if (is.null(out$verbose.FUN)) {
+    out$verbose.FUN <- verbose.net
   }
   if (is.null(out$set.control.stergm)) {
     out$set.control.stergm <- control.simulate.network(MCMC.burnin.min = 1000)
@@ -521,6 +546,9 @@ control.net <- function(type,
   }
   if (is.null(out$verbose.int)) {
     out$verbose.int <- 1
+  }
+  if (is.null(out$skip.check)) {
+    out$skip.check <- FALSE
   }
 
 

@@ -5,7 +5,7 @@
 \usage{
 control.icm(type, nsteps, nsims, rec.rand, b.rand, d.rand, initialize.FUN,
   infection.FUN, recovery.FUN, deaths.FUN, births.FUN, get_prev.FUN, verbose,
-  verbose.int, ...)
+  verbose.int, skip.check, ...)
 }
 \arguments{
 \item{type}{disease type to be modeled, with the choice of \code{"SI"} for
@@ -60,6 +60,11 @@ with the default function of \code{\link{get_prev.icm}}.}
 0 (the default) prints completion status of entire simulation and
 positive integer \code{x} prints progress after each \code{x} time
 steps.}
+
+\item{skip.check}{if \code{TRUE}, skips the error check for parameter values,
+initial conditions, and control settings before running the models.
+This is suggested only if encountering unnecessary errors when running
+new models.}
 
 \item{...}{additional control settings passed to model.}
 }
