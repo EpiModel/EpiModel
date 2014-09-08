@@ -332,6 +332,8 @@ control.icm <- function(type,
 #'        with the default function of \code{\link{resim_nets}}
 #' @param get_prev.FUN module to calculate disease prevalence at each time step,
 #'        with the default function of \code{\link{get_prev.net}}.
+#' @param verbose.FUN module to print simulation progress to screen, with the
+#'        default function of \code{\link{verbose.net}}.
 #' @param set.control.stergm control arguments passed to simulate.stergm. See the
 #'        help file for \code{\link{netdx}} for details and examples on specifying
 #'        this parameter.
@@ -434,6 +436,7 @@ control.net <- function(type,
                         births.FUN,
                         resim_nets.FUN,
                         get_prev.FUN,
+                        verbose.FUN,
                         set.control.stergm,
                         save.nwstats,
                         nwstats.formula,
@@ -509,6 +512,9 @@ control.net <- function(type,
   }
   if (is.null(out$get_prev.FUN)) {
     out$get_prev.FUN <- get_prev.net
+  }
+  if (is.null(out$verbose.FUN)) {
+    out$verbose.FUN <- verbose.net
   }
   if (is.null(out$set.control.stergm)) {
     out$set.control.stergm <- control.simulate.network(MCMC.burnin.min = 1000)

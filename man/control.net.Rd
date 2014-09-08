@@ -5,9 +5,9 @@
 \usage{
 control.net(type, nsteps, nsims, depend, rec.rand, b.rand, d.rand, tea.status,
   attr.rules, epi.by, pid.prefix, initialize.FUN, infection.FUN, recovery.FUN,
-  deaths.FUN, births.FUN, resim_nets.FUN, get_prev.FUN, set.control.stergm,
-  save.nwstats, nwstats.formula, delete.nodes, save.transmat, save.network,
-  verbose, verbose.int, skip.check, ...)
+  deaths.FUN, births.FUN, resim_nets.FUN, get_prev.FUN, verbose.FUN,
+  set.control.stergm, save.nwstats, nwstats.formula, delete.nodes,
+  save.transmat, save.network, verbose, verbose.int, skip.check, ...)
 }
 \arguments{
 \item{type}{disease type to be modeled, with the choice of \code{"SI"} for
@@ -82,6 +82,9 @@ with the default function of \code{\link{resim_nets}}}
 
 \item{get_prev.FUN}{module to calculate disease prevalence at each time step,
 with the default function of \code{\link{get_prev.net}}.}
+
+\item{verbose.FUN}{module to print simulation progress to screen, with the
+default function of \code{\link{verbose.net}}.}
 
 \item{set.control.stergm}{control arguments passed to simulate.stergm. See the
 help file for \code{\link{netdx}} for details and examples on specifying

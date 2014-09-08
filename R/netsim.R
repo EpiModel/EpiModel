@@ -141,7 +141,7 @@ netsim <- function(x,
                    ) {
 
   crosscheck.net(x, param, init, control)
-  verbose.net(control, type = "startup")
+  do.call(control[["verbose.FUN"]], list(control, type = "startup"))
 
 
   ### SIMULATION LOOP
@@ -191,7 +191,7 @@ netsim <- function(x,
 
 
       ## Progress Console
-      verbose.net(all, type = "progress", s, at)
+      do.call(control[["verbose.FUN"]], list(all, type = "progress", s, at))
 
     }
 
