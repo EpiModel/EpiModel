@@ -161,10 +161,10 @@ value:
        with no variation.
 }
 For example, the rules list
-\code{attr.rules = list(race = "t1", sex = "current", status = 0)}
+\code{attr.rules = list(race = "t1", sex = "current", status = "s")}
 specifies how the race, sex, and status attributes should be set for incoming
 nodes. By default, the rule is "current" for all attributes except status,
-in which case it is 0 (that is, all incoming nodes are susceptible).
+in which case it is "s" (that is, all incoming nodes are susceptible).
 }
 
 \section{New Modules}{
