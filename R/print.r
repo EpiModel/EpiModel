@@ -273,7 +273,10 @@ print.init.net <- function(x, ...) {
 #' @export
 print.control.dcm <- function(x, ...) {
 
-  pToPrint <- which(!(names(x) %in% c("dt")))
+  pToPrint <- seq_along(names(x))
+  if (is.null(x$new.mod)) {
+    pToPrint <- pToPrint[-which(names(x) == "new.mod")]
+  }
 
   cat("DCM Control Settings")
   cat("\n===========================\n")
