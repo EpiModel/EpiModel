@@ -5,51 +5,29 @@ shinyServer(function(input, output) {
 
   ## Main reactive functions
   param <- reactive({
-    vital <- ifelse(input$b.rate > 0 |
-                    input$ds.rate > 0 |
-                    input$di.rate > 0 |
-                    input$dr.rate > 0, TRUE, FALSE)
-    l <- list(inf.prob = input$inf.prob,
+    param.icm(inf.prob = input$inf.prob,
               act.rate = input$act.rate,
               rec.rate = input$rec.rate,
               b.rate = input$b.rate,
               ds.rate = input$ds.rate,
               di.rate = input$di.rate,
-              dr.rate = input$dr.rate,
-              groups = 1,
-              vital = vital)
-    class(l) <- "param.icm"
-    return(l)
+              dr.rate = input$dr.rate)
   })
   init <- reactive({
     if (input$modtype == "SIR") {
-      l <- list(s.num = input$s.num,
-                i.num = input$i.num,
-                r.num = input$r.num)
+      init.icm(s.num = input$s.num,
+               i.num = input$i.num,
+               r.num = input$r.num)
     } else {
-      l <- list(s.num = input$s.num,
-                i.num = input$i.num)
+      init.icm(s.num = input$s.num,
+               i.num = input$i.num)
     }
-    l$status.rand <- TRUE
-    class(l) <- "init.icm"
-    return(l)
   })
   control <- reactive({
-    l <- list(type = input$modtype,
-              nsteps = input$nsteps,
-              nsims = input$nsims,
-              rec.rand = TRUE,
-              b.rand = TRUE,
-              d.rand = TRUE,
-              verbose = FALSE,
-              initialize.FUN = initialize.icm,
-              infection.FUN = infection.icm,
-              recovery.FUN = recovery.icm,
-              deaths.FUN = deaths.icm,
-              births.FUN = births.icm,
-              get_prev.FUN = get_prev.icm)
-    class(l) <- "control.icm"
-    return(l)
+    control.icm(type = input$modtype,
+                nsteps = input$nsteps,
+                nsims = input$nsims,
+                verbose = FALSE)
   })
   mod <- reactive({
     input$runMod
