@@ -141,14 +141,18 @@ netsim <- function(x,
                    ) {
 
   crosscheck.net(x, param, init, control)
-  do.call(control[["verbose.FUN"]], list(control, type = "startup"))
+  if (!is.null(control[["verbose.FUN"]])) {
+    do.call(control[["verbose.FUN"]], list(control, type = "startup"))
+  }
 
 
   ### SIMULATION LOOP
   for (s in 1:control$nsims) {
 
     ## Initialization Module
-    all <- do.call(control[["initialize.FUN"]], list(x, param, init, control))
+    if (!is.null(control[["initialize.FUN"]])) {
+      all <- do.call(control[["initialize.FUN"]], list(x, param, init, control))
+    }
 
 
     ### TIME LOOP
@@ -163,29 +167,45 @@ netsim <- function(x,
       }
 
       ## Demographics Modules
-      all <- do.call(control[["deaths.FUN"]], list(all, at))
-      all <- do.call(control[["births.FUN"]], list(all, at))
+      if (!is.null(control[["deaths.FUN"]])) {
+        all <- do.call(control[["deaths.FUN"]], list(all, at))
+      }
+      if (!is.null(control[["births.FUN"]])) {
+        all <- do.call(control[["births.FUN"]], list(all, at))
+      }
 
 
       ## Recovery Module
-      all <- do.call(control[["recovery.FUN"]], list(all, at))
+      if (!is.null(control[["recovery.FUN"]])) {
+        all <- do.call(control[["recovery.FUN"]], list(all, at))
+      }
 
 
       ## Resimulate network
-      all <- do.call(control[["edges_correct.FUN"]], list(all, at))
-      all <- do.call(control[["resim_nets.FUN"]], list(all, at))
+      if (!is.null(control[["edges_correct.FUN"]])) {
+        all <- do.call(control[["edges_correct.FUN"]], list(all, at))
+      }
+      if (!is.null(control[["resim_nets.FUN"]])) {
+        all <- do.call(control[["resim_nets.FUN"]], list(all, at))
+      }
 
 
       ## Infection Module
-      all <- do.call(control[["infection.FUN"]], list(all, at))
+      if (!is.null(control[["infection.FUN"]])) {
+        all <- do.call(control[["infection.FUN"]], list(all, at))
+      }
 
 
       ## Save Prevalence
-      all <- do.call(control[["get_prev.FUN"]], list(all, at))
+      if (!is.null(control[["get_prev.FUN"]])) {
+        all <- do.call(control[["get_prev.FUN"]], list(all, at))
+      }
 
 
       ## Progress Console
-      do.call(control[["verbose.FUN"]], list(all, type = "progress", s, at))
+      if (!is.null(control[["verbose.FUN"]])) {
+        do.call(control[["verbose.FUN"]], list(all, type = "progress", s, at))
+      }
 
     }
 

@@ -57,6 +57,8 @@ API CHANGES
   replacement modules occurs within the control functions themselves. The
   existing control functions should be used as a template if one is considering
   replacing these parameterization functions.
+* Users may also bypass any of the built-in modules in network models (see the
+  list in control.net) by setting the argument for that module to NULL.
 
 BUG FIXES
 * Minor updates and bug fixes to the two built-in Shiny applications (accessed
