@@ -1,4 +1,4 @@
-context("ICM new models")
+context("New ICM models")
 
 test_that("ICM new modules", {
 
