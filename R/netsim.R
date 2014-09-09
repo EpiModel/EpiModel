@@ -155,12 +155,10 @@ netsim <- function(x,
     for (at in 2:control$nsteps) {
 
       ## User Modules
-      bim <- grep(".FUN", names(formals(control.net)), value = TRUE)
-      um <- which(grepl(".FUN", names(control)) & !(names(control) %in% bim))
+      um <- control$user.mods
       if (length(um) > 0) {
         for (i in seq_along(um)) {
-          umn <- names(control)[um[i]]
-          all <- do.call(control[[umn]], list(all, at))
+          all <- do.call(control[[um[i]]], list(all, at))
         }
       }
 
