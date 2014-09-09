@@ -1,4 +1,4 @@
-context("Extraction for network models")
+context("Get functions for network models")
 
 
 # Model simulation --------------------------------------------------------
