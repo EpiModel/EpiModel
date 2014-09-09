@@ -3,7 +3,8 @@
 \alias{init.icm}
 \title{Initial Conditions for Stochastic Individual Contact Models}
 \usage{
-init.icm(s.num, i.num, r.num, s.num.g2, i.num.g2, r.num.g2, status.rand, ...)
+init.icm(s.num, i.num, r.num, s.num.g2, i.num.g2, r.num.g2,
+  status.rand = TRUE, ...)
 }
 \arguments{
 \item{s.num}{number of initial susceptible. For two-group models, this is

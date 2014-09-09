@@ -49,21 +49,27 @@ init.dcm <- function(s.num,
                      r.num.g2,
                      ...) {
 
-  ## Pull parameters
-  out <- as.list(match.call(expand.dots = TRUE)[-1])
-
-
-  ## Split lists
-  out <- split_list(out)
-
-
-  ## Eval args
-  out <- eval_list(out)
+  # Get arguments
+  p <- list()
+  formal.args <- formals(sys.function())
+  formal.args[["..."]] <- NULL
+  for (arg in names(formal.args)) {
+    if (as.logical(mget(arg) != "")) {
+      p[arg] <- list(get(arg))
+    }
+  }
+  dot.args <- list(...)
+  names.dot.args <- names(dot.args)
+  if (length(dot.args) > 0) {
+    for (i in 1:length(dot.args)) {
+      p[[names.dot.args[i]]] <- dot.args[[i]]
+    }
+  }
 
 
   ## Output
-  class(out) <- "init.dcm"
-  return(out)
+  class(p) <- "init.dcm"
+  return(p)
 }
 
 
@@ -111,30 +117,30 @@ init.icm <- function(s.num,
                      s.num.g2,
                      i.num.g2,
                      r.num.g2,
-                     status.rand,
+                     status.rand = TRUE,
                      ...) {
 
-  ## Pull parameters
-  out <- as.list(match.call(expand.dots = TRUE)[-1])
-
-
-  ## Split lists
-  out <- split_list(out)
-
-
-  ## Eval args
-  out <- eval_list(out)
-
-
-  ## Defaults and checks
-  if (is.null(out$status.rand)) {
-    out$status.rand <- TRUE
+  # Get arguments
+  p <- list()
+  formal.args <- formals(sys.function())
+  formal.args[["..."]] <- NULL
+  for (arg in names(formal.args)) {
+    if (as.logical(mget(arg) != "")) {
+      p[arg] <- list(get(arg))
+    }
+  }
+  dot.args <- list(...)
+  names.dot.args <- names(dot.args)
+  if (length(dot.args) > 0) {
+    for (i in 1:length(dot.args)) {
+      p[[names.dot.args[i]]] <- dot.args[[i]]
+    }
   }
 
 
   ## Output
-  class(out) <- "init.icm"
-  return(out)
+  class(p) <- "init.icm"
+  return(p)
 }
 
 
@@ -182,33 +188,36 @@ init.net <- function(i.num,
                      i.num.m2,
                      r.num.m2,
                      status.vector,
-                     status.rand,
+                     status.rand = TRUE,
                      ...) {
 
-  ## Pull parameters
-  out <- as.list(match.call(expand.dots = TRUE)[-1])
-
-
-  ## Split lists
-  out <- split_list(out)
-
-
-  ## Eval args
-  out <- eval_list(out)
+  # Get arguments
+  p <- list()
+  formal.args <- formals(sys.function())
+  formal.args[["..."]] <- NULL
+  for (arg in names(formal.args)) {
+    if (as.logical(mget(arg) != "")) {
+      p[arg] <- list(get(arg))
+    }
+  }
+  dot.args <- list(...)
+  names.dot.args <- names(dot.args)
+  if (length(dot.args) > 0) {
+    for (i in 1:length(dot.args)) {
+      p[[names.dot.args[i]]] <- dot.args[[i]]
+    }
+  }
 
 
   ## Defaults and checks
-  if (is.null(out$status.rand)) {
-    out$status.rand <- TRUE
+  if (!is.null(p$i.num) & !is.null(p$status.vector)) {
+    stop("Use i.num OR status.vector to set initial infected")
   }
-  if (!is.null(out$i.num) & !is.null(out$status.vector)) {
-    stop('Use i.num OR status.vector to set initial infected')
-  }
-  if (!is.null(out$status.vector)) {
-    out$status.rand <- FALSE
+  if (!is.null(p$status.vector)) {
+    p$status.rand <- FALSE
   }
 
   ## Output
-  class(out) <- "init.net"
-  return(out)
+  class(p) <- "init.net"
+  return(p)
 }
