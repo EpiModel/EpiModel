@@ -127,7 +127,7 @@ plot.dcm <- function(x,
 
 
   ## Model dimensions
-  nsteps <- max(x$control$dt)
+  nsteps <- x$control$nsteps
   nruns <- x$control$nruns
   if (norun == FALSE && any(run > nruns)) {
     stop("Specify run between 1 and", nruns,
@@ -317,23 +317,23 @@ plot.dcm <- function(x,
   ## Plot lines
   if (lcomp == 1) {
     if (nruns == 1) {
-      lines(x$control$dt, x$epi[[y]][, 1],
+      lines(x$control$timesteps, x$epi[[y]][, 1],
             lwd = lwd[1], lty = lty[1], col = pal[1])
     }
     if (nruns > 1) {
       if (norun == TRUE) {
         for (i in 1:nruns) {
-          lines(x$control$dt, x$epi[[y]][, i],
+          lines(x$control$timesteps, x$epi[[y]][, i],
                 lwd = lwd[i], lty = lty[i], col = pal[i])
         }
       } else {
         if (length(run) == 1) {
-          lines(x$control$dt, x$epi[[y]][, run],
+          lines(x$control$timesteps, x$epi[[y]][, run],
                 lwd = lwd[1], lty = lty[1], col = pal[1])
         }
         if (length(run) > 1) {
           for (i in 1:length(run)) {
-            lines(x$control$dt, x$epi[[y]][, run[i]],
+            lines(x$control$timesteps, x$epi[[y]][, run[i]],
                   lwd = lwd[i], lty = lty[i], col = pal[i])
           }
         }
@@ -343,7 +343,7 @@ plot.dcm <- function(x,
   if (lcomp > 1) {
     if (nruns == 1) {
       for (i in 1:lcomp) {
-        lines(x$control$dt, x$epi[[y[i]]][, 1],
+        lines(x$control$timesteps, x$epi[[y[i]]][, 1],
               lwd = lwd, lty = lty[i], col = pal[i])
       }
     }
@@ -351,7 +351,7 @@ plot.dcm <- function(x,
       if (norun == TRUE) {
         for (i in 1:lcomp) {
           run <- 1
-          lines(x$control$dt, x$epi[[y[i]]][, run],
+          lines(x$control$timesteps, x$epi[[y[i]]][, run],
                 lwd = lwd[i], lty = lty[i], col = pal[i])
         }
       }
@@ -361,7 +361,7 @@ plot.dcm <- function(x,
                call. = FALSE)
         }
         for (i in 1:lcomp) {
-          lines(x$control$dt, x$epi[[y[i]]][, run],
+          lines(x$control$timesteps, x$epi[[y[i]]][, run],
                 lwd = lwd[i], lty = lty[i], col = pal[i])
         }
       }
@@ -1748,7 +1748,6 @@ plot.netsim <- function(x,
 #' @keywords plot
 #'
 #' @examples
-#' \dontrun{
 #' ## Example 1: DCM SIR model with varying act.rate
 #' param <- param.dcm(inf.prob = 0.2, act.rate = 5:7,
 #'                    rec.rate = 1/3, b.rate = 1/90, ds.rate = 1/100,
@@ -1767,7 +1766,6 @@ plot.netsim <- function(x,
 #'                        nsims = 3, verbose = FALSE)
 #' mod2 <- icm(param, init, control)
 #' comp_plot(mod2, at = 25, digits = 1)
-#' }
 #'
 comp_plot <- function(x, at, run, digits, ...) {
   UseMethod("comp_plot")
@@ -1787,6 +1785,7 @@ comp_plot.dcm <- function(x,
 
   ## Variables
   nruns <- x$control$nruns
+  nsteps <- x$control$nsteps
   type <- x$control$type
   groups <- x$param$groups
   vital <- x$param$vital
@@ -1802,11 +1801,11 @@ comp_plot.dcm <- function(x,
   }
 
   ## Time
-  if (missing(at) || (at > max(x$control$dt) | at < min(x$control$dt))) {
-    stop("Specify a timestep between 1 and ", max(x$control$dt))
+  if (missing(at) || (at > nsteps | at < 1)) {
+    stop("Specify a timestep between 1 and ", nsteps)
   }
   intime <- at
-  at <- which(x$control$dt == intime)
+  at <- which(x$control$timesteps == intime)
 
   ## Dataframe subsets
   df <- as.data.frame(x, run = run)
@@ -1992,7 +1991,7 @@ denom <- function(x, y, popfrac) {
 
   if (class(x) == "dcm") {
     if (popfrac == TRUE) {
-      den <- data.frame(den = rep(NA, length(x$control$dt)))
+      den <- data.frame(den = rep(NA, length(x$control$timesteps)))
       if (x$param$groups == 1) {
         for (i in 1:x$control$nruns) {
           den[, i] <- as.data.frame(x, run = i)$num

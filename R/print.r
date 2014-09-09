@@ -15,7 +15,7 @@ print.dcm <- function(x, ...) {
     cat("\nModel type:", x$control$type)
   }
   cat("\nNo. runs:", x$control$nruns)
-  cat("\nNo. time steps:", max(x$control$dt))
+  cat("\nNo. time steps:", x$control$nsteps)
   if (new.mod == FALSE) {
     cat("\nNo. groups:", x$param$groups)
   }
