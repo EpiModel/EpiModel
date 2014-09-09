@@ -1,4 +1,4 @@
-context("Diagnostics")
+context("Network diagnostics")
 
 
 # Setup -------------------------------------------------------------------
