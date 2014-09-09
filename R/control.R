@@ -80,7 +80,6 @@ control.dcm <- function(type,
   if (is.null(out$dt)) {
     dt <- 1
   }
-  out$dt <- seq(1, nsteps, dt)
 
   if (is.null(out$odemethod)) {
     out$odemethod <- "rk4"
