@@ -48,7 +48,6 @@ the three model classes. That functionality may be expanded in future software
 releases.
 }
 \examples{
-\dontrun{
 ## Example 1: DCM SIR model with varying act.rate
 param <- param.dcm(inf.prob = 0.2, act.rate = 5:7,
                    rec.rate = 1/3, b.rate = 1/90, ds.rate = 1/100,
@@ -67,7 +66,6 @@ control <- control.icm(type = "SIR", nsteps = 25,
                        nsims = 3, verbose = FALSE)
 mod2 <- icm(param, init, control)
 comp_plot(mod2, at = 25, digits = 1)
-}
 }
 \keyword{plot}
 
