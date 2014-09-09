@@ -227,25 +227,22 @@ crosscheck.icm <- function(param, init, control) {
 #'
 crosscheck.net <- function(x, param, init, control) {
 
-  # Main class check --------------------------------------------------------
-  if (!(class(x) == "netest" || (class(x) == "list" &&
-                                 all(sapply(x, class) == "netest")))) {
-    stop("x must be either an object of class netest or a list of netest objects",
-         call. = FALSE)
-  }
-  if (class(param) != "param.net") {
-    stop("param must an object of class param.net", call. = FALSE)
-  }
-  if (class(init) != "init.net") {
-    stop("init must an object of class init.net", call. = FALSE)
-  }
-  if (class(control) != "control.net") {
-    stop("control must an object of class control.net", call. = FALSE)
-  }
+  if (control$skip.check == FALSE) {
 
-
-  # Run checks on single netest objects
-  if (class(x) == "netest" && control$skip.check == FALSE) {
+    # Main class check --------------------------------------------------------
+    if (class(x) != "netest") {
+      stop("x must be either an object of class netest",
+           call. = FALSE)
+    }
+    if (class(param) != "param.net") {
+      stop("param must an object of class param.net", call. = FALSE)
+    }
+    if (class(init) != "init.net") {
+      stop("init must an object of class init.net", call. = FALSE)
+    }
+    if (class(control) != "control.net") {
+      stop("control must an object of class control.net", call. = FALSE)
+    }
 
     # Defaults ----------------------------------------------------------------
     if (is.null(control$nwstats.formula)) {
