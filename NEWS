@@ -26,6 +26,11 @@ NEW FEATURES
   help(modules.net).
 * Added progress bars for netdx simulations for computationally intensive
   parts of the simulations.
+* The x argument in netsim may now be a list of netest objects. This would be
+  used only if supplying new simulation modules that know how to process that
+  data structure. A motivation for this is to allow original models with
+  multiple networks simulated (e.g., a main partnership network and a casual
+  partnership network).
 
 USER INTERFACE CHANGES
 * The internal representation of disease status as an individual-level attribute

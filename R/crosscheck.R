@@ -228,8 +228,10 @@ crosscheck.icm <- function(param, init, control) {
 crosscheck.net <- function(x, param, init, control) {
 
   # Main class check --------------------------------------------------------
-  if (class(x) != "netest"){
-    stop("x must be an object of class netest", call. = FALSE)
+  if (!(class(x) == "netest" || (class(x) == "list" &&
+                                 all(sapply(x, class) == "netest")))) {
+    stop("x must be either an object of class netest or a list of netest objects",
+         call. = FALSE)
   }
   if (class(param) != "param.net") {
     stop("param must an object of class param.net", call. = FALSE)
@@ -242,7 +244,8 @@ crosscheck.net <- function(x, param, init, control) {
   }
 
 
-  if (control$skip.check == FALSE) {
+  # Run checks on single netest objects
+  if (class(x) == "netest" && control$skip.check == FALSE) {
 
     # Defaults ----------------------------------------------------------------
     if (is.null(control$nwstats.formula)) {
