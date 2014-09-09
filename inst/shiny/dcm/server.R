@@ -6,42 +6,29 @@ shinyServer(function(input, output, session) {
 
   ## Main reactive functions
   param <- reactive({
-    vital <- ifelse(input$b.rate > 0 |
-                    input$ds.rate > 0 |
-                    input$di.rate > 0 |
-                    input$dr.rate > 0, TRUE, FALSE)
-    l <- list(inf.prob = input$inf.prob,
+    param.dcm(inf.prob = input$inf.prob,
               act.rate = input$act.rate,
               rec.rate = input$rec.rate,
               b.rate = input$b.rate,
               ds.rate = input$ds.rate,
               di.rate = input$di.rate,
-              dr.rate = input$dr.rate,
-              vital = vital,
-              groups = 1)
-    class(l) <- "param.dcm"
-    return(l)
+              dr.rate = input$dr.rate)
   })
   init <- reactive({
     if (input$modtype == "SIR") {
-      l <- list(s.num = input$s.num,
-                i.num = input$i.num,
-                r.num = input$r.num)
+      init.dcm(s.num = input$s.num,
+               i.num = input$i.num,
+               r.num = input$r.num)
     } else {
-      l <- list(s.num = input$s.num,
-                i.num = input$i.num)
+      init.dcm(s.num = input$s.num,
+               i.num = input$i.num)
     }
-    class(l) <- "init.dcm"
-    return(l)
   })
   control <- reactive({
-    l <- list(type = input$modtype,
-              dt = seq(1, input$nsteps, input$dt),
-              odemethod = "rk4",
-              print.mod = FALSE,
-              verbose = FALSE)
-    class(l) <- "control.dcm"
-    return(l)
+    control.dcm(type = input$modtype,
+                nsteps = input$nsteps,
+                dt = input$dt,
+                verbose = FALSE)
   })
   mod <- reactive({
     input$runMod
