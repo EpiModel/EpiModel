@@ -3,9 +3,12 @@
 \alias{control.icm}
 \title{Control Settings for Stochastic Individual Contact Models}
 \usage{
-control.icm(type, nsteps, nsims, rec.rand, b.rand, d.rand, initialize.FUN,
-  infection.FUN, recovery.FUN, deaths.FUN, births.FUN, get_prev.FUN, verbose,
-  verbose.int, skip.check, ...)
+control.icm(type, nsteps, nsims = 1, rec.rand = TRUE, b.rand = TRUE,
+  d.rand = TRUE, initialize.FUN = initialize.icm,
+  infection.FUN = infection.icm, recovery.FUN = recovery.icm,
+  deaths.FUN = deaths.icm, births.FUN = births.icm,
+  get_prev.FUN = get_prev.icm, verbose = TRUE, verbose.int = 0,
+  skip.check = FALSE, ...)
 }
 \arguments{
 \item{type}{disease type to be modeled, with the choice of \code{"SI"} for

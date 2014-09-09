@@ -3,11 +3,16 @@
 \alias{control.net}
 \title{Control Settings for Stochastic Network Models}
 \usage{
-control.net(type, nsteps, nsims, depend, rec.rand, b.rand, d.rand, tea.status,
-  attr.rules, epi.by, pid.prefix, initialize.FUN, infection.FUN, recovery.FUN,
-  deaths.FUN, births.FUN, resim_nets.FUN, edges_correct.FUN, get_prev.FUN,
-  verbose.FUN, set.control.stergm, save.nwstats, nwstats.formula, delete.nodes,
-  save.transmat, save.network, verbose, verbose.int, skip.check, ...)
+control.net(type, nsteps, nsims = 1, depend, rec.rand = TRUE,
+  b.rand = TRUE, d.rand = TRUE, tea.status = TRUE, attr.rules, epi.by,
+  pid.prefix, initialize.FUN = initialize.net,
+  infection.FUN = infection.net, recovery.FUN = recovery.net,
+  deaths.FUN = deaths.net, births.FUN = births.net,
+  resim_nets.FUN = resim_nets, edges_correct.FUN = edges_correct,
+  get_prev.FUN = get_prev.net, verbose.FUN = verbose.net,
+  set.control.stergm, save.nwstats = TRUE, nwstats.formula,
+  delete.nodes = FALSE, save.transmat = TRUE, save.network = TRUE,
+  verbose = TRUE, verbose.int = 1, skip.check = FALSE, ...)
 }
 \arguments{
 \item{type}{disease type to be modeled, with the choice of \code{"SI"} for
@@ -47,7 +52,8 @@ implied by those rates.}
 to store disease status. A TEA is needed for plotting static networks
 at different time steps and for animating dynamic networks with evolving
 status. TEAs are computationally inefficient for large simulations and
-should be toggled off in those cases.}
+should be toggled off in those cases. This argument automatically set
+to \code{FALSE} if \code{delete.nodes=TRUE}.}
 
 \item{attr.rules}{a list containing the  rules for setting the attributes of
 incoming nodes, with one list element per attribute to be set (see

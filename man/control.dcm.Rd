@@ -3,7 +3,8 @@
 \alias{control.dcm}
 \title{Control Settings for Deterministic Compartmental Models}
 \usage{
-control.dcm(type, nsteps, dt, odemethod, new.mod, print.mod, verbose, ...)
+control.dcm(type, nsteps, dt = 1, odemethod = "rk4", new.mod = NULL,
+  print.mod = FALSE, verbose = TRUE, ...)
 }
 \arguments{
 \item{type}{disease type to be modeled, with the choice of \code{"SI"} for
