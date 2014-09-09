@@ -290,7 +290,8 @@ print.control.dcm <- function(x, ...) {
 #' @export
 print.control.icm <- function(x, ...) {
 
-  pToPrint <- which(!grepl(".FUN", names(x)))
+  pToPrint <- which(!grepl(".FUN", names(x)) &
+                    !(names(x) %in% c("bi.mods", "user.mods")))
 
   cat("ICM Control Settings")
   cat("\n===========================\n")
@@ -305,7 +306,8 @@ print.control.icm <- function(x, ...) {
 print.control.net <- function(x, ...) {
 
   pToPrint <- which(!grepl(".FUN", names(x)) &
-                    names(x) != "set.control.stergm")
+                    names(x) != "set.control.stergm" &
+                    !(names(x) %in% c("bi.mods", "user.mods")))
 
   cat("Network Model Control Settings")
   cat("\n===============================\n")
