@@ -3,12 +3,12 @@
 \alias{get_nwstats}
 \title{Extract Network Statistics from Network Epidemic Model}
 \usage{
-get_nwstats(x, sim = 1, network = 1)
+get_nwstats(x, sim, network = 1)
 }
 \arguments{
 \item{x}{an \code{EpiModel} object of class \code{\link{netsim}}.}
 
-\item{sim}{simulation number of extracted network.}
+\item{sim}{a vector of simulation numbers of extracted network.}
 
 \item{network}{network number, for simulations with multiple networks
        representing the population.}
@@ -40,7 +40,8 @@ control <- control.net(type = "SI", nsteps = 10, nsims = 3,
 mod <- netsim(est, param, init, control)
 
 ## Extract the network statistics from simulation 2
-get_nwstats(mod, sim = 2)
+get_nwstats(mod)
+get_nwstats(mod, sim = c(1,3))
 }
 }
 \keyword{extract}

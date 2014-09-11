@@ -164,7 +164,7 @@ get_transmat <- function(x, sim = 1) {
 #'              epidemic model.
 #'
 #' @param x an \code{EpiModel} object of class \code{\link{netsim}}.
-#' @param sim simulation number of extracted network.
+#' @param sim a vector of simulation numbers of extracted network.
 #' @param network network number, for simulations with multiple networks
 #'        representing the population.
 #'
@@ -194,18 +194,22 @@ get_transmat <- function(x, sim = 1) {
 #' mod <- netsim(est, param, init, control)
 #'
 #' ## Extract the network statistics from simulation 2
-#' get_nwstats(mod, sim = 2)
+#' get_nwstats(mod)
+#' get_nwstats(mod, sim = c(1,3))
 #' }
 #'
-get_nwstats <- function(x, sim = 1, network = 1) {
+get_nwstats <- function(x, sim, network = 1) {
 
   ## Warnings and checks
   if (class(x) != "netsim") {
     stop("x must be of class netsim", call. = FALSE)
   }
 
-  if (sim > x$control$nsims) {
-    stop("Specify sim between 1 and ", x$control$nsims, call. = FALSE)
+  if (missing(sim)) {
+    sim <- 1:x$control$nsims
+  }
+  if (max(sim) > x$control$nsims) {
+    stop("Specify sims less than or equal to ", x$control$nsims, call. = FALSE)
   }
 
   if (x$control$save.nwstats == FALSE || is.null(x$stats$nwstats)) {
@@ -218,9 +222,10 @@ get_nwstats <- function(x, sim = 1, network = 1) {
 
   ## Extraction
   if (x$control$num.nw == 1) {
-    out <- x$stats$nwstats[[sim]]
+    out <- x$stats$nwstats[sim]
   } else {
-    out <- x$stats$nwstats[[sim]][[network]]
+    out <- lapply(x$stats$nwstats, function(n) n[[network]])
+    out <- out[sim]
   }
 
   return(out)
