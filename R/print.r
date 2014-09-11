@@ -264,7 +264,11 @@ print.init.net <- function(x, ...) {
   cat("Network Model Initial Conditions")
   cat("\n=================================\n")
   for (i in seq_along(x)) {
-    cat(names(x)[i], "=", x[[i]], fill = 80)
+    if (class(x[[i]]) == "numeric" && length(x[[i]]) > 5) {
+      cat(names(x)[i], "=", x[[i]][1:3], "...", fill = 80)
+    } else {
+      cat(names(x)[i], "=", x[[i]], fill = 80)
+    }
   }
 
   invisible()
