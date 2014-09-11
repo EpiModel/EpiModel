@@ -5,7 +5,8 @@ NEW FEATURES
 * Added three new extraction functions for network models (get_network,
   get_transmat, and get_nwstats) which extract the network objects, transmission
   matrices, and data frame of network statistics from a completed netsim
-  simulation.
+  simulation. These functions also support extraction of simulations with
+  multiple networks (see API note).
 * For stochastic epidemic plots, added an option mean.smooth. If TRUE, this
   uses a lowess smoother on the outcome variables of interest. This is helpful
   in visualization of low-count outcomes like disease incidence.
@@ -26,11 +27,6 @@ NEW FEATURES
   help(modules.net).
 * Added progress bars for netdx simulations for computationally intensive
   parts of the simulations.
-* The x argument in netsim may now be a list of netest objects. This would be
-  used only if supplying new simulation modules that know how to process that
-  data structure. A motivation for this is to allow original models with
-  multiple networks simulated (e.g., a main partnership network and a casual
-  partnership network).
 
 USER INTERFACE CHANGES
 * The internal representation of disease status as an individual-level attribute
@@ -59,6 +55,11 @@ API CHANGES
   replacing these parameterization functions.
 * Users may also bypass any of the built-in modules in network models (see the
   list in control.net) by setting the argument for that module to NULL.
+* The x argument in netsim may now be a list of netest objects. This would be
+  used only if supplying new simulation modules that know how to process that
+  data structure. A motivation for this is to allow original models with
+  multiple networks simulated (e.g., a main partnership network and a casual
+  partnership network).
 
 BUG FIXES
 * Minor updates and bug fixes to the two built-in Shiny applications (accessed
