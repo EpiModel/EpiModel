@@ -67,7 +67,11 @@ resim_nets <- function(all, at) {
     anyActive <- ifelse(nActiveM1 > 0 & nActiveM2 > 0, TRUE, FALSE)
   }
 
-  statOnNw <- ("status" %in% get_formula_terms(all$nwparam$formation))
+  # Pull network model parameters
+  nwparam <- get_nwparam(all)
+
+  # Serosorting model check
+  statOnNw <- ("status" %in% get_formula_terms(nwparam$formation))
   status <- all$attr$status
   if (statOnNw == TRUE && length(unique(status)) == 1) {
     stop("Stopping simulation because status in formation formula and no longer any discordant nodes",
@@ -82,14 +86,15 @@ resim_nets <- function(all, at) {
     }
   }
 
+  # Network simulation
   if (anyActive > 0 & all$control$depend == TRUE) {
     suppressWarnings(
       all$nw <- simulate(all$nw,
-                         formation = all$nwparam$formation,
-                         dissolution = all$nwparam$dissolution,
-                         coef.form = all$nwparam$coef.form,
-                         coef.diss = all$nwparam$coef.diss$coef.adj,
-                         constraints = all$nwparam$constraints,
+                         formation = nwparam$formation,
+                         dissolution = nwparam$dissolution,
+                         coef.form = nwparam$coef.form,
+                         coef.diss = nwparam$coef.diss$coef.adj,
+                         constraints = nwparam$constraints,
                          time.start = at,
                          time.slices = 1,
                          time.offset = 0,

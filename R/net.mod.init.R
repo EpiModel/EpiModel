@@ -23,7 +23,6 @@ initialize.net <- function(x, param, init, control) {
 
   all$attr <- list()
   all$stats <- list()
-  all$nwparam <- list()
   all$temp <- list()
 
 
@@ -44,17 +43,9 @@ initialize.net <- function(x, param, init, control) {
 
   # Network Parameters ------------------------------------------------------
   all$nw <- nw
-  all$nwparam$formation <- x$formation
-  all$nwparam$dissolution <- x$dissolution
-  all$nwparam$coef.form <- x$coef.form
-  all$nwparam$coef.diss <- x$coef.diss
-  all$nwparam$constraints <-  x$constraints
-  all$nwparam$target.stats <- x$target.stats
-  if (is.null(x$constraints)) {
-    all$nwparam$constraints <- ~ .
-  } else {
-    all$nwparam$constraints <- x$constraints
-  }
+
+  all$nwparam <- list(x[-which(names(x) == "fit")])
+
   all$param$modes <- modes
 
 
@@ -71,7 +62,8 @@ initialize.net <- function(x, param, init, control) {
 
 
   ## Pull network val to attr
-  t <- get_formula_terms(all$nwparam$formation)
+  form <- get_nwparam(all)$formation
+  t <- get_formula_terms(form)
   all <- copy_toall_attr(all, at = 1, t)
 
 
@@ -133,7 +125,8 @@ init_status.net <- function(all) {
   status.vector <- all$init$status.vector
   status.rand <- all$init$status.rand
   num <- network.size(all$nw)
-  statOnNw <- "status" %in% get_formula_terms(all$nwparam$formation)
+  form <- get_nwparam(all)$form
+  statOnNw <- "status" %in% get_formula_terms(form)
 
   modes <- all$param$modes
   if (modes == 1) {

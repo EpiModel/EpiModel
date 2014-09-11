@@ -255,7 +255,7 @@ births.net <- function(all, at) {
   # Variables ---------------------------------------------------------------
   b.rate <- all$param$b.rate
   b.rate.m2 <- all$param$b.rate.m2
-  formation <- all$nwparam$formation
+  formation <- get_nwparam(all)$formation
   modes <- all$param$modes
   tea.status <- all$control$tea.status
   nOld <- all$out$num[at - 1]
@@ -355,7 +355,8 @@ births.net <- function(all, at) {
   if (length(newNodes) > 0) {
 
     # Set attributes on nw
-    t <- get_formula_terms(all$nwparam$formation)
+    form <- get_nwparam(all)$formation
+    t <- get_formula_terms(form)
     curr.tab <- get_attr_prop(all$nw, t)
     if (length(curr.tab) > 0) {
       all$nw <- update_nwattr(all$nw,
