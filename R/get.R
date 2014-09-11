@@ -225,3 +225,22 @@ get_nwstats <- function(x, sim = 1, network = 1) {
 
   return(out)
 }
+
+
+#' @title Extract Network Model Parameters
+#'
+#' @description Extracts a list of network model parameters saved in the
+#'              initialization module.
+#'
+#' @param x master data object used in \code{netsim} simulations.
+#' @param network network number, for simulations with multiple networks
+#'        representing the population.
+#'
+#' @keywords extract internal
+#' @export
+#'
+get_nwparam <- function(x, network = 1) {
+
+  out <- x$nwparam[[network]]
+  return(out)
+}
