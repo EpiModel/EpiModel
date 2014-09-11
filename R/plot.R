@@ -1359,6 +1359,8 @@ plot.netdx <- function(x,
 #' plot(mod, type = "sim")
 #' plot(mod, type = "sim", popfrac = FALSE)
 #' plot(mod, type = "sim", y = "si.flow")
+#' plot(mod, type = "sim", y = "si.flow",
+#'      mean.smooth = TRUE, mean.col = "firebrick")
 #'
 #' # Plot static networks
 #' par(mar = c(0, 0, 0, 0))
@@ -1538,8 +1540,8 @@ plot.netsim <- function(x,
     nstats <- length(outsts)
 
     ## target stats
-    target.stats <- attributes(x$stats$nwstats)$target.stats
-    formation.terms <- attributes(x$stats$nwstats)$formation.terms
+    formation.terms <- names(x$nwparam$coef.form)
+    target.stats <- x$nwparam$target.stats
 
     st <- data.frame(sorder = 1:length(nmstats), names = nmstats)
     ts <- data.frame(names = formation.terms, targets = target.stats)

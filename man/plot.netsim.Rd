@@ -114,6 +114,8 @@ mod <- netsim(est, param, init, control)
 plot(mod, type = "sim")
 plot(mod, type = "sim", popfrac = FALSE)
 plot(mod, type = "sim", y = "si.flow")
+plot(mod, type = "sim", y = "si.flow",
+     mean.smooth = TRUE, mean.col = "firebrick")
 
 # Plot static networks
 par(mar = c(0, 0, 0, 0))
