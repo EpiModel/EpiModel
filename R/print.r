@@ -143,7 +143,15 @@ print.netsim <- function(x, ...) {
   cat("\n-----------------------\n")
   pToPrint <- which(!(names(x$param) %in% c("modes", "vital")))
   for (i in pToPrint) {
-    cat(names(x$param)[i], "=", x$param[[i]], fill = 60)
+    if (class(x$param[[i]]) == "numeric" && length(x$param[[i]]) > 5) {
+      cat(names(x$param)[i], "=", x$param[[i]][1:3], "...", fill = 80)
+    } else if (class(x$param[[i]]) == "data.frame") {
+      cat(names(x$param)[i], "= <data.frame>\n")
+    } else if (class(x$param[[i]]) == "list") {
+      cat(names(x$param)[i], "= <list>\n")
+    } else {
+      cat(names(x$param)[i], "=", x$param[[i]], fill = 80)
+    }
   }
 
   cat("\nModel Output")
