@@ -1,7 +1,4 @@
 
-## Get functions
-
-
 #' @title Extract networkDynamic Object from Network Epidemic Model
 #'
 #' @description Extracts the networkDynamic object from a network epidemic model
@@ -10,6 +7,8 @@
 #'
 #' @param x an \code{EpiModel} object of class \code{\link{netsim}}.
 #' @param sim simulation number of extracted network.
+#' @param network network number, for simulations with multiple networks
+#'        representing the population.
 #' @param collapse if \code{TRUE}, collapse the \code{networkDynamic} object to
 #'        a static \code{network} object at a specified time step.
 #' @param at if \code{collapse} is used, the time step at which the extracted
@@ -46,7 +45,7 @@
 #' get_network(mod, collapse = TRUE, at = 5)
 #' }
 #'
-get_network <- function(x, sim = 1, collapse = FALSE, at) {
+get_network <- function(x, sim = 1, network = 1, collapse = FALSE, at) {
 
   ## Warnings and checks
   if (class(x) != "netsim") {
@@ -61,12 +60,20 @@ get_network <- function(x, sim = 1, collapse = FALSE, at) {
     stop("Network object not saved in netsim object, check control.net settings", call. = FALSE)
   }
 
+  if (network > x$control$num.nw) {
+    stop("Specify network between 1 and ", x$control$num.nw, call. = FALSE)
+  }
+
   if (collapse == TRUE && (missing(at) || at > x$control$nsteps)) {
     stop("Specify collapse time step between 1 and ", x$control$nsteps, call. = FALSE)
   }
 
   ## Extraction
-  out <- x$network[[sim]]
+  if (x$control$num.nw == 1) {
+    out <- x$network[[sim]]
+  } else {
+    out <- x$network[[sim]][[network]]
+  }
 
 
   ## Collapsing
@@ -158,6 +165,8 @@ get_transmat <- function(x, sim = 1) {
 #'
 #' @param x an \code{EpiModel} object of class \code{\link{netsim}}.
 #' @param sim simulation number of extracted network.
+#' @param network network number, for simulations with multiple networks
+#'        representing the population.
 #'
 #' @keywords extract
 #' @export
@@ -188,7 +197,7 @@ get_transmat <- function(x, sim = 1) {
 #' get_nwstats(mod, sim = 2)
 #' }
 #'
-get_nwstats <- function(x, sim = 1) {
+get_nwstats <- function(x, sim = 1, network = 1) {
 
   ## Warnings and checks
   if (class(x) != "netsim") {
@@ -203,9 +212,16 @@ get_nwstats <- function(x, sim = 1) {
     stop("Network statistics not saved in netsim object, check control.net settings", call. = FALSE)
   }
 
+  if (network > x$control$num.nw) {
+    stop("Specify network between 1 and ", x$control$num.nw, call. = FALSE)
+  }
 
   ## Extraction
-  out <- x$stats$nwstats[[sim]]
+  if (x$control$num.nw == 1) {
+    out <- x$stats$nwstats[[sim]]
+  } else {
+    out <- x$stats$nwstats[[sim]][[network]]
+  }
 
   return(out)
 }

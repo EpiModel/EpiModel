@@ -3,12 +3,15 @@
 \alias{get_network}
 \title{Extract networkDynamic Object from Network Epidemic Model}
 \usage{
-get_network(x, sim = 1, collapse = FALSE, at)
+get_network(x, sim = 1, network = 1, collapse = FALSE, at)
 }
 \arguments{
 \item{x}{an \code{EpiModel} object of class \code{\link{netsim}}.}
 
 \item{sim}{simulation number of extracted network.}
+
+\item{network}{network number, for simulations with multiple networks
+representing the population.}
 
 \item{collapse}{if \code{TRUE}, collapse the \code{networkDynamic} object to
 a static \code{network} object at a specified time step.}

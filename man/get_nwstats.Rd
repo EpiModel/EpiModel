@@ -3,12 +3,15 @@
 \alias{get_nwstats}
 \title{Extract Network Statistics from Network Epidemic Model}
 \usage{
-get_nwstats(x, sim = 1)
+get_nwstats(x, sim = 1, network = 1)
 }
 \arguments{
 \item{x}{an \code{EpiModel} object of class \code{\link{netsim}}.}
 
 \item{sim}{simulation number of extracted network.}
+
+\item{network}{network number, for simulations with multiple networks
+       representing the population.}
 }
 \description{
 Extracts a data frame of network statistics from a network
