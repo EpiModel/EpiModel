@@ -3,9 +3,10 @@
 \alias{plot.netsim}
 \title{Plot Data from a Stochastic Network Epidemic Model}
 \usage{
-\method{plot}{netsim}(x, type = "sim", sim, at = 1, col.status = FALSE,
-  shp.bip = NULL, stats, sim.lwd, sim.col, sim.lty = 1, targ.col,
-  targ.lwd = 2, targ.lty = 2, plots.joined, plot.leg = TRUE, ...)
+\method{plot}{netsim}(x, type = "sim", sim, network = 1, at = 1,
+  col.status = FALSE, shp.bip = NULL, stats, sim.lwd, sim.col,
+  sim.lty = 1, targ.col, targ.lwd = 2, targ.lty = 2, plots.joined,
+  plot.leg = TRUE, ...)
 }
 \arguments{
 \item{x}{an \code{EpiModel} model object of class \code{netsim}.}
@@ -14,7 +15,11 @@
 \code{"network"} for a static network plot (\code{plot.network}),
 or \code{"formation"} for network formation statistics.}
 
-\item{sim}{if \code{type="network"}, simulation number for network graph.}
+\item{sim}{if \code{type="network"}, a single simulation number for network
+plot; if \code{type="formation"}, a vector of simulation numbers to plot.}
+
+\item{network}{network number, for simulations with multiple networks
+representing the population.}
 
 \item{at}{if \code{type="network"}, time step for network graph.}
 

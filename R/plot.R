@@ -1270,7 +1270,10 @@ plot.netdx <- function(x,
 #' @param type type of plot: \code{"sim"} for epidemic model results,
 #'        \code{"network"} for a static network plot (\code{plot.network}),
 #'        or \code{"formation"} for network formation statistics.
-#' @param sim if \code{type="network"}, simulation number for network graph.
+#' @param sim if \code{type="network"}, a single simulation number for network
+#'        plot; if \code{type="formation"}, a vector of simulation numbers to plot.
+#' @param network network number, for simulations with multiple networks
+#'        representing the population.
 #' @param at if \code{type="network"}, time step for network graph.
 #' @param col.status if \code{TRUE} and \code{type="network"}, automatic disease
 #'        status colors (blue = susceptible, red = infected, , green = recovered).
@@ -1397,6 +1400,7 @@ plot.netdx <- function(x,
 plot.netsim <- function(x,
                         type = "sim",
                         sim,
+                        network = 1,
                         at = 1,
                         col.status = FALSE,
                         shp.bip = NULL,
@@ -1515,8 +1519,6 @@ plot.netsim <- function(x,
   if (type == "formation") {
 
     ## Stats
-    nwstats <- x$stats$nwstats
-    nsteps <- x$control$nsteps
     if (missing(sim)) {
       sim <- 1:x$control$nsims
     }
@@ -1524,6 +1526,10 @@ plot.netsim <- function(x,
     if (max(sim) > nsims) {
       stop("Maximum sim for this object is ", nsims, call. = FALSE)
     }
+
+    nwstats <- get_nwstats(x, sim, network)
+    nsims <- length(sim)
+    nsteps <- x$control$nsteps
 
     ## Find available stats
     nmstats <- names(nwstats[[1]])
@@ -1540,8 +1546,9 @@ plot.netsim <- function(x,
     nstats <- length(outsts)
 
     ## target stats
-    formation.terms <- names(x$nwparam$coef.form)
-    target.stats <- x$nwparam$target.stats
+    nwparam <- get_nwparam(x, network)
+    formation.terms <- names(nwparam$coef.form)
+    target.stats <- nwparam$target.stats
 
     st <- data.frame(sorder = 1:length(nmstats), names = nmstats)
     ts <- data.frame(names = formation.terms, targets = target.stats)
@@ -1642,7 +1649,7 @@ plot.netsim <- function(x,
       plot(1, 1, xlim = xlim, ylim = ylim,
            type = "n", xlab = xlab, ylab = ylab)
       for (j in outsts) {
-        for (i in sim) {
+        for (i in seq_along(sim)) {
           lines(x = 1:nsteps,
                 y = nwstats[[i]][[nmstats[j]]],
                 lty = sim.lty, lwd = sim.lwd,
@@ -1695,7 +1702,7 @@ plot.netsim <- function(x,
              ylim = c(ymin * 0.8, ymax * 1.2),
              type = "n", main = nmstats[j],
              xlab = "", ylab = "", ...)
-        for (i in sim) {
+        for (i in seq_along(sim)) {
           lines(x = 1:nsteps,
                 y = nwstats[[i]][[nmstats[j]]],
                 lwd = sim.lwd, lty = sim.lty,
