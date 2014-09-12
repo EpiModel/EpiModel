@@ -833,6 +833,9 @@ plot.icm <- function(x,
     if (nsims == 1) {
       for (j in seq_len(lcomp)) {
         mean.prev <- x$epi[[y[j]]][, 1]
+        if (mean.smooth == TRUE) {
+          mean.prev <- supsmu(x = 1:nsteps, y = mean.prev)$y
+        }
         lines(1:nsteps,
               mean.prev,
               lwd = mean.lwd[j],
