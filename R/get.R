@@ -153,6 +153,7 @@ get_transmat <- function(x, sim = 1) {
 
   ## Extraction
   out <- x$stats$transmat[[sim]]
+  out <- as.data.frame(out)
 
   return(out)
 }
@@ -227,6 +228,8 @@ get_nwstats <- function(x, sim, network = 1) {
     out <- lapply(x$stats$nwstats, function(n) n[[network]])
     out <- out[sim]
   }
+
+  out <- lapply(out, as.data.frame)
 
   return(out)
 }
