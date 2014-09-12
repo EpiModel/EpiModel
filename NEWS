@@ -71,6 +71,8 @@ BUG FIXES
   parameterization functions mentioned above.
 * Updated the print method for the param.net class to handle parameters that are
   lists or data frames.
+* merge.netsim now ignores any differences in the environment of the nwstats.formula
+  control, previously preventing proper merging of some network model simulations.
 
 OTHER
 * Added new test cases for running new DCMs, ICMs, and network models, following
