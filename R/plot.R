@@ -1532,7 +1532,7 @@ plot.netsim <- function(x,
     nsteps <- x$control$nsteps
 
     ## Find available stats
-    nmstats <- names(nwstats[[1]])
+    nmstats <- colnames(nwstats[[1]])
 
     ## Pull and check stat argument
     if (missing(stats)) {
