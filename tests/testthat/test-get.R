@@ -60,7 +60,9 @@ test_that("get_transmat yields warning for incorrect sim", {
 
 test_that("get_nwstats extracts data frame", {
   a <- get_nwstats(mod, sim = 1)
-  expect_is(a, "data.frame")
+  b <- a[[1]]
+  expect_is(a, "list")
+  expect_is(b, "data.frame")
 })
 
 test_that("get_nwstats yields warning for incorrect sim", {
