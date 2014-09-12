@@ -1432,10 +1432,13 @@ plot.netsim <- function(x,
     if (missing(sim)) {
       sim <- 1
     }
-    if (sim > nsims) {
-      stop("Specify sim between 1 and ", nsims, call. = FALSE)
+    if (length(sim) > 1) {
+      stop("Length of sim must be 1 for network plots", call. = FALSE)
     }
-    obj <- network.extract(x$network[[sim]], at = at)
+    if (sim > nsims) {
+      stop("Maximum sim number is ", nsims, call. = FALSE)
+    }
+    obj <- get_network(x, sim, network, collapse = TRUE, at = at)
     tea.status <- x$control$tea.status
 
     if (!is.null(shp.bip)) {
@@ -1469,7 +1472,7 @@ plot.netsim <- function(x,
       vertex.cex <- 1
     }
     if (col.status == TRUE) {
-      if (tea.status == FALSE) {
+      if (is.null(tea.status) || tea.status == FALSE) {
         stop("Plotting status colors requires tea.status=TRUE in netsim",
              call. = FALSE)
       }
