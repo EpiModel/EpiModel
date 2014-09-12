@@ -5,8 +5,11 @@ NEW FEATURES
 * Added three new extraction functions for network models (get_network,
   get_transmat, and get_nwstats) which extract the network objects, transmission
   matrices, and data frame of network statistics from a completed netsim
-  simulation. These functions also support extraction of simulations with
-  multiple networks (see API note).
+  simulation. These functions also support extraction of network model simulations
+  with multiple networks (see API note).
+* The plot function for netsim objects now has an argument, network, for plotting
+  network statistics and static networks (type = formation and network,
+  respectively) in simulations with multiple networks.
 * For stochastic epidemic plots, added an option mean.smooth. If TRUE, this
   uses a lowess smoother on the outcome variables of interest. This is helpful
   in visualization of low-count outcomes like disease incidence.
@@ -25,14 +28,15 @@ NEW FEATURES
   control.net. The latter performs the printing of simulation results to the
   console. Both functions are now listed in the modules help file accessed by:
   help(modules.net).
-* Added progress bars for netdx simulations for computationally intensive
-  parts of the simulations.
+* Added progress bars for netdx diagnostic simulations for computationally
+  intensive parts of the simulations.
 
 USER INTERFACE CHANGES
 * The internal representation of disease status as an individual-level attribute
   in the stochastic ICM and network models has been changed from number (0, 1, 2)
-  to character ("s", "i", "r"). This has few user implications for running the
-  integrated models, but one is that the status vector passed into the initial
+  to character ("s", "i", "r"). This changes little when running the integrated
+  models, and has greater implications for the API when editing modules. But one
+  change for integrated models is that the status vector passed into the initial
   conditions functions must now be in this new format. This also impacts the
   expansion of EpiModel for original models.
 * The zeromarg argument has been removed from plot.netsim for static network
@@ -57,7 +61,7 @@ API CHANGES
   list in control.net) by setting the argument for that module to NULL.
 * The x argument in netsim may now be a list of netest objects. This would be
   used only if supplying new simulation modules that know how to process that
-  data structure. A motivation for this is to allow original models with
+  data structure. The motivation for this is to allow original models with
   multiple networks simulated (e.g., a main partnership network and a casual
   partnership network).
 
@@ -70,7 +74,7 @@ BUG FIXES
 
 OTHER
 * Added new test cases for running new DCMs, ICMs, and network models, following
-  the vignette examples.
+  the vignette examples (see http://statnet.github.io/EpiModel/).
 
 
 Version 1.0.2
