@@ -1,4 +1,6 @@
 
+#' @export
+
 net.update.attribute <- function(all, attribute, type, params, include.inactive=F) {
   
   # TODO Check all
@@ -43,9 +45,9 @@ net.update.attribute <- function(all, attribute, type, params, include.inactive=
       # TODO More error checking.      
       new.vals <- sample(1:3,1,T,my.transmat[1,])
       switch(1+include.inactive,
-        {all$attr[attribute][all$attr$active==1,] <- all$attr[attribute][all$attr$active==1,] + 
+        {all$attr[attribute][all$attr$active==1,] <- all$attr[attribute][all$attr$active==1,] + NA
            },
-        {all$attr[attribute] <- all$attr[attribute] + 
+        {all$attr[attribute] <- all$attr[attribute] + NA
            }
       )
     },         
