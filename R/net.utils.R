@@ -153,9 +153,9 @@ check_bip_degdist <- function(num.m1,
 #'
 color_tea <- function(nd,
                       old.var = "testatus",
-                      old.sus = 0,
-                      old.inf = 1,
-                      old.rec = 2,
+                      old.sus = "s",
+                      old.inf = "i",
+                      old.rec = "r",
                       new.var = "ndtvcol",
                       new.sus,
                       new.inf,
@@ -181,11 +181,11 @@ color_tea <- function(nd,
     uninfected <- which(stat == old.sus)
     recovered <- which(stat == old.rec)
 
-    activate.vertex.attribute(nd, prefix = new.var, value = new.inf,
+    nd <- activate.vertex.attribute(nd, prefix = new.var, value = new.inf,
                               onset = at, terminus = Inf, v = infected)
-    activate.vertex.attribute(nd, prefix = new.var, value = new.sus,
+    nd <- activate.vertex.attribute(nd, prefix = new.var, value = new.sus,
                               onset = at, terminus = Inf, v = uninfected)
-    activate.vertex.attribute(nd, prefix = new.var, value = new.rec,
+    nd <- activate.vertex.attribute(nd, prefix = new.var, value = new.rec,
                               onset = at, terminus = Inf, v = recovered)
 
     if (verbose == TRUE) {
@@ -507,36 +507,25 @@ edgelist_meanage <- function(x, el) {
 edges_correct <- function(all, at) {
 
   if (all$param$vital == TRUE) {
-
     if (all$param$modes == 1) {
-      if (all$control$type %in% c("SI", "SIS")) {
-        old.num <- all$out$s.num[at-1] + all$out$i.num[at-1]
-        new.num <- all$out$s.num[at] + all$out$i.num[at]
-      }
-      if (all$control$type == "SIR") {
-        old.num <- all$out$s.num[at-1] + all$out$i.num[at-1] + all$out$r.num[at-1]
-        new.num <- all$out$s.num[at] + all$out$i.num[at] + all$out$r.num[at]
-      }
-      all$nwparam$coef.form[1] <- all$nwparam$coef.form[1] + log(old.num) - log(new.num)
+      old.num <- all$out$num[at-1]
+      new.num <- sum(all$attr$active == 1)
+      all$nwparam[[1]]$coef.form[1] <- all$nwparam[[1]]$coef.form[1] +
+                                       log(old.num) -
+                                       log(new.num)
     }
     if (all$param$modes == 2) {
-      if (all$control$type %in% c("SI", "SIS")) {
-        old.num.m1 <- all$out$s.num[at-1] + all$out$i.num[at-1]
-        old.num.m2 <- all$out$s.num.m2[at-1] + all$out$i.num.m2[at-1]
-        new.num.m1 <- all$out$s.num[at] + all$out$i.num[at]
-        new.num.m2 <- all$out$s.num.m2[at] + all$out$i.num.m2[at]
-      }
-      if (all$control$type == "SIR") {
-        old.num.m1 <- all$out$s.num[at-1] + all$out$i.num[at-1] + all$out$r.num[at-1]
-        old.num.m2 <- all$out$s.num.m2[at-1] + all$out$i.num.m2[at-1] + all$out$r.num.m2[at-1]
-        new.num.m1 <- all$out$s.num[at] + all$out$i.num[at] + all$out$r.num[at]
-        new.num.m2 <- all$out$s.num.m2[at] + all$out$i.num.m2[at] + all$out$r.num.m2[at]
-      }
-      all$nwparam$coef.form[1] <- all$nwparam$coef.form[1] +
-        log(2*old.num.m1*old.num.m2/(old.num.m1+old.num.m2)) -
-        log(2*new.num.m1*new.num.m2/(new.num.m1+new.num.m2))
+      mode <- idmode(all$nw)
+      old.num.m1 <- all$out$num[at-1]
+      old.num.m2 <- all$out$num.m2[at-1]
+      new.num.m1 <- sum(all$attr$active == 1 & mode == 1)
+      new.num.m2 <- sum(all$attr$active == 1 & mode == 2)
+      all$nwparam[[1]]$coef.form[1] <- all$nwparam[[1]]$coef.form[1] +
+                                       log(2*old.num.m1*old.num.m2/
+                                           (old.num.m1+old.num.m2)) -
+                                       log(2*new.num.m1*new.num.m2/
+                                           (new.num.m1+new.num.m2))
     }
-
   }
   return(all)
 }
@@ -658,25 +647,25 @@ get_prev.net <- function(all, at) {
   if (modes == 1) {
     if (at == 1) {
       all$out <- list()
-      all$out$s.num <- sum(status == 0)
+      all$out$s.num <- sum(status == "s")
       if (eb == TRUE) {
         for (i in 1:length(ebun)) {
-          all$out[[paste0("s.num", ebun[i])]] <- sum(status == 0 &
+          all$out[[paste0("s.num", ebun[i])]] <- sum(status == "s" &
                                                      get(ebn) == ebv[i])
         }
       }
-      all$out$i.num <- sum(status == 1)
+      all$out$i.num <- sum(status == "i")
       if (eb == TRUE) {
         for (i in 1:length(ebun)) {
-          all$out[[paste0("i.num", ebun[i])]] <- sum(status == 1 &
+          all$out[[paste0("i.num", ebun[i])]] <- sum(status == "i" &
                                                      get(ebn) == ebv[i])
         }
       }
       if (all$control$type == "SIR") {
-        all$out$r.num <- sum(status == 2)
+        all$out$r.num <- sum(status == "r")
         if (eb == TRUE) {
           for (i in 1:length(ebun)) {
-            all$out[[paste0("r.num", ebun[i])]] <- sum(status == 2 &
+            all$out[[paste0("r.num", ebun[i])]] <- sum(status == "r" &
                                                        get(ebn) == ebv[i])
           }
         }
@@ -689,25 +678,25 @@ get_prev.net <- function(all, at) {
       }
     } else {
       # at > 1
-      all$out$s.num[at] <- sum(status == 0)
+      all$out$s.num[at] <- sum(status == "s")
       if (eb == TRUE) {
         for (i in 1:length(ebun)) {
-          all$out[[paste0("s.num", ebun[i])]][at] <- sum(status == 0 &
+          all$out[[paste0("s.num", ebun[i])]][at] <- sum(status == "s" &
                                                          get(ebn) == ebv[i])
         }
       }
-      all$out$i.num[at] <- sum(status == 1)
+      all$out$i.num[at] <- sum(status == "i")
       if (eb == TRUE) {
         for (i in 1:length(ebun)) {
-          all$out[[paste0("i.num", ebun[i])]][at] <- sum(status == 1 &
+          all$out[[paste0("i.num", ebun[i])]][at] <- sum(status == "i" &
                                                          get(ebn) == ebv[i])
         }
       }
       if (all$control$type == "SIR") {
-        all$out$r.num[at] <- sum(status == 2)
+        all$out$r.num[at] <- sum(status == "r")
         if (eb == TRUE) {
           for (i in 1:length(ebun)) {
-            all$out[[paste0("r.num", ebun[i])]][at] <- sum(status == 2 &
+            all$out[[paste0("r.num", ebun[i])]][at] <- sum(status == "r" &
                                                            get(ebn) == ebv[i])
           }
         }
@@ -724,27 +713,27 @@ get_prev.net <- function(all, at) {
     # Bipartite networks
     if (at == 1) {
       all$out <- list()
-      all$out$s.num <- sum(status == 0 & mode == 1)
+      all$out$s.num <- sum(status == "s" & mode == 1)
       if (eb == TRUE) {
         for (i in 1:length(ebun)) {
-          all$out[[paste0("s.num", ebun[i])]] <- sum(status == 0 &
+          all$out[[paste0("s.num", ebun[i])]] <- sum(status == "s" &
                                                      mode == 1 &
                                                      get(ebn) == ebv[i])
         }
       }
-      all$out$i.num <- sum(status == 1 & mode == 1)
+      all$out$i.num <- sum(status == "i" & mode == 1)
       if (eb == TRUE) {
         for (i in 1:length(ebun)) {
-          all$out[[paste0("i.num", ebun[i])]] <- sum(status == 1 &
+          all$out[[paste0("i.num", ebun[i])]] <- sum(status == "i" &
                                                      mode == 1 &
                                                      get(ebn) == ebv[i])
         }
       }
       if (all$control$type == "SIR") {
-        all$out$r.num <- sum(status == 2 & mode == 1)
+        all$out$r.num <- sum(status == "r" & mode == 1)
         if (eb == TRUE) {
           for (i in 1:length(ebun)) {
-            all$out[[paste0("s.num", ebun[i])]] <- sum(status == 2 &
+            all$out[[paste0("s.num", ebun[i])]] <- sum(status == "r" &
                                                        mode == 1 &
                                                        get(ebn) == ebv[i])
           }
@@ -757,27 +746,27 @@ get_prev.net <- function(all, at) {
                                                    get(ebn) == ebv[i])
         }
       }
-      all$out$s.num.m2 <- sum(status == 0 & mode == 2)
+      all$out$s.num.m2 <- sum(status == "s" & mode == 2)
       if (eb == TRUE) {
         for (i in 1:length(ebun)) {
-          all$out[[paste0("s.num.m2", ebun[i])]] <- sum(status == 0 &
+          all$out[[paste0("s.num.m2", ebun[i])]] <- sum(status == "s" &
                                                         mode == 2 &
                                                         get(ebn) == ebv[i])
         }
       }
-      all$out$i.num.m2 <- sum(status == 1 & mode == 2)
+      all$out$i.num.m2 <- sum(status == "i" & mode == 2)
       if (eb == TRUE) {
         for (i in 1:length(ebun)) {
-          all$out[[paste0("i.num.m2", ebun[i])]] <- sum(status == 1 &
+          all$out[[paste0("i.num.m2", ebun[i])]] <- sum(status == "i" &
                                                         mode == 2 &
                                                         get(ebn) == ebv[i])
         }
       }
       if (all$control$type == "SIR") {
-        all$out$r.num.m2 <- sum(status == 2 & mode == 2)
+        all$out$r.num.m2 <- sum(status == "r" & mode == 2)
         if (eb == TRUE) {
           for (i in 1:length(ebun)) {
-            all$out[[paste0("r.num.m2", ebun[i])]] <- sum(status == 2 &
+            all$out[[paste0("r.num.m2", ebun[i])]] <- sum(status == "r" &
                                                           mode == 2 &
                                                           get(ebn) == ebv[i])
           }
@@ -792,27 +781,27 @@ get_prev.net <- function(all, at) {
       }
     } else {
       # at > 1
-      all$out$s.num[at] <- sum(status == 0 & mode == 1)
+      all$out$s.num[at] <- sum(status == "s" & mode == 1)
       if (eb == TRUE) {
         for (i in 1:length(ebun)) {
-          all$out[[paste0("s.num", ebun[i])]][at] <- sum(status == 0 &
+          all$out[[paste0("s.num", ebun[i])]][at] <- sum(status == "s" &
                                                          mode == 1 &
                                                          get(ebn) == ebv[i])
         }
       }
-      all$out$i.num[at] <- sum(status == 1 & mode == 1)
+      all$out$i.num[at] <- sum(status == "i" & mode == 1)
       if (eb == TRUE) {
         for (i in 1:length(ebun)) {
-          all$out[[paste0("i.num", ebun[i])]][at] <- sum(status == 1 &
+          all$out[[paste0("i.num", ebun[i])]][at] <- sum(status == "i" &
                                                          mode == 1 &
                                                          get(ebn) == ebv[i])
         }
       }
       if (all$control$type == "SIR") {
-        all$out$r.num[at] <- sum(status == 2 & mode == 1)
+        all$out$r.num[at] <- sum(status == "r" & mode == 1)
         if (eb == TRUE) {
           for (i in 1:length(ebun)) {
-            all$out[[paste0("s.num", ebun[i])]][at] <- sum(status == 2 &
+            all$out[[paste0("s.num", ebun[i])]][at] <- sum(status == "r" &
                                                            mode == 1 &
                                                            get(ebn) == ebv[i])
           }
@@ -825,27 +814,27 @@ get_prev.net <- function(all, at) {
                                                        get(ebn) == ebv[i])
         }
       }
-      all$out$s.num.m2[at] <- sum(status == 0 & mode == 2)
+      all$out$s.num.m2[at] <- sum(status == "s" & mode == 2)
       if (eb == TRUE) {
         for (i in 1:length(ebun)) {
-          all$out[[paste0("s.num.m2", ebun[i])]][at] <- sum(status == 0 &
+          all$out[[paste0("s.num.m2", ebun[i])]][at] <- sum(status == "s" &
                                                             mode == 2 &
                                                             get(ebn) == ebv[i])
         }
       }
-      all$out$i.num.m2[at] <- sum(status == 1 & mode == 2)
+      all$out$i.num.m2[at] <- sum(status == "i" & mode == 2)
       if (eb == TRUE) {
         for (i in 1:length(ebun)) {
-          all$out[[paste0("i.num.m2", ebun[i])]][at] <- sum(status == 1 &
+          all$out[[paste0("i.num.m2", ebun[i])]][at] <- sum(status == "i" &
                                                             mode == 2 &
                                                             get(ebn) == ebv[i])
         }
       }
       if (all$control$type == "SIR") {
-        all$out$r.num.m2[at] <- sum(status == 2 & mode == 2)
+        all$out$r.num.m2[at] <- sum(status == "r" & mode == 2)
         if (eb == TRUE) {
           for (i in 1:length(ebun)) {
-            all$out[[paste0("r.num.m2", ebun[i])]][at] <- sum(status == 2 &
+            all$out[[paste0("r.num.m2", ebun[i])]][at] <- sum(status == "r" &
                                                               mode == 2 &
                                                               get(ebn) == ebv[i])
           }

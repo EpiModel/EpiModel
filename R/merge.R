@@ -164,8 +164,13 @@ merge.netsim <- function(x, y,
   x$control$nsims <- as.integer(x$control$nsims)
   y$control$nsims <- as.integer(y$control$nsims)
   if (x$control$nsims > 1 & y$control$nsims > 1 &
-      !all(sapply(x, class) == sapply(y, class))) {
+        !all(sapply(x, class) == sapply(y, class))) {
     stop("x and y have different structure")
+  }
+
+  # Override environment of nwstats.formula
+  if (!is.null(x$control$nwstats.formula) & !is.null(y$control$nwstats.formula)) {
+    environment(x$control$nwstats.formula) <- environment(y$control$nwstats.formula) <- environment()
   }
 
 
@@ -173,6 +178,7 @@ merge.netsim <- function(x, y,
   check1 <- identical(x$param, y$param)
   check2 <- identical(x$control[-which(names(x$control) == "nsims")],
                       y$control[-which(names(y$control) == "nsims")])
+
 
   if (check1 == FALSE) {
     stop("x and y have different parameters")

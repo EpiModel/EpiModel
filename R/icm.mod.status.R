@@ -47,8 +47,8 @@ infection.icm <- function(all, at) {
     ## Discordant edgelist
     del$p1.stat <- all$attr$status[del$p1]
     del$p2.stat <- all$attr$status[del$p2]
-    serodis <- (del$p1.stat == 0 & del$p2.stat == 1) |
-      (del$p1.stat == 1 & del$p2.stat == 0)
+    serodis <- (del$p1.stat == "s" & del$p2.stat == "i") |
+               (del$p1.stat == "i" & del$p2.stat == "s")
     del <- del[serodis == TRUE, ]
 
 
@@ -57,23 +57,24 @@ infection.icm <- function(all, at) {
       if (all$param$groups == 1) {
         del$tprob <- all$param$inf.prob
       } else {
-        del$tprob <- ifelse(del$p1.stat == 0, all$param$inf.prob, all$param$inf.prob.g2)
+        del$tprob <- ifelse(del$p1.stat == "s", all$param$inf.prob,
+                                                all$param$inf.prob.g2)
       }
       del$trans <- rbinom(nrow(del), 1, del$tprob)
       del <- del[del$trans == TRUE, ]
       if (nrow(del) > 0) {
         if (all$param$groups == 1) {
-          newIds <- unique(ifelse(del$p1.stat == 0, del$p1, del$p2))
+          newIds <- unique(ifelse(del$p1.stat == "s", del$p1, del$p2))
           nInf <- length(newIds)
         }
         if (all$param$groups == 2) {
-          newIdsg1 <- unique(del$p1[del$p1.stat == 0])
-          newIdsg2 <- unique(del$p2[del$p2.stat == 0])
+          newIdsg1 <- unique(del$p1[del$p1.stat == "s"])
+          newIdsg2 <- unique(del$p2[del$p2.stat == "s"])
           nInf <- length(newIdsg1)
           nInfg2 <- length(newIdsg2)
           newIds <- c(newIdsg1, newIdsg2)
         }
-        all$attr$status[newIds] <- 1
+        all$attr$status[newIds] <- "i"
         all$attr$infTime[newIds] <- at
       } else {
         nInf <- nInfg2 <- 0
@@ -134,14 +135,14 @@ recovery.icm <- function(all, at) {
   group <- all$attr$group
 
   type <- all$control$type
-  recovState <- ifelse(type == "SIR", 2, 0)
+  recovState <- ifelse(type == "SIR", "r", "s")
 
   rec.rand <- all$control$rec.rand
   rec.rate <- all$param$rec.rate
   rec.rate.g2 <- all$param$rec.rate.g2
 
   nRecov <- nRecovG2 <- 0
-  idsElig <- which(active == 1 & status == 1)
+  idsElig <- which(active == 1 & status == "i")
   nElig <- length(idsElig)
 
   if (nElig > 0) {
@@ -190,13 +191,3 @@ recovery.icm <- function(all, at) {
 
   return(all)
 }
-
-
-
-
-
-
-
-
-
-

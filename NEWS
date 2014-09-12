@@ -1,3 +1,84 @@
+Version 1.1
+------------------------------------------------------------------------------
+
+NEW FEATURES
+* Added three new extraction functions for network models (get_network,
+  get_transmat, and get_nwstats) which extract the network objects, transmission
+  matrices, and data frame of network statistics from a completed netsim
+  simulation. These functions also support extraction of network model simulations
+  with multiple networks (see API note).
+* The plot function for netsim objects now has an argument, network, for plotting
+  network statistics and static networks (type = formation and network,
+  respectively) in simulations with multiple networks.
+* For stochastic epidemic plots, added an option mean.smooth. If TRUE, this
+  uses a lowess smoother on the outcome variables of interest. This is helpful
+  in visualization of low-count outcomes like disease incidence.
+* Automatic parallelization of network models is now possible with the
+  netsim_parallel function. Note that this is experimental and has not been
+  tested extensively across platforms, so bug reports are welcome.
+* Added an argument, skip.check, for the control settings in both ICM and network
+  model classes, which overrides the default error checking of parameters,
+  initial conditions, and control settings. This should only be used for original
+  models with new modules that may unnecessarily trigger a check error.
+* In network models, two preset functions have been changed to replaceable
+  modules: edges_correct and verbose.net. The former performs the adjustment to
+  the edges coefficient for network models with population size changes, in order
+  to preserve the mean degree; for mass action epidemic models, for example,
+  one would not want this adjustment, so the module should be set to NULL in
+  control.net. The latter performs the printing of simulation results to the
+  console. Both functions are now listed in the modules help file accessed by:
+  help(modules.net).
+* Added progress bars for netdx diagnostic simulations for computationally
+  intensive parts of the simulations.
+
+USER INTERFACE CHANGES
+* The internal representation of disease status as an individual-level attribute
+  in the stochastic ICM and network models has been changed from number (0, 1, 2)
+  to character ("s", "i", "r"). This changes little when running the integrated
+  models, and has greater implications for the API when editing modules. But one
+  change for integrated models is that the status vector passed into the initial
+  conditions functions must now be in this new format. This also impacts the
+  expansion of EpiModel for original models.
+* The zeromarg argument has been removed from plot.netsim for static network
+  plots (type = "network") to reduce potential issues with setting default
+  margins on plots. Now they must explicitly be set with standard par options.
+
+API CHANGES
+* The ordering of built-in modules within a time step for network simulations
+  has been changed such that the network resimulation module is run before the
+  infection module. There should be no substantive differences in model results,
+  but this provides a more logical consistency between edges toggled on at a
+  time step and the infections that may occur over those edges.
+* Evaluation of parameters, initial conditions, and control settings in the
+  core parameterization functions is now more stable, and also more flexible.
+  Defaults for the fixed arguments are now included in the documentation.
+* Users may now bypass the built-in param, init, and control functions altogether
+  for original ICM and network models, because the definition of new and
+  replacement modules occurs within the control functions themselves. The
+  existing control functions should be used as a template if one is considering
+  replacing these parameterization functions.
+* Users may also bypass any of the built-in modules in network models (see the
+  list in control.net) by setting the argument for that module to NULL.
+* The x argument in netsim may now be a list of netest objects. This would be
+  used only if supplying new simulation modules that know how to process that
+  data structure. The motivation for this is to allow original models with
+  multiple networks simulated (e.g., a main partnership network and a casual
+  partnership network).
+
+BUG FIXES
+* Minor updates and bug fixes to the two built-in Shiny applications (accessed
+  via the epiweb function). These apps now benefit from the more stable
+  parameterization functions mentioned above.
+* Updated the print method for the param.net class to handle parameters that are
+  lists or data frames.
+* merge.netsim now ignores any differences in the environment of the nwstats.formula
+  control, previously preventing proper merging of some network model simulations.
+
+OTHER
+* Added new test cases for running new DCMs, ICMs, and network models, following
+  the vignette examples (see http://statnet.github.io/EpiModel/).
+
+
 Version 1.0.2
 ------------------------------------------------------------------------------
 
@@ -9,6 +90,12 @@ INTERFACE CHANGES
   mostly used in the birth/entry modules. Now users may directly edit these
   modules and use the utility functions without explicitly adding them to the
   global environment.
+* Added warning message for network models in which there is a vertex attribute
+  for status added to the network but not referenced in the formation formula,
+  in which case the initial conditions for status will still be derived from the
+  input for init.net. This does not apply to "serosorting models", which reference
+  status in the formation formula, and which require setting status as a vertex
+  attribute on the network before calling netest.
 
 BUG FIXES
 * Network models with passed network attributes in the formation formula in open
@@ -20,6 +107,8 @@ BUG FIXES
   an error.
 * Simulating an SIR serosorting network epidemic model (status in the formation
   formula) no longer stops due to missing r.num in init.net.
+* Fix bug when calling netdx for one simulation only with a network model fit with
+  the full STERGM method (i.e., using the edapprox = FALSE in netest).
 
 OTHER
 * The dissolution_coefs function now stores and prints the death/exit rate.

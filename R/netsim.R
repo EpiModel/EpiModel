@@ -141,57 +141,71 @@ netsim <- function(x,
                    ) {
 
   crosscheck.net(x, param, init, control)
-  verbose.net(control, type = "startup")
+  if (!is.null(control[["verbose.FUN"]])) {
+    do.call(control[["verbose.FUN"]], list(control, type = "startup"))
+  }
 
 
   ### SIMULATION LOOP
   for (s in 1:control$nsims) {
 
     ## Initialization Module
-    all <- do.call(control[["initialize.FUN"]], list(x, param, init, control))
+    if (!is.null(control[["initialize.FUN"]])) {
+      all <- do.call(control[["initialize.FUN"]], list(x, param, init, control))
+    }
 
 
     ### TIME LOOP
     for (at in 2:control$nsteps) {
 
       ## User Modules
-      bim <- grep(".FUN", names(formals(control.net)), value = TRUE)
-      um <- which(grepl(".FUN", names(control)) & !(names(control) %in% bim))
+      um <- control$user.mods
       if (length(um) > 0) {
         for (i in seq_along(um)) {
-          umn <- names(control)[um[i]]
-          all <- do.call(control[[umn]], list(all, at))
+          all <- do.call(control[[um[i]]], list(all, at))
         }
+      }
+
+      ## Demographics Modules
+      if (!is.null(control[["deaths.FUN"]])) {
+        all <- do.call(control[["deaths.FUN"]], list(all, at))
+      }
+      if (!is.null(control[["births.FUN"]])) {
+        all <- do.call(control[["births.FUN"]], list(all, at))
+      }
+
+
+      ## Recovery Module
+      if (!is.null(control[["recovery.FUN"]])) {
+        all <- do.call(control[["recovery.FUN"]], list(all, at))
+      }
+
+
+      ## Resimulate network
+      if (!is.null(control[["edges_correct.FUN"]])) {
+        all <- do.call(control[["edges_correct.FUN"]], list(all, at))
+      }
+      if (!is.null(control[["resim_nets.FUN"]])) {
+        all <- do.call(control[["resim_nets.FUN"]], list(all, at))
       }
 
 
       ## Infection Module
-      all <- do.call(control[["infection.FUN"]], list(all, at))
+      if (!is.null(control[["infection.FUN"]])) {
+        all <- do.call(control[["infection.FUN"]], list(all, at))
+      }
 
 
-      ## Recovery Module
-      all <- do.call(control[["recovery.FUN"]], list(all, at))
-
-
-      ## Demographics Modules
-      all <- do.call(control[["deaths.FUN"]], list(all, at))
-      all <- do.call(control[["births.FUN"]], list(all, at))
-
-
-      ## Resimulate network
-      all <-  do.call(control[["resim_nets.FUN"]], list(all, at))
-
-
-      ## Save Prevalence Vectors
-      all <-  do.call(control[["get_prev.FUN"]], list(all, at))
-
-
-      ## Popsize Edges Correction
-      all <- edges_correct(all, at)
+      ## Save Prevalence
+      if (!is.null(control[["get_prev.FUN"]])) {
+        all <- do.call(control[["get_prev.FUN"]], list(all, at))
+      }
 
 
       ## Progress Console
-      verbose.net(all, type = "progress", s, at)
+      if (!is.null(control[["verbose.FUN"]])) {
+        do.call(control[["verbose.FUN"]], list(all, type = "progress", s, at))
+      }
 
     }
 
@@ -210,3 +224,126 @@ netsim <- function(x,
 
 }
 
+
+#' @title Stochastic Network Models in Parallel
+#'
+#' @description Simulates stochastic network epidemic models for infectious
+#'              disease in parallel.
+#'
+#' @inheritParams netsim
+#' @param merge if \code{TRUE}, merge parallel simulations into one \code{netsim}
+#'        object after simulation.
+#'
+#' @details
+#' This is an experimental implementation of the \code{\link{netsim}} function
+#' that runs model simulations in parallel, using the \code{foreach} and
+#' \code{doParallel} libraries.
+#'
+#' To run models in parallel, add an argument to the control settings called
+#' \code{ncores} that is equal to the number of parallel cores the simulations
+#' should be initiated on. Use \code{\link{detectCores}} to find the maximum on
+#' a system.
+#'
+#' This has been tested on Linux, Mac, and Windows but no guarantees are made
+#' that it will work on every platform. It is best-suited to be run in batch
+#' mode. Memory management errors have been encounted when running large simulations
+#' (large networks, long time steps, saving \code{networkDynamic} objects) in
+#' interactive environments like Rstudio server.
+#'
+#' Note that this function may be folded into \code{\link{netsim}} and deprecated
+#' in the future.
+#'
+#' @keywords model
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' nw <- network.initialize(n = 1000, directed = FALSE)
+#' formation <- ~ edges
+#' target.stats <- 500
+#' dissolution <- ~ offset(edges)
+#' duration <- 50
+#' coef.diss <- dissolution_coefs(dissolution, duration)
+#'
+#' est <- netest(nw,
+#'               formation,
+#'               dissolution,
+#'               target.stats,
+#'               coef.diss,
+#'               verbose = FALSE)
+#'
+#' param <- param.net(inf.prob = 0.25)
+#' init <- init.net(i.num = 50)
+#' control <- control.net(type = "SI", nsteps = 250,
+#'                        nsims = 4, ncores = 4)
+#'
+#' # Merging on by default
+#' sims <- netsim_parallel(est, param, init, control)
+#' plot(sims)
+#'
+#' # But may be toggled off
+#' sims <- netsim_parallel(est, param, init, control, merge = FALSE)
+#' }
+#'
+netsim_parallel <- function(x,
+                            param,
+                            init,
+                            control,
+                            merge = TRUE
+                            ) {
+
+  nsims <- control$nsims
+  ncores <- control$ncores
+  partype <- control$partype
+  if (is.null(partype)) {
+    partype <- "parallel"
+  }
+  if (partype == "snow") {
+    ncores <- sum(cores.per.node)
+  }
+
+  if (nsims > 1 && ncores > 1) {
+    suppressPackageStartupMessages(require(foreach))
+
+    if (partype == "parallel") {
+      suppressPackageStartupMessages(require(doParallel))
+      cluster.size <- min(nsims, ncores)
+      registerDoParallel(cluster.size)
+    }
+    if (partype == "snow") {
+      suppressPackageStartupMessages(require(doSNOW))
+      nodes <- control$nodes
+      cores.per.node <- control$cores.per.node
+      cl <- makeSOCKcluster(rep(nodes, cores.per.node))
+      registerDoSNOW(cl)
+    }
+
+    out <- foreach(i = 1:nsims) %dopar% {
+
+      require(EpiModel)
+      control$verbose = FALSE
+      control$nsims = 1
+
+      netsim(x, param, init, control)
+
+    }
+
+    if (partype == "snow") {
+      stopCluster(cl)
+    }
+
+    if (merge == TRUE) {
+      all <- out[[1]]
+      for (i in 2:length(out)) {
+        all <- merge(all, out[[i]])
+      }
+    } else {
+      all <- out
+    }
+
+  } else {
+    all <- netsim(x, param, init, control)
+  }
+
+  return(all)
+}

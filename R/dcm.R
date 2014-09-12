@@ -189,9 +189,12 @@ dcm <- function(param, init, control){
       all.p <- param
     }
 
+    ## Timesteps
+    times <- seq(1, control$nsteps, control$dt)
+
     ## Solve ODE
     df <- data.frame(ode(y = t0,
-                         times = control$dt,
+                         times = times,
                          func = model,
                          parms = all.p,
                          method = control$odemethod))

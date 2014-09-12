@@ -124,21 +124,27 @@ param.dcm <- function(inf.prob,
                       balance,
                       ...) {
 
-  ## Pull parameters
-  out <- as.list(match.call(expand.dots = TRUE)[-1])
-
-
-  ## Split lists
-  out <- split_list(out)
-
-
-  ## Eval args
-  out <- eval_list(out)
+  # Get arguments
+  p <- list()
+  formal.args <- formals(sys.function())
+  formal.args[["..."]] <- NULL
+  for (arg in names(formal.args)) {
+    if (as.logical(mget(arg) != "")) {
+      p[arg] <- list(get(arg))
+    }
+  }
+  dot.args <- list(...)
+  names.dot.args <- names(dot.args)
+  if (length(dot.args) > 0) {
+    for (i in 1:length(dot.args)) {
+      p[[names.dot.args[i]]] <- dot.args[[i]]
+    }
+  }
 
 
   ## Out
-  class(out) <- "param.dcm"
-  return(out)
+  class(p) <- "param.dcm"
+  return(p)
 }
 
 
@@ -213,44 +219,42 @@ param.icm <- function(inf.prob,
                       balance,
                       ...) {
 
-  ## Pull parameters
-  out <- as.list(match.call(expand.dots = TRUE)[-1])
-
-
-  ## Split lists
-  out <- split_list(out)
-
-
-  ## Eval args
-  out <- eval_list(out)
+  # Get arguments
+  p <- list()
+  formal.args <- formals(sys.function())
+  formal.args[["..."]] <- NULL
+  for (arg in names(formal.args)) {
+    if (as.logical(mget(arg) != "")) {
+      p[arg] <- list(get(arg))
+    }
+  }
+  dot.args <- list(...)
+  names.dot.args <- names(dot.args)
+  if (length(dot.args) > 0) {
+    for (i in 1:length(dot.args)) {
+      p[[names.dot.args[i]]] <- dot.args[[i]]
+    }
+  }
 
 
   ## Defaults and checks
-  if (is.null(out$act.rate)) {
-    out$act.rate <- 1
+  if (is.null(p$act.rate)) {
+    p$act.rate <- 1
   }
-  if (!is.null(out$b.rate) | !is.null(out$ds.rate) |
-      !is.null(out$di.rate) | !is.null(out$dr.rate)) {
-    out$vital <- TRUE
-  } else {
-    out$vital <- FALSE
-  }
+  p$vital <- ifelse(!is.null(p$b.rate) | !is.null(p$ds.rate) |
+                    !is.null(p$di.rate) | !is.null(p$dr.rate), TRUE, FALSE)
 
-  if (any(grepl(".g2", names(out))) == TRUE) {
-    out$groups <- 2
-  } else {
-    out$groups <- 1
-  }
+  p$groups <- ifelse(any(grepl(".g2", names(p))) == TRUE, 2, 1)
 
-  if (out$groups == 2 && (is.null(out$balance) ||
-                          !(out$balance %in% c("g1", "g2")))) {
+  if (p$groups == 2 && (is.null(p$balance) ||
+                        !(p$balance %in% c("g1", "g2")))) {
     stop("Specify balance=\"g1\" or balance=\"g2\" with 2-group models")
   }
 
 
   ## Output
-  class(out) <- "param.icm"
-  return(out)
+  class(p) <- "param.icm"
+  return(p)
 }
 
 
@@ -360,32 +364,34 @@ param.net <- function(inf.prob,
                       dr.rate.m2,
                       ...) {
 
-  ## Pull parameters
-  out <- as.list(match.call(expand.dots = TRUE)[-1])
-
-
-  ## Split lists
-  out <- split_list(out)
-
-
-  ## Eval args
-  out <- eval_list(out)
+  # Get arguments
+  p <- list()
+  formal.args <- formals(sys.function())
+  formal.args[["..."]] <- NULL
+  for (arg in names(formal.args)) {
+    if (as.logical(mget(arg) != "")) {
+      p[arg] <- list(get(arg))
+    }
+  }
+  dot.args <- list(...)
+  names.dot.args <- names(dot.args)
+  if (length(dot.args) > 0) {
+    for (i in 1:length(dot.args)) {
+      p[[names.dot.args[i]]] <- dot.args[[i]]
+    }
+  }
 
 
   ## Defaults and checks
   if (missing(act.rate)) {
-    out$act.rate <- 1
+    p$act.rate <- 1
   }
-  if (!missing(b.rate) | !missing(ds.rate) |
-      !missing(di.rate) | !missing(dr.rate)) {
-    out$vital <- TRUE
-  } else {
-    out$vital <- FALSE
-  }
+  p$vital <- ifelse(!missing(b.rate) | !missing(ds.rate) |
+                    !missing(di.rate) | !missing(dr.rate), TRUE, FALSE)
 
 
   ## Output
-  class(out) <- "param.net"
-  return(out)
+  class(p) <- "param.net"
+  return(p)
 }
 

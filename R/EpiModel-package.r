@@ -4,8 +4,8 @@
 #' \tabular{ll}{
 #'    Package: \tab EpiModel\cr
 #'    Type: \tab Package\cr
-#'    Version: \tab 1.0.1\cr
-#'    Date: \tab 2014-07-25\cr
+#'    Version: \tab 1.1\cr
+#'    Date: \tab 2014-09-06\cr
 #'    License: \tab GPL (>= 2)\cr
 #'    LazyLoad: \tab yes\cr
 #' }
@@ -104,7 +104,7 @@
 #'  }
 #' }
 #'
-#' @references \url{http://www.statnet.org/trac/wiki/EpiModel}
+#' @references \url{http://statnet.github.io/EpiModel}
 #'
 #' @name EpiModel-package
 #' @aliases EpiModel

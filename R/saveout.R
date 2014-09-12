@@ -20,6 +20,7 @@ saveout.dcm <- function(df, s, param, control, out) {
     out <- list()
     out$param <- param
     out$control <- control
+    out$control$timesteps <- seq(1, control$nsteps, control$dt)
     out$epi <- list()
     for (j in 2:ncol(df)) {
       out$epi[[names(df)[j]]] <- data.frame(df[, j])
@@ -106,10 +107,15 @@ saveout.icm <- function(all, s, out) {
 #'
 saveout.net <- function(all, s, out) {
 
+  # Counts number of simulated networks
+  num.nw <- ifelse(any(class(all$nw) == "network"), 1, length(all$nw))
+
   if (s == 1) {
     out <- list()
     out$param <- all$param
     out$control <- all$control
+    out$nwparam <- all$nwparam
+    out$control$num.nw <- num.nw
 
     out$epi <- list()
     for (j in 1:length(all$out)) {
@@ -128,6 +134,7 @@ saveout.net <- function(all, s, out) {
         out$stats$transmat <- list(data.frame())
       }
     }
+
     if (all$control$save.network == TRUE) {
       out$network <- list(all$nw)
     }
@@ -164,19 +171,6 @@ saveout.net <- function(all, s, out) {
     }
     if (all$control$save.nwstats == TRUE) {
       names(out$stats$nwstats) <- simnames
-
-      # Pull formation terms
-      formation <- all$nwparam$formation
-      a <- summary(update.formula(all$nw ~ ., formation), at = 1)
-      if (ncol(a) == 1) {
-        attributes(out$stats$nwstats)$formation.terms <- rownames(a)
-      } else {
-        attributes(out$stats$nwstats)$formation.terms <- colnames(a)
-      }
-
-      # Pull target statistics
-      attributes(out$stats$nwstats)$target.stats <- all$nwparam$target.stats
-
     }
     if (all$control$save.transmat == TRUE) {
       names(out$stats$transmat) <- simnames[1:length(out$stats$transmat)]

@@ -79,61 +79,61 @@ init_status.icm <- function(all) {
 
   # Status ------------------------------------------------------------------
   if (status.rand == FALSE) {
-    status <- rep(0, nG1 + nG2)
-    status[sample(which(group == 1), size = i.num)] <- 1
+    status <- rep("s", nG1 + nG2)
+    status[sample(which(group == 1), size = i.num)] <- "i"
     if (nGroups == 2) {
-      status[sample(which(group == 2), size = i.num.g2)] <- 1
+      status[sample(which(group == 2), size = i.num.g2)] <- "i"
     }
     if (type == "SIR") {
-      status[sample(which(group == 1 & status == 0), size = r.num)] <- 2
+      status[sample(which(group == 1 & status == "s"), size = r.num)] <- "r"
       if (nGroups == 2) {
-        status[sample(which(group == 2 & status == 0), size = r.num.g2)] <- 2
+        status[sample(which(group == 2 & status == "s"), size = r.num.g2)] <- "r"
       }
     }
   } else {
     status <- rep(NA, nG1 + nG2)
     if (type == "SIR") {
       status[which(group == 1)] <- sample(
-        x = c(0:2),
+        x = c("s", "i", "r"),
         size = nG1,
         replace = TRUE,
         prob = c(1-(i.num/nG1)-(r.num/nG1), i.num/nG1, r.num/nG1))
-      if (sum(status == 1 & group == 1) == 0 & i.num > 0) {
-        status[sample(which(group == 1), size = i.num)] <- 1
+      if (sum(status == "i" & group == 1) == 0 & i.num > 0) {
+        status[sample(which(group == 1), size = i.num)] <- "i"
       }
-      if (sum(status == 2 & group == 1) == 0 & r.num > 0) {
-        status[sample(which(group == 1), size = r.num)] <- 2
+      if (sum(status == "r" & group == 1) == 0 & r.num > 0) {
+        status[sample(which(group == 1), size = r.num)] <- "r"
       }
       if (nGroups == 2) {
         status[which(group == 2)] <- sample(
-          x = c(0:2),
+          x = c("s", "i", "r"),
           size = nG2,
           replace = TRUE,
           prob = c(1-(i.num.g2/nG2)-(r.num.g2/nG2), i.num.g2/nG2, r.num.g2/nG2))
-        if (sum(status == 1 & group == 2) == 0 & i.num.g2 > 0) {
-          status[sample(which(group == 2), size = i.num.g2)] <- 1
+        if (sum(status == "i" & group == 2) == 0 & i.num.g2 > 0) {
+          status[sample(which(group == 2), size = i.num.g2)] <- "i"
         }
-        if (sum(status == 2 & group == 2) == 0 & r.num.g2 > 0) {
-          status[sample(which(group == 2), size = r.num.g2)] <- 2
+        if (sum(status == "r" & group == 2) == 0 & r.num.g2 > 0) {
+          status[sample(which(group == 2), size = r.num.g2)] <- "r"
         }
       }
     } else {
       status[which(group == 1)] <- sample(
-        x = c(0:1),
+        x = c("s", "i"),
         size = nG1,
         replace = TRUE,
         prob = c(1-(i.num/nG1), i.num/nG1))
-      if (sum(status == 1 & group == 1) == 0 & i.num > 0) {
-        status[sample(which(group == 1), size = i.num)] <- 1
+      if (sum(status == "i" & group == 1) == 0 & i.num > 0) {
+        status[sample(which(group == 1), size = i.num)] <- "i"
       }
       if (nGroups == 2) {
         status[which(group == 2)] <- sample(
-          x = c(0:1),
+          x = c("s", "i"),
           size = nG2,
           replace = TRUE,
           prob = c(1-(i.num.g2/nG2), i.num.g2/nG2))
-        if (sum(status == 1 & group == 2) == 0 & i.num.g2 > 0) {
-          status[sample(which(group == 2), size = i.num.g2)] <- 1
+        if (sum(status == "i" & group == 2) == 0 & i.num.g2 > 0) {
+          status[sample(which(group == 2), size = i.num.g2)] <- "i"
         }
       }
     }
@@ -143,7 +143,7 @@ init_status.icm <- function(all) {
 
   # Infection Time ----------------------------------------------------------
   ## Set up inf.time vector
-  idsInf <- which(status == 1)
+  idsInf <- which(status == "i")
   infTime <- rep(NA, length(status))
 
   # If vital=TRUE, infTime is a uniform draw over the duration of infection
@@ -160,7 +160,6 @@ init_status.icm <- function(all) {
       infTime[idsInf] <- ssample(1:(-round(1/all$param$rec.rate) + 2),
                                  length(idsInf),
                                  replace = TRUE)
-      #TODO: divide this by group if rec.rate != rec.rate.g2
     }
   }
   all$attr$infTime <- infTime

@@ -1,4 +1,4 @@
-context("Diagnostics")
+context("Network diagnostics")
 
 
 # Setup -------------------------------------------------------------------
@@ -33,8 +33,8 @@ est2 <- netest(nw,
               dissolution,
               target.stats,
               coef.diss,
-              coef.form = -Inf)
-
+              coef.form = -Inf,
+              verbose = FALSE)
 
 
 # Tests -------------------------------------------------------------------

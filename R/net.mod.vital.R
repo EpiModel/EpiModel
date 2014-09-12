@@ -32,7 +32,7 @@ deaths.net <- function(all, at) {
 
   # Initialize counts and query rates
   nDeaths <- nDeathsM2 <- 0
-  idsElig <- which(all$attr$active == 1 & all$attr$status == 0)
+  idsElig <- which(all$attr$active == 1 & all$attr$status == "s")
   nElig <- length(idsElig)
 
   if (nElig > 0) {
@@ -97,7 +97,7 @@ deaths.net <- function(all, at) {
 
   # Initialize counts and query rates
   nDeaths <- nDeathsM2 <- 0
-  idsElig <- which(all$attr$active == 1 & all$attr$status == 1)
+  idsElig <- which(all$attr$active == 1 & all$attr$status == "i")
   nElig <- length(idsElig)
 
   if (nElig > 0) {
@@ -163,7 +163,7 @@ deaths.net <- function(all, at) {
 
     # Initialize counts and query rates
     nDeaths <- nDeathsM2 <- 0
-    idsElig <- which(all$attr$active == 1 & all$attr$status == 2)
+    idsElig <- which(all$attr$active == 1 & all$attr$status == "r")
     nElig <- length(idsElig)
 
     if (nElig > 0) {
@@ -255,7 +255,7 @@ births.net <- function(all, at) {
   # Variables ---------------------------------------------------------------
   b.rate <- all$param$b.rate
   b.rate.m2 <- all$param$b.rate.m2
-  formation <- all$nwparam$formation
+  formation <- get_nwparam(all)$formation
   modes <- all$param$modes
   tea.status <- all$control$tea.status
   nOld <- all$out$num[at - 1]
@@ -355,7 +355,8 @@ births.net <- function(all, at) {
   if (length(newNodes) > 0) {
 
     # Set attributes on nw
-    t <- get_formula_terms(all$nwparam$formation)
+    form <- get_nwparam(all)$formation
+    t <- get_formula_terms(form)
     curr.tab <- get_attr_prop(all$nw, t)
     if (length(curr.tab) > 0) {
       all$nw <- update_nwattr(all$nw,
@@ -379,7 +380,7 @@ births.net <- function(all, at) {
       } else {
         all$nw <- activate.vertex.attribute(all$nw,
                                             prefix = "testatus",
-                                            value = 0,
+                                            value = "s",
                                             onset = at,
                                             terminus = Inf,
                                             v = newNodes)
@@ -387,14 +388,14 @@ births.net <- function(all, at) {
     }
     if (modes == 1) {
       if (!("status" %in% t)) {
-        all$attr$status <- c(all$attr$status, rep(0, length(newNodes)))
+        all$attr$status <- c(all$attr$status, rep("s", length(newNodes)))
       }
       all$attr$active <- c(all$attr$active, rep(1, length(newNodes)))
       all$attr$infTime <- c(all$attr$infTime, rep(NA, length(newNodes)))
     }
     if (modes == 2) {
       if (!("status" %in% t)) {
-        all <- split_bip(all, "status", 0,
+        all <- split_bip(all, "status", "s",
                          nCurrM1, nCurrM2, nBirths, nBirthsM2)
       }
       all <- split_bip(all, "active", 1,
@@ -404,7 +405,7 @@ births.net <- function(all, at) {
     }
 
     ## Handles infTime when incoming nodes are infected
-    newNodesInf <- intersect(newNodes, which(all$attr$status == 1))
+    newNodesInf <- intersect(newNodes, which(all$attr$status == "s"))
     all$attr$infTime[newNodesInf] <- at
   }
 

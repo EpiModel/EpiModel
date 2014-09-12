@@ -74,6 +74,10 @@
 #' step to account for changes in the size of the network (changed through entries
 #' and exits), and the disease status of the nodes.
 #' \itemize{
+#'  \item \code{\link{edges_correct}}: adjusts the edges coefficient of a network
+#'        model to account for changes in the population size due to entries and
+#'        exits. The default behavior is to preserve the mean degree (average
+#'        number of edges per person) in response to change population sizes.
 #'  \item \code{\link{resim_nets}}: resimulates the network object one time step
 #'        forward given the set of formation and dissolution coefficients estimated
 #'        in \code{\link{netest}}. This function also deletes the inactive nodes
@@ -88,6 +92,8 @@
 #'        (susceptible, infected, recovered) at each time step for those active
 #'        nodes in the network. If the \code{epi.by} control is used, it calculates
 #'        these statistics by a set of nodal attributes.
+#'  \item \code{\link{verbose.net}}: summarizes the current state of the simulation
+#'        and prints this to the console.
 #' }
 #'
 #'

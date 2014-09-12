@@ -127,7 +127,7 @@ plot.dcm <- function(x,
 
 
   ## Model dimensions
-  nsteps <- max(x$control$dt)
+  nsteps <- x$control$nsteps
   nruns <- x$control$nruns
   if (norun == FALSE && any(run > nruns)) {
     stop("Specify run between 1 and", nruns,
@@ -317,23 +317,23 @@ plot.dcm <- function(x,
   ## Plot lines
   if (lcomp == 1) {
     if (nruns == 1) {
-      lines(x$control$dt, x$epi[[y]][, 1],
+      lines(x$control$timesteps, x$epi[[y]][, 1],
             lwd = lwd[1], lty = lty[1], col = pal[1])
     }
     if (nruns > 1) {
       if (norun == TRUE) {
         for (i in 1:nruns) {
-          lines(x$control$dt, x$epi[[y]][, i],
+          lines(x$control$timesteps, x$epi[[y]][, i],
                 lwd = lwd[i], lty = lty[i], col = pal[i])
         }
       } else {
         if (length(run) == 1) {
-          lines(x$control$dt, x$epi[[y]][, run],
+          lines(x$control$timesteps, x$epi[[y]][, run],
                 lwd = lwd[1], lty = lty[1], col = pal[1])
         }
         if (length(run) > 1) {
           for (i in 1:length(run)) {
-            lines(x$control$dt, x$epi[[y]][, run[i]],
+            lines(x$control$timesteps, x$epi[[y]][, run[i]],
                   lwd = lwd[i], lty = lty[i], col = pal[i])
           }
         }
@@ -343,7 +343,7 @@ plot.dcm <- function(x,
   if (lcomp > 1) {
     if (nruns == 1) {
       for (i in 1:lcomp) {
-        lines(x$control$dt, x$epi[[y[i]]][, 1],
+        lines(x$control$timesteps, x$epi[[y[i]]][, 1],
               lwd = lwd, lty = lty[i], col = pal[i])
       }
     }
@@ -351,7 +351,7 @@ plot.dcm <- function(x,
       if (norun == TRUE) {
         for (i in 1:lcomp) {
           run <- 1
-          lines(x$control$dt, x$epi[[y[i]]][, run],
+          lines(x$control$timesteps, x$epi[[y[i]]][, run],
                 lwd = lwd[i], lty = lty[i], col = pal[i])
         }
       }
@@ -361,7 +361,7 @@ plot.dcm <- function(x,
                call. = FALSE)
         }
         for (i in 1:lcomp) {
-          lines(x$control$dt, x$epi[[y[i]]][, run],
+          lines(x$control$timesteps, x$epi[[y[i]]][, run],
                 lwd = lwd[i], lty = lty[i], col = pal[i])
         }
       }
@@ -478,6 +478,7 @@ plot.dcm <- function(x,
 #' @param mean.line if \code{TRUE}, plot mean of simulations across time.
 #' @param mean.extinct if \code{TRUE}, include extinct simulations in mean
 #'        calculation (see details).
+#' @param mean.smooth if \code{TRUE}, use a lowess smoother on the mean line.
 #' @param mean.col a vector of any standard R color format for mean lines.
 #' @param mean.lwd line width for mean lines.
 #' @param mean.lty line type for mean lines.
@@ -543,8 +544,12 @@ plot.dcm <- function(x,
 #' control <- control.icm(type = "SI", nsteps = 100,
 #'                        nsims = 3, verbose = FALSE)
 #' mod2 <- icm(param, init, control)
+#'
+#' # Plot prevalence
 #' plot(mod2, y = "i.num", mean.line = FALSE)
-#' plot(mod2, y = "si.flow", sim.lines = FALSE)
+#'
+#' # Plot incidence
+#' plot(mod2, y = "si.flow", mean.smooth = TRUE)
 #' }
 #'
 plot.icm <- function(x,
@@ -557,6 +562,7 @@ plot.icm <- function(x,
                      sim.alpha,
                      mean.line = TRUE,
                      mean.extinct = TRUE,
+                     mean.smooth = FALSE,
                      mean.col,
                      mean.lwd,
                      mean.lty,
@@ -827,6 +833,9 @@ plot.icm <- function(x,
     if (nsims == 1) {
       for (j in seq_len(lcomp)) {
         mean.prev <- x$epi[[y[j]]][, 1]
+        if (mean.smooth == TRUE) {
+          mean.prev <- supsmu(x = 1:nsteps, y = mean.prev)$y
+        }
         lines(1:nsteps,
               mean.prev,
               lwd = mean.lwd[j],
@@ -839,9 +848,15 @@ plot.icm <- function(x,
       for (j in seq_len(lcomp)) {
         if (mean.extinct == TRUE) {
           mean.prev <- apply(x$epi[[y[j]]], 1, mean)
+          if (mean.smooth == TRUE) {
+            mean.prev <- supsmu(x = 1:nsteps, y = mean.prev)$y
+          }
         } else {
           non.extinct <- as.vector(which(apply(x$epi$si.flow, 2, max) > 0))
           mean.prev <- apply(x$epi[[y[j]]][, non.extinct], 1, mean)
+          if (mean.smooth == TRUE) {
+            mean.prev <- supsmu(x = 1:nsteps, y = mean.prev)$y
+          }
         }
         lines(1:nsteps,
               mean.prev,
@@ -1258,15 +1273,16 @@ plot.netdx <- function(x,
 #' @param type type of plot: \code{"sim"} for epidemic model results,
 #'        \code{"network"} for a static network plot (\code{plot.network}),
 #'        or \code{"formation"} for network formation statistics.
-#' @param sim if \code{type="network"}, simulation number for network graph.
+#' @param sim if \code{type="network"}, a single simulation number for network
+#'        plot; if \code{type="formation"}, a vector of simulation numbers to plot.
+#' @param network network number, for simulations with multiple networks
+#'        representing the population.
 #' @param at if \code{type="network"}, time step for network graph.
 #' @param col.status if \code{TRUE} and \code{type="network"}, automatic disease
 #'        status colors (blue = susceptible, red = infected, , green = recovered).
 #' @param shp.bip if \code{type="network"} and a bipartite simulation, shapes
 #'        for the mode 2 vertices, with acceptable inputs of "triangle" and
 #'        "square". Mode 1 vertices will be circles.
-#' @param zeromarg if \code{TRUE} and \code{type="network"}, automatically
-#'        sets plot margins to 0 on all sides.
 #' @param stats if \code{type="formation"}, network statistics to plot, among
 #'        those specified in \code{nwstats.formula} of \code{\link{control.net}},
 #'        with the default to plot all statistics.
@@ -1300,9 +1316,9 @@ plot.netdx <- function(x,
 #'        extraction of that dynamic network at a specific time point. This
 #'        plotting function wraps the \code{\link{plot.network}} function in the
 #'        \code{network} package. Consult the help page for \code{plot.network}
-#'        for all the plotting parameters. In addition, five plotting parameters
+#'        for all the plotting parameters. In addition, four plotting parameters
 #'        specific to \code{netsim} plots are available: \code{sim}, \code{at},
-#'        \code{col.status}, \code{shp.bip}, and \code{zeromarg}.
+#'        \code{col.status}, and \code{shp.bip}.
 #'  \item \strong{\code{type="formation"}}: summary network statistics related to
 #'        the network model formation are plotted. These plots are similar to the
 #'        formation plots for \code{netdx} objects. When running a \code{netsim}
@@ -1349,11 +1365,15 @@ plot.netdx <- function(x,
 #' plot(mod, type = "sim")
 #' plot(mod, type = "sim", popfrac = FALSE)
 #' plot(mod, type = "sim", y = "si.flow")
+#' plot(mod, type = "sim", y = "si.flow",
+#'      mean.smooth = TRUE, mean.col = "firebrick")
 #'
 #' # Plot static networks
+#' par(mar = c(0, 0, 0, 0))
 #' plot(mod, type = "network")
 #'
 #' # Automatic coloring of infected nodes as red
+#' par(mfrow = c(1, 2))
 #' plot(mod, type = "network",
 #'      col.status = TRUE, at = 50)
 #' plot(mod, type = "network",
@@ -1365,11 +1385,12 @@ plot.netdx <- function(x,
 #' plot(mod, type = "network", at = 50,
 #'      col.status = TRUE, shp.bip = "triangle")
 #'
-#' # Remove the automatic zero margin to include a title
-#' plot(mod, type = "network", zeromarg = FALSE,
-#'      main = "My Network Plot")
+#' # Include a title
+#' par(mar = c(1, 1, 2, 1), mfrow = c(1, 1))
+#' plot(mod, type = "network", main = "My Network Plot")
 #'
 #' # Plot formation statistics
+#' par(mar = c(3, 3, 1, 1), mgp = c(2, 1, 0))
 #' plot(mod, type = "formation")
 #' plot(mod, type = "formation", plots.joined = FALSE)
 #' plot(mod, type = "formation", sim = 2:4)
@@ -1382,10 +1403,10 @@ plot.netdx <- function(x,
 plot.netsim <- function(x,
                         type = "sim",
                         sim,
+                        network = 1,
                         at = 1,
                         col.status = FALSE,
                         shp.bip = NULL,
-                        zeromarg = TRUE,
                         stats,
                         sim.lwd,
                         sim.col,
@@ -1414,16 +1435,14 @@ plot.netsim <- function(x,
     if (missing(sim)) {
       sim <- 1
     }
+    if (length(sim) > 1) {
+      stop("Length of sim must be 1 for network plots", call. = FALSE)
+    }
     if (sim > nsims) {
-      stop("Specify sim between 1 and ", nsims, call. = FALSE)
+      stop("Maximum sim number is ", nsims, call. = FALSE)
     }
-    obj <- network.extract(x$network[[sim]], at = at)
+    obj <- get_network(x, sim, network, collapse = TRUE, at = at)
     tea.status <- x$control$tea.status
-
-    ops <- list(mar=par()$mar)
-    if (zeromarg == TRUE) {
-      par(mar=c(0, 0, 0, 0))
-    }
 
     if (!is.null(shp.bip)) {
       if (all(shp.bip != c("square", "triangle"))) {
@@ -1456,15 +1475,15 @@ plot.netsim <- function(x,
       vertex.cex <- 1
     }
     if (col.status == TRUE) {
-      if (tea.status == FALSE) {
+      if (is.null(tea.status) || tea.status == FALSE) {
         stop("Plotting status colors requires tea.status=TRUE in netsim",
              call. = FALSE)
       }
       pal <- transco(c("firebrick", "steelblue", "seagreen"), 0.75)
       if (tea.status == TRUE) {
-        cols <- ifelse(get.vertex.attribute.active(obj, "testatus", at = at) == 1,
+        cols <- ifelse(get.vertex.attribute.active(obj, "testatus", at = at) == "i",
                        pal[1], pal[2])
-        cols <- ifelse(get.vertex.attribute.active(obj, "testatus", at = at) == 2,
+        cols <- ifelse(get.vertex.attribute.active(obj, "testatus", at = at) == "r",
                        pal[3], cols)
       }
       plot.network(obj,
@@ -1485,7 +1504,6 @@ plot.netsim <- function(x,
                    ...)
     }
 
-    on.exit(par(ops))
   }
 
 
@@ -1507,8 +1525,6 @@ plot.netsim <- function(x,
   if (type == "formation") {
 
     ## Stats
-    nwstats <- x$stats$nwstats
-    nsteps <- x$control$nsteps
     if (missing(sim)) {
       sim <- 1:x$control$nsims
     }
@@ -1517,8 +1533,12 @@ plot.netsim <- function(x,
       stop("Maximum sim for this object is ", nsims, call. = FALSE)
     }
 
+    nwstats <- get_nwstats(x, sim, network)
+    nsims <- length(sim)
+    nsteps <- x$control$nsteps
+
     ## Find available stats
-    nmstats <- names(nwstats[[1]])
+    nmstats <- colnames(nwstats[[1]])
 
     ## Pull and check stat argument
     if (missing(stats)) {
@@ -1532,8 +1552,9 @@ plot.netsim <- function(x,
     nstats <- length(outsts)
 
     ## target stats
-    target.stats <- attributes(x$stats$nwstats)$target.stats
-    formation.terms <- attributes(x$stats$nwstats)$formation.terms
+    nwparam <- get_nwparam(x, network)
+    formation.terms <- names(nwparam$coef.form)
+    target.stats <- nwparam$target.stats
 
     st <- data.frame(sorder = 1:length(nmstats), names = nmstats)
     ts <- data.frame(names = formation.terms, targets = target.stats)
@@ -1634,7 +1655,7 @@ plot.netsim <- function(x,
       plot(1, 1, xlim = xlim, ylim = ylim,
            type = "n", xlab = xlab, ylab = ylab)
       for (j in outsts) {
-        for (i in sim) {
+        for (i in seq_along(sim)) {
           lines(x = 1:nsteps,
                 y = nwstats[[i]][[nmstats[j]]],
                 lty = sim.lty, lwd = sim.lwd,
@@ -1687,7 +1708,7 @@ plot.netsim <- function(x,
              ylim = c(ymin * 0.8, ymax * 1.2),
              type = "n", main = nmstats[j],
              xlab = "", ylab = "", ...)
-        for (i in sim) {
+        for (i in seq_along(sim)) {
           lines(x = 1:nsteps,
                 y = nwstats[[i]][[nmstats[j]]],
                 lwd = sim.lwd, lty = sim.lty,
@@ -1742,7 +1763,6 @@ plot.netsim <- function(x,
 #' @keywords plot
 #'
 #' @examples
-#' \dontrun{
 #' ## Example 1: DCM SIR model with varying act.rate
 #' param <- param.dcm(inf.prob = 0.2, act.rate = 5:7,
 #'                    rec.rate = 1/3, b.rate = 1/90, ds.rate = 1/100,
@@ -1761,7 +1781,6 @@ plot.netsim <- function(x,
 #'                        nsims = 3, verbose = FALSE)
 #' mod2 <- icm(param, init, control)
 #' comp_plot(mod2, at = 25, digits = 1)
-#' }
 #'
 comp_plot <- function(x, at, run, digits, ...) {
   UseMethod("comp_plot")
@@ -1781,6 +1800,7 @@ comp_plot.dcm <- function(x,
 
   ## Variables
   nruns <- x$control$nruns
+  nsteps <- x$control$nsteps
   type <- x$control$type
   groups <- x$param$groups
   vital <- x$param$vital
@@ -1796,11 +1816,11 @@ comp_plot.dcm <- function(x,
   }
 
   ## Time
-  if (missing(at) || (at > max(x$control$dt) | at < min(x$control$dt))) {
-    stop("Specify a timestep between 1 and ", max(x$control$dt))
+  if (missing(at) || (at > nsteps | at < 1)) {
+    stop("Specify a timestep between 1 and ", nsteps)
   }
   intime <- at
-  at <- which(x$control$dt == intime)
+  at <- which(x$control$timesteps == intime)
 
   ## Dataframe subsets
   df <- as.data.frame(x, run = run)
@@ -1986,7 +2006,7 @@ denom <- function(x, y, popfrac) {
 
   if (class(x) == "dcm") {
     if (popfrac == TRUE) {
-      den <- data.frame(den = rep(NA, length(x$control$dt)))
+      den <- data.frame(den = rep(NA, length(x$control$timesteps)))
       if (x$param$groups == 1) {
         for (i in 1:x$control$nruns) {
           den[, i] <- as.data.frame(x, run = i)$num

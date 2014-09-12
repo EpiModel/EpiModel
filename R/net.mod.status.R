@@ -51,8 +51,8 @@ infection.net <- function(all, at) {
     tea.status <- all$control$tea.status
 
     # Vector of infected and susceptible IDs
-    idsSus <- which(active == 1 & status == 0)
-    idsInf <- which(active == 1 & status == 1)
+    idsSus <- which(active == 1 & status == "s")
+    idsInf <- which(active == 1 & status == "i")
     nActive <- sum(active == 1)
     nElig <- length(idsInf)
 
@@ -114,15 +114,16 @@ infection.net <- function(all, at) {
           if (tea.status == TRUE) {
             nw <- activate.vertex.attribute(nw,
                                             prefix = "testatus",
-                                            value = 1,
+                                            value = "i",
                                             onset = at,
                                             terminus = Inf,
                                             v = idsNewInf)
           }
-          all$attr$status[idsNewInf] <- 1
+          all$attr$status[idsNewInf] <- "i"
           all$attr$infTime[idsNewInf] <- at
 
-          t <- get_formula_terms(all$nwparam$formation)
+          form <- get_nwparam(all)$formation
+          t <- get_formula_terms(form)
           if ("status" %in% t) {
             nw <- set.vertex.attribute(nw, "status", all$attr$status)
           }
@@ -212,8 +213,8 @@ discord_edgelist <- function(all, idsInf, idsSus, at) {
   if (nrow(el) > 0) {
     el <- el[sample(1:nrow(el)), , drop = FALSE]
     stat <- matrix(status[el], ncol = 2)
-    isInf <- matrix(stat %in% 1, ncol = 2)
-    isSus <- matrix(stat %in% 0, ncol = 2)
+    isInf <- matrix(stat %in% "i", ncol = 2)
+    isSus <- matrix(stat %in% "s", ncol = 2)
     SIpairs <- el[isSus[, 1] * isInf[, 2] == 1, , drop = FALSE]
     ISpairs <- el[isSus[, 2] * isInf[, 1] == 1, , drop = FALSE]
     pairs <- rbind(SIpairs, ISpairs[, 2:1])
@@ -258,14 +259,14 @@ recovery.net <- function(all, at) {
   mode <- idmode(all$nw)
 
   type <- all$control$type
-  recovState <- ifelse(type == "SIR", 2, 0)
+  recovState <- ifelse(type == "SIR", "r", "s")
 
   rec.rand <- all$control$rec.rand
   rec.rate <- all$param$rec.rate
   rec.rate.m2 <- all$param$rec.rate.m2
 
   nRecov <- nRecovM2 <- 0
-  idsElig <- which(active == 1 & status == 1)
+  idsElig <- which(active == 1 & status == "i")
   nElig <- length(idsElig)
 
 
@@ -314,7 +315,8 @@ recovery.net <- function(all, at) {
   }
 
   all$attr$status <- status
-  t <- get_formula_terms(all$nwparam$formation)
+  form <- get_nwparam(all)$formation
+  t <- get_formula_terms(form)
   if ("status" %in% t) {
     all$nw <- set.vertex.attribute(all$nw, "status", all$attr$status)
   }

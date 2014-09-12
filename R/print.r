@@ -15,7 +15,7 @@ print.dcm <- function(x, ...) {
     cat("\nModel type:", x$control$type)
   }
   cat("\nNo. runs:", x$control$nruns)
-  cat("\nNo. time steps:", max(x$control$dt))
+  cat("\nNo. time steps:", x$control$nsteps)
   if (new.mod == FALSE) {
     cat("\nNo. groups:", x$param$groups)
   }
@@ -143,7 +143,15 @@ print.netsim <- function(x, ...) {
   cat("\n-----------------------\n")
   pToPrint <- which(!(names(x$param) %in% c("modes", "vital")))
   for (i in pToPrint) {
-    cat(names(x$param)[i], "=", x$param[[i]], fill = 60)
+    if (class(x$param[[i]]) == "numeric" && length(x$param[[i]]) > 5) {
+      cat(names(x$param)[i], "=", x$param[[i]][1:3], "...", fill = 80)
+    } else if (class(x$param[[i]]) == "data.frame") {
+      cat(names(x$param)[i], "= <data.frame>\n")
+    } else if (class(x$param[[i]]) == "list") {
+      cat(names(x$param)[i], "= <list>\n")
+    } else {
+      cat(names(x$param)[i], "=", x$param[[i]], fill = 80)
+    }
   }
 
   cat("\nModel Output")
@@ -222,6 +230,10 @@ print.param.net <- function(x, ...) {
   for (i in pToPrint) {
     if (class(x[[i]]) == "numeric" && length(x[[i]]) > 5) {
       cat(names(x)[i], "=", x[[i]][1:3], "...", fill = 80)
+    } else if (class(x[[i]]) == "data.frame") {
+      cat(names(x)[i], "= <data.frame>\n")
+    } else if (class(x[[i]]) == "list") {
+      cat(names(x)[i], "= <list>\n")
     } else {
       cat(names(x)[i], "=", x[[i]], fill = 80)
     }
@@ -260,7 +272,11 @@ print.init.net <- function(x, ...) {
   cat("Network Model Initial Conditions")
   cat("\n=================================\n")
   for (i in seq_along(x)) {
-    cat(names(x)[i], "=", x[[i]], fill = 80)
+    if (class(x[[i]]) == "numeric" && length(x[[i]]) > 5) {
+      cat(names(x)[i], "=", x[[i]][1:3], "...", fill = 80)
+    } else {
+      cat(names(x)[i], "=", x[[i]], fill = 80)
+    }
   }
 
   invisible()
@@ -269,7 +285,10 @@ print.init.net <- function(x, ...) {
 #' @export
 print.control.dcm <- function(x, ...) {
 
-  pToPrint <- which(!(names(x) %in% c("dt")))
+  pToPrint <- seq_along(names(x))
+  if (is.null(x$new.mod)) {
+    pToPrint <- pToPrint[-which(names(x) == "new.mod")]
+  }
 
   cat("DCM Control Settings")
   cat("\n===========================\n")
@@ -283,7 +302,8 @@ print.control.dcm <- function(x, ...) {
 #' @export
 print.control.icm <- function(x, ...) {
 
-  pToPrint <- which(!grepl(".FUN", names(x)))
+  pToPrint <- which(!grepl(".FUN", names(x)) &
+                    !(names(x) %in% c("bi.mods", "user.mods")))
 
   cat("ICM Control Settings")
   cat("\n===========================\n")
@@ -298,7 +318,8 @@ print.control.icm <- function(x, ...) {
 print.control.net <- function(x, ...) {
 
   pToPrint <- which(!grepl(".FUN", names(x)) &
-                    names(x) != "set.control.stergm")
+                    names(x) != "set.control.stergm" &
+                    !(names(x) %in% c("bi.mods", "user.mods")))
 
   cat("Network Model Control Settings")
   cat("\n===============================\n")

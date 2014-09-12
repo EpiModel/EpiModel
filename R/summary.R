@@ -44,6 +44,7 @@ summary.dcm <- function(object,
   type <- object$control$type
   groups <- object$param$groups
   vital <- object$param$vital
+  nsteps <- object$control$nsteps
 
   if (!is.null(object$control$new.mod)) {
     stop("summary method not available for new model types in dcm")
@@ -51,8 +52,8 @@ summary.dcm <- function(object,
 
   df <- as.data.frame(object, run = run)
 
-  if (missing(at) || (at > max(object$control$dt) | at < min(object$control$dt))) {
-    stop("Specify at between 1 and ", max(object$control$dt))
+  if (missing(at) || (at > nsteps | at < 1)) {
+    stop("Specify at between 1 and ", nsteps)
   }
   df <- df[df$time == at, ]
 
@@ -189,7 +190,7 @@ summary.dcm <- function(object,
   cat("\n-----------------------")
   cat("\nModel type:", type)
   cat("\nNo. runs:", nruns)
-  cat("\nNo. time steps:", max(object$control$dt))
+  cat("\nNo. time steps:", object$nsteps)
   cat("\nNo. groups:", groups)
 
   if (groups == 1) {

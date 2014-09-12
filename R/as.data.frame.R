@@ -52,7 +52,7 @@ as.data.frame.dcm <- function(x,
                               run = 1,
                               ...) {
 
-  df <- data.frame(time = x$control$dt)
+  df <- data.frame(time = x$control$timesteps)
   nruns <- x$control$nruns
 
   # Output for models with 1 run

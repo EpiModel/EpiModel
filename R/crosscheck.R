@@ -147,56 +147,59 @@ crosscheck.icm <- function(param, init, control) {
     stop("control must an object of class control.icm", call. = FALSE)
   }
 
-  ## Check that rec.rate is supplied for SIR models
-  if (control$type %in% c("SIR", "SIS")) {
-    if (is.null(param$rec.rate)) {
-      stop("Specify rec.rate in param.icm", call. = FALSE)
+  if (control$skip.check == FALSE) {
+
+    ## Check that rec.rate is supplied for SIR models
+    if (control$type %in% c("SIR", "SIS")) {
+      if (is.null(param$rec.rate)) {
+        stop("Specify rec.rate in param.icm", call. = FALSE)
+      }
+      if (param$groups == 2 & is.null(param$rec.rate.g2)) {
+        stop("Specify rec.rate.g2 in param.icm", call. = FALSE)
+      }
     }
-    if (param$groups == 2 & is.null(param$rec.rate.g2)) {
-      stop("Specify rec.rate.g2 in param.icm", call. = FALSE)
-    }
-  }
 
 
-  ## Check that paramets and init are supplied for SIR models
-  if (control$type == "SIR") {
-    if (is.null(init$r.num)) {
-      stop("Specify r.num in init.icm", call. = FALSE)
+    ## Check that paramets and init are supplied for SIR models
+    if (control$type == "SIR") {
+      if (is.null(init$r.num)) {
+        stop("Specify r.num in init.icm", call. = FALSE)
+      }
+      if (param$groups == 2 & is.null(init$r.num.g2)) {
+        stop("Specify r.num.g2 in init.icm", call. = FALSE)
+      }
     }
-    if (param$groups == 2 & is.null(init$r.num.g2)) {
-      stop("Specify r.num.g2 in init.icm", call. = FALSE)
+
+    ## Check that groups implied by init and params are consistent
+    if (any(grepl(".g2", names(init))) == TRUE) {
+      init.groups <- 2
+    } else {
+      init.groups <- 1
     }
-  }
-
-  ## Check that groups implied by init and params are consistent
-  if (any(grepl(".g2", names(init))) == TRUE) {
-    init.groups <- 2
-  } else {
-    init.groups <- 1
-  }
-  if (param$groups == 2 && init.groups == 1) {
-    stop("Group 2 parameters specified in param.dcm, but missing group 2 initial states in init.icm",
-         call. = FALSE)
-  }
-  if (param$groups == 1 && init.groups == 2) {
-    stop("Group 2 initial stats specified in init.dcm, but missing group 2 parameters in param.icm",
-         call. = FALSE)
-  }
-
-  ## Deprecated parameters
-  bim <- grep(".FUN", names(formals(control.icm)), value = TRUE)
-  um <- which(grepl(".FUN", names(control)) & !(names(control) %in% bim))
-  if (length(um) == 0 && !is.null(control$type)) {
-    if (!is.null(param$trans.rate)) {
-      stop("The trans.rate parameter is deprecated. Use the inf.prob parameter instead.",
+    if (param$groups == 2 && init.groups == 1) {
+      stop("Group 2 parameters specified in param.dcm, but missing group 2 initial states in init.icm",
            call. = FALSE)
     }
-    if (!is.null(param$trans.rate.g2)) {
-      stop("The trans.rate.g2 parameter is deprecated. Use the inf.prob.g2 parameter instead.",
+    if (param$groups == 1 && init.groups == 2) {
+      stop("Group 2 initial stats specified in init.dcm, but missing group 2 parameters in param.icm",
            call. = FALSE)
     }
-  }
 
+    ## Deprecated parameters
+    bim <- grep(".FUN", names(formals(control.icm)), value = TRUE)
+    um <- which(grepl(".FUN", names(control)) & !(names(control) %in% bim))
+    if (length(um) == 0 && !is.null(control$type)) {
+      if (!is.null(param$trans.rate)) {
+        stop("The trans.rate parameter is deprecated. Use the inf.prob parameter instead.",
+             call. = FALSE)
+      }
+      if (!is.null(param$trans.rate.g2)) {
+        stop("The trans.rate.g2 parameter is deprecated. Use the inf.prob.g2 parameter instead.",
+             call. = FALSE)
+      }
+    }
+
+  }
 
   ## In-place assignment to update param and control
   on.exit(assign("param", param, pos = parent.frame()))
@@ -224,136 +227,148 @@ crosscheck.icm <- function(param, init, control) {
 #'
 crosscheck.net <- function(x, param, init, control) {
 
-  # Main class check --------------------------------------------------------
-  if (class(x) != "netest"){
-    stop("x must be an object of class netest", call. = FALSE)
-  }
-  if (class(param) != "param.net") {
-    stop("param must an object of class param.net", call. = FALSE)
-  }
-  if (class(init) != "init.net") {
-    stop("init must an object of class init.net", call. = FALSE)
-  }
-  if (class(control) != "control.net") {
-    stop("control must an object of class control.net", call. = FALSE)
-  }
+  if (control$skip.check == FALSE) {
 
-
-  if (is.null(control$nwstats.formula)) {
-    control$nwstats.formula <- x$formation
-  }
-
-  # Defaults ----------------------------------------------------------------
-  # Is status in network formation formula?
-  statOnNw <- ("status" %in% get_formula_terms(x$formation))
-
-  # Set dependent modeling defaults if vital or status on nw
-  if (is.null(control$depend)) {
-    if (param$vital == TRUE | statOnNw == TRUE) {
-      control$depend <- TRUE
-    } else {
-      control$depend <- FALSE
+    # Main class check --------------------------------------------------------
+    if (class(x) != "netest") {
+      stop("x must be either an object of class netest",
+           call. = FALSE)
     }
-  }
+    if (class(param) != "param.net") {
+      stop("param must an object of class param.net", call. = FALSE)
+    }
+    if (class(init) != "init.net") {
+      stop("init must an object of class init.net", call. = FALSE)
+    }
+    if (class(control) != "control.net") {
+      stop("control must an object of class control.net", call. = FALSE)
+    }
 
-  bip <- ifelse(is.bipartite(x$fit$network), TRUE, FALSE)
+    # Defaults ----------------------------------------------------------------
+    if (is.null(control$nwstats.formula)) {
+      control$nwstats.formula <- x$formation
+    }
 
-  if (bip == TRUE & is.null(control$pid.prefix)) {
-    control$pid.prefix <- c("F", "M")
-  }
+    # Is status in network formation formula?
+    statOnNw <- ("status" %in% get_formula_terms(x$formation))
 
-  if (statOnNw == TRUE && is.null(control$attr.rules$status)) {
-    control$attr.rules$status <- 0
-  }
+    # Set dependent modeling defaults if vital or status on nw
+    if (is.null(control$depend)) {
+      if (param$vital == TRUE | statOnNw == TRUE) {
+        control$depend <- TRUE
+      } else {
+        control$depend <- FALSE
+      }
+    }
+
+    bip <- ifelse(is.bipartite(x$fit$network), TRUE, FALSE)
+
+    if (bip == TRUE & is.null(control$pid.prefix)) {
+      control$pid.prefix <- c("F", "M")
+    }
+
+    if (statOnNw == TRUE && is.null(control$attr.rules$status)) {
+      control$attr.rules$status <- "s"
+    }
 
 
-  # Checks ------------------------------------------------------------------
+    # Checks ------------------------------------------------------------------
 
-  # Check that prevalence in NW attr status and initial conditions match
-  if (statOnNw == TRUE) {
-    nw1 <- sum(get.vertex.attribute(x$fit$network, "status") == 1)
-    init1 <- sum(unlist(init[grep("i.num", names(init), value = TRUE)]))
-    if ("i.num" %in% names(init) && nw1 != init1) {
-      warning("Overriding init infected settings with network status attribute",
+    # Check that prevalence in NW attr status and initial conditions match
+    if (statOnNw == TRUE) {
+      nw1 <- sum(get.vertex.attribute(x$fit$network, "status") == 1)
+      init1 <- sum(unlist(init[grep("i.num", names(init), value = TRUE)]))
+      if ("i.num" %in% names(init) && nw1 != init1) {
+        warning("Overriding init infected settings with network status attribute",
+                call. = FALSE, immediate. = TRUE)
+        if (interactive()) Sys.sleep(4)
+      }
+    }
+
+    # If status not in formation formula but set on original network, state that it
+    #   will be ignored
+    if (statOnNw == FALSE & "status" %in% names(x$fit$network$val[[1]])) {
+      warning("Overriding status vertex attribute on network with init.net conditions",
               call. = FALSE, immediate. = TRUE)
-      if (interactive()) Sys.sleep(3)
+      if (interactive()) Sys.sleep(4)
     }
-  }
 
-  # Check consistency of status vector to network structure
-  if (!is.null(init$status.vector)) {
-    if (length(init$status.vector) != network.size(x$fit$network)) {
-      stop("Length of status.vector is unequal to size of initial network")
-    }
-    svals <- sort(unique(init$status.vector))
-    if (control$type == "SIR") {
-      if (any(svals %in% 0:2 == FALSE)) {
-        stop("status.vector contains values other than 0, 1, and 2", call. = FALSE)
+
+    # Check consistency of status vector to network structure
+    if (!is.null(init$status.vector)) {
+      if (length(init$status.vector) != network.size(x$fit$network)) {
+        stop("Length of status.vector is unequal to size of initial network")
       }
-    } else {
-      if (any(svals %in% 0:1 == FALSE)) {
-        stop("status.vector contains values other than 0 and 1", call. = FALSE)
+      svals <- sort(unique(init$status.vector))
+      if (control$type == "SIR") {
+        if (any(svals %in% c("s", "i", "r") == FALSE)) {
+          stop("status.vector contains values other than \"s\", \"i\", and \"r\" ", call. = FALSE)
+        }
+      } else {
+        if (any(svals %in% c("s", "i") == FALSE)) {
+          stop("status.vector contains values other than \"s\" and \"i\" ", call. = FALSE)
+        }
       }
     }
-  }
 
-  # Bipartite model checks for inital conditions
-  if (bip == TRUE & is.null(init$i.num.m2) &
-        is.null(init$status.vector) & statOnNw == FALSE) {
-    stop("Specify i.num.m2 for bipartite simulations", call. = FALSE)
-  }
+    # Bipartite model checks for inital conditions
+    if (bip == TRUE & is.null(init$i.num.m2) &
+          is.null(init$status.vector) & statOnNw == FALSE) {
+      stop("Specify i.num.m2 for bipartite simulations", call. = FALSE)
+    }
 
-  # Recovery rate and initial recovered checks
-  if (control$type %in% c("SIR", "SIS")) {
-    if (is.null(param$rec.rate)) {
-      stop("Specify rec.rate in param.net", call. = FALSE)
-    }
-    if (bip == TRUE & is.null(param$rec.rate.m2)) {
-      stop("Specify rec.rate.m2 in param.net", call. = FALSE)
-    }
-  }
-  if (control$type == "SIR") {
-    if (is.null(init$r.num) & is.null(init$status.vector) & statOnNw == FALSE) {
-      stop("Specify r.num in init.net", call. = FALSE)
-    }
-    if (bip == TRUE & is.null(init$r.num.m2) & is.null(init$status.vector) & statOnNw == FALSE) {
-      stop("Specify r.num.m2 in init.net", call. = FALSE)
-    }
-  }
-
-  # Check demographic parameters for bipartite
-  if (bip == TRUE & param$vital == TRUE) {
-    if (is.null(param$b.rate.m2)) {
-      stop("Specify b.rate.m2 in param.net", call. = FALSE)
-    }
-    if (is.null(param$ds.rate.m2)) {
-      stop("Specify ds.rate.m2 in param.net", call. = FALSE)
-    }
-    if (is.null(param$di.rate.m2)) {
-      stop("Specify di.rate.m2 in param.net", call. = FALSE)
+    # Recovery rate and initial recovered checks
+    if (control$type %in% c("SIR", "SIS")) {
+      if (is.null(param$rec.rate)) {
+        stop("Specify rec.rate in param.net", call. = FALSE)
+      }
+      if (bip == TRUE & is.null(param$rec.rate.m2)) {
+        stop("Specify rec.rate.m2 in param.net", call. = FALSE)
+      }
     }
     if (control$type == "SIR") {
-      if (is.null(param$dr.rate.m2)) {
-        stop("Specify dr.rate.m2 in param.net", call. = FALSE)
+      if (is.null(init$r.num) & is.null(init$status.vector) & statOnNw == FALSE) {
+        stop("Specify r.num in init.net", call. = FALSE)
+      }
+      if (bip == TRUE & is.null(init$r.num.m2) & is.null(init$status.vector) & statOnNw == FALSE) {
+        stop("Specify r.num.m2 in init.net", call. = FALSE)
       }
     }
-  }
 
-
-  ## Deprecated parameters
-  bim <- grep(".FUN", names(formals(control.net)), value = TRUE)
-  um <- which(grepl(".FUN", names(control)) & !(names(control) %in% bim))
-  if (length(um) == 0 && !is.null(control$type)) {
-    if (!is.null(param$trans.rate)) {
-      stop("The trans.rate parameter is deprecated. Use the inf.prob parameter instead.",
-           call. = FALSE)
+    # Check demographic parameters for bipartite
+    if (bip == TRUE & param$vital == TRUE) {
+      if (is.null(param$b.rate.m2)) {
+        stop("Specify b.rate.m2 in param.net", call. = FALSE)
+      }
+      if (is.null(param$ds.rate.m2)) {
+        stop("Specify ds.rate.m2 in param.net", call. = FALSE)
+      }
+      if (is.null(param$di.rate.m2)) {
+        stop("Specify di.rate.m2 in param.net", call. = FALSE)
+      }
+      if (control$type == "SIR") {
+        if (is.null(param$dr.rate.m2)) {
+          stop("Specify dr.rate.m2 in param.net", call. = FALSE)
+        }
+      }
     }
-    if (!is.null(param$trans.rate.m2)) {
-      stop("The trans.rate.m2 parameter is deprecated. Use the inf.prob.m2 parameter instead.",
-           call. = FALSE)
-    }
-  }
 
+
+    ## Deprecated parameters
+    bim <- grep(".FUN", names(formals(control.net)), value = TRUE)
+    um <- which(grepl(".FUN", names(control)) & !(names(control) %in% bim))
+    if (length(um) == 0 && !is.null(control$type)) {
+      if (!is.null(param$trans.rate)) {
+        stop("The trans.rate parameter is deprecated. Use the inf.prob parameter instead.",
+             call. = FALSE)
+      }
+      if (!is.null(param$trans.rate.m2)) {
+        stop("The trans.rate.m2 parameter is deprecated. Use the inf.prob.m2 parameter instead.",
+             call. = FALSE)
+      }
+    }
+
+  }
 
   ## In-place assignment to update param and control
   assign("param", param, pos = parent.frame())
