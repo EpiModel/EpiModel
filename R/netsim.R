@@ -231,6 +231,8 @@ netsim <- function(x,
 #'              disease in parallel.
 #'
 #' @inheritParams netsim
+#' @param merge if \code{TRUE}, merge parallel simulations into one \code{netsim}
+#'        object after simulation.
 #'
 #' @details
 #' This is an experimental implementation of the \code{\link{netsim}} function
@@ -245,7 +247,7 @@ netsim <- function(x,
 #' This has been tested on Linux, Mac, and Windows but no guarantees are made
 #' that it will work on every platform. It is best-suited to be run in batch
 #' mode. Memory management errors have been encounted when running large simulations
-#' (large networks, long time steps, saving networkDynamic objects) in
+#' (large networks, long time steps, saving \code{networkDynamic} objects) in
 #' interactive environments like Rstudio server.
 #'
 #' Note that this function may be folded into \code{\link{netsim}} and deprecated
@@ -275,14 +277,19 @@ netsim <- function(x,
 #' control <- control.net(type = "SI", nsteps = 250,
 #'                        nsims = 4, ncores = 4)
 #'
+#' # Merging on by default
 #' sims <- netsim_parallel(est, param, init, control)
 #' plot(sims)
+#'
+#' # But may be toggled off
+#' sims <- netsim_parallel(est, param, init, control, merge = FALSE)
 #' }
 #'
 netsim_parallel <- function(x,
                             param,
                             init,
-                            control
+                            control,
+                            merge = TRUE
                             ) {
 
   nsims <- control$nsims
@@ -321,13 +328,17 @@ netsim_parallel <- function(x,
 
     }
 
-    all <- out[[1]]
-    for (i in 2:length(out)) {
-      all <- merge(all, out[[i]])
-    }
-
     if (partype == "snow") {
       stopCluster(cl)
+    }
+
+    if (merge == TRUE) {
+      all <- out[[1]]
+      for (i in 2:length(out)) {
+        all <- merge(all, out[[i]])
+      }
+    } else {
+      all <- out
     }
 
   } else {

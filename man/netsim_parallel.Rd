@@ -3,7 +3,7 @@
 \alias{netsim_parallel}
 \title{Stochastic Network Models in Parallel}
 \usage{
-netsim_parallel(x, param, init, control)
+netsim_parallel(x, param, init, control, merge = TRUE)
 }
 \arguments{
 \item{x}{fitted network model object, as an object of class
@@ -15,6 +15,9 @@ netsim_parallel(x, param, init, control)
 
 \item{control}{control settings, as an object of class
        \code{\link{control.net}}.}
+
+\item{merge}{if \code{TRUE}, merge parallel simulations into one \code{netsim}
+       object after simulation.}
 }
 \description{
 Simulates stochastic network epidemic models for infectious
@@ -33,7 +36,7 @@ a system.
 This has been tested on Linux, Mac, and Windows but no guarantees are made
 that it will work on every platform. It is best-suited to be run in batch
 mode. Memory management errors have been encounted when running large simulations
-(large networks, long time steps, saving networkDynamic objects) in
+(large networks, long time steps, saving \code{networkDynamic} objects) in
 interactive environments like Rstudio server.
 
 Note that this function may be folded into \code{\link{netsim}} and deprecated
@@ -60,8 +63,12 @@ init <- init.net(i.num = 50)
 control <- control.net(type = "SI", nsteps = 250,
                        nsims = 4, ncores = 4)
 
+# Merging on by default
 sims <- netsim_parallel(est, param, init, control)
 plot(sims)
+
+# But may be toggled off
+sims <- netsim_parallel(est, param, init, control, merge = FALSE)
 }
 }
 \keyword{model}
