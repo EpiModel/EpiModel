@@ -145,14 +145,9 @@ netest <- function(nw,
                    set.control.stergm,
                    verbose = TRUE) {
 
-
-	formation.nw <- update(formation, nw ~.)
-  environment(formation.nw) <- environment()
-
   if (missing(constraints)) {
     constraints	<- ~.
   }
-  environment(constraints) <- environment()
 
 	if (dissolution != ~ offset(edges)) {
 	  stop("Currently only ~offset(edges) dissolution models supported")
@@ -206,10 +201,13 @@ netest <- function(nw,
                                        MCMLE.maxit = 200)
     }
 
+    formation.nw <- update(formation, nw ~.)
+
     fit <- ergm(formation.nw,
                 target.stats = target.stats,
                 constraints = constraints,
                 offset.coef = coef.form,
+                eval.loglik = FALSE,
                 control = set.control.ergm)
 
     coef.form <- fit$coef
@@ -218,6 +216,13 @@ netest <- function(nw,
         coef.form[i] <- coef.form[i] - coef.diss$coef.crude[i]
       }
     }
+
+    # Reduce size of output object
+    fit$initialfit <- NULL
+    fit$sample <- NULL
+    fit$newnetwork <- NULL
+    environment(fit$sample.obs) <- NULL
+    environment(fit$reference) <- NULL
 
     out <- list()
     out$fit <- fit
