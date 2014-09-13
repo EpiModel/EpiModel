@@ -4,8 +4,8 @@
 \title{Dynamic Network Model Estimation}
 \usage{
 netest(nw, formation, dissolution, target.stats, coef.diss, constraints,
-  coef.form = NULL, edapprox = TRUE, set.control.ergm, set.control.stergm,
-  verbose = TRUE)
+  coef.form = NULL, edapprox = TRUE, output = "fit", set.control.ergm,
+  set.control.stergm, verbose = TRUE)
 }
 \arguments{
 \item{nw}{an object of class \code{\link{network}}.}
@@ -33,6 +33,10 @@ formula.}
 \item{edapprox}{if \code{TRUE}, use the indirect edges dissolution approximation
 method for the dynamic model fit, otherwise use the more time-intensive
 full STERGM estimation (see details).}
+
+\item{output}{if using the edges dissolution approximation method, \code{"sim"}
+simulates a static network from the fitted network model, for
+storage efficiency purposes.}
 
 \item{set.control.ergm}{control arguments passed to simulate.ergm (see
 details).}

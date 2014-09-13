@@ -23,6 +23,9 @@
 #' @param edapprox if \code{TRUE}, use the indirect edges dissolution approximation
 #'        method for the dynamic model fit, otherwise use the more time-intensive
 #'        full STERGM estimation (see details).
+#' @param output if using the edges dissolution approximation method, \code{"sim"}
+#'        simulates a static network from the fitted network model, for
+#'        storage efficiency purposes.
 #' @param set.control.ergm control arguments passed to simulate.ergm (see
 #'        details).
 #' @param set.control.stergm control arguments passed to simulate.stergm (see
@@ -141,6 +144,7 @@ netest <- function(nw,
                    constraints,
                    coef.form = NULL,
                    edapprox = TRUE,
+                   output = "fit",
                    set.control.ergm,
                    set.control.stergm,
                    verbose = TRUE) {
@@ -212,6 +216,7 @@ netest <- function(nw,
                 control = set.control.ergm)
 
     coef.form <- fit$coef
+    coef.form.crude <- coef.form
     if (coef.diss$coef.crude > -Inf) {
       for (i in 1:length(coef.diss$coef.crude)) {
         coef.form[i] <- coef.form[i] - coef.diss$coef.crude[i]
@@ -233,10 +238,15 @@ netest <- function(nw,
     out$formation <- formation
     out$target.stats <- target.stats
     out$coef.form <- coef.form
+    out$coef.form.crude <- coef.form.crude
     out$dissolution <- dissolution
     out$coef.diss <- coef.diss
     out$constraints <- constraints
     out$edapprox <- edapprox
+    if (output == "sim") {
+      out$fit <- simulate(out$fit)
+      environment(fit$constraints) <- NULL
+    }
 
   }
 
