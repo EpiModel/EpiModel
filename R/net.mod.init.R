@@ -28,7 +28,7 @@ initialize.net <- function(x, param, init, control) {
 
   # Network Simulation ------------------------------------------------------
   if (class(x$fit) == "network") {
-    nw <- simulate(formation,
+    nw <- simulate(x$formation,
                    basis = x$fit,
                    coef = x$coef.form.crude,
                    constraints = x$constraints)
