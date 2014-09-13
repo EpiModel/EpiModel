@@ -138,10 +138,6 @@ netdx <- function(x,
     if (verbose == TRUE) {
       cat("|")
     }
-    diag.sim.ts <- simulate(fit,
-                            time.slices = 1,
-                            monitor = formation,
-                            output = "stats")
   }
 
   if (edapprox == TRUE) {
@@ -176,14 +172,6 @@ netdx <- function(x,
     if (verbose == TRUE) {
       cat("|")
     }
-    diag.sim.ts <- simulate(nw,
-                            formation = formation,
-                            dissolution = dissolution,
-                            coef.form = coef.form,
-                            coef.diss = coef.diss$coef.crude,
-                            constraints = constraints,
-                            monitor = formation,
-                            output = "stats")
   }
 
   if (verbose == TRUE) {
@@ -221,7 +209,7 @@ netdx <- function(x,
 
 
   ## Get stats from for target statistics, removing offsets
-  ts.attr.names <- attributes(diag.sim.ts)$dimnames[[2]]
+  ts.attr.names <- names(coef.form)
   if (length(is.offset.term > 0)) {
     ts.attr.names <- ts.attr.names[-is.offset.term]
   }
