@@ -202,6 +202,7 @@ netest <- function(nw,
     }
 
     formation.nw <- update(formation, nw ~.)
+    environment(formation.nw) <- environment()
 
     fit <- ergm(formation.nw,
                 target.stats = target.stats,
@@ -221,8 +222,11 @@ netest <- function(nw,
     fit$initialfit <- NULL
     fit$sample <- NULL
     fit$newnetwork <- NULL
+    fit$constrained <- NULL
     environment(fit$sample.obs) <- NULL
     environment(fit$reference) <- NULL
+    environment(fit$constraints) <- environment()
+
 
     out <- list()
     out$fit <- fit
