@@ -299,7 +299,7 @@ netsim_parallel <- function(x,
     partype <- "parallel"
   }
   if (partype == "snow") {
-    ncores <- sum(cores.per.node)
+    ncores <- sum(control$cores.per.node)
   }
 
   if (nsims > 1 && ncores > 1) {
