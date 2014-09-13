@@ -27,7 +27,14 @@ initialize.net <- function(x, param, init, control) {
 
 
   # Network Simulation ------------------------------------------------------
-  nw <- simulate(x$fit)
+  if (class(x$fit) == "network") {
+    nw <- simulate(formation,
+                   basis = x$fit,
+                   coef = x$coef.form.crude,
+                   constraints = x$constraints)
+  } else {
+    nw <- simulate(x$fit)
+  }
   modes <- ifelse(nw %n% "bipartite", 2, 1)
   if (control$depend == TRUE) {
     if (class(x$fit) == "stergm") {

@@ -244,6 +244,12 @@ crosscheck.net <- function(x, param, init, control) {
       stop("control must an object of class control.net", call. = FALSE)
     }
 
+    if (class(x$fit) == "network") {
+      nw <- x$fit
+    } else {
+      nw <- x$fit$network
+    }
+
     # Defaults ----------------------------------------------------------------
     if (is.null(control$nwstats.formula)) {
       control$nwstats.formula <- x$formation
@@ -261,7 +267,7 @@ crosscheck.net <- function(x, param, init, control) {
       }
     }
 
-    bip <- ifelse(is.bipartite(x$fit$network), TRUE, FALSE)
+    bip <- ifelse(is.bipartite(nw), TRUE, FALSE)
 
     if (bip == TRUE & is.null(control$pid.prefix)) {
       control$pid.prefix <- c("F", "M")
@@ -276,7 +282,7 @@ crosscheck.net <- function(x, param, init, control) {
 
     # Check that prevalence in NW attr status and initial conditions match
     if (statOnNw == TRUE) {
-      nw1 <- sum(get.vertex.attribute(x$fit$network, "status") == 1)
+      nw1 <- sum(get.vertex.attribute(nw, "status") == 1)
       init1 <- sum(unlist(init[grep("i.num", names(init), value = TRUE)]))
       if ("i.num" %in% names(init) && nw1 != init1) {
         warning("Overriding init infected settings with network status attribute",
@@ -287,7 +293,7 @@ crosscheck.net <- function(x, param, init, control) {
 
     # If status not in formation formula but set on original network, state that it
     #   will be ignored
-    if (statOnNw == FALSE & "status" %in% names(x$fit$network$val[[1]])) {
+    if (statOnNw == FALSE & "status" %in% names(nw$val[[1]])) {
       warning("Overriding status vertex attribute on network with init.net conditions",
               call. = FALSE, immediate. = TRUE)
       if (interactive()) Sys.sleep(4)
@@ -296,7 +302,7 @@ crosscheck.net <- function(x, param, init, control) {
 
     # Check consistency of status vector to network structure
     if (!is.null(init$status.vector)) {
-      if (length(init$status.vector) != network.size(x$fit$network)) {
+      if (length(init$status.vector) != network.size(nw)) {
         stop("Length of status.vector is unequal to size of initial network")
       }
       svals <- sort(unique(init$status.vector))
