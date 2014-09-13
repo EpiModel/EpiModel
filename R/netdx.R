@@ -88,8 +88,12 @@ netdx <- function(x,
                   set.control.stergm,
                   verbose = TRUE) {
 
-  nw <- x$fit$network
-  fit <- x$fit
+  if (class(x$fit) == "network") {
+    nw <- x$fit
+  } else {
+    nw <- x$fit$network
+    fit <- x$fit
+  }
   formation <- x$formation
   coef.form <- x$coef.form
   dissolution <- x$dissolution
@@ -154,7 +158,14 @@ netdx <- function(x,
       cat("\n  |")
     }
     for (i in 1:nsims) {
-      fit.sim <- simulate(fit, control = set.control.ergm)
+      if (class(x$fit) == "network") {
+        fit.sim <- simulate(formation,
+                            basis = nw,
+                            coef = x$coef.form.crude,
+                            constraints = constraints)
+      } else {
+        fit.sim <- simulate(fit, control = set.control.ergm)
+      }
       diag.sim[[i]] <- simulate(fit.sim,
                            formation = formation,
                            dissolution = dissolution,
