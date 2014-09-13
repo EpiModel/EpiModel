@@ -30,6 +30,10 @@ NEW FEATURES
   help(modules.net).
 * Added progress bars for netdx diagnostic simulations for computationally
   intensive parts of the simulations.
+* Network model estimation with netest now provides an output argument. When
+  using the edges dissolution approximation (edapprox = TRUE), one may set output
+  to "sim" to save a static simulation network instead of the ergm object as an
+  element of the netest output. This is mainly for file size efficiency.
 
 USER INTERFACE CHANGES
 * The internal representation of disease status as an individual-level attribute
