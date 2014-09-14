@@ -1,7 +1,7 @@
 
 #' @title Initialization: icm Module
 #'
-#' @description This function initializes the master \code{all} object on which
+#' @description This function initializes the master \code{dat} object on which
 #'              data are stored, and simulates disease status and other attributes.
 #'
 #' @param param an \code{EpiModel} object of class \code{\link{param.icm}}.
@@ -14,35 +14,35 @@
 initialize.icm <- function(param, init, control) {
 
   ## Master List for Data ##
-  all <- list()
-  all$param <- param
-  all$init <- init
-  all$control <- control
+  dat <- list()
+  dat$param <- param
+  dat$init <- init
+  dat$control <- control
 
 
   # Set attributes
-  all$attr <- list()
+  dat$attr <- list()
   numeric.init <- init[which(sapply(init, class) == "numeric")]
   n <- do.call("sum", numeric.init)
-  all$attr$active <- rep(1, n)
-  if (all$param$groups == 1) {
-    all$attr$group <- rep(1, n)
+  dat$attr$active <- rep(1, n)
+  if (dat$param$groups == 1) {
+    dat$attr$group <- rep(1, n)
   } else {
     g2inits <- grep(".g2", names(numeric.init))
     g1inits <- setdiff(1:length(numeric.init), g2inits)
     nG1 <- sum(sapply(g1inits, function(x) init[[x]]))
     nG2 <- sum(sapply(g2inits, function(x) init[[x]]))
-    all$attr$group <- c(rep(1, nG1), rep(2, max(0, nG2)))
+    dat$attr$group <- c(rep(1, nG1), rep(2, max(0, nG2)))
   }
 
   # Initialize status and infection time
-  all <- init_status.icm(all)
+  dat <- init_status.icm(dat)
 
 
   # Summary out list
-  all <- get_prev.icm(all, at = 1)
+  dat <- get_prev.icm(dat, at = 1)
 
-  return(all)
+  return(dat)
 }
 
 
@@ -51,30 +51,30 @@ initialize.icm <- function(param, init, control) {
 #' @description This function sets the initial disease status on the
 #'              network given the specified initial conditions.
 #'
-#' @param all master data list object.
+#' @param dat master data list object.
 #'
 #' @seealso This is an initialization module for \code{\link{icm}}.
 #'
 #' @export
 #' @keywords internal
 #'
-init_status.icm <- function(all) {
+init_status.icm <- function(dat) {
 
   # Variables ---------------------------------------------------------------
-  type <- all$control$type
-  active <- all$attr$active
-  group <- all$attr$group
-  nGroups <- all$param$groups
+  type <- dat$control$type
+  active <- dat$attr$active
+  group <- dat$attr$group
+  nGroups <- dat$param$groups
 
   nG1 <- sum(group == 1)
   nG2 <- sum(group == 2)
 
-  i.num <- all$init$i.num
-  r.num <- all$init$r.num
-  i.num.g2 <- all$init$i.num.g2
-  r.num.g2 <- all$init$r.num.g2
+  i.num <- dat$init$i.num
+  r.num <- dat$init$r.num
+  i.num.g2 <- dat$init$i.num.g2
+  r.num.g2 <- dat$init$r.num.g2
 
-  status.rand <- all$init$status.rand
+  status.rand <- dat$init$status.rand
 
 
   # Status ------------------------------------------------------------------
@@ -138,7 +138,7 @@ init_status.icm <- function(all) {
       }
     }
   }
-  all$attr$status <- status
+  dat$attr$status <- status
 
 
   # Infection Time ----------------------------------------------------------
@@ -147,24 +147,24 @@ init_status.icm <- function(all) {
   infTime <- rep(NA, length(status))
 
   # If vital=TRUE, infTime is a uniform draw over the duration of infection
-  if (all$param$vital == TRUE && all$param$di.rate > 0) {
+  if (dat$param$vital == TRUE && dat$param$di.rate > 0) {
     infTime[idsInf] <- -rgeom(n = length(idsInf),
-                              prob = all$param$di.rate)+2
+                              prob = dat$param$di.rate)+2
   } else {
-    if (all$control$type == "SI" || all$param$rec.rate == 0) {
+    if (dat$control$type == "SI" || dat$param$rec.rate == 0) {
       # infTime a uniform draw over the number of sim time steps
-      infTime[idsInf] <- ssample(1:(-all$control$nsteps + 2),
+      infTime[idsInf] <- ssample(1:(-dat$control$nsteps + 2),
                                  length(idsInf),
                                  replace = TRUE)
     } else {
-      infTime[idsInf] <- ssample(1:(-round(1/all$param$rec.rate) + 2),
+      infTime[idsInf] <- ssample(1:(-round(1/dat$param$rec.rate) + 2),
                                  length(idsInf),
                                  replace = TRUE)
     }
   }
-  all$attr$infTime <- infTime
+  dat$attr$infTime <- infTime
 
-  return(all)
+  return(dat)
 }
 
 

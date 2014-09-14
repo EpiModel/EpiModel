@@ -3,14 +3,14 @@
 \alias{saveout.icm}
 \title{Save icm Data to Output List Format}
 \usage{
-saveout.icm(all, s, out)
+saveout.icm(dat, s, out)
 }
 \arguments{
-\item{all}{master object in \code{icm} simulations.}
-
 \item{s}{current run number.}
 
 \item{out}{out list passed back in for updating at runs 2+.}
+
+\item{all}{master object in \code{icm} simulations.}
 }
 \description{
 This function transfers the data from the master \code{all}

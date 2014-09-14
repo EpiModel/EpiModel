@@ -3,10 +3,10 @@
 \alias{recovery.icm}
 \title{Recovery: icm Module}
 \usage{
-recovery.icm(all, at)
+recovery.icm(dat, at)
 }
 \arguments{
-\item{all}{master data list object.}
+\item{dat}{master data list object.}
 
 \item{at}{current time step.}
 }

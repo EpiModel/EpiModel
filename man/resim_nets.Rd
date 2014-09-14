@@ -3,7 +3,7 @@
 \alias{resim_nets}
 \title{Resimulate Dynamic Network at Time 2+}
 \usage{
-resim_nets(all, at)
+resim_nets(dat, at)
 }
 \arguments{
 \item{at}{current time step.}

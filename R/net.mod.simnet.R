@@ -57,39 +57,39 @@ sim_nets <- function(x, nw, nsteps, control) {
 #' @export
 #' @keywords netUtils internal
 #'
-resim_nets <- function(all, at) {
+resim_nets <- function(dat, at) {
 
-  idsActive <- which(all$attr$active == 1)
+  idsActive <- which(dat$attr$active == 1)
   anyActive <- ifelse(length(idsActive) > 0, TRUE, FALSE)
-  if (all$param$modes == 2) {
-    nActiveM1 <- length(intersect(modeids(all$nw, mode = 1), idsActive))
-    nActiveM2 <- length(intersect(modeids(all$nw, mode = 2), idsActive))
+  if (dat$param$modes == 2) {
+    nActiveM1 <- length(intersect(modeids(dat$nw, mode = 1), idsActive))
+    nActiveM2 <- length(intersect(modeids(dat$nw, mode = 2), idsActive))
     anyActive <- ifelse(nActiveM1 > 0 & nActiveM2 > 0, TRUE, FALSE)
   }
 
   # Pull network model parameters
-  nwparam <- get_nwparam(all)
+  nwparam <- get_nwparam(dat)
 
   # Serosorting model check
   statOnNw <- ("status" %in% get_formula_terms(nwparam$formation))
-  status <- all$attr$status
+  status <- dat$attr$status
   if (statOnNw == TRUE && length(unique(status)) == 1) {
     stop("Stopping simulation because status in formation formula and no longer any discordant nodes",
          call. = TRUE)
   }
 
   # Set up nwstats df
-  if (all$control$save.nwstats == TRUE) {
+  if (dat$control$save.nwstats == TRUE) {
     if (at == 2) {
-      nwstats <- attributes(all$nw)$stats
-      all$stats$nwstats <- as.data.frame(nwstats)
+      nwstats <- attributes(dat$nw)$stats
+      dat$stats$nwstats <- as.data.frame(nwstats)
     }
   }
 
   # Network simulation
-  if (anyActive > 0 & all$control$depend == TRUE) {
+  if (anyActive > 0 & dat$control$depend == TRUE) {
     suppressWarnings(
-      all$nw <- simulate(all$nw,
+      dat$nw <- simulate(dat$nw,
                          formation = nwparam$formation,
                          dissolution = nwparam$dissolution,
                          coef.form = nwparam$coef.form,
@@ -98,24 +98,24 @@ resim_nets <- function(all, at) {
                          time.start = at,
                          time.slices = 1,
                          time.offset = 0,
-                         monitor = all$control$nwstats.formula,
-                         control = all$control$set.control.stergm))
+                         monitor = dat$control$nwstats.formula,
+                         control = dat$control$set.control.stergm))
 
     # Set up nwstats df
-    if (all$control$save.nwstats == TRUE) {
-      all$stats$nwstats[at, ] <- tail(attributes(all$nw)$stats, 1)
+    if (dat$control$save.nwstats == TRUE) {
+      dat$stats$nwstats[at, ] <- tail(attributes(dat$nw)$stats, 1)
     }
 
-    if (all$control$delete.nodes == TRUE) {
-      all$nw <- network.extract(all$nw, at = at)
-      inactive <- which(all$attr$active == 0)
-      all$attr <- deleteAttr(all$attr, inactive)
+    if (dat$control$delete.nodes == TRUE) {
+      dat$nw <- network.extract(dat$nw, at = at)
+      inactive <- which(dat$attr$active == 0)
+      dat$attr <- deleteAttr(dat$attr, inactive)
     }
 
   }
 
 
 
-  return(all)
+  return(dat)
 
 }

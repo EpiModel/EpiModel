@@ -3,10 +3,10 @@
 \alias{split_bip}
 \title{Update Attribute Values for a Bipartite Network}
 \usage{
-split_bip(all, var, val, nCurrM1, nCurrM2, nBirths, nBirthsM2)
+split_bip(dat, var, val, nCurrM1, nCurrM2, nBirths, nBirthsM2)
 }
 \arguments{
-\item{all}{master data object passed through \code{netsim} simulations.}
+\item{dat}{master data object passed through \code{netsim} simulations.}
 
 \item{var}{variable to update.}
 

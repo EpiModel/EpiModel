@@ -5,82 +5,82 @@
 #'              the network at the specified time step, output to a list of
 #'              vectors.
 #'
-#' @param all master data list object.
+#' @param dat master data list object.
 #' @param at current time step.
 #'
 #' @export
 #' @keywords internal
 #'
-get_prev.icm <- function(all, at) {
+get_prev.icm <- function(dat, at) {
 
   if (at == 1) {
-    all$out <- list()
-    all$out$s.num <- sum(all$attr$active == 1 &
-                         all$attr$status == "s" &
-                         all$attr$group == 1)
-    all$out$i.num <- sum(all$attr$active == 1 &
-                         all$attr$status == "i" &
-                         all$attr$group == 1)
-    all$out$num <- all$out$s.num + all$out$i.num
-    if (all$control$type == "SIR") {
-      all$out$r.num <- sum(all$attr$active == 1 &
-                           all$attr$status == "r" &
-                           all$attr$group ==1)
-      all$out$num <- all$out$s.num +
-                     all$out$i.num +
-                     all$out$r.num
+    dat$epi <- list()
+    dat$epi$s.num <- sum(dat$attr$active == 1 &
+                         dat$attr$status == "s" &
+                         dat$attr$group == 1)
+    dat$epi$i.num <- sum(dat$attr$active == 1 &
+                         dat$attr$status == "i" &
+                         dat$attr$group == 1)
+    dat$epi$num <- dat$epi$s.num + dat$epi$i.num
+    if (dat$control$type == "SIR") {
+      dat$epi$r.num <- sum(dat$attr$active == 1 &
+                           dat$attr$status == "r" &
+                           dat$attr$group ==1)
+      dat$epi$num <- dat$epi$s.num +
+                     dat$epi$i.num +
+                     dat$epi$r.num
     }
-    if (all$param$groups == 2) {
-      all$out$s.num.g2 <- sum(all$attr$active == 1 &
-                              all$attr$status == "s" &
-                              all$attr$group == 2)
-      all$out$i.num.g2 <- sum(all$attr$active == 1 &
-                              all$attr$status == "i" &
-                              all$attr$group == 2)
-      all$out$num.g2 <- all$out$s.num.g2 + all$out$i.num.g2
-      if (all$control$type == "SIR") {
-        all$out$r.num.g2 <- sum(all$attr$active == 1 &
-                                all$attr$status == "r" &
-                                all$attr$group == 2)
-        all$out$num.g2 <- all$out$s.num.g2 +
-                          all$out$i.num.g2 +
-                          all$out$r.num.g2
+    if (dat$param$groups == 2) {
+      dat$epi$s.num.g2 <- sum(dat$attr$active == 1 &
+                              dat$attr$status == "s" &
+                              dat$attr$group == 2)
+      dat$epi$i.num.g2 <- sum(dat$attr$active == 1 &
+                              dat$attr$status == "i" &
+                              dat$attr$group == 2)
+      dat$epi$num.g2 <- dat$epi$s.num.g2 + dat$epi$i.num.g2
+      if (dat$control$type == "SIR") {
+        dat$epi$r.num.g2 <- sum(dat$attr$active == 1 &
+                                dat$attr$status == "r" &
+                                dat$attr$group == 2)
+        dat$epi$num.g2 <- dat$epi$s.num.g2 +
+                          dat$epi$i.num.g2 +
+                          dat$epi$r.num.g2
       }
     }
   } else {
-    all$out$s.num[at] <- sum(all$attr$active == 1 &
-                             all$attr$status == "s" &
-                             all$attr$group == 1)
-    all$out$i.num[at] <- sum(all$attr$active == 1 &
-                             all$attr$status == "i" &
-                             all$attr$group == 1)
-    all$out$num[at] <- all$out$s.num[at] + all$out$i.num[at]
-    if (all$control$type == "SIR") {
-      all$out$r.num[at] <- sum(all$attr$active == 1 &
-                               all$attr$status == "r" &
-                               all$attr$group ==1)
-      all$out$num[at] <- all$out$s.num[at] +
-                         all$out$i.num[at] +
-                         all$out$r.num[at]
+    dat$epi$s.num[at] <- sum(dat$attr$active == 1 &
+                             dat$attr$status == "s" &
+                             dat$attr$group == 1)
+    dat$epi$i.num[at] <- sum(dat$attr$active == 1 &
+                             dat$attr$status == "i" &
+                             dat$attr$group == 1)
+    dat$epi$num[at] <- dat$epi$s.num[at] + dat$epi$i.num[at]
+    if (dat$control$type == "SIR") {
+      dat$epi$r.num[at] <- sum(dat$attr$active == 1 &
+                               dat$attr$status == "r" &
+                               dat$attr$group ==1)
+      dat$epi$num[at] <- dat$epi$s.num[at] +
+                         dat$epi$i.num[at] +
+                         dat$epi$r.num[at]
     }
-    if (all$param$groups == 2) {
-      all$out$s.num.g2[at] <- sum(all$attr$active == 1 &
-                                  all$attr$status == "s" &
-                                  all$attr$group == 2)
-      all$out$i.num.g2[at] <- sum(all$attr$active == 1 &
-                                  all$attr$status == "i" &
-                                  all$attr$group == 2)
-      all$out$num.g2[at] <- all$out$s.num.g2[at] + all$out$i.num.g2[at]
-      if (all$control$type == "SIR") {
-        all$out$r.num.g2[at] <- sum(all$attr$active == 1 &
-                                    all$attr$status == "r" &
-                                    all$attr$group == 2)
-        all$out$num.g2[at] <- all$out$s.num.g2[at] +
-                              all$out$i.num.g2[at] +
-                              all$out$r.num.g2[at]
+    if (dat$param$groups == 2) {
+      dat$epi$s.num.g2[at] <- sum(dat$attr$active == 1 &
+                                  dat$attr$status == "s" &
+                                  dat$attr$group == 2)
+      dat$epi$i.num.g2[at] <- sum(dat$attr$active == 1 &
+                                  dat$attr$status == "i" &
+                                  dat$attr$group == 2)
+      dat$epi$num.g2[at] <- dat$epi$s.num.g2[at] + dat$epi$i.num.g2[at]
+      if (dat$control$type == "SIR") {
+        dat$epi$r.num.g2[at] <- sum(dat$attr$active == 1 &
+                                    dat$attr$status == "r" &
+                                    dat$attr$group == 2)
+        dat$epi$num.g2[at] <- dat$epi$s.num.g2[at] +
+                              dat$epi$i.num.g2[at] +
+                              dat$epi$r.num.g2[at]
       }
     }
   }
 
-  return(all)
+  return(dat)
 }

@@ -4,37 +4,37 @@ test_that("New network models vignette example", {
 
 
   ## New Aging Module
-  aging <- function(all, at) {
+  aging <- function(dat, at) {
 
     if (at == 2) {
-      n <- sum(all$attr$active == 1)
-      all$attr$age <- sample(18:49, n, replace = TRUE)
+      n <- sum(dat$attr$active == 1)
+      dat$attr$age <- sample(18:49, n, replace = TRUE)
     } else {
-      all$attr$age <- all$attr$age + 1/12
+      dat$attr$age <- dat$attr$age + 1/12
     }
 
-    return(all)
+    return(dat)
   }
 
 
   ## Replacement Death Module
-  dfunc <- function(all, at) {
+  dfunc <- function(dat, at) {
 
-    idsElig <- which(all$attr$active == 1)
+    idsElig <- which(dat$attr$active == 1)
     nElig <- length(idsElig)
 
     nDeaths <- 0
 
     if (nElig > 0) {
-      ages <- all$attr$age[idsElig]
-      life.expt <- all$param$life.expt
+      ages <- dat$attr$age[idsElig]
+      life.expt <- dat$param$life.expt
       death.rates <- pmin(1, 1/(life.expt*12 - ages*12))
       vecDeaths <- which(rbinom(nElig, 1, death.rates) == 1)
       idsDeaths <- idsElig[vecDeaths]
       nDeaths <- length(idsDeaths)
       if (nDeaths > 0) {
-        all$attr$active[idsDeaths] <- 0
-        all$nw <- deactivate.vertices(all$nw,
+        dat$attr$active[idsDeaths] <- 0
+        dat$nw <- deactivate.vertices(dat$nw,
                                       onset = at,
                                       terminus = Inf,
                                       v = idsDeaths,
@@ -43,35 +43,35 @@ test_that("New network models vignette example", {
     }
 
     if (at == 2) {
-      all$out$d.flow <- c(0, nDeaths)
+      dat$epi$d.flow <- c(0, nDeaths)
     } else {
-      all$out$d.flow[at] <- nDeaths
+      dat$epi$d.flow[at] <- nDeaths
     }
 
-    return(all)
+    return(dat)
   }
 
 
   ## Replacement Birth Module
-  bfunc <- function(all, at) {
+  bfunc <- function(dat, at) {
 
     # Variables ---------------------------------------------------------------
-    growth.rate <- all$param$growth.rate
-    exptPopSize <- all$out$num[1] * (1 + growth.rate*at)
-    n <- network.size(all$nw)
-    tea.status <- all$control$tea.status
+    growth.rate <- dat$param$growth.rate
+    exptPopSize <- dat$epi$num[1] * (1 + growth.rate*at)
+    n <- network.size(dat$nw)
+    tea.status <- dat$control$tea.status
 
-    numNeeded <- exptPopSize - sum(all$attr$active == 1)
+    numNeeded <- exptPopSize - sum(dat$attr$active == 1)
     if (numNeeded > 0) {
       nBirths <- rpois(1, numNeeded)
     } else {
       nBirths <- 0
     }
     if (nBirths > 0) {
-      all$nw <- add.vertices(all$nw,
+      dat$nw <- add.vertices(dat$nw,
                              nv = nBirths)
       newNodes <- (n + 1):(n + nBirths)
-      all$nw <- activate.vertices(all$nw,
+      dat$nw <- activate.vertices(dat$nw,
                                   onset = at,
                                   terminus = Inf,
                                   v = newNodes)
@@ -80,29 +80,29 @@ test_that("New network models vignette example", {
 
     # Update Nodal Attributes -------------------------------------------------
     if (nBirths > 0) {
-      all$attr$active <- c(all$attr$active, rep(1, nBirths))
+      dat$attr$active <- c(dat$attr$active, rep(1, nBirths))
       if (tea.status == TRUE) {
-        all$nw <- activate.vertex.attribute(all$nw,
+        dat$nw <- activate.vertex.attribute(dat$nw,
                                             prefix = "testatus",
                                             value = 0,
                                             onset = at,
                                             terminus = Inf,
                                             v = newNodes)
       }
-      all$attr$status <- c(all$attr$status, rep("s", nBirths))
-      all$attr$infTime <- c(all$attr$infTime, rep(NA, nBirths))
-      all$attr$age <- c(all$attr$age, rep(18, nBirths))
+      dat$attr$status <- c(dat$attr$status, rep("s", nBirths))
+      dat$attr$infTime <- c(dat$attr$infTime, rep(NA, nBirths))
+      dat$attr$age <- c(dat$attr$age, rep(18, nBirths))
     }
 
 
     # Output ------------------------------------------------------------------
     if (at == 2) {
-      all$out$b.flow <- c(0, nBirths)
+      dat$epi$b.flow <- c(0, nBirths)
     } else {
-      all$out$b.flow[at] <- nBirths
+      dat$epi$b.flow[at] <- nBirths
     }
 
-    return(all)
+    return(dat)
   }
 
 

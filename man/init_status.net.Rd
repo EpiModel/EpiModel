@@ -3,10 +3,10 @@
 \alias{init_status.net}
 \title{Disease Status Initialization Module for netsim}
 \usage{
-init_status.net(all)
+init_status.net(dat)
 }
 \arguments{
-\item{all}{a list object containing a \code{networkDynamic} object and other
+\item{dat}{a list object containing a \code{networkDynamic} object and other
        initialization information passed from \code{\link{netsim}}.}
 }
 \description{
