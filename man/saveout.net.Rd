@@ -3,17 +3,17 @@
 \alias{saveout.net}
 \title{Save netsim Data to Output List Format}
 \usage{
-saveout.net(all, s, out)
+saveout.net(dat, s, out)
 }
 \arguments{
-\item{all}{master object in \code{netsim} simulations.}
+\item{dat}{master object in \code{netsim} simulations.}
 
 \item{s}{current simulation number.}
 
 \item{out}{out list passed back in for updating at simulations 2+.}
 }
 \description{
-This function transfers the data from the master \code{all}
+This function transfers the data from the master \code{dat}
              object to the output \code{out} object at the end of each
              simulation in \code{\link{netsim}}.
 }

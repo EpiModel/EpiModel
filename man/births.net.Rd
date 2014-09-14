@@ -3,10 +3,10 @@
 \alias{births.net}
 \title{Births: netsim Module}
 \usage{
-births.net(all, at)
+births.net(dat, at)
 }
 \arguments{
-\item{all}{a list object containing a \code{networkDynamic} object and other
+\item{dat}{a list object containing a \code{networkDynamic} object and other
 initialization information passed from \code{\link{netsim}}.}
 
 \item{at}{current time step.}

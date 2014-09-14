@@ -3,7 +3,7 @@
 #'
 #' @description This function simulates death for use in \link{netsim} simulations.
 #'
-#' @param all a list object containing a \code{networkDynamic} object and other
+#' @param dat a list object containing a \code{networkDynamic} object and other
 #'        initialization information passed from \code{\link{netsim}}.
 #' @param at current time step.
 #'
@@ -12,34 +12,34 @@
 #' @export
 #' @keywords netMod internal
 #'
-deaths.net <- function(all, at) {
+deaths.net <- function(dat, at) {
 
   # Conditions --------------------------------------------------------------
-  if (all$param$vital == FALSE) {
-    return(all)
+  if (dat$param$vital == FALSE) {
+    return(dat)
   }
 
 
   # Variables ---------------------------------------------------------------
-  modes <- all$param$modes
-  mode <- idmode(all$nw)
+  modes <- dat$param$modes
+  mode <- idmode(dat$nw)
 
-  type <- all$control$type
-  d.rand <- all$control$d.rand
+  type <- dat$control$type
+  d.rand <- dat$control$d.rand
 
 
   # Susceptible deaths ------------------------------------------------------
 
   # Initialize counts and query rates
   nDeaths <- nDeathsM2 <- 0
-  idsElig <- which(all$attr$active == 1 & all$attr$status == "s")
+  idsElig <- which(dat$attr$active == 1 & dat$attr$status == "s")
   nElig <- length(idsElig)
 
   if (nElig > 0) {
 
     # Pull rates by mode
     mElig <- mode[idsElig]
-    rates <- c(all$param$ds.rate, all$param$ds.rate.m2)
+    rates <- c(dat$param$ds.rate, dat$param$ds.rate.m2)
     ratesElig <- rates[mElig]
 
     # Stochastic deaths
@@ -49,8 +49,8 @@ deaths.net <- function(all, at) {
         idsDth <- idsElig[vecDeaths]
         nDeaths <- sum(mode[idsDth] == 1)
         nDeathsM2 <- sum(mode[idsDth] == 2)
-        all$attr$active[idsDth] <- 0
-        all$nw <- deactivate.vertices(all$nw,
+        dat$attr$active[idsDth] <- 0
+        dat$nw <- deactivate.vertices(dat$nw,
                                       onset = at,
                                       terminus = Inf,
                                       v = idsDth,
@@ -62,15 +62,15 @@ deaths.net <- function(all, at) {
     if (d.rand == FALSE) {
       idsDth <- idsDthM2 <- NULL
       nDeaths <- min(round(sum(ratesElig[mElig == 1])), sum(mElig == 1))
-      all$attr$active[ssample(idsElig[mElig == 1], nDeaths)] <- 0
+      dat$attr$active[ssample(idsElig[mElig == 1], nDeaths)] <- 0
       if (modes == 2) {
         nDeathsM2 <- min(round(sum(ratesElig[mElig == 2])), sum(mElig == 2))
-        all$attr$active[ssample(idsElig[mElig == 2], nDeaths)] <- 0
+        dat$attr$active[ssample(idsElig[mElig == 2], nDeaths)] <- 0
       }
       totDth <- nDeaths + nDeathsM2
       if (totDth > 0) {
         allids <- c(idsDth, idsDthM2)
-        all$nw <- deactivate.vertices(all$nw,
+        dat$nw <- deactivate.vertices(dat$nw,
                                       onset = at,
                                       terminus = Inf,
                                       v = allids,
@@ -81,14 +81,14 @@ deaths.net <- function(all, at) {
 
   # Output
   if (at == 2) {
-    all$out$ds.flow <- c(0, nDeaths)
+    dat$epi$ds.flow <- c(0, nDeaths)
     if (modes == 2) {
-      all$out$ds.flow.m2 <- c(0, nDeathsM2)
+      dat$epi$ds.flow.m2 <- c(0, nDeathsM2)
     }
   } else {
-    all$out$ds.flow[at] <- nDeaths
+    dat$epi$ds.flow[at] <- nDeaths
     if (modes == 2) {
-      all$out$ds.flow.m2[at] <- nDeathsM2
+      dat$epi$ds.flow.m2[at] <- nDeathsM2
     }
   }
 
@@ -97,14 +97,14 @@ deaths.net <- function(all, at) {
 
   # Initialize counts and query rates
   nDeaths <- nDeathsM2 <- 0
-  idsElig <- which(all$attr$active == 1 & all$attr$status == "i")
+  idsElig <- which(dat$attr$active == 1 & dat$attr$status == "i")
   nElig <- length(idsElig)
 
   if (nElig > 0) {
 
     # Pull rates by mode
     mElig <- mode[idsElig]
-    rates <- c(all$param$di.rate, all$param$di.rate.m2)
+    rates <- c(dat$param$di.rate, dat$param$di.rate.m2)
     ratesElig <- rates[mElig]
 
     # Stochastic deaths
@@ -114,8 +114,8 @@ deaths.net <- function(all, at) {
         idsDth <- idsElig[vecDeaths]
         nDeaths <- sum(mode[idsDth] == 1)
         nDeathsM2 <- sum(mode[idsDth] == 2)
-        all$attr$active[idsDth] <- 0
-        all$nw <- deactivate.vertices(all$nw,
+        dat$attr$active[idsDth] <- 0
+        dat$nw <- deactivate.vertices(dat$nw,
                                       onset = at,
                                       terminus = Inf,
                                       v = idsDth,
@@ -127,15 +127,15 @@ deaths.net <- function(all, at) {
     if (d.rand == FALSE) {
       idsDth <- idsDthM2 <- NULL
       nDeaths <- min(round(sum(ratesElig[mElig == 1])), sum(mElig == 1))
-      all$attr$active[ssample(idsElig[mElig == 1], nDeaths)] <- 0
+      dat$attr$active[ssample(idsElig[mElig == 1], nDeaths)] <- 0
       if (modes == 2) {
         nDeathsM2 <- min(round(sum(ratesElig[mElig == 2])), sum(mElig == 2))
-        all$attr$active[ssample(idsElig[mElig == 2], nDeaths)] <- 0
+        dat$attr$active[ssample(idsElig[mElig == 2], nDeaths)] <- 0
       }
       totDth <- nDeaths + nDeathsM2
       if (totDth > 0) {
         allids <- c(idsDth, idsDthM2)
-        all$nw <- deactivate.vertices(all$nw,
+        dat$nw <- deactivate.vertices(dat$nw,
                                       onset = at,
                                       terminus = Inf,
                                       v = allids,
@@ -146,14 +146,14 @@ deaths.net <- function(all, at) {
 
   # Output
   if (at == 2) {
-    all$out$di.flow <- c(0, nDeaths)
+    dat$epi$di.flow <- c(0, nDeaths)
     if (modes == 2) {
-      all$out$di.flow.m2 <- c(0, nDeathsM2)
+      dat$epi$di.flow.m2 <- c(0, nDeathsM2)
     }
   } else {
-    all$out$di.flow[at] <- nDeaths
+    dat$epi$di.flow[at] <- nDeaths
     if (modes == 2) {
-      all$out$di.flow.m2[at] <- nDeathsM2
+      dat$epi$di.flow.m2[at] <- nDeathsM2
     }
   }
 
@@ -163,14 +163,14 @@ deaths.net <- function(all, at) {
 
     # Initialize counts and query rates
     nDeaths <- nDeathsM2 <- 0
-    idsElig <- which(all$attr$active == 1 & all$attr$status == "r")
+    idsElig <- which(dat$attr$active == 1 & dat$attr$status == "r")
     nElig <- length(idsElig)
 
     if (nElig > 0) {
 
       # Pull rates by mode
       mElig <- mode[idsElig]
-      rates <- c(all$param$dr.rate, all$param$dr.rate.m2)
+      rates <- c(dat$param$dr.rate, dat$param$dr.rate.m2)
       ratesElig <- rates[mElig]
 
       # Stochastic deaths
@@ -180,8 +180,8 @@ deaths.net <- function(all, at) {
           idsDth <- idsElig[vecDeaths]
           nDeaths <- sum(mode[idsDth] == 1)
           nDeathsM2 <- sum(mode[idsDth] == 2)
-          all$attr$active[idsDth] <- 0
-          all$nw <- deactivate.vertices(all$nw,
+          dat$attr$active[idsDth] <- 0
+          dat$nw <- deactivate.vertices(dat$nw,
                                         onset = at,
                                         terminus = Inf,
                                         v = idsDth,
@@ -193,15 +193,15 @@ deaths.net <- function(all, at) {
       if (d.rand == FALSE) {
         idsDth <- idsDthM2 <- NULL
         nDeaths <- min(round(sum(ratesElig[mElig == 1])), sum(mElig == 1))
-        all$attr$active[ssample(idsElig[mElig == 1], nDeaths)] <- 0
+        dat$attr$active[ssample(idsElig[mElig == 1], nDeaths)] <- 0
         if (modes == 2) {
           nDeathsM2 <- min(round(sum(ratesElig[mElig == 2])), sum(mElig == 2))
-          all$attr$active[ssample(idsElig[mElig == 2], nDeaths)] <- 0
+          dat$attr$active[ssample(idsElig[mElig == 2], nDeaths)] <- 0
         }
         totDth <- nDeaths + nDeathsM2
         if (totDth > 0) {
           allids <- c(idsDth, idsDthM2)
-          all$nw <- deactivate.vertices(all$nw,
+          dat$nw <- deactivate.vertices(dat$nw,
                                         onset = at,
                                         terminus = Inf,
                                         v = allids,
@@ -212,20 +212,20 @@ deaths.net <- function(all, at) {
 
     # Output
     if (at == 2) {
-      all$out$dr.flow <- c(0, nDeaths)
+      dat$epi$dr.flow <- c(0, nDeaths)
       if (modes == 2) {
-        all$out$dr.flow.m2 <- c(0, nDeathsM2)
+        dat$epi$dr.flow.m2 <- c(0, nDeathsM2)
       }
     } else {
-      all$out$dr.flow[at] <- nDeaths
+      dat$epi$dr.flow[at] <- nDeaths
       if (modes == 2) {
-        all$out$dr.flow.m2[at] <- nDeathsM2
+        dat$epi$dr.flow.m2[at] <- nDeathsM2
       }
     }
   }
 
 
-  return(all)
+  return(dat)
 }
 
 
@@ -235,7 +235,7 @@ deaths.net <- function(all, at) {
 #' @description This function simulates new births into the network
 #'   for use in \code{\link{netsim}} simulations.
 #'
-#' @param all a list object containing a \code{networkDynamic} object and other
+#' @param dat a list object containing a \code{networkDynamic} object and other
 #'   initialization information passed from \code{\link{netsim}}.
 #' @param at current time step.
 #'
@@ -244,24 +244,24 @@ deaths.net <- function(all, at) {
 #' @export
 #' @keywords netMod internal
 #'
-births.net <- function(all, at) {
+births.net <- function(dat, at) {
 
   # Conditions --------------------------------------------------------------
-  if (all$param$vital == FALSE) {
-    return(all)
+  if (dat$param$vital == FALSE) {
+    return(dat)
   }
 
 
   # Variables ---------------------------------------------------------------
-  b.rate <- all$param$b.rate
-  b.rate.m2 <- all$param$b.rate.m2
-  formation <- get_nwparam(all)$formation
-  modes <- all$param$modes
-  tea.status <- all$control$tea.status
-  nOld <- all$out$num[at - 1]
-  nCurr <- network.size(all$nw)
-  b.rand <- all$control$b.rand
-  delete.nodes <- all$control$delete.nodes
+  b.rate <- dat$param$b.rate
+  b.rate.m2 <- dat$param$b.rate.m2
+  formation <- get_nwparam(dat)$formation
+  modes <- dat$param$modes
+  tea.status <- dat$control$tea.status
+  nOld <- dat$epi$num[at - 1]
+  nCurr <- network.size(dat$nw)
+  b.rand <- dat$control$b.rand
+  delete.nodes <- dat$control$delete.nodes
 
   nBirths <- nBirthsM2 <- 0
   newNodes <- newNodesM2 <- NULL
@@ -276,17 +276,17 @@ births.net <- function(all, at) {
       nBirths <- round(nOld * b.rate)
     }
     if (nBirths > 0) {
-      all$nw <- add.vertices(all$nw,
+      dat$nw <- add.vertices(dat$nw,
                              nv = nBirths)
       newNodes <- (nCurr + 1):(nCurr + nBirths)
-      all$nw <- activate.vertices(all$nw,
+      dat$nw <- activate.vertices(dat$nw,
                                   onset = at,
                                   terminus = Inf,
                                   v = newNodes)
     }
   }
   if (modes == 2 && nOld > 0) {
-    nOldM2 <- all$out$num.m2[at - 1]
+    nOldM2 <- dat$epi$num.m2[at - 1]
     if (b.rand == TRUE) {
       if (is.na(b.rate.m2)) {
         nBirths <- sum(rbinom(nOld, 1, b.rate))
@@ -306,20 +306,20 @@ births.net <- function(all, at) {
       }
     }
 
-    nCurrM1 <- length(modeids(all$nw, 1))
-    nCurrM2 <- length(modeids(all$nw, 2))
-    prefixes <- unique(substr(all$nw %v% "vertex.names", 1, 1))
+    nCurrM1 <- length(modeids(dat$nw, 1))
+    nCurrM2 <- length(modeids(dat$nw, 2))
+    prefixes <- unique(substr(dat$nw %v% "vertex.names", 1, 1))
 
     if (nBirths > 0) {
       newNodeIDs <- (nCurrM1 + 1):(nCurrM1 + nBirths)
       if (delete.nodes == FALSE) {
         newPids <- paste0(prefixes[1], newNodeIDs)
-        all$nw <- add.vertices(all$nw,
+        dat$nw <- add.vertices(dat$nw,
                                nv = nBirths,
                                last.mode = FALSE,
                                vertex.pid = newPids)
       } else {
-        all$nw <- add.vertices(all$nw,
+        dat$nw <- add.vertices(dat$nw,
                                nv = nBirths,
                                last.mode = FALSE)
       }
@@ -329,21 +329,21 @@ births.net <- function(all, at) {
       newNodeIDs <- (nCurrM2 + 1):(nCurrM2 + nBirthsM2)
       if (delete.nodes == FALSE) {
         newPids <- paste0(prefixes[2], newNodeIDs)
-        all$nw <- add.vertices(all$nw,
+        dat$nw <- add.vertices(dat$nw,
                                nv = nBirthsM2,
                                last.mode = TRUE,
                                vertex.pid = newPids)
       } else {
-        all$nw <- add.vertices(all$nw,
+        dat$nw <- add.vertices(dat$nw,
                                nv = nBirthsM2,
                                last.mode = TRUE)
       }
-      newSize <- network.size(all$nw)
+      newSize <- network.size(dat$nw)
       newNodesM2 <- (newSize - nBirthsM2 + 1):newSize
     }
     newNodes <- c(newNodes, newNodesM2)
     if (!is.null(newNodes)) {
-      all$nw <- activate.vertices(all$nw,
+      dat$nw <- activate.vertices(dat$nw,
                                   onset = at,
                                   terminus = Inf,
                                   v = newNodes)
@@ -355,30 +355,30 @@ births.net <- function(all, at) {
   if (length(newNodes) > 0) {
 
     # Set attributes on nw
-    form <- get_nwparam(all)$formation
+    form <- get_nwparam(dat)$formation
     t <- get_formula_terms(form)
-    curr.tab <- get_attr_prop(all$nw, t)
+    curr.tab <- get_attr_prop(dat$nw, t)
     if (length(curr.tab) > 0) {
-      all$nw <- update_nwattr(all$nw,
+      dat$nw <- update_nwattr(dat$nw,
                               newNodes,
-                              all$control$attr.rules,
+                              dat$control$attr.rules,
                               curr.tab,
-                              all$temp$t1.tab)
+                              dat$temp$t1.tab)
     }
 
     # Save any val on attr
-    all <- copy_toall_attr(all, at, t)
+    dat <- copy_toall_attr(dat, at, t)
 
     if (tea.status == TRUE) {
       if ("status" %in% t) {
-        all$nw <- activate.vertex.attribute(all$nw,
+        dat$nw <- activate.vertex.attribute(dat$nw,
                                             prefix = "testatus",
-                                            value = all$attr$status[newNodes],
+                                            value = dat$attr$status[newNodes],
                                             onset = at,
                                             terminus = Inf,
                                             v = newNodes)
       } else {
-        all$nw <- activate.vertex.attribute(all$nw,
+        dat$nw <- activate.vertex.attribute(dat$nw,
                                             prefix = "testatus",
                                             value = "s",
                                             onset = at,
@@ -388,41 +388,41 @@ births.net <- function(all, at) {
     }
     if (modes == 1) {
       if (!("status" %in% t)) {
-        all$attr$status <- c(all$attr$status, rep("s", length(newNodes)))
+        dat$attr$status <- c(dat$attr$status, rep("s", length(newNodes)))
       }
-      all$attr$active <- c(all$attr$active, rep(1, length(newNodes)))
-      all$attr$infTime <- c(all$attr$infTime, rep(NA, length(newNodes)))
+      dat$attr$active <- c(dat$attr$active, rep(1, length(newNodes)))
+      dat$attr$infTime <- c(dat$attr$infTime, rep(NA, length(newNodes)))
     }
     if (modes == 2) {
       if (!("status" %in% t)) {
-        all <- split_bip(all, "status", "s",
+        dat <- split_bip(dat, "status", "s",
                          nCurrM1, nCurrM2, nBirths, nBirthsM2)
       }
-      all <- split_bip(all, "active", 1,
+      dat <- split_bip(dat, "active", 1,
                        nCurrM1, nCurrM2, nBirths, nBirthsM2)
-      all <- split_bip(all, "infTime", NA,
+      dat <- split_bip(dat, "infTime", NA,
                        nCurrM1, nCurrM2, nBirths, nBirthsM2)
     }
 
     ## Handles infTime when incoming nodes are infected
-    newNodesInf <- intersect(newNodes, which(all$attr$status == "s"))
-    all$attr$infTime[newNodesInf] <- at
+    newNodesInf <- intersect(newNodes, which(dat$attr$status == "s"))
+    dat$attr$infTime[newNodesInf] <- at
   }
 
 
   # Output ------------------------------------------------------------------
   if (at == 2) {
-    all$out$b.flow <- c(0, nBirths)
+    dat$epi$b.flow <- c(0, nBirths)
     if (modes == 2) {
-      all$out$b.flow.m2 <- c(0, nBirthsM2)
+      dat$epi$b.flow.m2 <- c(0, nBirthsM2)
     }
   } else {
-    all$out$b.flow[at] <- nBirths
+    dat$epi$b.flow[at] <- nBirths
     if (modes == 2) {
-      all$out$b.flow.m2[at] <- nBirthsM2
+      dat$epi$b.flow.m2[at] <- nBirthsM2
     }
   }
 
-  return(all)
+  return(dat)
 }
 

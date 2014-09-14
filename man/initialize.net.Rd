@@ -15,7 +15,7 @@ initialize.net(x, param, init, control)
 \item{control}{an \code{EpiModel} object of class \code{\link{control.net}}.}
 }
 \description{
-This function initializes the master \code{all} object on which
+This function initializes the master \code{dat} object on which
              data are stored, simulates the initial state of the network, and
              simulates disease status and other attributes.
 }

@@ -1,7 +1,7 @@
 
 #' @title Initialization: netsim Module
 #'
-#' @description This function initializes the master \code{all} object on which
+#' @description This function initializes the master \code{dat} object on which
 #'              data are stored, simulates the initial state of the network, and
 #'              simulates disease status and other attributes.
 #'
@@ -16,14 +16,14 @@
 initialize.net <- function(x, param, init, control) {
 
   # Master Data List --------------------------------------------------------
-  all <- list()
-  all$param <- param
-  all$init <- init
-  all$control <- control
+  dat <- list()
+  dat$param <- param
+  dat$init <- init
+  dat$control <- control
 
-  all$attr <- list()
-  all$stats <- list()
-  all$temp <- list()
+  dat$attr <- list()
+  dat$stats <- list()
+  dat$temp <- list()
 
 
   # Network Simulation ------------------------------------------------------
@@ -49,40 +49,40 @@ initialize.net <- function(x, param, init, control) {
 
 
   # Network Parameters ------------------------------------------------------
-  all$nw <- nw
+  dat$nw <- nw
 
-  all$nwparam <- list(x[-which(names(x) == "fit")])
+  dat$nwparam <- list(x[-which(names(x) == "fit")])
 
-  all$param$modes <- modes
+  dat$param$modes <- modes
 
 
   # Initialization ----------------------------------------------------------
 
   ## Infection Status and Time Modules
-  all <- init_status.net(all)
+  dat <- init_status.net(dat)
 
 
   ## Initialize persistent IDs
   if (modes == 2 & param$vital == TRUE & control$delete.nodes == FALSE) {
-    all$nw <- init_pids(all$nw, all$control$pid.prefix)
+    dat$nw <- init_pids(dat$nw, dat$control$pid.prefix)
   }
 
 
   ## Pull network val to attr
-  form <- get_nwparam(all)$formation
+  form <- get_nwparam(dat)$formation
   t <- get_formula_terms(form)
-  all <- copy_toall_attr(all, at = 1, t)
+  dat <- copy_toall_attr(dat, at = 1, t)
 
 
   ## Store current proportions of attr
-  all$temp$t1.tab <- get_attr_prop(all$nw, t)
+  dat$temp$t1.tab <- get_attr_prop(dat$nw, t)
 
 
   ## Get initial prevalence
-  all <- get_prev.net(all, at = 1)
+  dat <- get_prev.net(dat, at = 1)
 
 
-  return(all)
+  return(dat)
 }
 
 
@@ -91,7 +91,7 @@ initialize.net <- function(x, param, init, control) {
 #' @description This function sets the initial disease status on the
 #'              network given the specified initial conditions.
 #'
-#' @param all a list object containing a \code{networkDynamic} object and other
+#' @param dat a list object containing a \code{networkDynamic} object and other
 #'        initialization information passed from \code{\link{netsim}}.
 #'
 #' @details
@@ -120,31 +120,31 @@ initialize.net <- function(x, param, init, control) {
 #' @export
 #' @keywords netMod internal
 #'
-init_status.net <- function(all) {
+init_status.net <- function(dat) {
 
   # Variables ---------------------------------------------------------------
-  tea.status <- all$control$tea.status
-  i.num <- all$init$i.num
-  i.num.m2 <- all$init$i.num.m2
-  r.num <- all$init$r.num
-  r.num.m2 <- all$init$r.num.m2
+  tea.status <- dat$control$tea.status
+  i.num <- dat$init$i.num
+  i.num.m2 <- dat$init$i.num.m2
+  r.num <- dat$init$r.num
+  r.num.m2 <- dat$init$r.num.m2
 
-  status.vector <- all$init$status.vector
-  status.rand <- all$init$status.rand
-  num <- network.size(all$nw)
-  form <- get_nwparam(all)$form
+  status.vector <- dat$init$status.vector
+  status.rand <- dat$init$status.rand
+  num <- network.size(dat$nw)
+  form <- get_nwparam(dat)$form
   statOnNw <- "status" %in% get_formula_terms(form)
 
-  modes <- all$param$modes
+  modes <- dat$param$modes
   if (modes == 1) {
     mode <- rep(1, num)
   } else {
-    mode <- idmode(all$nw)
+    mode <- idmode(dat$nw)
   }
   nM1 <- sum(mode == 1)
   nM2 <- sum(mode == 2)
 
-  type <- all$control$type
+  type <- dat$control$type
 
 
 
@@ -152,7 +152,7 @@ init_status.net <- function(all) {
 
   ## Status passed on input network
   if (statOnNw == TRUE) {
-    status <- get.vertex.attribute(all$nw, "status")
+    status <- get.vertex.attribute(dat$nw, "status")
   } else {
     if (!is.null(status.vector)) {
       status <- status.vector
@@ -225,15 +225,15 @@ init_status.net <- function(all) {
 
     }
   }
-  all$attr$status <- status
+  dat$attr$status <- status
 
-  # check to remove later
-  stopifnot(all(status %in% c("s", "i", "r")))
+  # TODO: check to remove later
+  stopifnot(dat(status %in% c("s", "i", "r")))
 
   ## Save out other attr
-  all$attr$active <- rep(1, length(status))
+  dat$attr$active <- rep(1, length(status))
   if (tea.status == TRUE) {
-    all$nw <- activate.vertex.attribute(all$nw,
+    dat$nw <- activate.vertex.attribute(dat$nw,
                                         prefix = "testatus",
                                         value = status,
                                         onset = 1,
@@ -247,24 +247,24 @@ init_status.net <- function(all) {
   infTime <- rep(NA, length(status))
 
   # If vital=TRUE, infTime is a uniform draw over the duration of infection
-  if (all$param$vital == TRUE && all$param$di.rate > 0) {
+  if (dat$param$vital == TRUE && dat$param$di.rate > 0) {
     infTime[idsInf] <- -rgeom(n = length(idsInf),
-                              prob = all$param$di.rate)+2
+                              prob = dat$param$di.rate)+2
   } else {
-    if (all$control$type == "SI" || all$param$rec.rate == 0) {
+    if (dat$control$type == "SI" || dat$param$rec.rate == 0) {
       # infTime a uniform draw over the number of sim time steps
-      infTime[idsInf] <- ssample(1:(-all$control$nsteps + 2),
+      infTime[idsInf] <- ssample(1:(-dat$control$nsteps + 2),
                                      length(idsInf),
                                      replace = TRUE)
     } else {
-      infTime[idsInf] <- ssample(1:(-round(1/all$param$rec.rate) + 2),
+      infTime[idsInf] <- ssample(1:(-round(1/dat$param$rec.rate) + 2),
                                  length(idsInf),
                                  replace = TRUE)
     }
   }
-  all$attr$infTime <- infTime
+  dat$attr$infTime <- infTime
 
-  return(all)
+  return(dat)
 }
 
 
