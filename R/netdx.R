@@ -15,6 +15,8 @@
 #' @param set.control.stergm control arguments passed to simulate.stergm (see
 #'        details).
 #' @param verbose print progress to the console.
+#' @param ncores sets the number of processor cores to run multiple simulations
+#'        on, using the \code{foreach} and \code{doParallel} implementations.
 #'
 #' @details
 #' The \code{netdx} function handles dynamic network diagnostics for network
@@ -76,6 +78,7 @@
 #'   nwstats.formula = ~ edges + meandeg + concurrent,
 #'   set.control.ergm = control.simulate.ergm(MCMC.burnin = 1e6),
 #'   set.control.stergm = control.simulate.network(MCMC.burnin.min = 1e5))
+#'
 #' dx
 #' plot(dx)
 #' }
@@ -86,7 +89,8 @@ netdx <- function(x,
                   nwstats.formula,
                   set.control.ergm,
                   set.control.stergm,
-                  verbose = TRUE) {
+                  verbose = TRUE,
+                  ncores = 1) {
 
   if (class(x$fit) == "network") {
     nw <- x$fit
@@ -104,6 +108,11 @@ netdx <- function(x,
   }
   target.stats <- x$target.stats
   edapprox <- x$edapprox
+
+  if (nsims > 1 && ncores > 1) {
+    suppressPackageStartupMessages(require(foreach))
+    suppressPackageStartupMessages(require(doParallel))
+  }
 
   if (verbose == TRUE) {
     cat("======================")
@@ -125,22 +134,35 @@ netdx <- function(x,
       set.control.stergm <- control.simulate.stergm()
     }
 
-    diag.sim <- list()
-    if (verbose == TRUE) {
-      cat("\n  |")
-    }
-    for (i in 1:nsims) {
-      diag.sim[[i]] <- simulate(fit,
-                           time.slices = nsteps,
-                           monitor = nwstats.formula,
-                           nsim = 1,
-                           control = set.control.stergm)
+    if (nsims == 1 || ncores == 1) {
+      diag.sim <- list()
       if (verbose == TRUE) {
-        cat("*")
+        cat("\n  |")
       }
-    }
-    if (verbose == TRUE) {
-      cat("|")
+      for (i in 1:nsims) {
+        diag.sim[[i]] <- simulate(fit,
+                                  time.slices = nsteps,
+                                  monitor = nwstats.formula,
+                                  nsim = 1,
+                                  control = set.control.stergm)
+        if (verbose == TRUE) {
+          cat("*")
+        }
+      }
+      if (verbose == TRUE) {
+        cat("|")
+      }
+    } else {
+      cluster.size <- min(nsims, ncores)
+      registerDoParallel(cluster.size)
+
+      diag.sim <- foreach(i = 1:nsims) %dopar% {
+        simulate(fit,
+                 time.slices = nsteps,
+                 monitor = nwstats.formula,
+                 nsim = 1,
+                 control = set.control.stergm)
+      }
     }
   }
 
@@ -153,37 +175,64 @@ netdx <- function(x,
       set.control.stergm <- control.simulate.network()
     }
 
-    diag.sim <- list()
-    if (verbose == TRUE) {
-      cat("\n  |")
-    }
-    for (i in 1:nsims) {
-      if (class(x$fit) == "network") {
-        fit.sim <- simulate(formation,
-                            basis = nw,
-                            coef = x$coef.form.crude,
-                            constraints = constraints)
-      } else {
-        fit.sim <- simulate(fit, control = set.control.ergm)
-      }
-      diag.sim[[i]] <- simulate(fit.sim,
-                           formation = formation,
-                           dissolution = dissolution,
-                           coef.form = coef.form,
-                           coef.diss = coef.diss$coef.crude,
-                           time.slices = nsteps,
-                           constraints = constraints,
-                           monitor = nwstats.formula,
-                           nsim = 1,
-                           control = set.control.stergm)
+    if (nsims == 1 || ncores == 1) {
+      diag.sim <- list()
       if (verbose == TRUE) {
-        cat("*")
+        cat("\n  |")
+      }
+      for (i in 1:nsims) {
+        if (class(x$fit) == "network") {
+          fit.sim <- simulate(formation,
+                              basis = nw,
+                              coef = x$coef.form.crude,
+                              constraints = constraints)
+        } else {
+          fit.sim <- simulate(fit, control = set.control.ergm)
+        }
+        diag.sim[[i]] <- simulate(fit.sim,
+                                  formation = formation,
+                                  dissolution = dissolution,
+                                  coef.form = coef.form,
+                                  coef.diss = coef.diss$coef.crude,
+                                  time.slices = nsteps,
+                                  constraints = constraints,
+                                  monitor = nwstats.formula,
+                                  nsim = 1,
+                                  control = set.control.stergm)
+        if (verbose == TRUE) {
+          cat("*")
+        }
+      }
+      if (verbose == TRUE) {
+        cat("|")
+      }
+    } else {
+      cluster.size <- min(nsims, ncores)
+      registerDoParallel(cluster.size)
+
+      diag.sim <- foreach(i = 1:nsims) %dopar% {
+        if (class(x$fit) == "network") {
+          fit.sim <- simulate(formation,
+                              basis = nw,
+                              coef = x$coef.form.crude,
+                              constraints = constraints)
+        } else {
+          fit.sim <- simulate(fit, control = set.control.ergm)
+        }
+        simulate(fit.sim,
+                 formation = formation,
+                 dissolution = dissolution,
+                 coef.form = coef.form,
+                 coef.diss = coef.diss$coef.crude,
+                 time.slices = nsteps,
+                 constraints = constraints,
+                 monitor = nwstats.formula,
+                 nsim = 1,
+                 control = set.control.stergm)
       }
     }
-    if (verbose == TRUE) {
-      cat("|")
-    }
-  }
+
+  } # end edapprox = TRUE condition
 
   if (verbose == TRUE) {
     cat("\n- Calculating formation statistics")
@@ -273,19 +322,29 @@ netdx <- function(x,
   }
 
   # Calculate mean partnership age from edgelist
-  pages <- list()
-  if (verbose == TRUE) {
-    cat("\n  |")
-  }
-  for (i in 1:length(diag.sim)) {
-    pages[[i]] <- edgelist_meanage(el = sim.df[[i]])
+  if (nsims == 1 || ncores == 1) {
+    pages <- list()
     if (verbose == TRUE) {
-      cat("*")
+      cat("\n  |")
+    }
+    for (i in 1:length(diag.sim)) {
+      pages[[i]] <- edgelist_meanage(el = sim.df[[i]])
+      if (verbose == TRUE) {
+        cat("*")
+      }
+    }
+    if (verbose == TRUE) {
+      cat("|")
+    }
+  } else {
+    cluster.size <- min(nsims, ncores)
+    registerDoParallel(cluster.size)
+
+    pages <- foreach(i = 1:nsims) %dopar% {
+      edgelist_meanage(el = sim.df[[i]])
     }
   }
-  if (verbose == TRUE) {
-    cat("|")
-  }
+
 
 
   ## Save output
