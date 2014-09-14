@@ -51,6 +51,9 @@ USER INTERFACE CHANGES
   margins on plots. Now they must explicitly be set with standard par options.
 
 API CHANGES
+* For ICMs and network models, the internal master data object has been renamed
+  from all to dat to prevent function name conflicts. Additionally, all summary
+  output is now stored within dat$epi, whereas the previous location was all$out.
 * The ordering of built-in modules within a time step for network simulations
   has been changed such that the network resimulation module is run before the
   infection module. There should be no substantive differences in model results,
