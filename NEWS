@@ -16,6 +16,9 @@ NEW FEATURES
 * Automatic parallelization of network models is now possible with the
   netsim_parallel function. Note that this is experimental and has not been
   tested extensively across platforms, so bug reports are welcome.
+* Network diagnostics in netdx also accepts a new ncores argument, which will
+  run the diagnostic simulations and calculations on those simulations in parallel
+  on a specified number of cores.
 * Added an argument, skip.check, for the control settings in both ICM and network
   model classes, which overrides the default error checking of parameters,
   initial conditions, and control settings. This should only be used for original
