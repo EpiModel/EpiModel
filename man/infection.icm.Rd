@@ -3,10 +3,10 @@
 \alias{infection.icm}
 \title{Primary Infection Module for icm}
 \usage{
-infection.icm(all, at)
+infection.icm(dat, at)
 }
 \arguments{
-\item{all}{master data list object.}
+\item{dat}{master data list object.}
 
 \item{at}{current time step.}
 }

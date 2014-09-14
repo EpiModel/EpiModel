@@ -58,24 +58,24 @@ saveout.dcm <- function(df, s, param, control, out) {
 #' @keywords internal
 #' @export
 #'
-saveout.icm <- function(all, s, out) {
+saveout.icm <- function(dat, s, out) {
 
   if (s == 1) {
     out <- list()
-    out$param <- all$param
-    out$control <- all$control
+    out$param <- dat$param
+    out$control <- dat$control
     out$epi <- list()
-    for (j in 1:length(all$out)) {
-      out$epi[[names(all$out)[j]]] <- data.frame(all$out[j])
+    for (j in 1:length(dat$epi)) {
+      out$epi[[names(dat$epi)[j]]] <- data.frame(dat$epi[j])
     }
   } else {
-    for (j in 1:length(all$out)) {
-      out$epi[[names(all$out)[j]]][, s] <- data.frame(all$out[j])
+    for (j in 1:length(dat$epi)) {
+      out$epi[[names(dat$epi)[j]]][, s] <- data.frame(dat$epi[j])
     }
   }
 
   ## Processing for final run
-  if (s == all$control$nsims) {
+  if (s == dat$control$nsims) {
 
     # Remove functions from control list
     ftodel <- grep(".FUN", names(out$control), value = TRUE)
@@ -83,7 +83,7 @@ saveout.icm <- function(all, s, out) {
 
     # Set column names for varying list elements
     for (i in as.vector(which(lapply(out$epi, class) == "data.frame"))) {
-      colnames(out$epi[[i]]) <- paste0("sim", 1:all$control$nsims)
+      colnames(out$epi[[i]]) <- paste0("sim", 1:dat$control$nsims)
     }
 
   }

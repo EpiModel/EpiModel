@@ -3,10 +3,10 @@
 \alias{init_status.icm}
 \title{Disease Status Initialization Module for icm}
 \usage{
-init_status.icm(all)
+init_status.icm(dat)
 }
 \arguments{
-\item{all}{master data list object.}
+\item{dat}{master data list object.}
 }
 \description{
 This function sets the initial disease status on the

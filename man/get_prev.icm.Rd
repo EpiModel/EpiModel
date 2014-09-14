@@ -3,10 +3,10 @@
 \alias{get_prev.icm}
 \title{Get Epidemic Output from icm Model}
 \usage{
-get_prev.icm(all, at)
+get_prev.icm(dat, at)
 }
 \arguments{
-\item{all}{master data list object.}
+\item{dat}{master data list object.}
 
 \item{at}{current time step.}
 }
