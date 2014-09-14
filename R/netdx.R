@@ -291,7 +291,6 @@ netdx <- function(x,
   ## Save output
   out <- list()
   out$nw <- nw
-  out$fit <- fit
   out$formation <- formation
   out$coef.form <- coef.form
   out$dissolution <- dissolution
