@@ -228,7 +228,7 @@ init_status.net <- function(dat) {
   dat$attr$status <- status
 
   # TODO: check to remove later
-  stopifnot(dat(status %in% c("s", "i", "r")))
+  stopifnot(all(status %in% c("s", "i", "r")))
 
   ## Save out other attr
   dat$attr$active <- rep(1, length(status))
