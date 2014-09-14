@@ -106,8 +106,8 @@ When fitting a STERGM indirectly (setting \code{edapprox} to \code{TRUE})
 control settings may be passed to the \code{ergm} function using
 \code{set.control.ergm} in \code{netest}. The controls should be input through
 the \code{control.ergm()} function, with the available parameters listed in the
-\code{\link[ergm:control.simulate.ergm]{control.simulate.ergm}} help page in
-the \code{ergm} package. An example is below.
+\code{\link[ergm:control.ergm]{control.ergm}} help page in the \code{ergm}
+package. An example is below.
 }
 \examples{
 \dontrun{
