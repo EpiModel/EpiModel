@@ -184,6 +184,7 @@ saveout.net <- function(dat, s, out) {
     out$control[ftodel] <- NULL
 
     out$temp <- NULL
+    out$control$currsim <- NULL
   }
 
   return(out)

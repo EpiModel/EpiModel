@@ -274,8 +274,8 @@ netsim <- function(x,
 #'
 #' param <- param.net(inf.prob = 0.25)
 #' init <- init.net(i.num = 50)
-#' control <- control.net(type = "SI", nsteps = 250,
-#'                        nsims = 4, ncores = 4)
+#' control <- control.net(type = "SI", nsteps = 100,
+#'                        nsims = 4, ncores = 4, verbose = FALSE)
 #'
 #' # Merging on by default
 #' sims <- netsim_parallel(est, param, init, control)
@@ -321,8 +321,8 @@ netsim_parallel <- function(x,
     out <- foreach(i = 1:nsims) %dopar% {
 
       require(EpiModel)
-      control$verbose = FALSE
       control$nsims = 1
+      control$currsim = i
 
       netsim(x, param, init, control)
 
