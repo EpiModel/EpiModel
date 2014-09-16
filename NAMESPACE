@@ -89,14 +89,11 @@ export(mod_SI_1g_op)
 export(mod_SI_2g_cl)
 export(mod_SI_2g_op)
 export(modeids)
+export(net.update.attribute)
 export(netdx)
 export(netest)
 export(netsim)
-<<<<<<< HEAD
-export(net.update.attribute)
-=======
 export(netsim_parallel)
->>>>>>> origin/master
 export(node_active)
 export(param.dcm)
 export(param.icm)
