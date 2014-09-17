@@ -138,6 +138,13 @@ saveout.net <- function(dat, s, out) {
     if (dat$control$save.network == TRUE) {
       out$network <- list(dat$nw)
     }
+
+    if (!is.null(dat$control$save.other)) {
+      for (i in 1:length(dat$control$save.other)) {
+        el.name <- dat$control$save.other[i]
+        out[[el.name]] <- list(dat[[el.name]])
+      }
+    }
   }
 
   if (s > 1) {
@@ -158,6 +165,13 @@ saveout.net <- function(dat, s, out) {
     }
     if (dat$control$save.network == TRUE) {
       out$network[[s]] <- dat$nw
+    }
+
+    if (!is.null(dat$control$save.other)) {
+      for (i in 1:length(dat$control$save.other)) {
+        el.name <- dat$control$save.other[i]
+        out[[el.name]][[s]] <- dat[[el.name]]
+      }
     }
   }
 
@@ -182,9 +196,9 @@ saveout.net <- function(dat, s, out) {
     # Remove functions from control list
     ftodel <- grep(".FUN", names(out$control), value = TRUE)
     out$control[ftodel] <- NULL
+    out$control$currsim <- NULL
 
     out$temp <- NULL
-    out$control$currsim <- NULL
   }
 
   return(out)

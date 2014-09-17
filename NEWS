@@ -23,6 +23,9 @@ NEW FEATURES
   model classes, which overrides the default error checking of parameters,
   initial conditions, and control settings. This should only be used for original
   models with new modules that may unnecessarily trigger a check error.
+* Added an argument, save.other, for the control settings in network models,
+  which is a character vector of other elements from the master data list, dat,
+  to save out in the simulation.
 * In network models, two preset functions have been changed to replaceable
   modules: edges_correct and verbose.net. The former performs the adjustment to
   the edges coefficient for network models with population size changes, in order

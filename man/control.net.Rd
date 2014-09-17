@@ -12,7 +12,7 @@ control.net(type, nsteps, nsims = 1, depend, rec.rand = TRUE,
   get_prev.FUN = get_prev.net, verbose.FUN = verbose.net,
   set.control.stergm, save.nwstats = TRUE, nwstats.formula,
   delete.nodes = FALSE, save.transmat = TRUE, save.network = TRUE,
-  verbose = TRUE, verbose.int = 1, skip.check = FALSE, ...)
+  save.other, verbose = TRUE, verbose.int = 1, skip.check = FALSE, ...)
 }
 \arguments{
 \item{type}{disease type to be modeled, with the choice of \code{"SI"} for
@@ -120,6 +120,10 @@ simulation. This object contains one row for each transmission event
 containing full edge history for each simulation. If \code{delete.nodes}
 is set to \code{TRUE}, this will only contain a static network with the
 edge configuration at the final time step of each simulation.}
+
+\item{save.other}{a vector of elements on the \code{dat} master data list
+to save out after each simulation. One example for built-in models is
+the attribute list, "attr", at the final time step.}
 
 \item{verbose}{if \code{TRUE}, print model progress to the console.}
 
