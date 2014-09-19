@@ -46,77 +46,77 @@ verbose.icm <- function(x, type, s, at) {
         cat("\nSimulation: ", s, "/", x$control$nsims, sep="")
         cat("\nTimestep: ", at, "/", x$control$nsteps, sep="")
         if (x$param$groups == 1) {
-          cat("\nIncidence:", x$out$si.flow[at])
+          cat("\nIncidence:", x$epi$si.flow[at])
         }
         if (x$param$groups == 2) {
-          cat("\nIncidence:", x$out$si.flow[at] + x$out$si.flow.g2[at])
+          cat("\nIncidence:", x$epi$si.flow[at] + x$epi$si.flow.g2[at])
         }
         if (x$control$type == "SIR") {
           if (x$param$groups == 1) {
-            cat("\nRecoveries:", x$out$ir.flow[at])
+            cat("\nRecoveries:", x$epi$ir.flow[at])
           }
           if (x$param$groups == 2) {
-            cat("\nRecoveries:", x$out$ir.flow[at] +
-                                 x$out$ir.flow.g2[at])
+            cat("\nRecoveries:", x$epi$ir.flow[at] +
+                                 x$epi$ir.flow.g2[at])
           }
         }
         if (x$control$type == "SIS") {
           if (x$param$groups == 1) {
-            cat("\nRecoveries:", x$out$is.flow[at])
+            cat("\nRecoveries:", x$epi$is.flow[at])
           }
           if (x$param$groups == 2) {
-            cat("\nRecoveries:", x$out$is.flow[at] +
-                                 x$out$is.flow.g2[at])
+            cat("\nRecoveries:", x$epi$is.flow[at] +
+                                 x$epi$is.flow.g2[at])
           }
         }
         if (x$param$groups == 1) {
-          cat("\nPrevalence:", x$out$i.num[at])
+          cat("\nPrevalence:", x$epi$i.num[at])
         }
         if (x$param$groups == 2) {
-          cat("\nPrevalence:", x$out$i.num[at] + x$out$i.num.g2[at])
+          cat("\nPrevalence:", x$epi$i.num[at] + x$epi$i.num.g2[at])
         }
         if (x$control$type %in% c("SI", "SIS")) {
           if (x$param$groups == 1) {
-            cat("\nPopulation:", x$out$s.num[at] + x$out$i.num[at])
+            cat("\nPopulation:", x$epi$s.num[at] + x$epi$i.num[at])
           }
           if (x$param$groups == 2) {
-            cat("\nPopulation:", x$out$s.num[at] + x$out$s.num.g2[at]+
-                                 x$out$i.num[at] + x$out$i.num.g2[at])
+            cat("\nPopulation:", x$epi$s.num[at] + x$epi$s.num.g2[at]+
+                                 x$epi$i.num[at] + x$epi$i.num.g2[at])
           }
         }
         if (x$control$type == "SIR") {
           if (x$param$groups == 1) {
-            cat("\nPopulation:", x$out$s.num[at] +
-                                 x$out$i.num[at] +
-                                 x$out$r.num[at])
+            cat("\nPopulation:", x$epi$s.num[at] +
+                                 x$epi$i.num[at] +
+                                 x$epi$r.num[at])
           }
           if (x$param$groups == 2) {
-            cat("\nPopulation:", x$out$s.num[at] +
-                                 x$out$i.num[at] +
-                                 x$out$r.num[at] +
-                                 x$out$s.num.g2[at] +
-                                 x$out$i.num.g2[at] +
-                                 x$out$r.num.g2[at])
+            cat("\nPopulation:", x$epi$s.num[at] +
+                                 x$epi$i.num[at] +
+                                 x$epi$r.num[at] +
+                                 x$epi$s.num.g2[at] +
+                                 x$epi$i.num.g2[at] +
+                                 x$epi$r.num.g2[at])
           }
         }
         if (x$param$vital == TRUE) {
           if (x$param$groups == 1) {
-            cat("\nBirths:", x$out$b.flow[at])
-            cat("\nDeaths, susceptibles:", x$out$ds.flow[at])
-            cat("\nDeaths, infecteds:", x$out$di.flow[at])
+            cat("\nBirths:", x$epi$b.flow[at])
+            cat("\nDeaths, susceptibles:", x$epi$ds.flow[at])
+            cat("\nDeaths, infecteds:", x$epi$di.flow[at])
             if (x$control$type == "SIR") {
-              cat("\nDeaths, recovered:", x$out$dr.flow[at])
+              cat("\nDeaths, recovered:", x$epi$dr.flow[at])
             }
           }
           if (x$param$groups == 2) {
-            cat("\nBirths:", x$out$b.flow[at] + x$out$b.flow.g2[at])
-            cat("\nDeaths, susceptible:", x$out$ds.flow[at] +
-                                          x$out$ds.flow.g2[at])
-            cat("\nDeaths, infected:", x$out$di.flow[at] +
-                                       x$out$di.flow.g2[at])
+            cat("\nBirths:", x$epi$b.flow[at] + x$epi$b.flow.g2[at])
+            cat("\nDeaths, susceptible:", x$epi$ds.flow[at] +
+                                          x$epi$ds.flow.g2[at])
+            cat("\nDeaths, infected:", x$epi$di.flow[at] +
+                                       x$epi$di.flow.g2[at])
             if (x$control$type == "SIR") {
-              cat("\nDeaths, recovered:", x$out$dr.flow[at] +
-                                          x$out$dr.flow.g2[at])
+              cat("\nDeaths, recovered:", x$epi$dr.flow[at] +
+                                          x$epi$dr.flow.g2[at])
             }
           }
         }
@@ -172,77 +172,77 @@ verbose.net <- function(x, type, s, at) {
         cat("\nSimulation: ", s, "/", x$control$nsims, sep="")
         cat("\nTimestep: ", at, "/", x$control$nsteps, sep="")
         if (x$param$modes == 1) {
-          cat("\nIncidence:", x$out$si.flow[at])
+          cat("\nIncidence:", x$epi$si.flow[at])
         }
         if (x$param$modes == 2) {
-          cat("\nIncidence:", x$out$si.flow[at] + x$out$si.flow.m2[at])
+          cat("\nIncidence:", x$epi$si.flow[at] + x$epi$si.flow.m2[at])
         }
         if (x$control$type == "SIR") {
           if (x$param$modes == 1) {
-            cat("\nRecoveries:", x$out$ir.flow[at])
+            cat("\nRecoveries:", x$epi$ir.flow[at])
           }
           if (x$param$modes == 2) {
-            cat("\nRecoveries:", x$out$ir.flow[at] +
-                                 x$out$ir.flow.m2[at])
+            cat("\nRecoveries:", x$epi$ir.flow[at] +
+                                 x$epi$ir.flow.m2[at])
           }
         }
         if (x$control$type == "SIS") {
           if (x$param$modes == 1) {
-            cat("\nRecoveries:", x$out$is.flow[at])
+            cat("\nRecoveries:", x$epi$is.flow[at])
           }
           if (x$param$modes == 2) {
-            cat("\nRecoveries:", x$out$is.flow[at] +
-                                 x$out$is.flow.m2[at])
+            cat("\nRecoveries:", x$epi$is.flow[at] +
+                                 x$epi$is.flow.m2[at])
           }
         }
         if (x$param$modes == 1) {
-          cat("\nPrevalence:", x$out$i.num[at])
+          cat("\nPrevalence:", x$epi$i.num[at])
         }
         if (x$param$modes == 2) {
-          cat("\nPrevalence:", x$out$i.num[at] + x$out$i.num.m2[at])
+          cat("\nPrevalence:", x$epi$i.num[at] + x$epi$i.num.m2[at])
         }
         if (x$control$type %in% c("SI", "SIS")) {
           if (x$param$modes == 1) {
-            cat("\nPopulation:", x$out$s.num[at] + x$out$i.num[at])
+            cat("\nPopulation:", x$epi$s.num[at] + x$epi$i.num[at])
           }
           if (x$param$modes == 2) {
-            cat("\nPopulation:", x$out$s.num[at] + x$out$s.num.m2[at] +
-                                 x$out$i.num[at] + x$out$i.num.m2[at])
+            cat("\nPopulation:", x$epi$s.num[at] + x$epi$s.num.m2[at] +
+                                 x$epi$i.num[at] + x$epi$i.num.m2[at])
           }
         }
         if (x$control$type == "SIR") {
           if (x$param$modes == 1) {
-            cat("\nPopulation:", x$out$s.num[at] +
-                                 x$out$i.num[at] +
-                                 x$out$r.num[at])
+            cat("\nPopulation:", x$epi$s.num[at] +
+                                 x$epi$i.num[at] +
+                                 x$epi$r.num[at])
           }
           if (x$param$modes == 2) {
-            cat("\nPopulation:", x$out$s.num[at] +
-                                 x$out$i.num[at] +
-                                 x$out$r.num[at] +
-                                 x$out$s.num.m2[at] +
-                                 x$out$i.num.m2[at] +
-                                 x$out$r.num.m2[at])
+            cat("\nPopulation:", x$epi$s.num[at] +
+                                 x$epi$i.num[at] +
+                                 x$epi$r.num[at] +
+                                 x$epi$s.num.m2[at] +
+                                 x$epi$i.num.m2[at] +
+                                 x$epi$r.num.m2[at])
           }
         }
         if (x$param$vital == TRUE) {
           if (x$param$modes == 1) {
-            cat("\nBirths:", x$out$b.flow[at])
-            cat("\nDeaths, susceptibles:", x$out$ds.flow[at])
-            cat("\nDeaths, infecteds:", x$out$di.flow[at])
+            cat("\nBirths:", x$epi$b.flow[at])
+            cat("\nDeaths, susceptibles:", x$epi$ds.flow[at])
+            cat("\nDeaths, infecteds:", x$epi$di.flow[at])
             if (x$control$type == "SIR") {
-              cat("\nDeaths, recovered:", x$out$dr.flow[at])
+              cat("\nDeaths, recovered:", x$epi$dr.flow[at])
             }
           }
           if (x$param$modes == 2) {
-            cat("\nBirths:", x$out$b.flow[at] + x$out$b.flow.m2[at])
-            cat("\nDeaths, susceptible:", x$out$ds.flow[at] +
-                                          x$out$ds.flow.m2[at])
-            cat("\nDeaths, infected:", x$out$di.flow[at] +
-                                       x$out$di.flow.m2[at])
+            cat("\nBirths:", x$epi$b.flow[at] + x$epi$b.flow.m2[at])
+            cat("\nDeaths, susceptible:", x$epi$ds.flow[at] +
+                                          x$epi$ds.flow.m2[at])
+            cat("\nDeaths, infected:", x$epi$di.flow[at] +
+                                       x$epi$di.flow.m2[at])
             if (x$control$type == "SIR") {
-              cat("\nDeaths, recovered:", x$out$dr.flow[at] +
-                                          x$out$dr.flow.m2[at])
+              cat("\nDeaths, recovered:", x$epi$dr.flow[at] +
+                                          x$epi$dr.flow.m2[at])
             }
           }
         }
