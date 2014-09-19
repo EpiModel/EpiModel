@@ -114,8 +114,5 @@ resim_nets <- function(dat, at) {
 
   }
 
-
-
   return(dat)
-
 }
