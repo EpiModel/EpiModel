@@ -3,10 +3,10 @@
 \alias{discord_edgelist}
 \title{Discordant Edgelist from NetworkDynamic Object}
 \usage{
-discord_edgelist(all, idsInf, idsSus, at)
+discord_edgelist(dat, idsInf, idsSus, at)
 }
 \arguments{
-\item{all}{a list object containing a \code{networkDynamic} object and other
+\item{dat}{a list object containing a \code{networkDynamic} object and other
 initialization information passed from \code{\link{netsim}}.}
 
 \item{idsInf}{vector of IDs for currently infecteds.}

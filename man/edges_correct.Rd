@@ -3,10 +3,10 @@
 \alias{edges_correct}
 \title{Adjustment for the Edges Coefficient with Changing Network Size}
 \usage{
-edges_correct(all, at)
+edges_correct(dat, at)
 }
 \arguments{
-\item{all}{master object in \code{netsim} simulations.}
+\item{dat}{master object in \code{netsim} simulations.}
 
 \item{at}{current time step.}
 }

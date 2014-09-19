@@ -4,7 +4,7 @@
 \title{Dynamic Network Model Diagnostics}
 \usage{
 netdx(x, nsims = 1, nsteps, nwstats.formula, set.control.ergm,
-  set.control.stergm, verbose = TRUE)
+  set.control.stergm, verbose = TRUE, ncores = 1)
 }
 \arguments{
 \item{x}{an \code{EpiModel} object of class \code{netest}.}
@@ -24,6 +24,9 @@ details).}
 details).}
 
 \item{verbose}{print progress to the console.}
+
+\item{ncores}{sets the number of processor cores to run multiple simulations
+       on, using the \code{foreach} and \code{doParallel} implementations.}
 }
 \description{
 Runs dynamic diagnostics on an ERGM/STERGM estimated through
@@ -86,6 +89,7 @@ dx <- netdx(est,
   nwstats.formula = ~ edges + meandeg + concurrent,
   set.control.ergm = control.simulate.ergm(MCMC.burnin = 1e6),
   set.control.stergm = control.simulate.network(MCMC.burnin.min = 1e5))
+
 dx
 plot(dx)
 }

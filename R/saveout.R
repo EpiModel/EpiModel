@@ -58,24 +58,24 @@ saveout.dcm <- function(df, s, param, control, out) {
 #' @keywords internal
 #' @export
 #'
-saveout.icm <- function(all, s, out) {
+saveout.icm <- function(dat, s, out) {
 
   if (s == 1) {
     out <- list()
-    out$param <- all$param
-    out$control <- all$control
+    out$param <- dat$param
+    out$control <- dat$control
     out$epi <- list()
-    for (j in 1:length(all$out)) {
-      out$epi[[names(all$out)[j]]] <- data.frame(all$out[j])
+    for (j in 1:length(dat$epi)) {
+      out$epi[[names(dat$epi)[j]]] <- data.frame(dat$epi[j])
     }
   } else {
-    for (j in 1:length(all$out)) {
-      out$epi[[names(all$out)[j]]][, s] <- data.frame(all$out[j])
+    for (j in 1:length(dat$epi)) {
+      out$epi[[names(dat$epi)[j]]][, s] <- data.frame(dat$epi[j])
     }
   }
 
   ## Processing for final run
-  if (s == all$control$nsims) {
+  if (s == dat$control$nsims) {
 
     # Remove functions from control list
     ftodel <- grep(".FUN", names(out$control), value = TRUE)
@@ -83,7 +83,7 @@ saveout.icm <- function(all, s, out) {
 
     # Set column names for varying list elements
     for (i in as.vector(which(lapply(out$epi, class) == "data.frame"))) {
-      colnames(out$epi[[i]]) <- paste0("sim", 1:all$control$nsims)
+      colnames(out$epi[[i]]) <- paste0("sim", 1:dat$control$nsims)
     }
 
   }
@@ -94,94 +94,109 @@ saveout.icm <- function(all, s, out) {
 
 #' @title Save netsim Data to Output List Format
 #'
-#' @description This function transfers the data from the master \code{all}
+#' @description This function transfers the data from the master \code{dat}
 #'              object to the output \code{out} object at the end of each
 #'              simulation in \code{\link{netsim}}.
 #'
-#' @param all master object in \code{netsim} simulations.
+#' @param dat master object in \code{netsim} simulations.
 #' @param s current simulation number.
 #' @param out out list passed back in for updating at simulations 2+.
 #'
 #' @keywords internal
 #' @export
 #'
-saveout.net <- function(all, s, out) {
+saveout.net <- function(dat, s, out) {
 
   # Counts number of simulated networks
-  num.nw <- ifelse(any(class(all$nw) == "network"), 1, length(all$nw))
+  num.nw <- ifelse(any(class(dat$nw) == "network"), 1, length(dat$nw))
 
   if (s == 1) {
     out <- list()
-    out$param <- all$param
-    out$control <- all$control
-    out$nwparam <- all$nwparam
+    out$param <- dat$param
+    out$control <- dat$control
+    out$nwparam <- dat$nwparam
     out$control$num.nw <- num.nw
 
     out$epi <- list()
-    for (j in 1:length(all$out)) {
-      out$epi[[names(all$out)[j]]] <- data.frame(all$out[j])
+    for (j in 1:length(dat$epi)) {
+      out$epi[[names(dat$epi)[j]]] <- data.frame(dat$epi[j])
     }
 
     out$stats <- list()
-    if (all$control$save.nwstats == TRUE) {
-      out$stats$nwstats <- list(all$stats$nwstats)
+    if (dat$control$save.nwstats == TRUE) {
+      out$stats$nwstats <- list(dat$stats$nwstats)
     }
-    if (all$control$save.transmat == TRUE) {
-      if (!is.null(all$stats$transmat)) {
-        row.names(all$stats$transmat) <- 1:nrow(all$stats$transmat)
-        out$stats$transmat <- list(all$stats$transmat)
+    if (dat$control$save.transmat == TRUE) {
+      if (!is.null(dat$stats$transmat)) {
+        row.names(dat$stats$transmat) <- 1:nrow(dat$stats$transmat)
+        out$stats$transmat <- list(dat$stats$transmat)
       } else {
         out$stats$transmat <- list(data.frame())
       }
     }
 
-    if (all$control$save.network == TRUE) {
-      out$network <- list(all$nw)
+    if (dat$control$save.network == TRUE) {
+      out$network <- list(dat$nw)
+    }
+
+    if (!is.null(dat$control$save.other)) {
+      for (i in 1:length(dat$control$save.other)) {
+        el.name <- dat$control$save.other[i]
+        out[[el.name]] <- list(dat[[el.name]])
+      }
     }
   }
 
   if (s > 1) {
-    for (j in 1:length(all$out)) {
-      out$epi[[names(all$out)[j]]][, s] <- data.frame(all$out[j])
+    for (j in 1:length(dat$epi)) {
+      out$epi[[names(dat$epi)[j]]][, s] <- data.frame(dat$epi[j])
     }
 
-    if (all$control$save.nwstats == TRUE) {
-      out$stats$nwstats[[s]] <- all$stats$nwstats
+    if (dat$control$save.nwstats == TRUE) {
+      out$stats$nwstats[[s]] <- dat$stats$nwstats
     }
-    if (all$control$save.transmat == TRUE) {
-      if (!is.null(all$stats$transmat)) {
-        row.names(all$stats$transmat) <- 1:nrow(all$stats$transmat)
-        out$stats$transmat[[s]] <- all$stats$transmat
+    if (dat$control$save.transmat == TRUE) {
+      if (!is.null(dat$stats$transmat)) {
+        row.names(dat$stats$transmat) <- 1:nrow(dat$stats$transmat)
+        out$stats$transmat[[s]] <- dat$stats$transmat
       } else {
         out$stats$transmat[[s]] <- data.frame()
       }
     }
-    if (all$control$save.network == TRUE) {
-      out$network[[s]] <- all$nw
+    if (dat$control$save.network == TRUE) {
+      out$network[[s]] <- dat$nw
+    }
+
+    if (!is.null(dat$control$save.other)) {
+      for (i in 1:length(dat$control$save.other)) {
+        el.name <- dat$control$save.other[i]
+        out[[el.name]][[s]] <- dat[[el.name]]
+      }
     }
   }
 
   ## Final processing
-  if (s == all$control$nsims) {
+  if (s == dat$control$nsims) {
 
     # Set names for out
-    simnames <- paste0("sim", 1:all$control$nsims)
+    simnames <- paste0("sim", 1:dat$control$nsims)
     for (i in as.vector(which(lapply(out$epi, class) == "data.frame"))) {
       colnames(out$epi[[i]]) <- simnames
     }
-    if (all$control$save.nwstats == TRUE) {
+    if (dat$control$save.nwstats == TRUE) {
       names(out$stats$nwstats) <- simnames
     }
-    if (all$control$save.transmat == TRUE) {
+    if (dat$control$save.transmat == TRUE) {
       names(out$stats$transmat) <- simnames[1:length(out$stats$transmat)]
     }
-    if (all$control$save.network == TRUE) {
+    if (dat$control$save.network == TRUE) {
       names(out$network) <- simnames
     }
 
     # Remove functions from control list
     ftodel <- grep(".FUN", names(out$control), value = TRUE)
     out$control[ftodel] <- NULL
+    out$control$currsim <- NULL
 
     out$temp <- NULL
   }

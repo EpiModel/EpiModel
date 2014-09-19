@@ -3,10 +3,10 @@
 \alias{deaths.icm}
 \title{Deaths: icm Module}
 \usage{
-deaths.icm(all, at)
+deaths.icm(dat, at)
 }
 \arguments{
-\item{all}{master data list object.}
+\item{dat}{master data list object.}
 
 \item{at}{current time step.}
 }

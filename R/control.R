@@ -318,6 +318,9 @@ control.icm <- function(type,
 #'        containing full edge history for each simulation. If \code{delete.nodes}
 #'        is set to \code{TRUE}, this will only contain a static network with the
 #'        edge configuration at the final time step of each simulation.
+#' @param save.other a vector of elements on the \code{dat} master data list
+#'        to save out after each simulation. One example for built-in models is
+#'        the attribute list, "attr", at the final time step.
 #' @param verbose if \code{TRUE}, print model progress to the console.
 #' @param verbose.int time step interval for printing progress to console, where
 #'        0 prints completion status of entire simulation and positive integer
@@ -409,6 +412,7 @@ control.net <- function(type,
                         delete.nodes = FALSE,
                         save.transmat = TRUE,
                         save.network = TRUE,
+                        save.other,
                         verbose = TRUE,
                         verbose.int = 1,
                         skip.check = FALSE,

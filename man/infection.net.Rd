@@ -3,16 +3,16 @@
 \alias{infection.net}
 \title{Primary Infection Module for netsim}
 \usage{
-infection.net(all, at)
+infection.net(dat, at)
 }
 \arguments{
-\item{all}{a list object containing a \code{networkDynamic} object and other
+\item{dat}{a list object containing a \code{networkDynamic} object and other
 initialization information passed from \code{\link{netsim}}.}
 
 \item{at}{current time step.}
 }
 \value{
-The main \code{all} object is returned with updated disease status and summary
+The main \code{dat} object is returned with updated disease status and summary
 incidence measures.
 }
 \description{

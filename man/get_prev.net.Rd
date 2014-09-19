@@ -3,10 +3,10 @@
 \alias{get_prev.net}
 \title{Get Epidemic Output from netsim Model}
 \usage{
-get_prev.net(all, at)
+get_prev.net(dat, at)
 }
 \arguments{
-\item{all}{a list object containing a \code{networkDynamic} object and other
+\item{dat}{a list object containing a \code{networkDynamic} object and other
 initialization information passed from \code{\link{netsim}}.}
 
 \item{at}{current time step.}

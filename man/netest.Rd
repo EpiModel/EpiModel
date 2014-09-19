@@ -4,8 +4,8 @@
 \title{Dynamic Network Model Estimation}
 \usage{
 netest(nw, formation, dissolution, target.stats, coef.diss, constraints,
-  coef.form = NULL, edapprox = TRUE, set.control.ergm, set.control.stergm,
-  verbose = TRUE)
+  coef.form = NULL, edapprox = TRUE, output = "fit", set.control.ergm,
+  set.control.stergm, verbose = TRUE)
 }
 \arguments{
 \item{nw}{an object of class \code{\link{network}}.}
@@ -33,6 +33,10 @@ formula.}
 \item{edapprox}{if \code{TRUE}, use the indirect edges dissolution approximation
 method for the dynamic model fit, otherwise use the more time-intensive
 full STERGM estimation (see details).}
+
+\item{output}{if using the edges dissolution approximation method, \code{"sim"}
+simulates a static network from the fitted network model, for
+storage efficiency purposes.}
 
 \item{set.control.ergm}{control arguments passed to simulate.ergm (see
 details).}
@@ -102,8 +106,8 @@ When fitting a STERGM indirectly (setting \code{edapprox} to \code{TRUE})
 control settings may be passed to the \code{ergm} function using
 \code{set.control.ergm} in \code{netest}. The controls should be input through
 the \code{control.ergm()} function, with the available parameters listed in the
-\code{\link[ergm:control.simulate.ergm]{control.simulate.ergm}} help page in
-the \code{ergm} package. An example is below.
+\code{\link[ergm:control.ergm]{control.ergm}} help page in the \code{ergm}
+package. An example is below.
 }
 \examples{
 \dontrun{

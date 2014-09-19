@@ -16,10 +16,16 @@ NEW FEATURES
 * Automatic parallelization of network models is now possible with the
   netsim_parallel function. Note that this is experimental and has not been
   tested extensively across platforms, so bug reports are welcome.
+* Network diagnostics in netdx also accepts a new ncores argument, which will
+  run the diagnostic simulations and calculations on those simulations in parallel
+  on a specified number of cores.
 * Added an argument, skip.check, for the control settings in both ICM and network
   model classes, which overrides the default error checking of parameters,
   initial conditions, and control settings. This should only be used for original
   models with new modules that may unnecessarily trigger a check error.
+* Added an argument, save.other, for the control settings in network models,
+  which is a character vector of other elements from the master data list, dat,
+  to save out in the simulation.
 * In network models, two preset functions have been changed to replaceable
   modules: edges_correct and verbose.net. The former performs the adjustment to
   the edges coefficient for network models with population size changes, in order
@@ -30,6 +36,10 @@ NEW FEATURES
   help(modules.net).
 * Added progress bars for netdx diagnostic simulations for computationally
   intensive parts of the simulations.
+* Network model estimation with netest now provides an output argument. When
+  using the edges dissolution approximation (edapprox = TRUE), one may set output
+  to "sim" to save a static simulation network instead of the ergm object as an
+  element of the netest output. This is mainly for file size efficiency.
 
 USER INTERFACE CHANGES
 * The internal representation of disease status as an individual-level attribute
@@ -44,6 +54,9 @@ USER INTERFACE CHANGES
   margins on plots. Now they must explicitly be set with standard par options.
 
 API CHANGES
+* For ICMs and network models, the internal master data object has been renamed
+  from all to dat to prevent function name conflicts. Additionally, all summary
+  output is now stored within dat$epi, whereas the previous location was all$out.
 * The ordering of built-in modules within a time step for network simulations
   has been changed such that the network resimulation module is run before the
   infection module. There should be no substantive differences in model results,

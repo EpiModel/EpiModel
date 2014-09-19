@@ -4,7 +4,7 @@
 #' @description This function simulates the main infection process given the
 #'              current state of the partnerships and disease in the system.
 #'
-#' @param all a list object containing a \code{networkDynamic} object and other
+#' @param dat a list object containing a \code{networkDynamic} object and other
 #'        initialization information passed from \code{\link{netsim}}.
 #' @param at current time step.
 #'
@@ -26,7 +26,7 @@
 #' }
 #'
 #' @return
-#' The main \code{all} object is returned with updated disease status and summary
+#' The main \code{dat} object is returned with updated disease status and summary
 #' incidence measures.
 #'
 #' @export
@@ -35,20 +35,20 @@
 #' @seealso \code{\link{discord_edgelist}} is used within \code{infection.net}
 #' to obtain a discordant edgelist.
 #'
-infection.net <- function(all, at) {
+infection.net <- function(dat, at) {
 
     # Variables ---------------------------------------------------------------
-    active <- all$attr$active
-    status <- all$attr$status
-    modes <- all$param$modes
-    mode <- idmode(all$nw)
+    active <- dat$attr$active
+    status <- dat$attr$status
+    modes <- dat$param$modes
+    mode <- idmode(dat$nw)
 
-    inf.prob <- all$param$inf.prob
-    inf.prob.m2 <- all$param$inf.prob.m2
-    act.rate <- all$param$act.rate
+    inf.prob <- dat$param$inf.prob
+    inf.prob.m2 <- dat$param$inf.prob.m2
+    act.rate <- dat$param$act.rate
 
-    nw <- all$nw
-    tea.status <- all$control$tea.status
+    nw <- dat$nw
+    tea.status <- dat$control$tea.status
 
     # Vector of infected and susceptible IDs
     idsSus <- which(active == 1 & status == "s")
@@ -65,13 +65,13 @@ infection.net <- function(all, at) {
     if (nElig > 0 && nElig < nActive) {
 
       # Get discordant edgelist
-      del <- discord_edgelist(all, idsInf, idsSus, at)
+      del <- discord_edgelist(dat, idsInf, idsSus, at)
 
       # If some discordant edges, then proceed
       if (!(is.null(del))) {
 
         # Infection duration to at
-        del$infDur <- at - all$attr$infTime[del$inf]
+        del$infDur <- at - dat$attr$infTime[del$inf]
         del$infDur[del$infDur == 0] <- 1
 
         # Calculate infection-stage transmission rates
@@ -119,13 +119,13 @@ infection.net <- function(all, at) {
                                             terminus = Inf,
                                             v = idsNewInf)
           }
-          all$attr$status[idsNewInf] <- "i"
-          all$attr$infTime[idsNewInf] <- at
+          dat$attr$status[idsNewInf] <- "i"
+          dat$attr$infTime[idsNewInf] <- at
 
-          form <- get_nwparam(all)$formation
+          form <- get_nwparam(dat)$formation
           t <- get_formula_terms(form)
           if ("status" %in% t) {
-            nw <- set.vertex.attribute(nw, "status", all$attr$status)
+            nw <- set.vertex.attribute(nw, "status", dat$attr$status)
           }
         }
 
@@ -144,27 +144,27 @@ infection.net <- function(all, at) {
    # Save transmission matrix
    if (totInf > 0) {
      if (at == 2) {
-       all$stats$transmat <- del
+       dat$stats$transmat <- del
      } else {
-       all$stats$transmat <- rbind(all$stats$transmat, del)
+       dat$stats$transmat <- rbind(dat$stats$transmat, del)
      }
    }
 
    ## Save incidence vector
    if (at == 2) {
-     all$out$si.flow <- c(0, nInf)
+     dat$epi$si.flow <- c(0, nInf)
      if (modes == 2) {
-       all$out$si.flow.m2 <- c(0, nInfM2)
+       dat$epi$si.flow.m2 <- c(0, nInfM2)
      }
    } else {
-     all$out$si.flow[at] <- nInf
+     dat$epi$si.flow[at] <- nInf
      if (modes == 2) {
-       all$out$si.flow.m2[at] <- nInfM2
+       dat$epi$si.flow.m2[at] <- nInfM2
      }
    }
 
-   all$nw <- nw
-   return(all)
+   dat$nw <- nw
+   return(dat)
 }
 
 
@@ -176,7 +176,7 @@ infection.net <- function(all, at) {
 #'              edgelist, defined as the set of edges in which the status of the
 #'              two partners is one susceptible and one infected.
 #'
-#' @param all a list object containing a \code{networkDynamic} object and other
+#' @param dat a list object containing a \code{networkDynamic} object and other
 #'        initialization information passed from \code{\link{netsim}}.
 #' @param idsInf vector of IDs for currently infecteds.
 #' @param idsSus vector of IDs for currently susceptible.
@@ -204,10 +204,10 @@ infection.net <- function(all, at) {
 #' @export
 #' @keywords netMod internal
 #'
-discord_edgelist <- function(all, idsInf, idsSus, at) {
+discord_edgelist <- function(dat, idsInf, idsSus, at) {
 
-  status <- all$attr$status
-  el <- get.dyads.active(all$nw, at = at)
+  status <- dat$attr$status
+  el <- get.dyads.active(dat$nw, at = at)
 
   del <- NULL
   if (nrow(el) > 0) {
@@ -236,34 +236,34 @@ discord_edgelist <- function(all, idsInf, idsSus, at) {
 #'              to a susceptible state (SIS model type), for use in
 #'              \code{\link{netsim}}.
 #'
-#' @param all a list object containing a \code{networkDynamic} object and other
+#' @param dat a list object containing a \code{networkDynamic} object and other
 #'        initialization information passed from \code{\link{netsim}}.
 #' @param at current time step.
 #'
 #' @export
 #' @keywords internal
 #'
-recovery.net <- function(all, at) {
+recovery.net <- function(dat, at) {
 
   ## Only run with SIR/SIS
-  if (!(all$control$type %in% c("SIR", "SIS"))) {
-    return(all)
+  if (!(dat$control$type %in% c("SIR", "SIS"))) {
+    return(dat)
   }
 
   # Variables ---------------------------------------------------------------
-  active <- all$attr$active
-  status <- all$attr$status
-  tea.status <- all$control$tea.status
+  active <- dat$attr$active
+  status <- dat$attr$status
+  tea.status <- dat$control$tea.status
 
-  modes <- all$param$modes
-  mode <- idmode(all$nw)
+  modes <- dat$param$modes
+  mode <- idmode(dat$nw)
 
-  type <- all$control$type
+  type <- dat$control$type
   recovState <- ifelse(type == "SIR", "r", "s")
 
-  rec.rand <- all$control$rec.rand
-  rec.rate <- all$param$rec.rate
-  rec.rate.m2 <- all$param$rec.rate.m2
+  rec.rand <- dat$control$rec.rand
+  rec.rate <- dat$param$rec.rate
+  rec.rate.m2 <- dat$param$rec.rate.m2
 
   nRecov <- nRecovM2 <- 0
   idsElig <- which(active == 1 & status == "i")
@@ -285,7 +285,7 @@ recovery.net <- function(all, at) {
         nRecovM2 <- sum(mode[idsRecov] == 2)
         status[idsRecov] <- recovState
         if (tea.status == TRUE) {
-          all$nw <- activate.vertex.attribute(all$nw,
+          dat$nw <- activate.vertex.attribute(dat$nw,
                                               prefix = "testatus",
                                               value = recovState,
                                               onset = at,
@@ -304,7 +304,7 @@ recovery.net <- function(all, at) {
       totRecov <- nRecov + nRecovM2
       if (tea.status == TRUE & totRecov > 0) {
         allids <- c(idsRecov, idsRecovM2)
-        all$nw <- activate.vertex.attribute(all$nw,
+        dat$nw <- activate.vertex.attribute(dat$nw,
                                             prefix = "testatus",
                                             value = recovState,
                                             onset = at,
@@ -314,11 +314,11 @@ recovery.net <- function(all, at) {
     }
   }
 
-  all$attr$status <- status
-  form <- get_nwparam(all)$formation
+  dat$attr$status <- status
+  form <- get_nwparam(dat)$formation
   t <- get_formula_terms(form)
   if ("status" %in% t) {
-    all$nw <- set.vertex.attribute(all$nw, "status", all$attr$status)
+    dat$nw <- set.vertex.attribute(dat$nw, "status", dat$attr$status)
   }
 
   # Output ------------------------------------------------------------------
@@ -326,17 +326,17 @@ recovery.net <- function(all, at) {
   outName[2] <- paste0(outName, ".m2")
 
   if (at == 2) {
-    all$out[[outName[1]]] <- c(0, nRecov)
+    dat$epi[[outName[1]]] <- c(0, nRecov)
   } else {
-    all$out[[outName[1]]][at] <- nRecov
+    dat$epi[[outName[1]]][at] <- nRecov
   }
   if (modes == 2) {
     if (at == 2) {
-      all$out[[outName[2]]] <- c(0, nRecovM2)
+      dat$epi[[outName[2]]] <- c(0, nRecovM2)
     } else {
-      all$out[[outName[2]]][at] <- nRecovM2
+      dat$epi[[outName[2]]][at] <- nRecovM2
     }
   }
 
-  return(all)
+  return(dat)
 }

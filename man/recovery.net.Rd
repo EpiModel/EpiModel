@@ -3,10 +3,10 @@
 \alias{recovery.net}
 \title{Recovery: netsim Module}
 \usage{
-recovery.net(all, at)
+recovery.net(dat, at)
 }
 \arguments{
-\item{all}{a list object containing a \code{networkDynamic} object and other
+\item{dat}{a list object containing a \code{networkDynamic} object and other
 initialization information passed from \code{\link{netsim}}.}
 
 \item{at}{current time step.}

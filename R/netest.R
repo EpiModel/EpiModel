@@ -23,6 +23,9 @@
 #' @param edapprox if \code{TRUE}, use the indirect edges dissolution approximation
 #'        method for the dynamic model fit, otherwise use the more time-intensive
 #'        full STERGM estimation (see details).
+#' @param output if using the edges dissolution approximation method, \code{"sim"}
+#'        simulates a static network from the fitted network model, for
+#'        storage efficiency purposes.
 #' @param set.control.ergm control arguments passed to simulate.ergm (see
 #'        details).
 #' @param set.control.stergm control arguments passed to simulate.stergm (see
@@ -81,8 +84,8 @@
 #' control settings may be passed to the \code{ergm} function using
 #' \code{set.control.ergm} in \code{netest}. The controls should be input through
 #' the \code{control.ergm()} function, with the available parameters listed in the
-#' \code{\link[ergm:control.simulate.ergm]{control.simulate.ergm}} help page in
-#' the \code{ergm} package. An example is below.
+#' \code{\link[ergm:control.ergm]{control.ergm}} help page in the \code{ergm}
+#' package. An example is below.
 #'
 #' @references
 #' Krivitsky PN, Handcock MS. "A separable model for dynamic networks." JRSS(B).
@@ -141,18 +144,14 @@ netest <- function(nw,
                    constraints,
                    coef.form = NULL,
                    edapprox = TRUE,
+                   output = "fit",
                    set.control.ergm,
                    set.control.stergm,
                    verbose = TRUE) {
 
-
-	formation.nw <- update(formation, nw ~.)
-  environment(formation.nw) <- environment()
-
   if (missing(constraints)) {
     constraints	<- ~.
   }
-  environment(constraints) <- environment()
 
 	if (dissolution != ~ offset(edges)) {
 	  stop("Currently only ~offset(edges) dissolution models supported")
@@ -206,28 +205,47 @@ netest <- function(nw,
                                        MCMLE.maxit = 200)
     }
 
+    formation.nw <- update(formation, nw ~.)
+    environment(formation.nw) <- environment()
+
     fit <- ergm(formation.nw,
                 target.stats = target.stats,
                 constraints = constraints,
                 offset.coef = coef.form,
+                eval.loglik = FALSE,
                 control = set.control.ergm)
 
     coef.form <- fit$coef
+    coef.form.crude <- coef.form
     if (coef.diss$coef.crude > -Inf) {
       for (i in 1:length(coef.diss$coef.crude)) {
         coef.form[i] <- coef.form[i] - coef.diss$coef.crude[i]
       }
     }
 
+    # Reduce size of output object
+    fit$initialfit <- NULL
+    fit$newnetwork <- NULL
+    fit$constrained <- NULL
+    environment(fit$sample.obs) <- NULL
+    environment(fit$reference) <- NULL
+    environment(fit$constraints) <- environment()
+
+
     out <- list()
     out$fit <- fit
     out$formation <- formation
     out$target.stats <- target.stats
     out$coef.form <- coef.form
+    out$coef.form.crude <- coef.form.crude
     out$dissolution <- dissolution
     out$coef.diss <- coef.diss
     out$constraints <- constraints
     out$edapprox <- edapprox
+    if (output == "sim") {
+      out$fit <- simulate(out$fit)
+      environment(fit$constraints) <- NULL
+    }
 
   }
 
