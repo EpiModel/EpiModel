@@ -3,7 +3,7 @@
 \alias{control.net}
 \title{Control Settings for Stochastic Network Models}
 \usage{
-control.net(type, nsteps, nsims = 1, depend, rec.rand = TRUE,
+control.net(type, nsteps, start = 1, nsims = 1, depend, rec.rand = TRUE,
   b.rand = TRUE, d.rand = TRUE, tea.status = TRUE, attr.rules, epi.by,
   pid.prefix, initialize.FUN = initialize.net,
   infection.FUN = infection.net, recovery.FUN = recovery.net,
@@ -22,6 +22,8 @@ Susceptible-Infected-Susceptible diseases.}
 
 \item{nsteps}{number of time steps to simulate the model over. This must be a
 positive integer.}
+
+\item{start}{for dependent simulations, time point to start up simulation.}
 
 \item{nsims}{the total number of disease simulations.}
 

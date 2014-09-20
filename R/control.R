@@ -245,6 +245,7 @@ control.icm <- function(type,
 #' @param nsteps number of time steps to simulate the model over. This must be a
 #'        positive integer.
 #' @param nsims the total number of disease simulations.
+#' @param start for dependent simulations, time point to start up simulation.
 #' @param depend if \code{TRUE}, resimulate the network at each time step. This
 #'        occurs by default with two varieties of dependent models: if there are
 #'        any vital dynamic parameters in the model, or if the network model
@@ -388,6 +389,7 @@ control.icm <- function(type,
 #'
 control.net <- function(type,
                         nsteps,
+                        start = 1,
                         nsims = 1,
                         depend,
                         rec.rand = TRUE,

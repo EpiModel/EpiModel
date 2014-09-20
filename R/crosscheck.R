@@ -230,8 +230,8 @@ crosscheck.net <- function(x, param, init, control) {
   if (control$skip.check == FALSE) {
 
     # Main class check --------------------------------------------------------
-    if (class(x) != "netest") {
-      stop("x must be either an object of class netest",
+    if (class(x) != "netest" && class(x) != "netsim") {
+      stop("x must be either an object of class netest or class netsim",
            call. = FALSE)
     }
     if (class(param) != "param.net") {
@@ -279,6 +279,21 @@ crosscheck.net <- function(x, param, init, control) {
 
 
     # Checks ------------------------------------------------------------------
+
+    # Check that start 1 for all independent simulations
+    if (control$depend == FALSE & start != 1) {
+      stop("Control setting start must be 1 for independent simulations",
+           call. = FALSE)
+    }
+    if (control$depend == TRUE & start > 1 & class(x) != "netsim") {
+      stop("x must be a netsim object if control setting start > 1",
+           call. = FALSE)
+    }
+    if (control$depend == TRUE & start > 1 & is.null(x$attr)) {
+      stop("x must contain attr to restart simulation, see save.other control setting",
+           call. = FALSE)
+    }
+
 
     # Check that prevalence in NW attr status and initial conditions match
     if (statOnNw == TRUE) {
