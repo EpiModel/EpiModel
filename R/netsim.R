@@ -310,8 +310,8 @@ netsim_parallel <- function(x,
     }
     if (par.type == "mpi") {
       suppressPackageStartupMessages(require(doMPI))
-      cl <- makeMPIcluster(cluster.size)
-      registerDoSNOW(cl)
+      cl <- startMPIcluster(cluster.size)
+      registerDoMPI(cl)
     }
 
     out <- foreach(i = 1:nsims) %dopar% {
