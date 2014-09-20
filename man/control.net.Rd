@@ -10,7 +10,7 @@ control.net(type, nsteps, start = 1, nsims = 1, depend, rec.rand = TRUE,
   deaths.FUN = deaths.net, births.FUN = births.net,
   resim_nets.FUN = resim_nets, edges_correct.FUN = edges_correct,
   get_prev.FUN = get_prev.net, verbose.FUN = verbose.net,
-  set.control.stergm, save.nwstats = TRUE, nwstats.formula,
+  set.control.stergm, save.nwstats = TRUE, nwstats.formula = "formation",
   delete.nodes = FALSE, save.transmat = TRUE, save.network = TRUE,
   save.other, verbose = TRUE, verbose.int = 1, skip.check = FALSE, ...)
 }
