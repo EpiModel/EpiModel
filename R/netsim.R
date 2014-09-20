@@ -151,12 +151,12 @@ netsim <- function(x,
 
     ## Initialization Module
     if (!is.null(control[["initialize.FUN"]])) {
-      dat <- do.call(control[["initialize.FUN"]], list(x, param, init, control))
+      dat <- do.call(control[["initialize.FUN"]], list(x, param, init, control, s))
     }
 
 
     ### TIME LOOP
-    for (at in 2:control$nsteps) {
+    for (at in max(2, control$start):control$nsteps) {
 
       ## User Modules
       um <- control$user.mods
