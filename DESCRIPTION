@@ -31,8 +31,9 @@ Imports:
     RColorBrewer,
     statnet.common
 Suggests:
-    doMPI,
     doParallel,
+    doMPI,
+    foreach,
     knitr,
     ndtv,
     shiny,
