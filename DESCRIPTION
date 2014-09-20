@@ -33,7 +33,6 @@ Imports:
 Suggests:
     doMPI,
     doParallel,
-    foreach,
     knitr,
     ndtv,
     shiny,
