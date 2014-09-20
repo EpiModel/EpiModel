@@ -63,14 +63,14 @@ param <- param.net(inf.prob = 0.25)
 init <- init.net(i.num = 50)
 
 # Runs multicore-type parallelization on single node
-control <- control.net(type = "SI", nsteps = 100, verbose = FALSE
+control <- control.net(type = "SI", nsteps = 100, verbose = FALSE,
                        par.type = "single", nsims = 4, ncores = 4)
 
 # Note: one should do this function call in batch mode
 sims <- netsim_parallel(est, param, init, control)
 
 # Runs parallelization across nodes using MPI
-control <- control.net(type = "SI", nsteps = 100, verbose = FALSE
+control <- control.net(type = "SI", nsteps = 100, verbose = FALSE,
                        par.type = "mpi", nsims = 4, ncores = 4)
 
 # This would be included in the script file called by mpirun

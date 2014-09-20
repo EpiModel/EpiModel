@@ -277,14 +277,14 @@ netsim <- function(x,
 #' init <- init.net(i.num = 50)
 #'
 #' # Runs multicore-type parallelization on single node
-#' control <- control.net(type = "SI", nsteps = 100, verbose = FALSE
+#' control <- control.net(type = "SI", nsteps = 100, verbose = FALSE,
 #'                        par.type = "single", nsims = 4, ncores = 4)
 #'
 #' # Note: one should do this function call in batch mode
 #' sims <- netsim_parallel(est, param, init, control)
 #'
 #' # Runs parallelization across nodes using MPI
-#' control <- control.net(type = "SI", nsteps = 100, verbose = FALSE
+#' control <- control.net(type = "SI", nsteps = 100, verbose = FALSE,
 #'                        par.type = "mpi", nsims = 4, ncores = 4)
 #'
 #' # This would be included in the script file called by mpirun
@@ -312,13 +312,11 @@ netsim_parallel <- function(x,
     suppressPackageStartupMessages(require(foreach))
     cluster.size <- min(nsims, ncores)
     if (par.type == "single") {
-      suppressPackageStartupMessages(require(doParallel))
-      registerDoParallel(cluster.size)
+      doParallel::registerDoParallel(cluster.size)
     }
     if (par.type == "mpi") {
-      suppressPackageStartupMessages(require(doMPI))
-      cl <- startMPIcluster(cluster.size)
-      registerDoMPI(cl)
+      cl <- doMPI::startMPIcluster(cluster.size)
+      doMPI::registerDoMPI(cl)
     }
 
     out <- foreach(i = 1:nsims) %dopar% {
@@ -329,7 +327,7 @@ netsim_parallel <- function(x,
     }
 
     if (par.type == "mpi") {
-      closeCluster(cl)
+      doMPI::closeCluster(cl)
     }
 
     if (merge == TRUE) {
