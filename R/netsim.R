@@ -322,7 +322,7 @@ netsim_parallel <- function(x,
     }
 
     if (par.type == "mpi") {
-      stopCluster(cl)
+      closeCluster(cl)
     }
 
     if (merge == TRUE) {
