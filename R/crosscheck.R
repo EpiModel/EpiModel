@@ -280,21 +280,6 @@ crosscheck.net <- function(x, param, init, control) {
 
     # Checks ------------------------------------------------------------------
 
-    # Check that start 1 for all independent simulations
-    if (control$depend == FALSE & start != 1) {
-      stop("Control setting start must be 1 for independent simulations",
-           call. = FALSE)
-    }
-    if (control$depend == TRUE & start > 1 & class(x) != "netsim") {
-      stop("x must be a netsim object if control setting start > 1",
-           call. = FALSE)
-    }
-    if (control$depend == TRUE & start > 1 & is.null(x$attr)) {
-      stop("x must contain attr to restart simulation, see save.other control setting",
-           call. = FALSE)
-    }
-
-
     # Check that prevalence in NW attr status and initial conditions match
     if (statOnNw == TRUE) {
       nw1 <- sum(get.vertex.attribute(nw, "status") == 1)
@@ -390,6 +375,41 @@ crosscheck.net <- function(x, param, init, control) {
     }
 
   }
+
+  if (control$start > 1) {
+
+    # Is status in network formation formula?
+    statOnNw <- ("status" %in% names(get_nwparam(x)$coef.form))
+
+    # Set dependent modeling defaults if vital or status on nw
+    if (is.null(control$depend)) {
+      if (param$vital == TRUE | statOnNw == TRUE) {
+        control$depend <- TRUE
+      } else {
+        control$depend <- FALSE
+      }
+    }
+
+    # Check that start 1 for all independent simulations
+    if (control$depend == FALSE) {
+      stop("Control setting start must be 1 for independent simulations",
+           call. = FALSE)
+    }
+    if (control$depend == TRUE & class(x) != "netsim") {
+      stop("x must be a netsim object if control setting start > 1",
+           call. = FALSE)
+    }
+    if (control$depend == TRUE & is.null(x$attr)) {
+      stop("x must contain attr to restart simulation, see save.other control setting",
+           call. = FALSE)
+    }
+    if (control$depend == TRUE & is.null(x$network)) {
+      stop("x must contain network object to restart simulation, see save.network control setting",
+           call. = FALSE)
+    }
+
+  }
+
 
   ## In-place assignment to update param and control
   assign("param", param, pos = parent.frame())
