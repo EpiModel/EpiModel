@@ -251,9 +251,6 @@ crosscheck.net <- function(x, param, init, control) {
     }
 
     # Defaults ----------------------------------------------------------------
-    if (is.null(control$nwstats.formula)) {
-      control$nwstats.formula <- x$formation
-    }
 
     # Is status in network formation formula?
     statOnNw <- ("status" %in% get_formula_terms(x$formation))
