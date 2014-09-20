@@ -336,7 +336,7 @@ netsim_parallel <- function(x,
   }
 
   return(all)
-  if(par.type = "mpi") {
+  if(par.type == "mpi") {
     on.exit(mpi.exit())
   }
 }
