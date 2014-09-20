@@ -294,41 +294,34 @@ netsim_parallel <- function(x,
 
   nsims <- control$nsims
   ncores <- control$ncores
-  partype <- control$partype
-  if (is.null(partype)) {
-    partype <- "parallel"
-  }
-  if (partype == "snow") {
-    ncores <- sum(control$cores.per.node)
+  par.type <- control$par.type
+  if (is.null(par.type)) {
+    par.type <- "single"
   }
 
-  if (nsims > 1 && ncores > 1) {
+  if (nsims == 1 | ncores == 1) {
+    sim <- netsim(x, param, init, control)
+  } else {
     suppressPackageStartupMessages(require(foreach))
-
-    if (partype == "parallel") {
+    cluster.size <- min(nsims, ncores)
+    if (par.type == "single") {
       suppressPackageStartupMessages(require(doParallel))
-      cluster.size <- min(nsims, ncores)
       registerDoParallel(cluster.size)
     }
-    if (partype == "snow") {
-      suppressPackageStartupMessages(require(doSNOW))
-      nodes <- control$nodes
-      cores.per.node <- control$cores.per.node
-      cl <- makeSOCKcluster(rep(nodes, cores.per.node))
+    if (par.type == "mpi") {
+      suppressPackageStartupMessages(require(doMPI))
+      cl <- makeMPIcluster(cluster.size)
       registerDoSNOW(cl)
     }
 
     out <- foreach(i = 1:nsims) %dopar% {
-
       require(EpiModel)
       control$nsims = 1
       control$currsim = i
-
       netsim(x, param, init, control)
-
     }
 
-    if (partype == "snow") {
+    if (par.type == "mpi") {
       stopCluster(cl)
     }
 
@@ -340,9 +333,6 @@ netsim_parallel <- function(x,
     } else {
       all <- out
     }
-
-  } else {
-    all <- netsim(x, param, init, control)
   }
 
   return(all)
