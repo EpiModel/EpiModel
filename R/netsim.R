@@ -151,69 +151,69 @@ netsim <- function(x,
 
     ## Initialization Module
     if (!is.null(control[["initialize.FUN"]])) {
-      all <- do.call(control[["initialize.FUN"]], list(x, param, init, control))
+      dat <- do.call(control[["initialize.FUN"]], list(x, param, init, control, s))
     }
 
 
     ### TIME LOOP
-    for (at in 2:control$nsteps) {
+    for (at in max(2, control$start):control$nsteps) {
 
       ## User Modules
       um <- control$user.mods
       if (length(um) > 0) {
         for (i in seq_along(um)) {
-          all <- do.call(control[[um[i]]], list(all, at))
+          dat <- do.call(control[[um[i]]], list(dat, at))
         }
       }
 
       ## Demographics Modules
       if (!is.null(control[["deaths.FUN"]])) {
-        all <- do.call(control[["deaths.FUN"]], list(all, at))
+        dat <- do.call(control[["deaths.FUN"]], list(dat, at))
       }
       if (!is.null(control[["births.FUN"]])) {
-        all <- do.call(control[["births.FUN"]], list(all, at))
+        dat <- do.call(control[["births.FUN"]], list(dat, at))
       }
 
 
       ## Recovery Module
       if (!is.null(control[["recovery.FUN"]])) {
-        all <- do.call(control[["recovery.FUN"]], list(all, at))
+        dat <- do.call(control[["recovery.FUN"]], list(dat, at))
       }
 
 
       ## Resimulate network
       if (!is.null(control[["edges_correct.FUN"]])) {
-        all <- do.call(control[["edges_correct.FUN"]], list(all, at))
+        dat <- do.call(control[["edges_correct.FUN"]], list(dat, at))
       }
       if (!is.null(control[["resim_nets.FUN"]])) {
-        all <- do.call(control[["resim_nets.FUN"]], list(all, at))
+        dat <- do.call(control[["resim_nets.FUN"]], list(dat, at))
       }
 
 
       ## Infection Module
       if (!is.null(control[["infection.FUN"]])) {
-        all <- do.call(control[["infection.FUN"]], list(all, at))
+        dat <- do.call(control[["infection.FUN"]], list(dat, at))
       }
 
 
       ## Save Prevalence
       if (!is.null(control[["get_prev.FUN"]])) {
-        all <- do.call(control[["get_prev.FUN"]], list(all, at))
+        dat <- do.call(control[["get_prev.FUN"]], list(dat, at))
       }
 
 
       ## Progress Console
       if (!is.null(control[["verbose.FUN"]])) {
-        do.call(control[["verbose.FUN"]], list(all, type = "progress", s, at))
+        do.call(control[["verbose.FUN"]], list(dat, type = "progress", s, at))
       }
 
     }
 
     # Set output
     if (s == 1) {
-      out <- saveout.net(all, s)
+      out <- saveout.net(dat, s)
     } else {
-      out <- saveout.net(all, s, out)
+      out <- saveout.net(dat, s, out)
     }
 
   } # end sim loop

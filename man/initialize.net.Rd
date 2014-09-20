@@ -3,7 +3,7 @@
 \alias{initialize.net}
 \title{Initialization: netsim Module}
 \usage{
-initialize.net(x, param, init, control)
+initialize.net(x, param, init, control, s)
 }
 \arguments{
 \item{x}{an \code{EpiModel} object of class \code{\link{netest}}.}
@@ -13,6 +13,8 @@ initialize.net(x, param, init, control)
 \item{init}{an \code{EpiModel} object of class \code{\link{init.net}}.}
 
 \item{control}{an \code{EpiModel} object of class \code{\link{control.net}}.}
+
+\item{s}{simulation number, used for restarting dependent simulations.}
 }
 \description{
 This function initializes the master \code{dat} object on which
