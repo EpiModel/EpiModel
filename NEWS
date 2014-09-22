@@ -15,10 +15,13 @@ NEW FEATURES
   in visualization of low-count outcomes like disease incidence.
 * Automatic parallelization of network models is now possible with the
   netsim_parallel function. Note that this is experimental and has not been
-  tested extensively across platforms, so bug reports are welcome.
+  tested extensively across platforms, so bug reports are welcome. Two parallel
+  methods are supported: doParallel for multiple cores on a single node, and
+  doMPI for multiple cores across multiple nodes. The latter requires an MPI
+  installation on a linux-based cluster.
 * Network diagnostics in netdx also accepts a new ncores argument, which will
   run the diagnostic simulations and calculations on those simulations in parallel
-  on a specified number of cores.
+  on a specified number of cores (single node only).
 * Added an argument, skip.check, for the control settings in both ICM and network
   model classes, which overrides the default error checking of parameters,
   initial conditions, and control settings. This should only be used for original
@@ -26,6 +29,13 @@ NEW FEATURES
 * Added an argument, save.other, for the control settings in network models,
   which is a character vector of other elements from the master data list, dat,
   to save out in the simulation.
+* Added an argument, start, for the control settings in network models, which is
+  a starting time point to resume simulations. In this case, the x argument in
+  netsim is a previously saved netsim object rather than a netest object. The
+  start argument should be one integer higher than the nsteps in that earlier
+  netsim object. The nsteps argument should now be the final steps for the
+  simulation. Note that this requires specifying save.other = "attr" in the
+  control settings, as well as saving the networks.
 * In network models, two preset functions have been changed to replaceable
   modules: edges_correct and verbose.net. The former performs the adjustment to
   the edges coefficient for network models with population size changes, in order
