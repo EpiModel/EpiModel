@@ -288,7 +288,7 @@ netdx <- function(x,
   if (verbose == TRUE) {
     cat("\n- Calculating duration statistics")
   }
-
+  
 
   ## Duration calculations
   sim.df <- list()
@@ -302,7 +302,7 @@ netdx <- function(x,
                  sim.df[[1]]$terminus.censored == FALSE)
   durVec <- sim.df[[1]]$duration[ncens]
   if (nsims > 1) {
-    for (i in 1:length(diag.sim)) {
+    for (i in 2:length(diag.sim)) {
       ncens <- which(sim.df[[i]]$onset.censored == FALSE &
                      sim.df[[i]]$terminus.censored == FALSE)
       durVec <- c(durVec, sim.df[[i]]$duration[ncens])
@@ -346,7 +346,37 @@ netdx <- function(x,
   }
 
 
+  ## Dissolution calculations
 
+  if (verbose == TRUE) {
+    cat("\n- Calculating dissolution statistics")
+  }
+
+  ## Create a merged vector of dissolution proportions (i.e. dissolutions/edges)
+  num.diss <- matrix(sapply(1:nsteps, function(x) sum(sim.df[[1]]$terminus==x)),nrow=1)
+  num.extant <- matrix(sapply(1:nsteps, function(x) sum(sim.df[[1]]$onset < x & sim.df[[1]]$terminus>=x)),nrow=1)
+  if (nsims > 1) {
+    for (i in 2:length(diag.sim)) {
+      num.diss <- rbind(num.diss, sapply(1:nsteps, function(x) sum(sim.df[[i]]$terminus==x)))
+      num.extant <- rbind(num.extant, sapply(1:nsteps, function(x) sum(sim.df[[i]]$onset < x & sim.df[[i]]$terminus>=x)))
+    }
+  }
+  prop.diss <- num.diss/num.extant
+  mean.prop.diss <- colMeans(prop.diss)
+  cum.mean.prop.diss <- cumsum(mean.prop.diss)/(1:length(mean.prop.diss))
+  
+  # Create dissolution table for "dissolution = ~ offset(edges)"
+  if (dissolution == ~offset(edges)) {
+    dissolution.mean <- mean(prop.diss)
+    dissolution.sd <- sd(prop.diss)
+    dissolution.expected <- 1/(exp(coef.diss$coef.crude[1]) + 1)
+    stats.table.dissolution <- round(c(target = dissolution.expected,
+                              sim.mean = dissolution.mean,
+                              sim.sd = dissolution.sd), 5)
+  } else {
+    stop('Only ~offset(edges) dissolution models currently supported')
+  }
+  
   ## Save output
   out <- list()
   out$nw <- nw
@@ -363,9 +393,11 @@ netdx <- function(x,
   out$stats <- stats
   out$stats.table.formation <- stats.table.formation
   out$stats.table.duration <- stats.table.duration
+  out$stats.table.dissolution <- stats.table.dissolution
   out$edgelist <- sim.df
   out$pages <- pages
-
+  out$cum.mean.prop.diss <- cum.mean.prop.diss
+  
   class(out) <- "netdx"
   return(out)
 }
