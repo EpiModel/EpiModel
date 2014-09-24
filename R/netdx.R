@@ -302,7 +302,7 @@ netdx <- function(x,
                  sim.df[[1]]$terminus.censored == FALSE)
   durVec <- sim.df[[1]]$duration[ncens]
   if (nsims > 1) {
-    for (i in 1:length(diag.sim)) {
+    for (i in 2:length(diag.sim)) {
       ncens <- which(sim.df[[i]]$onset.censored == FALSE &
                      sim.df[[i]]$terminus.censored == FALSE)
       durVec <- c(durVec, sim.df[[i]]$duration[ncens])
