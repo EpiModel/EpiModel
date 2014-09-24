@@ -86,7 +86,7 @@
 netdx <- function(x,
                   nsims = 1,
                   nsteps,
-                  nwstats.formula,
+                  nwstats.formula = "formation",
                   set.control.ergm,
                   set.control.stergm,
                   verbose = TRUE,
@@ -118,10 +118,6 @@ netdx <- function(x,
     cat("======================")
     cat("\nRunning Diagnostics")
     cat("\n======================\n")
-  }
-
-  if (missing(nwstats.formula)) {
-    nwstats.formula <- formation
   }
 
   if (verbose == TRUE) {
