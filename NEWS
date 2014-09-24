@@ -2,54 +2,48 @@ Version 1.1
 ------------------------------------------------------------------------------
 
 NEW FEATURES
-* Added three new extraction functions for network models (get_network,
-  get_transmat, and get_nwstats) which extract the network objects, transmission
-  matrices, and data frame of network statistics from a completed netsim
-  simulation. These functions also support extraction of network model simulations
-  with multiple networks (see API note).
-* The plot function for netsim objects now has an argument, network, for plotting
-  network statistics and static networks (type = formation and network,
-  respectively) in simulations with multiple networks.
-* For stochastic epidemic plots, added an option mean.smooth. If TRUE, this
+* Added three new extraction functions for network models (`get_network`,
+  `get_transmat`, and `get_nwstats`) which extract the network objects,
+  transmission matrices, and data frame of network statistics from a completed
+  `netsim` simulation. These functions also support extraction of network model
+  simulations with multiple networks (see API note).
+* The plot function for `netsim` objects now has an argument, network, for
+  plotting network statistics and static networks (`type = "formation"` and
+  `"network"`, respectively) in simulations with multiple networks.
+* For stochastic epidemic plots, added an option `mean.smooth`. If `TRUE`, this
   uses a lowess smoother on the outcome variables of interest. This is helpful
   in visualization of low-count outcomes like disease incidence.
 * Automatic parallelization of network models is now possible with the
-  netsim_parallel function. Note that this is experimental and has not been
+  `netsim_parallel` function. Note that this is experimental and has not been
   tested extensively across platforms, so bug reports are welcome. Two parallel
-  methods are supported: doParallel for multiple cores on a single node, and
-  doMPI for multiple cores across multiple nodes. The latter requires an MPI
+  methods are supported: `doParallel` for multiple cores on a single node, and
+  `doMPI` for multiple cores across multiple nodes. The latter requires an MPI
   installation on a linux-based cluster.
-* Network diagnostics in netdx also accepts a new ncores argument, which will
-  run the diagnostic simulations and calculations on those simulations in parallel
-  on a specified number of cores (single node only).
-* Added an argument, skip.check, for the control settings in both ICM and network
-  model classes, which overrides the default error checking of parameters,
-  initial conditions, and control settings. This should only be used for original
-  models with new modules that may unnecessarily trigger a check error.
-* Added an argument, save.other, for the control settings in network models,
-  which is a character vector of other elements from the master data list, dat,
+* Network diagnostics in `netdx` also accepts a new `ncores` argument, which will
+  run the diagnostic simulations and calculations on those simulations in
+  parallel on a specified number of cores (single node only).
+* Added an argument, `skip.check`, for the control settings in both ICM and
+  network model classes, which overrides the default error checking of
+  parameters, initial conditions, and control settings. This should only be used
+  for original models with new modules that may unnecessarily trigger a check
+  error.
+* Added an argument, `save.other`, for the control settings in network models,
+  which is a character vector of other elements from the master data list, `dat`,
   to save out in the simulation.
-* Added an argument, start, for the control settings in network models, which is
-  a starting time point to resume simulations. In this case, the x argument in
-  netsim is a previously saved netsim object rather than a netest object. The
-  start argument should be one integer higher than the nsteps in that earlier
-  netsim object. The nsteps argument should now be the final steps for the
-  simulation. Note that this requires specifying save.other = "attr" in the
-  control settings, as well as saving the networks.
-* In network models, two preset functions have been changed to replaceable
-  modules: edges_correct and verbose.net. The former performs the adjustment to
-  the edges coefficient for network models with population size changes, in order
-  to preserve the mean degree; for mass action epidemic models, for example,
-  one would not want this adjustment, so the module should be set to NULL in
-  control.net. The latter performs the printing of simulation results to the
-  console. Both functions are now listed in the modules help file accessed by:
-  help(modules.net).
-* Added progress bars for netdx diagnostic simulations for computationally
+* Added an argument, `start`, for the control settings in network models, which
+  is a starting time step to resume simulations. In this case, the `x` argument
+  in `netsim` is a previously saved `netsim` object rather than a `netest`
+  object. The `start` argument should be one integer higher than the `nsteps` in
+  that earlier `netsim` object. The `nsteps` argument should now be the final
+  steps for the simulation. Note that this requires specifying
+  `save.other = "attr"` in the control settings, as well as saving the networks.
+* Added progress bars for `netdx` diagnostic simulations for computationally
   intensive parts of the simulations.
-* Network model estimation with netest now provides an output argument. When
-  using the edges dissolution approximation (edapprox = TRUE), one may set output
-  to "sim" to save a static simulation network instead of the ergm object as an
-  element of the netest output. This is mainly for file size efficiency.
+* Network model estimation with `netest` now provides an output argument. When
+  using the edges dissolution approximation (`edapprox = TRUE`), one may set
+  output to `"sim"` to save a static simulation network instead of the `ergm`
+  object as an element of the `netest` output. This is mainly for file size
+  efficiency.
 
 USER INTERFACE CHANGES
 * The internal representation of disease status as an individual-level attribute
@@ -65,24 +59,34 @@ USER INTERFACE CHANGES
 
 API CHANGES
 * For ICMs and network models, the internal master data object has been renamed
-  from all to dat to prevent function name conflicts. Additionally, all summary
-  output is now stored within dat$epi, whereas the previous location was all$out.
+  from `all` to `dat` to prevent function name conflicts. Additionally, all
+  summary output is now stored within `dat$epi`, whereas the previous location
+  was `all$out`.
 * The ordering of built-in modules within a time step for network simulations
   has been changed such that the network resimulation module is run before the
   infection module. There should be no substantive differences in model results,
   but this provides a more logical consistency between edges toggled on at a
   time step and the infections that may occur over those edges.
+* In network models, two preset functions have been changed to replaceable
+  modules: `edges_correct` and `verbose.net`. The former performs the adjustment
+  to the edges coefficient for network models with population size changes, in
+  order to preserve the mean degree; for mass action epidemic models, for example,
+  one would not want this adjustment, so the module should be set to NULL in
+  `control.net`. The latter performs the printing of simulation results to the
+  console. Both functions are now listed in the modules help file accessed by:
+  `help(modules.net)`.
 * Evaluation of parameters, initial conditions, and control settings in the
   core parameterization functions is now more stable, and also more flexible.
   Defaults for the fixed arguments are now included in the documentation.
-* Users may now bypass the built-in param, init, and control functions altogether
-  for original ICM and network models, because the definition of new and
-  replacement modules occurs within the control functions themselves. The
+* Users may now bypass the built-in `param`, `init`, and `control` functions
+  altogether for original ICM and network models, because the definition of new
+  and replacement modules occurs within the control functions themselves. The
   existing control functions should be used as a template if one is considering
   replacing these parameterization functions.
 * Users may also bypass any of the built-in modules in network models (see the
-  list in control.net) by setting the argument for that module to NULL.
-* The x argument in netsim may now be a list of netest objects. This would be
+  list in `control.net`) by setting the argument for that module to `NULL`. This
+  may be replaced in the future by a user-defined ordered vector of modules.
+* The `x` argument in netsim may now be a list of `netest` objects. This would be
   used only if supplying new simulation modules that know how to process that
   data structure. The motivation for this is to allow original models with
   multiple networks simulated (e.g., a main partnership network and a casual
@@ -90,12 +94,13 @@ API CHANGES
 
 BUG FIXES
 * Minor updates and bug fixes to the two built-in Shiny applications (accessed
-  via the epiweb function). These apps now benefit from the more stable
-  parameterization functions mentioned above.
-* Updated the print method for the param.net class to handle parameters that are
-  lists or data frames.
-* merge.netsim now ignores any differences in the environment of the nwstats.formula
-  control, previously preventing proper merging of some network model simulations.
+  via the `epiweb` function). These apps now benefit from the more stable
+  parameterization functions.
+* Updated the `print` method for the `param.net` class to handle parameters that
+  are lists or data frames.
+* `merge.netsim` now ignores any differences in the environment of the
+  `nwstats.formula` control, previously preventing proper merging of some network
+  model simulations.
 
 OTHER
 * Added new test cases for running new DCMs, ICMs, and network models, following
