@@ -260,7 +260,7 @@ netdx <- function(x,
                             stats.means, stats.sd)
 
   # Which formation terms are offsets?
-  is.offset.term <- grep(pattern = "offset",
+  is.offset.term <- grep(pattern = "offset[(]",
                          strsplit(as.character(formation), "[+]")[[2]])
 
 
