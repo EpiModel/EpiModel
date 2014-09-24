@@ -309,7 +309,6 @@ netsim_parallel <- function(x,
   if (nsims == 1 | ncores == 1) {
     sim <- netsim(x, param, init, control)
   } else {
-    suppressPackageStartupMessages(require(foreach))
     cluster.size <- min(nsims, ncores)
     if (par.type == "single") {
       doParallel::registerDoParallel(cluster.size)

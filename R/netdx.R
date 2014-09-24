@@ -109,11 +109,6 @@ netdx <- function(x,
   target.stats <- x$target.stats
   edapprox <- x$edapprox
 
-  if (nsims > 1 && ncores > 1) {
-    suppressPackageStartupMessages(require(foreach))
-    suppressPackageStartupMessages(require(doParallel))
-  }
-
   if (verbose == TRUE) {
     cat("======================")
     cat("\nRunning Diagnostics")
