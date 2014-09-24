@@ -356,8 +356,8 @@ births.net <- function(dat, at) {
 
     # Set attributes on nw
     form <- get_nwparam(dat)$formation
-    t <- get_formula_terms(form)
-    curr.tab <- get_attr_prop(dat$nw, t)
+    fterms <- get_formula_terms(form)
+    curr.tab <- get_attr_prop(dat$nw, fterms)
     if (length(curr.tab) > 0) {
       dat$nw <- update_nwattr(dat$nw,
                               newNodes,
@@ -367,10 +367,10 @@ births.net <- function(dat, at) {
     }
 
     # Save any val on attr
-    dat <- copy_toall_attr(dat, at, t)
+    dat <- copy_toall_attr(dat, at, fterms)
 
     if (tea.status == TRUE) {
-      if ("status" %in% t) {
+      if ("status" %in% fterms) {
         dat$nw <- activate.vertex.attribute(dat$nw,
                                             prefix = "testatus",
                                             value = dat$attr$status[newNodes],
@@ -387,14 +387,14 @@ births.net <- function(dat, at) {
       }
     }
     if (modes == 1) {
-      if (!("status" %in% t)) {
+      if (!("status" %in% fterms)) {
         dat$attr$status <- c(dat$attr$status, rep("s", length(newNodes)))
       }
       dat$attr$active <- c(dat$attr$active, rep(1, length(newNodes)))
       dat$attr$infTime <- c(dat$attr$infTime, rep(NA, length(newNodes)))
     }
     if (modes == 2) {
-      if (!("status" %in% t)) {
+      if (!("status" %in% fterms)) {
         dat <- split_bip(dat, "status", "s",
                          nCurrM1, nCurrM2, nBirths, nBirthsM2)
       }

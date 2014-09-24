@@ -72,12 +72,12 @@ initialize.net <- function(x, param, init, control, s) {
 
     ## Pull network val to attr
     form <- get_nwparam(dat)$formation
-    t <- get_formula_terms(form)
-    dat <- copy_toall_attr(dat, at = 1, t)
+    fterms <- get_formula_terms(form)
+    dat <- copy_toall_attr(dat, at = 1, fterms)
 
 
     ## Store current proportions of attr
-    dat$temp$t1.tab <- get_attr_prop(dat$nw, t)
+    dat$temp$t1.tab <- get_attr_prop(dat$nw, fterms)
 
 
     ## Get initial prevalence
