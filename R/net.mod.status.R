@@ -143,6 +143,7 @@ infection.net <- function(dat, at) {
 
    # Save transmission matrix
    if (totInf > 0) {
+     del <- del[!duplicated(del$sus), ]
      if (at == 2) {
        dat$stats$transmat <- del
      } else {
