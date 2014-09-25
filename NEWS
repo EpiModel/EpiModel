@@ -1,3 +1,8 @@
+Version 1.1.1
+------------------------------------------------------------------------------
+
+
+
 Version 1.1
 ------------------------------------------------------------------------------
 
@@ -47,14 +52,14 @@ NEW FEATURES
 
 USER INTERFACE CHANGES
 * The internal representation of disease status as an individual-level attribute
-  in the stochastic ICM and network models has been changed from number (0, 1, 2)
-  to character ("s", "i", "r"). This changes little when running the integrated
-  models, and has greater implications for the API when editing modules. But one
-  change for integrated models is that the status vector passed into the initial
-  conditions functions must now be in this new format. This also impacts the
-  expansion of EpiModel for original models.
-* The zeromarg argument has been removed from plot.netsim for static network
-  plots (type = "network") to reduce potential issues with setting default
+  in the stochastic ICM and network models has been changed from number
+  `(0, 1, 2)` to character `("s", "i", "r")`. This changes little when running
+  the integrated models, and has greater implications for the API when editing
+  modules. But one change for integrated models is that the status vector passed
+  into the initial conditions functions must now be in this new format. This also
+  impacts the expansion of EpiModel for original models.
+* The `zeromarg` argument has been removed from `plot.netsim` for static network
+  plots (`type = "network"`) to reduce potential issues with setting default
   margins on plots. Now they must explicitly be set with standard par options.
 
 API CHANGES
