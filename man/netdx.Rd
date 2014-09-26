@@ -38,8 +38,8 @@ models fit with the \code{netest} function. Given the fitted model, \code{netdx}
 simulates a specified number of dynamic networks for a specified number of
 time steps per simulation. The network statistics in \code{nwstats.formula}
 are saved for each time step. Summary statistics for the formation model terms,
-as well as dissolution model statistics, are then calculated for access when
-printing or plotting the \code{netdx} object.
+as well as dissolution model and relational duration statistics, are then
+calculated for access when printing or plotting the \code{netdx} object.
 }
 \section{Control Arguments}{
 
