@@ -123,8 +123,8 @@ infection.net <- function(dat, at) {
           dat$attr$infTime[idsNewInf] <- at
 
           form <- get_nwparam(dat)$formation
-          t <- get_formula_terms(form)
-          if ("status" %in% t) {
+          fterms <- get_formula_terms(form)
+          if ("status" %in% fterms) {
             nw <- set.vertex.attribute(nw, "status", dat$attr$status)
           }
         }
@@ -143,6 +143,7 @@ infection.net <- function(dat, at) {
 
    # Save transmission matrix
    if (totInf > 0) {
+     del <- del[!duplicated(del$sus), ]
      if (at == 2) {
        dat$stats$transmat <- del
      } else {
@@ -316,8 +317,8 @@ recovery.net <- function(dat, at) {
 
   dat$attr$status <- status
   form <- get_nwparam(dat)$formation
-  t <- get_formula_terms(form)
-  if ("status" %in% t) {
+  fterms <- get_formula_terms(form)
+  if ("status" %in% fterms) {
     dat$nw <- set.vertex.attribute(dat$nw, "status", dat$attr$status)
   }
 

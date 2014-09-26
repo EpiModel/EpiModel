@@ -3,15 +3,15 @@
 \alias{copy_toall_attr}
 \title{Copies Vertex Attributes in Formation Formula to attr List}
 \usage{
-copy_toall_attr(dat, at, t)
+copy_toall_attr(dat, at, fterms)
 }
 \arguments{
 \item{dat}{master data object passed through \code{netsim} simulations.}
 
 \item{at}{current time step.}
 
-\item{t}{vector of attributes used in formation formula, usually as output of
-       \code{\link{get_formula_terms}}.}
+\item{fterms}{vector of attributes used in formation formula, usually as
+       output of \code{\link{get_formula_terms}}.}
 }
 \description{
 Copies the vertex attributes stored on the network object to the

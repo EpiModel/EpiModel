@@ -205,18 +205,18 @@ color_tea <- function(nd,
 #'
 #' @param dat master data object passed through \code{netsim} simulations.
 #' @param at current time step.
-#' @param t vector of attributes used in formation formula, usually as output of
-#'        \code{\link{get_formula_terms}}.
+#' @param fterms vector of attributes used in formation formula, usually as
+#'        output of \code{\link{get_formula_terms}}.
 #'
 #' @seealso \code{\link{get_formula_terms}}, \code{\link{get_attr_prop}},
 #'          \code{\link{update_nwattr}}.
 #' @keywords netUtils internal
 #' @export
 #'
-copy_toall_attr <- function(dat, at, t) {
+copy_toall_attr <- function(dat, at, fterms) {
 
   otha <- names(dat$nw$val[[1]])
-  otha <- otha[which(otha %in% t)]
+  otha <- otha[which(otha %in% fterms)]
 
   if (length(otha) > 0) {
     for (i in seq_along(otha)) {
@@ -539,25 +539,25 @@ edges_correct <- function(dat, at) {
 #'
 #' @param nw the \code{networkDynamic} object contained in the \code{netsim}
 #'        simulation.
-#' @param t vector of attributes used in formation formula, usually as output of
-#'        \code{\link{get_formula_terms}}.
-#' @param only.formula limit the tables to those terms only in \code{t}, otherwise
-#'        output proportions for all attributes on the network object.
+#' @param fterms vector of attributes used in formation formula, usually as
+#'        output of \code{\link{get_formula_terms}}.
+#' @param only.formula limit the tables to those terms only in \code{fterms},
+#'        otherwise output proportions for all attributes on the network object.
 #'
 #' @seealso \code{\link{get_formula_terms}}, \code{\link{copy_toall_attr}},
 #'          \code{\link{update_nwattr}}.
 #' @keywords netUtils internal
 #' @export
 #'
-get_attr_prop <- function(nw, t, only.formula = TRUE) {
+get_attr_prop <- function(nw, fterms, only.formula = TRUE) {
 
-  if (is.null(t)) {
+  if (is.null(fterms)) {
     return(NULL)
   }
 
   nwVal <- names(nw$val[[1]])
   if (only.formula == TRUE) {
-    nwVal <- nwVal[which(nwVal %in% t)]
+    nwVal <- nwVal[which(nwVal %in% fterms)]
   }
 
   out <- list()
@@ -569,6 +569,7 @@ get_attr_prop <- function(nw, t, only.formula = TRUE) {
 
   return(out)
 }
+
 
 #' @title Outputs Formula Terms into a Character Vector
 #'
@@ -585,17 +586,17 @@ get_attr_prop <- function(nw, t, only.formula = TRUE) {
 #'
 get_formula_terms <- function(formula) {
 
-  t <- attributes(terms.formula(formula))$term.labels
-  t <- strsplit(t, split = "[\"]")
-  tl <- sapply(t, length)
+  fterms <- attributes(terms.formula(formula))$term.labels
+  fterms <- strsplit(fterms, split = "[\"]")
+  tl <- sapply(fterms, length)
   if (all(tl == 1)) {
-    t <- NULL
+    fterms <- NULL
   } else {
-    t <- t[tl > 1]
-    t <- unique(sapply(t, function(x) x[2]))
+    fterms <- fterms[tl > 1]
+    fterms <- unique(sapply(fterms, function(x) x[2]))
   }
 
-  return(t)
+  return(fterms)
 }
 
 

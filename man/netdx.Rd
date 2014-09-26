@@ -3,7 +3,7 @@
 \alias{netdx}
 \title{Dynamic Network Model Diagnostics}
 \usage{
-netdx(x, nsims = 1, nsteps, nwstats.formula, set.control.ergm,
+netdx(x, nsims = 1, nsteps, nwstats.formula = "formation", set.control.ergm,
   set.control.stergm, verbose = TRUE, ncores = 1)
 }
 \arguments{

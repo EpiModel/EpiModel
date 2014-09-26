@@ -86,7 +86,7 @@
 netdx <- function(x,
                   nsims = 1,
                   nsteps,
-                  nwstats.formula,
+                  nwstats.formula = "formation",
                   set.control.ergm,
                   set.control.stergm,
                   verbose = TRUE,
@@ -109,19 +109,10 @@ netdx <- function(x,
   target.stats <- x$target.stats
   edapprox <- x$edapprox
 
-  if (nsims > 1 && ncores > 1) {
-    suppressPackageStartupMessages(require(foreach))
-    suppressPackageStartupMessages(require(doParallel))
-  }
-
   if (verbose == TRUE) {
     cat("======================")
     cat("\nRunning Diagnostics")
     cat("\n======================\n")
-  }
-
-  if (missing(nwstats.formula)) {
-    nwstats.formula <- formation
   }
 
   if (verbose == TRUE) {
@@ -264,7 +255,7 @@ netdx <- function(x,
                             stats.means, stats.sd)
 
   # Which formation terms are offsets?
-  is.offset.term <- grep(pattern = "offset",
+  is.offset.term <- grep(pattern = "offset[(]",
                          strsplit(as.character(formation), "[+]")[[2]])
 
 
