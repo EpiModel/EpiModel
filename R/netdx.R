@@ -24,8 +24,8 @@
 #' simulates a specified number of dynamic networks for a specified number of
 #' time steps per simulation. The network statistics in \code{nwstats.formula}
 #' are saved for each time step. Summary statistics for the formation model terms,
-#' as well as dissolution model statistics, are then calculated for access when
-#' printing or plotting the \code{netdx} object.
+#' as well as dissolution model and relational duration statistics, are then 
+#' calculated for access when printing or plotting the \code{netdx} object.
 #'
 #' @section Control Arguments:
 #' Models fit with the full STERGM method in \code{netest} (setting \code{edapprox}
@@ -279,7 +279,7 @@ netdx <- function(x,
   if (verbose == TRUE) {
     cat("\n- Calculating duration statistics")
   }
-
+  
 
   ## Duration calculations
   sim.df <- list()
@@ -337,7 +337,33 @@ netdx <- function(x,
   }
 
 
+  ## Dissolution calculations
 
+  if (verbose == TRUE) {
+    cat("\n- Calculating dissolution statistics")
+  }
+
+  ## Create a list of dissolution proportions (i.e. dissolutions/edges)
+  num.diss <- num.extant <- prop.diss <- list()
+
+  for (i in 1:length(diag.sim)) {      
+    prop.diss[[i]] <- sapply(1:nsteps, function(x) 
+      sum(sim.df[[i]]$terminus==x) / sum(sim.df[[i]]$onset < x & sim.df[[i]]$terminus>=x)
+    )    
+  }
+
+  # Create dissolution table for "dissolution = ~ offset(edges)"
+  if (dissolution == ~offset(edges)) {
+    dissolution.mean <- mean(unlist(prop.diss))
+    dissolution.sd <- sd(unlist(prop.diss))
+    dissolution.expected <- 1/(exp(coef.diss$coef.crude[1]) + 1)
+    stats.table.dissolution <- round(c(target = dissolution.expected,
+                              sim.mean = dissolution.mean,
+                              sim.sd = dissolution.sd), 5)
+  } else {
+    stop('Only ~offset(edges) dissolution models currently supported')
+  }
+  
   ## Save output
   out <- list()
   out$nw <- nw
@@ -354,9 +380,11 @@ netdx <- function(x,
   out$stats <- stats
   out$stats.table.formation <- stats.table.formation
   out$stats.table.duration <- stats.table.duration
+  out$stats.table.dissolution <- stats.table.dissolution
   out$edgelist <- sim.df
   out$pages <- pages
-
+  out$prop.diss <- prop.diss
+  
   class(out) <- "netdx"
   return(out)
 }
