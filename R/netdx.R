@@ -347,9 +347,9 @@ netdx <- function(x,
   num.diss <- num.extant <- prop.diss <- list()
 
   for (i in 1:length(diag.sim)) {      
-    num.diss[[i]] <- sapply(1:nsteps, function(x) sum(sim.df[[i]]$terminus==x))
-    num.extant[[i]] <- sapply(1:nsteps, function(x) sum(sim.df[[i]]$onset < x & sim.df[[i]]$terminus>=x))
-    prop.diss[[i]] <- num.diss[[i]]/num.extant[[i]]    
+    prop.diss[[i]] <- sapply(1:nsteps, function(x) 
+      sum(sim.df[[i]]$terminus==x) / sum(sim.df[[i]]$onset < x & sim.df[[i]]$terminus>=x)
+    )    
   }
 
   # Create dissolution table for "dissolution = ~ offset(edges)"
