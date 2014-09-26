@@ -110,6 +110,9 @@ print.netdx <- function(x, digits = 3, ...) {
   cat("\n----------------------- \n")
   print(round(x$stats.table.duration, digits = digits))
 
+  cat("\nDissolution Diagnostics")
+  cat("\n----------------------- \n")
+  print(round(x$stats.table.dissolution, digits = digits))
   invisible()
 }
 
