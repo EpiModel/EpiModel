@@ -24,8 +24,8 @@
 #' simulates a specified number of dynamic networks for a specified number of
 #' time steps per simulation. The network statistics in \code{nwstats.formula}
 #' are saved for each time step. Summary statistics for the formation model terms,
-#' as well as dissolution model statistics, are then calculated for access when
-#' printing or plotting the \code{netdx} object.
+#' as well as dissolution model and relational duration statistics, are then 
+#' calculated for access when printing or plotting the \code{netdx} object.
 #'
 #' @section Control Arguments:
 #' Models fit with the full STERGM method in \code{netest} (setting \code{edapprox}
@@ -352,23 +352,19 @@ netdx <- function(x,
     cat("\n- Calculating dissolution statistics")
   }
 
-  ## Create a merged vector of dissolution proportions (i.e. dissolutions/edges)
-  num.diss <- matrix(sapply(1:nsteps, function(x) sum(sim.df[[1]]$terminus==x)),nrow=1)
-  num.extant <- matrix(sapply(1:nsteps, function(x) sum(sim.df[[1]]$onset < x & sim.df[[1]]$terminus>=x)),nrow=1)
-  if (nsims > 1) {
-    for (i in 2:length(diag.sim)) {
-      num.diss <- rbind(num.diss, sapply(1:nsteps, function(x) sum(sim.df[[i]]$terminus==x)))
-      num.extant <- rbind(num.extant, sapply(1:nsteps, function(x) sum(sim.df[[i]]$onset < x & sim.df[[i]]$terminus>=x)))
-    }
+  ## Create a list of dissolution proportions (i.e. dissolutions/edges)
+  num.diss <- num.extant <- prop.diss <- list()
+
+  for (i in 1:length(diag.sim)) {      
+    num.diss[[i]] <- sapply(1:nsteps, function(x) sum(sim.df[[i]]$terminus==x))
+    num.extant[[i]] <- sapply(1:nsteps, function(x) sum(sim.df[[i]]$onset < x & sim.df[[i]]$terminus>=x))
+    prop.diss[[i]] <- num.diss[[i]]/num.extant[[i]]    
   }
-  prop.diss <- num.diss/num.extant
-  mean.prop.diss <- colMeans(prop.diss)
-  cum.mean.prop.diss <- cumsum(mean.prop.diss)/(1:length(mean.prop.diss))
-  
+
   # Create dissolution table for "dissolution = ~ offset(edges)"
   if (dissolution == ~offset(edges)) {
-    dissolution.mean <- mean(prop.diss)
-    dissolution.sd <- sd(prop.diss)
+    dissolution.mean <- mean(unlist(prop.diss))
+    dissolution.sd <- sd(unlist(prop.diss))
     dissolution.expected <- 1/(exp(coef.diss$coef.crude[1]) + 1)
     stats.table.dissolution <- round(c(target = dissolution.expected,
                               sim.mean = dissolution.mean,
@@ -396,7 +392,7 @@ netdx <- function(x,
   out$stats.table.dissolution <- stats.table.dissolution
   out$edgelist <- sim.df
   out$pages <- pages
-  out$cum.mean.prop.diss <- cum.mean.prop.diss
+  out$prop.diss <- prop.diss
   
   class(out) <- "netdx"
   return(out)
