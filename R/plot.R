@@ -893,8 +893,9 @@ plot.icm <- function(x,
 #' @param x an \code{EpiModel} object of class \code{netdx}.
 #' @param type plot type, with options of \code{"formation"} for network
 #'        model formation statistics, \code{"duration"} for dissolution model
-#'        statistics for average edge duration, or \code{"dissolution"} for dissolution model
-#'        statistics for proportion of ties dissolved per time step.
+#'        statistics for average edge duration, or \code{"dissolution"} for
+#'        dissolution model statistics for proportion of ties dissolved per time
+#'        step.
 #' @param sim vector of simulation numbers to plot, with the default to plot
 #'        all simulations.
 #' @param stats network statistics to plot, among those specified in the call
@@ -927,12 +928,13 @@ plot.icm <- function(x,
 #' \code{\link{edgelist_meanage}} function. The age is used as an estimator of
 #' the average duration of edges in the equilibrium state.
 #'
-#' The \code{dissolution} plot shows the proportion of the extant ties that are 
-#' dissolved at each time step, up until the maximum time step requested. Typically
-#' the proportion of ties that are dissolved is the reciprocal of the mean relational duration.
-#' This plot thus contains similar information to that in the duration plot, but should
-#' reach its expected value more quickly, since it is not subject to censoring.
-#' 
+#' The \code{dissolution} plot shows the proportion of the extant ties that are
+#' dissolved at each time step, up until the maximum time step requested.
+#' Typically the proportion of ties that are dissolved is the reciprocal of the
+#' mean relational duration. This plot thus contains similar information to that
+#' in the duration plot, but should reach its expected value more quickly, since
+#' it is not subject to censoring.
+#'
 #' The \code{plots.joined} argument will control whether the statistics
 #' in the \code{formation} plot are joined in one plot or plotted separately.
 #' The default is based on the number of network statistics requested. The
@@ -1270,47 +1272,47 @@ plot.netdx <- function(x,
 
   # Dissolution plot -----------------------------------------------------------
   if (type == "dissolution") {
-  
+
     prop.diss <- x$prop.diss
-    
+
     xlim <- c(1, nsteps)
     if (length(da) > 0 & !is.null(da$xlim)) {
       xlim <- da$xlim
     }
-    
+
     ylim <- c(0, max(sapply(prop.diss, max, na.rm = TRUE)) * 1.2)
     if (length(da) > 0 & !is.null(da$ylim)) {
       ylim <- da$ylim
     }
-    
+
     if (missing(sim.lwd)) {
       sim.lwd <- max(c(1-(nsims*0.05), 0.5))
     }
-    
+
     if (missing(sim.col)) {
       sim.col <- rep("darkgrey", nsims)
     }
     if (missing(targ.col)) {
       targ.col <- "black"
     }
-    
+
     # Default ylab
     if (length(da) > 0 && !is.null(da$ylab)) {
       ylab <- da$ylab
     } else {
-      ylab <- "Proportion of ties dissolving"
+      ylab <- "Prop. Edges Dissolving"
     }
-    
+
     # Default xlab
     if (length(da) > 0 && !is.null(da$xlab)) {
       xlab <- da$xlab
     } else {
       xlab <- "time"
     }
-    
+
     # Edges only dissolution model
     if (x$dissolution == ~offset(edges)) {
-      
+
       plot(x = 1, y = 1, type = "n",
            xlim = xlim, ylim = ylim,
            xlab = xlab, ylab = ylab)

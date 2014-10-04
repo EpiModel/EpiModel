@@ -12,8 +12,9 @@
 
 \item{type}{plot type, with options of \code{"formation"} for network
 model formation statistics, \code{"duration"} for dissolution model
-statistics for average edge duration, or \code{"dissolution"} for dissolution model
-statistics for proportion of ties dissolved per time step.}
+statistics for average edge duration, or \code{"dissolution"} for
+dissolution model statistics for proportion of ties dissolved per time
+step.}
 
 \item{sim}{vector of simulation numbers to plot, with the default to plot
 all simulations.}
@@ -62,10 +63,11 @@ step, up until the maximum time step requested. This is calculated with the
 the average duration of edges in the equilibrium state.
 
 The \code{dissolution} plot shows the proportion of the extant ties that are
-dissolved at each time step, up until the maximum time step requested. Typically
-the proportion of ties that are dissolved is the reciprocal of the mean relational duration.
-This plot thus contains similar information to that in the duration plot, but should
-reach its expected value more quickly, since it is not subject to censoring.
+dissolved at each time step, up until the maximum time step requested.
+Typically the proportion of ties that are dissolved is the reciprocal of the
+mean relational duration. This plot thus contains similar information to that
+in the duration plot, but should reach its expected value more quickly, since
+it is not subject to censoring.
 
 The \code{plots.joined} argument will control whether the statistics
 in the \code{formation} plot are joined in one plot or plotted separately.
