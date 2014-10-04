@@ -24,7 +24,7 @@
 #' simulates a specified number of dynamic networks for a specified number of
 #' time steps per simulation. The network statistics in \code{nwstats.formula}
 #' are saved for each time step. Summary statistics for the formation model terms,
-#' as well as dissolution model and relational duration statistics, are then 
+#' as well as dissolution model and relational duration statistics, are then
 #' calculated for access when printing or plotting the \code{netdx} object.
 #'
 #' @section Control Arguments:
@@ -279,7 +279,7 @@ netdx <- function(x,
   if (verbose == TRUE) {
     cat("\n- Calculating duration statistics")
   }
-  
+
 
   ## Duration calculations
   sim.df <- list()
@@ -344,13 +344,33 @@ netdx <- function(x,
   }
 
   ## Create a list of dissolution proportions (i.e. dissolutions/edges)
-  num.diss <- num.extant <- prop.diss <- list()
+  if (nsims == 1 || ncores == 1) {
+    if (verbose == TRUE) {
+      cat("\n  |")
+    }
+    prop.diss <- list()
+    for (i in 1:length(diag.sim)) {
+      prop.diss[[i]] <- sapply(1:nsteps, function(x) sum(sim.df[[i]]$terminus==x) /
+                                                         sum(sim.df[[i]]$onset < x &
+                                                             sim.df[[i]]$terminus>=x))
+      if (verbose == TRUE) {
+        cat("*")
+      }
+    }
+    if (verbose == TRUE) {
+      cat("|")
+    }
+  } else {
+    cluster.size <- min(nsims, ncores)
+    registerDoParallel(cluster.size)
 
-  for (i in 1:length(diag.sim)) {      
-    prop.diss[[i]] <- sapply(1:nsteps, function(x) 
-      sum(sim.df[[i]]$terminus==x) / sum(sim.df[[i]]$onset < x & sim.df[[i]]$terminus>=x)
-    )    
+    prop.diss <- foreach(i = 1:nsims) %dopar% {
+       sapply(1:nsteps, function(x) sum(sim.df[[i]]$terminus==x) /
+                                        sum(sim.df[[i]]$onset < x &
+                                            sim.df[[i]]$terminus>=x))
+    }
   }
+
 
   # Create dissolution table for "dissolution = ~ offset(edges)"
   if (dissolution == ~offset(edges)) {
@@ -363,7 +383,7 @@ netdx <- function(x,
   } else {
     stop('Only ~offset(edges) dissolution models currently supported')
   }
-  
+
   ## Save output
   out <- list()
   out$nw <- nw
@@ -384,7 +404,7 @@ netdx <- function(x,
   out$edgelist <- sim.df
   out$pages <- pages
   out$prop.diss <- prop.diss
-  
+
   class(out) <- "netdx"
   return(out)
 }
