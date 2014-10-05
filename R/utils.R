@@ -170,6 +170,21 @@ transco <- function(col,
 }
 
 
+#' @title Stable Sampling Function
+#'
+#' @description Provides a sampling function useful for dynamic simulations, in
+#'              which the length of the input vector may be multiple lengths and
+#'              the size of the sample may be 0.
+#'
+#' @param x Either a vector of one or more elements from which to choose, or a
+#'        positive integer.
+#' @param size a non-negative integer giving the number of items to choose.
+#' @param replace Should sampling be with replacement?
+#' @param prob A vector of probability weights for obtaining the elements of the
+#'        vector being sampled.
+#'
+#' @export
+#' @keywords internal
 ssample <- function(x, size, replace = FALSE, prob = NULL) {
 
   if (length(x) > 1) {
