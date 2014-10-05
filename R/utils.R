@@ -62,7 +62,15 @@ brewer_ramp <- function(n, plt, delete.lights = TRUE){
   return(pal(n))
 }
 
-
+#' @title Delete Elements from Attribute List
+#'
+#' @description Deletes elements from the master attribute list.
+#'
+#' @param attrList Attribute list.
+#' @param ids ID numbers to delete from the list.
+#'
+#' @export
+#' @keywords internal
 deleteAttr <- function(attrList, ids) {
   if (length(ids) > 0) {
     attrList <- lapply(attrList, function(x) x[-ids])
