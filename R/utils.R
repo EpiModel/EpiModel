@@ -168,37 +168,6 @@ deleteAttr <- function(attrList, ids) {
 }
 
 
-
-sampledf <- function(df, size, replace=FALSE, prob=NULL, group, status){
-
-  if (!missing(group) && !missing(status))
-    elig.ids <- df$ids[df$group %in% group & df$status %in% status]
-
-  if (missing(group) && !missing(status))
-    elig.ids <- df$ids[df$status %in% status]
-
-  if (!missing(group) && missing(status))
-    elig.ids <- df$ids[df$group %in% group]
-
-  if (missing(group) && missing(status))
-    elig.ids <- df$ids
-
-  if (length(elig.ids) > 1) {
-    ids <- sample(elig.ids, size, replace, prob)
-  } else {
-    if (size > 0) {
-      ids <- elig.ids
-    } else {
-      ids <- NULL
-    }
-  }
-
-  return(ids)
-}
-
-
-
-
 ssample <- function(x, size, replace = FALSE, prob = NULL) {
 
   if (length(x) > 1) {
