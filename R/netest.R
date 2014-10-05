@@ -225,7 +225,6 @@ netest <- function(nw,
 
     # Reduce size of output object
     fit$initialfit <- NULL
-    fit$newnetwork <- NULL
     fit$constrained <- NULL
     environment(fit$sample.obs) <- NULL
     environment(fit$reference) <- NULL
