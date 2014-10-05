@@ -17,7 +17,22 @@ verbose.dcm <- function(x, type, s) {
 
 }
 
-
+#' @title Progress Print Module for Stochastic Individual Contact Models
+#'
+#' @description This function prints progress from stochastic individual contact
+#'              models simulated with \code{icm} to the console.
+#'
+#' @param x if the \code{type} is "startup", then an object of class
+#'        \code{control.icm}, otherwise the all master data object in \code{icm}
+#'        simulations.
+#' @param type progress type, either of "startup" for starting messages before
+#'        all simulations, or "progress" for time step specific messages.
+#' @param s current simulation number, if type is "progress".
+#' @param at current time step, if type is "progress".
+#'
+#' @export
+#' @keywords internal
+#'
 verbose.icm <- function(x, type, s, at) {
 
   if (type == "startup") {
