@@ -1,5 +1,66 @@
 
-# Exported Functions ------------------------------------------------------
+#' @title RColorBrewer Color Ramp for EpiModel Plots
+#'
+#' @description Returns vector of colors consistent with a high-brightness set
+#'              of colors from an \code{RColorBrewer} palette.
+#'
+#' @param plt \code{RColorBrewer} palette from \code{\link{brewer.pal}}
+#' @param n number of colors to return
+#' @param delete.lights delete the lightest colors from the color palette,
+#'        helps with plotting in many high-contrast palettes
+#'
+#' @details
+#' \code{RColorBrewer} provides easy access to helpful color palettes, but the
+#' built-in palettes are limited to the set of colors in the existing palette.
+#' This function expands the palette size to any number of colors by filling
+#' in the gaps. Also, colors within the "div" and "seq" set of palettes whose
+#' colors are very light (close to white) are deleted by default for better
+#' visualization of plots.
+#'
+#' @return
+#' A vector of length equal to \code{n} with a range of color values consistent
+#' with an RColorBrewer color palette.
+#'
+#' @seealso \code{\link{RColorBrewer}}
+#' @keywords colorUtils internal
+#' @export
+#'
+#' @examples
+#' # Shows a 100-color ramp for 4 RColorBrewer palettes
+#' par(mfrow = c(2, 2), mar=c(1, 1, 2, 1))
+#' pals <- c("Spectral", "Greys", "Blues", "Set1")
+#' for (i in seq_along(pals)) {
+#'  plot(1:100, 1:100, type = "n", axes = FALSE, main = pals[i])
+#'  abline(v = 1:100, lwd = 6, col = brewer_ramp(100, pals[i]))
+#' }
+#'
+brewer_ramp <- function(n, plt, delete.lights = TRUE){
+
+  pltmax <- brewer.pal.info[row.names(brewer.pal.info)==plt, ]$maxcolors
+  pltcat <- brewer.pal.info[row.names(brewer.pal.info)==plt, ]$category
+
+  if (pltcat == "div") {
+    if (delete.lights == TRUE) {
+      colors <- brewer.pal(pltmax, plt)[-c(4:7)]
+    } else {
+      colors <- brewer.pal(pltmax, plt)
+    }
+  }
+  if (pltcat == "qual") {
+    colors <- brewer.pal(pltmax, plt)
+  }
+  if (pltcat == "seq") {
+    if (delete.lights == TRUE) {
+      colors <- rev(brewer.pal(pltmax, plt)[-c(1:3)])
+    } else {
+      colors <- rev(brewer.pal(pltmax, plt))
+    }
+  }
+
+  pal <- colorRampPalette(colors)
+
+  return(pal(n))
+}
 
 #' @title Obtain Transparent Colors
 #'
@@ -92,73 +153,6 @@ transco <- function(col,
   }
 }
 
-
-#' @title RColorBrewer Color Ramp for EpiModel Plots
-#'
-#' @description Returns vector of colors consistent with a high-brightness set
-#'              of colors from an \code{RColorBrewer} palette.
-#'
-#' @param plt \code{RColorBrewer} palette from \code{\link{brewer.pal}}
-#' @param n number of colors to return
-#' @param delete.lights delete the lightest colors from the color palette,
-#'        helps with plotting in many high-contrast palettes
-#'
-#' @details
-#' \code{RColorBrewer} provides easy access to helpful color palettes, but the
-#' built-in palettes are limited to the set of colors in the existing palette.
-#' This function expands the palette size to any number of colors by filling
-#' in the gaps. Also, colors within the "div" and "seq" set of palettes whose
-#' colors are very light (close to white) are deleted by default for better
-#' visualization of plots.
-#'
-#' @return
-#' A vector of length equal to \code{n} with a range of color values consistent
-#' with an RColorBrewer color palette.
-#'
-#' @seealso \code{\link{RColorBrewer}}
-#' @keywords colorUtils internal
-#' @export
-#'
-#' @examples
-#' # Shows a 100-color ramp for 4 RColorBrewer palettes
-#' par(mfrow = c(2, 2), mar=c(1, 1, 2, 1))
-#' pals <- c("Spectral", "Greys", "Blues", "Set1")
-#' for (i in seq_along(pals)) {
-#'  plot(1:100, 1:100, type = "n", axes = FALSE, main = pals[i])
-#'  abline(v = 1:100, lwd = 6, col = brewer_ramp(100, pals[i]))
-#' }
-#'
-brewer_ramp <- function(n, plt, delete.lights = TRUE){
-
-  pltmax <- brewer.pal.info[row.names(brewer.pal.info)==plt, ]$maxcolors
-  pltcat <- brewer.pal.info[row.names(brewer.pal.info)==plt, ]$category
-
-  if (pltcat == "div") {
-    if (delete.lights == TRUE) {
-      colors <- brewer.pal(pltmax, plt)[-c(4:7)]
-    } else {
-      colors <- brewer.pal(pltmax, plt)
-    }
-  }
-  if (pltcat == "qual") {
-    colors <- brewer.pal(pltmax, plt)
-  }
-  if (pltcat == "seq") {
-    if (delete.lights == TRUE) {
-      colors <- rev(brewer.pal(pltmax, plt)[-c(1:3)])
-    } else {
-      colors <- rev(brewer.pal(pltmax, plt))
-    }
-  }
-
-  pal <- colorRampPalette(colors)
-
-  return(pal(n))
-}
-
-
-
-# Non-Exported Functions --------------------------------------------------
 
 deleteAttr <- function(attrList, ids) {
   if (length(ids) > 0) {
