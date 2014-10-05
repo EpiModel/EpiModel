@@ -62,6 +62,14 @@ brewer_ramp <- function(n, plt, delete.lights = TRUE){
   return(pal(n))
 }
 
+
+deleteAttr <- function(attrList, ids) {
+  if (length(ids) > 0) {
+    attrList <- lapply(attrList, function(x) x[-ids])
+  }
+  return(attrList)
+}
+
 #' @title Obtain Transparent Colors
 #'
 #' @description Returns an RGB transparent color from any standard R color.
@@ -151,14 +159,6 @@ transco <- function(col,
   } else {
     return(t2)
   }
-}
-
-
-deleteAttr <- function(attrList, ids) {
-  if (length(ids) > 0) {
-    attrList <- lapply(attrList, function(x) x[-ids])
-  }
-  return(attrList)
 }
 
 
