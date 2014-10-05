@@ -26,19 +26,22 @@ Simulates stochastic network epidemic models for infectious
 \details{
 This is an experimental implementation of the \code{\link{netsim}} function
 that runs model simulations in parallel, using the \code{doParallel} and
-\code{doMPI} libraries.
+\code{doMPI} R packages.
 
 To run models in parallel on a single node, add an argument to the control
 settings called \code{ncores} that is equal to the number of parallel cores
 the simulations should be initiated on. Use \code{\link{detectCores}} to find
-the maximum on a node. Also available is an MPI option, called by adding a
-control argument \code{par.type} set to \code{"mpi"}. This requires a local
-MPI installation on the computing cluster, and the run of a bash script with
-an mpirun call containing the R script with the \code{netsim_parallel} call.
+the maximum on a node.
 
-This has been tested on Linux, Mac, and Windows but no guarantees are made
-that it will work on every platform. It is best-suited to be run in batch
-mode.
+Also available is an MPI option, called by adding a control argument
+\code{par.type} set to \code{"mpi"}. This requires a local MPI installation on
+the computing cluster, and the run of a bash script with an mpirun call
+containing the R script with the \code{netsim_parallel} call.
+
+The default single-node method has been tested on Linux, Mac, and Windows
+platforms. The MPI method is only intended to be run on Linux-based clusters
+with an MPI installation, although it may be possible to run on Mac or Windows.
+Both methods are best-suited to be run in non-interactive batch mode.
 
 Note that this function may be folded into \code{\link{netsim}} and deprecated
 in the future.
