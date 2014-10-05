@@ -167,15 +167,6 @@ deleteAttr <- function(attrList, ids) {
   return(attrList)
 }
 
-eval_list <- function(x) {
-
-  largs <- as.numeric(which(sapply(x, class) %in% c("call", "name")))
-  for (i in largs) {
-    x[[i]] <- eval.parent(x[[i]], n = 2)
-  }
-
-  return(x)
-}
 
 
 sampledf <- function(df, size, replace=FALSE, prob=NULL, group, status){
@@ -206,32 +197,6 @@ sampledf <- function(df, size, replace=FALSE, prob=NULL, group, status){
 }
 
 
-split_list <- function(x, exclude) {
-
-  largs <- rep(FALSE, length(x))
-  for (i in seq_along(x)) {
-    largs[i] <- class(eval.parent(x[[i]], n = 2)) == "list"
-  }
-  largs <- which(largs)
-
-  if (!missing(exclude)) {
-    largs <- largs[-which(names(largs) %in% exclude)]
-  }
-
-  largsn <- names(largs)
-  if (length(largsn) > 0) {
-    for (i in seq_along(largsn)) {
-      crlist <- eval.parent(x[[largsn[i]]], n = 2)
-      crlistn <- names(crlist)
-      for (j in seq_along(crlistn)) {
-        x[[crlistn[j]]] <- crlist[[j]]
-      }
-      x[[largsn[[i]]]] <- NULL
-    }
-  }
-
-  return(x)
-}
 
 
 ssample <- function(x, size, replace = FALSE, prob = NULL) {
