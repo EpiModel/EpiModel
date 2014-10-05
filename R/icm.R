@@ -101,7 +101,9 @@ icm <- function(param, init, control) {
   for (s in 1:control$nsims) {
 
     ## Initialization module
-    dat <- do.call(control[["initialize.FUN"]], list(param, init, control))
+    if (!is.null(control[["initialize.FUN"]])) {
+      dat <- do.call(control[["initialize.FUN"]], list(x, param, init, control))
+    }
 
 
     # Timestep loop
@@ -116,23 +118,33 @@ icm <- function(param, init, control) {
       }
 
       ## Infection
-      dat <- do.call(control[["infection.FUN"]], list(dat, at))
+      if (!is.null(control[["infection.FUN"]])) {
+        dat <- do.call(control[["infection.FUN"]], list(dat, at))
+      }
 
 
       ## Recovery
-      dat <- do.call(control[["recovery.FUN"]], list(dat, at))
+      if (!is.null(control[["recovery.FUN"]])) {
+        dat <- do.call(control[["recovery.FUN"]], list(dat, at))
+      }
 
 
       ## Mortality
-      dat <-  do.call(control[["deaths.FUN"]], list(dat, at))
+      if (!is.null(control[["deaths.FUN"]])) {
+        dat <- do.call(control[["deaths.FUN"]], list(dat, at))
+      }
 
 
       ## Birth Module
-      dat <-  do.call(control[["births.FUN"]], list(dat, at))
+      if (!is.null(control[["births.FUN"]])) {
+        dat <- do.call(control[["births.FUN"]], list(dat, at))
+      }
 
 
       ## Outputs
-      dat <-  do.call(control[["get_prev.FUN"]], list(dat, at))
+      if (!is.null(control[["get_prev.FUN"]])) {
+        dat <- do.call(control[["get_prev.FUN"]], list(dat, at))
+      }
 
 
       ## Track progress
