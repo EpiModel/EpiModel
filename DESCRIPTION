@@ -19,7 +19,7 @@ Authors@R: c(person("Samuel", "Jenness",
     role=c("ctb"), email="lxwang@uw.edu"))
 License: GPL-2
 URL: http://statnet.github.io/EpiModel
-BugReports: https://github.com/statnet/EpiModelPreview/issues
+BugReports: https://github.com/statnet/EpiModel/issues
 Depends:
     R (>= 3.0),
     network (>= 1.9.0),
