@@ -102,7 +102,7 @@ icm <- function(param, init, control) {
 
     ## Initialization module
     if (!is.null(control[["initialize.FUN"]])) {
-      dat <- do.call(control[["initialize.FUN"]], list(x, param, init, control))
+      dat <- do.call(control[["initialize.FUN"]], list(param, init, control))
     }
 
 
