@@ -62,6 +62,7 @@ brewer_ramp <- function(n, plt, delete.lights = TRUE){
   return(pal(n))
 }
 
+
 #' @title Delete Elements from Attribute List
 #'
 #' @description Deletes elements from the master attribute list.
@@ -77,6 +78,37 @@ deleteAttr <- function(attrList, ids) {
   }
   return(attrList)
 }
+
+#' @title Get Arguments from Parent Function
+#'
+#' @description Gets the arguments and values from the parent function environment
+#'              and returns them in a list.
+#'
+#' @param ... dot arguments in function.
+#'
+#' @export
+#' @keywords internal
+get_args <- function(...) {
+
+  p <- list()
+  formal.args <- formals(sys.function(1))
+  formal.args[["..."]] <- NULL
+  for (arg in names(formal.args)) {
+    if (as.logical(mget(arg, envir = parent.frame()) != "")) {
+      p[arg] <- list(get(arg, envir = parent.frame()))
+    }
+  }
+  dot.args <- list(...)
+  names.dot.args <- names(dot.args)
+  if (length(dot.args) > 0) {
+    for (i in 1:length(dot.args)) {
+      p[[names.dot.args[i]]] <- dot.args[[i]]
+    }
+  }
+
+  return(p)
+}
+
 
 #' @title Obtain Transparent Colors
 #'
@@ -200,3 +232,4 @@ ssample <- function(x, size, replace = FALSE, prob = NULL) {
   }
 
 }
+
