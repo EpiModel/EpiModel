@@ -124,25 +124,9 @@ param.dcm <- function(inf.prob,
                       balance,
                       ...) {
 
-  # Get arguments
-  p <- list()
-  formal.args <- formals(sys.function())
-  formal.args[["..."]] <- NULL
-  for (arg in names(formal.args)) {
-    if (as.logical(mget(arg) != "")) {
-      p[arg] <- list(get(arg))
-    }
-  }
-  dot.args <- list(...)
-  names.dot.args <- names(dot.args)
-  if (length(dot.args) > 0) {
-    for (i in 1:length(dot.args)) {
-      p[[names.dot.args[i]]] <- dot.args[[i]]
-    }
-  }
 
+  p <- get_args(...)
 
-  ## Out
   class(p) <- "param.dcm"
   return(p)
 }
@@ -220,21 +204,7 @@ param.icm <- function(inf.prob,
                       ...) {
 
   # Get arguments
-  p <- list()
-  formal.args <- formals(sys.function())
-  formal.args[["..."]] <- NULL
-  for (arg in names(formal.args)) {
-    if (as.logical(mget(arg) != "")) {
-      p[arg] <- list(get(arg))
-    }
-  }
-  dot.args <- list(...)
-  names.dot.args <- names(dot.args)
-  if (length(dot.args) > 0) {
-    for (i in 1:length(dot.args)) {
-      p[[names.dot.args[i]]] <- dot.args[[i]]
-    }
-  }
+  p <- get_args(...)
 
 
   ## Defaults and checks
@@ -365,21 +335,7 @@ param.net <- function(inf.prob,
                       ...) {
 
   # Get arguments
-  p <- list()
-  formal.args <- formals(sys.function())
-  formal.args[["..."]] <- NULL
-  for (arg in names(formal.args)) {
-    if (as.logical(mget(arg) != "")) {
-      p[arg] <- list(get(arg))
-    }
-  }
-  dot.args <- list(...)
-  names.dot.args <- names(dot.args)
-  if (length(dot.args) > 0) {
-    for (i in 1:length(dot.args)) {
-      p[[names.dot.args[i]]] <- dot.args[[i]]
-    }
-  }
+  p <- get_args(...)
 
 
   ## Defaults and checks
