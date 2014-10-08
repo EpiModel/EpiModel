@@ -112,7 +112,9 @@ model are:
 }
 }
 \references{
-\url{http://statnet.github.io/EpiModel}
+The main website is at \url{http://statnet.github.io/EpiModel},
+            and the source code is at \url{http://github.com/statnet/EpiModel}.
+            Bug reports and feature requests may be filed there.
 }
 \keyword{package}
 
