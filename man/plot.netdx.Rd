@@ -97,7 +97,7 @@ est <- netest(nw,
 dx <- netdx(est,
             nsims = 10,
             nsteps = 100,
-            nwstats.formula = ~ edges + meandeg + degree(1:2) + isolates + concurrent +
+            nwstats.formula = ~ edges + meandeg + concurrent +
                                 nodefactor("sex", base = 0) +
                                 nodematch("sex"),
             verbose = FALSE)
