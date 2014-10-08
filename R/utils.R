@@ -56,6 +56,9 @@ brewer_ramp <- function(n, plt, delete.lights = TRUE){
       colors <- rev(brewer.pal(pltmax, plt))
     }
   }
+  if (plt == "Set1") {
+    colors <- brewer.pal(9, "Set1")[-6]
+  }
 
   pal <- colorRampPalette(colors)
 
