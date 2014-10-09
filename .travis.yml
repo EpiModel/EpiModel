@@ -13,7 +13,7 @@ after_failure:
 
 notifications:
   email:
-    on_success: change
+    on_success: never
     on_failure: change
 
 env:
