@@ -67,7 +67,6 @@ test_that("SI, 2G, CL: 1 sim", {
                          nsims = 1,
                          verbose = FALSE)
   x <- icm(param, init, control)
-  expect_equal(min(x$epi$i.num), 1)
   expect_equal(max(x$epi$num), 501)
   test_icm(x)
 })
