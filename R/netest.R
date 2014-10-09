@@ -186,7 +186,7 @@ netest <- function(nw,
     out$fit <- fit
     out$formation <- formation
     out$target.stats <- target.stats
-    out$target.stats.names <- names(fit$target.stats)[!fit$formation.fit$offset]
+    out$target.stats.names <- names(fit$formation.fit$coef)[!fit$formation.fit$offset]
     out$coef.form <- coef.form$coef
     out$dissolution <- dissolution
     out$coef.diss <- coef.diss
@@ -236,7 +236,7 @@ netest <- function(nw,
     out$fit <- fit
     out$formation <- formation
     out$target.stats <- target.stats
-    out$target.stats.names <- names(fit$target.stats)[!fit$offset]
+    out$target.stats.names <- names(fit$coef)[!fit$offset]
     out$coef.form <- coef.form
     out$coef.form.crude <- coef.form.crude
     out$dissolution <- dissolution
