@@ -13,9 +13,10 @@ after_failure:
 
 notifications:
   email:
-    on_success: change
+    on_success: never
     on_failure: change
 
 env:
   - global:
     - _R_CHECK_FORCE_SUGGESTS_=0
+    - NOT_CRAN=true
