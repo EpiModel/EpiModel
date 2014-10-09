@@ -12,7 +12,6 @@ test_that("SI, 1G, CL: 1 run", {
   expect_equal(x$epi$i.num[150,1], 388.1552, tol = 0.0001)
   expect_equal(max(x$epi$i.num), 501)
   expect_equal(max(x$epi$s.num+x$epi$i.num), 501)
-  expect_equal(max(x$epi$s.num+x$epi$i.num), 1000)  ## REMOVE
 })
 
 test_that("SI, 1G, CL: varying inf.prob", {
