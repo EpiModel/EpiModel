@@ -195,7 +195,7 @@ print.param.dcm <- function(x, ...) {
   cat("DCM Parameters")
   cat("\n===========================\n")
   for (i in pToPrint) {
-    if (class(x[[i]]) == "numeric" && length(x[[i]]) > 10) {
+    if (class(x[[i]]) %in% c("integer", "numeric") && length(x[[i]]) > 10) {
       cat(names(x)[i], "=", x[[i]][1:5], "...", fill = 80)
     } else if (class(x[[i]]) == "data.frame") {
       cat(names(x)[i], "= <data.frame>\n")
@@ -217,7 +217,7 @@ print.param.icm <- function(x, ...) {
   cat("ICM Parameters")
   cat("\n===========================\n")
   for (i in pToPrint) {
-    if (class(x[[i]]) == "numeric" && length(x[[i]]) > 10) {
+    if (class(x[[i]]) %in% c("integer", "numeric") && length(x[[i]]) > 10) {
       cat(names(x)[i], "=", x[[i]][1:5], "...", fill = 80)
     } else if (class(x[[i]]) == "data.frame") {
       cat(names(x)[i], "= <data.frame>\n")
@@ -239,7 +239,7 @@ print.param.net <- function(x, ...) {
   cat("Network Model Parameters")
   cat("\n===========================\n")
   for (i in pToPrint) {
-    if (class(x[[i]]) == "numeric" && length(x[[i]]) > 10) {
+    if (class(x[[i]]) %in% c("integer", "numeric") && length(x[[i]]) > 10) {
       cat(names(x)[i], "=", x[[i]][1:5], "...", fill = 80)
     } else if (class(x[[i]]) == "data.frame") {
       cat(names(x)[i], "= <data.frame>\n")
@@ -256,10 +256,20 @@ print.param.net <- function(x, ...) {
 #' @export
 print.init.dcm <- function(x, ...) {
 
+  pToPrint <- seq_along(x)
+
   cat("DCM Initial Conditions")
   cat("\n===========================\n")
-  for (i in seq_along(x)) {
-    cat(names(x)[i], "=", x[[i]], fill = 80)
+  for (i in pToPrint) {
+    if (class(x[[i]]) %in% c("integer", "numeric") && length(x[[i]]) > 10) {
+      cat(names(x)[i], "=", x[[i]][1:5], "...", fill = 80)
+    } else if (class(x[[i]]) == "data.frame") {
+      cat(names(x)[i], "= <data.frame>\n")
+    } else if (class(x[[i]]) == "list") {
+      cat(names(x)[i], "= <list>\n")
+    } else {
+      cat(names(x)[i], "=", x[[i]], fill = 80)
+    }
   }
 
   invisible()
@@ -268,10 +278,20 @@ print.init.dcm <- function(x, ...) {
 #' @export
 print.init.icm <- function(x, ...) {
 
+  pToPrint <- seq_along(x)
+
   cat("ICM Initial Conditions")
   cat("\n===========================\n")
-  for (i in seq_along(x)) {
-    cat(names(x)[i], "=", x[[i]], fill = 80)
+  for (i in pToPrint) {
+    if (class(x[[i]]) %in% c("integer", "numeric") && length(x[[i]]) > 10) {
+      cat(names(x)[i], "=", x[[i]][1:5], "...", fill = 80)
+    } else if (class(x[[i]]) == "data.frame") {
+      cat(names(x)[i], "= <data.frame>\n")
+    } else if (class(x[[i]]) == "list") {
+      cat(names(x)[i], "= <list>\n")
+    } else {
+      cat(names(x)[i], "=", x[[i]], fill = 80)
+    }
   }
 
   invisible()
@@ -280,11 +300,17 @@ print.init.icm <- function(x, ...) {
 #' @export
 print.init.net <- function(x, ...) {
 
+  pToPrint <- seq_along(x)
+
   cat("Network Model Initial Conditions")
   cat("\n=================================\n")
-  for (i in seq_along(x)) {
-    if (class(x[[i]]) == "numeric" && length(x[[i]]) > 5) {
-      cat(names(x)[i], "=", x[[i]][1:3], "...", fill = 80)
+  for (i in pToPrint) {
+    if (class(x[[i]]) %in% c("integer", "numeric") && length(x[[i]]) > 10) {
+      cat(names(x)[i], "=", x[[i]][1:5], "...", fill = 80)
+    } else if (class(x[[i]]) == "data.frame") {
+      cat(names(x)[i], "= <data.frame>\n")
+    } else if (class(x[[i]]) == "list") {
+      cat(names(x)[i], "= <list>\n")
     } else {
       cat(names(x)[i], "=", x[[i]], fill = 80)
     }
