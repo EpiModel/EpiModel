@@ -6,15 +6,16 @@
 netsim_parallel(x, param, init, control, merge = TRUE)
 }
 \arguments{
-\item{x}{fitted network model object, as an object of class
-\code{\link{netest}}.}
+\item{x}{Fitted network model object, as an object of class \code{netest}.
+Alternatively, if restarting a previous simulation, may be an object of
+class \code{netsim}.}
 
-\item{param}{model parameters, as an object of class \code{\link{param.net}}.}
+\item{param}{Model parameters, as an object of class \code{param.net}.}
 
-\item{init}{initial conditions, as an object of class \code{\link{init.net}}.}
+\item{init}{Initial conditions, as an object of class \code{init.net}.}
 
-\item{control}{control settings, as an object of class
-       \code{\link{control.net}}.}
+\item{control}{Control settings, as an object of class
+       \code{control.net}.}
 
 \item{merge}{if \code{TRUE}, merge parallel simulations into one \code{netsim}
        object after simulation.}

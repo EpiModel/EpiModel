@@ -4,12 +4,13 @@
 #' @description Simulates stochastic network epidemic models for infectious
 #'              disease.
 #'
-#' @param x fitted network model object, as an object of class
-#'        \code{\link{netest}}.
-#' @param param model parameters, as an object of class \code{\link{param.net}}.
-#' @param init initial conditions, as an object of class \code{\link{init.net}}.
-#' @param control control settings, as an object of class
-#'        \code{\link{control.net}}.
+#' @param x Fitted network model object, as an object of class \code{netest}.
+#'        Alternatively, if restarting a previous simulation, may be an object of
+#'        class \code{netsim}.
+#' @param param Model parameters, as an object of class \code{param.net}.
+#' @param init Initial conditions, as an object of class \code{init.net}.
+#' @param control Control settings, as an object of class
+#'        \code{control.net}.
 #'
 #' @details
 #' Stochastic network models move beyond stochastic individual contact models by
