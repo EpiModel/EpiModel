@@ -178,6 +178,7 @@ netest <- function(nw,
                   offset.coef.diss = coef.diss$coef.crude,
                   constraints = constraints,
                   estimate = "EGMME",
+                  eval.loglik = FALSE,
                   control = set.control.stergm)
 
     coef.form <- fit$formation.fit
