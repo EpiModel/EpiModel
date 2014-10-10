@@ -127,7 +127,7 @@ netdx <- function(x,
 
     if (nsims == 1 || ncores == 1) {
       diag.sim <- list()
-      if (verbose == TRUE) {
+      if (verbose == TRUE & nsims > 1) {
         cat("\n  |")
       }
       for (i in 1:nsims) {
@@ -136,11 +136,11 @@ netdx <- function(x,
                                   monitor = nwstats.formula,
                                   nsim = 1,
                                   control = set.control.stergm)
-        if (verbose == TRUE) {
+        if (verbose == TRUE & nsims > 1) {
           cat("*")
         }
       }
-      if (verbose == TRUE) {
+      if (verbose == TRUE & nsims > 1) {
         cat("|")
       }
     } else {
@@ -168,7 +168,7 @@ netdx <- function(x,
 
     if (nsims == 1 || ncores == 1) {
       diag.sim <- list()
-      if (verbose == TRUE) {
+      if (verbose == TRUE & nsims > 1) {
         cat("\n  |")
       }
       for (i in 1:nsims) {
@@ -190,11 +190,11 @@ netdx <- function(x,
                                   monitor = nwstats.formula,
                                   nsim = 1,
                                   control = set.control.stergm)
-        if (verbose == TRUE) {
+        if (verbose == TRUE & nsims > 1) {
           cat("*")
         }
       }
-      if (verbose == TRUE) {
+      if (verbose == TRUE & nsims > 1) {
         cat("|")
       }
     } else {
@@ -254,16 +254,9 @@ netdx <- function(x,
                             names = names(stats.means),
                             stats.means, stats.sd)
 
-  # Which formation terms are offsets?
-  is.offset.term <- grep(pattern = "offset[(]",
-                         strsplit(as.character(formation), "[+]")[[2]])
 
-
-  ## Get stats from for target statistics, removing offsets
-  ts.attr.names <- names(coef.form)
-  if (length(is.offset.term > 0)) {
-    ts.attr.names <- ts.attr.names[-is.offset.term]
-  }
+  ## Get stats from for target statistics
+  ts.attr.names <- x$target.stats.names
   ts.out <- data.frame(names = ts.attr.names,
                        targets = target.stats)
 
@@ -315,16 +308,16 @@ netdx <- function(x,
   # Calculate mean partnership age from edgelist
   if (nsims == 1 || ncores == 1) {
     pages <- list()
-    if (verbose == TRUE) {
+    if (verbose == TRUE & nsims > 1) {
       cat("\n  |")
     }
     for (i in 1:length(diag.sim)) {
       pages[[i]] <- edgelist_meanage(el = sim.df[[i]])
-      if (verbose == TRUE) {
+      if (verbose == TRUE & nsims > 1) {
         cat("*")
       }
     }
-    if (verbose == TRUE) {
+    if (verbose == TRUE & nsims > 1) {
       cat("|")
     }
   } else {
@@ -345,7 +338,7 @@ netdx <- function(x,
 
   ## Create a list of dissolution proportions (i.e. dissolutions/edges)
   if (nsims == 1 || ncores == 1) {
-    if (verbose == TRUE) {
+    if (verbose == TRUE & nsims > 1) {
       cat("\n  |")
     }
     prop.diss <- list()
@@ -353,11 +346,11 @@ netdx <- function(x,
       prop.diss[[i]] <- sapply(1:nsteps, function(x) sum(sim.df[[i]]$terminus==x) /
                                                          sum(sim.df[[i]]$onset < x &
                                                              sim.df[[i]]$terminus>=x))
-      if (verbose == TRUE) {
+      if (verbose == TRUE & nsims > 1) {
         cat("*")
       }
     }
-    if (verbose == TRUE) {
+    if (verbose == TRUE & nsims > 1) {
       cat("|")
     }
   } else {

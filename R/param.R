@@ -141,8 +141,6 @@ param.dcm <- function(inf.prob,
     }
   }
 
-
-  ## Out
   class(p) <- "param.dcm"
   return(p)
 }

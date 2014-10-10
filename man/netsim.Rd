@@ -6,15 +6,16 @@
 netsim(x, param, init, control)
 }
 \arguments{
-\item{x}{fitted network model object, as an object of class
-\code{\link{netest}}.}
+\item{x}{Fitted network model object, as an object of class \code{netest}.
+Alternatively, if restarting a previous simulation, may be an object of
+class \code{netsim}.}
 
-\item{param}{model parameters, as an object of class \code{\link{param.net}}.}
+\item{param}{Model parameters, as an object of class \code{param.net}.}
 
-\item{init}{initial conditions, as an object of class \code{\link{init.net}}.}
+\item{init}{Initial conditions, as an object of class \code{init.net}.}
 
-\item{control}{control settings, as an object of class
-       \code{\link{control.net}}.}
+\item{control}{Control settings, as an object of class
+       \code{control.net}.}
 }
 \value{
 A list of class \code{netsim} with the following elements:

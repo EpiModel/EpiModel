@@ -1082,10 +1082,13 @@ plot.netdx <- function(x,
 
     # Default colors
     if (missing(sim.col)) {
-      if (nstats > 9) {
+      if (nstats > 8) {
         sim.col <- brewer_ramp(nstats, "Set1")
       } else {
-        sim.col <- brewer.pal(9, "Set1")[1:nstats]
+        sim.col <- brewer.pal(9, "Set1")[1:(nstats+1)]
+        if (nstats >= 6) {
+          sim.col <- sim.col[-which(sim.col == "#FFFF33")]
+        }
       }
     }
 
