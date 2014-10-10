@@ -196,7 +196,11 @@ print.param.dcm <- function(x, ...) {
   cat("\n===========================\n")
   for (i in pToPrint) {
     if (class(x[[i]]) == "numeric" && length(x[[i]]) > 10) {
-      cat(names(x)[i], "=", x[[i]][1:3], "...", fill = 80)
+      cat(names(x)[i], "=", x[[i]][1:5], "...", fill = 80)
+    } else if (class(x[[i]]) == "data.frame") {
+      cat(names(x)[i], "= <data.frame>\n")
+    } else if (class(x[[i]]) == "list") {
+      cat(names(x)[i], "= <list>\n")
     } else {
       cat(names(x)[i], "=", x[[i]], fill = 80)
     }
@@ -213,8 +217,12 @@ print.param.icm <- function(x, ...) {
   cat("ICM Parameters")
   cat("\n===========================\n")
   for (i in pToPrint) {
-    if (class(x[[i]]) == "numeric" && length(x[[i]]) > 5) {
-      cat(names(x)[i], "=", x[[i]][1:3], "...", fill = 80)
+    if (class(x[[i]]) == "numeric" && length(x[[i]]) > 10) {
+      cat(names(x)[i], "=", x[[i]][1:5], "...", fill = 80)
+    } else if (class(x[[i]]) == "data.frame") {
+      cat(names(x)[i], "= <data.frame>\n")
+    } else if (class(x[[i]]) == "list") {
+      cat(names(x)[i], "= <list>\n")
     } else {
       cat(names(x)[i], "=", x[[i]], fill = 80)
     }
@@ -231,8 +239,8 @@ print.param.net <- function(x, ...) {
   cat("Network Model Parameters")
   cat("\n===========================\n")
   for (i in pToPrint) {
-    if (class(x[[i]]) == "numeric" && length(x[[i]]) > 5) {
-      cat(names(x)[i], "=", x[[i]][1:3], "...", fill = 80)
+    if (class(x[[i]]) == "numeric" && length(x[[i]]) > 10) {
+      cat(names(x)[i], "=", x[[i]][1:5], "...", fill = 80)
     } else if (class(x[[i]]) == "data.frame") {
       cat(names(x)[i], "= <data.frame>\n")
     } else if (class(x[[i]]) == "list") {
