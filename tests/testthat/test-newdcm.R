@@ -113,7 +113,34 @@ test_that("New DCMs Example 2", {
 })
 
 
+test_that("DCM inital conditions ordering correct", {
 
+  SEIR <- function (t, t0, parms) {
+    with(as.list(c(t0, parms)), {
+      num <- s.num + e.num + i.num + r.num
+      lambda <- inf.prob * act.rate * i.num/num
+      dS <- -lambda * s.num
+      dE <- lambda * s.num - sx.rate * e.num
+      dI <- sx.rate * e.num - rec.rate * i.num
+      dR <- rec.rate * i.num
+      list(c(dS, dE, dI, dR),
+           num = num,
+           se.flow = lambda * s.num,
+           ei.flow = sx.rate * e.num,
+           ir.flow = rec.rate * i.num)
+    })
+  }
+
+  init <- init.dcm(s.num = 980, e.num = 10, i.num=10, r.num=0)
+  expect_identical(names(init), c("s.num", "e.num", "i.num", "r.num"))
+
+  param <- param.dcm(inf.prob=0.2, act.rate=.5, sx.rate=0.1, rec.rate=0.05)
+  control <- control.dcm(nsteps = 10, dt = 1, new.mod = SEIR)
+
+  mod <- dcm(param, init, control)
+  expect_is(mod, "dcm")
+  expect_identical(names(as.data.frame(mod))[3], "e.num")
+})
 
 
 
