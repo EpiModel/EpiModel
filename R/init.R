@@ -66,10 +66,16 @@ init.dcm <- function(s.num,
     }
   }
 
+  # Reorder arguments
+  mc <- names(as.list(sys.call()[-1]))
+  out.p <- list()
+  for (i in seq_along(mc)) {
+    out.p[[mc[i]]] <- p[[mc[i]]]
+  }
 
   ## Output
-  class(p) <- "init.dcm"
-  return(p)
+  class(out.p) <- "init.dcm"
+  return(out.p)
 }
 
 
