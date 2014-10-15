@@ -37,6 +37,17 @@ est2 <- netest(nw,
               verbose = FALSE)
 
 
+## Model 3: Includes faux-offset term
+formation <- ~ edges + nodemix("loc", base=c(1, 3))
+target.stats <- c(15, 0)
+est3 <- netest(nw,
+               formation,
+               dissolution,
+               target.stats,
+               coef.diss,
+               verbose = FALSE)
+
+
 # Tests -------------------------------------------------------------------
 
 test_that("netdx works for single simulations of edges only model", {
@@ -72,4 +83,7 @@ test_that("netdx for model with offset term and expanded formula", {
   expect_is(dx, "netdx")
 })
 
-
+test_that("netdx for model with faux offset term", {
+  dx <- netdx(est3, nsims = 2, nsteps = 10, verbose = FALSE)
+  expect_is(dx, "netdx")
+})
