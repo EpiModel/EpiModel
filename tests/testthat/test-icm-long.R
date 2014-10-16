@@ -9,29 +9,54 @@ test_that("SI, 1G, CL: 1 sim", {
   init <- init.icm(s.num = 500,
                    i.num = 1)
   control <- control.icm(type = "SI",
-                         nsteps = 500,
+                         nsteps = 100,
                          nsims = 1,
                          verbose = FALSE)
   x <- icm(param, init, control)
-  expect_equal(max(x$epi$i.num), 501)
-  expect_equal(max(x$epi$s.num+x$epi$i.num), 501)
+  expect_is(x, "icm")
+  expect_true(all(x$epi$num == 501))
   expect_is(as.data.frame(x), "data.frame")
+  expect_is(as.data.frame(x, out = "vals"), "data.frame")
+  expect_is(as.data.frame(x, out = "mean"), "data.frame")
+  expect_is(as.data.frame(x, out = "sd"), "data.frame")
+  expect_error(as.data.frame(x, out = vals, sim = 3))
+  expect_output(summary(x, at = 100), "EpiModel Summary")
+  expect_error(summary(x, at = 200))
+  plot(x)
+  plot(x, y = "i.num")
+  plot(x, y = "si.flow", mean.smooth = TRUE)
+  expect_error(plot(x, y = "sr.flow"))
+  comp_plot(x, at = 100)
+  expect_error(comp_plot(x, at = 200))
   test_icm(x)
 })
 
-test_that("SI, 1G, CL: 5 sim", {
+test_that("SI, 1G, CL: 2 sim", {
   skip_on_cran()
   param <- param.icm(inf.prob = 0.2,
                      act.rate = 0.25)
   init <- init.icm(s.num = 500,
                    i.num = 1)
   control <- control.icm(type = "SI",
-                         nsteps = 500,
-                         nsims = 5,
+                         nsteps = 100,
+                         nsims = 2,
                          verbose = FALSE)
   x <- icm(param, init, control)
-  expect_equal(max(x$epi$i.num), 501)
-  expect_equal(max(x$epi$s.num+x$epi$i.num), 501)
+  expect_is(x, "icm")
+  expect_true(all(x$epi$num == 501))
+  expect_is(as.data.frame(x), "data.frame")
+  expect_is(as.data.frame(x, out = "vals"), "data.frame")
+  expect_is(as.data.frame(x, out = "mean"), "data.frame")
+  expect_is(as.data.frame(x, out = "sd"), "data.frame")
+  expect_error(as.data.frame(x, out = vals, sim = 3))
+  expect_output(summary(x, at = 100), "EpiModel Summary")
+  expect_error(summary(x, at = 200))
+  plot(x)
+  plot(x, y = "i.num")
+  plot(x, y = "si.flow", mean.smooth = TRUE)
+  expect_error(plot(x, y = "sr.flow"))
+  comp_plot(x, at = 100)
+  expect_error(comp_plot(x, at = 200))
   test_icm(x)
 })
 
@@ -44,11 +69,24 @@ test_that("SI, 1G, CL: inf.prob = 0, status.rand = FALSE", {
                    status.rand = FALSE)
   control <- control.icm(type = "SI",
                          nsteps = 25,
-                         nsims = 25,
+                         nsims = 10,
                          verbose = FALSE)
   x <- icm(param, init, control)
-  expect_equal(max(x$epi$i.num), 1)
-  expect_equal(min(x$epi$i.num), 1)
+  expect_is(x, "icm")
+  expect_true(all(x$epi$num == 501))
+  expect_is(as.data.frame(x), "data.frame")
+  expect_is(as.data.frame(x, out = "vals"), "data.frame")
+  expect_is(as.data.frame(x, out = "mean"), "data.frame")
+  expect_is(as.data.frame(x, out = "sd"), "data.frame")
+  expect_error(as.data.frame(x, out = vals, sim = 3))
+  expect_output(summary(x, at = 25), "EpiModel Summary")
+  expect_error(summary(x, at = 200))
+  plot(x)
+  plot(x, y = "i.num")
+  plot(x, y = "si.flow", mean.smooth = TRUE)
+  expect_error(plot(x, y = "sr.flow"))
+  comp_plot(x, at = 25)
+  expect_error(comp_plot(x, at = 200))
   test_icm(x)
 })
 
@@ -63,15 +101,28 @@ test_that("SI, 2G, CL: 1 sim", {
                    s.num.g2 = 500,
                    i.num.g2 = 0)
   control <- control.icm(type = "SI",
-                         nsteps = 500,
+                         nsteps = 100,
                          nsims = 1,
                          verbose = FALSE)
   x <- icm(param, init, control)
-  expect_equal(max(x$epi$num), 501)
+  expect_is(x, "icm")
+  expect_true(all(x$epi$num == 501))
+  expect_is(as.data.frame(x), "data.frame")
+  expect_is(as.data.frame(x, out = "vals"), "data.frame")
+  expect_is(as.data.frame(x, out = "mean"), "data.frame")
+  expect_is(as.data.frame(x, out = "sd"), "data.frame")
+  expect_error(as.data.frame(x, out = vals, sim = 3))
+  expect_output(summary(x, at = 100), "EpiModel Summary")
+  expect_error(summary(x, at = 200))
+  plot(x)
+  plot(x, y = "i.num")
+  plot(x, y = "si.flow", mean.smooth = TRUE)
+  expect_error(plot(x, y = "sr.flow"))
+  expect_error(comp_plot(x, at = 100))
   test_icm(x)
 })
 
-test_that("SI, 2G, CL: 5 sim", {
+test_that("SI, 2G, CL: 2 sim", {
   skip_on_cran()
   param <- param.icm(inf.prob = 0.2,
                      act.rate = 0.25,
@@ -82,12 +133,25 @@ test_that("SI, 2G, CL: 5 sim", {
                    s.num.g2 = 500,
                    i.num.g2 = 0)
   control <- control.icm(type = "SI",
-                         nsteps = 500,
-                         nsims = 5,
+                         nsteps = 50,
+                         nsims = 2,
                          verbose = FALSE)
   x <- icm(param, init, control)
-  expect_equal(max(x$epi$i.num), 501)
-  expect_equal(max(x$epi$s.num+x$epi$i.num), 501)
+  expect_is(x, "icm")
+  expect_true(all(x$epi$num == 501))
+  expect_is(as.data.frame(x), "data.frame")
+  expect_is(as.data.frame(x, out = "vals"), "data.frame")
+  expect_is(as.data.frame(x, out = "mean"), "data.frame")
+  expect_is(as.data.frame(x, out = "sd"), "data.frame")
+  expect_error(as.data.frame(x, out = vals, sim = 3))
+  expect_output(summary(x, at = 50), "EpiModel Summary")
+  expect_error(summary(x, at = 200))
+  plot(x)
+  plot(x, y = "i.num")
+  plot(x, y = "si.flow", mean.smooth = TRUE)
+  expect_error(plot(x, y = "sr.flow"))
+  expect_error(comp_plot(x, at = 50))
+  expect_error(comp_plot(x, at = 200))
   test_icm(x)
 })
 
@@ -98,17 +162,30 @@ test_that("SI, 1G, OP: 1 sim", {
                      b.rate = 1/100,
                      ds.rate = 1/100,
                      di.rate = 1/90)
-  init <- init.icm(s.num = 500,
-                   i.num = 1)
+  init <- init.icm(s.num = 500, i.num = 1)
   control <- control.icm(type = "SI",
-                         nsteps = 500,
+                         nsteps = 100,
                          nsims = 1,
                          verbose = FALSE)
   x <- icm(param, init, control)
+  expect_is(x, "icm")
+  expect_is(as.data.frame(x), "data.frame")
+  expect_is(as.data.frame(x, out = "vals"), "data.frame")
+  expect_is(as.data.frame(x, out = "mean"), "data.frame")
+  expect_is(as.data.frame(x, out = "sd"), "data.frame")
+  expect_error(as.data.frame(x, out = vals, sim = 3))
+  expect_output(summary(x, at = 100), "EpiModel Summary")
+  expect_error(summary(x, at = 200))
+  plot(x)
+  plot(x, y = "i.num")
+  plot(x, y = "si.flow", mean.smooth = TRUE)
+  expect_error(plot(x, y = "sr.flow"))
+  comp_plot(x, at = 100)
+  expect_error(comp_plot(x, at = 200))
   test_icm(x)
 })
 
-test_that("SI, 1G, OP: 5 sim", {
+test_that("SI, 1G, OP: 2 sim", {
   skip_on_cran()
   param <- param.icm(inf.prob = 0.2,
                      act.rate = 0.25,
@@ -118,10 +195,24 @@ test_that("SI, 1G, OP: 5 sim", {
   init <- init.icm(s.num = 500,
                    i.num = 1)
   control <- control.icm(type = "SI",
-                         nsteps = 500,
-                         nsims = 5,
+                         nsteps = 50,
+                         nsims = 2,
                          verbose = FALSE)
   x <- icm(param, init, control)
+  expect_is(x, "icm")
+  expect_is(as.data.frame(x), "data.frame")
+  expect_is(as.data.frame(x, out = "vals"), "data.frame")
+  expect_is(as.data.frame(x, out = "mean"), "data.frame")
+  expect_is(as.data.frame(x, out = "sd"), "data.frame")
+  expect_error(as.data.frame(x, out = vals, sim = 3))
+  expect_output(summary(x, at = 50), "EpiModel Summary")
+  expect_error(summary(x, at = 200))
+  plot(x)
+  plot(x, y = "i.num")
+  plot(x, y = "si.flow", mean.smooth = TRUE)
+  expect_error(plot(x, y = "sr.flow"))
+  comp_plot(x, at = 50)
+  expect_error(comp_plot(x, at = 200))
   test_icm(x)
 })
 
@@ -142,14 +233,28 @@ test_that("SI, 2G, OP: 1 sim", {
                    s.num.g2 = 500,
                    i.num.g2 = 0)
   control <- control.icm(type = "SI",
-                         nsteps = 500,
+                         nsteps = 100,
                          nsims = 1,
                          verbose = FALSE)
   x <- icm(param, init, control)
+  expect_is(x, "icm")
+  expect_is(as.data.frame(x), "data.frame")
+  expect_is(as.data.frame(x, out = "vals"), "data.frame")
+  expect_is(as.data.frame(x, out = "mean"), "data.frame")
+  expect_is(as.data.frame(x, out = "sd"), "data.frame")
+  expect_error(as.data.frame(x, out = vals, sim = 3))
+  expect_output(summary(x, at = 100), "EpiModel Summary")
+  expect_error(summary(x, at = 200))
+  plot(x)
+  plot(x, y = "i.num")
+  plot(x, y = "si.flow", mean.smooth = TRUE)
+  expect_error(plot(x, y = "sr.flow"))
+  expect_error(comp_plot(x, at = 100))
+  expect_error(comp_plot(x, at = 200))
   test_icm(x)
 })
 
-test_that("SI, 2G, OP: 5 sim", {
+test_that("SI, 2G, OP: 2 sim", {
   skip_on_cran()
   param <- param.icm(inf.prob = 0.2,
                      act.rate = 0.25,
@@ -166,10 +271,24 @@ test_that("SI, 2G, OP: 5 sim", {
                    s.num.g2 = 500,
                    i.num.g2 = 0)
   control <- control.icm(type = "SI",
-                         nsteps = 500,
-                         nsims = 5,
+                         nsteps = 50,
+                         nsims = 2,
                          verbose = FALSE)
   x <- icm(param, init, control)
+  expect_is(x, "icm")
+  expect_is(as.data.frame(x), "data.frame")
+  expect_is(as.data.frame(x, out = "vals"), "data.frame")
+  expect_is(as.data.frame(x, out = "mean"), "data.frame")
+  expect_is(as.data.frame(x, out = "sd"), "data.frame")
+  expect_error(as.data.frame(x, out = vals, sim = 3))
+  expect_output(summary(x, at = 50), "EpiModel Summary")
+  expect_error(summary(x, at = 200))
+  plot(x)
+  plot(x, y = "i.num")
+  plot(x, y = "si.flow", mean.smooth = TRUE)
+  expect_error(plot(x, y = "sr.flow"))
+  expect_error(comp_plot(x, at = 50))
+  expect_error(comp_plot(x, at = 200))
   test_icm(x)
 })
 
@@ -185,15 +304,28 @@ test_that("SIR, 1G, CL: 1 sim", {
                    i.num = 1,
                    r.num = 0)
   control <- control.icm(type = "SIR",
-                         nsteps = 500,
+                         nsteps = 100,
                          nsims = 1,
                          verbose = FALSE)
   x <- icm(param, init, control)
-  expect_equal(max(x$epi$s.num+x$epi$i.num+x$epi$r.num), 501)
+  expect_is(x, "icm")
+  expect_is(as.data.frame(x), "data.frame")
+  expect_is(as.data.frame(x, out = "vals"), "data.frame")
+  expect_is(as.data.frame(x, out = "mean"), "data.frame")
+  expect_is(as.data.frame(x, out = "sd"), "data.frame")
+  expect_error(as.data.frame(x, out = vals, sim = 3))
+  expect_output(summary(x, at = 100), "EpiModel Summary")
+  expect_error(summary(x, at = 200))
+  plot(x)
+  plot(x, y = "r.num")
+  plot(x, y = "ir.flow", mean.smooth = TRUE)
+  expect_error(plot(x, y = "sr.flow"))
+  comp_plot(x, at = 100)
+  expect_error(comp_plot(x, at = 200))
   test_icm(x)
 })
 
-test_that("SIR, 1G, CL: 5 sim", {
+test_that("SIR, 1G, CL: 2 sim", {
   skip_on_cran()
   param <- param.icm(inf.prob = 0.2,
                      act.rate = 0.25,
@@ -202,11 +334,24 @@ test_that("SIR, 1G, CL: 5 sim", {
                    i.num = 1,
                    r.num = 0)
   control <- control.icm(type = "SIR",
-                         nsteps = 500,
-                         nsims = 5,
+                         nsteps = 50,
+                         nsims = 2,
                          verbose = FALSE)
   x <- icm(param, init, control)
-  expect_equal(max(x$epi$s.num+x$epi$i.num+x$epi$r.num), 501)
+  expect_is(x, "icm")
+  expect_is(as.data.frame(x), "data.frame")
+  expect_is(as.data.frame(x, out = "vals"), "data.frame")
+  expect_is(as.data.frame(x, out = "mean"), "data.frame")
+  expect_is(as.data.frame(x, out = "sd"), "data.frame")
+  expect_error(as.data.frame(x, out = vals, sim = 3))
+  expect_output(summary(x, at = 50), "EpiModel Summary")
+  expect_error(summary(x, at = 200))
+  plot(x)
+  plot(x, y = "r.num")
+  plot(x, y = "ir.flow", mean.smooth = TRUE)
+  expect_error(plot(x, y = "sr.flow"))
+  comp_plot(x, at = 50)
+  expect_error(comp_plot(x, at = 200))
   test_icm(x)
 })
 
@@ -220,12 +365,26 @@ test_that("SIR, 1G, CL: inf.prob = 0, status.rand = FALSE", {
                    r.num = 0,
                    status.rand = FALSE)
   control <- control.icm(type = "SIR",
-                         nsteps = 25,
-                         nsims = 25,
+                         nsteps = 10,
+                         nsims = 10,
                          verbose = FALSE)
   x <- icm(param, init, control)
+  expect_is(x, "icm")
   expect_equal(max(x$epi$i.num), 1)
   expect_equal(min(x$epi$i.num), 1)
+  expect_is(as.data.frame(x), "data.frame")
+  expect_is(as.data.frame(x, out = "vals"), "data.frame")
+  expect_is(as.data.frame(x, out = "mean"), "data.frame")
+  expect_is(as.data.frame(x, out = "sd"), "data.frame")
+  expect_error(as.data.frame(x, out = vals, sim = 3))
+  expect_output(summary(x, at = 10), "EpiModel Summary")
+  expect_error(summary(x, at = 200))
+  plot(x)
+  plot(x, y = "i.num")
+  plot(x, y = "si.flow", mean.smooth = TRUE)
+  expect_error(plot(x, y = "sr.flow"))
+  comp_plot(x, at = 10)
+  expect_error(comp_plot(x, at = 200))
   test_icm(x)
 })
 
@@ -241,15 +400,27 @@ test_that("SIR, 2G, CL: 1 sim", {
                    s.num.g2 = 500, i.num.g2 = 0, r.num.g2 = 0)
   control <- control.icm(type = "SIR",
                          nsims = 1,
-                         nsteps = 1000,
+                         nsteps = 100,
                          verbose = FALSE)
   x <- icm(param, init, control)
-  expect_equal(max(x$epi$s.num+x$epi$i.num+x$epi$r.num+
-                     x$epi$s.num.g2+x$epi$i.num.g2+x$epi$r.num.g2), 1001)
+  expect_is(x, "icm")
+  expect_is(as.data.frame(x), "data.frame")
+  expect_is(as.data.frame(x, out = "vals"), "data.frame")
+  expect_is(as.data.frame(x, out = "mean"), "data.frame")
+  expect_is(as.data.frame(x, out = "sd"), "data.frame")
+  expect_error(as.data.frame(x, out = vals, sim = 3))
+  expect_output(summary(x, at = 100), "EpiModel Summary")
+  expect_error(summary(x, at = 200))
+  plot(x)
+  plot(x, y = "i.num")
+  plot(x, y = "si.flow", mean.smooth = TRUE)
+  expect_error(plot(x, y = "sr.flow"))
+  expect_error(comp_plot(x, at = 100))
+  expect_error(comp_plot(x, at = 200))
   test_icm(x)
 })
 
-test_that("SIR, 2G, CL: 5 sim", {
+test_that("SIR, 2G, CL: 2 sim", {
   skip_on_cran()
   param <- param.icm(inf.prob = 0.2,
                      act.rate = 0.25,
@@ -260,12 +431,23 @@ test_that("SIR, 2G, CL: 5 sim", {
   init <- init.icm(s.num = 500, i.num = 1, r.num = 0,
                    s.num.g2 = 500, i.num.g2 = 0, r.num.g2 = 0)
   control <- control.icm(type = "SIR",
-                         nsims = 5,
-                         nsteps = 1000,
+                         nsims = 2,
+                         nsteps = 50,
                          verbose = FALSE)
   x <- icm(param, init, control)
-  expect_equal(max(x$epi$s.num+x$epi$i.num+x$epi$r.num+
-                     x$epi$s.num.g2+x$epi$i.num.g2+x$epi$r.num.g2), 1001)
+  expect_is(x, "icm")
+  expect_is(as.data.frame(x), "data.frame")
+  expect_is(as.data.frame(x, out = "vals"), "data.frame")
+  expect_is(as.data.frame(x, out = "mean"), "data.frame")
+  expect_is(as.data.frame(x, out = "sd"), "data.frame")
+  expect_error(as.data.frame(x, out = vals, sim = 3))
+  expect_output(summary(x, at = 50), "EpiModel Summary")
+  expect_error(summary(x, at = 200))
+  plot(x)
+  plot(x, y = "i.num")
+  plot(x, y = "si.flow", mean.smooth = TRUE)
+  expect_error(plot(x, y = "sr.flow"))
+  expect_error(comp_plot(x, at = 50))
   test_icm(x)
 })
 
@@ -282,14 +464,28 @@ test_that("SIR, 1G, OP: 1 sim", {
                    i.num = 1,
                    r.num = 0)
   control <- control.icm(type = "SIR",
-                         nsteps = 500,
+                         nsteps = 100,
                          nsims = 1,
                          verbose = FALSE)
   x <- icm(param, init, control)
+  expect_is(x, "icm")
+  expect_is(as.data.frame(x), "data.frame")
+  expect_is(as.data.frame(x, out = "vals"), "data.frame")
+  expect_is(as.data.frame(x, out = "mean"), "data.frame")
+  expect_is(as.data.frame(x, out = "sd"), "data.frame")
+  expect_error(as.data.frame(x, out = vals, sim = 3))
+  expect_output(summary(x, at = 100), "EpiModel Summary")
+  expect_error(summary(x, at = 200))
+  plot(x)
+  plot(x, y = "i.num")
+  plot(x, y = "si.flow", mean.smooth = TRUE)
+  expect_error(plot(x, y = "sr.flow"))
+  comp_plot(x, at = 100)
+  expect_error(comp_plot(x, at = 200))
   test_icm(x)
 })
 
-test_that("SIR, 1G, OP: 5 sim", {
+test_that("SIR, 1G, OP: 2 sim", {
   skip_on_cran()
   param <- param.icm(inf.prob = 0.2,
                      act.rate = 3,
@@ -302,10 +498,24 @@ test_that("SIR, 1G, OP: 5 sim", {
                    i.num = 1,
                    r.num = 0)
   control <- control.icm(type = "SIR",
-                         nsteps = 500,
-                         nsims = 5,
+                         nsteps = 50,
+                         nsims = 2,
                          verbose = FALSE)
   x <- icm(param, init, control)
+  expect_is(x, "icm")
+  expect_is(as.data.frame(x), "data.frame")
+  expect_is(as.data.frame(x, out = "vals"), "data.frame")
+  expect_is(as.data.frame(x, out = "mean"), "data.frame")
+  expect_is(as.data.frame(x, out = "sd"), "data.frame")
+  expect_error(as.data.frame(x, out = vals, sim = 3))
+  expect_output(summary(x, at = 50), "EpiModel Summary")
+  expect_error(summary(x, at = 200))
+  plot(x)
+  plot(x, y = "i.num")
+  plot(x, y = "si.flow", mean.smooth = TRUE)
+  expect_error(plot(x, y = "sr.flow"))
+  comp_plot(x, at = 50)
+  expect_error(comp_plot(x, at = 200))
   test_icm(x)
 })
 
@@ -328,14 +538,28 @@ test_that("SIR, 2G, OP: 1 sim", {
   init <- init.icm(s.num = 500, i.num = 1, r.num = 0,
                    s.num.g2 = 500, i.num.g2 = 0, r.num.g2 = 0)
   control <- control.icm(type = "SIR",
-                         nsteps = 500,
+                         nsteps = 100,
                          nsims = 1,
                          verbose = FALSE)
   x <- icm(param, init, control)
+  expect_is(x, "icm")
+  expect_is(as.data.frame(x), "data.frame")
+  expect_is(as.data.frame(x, out = "vals"), "data.frame")
+  expect_is(as.data.frame(x, out = "mean"), "data.frame")
+  expect_is(as.data.frame(x, out = "sd"), "data.frame")
+  expect_error(as.data.frame(x, out = vals, sim = 3))
+  expect_output(summary(x, at = 100), "EpiModel Summary")
+  expect_error(summary(x, at = 200))
+  plot(x)
+  plot(x, y = "i.num")
+  plot(x, y = "si.flow", mean.smooth = TRUE)
+  expect_error(plot(x, y = "sr.flow"))
+  expect_error(comp_plot(x, at = 100))
+  expect_error(comp_plot(x, at = 200))
   test_icm(x)
 })
 
-test_that("SIR, 2G, OP: 5 sim", {
+test_that("SIR, 2G, OP: 2 sim", {
   skip_on_cran()
   param <- param.icm(inf.prob = 0.2,
                      inf.prob.g2 = 0.1,
@@ -354,10 +578,23 @@ test_that("SIR, 2G, OP: 5 sim", {
   init <- init.icm(s.num = 500, i.num = 1, r.num = 0,
                    s.num.g2 = 500, i.num.g2 = 0, r.num.g2 = 0)
   control <- control.icm(type = "SIR",
-                         nsteps = 500,
-                         nsims = 5,
+                         nsteps = 50,
+                         nsims = 2,
                          verbose = FALSE)
   x <- icm(param, init, control)
+  expect_is(x, "icm")
+  expect_is(as.data.frame(x), "data.frame")
+  expect_is(as.data.frame(x, out = "vals"), "data.frame")
+  expect_is(as.data.frame(x, out = "mean"), "data.frame")
+  expect_is(as.data.frame(x, out = "sd"), "data.frame")
+  expect_error(as.data.frame(x, out = vals, sim = 3))
+  expect_output(summary(x, at = 50), "EpiModel Summary")
+  expect_error(summary(x, at = 200))
+  plot(x)
+  plot(x, y = "i.num")
+  plot(x, y = "si.flow", mean.smooth = TRUE)
+  expect_error(plot(x, y = "sr.flow"))
+  expect_error(comp_plot(x, at = 100))
   test_icm(x)
 })
 
@@ -372,15 +609,29 @@ test_that("SIS, 1G, CL: 1 sim", {
   init <- init.icm(s.num = 500,
                    i.num = 1)
   control <- control.icm(type = "SIS",
-                         nsteps = 500,
+                         nsteps = 100,
                          nsims = 1,
                          verbose = FALSE)
   x <- icm(param, init, control)
   expect_equal(max(x$epi$s.num+x$epi$i.num), 501)
+  expect_is(x, "icm")
+  expect_is(as.data.frame(x), "data.frame")
+  expect_is(as.data.frame(x, out = "vals"), "data.frame")
+  expect_is(as.data.frame(x, out = "mean"), "data.frame")
+  expect_is(as.data.frame(x, out = "sd"), "data.frame")
+  expect_error(as.data.frame(x, out = vals, sim = 3))
+  expect_output(summary(x, at = 100), "EpiModel Summary")
+  expect_error(summary(x, at = 200))
+  plot(x)
+  plot(x, y = "i.num")
+  plot(x, y = "si.flow", mean.smooth = TRUE)
+  expect_error(plot(x, y = "sr.flow"))
+  comp_plot(x, at = 100)
+  expect_error(comp_plot(x, at = 200))
   test_icm(x)
 })
 
-test_that("SIS, 1G, CL: 5 sim", {
+test_that("SIS, 1G, CL: 2 sim", {
   skip_on_cran()
   param <- param.icm(inf.prob = 0.2,
                      act.rate = 0.25,
@@ -388,11 +639,25 @@ test_that("SIS, 1G, CL: 5 sim", {
   init <- init.icm(s.num = 500,
                    i.num = 1)
   control <- control.icm(type = "SIS",
-                         nsteps = 500,
-                         nsims = 5,
+                         nsteps = 50,
+                         nsims = 2,
                          verbose = FALSE)
   x <- icm(param, init, control)
   expect_equal(max(x$epi$s.num+x$epi$i.num), 501)
+  expect_is(x, "icm")
+  expect_is(as.data.frame(x), "data.frame")
+  expect_is(as.data.frame(x, out = "vals"), "data.frame")
+  expect_is(as.data.frame(x, out = "mean"), "data.frame")
+  expect_is(as.data.frame(x, out = "sd"), "data.frame")
+  expect_error(as.data.frame(x, out = vals, sim = 3))
+  expect_output(summary(x, at = 50), "EpiModel Summary")
+  expect_error(summary(x, at = 200))
+  plot(x)
+  plot(x, y = "i.num")
+  plot(x, y = "si.flow", mean.smooth = TRUE)
+  expect_error(plot(x, y = "sr.flow"))
+  comp_plot(x, at = 50)
+  expect_error(comp_plot(x, at = 200))
   test_icm(x)
 })
 
@@ -405,10 +670,24 @@ test_that("SIS, 1G, CL: inf.prob = 0, status.rand = FALSE", {
                    i.num = 1,
                    status.rand = FALSE)
   control <- control.icm(type = "SIS",
-                         nsteps = 25,
-                         nsims = 25,
+                         nsteps = 10,
+                         nsims = 10,
                          verbose = FALSE)
   x <- icm(param, init, control)
+  expect_is(x, "icm")
+  expect_is(as.data.frame(x), "data.frame")
+  expect_is(as.data.frame(x, out = "vals"), "data.frame")
+  expect_is(as.data.frame(x, out = "mean"), "data.frame")
+  expect_is(as.data.frame(x, out = "sd"), "data.frame")
+  expect_error(as.data.frame(x, out = vals, sim = 3))
+  expect_output(summary(x, at = 10), "EpiModel Summary")
+  expect_error(summary(x, at = 200))
+  plot(x)
+  plot(x, y = "i.num")
+  plot(x, y = "si.flow", mean.smooth = TRUE)
+  expect_error(plot(x, y = "sr.flow"))
+  comp_plot(x, at = 10)
+  expect_error(comp_plot(x, at = 200))
   test_icm(x)
 })
 
@@ -425,16 +704,27 @@ test_that("SIS, 2G, CL: 1 sim", {
                    s.num.g2 = 500,
                    i.num.g2 = 0)
   control <- control.icm(type = "SIS",
-                         nsteps = 1000,
+                         nsteps = 100,
                          nsims = 1,
                          verbose = FALSE)
   x <- icm(param, init, control)
-  expect_equal(max(x$epi$s.num+x$epi$i.num), 501)
-  expect_equal(max(x$epi$s.num+x$epi$i.num+x$epi$s.num.g2+x$epi$i.num.g2), 1001)
+  expect_is(x, "icm")
+  expect_is(as.data.frame(x), "data.frame")
+  expect_is(as.data.frame(x, out = "vals"), "data.frame")
+  expect_is(as.data.frame(x, out = "mean"), "data.frame")
+  expect_is(as.data.frame(x, out = "sd"), "data.frame")
+  expect_error(as.data.frame(x, out = vals, sim = 3))
+  expect_output(summary(x, at = 100), "EpiModel Summary")
+  expect_error(summary(x, at = 200))
+  plot(x)
+  plot(x, y = "i.num")
+  plot(x, y = "si.flow", mean.smooth = TRUE)
+  expect_error(plot(x, y = "sr.flow"))
+  expect_error(comp_plot(x, at = 100))
   test_icm(x)
 })
 
-test_that("SIS, 2G, CL: 5 sim", {
+test_that("SIS, 2G, CL: 2 sim", {
   skip_on_cran()
   param <- param.icm(inf.prob = 0.2,
                      act.rate = 0.25,
@@ -447,12 +737,23 @@ test_that("SIS, 2G, CL: 5 sim", {
                    s.num.g2 = 500,
                    i.num.g2 = 0)
   control <- control.icm(type = "SIS",
-                         nsteps = 1000,
-                         nsims = 5,
+                         nsteps = 50,
+                         nsims = 2,
                          verbose = FALSE)
   x <- icm(param, init, control)
-  expect_equal(max(x$epi$s.num+x$epi$i.num), 501)
-  expect_equal(max(x$epi$s.num+x$epi$i.num+x$epi$s.num.g2+x$epi$i.num.g2), 1001)
+  expect_is(x, "icm")
+  expect_is(as.data.frame(x), "data.frame")
+  expect_is(as.data.frame(x, out = "vals"), "data.frame")
+  expect_is(as.data.frame(x, out = "mean"), "data.frame")
+  expect_is(as.data.frame(x, out = "sd"), "data.frame")
+  expect_error(as.data.frame(x, out = vals, sim = 3))
+  expect_output(summary(x, at = 50), "EpiModel Summary")
+  expect_error(summary(x, at = 200))
+  plot(x)
+  plot(x, y = "i.num")
+  plot(x, y = "si.flow", mean.smooth = TRUE)
+  expect_error(plot(x, y = "sr.flow"))
+  expect_error(comp_plot(x, at = 50))
   test_icm(x)
 })
 
@@ -467,14 +768,28 @@ test_that("SIS, 1G, OP: 1 sim", {
   init <- init.icm(s.num = 500,
                    i.num = 1)
   control <- control.icm(type = "SIS",
-                         nsteps = 500,
+                         nsteps = 100,
                          nsims = 1,
                          verbose = FALSE)
   x <- icm(param, init, control)
+  expect_is(x, "icm")
+  expect_is(as.data.frame(x), "data.frame")
+  expect_is(as.data.frame(x, out = "vals"), "data.frame")
+  expect_is(as.data.frame(x, out = "mean"), "data.frame")
+  expect_is(as.data.frame(x, out = "sd"), "data.frame")
+  expect_error(as.data.frame(x, out = vals, sim = 3))
+  expect_output(summary(x, at = 100), "EpiModel Summary")
+  expect_error(summary(x, at = 200))
+  plot(x)
+  plot(x, y = "i.num")
+  plot(x, y = "si.flow", mean.smooth = TRUE)
+  expect_error(plot(x, y = "sr.flow"))
+  comp_plot(x, at = 100)
+  expect_error(comp_plot(x, at = 200))
   test_icm(x)
 })
 
-test_that("SIS, 1G, OP: 5 sim", {
+test_that("SIS, 1G, OP: 2 sim", {
   skip_on_cran()
   param <- param.icm(inf.prob = 0.2,
                      act.rate = 0.5,
@@ -485,10 +800,24 @@ test_that("SIS, 1G, OP: 5 sim", {
   init <- init.icm(s.num = 500,
                    i.num = 1)
   control <- control.icm(type = "SIS",
-                         nsteps = 500,
-                         nsims = 5,
+                         nsteps = 50,
+                         nsims = 2,
                          verbose = FALSE)
   x <- icm(param, init, control)
+  expect_is(x, "icm")
+  expect_is(as.data.frame(x), "data.frame")
+  expect_is(as.data.frame(x, out = "vals"), "data.frame")
+  expect_is(as.data.frame(x, out = "mean"), "data.frame")
+  expect_is(as.data.frame(x, out = "sd"), "data.frame")
+  expect_error(as.data.frame(x, out = vals, sim = 3))
+  expect_output(summary(x, at = 50), "EpiModel Summary")
+  expect_error(summary(x, at = 200))
+  plot(x)
+  plot(x, y = "i.num")
+  plot(x, y = "si.flow", mean.smooth = TRUE)
+  expect_error(plot(x, y = "sr.flow"))
+  comp_plot(x, at = 50)
+  expect_error(comp_plot(x, at = 200))
   test_icm(x)
 })
 
@@ -511,14 +840,27 @@ test_that("SIS, 2G, OP: 1 sim", {
                    s.num.g2 = 500,
                    i.num.g2 = 1)
   control <- control.icm(type = "SIS",
-                         nsteps = 500,
+                         nsteps = 100,
                          nsims = 1,
                          verbose = FALSE)
   x <- icm(param, init, control)
+  expect_is(x, "icm")
+  expect_is(as.data.frame(x), "data.frame")
+  expect_is(as.data.frame(x, out = "vals"), "data.frame")
+  expect_is(as.data.frame(x, out = "mean"), "data.frame")
+  expect_is(as.data.frame(x, out = "sd"), "data.frame")
+  expect_error(as.data.frame(x, out = vals, sim = 3))
+  expect_output(summary(x, at = 100), "EpiModel Summary")
+  expect_error(summary(x, at = 200))
+  plot(x)
+  plot(x, y = "i.num")
+  plot(x, y = "si.flow", mean.smooth = TRUE)
+  expect_error(plot(x, y = "sr.flow"))
+  expect_error(comp_plot(x, at = 100))
   test_icm(x)
 })
 
-test_that("SIS, 2G, OP: 5 sim", {
+test_that("SIS, 2G, OP: 2 sim", {
   skip_on_cran()
   param <- param.icm(inf.prob = 0.2,
                      inf.prob.g2 = 0.1,
@@ -537,9 +879,22 @@ test_that("SIS, 2G, OP: 5 sim", {
                    s.num.g2 = 500,
                    i.num.g2 = 1)
   control <- control.icm(type = "SIS",
-                         nsteps = 500,
-                         nsims = 5,
+                         nsteps = 50,
+                         nsims = 2,
                          verbose = FALSE)
   x <- icm(param, init, control)
+  expect_is(x, "icm")
+  expect_is(as.data.frame(x), "data.frame")
+  expect_is(as.data.frame(x, out = "vals"), "data.frame")
+  expect_is(as.data.frame(x, out = "mean"), "data.frame")
+  expect_is(as.data.frame(x, out = "sd"), "data.frame")
+  expect_error(as.data.frame(x, out = vals, sim = 3))
+  expect_output(summary(x, at = 50), "EpiModel Summary")
+  expect_error(summary(x, at = 200))
+  plot(x)
+  plot(x, y = "i.num")
+  plot(x, y = "si.flow", mean.smooth = TRUE)
+  expect_error(plot(x, y = "sr.flow"))
+  expect_error(comp_plot(x, at = 50))
   test_icm(x)
 })
