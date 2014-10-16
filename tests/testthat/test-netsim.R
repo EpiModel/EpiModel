@@ -18,6 +18,10 @@ test_that("netsim for edges only, SI, one-mode, closed, 1 sim", {
   control <- control.net(type = "SI", nsims = 1, nsteps = 5, verbose = FALSE)
   mod <- netsim(est, param, init, control)
   expect_is(mod, "netsim")
+  plot(mod)
+  plot(mod, type = "formation")
+  plot(mod, type = "network")
+  test_net(mod)
 })
 
 test_that("netsim for edges only, SI, one-mode, closed, 2 sim", {
@@ -26,6 +30,10 @@ test_that("netsim for edges only, SI, one-mode, closed, 2 sim", {
   control <- control.net(type = "SI", nsims = 2, nsteps = 5, verbose = FALSE)
   mod <- netsim(est, param, init, control)
   expect_is(mod, "netsim")
+  plot(mod)
+  plot(mod, type = "formation")
+  plot(mod, type = "network")
+  test_net(mod)
 })
 
 test_that("netsim for edges only, SIS, one-mode, closed, 1 sim", {
@@ -34,6 +42,10 @@ test_that("netsim for edges only, SIS, one-mode, closed, 1 sim", {
   control <- control.net(type = "SIS", nsims = 1, nsteps = 5, verbose = FALSE)
   mod <- netsim(est, param, init, control)
   expect_is(mod, "netsim")
+  plot(mod)
+  plot(mod, type = "formation")
+  plot(mod, type = "network")
+  test_net(mod)
 })
 
 test_that("netsim for edges only, SIS, one-mode, closed, 2 sim", {
@@ -50,6 +62,10 @@ test_that("netsim for edges only, SIR, one-mode, closed, 1 sim", {
   control <- control.net(type = "SIR", nsims = 1, nsteps = 5, verbose = FALSE)
   mod <- netsim(est, param, init, control)
   expect_is(mod, "netsim")
+  plot(mod)
+  plot(mod, type = "formation")
+  plot(mod, type = "network")
+  test_net(mod)
 })
 
 test_that("netsim for edges only, SIR, one-mode, closed, 2 sim", {
@@ -58,4 +74,8 @@ test_that("netsim for edges only, SIR, one-mode, closed, 2 sim", {
   control <- control.net(type = "SIR", nsims = 2, nsteps = 5, verbose = FALSE)
   mod <- netsim(est, param, init, control)
   expect_is(mod, "netsim")
+  plot(mod)
+  plot(mod, type = "formation")
+  plot(mod, type = "network")
+  test_net(mod)
 })
