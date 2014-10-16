@@ -18,7 +18,9 @@ devtools::install_github("statnet/EpiModel")
 ```
 
 ### Documentation
-The main website for EpiModel, with tutorials and other supporting files, is <a href="http://statnet.github.io/EpiModel/" target="_blank">HERE</a>.
+The main website for EpiModel, with tutorials and other supporting files, is <a href="http://statnet.github.io/EpiModel/" target="_blank">here</a>. Users are encouraged to join the <a href="http://mailman11.u.washington.edu/mailman/listinfo/epimodel" target="_blank">email list for EpiModel</a> as a place to ask questions, report bugs, and tell us about your research using these tools.
+
+
 
 If using EpiModel for your own teaching or research purposes, please include a citation:
 > Jenness SM, Goodreau SM, Morris M (2014). *EpiModel: Mathematical Modeling of Infectious Disease.* R Package Version 1.1. URL:  http://statnet.github.io/EpiModel/.
