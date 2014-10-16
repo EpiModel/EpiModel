@@ -1438,7 +1438,7 @@ plot.netdx <- function(x,
 #' plot(mod, type = "sim")
 #' plot(mod, type = "sim", popfrac = FALSE)
 #' plot(mod, type = "sim", y = "si.flow")
-#' plot(mod, type = "sim", y = "si.flow",
+#' plot(mod, type = "sim", y = "si.flow", add = TRUE,
 #'      mean.smooth = TRUE, mean.col = "firebrick")
 #'
 #' # Plot static networks
@@ -1446,24 +1446,21 @@ plot.netdx <- function(x,
 #' plot(mod, type = "network")
 #'
 #' # Automatic coloring of infected nodes as red
-#' par(mfrow = c(1, 2))
-#' plot(mod, type = "network",
+#' par(mfrow = c(1, 2), mar = c(0, 0, 2, 0))
+#' plot(mod, type = "network", main = "Sim 1 | Time 50",
 #'      col.status = TRUE, at = 50)
-#' plot(mod, type = "network",
+#' plot(mod, type = "network", main = "Sim 5 | Time 50",
 #'      col.status = TRUE, at = 50, sim = 5)
 #'
 #' # Automatic shape by mode number (circle = mode 1)
+#' par(mar = c(0, 0, 0, 0))
 #' plot(mod, type = "network", at = 50,
 #'      col.status = TRUE, shp.bip = "square")
 #' plot(mod, type = "network", at = 50,
 #'      col.status = TRUE, shp.bip = "triangle")
 #'
-#' # Include a title
-#' par(mar = c(1, 1, 2, 1), mfrow = c(1, 1))
-#' plot(mod, type = "network", main = "My Network Plot")
-#'
 #' # Plot formation statistics
-#' par(mar = c(3, 3, 1, 1), mgp = c(2, 1, 0))
+#' par(mfrow = c(1, 1), mar = c(3, 3, 1, 1), mgp = c(2, 1, 0))
 #' plot(mod, type = "formation")
 #' plot(mod, type = "formation", plots.joined = FALSE)
 #' plot(mod, type = "formation", sim = 2:4)
