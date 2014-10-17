@@ -6,13 +6,12 @@ test_that("edges models", {
   skip_on_cran()
 
   nw <- network.initialize(n = 100, directed = FALSE)
-  est <- netest(
-    nw,
-    formation = ~ edges,
-    dissolution = ~offset(edges),
-    target.stats = 25,
-    coef.diss = dissolution_coefs(~offset(edges), 10, 0),
-    verbose = FALSE)
+  est <- netest(nw,
+                formation = ~ edges,
+                dissolution = ~offset(edges),
+                target.stats = 25,
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                verbose = FALSE)
   expect_is(est, "netest")
 
   ## "SI, 1M, CL: 1 sim"
@@ -24,6 +23,10 @@ test_that("edges models", {
   expect_is(as.data.frame(x), "data.frame")
   expect_true(max(x$epi$i.num) >= 1)
   expect_true(max(x$epi$i.num) <= 100)
+  expect_output(summary(x, at = 25), "EpiModel Summary")
+  plot(x)
+  plot(x, y = "si.flow", mean.smooth = TRUE)
+  plot(x, type = "formation")
   test_net(x)
   rm(x)
 
@@ -36,6 +39,10 @@ test_that("edges models", {
   expect_is(as.data.frame(x), "data.frame")
   expect_true(max(x$epi$i.num) == 1)
   expect_true(max(x$epi$si.flow) == 0)
+  expect_output(summary(x, at = 25), "EpiModel Summary")
+  plot(x)
+  plot(x, y = "si.flow", mean.smooth = TRUE)
+  plot(x, type = "formation")
   test_net(x)
   rm(x)
 
@@ -48,6 +55,10 @@ test_that("edges models", {
   expect_is(as.data.frame(x), "data.frame")
   expect_true(max(x$epi$i.num) >= 1)
   expect_true(max(x$epi$i.num) <= 100)
+  expect_output(summary(x, at = 25), "EpiModel Summary")
+  plot(x)
+  plot(x, y = "si.flow", mean.smooth = TRUE)
+  plot(x, type = "formation")
   test_net(x)
   rm(x)
 
@@ -64,6 +75,10 @@ test_that("edges models", {
   expect_true(x$control$tea.status, TRUE)
   expect_true(sum(get.vertex.attribute.active(x$network[[1]],
                                               prefix = "testatus", at = 1) == "i") >= 0)
+  expect_output(summary(x, at = 25), "EpiModel Summary")
+  plot(x)
+  plot(x, y = "si.flow", mean.smooth = TRUE)
+  plot(x, type = "formation")
   test_net(x)
   rm(x)
 
@@ -80,6 +95,10 @@ test_that("edges models", {
   # this tests that starting infected is same across sims
   expect_true(all(x$epi$i.num[1,] == 10))
   expect_true(max(x$epi$i.num) <= 100)
+  expect_output(summary(x, at = 25), "EpiModel Summary")
+  plot(x)
+  plot(x, y = "si.flow", mean.smooth = TRUE)
+  plot(x, type = "formation")
   test_net(x)
   rm(x)
 
@@ -95,6 +114,10 @@ test_that("edges models", {
   expect_is(as.data.frame(x), "data.frame")
   expect_true(max(x$epi$i.num) >= 1)
   expect_true(max(x$epi$i.num) <= 100)
+  expect_output(summary(x, at = 25), "EpiModel Summary")
+  plot(x)
+  plot(x, y = "si.flow", mean.smooth = TRUE)
+  plot(x, type = "formation")
   test_net(x)
   rm(x)
 
@@ -110,6 +133,10 @@ test_that("edges models", {
   expect_is(as.data.frame(x), "data.frame")
   expect_true(max(x$epi$i.num) == 10)
   expect_true(max(x$epi$si.flow) == 0)
+  expect_output(summary(x, at = 25), "EpiModel Summary")
+  plot(x)
+  plot(x, y = "si.flow", mean.smooth = TRUE)
+  plot(x, type = "formation")
   test_net(x)
   rm(x)
 
@@ -124,6 +151,10 @@ test_that("edges models", {
   expect_is(as.data.frame(x), "data.frame")
   expect_true(max(x$epi$i.num) >= 1)
   expect_true(max(x$epi$i.num) <= 100)
+  expect_output(summary(x, at = 25), "EpiModel Summary")
+  plot(x)
+  plot(x, y = "si.flow", mean.smooth = TRUE)
+  plot(x, type = "formation")
   test_net(x)
   rm(x)
 
@@ -157,6 +188,10 @@ test_that("edges models", {
   # this tests that starting infected is same across sims
   expect_true(all(x$epi$i.num[1,] == 50))
   expect_true(max(x$epi$i.num) <= 100)
+  expect_output(summary(x, at = 25), "EpiModel Summary")
+  plot(x)
+  plot(x, y = "si.flow", mean.smooth = TRUE)
+  plot(x, type = "formation")
   test_net(x)
   rm(x)
 
@@ -171,6 +206,10 @@ test_that("edges models", {
   expect_is(as.data.frame(x), "data.frame")
   expect_true(max(x$epi$i.num) >= 1)
   expect_true(max(x$epi$i.num) <= 100)
+  expect_output(summary(x, at = 25), "EpiModel Summary")
+  plot(x)
+  plot(x, y = "si.flow", mean.smooth = TRUE)
+  plot(x, type = "formation")
   test_net(x)
   rm(x)
 
@@ -185,6 +224,10 @@ test_that("edges models", {
   expect_is(as.data.frame(x), "data.frame")
   expect_true(max(x$epi$i.num) == 1)
   expect_true(max(x$epi$si.flow) == 0)
+  expect_output(summary(x, at = 25), "EpiModel Summary")
+  plot(x)
+  plot(x, y = "si.flow", mean.smooth = TRUE)
+  plot(x, type = "formation")
   test_net(x)
   rm(x)
 
@@ -199,6 +242,10 @@ test_that("edges models", {
   expect_is(as.data.frame(x), "data.frame")
   expect_true(max(x$epi$i.num) >= 1)
   expect_true(max(x$epi$i.num) <= 100)
+  expect_output(summary(x, at = 25), "EpiModel Summary")
+  plot(x)
+  plot(x, y = "si.flow", mean.smooth = TRUE)
+  plot(x, type = "formation")
   test_net(x)
   rm(x)
 
@@ -216,6 +263,10 @@ test_that("edges models", {
   expect_true(x$control$tea.status, TRUE)
   expect_true(sum(get.vertex.attribute.active(x$network[[1]],
                                               prefix = "testatus", at = 1) == "i") >= 0)
+  expect_output(summary(x, at = 25), "EpiModel Summary")
+  plot(x)
+  plot(x, y = "si.flow", mean.smooth = TRUE)
+  plot(x, type = "formation")
   test_net(x)
   rm(x)
 
@@ -232,6 +283,10 @@ test_that("edges models", {
   # this tests that starting infected is same across sims
   expect_true(all(x$epi$i.num[1,] == 10))
   expect_true(max(x$epi$i.num) <= 100)
+  expect_output(summary(x, at = 25), "EpiModel Summary")
+  plot(x)
+  plot(x, y = "si.flow", mean.smooth = TRUE)
+  plot(x, type = "formation")
   test_net(x)
   rm(x)
 
@@ -256,6 +311,10 @@ test_that("edges models", {
                          verbose = FALSE)
   x <- netsim(est, param, init, control)
   expect_equal(unique(sapply(x$epi, nrow)), 25)
+  expect_output(summary(x, at = 25), "EpiModel Summary")
+  plot(x)
+  plot(x, y = "si.flow", mean.smooth = TRUE)
+  plot(x, type = "formation")
   test_net(x)
   rm(x)
 
@@ -271,6 +330,10 @@ test_that("edges models", {
                          verbose = FALSE)
   x <- netsim(est, param, init, control)
   expect_equal(unique(sapply(x$epi, nrow)), 25)
+  expect_output(summary(x, at = 25), "EpiModel Summary")
+  plot(x)
+  plot(x, y = "si.flow", mean.smooth = TRUE)
+  plot(x, type = "formation")
   test_net(x)
   rm(x)
 
@@ -303,6 +366,10 @@ test_that("edges bipartite models", {
   expect_is(x, "netsim")
   expect_is(as.data.frame(x), "data.frame")
   expect_equal(x$param$modes, 2)
+  expect_output(summary(x, at = 25), "EpiModel Summary")
+  plot(x)
+  plot(x, y = "si.flow", mean.smooth = TRUE)
+  plot(x, type = "formation")
   test_net(x)
   rm(x)
 
@@ -320,6 +387,10 @@ test_that("edges bipartite models", {
   expect_is(x, "netsim")
   expect_is(as.data.frame(x), "data.frame")
   expect_equal(x$param$modes, 2)
+  expect_output(summary(x, at = 25), "EpiModel Summary")
+  plot(x)
+  plot(x, y = "si.flow", mean.smooth = TRUE)
+  plot(x, type = "formation")
   test_net(x)
   rm(x)
 
@@ -339,6 +410,10 @@ test_that("edges bipartite models", {
   x <- netsim(est5, param, init, control)
   expect_equal(max(x$epi$ir.flow), 0)
   expect_equal(max(x$epi$ir.flow.m2), 0)
+  expect_output(summary(x, at = 25), "EpiModel Summary")
+  plot(x)
+  plot(x, y = "si.flow", mean.smooth = TRUE)
+  plot(x, type = "formation")
   test_net(x)
   rm(x)
 
@@ -355,6 +430,10 @@ test_that("edges bipartite models", {
   expect_is(x, "netsim")
   expect_is(as.data.frame(x), "data.frame")
   expect_equal(x$param$modes, 2)
+  expect_output(summary(x, at = 25), "EpiModel Summary")
+  plot(x)
+  plot(x, y = "si.flow", mean.smooth = TRUE)
+  plot(x, type = "formation")
   test_net(x)
   rm(x)
 
@@ -373,6 +452,10 @@ test_that("edges bipartite models", {
   x <- netsim(est5, param, init, control)
   expect_equal(max(x$epi$is.flow), 0)
   expect_equal(max(x$epi$is.flow.m2), 0)
+  expect_output(summary(x, at = 10), "EpiModel Summary")
+  plot(x)
+  plot(x, y = "si.flow", mean.smooth = TRUE)
+  plot(x, type = "formation")
   test_net(x)
   rm(x)
 
@@ -406,6 +489,10 @@ test_that("Open population 1 mode models", {
   expect_is(x, "netsim")
   expect_is(as.data.frame(x), "data.frame")
   expect_equal(x$param$vital, TRUE)
+  expect_output(summary(x, at = 10), "EpiModel Summary")
+  plot(x)
+  plot(x, y = "si.flow", mean.smooth = TRUE)
+  plot(x, type = "formation")
   test_net(x)
   rm(x)
 
@@ -424,6 +511,10 @@ test_that("Open population 1 mode models", {
   expect_is(x, "netsim")
   expect_is(as.data.frame(x), "data.frame")
   expect_equal(x$param$vital, TRUE)
+  expect_output(summary(x, at = 10), "EpiModel Summary")
+  plot(x)
+  plot(x, y = "si.flow", mean.smooth = TRUE)
+  plot(x, type = "formation")
   test_net(x)
   rm(x)
 
@@ -444,6 +535,10 @@ test_that("Open population 1 mode models", {
   expect_is(x, "netsim")
   expect_is(as.data.frame(x), "data.frame")
   expect_equal(x$param$vital, TRUE)
+  expect_output(summary(x, at = 10), "EpiModel Summary")
+  plot(x)
+  plot(x, y = "si.flow", mean.smooth = TRUE)
+  plot(x, type = "formation")
   test_net(x)
   rm(x)
 
@@ -464,6 +559,10 @@ test_that("Open population 1 mode models", {
   expect_is(x, "netsim")
   expect_is(as.data.frame(x), "data.frame")
   expect_equal(x$param$vital, TRUE)
+  expect_output(summary(x, at = 10), "EpiModel Summary")
+  plot(x)
+  plot(x, y = "si.flow", mean.smooth = TRUE)
+  plot(x, type = "formation")
   test_net(x)
   rm(x)
 
@@ -484,6 +583,10 @@ test_that("Open population 1 mode models", {
   expect_is(x, "netsim")
   expect_is(as.data.frame(x), "data.frame")
   expect_equal(x$param$vital, TRUE)
+  expect_output(summary(x, at = 10), "EpiModel Summary")
+  plot(x)
+  plot(x, y = "si.flow", mean.smooth = TRUE)
+  plot(x, type = "formation")
   test_net(x)
   rm(x)
 
@@ -497,6 +600,10 @@ test_that("Open population 1 mode models", {
   expect_is(x, "netsim")
   expect_is(as.data.frame(x), "data.frame")
   expect_equal(x$param$vital, TRUE)
+  expect_output(summary(x, at = 10), "EpiModel Summary")
+  plot(x)
+  plot(x, y = "si.flow", mean.smooth = TRUE)
+  plot(x, type = "formation")
   test_net(x)
   rm(x)
 
@@ -508,8 +615,7 @@ test_that("Open-population bipartite models", {
   skip_on_cran()
 
   nw <- network.initialize(n = 100, bipartite = 50, directed = FALSE)
-  est5.vit <- netest(
-    nw,
+  est5.vit <- netest(nw,
     formation = ~ edges,
     dissolution = ~offset(edges),
     target.stats = 25,
@@ -536,6 +642,10 @@ test_that("Open-population bipartite models", {
   expect_is(x, "netsim")
   expect_is(as.data.frame(x), "data.frame")
   expect_equal(x$param$vital, TRUE)
+  expect_output(summary(x, at = 10), "EpiModel Summary")
+  plot(x)
+  plot(x, y = "si.flow", mean.smooth = TRUE)
+  plot(x, type = "formation")
   test_net(x)
   rm(x)
 
@@ -558,6 +668,10 @@ test_that("Open-population bipartite models", {
   expect_is(x, "netsim")
   expect_is(as.data.frame(x), "data.frame")
   expect_equal(x$param$vital, TRUE)
+  expect_output(summary(x, at = 10), "EpiModel Summary")
+  plot(x)
+  plot(x, y = "si.flow", mean.smooth = TRUE)
+  plot(x, type = "formation")
   test_net(x)
   rm(x)
 
@@ -585,6 +699,10 @@ test_that("Open-population bipartite models", {
   expect_is(x, "netsim")
   expect_is(as.data.frame(x), "data.frame")
   expect_equal(x$param$vital, TRUE)
+  expect_output(summary(x, at = 10), "EpiModel Summary")
+  plot(x)
+  plot(x, y = "si.flow", mean.smooth = TRUE)
+  plot(x, type = "formation")
   test_net(x)
   rm(x)
 
@@ -595,6 +713,10 @@ test_that("Open-population bipartite models", {
   expect_is(x, "netsim")
   expect_is(as.data.frame(x), "data.frame")
   expect_equal(x$param$vital, TRUE)
+  expect_output(summary(x, at = 10), "EpiModel Summary")
+  plot(x)
+  plot(x, y = "si.flow", mean.smooth = TRUE)
+  plot(x, type = "formation")
   test_net(x)
   rm(x)
 
@@ -606,8 +728,7 @@ test_that("Extinction open-population models", {
   skip_on_cran()
 
   nw <- network.initialize(n = 25, bipartite = 10, directed = FALSE)
-  est <- netest(
-    nw,
+  est <- netest(nw,
     formation = ~ edges,
     dissolution = ~offset(edges),
     target.stats = 15,
@@ -630,6 +751,10 @@ test_that("Extinction open-population models", {
                          nsims = 1, tea.status = FALSE,
                          verbose = FALSE)
   x <- netsim(est, param, init, control)
+  expect_output(summary(x, at = 10), "EpiModel Summary")
+  plot(x)
+  plot(x, y = "si.flow", mean.smooth = TRUE)
+  plot(x, type = "formation")
   test_net(x)
   rm(x)
 
@@ -648,6 +773,10 @@ test_that("Extinction open-population models", {
                          nsims = 1, tea.status = FALSE,
                          verbose = FALSE)
   x <- netsim(est, param, init, control)
+  expect_output(summary(x, at = 10), "EpiModel Summary")
+  plot(x)
+  plot(x, y = "si.flow", mean.smooth = TRUE)
+  plot(x, type = "formation")
   test_net(x)
   rm(x)
 
