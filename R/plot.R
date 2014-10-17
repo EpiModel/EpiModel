@@ -1623,7 +1623,7 @@ plot.netsim <- function(x,
 
     ## target stats
     nwparam <- get_nwparam(x, network)
-    formation.terms <- names(nwparam$coef.form)
+    formation.terms <- nwparam$target.stats.names
     target.stats <- nwparam$target.stats
 
     st <- data.frame(sorder = 1:length(nmstats), names = nmstats)
