@@ -782,7 +782,7 @@ test_that("Extinction open-population models", {
   expect_output(summary(x, at = 10), "EpiModel Summary")
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
-  plot(x, type = "formation")
+  #plot(x, type = "formation")
   test_net(x)
   rm(x)
 
