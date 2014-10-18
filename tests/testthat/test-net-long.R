@@ -250,15 +250,13 @@ test_that("edges models", {
   rm(x)
 
   ## "SIS, 1M, CL: 2 sim, use TEAs"
-  param <- param.net(inf.prob = 1,
-                     rec.rate = 0.01)
+  param <- param.net(inf.prob = 1, rec.rate = 0.01)
   init <- init.net(i.num = 1, status.rand = FALSE)
   control <- control.net(type = "SIS", nsims = 2, nsteps = 25,
                          tea.status = TRUE, verbose = FALSE)
   x <- netsim(est, param, init, control)
   expect_is(x, "netsim")
   expect_is(as.data.frame(x), "data.frame")
-  expect_true(max(x$epi$i.num) > 1)
   expect_true(max(x$epi$i.num) <= 100)
   expect_true(x$control$tea.status, TRUE)
   expect_true(sum(get.vertex.attribute.active(x$network[[1]],
