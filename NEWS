@@ -14,8 +14,8 @@ BUG FIXES
 * Fix bug for new DCMs in which the initial condition names include standard
   integrated initial condition names.
 * Several bugs fixes related to network diagnostics for models with offset terms
-  in the formation model. Also related formation diagnostics plots in plot.netsim
-  fixed.
+  in the formation model. Also related formation diagnostics plots in
+  `plot.netsim` fixed.
 
 OTHER
 * The new website for the EpiModel project is http://epimodel.org/
