@@ -21,17 +21,17 @@ devtools::install_github("statnet/EpiModel")
 ### Authors
 <table>
   <tr>
-    <td>Samuel M. Jenness</th>
+    <td><a href="http://samueljenness.org/" target="_blank">Samuel M. Jenness</a></th>
     <td>Department of Epidemiology</th>
     <td>University of Washington</th>
   </tr>
   <tr>
-    <td>Steven M. Goodreau</td>
+    <td><a href="http://faculty.washington.edu/goodreau/" target="_blank">Steven M. Goodreau</a></td>
     <td>Department of Anthropology</td>
     <td>University of Washington</td>
   </tr>
   <tr>
-    <td>Martina Morris</td>
+    <td><a href="http://faculty.washington.edu/morrism/" target="_blank">Martina Morris</a></td>
     <td>Departments of Statistics and Sociology</td>
     <td>University of Washington</td>
   </tr>
