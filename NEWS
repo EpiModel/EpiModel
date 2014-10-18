@@ -1,6 +1,24 @@
 Version 1.1.1
 ------------------------------------------------------------------------------
 
+NEW FEATURES
+* Added dissolution diagnostics in `netdx`. These show the proportion of edges
+  that dissolve per time step, as another diagnostic for the dissolution model.
+
+API CHANGES
+* Exported and added documentation for the `verbose.icm` function.
+
+BUG FIXES
+* Print functions for initial condition processing functions now handle list and
+  data frame structures.
+* Fix bug for new DCMs in which the initial condition names include standard
+  integrated initial condition names.
+* Several bugs fixes related to network diagnostics for models with offset terms
+  in the formation model. Also related formation diagnostics plots in plot.netsim
+  fixed.
+
+OTHER
+* The new website for the EpiModel project is http://epimodel.org/
 
 
 Version 1.1
