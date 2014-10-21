@@ -1508,9 +1508,18 @@ plot.netsim <- function(x,
     if (length(sim) > 1) {
       stop("Length of sim must be 1 for network plots", call. = FALSE)
     }
-    if (sim > nsims) {
-      stop("Maximum sim number is ", nsims, call. = FALSE)
+
+    if (sim == "mean") {
+      sim <- which.min(abs(as.numeric(x$epi$i.num[at, ]) -
+                           mean(as.numeric(x$epi$i.num[at, ]))))
     }
+    if (sim == "max") {
+      sim <- as.numeric(which.max(x$epi$i.num[at, ]))
+    }
+    if (sim == "min") {
+      sim <- as.numeric(which.min(x$epi$i.num[at, ]))
+    }
+
     obj <- get_network(x, sim, network, collapse = TRUE, at = at)
     tea.status <- x$control$tea.status
 
