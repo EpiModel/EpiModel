@@ -364,6 +364,9 @@ netdx <- function(x,
     }
   }
 
+  if (verbose == TRUE) {
+    cat("\n ")
+  }
 
   # Create dissolution table for "dissolution = ~ offset(edges)"
   if (dissolution == ~offset(edges)) {
