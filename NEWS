@@ -4,6 +4,9 @@ Version 1.1.1
 NEW FEATURES
 * Added dissolution diagnostics in `netdx`. These show the proportion of edges
   that dissolve per time step, as another diagnostic for the dissolution model.
+* Network plots with `plot.netsim` now allow specifying `"mean"`, `"min"`, or
+  `"max"` to plot the network at with the most average, maximum, and minumum
+  disease prevalence at the specified time step.
 
 API CHANGES
 * Exported and added documentation for the `verbose.icm` function.
