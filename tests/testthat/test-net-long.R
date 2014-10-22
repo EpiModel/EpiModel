@@ -27,6 +27,8 @@ test_that("edges models", {
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
+  plot(x, type = "network")
+  plot(x, type = "network", sim = "mean", col.status = TRUE)
   test_net(x)
   rm(x)
 
@@ -43,6 +45,8 @@ test_that("edges models", {
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
+  plot(x, type = "network")
+  plot(x, type = "network", sim = "mean", col.status = TRUE)
   test_net(x)
   rm(x)
 
@@ -59,6 +63,8 @@ test_that("edges models", {
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
+  plot(x, type = "network")
+  plot(x, type = "network", sim = "mean", col.status = TRUE)
   test_net(x)
   rm(x)
 
@@ -79,6 +85,8 @@ test_that("edges models", {
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
+  plot(x, type = "network")
+  plot(x, type = "network", sim = "mean", col.status = TRUE)
   test_net(x)
   rm(x)
 
@@ -87,8 +95,7 @@ test_that("edges models", {
   init <- init.net(status.vector = c(rep("i", 10),
                                      rep("s", 90)))
   control <- control.net(type = "SI", nsims = 2, nsteps = 25,
-                         verbose = FALSE,
-                         tea.status = FALSE)
+                         verbose = FALSE, tea.status = FALSE)
   x <- netsim(est, param, init, control)
   expect_is(x, "netsim")
   expect_is(as.data.frame(x), "data.frame")
@@ -99,15 +106,14 @@ test_that("edges models", {
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
+  expect_error(plot(x, type = "network", col.status = TRUE))
   test_net(x)
   rm(x)
 
   ## "SIR, 1M, CL: 1 sim"
-  param <- param.net(inf.prob = 0.5,
-                     rec.rate = 0.02)
+  param <- param.net(inf.prob = 0.5, rec.rate = 0.02)
   init <- init.net(i.num = 10, r.num = 0)
-  control <- control.net(type = "SIR",
-                         nsims = 1, nsteps = 25,
+  control <- control.net(type = "SIR", nsims = 1, nsteps = 25,
                          verbose = FALSE)
   x <- netsim(est, param, init, control)
   expect_is(x, "netsim")
@@ -118,16 +124,16 @@ test_that("edges models", {
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
+  plot(x, type = "network")
+  plot(x, type = "network", sim = "mean", col.status = TRUE)
   test_net(x)
   rm(x)
 
   ## "SIR, 1M, CL: 1 sim, inf.prob=0"
-  param <- param.net(inf.prob = 0,
-                     rec.rate = 0.02)
+  param <- param.net(inf.prob = 0, rec.rate = 0.02)
   init <- init.net(i.num = 10, r.num = 0, status.rand = FALSE)
   control <- control.net(type = "SIR", nsims = 1,
-                         nsteps = 25,
-                         verbose = FALSE)
+                         nsteps = 25, verbose = FALSE)
   x <- netsim(est, param, init, control)
   expect_is(x, "netsim")
   expect_is(as.data.frame(x), "data.frame")
@@ -137,12 +143,13 @@ test_that("edges models", {
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
+  plot(x, type = "network")
+  plot(x, type = "network", sim = "mean", col.status = TRUE)
   test_net(x)
   rm(x)
 
   ## "SIR, 1M, CL: 2 sim"
-  param <- param.net(inf.prob = 0.5,
-                     rec.rate = 0.1)
+  param <- param.net(inf.prob = 0.5, rec.rate = 0.1)
   init <- init.net(i.num = 1, r.num = 0)
   control <- control.net(type = "SIR", nsims = 2, nsteps = 25,
                          verbose = FALSE)
@@ -155,33 +162,16 @@ test_that("edges models", {
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
-  test_net(x)
-  rm(x)
-
-  ## "SIR, 1M, CL: 2 sim, use TEAs"
-  param <- param.net(inf.prob = 1,
-                     rec.rate = 0.1)
-  init <- init.net(i.num = 1, r.num = 0, status.rand = FALSE)
-  control <- control.net(type = "SIR", nsims = 2, nsteps = 25,
-                         tea.status = TRUE, verbose = FALSE)
-  x <- netsim(est, param, init, control)
-  expect_is(x, "netsim")
-  expect_is(as.data.frame(x), "data.frame")
-  expect_true(max(x$epi$i.num) >= 1)
-  expect_true(max(x$epi$i.num) <= 100)
-  expect_true(x$control$tea.status, TRUE)
-  expect_true(sum(get.vertex.attribute.active(x$network[[1]],
-                                              prefix = "testatus", at = 1) == "i") >= 0)
+  plot(x, type = "network")
+  plot(x, type = "network", sim = "mean", col.status = TRUE)
   test_net(x)
   rm(x)
 
   ## "SIR, 1M, CL: 2 sim, set status.vector"
-  param <- param.net(inf.prob = 0.5,
-                     rec.rate = 0.1)
+  param <- param.net(inf.prob = 0.5, rec.rate = 0.1)
   init <- init.net(status.vector = rep(c("s", "i"), each = 50))
   control <- control.net(type = "SIR", nsims = 2, nsteps = 25,
-                         verbose = FALSE,
-                         tea.status = FALSE)
+                         verbose = FALSE)
   x <- netsim(est, param, init, control)
   expect_is(x, "netsim")
   expect_is(as.data.frame(x), "data.frame")
@@ -192,12 +182,13 @@ test_that("edges models", {
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
+  plot(x, type = "network")
+  plot(x, type = "network", sim = "mean", col.status = TRUE)
   test_net(x)
   rm(x)
 
   ## "SIS, 1M, CL: 1 sim"
-  param <- param.net(inf.prob = 0.9,
-                     rec.rate = 0.01)
+  param <- param.net(inf.prob = 0.9, rec.rate = 0.01)
   init <- init.net(i.num = 1)
   control <- control.net(type = "SIS", nsims = 1, nsteps = 25,
                          verbose = FALSE)
@@ -210,12 +201,13 @@ test_that("edges models", {
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
+  plot(x, type = "network")
+  plot(x, type = "network", sim = "mean", col.status = TRUE)
   test_net(x)
   rm(x)
 
   ## "SIS, 1M, CL: 1 sim, inf.prob=0"
-  param <- param.net(inf.prob = 0,
-                     rec.rate = 0.01)
+  param <- param.net(inf.prob = 0, rec.rate = 0.01)
   init <- init.net(i.num = 1, status.rand = FALSE)
   control <- control.net(type = "SIS", nsims = 1, nsteps = 25,
                          verbose = FALSE)
@@ -228,12 +220,13 @@ test_that("edges models", {
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
+  plot(x, type = "network")
+  plot(x, type = "network", sim = "mean", col.status = TRUE)
   test_net(x)
   rm(x)
 
   ## "SIS, 1M, CL: 2 sim"
-  param <- param.net(inf.prob = 0.5,
-                     rec.rate = 0.01)
+  param <- param.net(inf.prob = 0.5, rec.rate = 0.01)
   init <- init.net(i.num = 1)
   control <- control.net(type = "SIS", nsims = 2, nsteps = 25,
                          verbose = FALSE)
@@ -249,7 +242,7 @@ test_that("edges models", {
   test_net(x)
   rm(x)
 
-  ## "SIS, 1M, CL: 2 sim, use TEAs"
+  ## "SIS, 1M, CL: 2 sim, test TEAs"
   param <- param.net(inf.prob = 1, rec.rate = 0.01)
   init <- init.net(i.num = 1, status.rand = FALSE)
   control <- control.net(type = "SIS", nsims = 2, nsteps = 25,
@@ -265,16 +258,16 @@ test_that("edges models", {
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
+  plot(x, type = "network")
+  plot(x, type = "network", sim = "mean", col.status = TRUE)
   test_net(x)
   rm(x)
 
   ## "SIS, 1M, CL: 2 sim, set status.vector"
-  param <- param.net(inf.prob = 0.5,
-                     rec.rate = 0.01)
+  param <- param.net(inf.prob = 0.5, rec.rate = 0.01)
   init <- init.net(status.vector = c(rep("i", 10), rep("s", 90)))
   control <- control.net(type = "SIS", nsims = 2, nsteps = 25,
-                         verbose = FALSE,
-                         tea.status = FALSE)
+                         verbose = FALSE, tea.status = FALSE)
   x <- netsim(est, param, init, control)
   expect_is(x, "netsim")
   expect_is(as.data.frame(x), "data.frame")
@@ -285,6 +278,8 @@ test_that("edges models", {
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
+  plot(x, type = "network")
+  expect_error(plot(x, type = "network", sim = "mean", col.status = TRUE))
   test_net(x)
 })
 

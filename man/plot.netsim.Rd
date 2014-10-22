@@ -9,52 +9,57 @@
   plot.leg = TRUE, ...)
 }
 \arguments{
-\item{x}{an \code{EpiModel} model object of class \code{netsim}.}
+\item{x}{An \code{EpiModel} model object of class \code{netsim}.}
 
-\item{type}{type of plot: \code{"sim"} for epidemic model results,
+\item{type}{Type of plot: \code{"sim"} for epidemic model results,
 \code{"network"} for a static network plot (\code{plot.network}),
 or \code{"formation"} for network formation statistics.}
 
-\item{sim}{if \code{type="network"}, a single simulation number for network
-plot; if \code{type="formation"}, a vector of simulation numbers to plot.}
+\item{sim}{If \code{type="network"}, a single simulation number for network
+plot, or else \code{"min"} to plot the simulation number with the
+lowest disease prevalence, \code{"max"} for the simulation with the
+highest disease prevalence, or \code{"mean"} for the simulation with
+the prevalance closest to the mean across simulations at the specified
+time step; if \code{type="formation"}, a vector of simulation numbers
+to plot.}
 
-\item{network}{network number, for simulations with multiple networks
+\item{network}{Network number, for simulations with multiple networks
 representing the population.}
 
-\item{at}{if \code{type="network"}, time step for network graph.}
+\item{at}{If \code{type="network"}, time step for network graph.}
 
-\item{col.status}{if \code{TRUE} and \code{type="network"}, automatic disease
+\item{col.status}{If \code{TRUE} and \code{type="network"}, automatic disease
 status colors (blue = susceptible, red = infected, , green = recovered).}
 
-\item{shp.bip}{if \code{type="network"} and a bipartite simulation, shapes
+\item{shp.bip}{If \code{type="network"} and a bipartite simulation, shapes
 for the mode 2 vertices, with acceptable inputs of "triangle" and
 "square". Mode 1 vertices will be circles.}
 
-\item{stats}{if \code{type="formation"}, network statistics to plot, among
+\item{stats}{If \code{type="formation"}, network statistics to plot, among
 those specified in \code{nwstats.formula} of \code{\link{control.net}},
 with the default to plot all statistics.}
 
-\item{sim.lwd}{line width for individual simulation lines, with defaults based
+\item{sim.lwd}{Line width for individual simulation lines, with defaults based
 on number of simulations (more simulations equals thinner lines).}
 
-\item{sim.col}{a vector of standard R colors to be used for individual
+\item{sim.col}{A vector of standard R colors to be used for individual
 simulation lines, with default colors based on \code{RColorBrewer}
 color palettes.}
 
-\item{sim.lty}{line type for the individual simulation lines.}
+\item{sim.lty}{Line type for the individual simulation lines.}
 
-\item{targ.col}{vector of standard R colors for target statistic lines, with
+\item{targ.col}{Vector of standard R colors for target statistic lines, with
 default colors based on \code{RColorBrewer} color palettes.}
 
-\item{targ.lwd}{line width for the line showing the target statistic values.}
+\item{targ.lwd}{Line width for the line showing the target statistic values.}
 
-\item{targ.lty}{line type for the line showing the target statistic values.}
+\item{targ.lty}{Line type for the line showing the target statistic values.}
 
-\item{plots.joined}{if \code{TRUE} and \code{type="formation"}, combine all
+\item{plots.joined}{If \code{TRUE} and \code{type="formation"}, combine all
 target statistics in one plot, versus one plot per target statistic if
 \code{FALSE}.}
 
-\item{plot.leg}{if \code{TRUE}, show legend (only if \code{plots.joined=TRUE}).}
+\item{plot.leg}{If \code{TRUE}, show legend (only if \code{plots.joined=TRUE}).}
 
 \item{...}{additional arguments to pass.}
 }
