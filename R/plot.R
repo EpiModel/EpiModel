@@ -1510,8 +1510,8 @@ plot.netsim <- function(x,
     if (missing(sim)) {
       sim <- 1
     }
-    if (length(sim) > 1) {
-      stop("Length of sim must be 1 for network plots", call. = FALSE)
+    if (length(sim) > 1 || (!is.numeric(sim) && !(sim %in% c("mean", "max", "min")))) {
+      stop("sim must be single simulation number or \"mean\", \"max\", or \"min\" ")
     }
 
     if (sim == "mean") {
