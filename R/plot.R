@@ -1342,37 +1342,42 @@ plot.netdx <- function(x,
 #' @description Plots epidemiological and network data from a stochastic network
 #'              model simulated with \code{netsim}.
 #'
-#' @param x an \code{EpiModel} model object of class \code{netsim}.
-#' @param type type of plot: \code{"sim"} for epidemic model results,
+#' @param x An \code{EpiModel} model object of class \code{netsim}.
+#' @param type Type of plot: \code{"sim"} for epidemic model results,
 #'        \code{"network"} for a static network plot (\code{plot.network}),
 #'        or \code{"formation"} for network formation statistics.
-#' @param sim if \code{type="network"}, a single simulation number for network
-#'        plot; if \code{type="formation"}, a vector of simulation numbers to plot.
-#' @param network network number, for simulations with multiple networks
+#' @param sim If \code{type="network"}, a single simulation number for network
+#'        plot, or else \code{"min"} to plot the simulation number with the
+#'        lowest disease prevalence, \code{"max"} for the simulation with the
+#'        highest disease prevalence, or \code{"mean"} for the simulation with
+#'        the prevalance closest to the mean across simulations at the specified
+#'        time step; if \code{type="formation"}, a vector of simulation numbers
+#'        to plot.
+#' @param network Network number, for simulations with multiple networks
 #'        representing the population.
-#' @param at if \code{type="network"}, time step for network graph.
-#' @param col.status if \code{TRUE} and \code{type="network"}, automatic disease
+#' @param at If \code{type="network"}, time step for network graph.
+#' @param col.status If \code{TRUE} and \code{type="network"}, automatic disease
 #'        status colors (blue = susceptible, red = infected, , green = recovered).
-#' @param shp.bip if \code{type="network"} and a bipartite simulation, shapes
+#' @param shp.bip If \code{type="network"} and a bipartite simulation, shapes
 #'        for the mode 2 vertices, with acceptable inputs of "triangle" and
 #'        "square". Mode 1 vertices will be circles.
-#' @param stats if \code{type="formation"}, network statistics to plot, among
+#' @param stats If \code{type="formation"}, network statistics to plot, among
 #'        those specified in \code{nwstats.formula} of \code{\link{control.net}},
 #'        with the default to plot all statistics.
-#' @param sim.col a vector of standard R colors to be used for individual
+#' @param sim.col A vector of standard R colors to be used for individual
 #'        simulation lines, with default colors based on \code{RColorBrewer}
 #'        color palettes.
-#' @param sim.lwd line width for individual simulation lines, with defaults based
+#' @param sim.lwd Line width for individual simulation lines, with defaults based
 #'        on number of simulations (more simulations equals thinner lines).
-#' @param sim.lty line type for the individual simulation lines.
-#' @param targ.col vector of standard R colors for target statistic lines, with
+#' @param sim.lty Line type for the individual simulation lines.
+#' @param targ.col Vector of standard R colors for target statistic lines, with
 #'        default colors based on \code{RColorBrewer} color palettes.
-#' @param targ.lwd line width for the line showing the target statistic values.
-#' @param targ.lty line type for the line showing the target statistic values.
-#' @param plots.joined if \code{TRUE} and \code{type="formation"}, combine all
+#' @param targ.lwd Line width for the line showing the target statistic values.
+#' @param targ.lty Line type for the line showing the target statistic values.
+#' @param plots.joined If \code{TRUE} and \code{type="formation"}, combine all
 #'        target statistics in one plot, versus one plot per target statistic if
 #'        \code{FALSE}.
-#' @param plot.leg if \code{TRUE}, show legend (only if \code{plots.joined=TRUE}).
+#' @param plot.leg If \code{TRUE}, show legend (only if \code{plots.joined=TRUE}).
 #' @param ... additional arguments to pass.
 #'
 #' @details
