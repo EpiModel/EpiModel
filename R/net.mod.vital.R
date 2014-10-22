@@ -50,11 +50,9 @@ deaths.net <- function(dat, at) {
         nDeaths <- sum(mode[idsDth] == 1)
         nDeathsM2 <- sum(mode[idsDth] == 2)
         dat$attr$active[idsDth] <- 0
-        dat$nw <- deactivate.vertices(dat$nw,
-                                      onset = at,
-                                      terminus = Inf,
-                                      v = idsDth,
-                                      deactivate.edges = TRUE)
+        dat$attr$exitTime[idsDth] <- at
+        dat$nw <- deactivate.vertices(dat$nw, onset = at, terminus = Inf,
+                                      v = idsDth, deactivate.edges = TRUE)
       }
     }
 
@@ -62,19 +60,18 @@ deaths.net <- function(dat, at) {
     if (d.rand == FALSE) {
       idsDth <- idsDthM2 <- NULL
       nDeaths <- min(round(sum(ratesElig[mElig == 1])), sum(mElig == 1))
-      dat$attr$active[ssample(idsElig[mElig == 1], nDeaths)] <- 0
+      idsDth <- ssample(idsElig[mElig == 1], nDeaths)
       if (modes == 2) {
         nDeathsM2 <- min(round(sum(ratesElig[mElig == 2])), sum(mElig == 2))
-        dat$attr$active[ssample(idsElig[mElig == 2], nDeaths)] <- 0
+        idsDthM2 <- ssample(idsElig[mElig == 2], nDeaths)
       }
       totDth <- nDeaths + nDeathsM2
       if (totDth > 0) {
         allids <- c(idsDth, idsDthM2)
-        dat$nw <- deactivate.vertices(dat$nw,
-                                      onset = at,
-                                      terminus = Inf,
-                                      v = allids,
-                                      deactivate.edges = TRUE)
+        dat$attr$active[allids] <- 0
+        dat$attr$exitTime[allids] <- at
+        dat$nw <- deactivate.vertices(dat$nw, onset = at, terminus = Inf,
+                                      v = allids, deactivate.edges = TRUE)
       }
     }
   }
@@ -115,11 +112,9 @@ deaths.net <- function(dat, at) {
         nDeaths <- sum(mode[idsDth] == 1)
         nDeathsM2 <- sum(mode[idsDth] == 2)
         dat$attr$active[idsDth] <- 0
-        dat$nw <- deactivate.vertices(dat$nw,
-                                      onset = at,
-                                      terminus = Inf,
-                                      v = idsDth,
-                                      deactivate.edges = TRUE)
+        dat$attr$exitTime[idsDth] <- 0
+        dat$nw <- deactivate.vertices(dat$nw, onset = at, terminus = Inf,
+                                      v = idsDth, deactivate.edges = TRUE)
       }
     }
 
@@ -128,18 +123,18 @@ deaths.net <- function(dat, at) {
       idsDth <- idsDthM2 <- NULL
       nDeaths <- min(round(sum(ratesElig[mElig == 1])), sum(mElig == 1))
       dat$attr$active[ssample(idsElig[mElig == 1], nDeaths)] <- 0
+      idsDth <- ssample(idsElig[mElig == 1], nDeaths)
       if (modes == 2) {
         nDeathsM2 <- min(round(sum(ratesElig[mElig == 2])), sum(mElig == 2))
-        dat$attr$active[ssample(idsElig[mElig == 2], nDeaths)] <- 0
+        idsDthM2 <- ssample(idsElig[mElig == 2], nDeaths)
       }
       totDth <- nDeaths + nDeathsM2
       if (totDth > 0) {
         allids <- c(idsDth, idsDthM2)
-        dat$nw <- deactivate.vertices(dat$nw,
-                                      onset = at,
-                                      terminus = Inf,
-                                      v = allids,
-                                      deactivate.edges = TRUE)
+        dat$attr$active[allids] <- 0
+        dat$attr$exitTime[allids] <- at
+        dat$nw <- deactivate.vertices(dat$nw, onset = at, terminus = Inf,
+                                      v = allids, deactivate.edges = TRUE)
       }
     }
   }
