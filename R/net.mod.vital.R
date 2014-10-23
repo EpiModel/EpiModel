@@ -404,6 +404,8 @@ births.net <- function(dat, at) {
     ## Handles infTime when incoming nodes are infected
     newNodesInf <- intersect(newNodes, which(dat$attr$status == "s"))
     dat$attr$infTime[newNodesInf] <- at
+    dat$attr$entrTime <- c(dat$attr$entrTime, rep(at, length(newNodes)))
+    dat$attr$exitTime <- c(dat$attr$exitTime, rep(NA, length(newNodes)))
   }
 
 
