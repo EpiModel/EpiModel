@@ -387,6 +387,8 @@ births.net <- function(dat, at) {
       }
       dat$attr$active <- c(dat$attr$active, rep(1, length(newNodes)))
       dat$attr$infTime <- c(dat$attr$infTime, rep(NA, length(newNodes)))
+      dat$attr$entrTime <- c(dat$attr$entrTime, rep(at, length(newNodes)))
+      dat$attr$exitTime <- c(dat$attr$exitTime, rep(NA, length(newNodes)))
     }
     if (modes == 2) {
       if (!("status" %in% fterms)) {
