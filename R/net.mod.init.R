@@ -244,6 +244,8 @@ init_status.net <- function(dat) {
 
   ## Save out other attr
   dat$attr$active <- rep(1, length(status))
+  dat$attr$entrTime <- rep(1, length(status))
+  dat$attr$exitTime <- rep(NA, length(status))
   if (tea.status == TRUE) {
     dat$nw <- activate.vertex.attribute(dat$nw,
                                         prefix = "testatus",
