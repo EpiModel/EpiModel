@@ -74,3 +74,35 @@ test_that("Serosorting model in open population", {
   sim <- netsim(est, param, init, control)
   expect_is(sim, "netsim")
 })
+
+
+test_that("Save attributes to output", {
+  skip_on_cran()
+  nw <- network.initialize(n = 50, bipartite = 25, directed = FALSE)
+  formation <- ~edges
+  target.stats <- 25
+  dissolution <- ~offset(edges)
+  coef.diss <- dissolution_coefs(dissolution, 38, d.rate = 0.01)
+
+  est1 <- netest(nw,
+                 formation,
+                 dissolution,
+                 target.stats,
+                 coef.diss,
+                 verbose = FALSE)
+
+  param <- param.net(inf.prob = 0.2, act.rate = 1,
+                     inf.prob.m2 = 0.2,
+                     b.rate = 0.01, b.rate.m2 = NA,
+                     ds.rate = 0.01, ds.rate.m2 = 0.01,
+                     di.rate = 0.01, di.rate.m2 = 0.01)
+
+  init <- init.net(i.num = 10, i.num.m2 = 10)
+  control <- control.net(type = "SI", nsteps = 10, nsims = 2,
+                         save.other = "attr", verbose = FALSE)
+
+  sim1 <- netsim(est1, param, init, control)
+  expect_is(sim1, "netsim")
+  expect_is(sim1$attr[[1]], "list")
+  expect_true(all(c("entrTime", "exitTime") %in% names(sim1$attr[[1]])))
+})
