@@ -6,13 +6,13 @@
 \alias{comp_plot.netsim}
 \title{Plot Compartment Diagram for Epidemic Models}
 \usage{
-comp_plot(x, at, run, digits, ...)
+comp_plot(x, at, digits, ...)
 
-\method{comp_plot}{dcm}(x, at, run = 1, digits = 3, ...)
+\method{comp_plot}{dcm}(x, at = 1, run = 1, digits = 3, ...)
 
-\method{comp_plot}{icm}(x, at = 1, run, digits = 3, ...)
+\method{comp_plot}{icm}(x, at = 1, digits = 3, ...)
 
-\method{comp_plot}{netsim}(x, at = 1, run, digits = 3, ...)
+\method{comp_plot}{netsim}(x, at = 1, digits = 3, ...)
 }
 \arguments{
 \item{x}{an \code{EpiModel} object of class \code{dcm}, \code{icm}, or
@@ -20,12 +20,12 @@ comp_plot(x, at, run, digits, ...)
 
 \item{at}{time step for model statistics.}
 
-\item{run}{model run number, for \code{dcm} class models with multiple runs
-(sensitivity analyses).}
-
 \item{digits}{number of significant digits to print.}
 
 \item{...}{additional arguments passed to plot (not used).}
+
+\item{run}{model run number, for \code{dcm} class models with multiple runs
+(sensitivity analyses).}
 }
 \description{
 Plots a compartment flow diagram for deterministic compartmental

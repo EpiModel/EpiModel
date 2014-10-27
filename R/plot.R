@@ -1866,7 +1866,7 @@ plot.netsim <- function(x,
 #' mod2 <- icm(param, init, control)
 #' comp_plot(mod2, at = 25, digits = 1)
 #'
-comp_plot <- function(x, at, run, digits, ...) {
+comp_plot <- function(x, at, digits, ...) {
   UseMethod("comp_plot")
 }
 
@@ -1875,7 +1875,7 @@ comp_plot <- function(x, at, run, digits, ...) {
 #' @rdname comp_plot
 #' @export
 comp_plot.dcm <- function(x,
-                          at,
+                          at = 1,
                           run = 1,
                           digits = 3,
                           ...
@@ -1894,14 +1894,10 @@ comp_plot.dcm <- function(x,
     stop("Only 1-group dcm models currently supported",
          call. = FALSE)
   }
-  if (run > nruns) {
-    stop("Specify a run between 1 and ", nruns,
-         call. = FALSE)
-  }
 
   ## Time
-  if (missing(at) || (at > nsteps | at < 1)) {
-    stop("Specify a timestep between 1 and ", nsteps)
+  if (at > nsteps | at < 1) {
+    stop("Specify a time step between 1 and ", nsteps)
   }
   intime <- at
   at <- which(x$control$timesteps == intime)
@@ -1971,7 +1967,6 @@ comp_plot.dcm <- function(x,
 #' @export
 comp_plot.icm <- function(x,
                           at = 1,
-                          run,
                           digits = 3,
                           ...
                           ) {
@@ -1995,7 +1990,7 @@ comp_plot.icm <- function(x,
   }
 
   # Time
-  if (missing(at) || (at > nsteps | at < 1)) {
+  if (at > nsteps | at < 1) {
     stop("Specify a timestep between 1 and ", nsteps,
          call. = FALSE)
   }
@@ -2067,14 +2062,12 @@ comp_plot.icm <- function(x,
 #' @export
 comp_plot.netsim <- function(x,
                              at = 1,
-                             run,
                              digits = 3,
                              ...
                              ) {
 
   comp_plot.icm(x = x,
                 at = at,
-                run = run,
                 digits = digits,
                 ...)
 
