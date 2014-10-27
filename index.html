@@ -7,6 +7,9 @@
 <link href="bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
 <link rel="stylesheet" href="css/styles.css"/>
 <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="css/buttons.css">
+<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+<script type="text/javascript" src="js/buttons.js"></script>
 </head>
 <body>
 
@@ -81,9 +84,9 @@
 
         <h4 style="margin-top: 18px">Main Tutorial</h4>
         <p>
-          The <a href="http://statnet.csde.washington.edu/EpiModel/vignette/Tutorial.pdf">EpiModel Tutorial</a> provides an
-          overview of the functionality of EpiModel, with a focus on using the integrated model types to
-          parameterize and simulate deterministic and stochastic epidemic models.
+          The <a href="http://statnet.csde.washington.edu/EpiModel/vignette/Tutorial.pdf">EpiModel Tutorial</a>
+          provides an overview of the functionality of EpiModel, with a focus on using the integrated model
+          types to parameterize and simulate deterministic and stochastic epidemic models.
         </p>
 
         <h4 style="margin-top: 18px">EpiModel Web</h4>
@@ -95,35 +98,56 @@
           contact models (ICMs). They are also hosted online
   				<small>
           <br>
-          <i class="fa fa-spinner fa-spin"></i>
-  					<a href="http://statnet.shinyapps.io/epidcm">DCMs</a>&nbsp;&nbsp;
-          <i class="fa fa-spinner fa-spin"></i>
-  					<a href="http://statnet.shinyapps.io/epiicm">ICMs</a>
+          <p></p>
+          <a href="http://statnet.shinyapps.io/epidcm"
+             class="button button-rounded button-tiny"><i class="fa fa-spinner fa-spin"></i> DCMs</a>&nbsp;&nbsp;&nbsp;
+          <a href="http://statnet.shinyapps.io/epiicm"
+             class="button button-rounded button-tiny"><i class="fa fa-spinner fa-spin"></i> ICMs</a>
   				</small>
         </p>
 
 
-        <h4 style="margin-top: 18px">Utilities</h4>
+        <h4 style="margin-top: 22px">Utilities</h4>
         <p>
-          <a href="http://statnet.csde.washington.edu/EpiModel/vignette/NetUtils.html">Network Utility Functions</a>: shows
-          extended examples of utility functions within EpiModel that help with the parameterization of
-          stochastic network models.
+          <strong>Network Utility Functions.</strong> This tutorial shows extended examples of utility
+          functions within EpiModel that help with the parameterization and simulation of stochastic
+          network models.
+          <br> <p></p>
+          <a href="http://statnet.csde.washington.edu/EpiModel/vignette/NetUtils.html"
+             class="button button-rounded button-tiny"><i class="fa fa-book"></i> Tutorial</a>
         </p>
 
-        <h4 style="margin-top: 18px">Extending EpiModel</h4>
+        <h4 style="margin-top: 22px">Extending EpiModel</h4>
         <p>
-          <ul>
-            <li type="square"> <a href="http://statnet.csde.washington.edu/EpiModel/vignette/NewDCMs.html">New DCMs with
-                 EpiModel</a>: how to build an original deterministic compartmental model by writing a model
-                 function and passing new parameters.</li>
-            <li type="square"> <a href="http://statnet.csde.washington.edu/EpiModel/vignette/NewICMs.html">New ICMs with
-                 EpiModel</a>: how to build an original stochastic individual contact model by writing
-                 replacement and supplemental module functions.</li>
-            <li type="square"> <a href="http://statnet.csde.washington.edu/EpiModel/vignette/NewNet.html">New Network
-                 Models with EpiModel</a>: how to build an original stochastic network model by writing
-                 replacement and supplemental module functions.</li>
-          </ul>
+          <strong>New DCMs with EpiModel.</strong> This tutorial shows how to build an original deterministic
+          compartmental model by writing a model function and passing new parameters.
+          <br> <p></p>
+          <a href="http://statnet.csde.washington.edu/EpiModel/vignette/NewDCMs.html"
+             class="button button-rounded button-tiny"><i class="fa fa-book"></i> Tutorial</a>&nbsp;&nbsp;&nbsp;
+          <a href="http://statnet.csde.washington.edu/EpiModel/vignette/NewDCMs.R"
+             class="button button-rounded button-tiny"><i class="fa fa-book"></i> Code</a>
         </p>
+        <br>
+        <p>
+          <strong>New ICMs with EpiModel.</strong> This tutorial shows how to build an original stochastic
+          individual contact model by writing replacement and supplemental module functions.
+          <br> <p></p>
+          <a href="http://statnet.csde.washington.edu/EpiModel/vignette/NewICMs.html"
+             class="button button-rounded button-tiny"><i class="fa fa-book"></i> Tutorial</a>&nbsp;&nbsp;&nbsp;
+          <a href="http://statnet.csde.washington.edu/EpiModel/vignette/NewICMs.R"
+             class="button button-rounded button-tiny"><i class="fa fa-book"></i> Code</a>
+        </p>
+        <br>
+        <p>
+          <strong>New Network Models with EpiModel.</strong> This tutorial shows how to build an original
+          stochastic network model by writing replacement and supplemental module functions.
+          <br> <p></p>
+          <a href="http://statnet.csde.washington.edu/EpiModel/vignette/NewNet.html"
+             class="button button-rounded button-tiny"><i class="fa fa-book"></i> Tutorial</a>&nbsp;&nbsp;&nbsp;
+          <a href="http://statnet.csde.washington.edu/EpiModel/vignette/NewNet.R"
+             class="button button-rounded button-tiny"><i class="fa fa-book"></i> Code</a>
+        </p>
+
       </div>
 
 
@@ -138,24 +162,19 @@
         to develop stochastic network models for epidemics, with a focus on empirical models of HIV/STI
         transmission and control.
         <br>
-    			<small>
-            <i class="fa fa-book"></i>
-  					  <a href="http://statnet.csde.washington.edu/EpiModel/nme/2014/index.html">NME 2014</a>&nbsp;&nbsp;
-            <i class="fa fa-book"></i>
-  					  <a href="https://statnet.csde.washington.edu/trac/wiki/NME2013">NME 2013</a>
-  				</small>
+          <p></p>
+          <a href="http://statnet.csde.washington.edu/EpiModel/nme/2014/index.html"
+             class="button button-rounded button-tiny"><i class="fa fa-book"></i> Course Materials</a>
         </p>
-
-        <h4  style="margin-top: 18px">Sunbelt</h4>
+        <h4 style="margin-top: 22px">Sunbelt</h4>
         <p>
         Sunbelt is the yearly conference of the International Network for Social Network Analysis. The
         conference offers several workshops for software tools, and statnet developers have been teaching
         there for several years. 2014 was the first year featuring an EpiModel workshop.
         <br>
-      		<small>
-            <i class="fa fa-book"></i>
-  					  <a href="https://statnet.csde.washington.edu/trac/wiki/Sunbelt2014">Sunbelt 2014</a>
-  				</small>
+          <p></p>
+          <a href="https://statnet.csde.washington.edu/trac/wiki/Sunbelt2014"
+           class="button button-rounded button-tiny"><i class="fa fa-book"></i> Course Materials</a>
         </p>
       </div>
 
