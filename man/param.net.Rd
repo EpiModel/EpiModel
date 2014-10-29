@@ -22,7 +22,9 @@ step of infection (see Time-Varying Parameters below).}
 or re-susceptibility (in \code{SIS} models). The recovery rate is the
 reciprocal of the disease duration. For bipartite models, this is the
 recovery rate for mode 1 persons only. This parameter is only used for
-\code{SIR} and \code{SIS} models.}
+\code{SIR} and \code{SIS} models. This may also be a vector
+of rates, with each element corresponding to the rate in that time step
+of infection (see Time-Varying Parameters below).}
 
 \item{b.rate}{birth or entry rate. For one-mode models, the birth rate is the
 rate of new births per person per unit time. For bipartite models, the
@@ -100,16 +102,16 @@ time.
 
 \section{Time-Varying Parameters}{
 
-The \code{inf.prob} and \code{act.rate} arguments may be specified as
-time-varying parameters by passing in a vector of probabilities or rates,
-respectively. The value in each position on the vector then corresponds to
-the probability or rate at that discrete time step for the infected partner.
-For example, an \code{inf.prob} of \code{c(0.5, 0.5, 0.1)} would simulate a
-0.5 transmission probability for the first two time steps of a person's
-infection, followed by a 0.1 for the third time step. If the infected person
-has not recovered or exited the population by the fourth time step, the third
-element in the vector will carry forward until one of those occurs or the
-simulation ends. For further examples, see
+The \code{inf.prob}, \code{act.rate}, \code{rec.rate} arguments (and their
+\code{.m2} companions) may be specified as time-varying parameters by passing
+in a vector of probabilities or rates, respectively. The value in each
+position on the vector then corresponds to the probability or rate at that
+discrete time step for the infected partner. For example, an \code{inf.prob}
+of \code{c(0.5, 0.5, 0.1)} would simulate a 0.5 transmission probability for
+the first two time steps of a person's infection, followed by a 0.1 for the
+third time step. If the infected person has not recovered or exited the
+population by the fourth time step, the third element in the vector will carry
+forward until one of those occurs or the simulation ends. For further examples, see
 \href{http://statnet.csde.washington.edu/EpiModel/nme/2014/d4-tut3.html}{this tutorial}.
 }
 
