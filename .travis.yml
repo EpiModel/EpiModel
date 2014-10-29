@@ -18,6 +18,8 @@ notifications:
 
 env:
   - global:
+     - R_BUILD_ARGS="--no-manual"
+     - R_CHECK_ARGS="--no-manual --as-cran"
     - BOOTSTRAP_LATEX=1
     - _R_CHECK_FORCE_SUGGESTS_=0
     - NOT_CRAN=true
