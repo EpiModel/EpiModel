@@ -2,26 +2,32 @@ Version 1.1.1
 ------------------------------------------------------------------------------
 
 NEW FEATURES
-* Added dissolution diagnostics in `netdx`. These show the proportion of edges
-  that dissolve per time step, as another diagnostic for the dissolution model.
+* Added dissolution diagnostics in `netdx`, for the proportion of edges that
+  dissolve per time step, as another diagnostic for the dissolution model (#53).
 * Network plots with `plot.netsim` now allow specifying `"mean"`, `"min"`, or
   `"max"` to plot the network at with the most average, maximum, and minumum
-  disease prevalence at the specified time step.
+  disease prevalence at the specified time step (#73).
+* Network models may now use time-varying recovery rates, similar to the previous
+  time-varying infection probabilities and act rates. The documentation for the
+  `param.net` function has been updated with details (#65).
 
 API CHANGES
 * Exported and added documentation for the `verbose.icm` function.
 
 BUG FIXES
 * Print functions for initial condition processing functions now handle list and
-  data frame structures.
+  data frame structures (#135).
 * Fix bug for new DCMs in which the initial condition names include standard
-  integrated initial condition names.
+  integrated initial condition names (#160).
 * Several bugs fixes related to network diagnostics for models with offset terms
   in the formation model. Also related formation diagnostics plots in
-  `plot.netsim` fixed.
+  `plot.netsim` fixed (#164).
+* Initialization of infection time for stochastic SIS/SIR models with two groups
+  or modes now fixed (#102).
 
 OTHER
 * The new website for the EpiModel project is http://epimodel.org/
+* The shiny apps now use the single file method.
 
 
 Version 1.1
