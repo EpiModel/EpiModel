@@ -18,5 +18,6 @@ notifications:
 
 env:
   - global:
+    - BOOTSTRAP_LATEX=1
     - _R_CHECK_FORCE_SUGGESTS_=0
     - NOT_CRAN=true
