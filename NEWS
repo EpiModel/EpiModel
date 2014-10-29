@@ -12,7 +12,7 @@ NEW FEATURES
   `param.net` function has been updated with details (#65).
 
 API CHANGES
-* Exported and added documentation for the `verbose.icm` function.
+* Exported and added documentation for the `verbose.icm` function (#71).
 
 BUG FIXES
 * Print functions for initial condition processing functions now handle list and
@@ -27,7 +27,7 @@ BUG FIXES
 
 OTHER
 * The new website for the EpiModel project is http://epimodel.org/
-* The shiny apps now use the single file method.
+* The shiny apps now use the single file method (#155).
 
 
 Version 1.1
