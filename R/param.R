@@ -263,14 +263,20 @@ param.icm <- function(inf.prob,
 #'
 #' @param inf.prob probability of infection per transmissible act between
 #'        a susceptible and an infected person. In bipartite models, this is the
-#'        probability of infection to the mode 1 nodes.
+#'        probability of infection to the mode 1 nodes. This may also be a vector
+#'        of probabilities, with each element corresponding to the probability
+#'        in that time step of infection (see Time-Varying Parameters below).
 #' @param act.rate average number of transmissible acts \emph{per partnership}
-#'        per unit time (see details).
+#'        per unit time (see act.rate Parameter below). This may also be a vector
+#'        of rates, with each element corresponding to the rate in in that time
+#'        step of infection (see Time-Varying Parameters below).
 #' @param rec.rate average rate of recovery with immunity (in \code{SIR} models)
 #'        or re-susceptibility (in \code{SIS} models). The recovery rate is the
 #'        reciprocal of the disease duration. For bipartite models, this is the
 #'        recovery rate for mode 1 persons only. This parameter is only used for
-#'        \code{SIR} and \code{SIS} models.
+#'        \code{SIR} and \code{SIS} models. This may also be a vector
+#'        of rates, with each element corresponding to the rate in that time step
+#'        of infection (see Time-Varying Parameters below).
 #' @param b.rate birth or entry rate. For one-mode models, the birth rate is the
 #'        rate of new births per person per unit time. For bipartite models, the
 #'        birth rate may be parameterized as a rate per mode 1 person time (with
@@ -328,6 +334,19 @@ param.icm <- function(inf.prob,
 #' Therefore, the \code{act.rate} parameter has a different interpretation here,
 #' where it is the number of transmissible acts \emph{per partnership} per unit
 #' time.
+#'
+#' @section Time-Varying Parameters:
+#' The \code{inf.prob}, \code{act.rate}, \code{rec.rate} arguments (and their
+#' \code{.m2} companions) may be specified as time-varying parameters by passing
+#' in a vector of probabilities or rates, respectively. The value in each
+#' position on the vector then corresponds to the probability or rate at that
+#' discrete time step for the infected partner. For example, an \code{inf.prob}
+#' of \code{c(0.5, 0.5, 0.1)} would simulate a 0.5 transmission probability for
+#' the first two time steps of a person's infection, followed by a 0.1 for the
+#' third time step. If the infected person has not recovered or exited the
+#' population by the fourth time step, the third element in the vector will carry
+#' forward until one of those occurs or the simulation ends. For further examples, see
+#' \href{http://statnet.csde.washington.edu/EpiModel/nme/2014/d4-tut3.html}{this tutorial}.
 #'
 #' @section New Modules:
 #' To build original models outside of the built-in models, new process modules

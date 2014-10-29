@@ -1823,10 +1823,8 @@ plot.netsim <- function(x,
 #' @param x an \code{EpiModel} object of class \code{dcm}, \code{icm}, or
 #'        \code{netsim}.
 #' @param at time step for model statistics.
-#' @param run model run number, for \code{dcm} class models with multiple runs
-#'        (sensitivity analyses).
 #' @param digits number of significant digits to print.
-#' @param ... additional arguments passed to plot (not used).
+#' @param ... additional arguments passed to plot (not currently used).
 #'
 #' @details
 #' The \code{comp_plot} function provides a visual summary of an epidemic model
@@ -1871,13 +1869,15 @@ comp_plot <- function(x, at, digits, ...) {
 }
 
 
+#' @param run model run number, for \code{dcm} class models with multiple runs
+#'        (sensitivity analyses).
 #' @method comp_plot dcm
 #' @rdname comp_plot
 #' @export
 comp_plot.dcm <- function(x,
                           at = 1,
-                          run = 1,
                           digits = 3,
+                          run = 1,
                           ...
                           ) {
 

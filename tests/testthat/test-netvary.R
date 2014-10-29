@@ -1,8 +1,6 @@
-## Testing time-varying inf.prob and act.rate in network models
-
 context("Time Varying Network Parameters")
 
-test_that("time varying inf.prob and act.rate for one-mode", {
+test_that("time varying parameters for one-mode", {
   nw <- network.initialize(n = 100, directed = FALSE)
   formation <- ~ edges
   target.stats <- 50
@@ -25,17 +23,20 @@ test_that("time varying inf.prob and act.rate for one-mode", {
   acts <- c(0.5, 2)
   act.rates <- rep(acts, durs)
 
+  rec.rates <- rep(0:1, c(20, 1))
+
   # Parameters, initial conditions, and controls for model
-  param <- param.net(inf.prob = inf.probs, act.rate = act.rates)
+  param <- param.net(inf.prob = inf.probs, act.rate = act.rates,
+                     rec.rate = rec.rates)
   init <- init.net(i.num = 50)
-  control <- control.net(type = "SI", nsteps = 10, nsims = 1,
+  control <- control.net(type = "SIS", nsteps = 10, nsims = 1,
                          save.transmat = TRUE, verbose = FALSE)
   mod <- netsim(est1, param, init, control)
   expect_is(mod, "netsim")
 })
 
 
-test_that("time varying inf.prob and act.rate for bipartite", {
+test_that("time varying parameters for bipartite", {
   nw <- network.initialize(n = 100, bipartite = 50, directed = FALSE)
   formation <- ~ edges
   target.stats <- 50
@@ -59,11 +60,17 @@ test_that("time varying inf.prob and act.rate for bipartite", {
   acts <- c(1, 2)
   act.rates <- rep(acts, durs)
 
+  rec.rates <- rep(0:1, c(20, 1))
+  rec.rates.m2 <- rep(0:1, c(10, 1))
+
   param <- param.net(inf.prob = inf.probs,
                      inf.prob.m2 = inf.probs.m2,
-                     act.rate = act.rates)
-  init <- init.net(i.num = 10, i.num.m2 = 10)
-  control <- control.net(type = "SI", nsteps = 10, nsims = 1,
+                     act.rate = act.rates,
+                     rec.rate = rec.rates,
+                     rec.rate.m2 = rec.rates.m2)
+  init <- init.net(i.num = 10, i.num.m2 = 10,
+                   r.num = 0, r.num.m2 = 0)
+  control <- control.net(type = "SIR", nsteps = 10, nsims = 1,
                          save.transmat = TRUE, verbose = FALSE)
 
   mod <- netsim(est1, param, init, control)

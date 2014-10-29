@@ -8,7 +8,7 @@
 \usage{
 comp_plot(x, at, digits, ...)
 
-\method{comp_plot}{dcm}(x, at = 1, run = 1, digits = 3, ...)
+\method{comp_plot}{dcm}(x, at = 1, digits = 3, run = 1, ...)
 
 \method{comp_plot}{icm}(x, at = 1, digits = 3, ...)
 
@@ -22,7 +22,7 @@ comp_plot(x, at, digits, ...)
 
 \item{digits}{number of significant digits to print.}
 
-\item{...}{additional arguments passed to plot (not used).}
+\item{...}{additional arguments passed to plot (not currently used).}
 
 \item{run}{model run number, for \code{dcm} class models with multiple runs
 (sensitivity analyses).}
