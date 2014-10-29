@@ -160,10 +160,10 @@ init_status.icm <- function(dat) {
       }
       if (nGroups == 2) {
         infG1 <- which(status == "i" & group == 1)
-        infTime[infM1] <- ssample(1:(-round(1/dat$param$rec.rate) + 2),
+        infTime[infG1] <- ssample(1:(-round(1/dat$param$rec.rate) + 2),
                                   length(infG1), replace = TRUE)
-        infM2 <- which(status == "i" & group == 2)
-        infTime[infM2] <- ssample(1:(-round(1/dat$param$rec.rate.g2) + 2),
+        infG2 <- which(status == "i" & group == 2)
+        infTime[infG2] <- ssample(1:(-round(1/dat$param$rec.rate.g2) + 2),
                                   length(infG2), replace = TRUE)
       }
     }
