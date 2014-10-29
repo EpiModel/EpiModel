@@ -263,21 +263,21 @@ init_status.net <- function(dat) {
   if (dat$param$vital == TRUE && dat$param$di.rate > 0) {
     infTime[idsInf] <- -rgeom(n = length(idsInf), prob = dat$param$di.rate)+2
   } else {
-    if (dat$control$type == "SI" || dat$param$rec.rate == 0) {
+    if (dat$control$type == "SI" || mean(dat$param$rec.rate) == 0) {
       # infTime a uniform draw over the number of sim time steps
       infTime[idsInf] <- ssample(1:(-dat$control$nsteps + 2),
                                      length(idsInf), replace = TRUE)
     } else {
       if (modes == 1) {
-        infTime[idsInf] <- ssample(1:(-round(1/dat$param$rec.rate) + 2),
+        infTime[idsInf] <- ssample(1:(-round(1/mean(dat$param$rec.rate)) + 2),
                                    length(idsInf), replace = TRUE)
       }
       if (modes == 2) {
         infM1 <- which(status == "i" & mode == 1)
-        infTime[infM1] <- ssample(1:(-round(1/dat$param$rec.rate) + 2),
+        infTime[infM1] <- ssample(1:(-round(1/mean(dat$param$rec.rate)) + 2),
                                    length(infM1), replace = TRUE)
         infM2 <- which(status == "i" & mode == 2)
-        infTime[infM2] <- ssample(1:(-round(1/dat$param$rec.rate.m2) + 2),
+        infTime[infM2] <- ssample(1:(-round(1/mean(dat$param$rec.rate.m2)) + 2),
                                   length(infM2), replace = TRUE)
 
       }

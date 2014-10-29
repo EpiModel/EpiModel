@@ -254,6 +254,7 @@ recovery.net <- function(dat, at) {
   # Variables ---------------------------------------------------------------
   active <- dat$attr$active
   status <- dat$attr$status
+  infTime <- dat$attr$infTime
   tea.status <- dat$control$tea.status
 
   modes <- dat$param$modes
@@ -271,12 +272,33 @@ recovery.net <- function(dat, at) {
   nElig <- length(idsElig)
 
 
-  # Process -----------------------------------------------------------------
-  if (nElig > 0) {
+  # Time-Varying Recovery Rate ----------------------------------------------
+  infDur <- at - infTime[active == 1 & status == "i"]
+  infDur[infDur == 0] <- 1
 
+  lrec.rate <- length(rec.rate)
+  if (lrec.rate == 1) {
     mElig <- mode[idsElig]
     rates <- c(rec.rate, rec.rate.m2)
     ratesElig <- rates[mElig]
+  } else {
+    mElig <- mode[idsElig]
+    if (is.null(rec.rate.m2)) {
+      rates <- ifelse(infDur <= lrec.rate, rec.rate[infDur], rec.rate[lrec.rate])
+    } else {
+      rates <- ifelse(mElig == 1, ifelse(infDur <= lrec.rate,
+                                         rec.rate[infDur],
+                                         rec.rate[lrec.rate]),
+                                  ifelse(infDur <= lrec.rate,
+                                         rec.rate.m2[infDur],
+                                         rec.rate.m2[lrec.rate]))
+    }
+    ratesElig <- rates
+  }
+
+
+  # Process -----------------------------------------------------------------
+  if (nElig > 0) {
 
     if (rec.rand == TRUE) {
       vecRecov <- which(rbinom(nElig, 1, ratesElig) == 1)
@@ -286,31 +308,32 @@ recovery.net <- function(dat, at) {
         nRecovM2 <- sum(mode[idsRecov] == 2)
         status[idsRecov] <- recovState
         if (tea.status == TRUE) {
-          dat$nw <- activate.vertex.attribute(dat$nw,
-                                              prefix = "testatus",
-                                              value = recovState,
-                                              onset = at,
-                                              terminus = Inf,
-                                              v = idsRecov)
+          dat$nw <- activate.vertex.attribute(dat$nw, prefix = "testatus",
+                                              value = recovState, onset = at,
+                                              terminus = Inf, v = idsRecov)
         }
       }
     } else {
       idsRecov <- idsRecovM2 <- NULL
       nRecov <- min(round(sum(ratesElig[mElig == 1])), sum(mElig == 1))
-      status[ssample(idsElig[mElig == 1], nRecov)] <- recovState
+      if (nRecov > 0) {
+        idsRecov <- ssample(idsElig[mElig == 1], nRecov)
+        status[idsRecov] <- recovState
+      }
+
       if (modes == 2) {
         nRecovM2 <- min(round(sum(ratesElig[mElig == 2])), sum(mElig == 2))
-        status[ssample(idsElig[mElig == 2], nRecov)] <- recovState
+        if (nRecovM2 > 0) {
+          idsRecovM2 <- ssample(idsElig[mElig == 2], nRecovM2)
+          status[idsRecovM2] <- recovState
+        }
       }
       totRecov <- nRecov + nRecovM2
       if (tea.status == TRUE & totRecov > 0) {
         allids <- c(idsRecov, idsRecovM2)
-        dat$nw <- activate.vertex.attribute(dat$nw,
-                                            prefix = "testatus",
-                                            value = recovState,
-                                            onset = at,
-                                            terminus = Inf,
-                                            v = allids)
+        dat$nw <- activate.vertex.attribute(dat$nw, prefix = "testatus",
+                                            value = recovState, onset = at,
+                                            terminus = Inf, v = allids)
       }
     }
   }
