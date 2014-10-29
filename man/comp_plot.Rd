@@ -8,7 +8,7 @@
 \usage{
 comp_plot(x, at, digits, ...)
 
-\method{comp_plot}{dcm}(x, at = 1, run = 1, digits = 3, ...)
+\method{comp_plot}{dcm}(x, at = 1, digits = 3, run = 1, ...)
 
 \method{comp_plot}{icm}(x, at = 1, digits = 3, ...)
 

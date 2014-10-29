@@ -1876,8 +1876,8 @@ comp_plot <- function(x, at, digits, ...) {
 #' @export
 comp_plot.dcm <- function(x,
                           at = 1,
-                          run = 1,
                           digits = 3,
+                          run = 1,
                           ...
                           ) {
 
