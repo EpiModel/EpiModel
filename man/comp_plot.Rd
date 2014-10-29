@@ -22,7 +22,7 @@ comp_plot(x, at, digits, ...)
 
 \item{digits}{number of significant digits to print.}
 
-\item{...}{additional arguments passed to plot (not used).}
+\item{...}{additional arguments passed to plot (not currently used).}
 
 \item{run}{model run number, for \code{dcm} class models with multiple runs
 (sensitivity analyses).}
