@@ -142,29 +142,33 @@ init_status.icm <- function(dat) {
 
 
   # Infection Time ----------------------------------------------------------
-  ## Set up inf.time vector
   idsInf <- which(status == "i")
   infTime <- rep(NA, length(status))
 
   # If vital=TRUE, infTime is a uniform draw over the duration of infection
   if (dat$param$vital == TRUE && dat$param$di.rate > 0) {
-    infTime[idsInf] <- -rgeom(n = length(idsInf),
-                              prob = dat$param$di.rate)+2
+    infTime[idsInf] <- -rgeom(n = length(idsInf), prob = dat$param$di.rate)+2
   } else {
     if (dat$control$type == "SI" || dat$param$rec.rate == 0) {
       # infTime a uniform draw over the number of sim time steps
       infTime[idsInf] <- ssample(1:(-dat$control$nsteps + 2),
-                                 length(idsInf),
-                                 replace = TRUE)
+                                 length(idsInf), replace = TRUE)
     } else {
-      infTime[idsInf] <- ssample(1:(-round(1/dat$param$rec.rate) + 2),
-                                 length(idsInf),
-                                 replace = TRUE)
+      if (nGroups == 1) {
+        infTime[idsInf] <- ssample(1:(-round(1/dat$param$rec.rate) + 2),
+                                   length(idsInf), replace = TRUE)
+      }
+      if (nGroups == 2) {
+        infG1 <- which(status == "i" & group == 1)
+        infTime[infM1] <- ssample(1:(-round(1/dat$param$rec.rate) + 2),
+                                  length(infG1), replace = TRUE)
+        infM2 <- which(status == "i" & group == 2)
+        infTime[infM2] <- ssample(1:(-round(1/dat$param$rec.rate.g2) + 2),
+                                  length(infG2), replace = TRUE)
+      }
     }
   }
   dat$attr$infTime <- infTime
 
   return(dat)
 }
-
-
