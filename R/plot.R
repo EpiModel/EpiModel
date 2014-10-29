@@ -1866,7 +1866,7 @@ plot.netsim <- function(x,
 #' mod2 <- icm(param, init, control)
 #' comp_plot(mod2, at = 25, digits = 1)
 #'
-comp_plot <- function(x, at, digits, ...) {
+comp_plot <- function(x, at, run, digits, ...) {
   UseMethod("comp_plot")
 }
 
