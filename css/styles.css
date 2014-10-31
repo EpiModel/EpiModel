@@ -5,7 +5,6 @@
 body {
   padding-top: 60px;
   font-family: helvetica, lucida grande, arial, sans serif;
-  font-weight: 100;
 }
 
 @media (max-width: 979px) {
@@ -32,4 +31,8 @@ body {
 h2 {
     padding-top: 45px;
     margin-top: -35px;
+}
+
+p,li {
+  font-weight: 100;
 }
