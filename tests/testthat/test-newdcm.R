@@ -143,4 +143,37 @@ test_that("DCM inital conditions ordering correct", {
 })
 
 
+test_that("Non-sensitivity parameter vector", {
 
+  ## SI function
+  intSI <- function(t, t0, parms) {
+    with(as.list(c(t0, parms)), {
+
+      ## Dynamic Calculations
+      # Population size
+      num <- s.num + i.num
+
+      if (t < start.time) {
+        lambda <- inf.prob[1]*act.rate*i.num/num
+      } else {
+        lambda <- inf.prob[2]*act.rate*i.num/num
+      }
+
+      ## Differential Equations
+      dS <- -lambda*s.num
+      dI <- lambda*s.num
+
+      ## Output
+      list(c(dS, dI),
+           num = num,
+           si.flow = lambda * s.num)
+    })
+  }
+
+  param <- param.dcm(inf.prob = c(0.5, 0.05), act.rate = 0.1, start.time = 100)
+  init <- init.dcm(s.num = 999, i.num = 1)
+  control <- control.dcm(nsteps = 250, new.mod = intSI, sens.param = FALSE)
+  mod <- dcm(param, init, control)
+  expect_is(mod, "dcm")
+  expect_true(any(!is.na(as.data.frame(mod))))
+})
