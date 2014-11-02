@@ -132,7 +132,7 @@ resim_nets <- function(dat, at) {
 #'
 edges_correct <- function(dat, at) {
 
-  if (dat$param$depend == TRUE) {
+  if (dat$control$depend == TRUE) {
     if (dat$param$modes == 1) {
       old.num <- dat$epi$num[at-1]
       new.num <- sum(dat$attr$active == 1)
