@@ -5,6 +5,10 @@ body {
   font-weight: 100;
 }
 
+li {
+  font-weight: 100 !important;
+}
+
 @media (max-width: 979px) {
 
     body {
