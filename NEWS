@@ -27,6 +27,8 @@ BUG FIXES
 
 OTHER
 * The new website for the EpiModel project is http://epimodel.org/
+* Added a new example of a SEIR Ebola DCM in the "Solving New DCMs with EpiModel"
+  tutorial.
 * The shiny apps now use the single file method (#155).
 * Exported and added documentation for the `verbose.icm` function (#71).
 * Other elements saved in network simulations with the `save.other` control
