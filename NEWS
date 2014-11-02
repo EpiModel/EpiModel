@@ -10,6 +10,10 @@ NEW FEATURES
 * Network models may now use time-varying recovery rates, similar to the previous
   time-varying infection probabilities and act rates. The documentation for the
   `param.net` function has been updated with details (#65).
+* New control setting for DCMs, `param.sens`, that allows bypassing the default
+  behavior of evaluating parameters with length greater than 1 as sensitivity
+  analyses. This should be used for single-run models if passing in parameters
+  with arbitrary form.
 
 BUG FIXES
 * Print functions for initial condition processing functions now handle list and
