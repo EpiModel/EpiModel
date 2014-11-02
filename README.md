@@ -1,7 +1,7 @@
 EpiModel
 ===============
 
-[![Version](http://img.shields.io/badge/Version-1.1.1-orange.svg)]
+[![Version](http://img.shields.io/badge/Version-1.1.1-orange.svg)](https://github.com/statnet/EpiModel/releases/tag/v1.1.1)
 [![Build Status](https://travis-ci.org/statnet/EpiModel.svg?branch=master)](https://travis-ci.org/statnet/EpiModel)
 [![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.12524.png)](http://dx.doi.org/10.5281/zenodo.12524)
 
