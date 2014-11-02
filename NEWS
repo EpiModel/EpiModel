@@ -10,9 +10,10 @@ NEW FEATURES
 * Network models may now use time-varying recovery rates, similar to the previous
   time-varying infection probabilities and act rates. The documentation for the
   `param.net` function has been updated with details (#65).
-
-API CHANGES
-* Exported and added documentation for the `verbose.icm` function (#71).
+* New control setting for DCMs, `param.sens`, that allows bypassing the default
+  behavior of evaluating parameters with length greater than 1 as sensitivity
+  analyses. This should be used for single-run models if passing in parameters
+  with arbitrary form.
 
 BUG FIXES
 * Print functions for initial condition processing functions now handle list and
@@ -24,10 +25,18 @@ BUG FIXES
   `plot.netsim` fixed (#164).
 * Initialization of infection time for stochastic SIS/SIR models with two groups
   or modes now fixed (#102).
+* Edges population size correction module, `edges_correct`, now runs for any
+  dependent network simulations, not just if built-in vital dynamics modules are
+  called (#141).
 
 OTHER
 * The new website for the EpiModel project is http://epimodel.org/
+* Added a new example of a SEIR Ebola DCM in the "Solving New DCMs with EpiModel"
+  tutorial.
 * The shiny apps now use the single file method (#155).
+* Exported and added documentation for the `verbose.icm` function (#71).
+* Other elements saved in network simulations with the `save.other` control
+  setting in `control.net` are now printed as output in `print.netsim` (#174).
 
 
 Version 1.1

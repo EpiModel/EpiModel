@@ -167,6 +167,9 @@ print.netsim <- function(x, ...) {
   if (!(is.null(x$stats$transmat))) {
     cat("\nTransmissions:", simnames)
   }
+  if (!is.null(x$control$save.other)) {
+    cat("\nOther:", x$control$save.other)
+  }
   cat("")
 
   invisible()
