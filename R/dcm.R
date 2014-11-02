@@ -166,7 +166,11 @@ dcm <- function(param, init, control){
 
 
   # Sensitivity parameters --------------------------------------------------
-  control$nruns <- max(sapply(param, length))
+  if (control$sens.param == FALSE) {
+    control$nruns <- 1
+  } else {
+    control$nruns <- max(sapply(param, length))
+  }
   if (control$nruns > 1) {
     longv <- which(sapply(param, length) == max(sapply(param, length)))
     longvn <- names(longv)
