@@ -116,3 +116,42 @@ resim_nets <- function(dat, at) {
 
   return(dat)
 }
+
+
+#' @title Adjustment for the Edges Coefficient with Changing Network Size
+#'
+#' @description Adjusts the edges coefficient in a dynamic network model
+#'              simulated in \code{\link{netsim}} to preserve the mean
+#'              degree of nodes in the network.
+#'
+#' @param dat master object in \code{netsim} simulations.
+#' @param at current time step.
+#'
+#' @keywords internal
+#' @export
+#'
+edges_correct <- function(dat, at) {
+
+  if (dat$param$vital == TRUE) {
+    if (dat$param$modes == 1) {
+      old.num <- dat$epi$num[at-1]
+      new.num <- sum(dat$attr$active == 1)
+      dat$nwparam[[1]]$coef.form[1] <- dat$nwparam[[1]]$coef.form[1] +
+        log(old.num) -
+        log(new.num)
+    }
+    if (dat$param$modes == 2) {
+      mode <- idmode(dat$nw)
+      old.num.m1 <- dat$epi$num[at-1]
+      old.num.m2 <- dat$epi$num.m2[at-1]
+      new.num.m1 <- sum(dat$attr$active == 1 & mode == 1)
+      new.num.m2 <- sum(dat$attr$active == 1 & mode == 2)
+      dat$nwparam[[1]]$coef.form[1] <- dat$nwparam[[1]]$coef.form[1] +
+        log(2*old.num.m1*old.num.m2/
+              (old.num.m1+old.num.m2)) -
+        log(2*new.num.m1*new.num.m2/
+              (new.num.m1+new.num.m2))
+    }
+  }
+  return(dat)
+}
