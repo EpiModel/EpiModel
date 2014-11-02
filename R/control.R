@@ -4,22 +4,26 @@
 #' @description Sets the controls for deterministic compartmental models
 #'              simulated with \code{\link{dcm}}.
 #'
-#' @param type disease type to be modeled, with the choice of \code{"SI"} for
+#' @param type Disease type to be modeled, with the choice of \code{"SI"} for
 #'        Susceptible-Infected diseases, \code{"SIR"} for
 #'        Susceptible-Infected-Recovered diseases, and \code{"SIS"} for
 #'        Susceptible-Infected-Susceptible diseases.
-#' @param nsteps number of time steps to solve the model over. This must be a
+#' @param nsteps Number of time steps to solve the model over. This must be a
 #'        positive integer.
-#' @param dt time unit for model solutions, with the default of 1. Model
+#' @param dt Time unit for model solutions, with the default of 1. Model
 #'        solutions for fractional time steps may be obtained by setting this to a
 #'        number between 0 and 1.
-#' @param odemethod ordinary differential equation (ODE) integration method, with
+#' @param odemethod Ordinary differential equation (ODE) integration method, with
 #'        the default of the "Runge-Kutta 4" method (see \code{\link{ode}} for
 #'        other options).
-#' @param new.mod if not running a built-in model type, a function with a new
+#' @param new.mod If not running a built-in model type, a function with a new
 #'        model to be simulated (see details).
-#' @param print.mod if \code{TRUE}, print the model form to the console.
-#' @param verbose if \code{TRUE}, print model progress to the console.
+#' @param sens.param If \code{TRUE}, evaluate arguments in parameters with length
+#'        greater than 1 as sensitivity analyses, with one model run per value of
+#'        the parameter. If \code{FALSE}, one model will be run with parameters
+#'        of arbitrary length.
+#' @param print.mod If \code{TRUE}, print the model form to the console.
+#' @param verbose If \code{TRUE}, print model progress to the console.
 #' @param ... additional control settings passed to model.
 #'
 #' @details
@@ -55,6 +59,7 @@ control.dcm <- function(type,
                         dt = 1,
                         odemethod = "rk4",
                         new.mod = NULL,
+                        sens.param = TRUE,
                         print.mod = FALSE,
                         verbose = TRUE,
                         ...) {
