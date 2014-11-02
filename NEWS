@@ -11,9 +11,6 @@ NEW FEATURES
   time-varying infection probabilities and act rates. The documentation for the
   `param.net` function has been updated with details (#65).
 
-API CHANGES
-* Exported and added documentation for the `verbose.icm` function (#71).
-
 BUG FIXES
 * Print functions for initial condition processing functions now handle list and
   data frame structures (#135).
@@ -24,10 +21,16 @@ BUG FIXES
   `plot.netsim` fixed (#164).
 * Initialization of infection time for stochastic SIS/SIR models with two groups
   or modes now fixed (#102).
+* Edges population size correction module, `edges_correct`, now runs for any
+  dependent network simulations, not just if built-in vital dynamics modules are
+  called (#141).
 
 OTHER
 * The new website for the EpiModel project is http://epimodel.org/
 * The shiny apps now use the single file method (#155).
+* Exported and added documentation for the `verbose.icm` function (#71).
+* Other elements saved in network simulations with the `save.other` control
+  setting in `control.net` are now printed as output in `print.netsim` (#174).
 
 
 Version 1.1
