@@ -45,7 +45,7 @@ The main website for EpiModel, with tutorials and other supporting files, is <a 
 ### Other 
 
 #### Citation
-If using EpiModel for teaching or research purposes, please include a citation:
+If using EpiModel for teaching or research, please include a citation:
 > Jenness SM, Goodreau SM, Morris M (2014). *EpiModel: Mathematical Modeling of Infectious Disease.* R Package Version 1.1.1. URL: http://epimodel.org/. DOI: 10.5281/zenodo.12524.
 
 #### Funding
