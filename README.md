@@ -1,9 +1,9 @@
 EpiModel
 ===============
 
-[![Version](http://img.shields.io/badge/Version-1.1.1-orange.svg)](https://github.com/statnet/EpiModel/releases/tag/v1.1.1)
-[![Build Status](https://travis-ci.org/statnet/EpiModel.svg?branch=master)](https://travis-ci.org/statnet/EpiModel)
-[![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.12524.png)](http://dx.doi.org/10.5281/zenodo.12524)
+[![Version](http://img.shields.io/badge/Version-1.1.1-orange.svg?style=flat)](https://github.com/statnet/EpiModel/releases/tag/v1.1.1)
+[![Build Status](http://img.shields.io/travis/statnet/EpiModel/master.svg?style=flat)](https://travis-ci.org/statnet/EpiModel)
+[![DOI](http://img.shields.io/badge/DOI-10.5281%2Fzenodo.12524-blue.svg?style=flat)](http://dx.doi.org/10.5281/zenodo.12524)
 
 EpiModel: tools for simulating mathematical models of infectious disease. Epidemic model classes include deterministic compartmental models, stochastic individual contact models, and stochastic network models. Disease types include SI, SIR, and SIS epidemics with and without demography, with tools available for expansion to model complex epidemic processes.
 
