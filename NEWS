@@ -1,3 +1,15 @@
+Version 1.1.2
+------------------------------------------------------------------------------
+
+NEW FEATURES
+* Added other epidemiological outcomes saved in user-defined modules to print
+  output with `print.netsim` (#183).
+
+BUG FIXES
+* Object elements saved in stochastic network models with the `save.other`
+  parameter in `control.net` may now be merged with `merge.netsim` (#185).
+
+
 Version 1.1.1
 ------------------------------------------------------------------------------
 

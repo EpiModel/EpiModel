@@ -1,4 +1,0 @@
-library(statnet.common)
-statnet.cite.head("EpiModel")
-statnet.cite.pkg("EpiModel")
-statnet.cite.foot("EpiModel")
