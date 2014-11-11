@@ -4,26 +4,29 @@
 \title{Merge Model Simulations Across netsim Objects}
 \usage{
 \method{merge}{netsim}(x, y, keep.transmat = TRUE, keep.network = TRUE,
-  keep.nwstats = TRUE, ...)
+  keep.nwstats = TRUE, keep.other = TRUE, ...)
 }
 \arguments{
-\item{x}{an \code{EpiModel} object of class \code{\link{netsim}}.}
+\item{x}{An \code{EpiModel} object of class \code{\link{netsim}}.}
 
-\item{y}{another \code{EpiModel} object of class \code{\link{netsim}},
+\item{y}{Another \code{EpiModel} object of class \code{\link{netsim}},
 with the identical model parameterization as \code{x}.}
 
-\item{keep.transmat}{if \code{TRUE}, keep the transmission matrices
+\item{keep.transmat}{If \code{TRUE}, keep the transmission matrices from the
+original \code{x} and \code{y} elements.}
+
+\item{keep.network}{If \code{TRUE}, keep the \code{networkDynamic} objects
 from the original \code{x} and \code{y} elements.}
 
-\item{keep.network}{if \code{TRUE}, keep the
-\code{networkDynamic} objects from the original \code{x} and \code{y}
-elements.}
+\item{keep.nwstats}{If \code{TRUE}, keep the network statistics (as set by
+the \code{nwstats.formula} parameter in \code{control.netsim}) from
+the original \code{x} and \code{y} elements.}
 
-\item{keep.nwstats}{if \code{TRUE}, keep the network
-statistics (as set by the \code{nwstats.formula} parameter in
-\code{control.netsim}) from the original \code{x} and \code{y} elements.}
+\item{keep.other}{If \code{TRUE}, keep the other simulation elements (as set
+by the \code{save.other} parameter in \code{control.netsim}) from the
+original \code{x} and \code{y} elements.}
 
-\item{...}{additional merge arguments (not used).}
+\item{...}{Additional merge arguments (not currently used).}
 }
 \description{
 Merges epidemiological data from two independent simulations of

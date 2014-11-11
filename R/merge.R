@@ -93,18 +93,20 @@ merge.icm <- function(x, y, ...) {
 #' @description Merges epidemiological data from two independent simulations of
 #'              stochastic network models from \code{netsim}.
 #'
-#' @param x an \code{EpiModel} object of class \code{\link{netsim}}.
-#' @param y another \code{EpiModel} object of class \code{\link{netsim}},
+#' @param x An \code{EpiModel} object of class \code{\link{netsim}}.
+#' @param y Another \code{EpiModel} object of class \code{\link{netsim}},
 #'        with the identical model parameterization as \code{x}.
-#' @param keep.transmat if \code{TRUE}, keep the transmission matrices
+#' @param keep.transmat If \code{TRUE}, keep the transmission matrices from the
+#'        original \code{x} and \code{y} elements.
+#' @param keep.network If \code{TRUE}, keep the \code{networkDynamic} objects
 #'        from the original \code{x} and \code{y} elements.
-#' @param keep.network if \code{TRUE}, keep the
-#'        \code{networkDynamic} objects from the original \code{x} and \code{y}
-#'        elements.
-#' @param keep.nwstats if \code{TRUE}, keep the network
-#'        statistics (as set by the \code{nwstats.formula} parameter in
-#'        \code{control.netsim}) from the original \code{x} and \code{y} elements.
-#' @param ...  additional merge arguments (not used).
+#' @param keep.nwstats If \code{TRUE}, keep the network statistics (as set by
+#'        the \code{nwstats.formula} parameter in \code{control.netsim}) from
+#'        the original \code{x} and \code{y} elements.
+#' @param keep.other If \code{TRUE}, keep the other simulation elements (as set
+#'        by the \code{save.other} parameter in \code{control.netsim}) from the
+#'        original \code{x} and \code{y} elements.
+#' @param ...  Additional merge arguments (not currently used).
 #'
 #' @details
 #' This merge function combines the results of two independent simulations of
@@ -155,6 +157,7 @@ merge.netsim <- function(x, y,
                          keep.transmat = TRUE,
                          keep.network = TRUE,
                          keep.nwstats = TRUE,
+                         keep.other = TRUE,
                          ...) {
 
   ## Check structure
@@ -199,6 +202,7 @@ merge.netsim <- function(x, y,
 
   z$control$nsims <- max(new.range)
 
+
   ## Transmission matrix
   if (keep.transmat == TRUE) {
     for (i in new.range) {
@@ -213,6 +217,7 @@ merge.netsim <- function(x, y,
     z$stats$transmat <- NULL
   }
 
+
   ## Network objects
   if (keep.network == TRUE & !is.null(x$network) & !is.null(y$network)) {
     for (i in new.range) {
@@ -225,6 +230,7 @@ merge.netsim <- function(x, y,
     z$network <- NULL
   }
 
+
   ## Network statistics
   if (keep.nwstats == TRUE & !is.null(x$stats$nwstats) & !is.null(y$stats$nwstats)) {
     for (i in new.range) {
@@ -236,6 +242,25 @@ merge.netsim <- function(x, y,
   } else {
     z$stats$nwstats <- NULL
   }
+
+  ## Other
+  if (keep.other == TRUE & !is.null(x$control$save.other) & !is.null(y$control$save.other)) {
+    other.x <- x$control$save.other
+    other.y <- y$control$save.other
+    if (!identical(other.x, other.y)) {
+      stop("Elements in save.other differ between x and y", call. = FALSE)
+    }
+    for (j in 1:length(other.x)) {
+      for (i in new.range) {
+        z[[other.x[j]]][[i]] <- y[[other.x[j]]][[i-x$control$nsims]]
+      }
+    }
+  } else {
+    for (j in 1:length(other.x)) {
+      z[[other.x[j]]] <- NULL
+    }
+  }
+
 
   return(z)
 }
