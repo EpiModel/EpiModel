@@ -244,20 +244,22 @@ merge.netsim <- function(x, y,
   }
 
   ## Other
-  if (keep.other == TRUE & !is.null(x$control$save.other) & !is.null(y$control$save.other)) {
-    other.x <- x$control$save.other
-    other.y <- y$control$save.other
-    if (!identical(other.x, other.y)) {
-      stop("Elements in save.other differ between x and y", call. = FALSE)
-    }
-    for (j in 1:length(other.x)) {
-      for (i in new.range) {
-        z[[other.x[j]]][[i]] <- y[[other.x[j]]][[i-x$control$nsims]]
+  if (!is.null(x$control$save.other) & !is.null(y$control$save.other)) {
+    if (keep.other == TRUE) {
+      other.x <- x$control$save.other
+      other.y <- y$control$save.other
+      if (!identical(other.x, other.y)) {
+        stop("Elements in save.other differ between x and y", call. = FALSE)
       }
-    }
-  } else {
-    for (j in 1:length(other.x)) {
-      z[[other.x[j]]] <- NULL
+      for (j in 1:length(other.x)) {
+        for (i in new.range) {
+          z[[other.x[j]]][[i]] <- y[[other.x[j]]][[i-x$control$nsims]]
+        }
+      }
+    } else {
+      for (j in 1:length(other.x)) {
+        z[[other.x[j]]] <- NULL
+      }
     }
   }
 
