@@ -1,13 +1,12 @@
----
-title: "EpiModel: Mathematical Modeling of Infectious Disease"
-author: "Samuel M. Jenness, Steven M. Goodreau, Martina Morris"
-date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{EpiModel Introduction}
-  %\VignetteEngine{knitr::rmarkdown}
-  \usepackage[utf8]{inputenc}
----
+<!--
+%\VignetteEngine{knitr::knitr}
+%\VignetteIndexEntry{EpiModel Introduction}
+-->
+
+### EpiModel: Mathematical Modeling of Infectious Disease
+#### Samuel M. Jenness, Steven M. Goodreau, Martina Morris
+##### University of Washington, Seattle
+`r Sys.Date()`
 
 The **EpiModel** package provides tools for building, solving, and plotting mathematical models of infectious disease in `R`. It is part of the **Statnet** suite of software for the representation and analysis of networks. **EpiModel** currently provides functionality for three classes of epidemic models and three disease types for modeling. Built-in model classes and types may be expanded by the user for new research.
 
