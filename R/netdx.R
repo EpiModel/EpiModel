@@ -333,17 +333,13 @@ netdx <- function(x,
       }
     }
 
-    # Create duration table for "dissolution = ~ offset(edges)"
-    if (dissolution == ~offset(edges)) {
-      duration.mean <- mean(durVec)
-      duration.sd <- sd(durVec)
-      duration.expected <- exp(coef.diss$coef.crude[1]) + 1
-      stats.table.duration <- c(target = duration.expected,
-                                sim.mean = duration.mean,
-                                sim.sd = duration.sd)
-    } else {
-      stop("Only ~offset(edges) dissolution models currently supported")
-    }
+    # Create duration table
+    duration.mean <- mean(durVec)
+    duration.sd <- sd(durVec)
+    duration.expected <- exp(coef.diss$coef.crude[1]) + 1
+    stats.table.duration <- c(target = duration.expected,
+                              sim.mean = duration.mean,
+                              sim.sd = duration.sd)
 
     # Calculate mean partnership age from edgelist
     if (nsims == 1 || ncores == 1) {
