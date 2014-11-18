@@ -113,6 +113,10 @@ netdx <- function(x,
   target.stats <- x$target.stats
   edapprox <- x$edapprox
 
+  if (dissolution != ~offset(edges)) {
+    stop('Only ~offset(edges) dissolution models currently supported')
+  }
+
   if (dynamic == TRUE && missing(nsteps)) {
     stop("Specify number of time steps with nsteps", call. = FALSE)
   }
@@ -338,7 +342,7 @@ netdx <- function(x,
                                 sim.mean = duration.mean,
                                 sim.sd = duration.sd)
     } else {
-      stop('Only ~offset(edges) dissolution models currently supported')
+      stop("Only ~offset(edges) dissolution models currently supported")
     }
 
     # Calculate mean partnership age from edgelist
@@ -403,17 +407,14 @@ netdx <- function(x,
       cat("\n ")
     }
 
-    # Create dissolution table for "dissolution = ~ offset(edges)"
-    if (dissolution == ~offset(edges)) {
-      dissolution.mean <- mean(unlist(prop.diss))
-      dissolution.sd <- sd(unlist(prop.diss))
-      dissolution.expected <- 1/(exp(coef.diss$coef.crude[1]) + 1)
-      stats.table.dissolution <- round(c(target = dissolution.expected,
-                                         sim.mean = dissolution.mean,
-                                         sim.sd = dissolution.sd), 5)
-    } else {
-      stop('Only ~offset(edges) dissolution models currently supported')
-    }
+    # Create dissolution table
+    dissolution.mean <- mean(unlist(prop.diss))
+    dissolution.sd <- sd(unlist(prop.diss))
+    dissolution.expected <- 1/(exp(coef.diss$coef.crude[1]) + 1)
+    stats.table.dissolution <- round(c(target = dissolution.expected,
+                                       sim.mean = dissolution.mean,
+                                       sim.sd = dissolution.sd), 5)
+
   }
 
 
