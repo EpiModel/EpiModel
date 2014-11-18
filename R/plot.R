@@ -1031,6 +1031,7 @@ plot.netdx <- function(x,
     stop("Maximum sim number is", nsims, call. = FALSE)
   }
   nsteps <- x$nsteps
+  dynamic <- x$dynamic
 
   # Get dotargs
   da <- list(...)
@@ -1075,13 +1076,21 @@ plot.netdx <- function(x,
       plots.joined <- TRUE
     }
 
-    xlim <- c(1, nsteps)
-    if (length(da) > 0 && !is.null(da$xlim)) {
-      xlim <- da$xlim
+    if (dynamic == TRUE) {
+      xlim <- c(1, nsteps)
+      if (length(da) > 0 && !is.null(da$xlim)) {
+        xlim <- da$xlim
+      }
+    } else {
+      xlim <- c(1, nsims)
+      if (length(da) > 0 && !is.null(da$xlim)) {
+        xlim <- da$xlim
+      }
     }
 
+
     if (missing(sim.lwd)) {
-      if (nsims == 1) {
+      if (nsims == 1 | dynamic == FALSE) {
         sim.lwd <- 1
       } else {
         sim.lwd <- max(c(1-(nsims*0.05), 0.5))
@@ -1130,11 +1139,20 @@ plot.netdx <- function(x,
         }
 
         ## Default xlab
-        if (length(da) > 0 && !is.null(da$xlab)) {
-          xlab <- da$xlab
+        if (dynamic == TRUE) {
+          if (length(da) > 0 && !is.null(da$xlab)) {
+            xlab <- da$xlab
+          } else {
+            xlab <- "time"
+          }
         } else {
-          xlab <- "time"
+          if (length(da) > 0 && !is.null(da$xlab)) {
+            xlab <- da$xlab
+          } else {
+            xlab <- "simulation number"
+          }
         }
+
 
         ## Default target line color
         if (missing(targ.col)) {
@@ -1153,12 +1171,18 @@ plot.netdx <- function(x,
              type = "n", xlab = xlab, ylab = ylab)
         for (j in outsts) {
           dataj <- data[, colnames(data) %in% nmstats[j], drop = FALSE]
-          for (i in sim) {
-            lines(x = 1:nsteps,
-                  y = dataj[,i],
+          if (dynamic == TRUE) {
+            for (i in sim) {
+              lines(dataj[,i],
+                    lty = sim.lty, lwd = sim.lwd,
+                    col = sim.col[which(j == outsts)])
+            }
+          } else {
+            lines(dataj,
                   lty = sim.lty, lwd = sim.lwd,
                   col = sim.col[which(j == outsts)])
           }
+
           if (j %in% targs) {
             abline(h = nwstats.table$Target[j],
                    lty = targ.lty, lwd = targ.lwd,
@@ -1203,9 +1227,14 @@ plot.netdx <- function(x,
                ylim = c(min(dataj) * 0.8, max(dataj) * 1.2),
                type = "n", main = nmstats[j],
                xlab = "", ylab = "")
-          for (i in sim) {
-            lines(x = 1:nsteps,
-                  y = dataj[, i],
+          if (dynamic == TRUE) {
+            for (i in sim) {
+              lines(y = dataj[, i],
+                    lwd = sim.lwd, lty = sim.lty,
+                    col = sim.col[which(j == outsts)])
+            }
+          } else {
+            lines(dataj,
                   lwd = sim.lwd, lty = sim.lty,
                   col = sim.col[which(j == outsts)])
           }
