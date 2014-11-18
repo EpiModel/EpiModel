@@ -305,8 +305,10 @@ netdx <- function(x,
   stats.table <- stats.table[do.call("order",
                                      stats.table[, "sorder", drop = FALSE]), , drop = FALSE]
   rownames(stats.table) <- stats.table$names
-  stats.table.formation <- stats.table[, -c(1, 3)]
-  colnames(stats.table.formation) <- c("Target", "Sim Mean", "Sim SD")
+
+  stats.table$reldiff <- (stats.table$stats.means-stats.table$targets)/stats.table$targets
+  stats.table.formation <- stats.table[, c(2, 4, 6, 5)]
+  colnames(stats.table.formation) <- c("Target", "Sim Mean", "Pct Diff", "Sim SD")
 
 
   if (dynamic == TRUE) {
@@ -402,19 +404,23 @@ netdx <- function(x,
     duration.mean <- mean(durVec)
     duration.sd <- sd(durVec)
     duration.expected <- exp(coef.diss$coef.crude[1]) + 1
+    duration.pctdiff <- (duration.mean-duration.expected)/duration.expected
+
 
     dissolution.mean <- mean(unlist(prop.diss))
     dissolution.sd <- sd(unlist(prop.diss))
     dissolution.expected <- 1/(exp(coef.diss$coef.crude[1]) + 1)
-
+    dissolution.pctdiff <- (dissolution.mean-dissolution.expected)/dissolution.expected
 
     stats.table.dissolution <- data.frame(Targets = c(duration.expected,
                                                       dissolution.expected),
                                           Sim_Means = c(duration.mean,
                                                         dissolution.mean),
+                                          Pct_Diff = c(duration.pctdiff,
+                                                       dissolution.pctdiff),
                                           Sim_SD = c(duration.sd,
                                                      dissolution.sd))
-    colnames(stats.table.dissolution) <- c("Target", "Sim Mean", "Sim SD")
+    colnames(stats.table.dissolution) <- c("Target", "Sim Mean", "Pct Diff", "Sim SD")
     rownames(stats.table.dissolution) <- c("Edge Duration", "Pct Edges Diss")
 
   }
