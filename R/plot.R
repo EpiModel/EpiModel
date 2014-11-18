@@ -1017,6 +1017,11 @@ plot.netdx <- function(x,
     stop("x must be an object of class netdx", call. = FALSE)
   }
 
+  if (x$dynamic == FALSE && type %in% c("duration", "dissolution")) {
+    stop("Plots of type duration and dissolution only available if netdx run with dynamic = TRUE",
+         call. = FALSE)
+  }
+
   ## Check sims
   nsims <- x$nsims
   if (missing(sim)) {
@@ -1238,6 +1243,7 @@ plot.netdx <- function(x,
   }
 
   # Duration plot -----------------------------------------------------------
+
   if (type == "duration") {
 
     pages <- x$pages
