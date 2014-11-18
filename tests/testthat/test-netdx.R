@@ -53,7 +53,9 @@ est3 <- netest(nw,
 test_that("netdx works for single simulations of edges only model", {
   dx <- netdx(est1, nsims = 1, nsteps = 10, verbose = FALSE)
   expect_is(dx, "netdx")
+  print(dx)
   plot(dx)
+  plot(dx, plots.joined = FALSE)
   plot(dx, type = "duration")
   plot(dx, type = "dissolution")
 })
@@ -61,7 +63,9 @@ test_that("netdx works for single simulations of edges only model", {
 test_that("netdx works for multiple simulations of edges only model", {
   dx <- netdx(est1, nsims = 2, nsteps = 10, verbose = FALSE)
   expect_is(dx, "netdx")
+  print(dx)
   plot(dx)
+  plot(dx, plots.joined = FALSE)
   plot(dx, type = "duration")
   plot(dx, type = "dissolution")
 })
@@ -70,7 +74,9 @@ test_that("netdx works for expanded monitoring formula", {
   dx <- netdx(est1, nsims = 2, nsteps = 10, verbose = FALSE,
               nwstats.formula = ~edges + concurrent)
   expect_is(dx, "netdx")
+  print(dx)
   plot(dx)
+  plot(dx, plots.joined = FALSE)
   plot(dx, type = "duration")
   plot(dx, type = "dissolution")
 })
@@ -79,7 +85,9 @@ test_that("netdx works for reduced monitoring formula", {
   dx <- netdx(est1, nsims = 2, nsteps = 10, verbose = FALSE,
               nwstats.formula = ~meandeg)
   expect_is(dx, "netdx")
+  print(dx)
   plot(dx)
+  plot(dx, plots.joined = FALSE)
   plot(dx, type = "duration")
   plot(dx, type = "dissolution")
 })
@@ -87,7 +95,9 @@ test_that("netdx works for reduced monitoring formula", {
 test_that("netdx for model with offset term", {
   dx <- netdx(est2, nsims = 2, nsteps = 10, verbose = FALSE)
   expect_is(dx, "netdx")
+  print(dx)
   plot(dx)
+  plot(dx, plots.joined = FALSE)
   plot(dx, type = "duration")
   plot(dx, type = "dissolution")
 })
@@ -96,7 +106,9 @@ test_that("netdx for model with offset term and expanded formula", {
   dx <- netdx(est2, nsims = 2, nsteps = 10, verbose = FALSE,
               nwstats.formula = ~edges + meandeg + concurrent + nodematch("loc"))
   expect_is(dx, "netdx")
+  print(dx)
   plot(dx)
+  plot(dx, plots.joined = FALSE)
   plot(dx, type = "duration")
   plot(dx, type = "dissolution")
 })
@@ -104,7 +116,9 @@ test_that("netdx for model with offset term and expanded formula", {
 test_that("netdx for model with faux offset term", {
   dx <- netdx(est3, nsims = 2, nsteps = 10, verbose = FALSE)
   expect_is(dx, "netdx")
+  print(dx)
   plot(dx)
+  plot(dx, plots.joined = FALSE)
   plot(dx, type = "duration")
   plot(dx, type = "dissolution")
 })
