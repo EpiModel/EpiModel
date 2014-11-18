@@ -102,6 +102,12 @@ test_that("Offset terms", {
 
 test_that("Faux offset term", {
 
+  n <- 50
+  nw <- network.initialize(n, directed = FALSE)
+  nw <- set.vertex.attribute(nw, "loc", rep(0:1, each = n/2))
+  dissolution <- ~ offset(edges)
+  duration <- 40
+  coef.diss <- dissolution_coefs(dissolution, duration)
   formation <- ~ edges + nodemix("loc", base=c(1, 3))
   target.stats <- c(15, 0)
   est3 <- netest(nw,
