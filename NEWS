@@ -2,6 +2,15 @@ Version 1.1.2
 ------------------------------------------------------------------------------
 
 NEW FEATURES
+* New option for `netdx` to simulate static diagnostics from an ERGM, rather
+  than the temporal diagnostics (still the default). This will help better
+  diagnose poor dynamic model fit when using the edges dissolution approximation
+  (#175).
+* Plot option added for `netdx`, with the `method` parameter, to plot boxplots of
+  the simulations against the target statistics. The default is still the line
+  plots (#191).
+* Print method for `netdx` is updated, along with a new statistic for the percent
+  deviation between the simulation means and target statistics (#192).
 * Added other epidemiological outcomes saved in user-defined modules to print
   output with `print.netsim` (#183).
 

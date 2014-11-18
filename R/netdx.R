@@ -4,18 +4,21 @@
 #' @description Runs dynamic diagnostics on an ERGM/STERGM estimated through
 #'              \code{netest}
 #'
-#' @param x an \code{EpiModel} object of class \code{netest}.
-#' @param nsims number of simulations to run.
-#' @param nsteps number of time steps per simulation.
-#' @param nwstats.formula a right-hand sided ERGM formula with the network
+#' @param x An \code{EpiModel} object of class \code{netest}.
+#' @param nsims Number of simulations to run.
+#' @param dynamic If \code{TRUE}, runs dynamic diagnostics. If \code{FALSE} and
+#'        the \code{netest} object was fit with the Edges Dissolution approximation
+#'        method, simulates from the static ERGM fit.
+#' @param nsteps Number of time steps per simulation (dynamic simulations only).
+#' @param nwstats.formula A right-hand sided ERGM formula with the network
 #'        statistics of interest. The default is the formation formula of the
 #'        network model contained in \code{x}.
-#' @param set.control.ergm control arguments passed to simulate.ergm (see
+#' @param set.control.ergm Control arguments passed to simulate.ergm (see
 #'        details).
-#' @param set.control.stergm control arguments passed to simulate.stergm (see
+#' @param set.control.stergm Control arguments passed to simulate.stergm (see
 #'        details).
-#' @param verbose print progress to the console.
-#' @param ncores sets the number of processor cores to run multiple simulations
+#' @param verbose Print progress to the console.
+#' @param ncores Number of processor cores to run multiple simulations
 #'        on, using the \code{foreach} and \code{doParallel} implementations.
 #'
 #' @details
@@ -85,6 +88,7 @@
 #'
 netdx <- function(x,
                   nsims = 1,
+                  dynamic = TRUE,
                   nsteps,
                   nwstats.formula = "formation",
                   set.control.ergm,
@@ -108,6 +112,18 @@ netdx <- function(x,
   }
   target.stats <- x$target.stats
   edapprox <- x$edapprox
+
+  if (dissolution != ~offset(edges)) {
+    stop('Only ~offset(edges) dissolution models currently supported')
+  }
+
+  if (dynamic == TRUE && missing(nsteps)) {
+    stop("Specify number of time steps with nsteps", call. = FALSE)
+  }
+
+  if (dynamic == FALSE && nwstats.formula == "formation") {
+    nwstats.formula <- est$formation
+  }
 
   if (verbose == TRUE) {
     cat("======================")
@@ -166,63 +182,80 @@ netdx <- function(x,
       set.control.stergm <- control.simulate.network()
     }
 
-    if (nsims == 1 || ncores == 1) {
-      diag.sim <- list()
-      if (verbose == TRUE & nsims > 1) {
-        cat("\n  |")
-      }
-      for (i in 1:nsims) {
-        if (class(x$fit) == "network") {
-          fit.sim <- simulate(formation,
-                              basis = nw,
-                              coef = x$coef.form.crude,
-                              constraints = constraints)
-        } else {
-          fit.sim <- simulate(fit, control = set.control.ergm)
-        }
-        diag.sim[[i]] <- simulate(fit.sim,
-                                  formation = formation,
-                                  dissolution = dissolution,
-                                  coef.form = coef.form,
-                                  coef.diss = coef.diss$coef.crude,
-                                  time.slices = nsteps,
-                                  constraints = constraints,
-                                  monitor = nwstats.formula,
-                                  nsim = 1,
-                                  control = set.control.stergm)
+    if (dynamic == TRUE) {
+      if (nsims == 1 || ncores == 1) {
+        diag.sim <- list()
         if (verbose == TRUE & nsims > 1) {
-          cat("*")
+          cat("\n  |")
         }
-      }
-      if (verbose == TRUE & nsims > 1) {
-        cat("|")
-      }
-    } else {
-      cluster.size <- min(nsims, ncores)
-      registerDoParallel(cluster.size)
+        for (i in 1:nsims) {
+          if (class(x$fit) == "network") {
+            fit.sim <- simulate(formation,
+                                basis = nw,
+                                coef = x$coef.form.crude,
+                                constraints = constraints)
+          } else {
+            fit.sim <- simulate(fit, control = set.control.ergm)
+          }
+          diag.sim[[i]] <- simulate(fit.sim,
+                                    formation = formation,
+                                    dissolution = dissolution,
+                                    coef.form = coef.form,
+                                    coef.diss = coef.diss$coef.crude,
+                                    time.slices = nsteps,
+                                    constraints = constraints,
+                                    monitor = nwstats.formula,
+                                    nsim = 1,
+                                    control = set.control.stergm)
+          if (verbose == TRUE & nsims > 1) {
+            cat("*")
+          }
+        }
+        if (verbose == TRUE & nsims > 1) {
+          cat("|")
+        }
+      } else {
+        cluster.size <- min(nsims, ncores)
+        registerDoParallel(cluster.size)
 
-      diag.sim <- foreach(i = 1:nsims) %dopar% {
-        if (class(x$fit) == "network") {
-          fit.sim <- simulate(formation,
-                              basis = nw,
-                              coef = x$coef.form.crude,
-                              constraints = constraints)
-        } else {
-          fit.sim <- simulate(fit, control = set.control.ergm)
+        diag.sim <- foreach(i = 1:nsims) %dopar% {
+          if (class(x$fit) == "network") {
+            fit.sim <- simulate(formation,
+                                basis = nw,
+                                coef = x$coef.form.crude,
+                                constraints = constraints)
+          } else {
+            fit.sim <- simulate(fit, control = set.control.ergm)
+          }
+          simulate(fit.sim,
+                   formation = formation,
+                   dissolution = dissolution,
+                   coef.form = coef.form,
+                   coef.diss = coef.diss$coef.crude,
+                   time.slices = nsteps,
+                   constraints = constraints,
+                   monitor = nwstats.formula,
+                   nsim = 1,
+                   control = set.control.stergm)
         }
-        simulate(fit.sim,
-                 formation = formation,
-                 dissolution = dissolution,
-                 coef.form = coef.form,
-                 coef.diss = coef.diss$coef.crude,
-                 time.slices = nsteps,
-                 constraints = constraints,
-                 monitor = nwstats.formula,
-                 nsim = 1,
-                 control = set.control.stergm)
       }
     }
-
+    if (dynamic == FALSE) {
+      if (class(x$fit) == "network") {
+        diag.sim <- simulate(formation,
+                             basis = nw,
+                             coef = x$coef.form.crude,
+                             constraints = constraints,
+                             nsim = nsims,
+                             statsonly = TRUE,
+                             monitor = nwstats.formula)
+      } else {
+        diag.sim <- simulate(fit, nsim = nsims,
+                             statsonly = TRUE,
+                             control = set.control.ergm,
+                             monitor = nwstats.formula)
+      }
+    }
   } # end edapprox = TRUE condition
 
   if (verbose == TRUE) {
@@ -230,22 +263,28 @@ netdx <- function(x,
   }
 
   ## List for stats for each simulation
-  stats <- list()
-  for (i in 1:length(diag.sim)) {
-    stats[[i]] <- as.matrix(attributes(diag.sim[[i]])$stats)[1:nsteps, , drop = FALSE]
+  if (dynamic == TRUE) {
+    stats <- list()
+    for (i in 1:length(diag.sim)) {
+      stats[[i]] <- as.matrix(attributes(diag.sim[[i]])$stats)[1:nsteps, , drop = FALSE]
+    }
+
+    ## Merged stats across all simulations
+    if (nsims > 1) {
+      merged.stats <- matrix(NA, nrow = nrow(stats[[1]])*nsims,
+                             ncol = ncol(stats[[1]]))
+      for (i in 1:ncol(stats[[1]])) {
+        merged.stats[,i] <- as.numeric(sapply(stats, function(x) c(x[,i])))
+      }
+      colnames(merged.stats) <- colnames(stats[[1]])
+    } else {
+      merged.stats <- stats[[1]]
+    }
+  } else {
+    stats <- list(diag.sim[,!duplicated(colnames(diag.sim)), drop = FALSE])
+    merged.stats <- diag.sim[,!duplicated(colnames(diag.sim)), drop = FALSE]
   }
 
-  ## Merged stats across all simulations
-  if (nsims > 1) {
-    merged.stats <- matrix(NA, nrow = nrow(stats[[1]])*nsims,
-                           ncol = ncol(stats[[1]]))
-    for (i in 1:ncol(stats[[1]])) {
-      merged.stats[,i] <- as.numeric(sapply(stats, function(x) c(x[,i])))
-    }
-    colnames(merged.stats) <- colnames(stats[[1]])
-  } else {
-    merged.stats <- stats[[1]]
-  }
 
   ## Calculate mean/sd from merged stats
   stats.means <- colMeans(merged.stats)
@@ -266,119 +305,126 @@ netdx <- function(x,
   stats.table <- stats.table[do.call("order",
                                      stats.table[, "sorder", drop = FALSE]), , drop = FALSE]
   rownames(stats.table) <- stats.table$names
-  stats.table.formation <- stats.table[, -c(1, 3)]
+
+  stats.table$reldiff <- (stats.table$stats.means-stats.table$targets)/stats.table$targets
+  stats.table.formation <- stats.table[, c(2, 4, 6, 5)]
+  colnames(stats.table.formation) <- c("Target", "Sim Mean", "Pct Diff", "Sim SD")
 
 
-  if (verbose == TRUE) {
-    cat("\n- Calculating duration statistics")
-  }
-
-
-  ## Duration calculations
-  sim.df <- list()
-  for (i in 1:length(diag.sim)) {
-    sim.df[[i]] <- as.data.frame(diag.sim[[i]])
-  }
-
-
-  ## Create a merged vector of durations
-  ncens <- which(sim.df[[1]]$onset.censored == FALSE &
-                 sim.df[[1]]$terminus.censored == FALSE)
-  durVec <- sim.df[[1]]$duration[ncens]
-  if (nsims > 1) {
-    for (i in 2:length(diag.sim)) {
-      ncens <- which(sim.df[[i]]$onset.censored == FALSE &
-                     sim.df[[i]]$terminus.censored == FALSE)
-      durVec <- c(durVec, sim.df[[i]]$duration[ncens])
+  if (dynamic == TRUE) {
+    if (verbose == TRUE) {
+      cat("\n- Calculating duration statistics")
     }
-  }
 
-  # Create duration table for "dissolution = ~ offset(edges)"
-  if (dissolution == ~offset(edges)) {
+
+    ## Duration calculations
+    sim.df <- list()
+    for (i in 1:length(diag.sim)) {
+      sim.df[[i]] <- as.data.frame(diag.sim[[i]])
+    }
+
+
+    ## Create a merged vector of durations
+    ncens <- which(sim.df[[1]]$onset.censored == FALSE &
+                     sim.df[[1]]$terminus.censored == FALSE)
+    durVec <- sim.df[[1]]$duration[ncens]
+    if (nsims > 1) {
+      for (i in 2:length(diag.sim)) {
+        ncens <- which(sim.df[[i]]$onset.censored == FALSE &
+                         sim.df[[i]]$terminus.censored == FALSE)
+        durVec <- c(durVec, sim.df[[i]]$duration[ncens])
+      }
+    }
+
+
+
+    # Calculate mean partnership age from edgelist
+    if (nsims == 1 || ncores == 1) {
+      pages <- list()
+      if (verbose == TRUE & nsims > 1) {
+        cat("\n  |")
+      }
+      for (i in 1:length(diag.sim)) {
+        pages[[i]] <- edgelist_meanage(el = sim.df[[i]])
+        if (verbose == TRUE & nsims > 1) {
+          cat("*")
+        }
+      }
+      if (verbose == TRUE & nsims > 1) {
+        cat("|")
+      }
+    } else {
+      cluster.size <- min(nsims, ncores)
+      registerDoParallel(cluster.size)
+
+      pages <- foreach(i = 1:nsims) %dopar% {
+        edgelist_meanage(el = sim.df[[i]])
+      }
+    }
+
+    ## Dissolution calculations
+    if (verbose == TRUE) {
+      cat("\n- Calculating dissolution statistics")
+    }
+
+    ## Create a list of dissolution proportions (i.e. dissolutions/edges)
+    if (nsims == 1 || ncores == 1) {
+      if (verbose == TRUE & nsims > 1) {
+        cat("\n  |")
+      }
+      prop.diss <- list()
+      for (i in 1:length(diag.sim)) {
+        prop.diss[[i]] <- sapply(1:nsteps, function(x) sum(sim.df[[i]]$terminus==x) /
+                                   sum(sim.df[[i]]$onset < x &
+                                         sim.df[[i]]$terminus>=x))
+        if (verbose == TRUE & nsims > 1) {
+          cat("*")
+        }
+      }
+      if (verbose == TRUE & nsims > 1) {
+        cat("|")
+      }
+    } else {
+      cluster.size <- min(nsims, ncores)
+      registerDoParallel(cluster.size)
+
+      prop.diss <- foreach(i = 1:nsims) %dopar% {
+        sapply(1:nsteps, function(x) sum(sim.df[[i]]$terminus==x) /
+                 sum(sim.df[[i]]$onset < x &
+                       sim.df[[i]]$terminus>=x))
+      }
+    }
+
+    if (verbose == TRUE) {
+      cat("\n ")
+    }
+
+
+    # Create dissolution tables
     duration.mean <- mean(durVec)
     duration.sd <- sd(durVec)
     duration.expected <- exp(coef.diss$coef.crude[1]) + 1
-    stats.table.duration <- c(target = duration.expected,
-                              sim.mean = duration.mean,
-                              sim.sd = duration.sd)
-  } else {
-    stop('Only ~offset(edges) dissolution models currently supported')
-  }
-
-  # Calculate mean partnership age from edgelist
-  if (nsims == 1 || ncores == 1) {
-    pages <- list()
-    if (verbose == TRUE & nsims > 1) {
-      cat("\n  |")
-    }
-    for (i in 1:length(diag.sim)) {
-      pages[[i]] <- edgelist_meanage(el = sim.df[[i]])
-      if (verbose == TRUE & nsims > 1) {
-        cat("*")
-      }
-    }
-    if (verbose == TRUE & nsims > 1) {
-      cat("|")
-    }
-  } else {
-    cluster.size <- min(nsims, ncores)
-    registerDoParallel(cluster.size)
-
-    pages <- foreach(i = 1:nsims) %dopar% {
-      edgelist_meanage(el = sim.df[[i]])
-    }
-  }
+    duration.pctdiff <- (duration.mean-duration.expected)/duration.expected
 
 
-  ## Dissolution calculations
-
-  if (verbose == TRUE) {
-    cat("\n- Calculating dissolution statistics")
-  }
-
-  ## Create a list of dissolution proportions (i.e. dissolutions/edges)
-  if (nsims == 1 || ncores == 1) {
-    if (verbose == TRUE & nsims > 1) {
-      cat("\n  |")
-    }
-    prop.diss <- list()
-    for (i in 1:length(diag.sim)) {
-      prop.diss[[i]] <- sapply(1:nsteps, function(x) sum(sim.df[[i]]$terminus==x) /
-                                                         sum(sim.df[[i]]$onset < x &
-                                                             sim.df[[i]]$terminus>=x))
-      if (verbose == TRUE & nsims > 1) {
-        cat("*")
-      }
-    }
-    if (verbose == TRUE & nsims > 1) {
-      cat("|")
-    }
-  } else {
-    cluster.size <- min(nsims, ncores)
-    registerDoParallel(cluster.size)
-
-    prop.diss <- foreach(i = 1:nsims) %dopar% {
-       sapply(1:nsteps, function(x) sum(sim.df[[i]]$terminus==x) /
-                                        sum(sim.df[[i]]$onset < x &
-                                            sim.df[[i]]$terminus>=x))
-    }
-  }
-
-  if (verbose == TRUE) {
-    cat("\n ")
-  }
-
-  # Create dissolution table for "dissolution = ~ offset(edges)"
-  if (dissolution == ~offset(edges)) {
     dissolution.mean <- mean(unlist(prop.diss))
     dissolution.sd <- sd(unlist(prop.diss))
     dissolution.expected <- 1/(exp(coef.diss$coef.crude[1]) + 1)
-    stats.table.dissolution <- round(c(target = dissolution.expected,
-                              sim.mean = dissolution.mean,
-                              sim.sd = dissolution.sd), 5)
-  } else {
-    stop('Only ~offset(edges) dissolution models currently supported')
+    dissolution.pctdiff <- (dissolution.mean-dissolution.expected)/dissolution.expected
+
+    stats.table.dissolution <- data.frame(Targets = c(duration.expected,
+                                                      dissolution.expected),
+                                          Sim_Means = c(duration.mean,
+                                                        dissolution.mean),
+                                          Pct_Diff = c(duration.pctdiff,
+                                                       dissolution.pctdiff),
+                                          Sim_SD = c(duration.sd,
+                                                     dissolution.sd))
+    colnames(stats.table.dissolution) <- c("Target", "Sim Mean", "Pct Diff", "Sim SD")
+    rownames(stats.table.dissolution) <- c("Edge Duration", "Pct Edges Diss")
+
   }
+
 
   ## Save output
   out <- list()
@@ -391,15 +437,17 @@ netdx <- function(x,
   out$edapprox <- edapprox
   out$target.stats <- ts.out
   out$nsims <- nsims
-  out$nsteps <- nsteps
+  out$dynamic <- dynamic
 
   out$stats <- stats
   out$stats.table.formation <- stats.table.formation
-  out$stats.table.duration <- stats.table.duration
-  out$stats.table.dissolution <- stats.table.dissolution
-  out$edgelist <- sim.df
-  out$pages <- pages
-  out$prop.diss <- prop.diss
+  if (dynamic == TRUE) {
+    out$nsteps <- nsteps
+    out$stats.table.dissolution <- stats.table.dissolution
+    out$edgelist <- sim.df
+    out$pages <- pages
+    out$prop.diss <- prop.diss
+  }
 
   class(out) <- "netdx"
   return(out)

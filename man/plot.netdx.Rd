@@ -3,45 +3,48 @@
 \alias{plot.netdx}
 \title{Plot Dynamic Network Model Diagnostics}
 \usage{
-\method{plot}{netdx}(x, type = "formation", sim, stats, sim.col, sim.lwd,
-  sim.lty = 1, targ.col, targ.lwd = 2, targ.lty = 2, plots.joined,
-  plot.leg = TRUE, ...)
+\method{plot}{netdx}(x, type = "formation", method = "l", sim, stats,
+  sim.col, sim.lwd, sim.lty = 1, targ.col, targ.lwd = 2, targ.lty = 2,
+  plots.joined, plot.leg = TRUE, ...)
 }
 \arguments{
-\item{x}{an \code{EpiModel} object of class \code{netdx}.}
+\item{x}{An \code{EpiModel} object of class \code{netdx}.}
 
-\item{type}{plot type, with options of \code{"formation"} for network
+\item{type}{Plot type, with options of \code{"formation"} for network
 model formation statistics, \code{"duration"} for dissolution model
 statistics for average edge duration, or \code{"dissolution"} for
 dissolution model statistics for proportion of ties dissolved per time
 step.}
 
-\item{sim}{vector of simulation numbers to plot, with the default to plot
+\item{method}{Plot method, with options of \code{"l"} for line plots and
+\code{"b"} for boxplots.}
+
+\item{sim}{Vector of simulation numbers to plot, with the default to plot
 all simulations.}
 
-\item{stats}{network statistics to plot, among those specified in the call
+\item{stats}{Network statistics to plot, among those specified in the call
 to \code{\link{netdx}}, with the default to plot all statistics
 contained in the object.}
 
-\item{sim.col}{vector of standard R colors for individual simulation lines,
+\item{sim.col}{Vector of standard R colors for individual simulation lines,
 with default colors based on \code{RColorBrewer} color palettes.}
 
-\item{sim.lwd}{line width for individual simulation lines, with defaults based
+\item{sim.lwd}{Line width for individual simulation lines, with defaults based
 on number of simulations (more simulations results in thinner lines).}
 
-\item{sim.lty}{line type for the individual simulation lines.}
+\item{sim.lty}{Line type for the individual simulation lines.}
 
-\item{targ.col}{vector of standard R colors for target statistic lines, with
+\item{targ.col}{Vector of standard R colors for target statistic lines, with
 default colors based on \code{RColorBrewer} color palettes.}
 
-\item{targ.lwd}{line width for the line showing the target statistic values.}
+\item{targ.lwd}{Line width for the line showing the target statistic values.}
 
-\item{targ.lty}{line type for the line showing the target statistic values.}
+\item{targ.lty}{Line type for the line showing the target statistic values.}
 
-\item{plots.joined}{if \code{TRUE}, combine all target statistics in one plot,
+\item{plots.joined}{If \code{TRUE}, combine all target statistics in one plot,
 otherwise use one plot window per target statistic.}
 
-\item{plot.leg}{if \code{TRUE}, show legend (only if \code{plots.joined=TRUE})}
+\item{plot.leg}{If \code{TRUE}, show legend (only if \code{plots.joined=TRUE})}
 
 \item{...}{additional arguments passed to main plot windows.}
 }
