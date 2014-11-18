@@ -1229,7 +1229,7 @@ plot.netdx <- function(x,
                xlab = "", ylab = "")
           if (dynamic == TRUE) {
             for (i in sim) {
-              lines(y = dataj[, i],
+              lines(dataj[, i],
                     lwd = sim.lwd, lty = sim.lty,
                     col = sim.col[which(j == outsts)])
             }
