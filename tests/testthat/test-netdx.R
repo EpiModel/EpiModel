@@ -23,7 +23,9 @@ test_that("Edges only models", {
   plot(dx)
   plot(dx, method = "b")
   plot(dx, type = "duration")
+  plot(dx, method = "b", type = "duration")
   plot(dx, type = "dissolution")
+  plot(dx, method = "b", type = "dissolution")
   rm(dx)
 
   ## Multiple simulations
@@ -33,7 +35,9 @@ test_that("Edges only models", {
   plot(dx)
   plot(dx, method = "b")
   plot(dx, type = "duration")
+  plot(dx, method = "b", type = "duration")
   plot(dx, type = "dissolution")
+  plot(dx, method = "b", type = "dissolution")
   rm(dx)
 
   ## Expanded monitoring formula
@@ -45,7 +49,9 @@ test_that("Edges only models", {
   plot(dx, plots.joined = FALSE)
   plot(dx, method = "b")
   plot(dx, type = "duration")
+  plot(dx, method = "b", type = "duration")
   plot(dx, type = "dissolution")
+  plot(dx, method = "b", type = "dissolution")
   rm(dx)
 
   ## Reduced monitoring formula
@@ -56,7 +62,9 @@ test_that("Edges only models", {
   plot(dx)
   plot(dx, method = "b")
   plot(dx, type = "duration")
+  plot(dx, method = "b", type = "duration")
   plot(dx, type = "dissolution")
+  plot(dx, method = "b", type = "dissolution")
 
 })
 
@@ -86,7 +94,9 @@ test_that("Offset terms", {
   plot(dx, plots.joined = FALSE)
   plot(dx, method = "b")
   plot(dx, type = "duration")
+  plot(dx, method = "b", type = "duration")
   plot(dx, type = "dissolution")
+  plot(dx, method = "b", type = "dissolution")
   rm(dx)
 
   ## Offset term with expanded formula
@@ -98,7 +108,9 @@ test_that("Offset terms", {
   plot(dx, plots.joined = FALSE)
   plot(dx, method = "b")
   plot(dx, type = "duration")
+  plot(dx, method = "b", type = "duration")
   plot(dx, type = "dissolution")
+  plot(dx, method = "b", type = "dissolution")
 
 })
 
@@ -127,6 +139,8 @@ test_that("Faux offset term", {
   plot(dx, plots.joined = FALSE)
   plot(dx, method = "b")
   plot(dx, type = "duration")
+  plot(dx, method = "b", type = "duration")
   plot(dx, type = "dissolution")
+  plot(dx, method = "b", type = "dissolution")
 
 })
