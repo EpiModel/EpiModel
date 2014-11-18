@@ -1253,24 +1253,19 @@ plot.netdx <- function(x,
     }
 
     # Edges only dissolution model
-    if (x$dissolution == ~offset(edges)) {
-
-      plot(x = 1, y = 1, type = "n",
-           xlim = xlim, ylim = ylim,
-           xlab = xlab, ylab = ylab)
-      for (i in sim) {
-        lines(x = 1:nsteps,
-              y = pages[[i]],
-              lwd = sim.lwd, lty = sim.lty,
-              col = sim.col)
-      }
-      abline(h = as.numeric(x$coef.diss[2]),
-             lty = targ.lty, lwd = targ.lwd,
-             col = targ.col)
-    } else {
-      stop("Only ~offset(edges) dissolution models currently supported",
-           call. = FALSE)
+    plot(x = 1, y = 1, type = "n",
+         xlim = xlim, ylim = ylim,
+         xlab = xlab, ylab = ylab)
+    for (i in sim) {
+      lines(x = 1:nsteps,
+            y = pages[[i]],
+            lwd = sim.lwd, lty = sim.lty,
+            col = sim.col)
     }
+    abline(h = as.numeric(x$coef.diss[2]),
+           lty = targ.lty, lwd = targ.lwd,
+           col = targ.col)
+
   }
 
   # Dissolution plot -----------------------------------------------------------
@@ -1314,24 +1309,19 @@ plot.netdx <- function(x,
     }
 
     # Edges only dissolution model
-    if (x$dissolution == ~offset(edges)) {
-
-      plot(x = 1, y = 1, type = "n",
-           xlim = xlim, ylim = ylim,
-           xlab = xlab, ylab = ylab)
-      for (i in sim) {
-        lines(x = 1:nsteps,
-              y = prop.diss[[i]],
-              lwd = sim.lwd, lty = sim.lty,
-              col = sim.col)
-      }
-      abline(h = as.numeric(1/(x$coef.diss[2]$duration)),
-             lty = targ.lty, lwd = targ.lwd,
-             col = targ.col)
-    } else {
-      stop("Only ~offset(edges) dissolution models currently supported",
-           call. = FALSE)
+    plot(x = 1, y = 1, type = "n",
+         xlim = xlim, ylim = ylim,
+         xlab = xlab, ylab = ylab)
+    for (i in sim) {
+      lines(x = 1:nsteps,
+            y = prop.diss[[i]],
+            lwd = sim.lwd, lty = sim.lty,
+            col = sim.col)
     }
+    abline(h = as.numeric(1/(x$coef.diss[2]$duration)),
+           lty = targ.lty, lwd = targ.lwd,
+           col = targ.col)
+
   }
 
 }
