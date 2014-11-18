@@ -306,6 +306,7 @@ netdx <- function(x,
                                      stats.table[, "sorder", drop = FALSE]), , drop = FALSE]
   rownames(stats.table) <- stats.table$names
   stats.table.formation <- stats.table[, -c(1, 3)]
+  colnames(stats.table.formation) <- c("Target", "Sim Mean", "Sim SD")
 
 
   if (dynamic == TRUE) {
@@ -333,13 +334,7 @@ netdx <- function(x,
       }
     }
 
-    # Create duration table
-    duration.mean <- mean(durVec)
-    duration.sd <- sd(durVec)
-    duration.expected <- exp(coef.diss$coef.crude[1]) + 1
-    stats.table.duration <- c(target = duration.expected,
-                              sim.mean = duration.mean,
-                              sim.sd = duration.sd)
+
 
     # Calculate mean partnership age from edgelist
     if (nsims == 1 || ncores == 1) {
@@ -366,7 +361,6 @@ netdx <- function(x,
     }
 
     ## Dissolution calculations
-
     if (verbose == TRUE) {
       cat("\n- Calculating dissolution statistics")
     }
@@ -403,13 +397,25 @@ netdx <- function(x,
       cat("\n ")
     }
 
-    # Create dissolution table
+
+    # Create dissolution tables
+    duration.mean <- mean(durVec)
+    duration.sd <- sd(durVec)
+    duration.expected <- exp(coef.diss$coef.crude[1]) + 1
+
     dissolution.mean <- mean(unlist(prop.diss))
     dissolution.sd <- sd(unlist(prop.diss))
     dissolution.expected <- 1/(exp(coef.diss$coef.crude[1]) + 1)
-    stats.table.dissolution <- round(c(target = dissolution.expected,
-                                       sim.mean = dissolution.mean,
-                                       sim.sd = dissolution.sd), 5)
+
+
+    stats.table.dissolution <- data.frame(Targets = c(duration.expected,
+                                                      dissolution.expected),
+                                          Sim_Means = c(duration.mean,
+                                                        dissolution.mean),
+                                          Sim_SD = c(duration.sd,
+                                                     dissolution.sd))
+    colnames(stats.table.dissolution) <- c("Target", "Sim Mean", "Sim SD")
+    rownames(stats.table.dissolution) <- c("Edge Duration", "Pct Edges Diss")
 
   }
 
@@ -431,7 +437,6 @@ netdx <- function(x,
   out$stats.table.formation <- stats.table.formation
   if (dynamic == TRUE) {
     out$nsteps <- nsteps
-    out$stats.table.duration <- stats.table.duration
     out$stats.table.dissolution <- stats.table.dissolution
     out$edgelist <- sim.df
     out$pages <- pages
