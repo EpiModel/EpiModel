@@ -1036,7 +1036,7 @@ plot.netdx <- function(x,
     nwstats.table <- x$stats.table.formation
 
     ## Find available stats
-    sts <- which(!is.na(nwstats.table$stats.means))
+    sts <- which(!is.na(nwstats.table[, "Sim Mean"]))
     nmstats <- rownames(nwstats.table)[sts]
 
     ## Pull and check stat argument
@@ -1055,7 +1055,7 @@ plot.netdx <- function(x,
     data <- data[, colnames(data) %in% nmstats[outsts], drop = FALSE]
 
     ## Pull target stats
-    targs <- which(!is.na(nwstats.table$targets))
+    targs <- which(!is.na(nwstats.table$Target))
 
 
     ## Plotting
@@ -1151,7 +1151,7 @@ plot.netdx <- function(x,
                 col = sim.col[which(j == outsts)])
         }
         if (j %in% targs) {
-          abline(h = nwstats.table$targets[j],
+          abline(h = nwstats.table$Target[j],
                  lty = targ.lty, lwd = targ.lwd,
                  col = targ.col[which(j == outsts)])
         }
@@ -1201,7 +1201,7 @@ plot.netdx <- function(x,
                 col = sim.col[which(j == outsts)])
         }
         if (j %in% targs) {
-          abline(h = nwstats.table$targets[j],
+          abline(h = nwstats.table$Target[j],
                  lty = targ.lty, lwd = targ.lwd,
                  col = targ.col[which(j == outsts)])
         }
