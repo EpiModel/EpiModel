@@ -1303,7 +1303,7 @@ plot.netdx <- function(x,
     if (length(da) > 0 && !is.null(da$ylab)) {
       ylab <- da$ylab
     } else {
-      ylab <- "Prop. Edges Dissolving"
+      ylab <- "Pct Edges Diss"
     }
 
     # Default xlab
