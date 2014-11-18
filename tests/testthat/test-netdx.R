@@ -144,3 +144,32 @@ test_that("Faux offset term", {
   plot(dx, method = "b", type = "dissolution")
 
 })
+
+
+test_that("Static diagnostic simulations", {
+
+  nw <- network.initialize(100, directed = FALSE)
+  formation <- ~ edges + concurrent
+  dissolution <- ~ offset(edges)
+  target.stats <- c(50, 20)
+  coef.diss <- dissolution_coefs(dissolution, duration = 10)
+
+  est4 <- netest(nw, formation, dissolution,
+                 target.stats, coef.diss, verbose = FALSE)
+
+  dx <- netdx(est4, dynamic = FALSE, nsims = 250,
+              nwstats.formula = ~ edges + meandeg + concurrent)
+  expect_is(dx, "netdx")
+
+  plot(dx)
+  plot(dx, stats = "meandeg")
+  plot(dx, plots.joined = FALSE)
+
+  plot(dx, method = "b", col = "bisque")
+
+  expect_error(plot(dx, method = "b", type = "duration"))
+  expect_error(plot(dx, method = "b", type = "dissolution"))
+
+})
+
+
