@@ -99,20 +99,28 @@ print.netdx <- function(x, digits = 3, ...) {
 
   cat("EpiModel Network Diagnostics")
   cat("\n=======================")
+  dxmethod <- ifelse(x$dynamic == TRUE, "Dynamic", "Static")
+  cat("\nDiagnostic Method:", dxmethod)
   cat("\nNo. Simulations:", x$nsims)
-  cat("\nNo. Time Steps:", x$nsteps)
+  if (x$dynamic == TRUE) {
+    cat("\nNo. Time Steps:", x$nsteps)
+  }
+
 
   cat("\n\nFormation Diagnostics")
   cat("\n----------------------- \n")
   print(round(x$stats.table.formation, digits = digits))
 
-  cat("\nDuration Diagnostics")
-  cat("\n----------------------- \n")
-  print(round(x$stats.table.duration, digits = digits))
+  if (x$dynamic == TRUE) {
+    cat("\nDuration Diagnostics")
+    cat("\n----------------------- \n")
+    print(round(x$stats.table.duration, digits = digits))
 
-  cat("\nDissolution Diagnostics")
-  cat("\n----------------------- \n")
-  print(round(x$stats.table.dissolution, digits = digits))
+    cat("\nDissolution Diagnostics")
+    cat("\n----------------------- \n")
+    print(round(x$stats.table.dissolution, digits = digits))
+  }
+
   invisible()
 }
 
