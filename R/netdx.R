@@ -117,6 +117,10 @@ netdx <- function(x,
     stop("Specify number of time steps with nsteps", call. = FALSE)
   }
 
+  if (dynamic == FALSE && nwstats.formula == "formation") {
+    nwstats.formula <- est$formation
+  }
+
   if (verbose == TRUE) {
     cat("======================")
     cat("\nRunning Diagnostics")
@@ -273,8 +277,8 @@ netdx <- function(x,
       merged.stats <- stats[[1]]
     }
   } else {
-    stats <- list(diag.sim[,!duplicated(colnames(diag.sim))])
-    merged.stats <- diag.sim[,!duplicated(colnames(diag.sim))]
+    stats <- list(diag.sim[,!duplicated(colnames(diag.sim)), drop = FALSE])
+    merged.stats <- diag.sim[,!duplicated(colnames(diag.sim)), drop = FALSE]
   }
 
 
@@ -424,12 +428,12 @@ netdx <- function(x,
   out$edapprox <- edapprox
   out$target.stats <- ts.out
   out$nsims <- nsims
-  out$nsteps <- nsteps
   out$dynamic <- dynamic
 
   out$stats <- stats
   out$stats.table.formation <- stats.table.formation
   if (dynamic == TRUE) {
+    out$nsteps <- nsteps
     out$stats.table.duration <- stats.table.duration
     out$stats.table.dissolution <- stats.table.dissolution
     out$edgelist <- sim.df
