@@ -890,29 +890,31 @@ plot.icm <- function(x,
 #' @description Plots dynamic network model diagnostics calculated in
 #'              \code{netdx}.
 #'
-#' @param x an \code{EpiModel} object of class \code{netdx}.
-#' @param type plot type, with options of \code{"formation"} for network
+#' @param x An \code{EpiModel} object of class \code{netdx}.
+#' @param type Plot type, with options of \code{"formation"} for network
 #'        model formation statistics, \code{"duration"} for dissolution model
 #'        statistics for average edge duration, or \code{"dissolution"} for
 #'        dissolution model statistics for proportion of ties dissolved per time
 #'        step.
-#' @param sim vector of simulation numbers to plot, with the default to plot
+#' @param method Plot method, with options of \code{"l"} for line plots and
+#'        \code{"b"} for boxplots.
+#' @param sim Vector of simulation numbers to plot, with the default to plot
 #'        all simulations.
-#' @param stats network statistics to plot, among those specified in the call
+#' @param stats Network statistics to plot, among those specified in the call
 #'        to \code{\link{netdx}}, with the default to plot all statistics
 #'        contained in the object.
-#' @param sim.col vector of standard R colors for individual simulation lines,
+#' @param sim.col Vector of standard R colors for individual simulation lines,
 #'        with default colors based on \code{RColorBrewer} color palettes.
-#' @param sim.lwd line width for individual simulation lines, with defaults based
+#' @param sim.lwd Line width for individual simulation lines, with defaults based
 #'        on number of simulations (more simulations results in thinner lines).
-#' @param sim.lty line type for the individual simulation lines.
-#' @param targ.col vector of standard R colors for target statistic lines, with
+#' @param sim.lty Line type for the individual simulation lines.
+#' @param targ.col Vector of standard R colors for target statistic lines, with
 #'        default colors based on \code{RColorBrewer} color palettes.
-#' @param targ.lwd line width for the line showing the target statistic values.
-#' @param targ.lty line type for the line showing the target statistic values.
-#' @param plots.joined if \code{TRUE}, combine all target statistics in one plot,
+#' @param targ.lwd Line width for the line showing the target statistic values.
+#' @param targ.lty Line type for the line showing the target statistic values.
+#' @param plots.joined If \code{TRUE}, combine all target statistics in one plot,
 #'        otherwise use one plot window per target statistic.
-#' @param plot.leg if \code{TRUE}, show legend (only if \code{plots.joined=TRUE})
+#' @param plot.leg If \code{TRUE}, show legend (only if \code{plots.joined=TRUE})
 #' @param ... additional arguments passed to main plot windows.
 #'
 #' @details
@@ -993,6 +995,7 @@ plot.icm <- function(x,
 #'
 plot.netdx <- function(x,
                        type = "formation",
+                       method = "l",
                        sim,
                        stats,
                        sim.col,
@@ -1094,122 +1097,144 @@ plot.netdx <- function(x,
 
 
     ## Joined Plots
-    if (plots.joined == TRUE) {
+    if (method == "l") {
+      if (plots.joined == TRUE) {
 
-      ## Default legend
-      if (nstats == 1) {
-        if (missing(plot.leg)) {
-          plot.leg <- FALSE
-        }
-      }
-
-      ## Default ylim
-      ylim <- c(min(data) * 0.8, max(data) * 1.2)
-      if (length(da) > 0 && !is.null(da$ylim)) {
-        ylim <- da$ylim
-      }
-
-      ## Default ylab
-      if (length(da) > 0 && !is.null(da$ylab)) {
-        ylab <- da$ylab
-      } else {
+        ## Default legend
         if (nstats == 1) {
-          ylab <- nmstats[outsts]
-        } else {
-          ylab <- "Statistic"
+          if (missing(plot.leg)) {
+            plot.leg <- FALSE
+          }
         }
-      }
 
-      ## Default xlab
-      if (length(da) > 0 && !is.null(da$xlab)) {
-        xlab <- da$xlab
-      } else {
-        xlab <- "time"
-      }
-
-      ## Default target line color
-      if (missing(targ.col)) {
-        if (nstats == 1) {
-          targ.col <- "black"
-        } else if (nstats > 9) {
-          targ.col <- brewer_ramp(nstats, "Set1")
-        } else {
-          targ.col <- brewer.pal(9, "Set1")[1:nstats]
+        ## Default ylim
+        ylim <- c(min(data) * 0.8, max(data) * 1.2)
+        if (length(da) > 0 && !is.null(da$ylim)) {
+          ylim <- da$ylim
         }
+
+        ## Default ylab
+        if (length(da) > 0 && !is.null(da$ylab)) {
+          ylab <- da$ylab
+        } else {
+          if (nstats == 1) {
+            ylab <- nmstats[outsts]
+          } else {
+            ylab <- "Statistic"
+          }
+        }
+
+        ## Default xlab
+        if (length(da) > 0 && !is.null(da$xlab)) {
+          xlab <- da$xlab
+        } else {
+          xlab <- "time"
+        }
+
+        ## Default target line color
+        if (missing(targ.col)) {
+          if (nstats == 1) {
+            targ.col <- "black"
+          } else if (nstats > 9) {
+            targ.col <- brewer_ramp(nstats, "Set1")
+          } else {
+            targ.col <- brewer.pal(9, "Set1")[1:nstats]
+          }
+        }
+
+
+        ## Main plot window
+        plot(1, 1, xlim = xlim, ylim = ylim,
+             type = "n", xlab = xlab, ylab = ylab)
+        for (j in outsts) {
+          dataj <- data[, colnames(data) %in% nmstats[j], drop = FALSE]
+          for (i in sim) {
+            lines(x = 1:nsteps,
+                  y = dataj[,i],
+                  lty = sim.lty, lwd = sim.lwd,
+                  col = sim.col[which(j == outsts)])
+          }
+          if (j %in% targs) {
+            abline(h = nwstats.table$Target[j],
+                   lty = targ.lty, lwd = targ.lwd,
+                   col = targ.col[which(j == outsts)])
+          }
+        }
+        if (plot.leg == TRUE) {
+          legend("topleft", legend = nmstats[outsts],
+                 lwd = 3, lty = sim.lty,
+                 col = sim.col[1:nstats], cex = 0.75,
+                 bg = "white")
+        }
+
       }
 
+      ## Split plots
+      if (plots.joined == FALSE) {
 
-      ## Main plot window
-      plot(1, 1, xlim = xlim, ylim = ylim,
-           type = "n", xlab = xlab, ylab = ylab)
+        if (nstats == 1) dimens <- c(1, 1)
+        if (nstats == 2) dimens <- c(1, 2)
+        if (nstats == 3) dimens <- c(1, 3)
+        if (nstats == 4) dimens <- c(2, 2)
+        if (nstats == 5) dimens <- c(2, 3)
+        if (nstats == 6) dimens <- c(2, 3)
+        if (nstats %in% 7:9) dimens <- c(3, 3)
+        if (nstats %in% 10:12) dimens <- c(4, 3)
+        if (nstats %in% 13:16) dimens <- c(4, 4)
+        if (nstats > 16) dimens <- rep(ceiling(sqrt(nstats)), 2)
+
+        # Pull graphical parameters
+        ops <- list(mar = par()$mar, mfrow = par()$mfrow, mgp = par()$mgp)
+        par(mar = c(2.5, 2.5, 2, 1), mgp = c(2, 1, 0), mfrow = dimens)
+
+        if (missing(targ.col)) {
+          targ.col <- rep("black", nstats)
+        }
+
+        for (j in outsts) {
+          dataj <- data[, colnames(data) %in% nmstats[j], drop = FALSE]
+          plot(x = 1, y = 1,
+               xlim = xlim,
+               ylim = c(min(dataj) * 0.8, max(dataj) * 1.2),
+               type = "n", main = nmstats[j],
+               xlab = "", ylab = "")
+          for (i in sim) {
+            lines(x = 1:nsteps,
+                  y = dataj[, i],
+                  lwd = sim.lwd, lty = sim.lty,
+                  col = sim.col[which(j == outsts)])
+          }
+          if (j %in% targs) {
+            abline(h = nwstats.table$Target[j],
+                   lty = targ.lty, lwd = targ.lwd,
+                   col = targ.col[which(j == outsts)])
+          }
+        }
+
+        # Reset graphical parameters
+        on.exit(par(ops))
+      }
+    }
+    if (method == "b") {
+
+      data <- list()
+      for (j in seq_along(stats)) {
+        data[[j]] <- unlist(lapply(nwstats, function(x) x[,stats[j]]))
+      }
+      data <- do.call("cbind", data)
+      colnames(data) <- stats
+
+      boxplot(data, ...)
+
       for (j in outsts) {
-        dataj <- data[, colnames(data) %in% nmstats[j], drop = FALSE]
-        for (i in sim) {
-          lines(x = 1:nsteps,
-                y = dataj[,i],
-                lty = sim.lty, lwd = sim.lwd,
-                col = sim.col[which(j == outsts)])
-        }
         if (j %in% targs) {
-          abline(h = nwstats.table$Target[j],
-                 lty = targ.lty, lwd = targ.lwd,
-                 col = targ.col[which(j == outsts)])
+          points(x = outsts[j], y = nwstats.table$Target[j],
+                 pch = 16, cex = 1.5, col = "blue")
         }
-      }
-      if (plot.leg == TRUE) {
-        legend("topleft", legend = nmstats[outsts],
-               lwd = 3, lty = sim.lty,
-               col = sim.col[1:nstats], cex = 0.75,
-               bg = "white")
       }
 
     }
 
-    ## Split plots
-    if (plots.joined == FALSE) {
-
-      if (nstats == 1) dimens <- c(1, 1)
-      if (nstats == 2) dimens <- c(1, 2)
-      if (nstats == 3) dimens <- c(1, 3)
-      if (nstats == 4) dimens <- c(2, 2)
-      if (nstats == 5) dimens <- c(2, 3)
-      if (nstats == 6) dimens <- c(2, 3)
-      if (nstats %in% 7:9) dimens <- c(3, 3)
-      if (nstats %in% 10:12) dimens <- c(4, 3)
-      if (nstats %in% 13:16) dimens <- c(4, 4)
-      if (nstats > 16) dimens <- rep(ceiling(sqrt(nstats)), 2)
-
-      # Pull graphical parameters
-      ops <- list(mar = par()$mar, mfrow = par()$mfrow, mgp = par()$mgp)
-      par(mar = c(2.5, 2.5, 2, 1), mgp = c(2, 1, 0), mfrow = dimens)
-
-      if (missing(targ.col)) {
-        targ.col <- rep("black", nstats)
-      }
-
-      for (j in outsts) {
-        dataj <- data[, colnames(data) %in% nmstats[j], drop = FALSE]
-        plot(x = 1, y = 1,
-             xlim = xlim,
-             ylim = c(min(dataj) * 0.8, max(dataj) * 1.2),
-             type = "n", main = nmstats[j],
-             xlab = "", ylab = "")
-        for (i in sim) {
-          lines(x = 1:nsteps,
-                y = dataj[, i],
-                lwd = sim.lwd, lty = sim.lty,
-                col = sim.col[which(j == outsts)])
-        }
-        if (j %in% targs) {
-          abline(h = nwstats.table$Target[j],
-                 lty = targ.lty, lwd = targ.lwd,
-                 col = targ.col[which(j == outsts)])
-        }
-      }
-
-      # Reset graphical parameters
-      on.exit(par(ops))
-    }
   }
 
   # Duration plot -----------------------------------------------------------
