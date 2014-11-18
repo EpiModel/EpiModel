@@ -1283,19 +1283,27 @@ plot.netdx <- function(x,
       xlab <- "time"
     }
 
-    # Edges only dissolution model
-    plot(x = 1, y = 1, type = "n",
-         xlim = xlim, ylim = ylim,
-         xlab = xlab, ylab = ylab)
-    for (i in sim) {
-      lines(x = 1:nsteps,
-            y = pages[[i]],
-            lwd = sim.lwd, lty = sim.lty,
-            col = sim.col)
+    if (method == "l") {
+      plot(x = 1, y = 1, type = "n",
+           xlim = xlim, ylim = ylim,
+           xlab = xlab, ylab = ylab)
+      for (i in sim) {
+        lines(x = 1:nsteps,
+              y = pages[[i]],
+              lwd = sim.lwd, lty = sim.lty,
+              col = sim.col)
+      }
+      abline(h = as.numeric(x$coef.diss[2]),
+             lty = targ.lty, lwd = targ.lwd,
+             col = targ.col)
     }
-    abline(h = as.numeric(x$coef.diss[2]),
-           lty = targ.lty, lwd = targ.lwd,
-           col = targ.col)
+
+    if (method == "b") {
+      data <- do.call("c", x$pages)
+      boxplot(data, ...)
+      points(x = 1, y = as.numeric(x$coef.diss[2]),
+             pch = 16, cex = 1.5, col = "blue")
+    }
 
   }
 
@@ -1339,19 +1347,27 @@ plot.netdx <- function(x,
       xlab <- "time"
     }
 
-    # Edges only dissolution model
-    plot(x = 1, y = 1, type = "n",
-         xlim = xlim, ylim = ylim,
-         xlab = xlab, ylab = ylab)
-    for (i in sim) {
-      lines(x = 1:nsteps,
-            y = prop.diss[[i]],
-            lwd = sim.lwd, lty = sim.lty,
-            col = sim.col)
+    if (method == "l") {
+      plot(x = 1, y = 1, type = "n",
+           xlim = xlim, ylim = ylim,
+           xlab = xlab, ylab = ylab)
+      for (i in sim) {
+        lines(x = 1:nsteps,
+              y = prop.diss[[i]],
+              lwd = sim.lwd, lty = sim.lty,
+              col = sim.col)
+      }
+      abline(h = as.numeric(1/(x$coef.diss[2]$duration)),
+             lty = targ.lty, lwd = targ.lwd,
+             col = targ.col)
     }
-    abline(h = as.numeric(1/(x$coef.diss[2]$duration)),
-           lty = targ.lty, lwd = targ.lwd,
-           col = targ.col)
+
+    if (method == "b") {
+      data <- do.call("c", x$prop.diss)
+      boxplot(data, ...)
+      points(x = 1, y = as.numeric(1/(x$coef.diss[2]$duration)),
+             pch = 16, cex = 1.5, col = "blue")
+    }
 
   }
 
