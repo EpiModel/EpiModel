@@ -122,7 +122,7 @@ netdx <- function(x,
   }
 
   if (dynamic == FALSE && nwstats.formula == "formation") {
-    nwstats.formula <- est$formation
+    nwstats.formula <- x$formation
   }
 
   if (verbose == TRUE) {
