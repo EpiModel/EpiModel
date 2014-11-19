@@ -13,6 +13,8 @@ NEW FEATURES
   deviation between the simulation means and target statistics (#192).
 * Added other epidemiological outcomes saved in user-defined modules to print
   output with `print.netsim` (#183).
+* New function `get_sims` will subset and extract entire simulations from `netsim`
+  objects with multiple simulations.
 
 BUG FIXES
 * Object elements saved in stochastic network models with the `save.other`

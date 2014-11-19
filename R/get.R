@@ -252,3 +252,50 @@ get_nwparam <- function(x, network = 1) {
   out <- x$nwparam[[network]]
   return(out)
 }
+
+
+#' @title Extract Network Simulations
+#'
+#' @description Subsets the entire \code{netsim} object to a subset of
+#'              simulations, essentially functioning like a reverse of
+#'              \code{merge}.
+#'
+#' @param x An object of class \code{netsim}.
+#' @param sims A vector of simulation numbers to retain in the output object.
+#'
+#' @keywords extract
+#' @export
+#'
+get_sims <- function(x, sims) {
+
+  nsims <- x$control$nsims
+  delsim <- setdiff(1:nsims, sims)
+
+  out <- x
+
+  for (i in seq_along(out$epi)) {
+    out$epi[[i]] <- out$epi[[i]][,-delsim, drop = FALSE]
+  }
+
+  if (!is.null(out$network)) {
+    out$network[delsim] <- NULL
+  }
+
+  if (!is.null(out$stats$nwstats)) {
+    out$stats$nwstats[delsim] <- NULL
+  }
+  if (!is.null(out$stats$transmat)) {
+    out$stats$transmat[delsim] <- NULL
+  }
+
+  if (!is.null(out$control$save.other)) {
+    oname <- out$control$save.other
+    for (i in seq_along(oname)) {
+      out[[oname[i]]][delsim] <- NULL
+    }
+  }
+
+  out$control$nsims <- length(sims)
+
+  return(out)
+}
