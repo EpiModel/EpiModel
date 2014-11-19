@@ -2,6 +2,8 @@ Version 1.1.2
 ------------------------------------------------------------------------------
 
 NEW FEATURES
+* Implement `control.dcm` option `dede`, which if true allows for delayed
+  differential equations to be passed into a new model solved with `dcm`.
 * New option for `netdx` to simulate static diagnostics from an ERGM, rather
   than the temporal diagnostics (still the default). This will help better
   diagnose poor dynamic model fit when using the edges dissolution approximation

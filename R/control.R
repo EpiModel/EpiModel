@@ -16,6 +16,8 @@
 #' @param odemethod Ordinary differential equation (ODE) integration method, with
 #'        the default of the "Runge-Kutta 4" method (see \code{\link{ode}} for
 #'        other options).
+#' @param dede If \code{TRUE}, use the delayed differential equation solver,
+#'        which allows for time-lagged variables.
 #' @param new.mod If not running a built-in model type, a function with a new
 #'        model to be simulated (see details).
 #' @param sens.param If \code{TRUE}, evaluate arguments in parameters with length
@@ -58,6 +60,7 @@ control.dcm <- function(type,
                         nsteps,
                         dt = 1,
                         odemethod = "rk4",
+                        dede = FALSE,
                         new.mod = NULL,
                         sens.param = TRUE,
                         print.mod = FALSE,

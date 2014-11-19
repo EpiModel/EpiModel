@@ -196,12 +196,19 @@ dcm <- function(param, init, control){
     ## Timesteps
     times <- seq(1, control$nsteps, control$dt)
 
-    ## Solve ODE
-    df <- data.frame(ode(y = t0,
-                         times = times,
-                         func = model,
-                         parms = all.p,
-                         method = control$odemethod))
+    ## Differential equation solvers
+    if (control$dede == FALSE) {
+      df <- data.frame(ode(y = t0,
+                           times = times,
+                           func = model,
+                           parms = all.p,
+                           method = control$odemethod))
+    } else {
+      df <- data.frame(dede(y = t0,
+                           times = times,
+                           func = model,
+                           parms = all.p))
+    }
 
 
     ## Save to out object

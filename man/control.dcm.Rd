@@ -3,8 +3,9 @@
 \alias{control.dcm}
 \title{Control Settings for Deterministic Compartmental Models}
 \usage{
-control.dcm(type, nsteps, dt = 1, odemethod = "rk4", new.mod = NULL,
-  sens.param = TRUE, print.mod = FALSE, verbose = TRUE, ...)
+control.dcm(type, nsteps, dt = 1, odemethod = "rk4", dede = FALSE,
+  new.mod = NULL, sens.param = TRUE, print.mod = FALSE, verbose = TRUE,
+  ...)
 }
 \arguments{
 \item{type}{Disease type to be modeled, with the choice of \code{"SI"} for
@@ -22,6 +23,9 @@ number between 0 and 1.}
 \item{odemethod}{Ordinary differential equation (ODE) integration method, with
 the default of the "Runge-Kutta 4" method (see \code{\link{ode}} for
 other options).}
+
+\item{dede}{If \code{TRUE}, use the delayed differential equation solver,
+which allows for time-lagged variables.}
 
 \item{new.mod}{If not running a built-in model type, a function with a new
 model to be simulated (see details).}
