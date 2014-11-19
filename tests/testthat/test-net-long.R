@@ -76,7 +76,7 @@ test_that("edges models", {
   x <- netsim(est, param, init, control)
   expect_is(x, "netsim")
   expect_is(as.data.frame(x), "data.frame")
-  expect_true(max(x$epi$i.num) > 1)
+  expect_true(max(x$epi$i.num) >= 1)
   expect_true(max(x$epi$i.num) <= 100)
   expect_true(x$control$tea.status, TRUE)
   expect_true(sum(get.vertex.attribute.active(x$network[[1]],
