@@ -21,5 +21,5 @@ env:
     - _R_CHECK_FORCE_SUGGESTS_=0
     - NOT_CRAN=true
     - R_BUILD_ARGS=" " 
-    - R_CHECK_ARGS="--as-cran" 
+    - R_CHECK_ARGS="--as-cran --no-manual" 
     - BOOTSTRAP_LATEX="1"
