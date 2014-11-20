@@ -16,6 +16,7 @@ install.packages("EpiModel")
 
 To install this development version, use the <a href="https://github.com/hadley/devtools" target="_blank">devtools package</a>:
 ```r
+if (!require("devtools")) install.packages("devtools")
 devtools::install_github("statnet/EpiModel")
 ```
 
