@@ -1,10 +1,5 @@
 language: c
 
-env:
-  - global:
-    - _R_CHECK_FORCE_SUGGESTS_="0"
-    - NOT_CRAN="true"
-
 before_install:
   - curl -OL http://raw.github.com/craigcitro/r-travis/master/scripts/travis-tool.sh
   - chmod 755 ./travis-tool.sh
@@ -20,3 +15,8 @@ notifications:
   email:
     on_success: never
     on_failure: change
+
+env:
+  - global:
+    - _R_CHECK_FORCE_SUGGESTS_=0
+    - NOT_CRAN=true
