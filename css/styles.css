@@ -2,12 +2,8 @@
 body {
   padding-top: 60px;
   font-family: helvetica, lucida grande, arial, sans serif;
-  font-weight: 100;
 }
 
-li {
-  font-weight: 100 !important;
-}
 
 @media (max-width: 979px) {
 
