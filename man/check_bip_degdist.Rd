@@ -6,13 +6,13 @@
 check_bip_degdist(num.m1, num.m2, deg.dist.m1, deg.dist.m2)
 }
 \arguments{
-\item{num.m1}{number of nodes in mode 1.}
+\item{num.m1}{Number of nodes in mode 1.}
 
-\item{num.m2}{number of nodes in mode 2.}
+\item{num.m2}{Number of nodes in mode 2.}
 
-\item{deg.dist.m1}{vector with fractional degree distribution for mode 1.}
+\item{deg.dist.m1}{Vector with fractional degree distribution for mode 1.}
 
-\item{deg.dist.m2}{vector with fractional degree distribution for mode 2.}
+\item{deg.dist.m2}{Vector with fractional degree distribution for mode 2.}
 }
 \description{
 Checks for consistency in the implied network statistics
@@ -27,19 +27,18 @@ given that fractional distribution within bipartite network simulations, in
 which the degree-constrained counts must be equal across modes.
 }
 \examples{
-# An unbalanced distribution
+# An imbalanced distribution
 check_bip_degdist(num.m1 = 500, num.m2 = 500,
-                  deg.dist.m1 = c(0.40, 0.55, 0.03, 0.02),
-                  deg.dist.m2 = c(0.48, 0.41, 0.08, 0.03))
+                  deg.dist.m2 = c(0.40, 0.55, 0.03, 0.02),
+                  deg.dist.m1 = c(0.48, 0.41, 0.08, 0.03))
 
 # A balanced distribution
-targets <- check_bip_degdist(num.m1 = 500, num.m2 = 500,
+check_bip_degdist(num.m1 = 500, num.m2 = 500,
                   deg.dist.m1 = c(0.40, 0.55, 0.04, 0.01),
                   deg.dist.m2 = c(0.48, 0.41, 0.08, 0.03))
-targets
 }
 \seealso{
-For a detailed explanation of this function, see the HTML vignette:
+For a detailed explanation of this function, see the tutorial:
 \href{http://statnet.org/EpiModel/vignette/NetUtils.html}{EpiModel Network
 Utility Functions}.
 }
