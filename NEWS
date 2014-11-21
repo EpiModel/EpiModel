@@ -22,6 +22,9 @@ BUG FIXES
 * Object elements saved in stochastic network models with the `save.other`
   parameter in `control.net` may now be merged with `merge.netsim` (#185).
 
+OTHER
+* Package `deSolve` moved from import to depend (#194).
+
 
 Version 1.1.1
 ------------------------------------------------------------------------------
