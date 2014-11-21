@@ -86,40 +86,52 @@ nw <- set.vertex.attribute(nw, "sex", rbinom(100, 1, 0.5))
 formation <- ~ edges + nodematch("sex")
 dissolution <- ~ offset(edges)
 target.stats <- c(50, 40)
-coef.diss <- dissolution_coefs(dissolution, duration = 10)
+coef.diss <- dissolution_coefs(dissolution, duration = 50)
 
 # Estimate the model
-est <- netest(nw,
-              formation,
-              dissolution,
-              target.stats,
-              coef.diss,
-              verbose = FALSE)
+est <- netest(nw, formation, dissolution,
+              target.stats, coef.diss, verbose = FALSE)
 
-# Run diagnostics
-dx <- netdx(est,
-            nsims = 10,
-            nsteps = 100,
-            nwstats.formula = ~ edges + meandeg + concurrent +
-                                nodefactor("sex", base = 0) +
-                                nodematch("sex"),
-            verbose = FALSE)
+# Static diagnostics
+dx1 <- netdx(est, nsims = 1e4, dynamic = FALSE,
+             nwstats.formula = ~ edges + meandeg + concurrent +
+                                 nodefactor("sex", base = 0) +
+                                 nodematch("sex"))
+dx1
+
+# Only formation diagnostics are available to plot
+plot(dx1, stats = "edges")
+plot(dx1, stats = "edges", method = "b", col = "seagreen3")
+plot(dx1, stats = c("nodefactor.sex.0", "nodefactor.sex.1"), method = "b")
+
+# Dynamic diagnostics
+dx2 <- netdx(est, nsims = 10, nsteps = 500,
+             nwstats.formula = ~ edges + meandeg + concurrent +
+                                 nodefactor("sex", base = 0) +
+                                 nodematch("sex"))
+dx2
 
 # Formation statistics plots, joined and separate
-plot(dx, type = "formation")
+plot(dx)
 plot(dx, type = "formation", plots.joined = TRUE)
-plot(dx, type = "formation", sim = 2:5)
+plot(dx, type = "formation", sim = 1, plots.joined = TRUE)
 plot(dx, type = "formation", plots.joined = FALSE,
      stats = c("edges", "concurrent"))
 plot(dx, type = "formation", stats = "nodefactor.sex.0",
      sim = 1, sim.lwd = 5, sim.col = "darkmagenta")
 
+plot(dx, method = "b", col = "bisque")
+plot(dx, method = "b", stats = "meandeg", col = "dodgerblue")
+
 # Duration statistics plot
 plot(dx, type = "duration")
-plot(dx, type = "duration", sim = 1)
 plot(dx, type = "duration", sim = 10,
      sim.col = "steelblue", sim.lwd = 3,
      targ.lty = 1, targ.lwd = 0.5)
+
+# Dissolution statistics plot
+plot(dx, type = "dissolution")
+plot(dx, type = "dissolution", method = "b", col = "pink1")
 }
 }
 \seealso{

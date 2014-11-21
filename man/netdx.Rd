@@ -75,27 +75,26 @@ nw <- network.initialize(100, directed = FALSE)
 formation <- ~ edges
 dissolution <- ~ offset(edges)
 target.stats <- 50
-coef.diss <- dissolution_coefs(dissolution, duration = 10)
+coef.diss <- dissolution_coefs(dissolution, duration = 25)
 
 # Estimate the model
-est <- netest(
-  nw,
-  formation,
-  dissolution,
-  target.stats,
-  coef.diss,
-  verbose = FALSE)
+est <- netest(nw, formation, dissolution,
+              target.stats, coef.diss, verbose = FALSE)
 
-# Run diagnostics
-dx <- netdx(est,
-  nsims = 5,
-  nsteps = 500,
-  nwstats.formula = ~ edges + meandeg + concurrent,
-  set.control.ergm = control.simulate.ergm(MCMC.burnin = 1e6),
-  set.control.stergm = control.simulate.network(MCMC.burnin.min = 1e5))
+# Static diagnostics on the ERGM fit
+dx1 <- netdx(est, nsims = 1e4, dynamic = FALSE,
+             nwstats.formula = ~ edges + meandeg + concurrent)
+dx1
+plot(dx1, method = "b", stats = c("edges", "concurrent"))
 
-dx
-plot(dx)
+# Dynamic diagnostics on the STERGM approximation
+dx2 <- netdx(est, nsims = 5, nsteps = 500,
+             nwstats.formula = ~ edges + meandeg + concurrent,
+             set.control.ergm = control.simulate.ergm(MCMC.burnin = 1e6))
+dx2
+plot(dx2, stats = c("edges", "meandeg"), plots.joined = FALSE)
+plot(dx2, type = "duration")
+plot(dx2, type = "dissolution", method = "b", col = "bisque")
 }
 }
 \seealso{
