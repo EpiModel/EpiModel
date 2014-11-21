@@ -6,27 +6,26 @@
 #' @description Outputs static vertex attributes for a bipartite network for one
 #'              specified mode.
 #'
-#' @param nw an object of class \code{network} or \code{networkDynamic}.
-#' @param mode mode number to extract values for.
-#' @param val static attribute values to return.
+#' @param nw An object of class \code{network} or \code{networkDynamic}.
+#' @param mode Mode number.
+#' @param val Nodal attribute to return.
 #'
 #' @export
 #' @keywords netUtils internal
 #'
 #' @examples
-#' nw <- network.initialize(10, bipartite = 5)
-#' nw %v% "sex" <- rep(c("M", "F"), each = 5)
-#' bipvals(nw, mode = 1, "sex")
+#' nw <- network.initialize(n = 10, bipartite = 5)
+#' nw <- set.vertex.attribute(nw, "male", rep(0:1, each = 5))
+#' bipvals(nw, mode = 1, "male")
 #'
-bipvals <- function(nw,
-                    mode,
-                    val
-                    ) {
+bipvals <- function(nw, mode, val) {
 
-  if (!is.numeric(nw$gal$bipartite))
-    stop("nw must be a bipartite network")
-  if (missing(mode))
-    stop("Specify mode=1 or mode=2")
+  if (!is.numeric(nw$gal$bipartite)) {
+    stop("nw must be a bipartite network", call. = FALSE)
+  }
+  if (missing(mode)) {
+    stop("Specify mode=1 or mode=2", call. = FALSE)
+  }
 
   nw %s% modeids(nw, mode) %v% val
 }
