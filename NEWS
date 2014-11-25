@@ -16,11 +16,15 @@ NEW FEATURES
 * Added other epidemiological outcomes saved in user-defined modules to print
   output with `print.netsim` (#183).
 * New function `get_sims` will subset and extract entire simulations from `netsim`
-  objects with multiple simulations.
+  objects with multiple simulations. A vector of simulation numbers may be
+  specified, or if set as "mean", the simulation with the infected prevalence
+  closest to the means across all simulations will be chosen.
 
 BUG FIXES
 * Object elements saved in stochastic network models with the `save.other`
   parameter in `control.net` may now be merged with `merge.netsim` (#185).
+* Quantile band is displayed in `plot` for ICMs and network models when the `y`
+  argument is specified (#188).
 
 OTHER
 * Package `deSolve` moved from import to depend (#194).
