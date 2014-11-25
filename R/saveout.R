@@ -39,6 +39,13 @@ saveout.dcm <- function(df, s, param, control, out) {
       colnames(out$epi[[s]]) <- paste0("run", 1:control$nruns)
     }
 
+    # Reset partnership parameters if used
+    if (!is.null(param$act.inf.prob)) {
+      out$param$inf.prob <- out$param$act.inf.prob
+      out$param$act.inf.prob <- NULL
+      out$param$act.rate <- NULL
+    }
+
   }
 
   return(out)

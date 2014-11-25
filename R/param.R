@@ -109,6 +109,8 @@
 #'
 param.dcm <- function(inf.prob,
                       act.rate,
+                      part.acq.rate,
+                      acts.per.part,
                       rec.rate,
                       b.rate,
                       ds.rate,
