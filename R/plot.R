@@ -763,7 +763,7 @@ plot.icm <- function(x,
   if (nsims == 1) {
     disp.qnts <- FALSE
   }
-  if (modes == 1 & nocomp == TRUE & missing(qnts)) {
+  if (modes == 1 & missing(qnts)) {
     disp.qnts <- TRUE
     qnts <- 0.5
   }
