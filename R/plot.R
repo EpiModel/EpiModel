@@ -755,7 +755,7 @@ plot.icm <- function(x,
 
 
   # Quantiles ---------------------------------------------------------------
-  if (missing(qnts)) {
+  if (missing(qnts) || qnts == FALSE) {
     disp.qnts <- FALSE
   } else {
     disp.qnts <- TRUE
