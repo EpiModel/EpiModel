@@ -4,53 +4,58 @@
 #' @description Sets the epidemic parameters for deterministic compartmental
 #'              models simulated with \code{dcm}.
 #'
-#' @param inf.prob probability of infection per transmissible act between
+#' @param inf.prob Probability of infection per transmissible act between
 #'        a susceptible and an infected person. In two-group models, this is the
 #'        probability of infection for the group 1 members.
-#' @param act.rate average number of transmissible acts per person per unit time.
+#' @param act.rate Average number of transmissible acts per person per unit time.
 #'        For two-group models, this is the number of acts per group 1 persons
 #'        per unit time; a balance between the acts in groups 1 and 2 is necessary,
 #'        and set using the \code{balance} parameter (see details).
-#' @param rec.rate average rate of recovery with immunity (in \code{SIR} models)
+#' @param part.acq.rate Rate of acquiring new partners per unit time, to be used
+#'        as an alternative to \code{act.rate} (see details). Currently only
+#'        available for one-group models.
+#' @param acts.per.part Number of acts per partnership, used with the
+#'        \code{part.acq.rate} parameter to specify the total number of acts.
+#' @param rec.rate Average rate of recovery with immunity (in \code{SIR} models)
 #'        or re-susceptibility (in \code{SIS} models). The recovery rate is the
 #'        reciprocal of the disease duration. For two-group models, this is the
 #'        recovery rate for group 1 persons only. This parameter is only used for
 #'        \code{SIR} and \code{SIS} models.
-#' @param b.rate birth or entry rate. For one-group models, the birth rate is the
+#' @param b.rate Birth or entry rate. For one-group models, the birth rate is the
 #'        rate of new births per person per unit time. For two-group models, the
 #'        birth rate may be parameterized as a rate per group 1 person time (with
 #'        group 1 persons representing females), and with the \code{b.rate.g2}
 #'        rate set as described below.
-#' @param ds.rate death or exit rate for susceptible. For two-group models, it
+#' @param ds.rate Death or exit rate for susceptible. For two-group models, it
 #'        is the rate for the group 1 susceptible only.
-#' @param di.rate death or exit rate for infected. For two-group models, it is
+#' @param di.rate Death or exit rate for infected. For two-group models, it is
 #'        the rate for the group 1 infected only.
-#' @param dr.rate death or exit rate for recovered. For two-group models, it is
+#' @param dr.rate Death or exit rate for recovered. For two-group models, it is
 #'        the rate for the group 1 recovered only. This parameter is only used for
 #'        \code{SIR} models.
-#' @param inf.prob.g2 probability of infection per transmissible act
+#' @param inf.prob.g2 Probability of infection per transmissible act
 #'        between a susceptible group 2 person and an infected group 1 person.
 #'        It is the probability of infection to group 2 members.
-#' @param act.rate.g2 average number of transmissible acts per group 2 person per
+#' @param act.rate.g2 Average number of transmissible acts per group 2 person per
 #'        unit time; a balance between the acts in groups 1 and 2 is necessary,
 #'        and set using the \code{balance} parameter (see details).
-#' @param rec.rate.g2 average rate of recovery with immunity (in \code{SIR} models)
+#' @param rec.rate.g2 Average rate of recovery with immunity (in \code{SIR} models)
 #'        or re-susceptibility (in \code{SIS} models) for group 2 persons. This
 #'        parameter is only used for two-group \code{SIR} and \code{SIS} models.
-#' @param b.rate.g2 birth or entry rate for group 2. This may either be specified
+#' @param b.rate.g2 Birth or entry rate for group 2. This may either be specified
 #'        numerically as the rate of new births per group 2 persons per unit time,
 #'        or as \code{NA} in which case the group 1 rate, \code{b.rate}, governs
 #'        the group 2 rate. The latter is used when, for example, the first group
 #'        is conceptualized as female, and the female population size determines
 #'        the birth rate. Such births are evenly allocated between the two groups.
-#' @param ds.rate.g2 death or exit rate for group 2 susceptible.
-#' @param di.rate.g2 death or exit rate for group 2 infected.
-#' @param dr.rate.g2 death or exit rate for group 2 recovered. This parameter is
+#' @param ds.rate.g2 Death or exit rate for group 2 susceptible.
+#' @param di.rate.g2 Death or exit rate for group 2 infected.
+#' @param dr.rate.g2 Death or exit rate for group 2 recovered. This parameter is
 #'        only used for \code{SIR} model types.
-#' @param balance for two-group models, balance the \code{act.rate} to the rate
+#' @param balance For two-group models, balance the \code{act.rate} to the rate
 #'        set for group 1 (with \code{balance="g1"}) or group 2 (with
 #'        \code{balance="g2"}). See details.
-#' @param ... additional arguments passed to model.
+#' @param ... Additional arguments passed to model.
 #'
 #' @details
 #' \code{param.dcm} sets the epidemic parameters for deterministic compartmental
@@ -80,6 +85,20 @@
 #' act rate should control the others with respect to balancing. See the
 #' \href{http://statnet.org/EpiModel/vignette/Tutorial.pdf}{EpiModel Tutorial}
 #' for further details.
+#'
+#' @section Partnerships as Contacts:
+#' A common parameterization of contacts within DCMs for HIV/STI is to collapse
+#' all acts to occur within a partnership. Standard DCMs do not permit mathematical
+#' partnerships, as the force of infection is an instantaneous hazard. Therefore,
+#' DCM partnerships simply embed all acts within one "partnership" by calculating
+#' a infection probability per partnership with the formula: \eqn{1-(1-\tau)^\alpha},
+#' where \eqn{\tau} is still the risk per act and \eqn{\alpha} is the number of
+#' acts per partnership. Within EpiModel, \code{inf.prob} still specifies the
+#' per-act transmission probability (\eqn{\tau}), but the \code{act.rate}
+#' parameter should be substituted by \code{part.acq.rate} for the rate of
+#' acquiring new partners and the \code{acts.per.part} for the number acts per
+#' partnership (\eqn{\alpha}). Finally, this is currently only implemented for
+#' one-group models.
 #'
 #' @section Sensitivity Analyses:
 #' \code{dcm} has been designed to easily run DCM sensitivity analyses, where a
