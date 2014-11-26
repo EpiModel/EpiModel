@@ -14,3 +14,25 @@ draw_qnts <- function(x, y, qnts, qnts.pal, loc = "epi") {
   }
 
 }
+
+
+draw_means <- function(x, y, mean.smooth, mean.lwd,
+                       mean.pal, mean.lty, loc = "epi") {
+
+  lcomp <- length(y)
+  nsims <- x$control$nsims
+
+  for (j in seq_len(lcomp)) {
+    if (nsims == 1) {
+      mean.prev <- x[[loc]][[y[j]]][, 1]
+    } else {
+      mean.prev <- rowMeans(x[[loc]][[y[j]]])
+    }
+    if (mean.smooth == TRUE) {
+      mean.prev <- supsmu(x = 1:nsteps, y = mean.prev)$y
+    }
+    lines(mean.prev, lwd = mean.lwd[j],
+          col = mean.pal[j], lty = mean.lty[j])
+  }
+
+}

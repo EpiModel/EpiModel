@@ -784,41 +784,30 @@ plot.icm <- function(x,
 
 
   # Mean lines --------------------------------------------------------------
-  if (!missing(mean.lwd) && length(mean.lwd) < lcomp) {
-    mean.lwd <- rep(mean.lwd, lcomp)
-  }
-  if (missing(mean.lwd)) {
-    mean.lwd <- rep(2.5, lcomp)
-  }
-  if (nomeanlty == TRUE) {
-    if (nocomp == TRUE) {
-      if (modes == 1) {
+  if (mean.line == TRUE) {
+    if (!missing(mean.lwd) && length(mean.lwd) < lcomp) {
+      mean.lwd <- rep(mean.lwd, lcomp)
+    }
+    if (missing(mean.lwd)) {
+      mean.lwd <- rep(2.5, lcomp)
+    }
+    if (nomeanlty == TRUE) {
+      if (nocomp == TRUE) {
+        if (modes == 1) {
+          mean.lty <- rep(1, lcomp)
+        }
+        if (modes == 2) {
+          mean.lty <- rep(1:2, each = lcomp / 2)
+        }
+      }
+      if (nocomp == FALSE) {
         mean.lty <- rep(1, lcomp)
       }
-      if (modes == 2) {
-        mean.lty <- rep(1:2, each = lcomp / 2)
-      }
     }
-    if (nocomp == FALSE) {
-      mean.lty <- rep(1, lcomp)
+    if (nomeanlty == FALSE & length(mean.lty) < lcomp) {
+      mean.lty <- rep(mean.lty, lcomp)
     }
-  }
-  if (nomeanlty == FALSE & length(mean.lty) < lcomp) {
-    mean.lty <- rep(mean.lty, lcomp)
-  }
-  if (mean.line == TRUE) {
-    for (j in seq_len(lcomp)) {
-      if (nsims == 1) {
-        mean.prev <- x$epi[[y[j]]][, 1]
-      } else {
-        mean.prev <- rowMeans(x$epi[[y[j]]])
-      }
-      if (mean.smooth == TRUE) {
-        mean.prev <- supsmu(x = 1:nsteps, y = mean.prev)$y
-      }
-      lines(mean.prev, lwd = mean.lwd[j],
-            col = mean.pal[j], lty = mean.lty[j])
-    }
+    draw_means(x, y, mean.smooth, mean.lwd, mean.pal, mean.lty)
   }
 
 
