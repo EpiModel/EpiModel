@@ -1299,7 +1299,18 @@ plot.netdx <- function(x,
         }
       }
 
-      ## Draw mean lines here
+      if (mean.line == TRUE) {
+        if (missing(mean.col)) {
+          mean.col <- sim.col
+        }
+        dataj <- as.data.frame(pages)
+        mean.prev <- rowMeans(dataj)
+        if (mean.smooth == TRUE) {
+          mean.prev <- supsmu(x = 1:length(mean.prev), y = mean.prev)$y
+        }
+        lines(mean.prev, lwd = mean.lwd,
+              col = mean.col, lty = mean.lty)
+      }
 
       ## Target line
       abline(h = as.numeric(x$coef.diss[2]),
@@ -1371,7 +1382,18 @@ plot.netdx <- function(x,
         }
       }
 
-      # Draw mean lines here
+      if (mean.line == TRUE) {
+        if (missing(mean.col)) {
+          mean.col <- sim.col
+        }
+        dataj <- as.data.frame(prop.diss)
+        mean.prev <- rowMeans(dataj)
+        if (mean.smooth == TRUE) {
+          mean.prev <- supsmu(x = 1:length(mean.prev), y = mean.prev)$y
+        }
+        lines(mean.prev, lwd = mean.lwd,
+              col = mean.col, lty = mean.lty)
+      }
 
       # Target line
       abline(h = as.numeric(1/(x$coef.diss[2]$duration)),
