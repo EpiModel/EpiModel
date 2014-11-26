@@ -776,7 +776,7 @@ plot.icm <- function(x,
   if (sim.lines == TRUE) {
     for (j in seq_len(lcomp)) {
       for (i in sims) {
-        lines(1:nsteps, x$epi[[y[j]]][, i], lwd = sim.lwd[j], col = sim.pal[j])
+        lines(x$epi[[y[j]]][, i], lwd = sim.lwd[j], col = sim.pal[j])
       }
     }
   }
