@@ -914,26 +914,26 @@ plot.icm <- function(x,
 #' dx2
 #'
 #' # Formation statistics plots, joined and separate
-#' plot(dx)
-#' plot(dx, type = "formation", plots.joined = TRUE)
-#' plot(dx, type = "formation", sim = 1, plots.joined = TRUE)
-#' plot(dx, type = "formation", plots.joined = FALSE,
+#' plot(dx2)
+#' plot(dx2, type = "formation", plots.joined = TRUE)
+#' plot(dx2, type = "formation", sim = 1, plots.joined = TRUE)
+#' plot(dx2, type = "formation", plots.joined = FALSE,
 #'      stats = c("edges", "concurrent"))
-#' plot(dx, type = "formation", stats = "nodefactor.sex.0",
+#' plot(dx2, type = "formation", stats = "nodefactor.sex.0",
 #'      sim = 1, sim.lwd = 5, sim.col = "darkmagenta")
 #'
-#' plot(dx, method = "b", col = "bisque")
-#' plot(dx, method = "b", stats = "meandeg", col = "dodgerblue")
+#' plot(dx2, method = "b", col = "bisque")
+#' plot(dx2, method = "b", stats = "meandeg", col = "dodgerblue")
 #'
 #' # Duration statistics plot
-#' plot(dx, type = "duration")
-#' plot(dx, type = "duration", sim = 10,
+#' plot(dx2, type = "duration")
+#' plot(dx2, type = "duration", sim = 10,
 #'      sim.col = "steelblue", sim.lwd = 3,
 #'      targ.lty = 1, targ.lwd = 0.5)
 #'
 #' # Dissolution statistics plot
-#' plot(dx, type = "dissolution")
-#' plot(dx, type = "dissolution", method = "b", col = "pink1")
+#' plot(dx2, type = "dissolution")
+#' plot(dx2, type = "dissolution", method = "b", col = "pink1")
 #' }
 #'
 plot.netdx <- function(x,
