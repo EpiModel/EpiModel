@@ -476,8 +476,6 @@ plot.dcm <- function(x,
 #' @param sim.alpha transparency level for simulation lines, where 0 = transparent
 #'        and 1 = opaque (see \code{\link{transco}}).
 #' @param mean.line if \code{TRUE}, plot mean of simulations across time.
-#' @param mean.extinct if \code{TRUE}, include extinct simulations in mean
-#'        calculation (see details).
 #' @param mean.smooth if \code{TRUE}, use a lowess smoother on the mean line.
 #' @param mean.col a vector of any standard R color format for mean lines.
 #' @param mean.lwd line width for mean lines.
@@ -504,9 +502,7 @@ plot.dcm <- function(x,
 #' plots are individual simulation lines, means of the individual simulation
 #' lines, and quantiles of those individual simulation lines. The mean line,
 #' toggled on with \code{mean.line=TRUE} is calculated as the row mean
-#' across simulations at each time step. The \code{mean.extinct} will, if set to
-#' \code{FALSE}, exclude from this calculation any simulations with no incident
-#' cases of disease.
+#' across simulations at each time step.
 #'
 #' Compartment prevalences are the size of a compartment over some denominator.
 #' To plot the raw numbers from any compartment, use \code{popfrac=FALSE}; this
@@ -561,7 +557,6 @@ plot.icm <- function(x,
                      sim.lwd,
                      sim.alpha,
                      mean.line = TRUE,
-                     mean.extinct = TRUE,
                      mean.smooth = FALSE,
                      mean.col,
                      mean.lwd,
@@ -777,23 +772,12 @@ plot.icm <- function(x,
 
   # Simulation lines --------------------------------------------------------
   if (missing(sim.lines)) {
-    if (modes == 1) {
-      sim.lines <- TRUE
-    } else {
-      sim.lines <- FALSE
-    }
+    sim.lines <- ifelse(modes == 1, TRUE, FALSE)
   }
   if (sim.lines == TRUE) {
-    if (nsims == 1) {
-      for (j in seq_len(lcomp)) {
-        lines(1:nsteps, x$epi[[y[j]]][, 1], lwd = sim.lwd[j], col = sim.pal[j])
-      }
-    }
-    if (nsims > 1) {
-      for (j in seq_len(lcomp)) {
-        for (i in sims) {
-          lines(1:nsteps, x$epi[[y[j]]][, i], lwd = sim.lwd[j], col = sim.pal[j])
-        }
+    for (j in seq_len(lcomp)) {
+      for (i in sims) {
+        lines(1:nsteps, x$epi[[y[j]]][, i], lwd = sim.lwd[j], col = sim.pal[j])
       }
     }
   }
@@ -829,11 +813,8 @@ plot.icm <- function(x,
         if (mean.smooth == TRUE) {
           mean.prev <- supsmu(x = 1:nsteps, y = mean.prev)$y
         }
-        lines(1:nsteps,
-              mean.prev,
-              lwd = mean.lwd[j],
-              col = mean.pal[j],
-              lty = mean.lty[j])
+        lines(1:nsteps, mean.prev, lwd = mean.lwd[j],
+              col = mean.pal[j], lty = mean.lty[j])
 
       }
     }
@@ -851,11 +832,8 @@ plot.icm <- function(x,
             mean.prev <- supsmu(x = 1:nsteps, y = mean.prev)$y
           }
         }
-        lines(1:nsteps,
-              mean.prev,
-              lwd = mean.lwd[j],
-              col = mean.pal[j],
-              lty = mean.lty[j])
+        lines(1:nsteps, mean.prev, lwd = mean.lwd[j],
+              col = mean.pal[j], lty = mean.lty[j])
       }
     }
   }
