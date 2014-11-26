@@ -807,34 +807,17 @@ plot.icm <- function(x,
     mean.lty <- rep(mean.lty, lcomp)
   }
   if (mean.line == TRUE) {
-    if (nsims == 1) {
-      for (j in seq_len(lcomp)) {
+    for (j in seq_len(lcomp)) {
+      if (nsims == 1) {
         mean.prev <- x$epi[[y[j]]][, 1]
-        if (mean.smooth == TRUE) {
-          mean.prev <- supsmu(x = 1:nsteps, y = mean.prev)$y
-        }
-        lines(1:nsteps, mean.prev, lwd = mean.lwd[j],
-              col = mean.pal[j], lty = mean.lty[j])
-
+      } else {
+        mean.prev <- rowMeans(x$epi[[y[j]]])
       }
-    }
-    if (nsims > 1) {
-      for (j in seq_len(lcomp)) {
-        if (mean.extinct == TRUE) {
-          mean.prev <- apply(x$epi[[y[j]]], 1, mean)
-          if (mean.smooth == TRUE) {
-            mean.prev <- supsmu(x = 1:nsteps, y = mean.prev)$y
-          }
-        } else {
-          non.extinct <- as.vector(which(apply(x$epi$si.flow, 2, max) > 0))
-          mean.prev <- apply(x$epi[[y[j]]][, non.extinct], 1, mean)
-          if (mean.smooth == TRUE) {
-            mean.prev <- supsmu(x = 1:nsteps, y = mean.prev)$y
-          }
-        }
-        lines(1:nsteps, mean.prev, lwd = mean.lwd[j],
-              col = mean.pal[j], lty = mean.lty[j])
+      if (mean.smooth == TRUE) {
+        mean.prev <- supsmu(x = 1:nsteps, y = mean.prev)$y
       }
+      lines(mean.prev, lwd = mean.lwd[j],
+            col = mean.pal[j], lty = mean.lty[j])
     }
   }
 
