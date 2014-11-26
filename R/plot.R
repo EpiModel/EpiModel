@@ -580,7 +580,6 @@ plot.icm <- function(x,
   if (max(sims) > nsims) {
     stop("Set sim to between 1 and ", nsims, call. = FALSE)
   }
-  nomeanlty <- ifelse(missing(mean.lty), TRUE, FALSE)
   type <- x$control$type
   if (class(x) == "icm") {
     modes <- x$param$groups
@@ -785,27 +784,23 @@ plot.icm <- function(x,
 
   # Mean lines --------------------------------------------------------------
   if (mean.line == TRUE) {
+
     if (!missing(mean.lwd) && length(mean.lwd) < lcomp) {
       mean.lwd <- rep(mean.lwd, lcomp)
     }
     if (missing(mean.lwd)) {
       mean.lwd <- rep(2.5, lcomp)
     }
-    if (nomeanlty == TRUE) {
-      if (nocomp == TRUE) {
-        if (modes == 1) {
-          mean.lty <- rep(1, lcomp)
-        }
-        if (modes == 2) {
-          mean.lty <- rep(1:2, each = lcomp / 2)
-        }
-      }
-      if (nocomp == FALSE) {
-        mean.lty <- rep(1, lcomp)
-      }
-    }
-    if (nomeanlty == FALSE & length(mean.lty) < lcomp) {
+
+    if (!missing(mean.lty) && length(mean.lty) < lcomp) {
       mean.lty <- rep(mean.lty, lcomp)
+    }
+    if (missing(mean.lty)) {
+      if (nocomp == FALSE || (nocomp == TRUE && modes == 1)) {
+        mean.lty <- rep(1, lcomp)
+      } else {
+        mean.lty <- rep(1:2, each = lcomp / 2)
+      }
     }
     draw_means(x, y, mean.smooth, mean.lwd, mean.pal, mean.lty)
   }
