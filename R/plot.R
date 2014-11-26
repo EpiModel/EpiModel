@@ -950,6 +950,9 @@ plot.netdx <- function(x,
                        mean.col,
                        mean.lwd = 2,
                        mean.lty = 1,
+                       qnts = FALSE,
+                       qnts.col,
+                       qnts.alpha,
                        targ.line = TRUE,
                        targ.col,
                        targ.lwd = 2,
@@ -1115,6 +1118,25 @@ plot.netdx <- function(x,
              type = "n", xlab = xlab, ylab = ylab)
         for (j in outsts) {
           dataj <- data[, colnames(data) %in% nmstats[j], drop = FALSE]
+
+          if (is.numeric(qnts)) {
+            if (qnts < 0 | qnts > 1) {
+              stop("qnts must be between 0 and 1", call. = FALSE)
+            }
+            if (missing(qnts.col)) {
+              qnts.col <- sim.col
+            }
+            if (missing(qnts.alpha)) {
+              qnts.alpha <- 0.75
+            }
+            qnts.col <- transco(qnts.col, qnts.alpha)
+            quants <- c((1-qnts)/2, 1-((1-qnts)/2))
+            qnt.prev <- apply(dataj, 1, function(x) quantile(x, c(quants[1], quants[2])))
+            xx <- c(1:(ncol(qnt.prev)), (ncol(qnt.prev)):1)
+            yy <- c(qnt.prev[1,], rev(qnt.prev[2,]))
+            polygon(xx, yy, col = qnts.col[which(j == outsts)], border = NA)
+          }
+
           if (sim.lines == TRUE) {
             if (dynamic == TRUE) {
               for (i in sim) {
@@ -1187,6 +1209,25 @@ plot.netdx <- function(x,
                ylim = c(min(dataj) * 0.8, max(dataj) * 1.2),
                type = "n", main = nmstats[j],
                xlab = "", ylab = "")
+
+          if (is.numeric(qnts)) {
+            if (qnts < 0 | qnts > 1) {
+              stop("qnts must be between 0 and 1", call. = FALSE)
+            }
+            if (missing(qnts.col)) {
+              qnts.col <- sim.col
+            }
+            if (missing(qnts.alpha)) {
+              qnts.alpha <- 0.75
+            }
+            qnts.col <- transco(qnts.col, qnts.alpha)
+            quants <- c((1-qnts)/2, 1-((1-qnts)/2))
+            qnt.prev <- apply(dataj, 1, function(x) quantile(x, c(quants[1], quants[2])))
+            xx <- c(1:(ncol(qnt.prev)), (ncol(qnt.prev)):1)
+            yy <- c(qnt.prev[1,], rev(qnt.prev[2,]))
+            polygon(xx, yy, col = qnts.col[which(j == outsts)], border = NA)
+          }
+
           if (sim.lines == TRUE) {
             if (dynamic == TRUE) {
               for (i in sim) {
@@ -1294,6 +1335,27 @@ plot.netdx <- function(x,
            xlim = xlim, ylim = ylim,
            xlab = xlab, ylab = ylab)
 
+      if (is.numeric(qnts)) {
+        if (qnts < 0 | qnts > 1) {
+          stop("qnts must be between 0 and 1", call. = FALSE)
+        }
+        if (missing(qnts.col)) {
+          qnts.col <- sim.col
+        }
+        if (missing(qnts.alpha)) {
+          qnts.alpha <- 0.75
+        }
+        qnts.col <- transco(qnts.col, qnts.alpha)
+        quants <- c((1-qnts)/2, 1-((1-qnts)/2))
+        dataj <- as.data.frame(pages)
+        qnt.prev <- apply(dataj, 1, function(x)
+                          quantile(x, c(quants[1], quants[2]),
+                                   na.rm = TRUE))
+        xx <- c(1:(ncol(qnt.prev)), (ncol(qnt.prev)):1)
+        yy <- c(qnt.prev[1,], rev(qnt.prev[2,]))
+        polygon(xx, yy, col = qnts.col, border = NA)
+      }
+
       ## Sim lines
       if (sim.lines == TRUE) {
         for (i in sim) {
@@ -1377,6 +1439,27 @@ plot.netdx <- function(x,
       plot(x = 1, y = 1, type = "n",
            xlim = xlim, ylim = ylim,
            xlab = xlab, ylab = ylab)
+
+      if (is.numeric(qnts)) {
+        if (qnts < 0 | qnts > 1) {
+          stop("qnts must be between 0 and 1", call. = FALSE)
+        }
+        if (missing(qnts.col)) {
+          qnts.col <- sim.col
+        }
+        if (missing(qnts.alpha)) {
+          qnts.alpha <- 0.75
+        }
+        qnts.col <- transco(qnts.col, qnts.alpha)
+        quants <- c((1-qnts)/2, 1-((1-qnts)/2))
+        dataj <- as.data.frame(prop.diss)
+        qnt.prev <- apply(dataj, 1, function(x)
+          quantile(x, c(quants[1], quants[2]),
+                   na.rm = TRUE))
+        xx <- c(1:(ncol(qnt.prev)), (ncol(qnt.prev)):1)
+        yy <- c(qnt.prev[1,], rev(qnt.prev[2,]))
+        polygon(xx, yy, col = qnts.col, border = NA)
+      }
 
       # Sim lines
       if (sim.lines == TRUE) {
