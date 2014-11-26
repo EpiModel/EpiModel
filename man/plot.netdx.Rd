@@ -5,7 +5,8 @@
 \usage{
 \method{plot}{netdx}(x, type = "formation", method = "l", sim, stats,
   sim.lines = TRUE, sim.col, sim.lwd, sim.lty = 1, mean.line = TRUE,
-  mean.smooth = FALSE, mean.col, mean.lwd = 2, mean.lty = 1, targ.col,
+  mean.smooth = FALSE, mean.col, mean.lwd = 2, mean.lty = 1,
+  qnts = FALSE, qnts.col, qnts.alpha, targ.line = TRUE, targ.col,
   targ.lwd = 2, targ.lty = 2, plots.joined, plot.leg = TRUE, ...)
 }
 \arguments{
@@ -27,6 +28,8 @@ all simulations.}
 to \code{\link{netdx}}, with the default to plot all statistics
 contained in the object.}
 
+\item{sim.lines}{If \code{TRUE}, plot individual simulation lines.}
+
 \item{sim.col}{Vector of standard R colors for individual simulation lines,
 with default colors based on \code{RColorBrewer} color palettes.}
 
@@ -35,12 +38,34 @@ on number of simulations (more simulations results in thinner lines).}
 
 \item{sim.lty}{Line type for the individual simulation lines.}
 
+\item{mean.line}{If \code{TRUE}, plot mean of simulations across time.}
+
+\item{mean.smooth}{If \code{TRUE}, use a lowess smoother on the mean line.}
+
+\item{mean.col}{A vector of any standard R color format for mean lines.}
+
+\item{mean.lwd}{Line width for mean lines.}
+
+\item{mean.lty}{Line type for mean lines.}
+
+\item{qnts}{If numeric, plot polygon of simulation quantiles based on the
+range implied by the argument (0.5 is the middle 50% of the data).
+If \code{FALSE}, suppress polygon from plot.}
+
+\item{qnts.col}{Vector of any standard R color format for polygons.}
+
+\item{qnts.alpha}{Transparency level for quantile polygons, where 0 =
+transparent and 1 = opaque (see \code{\link{transco}}).}
+
+\item{targ.line}{If \code{TRUE}, plot target or expected value line for
+the statistic of interest.}
+
 \item{targ.col}{Vector of standard R colors for target statistic lines, with
 default colors based on \code{RColorBrewer} color palettes.}
 
-\item{targ.lwd}{Line width for the line showing the target statistic values.}
+\item{targ.lwd}{Line Width for the line showing the target statistic values.}
 
-\item{targ.lty}{Line type for the line showing the target statistic values.}
+\item{targ.lty}{Line Type for the line showing the target statistic values.}
 
 \item{plots.joined}{If \code{TRUE}, combine all target statistics in one plot,
 otherwise use one plot window per target statistic.}

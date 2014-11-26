@@ -834,15 +834,29 @@ plot.icm <- function(x,
 #' @param stats Network statistics to plot, among those specified in the call
 #'        to \code{\link{netdx}}, with the default to plot all statistics
 #'        contained in the object.
+#' @param sim.lines If \code{TRUE}, plot individual simulation lines.
 #' @param sim.col Vector of standard R colors for individual simulation lines,
 #'        with default colors based on \code{RColorBrewer} color palettes.
 #' @param sim.lwd Line width for individual simulation lines, with defaults based
 #'        on number of simulations (more simulations results in thinner lines).
 #' @param sim.lty Line type for the individual simulation lines.
+#' @param mean.line If \code{TRUE}, plot mean of simulations across time.
+#' @param mean.smooth If \code{TRUE}, use a lowess smoother on the mean line.
+#' @param mean.col A vector of any standard R color format for mean lines.
+#' @param mean.lwd Line width for mean lines.
+#' @param mean.lty Line type for mean lines.
+#' @param qnts If numeric, plot polygon of simulation quantiles based on the
+#'        range implied by the argument (0.5 is the middle 50% of the data).
+#'        If \code{FALSE}, suppress polygon from plot.
+#' @param qnts.col Vector of any standard R color format for polygons.
+#' @param qnts.alpha Transparency level for quantile polygons, where 0 =
+#'        transparent and 1 = opaque (see \code{\link{transco}}).
+#' @param targ.line If \code{TRUE}, plot target or expected value line for
+#'        the statistic of interest.
 #' @param targ.col Vector of standard R colors for target statistic lines, with
 #'        default colors based on \code{RColorBrewer} color palettes.
-#' @param targ.lwd Line width for the line showing the target statistic values.
-#' @param targ.lty Line type for the line showing the target statistic values.
+#' @param targ.lwd Line Width for the line showing the target statistic values.
+#' @param targ.lty Line Type for the line showing the target statistic values.
 #' @param plots.joined If \code{TRUE}, combine all target statistics in one plot,
 #'        otherwise use one plot window per target statistic.
 #' @param plot.leg If \code{TRUE}, show legend (only if \code{plots.joined=TRUE})
