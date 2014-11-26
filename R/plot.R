@@ -941,9 +941,15 @@ plot.netdx <- function(x,
                        method = "l",
                        sim,
                        stats,
+                       sim.lines = TRUE,
                        sim.col,
                        sim.lwd,
                        sim.lty = 1,
+                       mean.line = TRUE,
+                       mean.smooth = FALSE,
+                       mean.col,
+                       mean.lwd = 2,
+                       mean.lty = 1,
                        targ.col,
                        targ.lwd = 2,
                        targ.lty = 2,
@@ -1108,16 +1114,29 @@ plot.netdx <- function(x,
              type = "n", xlab = xlab, ylab = ylab)
         for (j in outsts) {
           dataj <- data[, colnames(data) %in% nmstats[j], drop = FALSE]
-          if (dynamic == TRUE) {
-            for (i in sim) {
-              lines(dataj[,i],
+          if (sim.lines == TRUE) {
+            if (dynamic == TRUE) {
+              for (i in sim) {
+                lines(dataj[,i],
+                      lty = sim.lty, lwd = sim.lwd,
+                      col = sim.col[which(j == outsts)])
+              }
+            } else {
+              lines(dataj,
                     lty = sim.lty, lwd = sim.lwd,
                     col = sim.col[which(j == outsts)])
             }
-          } else {
-            lines(dataj,
-                  lty = sim.lty, lwd = sim.lwd,
-                  col = sim.col[which(j == outsts)])
+          }
+          if (mean.line == TRUE) {
+            if (missing(mean.col)) {
+              mean.col <- sim.col
+            }
+            mean.prev <- rowMeans(dataj)
+            if (mean.smooth == TRUE) {
+              mean.prev <- supsmu(x = 1:length(mean.prev), y = mean.prev)$y
+            }
+            lines(mean.prev, lwd = mean.lwd,
+                  col = mean.col[which(j == outsts)], lty = mean.lty)
           }
 
           if (j %in% targs) {
@@ -1164,17 +1183,33 @@ plot.netdx <- function(x,
                ylim = c(min(dataj) * 0.8, max(dataj) * 1.2),
                type = "n", main = nmstats[j],
                xlab = "", ylab = "")
-          if (dynamic == TRUE) {
-            for (i in sim) {
-              lines(dataj[, i],
+          if (sim.lines == TRUE) {
+            if (dynamic == TRUE) {
+              for (i in sim) {
+                lines(dataj[, i],
+                      lwd = sim.lwd, lty = sim.lty,
+                      col = sim.col[which(j == outsts)])
+              }
+            } else {
+              lines(dataj,
                     lwd = sim.lwd, lty = sim.lty,
                     col = sim.col[which(j == outsts)])
             }
-          } else {
-            lines(dataj,
-                  lwd = sim.lwd, lty = sim.lty,
-                  col = sim.col[which(j == outsts)])
           }
+
+          if (mean.line == TRUE) {
+            if (missing(mean.col)) {
+              mean.col <- sim.col
+            }
+            mean.prev <- rowMeans(dataj)
+            if (mean.smooth == TRUE) {
+              mean.prev <- supsmu(x = 1:length(mean.prev), y = mean.prev)$y
+            }
+            lines(mean.prev, lwd = mean.lwd,
+                  col = mean.col[which(j == outsts)], lty = mean.lty)
+          }
+
+
           if (j %in% targs) {
             abline(h = nwstats.table$Target[j],
                    lty = targ.lty, lwd = targ.lwd,
@@ -1253,12 +1288,20 @@ plot.netdx <- function(x,
       plot(x = 1, y = 1, type = "n",
            xlim = xlim, ylim = ylim,
            xlab = xlab, ylab = ylab)
-      for (i in sim) {
-        lines(x = 1:nsteps,
-              y = pages[[i]],
-              lwd = sim.lwd, lty = sim.lty,
-              col = sim.col)
+
+      ## Sim lines
+      if (sim.lines == TRUE) {
+        for (i in sim) {
+          lines(x = 1:nsteps,
+                y = pages[[i]],
+                lwd = sim.lwd, lty = sim.lty,
+                col = sim.col)
+        }
       }
+
+      ## Draw mean lines here
+
+      ## Target line
       abline(h = as.numeric(x$coef.diss[2]),
              lty = targ.lty, lwd = targ.lwd,
              col = targ.col)
@@ -1317,12 +1360,20 @@ plot.netdx <- function(x,
       plot(x = 1, y = 1, type = "n",
            xlim = xlim, ylim = ylim,
            xlab = xlab, ylab = ylab)
-      for (i in sim) {
-        lines(x = 1:nsteps,
-              y = prop.diss[[i]],
-              lwd = sim.lwd, lty = sim.lty,
-              col = sim.col)
+
+      # Sim lines
+      if (sim.lines == TRUE) {
+        for (i in sim) {
+          lines(x = 1:nsteps,
+                y = prop.diss[[i]],
+                lwd = sim.lwd, lty = sim.lty,
+                col = sim.col)
+        }
       }
+
+      # Draw mean lines here
+
+      # Target line
       abline(h = as.numeric(1/(x$coef.diss[2]$duration)),
              lty = targ.lty, lwd = targ.lwd,
              col = targ.col)

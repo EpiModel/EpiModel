@@ -4,8 +4,9 @@
 \title{Plot Dynamic Network Model Diagnostics}
 \usage{
 \method{plot}{netdx}(x, type = "formation", method = "l", sim, stats,
-  sim.col, sim.lwd, sim.lty = 1, targ.col, targ.lwd = 2, targ.lty = 2,
-  plots.joined, plot.leg = TRUE, ...)
+  sim.lines = TRUE, sim.col, sim.lwd, sim.lty = 1, mean.line = TRUE,
+  mean.smooth = FALSE, mean.col, mean.lwd = 2, mean.lty = 1, targ.col,
+  targ.lwd = 2, targ.lty = 2, plots.joined, plot.leg = TRUE, ...)
 }
 \arguments{
 \item{x}{An \code{EpiModel} object of class \code{netdx}.}
