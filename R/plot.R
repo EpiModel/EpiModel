@@ -950,6 +950,7 @@ plot.netdx <- function(x,
                        mean.col,
                        mean.lwd = 2,
                        mean.lty = 1,
+                       targ.line = TRUE,
                        targ.col,
                        targ.lwd = 2,
                        targ.lty = 2,
@@ -1139,11 +1140,14 @@ plot.netdx <- function(x,
                   col = mean.col[which(j == outsts)], lty = mean.lty)
           }
 
-          if (j %in% targs) {
-            abline(h = nwstats.table$Target[j],
-                   lty = targ.lty, lwd = targ.lwd,
-                   col = targ.col[which(j == outsts)])
+          if (targ.line == TRUE) {
+            if (j %in% targs) {
+              abline(h = nwstats.table$Target[j],
+                     lty = targ.lty, lwd = targ.lwd,
+                     col = targ.col[which(j == outsts)])
+            }
           }
+
         }
         if (plot.leg == TRUE) {
           legend("topleft", legend = nmstats[outsts],
@@ -1209,11 +1213,12 @@ plot.netdx <- function(x,
                   col = mean.col[which(j == outsts)], lty = mean.lty)
           }
 
-
-          if (j %in% targs) {
-            abline(h = nwstats.table$Target[j],
-                   lty = targ.lty, lwd = targ.lwd,
-                   col = targ.col[which(j == outsts)])
+          if (targ.line == TRUE) {
+            if (j %in% targs) {
+              abline(h = nwstats.table$Target[j],
+                     lty = targ.lty, lwd = targ.lwd,
+                     col = targ.col[which(j == outsts)])
+            }
           }
         }
 
@@ -1312,10 +1317,11 @@ plot.netdx <- function(x,
               col = mean.col, lty = mean.lty)
       }
 
-      ## Target line
-      abline(h = as.numeric(x$coef.diss[2]),
-             lty = targ.lty, lwd = targ.lwd,
-             col = targ.col)
+      if (targ.line == TRUE) {
+        abline(h = as.numeric(x$coef.diss[2]),
+               lty = targ.lty, lwd = targ.lwd,
+               col = targ.col)
+      }
     }
 
     if (method == "b") {
@@ -1395,10 +1401,11 @@ plot.netdx <- function(x,
               col = mean.col, lty = mean.lty)
       }
 
-      # Target line
-      abline(h = as.numeric(1/(x$coef.diss[2]$duration)),
-             lty = targ.lty, lwd = targ.lwd,
-             col = targ.col)
+      if (targ.line == TRUE) {
+        abline(h = as.numeric(1/(x$coef.diss[2]$duration)),
+               lty = targ.lty, lwd = targ.lwd,
+               col = targ.col)
+      }
     }
 
     if (method == "b") {
