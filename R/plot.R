@@ -807,17 +807,10 @@ plot.icm <- function(x,
 
 
   # Legends -----------------------------------------------------------------
-  if (missing(leg)) {
-    leg <- FALSE
-  }
-  if (leg == TRUE) {
-    if (modes == 2 & nocomp) {
-      legend("topright", legend = y, lty = mean.lty, lwd = 3,
-             col = mean.pal, cex = leg.cex, bg = "white")
-    } else {
-      legend("topright", legend = y, lty = 1, lwd = 3,
-             col = mean.pal, cex = leg.cex, bg = "white")
-    }
+  if (!missing(leg) && leg == TRUE) {
+    leg.lty <- ifelse(modes == 2 & nocomp == TRUE, mean.lty, 1)
+    legend("topright", legend = y, lty = leg.lty, lwd = 3,
+           col = mean.pal, cex = leg.cex, bg = "white")
   }
 
 }
