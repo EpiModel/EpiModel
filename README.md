@@ -1,7 +1,7 @@
 EpiModel
 ===============
 
-[![Version](http://img.shields.io/badge/Version-1.1.1-orange.svg?style=flat)](https://github.com/statnet/EpiModel/releases/tag/v1.1.1)
+[![Version](http://img.shields.io/badge/Version-1.1.2-orange.svg?style=flat)](https://github.com/statnet/EpiModel/releases/tag/v1.1.2)
 [![Build Status](http://img.shields.io/travis/statnet/EpiModel/master.svg?style=flat)](https://travis-ci.org/statnet/EpiModel)
 [![DOI](http://img.shields.io/badge/DOI-10.5281%2Fzenodo.12524-blue.svg?style=flat)](http://dx.doi.org/10.5281/zenodo.12524)
 
@@ -45,7 +45,7 @@ The main website for EpiModel, with tutorials and other supporting files is <a h
 
 #### Citation
 If using EpiModel for teaching or research, please include a citation:
-> Jenness SM, Goodreau SM, Morris M (2014). *EpiModel: Mathematical Modeling of Infectious Disease.* R Package Version 1.1.1. URL: http://epimodel.org/. DOI: 10.5281/zenodo.12524.
+> Jenness SM, Goodreau SM, Morris M (2014). *EpiModel: Mathematical Modeling of Infectious Disease.* R Package Version 1.1.2. URL: http://epimodel.org/. DOI: 10.5281/zenodo.12524.
 
 #### Funding
 Development of this software is supported by the following grants from the National Institutes of Health: R01HD68395 (NICHD), T32HD007543 (NICHD), and R24HD042828 (NICHD).
