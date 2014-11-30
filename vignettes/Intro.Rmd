@@ -24,4 +24,4 @@ news(package = "EpiModel")
 
 If using the **EpiModel** package for research, we request that you acknowledge this by citing the software in any publications:
 
-> Jenness SM, Goodreau SM, Morris M (2014). *EpiModel: Mathematical Modeling of Infectious Disease.* R Package Version 1.1.1. URL:  http://epimodel.org/.
+> Jenness SM, Goodreau SM, Morris M (2014). *EpiModel: Mathematical Modeling of Infectious Disease.* R Package Version 1.1.2. URL:  http://epimodel.org/.
