@@ -4,9 +4,8 @@
 \title{Plot Data from a Stochastic Individual Contact Epidemic Model}
 \usage{
 \method{plot}{icm}(x, y, popfrac, sim.lines, sims, sim.col, sim.lwd, sim.alpha,
-  mean.line = TRUE, mean.extinct = TRUE, mean.smooth = FALSE, mean.col,
-  mean.lwd, mean.lty, qnts, qnts.col, qnts.alpha, leg, leg.cex = 0.8,
-  axs = "r", add = FALSE, ...)
+  mean.line = TRUE, mean.smooth = FALSE, mean.col, mean.lwd, mean.lty, qnts,
+  qnts.col, qnts.alpha, leg, leg.cex = 0.8, axs = "r", add = FALSE, ...)
 }
 \arguments{
 \item{x}{an \code{EpiModel} object of class \code{icm}.}
@@ -30,9 +29,6 @@ with default to plot all simulations.}
 and 1 = opaque (see \code{\link{transco}}).}
 
 \item{mean.line}{if \code{TRUE}, plot mean of simulations across time.}
-
-\item{mean.extinct}{if \code{TRUE}, include extinct simulations in mean
-calculation (see details).}
 
 \item{mean.smooth}{if \code{TRUE}, use a lowess smoother on the mean line.}
 
@@ -75,9 +71,7 @@ and other results. The summary statistics that the function calculates and
 plots are individual simulation lines, means of the individual simulation
 lines, and quantiles of those individual simulation lines. The mean line,
 toggled on with \code{mean.line=TRUE} is calculated as the row mean
-across simulations at each time step. The \code{mean.extinct} will, if set to
-\code{FALSE}, exclude from this calculation any simulations with no incident
-cases of disease.
+across simulations at each time step.
 
 Compartment prevalences are the size of a compartment over some denominator.
 To plot the raw numbers from any compartment, use \code{popfrac=FALSE}; this

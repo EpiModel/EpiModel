@@ -11,6 +11,10 @@ NEW FEATURES
 * Plot option added for `netdx`, with the `method` parameter, to plot boxplots of
   the simulations against the target statistics. The default is still the line
   plots (#191).
+* Additional summary elements may now be plotted with `netdx` objects, similar
+  to epidemic data plots: mean lines and quantile bands. Additional arguments
+  added to allow toggling of these along with individual simulation lines and
+  target lines.
 * Print method for `netdx` is updated, along with a new statistic for the percent
   deviation between the simulation means and target statistics (#192).
 * Added other epidemiological outcomes saved in user-defined modules to print
