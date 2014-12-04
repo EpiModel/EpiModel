@@ -11,6 +11,11 @@ output:
 %\VignetteIndexEntry{EpiModel Introduction}
 -->
 
+```{r, echo=FALSE}
+vers <- packageVersion("EpiModel")
+year <- format(Sys.time(), "%Y")
+```
+
 <br>
 
 The **EpiModel** package provides tools for building, solving, and plotting mathematical models of infectious disease in `R`. It is part of the **Statnet** suite of software for the representation and analysis of networks. **EpiModel** currently provides functionality for three classes of epidemic models and three disease types for modeling. Built-in model classes and types may be expanded by the user for new research.
@@ -29,4 +34,4 @@ news(package = "EpiModel")
 
 If using the **EpiModel** package for research, we request that you acknowledge this by citing the software in any publications:
 
-> Jenness SM, Goodreau SM, Morris M (2014). *EpiModel: Mathematical Modeling of Infectious Disease.* R Package Version 1.1.2. URL:  http://epimodel.org/.
+> Jenness SM, Goodreau SM, Morris M (`r year`). *EpiModel: Mathematical Modeling of Infectious Disease.* R Package Version `r vers`. URL: http://epimodel.org/.
