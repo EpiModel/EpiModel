@@ -181,7 +181,7 @@ BUG FIXES
 
 OTHER
 * Added new test cases for running new DCMs, ICMs, and network models, following
-  the vignette examples (see http://statnet.github.io/EpiModel/).
+  the vignette examples (see http://epimodel.org/).
 
 
 Version 1.0.2
