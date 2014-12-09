@@ -220,9 +220,8 @@ netest <- function(nw,
     coef.form <- fit$coef
     coef.form.crude <- coef.form
     if (coef.diss$coef.crude > -Inf) {
-      for (i in 1:length(coef.diss$coef.crude)) {
-        coef.form[i] <- coef.form[i] - coef.diss$coef.crude[i]
-      }
+      nwDens <- und_dens(network.size(nw), target.stats[1])
+      coef.form[1] <- coef.form[1] - log(coef.diss$duration - nwDens/(1-nwDens))
     }
 
     # Reduce size of output object
@@ -259,3 +258,7 @@ netest <- function(nw,
   return(out)
 }
 
+
+und_dens <- function(n, edges) {
+  (2*edges)/(n*(n-1))
+}
