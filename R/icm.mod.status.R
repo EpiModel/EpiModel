@@ -4,8 +4,8 @@
 #' @description This function simulates the main infection process given the
 #'              current state of the actors in the system.
 #'
-#' @param dat master data list object.
-#' @param at current time step.
+#' @param dat Master data list object.
+#' @param at Current time step.
 #'
 #' @export
 #' @keywords internal
@@ -113,8 +113,8 @@ infection.icm <- function(dat, at) {
 #'              to a susceptible state (SIS model type), for use in
 #'              \code{\link{icm}}.
 #'
-#' @param dat master data list object.
-#' @param at current time step.
+#' @param dat Master data list object.
+#' @param at Current time step.
 #'
 #' @export
 #' @keywords internal

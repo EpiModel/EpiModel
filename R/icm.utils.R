@@ -5,8 +5,8 @@
 #'              the network at the specified time step, output to a list of
 #'              vectors.
 #'
-#' @param dat master data list object.
-#' @param at current time step.
+#' @param dat Master data list object.
+#' @param at Current time step.
 #'
 #' @export
 #' @keywords internal

@@ -4,11 +4,11 @@
 #' @description This function simulates a dynamic network over one or multiple
 #'              time steps, to be used in \code{\link{netsim}} models.
 #'
-#' @param x an \code{EpiModel} object of class \code{\link{netest}}.
-#' @param nw a \code{networkDynamic} object.
-#' @param nsteps number of time steps to simulate the network over.
-#' @param nsims number of independent network simulations.
-#' @param control an \code{EpiModel} object of class \code{\link{control.net}}.
+#' @param x An \code{EpiModel} object of class \code{\link{netest}}.
+#' @param nw A \code{networkDynamic} object.
+#' @param nsteps Number of time steps to simulate the network over.
+#' @param nsims Number of independent network simulations.
+#' @param control An \code{EpiModel} object of class \code{\link{control.net}}.
 #'
 #' @export
 #' @keywords netUtils internal
@@ -51,8 +51,8 @@ sim_nets <- function(x, nw, nsteps, control) {
 #'              between the epidemic and demographic processes and the network
 #'              structure.
 #'
-#' @param x a master object passed through \code{\link{netsim}}.
-#' @param at current time step.
+#' @param x A master object passed through \code{\link{netsim}}.
+#' @param at Current time step.
 #'
 #' @export
 #' @keywords netUtils internal
@@ -124,8 +124,8 @@ resim_nets <- function(dat, at) {
 #'              simulated in \code{\link{netsim}} to preserve the mean
 #'              degree of nodes in the network.
 #'
-#' @param dat master object in \code{netsim} simulations.
-#' @param at current time step.
+#' @param dat Master object in \code{netsim} simulations.
+#' @param at Current time step.
 #'
 #' @keywords internal
 #' @export

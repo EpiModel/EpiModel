@@ -109,50 +109,50 @@ control.dcm <- function(type,
 #' @description Sets the controls for stochastic individual contact models
 #'              simulated with \code{\link{icm}}.
 #'
-#' @param type disease type to be modeled, with the choice of \code{"SI"} for
+#' @param type Disease type to be modeled, with the choice of \code{"SI"} for
 #'        Susceptible-Infected diseases, \code{"SIR"} for
 #'        Susceptible-Infected-Recovered diseases, and \code{"SIS"} for
 #'        Susceptible-Infected-Susceptible diseases.
-#' @param nsteps number of time steps to solve the model over. This must be a
+#' @param nsteps Number of time steps to solve the model over. This must be a
 #'        positive integer.
-#' @param nsims number of simulations to run.
-#' @param rec.rand if \code{TRUE}, use a stochastic recovery model, with the
+#' @param nsims Number of simulations to run.
+#' @param rec.rand If \code{TRUE}, use a stochastic recovery model, with the
 #'        number of recovered at each time step a function of random draws from
 #'        a binomial distribution with the probability equal to \code{rec.rate}.
 #'        If \code{FALSE}, then a deterministic rounded count of the expectation
 #'        implied by that rate.
-#' @param b.rand if \code{TRUE}, use a stochastic birth model, with the
+#' @param b.rand If \code{TRUE}, use a stochastic birth model, with the
 #'        number of births at each time step a function of random draws from a
 #'        binomial distribution with the probability equal to the governing birth
 #'        rates. If \code{FALSE}, then a deterministic rounded count of the
 #'        expectation implied by those rates.
-#' @param d.rand if \code{TRUE}, use a stochastic death model, with the number of
+#' @param d.rand If \code{TRUE}, use a stochastic death model, with the number of
 #'        deaths at each time step a function of random draws from a binomial
 #'        distribution with the probability equal to the governing death rates.
 #'        If \code{FALSE}, then a deterministic rounded count of the expectation
 #'        implied by those rates.
-#' @param initialize.FUN module to initialize the model at the outset, with the
+#' @param initialize.FUN Module to initialize the model at the outset, with the
 #'        default function of \code{\link{initialize.icm}}.
-#' @param infection.FUN module to simulate disease infection, with the default
+#' @param infection.FUN Module to simulate disease infection, with the default
 #'        function of \code{\link{infection.icm}}.
-#' @param recovery.FUN module to simulate disease recovery, with the default
+#' @param recovery.FUN Module to simulate disease recovery, with the default
 #'        function of \code{\link{recovery.icm}}.
-#' @param deaths.FUN module to simulate deaths or exits, with the default
+#' @param deaths.FUN Module to simulate deaths or exits, with the default
 #'        function of \code{\link{deaths.icm}}.
-#' @param births.FUN module to simulate births or entries, with the default
+#' @param births.FUN Module to simulate births or entries, with the default
 #'        function of \code{\link{births.icm}}.
-#' @param get_prev.FUN module to calculate disease prevalence at each time step,
+#' @param get_prev.FUN Module to calculate disease prevalence at each time step,
 #'        with the default function of \code{\link{get_prev.icm}}.
-#' @param verbose if \code{TRUE}, print model progress to the console.
-#' @param verbose.int time step interval for printing progress to console, where
+#' @param verbose If \code{TRUE}, print model progress to the console.
+#' @param verbose.int Time step interval for printing progress to console, where
 #'        0 (the default) prints completion status of entire simulation and
 #'        positive integer \code{x} prints progress after each \code{x} time
 #'        steps.
-#' @param skip.check if \code{TRUE}, skips the error check for parameter values,
+#' @param skip.check If \code{TRUE}, skips the error check for parameter values,
 #'        initial conditions, and control settings before running the models.
 #'        This is suggested only if encountering unnecessary errors when running
 #'        new models.
-#' @param ... additional control settings passed to model.
+#' @param ... Additional control settings passed to model.
 #'
 #' @details
 #' \code{control.icm} sets the required control settings for any stochastic
@@ -246,100 +246,100 @@ control.icm <- function(type,
 #' @description Sets the controls for stochastic network models simulated with
 #'              \code{\link{netsim}}.
 #'
-#' @param type disease type to be modeled, with the choice of \code{"SI"} for
+#' @param type Disease type to be modeled, with the choice of \code{"SI"} for
 #'        Susceptible-Infected diseases, \code{"SIR"} for
 #'        Susceptible-Infected-Recovered diseases, and \code{"SIS"} for
 #'        Susceptible-Infected-Susceptible diseases.
-#' @param nsteps number of time steps to simulate the model over. This must be a
+#' @param nsteps Number of time steps to simulate the model over. This must be a
 #'        positive integer.
-#' @param nsims the total number of disease simulations.
-#' @param start for dependent simulations, time point to start up simulation.
-#' @param depend if \code{TRUE}, resimulate the network at each time step. This
+#' @param nsims The total number of disease simulations.
+#' @param start For dependent simulations, time point to start up simulation.
+#' @param depend If \code{TRUE}, resimulate the network at each time step. This
 #'        occurs by default with two varieties of dependent models: if there are
 #'        any vital dynamic parameters in the model, or if the network model
 #'        formation formula includes the "status" attribute.
-#' @param rec.rand if \code{TRUE}, use a stochastic recovery model, with the
+#' @param rec.rand If \code{TRUE}, use a stochastic recovery model, with the
 #'        number of recovered at each time step a function of random draws from
 #'        a binomial distribution with the probability equal to \code{rec.rate}.
 #'        If \code{FALSE}, then a deterministic rounded count of the expectation
 #'        implied by that rate.
-#' @param b.rand if \code{TRUE}, use a stochastic birth model, with the
+#' @param b.rand If \code{TRUE}, use a stochastic birth model, with the
 #'        number of births at each time step a function of random draws from a
 #'        binomial distribution with the probability equal to the governing birth
 #'        rates. If \code{FALSE}, then a deterministic rounded count of the
 #'        expectation implied by those rates.
-#' @param d.rand if \code{TRUE}, use a stochastic death model, with the number of
+#' @param d.rand If \code{TRUE}, use a stochastic death model, with the number of
 #'        deaths at each time step a function of random draws from a binomial
 #'        distribution with the probability equal to the governing death rates.
 #'        If \code{FALSE}, then a deterministic rounded count of the expectation
 #'        implied by those rates.
-#' @param tea.status if \code{TRUE}, use a temporally extended attribute (TEA)
+#' @param tea.status If \code{TRUE}, use a temporally extended attribute (TEA)
 #'        to store disease status. A TEA is needed for plotting static networks
 #'        at different time steps and for animating dynamic networks with evolving
 #'        status. TEAs are computationally inefficient for large simulations and
 #'        should be toggled off in those cases. This argument automatically set
 #'        to \code{FALSE} if \code{delete.nodes=TRUE}.
-#' @param attr.rules a list containing the  rules for setting the attributes of
+#' @param attr.rules A list containing the  rules for setting the attributes of
 #'        incoming nodes, with one list element per attribute to be set (see
 #'        details below).
-#' @param epi.by a character vector of length 1 containing a nodal attribute for
+#' @param epi.by A character vector of length 1 containing a nodal attribute for
 #'        which subgroup epidemic prevalences should be calculated. This nodal
 #'        attribute must be contained in the network model formation formula,
 #'        otherwise it is ignored.
-#' @param pid.prefix a character vector of length 2 containing the prefixes for
+#' @param pid.prefix A character vector of length 2 containing the prefixes for
 #'        persistent ids initialized in bipartite networks with vital dynamics,
 #'        with the default of \code{c("F", "M")}.
-#' @param initialize.FUN module to initialize the model at time 1, with the
+#' @param initialize.FUN Module to initialize the model at time 1, with the
 #'        default function of \code{\link{initialize.net}}.
-#' @param infection.FUN module to simulate disease infection, with the default
+#' @param infection.FUN Module to simulate disease infection, with the default
 #'        function of \code{\link{infection.net}}.
-#' @param recovery.FUN module to simulate disease recovery, with the default
+#' @param recovery.FUN Module to simulate disease recovery, with the default
 #'        function of \code{\link{recovery.net}}.
-#' @param deaths.FUN module to simulate death or exit, with the default function
+#' @param deaths.FUN Module to simulate death or exit, with the default function
 #'        of \code{\link{deaths.net}}.
-#' @param births.FUN module to simulate births or entries, with the default
+#' @param births.FUN Module to simulate births or entries, with the default
 #'        function of \code{\link{births.net}}.
-#' @param resim_nets.FUN module to resimulate the network at each time step,
+#' @param resim_nets.FUN Module to resimulate the network at each time step,
 #'        with the default function of \code{\link{resim_nets}}.
-#' @param edges_correct.FUN module to adjust the edges coefficient in response
+#' @param edges_correct.FUN Module to adjust the edges coefficient in response
 #'        to changes to the population size, with the default function of
 #'        \code{\link{edges_correct}} that preserves mean degree.
-#' @param get_prev.FUN module to calculate disease prevalence at each time step,
+#' @param get_prev.FUN Module to calculate disease prevalence at each time step,
 #'        with the default function of \code{\link{get_prev.net}}.
-#' @param verbose.FUN module to print simulation progress to screen, with the
+#' @param verbose.FUN Module to print simulation progress to screen, with the
 #'        default function of \code{\link{verbose.net}}.
-#' @param set.control.stergm control arguments passed to simulate.stergm. See the
+#' @param set.control.stergm Control arguments passed to simulate.stergm. See the
 #'        help file for \code{\link{netdx}} for details and examples on specifying
 #'        this parameter.
-#' @param save.nwstats if \code{TRUE}, save network statistics in a data frame.
+#' @param save.nwstats If \code{TRUE}, save network statistics in a data frame.
 #'        The statistics to be saved are specified in the \code{nwstats.formula}
 #'        argument.
-#' @param nwstats.formula a right-hand sided ERGM formula that includes network
+#' @param nwstats.formula A right-hand sided ERGM formula that includes network
 #'        statistics of interest, with the default to the formation formula terms.
-#' @param delete.nodes if \code{TRUE}, delete inactive nodes from the network
+#' @param delete.nodes If \code{TRUE}, delete inactive nodes from the network
 #'        after each time step, otherwise deactivate them but keep them in the
 #'        network object. Deleting nodes increases computational efficiency in
 #'        large network simulations.
-#' @param save.transmat if \code{TRUE}, save a transmission matrix for each
+#' @param save.transmat If \code{TRUE}, save a transmission matrix for each
 #'        simulation. This object contains one row for each transmission event
 #'        (see \code{\link{discord_edgelist}}).
-#' @param save.network if \code{TRUE}, save a \code{networkDynamic} object
+#' @param save.network If \code{TRUE}, save a \code{networkDynamic} object
 #'        containing full edge history for each simulation. If \code{delete.nodes}
 #'        is set to \code{TRUE}, this will only contain a static network with the
 #'        edge configuration at the final time step of each simulation.
-#' @param save.other a vector of elements on the \code{dat} master data list
+#' @param save.other A vector of elements on the \code{dat} master data list
 #'        to save out after each simulation. One example for built-in models is
 #'        the attribute list, "attr", at the final time step.
-#' @param verbose if \code{TRUE}, print model progress to the console.
-#' @param verbose.int time step interval for printing progress to console, where
+#' @param verbose If \code{TRUE}, print model progress to the console.
+#' @param verbose.int Time step interval for printing progress to console, where
 #'        0 prints completion status of entire simulation and positive integer
 #'        \code{x} prints progress after each \code{x} time steps. The default
 #'        is to print progress after each time step.
-#' @param skip.check if \code{TRUE}, skips the error check for parameter values,
+#' @param skip.check If \code{TRUE}, skips the error check for parameter values,
 #'        initial conditions, and control settings before running the models.
 #'        This is suggested only if encountering unnecessary errors when running
 #'        new models.
-#' @param ... additional control settings passed to model.
+#' @param ... Additional control settings passed to model.
 #'
 #' @details
 #' \code{control.net} sets the required control settings for any network model

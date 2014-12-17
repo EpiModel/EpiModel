@@ -4,9 +4,9 @@
 #' @description Simulates stochastic individual contact epidemic models for
 #'              infectious disease.
 #'
-#' @param param model parameters, as an object of class \code{\link{param.icm}}.
-#' @param init initial conditions, as an object of class \code{\link{init.icm}}.
-#' @param control control settings, as an object of class
+#' @param param Model parameters, as an object of class \code{\link{param.icm}}.
+#' @param init Initial conditions, as an object of class \code{\link{init.icm}}.
+#' @param control Control settings, as an object of class
 #'        \code{\link{control.icm}}.
 #'
 #' @details

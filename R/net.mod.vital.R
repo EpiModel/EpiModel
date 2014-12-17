@@ -3,9 +3,9 @@
 #'
 #' @description This function simulates death for use in \link{netsim} simulations.
 #'
-#' @param dat a list object containing a \code{networkDynamic} object and other
+#' @param dat Master list object containing a \code{networkDynamic} object and other
 #'        initialization information passed from \code{\link{netsim}}.
-#' @param at current time step.
+#' @param at Current time step.
 #'
 #' @seealso \code{\link{netsim}}
 #'
@@ -230,9 +230,9 @@ deaths.net <- function(dat, at) {
 #' @description This function simulates new births into the network
 #'   for use in \code{\link{netsim}} simulations.
 #'
-#' @param dat a list object containing a \code{networkDynamic} object and other
+#' @param dat Master list object containing a \code{networkDynamic} object and other
 #'   initialization information passed from \code{\link{netsim}}.
-#' @param at current time step.
+#' @param at Current time step.
 #'
 #' @seealso \code{\link{netsim}}
 #'

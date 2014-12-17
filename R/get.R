@@ -5,13 +5,13 @@
 #'              simulated with \code{netsim}, with the option to collapse the
 #'              extracted network at a specific time step.
 #'
-#' @param x an \code{EpiModel} object of class \code{\link{netsim}}.
-#' @param sim simulation number of extracted network.
-#' @param network network number, for simulations with multiple networks
+#' @param x An \code{EpiModel} object of class \code{\link{netsim}}.
+#' @param sim Simulation number of extracted network.
+#' @param network Network number, for simulations with multiple networks
 #'        representing the population.
-#' @param collapse if \code{TRUE}, collapse the \code{networkDynamic} object to
+#' @param collapse If \code{TRUE}, collapse the \code{networkDynamic} object to
 #'        a static \code{network} object at a specified time step.
-#' @param at if \code{collapse} is used, the time step at which the extracted
+#' @param at If \code{collapse} is used, the time step at which the extracted
 #'        network should be collapsed.
 #'
 #' @keywords extract
@@ -90,8 +90,8 @@ get_network <- function(x, sim = 1, network = 1, collapse = FALSE, at) {
 #' @description Extracts the matrix of transmission data for each transmission
 #'              event that occured within a network epidemic model.
 #'
-#' @param x an \code{EpiModel} object of class \code{\link{netsim}}.
-#' @param sim simulation number of extracted network.
+#' @param x An \code{EpiModel} object of class \code{\link{netsim}}.
+#' @param sim Simulation number of extracted network.
 #'
 #' @return
 #' A data frame with the following collumns
@@ -164,9 +164,9 @@ get_transmat <- function(x, sim = 1) {
 #' @description Extracts a data frame of network statistics from a network
 #'              epidemic model.
 #'
-#' @param x an \code{EpiModel} object of class \code{\link{netsim}}.
-#' @param sim a vector of simulation numbers of extracted network.
-#' @param network network number, for simulations with multiple networks
+#' @param x An \code{EpiModel} object of class \code{\link{netsim}}.
+#' @param sim A vector of simulation numbers of extracted network.
+#' @param network Network number, for simulations with multiple networks
 #'        representing the population.
 #'
 #' @keywords extract
@@ -240,8 +240,8 @@ get_nwstats <- function(x, sim, network = 1) {
 #' @description Extracts a list of network model parameters saved in the
 #'              initialization module.
 #'
-#' @param x master data object used in \code{netsim} simulations.
-#' @param network network number, for simulations with multiple networks
+#' @param x Master data object used in \code{netsim} simulations.
+#' @param network Network number, for simulations with multiple networks
 #'        representing the population.
 #'
 #' @keywords extract internal

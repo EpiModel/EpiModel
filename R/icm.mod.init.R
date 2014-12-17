@@ -4,9 +4,9 @@
 #' @description This function initializes the master \code{dat} object on which
 #'              data are stored, and simulates disease status and other attributes.
 #'
-#' @param param an \code{EpiModel} object of class \code{\link{param.icm}}.
-#' @param init an \code{EpiModel} object of class \code{\link{init.icm}}.
-#' @param control an \code{EpiModel} object of class \code{\link{control.icm}}.
+#' @param param An \code{EpiModel} object of class \code{\link{param.icm}}.
+#' @param init An \code{EpiModel} object of class \code{\link{init.icm}}.
+#' @param control An \code{EpiModel} object of class \code{\link{control.icm}}.
 #'
 #' @export
 #' @keywords internal
@@ -51,7 +51,7 @@ initialize.icm <- function(param, init, control) {
 #' @description This function sets the initial disease status on the
 #'              network given the specified initial conditions.
 #'
-#' @param dat master data list object.
+#' @param dat Master data list object.
 #'
 #' @seealso This is an initialization module for \code{\link{icm}}.
 #'

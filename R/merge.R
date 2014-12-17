@@ -4,10 +4,10 @@
 #' @description Merges epidemiological data from two independent simulations of
 #'              stochastic individual contact models from \code{icm}.
 #'
-#' @param x an \code{EpiModel} object of class \code{\link{icm}}.
-#' @param y another \code{EpiModel} object of class \code{\link{icm}}, with the
+#' @param x An \code{EpiModel} object of class \code{\link{icm}}.
+#' @param y Another \code{EpiModel} object of class \code{\link{icm}}, with the
 #'        identical model parameterization as \code{x}.
-#' @param ...  additional merge arguments (not used).
+#' @param ...  Additional merge arguments (not used).
 #'
 #' @details
 #' This merge function combines the results of two independent simulations of

@@ -7,28 +7,28 @@
 #' @description Plots epidemiological data from a deterministic compartment
 #'              epidemic model solved with \code{dcm}.
 #'
-#' @param x an \code{EpiModel} object of class \code{dcm}.
-#' @param y output compartments or flows from \code{dcm} object to plot.
-#' @param popfrac if \code{TRUE}, plot prevalence of values rather than numbers
+#' @param x An \code{EpiModel} object of class \code{dcm}.
+#' @param y Output compartments or flows from \code{dcm} object to plot.
+#' @param popfrac If \code{TRUE}, plot prevalence of values rather than numbers
 #'        (see details).
-#' @param run run number to plot, for models with multiple runs (default is run 1).
-#' @param col color for lines, either specified as a single color in a standard
+#' @param run Run number to plot, for models with multiple runs (default is run 1).
+#' @param col Color for lines, either specified as a single color in a standard
 #'        R color format, or alternatively as a color palette from
 #'        \code{\link{RColorBrewer}} (see details).
-#' @param lwd line width for output lines.
-#' @param lty line type for output lines.
-#' @param alpha transparency level for lines, where 0 = transparent and 1 = opaque
+#' @param lwd Line width for output lines.
+#' @param lty Line type for output lines.
+#' @param alpha Transparency level for lines, where 0 = transparent and 1 = opaque
 #'        (see \code{\link{transco}}).
-#' @param leg type of legend to plot. Values are "n" for no legend, "full" for
+#' @param leg Type of legend to plot. Values are "n" for no legend, "full" for
 #'        full legend, and "lim" for limited legend (see details).
-#' @param leg.name character string to use for legend, with the default
+#' @param leg.name Character string to use for legend, with the default
 #'        determined automatically based on the \code{y} input.
-#' @param leg.cex legend scale size.
-#' @param axs plot axis type (see \code{\link{par}} for details), with default
+#' @param leg.cex Legend scale size.
+#' @param axs Plot axis type (see \code{\link{par}} for details), with default
 #'        of "r".
-#' @param add if \code{TRUE}, new plot window is not called and lines are added to
+#' @param add If \code{TRUE}, new plot window is not called and lines are added to
 #'        existing plot window.
-#' @param ... additional arguments to pass to main plot window (see
+#' @param ... Additional arguments to pass to main plot window (see
 #'        \code{\link{plot.default}}).
 #'
 #' @details
@@ -463,36 +463,36 @@ plot.dcm <- function(x,
 #' @description Plots epidemiological data from a stochastic individual contact
 #'              model simulated with \code{icm}.
 #'
-#' @param x an \code{EpiModel} object of class \code{icm}.
-#' @param y output compartments or flows from \code{icm} object to plot.
-#' @param popfrac if \code{TRUE}, plot prevalence of values rather than numbers
+#' @param x An \code{EpiModel} object of class \code{icm}.
+#' @param y Output compartments or flows from \code{icm} object to plot.
+#' @param popfrac If \code{TRUE}, plot prevalence of values rather than numbers
 #'        (see details).
-#' @param sim.lines if \code{TRUE}, plot individual simulation lines. Default is
+#' @param sim.lines If \code{TRUE}, plot individual simulation lines. Default is
 #'        to plot lines for one-group models but not for two-group models.
-#' @param sims a vector representing which individual simulation lines to plot,
+#' @param sims Vector representing which individual simulation lines to plot,
 #'        with default to plot all simulations.
-#' @param sim.col a vector of any standard R color format for simulation lines.
-#' @param sim.lwd line width for simulation lines.
-#' @param sim.alpha transparency level for simulation lines, where 0 = transparent
+#' @param sim.col Vector of any standard R color format for simulation lines.
+#' @param sim.lwd Line width for simulation lines.
+#' @param sim.alpha Transparency level for simulation lines, where 0 = transparent
 #'        and 1 = opaque (see \code{\link{transco}}).
-#' @param mean.line if \code{TRUE}, plot mean of simulations across time.
-#' @param mean.smooth if \code{TRUE}, use a lowess smoother on the mean line.
-#' @param mean.col a vector of any standard R color format for mean lines.
-#' @param mean.lwd line width for mean lines.
-#' @param mean.lty line type for mean lines.
-#' @param qnts if numeric, plot polygon of simulation quantiles based on the
+#' @param mean.line If \code{TRUE}, plot mean of simulations across time.
+#' @param mean.smooth If \code{TRUE}, use a lowess smoother on the mean line.
+#' @param mean.col Vector of any standard R color format for mean lines.
+#' @param mean.lwd Line width for mean lines.
+#' @param mean.lty Line type for mean lines.
+#' @param qnts If numeric, plot polygon of simulation quantiles based on the
 #'        range implied by the argument (see details). If \code{FALSE}, suppress
 #'        polygon from plot.
-#' @param qnts.col a vector of any standard R color format for polygons.
-#' @param qnts.alpha transparency level for quantile polygons, where 0 =
+#' @param qnts.col Vector of any standard R color format for polygons.
+#' @param qnts.alpha Transparency level for quantile polygons, where 0 =
 #'        transparent and 1 = opaque (see \code{\link{transco}}).
-#' @param leg if \code{TRUE}, plot default legend.
-#' @param leg.cex legend scale size.
-#' @param axs plot axis type (see \code{\link{par}} for details), with default
+#' @param leg If \code{TRUE}, plot default legend.
+#' @param leg.cex Legend scale size.
+#' @param axs Plot axis type (see \code{\link{par}} for details), with default
 #'        to \code{"r"}.
-#' @param add if \code{TRUE}, new plot window is not called and lines are added to
+#' @param add If \code{TRUE}, new plot window is not called and lines are added to
 #'        existing plot window.
-#' @param ... additional arguments to pass to main plot (see
+#' @param ... Additional arguments to pass to main plot (see
 #'        \code{\link{plot.default}}).
 #'
 #' @details
@@ -2038,11 +2038,11 @@ plot.netsim <- function(x,
 #'              models, stochastic individual contact models, and stochastic
 #'              network models.
 #'
-#' @param x an \code{EpiModel} object of class \code{dcm}, \code{icm}, or
+#' @param x An \code{EpiModel} object of class \code{dcm}, \code{icm}, or
 #'        \code{netsim}.
-#' @param at time step for model statistics.
-#' @param digits number of significant digits to print.
-#' @param ... additional arguments passed to plot (not currently used).
+#' @param at Time step for model statistics.
+#' @param digits Number of significant digits to print.
+#' @param ... Additional arguments passed to plot (not currently used).
 #'
 #' @details
 #' The \code{comp_plot} function provides a visual summary of an epidemic model
@@ -2087,7 +2087,7 @@ comp_plot <- function(x, at, digits, ...) {
 }
 
 
-#' @param run model run number, for \code{dcm} class models with multiple runs
+#' @param run Model run number, for \code{dcm} class models with multiple runs
 #'        (sensitivity analyses).
 #' @method comp_plot dcm
 #' @rdname comp_plot

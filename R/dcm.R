@@ -4,9 +4,9 @@
 #' @description Solves deterministic compartmental epidemic models for
 #'              infectious disease.
 #'
-#' @param param model parameters, as an object of class \code{\link{param.dcm}}.
-#' @param init initial conditions, as an object of class \code{\link{init.dcm}}.
-#' @param control control settings, as an object of class
+#' @param param Model parameters, as an object of class \code{\link{param.dcm}}.
+#' @param init Initial conditions, as an object of class \code{\link{init.dcm}}.
+#' @param control Control settings, as an object of class
 #'        \code{\link{control.dcm}}.
 #'
 #' @details

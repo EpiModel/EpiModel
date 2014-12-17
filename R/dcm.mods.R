@@ -5,12 +5,12 @@
 #'              compartmental models solved using the \code{\link{dcm}}
 #'              function in \code{EpiModel}.
 #'
-#' @param t time vector
-#' @param t0 initial conditions
-#' @param parms model parameters
+#' @param t Time vector.
+#' @param t0 Initial conditions.
+#' @param parms Model parameters.
 #'
 #' @details
-#' Details to add
+#' Details to add.
 #'
 #' @keywords internal
 #' @name dcm.mods

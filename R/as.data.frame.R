@@ -5,11 +5,11 @@
 #'              \code{dcm} into a data frame using the generic
 #'              \code{as.data.frame} function.
 #'
-#' @param x an \code{EpiModel} object of class \code{\link{dcm}}.
-#' @param run run number for model; used for multiple-run sensitivity models.
-#' @param row.names see \code{\link{as.data.frame.default}}.
-#' @param optional see \code{\link{as.data.frame.default}}.
-#' @param ...  see \code{\link{as.data.frame.default}}.
+#' @param x An \code{EpiModel} object of class \code{\link{dcm}}.
+#' @param run Run number for model; used for multiple-run sensitivity models.
+#' @param row.names See \code{\link{as.data.frame.default}}.
+#' @param optional See \code{\link{as.data.frame.default}}.
+#' @param ...  See \code{\link{as.data.frame.default}}.
 #'
 #' @details
 #' Model output from a \code{dcm} simulation are available as a data
@@ -87,16 +87,16 @@ as.data.frame.dcm <- function(x,
 #'              \code{icm} and \code{netsim} into a data frame using
 #'              the generic \code{as.data.frame} function.
 #'
-#' @param x an \code{EpiModel} object of class \code{icm} or \code{netsim}.
-#' @param sim simulation number from model; used only if more than 1 simulation
+#' @param x An \code{EpiModel} object of class \code{icm} or \code{netsim}.
+#' @param sim Simulation number from model; used only if more than 1 simulation
 #'        and \code{out="vals"}.
-#' @param out data output to data frame: \code{"mean"} for row means across
+#' @param out Data output to data frame: \code{"mean"} for row means across
 #'        simulations, \code{"sd"} for row standard deviations across simulations,
 #'        and \code{"vals"} for values from one specific simulation (with simulation
 #'        number set with \code{sim} argument).
-#' @param row.names see \code{\link{as.data.frame.default}}.
-#' @param optional see \code{\link{as.data.frame.default}}.
-#' @param ...  see \code{\link{as.data.frame.default}}.
+#' @param row.names See \code{\link{as.data.frame.default}}.
+#' @param optional See \code{\link{as.data.frame.default}}.
+#' @param ...  See \code{\link{as.data.frame.default}}.
 #'
 #' @details
 #' These methods work for both \code{icm} and \code{netsim}

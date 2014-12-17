@@ -121,17 +121,17 @@ check_bip_degdist <- function(num.m1, num.m2,
 #'              variable in a \code{networkDynamic} object containing a disease
 #'              status TEA in numeric format.
 #'
-#' @param nd an object of class \code{networkDynamic}.
-#' @param old.var old TEA variable name.
-#' @param old.sus status value for susceptible in old TEA variable.
-#' @param old.inf status value for infected in old TEA variable.
-#' @param old.rec status value for recovered in old TEA variable.
-#' @param new.var new TEA variable name to be stored in \code{networkDynamic}
+#' @param nd An object of class \code{networkDynamic}.
+#' @param old.var Old TEA variable name.
+#' @param old.sus Status value for susceptible in old TEA variable.
+#' @param old.inf Status value for infected in old TEA variable.
+#' @param old.rec Status value for recovered in old TEA variable.
+#' @param new.var New TEA variable name to be stored in \code{networkDynamic}
 #'        object.
-#' @param new.sus status value for susceptible in new TEA variable.
-#' @param new.inf status value for infected in new TEA variable.
-#' @param new.rec status value for recovered in new TEA variable.
-#' @param verbose print progress to console.
+#' @param new.sus Status value for susceptible in new TEA variable.
+#' @param new.inf Status value for infected in new TEA variable.
+#' @param new.rec Status value for recovered in new TEA variable.
+#' @param verbose Print progress to console.
 #'
 #' @details
 #' The \code{ndtv} package (\url{http://cran.r-project.org/package=ndtv}) produces
@@ -210,9 +210,9 @@ color_tea <- function(nd,
 #' @description Copies the vertex attributes stored on the network object to the
 #'              master attr list in the dat data object.
 #'
-#' @param dat master data object passed through \code{netsim} simulations.
-#' @param at current time step.
-#' @param fterms vector of attributes used in formation formula, usually as
+#' @param dat Master data object passed through \code{netsim} simulations.
+#' @param at Current time step.
+#' @param fterms Vector of attributes used in formation formula, usually as
 #'        output of \code{\link{get_formula_terms}}.
 #'
 #' @seealso \code{\link{get_formula_terms}}, \code{\link{get_attr_prop}},
@@ -248,11 +248,11 @@ copy_toall_attr <- function(dat, at, fterms) {
 #'              and average edge duration, to pass as offsets to an ERGM/STERGM
 #'              model fit in \code{netest}.
 #'
-#' @param dissolution a right-hand sided STERGM dissolution formula
+#' @param dissolution Right-hand sided STERGM dissolution formula
 #'        (see \code{\link{netest}}); currently limited to a \code{~offset(edges)}
 #'        dissolution model.
-#' @param duration an average edge duration in arbitrary time units.
-#' @param d.rate death/exit rate in the absence of disease.
+#' @param duration Average edge duration in arbitrary time units.
+#' @param d.rate Death/exit rate in the absence of disease.
 #'
 #' @details
 #' This function performs two calculations to obtain a dissolution coefficient
@@ -354,7 +354,7 @@ dissolution_coefs <- function(dissolution,
 #'              left-censored, right-censored, both-censored, or uncensored for a
 #'              \code{networkDynamic} object.
 #'
-#' @param el a timed edgelist with start and end times extracted from a
+#' @param el Timed edgelist with start and end times extracted from a
 #'        \code{networkDynamic} object using the \code{as.data.frame.networkDynamic}
 #'        function.
 #'
@@ -431,8 +431,8 @@ edgelist_censor <- function(el) {
 #'
 #' @description Outputs a vector of mean ages of edges at a series of timesteps
 #'
-#' @param x an \code{EpiModel} object of class \code{\link{netest}}.
-#' @param el if not passing \code{x}, a timed edgelist from a \code{networkDynamic}
+#' @param x An \code{EpiModel} object of class \code{\link{netest}}.
+#' @param el If not passing \code{x}, a timed edgelist from a \code{networkDynamic}
 #'        object extracted with the \code{as.data.frame.networkDynamic} function.
 #'
 #' @details
@@ -505,11 +505,11 @@ edgelist_meanage <- function(x, el) {
 #'              contained on the network, with a possible limitation to those
 #'              attributes contained in the formation formula only.
 #'
-#' @param nw the \code{networkDynamic} object contained in the \code{netsim}
+#' @param nw The \code{networkDynamic} object contained in the \code{netsim}
 #'        simulation.
-#' @param fterms vector of attributes used in formation formula, usually as
+#' @param fterms Vector of attributes used in formation formula, usually as
 #'        output of \code{\link{get_formula_terms}}.
-#' @param only.formula limit the tables to those terms only in \code{fterms},
+#' @param only.formula Limit the tables to those terms only in \code{fterms},
 #'        otherwise output proportions for all attributes on the network object.
 #'
 #' @seealso \code{\link{get_formula_terms}}, \code{\link{copy_toall_attr}},
@@ -545,7 +545,7 @@ get_attr_prop <- function(nw, fterms, only.formula = TRUE) {
 #'              a character vector of terms to be used in \code{netsim}
 #'              simulations.
 #'
-#' @param formula a right-hand sided formation formula.
+#' @param formula Right-hand sided formation formula.
 #'
 #' @seealso \code{\link{copy_toall_attr}}, \code{\link{get_attr_prop}},
 #'          \code{\link{update_nwattr}}.
@@ -574,9 +574,9 @@ get_formula_terms <- function(formula) {
 #' @description Provides all active model state sizes from the network at the
 #'              specified time step, output to a list of vectors.
 #'
-#' @param dat a list object containing a \code{networkDynamic} object and other
+#' @param dat Master list object containing a \code{networkDynamic} object and other
 #'        initialization information passed from \code{\link{netsim}}.
-#' @param at current time step.
+#' @param at Current time step.
 #'
 #' @details
 #' This network utility is used during the \code{\link{netsim}} simulation
@@ -828,8 +828,8 @@ get_prev.net <- function(dat, at) {
 #'
 #' @description Outputs mode numbers give ID numbers for a bipartite network.
 #'
-#' @param nw an object of class \code{network} or \code{networkDynamic}.
-#' @param ids a vector of ID numbers for which the mode number
+#' @param nw Object of class \code{network} or \code{networkDynamic}.
+#' @param ids Vector of ID numbers for which the mode number
 #'        should be returned.
 #'
 #' @seealso \code{\link{modeids}} provides the reverse functionality.
@@ -871,8 +871,8 @@ idmode <- function(nw, ids) {
 #'
 #' @description Outputs ID numbers for a mode number for a bipartite network.
 #'
-#' @param nw an object of class \code{network} or \code{networkDynamic}.
-#' @param mode mode number to return ID numbers for.
+#' @param nw Object of class \code{network} or \code{networkDynamic}.
+#' @param mode Mode number to return ID numbers for.
 #'
 #' @seealso \code{\link{idmode}} provides the reverse functionality.
 #'
@@ -911,16 +911,16 @@ modeids <- function(nw, mode) {
 #' @description Outputs information on the active nodes in a \code{networkDynamic}
 #'              object.
 #'
-#' @param nw an object of class \code{networkDynamic}.
-#' @param at current time step.
-#' @param out function output, with options of \code{out="vec"} for
+#' @param nw Object of class \code{networkDynamic}.
+#' @param at Current time step.
+#' @param out Function output, with options of \code{out="vec"} for
 #'        a T/F vector of whether the node is active, \code{out="ids"} for
 #'        a vector of IDs active, \code{out="prev"} for the number of
 #'        nodes that are active, and \code{out="all"} to return a list of
 #'        the prior three elements.
-#' @param mode if \code{nw} is bipartite, the mode number for status (may
+#' @param mode If \code{nw} is bipartite, the mode number for status (may
 #'        be ignored if requesting output for both modes).
-#' @param active.default if \code{TRUE}, elements without an activity attribute
+#' @param active.default If \code{TRUE}, elements without an activity attribute
 #'        will be regarded as active.
 #'
 #' @details
@@ -1028,13 +1028,13 @@ node_active <- function(nw,
 #'              splitting the attribute vector into two, adding the new values,
 #'              and re-concatenating the two updated vectors.
 #'
-#' @param dat master data object passed through \code{netsim} simulations.
-#' @param var variable to update.
-#' @param val fixed value to set for all incoming nodes.
-#' @param nCurrM1 number currently in mode 1.
-#' @param nCurrM2 number currently in mode 2.
-#' @param nBirths number of births/entries in mode 1.
-#' @param nBirthsM2 number of births/entries in mode2.
+#' @param dat Master data object passed through \code{netsim} simulations.
+#' @param var Variable to update.
+#' @param val Fixed value to set for all incoming nodes.
+#' @param nCurrM1 Number currently in mode 1.
+#' @param nCurrM2 Number currently in mode 2.
+#' @param nBirths Number of births/entries in mode 1.
+#' @param nBirthsM2 Number of births/entries in mode2.
 #'
 #' @export
 #' @keywords netUtils internal
@@ -1061,13 +1061,13 @@ split_bip <- function(dat, var, val, nCurrM1, nCurrM2, nBirths, nBirthsM2) {
 #'              into that network, based on a set of rules for each attribute
 #'              that the user specifies in \code{control.net}.
 #'
-#' @param nw the \code{networkDynamic} object used in \code{netsim} simulations.
-#' @param newNodes vector of nodal IDs for incoming nodes at the current time
+#' @param nw The \code{networkDynamic} object used in \code{netsim} simulations.
+#' @param newNodes Vector of nodal IDs for incoming nodes at the current time
 #'        step.
-#' @param rules list of rules, one per attribute to be set, governing how to set
+#' @param rules List of rules, one per attribute to be set, governing how to set
 #'        the values of each attribute.
-#' @param curr.tab current proportional distribution of all vertex attributes.
-#' @param t1.tab proportional distribution of all vertex attributes at the outset
+#' @param curr.tab Current proportional distribution of all vertex attributes.
+#' @param t1.tab Proportional distribution of all vertex attributes at the outset
 #'        of the simulation.
 #'
 #' @seealso \code{\link{copy_toall_attr}}, \code{\link{get_attr_prop}},

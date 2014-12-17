@@ -4,20 +4,20 @@
 #' @description Sets the initial conditions for deterministic compartmental
 #'              models simulated with \code{dcm}.
 #'
-#' @param s.num number of initial susceptible. For two-group models, this is
+#' @param s.num Number of initial susceptible. For two-group models, this is
 #'        the number of initial group 1 susceptible.
-#' @param i.num number of initial infected. For two-group models, this is the
+#' @param i.num Number of initial infected. For two-group models, this is the
 #'        number of initial group 1 infected.
-#' @param r.num number of initial recovered. For two-group models, this is the
+#' @param r.num Number of initial recovered. For two-group models, this is the
 #'        number of initial group 1 recovered. This parameter is only used for
 #'        the \code{SIR} model type.
-#' @param s.num.g2 number of initial susceptible in group 2. This parameter is
+#' @param s.num.g2 Number of initial susceptible in group 2. This parameter is
 #'        only used for two-group models.
-#' @param i.num.g2 number of initial infected in group 2. This parameter is only
+#' @param i.num.g2 Number of initial infected in group 2. This parameter is only
 #'        used for two-group models.
-#' @param r.num.g2 number of initial recovered in group 2. This parameter is
+#' @param r.num.g2 Number of initial recovered in group 2. This parameter is
 #'        only used for two-group \code{SIR} models.
-#' @param ... additional initial conditions passed to model.
+#' @param ... Additional initial conditions passed to model.
 #'
 #' @details
 #' The initial conditions for a model solved with \code{\link{dcm}} should be
@@ -84,23 +84,23 @@ init.dcm <- function(s.num,
 #' @description Sets the initial conditions for stochastic individual contact
 #'              models simulated with \code{icm}.
 #'
-#' @param s.num number of initial susceptible. For two-group models, this is
+#' @param s.num Number of initial susceptible. For two-group models, this is
 #'        the number of initial group 1 susceptible.
-#' @param i.num number of initial infected. For two-group models, this is the
+#' @param i.num Number of initial infected. For two-group models, this is the
 #'        number of initial group 1 infected.
-#' @param r.num number of initial recovered. For two-group models, this is the
+#' @param r.num Number of initial recovered. For two-group models, this is the
 #'        number of initial group 1 recovered. This parameter is only used for
 #'        the \code{SIR} model type.
-#' @param s.num.g2 number of initial susceptible in group 2. This parameter is
+#' @param s.num.g2 Number of initial susceptible in group 2. This parameter is
 #'        only used for two-group models.
-#' @param i.num.g2 number of initial infected in group 2. This parameter is only
+#' @param i.num.g2 Number of initial infected in group 2. This parameter is only
 #'        used for two-group models.
-#' @param r.num.g2 number of initial recovered in group 2. This parameter is
+#' @param r.num.g2 Number of initial recovered in group 2. This parameter is
 #'        only used for two-group \code{SIR} models.
-#' @param status.rand if \code{TRUE}, sets infection based on random binomial
+#' @param status.rand If \code{TRUE}, sets infection based on random binomial
 #'        draws from the distribution implied by the number susceptible, infected,
 #'        and recovered in each group.
-#' @param ... additional initial conditions passed to model.
+#' @param ... Additional initial conditions passed to model.
 #'
 #' @details
 #' The initial conditions for a model solved with \code{\link{icm}} should be
@@ -155,23 +155,23 @@ init.icm <- function(s.num,
 #' @description Sets the initial conditions for stochastic network models
 #'              simulated with \code{netsim}.
 #'
-#' @param i.num number of initial infected. For bipartite models, this is the
+#' @param i.num Number of initial infected. For bipartite models, this is the
 #'        number of initial mode 1 infected.
-#' @param r.num number of initial recovered. For bipartite models, this is the
+#' @param r.num Number of initial recovered. For bipartite models, this is the
 #'        number of initial mode 1 recovered. This parameter is only used for
 #'        the \code{SIR} model type.
-#' @param i.num.m2 number of initial infected in mode 2. This parameter is only
+#' @param i.num.m2 Number of initial infected in mode 2. This parameter is only
 #'        used for bipartite models.
-#' @param r.num.m2 number of initial recovered in mode 2. This parameter is
+#' @param r.num.m2 Number of initial recovered in mode 2. This parameter is
 #'        only used for bipartite \code{SIR} models.
-#' @param status.vector a vector of length equal to the size of the input network,
+#' @param status.vector A vector of length equal to the size of the input network,
 #'        containing the status of each node. Setting status
 #'        here overrides any inputs passed in the \code{.num} arguments and also
 #'        overrides \code{status.rand=TRUE}.
-#' @param status.rand if \code{TRUE} and not using \code{status.vector}, sets
+#' @param status.rand If \code{TRUE} and not using \code{status.vector}, sets
 #'        infection based on random binomial draws from the distribution implied
 #'        by the number infected and recovered in each mode.
-#' @param ... additional initial conditions passed to model.
+#' @param ... Additional initial conditions passed to model.
 #'
 #' @details
 #' The initial conditions for a model solved with \code{\link{netsim}} should be

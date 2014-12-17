@@ -5,11 +5,11 @@
 #'              data are stored, simulates the initial state of the network, and
 #'              simulates disease status and other attributes.
 #'
-#' @param x an \code{EpiModel} object of class \code{\link{netest}}.
-#' @param param an \code{EpiModel} object of class \code{\link{param.net}}.
-#' @param init an \code{EpiModel} object of class \code{\link{init.net}}.
-#' @param control an \code{EpiModel} object of class \code{\link{control.net}}.
-#' @param s simulation number, used for restarting dependent simulations.
+#' @param x An \code{EpiModel} object of class \code{\link{netest}}.
+#' @param param An \code{EpiModel} object of class \code{\link{param.net}}.
+#' @param init An \code{EpiModel} object of class \code{\link{init.net}}.
+#' @param control An \code{EpiModel} object of class \code{\link{control.net}}.
+#' @param s Simulation number, used for restarting dependent simulations.
 #'
 #' @export
 #' @keywords internal
@@ -105,7 +105,7 @@ initialize.net <- function(x, param, init, control, s) {
 #' @description This function sets the initial disease status on the
 #'              network given the specified initial conditions.
 #'
-#' @param dat a list object containing a \code{networkDynamic} object and other
+#' @param dat Master list object containing a \code{networkDynamic} object and other
 #'        initialization information passed from \code{\link{netsim}}.
 #'
 #' @details
@@ -294,8 +294,8 @@ init_status.net <- function(dat) {
 #' @description This function initializes the persistent IDs for
 #'              a \code{networkDynamic} object.
 #'
-#' @param nw an object of class \code{networkDynamic}.
-#' @param prefixes character string prefix for mode-specific ID.
+#' @param nw An object of class \code{networkDynamic}.
+#' @param prefixes Character string prefix for mode-specific ID.
 #'
 #' @details
 #' This function is used for \code{\link{netsim}} simulations

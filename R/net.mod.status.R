@@ -4,9 +4,9 @@
 #' @description This function simulates the main infection process given the
 #'              current state of the partnerships and disease in the system.
 #'
-#' @param dat a list object containing a \code{networkDynamic} object and other
+#' @param dat A list object containing a \code{networkDynamic} object and other
 #'        initialization information passed from \code{\link{netsim}}.
-#' @param at current time step.
+#' @param at Current time step.
 #'
 #' @details
 #' The main steps in this infection module are as follows:
@@ -177,11 +177,11 @@ infection.net <- function(dat, at) {
 #'              edgelist, defined as the set of edges in which the status of the
 #'              two partners is one susceptible and one infected.
 #'
-#' @param dat a list object containing a \code{networkDynamic} object and other
+#' @param dat Master list object containing a \code{networkDynamic} object and other
 #'        initialization information passed from \code{\link{netsim}}.
-#' @param idsInf vector of IDs for currently infecteds.
-#' @param idsSus vector of IDs for currently susceptible.
-#' @param at current time step.
+#' @param idsInf Vector of IDs for currently infecteds.
+#' @param idsSus Vector of IDs for currently susceptible.
+#' @param at Current time step.
 #'
 #' @details
 #' This internal function works within the parent \code{\link{infection.net}} function
@@ -237,9 +237,9 @@ discord_edgelist <- function(dat, idsInf, idsSus, at) {
 #'              to a susceptible state (SIS model type), for use in
 #'              \code{\link{netsim}}.
 #'
-#' @param dat a list object containing a \code{networkDynamic} object and other
+#' @param dat Master list object containing a \code{networkDynamic} object and other
 #'        initialization information passed from \code{\link{netsim}}.
-#' @param at current time step.
+#' @param at Current time step.
 #'
 #' @export
 #' @keywords internal

@@ -3,12 +3,12 @@
 #'
 #' @description Extracts and prints model statistics solved with \code{dcm}.
 #'
-#' @param object an \code{EpiModel} object of class \code{dcm}.
-#' @param at time step for model statistics.
-#' @param run model run number, for \code{dcm} class models with multiple runs
+#' @param object An \code{EpiModel} object of class \code{dcm}.
+#' @param at Time step for model statistics.
+#' @param run Model run number, for \code{dcm} class models with multiple runs
 #'        (sensitivity analyses).
-#' @param digits number of significant digits to print.
-#' @param ... additional summary function arguments (not used).
+#' @param digits Number of significant digits to print.
+#' @param ... Additional summary function arguments (not used).
 #'
 #' @details
 #' Summary statistics for the main epidemiological outcomes (state and transition
@@ -215,10 +215,10 @@ summary.dcm <- function(object,
 #'
 #' @description Extracts and prints model statistics simulated with \code{icm}.
 #'
-#' @param object an \code{EpiModel} object of class \code{icm}.
-#' @param at time step for model statistics.
-#' @param digits number of significant digits to print.
-#' @param ... additional summary function arguments.
+#' @param object An \code{EpiModel} object of class \code{icm}.
+#' @param at Time step for model statistics.
+#' @param digits Number of significant digits to print.
+#' @param ... Additional summary function arguments.
 #'
 #' @details
 #' Summary statistics for the main epidemiological outcomes (state and transition
@@ -454,10 +454,10 @@ summary.icm <- function(object,
 #'
 #' @description Extracts and prints model statistics simulated with \code{netsim}.
 #'
-#' @param object an \code{EpiModel} object of class \code{netsim}.
-#' @param at time step for model statistics.
-#' @param digits number of significant digits to print.
-#' @param ... additional summary function arguments.
+#' @param object An \code{EpiModel} object of class \code{netsim}.
+#' @param at Time step for model statistics.
+#' @param digits Number of significant digits to print.
+#' @param ... Additional summary function arguments.
 #'
 #' @details
 #' Summary statistics for the main epidemiological outcomes (state and transition
@@ -724,8 +724,8 @@ summary.netsim <- function(object,
 #'
 #' @description Prints the summary model fit statistics for an ERGM or STERGM fit.
 #'
-#' @param object an \code{EpiModel} object of class \code{netest}.
-#' @param ... additional summary function arguments.
+#' @param object An \code{EpiModel} object of class \code{netest}.
+#' @param ... Additional summary function arguments.
 #'
 #' @method summary netest
 #' @keywords internal

@@ -5,9 +5,9 @@
 #'              \code{\link{param.dcm}}, \code{\link{init.dcm}}, and
 #'              \code{\link{control.dcm}} are consistent.
 #'
-#' @param param an \code{EpiModel} object of class \code{\link{param.dcm}}.
-#' @param init an \code{EpiModel} object of class \code{\link{init.dcm}}.
-#' @param control an \code{EpiModel} object of class \code{\link{control.dcm}}.
+#' @param param An \code{EpiModel} object of class \code{\link{param.dcm}}.
+#' @param init An \code{EpiModel} object of class \code{\link{init.dcm}}.
+#' @param control An \code{EpiModel} object of class \code{\link{control.dcm}}.
 #'
 #' @return
 #' This function returns no objects.
@@ -124,9 +124,9 @@ crosscheck.dcm <- function(param, init, control) {
 #'              \code{\link{param.icm}}, \code{\link{init.icm}}, and
 #'              \code{\link{control.icm}} are consistent.
 #'
-#' @param param an \code{EpiModel} object of class \code{\link{param.icm}}.
-#' @param init an \code{EpiModel} object of class \code{\link{init.icm}}.
-#' @param control an \code{EpiModel} object of class \code{\link{control.icm}}.
+#' @param param An \code{EpiModel} object of class \code{\link{param.icm}}.
+#' @param init An \code{EpiModel} object of class \code{\link{init.icm}}.
+#' @param control An \code{EpiModel} object of class \code{\link{control.icm}}.
 #'
 #' @return
 #' This function returns no objects.
@@ -214,10 +214,10 @@ crosscheck.icm <- function(param, init, control) {
 #'              \code{\link{param.net}}, \code{\link{init.net}}, and
 #'              \code{\link{control.net}} are consistent.
 #'
-#' @param x an \code{EpiModel} object of class \code{\link{netest}}.
-#' @param param an \code{EpiModel} object of class \code{\link{param.net}}.
-#' @param init an \code{EpiModel} object of class \code{\link{init.net}}.
-#' @param control an \code{EpiModel} object of class \code{\link{control.net}}.
+#' @param x An \code{EpiModel} object of class \code{\link{netest}}.
+#' @param param An \code{EpiModel} object of class \code{\link{param.net}}.
+#' @param init An \code{EpiModel} object of class \code{\link{init.net}}.
+#' @param control An \code{EpiModel} object of class \code{\link{control.net}}.
 #'
 #' @return
 #' This function returns no objects.

@@ -232,7 +232,7 @@ netsim <- function(x,
 #'              disease in parallel.
 #'
 #' @inheritParams netsim
-#' @param merge if \code{TRUE}, merge parallel simulations into one \code{netsim}
+#' @param merge If \code{TRUE}, merge parallel simulations into one \code{netsim}
 #'        object after simulation.
 #'
 #' @details
