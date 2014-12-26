@@ -375,34 +375,21 @@ crosscheck.net <- function(x, param, init, control) {
 
   if (control$start > 1) {
 
-    # Is status in network formation formula?
-    statOnNw <- ("status" %in% names(get_nwparam(x)$coef.form))
+    control$depend <- TRUE
 
-    # Set dependent modeling defaults if vital or status on nw
-    if (is.null(control$depend)) {
-      if (param$vital == TRUE | statOnNw == TRUE) {
-        control$depend <- TRUE
-      } else {
-        control$depend <- FALSE
+    if (control$skip.check == FALSE) {
+      if (class(x) != "netsim") {
+        stop("x must be a netsim object if control setting start > 1",
+             call. = FALSE)
       }
-    }
-
-    # Check that start 1 for all independent simulations
-    if (control$depend == FALSE) {
-      stop("Control setting start must be 1 for independent simulations",
-           call. = FALSE)
-    }
-    if (control$depend == TRUE & class(x) != "netsim") {
-      stop("x must be a netsim object if control setting start > 1",
-           call. = FALSE)
-    }
-    if (control$depend == TRUE & is.null(x$attr)) {
-      stop("x must contain attr to restart simulation, see save.other control setting",
-           call. = FALSE)
-    }
-    if (control$depend == TRUE & is.null(x$network)) {
-      stop("x must contain network object to restart simulation, see save.network control setting",
-           call. = FALSE)
+      if (is.null(x$attr)) {
+        stop("x must contain attr to restart simulation, see save.other control setting",
+             call. = FALSE)
+      }
+      if (is.null(x$network)) {
+        stop("x must contain network object to restart simulation, see save.network control setting",
+             call. = FALSE)
+      }
     }
 
   }
