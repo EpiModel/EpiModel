@@ -311,7 +311,7 @@ netsim_parallel <- function(x,
   }
 
   if (nsims == 1 | ncores == 1) {
-    sim <- netsim(x, param, init, control)
+    all <- netsim(x, param, init, control)
   } else {
     cluster.size <- min(nsims, ncores)
     if (par.type == "single") {
