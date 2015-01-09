@@ -17,7 +17,8 @@
 <div class="navbar navbar-inverse navbar-fixed-top">
 	<div class="navbar-inner">
 		<div class="container">
-			<button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+			<button type="button" class="btn btn-navbar" data-toggle="collapse"
+      data-target=".nav-collapse">
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
@@ -54,18 +55,19 @@
 			<div id="Installation">
 				<h2>Installation</h2>
 				<p>
-					The current software version is <strong>EpiModel v1.1.2</strong>, which may be downloaded
-          from <a href="http://cran.r-project.org/web/packages/EpiModel/index.html">CRAN</a> and
-          can be installed in R through:
+					The current software version is <strong>EpiModel v1.1.2</strong>, which
+          may be downloaded from
+          <a href="http://cran.r-project.org/web/packages/EpiModel/index.html">CRAN</a>
+          and can be installed in R through:
           <pre><code>install.packages("EpiModel")</code></pre>
           The development version of EpiModel hosted on
-          <a href="https://github.com/statnet/EpiModel">GitHub</a> and
-          may be installed via the devtools package by:
+          <a href="https://github.com/statnet/EpiModel">GitHub</a> and may be
+          installed via the devtools package by:
           <pre style="margin-top: 10px"><code>devtools::install_github("statnet/EpiModel")</code></pre>
 				</p>
         <p>The software source code is available at the
-           <a href="http://github.com/statnet/EpiModel/">Github Repository</a>. Users should submit
-          bug reports and feature requests as issues there.
+           <a href="http://github.com/statnet/EpiModel/">Github Repository</a>.
+           Users should submit bug reports and feature requests as issues there.
         </p>
 			</div>
 
@@ -74,53 +76,60 @@
 
         <h4>Software Documentation</h4>
         <ul>
-          <li type="square"> <a href="http://cran.r-project.org/web/packages/EpiModel/EpiModel.pdf">EpiModel
-               Manual</a>: a PDF manual of the help documentation within the package, with entries for the core
-               package functions.</li>
-          <li type="square"> <a href="https://github.com/statnet/EpiModel/releases">EpiModel News</a>:
-               major changes were implemented in EpiModel v1.0. This news file (also contained within the
-               package) lists those and more recent changes.</li>
+          <li type="square">
+            <a href="http://cran.r-project.org/web/packages/EpiModel/EpiModel.pdf">
+              EpiModel Manual</a>: a PDF manual of the help documentation within
+              the package, with entries for the core package functions.</li>
+          <li type="square">
+            <a href="https://github.com/statnet/EpiModel/releases">EpiModel News</a>:
+               major changes were implemented in EpiModel v1.0. This news file
+               (also contained within the package) lists recent software updates.</li>
         </ul>
 
         <h4 style="margin-top: 18px">Main Tutorial</h4>
         <p>
-          The <a href="http://statnet.csde.washington.edu/EpiModel/vignette/Tutorial.pdf">EpiModel Tutorial</a>
-          provides an overview of the functionality of EpiModel, with a focus on using the integrated model
-          types to parameterize and simulate deterministic and stochastic epidemic models.
+          The <a href="http://statnet.csde.washington.edu/EpiModel/vignette/Tutorial.pdf">
+          EpiModel Tutorial</a> provides an overview of the functionality of
+          EpiModel, with a focus on using the integrated model types to
+          parameterize and simulate deterministic and stochastic epidemic models.
         </p>
 
         <h4 style="margin-top: 18px">EpiModel Web</h4>
         <p>
-          For beginning EpiModel users and those new to mathematical modeling generally, EpiModel includes
-          two web-based applications for simulating epidemics, using the
-          <a href="http://shiny.rstudio.com/">Shiny</a> framework in R. These applications are included
-          within EpiModel itself for deterministic compartmental models (DCMs) and stochastic individual
+          For beginning EpiModel users and those new to mathematical modeling
+          generally, EpiModel includes two web-based applications for simulating
+          epidemics, using the <a href="http://shiny.rstudio.com/">Shiny</a>
+          framework in R. These applications are included within EpiModel
+          for deterministic compartmental models (DCMs) and stochastic individual
           contact models (ICMs). They are also hosted online
           <br>
           <small>
-          <a href="http://statnet.shinyapps.io/epidcm"><i class="fa fa-spinner fa-spin"></i> DCMs</a>&nbsp;&nbsp;&nbsp;
-          <a href="http://statnet.shinyapps.io/epiicm"><i class="fa fa-spinner fa-spin"></i> ICMs</a>
+          <a href="http://statnet.shinyapps.io/epidcm">
+            <i class="fa fa-spinner fa-spin"></i> DCMs</a>&nbsp;&nbsp;&nbsp;
+          <a href="http://statnet.shinyapps.io/epiicm">
+            <i class="fa fa-spinner fa-spin"></i> ICMs</a>
   				</small>
         </p>
 
 
         <h4 style="margin-top: 18px">Utilities</h4>
         <p>
-          <strong>Network Utility Functions</strong> &nbsp;&nbsp;This tutorial shows extended examples of utility
-          functions within EpiModel that help with the parameterization and simulation of stochastic
-          network models.
+          <strong>Network Utility Functions</strong> &nbsp;&nbsp;This tutorial
+          shows extended examples of utility functions within EpiModel that help
+          with the parameterization and simulation of stochastic network models.
           <br>
           <small>
-            <a href="http://statnet.csde.washington.edu/EpiModel/vignette/NetUtils.html"><i class="fa fa-book">
+            <a href="http://statnet.csde.washington.edu/EpiModel/vignette/NetUtils.html">
+              <i class="fa fa-book">
             </i> Tutorial</a>
           </small>
         </p>
 
         <h4 style="margin-top: 18px">Extending EpiModel</h4>
         <p>
-          <strong>New DCMs with EpiModel</strong> &nbsp;&nbsp; This tutorial shows how to build
-          an original deterministic compartmental model by writing a model function and
-          passing new parameters.
+          <strong>New DCMs with EpiModel</strong> &nbsp;&nbsp; This tutorial
+          shows how to build original deterministic compartmental models by
+          writing model functions and passing new parameters.
           <br>
           <small>
             <a href="http://statnet.csde.washington.edu/EpiModel/vignette/NewDCMs.html">
@@ -130,9 +139,9 @@
           </small>
         </p>
         <p>
-          <strong>New ICMs with EpiModel</strong> &nbsp;&nbsp; This tutorial shows how to build
-          an original stochastic individual contact model by writing replacement and supplemental
-          module functions.
+          <strong>New ICMs with EpiModel</strong> &nbsp;&nbsp; This tutorial
+          shows how to build original stochastic individual contact models by
+          writing replacement and supplemental module functions.
           <br>
           <small>
             <a href="http://statnet.csde.washington.edu/EpiModel/vignette/NewICMs.html">
@@ -142,9 +151,9 @@
           </small>
         </p>
         <p>
-          <strong>New Network Models with EpiModel</strong> &nbsp;&nbsp; This tutorial shows how to
-          build an original stochastic network model by writing replacement and supplemental module
-          functions.
+          <strong>New Network Models with EpiModel</strong> &nbsp;&nbsp; This
+          tutorial shows how to build original stochastic network model by
+          writing replacement and supplemental module functions.
           <br>
           <small>
             <a href="http://statnet.csde.washington.edu/EpiModel/vignette/NewNet.html">
@@ -162,10 +171,12 @@
 
         <h4>Network Modeling for Epidemics</h4>
         <p>
-        This 6-day yearly summer course introduces traditional compartmental models for epidemics, the
-        methodology for classical descriptive network analysis, and new statistical methods for network
-        analysis using exponential-family random graph models. The final goal is then to use these methods
-        to develop stochastic network models for epidemics, with a focus on empirical models of HIV/STI
+        This 6-day yearly summer course introduces traditional compartmental
+        models for epidemics, stochastic microsimulation epidemic models,
+        the methodology for classical descriptive network analysis, and new
+        statistical methods for network analysis using exponential-family random
+        graph models. Students learn to use these methods to develop their own
+        epidemic models, with a focus on data-driven network models of HIV/STI
         transmission and control.
         <br>
         <small>
@@ -173,16 +184,26 @@
              <i class="fa fa-book"></i> Course Materials</a>
         </small>
         </p>
+        <p>
+        <strong>NME 2015</strong> will be offered in <strong>Seattle
+        (August 24-28)</strong> and <strong>Bruges, Belgium (September 7-11)</strong>.
+        Further details will be posted on the EpiModel email list.
+        </p>
         <h4 style="margin-top: 22px">Sunbelt</h4>
         <p>
-        Sunbelt is the yearly conference of the International Network for Social Network Analysis. The
-        conference offers several workshops for software tools, and statnet developers have been teaching
-        there for several years. 2014 was the first year featuring an EpiModel workshop.
+        Sunbelt is the yearly conference of the International Network for Social
+        Network Analysis. The conference offers several workshops for software
+        tools, and statnet developers have been teaching there for several years.
         <br>
         <small>
           <a href="https://statnet.csde.washington.edu/trac/wiki/Sunbelt2014">
              <i class="fa fa-book"></i> Course Materials</a>
         </small>
+        </p>
+        <p>
+          An EpiModel workshop will be offered at
+          <a href="http://insna.org/sunbelt2015/"><strong>Sunbelt 2015</strong></a>
+          in Brighton, England (June 23-28).
         </p>
       </div>
 
@@ -193,21 +214,25 @@
         <h4>Email List</h4>
         <p>
         Users are encouraged to join the email list for
-        <a href="http://mailman11.u.washington.edu/mailman/listinfo/epimodel">EpiModel</a> (as well as
-        the list for <a href="http://mailman.u.washington.edu/mailman/listinfo/statnet_help">Statnet</a>)
-        as a place to ask questions, report bugs, and tell us about your research using these tools.
+        <a href="http://mailman11.u.washington.edu/mailman/listinfo/epimodel">
+        EpiModel</a> (as well as the list for
+        <a href="http://mailman.u.washington.edu/mailman/listinfo/statnet_help">
+        Statnet</a>) as a place to ask questions, report bugs, and tell us about
+        your research using these tools.
         </p>
 
         <h4  style="margin-top: 18px">Funding Support</h4>
         <p>
-        This software is supported by grant number R01HD68395 from the National Institute of Child
-        Health and Human Development.
+        Development of this software is supported by the following grants from
+        the National Institutes of Health: R01HD68395 (NICHD), T32HD007543 (NICHD),
+        and R24HD042828 (NICHD).
         </p>
 
         <h4  style="margin-top: 18px">Copyright</h4>
         <p>
-        These materials are distributed under the GPL-3 license, with the following copyright and attribution
-        requirements listed <a href="http://statnet.csde.washington.edu/attribution.shtml">here</a>.
+        These materials are distributed under the GPL-3 license, with the
+        following copyright and attribution requirements listed
+        <a href="http://statnet.csde.washington.edu/attribution.shtml">here</a>.
         </p>
       </div>
 
@@ -215,7 +240,8 @@
 		<!-- right part of page -->
 		<div class="hidden-phone">
 			<div class="span4">
-				<img style="float: left" src="http://statnet.csde.washington.edu/EpiModel/movie.gif" />
+				<img style="float: left"
+          src="http://statnet.csde.washington.edu/EpiModel/movie.gif" />
 			</div>
 		</div>
 	</div>
