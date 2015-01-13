@@ -125,7 +125,7 @@ netdx <- function(x,
   }
 
   if (verbose == TRUE) {
-    cat("======================")
+    cat("\n======================")
     cat("\nRunning Diagnostics")
     cat("\n======================\n")
   }
