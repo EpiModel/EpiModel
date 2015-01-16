@@ -133,4 +133,18 @@ test_that("New network models vignette example", {
   mod <- netsim(est, param, init, control)
   expect_is(mod, "netsim")
 
+  ## Test module reordering
+  control <- control.net(type = "SI",
+                         nsims = 1,
+                         nsteps = 10,
+                         deaths.FUN = dfunc,
+                         births.FUN = bfunc,
+                         aging.FUN = aging,
+                         module.order = c("aging.FUN", "births.FUN", "deaths.FUN"),
+                         depend = TRUE,
+                         save.network = FALSE,
+                         verbose = FALSE)
+  mod <- netsim(est, param, init, control)
+  expect_is(mod, "netsim")
+
 })
