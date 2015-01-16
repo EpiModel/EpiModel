@@ -60,12 +60,8 @@ with disease types for Susceptible-Infected (SI), Susceptible-Infected-Recovered
 Original models may be parameterized by writing new process modules that
 either take the place of existing modules (for example, disease recovery), or
 supplement the set of existing processes with a new one contained in an new
-module. This functionality is new to \code{EpiModel} and further documentation
-will be posted through tutorial vignettes at the
-\href{http://statnet.org/trac/wiki/EpiModel}{EpiModel website} shortly. This
-modular approach is the same as building new ICMs, for which there is an
-existing \href{http://statnet.org/EpiModel/vignette/NewICMs.html}{Solving New
-ICMs with EpiModel} tutorial. Finally, the list of modules within \code{netsim}
+module. This functionality is documented in the New Network Models with EpiModel
+Tutorial at \url{www.epimodel.org}. The list of modules within \code{netsim}
 available for modification is listed in \code{\link{modules.net}}.
 }
 \examples{

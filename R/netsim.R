@@ -30,12 +30,8 @@
 #' Original models may be parameterized by writing new process modules that
 #' either take the place of existing modules (for example, disease recovery), or
 #' supplement the set of existing processes with a new one contained in an new
-#' module. This functionality is new to \code{EpiModel} and further documentation
-#' will be posted through tutorial vignettes at the
-#' \href{http://statnet.org/trac/wiki/EpiModel}{EpiModel website} shortly. This
-#' modular approach is the same as building new ICMs, for which there is an
-#' existing \href{http://statnet.org/EpiModel/vignette/NewICMs.html}{Solving New
-#' ICMs with EpiModel} tutorial. Finally, the list of modules within \code{netsim}
+#' module. This functionality is documented in the New Network Models with EpiModel
+#' Tutorial at \url{www.epimodel.org}. The list of modules within \code{netsim}
 #' available for modification is listed in \code{\link{modules.net}}.
 #'
 #' @return
@@ -159,51 +155,20 @@ netsim <- function(x,
     ### TIME LOOP
     for (at in max(2, control$start):control$nsteps) {
 
-      ## User Modules
-      um <- control$user.mods
-      if (length(um) > 0) {
-        for (i in seq_along(um)) {
-          dat <- do.call(control[[um[i]]], list(dat, at))
-        }
+      ## Module order
+      morder <- control$module.order
+      if (is.null(morder)) {
+        lim.bi.mods <- control$bi.mods[-which(control$bi.mods %in%
+                                                c("initialize.FUN", "verbose.FUN"))]
+        morder <- c(control$user.mods, lim.bi.mods)
       }
 
-      ## Demographics Modules
-      if (!is.null(control[["deaths.FUN"]])) {
-        dat <- do.call(control[["deaths.FUN"]], list(dat, at))
-      }
-      if (!is.null(control[["births.FUN"]])) {
-        dat <- do.call(control[["births.FUN"]], list(dat, at))
+      ## Evaluate modules
+      for (i in seq_along(morder)) {
+        dat <- do.call(control[[morder[i]]], list(dat, at))
       }
 
-
-      ## Recovery Module
-      if (!is.null(control[["recovery.FUN"]])) {
-        dat <- do.call(control[["recovery.FUN"]], list(dat, at))
-      }
-
-
-      ## Resimulate network
-      if (!is.null(control[["edges_correct.FUN"]])) {
-        dat <- do.call(control[["edges_correct.FUN"]], list(dat, at))
-      }
-      if (!is.null(control[["resim_nets.FUN"]])) {
-        dat <- do.call(control[["resim_nets.FUN"]], list(dat, at))
-      }
-
-
-      ## Infection Module
-      if (!is.null(control[["infection.FUN"]])) {
-        dat <- do.call(control[["infection.FUN"]], list(dat, at))
-      }
-
-
-      ## Save Prevalence
-      if (!is.null(control[["get_prev.FUN"]])) {
-        dat <- do.call(control[["get_prev.FUN"]], list(dat, at))
-      }
-
-
-      ## Progress Console
+      ## Verbose module
       if (!is.null(control[["verbose.FUN"]])) {
         do.call(control[["verbose.FUN"]], list(dat, type = "progress", s, at))
       }
