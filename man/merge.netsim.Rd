@@ -5,7 +5,7 @@
 \title{Merge Model Simulations Across netsim Objects}
 \usage{
 \method{merge}{netsim}(x, y, keep.transmat = TRUE, keep.network = TRUE,
-  keep.nwstats = TRUE, keep.other = TRUE, ...)
+  keep.nwstats = TRUE, keep.other = TRUE, param.error = TRUE, ...)
 }
 \arguments{
 \item{x}{An \code{EpiModel} object of class \code{\link{netsim}}.}
@@ -26,6 +26,11 @@ the original \code{x} and \code{y} elements.}
 \item{keep.other}{If \code{TRUE}, keep the other simulation elements (as set
 by the \code{save.other} parameter in \code{control.netsim}) from the
 original \code{x} and \code{y} elements.}
+
+\item{param.error}{If \code{TRUE}, if \code{x} and \code{y} have different
+params (in \code{param.net}) or controls (passed in \code{control.net})
+an error will prevent the merge. Use \code{FALSE} to override that
+check.}
 
 \item{...}{Additional merge arguments (not currently used).}
 }

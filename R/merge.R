@@ -106,6 +106,10 @@ merge.icm <- function(x, y, ...) {
 #' @param keep.other If \code{TRUE}, keep the other simulation elements (as set
 #'        by the \code{save.other} parameter in \code{control.netsim}) from the
 #'        original \code{x} and \code{y} elements.
+#' @param param.error If \code{TRUE}, if \code{x} and \code{y} have different
+#'        params (in \code{param.net}) or controls (passed in \code{control.net})
+#'        an error will prevent the merge. Use \code{FALSE} to override that
+#'        check.
 #' @param ...  Additional merge arguments (not currently used).
 #'
 #' @details
@@ -158,6 +162,7 @@ merge.netsim <- function(x, y,
                          keep.network = TRUE,
                          keep.nwstats = TRUE,
                          keep.other = TRUE,
+                         param.error = TRUE,
                          ...) {
 
   ## Check structure
@@ -183,10 +188,10 @@ merge.netsim <- function(x, y,
                       y$control[-which(names(y$control) == "nsims")])
 
 
-  if (check1 == FALSE) {
+  if (check1 == FALSE && param.error == TRUE) {
     stop("x and y have different parameters")
   }
-  if (check2 == FALSE) {
+  if (check2 == FALSE && param.error == TRUE) {
     stop("x and y have different controls")
   }
 
