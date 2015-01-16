@@ -6,12 +6,12 @@
 \usage{
 control.net(type, nsteps, start = 1, nsims = 1, depend, rec.rand = TRUE,
   b.rand = TRUE, d.rand = TRUE, tea.status = TRUE, attr.rules, epi.by,
-  pid.prefix, initialize.FUN = initialize.net,
-  infection.FUN = infection.net, recovery.FUN = recovery.net,
-  deaths.FUN = deaths.net, births.FUN = births.net,
-  resim_nets.FUN = resim_nets, edges_correct.FUN = edges_correct,
-  get_prev.FUN = get_prev.net, verbose.FUN = verbose.net,
-  set.control.stergm, save.nwstats = TRUE, nwstats.formula = "formation",
+  pid.prefix, initialize.FUN = initialize.net, deaths.FUN = deaths.net,
+  births.FUN = births.net, recovery.FUN = recovery.net,
+  edges_correct.FUN = edges_correct, resim_nets.FUN = resim_nets,
+  infection.FUN = infection.net, get_prev.FUN = get_prev.net,
+  verbose.FUN = verbose.net, module.order = NULL, set.control.stergm,
+  save.nwstats = TRUE, nwstats.formula = "formation",
   delete.nodes = FALSE, save.transmat = TRUE, save.network = TRUE,
   save.other, verbose = TRUE, verbose.int = 1, skip.check = FALSE, ...)
 }
@@ -74,30 +74,38 @@ with the default of \code{c("F", "M")}.}
 \item{initialize.FUN}{Module to initialize the model at time 1, with the
 default function of \code{\link{initialize.net}}.}
 
-\item{infection.FUN}{Module to simulate disease infection, with the default
-function of \code{\link{infection.net}}.}
-
-\item{recovery.FUN}{Module to simulate disease recovery, with the default
-function of \code{\link{recovery.net}}.}
-
 \item{deaths.FUN}{Module to simulate death or exit, with the default function
 of \code{\link{deaths.net}}.}
 
 \item{births.FUN}{Module to simulate births or entries, with the default
 function of \code{\link{births.net}}.}
 
-\item{resim_nets.FUN}{Module to resimulate the network at each time step,
-with the default function of \code{\link{resim_nets}}.}
+\item{recovery.FUN}{Module to simulate disease recovery, with the default
+function of \code{\link{recovery.net}}.}
 
 \item{edges_correct.FUN}{Module to adjust the edges coefficient in response
 to changes to the population size, with the default function of
 \code{\link{edges_correct}} that preserves mean degree.}
+
+\item{resim_nets.FUN}{Module to resimulate the network at each time step,
+with the default function of \code{\link{resim_nets}}.}
+
+\item{infection.FUN}{Module to simulate disease infection, with the default
+function of \code{\link{infection.net}}.}
 
 \item{get_prev.FUN}{Module to calculate disease prevalence at each time step,
 with the default function of \code{\link{get_prev.net}}.}
 
 \item{verbose.FUN}{Module to print simulation progress to screen, with the
 default function of \code{\link{verbose.net}}.}
+
+\item{module.order}{A character vector of module names that lists modules the
+order in which they should be evaluated within each time step. If
+\code{NULL}, the modules will be evaluated as follows: first any
+new modules supplied through \code{...} in the order in which they are
+listed, then the built-in modules in their order of the function listing.
+The \code{initialize.FUN} will always be run first and the
+\code{verbose.FUN} always last.}
 
 \item{set.control.stergm}{Control arguments passed to simulate.stergm. See the
 help file for \code{\link{netdx}} for details and examples on specifying
@@ -191,9 +199,8 @@ the \code{\link{infection.net}} function.
 
 For original models, one may substitute replacement module functions for any
 the default functions. New modules may be added to the workflow at each time
-step by passing a module function via the \code{...} argument. This functionality
-is new to \code{EpiModel} and further documentation will be posted in tutorial
-vignettes at the \href{http://statnet.org/trac/wiki/EpiModel}{EpiModel website}.
+step by passing a module function via the \code{...} argument. Consult the
+New Network Models with EpiModel tutorial at \url{http://www.epimodel.org}.
 }
 \seealso{
 Use \code{\link{param.net}} to specify model parameters and

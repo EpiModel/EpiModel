@@ -291,23 +291,30 @@ control.icm <- function(type,
 #'        with the default of \code{c("F", "M")}.
 #' @param initialize.FUN Module to initialize the model at time 1, with the
 #'        default function of \code{\link{initialize.net}}.
-#' @param infection.FUN Module to simulate disease infection, with the default
-#'        function of \code{\link{infection.net}}.
-#' @param recovery.FUN Module to simulate disease recovery, with the default
-#'        function of \code{\link{recovery.net}}.
 #' @param deaths.FUN Module to simulate death or exit, with the default function
 #'        of \code{\link{deaths.net}}.
 #' @param births.FUN Module to simulate births or entries, with the default
 #'        function of \code{\link{births.net}}.
-#' @param resim_nets.FUN Module to resimulate the network at each time step,
-#'        with the default function of \code{\link{resim_nets}}.
+#' @param recovery.FUN Module to simulate disease recovery, with the default
+#'        function of \code{\link{recovery.net}}.
 #' @param edges_correct.FUN Module to adjust the edges coefficient in response
 #'        to changes to the population size, with the default function of
 #'        \code{\link{edges_correct}} that preserves mean degree.
+#' @param resim_nets.FUN Module to resimulate the network at each time step,
+#'        with the default function of \code{\link{resim_nets}}.
+#' @param infection.FUN Module to simulate disease infection, with the default
+#'        function of \code{\link{infection.net}}.
 #' @param get_prev.FUN Module to calculate disease prevalence at each time step,
 #'        with the default function of \code{\link{get_prev.net}}.
 #' @param verbose.FUN Module to print simulation progress to screen, with the
 #'        default function of \code{\link{verbose.net}}.
+#' @param module.order A character vector of module names that lists modules the
+#'        order in which they should be evaluated within each time step. If
+#'        \code{NULL}, the modules will be evaluated as follows: first any
+#'        new modules supplied through \code{...} in the order in which they are
+#'        listed, then the built-in modules in their order of the function listing.
+#'        The \code{initialize.FUN} will always be run first and the
+#'        \code{verbose.FUN} always last.
 #' @param set.control.stergm Control arguments passed to simulate.stergm. See the
 #'        help file for \code{\link{netdx}} for details and examples on specifying
 #'        this parameter.
@@ -383,9 +390,8 @@ control.icm <- function(type,
 #'
 #' For original models, one may substitute replacement module functions for any
 #' the default functions. New modules may be added to the workflow at each time
-#' step by passing a module function via the \code{...} argument. This functionality
-#' is new to \code{EpiModel} and further documentation will be posted in tutorial
-#' vignettes at the \href{http://statnet.org/trac/wiki/EpiModel}{EpiModel website}.
+#' step by passing a module function via the \code{...} argument. Consult the
+#' New Network Models with EpiModel tutorial at \url{http://www.epimodel.org}.
 #'
 #' @seealso Use \code{\link{param.net}} to specify model parameters and
 #'          \code{\link{init.net}} to specify the initial conditions. Run the
@@ -408,14 +414,15 @@ control.net <- function(type,
                         epi.by,
                         pid.prefix,
                         initialize.FUN = initialize.net,
-                        infection.FUN = infection.net,
-                        recovery.FUN = recovery.net,
                         deaths.FUN = deaths.net,
                         births.FUN = births.net,
-                        resim_nets.FUN = resim_nets,
+                        recovery.FUN = recovery.net,
                         edges_correct.FUN = edges_correct,
+                        resim_nets.FUN = resim_nets,
+                        infection.FUN = infection.net,
                         get_prev.FUN = get_prev.net,
                         verbose.FUN = verbose.net,
+                        module.order = NULL,
                         set.control.stergm,
                         save.nwstats = TRUE,
                         nwstats.formula = "formation",
