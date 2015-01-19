@@ -1,9 +1,9 @@
 EpiModel
 ===============
 
-[![Version](http://img.shields.io/badge/Version-1.1.2-orange.svg?style=flat)](https://github.com/statnet/EpiModel/releases/tag/v1.1.2)
+[![Version](http://img.shields.io/badge/Version-1.1.3-orange.svg?style=flat)](https://github.com/statnet/EpiModel/releases/tag/v1.1.3)
 [![Build Status](http://img.shields.io/travis/statnet/EpiModel/master.svg?style=flat)](https://travis-ci.org/statnet/EpiModel)
-[![DOI](http://img.shields.io/badge/DOI-10.5281%2Fzenodo.13012-blue.svg?style=flat)](http://dx.doi.org/10.5281/zenodo.13012)
+[![DOI](http://img.shields.io/badge/DOI-10.5281%2Fzenodo.14009-blue.svg?style=flat)](http://dx.doi.org/10.5281/zenodo.14009)
 
 EpiModel: tools for simulating mathematical models of infectious disease. Epidemic model classes include deterministic compartmental models, stochastic individual contact models, and stochastic network models. Disease types include SI, SIR, and SIS epidemics with and without demography, with tools available for expansion to model complex epidemic processes.
 
@@ -45,7 +45,7 @@ The main website for EpiModel, with tutorials and other supporting files is <a h
 
 #### Citation
 If using EpiModel for teaching or research, please include a citation:
-> Jenness SM, Goodreau SM, Morris M (2014). *EpiModel: Mathematical Modeling of Infectious Disease.* R Package Version 1.1.2. URL: http://epimodel.org/. DOI: 10.5281/zenodo.13012.
+> Jenness SM, Goodreau SM, Morris M (2015). *EpiModel: Mathematical Modeling of Infectious Disease.* R Package Version 1.1.3. URL: http://epimodel.org/. DOI: 10.5281/zenodo.14009.
 
 #### Funding
 Development of this software is supported by the following grants from the National Institutes of Health: R01HD68395 (NICHD), T32HD007543 (NICHD), and R24HD042828 (NICHD).
