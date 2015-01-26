@@ -285,22 +285,24 @@ get_sims <- function(x, sims) {
 
   delsim <- setdiff(1:nsims, sims)
   out <- x
-  for (i in seq_along(out$epi)) {
-    out$epi[[i]] <- out$epi[[i]][, -delsim, drop = FALSE]
-  }
-  if (!is.null(out$network)) {
-    out$network[delsim] <- NULL
-  }
-  if (!is.null(out$stats$nwstats)) {
-    out$stats$nwstats[delsim] <- NULL
-  }
-  if (!is.null(out$stats$transmat)) {
-    out$stats$transmat[delsim] <- NULL
-  }
-  if (!is.null(out$control$save.other)) {
-    oname <- out$control$save.other
-    for (i in seq_along(oname)) {
-      out[[oname[i]]][delsim] <- NULL
+  if (length(delsim) > 0) {
+    for (i in seq_along(out$epi)) {
+      out$epi[[i]] <- out$epi[[i]][, -delsim, drop = FALSE]
+    }
+    if (!is.null(out$network)) {
+      out$network[delsim] <- NULL
+    }
+    if (!is.null(out$stats$nwstats)) {
+      out$stats$nwstats[delsim] <- NULL
+    }
+    if (!is.null(out$stats$transmat)) {
+      out$stats$transmat[delsim] <- NULL
+    }
+    if (!is.null(out$control$save.other)) {
+      oname <- out$control$save.other
+      for (i in seq_along(oname)) {
+        out[[oname[i]]][delsim] <- NULL
+      }
     }
   }
   out$control$nsims <- length(sims)
