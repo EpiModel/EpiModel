@@ -1413,8 +1413,7 @@ plot.netdx <- function(x,
       ## Sim lines
       if (sim.lines == TRUE) {
         for (i in sim) {
-          lines(x = 1:nsteps,
-                y = pages[[i]],
+          lines(pages[[i]],
                 lwd = sim.lwd, lty = sim.lty,
                 col = sim.col)
         }
@@ -1518,8 +1517,7 @@ plot.netdx <- function(x,
       # Sim lines
       if (sim.lines == TRUE) {
         for (i in sim) {
-          lines(x = 1:nsteps,
-                y = prop.diss[[i]],
+          lines(prop.diss[[i]],
                 lwd = sim.lwd, lty = sim.lty,
                 col = sim.col)
         }
@@ -1960,8 +1958,7 @@ plot.netsim <- function(x,
            type = "n", xlab = xlab, ylab = ylab)
       for (j in outsts) {
         for (i in seq_along(sim)) {
-          lines(x = 1:nsteps,
-                y = nwstats[[i]][[nmstats[j]]],
+          lines(nwstats[[i]][[nmstats[j]]],
                 lty = sim.lty, lwd = sim.lwd,
                 col = sim.col[which(j == outsts)])
         }
@@ -2013,8 +2010,7 @@ plot.netsim <- function(x,
              type = "n", main = nmstats[j],
              xlab = "", ylab = "", ...)
         for (i in seq_along(sim)) {
-          lines(x = 1:nsteps,
-                y = nwstats[[i]][[nmstats[j]]],
+          lines(nwstats[[i]][[nmstats[j]]],
                 lwd = sim.lwd, lty = sim.lty,
                 col = sim.col[which(j == outsts)])
         }
