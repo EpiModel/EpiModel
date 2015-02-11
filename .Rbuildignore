@@ -2,3 +2,5 @@
 ^\.Rproj\.user$
 ^\.travis\.yml$
 ^README.md$
+inst/shiny/dcm/shinyapps
+inst/shiny/icm/shinyapps
