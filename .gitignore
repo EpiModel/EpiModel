@@ -2,5 +2,5 @@
 .Rhistory
 .RData
 *.Rproj
-inst/shiny/dcm/shinyapps/
-inst/shiny/icm/shinyapps/
+inst/shiny/epidcm/shinyapps/
+inst/shiny/epiicm/shinyapps/

@@ -39,9 +39,9 @@
 #'
 epiweb <- function(class) {
   if (class == "dcm") {
-    shiny::runApp(system.file("shiny", "dcm", package = "EpiModel"))
+    shiny::runApp(system.file("shiny", "epidcm", package = "EpiModel"))
   } else if (class == "icm") {
-    shiny::runApp(system.file("shiny", "icm", package = "EpiModel"))
+    shiny::runApp(system.file("shiny", "epiicm", package = "EpiModel"))
   } else {
     stop("Specify class as either \"dcm\" or \"icm\" ")
   }
