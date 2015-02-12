@@ -295,6 +295,7 @@ netdx <- function(x,
 
   ## Get stats from for target statistics
   ts.attr.names <- x$target.stats.names
+  target.stats <- target.stats[which(target.stats > 0)]
   ts.out <- data.frame(names = ts.attr.names,
                        targets = target.stats)
 
