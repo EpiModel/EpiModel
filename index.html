@@ -27,7 +27,8 @@
 			<div class="nav-collapse collapse">
 				<ul class="nav">
 					<li><a href="#Installation">Installation</a></li>
-          <li><a href="#Documentation">Documentation</a></li>
+					<li><a href="#Started">Getting Started</a></li>
+          <li><a href="#Tutorials">Tutorials</a></li>
           <li><a href="#Workshops">Workshops</a></li>
           <li><a href="#Other">Other</a></li>
 				</ul>
@@ -53,7 +54,7 @@
 			</p>
 
 			<div id="Installation">
-				<h2>Installation</h2>
+				<h3>Installation</h3>
 				<p>
 					The current software version is <strong>EpiModel v1.1.3</strong>, which
           may be downloaded from
@@ -68,30 +69,20 @@
         <p>The software source code is available at the
            <a href="http://github.com/statnet/EpiModel/">Github Repository</a>.
            Users should submit bug reports and feature requests as issues there.
+          The <a href="https://github.com/statnet/EpiModel/releases">Releases Page</a>:
+          on the repository lists all the changes to the software over time.
         </p>
+
 			</div>
 
-  		<div id="Documentation">
-				<h2>Documentation</h2>
+  		<div id="Started">
+				<h3>Getting Started</h3>
 
-        <h4>Software Documentation</h4>
-        <ul>
-          <li type="square">
-            <a href="http://cran.r-project.org/web/packages/EpiModel/EpiModel.pdf">
-              EpiModel Manual</a>: a PDF manual of the help documentation within
-              the package, with entries for the core package functions.</li>
-          <li type="square">
-            <a href="https://github.com/statnet/EpiModel/releases">EpiModel News</a>:
-               major changes were implemented in EpiModel v1.0. This news file
-               (also contained within the package) lists recent software updates.</li>
-        </ul>
-
-        <h4 style="margin-top: 18px">Main Tutorial</h4>
+        <h4>Software Manual</h4>
         <p>
-          The <a href="http://statnet.csde.washington.edu/EpiModel/vignette/Tutorial.pdf">
-          EpiModel Tutorial</a> provides an overview of the functionality of
-          EpiModel, with a focus on using the integrated model types to
-          parameterize and simulate deterministic and stochastic epidemic models.
+          The <a href="http://cran.r-project.org/web/packages/EpiModel/EpiModel.pdf">
+            EpiModel Software Manual</a> provides a list of all the main functions
+            within the package, with syntax and examples.
         </p>
 
         <h4 style="margin-top: 18px">EpiModel Web</h4>
@@ -111,6 +102,102 @@
   				</small>
         </p>
 
+      </div>
+
+  		<div id="Tutorials">
+				<h3>Tutorials</h3>
+        For each of the three model classes in EpiModel, the tutorials are
+        organized into basic integrated models to guide new users in the features
+        of the model class, and advanced extension models to build out the models
+        to answer new research questions.
+
+        <h4 style="margin-top: 18px">Basic Integrated Models</h4>
+        <p>
+          <strong>Basic DCMs with EpiModel</strong> &nbsp;&nbsp; This tutorial
+          provides some mathematical background for deterministic compartmental
+          models, with exploration of different model types and parameterizations
+          within EpiModel.
+          <br>
+          <small>
+            <a href="http://statnet.github.io/tut/BasicDCMs.html">
+               <i class="fa fa-book"></i> Tutorial</a>&nbsp;&nbsp;&nbsp;
+            <a href="http://statnet.github.io/tut/BasicDCMs.R">
+               <i class="fa fa-code"></i> Code</a>
+          </small>
+        </p>
+        <p>
+          <strong>Basic ICMs with EpiModel</strong> &nbsp;&nbsp; Stochastic
+          individual contact models (ICMs) are the microsimulation analogs to
+          DCMs. This tutorial explains the general differences between deterministic
+          and stochastic modeling, with hands-on basic examples.
+          <br>
+          <small>
+            <a href="http://statnet.github.io/tut/BasicICMs.html">
+               <i class="fa fa-book"></i> Tutorial</a>&nbsp;&nbsp;&nbsp;
+            <a href="http://statnet.github.io/tut/BasicICMs.R">
+               <i class="fa fa-code"></i> Code</a>
+          </small>
+        </p>
+        <p>
+          <strong>Basic Network Models with EpiModel</strong> &nbsp;&nbsp; Stochastic
+          network models build in arbitrarily complex contact or partnership
+          relational structures that form and dissolve over time, using the framework
+          of temporal exponential random graph models. This tutorial shows how to
+          simulate epidemics over simple networks with easily defined network
+          structures.
+          <br>
+          <small>
+            <a href="http://statnet.github.io/tut/BasicICMs.html">
+               <i class="fa fa-book"></i> Tutorial</a>&nbsp;&nbsp;&nbsp;
+            <a href="http://statnet.github.io/tut/BasicICMs.R">
+               <i class="fa fa-code"></i> Code</a>
+          </small>
+        </p>
+
+        <h4 style="margin-top: 18px">Advanced Extension Models</h4>
+        <p>
+          <strong>New DCMs with EpiModel</strong> &nbsp;&nbsp; Creating new
+          deterministic compartmental models in EpiModel involves writing new
+          model functions defining the mathematical transition processes, and then
+          parameterizing and simulating those models. This tutorial shows examples
+          of how to write model functions, including new parameters, and run new
+          models.
+          <br>
+          <small>
+            <a href="http://statnet.github.io/tut/NewDCMs.html">
+               <i class="fa fa-book"></i> Tutorial</a>&nbsp;&nbsp;&nbsp;
+            <a href="http://statnet.github.io/tut/NewDCMs.R">
+               <i class="fa fa-code"></i> Code</a>
+          </small>
+        </p>
+        <p>
+          <strong>New ICMs with EpiModel</strong> &nbsp;&nbsp; Original stochastic
+          individual contact models require defining and inserting new *modules*
+          that handle one aspect of the epidemic or related processes in the
+          microsimulation. Examples in this tutorial include new demographic
+          and transmission-related modules.
+          <br>
+          <small>
+            <a href="http://statnet.github.io/tut/NewICMs.html">
+               <i class="fa fa-book"></i> Tutorial</a>&nbsp;&nbsp;&nbsp;
+            <a href="http://statnet.github.io/tut/NewICMs.R">
+               <i class="fa fa-code"></i> Code</a>
+          </small>
+        </p>
+        <p>
+          <strong>New Network Models with EpiModel</strong> &nbsp;&nbsp; Similar
+          to ICMs, writing new network models requires creating modules that are
+          plugged in to the epidemic simulation. This framework allows for
+          new epidemiological processes of arbitrary complexity that interact
+          with the unique dynamic network structures of interest.
+          <br>
+          <small>
+            <a href="http://statnet.github.io/tut/NewNet.html">
+               <i class="fa fa-book"></i> Tutorial</a> &nbsp;&nbsp;&nbsp;
+            <a href="http://statnet.github.io/tut/NewNet.R">
+               <i class="fa fa-code"></i> Code</a>
+          </small>
+        </p>
 
         <h4 style="margin-top: 18px">Utilities</h4>
         <p>
@@ -119,47 +206,9 @@
           with the parameterization and simulation of stochastic network models.
           <br>
           <small>
-            <a href="http://statnet.csde.washington.edu/EpiModel/vignette/NetUtils.html">
+            <a href="http://statnet.github.io/tut/NetUtils.html">
               <i class="fa fa-book">
             </i> Tutorial</a>
-          </small>
-        </p>
-
-        <h4 style="margin-top: 18px">Extending EpiModel</h4>
-        <p>
-          <strong>New DCMs with EpiModel</strong> &nbsp;&nbsp; This tutorial
-          shows how to build original deterministic compartmental models by
-          writing model functions and passing new parameters.
-          <br>
-          <small>
-            <a href="http://statnet.csde.washington.edu/EpiModel/vignette/NewDCMs.html">
-               <i class="fa fa-book"></i> Tutorial</a>&nbsp;&nbsp;&nbsp;
-            <a href="http://statnet.csde.washington.edu/EpiModel/vignette/NewDCMs.R">
-               <i class="fa fa-code"></i> Code</a>
-          </small>
-        </p>
-        <p>
-          <strong>New ICMs with EpiModel</strong> &nbsp;&nbsp; This tutorial
-          shows how to build original stochastic individual contact models by
-          writing replacement and supplemental module functions.
-          <br>
-          <small>
-            <a href="http://statnet.csde.washington.edu/EpiModel/vignette/NewICMs.html">
-               <i class="fa fa-book"></i> Tutorial</a>&nbsp;&nbsp;&nbsp;
-            <a href="http://statnet.csde.washington.edu/EpiModel/vignette/NewICMs.R">
-               <i class="fa fa-code"></i> Code</a>
-          </small>
-        </p>
-        <p>
-          <strong>New Network Models with EpiModel</strong> &nbsp;&nbsp; This
-          tutorial shows how to build original stochastic network model by
-          writing replacement and supplemental module functions.
-          <br>
-          <small>
-            <a href="http://statnet.csde.washington.edu/EpiModel/vignette/NewNet.html">
-               <i class="fa fa-book"></i> Tutorial</a> &nbsp;&nbsp;&nbsp;
-            <a href="http://statnet.csde.washington.edu/EpiModel/vignette/NewNet.R">
-               <i class="fa fa-code"></i> Code</a>
           </small>
         </p>
 
@@ -167,7 +216,7 @@
 
 
     	<div id="Workshops">
-				<h2>Workshops</h2>
+				<h3>Workshops</h3>
 
         <h4>Network Modeling for Epidemics</h4>
         <p>
@@ -209,7 +258,7 @@
 
 
       <div id="Other">
-				<h2>Other</h2>
+				<h3>Other</h3>
 
         <h4>Email List</h4>
         <p>

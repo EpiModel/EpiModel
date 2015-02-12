@@ -16,6 +16,11 @@ body {
         margin-top: 10px !important;
     }
 
+    h3 {
+        padding-top: 0 !important;
+        margin-top: 12px !important;
+    }
+
     h4 {
       margin-top: 10px !important;
     }
@@ -31,10 +36,7 @@ h2 {
     margin-top: -35px;
 }
 
-li {
-  font-weight: 500;
-}
-
-a.brand {
-  font-weight: 500;
+h3 {
+    padding-top: 45px;
+    margin-top: -35px;
 }
