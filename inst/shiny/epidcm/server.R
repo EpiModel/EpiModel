@@ -154,7 +154,7 @@ shinyServer(function(input, output) {
   ## Data tab
   output$outData <- renderDataTable({
     as.data.frame(mod())
-  }, options = list(aLengthMenu = c(10, 25, 50, 100), iDisplayLength = 10))
+  }, options = list(lengthMenu = c(10, 25, 50, 100), pageLength = 10))
 
   output$dlData <- downloadHandler(
     filename = "ModelData.csv",

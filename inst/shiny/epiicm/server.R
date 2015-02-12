@@ -177,7 +177,7 @@ shinyServer(function(input, output) {
     } else if (input$datasel == "Simulations") {
       as.data.frame(mod(), out = "vals", sim = max(1, input$datasim))
     }
-  }, options = list(aLengthMenu = c(10, 25, 50, 100), iDisplayLength = 10))
+  }, options = list(lengthMenu = c(10, 25, 50, 100), pageLength = 10))
   output$dlData <- downloadHandler(
     filename = "ModelData.csv",
     content = function(file) {
