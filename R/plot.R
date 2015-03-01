@@ -221,20 +221,29 @@ plot.dcm <- function(x,
     }
   }
 
+  ## Defaults for xlab and ylab
+  if (is.null(da$xlab)) {
+    xlab <- "Time"
+  } else {
+    xlab <- da$xlab
+  }
+
+  if (is.null(da$ylab)) {
+    if (popfrac == FALSE) {
+      ylab <- "Number"
+    } else {
+      ylab <- "Prevalence"
+    }
+  } else {
+    ylab <- da$ylab
+  }
+
 
   ## Main plot window
   if (add == FALSE) {
-    if (popfrac == FALSE) {
-      Time <- Number <- 1
-      plot(Time, Number, type = "n", bty = "n",
-           xaxs = axs, yaxs = axs, xlim = xlim, ylim = ylim,
-           main = main)
-    } else {
-      Time <- Prevalence <- 1
-      plot(Time, Prevalence, type = "n", bty = "n",
-           xaxs = axs, yaxs = axs, xlim = xlim, ylim = ylim,
-           main = main)
-    }
+    plot(1, 1, type = "n", bty = "n",
+         xaxs = axs, yaxs = axs, xlim = xlim, ylim = ylim,
+         xlab = xlab, ylab = ylab, main = main)
   }
 
 
