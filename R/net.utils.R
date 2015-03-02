@@ -1034,7 +1034,7 @@ node_active <- function(nw,
 #' @param nCurrM1 Number currently in mode 1.
 #' @param nCurrM2 Number currently in mode 2.
 #' @param nBirths Number of births/entries in mode 1.
-#' @param nBirthsM2 Number of births/entries in mode2.
+#' @param nBirthsM2 Number of births/entries in mode 2.
 #'
 #' @export
 #' @keywords netUtils internal
