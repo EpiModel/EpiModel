@@ -77,12 +77,8 @@ coef.diss <- dissolution_coefs(dissolution, duration)
 
 # Estimate the ERGM models (see help for netest)
 # Skipping model diagnostics for this, but one should always run these
-est1 <- netest(nw,
-               formation,
-               dissolution,
-               target.stats,
-               coef.diss,
-               verbose = FALSE)
+est1 <- netest(nw, formation, dissolution,
+               target.stats, coef.diss, verbose = FALSE)
 
 # Parameters, initial conditions, and controls for model
 param <- param.net(inf.prob = 0.3, inf.prob.m2 = 0.15)
@@ -103,12 +99,8 @@ summary(mod1, at = 50)
 coef.diss <- dissolution_coefs(dissolution, duration, d.rate = 0.0021)
 
 # Reestimate the model with new coefficient
-est2 <- netest(nw,
-               formation,
-               dissolution,
-               target.stats,
-               coef.diss,
-               verbose = FALSE)
+est2 <- netest(nw, formation, dissolution,
+               target.stats, coef.diss, verbose = FALSE)
 
 # Reset parameters to include demographic rates
 param <- param.net(inf.prob = 0.3, inf.prob.m2 = 0.15,
