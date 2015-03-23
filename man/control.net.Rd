@@ -6,14 +6,15 @@
 \usage{
 control.net(type, nsteps, start = 1, nsims = 1, depend, rec.rand = TRUE,
   b.rand = TRUE, d.rand = TRUE, tea.status = TRUE, attr.rules, epi.by,
-  pid.prefix, initialize.FUN = initialize.net, deaths.FUN = deaths.net,
-  births.FUN = births.net, recovery.FUN = recovery.net,
-  edges_correct.FUN = edges_correct, resim_nets.FUN = resim_nets,
-  infection.FUN = infection.net, get_prev.FUN = get_prev.net,
-  verbose.FUN = verbose.net, module.order = NULL, set.control.stergm,
-  save.nwstats = TRUE, nwstats.formula = "formation",
-  delete.nodes = FALSE, save.transmat = TRUE, save.network = TRUE,
-  save.other, verbose = TRUE, verbose.int = 1, skip.check = FALSE, ...)
+  use.pids = TRUE, pid.prefix, initialize.FUN = initialize.net,
+  deaths.FUN = deaths.net, births.FUN = births.net,
+  recovery.FUN = recovery.net, edges_correct.FUN = edges_correct,
+  resim_nets.FUN = resim_nets, infection.FUN = infection.net,
+  get_prev.FUN = get_prev.net, verbose.FUN = verbose.net,
+  module.order = NULL, set.control.stergm, save.nwstats = TRUE,
+  nwstats.formula = "formation", delete.nodes = FALSE,
+  save.transmat = TRUE, save.network = TRUE, save.other, verbose = TRUE,
+  verbose.int = 1, skip.check = FALSE, ...)
 }
 \arguments{
 \item{type}{Disease type to be modeled, with the choice of \code{"SI"} for
@@ -67,9 +68,14 @@ which subgroup epidemic prevalences should be calculated. This nodal
 attribute must be contained in the network model formation formula,
 otherwise it is ignored.}
 
-\item{pid.prefix}{A character vector of length 2 containing the prefixes for
-persistent ids initialized in bipartite networks with vital dynamics,
-with the default of \code{c("F", "M")}.}
+\item{use.pids}{If \code{TRUE}, use persistent ids for vertices; otherwise,
+numeric ids will be recycled in models with vital dynamics. For one-mode
+simulations, this will be a random hexidecimal value; for bipartite
+simulations, it will be based on \code{pid.prefix}.}
+
+\item{pid.prefix}{For bipartite network simulations with vital dynamics,
+a character vector of length 2 containing the prefixes, with the
+default of \code{c("F", "M")}.}
 
 \item{initialize.FUN}{Module to initialize the model at time 1, with the
 default function of \code{\link{initialize.net}}.}
