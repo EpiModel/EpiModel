@@ -2,17 +2,29 @@
 #' @title Deterministic Compartmental Model Functions
 #'
 #' @description These functions parameterize the built-in deterministic
-#'              compartmental models solved using the \code{\link{dcm}}
-#'              function in \code{EpiModel}.
+#'              compartmental models solved using the \code{dcm} function.
 #'
-#' @param t Time vector.
-#' @param t0 Initial conditions.
-#' @param parms Model parameters.
+#' @param t Time vector, passed into model function internally through
+#'        \code{\link{dcm}} via the control settings in \code{\link{control.dcm}}.
+#' @param t0 Initial conditions for model, passed into model function internally
+#'        through \code{\link{dcm}} via the initial conditions in
+#'        \code{\link{init.dcm}}.
+#' @param parms Model parameters, passed into model function internally through
+#'        \code{\link{dcm}} via the parameter settings in \code{\link{param.dcm}}.
 #'
 #' @details
-#' Details to add.
+#' This help page shows the names of all the integrated deterministic compartmental
+#' model functions supported in EpiModel. Integrated models are those already
+#' programmed interally within the software. The model functions may be printed
+#' to see their internal structure, either directly on the console or by using
+#' the \code{print.mod} argument in \code{\link{control.dcm}}.
 #'
-#' @keywords internal
+#' The naming convention for the models listed here follows the format:
+#' \code{mod_<disease type>_<number of groups>_<vital dynamics>}. The supported
+#' disease types are SI, SIS, and SIR; the number of groups are 1 or 2; and the
+#' vital dynamic options are closed (fixed population composition) or open (with
+#' births and deaths).
+
 #' @name dcm.mods
 #'
 NULL
