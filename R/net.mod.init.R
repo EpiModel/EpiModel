@@ -52,9 +52,7 @@ initialize.net <- function(x, param, init, control, s) {
 
     # Network Parameters ------------------------------------------------------
     dat$nw <- nw
-
     dat$nwparam <- list(x[-which(names(x) == "fit")])
-
     dat$param$modes <- modes
 
 
@@ -65,7 +63,7 @@ initialize.net <- function(x, param, init, control, s) {
 
 
     ## Initialize persistent IDs
-    if (modes == 2 & param$vital == TRUE & control$delete.nodes == FALSE) {
+    if (control$use.pids == TRUE) {
       dat$nw <- init_pids(dat$nw, dat$control$pid.prefix)
     }
 
@@ -325,13 +323,16 @@ init_status.net <- function(dat) {
 #'
 init_pids <- function(nw, prefixes=c("F", "M")) {
 
-  # Set persistent IDs
-  t0.pids <- c(paste0(prefixes[1], 1:length(modeids(nw, 1))),
-               paste0(prefixes[2], 1:length(modeids(nw, 2))))
+  if (nw$gal$bipartite == FALSE) {
+    nw <- initialize.pids(nw)
+  } else {
+    t0.pids <- c(paste0(prefixes[1], 1:length(modeids(nw, 1))),
+                 paste0(prefixes[2], 1:length(modeids(nw, 2))))
 
-  # Initialize persistent IDs on network
-  nw <- set.network.attribute(nw, "vertex.pid", "vertex.names")
-  nw <- set.vertex.attribute(nw, "vertex.names", t0.pids)
+    nw <- set.network.attribute(nw, "vertex.pid", "vertex.names")
+    nw <- set.vertex.attribute(nw, "vertex.names", t0.pids)
+  }
+
 
   return(nw)
 }
