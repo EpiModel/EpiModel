@@ -81,8 +81,8 @@ Sets the controls for stochastic individual contact models
 individual contact model solved with the \code{\link{icm}} function. Controls
 are required for both built-in model types and when passing original process
 modules. For an overview of control settings for built-in ICM class models,
-consult the \href{http://statnet.org/EpiModel/vignette/Tutorial.pdf}{EpiModel
-Tutorial}. For all built-in models, the \code{type} argument is a necessary
+consult the \href{http://statnet.github.io/tut/BasicICMs.html}{Basic ICMs}
+tutorial. For all built-in models, the \code{type} argument is a necessary
 parameter and it has no default.
 }
 \section{New Modules}{
@@ -98,7 +98,7 @@ For original models, one may substitute replacement module functions for any
 the default functions. New modules may be added to the workflow at each time
 step by passing a module function via the \code{...} argument. Further details
 and examples of passing new modules to \code{icm} are found in the
-\href{http://statnet.org/EpiModel/vignette/NewICMs.html}{Solving New ICMs with
+\href{http://statnet.github.io/tut/NewICMs.html}{Solving New ICMs with
 EpiModel} tutorial.
 }
 \seealso{

@@ -51,7 +51,7 @@ Sets the controls for deterministic compartmental models
 compartmental models solved with the \code{\link{dcm}} function. Controls are
 required for both built-in model types and original models. For an overview of
 control settings for built-in DCM class models, consult the
-\href{http://statnet.org/EpiModel/vignette/Tutorial.pdf}{EpiModel Tutorial}.
+\href{http://statnet.github.io/tut/BasicDCMs.html}{Basic DCMs} tutorial.
 For all built-in models, the \code{type} argument is a necessary parameter
 and it has no default.
 }
@@ -64,8 +64,8 @@ functions.
 
 These new models may be input and solved with \code{\link{dcm}} using the
 \code{new.mod} argument, which requires as input a model function. Details and
-examples are found in the \href{http://statnet.org/EpiModel/vignette/NewDCMs.html}{Solving
-New DCMs with EpiModel} tutorial.
+examples are found in the \href{http://statnet.github.io/tut/NewDCMs.html}{Solving
+New DCMs} tutorial.
 }
 \seealso{
 Use \code{\link{param.dcm}} to specify model parameters and
