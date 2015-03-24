@@ -49,8 +49,9 @@ remain connected) over time. This enables edges to have duration, allowing for
 repeated transmission-related acts within the same dyad, specification of edge
 formation and dissolution rates, control over the temporal sequencing of
 multiple edges, and specification of network-level features. A detailed
-description of these models, along with examples, is found in Section 4 of
-the \href{http://statnet.org/EpiModel/vignette/Tutorial.pdf}{EpiModel Tutorial}.
+description of these models, along with examples, is found in the
+the \href{http://statnet.github.io/tut/BasicNet.html}{Basic Network Models}
+tutorial.
 
 The \code{netsim} function performs modeling of both the built-in model types
 and original models. Built-in model types include one-mode and bipartite models
@@ -60,9 +61,10 @@ with disease types for Susceptible-Infected (SI), Susceptible-Infected-Recovered
 Original models may be parameterized by writing new process modules that
 either take the place of existing modules (for example, disease recovery), or
 supplement the set of existing processes with a new one contained in an new
-module. This functionality is documented in the New Network Models with EpiModel
-Tutorial at \url{www.epimodel.org}. The list of modules within \code{netsim}
-available for modification is listed in \code{\link{modules.net}}.
+module. This functionality is documented in the
+\href{http://statnet.github.io/tut/NewNet.html}{Solving New Network Models}
+tutorial. The list of modules within \code{netsim} available for modification
+is listed in \code{\link{modules.net}}.
 }
 \examples{
 \dontrun{

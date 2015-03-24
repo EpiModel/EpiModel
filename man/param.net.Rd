@@ -112,8 +112,10 @@ of \code{c(0.5, 0.5, 0.1)} would simulate a 0.5 transmission probability for
 the first two time steps of a person's infection, followed by a 0.1 for the
 third time step. If the infected person has not recovered or exited the
 population by the fourth time step, the third element in the vector will carry
-forward until one of those occurs or the simulation ends. For further examples, see
-\href{http://statnet.csde.washington.edu/EpiModel/nme/d4-tut3.html}{this tutorial}.
+forward until one of those occurs or the simulation ends. For further examples,
+see the NME tutorial,
+\href{http://statnet.csde.washington.edu/EpiModel/nme/d4-tut3.html}{Additional
+Modeling Topics}.
 }
 
 \section{New Modules}{

@@ -15,8 +15,8 @@
 #' on individual agents in discrete time as a function of processes with stochastic
 #' variation. The stochasticity is inherent in all transition processes:
 #' infection, recovery, and demographics. A detailed description of these models
-#' may be found in Section 3 of the
-#' \href{http://statnet.org/EpiModel/vignette/Tutorial.pdf}{EpiModel Tutorial}.
+#' may be found in the \href{http://statnet.github.io/tut/BasicICMs.html}{Basic
+#' ICMs} tutorial.
 #'
 #' The \code{icm} function performs  modeling of both the built-in model types
 #' and original models. Built-in model types include one-group and two-group
@@ -27,8 +27,7 @@
 #' the set of existing processes with a new one contained in an original module.
 #' New and replacement modules may be written and input into \code{icm} following
 #' the steps outlined in the
-#' \href{http://statnet.org/EpiModel/vignette/NewICMs.html}{Solving New ICMs
-#' with EpiModel} tutorial.
+#' \href{http://statnet.github.io/tut/NewICMs.html}{Solving New ICMs} tutorial.
 #'
 #' @return
 #' A list of class \code{icm} with the following elements:
