@@ -58,8 +58,8 @@
 #' built-in types, for which these parameters are used, or original model
 #' specifications for which these parameters may be used (but not necessarily).
 #' A detailed description of DCM parameterization for built-in models is found
-#' in Section 2 of the
-#' \href{http://statnet.org/EpiModel/vignette/Tutorial.pdf}{EpiModel Tutorial}.
+#' in the
+#' \href{http://statnet.github.io/tut/BasicDCMs.html}{Basic DCMs} tutorial.
 #'
 #' For built-in models, the model specification will be selected as a function
 #' of the model parameters entered here and the control settings in
@@ -86,8 +86,7 @@
 #' series of models varying one or more of the model parameters is run. This is
 #' possible by setting any parameter as a vector of length greater than one. See
 #' both the example below and the
-#' \href{http://statnet.org/EpiModel/vignette/Tutorial.pdf}{EpiModel Tutorial}
-#' for details.
+#' \href{http://statnet.github.io/tut/BasicDCMs.html}{Basic DCMs} tutorial.
 #'
 #' @section New Model Types:
 #' To build original model specifications outside of the built-in models, start
@@ -158,9 +157,8 @@ param.dcm <- function(inf.prob,
 #' contact models simulated with the \code{\link{icm}} function. Models
 #' may use the built-in types, for which these parameters are used, or new process
 #' modules which may use these parameters (but not necessarily). A detailed
-#' description of ICM parameterization for built-in models is found in Section 3
-#' of the \href{http://statnet.org/EpiModel/vignette/Tutorial.pdf}{EpiModel
-#' Tutorial}.
+#' description of ICM parameterization for built-in models is found in the
+#' \href{http://statnet.github.io/tut/BasicICMs.html}{Basic ICMs} tutorial.
 #'
 #' For built-in models, the model specification will be chosen as a result of
 #' the model parameters entered here and the control settings in
@@ -179,8 +177,7 @@ param.dcm <- function(inf.prob,
 #' \eqn{N_i} is the group size and \eqn{\alpha_i} the group-specific act rates
 #' at time \eqn{t}. The \code{balance} parameter here specifies which group's
 #' act rate should control the others with respect to balancing. See the
-#' \href{http://statnet.org/EpiModel/vignette/Tutorial.pdf}{EpiModel Tutorial}
-#' for further details.
+#' \href{http://statnet.github.io/tut/BasicDCMs.html}{Basic DCMs} tutorial.
 #'
 #' @section New Modules:
 #' To build original models outside of the built-in models, new process modules
@@ -313,8 +310,8 @@ param.icm <- function(inf.prob,
 #' may use the built-in types, for which these parameters are used, or new process
 #' modules which may use these parameters (but not necessarily). A detailed
 #' description of network model parameterization for built-in models is found in
-#' Section 4 of the \href{http://statnet.org/EpiModel/vignette/Tutorial.pdf}{EpiModel
-#' Tutorial}.
+#' the \href{http://statnet.github.io/tut/BasicNet.html}{Basic Network Models}
+#' tutorial.
 #'
 #' For built-in models, the model specification will be chosen as a result of
 #' the model parameters entered here and the control settings in
@@ -345,8 +342,10 @@ param.icm <- function(inf.prob,
 #' the first two time steps of a person's infection, followed by a 0.1 for the
 #' third time step. If the infected person has not recovered or exited the
 #' population by the fourth time step, the third element in the vector will carry
-#' forward until one of those occurs or the simulation ends. For further examples, see
-#' \href{http://statnet.csde.washington.edu/EpiModel/nme/2014/d4-tut3.html}{this tutorial}.
+#' forward until one of those occurs or the simulation ends. For further examples,
+#' see the NME tutorial,
+#' \href{http://statnet.csde.washington.edu/EpiModel/nme/d4-tut3.html}{Additional
+#' Modeling Topics}.
 #'
 #' @section New Modules:
 #' To build original models outside of the built-in models, new process modules

@@ -82,8 +82,8 @@ models solved with the \code{\link{dcm}} function. The models may use the
 built-in types, for which these parameters are used, or original model
 specifications for which these parameters may be used (but not necessarily).
 A detailed description of DCM parameterization for built-in models is found
-in Section 2 of the
-\href{http://statnet.org/EpiModel/vignette/Tutorial.pdf}{EpiModel Tutorial}.
+in the
+\href{http://statnet.github.io/tut/BasicDCMs.html}{Basic DCMs} tutorial.
 
 For built-in models, the model specification will be selected as a function
 of the model parameters entered here and the control settings in
@@ -113,8 +113,7 @@ for further details.
 series of models varying one or more of the model parameters is run. This is
 possible by setting any parameter as a vector of length greater than one. See
 both the example below and the
-\href{http://statnet.org/EpiModel/vignette/Tutorial.pdf}{EpiModel Tutorial}
-for details.
+\href{http://statnet.github.io/tut/BasicDCMs.html}{Basic DCMs} tutorial.
 }
 
 \section{New Model Types}{

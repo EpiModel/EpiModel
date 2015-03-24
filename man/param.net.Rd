@@ -77,8 +77,8 @@ models simulated with the \code{\link{netsim}} function. Models
 may use the built-in types, for which these parameters are used, or new process
 modules which may use these parameters (but not necessarily). A detailed
 description of network model parameterization for built-in models is found in
-Section 4 of the \href{http://statnet.org/EpiModel/vignette/Tutorial.pdf}{EpiModel
-Tutorial}.
+the \href{http://statnet.github.io/tut/BasicNet.html}{Basic Network Models}
+tutorial.
 
 For built-in models, the model specification will be chosen as a result of
 the model parameters entered here and the control settings in
@@ -113,7 +113,7 @@ the first two time steps of a person's infection, followed by a 0.1 for the
 third time step. If the infected person has not recovered or exited the
 population by the fourth time step, the third element in the vector will carry
 forward until one of those occurs or the simulation ends. For further examples, see
-\href{http://statnet.csde.washington.edu/EpiModel/nme/2014/d4-tut3.html}{this tutorial}.
+\href{http://statnet.csde.washington.edu/EpiModel/nme/d4-tut3.html}{this tutorial}.
 }
 
 \section{New Modules}{
