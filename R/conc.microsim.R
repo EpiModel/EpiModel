@@ -5,21 +5,21 @@
 #'              with purely heterosexual mixing under varying scenarios
 #'              of sexual partnership concurrency.
 #'
-#' @param s.num.f number of initial susceptible females in the population.
-#' @param i.num.f number of initial infected females in the population.
-#' @param s.num.m number of initial susceptible males in the population.
-#' @param i.num.m number of initial infected females in the population.
-#' @param monog.f if \code{TRUE}, enforce a momentary degree constraint of
+#' @param s.num.f Number of initial susceptible females in the population.
+#' @param i.num.f Number of initial infected females in the population.
+#' @param s.num.m Number of initial susceptible males in the population.
+#' @param i.num.m Number of initial infected females in the population.
+#' @param monog.f If \code{TRUE}, enforce a momentary degree constraint of
 #'        monogamy for females (females not allowed concurrent partnerships).
-#' @param monog.m if \code{TRUE}, enforce a momentary degree constraint of
+#' @param monog.m If \code{TRUE}, enforce a momentary degree constraint of
 #'        monogamy for males (males not allowed concurrent partnerships).
-#' @param meandeg average momentary mean degree (number of current partnerships)
+#' @param meandeg Average momentary mean degree (number of current partnerships)
 #'        in the population.
-#' @param part.duration average length of partnerships in months.
-#' @param nsteps number of time steps to simulate the model over. This must be a
+#' @param part.duration Average length of partnerships in months.
+#' @param nsteps Number of time steps to simulate the model over. This must be a
 #'        positive integer.
-#' @param nsims number of simulations to run.
-#' @param verbose if \code{TRUE}, print model progress to the console.
+#' @param nsims Number of simulations to run.
+#' @param verbose If \code{TRUE}, print model progress to the console.
 #'
 #' @details
 #' This function runs a microsimulation model of HIV-1 transmission in a purely

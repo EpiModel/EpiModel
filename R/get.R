@@ -5,13 +5,13 @@
 #'              simulated with \code{netsim}, with the option to collapse the
 #'              extracted network at a specific time step.
 #'
-#' @param x an \code{EpiModel} object of class \code{\link{netsim}}.
-#' @param sim simulation number of extracted network.
-#' @param network network number, for simulations with multiple networks
+#' @param x An \code{EpiModel} object of class \code{\link{netsim}}.
+#' @param sim Simulation number of extracted network.
+#' @param network Network number, for simulations with multiple networks
 #'        representing the population.
-#' @param collapse if \code{TRUE}, collapse the \code{networkDynamic} object to
+#' @param collapse If \code{TRUE}, collapse the \code{networkDynamic} object to
 #'        a static \code{network} object at a specified time step.
-#' @param at if \code{collapse} is used, the time step at which the extracted
+#' @param at If \code{collapse} is used, the time step at which the extracted
 #'        network should be collapsed.
 #'
 #' @keywords extract
@@ -90,8 +90,8 @@ get_network <- function(x, sim = 1, network = 1, collapse = FALSE, at) {
 #' @description Extracts the matrix of transmission data for each transmission
 #'              event that occured within a network epidemic model.
 #'
-#' @param x an \code{EpiModel} object of class \code{\link{netsim}}.
-#' @param sim simulation number of extracted network.
+#' @param x An \code{EpiModel} object of class \code{\link{netsim}}.
+#' @param sim Simulation number of extracted network.
 #'
 #' @return
 #' A data frame with the following collumns
@@ -164,9 +164,9 @@ get_transmat <- function(x, sim = 1) {
 #' @description Extracts a data frame of network statistics from a network
 #'              epidemic model.
 #'
-#' @param x an \code{EpiModel} object of class \code{\link{netsim}}.
-#' @param sim a vector of simulation numbers of extracted network.
-#' @param network network number, for simulations with multiple networks
+#' @param x An \code{EpiModel} object of class \code{\link{netsim}}.
+#' @param sim A vector of simulation numbers of extracted network.
+#' @param network Network number, for simulations with multiple networks
 #'        representing the population.
 #'
 #' @keywords extract
@@ -240,8 +240,8 @@ get_nwstats <- function(x, sim, network = 1) {
 #' @description Extracts a list of network model parameters saved in the
 #'              initialization module.
 #'
-#' @param x master data object used in \code{netsim} simulations.
-#' @param network network number, for simulations with multiple networks
+#' @param x Master data object used in \code{netsim} simulations.
+#' @param network Network number, for simulations with multiple networks
 #'        representing the population.
 #'
 #' @keywords extract internal
@@ -261,7 +261,10 @@ get_nwparam <- function(x, network = 1) {
 #'              \code{merge}.
 #'
 #' @param x An object of class \code{netsim}.
-#' @param sims A vector of simulation numbers to retain in the output object.
+#' @param sims A vector of simulation numbers to retain in the output object,
+#'        or \code{"mean"} which automatically selects the one simulation with
+#'        the number infected at the final time step closest to the mean across
+#'        all simulations.
 #'
 #' @keywords extract
 #' @export
@@ -269,33 +272,39 @@ get_nwparam <- function(x, network = 1) {
 get_sims <- function(x, sims) {
 
   nsims <- x$control$nsims
+
+  if (missing(sims)) {
+    stop("Specify sims as a vector of simulations or \"mean\" ", call. = FALSE)
+  }
+
+  if (length(sims) == 1 && sims == "mean") {
+    d <- tail(x$epi$i.num, 1)
+    md <- mean(as.numeric(d))
+    sims <- which.min(abs(d - md))
+  }
+
   delsim <- setdiff(1:nsims, sims)
-
   out <- x
-
-  for (i in seq_along(out$epi)) {
-    out$epi[[i]] <- out$epi[[i]][,-delsim, drop = FALSE]
-  }
-
-  if (!is.null(out$network)) {
-    out$network[delsim] <- NULL
-  }
-
-  if (!is.null(out$stats$nwstats)) {
-    out$stats$nwstats[delsim] <- NULL
-  }
-  if (!is.null(out$stats$transmat)) {
-    out$stats$transmat[delsim] <- NULL
-  }
-
-  if (!is.null(out$control$save.other)) {
-    oname <- out$control$save.other
-    for (i in seq_along(oname)) {
-      out[[oname[i]]][delsim] <- NULL
+  if (length(delsim) > 0) {
+    for (i in seq_along(out$epi)) {
+      out$epi[[i]] <- out$epi[[i]][, -delsim, drop = FALSE]
+    }
+    if (!is.null(out$network)) {
+      out$network[delsim] <- NULL
+    }
+    if (!is.null(out$stats$nwstats)) {
+      out$stats$nwstats[delsim] <- NULL
+    }
+    if (!is.null(out$stats$transmat)) {
+      out$stats$transmat[delsim] <- NULL
+    }
+    if (!is.null(out$control$save.other)) {
+      oname <- out$control$save.other
+      for (i in seq_along(oname)) {
+        out[[oname[i]]][delsim] <- NULL
+      }
     }
   }
-
   out$control$nsims <- length(sims)
-
   return(out)
 }

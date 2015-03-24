@@ -7,28 +7,28 @@
 #' @description Plots epidemiological data from a deterministic compartment
 #'              epidemic model solved with \code{dcm}.
 #'
-#' @param x an \code{EpiModel} object of class \code{dcm}.
-#' @param y output compartments or flows from \code{dcm} object to plot.
-#' @param popfrac if \code{TRUE}, plot prevalence of values rather than numbers
+#' @param x An \code{EpiModel} object of class \code{dcm}.
+#' @param y Output compartments or flows from \code{dcm} object to plot.
+#' @param popfrac If \code{TRUE}, plot prevalence of values rather than numbers
 #'        (see details).
-#' @param run run number to plot, for models with multiple runs (default is run 1).
-#' @param col color for lines, either specified as a single color in a standard
+#' @param run Run number to plot, for models with multiple runs (default is run 1).
+#' @param col Color for lines, either specified as a single color in a standard
 #'        R color format, or alternatively as a color palette from
 #'        \code{\link{RColorBrewer}} (see details).
-#' @param lwd line width for output lines.
-#' @param lty line type for output lines.
-#' @param alpha transparency level for lines, where 0 = transparent and 1 = opaque
+#' @param lwd Line width for output lines.
+#' @param lty Line type for output lines.
+#' @param alpha Transparency level for lines, where 0 = transparent and 1 = opaque
 #'        (see \code{\link{transco}}).
-#' @param leg type of legend to plot. Values are "n" for no legend, "full" for
+#' @param leg Type of legend to plot. Values are "n" for no legend, "full" for
 #'        full legend, and "lim" for limited legend (see details).
-#' @param leg.name character string to use for legend, with the default
+#' @param leg.name Character string to use for legend, with the default
 #'        determined automatically based on the \code{y} input.
-#' @param leg.cex legend scale size.
-#' @param axs plot axis type (see \code{\link{par}} for details), with default
+#' @param leg.cex Legend scale size.
+#' @param axs Plot axis type (see \code{\link{par}} for details), with default
 #'        of "r".
-#' @param add if \code{TRUE}, new plot window is not called and lines are added to
+#' @param add If \code{TRUE}, new plot window is not called and lines are added to
 #'        existing plot window.
-#' @param ... additional arguments to pass to main plot window (see
+#' @param ... Additional arguments to pass to main plot window (see
 #'        \code{\link{plot.default}}).
 #'
 #' @details
@@ -221,20 +221,29 @@ plot.dcm <- function(x,
     }
   }
 
+  ## Defaults for xlab and ylab
+  if (is.null(da$xlab)) {
+    xlab <- "Time"
+  } else {
+    xlab <- da$xlab
+  }
+
+  if (is.null(da$ylab)) {
+    if (popfrac == FALSE) {
+      ylab <- "Number"
+    } else {
+      ylab <- "Prevalence"
+    }
+  } else {
+    ylab <- da$ylab
+  }
+
 
   ## Main plot window
   if (add == FALSE) {
-    if (popfrac == FALSE) {
-      Time <- Number <- 1
-      plot(Time, Number, type = "n", bty = "n",
-           xaxs = axs, yaxs = axs, xlim = xlim, ylim = ylim,
-           main = main)
-    } else {
-      Time <- Prevalence <- 1
-      plot(Time, Prevalence, type = "n", bty = "n",
-           xaxs = axs, yaxs = axs, xlim = xlim, ylim = ylim,
-           main = main)
-    }
+    plot(1, 1, type = "n", bty = "n",
+         xaxs = axs, yaxs = axs, xlim = xlim, ylim = ylim,
+         xlab = xlab, ylab = ylab, main = main)
   }
 
 
@@ -463,38 +472,36 @@ plot.dcm <- function(x,
 #' @description Plots epidemiological data from a stochastic individual contact
 #'              model simulated with \code{icm}.
 #'
-#' @param x an \code{EpiModel} object of class \code{icm}.
-#' @param y output compartments or flows from \code{icm} object to plot.
-#' @param popfrac if \code{TRUE}, plot prevalence of values rather than numbers
+#' @param x An \code{EpiModel} object of class \code{icm}.
+#' @param y Output compartments or flows from \code{icm} object to plot.
+#' @param popfrac If \code{TRUE}, plot prevalence of values rather than numbers
 #'        (see details).
-#' @param sim.lines if \code{TRUE}, plot individual simulation lines. Default is
+#' @param sim.lines If \code{TRUE}, plot individual simulation lines. Default is
 #'        to plot lines for one-group models but not for two-group models.
-#' @param sims a vector representing which individual simulation lines to plot,
+#' @param sims Vector representing which individual simulation lines to plot,
 #'        with default to plot all simulations.
-#' @param sim.col a vector of any standard R color format for simulation lines.
-#' @param sim.lwd line width for simulation lines.
-#' @param sim.alpha transparency level for simulation lines, where 0 = transparent
+#' @param sim.col Vector of any standard R color format for simulation lines.
+#' @param sim.lwd Line width for simulation lines.
+#' @param sim.alpha Transparency level for simulation lines, where 0 = transparent
 #'        and 1 = opaque (see \code{\link{transco}}).
-#' @param mean.line if \code{TRUE}, plot mean of simulations across time.
-#' @param mean.extinct if \code{TRUE}, include extinct simulations in mean
-#'        calculation (see details).
-#' @param mean.smooth if \code{TRUE}, use a lowess smoother on the mean line.
-#' @param mean.col a vector of any standard R color format for mean lines.
-#' @param mean.lwd line width for mean lines.
-#' @param mean.lty line type for mean lines.
-#' @param qnts if numeric, plot polygon of simulation quantiles based on the
+#' @param mean.line If \code{TRUE}, plot mean of simulations across time.
+#' @param mean.smooth If \code{TRUE}, use a lowess smoother on the mean line.
+#' @param mean.col Vector of any standard R color format for mean lines.
+#' @param mean.lwd Line width for mean lines.
+#' @param mean.lty Line type for mean lines.
+#' @param qnts If numeric, plot polygon of simulation quantiles based on the
 #'        range implied by the argument (see details). If \code{FALSE}, suppress
 #'        polygon from plot.
-#' @param qnts.col a vector of any standard R color format for polygons.
-#' @param qnts.alpha transparency level for quantile polygons, where 0 =
+#' @param qnts.col Vector of any standard R color format for polygons.
+#' @param qnts.alpha Transparency level for quantile polygons, where 0 =
 #'        transparent and 1 = opaque (see \code{\link{transco}}).
-#' @param leg if \code{TRUE}, plot default legend.
-#' @param leg.cex legend scale size.
-#' @param axs plot axis type (see \code{\link{par}} for details), with default
+#' @param leg If \code{TRUE}, plot default legend.
+#' @param leg.cex Legend scale size.
+#' @param axs Plot axis type (see \code{\link{par}} for details), with default
 #'        to \code{"r"}.
-#' @param add if \code{TRUE}, new plot window is not called and lines are added to
+#' @param add If \code{TRUE}, new plot window is not called and lines are added to
 #'        existing plot window.
-#' @param ... additional arguments to pass to main plot (see
+#' @param ... Additional arguments to pass to main plot (see
 #'        \code{\link{plot.default}}).
 #'
 #' @details
@@ -504,9 +511,7 @@ plot.dcm <- function(x,
 #' plots are individual simulation lines, means of the individual simulation
 #' lines, and quantiles of those individual simulation lines. The mean line,
 #' toggled on with \code{mean.line=TRUE} is calculated as the row mean
-#' across simulations at each time step. The \code{mean.extinct} will, if set to
-#' \code{FALSE}, exclude from this calculation any simulations with no incident
-#' cases of disease.
+#' across simulations at each time step.
 #'
 #' Compartment prevalences are the size of a compartment over some denominator.
 #' To plot the raw numbers from any compartment, use \code{popfrac=FALSE}; this
@@ -561,7 +566,6 @@ plot.icm <- function(x,
                      sim.lwd,
                      sim.alpha,
                      mean.line = TRUE,
-                     mean.extinct = TRUE,
                      mean.smooth = FALSE,
                      mean.col,
                      mean.lwd,
@@ -585,7 +589,6 @@ plot.icm <- function(x,
   if (max(sims) > nsims) {
     stop("Set sim to between 1 and ", nsims, call. = FALSE)
   }
-  nomeanlty <- ifelse(missing(mean.lty), TRUE, FALSE)
   type <- x$control$type
   if (class(x) == "icm") {
     modes <- x$param$groups
@@ -705,9 +708,9 @@ plot.icm <- function(x,
   # Compartment max
   if (popfrac == FALSE) {
     if (lcomp == 1) {
-      max.prev <- max(x$epi[[y]])
+      max.prev <- max(x$epi[[y]], na.rm = TRUE)
     } else {
-      max.prev <- max(sapply(y, function(comps) max(x$epi[[comps]])))
+      max.prev <- max(sapply(y, function(comps) max(x$epi[[comps]], na.rm = TRUE)))
     }
   } else {
     max.prev <- 1
@@ -737,25 +740,32 @@ plot.icm <- function(x,
     main <- da$main
   }
 
+  if (is.null(da$xlab)) {
+    xlab <- "Time"
+  } else {
+    xlab <- da$xlab
+  }
+
+  if (is.null(da$ylab)) {
+    if (popfrac == FALSE) {
+      ylab <- "Number"
+    } else {
+      ylab <- "Prevalence"
+    }
+  } else {
+    ylab <- da$ylab
+  }
 
   # Main plot window --------------------------------------------------------
   if (add == FALSE) {
-    if (popfrac == FALSE) {
-      Time <- Number <- 1
-      plot(Time, Number, type = "n", bty = "n",
-           xaxs = axs, yaxs = axs, xlim = xlim, ylim = ylim,
-           main = main)
-    } else {
-      Time <- Prevalence <- 1
-      plot(Time, Prevalence, type = "n", bty = "n",
-           xaxs = axs, yaxs = axs, xlim = xlim, ylim = ylim,
-           main = main)
-    }
+    plot(1, 1, type = "n", bty = "n",
+         xaxs = axs, yaxs = axs, xlim = xlim, ylim = ylim,
+         xlab = xlab, ylab = ylab, main = main)
   }
 
 
   # Quantiles ---------------------------------------------------------------
-  if (missing(qnts)) {
+  if (missing(qnts) || qnts == FALSE) {
     disp.qnts <- FALSE
   } else {
     disp.qnts <- TRUE
@@ -771,115 +781,92 @@ plot.icm <- function(x,
     if (qnts > 1 | qnts < 0) {
       stop("qnts must be between 0 and 1", call. = FALSE)
     }
-    for (j in seq_len(lcomp)) {
-      quants <- c((1-qnts)/2, 1-((1-qnts)/2))
-      qnt.prev <- apply(x$epi[[y[j]]], 1,
-                        function(x) quantile(x, c(quants[1], quants[2])))
-      xx <- c(1:nsteps, nsteps:1)
-      yy <- c(qnt.prev[1,], rev(qnt.prev[2,]))
-      polygon(xx, yy, col = qnts.pal[j], border = NA)
-    }
+    draw_qnts(x, y, qnts, qnts.pal)
   }
 
 
   # Simulation lines --------------------------------------------------------
   if (missing(sim.lines)) {
-    if (modes == 1) {
-      sim.lines <- TRUE
-    } else {
-      sim.lines <- FALSE
-    }
+    sim.lines <- ifelse(modes == 1, TRUE, FALSE)
   }
   if (sim.lines == TRUE) {
-    if (nsims == 1) {
-      for (j in seq_len(lcomp)) {
-        lines(1:nsteps, x$epi[[y[j]]][, 1], lwd = sim.lwd[j], col = sim.pal[j])
-      }
-    }
-    if (nsims > 1) {
-      for (j in seq_len(lcomp)) {
-        for (i in sims) {
-          lines(1:nsteps, x$epi[[y[j]]][, i], lwd = sim.lwd[j], col = sim.pal[j])
-        }
+    for (j in seq_len(lcomp)) {
+      for (i in sims) {
+        lines(x$epi[[y[j]]][, i], lwd = sim.lwd[j], col = sim.pal[j])
       }
     }
   }
 
 
   # Mean lines --------------------------------------------------------------
-  if (!missing(mean.lwd) && length(mean.lwd) < lcomp) {
-    mean.lwd <- rep(mean.lwd, lcomp)
-  }
-  if (missing(mean.lwd)) {
-    mean.lwd <- rep(2.5, lcomp)
-  }
-  if (nomeanlty == TRUE) {
-    if (nocomp == TRUE) {
-      if (modes == 1) {
+  if (mean.line == TRUE) {
+
+    if (!missing(mean.lwd) && length(mean.lwd) < lcomp) {
+      mean.lwd <- rep(mean.lwd, lcomp)
+    }
+    if (missing(mean.lwd)) {
+      mean.lwd <- rep(2.5, lcomp)
+    }
+
+    if (!missing(mean.lty) && length(mean.lty) < lcomp) {
+      mean.lty <- rep(mean.lty, lcomp)
+    }
+    if (missing(mean.lty)) {
+      if (nocomp == FALSE || (nocomp == TRUE && modes == 1)) {
         mean.lty <- rep(1, lcomp)
-      }
-      if (modes == 2) {
+      } else {
         mean.lty <- rep(1:2, each = lcomp / 2)
       }
     }
-    if (nocomp == FALSE) {
-      mean.lty <- rep(1, lcomp)
-    }
-  }
-  if (nomeanlty == FALSE & length(mean.lty) < lcomp) {
-    mean.lty <- rep(mean.lty, lcomp)
-  }
-  if (mean.line == TRUE) {
-    if (nsims == 1) {
-      for (j in seq_len(lcomp)) {
-        mean.prev <- x$epi[[y[j]]][, 1]
-        if (mean.smooth == TRUE) {
-          mean.prev <- supsmu(x = 1:nsteps, y = mean.prev)$y
-        }
-        lines(1:nsteps,
-              mean.prev,
-              lwd = mean.lwd[j],
-              col = mean.pal[j],
-              lty = mean.lty[j])
-
-      }
-    }
-    if (nsims > 1) {
-      for (j in seq_len(lcomp)) {
-        if (mean.extinct == TRUE) {
-          mean.prev <- apply(x$epi[[y[j]]], 1, mean)
-          if (mean.smooth == TRUE) {
-            mean.prev <- supsmu(x = 1:nsteps, y = mean.prev)$y
-          }
-        } else {
-          non.extinct <- as.vector(which(apply(x$epi$si.flow, 2, max) > 0))
-          mean.prev <- apply(x$epi[[y[j]]][, non.extinct], 1, mean)
-          if (mean.smooth == TRUE) {
-            mean.prev <- supsmu(x = 1:nsteps, y = mean.prev)$y
-          }
-        }
-        lines(1:nsteps,
-              mean.prev,
-              lwd = mean.lwd[j],
-              col = mean.pal[j],
-              lty = mean.lty[j])
-      }
-    }
+    draw_means(x, y, mean.smooth, mean.lwd, mean.pal, mean.lty)
   }
 
 
   # Legends -----------------------------------------------------------------
-  if (missing(leg)) {
-    leg <- FALSE
+  if (!missing(leg) && leg == TRUE) {
+    leg.lty <- ifelse(modes == 2 & nocomp == TRUE, mean.lty, 1)
+    legend("topright", legend = y, lty = leg.lty, lwd = 3,
+           col = mean.pal, cex = leg.cex, bg = "white")
   }
-  if (leg == TRUE) {
-    if (modes == 2 & nocomp) {
-      legend("topright", legend = y, lty = mean.lty, lwd = 3,
-             col = mean.pal, cex = leg.cex, bg = "white")
+
+}
+
+
+## Helper utilities
+draw_qnts <- function(x, y, qnts, qnts.pal, loc = "epi") {
+
+  lcomp <- length(y)
+  for (j in seq_len(lcomp)) {
+    quants <- c((1-qnts)/2, 1-((1-qnts)/2))
+    qnt.prev <- apply(x[[loc]][[y[j]]], 1,
+                      function(x) {
+                        quantile(x, c(quants[1], quants[2]), na.rm = TRUE)
+                      })
+    xx <- c(1:(ncol(qnt.prev)), (ncol(qnt.prev)):1)
+    yy <- c(qnt.prev[1,], rev(qnt.prev[2,]))
+    polygon(xx, yy, col = qnts.pal[j], border = NA)
+  }
+
+}
+
+
+draw_means <- function(x, y, mean.smooth, mean.lwd,
+                       mean.pal, mean.lty, loc = "epi") {
+
+  lcomp <- length(y)
+  nsims <- x$control$nsims
+
+  for (j in seq_len(lcomp)) {
+    if (nsims == 1) {
+      mean.prev <- x[[loc]][[y[j]]][, 1]
     } else {
-      legend("topright", legend = y, lty = 1, lwd = 3,
-             col = mean.pal, cex = leg.cex, bg = "white")
+      mean.prev <- rowMeans(x[[loc]][[y[j]]])
     }
+    if (mean.smooth == TRUE) {
+      mean.prev <- supsmu(x = 1:length(mean.prev), y = mean.prev)$y
+    }
+    lines(mean.prev, lwd = mean.lwd[j],
+          col = mean.pal[j], lty = mean.lty[j])
   }
 
 }
@@ -903,15 +890,29 @@ plot.icm <- function(x,
 #' @param stats Network statistics to plot, among those specified in the call
 #'        to \code{\link{netdx}}, with the default to plot all statistics
 #'        contained in the object.
+#' @param sim.lines If \code{TRUE}, plot individual simulation lines.
 #' @param sim.col Vector of standard R colors for individual simulation lines,
 #'        with default colors based on \code{RColorBrewer} color palettes.
 #' @param sim.lwd Line width for individual simulation lines, with defaults based
 #'        on number of simulations (more simulations results in thinner lines).
 #' @param sim.lty Line type for the individual simulation lines.
+#' @param mean.line If \code{TRUE}, plot mean of simulations across time.
+#' @param mean.smooth If \code{TRUE}, use a lowess smoother on the mean line.
+#' @param mean.col A vector of any standard R color format for mean lines.
+#' @param mean.lwd Line width for mean lines.
+#' @param mean.lty Line type for mean lines.
+#' @param qnts If numeric, plot polygon of simulation quantiles based on the
+#'        range implied by the argument (0.5 is the middle 50% of the data).
+#'        If \code{FALSE}, suppress polygon from plot.
+#' @param qnts.col Vector of any standard R color format for polygons.
+#' @param qnts.alpha Transparency level for quantile polygons, where 0 =
+#'        transparent and 1 = opaque (see \code{\link{transco}}).
+#' @param targ.line If \code{TRUE}, plot target or expected value line for
+#'        the statistic of interest.
 #' @param targ.col Vector of standard R colors for target statistic lines, with
 #'        default colors based on \code{RColorBrewer} color palettes.
-#' @param targ.lwd Line width for the line showing the target statistic values.
-#' @param targ.lty Line type for the line showing the target statistic values.
+#' @param targ.lwd Line Width for the line showing the target statistic values.
+#' @param targ.lty Line Type for the line showing the target statistic values.
 #' @param plots.joined If \code{TRUE}, combine all target statistics in one plot,
 #'        otherwise use one plot window per target statistic.
 #' @param plot.leg If \code{TRUE}, show legend (only if \code{plots.joined=TRUE})
@@ -983,26 +984,26 @@ plot.icm <- function(x,
 #' dx2
 #'
 #' # Formation statistics plots, joined and separate
-#' plot(dx)
-#' plot(dx, type = "formation", plots.joined = TRUE)
-#' plot(dx, type = "formation", sim = 1, plots.joined = TRUE)
-#' plot(dx, type = "formation", plots.joined = FALSE,
+#' plot(dx2)
+#' plot(dx2, type = "formation", plots.joined = TRUE)
+#' plot(dx2, type = "formation", sim = 1, plots.joined = TRUE)
+#' plot(dx2, type = "formation", plots.joined = FALSE,
 #'      stats = c("edges", "concurrent"))
-#' plot(dx, type = "formation", stats = "nodefactor.sex.0",
+#' plot(dx2, type = "formation", stats = "nodefactor.sex.0",
 #'      sim = 1, sim.lwd = 5, sim.col = "darkmagenta")
 #'
-#' plot(dx, method = "b", col = "bisque")
-#' plot(dx, method = "b", stats = "meandeg", col = "dodgerblue")
+#' plot(dx2, method = "b", col = "bisque")
+#' plot(dx2, method = "b", stats = "meandeg", col = "dodgerblue")
 #'
 #' # Duration statistics plot
-#' plot(dx, type = "duration")
-#' plot(dx, type = "duration", sim = 10,
+#' plot(dx2, type = "duration")
+#' plot(dx2, type = "duration", sim = 10,
 #'      sim.col = "steelblue", sim.lwd = 3,
 #'      targ.lty = 1, targ.lwd = 0.5)
 #'
 #' # Dissolution statistics plot
-#' plot(dx, type = "dissolution")
-#' plot(dx, type = "dissolution", method = "b", col = "pink1")
+#' plot(dx2, type = "dissolution")
+#' plot(dx2, type = "dissolution", method = "b", col = "pink1")
 #' }
 #'
 plot.netdx <- function(x,
@@ -1010,9 +1011,19 @@ plot.netdx <- function(x,
                        method = "l",
                        sim,
                        stats,
+                       sim.lines = TRUE,
                        sim.col,
                        sim.lwd,
                        sim.lty = 1,
+                       mean.line = TRUE,
+                       mean.smooth = FALSE,
+                       mean.col,
+                       mean.lwd = 2,
+                       mean.lty = 1,
+                       qnts = FALSE,
+                       qnts.col,
+                       qnts.alpha,
+                       targ.line = TRUE,
                        targ.col,
                        targ.lwd = 2,
                        targ.lty = 2,
@@ -1168,13 +1179,7 @@ plot.netdx <- function(x,
 
         ## Default target line color
         if (missing(targ.col)) {
-          if (nstats == 1) {
-            targ.col <- "black"
-          } else if (nstats > 9) {
-            targ.col <- brewer_ramp(nstats, "Set1")
-          } else {
-            targ.col <- brewer.pal(9, "Set1")[1:nstats]
-          }
+          targ.col <- sim.col
         }
 
 
@@ -1183,23 +1188,58 @@ plot.netdx <- function(x,
              type = "n", xlab = xlab, ylab = ylab)
         for (j in outsts) {
           dataj <- data[, colnames(data) %in% nmstats[j], drop = FALSE]
-          if (dynamic == TRUE) {
-            for (i in sim) {
-              lines(dataj[,i],
+
+          if (is.numeric(qnts)) {
+            if (qnts < 0 | qnts > 1) {
+              stop("qnts must be between 0 and 1", call. = FALSE)
+            }
+            if (missing(qnts.col)) {
+              qnts.col <- sim.col
+            }
+            if (missing(qnts.alpha)) {
+              qnts.alpha <- 0.75
+            }
+            qnts.col <- transco(qnts.col, qnts.alpha)
+            quants <- c((1-qnts)/2, 1-((1-qnts)/2))
+            qnt.prev <- apply(dataj, 1, function(x) quantile(x, c(quants[1], quants[2])))
+            xx <- c(1:(ncol(qnt.prev)), (ncol(qnt.prev)):1)
+            yy <- c(qnt.prev[1,], rev(qnt.prev[2,]))
+            polygon(xx, yy, col = qnts.col[which(j == outsts)], border = NA)
+          }
+
+          if (sim.lines == TRUE) {
+            if (dynamic == TRUE) {
+              for (i in sim) {
+                lines(dataj[,i],
+                      lty = sim.lty, lwd = sim.lwd,
+                      col = sim.col[which(j == outsts)])
+              }
+            } else {
+              lines(dataj,
                     lty = sim.lty, lwd = sim.lwd,
                     col = sim.col[which(j == outsts)])
             }
-          } else {
-            lines(dataj,
-                  lty = sim.lty, lwd = sim.lwd,
-                  col = sim.col[which(j == outsts)])
+          }
+          if (mean.line == TRUE) {
+            if (missing(mean.col)) {
+              mean.col <- sim.col
+            }
+            mean.prev <- rowMeans(dataj)
+            if (mean.smooth == TRUE) {
+              mean.prev <- supsmu(x = 1:length(mean.prev), y = mean.prev)$y
+            }
+            lines(mean.prev, lwd = mean.lwd,
+                  col = mean.col[which(j == outsts)], lty = mean.lty)
           }
 
-          if (j %in% targs) {
-            abline(h = nwstats.table$Target[j],
-                   lty = targ.lty, lwd = targ.lwd,
-                   col = targ.col[which(j == outsts)])
+          if (targ.line == TRUE) {
+            if (j %in% targs) {
+              abline(h = nwstats.table$Target[j],
+                     lty = targ.lty, lwd = targ.lwd,
+                     col = targ.col[which(j == outsts)])
+            }
           }
+
         }
         if (plot.leg == TRUE) {
           legend("topleft", legend = nmstats[outsts],
@@ -1239,21 +1279,57 @@ plot.netdx <- function(x,
                ylim = c(min(dataj) * 0.8, max(dataj) * 1.2),
                type = "n", main = nmstats[j],
                xlab = "", ylab = "")
-          if (dynamic == TRUE) {
-            for (i in sim) {
-              lines(dataj[, i],
+
+          if (is.numeric(qnts)) {
+            if (qnts < 0 | qnts > 1) {
+              stop("qnts must be between 0 and 1", call. = FALSE)
+            }
+            if (missing(qnts.col)) {
+              qnts.col <- sim.col
+            }
+            if (missing(qnts.alpha)) {
+              qnts.alpha <- 0.75
+            }
+            qnts.col <- transco(qnts.col, qnts.alpha)
+            quants <- c((1-qnts)/2, 1-((1-qnts)/2))
+            qnt.prev <- apply(dataj, 1, function(x) quantile(x, c(quants[1], quants[2])))
+            xx <- c(1:(ncol(qnt.prev)), (ncol(qnt.prev)):1)
+            yy <- c(qnt.prev[1,], rev(qnt.prev[2,]))
+            polygon(xx, yy, col = qnts.col[which(j == outsts)], border = NA)
+          }
+
+          if (sim.lines == TRUE) {
+            if (dynamic == TRUE) {
+              for (i in sim) {
+                lines(dataj[, i],
+                      lwd = sim.lwd, lty = sim.lty,
+                      col = sim.col[which(j == outsts)])
+              }
+            } else {
+              lines(dataj,
                     lwd = sim.lwd, lty = sim.lty,
                     col = sim.col[which(j == outsts)])
             }
-          } else {
-            lines(dataj,
-                  lwd = sim.lwd, lty = sim.lty,
-                  col = sim.col[which(j == outsts)])
           }
-          if (j %in% targs) {
-            abline(h = nwstats.table$Target[j],
-                   lty = targ.lty, lwd = targ.lwd,
-                   col = targ.col[which(j == outsts)])
+
+          if (mean.line == TRUE) {
+            if (missing(mean.col)) {
+              mean.col <- sim.col
+            }
+            mean.prev <- rowMeans(dataj)
+            if (mean.smooth == TRUE) {
+              mean.prev <- supsmu(x = 1:length(mean.prev), y = mean.prev)$y
+            }
+            lines(mean.prev, lwd = mean.lwd,
+                  col = mean.col[which(j == outsts)], lty = mean.lty)
+          }
+
+          if (targ.line == TRUE) {
+            if (j %in% targs) {
+              abline(h = nwstats.table$Target[j],
+                     lty = targ.lty, lwd = targ.lwd,
+                     col = targ.col[which(j == outsts)])
+            }
           }
         }
 
@@ -1328,15 +1404,55 @@ plot.netdx <- function(x,
       plot(x = 1, y = 1, type = "n",
            xlim = xlim, ylim = ylim,
            xlab = xlab, ylab = ylab)
-      for (i in sim) {
-        lines(x = 1:nsteps,
-              y = pages[[i]],
-              lwd = sim.lwd, lty = sim.lty,
-              col = sim.col)
+
+      if (is.numeric(qnts)) {
+        if (qnts < 0 | qnts > 1) {
+          stop("qnts must be between 0 and 1", call. = FALSE)
+        }
+        if (missing(qnts.col)) {
+          qnts.col <- sim.col
+        }
+        if (missing(qnts.alpha)) {
+          qnts.alpha <- 0.75
+        }
+        qnts.col <- transco(qnts.col, qnts.alpha)
+        quants <- c((1-qnts)/2, 1-((1-qnts)/2))
+        dataj <- as.data.frame(pages)
+        qnt.prev <- apply(dataj, 1, function(x)
+                          quantile(x, c(quants[1], quants[2]),
+                                   na.rm = TRUE))
+        xx <- c(1:(ncol(qnt.prev)), (ncol(qnt.prev)):1)
+        yy <- c(qnt.prev[1,], rev(qnt.prev[2,]))
+        polygon(xx, yy, col = qnts.col, border = NA)
       }
-      abline(h = as.numeric(x$coef.diss[2]),
-             lty = targ.lty, lwd = targ.lwd,
-             col = targ.col)
+
+      ## Sim lines
+      if (sim.lines == TRUE) {
+        for (i in sim) {
+          lines(pages[[i]],
+                lwd = sim.lwd, lty = sim.lty,
+                col = sim.col)
+        }
+      }
+
+      if (mean.line == TRUE) {
+        if (missing(mean.col)) {
+          mean.col <- sim.col
+        }
+        dataj <- as.data.frame(pages)
+        mean.prev <- rowMeans(dataj)
+        if (mean.smooth == TRUE) {
+          mean.prev <- supsmu(x = 1:length(mean.prev), y = mean.prev)$y
+        }
+        lines(mean.prev, lwd = mean.lwd,
+              col = mean.col, lty = mean.lty)
+      }
+
+      if (targ.line == TRUE) {
+        abline(h = as.numeric(x$coef.diss[2]),
+               lty = targ.lty, lwd = targ.lwd,
+               col = targ.col)
+      }
     }
 
     if (method == "b") {
@@ -1392,15 +1508,55 @@ plot.netdx <- function(x,
       plot(x = 1, y = 1, type = "n",
            xlim = xlim, ylim = ylim,
            xlab = xlab, ylab = ylab)
-      for (i in sim) {
-        lines(x = 1:nsteps,
-              y = prop.diss[[i]],
-              lwd = sim.lwd, lty = sim.lty,
-              col = sim.col)
+
+      if (is.numeric(qnts)) {
+        if (qnts < 0 | qnts > 1) {
+          stop("qnts must be between 0 and 1", call. = FALSE)
+        }
+        if (missing(qnts.col)) {
+          qnts.col <- sim.col
+        }
+        if (missing(qnts.alpha)) {
+          qnts.alpha <- 0.75
+        }
+        qnts.col <- transco(qnts.col, qnts.alpha)
+        quants <- c((1-qnts)/2, 1-((1-qnts)/2))
+        dataj <- as.data.frame(prop.diss)
+        qnt.prev <- apply(dataj, 1, function(x)
+          quantile(x, c(quants[1], quants[2]),
+                   na.rm = TRUE))
+        xx <- c(1:(ncol(qnt.prev)), (ncol(qnt.prev)):1)
+        yy <- c(qnt.prev[1,], rev(qnt.prev[2,]))
+        polygon(xx, yy, col = qnts.col, border = NA)
       }
-      abline(h = as.numeric(1/(x$coef.diss[2]$duration)),
-             lty = targ.lty, lwd = targ.lwd,
-             col = targ.col)
+
+      # Sim lines
+      if (sim.lines == TRUE) {
+        for (i in sim) {
+          lines(prop.diss[[i]],
+                lwd = sim.lwd, lty = sim.lty,
+                col = sim.col)
+        }
+      }
+
+      if (mean.line == TRUE) {
+        if (missing(mean.col)) {
+          mean.col <- sim.col
+        }
+        dataj <- as.data.frame(prop.diss)
+        mean.prev <- rowMeans(dataj)
+        if (mean.smooth == TRUE) {
+          mean.prev <- supsmu(x = 1:length(mean.prev), y = mean.prev)$y
+        }
+        lines(mean.prev, lwd = mean.lwd,
+              col = mean.col, lty = mean.lty)
+      }
+
+      if (targ.line == TRUE) {
+        abline(h = as.numeric(1/(x$coef.diss[2]$duration)),
+               lty = targ.lty, lwd = targ.lwd,
+               col = targ.col)
+      }
     }
 
     if (method == "b") {
@@ -1818,8 +1974,7 @@ plot.netsim <- function(x,
            type = "n", xlab = xlab, ylab = ylab)
       for (j in outsts) {
         for (i in seq_along(sim)) {
-          lines(x = 1:nsteps,
-                y = nwstats[[i]][[nmstats[j]]],
+          lines(nwstats[[i]][[nmstats[j]]],
                 lty = sim.lty, lwd = sim.lwd,
                 col = sim.col[which(j == outsts)])
         }
@@ -1871,8 +2026,7 @@ plot.netsim <- function(x,
              type = "n", main = nmstats[j],
              xlab = "", ylab = "", ...)
         for (i in seq_along(sim)) {
-          lines(x = 1:nsteps,
-                y = nwstats[[i]][[nmstats[j]]],
+          lines(nwstats[[i]][[nmstats[j]]],
                 lwd = sim.lwd, lty = sim.lty,
                 col = sim.col[which(j == outsts)])
         }
@@ -1898,11 +2052,11 @@ plot.netsim <- function(x,
 #'              models, stochastic individual contact models, and stochastic
 #'              network models.
 #'
-#' @param x an \code{EpiModel} object of class \code{dcm}, \code{icm}, or
+#' @param x An \code{EpiModel} object of class \code{dcm}, \code{icm}, or
 #'        \code{netsim}.
-#' @param at time step for model statistics.
-#' @param digits number of significant digits to print.
-#' @param ... additional arguments passed to plot (not currently used).
+#' @param at Time step for model statistics.
+#' @param digits Number of significant digits to print.
+#' @param ... Additional arguments passed to plot (not currently used).
 #'
 #' @details
 #' The \code{comp_plot} function provides a visual summary of an epidemic model
@@ -1947,7 +2101,7 @@ comp_plot <- function(x, at, digits, ...) {
 }
 
 
-#' @param run model run number, for \code{dcm} class models with multiple runs
+#' @param run Model run number, for \code{dcm} class models with multiple runs
 #'        (sensitivity analyses).
 #' @method comp_plot dcm
 #' @rdname comp_plot

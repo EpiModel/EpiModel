@@ -5,32 +5,32 @@
 #'              random graph modeling (ERGM) framework with extensions for
 #'              dynamic/temporal models (STERGM).
 #'
-#' @param nw an object of class \code{\link{network}}.
-#' @param formation a right-hand sided STERGM formation formula in the form
+#' @param nw An object of class \code{\link{network}}.
+#' @param formation Right-hand sided STERGM formation formula in the form
 #'        \code{~ edges + ...}, where \code{...} are additional network statistics.
-#' @param dissolution a right-hand sided STERGM dissolution formula of the form
+#' @param dissolution Right-hand sided STERGM dissolution formula of the form
 #'        \code{~ offset(edges)}. This dissolution model is the only model currently
 #'        supported in \code{EpiModel}.
-#' @param target.stats a vector of target statistics for the formation model, with
+#' @param target.stats Vector of target statistics for the formation model, with
 #'        one number for each network statistic in the model (see \code{\link{stergm}}).
-#' @param coef.diss an object of class \code{disscoef} output from the
+#' @param coef.diss An object of class \code{disscoef} output from the
 #'        \code{\link{dissolution_coefs}} function.
-#' @param constraints a right-hand sided formula specifying constraints for the
+#' @param constraints Right-hand sided formula specifying constraints for the
 #'        modeled network, in the form \code{~...}, where \code{...} are constraint
 #'        terms described in \code{\link{stergm}}. By default, no constraints are set.
-#' @param coef.form A vector of coefficients for the offset terms in the formation
+#' @param coef.form Vector of coefficients for the offset terms in the formation
 #'        formula.
-#' @param edapprox if \code{TRUE}, use the indirect edges dissolution approximation
+#' @param edapprox If \code{TRUE}, use the indirect edges dissolution approximation
 #'        method for the dynamic model fit, otherwise use the more time-intensive
 #'        full STERGM estimation (see details).
-#' @param output if using the edges dissolution approximation method, \code{"sim"}
+#' @param output If using the edges dissolution approximation method, \code{"sim"}
 #'        simulates a static network from the fitted network model, for
 #'        storage efficiency purposes.
-#' @param set.control.ergm control arguments passed to simulate.ergm (see
+#' @param set.control.ergm Control arguments passed to simulate.ergm (see
 #'        details).
-#' @param set.control.stergm control arguments passed to simulate.stergm (see
+#' @param set.control.stergm Control arguments passed to simulate.stergm (see
 #'        details).
-#' @param verbose print progress to the console.
+#' @param verbose Print progress to the console.
 #'
 #' @details
 #' \code{netest} is a wrapper function for the \code{ergm} and \code{stergm}
@@ -41,8 +41,9 @@
 #' With a fitted network model, one should always first proceed to model
 #' diagnostics, available through the \code{\link{netdx}} function, to check
 #' model fit. A detailed description of fitting these models, along with examples,
-#' may be found in Section 4 of the
-#' \href{http://statnet.org/EpiModel/vignette/Tutorial.pdf}{EpiModel Tutorial}.
+#' may be found in the
+#' \href{http://statnet.github.io/tut/BasicNet.html}{Basic Network Models}
+#' tutorial.
 #'
 #' @section Edges Dissolution Approximation:
 #' The edges dissolution approximation method is described in Carnegie et al.
@@ -220,9 +221,8 @@ netest <- function(nw,
     coef.form <- fit$coef
     coef.form.crude <- coef.form
     if (coef.diss$coef.crude > -Inf) {
-      for (i in 1:length(coef.diss$coef.crude)) {
-        coef.form[i] <- coef.form[i] - coef.diss$coef.crude[i]
-      }
+      nwDens <- und_dens(network.size(nw), target.stats[1])
+      coef.form[1] <- coef.form[1] - log(coef.diss$duration - nwDens/(1-nwDens))
     }
 
     # Reduce size of output object
@@ -259,3 +259,7 @@ netest <- function(nw,
   return(out)
 }
 
+
+und_dens <- function(n, edges) {
+  (2*edges)/(n*(n-1))
+}

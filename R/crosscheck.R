@@ -5,9 +5,9 @@
 #'              \code{\link{param.dcm}}, \code{\link{init.dcm}}, and
 #'              \code{\link{control.dcm}} are consistent.
 #'
-#' @param param an \code{EpiModel} object of class \code{\link{param.dcm}}.
-#' @param init an \code{EpiModel} object of class \code{\link{init.dcm}}.
-#' @param control an \code{EpiModel} object of class \code{\link{control.dcm}}.
+#' @param param An \code{EpiModel} object of class \code{\link{param.dcm}}.
+#' @param init An \code{EpiModel} object of class \code{\link{init.dcm}}.
+#' @param control An \code{EpiModel} object of class \code{\link{control.dcm}}.
 #'
 #' @return
 #' This function returns no objects.
@@ -139,9 +139,9 @@ crosscheck.dcm <- function(param, init, control) {
 #'              \code{\link{param.icm}}, \code{\link{init.icm}}, and
 #'              \code{\link{control.icm}} are consistent.
 #'
-#' @param param an \code{EpiModel} object of class \code{\link{param.icm}}.
-#' @param init an \code{EpiModel} object of class \code{\link{init.icm}}.
-#' @param control an \code{EpiModel} object of class \code{\link{control.icm}}.
+#' @param param An \code{EpiModel} object of class \code{\link{param.icm}}.
+#' @param init An \code{EpiModel} object of class \code{\link{init.icm}}.
+#' @param control An \code{EpiModel} object of class \code{\link{control.icm}}.
 #'
 #' @return
 #' This function returns no objects.
@@ -229,10 +229,10 @@ crosscheck.icm <- function(param, init, control) {
 #'              \code{\link{param.net}}, \code{\link{init.net}}, and
 #'              \code{\link{control.net}} are consistent.
 #'
-#' @param x an \code{EpiModel} object of class \code{\link{netest}}.
-#' @param param an \code{EpiModel} object of class \code{\link{param.net}}.
-#' @param init an \code{EpiModel} object of class \code{\link{init.net}}.
-#' @param control an \code{EpiModel} object of class \code{\link{control.net}}.
+#' @param x An \code{EpiModel} object of class \code{\link{netest}}.
+#' @param param An \code{EpiModel} object of class \code{\link{param.net}}.
+#' @param init An \code{EpiModel} object of class \code{\link{init.net}}.
+#' @param control An \code{EpiModel} object of class \code{\link{control.net}}.
 #'
 #' @return
 #' This function returns no objects.
@@ -390,34 +390,21 @@ crosscheck.net <- function(x, param, init, control) {
 
   if (control$start > 1) {
 
-    # Is status in network formation formula?
-    statOnNw <- ("status" %in% names(get_nwparam(x)$coef.form))
+    control$depend <- TRUE
 
-    # Set dependent modeling defaults if vital or status on nw
-    if (is.null(control$depend)) {
-      if (param$vital == TRUE | statOnNw == TRUE) {
-        control$depend <- TRUE
-      } else {
-        control$depend <- FALSE
+    if (control$skip.check == FALSE) {
+      if (class(x) != "netsim") {
+        stop("x must be a netsim object if control setting start > 1",
+             call. = FALSE)
       }
-    }
-
-    # Check that start 1 for all independent simulations
-    if (control$depend == FALSE) {
-      stop("Control setting start must be 1 for independent simulations",
-           call. = FALSE)
-    }
-    if (control$depend == TRUE & class(x) != "netsim") {
-      stop("x must be a netsim object if control setting start > 1",
-           call. = FALSE)
-    }
-    if (control$depend == TRUE & is.null(x$attr)) {
-      stop("x must contain attr to restart simulation, see save.other control setting",
-           call. = FALSE)
-    }
-    if (control$depend == TRUE & is.null(x$network)) {
-      stop("x must contain network object to restart simulation, see save.network control setting",
-           call. = FALSE)
+      if (is.null(x$attr)) {
+        stop("x must contain attr to restart simulation, see save.other control setting",
+             call. = FALSE)
+      }
+      if (is.null(x$network)) {
+        stop("x must contain network object to restart simulation, see save.network control setting",
+             call. = FALSE)
+      }
     }
 
   }

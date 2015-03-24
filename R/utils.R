@@ -5,8 +5,8 @@
 #'              of colors from an \code{RColorBrewer} palette.
 #'
 #' @param plt \code{RColorBrewer} palette from \code{\link{brewer.pal}}
-#' @param n number of colors to return
-#' @param delete.lights delete the lightest colors from the color palette,
+#' @param n Number of colors to return
+#' @param delete.lights Delete the lightest colors from the color palette,
 #'        helps with plotting in many high-contrast palettes
 #'
 #' @details
@@ -82,12 +82,13 @@ deleteAttr <- function(attrList, ids) {
   return(attrList)
 }
 
+
 #' @title Get Arguments from Parent Function
 #'
 #' @description Gets the arguments and values from the parent function environment
 #'              and returns them in a list.
 #'
-#' @param ... dot arguments in function.
+#' @param ... Dot arguments in function.
 #'
 #' @export
 #' @keywords internal
@@ -117,12 +118,12 @@ get_args <- function(...) {
 #'
 #' @description Returns an RGB transparent color from any standard R color.
 #'
-#' @param col a vector consisting of colors, of any of the three kinds of
+#' @param col Vector consisting of colors, of any of the three kinds of
 #'        \code{R} color specifications (named, hexadecimal, or integer; see
 #'        \code{\link{col2rgb}}).
-#' @param alpha a vector of transparency levels, where 0 is transparent and 1
+#' @param alpha Vector of transparency levels, where 0 is transparent and 1
 #'        is opaque.
-#' @param invisible supresses printing of the RGB color.
+#' @param invisible Supresses printing of the RGB color.
 #'
 #' @details
 #' The purpose of this function is to facilitate color transparency, which is
@@ -213,9 +214,9 @@ transco <- function(col,
 #'
 #' @param x Either a vector of one or more elements from which to choose, or a
 #'        positive integer.
-#' @param size a non-negative integer giving the number of items to choose.
+#' @param size Non-negative integer giving the number of items to choose.
 #' @param replace Should sampling be with replacement?
-#' @param prob A vector of probability weights for obtaining the elements of the
+#' @param prob Vector of probability weights for obtaining the elements of the
 #'        vector being sampled.
 #'
 #' @export

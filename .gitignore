@@ -2,3 +2,5 @@
 .Rhistory
 .RData
 *.Rproj
+inst/shiny/epidcm/rsconnect/
+inst/shiny/epiicm/rsconnect/

@@ -4,8 +4,8 @@
 #' @description This function simulates death for use in \code{\link{icm}}
 #'              simulations.
 #'
-#' @param dat master data list object.
-#' @param at current time step.
+#' @param dat Master data list object.
+#' @param at Current time step.
 #'
 #' @seealso \code{\link{icm}}
 #'
@@ -157,8 +157,8 @@ deaths.icm <- function(dat, at) {
 #' @description This function simulates birth for use in \code{\link{icm}}
 #'              simulations.
 #'
-#' @param dat master data list object.
-#' @param at current time step.
+#' @param dat Master data list object.
+#' @param at Current time step.
 #'
 #' @seealso \code{\link{icm}}
 #'

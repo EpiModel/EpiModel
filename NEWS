@@ -1,3 +1,47 @@
+Version 1.1.3
+------------------------------------------------------------------------------
+
+NEW FEATURES
+* Network models now feature more consistent and flexible use of persistent IDs
+  for networkDynamic objects (#199). This involved adding a new control setting,
+  `use.pids` in `control.net`. See help("persistent.ids") in the `networkDynamic`
+  package for more background.
+
+BUG FIXES
+* Fixed error in `births.net` module that set the default `entrTime` and
+  `exitTime` attributes twice for bipartite models (#205).
+* Plotting for all model classes now allow setting `xlab` and `ylab` (#206).
+* `get_sims` extraction now outputs correct data when object contains single
+  simulation.
+
+OTHER
+
+
+Version 1.1.3
+------------------------------------------------------------------------------
+
+NEW FEATURES
+* The `skip.check` argument for `control.net` is even more flexible, to allow
+  for passing different class elements into `netsim` with original models.
+* New `param.error` argument for `merge.netsim` that allows bypassing the stop
+  error if the parameters and control settings from the two merged objects are
+  not identical.
+* `control.net` has new `module.order` argument to provide control of the order
+  in which modules are evaluated within each time step. The default ordering is
+  maintained as explained in the updated help file.
+
+BUG FIXES
+* `netsim_parallel` now returns the correct object if used for single simulations
+  or on single cores.
+* `plot.icm` removes NA values from the data when calculating `ylim` and the
+  quantile bands.
+
+OTHER
+* `netest` now implements an improved "Edges Dissolution Approximation" via the
+  `edapprox` argument.
+* Several documentation updates.
+
+
 Version 1.1.2
 ------------------------------------------------------------------------------
 
@@ -11,16 +55,24 @@ NEW FEATURES
 * Plot option added for `netdx`, with the `method` parameter, to plot boxplots of
   the simulations against the target statistics. The default is still the line
   plots (#191).
+* Additional summary elements may now be plotted with `netdx` objects, similar
+  to epidemic data plots: mean lines and quantile bands. Additional arguments
+  added to allow toggling of these along with individual simulation lines and
+  target lines.
 * Print method for `netdx` is updated, along with a new statistic for the percent
   deviation between the simulation means and target statistics (#192).
 * Added other epidemiological outcomes saved in user-defined modules to print
   output with `print.netsim` (#183).
 * New function `get_sims` will subset and extract entire simulations from `netsim`
-  objects with multiple simulations.
+  objects with multiple simulations. A vector of simulation numbers may be
+  specified, or if set as "mean", the simulation with the infected prevalence
+  closest to the means across all simulations will be chosen.
 
 BUG FIXES
 * Object elements saved in stochastic network models with the `save.other`
   parameter in `control.net` may now be merged with `merge.netsim` (#185).
+* Quantile band is displayed in `plot` for ICMs and network models when the `y`
+  argument is specified (#188).
 
 OTHER
 * Package `deSolve` moved from import to depend (#194).
@@ -173,7 +225,7 @@ BUG FIXES
 
 OTHER
 * Added new test cases for running new DCMs, ICMs, and network models, following
-  the vignette examples (see http://statnet.github.io/EpiModel/).
+  the vignette examples (see http://epimodel.org/).
 
 
 Version 1.0.2

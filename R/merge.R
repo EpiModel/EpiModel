@@ -4,10 +4,10 @@
 #' @description Merges epidemiological data from two independent simulations of
 #'              stochastic individual contact models from \code{icm}.
 #'
-#' @param x an \code{EpiModel} object of class \code{\link{icm}}.
-#' @param y another \code{EpiModel} object of class \code{\link{icm}}, with the
+#' @param x An \code{EpiModel} object of class \code{\link{icm}}.
+#' @param y Another \code{EpiModel} object of class \code{\link{icm}}, with the
 #'        identical model parameterization as \code{x}.
-#' @param ...  additional merge arguments (not used).
+#' @param ...  Additional merge arguments (not used).
 #'
 #' @details
 #' This merge function combines the results of two independent simulations of
@@ -106,6 +106,10 @@ merge.icm <- function(x, y, ...) {
 #' @param keep.other If \code{TRUE}, keep the other simulation elements (as set
 #'        by the \code{save.other} parameter in \code{control.netsim}) from the
 #'        original \code{x} and \code{y} elements.
+#' @param param.error If \code{TRUE}, if \code{x} and \code{y} have different
+#'        params (in \code{param.net}) or controls (passed in \code{control.net})
+#'        an error will prevent the merge. Use \code{FALSE} to override that
+#'        check.
 #' @param ...  Additional merge arguments (not currently used).
 #'
 #' @details
@@ -158,6 +162,7 @@ merge.netsim <- function(x, y,
                          keep.network = TRUE,
                          keep.nwstats = TRUE,
                          keep.other = TRUE,
+                         param.error = TRUE,
                          ...) {
 
   ## Check structure
@@ -183,10 +188,10 @@ merge.netsim <- function(x, y,
                       y$control[-which(names(y$control) == "nsims")])
 
 
-  if (check1 == FALSE) {
+  if (check1 == FALSE && param.error == TRUE) {
     stop("x and y have different parameters")
   }
-  if (check2 == FALSE) {
+  if (check2 == FALSE && param.error == TRUE) {
     stop("x and y have different controls")
   }
 

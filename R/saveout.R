@@ -5,11 +5,11 @@
 #'              object to the output \code{out} object at the end of each
 #'              simulation in \code{\link{dcm}}.
 #'
-#' @param all master object in \code{df} simulations.
-#' @param s current run number.
-#' @param param param list set in \code{\link{param.dcm}}
-#' @param control control list set in \code{\link{control.dcm}}.
-#' @param out out list passed back in for updating at runs 2+.
+#' @param df Master object in \code{\link{dcm}} simulations.
+#' @param s Current run number.
+#' @param param Param list set in \code{\link{param.dcm}}
+#' @param control Control list set in \code{\link{control.dcm}}.
+#' @param out Out list passed back in for updating at runs 2+.
 #'
 #' @keywords internal
 #' @export
@@ -58,9 +58,9 @@ saveout.dcm <- function(df, s, param, control, out) {
 #'              object to the output \code{out} object at the end of each
 #'              simulation in \code{\link{icm}}.
 #'
-#' @param all master object in \code{icm} simulations.
-#' @param s current run number.
-#' @param out out list passed back in for updating at runs 2+.
+#' @param dat Master object in \code{icm} simulations.
+#' @param s Current run number.
+#' @param out Out list passed back in for updating at runs 2+.
 #'
 #' @keywords internal
 #' @export
@@ -105,9 +105,9 @@ saveout.icm <- function(dat, s, out) {
 #'              object to the output \code{out} object at the end of each
 #'              simulation in \code{\link{netsim}}.
 #'
-#' @param dat master object in \code{netsim} simulations.
-#' @param s current simulation number.
-#' @param out out list passed back in for updating at simulations 2+.
+#' @param dat Master object in \code{netsim} simulations.
+#' @param s Current simulation number.
+#' @param out Out list passed back in for updating at simulations 2+.
 #'
 #' @keywords internal
 #' @export

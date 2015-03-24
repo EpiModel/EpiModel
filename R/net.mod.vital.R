@@ -3,9 +3,9 @@
 #'
 #' @description This function simulates death for use in \link{netsim} simulations.
 #'
-#' @param dat a list object containing a \code{networkDynamic} object and other
+#' @param dat Master list object containing a \code{networkDynamic} object and other
 #'        initialization information passed from \code{\link{netsim}}.
-#' @param at current time step.
+#' @param at Current time step.
 #'
 #' @seealso \code{\link{netsim}}
 #'
@@ -230,9 +230,9 @@ deaths.net <- function(dat, at) {
 #' @description This function simulates new births into the network
 #'   for use in \code{\link{netsim}} simulations.
 #'
-#' @param dat a list object containing a \code{networkDynamic} object and other
+#' @param dat Master list object containing a \code{networkDynamic} object and other
 #'   initialization information passed from \code{\link{netsim}}.
-#' @param at current time step.
+#' @param at Current time step.
 #'
 #' @seealso \code{\link{netsim}}
 #'
@@ -392,20 +392,22 @@ births.net <- function(dat, at) {
     }
     if (modes == 2) {
       if (!("status" %in% fterms)) {
-        dat <- split_bip(dat, "status", "s",
-                         nCurrM1, nCurrM2, nBirths, nBirthsM2)
+        dat <- split_bip(dat, "status", "s", nCurrM1, nCurrM2, nBirths, nBirthsM2)
       }
-      dat <- split_bip(dat, "active", 1,
-                       nCurrM1, nCurrM2, nBirths, nBirthsM2)
-      dat <- split_bip(dat, "infTime", NA,
-                       nCurrM1, nCurrM2, nBirths, nBirthsM2)
+      dat <- split_bip(dat, "active", 1, nCurrM1, nCurrM2, nBirths, nBirthsM2)
+      dat <- split_bip(dat, "infTime", NA, nCurrM1, nCurrM2, nBirths, nBirthsM2)
+      dat <- split_bip(dat, "entrTime", at, nCurrM1, nCurrM2, nBirths, nBirthsM2)
+      dat <- split_bip(dat, "exitTime", NA, nCurrM1, nCurrM2, nBirths, nBirthsM2)
     }
 
     ## Handles infTime when incoming nodes are infected
     newNodesInf <- intersect(newNodes, which(dat$attr$status == "s"))
     dat$attr$infTime[newNodesInf] <- at
-    dat$attr$entrTime <- c(dat$attr$entrTime, rep(at, length(newNodes)))
-    dat$attr$exitTime <- c(dat$attr$exitTime, rep(NA, length(newNodes)))
+
+    if (length(unique(sapply(dat$attr, length))) != 1) {
+      stop("Attribute list of unequal length. Check births.net module.")
+    }
+
   }
 
 

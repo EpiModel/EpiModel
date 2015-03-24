@@ -19,8 +19,9 @@
 #' repeated transmission-related acts within the same dyad, specification of edge
 #' formation and dissolution rates, control over the temporal sequencing of
 #' multiple edges, and specification of network-level features. A detailed
-#' description of these models, along with examples, is found in Section 4 of
-#' the \href{http://statnet.org/EpiModel/vignette/Tutorial.pdf}{EpiModel Tutorial}.
+#' description of these models, along with examples, is found in the
+#' the \href{http://statnet.github.io/tut/BasicNet.html}{Basic Network Models}
+#' tutorial.
 #'
 #' The \code{netsim} function performs modeling of both the built-in model types
 #' and original models. Built-in model types include one-mode and bipartite models
@@ -30,13 +31,10 @@
 #' Original models may be parameterized by writing new process modules that
 #' either take the place of existing modules (for example, disease recovery), or
 #' supplement the set of existing processes with a new one contained in an new
-#' module. This functionality is new to \code{EpiModel} and further documentation
-#' will be posted through tutorial vignettes at the
-#' \href{http://statnet.org/trac/wiki/EpiModel}{EpiModel website} shortly. This
-#' modular approach is the same as building new ICMs, for which there is an
-#' existing \href{http://statnet.org/EpiModel/vignette/NewICMs.html}{Solving New
-#' ICMs with EpiModel} tutorial. Finally, the list of modules within \code{netsim}
-#' available for modification is listed in \code{\link{modules.net}}.
+#' module. This functionality is documented in the
+#' \href{http://statnet.github.io/tut/NewNet.html}{Solving New Network Models}
+#' tutorial. The list of modules within \code{netsim} available for modification
+#' is listed in \code{\link{modules.net}}.
 #'
 #' @return
 #' A list of class \code{netsim} with the following elements:
@@ -82,12 +80,8 @@
 #'
 #' # Estimate the ERGM models (see help for netest)
 #' # Skipping model diagnostics for this, but one should always run these
-#' est1 <- netest(nw,
-#'                formation,
-#'                dissolution,
-#'                target.stats,
-#'                coef.diss,
-#'                verbose = FALSE)
+#' est1 <- netest(nw, formation, dissolution,
+#'                target.stats, coef.diss, verbose = FALSE)
 #'
 #' # Parameters, initial conditions, and controls for model
 #' param <- param.net(inf.prob = 0.3, inf.prob.m2 = 0.15)
@@ -108,12 +102,8 @@
 #' coef.diss <- dissolution_coefs(dissolution, duration, d.rate = 0.0021)
 #'
 #' # Reestimate the model with new coefficient
-#' est2 <- netest(nw,
-#'                formation,
-#'                dissolution,
-#'                target.stats,
-#'                coef.diss,
-#'                verbose = FALSE)
+#' est2 <- netest(nw, formation, dissolution,
+#'                target.stats, coef.diss, verbose = FALSE)
 #'
 #' # Reset parameters to include demographic rates
 #' param <- param.net(inf.prob = 0.3, inf.prob.m2 = 0.15,
@@ -159,51 +149,20 @@ netsim <- function(x,
     ### TIME LOOP
     for (at in max(2, control$start):control$nsteps) {
 
-      ## User Modules
-      um <- control$user.mods
-      if (length(um) > 0) {
-        for (i in seq_along(um)) {
-          dat <- do.call(control[[um[i]]], list(dat, at))
-        }
+      ## Module order
+      morder <- control$module.order
+      if (is.null(morder)) {
+        lim.bi.mods <- control$bi.mods[-which(control$bi.mods %in%
+                                                c("initialize.FUN", "verbose.FUN"))]
+        morder <- c(control$user.mods, lim.bi.mods)
       }
 
-      ## Demographics Modules
-      if (!is.null(control[["deaths.FUN"]])) {
-        dat <- do.call(control[["deaths.FUN"]], list(dat, at))
-      }
-      if (!is.null(control[["births.FUN"]])) {
-        dat <- do.call(control[["births.FUN"]], list(dat, at))
+      ## Evaluate modules
+      for (i in seq_along(morder)) {
+        dat <- do.call(control[[morder[i]]], list(dat, at))
       }
 
-
-      ## Recovery Module
-      if (!is.null(control[["recovery.FUN"]])) {
-        dat <- do.call(control[["recovery.FUN"]], list(dat, at))
-      }
-
-
-      ## Resimulate network
-      if (!is.null(control[["edges_correct.FUN"]])) {
-        dat <- do.call(control[["edges_correct.FUN"]], list(dat, at))
-      }
-      if (!is.null(control[["resim_nets.FUN"]])) {
-        dat <- do.call(control[["resim_nets.FUN"]], list(dat, at))
-      }
-
-
-      ## Infection Module
-      if (!is.null(control[["infection.FUN"]])) {
-        dat <- do.call(control[["infection.FUN"]], list(dat, at))
-      }
-
-
-      ## Save Prevalence
-      if (!is.null(control[["get_prev.FUN"]])) {
-        dat <- do.call(control[["get_prev.FUN"]], list(dat, at))
-      }
-
-
-      ## Progress Console
+      ## Verbose module
       if (!is.null(control[["verbose.FUN"]])) {
         do.call(control[["verbose.FUN"]], list(dat, type = "progress", s, at))
       }
@@ -232,7 +191,7 @@ netsim <- function(x,
 #'              disease in parallel.
 #'
 #' @inheritParams netsim
-#' @param merge if \code{TRUE}, merge parallel simulations into one \code{netsim}
+#' @param merge If \code{TRUE}, merge parallel simulations into one \code{netsim}
 #'        object after simulation.
 #'
 #' @details
@@ -311,7 +270,7 @@ netsim_parallel <- function(x,
   }
 
   if (nsims == 1 | ncores == 1) {
-    sim <- netsim(x, param, init, control)
+    all <- netsim(x, param, init, control)
   } else {
     cluster.size <- min(nsims, ncores)
     if (par.type == "single") {

@@ -4,7 +4,7 @@
 #' @description Runs a web browser-based GUI of deterministic compartmental
 #'              models and stochastic individual contact models.
 #'
-#' @param class model class, with options of \code{"dcm"} and \code{"icm"}.
+#' @param class Model class, with options of \code{"dcm"} and \code{"icm"}.
 #'
 #' @details
 #' \code{epiweb} runs a web-based GUI of a one-group \code{\link{dcm}} models
@@ -39,9 +39,9 @@
 #'
 epiweb <- function(class) {
   if (class == "dcm") {
-    shiny::runApp(system.file("shiny", "dcm", package = "EpiModel"))
+    shiny::runApp(system.file("shiny", "epidcm", package = "EpiModel"))
   } else if (class == "icm") {
-    shiny::runApp(system.file("shiny", "icm", package = "EpiModel"))
+    shiny::runApp(system.file("shiny", "epiicm", package = "EpiModel"))
   } else {
     stop("Specify class as either \"dcm\" or \"icm\" ")
   }

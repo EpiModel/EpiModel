@@ -63,8 +63,8 @@
 #' built-in types, for which these parameters are used, or original model
 #' specifications for which these parameters may be used (but not necessarily).
 #' A detailed description of DCM parameterization for built-in models is found
-#' in Section 2 of the
-#' \href{http://statnet.org/EpiModel/vignette/Tutorial.pdf}{EpiModel Tutorial}.
+#' in the
+#' \href{http://statnet.github.io/tut/BasicDCMs.html}{Basic DCMs} tutorial.
 #'
 #' For built-in models, the model specification will be selected as a function
 #' of the model parameters entered here and the control settings in
@@ -105,8 +105,7 @@
 #' series of models varying one or more of the model parameters is run. This is
 #' possible by setting any parameter as a vector of length greater than one. See
 #' both the example below and the
-#' \href{http://statnet.org/EpiModel/vignette/Tutorial.pdf}{EpiModel Tutorial}
-#' for details.
+#' \href{http://statnet.github.io/tut/BasicDCMs.html}{Basic DCMs} tutorial.
 #'
 #' @section New Model Types:
 #' To build original model specifications outside of the built-in models, start
@@ -179,9 +178,8 @@ param.dcm <- function(inf.prob,
 #' contact models simulated with the \code{\link{icm}} function. Models
 #' may use the built-in types, for which these parameters are used, or new process
 #' modules which may use these parameters (but not necessarily). A detailed
-#' description of ICM parameterization for built-in models is found in Section 3
-#' of the \href{http://statnet.org/EpiModel/vignette/Tutorial.pdf}{EpiModel
-#' Tutorial}.
+#' description of ICM parameterization for built-in models is found in the
+#' \href{http://statnet.github.io/tut/BasicICMs.html}{Basic ICMs} tutorial.
 #'
 #' For built-in models, the model specification will be chosen as a result of
 #' the model parameters entered here and the control settings in
@@ -200,8 +198,7 @@ param.dcm <- function(inf.prob,
 #' \eqn{N_i} is the group size and \eqn{\alpha_i} the group-specific act rates
 #' at time \eqn{t}. The \code{balance} parameter here specifies which group's
 #' act rate should control the others with respect to balancing. See the
-#' \href{http://statnet.org/EpiModel/vignette/Tutorial.pdf}{EpiModel Tutorial}
-#' for further details.
+#' \href{http://statnet.github.io/tut/BasicDCMs.html}{Basic DCMs} tutorial.
 #'
 #' @section New Modules:
 #' To build original models outside of the built-in models, new process modules
@@ -282,51 +279,51 @@ param.icm <- function(inf.prob,
 #' @description Sets the epidemic parameters for stochastic network models
 #'              simulated with \code{\link{netsim}}.
 #'
-#' @param inf.prob probability of infection per transmissible act between
+#' @param inf.prob Probability of infection per transmissible act between
 #'        a susceptible and an infected person. In bipartite models, this is the
 #'        probability of infection to the mode 1 nodes. This may also be a vector
 #'        of probabilities, with each element corresponding to the probability
 #'        in that time step of infection (see Time-Varying Parameters below).
-#' @param act.rate average number of transmissible acts \emph{per partnership}
+#' @param act.rate Average number of transmissible acts \emph{per partnership}
 #'        per unit time (see act.rate Parameter below). This may also be a vector
 #'        of rates, with each element corresponding to the rate in in that time
 #'        step of infection (see Time-Varying Parameters below).
-#' @param rec.rate average rate of recovery with immunity (in \code{SIR} models)
+#' @param rec.rate Average rate of recovery with immunity (in \code{SIR} models)
 #'        or re-susceptibility (in \code{SIS} models). The recovery rate is the
 #'        reciprocal of the disease duration. For bipartite models, this is the
 #'        recovery rate for mode 1 persons only. This parameter is only used for
 #'        \code{SIR} and \code{SIS} models. This may also be a vector
 #'        of rates, with each element corresponding to the rate in that time step
 #'        of infection (see Time-Varying Parameters below).
-#' @param b.rate birth or entry rate. For one-mode models, the birth rate is the
+#' @param b.rate Birth or entry rate. For one-mode models, the birth rate is the
 #'        rate of new births per person per unit time. For bipartite models, the
 #'        birth rate may be parameterized as a rate per mode 1 person time (with
 #'        mode 1 persons representing females), and with the \code{b.rate.g2}
 #'        rate set as described below.
-#' @param ds.rate death or exit rate for susceptible. For bipartite models, it
+#' @param ds.rate Death or exit rate for susceptible. For bipartite models, it
 #'        is the rate for the mode 1 susceptible only.
-#' @param di.rate death or exit rate for infected. For bipartite models, it is
+#' @param di.rate Death or exit rate for infected. For bipartite models, it is
 #'        the rate for the mode 1 infected only.
-#' @param dr.rate death or exit rate for recovered. For bipartite models, it is
+#' @param dr.rate Death or exit rate for recovered. For bipartite models, it is
 #'        the rate for the mode 1 recovered only. This parameter is only used for
 #'        \code{SIR} models.
-#' @param inf.prob.m2 probability of transmission given a transmissible act
+#' @param inf.prob.m2 Probability of transmission given a transmissible act
 #'        between a susceptible mode 2 person and an infected mode 1 person.
 #'        It is the probability of transmission to mode 2 members.
-#' @param rec.rate.m2 average rate of recovery with immunity (in \code{SIR} models)
+#' @param rec.rate.m2 Average rate of recovery with immunity (in \code{SIR} models)
 #'        or re-susceptibility (in \code{SIS} models) for mode 2 persons. This
 #'        parameter is only used for bipartite \code{SIR} and \code{SIS} models.
-#' @param b.rate.m2 birth or entry rate for mode 2. This may either be specified
+#' @param b.rate.m2 Birth or entry rate for mode 2. This may either be specified
 #'        numerically as the rate of new births per mode 2 persons per unit time,
 #'        or as \code{NA} in which case the mode 1 rate, \code{b.rate}, governs
 #'        the mode 2 rate. The latter is used when, for example, the first mode
 #'        is conceptualized as female, and the female population size determines
 #'        the birth rate. Such births are evenly allocated between the two modes.
-#' @param ds.rate.m2 death or exit rate for mode 2 susceptible.
-#' @param di.rate.m2 death or exit rate for mode 2 infected.
-#' @param dr.rate.m2 death or exit rate for mode 2 recovered. This parameter is
+#' @param ds.rate.m2 Death or exit rate for mode 2 susceptible.
+#' @param di.rate.m2 Death or exit rate for mode 2 infected.
+#' @param dr.rate.m2 Death or exit rate for mode 2 recovered. This parameter is
 #'        only used for \code{SIR} model types.
-#' @param ... additional arguments passed to model.
+#' @param ... Additional arguments passed to model.
 #'
 #' @details
 #' \code{param.net} sets the epidemic parameters for the stochastic network
@@ -334,8 +331,8 @@ param.icm <- function(inf.prob,
 #' may use the built-in types, for which these parameters are used, or new process
 #' modules which may use these parameters (but not necessarily). A detailed
 #' description of network model parameterization for built-in models is found in
-#' Section 4 of the \href{http://statnet.org/EpiModel/vignette/Tutorial.pdf}{EpiModel
-#' Tutorial}.
+#' the \href{http://statnet.github.io/tut/BasicNet.html}{Basic Network Models}
+#' tutorial.
 #'
 #' For built-in models, the model specification will be chosen as a result of
 #' the model parameters entered here and the control settings in
@@ -366,8 +363,10 @@ param.icm <- function(inf.prob,
 #' the first two time steps of a person's infection, followed by a 0.1 for the
 #' third time step. If the infected person has not recovered or exited the
 #' population by the fourth time step, the third element in the vector will carry
-#' forward until one of those occurs or the simulation ends. For further examples, see
-#' \href{http://statnet.csde.washington.edu/EpiModel/nme/2014/d4-tut3.html}{this tutorial}.
+#' forward until one of those occurs or the simulation ends. For further examples,
+#' see the NME tutorial,
+#' \href{http://statnet.csde.washington.edu/EpiModel/nme/d4-tut3.html}{Additional
+#' Modeling Topics}.
 #'
 #' @section New Modules:
 #' To build original models outside of the built-in models, new process modules
