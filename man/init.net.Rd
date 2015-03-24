@@ -41,8 +41,8 @@ The initial conditions for a model solved with \code{\link{netsim}} should be
 input into the \code{init.net} function. This function handles initial
 conditions for both built-in models and new modules. For an overview of
 specifying initial conditions across a variety of built-in network models,
-consult the \href{http://statnet.org/EpiModel/vignette/Tutorial.pdf}{EpiModel
-Tutorial}.
+consult the \href{http://statnet.github.io/tut/BasicNet.html}{Basic Network
+Models} tutorial.
 }
 \seealso{
 Use \code{\link{param.net}} to specify model parameters and

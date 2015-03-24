@@ -42,7 +42,7 @@ The initial conditions for a model solved with \code{\link{icm}} should be
 input into the \code{init.icm} function. This function handles initial
 conditions for both built-in models and original models using new modules. For
 an overview of initial conditions for built-in ICM class models, consult the
-\href{http://statnet.org/EpiModel/vignette/Tutorial.pdf}{EpiModel Tutorial}.
+\href{http://statnet.github.io/tut/BasicICMs.html}{Basic ICMs} tutorial.
 }
 \seealso{
 Use \code{\link{param.icm}} to specify model parameters and
