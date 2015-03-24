@@ -4,9 +4,9 @@
 \alias{param.dcm}
 \title{Epidemic Parameters for Deterministic Compartmental Models}
 \usage{
-param.dcm(inf.prob, act.rate, rec.rate, b.rate, ds.rate, di.rate, dr.rate,
-  inf.prob.g2, act.rate.g2, rec.rate.g2, b.rate.g2, ds.rate.g2, di.rate.g2,
-  dr.rate.g2, balance, ...)
+param.dcm(inf.prob, act.rate, part.acq.rate, acts.per.part, rec.rate, b.rate,
+  ds.rate, di.rate, dr.rate, inf.prob.g2, act.rate.g2, rec.rate.g2, b.rate.g2,
+  ds.rate.g2, di.rate.g2, dr.rate.g2, balance, ...)
 }
 \arguments{
 \item{inf.prob}{Probability of infection per transmissible act between
@@ -17,6 +17,13 @@ probability of infection for the group 1 members.}
 For two-group models, this is the number of acts per group 1 persons
 per unit time; a balance between the acts in groups 1 and 2 is necessary,
 and set using the \code{balance} parameter (see details).}
+
+\item{part.acq.rate}{Rate of acquiring new partners per unit time, to be used
+as an alternative to \code{act.rate} (see details). Currently only
+available for one-group models.}
+
+\item{acts.per.part}{Number of acts per partnership, used with the
+\code{part.acq.rate} parameter to specify the total number of acts.}
 
 \item{rec.rate}{Average rate of recovery with immunity (in \code{SIR} models)
 or re-susceptibility (in \code{SIS} models). The recovery rate is the
@@ -105,6 +112,22 @@ at time \eqn{t}. The \code{balance} parameter here specifies which group's
 act rate should control the others with respect to balancing. See the
 \href{http://statnet.org/EpiModel/vignette/Tutorial.pdf}{EpiModel Tutorial}
 for further details.
+}
+
+\section{Partnerships as Contacts}{
+
+A common parameterization of contacts within DCMs for HIV/STI is to collapse
+all acts to occur within a partnership. Standard DCMs do not permit mathematical
+partnerships, as the force of infection is an instantaneous hazard. Therefore,
+DCM partnerships simply embed all acts within one "partnership" by calculating
+a infection probability per partnership with the formula: \eqn{1-(1-\tau)^\alpha},
+where \eqn{\tau} is still the risk per act and \eqn{\alpha} is the number of
+acts per partnership. Within EpiModel, \code{inf.prob} still specifies the
+per-act transmission probability (\eqn{\tau}), but the \code{act.rate}
+parameter should be substituted by \code{part.acq.rate} for the rate of
+acquiring new partners and the \code{acts.per.part} for the number acts per
+partnership (\eqn{\alpha}). Finally, this is currently only implemented for
+one-group models.
 }
 
 \section{Sensitivity Analyses}{

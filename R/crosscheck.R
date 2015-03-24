@@ -32,9 +32,6 @@ crosscheck.dcm <- function(param, init, control) {
   if (is.null(control$new.mod)) {
 
     ## Defaults
-    if (is.null(param$act.rate)) {
-      param$act.rate <- 1
-    }
     if (is.null(param$vital)) {
       if (!is.null(param$b.rate) |
           !is.null(param$ds.rate) |
@@ -102,6 +99,24 @@ crosscheck.dcm <- function(param, init, control) {
       stop("Specified initial number recovered for non-SIR model",
            call. = FALSE)
     }
+
+    # Partnerships
+    if (!is.null(param$part.acq.rate)) {
+      if (!is.null(param$act.rate)) {
+        stop("Specify contacts with either act.rate or part.acq.rate", call. = FALSE)
+      }
+      if (param$groups == 2) {
+        stop("Contacts as partnerships currently available only with 1-group models",
+             call. = FALSE)
+      }
+      if (param$groups == 1) {
+        param$act.inf.prob <- param$inf.prob
+        param$inf.prob <- 1-(1-param$inf.prob)^param$acts.per.part
+        param$act.rate <- param$part.acq.rate
+      }
+
+    }
+
 
     # Deprecated parameters
     if (!is.null(param$trans.rate)) {
