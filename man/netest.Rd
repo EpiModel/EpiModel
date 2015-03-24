@@ -61,8 +61,9 @@ necessary input for running the epidemic simulations in \code{\link{netsim}}.
 With a fitted network model, one should always first proceed to model
 diagnostics, available through the \code{\link{netdx}} function, to check
 model fit. A detailed description of fitting these models, along with examples,
-may be found in Section 4 of the
-\href{http://statnet.org/EpiModel/vignette/Tutorial.pdf}{EpiModel Tutorial}.
+may be found in the
+\href{http://statnet.github.io/tut/BasicDCMs.html}{Basic Network Models}
+tutorial.
 }
 \section{Edges Dissolution Approximation}{
 
