@@ -190,8 +190,8 @@ print.disscoef <- function(x, ...) {
   cat("\n=======================")
   cat("\nDissolution Model: "); ; print(x$dissolution)
   cat("Edge Duration:", x$duration)
-  cat("\nAdjusted Coefficient:", x$coef.adj)
   cat("\nCrude Coefficient:", x$coef.crude)
+  cat("\nAdjusted Coefficient:", x$coef.adj)
   cat("\nDeath rate:", x$d.rate)
   invisible()
 }
