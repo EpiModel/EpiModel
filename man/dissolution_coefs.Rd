@@ -8,25 +8,25 @@ dissolution_coefs(dissolution, duration, d.rate = 0)
 }
 \arguments{
 \item{dissolution}{Right-hand sided STERGM dissolution formula
-(see \code{\link{netest}}); currently limited to a \code{~offset(edges)}
-dissolution model.}
+(see \code{\link{netest}}). See below for list of supported dissolution
+models.}
 
-\item{duration}{Average edge duration in arbitrary time units.}
+\item{duration}{A vector of mean edge durations in arbitrary time units.}
 
-\item{d.rate}{Death/exit rate in the absence of disease.}
+\item{d.rate}{Death or exit rate from the population, as a single homogenous
+       rate that applies to the entire population.}
 }
 \value{
 A list of class \code{disscoef} with the following elements:
 \itemize{
- \item \strong{dissolution:} the right-hand sided STERGM dissolution formula
+ \item \strong{dissolution:} right-hand sided STERGM dissolution formula
         passed in the function call.
- \item \strong{duration:} the average edge duration passed in the function
-       call.
- \item \strong{coef.crude:} the average duration transformed into a logit
-       coefficient for use in STERGM simulations.
- \item \strong{coef.adj:} the crude coefficient adjusted for the impact of
+ \item \strong{duration:} mean edge durations passed into the function.
+ \item \strong{coef.crude:} mean durations transformed into a logit
+       coefficients.
+ \item \strong{coef.adj:} crude coefficients adjusted for the risk of
        death on edge persistence, if the \code{d.rate} argument is supplied.
- \item \strong{d.rate:} the death rate, supplied via the \code{d.rate} argument.
+ \item \strong{d.rate:} the death rate.
 }
 }
 \description{
@@ -35,30 +35,59 @@ Calculates dissolution coefficients, given a dissolution model
              model fit in \code{netest}.
 }
 \details{
-This function performs two calculations to obtain a dissolution coefficient
+This function performs two calculations for dissolution coefficients
 used in a network model estimated with \code{\link{netest}}:
 \enumerate{
- \item \strong{Transformation:} the average duration of edges in a network are
+ \item \strong{Transformation:} the mean duration of edges in a network are
        mathematically transformed to logit coefficients.
  \item \strong{Adjustment:} In a dynamic network simulation in an open
-       population (in which there are births and deaths), it is necessary to
-       adjust the dissolution coefficient for the STERGM simulations to account
-       for the death as a competing risk to edge dissolution.
+       population (in which there are deaths), it is further necessary to
+       adjust these coefficients for dynamic simulations; this upward adjustment
+       accounts for death as a competing risk to edge dissolution.
 }
 
-Future releases of \code{EpiModel} will allow for more flexibility in the
-possible dissolution models that may be calculated, including models with
-heterogenous dissolution probabilities conditional on nodal or edge attributes.
+The current dissolution models supported by this function and in network
+model estimation in \code{\link{netest}} are as follows:
+\itemize{
+ \item \code{~offset(edges)}: a homogeneous dissolution model in which the
+        edge duration is the same for all partnerships. This requires
+        specifying one duration value.
+ \item \code{~offset(edges) + offset(nodematch("<attr>"))}: a heterogeneous
+        model in which the edge duration varies by whether the nodes in the
+        dyad have similar values of a specified attribute. The duration vector
+        should now contain two values: the first is the mean edge duration of
+        non-matched dyads, and the second is the duration of the matched dyads.
+ \item \code{~offset(edges) + offset(nodemix("<attr>"))}: a heterogenous model
+        that extends the nodematch model to include non-binary attributes for
+        homophily. The duration vector should first contain the base value,
+        then the values for every other possible combination in the term.
+ \item \code{~offset(edges) + offset(nodefactor("<attr>"))}: a heterogenous
+        model in which the edge duration varies by a specified attribute. The
+        duration vector should first contain the base value, then the values
+        for every other value of that attribute in the term.
+}
 }
 \examples{
-dissolution <- ~offset(edges)
-duration <- 25
-dissolution_coefs(dissolution, duration)
-dissolution_coefs(dissolution, duration, d.rate = 0.001)
+# Homogeneous dissolution model with no deaths
+dissolution_coefs(dissolution = ~offset(edges), duration = 25)
+
+# Homogeneous dissolution model with deaths
+dissolution_coefs(dissolution = ~offset(edges), duration = 25,
+                  d.rate = 0.001)
+
+# Heterogeneous dissolution model in which same-race edges have
+# shorter duration compared to mixed-race edges, with no deaths
+dissolution_coefs(dissolution = ~offset(edges) + offset(nodematch("race")),
+                  duration = c(20, 10))
+
+# Heterogeneous dissolution model in which same-race edges have
+# shorter duration compared to mixed-race edges, with deaths
+dissolution_coefs(dissolution = ~offset(edges) + offset(nodematch("race")),
+                  duration = c(20, 10), d.rate = 0.001)
 }
 \seealso{
 The theory and details of this function are explained in detail in the
-\href{http://statnet.org/EpiModel/vignette/NetUtils.html}{EpiModel Network
+\href{http://statnet.github.io/tut/NetUtils.html}{EpiModel Network
 Utility Functions} tutorial.
 }
 \keyword{netUtils}
