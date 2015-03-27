@@ -298,48 +298,84 @@ copy_toall_attr <- function(dat, at, fterms) {
 #' dissolution_coefs(dissolution, duration)
 #' dissolution_coefs(dissolution, duration, d.rate = 0.001)
 #'
-dissolution_coefs <- function(dissolution,
-                              duration,
-                              d.rate = 0
-                              ) {
+dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
 
 
   # Check form of dissolution formula
   form.length <- length(strsplit(as.character(dissolution)[2], "[+]")[[1]])
   t1.edges <- grepl("offset[(]edges",
                     strsplit(as.character(dissolution)[2], "[+]")[[1]][1])
-
-  # Log transformation of duration to coefficent
-  if (t1.edges == TRUE && form.length == 1) {
-    coef.diss <- log(duration[1] - 1)
-  } else {
-    stop("Only ~offset(edges) dissolution models currently supported",
-         call. = FALSE)
+  if (form.length == 2) {
+    t2 <- strsplit(as.character(dissolution)[2], "[+]")[[1]][2]
+    t2.term <- NULL
+    if (grepl("offset[(]nodematch", t2)) {
+      t2.term <- "nodematch"
+    } else if (grepl("offset[(]nodefactor")) {
+      t2.term <- "nodefactor"
+    } else if (grepl("offset[(]nodemix",)) {
+      t2.term <- "nodemix"
+    }
   }
 
-  if (d.rate > 0) {
-    # Exogenous death correction to coefficient
-    exp.dur <- 1 + exp(coef.diss)
-    prob.diss <- 1 / exp.dur
+  if (length(d.rate) > 1) {
+    stop("Length of d.rate must be 1", call. = FALSE)
+  }
 
-    prob.neither.dying <- (1 - d.rate)^2
-    prob.either.dying <- 2*d.rate - d.rate^2
-
-    prob <- 1 - ((prob.diss - prob.either.dying) / prob.neither.dying)
-    if (prob >= 1) {
-      stop("The competing risk of mortality is too high for the given duration. Specify a lower d.rate",
+  # Log transformation of duration to coefficent
+  if (t1.edges == FALSE) {
+    stop("Dissolution models must start with offset(edges)", call. = FALSE)
+  }
+  if (form.length == 1) {
+    if (length(duration > 1)) {
+      stop("Dissolution model length is 1, but number of durations was",
+           length(duration), call. = FALSE)
+    }
+    pg <- (duration[1] - 1)/duration[1]
+    ps2 <- 1 - d.rate
+    coef.crude <- log(pg/(1 - pg))
+    if (ps2 <= pg) {
+      stop("The competing risk of mortality is too high given the duration. Specify a lower d.rate",
            call. = FALSE)
     }
-    coef.diss.adj <- logit(prob)
-  } else {
-    coef.diss.adj <- coef.diss
+    coef.adj <- log(pg/(ps2 - pg))
+  }
+  if (form.length == 2) {
+   if (t2.term %in% c("nodematch", "nodefactor", "nodemix")) {
+
+     coef.crude <- coef.adj <- NA
+     for (i in 1:length(duration)) {
+       if (i == 1) {
+         pg.thetaX <- (duration[i] - 1) / duration[i]
+         ps2.thetaX <- (1 - d.rate)^2
+         if (sqrt(ps2.thetaX) <= pg.thetaX) {
+           stop("The competing risk of mortality is too high for the given the duration in place ", i,
+                ". Specify a lower d.rate", call. = FALSE)
+         }
+         coef.crude[i] <- log(pg.thetaX/(1 - pg.thetaX))
+         coef.adj[i] <- log(pg.thetaX/(ps2.thetaX - pg.thetaX))
+       } else {
+         pg.thetaX <- (duration[i] - 1) / duration[i]
+         ps2.thetaX <- (1 - d.rate)^2
+         if (sqrt(ps2.thetaX) <= pg.thetaX) {
+           stop("The competing risk of mortality is too high for the given the duration in place ", i,
+                ". Specify a lower d.rate", call. = FALSE)
+         }
+         coef.crude[i] <- log(pg.thetaX/(1 - pg.thetaX)) - coef.crude[1]
+         coef.adj[i] <- log(pg.thetaX/(ps2.thetaX - pg.thetaX)) - coef.adj[1]
+       }
+     }
+
+   } else {
+     stop("Supported heterogeneous dissolution model terms are nodematch, nodefactor, or nodemix",
+          call. = FALSE)
+   }
   }
 
   out <- list()
   out$dissolution <- dissolution
   out$duration <- duration
-  out$coef.adj <- coef.diss.adj
-  out$coef.crude <- coef.diss
+  out$coef.crude <- coef.crude
+  out$coef.adj <- coef.adj
   out$d.rate <- d.rate
 
   class(out) <- "disscoef"
