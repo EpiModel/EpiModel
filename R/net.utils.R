@@ -326,14 +326,14 @@ dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
     stop("Dissolution models must start with offset(edges)", call. = FALSE)
   }
   if (form.length == 1) {
-    if (length(duration > 1)) {
-      stop("Dissolution model length is 1, but number of durations was",
+    if (length(duration) > 1) {
+      stop("Dissolution model length is 1, but number of duration was ",
            length(duration), call. = FALSE)
     }
     pg <- (duration[1] - 1)/duration[1]
-    ps2 <- 1 - d.rate
+    ps2 <- (1 - d.rate)^2
     coef.crude <- log(pg/(1 - pg))
-    if (ps2 <= pg) {
+    if (sqrt(ps2) <= pg) {
       stop("The competing risk of mortality is too high given the duration. Specify a lower d.rate",
            call. = FALSE)
     }
