@@ -103,7 +103,7 @@ the other group size and act rate: \eqn{N_1 \alpha_1 = N_2 \alpha_2}, where
 \eqn{N_i} is the group size and \eqn{\alpha_i} the group-specific act rates
 at time \eqn{t}. The \code{balance} parameter here specifies which group's
 act rate should control the others with respect to balancing. See the
-\href{http://statnet.org/EpiModel/vignette/Tutorial.pdf}{EpiModel Tutorial}
+\href{http://statnet.github.io/tut/BasicDCMs.html}{Basic DCMs} tutorial
 for further details.
 }
 
@@ -119,7 +119,7 @@ both the example below and the
 \section{New Model Types}{
 
 To build original model specifications outside of the built-in models, start
-by consulting the \href{http://statnet.org/EpiModel/vignette/NewDCMs.html}{Solving
+by consulting the \href{http://statnet.github.io/tut/NewDCMs.html}{Solving
 New DCMs with EpiModel} tutorial. Briefly, an original model may use either
 the existing model parameters named here, an original set of parameters, or
 a combination of both. The \code{...} argument allows the user to pass an

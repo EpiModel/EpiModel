@@ -51,7 +51,7 @@ bipvals <- function(nw, mode, val) {
 #'
 #' @seealso
 #' For a detailed explanation of this function, see the tutorial:
-#' \href{http://statnet.org/EpiModel/vignette/NetUtils.html}{EpiModel Network
+#' \href{http://statnet.github.io/tut/NetUtils.html}{EpiModel Network
 #' Utility Functions}.
 #'
 #' @export

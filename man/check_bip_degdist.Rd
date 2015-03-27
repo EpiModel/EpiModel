@@ -40,7 +40,7 @@ check_bip_degdist(num.m1 = 500, num.m2 = 500,
 }
 \seealso{
 For a detailed explanation of this function, see the tutorial:
-\href{http://statnet.org/EpiModel/vignette/NetUtils.html}{EpiModel Network
+\href{http://statnet.github.io/tut/NetUtils.html}{EpiModel Network
 Utility Functions}.
 }
 \keyword{netUtils}
