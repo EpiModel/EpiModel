@@ -311,7 +311,7 @@ copy_toall_attr <- function(dat, at, fterms) {
 #'
 #' @examples
 #' # Homogeneous dissolution model with no deaths
-#' dissolution_coefs(dissolution = ~offset(edges), duration = 25)
+#' cd <- dissolution_coefs(dissolution = ~offset(edges), duration = 25)
 #'
 #' # Homogeneous dissolution model with deaths
 #' dissolution_coefs(dissolution = ~offset(edges), duration = 25,
@@ -345,6 +345,11 @@ dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
       t2.term <- "nodemix"
     }
   }
+
+  valid.model <- ifelse((form.length == 1 & t1.edges == TRUE) ||
+                        (form.length == 2 & t1.edges == TRUE &
+                           t2.term %in% c("nodematch", "nodefactor", "nodemix")),
+                        TRUE, FALSE)
 
   if (length(d.rate) > 1) {
     stop("Length of d.rate must be 1", call. = FALSE)
@@ -402,6 +407,7 @@ dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
   out$coef.crude <- coef.crude
   out$coef.adj <- coef.adj
   out$d.rate <- d.rate
+  out$valid.model <- valid.model
 
   class(out) <- "disscoef"
   return(out)
