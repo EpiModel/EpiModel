@@ -154,9 +154,9 @@ netest <- function(nw,
     constraints	<- ~.
   }
 
-	if (dissolution != ~ offset(edges)) {
-	  stop("Currently only ~offset(edges) dissolution models supported")
-	}
+  if (class(coef.diss) != "disscoef" || coef.diss$valid.model == FALSE) {
+    stop("Dissolution model not currently supported. See ?dissolution_coefs", call. = FALSE)
+  }
 
   if (edapprox == FALSE) {
 
@@ -220,9 +220,11 @@ netest <- function(nw,
 
     coef.form <- fit$coef
     coef.form.crude <- coef.form
-    if (coef.diss$coef.crude > -Inf) {
-      nwDens <- und_dens(network.size(nw), target.stats[1])
-      coef.form[1] <- coef.form[1] - log(coef.diss$duration - nwDens/(1-nwDens))
+    if (coef.diss$coef.crude[1] > -Inf) {
+      # nwDens <- und_dens(network.size(nw), target.stats[1])
+      # coef.form[1] <- coef.form[1] - log(coef.diss$duration - nwDens/(1-nwDens))
+      l.cd <- length(coef.diss$coef.crude)
+      coef.form[1:l.cd] <- coef.form[1:l.cd] - coef.diss$coef.crude
     }
 
     # Reduce size of output object
