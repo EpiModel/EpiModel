@@ -154,7 +154,7 @@ netest <- function(nw,
     constraints	<- ~.
   }
 
-  if (class(coef.diss) != "disscoef" || coef.diss$valid.model == FALSE) {
+  if (class(coef.diss) != "disscoef" || coef.diss$model.type == "invalid") {
     stop("Dissolution model not currently supported. See ?dissolution_coefs", call. = FALSE)
   }
 
