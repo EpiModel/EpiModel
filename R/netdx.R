@@ -95,6 +95,10 @@ netdx <- function(x,
                   verbose = TRUE,
                   ncores = 1) {
 
+  if (class(x) != "netest") {
+    stop("x must be an object of class netest", call. = FALSE)
+  }
+
   if (class(x$fit) == "network") {
     nw <- x$fit
   } else {
