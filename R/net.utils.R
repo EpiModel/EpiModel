@@ -346,10 +346,15 @@ dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
     }
   }
 
-  valid.model <- ifelse((form.length == 1 & t1.edges == TRUE) ||
-                        (form.length == 2 & t1.edges == TRUE &
-                           t2.term %in% c("nodematch", "nodefactor", "nodemix")),
-                        TRUE, FALSE)
+  model.type <- NA
+  if (form.length == 1 && t1.edges == TRUE) {
+    model.type <- "homog"
+  } else if (form.length == 2 && t1.edges == TRUE &&
+      t2.term %in% c("nodematch", "nodefactor", "nodemix")) {
+    model.type <- "hetero"
+  } else {
+    model.type <- "invalid"
+  }
 
   if (length(d.rate) > 1) {
     stop("Length of d.rate must be 1", call. = FALSE)
@@ -407,7 +412,7 @@ dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
   out$coef.crude <- coef.crude
   out$coef.adj <- coef.adj
   out$d.rate <- d.rate
-  out$valid.model <- valid.model
+  out$model.type <- model.type
 
   class(out) <- "disscoef"
   return(out)
