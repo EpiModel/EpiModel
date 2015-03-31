@@ -116,10 +116,6 @@ netdx <- function(x,
   target.stats <- x$target.stats
   edapprox <- x$edapprox
 
-  if (dissolution != ~offset(edges)) {
-    stop('Only ~offset(edges) dissolution models currently supported')
-  }
-
   if (dynamic == TRUE && missing(nsteps)) {
     stop("Specify number of time steps with nsteps", call. = FALSE)
   }
