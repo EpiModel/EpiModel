@@ -114,6 +114,10 @@ print.netdx <- function(x, digits = 3, ...) {
     cat("\nDissolution Diagnostics")
     cat("\n----------------------- \n")
     print(round(x$stats.table.dissolution, digits = digits))
+    if (x$coef.diss$model.type == "hetero") {
+      cat("----------------------- \n")
+      cat("* Heterogeneous dissolution model results averaged over")
+    }
   }
 
   invisible()
