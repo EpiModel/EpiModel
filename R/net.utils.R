@@ -311,7 +311,7 @@ copy_toall_attr <- function(dat, at, fterms) {
 #'
 #' @examples
 #' # Homogeneous dissolution model with no deaths
-#' cd <- dissolution_coefs(dissolution = ~offset(edges), duration = 25)
+#' dissolution_coefs(dissolution = ~offset(edges), duration = 25)
 #'
 #' # Homogeneous dissolution model with deaths
 #' dissolution_coefs(dissolution = ~offset(edges), duration = 25,
