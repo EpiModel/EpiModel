@@ -339,9 +339,9 @@ dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
     t2.term <- NULL
     if (grepl("offset[(]nodematch", t2)) {
       t2.term <- "nodematch"
-    } else if (grepl("offset[(]nodefactor")) {
+    } else if (grepl("offset[(]nodefactor", t2)) {
       t2.term <- "nodefactor"
-    } else if (grepl("offset[(]nodemix",)) {
+    } else if (grepl("offset[(]nodemix", t2)) {
       t2.term <- "nodemix"
     }
   }
