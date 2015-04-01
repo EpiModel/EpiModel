@@ -5,7 +5,8 @@
 \title{Dynamic Network Model Diagnostics}
 \usage{
 netdx(x, nsims = 1, dynamic = TRUE, nsteps, nwstats.formula = "formation",
-  set.control.ergm, set.control.stergm, verbose = TRUE, ncores = 1)
+  set.control.ergm, set.control.stergm, keep.tedgelist = FALSE,
+  verbose = TRUE, ncores = 1)
 }
 \arguments{
 \item{x}{An \code{EpiModel} object of class \code{netest}.}
@@ -27,6 +28,9 @@ details).}
 
 \item{set.control.stergm}{Control arguments passed to simulate.stergm (see
 details).}
+
+\item{keep.tedgelist}{If \code{TRUE}, keep the timed edgelist generated from
+the dynamic simulations, for further analysis on edge durations.}
 
 \item{verbose}{Print progress to the console.}
 

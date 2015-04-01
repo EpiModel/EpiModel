@@ -17,6 +17,8 @@
 #'        details).
 #' @param set.control.stergm Control arguments passed to simulate.stergm (see
 #'        details).
+#' @param keep.tedgelist If \code{TRUE}, keep the timed edgelist generated from
+#'        the dynamic simulations, for further analysis on edge durations.
 #' @param verbose Print progress to the console.
 #' @param ncores Number of processor cores to run multiple simulations
 #'        on, using the \code{foreach} and \code{doParallel} implementations.
@@ -92,6 +94,7 @@ netdx <- function(x,
                   nwstats.formula = "formation",
                   set.control.ergm,
                   set.control.stergm,
+                  keep.tedgelist = FALSE,
                   verbose = TRUE,
                   ncores = 1) {
 
@@ -447,6 +450,9 @@ netdx <- function(x,
     out$edgelist <- sim.df
     out$pages <- pages
     out$prop.diss <- prop.diss
+    if (keep.tedgelist == TRUE) {
+      out$tedgelist <- sim.df
+    }
   }
 
   class(out) <- "netdx"
