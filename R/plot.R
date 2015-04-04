@@ -1363,6 +1363,11 @@ plot.netdx <- function(x,
 
   if (type == "duration") {
 
+    if (x$coef.diss$model.type == "hetero") {
+      stop("Duration plots for heterogeneous dissolution models not currently available",
+           call. = FALSE)
+    }
+
     pages <- x$pages
 
     xlim <- c(1, nsteps)
@@ -1466,6 +1471,11 @@ plot.netdx <- function(x,
 
   # Dissolution plot -----------------------------------------------------------
   if (type == "dissolution") {
+
+    if (x$coef.diss$model.type == "hetero") {
+      stop("Dissolution plots for heterogeneous dissolution models not currently available",
+           call. = FALSE)
+    }
 
     prop.diss <- x$prop.diss
 

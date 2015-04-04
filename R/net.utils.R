@@ -51,7 +51,7 @@ bipvals <- function(nw, mode, val) {
 #'
 #' @seealso
 #' For a detailed explanation of this function, see the tutorial:
-#' \href{http://statnet.org/EpiModel/vignette/NetUtils.html}{EpiModel Network
+#' \href{http://statnet.github.io/tut/NetUtils.html}{EpiModel Network
 #' Utility Functions}.
 #'
 #' @export
@@ -249,98 +249,170 @@ copy_toall_attr <- function(dat, at, fterms) {
 #'              model fit in \code{netest}.
 #'
 #' @param dissolution Right-hand sided STERGM dissolution formula
-#'        (see \code{\link{netest}}); currently limited to a \code{~offset(edges)}
-#'        dissolution model.
-#' @param duration Average edge duration in arbitrary time units.
-#' @param d.rate Death/exit rate in the absence of disease.
+#'        (see \code{\link{netest}}). See below for list of supported dissolution
+#'        models.
+#' @param duration A vector of mean edge durations in arbitrary time units.
+#' @param d.rate Death or exit rate from the population, as a single homogenous
+#'        rate that applies to the entire population.
 #'
 #' @details
-#' This function performs two calculations to obtain a dissolution coefficient
+#' This function performs two calculations for dissolution coefficients
 #' used in a network model estimated with \code{\link{netest}}:
 #' \enumerate{
-#'  \item \strong{Transformation:} the average duration of edges in a network are
+#'  \item \strong{Transformation:} the mean duration of edges in a network are
 #'        mathematically transformed to logit coefficients.
 #'  \item \strong{Adjustment:} In a dynamic network simulation in an open
-#'        population (in which there are births and deaths), it is necessary to
-#'        adjust the dissolution coefficient for the STERGM simulations to account
-#'        for the death as a competing risk to edge dissolution.
+#'        population (in which there are deaths), it is further necessary to
+#'        adjust these coefficients for dynamic simulations; this upward adjustment
+#'        accounts for death as a competing risk to edge dissolution.
 #' }
 #'
-#' Future releases of \code{EpiModel} will allow for more flexibility in the
-#' possible dissolution models that may be calculated, including models with
-#' heterogenous dissolution probabilities conditional on nodal or edge attributes.
+#' The current dissolution models supported by this function and in network
+#' model estimation in \code{\link{netest}} are as follows:
+#' \itemize{
+#'  \item \code{~offset(edges)}: a homogeneous dissolution model in which the
+#'         edge duration is the same for all partnerships. This requires
+#'         specifying one duration value.
+#'  \item \code{~offset(edges) + offset(nodematch("<attr>"))}: a heterogeneous
+#'         model in which the edge duration varies by whether the nodes in the
+#'         dyad have similar values of a specified attribute. The duration vector
+#'         should now contain two values: the first is the mean edge duration of
+#'         non-matched dyads, and the second is the duration of the matched dyads.
+#'  \item \code{~offset(edges) + offset(nodemix("<attr>"))}: a heterogenous model
+#'         that extends the nodematch model to include non-binary attributes for
+#'         homophily. The duration vector should first contain the base value,
+#'         then the values for every other possible combination in the term.
+#'  \item \code{~offset(edges) + offset(nodefactor("<attr>"))}: a heterogenous
+#'         model in which the edge duration varies by a specified attribute. The
+#'         duration vector should first contain the base value, then the values
+#'         for every other value of that attribute in the term.
+#' }
 #'
 #' @return
 #' A list of class \code{disscoef} with the following elements:
 #' \itemize{
-#'  \item \strong{dissolution:} the right-hand sided STERGM dissolution formula
+#'  \item \strong{dissolution:} right-hand sided STERGM dissolution formula
 #'         passed in the function call.
-#'  \item \strong{duration:} the average edge duration passed in the function
-#'        call.
-#'  \item \strong{coef.crude:} the average duration transformed into a logit
-#'        coefficient for use in STERGM simulations.
-#'  \item \strong{coef.adj:} the crude coefficient adjusted for the impact of
+#'  \item \strong{duration:} mean edge durations passed into the function.
+#'  \item \strong{coef.crude:} mean durations transformed into a logit
+#'        coefficients.
+#'  \item \strong{coef.adj:} crude coefficients adjusted for the risk of
 #'        death on edge persistence, if the \code{d.rate} argument is supplied.
-#'  \item \strong{d.rate:} the death rate, supplied via the \code{d.rate} argument.
+#'  \item \strong{d.rate:} the death rate.
 #' }
 #'
 #' @seealso
 #' The theory and details of this function are explained in detail in the
-#' \href{http://statnet.org/EpiModel/vignette/NetUtils.html}{EpiModel Network
+#' \href{http://statnet.github.io/tut/NetUtils.html}{EpiModel Network
 #' Utility Functions} tutorial.
 #'
 #' @export
 #' @keywords netUtils
 #'
 #' @examples
-#' dissolution <- ~offset(edges)
-#' duration <- 25
-#' dissolution_coefs(dissolution, duration)
-#' dissolution_coefs(dissolution, duration, d.rate = 0.001)
+#' # Homogeneous dissolution model with no deaths
+#' dissolution_coefs(dissolution = ~offset(edges), duration = 25)
 #'
-dissolution_coefs <- function(dissolution,
-                              duration,
-                              d.rate = 0
-                              ) {
-
+#' # Homogeneous dissolution model with deaths
+#' dissolution_coefs(dissolution = ~offset(edges), duration = 25,
+#'                   d.rate = 0.001)
+#'
+#' # Heterogeneous dissolution model in which same-race edges have
+#' # shorter duration compared to mixed-race edges, with no deaths
+#' dissolution_coefs(dissolution = ~offset(edges) + offset(nodematch("race")),
+#'                   duration = c(20, 10))
+#'
+#' # Heterogeneous dissolution model in which same-race edges have
+#' # shorter duration compared to mixed-race edges, with deaths
+#' dissolution_coefs(dissolution = ~offset(edges) + offset(nodematch("race")),
+#'                   duration = c(20, 10), d.rate = 0.001)
+#'
+#'
+dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
 
   # Check form of dissolution formula
   form.length <- length(strsplit(as.character(dissolution)[2], "[+]")[[1]])
   t1.edges <- grepl("offset[(]edges",
                     strsplit(as.character(dissolution)[2], "[+]")[[1]][1])
-
-  # Log transformation of duration to coefficent
-  if (t1.edges == TRUE && form.length == 1) {
-    coef.diss <- log(duration[1] - 1)
-  } else {
-    stop("Only ~offset(edges) dissolution models currently supported",
-         call. = FALSE)
+  if (form.length == 2) {
+    t2 <- strsplit(as.character(dissolution)[2], "[+]")[[1]][2]
+    t2.term <- NULL
+    if (grepl("offset[(]nodematch", t2)) {
+      t2.term <- "nodematch"
+    } else if (grepl("offset[(]nodefactor", t2)) {
+      t2.term <- "nodefactor"
+    } else if (grepl("offset[(]nodemix", t2)) {
+      t2.term <- "nodemix"
+    }
   }
 
-  if (d.rate > 0) {
-    # Exogenous death correction to coefficient
-    exp.dur <- 1 + exp(coef.diss)
-    prob.diss <- 1 / exp.dur
+  model.type <- NA
+  if (form.length == 1 && t1.edges == TRUE) {
+    model.type <- "homog"
+  } else if (form.length == 2 && t1.edges == TRUE &&
+      t2.term %in% c("nodematch", "nodefactor", "nodemix")) {
+    model.type <- "hetero"
+  } else {
+    model.type <- "invalid"
+  }
 
-    prob.neither.dying <- (1 - d.rate)^2
-    prob.either.dying <- 2*d.rate - d.rate^2
+  if (length(d.rate) > 1) {
+    stop("Length of d.rate must be 1", call. = FALSE)
+  }
 
-    prob <- 1 - ((prob.diss - prob.either.dying) / prob.neither.dying)
-    if (prob >= 1) {
-      stop("The competing risk of mortality is too high for the given duration. Specify a lower d.rate",
+  # Log transformation of duration to coefficent
+  if (t1.edges == FALSE) {
+    stop("Dissolution models must start with offset(edges)", call. = FALSE)
+  }
+  if (form.length == 1) {
+    if (length(duration) > 1) {
+      stop("Dissolution model length is 1, but number of duration was ",
+           length(duration), call. = FALSE)
+    }
+    pg <- (duration[1] - 1)/duration[1]
+    ps2 <- (1 - d.rate)^2
+    coef.crude <- log(pg/(1 - pg))
+    if (sqrt(ps2) <= pg) {
+      stop("The competing risk of mortality is too high given the duration. Specify a lower d.rate",
            call. = FALSE)
     }
-    coef.diss.adj <- logit(prob)
-  } else {
-    coef.diss.adj <- coef.diss
+    coef.adj <- log(pg/(ps2 - pg))
+  }
+  if (form.length == 2) {
+   if (t2.term %in% c("nodematch", "nodefactor", "nodemix")) {
+
+     coef.crude <- coef.adj <- NA
+     for (i in 1:length(duration)) {
+
+       pg.thetaX <- (duration[i] - 1) / duration[i]
+       ps2.thetaX <- (1 - d.rate)^2
+       if (sqrt(ps2.thetaX) <= pg.thetaX) {
+         stop("The competing risk of mortality is too high for the given the duration in place ", i,
+              ". Specify a lower d.rate", call. = FALSE)
+       }
+       if (i == 1) {
+         coef.crude[i] <- log(pg.thetaX/(1 - pg.thetaX))
+         coef.adj[i] <- log(pg.thetaX/(ps2.thetaX - pg.thetaX))
+       } else {
+         coef.crude[i] <- log(pg.thetaX/(1 - pg.thetaX)) - coef.crude[1]
+         coef.adj[i] <- log(pg.thetaX/(ps2.thetaX - pg.thetaX)) - coef.adj[1]
+       }
+
+     }
+
+   } else {
+     stop("Supported heterogeneous dissolution model terms are nodematch, nodefactor, or nodemix",
+          call. = FALSE)
+   }
   }
 
   out <- list()
   out$dissolution <- dissolution
   out$duration <- duration
-  out$coef.adj <- coef.diss.adj
-  out$coef.crude <- coef.diss
+  out$coef.crude <- coef.crude
+  out$coef.adj <- coef.adj
   out$d.rate <- d.rate
+  out$model.type <- model.type
 
   class(out) <- "disscoef"
   return(out)
