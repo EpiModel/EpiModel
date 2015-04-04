@@ -1,7 +1,10 @@
-Version 1.1.3
+Version 1.1.4
 ------------------------------------------------------------------------------
 
 NEW FEATURES
+* A limited set of heterogeneous dissolution models now allowed for network
+  models (#184): edges + nodematch, nodemix, or nodefactor formulas now supported.
+  See help file for `dissolution_coefs` for examples.
 * Network models now feature more consistent and flexible use of persistent IDs
   for networkDynamic objects (#199). This involved adding a new control setting,
   `use.pids` in `control.net`. See help("persistent.ids") in the `networkDynamic`
