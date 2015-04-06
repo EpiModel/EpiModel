@@ -21,14 +21,14 @@ License: GPL-2
 URL: http://epimodel.org/
 BugReports: https://github.com/statnet/EpiModel/issues
 Depends:
-    R (>= 3.0),
+    R (>= 3.1),
     deSolve (>= 1.11),
-    network (>= 1.10.2),
-    networkDynamic (>= 0.6.3),
-    tergm (>= 3.1.4)
+    network (>= 1.11.3),
+    networkDynamic (>= 0.7.1),
+    tergm (>= 3.2.4)
 Imports:
     doParallel,
-    ergm (>= 3.1.3),
+    ergm (>= 3.2.4),
     foreach,
     RColorBrewer,
     statnet.common
