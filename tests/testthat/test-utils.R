@@ -53,3 +53,13 @@ test_that("transco", {
   expect_error(transco("bob", 1))
 
 })
+
+
+test_that("ssample", {
+
+  expect_true(length(ssample(1:5, 1)) == 1)
+  expect_equal(ssample(5, 1), 5)
+  expect_equal(ssample(5, 2), 5)
+  expect_null(ssample(5, 0))
+
+})
