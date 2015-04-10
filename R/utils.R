@@ -36,8 +36,14 @@
 #'
 brewer_ramp <- function(n, plt, delete.lights = TRUE){
 
-  pltmax <- brewer.pal.info[row.names(brewer.pal.info)==plt, ]$maxcolors
-  pltcat <- brewer.pal.info[row.names(brewer.pal.info)==plt, ]$category
+  bpi <- brewer.pal.info
+  if (!(plt %in% row.names(bpi))) {
+    stop("plt must match an RColorBrewer palette name. See RColorBrewer::brewer.pal.info",
+         .call = FALSE)
+  }
+
+  pltmax <- bpi[row.names(bpi)==plt, ]$maxcolors
+  pltcat <- bpi[row.names(bpi)==plt, ]$category
 
   if (pltcat == "div") {
     if (delete.lights == TRUE) {
