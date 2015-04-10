@@ -86,6 +86,14 @@ brewer_ramp <- function(n, plt, delete.lights = TRUE){
 #' @export
 #' @keywords internal
 deleteAttr <- function(attrList, ids) {
+
+  if (class(attrList) != "list") {
+    stop("attrList must be a list", call. = FALSE)
+  }
+  if (length(unique(sapply(attrList, length))) != 1) {
+    stop("attrList must be rectangular (same number of obs per element)")
+  }
+
   if (length(ids) > 0) {
     attrList <- lapply(attrList, function(x) x[-ids])
   }

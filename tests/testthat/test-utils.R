@@ -20,3 +20,18 @@ test_that("brewer_ramp returns correct output", {
   expect_error(brewer_ramp(-1, plt = "Spectral"))
 
 })
+
+
+test_that("deleteAttr returns correct output", {
+
+  l <- list(a = 1:5, b = 6:10)
+  expect_is(deleteAttr(l, 5), "list")
+  expect_true(length(unique(sapply(deleteAttr(l, 2:3), length))) == 1)
+
+  l2 <- list(a = 1:3, b = 5:20)
+  expect_error(deleteAttr(l2, 2:4))
+  expect_error(deleteAttr(as.data.frame(l), 1))
+
+  expect_equal(l, deleteAttr(l, NULL))
+
+})
