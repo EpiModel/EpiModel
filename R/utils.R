@@ -36,8 +36,18 @@
 #'
 brewer_ramp <- function(n, plt, delete.lights = TRUE){
 
-  pltmax <- brewer.pal.info[row.names(brewer.pal.info)==plt, ]$maxcolors
-  pltcat <- brewer.pal.info[row.names(brewer.pal.info)==plt, ]$category
+  if (n < 1) {
+    stop("n must be a positive integer", call. = FALSE)
+  }
+
+  bpi <- brewer.pal.info
+  if (!(plt %in% row.names(bpi))) {
+    stop("plt must match an RColorBrewer palette name. See RColorBrewer::brewer.pal.info",
+         .call = FALSE)
+  }
+
+  pltmax <- bpi[row.names(bpi)==plt, ]$maxcolors
+  pltcat <- bpi[row.names(bpi)==plt, ]$category
 
   if (pltcat == "div") {
     if (delete.lights == TRUE) {
@@ -76,41 +86,18 @@ brewer_ramp <- function(n, plt, delete.lights = TRUE){
 #' @export
 #' @keywords internal
 deleteAttr <- function(attrList, ids) {
+
+  if (class(attrList) != "list") {
+    stop("attrList must be a list", call. = FALSE)
+  }
+  if (length(unique(sapply(attrList, length))) != 1) {
+    stop("attrList must be rectangular (same number of obs per element)")
+  }
+
   if (length(ids) > 0) {
     attrList <- lapply(attrList, function(x) x[-ids])
   }
   return(attrList)
-}
-
-
-#' @title Get Arguments from Parent Function
-#'
-#' @description Gets the arguments and values from the parent function environment
-#'              and returns them in a list.
-#'
-#' @param ... Dot arguments in function.
-#'
-#' @export
-#' @keywords internal
-get_args <- function(...) {
-
-  p <- list()
-  formal.args <- formals(sys.function(1))
-  formal.args[["..."]] <- NULL
-  for (arg in names(formal.args)) {
-    if (as.logical(mget(arg, envir = parent.frame()) != "")) {
-      p[arg] <- list(get(arg, envir = parent.frame()))
-    }
-  }
-  dot.args <- list(...)
-  names.dot.args <- names(dot.args)
-  if (length(dot.args) > 0) {
-    for (i in 1:length(dot.args)) {
-      p[[names.dot.args[i]]] <- dot.args[[i]]
-    }
-  }
-
-  return(p)
 }
 
 
@@ -167,17 +154,14 @@ get_args <- function(...) {
 #' plot(net, vertex.col = vcol, vertex.border = "grey70",
 #'      vertex.cex = 1.5, edge.col = "grey50")
 #'
-transco <- function(col,
-                    alpha = 1,
-                    invisible = FALSE
-                    ) {
+transco <- function(col, alpha = 1, invisible = FALSE) {
 
   if (length(alpha) > 1 && length(col) > 1) {
-    stop("Length of col or length of alpha must be 1")
+    stop("Length of col or length of alpha must be 1", call. = FALSE)
   }
 
   if (alpha > 1 || alpha < 0) {
-    stop("Specify alpha between 0 and 1")
+    stop("Specify alpha between 0 and 1", call. = FALSE)
   }
 
   newa <- floor(alpha * 255)
