@@ -36,6 +36,10 @@
 #'
 brewer_ramp <- function(n, plt, delete.lights = TRUE){
 
+  if (n < 1) {
+    stop("n must be a positive integer", call. = FALSE)
+  }
+
   bpi <- brewer.pal.info
   if (!(plt %in% row.names(bpi))) {
     stop("plt must match an RColorBrewer palette name. See RColorBrewer::brewer.pal.info",
