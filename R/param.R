@@ -7,6 +7,13 @@
 #' @param inf.prob Probability of infection per transmissible act between
 #'        a susceptible and an infected person. In two-group models, this is the
 #'        probability of infection for the group 1 members.
+#' @param inter.eff Efficacy of an intervention which affects the per-act
+#'        probability of infection. Efficacy is defined as 1 - the relative
+#'        hazard of infection given exposure to the intervention, compared to no
+#'        exposure.
+#' @param inter.start Time step at which the intervention starts, between 1 and
+#'        the number of time steps specified in the model. This will default to
+#'        1 if the inter.eff is defined but this parameter is not.
 #' @param act.rate Average number of transmissible acts per person per unit time.
 #'        For two-group models, this is the number of acts per group 1 persons
 #'        per unit time; a balance between the acts in groups 1 and 2 is necessary,
@@ -107,6 +114,8 @@
 #' @export
 #'
 param.dcm <- function(inf.prob,
+                      inter.eff,
+                      inter.start,
                       act.rate,
                       rec.rate,
                       b.rate,
@@ -138,6 +147,10 @@ param.dcm <- function(inf.prob,
     for (i in 1:length(dot.args)) {
       p[[names.dot.args[i]]] <- dot.args[[i]]
     }
+  }
+
+  if (!is.null(p$inter.eff) && is.null(p$inter.start)) {
+    p$inter.start <- 1
   }
 
   class(p) <- "param.dcm"
