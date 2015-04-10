@@ -154,17 +154,14 @@ deleteAttr <- function(attrList, ids) {
 #' plot(net, vertex.col = vcol, vertex.border = "grey70",
 #'      vertex.cex = 1.5, edge.col = "grey50")
 #'
-transco <- function(col,
-                    alpha = 1,
-                    invisible = FALSE
-                    ) {
+transco <- function(col, alpha = 1, invisible = FALSE) {
 
   if (length(alpha) > 1 && length(col) > 1) {
-    stop("Length of col or length of alpha must be 1")
+    stop("Length of col or length of alpha must be 1", call. = FALSE)
   }
 
   if (alpha > 1 || alpha < 0) {
-    stop("Specify alpha between 0 and 1")
+    stop("Specify alpha between 0 and 1", call. = FALSE)
   }
 
   newa <- floor(alpha * 255)

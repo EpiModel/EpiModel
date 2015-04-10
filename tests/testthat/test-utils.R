@@ -1,6 +1,6 @@
 context("Utility Functions")
 
-test_that("brewer_ramp returns correct output", {
+test_that("brewer_ramp", {
 
   expect_true(length(brewer_ramp(100, plt = "Spectral")) == 100)
   expect_true(length(brewer_ramp(100, plt = "Spectral", delete.lights = FALSE)) == 100)
@@ -22,7 +22,7 @@ test_that("brewer_ramp returns correct output", {
 })
 
 
-test_that("deleteAttr returns correct output", {
+test_that("deleteAttr", {
 
   l <- list(a = 1:5, b = 6:10)
   expect_is(deleteAttr(l, 5), "list")
@@ -33,5 +33,23 @@ test_that("deleteAttr returns correct output", {
   expect_error(deleteAttr(as.data.frame(l), 1))
 
   expect_equal(l, deleteAttr(l, NULL))
+
+})
+
+
+test_that("transco", {
+
+  cols <- transco(c("steelblue", "black"), 0.5)
+  cols2 <- transco(1, c(0.5, 1))
+
+  expect_is(class(cols), "character")
+  expect_true(length(cols) == 2)
+  expect_is(class(cols2), "character")
+  expect_true(length(cols2) == 2)
+  expect_error(transco(1:2, c(0.2, 0.3)))
+  expect_is(class(transco(1, 1)), "character")
+  expect_is(transco(1, 1, invisible = TRUE), "character")
+  expect_error(transco(1, 2))
+  expect_error(transco("bob", 1))
 
 })
