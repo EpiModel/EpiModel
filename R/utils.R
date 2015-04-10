@@ -89,37 +89,6 @@ deleteAttr <- function(attrList, ids) {
 }
 
 
-#' @title Get Arguments from Parent Function
-#'
-#' @description Gets the arguments and values from the parent function environment
-#'              and returns them in a list.
-#'
-#' @param ... Dot arguments in function.
-#'
-#' @export
-#' @keywords internal
-get_args <- function(...) {
-
-  p <- list()
-  formal.args <- formals(sys.function(1))
-  formal.args[["..."]] <- NULL
-  for (arg in names(formal.args)) {
-    if (as.logical(mget(arg, envir = parent.frame()) != "")) {
-      p[arg] <- list(get(arg, envir = parent.frame()))
-    }
-  }
-  dot.args <- list(...)
-  names.dot.args <- names(dot.args)
-  if (length(dot.args) > 0) {
-    for (i in 1:length(dot.args)) {
-      p[[names.dot.args[i]]] <- dot.args[[i]]
-    }
-  }
-
-  return(p)
-}
-
-
 #' @title Obtain Transparent Colors
 #'
 #' @description Returns an RGB transparent color from any standard R color.
