@@ -4,7 +4,7 @@ author: "Samuel M. Jenness, Steven M. Goodreau, Martina Morris"
 date: "University of Washington, Seattle"
 output:
   html_document:
-    theme: spacelab
+    theme: cerulean
 ---
 <!--
 %\VignetteEngine{knitr::rmarkdown}
