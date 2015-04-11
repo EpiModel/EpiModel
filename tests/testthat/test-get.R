@@ -45,9 +45,9 @@ test_that("get_network yields warning for incorrect sim", {
 
 test_that("get_network error flags", {
   expect_error(get_network(list(a = 1), 1))
-  expect_error(get_network(a, 4))
-  expect_error(get_network(a, 1, collapse = TRUE))
-  expect_error(get_network(a, 1, collapse = TRUE, at = 200))
+  expect_error(get_network(mod, 4))
+  expect_error(get_network(mod, 1, collapse = TRUE))
+  expect_error(get_network(mod, 1, collapse = TRUE, at = 200))
 })
 
 
