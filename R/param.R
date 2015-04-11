@@ -211,6 +211,8 @@ param.dcm <- function(inf.prob,
 #' @export
 #'
 param.icm <- function(inf.prob,
+                      inter.eff,
+                      inter.start,
                       act.rate,
                       rec.rate,
                       b.rate,
@@ -259,6 +261,9 @@ param.icm <- function(inf.prob,
     stop("Specify balance=\"g1\" or balance=\"g2\" with 2-group models")
   }
 
+  if (!is.null(p$inter.eff) && is.null(p$inter.start)) {
+    p$inter.start <- 1
+  }
 
   ## Output
   class(p) <- "param.icm"
@@ -379,6 +384,7 @@ param.icm <- function(inf.prob,
 #' @export
 #'
 param.net <- function(inf.prob,
+                      inter.start,
                       act.rate,
                       rec.rate,
                       b.rate,
