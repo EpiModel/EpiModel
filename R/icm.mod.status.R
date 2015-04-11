@@ -35,6 +35,7 @@ infection.icm <- function(dat, at) {
     p2 <- ssample(which(dat$attr$active == 1 & dat$attr$group == 2), acts, replace = TRUE)
   }
 
+  del <- NULL
   if (length(p1) > 0 & length(p2) > 0) {
     del <- data.frame(p1, p2)
     if (dat$param$groups == 1) {
@@ -59,6 +60,9 @@ infection.icm <- function(dat, at) {
       } else {
         del$tprob <- ifelse(del$p1.stat == "s", dat$param$inf.prob,
                                                 dat$param$inf.prob.g2)
+      }
+      if (!is.null(dat$param$inter.eff) && at >= dat$param$inter.start) {
+        del$tprob <- del$tprob * (1 - dat$param$inter.eff)
       }
       del$trans <- rbinom(nrow(del), 1, del$tprob)
       del <- del[del$trans == TRUE, ]

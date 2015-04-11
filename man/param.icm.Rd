@@ -4,14 +4,23 @@
 \alias{param.icm}
 \title{Epidemic Parameters for Stochastic Individual Contact Models}
 \usage{
-param.icm(inf.prob, act.rate, rec.rate, b.rate, ds.rate, di.rate, dr.rate,
-  inf.prob.g2, act.rate.g2, rec.rate.g2, b.rate.g2, ds.rate.g2, di.rate.g2,
-  dr.rate.g2, balance, ...)
+param.icm(inf.prob, inter.eff, inter.start, act.rate, rec.rate, b.rate, ds.rate,
+  di.rate, dr.rate, inf.prob.g2, act.rate.g2, rec.rate.g2, b.rate.g2,
+  ds.rate.g2, di.rate.g2, dr.rate.g2, balance, ...)
 }
 \arguments{
 \item{inf.prob}{Probability of infection per transmissible act between
 a susceptible and an infected person. In two-group models, this is the
 probability of infection for the group 1 members.}
+
+\item{inter.eff}{Efficacy of an intervention which affects the per-act
+probability of infection. Efficacy is defined as 1 - the relative
+hazard of infection given exposure to the intervention, compared to no
+exposure.}
+
+\item{inter.start}{Time step at which the intervention starts, between 1 and
+the number of time steps specified in the model. This will default to
+1 if the inter.eff is defined but this parameter is not.}
 
 \item{act.rate}{Average number of transmissible acts per person per unit time.
 For two-group models, this is the number of acts per group 1 persons

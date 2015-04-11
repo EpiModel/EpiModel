@@ -4,8 +4,9 @@
 \alias{param.net}
 \title{Epidemic Parameters for Stochastic Network Models}
 \usage{
-param.net(inf.prob, act.rate, rec.rate, b.rate, ds.rate, di.rate, dr.rate,
-  inf.prob.m2, rec.rate.m2, b.rate.m2, ds.rate.m2, di.rate.m2, dr.rate.m2, ...)
+param.net(inf.prob, inter.eff, inter.start, act.rate, rec.rate, b.rate, ds.rate,
+  di.rate, dr.rate, inf.prob.m2, rec.rate.m2, b.rate.m2, ds.rate.m2, di.rate.m2,
+  dr.rate.m2, ...)
 }
 \arguments{
 \item{inf.prob}{Probability of infection per transmissible act between
@@ -13,6 +14,15 @@ a susceptible and an infected person. In bipartite models, this is the
 probability of infection to the mode 1 nodes. This may also be a vector
 of probabilities, with each element corresponding to the probability
 in that time step of infection (see Time-Varying Parameters below).}
+
+\item{inter.eff}{Efficacy of an intervention which affects the per-act
+probability of infection. Efficacy is defined as 1 - the relative
+hazard of infection given exposure to the intervention, compared to no
+exposure.}
+
+\item{inter.start}{Time step at which the intervention starts, between 1 and
+the number of time steps specified in the model. This will default to
+1 if the inter.eff is defined but this parameter is not.}
 
 \item{act.rate}{Average number of transmissible acts \emph{per partnership}
 per unit time (see act.rate Parameter below). This may also be a vector
