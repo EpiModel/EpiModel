@@ -111,7 +111,6 @@ get_network <- function(x, sim = 1, network = 1, collapse = FALSE, at) {
 #' @export
 #'
 #' @examples
-#' \dontrun{
 #' ## Simulate SI epidemic on bipartite Bernoulli random graph
 #' nw <- network.initialize(n = 100, bipartite = 50, directed = FALSE)
 #' formation <- ~ edges
@@ -133,7 +132,6 @@ get_network <- function(x, sim = 1, network = 1, collapse = FALSE, at) {
 #'
 #' ## Extract the transmission matrix from simulation 2
 #' get_transmat(mod, sim = 2)
-#' }
 #'
 get_transmat <- function(x, sim = 1) {
 
@@ -173,7 +171,6 @@ get_transmat <- function(x, sim = 1) {
 #' @export
 #'
 #' @examples
-#' \dontrun{
 #' ## Simulate SI epidemic on bipartite Bernoulli random graph
 #' nw <- network.initialize(n = 100, bipartite = 50, directed = FALSE)
 #' formation <- ~ edges
@@ -197,7 +194,6 @@ get_transmat <- function(x, sim = 1) {
 #' ## Extract the network statistics from simulation 2
 #' get_nwstats(mod)
 #' get_nwstats(mod, sim = c(1,3))
-#' }
 #'
 get_nwstats <- function(x, sim, network = 1) {
 
