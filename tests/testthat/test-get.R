@@ -59,15 +59,11 @@ test_that("get_transmat extracts data frame", {
   expect_is(a, "data.frame")
 })
 
-test_that("get_transmat yields warning for incorrect sim", {
-
-})
-
 test_that("get_transmat error flags", {
-  expect_error(get_transmat(mod, sim = 5))
-  expect_error(get_transmat(list(a = 1)))
+  expect_error(get_transmat(mod, sim = 5), "Specify sim between 1 and 3")
+  expect_error(get_transmat(list(a = 1)), "x must be of class netsim")
   mod$stats$transmat <- NULL
-  expect_error(get_transmat(mod, 1))
+  expect_error(get_transmat(mod, 1), "transmat not saved")
 })
 
 
