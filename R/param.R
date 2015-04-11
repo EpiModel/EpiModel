@@ -281,6 +281,13 @@ param.icm <- function(inf.prob,
 #'        probability of infection to the mode 1 nodes. This may also be a vector
 #'        of probabilities, with each element corresponding to the probability
 #'        in that time step of infection (see Time-Varying Parameters below).
+#' @param inter.eff Efficacy of an intervention which affects the per-act
+#'        probability of infection. Efficacy is defined as 1 - the relative
+#'        hazard of infection given exposure to the intervention, compared to no
+#'        exposure.
+#' @param inter.start Time step at which the intervention starts, between 1 and
+#'        the number of time steps specified in the model. This will default to
+#'        1 if the inter.eff is defined but this parameter is not.
 #' @param act.rate Average number of transmissible acts \emph{per partnership}
 #'        per unit time (see act.rate Parameter below). This may also be a vector
 #'        of rates, with each element corresponding to the rate in in that time
@@ -384,6 +391,7 @@ param.icm <- function(inf.prob,
 #' @export
 #'
 param.net <- function(inf.prob,
+                      inter.eff,
                       inter.start,
                       act.rate,
                       rec.rate,
@@ -424,6 +432,10 @@ param.net <- function(inf.prob,
   p$vital <- ifelse(!missing(b.rate) | !missing(ds.rate) |
                     !missing(di.rate) | !missing(dr.rate), TRUE, FALSE)
 
+
+  if (!is.null(p$inter.eff) && is.null(p$inter.start)) {
+    p$inter.start <- 1
+  }
 
   ## Output
   class(p) <- "param.net"

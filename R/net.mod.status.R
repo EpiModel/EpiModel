@@ -90,6 +90,11 @@ infection.net <- function(dat, at) {
                                          inf.prob.m2[linf.prob]))
         }
 
+        # Interventions
+        if (!is.null(dat$param$inter.eff) && at >= dat$param$inter.start) {
+          del$transProb <- del$transProb * (1 - dat$param$inter.eff)
+        }
+
         # Calculate infection-stage act/contact rates
         lact.rate <- length(act.rate)
         del$actRate <- ifelse(del$infDur <= lact.rate,
