@@ -244,9 +244,7 @@ get_nwstats <- function(x, sim, network = 1) {
 #' @export
 #'
 get_nwparam <- function(x, network = 1) {
-
-  out <- x$nwparam[[network]]
-  return(out)
+  x$nwparam[[network]]
 }
 
 
