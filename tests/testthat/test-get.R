@@ -43,6 +43,13 @@ test_that("get_network yields warning for incorrect sim", {
   expect_error(get_network(mod, sim = 5))
 })
 
+test_that("get_network error flags", {
+  expect_error(get_network(list(a = 1), 1))
+  expect_error(get_network(a, 4))
+  expect_error(get_network(a, 1, collapse = TRUE))
+  expect_error(get_network(a, 1, collapse = TRUE, at = 200))
+})
+
 
 # get transmat ------------------------------------------------------------
 
@@ -52,7 +59,14 @@ test_that("get_transmat extracts data frame", {
 })
 
 test_that("get_transmat yields warning for incorrect sim", {
+
+})
+
+test_that("get_transmat error flags", {
   expect_error(get_transmat(mod, sim = 5))
+  expect_error(get_transmat(list(a = 1)))
+  mod$stats$transmat <- NULL
+  expect_error(get_transmat(mod, 1))
 })
 
 
