@@ -177,12 +177,12 @@ crosscheck.icm <- function(param, init, control) {
       init.groups <- 1
     }
     if (param$groups == 2 && init.groups == 1) {
-      stop("Group 2 parameters specified in param.dcm, but missing group 2 initial states in init.icm",
-           call. = FALSE)
+      stop("Group 2 parameters specified in param.dcm, but missing group 2, ",
+           "initial states in init.icm", call. = FALSE)
     }
     if (param$groups == 1 && init.groups == 2) {
-      stop("Group 2 initial stats specified in init.dcm, but missing group 2 parameters in param.icm",
-           call. = FALSE)
+      stop("Group 2 initial stats specified in init.dcm, but missing group 2 ",
+           "parameters in param.icm", call. = FALSE)
     }
 
     ## Deprecated parameters
@@ -190,12 +190,12 @@ crosscheck.icm <- function(param, init, control) {
     um <- which(grepl(".FUN", names(control)) & !(names(control) %in% bim))
     if (length(um) == 0 && !is.null(control$type)) {
       if (!is.null(param$trans.rate)) {
-        stop("The trans.rate parameter is deprecated. Use the inf.prob parameter instead.",
-             call. = FALSE)
+        stop("The trans.rate parameter is deprecated. Use the inf.prob ",
+             "parameter instead.", call. = FALSE)
       }
       if (!is.null(param$trans.rate.g2)) {
-        stop("The trans.rate.g2 parameter is deprecated. Use the inf.prob.g2 parameter instead.",
-             call. = FALSE)
+        stop("The trans.rate.g2 parameter is deprecated. Use the inf.prob.g2 ",
+             "parameter instead.", call. = FALSE)
       }
     }
 
@@ -305,11 +305,13 @@ crosscheck.net <- function(x, param, init, control) {
       svals <- sort(unique(init$status.vector))
       if (control$type == "SIR") {
         if (any(svals %in% c("s", "i", "r") == FALSE)) {
-          stop("status.vector contains values other than \"s\", \"i\", and \"r\" ", call. = FALSE)
+          stop("status.vector contains values other than \"s\", \"i\", and \"r\" ",
+               call. = FALSE)
         }
       } else {
         if (any(svals %in% c("s", "i") == FALSE)) {
-          stop("status.vector contains values other than \"s\" and \"i\" ", call. = FALSE)
+          stop("status.vector contains values other than \"s\" and \"i\" ",
+               call. = FALSE)
         }
       }
     }
@@ -333,7 +335,8 @@ crosscheck.net <- function(x, param, init, control) {
       if (is.null(init$r.num) & is.null(init$status.vector) & statOnNw == FALSE) {
         stop("Specify r.num in init.net", call. = FALSE)
       }
-      if (bip == TRUE & is.null(init$r.num.m2) & is.null(init$status.vector) & statOnNw == FALSE) {
+      if (bip == TRUE & is.null(init$r.num.m2) & is.null(init$status.vector) &
+          statOnNw == FALSE) {
         stop("Specify r.num.m2 in init.net", call. = FALSE)
       }
     }
@@ -362,12 +365,12 @@ crosscheck.net <- function(x, param, init, control) {
     um <- which(grepl(".FUN", names(control)) & !(names(control) %in% bim))
     if (length(um) == 0 && !is.null(control$type)) {
       if (!is.null(param$trans.rate)) {
-        stop("The trans.rate parameter is deprecated. Use the inf.prob parameter instead.",
-             call. = FALSE)
+        stop("The trans.rate parameter is deprecated. Use the inf.prob ",
+             "parameter instead.", call. = FALSE)
       }
       if (!is.null(param$trans.rate.m2)) {
-        stop("The trans.rate.m2 parameter is deprecated. Use the inf.prob.m2 parameter instead.",
-             call. = FALSE)
+        stop("The trans.rate.m2 parameter is deprecated. Use the inf.prob.m2 ",
+             "parameter instead.", call. = FALSE)
       }
     }
 
@@ -383,8 +386,8 @@ crosscheck.net <- function(x, param, init, control) {
              call. = FALSE)
       }
       if (is.null(x$attr)) {
-        stop("x must contain attr to restart simulation, see save.other control setting",
-             call. = FALSE)
+        stop("x must contain attr to restart simulation, see save.other ",
+             "control setting", call. = FALSE)
       }
       if (is.null(x$network)) {
         stop("x must contain network object to restart simulation, see save.network control setting",
