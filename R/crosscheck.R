@@ -390,9 +390,19 @@ crosscheck.net <- function(x, param, init, control) {
              "control setting", call. = FALSE)
       }
       if (is.null(x$network)) {
-        stop("x must contain network object to restart simulation, see save.network control setting",
-             call. = FALSE)
+        stop("x must contain network object to restart simulation, ",
+             "see save.network control setting", call. = FALSE)
       }
+      if (control$nsteps < control$start) {
+        stop("control setting nsteps must be > control setting start in ",
+             "restarted simulations", call. = FALSE)
+      }
+      if (control$start > x$control$nsteps + 1) {
+        stop("control setting start must be 1 greater than the nsteps in the ",
+             "prior simulation", call. = FALSE)
+      }
+
+
     }
 
   }
