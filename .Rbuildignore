@@ -2,5 +2,5 @@
 ^\.Rproj\.user$
 ^\.travis\.yml$
 ^README.md$
-inst/shiny/epidcm/rsconnect/
-inst/shiny/epiicm/rsconnect/
+inst/shiny/epidcm/rsconnect/*.*
+inst/shiny/epiicm/rsconnect/*.*
