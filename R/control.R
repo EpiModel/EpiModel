@@ -491,10 +491,6 @@ control.net <- function(type,
     p$tea.status <- FALSE
   }
 
-  if (p$start > 1) {
-    p$skip.check <- TRUE
-  }
-
   ## Output
   class(p) <- "control.net"
   return(p)
