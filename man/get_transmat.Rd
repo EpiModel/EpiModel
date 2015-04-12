@@ -30,7 +30,6 @@ Extracts the matrix of transmission data for each transmission
              event that occured within a network epidemic model.
 }
 \examples{
-\dontrun{
 ## Simulate SI epidemic on bipartite Bernoulli random graph
 nw <- network.initialize(n = 100, bipartite = 50, directed = FALSE)
 formation <- ~ edges
@@ -52,7 +51,6 @@ mod <- netsim(est, param, init, control)
 
 ## Extract the transmission matrix from simulation 2
 get_transmat(mod, sim = 2)
-}
 }
 \keyword{extract}
 

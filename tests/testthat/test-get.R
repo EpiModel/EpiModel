@@ -74,8 +74,30 @@ test_that("get_nwstats extracts data frame", {
   b <- a[[1]]
   expect_is(a, "list")
   expect_is(b, "data.frame")
+  expect_equal(get_nwstats(mod, sim = 1:3), get_nwstats(mod))
 })
 
-test_that("get_nwstats yields warning for incorrect sim", {
+test_that("get_nwstats error flags", {
+  expect_error(get_nwstats(list(a = 1)), "x must be of class netsim")
   expect_error(get_nwstats(mod, sim = 5))
+  expect_error(get_nwstats(mod, sim = 1, network = 2), "Specify network between 1")
+  mod$stats$nwstats <- NULL
+  expect_error(get_nwstats(mod), "Network statistics not saved")
 })
+
+
+# get sims ----------------------------------------------------------------
+
+test_that("get_sims extracts simulations", {
+  expect_is(get_sims(mod, sims = 1), "netsim")
+  expect_is(get_sims(mod, sims = 2:3), "netsim")
+  expect_is(get_sims(mod, sims = "mean"), "netsim")
+  expect_is(get_sims(mod, sims = 1:3), "netsim")
+})
+
+
+test_that("get_sims error flags", {
+  expect_error(get_sims(list(a = 1)), "x must be of class netsim")
+  expect_error(get_sims(mod), "Specify sims as a vector")
+})
+

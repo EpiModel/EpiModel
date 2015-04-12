@@ -265,6 +265,10 @@ get_nwparam <- function(x, network = 1) {
 #'
 get_sims <- function(x, sims) {
 
+  if (class(x) != "netsim") {
+    stop("x must be of class netsim", call. = FALSE)
+  }
+
   nsims <- x$control$nsims
 
   if (missing(sims)) {
