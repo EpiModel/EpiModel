@@ -227,7 +227,7 @@ crosscheck.icm <- function(param, init, control) {
 #'
 crosscheck.net <- function(x, param, init, control) {
 
-  if (control$skip.check == FALSE) {
+  if (control$start == 1 && control$skip.check == FALSE) {
 
     # Main class check --------------------------------------------------------
     if (class(x) != "netest" && class(x) != "netsim") {
