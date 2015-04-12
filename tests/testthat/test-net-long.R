@@ -309,9 +309,9 @@ test_that("High death rate models", {
   x <- netsim(est, param, init, control)
   expect_equal(unique(sapply(x$epi, nrow)), 25)
   expect_output(summary(x, at = 25), "EpiModel Summary")
-  #plot(x)                                                 ## To fix in #168
-  #plot(x, y = "si.flow", mean.smooth = TRUE)
-  #plot(x, type = "formation")
+  plot(x)
+  plot(x, y = "si.flow", mean.smooth = TRUE)
+  plot(x, type = "formation")
   test_net(x)
   rm(x)
 
@@ -332,7 +332,6 @@ test_that("High death rate models", {
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
   test_net(x)
-  rm(x)
 
 })
 
@@ -753,7 +752,7 @@ test_that("Extinction open-population models", {
   expect_output(summary(x, at = 10), "EpiModel Summary")
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
-  #plot(x, type = "formation")
+  plot(x, type = "formation")
   test_net(x)
   rm(x)
 
@@ -775,7 +774,7 @@ test_that("Extinction open-population models", {
   expect_output(summary(x, at = 10), "EpiModel Summary")
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
-  #plot(x, type = "formation")
+  plot(x, type = "formation")
   test_net(x)
   rm(x)
 
