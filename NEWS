@@ -9,6 +9,11 @@ NEW FEATURES
   for networkDynamic objects (#199). This involved adding a new control setting,
   `use.pids` in `control.net`. See help("persistent.ids") in the `networkDynamic`
   package for more background.
+* Interventions are added to all model classes (#20). For DCMs, ICMs, and network
+  models, there are new parameters, inter.eff and inter.start, for the efficacy
+  and starting time of the intervention. This generic intervention has the effect
+  of reducing the probability of transmission given a contact between a susceptible
+  and infected person by the efficacy parameter.
 
 BUG FIXES
 * Fixed error in `births.net` module that set the default `entrTime` and
@@ -18,6 +23,8 @@ BUG FIXES
   simulation.
 
 OTHER
+* More robust testing of functions.
+* Updated hyperlinks within doc files to new github-based website.
 
 
 Version 1.1.3
