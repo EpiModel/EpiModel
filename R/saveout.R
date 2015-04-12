@@ -197,6 +197,7 @@ saveout.net <- function(dat, s, out) {
     ftodel <- grep(".FUN", names(out$control), value = TRUE)
     out$control[ftodel] <- NULL
     out$control$currsim <- NULL
+    environment(out$control$nwstats.formula) <- NULL
 
     out$temp <- NULL
   }
