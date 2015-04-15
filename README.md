@@ -1,10 +1,10 @@
 EpiModel
 ===============
 
-[![Version](http://img.shields.io/badge/Version-1.1.3-orange.svg?style=flat)](https://github.com/statnet/EpiModel/releases/tag/v1.1.3)
+[![Version](http://img.shields.io/badge/Version-1.1.4-orange.svg?style=flat)](https://github.com/statnet/EpiModel/releases/tag/v1.1.4)
 <a href='https://travis-ci.org/statnet/EpiModel' target="_blank"><img src='http://img.shields.io/travis/statnet/EpiModel/master.svg?style=flat' alt='Build Status' /></a>
 <a href='https://coveralls.io/r/statnet/EpiModel?branch=master' target="_blank"><img src='https://coveralls.io/repos/statnet/EpiModel/badge.svg?branch=master' alt='Coverage Status' /></a>
-<a href='http://dx.doi.org/10.5281/zenodo.14009' target="_blank"><img src='http://img.shields.io/badge/DOI-10.5281%2Fzenodo.14009-blue.svg?style=flat' alt='DOI' /></a>
+<a href='http://dx.doi.org/10.5281/zenodo.16767' target="_blank"><img src='http://img.shields.io/badge/DOI-10.5281%2Fzenodo.16767-blue.svg?style=flat' alt='DOI' /></a>
 
 EpiModel: tools for simulating mathematical models of infectious disease. Epidemic model classes include deterministic compartmental models, stochastic individual contact models, and stochastic network models. Disease types include SI, SIR, and SIS epidemics with and without demography, with tools available for expansion to model complex epidemic processes.
 
@@ -46,7 +46,7 @@ The main website for EpiModel, with tutorials and other supporting files is <a h
 
 #### Citation
 If using EpiModel for teaching or research, please include a citation:
-> Jenness SM, Goodreau SM, Morris M (2015). *EpiModel: Mathematical Modeling of Infectious Disease.* R Package Version 1.1.3. URL: http://epimodel.org/. DOI: 10.5281/zenodo.14009.
+> Jenness SM, Goodreau SM, Morris M (2015). *EpiModel: Mathematical Modeling of Infectious Disease.* R Package Version 1.1.4. URL: http://epimodel.org/. DOI: 10.5281/zenodo.16767.
 
 #### Funding
 Development of this software is supported by the following grants from the National Institutes of Health: R01HD68395 (NICHD), T32HD007543 (NICHD), and R24HD042828 (NICHD).
