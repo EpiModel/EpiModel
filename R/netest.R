@@ -279,20 +279,35 @@ diss_check <- function(formation, dissolution){
   form.terms <- gsub("\\s", "", form.terms)
   diss.terms <- gsub("\\s", "", diss.terms)
 
-  form.terms <- gsub("offset(", "", form.terms, fixed = TRUE)
-  diss.terms <- gsub("offset(", "", diss.terms, fixed = TRUE)
+  offpos.f <- grep("offset(", form.terms, fixed = TRUE)
+  form.terms[offpos.f] <- substr(form.terms[offpos.f], nchar("offset(") + 1,
+                                 nchar(form.terms[offpos.f]) - 1)
+  offpos.d <- grep("offset(", diss.terms, fixed = TRUE)
+  diss.terms[offpos.d] <- substr(diss.terms[offpos.d], nchar("offset(") + 1,
+                                 nchar(diss.terms[offpos.d]) - 1)
+
+  argpos.f <- regexpr("\\(", form.terms)
+  argpos.d <- regexpr("\\(", diss.terms)
 
   # Matrix with terms in row 1, args in row 2
-  diss.terms <- vapply(strsplit(diss.terms, "\\("),
+  form.terms <- vapply(regmatches(form.terms, argpos.f, invert = TRUE),
                        function(x) {
-                         if (length(x) < 2) {x <- c(x, "")}
-                         gsub(")", "", x, fixed = TRUE)
+                         if (length(x) < 2) {
+                           x <- c(x, "")
+                         } else {
+                           x[2] <- substr(x[2], 1, nchar(x[2]) - 1)
+                         }
+                         x
                        },
                        c(term = "", args = ""))
-  form.terms <- vapply(strsplit(form.terms, "\\("),
+  diss.terms <- vapply(regmatches(diss.terms, argpos.d, invert = TRUE),
                        function(x) {
-                         if (length(x) < 2) {x <- c(x, "")}
-                         gsub(")", "", x, fixed = TRUE)
+                         if (length(x) < 2) {
+                           x <- c(x, "")
+                         } else {
+                           x[2] <- substr(x[2], 1, nchar(x[2]) - 1)
+                         }
+                         x
                        },
                        c(term = "", args = ""))
 
