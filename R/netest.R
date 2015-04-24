@@ -279,6 +279,7 @@ diss_check <- function(formation, dissolution){
   form.terms <- gsub("\\s", "", form.terms)
   diss.terms <- gsub("\\s", "", diss.terms)
 
+  form.terms <- gsub("offset(", "", form.terms, fixed = TRUE)
   diss.terms <- gsub("offset(", "", diss.terms, fixed = TRUE)
 
   # Matrix with terms in row 1, args in row 2
