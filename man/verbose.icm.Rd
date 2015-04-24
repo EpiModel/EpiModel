@@ -4,7 +4,7 @@
 \alias{verbose.icm}
 \title{Progress Print Module for Stochastic Individual Contact Models}
 \usage{
-verbose.icm(x, type, s = 1, at)
+verbose.icm(x, type, s = 1, at = 2)
 }
 \arguments{
 \item{x}{If the \code{type} is "startup", then an object of class

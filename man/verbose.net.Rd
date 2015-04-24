@@ -4,7 +4,7 @@
 \alias{verbose.net}
 \title{Progress Print Module for Stochastic Network Models}
 \usage{
-verbose.net(x, type, s = 1, at)
+verbose.net(x, type, s = 1, at = 2)
 }
 \arguments{
 \item{x}{If the \code{type} is "startup", then an object of class

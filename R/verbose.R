@@ -48,7 +48,7 @@ verbose.dcm <- function(x, type, s = 1) {
 #' @export
 #' @keywords internal
 #'
-verbose.icm <- function(x, type, s = 1, at) {
+verbose.icm <- function(x, type, s = 1, at = 2) {
 
   if (type == "startup") {
     if (x$verbose == TRUE) {
@@ -174,7 +174,7 @@ verbose.icm <- function(x, type, s = 1, at) {
 #' @export
 #' @keywords internal
 #'
-verbose.net <- function(x, type, s = 1, at) {
+verbose.net <- function(x, type, s = 1, at = 2) {
 
   if (type == "startup") {
     if (x$verbose == TRUE) {
@@ -282,4 +282,3 @@ verbose.net <- function(x, type, s = 1, at) {
   }
 
 }
-
