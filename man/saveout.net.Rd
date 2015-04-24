@@ -4,7 +4,7 @@
 \alias{saveout.net}
 \title{Save netsim Data to Output List Format}
 \usage{
-saveout.net(dat, s, out)
+saveout.net(dat, s, out = NULL)
 }
 \arguments{
 \item{dat}{Master object in \code{netsim} simulations.}

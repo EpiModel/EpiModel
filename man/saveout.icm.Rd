@@ -4,7 +4,7 @@
 \alias{saveout.icm}
 \title{Save icm Data to Output List Format}
 \usage{
-saveout.icm(dat, s, out)
+saveout.icm(dat, s, out = NULL)
 }
 \arguments{
 \item{dat}{Master object in \code{icm} simulations.}

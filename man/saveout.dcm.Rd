@@ -4,7 +4,7 @@
 \alias{saveout.dcm}
 \title{Save dcm Data to Output List Format}
 \usage{
-saveout.dcm(df, s, param, control, out)
+saveout.dcm(df, s, param, control, out = NULL)
 }
 \arguments{
 \item{df}{Master object in \code{\link{dcm}} simulations.}
