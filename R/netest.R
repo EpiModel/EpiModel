@@ -263,5 +263,5 @@ netest <- function(nw,
 
 
 und_dens <- function(n, edges) {
-  (2*edges)/(n*(n-1))
+  (2 * edges) / (n * (n - 1))
 }
