@@ -4,7 +4,7 @@
 \alias{verbose.dcm}
 \title{Progress Print Module for Deterministic Compartmental Models}
 \usage{
-verbose.dcm(x, type, s)
+verbose.dcm(x, type, s = 1)
 }
 \arguments{
 \item{x}{If the \code{type} is "startup", then an object of class
