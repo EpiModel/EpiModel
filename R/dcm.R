@@ -180,7 +180,7 @@ dcm <- function(param, init, control){
 
   # Model runs --------------------------------------------------------------
   verbose.dcm(control, type = "startup")
-  for (s in 1:control$nruns){
+  for (s in 1:control$nruns) {
 
     ## Sensitivity parameter input
     if (control$nruns > 1) {
