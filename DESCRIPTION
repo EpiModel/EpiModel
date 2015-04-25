@@ -27,13 +27,10 @@ Depends:
     networkDynamic (>= 0.7.1),
     tergm (>= 3.2.4)
 Imports:
-    doParallel,
     ergm (>= 3.2.4),
-    foreach,
     RColorBrewer,
     statnet.common
 Suggests:
-    doMPI,
     knitr,
     ndtv,
     shiny,
