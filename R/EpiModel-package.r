@@ -111,6 +111,7 @@
 #' @name EpiModel-package
 #' @aliases EpiModel
 #' @import deSolve ergm network networkDynamic RColorBrewer statnet.common tergm
+#'         foreach doParallel
 #' @docType package
 #' @keywords package
 #'
