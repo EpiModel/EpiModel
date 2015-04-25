@@ -273,7 +273,7 @@ netdx <- function(x,
 
     ## Merged stats across all simulations
     if (nsims > 1) {
-      merged.stats <- matrix(NA, nrow = nrow(stats[[1]])*nsims,
+      merged.stats <- matrix(NA, nrow = nrow(stats[[1]]) * nsims,
                              ncol = ncol(stats[[1]]))
       for (i in 1:ncol(stats[[1]])) {
         merged.stats[,i] <- as.numeric(sapply(stats, function(x) c(x[,i])))
@@ -309,7 +309,8 @@ netdx <- function(x,
                                      stats.table[, "sorder", drop = FALSE]), , drop = FALSE]
   rownames(stats.table) <- stats.table$names
 
-  stats.table$reldiff <- (stats.table$stats.means-stats.table$targets)/stats.table$targets
+  stats.table$reldiff <- (stats.table$stats.means - stats.table$targets) /
+                         stats.table$targets
   stats.table.formation <- stats.table[, c(2, 4, 6, 5)]
   colnames(stats.table.formation) <- c("Target", "Sim Mean", "Pct Diff", "Sim SD")
 
@@ -377,9 +378,9 @@ netdx <- function(x,
       }
       prop.diss <- list()
       for (i in 1:length(diag.sim)) {
-        prop.diss[[i]] <- sapply(1:nsteps, function(x) sum(sim.df[[i]]$terminus==x) /
+        prop.diss[[i]] <- sapply(1:nsteps, function(x) sum(sim.df[[i]]$terminus == x) /
                                    sum(sim.df[[i]]$onset < x &
-                                         sim.df[[i]]$terminus>=x))
+                                       sim.df[[i]]$terminus >= x))
         if (verbose == TRUE & nsims > 1) {
           cat("*")
         }
@@ -392,9 +393,9 @@ netdx <- function(x,
       registerDoParallel(cluster.size)
 
       prop.diss <- foreach(i = 1:nsims) %dopar% {
-        sapply(1:nsteps, function(x) sum(sim.df[[i]]$terminus==x) /
+        sapply(1:nsteps, function(x) sum(sim.df[[i]]$terminus == x) /
                  sum(sim.df[[i]]$onset < x &
-                       sim.df[[i]]$terminus>=x))
+                     sim.df[[i]]$terminus >= x))
       }
     }
 
@@ -407,13 +408,14 @@ netdx <- function(x,
     duration.mean <- mean(durVec)
     duration.sd <- sd(durVec)
     duration.expected <- exp(coef.diss$coef.crude[1]) + 1
-    duration.pctdiff <- (duration.mean-duration.expected)/duration.expected
+    duration.pctdiff <- (duration.mean - duration.expected) / duration.expected
 
 
     dissolution.mean <- mean(unlist(prop.diss))
     dissolution.sd <- sd(unlist(prop.diss))
-    dissolution.expected <- 1/(exp(coef.diss$coef.crude[1]) + 1)
-    dissolution.pctdiff <- (dissolution.mean-dissolution.expected)/dissolution.expected
+    dissolution.expected <- 1 / (exp(coef.diss$coef.crude[1]) + 1)
+    dissolution.pctdiff <- (dissolution.mean - dissolution.expected) /
+                           dissolution.expected
 
     stats.table.dissolution <- data.frame(Targets = c(duration.expected,
                                                       dissolution.expected),

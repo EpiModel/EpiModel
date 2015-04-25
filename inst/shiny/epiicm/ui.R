@@ -226,7 +226,7 @@ shinyUI(pageWithSidebar(
                ),
                fluidRow(
                  dataTableOutput("outData"),
-                 br(),br()
+                 br(), br()
                ),
                fluidRow(
                  downloadButton(outputId = "dlData",
@@ -248,7 +248,7 @@ shinyUI(pageWithSidebar(
                  these ICMs, please consult the documentation, tutorials, and workshop materials
                  at the main", a("EpiModel website.", href = "http://statnet.github.io/EpiModel")),
                p("This web application, built with",
-                 a("Shiny", href="http://shiny.rstudio.com/"), "may be lauched via an R session with
+                 a("Shiny", href = "http://shiny.rstudio.com/"), "may be lauched via an R session with
                  EpiModel and Shiny installed (see the epiweb function), or directly on any web
                  browser (no R needed)", a("here.", href = "http://statnet.shinyapps.io/epiicm/")),
                br(),

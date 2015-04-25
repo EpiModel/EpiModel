@@ -177,7 +177,7 @@ shinyUI(pageWithSidebar(
                  plotOutput(outputId = "CompPlot"),
                  downloadButton(outputId = "dlCompPlot",
                                 label = "Download Plot"),
-                 br(),br()
+                 br(), br()
                )
                ), # End tabPanel Summary
 
@@ -185,7 +185,7 @@ shinyUI(pageWithSidebar(
       tabPanel("Data",
                h4("Model Data"),
                dataTableOutput("outData"),
-               br(),br(),
+               br(), br(),
                downloadButton(outputId = "dlData",
                               label = "Download Data")
       ), # End tabPanel Data
@@ -203,7 +203,7 @@ shinyUI(pageWithSidebar(
                  these DCMs, please consult the documentation, tutorials, and workshop materials
                  at the main", a("EpiModel website.", href = "http://statnet.github.io/EpiModel")),
                p("This web application, built with",
-                 a("Shiny", href="http://shiny.rstudio.com/"), "may be lauched via an R session with
+                 a("Shiny", href = "http://shiny.rstudio.com/"), "may be lauched via an R session with
                  EpiModel and Shiny installed (see the epiweb function), or directly on any web
                  browser (no R needed)", a("here.", href = "http://statnet.shinyapps.io/epidcm/")),
                br(),

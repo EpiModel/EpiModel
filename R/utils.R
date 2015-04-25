@@ -46,8 +46,8 @@ brewer_ramp <- function(n, plt, delete.lights = TRUE){
          .call = FALSE)
   }
 
-  pltmax <- bpi[row.names(bpi)==plt, ]$maxcolors
-  pltcat <- bpi[row.names(bpi)==plt, ]$category
+  pltmax <- bpi[row.names(bpi) == plt, ]$maxcolors
+  pltcat <- bpi[row.names(bpi) == plt, ]$category
 
   if (pltcat == "div") {
     if (delete.lights == TRUE) {
@@ -170,16 +170,16 @@ transco <- function(col, alpha = 1, invisible = FALSE) {
 
   if (length(col) > 1) {
     for (i in seq_along(col)) {
-      t2[i] <- rgb(t1[1,i], t1[2,i], t1[3,i], newa, maxColorValue = 255)
+      t2[i] <- rgb(t1[1, i], t1[2, i], t1[3, i], newa, maxColorValue = 255)
     }
   }
   if (length(alpha) > 1) {
     for (i in seq_along(alpha)) {
-      t2[i] <- rgb(t1[1,1], t1[2,1], t1[3,1], newa[i], maxColorValue = 255)
+      t2[i] <- rgb(t1[1, 1], t1[2, 1], t1[3, 1], newa[i], maxColorValue = 255)
     }
   }
   if (length(col) == 1 && length(alpha) == 1) {
-    t2 <- rgb(t1[1,1], t1[2,1], t1[3,1], newa, maxColorValue = 255)
+    t2 <- rgb(t1[1, 1], t1[2, 1], t1[3, 1], newa, maxColorValue = 255)
   }
 
   if (invisible == TRUE) {

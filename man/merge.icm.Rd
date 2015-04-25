@@ -25,11 +25,11 @@ model parameterization between the two calls must be exactly the same, except
 for the number of simulations in each call. This allows for manual
 parallelization of model simulations.
 
-This merge function does not work the same as the default merge in
-allowing for a combined object where the structure differs between the
-input elements. Instead, the function checks that objects are identical
-in model parameterization in every respect (except number of simulations) and
-binds the results.
+This merge function does not work the same as the default merge in allowing
+for a combined object where the structure differs between the input elements.
+Instead, the function checks that objects are identical in model
+parameterization in every respect (except number of simulations) and binds
+the results.
 }
 \examples{
 param <- param.icm(inf.prob = 0.2, act.rate = 0.8)

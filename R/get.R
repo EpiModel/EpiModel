@@ -57,7 +57,8 @@ get_network <- function(x, sim = 1, network = 1, collapse = FALSE, at) {
   }
 
   if (x$control$save.network == FALSE || is.null(x$network)) {
-    stop("Network object not saved in netsim object, check control.net settings", call. = FALSE)
+    stop("Network object not saved in netsim object, check control.net settings",
+         call. = FALSE)
   }
 
   if (network > x$control$num.nw) {
@@ -65,7 +66,8 @@ get_network <- function(x, sim = 1, network = 1, collapse = FALSE, at) {
   }
 
   if (collapse == TRUE && (missing(at) || at > x$control$nsteps)) {
-    stop("Specify collapse time step between 1 and ", x$control$nsteps, call. = FALSE)
+    stop("Specify collapse time step between 1 and ", x$control$nsteps,
+         call. = FALSE)
   }
 
   ## Extraction
@@ -145,7 +147,8 @@ get_transmat <- function(x, sim = 1) {
   }
 
   if (x$control$save.transmat == FALSE || is.null(x$stats$transmat)) {
-    stop("transmat not saved in netsim object, check control.net settings", call. = FALSE)
+    stop("transmat not saved in netsim object, check control.net settings",
+         call. = FALSE)
   }
 
 
@@ -210,7 +213,8 @@ get_nwstats <- function(x, sim, network = 1) {
   }
 
   if (x$control$save.nwstats == FALSE || is.null(x$stats$nwstats)) {
-    stop("Network statistics not saved in netsim object, check control.net settings", call. = FALSE)
+    stop("Network statistics not saved in netsim object, check control.net settings",
+         call. = FALSE)
   }
 
   if (network > x$control$num.nw) {

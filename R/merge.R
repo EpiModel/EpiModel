@@ -16,11 +16,11 @@
 #' for the number of simulations in each call. This allows for manual
 #' parallelization of model simulations.
 #'
-#' This merge function does not work the same as the default merge in
-#' allowing for a combined object where the structure differs between the
-#' input elements. Instead, the function checks that objects are identical
-#' in model parameterization in every respect (except number of simulations) and
-#' binds the results.
+#' This merge function does not work the same as the default merge in allowing
+#' for a combined object where the structure differs between the input elements.
+#' Instead, the function checks that objects are identical in model
+#' parameterization in every respect (except number of simulations) and binds
+#' the results.
 #'
 #' @method merge icm
 #' @keywords extract

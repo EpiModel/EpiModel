@@ -25,7 +25,7 @@ get_prev.icm <- function(dat, at) {
     if (dat$control$type == "SIR") {
       dat$epi$r.num <- sum(dat$attr$active == 1 &
                            dat$attr$status == "r" &
-                           dat$attr$group ==1)
+                           dat$attr$group == 1)
       dat$epi$num <- dat$epi$s.num +
                      dat$epi$i.num +
                      dat$epi$r.num
@@ -58,7 +58,7 @@ get_prev.icm <- function(dat, at) {
     if (dat$control$type == "SIR") {
       dat$epi$r.num[at] <- sum(dat$attr$active == 1 &
                                dat$attr$status == "r" &
-                               dat$attr$group ==1)
+                               dat$attr$group == 1)
       dat$epi$num[at] <- dat$epi$s.num[at] +
                          dat$epi$i.num[at] +
                          dat$epi$r.num[at]

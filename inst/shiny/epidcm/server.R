@@ -48,7 +48,7 @@ shinyServer(function(input, output) {
 
   ## Main Plot tab
   output$MainPlot <- renderPlot({
-    par(mar=c(3.5, 3.5, 1.2, 1), mgp = c(2.1, 1, 0))
+    par(mar = c(3.5, 3.5, 1.2, 1), mgp = c(2.1, 1, 0))
     if (input$compsel == "Compartment Prevalence") {
       plot(mod(),
            leg.cex = 1.1,

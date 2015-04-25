@@ -176,7 +176,8 @@ init_status.net <- function(dat) {
             x = c("s", "i", "r"),
             size = nM1,
             replace = TRUE,
-            prob = c(1-(i.num/nM1)-(r.num/nM1), i.num/nM1, r.num/nM1))
+            prob = c(1 - (i.num / nM1) - (r.num / nM1),
+                     i.num / nM1, r.num / nM1))
           if (sum(status == "i" & mode == 1) == 0 & i.num > 0) {
             status[sample(which(mode == 1), size = i.num)] <- "i"
           }
@@ -188,7 +189,8 @@ init_status.net <- function(dat) {
               x = c("s", "i", "r"),
               size = nM2,
               replace = TRUE,
-              prob = c(1-(i.num.m2/nM2)-(r.num.m2/nM2), i.num.m2/nM2, r.num.m2/nM2))
+              prob = c(1 - (i.num.m2 / nM2) - (r.num.m2 / nM2),
+                       i.num.m2 / nM2, r.num.m2 / nM2))
             if (sum(status == "i" & mode == 2) == 0 & i.num.m2 > 0) {
               status[sample(which(mode == 2), size = i.num.m2)] <- "i"
             }
@@ -201,7 +203,7 @@ init_status.net <- function(dat) {
             x = c("s", "i"),
             size = nM1,
             replace = TRUE,
-            prob = c(1-(i.num/nM1), i.num/nM1))
+            prob = c(1 - (i.num / nM1), i.num / nM1))
           if (sum(status == "i" & mode == 1) == 0 & i.num > 0) {
             status[sample(which(mode == 1), size = i.num)] <- "i"
           }
@@ -210,7 +212,7 @@ init_status.net <- function(dat) {
               x = c("s", "i"),
               size = nM2,
               replace = TRUE,
-              prob = c(1-(i.num.m2/nM2), i.num.m2/nM2))
+              prob = c(1 - (i.num.m2 / nM2), i.num.m2 / nM2))
             if (sum(status == "i" & mode == 2) == 0 & i.num.m2 > 0) {
               status[sample(which(mode == 2), size = i.num.m2)] <- "i"
             }
@@ -259,7 +261,7 @@ init_status.net <- function(dat) {
 
   # If vital=TRUE, infTime is a uniform draw over the duration of infection
   if (dat$param$vital == TRUE && dat$param$di.rate > 0) {
-    infTime[idsInf] <- -rgeom(n = length(idsInf), prob = dat$param$di.rate)+2
+    infTime[idsInf] <- -rgeom(n = length(idsInf), prob = dat$param$di.rate) + 2
   } else {
     if (dat$control$type == "SI" || mean(dat$param$rec.rate) == 0) {
       # infTime a uniform draw over the number of sim time steps
@@ -267,15 +269,15 @@ init_status.net <- function(dat) {
                                      length(idsInf), replace = TRUE)
     } else {
       if (modes == 1) {
-        infTime[idsInf] <- ssample(1:(-round(1/mean(dat$param$rec.rate)) + 2),
+        infTime[idsInf] <- ssample(1:(-round(1 / mean(dat$param$rec.rate)) + 2),
                                    length(idsInf), replace = TRUE)
       }
       if (modes == 2) {
         infM1 <- which(status == "i" & mode == 1)
-        infTime[infM1] <- ssample(1:(-round(1/mean(dat$param$rec.rate)) + 2),
+        infTime[infM1] <- ssample(1:(-round(1 / mean(dat$param$rec.rate)) + 2),
                                    length(infM1), replace = TRUE)
         infM2 <- which(status == "i" & mode == 2)
-        infTime[infM2] <- ssample(1:(-round(1/mean(dat$param$rec.rate.m2)) + 2),
+        infTime[infM2] <- ssample(1:(-round(1 / mean(dat$param$rec.rate.m2)) + 2),
                                   length(infM2), replace = TRUE)
 
       }
