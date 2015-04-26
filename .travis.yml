@@ -6,7 +6,7 @@ before_install:
   - ./travis-tool.sh bootstrap
 install:
   - ./travis-tool.sh install_aptget libglpk-dev
-  - ./travis-tool.sh install_github jimhester/covr jimhester/robustr
+  - ./travis-tool.sh install_github jimhester/robustr jimhester/covr
   - ./travis-tool.sh r_binary_install httpuv
   - ./travis-tool.sh install_deps
 script: ./travis-tool.sh run_tests
