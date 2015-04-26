@@ -61,7 +61,7 @@ as.data.frame.dcm <- function(x,
       stop("Specify run = 1")
     }
     for (i in seq_along(x$epi)) {
-      df[, i+1] <- x$epi[[i]]
+      df[, i + 1] <- x$epi[[i]]
     }
   }
 
@@ -71,7 +71,7 @@ as.data.frame.dcm <- function(x,
       stop(paste("Specify run between 1 and", nruns))
     }
     for (i in seq_along(x$epi)) {
-      df[, i+1] <- x$epi[[i]][, run]
+      df[, i + 1] <- x$epi[[i]][, run]
     }
   }
 
@@ -158,7 +158,7 @@ as.data.frame.icm <- function(x,
         stop("Specify sim = 1")
       }
       for (i in seq_along(x$epi)) {
-        df[, i+1] <- x$epi[[i]]
+        df[, i + 1] <- x$epi[[i]]
       }
     }
 
@@ -168,7 +168,7 @@ as.data.frame.icm <- function(x,
         stop(paste("Specify sim between 1 and", nsims))
       }
       for (i in seq_along(x$epi)) {
-        df[, i+1] <- x$epi[[i]][, sim]
+        df[, i + 1] <- x$epi[[i]][, sim]
       }
     }
   }
@@ -177,12 +177,12 @@ as.data.frame.icm <- function(x,
   if (out == "mean") {
     if (nsims == 1) {
       for (i in seq_along(x$epi)) {
-        df[, i+1] <- x$epi[[i]]
+        df[, i + 1] <- x$epi[[i]]
       }
     }
     if (nsims > 1) {
       for (i in seq_along(x$epi)) {
-        df[, i+1] <- rowMeans(x$epi[[i]])
+        df[, i + 1] <- rowMeans(x$epi[[i]])
       }
     }
   }
@@ -191,12 +191,12 @@ as.data.frame.icm <- function(x,
   if (out == "sd") {
     if (nsims == 1) {
       for (i in seq_along(x$epi)) {
-        df[, i+1] <- 0
+        df[, i + 1] <- 0
       }
     }
     if (nsims > 1) {
       for (i in seq_along(x$epi)) {
-        df[, i+1] <- apply(x$epi[[i]], 1, sd)
+        df[, i + 1] <- apply(x$epi[[i]], 1, sd)
       }
     }
   }

@@ -46,13 +46,13 @@ mod_SI_1g_cl <- function(t, t0, parms) {
     }
 
     # ODEs
-    dS <- -lambda*s.num
-    dI <- lambda*s.num
+    dS <- -lambda * s.num
+    dI <- lambda * s.num
 
     # Output
     list(c(dS, dI),
          num = num,
-         si.flow = lambda*s.num)
+         si.flow = lambda * s.num)
   })
 }
 
@@ -74,16 +74,16 @@ mod_SI_1g_op <- function(t, t0, parms) {
     }
 
     # ODEs
-    dS <- -lambda*s.num + b.rate*num - ds.rate*s.num
-    dI <- lambda*s.num - di.rate*i.num
+    dS <- -lambda * s.num + b.rate * num - ds.rate * s.num
+    dI <- lambda * s.num - di.rate * i.num
 
     # Output
     list(c(dS, dI),
          num = num,
-         si.flow = lambda*s.num,
-         b.flow = b.rate*num,
-         ds.flow = ds.rate*s.num,
-         di.flow = di.rate*i.num)
+         si.flow = lambda * s.num,
+         b.flow = b.rate * num,
+         ds.flow = ds.rate * s.num,
+         di.flow = di.rate * i.num)
   })
 }
 
@@ -119,18 +119,18 @@ mod_SI_2g_cl <- function(t, t0, parms) {
     }
 
     # ODEs
-    dSm1 <- -lambda.g1*s.num
-    dIm1 <- lambda.g1*s.num
+    dSm1 <- -lambda.g1 * s.num
+    dIm1 <- lambda.g1 * s.num
 
-    dSm2 <- -lambda.g2*s.num.g2
-    dIm2 <- lambda.g2*s.num.g2
+    dSm2 <- -lambda.g2 * s.num.g2
+    dIm2 <- lambda.g2 * s.num.g2
 
     list(c(dSm1, dIm1,
            dSm2, dIm2),
          num = num.g1,
          num.g2 = num.g2,
-         si.flow = lambda.g1*s.num,
-         si.flow.g2 = lambda.g2*s.num.g2)
+         si.flow = lambda.g1 * s.num,
+         si.flow.g2 = lambda.g2 * s.num.g2)
   })
 }
 
@@ -167,19 +167,19 @@ mod_SI_2g_op <- function(t, t0, parms) {
 
     # birth rates
     if (is.na(b.rate.g2)) {
-      br.g1 <- b.rate*num.g1
-      br.g2 <- b.rate*num.g1
+      br.g1 <- b.rate * num.g1
+      br.g2 <- b.rate * num.g1
     } else {
-      br.g1 <- b.rate*num.g1
-      br.g2 <- b.rate*num.g2
+      br.g1 <- b.rate * num.g1
+      br.g2 <- b.rate * num.g2
     }
 
     # ODEs
-    dSm1 <- -lambda.g1*s.num + br.g1 - ds.rate*s.num
-    dIm1 <- lambda.g1*s.num - di.rate*i.num
+    dSm1 <- -lambda.g1 * s.num + br.g1 - ds.rate * s.num
+    dIm1 <- lambda.g1 * s.num - di.rate * i.num
 
-    dSm2 <- -lambda.g2*s.num.g2 + br.g2 - ds.rate.g2*s.num.g2
-    dIm2 <- lambda.g2*s.num.g2 - di.rate.g2*i.num.g2
+    dSm2 <- -lambda.g2 * s.num.g2 + br.g2 - ds.rate.g2 * s.num.g2
+    dIm2 <- lambda.g2 * s.num.g2 - di.rate.g2 * i.num.g2
 
     list(c(dSm1, dIm1,
            dSm2, dIm2),
@@ -214,9 +214,9 @@ mod_SIR_1g_cl <- function(t, t0, parms) {
     }
 
     # ODEs
-    dS <- -lambda*s.num
-    dI <- lambda*s.num - rec.rate*i.num
-    dR <- rec.rate*i.num
+    dS <- -lambda * s.num
+    dI <- lambda * s.num - rec.rate * i.num
+    dR <- rec.rate * i.num
 
     list(c(dS, dI, dR),
          num = num,
@@ -243,9 +243,9 @@ mod_SIR_1g_op <- function(t, t0, parms) {
     }
 
     # ODEs
-    dS <- -lambda*s.num + b.rate*num - ds.rate*s.num
-    dI <- lambda*s.num - rec.rate*i.num - di.rate*i.num
-    dR <- rec.rate*i.num - dr.rate*r.num
+    dS <- -lambda * s.num + b.rate * num - ds.rate * s.num
+    dI <- lambda * s.num - rec.rate * i.num - di.rate * i.num
+    dR <- rec.rate * i.num - dr.rate * r.num
 
     list(c(dS, dI, dR),
          num = num,
@@ -290,13 +290,13 @@ mod_SIR_2g_cl <- function(t, t0, parms) {
     }
 
     # ODEs
-    dSm1 <- -lambda.g1*s.num
-    dIm1 <- lambda.g1*s.num - rec.rate*i.num
-    dRm1 <- rec.rate*i.num
+    dSm1 <- -lambda.g1 * s.num
+    dIm1 <- lambda.g1 * s.num - rec.rate * i.num
+    dRm1 <- rec.rate * i.num
 
-    dSm2 <- -lambda.g2*s.num.g2
-    dIm2 <- lambda.g2*s.num.g2 - rec.rate.g2*i.num.g2
-    dRm2 <- rec.rate.g2*i.num.g2
+    dSm2 <- -lambda.g2 * s.num.g2
+    dIm2 <- lambda.g2 * s.num.g2 - rec.rate.g2 * i.num.g2
+    dRm2 <- rec.rate.g2 * i.num.g2
 
     list(c(dSm1, dIm1, dRm1,
            dSm2, dIm2, dRm2),
@@ -342,21 +342,21 @@ mod_SIR_2g_op <- function(t, t0, parms) {
 
     # birth rates
     if (is.na(b.rate.g2)) {
-      br.g1 <- b.rate*num.g1
-      br.g2 <- b.rate*num.g1
+      br.g1 <- b.rate * num.g1
+      br.g2 <- b.rate * num.g1
     } else {
-      br.g1 <- b.rate*num.g1
-      br.g2 <- b.rate*num.g2
+      br.g1 <- b.rate * num.g1
+      br.g2 <- b.rate * num.g2
     }
 
     # ODEs
-    dSm1 <- -lambda.g1*s.num + br.g1 - ds.rate*s.num
-    dIm1 <- lambda.g1*s.num - rec.rate*i.num - di.rate*i.num
-    dRm1 <- rec.rate*i.num - dr.rate*r.num
+    dSm1 <- -lambda.g1 * s.num + br.g1 - ds.rate * s.num
+    dIm1 <- lambda.g1 * s.num - rec.rate * i.num - di.rate * i.num
+    dRm1 <- rec.rate * i.num - dr.rate * r.num
 
-    dSm2 <- -lambda.g2*s.num.g2 + br.g2 - ds.rate.g2*s.num.g2
-    dIm2 <- lambda.g2*s.num.g2 - rec.rate.g2*i.num.g2 - di.rate.g2*i.num.g2
-    dRm2 <- rec.rate.g2*i.num.g2 - dr.rate.g2*r.num.g2
+    dSm2 <- -lambda.g2 * s.num.g2 + br.g2 - ds.rate.g2 * s.num.g2
+    dIm2 <- lambda.g2 * s.num.g2 - rec.rate.g2 * i.num.g2 - di.rate.g2 * i.num.g2
+    dRm2 <- rec.rate.g2 * i.num.g2 - dr.rate.g2 * r.num.g2
 
     list(c(dSm1, dIm1, dRm1,
            dSm2, dIm2, dRm2),
@@ -395,8 +395,8 @@ mod_SIS_1g_cl <- function(t, t0, parms) {
     }
 
     # ODEs
-    dS <- -lambda*s.num + rec.rate*i.num
-    dI <- lambda*s.num - rec.rate*i.num
+    dS <- -lambda * s.num + rec.rate * i.num
+    dI <- lambda * s.num - rec.rate * i.num
 
     list(c(dS, dI),
          num = num,
@@ -423,8 +423,8 @@ mod_SIS_1g_op <- function(t, t0, parms) {
     }
 
     # ODEs
-    dS <- -lambda*s.num + rec.rate*i.num + b.rate*num - ds.rate*s.num
-    dI <- lambda*s.num - rec.rate*i.num - di.rate*i.num
+    dS <- -lambda * s.num + rec.rate * i.num + b.rate * num - ds.rate * s.num
+    dI <- lambda * s.num - rec.rate * i.num - di.rate * i.num
 
     list(c(dS, dI),
          num = num,
@@ -460,19 +460,19 @@ mod_SIS_2g_cl <- function(t, t0, parms) {
     }
 
     # Group Lambdas
-    lambda.g1 <- inf.prob * ar.g1 * i.num.g2/num.g2
-    lambda.g2 <- inf.prob.g2 * ar.g2 * i.num/num.g1
+    lambda.g1 <- inf.prob * ar.g1 * i.num.g2 / num.g2
+    lambda.g2 <- inf.prob.g2 * ar.g2 * i.num / num.g1
     if (!is.null(parms$inter.eff) && t >= inter.start) {
       lambda.g1 <- lambda.g1 * (1 - inter.eff)
       lambda.g2 <- lambda.g2 * (1 - inter.eff)
     }
 
     # ODEs
-    dSm1 <- -lambda.g1*s.num + rec.rate*i.num
-    dIm1 <- lambda.g1*s.num - rec.rate*i.num
+    dSm1 <- -lambda.g1 * s.num + rec.rate * i.num
+    dIm1 <- lambda.g1 * s.num - rec.rate * i.num
 
-    dSm2 <- -lambda.g2*s.num.g2 + rec.rate.g2*i.num.g2
-    dIm2 <- lambda.g2*s.num.g2 - rec.rate.g2*i.num.g2
+    dSm2 <- -lambda.g2 * s.num.g2 + rec.rate.g2 * i.num.g2
+    dIm2 <- lambda.g2 * s.num.g2 - rec.rate.g2 * i.num.g2
 
     list(c(dSm1, dIm1,
            dSm2, dIm2),
@@ -509,8 +509,8 @@ mod_SIS_2g_op <- function(t, t0, parms) {
     }
 
     # Group Lambdas
-    lambda.g1 <- inf.prob * ar.g1 * i.num.g2/num.g2
-    lambda.g2 <- inf.prob.g2 * ar.g2 * i.num/num.g1
+    lambda.g1 <- inf.prob * ar.g1 * i.num.g2 / num.g2
+    lambda.g2 <- inf.prob.g2 * ar.g2 * i.num / num.g1
     if (!is.null(parms$inter.eff) && t >= inter.start) {
       lambda.g1 <- lambda.g1 * (1 - inter.eff)
       lambda.g2 <- lambda.g2 * (1 - inter.eff)
@@ -518,19 +518,19 @@ mod_SIS_2g_op <- function(t, t0, parms) {
 
     # birth rates
     if (is.na(b.rate.g2)) {
-      br.g1 <- b.rate*num.g1
-      br.g2 <- b.rate*num.g1
+      br.g1 <- b.rate * num.g1
+      br.g2 <- b.rate * num.g1
     } else {
-      br.g1 <- b.rate*num.g1
-      br.g2 <- b.rate*num.g2
+      br.g1 <- b.rate * num.g1
+      br.g2 <- b.rate * num.g2
     }
 
     # ODEs
-    dSm1 <- -lambda.g1*s.num + rec.rate*i.num + br.g1 - ds.rate*s.num
-    dIm1 <- lambda.g1*s.num - rec.rate*i.num - di.rate*i.num
+    dSm1 <- -lambda.g1 * s.num + rec.rate * i.num + br.g1 - ds.rate * s.num
+    dIm1 <- lambda.g1 * s.num - rec.rate * i.num - di.rate * i.num
 
-    dSm2 <- -lambda.g2*s.num.g2 + rec.rate.g2*i.num.g2 + br.g2 - ds.rate.g2*s.num.g2
-    dIm2 <- lambda.g2*s.num.g2 - rec.rate.g2*i.num.g2 - di.rate.g2*i.num.g2
+    dSm2 <- -lambda.g2 * s.num.g2 + rec.rate.g2 * i.num.g2 + br.g2 - ds.rate.g2 * s.num.g2
+    dIm2 <- lambda.g2 * s.num.g2 - rec.rate.g2 * i.num.g2 - di.rate.g2 * i.num.g2
 
     list(c(dSm1, dIm1,
            dSm2, dIm2),

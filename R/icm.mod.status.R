@@ -14,14 +14,16 @@ infection.icm <- function(dat, at) {
 
   ## Expected acts
   if (dat$param$groups == 1) {
-    acts <- round(dat$param$act.rate * dat$epi$num[at-1] / 2)
+    acts <- round(dat$param$act.rate * dat$epi$num[at - 1] / 2)
   }
   if (dat$param$groups == 2) {
     if (dat$param$balance == "g1") {
-      acts <- round(dat$param$act.rate * (dat$epi$num[at-1] + dat$epi$num.g2[at-1]) / 2)
+      acts <- round(dat$param$act.rate *
+                      (dat$epi$num[at - 1] + dat$epi$num.g2[at - 1]) / 2)
     }
     if (dat$param$balance == "g2") {
-      acts <- round(dat$param$act.rate.g2 * (dat$epi$num[at-1] + dat$epi$num.g2[at-1]) / 2)
+      acts <- round(dat$param$act.rate.g2 *
+                      (dat$epi$num[at - 1] + dat$epi$num.g2[at - 1]) / 2)
     }
   }
 
@@ -31,8 +33,10 @@ infection.icm <- function(dat, at) {
     p1 <- ssample(which(dat$attr$active == 1), acts, replace = TRUE)
     p2 <- ssample(which(dat$attr$active == 1), acts, replace = TRUE)
   } else {
-    p1 <- ssample(which(dat$attr$active == 1 & dat$attr$group == 1), acts, replace = TRUE)
-    p2 <- ssample(which(dat$attr$active == 1 & dat$attr$group == 2), acts, replace = TRUE)
+    p1 <- ssample(which(dat$attr$active == 1 & dat$attr$group == 1),
+                  acts, replace = TRUE)
+    p2 <- ssample(which(dat$attr$active == 1 & dat$attr$group == 2),
+                  acts, replace = TRUE)
   }
 
   del <- NULL
@@ -40,7 +44,8 @@ infection.icm <- function(dat, at) {
     del <- data.frame(p1, p2)
     if (dat$param$groups == 1) {
       while (any(del$p1 == del$p2)) {
-        del$p2 <- ifelse(del$p1 == del$p2, ssample(which(dat$attr$active == 1), 1), del$p2)
+        del$p2 <- ifelse(del$p1 == del$p2,
+                         ssample(which(dat$attr$active == 1), 1), del$p2)
       }
     }
 

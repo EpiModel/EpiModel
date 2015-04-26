@@ -310,7 +310,7 @@ plot.dcm <- function(x,
           if (type != "SIR") {
             pal <- pal[1:2]
           }
-          pal <- rep(pal, times = lcomp/2)
+          pal <- rep(pal, times = lcomp / 2)
         }
       }
       if (use.brewer == FALSE) {
@@ -671,7 +671,7 @@ plot.icm <- function(x,
     sim.alpha <- 0.9
   }
   if (missing(sim.alpha) & nsims > 1) {
-    sim.alpha <- max(c(0.05, 1-log10(nsims)/3))
+    sim.alpha <- max(c(0.05, 1 - log10(nsims) / 3))
   }
   sim.pal <- transco(sim.col, sim.alpha)
 
@@ -837,13 +837,13 @@ draw_qnts <- function(x, y, qnts, qnts.pal, loc = "epi") {
 
   lcomp <- length(y)
   for (j in seq_len(lcomp)) {
-    quants <- c((1-qnts)/2, 1-((1-qnts)/2))
+    quants <- c((1 - qnts) / 2, 1 - ((1 - qnts) / 2))
     qnt.prev <- apply(x[[loc]][[y[j]]], 1,
                       function(x) {
                         quantile(x, c(quants[1], quants[2]), na.rm = TRUE)
                       })
     xx <- c(1:(ncol(qnt.prev)), (ncol(qnt.prev)):1)
-    yy <- c(qnt.prev[1,], rev(qnt.prev[2,]))
+    yy <- c(qnt.prev[1, ], rev(qnt.prev[2, ]))
     polygon(xx, yy, col = qnts.pal[j], border = NA)
   }
 
@@ -1041,8 +1041,8 @@ plot.netdx <- function(x,
   }
 
   if (x$dynamic == FALSE && type %in% c("duration", "dissolution")) {
-    stop("Plots of type duration and dissolution only available if netdx run with dynamic = TRUE",
-         call. = FALSE)
+    stop("Plots of type duration and dissolution only available if netdx ",
+         "run with dynamic = TRUE", call. = FALSE)
   }
 
   ## Check sims
@@ -1116,7 +1116,7 @@ plot.netdx <- function(x,
       if (nsims == 1 | dynamic == FALSE) {
         sim.lwd <- 1
       } else {
-        sim.lwd <- max(c(1-(nsims*0.05), 0.5))
+        sim.lwd <- max(c(1 - (nsims * 0.05), 0.5))
       }
     }
 
@@ -1125,7 +1125,7 @@ plot.netdx <- function(x,
       if (nstats > 8) {
         sim.col <- brewer_ramp(nstats, "Set1")
       } else {
-        sim.col <- brewer.pal(9, "Set1")[1:(nstats+1)]
+        sim.col <- brewer.pal(9, "Set1")[1:(nstats + 1)]
         if (nstats >= 6) {
           sim.col <- sim.col[-which(sim.col == "#FFFF33")]
         }
@@ -1200,10 +1200,12 @@ plot.netdx <- function(x,
               qnts.alpha <- 0.75
             }
             qnts.col <- transco(qnts.col, qnts.alpha)
-            quants <- c((1-qnts)/2, 1-((1-qnts)/2))
-            qnt.prev <- apply(dataj, 1, function(x) quantile(x, c(quants[1], quants[2])))
+            quants <- c((1 - qnts) / 2, 1 - ((1 - qnts) / 2))
+            qnt.prev <- apply(dataj, 1, function(x) {
+                 quantile(x, c(quants[1], quants[2]))
+              })
             xx <- c(1:(ncol(qnt.prev)), (ncol(qnt.prev)):1)
-            yy <- c(qnt.prev[1,], rev(qnt.prev[2,]))
+            yy <- c(qnt.prev[1, ], rev(qnt.prev[2, ]))
             polygon(xx, yy, col = qnts.col[which(j == outsts)], border = NA)
           }
 
@@ -1291,10 +1293,12 @@ plot.netdx <- function(x,
               qnts.alpha <- 0.75
             }
             qnts.col <- transco(qnts.col, qnts.alpha)
-            quants <- c((1-qnts)/2, 1-((1-qnts)/2))
-            qnt.prev <- apply(dataj, 1, function(x) quantile(x, c(quants[1], quants[2])))
+            quants <- c((1 - qnts) / 2, 1 - ((1 - qnts) / 2))
+            qnt.prev <- apply(dataj, 1, function(x) {
+                  quantile(x, c(quants[1], quants[2]))
+              })
             xx <- c(1:(ncol(qnt.prev)), (ncol(qnt.prev)):1)
-            yy <- c(qnt.prev[1,], rev(qnt.prev[2,]))
+            yy <- c(qnt.prev[1, ], rev(qnt.prev[2, ]))
             polygon(xx, yy, col = qnts.col[which(j == outsts)], border = NA)
           }
 
@@ -1381,7 +1385,7 @@ plot.netdx <- function(x,
     }
 
     if (missing(sim.lwd)) {
-      sim.lwd <- max(c(1-(nsims*0.05), 0.5))
+      sim.lwd <- max(c(1 - (nsims * 0.05), 0.5))
     }
 
     if (missing(sim.col)) {
@@ -1421,13 +1425,13 @@ plot.netdx <- function(x,
           qnts.alpha <- 0.75
         }
         qnts.col <- transco(qnts.col, qnts.alpha)
-        quants <- c((1-qnts)/2, 1-((1-qnts)/2))
+        quants <- c((1 - qnts) / 2, 1 - ((1 - qnts) / 2))
         dataj <- as.data.frame(pages)
         qnt.prev <- apply(dataj, 1, function(x)
                           quantile(x, c(quants[1], quants[2]),
                                    na.rm = TRUE))
         xx <- c(1:(ncol(qnt.prev)), (ncol(qnt.prev)):1)
-        yy <- c(qnt.prev[1,], rev(qnt.prev[2,]))
+        yy <- c(qnt.prev[1, ], rev(qnt.prev[2, ]))
         polygon(xx, yy, col = qnts.col, border = NA)
       }
 
@@ -1490,7 +1494,7 @@ plot.netdx <- function(x,
     }
 
     if (missing(sim.lwd)) {
-      sim.lwd <- max(c(1-(nsims*0.05), 0.5))
+      sim.lwd <- max(c(1 - (nsims * 0.05), 0.5))
     }
 
     if (missing(sim.col)) {
@@ -1530,13 +1534,13 @@ plot.netdx <- function(x,
           qnts.alpha <- 0.75
         }
         qnts.col <- transco(qnts.col, qnts.alpha)
-        quants <- c((1-qnts)/2, 1-((1-qnts)/2))
+        quants <- c((1 - qnts) / 2, 1 - ((1 - qnts) / 2))
         dataj <- as.data.frame(prop.diss)
         qnt.prev <- apply(dataj, 1, function(x)
           quantile(x, c(quants[1], quants[2]),
                    na.rm = TRUE))
         xx <- c(1:(ncol(qnt.prev)), (ncol(qnt.prev)):1)
-        yy <- c(qnt.prev[1,], rev(qnt.prev[2,]))
+        yy <- c(qnt.prev[1, ], rev(qnt.prev[2, ]))
         polygon(xx, yy, col = qnts.col, border = NA)
       }
 
@@ -1563,7 +1567,7 @@ plot.netdx <- function(x,
       }
 
       if (targ.line == TRUE) {
-        abline(h = as.numeric(1/(x$coef.diss[2]$duration)),
+        abline(h = as.numeric(1 / (x$coef.diss[2]$duration)),
                lty = targ.lty, lwd = targ.lwd,
                col = targ.col)
       }
@@ -1572,7 +1576,7 @@ plot.netdx <- function(x,
     if (method == "b") {
       data <- do.call("c", x$prop.diss)
       boxplot(data, ...)
-      points(x = 1, y = as.numeric(1/(x$coef.diss[2]$duration)),
+      points(x = 1, y = as.numeric(1 / (x$coef.diss[2]$duration)),
              pch = 16, cex = 1.5, col = "blue")
     }
 
@@ -1909,7 +1913,7 @@ plot.netsim <- function(x,
       if (nsims == 1) {
         sim.lwd <- 1
       } else {
-        sim.lwd <- max(c(1-(nsims*0.05), 0.5))
+        sim.lwd <- max(c(1 - (nsims * 0.05), 0.5))
       }
     }
 
@@ -2028,8 +2032,8 @@ plot.netsim <- function(x,
       }
 
       for (j in outsts) {
-        ymin <- min(mins[j,])
-        ymax <- max(maxs[j,])
+        ymin <- min(mins[j, ])
+        ymax <- max(maxs[j, ])
         plot(x = 1, y = 1,
              xlim = xlim,
              ylim = c(ymin * 0.8, ymax * 1.2),
@@ -2258,7 +2262,7 @@ comp_plot.icm <- function(x,
   if (type == "SI" && groups == 1) {
     mbox(22, 40, "Susceptible", paste0(df.mn$s.num, "(", df.sd$s.num, ")"))
     mbox(57, 40, "Infected", paste0(df.mn$i.num, "(", df.sd$i.num, ")"))
-    harrow(22, 40, "si.flow", df.mn$si.flow, dir="right")
+    harrow(22, 40, "si.flow", df.mn$si.flow, dir = "right")
     if (vital == TRUE) {
       varrow(22, 40, "ds.flow", df.mn$ds.flow, dir = "out")
       varrow(57, 40, "di.flow", df.mn$di.flow, dir = "out")
@@ -2419,28 +2423,28 @@ denom <- function(x, y, popfrac) {
 ## comp_plot helper utilities ##
 #  Text box
 mbox <- function(x, y, title, val) {
-  polygon(c(x, x+20, x+20, x), c(y, y, y+20, y+20))
-  text(x+10, y+10, paste(title, "\n n=", val, sep=""), cex=0.9)
+  polygon(c(x, x + 20, x + 20, x), c(y, y, y + 20, y + 20))
+  text(x + 10, y + 10, paste(title, "\n n=", val, sep = ""), cex = 0.9)
 }
 #  Horizontal arrow
 harrow <- function(xbox, ybox, title, val, dir) {
   if (dir == "right") {
-    arrows(xbox+20, ybox+12, xbox+35, lwd=2, length=0.15)
-    text(xbox+27.5, ybox+17, paste(title, val, sep="="), cex=0.8)
+    arrows(xbox + 20, ybox + 12, xbox + 35, lwd = 2, length = 0.15)
+    text(xbox + 27.5, ybox + 17, paste(title, val, sep = "="), cex = 0.8)
   }
   if (dir == "left") {
-    arrows(xbox+20+15, ybox+5, xbox+20, lwd=2, length=0.15)
-    text(xbox+27.5, ybox+2, paste(title, val, sep="="), cex=0.8)
+    arrows(xbox + 20 + 15, ybox + 5, xbox + 20, lwd = 2, length = 0.15)
+    text(xbox + 27.5, ybox + 2, paste(title, val, sep = "="), cex = 0.8)
   }
 }
 #  Vertical arrow
 varrow <- function(xbox, ybox, title, val, dir) {
   if (dir == "out") {
-    arrows(xbox+10, ybox, xbox+10, ybox-25, lwd=2, length=0.15)
-    text(xbox+10, ybox-12.5, paste(title, val, sep="="), cex=0.8, pos=4)
+    arrows(xbox + 10, ybox, xbox + 10, ybox - 25, lwd = 2, length = 0.15)
+    text(xbox + 10, ybox - 12.5, paste(title, val, sep = "="), cex = 0.8, pos = 4)
   }
   if (dir == "in") {
-    arrows(xbox+10, ybox+45, xbox+10, ybox+20, lwd=2, length=0.15)
-    text(xbox+10, ybox+32.5, paste(title, val, sep="="), cex=0.8, pos=4)
+    arrows(xbox + 10, ybox + 45, xbox + 10, ybox + 20, lwd = 2, length = 0.15)
+    text(xbox + 10, ybox + 32.5, paste(title, val, sep = "="), cex = 0.8, pos = 4)
   }
 }

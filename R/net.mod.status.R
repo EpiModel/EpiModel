@@ -102,7 +102,7 @@ infection.net <- function(dat, at) {
                               act.rate[lact.rate])
 
         # Calculate final transmission probability per timestep
-        del$finalProb <- 1-(1-del$transProb)^del$actRate
+        del$finalProb <- 1 - (1 - del$transProb) ^ del$actRate
 
         # Randomize transmissions and subset df
         transmit <- rbinom(nrow(del), 1, del$finalProb)

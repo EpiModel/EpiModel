@@ -177,7 +177,7 @@ births.icm <- function(dat, at) {
   b.rate.g2 <- dat$param$b.rate.g2
   b.rand <- dat$control$b.rand
   groups <- dat$param$groups
-  nOld <- dat$epi$num[at-1]
+  nOld <- dat$epi$num[at - 1]
 
 
   # Process -----------------------------------------------------------------
@@ -192,7 +192,7 @@ births.icm <- function(dat, at) {
     }
   }
   if (groups == 2) {
-    nOldG2 <- dat$epi$num.g2[at-1]
+    nOldG2 <- dat$epi$num.g2[at - 1]
     if (b.rand == TRUE) {
       if (is.na(b.rate.g2)) {
         nBirths <- sum(rbinom(nOld, 1, b.rate))

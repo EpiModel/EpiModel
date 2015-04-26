@@ -16,11 +16,11 @@
 #' for the number of simulations in each call. This allows for manual
 #' parallelization of model simulations.
 #'
-#' This merge function does not work the same as the default merge in
-#' allowing for a combined object where the structure differs between the
-#' input elements. Instead, the function checks that objects are identical
-#' in model parameterization in every respect (except number of simulations) and
-#' binds the results.
+#' This merge function does not work the same as the default merge in allowing
+#' for a combined object where the structure differs between the input elements.
+#' Instead, the function checks that objects are identical in model
+#' parameterization in every respect (except number of simulations) and binds
+#' the results.
 #'
 #' @method merge icm
 #' @keywords extract
@@ -178,7 +178,8 @@ merge.netsim <- function(x, y,
 
   # Override environment of nwstats.formula
   if (!is.null(x$control$nwstats.formula) & !is.null(y$control$nwstats.formula)) {
-    environment(x$control$nwstats.formula) <- environment(y$control$nwstats.formula) <- environment()
+    environment(x$control$nwstats.formula) <-
+      environment(y$control$nwstats.formula) <- environment()
   }
 
 
@@ -212,7 +213,7 @@ merge.netsim <- function(x, y,
   if (keep.transmat == TRUE) {
     for (i in new.range) {
       if (!is.null(x$stats$transmat) & !is.null(y$stats$transmat)) {
-        z$stats$transmat[[i]] <- y$stats$transmat[[i-x$control$nsims]]
+        z$stats$transmat[[i]] <- y$stats$transmat[[i - x$control$nsims]]
         if (!is.null(z$stats$transmat)) {
           names(z$stats$transmat)[i] <- paste0("sim", i)
         }
@@ -226,7 +227,7 @@ merge.netsim <- function(x, y,
   ## Network objects
   if (keep.network == TRUE & !is.null(x$network) & !is.null(y$network)) {
     for (i in new.range) {
-      z$network[[i]] <- y$network[[i-x$control$nsims]]
+      z$network[[i]] <- y$network[[i - x$control$nsims]]
       if (!is.null(z$network)) {
         names(z$network)[i] <- paste0("sim", i)
       }
@@ -239,7 +240,7 @@ merge.netsim <- function(x, y,
   ## Network statistics
   if (keep.nwstats == TRUE & !is.null(x$stats$nwstats) & !is.null(y$stats$nwstats)) {
     for (i in new.range) {
-      z$stats$nwstats[[i]] <- y$stats$nwstats[[i-x$control$nsims]]
+      z$stats$nwstats[[i]] <- y$stats$nwstats[[i - x$control$nsims]]
       if (!is.null(z$stats$nwstats)) {
         names(z$stats$nwstats)[i] <- paste0("sim", i)
       }
@@ -258,7 +259,7 @@ merge.netsim <- function(x, y,
       }
       for (j in 1:length(other.x)) {
         for (i in new.range) {
-          z[[other.x[j]]][[i]] <- y[[other.x[j]]][[i-x$control$nsims]]
+          z[[other.x[j]]][[i]] <- y[[other.x[j]]][[i - x$control$nsims]]
         }
       }
     } else {

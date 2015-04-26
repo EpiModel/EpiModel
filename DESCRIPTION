@@ -33,7 +33,6 @@ Imports:
     RColorBrewer,
     statnet.common
 Suggests:
-    doMPI,
     knitr,
     ndtv,
     shiny,

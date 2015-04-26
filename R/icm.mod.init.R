@@ -97,7 +97,7 @@ init_status.icm <- function(dat) {
         x = c("s", "i", "r"),
         size = nG1,
         replace = TRUE,
-        prob = c(1-(i.num/nG1)-(r.num/nG1), i.num/nG1, r.num/nG1))
+        prob = c(1 - (i.num / nG1) - (r.num / nG1), i.num / nG1, r.num / nG1))
       if (sum(status == "i" & group == 1) == 0 & i.num > 0) {
         status[sample(which(group == 1), size = i.num)] <- "i"
       }
@@ -109,7 +109,8 @@ init_status.icm <- function(dat) {
           x = c("s", "i", "r"),
           size = nG2,
           replace = TRUE,
-          prob = c(1-(i.num.g2/nG2)-(r.num.g2/nG2), i.num.g2/nG2, r.num.g2/nG2))
+          prob = c(1 - (i.num.g2 / nG2) - (r.num.g2 / nG2),
+                   i.num.g2 / nG2, r.num.g2 / nG2))
         if (sum(status == "i" & group == 2) == 0 & i.num.g2 > 0) {
           status[sample(which(group == 2), size = i.num.g2)] <- "i"
         }
@@ -122,7 +123,7 @@ init_status.icm <- function(dat) {
         x = c("s", "i"),
         size = nG1,
         replace = TRUE,
-        prob = c(1-(i.num/nG1), i.num/nG1))
+        prob = c(1 - (i.num / nG1), i.num / nG1))
       if (sum(status == "i" & group == 1) == 0 & i.num > 0) {
         status[sample(which(group == 1), size = i.num)] <- "i"
       }
@@ -131,7 +132,7 @@ init_status.icm <- function(dat) {
           x = c("s", "i"),
           size = nG2,
           replace = TRUE,
-          prob = c(1-(i.num.g2/nG2), i.num.g2/nG2))
+          prob = c(1 - (i.num.g2 / nG2), i.num.g2 / nG2))
         if (sum(status == "i" & group == 2) == 0 & i.num.g2 > 0) {
           status[sample(which(group == 2), size = i.num.g2)] <- "i"
         }
@@ -147,7 +148,7 @@ init_status.icm <- function(dat) {
 
   # If vital=TRUE, infTime is a uniform draw over the duration of infection
   if (dat$param$vital == TRUE && dat$param$di.rate > 0) {
-    infTime[idsInf] <- -rgeom(n = length(idsInf), prob = dat$param$di.rate)+2
+    infTime[idsInf] <- -rgeom(n = length(idsInf), prob = dat$param$di.rate) + 2
   } else {
     if (dat$control$type == "SI" || dat$param$rec.rate == 0) {
       # infTime a uniform draw over the number of sim time steps
@@ -155,15 +156,15 @@ init_status.icm <- function(dat) {
                                  length(idsInf), replace = TRUE)
     } else {
       if (nGroups == 1) {
-        infTime[idsInf] <- ssample(1:(-round(1/dat$param$rec.rate) + 2),
+        infTime[idsInf] <- ssample(1:(-round(1 / dat$param$rec.rate) + 2),
                                    length(idsInf), replace = TRUE)
       }
       if (nGroups == 2) {
         infG1 <- which(status == "i" & group == 1)
-        infTime[infG1] <- ssample(1:(-round(1/dat$param$rec.rate) + 2),
+        infTime[infG1] <- ssample(1:(-round(1 / dat$param$rec.rate) + 2),
                                   length(infG1), replace = TRUE)
         infG2 <- which(status == "i" & group == 2)
-        infTime[infG2] <- ssample(1:(-round(1/dat$param$rec.rate.g2) + 2),
+        infTime[infG2] <- ssample(1:(-round(1 / dat$param$rec.rate.g2) + 2),
                                   length(infG2), replace = TRUE)
       }
     }

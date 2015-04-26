@@ -14,7 +14,7 @@
 #' @export
 #' @keywords internal
 #'
-verbose.dcm <- function(x, type, s) {
+verbose.dcm <- function(x, type, s = 1) {
 
   if (type == "startup") {
     if (x$verbose == TRUE & x$nruns > 1) {
@@ -26,7 +26,7 @@ verbose.dcm <- function(x, type, s) {
 
   if (type == "progress") {
     if (x$verbose == TRUE & x$nruns > 1) {
-      cat("Run = ", s, "/", x$nruns, "\n", sep="")
+      cat("Run = ", s, "/", x$nruns, "\n", sep = "")
     }
   }
 
@@ -48,7 +48,7 @@ verbose.dcm <- function(x, type, s) {
 #' @export
 #' @keywords internal
 #'
-verbose.icm <- function(x, type, s, at) {
+verbose.icm <- function(x, type, s = 1, at = 2) {
 
   if (type == "startup") {
     if (x$verbose == TRUE) {
@@ -67,14 +67,14 @@ verbose.icm <- function(x, type, s, at) {
   if (type == "progress") {
     if (x$control$verbose == TRUE) {
       if (x$control$verbose.int == 0 && at == x$control$nsteps) {
-        cat("\nSim = ", s, "/", x$control$nsims, sep="")
+        cat("\nSim = ", s, "/", x$control$nsims, sep = "")
       }
       if (x$control$verbose.int > 0 && (at %% x$control$verbose.int == 0)) {
         cat("\014")
         cat("\nNetwork Disease Simulation")
         cat("\n----------------------------")
-        cat("\nSimulation: ", s, "/", x$control$nsims, sep="")
-        cat("\nTimestep: ", at, "/", x$control$nsteps, sep="")
+        cat("\nSimulation: ", s, "/", x$control$nsims, sep = "")
+        cat("\nTimestep: ", at, "/", x$control$nsteps, sep = "")
         if (x$param$groups == 1) {
           cat("\nIncidence:", x$epi$si.flow[at])
         }
@@ -110,7 +110,7 @@ verbose.icm <- function(x, type, s, at) {
             cat("\nPopulation:", x$epi$s.num[at] + x$epi$i.num[at])
           }
           if (x$param$groups == 2) {
-            cat("\nPopulation:", x$epi$s.num[at] + x$epi$s.num.g2[at]+
+            cat("\nPopulation:", x$epi$s.num[at] + x$epi$s.num.g2[at] +
                                  x$epi$i.num[at] + x$epi$i.num.g2[at])
           }
         }
@@ -174,7 +174,7 @@ verbose.icm <- function(x, type, s, at) {
 #' @export
 #' @keywords internal
 #'
-verbose.net <- function(x, type, s, at) {
+verbose.net <- function(x, type, s = 1, at = 2) {
 
   if (type == "startup") {
     if (x$verbose == TRUE) {
@@ -193,14 +193,14 @@ verbose.net <- function(x, type, s, at) {
   if (type == "progress") {
     if (x$control$verbose == TRUE) {
       if (x$control$verbose.int == 0 && at == x$control$nsteps) {
-        cat("\nSim = ", s, "/", x$control$nsims, sep="")
+        cat("\nSim = ", s, "/", x$control$nsims, sep = "")
       }
       if (x$control$verbose.int > 0 && (at %% x$control$verbose.int == 0)) {
         cat("\014")
         cat("\nNetwork Disease Simulation")
         cat("\n----------------------------")
-        cat("\nSimulation: ", s, "/", x$control$nsims, sep="")
-        cat("\nTimestep: ", at, "/", x$control$nsteps, sep="")
+        cat("\nSimulation: ", s, "/", x$control$nsims, sep = "")
+        cat("\nTimestep: ", at, "/", x$control$nsteps, sep = "")
         if (x$param$modes == 1) {
           cat("\nIncidence:", x$epi$si.flow[at])
         }
@@ -282,4 +282,3 @@ verbose.net <- function(x, type, s, at) {
   }
 
 }
-
