@@ -154,9 +154,11 @@ netest <- function(nw,
     constraints	<- ~.
   }
 
-  if (class(coef.diss) != "disscoef" || coef.diss$model.type == "invalid") {
-    stop("Dissolution model not currently supported. See ?dissolution_coefs", call. = FALSE)
+  if (class(coef.diss) != "disscoef") {
+    stop("dissolution must be of input through dissolution_coefs function",
+         call. = FALSE)
   }
+  diss_check(formation, dissolution)
 
   if (edapprox == FALSE) {
 
@@ -263,5 +265,69 @@ netest <- function(nw,
 
 
 und_dens <- function(n, edges) {
-  (2*edges)/(n*(n-1))
+  (2 * edges) / (n * (n - 1))
+}
+
+
+diss_check <- function(formation, dissolution){
+
+  # Split formulas into separate terms
+  form.terms <- strsplit(as.character(formation)[2], "[+]")[[1]]
+  diss.terms <- strsplit(as.character(dissolution)[2], "[+]")[[1]]
+
+  # Remove whitespace
+  form.terms <- gsub("\\s", "", form.terms)
+  diss.terms <- gsub("\\s", "", diss.terms)
+
+  offpos.f <- grep("offset(", form.terms, fixed = TRUE)
+  form.terms[offpos.f] <- substr(form.terms[offpos.f], nchar("offset(") + 1,
+                                 nchar(form.terms[offpos.f]) - 1)
+  offpos.d <- grep("offset(", diss.terms, fixed = TRUE)
+  diss.terms[offpos.d] <- substr(diss.terms[offpos.d], nchar("offset(") + 1,
+                                 nchar(diss.terms[offpos.d]) - 1)
+
+  argpos.f <- regexpr("\\(", form.terms)
+  argpos.d <- regexpr("\\(", diss.terms)
+
+  # Matrix with terms in row 1, args in row 2
+  form.terms <- vapply(regmatches(form.terms, argpos.f, invert = TRUE),
+                       function(x) {
+                         if (length(x) < 2) {
+                           x <- c(x, "")
+                         } else {
+                           x[2] <- substr(x[2], 1, nchar(x[2]) - 1)
+                         }
+                         x
+                       },
+                       c(term = "", args = ""))
+  diss.terms <- vapply(regmatches(diss.terms, argpos.d, invert = TRUE),
+                       function(x) {
+                         if (length(x) < 2) {
+                           x <- c(x, "")
+                         } else {
+                           x[2] <- substr(x[2], 1, nchar(x[2]) - 1)
+                         }
+                         x
+                       },
+                       c(term = "", args = ""))
+
+
+  matchpos <- match(diss.terms[1, ], form.terms[1, ])
+
+  if (any(is.na(matchpos))) {
+    stop("Dissolution model is not a subset of formation model.", call. = FALSE)
+  }
+  if (!all(diss.terms[1, ] %in% c("edges", "nodemix", "nodematch", "nodefactor"))) {
+    stop("The only allowed dissolution terms are edges, nodemix, nodematch and ",
+         "nodefactor", call. = FALSE)
+  }
+  if (any(matchpos != 1:ncol(diss.terms))) {
+    stop("Order of terms in the dissolution model does not correspond to the ",
+         "formation model.", call. = FALSE)
+  }
+  if (any(diss.terms[2, ] != form.terms[2, 1:ncol(diss.terms)])) {
+    stop("Term options for one or more terms in dissolution model do not ",
+         "match the options in the formation model.", call. = FALSE)
+  }
+
 }

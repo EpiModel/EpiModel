@@ -10,7 +10,7 @@ test_that("Delayed differntial equation models function", {
       if (t < 2) {
         i.num.foi <- 0
       } else {
-        i.num.foi <- lagvalue(t-1, 2)
+        i.num.foi <- lagvalue(t - 1, 2)
       }
 
       lambda <- inf.prob * act.rate * i.num.foi / num
