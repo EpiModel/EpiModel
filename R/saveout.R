@@ -199,7 +199,10 @@ saveout.net <- function(dat, s, out = NULL) {
     out$control$currsim <- NULL
     environment(out$control$nwstats.formula) <- NULL
 
-    out$temp <- NULL
+    if (!("temp" %in% dat$control$save.other)) {
+      out$temp <- NULL
+    }
+
   }
 
   return(out)
