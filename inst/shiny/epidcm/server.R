@@ -33,8 +33,9 @@ shinyServer(function(input, output) {
   control <- reactive({
     control.dcm(type = input$modtype,
                 nsteps = input$nsteps,
-                dt = input$dt,
-                verbose = FALSE)
+                dt = 1,                  ## TODO: to be switched back to input dt
+                verbose = FALSE,
+                odemethod = "euler")     ## TODO: to be switched back to default
   })
   mod <- reactive({
     input$runMod
