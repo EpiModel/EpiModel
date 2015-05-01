@@ -130,9 +130,9 @@ mod_SI_2g_cl <- function(t, t0, parms) {
 
     # ODEs
     dSm1 <- -si.flow
-    dIm1 <- si.flow
-    dSm2 <- -si.flow
-    dIm2 <- si.flow
+    dIm1 <-  si.flow
+    dSm2 <- -si.flow.g2
+    dIm2 <-  si.flow.g2
 
     # Output
     list(c(dSm1, dIm1, dSm2, dIm2,
