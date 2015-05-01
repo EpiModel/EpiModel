@@ -175,7 +175,7 @@ plot.dcm <- function(x,
 
   ## Compartment ymax calculations
   if (popfrac == FALSE) {
-    allmax <- sapply(1:lcomp, function(i) max(x$epi[[y[i]]]))
+    allmax <- sapply(1:lcomp, function(i) max(x$epi[[y[i]]], na.rm = TRUE))
     ymax <- ceiling(max(allmax))
   } else {
     ymax <- 1
