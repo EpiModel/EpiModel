@@ -128,7 +128,7 @@ dcm <- function(param, init, control){
       if (param$groups == 1) {
         if (param$vital == FALSE) {
           model <- mod_SIR_1g_cl
-          init <- c(init, si.flow = c, ir.flow = 0)
+          init <- c(init, si.flow = 0, ir.flow = 0)
         } else {
           model <- mod_SIR_1g_op
           init <- c(init, si.flow = 0, ir.flow = 0, b.flow = 0,
