@@ -501,7 +501,7 @@ test_that("Open population 1 mode models", {
                      ds.rate = 0.02,
                      di.rate = 0.02)
   init <- init.net(i.num = 10)
-  control <- control.net(type = "SI", nsteps = 10,
+  control <- control.net(type = "SI", nsteps = 25,
                          nsims = 1,
                          verbose = FALSE,
                          tea.status = FALSE,
@@ -569,7 +569,7 @@ test_that("Open population 1 mode models", {
                      di.rate = 0.02,
                      dr.rate = 0.02)
   init <- init.net(i.num = 10, r.num = 0)
-  control <- control.net(type = "SIR", nsteps = 10,
+  control <- control.net(type = "SIR", nsteps = 25,
                          nsims = 1,
                          verbose = FALSE,
                          tea.status = FALSE,
@@ -689,6 +689,30 @@ test_that("Open-population bipartite models", {
   test_net(x)
   rm(x)
 
+  ## "SI, 2M, OP, deterministic births and deaths: 1 sim"
+  param <- param.net(inf.prob = 0.5,
+                     inf.prob.m2 = 0.1,
+                     act.rate = 2,
+                     b.rate = 0.02,
+                     ds.rate = 0.02,
+                     di.rate = 0.02,
+                     b.rate.m2 = 0.02,
+                     ds.rate.m2 = 0.02,
+                     di.rate.m2 = 0.02)
+  init <- init.net(i.num = 10, i.num.m2 = 10)
+  control <- control.net(type = "SI", nsteps = 25,
+                         nsims = 1,
+                         verbose = FALSE,
+                         tea.status = FALSE,
+                         b.rand = FALSE, d.rand = FALSE)
+  x <- netsim(est5.vit, param, init, control)
+  expect_is(x, "netsim")
+  expect_is(as.data.frame(x), "data.frame")
+  expect_equal(x$param$vital, TRUE)
+  expect_output(summary(x, at = 10), "EpiModel Summary")
+  test_net(x)
+  rm(x)
+
   ## "SI, 2M, OP: 2 sim"
   param <- param.net(inf.prob = 0.5,
                      inf.prob.m2 = 0.1,
@@ -743,6 +767,36 @@ test_that("Open-population bipartite models", {
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
+  test_net(x)
+  rm(x)
+
+
+  ## "SIR, 2M, OP, deterministic births, deaths, and recoveries: 1 sim"
+  param <- param.net(inf.prob = 0.5,
+                     inf.prob.m2 = 0.1,
+                     rec.rate = 0.1,
+                     rec.rate.m2 = 0.1,
+                     act.rate = 2,
+                     b.rate = 0.02,
+                     b.rate.m2 = NA,
+                     ds.rate = 0.02,
+                     ds.rate.m2 = 0.02,
+                     di.rate = 0.02,
+                     di.rate.m2 = 0.02,
+                     dr.rate = 0.02,
+                     dr.rate.m2 = 0.02)
+  init <- init.net(i.num = 10, i.num.m2 = 0,
+                   r.num = 0, r.num.m2 = 10)
+  control <- control.net(type = "SIR", nsteps = 10,
+                         nsims = 1,
+                         verbose = FALSE,
+                         tea.status = FALSE,
+                         b.rand = FALSE, d.rand = FALSE, rec.rand = FALSE)
+  x <- netsim(est5.vit, param, init, control)
+  expect_is(x, "netsim")
+  expect_is(as.data.frame(x), "data.frame")
+  expect_equal(x$param$vital, TRUE)
+  expect_output(summary(x, at = 10), "EpiModel Summary")
   test_net(x)
   rm(x)
 
