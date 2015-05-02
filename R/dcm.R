@@ -165,10 +165,10 @@ dcm <- function(param, init, control){
                     si.flow.g2 = 0, is.flow.g2 = 0)
         } else {
           model <- mod_SIS_2g_op
-          init <- c(init, si.flow = 0, is.flow = 0, b.flow = 0,
-                    ds.flow = 0, di.flow = 0,
-                    si.flow.g2 = 0, is.flow.g2 = 0, b.flow.g2 = 0,
-                    ds.flow.g2 = 0, di.flow.g2 = 0)
+          init <- c(init, si.flow = 0, is.flow = 0,
+                    b.flow = 0, ds.flow = 0, di.flow = 0,
+                    si.flow.g2 = 0, is.flow.g2 = 0,
+                    b.flow.g2 = 0, ds.flow.g2 = 0, di.flow.g2 = 0)
         }
       }
     }

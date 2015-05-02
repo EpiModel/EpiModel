@@ -189,9 +189,9 @@ mod_SI_2g_op <- function(t, t0, parms) {
 
     # ODEs
     dSm1 <- -si.flow + b.flow - ds.flow
-    dIm1 <- si.flow - di.flow
-    dSm2 <- -si.flow + b.flow.g2 - ds.flow.g2
-    dIm2 <- si.flow - di.flow.g2
+    dIm1 <-  si.flow - di.flow
+    dSm2 <- -si.flow.g2 + b.flow.g2 - ds.flow.g2
+    dIm2 <-  si.flow.g2 - di.flow.g2
 
     # Output
     list(c(dSm1, dIm1, dSm2, dIm2,
@@ -560,7 +560,7 @@ mod_SIS_2g_op <- function(t, t0, parms) {
     dSm1 <- -si.flow + is.flow + b.flow - ds.flow
     dIm1 <-  si.flow - is.flow - di.flow
     dSm2 <- -si.flow.g2 + is.flow.g2 + b.flow.g2 - ds.flow.g2
-    dSm2 <-  si.flo2.g2 + is.flow.g2 - di.flow.g2
+    dIm2 <-  si.flow.g2 - is.flow.g2 - di.flow.g2
 
     # Output
     list(c(dSm1, dIm1, dSm2, dIm2,
