@@ -136,6 +136,7 @@ test_that("si.flow correct for closed SI model, RK4 method", {
   expect_equal(df$i.num[2], df$i.num[1] + df$si.flow[1])
   expect_equal(df$s.num[2], df$s.num[1] - df$si.flow[1])
   expect_equal(df$si.flow[1], 96.58919, tol = 0.0001)
+  expect_true(is.na(tail(df$si.flow, 1)))
 })
 
 
@@ -149,6 +150,7 @@ test_that("si.flow correct for closed SI model, RK4 method", {
   expect_equal(df$num[2], df$num[1] + df$b.flow[1] - df$ds.flow[1] - df$di.flow[1])
   expect_equal(df$i.num[2], df$i.num[1] + df$si.flow[1] - df$di.flow[1])
   expect_equal(df$si.flow[1], 96.06876, tol = 0.0001)
+  expect_true(is.na(tail(df$si.flow, 1)))
 })
 
 test_that("si.flow correct for closed SI model, Euler method", {
@@ -160,6 +162,7 @@ test_that("si.flow correct for closed SI model, Euler method", {
   expect_equal(df$i.num[2], df$i.num[1] + df$si.flow[1])
   expect_equal(df$s.num[2], df$s.num[1] - df$si.flow[1])
   expect_equal(df$si.flow[1], 67.76348, tol = 0.0001)
+  expect_true(is.na(tail(df$si.flow, 1)))
 })
 
 
@@ -173,6 +176,29 @@ test_that("si.flow correct for closed SI model, Euler method", {
   expect_equal(df$num[2], df$num[1] + df$b.flow[1] - df$ds.flow[1] - df$di.flow[1])
   expect_equal(df$i.num[2], df$i.num[1] + df$si.flow[1] - df$di.flow[1])
   expect_equal(df$si.flow[1], 67.76348, tol = 0.0001)
+  expect_true(is.na(tail(df$si.flow, 1)))
 })
 
+
+# Check dt fractional -----------------------------------------------------
+
+test_that("fractional dt returns, RK4 method", {
+  param <- param.dcm(inf.prob = 0.2, act.rate = 3.4)
+  init <- init.dcm(s.num = 28650, i.num = 100)
+  control <- control.dcm(type = "SI", nsteps = 10, dt = 0.5)
+  mod <- dcm(param, init, control)
+  df <- as.data.frame(mod)
+  expect_equal(tail(df$i.num, 1), df$i.num[1] + sum(df$si.flow, na.rm = TRUE))
+  expect_equal(df$time, seq(1, 10, 0.5))
+})
+
+test_that("fractional dt returns, Euler method", {
+  param <- param.dcm(inf.prob = 0.2, act.rate = 3.4)
+  init <- init.dcm(s.num = 28650, i.num = 100)
+  control <- control.dcm(type = "SI", nsteps = 10, dt = 0.5, odemethod = "euler")
+  mod <- dcm(param, init, control)
+  df <- as.data.frame(mod)
+  expect_equal(tail(df$i.num, 1), df$i.num[1] + sum(df$si.flow, na.rm = TRUE))
+  expect_equal(df$time, seq(1, 10, 0.5))
+})
 
