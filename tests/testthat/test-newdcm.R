@@ -19,19 +19,21 @@ test_that("New DCMs Example 1", {
         lambda <- (inf.prob*act.rate*i.num/num) * rel.haz
       }
 
+      ## Flows
+      si.flow <- lambda * s.num
+
       ## Differential Equations
       dS <- -lambda*s.num
       dI <- lambda*s.num
 
       ## Output
-      list(c(dS, dI),
-           num = num,
-           si.flow = lambda * s.num)
+      list(c(dS, dI, si.flow),
+           num = num)
     })
   }
 
 
-  init <- init.dcm(s.num = 999, i.num = 1)
+  init <- init.dcm(s.num = 999, i.num = 1, si.flow = 0)
   control <- control.dcm(nsteps = 250, dt = 1, new.mod = intSI, verbose = FALSE)
   param1 <- param.dcm(inf.prob = 0.5, act.rate = 0.1,
                       start.time = seq(100, 200, 100), rel.haz = 1)
@@ -115,26 +117,28 @@ test_that("New DCMs Example 2", {
 
 test_that("DCM inital conditions ordering correct", {
 
-  SEIR <- function (t, t0, parms) {
+  SEIR <- function(t, t0, parms) {
     with(as.list(c(t0, parms)), {
       num <- s.num + e.num + i.num + r.num
       lambda <- inf.prob * act.rate * i.num/num
+      se.flow = lambda * s.num
+      ei.flow = sx.rate * e.num
+      ir.flow = rec.rate * i.num
       dS <- -lambda * s.num
       dE <- lambda * s.num - sx.rate * e.num
       dI <- sx.rate * e.num - rec.rate * i.num
       dR <- rec.rate * i.num
-      list(c(dS, dE, dI, dR),
-           num = num,
-           se.flow = lambda * s.num,
-           ei.flow = sx.rate * e.num,
-           ir.flow = rec.rate * i.num)
+      list(c(dS, dE, dI, dR, se.flow, ei.flow, ir.flow),
+           num = num)
     })
   }
 
-  init <- init.dcm(s.num = 980, e.num = 10, i.num=10, r.num=0)
-  expect_identical(names(init), c("s.num", "e.num", "i.num", "r.num"))
+  init <- init.dcm(s.num = 980, e.num = 10, i.num = 10, r.num = 0,
+                   se.flow = 0, ei.flow = 0, ir.flow = 0)
+  expect_identical(names(init), c("s.num", "e.num", "i.num", "r.num",
+                                  "se.flow", "ei.flow", "ir.flow"))
 
-  param <- param.dcm(inf.prob=0.2, act.rate=.5, sx.rate=0.1, rec.rate=0.05)
+  param <- param.dcm(inf.prob = 0.2, act.rate = 0.5, sx.rate = 0.1, rec.rate = 0.05)
   control <- control.dcm(nsteps = 10, dt = 1, new.mod = SEIR)
 
   mod <- dcm(param, init, control)
@@ -159,19 +163,21 @@ test_that("Non-sensitivity parameter vector", {
         lambda <- inf.prob[2]*act.rate*i.num/num
       }
 
+      ## Flows
+      si.flow <- lambda * s.num
+
       ## Differential Equations
-      dS <- -lambda*s.num
-      dI <- lambda*s.num
+      dS <- -si.flow
+      dI <- si.flow
 
       ## Output
-      list(c(dS, dI),
-           num = num,
-           si.flow = lambda * s.num)
+      list(c(dS, dI, si.flow),
+           num = num)
     })
   }
 
   param <- param.dcm(inf.prob = c(0.5, 0.05), act.rate = 0.1, start.time = 100)
-  init <- init.dcm(s.num = 999, i.num = 1)
+  init <- init.dcm(s.num = 999, i.num = 1, si.flow = 0)
   control <- control.dcm(nsteps = 250, new.mod = intSI, sens.param = FALSE)
   mod <- dcm(param, init, control)
   expect_is(mod, "dcm")
