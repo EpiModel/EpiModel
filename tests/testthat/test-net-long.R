@@ -466,7 +466,7 @@ test_that("Open population 1 mode models", {
 
   nw <- network.initialize(n = 100, directed = FALSE)
   est.vit <- netest(nw,
-    formation = ~ edges,
+    formation = ~edges,
     dissolution = ~offset(edges),
     target.stats = 25,
     coef.diss = dissolution_coefs(~offset(edges), 10, 0.02),
@@ -491,6 +491,26 @@ test_that("Open population 1 mode models", {
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
+  test_net(x)
+  rm(x)
+
+  ## "SI, 1M, OP, deterministic births and deaths: 1 sim"
+  param <- param.net(inf.prob = 0.5,
+                     act.rate = 2,
+                     b.rate = 0.02,
+                     ds.rate = 0.02,
+                     di.rate = 0.02)
+  init <- init.net(i.num = 10)
+  control <- control.net(type = "SI", nsteps = 25,
+                         nsims = 1,
+                         verbose = FALSE,
+                         tea.status = FALSE,
+                         b.rand = FALSE, d.rand = FALSE)
+  x <- netsim(est.vit, param, init, control)
+  expect_is(x, "netsim")
+  expect_is(as.data.frame(x), "data.frame")
+  expect_equal(x$param$vital, TRUE)
+  expect_output(summary(x, at = 10), "EpiModel Summary")
   test_net(x)
   rm(x)
 
@@ -537,6 +557,28 @@ test_that("Open population 1 mode models", {
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
+  test_net(x)
+  rm(x)
+
+  ## "SIR, 1M OP, deterministic births, recoveries and deaths: 1 sim"
+  param <- param.net(inf.prob = 0.5,
+                     rec.rate = 0.1,
+                     act.rate = 2,
+                     b.rate = 0.02,
+                     ds.rate = 0.02,
+                     di.rate = 0.02,
+                     dr.rate = 0.02)
+  init <- init.net(i.num = 10, r.num = 0)
+  control <- control.net(type = "SIR", nsteps = 25,
+                         nsims = 1,
+                         verbose = FALSE,
+                         tea.status = FALSE,
+                         b.rand = FALSE, d.rand = FALSE, rec.rand = FALSE)
+  x <- netsim(est.vit, param, init, control)
+  expect_is(x, "netsim")
+  expect_is(as.data.frame(x), "data.frame")
+  expect_equal(x$param$vital, TRUE)
+  expect_output(summary(x, at = 10), "EpiModel Summary")
   test_net(x)
   rm(x)
 
@@ -614,7 +656,7 @@ test_that("Open-population bipartite models", {
 
   nw <- network.initialize(n = 100, bipartite = 50, directed = FALSE)
   est5.vit <- netest(nw,
-    formation = ~ edges,
+    formation = ~edges,
     dissolution = ~offset(edges),
     target.stats = 25,
     coef.diss = dissolution_coefs(~offset(edges), 10, 0.02),
@@ -644,6 +686,30 @@ test_that("Open-population bipartite models", {
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
+  test_net(x)
+  rm(x)
+
+  ## "SI, 2M, OP, deterministic births and deaths: 1 sim"
+  param <- param.net(inf.prob = 0.5,
+                     inf.prob.m2 = 0.1,
+                     act.rate = 2,
+                     b.rate = 0.02,
+                     ds.rate = 0.02,
+                     di.rate = 0.02,
+                     b.rate.m2 = 0.02,
+                     ds.rate.m2 = 0.02,
+                     di.rate.m2 = 0.02)
+  init <- init.net(i.num = 10, i.num.m2 = 10)
+  control <- control.net(type = "SI", nsteps = 25,
+                         nsims = 1,
+                         verbose = FALSE,
+                         tea.status = FALSE,
+                         b.rand = FALSE, d.rand = FALSE)
+  x <- netsim(est5.vit, param, init, control)
+  expect_is(x, "netsim")
+  expect_is(as.data.frame(x), "data.frame")
+  expect_equal(x$param$vital, TRUE)
+  expect_output(summary(x, at = 10), "EpiModel Summary")
   test_net(x)
   rm(x)
 
@@ -704,6 +770,36 @@ test_that("Open-population bipartite models", {
   test_net(x)
   rm(x)
 
+
+  ## "SIR, 2M, OP, deterministic births, deaths, and recoveries: 1 sim"
+  param <- param.net(inf.prob = 0.5,
+                     inf.prob.m2 = 0.1,
+                     rec.rate = 0.1,
+                     rec.rate.m2 = 0.1,
+                     act.rate = 2,
+                     b.rate = 0.02,
+                     b.rate.m2 = NA,
+                     ds.rate = 0.02,
+                     ds.rate.m2 = 0.02,
+                     di.rate = 0.02,
+                     di.rate.m2 = 0.02,
+                     dr.rate = 0.02,
+                     dr.rate.m2 = 0.02)
+  init <- init.net(i.num = 10, i.num.m2 = 0,
+                   r.num = 0, r.num.m2 = 10)
+  control <- control.net(type = "SIR", nsteps = 10,
+                         nsims = 1,
+                         verbose = FALSE,
+                         tea.status = FALSE,
+                         b.rand = FALSE, d.rand = FALSE, rec.rand = FALSE)
+  x <- netsim(est5.vit, param, init, control)
+  expect_is(x, "netsim")
+  expect_is(as.data.frame(x), "data.frame")
+  expect_equal(x$param$vital, TRUE)
+  expect_output(summary(x, at = 10), "EpiModel Summary")
+  test_net(x)
+  rm(x)
+
   ## "SIR, 2M, OP: 3 sim"
   control <- control.net(type = "SIR", nsteps = 10, nsims = 2,
                          verbose = FALSE, tea.status = FALSE)
@@ -727,7 +823,7 @@ test_that("Extinction open-population models", {
 
   nw <- network.initialize(n = 25, bipartite = 10, directed = FALSE)
   est <- netest(nw,
-    formation = ~ edges,
+    formation = ~edges,
     dissolution = ~offset(edges),
     target.stats = 15,
     coef.diss = dissolution_coefs(~offset(edges), 10, 0.02),

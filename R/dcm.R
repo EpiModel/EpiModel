@@ -107,14 +107,20 @@ dcm <- function(param, init, control){
       if (param$groups == 1) {
         if (param$vital == FALSE) {
           model <- mod_SI_1g_cl
+          init <- c(init, si.flow = 0)
         } else {
           model <- mod_SI_1g_op
+          init <- c(init, si.flow = 0, b.flow = 0, ds.flow = 0, di.flow = 0)
         }
       } else {
         if (param$vital == FALSE) {
           model <- mod_SI_2g_cl
+          init <- c(init, si.flow = 0, si.flow.g2 = 0)
         } else {
           model <- mod_SI_2g_op
+          init <- c(init,
+                    si.flow = 0, b.flow = 0, ds.flow = 0, di.flow = 0,
+                    si.flow.g2 = 0, b.flow.g2 = 0, ds.flow.g2 = 0, di.flow.g2 = 0)
         }
       }
     }
@@ -122,14 +128,23 @@ dcm <- function(param, init, control){
       if (param$groups == 1) {
         if (param$vital == FALSE) {
           model <- mod_SIR_1g_cl
+          init <- c(init, si.flow = 0, ir.flow = 0)
         } else {
           model <- mod_SIR_1g_op
+          init <- c(init, si.flow = 0, ir.flow = 0, b.flow = 0,
+                    ds.flow = 0, di.flow = 0, dr.flow = 0)
         }
       } else {
         if (param$vital == FALSE) {
           model <- mod_SIR_2g_cl
+          init <- c(init, si.flow = 0, ir.flow = 0,
+                    si.flow.g2 = 0, ir.flow.g2 = 0)
         } else {
           model <- mod_SIR_2g_op
+          init <- c(init, si.flow = 0, ir.flow = 0, b.flow = 0,
+                    ds.flow = 0, di.flow = 0, dr.flow = 0,
+                    si.flow.g2 = 0, ir.flow.g2 = 0, b.flow.g2 = 0,
+                    ds.flow.g2 = 0, di.flow.g2 = 0, dr.flow.g2 = 0)
         }
       }
     }
@@ -137,14 +152,23 @@ dcm <- function(param, init, control){
       if (param$groups == 1) {
         if (param$vital == FALSE) {
           model <- mod_SIS_1g_cl
+          init <- c(init, si.flow = 0, is.flow = 0)
         } else {
           model <- mod_SIS_1g_op
+          init <- c(init, si.flow = 0, is.flow = 0,
+                    b.flow = 0, ds.flow = 0, di.flow = 0)
         }
       } else {
         if (param$vital == FALSE) {
           model <- mod_SIS_2g_cl
+          init <- c(init, si.flow = 0, is.flow = 0,
+                    si.flow.g2 = 0, is.flow.g2 = 0)
         } else {
           model <- mod_SIS_2g_op
+          init <- c(init, si.flow = 0, is.flow = 0,
+                    b.flow = 0, ds.flow = 0, di.flow = 0,
+                    si.flow.g2 = 0, is.flow.g2 = 0,
+                    b.flow.g2 = 0, ds.flow.g2 = 0, di.flow.g2 = 0)
         }
       }
     }
@@ -210,6 +234,16 @@ dcm <- function(param, init, control){
                            parms = all.p))
     }
 
+    ## Recalculate Flows
+    isFlow <- grep(".flow", x = names(df))
+    if (length(isFlow) > 0) {
+      for (j in isFlow) {
+        df[, j] <- c(diff(df[, j]), NA)
+      }
+    }
+
+
+    # Output ------------------------------------------------------------------
 
     ## Save to out object
     if (s == 1) {
@@ -226,4 +260,3 @@ dcm <- function(param, init, control){
   class(out) <- "dcm"
   invisible(out)
 }
-

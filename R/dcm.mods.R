@@ -45,14 +45,17 @@ mod_SI_1g_cl <- function(t, t0, parms) {
       lambda <- lambda * (1 - inter.eff)
     }
 
+    # Flows
+    si.flow <- lambda * s.num
+
     # ODEs
-    dS <- -lambda * s.num
-    dI <- lambda * s.num
+    dS <- -si.flow
+    dI <- si.flow
 
     # Output
-    list(c(dS, dI),
-         num = num,
-         si.flow = lambda * s.num)
+    list(c(dS, dI,
+           si.flow),
+         num = num)
   })
 }
 
@@ -73,17 +76,20 @@ mod_SI_1g_op <- function(t, t0, parms) {
       lambda <- lambda * (1 - inter.eff)
     }
 
+    # Flows
+    si.flow <- lambda * s.num
+    b.flow <- b.rate * num
+    ds.flow <- ds.rate * s.num
+    di.flow <- di.rate * i.num
+
     # ODEs
-    dS <- -lambda * s.num + b.rate * num - ds.rate * s.num
-    dI <- lambda * s.num - di.rate * i.num
+    dS <- -si.flow + b.flow - ds.flow
+    dI <- si.flow - di.flow
 
     # Output
-    list(c(dS, dI),
-         num = num,
-         si.flow = lambda * s.num,
-         b.flow = b.rate * num,
-         ds.flow = ds.rate * s.num,
-         di.flow = di.rate * i.num)
+    list(c(dS, dI,
+           si.flow, b.flow, ds.flow, di.flow),
+         num = num)
   })
 }
 
@@ -118,19 +124,20 @@ mod_SI_2g_cl <- function(t, t0, parms) {
       lambda.g2 <- lambda.g2 * (1 - inter.eff)
     }
 
+    # Flows
+    si.flow <- lambda.g1 * s.num
+    si.flow.g2 <- lambda.g2 * s.num.g2
+
     # ODEs
-    dSm1 <- -lambda.g1 * s.num
-    dIm1 <- lambda.g1 * s.num
+    dSm1 <- -si.flow
+    dIm1 <-  si.flow
+    dSm2 <- -si.flow.g2
+    dIm2 <-  si.flow.g2
 
-    dSm2 <- -lambda.g2 * s.num.g2
-    dIm2 <- lambda.g2 * s.num.g2
-
-    list(c(dSm1, dIm1,
-           dSm2, dIm2),
-         num = num.g1,
-         num.g2 = num.g2,
-         si.flow = lambda.g1 * s.num,
-         si.flow.g2 = lambda.g2 * s.num.g2)
+    # Output
+    list(c(dSm1, dIm1, dSm2, dIm2,
+           si.flow, si.flow.g2),
+         num = num.g1, num.g2 = num.g2)
   })
 }
 
@@ -165,34 +172,33 @@ mod_SI_2g_op <- function(t, t0, parms) {
       lambda.g2 <- lambda.g2 * (1 - inter.eff)
     }
 
-    # birth rates
+    # Flows
+    si.flow <- lambda.g1 * s.num
+    si.flow.g2 <- lambda.g2 * s.num.g2
     if (is.na(b.rate.g2)) {
-      br.g1 <- b.rate * num.g1
-      br.g2 <- b.rate * num.g1
+      b.flow <- b.rate * num.g1
+      b.flow.g2 <- b.rate * num.g1
     } else {
-      br.g1 <- b.rate * num.g1
-      br.g2 <- b.rate * num.g2
+      b.flow <- b.rate * num.g1
+      b.flow.g2 <- b.rate * num.g2
     }
+    ds.flow <- ds.rate * s.num
+    ds.flow.g2 <- ds.rate.g2 * s.num.g2
+    di.flow <- di.rate * i.num
+    di.flow.g2 <- di.rate.g2 * i.num.g2
 
     # ODEs
-    dSm1 <- -lambda.g1 * s.num + br.g1 - ds.rate * s.num
-    dIm1 <- lambda.g1 * s.num - di.rate * i.num
+    dSm1 <- -si.flow + b.flow - ds.flow
+    dIm1 <-  si.flow - di.flow
+    dSm2 <- -si.flow.g2 + b.flow.g2 - ds.flow.g2
+    dIm2 <-  si.flow.g2 - di.flow.g2
 
-    dSm2 <- -lambda.g2 * s.num.g2 + br.g2 - ds.rate.g2 * s.num.g2
-    dIm2 <- lambda.g2 * s.num.g2 - di.rate.g2 * i.num.g2
-
-    list(c(dSm1, dIm1,
-           dSm2, dIm2),
+    # Output
+    list(c(dSm1, dIm1, dSm2, dIm2,
+           si.flow, b.flow, ds.flow, di.flow,
+           si.flow.g2, b.flow.g2, ds.flow.g2, di.flow.g2),
          num = num.g1,
-         num.g2 = num.g2,
-         si.flow = lambda.g1 * s.num,
-         si.flow.g2 = lambda.g2 * s.num.g2,
-         b.flow = br.g1,
-         ds.flow = ds.rate * s.num,
-         di.flow = di.rate * i.num,
-         b.flow.g2 = br.g2,
-         ds.flow.g2 = ds.rate.g2 * s.num.g2,
-         di.flow.g2 = di.rate.g2 * i.num.g2)
+         num.g2 = num.g2)
   })
 }
 
@@ -213,15 +219,19 @@ mod_SIR_1g_cl <- function(t, t0, parms) {
       lambda <- lambda * (1 - inter.eff)
     }
 
-    # ODEs
-    dS <- -lambda * s.num
-    dI <- lambda * s.num - rec.rate * i.num
-    dR <- rec.rate * i.num
+    # Flows
+    si.flow <- lambda * s.num
+    ir.flow <- rec.rate * i.num
 
-    list(c(dS, dI, dR),
-         num = num,
-         si.flow = lambda * s.num,
-         ir.flow = rec.rate * i.num)
+    # ODEs
+    dS <- -si.flow
+    dI <- si.flow - ir.flow
+    dR <- ir.flow
+
+    # Output
+    list(c(dS, dI, dR,
+           si.flow, ir.flow),
+         num = num)
   })
 }
 
@@ -242,19 +252,24 @@ mod_SIR_1g_op <- function(t, t0, parms) {
       lambda <- lambda * (1 - inter.eff)
     }
 
-    # ODEs
-    dS <- -lambda * s.num + b.rate * num - ds.rate * s.num
-    dI <- lambda * s.num - rec.rate * i.num - di.rate * i.num
-    dR <- rec.rate * i.num - dr.rate * r.num
+    # Flows
+    si.flow <- lambda * s.num
+    ir.flow <- rec.rate * i.num
+    b.flow <- b.rate * num
+    ds.flow <- ds.rate * s.num
+    di.flow <- di.rate * i.num
+    dr.flow <- dr.rate * r.num
 
-    list(c(dS, dI, dR),
-         num = num,
-         si.flow = lambda * s.num,
-         ir.flow = rec.rate * i.num,
-         b.flow = b.rate * num,
-         ds.flow = ds.rate * s.num,
-         di.flow = di.rate * i.num,
-         dr.flow = dr.rate * r.num)
+    # ODEs
+    dS <- -si.flow + b.flow - ds.flow
+    dI <- si.flow - ir.flow - di.flow
+    dR <- ir.flow - dr.flow
+
+    # Output
+    list(c(dS, dI, dR,
+           si.flow, ir.flow, b.flow,
+           ds.flow, di.flow, dr.flow),
+         num = num)
   })
 }
 
@@ -289,23 +304,25 @@ mod_SIR_2g_cl <- function(t, t0, parms) {
       lambda.g2 <- lambda.g2 * (1 - inter.eff)
     }
 
+    # Flows
+    si.flow <- lambda.g1 * s.num
+    si.flow.g2 <- lambda.g2 * s.num.g2
+    ir.flow <- rec.rate * i.num
+    ir.flow.g2 <- rec.rate.g2 * i.num.g2
+
     # ODEs
-    dSm1 <- -lambda.g1 * s.num
-    dIm1 <- lambda.g1 * s.num - rec.rate * i.num
-    dRm1 <- rec.rate * i.num
+    dSm1 <- -si.flow
+    dIm1 <- si.flow - ir.flow
+    dRm1 <- ir.flow
+    dSm2 <- -si.flow.g2
+    dIm2 <- si.flow.g2 - ir.flow.g2
+    dRm2 <- ir.flow.g2
 
-    dSm2 <- -lambda.g2 * s.num.g2
-    dIm2 <- lambda.g2 * s.num.g2 - rec.rate.g2 * i.num.g2
-    dRm2 <- rec.rate.g2 * i.num.g2
-
-    list(c(dSm1, dIm1, dRm1,
-           dSm2, dIm2, dRm2),
+    # Output
+    list(c(dSm1, dIm1, dRm1, dSm2, dIm2, dRm2,
+           si.flow, ir.flow, si.flow.g2, ir.flow.g2),
          num = num.g1,
-         num.g2 = num.g2,
-         si.flow = lambda.g1 * s.num,
-         ir.flow = rec.rate * i.num,
-         si.flow.g2 = lambda.g2 * s.num.g2,
-         ir.flow.g2 = rec.rate.g2 * i.num.g2)
+         num.g2 = num.g2)
   })
 }
 
@@ -340,40 +357,39 @@ mod_SIR_2g_op <- function(t, t0, parms) {
       lambda.g2 <- lambda.g2 * (1 - inter.eff)
     }
 
-    # birth rates
+    # Flows
+    si.flow <- lambda.g1 * s.num
+    si.flow.g2 <- lambda.g2 * s.num.g2
+    ir.flow <- rec.rate * i.num
+    ir.flow.g2 <- rec.rate.g2 * i.num.g2
     if (is.na(b.rate.g2)) {
-      br.g1 <- b.rate * num.g1
-      br.g2 <- b.rate * num.g1
+      b.flow <- b.rate * num.g1
+      b.flow.g2 <- b.rate * num.g1
     } else {
-      br.g1 <- b.rate * num.g1
-      br.g2 <- b.rate * num.g2
+      b.flow <- b.rate * num.g1
+      b.flow.g2 <- b.rate * num.g2
     }
+    ds.flow <- ds.rate * s.num
+    ds.flow.g2 <- ds.rate.g2 * s.num.g2
+    di.flow <- di.rate * i.num
+    di.flow.g2 <- di.rate.g2 * i.num.g2
+    dr.flow <- dr.rate * r.num
+    dr.flow.g2 <- dr.rate.g2 * r.num.g2
 
     # ODEs
-    dSm1 <- -lambda.g1 * s.num + br.g1 - ds.rate * s.num
-    dIm1 <- lambda.g1 * s.num - rec.rate * i.num - di.rate * i.num
-    dRm1 <- rec.rate * i.num - dr.rate * r.num
+    dSm1 <- -si.flow + b.flow - ds.flow
+    dIm1 <- si.flow - ir.flow - di.flow
+    dRm1 <- ir.flow - dr.flow
+    dSm2 <- -si.flow.g2 + b.flow.g2 - ds.flow.g2
+    dIm2 <- si.flow.g2 - ir.flow.g2 - di.flow.g2
+    dRm2 <- ir.flow.g2 - dr.flow.g2
 
-    dSm2 <- -lambda.g2 * s.num.g2 + br.g2 - ds.rate.g2 * s.num.g2
-    dIm2 <- lambda.g2 * s.num.g2 - rec.rate.g2 * i.num.g2 - di.rate.g2 * i.num.g2
-    dRm2 <- rec.rate.g2 * i.num.g2 - dr.rate.g2 * r.num.g2
-
-    list(c(dSm1, dIm1, dRm1,
-           dSm2, dIm2, dRm2),
-         num = num.g1,
-         num.g2 = num.g2,
-         si.flow = lambda.g1 * s.num,
-         ir.flow = rec.rate * i.num,
-         si.flow.g2 = lambda.g2 * s.num.g2,
-         ir.flow.g2 = rec.rate.g2 * i.num.g2,
-         b.flow = br.g1,
-         ds.flow = ds.rate * s.num,
-         di.flow = di.rate * i.num,
-         dr.flow = dr.rate * r.num,
-         b.flow.g2 = br.g2,
-         ds.flow.g2 = ds.rate.g2 * s.num.g2,
-         di.flow.g2 = di.rate.g2 * i.num.g2,
-         dr.flow.g2 = dr.rate.g2 * r.num.g2)
+    # Output
+    list(c(dSm1, dIm1, dRm1, dSm2, dIm2, dRm2,
+           si.flow, ir.flow, b.flow, ds.flow, di.flow, dr.flow,
+           si.flow.g2, ir.flow.g2, b.flow.g2, ds.flow.g2,
+           di.flow.g2, dr.flow.g2),
+         num = num.g1, num.g2 = num.g2)
   })
 }
 
@@ -394,14 +410,17 @@ mod_SIS_1g_cl <- function(t, t0, parms) {
       lambda <- lambda * (1 - inter.eff)
     }
 
-    # ODEs
-    dS <- -lambda * s.num + rec.rate * i.num
-    dI <- lambda * s.num - rec.rate * i.num
+    # Flows
+    si.flow <- lambda * s.num
+    is.flow <- rec.rate * i.num
 
-    list(c(dS, dI),
-         num = num,
-         si.flow = lambda * s.num,
-         is.flow = rec.rate * i.num)
+    # ODEs
+    dS <- -si.flow + is.flow
+    dI <- si.flow - is.flow
+
+    # Output
+    list(c(dS, dI, si.flow, is.flow),
+         num = num)
   })
 }
 
@@ -422,17 +441,20 @@ mod_SIS_1g_op <- function(t, t0, parms) {
       lambda <- lambda * (1 - inter.eff)
     }
 
-    # ODEs
-    dS <- -lambda * s.num + rec.rate * i.num + b.rate * num - ds.rate * s.num
-    dI <- lambda * s.num - rec.rate * i.num - di.rate * i.num
+    # Flows
+    si.flow <- lambda * s.num
+    is.flow <- rec.rate * i.num
+    b.flow <- b.rate * num
+    ds.flow <- ds.rate * s.num
+    di.flow <- di.rate * i.num
 
-    list(c(dS, dI),
-         num = num,
-         si.flow = lambda * s.num,
-         is.flow = rec.rate * i.num,
-         b.flow = b.rate * num,
-         ds.flow = ds.rate * s.num,
-         di.flow = di.rate * i.num)
+    # ODEs
+    dS <- -si.flow + is.flow + b.flow - ds.flow
+    dI <- si.flow - is.flow - di.flow
+
+    # Output
+    list(c(dS, dI, si.flow, is.flow, b.flow, ds.flow, di.flow),
+         num = num)
   })
 }
 
@@ -467,21 +489,22 @@ mod_SIS_2g_cl <- function(t, t0, parms) {
       lambda.g2 <- lambda.g2 * (1 - inter.eff)
     }
 
+    # Flows
+    si.flow <- lambda.g1 * s.num
+    is.flow <- rec.rate * i.num
+    si.flow.g2 <- lambda.g2 * s.num.g2
+    is.flow.g2 <- rec.rate.g2 * i.num.g2
+
     # ODEs
-    dSm1 <- -lambda.g1 * s.num + rec.rate * i.num
-    dIm1 <- lambda.g1 * s.num - rec.rate * i.num
+    dSm1 <- -si.flow + is.flow
+    dIm1 <-  si.flow - is.flow
+    dSm2 <- -si.flow.g2 + is.flow.g2
+    dIm2 <-  si.flow.g2 - is.flow.g2
 
-    dSm2 <- -lambda.g2 * s.num.g2 + rec.rate.g2 * i.num.g2
-    dIm2 <- lambda.g2 * s.num.g2 - rec.rate.g2 * i.num.g2
-
-    list(c(dSm1, dIm1,
-           dSm2, dIm2),
-         num = num.g1,
-         num.g2 = num.g2,
-         si.flow = lambda.g1 * s.num,
-         is.flow = rec.rate * i.num,
-         si.flow.g2 = lambda.g2 * s.num.g2,
-         is.flow.g2 = rec.rate.g2 * i.num.g2)
+    # Output
+    list(c(dSm1, dIm1, dSm2, dIm2,
+           si.flow, is.flow, si.flow.g2, is.flow.g2),
+         num = num.g1, num.g2 = num.g2)
   })
 }
 
@@ -516,34 +539,33 @@ mod_SIS_2g_op <- function(t, t0, parms) {
       lambda.g2 <- lambda.g2 * (1 - inter.eff)
     }
 
-    # birth rates
+    # Flows
+    si.flow <- lambda.g1 * s.num
+    si.flow.g2 <- lambda.g2 * s.num.g2
+    is.flow <- rec.rate * i.num
+    is.flow.g2 <- rec.rate.g2 * i.num.g2
     if (is.na(b.rate.g2)) {
-      br.g1 <- b.rate * num.g1
-      br.g2 <- b.rate * num.g1
+      b.flow <- b.rate * num.g1
+      b.flow.g2 <- b.rate * num.g1
     } else {
-      br.g1 <- b.rate * num.g1
-      br.g2 <- b.rate * num.g2
+      b.flow <- b.rate * num.g1
+      b.flow.g2 <- b.rate * num.g2
     }
+    ds.flow <- ds.rate * s.num
+    ds.flow.g2 <- ds.rate.g2 * s.num.g2
+    di.flow <- di.rate * i.num
+    di.flow.g2 <- di.rate.g2 * i.num.g2
 
     # ODEs
-    dSm1 <- -lambda.g1 * s.num + rec.rate * i.num + br.g1 - ds.rate * s.num
-    dIm1 <- lambda.g1 * s.num - rec.rate * i.num - di.rate * i.num
+    dSm1 <- -si.flow + is.flow + b.flow - ds.flow
+    dIm1 <-  si.flow - is.flow - di.flow
+    dSm2 <- -si.flow.g2 + is.flow.g2 + b.flow.g2 - ds.flow.g2
+    dIm2 <-  si.flow.g2 - is.flow.g2 - di.flow.g2
 
-    dSm2 <- -lambda.g2 * s.num.g2 + rec.rate.g2 * i.num.g2 + br.g2 - ds.rate.g2 * s.num.g2
-    dIm2 <- lambda.g2 * s.num.g2 - rec.rate.g2 * i.num.g2 - di.rate.g2 * i.num.g2
-
-    list(c(dSm1, dIm1,
-           dSm2, dIm2),
-         num = num.g1,
-         num.g2 = num.g2,
-         si.flow = lambda.g1 * s.num,
-         is.flow = rec.rate * i.num,
-         si.flow.g2 = lambda.g2 * s.num.g2,
-         is.flow.g2 = rec.rate.g2 * i.num.g2,
-         b.flow = br.g1,
-         ds.flow = ds.rate * s.num,
-         di.flow = di.rate * i.num,
-         ds.flow.g2 = ds.rate.g2 * s.num.g2,
-         di.flow.g2 = di.rate.g2 * i.num.g2)
+    # Output
+    list(c(dSm1, dIm1, dSm2, dIm2,
+           si.flow, is.flow, b.flow, ds.flow, di.flow,
+           si.flow.g2, is.flow.g2, b.flow.g2, ds.flow.g2, di.flow.g2),
+         num = num.g1, num.g2 = num.g2)
   })
 }
