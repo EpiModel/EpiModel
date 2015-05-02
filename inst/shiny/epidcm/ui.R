@@ -10,7 +10,6 @@ library(EpiModel)
 
 shinyUI(fluidPage(
 
-
   # Header
   titlePanel("EpiModel: Deterministic Compartmental Models"),
 
@@ -41,9 +40,7 @@ shinyUI(fluidPage(
                        numericInput(inputId = "r.num",
                                     label = "Number Recovered",
                                     value = 0,
-                                    min = 0)
-      ),
-      p(),
+                                    min = 0)),
 
 
       h4("Time", style = "margin-top: 25px"),
@@ -70,8 +67,7 @@ shinyUI(fluidPage(
                        numericInput(inputId = "rec.rate",
                                     label = "Recovery Rate",
                                     min = 0,
-                                    value = 0)
-      ),
+                                    value = 0)),
       numericInput(inputId = "b.rate",
                    label = "Birth Rate",
                    min = 0,
@@ -88,8 +84,7 @@ shinyUI(fluidPage(
                        numericInput(inputId = "dr.rate",
                                     label = "Death Rate (Rec.)",
                                     min = 0,
-                                    value = 0.0)
-      )
+                                    value = 0.0))
     ), # End sidebarPanel
 
     mainPanel(
@@ -99,43 +94,34 @@ shinyUI(fluidPage(
          plotOutput(outputId = "MainPlot"),
          br(),
          wellPanel(
+           h4("Plot Options"),
            fluidRow(
              column(5,
                     selectInput(inputId = "compsel",
                                 label = strong("Plot Selection"),
                                 choices = c("Compartment Prevalence",
                                             "Compartment Size",
-                                            "Disease Incidence")),
-                    p()
-             )
-           ),
+                                            "Disease Incidence")))),
            fluidRow(
-             h5("Display Options"),
              column(5,
                     sliderInput(inputId = "alpha",
                                 label = "Line Transparency",
                                 min = 0.1,
                                 max = 1,
                                 value = 0.8,
-                                step = 0.1)
-             )
-           ),
+                                step = 0.1))),
            fluidRow(
              column(2,
                     checkboxInput(inputId = "showleg",
-                                  label = "Legend",
-                                  value = TRUE)
-             )
-           ),
+                                  label = "Plot Legend",
+                                  value = TRUE))),
            fluidRow(
              h5("Download PDF"),
              column(5,
                     downloadButton(outputId = "dlMainPlot",
-                                   label = "Download")
-             )
-           )
-         )
-        ), # End tabPanel Plot
+                                   label = "Download")))
+         ) # End wellPanel
+        ), # End tabPanel
 
 
         tabPanel("Summary",
@@ -143,51 +129,37 @@ shinyUI(fluidPage(
          helpText("Select the time step of interest and the number of
                   significant digits to output in the table and compartment
                   plot below."),
-         p(),
          fluidRow(
            column(5,
                   numericInput(inputId = "summTs",
                                label = strong("Time Step"),
                                value = 1,
                                min = 1,
-                               max = 500)
-           ),
+                               max = 500)),
            column(5,
                   numericInput(inputId = "summDig",
                                label = strong("Significant Digits"),
                                value = 3,
                                min = 0,
-                               max = 8)
-           ),
-           p()
-         ),
+                               max = 8))),
          fluidRow(
-           verbatimTextOutput(outputId = "outSummary"),
-           br()
-         ),
+           verbatimTextOutput(outputId = "outSummary")),
          fluidRow(
-           h4("Compartment Plot"),
+           h4("Compartment Plot", style = "margin-top: 25px"),
            plotOutput(outputId = "CompPlot"),
            downloadButton(outputId = "dlCompPlot",
-                          label = "Download Plot"),
-           br(), br()
-         )
-           ), # end tabPanel Summary
-
+                          label = "Download Plot"))
+        ), # end tabPanel Summary
 
         tabPanel("Data",
          h4("Model Data"),
          dataTableOutput("outData"),
-         br(),
          fluidRow(
            column(4,
                   numericInput(inputId = "tabdig",
                                label = "Significant Digits",
                                min = 0,
-                               value = 2)
-                  )
-         ),
-         br(),
+                               value = 2))),
          downloadButton(outputId = "dlData",
                         label = "Download Data")
         ), # end tabPanel Data
@@ -197,13 +169,13 @@ shinyUI(fluidPage(
          p("This application solves and plots a deterministic, compartmental
            epidemic models (DCMs). The model simulations are driven by the",
            a("EpiModel", href = "http://cran.r-project.org/web/packages/EpiModel/index.html"),
-           "package in R."),
+           "package in R.", style = "margin-top: 25px"),
          p("Models here are limited to basic one-group homogenous mixing models with
            a limited set of parameters, initial conditions, and control settings. More
            complex models are available in the command-line version of EpiModel. For
            further details, including more background on the mathematics and theory behind
            these DCMs, please consult the documentation, tutorials, and workshop materials
-           at the main", a("EpiModel website.", href = "http://statnet.github.io/EpiModel")),
+           at the main", a("EpiModel website.", href = "http://epimodel.org")),
          p("This web application, built with",
            a("Shiny", href = "http://shiny.rstudio.com/"), "may be lauched via an R session with
            EpiModel and Shiny installed (see the epiweb function), or directly on any web
