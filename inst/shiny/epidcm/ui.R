@@ -6,7 +6,6 @@
 ##
 
 library(shiny)
-library(shinythemes)
 library(EpiModel)
 
 shinyUI(fluidPage(
