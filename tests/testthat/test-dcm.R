@@ -202,3 +202,50 @@ test_that("fractional dt returns, Euler method", {
   expect_equal(df$time, seq(1, 10, 0.5))
 })
 
+
+# DCM interventions -------------------------------------------------------
+
+test_that("DCM interventions, SI model", {
+  param <- param.dcm(inf.prob = 0.2, act.rate = 3.4,
+                     inter.eff = 1)
+  expect_equal(param$inter.start, 1)
+
+  param <- param.dcm(inf.prob = 0.2, act.rate = 3.4,
+                     inter.eff = 1, inter.start = 5)
+  expect_equal(param$inter.start, 5)
+
+  init <- init.dcm(s.num = 28650, i.num = 100)
+  control <- control.dcm(type = "SI", nsteps = 10)
+  mod <- dcm(param, init, control)
+
+  df <- as.data.frame(mod)
+  expect_equal(sum(df$si.flow[5:10], na.rm = TRUE), 0)
+  expect_true(length(unique(df$i.num[5:10])) == 1)
+  expect_true(length(unique(df$s.num[5:10])) == 1)
+})
+
+test_that("DCM interventions, SIS model", {
+  param <- param.dcm(inf.prob = 0.2, act.rate = 3.4, rec.rate = 0.1,
+                     inter.eff = 1, inter.start = 5)
+  expect_equal(param$inter.start, 5)
+  init <- init.dcm(s.num = 28650, i.num = 100)
+  control <- control.dcm(type = "SIS", nsteps = 10)
+  mod <- dcm(param, init, control)
+  df <- as.data.frame(mod)
+  expect_equal(sum(df$si.flow[5:10], na.rm = TRUE), 0)
+  expect_equal(df$s.num[10], 28221.24, tol = 0.0001)
+  expect_equal(df$i.num[10], 528.7624, tol = 0.0001)
+})
+
+test_that("DCM interventions, SIR model", {
+  param <- param.dcm(inf.prob = 0.2, act.rate = 3.4, rec.rate = 0.1,
+                     inter.eff = 1, inter.start = 5)
+  expect_equal(param$inter.start, 5)
+  init <- init.dcm(s.num = 28650, i.num = 100, r.num = 0)
+  control <- control.dcm(type = "SIR", nsteps = 10)
+  mod <- dcm(param, init, control)
+  df <- as.data.frame(mod)
+  expect_equal(sum(df$si.flow[5:10], na.rm = TRUE), 0)
+  expect_true(length(unique(df$s.num[5:10])) == 1)
+  expect_equal(df$i.num[10], 526.6549, tol = 0.0001)
+})
