@@ -260,10 +260,7 @@ births.net <- function(dat, at) {
       dat$nw <- add.vertices(dat$nw,
                              nv = nBirths)
       newNodes <- (nCurr + 1):(nCurr + nBirths)
-      dat$nw <- activate.vertices(dat$nw,
-                                  onset = at,
-                                  terminus = Inf,
-                                  v = newNodes)
+      dat$nw <- activate.vertices(dat$nw, onset = at, terminus = Inf, v = newNodes)
     }
   }
   if (modes == 2 && nOld > 0) {
@@ -324,10 +321,7 @@ births.net <- function(dat, at) {
     }
     newNodes <- c(newNodes, newNodesM2)
     if (!is.null(newNodes)) {
-      dat$nw <- activate.vertices(dat$nw,
-                                  onset = at,
-                                  terminus = Inf,
-                                  v = newNodes)
+      dat$nw <- activate.vertices(dat$nw, onset = at, terminus = Inf, v = newNodes)
     }
   }
 
@@ -340,11 +334,8 @@ births.net <- function(dat, at) {
     fterms <- get_formula_terms(form)
     curr.tab <- get_attr_prop(dat$nw, fterms)
     if (length(curr.tab) > 0) {
-      dat$nw <- update_nwattr(dat$nw,
-                              newNodes,
-                              dat$control$attr.rules,
-                              curr.tab,
-                              dat$temp$t1.tab)
+      dat$nw <- update_nwattr(dat$nw, newNodes, dat$control$attr.rules,
+                              curr.tab, dat$temp$t1.tab)
     }
 
     # Save any val on attr
@@ -352,18 +343,13 @@ births.net <- function(dat, at) {
 
     if (tea.status == TRUE) {
       if ("status" %in% fterms) {
-        dat$nw <- activate.vertex.attribute(dat$nw,
-                                            prefix = "testatus",
+        dat$nw <- activate.vertex.attribute(dat$nw, prefix = "testatus",
                                             value = dat$attr$status[newNodes],
-                                            onset = at,
-                                            terminus = Inf,
+                                            onset = at, terminus = Inf,
                                             v = newNodes)
       } else {
-        dat$nw <- activate.vertex.attribute(dat$nw,
-                                            prefix = "testatus",
-                                            value = "s",
-                                            onset = at,
-                                            terminus = Inf,
+        dat$nw <- activate.vertex.attribute(dat$nw, prefix = "testatus",
+                                            value = "s", onset = at, terminus = Inf,
                                             v = newNodes)
       }
     }
