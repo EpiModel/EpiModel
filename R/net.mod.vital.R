@@ -257,8 +257,7 @@ births.net <- function(dat, at) {
       nBirths <- round(nOld * b.rate)
     }
     if (nBirths > 0) {
-      dat$nw <- add.vertices(dat$nw,
-                             nv = nBirths)
+      dat$nw <- add.vertices(dat$nw, nv = nBirths)
       newNodes <- (nCurr + 1):(nCurr + nBirths)
       dat$nw <- activate.vertices(dat$nw, onset = at, terminus = Inf, v = newNodes)
     }
