@@ -52,6 +52,9 @@ shinyUI(fluidPage(
                    label = "dt (Step Size)",
                    value = 1,
                    min = 0),
+      selectInput(inputId = "nimeth",
+                  label = "Integration Method",
+                  choices = c("rk4", "lsoda", "euler")),
 
       h4("Parameters", style = "margin-top: 25px"),
       numericInput(inputId = "inf.prob",

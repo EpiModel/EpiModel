@@ -35,7 +35,7 @@ shinyServer(function(input, output) {
                 nsteps = input$nsteps,
                 dt = 1,                  ## TODO: to be switched back to input dt
                 verbose = FALSE,
-                odemethod = "euler")     ## TODO: to be switched back to default
+                odemethod = input$nimeth)
   })
   mod <- reactive({
     input$runMod
