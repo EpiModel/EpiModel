@@ -33,7 +33,7 @@ shinyServer(function(input, output) {
   control <- reactive({
     control.dcm(type = input$modtype,
                 nsteps = input$nsteps,
-                dt = 1,                  ## TODO: to be switched back to input dt
+                dt = input$dt,
                 verbose = FALSE,
                 odemethod = input$nimeth)
   })
