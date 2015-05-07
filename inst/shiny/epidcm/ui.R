@@ -10,10 +10,8 @@ library(EpiModel)
 
 shinyUI(fluidPage(
 
-  # Header
   titlePanel("EpiModel: Deterministic Compartmental Models"),
 
-  # Sidebar Layout
   sidebarLayout(
     sidebarPanel(
 
@@ -177,7 +175,7 @@ shinyUI(fluidPage(
            complex models are available in the command-line version of EpiModel. For
            further details, including more background on the mathematics and theory behind
            these DCMs, please consult the documentation, tutorials, and workshop materials
-           at the main", a("EpiModel website.", href = "http://epimodel.org")),
+           at the main", a("EpiModel website.", href = "http://epimodel.org/")),
          p("This web application, built with",
            a("Shiny", href = "http://shiny.rstudio.com/"), "may be lauched via an R session with
            EpiModel and Shiny installed (see the epiweb function), or directly on any web
