@@ -114,15 +114,14 @@ shinyUI(fluidPage(
                                 value = 0.8,
                                 step = 0.1))),
            fluidRow(
-             column(2,
+             column(3,
                     checkboxInput(inputId = "showleg",
                                   label = "Plot Legend",
                                   value = TRUE))),
            fluidRow(
-             h5("Download PDF"),
              column(5,
                     downloadButton(outputId = "dlMainPlot",
-                                   label = "Download")))
+                                   label = "Download PDF")))
          ) # End wellPanel
         ), # End tabPanel
 
