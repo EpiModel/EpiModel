@@ -33,9 +33,9 @@ shinyServer(function(input, output) {
   control <- reactive({
     control.dcm(type = input$modtype,
                 nsteps = input$nsteps,
-                dt = 1,                  ## TODO: to be switched back to input dt
+                dt = input$dt,
                 verbose = FALSE,
-                odemethod = "euler")     ## TODO: to be switched back to default
+                odemethod = input$nimeth)
   })
   mod <- reactive({
     input$runMod
@@ -154,7 +154,7 @@ shinyServer(function(input, output) {
 
   ## Data tab
   output$outData <- renderDataTable({
-    as.data.frame(mod())
+    round(as.data.frame(mod()), input$tabdig)
   }, options = list(lengthMenu = c(10, 25, 50, 100), pageLength = 10))
 
   output$dlData <- downloadHandler(

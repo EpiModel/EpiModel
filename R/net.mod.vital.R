@@ -30,62 +30,49 @@ deaths.net <- function(dat, at) {
 
   # Susceptible deaths ------------------------------------------------------
 
-  # Initialize counts and query rates
-  nDeaths <- nDeathsM2 <- 0
-  idsElig <- which(dat$attr$active == 1 & dat$attr$status == "s")
-  nElig <- length(idsElig)
+  # Initialize counts and pull rates
+  nDeaths.sus <- nDeathsM2.sus <- 0
+  idsElig.sus <- which(dat$attr$active == 1 & dat$attr$status == "s")
+  nElig.sus <- length(idsElig.sus)
 
-  if (nElig > 0) {
+  if (nElig.sus > 0) {
 
-    # Pull rates by mode
-    mElig <- mode[idsElig]
-    rates <- c(dat$param$ds.rate, dat$param$ds.rate.m2)
-    ratesElig <- rates[mElig]
+    # Mortality rates by mode
+    mElig.sus <- mode[idsElig.sus]
+    rates.sus <- c(dat$param$ds.rate, dat$param$ds.rate.m2)
+    ratesElig.sus <- rates.sus[mElig.sus]
 
-    # Stochastic deaths
+    # Stochastic exits
     if (d.rand == TRUE) {
-      vecDeaths <- which(rbinom(nElig, 1, ratesElig) == 1)
-      if (length(vecDeaths) > 0) {
-        idsDth <- idsElig[vecDeaths]
-        nDeaths <- sum(mode[idsDth] == 1)
-        nDeathsM2 <- sum(mode[idsDth] == 2)
-        dat$attr$active[idsDth] <- 0
-        dat$attr$exitTime[idsDth] <- at
+      vecDeaths.sus <- which(rbinom(nElig.sus, 1, ratesElig.sus) == 1)
+      if (length(vecDeaths.sus) > 0) {
+        idsDth.sus <- idsElig.sus[vecDeaths.sus]
+        nDeaths.sus <- sum(mode[idsDth.sus] == 1)
+        nDeathsM2.sus <- sum(mode[idsDth.sus] == 2)
+        dat$attr$active[idsDth.sus] <- 0
+        dat$attr$exitTime[idsDth.sus] <- at
         dat$nw <- deactivate.vertices(dat$nw, onset = at, terminus = Inf,
-                                      v = idsDth, deactivate.edges = TRUE)
+                                      v = idsDth.sus, deactivate.edges = TRUE)
       }
     }
 
-    # Deterministic deaths
+    # Deterministic exits
     if (d.rand == FALSE) {
-      idsDth <- idsDthM2 <- NULL
-      nDeaths <- min(round(sum(ratesElig[mElig == 1])), sum(mElig == 1))
-      idsDth <- ssample(idsElig[mElig == 1], nDeaths)
+      idsDth.sus <- idsDthM2.sus <- NULL
+      nDeaths.sus <- min(round(sum(ratesElig.sus[mElig.sus == 1])), sum(mElig.sus == 1))
+      idsDth.sus <- ssample(idsElig.sus[mElig.sus == 1], nDeaths.sus)
       if (modes == 2) {
-        nDeathsM2 <- min(round(sum(ratesElig[mElig == 2])), sum(mElig == 2))
-        idsDthM2 <- ssample(idsElig[mElig == 2], nDeaths)
+        nDeathsM2.sus <- min(round(sum(ratesElig.sus[mElig.sus == 2])), sum(mElig.sus == 2))
+        idsDthM2.sus <- ssample(idsElig.sus[mElig.sus == 2], nDeathsM2.sus)
       }
-      totDth <- nDeaths + nDeathsM2
-      if (totDth > 0) {
-        allids <- c(idsDth, idsDthM2)
-        dat$attr$active[allids] <- 0
-        dat$attr$exitTime[allids] <- at
+      totDth.sus <- nDeaths.sus + nDeathsM2.sus
+      if (totDth.sus > 0) {
+        idsDthAll.sus <- c(idsDth.sus, idsDthM2.sus)
+        dat$attr$active[idsDthAll.sus] <- 0
+        dat$attr$exitTime[idsDthAll.sus] <- at
         dat$nw <- deactivate.vertices(dat$nw, onset = at, terminus = Inf,
-                                      v = allids, deactivate.edges = TRUE)
+                                      v = idsDthAll.sus, deactivate.edges = TRUE)
       }
-    }
-  }
-
-  # Output
-  if (at == 2) {
-    dat$epi$ds.flow <- c(0, nDeaths)
-    if (modes == 2) {
-      dat$epi$ds.flow.m2 <- c(0, nDeathsM2)
-    }
-  } else {
-    dat$epi$ds.flow[at] <- nDeaths
-    if (modes == 2) {
-      dat$epi$ds.flow.m2[at] <- nDeathsM2
     }
   }
 
@@ -93,62 +80,48 @@ deaths.net <- function(dat, at) {
   # Infected deaths ---------------------------------------------------------
 
   # Initialize counts and query rates
-  nDeaths <- nDeathsM2 <- 0
-  idsElig <- which(dat$attr$active == 1 & dat$attr$status == "i")
-  nElig <- length(idsElig)
+  nDeaths.inf <- nDeathsM2.inf <- 0
+  idsElig.inf <- which(dat$attr$active == 1 & dat$attr$status == "i")
+  nElig.inf <- length(idsElig.inf)
 
-  if (nElig > 0) {
+  if (nElig.inf > 0) {
 
-    # Pull rates by mode
-    mElig <- mode[idsElig]
-    rates <- c(dat$param$di.rate, dat$param$di.rate.m2)
-    ratesElig <- rates[mElig]
+    # Mortality rates by mode
+    mElig.inf <- mode[idsElig.inf]
+    rates.inf <- c(dat$param$di.rate, dat$param$di.rate.m2)
+    ratesElig.inf <- rates.inf[mElig.inf]
 
-    # Stochastic deaths
+    # Stochastic exits
     if (d.rand == TRUE) {
-      vecDeaths <- which(rbinom(nElig, 1, ratesElig) == 1)
-      if (length(vecDeaths) > 0) {
-        idsDth <- idsElig[vecDeaths]
-        nDeaths <- sum(mode[idsDth] == 1)
-        nDeathsM2 <- sum(mode[idsDth] == 2)
-        dat$attr$active[idsDth] <- 0
-        dat$attr$exitTime[idsDth] <- 0
+      vecDeaths.inf <- which(rbinom(nElig.inf, 1, ratesElig.inf) == 1)
+      if (length(vecDeaths.inf) > 0) {
+        idsDth.inf <- idsElig.inf[vecDeaths.inf]
+        nDeaths.inf <- sum(mode[idsDth.inf] == 1)
+        nDeathsM2.inf <- sum(mode[idsDth.inf] == 2)
+        dat$attr$active[idsDth.inf] <- 0
+        dat$attr$exitTime[idsDth.inf] <- at
         dat$nw <- deactivate.vertices(dat$nw, onset = at, terminus = Inf,
-                                      v = idsDth, deactivate.edges = TRUE)
+                                      v = idsDth.inf, deactivate.edges = TRUE)
       }
     }
 
-    # Deterministic deaths
+    # Deterministic exits
     if (d.rand == FALSE) {
-      idsDth <- idsDthM2 <- NULL
-      nDeaths <- min(round(sum(ratesElig[mElig == 1])), sum(mElig == 1))
-      dat$attr$active[ssample(idsElig[mElig == 1], nDeaths)] <- 0
-      idsDth <- ssample(idsElig[mElig == 1], nDeaths)
+      idsDth.inf <- idsDthM2.inf <- NULL
+      nDeaths.inf <- min(round(sum(ratesElig.inf[mElig.inf == 1])), sum(mElig.inf == 1))
+      idsDth.inf <- ssample(idsElig.inf[mElig.inf == 1], nDeaths.inf)
       if (modes == 2) {
-        nDeathsM2 <- min(round(sum(ratesElig[mElig == 2])), sum(mElig == 2))
-        idsDthM2 <- ssample(idsElig[mElig == 2], nDeaths)
+        nDeathsM2.inf <- min(round(sum(ratesElig.inf[mElig.inf == 2])), sum(mElig.inf == 2))
+        idsDthM2.inf <- ssample(idsElig.inf[mElig.inf == 2], nDeathsM2.inf)
       }
-      totDth <- nDeaths + nDeathsM2
-      if (totDth > 0) {
-        allids <- c(idsDth, idsDthM2)
-        dat$attr$active[allids] <- 0
-        dat$attr$exitTime[allids] <- at
+      totDth.inf <- nDeaths.inf + nDeathsM2.inf
+      if (totDth.inf > 0) {
+        idsDthAll.inf <- c(idsDth.inf, idsDthM2.inf)
+        dat$attr$active[idsDthAll.inf] <- 0
+        dat$attr$exitTime[idsDthAll.inf] <- at
         dat$nw <- deactivate.vertices(dat$nw, onset = at, terminus = Inf,
-                                      v = allids, deactivate.edges = TRUE)
+                                      v = idsDthAll.inf, deactivate.edges = TRUE)
       }
-    }
-  }
-
-  # Output
-  if (at == 2) {
-    dat$epi$di.flow <- c(0, nDeaths)
-    if (modes == 2) {
-      dat$epi$di.flow.m2 <- c(0, nDeathsM2)
-    }
-  } else {
-    dat$epi$di.flow[at] <- nDeaths
-    if (modes == 2) {
-      dat$epi$di.flow.m2[at] <- nDeathsM2
     }
   }
 
@@ -157,72 +130,85 @@ deaths.net <- function(dat, at) {
   if (type == "SIR") {
 
     # Initialize counts and query rates
-    nDeaths <- nDeathsM2 <- 0
-    idsElig <- which(dat$attr$active == 1 & dat$attr$status == "r")
-    nElig <- length(idsElig)
+    nDeaths.rec <- nDeathsM2.rec <- 0
+    idsElig.rec <- which(dat$attr$active == 1 & dat$attr$status == "r")
+    nElig.rec <- length(idsElig.rec)
 
-    if (nElig > 0) {
+    if (nElig.rec > 0) {
 
-      # Pull rates by mode
-      mElig <- mode[idsElig]
-      rates <- c(dat$param$dr.rate, dat$param$dr.rate.m2)
-      ratesElig <- rates[mElig]
+      # Mortality rates by mode
+      mElig.rec <- mode[idsElig.rec]
+      rates.rec <- c(dat$param$dr.rate, dat$param$dr.rate.m2)
+      ratesElig.rec <- rates.rec[mElig.rec]
 
-      # Stochastic deaths
+      # Stochastic exits
       if (d.rand == TRUE) {
-        vecDeaths <- which(rbinom(nElig, 1, ratesElig) == 1)
-        if (length(vecDeaths) > 0) {
-          idsDth <- idsElig[vecDeaths]
-          nDeaths <- sum(mode[idsDth] == 1)
-          nDeathsM2 <- sum(mode[idsDth] == 2)
-          dat$attr$active[idsDth] <- 0
-          dat$nw <- deactivate.vertices(dat$nw,
-                                        onset = at,
-                                        terminus = Inf,
-                                        v = idsDth,
-                                        deactivate.edges = TRUE)
+        vecDeaths.rec <- which(rbinom(nElig.rec, 1, ratesElig.rec) == 1)
+        if (length(vecDeaths.rec) > 0) {
+          idsDth.rec <- idsElig.rec[vecDeaths.rec]
+          nDeaths.rec <- sum(mode[idsDth.rec] == 1)
+          nDeathsM2.rec <- sum(mode[idsDth.rec] == 2)
+          dat$attr$active[idsDth.rec] <- 0
+          dat$attr$exitTime[idsDth.rec] <- at
+          dat$nw <- deactivate.vertices(dat$nw, onset = at, terminus = Inf,
+                                        v = idsDth.rec, deactivate.edges = TRUE)
         }
       }
 
-      # Deterministic deaths
+      # Deterministic exits
       if (d.rand == FALSE) {
-        idsDth <- idsDthM2 <- NULL
-        nDeaths <- min(round(sum(ratesElig[mElig == 1])), sum(mElig == 1))
-        dat$attr$active[ssample(idsElig[mElig == 1], nDeaths)] <- 0
+        idsDth.rec <- idsDthM2.rec <- NULL
+        nDeaths.rec <- min(round(sum(ratesElig.rec[mElig.rec == 1])), sum(mElig.rec == 1))
+        idsDth.rec <- ssample(idsElig.rec[mElig.rec == 1], nDeaths.rec)
         if (modes == 2) {
-          nDeathsM2 <- min(round(sum(ratesElig[mElig == 2])), sum(mElig == 2))
-          dat$attr$active[ssample(idsElig[mElig == 2], nDeaths)] <- 0
+          nDeathsM2.rec <- min(round(sum(ratesElig.rec[mElig.rec == 2])), sum(mElig.rec == 2))
+          idsDthM2.rec <- ssample(idsElig.rec[mElig.rec == 2], nDeathsM2.rec)
         }
-        totDth <- nDeaths + nDeathsM2
-        if (totDth > 0) {
-          allids <- c(idsDth, idsDthM2)
-          dat$nw <- deactivate.vertices(dat$nw,
-                                        onset = at,
-                                        terminus = Inf,
-                                        v = allids,
-                                        deactivate.edges = TRUE)
+        totDth.rec <- nDeaths.rec + nDeathsM2.rec
+        if (totDth.rec > 0) {
+          idsDthAll.rec <- c(idsDth.rec, idsDthM2.rec)
+          dat$attr$active[idsDthAll.rec] <- 0
+          dat$attr$exitTime[idsDthAll.rec] <- at
+          dat$nw <- deactivate.vertices(dat$nw, onset = at, terminus = Inf,
+                                        v = idsDthAll.rec, deactivate.edges = TRUE)
         }
-      }
-    }
-
-    # Output
-    if (at == 2) {
-      dat$epi$dr.flow <- c(0, nDeaths)
-      if (modes == 2) {
-        dat$epi$dr.flow.m2 <- c(0, nDeathsM2)
-      }
-    } else {
-      dat$epi$dr.flow[at] <- nDeaths
-      if (modes == 2) {
-        dat$epi$dr.flow.m2[at] <- nDeathsM2
       }
     }
   }
 
 
+  # Output ------------------------------------------------------------------
+
+  if (at == 2) {
+    dat$epi$ds.flow <- c(0, nDeaths.sus)
+    dat$epi$di.flow <- c(0, nDeaths.inf)
+    if (type == "SIR") {
+      dat$epi$dr.flow <- c(0, nDeaths.rec)
+    }
+    if (modes == 2) {
+      dat$epi$ds.flow.m2 <- c(0, nDeathsM2.sus)
+      dat$epi$di.flow.m2 <- c(0, nDeathsM2.inf)
+      if (type == "SIR") {
+        dat$epi$dr.flow.m2 <- c(0, nDeathsM2.rec)
+      }
+    }
+  } else {
+    dat$epi$ds.flow[at] <- nDeaths.sus
+    dat$epi$di.flow[at] <- nDeaths.inf
+    if (type == "SIR") {
+      dat$epi$dr.flow[at] <- nDeaths.rec
+    }
+    if (modes == 2) {
+      dat$epi$ds.flow.m2[at] <- nDeathsM2.sus
+      dat$epi$di.flow.m2[at] <- nDeathsM2.inf
+      if (type == "SIR") {
+        dat$epi$dr.flow.m2[at] <- nDeathsM2.rec
+      }
+    }
+  }
+
   return(dat)
 }
-
 
 
 #' @title Births: netsim Module
@@ -271,13 +257,9 @@ births.net <- function(dat, at) {
       nBirths <- round(nOld * b.rate)
     }
     if (nBirths > 0) {
-      dat$nw <- add.vertices(dat$nw,
-                             nv = nBirths)
+      dat$nw <- add.vertices(dat$nw, nv = nBirths)
       newNodes <- (nCurr + 1):(nCurr + nBirths)
-      dat$nw <- activate.vertices(dat$nw,
-                                  onset = at,
-                                  terminus = Inf,
-                                  v = newNodes)
+      dat$nw <- activate.vertices(dat$nw, onset = at, terminus = Inf, v = newNodes)
     }
   }
   if (modes == 2 && nOld > 0) {
@@ -338,10 +320,7 @@ births.net <- function(dat, at) {
     }
     newNodes <- c(newNodes, newNodesM2)
     if (!is.null(newNodes)) {
-      dat$nw <- activate.vertices(dat$nw,
-                                  onset = at,
-                                  terminus = Inf,
-                                  v = newNodes)
+      dat$nw <- activate.vertices(dat$nw, onset = at, terminus = Inf, v = newNodes)
     }
   }
 
@@ -354,11 +333,8 @@ births.net <- function(dat, at) {
     fterms <- get_formula_terms(form)
     curr.tab <- get_attr_prop(dat$nw, fterms)
     if (length(curr.tab) > 0) {
-      dat$nw <- update_nwattr(dat$nw,
-                              newNodes,
-                              dat$control$attr.rules,
-                              curr.tab,
-                              dat$temp$t1.tab)
+      dat$nw <- update_nwattr(dat$nw, newNodes, dat$control$attr.rules,
+                              curr.tab, dat$temp$t1.tab)
     }
 
     # Save any val on attr
@@ -366,18 +342,13 @@ births.net <- function(dat, at) {
 
     if (tea.status == TRUE) {
       if ("status" %in% fterms) {
-        dat$nw <- activate.vertex.attribute(dat$nw,
-                                            prefix = "testatus",
+        dat$nw <- activate.vertex.attribute(dat$nw, prefix = "testatus",
                                             value = dat$attr$status[newNodes],
-                                            onset = at,
-                                            terminus = Inf,
+                                            onset = at, terminus = Inf,
                                             v = newNodes)
       } else {
-        dat$nw <- activate.vertex.attribute(dat$nw,
-                                            prefix = "testatus",
-                                            value = "s",
-                                            onset = at,
-                                            terminus = Inf,
+        dat$nw <- activate.vertex.attribute(dat$nw, prefix = "testatus",
+                                            value = "s", onset = at, terminus = Inf,
                                             v = newNodes)
       }
     }
