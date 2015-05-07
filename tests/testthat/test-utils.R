@@ -1,5 +1,8 @@
 context("Utility Functions")
 
+
+# Color functions ---------------------------------------------------------
+
 test_that("brewer_ramp", {
 
   expect_true(length(brewer_ramp(100, plt = "Spectral")) == 100)
@@ -21,22 +24,6 @@ test_that("brewer_ramp", {
 
 })
 
-
-test_that("deleteAttr", {
-
-  l <- list(a = 1:5, b = 6:10)
-  expect_is(deleteAttr(l, 5), "list")
-  expect_true(length(unique(sapply(deleteAttr(l, 2:3), length))) == 1)
-
-  l2 <- list(a = 1:3, b = 5:20)
-  expect_error(deleteAttr(l2, 2:4))
-  expect_error(deleteAttr(as.data.frame(l), 1))
-
-  expect_equal(l, deleteAttr(l, NULL))
-
-})
-
-
 test_that("transco", {
 
   cols <- transco(c("steelblue", "black"), 0.5)
@@ -55,6 +42,80 @@ test_that("transco", {
 })
 
 
+# calc_eql function -------------------------------------------------------
+
+test_that("calc_eql for dcm", {
+  param <- param.dcm(inf.prob = 0.2,
+                     inf.prob.g2 = 0.1, act.rate = 0.5,
+                     balance = "g1", rec.rate = 1 / 50, rec.rate.g2 = 1 / 50,
+                     b.rate = 1 / 100, b.rate.g2 = NA, ds.rate = 1 / 100,
+                     ds.rate.g2 = 1 / 100, di.rate = 1 / 90, di.rate.g2 = 1 / 90)
+  init <- init.dcm(s.num = 500, i.num = 1,
+                   s.num.g2 = 500, i.num.g2 = 1)
+  control <- control.dcm(type = "SIS", nsteps = 500, verbose = FALSE)
+  x <- dcm(param, init, control)
+  expect_output(calc_eql(x, nsteps = 100), "Rel. Diff.:    0.0001")
+  expect_output(calc_eql(x, nsteps = 100, numer = "i.num.g2", "num.g2"),
+                "Start Prev.:   0.5028")
+  expect_error(calc_eql(x, nsteps = 100, numer = "foo", denom = "num"),
+               "numer must be an output compartment on x")
+  expect_error(calc_eql(x, nsteps = 100, numer = "i.num", denom = "bar"),
+               "denom must be an output compartment on x")
+
+})
+
+test_that("calc_eql for icm", {
+  skip_on_cran()
+  set.seed(1)
+  param <- param.icm(inf.prob = 0.2,
+                     act.rate = 0.25, b.rate = 1/100,
+                     ds.rate = 1/100, di.rate = 1/90)
+  init <- init.icm(s.num = 500, i.num = 1)
+  control <- control.icm(type = "SI", nsteps = 500, nsims = 1, verbose = FALSE)
+  x <- icm(param, init, control)
+  expect_output(calc_eql(x, nsteps = 100), "Start Prev.:   0.7892")
+  expect_output(calc_eql(x, nsteps = 100), "<= Threshold:  FALSE")
+})
+
+test_that("calc_eql for netsim", {
+  skip_on_cran()
+  set.seed(35160)
+  nw <- network.initialize(n = 50, directed = FALSE)
+  nw <- set.vertex.attribute(nw, "race", rbinom(50, 1, 0.5))
+  est <- netest(
+    nw,
+    formation = ~edges + nodematch("race"),
+    dissolution = ~offset(edges),
+    target.stats = c(25, 10),
+    coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+    verbose = FALSE)
+  param <- param.net(inf.prob = 0.5, act.rate = 1)
+  init <- init.net(i.num = 25)
+  control <- control.net(type = "SI", nsims = 1, nsteps = 100, verbose = FALSE)
+  mod <- netsim(est, param, init, control)
+  expect_output(calc_eql(mod, nsteps = 20), "Start Prev.:   1")
+  expect_output(calc_eql(mod, nsteps = 20), "Rel. Diff.:    0")
+})
+
+
+
+# Other utilities ---------------------------------------------------------
+
+test_that("deleteAttr", {
+
+  l <- list(a = 1:5, b = 6:10)
+  expect_is(deleteAttr(l, 5), "list")
+  expect_true(length(unique(sapply(deleteAttr(l, 2:3), length))) == 1)
+
+  l2 <- list(a = 1:3, b = 5:20)
+  expect_error(deleteAttr(l2, 2:4))
+  expect_error(deleteAttr(as.data.frame(l), 1))
+
+  expect_equal(l, deleteAttr(l, NULL))
+
+})
+
+
 test_that("ssample", {
 
   expect_true(length(ssample(1:5, 1)) == 1)
@@ -63,3 +124,7 @@ test_that("ssample", {
   expect_null(ssample(5, 0))
 
 })
+
+
+
+

@@ -31,6 +31,91 @@ bipvals <- function(nw, mode, val) {
 }
 
 
+#' @title Calculate Equilibrium for Infection Prevalence
+#'
+#' @description Calculates the relative change in infection prevalence across a
+#'              time series of an epidemic model to assess equilibrium.
+#'
+#' @param x An \code{EpiModel} object of class \code{dcm}, \code{icm}, or
+#'        \code{netsim}.
+#' @param numer Numerator for prevalence calculation.
+#' @param denom Denominator for prevalence calculation.
+#' @param nsteps Number of time steps at end of model simulation to calculate
+#'        equilibrium as the absolute value of the difference between the
+#'        minimum prevalence value and the maximum prevalence value over that
+#'        time range.
+#' @param threshold Threshold value for determining equilibrium.
+#' @param digits Number of digits to round for table output.
+#'
+#' @details
+#' This function calculates whether equilibrium in disease prevalence, or any
+#' other fraction of two compartments contained in an epidemic model, have
+#' reach equilibrium over a time series. Equilibrium is calculated as the
+#' absolute value of the difference of the maximum prevalence and minimum
+#' prevalence over a specified time series. That time series is specified as the
+#' final \code{nsteps} time steps of an epidemic model. A larger \code{nsteps}
+#' specification will therefore calculate differences over a longer time series.
+#'
+#' @export
+#'
+#' @examples
+#' # Calculate equilibrium for a DCM
+#' param <- param.dcm(inf.prob = 0.2, inf.prob.g2 = 0.1, act.rate = 0.5,
+#'                    balance = "g1", rec.rate = 1 / 50, rec.rate.g2 = 1 / 50,
+#'                    b.rate = 1 / 100, b.rate.g2 = NA, ds.rate = 1 / 100,
+#'                    ds.rate.g2 = 1 / 100, di.rate = 1 / 90,
+#'                    di.rate.g2 = 1 / 90)
+#' init <- init.dcm(s.num = 500, i.num = 1,
+#'                  s.num.g2 = 500, i.num.g2 = 1)
+#' control <- control.dcm(type = "SIS", nsteps = 500, verbose = FALSE)
+#' x <- dcm(param, init, control)
+#' plot(x)
+#'
+#' # Different calculation options
+#' calc_eql(x, nsteps = 100)
+#' calc_eql(x, nsteps = 250)
+#' calc_eql(x, nsteps = 100, numer = "i.num.g2", denom = "num.g2")
+#' calc_eql(x, nsteps = 100, numer = "i.num.g2", denom = "num.g2",
+#'          threshold = 0.00001)
+#'
+calc_eql <- function(x, numer = "i.num", denom = "num",
+                     nsteps, threshold = 0.001, digits = 4) {
+
+  if (!(class(x) %in% c("dcm", "icm", "netsim"))) {
+    stop("x must an object of class dcm, icm, or netsim", call. = FALSE)
+  }
+
+  # Change scipen based on digits
+  old.scipen <- options()$scipen
+  options(scipen = digits + 1)
+
+  # Convert model to df and calculate prevalence
+  df <- as.data.frame(x)
+  if (!(numer %in% names(df))) {
+    stop("numer must be an output compartment on x", call. = FALSE)
+  }
+  if (!(denom %in% names(df))) {
+    stop("denom must be an output compartment on x", call. = FALSE)
+  }
+  prev <- df[[numer]]/df[[denom]]
+
+  # Truncate vector and calculate difference
+  tprev <- tail(prev, nsteps)
+  diff <- abs(max(tprev) - min(tprev))
+
+  cat("Equilibrium Results")
+  cat("\n=================================")
+  cat("\nStart Prev.:  ", round(head(tprev, 1), digits))
+  cat("\nEnd Prev.:    ", round(tail(tprev, 1), digits))
+  cat("\nMax Prev.:    ", round(max(tprev), digits))
+  cat("\nMin Prev.:    ", round(min(tprev), digits))
+  cat("\nRel. Diff.:   ", round(diff, digits))
+  cat("\n<= Threshold: ", diff <= threshold)
+
+  on.exit(options(scipen = old.scipen))
+}
+
+
 #' @title Check Degree Distribution for Bipartite Target Statistics
 #'
 #' @description Checks for consistency in the implied network statistics
