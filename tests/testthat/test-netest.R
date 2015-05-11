@@ -80,3 +80,18 @@ test_that("netest diss_check flags bad models", {
                       cd, verbose = FALSE),
                "Term options for one or more terms in dissolution model")
 })
+
+
+
+# Other -------------------------------------------------------------------
+
+test_that("nonconv.error error flag", {
+  skip_on_cran()
+  nw <- network.initialize(100, directed = FALSE)
+  expect_error(netest(nw, formation = ~ edges + concurrent,
+                      dissolution = ~offset(edges), target.stats = c(100, 1),
+                      coef.diss = dissolution_coefs(~offset(edges), 50),
+                      set.control.ergm = control.ergm(MCMLE.maxit = 5),
+                      nonconv.error = TRUE), "Model did not converge.")
+})
+

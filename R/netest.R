@@ -30,6 +30,10 @@
 #'        details).
 #' @param set.control.stergm Control arguments passed to simulate.stergm (see
 #'        details).
+#' @param nonconv.error If \code{TRUE}, function will error if model did not
+#'        converge after the specified number of iterations. This may be useful
+#'        in batch mode while fitting many models and there is no desire to
+#'        return to the nonconverged model object.
 #' @param verbose Print progress to the console.
 #'
 #' @details
@@ -148,6 +152,7 @@ netest <- function(nw,
                    output = "fit",
                    set.control.ergm,
                    set.control.stergm,
+                   nonconv.error = FALSE,
                    verbose = TRUE) {
 
   if (missing(constraints)) {
@@ -219,6 +224,15 @@ netest <- function(nw,
                 offset.coef = coef.form,
                 eval.loglik = FALSE,
                 control = set.control.ergm)
+
+    if (nonconv.error == TRUE) {
+      sl <- tail(fit$steplen.hist, 2)
+      if (all(sl == 1) == FALSE) {
+        stop("Model did not converge. Stopping due to nonconv.error setting",
+             call. = FALSE)
+      }
+    }
+
 
     coef.form <- fit$coef
     coef.form.crude <- coef.form
