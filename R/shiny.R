@@ -15,8 +15,8 @@
 #'
 #' These apps are also hosted online at Rstudio's shinyapps site here:
 #' \itemize{
-#'    \item \strong{DCM:} \url{http://statnet.shinyapps.io/epidcm/}
-#'    \item \strong{ICM:} \url{http://statnet.shinyapps.io/epiicm/}
+#'    \item DCM App: \samp{https://statnet.shinyapps.io/epidcm/}
+#'    \item ICM App: \samp{https://statnet.shinyapps.io/epiicm/}
 #' }
 #'
 #' @references
