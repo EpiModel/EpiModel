@@ -1,6 +1,38 @@
 Version 1.1.5
 ------------------------------------------------------------------------------
 
+NEW FEATURES
+* Built-in parallelization of stochastic network model simulations directly within
+  the package with the `netsim_parallel` function has been deprecated. This
+  functionality has been replaced with model simulation functions within the
+  `EpiModel.hpc` extension package: https://github.com/statnet/EpiModel.hpc
+* Cosmetic and functional updates to built-in Shiny applications accessible within
+  the package via `epiweb`.
+* New function, `calc_eql`, calculates whether a model of any class in EpiModel
+  has reached an equilibrium state over a defined time series. Equilibrium is
+  defined as the absolute value of the difference of the maximum prevalence and
+  minimum prevalence over a specified time series falling below a specified
+  threshold. For stochastic models, these values are calcualted based on the
+  mean of the individual time series simulations.
+* `netest` now includes a new argument, `nonconv.error`, that will send the
+  function to an error state if the ERGM did not coverge after the specified
+  number of interations. The default is to allow for a nonconverged model fit
+  to be returned. Requiring an error may be helpful when running a number of
+  models in batch mode.
+
+BUG FIXES
+* Within the built-in deterministic compartmental models solved with the `dcm`
+  function, there was an error in the calculation of flows (e.g., disease incidence
+  or number of deaths per unit time) when the models were integrated with methods
+  other than the "Euler" solution. Flows are now calculated correctly for all
+  numerical integration methods supported via the `deSolve` package.
+* Minor bugs in the default deaths module for stochastic network models were
+  corrected.
+
+OTHER
+* `netest` will now check to ensure that the formation and dissolution models are
+  in allignment (terms specified in the same order) and that dissolution model is
+  of proper forms (see v1.1.4 notes).
 
 
 Version 1.1.4
