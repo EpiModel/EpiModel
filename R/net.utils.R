@@ -46,6 +46,8 @@ bipvals <- function(nw, mode, val) {
 #'        time range.
 #' @param threshold Threshold value for determining equilibrium.
 #' @param digits Number of digits to round for table output.
+#' @param invisible If \code{TRUE}, function will suppress output to console and
+#'        return summary statistics invisibly.
 #'
 #' @details
 #' This function calculates whether equilibrium in disease prevalence, or any
@@ -79,7 +81,7 @@ bipvals <- function(nw, mode, val) {
 #'          threshold = 0.00001)
 #'
 calc_eql <- function(x, numer = "i.num", denom = "num",
-                     nsteps, threshold = 0.001, digits = 4) {
+                     nsteps, threshold = 0.001, digits = 4, invisible = FALSE) {
 
   if (!(class(x) %in% c("dcm", "icm", "netsim"))) {
     stop("x must an object of class dcm, icm, or netsim", call. = FALSE)
@@ -113,6 +115,14 @@ calc_eql <- function(x, numer = "i.num", denom = "num",
   cat("\n<= Threshold: ", diff <= threshold)
 
   on.exit(options(scipen = old.scipen))
+  out <- list(strprev = round(head(tprev, 1), digits),
+              endprev = round(tail(tprev, 1), digits),
+              maxprev = round(max(tprev), digits),
+              minprev = round(min(tprev), digits),
+              reldiff = round(diff, digits),
+              thresh = diff <= threshold)
+  invisible(out)
+
 }
 
 

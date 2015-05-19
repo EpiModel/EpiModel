@@ -5,7 +5,7 @@
 \title{Calculate Equilibrium for Infection Prevalence}
 \usage{
 calc_eql(x, numer = "i.num", denom = "num", nsteps, threshold = 0.001,
-  digits = 4)
+  digits = 4, invisible = FALSE)
 }
 \arguments{
 \item{x}{An \code{EpiModel} object of class \code{dcm}, \code{icm}, or
@@ -23,6 +23,9 @@ time range.}
 \item{threshold}{Threshold value for determining equilibrium.}
 
 \item{digits}{Number of digits to round for table output.}
+
+\item{invisible}{If \code{TRUE}, function will suppress output to console and
+       return summary statistics invisibly.}
 }
 \description{
 Calculates the relative change in infection prevalence across a
