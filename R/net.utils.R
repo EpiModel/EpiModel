@@ -105,14 +105,16 @@ calc_eql <- function(x, numer = "i.num", denom = "num",
   tprev <- tail(prev, nsteps)
   diff <- abs(max(tprev) - min(tprev))
 
-  cat("Equilibrium Results")
-  cat("\n=================================")
-  cat("\nStart Prev.:  ", round(head(tprev, 1), digits))
-  cat("\nEnd Prev.:    ", round(tail(tprev, 1), digits))
-  cat("\nMax Prev.:    ", round(max(tprev), digits))
-  cat("\nMin Prev.:    ", round(min(tprev), digits))
-  cat("\nRel. Diff.:   ", round(diff, digits))
-  cat("\n<= Threshold: ", diff <= threshold)
+  if (invisible == FALSE) {
+    cat("Equilibrium Results")
+    cat("\n=================================")
+    cat("\nStart Prev.:  ", round(head(tprev, 1), digits))
+    cat("\nEnd Prev.:    ", round(tail(tprev, 1), digits))
+    cat("\nMax Prev.:    ", round(max(tprev), digits))
+    cat("\nMin Prev.:    ", round(min(tprev), digits))
+    cat("\nRel. Diff.:   ", round(diff, digits))
+    cat("\n<= Threshold: ", diff <= threshold)
+  }
 
   on.exit(options(scipen = old.scipen))
   out <- list(strprev = round(head(tprev, 1), digits),
