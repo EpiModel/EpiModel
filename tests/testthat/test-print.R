@@ -59,7 +59,7 @@ test_that("print.netsim", {
   control <- control.net(type = "SI", nsteps = 10, nsims = 1,
                          verbose = FALSE)
   mod <- netsim(est1, param, init, control)
-  expect_output(print(est), "EpiModel Object")
+  expect_output(print(mod), "EpiModel Object")
   expect_output(print(mod), "Model class: netsim")
   expect_output(print(mod), "Model type: SI")
   expect_output(print(mod), "No. NW modes: 2")
