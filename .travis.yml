@@ -15,7 +15,7 @@ after_failure:
   - ./travis-tool.sh dump_logs
 
 after_success:
-  - Rscript -e 'library(covr);coveralls(type = c("test", "example"))'
+  - Rscript -e 'library(covr);coveralls(type = "all")'
 
 notifications:
   email:
