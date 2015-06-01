@@ -1449,7 +1449,7 @@ plot.netdx <- function(x,
            xlim = xlim, ylim = ylim,
            xlab = xlab, ylab = ylab)
 
-      if (is.numeric(qnts)) {
+      if (is.numeric(qnts) & nsims > 1) {
         if (qnts < 0 | qnts > 1) {
           stop("qnts must be between 0 and 1", call. = FALSE)
         }
@@ -1462,6 +1462,7 @@ plot.netdx <- function(x,
         qnts.col <- transco(qnts.col, qnts.alpha)
         quants <- c((1 - qnts) / 2, 1 - ((1 - qnts) / 2))
         dataj <- as.data.frame(pages)
+        dataj <- dataj[complete.cases(dataj), , drop = FALSE]
         qnt.prev <- apply(dataj, 1, function(x)
                           quantile(x, c(quants[1], quants[2]),
                                    na.rm = TRUE))
@@ -1489,6 +1490,7 @@ plot.netdx <- function(x,
           mean.col <- sim.col
         }
         dataj <- as.data.frame(pages)
+        dataj <- dataj[complete.cases(dataj), , drop = FALSE]
         mean.prev <- rowMeans(dataj)
         if (mean.smooth == TRUE) {
           mean.prev <- supsmu(x = 1:length(mean.prev), y = mean.prev)$y
