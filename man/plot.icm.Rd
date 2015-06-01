@@ -5,8 +5,9 @@
 \title{Plot Data from a Stochastic Individual Contact Epidemic Model}
 \usage{
 \method{plot}{icm}(x, y, popfrac, sim.lines, sims, sim.col, sim.lwd, sim.alpha,
-  mean.line = TRUE, mean.smooth = FALSE, mean.col, mean.lwd, mean.lty, qnts,
-  qnts.col, qnts.alpha, leg, leg.cex = 0.8, axs = "r", add = FALSE, ...)
+  mean.line = TRUE, mean.smooth = TRUE, mean.col, mean.lwd, mean.lty, qnts,
+  qnts.col, qnts.alpha, qnts.smooth = TRUE, leg, leg.cex = 0.8, axs = "r",
+  add = FALSE, ...)
 }
 \arguments{
 \item{x}{An \code{EpiModel} object of class \code{icm}.}
@@ -47,6 +48,8 @@ polygon from plot.}
 
 \item{qnts.alpha}{Transparency level for quantile polygons, where 0 =
 transparent and 1 = opaque (see \code{\link{transco}}).}
+
+\item{qnts.smooth}{If \code{TRUE}, use a lowess smoother on quantile polygons.}
 
 \item{leg}{If \code{TRUE}, plot default legend.}
 
@@ -110,6 +113,7 @@ plot(mod2, y = "i.num", mean.line = FALSE)
 
 # Plot incidence
 plot(mod2, y = "si.flow", mean.smooth = TRUE)
+plot(mod2, y = "si.flow", qnts.smooth = FALSE, qnts = 1)
 }
 }
 \seealso{
