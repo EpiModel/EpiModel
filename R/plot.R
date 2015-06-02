@@ -845,6 +845,7 @@ draw_qnts <- function(x, y, qnts, qnts.pal, qnts.smooth, loc = "epi") {
                       function(x) {
                         quantile(x, c(quants[1], quants[2]), na.rm = TRUE)
                       })
+    qnt.prev <- qnt.prev[, complete.cases(t(qnt.prev))]
     xx <- c(1:(ncol(qnt.prev)), (ncol(qnt.prev)):1)
     if (qnts.smooth == FALSE) {
       yy <- c(qnt.prev[1, ], rev(qnt.prev[2, ]))
