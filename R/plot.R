@@ -495,6 +495,7 @@ plot.dcm <- function(x,
 #' @param qnts.col Vector of any standard R color format for polygons.
 #' @param qnts.alpha Transparency level for quantile polygons, where 0 =
 #'        transparent and 1 = opaque (see \code{\link{transco}}).
+#' @param qnts.smooth If \code{TRUE}, use a lowess smoother on quantile polygons.
 #' @param leg If \code{TRUE}, plot default legend.
 #' @param leg.cex Legend scale size.
 #' @param axs Plot axis type (see \code{\link{par}} for details), with default
@@ -555,6 +556,7 @@ plot.dcm <- function(x,
 #'
 #' # Plot incidence
 #' plot(mod2, y = "si.flow", mean.smooth = TRUE)
+#' plot(mod2, y = "si.flow", qnts.smooth = FALSE, qnts = 1)
 #' }
 #'
 plot.icm <- function(x,
@@ -566,13 +568,14 @@ plot.icm <- function(x,
                      sim.lwd,
                      sim.alpha,
                      mean.line = TRUE,
-                     mean.smooth = FALSE,
+                     mean.smooth = TRUE,
                      mean.col,
                      mean.lwd,
                      mean.lty,
                      qnts,
                      qnts.col,
                      qnts.alpha,
+                     qnts.smooth = TRUE,
                      leg,
                      leg.cex = 0.8,
                      axs = "r",
@@ -781,7 +784,7 @@ plot.icm <- function(x,
     if (qnts > 1 | qnts < 0) {
       stop("qnts must be between 0 and 1", call. = FALSE)
     }
-    draw_qnts(x, y, qnts, qnts.pal)
+    draw_qnts(x, y, qnts, qnts.pal, qnts.smooth)
   }
 
 
@@ -833,7 +836,7 @@ plot.icm <- function(x,
 
 
 ## Helper utilities
-draw_qnts <- function(x, y, qnts, qnts.pal, loc = "epi") {
+draw_qnts <- function(x, y, qnts, qnts.pal, qnts.smooth, loc = "epi") {
 
   lcomp <- length(y)
   for (j in seq_len(lcomp)) {
@@ -842,8 +845,14 @@ draw_qnts <- function(x, y, qnts, qnts.pal, loc = "epi") {
                       function(x) {
                         quantile(x, c(quants[1], quants[2]), na.rm = TRUE)
                       })
+    qnt.prev <- qnt.prev[, complete.cases(t(qnt.prev))]
     xx <- c(1:(ncol(qnt.prev)), (ncol(qnt.prev)):1)
-    yy <- c(qnt.prev[1, ], rev(qnt.prev[2, ]))
+    if (qnts.smooth == FALSE) {
+      yy <- c(qnt.prev[1, ], rev(qnt.prev[2, ]))
+    } else {
+      yy <- c(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[1, ])$y,
+              rev(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[2, ])$y))
+    }
     polygon(xx, yy, col = qnts.pal[j], border = NA)
   }
 
@@ -907,6 +916,7 @@ draw_means <- function(x, y, mean.smooth, mean.lwd,
 #' @param qnts.col Vector of any standard R color format for polygons.
 #' @param qnts.alpha Transparency level for quantile polygons, where 0 =
 #'        transparent and 1 = opaque (see \code{\link{transco}}).
+#' @param qnts.smooth If \code{TRUE}, use a lowess smoother on the quantile band.
 #' @param targ.line If \code{TRUE}, plot target or expected value line for
 #'        the statistic of interest.
 #' @param targ.col Vector of standard R colors for target statistic lines, with
@@ -973,8 +983,10 @@ draw_means <- function(x, y, mean.smooth, mean.lwd,
 #'
 #' # Only formation diagnostics are available to plot
 #' plot(dx1, stats = "edges")
+#' plot(dx1, stats = c("edges", "concurrent"))
 #' plot(dx1, stats = "edges", method = "b", col = "seagreen3")
-#' plot(dx1, stats = c("nodefactor.sex.0", "nodefactor.sex.1"), method = "b")
+#' plot(dx1, stats = c("nodefactor.sex.0", "nodefactor.sex.1"),
+#'      method = "b", col = transco(2:3, 0.5))
 #'
 #' # Dynamic diagnostics
 #' dx2 <- netdx(est, nsims = 10, nsteps = 500,
@@ -986,7 +998,8 @@ draw_means <- function(x, y, mean.smooth, mean.lwd,
 #' # Formation statistics plots, joined and separate
 #' plot(dx2)
 #' plot(dx2, type = "formation", plots.joined = TRUE)
-#' plot(dx2, type = "formation", sim = 1, plots.joined = TRUE)
+#' plot(dx2, type = "formation", sim = 1, plots.joined = TRUE,
+#'      qnts = FALSE, sim.lines = TRUE, mean.line = FALSE)
 #' plot(dx2, type = "formation", plots.joined = FALSE,
 #'      stats = c("edges", "concurrent"))
 #' plot(dx2, type = "formation", stats = "nodefactor.sex.0",
@@ -996,13 +1009,12 @@ draw_means <- function(x, y, mean.smooth, mean.lwd,
 #' plot(dx2, method = "b", stats = "meandeg", col = "dodgerblue")
 #'
 #' # Duration statistics plot
-#' plot(dx2, type = "duration")
-#' plot(dx2, type = "duration", sim = 10,
-#'      sim.col = "steelblue", sim.lwd = 3,
-#'      targ.lty = 1, targ.lwd = 0.5)
+#' plot(dx2, type = "duration", mean.col = "black")
+#' plot(dx2, type = "duration", sim = 10, mean.line = FALSE, sim.line = TRUE,
+#'      sim.col = "steelblue", sim.lwd = 3, targ.lty = 1, targ.lwd = 0.5)
 #'
 #' # Dissolution statistics plot
-#' plot(dx2, type = "dissolution")
+#' plot(dx2, type = "dissolution", mean.col = "black")
 #' plot(dx2, type = "dissolution", method = "b", col = "pink1")
 #' }
 #'
@@ -1011,18 +1023,19 @@ plot.netdx <- function(x,
                        method = "l",
                        sim,
                        stats,
-                       sim.lines = TRUE,
+                       sim.lines,
                        sim.col,
                        sim.lwd,
                        sim.lty = 1,
                        mean.line = TRUE,
-                       mean.smooth = FALSE,
+                       mean.smooth = TRUE,
                        mean.col,
                        mean.lwd = 2,
                        mean.lty = 1,
-                       qnts = FALSE,
+                       qnts = 0.5,
                        qnts.col,
                        qnts.alpha,
+                       qnts.smooth = TRUE,
                        targ.line = TRUE,
                        targ.col,
                        targ.lwd = 2,
@@ -1031,7 +1044,6 @@ plot.netdx <- function(x,
                        plot.leg = TRUE,
                        ...
                        ) {
-
 
   # Checks and Variables ----------------------------------------------------
 
@@ -1135,6 +1147,15 @@ plot.netdx <- function(x,
 
     ## Joined Plots
     if (method == "l") {
+
+      if (missing(sim.lines)) {
+        if (dynamic == TRUE) {
+          sim.lines <- FALSE
+        } else {
+          sim.lines <- TRUE
+        }
+      }
+
       if (plots.joined == TRUE) {
 
         ## Default legend
@@ -1205,7 +1226,12 @@ plot.netdx <- function(x,
                  quantile(x, c(quants[1], quants[2]))
               })
             xx <- c(1:(ncol(qnt.prev)), (ncol(qnt.prev)):1)
-            yy <- c(qnt.prev[1, ], rev(qnt.prev[2, ]))
+            if (qnts.smooth == FALSE) {
+              yy <- c(qnt.prev[1, ], rev(qnt.prev[2, ]))
+            } else {
+              yy <- c(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[1, ])$y,
+                      rev(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[2, ])$y))
+            }
             polygon(xx, yy, col = qnts.col[which(j == outsts)], border = NA)
           }
 
@@ -1298,7 +1324,12 @@ plot.netdx <- function(x,
                   quantile(x, c(quants[1], quants[2]))
               })
             xx <- c(1:(ncol(qnt.prev)), (ncol(qnt.prev)):1)
-            yy <- c(qnt.prev[1, ], rev(qnt.prev[2, ]))
+            if (qnts.smooth == FALSE) {
+              yy <- c(qnt.prev[1, ], rev(qnt.prev[2, ]))
+            } else {
+              yy <- c(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[1, ])$y,
+                      rev(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[2, ])$y))
+            }
             polygon(xx, yy, col = qnts.col[which(j == outsts)], border = NA)
           }
 
@@ -1410,11 +1441,16 @@ plot.netdx <- function(x,
     }
 
     if (method == "l") {
+
+      if (missing(sim.lines)) {
+        sim.lines <- FALSE
+      }
+
       plot(x = 1, y = 1, type = "n",
            xlim = xlim, ylim = ylim,
            xlab = xlab, ylab = ylab)
 
-      if (is.numeric(qnts)) {
+      if (is.numeric(qnts) & nsims > 1) {
         if (qnts < 0 | qnts > 1) {
           stop("qnts must be between 0 and 1", call. = FALSE)
         }
@@ -1427,11 +1463,17 @@ plot.netdx <- function(x,
         qnts.col <- transco(qnts.col, qnts.alpha)
         quants <- c((1 - qnts) / 2, 1 - ((1 - qnts) / 2))
         dataj <- as.data.frame(pages)
+        dataj <- dataj[complete.cases(dataj), , drop = FALSE]
         qnt.prev <- apply(dataj, 1, function(x)
                           quantile(x, c(quants[1], quants[2]),
                                    na.rm = TRUE))
         xx <- c(1:(ncol(qnt.prev)), (ncol(qnt.prev)):1)
-        yy <- c(qnt.prev[1, ], rev(qnt.prev[2, ]))
+        if (qnts.smooth == FALSE) {
+          yy <- c(qnt.prev[1, ], rev(qnt.prev[2, ]))
+        } else {
+          yy <- c(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[1, ])$y,
+                  rev(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[2, ])$y))
+        }
         polygon(xx, yy, col = qnts.col, border = NA)
       }
 
@@ -1449,6 +1491,7 @@ plot.netdx <- function(x,
           mean.col <- sim.col
         }
         dataj <- as.data.frame(pages)
+        dataj <- dataj[complete.cases(dataj), , drop = FALSE]
         mean.prev <- rowMeans(dataj)
         if (mean.smooth == TRUE) {
           mean.prev <- supsmu(x = 1:length(mean.prev), y = mean.prev)$y
@@ -1519,6 +1562,11 @@ plot.netdx <- function(x,
     }
 
     if (method == "l") {
+
+      if (missing(sim.lines)) {
+        sim.lines <- FALSE
+      }
+
       plot(x = 1, y = 1, type = "n",
            xlim = xlim, ylim = ylim,
            xlab = xlab, ylab = ylab)
@@ -1540,7 +1588,12 @@ plot.netdx <- function(x,
           quantile(x, c(quants[1], quants[2]),
                    na.rm = TRUE))
         xx <- c(1:(ncol(qnt.prev)), (ncol(qnt.prev)):1)
-        yy <- c(qnt.prev[1, ], rev(qnt.prev[2, ]))
+        if (qnts.smooth == FALSE) {
+          yy <- c(qnt.prev[1, ], rev(qnt.prev[2, ]))
+        } else {
+          yy <- c(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[1, ])$y,
+                  rev(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[2, ])$y))
+        }
         polygon(xx, yy, col = qnts.col, border = NA)
       }
 

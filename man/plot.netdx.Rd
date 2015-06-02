@@ -5,9 +5,9 @@
 \title{Plot Dynamic Network Model Diagnostics}
 \usage{
 \method{plot}{netdx}(x, type = "formation", method = "l", sim, stats,
-  sim.lines = TRUE, sim.col, sim.lwd, sim.lty = 1, mean.line = TRUE,
-  mean.smooth = FALSE, mean.col, mean.lwd = 2, mean.lty = 1,
-  qnts = FALSE, qnts.col, qnts.alpha, targ.line = TRUE, targ.col,
+  sim.lines, sim.col, sim.lwd, sim.lty = 1, mean.line = TRUE,
+  mean.smooth = TRUE, mean.col, mean.lwd = 2, mean.lty = 1, qnts = 0.5,
+  qnts.col, qnts.alpha, qnts.smooth = TRUE, targ.line = TRUE, targ.col,
   targ.lwd = 2, targ.lty = 2, plots.joined, plot.leg = TRUE, ...)
 }
 \arguments{
@@ -57,6 +57,8 @@ If \code{FALSE}, suppress polygon from plot.}
 
 \item{qnts.alpha}{Transparency level for quantile polygons, where 0 =
 transparent and 1 = opaque (see \code{\link{transco}}).}
+
+\item{qnts.smooth}{If \code{TRUE}, use a lowess smoother on the quantile band.}
 
 \item{targ.line}{If \code{TRUE}, plot target or expected value line for
 the statistic of interest.}
@@ -128,8 +130,10 @@ dx1
 
 # Only formation diagnostics are available to plot
 plot(dx1, stats = "edges")
+plot(dx1, stats = c("edges", "concurrent"))
 plot(dx1, stats = "edges", method = "b", col = "seagreen3")
-plot(dx1, stats = c("nodefactor.sex.0", "nodefactor.sex.1"), method = "b")
+plot(dx1, stats = c("nodefactor.sex.0", "nodefactor.sex.1"),
+     method = "b", col = transco(2:3, 0.5))
 
 # Dynamic diagnostics
 dx2 <- netdx(est, nsims = 10, nsteps = 500,
@@ -141,7 +145,8 @@ dx2
 # Formation statistics plots, joined and separate
 plot(dx2)
 plot(dx2, type = "formation", plots.joined = TRUE)
-plot(dx2, type = "formation", sim = 1, plots.joined = TRUE)
+plot(dx2, type = "formation", sim = 1, plots.joined = TRUE,
+     qnts = FALSE, sim.lines = TRUE, mean.line = FALSE)
 plot(dx2, type = "formation", plots.joined = FALSE,
      stats = c("edges", "concurrent"))
 plot(dx2, type = "formation", stats = "nodefactor.sex.0",
@@ -151,13 +156,12 @@ plot(dx2, method = "b", col = "bisque")
 plot(dx2, method = "b", stats = "meandeg", col = "dodgerblue")
 
 # Duration statistics plot
-plot(dx2, type = "duration")
-plot(dx2, type = "duration", sim = 10,
-     sim.col = "steelblue", sim.lwd = 3,
-     targ.lty = 1, targ.lwd = 0.5)
+plot(dx2, type = "duration", mean.col = "black")
+plot(dx2, type = "duration", sim = 10, mean.line = FALSE, sim.line = TRUE,
+     sim.col = "steelblue", sim.lwd = 3, targ.lty = 1, targ.lwd = 0.5)
 
 # Dissolution statistics plot
-plot(dx2, type = "dissolution")
+plot(dx2, type = "dissolution", mean.col = "black")
 plot(dx2, type = "dissolution", method = "b", col = "pink1")
 }
 }
