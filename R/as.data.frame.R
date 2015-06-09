@@ -182,7 +182,7 @@ as.data.frame.icm <- function(x,
     }
     if (nsims > 1) {
       for (i in seq_along(x$epi)) {
-        df[, i + 1] <- rowMeans(x$epi[[i]])
+        df[, i + 1] <- rowMeans(x$epi[[i]], na.rm = TRUE)
       }
     }
   }
@@ -196,7 +196,7 @@ as.data.frame.icm <- function(x,
     }
     if (nsims > 1) {
       for (i in seq_along(x$epi)) {
-        df[, i + 1] <- apply(x$epi[[i]], 1, sd)
+        df[, i + 1] <- apply(x$epi[[i]], 1, sd, na.rm = TRUE)
       }
     }
   }
