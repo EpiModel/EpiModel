@@ -196,7 +196,10 @@ netsim <- function(x,
 #'
 #' @details
 #' This function is deprecated and has been replaced by the \code{netsim_par}
-#' function in the \code{EpiModel.hpc package}.
+#' function in the \code{EpiModelHPC package}.
+#'
+#' @seealso
+#' The EpiModelHPC repository may be found at \url{http://github.com/statnet/EpiModelHPC}.
 #'
 #' @keywords internal
 #' @export
@@ -204,7 +207,7 @@ netsim <- function(x,
 netsim_parallel <- function(x, param, init, control, merge = TRUE) {
 
   stop("EpiModel::netsim_parallel has been deprecated.",
-       "Use EpiModel.hpc::netsim_par instead.", .call = FALSE)
+       "Use EpiModelHPC::netsim_par instead.", .call = FALSE)
 
   return(all)
 }

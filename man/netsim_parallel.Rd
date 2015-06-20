@@ -27,7 +27,10 @@ Simulates stochastic network epidemic models for infectious
 }
 \details{
 This function is deprecated and has been replaced by the \code{netsim_par}
-function in the \code{EpiModel.hpc package}.
+function in the \code{EpiModelHPC package}.
+}
+\seealso{
+The EpiModelHPC repository may be found at \url{http://github.com/statnet/EpiModelHPC}.
 }
 \keyword{internal}
 
