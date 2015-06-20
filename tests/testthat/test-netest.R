@@ -7,7 +7,7 @@ test_that("netest works for edges only model", {
   nw <- network.initialize(n = 50, directed = FALSE)
   est <- netest(
     nw,
-    formation = ~ edges,
+    formation = ~edges,
     dissolution = ~offset(edges),
     target.stats = 25,
     coef.diss = dissolution_coefs(~offset(edges), 10, 0),
@@ -21,7 +21,7 @@ test_that("netest works for edges + nodematch model", {
   nw <- set.vertex.attribute(nw, "race", rbinom(50, 1, 0.5))
   est <- netest(
     nw,
-    formation = ~ edges + nodematch("race"),
+    formation = ~edges + nodematch("race"),
     dissolution = ~offset(edges),
     target.stats = c(25, 10),
     coef.diss = dissolution_coefs(~offset(edges), 10, 0),
@@ -34,7 +34,7 @@ test_that("netest works with offset.coef terms", {
   nw <- network.initialize(100, directed = FALSE)
   nw <- set.vertex.attribute(nw, "role", rep(c("I", "V", "R"), c(10, 80, 10)))
   est <- netest(nw,
-                formation = ~ edges +
+                formation = ~edges +
                               offset(nodematch('role', diff = TRUE, keep = 1:2)),
                 coef.form = c(-Inf, -Inf),
                 target.stats = c(40),
@@ -54,7 +54,7 @@ test_that("netest works for heterogeneous dissolutions", {
   est <- netest(
     nw,
     formation = ~edges + nodematch("race"),
-    dissolution = ~ edges + nodematch("race"),
+    dissolution = ~edges + nodematch("race"),
     target.stats = c(50, 20),
     coef.diss = dissolution_coefs(~offset(edges) + offset(nodematch("race")), c(10, 20)),
     verbose = FALSE
@@ -80,18 +80,3 @@ test_that("netest diss_check flags bad models", {
                       cd, verbose = FALSE),
                "Term options for one or more terms in dissolution model")
 })
-
-
-
-# Other -------------------------------------------------------------------
-
-test_that("nonconv.error error flag", {
-  skip_on_cran()
-  nw <- network.initialize(100, directed = FALSE)
-  expect_error(netest(nw, formation = ~ edges + concurrent,
-                      dissolution = ~offset(edges), target.stats = c(100, 1),
-                      coef.diss = dissolution_coefs(~offset(edges), 50),
-                      set.control.ergm = control.ergm(MCMLE.maxit = 5),
-                      nonconv.error = TRUE), "Model did not converge.")
-})
-
