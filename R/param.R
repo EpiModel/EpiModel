@@ -113,24 +113,10 @@
 #'
 #' @export
 #'
-param.dcm <- function(inf.prob,
-                      inter.eff,
-                      inter.start,
-                      act.rate,
-                      rec.rate,
-                      b.rate,
-                      ds.rate,
-                      di.rate,
-                      dr.rate,
-                      inf.prob.g2,
-                      act.rate.g2,
-                      rec.rate.g2,
-                      b.rate.g2,
-                      ds.rate.g2,
-                      di.rate.g2,
-                      dr.rate.g2,
-                      balance,
-                      ...) {
+param.dcm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
+                      b.rate, ds.rate, di.rate, dr.rate, inf.prob.g2,
+                      act.rate.g2, rec.rate.g2, b.rate.g2, ds.rate.g2,
+                      di.rate.g2, dr.rate.g2, balance, ...) {
 
   # Get arguments
   p <- list()
@@ -210,24 +196,10 @@ param.dcm <- function(inf.prob,
 #'
 #' @export
 #'
-param.icm <- function(inf.prob,
-                      inter.eff,
-                      inter.start,
-                      act.rate,
-                      rec.rate,
-                      b.rate,
-                      ds.rate,
-                      di.rate,
-                      dr.rate,
-                      inf.prob.g2,
-                      act.rate.g2,
-                      rec.rate.g2,
-                      b.rate.g2,
-                      ds.rate.g2,
-                      di.rate.g2,
-                      dr.rate.g2,
-                      balance,
-                      ...) {
+param.icm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
+                      b.rate, ds.rate, di.rate, dr.rate, inf.prob.g2,
+                      act.rate.g2, rec.rate.g2, b.rate.g2, ds.rate.g2,
+                      di.rate.g2, dr.rate.g2, balance, ...) {
 
   # Get arguments
   p <- list()
@@ -390,22 +362,10 @@ param.icm <- function(inf.prob,
 #'
 #' @export
 #'
-param.net <- function(inf.prob,
-                      inter.eff,
-                      inter.start,
-                      act.rate,
-                      rec.rate,
-                      b.rate,
-                      ds.rate,
-                      di.rate,
-                      dr.rate,
-                      inf.prob.m2,
-                      rec.rate.m2,
-                      b.rate.m2,
-                      ds.rate.m2,
-                      di.rate.m2,
-                      dr.rate.m2,
-                      ...) {
+param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
+                      b.rate, ds.rate, di.rate, dr.rate, inf.prob.m2,
+                      rec.rate.m2, b.rate.m2, ds.rate.m2, di.rate.m2,
+                      dr.rate.m2, ...) {
 
   # Get arguments
   p <- list()
