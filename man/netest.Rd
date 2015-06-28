@@ -113,7 +113,6 @@ the \code{control.ergm()} function, with the available parameters listed in the
 package. An example is below.
 }
 \examples{
-\dontrun{
 # Initialize a network of 100 nodes
 nw <- network.initialize(n = 100, directed = FALSE)
 
@@ -124,7 +123,7 @@ formation <- ~edges + concurrent
 target.stats <- c(50, 25)
 
 # Obtain the offset coefficients
-coef.diss <- dissolution_coefs(dissolution = offset(edges), duration = 10)
+coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 10)
 
 # Estimate the STERGM using the edges dissolution approximation
 est <- netest(nw, formation, target.stats, coef.diss,
@@ -134,7 +133,6 @@ est
 
 # To estimate the STERGM directly, use edapprox = FALSE
 # est2 <- netest(nw, formation, target.stats, coef.diss, edapprox = FALSE)
-}
 }
 \references{
 Krivitsky PN, Handcock MS. "A separable model for dynamic networks." JRSS(B).
