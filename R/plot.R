@@ -1144,7 +1144,11 @@ plot.netdx <- function(x, type = "formation", method = "l", sim, stats,
 
         ## Default target line color
         if (missing(targ.col)) {
-          targ.col <- sim.col
+          if (nstats == 1) {
+            targ.col <- "black"
+          } else {
+            targ.col <- sim.col
+          }
         }
 
 
@@ -1162,7 +1166,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sim, stats,
               qnts.col <- sim.col
             }
             if (missing(qnts.alpha)) {
-              qnts.alpha <- 0.75
+              qnts.alpha <- 0.35
             }
             qnts.col <- transco(qnts.col, qnts.alpha)
             quants <- c((1 - qnts) / 2, 1 - ((1 - qnts) / 2))
@@ -1260,7 +1264,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sim, stats,
               qnts.col <- sim.col
             }
             if (missing(qnts.alpha)) {
-              qnts.alpha <- 0.75
+              qnts.alpha <- 0.35
             }
             qnts.col <- transco(qnts.col, qnts.alpha)
             quants <- c((1 - qnts) / 2, 1 - ((1 - qnts) / 2))
@@ -1364,7 +1368,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sim, stats,
     }
 
     if (missing(sim.col)) {
-      sim.col <- rep("darkgrey", nsims)
+      sim.col <- rep("grey20", nsims)
     }
     if (missing(targ.col)) {
       targ.col <- "black"
@@ -1402,7 +1406,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sim, stats,
           qnts.col <- sim.col
         }
         if (missing(qnts.alpha)) {
-          qnts.alpha <- 0.75
+          qnts.alpha <- 0.35
         }
         qnts.col <- transco(qnts.col, qnts.alpha)
         quants <- c((1 - qnts) / 2, 1 - ((1 - qnts) / 2))
@@ -1475,7 +1479,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sim, stats,
       xlim <- da$xlim
     }
 
-    ylim <- c(0, max(sapply(prop.diss, max, na.rm = TRUE)) * 1.2)
+    ylim <- c(0, max(sapply(prop.diss, max, na.rm = TRUE)) * 1.1)
     if (length(da) > 0 & !is.null(da$ylim)) {
       ylim <- da$ylim
     }
@@ -1485,7 +1489,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sim, stats,
     }
 
     if (missing(sim.col)) {
-      sim.col <- rep("darkgrey", nsims)
+      sim.col <- rep("grey20", nsims)
     }
     if (missing(targ.col)) {
       targ.col <- "black"
@@ -1523,7 +1527,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sim, stats,
           qnts.col <- sim.col
         }
         if (missing(qnts.alpha)) {
-          qnts.alpha <- 0.75
+          qnts.alpha <- 0.35
         }
         qnts.col <- transco(qnts.col, qnts.alpha)
         quants <- c((1 - qnts) / 2, 1 - ((1 - qnts) / 2))
