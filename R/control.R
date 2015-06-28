@@ -56,16 +56,9 @@
 #'
 #' @export
 #'
-control.dcm <- function(type,
-                        nsteps,
-                        dt = 1,
-                        odemethod = "rk4",
-                        dede = FALSE,
-                        new.mod = NULL,
-                        sens.param = TRUE,
-                        print.mod = FALSE,
-                        verbose = TRUE,
-                        ...) {
+control.dcm <- function(type, nsteps, dt = 1, odemethod = "rk4",
+                        dede = FALSE, new.mod = NULL, sens.param = TRUE,
+                        print.mod = FALSE, verbose = TRUE, ...) {
 
   # Get arguments
   p <- list()
@@ -186,22 +179,12 @@ control.dcm <- function(type,
 #'
 #' @export
 #'
-control.icm <- function(type,
-                        nsteps,
-                        nsims = 1,
-                        rec.rand = TRUE,
-                        b.rand = TRUE,
-                        d.rand = TRUE,
-                        initialize.FUN = initialize.icm,
-                        infection.FUN = infection.icm,
-                        recovery.FUN = recovery.icm,
-                        deaths.FUN = deaths.icm,
-                        births.FUN = births.icm,
-                        get_prev.FUN = get_prev.icm,
-                        verbose = TRUE,
-                        verbose.int = 0,
-                        skip.check = FALSE,
-                        ...) {
+control.icm <- function(type, nsteps, nsims = 1, rec.rand = TRUE, b.rand = TRUE,
+                        d.rand = TRUE, initialize.FUN = initialize.icm,
+                        infection.FUN = infection.icm, recovery.FUN = recovery.icm,
+                        deaths.FUN = deaths.icm, births.FUN = births.icm,
+                        get_prev.FUN = get_prev.icm, verbose = TRUE,
+                        verbose.int = 0, skip.check = FALSE, ...) {
 
   # Get arguments
   p <- list()
@@ -405,40 +388,19 @@ control.icm <- function(type,
 #'
 #' @export
 #'
-control.net <- function(type,
-                        nsteps,
-                        start = 1,
-                        nsims = 1,
-                        depend,
-                        rec.rand = TRUE,
-                        b.rand = TRUE,
-                        d.rand = TRUE,
-                        tea.status = TRUE,
-                        attr.rules,
-                        epi.by,
-                        use.pids = TRUE,
-                        pid.prefix,
-                        initialize.FUN = initialize.net,
-                        deaths.FUN = deaths.net,
-                        births.FUN = births.net,
-                        recovery.FUN = recovery.net,
+control.net <- function(type, nsteps, start = 1, nsims = 1, depend, rec.rand = TRUE,
+                        b.rand = TRUE, d.rand = TRUE, tea.status = TRUE,
+                        attr.rules, epi.by, use.pids = TRUE, pid.prefix,
+                        initialize.FUN = initialize.net, deaths.FUN = deaths.net,
+                        births.FUN = births.net, recovery.FUN = recovery.net,
                         edges_correct.FUN = edges_correct,
-                        resim_nets.FUN = resim_nets,
-                        infection.FUN = infection.net,
-                        get_prev.FUN = get_prev.net,
-                        verbose.FUN = verbose.net,
-                        module.order = NULL,
-                        set.control.stergm,
-                        save.nwstats = TRUE,
-                        nwstats.formula = "formation",
-                        delete.nodes = FALSE,
-                        save.transmat = TRUE,
-                        save.network = TRUE,
-                        save.other,
-                        verbose = TRUE,
-                        verbose.int = 1,
-                        skip.check = FALSE,
-                        ...) {
+                        resim_nets.FUN = resim_nets, infection.FUN = infection.net,
+                        get_prev.FUN = get_prev.net, verbose.FUN = verbose.net,
+                        module.order = NULL, set.control.stergm,
+                        save.nwstats = TRUE, nwstats.formula = "formation",
+                        delete.nodes = FALSE, save.transmat = TRUE,
+                        save.network = TRUE, save.other, verbose = TRUE,
+                        verbose.int = 1, skip.check = FALSE, ...) {
 
   # Get arguments
   p <- list()
