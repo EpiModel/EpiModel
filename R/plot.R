@@ -97,20 +97,8 @@
 #' plot(mod, y = c("s.num", "i.num"),
 #'      run = 10, lty = 2, leg = "n", add = TRUE)
 #'
-plot.dcm <- function(x,
-                     y,
-                     popfrac,
-                     run,
-                     col,
-                     lwd,
-                     lty,
-                     alpha = 0.9,
-                     leg,
-                     leg.name,
-                     leg.cex = 0.8,
-                     axs = "r",
-                     add = FALSE,
-                     ...) {
+plot.dcm <- function(x, y, popfrac, run, col, lwd, lty, alpha = 0.9, leg,
+                     leg.name, leg.cex = 0.8, axs = "r", add = FALSE, ...) {
 
 
   ## Set missing flags
@@ -431,7 +419,8 @@ plot.dcm <- function(x,
     }
     if (lcomp > 1) {
       leg.names <- y
-      warning("Legend names ignored for multiple y plots of multiple run models")
+      warning("Legend names ignored for multiple y plots of multiple run models",
+              call. = FALSE)
     }
   }
 
@@ -559,28 +548,11 @@ plot.dcm <- function(x,
 #' plot(mod2, y = "si.flow", qnts.smooth = FALSE, qnts = 1)
 #' }
 #'
-plot.icm <- function(x,
-                     y,
-                     popfrac,
-                     sim.lines,
-                     sims,
-                     sim.col,
-                     sim.lwd,
-                     sim.alpha,
-                     mean.line = TRUE,
-                     mean.smooth = TRUE,
-                     mean.col,
-                     mean.lwd,
-                     mean.lty,
-                     qnts,
-                     qnts.col,
-                     qnts.alpha,
-                     qnts.smooth = TRUE,
-                     leg,
-                     leg.cex = 0.8,
-                     axs = "r",
-                     add = FALSE,
-                     ...) {
+plot.icm <- function(x, y, popfrac, sim.lines, sims, sim.col, sim.lwd,
+                     sim.alpha, mean.line = TRUE, mean.smooth = TRUE,
+                     mean.col, mean.lwd, mean.lty, qnts, qnts.col,
+                     qnts.alpha, qnts.smooth = TRUE, leg, leg.cex = 0.8,
+                     axs = "r", add = FALSE, ...) {
 
 
   # Model dimensions and class ----------------------------------------------
@@ -1018,32 +990,12 @@ draw_means <- function(x, y, mean.smooth, mean.lwd,
 #' plot(dx2, type = "dissolution", method = "b", col = "pink1")
 #' }
 #'
-plot.netdx <- function(x,
-                       type = "formation",
-                       method = "l",
-                       sim,
-                       stats,
-                       sim.lines,
-                       sim.col,
-                       sim.lwd,
-                       sim.lty = 1,
-                       mean.line = TRUE,
-                       mean.smooth = TRUE,
-                       mean.col,
-                       mean.lwd = 2,
-                       mean.lty = 1,
-                       qnts = 0.5,
-                       qnts.col,
-                       qnts.alpha,
-                       qnts.smooth = TRUE,
-                       targ.line = TRUE,
-                       targ.col,
-                       targ.lwd = 2,
-                       targ.lty = 2,
-                       plots.joined,
-                       plot.leg = TRUE,
-                       ...
-                       ) {
+plot.netdx <- function(x, type = "formation", method = "l", sim, stats,
+                       sim.lines, sim.col, sim.lwd, sim.lty = 1, mean.line = TRUE,
+                       mean.smooth = TRUE, mean.col, mean.lwd = 2, mean.lty = 1,
+                       qnts = 0.5, qnts.col, qnts.alpha, qnts.smooth = TRUE,
+                       targ.line = TRUE, targ.col, targ.lwd = 2, targ.lty = 2,
+                       plots.joined, plot.leg = TRUE, ...) {
 
   # Checks and Variables ----------------------------------------------------
 
@@ -1776,23 +1728,10 @@ plot.netdx <- function(x,
 #'      sim.lwd = 2, sim.col = "seagreen")
 #' }
 #'
-plot.netsim <- function(x,
-                        type = "sim",
-                        sim,
-                        network = 1,
-                        at = 1,
-                        col.status = FALSE,
-                        shp.bip = NULL,
-                        stats,
-                        sim.lwd,
-                        sim.col,
-                        sim.lty = 1,
-                        targ.col,
-                        targ.lwd = 2,
-                        targ.lty = 2,
-                        plots.joined,
-                        plot.leg = TRUE,
-                        ...) {
+plot.netsim <- function(x, type = "sim", sim, network = 1, at = 1,
+                        col.status = FALSE, shp.bip = NULL, stats, sim.lwd,
+                        sim.col, sim.lty = 1, targ.col, targ.lwd = 2,
+                        targ.lty = 2, plots.joined, plot.leg = TRUE, ...) {
 
   # Network plot ------------------------------------------------------------
   if (type == "network") {
@@ -2109,7 +2048,6 @@ plot.netsim <- function(x,
     }
   }
 
-
 }
 
 
@@ -2173,16 +2111,10 @@ comp_plot <- function(x, at, digits, ...) {
 #' @method comp_plot dcm
 #' @rdname comp_plot
 #' @export
-comp_plot.dcm <- function(x,
-                          at = 1,
-                          digits = 3,
-                          run = 1,
-                          ...
-                          ) {
+comp_plot.dcm <- function(x, at = 1, digits = 3, run = 1, ...) {
 
 
   ## Variables
-  nruns <- x$control$nruns
   nsteps <- x$control$nsteps
   type <- x$control$type
   groups <- x$param$groups
@@ -2264,14 +2196,9 @@ comp_plot.dcm <- function(x,
 #' @method comp_plot icm
 #' @rdname comp_plot
 #' @export
-comp_plot.icm <- function(x,
-                          at = 1,
-                          digits = 3,
-                          ...
-                          ) {
+comp_plot.icm <- function(x, at = 1, digits = 3, ...) {
 
   # Variables
-  nruns <- x$control$nruns
   nsteps <- x$control$nsteps
   type <- x$control$type
   vital <- x$param$vital
@@ -2359,16 +2286,9 @@ comp_plot.icm <- function(x,
 #' @method comp_plot netsim
 #' @rdname comp_plot
 #' @export
-comp_plot.netsim <- function(x,
-                             at = 1,
-                             digits = 3,
-                             ...
-                             ) {
+comp_plot.netsim <- function(x, at = 1, digits = 3, ...) {
 
-  comp_plot.icm(x = x,
-                at = at,
-                digits = digits,
-                ...)
+  comp_plot.icm(x = x, at = at, digits = digits, ...)
 
 }
 
