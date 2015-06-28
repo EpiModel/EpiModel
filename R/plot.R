@@ -1067,7 +1067,6 @@ plot.netdx <- function(x, type = "formation", method = "l", sim, stats,
       }
     }
 
-
     if (missing(sim.lwd)) {
       if (nsims == 1 | dynamic == FALSE) {
         sim.lwd <- 1
@@ -1900,10 +1899,13 @@ plot.netsim <- function(x, type = "sim", sim, network = 1, at = 1,
 
     # Default colors
     if (missing(sim.col)) {
-      if (nstats > 9) {
+      if (nstats > 8) {
         sim.col <- brewer_ramp(nstats, "Set1")
       } else {
-        sim.col <- brewer.pal(9, "Set1")[1:nstats]
+        sim.col <- brewer.pal(9, "Set1")[1:(nstats + 1)]
+        if (nstats >= 6) {
+          sim.col <- sim.col[-which(sim.col == "#FFFF33")]
+        }
       }
     }
 
