@@ -256,16 +256,9 @@ check_bip_degdist <- function(num.m1, num.m2,
 #' @keywords colorUtils
 #' @export
 #'
-color_tea <- function(nd,
-                      old.var = "testatus",
-                      old.sus = "s",
-                      old.inf = "i",
-                      old.rec = "r",
-                      new.var = "ndtvcol",
-                      new.sus,
-                      new.inf,
-                      new.rec,
-                      verbose = TRUE) {
+color_tea <- function(nd, old.var = "testatus", old.sus = "s", old.inf = "i",
+                      old.rec = "r", new.var = "ndtvcol", new.sus, new.inf,
+                      new.rec, verbose = TRUE) {
 
   if (missing(new.inf)) {
     new.inf <- transco("firebrick", 0.75)
@@ -300,7 +293,6 @@ color_tea <- function(nd,
 
   return(nd)
 }
-
 
 
 #' @title Copies Vertex Attributes in Formation Formula to attr List
@@ -515,7 +507,6 @@ dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
   class(out) <- "disscoef"
   return(out)
 }
-
 
 
 #' @title Table of Edge Censoring
@@ -993,7 +984,6 @@ get_prev.net <- function(dat, at) {
 }
 
 
-
 #' @title Mode Numbers for Bipartite Network
 #'
 #' @description Outputs mode numbers give ID numbers for a bipartite network.
@@ -1115,12 +1105,7 @@ modeids <- function(nw, mode) {
 #' node_active(nw, at = 1, out = "all")
 #' node_active(nw, at = 5, out = "all")
 #'
-node_active <- function(nw,
-                        at,
-                        out,
-                        mode,
-                        active.default = FALSE
-                        ) {
+node_active <- function(nw, at, out, mode, active.default = FALSE) {
 
   if (!(missing(mode)) && !is.numeric(nw$gal$bipartite))
     stop("nw must be bipartite if mode argument is used")
