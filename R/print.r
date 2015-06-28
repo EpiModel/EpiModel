@@ -5,7 +5,7 @@ print.dcm <- function(x, ...) {
   # New model
   new.mod <- ifelse(!is.null(x$control$new.mod), TRUE, FALSE)
 
-  cat("EpiModel Object")
+  cat("EpiModel Simulation")
   cat("\n=======================")
   cat("\nModel class:", class(x))
 
@@ -43,7 +43,7 @@ print.dcm <- function(x, ...) {
 #' @export
 print.icm <- function(x, ...) {
 
-  cat("EpiModel Object")
+  cat("EpiModel Simulation")
   cat("\n=======================")
   cat("\nModel class:", class(x))
 
@@ -72,9 +72,9 @@ print.icm <- function(x, ...) {
 
 
 #' @export
-print.netest <- function(x, digits=3, ...) {
+print.netest <- function(x, digits = 3, ...) {
 
-  cat("EpiModel Object")
+  cat("EpiModel Network Estimation")
   cat("\n=======================")
   cat("\nModel class:", class(x))
   estmeth <- ifelse(x$edapprox == TRUE, "ERGM with Edges Approximation",
@@ -138,7 +138,7 @@ print.netsim <- function(x, ...) {
     simnames <- paste0("sim1 ... sim", nsims)
   }
 
-  cat("EpiModel Object")
+  cat("EpiModel Simulation")
   cat("\n=======================")
   cat("\nModel class:", class(x))
 
@@ -192,7 +192,7 @@ print.disscoef <- function(x, ...) {
 
   cat("Dissolution Coefficients")
   cat("\n=======================")
-  cat("\nDissolution Model: "); ; print(x$dissolution)
+  cat("\nDissolution Model: "); print(x$dissolution)
   cat("Edge Duration:", x$duration)
   cat("\nCrude Coefficient:", x$coef.crude)
   cat("\nAdjusted Coefficient:", x$coef.adj)
@@ -361,6 +361,10 @@ print.control.icm <- function(x, ...) {
   for (i in pToPrint) {
     cat(names(x)[i], "=", x[[i]], fill = 80)
   }
+  cat("Built-In Modules:", x$bi.mods, fill = 80)
+  if (length(x$user.mods) > 0) {
+    cat("User Modules:", x$user.mods, fill = 80)
+  }
 
   invisible()
 }
@@ -385,6 +389,10 @@ print.control.net <- function(x, ...) {
     } else {
       cat(names(x)[i], "=", x[[i]], fill = 80)
     }
+  }
+  cat("Built-In Modules:", x$bi.mods, fill = 80)
+  if (length(x$user.mods) > 0) {
+    cat("User Modules:", x$user.mods, fill = 80)
   }
 
   invisible()
