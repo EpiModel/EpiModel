@@ -74,7 +74,8 @@ resim_nets <- function(dat, at) {
   statOnNw <- ("status" %in% get_formula_terms(nwparam$formation))
   status <- dat$attr$status
   if (statOnNw == TRUE && length(unique(status)) == 1) {
-    stop("Stopping simulation because status in formation formula and no longer any discordant nodes",
+    stop("Stopping simulation because status in formation formula and ",
+         "no longer any discordant nodes",
          call. = TRUE)
   }
 
@@ -103,7 +104,8 @@ resim_nets <- function(dat, at) {
 
     # Set up nwstats df
     if (dat$control$save.nwstats == TRUE) {
-      dat$stats$nwstats <- rbind(dat$stats$nwstats, tail(attributes(dat$nw)$stats, 1))
+      dat$stats$nwstats <- rbind(dat$stats$nwstats,
+                                 tail(attributes(dat$nw)$stats, 1))
     }
 
     if (dat$control$delete.nodes == TRUE) {
