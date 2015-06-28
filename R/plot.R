@@ -756,7 +756,7 @@ plot.icm <- function(x, y, popfrac, sim.lines, sims, sim.col, sim.lwd,
 
   # Simulation lines --------------------------------------------------------
   if (missing(sim.lines)) {
-    sim.lines <- ifelse(modes == 1, TRUE, FALSE)
+    sim.lines <- FALSE
   }
   if (sim.lines == TRUE) {
     for (j in seq_len(lcomp)) {
