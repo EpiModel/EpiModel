@@ -87,16 +87,9 @@
 #' plot(dx2, type = "dissolution", method = "b", col = "bisque")
 #' }
 #'
-netdx <- function(x,
-                  nsims = 1,
-                  dynamic = TRUE,
-                  nsteps,
-                  nwstats.formula = "formation",
-                  set.control.ergm,
-                  set.control.stergm,
-                  keep.tedgelist = FALSE,
-                  verbose = TRUE,
-                  ncores = 1) {
+netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps, nwstats.formula = "formation",
+                  set.control.ergm, set.control.stergm, keep.tedgelist = FALSE,
+                  verbose = TRUE, ncores = 1) {
 
   if (class(x) != "netest") {
     stop("x must be an object of class netest", call. = FALSE)
@@ -114,7 +107,7 @@ netdx <- function(x,
   coef.diss <- x$coef.diss
   constraints <- x$constraints
   if (is.null(constraints)) {
-    constraints <- ~ .
+    constraints <- ~.
   }
   target.stats <- x$target.stats
   edapprox <- x$edapprox

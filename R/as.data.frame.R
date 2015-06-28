@@ -46,10 +46,7 @@
 #' head(as.data.frame(mod2))
 #' tail(as.data.frame(mod2))
 #'
-as.data.frame.dcm <- function(x,
-                              row.names = NULL,
-                              optional = FALSE,
-                              run = 1,
+as.data.frame.dcm <- function(x, row.names = NULL, optional = FALSE, run = 1,
                               ...) {
 
   df <- data.frame(time = x$control$timesteps)
@@ -128,12 +125,8 @@ as.data.frame.dcm <- function(x,
 #' as.data.frame(mod, out = "vals")
 #' as.data.frame(mod, out = "vals", sim = 2)
 #'
-as.data.frame.icm <- function(x,
-                              row.names = NULL,
-                              optional = FALSE,
-                              sim,
-                              out = "mean",
-                              ...) {
+as.data.frame.icm <- function(x, row.names = NULL, optional = FALSE,
+                              sim, out = "mean", ...) {
 
   df <- data.frame(time = 1:x$control$nsteps)
   nsims <- x$control$nsims
@@ -210,19 +203,11 @@ as.data.frame.icm <- function(x,
 #' @method as.data.frame netsim
 #' @export
 #' @rdname as.data.frame.icm
-as.data.frame.netsim <- function(x,
-                                 row.names = NULL,
-                                 optional = FALSE,
-                                 sim,
-                                 out = "mean",
-                                 ...) {
+as.data.frame.netsim <- function(x, row.names = NULL, optional = FALSE,
+                                 sim, out = "mean", ...) {
 
-  df <- as.data.frame.icm(x,
-                          row.names = row.names,
-                          optional = optional,
-                          sim = sim,
-                          out = out,
-                          ...)
+  df <- as.data.frame.icm(x, row.names = row.names, optional = optional,
+                          sim = sim, out = out, ...)
   return(df)
 
 }

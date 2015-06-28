@@ -123,36 +123,19 @@
 #' coef.diss <- dissolution_coefs(dissolution, duration = 10)
 #'
 #' # Estimate the STERGM using the edges dissolution approximation
-#' est <- netest(nw,
-#'               formation,
-#'               dissolution,
-#'               target.stats,
-#'               coef.diss,
+#' est <- netest(nw, formation, dissolution, target.stats, coef.diss,
 #'               set.control.ergm = control.ergm(MCMC.burnin = 1e5,
 #'                                               MCMC.interval = 1000))
 #' est
 #'
 #' # To estimate the STERGM directly, use edapprox = FALSE
-#' # est2 <- netest(nw,
-#' #                formation,
-#' #                dissolution,
-#' #                target.stats,
-#' #                coef.diss,
-#' #                edapprox = FALSE)
+#' # est2 <- netest(nw, formation, dissolution, target.stats,
+#' #                coef.diss, edapprox = FALSE)
 #' }
 #'
-netest <- function(nw,
-                   formation,
-                   dissolution,
-                   target.stats,
-                   coef.diss,
-                   constraints,
-                   coef.form = NULL,
-                   edapprox = TRUE,
-                   output = "fit",
-                   set.control.ergm,
-                   set.control.stergm,
-                   nonconv.error = FALSE,
+netest <- function(nw, formation, dissolution, target.stats, coef.diss,
+                   constraints, coef.form = NULL, edapprox = TRUE, output = "fit",
+                   set.control.ergm, set.control.stergm, nonconv.error = FALSE,
                    verbose = TRUE) {
 
   if (missing(constraints)) {

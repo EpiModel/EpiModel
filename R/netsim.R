@@ -125,11 +125,7 @@
 #' summary(mod2, at = 100)
 #' }
 #'
-netsim <- function(x,
-                   param,
-                   init,
-                   control
-                   ) {
+netsim <- function(x, param, init, control) {
 
   crosscheck.net(x, param, init, control)
   if (!is.null(control[["verbose.FUN"]])) {
