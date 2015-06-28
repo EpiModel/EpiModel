@@ -100,7 +100,7 @@ test_that("New network models vignette example", {
   ## Network Model
   nw <- network.initialize(50, directed = FALSE)
   est <- netest(nw, formation = ~edges, target.stats = 15,
-                coef.diss = dissolution_coefs(~offset(edges), 60, 0.0002747253),
+                coef.diss = dissolution_coefs(~offset(edges), 60, 0.000274),
                 verbose = FALSE)
 
 
