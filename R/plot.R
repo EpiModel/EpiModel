@@ -132,7 +132,7 @@ plot.dcm <- function(x, y, popfrac, run, col, lwd, lty, alpha = 0.9, leg,
 
   ## Main title default
   if (is.null(da$main)) {
-    main <- paste("DCM", x$control$type, "Model")
+    main <- ""
   } else {
     main <- da$main
   }
@@ -704,13 +704,7 @@ plot.icm <- function(x, y, popfrac, sim.lines, sims, sim.col, sim.lwd,
     ylim <- da$ylim
   }
   if (is.null(da$main)) {
-    if (class(x) == "icm") {
-      modclass <- "ICM"
-    }
-    if (class(x) == "netsim") {
-      modclass <- "Network"
-    }
-    main <- paste(modclass, type, "Model")
+    main <- ""
   } else {
     main <- da$main
   }
