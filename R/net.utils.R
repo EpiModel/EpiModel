@@ -532,7 +532,7 @@ dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
 #' @examples
 #' # Initialize and parameterize network model
 #' nw <- network.initialize(n = 100, directed = FALSE)
-#' formation <- ~ edges
+#' formation <- ~edges
 #' target.stats <- 50
 #' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
 #'
@@ -605,7 +605,7 @@ edgelist_censor <- function(el) {
 #' @examples
 #' # Initialize and parameterize the network model
 #' nw <- network.initialize(n = 100, directed = FALSE)
-#' formation <- ~ edges
+#' formation <- ~edges
 #' target.stats <- 50
 #' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
 #'

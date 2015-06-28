@@ -7,7 +7,7 @@
 #'
 #' @param nw An object of class \code{\link{network}}.
 #' @param formation Right-hand sided STERGM formation formula in the form
-#'        \code{~ edges + ...}, where \code{...} are additional network statistics.
+#'        \code{~edges + ...}, where \code{...} are additional network statistics.
 #' @param target.stats Vector of target statistics for the formation model, with
 #'        one number for each network statistic in the model (see \code{\link{stergm}}).
 #' @param coef.diss An object of class \code{disscoef} output from the
@@ -110,7 +110,7 @@
 #' nw <- network.initialize(n = 100, directed = FALSE)
 #'
 #' # Set formation formula
-#' formation <- ~ edges + concurrent
+#' formation <- ~edges + concurrent
 #'
 #' # Set target statistics for formation
 #' target.stats <- c(50, 25)

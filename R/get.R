@@ -21,7 +21,7 @@
 #' \dontrun{
 #' ## Simulate SI epidemic on bipartite Bernoulli random graph
 #' nw <- network.initialize(n = 100, bipartite = 50, directed = FALSE)
-#' formation <- ~ edges
+#' formation <- ~edges
 #' target.stats <- 50
 #' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
 #' est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
@@ -107,7 +107,7 @@ get_network <- function(x, sim = 1, network = 1, collapse = FALSE, at) {
 #' @examples
 #' ## Simulate SI epidemic on bipartite Bernoulli random graph
 #' nw <- network.initialize(n = 100, bipartite = 50, directed = FALSE)
-#' formation <- ~ edges
+#' formation <- ~edges
 #' target.stats <- 50
 #' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
 #' est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
@@ -160,7 +160,7 @@ get_transmat <- function(x, sim = 1) {
 #' @examples
 #' ## Simulate SI epidemic on bipartite Bernoulli random graph
 #' nw <- network.initialize(n = 100, bipartite = 50, directed = FALSE)
-#' formation <- ~ edges
+#' formation <- ~edges
 #' target.stats <- 50
 #' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
 #' est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)

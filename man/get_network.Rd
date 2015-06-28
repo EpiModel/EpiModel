@@ -29,7 +29,7 @@ Extracts the networkDynamic object from a network epidemic model
 \dontrun{
 ## Simulate SI epidemic on bipartite Bernoulli random graph
 nw <- network.initialize(n = 100, bipartite = 50, directed = FALSE)
-formation <- ~ edges
+formation <- ~edges
 target.stats <- 50
 coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
 est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)

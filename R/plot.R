@@ -1668,7 +1668,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sim, stats,
 #' ## Independent SI Model
 #' # Initialize network and set network model parameters
 #' nw <- network.initialize(n = 100, bipartite = 50, directed = FALSE)
-#' formation <- ~ edges
+#' formation <- ~edges
 #' target.stats <- 50
 #' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
 #'
@@ -1680,7 +1680,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sim, stats,
 #' init <- init.net(i.num = 10, i.num.m2 = 10)
 #' control <- control.net(type = "SI", nsteps = 100, nsims = 5,
 #'                        verbose = FALSE, save.nwstats = TRUE,
-#'                        nwstats.formula = ~ edges + meandeg + concurrent)
+#'                        nwstats.formula = ~edges + meandeg + concurrent)
 #' mod <- netsim(est, param, init, control)
 #'
 #' # Plot epidemic trajectory (default type)
