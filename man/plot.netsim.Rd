@@ -101,17 +101,10 @@ model simulated through \code{\link{netsim}}:
 nw <- network.initialize(n = 100, bipartite = 50, directed = FALSE)
 formation <- ~ edges
 target.stats <- 50
-dissolution <- ~ offset(edges)
-duration <- 20
-coef.diss <- dissolution_coefs(dissolution, duration)
+coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
 
 # Estimate the network model
-est <- netest(nw,
-              formation,
-              dissolution,
-              target.stats,
-              coef.diss,
-              verbose = FALSE)
+est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 
 # Simulate the epidemic model
 param <- param.net(inf.prob = 0.3, inf.prob.m2 = 0.15)

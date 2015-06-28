@@ -6,15 +6,8 @@ test_that("Edges only models", {
   nw <- network.initialize(num, directed = FALSE)
   formation <- ~edges
   target.stats <- 15
-  dissolution <- ~offset(edges)
-  duration <- 20
-  coef.diss <- dissolution_coefs(dissolution, duration)
-  est1 <- netest(nw,
-                 formation,
-                 dissolution,
-                 target.stats,
-                 coef.diss,
-                 verbose = FALSE)
+  coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
+  est1 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 
   ## Single simulation
   dx1 <- netdx(est1, nsims = 1, nsteps = 10, verbose = FALSE)
@@ -40,7 +33,7 @@ test_that("Edges only models", {
 
   ## Expanded monitoring formula
   dx3 <- netdx(est1, nsims = 2, nsteps = 10, verbose = FALSE,
-              nwstats.formula = ~edges + concurrent)
+               nwstats.formula = ~edges + concurrent)
   expect_is(dx3, "netdx")
   print(dx3)
   plot(dx3)
@@ -76,12 +69,7 @@ test_that("Offset terms", {
   coef.diss <- dissolution_coefs(dissolution, duration)
   formation <- ~edges + offset(nodemix("loc", base = c(1, 3)))
   target.stats <- 15
-  est2 <- netest(nw,
-                 formation,
-                 dissolution,
-                 target.stats,
-                 coef.diss,
-                 coef.form = -Inf,
+  est2 <- netest(nw, formation, target.stats, coef.diss, coef.form = -Inf,
                  verbose = FALSE)
 
   dx <- netdx(est2, nsims = 2, nsteps = 10, verbose = FALSE)
@@ -119,15 +107,10 @@ test_that("Faux offset term", {
   nw <- set.vertex.attribute(nw, "loc", rep(0:1, each = n/2))
   dissolution <- ~offset(edges)
   duration <- 40
-  coef.diss <- dissolution_coefs(dissolution, duration)
+  coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 40)
   formation <- ~edges + nodemix("loc", base = c(1, 3))
   target.stats <- c(15, 0)
-  est3 <- netest(nw,
-                 formation,
-                 dissolution,
-                 target.stats,
-                 coef.diss,
-                 verbose = FALSE)
+  est3 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 
   dx <- netdx(est3, nsims = 2, nsteps = 10, verbose = FALSE)
   expect_is(dx, "netdx")
@@ -147,12 +130,10 @@ test_that("Static diagnostic simulations", {
 
   nw <- network.initialize(100, directed = FALSE)
   formation <- ~edges + concurrent
-  dissolution <- ~offset(edges)
   target.stats <- c(50, 20)
-  coef.diss <- dissolution_coefs(dissolution, duration = 10)
+  coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 10)
 
-  est4 <- netest(nw, formation, dissolution,
-                 target.stats, coef.diss, verbose = FALSE)
+  est4 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 
   dx <- netdx(est4, dynamic = FALSE, nsims = 250,
               nwstats.formula = ~edges + meandeg + concurrent)

@@ -4,19 +4,15 @@
 \alias{netest}
 \title{Dynamic Network Model Estimation}
 \usage{
-netest(nw, formation, dissolution, target.stats, coef.diss, constraints,
-  coef.form = NULL, edapprox = TRUE, output = "fit", set.control.ergm,
-  set.control.stergm, nonconv.error = FALSE, verbose = TRUE)
+netest(nw, formation, target.stats, coef.diss, constraints, coef.form = NULL,
+  edapprox = TRUE, output = "fit", set.control.ergm, set.control.stergm,
+  nonconv.error = FALSE, verbose = TRUE)
 }
 \arguments{
 \item{nw}{An object of class \code{\link{network}}.}
 
 \item{formation}{Right-hand sided STERGM formation formula in the form
 \code{~ edges + ...}, where \code{...} are additional network statistics.}
-
-\item{dissolution}{Right-hand sided STERGM dissolution formula of the form
-\code{~ offset(edges)}. This dissolution model is the only model currently
-supported in \code{EpiModel}.}
 
 \item{target.stats}{Vector of target statistics for the formation model, with
 one number for each network statistic in the model (see \code{\link{stergm}}).}
@@ -121,25 +117,23 @@ package. An example is below.
 # Initialize a network of 100 nodes
 nw <- network.initialize(n = 100, directed = FALSE)
 
-# Set formation and dissolution formulas
+# Set formation formula
 formation <- ~ edges + concurrent
-dissolution <- ~ offset(edges)
 
 # Set target statistics for formation
 target.stats <- c(50, 25)
 
 # Obtain the offset coefficients
-coef.diss <- dissolution_coefs(dissolution, duration = 10)
+coef.diss <- dissolution_coefs(dissolution = offset(edges), duration = 10)
 
 # Estimate the STERGM using the edges dissolution approximation
-est <- netest(nw, formation, dissolution, target.stats, coef.diss,
+est <- netest(nw, formation, target.stats, coef.diss,
               set.control.ergm = control.ergm(MCMC.burnin = 1e5,
                                               MCMC.interval = 1000))
 est
 
 # To estimate the STERGM directly, use edapprox = FALSE
-# est2 <- netest(nw, formation, dissolution, target.stats,
-#                coef.diss, edapprox = FALSE)
+# est2 <- netest(nw, formation, target.stats, coef.diss, edapprox = FALSE)
 }
 }
 \references{

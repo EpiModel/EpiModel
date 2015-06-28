@@ -2,13 +2,9 @@ context("Standard network models")
 
 nw <- network.initialize(n = 50, directed = FALSE)
 nw <- set.vertex.attribute(nw, "race", rbinom(50, 1, 0.5))
-est <- netest(
-  nw,
-  formation = ~edges + nodematch("race"),
-  dissolution = ~offset(edges),
-  target.stats = c(25, 10),
-  coef.diss = dissolution_coefs(~offset(edges), 10, 0),
-  verbose = FALSE)
+est <- netest(nw, formation = ~edges + nodematch("race"), target.stats = c(25, 10),
+              coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+              verbose = FALSE)
 
 # Edges + nodematch, one-mode, closed
 
@@ -79,5 +75,3 @@ test_that("netsim for edges only, SIR, one-mode, closed, 2 sim", {
   plot(mod, type = "network")
   test_net(mod)
 })
-
-

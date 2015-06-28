@@ -7,15 +7,8 @@ test_that("Updating attributes in open populations", {
 
   formation <- ~edges + nodefactor("risk")
   target.stats <- c(25, 36)
-  dissolution <- ~offset(edges)
-  coef.diss <- dissolution_coefs(dissolution, 38, d.rate = 0.002)
-
-  est1 <- netest(nw,
-                 formation,
-                 dissolution,
-                 target.stats,
-                 coef.diss,
-                 verbose = FALSE)
+  coef.diss <- dissolution_coefs(dissolution = ~offset(edges), 38, d.rate = 0.002)
+  est1 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 
   probs <- c(0.2055, 0.0088, 0.0614, 0)
   durs <- c(3, 100, 9, 10)
@@ -46,28 +39,20 @@ test_that("Serosorting model in open population", {
   nw <- set.vertex.attribute(nw, "status", "i", infIds)
   nw <- set.vertex.attribute(nw, "race", rbinom(n, 1, 0.5))
 
-  formation <- ~ edges + nodefactor("status", base = 1) +
-                 nodematch("status") + nodematch("race")
+  formation <- ~edges + nodefactor("status", base = 1) +
+                nodematch("status") + nodematch("race")
   target.stats <- c(18, 3, 15, 10)
-
-  dissolution <- ~offset(edges)
-  coef.diss <- dissolution_coefs(dissolution, 50, d.rate = 0.01)
-
-  est <- netest(nw,
-                formation,
-                dissolution,
-                target.stats,
-                coef.diss,
-                verbose = FALSE)
+  coef.diss <- dissolution_coefs(dissolution = ~offset(edges), 50, d.rate = 0.01)
+  est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 
   param <- param.net(inf.prob = 0.03, b.rate = 0.01,
                      ds.rate = 0.01, di.rate = 0.01)
   init <- init.net()
   control <- control.net(type = "SI", nsteps = 10, nsims = 1,
-                         nwstats.formula = ~ edges +
-                                             meandeg +
-                                             nodefactor("status", base = 0) +
-                                             nodematch("status"),
+                         nwstats.formula = ~edges +
+                                            meandeg +
+                                            nodefactor("status", base = 0) +
+                                            nodematch("status"),
                          save.network = FALSE,
                          verbose = FALSE)
 
@@ -81,15 +66,8 @@ test_that("Save attributes to output", {
   nw <- network.initialize(n = 50, bipartite = 25, directed = FALSE)
   formation <- ~edges
   target.stats <- 25
-  dissolution <- ~offset(edges)
-  coef.diss <- dissolution_coefs(dissolution, 38, d.rate = 0.01)
-
-  est1 <- netest(nw,
-                 formation,
-                 dissolution,
-                 target.stats,
-                 coef.diss,
-                 verbose = FALSE)
+  coef.diss <- dissolution_coefs(dissolution = ~offset(edges), 38, d.rate = 0.01)
+  est1 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 
   param <- param.net(inf.prob = 0.2, act.rate = 1,
                      inf.prob.m2 = 0.2,

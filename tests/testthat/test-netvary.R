@@ -2,19 +2,11 @@ context("Time Varying Network Parameters")
 
 test_that("time varying parameters for one-mode", {
   nw <- network.initialize(n = 100, directed = FALSE)
-  formation <- ~ edges
+  formation <- ~edges
   target.stats <- 50
-  dissolution <- ~ offset(edges)
-  duration <- 20
-  coef.diss <- dissolution_coefs(dissolution, duration)
+  coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration  = 20)
 
-  est1 <- netest(nw,
-                 formation,
-                 dissolution,
-                 target.stats,
-                 coef.diss,
-                 verbose = FALSE)
-
+  est1 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 
   probs <- c(0.25, 0.02)
   durs <- c(10, 1)
@@ -38,19 +30,11 @@ test_that("time varying parameters for one-mode", {
 
 test_that("time varying parameters for bipartite", {
   nw <- network.initialize(n = 100, bipartite = 50, directed = FALSE)
-  formation <- ~ edges
+  formation <- ~edges
   target.stats <- 50
-  dissolution <- ~ offset(edges)
-  duration <- 20
-  coef.diss <- dissolution_coefs(dissolution, duration)
+  coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration  = 20)
 
-  est1 <- netest(nw,
-                 formation,
-                 dissolution,
-                 target.stats,
-                 coef.diss,
-                 verbose = FALSE)
-
+  est1 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 
   probs <- c(0.25, 0.01)
   durs <- c(10, 1)

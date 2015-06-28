@@ -28,7 +28,7 @@ sim_nets <- function(x, nw, nsteps, control) {
     suppressWarnings(
       sim <- simulate(nw,
                       formation = x$formation,
-                      dissolution = x$dissolution,
+                      dissolution = x$coef.diss$dissolution,
                       coef.form = x$coef.form,
                       coef.diss = x$coef.diss$coef.crude,
                       time.slices = nsteps,
@@ -92,7 +92,7 @@ resim_nets <- function(dat, at) {
     suppressWarnings(
       dat$nw <- simulate(dat$nw,
                          formation = nwparam$formation,
-                         dissolution = nwparam$dissolution,
+                         dissolution = nwparam$coef.diss$dissolution,
                          coef.form = nwparam$coef.form,
                          coef.diss = nwparam$coef.diss$coef.adj,
                          constraints = nwparam$constraints,
@@ -136,7 +136,7 @@ edges_correct <- function(dat, at) {
 
   if (dat$control$depend == TRUE) {
     if (dat$param$modes == 1) {
-      old.num <- dat$epi$num[at-1]
+      old.num <- dat$epi$num[at - 1]
       new.num <- sum(dat$attr$active == 1)
       dat$nwparam[[1]]$coef.form[1] <- dat$nwparam[[1]]$coef.form[1] +
         log(old.num) -
@@ -144,15 +144,13 @@ edges_correct <- function(dat, at) {
     }
     if (dat$param$modes == 2) {
       mode <- idmode(dat$nw)
-      old.num.m1 <- dat$epi$num[at-1]
-      old.num.m2 <- dat$epi$num.m2[at-1]
+      old.num.m1 <- dat$epi$num[at - 1]
+      old.num.m2 <- dat$epi$num.m2[at - 1]
       new.num.m1 <- sum(dat$attr$active == 1 & mode == 1)
       new.num.m2 <- sum(dat$attr$active == 1 & mode == 2)
       dat$nwparam[[1]]$coef.form[1] <- dat$nwparam[[1]]$coef.form[1] +
-        log(2*old.num.m1*old.num.m2/
-              (old.num.m1+old.num.m2)) -
-        log(2*new.num.m1*new.num.m2/
-              (new.num.m1+new.num.m2))
+        log(2 * old.num.m1 * old.num.m2 / (old.num.m1 + old.num.m2)) -
+        log(2 * new.num.m1 * new.num.m2/ (new.num.m1 + new.num.m2))
     }
   }
   return(dat)

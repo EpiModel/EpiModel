@@ -132,14 +132,9 @@ merge.icm <- function(x, y, ...) {
 #' @examples
 #' # Network model
 #' nw <- network.initialize(n = 100, directed = FALSE)
-#' dissolution <- ~offset(edges)
-#' coef.diss <- dissolution_coefs(dissolution, duration = 10)
-#' est <- netest(nw,
-#'               formation = ~ edges,
-#'               dissolution = ~offset(edges),
-#'               target.stats = 25,
-#'               coef.diss = coef.diss,
-#'               verbose = FALSE)
+#' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 10)
+#' est <- netest(nw, formation = ~ edges, target.stats = 25,
+#'               coef.diss = coef.diss, verbose = FALSE)
 #'
 #' # Epidemic models
 #' param <- param.net(inf.prob = 1)
@@ -157,13 +152,9 @@ merge.icm <- function(x, y, ...) {
 #' y$epi
 #' z$epi
 #'
-merge.netsim <- function(x, y,
-                         keep.transmat = TRUE,
-                         keep.network = TRUE,
-                         keep.nwstats = TRUE,
-                         keep.other = TRUE,
-                         param.error = TRUE,
-                         ...) {
+merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
+                         keep.nwstats = TRUE, keep.other = TRUE,
+                         param.error = TRUE, ...) {
 
   ## Check structure
   if (length(x) != length(y) || names(x) != names(y)) {

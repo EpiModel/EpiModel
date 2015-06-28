@@ -3,13 +3,11 @@ context("Use PIDs for Network Simulations")
 test_that("PIDs for one-mode models", {
 
   nw <- network.initialize(n = 100, directed = FALSE)
-  formation <- ~ edges
+  formation <- ~edges
   target.stats <- 50
-  dissolution <- ~ offset(edges)
-  duration <- 50
-  coef.diss <- dissolution_coefs(dissolution, duration, d.rate = 0.01)
-  est <- netest(nw, formation, dissolution, target.stats,
-                coef.diss, verbose = FALSE)
+  coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 50,
+                                 d.rate = 0.01)
+  est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 
   param <- param.net(inf.prob = 0.1, rec.rate = 0.02,
                      b.rate = 0.01, ds.rate = 0.01, di.rate = 0.01)
@@ -33,13 +31,11 @@ test_that("PIDs for one-mode models", {
 test_that("PIDs for bipartite models", {
 
   nw <- network.initialize(n = 100, bipartite = 50, directed = FALSE)
-  formation <- ~ edges
+  formation <- ~edges
   target.stats <- 50
-  dissolution <- ~ offset(edges)
-  duration <- 50
-  coef.diss <- dissolution_coefs(dissolution, duration, d.rate = 0.01)
-  est <- netest(nw, formation, dissolution, target.stats,
-                coef.diss, verbose = FALSE)
+  coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 50,
+                                 d.rate = 0.01)
+  est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 
   param <- param.net(inf.prob = 0.1, inf.prob.m2 = 0.1,
                      b.rate = 0.01, ds.rate = 0.01, di.rate = 0.01,

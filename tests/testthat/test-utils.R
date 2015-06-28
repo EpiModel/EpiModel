@@ -67,8 +67,7 @@ test_that("calc_eql for dcm", {
 test_that("calc_eql for icm", {
   skip_on_cran()
   set.seed(1)
-  param <- param.icm(inf.prob = 0.2,
-                     act.rate = 0.25, b.rate = 1/100,
+  param <- param.icm(inf.prob = 0.2, act.rate = 0.25, b.rate = 1/100,
                      ds.rate = 1/100, di.rate = 1/90)
   init <- init.icm(s.num = 500, i.num = 1)
   control <- control.icm(type = "SI", nsteps = 500, nsims = 1, verbose = FALSE)
@@ -82,13 +81,9 @@ test_that("calc_eql for netsim", {
   set.seed(35160)
   nw <- network.initialize(n = 50, directed = FALSE)
   nw <- set.vertex.attribute(nw, "race", rbinom(50, 1, 0.5))
-  est <- netest(
-    nw,
-    formation = ~edges + nodematch("race"),
-    dissolution = ~offset(edges),
-    target.stats = c(25, 10),
-    coef.diss = dissolution_coefs(~offset(edges), 10, 0),
-    verbose = FALSE)
+  est <- netest(nw, formation = ~edges + nodematch("race"), target.stats = c(25, 10),
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                verbose = FALSE)
   param <- param.net(inf.prob = 0.5, act.rate = 1)
   init <- init.net(i.num = 25)
   control <- control.net(type = "SI", nsims = 1, nsteps = 100, verbose = FALSE)

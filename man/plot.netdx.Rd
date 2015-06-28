@@ -112,20 +112,18 @@ the number of statistics.
 # Network initialization and model parameterization
 nw <- network.initialize(100, directed = FALSE)
 nw <- set.vertex.attribute(nw, "sex", rbinom(100, 1, 0.5))
-formation <- ~ edges + nodematch("sex")
-dissolution <- ~ offset(edges)
+formation <- ~edges + nodematch("sex")
 target.stats <- c(50, 40)
-coef.diss <- dissolution_coefs(dissolution, duration = 50)
+coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 50)
 
 # Estimate the model
-est <- netest(nw, formation, dissolution,
-              target.stats, coef.diss, verbose = FALSE)
+est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 
 # Static diagnostics
 dx1 <- netdx(est, nsims = 1e4, dynamic = FALSE,
-             nwstats.formula = ~ edges + meandeg + concurrent +
-                                 nodefactor("sex", base = 0) +
-                                 nodematch("sex"))
+             nwstats.formula = ~edges + meandeg + concurrent +
+                                nodefactor("sex", base = 0) +
+                                nodematch("sex"))
 dx1
 
 # Only formation diagnostics are available to plot
@@ -137,9 +135,9 @@ plot(dx1, stats = c("nodefactor.sex.0", "nodefactor.sex.1"),
 
 # Dynamic diagnostics
 dx2 <- netdx(est, nsims = 10, nsteps = 500,
-             nwstats.formula = ~ edges + meandeg + concurrent +
-                                 nodefactor("sex", base = 0) +
-                                 nodematch("sex"))
+             nwstats.formula = ~edges + meandeg + concurrent +
+                                nodefactor("sex", base = 0) +
+                                nodematch("sex"))
 dx2
 
 # Formation statistics plots, joined and separate

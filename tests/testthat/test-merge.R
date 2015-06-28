@@ -2,10 +2,7 @@ context("Network merging")
 
 test_that("merge: works for open sims saving nw stats", {
   nw <- network.initialize(n = 50, directed = FALSE)
-  est <- netest(nw,
-                formation = ~ edges,
-                dissolution = ~offset(edges),
-                target.stats = 10,
+  est <- netest(nw, formation = ~edges, target.stats = 10,
                 coef.diss = dissolution_coefs(~offset(edges), 10, 0),
                 verbose = FALSE)
 
@@ -13,9 +10,7 @@ test_that("merge: works for open sims saving nw stats", {
                      ds.rate = 0.01,
                      di.rate = 0.01)
   init <- init.net(i.num = 1)
-  control <- control.net(type = "SI",
-                         nsteps = 5,
-                         save.stats = TRUE,
+  control <- control.net(type = "SI", nsteps = 5, save.stats = TRUE,
                          stats.formula = ~edges + meandeg + degree(0) + concurrent,
                          verbose = FALSE)
 

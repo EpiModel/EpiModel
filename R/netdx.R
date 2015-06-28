@@ -63,13 +63,11 @@
 #' # Network initialization and model parameterization
 #' nw <- network.initialize(100, directed = FALSE)
 #' formation <- ~ edges
-#' dissolution <- ~ offset(edges)
 #' target.stats <- 50
-#' coef.diss <- dissolution_coefs(dissolution, duration = 25)
+#' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 25)
 #'
 #' # Estimate the model
-#' est <- netest(nw, formation, dissolution,
-#'               target.stats, coef.diss, verbose = FALSE)
+#' est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 #'
 #' # Static diagnostics on the ERGM fit
 #' dx1 <- netdx(est, nsims = 1e4, dynamic = FALSE,
@@ -103,7 +101,7 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps, nwstats.formula = "forma
   }
   formation <- x$formation
   coef.form <- x$coef.form
-  dissolution <- x$dissolution
+  dissolution <- x$coef.diss$dissolution
   coef.diss <- x$coef.diss
   constraints <- x$constraints
   if (is.null(constraints)) {

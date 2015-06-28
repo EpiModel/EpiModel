@@ -34,11 +34,8 @@ test_that("New network models vignette example", {
       nDeaths <- length(idsDeaths)
       if (nDeaths > 0) {
         dat$attr$active[idsDeaths] <- 0
-        dat$nw <- deactivate.vertices(dat$nw,
-                                      onset = at,
-                                      terminus = Inf,
-                                      v = idsDeaths,
-                                      deactivate.edges = TRUE)
+        dat$nw <- deactivate.vertices(dat$nw, onset = at, terminus = Inf,
+                                      v = idsDeaths, deactivate.edges = TRUE)
       }
     }
 
@@ -68,13 +65,10 @@ test_that("New network models vignette example", {
       nBirths <- 0
     }
     if (nBirths > 0) {
-      dat$nw <- add.vertices(dat$nw,
-                             nv = nBirths)
+      dat$nw <- add.vertices(dat$nw, nv = nBirths)
       newNodes <- (n + 1):(n + nBirths)
-      dat$nw <- activate.vertices(dat$nw,
-                                  onset = at,
-                                  terminus = Inf,
-                                  v = newNodes)
+      dat$nw <- activate.vertices(dat$nw, onset = at,
+                                  terminus = Inf, v = newNodes)
     }
 
 
@@ -82,12 +76,9 @@ test_that("New network models vignette example", {
     if (nBirths > 0) {
       dat$attr$active <- c(dat$attr$active, rep(1, nBirths))
       if (tea.status == TRUE) {
-        dat$nw <- activate.vertex.attribute(dat$nw,
-                                            prefix = "testatus",
-                                            value = 0,
-                                            onset = at,
-                                            terminus = Inf,
-                                            v = newNodes)
+        dat$nw <- activate.vertex.attribute(dat$nw, prefix = "testatus",
+                                            value = 0, onset = at,
+                                            terminus = Inf, v = newNodes)
       }
       dat$attr$status <- c(dat$attr$status, rep("s", nBirths))
       dat$attr$infTime <- c(dat$attr$infTime, rep(NA, nBirths))
@@ -108,42 +99,25 @@ test_that("New network models vignette example", {
 
   ## Network Model
   nw <- network.initialize(50, directed = FALSE)
-  est <- netest(nw,
-                formation = ~ edges,
-                dissolution = ~offset(edges),
-                target.stats = 15,
+  est <- netest(nw, formation = ~edges, target.stats = 15,
                 coef.diss = dissolution_coefs(~offset(edges), 60, 0.0002747253),
                 verbose = FALSE)
 
 
   ## EpiModel
-  param <- param.net(inf.prob = 0.35,
-                     growth.rate = 0.00083,
-                     life.expt = 70)
+  param <- param.net(inf.prob = 0.35, growth.rate = 0.00083, life.expt = 70)
   init <- init.net(i.num = 10)
-  control <- control.net(type = "SI",
-                         nsims = 1,
-                         nsteps = 10,
-                         deaths.FUN = dfunc,
-                         births.FUN = bfunc,
-                         aging.FUN = aging,
-                         depend = TRUE,
-                         save.network = FALSE,
-                         verbose = FALSE)
+  control <- control.net(type = "SI", nsims = 1, nsteps = 10,
+                         deaths.FUN = dfunc, births.FUN = bfunc, aging.FUN = aging,
+                         depend = TRUE, save.network = FALSE, verbose = FALSE)
   mod <- netsim(est, param, init, control)
   expect_is(mod, "netsim")
 
   ## Test module reordering
-  control <- control.net(type = "SI",
-                         nsims = 1,
-                         nsteps = 10,
-                         deaths.FUN = dfunc,
-                         births.FUN = bfunc,
-                         aging.FUN = aging,
+  control <- control.net(type = "SI", nsims = 1, nsteps = 10,
+                         deaths.FUN = dfunc, births.FUN = bfunc, aging.FUN = aging,
                          module.order = c("aging.FUN", "births.FUN", "deaths.FUN"),
-                         depend = TRUE,
-                         save.network = FALSE,
-                         verbose = FALSE)
+                         depend = TRUE, save.network = FALSE, verbose = FALSE)
   mod <- netsim(est, param, init, control)
   expect_is(mod, "netsim")
 

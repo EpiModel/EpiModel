@@ -534,16 +534,10 @@ dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
 #' nw <- network.initialize(n = 100, directed = FALSE)
 #' formation <- ~ edges
 #' target.stats <- 50
-#' dissolution <- ~ offset(edges)
-#' coef.diss <- dissolution_coefs(dissolution, duration = 20)
+#' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
 #'
 #' # Model estimation
-#' est <- netest(nw,
-#'               formation,
-#'               dissolution,
-#'               target.stats,
-#'               coef.diss,
-#'               verbose = FALSE)
+#' est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 #'
 #' # Simulate the network and extract a timed edgelist
 #' sim <- netdx(est, nsims = 1, nsteps = 100, verbose = FALSE)
@@ -553,9 +547,6 @@ dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
 #' edgelist_censor(el)
 #'
 edgelist_censor <- function(el) {
-
-  time.steps <- max(el$terminus)
-  min.step <- min(el$onset)
 
   # left censored
   leftcens <- el$onset.censored
@@ -616,12 +607,10 @@ edgelist_censor <- function(el) {
 #' nw <- network.initialize(n = 100, directed = FALSE)
 #' formation <- ~ edges
 #' target.stats <- 50
-#' dissolution <- ~ offset(edges)
-#' coef.diss <- dissolution_coefs(dissolution, duration = 20)
+#' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
 #'
 #' # Model estimation
-#' est <- netest(nw, formation, dissolution,
-#'               target.stats, coef.diss, verbose = FALSE)
+#' est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 #'
 #' # Simulate the network and extract a timed edgelist
 #' sim <- netdx(est, nsims = 1, nsteps = 100, verbose = FALSE)
