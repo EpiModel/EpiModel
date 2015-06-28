@@ -681,7 +681,6 @@ summary.netsim <- function(object, at, digits = 3, ...) {
 }
 
 
-
 #' @title Summary for Network Model Fit
 #'
 #' @description Prints the summary model fit statistics for an ERGM or STERGM fit.
@@ -695,10 +694,17 @@ summary.netsim <- function(object, at, digits = 3, ...) {
 #'
 #' @details
 #' This function is simply a wrapper function for \code{summary.ergm} and
-#'   \code{summary.stergm}.
+#' \code{summary.stergm}. Additionally, if the edges dissolution approximation
+#' was used to fit the temporal ERGM, then the dissolution coefficient information
+#' will be printed.
 #'
 summary.netest <- function(object, ...) {
 
-  summary(object$fit, ...)
+  print(summary(object$fit, ...))
+
+  if (object$edapprox == TRUE) {
+    cat("\n")
+    print(object$coef.diss)
+  }
 
 }
