@@ -105,7 +105,6 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
 #' # Initialize a network of 100 nodes
 #' nw <- network.initialize(n = 100, directed = FALSE)
 #'
@@ -116,7 +115,7 @@
 #' target.stats <- c(50, 25)
 #'
 #' # Obtain the offset coefficients
-#' coef.diss <- dissolution_coefs(dissolution = offset(edges), duration = 10)
+#' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 10)
 #'
 #' # Estimate the STERGM using the edges dissolution approximation
 #' est <- netest(nw, formation, target.stats, coef.diss,
@@ -126,7 +125,6 @@
 #'
 #' # To estimate the STERGM directly, use edapprox = FALSE
 #' # est2 <- netest(nw, formation, target.stats, coef.diss, edapprox = FALSE)
-#' }
 #'
 netest <- function(nw, formation, target.stats, coef.diss, constraints,
                    coef.form = NULL, edapprox = TRUE, output = "fit",
