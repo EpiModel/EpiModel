@@ -4,13 +4,13 @@
 \alias{plot.icm}
 \title{Plot Data from a Stochastic Individual Contact Epidemic Model}
 \usage{
-\method{plot}{icm}(x, y, popfrac, sim.lines, sims, sim.col, sim.lwd, sim.alpha,
-  mean.line = TRUE, mean.smooth = TRUE, mean.col, mean.lwd, mean.lty, qnts,
-  qnts.col, qnts.alpha, qnts.smooth = TRUE, leg, leg.cex = 0.8, axs = "r",
-  add = FALSE, ...)
+\method{plot}{icm}(x, y, popfrac, sim.lines = FALSE, sims, sim.col, sim.lwd,
+  sim.alpha, mean.line = TRUE, mean.smooth = TRUE, mean.col, mean.lwd = 2,
+  mean.lty = 1, qnts = 0.5, qnts.col, qnts.alpha, qnts.smooth = TRUE, leg,
+  leg.cex = 0.8, axs = "r", add = FALSE, ...)
 }
 \arguments{
-\item{x}{An \code{EpiModel} object of class \code{icm}.}
+\item{x}{An \code{EpiModel} model object of class \code{netsim}.}
 
 \item{y}{Output compartments or flows from \code{icm} object to plot.}
 
@@ -20,8 +20,13 @@
 \item{sim.lines}{If \code{TRUE}, plot individual simulation lines. Default is
 to plot lines for one-group models but not for two-group models.}
 
-\item{sims}{Vector representing which individual simulation lines to plot,
-with default to plot all simulations.}
+\item{sims}{If \code{type="epi"} or \code{"formation"}, a vector of
+simulation numbers to plot. If \code{type="network"}, a single
+simulation number for network plot, or else \code{"min"} to plot the
+simulation number with the lowest disease prevalence, \code{"max"} for
+the simulation with the highest disease prevalence, or \code{"mean"}
+for the simulation with the prevalance closest to the mean across
+simulations at the specified time step.}
 
 \item{sim.col}{Vector of any standard R color format for simulation lines.}
 
@@ -61,35 +66,11 @@ to \code{"r"}.}
 \item{add}{If \code{TRUE}, new plot window is not called and lines are added to
 existing plot window.}
 
-\item{...}{Additional arguments to pass to main plot (see
-       \code{\link{plot.default}}).}
+\item{...}{additional arguments to pass.}
 }
 \description{
 Plots epidemiological data from a stochastic individual contact
              model simulated with \code{icm}.
-}
-\details{
-This plotting function will extract the epidemiological output from a model
-object of class \code{icm} and plot the time series data of disease prevalence
-and other results. The summary statistics that the function calculates and
-plots are individual simulation lines, means of the individual simulation
-lines, and quantiles of those individual simulation lines. The mean line,
-toggled on with \code{mean.line=TRUE} is calculated as the row mean
-across simulations at each time step.
-
-Compartment prevalences are the size of a compartment over some denominator.
-To plot the raw numbers from any compartment, use \code{popfrac=FALSE}; this
-is the default for any plots of flows. The \code{popfrac} parameter calculates
-and plots the denominators of all specified compartments using these rules: 1)
-for one-group models, the prevalence of any compartment is the compartment size
-divided by the total population size; 2) for two-group models, the prevalence
-of any compartment is the compartment size divided by the group population size.
-
-The quantiles show the range of outcome values within a certain specified
-quantile range. By default, the interquartile range is shown: that is the
-middle 50\% of the data. This is specified by \code{qnts=0.5}. To show the
-middle 95\% of the data, specify \code{qnts=0.95}. To toggle off the polygons
-where they are plotted by default, specify \code{qnts=FALSE}.
 }
 \examples{
 \dontrun{

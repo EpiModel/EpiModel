@@ -4,25 +4,74 @@
 \alias{plot.netsim}
 \title{Plot Data from a Stochastic Network Epidemic Model}
 \usage{
-\method{plot}{netsim}(x, type = "sim", sim, network = 1, at = 1,
-  col.status = FALSE, shp.bip = NULL, stats, sim.lwd, sim.col,
-  sim.lty = 1, targ.col, targ.lwd = 2, targ.lty = 2, plots.joined,
-  plot.leg = TRUE, ...)
+\method{plot}{netsim}(x, type = "epi", y, popfrac, sim.lines = FALSE, sims,
+  sim.col, sim.lwd, sim.alpha, mean.line = TRUE, mean.smooth = TRUE,
+  mean.col, mean.lwd = 2, mean.lty = 1, qnts = 0.5, qnts.col, qnts.alpha,
+  qnts.smooth = TRUE, leg, leg.cex = 0.8, axs = "r", add = FALSE,
+  network = 1, at = 1, col.status = FALSE, shp.bip = NULL, stats,
+  targ.line = TRUE, targ.col, targ.lwd = 2, targ.lty = 2, plots.joined,
+  ...)
 }
 \arguments{
 \item{x}{An \code{EpiModel} model object of class \code{netsim}.}
 
-\item{type}{Type of plot: \code{"sim"} for epidemic model results,
+\item{type}{Type of plot: \code{"epi"} for epidemic model results,
 \code{"network"} for a static network plot (\code{plot.network}),
 or \code{"formation"} for network formation statistics.}
 
-\item{sim}{If \code{type="network"}, a single simulation number for network
-plot, or else \code{"min"} to plot the simulation number with the
-lowest disease prevalence, \code{"max"} for the simulation with the
-highest disease prevalence, or \code{"mean"} for the simulation with
-the prevalance closest to the mean across simulations at the specified
-time step; if \code{type="formation"}, a vector of simulation numbers
-to plot.}
+\item{y}{Output compartments or flows from \code{icm} object to plot.}
+
+\item{popfrac}{If \code{TRUE}, plot prevalence of values rather than numbers
+(see details).}
+
+\item{sim.lines}{If \code{TRUE}, plot individual simulation lines. Default is
+to plot lines for one-group models but not for two-group models.}
+
+\item{sims}{If \code{type="epi"} or \code{"formation"}, a vector of
+simulation numbers to plot. If \code{type="network"}, a single
+simulation number for network plot, or else \code{"min"} to plot the
+simulation number with the lowest disease prevalence, \code{"max"} for
+the simulation with the highest disease prevalence, or \code{"mean"}
+for the simulation with the prevalance closest to the mean across
+simulations at the specified time step.}
+
+\item{sim.col}{Vector of any standard R color format for simulation lines.}
+
+\item{sim.lwd}{Line width for simulation lines.}
+
+\item{sim.alpha}{Transparency level for simulation lines, where 0 = transparent
+and 1 = opaque (see \code{\link{transco}}).}
+
+\item{mean.line}{If \code{TRUE}, plot mean of simulations across time.}
+
+\item{mean.smooth}{If \code{TRUE}, use a lowess smoother on the mean line.}
+
+\item{mean.col}{Vector of any standard R color format for mean lines.}
+
+\item{mean.lwd}{Line width for mean lines.}
+
+\item{mean.lty}{Line type for mean lines.}
+
+\item{qnts}{If numeric, plot polygon of simulation quantiles based on the
+range implied by the argument (see details). If \code{FALSE}, suppress
+polygon from plot.}
+
+\item{qnts.col}{Vector of any standard R color format for polygons.}
+
+\item{qnts.alpha}{Transparency level for quantile polygons, where 0 =
+transparent and 1 = opaque (see \code{\link{transco}}).}
+
+\item{qnts.smooth}{If \code{TRUE}, use a lowess smoother on quantile polygons.}
+
+\item{leg}{If \code{TRUE}, plot default legend.}
+
+\item{leg.cex}{Legend scale size.}
+
+\item{axs}{Plot axis type (see \code{\link{par}} for details), with default
+to \code{"r"}.}
+
+\item{add}{If \code{TRUE}, new plot window is not called and lines are added to
+existing plot window.}
 
 \item{network}{Network number, for simulations with multiple networks
 representing the population.}
@@ -40,14 +89,8 @@ for the mode 2 vertices, with acceptable inputs of "triangle" and
 those specified in \code{nwstats.formula} of \code{\link{control.net}},
 with the default to plot all statistics.}
 
-\item{sim.lwd}{Line width for individual simulation lines, with defaults based
-on number of simulations (more simulations equals thinner lines).}
-
-\item{sim.col}{A vector of standard R colors to be used for individual
-simulation lines, with default colors based on \code{RColorBrewer}
-color palettes.}
-
-\item{sim.lty}{Line type for the individual simulation lines.}
+\item{targ.line}{If \code{TRUE}, plot target or expected value line for
+the statistic of interest.}
 
 \item{targ.col}{Vector of standard R colors for target statistic lines, with
 default colors based on \code{RColorBrewer} color palettes.}
@@ -60,8 +103,6 @@ default colors based on \code{RColorBrewer} color palettes.}
 target statistics in one plot, versus one plot per target statistic if
 \code{FALSE}.}
 
-\item{plot.leg}{If \code{TRUE}, show legend (only if \code{plots.joined=TRUE}).}
-
 \item{...}{additional arguments to pass.}
 }
 \description{
@@ -72,11 +113,8 @@ Plots epidemiological and network data from a stochastic network
 This plot function can produce three types of plots with a stochastic network
 model simulated through \code{\link{netsim}}:
 \enumerate{
- \item \strong{\code{type="sim"}}: epidemic model results (e.g., disease
-       prevalence and incidence) may be plotted. In this case, this plotting
-       function wraps the \code{\link{plot.icm}} function, as the stochastic
-       epidemiological results are in the same data structure. Consult the
-       help page for \code{plot.icm} for all the plotting parameters.
+ \item \strong{\code{type="epi"}}: epidemic model results (e.g., disease
+       prevalence and incidence) may be plotted.
  \item \strong{\code{type="network"}}: a static network plot will be generated.
        A static network plot of a dynamic network is a cross-sectional
        extraction of that dynamic network at a specific time point. This
@@ -115,32 +153,28 @@ control <- control.net(type = "SI", nsteps = 100, nsims = 5,
 mod <- netsim(est, param, init, control)
 
 # Plot epidemic trajectory (default type)
-plot(mod, type = "sim")
-plot(mod, type = "sim", popfrac = FALSE)
-plot(mod, type = "sim", y = "si.flow")
-plot(mod, type = "sim", y = "si.flow", add = TRUE,
-     mean.smooth = TRUE, mean.col = "firebrick")
+plot(mod, type = "epi")
+plot(mod, type = "epi", popfrac = FALSE)
+plot(mod, type = "epi", y = "si.flow", qnts = 1)
 
 # Plot static networks
-par(mar = c(0, 0, 0, 0))
+par(mar = c(0,0,0,0))
 plot(mod, type = "network")
 
 # Automatic coloring of infected nodes as red
 par(mfrow = c(1, 2), mar = c(0, 0, 2, 0))
-plot(mod, type = "network", main = "Sim 1 | Time 50",
-     col.status = TRUE, at = 50)
-plot(mod, type = "network", main = "Sim 5 | Time 50",
-     col.status = TRUE, at = 50, sim = 5)
+plot(mod, type = "network", main = "Min Prev | Time 50",
+     col.status = TRUE, at = 50, sims = "min")
+plot(mod, type = "network", main = "Max Prev | Time 50",
+     col.status = TRUE, at = 50, sims = "max")
 
 # Automatic shape by mode number (circle = mode 1)
-par(mar = c(0, 0, 0, 0))
-plot(mod, type = "network", at = 50,
-     col.status = TRUE, shp.bip = "square")
-plot(mod, type = "network", at = 50,
-     col.status = TRUE, shp.bip = "triangle")
+par(mar = c(0,0,0,0))
+plot(mod, type = "network", at = 50, col.status = TRUE, shp.bip = "square")
+plot(mod, type = "network", at = 50, col.status = TRUE, shp.bip = "triangle")
 
 # Plot formation statistics
-par(mfrow = c(1, 1), mar = c(3, 3, 1, 1), mgp = c(2, 1, 0))
+par(mfrow = c(1,1), mar = c(3,3,1,1), mgp = c(2,1,0))
 plot(mod, type = "formation")
 plot(mod, type = "formation", plots.joined = FALSE)
 plot(mod, type = "formation", sim = 2:4)
@@ -151,7 +185,7 @@ plot(mod, type = "formation", stats = "meandeg",
 }
 }
 \seealso{
-\code{\link{plot.icm}}, \code{\link{plot.network}}
+\code{\link{plot.network}}
 }
 \keyword{plot}
 

@@ -4,11 +4,11 @@
 \alias{plot.netdx}
 \title{Plot Dynamic Network Model Diagnostics}
 \usage{
-\method{plot}{netdx}(x, type = "formation", method = "l", sim, stats,
-  sim.lines, sim.col, sim.lwd, sim.lty = 1, mean.line = TRUE,
-  mean.smooth = TRUE, mean.col, mean.lwd = 2, mean.lty = 1, qnts = 0.5,
-  qnts.col, qnts.alpha, qnts.smooth = TRUE, targ.line = TRUE, targ.col,
-  targ.lwd = 2, targ.lty = 2, plots.joined, plot.leg = TRUE, ...)
+\method{plot}{netdx}(x, type = "formation", method = "l", sims, stats,
+  sim.lines, sim.col, sim.lwd, mean.line = TRUE, mean.smooth = TRUE,
+  mean.col, mean.lwd = 2, mean.lty = 1, qnts = 0.5, qnts.col, qnts.alpha,
+  qnts.smooth = TRUE, targ.line = TRUE, targ.col, targ.lwd = 2,
+  targ.lty = 2, plots.joined, leg, ...)
 }
 \arguments{
 \item{x}{An \code{EpiModel} object of class \code{netdx}.}
@@ -22,43 +22,45 @@ step.}
 \item{method}{Plot method, with options of \code{"l"} for line plots and
 \code{"b"} for boxplots.}
 
-\item{sim}{Vector of simulation numbers to plot, with the default to plot
-all simulations.}
+\item{sims}{If \code{type="epi"} or \code{"formation"}, a vector of
+simulation numbers to plot. If \code{type="network"}, a single
+simulation number for network plot, or else \code{"min"} to plot the
+simulation number with the lowest disease prevalence, \code{"max"} for
+the simulation with the highest disease prevalence, or \code{"mean"}
+for the simulation with the prevalance closest to the mean across
+simulations at the specified time step.}
 
 \item{stats}{Network statistics to plot, among those specified in the call
 to \code{\link{netdx}}, with the default to plot all statistics
 contained in the object.}
 
-\item{sim.lines}{If \code{TRUE}, plot individual simulation lines.}
+\item{sim.lines}{If \code{TRUE}, plot individual simulation lines. Default is
+to plot lines for one-group models but not for two-group models.}
 
-\item{sim.col}{Vector of standard R colors for individual simulation lines,
-with default colors based on \code{RColorBrewer} color palettes.}
+\item{sim.col}{Vector of any standard R color format for simulation lines.}
 
-\item{sim.lwd}{Line width for individual simulation lines, with defaults based
-on number of simulations (more simulations results in thinner lines).}
-
-\item{sim.lty}{Line type for the individual simulation lines.}
+\item{sim.lwd}{Line width for simulation lines.}
 
 \item{mean.line}{If \code{TRUE}, plot mean of simulations across time.}
 
 \item{mean.smooth}{If \code{TRUE}, use a lowess smoother on the mean line.}
 
-\item{mean.col}{A vector of any standard R color format for mean lines.}
+\item{mean.col}{Vector of any standard R color format for mean lines.}
 
 \item{mean.lwd}{Line width for mean lines.}
 
 \item{mean.lty}{Line type for mean lines.}
 
 \item{qnts}{If numeric, plot polygon of simulation quantiles based on the
-range implied by the argument (0.5 is the middle 50% of the data).
-If \code{FALSE}, suppress polygon from plot.}
+range implied by the argument (see details). If \code{FALSE}, suppress
+polygon from plot.}
 
 \item{qnts.col}{Vector of any standard R color format for polygons.}
 
 \item{qnts.alpha}{Transparency level for quantile polygons, where 0 =
 transparent and 1 = opaque (see \code{\link{transco}}).}
 
-\item{qnts.smooth}{If \code{TRUE}, use a lowess smoother on the quantile band.}
+\item{qnts.smooth}{If \code{TRUE}, use a lowess smoother on quantile polygons.}
 
 \item{targ.line}{If \code{TRUE}, plot target or expected value line for
 the statistic of interest.}
@@ -66,16 +68,17 @@ the statistic of interest.}
 \item{targ.col}{Vector of standard R colors for target statistic lines, with
 default colors based on \code{RColorBrewer} color palettes.}
 
-\item{targ.lwd}{Line Width for the line showing the target statistic values.}
+\item{targ.lwd}{Line width for the line showing the target statistic values.}
 
-\item{targ.lty}{Line Type for the line showing the target statistic values.}
+\item{targ.lty}{Line type for the line showing the target statistic values.}
 
-\item{plots.joined}{If \code{TRUE}, combine all target statistics in one plot,
-otherwise use one plot window per target statistic.}
+\item{plots.joined}{If \code{TRUE} and \code{type="formation"}, combine all
+target statistics in one plot, versus one plot per target statistic if
+\code{FALSE}.}
 
-\item{plot.leg}{If \code{TRUE}, show legend (only if \code{plots.joined=TRUE})}
+\item{leg}{If \code{TRUE}, plot default legend.}
 
-\item{...}{additional arguments passed to main plot windows.}
+\item{...}{additional arguments to pass.}
 }
 \description{
 Plots dynamic network model diagnostics calculated in

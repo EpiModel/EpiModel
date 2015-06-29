@@ -25,7 +25,7 @@ test_that("edges models", {
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
   plot(x, type = "network")
-  plot(x, type = "network", sim = "mean", col.status = TRUE)
+  plot(x, type = "network", sims = "mean", col.status = TRUE)
   test_net(x)
   rm(x)
 
@@ -43,7 +43,7 @@ test_that("edges models", {
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
   plot(x, type = "network")
-  plot(x, type = "network", sim = "mean", col.status = TRUE)
+  plot(x, type = "network", sims = "mean", col.status = TRUE)
   test_net(x)
   rm(x)
 
@@ -61,7 +61,7 @@ test_that("edges models", {
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
   plot(x, type = "network")
-  plot(x, type = "network", sim = "mean", col.status = TRUE)
+  plot(x, type = "network", sims = "mean", col.status = TRUE)
   test_net(x)
   rm(x)
 
@@ -83,7 +83,7 @@ test_that("edges models", {
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
   plot(x, type = "network")
-  plot(x, type = "network", sim = "mean", col.status = TRUE)
+  plot(x, type = "network", sims = "mean", col.status = TRUE)
   test_net(x)
   rm(x)
 
@@ -122,7 +122,7 @@ test_that("edges models", {
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
   plot(x, type = "network")
-  plot(x, type = "network", sim = "mean", col.status = TRUE)
+  plot(x, type = "network", sims = "mean", col.status = TRUE)
   test_net(x)
   rm(x)
 
@@ -141,7 +141,7 @@ test_that("edges models", {
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
   plot(x, type = "network")
-  plot(x, type = "network", sim = "mean", col.status = TRUE)
+  plot(x, type = "network", sims = "mean", col.status = TRUE)
   test_net(x)
   rm(x)
 
@@ -160,7 +160,7 @@ test_that("edges models", {
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
   plot(x, type = "network")
-  plot(x, type = "network", sim = "mean", col.status = TRUE)
+  plot(x, type = "network", sims = "mean", col.status = TRUE)
   test_net(x)
   rm(x)
 
@@ -180,7 +180,7 @@ test_that("edges models", {
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
   plot(x, type = "network")
-  plot(x, type = "network", sim = "mean", col.status = TRUE)
+  plot(x, type = "network", sims = "mean", col.status = TRUE)
   test_net(x)
   rm(x)
 
@@ -199,7 +199,7 @@ test_that("edges models", {
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
   plot(x, type = "network")
-  plot(x, type = "network", sim = "mean", col.status = TRUE)
+  plot(x, type = "network", sims = "mean", col.status = TRUE)
   test_net(x)
   rm(x)
 
@@ -218,7 +218,7 @@ test_that("edges models", {
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
   plot(x, type = "network")
-  plot(x, type = "network", sim = "mean", col.status = TRUE)
+  plot(x, type = "network", sims = "mean", col.status = TRUE)
   test_net(x)
   rm(x)
 
@@ -256,7 +256,7 @@ test_that("edges models", {
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
   plot(x, type = "network")
-  plot(x, type = "network", sim = "mean", col.status = TRUE)
+  plot(x, type = "network", sims = "mean", col.status = TRUE)
   test_net(x)
   rm(x)
 
@@ -276,7 +276,7 @@ test_that("edges models", {
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
   plot(x, type = "network")
-  expect_error(plot(x, type = "network", sim = "mean", col.status = TRUE))
+  expect_error(plot(x, type = "network", sims = "mean", col.status = TRUE))
   test_net(x)
 })
 
