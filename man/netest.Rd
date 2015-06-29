@@ -9,20 +9,20 @@ netest(nw, formation, target.stats, coef.diss, constraints, coef.form = NULL,
   nonconv.error = FALSE, verbose = TRUE)
 }
 \arguments{
-\item{nw}{An object of class \code{\link{network}}.}
+\item{nw}{An object of class \code{network}.}
 
 \item{formation}{Right-hand sided STERGM formation formula in the form
 \code{~edges + ...}, where \code{...} are additional network statistics.}
 
 \item{target.stats}{Vector of target statistics for the formation model, with
-one number for each network statistic in the model (see \code{\link{stergm}}).}
+one number for each network statistic in the model.}
 
 \item{coef.diss}{An object of class \code{disscoef} output from the
 \code{\link{dissolution_coefs}} function.}
 
 \item{constraints}{Right-hand sided formula specifying constraints for the
 modeled network, in the form \code{~...}, where \code{...} are constraint
-terms described in \code{\link{stergm}}. By default, no constraints are set.}
+terms. By default, no constraints are set.}
 
 \item{coef.form}{Vector of coefficients for the offset terms in the formation
 formula.}
