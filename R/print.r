@@ -169,14 +169,18 @@ print.netsim <- function(x, ...) {
   cat("\nCompartments:", names(x$epi)[grep("num", names(x$epi))], fill = 60)
   cat("Flows:", names(x$epi)[grep("flow", names(x$epi))], fill = 60)
   othOut <- names(x$epi)[-c(grep("num", names(x$epi)), grep("flow", names(x$epi)))]
-  if (!is.null(othOut)) {
+  if (length(othOut) > 0) {
     cat("Other Output:", othOut, fill = 60)
   }
   if (!(is.null(x$network))) {
-    cat("\nNetworks:", simnames)
+    cat("Networks:", simnames)
   }
   if (!(is.null(x$stats$transmat))) {
-    cat("\nTransmissions:", simnames)
+    if (!is.null(x$network)) {
+      cat("\nTransmissions:", simnames)
+    } else {
+      cat("Transsmissions:", simnames)
+    }
   }
   if (!is.null(x$control$save.other)) {
     cat("\nOther Elements:", x$control$save.other)
