@@ -1,7 +1,6 @@
 context("Network diagnostics")
 
 test_that("Edges only models", {
-
   num <- 50
   nw <- network.initialize(num, directed = FALSE)
   formation <- ~edges
@@ -55,12 +54,10 @@ test_that("Edges only models", {
   plot(dx4, method = "b", type = "duration")
   plot(dx4, type = "dissolution")
   plot(dx4, method = "b", type = "dissolution")
-
 })
 
 
 test_that("Offset terms", {
-
   n <- 50
   nw <- network.initialize(n, directed = FALSE)
   nw <- set.vertex.attribute(nw, "loc", rep(0:1, each = n/2))
@@ -96,7 +93,6 @@ test_that("Offset terms", {
   plot(dx, method = "b", type = "duration")
   plot(dx, type = "dissolution")
   plot(dx, method = "b", type = "dissolution")
-
 })
 
 
@@ -105,8 +101,6 @@ test_that("Faux offset term", {
   n <- 50
   nw <- network.initialize(n, directed = FALSE)
   nw <- set.vertex.attribute(nw, "loc", rep(0:1, each = n/2))
-  dissolution <- ~offset(edges)
-  duration <- 40
   coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 40)
   formation <- ~edges + nodemix("loc", base = c(1, 3))
   target.stats <- c(15, 0)
@@ -122,7 +116,6 @@ test_that("Faux offset term", {
   plot(dx, method = "b", type = "duration")
   plot(dx, type = "dissolution")
   plot(dx, method = "b", type = "dissolution")
-
 })
 
 
@@ -132,7 +125,6 @@ test_that("Static diagnostic simulations", {
   formation <- ~edges + concurrent
   target.stats <- c(50, 20)
   coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 10)
-
   est4 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 
   dx <- netdx(est4, dynamic = FALSE, nsims = 250,
@@ -147,5 +139,4 @@ test_that("Static diagnostic simulations", {
 
   expect_error(plot(dx, method = "b", type = "duration"))
   expect_error(plot(dx, method = "b", type = "dissolution"))
-
 })
