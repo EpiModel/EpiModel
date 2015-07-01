@@ -4,10 +4,12 @@
 \alias{epiweb}
 \title{EpiModel Web}
 \usage{
-epiweb(class)
+epiweb(class, ...)
 }
 \arguments{
 \item{class}{Model class, with options of \code{"dcm"} and \code{"icm"}.}
+
+\item{...}{Additional arguments passed to \code{shiny::runApp}.}
 }
 \description{
 Runs a web browser-based GUI of deterministic compartmental

@@ -5,6 +5,7 @@
 #'              models and stochastic individual contact models.
 #'
 #' @param class Model class, with options of \code{"dcm"} and \code{"icm"}.
+#' @param ... Additional arguments passed to \code{shiny::runApp}.
 #'
 #' @details
 #' \code{epiweb} runs a web-based GUI of a one-group \code{\link{dcm}} models
@@ -37,12 +38,12 @@
 #' epiweb(class = "icm")
 #' }
 #'
-epiweb <- function(class) {
+epiweb <- function(class, ...) {
   if (class == "dcm") {
-    shiny::runApp(system.file("shiny", "epidcm", package = "EpiModel"))
+    shiny::runApp(system.file("shiny", "epidcm", package = "EpiModel"), ...)
   } else if (class == "icm") {
-    shiny::runApp(system.file("shiny", "epiicm", package = "EpiModel"))
+    shiny::runApp(system.file("shiny", "epiicm", package = "EpiModel"), ...)
   } else {
-    stop("Specify class as either \"dcm\" or \"icm\" ")
+    stop("Specify class as either \"dcm\" or \"icm\" ", call. = FALSE)
   }
 }
