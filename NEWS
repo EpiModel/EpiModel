@@ -5,7 +5,7 @@ NEW FEATURES
 * Built-in parallelization of stochastic network model simulations directly within
   the package with the `netsim_parallel` function has been deprecated. This
   functionality has been replaced with model simulation functions within the
-  `EpiModel.hpc` extension package: https://github.com/statnet/EpiModel.hpc
+  `EpiModelHPC` extension package: https://github.com/statnet/EpiModelHPC
 * Cosmetic and functional updates to built-in Shiny applications accessible within
   the package via `epiweb`.
 * New function, `calc_eql`, calculates whether a model of any class in EpiModel
