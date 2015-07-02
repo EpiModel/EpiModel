@@ -17,7 +17,7 @@ sim_nets <- function(x, nw, nsteps, control) {
 
   if (x$edapprox == FALSE) {
     suppressWarnings(
-      sim <- tergm::simulate(nw,
+      sim <- simulate(nw,
                       time.slices = nsteps,
                       monitor = control$nwstats.formula,
                       nsim = 1,
@@ -26,7 +26,7 @@ sim_nets <- function(x, nw, nsteps, control) {
                       control = control$set.control.stergm))
   } else {
     suppressWarnings(
-      sim <- tergm::simulate(nw,
+      sim <- simulate(nw,
                       formation = x$formation,
                       dissolution = x$coef.diss$dissolution,
                       coef.form = x$coef.form,
@@ -90,7 +90,7 @@ resim_nets <- function(dat, at) {
   # Network simulation
   if (anyActive > 0 & dat$control$depend == TRUE) {
     suppressWarnings(
-      dat$nw <- tergm::simulate(dat$nw,
+      dat$nw <- simulate(dat$nw,
                          formation = nwparam$formation,
                          dissolution = nwparam$coef.diss$dissolution,
                          coef.form = nwparam$coef.form,
