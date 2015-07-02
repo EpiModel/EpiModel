@@ -82,3 +82,42 @@ test_that("print.disscoefs", {
   expect_output(print(o), "Crude Coefficient: 2.944439 -0.7472144")
   expect_output(print(o), "Adjusted Coefficient: 2.98524 -0.7678231")
 })
+
+test_that("print.param", {
+  p <- param.dcm(inf.prob = 0.1, rec.rate = 0.1)
+  expect_output(p, "DCM Parameters")
+
+  p <- param.icm(inf.prob = 0.1, rec.rate = 0.1)
+  expect_output(p, "ICM Parameters")
+
+  p <- param.net(inf.prob = 0.1, rec.rate = 0.1)
+  expect_output(p, "Network Model Parameters")
+  expect_output(p, "act.rate = 1")
+})
+
+test_that("print.init", {
+  i <- init.dcm(s.num = 10, i.num = 10)
+  expect_output(i, "DCM Initial Conditions")
+
+  i <- init.icm(s.num = 10, i.num = 10)
+  expect_output(i, "ICM Initial Conditions")
+  expect_output(i, "status.rand = TRUE")
+
+  i <- init.net(s.num = 10, i.num = 10)
+  expect_output(i, "Network Model Initial Conditions")
+  expect_output(i, "status.rand = TRUE")
+})
+
+test_that("print.control", {
+  co <- control.dcm(type = "SI", nsteps = 10)
+  expect_output(co, "DCM Control Settings")
+  expect_output(co, "odemethod = rk4")
+
+  co <- control.icm(type = "SI", nsteps = 10)
+  expect_output(co, "ICM Control Settings")
+  expect_output(co, "Built-In Modules: initialize.FUN")
+
+  co <- control.net(type = "SI", nsteps = 10)
+  expect_output(co, "Network Model Control Settings")
+  expect_output(co, "Built-In Modules: initialize.FUN")
+})
