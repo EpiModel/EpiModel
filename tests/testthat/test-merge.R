@@ -1,4 +1,19 @@
-context("Network merging")
+context("Stochastic model merging")
+
+test_that("merge for ICM", {
+  param <- param.icm(inf.prob = 0.2, act.rate = 0.8)
+  init <- init.icm(s.num = 1000, i.num = 100)
+  control <- control.icm(type = "SI", nsteps = 10,
+                         nsims = 3, verbose = FALSE)
+  x <- icm(param, init, control)
+  control <- control.icm(type = "SI", nsteps = 10,
+                         nsims = 1, verbose = FALSE)
+  y <- icm(param, init, control)
+  z <- merge(x, y)
+  expect_is(z, "icm")
+  expect_true(z$control$nsims == 4)
+  expect_true(dim(z$epi$i.num)[2] == 4)
+})
 
 test_that("merge: works for open sims saving nw stats", {
   nw <- network.initialize(n = 50, directed = FALSE)
