@@ -25,15 +25,14 @@ BugReports: https://github.com/statnet/EpiModel/issues
 Depends:
     R (>= 3.1),
     deSolve (>= 1.11),
-    network (>= 1.11.3),
-    networkDynamic (>= 0.7.1),
-    tergm (>= 3.2.4)
+    network (>= 1.12.0),
+    networkDynamic (>= 0.7.1)
 Imports:
     doParallel,
     ergm (>= 3.2.4),
     foreach,
     RColorBrewer,
-    statnet.common
+    tergm (>= 3.2.4)
 Suggests:
     knitr,
     ndtv,
