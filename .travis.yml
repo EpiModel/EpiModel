@@ -6,6 +6,7 @@ warnings_are_errors: true
 r_packages:
  - covr
 r_binary_packages:
+ - git2r
  - httpuv
  - stringi
 
