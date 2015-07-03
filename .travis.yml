@@ -1,20 +1,15 @@
-language: c
+language: r
+sudo: required
 
-before_install:
-  - curl -OL http://raw.github.com/craigcitro/r-travis/master/scripts/travis-tool.sh
-  - chmod 755 ./travis-tool.sh
-  - ./travis-tool.sh bootstrap
-install:
-  - ./travis-tool.sh r_install covr
-  - ./travis-tool.sh r_binary_install httpuv
-  - ./travis-tool.sh install_deps
-script: ./travis-tool.sh run_tests
+warnings_are_errors: true
 
-after_failure:
-  - ./travis-tool.sh dump_logs
+r_packages:
+ - covr
+r_binary_packages:
+ - httpuv
 
 after_success:
-  - Rscript -e 'library(covr);library(methods);coveralls()'
+  - Rscript -e 'covr::coveralls()'
 
 notifications:
   email:
@@ -23,9 +18,4 @@ notifications:
 
 env:
   - global:
-      - R_BUILD_ARGS=--no-manual
-      - R_CHECK_ARGS=--as-cran
-      - BOOTSTRAP_LATEX=1
-      - WARNINGS_ARE_ERRORS=1
-      - _R_CHECK_FORCE_SUGGESTS_=0
       - NOT_CRAN=true
