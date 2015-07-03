@@ -7,6 +7,7 @@ r_packages:
  - covr
 r_binary_packages:
  - httpuv
+ - stringi
 
 after_success:
   - Rscript -e 'covr::coveralls()'
