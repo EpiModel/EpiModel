@@ -11,7 +11,7 @@ r_binary_packages:
  - stringi
 
 after_success:
-  - Rscript -e 'covr::coveralls()'
+  - Rscript -e 'library(covr); library(methods); covr::coveralls()'
 
 notifications:
   email:
