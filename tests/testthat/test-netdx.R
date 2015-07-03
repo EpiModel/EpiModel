@@ -69,7 +69,7 @@ test_that("Offset terms", {
   est2 <- netest(nw, formation, target.stats, coef.diss, coef.form = -Inf,
                  verbose = FALSE)
 
-  dx <- netdx(est2, nsims = 2, nsteps = 10, verbose = FALSE)
+  dx <- netdx(est2, nsims = 2, nsteps = 50, verbose = FALSE)
   expect_is(dx, "netdx")
   print(dx)
   plot(dx)
@@ -82,7 +82,7 @@ test_that("Offset terms", {
   rm(dx)
 
   ## Offset term with expanded formula
-  dx <- netdx(est2, nsims = 2, nsteps = 10, verbose = FALSE,
+  dx <- netdx(est2, nsims = 2, nsteps = 50, verbose = FALSE,
               nwstats.formula = ~edges + meandeg + concurrent + nodematch("loc"))
   expect_is(dx, "netdx")
   print(dx)
@@ -97,7 +97,6 @@ test_that("Offset terms", {
 
 
 test_that("Faux offset term", {
-
   n <- 50
   nw <- network.initialize(n, directed = FALSE)
   nw <- set.vertex.attribute(nw, "loc", rep(0:1, each = n/2))
@@ -106,7 +105,7 @@ test_that("Faux offset term", {
   target.stats <- c(15, 0)
   est3 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 
-  dx <- netdx(est3, nsims = 2, nsteps = 10, verbose = FALSE)
+  dx <- netdx(est3, nsims = 2, nsteps = 50, verbose = FALSE)
   expect_is(dx, "netdx")
   print(dx)
   plot(dx)
@@ -120,7 +119,6 @@ test_that("Faux offset term", {
 
 
 test_that("Static diagnostic simulations", {
-
   nw <- network.initialize(100, directed = FALSE)
   formation <- ~edges + concurrent
   target.stats <- c(50, 20)
