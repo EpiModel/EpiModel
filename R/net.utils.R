@@ -331,7 +331,6 @@ copy_toall_attr <- function(dat, at, fterms) {
 }
 
 
-
 #' @title Dissolution Coefficients for Stochastic Network Models
 #'
 #' @description Calculates dissolution coefficients, given a dissolution model
