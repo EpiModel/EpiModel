@@ -718,7 +718,6 @@ get_formula_terms <- function(formula) {
 }
 
 
-
 #' @title Get Epidemic Output from netsim Model
 #'
 #' @description Provides all active model state sizes from the network at the
@@ -1052,116 +1051,6 @@ modeids <- function(nw, mode) {
   }
 
   return(out)
-}
-
-
-#' @title Query Active Nodes in NetworkDynamic Object
-#'
-#' @description Outputs information on the active nodes in a \code{networkDynamic}
-#'              object.
-#'
-#' @param nw Object of class \code{networkDynamic}.
-#' @param at Current time step.
-#' @param out Function output, with options of \code{out="vec"} for
-#'        a T/F vector of whether the node is active, \code{out="ids"} for
-#'        a vector of IDs active, \code{out="prev"} for the number of
-#'        nodes that are active, and \code{out="all"} to return a list of
-#'        the prior three elements.
-#' @param mode If \code{nw} is bipartite, the mode number for status (may
-#'        be ignored if requesting output for both modes).
-#' @param active.default If \code{TRUE}, elements without an activity attribute
-#'        will be regarded as active.
-#'
-#' @details
-#' This is a specialized version of \code{\link{is.active}} from the
-#' \code{networkDynamic} package that allows for key output to be efficiently
-#' generated for use in \code{\link{netsim}} simulations.
-#'
-#' @seealso \code{\link{is.active}}, \code{\link{get_prev.net}}
-#'
-#' @export
-#' @keywords netUtils internal
-#'
-#' @examples
-#' # Initialize NW and activate vertices
-#' nw <- network.initialize(20)
-#'
-#' # Activate all vertices, then deactive half at time 5
-#' activate.vertices(nw, onset = 1, terminus = 10)
-#' deactivate.vertices(nw, onset = 5, terminus = 10, v = 1:10)
-#'
-#' # Output all information for vertices at time 1 and time 5
-#' node_active(nw, at = 1, out = "all")
-#' node_active(nw, at = 5, out = "all")
-#'
-node_active <- function(nw, at, out, mode, active.default = FALSE) {
-
-  if (!(missing(mode)) && !is.numeric(nw$gal$bipartite))
-    stop("nw must be bipartite if mode argument is used")
-
-  if (out %in% c("vec", "ids", "prev")) {
-    if (missing(mode)) {
-      node.active <- is.active(nw, v = seq_len(network.size(nw)), at = at,
-                               active.default = active.default)
-      out.vec <- node.active
-      out.ids <- which(node.active)
-      out.prev <- sum(node.active)
-    } else {
-      node.active <- is.active(nw, v = seq_len(network.size(nw)), at = at,
-                               active.default = active.default)
-      ids.m1 <- modeids(nw, 1)
-      ids.m2 <- modeids(nw, 2)
-      if (mode == 1) {
-        out.vec <- node.active[ids.m1]
-        out.ids <- intersect(which(node.active), ids.m1)
-        out.prev <- sum(node.active[ids.m1])
-      }
-      if (mode == 2) {
-        out.vec <- node.active[ids.m2]
-        out.ids <- intersect(which(node.active), ids.m2)
-        out.prev <- sum(node.active[ids.m2])
-      }
-    }
-  }
-  if (out == "all") {
-    if (!is.numeric(nw$gal$bipartite)) {
-      node.active <- is.active(nw, v = seq_len(network.size(nw)), at = at,
-                               active.default = active.default)
-      out.all <- list()
-      out.all$vec$all <- node.active
-      out.all$ids$all <- which(node.active)
-      out.all$prev$all <- sum(node.active)
-    } else {
-      node.active <- is.active(nw, v = seq_len(network.size(nw)), at = at,
-                               active.default = active.default)
-      out.all <- list()
-      ids.m1 <- modeids(nw, 1)
-      ids.m2 <- modeids(nw, 2)
-      out.all$vec$m1 <- node.active[ids.m1]
-      out.all$vec$m2 <- node.active[ids.m2]
-      out.all$vec$all <- node.active
-      out.all$ids$m1 <- intersect(which(node.active), ids.m1)
-      out.all$ids$m2 <- intersect(which(node.active), ids.m2)
-      out.all$ids$all <- which(node.active)
-      out.all$prev$m1 <- sum(node.active[ids.m1])
-      out.all$prev$m2 <- sum(node.active[ids.m2])
-      out.all$prev$all <- sum(node.active)
-    }
-  }
-
-  if (out == "vec") {
-    return(out.vec)
-  }
-  if (out == "ids") {
-    return(out.ids)
-  }
-  if (out == "prev") {
-    return(out.prev)
-  }
-  if (out == "all") {
-    return(out.all)
-  }
-
 }
 
 
