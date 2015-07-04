@@ -15,6 +15,7 @@ test_that("SI, 1G, CL: 1 run", {
   plot(x)
   plot(x, y = "i.num")
   plot(x, y = c("i.num", "s.num"))
+  summary(x, at = 2)
 })
 
 test_that("SI, 1G, CL: varying inf.prob", {
@@ -33,6 +34,7 @@ test_that("SI, 1G, CL: varying inf.prob", {
   plot(x)
   plot(x, y = "i.num")
   plot(x, y = c("i.num", "s.num"), run = 2)
+  summary(x, at = 2)
 })
 
 test_that("SI, 1G, CL: varying act.rate", {
@@ -51,6 +53,7 @@ test_that("SI, 1G, CL: varying act.rate", {
   plot(x)
   plot(x, y = "i.num")
   plot(x, y = c("i.num", "s.num"), run = 2)
+  summary(x, at = 2)
 })
 
 test_that("SI, 1G, CL: varying inf.prob and act.rate", {
@@ -69,6 +72,7 @@ test_that("SI, 1G, CL: varying inf.prob and act.rate", {
   plot(x)
   plot(x, y = "i.num")
   plot(x, y = c("i.num", "s.num"), run = 2)
+  summary(x, at = 2)
 })
 
 test_that("SI, 2G, CL: 1 run", {
@@ -88,6 +92,7 @@ test_that("SI, 2G, CL: 1 run", {
   plot(x)
   plot(x, y = "i.num")
   plot(x, y = c("i.num", "s.num"))
+  summary(x, at = 2)
 })
 
 test_that("SI, 2G, CL: varying inf.prob", {
@@ -108,6 +113,7 @@ test_that("SI, 2G, CL: varying inf.prob", {
   plot(x)
   plot(x, y = "i.num")
   plot(x, y = c("i.num", "s.num"))
+  summary(x, at = 2)
 })
 
 test_that("SI, 1G, OP: 1 run", {
@@ -122,6 +128,7 @@ test_that("SI, 1G, OP: 1 run", {
   plot(x)
   plot(x, y = "i.num")
   plot(x, y = c("i.num", "s.num"))
+  summary(x, at = 2)
 })
 
 test_that("SI, 1G, OP: varying inf.prob", {
@@ -137,6 +144,7 @@ test_that("SI, 1G, OP: varying inf.prob", {
   plot(x)
   plot(x, y = "i.num")
   plot(x, y = c("i.num", "s.num"), run = 2)
+  summary(x, at = 2)
 })
 
 test_that("SI, 2G, OP: 1 run", {
@@ -155,6 +163,7 @@ test_that("SI, 2G, OP: 1 run", {
   plot(x)
   plot(x, y = "i.num")
   plot(x, y = c("i.num", "s.num"))
+  summary(x, at = 2)
 })
 
 test_that("SI, 2G, OP: varying inf.prob", {
@@ -173,6 +182,7 @@ test_that("SI, 2G, OP: varying inf.prob", {
   plot(x)
   plot(x, y = "i.num")
   plot(x, y = c("i.num", "s.num"))
+  summary(x, at = 2)
 })
 
 
@@ -190,6 +200,7 @@ test_that("SIR, 1G, CL: 1 run", {
   plot(x)
   plot(x, y = "i.num")
   plot(x, y = c("i.num", "s.num"))
+  summary(x, at = 2)
 })
 
 test_that("SIR, 1G, CL: varying inf.prob", {
@@ -205,6 +216,7 @@ test_that("SIR, 1G, CL: varying inf.prob", {
   plot(x)
   plot(x, y = "i.num")
   plot(x, y = c("i.num", "s.num"), run = 2)
+  summary(x, at = 2)
 })
 
 test_that("SIR, 2G, CL: 1 run", {
@@ -224,6 +236,7 @@ test_that("SIR, 2G, CL: 1 run", {
   plot(x)
   plot(x, y = "i.num")
   plot(x, y = c("i.num", "s.num"))
+  summary(x, at = 2)
 })
 
 test_that("SIR, 2G, CL: varying inf.prob", {
@@ -240,6 +253,7 @@ test_that("SIR, 2G, CL: varying inf.prob", {
   plot(x)
   plot(x, y = "i.num")
   plot(x, y = c("i.num", "s.num"), run = 2)
+  summary(x, at = 2)
 })
 
 test_that("SIR, 1G, OP: 1 run", {
@@ -254,6 +268,7 @@ test_that("SIR, 1G, OP: 1 run", {
   plot(x)
   plot(x, y = "i.num")
   plot(x, y = c("i.num", "s.num"))
+  summary(x, at = 2)
 })
 
 test_that("SIR, 1G, OP: varying inf.prob", {
@@ -269,6 +284,7 @@ test_that("SIR, 1G, OP: varying inf.prob", {
   plot(x)
   plot(x, y = "i.num")
   plot(x, y = c("i.num", "s.num"), run = 2)
+  summary(x, at = 2)
 })
 
 test_that("SIR, 2G, OP: 1 run", {
@@ -289,6 +305,7 @@ test_that("SIR, 2G, OP: 1 run", {
   plot(x)
   plot(x, y = "i.num")
   plot(x, y = c("i.num", "s.num"))
+  summary(x, at = 2)
 })
 
 test_that("SIR, 2G, OP: varying inf.prob", {
@@ -310,6 +327,7 @@ test_that("SIR, 2G, OP: varying inf.prob", {
   plot(x)
   plot(x, y = "i.num")
   plot(x, y = c("i.num", "s.num"), run = 2)
+  summary(x, at = 2)
 })
 
 
@@ -327,6 +345,7 @@ test_that("SIS, 1G, CL: 1 run", {
   plot(x)
   plot(x, y = "i.num")
   plot(x, y = c("i.num", "s.num"))
+  summary(x, at = 2)
 })
 
 test_that("SIS, 1G, CL: varying inf.prob", {
@@ -343,6 +362,7 @@ test_that("SIS, 1G, CL: varying inf.prob", {
   plot(x)
   plot(x, y = "i.num")
   plot(x, y = c("i.num", "s.num"), run = 2)
+  summary(x, at = 2)
 })
 
 test_that("SIS, 2G, CL: 1 run", {
@@ -361,6 +381,7 @@ test_that("SIS, 2G, CL: 1 run", {
   plot(x)
   plot(x, y = "i.num")
   plot(x, y = c("i.num", "s.num"))
+  summary(x, at = 2)
 })
 
 test_that("SIS, 2G, CL: varying inf.prob", {
@@ -381,6 +402,7 @@ test_that("SIS, 2G, CL: varying inf.prob", {
   plot(x)
   plot(x, y = "i.num")
   plot(x, y = c("i.num", "s.num"), run = 2)
+  summary(x, at = 2)
 })
 
 test_that("SIS, 1G, OP: 1 run", {
@@ -395,6 +417,7 @@ test_that("SIS, 1G, OP: 1 run", {
   plot(x)
   plot(x, y = "i.num")
   plot(x, y = c("i.num", "s.num"))
+  summary(x, at = 2)
 })
 
 test_that("SIS, 1G, OP: varying inf.prob", {
@@ -410,6 +433,7 @@ test_that("SIS, 1G, OP: varying inf.prob", {
   plot(x)
   plot(x, y = "i.num")
   plot(x, y = c("i.num", "s.num"), run = 2)
+  summary(x, at = 2)
 })
 
 test_that("SIS, 2G, OP: 1 run", {
@@ -428,6 +452,7 @@ test_that("SIS, 2G, OP: 1 run", {
   plot(x)
   plot(x, y = "i.num")
   plot(x, y = c("i.num", "s.num"))
+  summary(x, at = 2)
 })
 
 test_that("SIS, 2G, OP: varying inf.prob", {
@@ -449,6 +474,7 @@ test_that("SIS, 2G, OP: varying inf.prob", {
   plot(x)
   plot(x, y = "i.num")
   plot(x, y = c("i.num", "s.num"), run = 2)
+  summary(x, at = 2)
 })
 
 
@@ -470,5 +496,6 @@ test_that("SIS, 2G, OP: balance = g2", {
   plot(x)
   plot(x, y = "i.num")
   plot(x, y = c("i.num", "s.num"))
+  summary(x, at = 2)
 })
 
