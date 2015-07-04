@@ -1,4 +1,40 @@
-Version 1.1.5
+Version 1.2.0
+------------------------------------------------------------------------------
+
+NEW FEATURES
+* The `calc_eql` function now returns test statistics invisibly.
+* Major overhaul of plotting functions for stochastic model plots. `plot.netsim`
+  is now a separate method for epidemic plots (it was previously a function call
+  to `plot.icm`), with function arguments and default settings more consistent
+  across plotting functions. There may be minor backwards incompatibility for some
+  epidemic plots. Network statistic plots in `plot.netdx` and `plot.netsim` now
+  use the same methods and share the same defaults. The defaults for these plots
+  will be to plot smoothed quantile bands (the IQR) and means of simulations
+  without the individual simulation lines. Any individual elements may be toggled
+  on or off as before.
+* Modules are now listed in the output for `param.icm` and `param.net` classes.
+* Removed `dissolution` argument to `netest`. This argument specified the right-
+  hand sided dissolution formula for temporal ERGMs. It was removed because this
+  formula was already specified in the `dissolution_coefs` function, the output
+  of which is passed to `netest`, thereby removing the duplication.
+
+
+BUG FIXES
+* `as.data.frame` methods for stochastic models remove `NA` from individual
+  simulations when calculating row means.
+* Fixed bug in network birth module for assigning infection status for incoming
+  nodes.
+
+
+OTHER
+* Major updated internal package function testing for more reliable performance.
+* Added `...` argument to `epiweb` to pass additional arguments to `shiny::runApp`.
+* Importing the `graphics`, `grDevices`, `stats`, and `utils` packages as
+  required by CRAN.
+* Update Travis-CI methods used for testing.
+
+
+Version 1.1.6
 ------------------------------------------------------------------------------
 
 NEW FEATURES
