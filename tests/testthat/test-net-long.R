@@ -50,7 +50,8 @@ test_that("edges models", {
   ## "SI, 1M, CL: 2 sim"
   param <- param.net(inf.prob = 0.5)
   init <- init.net(i.num = 1)
-  control <- control.net(type = "SI", nsims = 2, nsteps = 25, verbose = TRUE)
+  control <- control.net(type = "SI", nsims = 2, nsteps = 25, verbose = TRUE,
+                         nwstats.formula = ~edges + meandeg + concurrent)
   x <- netsim(est, param, init, control)
   expect_is(x, "netsim")
   expect_is(as.data.frame(x), "data.frame")
@@ -60,6 +61,10 @@ test_that("edges models", {
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
+  plot(x, type = "formation", plots.joined = FALSE)
+  plot(x, type = "formation", stats = "edges")
+  plot(x, type = "formation", stats = c("edges", "meandeg"))
+  plot(x, type = "formation", sim.lines = TRUE, qnts.smooth = FALSE)
   plot(x, type = "network")
   plot(x, type = "network", sims = "mean", col.status = TRUE)
   test_net(x)
@@ -348,6 +353,9 @@ test_that("edges bipartite models", {
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
+  plot(x, type = "network")
+  plot(x, type = "network", shp.bip = TRUE)
+  plot(x, type = "network", shp.bip = FALSE)
   test_net(x)
   rm(x)
 
