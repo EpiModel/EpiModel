@@ -527,10 +527,6 @@ plot.icm <- function(x, y, popfrac, sim.lines = FALSE, sims, sim.col, sim.lwd,
         y <- c(grep(".num$", names(x$epi), value = TRUE),
                grep(".num.g2$", names(x$epi), value = TRUE))
       }
-      if (class(x) == "netsim") {
-        y <- c(grep(".num$", names(x$epi), value = TRUE),
-               grep(".num.m2$", names(x$epi), value = TRUE))
-      }
     }
     if (missing(leg)) {
       leg <- TRUE
