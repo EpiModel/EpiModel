@@ -129,3 +129,12 @@ test_that("bipvals", {
   nw <- set.vertex.attribute(nw, "male", rep(0:1, each = 5))
   expect_error(bipvals(nw, 1, "male"), "nw must be a bipartite network")
 })
+
+test_that("check_bip_degdist", {
+  check_bip_degdist(num.m1 = 500, num.m2 = 500,
+                    deg.dist.m2 = c(0.40, 0.55, 0.03, 0.02),
+                    deg.dist.m1 = c(0.48, 0.41, 0.08, 0.03))
+  check_bip_degdist(num.m1 = 500, num.m2 = 500,
+                    deg.dist.m1 = c(0.40, 0.55, 0.04, 0.01),
+                    deg.dist.m2 = c(0.48, 0.41, 0.08, 0.03))
+})
