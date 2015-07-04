@@ -138,3 +138,18 @@ test_that("Static diagnostic simulations", {
   expect_error(plot(dx, method = "b", type = "duration"))
   expect_error(plot(dx, method = "b", type = "dissolution"))
 })
+
+
+test_that("Parallel methods", {
+  skip_on_cran()
+  num <- 50
+  nw <- network.initialize(num, directed = FALSE)
+  formation <- ~edges
+  target.stats <- 15
+  coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
+  est1 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
+
+  ## Single simulation
+  dx1 <- netdx(est1, nsims = 2, nsteps = 25, ncores = 2)
+  expect_is(dx1, "netdx")
+})
