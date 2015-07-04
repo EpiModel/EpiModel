@@ -44,6 +44,7 @@ test_that("SI, 1G, CL: 2 sim", {
   plot(x)
   plot(x, y = "i.num")
   plot(x, y = "si.flow", mean.smooth = TRUE)
+  plot(x, qnts.smooth = FALSE, sim.lines = TRUE, mean.smooth = FALSE)
   expect_error(plot(x, y = "sr.flow"))
   comp_plot(x, at = 100)
   expect_error(comp_plot(x, at = 200))
