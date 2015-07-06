@@ -119,9 +119,8 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps, nwstats.formula = "forma
   }
 
   if (verbose == TRUE) {
-    cat("\n======================")
-    cat("\nRunning Diagnostics")
-    cat("\n======================\n")
+    cat("\nNetwork Diagnostics")
+    cat("\n-----------------------\n")
   }
 
   if (verbose == TRUE) {
