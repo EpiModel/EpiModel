@@ -18,9 +18,7 @@ verbose.dcm <- function(x, type, s = 1) {
 
   if (type == "startup") {
     if (x$verbose == TRUE & x$nruns > 1) {
-      cat("===============================")
-      cat("\nStarting", x$nruns, "DCM Simulations")
-      cat("\n===============================\n")
+      cat("\n* Starting DCM Simulation")
     }
   }
 
@@ -52,15 +50,7 @@ verbose.icm <- function(x, type, s = 1, at = 2) {
 
   if (type == "startup") {
     if (x$verbose == TRUE) {
-      if (x$nsims == 1) {
-        cat("===============================")
-        cat("\nStarting 1 icm Simulation")
-        cat("\n===============================\n")
-      } else {
-        cat("===============================")
-        cat("\nStarting", x$nsims, "icm Simulations")
-        cat("\n===============================")
-      }
+      cat("\n* Starting ICM Simulation")
     }
   }
 
@@ -71,7 +61,7 @@ verbose.icm <- function(x, type, s = 1, at = 2) {
       }
       if (x$control$verbose.int > 0 && (at %% x$control$verbose.int == 0)) {
         cat("\014")
-        cat("\nNetwork Disease Simulation")
+        cat("\nEpidemic Simulation")
         cat("\n----------------------------")
         cat("\nSimulation: ", s, "/", x$control$nsims, sep = "")
         cat("\nTimestep: ", at, "/", x$control$nsteps, sep = "")
@@ -178,15 +168,7 @@ verbose.net <- function(x, type, s = 1, at = 2) {
 
   if (type == "startup") {
     if (x$verbose == TRUE) {
-      if (x$nsims == 1) {
-        cat("===================================")
-        cat("\nStarting 1 Epidemic Simulation")
-        cat("\n===================================")
-      } else {
-        cat("===================================")
-        cat("\nStarting", x$nsims, "Epidemic Simulations")
-        cat("\n===================================")
-      }
+      cat("\n* Starting Network Simulation")
     }
   }
 
@@ -197,7 +179,7 @@ verbose.net <- function(x, type, s = 1, at = 2) {
       }
       if (x$control$verbose.int > 0 && (at %% x$control$verbose.int == 0)) {
         cat("\014")
-        cat("\nNetwork Disease Simulation")
+        cat("\nEpidemic Simulation")
         cat("\n----------------------------")
         cat("\nSimulation: ", s, "/", x$control$nsims, sep = "")
         cat("\nTimestep: ", at, "/", x$control$nsteps, sep = "")
