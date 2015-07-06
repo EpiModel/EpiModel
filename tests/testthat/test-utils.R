@@ -1,8 +1,5 @@
 context("Utility Functions")
 
-
-# Color functions ---------------------------------------------------------
-
 test_that("brewer_ramp", {
 
   expect_true(length(brewer_ramp(100, plt = "Spectral")) == 100)
@@ -41,8 +38,21 @@ test_that("transco", {
 
 })
 
-
-# calc_eql function -------------------------------------------------------
+test_that("color_tea", {
+  nw <- network.initialize(n = 100, directed = FALSE)
+  formation <- ~edges
+  target.stats <- 50
+  coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
+  est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
+  param <- param.net(inf.prob = 0.3, rec.rate = 0.001)
+  init <- init.net(i.num = 25, r.num = 25)
+  control <- control.net(type = "SIR", nsteps = 10, nsims = 1, verbose.int = 0)
+  mod <- netsim(est, param, init, control)
+  nd <- get_network(mod)
+  nd <- color_tea(nd)
+  expect_is(nd, "networkDynamic")
+  expect_true(length(unique(get.vertex.attribute.active(nd, "ndtvcol", at = 1))) == 3)
+})
 
 test_that("calc_eql for dcm", {
   param <- param.dcm(inf.prob = 0.2, inf.prob.g2 = 0.1, act.rate = 0.5,
@@ -91,10 +101,6 @@ test_that("calc_eql for netsim", {
   expect_output(calc_eql(mod, nsteps = 20), "Rel. Diff.:    0")
 })
 
-
-
-# Other utilities ---------------------------------------------------------
-
 test_that("deleteAttr", {
 
   l <- list(a = 1:5, b = 6:10)
@@ -108,7 +114,6 @@ test_that("deleteAttr", {
   expect_equal(l, deleteAttr(l, NULL))
 
 })
-
 
 test_that("ssample", {
 
@@ -124,6 +129,7 @@ test_that("bipvals", {
   nw <- set.vertex.attribute(nw, "male", rep(0:1, each = 5))
   expect_true(all(bipvals(nw, mode = 1, "male")) == 0)
   expect_true(all(bipvals(nw, mode = 2, "male")) == 1)
+  expect_error(bipvals(nw, val = "male"))
 
   nw <- network.initialize(n = 10)
   nw <- set.vertex.attribute(nw, "male", rep(0:1, each = 5))
@@ -131,10 +137,32 @@ test_that("bipvals", {
 })
 
 test_that("check_bip_degdist", {
-  check_bip_degdist(num.m1 = 500, num.m2 = 500,
+  expect_output(check_bip_degdist(num.m1 = 500, num.m2 = 500,
                     deg.dist.m2 = c(0.40, 0.55, 0.03, 0.02),
-                    deg.dist.m1 = c(0.48, 0.41, 0.08, 0.03))
-  check_bip_degdist(num.m1 = 500, num.m2 = 500,
+                    deg.dist.m1 = c(0.48, 0.41, 0.08, 0.03)),
+                "-0.015 Rel Diff")
+  expect_output(check_bip_degdist(num.m1 = 500, num.m2 = 500,
                     deg.dist.m1 = c(0.40, 0.55, 0.04, 0.01),
-                    deg.dist.m2 = c(0.48, 0.41, 0.08, 0.03))
+                    deg.dist.m2 = c(0.48, 0.41, 0.08, 0.03)),
+                "Edges balanced")
+  expect_output(check_bip_degdist(num.m1 = 500, num.m2 = 500,
+                                  deg.dist.m1 = c(0.45, 0.55, 0.04, 0.01),
+                                  deg.dist.m2 = c(0.48, 0.41, 0.08, 0.03)),
+                "deg.dist.m1 TOTAL != 1")
+  expect_output(check_bip_degdist(num.m1 = 500, num.m2 = 500,
+                                  deg.dist.m1 = c(0.40, 0.55, 0.04, 0.01),
+                                  deg.dist.m2 = c(0.55, 0.41, 0.08, 0.03)),
+                "deg.dist.m2 TOTAL != 1")
+})
+
+test_that("edgelist_censor", {
+  skip_on_cran()
+  nw <- network.initialize(n = 100, directed = FALSE)
+  formation <- ~edges
+  target.stats <- 50
+  coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
+  est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
+  sim <- netdx(est, nsims = 1, nsteps = 100, verbose = FALSE)
+  el <- sim$edgelist[[1]]
+  expect_is(edgelist_censor(el), "matrix")
 })
