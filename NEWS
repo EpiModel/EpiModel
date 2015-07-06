@@ -18,20 +18,19 @@ NEW FEATURES
   formula was already specified in the `dissolution_coefs` function, the output
   of which is passed to `netest`, thereby removing the duplication.
 
-
 BUG FIXES
 * `as.data.frame` methods for stochastic models remove `NA` from individual
   simulations when calculating row means.
 * Fixed bug in network birth module for assigning infection status for incoming
   nodes.
-
+* The `verbose` parameter in `netest` now correctly controls the model fitting
+  output level in the underlying `ergm` and `stergm` functions.
 
 OTHER
 * Major updated internal package function testing for more reliable performance.
 * Added `...` argument to `epiweb` to pass additional arguments to `shiny::runApp`.
 * Importing the `graphics`, `grDevices`, `stats`, and `utils` packages as
   required by CRAN.
-* Update Travis-CI methods used for testing.
 
 
 Version 1.1.6
