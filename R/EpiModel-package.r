@@ -110,10 +110,15 @@
 #'
 #' @name EpiModel-package
 #' @aliases EpiModel
-#' @import graphics grDevices stats utils ergm network networkDynamic tergm
-#'         foreach doParallel
+#' @import ergm network networkDynamic tergm foreach doParallel
 #' @importFrom deSolve dede ode
 #' @importFrom RColorBrewer brewer.pal brewer.pal.info
+#' @importFrom graphics abline arrows boxplot legend lines mtext par plot points
+#'             polygon text title
+#' @importFrom grDevices col2rgb colorRampPalette rgb
+#' @importFrom stats complete.cases quantile rbinom rgeom sd setNames simulate
+#'             supsmu terms.formula update
+#' @importFrom utils head tail
 #'
 #' @docType package
 #' @keywords package
