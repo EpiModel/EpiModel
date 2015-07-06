@@ -6,7 +6,7 @@
 \usage{
 netest(nw, formation, target.stats, coef.diss, constraints, coef.form = NULL,
   edapprox = TRUE, output = "fit", set.control.ergm, set.control.stergm,
-  nonconv.error = FALSE, verbose = TRUE)
+  nonconv.error = FALSE, verbose = FALSE)
 }
 \arguments{
 \item{nw}{An object of class \code{network}.}
@@ -46,7 +46,7 @@ converge after the specified number of iterations. This may be useful
 in batch mode while fitting many models and there is no desire to
 return to the nonconverged model object.}
 
-\item{verbose}{Print progress to the console.}
+\item{verbose}{Print model fitting progress to console.}
 }
 \description{
 Estimates statistical network models using the exponential
@@ -90,9 +90,8 @@ formation model; thus, this approach is of most use when the main goal of
 estimation is to drive dynamic network simulations rather than to conduct
 inference on the formation model. The user is strongly encouraged to examine
 the behavior of the resulting simulations to confirm that the approximation
-is adequate for their purposes. For an example, see this
-\href{http://statnet.org/workshops/SUNBELT/current/tergm/tergm_tutorial.html}{STERGM
-Tutorial}.
+is adequate for their purposes. For an example, see the vignette for the
+package \code{tergm}.
 }
 
 \section{Control Arguments}{

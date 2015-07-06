@@ -31,7 +31,7 @@
 #'        converge after the specified number of iterations. This may be useful
 #'        in batch mode while fitting many models and there is no desire to
 #'        return to the nonconverged model object.
-#' @param verbose Print progress to the console.
+#' @param verbose Print model fitting progress to console.
 #'
 #' @details
 #' \code{netest} is a wrapper function for the \code{ergm} and \code{stergm}
@@ -69,9 +69,8 @@
 #' estimation is to drive dynamic network simulations rather than to conduct
 #' inference on the formation model. The user is strongly encouraged to examine
 #' the behavior of the resulting simulations to confirm that the approximation
-#' is adequate for their purposes. For an example, see this
-#' \href{http://statnet.org/workshops/SUNBELT/current/tergm/tergm_tutorial.html}{STERGM
-#' Tutorial}.
+#' is adequate for their purposes. For an example, see the vignette for the
+#' package \code{tergm}.
 #'
 #' @section Control Arguments:
 #' The \code{ergm} and \code{stergm} functions allow control settings for the
@@ -129,7 +128,7 @@
 netest <- function(nw, formation, target.stats, coef.diss, constraints,
                    coef.form = NULL, edapprox = TRUE, output = "fit",
                    set.control.ergm, set.control.stergm, nonconv.error = FALSE,
-                   verbose = TRUE) {
+                   verbose = FALSE) {
 
   if (missing(constraints)) {
     constraints	<- ~.
@@ -143,12 +142,6 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
   diss_check(formation, dissolution)
 
   if (edapprox == FALSE) {
-
-    if (verbose == TRUE) {
-      cat("======================")
-      cat("\nFitting STERGM")
-      cat("\n======================\n")
-    }
 
     if (missing(set.control.stergm)) {
       set.control.stergm <- control.stergm(EGMME.MCMC.burnin.min = 1e5)
@@ -164,7 +157,8 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
                   constraints = constraints,
                   estimate = "EGMME",
                   eval.loglik = FALSE,
-                  control = set.control.stergm)
+                  control = set.control.stergm,
+                  verbose = verbose)
 
     coef.form <- fit$formation.fit
 
@@ -181,12 +175,6 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
 
   } else {
 
-    if (verbose == TRUE) {
-      cat("======================")
-      cat("\nFitting ERGM")
-      cat("\n======================\n")
-    }
-
     if (missing(set.control.ergm)) {
       set.control.ergm <- control.ergm(MCMC.burnin = 1e5,
                                        MCMLE.maxit = 200)
@@ -200,7 +188,8 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
                 constraints = constraints,
                 offset.coef = coef.form,
                 eval.loglik = FALSE,
-                control = set.control.ergm)
+                control = set.control.ergm,
+                verbose = verbose)
 
     if (nonconv.error == TRUE) {
       sl <- tail(fit$steplen.hist, 2)
