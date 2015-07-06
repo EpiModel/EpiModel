@@ -163,7 +163,7 @@ merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
   x$control$nsims <- as.integer(x$control$nsims)
   y$control$nsims <- as.integer(y$control$nsims)
   if (x$control$nsims > 1 & y$control$nsims > 1 &
-        !all(sapply(x, class) == sapply(y, class))) {
+      !all(sapply(x, function(i) class(i)[1]) == sapply(y, function(i) class(i)[1]))) {
     stop("x and y have different structure")
   }
 
