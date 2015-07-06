@@ -28,15 +28,15 @@ Depends:
     networkDynamic (>= 0.7.1),
     tergm (>= 3.2.4)
 Imports:
+    graphics,
+    grDevices,
+    stats,
+    utils,
     doParallel,
     ergm (>= 3.2.4),
     foreach,
     network (>= 1.12.0),
-    RColorBrewer,
-    graphics,
-    grDevices,
-    stats,
-    utils
+    RColorBrewer
 Suggests:
     knitr,
     ndtv,

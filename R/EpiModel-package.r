@@ -110,8 +110,10 @@
 #'
 #' @name EpiModel-package
 #' @aliases EpiModel
-#' @import deSolve ergm network networkDynamic RColorBrewer tergm foreach doParallel
-#'         graphics grDevices stats utils
+#' @import graphics grDevices stats utils ergm network networkDynamic
+#'         RColorBrewer tergm foreach doParallel
+#' @importFrom deSolve dede ode
+#'
 #' @docType package
 #' @keywords package
 #'
