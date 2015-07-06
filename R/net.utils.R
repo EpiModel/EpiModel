@@ -896,12 +896,3 @@ update_nwattr <- function(nw, newNodes, rules, curr.tab, t1.tab) {
 
   return(nw)
 }
-
-
-# Unexported Functions ----------------------------------------------------
-
-# logit transformation of a probability
-logit <- function(x) {
-  log(x / (1 - x))
-}
-
