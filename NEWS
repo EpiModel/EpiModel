@@ -25,6 +25,8 @@ BUG FIXES
   nodes.
 * The `verbose` parameter in `netest` now correctly controls the model fitting
   output level in the underlying `ergm` and `stergm` functions.
+* `merge.netsim` now correctly checks elements of two objects to be merged when
+  the classes of those elements may be of length greater than 1.
 
 OTHER
 * Major updated internal package function testing for more reliable performance.
