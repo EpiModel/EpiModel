@@ -726,7 +726,11 @@ plot.icm <- function(x, y, popfrac, sim.lines = FALSE, sims, sim.col, sim.lwd,
 
   ## Legends ##
   if (!missing(leg) && leg == TRUE) {
-    leg.lty <- ifelse(modes == 2 & nocomp == TRUE, mean.lty, 1)
+    if (modes == 2 & nocomp == TRUE) {
+      leg.lty <- mean.lty
+    } else {
+      leg.lty <- 1
+    }
     legend("topright", legend = y, lty = leg.lty, lwd = 3,
            col = mean.pal, cex = leg.cex, bg = "white")
   }
@@ -1978,7 +1982,11 @@ plot.netsim <- function(x, type = "epi", y, popfrac, sim.lines = FALSE, sims, si
 
     ## Legends ##
     if (!missing(leg) && leg == TRUE) {
-      leg.lty <- ifelse(modes == 2 & nocomp == TRUE, mean.lty, 1)
+      if (modes == 2 & nocomp == TRUE) {
+        leg.lty <- mean.lty
+      } else {
+        leg.lty <- 1
+      }
       legend("topright", legend = y, lty = leg.lty, lwd = 3,
              col = mean.pal, cex = leg.cex, bg = "white")
     }
