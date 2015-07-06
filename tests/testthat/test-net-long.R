@@ -354,8 +354,8 @@ test_that("edges bipartite models", {
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
   plot(x, type = "network")
-  plot(x, type = "network", shp.bip = TRUE)
-  plot(x, type = "network", shp.bip = FALSE)
+  plot(x, type = "network", shp.bip = "triangle")
+  expect_error(plot(x, type = "network", shp.bip = TRUE))
   test_net(x)
   rm(x)
 
