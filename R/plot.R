@@ -957,7 +957,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 
     ## Plotting
     if (missing(plots.joined)) {
-      plots.joined <- ifelse(nstats > 5, FALSE, TRUE)
+      plots.joined <- ifelse(nstats > 3, FALSE, TRUE)
     }
 
     if (nstats == 1) {
@@ -2045,7 +2045,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac, sim.lines = FALSE, sims, si
 
     ## Plotting
     if (missing(plots.joined)) {
-      plots.joined <- ifelse(nstats > 5, FALSE, TRUE)
+      plots.joined <- ifelse(nstats > 3, FALSE, TRUE)
     }
     if (nstats == 1) {
       plots.joined <- TRUE
