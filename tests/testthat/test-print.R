@@ -1,4 +1,4 @@
-context("print functions")
+context("Print functions")
 
 test_that("print.dcm", {
   param <- param.dcm(inf.prob = 0.2, act.rate = 0.25)

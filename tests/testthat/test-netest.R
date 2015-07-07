@@ -1,4 +1,4 @@
-context("netest")
+context("Network estimation functions")
 
 
 # Test formation models ---------------------------------------------------
