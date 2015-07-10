@@ -23,14 +23,12 @@
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
-			<a class="brand" href="#">EpiModel</a>
+			<a class="brand" style="color: #FDD262" href="#">EpiModel</a>
 			<div class="nav-collapse collapse">
 				<ul class="nav">
-					<li><a href="#Installation">Installation</a></li>
-					<li><a href="#Started">Getting Started</a></li>
-          <li><a href="#Tutorials">Tutorials</a></li>
-          <li><a href="#Workshops">Workshops</a></li>
-          <li><a href="#Other">Other</a></li>
+          <li><a href=tut.html>Tutorials</a></li>
+          <li><a href=ws.html>Workshops</a></li>
+          <li><a href=det.html>Details</a></li>
 				</ul>
 			</div><!--/.nav-collapse -->
 		</div>
@@ -50,18 +48,22 @@
       include deterministic compartmental models, stochastic individual contact
       models, and stochastic network models. Disease types include SI, SIR, and
       SIS epidemics with and without demography, with utilities available for
-      expansion to epidemics of arbitrary complexity.
+      expansion to construct and simulate epidemic models of arbitrary complexity.
+      The network model class is based on the statistical framework of temporal
+      exponential random graph models (ERGMs) implementated in the
+      <a href="http://statnet.csde.washington.edu/"> Statnet</a> suite of software
+      for R.
 			</p>
 
 			<div id="Installation">
 				<h3>Installation</h3>
 				<p>
-					The current software version is <strong>EpiModel v1.1.6</strong>, which
+					The current software version is <strong>EpiModel v1.2.0</strong>, which
           may be downloaded from
           <a href="http://cran.r-project.org/web/packages/EpiModel/index.html">CRAN</a>
-          and can be installed in R through:
+          and installed in R through:
           <pre><code>install.packages("EpiModel", dependencies = TRUE)</code></pre>
-          The development version of EpiModel hosted on
+          The development version of EpiModel is hosted on
           <a href="https://github.com/statnet/EpiModel">GitHub</a> and may be
           installed via the devtools package by:
           <pre style="margin-top: 10px"><code>devtools::install_github("statnet/EpiModel")</code></pre>
@@ -69,8 +71,8 @@
         <p>The software source code is available at the
            <a href="http://github.com/statnet/EpiModel/">Github Repository</a>.
            Users should submit bug reports and feature requests as issues there.
-          The <a href="https://github.com/statnet/EpiModel/releases">Releases Page</a>
-          on the repository lists all the changes to the software over time.
+          The <a href="https://github.com/statnet/EpiModel/releases">Releases</a>
+          page on the repository lists all the changes to the software over time.
         </p>
 
 			</div>
@@ -82,7 +84,8 @@
         <p>
           The <a href="http://cran.r-project.org/web/packages/EpiModel/EpiModel.pdf">
             EpiModel Software Manual</a> provides a list of all the main functions
-            within the package, with syntax and examples.
+            within the package, with syntax and examples. This documentation is
+            also available within the package by consulting the help files.
         </p>
 
         <h4 style="margin-top: 18px">EpiModel Web</h4>
@@ -92,7 +95,7 @@
           epidemics, using the <a href="http://shiny.rstudio.com/">Shiny</a>
           framework in R. These applications are included within EpiModel
           for deterministic compartmental models (DCMs) and stochastic individual
-          contact models (ICMs). They are also hosted online
+          contact models (ICMs). They are also hosted online.
           <br>
           <small>
           <a href="http://statnet.shinyapps.io/epidcm">
@@ -102,183 +105,17 @@
   				</small>
         </p>
 
-      </div>
-
-  		<div id="Tutorials">
-				<h3>Tutorials</h3>
-        For each of the three model classes in EpiModel, the tutorials are
-        organized into basic integrated models to guide new users in the features
-        of the model class, and advanced extension models to build out the models
-        to answer new research questions.
-
-        <h4 style="margin-top: 18px">Basic Integrated Models</h4>
+        <h4 style="margin-top: 18px">Next Steps</h4>
         <p>
-          <strong>Basic DCMs with EpiModel</strong> &nbsp;&nbsp; This tutorial
-          provides some mathematical background for deterministic compartmental
-          models, with exploration of different model types and parameterizations
-          within EpiModel.
-          <br>
-          <small>
-            <a href="http://statnet.github.io/tut/BasicDCMs.html">
-               <i class="fa fa-book"></i> Tutorial</a>&nbsp;&nbsp;&nbsp;
-            <a href="http://statnet.github.io/tut/BasicDCMs.R">
-               <i class="fa fa-code"></i> Code</a>
-          </small>
-        </p>
-        <p>
-          <strong>Basic ICMs with EpiModel</strong> &nbsp;&nbsp; Stochastic
-          individual contact models (ICMs) are the microsimulation analogs to
-          DCMs. This tutorial explains the general differences between deterministic
-          and stochastic modeling, with hands-on basic examples.
-          <br>
-          <small>
-            <a href="http://statnet.github.io/tut/BasicICMs.html">
-               <i class="fa fa-book"></i> Tutorial</a>&nbsp;&nbsp;&nbsp;
-            <a href="http://statnet.github.io/tut/BasicICMs.R">
-               <i class="fa fa-code"></i> Code</a>
-          </small>
-        </p>
-        <p>
-          <strong>Basic Network Models with EpiModel</strong> &nbsp;&nbsp; Stochastic
-          network models build in arbitrarily complex contact or partnership
-          relational structures that form and dissolve over time, using the framework
-          of temporal exponential random graph models. This tutorial shows how to
-          simulate epidemics over simple networks with easily defined network
-          structures.
-          <br>
-          <small>
-            <a href="http://statnet.github.io/tut/BasicNet.html">
-               <i class="fa fa-book"></i> Tutorial</a>&nbsp;&nbsp;&nbsp;
-            <a href="http://statnet.github.io/tut/BasicNet.R">
-               <i class="fa fa-code"></i> Code</a>
-          </small>
+          The <a href="tut.html"> Tutorials</a> page provides introductions to
+          running epidemic models of
+          the three classes supported in EpiModel, and then expanding those models
+          to address novel research questions. For greater theoretical background
+          to fitting stochastic network models specifically, consult the
+          <a href="ws.html"> Workshops</a> page to view the materials from our
+          in-person courses on using EpiModel.
         </p>
 
-        <h4 style="margin-top: 18px">Advanced Extension Models</h4>
-        <p>
-          <strong>New DCMs with EpiModel</strong> &nbsp;&nbsp; Creating new
-          deterministic compartmental models in EpiModel involves writing new
-          model functions defining the mathematical transition processes, and then
-          parameterizing and simulating those models. This tutorial shows examples
-          of how to write model functions, including new parameters, and run new
-          models.
-          <br>
-          <small>
-            <a href="http://statnet.github.io/tut/NewDCMs.html">
-               <i class="fa fa-book"></i> Tutorial</a>&nbsp;&nbsp;&nbsp;
-            <a href="http://statnet.github.io/tut/NewDCMs.R">
-               <i class="fa fa-code"></i> Code</a>
-          </small>
-        </p>
-        <p>
-          <strong>New ICMs with EpiModel</strong> &nbsp;&nbsp; Original stochastic
-          individual contact models require defining and inserting new *modules*
-          that handle one aspect of the epidemic or related processes in the
-          microsimulation. Examples in this tutorial include new demographic
-          and transmission-related modules.
-          <br>
-          <small>
-            <a href="http://statnet.github.io/tut/NewICMs.html">
-               <i class="fa fa-book"></i> Tutorial</a>&nbsp;&nbsp;&nbsp;
-            <a href="http://statnet.github.io/tut/NewICMs.R">
-               <i class="fa fa-code"></i> Code</a>
-          </small>
-        </p>
-        <p>
-          <strong>New Network Models with EpiModel</strong> &nbsp;&nbsp; Similar
-          to ICMs, writing new network models requires creating modules that are
-          plugged in to the epidemic simulation. This framework allows for
-          new epidemiological processes of arbitrary complexity that interact
-          with the unique dynamic network structures of interest.
-          <br>
-          <small>
-            <a href="http://statnet.github.io/tut/NewNet.html">
-               <i class="fa fa-book"></i> Tutorial</a> &nbsp;&nbsp;&nbsp;
-            <a href="http://statnet.github.io/tut/NewNet.R">
-               <i class="fa fa-code"></i> Code</a>
-          </small>
-        </p>
-
-        <h4 style="margin-top: 18px">Utilities</h4>
-        <p>
-          <strong>Network Utility Functions</strong> &nbsp;&nbsp;This tutorial
-          shows extended examples of utility functions within EpiModel that help
-          with the parameterization and simulation of stochastic network models.
-          <br>
-          <small>
-            <a href="http://statnet.github.io/tut/NetUtils.html">
-              <i class="fa fa-book">
-            </i> Tutorial</a>
-          </small>
-        </p>
-
-      </div>
-
-
-    	<div id="Workshops">
-				<h3>Workshops</h3>
-
-        <h4>Network Modeling for Epidemics</h4>
-        <p>
-        This 6-day yearly summer course introduces traditional compartmental
-        models for epidemics, stochastic microsimulation epidemic models,
-        the methodology for classical descriptive network analysis, and new
-        statistical methods for network analysis using exponential-family random
-        graph models. Students learn to use these methods to develop their own
-        epidemic models, with a focus on data-driven network models of HIV/STI
-        transmission and control.
-        <br>
-        <small>
-          <a href="http://statnet.csde.washington.edu/EpiModel/nme/index.html">
-             <i class="fa fa-book"></i> Course Materials</a>
-        </small>
-        </p>
-        <p>
-        <strong>NME 2015</strong> will be offered in <strong>Seattle
-        (August 24-28)</strong> and <strong>Bruges, Belgium (September 7-11)</strong>.
-        Further details will be posted on the EpiModel email list; application information
-        is now listed on the website above.
-        </p>
-        <h4 style="margin-top: 22px">Sunbelt</h4>
-        <p>
-        Sunbelt is the yearly conference of the International Network for Social
-        Network Analysis. The conference offers several workshops for software
-        tools, and statnet developers have been teaching there for several years.
-        <br>
-        <small>
-          <a href="http://statnet.github.io/sb/">
-             <i class="fa fa-book"></i> Course Materials</a>
-        </small>
-        </p>
-      </div>
-
-
-      <div id="Other">
-				<h3>Other</h3>
-
-        <h4>Email List</h4>
-        <p>
-        Users are encouraged to join the email list for
-        <a href="http://mailman11.u.washington.edu/mailman/listinfo/epimodel">
-        EpiModel</a> (as well as the list for
-        <a href="http://mailman.u.washington.edu/mailman/listinfo/statnet_help">
-        Statnet</a>) as a place to ask questions, report bugs, and tell us about
-        your research using these tools.
-        </p>
-
-        <h4  style="margin-top: 18px">Funding Support</h4>
-        <p>
-        Development of this software is supported by the following grants from
-        the National Institutes of Health: R01HD68395 (NICHD), T32HD007543 (NICHD),
-        and R24HD042828 (NICHD).
-        </p>
-
-        <h4  style="margin-top: 18px">Copyright</h4>
-        <p>
-        These materials are distributed under the GPL-3 license, with the
-        following copyright and attribution requirements listed
-        <a href="http://statnet.csde.washington.edu/attribution.shtml">here</a>.
-        </p>
       </div>
 
 		</div>
@@ -307,5 +144,4 @@
   ga('create', 'UA-56272534-1', 'auto');
   ga('require', 'displayfeatures');
   ga('send', 'pageview');
-
 </script>
