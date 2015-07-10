@@ -22,12 +22,12 @@ shinyServer(function(input, output) {
   })
   init <- reactive({
     if (input$modtype == "SIR") {
-      init.icm(s.num = input$s.num,
-               i.num = input$i.num,
-               r.num = input$r.num)
+      init.icm(s.num = as.numeric(input$s.num),
+               i.num = as.numeric(input$i.num),
+               r.num = as.numeric(input$r.num))
     } else {
-      init.icm(s.num = input$s.num,
-               i.num = input$i.num)
+      init.icm(s.num = as.numeric(input$s.num),
+               i.num = as.numeric(input$i.num))
     }
   })
   control <- reactive({
