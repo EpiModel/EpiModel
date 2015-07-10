@@ -24,7 +24,7 @@ verbose.dcm <- function(x, type, s = 1) {
 
   if (type == "progress") {
     if (x$verbose == TRUE & x$nruns > 1) {
-      cat("Run = ", s, "/", x$nruns, "\n", sep = "")
+      cat("\nRun = ", s, "/", x$nruns, sep = "")
     }
   }
 
