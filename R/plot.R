@@ -128,7 +128,7 @@ plot.dcm <- function(x, y, popfrac, run, col, lwd, lty, alpha = 0.9, leg,
   }
 
   groups <- x$param$groups
-  type <- x$control$type
+  dis.type <- x$control$type
 
   ## Main title default
   if (is.null(da$main)) {
@@ -295,7 +295,7 @@ plot.dcm <- function(x, y, popfrac, run, col, lwd, lty, alpha = 0.9, leg,
           fixpal <- pal
           fixpal[1] <- pal[2]; fixpal[2] <- pal[1]
           pal <- fixpal
-          if (type != "SIR") {
+          if (dis.type != "SIR") {
             pal <- pal[1:2]
           }
           pal <- rep(pal, times = lcomp / 2)
@@ -509,7 +509,7 @@ plot.icm <- function(x, y, popfrac, sim.lines = FALSE, sims, sim.col, sim.lwd,
   if (max(sims) > nsims) {
     stop("Set sim to between 1 and ", nsims, call. = FALSE)
   }
-  type <- x$control$type
+  dis.type <- x$control$type
   modes <- x$param$groups
 
   # dotargs
@@ -589,7 +589,7 @@ plot.icm <- function(x, y, popfrac, sim.lines = FALSE, sims, sim.col, sim.lwd,
   # Special case for 2-mode/group models
   if (modes == 2 & nocomp == TRUE) {
     pal <- brewer.pal(3, "Set1")
-    if (type == "SIR") {
+    if (dis.type == "SIR") {
       mean.pal <- rep(mean.pal, 2)
       qnts.pal <- rep(qnts.pal, 2)
       sim.pal <- rep(sim.pal, 2)
@@ -1760,7 +1760,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac, sim.lines = FALSE, sims, si
     if (max(sims) > nsims) {
       stop("Set sim to between 1 and ", nsims, call. = FALSE)
     }
-    type <- x$control$type
+    dis.type <- x$control$type
     modes <- x$param$modes
 
 
@@ -1845,7 +1845,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac, sim.lines = FALSE, sims, si
     # Special case for 2-mode/group models
     if (modes == 2 & nocomp == TRUE) {
       pal <- brewer.pal(3, "Set1")
-      if (type == "SIR") {
+      if (dis.type == "SIR") {
         mean.pal <- rep(mean.pal, 2)
         qnts.pal <- rep(qnts.pal, 2)
         sim.pal <- rep(sim.pal, 2)
@@ -2323,7 +2323,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac, sim.lines = FALSE, sims, si
 #'                    rec.rate = 1/3, b.rate = 1/90, ds.rate = 1/100,
 #'                    di.rate = 1/35, dr.rate = 1/100)
 #' init <- init.dcm(s.num = 1000, i.num = 1, r.num = 0)
-#' control <- control.dcm(type="SIR", nsteps = 25, verbose = FALSE)
+#' control <- control.dcm(type = "SIR", nsteps = 25, verbose = FALSE)
 #' mod1 <- dcm(param, init, control)
 #' comp_plot(mod1, at = 25, run = 3)
 #'
@@ -2352,7 +2352,7 @@ comp_plot.dcm <- function(x, at = 1, digits = 3, run = 1, ...) {
 
   ## Variables
   nsteps <- x$control$nsteps
-  type <- x$control$type
+  dis.type <- x$control$type
   groups <- x$param$groups
   vital <- x$param$vital
 
@@ -2380,12 +2380,12 @@ comp_plot.dcm <- function(x, at = 1, digits = 3, run = 1, ...) {
 
   ## Main Plot
   plot(0:100, 0:100, type = "n", axes = FALSE)
-  title(main = paste(type, "Model Diagram"))
+  title(main = paste(dis.type, "Model Diagram"))
   mtext(paste0("time=", intime, "  |  run=", run),
         side = 3, cex = 0.8, line = -1)
 
   ## 1. SI Model
-  if (type == "SI") {
+  if (dis.type == "SI") {
     mbox(22, 40, "Susceptible", df$s.num)
     mbox(57, 40, "Infected", df$i.num)
     harrow(22, 40, "si.flow", df$si.flow, dir = "right")
@@ -2397,7 +2397,7 @@ comp_plot.dcm <- function(x, at = 1, digits = 3, run = 1, ...) {
   }
 
   ## 2. SIR Model
-  if (type == "SIR") {
+  if (dis.type == "SIR") {
     mbox(5, 40, "Susceptible", df$s.num)
     mbox(40, 40, "Infected", df$i.num)
     mbox(75, 40, "Recovered", df$r.num)
@@ -2412,7 +2412,7 @@ comp_plot.dcm <- function(x, at = 1, digits = 3, run = 1, ...) {
   }
 
   ## 3. SIS Model
-  if (type == "SIS") {
+  if (dis.type == "SIS") {
     mbox(22, 40, "Susceptible", df$s.num)
     mbox(57, 40, "Infected", df$i.num)
     harrow(22, 40, "si.flow", df$si.flow, dir = "right")
@@ -2436,7 +2436,7 @@ comp_plot.icm <- function(x, at = 1, digits = 3, ...) {
 
   # Variables
   nsteps <- x$control$nsteps
-  type <- x$control$type
+  dis.type <- x$control$type
   vital <- x$param$vital
 
   # Standardize groups
@@ -2470,12 +2470,12 @@ comp_plot.icm <- function(x, at = 1, digits = 3, ...) {
 
   ## Main Plot
   plot(0:100, 0:100, type = "n", axes = FALSE)
-  title(main = paste(type, "Model Diagram"))
+  title(main = paste(dis.type, "Model Diagram"))
   mtext(paste0("Simulation means(sd) | time=", at),
         side = 3, cex = 0.8, line = -1)
 
   ## 1. SI Model
-  if (type == "SI" && groups == 1) {
+  if (dis.type == "SI" && groups == 1) {
     mbox(22, 40, "Susceptible", paste0(df.mn$s.num, "(", df.sd$s.num, ")"))
     mbox(57, 40, "Infected", paste0(df.mn$i.num, "(", df.sd$i.num, ")"))
     harrow(22, 40, "si.flow", df.mn$si.flow, dir = "right")
@@ -2487,7 +2487,7 @@ comp_plot.icm <- function(x, at = 1, digits = 3, ...) {
   }
 
   ## 2. SIR Model
-  if (type == "SIR" && groups == 1) {
+  if (dis.type == "SIR" && groups == 1) {
     mbox(5, 40, "Susceptible", paste0(df.mn$s.num, "(", df.sd$s.num, ")"))
     mbox(40, 40, "Infected", paste0(df.mn$i.num, "(", df.sd$i.num, ")"))
     mbox(75, 40, "Recovered", paste0(df.mn$r.num, "(", df.sd$r.num, ")"))
@@ -2502,7 +2502,7 @@ comp_plot.icm <- function(x, at = 1, digits = 3, ...) {
   }
 
   ## 3. SIS Model
-  if (type == "SIS" && groups == 1) {
+  if (dis.type == "SIS" && groups == 1) {
     mbox(22, 40, "Susceptible", paste0(df.mn$s.num, "(", df.sd$s.num, ")"))
     mbox(57, 40, "Infected", paste0(df.mn$i.num, "(", df.sd$i.num, ")"))
     harrow(22, 40, "si.flow", df.mn$si.flow, dir = "right")

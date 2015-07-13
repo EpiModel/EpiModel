@@ -54,7 +54,7 @@ param <- param.dcm(inf.prob = 0.2, act.rate = 5:7,
                    rec.rate = 1/3, b.rate = 1/90, ds.rate = 1/100,
                    di.rate = 1/35, dr.rate = 1/100)
 init <- init.dcm(s.num = 1000, i.num = 1, r.num = 0)
-control <- control.dcm(type="SIR", nsteps = 25, verbose = FALSE)
+control <- control.dcm(type = "SIR", nsteps = 25, verbose = FALSE)
 mod1 <- dcm(param, init, control)
 comp_plot(mod1, at = 25, run = 3)
 
