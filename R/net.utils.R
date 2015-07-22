@@ -168,8 +168,6 @@ calc_eql <- function(x, numer = "i.num", denom = "num",
 check_bip_degdist <- function(num.m1, num.m2,
                               deg.dist.m1, deg.dist.m2) {
 
-  num <- num.m1 + num.m2
-
   deg.counts.m1 <- deg.dist.m1 * num.m1
   deg.counts.m2 <- deg.dist.m2 * num.m2
 
@@ -188,18 +186,19 @@ check_bip_degdist <- function(num.m1, num.m2,
   print(mat, print.gap = 3)
   cat("=============================================\n")
 
-  if (sum(deg.dist.m1) != 1 | sum(deg.dist.m2) != 1 |
-      round(tot.deg.m1) != round(tot.deg.m2)) {
-    if (sum(deg.dist.m1) != 1) {
+  reldiff <- (tot.deg.m1 - tot.deg.m2) / tot.deg.m2
+  absdiff <- abs(tot.deg.m1 - tot.deg.m2)
+
+  if (sum(deg.dist.m1) <= 0.999 | sum(deg.dist.m2) <= 0.999 | absdiff > 1) {
+    if (sum(deg.dist.m1) <= 0.999) {
       cat("** deg.dist.m1 TOTAL != 1 \n")
     }
-    if (sum(deg.dist.m2) != 1) {
+    if (sum(deg.dist.m2) <= 0.999) {
       cat("** deg.dist.m2 TOTAL != 1 \n")
     }
 
-    if (round(tot.deg.m1) != round(tot.deg.m2)) {
-      reldiff <- (tot.deg.m1 - tot.deg.m2) / tot.deg.m2
-      if (reldiff > 0) {
+    if (absdiff > 1) {
+      if (tot.deg.m1 > tot.deg.m2) {
         msg <- "Mode 1 Edges > Mode 2 Edges:"
       } else {
         msg <- "Mode 1 Edges < Mode 2 Edges:"
