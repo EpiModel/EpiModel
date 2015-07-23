@@ -418,7 +418,10 @@ control.net <- function(type, nsteps, start = 1, nsims = 1, depend, rec.rand = T
 
 
   ## Module classification
-  p$bi.mods <- grep(".FUN", names(formal.args), value = TRUE)
+  bi.mods <- grep(".FUN", names(formal.args), value = TRUE)
+  bi.mods <- bi.mods[which(sapply(bi.mods, function(x) !is.null(eval(parse(text = x))),
+                                  USE.NAMES = FALSE) == TRUE)]
+  p$bi.mods <- bi.mods
   p$user.mods <- grep(".FUN", names.dot.args, value = TRUE)
 
 
