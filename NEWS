@@ -6,6 +6,8 @@ BUG FIXES
   bipartite mode statistics.
 * Fixes a formatting issue with output for DCMs run with the `dcm` function.
 * Fixes a variable name collision problem for epidemic plotting functions.
+* Removes long burn-ins from network model estimation in `netest` to improve
+  performance of fitting models.
 
 
 Version 1.2.0

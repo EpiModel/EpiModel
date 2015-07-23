@@ -47,9 +47,6 @@ Susceptible-Infected-Recovered (SIR), and Susceptible-Infected-Susceptible (SIS)
 Original models may be built by writing new process modules that either take
 the place of existing modules (for example, disease recovery), or supplement
 the set of existing processes with a new one contained in an original module.
-New and replacement modules may be written and input into \code{icm} following
-the steps outlined in the
-\href{http://statnet.github.io/tut/NewICMs.html}{Solving New ICMs} tutorial.
 }
 \examples{
 \dontrun{

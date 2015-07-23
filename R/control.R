@@ -166,10 +166,7 @@ control.dcm <- function(type, nsteps, dt = 1, odemethod = "rk4",
 #'
 #' For original models, one may substitute replacement module functions for any
 #' the default functions. New modules may be added to the workflow at each time
-#' step by passing a module function via the \code{...} argument. Further details
-#' and examples of passing new modules to \code{icm} are found in the
-#' \href{http://statnet.github.io/tut/NewICMs.html}{Solving New ICMs with
-#' EpiModel} tutorial.
+#' step by passing a module function via the \code{...} argument.
 #'
 #' @seealso Use \code{\link{param.icm}} to specify model parameters and
 #'          \code{\link{init.icm}} to specify the initial conditions. Run the
