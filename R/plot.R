@@ -510,7 +510,11 @@ plot.icm <- function(x, y, popfrac, sim.lines = FALSE, sims, sim.col, sim.lwd,
     stop("Set sim to between 1 and ", nsims, call. = FALSE)
   }
   dis.type <- x$control$type
-  modes <- x$param$groups
+  if (is.null(x$param$groups)) {
+    modes <- 1
+  } else {
+    modes <- x$param$groups
+  }
 
   # dotargs
   da <- list(...)
@@ -1761,7 +1765,11 @@ plot.netsim <- function(x, type = "epi", y, popfrac, sim.lines = FALSE, sims, si
       stop("Set sim to between 1 and ", nsims, call. = FALSE)
     }
     dis.type <- x$control$type
-    modes <- x$param$modes
+    if (is.null(x$param$modes)) {
+      modes <- 1
+    } else {
+      modes <- x$param$modes
+    }
 
 
     # dotargs
