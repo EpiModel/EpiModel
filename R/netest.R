@@ -144,7 +144,7 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
   if (edapprox == FALSE) {
 
     if (missing(set.control.stergm)) {
-      set.control.stergm <- control.stergm(EGMME.MCMC.burnin.min = 1e5)
+      set.control.stergm <- control.stergm()
     }
 
     fit <- stergm(nw,
@@ -176,11 +176,10 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
   } else {
 
     if (missing(set.control.ergm)) {
-      set.control.ergm <- control.ergm(MCMC.burnin = 1e5,
-                                       MCMLE.maxit = 200)
+      set.control.ergm <- control.ergm()
     }
 
-    formation.nw <- update(formation, nw ~.)
+    formation.nw <- update(formation, nw ~ .)
     environment(formation.nw) <- environment()
 
     fit <- ergm(formation.nw,
