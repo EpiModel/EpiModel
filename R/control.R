@@ -376,6 +376,8 @@ control.icm <- function(type, nsteps, nsims = 1, rec.rand = TRUE, b.rand = TRUE,
 #' the default functions. New modules may be added to the workflow at each time
 #' step by passing a module function via the \code{...} argument. Consult the
 #' \href{http://statnet.github.io/tut/NewNet.html}{New Network Models} tutorial.
+#' One may remove existing modules, such as \code{births.FUN}, from the workflow
+#' by setting the parameter value for that argument to \code{NULL}.
 #'
 #' @seealso Use \code{\link{param.net}} to specify model parameters and
 #'          \code{\link{init.net}} to specify the initial conditions. Run the

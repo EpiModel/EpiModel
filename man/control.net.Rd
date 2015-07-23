@@ -207,6 +207,8 @@ For original models, one may substitute replacement module functions for any
 the default functions. New modules may be added to the workflow at each time
 step by passing a module function via the \code{...} argument. Consult the
 \href{http://statnet.github.io/tut/NewNet.html}{New Network Models} tutorial.
+One may remove existing modules, such as \code{births.FUN}, from the workflow
+by setting the parameter value for that argument to \code{NULL}.
 }
 \seealso{
 Use \code{\link{param.net}} to specify model parameters and
