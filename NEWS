@@ -1,3 +1,13 @@
+Version 1.2.1
+------------------------------------------------------------------------------
+
+BUG FIXES
+* `check_bip_degdist` now uses more tolerant checks of equality when comparing
+  bipartite mode statistics.
+* Fixes a formatting issue with output for DCMs run with the `dcm` function.
+* Fixes a variable name collision problem for epidemic plotting functions.
+
+
 Version 1.2.0
 ------------------------------------------------------------------------------
 
