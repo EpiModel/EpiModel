@@ -191,10 +191,10 @@ check_bip_degdist <- function(num.m1, num.m2,
 
   if (sum(deg.dist.m1) <= 0.999 | sum(deg.dist.m1) >= 1.001 |
       sum(deg.dist.m2) <= 0.999 | sum(deg.dist.m2) >= 1.001 | absdiff > 1) {
-    if (sum(deg.dist.m1) <= 0.999) {
+    if (sum(deg.dist.m1) <= 0.999 | sum(deg.dist.m1) >= 1.001) {
       cat("** deg.dist.m1 TOTAL != 1 \n")
     }
-    if (sum(deg.dist.m2) <= 0.999) {
+    if (sum(deg.dist.m2) <= 0.999 | sum(deg.dist.m2) >= 1.001) {
       cat("** deg.dist.m2 TOTAL != 1 \n")
     }
 
