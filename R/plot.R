@@ -759,8 +759,8 @@ draw_qnts <- function(x, y, qnts, qnts.pal, qnts.smooth, loc = "epi") {
     if (qnts.smooth == FALSE) {
       yy <- c(qnt.prev[1, ], rev(qnt.prev[2, ]))
     } else {
-      yy <- c(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[1, ])$y,
-              rev(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[2, ])$y))
+      yy <- c(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[1, ]))$y,
+              rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[2, ]))$y))
     }
     polygon(xx, yy, col = qnts.pal[j], border = NA)
   }
@@ -781,7 +781,7 @@ draw_means <- function(x, y, mean.smooth, mean.lwd,
       mean.prev <- rowMeans(x[[loc]][[y[j]]])
     }
     if (mean.smooth == TRUE) {
-      mean.prev <- supsmu(x = 1:length(mean.prev), y = mean.prev)$y
+      mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev), y = mean.prev))$y
     }
     lines(mean.prev, lwd = mean.lwd[j],
           col = mean.pal[j], lty = mean.lty[j])
@@ -1092,8 +1092,8 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
             if (qnts.smooth == FALSE) {
               yy <- c(qnt.prev[1, ], rev(qnt.prev[2, ]))
             } else {
-              yy <- c(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[1, ])$y,
-                      rev(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[2, ])$y))
+              yy <- c(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[1, ]))$y,
+                      rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[2, ]))$y))
             }
             polygon(xx, yy, col = qnts.col[which(j == outsts)], border = NA)
           }
@@ -1113,7 +1113,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
             }
             mean.prev <- rowMeans(dataj)
             if (mean.smooth == TRUE) {
-              mean.prev <- supsmu(x = 1:length(mean.prev), y = mean.prev)$y
+              mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev), y = mean.prev))$y
             }
             lines(mean.prev, lwd = mean.lwd,
                   col = mean.col[which(j == outsts)], lty = mean.lty)
@@ -1184,8 +1184,8 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
             if (qnts.smooth == FALSE) {
               yy <- c(qnt.prev[1, ], rev(qnt.prev[2, ]))
             } else {
-              yy <- c(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[1, ])$y,
-                      rev(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[2, ])$y))
+              yy <- c(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[1, ]))$y,
+                      rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[2, ]))$y))
             }
             polygon(xx, yy, col = qnts.col[which(j == outsts)], border = NA)
           }
@@ -1206,7 +1206,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
             }
             mean.prev <- rowMeans(dataj)
             if (mean.smooth == TRUE) {
-              mean.prev <- supsmu(x = 1:length(mean.prev), y = mean.prev)$y
+              mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev), y = mean.prev))$y
             }
             lines(mean.prev, lwd = mean.lwd,
                   col = mean.col[which(j == outsts)], lty = mean.lty)
@@ -1324,8 +1324,8 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         if (qnts.smooth == FALSE) {
           yy <- c(qnt.prev[1, ], rev(qnt.prev[2, ]))
         } else {
-          yy <- c(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[1, ])$y,
-                  rev(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[2, ])$y))
+          yy <- c(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[1, ]))$y,
+                  rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[2, ]))$y))
         }
         polygon(xx, yy, col = qnts.col, border = NA)
       }
@@ -1345,7 +1345,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         dataj <- dataj[complete.cases(dataj), , drop = FALSE]
         mean.prev <- rowMeans(dataj)
         if (mean.smooth == TRUE) {
-          mean.prev <- supsmu(x = 1:length(mean.prev), y = mean.prev)$y
+          mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev), y = mean.prev))$y
         }
         lines(mean.prev, lwd = mean.lwd,
               col = mean.col, lty = mean.lty)
@@ -1442,8 +1442,8 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         if (qnts.smooth == FALSE) {
           yy <- c(qnt.prev[1, ], rev(qnt.prev[2, ]))
         } else {
-          yy <- c(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[1, ])$y,
-                  rev(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[2, ])$y))
+          yy <- c(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[1, ]))$y,
+                  rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[2, ]))$y))
         }
         polygon(xx, yy, col = qnts.col, border = NA)
       }
@@ -1462,7 +1462,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         dataj <- as.data.frame(prop.diss)
         mean.prev <- rowMeans(dataj)
         if (mean.smooth == TRUE) {
-          mean.prev <- supsmu(x = 1:length(mean.prev), y = mean.prev)$y
+          mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev), y = mean.prev))$y
         }
         lines(mean.prev, lwd = mean.lwd,
               col = mean.col, lty = mean.lty)
@@ -2167,8 +2167,8 @@ plot.netsim <- function(x, type = "epi", y, popfrac, sim.lines = FALSE, sims, si
           if (qnts.smooth == FALSE) {
             yy <- c(qnt.prev[1, ], rev(qnt.prev[2, ]))
           } else {
-            yy <- c(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[1, ])$y,
-                    rev(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[2, ])$y))
+            yy <- c(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[1, ]))$y,
+                    rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[2, ]))$y))
           }
           polygon(xx, yy, col = qnts.col[which(j == outsts)], border = NA)
         }
@@ -2185,7 +2185,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac, sim.lines = FALSE, sims, si
           }
           mean.prev <- rowMeans(dataj)
           if (mean.smooth == TRUE) {
-            mean.prev <- supsmu(x = 1:length(mean.prev), y = mean.prev)$y
+            mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev), y = mean.prev))$y
           }
           lines(mean.prev, lwd = mean.lwd,
                 col = mean.col[which(j == outsts)], lty = mean.lty)
@@ -2257,8 +2257,8 @@ plot.netsim <- function(x, type = "epi", y, popfrac, sim.lines = FALSE, sims, si
           if (qnts.smooth == FALSE) {
             yy <- c(qnt.prev[1, ], rev(qnt.prev[2, ]))
           } else {
-            yy <- c(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[1, ])$y,
-                    rev(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[2, ])$y))
+            yy <- c(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[1, ]))$y,
+                    rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[2, ]))$y))
           }
           polygon(xx, yy, col = qnts.col[which(j == outsts)], border = NA)
         }
@@ -2275,7 +2275,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac, sim.lines = FALSE, sims, si
           }
           mean.prev <- rowMeans(dataj)
           if (mean.smooth == TRUE) {
-            mean.prev <- supsmu(x = 1:length(mean.prev), y = mean.prev)$y
+            mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev), y = mean.prev))$y
           }
           lines(mean.prev, lwd = mean.lwd,
                 col = mean.col[which(j == outsts)], lty = mean.lty)
