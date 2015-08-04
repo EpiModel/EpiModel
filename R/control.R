@@ -428,8 +428,8 @@ control.net <- function(type, nsteps, start = 1, nsims = 1, depend, rec.rand = T
 
 
   ## Defaults and checks
-  if (is.null(p$type) | !(p$type %in% c("SI", "SIS", "SIR"))) {
-    stop("Specify type as \"SI\", \"SIS\", or \"SIR\" ")
+  if (is.null(p$type)) {
+    p$type <- "SI"
   }
   if (is.null(p$nsteps)) {
     stop("Specify nsteps")
