@@ -237,14 +237,16 @@ get_nwparam <- function(x, network = 1) {
 #'
 #' @param x An object of class \code{netsim}.
 #' @param sims A vector of simulation numbers to retain in the output object,
-#'        or \code{"mean"} which automatically selects the one simulation with
-#'        the number infected at the final time step closest to the mean across
-#'        all simulations.
+#'        or \code{"mean"} which selects the one simulation with value of the
+#'        variable specified in \code{var} closest to the mean of \code{var}
+#'        across all simulations.
+#' @param var Variable to use when \code{sims = "mean"} for selecting the average
+#'        simulation from the set.
 #'
 #' @keywords extract
 #' @export
 #'
-get_sims <- function(x, sims) {
+get_sims <- function(x, sims, var = "i.num") {
 
   if (class(x) != "netsim") {
     stop("x must be of class netsim", call. = FALSE)
@@ -257,7 +259,7 @@ get_sims <- function(x, sims) {
   }
 
   if (length(sims) == 1 && sims == "mean") {
-    d <- tail(x$epi$i.num, 1)
+    d <- tail(x$epi[[var]], 1)
     md <- mean(as.numeric(d))
     sims <- which.min(abs(d - md))
   }

@@ -4,15 +4,18 @@
 \alias{get_sims}
 \title{Extract Network Simulations}
 \usage{
-get_sims(x, sims)
+get_sims(x, sims, var = "i.num")
 }
 \arguments{
 \item{x}{An object of class \code{netsim}.}
 
 \item{sims}{A vector of simulation numbers to retain in the output object,
-       or \code{"mean"} which automatically selects the one simulation with
-       the number infected at the final time step closest to the mean across
-       all simulations.}
+or \code{"mean"} which selects the one simulation with value of the
+variable specified in \code{var} closest to the mean of \code{var}
+across all simulations.}
+
+\item{var}{Variable to use when \code{sims = "mean"} for selecting the average
+       simulation from the set.}
 }
 \description{
 Subsets the entire \code{netsim} object to a subset of
