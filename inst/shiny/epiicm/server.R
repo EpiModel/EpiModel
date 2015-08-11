@@ -27,7 +27,7 @@ shinyServer(function(input, output) {
                r.num = as.numeric(input$r.num))
     } else {
       init.icm(s.num = as.numeric(input$s.num),
-               i.num = as.numeric(input$i.num))
+               i.num = as.numeric(input$i.num), status.rand = FALSE)
     }
   })
   control <- reactive({
