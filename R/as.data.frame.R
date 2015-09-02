@@ -89,8 +89,10 @@ as.data.frame.dcm <- function(x, row.names = NULL, optional = FALSE, run = 1,
 #'        and \code{out="vals"}.
 #' @param out Data output to data frame: \code{"mean"} for row means across
 #'        simulations, \code{"sd"} for row standard deviations across simulations,
-#'        and \code{"vals"} for values from one specific simulation (with simulation
+#'        \code{"qnt"} for row quantiles at the level specified in \code{qval},
+#'        or \code{"vals"} for values from one specific simulation (with simulation
 #'        number set with \code{sim} argument).
+#' @param qval Quantile value necessary when \code{out="qnt"}.
 #' @param row.names See \code{\link{as.data.frame.default}}.
 #' @param optional See \code{\link{as.data.frame.default}}.
 #' @param ...  See \code{\link{as.data.frame.default}}.
@@ -98,10 +100,10 @@ as.data.frame.dcm <- function(x, row.names = NULL, optional = FALSE, run = 1,
 #' @details
 #' These methods work for both \code{icm} and \code{netsim}
 #' class models. The available output includes time-specific means,
-#' standard deviations, and simulation values (compartment and flow sizes from
-#' one simulation) from these stochastic model classes. Means and standard
-#' deviations are calculated by taking the row summary across all simulations
-#' for each time step in the model output.
+#' standard deviations, quantiles, and simulation values (compartment and flow
+#' sizes from one simulation) from these stochastic model classes. Means and
+#' standard deviations are calculated by taking the row summary across all
+#' simulations for each time step in the model output.
 #'
 #' @method as.data.frame icm
 #' @keywords extract
@@ -121,12 +123,16 @@ as.data.frame.dcm <- function(x, row.names = NULL, optional = FALSE, run = 1,
 #' # Standard deviations of simulations
 #' as.data.frame(mod, out = "sd")
 #'
+#' # Quantile values for interquartile interval
+#' as.data.frame(mod, out = "qnt", qval = 0.25)
+#' as.data.frame(mod, out = "qnt", qval = 0.75)
+#'
 #' # Individual simulation runs, with default sim=1
 #' as.data.frame(mod, out = "vals")
 #' as.data.frame(mod, out = "vals", sim = 2)
 #'
 as.data.frame.icm <- function(x, row.names = NULL, optional = FALSE,
-                              sim, out = "mean", ...) {
+                              sim, out = "mean", qval, ...) {
 
   df <- data.frame(time = 1:x$control$nsteps)
   nsims <- x$control$nsims
@@ -193,6 +199,16 @@ as.data.frame.icm <- function(x, row.names = NULL, optional = FALSE,
       }
     }
   }
+
+  if (out == "qnt") {
+    if (missing(qval) || length(qval) > 1 || (qval > 1 | qval < 0)) {
+      stop("Must specify qval as single value between 0 and 1", call. = FALSE)
+    }
+    for (i in seq_along(x$epi)) {
+      df[, i + 1] <- apply(x$epi[[i]], 1, quantile, probs = qval, na.rm = TRUE)
+    }
+  }
+
 
   names(df)[2:ncol(df)] <- names(x$epi)
 

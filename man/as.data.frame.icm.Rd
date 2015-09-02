@@ -6,7 +6,7 @@
 \title{Extract Model Data for Stochastic Models}
 \usage{
 \method{as.data.frame}{icm}(x, row.names = NULL, optional = FALSE, sim,
-  out = "mean", ...)
+  out = "mean", qval, ...)
 
 \method{as.data.frame}{netsim}(x, row.names = NULL, optional = FALSE, sim,
   out = "mean", ...)
@@ -23,8 +23,11 @@ and \code{out="vals"}.}
 
 \item{out}{Data output to data frame: \code{"mean"} for row means across
 simulations, \code{"sd"} for row standard deviations across simulations,
-and \code{"vals"} for values from one specific simulation (with simulation
+\code{"qnt"} for row quantiles at the level specified in \code{qval},
+or \code{"vals"} for values from one specific simulation (with simulation
 number set with \code{sim} argument).}
+
+\item{qval}{Quantile value necessary when \code{out="qnt"}.}
 
 \item{...}{See \code{\link{as.data.frame.default}}.}
 }
@@ -36,10 +39,10 @@ This function extracts model simulations for objects of classes
 \details{
 These methods work for both \code{icm} and \code{netsim}
 class models. The available output includes time-specific means,
-standard deviations, and simulation values (compartment and flow sizes from
-one simulation) from these stochastic model classes. Means and standard
-deviations are calculated by taking the row summary across all simulations
-for each time step in the model output.
+standard deviations, quantiles, and simulation values (compartment and flow
+sizes from one simulation) from these stochastic model classes. Means and
+standard deviations are calculated by taking the row summary across all
+simulations for each time step in the model output.
 }
 \examples{
 ## Stochastic ICM SIS model with 5 simulations
@@ -54,6 +57,10 @@ as.data.frame(mod)
 
 # Standard deviations of simulations
 as.data.frame(mod, out = "sd")
+
+# Quantile values for interquartile interval
+as.data.frame(mod, out = "qnt", qval = 0.25)
+as.data.frame(mod, out = "qnt", qval = 0.75)
 
 # Individual simulation runs, with default sim=1
 as.data.frame(mod, out = "vals")
