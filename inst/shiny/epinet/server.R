@@ -8,7 +8,7 @@
 library(shiny)
 library(EpiModel)
 
-shinyServer(function(input, output) {
+shinyServer(function(input, output, session) {
 
   #Main reactive objects
   net <- reactive({
@@ -20,20 +20,28 @@ shinyServer(function(input, output) {
   })
   fit <- reactive({
     if(input$runMod == 0){return()}
-    isolate(
+    isolate({
+      fit.progress <- Progress$new(session, min = 0, max = 1)
+      on.exit(fit.progress$close())
+
+      fit.progress$set(value = 0.5, message = "Fitting model")
       netest(net(), formation = as.formula(input$formation),
-             target.stats = input$form.targets,
-             coef.diss = coef.diss(),
-             verbose = FALSE)
-    )
+           target.stats = input$form.targets,
+           coef.diss = coef.diss(),
+           verbose = FALSE)
+    })
   })
   dxsim <- reactive({
     if(input$runMod == 0){return()}
     input$runDx
-    isolate(
+    isolate({
+      dx.progress <- Progress$new(session, min = 0, max = 1)
+      on.exit(dx.progress$close())
+
+      dx.progress$set(value = 0.5, message = "Diagnosing fit")
       netdx(fit(), nsims = input$dx.nsims, nsteps = input$dx.nsteps,
             keep.tedgelist = FALSE, verbose = FALSE)
-    )
+    })
   })
 
   #Output objects
