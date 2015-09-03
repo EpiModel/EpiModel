@@ -112,7 +112,7 @@ init.dcm <- function(s.num, i.num, r.num, s.num.g2, i.num.g2, r.num.g2,
 #' @export
 #'
 init.icm <- function(s.num, i.num, r.num, s.num.g2, i.num.g2, r.num.g2,
-                     status.rand = TRUE, ...) {
+                     status.rand = FALSE, ...) {
 
   # Get arguments
   p <- list()
@@ -178,7 +178,7 @@ init.icm <- function(s.num, i.num, r.num, s.num.g2, i.num.g2, r.num.g2,
 #' @export
 #'
 init.net <- function(i.num, r.num, i.num.m2, r.num.m2,
-                     status.vector, status.rand = TRUE, ...) {
+                     status.vector, status.rand = FALSE, ...) {
 
   # Get arguments
   p <- list()

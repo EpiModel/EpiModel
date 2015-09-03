@@ -4,7 +4,7 @@
 \alias{init.net}
 \title{Initial Conditions for Stochastic Network Models}
 \usage{
-init.net(i.num, r.num, i.num.m2, r.num.m2, status.vector, status.rand = TRUE,
+init.net(i.num, r.num, i.num.m2, r.num.m2, status.vector, status.rand = FALSE,
   ...)
 }
 \arguments{
