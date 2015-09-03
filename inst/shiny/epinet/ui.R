@@ -29,6 +29,7 @@ shinyUI(fluidPage(
                     label = "Directed?",
                     value = FALSE),
 
+      h4("Formation", style = "margin-top: 25px"),
       selectInput("formation",
                   label = "Formation Formula",
                   choices = c("~edges")),
@@ -36,6 +37,7 @@ shinyUI(fluidPage(
                    label = "Target Statistics",
                    value = 20),
 
+      h4("Dissolution", style = "margin-top: 25px"),
       selectInput("dissolution",
                   label = "Dissolution Formula",
                   choices = c("~offset(edges)")),
@@ -49,11 +51,12 @@ shinyUI(fluidPage(
     mainPanel(
       tabsetPanel(
         tabPanel("Net Diagnostics",
+                 br(),
                  fluidRow(
-                   column(3, offset = 1,
-                          numericInput("dx.nsims",
-                                       label = "Simulations",
-                                       value = 5, min = 1)),
+                   column(3, numericInput("dx.nsims",
+                                          label = "Simulations",
+                                          value = 5, min = 1)),
+
                    column(3, numericInput("dx.nsteps",
                                           label = "Time Steps per Sim",
                                           value = 500, min = 1)),

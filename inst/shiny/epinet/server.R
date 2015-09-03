@@ -23,7 +23,8 @@ shinyServer(function(input, output) {
     isolate(
       netest(net(), formation = as.formula(input$formation),
              target.stats = input$form.targets,
-             coef.diss = coef.diss())
+             coef.diss = coef.diss(),
+             verbose = FALSE)
     )
   })
   dxsim <- reactive({
@@ -31,7 +32,7 @@ shinyServer(function(input, output) {
     input$runDx
     isolate(
       netdx(fit(), nsims = input$dx.nsims, nsteps = input$dx.nsteps,
-            keep.tedgelist = FALSE)
+            keep.tedgelist = FALSE, verbose = FALSE)
     )
   })
 
@@ -42,6 +43,7 @@ shinyServer(function(input, output) {
     }
   })
   output$dxplot <- renderPlot({
+    par(mar = c(5, 4, 2, 2))
     if(!is.null(dxsim())){
       plot(dxsim(), type = input$dxtype)
     }
