@@ -81,7 +81,7 @@ test_that("calc_eql for icm", {
   init <- init.icm(s.num = 500, i.num = 1)
   control <- control.icm(type = "SI", nsteps = 500, nsims = 1, verbose = FALSE)
   x <- icm(param, init, control)
-  expect_output(calc_eql(x, nsteps = 100), "Start Prev.:   0.7892")
+  expect_output(calc_eql(x, nsteps = 100), "Start Prev.:   0.7607")
   expect_output(calc_eql(x, nsteps = 100), "<= Threshold:  FALSE")
 })
 
