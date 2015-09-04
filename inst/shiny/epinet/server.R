@@ -53,7 +53,13 @@ shinyServer(function(input, output, session) {
   })
   control <- reactive({
     control.net(type = input$modtype, nsims = input$epi.nsims,
-                nsteps = input$epi.nsteps)
+                nsteps = input$epi.nsteps, verbose.int = 0)
+  })
+  episim <- reactive({
+    if(input$runEpi == 0){return()}
+    isolate(
+      netsim(fit(), param = param(), init = init(), control = control())
+    )
   })
 
   #Output objects
@@ -72,6 +78,12 @@ shinyServer(function(input, output, session) {
     if(!is.null(dxsim())){
       dxsim()
     }
+  })
+  output$episum <- renderPrint({
+    episim()
+  })
+  output$epiplot <- renderPlot({
+    plot(episim())
   })
 
 })

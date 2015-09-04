@@ -19,6 +19,8 @@ shinyUI(fluidPage(
                  br(),
                  wellPanel(
 
+                   actionButton("runMod", "Fit Model & Run Diagnostics",
+                                style = "margin-bottom: 10px;"),
                    fluidRow(
                      column(7, numericInput("num",
                                             label = "Number of Nodes",
@@ -41,14 +43,15 @@ shinyUI(fluidPage(
                                            choices = c("~offset(edges)"))),
                      column(5, numericInput("dur",
                                             label = "Edge Durations",
-                                            value = 90))),
-                   actionButton("runMod", "Fit Model & Run Diagnostics")
+                                            value = 90)))
                  ),
                  verbatimTextOutput("modelsum")
         ),
         tabPanel("Epidemic Parameters",
                  br(),
                  wellPanel(
+                   actionButton("runEpi", label = "Simulate Epidemic",
+                                style = "margin-bottom: 10px"),
                    selectInput("modtype",
                                label = "Disease model",
                                choices = c("SI", "SIR", "SIS")),
@@ -101,7 +104,9 @@ shinyUI(fluidPage(
                              label = "Plot Type",
                              choices = c("formation", "dissolution", "duration")),
                  verbatimTextOutput("modeldx")),
-        tabPanel("Epidemic Simulation")
+        tabPanel("Epidemic Simulation",
+                 plotOutput("epiplot"),
+                 verbatimTextOutput("episum"))
       )
     )
   )
