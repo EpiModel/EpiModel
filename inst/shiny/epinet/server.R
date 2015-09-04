@@ -57,9 +57,16 @@ shinyServer(function(input, output, session) {
   })
   episim <- reactive({
     if(input$runEpi == 0){return()}
-    isolate(
+    isolate({
+      epi.progress <- Progress$new(session, min = 0, max = 1)
+      on.exit(epi.progress$close())
+
+      epi.progress$set(value = 0.5, message = "Simulating Epidemic")
       netsim(fit(), param = param(), init = init(), control = control())
-    )
+    })
+  })
+  showqnts <- reactive({
+    ifelse(input$qntsrng == 0, FALSE, input$qntsrng)
   })
 
   #Output objects
@@ -79,11 +86,50 @@ shinyServer(function(input, output, session) {
       dxsim()
     }
   })
-  output$episum <- renderPrint({
-    episim()
-  })
   output$epiplot <- renderPlot({
-    plot(episim())
+    par(mar = c(3.5, 3.5, 1.2, 1), mgp = c(2.1, 1, 0))
+    if (input$compsel == "Compartment Prevalence") {
+      plot(episim(),
+           mean.line = input$showmean,
+           sim.lines = input$showsims,
+           qnts = showqnts(),
+           leg = input$showleg,
+           leg.cex = 1.1,
+           lwd = 3.5,
+           main = "")
+    }
+    if (input$compsel == "Compartment Size") {
+      plot(episim(),
+           popfrac = FALSE,
+           mean.line = input$showmean,
+           sim.lines = input$showsims,
+           qnts = showqnts(),
+           leg = input$showleg,
+           leg.cex = 1.1,
+           lwd = 3.5,
+           main = "")
+    }
+    if (input$compsel == "Disease Incidence") {
+      plot(episim(),
+           y = "si.flow",
+           popfrac = FALSE,
+           mean.line = input$showmean,
+           sim.lines = input$showsims,
+           qnts = showqnts(),
+           leg = input$showleg,
+           leg.cex = 1.1,
+           lwd = 3.5,
+           main = "")
+    }
   })
+  outputOptions(output, "epiplot", suspendWhenHidden = FALSE)
+  output$sumtimeui <- renderUI({
+    numericInput("sumtime", label = "Time Step",
+                 value = 1, min = 1, max = input$epi.nsteps)
+  })
+  output$episum <- renderPrint({
+    summary(episim(), at = input$sumtime)
+  })
+
 
 })
