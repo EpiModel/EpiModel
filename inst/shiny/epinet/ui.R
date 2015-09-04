@@ -33,7 +33,7 @@ shinyUI(fluidPage(
                      column(7, selectInput("formation",
                                            label = "Formation Formula",
                                            choices = c("~edges"))),
-                     column(5, numericInput("form.targets",
+                     column(5, textInput("form.targets",
                                             label = "Target Statistics",
                                             value = 20))),
 

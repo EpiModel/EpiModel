@@ -18,6 +18,9 @@ shinyServer(function(input, output, session) {
     dissolution_coefs(dissolution = as.formula(input$dissolution),
                       duration = input$dur)
   })
+  target.stats <- reactive({
+    eval(parse(text = paste0("c(", input$form.targets, ")")))
+  })
   fit <- reactive({
     if(input$runMod == 0){return()}
     isolate({
@@ -26,7 +29,7 @@ shinyServer(function(input, output, session) {
 
       fit.progress$set(value = 0.5, message = "Fitting model")
       netest(net(), formation = as.formula(input$formation),
-           target.stats = input$form.targets,
+           target.stats = target.stats(),
            coef.diss = coef.diss(),
            verbose = FALSE)
     })
@@ -87,6 +90,7 @@ shinyServer(function(input, output, session) {
     }
   })
   output$epiplot <- renderPlot({
+    if(input$runEpi == 0){return()}
     par(mar = c(3.5, 3.5, 1.2, 1), mgp = c(2.1, 1, 0))
     if (input$compsel == "Compartment Prevalence") {
       plot(episim(),
@@ -128,6 +132,7 @@ shinyServer(function(input, output, session) {
                  value = 1, min = 1, max = input$epi.nsteps)
   })
   output$episum <- renderPrint({
+    if(is.null(input$sumtime)) {return()}
     summary(episim(), at = input$sumtime)
   })
 
