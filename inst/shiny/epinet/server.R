@@ -44,6 +44,18 @@ shinyServer(function(input, output, session) {
     })
   })
 
+  param <- reactive({
+    param.net(inf.prob = input$infprob, act.rate = input$actrate,
+              rec.rate = input$recrate)
+  })
+  init <- reactive({
+    init.net(i.num = input$inum, r.num = input$rnum)
+  })
+  control <- reactive({
+    control.net(type = input$modtype, nsims = input$epi.nsims,
+                nsteps = input$epi.nsteps)
+  })
+
   #Output objects
   output$modelsum <- renderPrint({
     if(!is.null(fit())){
@@ -54,6 +66,11 @@ shinyServer(function(input, output, session) {
     par(mar = c(5, 4, 2, 2))
     if(!is.null(dxsim())){
       plot(dxsim(), type = input$dxtype)
+    }
+  })
+  output$modeldx <- renderPrint({
+    if(!is.null(dxsim())){
+      dxsim()
     }
   })
 

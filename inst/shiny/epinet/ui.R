@@ -12,45 +12,77 @@ shinyUI(fluidPage(
 
   titlePanel("EpiModel: Network Models"),
 
-  sidebarLayout(
-    sidebarPanel(
+  fluidRow(
+    column(4,
+      tabsetPanel(
+        tabPanel("Initialize Network",
+                 br(),
+                 wellPanel(
 
-      h3("Instructions", style = "margin-top: 0px"),
-      helpText("Click Run Model after changing model parameters",
-               "or conditions."),
-      actionButton("runMod", "Run Model"),
+                   fluidRow(
+                     column(7, numericInput("num",
+                                            label = "Number of Nodes",
+                                            value = 100,
+                                            min = 0)),
+                     column(5, checkboxInput("directed",
+                                             label = "Directed?",
+                                             value = FALSE))),
+                   fluidRow(
+                     column(7, selectInput("formation",
+                                           label = "Formation Formula",
+                                           choices = c("~edges"))),
+                     column(5, numericInput("form.targets",
+                                            label = "Target Statistics",
+                                            value = 20))),
 
-      h4("Initialize Network", style = "margin-top: 25px"),
-      numericInput("num",
-                   label = "Number of Nodes",
-                   value = 100,
-                   min = 0),
-      checkboxInput("directed",
-                    label = "Directed?",
-                    value = FALSE),
+                   fluidRow(
+                     column(7, selectInput("dissolution",
+                                           label = "Dissolution Formula",
+                                           choices = c("~offset(edges)"))),
+                     column(5, numericInput("dur",
+                                            label = "Edge Durations",
+                                            value = 90))),
+                   actionButton("runMod", "Fit Model & Run Diagnostics")
+                 ),
+                 verbatimTextOutput("modelsum")
+        ),
+        tabPanel("Epidemic Parameters",
+                 br(),
+                 wellPanel(
+                   selectInput("modtype",
+                               label = "Disease model",
+                               choices = c("SI", "SIR", "SIS")),
+                   numericInput("infprob",
+                                label = "Per act transmission probability",
+                                value = 0.4, max = 1, min = 0),
+                   numericInput("actrate",
+                                label = "Acts per partnership per time step",
+                                value = 2, min = 0),
+                   numericInput("recrate",
+                                label = "Recovery rate (inverse of disease duration)",
+                                value = 0.01, min = 0),
+                   numericInput("inum",
+                                label = "Initially infected",
+                                value = 10, min = 0, step = 1),
+                   numericInput("rnum",
+                                label = "Initially recovered",
+                                value = 0, min = 0, step = 1),
+                   numericInput("epi.nsims",
+                                label = "Simulations",
+                                value = 1, min = 1),
+                   numericInput("epi.nsteps",
+                                label = "Time Steps per Sim",
+                                value = 500, min = 1)
 
-      h4("Formation", style = "margin-top: 25px"),
-      selectInput("formation",
-                  label = "Formation Formula",
-                  choices = c("~edges")),
-      numericInput("form.targets",
-                   label = "Target Statistics",
-                   value = 20),
+                 ))
+      )
 
-      h4("Dissolution", style = "margin-top: 25px"),
-      selectInput("dissolution",
-                  label = "Dissolution Formula",
-                  choices = c("~offset(edges)")),
-      numericInput("dur",
-                   label = "Edge Durations",
-                   value = 90)
-
-    ), #End sidebarPanel
+    ), #End sidebar
 
     # Main panel
-    mainPanel(
+    column(8,
       tabsetPanel(
-        tabPanel("Net Diagnostics",
+        tabPanel("Network Diagnostics",
                  br(),
                  fluidRow(
                    column(3, numericInput("dx.nsims",
@@ -68,7 +100,8 @@ shinyUI(fluidPage(
                  selectInput("dxtype",
                              label = "Plot Type",
                              choices = c("formation", "dissolution", "duration")),
-                 verbatimTextOutput("modelsum"))
+                 verbatimTextOutput("modeldx")),
+        tabPanel("Epidemic Simulation")
       )
     )
   )
