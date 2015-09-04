@@ -45,11 +45,11 @@ shinyServer(function(input, output, session) {
   })
 
   param <- reactive({
-    param.net(inf.prob = input$infprob, act.rate = input$actrate,
-              rec.rate = input$recrate)
+    param.net(inf.prob = input$inf.prob, act.rate = input$act.rate,
+              rec.rate = input$rec.rate)
   })
   init <- reactive({
-    init.net(i.num = input$inum, r.num = input$rnum)
+    init.net(i.num = input$i.num, r.num = input$r.num)
   })
   control <- reactive({
     control.net(type = input$modtype, nsims = input$epi.nsims,
