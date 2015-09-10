@@ -25,10 +25,8 @@ shinyUI(fluidPage(
                      column(7, numericInput("num",
                                             label = "Number of Nodes",
                                             value = 100,
-                                            min = 0)),
-                     column(5, checkboxInput("directed",
-                                             label = "Directed?",
-                                             value = FALSE))),
+                                            min = 0))
+                     ),
                    fluidRow(
                      column(7, selectInput("formation",
                                            label = "Formation Formula",
