@@ -44,8 +44,7 @@ shinyUI(fluidPage(
                      column(5, numericInput("dur",
                                             label = "Edge Durations",
                                             value = 90)))
-                 ),
-                 verbatimTextOutput("modelsum")
+                 )
         ),
         tabPanel("Epidemic Parameters",
                  br(),

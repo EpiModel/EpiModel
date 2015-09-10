@@ -75,11 +75,6 @@ shinyServer(function(input, output, session) {
   })
 
   #Output objects
-  output$modelsum <- renderPrint({
-    if(!is.null(fit())){
-      summary(fit())
-    }
-  })
   output$dxplot <- renderPlot({
     par(mar = c(5, 4, 2, 2))
     if(!is.null(dxsim())){
