@@ -12,7 +12,7 @@ shinyServer(function(input, output, session) {
 
   #Main reactive objects
   net <- reactive({
-    network.initialize(n = input$num, directed = input$directed)
+    network.initialize(n = input$num, directed = FALSE)
   })
   coef.diss <- reactive({
     dissolution_coefs(dissolution = as.formula(input$dissolution),
