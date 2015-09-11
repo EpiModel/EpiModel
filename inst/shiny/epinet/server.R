@@ -27,7 +27,7 @@ shinyServer(function(input, output, session) {
       fit.progress <- Progress$new(session, min = 0, max = 1)
       on.exit(fit.progress$close())
 
-      fit.progress$set(value = 0.5, message = "Fitting model")
+      fit.progress$set(value = NULL, message = "Fitting model")
       netest(net(), formation = as.formula(input$formation),
            target.stats = target.stats(),
            coef.diss = coef.diss(),
@@ -41,7 +41,7 @@ shinyServer(function(input, output, session) {
       dx.progress <- Progress$new(session, min = 0, max = 1)
       on.exit(dx.progress$close())
 
-      dx.progress$set(value = 0.5, message = "Diagnosing fit")
+      dx.progress$set(value = NULL, message = "Diagnosing fit")
       netdx(fit(), nsims = input$dx.nsims, nsteps = input$dx.nsteps,
             keep.tedgelist = FALSE, verbose = FALSE)
     })
@@ -49,15 +49,13 @@ shinyServer(function(input, output, session) {
 
   param <- reactive({
     param.net(inf.prob = input$inf.prob, act.rate = input$act.rate,
-              rec.rate = input$rec.rate, b.rate = input$b.rate,
-              ds.rate = input$ds.rate, di.rate = input$di.rate,
-              dr.rate = input$dr.rate)
+              rec.rate = input$rec.rate)
   })
   init <- reactive({
     init.net(i.num = input$i.num, r.num = input$r.num)
   })
   control <- reactive({
-    control.net(type = input$modtype, nsims = input$epi.nsims,
+    control.net(type = input$modtype, nsims = 1,
                 nsteps = input$epi.nsteps, verbose.int = 0)
   })
   episim <- reactive({
@@ -65,9 +63,20 @@ shinyServer(function(input, output, session) {
     isolate({
       epi.progress <- Progress$new(session, min = 0, max = 1)
       on.exit(epi.progress$close())
+      epi.progress$set(value = 0, message = "Simulating Epidemic")
+      nsims <- input$epi.nsims
 
-      epi.progress$set(value = 0.5, message = "Simulating Epidemic")
-      netsim(fit(), param = param(), init = init(), control = control())
+      epi.progress$inc(amount = 1/nsims, message = "Simulating Epidemic",
+                       detail = paste0("Sim 1/", nsims))
+      x <- netsim(fit(), param = param(), init = init(), control = control())
+      for(i in 2:nsims){
+        epi.progress$inc(amount = 1/nsims,
+                         detail = paste0("Sim ", i, "/", nsims))
+        y <- netsim(fit(), param = param(), init = init(), control = control())
+
+        x <- merge(x, y)
+      }
+      x
     })
   })
   showqnts <- reactive({
