@@ -131,7 +131,7 @@ navbarPage("EpiModel: Network Models",
              #main panel
              column(8,
                 tabsetPanel(
-                  tabPanel("Plots",
+                  tabPanel("Plot",
                      plotOutput("epiplot"),
                      wellPanel(
                        h4("Plot Options"),
@@ -174,6 +174,41 @@ navbarPage("EpiModel: Network Models",
 
               ) #end main panel
             )
-           )
+           ), #end epi page
+  tabPanel("Data",
+      div(style = "margin: auto; width: 80%;",
+           h4("Model Data"),
+           helpText("Select output as the time-specific means or standard
+                  deviations across simulations, or individual simulation
+                  values (if the last, also input the desired simulation
+                  number."),
+           p(),
+           wellPanel(
+             fluidRow(
+               column(5,
+                      selectInput(inputId = "datasel",
+                                  label = strong("Data Selection"),
+                                  choices = c("Means",
+                                              "Standard Deviations",
+                                              "Simulations"))),
+               column(4,
+                      conditionalPanel("input.datasel == 'Simulations'",
+                                       uiOutput("simnoControl"))))
+           ), # end wellPanel
+           fluidRow(
+             dataTableOutput("outData")),
+           fluidRow(
+             column(4,
+                    numericInput(inputId = "tabdig",
+                                 label = "Significant Digits",
+                                 min = 0,
+                                 value = 2))),
+           fluidRow(
+             downloadButton(outputId = "dlData",
+                            label = "Download Data")),
+           br()
+      )
+           ), #end data page
+  tabPanel("About")
   )
 )

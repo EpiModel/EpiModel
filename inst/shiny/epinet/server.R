@@ -83,7 +83,9 @@ shinyServer(function(input, output, session) {
     ifelse(input$qntsrng == 0, FALSE, input$qntsrng)
   })
 
-  #Output objects
+# Output objects ----------------------------------------------------------
+
+  ## netdx page
   output$dxplot <- renderPlot({
     par(mar = c(5, 4, 2, 2))
     if(!is.null(dxsim())){
@@ -95,6 +97,8 @@ shinyServer(function(input, output, session) {
       dxsim()
     }
   })
+
+  ## Epi page
   output$epiplot <- renderPlot({
     if(input$runEpi == 0){return()}
     par(mar = c(3.5, 3.5, 1.2, 1), mgp = c(2.1, 1, 0))
@@ -141,6 +145,40 @@ shinyServer(function(input, output, session) {
     if(is.null(input$sumtime)) {return()}
     summary(episim(), at = input$sumtime)
   })
+
+  ## Data page
+  output$simnoControl <- renderUI({
+    input$runEpi
+    maxsims <- isolate(input$epi.nsims)
+    sliderInput(inputId = "datasim",
+                label = strong("Simulation Number"),
+                min = 1,
+                max = maxsims,
+                value = 1,
+                step = 1)
+  })
+  output$outData <- renderDataTable({
+    if (input$datasel == "Means") {
+      round(as.data.frame(episim()), input$tabdig)
+    } else if (input$datasel == "Standard Deviations") {
+      round(as.data.frame(episim(), out = "sd"), input$tabdig)
+    } else if (input$datasel == "Simulations") {
+      as.data.frame(episim(), out = "vals", sim = max(1, input$datasim))
+    }
+  }, options = list(lengthMenu = c(10, 25, 50, 100), pageLength = 10))
+  output$dlData <- downloadHandler(
+    filename = "ModelData.csv",
+    content = function(file) {
+      if (input$datasel == "Means") {
+        write.csv(as.data.frame(mod()), file)
+      } else if (input$datasel == "Standard Deviations") {
+        write.csv(as.data.frame(mod(), out = "sd"), file)
+      } else if (input$datasel == "Simulations") {
+        write.csv(as.data.frame(mod(), out = "vals", sim = input$datasim), file)
+      }
+
+    }
+  )
 
 
 })
