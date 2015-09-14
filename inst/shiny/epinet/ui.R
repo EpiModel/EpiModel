@@ -57,9 +57,15 @@ navbarPage("EpiModel: Network Models",
                                             style = "margin-top: 25px;"))
                    ),
                    plotOutput("dxplot"),
-                   selectInput("dxtype",
-                               label = "Plot Type",
-                               choices = c("formation", "dissolution", "duration")),
+                   fluidRow(
+                     column(3,
+                        selectInput("dxtype",
+                             label = "Plot Type",
+                             choices = c("formation", "dissolution", "duration"))),
+                     column(3,
+                        downloadButton("dxplotDL", label = "Download Plot"))
+                   ),
+
                    verbatimTextOutput("modeldx"))
            )
           ),
@@ -162,7 +168,8 @@ navbarPage("EpiModel: Network Models",
                                             min = 0,
                                             max = 1,
                                             value = 0.5,
-                                            step = 0.01)))
+                                            step = 0.01))),
+                       downloadButton("epiplotDL", "Download Plot")
                             )
                            ),
                   tabPanel("Summary",

@@ -92,6 +92,16 @@ shinyServer(function(input, output, session) {
       plot(dxsim(), type = input$dxtype)
     }
   })
+  output$dxplotDL <- downloadHandler(
+    filename = "netdxplot.pdf",
+    content = function(file) {
+      pdf(file = file, height = 6, width = 10)
+      par(mar = c(5, 4, 2, 2), mgp = c(2.1, 1, 0))
+      if(!is.null(dxsim())){
+        plot(dxsim(), type = input$dxtype)
+      }
+      dev.off()
+  })
   output$modeldx <- renderPrint({
     if(!is.null(dxsim())){
       dxsim()
@@ -111,8 +121,7 @@ shinyServer(function(input, output, session) {
            leg.cex = 1.1,
            lwd = 3.5,
            main = "")
-    }
-    if (input$compsel == "Compartment Size") {
+    } else if (input$compsel == "Compartment Size") {
       plot(episim(),
            popfrac = FALSE,
            mean.line = input$showmean,
@@ -122,8 +131,7 @@ shinyServer(function(input, output, session) {
            leg.cex = 1.1,
            lwd = 3.5,
            main = "")
-    }
-    if (input$compsel == "Disease Incidence") {
+    } else if (input$compsel == "Disease Incidence") {
       plot(episim(),
            y = "si.flow",
            popfrac = FALSE,
@@ -137,6 +145,46 @@ shinyServer(function(input, output, session) {
     }
   })
   outputOptions(output, "epiplot", suspendWhenHidden = FALSE)
+  output$epiplotDL <- downloadHandler(
+    filename = "epiplot.pdf",
+    content =  function(file){
+      pdf(file = file, height = 6, width = 10)
+      par(mar = c(3.5, 3.5, 1.2, 1), mgp = c(2.1, 1, 0))
+      if (input$compsel == "Compartment Prevalence") {
+        plot(episim(),
+             mean.line = input$showmean,
+             sim.lines = input$showsims,
+             qnts = showqnts(),
+             leg = input$showleg,
+             leg.cex = 1.1,
+             lwd = 3.5,
+             main = "")
+      } else if (input$compsel == "Compartment Size") {
+        plot(episim(),
+             popfrac = FALSE,
+             mean.line = input$showmean,
+             sim.lines = input$showsims,
+             qnts = showqnts(),
+             leg = input$showleg,
+             leg.cex = 1.1,
+             lwd = 3.5,
+             main = "")
+      } else if (input$compsel == "Disease Incidence") {
+        plot(episim(),
+             y = "si.flow",
+             popfrac = FALSE,
+             mean.line = input$showmean,
+             sim.lines = input$showsims,
+             qnts = showqnts(),
+             leg = input$showleg,
+             leg.cex = 1.1,
+             lwd = 3.5,
+             main = "")
+      }
+      dev.off()
+    }
+  )
+
   output$sumtimeui <- renderUI({
     numericInput("sumtime", label = "Time Step",
                  value = 1, min = 1, max = input$epi.nsteps)
@@ -158,6 +206,27 @@ shinyServer(function(input, output, session) {
          sims = input$nwplotsim2)
   })
 
+  output$nwplot1DL <- downloadHandler(
+    filename = "nwplot.pdf",
+    content = function(file){
+      pdf(file = file, height = 6, width = 6)
+      par(mar = c(0, 0, 0, 0))
+      plot(episim(), type = "network", col.status = TRUE, at = input$nwplottime,
+           sims = input$nwplotsim)
+      dev.off()
+    }
+  )
+  output$nwplot2DL <- downloadHandler(
+    filename = "nwplot.pdf",
+    content = function(file){
+      pdf(file = file, height = 6, width = 6)
+      par(mar = c(0, 0, 0, 0))
+      plot(episim(), type = "network", col.status = TRUE, at = input$nwplottime2,
+           sims = input$nwplotsim2)
+      dev.off()
+    }
+  )
+
   output$plotUI <- renderUI({
     if(input$secondplot){
       out <- fluidRow(
@@ -177,14 +246,16 @@ shinyServer(function(input, output, session) {
          numericInput("nwplotsim", label = "Simulation", value = 1,
                       min = 1, max = input$epi.nsims, step = 1),
          numericInput("nwplottime", label = "Time Step", value = 1,
-                      min = 1, max = input$epi.nsteps, step = 1)
+                      min = 1, max = input$epi.nsteps, step = 1),
+         downloadButton("nwplot1DL", label = "Download Plot 1")
       ),
       conditionalPanel("input.secondplot",
            column(6,
               numericInput("nwplotsim2", label = "Simulation", value = 1,
                            min = 1, max = input$epi.nsims, step = 1),
               numericInput("nwplottime2", label = "Time Step", value = 1,
-                           min = 1, max = input$epi.nsteps, step = 1)
+                           min = 1, max = input$epi.nsteps, step = 1),
+              downloadButton("nwplot2DL", label = "Download Plot 2")
                     )
       )
     )
