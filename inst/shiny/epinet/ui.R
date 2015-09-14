@@ -12,6 +12,11 @@ shinyUI(
 navbarPage("EpiModel: Network Models",
 
   tabPanel("Network Diagnostics",
+           tagList(
+             tags$head(
+               tags$link(rel="stylesheet", type="text/css",href="style.css")
+             )
+           ),
            fluidRow(
              column(4,
                     br(),
