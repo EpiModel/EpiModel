@@ -175,6 +175,24 @@ navbarPage("EpiModel: Network Models",
               ) #end main panel
             )
            ), #end epi page
+  tabPanel("Network Plots",
+
+           fluidRow(
+             plotOutput("nwplot")
+           ),
+           column(8, wellPanel(
+             h4("Plot Options"),
+             fluidRow(
+               column(6,
+                numericInput("nwplotsim", label = "Simulation", value = 1,
+                             min = 1, step = 1),
+                numericInput("nwplottime", label = "Time Step", value = 1,
+                             min = 1, step = 1)
+                      )
+             )
+           ))
+
+           ), #end nw plots page
   tabPanel("Data",
       div(style = "margin: auto; width: 80%;",
            h4("Model Data"),

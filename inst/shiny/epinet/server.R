@@ -146,6 +146,13 @@ shinyServer(function(input, output, session) {
     summary(episim(), at = input$sumtime)
   })
 
+  ## nw plots page
+  output$nwplot <- renderPlot({
+    par(mar = c(0, 0, 0, 0))
+    plot(episim(), type = "network", col.status = TRUE, at = input$nwplottime,
+         sims = input$nwplotsim)
+  })
+
   ## Data page
   output$simnoControl <- renderUI({
     input$runEpi
