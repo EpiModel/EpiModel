@@ -158,7 +158,7 @@ shinyServer(function(input, output, session) {
          sims = input$nwplotsim2)
   })
 
-  output$plotui <- renderUI({
+  output$plotUI <- renderUI({
     if(input$secondplot){
       out <- fluidRow(
         column(6, style = "padding-right: 0px;",
@@ -170,6 +170,24 @@ shinyServer(function(input, output, session) {
       out <- plotOutput("nwplot")
     }
     out
+  })
+  output$plotoptionsUI <- renderUI({
+    fluidRow(
+      column(6,
+         numericInput("nwplotsim", label = "Simulation", value = 1,
+                      min = 1, max = input$epi.nsims, step = 1),
+         numericInput("nwplottime", label = "Time Step", value = 1,
+                      min = 1, max = input$epi.nsteps, step = 1)
+      ),
+      conditionalPanel("input.secondplot",
+           column(6,
+              numericInput("nwplotsim2", label = "Simulation", value = 1,
+                           min = 1, max = input$epi.nsims, step = 1),
+              numericInput("nwplottime2", label = "Time Step", value = 1,
+                           min = 1, max = input$epi.nsteps, step = 1)
+                    )
+      )
+    )
   })
 
   ## Data page
