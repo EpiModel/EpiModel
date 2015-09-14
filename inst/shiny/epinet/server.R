@@ -69,12 +69,14 @@ shinyServer(function(input, output, session) {
       epi.progress$inc(amount = 1/nsims, message = "Simulating Epidemic",
                        detail = paste0("Sim 1/", nsims))
       x <- netsim(fit(), param = param(), init = init(), control = control())
-      for(i in 2:nsims){
-        epi.progress$inc(amount = 1/nsims,
-                         detail = paste0("Sim ", i, "/", nsims))
-        y <- netsim(fit(), param = param(), init = init(), control = control())
+      if(nsims > 1){
+        for(i in 2:nsims){
+          epi.progress$inc(amount = 1/nsims,
+                           detail = paste0("Sim ", i, "/", nsims))
+          y <- netsim(fit(), param = param(), init = init(), control = control())
 
-        x <- merge(x, y)
+          x <- merge(x, y)
+        }
       }
       x
     })
