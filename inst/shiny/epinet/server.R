@@ -56,7 +56,7 @@ shinyServer(function(input, output, session) {
   })
   control <- reactive({
     control.net(type = input$modtype, nsims = 1,
-                nsteps = input$epi.nsteps, verbose.int = 0)
+                nsteps = input$epi.nsteps, verbose = FALSE)
   })
   episim <- reactive({
     if(input$runEpi == 0){return()}
@@ -151,6 +151,25 @@ shinyServer(function(input, output, session) {
     par(mar = c(0, 0, 0, 0))
     plot(episim(), type = "network", col.status = TRUE, at = input$nwplottime,
          sims = input$nwplotsim)
+  })
+  output$nwplot2 <- renderPlot({
+    par(mar = c(0, 0, 0, 0))
+    plot(episim(), type = "network", col.status = TRUE, at = input$nwplottime2,
+         sims = input$nwplotsim2)
+  })
+
+  output$plotui <- renderUI({
+    if(input$secondplot){
+      out <- fluidRow(
+        column(6, style = "padding-right: 0px;",
+               plotOutput("nwplot")),
+        column(6, style = "padding-left: 0px;",
+               plotOutput("nwplot2"))
+      )
+    } else {
+      out <- plotOutput("nwplot")
+    }
+    out
   })
 
   ## Data page

@@ -177,17 +177,29 @@ navbarPage("EpiModel: Network Models",
            ), #end epi page
   tabPanel("Network Plots",
 
-           fluidRow(
-             plotOutput("nwplot")
-           ),
-           column(8, wellPanel(
+           uiOutput("plotui"),
+           br(),
+           div(style = "margin: auto; width: 60%;",
+            wellPanel(
              h4("Plot Options"),
+             checkboxInput("secondplot", label = "Plot two time steps",
+                           value = FALSE),
              fluidRow(
                column(6,
                 numericInput("nwplotsim", label = "Simulation", value = 1,
                              min = 1, step = 1),
                 numericInput("nwplottime", label = "Time Step", value = 1,
                              min = 1, step = 1)
+                      ),
+               conditionalPanel("input.secondplot",
+                  column(6,
+                    numericInput("nwplotsim2", label = "Simulation",
+                             value = 1, min = 1, step = 1),
+                    numericInput("nwplottime2", label = "Time Step",
+                             value = 1, min = 1, step = 1)
+
+                                )
+
                       )
              )
            ))
