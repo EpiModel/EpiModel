@@ -28,7 +28,7 @@ navbarPage("EpiModel: Network Models",
                       fluidRow(
                         column(7, selectInput("formation",
                                               label = "Formation Formula",
-                                              choices = c("~edges"))),
+                                              choices = c("~edges", "~edges + concurrent"))),
                         column(5, textInput("form.targets",
                                             label = "Target Statistics",
                                             value = 20))),
