@@ -190,19 +190,17 @@ navbarPage("EpiModel: Network Models",
                                   label = strong("Data Selection"),
                                   choices = c("Means",
                                               "Standard Deviations",
-                                              "Simulations"))),
-               column(4,
+                                              "Simulations")),
                       conditionalPanel("input.datasel == 'Simulations'",
-                                       uiOutput("simnoControl"))))
+                                       uiOutput("simnoControl"))),
+               column(4, offset = 1,
+                      numericInput(inputId = "tabdig",
+                                   label = "Significant Digits",
+                                   min = 0,
+                                   value = 2)))
            ), # end wellPanel
            fluidRow(
              dataTableOutput("outData")),
-           fluidRow(
-             column(4,
-                    numericInput(inputId = "tabdig",
-                                 label = "Significant Digits",
-                                 min = 0,
-                                 value = 2))),
            fluidRow(
              downloadButton(outputId = "dlData",
                             label = "Download Data")),
