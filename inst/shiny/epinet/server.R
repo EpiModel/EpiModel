@@ -83,8 +83,8 @@ shinyServer(function(input, output, session) {
       x
     })
   })
-  showqnts <- reactive({
-    ifelse(input$qntsrng == 0, FALSE, input$qntsrng)
+  epi.showqnts <- reactive({
+    ifelse(input$epi.qntsrng == 0, FALSE, input$epi.qntsrng)
   })
 
 # Output objects ----------------------------------------------------------
@@ -134,20 +134,20 @@ shinyServer(function(input, output, session) {
     par(mar = c(3.5, 3.5, 1.2, 1), mgp = c(2.1, 1, 0))
     if (input$compsel == "Compartment Prevalence") {
       plot(episim(),
-           mean.line = input$showmean,
-           sim.lines = input$showsims,
-           qnts = showqnts(),
-           leg = input$showleg,
+           mean.line = input$epi.showmean,
+           sim.lines = input$epi.showsims,
+           qnts = epi.showqnts(),
+           leg = input$epi.showleg,
            leg.cex = 1.1,
            lwd = 3.5,
            main = "")
     } else if (input$compsel == "Compartment Size") {
       plot(episim(),
            popfrac = FALSE,
-           mean.line = input$showmean,
-           sim.lines = input$showsims,
-           qnts = showqnts(),
-           leg = input$showleg,
+           mean.line = input$epi.showmean,
+           sim.lines = input$epi.showsims,
+           qnts = epi.showqnts(),
+           leg = input$epi.showleg,
            leg.cex = 1.1,
            lwd = 3.5,
            main = "")
@@ -155,10 +155,10 @@ shinyServer(function(input, output, session) {
       plot(episim(),
            y = "si.flow",
            popfrac = FALSE,
-           mean.line = input$showmean,
-           sim.lines = input$showsims,
-           qnts = showqnts(),
-           leg = input$showleg,
+           mean.line = input$epi.showmean,
+           sim.lines = input$epi.showsims,
+           qnts = epi.showqnts(),
+           leg = input$epi.showleg,
            leg.cex = 1.1,
            lwd = 3.5,
            main = "")
@@ -172,20 +172,20 @@ shinyServer(function(input, output, session) {
       par(mar = c(3.5, 3.5, 1.2, 1), mgp = c(2.1, 1, 0))
       if (input$compsel == "Compartment Prevalence") {
         plot(episim(),
-             mean.line = input$showmean,
-             sim.lines = input$showsims,
-             qnts = showqnts(),
-             leg = input$showleg,
+             mean.line = input$epi.showmean,
+             sim.lines = input$epi.showsims,
+             qnts = epi.showqnts(),
+             leg = input$epi.showleg,
              leg.cex = 1.1,
              lwd = 3.5,
              main = "")
       } else if (input$compsel == "Compartment Size") {
         plot(episim(),
              popfrac = FALSE,
-             mean.line = input$showmean,
-             sim.lines = input$showsims,
-             qnts = showqnts(),
-             leg = input$showleg,
+             mean.line = input$epi.showmean,
+             sim.lines = input$epi.showsims,
+             qnts = epi.showqnts(),
+             leg = input$epi.showleg,
              leg.cex = 1.1,
              lwd = 3.5,
              main = "")
@@ -193,10 +193,10 @@ shinyServer(function(input, output, session) {
         plot(episim(),
              y = "si.flow",
              popfrac = FALSE,
-             mean.line = input$showmean,
-             sim.lines = input$showsims,
-             qnts = showqnts(),
-             leg = input$showleg,
+             mean.line = input$epi.showmean,
+             sim.lines = input$epi.showsims,
+             qnts = epi.showqnts(),
+             leg = input$epi.showleg,
              leg.cex = 1.1,
              lwd = 3.5,
              main = "")
