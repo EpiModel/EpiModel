@@ -62,13 +62,37 @@ navbarPage("EpiModel: Network Models",
                                             style = "margin-top: 25px;"))
                    ),
                    plotOutput("dxplot"),
-                   fluidRow(
-                     column(3,
-                        selectInput("dxtype",
-                             label = "Plot Type",
-                             choices = c("formation", "dissolution", "duration"))),
-                     column(3,
-                        downloadButton("dxplotDL", label = "Download Plot"))
+                   wellPanel(
+                     fluidRow(
+                       column(4,
+                          selectInput("dxtype",
+                               label = "Plot Type",
+                               choices = c("formation", "dissolution", "duration"))),
+                       column(5,
+                              sliderInput(inputId = "dx.qntsrng",
+                                          label = "Quantile Band",
+                                          min = 0,
+                                          max = 1,
+                                          value = 0.5,
+                                          step = 0.01))
+                       ),
+                       fluidRow(
+                         column(3,
+                                checkboxInput(inputId = "dx.showmean",
+                                              label = "Mean Line",
+                                              value = TRUE)),
+                         column(3,
+                                checkboxInput(inputId = "dx.showsims",
+                                              label = "Sim Lines",
+                                              value = FALSE)),
+                         column(3,
+                                checkboxInput(inputId = "dx.showleg",
+                                              label = "Legend",
+                                              value = FALSE))),
+                     fluidRow(
+                       column(3,
+                            downloadButton("dxplotDL", label = "Download Plot"))
+                     )
                    ),
 
                    verbatimTextOutput("modeldx"))
@@ -149,7 +173,7 @@ navbarPage("EpiModel: Network Models",
                        fluidRow(
                          column(5,
                                 selectInput(inputId = "compsel",
-                                            label = strong("Plot Selection"),
+                                            label = strong("Plot Type"),
                                             choices = c("Compartment Prevalence",
                                                         "Compartment Size",
                                                         "Disease Incidence")))),

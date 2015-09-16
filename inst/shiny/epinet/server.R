@@ -10,7 +10,8 @@ library(EpiModel)
 
 shinyServer(function(input, output, session) {
 
-  #Main reactive objects
+# Reactive Objects --------------------------------------------------------
+
   net <- reactive({
     network.initialize(n = input$num, directed = FALSE)
   })
@@ -26,7 +27,6 @@ shinyServer(function(input, output, session) {
     isolate({
       fit.progress <- Progress$new(session, min = 0, max = 1)
       on.exit(fit.progress$close())
-
       fit.progress$set(value = NULL, message = "Fitting model")
       netest(net(), formation = as.formula(input$formation),
            target.stats = target.stats(),
@@ -40,11 +40,13 @@ shinyServer(function(input, output, session) {
     isolate({
       dx.progress <- Progress$new(session, min = 0, max = 1)
       on.exit(dx.progress$close())
-
       dx.progress$set(value = NULL, message = "Diagnosing fit")
       netdx(fit(), nsims = input$dx.nsims, nsteps = input$dx.nsteps,
             keep.tedgelist = FALSE, verbose = FALSE)
     })
+  })
+  dx.showqnts <- reactive({
+    ifelse(input$dx.qntsrng == 0, FALSE, input$dx.qntsrng)
   })
 
   param <- reactive({
@@ -91,7 +93,15 @@ shinyServer(function(input, output, session) {
   output$dxplot <- renderPlot({
     par(mar = c(5, 4, 2, 2))
     if(!is.null(dxsim())){
-      plot(dxsim(), type = input$dxtype)
+      plot(dxsim(),
+           type = input$dxtype,
+           mean.line = input$dx.showmean,
+           sim.lines = input$dx.showsims,
+           qnts = dx.showqnts(),
+           leg = input$dx.showleg,
+           leg.cex = 1.1,
+           lwd = 3.5,
+           main = "")
     }
   })
   output$dxplotDL <- downloadHandler(
@@ -100,7 +110,15 @@ shinyServer(function(input, output, session) {
       pdf(file = file, height = 6, width = 10)
       par(mar = c(5, 4, 2, 2), mgp = c(2.1, 1, 0))
       if(!is.null(dxsim())){
-        plot(dxsim(), type = input$dxtype)
+        plot(dxsim(),
+             type = input$dxtype,
+             mean.line = input$dx.showmean,
+             sim.lines = input$dx.showsims,
+             qnts = dx.showqnts(),
+             leg = input$dx.showleg,
+             leg.cex = 1.1,
+             lwd = 3.5,
+             main = "")
       }
       dev.off()
   })
