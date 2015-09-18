@@ -34,9 +34,15 @@ navbarPage("EpiModel: Network Models",
                         column(7, selectInput("formation",
                                               label = "Formation Formula",
                                               choices = c("~edges", "~edges + concurrent"))),
-                        column(5, textInput("form.targets",
-                                            label = "Target Statistics",
-                                            value = 20))),
+                        column(5, numericInput("edge.target",
+                                               label = "Target: edges",
+                                               value = 20),
+                               conditionalPanel("input.formation == '~edges + concurrent'",
+                                  numericInput("conc.target",
+                                               label = "Target: concurrent",
+                                               value = 10)
+                                                )
+                               )),
 
                       fluidRow(
                         column(7, selectInput("dissolution",

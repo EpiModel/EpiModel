@@ -19,7 +19,11 @@ shinyServer(function(input, output, session) {
                       duration = input$dur)
   })
   target.stats <- reactive({
-    eval(parse(text = paste0("c(", input$form.targets, ")")))
+    if(input$formation == "~edges"){
+      c(input$edge.target)
+    } else {
+      c(input$edge.target, input$conc.target)
+    }
   })
   fit <- reactive({
     if(input$runMod == 0){return()}
