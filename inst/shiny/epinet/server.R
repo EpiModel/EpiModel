@@ -202,14 +202,20 @@ shinyServer(function(input, output, session) {
 
   ## nw plots page
   output$nwplot <- renderPlot({
+    simno <- ifelse(input$nwplotsim == "mean",
+                    yes = "mean",
+                    no = as.numeric(input$nwplotsim))
     par(mar = c(0, 0, 0, 0))
     plot(episim(), type = "network", col.status = TRUE, at = input$nwplottime,
-         sims = input$nwplotsim)
+         sims = simno)
   })
   output$nwplot2 <- renderPlot({
+    simno <- ifelse(input$nwplotsim2 == "mean",
+                    yes = "mean",
+                    no = as.numeric(input$nwplotsim2))
     par(mar = c(0, 0, 0, 0))
     plot(episim(), type = "network", col.status = TRUE, at = input$nwplottime2,
-         sims = input$nwplotsim2)
+         sims = simno)
   })
 
   output$nwplot1DL <- downloadHandler(
@@ -249,16 +255,16 @@ shinyServer(function(input, output, session) {
   output$plotoptionsUI <- renderUI({
     fluidRow(
       column(6,
-         numericInput("nwplotsim", label = "Simulation", value = 1,
-                      min = 1, max = input$epi.nsims, step = 1),
+         selectInput("nwplotsim", label = "Simulation",
+                      choices = c("mean", 1:input$epi.nsims)),
          numericInput("nwplottime", label = "Time Step", value = 1,
                       min = 1, max = input$epi.nsteps, step = 1),
          downloadButton("nwplot1DL", label = "Download Plot 1")
       ),
       conditionalPanel("input.secondplot",
            column(6,
-              numericInput("nwplotsim2", label = "Simulation", value = 1,
-                           min = 1, max = input$epi.nsims, step = 1),
+                  selectInput("nwplotsim2", label = "Simulation",
+                              choices = c("mean", 1:input$epi.nsims)),
               numericInput("nwplottime2", label = "Time Step", value = 1,
                            min = 1, max = input$epi.nsteps, step = 1),
               downloadButton("nwplot2DL", label = "Download Plot 2")
