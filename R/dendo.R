@@ -44,7 +44,7 @@ require(ape)
 # }
 
 # crawler version
-as.phylo.tPath<-function(net, path){
+as.phylo.tPath<-function(path){
   
   el<-cbind(path$previous,1:length(path$previous))
   # remove the seed row
@@ -53,8 +53,8 @@ as.phylo.tPath<-function(net, path){
   singleKidNodes<-as.numeric(names(which(table(el[,1])==1)))
   if (length(singleKidNodes)>0){
     singleKidsRows<-which(el[,1]==singleKidNodes)
-    warning('removed row(s) ',singleKidsRows, ' corresponding to single child')
-    el<-el[-singleKidsRows,,drop=FALSE]
+    warning('found vertices ',paste(singleKidNodes,collapse=','), ' that create "non-splitting" phylo nodes')
+    #el<-el[-singleKidsRows,,drop=FALSE]
   }
   
   origNodes<-unique(el[,1])
@@ -68,8 +68,10 @@ as.phylo.tPath<-function(net, path){
   phyloN<-length(phyloTips)+1
   while(length(v)>0){
     origIndex<-which(origNodes==v[1])
-    phyloNodes[origIndex]<-phyloN
-    phyloN<-phyloN+1
+    if(length(origIndex)>0){
+      phyloNodes[origIndex]<-phyloN
+      phyloN<-phyloN+1
+    }
     kids<-which(path$previous==v[1])
     v<-c(v[-1],kids)
   }
@@ -83,8 +85,8 @@ as.phylo.tPath<-function(net, path){
   out<-list()
   out[['edge']]<-el
   out[['Nnode']]<-length(phyloNodes)  # number of non-tip nodes
-  out[['tip.label']]<-network.vertex.names(net)[origTips]
-  out[['node.label']]<-network.vertex.names(net)[origNodes]
+  out[['tip.label']]<-origTips
+  out[['node.label']]<-origNodes
   class(out)<-'phylo'
   return(out)
 }
@@ -92,13 +94,17 @@ as.phylo.tPath<-function(net, path){
 #' @title convert transmat infection tree into a phylo tree object
 #' @method as.phylo transmat
 #' @export as.phylo.transmat
+#' @examples 
+#' tm2<-data.frame(inf=c(5,5,6,6,7,7),sus=c(1,6,2,7,3,4))
+#' plot(as.phylo(tm2),show.node.label = TRUE)
+#' 
 as.phylo.transmat<-function(tm){
   el<-cbind(tm$inf,tm$sus)
   #phylo doesn't like "non-splitting" nodes that have no children
   singleKidNodes<-as.numeric(names(which(table(el[,1])==1)))
   if (length(singleKidNodes)>0){
     singleKidsRows<-el[,1]%in%singleKidNodes
-    warning('found vertices ',paste(singleKidNodes,collapse = ','),' that create "non-splitting" phlo nodes ')
+    warning('found vertices ',paste(singleKidNodes,collapse = ','),' that create "non-splitting" phylo nodes ')
     #el<-el[!singleKidsRows,,drop=FALSE]
   }
   
@@ -107,7 +113,6 @@ as.phylo.transmat<-function(tm){
   
   phyloTips<-1:length(origTips)
   phyloNodes<-rep(NA,length(origNodes))
-
   # find roots (infectors that never appear as sus)
   v<-setdiff(unique(el[,1]),unique(el[,2]))
   if(length(v)>1){
@@ -115,12 +120,13 @@ as.phylo.transmat<-function(tm){
   }
   # figure out the ordering such that the root
   # node will be one larger than the tip nodes
-  phyloN<-length(origTips)+1
+  
+  phyloN<-1
   while(length(v)>0){
     origIndex<-which(origNodes==v[1])
     if(length(origIndex)>0){
       # add the element on the list of phylo nodes
-      phyloNodes[origIndex]<-phyloN
+      phyloNodes[origIndex]<-phyloN+length(origTips)
       phyloN<-phyloN+1
     }
     kids<-el[el[,1]==v[1],2] # look up kids on the edgelist

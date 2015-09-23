@@ -9,4 +9,8 @@
 \description{
 convert transmat infection tree into a phylo tree object
 }
+\examples{
+tm2<-data.frame(inf=c(5,5,6,6,7,7),sus=c(1,6,2,7,3,4))
+plot(as.phylo(tm2),show.node.label = TRUE)
+}
 
