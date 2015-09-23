@@ -288,7 +288,7 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps, nwstats.formula = "forma
 
   ## Get stats from for target statistics
   ts.attr.names <- x$target.stats.names
-  target.stats <- target.stats[which(target.stats > 0)]
+  # target.stats <- target.stats[which(target.stats > 0)]
   ts.out <- data.frame(names = ts.attr.names,
                        targets = target.stats)
 
