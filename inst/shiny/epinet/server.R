@@ -12,9 +12,74 @@ shinyServer(function(input, output, session) {
 
 # Reactive Objects --------------------------------------------------------
 
+  ##Network Diagnostics
   net <- reactive({
     network.initialize(n = input$num, directed = FALSE)
   })
+
+  #link duration slider and numeric input
+  observeEvent(input$meandur, {
+    updateNumericInput(session, "dur",
+                       label = "Edge Durations",
+                       value = input$meandur)
+  })
+  observeEvent(input$dur, {
+    updateSliderInput(session, "meandur",
+                      label = "Mean Partnership Duration",
+                      value = input$dur, min = 1, max = 100)
+  })
+
+  #link mean degree slider and edge target numeric input
+  observeEvent(input$meandeg, {
+    updateNumericInput(session, "edge.target",
+                       label = "Target: edges",
+                       value = input$num * input$meandeg / 2)
+  })
+  observeEvent(input$edge.target, {
+    updateNumericInput(session, "meandeg",
+                       label = "Mean Degree",
+                       value = input$edge.target * 2 / input$num,
+                       min = 0.5,
+                       max = 1,
+                       step = 0.05)
+  })
+
+  #link concurrency dropdown and formation formula
+  observeEvent(input$conc, {
+    form <- ifelse(input$conc == "No concurrency specified",
+                   yes = "~edges",
+                   no = "~edges + concurrent")
+    updateSelectInput(session, "formation",
+                      label = "Formation Formula",
+                      choices = c("~edges", "~edges + concurrent"),
+                      selected = form)
+  })
+  observeEvent(input$formation, {
+    conc <- ifelse(input$formation == "~edges",
+                   yes = "No concurrency specified",
+                   no = "Target % concurrency")
+    updateSelectInput(session, "conc",
+                      label = "Concurrency Rule",
+                      choices = c("No concurrency specified",
+                                  "Target % concurrency"),
+                      selected = conc)
+  })
+
+  #link percent concurrent with concurrent target
+  observeEvent(input$percConc, {
+    updateNumericInput(session, "conc.target",
+                       label = "Target: concurrent",
+                       value = input$percConc * input$num / 100)
+  })
+  observeEvent(input$conc.target, {
+    updateSliderInput(session, "percConc",
+                      label = "Percent of nodes with concurrent partners",
+                      value = input$conc.target / input$num * 100,
+                      min = 0,
+                      max = 100,
+                      step = 10)
+  })
+
   coef.diss <- reactive({
     dissolution_coefs(dissolution = as.formula(input$dissolution),
                       duration = input$dur)
@@ -53,6 +118,7 @@ shinyServer(function(input, output, session) {
     ifelse(input$dx.qntsrng == 0, FALSE, input$dx.qntsrng)
   })
 
+  ##Epidemic Simulation
   param <- reactive({
     param.net(inf.prob = input$inf.prob, act.rate = input$act.rate,
               rec.rate = input$rec.rate)
