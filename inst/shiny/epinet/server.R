@@ -39,7 +39,7 @@ shinyServer(function(input, output, session) {
     updateNumericInput(session, "meandeg",
                        label = "Mean Degree",
                        value = input$edge.target * 2 / input$num,
-                       min = 0.5,
+                       min = 0.4,
                        max = 1,
                        step = 0.05)
   })
@@ -137,20 +137,24 @@ shinyServer(function(input, output, session) {
     })
   })
   dx.showqnts <- reactive({
-    ifelse(input$dx.qntsrng == 0, FALSE, input$dx.qntsrng)
+    ifelse(input$dx.qntsrng == 0,  FALSE, input$dx.qntsrng)
   })
 
   ##Epidemic Simulation
   param <- reactive({
-    param.net(inf.prob = input$inf.prob, act.rate = input$act.rate,
+    param.net(inf.prob = input$inf.prob,
+              act.rate = input$act.rate,
               rec.rate = input$rec.rate)
   })
   init <- reactive({
-    init.net(i.num = input$i.num, r.num = input$r.num)
+    init.net(i.num = input$i.num,
+             r.num = input$r.num)
   })
   control <- reactive({
-    control.net(type = input$modtype, nsims = 1,
-                nsteps = input$epi.nsteps, verbose = FALSE)
+    control.net(type = input$modtype,
+                nsims = 1,
+                nsteps = input$epi.nsteps,
+                verbose = FALSE)
   })
   episim <- reactive({
     if(input$runEpi == 0){return()}
@@ -160,14 +164,21 @@ shinyServer(function(input, output, session) {
       epi.progress$set(value = 0, message = "Simulating Epidemic")
       nsims <- input$epi.nsims
 
-      epi.progress$inc(amount = 1/nsims, message = "Simulating Epidemic",
+      epi.progress$inc(amount = 1/nsims,
+                       message = "Simulating Epidemic",
                        detail = paste0("Sim 1/", nsims))
-      x <- netsim(fit(), param = param(), init = init(), control = control())
+      x <- netsim(fit(),
+                  param = param(),
+                  init = init(),
+                  control = control())
       if(nsims > 1){
         for(i in 2:nsims){
           epi.progress$inc(amount = 1/nsims,
                            detail = paste0("Sim ", i, "/", nsims))
-          y <- netsim(fit(), param = param(), init = init(), control = control())
+          y <- netsim(fit(),
+                      param = param(),
+                      init = init(),
+                      control = control())
 
           x <- merge(x, y)
         }
@@ -304,8 +315,11 @@ shinyServer(function(input, output, session) {
   )
 
   output$sumtimeui <- renderUI({
-    numericInput("sumtime", label = "Time Step",
-                 value = 1, min = 1, max = input$epi.nsteps)
+    numericInput("sumtime",
+                 label = "Time Step",
+                 value = 1,
+                 min = 1,
+                 max = input$epi.nsteps)
   })
   output$episum <- renderPrint({
     if(is.null(input$sumtime)) {return()}
@@ -318,7 +332,10 @@ shinyServer(function(input, output, session) {
                     yes = "mean",
                     no = as.numeric(input$nwplotsim))
     par(mar = c(0, 0, 0, 0))
-    plot(episim(), type = "network", col.status = TRUE, at = input$nwplottime,
+    plot(episim(),
+         type = "network",
+         col.status = TRUE,
+         at = input$nwplottime,
          sims = simno)
   })
   output$nwplot2 <- renderPlot({
@@ -326,7 +343,10 @@ shinyServer(function(input, output, session) {
                     yes = "mean",
                     no = as.numeric(input$nwplotsim2))
     par(mar = c(0, 0, 0, 0))
-    plot(episim(), type = "network", col.status = TRUE, at = input$nwplottime2,
+    plot(episim(),
+         type = "network",
+         col.status = TRUE,
+         at = input$nwplottime2,
          sims = simno)
   })
 
@@ -335,7 +355,10 @@ shinyServer(function(input, output, session) {
     content = function(file){
       pdf(file = file, height = 6, width = 6)
       par(mar = c(0, 0, 0, 0))
-      plot(episim(), type = "network", col.status = TRUE, at = input$nwplottime,
+      plot(episim(),
+           type = "network",
+           col.status = TRUE,
+           at = input$nwplottime,
            sims = input$nwplotsim)
       dev.off()
     }
@@ -345,7 +368,10 @@ shinyServer(function(input, output, session) {
     content = function(file){
       pdf(file = file, height = 6, width = 6)
       par(mar = c(0, 0, 0, 0))
-      plot(episim(), type = "network", col.status = TRUE, at = input$nwplottime2,
+      plot(episim(),
+           type = "network",
+           col.status = TRUE,
+           at = input$nwplottime2,
            sims = input$nwplotsim2)
       dev.off()
     }
@@ -367,18 +393,28 @@ shinyServer(function(input, output, session) {
   output$plotoptionsUI <- renderUI({
     fluidRow(
       column(6,
-         selectInput("nwplotsim", label = "Simulation",
-                      choices = c("mean", 1:input$epi.nsims)),
-         numericInput("nwplottime", label = "Time Step", value = 1,
-                      min = 1, max = input$epi.nsteps, step = 1),
+         selectInput("nwplotsim",
+                     label = "Simulation",
+                     choices = c("mean", 1:input$epi.nsims)),
+         numericInput("nwplottime",
+                      label = "Time Step",
+                      value = 1,
+                      min = 1,
+                      max = input$epi.nsteps,
+                      step = 1),
          downloadButton("nwplot1DL", label = "Download Plot 1")
       ),
       conditionalPanel("input.secondplot",
            column(6,
-                  selectInput("nwplotsim2", label = "Simulation",
-                              choices = c("mean", 1:input$epi.nsims)),
-              numericInput("nwplottime2", label = "Time Step", value = 1,
-                           min = 1, max = input$epi.nsteps, step = 1),
+              selectInput("nwplotsim2",
+                          label = "Simulation",
+                          choices = c("mean", 1:input$epi.nsims)),
+              numericInput("nwplottime2",
+                           label = "Time Step",
+                           value = 1,
+                           min = 1,
+                           max = input$epi.nsteps,
+                           step = 1),
               downloadButton("nwplot2DL", label = "Download Plot 2")
                     )
       )

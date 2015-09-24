@@ -43,7 +43,7 @@ navbarPage("EpiModel: Network Models",
                       sliderInput("meandeg",
                                   label = "Mean Degree",
                                   value = 0.5,
-                                  min = 0.5,
+                                  min = 0.4,
                                   max = 1,
                                   step = 0.05),
                       sliderInput("meandur",
@@ -71,7 +71,7 @@ navbarPage("EpiModel: Network Models",
                                               choices = c("~edges", "~edges + concurrent"))),
                         column(5, numericInput("edge.target",
                                                label = "Target: edges",
-                                               value = 20),
+                                               value = 25),
                                conditionalPanel("input.formation == '~edges + concurrent'",
                                   numericInput("conc.target",
                                                label = "Target: concurrent",
@@ -261,7 +261,8 @@ navbarPage("EpiModel: Network Models",
            div(style = "margin: auto; width: 60%;",
             wellPanel(
              h4("Plot Options"),
-             checkboxInput("secondplot", label = "Plot two time steps",
+             checkboxInput("secondplot",
+                           label = "Plot two time steps",
                            value = FALSE),
              uiOutput("plotoptionsUI")
            ))
@@ -273,7 +274,7 @@ navbarPage("EpiModel: Network Models",
            helpText("Select output as the time-specific means or standard
                   deviations across simulations, or individual simulation
                   values (if the last, also input the desired simulation
-                  number."),
+                  number)."),
            p(),
            wellPanel(
              fluidRow(
