@@ -71,7 +71,7 @@ shinyServer(function(input, output, session) {
       track <- c("edges", "concurrent")
     }
     updateSelectInput(session, "nwstats",
-                      label = "Network stats to track",
+                      label = "Network Stats to Track",
                       choices = c("edges",
                                   "concurrent",
                                   "isolates",
