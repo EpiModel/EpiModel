@@ -44,7 +44,7 @@ shinyServer(function(input, output, session) {
                        step = 0.05)
   })
 
-  #link concurrency dropdown and formation formula
+  #link concurrency dropdown and formation formula and nwstats to track
   observeEvent(input$conc, {
     form <- ifelse(input$conc == "No concurrency specified",
                    yes = "~edges",
@@ -63,6 +63,20 @@ shinyServer(function(input, output, session) {
                       choices = c("No concurrency specified",
                                   "Target % concurrency"),
                       selected = conc)
+  })
+  observeEvent(input$formation, {
+    if(input$formation == "~edges"){
+      track <- "edges"
+    } else {
+      track <- c("edges", "concurrent")
+    }
+    updateSelectInput(session, "nwstats",
+                      label = "Network stats to track",
+                      choices = c("edges",
+                                  "concurrent",
+                                  "isolates",
+                                  "mean degree" = "meandeg"),
+                      selected = track)
   })
 
   #link percent concurrent with concurrent target
@@ -91,16 +105,20 @@ shinyServer(function(input, output, session) {
       c(input$edge.target, input$conc.target)
     }
   })
+  nwstats <- reactive({
+    as.formula(paste0("~", paste(input$nwstats, collapse = "+")))
+  })
   fit <- reactive({
     if(input$runMod == 0){return()}
     isolate({
       fit.progress <- Progress$new(session, min = 0, max = 1)
       on.exit(fit.progress$close())
       fit.progress$set(value = NULL, message = "Fitting model")
-      netest(net(), formation = as.formula(input$formation),
-           target.stats = target.stats(),
-           coef.diss = coef.diss(),
-           verbose = FALSE)
+      netest(net(),
+             formation = as.formula(input$formation),
+             target.stats = target.stats(),
+             coef.diss = coef.diss(),
+             verbose = FALSE)
     })
   })
   dxsim <- reactive({
@@ -110,8 +128,12 @@ shinyServer(function(input, output, session) {
       dx.progress <- Progress$new(session, min = 0, max = 1)
       on.exit(dx.progress$close())
       dx.progress$set(value = NULL, message = "Diagnosing fit")
-      netdx(fit(), nsims = input$dx.nsims, nsteps = input$dx.nsteps,
-            keep.tedgelist = FALSE, verbose = FALSE)
+      netdx(fit(),
+            nsims = input$dx.nsims,
+            nsteps = input$dx.nsteps,
+            nwstats.formula = nwstats(),
+            keep.tedgelist = FALSE,
+            verbose = FALSE)
     })
   })
   dx.showqnts <- reactive({
@@ -161,9 +183,12 @@ shinyServer(function(input, output, session) {
 
   ## netdx page
   output$dxplot <- renderPlot({
+    input$runMod
     par(mar = c(5, 4, 2, 2))
     if(!is.null(dxsim())){
+      stats <- isolate(input$nwstats)
       plot(dxsim(),
+           stats = stats,
            type = input$dxtype,
            mean.line = input$dx.showmean,
            sim.lines = input$dx.showsims,
@@ -180,7 +205,10 @@ shinyServer(function(input, output, session) {
       pdf(file = file, height = 6, width = 10)
       par(mar = c(5, 4, 2, 2), mgp = c(2.1, 1, 0))
       if(!is.null(dxsim())){
+        input$runMod
+        stats <- isolate(input$nwstats)
         plot(dxsim(),
+             stats = stats,
              type = input$dxtype,
              mean.line = input$dx.showmean,
              sim.lines = input$dx.showsims,
