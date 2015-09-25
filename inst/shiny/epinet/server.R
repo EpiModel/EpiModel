@@ -33,7 +33,8 @@ shinyServer(function(input, output, session) {
   observeEvent(input$meandeg, {
     updateNumericInput(session, "edge.target",
                        label = "Target: edges",
-                       value = input$num * input$meandeg / 2)
+                       value = input$num * input$meandeg / 2,
+                       step = 0.1)
   })
   observeEvent(input$edge.target, {
     updateNumericInput(session, "meandeg",
@@ -41,7 +42,7 @@ shinyServer(function(input, output, session) {
                        value = input$edge.target * 2 / input$num,
                        min = 0.1,
                        max = 1.5,
-                       step = 0.05)
+                       step = 0.1)
   })
 
   #link concurrency dropdown and formation formula and nwstats to track
@@ -90,7 +91,7 @@ shinyServer(function(input, output, session) {
                       label = "Percent of nodes with concurrent partners",
                       value = input$conc.target / input$num * 100,
                       min = 0,
-                      max = 100,
+                      max = 50,
                       step = 10)
   })
 
