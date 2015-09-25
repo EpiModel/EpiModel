@@ -329,6 +329,7 @@ shinyServer(function(input, output, session) {
 
   ## nw plots page
   output$nwplot <- renderPlot({
+    if(input$runEpi == 0){return()}
     simno <- ifelse(input$nwplotsim == "mean",
                     yes = "mean",
                     no = as.numeric(input$nwplotsim))

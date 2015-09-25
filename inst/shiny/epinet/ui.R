@@ -9,8 +9,9 @@ library(shiny)
 library(EpiModel)
 
 shinyUI(
-navbarPage("EpiModel: Network Models",
-
+navbarPage(title = NULL,
+  tabPanel("EpiModel: Network Models",
+           p("About this app...")),
   tabPanel("Model Estimation",
            tagList(
              tags$head(
@@ -21,6 +22,7 @@ navbarPage("EpiModel: Network Models",
              column(4,
                     br(),
                     wellPanel(
+                      h4("Model Estimation"),
 
                       actionButton("runMod", "Fit Model & Run Diagnostics",
                                    style = "margin-bottom: 10px;"),
@@ -102,7 +104,7 @@ navbarPage("EpiModel: Network Models",
                                                        "mean degree" = "meandeg"),
                                            selected = "edges"))
                    ),
-                   plotOutput("dxplot"),
+                   plotOutput("dxplot", height = "600px"),
                    wellPanel(
                      h4("Plot Options"),
                      fluidRow(
@@ -149,6 +151,7 @@ navbarPage("EpiModel: Network Models",
              column(4,
                br(),
                wellPanel(
+                 h4("Epidemic Simulation"),
                  actionButton("runEpi", label = "Simulate Epidemic",
                               style = "margin-bottom: 10px"),
                  helpText("Click the button above after changing model",
@@ -217,7 +220,7 @@ navbarPage("EpiModel: Network Models",
              column(8,
                 tabsetPanel(
                   tabPanel("Plot",
-                     plotOutput("epiplot"),
+                     plotOutput("epiplot", height = "600px"),
                      wellPanel(
                        h4("Plot Options"),
                        fluidRow(
@@ -270,6 +273,10 @@ navbarPage("EpiModel: Network Models",
            div(style = "margin: auto; width: 60%;",
             wellPanel(
              h4("Plot Options"),
+             helpText("Look at the network plot of any epidemic simulation at
+                      any time step. Plotting the mean network shows the plot
+                      of the simulation that is closest to the mean prevalence
+                      at each time step."),
              checkboxInput("secondplot",
                            label = "Plot two time steps",
                            value = FALSE),
@@ -308,7 +315,6 @@ navbarPage("EpiModel: Network Models",
                             label = "Download Data")),
            br()
       )
-           ), #end data page
-  tabPanel("About")
+           ) #end data page
   )
 )
