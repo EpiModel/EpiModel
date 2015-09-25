@@ -11,7 +11,7 @@ library(EpiModel)
 shinyUI(
 navbarPage("EpiModel: Network Models",
 
-  tabPanel("Network Diagnostics",
+  tabPanel("Model Estimation",
            tagList(
              tags$head(
                tags$link(rel="stylesheet", type="text/css",href="style.css")
