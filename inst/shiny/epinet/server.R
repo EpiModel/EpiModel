@@ -39,8 +39,8 @@ shinyServer(function(input, output, session) {
     updateNumericInput(session, "meandeg",
                        label = "Mean Degree",
                        value = input$edge.target * 2 / input$num,
-                       min = 0.4,
-                       max = 1,
+                       min = 0.1,
+                       max = 1.5,
                        step = 0.05)
   })
 
