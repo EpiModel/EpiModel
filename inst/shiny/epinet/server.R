@@ -199,17 +199,17 @@ shinyServer(function(input, output, session) {
     par(mar = c(5, 4, 2, 2))
     if(!is.null(dxsim())){
       stats <- isolate(input$nwstats)
-      plot.netdx(dxsim(),
-                 stats = stats,
-                 type = input$dxtype,
-                 mean.line = input$dx.showmean,
-                 sim.lines = input$dx.showsims,
-                 qnts = dx.showqnts(),
-                 plots.joined = input$plots.joined,
-                 leg = input$dx.showleg,
-                 leg.cex = 1.1,
-                 lwd = 3.5,
-                 main = "")
+      plot(dxsim(),
+           stats = stats,
+           type = input$dxtype,
+           mean.line = input$dx.showmean,
+           sim.lines = input$dx.showsims,
+           qnts = dx.showqnts(),
+           plots.joined = input$plots.joined,
+           leg = input$dx.showleg,
+           leg.cex = 1.1,
+           lwd = 3.5,
+           main = "")
     }
   })
   output$dxplotDL <- downloadHandler(
