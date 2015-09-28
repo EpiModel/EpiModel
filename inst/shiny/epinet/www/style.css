@@ -2,11 +2,9 @@
 
 .transp {
   opacity: 0.4;
-  filter: alpha(opacity=40);
 }
 .transp:hover {
   opacity: 1.0;
-  filter: alpha(opacity=100);
 }
 
 .navbar .navbar-brand{

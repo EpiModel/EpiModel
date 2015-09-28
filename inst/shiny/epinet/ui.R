@@ -11,11 +11,14 @@ library(EpiModel)
 shinyUI(
 navbarPage(title = NULL, windowTitle = "EpiModel: Network Models",
   tabPanel("EpiModel: Network Models",
-      column(7, offset = 1,
+
+      column(6, offset = 1,
            h2("EpiModel: Network Models", style = "color: #445555;"),
            p(a("EpiModel", href = "http://www.epimodel.org/", target = "_blank"),
              "is an R package that provides tools for simulating and
-             analyzing mathematical models of infectious disease. "),
+             analyzing mathematical models of infectious disease."),
+           p("More text..."),
+           p("More text..."),
            p("This web application, built with",
            a("Shiny,", href = "http://shiny.rstudio.com/", target = "_blank"),
              "may be lauched via an R session with EpiModel and Shiny installed
@@ -24,18 +27,18 @@ navbarPage(title = NULL, windowTitle = "EpiModel: Network Models",
                          target = "_blank"))
              ),
       column(4,
-             img(src = "dxplot.png", class = "transp",
+             img(src = "dxplot.png", class = "transp", title = "Network Diagnostics",
                  width = "250px", height = "151px"),
-             img(src = "epiplot.png", class = "transp",
+             img(src = "epiplot.png", class = "transp", title = "Disease Prevalence",
                  width = "250px", height = "151px"),
-             img(src = "nwplot.png", class = "transp",
-                 width = "250px", height = "164px"))
-
+             img(src = "nwplot.png", class = "transp", title = "Network Plot",
+                 width = "250px", height = "164px")
+             )
            ),
   tabPanel("Model Estimation",
            tagList(
              tags$head(
-               tags$link(rel="stylesheet", type="text/css",href="style.css")
+               tags$link(rel="stylesheet", type="text/css", href="style.css")
              )
            ),
            fluidRow(
