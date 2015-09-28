@@ -2,22 +2,26 @@
 #' @title EpiModel Web
 #'
 #' @description Runs a web browser-based GUI of deterministic compartmental
-#'              models and stochastic individual contact models.
+#'              models, stochastic individual contact models and basic network
+#'              models.
 #'
-#' @param class Model class, with options of \code{"dcm"} and \code{"icm"}.
+#' @param class Model class, with options of \code{"dcm"}, \code{"icm"}
+#'        and \code{"net"}.
 #' @param ... Additional arguments passed to \code{shiny::runApp}.
 #'
 #' @details
-#' \code{epiweb} runs a web-based GUI of a one-group \code{\link{dcm}} models
-#' and \code{\link{icm}} models with user input on model type, state sizes, and
-#' parameters. Model output may be plotted, summarized, and saved as raw data
-#' using the core \code{EpiModel} functionality for these model classes. These
-#' applications are built using the \code{shiny} package framework.
+#' \code{epiweb} runs a web-based GUI of one-group \code{\link{dcm}} models,
+#' \code{\link{icm}} models and network models with user input on
+#' model type, state sizes, and parameters. Model output may be plotted,
+#' summarized, and saved as raw data using the core \code{EpiModel}
+#' functionality for these model classes. These applications are built using
+#' the \code{shiny} package framework.
 #'
 #' These apps are also hosted online at Rstudio's shinyapps site here:
 #' \itemize{
 #'    \item DCM App: \samp{https://statnet.shinyapps.io/epidcm/}
 #'    \item ICM App: \samp{https://statnet.shinyapps.io/epiicm/}
+#'    \item NET App: \samp{https://statnet.shinyapps.io/epinet/}
 #' }
 #'
 #' @references
@@ -36,6 +40,9 @@
 #'
 #' ## Stochastic individual contact models
 #' epiweb(class = "icm")
+#'
+#' ## Basic network models
+#' epiweb(class = "net")
 #' }
 #'
 epiweb <- function(class, ...) {
@@ -43,7 +50,9 @@ epiweb <- function(class, ...) {
     shiny::runApp(system.file("shiny", "epidcm", package = "EpiModel"), ...)
   } else if (class == "icm") {
     shiny::runApp(system.file("shiny", "epiicm", package = "EpiModel"), ...)
+  } else if (class == "net") {
+    shiny::runApp(system.file("shiny", "epinet", package = "EpiModel"), ...)
   } else {
-    stop("Specify class as either \"dcm\" or \"icm\" ", call. = FALSE)
+    stop("Specify class as either \"dcm\", \"icm\" or \"net\" ", call. = FALSE)
   }
 }

@@ -7,25 +7,29 @@
 epiweb(class, ...)
 }
 \arguments{
-\item{class}{Model class, with options of \code{"dcm"} and \code{"icm"}.}
+\item{class}{Model class, with options of \code{"dcm"}, \code{"icm"}
+and \code{"net"}.}
 
 \item{...}{Additional arguments passed to \code{shiny::runApp}.}
 }
 \description{
 Runs a web browser-based GUI of deterministic compartmental
-             models and stochastic individual contact models.
+             models, stochastic individual contact models and basic network
+             models.
 }
 \details{
-\code{epiweb} runs a web-based GUI of a one-group \code{\link{dcm}} models
-and \code{\link{icm}} models with user input on model type, state sizes, and
-parameters. Model output may be plotted, summarized, and saved as raw data
-using the core \code{EpiModel} functionality for these model classes. These
-applications are built using the \code{shiny} package framework.
+\code{epiweb} runs a web-based GUI of one-group \code{\link{dcm}} models,
+\code{\link{icm}} models and network models with user input on
+model type, state sizes, and parameters. Model output may be plotted,
+summarized, and saved as raw data using the core \code{EpiModel}
+functionality for these model classes. These applications are built using
+the \code{shiny} package framework.
 
 These apps are also hosted online at Rstudio's shinyapps site here:
 \itemize{
    \item DCM App: \samp{https://statnet.shinyapps.io/epidcm/}
    \item ICM App: \samp{https://statnet.shinyapps.io/epiicm/}
+   \item NET App: \samp{https://statnet.shinyapps.io/epinet/}
 }
 }
 \examples{
@@ -35,6 +39,9 @@ epiweb(class = "dcm")
 
 ## Stochastic individual contact models
 epiweb(class = "icm")
+
+## Basic network models
+epiweb(class = "net")
 }
 }
 \references{
