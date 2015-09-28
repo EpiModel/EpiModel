@@ -9,9 +9,29 @@ library(shiny)
 library(EpiModel)
 
 shinyUI(
-navbarPage(title = NULL,
+navbarPage(title = NULL, windowTitle = "EpiModel: Network Models",
   tabPanel("EpiModel: Network Models",
-           p("About this app...")),
+      column(7, offset = 1,
+           h2("EpiModel: Network Models", style = "color: #445555;"),
+           p(a("EpiModel", href = "http://www.epimodel.org/", target = "_blank"),
+             "is an R package that provides tools for simulating and
+             analyzing mathematical models of infectious disease. "),
+           p("This web application, built with",
+           a("Shiny,", href = "http://shiny.rstudio.com/", target = "_blank"),
+             "may be lauched via an R session with EpiModel and Shiny installed
+             (see the epiweb function), or directly on any web browser (no R
+             needed)", a("here.", href = "https://statnet.shinyapps.io/epinet",
+                         target = "_blank"))
+             ),
+      column(4,
+             img(src = "dxplot.png", class = "transp",
+                 width = "250px", height = "151px"),
+             img(src = "epiplot.png", class = "transp",
+                 width = "250px", height = "151px"),
+             img(src = "nwplot.png", class = "transp",
+                 width = "250px", height = "164px"))
+
+           ),
   tabPanel("Model Estimation",
            tagList(
              tags$head(
