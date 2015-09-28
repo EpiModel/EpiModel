@@ -115,11 +115,15 @@ shinyServer(function(input, output, session) {
       fit.progress <- Progress$new(session, min = 0, max = 1)
       on.exit(fit.progress$close())
       fit.progress$set(value = NULL, message = "Fitting model")
-      netest(net(),
-             formation = as.formula(input$formation),
-             target.stats = target.stats(),
-             coef.diss = coef.diss(),
-             verbose = FALSE)
+      fit <- tryCatch({netest(net(),
+                              formation = as.formula(input$formation),
+                              target.stats = target.stats(),
+                              coef.diss = coef.diss(),
+                              verbose = FALSE)},
+                      error = function(e) e)
+      validate(need(!("error" %in% class(fit)),
+        message = "There is a problem with model specification, please try again."))
+      fit
     })
   })
   dxsim <- reactive({
