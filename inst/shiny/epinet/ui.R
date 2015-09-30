@@ -23,18 +23,18 @@ navbarPage(title = NULL, windowTitle = "EpiModel: Network Models",
               over dynamic contact networks. These stochastic network models are
              based on the statistical framework of", a("temporal exponential random
              graph models.", href = "http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3891677/",
-             target = "_blank"), "This web application isbuilt with",
+             target = "_blank"), "This web application is built with",
              a("Shiny,", href = "http://shiny.rstudio.com/", target = "_blank"),
-             "may be lauched via an R session with EpiModel and Shiny installed
-             (see the epiweb function), or directly on any web browser (no R
+             "and may be lauched via an R session with EpiModel and Shiny installed
+             (see the", code("epiweb"),"function), or directly on any web browser (no R
              needed)", a("here.", href = "https://statnet.shinyapps.io/epinet",
                          target = "_blank")),
-           p("To get started, a statistical network model in the Model Estimation
+           p("To get started, create a statistical network model in the Model Estimation
              page using one of the two model specification methods. This page fits
-             a temporal ERGM using the netest function and runs diagnostics on the
-             fitted model with the netdx function. After the model is properly
+             a temporal ERGM using the", code("netest"), "function and runs diagnostics on the
+             fitted model with the", code("netdx"), "function. After the model is properly
              specified, simulate an epidemic on the network using the Epidemic
-             Simulation page. This runs the netsim function in EpiModel, and the
+             Simulation page. This runs the", code("netsim"), "function in EpiModel, and the
              epidemic parameters are described in detail in the help pages there.
              Model output may be plotted to show the epidemic time series or
              static network plots, as well as viewing numerical data summaries."),
