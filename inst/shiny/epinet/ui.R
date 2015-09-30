@@ -10,35 +10,47 @@ library(EpiModel)
 
 shinyUI(
 navbarPage(title = NULL, windowTitle = "EpiModel: Network Models",
-  tabPanel("EpiModel: Network Models",
+  tabPanel("Details",
 
       column(6, offset = 1,
-           h2("EpiModel: Network Models", style = "color: #445555;"),
+           h2("Stochastic Network Models with EpiModel", style = "color: #445555;"),
            p(a("EpiModel", href = "http://www.epimodel.org/", target = "_blank"),
              "is an R package that provides tools for simulating and
-             analyzing mathematical models of infectious disease."),
-           p("More text..."),
-           p("More text..."),
-           p("This web application, built with",
-           a("Shiny,", href = "http://shiny.rstudio.com/", target = "_blank"),
+             analyzing mathematical models of infectious disease.
+             Details about the package, including the epidemic model classes
+             supported by the software can be found at the link above."),
+           p("This web-based application allows for simple modeling of epidemics
+              over dynamic contact networks. These stochastic network models are
+             based on the statistical framework of", a("temporal exponential random
+             graph models.", href = "http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3891677/",
+             target = "_blank"), "This web application isbuilt with",
+             a("Shiny,", href = "http://shiny.rstudio.com/", target = "_blank"),
              "may be lauched via an R session with EpiModel and Shiny installed
              (see the epiweb function), or directly on any web browser (no R
              needed)", a("here.", href = "https://statnet.shinyapps.io/epinet",
-                         target = "_blank"))
-             ),
-      column(4,
-             img(src = "dxplot.png", class = "transp", title = "Network Diagnostics",
-                 width = "250px", height = "151px"),
-             img(src = "epiplot.png", class = "transp", title = "Disease Prevalence",
-                 width = "250px", height = "151px"),
-             img(src = "nwplot.png", class = "transp", title = "Network Plot",
-                 width = "250px", height = "164px")
+                         target = "_blank")),
+           p("To get started, a statistical network model in the Model Estimation
+             page using one of the two model specification methods. This page fits
+             a temporal ERGM using the netest function and runs diagnostics on the
+             fitted model with the netdx function. After the model is properly
+             specified, simulate an epidemic on the network using the Epidemic
+             Simulation page. This runs the netsim function in EpiModel, and the
+             epidemic parameters are described in detail in the help pages there.
+             Model output may be plotted to show the epidemic time series or
+             static network plots, as well as viewing numerical data summaries."),
+           p("The author of this application is Emily Beylerian, Software Developer
+             at the University of Washington Centers for Studies in Demoraphy and
+             Ecology. The authors of the larger EpiModel project are Samuel Jenness,
+             Steven Goodreau, and Martina Morris at the University of Washington.
+             Development of this software is supported by the following grants from
+             the National Institutes of Health: R01HD68395 (NICHD), T32HD007543 (NICHD),
+             and R24HD042828 (NICHD).")
              )
            ),
   tabPanel("Model Estimation",
            tagList(
              tags$head(
-               tags$link(rel="stylesheet", type="text/css", href="style.css")
+               tags$link(rel = "stylesheet", type = "text/css", href = "style.css")
              )
            ),
            fluidRow(
