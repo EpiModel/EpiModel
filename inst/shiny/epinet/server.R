@@ -34,7 +34,7 @@ shinyServer(function(input, output, session) {
     updateNumericInput(session, "edge.target",
                        label = "Target: edges",
                        value = input$num * input$meandeg / 2,
-                       step = 0.01)
+                       step = 0.1)
   })
   observeEvent(input$edge.target, {
     updateNumericInput(session, "meandeg",
@@ -42,7 +42,7 @@ shinyServer(function(input, output, session) {
                        value = input$edge.target * 2 / input$num,
                        min = 0.1,
                        max = 1.5,
-                       step = 0.1)
+                       step = 0.01)
   })
 
   #link concurrency dropdown and formation formula and nwstats to track
