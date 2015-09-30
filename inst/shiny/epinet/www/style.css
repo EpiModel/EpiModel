@@ -1,10 +1,8 @@
 
 
-.transp {
-  opacity: 0.4;
-}
-.transp:hover {
-  opacity: 1.0;
+code {
+  color: #445555;
+  background-color: #f5f5f5;
 }
 
 .navbar .navbar-brand{

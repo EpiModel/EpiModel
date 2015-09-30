@@ -23,18 +23,18 @@ navbarPage(title = NULL, windowTitle = "EpiModel: Network Models",
               over dynamic contact networks. These stochastic network models are
              based on the statistical framework of", a("temporal exponential random
              graph models.", href = "http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3891677/",
-             target = "_blank"), "This web application isbuilt with",
+             target = "_blank"), "This web application is built with",
              a("Shiny,", href = "http://shiny.rstudio.com/", target = "_blank"),
-             "may be lauched via an R session with EpiModel and Shiny installed
-             (see the epiweb function), or directly on any web browser (no R
+             "and may be lauched via an R session with EpiModel and Shiny installed
+             (see the", code("epiweb"),"function), or directly on any web browser (no R
              needed)", a("here.", href = "https://statnet.shinyapps.io/epinet",
                          target = "_blank")),
-           p("To get started, a statistical network model in the Model Estimation
+           p("To get started, create a statistical network model in the Model Estimation
              page using one of the two model specification methods. This page fits
-             a temporal ERGM using the netest function and runs diagnostics on the
-             fitted model with the netdx function. After the model is properly
+             a temporal ERGM using the", code("netest"), "function and runs diagnostics on the
+             fitted model with the", code("netdx"), "function. After the model is properly
              specified, simulate an epidemic on the network using the Epidemic
-             Simulation page. This runs the netsim function in EpiModel, and the
+             Simulation page. This runs the", code("netsim"), "function in EpiModel, and the
              epidemic parameters are described in detail in the help pages there.
              Model output may be plotted to show the epidemic time series or
              static network plots, as well as viewing numerical data summaries."),
@@ -258,7 +258,7 @@ navbarPage(title = NULL, windowTitle = "EpiModel: Network Models",
              #main panel
              column(8,
                 tabsetPanel(
-                  tabPanel("Plot",
+                  tabPanel("Time Series Plots",
                      plotOutput("epiplot", height = "600px"),
                      wellPanel(
                        h4("Plot Options"),
@@ -285,7 +285,7 @@ navbarPage(title = NULL, windowTitle = "EpiModel: Network Models",
                          column(3,
                                 checkboxInput(inputId = "epi.showsims",
                                               label = "Sim Lines",
-                                              value = TRUE)),
+                                              value = FALSE)),
                          column(3,
                                 checkboxInput(inputId = "epi.showleg",
                                               label = "Legend",
@@ -294,6 +294,50 @@ navbarPage(title = NULL, windowTitle = "EpiModel: Network Models",
                          downloadButton("epiplotDL", "Download Plot")
                          )
                        )
+                           ),
+                  tabPanel("Network Plots",
+                           uiOutput("plotUI"),
+                           br(),
+                           wellPanel(
+                             h4("Plot Options"),
+                             helpText("Plotting the mean network shows the plot
+                                      of the simulation that is closest to
+                                      the mean prevalence at each time step."),
+                             checkboxInput("secondplot",
+                                           label = "Plot two time steps",
+                                           value = FALSE),
+                             uiOutput("plotoptionsUI")
+                             )
+                           ),
+                  tabPanel("Data",
+                           div(style = "margin: auto; width: 90%;",
+                               br(),
+                               helpText("Select output as the time-specific means
+                                      or standard deviations across simulations,
+                                        or individual simulation values (if the
+                                        last, also input the desired simulation
+                                        number)."),
+                               fluidRow(
+                                 column(3,
+                                        selectInput(inputId = "datasel",
+                                                    label = strong("Data Selection"),
+                                                    choices = c("Means",
+                                                                "Standard Deviations",
+                                                                "Simulations"))),
+                                 conditionalPanel("input.datasel == 'Simulations'",
+                                        column(4,
+                                               uiOutput("simnoControl"))),
+                                 column(3,
+                                        numericInput(inputId = "tabdig",
+                                                     label = "Significant Digits",
+                                                     min = 0,
+                                                     value = 2))),
+                               fluidRow(
+                                dataTableOutput("outData")),
+                               fluidRow(
+                             downloadButton(outputId = "dlData",
+                                            label = "Download Data"))
+                           )
                            ),
                   tabPanel("Summary",
                        br(),
@@ -304,56 +348,6 @@ navbarPage(title = NULL, windowTitle = "EpiModel: Network Models",
 
               ) #end main panel
             )
-           ), #end epi page
-  tabPanel("Network Plots",
-
-           uiOutput("plotUI"),
-           br(),
-           div(style = "margin: auto; width: 60%;",
-            wellPanel(
-             h4("Plot Options"),
-             helpText("Look at the network plot of any epidemic simulation at
-                      any time step. Plotting the mean network shows the plot
-                      of the simulation that is closest to the mean prevalence
-                      at each time step."),
-             checkboxInput("secondplot",
-                           label = "Plot two time steps",
-                           value = FALSE),
-             uiOutput("plotoptionsUI")
-           ))
-
-           ), #end nw plots page
-  tabPanel("Data",
-      div(style = "margin: auto; width: 80%;",
-           h4("Model Data"),
-           helpText("Select output as the time-specific means or standard
-                  deviations across simulations, or individual simulation
-                  values (if the last, also input the desired simulation
-                  number)."),
-           p(),
-           wellPanel(
-             fluidRow(
-               column(5,
-                      selectInput(inputId = "datasel",
-                                  label = strong("Data Selection"),
-                                  choices = c("Means",
-                                              "Standard Deviations",
-                                              "Simulations")),
-                      conditionalPanel("input.datasel == 'Simulations'",
-                                       uiOutput("simnoControl"))),
-               column(4, offset = 1,
-                      numericInput(inputId = "tabdig",
-                                   label = "Significant Digits",
-                                   min = 0,
-                                   value = 2)))
-           ), # end wellPanel
-           fluidRow(
-             dataTableOutput("outData")),
-           fluidRow(
-             downloadButton(outputId = "dlData",
-                            label = "Download Data")),
-           br()
-      )
-           ) #end data page
+           ) #end epi page
   )
 )
