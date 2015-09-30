@@ -34,7 +34,7 @@ shinyServer(function(input, output, session) {
     updateNumericInput(session, "edge.target",
                        label = "Target: edges",
                        value = input$num * input$meandeg / 2,
-                       step = 0.1)
+                       step = 0.01)
   })
   observeEvent(input$edge.target, {
     updateNumericInput(session, "meandeg",
