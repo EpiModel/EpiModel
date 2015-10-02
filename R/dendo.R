@@ -3,6 +3,9 @@ require(ape)
 
 #' @title functions for converting to and from phylo class
 #' @import ape
+#' 
+#' 
+#' 
 # require(tsna)
 # data(moodyContactSim)
 # v10path<-tPath(moodyContactSim,v=10,start=0)
@@ -10,40 +13,7 @@ require(ape)
 # getChildren(10,17,v10path$previous)
 # plot(v10path)
 # as.phylo.tPath(moodyContactSim,v10path)
- 
-
- 
-# edgelist version 
-# as.phylo.tPath<-function(net, path){
-# 
-#   el<-cbind(path$previous,1:length(path$previous))
-#   # remove the seed row
-#   el<-el[path$previous!=0,]
-#   # 'nodes' are all the vertices with decendents
-#   nodes<-unique(path$previous[path$previous!=0])
-#   # tips are all the vertices that are not nodes
-#   tips<-setdiff(1:length(path$previous),nodes)
-#   
-#   ids<-c(tips,nodes)
-#   
-#   # remap numbering
-#   el[,1]<-match(el[,1],ids)
-#   el[,2]<-match(el[,2],ids)
-#   
-#   # delete the singles
-#   
-#   
-#   out<-list()
-#   out[['edge']]<-el
-#   out[['Nnode']]<-length(nodes)  # number of non-tip nodes
-#   out[['tip.label']]<-network.vertex.names(net)[tips]
-#   out[['node.label']]<-network.vertex.names(net)[nodes]
-#   out[['edge.length']]<-path$tdist
-#   class(out)<-'phylo'
-#   return(out)
-# }
-
-# crawler version
+# this is a draft version (used with tsna code above)
 as.phylo.tPath<-function(path){
   
   el<-cbind(path$previous,1:length(path$previous))
@@ -91,30 +61,50 @@ as.phylo.tPath<-function(path){
   return(out)
 }
 
+#' @title convert transmat infection tree into a phylo object
+#' @method as.phylo transmat
+#' @export as.phylo.transmat
+#' @param x An object of class \code{'transmat'}, the output from \code{\link{get_transmat}}. 
+#' @param collapse.singles logical, (default TRUE) should \code{\link{collapse.singles}} be called on the phylo object before it is returned? (many infection trees contain intermediate nodes that must be removed to be a proper phylo tree)
+#' @param ...  further arguments (unused)
+#' @details Converts the edgelist matrix in the transmat object into a phylo object by doing the required reordering and labeling.  Converts the infection timing into elapsed time from parents infections to be appropriate for the \code{edge.length} component.  If the the tree does not have the appropriate structure to be a phylogenetic tree (chains of multiple vertices with no branches) the branches will be collapsed (depending on \code{collapse.singles}) and labeled with the latest vertex in the chain. 
+#' @examples
+#' library(EpiModel)
+#' nw <- network.initialize(n = 100, directed = FALSE)
+#' formation <- ~edges
+#' target.stats <- 50
+#' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
+#' est1 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 
-
-as.phylo.transmat<-function(tm){
+#' param <- param.net(inf.prob = 0.5)
+#' init <- init.net(i.num = 1)
+#' control <- control.net(type = "SI", nsteps = 40, nsims = 1, verbose.int = 0, use.pids = FALSE)
+#' mod1 <- netsim(est1, param, init, control)
+#' tm <- get_transmat(mod1)
+#' tmPhylo<-as.phylo(tm)
+#' plot(tmPhylo,show.node.label = TRUE,cex=0.7)
+as.phylo.transmat<-function(x,collapse.singles=TRUE,...){
+  tm<-x
   el<-cbind(tm$inf,tm$sus)
-  #phylo doesn't like "non-splitting" nodes that have no children
-#   dummyTips<-numeric(0)
-#   singleKidNodes<-as.numeric(names(which(table(el[,1])==1)))
-#   if (length(singleKidNodes)>0){
-#     singleKidsRows<-el[,1]%in%singleKidNodes
-#     warning('found vertices ',paste(singleKidNodes,collapse = ','),' that create "non-splitting" phylo nodes, dummies marked with "*" added ')
-#     #el<-el[!singleKidsRows,,drop=FALSE]
-#     # add some dummy nodes
-#     for(row in which(singleKidsRows)){
-#       dummyTips<-c(dummyTips,max(el+1))
-#       el<-rbind(el,c(el[row,1],max(el)+1))
-#     }
-#   }
-  
+
   origNodes<-unique(el[,1])
   origTips<-setdiff(el[,2],origNodes)
   
   phyloTips<-1:length(origTips)
   phyloNodes<-rep(NA,length(origNodes))
   phylo.label<-phyloNodes  # make a list to store the labels
+  # store the duration of time between the infection and its parent's infection
+  durations<-sapply(1:nrow(el),function(r){
+    # convert corresponding infection time to a duration rather than clock
+    parentRow<-which(el[,2]==el[r,1]) # find edgelist row for v's parent
+    #  parent will be missing if it is the root
+    if (length(parentRow)>0){
+      # set the time to the difference between v's infection time and v's parent's infection time
+      tm[['at']][r]-tm[['at']][parentRow]
+    } else {
+      tm[['at']][r]  # assume infection started at time 0
+    }
+  })
 
   # find roots (infectors that never appear as sus)
   v<-setdiff(unique(el[,1]),unique(el[,2]))
@@ -143,33 +133,28 @@ as.phylo.transmat<-function(tm){
   el[elTips,2]<-phyloTips[match(el[elTips,2],origTips)]
   el[!elTips,2]<-phyloNodes[match(el[!elTips,2],origNodes)]
   el[,1]<-phyloNodes[match(el[,1],origNodes)]
-
-  # also translate the times
-  times<-tm[['at']] # get the times 
-  #times[elTips]<-phyloTips[match(el[elTips,2],origTips)]
-  #times[!elTips]<-phyloNodes[match(el[!elTips,2],origNodes)]
-  
-  # if we have dummy nodes, change their labels
-  tip.label<-origTips
-#   if(length(dummyTips)>0){
-#     tip.label[match(dummyTips,origTips)]<-'*'
-#   }
   
   out<-list()
   out[['edge']]<-el
   out[['Nnode']]<-length(phyloNodes)  # number of non-tip nodes
-  out[['tip.label']]<-tip.label
+  out[['tip.label']]<-origTips
   out[['node.label']]<-phylo.label
   out[['root.edge']]<-0 # have to assume sim started at 0
-  out[['edge.length']]<-times
+  out[['edge.length']]<-durations
   class(out)<-'phylo'
+  if(collapse.singles){
+    out<-collapse.singles(out)
+  }
   return(out)
 }
 
 #' @title converting transmat infection tree into a network object
 #' @method as.network transmat
 #' @export as.network.transmat
-as.network.transmat<-function(tm){
+#' @param x an object of class \code{transmat} to be converted into a network object
+#' @description converts the edges of the infection tree described in the transmat object into a \code{\link{network}} object, copying in appropriate edge attributes for 'at', 'infDur', 'transProb', 'actRate', and 'finalProb' and constructing a vertex attribute for 'at'. 
+as.network.transmat<-function(x,...){
+  tm<-x
   ids<-unique(c(tm$sus,tm$inf))
   # remap the ids to a new set
   tm$sus<-match(tm$sus,ids)
@@ -193,70 +178,20 @@ as.network.transmat<-function(tm){
 #' @title plot transmat infection tree in one of several styles
 #' @method plot transmat
 #' @export plot.transmat
-plot.transmat<-function(tm,style=c('cascade','network','gv_tree','phylo'),...){
+#' @description plots the infection tree described in a transmat object in one of several styles: phylogentic tree, a network, a hierarchical tree, or a diffusion timeline. 
+plot.transmat<-function(tm,style=c('phylo','network','gv_tree','diffusion'),...){
   style<-match.arg(style)
   switch (style,
-    'cascade' = tm_cascade_plot(tm,...),
+    'diffusion' = tm_cascade_plot(tm,...),
     'network' = plot.network(as.network(tm),...),
     'gv_tree' = tm_gv_tree_plot(tm,...),
     'phylo' = plot(as.phylo(tm),show.node.label = TRUE,cex=0.7)
   )
 }
 
-if(FALSE){
 
 
-phytest<-list(edge=matrix(c(5,4,
-                            5,6,
-                            6,3,
-                            6,7,
-                            7,2,
-                            7,1),ncol=2,byrow=TRUE),
-              Nnode=3,
-              tip.label=1:4,
-              node.label=5:7,
-              edge.length=c(5,1,1,1,1,1))
-class(phytest)<-'phylo'
-plot(phytest,show.node.label=TRUE,use.edge.length = TRUE)
-
-
-
-# this works
-phytest<-list(edge=matrix(c(5,1,
-                            5,6,
-                            6,2,
-                            6,7,
-                            7,3,
-                            7,4),ncol=2,byrow=TRUE),
-              Nnode=3,
-              tip.label=1:4,
-              node.label=5:7,
-              edge.length=c(5,1,1,1,1,1))
-class(phytest)<-'phylo'
-plot(phytest,show.node.label=TRUE,use.edge.length = TRUE)
-
-}
-
-
-
-### example code
-transmat_example<-function(){
-library(EpiModel)
-nw <- network.initialize(n = 100, directed = FALSE)
-formation <- ~edges
-target.stats <- 50
-coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
-est1 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
-
-param <- param.net(inf.prob = 0.5)
-init <- init.net(i.num = 1)
-control <- control.net(type = "SI", nsteps = 40, nsims = 1, verbose.int = 0, use.pids = FALSE)
-mod1 <- netsim(est1, param, init, control)
-
-tm <- get_transmat(mod1)
-tm
-}
-
+# this is a wrapper that uses ndtv and graphviz to make a tree plot
 tm_gv_tree_plot<-function(tm,...){
 # assumes graphviz is installed
 requireNamespace('ndtv')
@@ -270,6 +205,7 @@ treeCoords<-layout.normalize(treeCoords,keep.aspect.ratio = FALSE)
 plot(net,coord=treeCoords,displaylabels=TRUE,jitter=FALSE,label.pos=2,label.cex=0.6,...)
 }
 
+#' @export is.transmat
 is.transmat<-function(x){
   if ('transmat'%in%class(x)){
     return(TRUE)
@@ -278,6 +214,7 @@ is.transmat<-function(x){
   }
 }
 
+# TODO: this needs to be replaced to call the diffusionTimeline version in ndtv, once that is release. 
 tm_cascade_plot<-function(x,time.attr,
                           label = network.vertex.names(x),
                           displaylabels = !missing(label),
@@ -374,13 +311,3 @@ tm_cascade_plot<-function(x,time.attr,
   par(op)
 }
 
-mat<-matrix(c(1,0,0,0,0,
-         1,1,0,0,0,
-         1,1,1,0,0,
-         1,1,0,1,0,
-         1,1,0,1,0),ncol=5)
-rownames(mat)<-LETTERS[1:5]
-plot(nj(dist.gene(mat)),show.node.label = TRUE)
-plot(bionj(dist.gene(mat)),show.node.label = TRUE)
-plot(fastme.bal(dist.gene(mat)),show.node.label = TRUE)
-plot(njs(dist.gene(mat)),show.node.label = TRUE)

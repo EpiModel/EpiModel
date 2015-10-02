@@ -4,10 +4,10 @@
 \alias{plot.transmat}
 \title{plot transmat infection tree in one of several styles}
 \usage{
-\method{plot}{transmat}(tm, style = c("cascade", "network", "gv_tree",
-  "phylo"), ...)
+\method{plot}{transmat}(tm, style = c("phylo", "network", "gv_tree",
+  "diffusion"), ...)
 }
 \description{
-plot transmat infection tree in one of several styles
+plots the infection tree described in a transmat object in one of several styles: phylogentic tree, a network, a hierarchical tree, or a diffusion timeline.
 }
 

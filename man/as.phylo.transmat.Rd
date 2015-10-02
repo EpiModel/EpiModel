@@ -2,15 +2,36 @@
 % Please edit documentation in R/dendo.R
 \name{as.phylo.transmat}
 \alias{as.phylo.transmat}
-\title{convert transmat infection tree into a phylo tree object}
+\title{convert transmat infection tree into a phylo object}
 \usage{
-\method{as.phylo}{transmat}(tm)
+\method{as.phylo}{transmat}(x, collapse.singles = TRUE, ...)
+}
+\arguments{
+\item{x}{An object of class \code{'transmat'}, the output from \code{\link{get_transmat}}.}
+
+\item{collapse.singles}{logical, (default TRUE) should \code{\link{collapse.singles}} be called on the phylo object before it is returned? (many infection trees contain intermediate nodes that must be removed to be a proper phylo tree)}
+
+\item{...}{further arguments (unused)}
 }
 \description{
-convert transmat infection tree into a phylo tree object
+convert transmat infection tree into a phylo object
+}
+\details{
+Converts the edgelist matrix in the transmat object into a phylo object by doing the required reordering and labeling.  Converts the infection timing into elapsed time from parents infections to be appropriate for the \code{edge.length} component.  If the the tree does not have the appropriate structure to be a phylogenetic tree (chains of multiple vertices with no branches) the branches will be collapsed (depending on \code{collapse.singles}) and labeled with the latest vertex in the chain.
 }
 \examples{
-tm2<-data.frame(inf=c(5,5,6,6,7,7),sus=c(1,6,2,7,3,4))
-plot(as.phylo(tm2),show.node.label = TRUE)
+library(EpiModel)
+nw <- network.initialize(n = 100, directed = FALSE)
+formation <- ~edges
+target.stats <- 50
+coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
+est1 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
+param <- param.net(inf.prob = 0.5)
+init <- init.net(i.num = 1)
+control <- control.net(type = "SI", nsteps = 40, nsims = 1, verbose.int = 0, use.pids = FALSE)
+mod1 <- netsim(est1, param, init, control)
+tm <- get_transmat(mod1)
+tmPhylo<-as.phylo(tm)
+plot(tmPhylo,show.node.label = TRUE,cex=0.7)
 }
 
