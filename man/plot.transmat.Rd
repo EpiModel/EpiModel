@@ -2,11 +2,12 @@
 % Please edit documentation in R/dendo.R
 \name{plot.transmat}
 \alias{plot.transmat}
-\title{plot transmat infection tree in the style of a phylo tree}
+\title{plot transmat infection tree in one of several styles}
 \usage{
-\method{plot}{transmat}(tm, ...)
+\method{plot}{transmat}(tm, style = c("cascade", "network", "gv_tree",
+  "phylo"), ...)
 }
 \description{
-plot transmat infection tree in the style of a phylo tree
+plot transmat infection tree in one of several styles
 }
 
