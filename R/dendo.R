@@ -64,6 +64,7 @@ as.phylo.tPath<-function(path){
 #' @title convert transmat infection tree into a phylo object
 #' @method as.phylo transmat
 #' @export as.phylo.transmat
+#' @import ape
 #' @param x An object of class \code{'transmat'}, the output from \code{\link{get_transmat}}. 
 #' @param collapse.singles logical, (default TRUE) should \code{\link{collapse.singles}} be called on the phylo object before it is returned? (many infection trees contain intermediate nodes that must be removed to be a proper phylo tree)
 #' @param ...  further arguments (unused)
@@ -108,8 +109,10 @@ as.phylo.transmat<-function(x,collapse.singles=TRUE,...){
 
   # find roots (infectors that never appear as sus)
   v<-setdiff(unique(el[,1]),unique(el[,2]))
+  multiPhylo<-FALSE
   if(length(v)>1){
     warning('found multiple trees ',length(v),' not yet supported')
+    multiPhylo<-TRUE
   }
   # figure out the ordering such that the root
   # node will be one larger than the tip nodes
