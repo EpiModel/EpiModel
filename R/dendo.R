@@ -186,7 +186,7 @@ plot.transmat<-function(x,style=c('phylo','network','gv_tree','transmissionTimel
     'transmissionTimeline' = tm_cascade_plot(x,...),
     'network' = plot.network(as.network(x),...),
     'gv_tree' = tm_gv_tree_plot(x,...),
-    'phylo' = plot(as.phylo(x),show.node.label = TRUE,cex=0.7)
+    'phylo' = plot(as.phylo.transmat(x),show.node.label = TRUE,cex=0.7)
   )
 }
 
