@@ -144,6 +144,7 @@ as.phylo.transmat<-function(x,collapse.singles=TRUE,...){
 }
 
 #' @title converting transmat infection tree into a network object
+#' @S3method as.network transmat
 #' @method as.network transmat
 #' @export as.network.transmat
 #' @param x an object of class \code{transmat} to be converted into a network object
@@ -172,6 +173,7 @@ as.network.transmat<-function(x,...){
 }
 
 #' @title plot transmat infection tree in one of several styles
+#' @S3method plot transmat
 #' @method plot transmat
 #' @export plot.transmat
 #' @param x a \code{\link{transmat}} object to be plotted
