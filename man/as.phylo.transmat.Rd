@@ -9,7 +9,7 @@
 \arguments{
 \item{x}{An object of class \code{'transmat'}, the output from \code{\link{get_transmat}}.}
 
-\item{collapse.singles}{logical, (default TRUE) should \code{\link{collapse.singles}} be called on the phylo object before it is returned? (many infection trees contain intermediate nodes that must be removed to be a proper phylo tree)}
+\item{collapse.singles}{logical, (default TRUE) should \code{\link[ape]{collapse.singles}} be called on the phylo object before it is returned? (many infection trees contain intermediate nodes that must be removed to be a proper phylo tree)}
 
 \item{...}{further arguments (unused)}
 }

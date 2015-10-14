@@ -3,6 +3,7 @@
 \name{is.transmat}
 \alias{get_transmat}
 \alias{is.transmat}
+\alias{transmat}
 \title{Extract Transmissions Matrix from Network Epidemic Model}
 \usage{
 is.transmat(x)
@@ -10,11 +11,9 @@ is.transmat(x)
 get_transmat(x, sim = 1)
 }
 \arguments{
-\item{x}{an object to be tested for the transmat class}
+\item{x}{An \code{EpiModel} object of class \code{\link{netsim}}.}
 
 \item{sim}{Simulation number of extracted network.}
-
-\item{x}{An \code{EpiModel} object of class \code{\link{netsim}}.}
 }
 \value{
 A data frame with the following collumns

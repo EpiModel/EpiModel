@@ -8,6 +8,8 @@
 }
 \arguments{
 \item{x}{an object of class \code{transmat} to be converted into a network object}
+
+\item{...}{unused}
 }
 \description{
 converts the edges of the infection tree described in the transmat object into a \code{\link{network}} object, copying in appropriate edge attributes for 'at', 'infDur', 'transProb', 'actRate', and 'finalProb' and constructing a vertex attribute for 'at'.

@@ -1,11 +1,5 @@
 # classes for working with dendograms from ape
-require(ape)
 
-#' @title functions for converting to and from phylo class
-#' @import ape
-#' 
-#' 
-#' 
 # require(tsna)
 # data(moodyContactSim)
 # v10path<-tPath(moodyContactSim,v=10,start=0)
@@ -65,7 +59,7 @@ as.phylo.tPath<-function(path){
 #' @method as.phylo transmat
 #' @export as.phylo.transmat
 #' @param x An object of class \code{'transmat'}, the output from \code{\link{get_transmat}}. 
-#' @param collapse.singles logical, (default TRUE) should \code{\link{collapse.singles}} be called on the phylo object before it is returned? (many infection trees contain intermediate nodes that must be removed to be a proper phylo tree)
+#' @param collapse.singles logical, (default TRUE) should \code{\link[ape]{collapse.singles}} be called on the phylo object before it is returned? (many infection trees contain intermediate nodes that must be removed to be a proper phylo tree)
 #' @param ...  further arguments (unused)
 #' @details Converts the edgelist matrix in the transmat object into a phylo object by doing the required reordering and labeling.  Converts the infection timing into elapsed time from parents' infections to be appropriate for the \code{edge.length} component.  If the the tree does not have the appropriate structure to be a phylogenetic tree (chains of multiple vertices with no branches) the branches will be collapsed (depending on \code{collapse.singles}) and labeled with the latest vertex in the chain. Does not yet support infection trees with multiple sources.
 #' @examples
@@ -153,6 +147,7 @@ as.phylo.transmat<-function(x,collapse.singles=TRUE,...){
 #' @method as.network transmat
 #' @export as.network.transmat
 #' @param x an object of class \code{transmat} to be converted into a network object
+#' @param ... unused
 #' @description converts the edges of the infection tree described in the transmat object into a \code{\link{network}} object, copying in appropriate edge attributes for 'at', 'infDur', 'transProb', 'actRate', and 'finalProb' and constructing a vertex attribute for 'at'. 
 as.network.transmat<-function(x,...){
   tm<-x
@@ -179,17 +174,17 @@ as.network.transmat<-function(x,...){
 #' @title plot transmat infection tree in one of several styles
 #' @method plot transmat
 #' @export plot.transmat
-#' @param tm a \code{\link{transmat}} object to be plotted
+#' @param x a \code{\link{transmat}} object to be plotted
 #' @param style character name of plot style
 #' @param ...  additional plot arguments to be passed to lower-level plot functions (plot.network, etc)
 #' @description plots the infection tree described in a transmat object in one of several styles: phylogentic tree, a network, a hierarchical tree (gv_tree'), or a transmissionTimeline. The gv_tree and transmissionTimeline require that the ndtv package is installed, and the gv_tree requires a working Graphviz installation on the system. \code{\link[ndtv]{install.graphviz}}. All of the options are essentially wrappers to other plot calls with some appropriate preset arguments. 
-plot.transmat<-function(tm,style=c('phylo','network','gv_tree','transmissionTimeline'),...){
+plot.transmat<-function(x,style=c('phylo','network','gv_tree','transmissionTimeline'),...){
   style<-match.arg(style)
   switch (style,
-    'transmissionTimeline' = tm_cascade_plot(tm,...),
-    'network' = plot.network(as.network(tm),...),
-    'gv_tree' = tm_gv_tree_plot(tm,...),
-    'phylo' = plot(as.phylo(tm),show.node.label = TRUE,cex=0.7)
+    'transmissionTimeline' = tm_cascade_plot(x,...),
+    'network' = plot.network(as.network(x),...),
+    'gv_tree' = tm_gv_tree_plot(x,...),
+    'phylo' = plot(as.phylo(x),show.node.label = TRUE,cex=0.7)
   )
 }
 
@@ -210,8 +205,8 @@ plot(net,coord=treeCoords,displaylabels=TRUE,jitter=FALSE,label.pos=2,label.cex=
 }
 
 #' @export is.transmat
+#' @aliases transmat
 #' @rdname get_transmat
-#' @param x an object to be tested for the transmat class
 is.transmat<-function(x){
   if ('transmat'%in%class(x)){
     return(TRUE)
