@@ -36,11 +36,11 @@ Imports:
     ergm (>= 3.2.4),
     foreach,
     network (>= 1.12.0),
-    RColorBrewer,
-    ape
+    RColorBrewer
 Suggests:
     knitr,
     ndtv,
     shiny,
-    testthat
+    testthat,
+    ape
 VignetteBuilder: knitr

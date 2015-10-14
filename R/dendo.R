@@ -64,11 +64,10 @@ as.phylo.tPath<-function(path){
 #' @title convert transmat infection tree into a phylo object
 #' @method as.phylo transmat
 #' @export as.phylo.transmat
-#' @import ape
 #' @param x An object of class \code{'transmat'}, the output from \code{\link{get_transmat}}. 
 #' @param collapse.singles logical, (default TRUE) should \code{\link{collapse.singles}} be called on the phylo object before it is returned? (many infection trees contain intermediate nodes that must be removed to be a proper phylo tree)
 #' @param ...  further arguments (unused)
-#' @details Converts the edgelist matrix in the transmat object into a phylo object by doing the required reordering and labeling.  Converts the infection timing into elapsed time from parents infections to be appropriate for the \code{edge.length} component.  If the the tree does not have the appropriate structure to be a phylogenetic tree (chains of multiple vertices with no branches) the branches will be collapsed (depending on \code{collapse.singles}) and labeled with the latest vertex in the chain. 
+#' @details Converts the edgelist matrix in the transmat object into a phylo object by doing the required reordering and labeling.  Converts the infection timing into elapsed time from parents' infections to be appropriate for the \code{edge.length} component.  If the the tree does not have the appropriate structure to be a phylogenetic tree (chains of multiple vertices with no branches) the branches will be collapsed (depending on \code{collapse.singles}) and labeled with the latest vertex in the chain. Does not yet support infection trees with multiple sources.
 #' @examples
 #' library(EpiModel)
 #' nw <- network.initialize(n = 100, directed = FALSE)
@@ -82,9 +81,10 @@ as.phylo.tPath<-function(path){
 #' control <- control.net(type = "SI", nsteps = 40, nsims = 1, verbose.int = 0, use.pids = FALSE)
 #' mod1 <- netsim(est1, param, init, control)
 #' tm <- get_transmat(mod1)
-#' tmPhylo<-as.phylo(tm)
+#' tmPhylo<-as.phylo.transmat(tm)
 #' plot(tmPhylo,show.node.label = TRUE,cex=0.7)
 as.phylo.transmat<-function(x,collapse.singles=TRUE,...){
+  requireNamespace('ape')
   tm<-x
   el<-cbind(tm$inf,tm$sus)
 
@@ -109,10 +109,8 @@ as.phylo.transmat<-function(x,collapse.singles=TRUE,...){
 
   # find roots (infectors that never appear as sus)
   v<-setdiff(unique(el[,1]),unique(el[,2]))
-  multiPhylo<-FALSE
   if(length(v)>1){
     warning('found multiple trees ',length(v),' not yet supported')
-    multiPhylo<-TRUE
   }
   # figure out the ordering such that the root
   # node will be one larger than the tip nodes
@@ -146,7 +144,7 @@ as.phylo.transmat<-function(x,collapse.singles=TRUE,...){
   out[['edge.length']]<-durations
   class(out)<-'phylo'
   if(collapse.singles){
-    out<-collapse.singles(out)
+    out<-ape::collapse.singles(out)
   }
   return(out)
 }
@@ -181,11 +179,14 @@ as.network.transmat<-function(x,...){
 #' @title plot transmat infection tree in one of several styles
 #' @method plot transmat
 #' @export plot.transmat
-#' @description plots the infection tree described in a transmat object in one of several styles: phylogentic tree, a network, a hierarchical tree, or a diffusion timeline. 
-plot.transmat<-function(tm,style=c('phylo','network','gv_tree','diffusion'),...){
+#' @param tm a \code{\link{transmat}} object to be plotted
+#' @param style character name of plot style
+#' @param ...  additional plot arguments to be passed to lower-level plot functions (plot.network, etc)
+#' @description plots the infection tree described in a transmat object in one of several styles: phylogentic tree, a network, a hierarchical tree (gv_tree'), or a transmissionTimeline. The gv_tree and transmissionTimeline require that the ndtv package is installed, and the gv_tree requires a working Graphviz installation on the system. \code{\link[ndtv]{install.graphviz}}. All of the options are essentially wrappers to other plot calls with some appropriate preset arguments. 
+plot.transmat<-function(tm,style=c('phylo','network','gv_tree','transmissionTimeline'),...){
   style<-match.arg(style)
   switch (style,
-    'diffusion' = tm_cascade_plot(tm,...),
+    'transmissionTimeline' = tm_cascade_plot(tm,...),
     'network' = plot.network(as.network(tm),...),
     'gv_tree' = tm_gv_tree_plot(tm,...),
     'phylo' = plot(as.phylo(tm),show.node.label = TRUE,cex=0.7)
@@ -200,15 +201,17 @@ tm_gv_tree_plot<-function(tm,...){
 requireNamespace('ndtv')
 net<-as.network(tm)
 # calculate coords for transmission tree
-treeCoords<-network.layout.animate.Graphviz(net,
+treeCoords<-ndtv::network.layout.animate.Graphviz(net,
                                             layout.par=list(gv.engine='dot',
                                                             gv.args='-Granksep=2'))
-treeCoords<-layout.normalize(treeCoords,keep.aspect.ratio = FALSE)
+treeCoords<-ndtv::layout.normalize(treeCoords,keep.aspect.ratio = FALSE)
 # peek at it
-plot(net,coord=treeCoords,displaylabels=TRUE,jitter=FALSE,label.pos=2,label.cex=0.6,...)
+plot(net,coord=treeCoords,displaylabels=TRUE,jitter=FALSE,label.pos=2,label.cex=0.7,...)
 }
 
 #' @export is.transmat
+#' @rdname get_transmat
+#' @param x an object to be tested for the transmat class
 is.transmat<-function(x){
   if ('transmat'%in%class(x)){
     return(TRUE)
@@ -217,11 +220,11 @@ is.transmat<-function(x){
   }
 }
 
-# TODO: this needs to be replaced to call the diffusionTimeline version in ndtv, once that is release. 
+# TODO: this needs to be replaced to call the diffusionTimeline version in ndtv, once that is released to cran. 
 tm_cascade_plot<-function(x,time.attr,
-                          label = network.vertex.names(x),
-                          displaylabels = !missing(label),
-                          label.cex = 1,
+                          label = NULL,
+                          displaylabels = TRUE,
+                          label.cex = 0.7,
                           label.col = 1,
                           vertex.col = 2,
                           vertex.sides = 50,
@@ -242,27 +245,21 @@ tm_cascade_plot<-function(x,time.attr,
   el<-as.edgelist(net)
   times<-get.vertex.attribute(net,time.attr)
   coords<-matrix(0,nrow=network.size(net),ncol=2)
-  if(is.tPath(x)){
-    # assume tPath for now
-    yBin<-net%v%'gsteps'
-    coords<-cbind(times,yBin)
-    yBin<-0
-  } else {
-    # find roots
-    v<-setdiff(unique(el[,1]),unique(el[,2]))
-   
-    visited<-integer(0)
-    while(length(v)>0){
-      visited<-c(visited,v[1])
-      coords[v[1],]<-c(times[v[1]],yBin)
-      kids<-el[el[,1]==v[1],2] # look up kids on the edgelist
-      # in case network was not actually a tree, make sure we don't loop forever
-      if(any(kids%in%visited)){
-        stop('vertex was revisited: network does not appear to be a tree')
-      }
-      v<-c(v[-1],kids)
-      yBin<-yBin+1
+  yBin<-0
+  # find roots
+  v<-setdiff(unique(el[,1]),unique(el[,2]))
+ 
+  visited<-integer(0)
+  while(length(v)>0){
+    visited<-c(visited,v[1])
+    coords[v[1],]<-c(times[v[1]],yBin)
+    kids<-el[el[,1]==v[1],2] # look up kids on the edgelist
+    # in case network was not actually a tree, make sure we don't loop forever
+    if(any(kids%in%visited)){
+      stop('vertex was revisited: network does not appear to be a tree')
     }
+    v<-c(v[-1],kids)
+    yBin<-yBin+1
   }
   op <- par(no.readonly = TRUE)
   
@@ -270,7 +267,9 @@ tm_cascade_plot<-function(x,time.attr,
   plot(coords,pch=NA,xlab=xlab,ylab=ylab,...)
   
   # expand the various plot parameters using network defaults
-  
+  if(is.null(label)){
+    label<-network.vertex.names(net)
+  }
   vertex.col<- plotArgs.network(net,'vertex.col',vertex.col)
   vertex.sides<-plotArgs.network(net,'vertex.sides',vertex.sides)
   # remap vertex.sides to a vertex pch approximation
@@ -286,7 +285,7 @@ tm_cascade_plot<-function(x,time.attr,
   labels <-plotArgs.network(net,'labels',labels)
   label.col<-plotArgs.network(net,'label.col',label.col)
   label.pos<-4
-  label.cex<-plotArgs.network(net,'label.col',label.col)
+  label.cex<-plotArgs.network(net,'label.cex',label.cex)
   
   # plot the 'edges'
   if(nrow(el)>0){
@@ -308,7 +307,7 @@ tm_cascade_plot<-function(x,time.attr,
       
     # plot labels
     if(displaylabels){
-      text(coords[,1],coords[,2],labels = labels,col=label.col,pos=label.pos,cex=label.cex)
+      text(coords[,1],coords[,2],labels = label,col=label.col,pos=label.pos,cex=label.cex)
     }
   }
   par(op)

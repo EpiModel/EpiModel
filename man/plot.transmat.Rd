@@ -5,9 +5,16 @@
 \title{plot transmat infection tree in one of several styles}
 \usage{
 \method{plot}{transmat}(tm, style = c("phylo", "network", "gv_tree",
-  "diffusion"), ...)
+  "transmissionTimeline"), ...)
+}
+\arguments{
+\item{tm}{a \code{\link{transmat}} object to be plotted}
+
+\item{style}{character name of plot style}
+
+\item{...}{additional plot arguments to be passed to lower-level plot functions (plot.network, etc)}
 }
 \description{
-plots the infection tree described in a transmat object in one of several styles: phylogentic tree, a network, a hierarchical tree, or a diffusion timeline.
+plots the infection tree described in a transmat object in one of several styles: phylogentic tree, a network, a hierarchical tree (gv_tree'), or a transmissionTimeline. The gv_tree and transmissionTimeline require that the ndtv package is installed, and the gv_tree requires a working Graphviz installation on the system. \code{\link[ndtv]{install.graphviz}}. All of the options are essentially wrappers to other plot calls with some appropriate preset arguments.
 }
 

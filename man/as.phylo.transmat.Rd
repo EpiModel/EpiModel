@@ -17,7 +17,7 @@
 convert transmat infection tree into a phylo object
 }
 \details{
-Converts the edgelist matrix in the transmat object into a phylo object by doing the required reordering and labeling.  Converts the infection timing into elapsed time from parents infections to be appropriate for the \code{edge.length} component.  If the the tree does not have the appropriate structure to be a phylogenetic tree (chains of multiple vertices with no branches) the branches will be collapsed (depending on \code{collapse.singles}) and labeled with the latest vertex in the chain.
+Converts the edgelist matrix in the transmat object into a phylo object by doing the required reordering and labeling.  Converts the infection timing into elapsed time from parents' infections to be appropriate for the \code{edge.length} component.  If the the tree does not have the appropriate structure to be a phylogenetic tree (chains of multiple vertices with no branches) the branches will be collapsed (depending on \code{collapse.singles}) and labeled with the latest vertex in the chain. Does not yet support infection trees with multiple sources.
 }
 \examples{
 library(EpiModel)
@@ -31,7 +31,7 @@ init <- init.net(i.num = 1)
 control <- control.net(type = "SI", nsteps = 40, nsims = 1, verbose.int = 0, use.pids = FALSE)
 mod1 <- netsim(est1, param, init, control)
 tm <- get_transmat(mod1)
-tmPhylo<-as.phylo(tm)
+tmPhylo<-as.phylo.transmat(tm)
 plot(tmPhylo,show.node.label = TRUE,cex=0.7)
 }
 
