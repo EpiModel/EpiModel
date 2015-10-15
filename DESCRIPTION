@@ -39,7 +39,7 @@ Imports:
     RColorBrewer
 Suggests:
     knitr,
-    ndtv,
+    ndtv (>= 0.7),
     shiny,
     testthat,
     ape

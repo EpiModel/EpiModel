@@ -177,13 +177,15 @@ as.network.transmat<-function(x,...){
 #' @method plot transmat
 #' @export plot.transmat
 #' @param x a \code{\link{transmat}} object to be plotted
-#' @param style character name of plot style
+#' @param style character name of plot style. One of "phylo", "network", "gv_tree" or "transmissionTimeline"
 #' @param ...  additional plot arguments to be passed to lower-level plot functions (plot.network, etc)
-#' @description plots the infection tree described in a transmat object in one of several styles: phylogentic tree, a network, a hierarchical tree (gv_tree'), or a transmissionTimeline. The gv_tree and transmissionTimeline require that the ndtv package is installed, and the gv_tree requires a working Graphviz installation on the system. \code{\link[ndtv]{install.graphviz}}. All of the options are essentially wrappers to other plot calls with some appropriate preset arguments. 
+#' @description plots the infection tree described in a \code{\link{transmat}} object in one of several styles: phylogentic tree, an un-rooted network, a hierarchical tree ("gv_tree"), or a transmissionTimeline. 
+#' @details The phylo plot requires the \code{ape} package. The gv_tree and \code{\link[ndtv]{transmissionTimeline}} require that the \code{ndtv} package is installed, and the gv_tree requires a working Graphviz installation on the system. \code{\link[ndtv]{install.graphviz}}. All of the options are essentially wrappers to other plot calls with some appropriate preset arguments. 
+#' @seealso \code{\link{plot.network}},\code{\link[ape]{plot.phylo}},\code{\link[ndtv]{transmissionTimeline}}
 plot.transmat<-function(x,style=c('phylo','network','gv_tree','transmissionTimeline'),...){
   style<-match.arg(style)
   switch (style,
-    'transmissionTimeline' = tm_cascade_plot(x,...),
+    'transmissionTimeline' = tm_transsmissionTree_plot(x,...),
     'network' = plot.network(as.network(x),...),
     'gv_tree' = tm_gv_tree_plot(x,...),
     'phylo' = plot(as.phylo.transmat(x),show.node.label = TRUE,cex=0.7)
@@ -217,96 +219,9 @@ is.transmat<-function(x){
   }
 }
 
-# TODO: this needs to be replaced to call the diffusionTimeline version in ndtv, once that is released to cran. 
-tm_cascade_plot<-function(x,time.attr,
-                          label = NULL,
-                          displaylabels = TRUE,
-                          label.cex = 0.7,
-                          label.col = 1,
-                          vertex.col = 2,
-                          vertex.sides = 50,
-                          edge.col = 'gray',
-                          edge.lty = 1,
-                          edge.lwd = 1,
-                          xlab='time',
-                          ylab='generation',
-                          ...){
-  net<-as.network(x)
-  if(missing(time.attr)){
-    if(is.transmat(x)){
-      time.attr<-'at'
-    } else if ('tPath'%in%class(x)){
-      time.attr<-'tdist'
-    }
-  }
-  el<-as.edgelist(net)
-  times<-get.vertex.attribute(net,time.attr)
-  coords<-matrix(0,nrow=network.size(net),ncol=2)
-  yBin<-0
-  # find roots
-  v<-setdiff(unique(el[,1]),unique(el[,2]))
- 
-  visited<-integer(0)
-  while(length(v)>0){
-    visited<-c(visited,v[1])
-    coords[v[1],]<-c(times[v[1]],yBin)
-    kids<-el[el[,1]==v[1],2] # look up kids on the edgelist
-    # in case network was not actually a tree, make sure we don't loop forever
-    if(any(kids%in%visited)){
-      stop('vertex was revisited: network does not appear to be a tree')
-    }
-    v<-c(v[-1],kids)
-    yBin<-yBin+1
-  }
-  op <- par(no.readonly = TRUE)
-  
-  # set up the plotting window
-  plot(coords,pch=NA,xlab=xlab,ylab=ylab,...)
-  
-  # expand the various plot parameters using network defaults
-  if(is.null(label)){
-    label<-network.vertex.names(net)
-  }
-  vertex.col<- plotArgs.network(net,'vertex.col',vertex.col)
-  vertex.sides<-plotArgs.network(net,'vertex.sides',vertex.sides)
-  # remap vertex.sides to a vertex pch approximation
-  vertex.pch <- sapply(vertex.sides,function(sides){
-    switch (as.character(sides),
-    '3' = 24,
-    '4' = 22,
-    '50' = 21)})
-  
-  edge.col<-plotArgs.network(net,'edge.col',edge.col)
-  edge.lty <- plotArgs.network(net,'edge.lty',edge.lty)
-  edge.lwd <- plotArgs.network(net,'edge.lwd',edge.lwd)
-  labels <-plotArgs.network(net,'labels',labels)
-  label.col<-plotArgs.network(net,'label.col',label.col)
-  label.pos<-4
-  label.cex<-plotArgs.network(net,'label.cex',label.cex)
-  
-  # plot the 'edges'
-  if(nrow(el)>0){
-    lapply(1:nrow(el),function(e){
-      lines(c(coords[el[e,1],1],
-            coords[el[e,2],1]), # xcoords
-            c(coords[el[e,1],2],
-            coords[el[e,2],2]),# ycoords
-            col=edge.col[e],
-            lwd=edge.lwd[e],
-            lty=edge.lty[e]
-          )
-    })
-  }
-  
-  # plot the vertices
-  if(network.size(net)>0){
-    points(coords[,1],coords[,2],pch=21,bg=vertex.col)
-      
-    # plot labels
-    if(displaylabels){
-      text(coords[,1],coords[,2],labels = label,col=label.col,pos=label.pos,cex=label.cex)
-    }
-  }
-  par(op)
+# this is a wrapper to load the namespace and call the transmissionTimeline
+tm_transsmissionTree_plot<-function(x,...){
+  requireNamespace('ndtv')
+  ndtv::transmissionTimeline(x,...)
 }
 
