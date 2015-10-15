@@ -1,60 +1,5 @@
 # classes for working with dendograms from ape
 
-# require(tsna)
-# data(moodyContactSim)
-# v10path<-tPath(moodyContactSim,v=10,start=0)
-# 
-# getChildren(10,17,v10path$previous)
-# plot(v10path)
-# as.phylo.tPath(moodyContactSim,v10path)
-# this is a draft version (used with tsna code above)
-as.phylo.tPath<-function(path){
-  
-  el<-cbind(path$previous,1:length(path$previous))
-  # remove the seed row
-  el<-el[path$previous!=0,]
-  #phylo doesn't like "non-splitting" nodes that have no children
-  singleKidNodes<-as.numeric(names(which(table(el[,1])==1)))
-  if (length(singleKidNodes)>0){
-    singleKidsRows<-which(el[,1]==singleKidNodes)
-    warning('found vertices ',paste(singleKidNodes,collapse=','), ' that create "non-splitting" phylo nodes')
-    #el<-el[-singleKidsRows,,drop=FALSE]
-  }
-  
-  origNodes<-unique(el[,1])
-  origTips<-setdiff(el[,2],origNodes)
-  
-  phyloTips<-1:length(origTips)
-  phyloNodes<-rep(NA,length(origNodes))
-  # figure out the ordering such that the root
-  # node will be one larger than the tip nodes
-  v<-which(path$previous==0)
-  phyloN<-length(phyloTips)+1
-  while(length(v)>0){
-    origIndex<-which(origNodes==v[1])
-    if(length(origIndex)>0){
-      phyloNodes[origIndex]<-phyloN
-      phyloN<-phyloN+1
-    }
-    kids<-which(path$previous==v[1])
-    v<-c(v[-1],kids)
-  }
-  
-  elTips<-el[,2]%in%origTips
-  # translate the edgelist to the new ids
-  el[elTips,2]<-phyloTips[match(el[elTips,2],origTips)]
-  el[!elTips,2]<-phyloNodes[match(el[!elTips,2],origNodes)]
-  el[,1]<-phyloNodes[match(el[,1],origNodes)]
-  
-  out<-list()
-  out[['edge']]<-el
-  out[['Nnode']]<-length(phyloNodes)  # number of non-tip nodes
-  out[['tip.label']]<-origTips
-  out[['node.label']]<-origNodes
-  class(out)<-'phylo'
-  return(out)
-}
-
 #' @title convert transmat infection tree into a phylo object
 #' @method as.phylo transmat
 #' @export as.phylo.transmat
@@ -179,7 +124,7 @@ as.network.transmat<-function(x,...){
 #' @param x a \code{\link{transmat}} object to be plotted
 #' @param style character name of plot style. One of "phylo", "network", "gv_tree" or "transmissionTimeline"
 #' @param ...  additional plot arguments to be passed to lower-level plot functions (plot.network, etc)
-#' @description plots the infection tree described in a \code{\link{transmat}} object in one of several styles: phylogentic tree, an un-rooted network, a hierarchical tree ("gv_tree"), or a transmissionTimeline. 
+#' @description plots the infection tree described in a \code{\link{transmat}} object in one of several styles: phylogentic tree, an un-rooted network, a hierarchical tree, or a transmissionTimeline. 
 #' @details The phylo plot requires the \code{ape} package. The gv_tree and \code{\link[ndtv]{transmissionTimeline}} require that the \code{ndtv} package is installed, and the gv_tree requires a working Graphviz installation on the system. \code{\link[ndtv]{install.graphviz}}. All of the options are essentially wrappers to other plot calls with some appropriate preset arguments. 
 #' @seealso \code{\link{plot.network}},\code{\link[ape]{plot.phylo}},\code{\link[ndtv]{transmissionTimeline}}
 plot.transmat<-function(x,style=c('phylo','network','gv_tree','transmissionTimeline'),...){
