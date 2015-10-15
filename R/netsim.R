@@ -171,30 +171,3 @@ netsim <- function(x, param, init, control) {
 
 }
 
-
-#' @title Stochastic Network Models in Parallel
-#'
-#' @description Simulates stochastic network epidemic models for infectious
-#'              disease in parallel (deprecated).
-#'
-#' @inheritParams netsim
-#' @param merge If \code{TRUE}, merge parallel simulations into one \code{netsim}
-#'        object after simulation.
-#'
-#' @details
-#' This function is deprecated and has been replaced by the \code{netsim_par}
-#' function in the \code{EpiModelHPC package}.
-#'
-#' @seealso
-#' The EpiModelHPC repository may be found at \url{http://github.com/statnet/EpiModelHPC}.
-#'
-#' @keywords internal
-#' @export
-#'
-netsim_parallel <- function(x, param, init, control, merge = TRUE) {
-
-  stop("EpiModel::netsim_parallel has been deprecated.",
-       "Use EpiModelHPC::netsim_par instead.", .call = FALSE)
-
-  return(all)
-}

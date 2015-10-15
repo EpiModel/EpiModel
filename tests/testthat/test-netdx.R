@@ -117,6 +117,24 @@ test_that("Faux offset term", {
 })
 
 
+test_that("More complicated faux offset term", {
+  # skip_on_cran()
+  nw <- network.initialize(1000, directed = FALSE)
+  nw <- set.vertex.attribute(nw, "sexor",
+                             sample(c(rep(1,20), rep(2,460),
+                                      rep(3,20), rep(4,500))))
+  nw <- set.vertex.attribute(nw, "region", sample(rep(1:5,200)))
+  fit <- netest(nw,
+                formation = ~edges +
+                             nodemix("sexor", base = 1) +
+                             nodematch("region"),
+                target.stats = c(463, 0, 0, 18, 0, 6, 0, 380, 25, 0, 400),
+                coef.diss = dissolution_coefs(~offset(edges), 60))
+  dx <- netdx(fit, nsteps = 10, verbose = FALSE)
+  expect_is(dx, "netdx")
+})
+
+
 test_that("Static diagnostic simulations", {
   nw <- network.initialize(100, directed = FALSE)
   formation <- ~edges + concurrent

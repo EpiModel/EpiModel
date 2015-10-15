@@ -84,11 +84,11 @@ print.netest <- function(x, digits = 3, ...) {
   cat("\n\nModel Form")
   cat("\n-----------------------")
   cat("\nFormation: "); print(x$formation)
-  cat("Formation Targets:", x$target.stats)
-  cat("\nDissolution: "); print(x$dissolution)
-  cat("Edge Duration Target:", x$coef.diss$duration)
+  cat("Target Statistics:", x$target.stats)
   cat("\nConstraints: "); cat(paste0(as.character(x$constraints)[1],
-                                   as.character(x$constraints)[2]))
+                                     as.character(x$constraints)[2]))
+  cat("\n\nDissolution: "); cat(as.character(x$coef.diss$dissolution), sep = "")
+  cat("\nTarget Statistics:", x$coef.diss$duration)
 
   invisible()
 }
@@ -196,11 +196,12 @@ print.disscoef <- function(x, ...) {
 
   cat("Dissolution Coefficients")
   cat("\n=======================")
-  cat("\nDissolution Model: "); print(x$dissolution)
-  cat("Edge Duration:", x$duration)
+  cat("\nDissolution Model: "); cat(as.character(x$dissolution), sep = "")
+  cat("\nTarget Statistics:", x$duration)
   cat("\nCrude Coefficient:", x$coef.crude)
+  cat("\nMortality/Exit Rate:", x$d.rate)
   cat("\nAdjusted Coefficient:", x$coef.adj)
-  cat("\nDeath rate:", x$d.rate)
+
   invisible()
 }
 

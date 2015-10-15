@@ -205,7 +205,8 @@ as.data.frame.icm <- function(x, row.names = NULL, optional = FALSE,
       stop("Must specify qval as single value between 0 and 1", call. = FALSE)
     }
     for (i in seq_along(x$epi)) {
-      df[, i + 1] <- apply(x$epi[[i]], 1, quantile, probs = qval, na.rm = TRUE)
+      df[, i + 1] <- apply(x$epi[[i]], 1, quantile, probs = qval,
+                           na.rm = TRUE, names = FALSE)
     }
   }
 
