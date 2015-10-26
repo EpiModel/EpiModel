@@ -92,7 +92,7 @@ shinyServer(function(input, output, session) {
                       value = input$conc.target / input$num * 100,
                       min = 0,
                       max = 50,
-                      step = 10)
+                      step = 5)
   })
 
   coef.diss <- reactive({

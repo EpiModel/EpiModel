@@ -71,8 +71,7 @@ navbarPage(title = NULL, windowTitle = "EpiModel: Network Models",
                       hr(),
                       h4(tags$u("Specification")),
                       h4("Method 1 (Summary Stat Targets)"),
-                      helpText("Note: A mean degree greater than one implies
-                               some level of concurrency."),
+
                       sliderInput("meandeg",
                                   label = "Mean Degree",
                                   value = 0.5,
@@ -89,12 +88,16 @@ navbarPage(title = NULL, windowTitle = "EpiModel: Network Models",
                                   choices = c("Concurrency not included in model",
                                               "Target % concurrency")),
                       conditionalPanel("input.conc == 'Target % concurrency'",
+                                       helpText("Note: A mean degree greater than one always
+                                                implies some level of concurrency. The model
+                                                will not be run if concurrency is too low for
+                                                the chosen mean degree."),
                                        sliderInput("percConc",
                                                    "Percent of nodes with concurrent partners",
                                                    value = 10,
                                                    min = 0,
                                                    max = 50,
-                                                   step = 10,
+                                                   step = 5,
                                                    post = "%")),
                       hr(),
                       h4("Method 2 (Model and NW Stat Targets)"),
