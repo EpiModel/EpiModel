@@ -10,7 +10,7 @@ library(EpiModel)
 
 shinyUI(
 navbarPage(title = NULL, windowTitle = "EpiModel: Network Models",
-  tabPanel("Details",
+  tabPanel("About",
 
       column(6, offset = 1,
            h2("Stochastic Network Models with EpiModel", style = "color: #445555;"),
@@ -47,7 +47,7 @@ navbarPage(title = NULL, windowTitle = "EpiModel: Network Models",
              and R24HD042828 (NICHD).")
              )
            ),
-  tabPanel("Model Estimation",
+  tabPanel("Network Model Estimation",
            tagList(
              tags$head(
                tags$link(rel = "stylesheet", type = "text/css", href = "style.css")
@@ -57,7 +57,7 @@ navbarPage(title = NULL, windowTitle = "EpiModel: Network Models",
              column(4,
                     br(),
                     wellPanel(
-                      h4("Model Estimation"),
+                      h4(tags$u("Network Model Estimation")),
 
                       actionButton("runMod", "Fit Model & Run Diagnostics",
                                    style = "margin-bottom: 10px;"),
@@ -69,7 +69,10 @@ navbarPage(title = NULL, windowTitle = "EpiModel: Network Models",
                       ),
 
                       hr(),
-                      h4("Model Specification: Method 1"),
+                      h4(tags$u("Specification")),
+                      h4("Method 1 (Summary Stat Targets)"),
+                      helpText("Note: A mean degree greater than one implies
+                               some level of concurrency."),
                       sliderInput("meandeg",
                                   label = "Mean Degree",
                                   value = 0.5,
@@ -83,7 +86,7 @@ navbarPage(title = NULL, windowTitle = "EpiModel: Network Models",
                                   max = 100),
                       selectInput("conc",
                                   label = "Concurrency Rule",
-                                  choices = c("No concurrency specified",
+                                  choices = c("Concurrency not included in model",
                                               "Target % concurrency")),
                       conditionalPanel("input.conc == 'Target % concurrency'",
                                        sliderInput("percConc",
@@ -94,7 +97,7 @@ navbarPage(title = NULL, windowTitle = "EpiModel: Network Models",
                                                    step = 10,
                                                    post = "%")),
                       hr(),
-                      h4("Model Specification: Method 2"),
+                      h4("Method 2 (Model and NW Stat Targets)"),
                       fluidRow(
                         column(7, selectInput("formation",
                                               label = "Formation Formula",
@@ -187,7 +190,7 @@ navbarPage(title = NULL, windowTitle = "EpiModel: Network Models",
              column(4,
                br(),
                wellPanel(
-                 h4("Epidemic Simulation"),
+                 h4(tags$u("Epidemic Simulation")),
                  actionButton("runEpi", label = "Simulate Epidemic",
                               style = "margin-bottom: 10px"),
                  helpText("Click the button above after changing model",
@@ -325,7 +328,7 @@ navbarPage(title = NULL, windowTitle = "EpiModel: Network Models",
                                                                 "Standard Deviations",
                                                                 "Simulations"))),
                                  conditionalPanel("input.datasel == 'Simulations'",
-                                        column(4,
+                                        column(3,
                                                uiOutput("simnoControl"))),
                                  column(3,
                                         numericInput(inputId = "tabdig",
