@@ -7,9 +7,13 @@
 \method{as.phylo}{transmat}(x, collapse.singles = TRUE, ...)
 }
 \arguments{
-\item{x}{An object of class \code{'transmat'}, the output from \code{\link{get_transmat}}.}
+\item{x}{An object of class \code{'transmat'}, the output from
+\code{\link{get_transmat}}.}
 
-\item{collapse.singles}{logical, (default TRUE) should \code{\link[ape]{collapse.singles}} be called on the phylo object before it is returned? (many infection trees contain intermediate nodes that must be removed to be a proper phylo tree)}
+\item{collapse.singles}{logical, (default TRUE) should
+\code{\link[ape]{collapse.singles}} be called on the phylo object
+before it is returned? (many infection trees contain intermediate
+nodes that must be removed to be a proper phylo tree)}
 
 \item{...}{further arguments (unused)}
 }
@@ -17,7 +21,14 @@
 convert transmat infection tree into a phylo object
 }
 \details{
-Converts the edgelist matrix in the transmat object into a phylo object by doing the required reordering and labeling.  Converts the infection timing into elapsed time from parents' infections to be appropriate for the \code{edge.length} component.  If the the tree does not have the appropriate structure to be a phylogenetic tree (chains of multiple vertices with no branches) the branches will be collapsed (depending on \code{collapse.singles}) and labeled with the latest vertex in the chain. Does not yet support infection trees with multiple sources.
+Converts the edgelist matrix in the transmat object into a phylo object by
+doing the required reordering and labeling.  Converts the infection timing into
+elapsed time from parents' infections to be appropriate for the
+\code{edge.length} component.  If the the tree does not have the appropriate
+structure to be a phylogenetic tree (chains of multiple vertices with no
+branches) the branches will be collapsed (depending on \code{collapse.singles})
+and labeled with the latest vertex in the chain. Does not yet support infection
+trees with multiple sources.
 }
 \examples{
 library(EpiModel)

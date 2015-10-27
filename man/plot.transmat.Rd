@@ -2,7 +2,7 @@
 % Please edit documentation in R/dendo.R
 \name{plot.transmat}
 \alias{plot.transmat}
-\title{plot transmat infection tree in one of several styles}
+\title{Plot transmat infection tree in one of several styles}
 \usage{
 \method{plot}{transmat}(x, style = c("phylo", "network", "gv_tree",
   "transmissionTimeline"), ...)
@@ -10,17 +10,26 @@
 \arguments{
 \item{x}{a \code{\link{transmat}} object to be plotted}
 
-\item{style}{character name of plot style. One of "phylo", "network", "gv_tree" or "transmissionTimeline"}
+\item{style}{character name of plot style. One of "phylo", "network", "gv_tree"
+or "transmissionTimeline"}
 
-\item{...}{additional plot arguments to be passed to lower-level plot functions (plot.network, etc)}
+\item{...}{additional plot arguments to be passed to lower-level plot
+       functions (plot.network, etc)}
 }
 \description{
-plots the infection tree described in a \code{\link{transmat}} object in one of several styles: phylogentic tree, an un-rooted network, a hierarchical tree ("gv_tree"), or a transmissionTimeline.
+Plots the infection tree described in a \code{\link{transmat}}
+             object in one of several styles: phylogentic tree, an un-rooted
+             network, a hierarchical tree, or a transmissionTimeline.
 }
 \details{
-The phylo plot requires the \code{ape} package. The gv_tree and \code{\link[ndtv]{transmissionTimeline}} require that the \code{ndtv} package is installed, and the gv_tree requires a working Graphviz installation on the system. \code{\link[ndtv]{install.graphviz}}. All of the options are essentially wrappers to other plot calls with some appropriate preset arguments.
+The phylo plot requires the \code{ape} package. The gv_tree and
+\code{\link[ndtv]{transmissionTimeline}} require that the \code{ndtv} package
+is installed, and the gv_tree requires a working Graphviz installation on the
+system. \code{\link[ndtv]{install.graphviz}}. All of the options are essentially
+wrappers to other plot calls with some appropriate preset arguments.
 }
 \seealso{
-\code{\link{plot.network}},\code{\link[ape]{plot.phylo}},\code{\link[ndtv]{transmissionTimeline}}
+\code{\link{plot.network}},\code{\link[ape]{plot.phylo}},
+\code{\link[ndtv]{transmissionTimeline}}
 }
 
