@@ -2,12 +2,12 @@
 % Please edit documentation in R/dendo.R
 \name{as.phylo.transmat}
 \alias{as.phylo.transmat}
-\title{convert transmat infection tree into a phylo object}
+\title{Convert transmat infection tree into a phylo object}
 \usage{
 \method{as.phylo}{transmat}(x, collapse.singles = TRUE, ...)
 }
 \arguments{
-\item{x}{An object of class \code{'transmat'}, the output from
+\item{x}{An object of class \code{"transmat"}, the output from
 \code{\link{get_transmat}}.}
 
 \item{collapse.singles}{logical, (default TRUE) should
@@ -18,7 +18,7 @@ nodes that must be removed to be a proper phylo tree)}
 \item{...}{further arguments (unused)}
 }
 \description{
-convert transmat infection tree into a phylo object
+Convert transmat infection tree into a phylo object
 }
 \details{
 Converts the edgelist matrix in the transmat object into a phylo object by
@@ -31,18 +31,22 @@ and labeled with the latest vertex in the chain. Does not yet support infection
 trees with multiple sources.
 }
 \examples{
-library(EpiModel)
+set.seed(10)
 nw <- network.initialize(n = 100, directed = FALSE)
 formation <- ~edges
 target.stats <- 50
 coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
+
 est1 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
+
 param <- param.net(inf.prob = 0.5)
 init <- init.net(i.num = 1)
-control <- control.net(type = "SI", nsteps = 40, nsims = 1, verbose.int = 0, use.pids = FALSE)
+control <- control.net(type = "SI", nsteps = 40, nsims = 1, verbose = FALSE,
+                       use.pids = FALSE)
+
 mod1 <- netsim(est1, param, init, control)
 tm <- get_transmat(mod1)
-tmPhylo<-as.phylo.transmat(tm)
-plot(tmPhylo,show.node.label = TRUE,cex=0.7)
+tmPhylo <- as.phylo(tm)
+plot(tmPhylo, show.node.label = TRUE, cex = 0.7)
 }
 

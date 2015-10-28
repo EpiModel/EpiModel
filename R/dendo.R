@@ -19,8 +19,9 @@
 #' and labeled with the latest vertex in the chain. Does not yet support infection
 #' trees with multiple sources.
 #'
-#' @method as.phylo transmat
-#' @export
+#' @S3method as.phylo transmat
+#' @importFrom ape as.phylo
+#' @export as.phylo.transmat
 #'
 #' @examples
 #' set.seed(10)
@@ -38,12 +39,11 @@
 #'
 #' mod1 <- netsim(est1, param, init, control)
 #' tm <- get_transmat(mod1)
-#' tmPhylo <- as.phylo.transmat(tm)
+#' tmPhylo <- as.phylo(tm)
 #' plot(tmPhylo, show.node.label = TRUE, cex = 0.7)
 #'
 as.phylo.transmat <- function(x, collapse.singles = TRUE, ...) {
 
-  requireNamespace("ape")
   tm <- x
   el <- cbind(tm$inf,tm$sus)
 
@@ -108,7 +108,7 @@ as.phylo.transmat <- function(x, collapse.singles = TRUE, ...) {
 
   class(out) <- "phylo"
   if (collapse.singles == TRUE) {
-    out <- ape::collapse.singles(out)
+    out <- collapse.singles(out)
   }
   return(out)
 }
