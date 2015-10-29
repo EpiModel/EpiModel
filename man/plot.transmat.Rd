@@ -4,7 +4,7 @@
 \alias{plot.transmat}
 \title{Plot transmat infection tree in one of several styles}
 \usage{
-\method{plot}{transmat}(x, style = c("phylo", "network", "gv_tree",
+\method{plot}{transmat}(x, style = c("phylo", "network",
   "transmissionTimeline"), ...)
 }
 \arguments{
@@ -23,13 +23,12 @@ Plots the infection tree described in a \code{\link{transmat}}
 }
 \details{
 The phylo plot requires the \code{ape} package. The gv_tree and
-\code{\link[ndtv]{transmissionTimeline}} require that the \code{ndtv} package
+\code{ndtv::transmissionTimeline} require that the \code{ndtv} package
 is installed, and the gv_tree requires a working Graphviz installation on the
-system. \code{\link[ndtv]{install.graphviz}}. All of the options are essentially
+system. \code{ndtv::install.graphviz}. All of the options are essentially
 wrappers to other plot calls with some appropriate preset arguments.
 }
 \seealso{
-\code{\link{plot.network}},\code{\link[ape]{plot.phylo}},
-\code{\link[ndtv]{transmissionTimeline}}
+\code{\link{plot.network}},\code{\link[ape]{plot.phylo}}
 }
 

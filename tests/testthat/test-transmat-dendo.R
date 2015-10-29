@@ -34,7 +34,7 @@ test_that('as.phylo.transmat',{
 
 
 test_that('as.network.transmat',{
-  net<-as.network.transmat(tm)
+  net<-as.network(tm)
   expect_equal(network.size(net),54)
   expect_equal(list.edge.attributes(net),c("actRate","at","finalProb", "infDur","na","transProb"))
   expect_equal(list.vertex.attributes(net),c("at","na","vertex.names"))
@@ -43,7 +43,7 @@ test_that('as.network.transmat',{
 test_that('plot.transmat',{
   plot(tm) #phylogram default
   plot(tm,style = 'network')
-  plot(tm,style='gv_tree')
+  # plot(tm,style='gv_tree')
   plot(tm,style='transmissionTimeline')
 })
 

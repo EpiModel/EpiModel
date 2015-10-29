@@ -19,8 +19,7 @@
 #' and labeled with the latest vertex in the chain. Does not yet support infection
 #' trees with multiple sources.
 #'
-#' @method as.phylo transmat
-#' @export
+#' @export as.phylo.transmat
 #'
 #' @examples
 #' set.seed(10)
@@ -43,7 +42,6 @@
 #'
 as.phylo.transmat <- function(x, collapse.singles = TRUE, ...) {
 
-  requireNamespace("ape")
   tm <- x
   el <- cbind(tm$inf,tm$sus)
 
@@ -165,19 +163,18 @@ as.network.transmat <- function(x, ...){
 #'        functions (plot.network, etc)
 #'
 #' @details The phylo plot requires the \code{ape} package. The gv_tree and
-#' \code{\link[ndtv]{transmissionTimeline}} require that the \code{ndtv} package
+#' \code{ndtv::transmissionTimeline} require that the \code{ndtv} package
 #' is installed, and the gv_tree requires a working Graphviz installation on the
-#' system. \code{\link[ndtv]{install.graphviz}}. All of the options are essentially
+#' system. \code{ndtv::install.graphviz}. All of the options are essentially
 #' wrappers to other plot calls with some appropriate preset arguments.
 #'
 #' @export
 #' @method plot transmat
 #'
-#' @seealso \code{\link{plot.network}},\code{\link[ape]{plot.phylo}},
-#' \code{\link[ndtv]{transmissionTimeline}}
+#' @seealso \code{\link{plot.network}},\code{\link[ape]{plot.phylo}}
 #'
 plot.transmat <- function(x,
-                          style=c("phylo", "network", "gv_tree", "transmissionTimeline"),
+                          style=c("phylo", "network", "transmissionTimeline"),
                           ...) {
 
   style <- match.arg(style)
@@ -185,7 +182,7 @@ plot.transmat <- function(x,
   switch(style,
     "transmissionTimeline" = tm_transsmissionTree_plot(x, ...),
     "network" = plot.network(as.network(x), ...),
-    "gv_tree" = tm_gv_tree_plot(x, ...),
+    # "gv_tree" = tm_gv_tree_plot(x, ...),
     "phylo" = plot(as.phylo.transmat(x), show.node.label = TRUE, cex = 0.7)
   )
 
@@ -196,7 +193,6 @@ plot.transmat <- function(x,
 tm_gv_tree_plot <- function(tm, ...) {
 
   # assumes graphviz is installed
-  requireNamespace("ndtv")
   net <- as.network(tm)
 
   # calculate coords for transmission tree
@@ -223,7 +219,6 @@ is.transmat <- function(x) {
 
 # this is a wrapper to load the namespace and call the transmissionTimeline
 tm_transsmissionTree_plot <- function(x, ...) {
-  requireNamespace("ndtv")
   ndtv::transmissionTimeline(x, ...)
 }
 
