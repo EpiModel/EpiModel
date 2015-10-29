@@ -121,6 +121,7 @@
 #' @importFrom stats complete.cases quantile rbinom rgeom sd setNames simulate
 #'             supsmu terms.formula update
 #' @importFrom utils head tail
+#' @importFrom ape as.phylo collapse.singles
 #'
 #' @docType package
 #' @keywords package
