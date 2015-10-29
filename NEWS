@@ -2,6 +2,10 @@ Version 1.2.2
 ------------------------------------------------------------------------------
 
 NEW FEATURES
+* New translation and plotting functions for temporal transmission chains measured
+  in stochastic network models. These include a dendogram using methods from the
+  `ape` package and a transmission timeline from the `ndtv` package. See the help
+  files for the `as.phylo.transmat` and `plot.transmat` functions.
 * Added a Shiny application for stochastic network models. This may be accessed
   from within the package with `epiweb(class = "net")`. It is also hosted online
   at http://statnet.shinyapps.io/epinet/
