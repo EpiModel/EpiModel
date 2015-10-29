@@ -1,6 +1,6 @@
 Package: EpiModel
 Version: 1.2.2
-Date: 2015-09-25
+Date: 2015-10-29
 Title: Mathematical Modeling of Infectious Disease
 Description: Tools for simulating mathematical models of infectious disease.
     Epidemic model classes include deterministic compartmental models,
@@ -18,7 +18,9 @@ Authors@R: c(person("Samuel", "Jenness",
     person("Emily", "Beylerian",
     role=c("ctb"), email="ebey@uw.edu"),
     person("Li", "Wang",
-    role=c("ctb"), email="lxwang@uw.edu"))
+    role=c("ctb"), email="lxwang@uw.edu"),
+    person("Skye", "Bender-deMoll",
+    role=c("ctb"), email="skyebend@uw.edu"))
 License: GPL-2
 URL: http://epimodel.org/
 BugReports: https://github.com/statnet/EpiModel/issues
