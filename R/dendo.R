@@ -38,11 +38,10 @@
 #'
 #' mod1 <- netsim(est1, param, init, control)
 #' tm <- get_transmat(mod1)
-#' tmPhylo <- as.phylo(tm)
+#' tmPhylo <- as.phylo.transmat(tm)
 #' plot(tmPhylo, show.node.label = TRUE, cex = 0.7)
 #'
 as.phylo.transmat <- function(x, collapse.singles = TRUE, ...) {
-
   tm <- x
   el <- cbind(tm$inf,tm$sus)
 
@@ -158,15 +157,14 @@ as.network.transmat <- function(x, ...){
 #'              network, a hierarchical tree, or a transmissionTimeline.
 #'
 #' @param x a \code{\link{transmat}} object to be plotted
-#' @param style character name of plot style. One of "phylo", "network", "gv_tree"
+#' @param style character name of plot style. One of "phylo", "network",
 #'        or "transmissionTimeline"
 #' @param ...  additional plot arguments to be passed to lower-level plot
 #'        functions (plot.network, etc)
 #'
-#' @details The phylo plot requires the \code{ape} package. The gv_tree and
-#' \code{ndtv::transmissionTimeline} require that the \code{ndtv} package
-#' is installed, and the gv_tree requires a working Graphviz installation on the
-#' system. \code{ndtv::install.graphviz}. All of the options are essentially
+#' @details The phylo plot requires the \code{ape} package. The
+#' \code{ndtv::transmissionTimeline} requires that the \code{ndtv} package
+#' is installed. All of the options are essentially
 #' wrappers to other plot calls with some appropriate preset arguments.
 #'
 #' @export
@@ -220,6 +218,7 @@ is.transmat <- function(x) {
 
 # this is a wrapper to load the namespace and call the transmissionTimeline
 tm_transsmissionTree_plot <- function(x, ...) {
+  requireNamespace('ndtv')
   ndtv::transmissionTimeline(x, ...)
 }
 

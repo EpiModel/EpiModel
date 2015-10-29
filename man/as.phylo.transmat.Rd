@@ -46,7 +46,7 @@ control <- control.net(type = "SI", nsteps = 40, nsims = 1, verbose = FALSE,
 
 mod1 <- netsim(est1, param, init, control)
 tm <- get_transmat(mod1)
-tmPhylo <- as.phylo(tm)
+tmPhylo <- as.phylo.transmat(tm)
 plot(tmPhylo, show.node.label = TRUE, cex = 0.7)
 }
 

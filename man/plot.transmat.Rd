@@ -10,7 +10,7 @@
 \arguments{
 \item{x}{a \code{\link{transmat}} object to be plotted}
 
-\item{style}{character name of plot style. One of "phylo", "network", "gv_tree"
+\item{style}{character name of plot style. One of "phylo", "network",
 or "transmissionTimeline"}
 
 \item{...}{additional plot arguments to be passed to lower-level plot
@@ -22,10 +22,9 @@ Plots the infection tree described in a \code{\link{transmat}}
              network, a hierarchical tree, or a transmissionTimeline.
 }
 \details{
-The phylo plot requires the \code{ape} package. The gv_tree and
-\code{ndtv::transmissionTimeline} require that the \code{ndtv} package
-is installed, and the gv_tree requires a working Graphviz installation on the
-system. \code{ndtv::install.graphviz}. All of the options are essentially
+The phylo plot requires the \code{ape} package. The
+\code{ndtv::transmissionTimeline} requires that the \code{ndtv} package
+is installed. All of the options are essentially
 wrappers to other plot calls with some appropriate preset arguments.
 }
 \seealso{
