@@ -47,7 +47,7 @@ shinyServer(function(input, output, session) {
 
   #link concurrency dropdown and formation formula and nwstats to track
   observeEvent(input$conc, {
-    form <- ifelse(input$conc == "No concurrency specified",
+    form <- ifelse(input$conc == "Concurrency not included in model",
                    yes = "~edges",
                    no = "~edges + concurrent")
     updateSelectInput(session, "formation",
@@ -57,11 +57,11 @@ shinyServer(function(input, output, session) {
   })
   observeEvent(input$formation, {
     conc <- ifelse(input$formation == "~edges",
-                   yes = "No concurrency specified",
+                   yes = "Concurrency not included in model",
                    no = "Target % concurrency")
     updateSelectInput(session, "conc",
                       label = "Concurrency Rule",
-                      choices = c("No concurrency specified",
+                      choices = c("Concurrency not included in model",
                                   "Target % concurrency"),
                       selected = conc)
   })
@@ -92,7 +92,7 @@ shinyServer(function(input, output, session) {
                       value = input$conc.target / input$num * 100,
                       min = 0,
                       max = 50,
-                      step = 10)
+                      step = 5)
   })
 
   coef.diss <- reactive({
@@ -432,12 +432,11 @@ shinyServer(function(input, output, session) {
   output$simnoControl <- renderUI({
     input$runEpi
     maxsims <- isolate(input$epi.nsims)
-    sliderInput(inputId = "datasim",
+    numericInput(inputId = "datasim",
                 label = strong("Simulation Number"),
-                min = 1,
-                max = maxsims,
                 value = 1,
-                step = 1)
+                min = 1,
+                max = maxsims)
   })
   output$outData <- renderDataTable({
     if (input$datasel == "Means") {
