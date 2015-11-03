@@ -17,15 +17,17 @@ nodes that must be removed to be a proper phylo tree)}
 
 \item{...}{further arguments (unused)}
 }
+\description{
+Converts the edgelist matrix in the transmat object into a phylo
+             object by doing the required reordering and labeling.
+}
 \details{
-Converts the edgelist matrix in the transmat object into a phylo object by
-doing the required reordering and labeling.  Converts the infection timing into
-elapsed time from parents' infections to be appropriate for the
-\code{edge.length} component.  If the the tree does not have the appropriate
-structure to be a phylogenetic tree (chains of multiple vertices with no
-branches) the branches will be collapsed (depending on \code{collapse.singles})
-and labeled with the latest vertex in the chain. Does not yet support infection
-trees with multiple sources.
+Converts the infection timing into elapsed time from parents' infections to be
+appropriate for the \code{edge.length} component.  If the the tree does not
+have the appropriate structure to be a phylogenetic tree (chains of multiple
+vertices with no branches) the branches will be collapsed (depending on
+\code{collapse.singles}) and labeled with the latest vertex in the chain. Does
+not yet support infection trees with multiple sources.
 }
 \examples{
 set.seed(10)
