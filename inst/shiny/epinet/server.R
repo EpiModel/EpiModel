@@ -36,6 +36,12 @@ shinyServer(function(input, output, session) {
                        value = input$num * input$meandeg / 2,
                        step = 0.01)
   })
+  observeEvent(input$num, {
+    updateNumericInput(session, "edge.target",
+                       label = "Target: edges",
+                       value = input$num * input$meandeg / 2,
+                       step = 0.01)
+  })
   observeEvent(input$edge.target, {
     updateNumericInput(session, "meandeg",
                        label = "Mean Degree",
@@ -82,6 +88,11 @@ shinyServer(function(input, output, session) {
 
   #link percent concurrent with concurrent target
   observeEvent(input$percConc, {
+    updateNumericInput(session, "conc.target",
+                       label = "Target: concurrent",
+                       value = input$percConc * input$num / 100)
+  })
+  observeEvent(input$num, {
     updateNumericInput(session, "conc.target",
                        label = "Target: concurrent",
                        value = input$percConc * input$num / 100)
