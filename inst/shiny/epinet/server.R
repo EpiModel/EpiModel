@@ -17,6 +17,39 @@ shinyServer(function(input, output, session) {
     network.initialize(n = input$num, directed = FALSE)
   })
 
+  lowestconc <- reactive({
+    n <- input$num
+    e <- input$edge.target
+    s <- 0
+    conc <- 0
+    if(e > n/2){
+      if(e <= n-1){
+        # can put all edges on one node
+        conc <- 1
+      } else {
+        # e >= n
+        # one node has been filled
+        # first extra edge creates two concurrent nodes
+        conc <- 3
+        leftovers <- e - n
+        if(leftovers > 0){
+          s <- 1
+          count <- 0
+          for(i in seq(leftovers)){
+            if(s+1 == count){
+              s <- s + 1
+              count <- 0
+            }
+            count <- count + 1
+          }
+        }
+        conc <- conc + s
+      }
+    }
+
+    conc/n
+  })
+
   #link duration slider and numeric input
   observeEvent(input$meandur, {
     updateNumericInput(session, "dur",
@@ -101,7 +134,7 @@ shinyServer(function(input, output, session) {
     updateSliderInput(session, "percConc",
                       label = "Percent of nodes with concurrent partners",
                       value = input$conc.target / input$num * 100,
-                      min = 0,
+                      min = lowestconc()*100,
                       max = 50,
                       step = 5)
   })
@@ -209,6 +242,16 @@ shinyServer(function(input, output, session) {
 # Output objects ----------------------------------------------------------
 
   ## netdx page
+  output$percConcSlider <- renderUI({
+    sliderInput("percConc",
+                "Percent of nodes with concurrent partners",
+                value = 10,
+                min = lowestconc()*100,
+                max = 50,
+                step = 5,
+                post = "%")
+  })
+
   output$dxplot <- renderPlot({
     input$runMod
     par(mar = c(5, 4, 2, 2))

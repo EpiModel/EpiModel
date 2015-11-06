@@ -69,8 +69,8 @@ navbarPage(title = NULL, windowTitle = "EpiModel: Network Models",
                       ),
 
                       hr(),
-                      h4(tags$u("Specification")),
-                      h4("Method 1 (Summary Stat Targets)"),
+                      h4(tags$u("Specification: Method 1")),
+                      h4("Summary Stat Targets"),
 
                       sliderInput("meandeg",
                                   label = "Mean Degree",
@@ -92,15 +92,11 @@ navbarPage(title = NULL, windowTitle = "EpiModel: Network Models",
                                                 implies some level of concurrency. The model
                                                 will not be run if concurrency is too low for
                                                 the chosen mean degree."),
-                                       sliderInput("percConc",
-                                                   "Percent of nodes with concurrent partners",
-                                                   value = 10,
-                                                   min = 0,
-                                                   max = 50,
-                                                   step = 5,
-                                                   post = "%")),
+                                       uiOutput("percConcSlider")
+                                       ),
                       hr(),
-                      h4("Method 2 (Model and NW Stat Targets)"),
+                      h4(tags$u("Specification: Method 2")),
+                      h4("Model and NW Stat Targets"),
                       fluidRow(
                         column(7, selectInput("formation",
                                               label = "Formation Formula",
