@@ -33,17 +33,9 @@ shinyServer(function(input, output, session) {
         conc <- 3
         leftovers <- e - n
         if(leftovers > 0){
-          s <- 1
-          count <- 0
-          for(i in seq(leftovers)){
-            if(s+1 == count){
-              s <- s + 1
-              count <- 0
-            }
-            count <- count + 1
-          }
+          moreconc <- floor((-1 + sqrt(1 + 8*leftovers))/2)
         }
-        conc <- conc + s
+        conc <- conc + moreconc
       }
     }
 
