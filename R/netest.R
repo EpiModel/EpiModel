@@ -309,3 +309,73 @@ diss_check <- function(formation, dissolution){
   }
 
 }
+
+
+#' @title Adjust Dissolution Component of Network Model Fit
+#'
+#' @description Adjusts the dissolution component of an dynamic ERGM fit using
+#'              the \code{netest} function with the edges dissolution approximation
+#'              method.
+#'
+#' @param old.netest An object of class \code{netest}, from the \code{\link{netest}}
+#'        function.
+#' @param new.coef.diss An object of class \code{disscoef}, from the
+#'        \code{\link{dissolution_coefs}} function.
+#'
+#' @details
+#' Fitting an ERGM is a computationally intensive process when the model includes
+#' dyadic dependent terms. With the edges dissolution approximation method of
+#' Carnegie et al, the coefficients for a temporal ERGM are approximated by fitting
+#' a static ERGM and adjusting the formation coefficients to account for edge
+#' dissolution. This function provides a very efficient method to adjust the
+#' coefficients of that model when one wants to use a different dissolution model;
+#' a typical use case may be to fit several different models with different
+#' average edge durations as targets. The example below exhibits that case.
+#'
+#' @export
+#'
+#' @examples
+#' nw <- network.initialize(1000, directed = FALSE)
+#'
+#' # Two dissolutions: an average duration of 300 versus 200
+#' diss.300 <- dissolution_coefs(~offset(edges), 300, 0.001)
+#' diss.200 <- dissolution_coefs(~offset(edges), 200, 0.001)
+#'
+#' # Fit the two reference models
+#' est300 <- netest(nw = nw,
+#'                 formation = ~edges,
+#'                 target.stats = c(500),
+#'                 coef.diss = diss.300)
+#'
+#' est200 <- netest(nw = nw,
+#'                 formation = ~edges,
+#'                 target.stats = c(500),
+#'                 coef.diss = diss.200)
+#'
+#' # Alternatively, update the 300 model with the 200 coefficients
+#' est200.compare <- update_dissolution(est300, diss.200)
+#'
+#' identical(est200$coef.form, est200.compare$coef.form)
+#'
+update_dissolution <- function(old.netest, new.coef.diss) {
+
+  if (class(old.netest) != "netest") {
+    stop("old.netest must be an object of class netest", call. = FALSE)
+  }
+  if (class(new.coef.diss) != "disscoef") {
+    stop("new.coef.diss must be an object of class disscoef", call. = FALSE)
+  }
+  if (old.netest$edapprox != TRUE) {
+    stop("Edges dissolution approximation must be used for this adjustment", call. = FALSE)
+  }
+
+  out <- old.netest
+
+  l.cd <- length(new.coef.diss$coef.crude)
+  out$coef.form[1:l.cd] <- out$coef.form[1:l.cd] + out$coef.diss$coef.crude
+  out$coef.form[1:l.cd] <- out$coef.form[1:l.cd] - new.coef.diss$coef.crude
+
+  out$coef.diss <- new.coef.diss
+
+  return(out)
+}
