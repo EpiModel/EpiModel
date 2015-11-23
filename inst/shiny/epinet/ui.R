@@ -69,8 +69,8 @@ navbarPage(title = NULL, windowTitle = "EpiModel: Network Models",
                       ),
 
                       hr(),
-                      h4(tags$u("Specification: Method 1")),
-                      h4("Summary Stat Targets"),
+                      h4("Specification: Method 1", style = "margin-bottom:0;"),
+                      helpText("Summary Stat Targets", style = "margin-top:0;"),
 
                       sliderInput("meandeg",
                                   label = "Mean Degree",
@@ -95,8 +95,8 @@ navbarPage(title = NULL, windowTitle = "EpiModel: Network Models",
                                        uiOutput("percConcSlider")
                                        ),
                       hr(),
-                      h4(tags$u("Specification: Method 2")),
-                      h4("Model and NW Stat Targets"),
+                      h4("Specification: Method 2", style = "margin-bottom:0;"),
+                      helpText("Model and NW Stat Targets", style = "margin-top:0;"),
                       fluidRow(
                         column(7, selectInput("formation",
                                               label = "Formation Formula",
