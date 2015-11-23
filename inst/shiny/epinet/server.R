@@ -38,6 +38,14 @@ shinyServer(function(input, output, session) {
         conc <- conc + moreconc
       }
     }
+    if(e > .3 * n){
+      # add buffer 10%
+      conc <- conc + (.1 * n)
+      if(e > .5 * n){
+        #add buffer 10% for md over 1
+        conc <- conc + (.1 * n)
+      }
+    }
 
     conc/n
   })
