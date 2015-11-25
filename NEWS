@@ -1,3 +1,11 @@
+Version 1.2.3
+------------------------------------------------------------------------------
+
+NEW FEATURES
+* The stochastic network model Shiny application now features adaptive concurrency
+  levels with ERGMs including that network statistic.
+
+
 Version 1.2.2
 ------------------------------------------------------------------------------
 
