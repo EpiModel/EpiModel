@@ -17,6 +17,39 @@ shinyServer(function(input, output, session) {
     network.initialize(n = input$num, directed = FALSE)
   })
 
+  lowestconc <- reactive({
+    n <- input$num
+    e <- input$edge.target
+    s <- 0
+    conc <- 0
+    if(e > n/2){
+      if(e <= n-1){
+        # can put all edges on one node
+        conc <- 1
+      } else {
+        # e >= n
+        # one node has been filled
+        # first extra edge creates two concurrent nodes
+        conc <- 3
+        leftovers <- e - n
+        if(leftovers > 0){
+          moreconc <- floor((-1 + sqrt(1 + 8*leftovers))/2)
+        }
+        conc <- conc + moreconc
+      }
+    }
+    if(e > .3 * n){
+      # add buffer 10%
+      conc <- conc + (.1 * n)
+      if(e > .5 * n){
+        #add buffer 10% for md over 1
+        conc <- conc + (.1 * n)
+      }
+    }
+
+    conc/n
+  })
+
   #link duration slider and numeric input
   observeEvent(input$meandur, {
     updateNumericInput(session, "dur",
@@ -35,6 +68,12 @@ shinyServer(function(input, output, session) {
                        label = "Target: edges",
                        value = input$num * input$meandeg / 2,
                        step = 0.1)
+  })
+  observeEvent(input$num, {
+    updateNumericInput(session, "edge.target",
+                       label = "Target: edges",
+                       value = input$num * input$meandeg / 2,
+                       step = 0.01)
   })
   observeEvent(input$edge.target, {
     updateNumericInput(session, "meandeg",
@@ -86,11 +125,16 @@ shinyServer(function(input, output, session) {
                        label = "Target: concurrent",
                        value = input$percConc * input$num / 100)
   })
+  observeEvent(input$num, {
+    updateNumericInput(session, "conc.target",
+                       label = "Target: concurrent",
+                       value = input$percConc * input$num / 100)
+  })
   observeEvent(input$conc.target, {
     updateSliderInput(session, "percConc",
                       label = "Percent of nodes with concurrent partners",
                       value = input$conc.target / input$num * 100,
-                      min = 0,
+                      min = lowestconc()*100,
                       max = 50,
                       step = 5)
   })
@@ -198,6 +242,16 @@ shinyServer(function(input, output, session) {
 # Output objects ----------------------------------------------------------
 
   ## netdx page
+  output$percConcSlider <- renderUI({
+    sliderInput("percConc",
+                "Percent of nodes with concurrent partners",
+                value = 10,
+                min = lowestconc()*100,
+                max = 50,
+                step = 5,
+                post = "%")
+  })
+
   output$dxplot <- renderPlot({
     input$runMod
     par(mar = c(5, 4, 2, 2))
