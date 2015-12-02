@@ -325,16 +325,17 @@ init_status.net <- function(dat) {
 #'
 init_pids <- function(nw, prefixes=c("F", "M")) {
 
-  if (nw$gal$bipartite == FALSE) {
-    nw <- initialize.pids(nw)
-  } else {
-    t0.pids <- c(paste0(prefixes[1], 1:length(modeids(nw, 1))),
-                 paste0(prefixes[2], 1:length(modeids(nw, 2))))
+  if (is.null(nw$gal$vertex.pid)) {
+    if (nw$gal$bipartite == FALSE) {
+      nw <- initialize.pids(nw)
+    } else {
+      t0.pids <- c(paste0(prefixes[1], 1:length(modeids(nw, 1))),
+                   paste0(prefixes[2], 1:length(modeids(nw, 2))))
 
-    nw <- set.network.attribute(nw, "vertex.pid", "vertex.names")
-    nw <- set.vertex.attribute(nw, "vertex.names", t0.pids)
+      nw <- set.network.attribute(nw, "vertex.pid", "vertex.names")
+      nw <- set.vertex.attribute(nw, "vertex.names", t0.pids)
+    }
   }
-
 
   return(nw)
 }
