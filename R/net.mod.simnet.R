@@ -15,30 +15,19 @@
 #'
 sim_nets <- function(x, nw, nsteps, control) {
 
-  if (x$edapprox == FALSE) {
-    suppressWarnings(
-      sim <- simulate(nw,
-                      time.slices = nsteps,
-                      monitor = control$nwstats.formula,
-                      nsim = 1,
-                      time.start = 1,
-                      time.offset = 0,
-                      control = control$set.control.stergm))
-  } else {
-    suppressWarnings(
-      sim <- simulate(nw,
-                      formation = x$formation,
-                      dissolution = x$coef.diss$dissolution,
-                      coef.form = x$coef.form,
-                      coef.diss = x$coef.diss$coef.crude,
-                      time.slices = nsteps,
-                      time.start = 1,
-                      time.offset = 0,
-                      constraints = x$constraints,
-                      monitor = control$nwstats.formula,
-                      nsim = 1,
-                      control = control$set.control.stergm))
-  }
+  suppressWarnings(
+    sim <- simulate(nw,
+                    formation = x$formation,
+                    dissolution = x$coef.diss$dissolution,
+                    coef.form = x$coef.form,
+                    coef.diss = x$coef.diss$coef.crude,
+                    time.slices = nsteps,
+                    time.start = 1,
+                    time.offset = 0,
+                    constraints = x$constraints,
+                    monitor = control$nwstats.formula,
+                    nsim = 1,
+                    control = control$set.control.stergm))
 
   return(sim)
 }
