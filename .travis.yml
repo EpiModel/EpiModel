@@ -2,6 +2,7 @@ language: r
 sudo: required
 
 warnings_are_errors: true
+cran: http://cran.fhcrc.org/
 
 r_packages:
  - covr
