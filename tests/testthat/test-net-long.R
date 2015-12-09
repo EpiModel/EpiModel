@@ -757,15 +757,18 @@ test_that("Extended post-simulation diagnosntic tests", {
 
   param <- param.net(inf.prob = 0.5)
   init <- init.net(i.num = 10)
-  control <- control.net(type = "SI", nsteps = 25, nsims = 1)
 
+  control <- control.net(type = "SI", nsteps = 10, nsims = 2)
   sim <- netsim(est, param, init, control)
+  plot(sim, type = "formation")
 
+  control <- control.net(type = "SI", nsteps = 10, nsims = 1)
+  sim <- netsim(est, param, init, control)
   plot(sim, type = "formation")
 
   est <- netest(nw,
-                formation = ~edges,
-                target.stats = c(50),
+                formation = ~edges + concurrent,
+                target.stats = c(50, 20),
                 coef.diss = dissolution_coefs(~offset(edges), 25))
 
   dx <- netdx(est, nsims = 5, nsteps = 100)
@@ -773,11 +776,13 @@ test_that("Extended post-simulation diagnosntic tests", {
 
   param <- param.net(inf.prob = 0.5)
   init <- init.net(i.num = 10)
-  control <- control.net(type = "SI", nsteps = 25, nsims = 1)
 
+  control <- control.net(type = "SI", nsteps = 10, nsims = 2)
   sim <- netsim(est, param, init, control)
-
   plot(sim, type = "formation")
 
+  control <- control.net(type = "SI", nsteps = 10, nsims = 1)
+  sim <- netsim(est, param, init, control)
+  plot(sim, type = "formation")
 
 })
