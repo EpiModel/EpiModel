@@ -2034,9 +2034,8 @@ plot.netsim <- function(x, type = "epi", y, popfrac, sim.lines = FALSE, sims, si
     nstats <- length(outsts)
 
     names(nwstats) <- rep("", length(nwstats))
-    data <- do.call("cbind", args = nwstats)
+    data <- as.matrix(do.call("cbind", args = nwstats))
     data <- data[, colnames(data) %in% nmstats[outsts], drop = FALSE]
-    # names(data) <- unname(sapply(names(data), function(x) gsub(".[0-9]", "", x)))
 
     ## target stats
     nwparam <- get_nwparam(x, network)
