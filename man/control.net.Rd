@@ -31,7 +31,8 @@ positive integer.}
 
 \item{depend}{If \code{TRUE}, resimulate the network at each time step. This
 occurs by default with two varieties of dependent models: if there are
-any vital dynamic parameters in the model, or if the network model
+any vital dynamic parameters in the model (or if non-standard birth or
+death modules are passed into \code{control.net}), or if the network model
 formation formula includes the "status" attribute.}
 
 \item{rec.rand}{If \code{TRUE}, use a stochastic recovery model, with the

@@ -236,7 +236,8 @@ control.icm <- function(type, nsteps, nsims = 1, rec.rand = TRUE, b.rand = TRUE,
 #' @param start For dependent simulations, time point to start up simulation.
 #' @param depend If \code{TRUE}, resimulate the network at each time step. This
 #'        occurs by default with two varieties of dependent models: if there are
-#'        any vital dynamic parameters in the model, or if the network model
+#'        any vital dynamic parameters in the model (or if non-standard birth or
+#'        death modules are passed into \code{control.net}), or if the network model
 #'        formation formula includes the "status" attribute.
 #' @param rec.rand If \code{TRUE}, use a stochastic recovery model, with the
 #'        number of recovered at each time step a function of random draws from
@@ -426,6 +427,14 @@ control.net <- function(type, nsteps, start = 1, nsims = 1, depend, rec.rand = T
   p$bi.mods <- bi.mods
   p$user.mods <- grep(".FUN", names.dot.args, value = TRUE)
 
+
+  if (missing(depend)) {
+    arg.list <- as.list(match.call())
+    if ((!is.null(arg.list$deaths.FUN) && arg.list$deaths.FUN != "deaths.net") |
+        (!is.null(arg.list$births.FUN) && arg.list$births.FUN != "births.net")) {
+      p$depend <- TRUE
+    }
+  }
 
   ## Defaults and checks
   if (is.null(p$type)) {
