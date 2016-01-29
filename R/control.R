@@ -231,9 +231,14 @@ control.icm <- function(type, nsteps, nsims = 1, rec.rand = TRUE, b.rand = TRUE,
 #'        Susceptible-Infected-Recovered diseases, and \code{"SIS"} for
 #'        Susceptible-Infected-Susceptible diseases.
 #' @param nsteps Number of time steps to simulate the model over. This must be a
-#'        positive integer.
+#'        positive integer that is equal to the final step of a simulation. If
+#'        simulation is restarted with \code{start} argument, this number must
+#'        be at least one greater than that argument's value.
 #' @param nsims The total number of disease simulations.
 #' @param start For dependent simulations, time point to start up simulation.
+#'        For restarted simulations, this must be one greater than the final time
+#'        step in the prior simulation and must be less than the value in
+#'        \code{nsteps}.
 #' @param depend If \code{TRUE}, resimulate the network at each time step. This
 #'        occurs by default with two varieties of dependent models: if there are
 #'        any vital dynamic parameters in the model (or if non-standard birth or

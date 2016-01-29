@@ -23,9 +23,14 @@ Susceptible-Infected-Recovered diseases, and \code{"SIS"} for
 Susceptible-Infected-Susceptible diseases.}
 
 \item{nsteps}{Number of time steps to simulate the model over. This must be a
-positive integer.}
+positive integer that is equal to the final step of a simulation. If
+simulation is restarted with \code{start} argument, this number must
+be at least one greater than that argument's value.}
 
-\item{start}{For dependent simulations, time point to start up simulation.}
+\item{start}{For dependent simulations, time point to start up simulation.
+For restarted simulations, this must be one greater than the final time
+step in the prior simulation and must be less than the value in
+\code{nsteps}.}
 
 \item{nsims}{The total number of disease simulations.}
 
