@@ -7,8 +7,8 @@ Description: Tools for simulating mathematical models of infectious disease.
     stochastic agent-based, and stochastic network models. Network models use
     robust statistical methods of exponential-family random graph models (ERGMs)
     from the Statnet suite of software packages in R. Standard templates for epidemic
-    modeling in EpiModel include SI, SIR, and SIS disease types. EpiModel features
-    a broad API for easily extending these templates to address novel scentific research
+    modeling include SI, SIR, and SIS disease types. EpiModel features
+    an easy API for extending these templates to address novel scientific research
     aims.
 Maintainer: Samuel Jenness <samuel.m.jenness@emory.edu>
 Authors@R: c(person("Samuel", "Jenness",
