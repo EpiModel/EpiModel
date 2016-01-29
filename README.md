@@ -27,7 +27,7 @@ devtools::install_github("statnet/EpiModel")
   <tr>
     <td><a href="http://samueljenness.org/" target="_blank">Samuel M. Jenness</a></th>
     <td>Department of Epidemiology</th>
-    <td>University of Washington</th>
+    <td>Emory University</th>
   </tr>
   <tr>
     <td><a href="http://faculty.washington.edu/goodreau/" target="_blank">Steven M. Goodreau</a></td>
