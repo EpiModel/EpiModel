@@ -12,6 +12,8 @@ BUG FIXES
   with a full STERGM fit (`edapprox = FALSE` in the `netest` function).
 * Fixed error for stochastic network model simulations in `netest` when models
   were fit with the full STERGM method.
+* Automatically set `depend` parameter to `TRUE` in `control.net` when user
+  passes in any new birth or death modules.
 
 
 Version 1.2.2
