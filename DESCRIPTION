@@ -45,6 +45,7 @@ Imports:
 Suggests:
     knitr,
     ndtv (>= 0.7),
+    rmarkdown,
     shiny,
     testthat
 VignetteBuilder: knitr
