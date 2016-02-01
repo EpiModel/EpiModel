@@ -1,15 +1,14 @@
 ---
 title: 'EpiModel: Mathematical Modeling of Infectious Disease'
 author: "Samuel M. Jenness, Steven M. Goodreau, Martina Morris"
-date: "University of Washington, Seattle"
-output:
-  html_document:
-    theme: cerulean
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{EpiModel Introduction}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
 ---
-<!--
-%\VignetteEngine{knitr::rmarkdown}
-%\VignetteIndexEntry{EpiModel Introduction}
--->
+
 
 ```{r, echo=FALSE}
 vers <- packageVersion("EpiModel")

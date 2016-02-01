@@ -43,9 +43,9 @@ Imports:
     RColorBrewer,
     ape
 Suggests:
-    rmarkdown,
+    knitr,
     ndtv (>= 0.7),
     shiny,
     testthat
-VignetteBuilder: rmarkdown
+VignetteBuilder: knitr
 RoxygenNote: 5.0.1
