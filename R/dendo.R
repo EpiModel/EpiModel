@@ -6,19 +6,24 @@
 #'
 #' @param x An object of class \code{"transmat"}, the output from
 #'        \code{\link{get_transmat}}.
-#' @param collapse.singles logical, (default TRUE) should
-#'        \code{\link[ape]{collapse.singles}} be called on the phylo object
-#'        before it is returned? (many infection trees contain intermediate
-#'        nodes that must be removed to be a proper phylo tree)
+#' @param collapse.singles logical, DEPRECATED
 #' @param ...  further arguments (unused)
 #'
 #' @details
-#' Converts the infection timing into elapsed time from parents' infections to be
-#' appropriate for the \code{edge.length} component.  If the the tree does not
-#' have the appropriate structure to be a phylogenetic tree (chains of multiple
-#' vertices with no branches) the branches will be collapsed (depending on
-#' \code{collapse.singles}) and labeled with the latest vertex in the chain. Does
-#' not yet support infection trees with multiple sources.
+#' Converts a \code{\link{transmat}} object containing information about the history of a 
+#' simulated infection into a \code{\link{phylo}} object representation suitable for plotting
+#'  as a tree with \code{\link[ape]{plot.phylo}}.  Each infection 
+#' event becomes a 'node' (horizontal branch) in the resulting phylo tree, and each 
+#' network vertex becomes a 'tip' of the tree.  The infection events are labled with 
+#' the vertex id of the infector to make it possible to trace the path of infection.  
+#' 
+#' The infection timing information is included to position the phylo-nodes, with the
+#'  lines to the tips drawn to the max time value +1 (the transmat does not contain info
+#'  on vertex activity, so it effectively assumes all vertices are active/alive until 
+#'  the end of the simulation). The function does not yet support infection trees with multiple infection seeds
+#' 
+#' Note that in EpiModel versions <= 1.2.4, the phylo tree was constructed differently, translating network 
+#' vertices to both phylo-nodes and tips and requiring 'collapse.singles' to prune it to an appropriate branching structure.
 #'
 #' @importFrom ape as.phylo
 #' @export as.phylo.transmat
@@ -40,75 +45,92 @@
 #' mod1 <- netsim(est1, param, init, control)
 #' tm <- get_transmat(mod1)
 #' tmPhylo <- as.phylo.transmat(tm)
-#' plot(tmPhylo, show.node.label = TRUE, cex = 0.7)
+#' plot(tmPhylo, show.node.label = TRUE,
+#'               root.edge=TRUE, 
+#'               cex = 0.5)
 #'
-as.phylo.transmat <- function(x, collapse.singles = TRUE, ...) {
+as.phylo.transmat <- function(x, collapse.singles, ...) {
+  
+  # warnings if somone tries to use old args that are no longer supported
+  if(!missing(collapse.singles)){
+    warning("the 'collapse.singles' argument to as.phylo.transmat is no longer supported and will be ignored")
+  }
+  
   tm <- x
   el <- cbind(tm$inf,tm$sus)
-
-  origNodes <- unique(el[,1])
-  origTips <- setdiff(el[,2],origNodes)
-
-  phyloTips <- 1:length(origTips)
-  phyloNodes <- rep(NA,length(origNodes))
-  phylo.label <- phyloNodes  # make a list to store the labels
-
-  # store the duration of time between the infection and its parent's infection
-  durations <- sapply(1:nrow(el), function(r) {
-
-    # convert corresponding infection time to a duration rather than clock
-    parentRow <- which(el[, 2] == el[r, 1]) # find edgelist row for v's parent
-
-    #  parent will be missing if it is the root
-    if (length(parentRow) > 0) {
-      # set the time to the difference between v's infection time and v's
-      # parent's infection time
-      tm[["at"]][r] - tm[["at"]][parentRow]
-    } else {
-      tm[["at"]][r]  # assume infection started at time 0
-    }
-  })
-
+  origNodes <- unique(as.vector(el))
+  # translate ids in el to sequential integers starting from one
+  el[,1]<-match(el[,1],origNodes)
+  el[,2]<-match(el[,2],origNodes)
+  
+  maxTip<-max(el)  # need to know what phylo node ids will start
+  maxTime<-max(x$at)+1
+  # create new ids for phyloNodes
+  phyloNodes <- seq(from=maxTip+1,length.out=length(origNodes)-1)
+  Nnode<-length(phyloNodes)
+  # create labels for each phylo node based on infector id
+  phylo.label <- tm$inf
+  # this is an alternate label form like i_j
+  #phylo.label <- sapply(1:length(phyloNodes),function(r){
+  #  paste(tm[r,'inf'],tm[r,'sus'],sep='_')
+  #})  
+  
+  # set default durations
+  # since we don't know how long the graph vertices live, assume entire duration
+  durations <-rep(maxTime+1,length(phyloNodes)*2)
   # find roots (infectors that never appear as sus)
   v <- setdiff(unique(el[, 1]), unique(el[, 2]))
   if (length(v) > 1) {
     warning("found multiple trees ", length(v), " not yet supported")
   }
-  # figure out the ordering such that the root
-  # node will be one larger than the tip nodes
-
-  phyloN <- 1
-  while (length(v) > 0) {
-    origIndex <- which(origNodes == v[1])
-    if (length(origIndex) > 0) {
-      # add the element on the list of phylo nodes
-      phyloNodes[origIndex] <- phyloN + length(origTips)
-      # copy the old label to new position
-      phylo.label[phyloN] <- origNodes[origIndex]
-      phyloN <- phyloN + 1
+  
+  # create a new edgelist by stepping through the existing edgelist
+  # and creating the new links from phylo nodes to graph vertices (tips)
+  # and from phylo node to phylo node
+  # have to do this as progressive modifications
+  
+  # assume at least one xmit has occured
+  # create the phylo node linking to the first 
+  # infector and infectee
+  phyloEl <-rbind(cbind(phyloNodes[1],el[1,1]),
+                  cbind(phyloNodes[1],el[1,2]))
+  durations[1]<-maxTime-x$at[1]
+  durations[2]<-maxTime-x$at[1]
+  phyloN<-1
+  # loop over remaining rows
+  if(nrow(el)>1){
+    for(r in 2:nrow(el)){
+      # find id of infector
+      infector<-el[r,1]
+      # find the phylo row of phylo node corresponding to the infector
+      phyNRow<-which(phyloEl[,2]==infector)
+      # replace the infector with a new phylo node
+      phyloEl[phyNRow,2]<-phyloNodes[phyloN+1]
+      # link the new phylo node to the infector
+      phyloEl<-rbind(phyloEl,cbind(phyloNodes[phyloN+1],infector))
+      # link the new phylo node to the infectee
+      phyloEl<-rbind(phyloEl,cbind(phyloNodes[phyloN+1],el[r,2]))
+      
+      # update the timing on the replaced row that linked to tip
+      durations[phyNRow] <- durations[phyNRow] - (maxTime - tm[["at"]][r])
+      # add timings for new rows equal to remaining time
+      durations[nrow(phyloEl)-1]<- maxTime - tm[["at"]][r] 
+      durations[nrow(phyloEl)]<- maxTime - tm[["at"]][r] 
+      
+      # increment the phylo node counter
+      phyloN<- phyloN+1
     }
-    kids <- el[el[, 1] == v[1], 2] # look up kids on the edgelist
-    v <- c(v[-1], kids)
   }
-
-  elTips <- el[, 2] %in% origTips
-  # translate the edgelist to the new ids
-  el[elTips, 2] <- phyloTips[match(el[elTips, 2], origTips)]
-  el[!elTips, 2] <- phyloNodes[match(el[!elTips, 2], origNodes)]
-  el[, 1] <- phyloNodes[match(el[, 1], origNodes)]
-
+  # format the output
   out <- list()
-  out[["edge"]] <- el
-  out[["Nnode"]] <- length(phyloNodes)  # number of non-tip nodes
-  out[["tip.label"]] <- origTips
+  out[["edge"]] <- phyloEl
+  out[["Nnode"]] <- Nnode  # number of non-tip nodes
+  out[["tip.label"]] <- origNodes
   out[["node.label"]] <- phylo.label
-  out[["root.edge"]] <- 0 # have to assume sim started at 0
+  out[["root.edge"]] <- x$at[1] # have to assume sim started at 0
   out[["edge.length"]] <- durations
-
+  
   class(out) <- "phylo"
-  if (collapse.singles == TRUE) {
-    out <- collapse.singles(out)
-  }
   return(out)
 }
 
@@ -161,7 +183,7 @@ as.network.transmat <- function(x, ...){
 #' @param style character name of plot style. One of "phylo", "network",
 #'        or "transmissionTimeline"
 #' @param ...  additional plot arguments to be passed to lower-level plot
-#'        functions (plot.network, etc)
+#'        functions (plot.network, plot.phylo, etc)
 #'
 #' @details The phylo plot requires the \code{ape} package. The
 #' \code{ndtv::transmissionTimeline} requires that the \code{ndtv} package
@@ -183,7 +205,12 @@ plot.transmat <- function(x,
     "transmissionTimeline" = tm_transsmissionTree_plot(x, ...),
     "network" = plot.network(as.network(x), ...),
     # "gv_tree" = tm_gv_tree_plot(x, ...),
-    "phylo" = plot(as.phylo.transmat(x), show.node.label = TRUE, cex = 0.7)
+    "phylo" = plot(as.phylo.transmat(x), 
+                   show.node.label = TRUE, 
+                   root.edge=TRUE,
+                   label.offset=0.1,
+                   ...
+                   )
   )
 
 }
