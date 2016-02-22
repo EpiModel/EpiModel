@@ -22,7 +22,7 @@ if (!require("devtools")) install.packages("devtools")
 devtools::install_github("statnet/EpiModel")
 ```
 
-#### Authors
+#### Lead Authors
 <table>
   <tr>
     <td><a href="http://samueljenness.org/" target="_blank">Samuel M. Jenness</a></th>
