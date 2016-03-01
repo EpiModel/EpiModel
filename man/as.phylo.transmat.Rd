@@ -4,13 +4,15 @@
 \alias{as.phylo.transmat}
 \title{Convert transmat infection tree into a phylo object}
 \usage{
-\method{as.phylo}{transmat}(x, collapse.singles, ...)
+\method{as.phylo}{transmat}(x, collapse.singles, death.times, ...)
 }
 \arguments{
 \item{x}{An object of class \code{"transmat"}, the output from
 \code{\link{get_transmat}}.}
 
 \item{collapse.singles}{logical, DEPRECATED}
+
+\item{death.times}{optional numeric vector providing the time of death of vertices, to be used to scale the lengths of branches reaching to the tips. Index position on vector corresponds to network id.  NA indicates no death, so branch will extend to the end of the tree.}
 
 \item{...}{further arguments (unused)}
 }
@@ -27,8 +29,7 @@ network vertex becomes a 'tip' of the tree.  The infection events are labled wit
 the vertex id of the infector to make it possible to trace the path of infection.  
 
 The infection timing information is included to position the phylo-nodes, with the
- lines to the tips drawn to the max time value +1 (the transmat does not contain info
- on vertex activity, so it effectively assumes all vertices are active/alive until 
+ lines to the tips drawn to the max time value +1 (unless \code{death.times} are passed in it effectively assumes all vertices are active/alive until 
  the end of the simulation). The function does not yet support infection trees with multiple infection seeds
 
 Note that in EpiModel versions <= 1.2.4, the phylo tree was constructed differently, translating network 
