@@ -124,8 +124,7 @@ third time step. If the infected person has not recovered or exited the
 population by the fourth time step, the third element in the vector will carry
 forward until one of those occurs or the simulation ends. For further examples,
 see the NME tutorial,
-\href{http://statnet.csde.washington.edu/EpiModel/nme/d4-tut3.html}{Additional
-Modeling Topics}.
+\href{http://statnet.github.io/nme/d3-tut3.html}{Time-Varying Biology & Behavior}.
 }
 
 \section{New Modules}{
