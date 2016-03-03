@@ -7,7 +7,7 @@
 #' @param x An object of class \code{"transmat"}, the output from
 #'        \code{\link{get_transmat}}.
 #' @param collapse.singles logical, DEPRECATED
-#' @param death.times  optional numeric vector providing the time of death of vertices, to be used to scale the lengths of branches reaching to the tips. Index position on vector corresponds to network id.  NA indicates no death, so branch will extend to the end of the tree. 
+#' @param vertex.exit.times  optional numeric vector providing the time of death of vertices, to be used to scale the lengths of branches reaching to the tips. Index position on vector corresponds to network id.  NA indicates no death, so branch will extend to the end of the tree. 
 #' @param ...  further arguments (unused)
 #'
 #' @details
@@ -19,7 +19,7 @@
 #' the vertex id of the infector to make it possible to trace the path of infection.  
 #' 
 #' The infection timing information is included to position the phylo-nodes, with the
-#'  lines to the tips drawn to the max time value +1 (unless \code{death.times} are passed in it effectively assumes all vertices are active/alive until 
+#'  lines to the tips drawn to the max time value +1 (unless \code{vertex.exit.times} are passed in it effectively assumes all vertices are active/alive until 
 #'  the end of the simulation). The function does not yet support infection trees with multiple infection seeds
 #' 
 #' Note that in EpiModel versions <= 1.2.4, the phylo tree was constructed differently, translating network 
@@ -49,7 +49,7 @@
 #'               root.edge=TRUE, 
 #'               cex = 0.5)
 #'
-as.phylo.transmat <- function(x, collapse.singles, death.times, ...) {
+as.phylo.transmat <- function(x, collapse.singles, vertex.exit.times, ...) {
   
   # warnings if somone tries to use old args that are no longer supported
   if(!missing(collapse.singles)){
@@ -64,10 +64,10 @@ as.phylo.transmat <- function(x, collapse.singles, death.times, ...) {
   
   el <- cbind(tm$inf,tm$sus)
   origNodes <- unique(as.vector(el))
-  # if death.times included check that it is consistant
-  if (!missing(death.times)){
-    if(length(origNodes) > length(death.times) | any(origNodes > length(death.times))){
-      stop('Vertex ids in edgelist imply a larger network size than death.times')
+  # if vertex.exit.times included check that it is consistant
+  if (!missing(vertex.exit.times)){
+    if(length(origNodes) > length(vertex.exit.times) | any(origNodes > length(vertex.exit.times))){
+      stop('Vertex ids in edgelist imply a larger network size than vertex.exit.times')
     }
   }
   # translate ids in el to sequential integers starting from one
@@ -108,14 +108,14 @@ as.phylo.transmat <- function(x, collapse.singles, death.times, ...) {
   # infector and infectee
   phyloEl <-rbind(cbind(phyloNodes[1],el[1,1]),
                   cbind(phyloNodes[1],el[1,2]))
-  if(!missing(death.times)){ 
-    if(!is.na(death.times[origNodes[el[1,1]]])){
-      durations[1]<- death.times[origNodes[el[1,1]]] - x$at[1]
+  if(!missing(vertex.exit.times)){ 
+    if(!is.na(vertex.exit.times[origNodes[el[1,1]]])){
+      durations[1]<- vertex.exit.times[origNodes[el[1,1]]] - x$at[1]
     } else{
       durations[1]<-maxTime-x$at[1]
     }
-    if(!is.na(death.times[origNodes[el[1,2]]])){
-      durations[2]<- death.times[origNodes[el[1,2]]] - x$at[1]
+    if(!is.na(vertex.exit.times[origNodes[el[1,2]]])){
+      durations[2]<- vertex.exit.times[origNodes[el[1,2]]] - x$at[1]
     } else{
       durations[2]<-maxTime-x$at[1]
     }
@@ -142,8 +142,8 @@ as.phylo.transmat <- function(x, collapse.singles, death.times, ...) {
       durations[phyNRow] <- durations[phyNRow] - (maxTime - tm[["at"]][r])
       # add timings for new rows equal to remaining time
       durations[nrow(phyloEl)-1]<- maxTime - tm[["at"]][r]
-      if(!missing(death.times) && !is.na(death.times[origNodes[el[r,2]]])){
-        durations[nrow(phyloEl)]<- death.times[origNodes[el[r,2]]] - tm[["at"]][r] 
+      if(!missing(vertex.exit.times) && !is.na(vertex.exit.times[origNodes[el[r,2]]])){
+        durations[nrow(phyloEl)]<- vertex.exit.times[origNodes[el[r,2]]] - tm[["at"]][r] 
       } else {
         durations[nrow(phyloEl)]<- maxTime - tm[["at"]][r] 
       }
