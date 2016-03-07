@@ -160,3 +160,4 @@ test_that("init.icm setting for status.rand",{
   x <- icm(param, init, control)
   expect_is(x, "icm")
 })
+
