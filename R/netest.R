@@ -27,10 +27,6 @@
 #'        details).
 #' @param set.control.stergm Control arguments passed to simulate.stergm (see
 #'        details).
-#' @param nonconv.error If \code{TRUE}, function will error if model did not
-#'        converge after the specified number of iterations. This may be useful
-#'        in batch mode while fitting many models and there is no desire to
-#'        return to the nonconverged model object.
 #' @param verbose Print model fitting progress to console.
 #'
 #' @details
@@ -127,7 +123,7 @@
 #'
 netest <- function(nw, formation, target.stats, coef.diss, constraints,
                    coef.form = NULL, edapprox = TRUE, output = "fit",
-                   set.control.ergm, set.control.stergm, nonconv.error = FALSE,
+                   set.control.ergm, set.control.stergm,
                    verbose = FALSE) {
 
   if (missing(constraints)) {
@@ -190,20 +186,9 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
                 control = set.control.ergm,
                 verbose = verbose)
 
-    if (nonconv.error == TRUE) {
-      sl <- tail(fit$steplen.hist, 2)
-      if (all(sl == 1) == FALSE) {
-        stop("Model did not converge. Stopping due to nonconv.error setting",
-             call. = FALSE)
-      }
-    }
-
-
     coef.form <- fit$coef
     coef.form.crude <- coef.form
     if (coef.diss$coef.crude[1] > -Inf) {
-      # nwDens <- und_dens(network.size(nw), target.stats[1])
-      # coef.form[1] <- coef.form[1] - log(coef.diss$duration - nwDens/(1-nwDens))
       l.cd <- length(coef.diss$coef.crude)
       coef.form[1:l.cd] <- coef.form[1:l.cd] - coef.diss$coef.crude
     }
@@ -239,11 +224,6 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
 
   class(out) <- "netest"
   return(out)
-}
-
-
-und_dens <- function(n, edges) {
-  (2 * edges) / (n * (n - 1))
 }
 
 
