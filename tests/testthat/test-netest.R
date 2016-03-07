@@ -100,8 +100,12 @@ test_that("update_dissolution tests", {
                   coef.diss = diss.200)
 
   est200.compare <- update_dissolution(est300, diss.200)
-
   expect_true(identical(est200$coef.form, est200.compare$coef.form))
+  
+  expect_error(update_dissolution(1, diss.200), "old.netest must be an object of class netest")
+  expect_error(update_dissolution(est300, 1), "new.coef.diss must be an object of class disscoef")
+  est300$edapprox <- FALSE
+  expect_error(update_dissolution(est300, diss.200), "Edges dissolution approximation must be used")
 })
 
 # STERGM ----------------------------------------------------------------------------
