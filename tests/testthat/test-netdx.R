@@ -175,6 +175,7 @@ test_that("Parallel methods", {
 })
 
 test_that("error checking", {
+  nw <- network.initialize(25, directed = FALSE)
   est <- netest(nw, formation = ~edges, target.stats = 25,
                 coef.diss = dissolution_coefs(~offset(edges), 10, 0),
                 edapprox = TRUE, verbose = FALSE)
