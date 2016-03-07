@@ -138,3 +138,25 @@ test_that("Act rate balance works when specified to g2", {
   x <- icm(param, init, control)
   expect_is(x, "icm")
 })
+
+test_that("init.icm setting for status.rand",{
+  param <- param.icm(inf.prob = 0.2,
+                     act.rate = 0.25, rec.rate = 1/50)
+  init <- init.icm(s.num = 500, i.num = 1, status.rand = TRUE)
+  control <- control.icm(type = "SIS", nsteps = 5, nsims = 1, verbose = FALSE)
+  x <- icm(param, init, control)
+  expect_is(x, "icm")
+  
+  param <- param.icm(inf.prob = 0.2, inf.prob.g2 = 0.1,
+                     act.rate = 1, balance = "g1",
+                     rec.rate = 1/50, rec.rate.g2 = 1/50,
+                     b.rate = 1/100, b.rate.g2 = NA,
+                     ds.rate = 1/100, ds.rate.g2 = 1/100,
+                     di.rate = 1/90, di.rate.g2 = 1/90,
+                     dr.rate = 1/100, dr.rate.g2 = 1/100)
+  init <- init.icm(s.num = 500, i.num = 1, r.num = 0,
+                   s.num.g2 = 500, i.num.g2 = 1, r.num.g2 = 0, status.rand = TRUE)
+  control <- control.icm(type = "SIR", nsteps = 5, nsims = 2, verbose = FALSE)
+  x <- icm(param, init, control)
+  expect_is(x, "icm")
+})
