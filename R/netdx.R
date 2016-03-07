@@ -104,9 +104,6 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps, nwstats.formula = "forma
   dissolution <- x$coef.diss$dissolution
   coef.diss <- x$coef.diss
   constraints <- x$constraints
-  if (is.null(constraints)) {
-    constraints <- ~.
-  }
   target.stats <- x$target.stats
   edapprox <- x$edapprox
 
