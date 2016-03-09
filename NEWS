@@ -3,7 +3,8 @@ Version 1.2.5
 
 NEW FEATURES
 * Added multicore functionality to simulating stochastic network models with `netsim`. This
-  only supports single-node frameworks currently, using the `doParallel` package.
+  only supports single-node frameworks currently, using the `doParallel` package. Run models
+  in parallel by using the `ncores` parameter in `control.net`.
 * Modifications to the `as.phylo.transmat` function to construct the phylo tree with all 
   network vertices as phylo-tips and all transmissions as phylo nodes.
 
