@@ -17,7 +17,7 @@ year <- format(Sys.time(), "%Y")
 
 <br>
 
-The **EpiModel** package provides tools for building, solving, and plotting mathematical models of infectious disease in `R`. It is part of the **Statnet** suite of software for the representation and analysis of networks. **EpiModel** currently provides functionality for three classes of epidemic models and three disease types for modeling. Built-in model classes and types may be expanded by the user for new research.
+The **EpiModel** package provides tools for building, solving, and plotting mathematical models of infectious disease in `R`. For the stochastic network modeling of epidemics, it depends on the **Statnet** suite of software for the representation and analysis of networks (see http://statnet.org). **EpiModel** currently provides functionality for three classes of epidemic models and three disease types for modeling. Built-in model classes and types may be expanded by the user for new research.
 
 This vignette is a placeholder for the **EpiModel** tutorials, all hosted online and external to the package to minimize overhead and provide flexibility in updates. Everything may be found at the **EpiModel** website: http://epimodel.org/
 

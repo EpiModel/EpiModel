@@ -13,11 +13,10 @@
 #'        \code{control.net}.
 #'
 #' @details
-#' Stochastic network models move beyond stochastic individual contact models by
-#' explicitly modeling phenomena within and across edges (pairs of nodes that
-#' remain connected) over time. This enables edges to have duration, allowing for
-#' repeated transmission-related acts within the same dyad, specification of edge
-#' formation and dissolution rates, control over the temporal sequencing of
+#' Stochastic network models explicitly represent phenomena within and across edges 
+#' (pairs of nodes that remain connected) over time. This enables edges to have duration, 
+#' allowing for repeated transmission-related acts within the same dyad, specification of 
+#' edge formation and dissolution rates, control over the temporal sequencing of
 #' multiple edges, and specification of network-level features. A detailed
 #' description of these models, along with examples, is found in the
 #' the \href{http://statnet.github.io/tut/BasicNet.html}{Basic Network Models}
@@ -123,51 +122,103 @@ netsim <- function(x, param, init, control) {
     do.call(control[["verbose.FUN"]], list(control, type = "startup"))
   }
 
-
-  ### SIMULATION LOOP
-  for (s in 1:control$nsims) {
-
-    ## Initialization Module
-    if (!is.null(control[["initialize.FUN"]])) {
-      dat <- do.call(control[["initialize.FUN"]], list(x, param, init, control, s))
-    }
-
-
-    ### TIME LOOP
-    for (at in max(2, control$start):control$nsteps) {
-
-      ## Module order
-      morder <- control$module.order
-      if (is.null(morder)) {
-        lim.bi.mods <- control$bi.mods[-which(control$bi.mods %in%
-                                                c("initialize.FUN", "verbose.FUN"))]
-        morder <- c(control$user.mods, lim.bi.mods)
+  nsims <- control$nsims
+  ncores <- ifelse(nsims == 1, 1, min(parallel::detectCores(), control$ncores))
+  control$ncores <- ncores
+  
+  if (ncores == 1) {
+    for (s in 1:control$nsims) {
+      
+      ## Initialization Module
+      if (!is.null(control[["initialize.FUN"]])) {
+        dat <- do.call(control[["initialize.FUN"]], list(x, param, init, control, s))
       }
-
-      ## Evaluate modules
-      for (i in seq_along(morder)) {
-        dat <- do.call(control[[morder[i]]], list(dat, at))
+      
+      
+      ### TIME LOOP
+      for (at in max(2, control$start):control$nsteps) {
+        
+        ## Module order
+        morder <- control$module.order
+        if (is.null(morder)) {
+          lim.bi.mods <- control$bi.mods[-which(control$bi.mods %in%
+                                                  c("initialize.FUN", "verbose.FUN"))]
+          morder <- c(control$user.mods, lim.bi.mods)
+        }
+        
+        ## Evaluate modules
+        for (i in seq_along(morder)) {
+          dat <- do.call(control[[morder[i]]], list(dat, at))
+        }
+        
+        ## Verbose module
+        if (!is.null(control[["verbose.FUN"]])) {
+          do.call(control[["verbose.FUN"]], list(dat, type = "progress", s, at))
+        }
+        
       }
-
-      ## Verbose module
-      if (!is.null(control[["verbose.FUN"]])) {
-        do.call(control[["verbose.FUN"]], list(dat, type = "progress", s, at))
+      
+      # Set output
+      if (s == 1) {
+        out <- saveout.net(dat, s)
+      } else {
+        out <- saveout.net(dat, s, out)
       }
-
+      class(out) <- "netsim"
     }
-
-    # Set output
-    if (s == 1) {
-      out <- saveout.net(dat, s)
-    } else {
-      out <- saveout.net(dat, s, out)
+  }
+  
+  if (ncores > 1) {
+    doParallel::registerDoParallel(ncores)
+    
+    sout <- foreach(s = 1:nsims) %dopar% {
+    
+      control$nsims <- 1
+      control$currsim <- s
+    
+      ## Initialization Module
+      if (!is.null(control[["initialize.FUN"]])) {
+        dat <- do.call(control[["initialize.FUN"]], list(x, param, init, control, s))
+      }
+      
+      
+      ### TIME LOOP
+      for (at in max(2, control$start):control$nsteps) {
+        
+        ## Module order
+        morder <- control$module.order
+        if (is.null(morder)) {
+          lim.bi.mods <- control$bi.mods[-which(control$bi.mods %in%
+                                                  c("initialize.FUN", "verbose.FUN"))]
+          morder <- c(control$user.mods, lim.bi.mods)
+        }
+        
+        ## Evaluate modules
+        for (i in seq_along(morder)) {
+          dat <- do.call(control[[morder[i]]], list(dat, at))
+        }
+        
+        ## Verbose module
+        if (!is.null(control[["verbose.FUN"]])) {
+          do.call(control[["verbose.FUN"]], list(dat, type = "progress", s, at))
+        }
+        
+      }
+      
+      # Set output
+      out <- saveout.net(dat, s = 1)
+      class(out) <- "netsim"
+      return(out)
     }
+    
+    merged.out <- sout[[1]]
+    for (i in 2:length(sout)) {
+      merged.out <- merge(merged.out, sout[[i]], param.error = FALSE)
+    }
+    out <- merged.out
+    class(out) <- "netsim"
+  }
 
-  } # end sim loop
-
-
-  class(out) <- "netsim"
-  invisible(out)
-
+  return(out)
 }
 
