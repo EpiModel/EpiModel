@@ -13,11 +13,10 @@
 #'        \code{control.net}.
 #'
 #' @details
-#' Stochastic network models move beyond stochastic individual contact models by
-#' explicitly modeling phenomena within and across edges (pairs of nodes that
-#' remain connected) over time. This enables edges to have duration, allowing for
-#' repeated transmission-related acts within the same dyad, specification of edge
-#' formation and dissolution rates, control over the temporal sequencing of
+#' Stochastic network models explicitly represent phenomena within and across edges 
+#' (pairs of nodes that remain connected) over time. This enables edges to have duration, 
+#' allowing for repeated transmission-related acts within the same dyad, specification of 
+#' edge formation and dissolution rates, control over the temporal sequencing of
 #' multiple edges, and specification of network-level features. A detailed
 #' description of these models, along with examples, is found in the
 #' the \href{http://statnet.github.io/tut/BasicNet.html}{Basic Network Models}
