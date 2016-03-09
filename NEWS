@@ -1,3 +1,17 @@
+Version 1.2.5
+------------------------------------------------------------------------------
+
+NEW FEATURES
+* Added multicore functionality to simulating stochastic network models with `netsim`. This
+  only supports single-node frameworks currently, using the `doParallel` package.
+* Modifications to the `as.phylo.transmat` function to construct the phylo tree with all 
+  network vertices as phylo-tips and all transmissions as phylo nodes.
+
+OTHER
+* General code cleanup and improvement of package tests to increase coverage about 90%.
+
+
+
 Version 1.2.3
 ------------------------------------------------------------------------------
 
