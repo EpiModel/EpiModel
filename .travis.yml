@@ -1,18 +1,14 @@
 language: r
-sudo: required
+sudo: false
+cache: packages
 
 warnings_are_errors: true
-cran: http://cran.fhcrc.org/
 
 r_packages:
  - covr
-r_binary_packages:
- - git2r
- - httpuv
- - stringi
 
 after_success:
-  - Rscript -e 'library(covr); library(methods); covr::coveralls()'
+  - Rscript -e 'covr::coveralls()'
 
 notifications:
   email:
