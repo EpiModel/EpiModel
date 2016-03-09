@@ -1,7 +1,7 @@
 context("test netsim parallel")
 
 test_that("netsim par, 1 sim, 1 core", {
-  
+  skip_on_cran()
   nw <- network.initialize(n = 50, directed = FALSE)
   est <- netest(nw, formation = ~edges, target.stats = 24,
                 coef.diss = dissolution_coefs(~offset(edges), 10, 0),
@@ -19,7 +19,7 @@ test_that("netsim par, 1 sim, 1 core", {
 
 
 test_that("netsim par, 2 sims, 2 cores", {
-  
+  skip_on_cran()
   nw <- network.initialize(n = 50, directed = FALSE)
   est <- netest(nw, formation = ~edges, target.stats = 24,
                 coef.diss = dissolution_coefs(~offset(edges), 10, 0),
@@ -36,7 +36,7 @@ test_that("netsim par, 2 sims, 2 cores", {
 })
 
 test_that("netsim par, 1 sim, 2 cores", {
-  
+  skip_on_cran()
   nw <- network.initialize(n = 50, directed = FALSE)
   est <- netest(nw, formation = ~edges, target.stats = 24,
                 coef.diss = dissolution_coefs(~offset(edges), 10, 0),
@@ -53,7 +53,7 @@ test_that("netsim par, 1 sim, 2 cores", {
 })
 
 test_that("netsim par, 2 sims, 1 cores", {
-  
+  skip_on_cran()
   nw <- network.initialize(n = 50, directed = FALSE)
   est <- netest(nw, formation = ~edges, target.stats = 24,
                 coef.diss = dissolution_coefs(~offset(edges), 10, 0),
