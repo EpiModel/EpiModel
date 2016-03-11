@@ -104,7 +104,6 @@ mod_SI_2g_cl <- function(t, t0, parms) {
     # Derivations
     num.g1 <- s.num + i.num
     num.g2 <- s.num.g2 + i.num.g2
-    num <- num.g1 + num.g2
 
     # Act Balancing
     if (balance == "g1") {
@@ -152,7 +151,6 @@ mod_SI_2g_op <- function(t, t0, parms) {
     # Derivations
     num.g1 <- s.num + i.num
     num.g2 <- s.num.g2 + i.num.g2
-    num <- num.g1 + num.g2
 
     # Act Balancing
     if (balance == "g1") {
@@ -180,7 +178,7 @@ mod_SI_2g_op <- function(t, t0, parms) {
       b.flow.g2 <- b.rate * num.g1
     } else {
       b.flow <- b.rate * num.g1
-      b.flow.g2 <- b.rate * num.g2
+      b.flow.g2 <- b.rate.g2 * num.g2
     }
     ds.flow <- ds.rate * s.num
     ds.flow.g2 <- ds.rate.g2 * s.num.g2
@@ -284,7 +282,6 @@ mod_SIR_2g_cl <- function(t, t0, parms) {
     # Derivations
     num.g1 <- s.num + i.num + r.num
     num.g2 <- s.num.g2 + i.num.g2 + r.num.g2
-    num <- num.g1 + num.g2
 
     # Act Balancing
     if (balance == "g1") {
@@ -337,7 +334,6 @@ mod_SIR_2g_op <- function(t, t0, parms) {
     # Derivations
     num.g1 <- s.num + i.num + r.num
     num.g2 <- s.num.g2 + i.num.g2 + r.num.g2
-    num <- num.g1 + num.g2
 
     # Act Balancing
     if (balance == "g1") {
@@ -367,7 +363,7 @@ mod_SIR_2g_op <- function(t, t0, parms) {
       b.flow.g2 <- b.rate * num.g1
     } else {
       b.flow <- b.rate * num.g1
-      b.flow.g2 <- b.rate * num.g2
+      b.flow.g2 <- b.rate.g2 * num.g2
     }
     ds.flow <- ds.rate * s.num
     ds.flow.g2 <- ds.rate.g2 * s.num.g2
@@ -519,7 +515,6 @@ mod_SIS_2g_op <- function(t, t0, parms) {
     # Derivations
     num.g1 <- s.num + i.num
     num.g2 <- s.num.g2 + i.num.g2
-    num <- num.g1 + num.g2
 
     # Act Balancing
     if (balance == "g1") {
@@ -549,7 +544,7 @@ mod_SIS_2g_op <- function(t, t0, parms) {
       b.flow.g2 <- b.rate * num.g1
     } else {
       b.flow <- b.rate * num.g1
-      b.flow.g2 <- b.rate * num.g2
+      b.flow.g2 <- b.rate.g2 * num.g2
     }
     ds.flow <- ds.rate * s.num
     ds.flow.g2 <- ds.rate.g2 * s.num.g2
