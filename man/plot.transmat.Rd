@@ -14,7 +14,7 @@
 or "transmissionTimeline"}
 
 \item{...}{additional plot arguments to be passed to lower-level plot
-functions (plot.network, etc)}
+functions (plot.network, plot.phylo, etc)}
 }
 \description{
 Plots the infection tree described in a \code{\link{transmat}}
