@@ -18,9 +18,7 @@
 #' @keywords internal
 #' @export
 #'
-mcat <- function(test) {
-  cat("\n", test, " ... ", sep = "")
-}
+mcat <- function(test) { cat("\n", test, " ... ", sep = "") }
 
 
 #' @title Test the Model Output from a Network Model
@@ -48,52 +46,32 @@ test_net <- function(x) {
       if (type == "SI") {
         if (vital == FALSE) {
           test <- with(df, s.num[i] == s.num[i - 1] - si.flow[i])
-          if (test == FALSE) {
-            cat("\nFailed *s.num* at SIM", s, "TIME", i)
-          }
+          if (test == FALSE) cat("\nFailed *s.num* at SIM", s, "TIME", i)
           test <- with(df, i.num[i] == i.num[i - 1] + si.flow[i])
-          if (test == FALSE) {
-            cat("\nFailed *i.num* at SIM", s, "TIME", i)
-          }
+          if (test == FALSE) cat("\nFailed *i.num* at SIM", s, "TIME", i)
           if (modes == 2) {
             test <- with(df, s.num.m2[i] == s.num.m2[i - 1] - si.flow.m2[i])
-            if (test == FALSE) {
-              cat("\nFailed *s.num.m2* at SIM", s, "TIME", i)
-            }
+            if (test == FALSE) cat("\nFailed *s.num.m2* at SIM", s, "TIME", i)
             test <- with(df, i.num.m2[i] == i.num.m2[i - 1] + si.flow.m2[i])
-            if (test == FALSE) {
-              cat("\nFailed *i.num.m2* at SIM", s, "TIME", i)
-            }
+            if (test == FALSE) cat("\nFailed *i.num.m2* at SIM", s, "TIME", i)
           }
         }
         if (vital == TRUE) {
           test <- with(df, num[i] == num[i - 1] + b.flow[i] - ds.flow[i] - di.flow[i])
-          if (test == FALSE) {
-            cat("\nFailed *num* at SIM", s, "TIME", i)
-          }
+          if (test == FALSE) cat("\nFailed *num* at SIM", s, "TIME", i)
           test <- with(df, s.num[i] == s.num[i - 1] - si.flow[i] + b.flow[i] - ds.flow[i])
-          if (test == FALSE) {
-            cat("\nFailed *s.num* at SIM", s, "TIME", i)
-          }
+          if (test == FALSE) cat("\nFailed *s.num* at SIM", s, "TIME", i)
           test <- with(df, i.num[i] == i.num[i - 1] + si.flow[i] - di.flow[i])
-          if (test == FALSE) {
-            cat("\nFailed *i.num* at SIM", s, "TIME", i)
-          }
+          if (test == FALSE) cat("\nFailed *i.num* at SIM", s, "TIME", i)
           if (modes == 2) {
             test <- df$num.m2[i] == df$num.m2[i - 1] + df$b.flow.m2[i] -
                                     df$ds.flow.m2[i] - df$di.flow.m2[i]
-            if (test == FALSE) {
-              cat("\nFailed *num.m2* at SIM", s, "TIME", i)
-            }
+            if (test == FALSE) cat("\nFailed *num.m2* at SIM", s, "TIME", i)
             test <- df$s.num.m2[i] == df$s.num.m2[i - 1] - df$si.flow.m2[i] +
                                       df$b.flow.m2[i] - df$ds.flow.m2[i]
-            if (test == FALSE) {
-              cat("\nFailed *s.num.m2* at SIM", s, "TIME", i)
-            }
+            if (test == FALSE) cat("\nFailed *s.num.m2* at SIM", s, "TIME", i)
             test <- with(df, i.num.m2[i] == i.num.m2[i - 1] + si.flow.m2[i] - di.flow.m2[i])
-            if (test == FALSE) {
-              cat("\nFailed *i.num.m2* at SIM", s, "TIME", i)
-            }
+            if (test == FALSE) cat("\nFailed *i.num.m2* at SIM", s, "TIME", i)
           }
         }
       }
@@ -101,70 +79,42 @@ test_net <- function(x) {
       if (type == "SIR") {
         if (vital == FALSE) {
           test <- with(df, s.num[i] == s.num[i - 1] - si.flow[i])
-          if (test == FALSE) {
-            cat("\nFailed *s.num* at SIM", s, "TIME", i)
-          }
+          if (test == FALSE) cat("\nFailed *s.num* at SIM", s, "TIME", i)
           test <- with(df, i.num[i] == i.num[i - 1] + si.flow[i] - ir.flow[i])
-          if (test == FALSE) {
-            cat("\nFailed *i.num* at SIM", s, "TIME", i)
-          }
+          if (test == FALSE) cat("\nFailed *i.num* at SIM", s, "TIME", i)
           test <- with(df, r.num[i] == r.num[i - 1] + ir.flow[i])
-          if (test == FALSE) {
-            cat("\nFailed *r.num* at SIM", s, "TIME", i)
-          }
+          if (test == FALSE) cat("\nFailed *r.num* at SIM", s, "TIME", i)
           if (modes == 2) {
             test <- with(df, s.num.m2[i] == s.num.m2[i - 1] - si.flow.m2[i])
-            if (test == FALSE) {
-              cat("\nFailed *s.num.m2* at SIM", s, "TIME", i)
-            }
+            if (test == FALSE) cat("\nFailed *s.num.m2* at SIM", s, "TIME", i)
             test <- with(df, i.num.m2[i] == i.num.m2[i - 1] + si.flow.m2[i] - ir.flow.m2[i])
-            if (test == FALSE) {
-              cat("\nFailed *i.num.m2* at SIM", s, "TIME", i)
-            }
+            if (test == FALSE) cat("\nFailed *i.num.m2* at SIM", s, "TIME", i)
             test <- with(df, r.num.m2[i] == r.num.m2[i - 1] + ir.flow.m2[i])
-            if (test == FALSE) {
-              cat("\nFailed *r.num.m2* at SIM", s, "TIME", i)
-            }
+            if (test == FALSE) cat("\nFailed *r.num.m2* at SIM", s, "TIME", i)
           }
         }
         if (vital == TRUE) {
           test <- with(df, num[i] == num[i - 1] + b.flow[i] - ds.flow[i] -
                          di.flow[i] - dr.flow[i])
-          if (test == FALSE) {
-            cat("\nFailed *num* at SIM", s, "TIME", i)
-          }
+          if (test == FALSE) cat("\nFailed *num* at SIM", s, "TIME", i)
           test <- with(df, s.num[i] == s.num[i - 1] - si.flow[i] + b.flow[i] - ds.flow[i])
-          if (test == FALSE) {
-            cat("\nFailed *s.num* at SIM", s, "TIME", i)
-          }
+          if (test == FALSE) cat("\nFailed *s.num* at SIM", s, "TIME", i)
           test <- with(df, i.num[i] == i.num[i - 1] + si.flow[i] - ir.flow[i] - di.flow[i])
-          if (test == FALSE) {
-            cat("\nFailed *i.num* at SIM", s, "TIME", i)
-          }
+          if (test == FALSE) cat("\nFailed *i.num* at SIM", s, "TIME", i)
           test <- with(df, r.num[i] == r.num[i - 1] + ir.flow[i] - dr.flow[i])
-          if (test == FALSE) {
-            cat("\nFailed *r.num* at SIM", s, "TIME", i)
-          }
+          if (test == FALSE) cat("\nFailed *r.num* at SIM", s, "TIME", i)
           if (modes == 2) {
             test <- with(df, num.m2[i] == num.m2[i - 1] + b.flow.m2[i] - ds.flow.m2[i] -
                                           di.flow.m2[i] - dr.flow.m2[i])
-            if (test == FALSE) {
-              cat("\nFailed *num* at SIM", s, "TIME", i)
-            }
+            if (test == FALSE) cat("\nFailed *num* at SIM", s, "TIME", i)
             test <- with(df, s.num.m2[i] == s.num.m2[i - 1] - si.flow.m2[i] +
                            b.flow.m2[i] - ds.flow.m2[i])
-            if (test == FALSE) {
-              cat("\nFailed *s.num* at SIM", s, "TIME", i)
-            }
+            if (test == FALSE) cat("\nFailed *s.num* at SIM", s, "TIME", i)
             test <- with(df, i.num.m2[i] == i.num.m2[i - 1] + si.flow.m2[i] -
                                             ir.flow.m2[i] - di.flow.m2[i])
-            if (test == FALSE) {
-              cat("\nFailed *i.num* at SIM", s, "TIME", i)
-            }
+            if (test == FALSE) cat("\nFailed *i.num* at SIM", s, "TIME", i)
             test <- with(df, r.num.m2[i] == r.num.m2[i - 1] + ir.flow.m2[i] - dr.flow.m2[i])
-            if (test == FALSE) {
-              cat("\nFailed *r.num* at SIM", s, "TIME", i)
-            }
+            if (test == FALSE) cat("\nFailed *r.num* at SIM", s, "TIME", i)
           }
         }
       }
@@ -172,54 +122,34 @@ test_net <- function(x) {
       if (type == "SIS") {
         if (vital == FALSE) {
           test <- with(df, s.num[i] == s.num[i - 1] - si.flow[i] + is.flow[i])
-          if (test == FALSE) {
-            cat("\nFailed *s.num* at SIM", s, "TIME", i)
-          }
+          if (test == FALSE) cat("\nFailed *s.num* at SIM", s, "TIME", i)
           test <- with(df, i.num[i] == i.num[i - 1] + si.flow[i] - is.flow[i])
-          if (test == FALSE) {
-            cat("\nFailed *i.num* at SIM", s, "TIME", i)
-          }
+          if (test == FALSE) cat("\nFailed *i.num* at SIM", s, "TIME", i)
           if (modes == 2) {
             test <- with(df, s.num.m2[i] == s.num.m2[i - 1] - si.flow.m2[i] + is.flow.m2[i])
-            if (test == FALSE) {
-              cat("\nFailed *s.num.m2* at SIM", s, "TIME", i)
-            }
+            if (test == FALSE) cat("\nFailed *s.num.m2* at SIM", s, "TIME", i)
             test <- with(df, i.num.m2[i] == i.num.m2[i - 1] + si.flow.m2[i] - is.flow.m2[i])
-            if (test == FALSE) {
-              cat("\nFailed *i.num.m2* at SIM", s, "TIME", i)
-            }
+            if (test == FALSE) cat("\nFailed *i.num.m2* at SIM", s, "TIME", i)
           }
         }
         if (vital == TRUE) {
           test <- with(df, num[i] == num[i - 1] + b.flow[i] - ds.flow[i] - di.flow[i])
-          if (test == FALSE) {
-            cat("\nFailed *num* at SIM", s, "TIME", i)
-          }
+          if (test == FALSE) cat("\nFailed *num* at SIM", s, "TIME", i)
           test <- with(df, s.num[i] == s.num[i - 1] - si.flow[i] + is.flow[i] +
                          b.flow[i] - ds.flow[i])
-          if (test == FALSE) {
-            cat("\nFailed *s.num* at SIM", s, "TIME", i)
-          }
+          if (test == FALSE) cat("\nFailed *s.num* at SIM", s, "TIME", i)
           test <- with(df, i.num[i] == i.num[i - 1] + si.flow[i] - is.flow[i] - di.flow[i])
-          if (test == FALSE) {
-            cat("\nFailed *i.num* at SIM", s, "TIME", i)
-          }
+          if (test == FALSE) cat("\nFailed *i.num* at SIM", s, "TIME", i)
           if (modes == 2) {
             test <- with(df, num.m2[i] == num.m2[i - 1] + b.flow.m2[i] -
                            ds.flow.m2[i] - di.flow.m2[i])
-            if (test == FALSE) {
-              cat("\nFailed *num* at SIM", s, "TIME", i)
-            }
+            if (test == FALSE) cat("\nFailed *num* at SIM", s, "TIME", i)
             test <- with(df, s.num.m2[i] == s.num.m2[i - 1] - si.flow.m2[i] +
                            is.flow.m2[i] + b.flow.m2[i] - ds.flow.m2[i])
-            if (test == FALSE) {
-              cat("\nFailed *s.num* at SIM", s, "TIME", i)
-            }
+            if (test == FALSE) cat("\nFailed *s.num* at SIM", s, "TIME", i)
             test <- with(df, i.num.m2[i] == i.num.m2[i - 1] + si.flow.m2[i] -
                            is.flow.m2[i] - di.flow.m2[i])
-            if (test == FALSE) {
-              cat("\nFailed *i.num* at SIM", s, "TIME", i)
-            }
+            if (test == FALSE) cat("\nFailed *i.num* at SIM", s, "TIME", i)
           }
         }
       }

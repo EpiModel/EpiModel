@@ -235,6 +235,8 @@ control.icm <- function(type, nsteps, nsims = 1, rec.rand = TRUE, b.rand = TRUE,
 #'        simulation is restarted with \code{start} argument, this number must
 #'        be at least one greater than that argument's value.
 #' @param nsims The total number of disease simulations.
+#' @param ncores Number of processor cores to run multiple simulations
+#'        on, using the \code{foreach} and \code{doParallel} implementations.
 #' @param start For dependent simulations, time point to start up simulation.
 #'        For restarted simulations, this must be one greater than the final time
 #'        step in the prior simulation and must be less than the value in
@@ -393,7 +395,8 @@ control.icm <- function(type, nsteps, nsims = 1, rec.rand = TRUE, b.rand = TRUE,
 #'
 #' @export
 #'
-control.net <- function(type, nsteps, start = 1, nsims = 1, depend, rec.rand = TRUE,
+control.net <- function(type, nsteps, start = 1, nsims = 1, ncores = 1,
+                        depend, rec.rand = TRUE,
                         b.rand = TRUE, d.rand = TRUE, tea.status = TRUE,
                         attr.rules, epi.by, use.pids = TRUE, pid.prefix,
                         initialize.FUN = initialize.net, deaths.FUN = deaths.net,

@@ -249,3 +249,14 @@ test_that("DCM interventions, SIR model", {
   expect_true(length(unique(df$s.num[5:10])) == 1)
   expect_equal(df$i.num[10], 526.6549, tol = 0.0001)
 })
+
+
+
+# param, init, control --------------------------------------------------------------
+
+test_that("control checks", {
+  control <- control.dcm(type = "SI", nsteps = 10, foo = "boo")
+  expect_true(control$foo == "boo")
+  expect_error(control.dcm(type = "SI"), "Specify nsteps")
+  expect_error(control.dcm(type = "SEIR", nsteps = 10), "Specify type as")
+})

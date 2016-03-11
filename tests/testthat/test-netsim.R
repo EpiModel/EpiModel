@@ -75,3 +75,54 @@ test_that("netsim for edges only, SIR, one-mode, closed, 2 sim", {
   plot(mod, type = "network")
   test_net(mod)
 })
+
+test_that("netsim status.rand argument", {
+  nw <- network.initialize(n = 100, directed = FALSE)
+  est <- netest(nw, formation = ~edges, target.stats = 25,
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                edapprox = TRUE, verbose = FALSE)
+  param <- param.net(inf.prob = 0.5, rec.rate = 0.1)
+  init <- init.net(i.num = 10, r.num = 0, status.rand = TRUE)
+  control <- control.net(type = "SIR", nsims = 1, nsteps = 10,
+                         verbose = FALSE, tea.status = FALSE)
+  mod <- netsim(est, param, init, control)
+  expect_is(mod, "netsim")
+  
+  nw <- network.initialize(n = 100, bipartite = 50, directed = FALSE)
+  est <- netest(nw, formation = ~edges, target.stats = 25,
+                 coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                 edapprox = TRUE, verbose = FALSE)
+  param <- param.net(inf.prob = 0.5, inf.prob.m2 = 0.1,
+                     rec.rate = 0.1, rec.rate.m2 = 0.1)
+  init <- init.net(i.num = 10, i.num.m2 = 10,
+                   r.num = 0, r.num.m2 = 0,
+                   status.rand = TRUE)
+  control <- control.net(type = "SIR", nsims = 1, nsteps = 10,
+                         verbose = FALSE, tea.status = FALSE)
+  mod <- netsim(est, param, init, control)
+  expect_is(mod, "netsim")
+  
+  nw <- network.initialize(n = 100, directed = FALSE)
+  est <- netest(nw, formation = ~edges, target.stats = 25,
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                edapprox = TRUE, verbose = FALSE)
+  param <- param.net(inf.prob = 0.5, rec.rate = 0.1)
+  init <- init.net(i.num = 10, status.rand = TRUE)
+  control <- control.net(type = "SIS", nsims = 1, nsteps = 10,
+                         verbose = FALSE, tea.status = FALSE)
+  mod <- netsim(est, param, init, control)
+  expect_is(mod, "netsim")
+  
+  nw <- network.initialize(n = 100, bipartite = 50, directed = FALSE)
+  est <- netest(nw, formation = ~edges, target.stats = 25,
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                edapprox = TRUE, verbose = FALSE)
+  param <- param.net(inf.prob = 0.5, inf.prob.m2 = 0.1,
+                     rec.rate = 0.1, rec.rate.m2 = 0.1)
+  init <- init.net(i.num = 10, i.num.m2 = 10,
+                   status.rand = TRUE)
+  control <- control.net(type = "SIS", nsims = 1, nsteps = 10,
+                         verbose = FALSE, tea.status = FALSE)
+  mod <- netsim(est, param, init, control)
+  expect_is(mod, "netsim")
+})

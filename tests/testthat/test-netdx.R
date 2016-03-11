@@ -154,6 +154,10 @@ test_that("Static diagnostic simulations", {
 
   expect_error(plot(dx, method = "b", type = "duration"))
   expect_error(plot(dx, method = "b", type = "dissolution"))
+  
+  # test for default formation model
+  dx <- netdx(est4, dynamic = FALSE, nsims = 250, verbose = FALSE)
+  expect_is(dx, "netdx")
 })
 
 
@@ -166,7 +170,47 @@ test_that("Parallel methods", {
   coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
   est1 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 
-  ## Single simulation
   dx1 <- netdx(est1, nsims = 2, nsteps = 25, ncores = 2)
   expect_is(dx1, "netdx")
+})
+
+test_that("error checking", {
+  nw <- network.initialize(25, directed = FALSE)
+  est <- netest(nw, formation = ~edges, target.stats = 25,
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                edapprox = TRUE, verbose = FALSE)
+  expect_error(netdx(x = 1, nsteps = 100))
+  expect_error(netdx(est), "Specify number of time steps with nsteps")
+})
+
+test_that("pass in netest with sim", {
+  skip_on_cran()
+  num <- 50
+  nw <- network.initialize(num, directed = FALSE)
+  formation <- ~edges
+  target.stats <- 15
+  coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
+  est1 <- netest(nw, formation, target.stats, coef.diss, output = "sim", verbose = FALSE)
+  dx <- netdx(est1, nsims = 1, nsteps = 10, verbose = FALSE)
+  
+})
+
+test_that("Full STERGM", {
+  skip_on_cran()
+  nw <- network.initialize(n = 50, directed = FALSE)
+  est <- netest(nw, formation = ~edges, target.stats = 25,
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                edapprox = FALSE, verbose = FALSE)
+  
+  # one core test
+  dx <- netdx(est, nsims = 1, nsteps = 10, verbose = FALSE)
+  expect_is(dx, "netdx")
+  expect_true(!dx$edapprox)
+  expect_true(colnames(dx$stats[[1]]) == "edges")
+  
+  # parallel test
+  dx <- netdx(est, nsims = 2, nsteps = 10, ncores = 2, verbose = FALSE)
+  expect_is(dx, "netdx")
+  expect_true(dx$nsims == 2)
+  
 })

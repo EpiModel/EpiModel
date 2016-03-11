@@ -6,7 +6,7 @@
 \usage{
 netest(nw, formation, target.stats, coef.diss, constraints, coef.form = NULL,
   edapprox = TRUE, output = "fit", set.control.ergm, set.control.stergm,
-  nonconv.error = FALSE, verbose = FALSE)
+  verbose = FALSE)
 }
 \arguments{
 \item{nw}{An object of class \code{network}.}
@@ -40,11 +40,6 @@ details).}
 
 \item{set.control.stergm}{Control arguments passed to simulate.stergm (see
 details).}
-
-\item{nonconv.error}{If \code{TRUE}, function will error if model did not
-converge after the specified number of iterations. This may be useful
-in batch mode while fitting many models and there is no desire to
-return to the nonconverged model object.}
 
 \item{verbose}{Print model fitting progress to console.}
 }

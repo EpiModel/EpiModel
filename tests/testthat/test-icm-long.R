@@ -382,7 +382,8 @@ test_that("SIR, 1G, OP: 2 sim", {
                      b.rate = 1/100, ds.rate = 1/100, di.rate = 1/90,
                      dr.rate = 1/100)
   init <- init.icm(s.num = 500, i.num = 1, r.num = 0)
-  control <- control.icm(type = "SIR", nsteps = 50, nsims = 2, verbose = TRUE)
+  control <- control.icm(type = "SIR", nsteps = 50, nsims = 2, verbose = TRUE,
+                         d.rand = FALSE, b.rand = FALSE)
   x <- icm(param, init, control)
   expect_is(x, "icm")
   expect_is(as.data.frame(x), "data.frame")
@@ -440,7 +441,7 @@ test_that("SIR, 2G, OP: 2 sim", {
   init <- init.icm(s.num = 500, i.num = 1, r.num = 0,
                    s.num.g2 = 500, i.num.g2 = 0, r.num.g2 = 0)
   control <- control.icm(type = "SIR", nsteps = 50, nsims = 2, verbose = TRUE,
-                         verbose.int = 1)
+                         verbose.int = 1, d.rand = FALSE, b.rand = FALSE)
   x <- icm(param, init, control)
   expect_is(x, "icm")
   expect_is(as.data.frame(x), "data.frame")

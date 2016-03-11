@@ -64,3 +64,58 @@ test_that("netest diss_check flags bad models", {
   expect_error(netest(nw, formation, target.stats = c(50, 20), coef.diss, verbose = FALSE),
                "Term options for one or more terms in dissolution model")
 })
+
+
+# Other tests -----------------------------------------------------------------------
+
+test_that("Error if incorrect coef.diss parameter", {
+  nw <- network.initialize(n = 50, directed = FALSE)
+  coef.diss <- 1
+  expect_error(netest(nw, formation = ~edges, target.stats = 25, coef.diss = coef.diss,
+                verbose = FALSE))
+})
+
+test_that("output = sim", {
+  nw <- network.initialize(n = 50, directed = FALSE)
+  est <- netest(nw, formation = ~edges, target.stats = 25,
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                output = "sim", verbose = FALSE)
+  expect_is(est$fit, "network")
+})
+
+test_that("update_dissolution tests", {
+  nw <- network.initialize(1000, directed = FALSE)
+
+  diss.300 <- dissolution_coefs(~offset(edges), 300, 0.001)
+  diss.200 <- dissolution_coefs(~offset(edges), 200, 0.001)
+
+  est300 <- netest(nw = nw,
+                  formation = ~edges,
+                  target.stats = 500,
+                  coef.diss = diss.300)
+
+  est200 <- netest(nw = nw,
+                  formation = ~edges,
+                  target.stats = 500,
+                  coef.diss = diss.200)
+
+  est200.compare <- update_dissolution(est300, diss.200)
+  expect_true(identical(est200$coef.form, est200.compare$coef.form))
+  
+  expect_error(update_dissolution(1, diss.200), "old.netest must be an object of class netest")
+  expect_error(update_dissolution(est300, 1), "new.coef.diss must be an object of class disscoef")
+  est300$edapprox <- FALSE
+  expect_error(update_dissolution(est300, diss.200), "Edges dissolution approximation must be used")
+})
+
+# STERGM ----------------------------------------------------------------------------
+
+test_that("Basic STERGM fit", {
+  skip_on_cran()
+  nw <- network.initialize(n = 50, directed = FALSE)
+  est <- netest(nw, formation = ~edges, target.stats = 25,
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                edapprox = FALSE, verbose = FALSE)
+  expect_is(est, "netest")
+  expect_true(!est$edapprox)
+})
