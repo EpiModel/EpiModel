@@ -79,6 +79,9 @@ as.phylo.transmat <- function(x, collapse.singles, vertex.exit.times, ...) {
   
   
   maxTime<-max(x$at)+1
+  if(!missing(vertex.exit.times)){
+    maxTime<-max(maxTime,vertex.exit.times,na.rm = TRUE)
+  }
   # create new ids for phyloNodes
   phyloNodes <- seq(from=maxTip+1,length.out=length(origNodes)-1)
   Nnode<-length(phyloNodes)
@@ -91,7 +94,17 @@ as.phylo.transmat <- function(x, collapse.singles, vertex.exit.times, ...) {
   
   # set default durations
   # since we don't know how long the graph vertices live, assume entire duration
-  durations <-rep(maxTime+1,length(phyloNodes)*2)
+  durations <-rep(NA,length(phyloNodes)*2)
+  tipExitTimes<- rep(maxTime,maxTip)
+  if(!missing(vertex.exit.times)){
+    # replace any NA values with max time
+    vertex.exit.times[is.na(vertex.exit.times)]<-maxTime+1
+    # copy the vertex exit times into the appropriate positions in the durations array
+    durations[seq_len(maxTip)]<-vertex.exit.times[origNodes]
+    # reorder the vertex.exit times to match new ids of tips
+    tipExitTimes<-vertex.exit.times[origNodes]
+  } 
+    
   # find roots (infectors that never appear as sus)
   v <- setdiff(unique(el[, 1]), unique(el[, 2]))
   if (length(v) > 1) {
@@ -108,21 +121,10 @@ as.phylo.transmat <- function(x, collapse.singles, vertex.exit.times, ...) {
   # infector and infectee
   phyloEl <-rbind(cbind(phyloNodes[1],el[1,1]),
                   cbind(phyloNodes[1],el[1,2]))
-  if(!missing(vertex.exit.times)){ 
-    if(!is.na(vertex.exit.times[origNodes[el[1,1]]])){
-      durations[1]<- vertex.exit.times[origNodes[el[1,1]]] - x$at[1]
-    } else{
-      durations[1]<-maxTime-x$at[1]
-    }
-    if(!is.na(vertex.exit.times[origNodes[el[1,2]]])){
-      durations[2]<- vertex.exit.times[origNodes[el[1,2]]] - x$at[1]
-    } else{
-      durations[2]<-maxTime-x$at[1]
-    }
-  } else {
-    durations[1]<-maxTime-x$at[1]
-    durations[2]<-maxTime-x$at[1]
-  }
+ 
+  durations[1]<-tipExitTimes[el[1,1]]-tm[["at"]][1]
+  durations[2]<-tipExitTimes[el[1,2]]-tm[["at"]][1]
+  
   phyloN<-1
   # loop over remaining rows
   if(nrow(el)>1){
@@ -137,16 +139,15 @@ as.phylo.transmat <- function(x, collapse.singles, vertex.exit.times, ...) {
       phyloEl<-rbind(phyloEl,cbind(phyloNodes[phyloN+1],infector))
       # link the new phylo node to the infectee (tip)
       phyloEl<-rbind(phyloEl,cbind(phyloNodes[phyloN+1],el[r,2]))
-      
+    
       # update the timing on the replaced row that linked to tip
-      durations[phyNRow] <- durations[phyNRow] - (maxTime - tm[["at"]][r])
+      durations[phyNRow] <- durations[phyNRow] - (tipExitTimes[infector] - tm[["at"]][r])
       # add timings for new rows equal to remaining time
-      durations[nrow(phyloEl)-1]<- maxTime - tm[["at"]][r]
-      if(!missing(vertex.exit.times) && !is.na(vertex.exit.times[origNodes[el[r,2]]])){
-        durations[nrow(phyloEl)]<- vertex.exit.times[origNodes[el[r,2]]] - tm[["at"]][r] 
-      } else {
-        durations[nrow(phyloEl)]<- maxTime - tm[["at"]][r] 
-      }
+      # infector
+      durations[nrow(phyloEl)-1]<- tipExitTimes[infector] - tm[["at"]][r]
+      # infectee
+      durations[nrow(phyloEl)]<- tipExitTimes[el[r,2]] - tm[["at"]][r] 
+      
       
       # increment the phylo node counter
       phyloN<- phyloN+1
