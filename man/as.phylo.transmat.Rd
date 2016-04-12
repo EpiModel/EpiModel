@@ -30,7 +30,9 @@ the vertex id of the infector to make it possible to trace the path of infection
 
 The infection timing information is included to position the phylo-nodes, with the
  lines to the tips drawn to the max time value +1 (unless \code{vertex.exit.times} are passed in it effectively assumes all vertices are active/alive until 
- the end of the simulation). The function does not yet support infection trees with multiple infection seeds
+ the end of the simulation). 
+ 
+ If the transmat contains multiple infection seeds (there are multiple trees with seperate root nodes) it will return a list of class 'multiPhylo', each element of which is a phylo object.  See \code{\link[ape]{read.tree}}
 
 Note that in EpiModel versions <= 1.2.4, the phylo tree was constructed differently, translating network 
 vertices to both phylo-nodes and tips and requiring 'collapse.singles' to prune it to an appropriate branching structure.

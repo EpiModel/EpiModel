@@ -56,11 +56,23 @@ test_that("as.phylo.transmat",{
   
   evoPhylo<-as.phylo(evo_tm,vertex.exit.times=evo_exit_times)
   expect_equal(evoPhylo$edge.length,c(180, 1601, 343, 1066, 279, 49, 56, 28, 2, 1173, 262, 670, 749,  1145, 268, 666, 118, 406, 137, 51, 58, 51, 698, 132, 217, 20,  213, 682, 669, 231, 205, 222, 245, 33, 200, 231, 494, 20, 304,  254, 271, 472, 274, 296, 438, 438, 106, 24, 372, 372, 124, 366,  60, 349, 196, 22, 1, 303, 302, 279, 178, 33, 289, 90, 32, 283,  282, 282, 272, 48, 257, 257, 187, 251, 7, 242, 235, 235, 120,  48, 201, 201, 46, 199, 195, 25, 173, 173, 172, 36, 143, 170,  74, 170, 153, 153, 136, 136, 112, 112, 109, 109, 100, 100, 64,  62, 23, 23, 5, 5, 2, 2))
-  plot(evoPhylo,show.node.label = TRUE,cex=0.8)
+  plot(evoPhylo,show.node.label = TRUE,cex=0.6,root.edge = TRUE,tip.color = 'blue')
   
+  
+  # test multiple trees
+  
+  two_tree<-data.frame(at=c(0,1,2,2,3,4,0,1,2,3),sus=c(2,3,4,5,6,7,9,10,11,12),inf=c(1,1,3,4,3,5,8,9,9,10))
+  class(two_tree)<-c('transmat',class(two_tree))
+  expect_message(two_phylo<-as.phylo.transmat(two_tree),regexp = 'found multiple trees')
+  expect_true(inherits(two_phylo,'multiPhylo'))
+  expect_equal(length(two_phylo),2)
+  expect_equal(class(two_phylo[[1]]),'phylo')
+  expect_equal(names(two_phylo),c("seed_1", "seed_8"))
+  plot(two_phylo[[1]])
+  plot(two_phylo[[2]])
+  
+  two_phylo_exits<-as.phylo.transmat(two_tree,vertex.exit.times = c(NA,NA,5,7,NA,NA,5,3,NA,NA,3,NA))
 })
-
-
 
 
 

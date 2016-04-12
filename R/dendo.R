@@ -20,7 +20,9 @@
 #' 
 #' The infection timing information is included to position the phylo-nodes, with the
 #'  lines to the tips drawn to the max time value +1 (unless \code{vertex.exit.times} are passed in it effectively assumes all vertices are active/alive until 
-#'  the end of the simulation). The function does not yet support infection trees with multiple infection seeds
+#'  the end of the simulation). 
+#'  
+#'  If the transmat contains multiple infection seeds (there are multiple trees with seperate root nodes) it will return a list of class 'multiPhylo', each element of which is a phylo object.  See \code{\link[ape]{read.tree}}
 #' 
 #' Note that in EpiModel versions <= 1.2.4, the phylo tree was constructed differently, translating network 
 #' vertices to both phylo-nodes and tips and requiring 'collapse.singles' to prune it to an appropriate branching structure.
@@ -55,17 +57,43 @@ as.phylo.transmat <- function(x, collapse.singles, vertex.exit.times, ...) {
   if(!missing(collapse.singles)){
     warning("the 'collapse.singles' argument to as.phylo.transmat is no longer supported and will be ignored")
   }
+  
   # if not named properly, assume inf,sus at
   if(!all(c('inf','sus','at')%in%names(x))){
     warning("input does not have appropriate column names for transmat, assuming first 3 should be 'inf','sus','at'")
     names(x)<-c('inf','sus','at')
   }
   tm <- x
+  if(missing(vertex.exit.times)){
+    vertex.exit.times<-NULL
+  }
+  # find roots (infectors that never appear as sus)
+  v <- setdiff(unique(tm$inf), unique(tm$sus))
+  if (length(v) > 1) {
+    message("found multiple trees, returning a list of ", length(v), " phylo objects")
+    # need to extract the portions of the edgelist and call seperately
+    sub_phylos<-lapply(v,function(v_sub){
+      # walk down the list to find elements below v_sub
+      sub_rows<-which(tm$inf==v_sub)
+      toFind<-v_sub
+      while(length(toFind)>0){
+        i<-toFind[1]
+        sub_rows<-unique(c(sub_rows,which(tm$inf==i)))
+        toFind<-c(toFind[-1],tm$sus[which(tm$inf==i)])
+      }
+      # call as.phylo on the subset of the edgelist
+      as.phylo.transmat(tm[sub_rows,,drop=FALSE],vertex.exit.times=vertex.exit.times)
+
+    })
+    names(sub_phylos)<-paste('seed',v,sep='_')
+    class(sub_phylos)<-c('multiPhylo',class(sub_phylos))
+    return(sub_phylos)
+  }
   
   el <- cbind(tm$inf,tm$sus)
   origNodes <- unique(as.vector(el))
   # if vertex.exit.times included check that it is consistant
-  if (!missing(vertex.exit.times)){
+  if (!is.null(vertex.exit.times)){
     if(length(origNodes) > length(vertex.exit.times) | any(origNodes > length(vertex.exit.times))){
       stop('Vertex ids in edgelist imply a larger network size than vertex.exit.times')
     }
@@ -79,7 +107,7 @@ as.phylo.transmat <- function(x, collapse.singles, vertex.exit.times, ...) {
   
   
   maxTime<-max(x$at)+1
-  if(!missing(vertex.exit.times)){
+  if(!is.null(vertex.exit.times)){
     maxTime<-max(maxTime,vertex.exit.times,na.rm = TRUE)
   }
   # create new ids for phyloNodes
@@ -96,7 +124,7 @@ as.phylo.transmat <- function(x, collapse.singles, vertex.exit.times, ...) {
   # since we don't know how long the graph vertices live, assume entire duration
   durations <-rep(NA,length(phyloNodes)*2)
   tipExitTimes<- rep(maxTime,maxTip)
-  if(!missing(vertex.exit.times)){
+  if(!is.null(vertex.exit.times)){
     # replace any NA values with max time
     vertex.exit.times[is.na(vertex.exit.times)]<-maxTime+1
     # copy the vertex exit times into the appropriate positions in the durations array
@@ -104,12 +132,7 @@ as.phylo.transmat <- function(x, collapse.singles, vertex.exit.times, ...) {
     # reorder the vertex.exit times to match new ids of tips
     tipExitTimes<-vertex.exit.times[origNodes]
   } 
-    
-  # find roots (infectors that never appear as sus)
-  v <- setdiff(unique(el[, 1]), unique(el[, 2]))
-  if (length(v) > 1) {
-    warning("found multiple trees ", length(v), " not yet supported")
-  }
+  
   
   # create a new edgelist by stepping through the existing edgelist
   # and creating the new links from phylo nodes to graph vertices (tips)
