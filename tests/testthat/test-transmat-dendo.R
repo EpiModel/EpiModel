@@ -47,9 +47,31 @@ test_that("as.phylo.transmat",{
   expect_equal(as.phylo(tiny,vertex.exit.times=c(3,11,7,15))$edge.length,c(3,5,5,2,1,5))
   
   # check death time with NA
-  expect_equal(as.phylo(tiny,vertex.exit.times=c(3,11,7,NA))$edge.length,c(3,5,5,2,1,1))
+  expect_equal(as.phylo(tiny,vertex.exit.times=c(3,11,7,NA))$edge.length,c(3,5,5,2,1,2))
+  
+  # more complete vertex.exit time example
+  
+  evo_tm<- structure(list(at = c(50L, 230L, 573L, 622L, 650L, 652L, 678L,  852L, 914L, 1032L, 1083L, 1120L, 1134L, 1141L, 1154L, 1252L,  1296L, 1320L, 1329L, 1349L, 1351L, 1354L, 1385L, 1427L, 1451L,  1457L, 1474L, 1518L, 1520L, 1521L, 1533L, 1534L, 1540L, 1541L,  1551L, 1566L, 1572L, 1581L, 1588L, 1603L, 1622L, 1624L, 1628L,  1650L, 1651L, 1653L, 1653L, 1670L, 1687L, 1711L, 1714L, 1723L,  1759L, 1800L, 1818L, 1821L), sus = c(89, 66, 25, 22, 38, 58,  91, 18, 81, 40, 62, 48, 111, 76, 80, 56, 53, 39, 94, 9, 102,  11, 17, 33, 6, 12, 64, 10, 3, 82, 107, 108, 68, 41, 26, 78, 109,  4, 114, 106, 42, 92, 103, 30, 75, 112, 93, 7, 43, 24, 95, 60,  110, 2, 55, 54), inf = c(83, 83, 83, 25, 22, 22, 25, 83, 22,  22, 40, 83, 62, 40, 111, 48, 66, 81, 53, 94, 62, 40, 80, 25,  33, 48, 56, 18, 81, 81, 25, 56, 10, 66, 39, 107, 10, 48, 48,  9, 62, 108, 40, 11, 106, 94, 103, 108, 75, 25, 18, 9, 10, 82,  83, 110)), .Names = c("at", "sus", "inf"), row.names = c(NA,  -56L), class = "transmat")
+  evo_exit_times<-c(NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 772,  NA, NA, NA, NA, NA, NA, 1169, NA, NA, NA, 1599, NA, 223, NA,  NA, 165, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,  NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 1713, 1322, NA,  NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,  NA, NA, NA, NA, NA, NA, NA, NA, 1090, NA, NA, NA, NA, 1651, NA,  NA, NA, NA, 1796, NA, NA, NA, NA, NA, NA, NA, NA, 1727, NA, NA,  NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,  NA, NA)
+  
+  evoPhylo<-as.phylo(evo_tm,vertex.exit.times=evo_exit_times)
+  expect_equal(evoPhylo$edge.length,c(180, 1601, 343, 1066, 279, 49, 56, 28, 2, 1173, 262, 670, 749,  1145, 268, 666, 118, 406, 137, 51, 58, 51, 698, 132, 217, 20,  213, 682, 669, 231, 205, 222, 245, 33, 200, 231, 494, 20, 304,  254, 271, 472, 274, 296, 438, 438, 106, 24, 372, 372, 124, 366,  60, 349, 196, 22, 1, 303, 302, 279, 178, 33, 289, 90, 32, 283,  282, 282, 272, 48, 257, 257, 187, 251, 7, 242, 235, 235, 120,  48, 201, 201, 46, 199, 195, 25, 173, 173, 172, 36, 143, 170,  74, 170, 153, 153, 136, 136, 112, 112, 109, 109, 100, 100, 64,  62, 23, 23, 5, 5, 2, 2))
+  plot(evoPhylo,show.node.label = TRUE,cex=0.6,root.edge = TRUE,tip.color = 'blue')
   
   
+  # test multiple trees
+  
+  two_tree<-data.frame(at=c(0,1,2,2,3,4,0,1,2,3),sus=c(2,3,4,5,6,7,9,10,11,12),inf=c(1,1,3,4,3,5,8,9,9,10))
+  class(two_tree)<-c('transmat',class(two_tree))
+  expect_message(two_phylo<-as.phylo.transmat(two_tree),regexp = 'found multiple trees')
+  expect_true(inherits(two_phylo,'multiPhylo'))
+  expect_equal(length(two_phylo),2)
+  expect_equal(class(two_phylo[[1]]),'phylo')
+  expect_equal(names(two_phylo),c("seed_1", "seed_8"))
+  plot(two_phylo[[1]])
+  plot(two_phylo[[2]])
+  
+  two_phylo_exits<-as.phylo.transmat(two_tree,vertex.exit.times = c(NA,NA,5,7,NA,NA,5,3,NA,NA,3,NA))
 })
 
 
