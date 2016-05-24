@@ -1,3 +1,20 @@
+Version 1.2.6
+------------------------------------------------------------------------------
+
+NEW FEATURES
+* Updates to `as.phylo.transmat` to fix issues with vertex exit times and to 
+  now accept multiple seed vertices if multiple seeds are detected, returning
+  a list of phylo objects of class `multiPhylo` following the convention of
+  `ape::read.tree`.
+
+BUG FIXES
+* Corrected an error governing the birth rate of 2-group, open-population
+  deterministic compartmental models (DCMs).
+
+OTHER
+* Updated license to GPL-3.
+
+
 Version 1.2.5
 ------------------------------------------------------------------------------
 
