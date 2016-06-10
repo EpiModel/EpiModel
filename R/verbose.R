@@ -166,13 +166,13 @@ verbose.icm <- function(x, type, s = 1, at = 2) {
 #'
 verbose.net <- function(x, type, s = 1, at = 2) {
 
-  if (type == "startup") {
+  if (type == "startup" && x$ncores == 1) {
     if (x$verbose == TRUE) {
       cat("\n* Starting Network Simulation")
     }
   }
 
-  if (type == "progress") {
+  if (type == "progress" && x$control$ncores == 1) {
     if (x$control$verbose == TRUE) {
       if (x$control$verbose.int == 0 && at == x$control$nsteps) {
         cat("\nSim = ", s, "/", x$control$nsims, sep = "")

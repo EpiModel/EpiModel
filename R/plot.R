@@ -2544,97 +2544,20 @@ comp_plot.netsim <- function(x, at = 1, digits = 3, ...) {
 
 # Calculate denominators
 denom <- function(x, y, popfrac) {
-
-  if (class(x) == "dcm") {
-    if (popfrac == TRUE) {
-      den <- data.frame(den = rep(NA, length(x$control$timesteps)))
-      if (x$param$groups == 1) {
-        for (i in 1:x$control$nruns) {
-          den[, i] <- as.data.frame(x, run = i)$num
-        }
-        for (i in 1:length(y)) {
-          x$epi[[y[i]]] <- x$epi[[y[i]]] / den
-        }
-      }
-      if (x$param$groups == 2) {
-        den <- list(den.g1 = den, den.g2 = den)
-        for (i in 1:x$control$nruns) {
-          den[[1]][, i] <- as.data.frame(x, run = i)$num
-          den[[2]][, i] <- as.data.frame(x, run = i)$num.g2
-        }
-        y.group.num <- ifelse(grepl("num.g2$", y), 2, 1)
-        for (j in 1:length(y)) {
-          x$epi[[y[j]]] <- x$epi[[y[j]]] / den[[y.group.num[j]]]
-        }
-      }
-    }
-    if (popfrac == FALSE && x$control$nruns == 1) {
-      for (j in 1:length(y)) {
-        x$epi[[y[j]]] <- data.frame(x$epi[[y[j]]])
-      }
+  
+  cont.val <- ifelse(class(x) == "dcm", "nruns", "nsims")
+  if (popfrac == TRUE) {
+    for (i in 1:length(y)) {
+      dname <- paste(strsplit(y[i], "[.]")[[1]][-1], collapse = ".")
+      x$epi[[y[i]]] <- x$epi[[y[i]]] / x$epi[[dname]]
     }
   }
-
-  if (class(x) == "icm") {
-    if (popfrac == TRUE) {
-      den <- data.frame(den = rep(NA, x$control$nsteps))
-      if (x$param$groups == 1) {
-        for (i in 1:x$control$nsims) {
-          den[, i] <- as.data.frame(x, sim = i, out = "vals")$num
-        }
-        for (i in 1:length(y)) {
-          x$epi[[y[i]]] <- x$epi[[y[i]]] / den
-        }
-      }
-      if (x$param$groups == 2) {
-        den <- list(den.g1 = den, den.g2 = den)
-        for (i in 1:x$control$nsims) {
-          den[[1]][, i] <- as.data.frame(x, sim = i, out = "vals")$num
-          den[[2]][, i] <- as.data.frame(x, sim = i, out = "vals")$num.g2
-        }
-        y.group.num <- ifelse(grepl("num.g2$", y), 2, 1)
-        for (j in 1:length(y)) {
-          x$epi[[y[j]]] <- x$epi[[y[j]]] / den[[y.group.num[j]]]
-        }
-      }
-    }
-    if (popfrac == FALSE && x$control$nsims == 1) {
-      for (j in 1:length(y)) {
-        x$epi[[y[j]]] <- data.frame(x$epi[[y[j]]])
-      }
+  if (popfrac == FALSE && x$control[[cont.val]] == 1) {
+    for (j in 1:length(y)) {
+      x$epi[[y[j]]] <- data.frame(x$epi[[y[j]]])
     }
   }
-
-  if (class(x) == "netsim") {
-    if (popfrac == TRUE) {
-      den <- data.frame(den = rep(NA, x$control$nsteps))
-      if (x$param$modes == 1) {
-        for (i in 1:x$control$nsims) {
-          den[, i] <- as.data.frame(x, sim = i, out = "vals")$num
-        }
-        for (i in 1:length(y)) {
-          x$epi[[y[i]]] <- x$epi[[y[i]]] / den
-        }
-      }
-      if (x$param$modes == 2) {
-        den <- list(den.g1 = den, den.g2 = den)
-        for (i in 1:x$control$nsims) {
-          den[[1]][, i] <- as.data.frame(x, sim = i, out = "vals")$num
-          den[[2]][, i] <- as.data.frame(x, sim = i, out = "vals")$num.m2
-        }
-        y.group.num <- ifelse(grepl("num.m2$", y), 2, 1)
-        for (j in 1:length(y)) {
-          x$epi[[y[j]]] <- x$epi[[y[j]]] / den[[y.group.num[j]]]
-        }
-      }
-    }
-    if (popfrac == FALSE && x$control$nsims == 1) {
-      for (j in 1:length(y)) {
-        x$epi[[y[j]]] <- data.frame(x$epi[[y[j]]])
-      }
-    }
-  }
-
+  
   return(x)
 }
 
