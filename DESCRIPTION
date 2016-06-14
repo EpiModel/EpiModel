@@ -49,5 +49,6 @@ Suggests:
     rmarkdown,
     shiny,
     testthat
+Remotes: github::statnet/tergmLite
 VignetteBuilder: knitr
 RoxygenNote: 5.0.1
