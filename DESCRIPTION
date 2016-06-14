@@ -1,6 +1,6 @@
-Package: EpiModel
-Version: 1.2.7
-Date: 2016-05-25
+Package: EpiModelFastEdgelist
+Version: 1.2.8
+Date: 2016-06-07
 Title: Mathematical Modeling of Infectious Disease
 Description: Tools for simulating mathematical models of infectious disease. 
     Epidemic model classes include deterministic compartmental models, stochastic 
@@ -29,7 +29,8 @@ Depends:
     R (>= 3.2),
     deSolve (>= 1.12),
     networkDynamic (>= 0.9.0),
-    tergm (>= 3.3.1)
+    tergm (>= 3.3.1),
+    tergmLite
 Imports:
     graphics,
     grDevices,
