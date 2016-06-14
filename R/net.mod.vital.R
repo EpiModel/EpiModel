@@ -22,7 +22,12 @@ deaths.net <- function(dat, at) {
 
   # Variables ---------------------------------------------------------------
   modes <- dat$param$modes
-  mode <- idmode(dat$nw)
+  if(!is.null(dat[['nw']])){
+    mode <- idmode(dat$nw)
+  } else {
+    # assume that if in edgelist mode, must not be two mode
+    mode <-rep.int(1,attr(dat$el,'n'))
+  }
 
   type <- dat$control$type
   d.rand <- dat$control$d.rand
@@ -51,8 +56,9 @@ deaths.net <- function(dat, at) {
         nDeathsM2.sus <- sum(mode[idsDth.sus] == 2)
         dat$attr$active[idsDth.sus] <- 0
         dat$attr$exitTime[idsDth.sus] <- at
-        dat$nw <- deactivate.vertices(dat$nw, onset = at, terminus = Inf,
-                                      v = idsDth.sus, deactivate.edges = TRUE)
+        #dat$nw <- deactivate.vertices(dat$nw, onset = at, terminus = Inf,
+        #                              v = idsDth.sus, deactivate.edges = TRUE)
+        dat <-terminate_vertices(dat,at,idsDth.sus)
       }
     }
 
@@ -70,8 +76,9 @@ deaths.net <- function(dat, at) {
         idsDthAll.sus <- c(idsDth.sus, idsDthM2.sus)
         dat$attr$active[idsDthAll.sus] <- 0
         dat$attr$exitTime[idsDthAll.sus] <- at
-        dat$nw <- deactivate.vertices(dat$nw, onset = at, terminus = Inf,
-                                      v = idsDthAll.sus, deactivate.edges = TRUE)
+        #dat$nw <- deactivate.vertices(dat$nw, onset = at, terminus = Inf,
+        #                              v = idsDthAll.sus, deactivate.edges = TRUE)
+        dat <-terminate_vertices(dat,at,idsDthAll.sus)
       }
     }
   }
@@ -100,8 +107,9 @@ deaths.net <- function(dat, at) {
         nDeathsM2.inf <- sum(mode[idsDth.inf] == 2)
         dat$attr$active[idsDth.inf] <- 0
         dat$attr$exitTime[idsDth.inf] <- at
-        dat$nw <- deactivate.vertices(dat$nw, onset = at, terminus = Inf,
-                                      v = idsDth.inf, deactivate.edges = TRUE)
+        #dat$nw <- deactivate.vertices(dat$nw, onset = at, terminus = Inf,
+        #                              v = idsDth.inf, deactivate.edges = TRUE)
+        dat <-terminate_vertices(dat,at,idsDth.inf)
       }
     }
 
@@ -119,8 +127,9 @@ deaths.net <- function(dat, at) {
         idsDthAll.inf <- c(idsDth.inf, idsDthM2.inf)
         dat$attr$active[idsDthAll.inf] <- 0
         dat$attr$exitTime[idsDthAll.inf] <- at
-        dat$nw <- deactivate.vertices(dat$nw, onset = at, terminus = Inf,
-                                      v = idsDthAll.inf, deactivate.edges = TRUE)
+        #dat$nw <- deactivate.vertices(dat$nw, onset = at, terminus = Inf,
+        #                              v = idsDthAll.inf, deactivate.edges = TRUE)
+        dat <-terminate_vertices(dat,at,idsDthAll.inf)
       }
     }
   }
@@ -150,8 +159,9 @@ deaths.net <- function(dat, at) {
           nDeathsM2.rec <- sum(mode[idsDth.rec] == 2)
           dat$attr$active[idsDth.rec] <- 0
           dat$attr$exitTime[idsDth.rec] <- at
-          dat$nw <- deactivate.vertices(dat$nw, onset = at, terminus = Inf,
-                                        v = idsDth.rec, deactivate.edges = TRUE)
+          #dat$nw <- deactivate.vertices(dat$nw, onset = at, terminus = Inf,
+          #                              v = idsDth.rec, deactivate.edges = TRUE)
+          dat <-terminate_vertices(dat,at,idsDth.rec)
         }
       }
 
@@ -169,8 +179,9 @@ deaths.net <- function(dat, at) {
           idsDthAll.rec <- c(idsDth.rec, idsDthM2.rec)
           dat$attr$active[idsDthAll.rec] <- 0
           dat$attr$exitTime[idsDthAll.rec] <- at
-          dat$nw <- deactivate.vertices(dat$nw, onset = at, terminus = Inf,
-                                        v = idsDthAll.rec, deactivate.edges = TRUE)
+          #dat$nw <- deactivate.vertices(dat$nw, onset = at, terminus = Inf,
+          #                              v = idsDthAll.rec, deactivate.edges = TRUE)
+          dat <-terminate_vertices(dat,at,idsDthAll.rec)
         }
       }
     }
@@ -240,7 +251,11 @@ births.net <- function(dat, at) {
   modes <- dat$param$modes
   tea.status <- dat$control$tea.status
   nOld <- dat$epi$num[at - 1]
-  nCurr <- network.size(dat$nw)
+  if(!is.null(dat[['nw']])){
+    nCurr <- network.size(dat$nw)
+  } else {
+    nCurr <-attr(dat$el,'n')
+  }
   b.rand <- dat$control$b.rand
   delete.nodes <- dat$control$delete.nodes
 
@@ -257,12 +272,16 @@ births.net <- function(dat, at) {
       nBirths <- round(nOld * b.rate)
     }
     if (nBirths > 0) {
-      dat$nw <- add.vertices(dat$nw, nv = nBirths)
-      newNodes <- (nCurr + 1):(nCurr + nBirths)
-      dat$nw <- activate.vertices(dat$nw, onset = at, terminus = Inf, v = newNodes)
+      #dat$nw <- add.vertices(dat$nw, nv = nBirths)
+      #newNodes <- (nCurr + 1):(nCurr + nBirths)
+      #dat$nw <- activate.vertices(dat$nw, onset = at, terminus = Inf, v = newNodes)
+      dat<-initiate_vertices(dat,at,nBirths)
     }
   }
   if (modes == 2 && nOld > 0) {
+    if(is.null(dat[['nw']])){
+      stop('fast_edgelist mode does not support two-mode networks')
+    }
     nOldM2 <- dat$epi$num.m2[at - 1]
     if (b.rand == TRUE) {
       if (is.na(b.rate.m2)) {
@@ -398,3 +417,33 @@ births.net <- function(dat, at) {
   return(dat)
 }
 
+
+# internal function to either terminate nodes in the network object, or in the edgelist
+# depending on the mode of operation
+terminate_vertices<-function(dat,at,vids.to.terminate){
+  # if the network object exists, assume we are in network mode
+  if(!is.null(dat[['nw']])){
+    # deactivate the vertices on the network object
+    dat$nw <- deactivate.vertices(dat$nw, onset = at, terminus = Inf,
+                                  v = vids.to.terminate, deactivate.edges = TRUE)
+  } else{
+    # assume we are running in fast_edgelist mode
+    # and remove from edgelist using tergmLite utils
+    dat$el<-tergmLite::delete_vertices(el = dat$el,vid = vids.to.terminate)
+  }
+  return(dat)
+}
+
+# internal function to either initialize vertices in the network object, 
+# or in the edgelist, depending on mode of operation
+initiate_vertices<-function(dat,at,n){
+  # if the network object exists, assume we are in network mode
+  if(!is.null(dat[['nw']])){
+    # add and activate new vertices
+    dat$nw <- add.vertices.active(dat$nw, nv = n,onset=at, terminus=Inf)
+  } else {
+    # increment the vertex counter on the edgelist
+    dat$el<-tergmLite::add_vertices(dat$el,n)
+  }
+  return(dat)
+}

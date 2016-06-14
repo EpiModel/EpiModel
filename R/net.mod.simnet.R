@@ -78,32 +78,87 @@ resim_nets <- function(dat, at) {
 
   # Network simulation
   if (anyActive > 0 & dat$control$depend == TRUE) {
-    suppressWarnings(
-      dat$nw <- simulate(dat$nw,
-                         formation = nwparam$formation,
-                         dissolution = nwparam$coef.diss$dissolution,
-                         coef.form = nwparam$coef.form,
-                         coef.diss = nwparam$coef.diss$coef.adj,
-                         constraints = nwparam$constraints,
-                         time.start = at,
-                         time.slices = 1,
-                         time.offset = 0,
-                         monitor = dat$control$nwstats.formula,
-                         control = dat$control$set.control.stergm))
-
-    # Set up nwstats df
-    if (dat$control$save.nwstats == TRUE) {
-      dat$stats$nwstats <- rbind(dat$stats$nwstats,
-                                 tail(attributes(dat$nw)$stats, 1))
+    
+    if(!is.null(dat[['nw']])){
+      # in network mode
+      suppressWarnings(
+        dat$nw <- simulate(dat$nw,
+                           formation = nwparam$formation,
+                           dissolution = nwparam$coef.diss$dissolution,
+                           coef.form = nwparam$coef.form,
+                           coef.diss = nwparam$coef.diss$coef.adj,
+                           constraints = nwparam$constraints,
+                           time.start = at,
+                           time.slices = 1,
+                           time.offset = 0,
+                           monitor = dat$control$nwstats.formula,
+                           control = dat$control$set.control.stergm))
+  
+      # Set up nwstats df
+      if (dat$control$save.nwstats == TRUE) {
+        dat$stats$nwstats <- rbind(dat$stats$nwstats,
+                                   tail(attributes(dat$nw)$stats, 1))
+      }
+  
+      if (dat$control$delete.nodes == TRUE) {
+        dat$nw <- network.extract(dat$nw, at = at)
+        inactive <- which(dat$attr$active == 0)
+        dat$attr <- deleteAttr(dat$attr, inactive)
+      }
+    } else {
+      # in fast edgelist mode
+      
+      # construct the list of model statistics input vectors
+      # and attach to dat$p
+      #dat <- updatenwp.msm(dat, network = 1)
+      n <- attributes(dat$el)$n
+      maxdyads <- choose(n, 2)
+      
+      p <- dat$p
+      mf <- p$model.form
+      md <- p$model.diss
+      mhf <- p$MHproposal.form
+      mhd <- p$MHproposal.diss
+        
+      ## Update model.form terms##
+      
+      # edges
+      mf$terms[[1]]$maxval <- maxdyads
+      
+      ## combined maxval ##
+      mf$maxval[1] <- maxdyads
+      
+      ## Update model.diss ##
+      md$terms[[1]]$maxval <- maxdyads
+      md$maxval <- maxdyads
+      
+      ## Update MHproposal.form ##
+      #TODO: are these only needed for specific degree models
+      #mhf$arguments$constraints$bd$attribs <-
+      #  matrix(rep(mhf$arguments$constraints$bd$attribs[1], n), ncol = 1)
+      #mhf$arguments$constraints$bd$maxout <-
+      #  matrix(rep(mhf$arguments$constraints$bd$maxout[1], n), ncol = 1)
+      #mhf$arguments$constraints$bd$maxin <- matrix(rep(n - 1, n), ncol = 1)
+      #mhf$arguments$constraints$bd$minout <-
+      #  mhf$arguments$constraints$bd$minin <- matrix(rep(0, n), ncol = 1)
+      
+      ## Update MHproposal.diss ##
+      #mhd$arguments$constraints$bd <- mhf$arguments$constraints$bd
+      
+      dat$p <- list(model.form = mf, model.diss = md,
+                               MHproposal.form = mhf, MHproposal.diss = mhd)
+      
+      # directly call the MCMC sample passing in the edgelists and term inputs
+      dat$el <- tergmLite::simulate_network(p = dat$p,
+                                                 el = dat$el,
+                                                 coef.form = nwparam$coef.form,
+                                                 coef.diss = nwparam$coef.diss$coef.adj,
+                                                 save.changes = TRUE)
+      
+      
     }
-
-    if (dat$control$delete.nodes == TRUE) {
-      dat$nw <- network.extract(dat$nw, at = at)
-      inactive <- which(dat$attr$active == 0)
-      dat$attr <- deleteAttr(dat$attr, inactive)
-    }
-
   }
+  
 
   return(dat)
 }

@@ -42,16 +42,51 @@ initialize.net <- function(x, param, init, control, s) {
       if (class(x$fit) == "stergm") {
         nw <- network.collapse(nw, at = 1)
       }
+      # simulate the initial network
       nw <- sim_nets(x, nw, nsteps = 1, control)
     }
     if (control$depend == FALSE) {
+      # simulate the entire network sequence
       nw <- sim_nets(x, nw, nsteps = control$nsteps, control)
     }
     nw <- activate.vertices(nw, onset = 1, terminus = Inf)
+    
+    # Check for network or fast edgelist mode
+    # TODO: perhaps these checks should be moved to control.net?
+    if(control$fast.edgelist){
+      # make sure we are not using unsupported model features with fast edgelist
+      if (control$tea.status){
+        stop('tea.status=TRUE mode cannot be used with fast.edgelist simulations')
+      }
+      if (control$save.network){
+        stop('save.network=TRUE mode cannot be used with fast.edgelist simulations')
+      }
+      
+      if(is.bipartite(nw) | modes > 1){
+        stop('bipartite networks cannot be used with fast.edgelist simulations')
+        # TODO: probably the code could be modified to support bi-partite networks with the same rates, but maybe not useful
+      }
+      if(control$use.pids){
+        stop('use.pids=TRUE cannot be used with fast.edgelist simulations')
+      }
+      
+      # store the edgelist instead of the network object
+      dat$nw<-NULL
+      dat$el<-as.edgelist(nw)
+      attributes(dat$el)$vnames <- NULL
+      # record initival values for MHP proposals, etc
+      p <- tergmLite::stergm_prep(nw, x$formation, x$coef.diss$dissolution,
+                                  x$coef.form, x$coef.diss$coef.adj, x$constraints)
+      p$model.form$formula <- NULL
+      p$model.diss$formula <- NULL
+      dat$p <- p
+    } else {
+      # regular network mode (not fast edgelist)
+      dat$nw <- nw
+    }
 
 
     # Network Parameters ------------------------------------------------------
-    dat$nw <- nw
     dat$nwparam <- list(x[-which(names(x) == "fit")])
     dat$param$modes <- modes
 
@@ -80,7 +115,7 @@ initialize.net <- function(x, param, init, control, s) {
 
     ## Get initial prevalence
     dat <- get_prev.net(dat, at = 1)
-  } else {
+} else {
     dat <- list()
 
     dat$nw <- x$network[[s]]
@@ -143,7 +178,11 @@ init_status.net <- function(dat) {
 
   status.vector <- dat$init$status.vector
   status.rand <- dat$init$status.rand
-  num <- network.size(dat$nw)
+  if(!is.null(dat[['nw']])){
+    num <- network.size(dat[['nw']])
+  } else {
+    num <- attr(dat$el,'n')
+  }
   form <- get_nwparam(dat)$form
   statOnNw <- "status" %in% get_formula_terms(form)
 
