@@ -28,7 +28,7 @@ test_that('mode switch works',{
                    r.num = 0)
   control_new <- control.net(type = "SIR", nsteps = 5, nsims = 1,
                              tea.status = FALSE,
-                             save.network=FALSE,
+                             save.network=TRUE,
                              use.pids = FALSE,
                              fast.edgelist=TRUE,
                              verbose=FALSE)
@@ -37,12 +37,15 @@ test_that('mode switch works',{
   
   control_old <- control.net(type = "SIR", nsteps = 5, nsims = 1,
                              tea.status = FALSE,
-                             save.network=FALSE,
+                             save.network=TRUE,
                              use.pids = FALSE,
                              fast.edgelist=FALSE,
                              verbose=FALSE)
   set.seed(1)
   simold <- netsim(est2, param, init, control_old)
+  
+  # since they were both run with the same seed, expect the transmats to be identical
+  expect_equal(simold$stats$transmat,simnew$stats$transmat)
 })
 
 # TODO: add tests that non-supported models flagged correctly

@@ -108,7 +108,12 @@ saveout.icm <- function(dat, s, out = NULL) {
 saveout.net <- function(dat, s, out = NULL) {
 
   # Counts number of simulated networks
-  num.nw <- ifelse(any(class(dat$nw) == "network"), 1, length(dat$nw))
+  if(!is.null(dat[['nw']])){
+    num.nw <- ifelse(any(class(dat$nw) == "network"), 1, length(dat$nw))
+  } else {
+    #TODO: check this once multiple sims supported in el mode
+    num.nw <- ifelse(!is.list(dat$el), 1, length(dat$el))
+  }
 
   if (s == 1) {
     out <- list()
@@ -137,7 +142,18 @@ saveout.net <- function(dat, s, out = NULL) {
     }
 
     if (dat$control$save.network == TRUE) {
-      out$network <- list(dat$nw)
+      if(!is.null(dat[['nw']])){
+        out$network <- list(dat[['nw']])
+      } else {
+        # in edgelist mode, so create a network from the edgelist
+        nw <- network.initialize(attr(dat$el,'n'),
+                                directed = attr(dat$el,'directed'),
+                                bipartite = attr(dat$el,'bipartite'),
+                                loops = attr(dat$el,'loops'))
+        # TODO: copy vertex attributes?
+        out$network <- list(network.edgelist(dat$el,nw))
+        
+      }
     }
 
     if (!is.null(dat$control$save.other)) {
@@ -165,7 +181,17 @@ saveout.net <- function(dat, s, out = NULL) {
       }
     }
     if (dat$control$save.network == TRUE) {
-      out$network[[s]] <- dat$nw
+      if(!is.null(dat[['nw']])){
+        out$network[[s]] <- dat[['nw']]
+      } else {
+        # in edgelist mode, so create a network from the edgelist
+        nw <- network.initialize(attr(dat$el,'n'),
+                                directed = attr(dat$el,'directed'),
+                                bipartite = attr(dat$el,'bipartite'),
+                                loops = attr(dat$el,'loops'))
+        out$network[[s]] <- network.edgelist(dat$el,nw)
+                                  
+      }
     }
 
     if (!is.null(dat$control$save.other)) {
