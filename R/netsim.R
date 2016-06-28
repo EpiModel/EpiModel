@@ -136,26 +136,28 @@ netsim <- function(x, param, init, control) {
       
       
       ### TIME LOOP
-      for (at in max(2, control$start):control$nsteps) {
-        
-        ## Module order
-        morder <- control$module.order
-        if (is.null(morder)) {
-          lim.bi.mods <- control$bi.mods[-which(control$bi.mods %in%
-                                                  c("initialize.FUN", "verbose.FUN"))]
-          morder <- c(control$user.mods, lim.bi.mods)
+      if (control$nsteps > 1) {
+        for (at in max(2, control$start):control$nsteps) {
+          
+          ## Module order
+          morder <- control$module.order
+          if (is.null(morder)) {
+            lim.bi.mods <- control$bi.mods[-which(control$bi.mods %in%
+                                                    c("initialize.FUN", "verbose.FUN"))]
+            morder <- c(control$user.mods, lim.bi.mods)
+          }
+          
+          ## Evaluate modules
+          for (i in seq_along(morder)) {
+            dat <- do.call(control[[morder[i]]], list(dat, at))
+          }
+          
+          ## Verbose module
+          if (!is.null(control[["verbose.FUN"]])) {
+            do.call(control[["verbose.FUN"]], list(dat, type = "progress", s, at))
+          }
+          
         }
-        
-        ## Evaluate modules
-        for (i in seq_along(morder)) {
-          dat <- do.call(control[[morder[i]]], list(dat, at))
-        }
-        
-        ## Verbose module
-        if (!is.null(control[["verbose.FUN"]])) {
-          do.call(control[["verbose.FUN"]], list(dat, type = "progress", s, at))
-        }
-        
       }
       
       # Set output
@@ -183,28 +185,30 @@ netsim <- function(x, param, init, control) {
       
       
       ### TIME LOOP
-      for (at in max(2, control$start):control$nsteps) {
-        
-        ## Module order
-        morder <- control$module.order
-        if (is.null(morder)) {
-          lim.bi.mods <- control$bi.mods[-which(control$bi.mods %in%
-                                                  c("initialize.FUN", "verbose.FUN"))]
-          morder <- c(control$user.mods, lim.bi.mods)
+      if (control$nsteps > 1) {
+        for (at in max(2, control$start):control$nsteps) {
+          
+          ## Module order
+          morder <- control$module.order
+          if (is.null(morder)) {
+            lim.bi.mods <- control$bi.mods[-which(control$bi.mods %in%
+                                                    c("initialize.FUN", "verbose.FUN"))]
+            morder <- c(control$user.mods, lim.bi.mods)
+          }
+          
+          ## Evaluate modules
+          for (i in seq_along(morder)) {
+            dat <- do.call(control[[morder[i]]], list(dat, at))
+          }
+          
+          ## Verbose module
+          if (!is.null(control[["verbose.FUN"]])) {
+            do.call(control[["verbose.FUN"]], list(dat, type = "progress", s, at))
+          }
+          
         }
-        
-        ## Evaluate modules
-        for (i in seq_along(morder)) {
-          dat <- do.call(control[[morder[i]]], list(dat, at))
-        }
-        
-        ## Verbose module
-        if (!is.null(control[["verbose.FUN"]])) {
-          do.call(control[["verbose.FUN"]], list(dat, type = "progress", s, at))
-        }
-        
       }
-      
+
       # Set output
       out <- saveout.net(dat, s = 1)
       class(out) <- "netsim"
