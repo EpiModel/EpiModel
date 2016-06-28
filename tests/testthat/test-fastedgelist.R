@@ -26,7 +26,17 @@ test_that('mode switch works',{
                      dr.rate = 0.001)
   init <- init.net(i.num = 10,
                    r.num = 0)
-  control_new <- control.net(type = "SIR", nsteps = 5, nsims = 1,
+  
+  control_old <- control.net(type = "SIR", nsteps = 2, nsims = 1,
+                             tea.status = FALSE,
+                             save.network=TRUE,
+                             use.pids = FALSE,
+                             fast.edgelist=FALSE,
+                             verbose=FALSE)
+  set.seed(1)
+  simold <- netsim(est2, param, init, control_old)
+  
+  control_new <- control.net(type = "SIR", nsteps = 2, nsims = 1,
                              tea.status = FALSE,
                              save.network=TRUE,
                              use.pids = FALSE,
@@ -35,14 +45,7 @@ test_that('mode switch works',{
   set.seed(1)
   simnew <- netsim(est2, param, init, control_new)
   
-  control_old <- control.net(type = "SIR", nsteps = 5, nsims = 1,
-                             tea.status = FALSE,
-                             save.network=TRUE,
-                             use.pids = FALSE,
-                             fast.edgelist=FALSE,
-                             verbose=FALSE)
-  set.seed(1)
-  simold <- netsim(est2, param, init, control_old)
+
   
   # since they were both run with the same seed, expect the transmats to be identical
   expect_equal(simold$stats$transmat,simnew$stats$transmat)
