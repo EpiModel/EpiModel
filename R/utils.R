@@ -221,3 +221,54 @@ ssample <- function(x, size, replace = FALSE, prob = NULL) {
 
 }
 
+
+#' @title Get Individual Degree from Network or Edgelist
+#'
+#' @description A fast method for querying the current degree of all individuals
+#'              within a network.
+#'
+#' @param x Either an object of class \code{network} or \code{edgelist} generated
+#'        from a network. If \code{x} is an edgelist, then it must contain
+#'        an attribute for the total network size, \code{n}.
+#'        
+#' @details 
+#' Individual-level data on the current degree of nodes within a network is
+#' often useful for summary statistics and modeling complex interactions between
+#' degree. Given a \code{network} class object, \code{net}, one way to look 
+#' up the current degree is to get a summary of the ERGM term, \code{sociality},
+#' as in: \code{summary(net ~ sociality(base = 0))}. But that is computionally
+#' inefficient for a number of reasons. This function provide a fast method 
+#' for generating the vector of degree using a query of the edgelist. It is
+#' even faster if the parameter \code{x} is already transformed as an edgelist.
+#' 
+#' @export
+#' 
+#' @examples 
+#' nw <- network.initialize(100, directed = FALSE) 
+#' 
+#' set.seed(1)
+#' fit <- ergm(nw ~ edges, target.stats = 50)
+#' sim <- simulate(fit)
+#' 
+#' deg.net <- get_degree(sim)
+#' deg.net
+#' 
+#' el <- as.edgelist(sim)
+#' deg.el <- get_degree(el)
+#' deg.el
+#' 
+#' identical(deg.net, deg.el)
+#'
+get_degree <- function(x) {
+  if (inherits(x, "network")) {
+    x <- as.edgelist(x)
+  }
+  if (is.null(attr(x, "n"))) {
+    stop("x missing an n attribute")
+  }
+  n <- attr(x, "n")
+  alt.deg <- rep(0, n)
+  tab.deg <- table(x)
+  alt.deg[as.numeric(names(tab.deg))] <- unname(tab.deg)
+  alt.deg
+}
