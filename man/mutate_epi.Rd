@@ -44,7 +44,7 @@ mod1 <- mutate_epi(mod1, ir100 = 5200*(si.flow + si.flow.m2) /
                                       (s.num + s.num.m2))       
 df <- as.data.frame(mod1)
 df$ir100
-                                                   
+                                
 
 }
 
