@@ -8,7 +8,7 @@ EpiModel
 <a href='http://dx.doi.org/10.5281/zenodo.16767' target="_blank"><img src='http://img.shields.io/badge/DOI-10.5281%2Fzenodo.16767-blue.svg?style=flat' alt='DOI' /></a>
 
 <br>
-<img align="right" src="http://statnet.csde.washington.edu/EpiModel/movie.gif">
+<img align="right" src="http://www.epimodel.org/movie.gif">
 
 EpiModel: tools for simulating mathematical models of infectious disease. Epidemic model classes include deterministic compartmental models, stochastic individual contact models, and stochastic network models. Disease types include SI, SIR, and SIS epidemics with and without demography, with tools available for expansion to model complex epidemic processes.
 
