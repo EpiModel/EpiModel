@@ -313,7 +313,6 @@ get_degree <- function(x) {
 #'                                       (s.num + s.num.m2))       
 #' df <- as.data.frame(mod1)
 #' df$ir100
-#'                                 
 #'
 mutate_epi <- function(sim, ...) {
   
