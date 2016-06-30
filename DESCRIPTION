@@ -40,7 +40,8 @@ Imports:
     foreach,
     network (>= 1.13.0),
     RColorBrewer,
-    ape
+    ape,
+    lazyeval
 Suggests:
     covr,
     knitr,

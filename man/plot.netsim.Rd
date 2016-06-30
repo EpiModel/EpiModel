@@ -147,6 +147,9 @@ and plots the denominators of all specified compartments using these rules: 1)
 for one-group models, the prevalence of any compartment is the compartment size
 divided by the total population size; 2) for two-group models, the prevalence
 of any compartment is the compartment size divided by the group population size.
+For any prevalences that are not automatically calculated, the 
+\code{\link{mutate_epi}} may be used to add new variables to the \code{netsim}
+object to plot or analyze.
 
 The quantiles show the range of outcome values within a certain specified
 quantile range. By default, the interquartile range is shown: that is the
@@ -208,7 +211,7 @@ plot(mod, type = "formation", stats = "meandeg",
 
 }
 \seealso{
-\code{\link{plot.network}}
+\code{\link{plot.network}} \code{\link{mutate_epi}}
 }
 \keyword{plot}
 

@@ -122,6 +122,7 @@
 #'             supsmu terms.formula update
 #' @importFrom utils head tail
 #' @importFrom ape as.phylo collapse.singles
+#' @importFrom lazyeval lazy_dots lazy_eval
 #'
 #' @docType package
 #' @keywords package

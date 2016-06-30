@@ -272,3 +272,58 @@ get_degree <- function(x) {
   alt.deg[as.numeric(names(tab.deg))] <- unname(tab.deg)
   alt.deg
 }
+
+
+#' @title Add New Epidemiology Variables
+#'
+#' @description Inspired by \code{dplyr::mutate}, \code{mutate_epi} adds new 
+#'              variables to the epidemiological and related variables within 
+#'              an object of class \code{netsim}.
+#'
+#' @param sim An object of class \code{netsim}.
+#' @param ... Name-value pairs of expressions (see examples below).
+#'  
+#' @return 
+#' An object of class \code{netsim} with the additional variables.      
+#'  
+#' @export
+#' 
+#' @examples 
+#' nw <- network.initialize(n = 100, bipartite = 50, directed = FALSE)
+#' formation <- ~edges
+#' target.stats <- 50
+#' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
+#' est1 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
+#' 
+#' # Epidemic model
+#' param <- param.net(inf.prob = 0.3, inf.prob.m2 = 0.15)
+#' init <- init.net(i.num = 1, i.num.m2 = 0)
+#' control <- control.net(type = "SI", nsteps = 100, nsims = 5, 
+#'                        verbose = FALSE)
+#' mod1 <- netsim(est1, param, init, control)
+#' mod1
+#' 
+#' # Add the prevalences to the dataset
+#' mod1 <- mutate_epi(mod1, i.prev = i.num / num,
+#'                          i.prev.m2 = i.num.m2 / num.m2)
+#' plot(mod1, y = c("i.prev", "i.prev.m2"), qnts = 0.5, leg = TRUE)                        
+#'                          
+#' # Add incidence rate per 100 person years (assume time step = 1 week)
+#' mod1 <- mutate_epi(mod1, ir100 = 5200*(si.flow + si.flow.m2) / 
+#'                                       (s.num + s.num.m2))       
+#' df <- as.data.frame(mod1)
+#' df$ir100
+#'                                 
+#'
+mutate_epi <- function(sim, ...) {
+  
+  if (!inherits(sim, "netsim")) {
+    stop("sim must an an object of class netsim", call. = FALSE)
+  }
+  
+  dt <- lazy_dots(...)
+  ndat <- lazy_eval(dt, sim$epi)
+  
+  sim$epi <- c(sim$epi, ndat)
+  return(sim)
+}
