@@ -244,20 +244,26 @@ ssample <- function(x, size, replace = FALSE, prob = NULL) {
 #' @export
 #' 
 #' @examples 
-#' nw <- network.initialize(100, directed = FALSE) 
+#' nw <- network.initialize(500, directed = FALSE) 
 #' 
 #' set.seed(1)
-#' fit <- ergm(nw ~ edges, target.stats = 50)
+#' fit <- ergm(nw ~ edges, target.stats = 250)
 #' sim <- simulate(fit)
-#' 
+#'
+#' # Slow ERGM-based method
+#' ergm.method <- unname(summary(sim ~ sociality(base = 0)))
+#' ergm.method  
+#'  
+#' # Fast tabulate method with network object  
 #' deg.net <- get_degree(sim)
 #' deg.net
 #' 
+#' # Even faster if network already transformed into an edgelist
 #' el <- as.edgelist(sim)
 #' deg.el <- get_degree(el)
 #' deg.el
 #' 
-#' identical(deg.net, deg.el)
+#' identical(ergm.method, deg.net, deg.el)
 #'
 get_degree <- function(x) {
   if (inherits(x, "network")) {
@@ -267,10 +273,8 @@ get_degree <- function(x) {
     stop("x missing an n attribute")
   }
   n <- attr(x, "n")
-  alt.deg <- rep(0, n)
-  tab.deg <- table(x)
-  alt.deg[as.numeric(names(tab.deg))] <- unname(tab.deg)
-  alt.deg
+  out <- tabulate(x, nbins = n)
+  return(out)
 }
 
 
