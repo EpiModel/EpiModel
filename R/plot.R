@@ -1666,6 +1666,11 @@ plot.netsim <- function(x, type = "epi", y, popfrac, sim.lines = FALSE, sims, si
                         shp.bip = NULL, stats, targ.line = TRUE, targ.col,
                         targ.lwd = 2, targ.lty = 2, plots.joined, ...) {
 
+  # type check
+  if ((type %in% c("epi", "network", "formation")) == FALSE) {
+    stop("type must be one of: \"epi\", \"network\", or \"formation\" ", call. = FALSE)
+  }
+  
   # Network plot ------------------------------------------------------------
   if (type == "network") {
 
