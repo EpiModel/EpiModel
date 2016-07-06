@@ -282,13 +282,13 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps, nwstats.formula = "forma
                             names = names(stats.means),
                             stats.means, stats.sd)
 
-
   ## Get stats from for target statistics
   ts.attr.names <- x$target.stats.names
-  # target.stats <- target.stats[which(target.stats > 0)]
+  if (length(ts.attr.names) != length(target.stats)) {
+    target.stats <- target.stats[which(target.stats > 0)]
+  } 
   ts.out <- data.frame(names = ts.attr.names,
                        targets = target.stats)
-
 
   ## Create stats.formation table for output
   stats.table <- merge(ts.out, stats.table, all = TRUE)
