@@ -147,7 +147,7 @@ and plots the denominators of all specified compartments using these rules: 1)
 for one-group models, the prevalence of any compartment is the compartment size
 divided by the total population size; 2) for two-group models, the prevalence
 of any compartment is the compartment size divided by the group population size.
-For any prevalences that are not automatically calculated, the 
+For any prevalences that are not automatically calculated, the
 \code{\link{mutate_epi}} may be used to add new variables to the \code{netsim}
 object to plot or analyze.
 

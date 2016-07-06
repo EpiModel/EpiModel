@@ -1590,7 +1590,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #' for one-group models, the prevalence of any compartment is the compartment size
 #' divided by the total population size; 2) for two-group models, the prevalence
 #' of any compartment is the compartment size divided by the group population size.
-#' For any prevalences that are not automatically calculated, the 
+#' For any prevalences that are not automatically calculated, the
 #' \code{\link{mutate_epi}} may be used to add new variables to the \code{netsim}
 #' object to plot or analyze.
 #'
@@ -1670,7 +1670,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac, sim.lines = FALSE, sims, si
   if ((type %in% c("epi", "network", "formation")) == FALSE) {
     stop("type must be one of: \"epi\", \"network\", or \"formation\" ", call. = FALSE)
   }
-  
+
   # Network plot ------------------------------------------------------------
   if (type == "network") {
 
@@ -2051,6 +2051,9 @@ plot.netsim <- function(x, type = "epi", y, popfrac, sim.lines = FALSE, sims, si
     target.stats <- nwparam$target.stats
 
     st <- data.frame(sorder = 1:length(nmstats), names = nmstats)
+    if (length(formation.terms) != length(target.stats)) {
+      target.stats <- target.stats[which(target.stats > 0)]
+    }
     ts <- data.frame(names = formation.terms, targets = target.stats)
 
     m <- merge(st, ts, all = TRUE)
@@ -2552,7 +2555,7 @@ comp_plot.netsim <- function(x, at = 1, digits = 3, ...) {
 
 # Calculate denominators
 denom <- function(x, y, popfrac) {
-  
+
   cont.val <- ifelse(class(x) == "dcm", "nruns", "nsims")
   if (popfrac == TRUE) {
     for (i in 1:length(y)) {
@@ -2565,7 +2568,7 @@ denom <- function(x, y, popfrac) {
       x$epi[[y[j]]] <- data.frame(x$epi[[y[j]]])
     }
   }
-  
+
   return(x)
 }
 
