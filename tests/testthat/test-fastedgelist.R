@@ -15,6 +15,7 @@ test_that('mode switch works',{
                                  d.rate = 0.0021)
   
   # Reestimate the model with new coefficient
+  set.seed(1)
   est2 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
   
   # Reset parameters to include demographic rates
@@ -24,10 +25,10 @@ test_that('mode switch works',{
                      ds.rate = 0.001, 
                      di.rate = 0.001, 
                      dr.rate = 0.001)
-  init <- init.net(i.num = 10,
+  init<- init.net(i.num = 10,
                    r.num = 0)
   
-  control_old <- control.net(type = "SIR", nsteps = 2, nsims = 1,
+  control_old <- control.net(type = "SIR", nsteps = 5, nsims = 1,
                              tea.status = FALSE,
                              save.network=TRUE,
                              use.pids = FALSE,
@@ -36,7 +37,7 @@ test_that('mode switch works',{
   set.seed(1)
   simold <- netsim(est2, param, init, control_old)
   
-  control_new <- control.net(type = "SIR", nsteps = 2, nsims = 1,
+  control_new <- control.net(type = "SIR", nsteps = 5, nsims = 1,
                              tea.status = FALSE,
                              save.network=TRUE,
                              use.pids = FALSE,

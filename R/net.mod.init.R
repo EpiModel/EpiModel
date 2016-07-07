@@ -29,6 +29,8 @@ initialize.net <- function(x, param, init, control, s) {
 
 
     # Network Simulation ------------------------------------------------------
+    # draw an initial state to be fed into the stergm
+    # NOTE that this NOT the initial state of the simulate network, some edges will be toggled. 
     if (class(x$fit) == "network") {
       nw <- simulate(x$formation,
                      basis = x$fit,
@@ -38,11 +40,15 @@ initialize.net <- function(x, param, init, control, s) {
       nw <- simulate(x$fit)
     }
     modes <- ifelse(nw %n% "bipartite", 2, 1)
+    
+   
+    
+    # simulate in network mode (not fast edgelist)
     if (control$depend == TRUE) {
       if (class(x$fit) == "stergm") {
         nw <- network.collapse(nw, at = 1)
       }
-      # simulate the initial network
+      # simulate the initial time step of the network
       nw <- sim_nets(x, nw, nsteps = 1, control)
     }
     if (control$depend == FALSE) {
@@ -52,8 +58,10 @@ initialize.net <- function(x, param, init, control, s) {
     nw <- activate.vertices(nw, onset = 1, terminus = Inf)
     
     # Check for network or fast edgelist mode
-    # TODO: perhaps these checks should be moved to control.net?
-    if(control$fast.edgelist){
+    if(!control$fast.edgelist){
+      dat$nw <- nw
+    } else { # simulate in fast edgelist mode
+      # TODO: perhaps these checks should be moved to control.net?
       # make sure we are not using unsupported model features with fast edgelist
       if (control$tea.status){
         stop('tea.status=TRUE mode cannot be used with fast.edgelist simulations')
@@ -72,18 +80,17 @@ initialize.net <- function(x, param, init, control, s) {
       
       # store the edgelist instead of the network object
       dat$nw<-NULL
-      dat$el<-as.edgelist(nw)
+      # note that the network may contain terminated edges, so must extract at the current timestep
+      dat$el<-as.edgelist(network.collapse(nw,at=1))
       attributes(dat$el)$vnames <- NULL
       # record initival values for MHP proposals, etc
-      p <- tergmLite::stergm_prep(nw, x$formation, x$coef.diss$dissolution,
+      p <- tergmLite::stergm_prep(network.collapse(nw,at=1), x$formation, x$coef.diss$dissolution,
                                   x$coef.form, x$coef.diss$coef.adj, x$constraints)
       p$model.form$formula <- NULL
       p$model.diss$formula <- NULL
       dat$p <- p
-    } else {
-      # regular network mode (not fast edgelist)
-      dat$nw <- nw
-    }
+      
+    } 
 
 
     # Network Parameters ------------------------------------------------------

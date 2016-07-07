@@ -220,8 +220,12 @@ discord_edgelist <- function(dat, idsInf, idsSus, at) {
   status <- dat$attr$status
   if(!is.null(dat[['nw']])){
     el <- get.dyads.active(dat$nw, at = at)
+    # enforce sort and column order
+    el <- as.edgelist(el,n<-network.size(nw),directed=is.directed(nw),bipartite=is.bipartite(nw),loops=has.loops(nw))
   } else {
     el <- dat$el
+    # enforce sort and column order
+    el <- as.edgelist(el,n=attr(el,'n'),directed=FALSE)
   }
 
   del <- NULL
