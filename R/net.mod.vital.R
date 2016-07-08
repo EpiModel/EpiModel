@@ -429,7 +429,9 @@ terminate_vertices<-function(dat,at,vids.to.terminate){
   } else{
     # assume we are running in fast_edgelist mode
     # and remove from edgelist using tergmLite utils
-    dat$el<-tergmLite::delete_vertices(el = dat$el,vid = vids.to.terminate)
+    dat$el <- tergmLite::delete_vertices(el = dat$el,vid = vids.to.terminate)
+    # also need to remove corresponding attribute rows
+    dat$attr <- deleteAttr(dat$attr,vids.to.terminate)
   }
   return(dat)
 }

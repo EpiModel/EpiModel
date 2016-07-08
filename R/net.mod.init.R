@@ -66,9 +66,6 @@ initialize.net <- function(x, param, init, control, s) {
       if (control$tea.status){
         stop('tea.status=TRUE mode cannot be used with fast.edgelist simulations')
       }
-      #if (control$save.network){
-      #  stop('save.network=TRUE mode cannot be used with fast.edgelist simulations')
-      #}
       
       if(is.bipartite(nw) | modes > 1){
         stop('bipartite networks cannot be used with fast.edgelist simulations')
