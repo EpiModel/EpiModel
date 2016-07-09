@@ -80,6 +80,14 @@ initialize.net <- function(x, param, init, control, s) {
       # note that the network may contain terminated edges, so must extract at the current timestep
       dat$el<-as.edgelist(network.collapse(nw,at=1))
       attributes(dat$el)$vnames <- NULL
+      # copy any non-standard vertex attributes (probably user attached)
+      # TODO: check model terms and only copy those actually used and in vector form
+      vattrs <- list.vertex.attributes(nw)
+      vattrs <- vattrs[!vattrs%in%c('na','vertex.names')]
+      for (attrname in vattrs){
+        dat$attr[[attrname]] <- get.vertex.attribute(nw,attrname)
+      }
+      
       # record initival values for MHP proposals, etc
       p <- tergmLite::stergm_prep(network.collapse(nw,at=1), x$formation, x$coef.diss$dissolution,
                                   x$coef.form, x$coef.diss$coef.adj, x$constraints)
