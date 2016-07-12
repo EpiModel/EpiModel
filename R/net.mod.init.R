@@ -75,6 +75,10 @@ initialize.net <- function(x, param, init, control, s) {
         stop('use.pids=TRUE cannot be used with fast.edgelist simulations')
       }
       
+      if(control$save.transmat){
+        warning('transmat network ids in fast.edgelist simulations will not be consistent')
+      }
+      
       # store the edgelist instead of the network object
       dat$nw<-NULL
       # note that the network may contain terminated edges, so must extract at the current timestep
