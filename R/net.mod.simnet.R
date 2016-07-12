@@ -113,28 +113,31 @@ resim_nets <- function(dat, at) {
       # in fast edgelist mode
       
       # construct the list of model statistics input vectors
+      
+      dat<-updateModelTermInputs(dat)
+      
       # and attach to dat$p
       #dat <- updatenwp.msm(dat, network = 1)
-      n <- attributes(dat$el)$n
-      maxdyads <- choose(n, 2)
+      #n <- attributes(dat$el)$n
+      #maxdyads <- choose(n, 2)
       
-      p <- dat$p
-      mf <- p$model.form
-      md <- p$model.diss
-      mhf <- p$MHproposal.form
-      mhd <- p$MHproposal.diss
+      #p <- dat$p
+      #mf <- p$model.form
+      #md <- p$model.diss
+      #mhf <- p$MHproposal.form
+      #mhd <- p$MHproposal.diss
         
       ## Update model.form terms##
       
       # edges
-      mf$terms[[1]]$maxval <- maxdyads
+      #mf$terms[[1]]$maxval <- maxdyads
       
       ## combined maxval ##
-      mf$maxval[1] <- maxdyads
+      #mf$maxval[1] <- maxdyads
       
       ## Update model.diss ##
-      md$terms[[1]]$maxval <- maxdyads
-      md$maxval <- maxdyads
+      #md$terms[[1]]$maxval <- maxdyads
+      #md$maxval <- maxdyads
       
       ## Update MHproposal.form ##
       #TODO: are these only needed for specific degree models
@@ -149,8 +152,8 @@ resim_nets <- function(dat, at) {
       ## Update MHproposal.diss ##
       #mhd$arguments$constraints$bd <- mhf$arguments$constraints$bd
       
-      dat$p <- list(model.form = mf, model.diss = md,
-                               MHproposal.form = mhf, MHproposal.diss = mhd)
+      #dat$p <- list(model.form = mf, model.diss = md,
+      #                         MHproposal.form = mhf, MHproposal.diss = mhd)
       
       # directly call the MCMC sample passing in the edgelists and term inputs
       dat$el <- tergmLite::simulate_network(p = dat$p,
