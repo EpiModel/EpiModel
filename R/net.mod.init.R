@@ -79,6 +79,15 @@ initialize.net <- function(x, param, init, control, s) {
         warning('transmat network ids in fast.edgelist simulations will not be consistent')
       }
       
+      # make sure the network does not have any features where the code will assume otherwise
+      # (some of the edgelist processing code will strip attributes)
+      if(is.directed(nw)){
+        stop('fast.edgelist simulations do not currently support directed networks')
+      }
+      if(has.loops(nw)){
+        stop('fast.edgelist simulations do not currently support networks with loops (self-edges)')
+      }
+      
       # store the edgelist instead of the network object
       dat$nw<-NULL
       # note that the network may contain terminated edges, so must extract at the current timestep
