@@ -94,7 +94,7 @@ resim_nets <- function(dat, at) {
                            time.start = at,
                            time.slices = 1,
                            time.offset = 0,
-                           #monitor = dat$control$nwstats.formula,
+                           monitor = dat$control$nwstats.formula,
                            monitor = NULL,
                            control = dat$control$set.control.stergm))
   
@@ -162,14 +162,15 @@ resim_nets <- function(dat, at) {
                                                  coef.diss = nwparam$coef.diss$coef.adj,
                                                  save.changes = TRUE)
       
-      # testing if edgelist tail/head ordering makes a difference
-      # make sure not to drop attrs when doing this
-      if (nrow(dat$el>0) && dat$el[1,1]>dat$el[1,2]){
-        tmp<-dat$el[,2:1,drop=FALSE]
-        tmp<-tmp[order(tmp[,1], tmp[,2]),,drop=FALSE]
-        attributes(tmp)<-attributes(dat$el)
-        dat$el<-tmp
-      }
+      # uncomment this code block to force edgelist ordering to 
+      # simulations aligned between fast edgelist and normal modes
+#       if (nrow(dat$el>0) && dat$el[1,1]>dat$el[1,2]){
+#         tmp<-dat$el[,2:1,drop=FALSE]
+#         tmp<-tmp[order(tmp[,1], tmp[,2]),,drop=FALSE]
+#         # make sure not to drop attrs when doing this
+#         attributes(tmp)<-attributes(dat$el)
+#         dat$el<-tmp
+#       }
       
       
       # save up nwstats df
