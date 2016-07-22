@@ -118,14 +118,14 @@ resim_nets <- function(dat, at) {
       
       # and attach to dat$p
       #dat <- updatenwp.msm(dat, network = 1)
-      #n <- attributes(dat$el)$n
+      n <- attributes(dat$el)$n
       #maxdyads <- choose(n, 2)
       
       #p <- dat$p
       #mf <- p$model.form
       #md <- p$model.diss
-      #mhf <- p$MHproposal.form
-      #mhd <- p$MHproposal.diss
+      mhf <- dat$p$MHproposal.form
+      mhd <- dat$p$MHproposal.diss
         
       ## Update model.form terms##
       
@@ -140,17 +140,23 @@ resim_nets <- function(dat, at) {
       #md$maxval <- maxdyads
       
       ## Update MHproposal.form ##
-      #TODO: are these only needed for specific degree models
-      #mhf$arguments$constraints$bd$attribs <-
-      #  matrix(rep(mhf$arguments$constraints$bd$attribs[1], n), ncol = 1)
-      #mhf$arguments$constraints$bd$maxout <-
-      #  matrix(rep(mhf$arguments$constraints$bd$maxout[1], n), ncol = 1)
-      #mhf$arguments$constraints$bd$maxin <- matrix(rep(n - 1, n), ncol = 1)
-      #mhf$arguments$constraints$bd$minout <-
-      #  mhf$arguments$constraints$bd$minin <- matrix(rep(0, n), ncol = 1)
-      
-      ## Update MHproposal.diss ##
-      #mhd$arguments$constraints$bd <- mhf$arguments$constraints$bd
+      #TODO: I believe these only needed for bounded degree models
+      # so assume that if first parameter is null, they are not set and don't need updates
+      if(!is.null(mhf$arguments$constraints$bd$attribs[1])){
+        mhf$arguments$constraints$bd$attribs <-
+          matrix(rep(mhf$arguments$constraints$bd$attribs[1], n), ncol = 1)
+        mhf$arguments$constraints$bd$maxout <-
+          matrix(rep(mhf$arguments$constraints$bd$maxout[1], n), ncol = 1)
+        mhf$arguments$constraints$bd$maxin <- matrix(rep(n - 1, n), ncol = 1)
+        mhf$arguments$constraints$bd$minout <-
+          mhf$arguments$constraints$bd$minin <- matrix(rep(0, n), ncol = 1)
+        
+        ## Update MHproposal.diss ##
+        mhd$arguments$constraints$bd <- mhf$arguments$constraints$bd
+        
+        dat$p$MHproposal.form <- mhf
+        dat$p$MHproposal.diss <- mhd
+      }
       
       #dat$p <- list(model.form = mf, model.diss = md,
       #                         MHproposal.form = mhf, MHproposal.diss = mhd)
