@@ -95,7 +95,6 @@ resim_nets <- function(dat, at) {
                            time.slices = 1,
                            time.offset = 0,
                            monitor = dat$control$nwstats.formula,
-                           monitor = NULL,
                            control = dat$control$set.control.stergm))
   
       # Set up nwstats df
