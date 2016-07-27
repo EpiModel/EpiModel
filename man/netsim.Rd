@@ -49,7 +49,7 @@ allowing for repeated transmission-related acts within the same dyad, specificat
 edge formation and dissolution rates, control over the temporal sequencing of
 multiple edges, and specification of network-level features. A detailed
 description of these models, along with examples, is found in the
-the \href{http://statnet.github.io/tut/BasicNet.html}{Basic Network Models}
+\href{http://statnet.github.io/tut/BasicNet.html}{Basic Network Models}
 tutorial.
 
 The \code{netsim} function performs modeling of both the built-in model types
