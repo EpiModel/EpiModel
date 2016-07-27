@@ -17,7 +17,7 @@
 \item{...}{further arguments (unused)}
 }
 \description{
-Converts the edgelist matrix in the \code{\link{transmat}} object into a \code{\link{phylo}}
+Converts the edgelist matrix in the \code{transmat} object into a \code{phylo}
              object by doing the required reordering and labeling.
 }
 \details{

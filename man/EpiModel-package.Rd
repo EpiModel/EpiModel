@@ -32,7 +32,7 @@ models:
        allows for easy specification of sensitivity models to compare multiple
        runs of the same model with different parameter values.
  \item \strong{Stochastic Individual Contact Models:} a novel class of
-       microsimulation models that were developed to mirror the deterministic models,
+       microsimulation models that were developed to mirror the deterministic models
        but add random variation in all components of the transmission dynamics
        system, from infection to recovery to vital dynamics (births and deaths).
  \item \strong{Stochastic Network Models:} using the underlying statistical
@@ -106,7 +106,7 @@ model are:
          simulating the base network over time to ensure the model fits the
          targets for formation and dissolution.
    \item \code{\link{netsim}} simulates the stochastic network epidemic models,
-         with a given network model fit in \code{\link{netest}}. Here, the
+         with a given network model fit in \code{\link{netest}}. Here the
          function requires this model fit object along with the parameters,
          initial conditions, and control settings as defined above.
  }

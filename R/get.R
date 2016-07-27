@@ -1,7 +1,7 @@
 
 #' @title Extract networkDynamic Object from Network Epidemic Model
 #'
-#' @description Extracts the networkDynamic object from a network epidemic model
+#' @description Extracts the \code{networkDynamic} object from a network epidemic model
 #'              simulated with \code{netsim}, with the option to collapse the
 #'              extracted network at a specific time step.
 #'
@@ -88,7 +88,7 @@ get_network <- function(x, sim = 1, network = 1, collapse = FALSE, at) {
 #' @param sim Simulation number of extracted network.
 #'
 #' @return
-#' A data frame with the following collumns
+#' A data frame with the following columns
 #' \itemize{
 #'  \item \strong{at:} the time step at which the transmission occurred.
 #'  \item \strong{sus:} the ID number of the susceptible (newly infected) node.
@@ -150,7 +150,7 @@ get_transmat <- function(x, sim = 1) {
 #'              epidemic model.
 #'
 #' @param x An \code{EpiModel} object of class \code{\link{netsim}}.
-#' @param sim A vector of simulation numbers of extracted network.
+#' @param sim A vector of simulation numbers from the extracted network.
 #' @param network Network number, for simulations with multiple networks
 #'        representing the population.
 #'
@@ -237,7 +237,7 @@ get_nwparam <- function(x, network = 1) {
 #'
 #' @param x An object of class \code{netsim}.
 #' @param sims A vector of simulation numbers to retain in the output object,
-#'        or \code{"mean"} which selects the one simulation with value of the
+#'        or \code{"mean"} which selects the one simulation with the value of the
 #'        variable specified in \code{var} closest to the mean of \code{var}
 #'        across all simulations.
 #' @param var Variable to use when \code{sims = "mean"} for selecting the average

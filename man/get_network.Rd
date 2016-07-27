@@ -21,7 +21,7 @@ a static \code{network} object at a specified time step.}
 network should be collapsed.}
 }
 \description{
-Extracts the networkDynamic object from a network epidemic model
+Extracts the \code{networkDynamic} object from a network epidemic model
              simulated with \code{netsim}, with the option to collapse the
              extracted network at a specific time step.
 }

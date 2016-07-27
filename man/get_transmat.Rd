@@ -16,7 +16,7 @@ get_transmat(x, sim = 1)
 \item{sim}{Simulation number of extracted network.}
 }
 \value{
-A data frame with the following collumns
+A data frame with the following columns
 \itemize{
  \item \strong{at:} the time step at which the transmission occurred.
  \item \strong{sus:} the ID number of the susceptible (newly infected) node.

@@ -8,7 +8,7 @@
 #' deterministic compartmental models.
 #'
 #' The \code{\link{icm}} function handles both the simulation tasks. Within this
-#' function are a series of modules that initialize the simulation, and then
+#' function are a series of modules that initialize the simulation and then
 #' simulate new infections, recoveries, and vital dynamics at each time step. A
 #' module also handles the basic bookkeeping calculations for disease prevalence.
 #'
@@ -24,7 +24,7 @@
 #' listed below.
 #'
 #' @section Initialization Module:
-#' This function sets up the agent attributes like disease status on the network
+#' This function sets up agent attributes, like disease status, on the network
 #' at the starting time step of disease simulation, \eqn{t_1}. For multiple-simulation
 #' function calls, these are reset at the beginning of each simulation.
 #' \itemize{
