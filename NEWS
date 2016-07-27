@@ -1,6 +1,20 @@
 Version 1.2.7
 ------------------------------------------------------------------------------
 
+NEW FEATURES
+* Add new `mutate_epi` function inspired by the `dplyr` package, to add 
+  post-hoc summary statistic calculations to completed network simulations.
+  See the function help file for examples.
+* Added a speedy `get_degree` function that returns a vector of current 
+  network degree for each person in a network. 
+
+BUG FIXES
+* Updated internal plot functions that calculate prevalences.
+* Disable verbose output if running network models in parallel.
+
+OTHER
+* Allow network simulations of 1 time step (mainly used for debugging and 
+  testing).
 
 
 Version 1.2.6
