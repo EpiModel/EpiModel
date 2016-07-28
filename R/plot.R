@@ -39,7 +39,7 @@
 #' specific compartments or flows to plot may be set using the \code{y} parameter,
 #' and in multiple run models the specific run may also be specified.
 #'
-#' @section The popfrac Argument:
+#' @section The \code{popfrac} Argument:
 #' Compartment prevalences are the size of a compartment over some denominator.
 #' To plot the raw numbers from any compartment, use \code{popfrac=FALSE}; this
 #' is the default for any plots of flows. The \code{popfrac} parameter calculates
@@ -51,10 +51,10 @@
 #' @section Color Palettes:
 #' Since \code{\link{dcm}} supports multiple run sensitivity models, plotting
 #' the results of such models uses a complex color scheme for distinguishing runs.
-#' This is accomplished using the \code{\link{RColorBrewer}} color palettes, in
-#' which includes a range of linked colors using named palettes. For
+#' This is accomplished using the \code{\link{RColorBrewer}} color palettes,
+#' which include a range of linked colors using named palettes. For
 #' \code{plot.dcm}, one may either specify a brewer color palette listed in
-#' \code{\link{brewer.pal.info}}, or alternatively a vector of standard R colors
+#' \code{\link{brewer.pal.info}}, or, alternatively, a vector of standard R colors
 #' (named, hexidecimal, or positive integers; see \code{\link{col2rgb}}).
 #'
 #' @section Plot Legends:
@@ -63,7 +63,7 @@
 #' plot a legend with values for every line in a sensitivity analysis, use
 #' \code{leg="full"}. With models with many runs, this may be visually
 #' overwhelming. In those cases, use \code{leg="lim"} to plot a legend limited
-#' to the highest and lowest of the varying parameter in the model. In cases
+#' to the highest and lowest values of the varying parameter in the model. In cases
 #' where the default legend names are not helpful, one may override those names
 #' with the \code{leg.name} argument.
 #'
@@ -823,7 +823,7 @@ draw_means <- function(x, y, mean.smooth, mean.lwd,
 #'
 #' The \code{dissolution} plot shows the proportion of the extant ties that are
 #' dissolved at each time step, up until the maximum time step requested.
-#' Typically the proportion of ties that are dissolved is the reciprocal of the
+#' Typically, the proportion of ties that are dissolved is the reciprocal of the
 #' mean relational duration. This plot thus contains similar information to that
 #' in the duration plot, but should reach its expected value more quickly, since
 #' it is not subject to censoring.
@@ -1533,7 +1533,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #'        representing the population.
 #' @param at If \code{type="network"}, time step for network graph.
 #' @param col.status If \code{TRUE} and \code{type="network"}, automatic disease
-#'        status colors (blue = susceptible, red = infected, , green = recovered).
+#'        status colors (blue = susceptible, red = infected, green = recovered).
 #' @param shp.bip If \code{type="network"} and a bipartite simulation, shapes
 #'        for the mode 2 vertices, with acceptable inputs of "triangle" and
 #'        "square". Mode 1 vertices will be circles.
@@ -1562,7 +1562,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #'        extraction of that dynamic network at a specific time point. This
 #'        plotting function wraps the \code{\link{plot.network}} function in the
 #'        \code{network} package. Consult the help page for \code{plot.network}
-#'        for all the plotting parameters. In addition, four plotting parameters
+#'        for all of the plotting parameters. In addition, four plotting parameters
 #'        specific to \code{netsim} plots are available: \code{sim}, \code{at},
 #'        \code{col.status}, and \code{shp.bip}.
 #'  \item \strong{\code{type="formation"}}: summary network statistics related to

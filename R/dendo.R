@@ -232,13 +232,13 @@ as.network.transmat <- function(x, ...){
 #' @title Plot transmat infection tree in one of several styles
 #'
 #' @description Plots the infection tree described in a \code{\link{transmat}}
-#'              object in one of several styles: phylogentic tree, an un-rooted
+#'              object in one of several styles: phylogenetic tree, an un-rooted
 #'              network, a hierarchical tree, or a transmissionTimeline.
 #'
-#' @param x a \code{\link{transmat}} object to be plotted
-#' @param style character name of plot style. One of "phylo", "network",
+#' @param x A \code{\link{transmat}} object to be plotted
+#' @param Style character name of plot style. One of "phylo", "network",
 #'        or "transmissionTimeline"
-#' @param ...  additional plot arguments to be passed to lower-level plot
+#' @param ...  Additional plot arguments to be passed to lower-level plot
 #'        functions (plot.network, plot.phylo, etc)
 #'
 #' @details The phylo plot requires the \code{ape} package. The

@@ -57,7 +57,7 @@ the fractional proportion of each compartment in the model over time. The
 specific compartments or flows to plot may be set using the \code{y} parameter,
 and in multiple run models the specific run may also be specified.
 }
-\section{The popfrac Argument}{
+\section{The \code{popfrac} Argument}{
 
 Compartment prevalences are the size of a compartment over some denominator.
 To plot the raw numbers from any compartment, use \code{popfrac=FALSE}; this
@@ -72,10 +72,10 @@ of any compartment is the compartment size divided by the group size.
 
 Since \code{\link{dcm}} supports multiple run sensitivity models, plotting
 the results of such models uses a complex color scheme for distinguishing runs.
-This is accomplished using the \code{\link{RColorBrewer}} color palettes, in
-which includes a range of linked colors using named palettes. For
+This is accomplished using the \code{\link{RColorBrewer}} color palettes,
+which include a range of linked colors using named palettes. For
 \code{plot.dcm}, one may either specify a brewer color palette listed in
-\code{\link{brewer.pal.info}}, or alternatively a vector of standard R colors
+\code{\link{brewer.pal.info}}, or, alternatively, a vector of standard R colors
 (named, hexidecimal, or positive integers; see \code{\link{col2rgb}}).
 }
 
@@ -86,7 +86,7 @@ added by default for plots. To turn off the legend, use \code{leg="n"}. To
 plot a legend with values for every line in a sensitivity analysis, use
 \code{leg="full"}. With models with many runs, this may be visually
 overwhelming. In those cases, use \code{leg="lim"} to plot a legend limited
-to the highest and lowest of the varying parameter in the model. In cases
+to the highest and lowest values of the varying parameter in the model. In cases
 where the default legend names are not helpful, one may override those names
 with the \code{leg.name} argument.
 }

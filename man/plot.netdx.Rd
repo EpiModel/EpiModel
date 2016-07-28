@@ -99,7 +99,7 @@ the average duration of edges in the equilibrium state.
 
 The \code{dissolution} plot shows the proportion of the extant ties that are
 dissolved at each time step, up until the maximum time step requested.
-Typically the proportion of ties that are dissolved is the reciprocal of the
+Typically, the proportion of ties that are dissolved is the reciprocal of the
 mean relational duration. This plot thus contains similar information to that
 in the duration plot, but should reach its expected value more quickly, since
 it is not subject to censoring.

@@ -20,7 +20,7 @@ exposure.}
 
 \item{inter.start}{Time step at which the intervention starts, between 1 and
 the number of time steps specified in the model. This will default to
-1 if the inter.eff is defined but this parameter is not.}
+1 if the \code{inter.eff} is defined but this parameter is not.}
 
 \item{act.rate}{Average number of transmissible acts per person per unit time.
 For two-group models, this is the number of acts per group 1 persons
@@ -96,7 +96,7 @@ description of ICM parameterization for built-in models is found in the
 For built-in models, the model specification will be chosen as a result of
 the model parameters entered here and the control settings in
 \code{\link{control.icm}}. One-group and two-group models are available, where
-the former assumes a homogenous mixing in the population whereas the latter
+the former assumes a homogenous mixing in the population and the latter
 assumes a purely heterogenous mixing between two distinct partitions in the
 population (e.g., men and women). Specifying any group two parameters (those
 with a \code{.g2}) implies the simulation of a two-group model. All the
@@ -121,7 +121,7 @@ may be constructed to replace the existing modules or to supplement the existing
 set. These are passed into the control settings in \code{\link{control.icm}}.
 New modules may use either the existing model parameters named here, an
 original set of parameters, or a combination of both. The \code{...} allows
-the user to pass an arbitrary set of original model parmeters into
+the user to pass an arbitrary set of original model parameters into
 \code{param.icm}. Whereas there are strict checks with default modules for
 parameter validity, these checks are the user's responsibility with new modules.
 }

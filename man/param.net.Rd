@@ -22,10 +22,10 @@ exposure.}
 
 \item{inter.start}{Time step at which the intervention starts, between 1 and
 the number of time steps specified in the model. This will default to
-1 if the inter.eff is defined but this parameter is not.}
+1 if the \code{inter.eff} is defined but this parameter is not.}
 
 \item{act.rate}{Average number of transmissible acts \emph{per partnership}
-per unit time (see act.rate Parameter below). This may also be a vector
+per unit time (see \code{act.rate} Parameter below). This may also be a vector
 of rates, with each element corresponding to the rate in in that time
 step of infection (see Time-Varying Parameters below).}
 
@@ -98,7 +98,7 @@ in the population (e.g., men and women). Specifying any bipartite parameters
 (those with a \code{.m2}) implies the simulation of a bipartite model. All the
 parameters for a desired model type must be specified, even if they are zero.
 }
-\section{The act.rate Parameter}{
+\section{The \code{act.rate} Parameter}{
 
 A key difference between these network models and DCM/ICM classes is the
 treatment of transmission events. With DCM and ICM, contacts or partnerships are
@@ -122,7 +122,7 @@ of \code{c(0.5, 0.5, 0.1)} would simulate a 0.5 transmission probability for
 the first two time steps of a person's infection, followed by a 0.1 for the
 third time step. If the infected person has not recovered or exited the
 population by the fourth time step, the third element in the vector will carry
-forward until one of those occurs or the simulation ends. For further examples,
+forward until one of those events occurs or the simulation ends. For further examples,
 see the NME tutorial,
 \href{http://statnet.github.io/nme/d3-tut3.html}{Time-Varying Biology & Behavior}.
 }
@@ -134,7 +134,7 @@ may be constructed to replace the existing modules or to supplement the existing
 set. These are passed into the control settings in \code{\link{control.net}}.
 New modules may use either the existing model parameters named here, an
 original set of parameters, or a combination of both. The \code{...} allows
-the user to pass an arbitrary set of original model parmeters into
+the user to pass an arbitrary set of original model parameters into
 \code{param.net}. Whereas there are strict checks with default modules for
 parameter validity, these checks are the user's responsibility with new modules.
 }
