@@ -10,11 +10,11 @@
 \arguments{
 \item{x}{A \code{\link{transmat}} object to be plotted}
 
+\item{style}{Character name of plot style. One of "phylo", "network",
+or "transmissionTimeline"}
+
 \item{...}{Additional plot arguments to be passed to lower-level plot
 functions (plot.network, plot.phylo, etc)}
-
-\item{Style}{character name of plot style. One of "phylo", "network",
-or "transmissionTimeline"}
 }
 \description{
 Plots the infection tree described in a \code{\link{transmat}}

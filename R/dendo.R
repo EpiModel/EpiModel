@@ -236,7 +236,7 @@ as.network.transmat <- function(x, ...){
 #'              network, a hierarchical tree, or a transmissionTimeline.
 #'
 #' @param x A \code{\link{transmat}} object to be plotted
-#' @param Style character name of plot style. One of "phylo", "network",
+#' @param style Character name of plot style. One of "phylo", "network",
 #'        or "transmissionTimeline"
 #' @param ...  Additional plot arguments to be passed to lower-level plot
 #'        functions (plot.network, plot.phylo, etc)
