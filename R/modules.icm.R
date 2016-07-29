@@ -29,7 +29,7 @@
 #' function calls, these are reset at the beginning of each simulation.
 #' \itemize{
 #'  \item \code{\link{initialize.icm}}: sets which agents are initially infected,
-#'        either through the initial conditions passed in \code{\link{init.icm}}.
+#'        through the initial conditions passed in \code{\link{init.icm}}.
 #' }
 #'
 #' @section Disease Status Modification Modules:

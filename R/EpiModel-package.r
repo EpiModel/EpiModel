@@ -62,7 +62,7 @@
 #'  \item \code{\link{param.dcm}}, \code{\link{param.icm}}, and
 #'        \code{\link{param.net}} are used to input epidemic parameters for each
 #'        of the three model classes. Parameters include the rate of contacts or
-#'        acts between actors, the likelihood of transmission per contact, and recovery and
+#'        acts between actors, the probability of transmission per contact, and recovery and
 #'        demographic rates for models that include those transitions.
 #'  \item \code{\link{init.dcm}}, \code{\link{init.icm}}, and \code{\link{init.net}}
 #'        are used to input the initial conditions for each class. The main
