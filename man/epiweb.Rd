@@ -14,7 +14,7 @@ and \code{"net"}.}
 }
 \description{
 Runs a web browser-based GUI of deterministic compartmental
-             models, stochastic individual contact models and basic network
+             models, stochastic individual contact models, and basic network
              models.
 }
 \details{

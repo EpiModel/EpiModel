@@ -22,7 +22,7 @@ are to provide basic tools for modeling in multiple frameworks for pedagogical
 purposes, and to support users in developing and expanding these tools using
 the package's utility functions for their own research.
 }
-\section{Model Classes and Types}{
+\section{Model Classes and Disease Types}{
 
 EpiModel currently provides functionality for three classes of epidemic
 models:
@@ -32,7 +32,7 @@ models:
        allows for easy specification of sensitivity models to compare multiple
        runs of the same model with different parameter values.
  \item \strong{Stochastic Individual Contact Models:} a novel class of
-       microsimulation models were developed to mirror the deterministic models
+       microsimulation models that were developed to mirror the deterministic models
        but add random variation in all components of the transmission dynamics
        system, from infection to recovery to vital dynamics (births and deaths).
  \item \strong{Stochastic Network Models:} using the underlying statistical
@@ -70,11 +70,11 @@ necessary parameters, initial conditions, and control settings:
  \item \code{\link{param.dcm}}, \code{\link{param.icm}}, and
        \code{\link{param.net}} are used to input epidemic parameters for each
        of the three model classes. Parameters include the rate of contacts or
-       acts between actors, the transmission per contact, and recovery and
+       acts between actors, the probability of transmission per contact, and recovery and
        demographic rates for models that include those transitions.
  \item \code{\link{init.dcm}}, \code{\link{init.icm}}, and \code{\link{init.net}}
        are used to input the initial conditions for each class. The main
-       conditions are limited to the numbers or, if applicaple, the specific
+       conditions are limited to the numbers or, if applicable, the specific
        agents in the population who are infected or recovered at the simulation
        outset.
  \item \code{\link{control.dcm}}, \code{\link{control.icm}}, and
@@ -84,7 +84,7 @@ necessary parameters, initial conditions, and control settings:
        simulations. Controls are also used to input new model functions (for
        DCMs) and new model modules (for ICMs and network models) to allow the
        user to simulate fully original epidemic models in EpiModel. See the
-       extensive documention linked on the control function help pages for
+       extensive documention linked to on the control function help pages for
        further details.
 }
 

@@ -10,7 +10,7 @@ get_sims(x, sims, var = "i.num")
 \item{x}{An object of class \code{netsim}.}
 
 \item{sims}{A vector of simulation numbers to retain in the output object,
-or \code{"mean"} which selects the one simulation with value of the
+or \code{"mean"} which selects the one simulation with the value of the
 variable specified in \code{var} closest to the mean of \code{var}
 across all simulations.}
 

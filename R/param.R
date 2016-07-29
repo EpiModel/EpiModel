@@ -13,7 +13,7 @@
 #'        exposure.
 #' @param inter.start Time step at which the intervention starts, between 1 and
 #'        the number of time steps specified in the model. This will default to
-#'        1 if the inter.eff is defined but this parameter is not.
+#'        1 if the \code{inter.eff} is defined but this parameter is not.
 #' @param act.rate Average number of transmissible acts per person per unit time.
 #'        For two-group models, this is the number of acts per group 1 persons
 #'        per unit time; a balance between the acts in groups 1 and 2 is necessary,
@@ -101,7 +101,7 @@
 #' New DCMs with EpiModel} tutorial. Briefly, an original model may use either
 #' the existing model parameters named here, an original set of parameters, or
 #' a combination of both. The \code{...} argument allows the user to pass an
-#' arbitrary set of new model parmeters into \code{param.dcm}. Whereas there are
+#' arbitrary set of new model parameters into \code{param.dcm}. Whereas there are
 #' strict checks for built-in models that the model parameters are valid,
 #' parameter validity is the user's responsibility with these original models.
 #'
@@ -162,7 +162,7 @@ param.dcm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
 #' For built-in models, the model specification will be chosen as a result of
 #' the model parameters entered here and the control settings in
 #' \code{\link{control.icm}}. One-group and two-group models are available, where
-#' the former assumes a homogenous mixing in the population whereas the latter
+#' the former assumes a homogenous mixing in the population and the latter
 #' assumes a purely heterogenous mixing between two distinct partitions in the
 #' population (e.g., men and women). Specifying any group two parameters (those
 #' with a \code{.g2}) implies the simulation of a two-group model. All the
@@ -184,7 +184,7 @@ param.dcm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
 #' set. These are passed into the control settings in \code{\link{control.icm}}.
 #' New modules may use either the existing model parameters named here, an
 #' original set of parameters, or a combination of both. The \code{...} allows
-#' the user to pass an arbitrary set of original model parmeters into
+#' the user to pass an arbitrary set of original model parameters into
 #' \code{param.icm}. Whereas there are strict checks with default modules for
 #' parameter validity, these checks are the user's responsibility with new modules.
 #'
@@ -259,9 +259,9 @@ param.icm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
 #'        exposure.
 #' @param inter.start Time step at which the intervention starts, between 1 and
 #'        the number of time steps specified in the model. This will default to
-#'        1 if the inter.eff is defined but this parameter is not.
+#'        1 if the \code{inter.eff} is defined but this parameter is not.
 #' @param act.rate Average number of transmissible acts \emph{per partnership}
-#'        per unit time (see act.rate Parameter below). This may also be a vector
+#'        per unit time (see \code{act.rate} Parameter below). This may also be a vector
 #'        of rates, with each element corresponding to the rate in in that time
 #'        step of infection (see Time-Varying Parameters below).
 #' @param rec.rate Average rate of recovery with immunity (in \code{SIR} models)
@@ -318,7 +318,7 @@ param.icm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
 #' (those with a \code{.m2}) implies the simulation of a bipartite model. All the
 #' parameters for a desired model type must be specified, even if they are zero.
 #'
-#' @section The act.rate Parameter:
+#' @section The \code{act.rate} Parameter:
 #' A key difference between these network models and DCM/ICM classes is the
 #' treatment of transmission events. With DCM and ICM, contacts or partnerships are
 #' mathematically instantaneous events: they have no duration in time, and thus
@@ -339,7 +339,7 @@ param.icm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
 #' the first two time steps of a person's infection, followed by a 0.1 for the
 #' third time step. If the infected person has not recovered or exited the
 #' population by the fourth time step, the third element in the vector will carry
-#' forward until one of those occurs or the simulation ends. For further examples,
+#' forward until one of those events occurs or the simulation ends. For further examples,
 #' see the NME tutorial,
 #' \href{http://statnet.github.io/nme/d3-tut3.html}{Time-Varying Biology & Behavior}.
 #'
@@ -349,7 +349,7 @@ param.icm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
 #' set. These are passed into the control settings in \code{\link{control.net}}.
 #' New modules may use either the existing model parameters named here, an
 #' original set of parameters, or a combination of both. The \code{...} allows
-#' the user to pass an arbitrary set of original model parmeters into
+#' the user to pass an arbitrary set of original model parameters into
 #' \code{param.net}. Whereas there are strict checks with default modules for
 #' parameter validity, these checks are the user's responsibility with new modules.
 #'

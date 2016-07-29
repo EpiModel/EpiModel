@@ -32,11 +32,11 @@
 #' \itemize{
 #'  \item \strong{param:} the epidemic parameters passed into the model through
 #'        \code{param}, with additional parameters added as necessary.
-#'  \item \strong{control:} the control settings passed into the model through,
+#'  \item \strong{control:} the control settings passed into the model through
 #'        \code{control}, with additional controls added as necessary.
-#'  \item \strong{epi:} a list of of data frames, one for each epidemiological
+#'  \item \strong{epi:} a list of data frames, one for each epidemiological
 #'        output from the model. Outputs for built-in models always include the
-#'        size of each compartment, as well as flows in, out, and between
+#'        size of each compartment, as well as flows in, out of, and between
 #'        compartments.
 #' }
 #'

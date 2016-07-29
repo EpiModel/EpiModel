@@ -9,7 +9,7 @@ get_nwstats(x, sim, network = 1)
 \arguments{
 \item{x}{An \code{EpiModel} object of class \code{\link{netsim}}.}
 
-\item{sim}{A vector of simulation numbers of extracted network.}
+\item{sim}{A vector of simulation numbers from the extracted network.}
 
 \item{network}{Network number, for simulations with multiple networks
 representing the population.}

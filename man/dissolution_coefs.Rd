@@ -22,7 +22,7 @@ A list of class \code{disscoef} with the following elements:
  \item \strong{dissolution:} right-hand sided STERGM dissolution formula
         passed in the function call.
  \item \strong{duration:} mean edge durations passed into the function.
- \item \strong{coef.crude:} mean durations transformed into a logit
+ \item \strong{coef.crude:} mean durations transformed into logit
        coefficients.
  \item \strong{coef.adj:} crude coefficients adjusted for the risk of
        death on edge persistence, if the \code{d.rate} argument is supplied.
@@ -40,7 +40,7 @@ used in a network model estimated with \code{\link{netest}}:
 \enumerate{
  \item \strong{Transformation:} the mean duration of edges in a network are
        mathematically transformed to logit coefficients.
- \item \strong{Adjustment:} In a dynamic network simulation in an open
+ \item \strong{Adjustment:} in a dynamic network simulation in an open
        population (in which there are deaths), it is further necessary to
        adjust these coefficients for dynamic simulations; this upward adjustment
        accounts for death as a competing risk to edge dissolution.

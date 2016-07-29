@@ -23,10 +23,10 @@ method, simulates from the static ERGM fit.}
 statistics of interest. The default is the formation formula of the
 network model contained in \code{x}.}
 
-\item{set.control.ergm}{Control arguments passed to simulate.ergm (see
+\item{set.control.ergm}{Control arguments passed to \code{simulate.ergm} (see
 details).}
 
-\item{set.control.stergm}{Control arguments passed to simulate.stergm (see
+\item{set.control.stergm}{Control arguments passed to \code{simulate.stergm} (see
 details).}
 
 \item{keep.tedgelist}{If \code{TRUE}, keep the timed edgelist generated from
@@ -39,7 +39,7 @@ on, using the \code{foreach} and \code{doParallel} implementations.}
 }
 \description{
 Runs dynamic diagnostics on an ERGM/STERGM estimated through
-             \code{netest}
+             \code{netest}.
 }
 \details{
 The \code{netdx} function handles dynamic network diagnostics for network
@@ -48,7 +48,7 @@ simulates a specified number of dynamic networks for a specified number of
 time steps per simulation. The network statistics in \code{nwstats.formula}
 are saved for each time step. Summary statistics for the formation model terms,
 as well as dissolution model and relational duration statistics, are then
-calculated for access when printing or plotting the \code{netdx} object.
+calculated and can be accessed when printing or plotting the \code{netdx} object.
 }
 \section{Control Arguments}{
 
@@ -62,7 +62,7 @@ page in the \code{tergm} package.
 
 Models fit with the ERGM method with the edges dissolution approximation
 (setting \code{edapprox} to \code{TRUE}) require a call first to
-\code{simulate.ergm} for simulating an initial network and second to
+\code{simulate.ergm} for simulating an initial network, and second to
 \code{simulate.network} for simulating that static network forward through
 time. Control parameters may be set for both processes in \code{netdx}.
 For the first, the parameters should be input through the

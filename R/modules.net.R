@@ -7,7 +7,7 @@
 #' simulation of epidemic dynamics on top of those evolving networks. The
 #' \code{\link{netsim}} function handles both the network and epidemic simulation
 #' tasks. Within this function are a series of modules that initialize the
-#' simulation, and then simulate new infections, recoveries, and demographics on
+#' simulation and then simulate new infections, recoveries, and demographics on
 #' the network. Modules also handle the resimulation of the network and some
 #' bookkeeping calculations for disease prevalence.
 #'
@@ -24,7 +24,7 @@
 #' listed below.
 #'
 #' @section Initialization Module:
-#' This function sets up the nodal attributes like disease status on the network
+#' This function sets up nodal attributes, like disease status, on the network
 #' at the starting time step of disease simulation, \eqn{t_1}. For multiple-simulation
 #' function calls, these are reset at the beginning of each individual simulation.
 #' \itemize{
@@ -49,7 +49,7 @@
 #'  \item \code{\link{recovery.net}}: simulates recovery from infection either to
 #'        a lifelong immune state (for SIR models) or back to the susceptible
 #'        state (for SIS models), as a function of the recovery rate parameters
-#'        specified \code{\link{param.net}}.
+#'        specified in \code{\link{param.net}}.
 #' }
 #'
 #'
@@ -91,7 +91,7 @@
 #'  \item \code{\link{get_prev.net}}: calculates the number in each disease state
 #'        (susceptible, infected, recovered) at each time step for those active
 #'        nodes in the network. If the \code{epi.by} control is used, it calculates
-#'        these statistics by a set of nodal attributes.
+#'        these statistics by a set of specified nodal attributes.
 #'  \item \code{\link{verbose.net}}: summarizes the current state of the simulation
 #'        and prints this to the console.
 #' }

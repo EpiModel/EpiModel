@@ -164,7 +164,7 @@ control.dcm <- function(type, nsteps, dt = 1, odemethod = "rk4",
 #' the simulation. The default infection module, for example, is contained in
 #' the \code{\link{infection.icm}} function.
 #'
-#' For original models, one may substitute replacement module functions for any
+#' For original models, one may substitute replacement module functions for any of
 #' the default functions. New modules may be added to the workflow at each time
 #' step by passing a module function via the \code{...} argument.
 #'
@@ -352,8 +352,8 @@ control.icm <- function(type, nsteps, nsims = 1, rec.rand = TRUE, b.rand = TRUE,
 #' @section The attr.rules Argument:
 #' The \code{attr.rules} parameter is used to specify the rules for how nodal
 #' attribute values for incoming nodes should be set. These rules are only
-#' necessary for models in which there are incoming nodes (i.e., births) and also
-#' there is a nodal attribute in the network model formation formula set in
+#' necessary for models in which there are incoming nodes (i.e., births) and 
+#' there is also a nodal attribute in the network model formation formula set in
 #' \code{\link{netest}}. There are three rules available for each attribute
 #' value:
 #' \itemize{
@@ -380,7 +380,7 @@ control.icm <- function(type, nsteps, nsims = 1, rec.rand = TRUE, b.rand = TRUE,
 #' the simulation. The default infection module, for example, is contained in
 #' the \code{\link{infection.net}} function.
 #'
-#' For original models, one may substitute replacement module functions for any
+#' For original models, one may substitute replacement module functions for any of
 #' the default functions. New modules may be added to the workflow at each time
 #' step by passing a module function via the \code{...} argument. Consult the
 #' \href{http://statnet.github.io/tut/NewNet.html}{New Network Models} tutorial.
