@@ -55,7 +55,7 @@ If using EpiModel for teaching or research, please include a citation:
 > Jenness SM, Goodreau SM, Morris M (2016). *EpiModel: Mathematical Modeling of Infectious Disease.* R Package Version 1.2.7. URL: http://epimodel.org/. DOI: 10.5281/zenodo.16767.
 
 #### Funding
-Development of this software is supported by the following grants from the National Institutes of Health: R01HD68395 (NICHD), T32HD007543 (NICHD), and R24HD042828 (NICHD).
+Development of this software has been supported by the following grants: [NIH R01HD68395](https://projectreporter.nih.gov/project_info_description.cfm?aid=8841605), [NIH R21HD075662](https://projectreporter.nih.gov/project_info_description.cfm?aid=8601779), [NIH R01AI108490](https://projectreporter.nih.gov/project_info_description.cfm?aid=9024415), [NIH P30AI050409](https://projectreporter.nih.gov/project_info_description.cfm?aid=9120767), [NIH P30AI027757](https://projectreporter.nih.gov/project_info_description.cfm?aid=9069392), and [CDC U38PS004646](https://projectreporter.nih.gov/project_info_details.cfm?aid=8926715).
 
 #### Copyright
 These materials are distributed under the GPL-3 license, with the following copyright and attribution requirements listed <a href="http://statnet.csde.washington.edu/attribution.shtml" target="_blank">here</a>.
