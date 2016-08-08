@@ -16,7 +16,7 @@ EpiModel: tools for simulating mathematical models of infectious disease. Epidem
 #### Installation
 The current release version can be found on <a href="http://cran.r-project.org/web/packages/EpiModel/index.html" target="_blank">CRAN</a> and installed with:
 ```r
-install.packages("EpiModel")
+install.packages("EpiModel", dependencies = TRUE)
 ```
 
 To install this development version, use the <a href="https://github.com/hadley/devtools" target="_blank">devtools package</a>:
