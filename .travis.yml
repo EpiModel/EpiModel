@@ -4,14 +4,14 @@ cache: packages
 
 warnings_are_errors: true
 
-after_success:
-  - Rscript -e 'covr::coveralls()'
-
 notifications:
   email:
     on_success: never
     on_failure: change
 
 env:
-  - global:
-      - NOT_CRAN=true
+  global:
+    - NOT_CRAN=true
+
+after_success:
+  - Rscript -e 'covr::coveralls()'
