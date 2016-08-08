@@ -9,9 +9,5 @@ notifications:
     on_success: never
     on_failure: change
 
-env:
-  global:
-    - NOT_CRAN=true
-
 after_success:
   - Rscript -e 'covr::coveralls()'
