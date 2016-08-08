@@ -48,7 +48,7 @@ devtools::install_github("statnet/EpiModel")
 #### Documentation
 The main website for EpiModel, with tutorials and other supporting files is <a href="http://epimodel.org/" target="_blank">http://epimodel.org/</a>. Users are encouraged to join the <a href="http://mailman11.u.washington.edu/mailman/listinfo/epimodel" target="_blank">email list for EpiModel</a> as a place to ask questions, report bugs, and tell us about your research using these tools.
 
-A good place to start learning about EpiModel is the main vignette, currently under review, but available in pre-press form <a href="http://statnet.github.io/tut/EpiModelVignette.pdf" target="_blank">here!</a>
+A good place to start learning about EpiModel is the main vignette, currently under review, but <a href="http://statnet.github.io/tut/EpiModelVignette.pdf" target="_blank">currently available in pre-press form here!</a>
 
 #### Citation
 If using EpiModel for teaching or research, please include a citation:
