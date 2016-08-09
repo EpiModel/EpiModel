@@ -166,3 +166,13 @@ test_that("edgelist_censor", {
   el <- sim$edgelist[[1]]
   expect_is(edgelist_censor(el), "matrix")
 })
+
+test_that("get_formula_terms", {
+  # plain nodematch
+  expect_equal(get_formula_terms(formula(~edges + nodematch("role", diff = TRUE, keep = 1:2))),'role')
+  expect_equal(get_formula_terms(formula(~edges + nodematch('role')+edgecov.ages('weight'))),c('role','weight'))
+  
+  # nodematch with offset, gave error #248
+  expect_equal(get_formula_terms(formula(~edges + offset(nodematch("role", diff = TRUE, keep = 1:2)))),'role')
+  
+})

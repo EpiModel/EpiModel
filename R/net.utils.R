@@ -704,7 +704,12 @@ get_attr_prop <- function(nw, fterms, only.formula = TRUE) {
 get_formula_terms <- function(formula) {
 
   fterms <- attributes(terms.formula(formula))$term.labels
-  fterms <- strsplit(fterms, split = "[\"]")
+  # if it has an offset term, needs to be processed differently
+  if(!is.null(attr(terms.formula(formula),'offset'))){
+    offTerm <- attr(terms.formula(formula),'offset')
+    fterms <-c(fterms,attr(terms.formula(formula),'variables')[[offTerm+1]])
+  }
+  fterms <- strsplit(as.character(fterms), split = "[\"]")
   tl <- sapply(fterms, length)
   if (all(tl == 1)) {
     fterms <- NULL
