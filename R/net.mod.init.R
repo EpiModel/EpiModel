@@ -135,7 +135,7 @@ initialize.net <- function(x, param, init, control, s) {
 
 
     ## Store current proportions of attr
-    dat$temp$t1.tab <- get_attr_prop(dat$nw, fterms)
+    dat$temp$t1.tab <- get_attr_prop(dat, fterms)
 
 
     ## Get initial prevalence

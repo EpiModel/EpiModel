@@ -54,6 +54,7 @@ test_that('mode switch works',{
 })
 
 test_that('edges+nodematch model works',{
+  sims = 500
   nw <- network.initialize(n = 100, directed = FALSE)
   # specify two different roles for the vertices
   nw%v%'rolemode'<-rep_len(c('a','b'),network.size(nw))
@@ -80,24 +81,37 @@ test_that('edges+nodematch model works',{
   init<- init.net(i.num = 10,
                   r.num = 0)
   
-  control_old <- control.net(type = "SIR", nsteps = 100, nsims = 12,
+  control_old <- control.net(type = "SIR", nsteps = 100, nsims = sims,
                              tea.status = FALSE,
                              save.network=FALSE,
                              use.pids = FALSE,
                              fast.edgelist=FALSE,
-                             verbose=FALSE)
+                             verbose=TRUE)
   set.seed(1)
   simold <- netsim(est2, param, init, control_old)
   
-  control_new <- control.net(type = "SIR", nsteps = 100, nsims = 12,
+  control_new <- control.net(type = "SIR", nsteps = 100, nsims = sims,
                              tea.status = FALSE,
                              save.network=FALSE,
                              use.pids = FALSE,
                              fast.edgelist=TRUE,
-                             verbose=FALSE)
+                             verbose=TRUE)
   set.seed(1)
   simnew <- netsim(est2, param, init, control_new)
   # need to run a number of sims and verify that the outcomes match on average
+  
+  pdf('edgelistPrevTimeseriesComparison.pdf')
+  plot(simold, y = 'i.num', qnts = 0.5,main=paste('i.num comparison for',sims, 'net and edgelist models'))
+  plot(simnew, y = 'i.num', qnts = 0.5,add=TRUE)
+  dev.off()
+  
+  pdf('edgelistFinalPrevBoxplot.pdf')
+  boxplot(x=list(net=as.numeric(simold$epi$i.num[100,]),
+                 edgelist=as.numeric(simnew$epi$i.num[100,])),
+          main='comparison final i.num, 500 sims, 100 steps')
+  dev.off()
+  IQR(as.numeric(simold$epi$i.num[100,]))
+  IQR(as.numeric(simnew$epi$i.num[100,]))
 
 })
 
