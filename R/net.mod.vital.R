@@ -421,6 +421,8 @@ births.net <- function(dat, at) {
 # internal function to either terminate nodes in the network object, or in the edgelist
 # depending on the mode of operation
 terminate_vertices<-function(dat,at,vids.to.terminate){
+  # if no vids, give back the dat
+  if (length(vids.to.terminate) == 0) return(dat)
   # if the network object exists, assume we are in network mode
   if(!is.null(dat[['nw']])){
     # deactivate the vertices on the network object
