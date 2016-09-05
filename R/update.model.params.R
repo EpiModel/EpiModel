@@ -6,6 +6,9 @@
 #mhf <- p$MHproposal.form
 #mhd <- p$MHproposal.diss
 
+
+#TODO: check speed costs of executing the appropriate check.ergmTerm function in order to provide consistent checking of network types, argument names, etc. 
+
 updateModelTermInputs<-function(dat){
   p <- dat$p
   mf <- p$model.form
@@ -41,6 +44,13 @@ updateModelTermInputs<-function(dat){
       #ui <- seq(along = u)   <-- this is in original code, I don't understand why
       #inputs <- c(ui, nodecov)
       inputs <-nodecov
+      mf$terms[[t]]$inputs <- c(0, length(mf$terms[[t]]$coef.names),
+                                length(inputs), inputs)
+    } else if (term$name=='concurrent'){
+      # ---- CONCURRENT -------------------
+      coef.names <- "concurrent"
+      name <- "concurrent"
+      inputs <- NULL
       mf$terms[[t]]$inputs <- c(0, length(mf$terms[[t]]$coef.names),
                                 length(inputs), inputs)
       

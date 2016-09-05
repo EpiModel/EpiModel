@@ -173,6 +173,95 @@ test_that('expected speed improvement',{
 })
 
 # TODO: add tests that non-supported models flagged correctly
+test_that('non-supported models give error',{
+  sims = 1
+  nw <- network.initialize(n = 100, directed = FALSE)
+  formation <- ~edges+offset(density)
+  target.stats <- c(30)
+  
+  # calculate dissolution coefficient with death rate
+  coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20,
+                                 d.rate = 0.0021)
+  coef.form <- c(30)  
+  # Reestimate the model with new coefficient
+  est2 <- netest(nw, formation, target.stats, coef.diss, coef.form=coef.form, verbose = FALSE)
+  
+  # Reset parameters to include demographic rates
+  param <- param.net(inf.prob = 0.3, 
+                     rec.rate = 0.02, 
+                     b.rate = 0.00, 
+                     ds.rate = 0.01, 
+                     di.rate = 0.0, 
+                     dr.rate = 0.0)
+  init<- init.net(i.num = 10,
+                  r.num = 0)
+  
+  control_old <- control.net(type = "SIR", nsteps = 10, nsims = sims,
+                             tea.status = FALSE,
+                             save.network=FALSE,
+                             use.pids = FALSE,
+                             fast.edgelist=TRUE,
+                             verbose=TRUE)
+  expect_error(netsim(est2, param, init, control_old),regexp = 'fast_edgelist mode does not know how to update the term')
+})
+
+test_that('edges+concurrent model works',{
+  sims = 10
+  nw <- network.initialize(n = 100, directed = FALSE)
+  formation <- ~edges+concurrent
+  target.stats <- c(50,35)
+  
+  # calculate dissolution coefficient with death rate
+  coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20,
+                                 d.rate = 0.0021)
+  
+  # Reestimate the model with new coefficient
+  set.seed(1)
+  est2 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
+  
+  # Reset parameters to include demographic rates
+  param <- param.net(inf.prob = 0.3, 
+                     rec.rate = 0.02, 
+                     b.rate = 0.00, 
+                     ds.rate = 0.01, 
+                     di.rate = 0.0, 
+                     dr.rate = 0.0)
+  init<- init.net(i.num = 10,
+                  r.num = 0)
+  
+  control_old <- control.net(type = "SIR", nsteps = 100, nsims = sims,
+                             tea.status = FALSE,
+                             save.network=FALSE,
+                             use.pids = FALSE,
+                             fast.edgelist=FALSE,
+                             verbose=TRUE)
+  set.seed(1)
+  simold <- netsim(est2, param, init, control_old)
+  
+  control_new <- control.net(type = "SIR", nsteps = 100, nsims = sims,
+                             tea.status = FALSE,
+                             save.network=FALSE,
+                             use.pids = FALSE,
+                             fast.edgelist=TRUE,
+                             verbose=TRUE)
+  set.seed(1)
+  simnew <- netsim(est2, param, init, control_new)
+  # need to run a number of sims and verify that the outcomes match on average
+  
+  pdf('edgelistPrevConcurrentTimeseriesComparison.pdf')
+  plot(simold, y = 'i.num', qnts = 0.5,main=paste('i.num comparison for',sims, 'net and edgelist models'))
+  plot(simnew, y = 'i.num', qnts = 0.5,add=TRUE)
+  dev.off()
+  
+  pdf('edgelistConcurrentFinalPrevBoxplot.pdf')
+  boxplot(x=list(net=as.numeric(simold$epi$i.num[100,]),
+                 edgelist=as.numeric(simnew$epi$i.num[100,])),
+          main='comparison final i.num, 500 sims, 100 steps')
+  dev.off()
+  IQR(as.numeric(simold$epi$i.num[100,]))
+  IQR(as.numeric(simnew$epi$i.num[100,]))
+  
+})
 
 
 
