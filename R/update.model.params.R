@@ -46,6 +46,31 @@ updateModelTermInputs<-function(dat){
       inputs <-nodecov
       mf$terms[[t]]$inputs <- c(0, length(mf$terms[[t]]$coef.names),
                                 length(inputs), inputs)
+      
+    } else if (term$name=='nodefactor'){
+      # ---- NODEFACTOR -------------------
+      # see ergm:::InitErgmTerm.nodefactor
+      # get the name of the attribute to be used for nodecov
+      attrname <- strsplit(term$coef.names,'.',fixed=TRUE)[[1]][2]
+      # collect the values for the attribute
+      nodecov <- dat$attr[[attrname]]
+      u <- sort(unique(nodecov))
+      # TODO: unable to check the 'base' argument because 
+      # that info not passed down to this label
+      #if (any(NVL(a$base, 0) != 0)) {
+        #u <- u[-a$base]
+        u <- u[-1]
+        if (length(u) == 0) {
+          stop(" nodefactor term should be deleted because it contributes no statistics")
+        }
+      #}
+      nodecov <- match(nodecov, u, nomatch = length(u) + 1)
+      ui <- seq(along = u)
+      inputs <- c(ui, nodecov)
+      attr(inputs, "ParamsBeforeCov") <- length(ui)
+      inputs <-nodecov
+      mf$terms[[t]]$inputs <- c(0, length(mf$terms[[t]]$coef.names),
+                                length(inputs), inputs)
     } else if (term$name=='concurrent'){
       # ---- CONCURRENT -------------------
       coef.names <- "concurrent"
@@ -55,6 +80,7 @@ updateModelTermInputs<-function(dat){
                                 length(inputs), inputs)
       
     } else {
+      # this is not one of the hardcoded terms, so stop
       stop('fast_edgelist mode does not know how to update the term ',term$name,' in the formation model formula')
     }
     
