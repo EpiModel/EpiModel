@@ -50,12 +50,8 @@ updateModelTermInputs<-function(dat){
       nodecov[dontmatch] <- length(u) + (1:sum(dontmatch))
       ui <- seq(along = u)
       if (args$diff==TRUE) {
-        #coef.names <- paste("nodematch", paste(attrname, collapse = "."), 
-        #                    u, sep = ".")
         inputs <- c(ui, nodecov)
       } else {
-        #coef.names <- paste("nodematch", paste(attrname, collapse = "."), 
-        #                    sep = ".")
         inputs <- nodecov
       }
       mf$terms[[t]]$inputs <- c(0, length(mf$terms[[t]]$coef.names),

@@ -115,6 +115,70 @@ test_that('edges+nodematch model works',{
 
 })
 
+test_that('edges+nodematch(diff=TRUE) model works',{
+  sims = 1
+  nw <- network.initialize(n = 100, directed = FALSE)
+  # specify two different roles for the vertices
+  nw%v%'rolemode'<-rep_len(c('a','b','c'),network.size(nw))
+  foo <- TRUE  # this is to test that evaluating formula args in calling environment works
+  valRange <- 2:3
+  formation <- ~edges+offset(nodematch('rolemode',diff=foo,keep=valRange))
+  target.stats <- 50
+  
+  # calculate dissolution coefficient with death rate
+  coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20,
+                                 d.rate = 0.0021)
+  # set iInf coef for offset statistic for nodematch "never form ties between vertcies with non matching attributes
+  coef.form <- c(-Inf,-Inf)  
+  
+  # Reestimate the model with new coefficient
+  set.seed(1)
+  est2 <- netest(nw, formation, target.stats, coef.diss, coef.form=coef.form, verbose = FALSE)
+  
+  # Reset parameters to include demographic rates
+  param <- param.net(inf.prob = 0.3, 
+                     rec.rate = 0.02, 
+                     b.rate = 0.00, 
+                     ds.rate = 0.01, 
+                     di.rate = 0.0, 
+                     dr.rate = 0.0)
+  init<- init.net(i.num = 10,
+                  r.num = 0)
+  
+  control_old <- control.net(type = "SIR", nsteps = 100, nsims = sims,
+                             tea.status = FALSE,
+                             save.network=FALSE,
+                             use.pids = FALSE,
+                             fast.edgelist=FALSE,
+                             verbose=TRUE)
+  set.seed(1)
+  simold <- netsim(est2, param, init, control_old)
+  
+  control_new <- control.net(type = "SIR", nsteps = 100, nsims = sims,
+                             tea.status = FALSE,
+                             save.network=FALSE,
+                             use.pids = FALSE,
+                             fast.edgelist=TRUE,
+                             verbose=TRUE)
+  set.seed(1)
+  simnew <- netsim(est2, param, init, control_new)
+  # need to run a number of sims and verify that the outcomes match on average
+  
+  pdf('edgelistPrevNodematchDiffTimeseriesComparison.pdf')
+  plot(simold, y = 'i.num', qnts = 0.5,main=paste('i.num comparison for',sims, 'net and edgelist models'))
+  plot(simnew, y = 'i.num', qnts = 0.5,add=TRUE)
+  dev.off()
+  
+  pdf('edgelistFinalPrevNodematchDiffBoxplot.pdf')
+  boxplot(x=list(net=as.numeric(simold$epi$i.num[100,]),
+                 edgelist=as.numeric(simnew$epi$i.num[100,])),
+          main=paste('comparison final i.num,',sims,'sims, 100 steps'))
+  dev.off()
+  IQR(as.numeric(simold$epi$i.num[100,]))
+  IQR(as.numeric(simnew$epi$i.num[100,]))
+  
+})
+
 test_that('expected speed improvement',{
   library(microbenchmark)
   nw <- network.initialize(n = 500, directed = FALSE)
