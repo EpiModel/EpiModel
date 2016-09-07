@@ -36,7 +36,6 @@ updateModelTermInputs<-function(dat){
       form <- dat$nwparam[[1]]$formation
       args<-get_formula_term_args_in_formula_env(form,t)
       # get the name of the attribute to be used for nodecov
-      #attrname <- strsplit(term$coef.names,'.',fixed=TRUE)[[1]][2]
       attrname <- args[[1]]
       # collect the values for the attribute
       nodecov <- dat$attr[[attrname]]
@@ -61,26 +60,22 @@ updateModelTermInputs<-function(dat){
       
       # ---- NODEFACTOR -------------------
       # see ergm:::InitErgmTerm.nodefactor
+      form <- dat$nwparam[[1]]$formation
+      args<-get_formula_term_args_in_formula_env(form,t)
       # get the name of the attribute to be used for nodecov
-      attrname <- strsplit(term$coef.names,'.',fixed=TRUE)[[1]][2]
-      # collect the values for the attribute
+      attrname <- args[[1]]      # collect the values for the attribute
       nodecov <- dat$attr[[attrname]]
       u <- sort(unique(nodecov))
-      # TODO: unable to check the 'base' argument because 
-      # that info not passed down to this level.
-      # may be possible to infer by which ones missing from coef.names?
-      #if (any(NVL(a$base, 0) != 0)) {
-        #u <- u[-a$base]
-        u <- u[-1]
+      if (any(NVL(args$base, 0) != 0)) {
+        u <- u[-args$base]
         if (length(u) == 0) {
           stop(" nodefactor term should be deleted because it contributes no statistics")
         }
-      #}
+      }
       nodecov <- match(nodecov, u, nomatch = length(u) + 1)
       ui <- seq(along = u)
       inputs <- c(ui, nodecov)
       attr(inputs, "ParamsBeforeCov") <- length(ui)
-      inputs <-nodecov
       mf$terms[[t]]$inputs <- c(0, length(mf$terms[[t]]$coef.names),
                                 length(inputs), inputs)
     } else if (term$name=='concurrent'){
@@ -93,7 +88,7 @@ updateModelTermInputs<-function(dat){
       
     } else {
       # this is not one of the hardcoded terms, so stop
-      stop('fast_edgelist mode does not know how to update the term ',term$name,' in the formation model formula')
+      stop("EpiModel's fast_edgelist mode does not know how to update the term '",term$name,"' in the formation model formula")
     }
     
   }

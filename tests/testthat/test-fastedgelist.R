@@ -84,6 +84,7 @@ test_that('edges+nodematch model works',{
   control_old <- control.net(type = "SIR", nsteps = 100, nsims = sims,
                              tea.status = FALSE,
                              save.network=FALSE,
+                             save.transmat = FALSE,
                              use.pids = FALSE,
                              fast.edgelist=FALSE,
                              verbose=TRUE)
@@ -93,6 +94,7 @@ test_that('edges+nodematch model works',{
   control_new <- control.net(type = "SIR", nsteps = 100, nsims = sims,
                              tea.status = FALSE,
                              save.network=FALSE,
+                             save.transmat = FALSE,
                              use.pids = FALSE,
                              fast.edgelist=TRUE,
                              verbose=TRUE)
@@ -148,6 +150,7 @@ test_that('edges+nodematch(diff=TRUE) model works',{
   control_old <- control.net(type = "SIR", nsteps = 100, nsims = sims,
                              tea.status = FALSE,
                              save.network=FALSE,
+                             save.transmat = FALSE,
                              use.pids = FALSE,
                              fast.edgelist=FALSE,
                              verbose=TRUE)
@@ -157,6 +160,7 @@ test_that('edges+nodematch(diff=TRUE) model works',{
   control_new <- control.net(type = "SIR", nsteps = 100, nsims = sims,
                              tea.status = FALSE,
                              save.network=FALSE,
+                             save.transmat = FALSE,
                              use.pids = FALSE,
                              fast.edgelist=TRUE,
                              verbose=TRUE)
@@ -210,6 +214,7 @@ test_that('expected speed improvement',{
   control_old <- control.net(type = "SIR", nsteps = 100, nsims = 1,
                              tea.status = FALSE,
                              save.network=FALSE,
+                             save.transmat = FALSE,
                              use.pids = FALSE,
                              fast.edgelist=FALSE,
                              verbose=FALSE)
@@ -218,6 +223,7 @@ test_that('expected speed improvement',{
   control_new <- control.net(type = "SIR", nsteps = 100, nsims = 1,
                              tea.status = FALSE,
                              save.network=FALSE,
+                             save.transmat = FALSE,
                              use.pids = FALSE,
                              fast.edgelist=TRUE,
                              verbose=FALSE)
@@ -263,6 +269,7 @@ test_that('non-supported models give error',{
   control_old <- control.net(type = "SIR", nsteps = 10, nsims = sims,
                              tea.status = FALSE,
                              save.network=FALSE,
+                             save.transmat = FALSE,
                              use.pids = FALSE,
                              fast.edgelist=TRUE,
                              verbose=TRUE)
@@ -296,6 +303,7 @@ test_that('edges+concurrent model works',{
   control_old <- control.net(type = "SIR", nsteps = 100, nsims = sims,
                              tea.status = FALSE,
                              save.network=FALSE,
+                             save.transmat = FALSE,
                              use.pids = FALSE,
                              fast.edgelist=FALSE,
                              verbose=TRUE)
@@ -305,6 +313,7 @@ test_that('edges+concurrent model works',{
   control_new <- control.net(type = "SIR", nsteps = 100, nsims = sims,
                              tea.status = FALSE,
                              save.network=FALSE,
+                             save.transmat = FALSE,
                              use.pids = FALSE,
                              fast.edgelist=TRUE,
                              verbose=TRUE)
@@ -328,7 +337,7 @@ test_that('edges+concurrent model works',{
 })
 
 test_that('edges+nodefactor model works',{
-  sims = 500
+  sims = 10
   nw <- network.initialize(n = 100, directed = FALSE)
   # specify two different roles for the vertices
   nw%v%'rolemode'<-rep_len(c('a','b','c'),network.size(nw))
@@ -356,6 +365,7 @@ test_that('edges+nodefactor model works',{
   control_old <- control.net(type = "SIR", nsteps = 100, nsims = sims,
                              tea.status = FALSE,
                              save.network=FALSE,
+                             save.transmat = FALSE,
                              use.pids = FALSE,
                              fast.edgelist=FALSE,
                              verbose=TRUE)
@@ -365,6 +375,7 @@ test_that('edges+nodefactor model works',{
   control_new <- control.net(type = "SIR", nsteps = 100, nsims = sims,
                              tea.status = FALSE,
                              save.network=FALSE,
+                             save.transmat = FALSE,
                              use.pids = FALSE,
                              fast.edgelist=TRUE,
                              verbose=TRUE)
