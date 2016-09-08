@@ -91,7 +91,7 @@ updateModelTermInputs<-function(dat){
       form <- dat$nwparam[[1]]$formation
       args<-get_formula_term_args_in_formula_env(form,t)
       
-      d <- args$d
+      d <- args[[1]]
       byarg <- args$byarg
       homophily <- args$homophily
       emptynwstats <- NULL
@@ -102,10 +102,11 @@ updateModelTermInputs<-function(dat){
           u <- c(u, NA)
         }
         nodecov <- match(nodecov, u)
-        if (length(u) == 1) 
+        if (length(u) == 1) {
           stop("Attribute given to degree() has only one value", 
                call. = FALSE)
-      }
+        }
+      } 
       if (!is.null(byarg) && !homophily) {
         lu <- length(u)
         du <- rbind(rep(d, lu), rep(1:lu, rep(length(d), lu)))
@@ -121,7 +122,8 @@ updateModelTermInputs<-function(dat){
           emptynwstats <- rep(0, length(d))
           emptynwstats[d == 0] <- attr(dat$el,'n') # network size
         }
-      } if (is.null(byarg)) {
+      } 
+      if (is.null(byarg)) {
         if (length(d) == 0) {
           return(NULL)
         }
@@ -142,28 +144,77 @@ updateModelTermInputs<-function(dat){
                                   length(inputs), inputs)
         mf$terms[[t]]$emptynwstats <- emptynwstats
   
-      }  else {
-        list(name = name, coef.names = coef.names, inputs = inputs, 
-             dependence = TRUE, minval = 0, maxval = network.size(nw), 
-             conflicts.constraints = "degreedist")
+      } else {
+        mf$terms[[t]]$inputs <- c(0, length(mf$terms[[t]]$coef.names),
+                                  length(inputs), inputs)
+        # belive it is also necessary to update the maxval for this statistic?
+        mf$terms[[t]]$maxval<- attr(dat$el,'n') # network size
       }
-      mf$terms[[t]]$inputs <- c(0, length(mf$terms[[t]]$coef.names),
-                                length(inputs), inputs)
-      # belive it is also necessary to update the maxval for this statistic?
-      mf$terms[[t]]$maxval<- attr(dat$el,'n') # network size
+     
       
+    } 
+    else if (term$name=='absdiff'){
+      # ---- ABSDIFF -------------------
+      # see ergm:::InitErgmTerm.absdiff
+      form <- dat$nwparam[[1]]$formation
+      args<-get_formula_term_args_in_formula_env(form,t)
+      attrname <- args[[1]]
+      # get the transformation function
+      pow <- args$pow
+      nodecov <- dat$attr[[attrname]]
+      #TODO: check of pow passed in correctly
+      mf$terms[[t]]$inputs <- c(pow, length(mf$terms[[t]]$coef.names),
+                                length(inputs), inputs)
     } else if (term$name=='nodecov'){
       # ---- NODECOV -------------------
       # see ergm:::InitErgmTerm.nodecov
       form <- dat$nwparam[[1]]$formation
       args<-get_formula_term_args_in_formula_env(form,t)
-      attrname <- args$attrname
+      attrname <- args[[1]]
       # get the transformation function
       f <- args$transform
       nodecov <- dat$attr[[attrname]]
       inputs <- f(nodecov)
       mf$terms[[t]]$inputs <- c(0, length(mf$terms[[t]]$coef.names),
                                 length(inputs), inputs)
+    } else if (term$name=='nodemix'){
+      # ---- NODEMIX -------------------
+      # see ergm:::InitErgmTerm.nodemix
+      form <- dat$nwparam[[1]]$formation
+      args<-get_formula_term_args_in_formula_env(form,t)
+      attrname <- args[[1]]
+      nodecov <- dat$attr[[attrname]]
+      base <- args$base
+      # ASSUMES NETWORK IS NOT BIPARTITE
+      u <- sort(unique(nodecov))
+      if (any(is.na(nodecov))) {
+        u <- c(u, NA)
+      }
+      nodecov <- match(nodecov, u, nomatch = length(u) + 1)
+      ui <- seq(along = u)
+      ucount <- sapply(ui, function(x) {
+        sum(nodecov == x, na.rm = TRUE)
+      })
+      uui <- matrix(1:length(ui)^2, length(ui), length(ui))
+      urm <- t(sapply(ui, rep, length(ui)))
+      ucm <- sapply(ui, rep, length(ui))
+      uun <- outer(u, u, paste, sep = ".")
+      if (!is.directed(nw)) {
+        uui <- uui[upper.tri(uui, diag = TRUE)]
+        urm <- urm[upper.tri(urm, diag = TRUE)]
+        ucm <- ucm[upper.tri(ucm, diag = TRUE)]
+        uun <- uun[upper.tri(uun, diag = TRUE)]
+      }
+      if (any(NVL(a$base, 0) != 0)) {
+        urm <- as.vector(urm)[-a$base]
+        ucm <- as.vector(ucm)[-a$base]
+        uun <- as.vector(uun)[-a$base]
+      }
+      inputs <- c(urm, ucm, nodecov)
+      attr(inputs, "ParamsBeforeCov") <- 2 * length(uun)
+      mf$terms[[t]]$inputs <- c(0, length(mf$terms[[t]]$coef.names),
+                                length(inputs), inputs)
+      
     } else {
       # this is not one of the hardcoded terms, so stop
       stop("EpiModel's fast_edgelist mode does not know how to update the term '",term$name,"' in the formation model formula")
