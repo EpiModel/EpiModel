@@ -80,12 +80,90 @@ updateModelTermInputs<-function(dat){
                                 length(inputs), inputs)
     } else if (term$name=='concurrent'){
       # ---- CONCURRENT -------------------
-      coef.names <- "concurrent"
-      name <- "concurrent"
+      # concurrent doesn't actually accept any inputs
       inputs <- NULL
       mf$terms[[t]]$inputs <- c(0, length(mf$terms[[t]]$coef.names),
                                 length(inputs), inputs)
       
+    } else if (term$name=='degree'){
+      # ---- DEGREEE -------------------
+      # see ergm:::InitErgmTerm.degree
+      form <- dat$nwparam[[1]]$formation
+      args<-get_formula_term_args_in_formula_env(form,t)
+      
+      d <- args$d
+      byarg <- args$byarg
+      homophily <- args$homophily
+      emptynwstats <- NULL
+      if (!is.null(byarg)) {
+        nodecov <- dat$attr[[byarg]]
+        u <- sort(unique(nodecov))
+        if (any(is.na(nodecov))) {
+          u <- c(u, NA)
+        }
+        nodecov <- match(nodecov, u)
+        if (length(u) == 1) 
+          stop("Attribute given to degree() has only one value", 
+               call. = FALSE)
+      }
+      if (!is.null(byarg) && !homophily) {
+        lu <- length(u)
+        du <- rbind(rep(d, lu), rep(1:lu, rep(length(d), lu)))
+        if (any(du[1, ] == 0)) {
+          emptynwstats <- rep(0, ncol(du))
+          tmp <- du[2, du[1, ] == 0]
+          for (i in 1:length(tmp)) tmp[i] <- sum(nodecov == 
+                                                   tmp[i])
+          emptynwstats[du[1, ] == 0] <- tmp
+        }
+      }  else {
+        if (any(d == 0)) {
+          emptynwstats <- rep(0, length(d))
+          emptynwstats[d == 0] <- attr(dat$el,'n') # network size
+        }
+      } if (is.null(byarg)) {
+        if (length(d) == 0) {
+          return(NULL)
+        }
+        inputs <- c(d)
+      }  else if (homophily) {
+        if (length(d) == 0) {
+          return(NULL)
+        }
+        inputs <- c(d, nodecov)
+      }  else {
+        if (ncol(du) == 0) {
+          return(NULL)
+        }
+        inputs <- c(as.vector(du), nodecov)
+      }
+      if (!is.null(emptynwstats)) {
+        mf$terms[[t]]$inputs <- c(0, length(mf$terms[[t]]$coef.names),
+                                  length(inputs), inputs)
+        mf$terms[[t]]$emptynwstats <- emptynwstats
+  
+      }  else {
+        list(name = name, coef.names = coef.names, inputs = inputs, 
+             dependence = TRUE, minval = 0, maxval = network.size(nw), 
+             conflicts.constraints = "degreedist")
+      }
+      mf$terms[[t]]$inputs <- c(0, length(mf$terms[[t]]$coef.names),
+                                length(inputs), inputs)
+      # belive it is also necessary to update the maxval for this statistic?
+      mf$terms[[t]]$maxval<- attr(dat$el,'n') # network size
+      
+    } else if (term$name=='nodecov'){
+      # ---- NODECOV -------------------
+      # see ergm:::InitErgmTerm.nodecov
+      form <- dat$nwparam[[1]]$formation
+      args<-get_formula_term_args_in_formula_env(form,t)
+      attrname <- args$attrname
+      # get the transformation function
+      f <- args$transform
+      nodecov <- dat$attr[[attrname]]
+      inputs <- f(nodecov)
+      mf$terms[[t]]$inputs <- c(0, length(mf$terms[[t]]$coef.names),
+                                length(inputs), inputs)
     } else {
       # this is not one of the hardcoded terms, so stop
       stop("EpiModel's fast_edgelist mode does not know how to update the term '",term$name,"' in the formation model formula")
