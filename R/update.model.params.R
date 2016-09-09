@@ -161,7 +161,7 @@ updateModelTermInputs<-function(dat){
       attrname <- args[[1]]
       # get the transformation function
       pow <- args$pow
-      nodecov <- dat$attr[[attrname]]
+      inputs <- dat$attr[[attrname]]
       #TODO: check of pow passed in correctly
       mf$terms[[t]]$inputs <- c(pow, length(mf$terms[[t]]$coef.names),
                                 length(inputs), inputs)
@@ -174,7 +174,12 @@ updateModelTermInputs<-function(dat){
       # get the transformation function
       f <- args$transform
       nodecov <- dat$attr[[attrname]]
-      inputs <- f(nodecov)
+      # strange that the original version of the term doesn't require this logic to implement the default term..
+      if(!is.null(f)){
+        inputs <- f(nodecov)
+      } else {
+        inputs <- nodecov
+      }
       mf$terms[[t]]$inputs <- c(0, length(mf$terms[[t]]$coef.names),
                                 length(inputs), inputs)
     } else if (term$name=='nodemix'){
