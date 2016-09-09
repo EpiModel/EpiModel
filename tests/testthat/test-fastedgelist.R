@@ -399,6 +399,130 @@ test_that('edges+nodefactor model works',{
 })
 
 
+
+compareNetVsElmodel <- function(est,modelName,param,init,numSteps=100,numSims=1){
+  
+  
+  control_noEl <- control.net(type = "SIR", nsteps = numSteps, nsims = numSims,
+                             tea.status = FALSE,
+                             save.network=FALSE,
+                             save.transmat = FALSE,
+                             use.pids = FALSE,
+                             fast.edgelist=FALSE,
+                             verbose=TRUE)
+  message('starting network-based sims')
+  simNoEl<- netsim(est, param, init, control_noEl)
+  control_el <- control.net(type = "SIR", nsteps = numSteps, nsims = numSims,
+                             tea.status = FALSE,
+                             save.network=FALSE,
+                             save.transmat = FALSE,
+                             use.pids = FALSE,
+                             fast.edgelist=TRUE,
+                             verbose=TRUE)
+  message('starting edgelist-based sims')
+  simEl <- netsim(est, param, init, control_el)
+  message('comparing results')
+  # generate plots in external file
+  
+  pdf(file = paste('comparisonsFor',modelName,'.pdf',sep=''))
+  
+  # model summary info
+  plot(0:10, type = "n", xaxt="n", yaxt="n", bty="n", xlab = "", ylab = "",main='model params:')
+  text(3,9,labels= est$formation)
+  text(3,8,labels= paste(est$target.stats))
+  text(rep(8,9),y = 9:1,labels = paste(names(simEl$param),simEl$param,sep='='))
+
+  plot(simNoEl, y = 'i.num', qnts = 0.5,
+       mean.col='blue',
+       main=paste(modelName,'i.num for',numSims, 'net and el models'))
+  plot(simEl, y = 'i.num', qnts = 0.5,add=TRUE,
+       mean.col='green' )
+  legend(0,1,c('net','el'),fill = c('blue','green'))
+
+   boxplot(x=list(net=as.numeric(simNoEl$epi$i.num[numSteps,]),
+                  edgelist=as.numeric(simEl$epi$i.num[numSteps,])),
+           main=paste(modelName,'final i.num distribution,',numSims,'sims, ',numSteps,' steps'))
+   
+   dev.off()
+
+  invisible(list(simNoEl,simEl))
+}
+
+test_that('edges+absdiff model works',{
+  nw <- network.initialize(n = 100, directed = FALSE)
+  # specify random numeric value for vertices
+  nw%v%'numParam'<-runif(network.size(nw))
+  formation <- ~edges+absdiff('numParam')
+  target.stats <- c(50,10)
+  param <- param.net(inf.prob = 0.3, 
+                     rec.rate = 0.02, 
+                     b.rate = 0.00, # <- need to leave births at zero because have not defined module to give new values
+                     ds.rate = 0.01, 
+                     di.rate = 0.01, 
+                     dr.rate = 0.01)
+  init<- init.net(i.num = 10,
+                  r.num = 0)
+  
+  # calculate dissolution coefficient with death rate
+  coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 2,
+                                 d.rate = 0.0021)
+  
+  # estimate the model with new coefficient
+  est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
+  
+  models <- compareNetVsElmodel(est, 'Absdiff',param,init,numSteps = 5,numSims = 5)
+})
+
+test_that('edges+nodecov model works',{
+  nw <- network.initialize(n = 100, directed = FALSE)
+  # specify random numeric value for vertices
+  nw%v%'numParam'<-runif(network.size(nw))
+  formation <- ~edges+nodecov('numParam',transform=sum,transformname='Sum')
+  target.stats <- c(50,10)
+  param <- param.net(inf.prob = 0.3, 
+                     rec.rate = 0.02, 
+                     b.rate = 0.00, # <- need to leave births at zero because have not defined module to give new values
+                     ds.rate = 0.01, 
+                     di.rate = 0.01, 
+                     dr.rate = 0.01)
+  init<- init.net(i.num = 10,
+                  r.num = 0)
+  
+  # calculate dissolution coefficient with death rate
+  coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 2,
+                                 d.rate = 0.0021)
+  
+  # estimate the model with new coefficient
+  est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
+  
+  models <- compareNetVsElmodel(est, 'Nodecov',param,init,numSteps = 5,numSims = 5)
+})
+
+test_that('edges+nodecov model works',{
+  data(florentine)
+
+  formation <- ~edges+nodecov('wealth')
+  target.stats <- c(20,2168)
+  param <- param.net(inf.prob = 0.3, 
+                     rec.rate = 0.02, 
+                     b.rate = 0.00, # <- need to leave births at zero because have not defined module to give new values
+                     ds.rate = 0.01, 
+                     di.rate = 0.01, 
+                     dr.rate = 0.01)
+  init<- init.net(i.num = 10,
+                  r.num = 0)
+  
+  # calculate dissolution coefficient with death rate
+  coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 2,
+                                 d.rate = 0.0021)
+  
+  # estimate the model with new coefficient
+  est <- netest(flomarriage, formation, target.stats, coef.diss, verbose = FALSE)
+  
+  models <- compareNetVsElmodel(est, 'Nodecov',param,init,numSteps = 100,numSims = 5)
+})
+
+
 plotvital<-function(netsim){
   deaths<-as.vector(netsim$epi$ds.flow+netsim$epi$di.flow+netsim$epi$dr.flow)[,1]
   births<-netsim$epi$b.flow[,1]
