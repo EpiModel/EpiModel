@@ -778,7 +778,7 @@ draw_means <- function(x, y, mean.smooth, mean.lwd,
     if (nsims == 1) {
       mean.prev <- x[[loc]][[y[j]]][, 1]
     } else {
-      mean.prev <- rowMeans(x[[loc]][[y[j]]])
+      mean.prev <- rowMeans(x[[loc]][[y[j]]], na.rm = TRUE)
     }
     if (mean.smooth == TRUE) {
       mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev), y = mean.prev))$y
