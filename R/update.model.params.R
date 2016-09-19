@@ -42,6 +42,8 @@ updateModelTermInputs<-function(dat){
       args<-get_formula_term_args_in_formula_env(form,t)
       # get the name of the attribute to be used for nodecov
       attrname <- args[[1]]
+      diff<-args$diff
+      if(is.null(diff)) diff <- FALSE
       # collect the values for the attribute
       nodecov <- dat$attr[[attrname]]
       u <- sort(unique(nodecov))
@@ -53,7 +55,7 @@ updateModelTermInputs<-function(dat){
       dontmatch <- nodecov == (length(u) + 1)
       nodecov[dontmatch] <- length(u) + (1:sum(dontmatch))
       ui <- seq(along = u)
-      if (args$diff==TRUE) {
+      if (diff==TRUE) {
         inputs <- c(ui, nodecov)
       } else {
         inputs <- nodecov
