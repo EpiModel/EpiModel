@@ -522,6 +522,54 @@ test_that('edges+nodecov model works',{
   models <- compareNetVsElmodel(est, 'Nodecov',param,init,numSteps = 100,numSims = 5)
 })
 
+test_that('edges+nodemix model works',{
+  nw <- network.initialize(n = 100, directed = FALSE)
+  # specify random categorical value for vertices
+  nw%v%'rolemode'<-rep_len(c('a','b','c'),network.size(nw))
+  formation <- ~edges+nodemix('rolemode',base=1)
+  target.stats <- c(50,12,8,8,9,8)
+  param <- param.net(inf.prob = 0.3, 
+                     rec.rate = 0.02, 
+                     b.rate = 0.00, # <- need to leave births at zero because have not defined module to give new values
+                     ds.rate = 0.01, 
+                     di.rate = 0.01, 
+                     dr.rate = 0.01)
+  init<- init.net(i.num = 10,
+                  r.num = 0)
+  
+  # calculate dissolution coefficient with death rate
+  coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 2,
+                                 d.rate = 0.0021)
+  
+  # estimate the model with new coefficient
+  est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
+  
+  models <- compareNetVsElmodel(est, 'Nodmix',param,init,numSteps = 5,numSims = 5)
+})
+
+test_that('edges+degree model works',{
+  nw <- network.initialize(n = 100, directed = FALSE)
+  formation <- ~edges+degree(1:3)
+  target.stats <- c(50,44,14,8)
+  param <- param.net(inf.prob = 0.3, 
+                     rec.rate = 0.02, 
+                     b.rate = 0.00, # <- need to leave births at zero because have not defined module to give new values
+                     ds.rate = 0.01, 
+                     di.rate = 0.01, 
+                     dr.rate = 0.01)
+  init<- init.net(i.num = 10,
+                  r.num = 0)
+  
+  # calculate dissolution coefficient with death rate
+  coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 2,
+                                 d.rate = 0.0021)
+  
+  # estimate the model with new coefficient
+  est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
+  
+  models <- compareNetVsElmodel(est, 'Degree',param,init,numSteps = 5,numSims = 5)
+})
+
 
 plotvital<-function(netsim){
   deaths<-as.vector(netsim$epi$ds.flow+netsim$epi$di.flow+netsim$epi$dr.flow)[,1]

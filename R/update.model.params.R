@@ -21,6 +21,11 @@ updateModelTermInputs<-function(dat){
   # by ergm.getmodel using the network object, and this has also validated the terms
   # so for most terms we only need to setup the specific values of the input vectors
   # loop over formation model terms and update
+  
+  # the input vectors are padded out as the would be by updatemodel.ErgmTerm
+  #  outlist$inputs <- c(ifelse(is.null(tmp), 0, tmp),
+  # length(outlist$coef.names), 
+  # length(outlist$inputs), outlist$inputs)
   for (t in seq_along(mf$terms)){
     term<-mf$terms[[t]]
   
@@ -76,7 +81,7 @@ updateModelTermInputs<-function(dat){
       ui <- seq(along = u)
       inputs <- c(ui, nodecov)
       attr(inputs, "ParamsBeforeCov") <- length(ui)
-      mf$terms[[t]]$inputs <- c(0, length(mf$terms[[t]]$coef.names),
+      mf$terms[[t]]$inputs <- c(length(ui), length(mf$terms[[t]]$coef.names),
                                 length(inputs), inputs)
     } else if (term$name=='concurrent'){
       # ---- CONCURRENT -------------------
@@ -210,14 +215,14 @@ updateModelTermInputs<-function(dat){
         ucm <- ucm[upper.tri(ucm, diag = TRUE)]
         uun <- uun[upper.tri(uun, diag = TRUE)]
       }
-      if (any(NVL(a$base, 0) != 0)) {
-        urm <- as.vector(urm)[-a$base]
-        ucm <- as.vector(ucm)[-a$base]
-        uun <- as.vector(uun)[-a$base]
+      if (any(NVL(base, 0) != 0)) {
+        urm <- as.vector(urm)[-base]
+        ucm <- as.vector(ucm)[-base]
+        uun <- as.vector(uun)[-base]
       }
       inputs <- c(urm, ucm, nodecov)
       attr(inputs, "ParamsBeforeCov") <- 2 * length(uun)
-      mf$terms[[t]]$inputs <- c(0, length(mf$terms[[t]]$coef.names),
+      mf$terms[[t]]$inputs <- c(2 * length(uun), length(mf$terms[[t]]$coef.names),
                                 length(inputs), inputs)
       
     } else {
