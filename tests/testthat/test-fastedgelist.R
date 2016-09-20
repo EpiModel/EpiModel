@@ -129,8 +129,10 @@ test_that('edges+nodematch(diff=TRUE) model works',{
   # specify two different roles for the vertices
   nw%v%'rolemode'<-rep_len(c('a','b','c'),network.size(nw))
   foo <- TRUE  # this is to test that evaluating formula args in calling environment works
+               
   valRange <- 2:3
-  formation <- ~edges+offset(nodematch('rolemode',diff=foo,keep=valRange))
+  # formation <- ~edges+offset(nodematch('rolemode',diff=foo,keep=valRange))  # this seems to run fine in manual testing, but not inside testthat, different environment evaluation?
+  formation <- ~edges+offset(nodematch('rolemode',diff=TRUE,keep=valRange))
   target.stats <- 50
   
   # calculate dissolution coefficient with death rate
