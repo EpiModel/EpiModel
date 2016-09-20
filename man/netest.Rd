@@ -35,10 +35,10 @@ full STERGM estimation (see details).}
 simulates a static network from the fitted network model, for
 storage efficiency purposes.}
 
-\item{set.control.ergm}{Control arguments passed to simulate.ergm (see
+\item{set.control.ergm}{Control arguments passed to \code{simulate.ergm} (see
 details).}
 
-\item{set.control.stergm}{Control arguments passed to simulate.stergm (see
+\item{set.control.stergm}{Control arguments passed to \code{simulate.stergm} (see
 details).}
 
 \item{verbose}{Print model fitting progress to console.}
@@ -93,13 +93,13 @@ package \code{tergm}.
 
 The \code{ergm} and \code{stergm} functions allow control settings for the
 model fitting process. When fitting a STERGM directly (setting \code{edapprox}
-to \code{FALSE}) control parameters may be passed to the \code{stergm}
+to \code{FALSE}), control parameters may be passed to the \code{stergm}
 function with the \code{set.control.stergm} argument in \code{netest}. The
 controls should be input through the \code{control.stergm()} function, with
 the available parameters listed in the \code{\link{control.stergm}} help page
 in the \code{tergm} package.
 
-When fitting a STERGM indirectly (setting \code{edapprox} to \code{TRUE})
+When fitting a STERGM indirectly (setting \code{edapprox} to \code{TRUE}),
 control settings may be passed to the \code{ergm} function using
 \code{set.control.ergm} in \code{netest}. The controls should be input through
 the \code{control.ergm()} function, with the available parameters listed in the

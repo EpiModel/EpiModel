@@ -52,7 +52,7 @@ bipvals <- function(nw, mode, val) {
 #' @details
 #' This function calculates whether equilibrium in disease prevalence, or any
 #' other fraction of two compartments contained in an epidemic model, have
-#' reach equilibrium over a time series. Equilibrium is calculated as the
+#' reached equilibrium over a time series. Equilibrium is calculated as the
 #' absolute value of the difference of the maximum prevalence and minimum
 #' prevalence over a specified time series. That time series is specified as the
 #' final \code{nsteps} time steps of an epidemic model. A larger \code{nsteps}
@@ -237,7 +237,7 @@ check_bip_degdist <- function(num.m1, num.m2,
 #' attributes. Nodal attribute dynamics in \code{ndtv} movies require a temporally
 #' extended attribute (TEA) containing a standard R color for each node at each
 #' time step. By default, the \code{EpiModel} package uses TEAs to store disease
-#' status history in network model simulations run in \code{\link{netsim}}. But
+#' status history in network model simulations run in \code{\link{netsim}}. But,
 #' that status TEA is in numeric format (0, 1, 2). The \code{color_tea} function
 #' transforms those numeric values of that disease status TEA into a TEA with
 #' color values in order to visualize status changes in \code{ndtv}.
@@ -350,7 +350,7 @@ copy_toall_attr <- function(dat, at, fterms) {
 #' \enumerate{
 #'  \item \strong{Transformation:} the mean duration of edges in a network are
 #'        mathematically transformed to logit coefficients.
-#'  \item \strong{Adjustment:} In a dynamic network simulation in an open
+#'  \item \strong{Adjustment:} in a dynamic network simulation in an open
 #'        population (in which there are deaths), it is further necessary to
 #'        adjust these coefficients for dynamic simulations; this upward adjustment
 #'        accounts for death as a competing risk to edge dissolution.
@@ -383,7 +383,7 @@ copy_toall_attr <- function(dat, at, fterms) {
 #'  \item \strong{dissolution:} right-hand sided STERGM dissolution formula
 #'         passed in the function call.
 #'  \item \strong{duration:} mean edge durations passed into the function.
-#'  \item \strong{coef.crude:} mean durations transformed into a logit
+#'  \item \strong{coef.crude:} mean durations transformed into logit
 #'        coefficients.
 #'  \item \strong{coef.adj:} crude coefficients adjusted for the risk of
 #'        death on edge persistence, if the \code{d.rate} argument is supplied.

@@ -221,3 +221,112 @@ ssample <- function(x, size, replace = FALSE, prob = NULL) {
 
 }
 
+
+#' @title Get Individual Degree from Network or Edgelist
+#'
+#' @description A fast method for querying the current degree of all individuals
+#'              within a network.
+#'
+#' @param x Either an object of class \code{network} or \code{edgelist} generated
+#'        from a network. If \code{x} is an edgelist, then it must contain
+#'        an attribute for the total network size, \code{n}.
+#'        
+#' @details 
+#' Individual-level data on the current degree of nodes within a network is
+#' often useful for summary statistics and modeling complex interactions between
+#' degree. Given a \code{network} class object, \code{net}, one way to look 
+#' up the current degree is to get a summary of the ERGM term, \code{sociality},
+#' as in: \code{summary(net ~ sociality(base = 0))}. But that is computionally
+#' inefficient for a number of reasons. This function provide a fast method 
+#' for generating the vector of degree using a query of the edgelist. It is
+#' even faster if the parameter \code{x} is already transformed as an edgelist.
+#' 
+#' @export
+#' 
+#' @examples 
+#' nw <- network.initialize(500, directed = FALSE) 
+#' 
+#' set.seed(1)
+#' fit <- ergm(nw ~ edges, target.stats = 250)
+#' sim <- simulate(fit)
+#'
+#' # Slow ERGM-based method
+#' ergm.method <- unname(summary(sim ~ sociality(base = 0)))
+#' ergm.method  
+#'  
+#' # Fast tabulate method with network object  
+#' deg.net <- get_degree(sim)
+#' deg.net
+#' 
+#' # Even faster if network already transformed into an edgelist
+#' el <- as.edgelist(sim)
+#' deg.el <- get_degree(el)
+#' deg.el
+#' 
+#' identical(ergm.method, deg.net, deg.el)
+#'
+get_degree <- function(x) {
+  if (inherits(x, "network")) {
+    x <- as.edgelist(x)
+  }
+  if (is.null(attr(x, "n"))) {
+    stop("x missing an n attribute")
+  }
+  n <- attr(x, "n")
+  out <- tabulate(x, nbins = n)
+  return(out)
+}
+
+
+#' @title Add New Epidemiology Variables
+#'
+#' @description Inspired by \code{dplyr::mutate}, \code{mutate_epi} adds new 
+#'              variables to the epidemiological and related variables within 
+#'              an object of class \code{netsim}.
+#'
+#' @param sim An object of class \code{netsim}.
+#' @param ... Name-value pairs of expressions (see examples below).
+#'  
+#' @return 
+#' An object of class \code{netsim} with the additional variables.      
+#'  
+#' @export
+#' 
+#' @examples 
+#' nw <- network.initialize(n = 100, bipartite = 50, directed = FALSE)
+#' formation <- ~edges
+#' target.stats <- 50
+#' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
+#' est1 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
+#' 
+#' # Epidemic model
+#' param <- param.net(inf.prob = 0.3, inf.prob.m2 = 0.15)
+#' init <- init.net(i.num = 1, i.num.m2 = 0)
+#' control <- control.net(type = "SI", nsteps = 100, nsims = 5, 
+#'                        verbose = FALSE)
+#' mod1 <- netsim(est1, param, init, control)
+#' mod1
+#' 
+#' # Add the prevalences to the dataset
+#' mod1 <- mutate_epi(mod1, i.prev = i.num / num,
+#'                          i.prev.m2 = i.num.m2 / num.m2)
+#' plot(mod1, y = c("i.prev", "i.prev.m2"), qnts = 0.5, leg = TRUE)                        
+#'                          
+#' # Add incidence rate per 100 person years (assume time step = 1 week)
+#' mod1 <- mutate_epi(mod1, ir100 = 5200*(si.flow + si.flow.m2) / 
+#'                                       (s.num + s.num.m2))       
+#' df <- as.data.frame(mod1)
+#' df$ir100
+#'
+mutate_epi <- function(sim, ...) {
+  
+  if (!inherits(sim, "netsim")) {
+    stop("sim must an an object of class netsim", call. = FALSE)
+  }
+  
+  dt <- lazy_dots(...)
+  ndat <- lazy_eval(dt, sim$epi)
+  
+  sim$epi <- c(sim$epi, ndat)
+  return(sim)
+}

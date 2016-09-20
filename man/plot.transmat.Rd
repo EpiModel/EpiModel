@@ -8,17 +8,17 @@
   "transmissionTimeline"), ...)
 }
 \arguments{
-\item{x}{a \code{\link{transmat}} object to be plotted}
+\item{x}{A \code{\link{transmat}} object to be plotted}
 
-\item{style}{character name of plot style. One of "phylo", "network",
+\item{style}{Character name of plot style. One of "phylo", "network",
 or "transmissionTimeline"}
 
-\item{...}{additional plot arguments to be passed to lower-level plot
+\item{...}{Additional plot arguments to be passed to lower-level plot
 functions (plot.network, plot.phylo, etc)}
 }
 \description{
 Plots the infection tree described in a \code{\link{transmat}}
-             object in one of several styles: phylogentic tree, an un-rooted
+             object in one of several styles: phylogenetic tree, an un-rooted
              network, a hierarchical tree, or a transmissionTimeline.
 }
 \details{

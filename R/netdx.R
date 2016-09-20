@@ -2,7 +2,7 @@
 #' @title Dynamic Network Model Diagnostics
 #'
 #' @description Runs dynamic diagnostics on an ERGM/STERGM estimated through
-#'              \code{netest}
+#'              \code{netest}.
 #'
 #' @param x An \code{EpiModel} object of class \code{netest}.
 #' @param nsims Number of simulations to run.
@@ -13,9 +13,9 @@
 #' @param nwstats.formula A right-hand sided ERGM formula with the network
 #'        statistics of interest. The default is the formation formula of the
 #'        network model contained in \code{x}.
-#' @param set.control.ergm Control arguments passed to simulate.ergm (see
+#' @param set.control.ergm Control arguments passed to \code{simulate.ergm} (see
 #'        details).
-#' @param set.control.stergm Control arguments passed to simulate.stergm (see
+#' @param set.control.stergm Control arguments passed to \code{simulate.stergm} (see
 #'        details).
 #' @param keep.tedgelist If \code{TRUE}, keep the timed edgelist generated from
 #'        the dynamic simulations, for further analysis on edge durations.
@@ -30,7 +30,7 @@
 #' time steps per simulation. The network statistics in \code{nwstats.formula}
 #' are saved for each time step. Summary statistics for the formation model terms,
 #' as well as dissolution model and relational duration statistics, are then
-#' calculated for access when printing or plotting the \code{netdx} object.
+#' calculated and can be accessed when printing or plotting the \code{netdx} object.
 #'
 #' @section Control Arguments:
 #' Models fit with the full STERGM method in \code{netest} (setting \code{edapprox}
@@ -43,7 +43,7 @@
 #'
 #' Models fit with the ERGM method with the edges dissolution approximation
 #' (setting \code{edapprox} to \code{TRUE}) require a call first to
-#' \code{simulate.ergm} for simulating an initial network and second to
+#' \code{simulate.ergm} for simulating an initial network, and second to
 #' \code{simulate.network} for simulating that static network forward through
 #' time. Control parameters may be set for both processes in \code{netdx}.
 #' For the first, the parameters should be input through the
@@ -282,13 +282,13 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps, nwstats.formula = "forma
                             names = names(stats.means),
                             stats.means, stats.sd)
 
-
   ## Get stats from for target statistics
   ts.attr.names <- x$target.stats.names
-  # target.stats <- target.stats[which(target.stats > 0)]
+  if (length(ts.attr.names) != length(target.stats)) {
+    target.stats <- target.stats[which(target.stats > 0)]
+  } 
   ts.out <- data.frame(names = ts.attr.names,
                        targets = target.stats)
-
 
   ## Create stats.formation table for output
   stats.table <- merge(ts.out, stats.table, all = TRUE)

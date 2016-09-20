@@ -23,11 +23,11 @@ A list of class \code{netsim} with the following elements:
 \itemize{
  \item \strong{param:} the epidemic parameters passed into the model through
        \code{param}, with additional parameters added as necessary.
- \item \strong{control:} the control settings passed into the model through,
+ \item \strong{control:} the control settings passed into the model through
        \code{control}, with additional controls added as necessary.
- \item \strong{epi:} a list of of data frames, one for each epidemiological
+ \item \strong{epi:} a list of data frames, one for each epidemiological
        output from the model. Outputs for built-in models always include the
-       size of each compartment, as well as flows in, out, and between
+       size of each compartment, as well as flows in, out of, and between
        compartments.
  \item \strong{stats:} a list containing two sublists, \code{nwstats} for any
        network statistics saved in the simulation, and \code{transmat} for
@@ -49,7 +49,7 @@ allowing for repeated transmission-related acts within the same dyad, specificat
 edge formation and dissolution rates, control over the temporal sequencing of
 multiple edges, and specification of network-level features. A detailed
 description of these models, along with examples, is found in the
-the \href{http://statnet.github.io/tut/BasicNet.html}{Basic Network Models}
+\href{http://statnet.github.io/tut/BasicNet.html}{Basic Network Models}
 tutorial.
 
 The \code{netsim} function performs modeling of both the built-in model types
@@ -59,7 +59,7 @@ with disease types for Susceptible-Infected (SI), Susceptible-Infected-Recovered
 
 Original models may be parameterized by writing new process modules that
 either take the place of existing modules (for example, disease recovery), or
-supplement the set of existing processes with a new one contained in an new
+supplement the set of existing processes with a new one contained in a new
 module. This functionality is documented in the
 \href{http://statnet.github.io/tut/NewNet.html}{Solving New Network Models}
 tutorial. The list of modules within \code{netsim} available for modification

@@ -176,3 +176,29 @@ test_that("get_formula_terms", {
   expect_equal(get_formula_terms(formula(~edges + offset(nodematch("role", diff = TRUE, keep = 1:2)))),'role')
   
 })
+
+test_that("mutate_epi", {
+   nw <- network.initialize(n = 100, bipartite = 50, directed = FALSE)
+   formation <- ~edges
+   target.stats <- 50
+   coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
+   est1 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
+   
+   # Epidemic model
+   param <- param.net(inf.prob = 0.3, inf.prob.m2 = 0.15)
+   init <- init.net(i.num = 1, i.num.m2 = 0)
+   control <- control.net(type = "SI", nsteps = 10, nsims = 2, 
+                          verbose = FALSE)
+   mod1 <- netsim(est1, param, init, control)
+   
+   mod1 <- mutate_epi(mod1, i.prev = i.num / num,
+                            i.prev.m2 = i.num.m2 / num.m2)
+   expect_equal(names(mod1$epi), c("s.num", "i.num", "num", "s.num.m2", "i.num.m2", "num.m2", 
+                                   "si.flow", "si.flow.m2", "i.prev", "i.prev.m2"))
+                        
+   # Add incidence rate per 100 person years (assume time step = 1 week)
+   mod1 <- mutate_epi(mod1, ir100 = 5200*(si.flow + si.flow.m2) / 
+                                         (s.num + s.num.m2))       
+   df <- as.data.frame(mod1)
+   expect_true("ir100" %in% names(df))
+})

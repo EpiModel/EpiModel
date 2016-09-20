@@ -1,7 +1,7 @@
 
 #' @title Convert transmat infection tree into a phylo object
 #'
-#' @description Converts the edgelist matrix in the transmat object into a phylo
+#' @description Converts the edgelist matrix in the \code{transmat} object into a \code{phylo}
 #'              object by doing the required reordering and labeling.
 #'
 #' @param x An object of class \code{"transmat"}, the output from
@@ -15,14 +15,14 @@
 #' simulated infection into a \code{\link{phylo}} object representation suitable for plotting
 #'  as a tree with \code{\link[ape]{plot.phylo}}.  Each infection 
 #' event becomes a 'node' (horizontal branch) in the resulting phylo tree, and each 
-#' network vertex becomes a 'tip' of the tree.  The infection events are labled with 
+#' network vertex becomes a 'tip' of the tree.  The infection events are labeled with 
 #' the vertex id of the infector to make it possible to trace the path of infection.  
 #' 
 #' The infection timing information is included to position the phylo-nodes, with the
 #'  lines to the tips drawn to the max time value +1 (unless \code{vertex.exit.times} are passed in it effectively assumes all vertices are active/alive until 
 #'  the end of the simulation). 
 #'  
-#'  If the transmat contains multiple infection seeds (there are multiple trees with seperate root nodes) it will return a list of class 'multiPhylo', each element of which is a phylo object.  See \code{\link[ape]{read.tree}}
+#'  If the transmat contains multiple infection seeds (there are multiple trees with seperate root nodes) it will return a list of class 'multiPhylo', each element of which is a phylo object.  See \code{\link[ape]{read.tree}}.
 #' 
 #' Note that in EpiModel versions <= 1.2.4, the phylo tree was constructed differently, translating network 
 #' vertices to both phylo-nodes and tips and requiring 'collapse.singles' to prune it to an appropriate branching structure.
@@ -232,13 +232,13 @@ as.network.transmat <- function(x, ...){
 #' @title Plot transmat infection tree in one of several styles
 #'
 #' @description Plots the infection tree described in a \code{\link{transmat}}
-#'              object in one of several styles: phylogentic tree, an un-rooted
+#'              object in one of several styles: phylogenetic tree, an un-rooted
 #'              network, a hierarchical tree, or a transmissionTimeline.
 #'
-#' @param x a \code{\link{transmat}} object to be plotted
-#' @param style character name of plot style. One of "phylo", "network",
+#' @param x A \code{\link{transmat}} object to be plotted
+#' @param style Character name of plot style. One of "phylo", "network",
 #'        or "transmissionTimeline"
-#' @param ...  additional plot arguments to be passed to lower-level plot
+#' @param ...  Additional plot arguments to be passed to lower-level plot
 #'        functions (plot.network, plot.phylo, etc)
 #'
 #' @details The phylo plot requires the \code{ape} package. The

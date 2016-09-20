@@ -20,7 +20,7 @@ exposure.}
 
 \item{inter.start}{Time step at which the intervention starts, between 1 and
 the number of time steps specified in the model. This will default to
-1 if the inter.eff is defined but this parameter is not.}
+1 if the \code{inter.eff} is defined but this parameter is not.}
 
 \item{act.rate}{Average number of transmissible acts per person per unit time.
 For two-group models, this is the number of acts per group 1 persons
@@ -132,7 +132,7 @@ by consulting the \href{http://statnet.github.io/tut/NewDCMs.html}{Solving
 New DCMs with EpiModel} tutorial. Briefly, an original model may use either
 the existing model parameters named here, an original set of parameters, or
 a combination of both. The \code{...} argument allows the user to pass an
-arbitrary set of new model parmeters into \code{param.dcm}. Whereas there are
+arbitrary set of new model parameters into \code{param.dcm}. Whereas there are
 strict checks for built-in models that the model parameters are valid,
 parameter validity is the user's responsibility with these original models.
 }

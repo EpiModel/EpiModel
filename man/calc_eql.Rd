@@ -34,7 +34,7 @@ Calculates the relative change in infection prevalence across a
 \details{
 This function calculates whether equilibrium in disease prevalence, or any
 other fraction of two compartments contained in an epidemic model, have
-reach equilibrium over a time series. Equilibrium is calculated as the
+reached equilibrium over a time series. Equilibrium is calculated as the
 absolute value of the difference of the maximum prevalence and minimum
 prevalence over a specified time series. That time series is specified as the
 final \code{nsteps} time steps of an epidemic model. A larger \code{nsteps}

@@ -39,7 +39,7 @@
 #' specific compartments or flows to plot may be set using the \code{y} parameter,
 #' and in multiple run models the specific run may also be specified.
 #'
-#' @section The popfrac Argument:
+#' @section The \code{popfrac} Argument:
 #' Compartment prevalences are the size of a compartment over some denominator.
 #' To plot the raw numbers from any compartment, use \code{popfrac=FALSE}; this
 #' is the default for any plots of flows. The \code{popfrac} parameter calculates
@@ -51,10 +51,10 @@
 #' @section Color Palettes:
 #' Since \code{\link{dcm}} supports multiple run sensitivity models, plotting
 #' the results of such models uses a complex color scheme for distinguishing runs.
-#' This is accomplished using the \code{\link{RColorBrewer}} color palettes, in
-#' which includes a range of linked colors using named palettes. For
+#' This is accomplished using the \code{\link{RColorBrewer}} color palettes,
+#' which include a range of linked colors using named palettes. For
 #' \code{plot.dcm}, one may either specify a brewer color palette listed in
-#' \code{\link{brewer.pal.info}}, or alternatively a vector of standard R colors
+#' \code{\link{brewer.pal.info}}, or, alternatively, a vector of standard R colors
 #' (named, hexidecimal, or positive integers; see \code{\link{col2rgb}}).
 #'
 #' @section Plot Legends:
@@ -63,7 +63,7 @@
 #' plot a legend with values for every line in a sensitivity analysis, use
 #' \code{leg="full"}. With models with many runs, this may be visually
 #' overwhelming. In those cases, use \code{leg="lim"} to plot a legend limited
-#' to the highest and lowest of the varying parameter in the model. In cases
+#' to the highest and lowest values of the varying parameter in the model. In cases
 #' where the default legend names are not helpful, one may override those names
 #' with the \code{leg.name} argument.
 #'
@@ -778,7 +778,7 @@ draw_means <- function(x, y, mean.smooth, mean.lwd,
     if (nsims == 1) {
       mean.prev <- x[[loc]][[y[j]]][, 1]
     } else {
-      mean.prev <- rowMeans(x[[loc]][[y[j]]])
+      mean.prev <- rowMeans(x[[loc]][[y[j]]], na.rm = TRUE)
     }
     if (mean.smooth == TRUE) {
       mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev), y = mean.prev))$y
@@ -823,7 +823,7 @@ draw_means <- function(x, y, mean.smooth, mean.lwd,
 #'
 #' The \code{dissolution} plot shows the proportion of the extant ties that are
 #' dissolved at each time step, up until the maximum time step requested.
-#' Typically the proportion of ties that are dissolved is the reciprocal of the
+#' Typically, the proportion of ties that are dissolved is the reciprocal of the
 #' mean relational duration. This plot thus contains similar information to that
 #' in the duration plot, but should reach its expected value more quickly, since
 #' it is not subject to censoring.
@@ -1533,7 +1533,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #'        representing the population.
 #' @param at If \code{type="network"}, time step for network graph.
 #' @param col.status If \code{TRUE} and \code{type="network"}, automatic disease
-#'        status colors (blue = susceptible, red = infected, , green = recovered).
+#'        status colors (blue = susceptible, red = infected, green = recovered).
 #' @param shp.bip If \code{type="network"} and a bipartite simulation, shapes
 #'        for the mode 2 vertices, with acceptable inputs of "triangle" and
 #'        "square". Mode 1 vertices will be circles.
@@ -1562,7 +1562,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #'        extraction of that dynamic network at a specific time point. This
 #'        plotting function wraps the \code{\link{plot.network}} function in the
 #'        \code{network} package. Consult the help page for \code{plot.network}
-#'        for all the plotting parameters. In addition, four plotting parameters
+#'        for all of the plotting parameters. In addition, four plotting parameters
 #'        specific to \code{netsim} plots are available: \code{sim}, \code{at},
 #'        \code{col.status}, and \code{shp.bip}.
 #'  \item \strong{\code{type="formation"}}: summary network statistics related to
@@ -1590,6 +1590,9 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #' for one-group models, the prevalence of any compartment is the compartment size
 #' divided by the total population size; 2) for two-group models, the prevalence
 #' of any compartment is the compartment size divided by the group population size.
+#' For any prevalences that are not automatically calculated, the
+#' \code{\link{mutate_epi}} may be used to add new variables to the \code{netsim}
+#' object to plot or analyze.
 #'
 #' The quantiles show the range of outcome values within a certain specified
 #' quantile range. By default, the interquartile range is shown: that is the
@@ -1601,7 +1604,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #' @export
 #'
 #' @keywords plot
-#' @seealso \code{\link{plot.network}}
+#' @seealso \code{\link{plot.network}} \code{\link{mutate_epi}}
 #'
 #' @examples
 #' \dontrun{
@@ -1662,6 +1665,11 @@ plot.netsim <- function(x, type = "epi", y, popfrac, sim.lines = FALSE, sims, si
                         add = FALSE, network = 1, at = 1, col.status = FALSE,
                         shp.bip = NULL, stats, targ.line = TRUE, targ.col,
                         targ.lwd = 2, targ.lty = 2, plots.joined, ...) {
+
+  # type check
+  if ((type %in% c("epi", "network", "formation")) == FALSE) {
+    stop("type must be one of: \"epi\", \"network\", or \"formation\" ", call. = FALSE)
+  }
 
   # Network plot ------------------------------------------------------------
   if (type == "network") {
@@ -1870,7 +1878,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac, sim.lines = FALSE, sims, si
     ## Prevalence calculations ##
     nopopfrac <- ifelse(missing(popfrac), TRUE, FALSE)
     if (nopopfrac == TRUE) {
-      popfrac <- TRUE
+      popfrac <- FALSE
     }
     if (nopopfrac == TRUE) {
       if (any(grepl(".flow", y)) |
@@ -2043,6 +2051,9 @@ plot.netsim <- function(x, type = "epi", y, popfrac, sim.lines = FALSE, sims, si
     target.stats <- nwparam$target.stats
 
     st <- data.frame(sorder = 1:length(nmstats), names = nmstats)
+    if (length(formation.terms) != length(target.stats)) {
+      target.stats <- target.stats[which(target.stats > 0)]
+    }
     ts <- data.frame(names = formation.terms, targets = target.stats)
 
     m <- merge(st, ts, all = TRUE)
@@ -2544,7 +2555,7 @@ comp_plot.netsim <- function(x, at = 1, digits = 3, ...) {
 
 # Calculate denominators
 denom <- function(x, y, popfrac) {
-  
+
   cont.val <- ifelse(class(x) == "dcm", "nruns", "nsims")
   if (popfrac == TRUE) {
     for (i in 1:length(y)) {
@@ -2557,7 +2568,7 @@ denom <- function(x, y, popfrac) {
       x$epi[[y[j]]] <- data.frame(x$epi[[y[j]]])
     }
   }
-  
+
   return(x)
 }
 

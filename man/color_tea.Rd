@@ -41,7 +41,7 @@ animated visuals for dynamic networks with evolving edge structures and nodal
 attributes. Nodal attribute dynamics in \code{ndtv} movies require a temporally
 extended attribute (TEA) containing a standard R color for each node at each
 time step. By default, the \code{EpiModel} package uses TEAs to store disease
-status history in network model simulations run in \code{\link{netsim}}. But
+status history in network model simulations run in \code{\link{netsim}}. But,
 that status TEA is in numeric format (0, 1, 2). The \code{color_tea} function
 transforms those numeric values of that disease status TEA into a TEA with
 color values in order to visualize status changes in \code{ndtv}.
