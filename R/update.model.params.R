@@ -8,7 +8,6 @@
 
 
 #TODO: check speed costs of executing the appropriate check.ergmTerm function in order to provide consistent checking of network types, argument names, etc. 
-
 updateModelTermInputs<-function(dat){
   p <- dat$p
   mf <- p$model.form
@@ -211,12 +210,12 @@ updateModelTermInputs<-function(dat){
       urm <- t(sapply(ui, rep, length(ui)))
       ucm <- sapply(ui, rep, length(ui))
       uun <- outer(u, u, paste, sep = ".")
-      if (!is.directed(nw)) {
+      # ASSUME IT IS UNDIRECTED
         uui <- uui[upper.tri(uui, diag = TRUE)]
         urm <- urm[upper.tri(urm, diag = TRUE)]
         ucm <- ucm[upper.tri(ucm, diag = TRUE)]
         uun <- uun[upper.tri(uun, diag = TRUE)]
-      }
+      
       if (any(NVL(base, 0) != 0)) {
         urm <- as.vector(urm)[-base]
         ucm <- as.vector(ucm)[-base]
