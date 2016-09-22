@@ -113,7 +113,7 @@ resim_nets <- function(dat, at) {
       
       # construct the list of model statistics input vectors
       
-      dat<-updateModelTermInputs(dat)
+      dat<-tergmLite::updateModelTermInputs(dat)
       
       # and attach to dat$p
       #dat <- updatenwp.msm(dat, network = 1)

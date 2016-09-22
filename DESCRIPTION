@@ -29,8 +29,7 @@ Depends:
     R (>= 3.2),
     deSolve (>= 1.12),
     networkDynamic (>= 0.9.0),
-    tergm (>= 3.3.1),
-    tergmLite
+    tergm (>= 3.3.1)
 Imports:
     graphics,
     grDevices,
@@ -49,7 +48,8 @@ Suggests:
     ndtv,
     rmarkdown,
     shiny,
-    testthat
+    testthat,
+    tergmLite
 Remotes: github::statnet/tergmLite
 VignetteBuilder: knitr
 RoxygenNote: 5.0.1

@@ -61,6 +61,10 @@ initialize.net <- function(x, param, init, control, s) {
     if(!control$fast.edgelist){
       dat$nw <- nw
     } else { # simulate in fast edgelist mode
+      hasTergmLite <- requireNamespace('tergmLite',quietly = TRUE)
+      if (!hasTergmLite){
+        stop('fast_edgelist mode requires installing the tergmLite package from https://github.com/statnet/tergmLite')
+      }
       # TODO: perhaps these checks should be moved to control.net?
       # make sure we are not using unsupported model features with fast edgelist
       if (control$tea.status){
