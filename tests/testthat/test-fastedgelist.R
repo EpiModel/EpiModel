@@ -231,8 +231,7 @@ if(!hasTergmLite){
     IQR(as.numeric(simnew$epi$i.num[NUMSTEPS,]))
     
   })
-  library(microbenchmark)
-  
+  # library(microbenchmark)
   # test_that('expected speed improvement',{
   #   nw <- network.initialize(n = 500, directed = FALSE)
   #   # specify two different roles for the vertices
