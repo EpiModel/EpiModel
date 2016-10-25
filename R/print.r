@@ -201,6 +201,7 @@ print.disscoef <- function(x, ...) {
   cat("\nCrude Coefficient:", x$coef.crude)
   cat("\nMortality/Exit Rate:", x$d.rate)
   cat("\nAdjusted Coefficient:", x$coef.adj)
+  cat("\n")
 
   invisible()
 }
