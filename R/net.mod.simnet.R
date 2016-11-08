@@ -109,35 +109,11 @@ resim_nets <- function(dat, at) {
         dat$attr <- deleteAttr(dat$attr, inactive)
       }
     } else {
-      # in fast edgelist mode
+
       # construct the list of model statistics input vectors
-
       dat <- tergmLite::updateModelTermInputs(dat)
-      n <- attributes(dat$el)$n
 
-      mhf <- dat$p$MHproposal.form
-      mhd <- dat$p$MHproposal.diss
-
-      ## Update MHproposal.form ##
-      #TODO: I believe these only needed for bounded degree models
-      # so assume that if first parameter is null, they are not set and don't need updates
-      if (!is.null(mhf$arguments$constraints$bd$attribs[1])) {
-        mhf$arguments$constraints$bd$attribs <-
-          matrix(rep(mhf$arguments$constraints$bd$attribs[1], n), ncol = 1)
-        mhf$arguments$constraints$bd$maxout <-
-          matrix(rep(mhf$arguments$constraints$bd$maxout[1], n), ncol = 1)
-        mhf$arguments$constraints$bd$maxin <- matrix(rep(n - 1, n), ncol = 1)
-        mhf$arguments$constraints$bd$minout <-
-          mhf$arguments$constraints$bd$minin <- matrix(rep(0, n), ncol = 1)
-
-        ## Update MHproposal.diss ##
-        mhd$arguments$constraints$bd <- mhf$arguments$constraints$bd
-
-        dat$p$MHproposal.form <- mhf
-        dat$p$MHproposal.diss <- mhd
-      }
-
-      # directly call the MCMC sample passing in the edgelists and term inputs
+      # fast version of tergm::simulate.network
       dat$el <- tergmLite::simulate_network(p = dat$p,
                                             el = dat$el,
                                             coef.form = nwparam$coef.form,
