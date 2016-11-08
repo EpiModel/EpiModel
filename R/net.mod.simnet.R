@@ -78,10 +78,10 @@ resim_nets <- function(dat, at) {
 
   # Network simulation
   if (anyActive > 0 & dat$control$depend == TRUE) {
-    
-    if(!is.null(dat[['nw']])){
 
-      
+    if (!is.null(dat[['nw']])) {
+
+
       # in network mode
       suppressWarnings(
 
@@ -96,13 +96,13 @@ resim_nets <- function(dat, at) {
                            time.offset = 0,
                            monitor = dat$control$nwstats.formula,
                            control = dat$control$set.control.stergm))
-  
+
       # Set up nwstats df
       if (dat$control$save.nwstats == TRUE) {
         dat$stats$nwstats <- rbind(dat$stats$nwstats,
                                    tail(attributes(dat$nw)$stats, 1))
       }
-  
+
       if (dat$control$delete.nodes == TRUE) {
         dat$nw <- network.extract(dat$nw, at = at)
         inactive <- which(dat$attr$active == 0)
@@ -110,38 +110,18 @@ resim_nets <- function(dat, at) {
       }
     } else {
       # in fast edgelist mode
-      
       # construct the list of model statistics input vectors
-      
-      dat<-tergmLite::updateModelTermInputs(dat)
-      
-      # and attach to dat$p
-      #dat <- updatenwp.msm(dat, network = 1)
+
+      dat <- tergmLite::updateModelTermInputs(dat)
       n <- attributes(dat$el)$n
-      #maxdyads <- choose(n, 2)
-      
-      #p <- dat$p
-      #mf <- p$model.form
-      #md <- p$model.diss
+
       mhf <- dat$p$MHproposal.form
       mhd <- dat$p$MHproposal.diss
-        
-      ## Update model.form terms##
-      
-      # edges
-      #mf$terms[[1]]$maxval <- maxdyads
-      
-      ## combined maxval ##
-      #mf$maxval[1] <- maxdyads
-      
-      ## Update model.diss ##
-      #md$terms[[1]]$maxval <- maxdyads
-      #md$maxval <- maxdyads
-      
+
       ## Update MHproposal.form ##
       #TODO: I believe these only needed for bounded degree models
       # so assume that if first parameter is null, they are not set and don't need updates
-      if(!is.null(mhf$arguments$constraints$bd$attribs[1])){
+      if (!is.null(mhf$arguments$constraints$bd$attribs[1])) {
         mhf$arguments$constraints$bd$attribs <-
           matrix(rep(mhf$arguments$constraints$bd$attribs[1], n), ncol = 1)
         mhf$arguments$constraints$bd$maxout <-
@@ -149,43 +129,28 @@ resim_nets <- function(dat, at) {
         mhf$arguments$constraints$bd$maxin <- matrix(rep(n - 1, n), ncol = 1)
         mhf$arguments$constraints$bd$minout <-
           mhf$arguments$constraints$bd$minin <- matrix(rep(0, n), ncol = 1)
-        
+
         ## Update MHproposal.diss ##
         mhd$arguments$constraints$bd <- mhf$arguments$constraints$bd
-        
+
         dat$p$MHproposal.form <- mhf
         dat$p$MHproposal.diss <- mhd
       }
-      
-      #dat$p <- list(model.form = mf, model.diss = md,
-      #                         MHproposal.form = mhf, MHproposal.diss = mhd)
-      
+
       # directly call the MCMC sample passing in the edgelists and term inputs
       dat$el <- tergmLite::simulate_network(p = dat$p,
-                                                 el = dat$el,
-                                                 coef.form = nwparam$coef.form,
-                                                 coef.diss = nwparam$coef.diss$coef.adj,
-                                                 save.changes = TRUE)
-      
-      # uncomment this code block to force edgelist ordering to 
-      # simulations aligned between fast edgelist and normal modes
-#       if (nrow(dat$el>0) && dat$el[1,1]>dat$el[1,2]){
-#         tmp<-dat$el[,2:1,drop=FALSE]
-#         tmp<-tmp[order(tmp[,1], tmp[,2]),,drop=FALSE]
-#         # make sure not to drop attrs when doing this
-#         attributes(tmp)<-attributes(dat$el)
-#         dat$el<-tmp
-#       }
-      
-      
+                                            el = dat$el,
+                                            coef.form = nwparam$coef.form,
+                                            coef.diss = nwparam$coef.diss$coef.adj,
+                                            save.changes = TRUE)
+
       # save up nwstats df
       if (dat$control$save.nwstats == TRUE) {
         dat$stats$nwstats <- rbind(dat$stats$nwstats,
                                    tail(attributes(dat$nw)$stats, 1))
-      } 
+      }
     }
   }
-  
 
   return(dat)
 }
@@ -221,7 +186,7 @@ edges_correct <- function(dat, at) {
       new.num.m2 <- sum(dat$attr$active == 1 & mode == 2)
       dat$nwparam[[1]]$coef.form[1] <- dat$nwparam[[1]]$coef.form[1] +
         log(2 * old.num.m1 * old.num.m2 / (old.num.m1 + old.num.m2)) -
-        log(2 * new.num.m1 * new.num.m2/ (new.num.m1 + new.num.m2))
+        log(2 * new.num.m1 * new.num.m2 / (new.num.m1 + new.num.m2))
     }
   }
   return(dat)

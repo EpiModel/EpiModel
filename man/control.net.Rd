@@ -148,9 +148,9 @@ containing full edge history for each simulation. If \code{delete.nodes}
 is set to \code{TRUE}, this will only contain a static network with the
 edge configuration at the final time step of each simulation.}
 
-\item{fast.edgelist}{EXPERIMENTAL If \code{TRUE}. uses an edgelist instead of a network internal
-representation during simulation to enable much faster performance on a 
-a small subset of simple models}
+\item{fast.edgelist}{EXPERIMENTAL If \code{TRUE}. uses an edgelist instead of 
+a network internal representation during simulation to enable much faster 
+performance on a small subset of simple models}
 
 \item{save.other}{A vector of elements on the \code{dat} master data list
 to save out after each simulation. One example for built-in models is

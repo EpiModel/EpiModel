@@ -179,8 +179,6 @@ infection.net <- function(dat, at) {
 }
 
 
-
-
 #' @title Discordant Edgelist from NetworkDynamic Object
 #'
 #' @description This function returns a \code{data.frame} with a discordant
@@ -218,10 +216,11 @@ infection.net <- function(dat, at) {
 discord_edgelist <- function(dat, idsInf, idsSus, at) {
 
   status <- dat$attr$status
-  if(!is.null(dat[['nw']])){
+  if (!is.null(dat[['nw']])) {
     el <- get.dyads.active(dat$nw, at = at)
     # uncomment enforce sort and column order for consistency between fast.edgelist and normal modes
-    #el <- as.edgelist(el,n<-network.size(nw),directed=is.directed(nw),bipartite=is.bipartite(nw),loops=has.loops(nw))
+    #el <- as.edgelist(el,n<-network.size(nw),directed=is.directed(nw),
+    #                  bipartite=is.bipartite(nw),loops=has.loops(nw))
   } else {
     el <- dat$el
     # uncomment enforce sort and column order for consistency between fast.edgelist and normal modes
@@ -276,11 +275,11 @@ recovery.net <- function(dat, at) {
   tea.status <- dat$control$tea.status
 
   modes <- dat$param$modes
-  if(!is.null(dat[['nw']])){
+  if (!is.null(dat[['nw']])) {
     mode <- idmode(dat$nw)
   } else {
     # assume that if using edgelist, must be one-mode
-    mode <-rep.int(1,attr(dat$el,'n'))
+    mode <- rep.int(1,attr(dat$el,'n'))
   }
 
   type <- dat$control$type
