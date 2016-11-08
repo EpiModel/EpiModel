@@ -326,6 +326,9 @@ control.icm <- function(type, nsteps, nsims = 1, rec.rand = TRUE, b.rand = TRUE,
 #'        containing full edge history for each simulation. If \code{delete.nodes}
 #'        is set to \code{TRUE}, this will only contain a static network with the
 #'        edge configuration at the final time step of each simulation.
+#' @param fast.edgelist EXPERIMENTAL If \code{TRUE}. uses an edgelist instead of 
+#'        a network internal representation during simulation to enable much faster 
+#'        performance on a small subset of simple models   
 #' @param save.other A vector of elements on the \code{dat} master data list
 #'        to save out after each simulation. One example for built-in models is
 #'        the attribute list, "attr", at the final time step.
@@ -407,7 +410,8 @@ control.net <- function(type, nsteps, start = 1, nsims = 1, ncores = 1,
                         module.order = NULL, set.control.stergm,
                         save.nwstats = TRUE, nwstats.formula = "formation",
                         delete.nodes = FALSE, save.transmat = TRUE,
-                        save.network = TRUE, save.other, verbose = TRUE,
+                        save.network = TRUE, fast.edgelist = FALSE,
+                        save.other, verbose = TRUE,
                         verbose.int = 1, skip.check = FALSE, ...) {
 
   # Get arguments

@@ -655,7 +655,7 @@ edgelist_meanage <- function(x, el) {
 #'              attributes contained in the formation formula only.
 #'
 #' @param nw The \code{networkDynamic} object contained in the \code{netsim}
-#'        simulation.
+#'        simulation. Or, in fast_edgelist mode, the \code{dat} object containing vertex attributes.
 #' @param fterms Vector of attributes used in formation formula, usually as
 #'        output of \code{\link{get_formula_terms}}.
 #' @param only.formula Limit the tables to those terms only in \code{fterms},
@@ -667,12 +667,23 @@ edgelist_meanage <- function(x, el) {
 #' @export
 #'
 get_attr_prop <- function(nw, fterms, only.formula = TRUE) {
+  if (is.network(nw)){
+    # call the network version
+    get_attr_prop_nw(nw,fterms,only.formula=only.formula)
+  } else {
+    # call the dat version
+    get_attr_prop_df(dat=nw,fterms,only.formula=only.formula)
+  }
+}
+
+# computes vertex attribute proportions based on the network object
+get_attr_prop_nw <- function(nw, fterms, only.formula = TRUE) {
 
   if (is.null(fterms)) {
     return(NULL)
   }
 
-  nwVal <- names(nw$val[[1]])
+  nwVal <- list.vertex.attributes(nw)
   if (only.formula == TRUE) {
     nwVal <- nwVal[which(nwVal %in% fterms)]
   }
@@ -684,6 +695,28 @@ get_attr_prop <- function(nw, fterms, only.formula = TRUE) {
   }
   names(out) <- nwVal
 
+  return(out)
+}
+
+# computes the vertex attribute proportions based on dat object
+get_attr_prop_df <- function(dat, fterms, only.formula = TRUE) {
+  
+  if (is.null(fterms)) {
+    return(NULL)
+  }
+  
+  nwVal <- names(dat$attr)
+  if (only.formula == TRUE) {
+    nwVal <- nwVal[which(nwVal %in% fterms)]
+  }
+  
+  out <- list()
+  for (i in 1:length(nwVal)) {
+    tab <- prop.table(table(dat$attr[[i]]))
+    out[[i]] <- tab
+  }
+  names(out) <- nwVal
+  
   return(out)
 }
 
@@ -704,7 +737,12 @@ get_attr_prop <- function(nw, fterms, only.formula = TRUE) {
 get_formula_terms <- function(formula) {
 
   fterms <- attributes(terms.formula(formula))$term.labels
-  fterms <- strsplit(fterms, split = "[\"]")
+  # if it has an offset term, needs to be processed differently
+  if(!is.null(attr(terms.formula(formula),'offset'))){
+    offTerm <- attr(terms.formula(formula),'offset')
+    fterms <-c(fterms,attr(terms.formula(formula),'variables')[[offTerm+1]])
+  }
+  fterms <- strsplit(as.character(fterms), split = "[\"]")
   tl <- sapply(fterms, length)
   if (all(tl == 1)) {
     fterms <- NULL

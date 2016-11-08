@@ -14,7 +14,8 @@ control.net(type, nsteps, start = 1, nsims = 1, ncores = 1, depend,
   verbose.FUN = verbose.net, module.order = NULL, set.control.stergm,
   save.nwstats = TRUE, nwstats.formula = "formation",
   delete.nodes = FALSE, save.transmat = TRUE, save.network = TRUE,
-  save.other, verbose = TRUE, verbose.int = 1, skip.check = FALSE, ...)
+  fast.edgelist = FALSE, save.other, verbose = TRUE, verbose.int = 1,
+  skip.check = FALSE, ...)
 }
 \arguments{
 \item{type}{Disease type to be modeled, with the choice of \code{"SI"} for
@@ -146,6 +147,10 @@ simulation. This object contains one row for each transmission event
 containing full edge history for each simulation. If \code{delete.nodes}
 is set to \code{TRUE}, this will only contain a static network with the
 edge configuration at the final time step of each simulation.}
+
+\item{fast.edgelist}{EXPERIMENTAL If \code{TRUE}. uses an edgelist instead of 
+a network internal representation during simulation to enable much faster 
+performance on a small subset of simple models}
 
 \item{save.other}{A vector of elements on the \code{dat} master data list
 to save out after each simulation. One example for built-in models is

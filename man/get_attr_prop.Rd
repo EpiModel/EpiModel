@@ -8,7 +8,7 @@ get_attr_prop(nw, fterms, only.formula = TRUE)
 }
 \arguments{
 \item{nw}{The \code{networkDynamic} object contained in the \code{netsim}
-simulation.}
+simulation. Or, in fast_edgelist mode, the \code{dat} object containing vertex attributes.}
 
 \item{fterms}{Vector of attributes used in formation formula, usually as
 output of \code{\link{get_formula_terms}}.}

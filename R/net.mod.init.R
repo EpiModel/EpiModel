@@ -29,6 +29,8 @@ initialize.net <- function(x, param, init, control, s) {
 
 
     # Network Simulation ------------------------------------------------------
+    # draw an initial state to be fed into the stergm
+    # NOTE that this NOT the initial state of the simulate network, some edges will be toggled.
     if (class(x$fit) == "network") {
       nw <- simulate(x$formation,
                      basis = x$fit,
@@ -38,20 +40,89 @@ initialize.net <- function(x, param, init, control, s) {
       nw <- simulate(x$fit)
     }
     modes <- ifelse(nw %n% "bipartite", 2, 1)
+
+
+
+    # simulate in network mode (not fast edgelist)
     if (control$depend == TRUE) {
       if (class(x$fit) == "stergm") {
         nw <- network.collapse(nw, at = 1)
       }
+      # simulate the initial time step of the network
       nw <- sim_nets(x, nw, nsteps = 1, control)
     }
     if (control$depend == FALSE) {
+      # simulate the entire network sequence
       nw <- sim_nets(x, nw, nsteps = control$nsteps, control)
     }
     nw <- activate.vertices(nw, onset = 1, terminus = Inf)
 
+    # Check for network or fast edgelist mode
+    if (!control$fast.edgelist) {
+      dat$nw <- nw
+    } else {
+      # simulate in fast edgelist mode
+      hasTergmLite <- requireNamespace('tergmLite', quietly = TRUE)
+      if (!hasTergmLite) {
+        stop('fast_edgelist mode requires installing the tergmLite package from
+             https://github.com/statnet/tergmLite')
+      }
+      # TODO: perhaps these checks should be moved to control.net?
+      # make sure we are not using unsupported model features with fast edgelist
+      if (control$tea.status) {
+        stop('tea.status=TRUE mode cannot be used with fast.edgelist simulations')
+      }
+
+      if (is.bipartite(nw) | modes > 1) {
+        stop('bipartite networks cannot be used with fast.edgelist simulations')
+        # TODO: probably the code could be modified to support bi-partite networks
+        # with the same rates, but maybe not useful
+      }
+      if (control$use.pids) {
+        stop('use.pids=TRUE cannot be used with fast.edgelist simulations')
+      }
+
+      if (control$save.transmat) {
+        warning('transmat network ids in fast.edgelist simulations will not be consistent')
+      }
+
+      # make sure the network does not have any features where the code will assume otherwise
+      # (some of the edgelist processing code will strip attributes)
+      if (is.directed(nw)) {
+        stop('fast.edgelist simulations do not currently support directed networks')
+      }
+      if (has.loops(nw)) {
+        stop('fast.edgelist simulations do not currently support networks with loops (self-edges)')
+      }
+
+      # store the edgelist instead of the network object
+      dat$nw <- NULL
+      # note that the network may contain terminated edges, so must extract at the current timestep
+      dat$el <- as.edgelist(network.collapse(nw, at = 1))
+      attributes(dat$el)$vnames <- NULL
+      # copy any non-standard vertex attributes (probably user attached)
+      # TODO: check model terms and only copy those actually used and in vector form
+      vattrs <- list.vertex.attributes(nw)
+      vattrs <- vattrs[!vattrs %in% c('na', 'vertex.names')]
+      for (attrname in vattrs) {
+        dat$attr[[attrname]] <- get.vertex.attribute(nw,attrname)
+      }
+
+      # record initival values for MHP proposals, etc
+      p <- tergmLite::stergm_prep(network.collapse(nw, at = 1),
+                                  x$formation,
+                                  x$coef.diss$dissolution,
+                                  x$coef.form,
+                                  x$coef.diss$coef.adj,
+                                  x$constraints)
+      p$model.form$formula <- NULL
+      p$model.diss$formula <- NULL
+      dat$p <- p
+
+    }
+
 
     # Network Parameters ------------------------------------------------------
-    dat$nw <- nw
     dat$nwparam <- list(x[-which(names(x) == "fit")])
     dat$param$modes <- modes
 
@@ -75,7 +146,7 @@ initialize.net <- function(x, param, init, control, s) {
 
 
     ## Store current proportions of attr
-    dat$temp$t1.tab <- get_attr_prop(dat$nw, fterms)
+    dat$temp$t1.tab <- get_attr_prop(dat, fterms)
 
 
     ## Get initial prevalence
@@ -143,7 +214,11 @@ init_status.net <- function(dat) {
 
   status.vector <- dat$init$status.vector
   status.rand <- dat$init$status.rand
-  num <- network.size(dat$nw)
+  if(!is.null(dat[['nw']])){
+    num <- network.size(dat[['nw']])
+  } else {
+    num <- attr(dat$el,'n')
+  }
   form <- get_nwparam(dat)$form
   statOnNw <- "status" %in% get_formula_terms(form)
 

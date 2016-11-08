@@ -41,13 +41,18 @@ infection.net <- function(dat, at) {
     active <- dat$attr$active
     status <- dat$attr$status
     modes <- dat$param$modes
-    mode <- idmode(dat$nw)
+    if(!is.null(dat[['nw']])){
+      mode <- idmode(dat$nw)
+    } else {
+      # assume that if using edgelist, must be one-mode
+      mode <-rep(1,attr(dat$el,'n'))
+    }
 
     inf.prob <- dat$param$inf.prob
     inf.prob.m2 <- dat$param$inf.prob.m2
     act.rate <- dat$param$act.rate
 
-    nw <- dat$nw
+    nw <- dat[['nw']]
     tea.status <- dat$control$tea.status
 
     # Vector of infected and susceptible IDs
@@ -169,11 +174,9 @@ infection.net <- function(dat, at) {
      }
    }
 
-   dat$nw <- nw
+   dat[['nw']] <- nw
    return(dat)
 }
-
-
 
 
 #' @title Discordant Edgelist from NetworkDynamic Object
@@ -213,7 +216,16 @@ infection.net <- function(dat, at) {
 discord_edgelist <- function(dat, idsInf, idsSus, at) {
 
   status <- dat$attr$status
-  el <- get.dyads.active(dat$nw, at = at)
+  if (!is.null(dat[['nw']])) {
+    el <- get.dyads.active(dat$nw, at = at)
+    # uncomment enforce sort and column order for consistency between fast.edgelist and normal modes
+    #el <- as.edgelist(el,n<-network.size(nw),directed=is.directed(nw),
+    #                  bipartite=is.bipartite(nw),loops=has.loops(nw))
+  } else {
+    el <- dat$el
+    # uncomment enforce sort and column order for consistency between fast.edgelist and normal modes
+    # el <- as.edgelist(el,n=attr(el,'n'),directed=FALSE)
+  }
 
   del <- NULL
   if (nrow(el) > 0) {
@@ -263,7 +275,12 @@ recovery.net <- function(dat, at) {
   tea.status <- dat$control$tea.status
 
   modes <- dat$param$modes
-  mode <- idmode(dat$nw)
+  if (!is.null(dat[['nw']])) {
+    mode <- idmode(dat$nw)
+  } else {
+    # assume that if using edgelist, must be one-mode
+    mode <- rep.int(1,attr(dat$el,'n'))
+  }
 
   type <- dat$control$type
   recovState <- ifelse(type == "SIR", "r", "s")
