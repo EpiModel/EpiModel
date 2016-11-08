@@ -120,11 +120,6 @@ resim_nets <- function(dat, at) {
                                             coef.diss = nwparam$coef.diss$coef.adj,
                                             save.changes = TRUE)
 
-      # save up nwstats df
-      if (dat$control$save.nwstats == TRUE) {
-        dat$stats$nwstats <- rbind(dat$stats$nwstats,
-                                   tail(attributes(dat$nw)$stats, 1))
-      }
     }
   }
 
