@@ -1025,7 +1025,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         }
 
         ## Default ylim
-        ylim <- c(min(data) * 0.8, max(data) * 1.2)
+        ylim <- c(min(data) * 0.9, max(data) * 1.1)
         if (length(da) > 0 && !is.null(da$ylim)) {
           ylim <- da$ylim
         }
@@ -1161,7 +1161,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
           dataj <- data[, colnames(data) %in% nmstats[j], drop = FALSE]
           plot(x = 1, y = 1,
                xlim = xlim,
-               ylim = c(min(dataj) * 0.8, max(dataj) * 1.2),
+               ylim = c(min(dataj) * 0.9, max(dataj) * 1.1),
                type = "n", main = nmstats[j],
                xlab = "", ylab = "")
 
