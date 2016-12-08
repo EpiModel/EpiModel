@@ -419,6 +419,11 @@ copy_toall_attr <- function(dat, at, fterms) {
 #'
 dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
 
+  # Error check for duration < 1
+  if (any(duration < 1)) {
+    stop("All values in duration must be >= 1", call. = FALSE)
+  }
+
   # Check form of dissolution formula
   form.length <- length(strsplit(as.character(dissolution)[2], "[+]")[[1]])
   t1.edges <- grepl("offset[(]edges",
