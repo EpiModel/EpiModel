@@ -11,7 +11,7 @@
 #' the network. Modules also handle the resimulation of the network and some
 #' bookkeeping calculations for disease prevalence.
 #'
-#' Writing original network models that expand upon our built-in model set will
+#' Writing original network models that expand upon our "integrated" model set will
 #' require modifying the existing modules or adding new modules to the workflow
 #' in \code{\link{netsim}}. The existing modules may be used as a template for
 #' replacement or new modules.

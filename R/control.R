@@ -18,7 +18,7 @@
 #'        other options).
 #' @param dede If \code{TRUE}, use the delayed differential equation solver,
 #'        which allows for time-lagged variables.
-#' @param new.mod If not running a built-in model type, a function with a new
+#' @param new.mod If not running an integrated model type, a function with a new
 #'        model to be simulated (see details).
 #' @param sens.param If \code{TRUE}, evaluate arguments in parameters with length
 #'        greater than 1 as sensitivity analyses, with one model run per value of
@@ -31,14 +31,14 @@
 #' @details
 #' \code{control.dcm} sets the required control settings for any deterministic
 #' compartmental models solved with the \code{\link{dcm}} function. Controls are
-#' required for both built-in model types and original models. For an overview of
-#' control settings for built-in DCM class models, consult the
+#' required for both integrated model types and original models. For an overview of
+#' control settings for integrated DCM class models, consult the
 #' \href{http://statnet.github.io/tut/BasicDCMs.html}{Basic DCMs} tutorial.
-#' For all built-in models, the \code{type} argument is a necessary parameter
+#' For all integrated models, the \code{type} argument is a necessary parameter
 #' and it has no default.
 #'
 #' @section New Model Functions:
-#' The form of the model function for built-in models may be displayed with the
+#' The form of the model function for integrated models may be displayed with the
 #' \code{print.mod} argument set to \code{TRUE}. In this case, the model will not
 #' be run. These model forms may be used as templates to write original model
 #' functions.
@@ -151,14 +151,14 @@ control.dcm <- function(type, nsteps, dt = 1, odemethod = "rk4",
 #' @details
 #' \code{control.icm} sets the required control settings for any stochastic
 #' individual contact model solved with the \code{\link{icm}} function. Controls
-#' are required for both built-in model types and when passing original process
-#' modules. For an overview of control settings for built-in ICM class models,
+#' are required for both integrated model types and when passing original process
+#' modules. For an overview of control settings for integrated ICM class models,
 #' consult the \href{http://statnet.github.io/tut/BasicICMs.html}{Basic ICMs}
-#' tutorial. For all built-in models, the \code{type} argument is a necessary
+#' tutorial. For all integrated models, the \code{type} argument is a necessary
 #' parameter and it has no default.
 #'
 #' @section New Modules:
-#' Built-in ICM models use a set of module functions that specify
+#' Integrated ICM models use a set of module functions that specify
 #' how the individual agents in the population are subjected to infection, recovery,
 #' demographics, and other processes. Core modules are those listed in the
 #' \code{.FUN} arguments. For each module, there is a default function used in
@@ -305,7 +305,7 @@ control.icm <- function(type, nsteps, nsims = 1, rec.rand = TRUE, b.rand = TRUE,
 #'        order in which they should be evaluated within each time step. If
 #'        \code{NULL}, the modules will be evaluated as follows: first any
 #'        new modules supplied through \code{...} in the order in which they are
-#'        listed, then the built-in modules in their order of the function listing.
+#'        listed, then the integrated modules in their order of the function listing.
 #'        The \code{initialize.FUN} will always be run first and the
 #'        \code{verbose.FUN} always last.
 #' @param set.control.stergm Control arguments passed to simulate.stergm. See the
@@ -328,7 +328,7 @@ control.icm <- function(type, nsteps, nsims = 1, rec.rand = TRUE, b.rand = TRUE,
 #'        is set to \code{TRUE}, this will only contain a static network with the
 #'        edge configuration at the final time step of each simulation.
 #' @param save.other A vector of elements on the \code{dat} master data list
-#'        to save out after each simulation. One example for built-in models is
+#'        to save out after each simulation. One example for integrated models is
 #'        the attribute list, "attr", at the final time step.
 #' @param verbose If \code{TRUE}, print model progress to the console.
 #' @param verbose.int Time step interval for printing progress to console, where
@@ -345,10 +345,10 @@ control.icm <- function(type, nsteps, nsims = 1, rec.rand = TRUE, b.rand = TRUE,
 #' @details
 #' \code{control.net} sets the required control settings for any network model
 #' solved with the \code{\link{netsim}} function. Controls are required for both
-#' built-in model types and when passing original process modules. For an overview
-#' of control settings for built-in network models, consult the
+#' integrated model types and when passing original process modules. For an overview
+#' of control settings for integrated network models, consult the
 #' \href{http://statnet.github.io/tut/BasicNet.html}{Basic Network Models} tutorial.
-#' For all built-in models, the \code{type} argument is a necessary parameter
+#' For all integrated models, the \code{type} argument is a necessary parameter
 #' and it has no default.
 #'
 #' @section The attr.rules Argument:
@@ -375,7 +375,7 @@ control.icm <- function(type, nsteps, nsims = 1, rec.rand = TRUE, b.rand = TRUE,
 #' in which case it is "s" (that is, all incoming nodes are susceptible).
 #'
 #' @section New Modules:
-#' Built-in network models use a set of module functions that specify how the
+#' Integrated network models use a set of module functions that specify how the
 #' individual nodes in the network are subjected to infection, recovery,
 #' demographics, and other processes. Core modules are those listed in the
 #' \code{.FUN} arguments. For each module, there is a default function used in

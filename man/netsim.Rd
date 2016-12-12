@@ -26,7 +26,7 @@ A list of class \code{netsim} with the following elements:
  \item \strong{control:} the control settings passed into the model through
        \code{control}, with additional controls added as necessary.
  \item \strong{epi:} a list of data frames, one for each epidemiological
-       output from the model. Outputs for built-in models always include the
+       output from the model. Outputs for integrated models always include the
        size of each compartment, as well as flows in, out of, and between
        compartments.
  \item \strong{stats:} a list containing two sublists, \code{nwstats} for any
@@ -43,17 +43,17 @@ Simulates stochastic network epidemic models for infectious
              disease.
 }
 \details{
-Stochastic network models explicitly represent phenomena within and across edges 
-(pairs of nodes that remain connected) over time. This enables edges to have duration, 
-allowing for repeated transmission-related acts within the same dyad, specification of 
+Stochastic network models explicitly represent phenomena within and across edges
+(pairs of nodes that remain connected) over time. This enables edges to have duration,
+allowing for repeated transmission-related acts within the same dyad, specification of
 edge formation and dissolution rates, control over the temporal sequencing of
 multiple edges, and specification of network-level features. A detailed
 description of these models, along with examples, is found in the
 \href{http://statnet.github.io/tut/BasicNet.html}{Basic Network Models}
 tutorial.
 
-The \code{netsim} function performs modeling of both the built-in model types
-and original models. Built-in model types include one-mode and bipartite models
+The \code{netsim} function performs modeling of both the integrated model types
+and original models. Integrated model types include one-mode and bipartite models
 with disease types for Susceptible-Infected (SI), Susceptible-Infected-Recovered
 (SIR), and Susceptible-Infected-Susceptible (SIS).
 

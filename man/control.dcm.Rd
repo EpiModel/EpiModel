@@ -28,7 +28,7 @@ other options).}
 \item{dede}{If \code{TRUE}, use the delayed differential equation solver,
 which allows for time-lagged variables.}
 
-\item{new.mod}{If not running a built-in model type, a function with a new
+\item{new.mod}{If not running an integrated model type, a function with a new
 model to be simulated (see details).}
 
 \item{sens.param}{If \code{TRUE}, evaluate arguments in parameters with length
@@ -49,15 +49,15 @@ Sets the controls for deterministic compartmental models
 \details{
 \code{control.dcm} sets the required control settings for any deterministic
 compartmental models solved with the \code{\link{dcm}} function. Controls are
-required for both built-in model types and original models. For an overview of
-control settings for built-in DCM class models, consult the
+required for both integrated model types and original models. For an overview of
+control settings for integrated DCM class models, consult the
 \href{http://statnet.github.io/tut/BasicDCMs.html}{Basic DCMs} tutorial.
-For all built-in models, the \code{type} argument is a necessary parameter
+For all integrated models, the \code{type} argument is a necessary parameter
 and it has no default.
 }
 \section{New Model Functions}{
 
-The form of the model function for built-in models may be displayed with the
+The form of the model function for integrated models may be displayed with the
 \code{print.mod} argument set to \code{TRUE}. In this case, the model will not
 be run. These model forms may be used as templates to write original model
 functions.

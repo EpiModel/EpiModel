@@ -40,8 +40,8 @@ Sets the initial conditions for stochastic individual contact
 \details{
 The initial conditions for a model solved with \code{\link{icm}} should be
 input into the \code{init.icm} function. This function handles initial
-conditions for both built-in models and original models using new modules. For
-an overview of initial conditions for built-in ICM class models, consult the
+conditions for both integrated models and original models using new modules. For
+an overview of initial conditions for integrated ICM class models, consult the
 \href{http://statnet.github.io/tut/BasicICMs.html}{Basic ICMs} tutorial.
 }
 \seealso{

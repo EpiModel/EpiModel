@@ -118,7 +118,7 @@ default function of \code{\link{verbose.net}}.}
 order in which they should be evaluated within each time step. If
 \code{NULL}, the modules will be evaluated as follows: first any
 new modules supplied through \code{...} in the order in which they are
-listed, then the built-in modules in their order of the function listing.
+listed, then the integrated modules in their order of the function listing.
 The \code{initialize.FUN} will always be run first and the
 \code{verbose.FUN} always last.}
 
@@ -148,7 +148,7 @@ is set to \code{TRUE}, this will only contain a static network with the
 edge configuration at the final time step of each simulation.}
 
 \item{save.other}{A vector of elements on the \code{dat} master data list
-to save out after each simulation. One example for built-in models is
+to save out after each simulation. One example for integrated models is
 the attribute list, "attr", at the final time step.}
 
 \item{verbose}{If \code{TRUE}, print model progress to the console.}
@@ -173,10 +173,10 @@ Sets the controls for stochastic network models simulated with
 \details{
 \code{control.net} sets the required control settings for any network model
 solved with the \code{\link{netsim}} function. Controls are required for both
-built-in model types and when passing original process modules. For an overview
-of control settings for built-in network models, consult the
+integrated model types and when passing original process modules. For an overview
+of control settings for integrated network models, consult the
 \href{http://statnet.github.io/tut/BasicNet.html}{Basic Network Models} tutorial.
-For all built-in models, the \code{type} argument is a necessary parameter
+For all integrated models, the \code{type} argument is a necessary parameter
 and it has no default.
 }
 \section{The attr.rules Argument}{
@@ -206,7 +206,7 @@ in which case it is "s" (that is, all incoming nodes are susceptible).
 
 \section{New Modules}{
 
-Built-in network models use a set of module functions that specify how the
+Integrated network models use a set of module functions that specify how the
 individual nodes in the network are subjected to infection, recovery,
 demographics, and other processes. Core modules are those listed in the
 \code{.FUN} arguments. For each module, there is a default function used in

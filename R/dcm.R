@@ -18,13 +18,13 @@
 #' found in the \href{http://statnet.github.io/tut/BasicDCMs.html}{Basic DCMs}
 #' tutorial.
 #'
-#' The \code{dcm} function performs  modeling of both built-in model types and
-#' original models with new structures. Built-in model types include one-group
+#' The \code{dcm} function performs  modeling of both integrated model types and
+#' original models with new structures. Integrated model types include one-group
 #' and two-group models with disease types for Susceptible-Infected (SI),
 #' Susceptible-Infected-Recovered (SIR), and Susceptible-Infected-Susceptible (SIS).
 #' New model types may be written and input into \code{dcm} following the steps
 #' outlined in the \href{http://statnet.github.io/tut/NewDCMs.html}{Solving
-#' New DCMs} tutorial. Both built-in and original models require
+#' New DCMs} tutorial. Both integrated and original models require
 #' the \code{param}, \code{init}, and \code{control} inputs.
 #'
 #' @return
@@ -35,7 +35,7 @@
 #'  \item \strong{control:} the control settings passed into the model through
 #'        \code{control}, with additional controls added as necessary.
 #'  \item \strong{epi:} a list of data frames, one for each epidemiological
-#'        output from the model. Outputs for built-in models always include the
+#'        output from the model. Outputs for integrated models always include the
 #'        size of each compartment, as well as flows in, out of, and between
 #'        compartments.
 #' }

@@ -80,15 +80,15 @@ Sets the controls for stochastic individual contact models
 \details{
 \code{control.icm} sets the required control settings for any stochastic
 individual contact model solved with the \code{\link{icm}} function. Controls
-are required for both built-in model types and when passing original process
-modules. For an overview of control settings for built-in ICM class models,
+are required for both integrated model types and when passing original process
+modules. For an overview of control settings for integrated ICM class models,
 consult the \href{http://statnet.github.io/tut/BasicICMs.html}{Basic ICMs}
-tutorial. For all built-in models, the \code{type} argument is a necessary
+tutorial. For all integrated models, the \code{type} argument is a necessary
 parameter and it has no default.
 }
 \section{New Modules}{
 
-Built-in ICM models use a set of module functions that specify
+Integrated ICM models use a set of module functions that specify
 how the individual agents in the population are subjected to infection, recovery,
 demographics, and other processes. Core modules are those listed in the
 \code{.FUN} arguments. For each module, there is a default function used in

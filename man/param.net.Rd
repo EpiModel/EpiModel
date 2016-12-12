@@ -84,13 +84,13 @@ Sets the epidemic parameters for stochastic network models
 \details{
 \code{param.net} sets the epidemic parameters for the stochastic network
 models simulated with the \code{\link{netsim}} function. Models
-may use the built-in types, for which these parameters are used, or new process
+may use the integrated types, for which these parameters are used, or new process
 modules which may use these parameters (but not necessarily). A detailed
-description of network model parameterization for built-in models is found in
+description of network model parameterization for integrated models is found in
 the \href{http://statnet.github.io/tut/BasicNet.html}{Basic Network Models}
 tutorial.
 
-For built-in models, the model specification will be chosen as a result of
+For integrated models, the model specification will be chosen as a result of
 the model parameters entered here and the control settings in
 \code{\link{control.net}}. One-mode and two-mode models are available, where
 the the latter assumes a heterogenous mixing between two distinct partitions
@@ -129,7 +129,7 @@ see the NME tutorial,
 
 \section{New Modules}{
 
-To build original models outside of the built-in models, new process modules
+To build original models outside of the integrated models, new process modules
 may be constructed to replace the existing modules or to supplement the existing
 set. These are passed into the control settings in \code{\link{control.net}}.
 New modules may use either the existing model parameters named here, an

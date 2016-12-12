@@ -22,8 +22,8 @@
 #' @details
 #' The initial conditions for a model solved with \code{\link{dcm}} should be
 #' input into the \code{init.dcm} function. This function handles initial
-#' conditions for both built-in model types and original models. For an overview
-#' of initial conditions for built-in DCM class models, consult the
+#' conditions for both integrated model types and original models. For an overview
+#' of initial conditions for integrated DCM class models, consult the
 #' \href{http://statnet.github.io/tut/BasicDCMs.html}{Basic DCMs} tutorial.
 #'
 #' Original models may use the parameter names listed as arguments here, a new
@@ -99,8 +99,8 @@ init.dcm <- function(s.num, i.num, r.num, s.num.g2, i.num.g2, r.num.g2,
 #' @details
 #' The initial conditions for a model solved with \code{\link{icm}} should be
 #' input into the \code{init.icm} function. This function handles initial
-#' conditions for both built-in models and original models using new modules. For
-#' an overview of initial conditions for built-in ICM class models, consult the
+#' conditions for both integrated models and original models using new modules. For
+#' an overview of initial conditions for integrated ICM class models, consult the
 #' \href{http://statnet.github.io/tut/BasicICMs.html}{Basic ICMs} tutorial.
 #'
 #' @seealso Use \code{\link{param.icm}} to specify model parameters and
@@ -164,8 +164,8 @@ init.icm <- function(s.num, i.num, r.num, s.num.g2, i.num.g2, r.num.g2,
 #' @details
 #' The initial conditions for a model solved with \code{\link{netsim}} should be
 #' input into the \code{init.net} function. This function handles initial
-#' conditions for both built-in models and new modules. For an overview of
-#' specifying initial conditions across a variety of built-in network models,
+#' conditions for both integrated models and new modules. For an overview of
+#' specifying initial conditions across a variety of integrated network models,
 #' consult the \href{http://statnet.github.io/tut/BasicNet.html}{Basic Network
 #' Models} tutorial.
 #'

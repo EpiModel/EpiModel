@@ -1,7 +1,7 @@
 
 #' @title Deterministic Compartmental Model Functions
 #'
-#' @description These functions parameterize the built-in deterministic
+#' @description These functions parameterize the integrated deterministic
 #'              compartmental models solved using the \code{dcm} function.
 #'
 #' @param t Time vector, passed into model function internally through

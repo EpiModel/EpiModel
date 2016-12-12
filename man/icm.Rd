@@ -22,7 +22,7 @@ A list of class \code{icm} with the following elements:
  \item \strong{control:} the control settings passed into the model through
        \code{control}, with additional controls added as necessary.
  \item \strong{epi:} a list of data frames, one for each epidemiological
-       output from the model. Outputs for built-in models always include the
+       output from the model. Outputs for integrated models always include the
        size of each compartment, as well as flows in, out of, and between
        compartments.
 }
@@ -40,8 +40,8 @@ infection, recovery, and demographics. A detailed description of these models
 may be found in the \href{http://statnet.github.io/tut/BasicICMs.html}{Basic
 ICMs} tutorial.
 
-The \code{icm} function performs  modeling of both the built-in model types
-and original models. Built-in model types include one-group and two-group
+The \code{icm} function performs  modeling of both the integrated model types
+and original models. Integrated model types include one-group and two-group
 models with disease types for Susceptible-Infected (SI),
 Susceptible-Infected-Recovered (SIR), and Susceptible-Infected-Susceptible (SIS).
 Original models may be built by writing new process modules that either take

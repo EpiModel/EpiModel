@@ -52,7 +52,7 @@ through \code{\link{dcm}} via the initial conditions in
 \code{\link{dcm}} via the parameter settings in \code{\link{param.dcm}}.}
 }
 \description{
-These functions parameterize the built-in deterministic
+These functions parameterize the integrated deterministic
              compartmental models solved using the \code{dcm} function.
 }
 \details{

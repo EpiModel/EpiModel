@@ -13,17 +13,17 @@
 #'        \code{control.net}.
 #'
 #' @details
-#' Stochastic network models explicitly represent phenomena within and across edges 
-#' (pairs of nodes that remain connected) over time. This enables edges to have duration, 
-#' allowing for repeated transmission-related acts within the same dyad, specification of 
+#' Stochastic network models explicitly represent phenomena within and across edges
+#' (pairs of nodes that remain connected) over time. This enables edges to have duration,
+#' allowing for repeated transmission-related acts within the same dyad, specification of
 #' edge formation and dissolution rates, control over the temporal sequencing of
 #' multiple edges, and specification of network-level features. A detailed
 #' description of these models, along with examples, is found in the
 #' \href{http://statnet.github.io/tut/BasicNet.html}{Basic Network Models}
 #' tutorial.
 #'
-#' The \code{netsim} function performs modeling of both the built-in model types
-#' and original models. Built-in model types include one-mode and bipartite models
+#' The \code{netsim} function performs modeling of both the integrated model types
+#' and original models. Integrated model types include one-mode and bipartite models
 #' with disease types for Susceptible-Infected (SI), Susceptible-Infected-Recovered
 #' (SIR), and Susceptible-Infected-Susceptible (SIS).
 #'
@@ -43,7 +43,7 @@
 #'  \item \strong{control:} the control settings passed into the model through
 #'        \code{control}, with additional controls added as necessary.
 #'  \item \strong{epi:} a list of data frames, one for each epidemiological
-#'        output from the model. Outputs for built-in models always include the
+#'        output from the model. Outputs for integrated models always include the
 #'        size of each compartment, as well as flows in, out of, and between
 #'        compartments.
 #'  \item \strong{stats:} a list containing two sublists, \code{nwstats} for any
@@ -125,20 +125,20 @@ netsim <- function(x, param, init, control) {
   nsims <- control$nsims
   ncores <- ifelse(nsims == 1, 1, min(parallel::detectCores(), control$ncores))
   control$ncores <- ncores
-  
+
   if (ncores == 1) {
     for (s in 1:control$nsims) {
-      
+
       ## Initialization Module
       if (!is.null(control[["initialize.FUN"]])) {
         dat <- do.call(control[["initialize.FUN"]], list(x, param, init, control, s))
       }
-      
-      
+
+
       ### TIME LOOP
       if (control$nsteps > 1) {
         for (at in max(2, control$start):control$nsteps) {
-          
+
           ## Module order
           morder <- control$module.order
           if (is.null(morder)) {
@@ -146,20 +146,20 @@ netsim <- function(x, param, init, control) {
                                                     c("initialize.FUN", "verbose.FUN"))]
             morder <- c(control$user.mods, lim.bi.mods)
           }
-          
+
           ## Evaluate modules
           for (i in seq_along(morder)) {
             dat <- do.call(control[[morder[i]]], list(dat, at))
           }
-          
+
           ## Verbose module
           if (!is.null(control[["verbose.FUN"]])) {
             do.call(control[["verbose.FUN"]], list(dat, type = "progress", s, at))
           }
-          
+
         }
       }
-      
+
       # Set output
       if (s == 1) {
         out <- saveout.net(dat, s)
@@ -169,25 +169,25 @@ netsim <- function(x, param, init, control) {
       class(out) <- "netsim"
     }
   }
-  
+
   if (ncores > 1) {
     doParallel::registerDoParallel(ncores)
-    
+
     sout <- foreach(s = 1:nsims) %dopar% {
-    
+
       control$nsims <- 1
       control$currsim <- s
-    
+
       ## Initialization Module
       if (!is.null(control[["initialize.FUN"]])) {
         dat <- do.call(control[["initialize.FUN"]], list(x, param, init, control, s))
       }
-      
-      
+
+
       ### TIME LOOP
       if (control$nsteps > 1) {
         for (at in max(2, control$start):control$nsteps) {
-          
+
           ## Module order
           morder <- control$module.order
           if (is.null(morder)) {
@@ -195,17 +195,17 @@ netsim <- function(x, param, init, control) {
                                                     c("initialize.FUN", "verbose.FUN"))]
             morder <- c(control$user.mods, lim.bi.mods)
           }
-          
+
           ## Evaluate modules
           for (i in seq_along(morder)) {
             dat <- do.call(control[[morder[i]]], list(dat, at))
           }
-          
+
           ## Verbose module
           if (!is.null(control[["verbose.FUN"]])) {
             do.call(control[["verbose.FUN"]], list(dat, type = "progress", s, at))
           }
-          
+
         }
       }
 
@@ -214,7 +214,7 @@ netsim <- function(x, param, init, control) {
       class(out) <- "netsim"
       return(out)
     }
-    
+
     merged.out <- sout[[1]]
     for (i in 2:length(sout)) {
       merged.out <- merge(merged.out, sout[[i]], param.error = FALSE)
