@@ -1600,6 +1600,16 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #' middle 95\% of the data, specify \code{qnts=0.95}. To toggle off the polygons
 #' where they are plotted by default, specify \code{qnts=FALSE}.
 #'
+#' When \code{type="network"}, this function will plot cross sections of the simulated
+#' networks at specified time steps. Because it is only possible to plot one time
+#' step from one simulation at a time, it is necessary to enter these in the
+#' \code{at} and \code{sims} parameters. To aide in visualizing representative
+#' and extreme simulations at specific time steps, the sims parameter may be set
+#' to \code{"mean"} to plot the simulation in which the disease prevalence is
+#' closest to the average across all simulations, \code{"min"} to plot the simulation
+#' in which the prevalence is lowest, and \code{"max"} to plot the simulation
+#' in which the prevalence is highest.
+#'
 #' @method plot netsim
 #' @export
 #'
@@ -1693,15 +1703,19 @@ plot.netsim <- function(x, type = "epi", y, popfrac, sim.lines = FALSE, sims, si
            "or \"mean\", \"max\", or \"min\" ", call. = FALSE)
     }
 
+    sims.arg <- sims
     if (sims == "mean") {
       sims <- which.min(abs(as.numeric(x$epi$i.num[at, ]) -
                            mean(as.numeric(x$epi$i.num[at, ]))))
+      sims.val <- as.numeric(x$epi$i.num[at, sims])
     }
     if (sims == "max") {
       sims <- as.numeric(which.max(x$epi$i.num[at, ]))
+      sims.val <- x$epi$i.num[at, sims]
     }
     if (sims == "min") {
       sims <- as.numeric(which.min(x$epi$i.num[at, ]))
+      sims.val <- x$epi$i.num[at, sims]
     }
 
     obj <- get_network(x, sims, network, collapse = TRUE, at = at)
@@ -1753,6 +1767,9 @@ plot.netsim <- function(x, type = "epi", y, popfrac, sim.lines = FALSE, sims, si
                    edge.col = "grey40", vertex.sides = vertex.sides,
                    vertex.rot = vertex.rot, vertex.cex = vertex.cex,
                    displaylabels = FALSE, ...)
+      if (sims.arg %in% c("mean", "max", "min")) {
+        mtext(side = 1, text = paste("Sim =", sims, " | Prev =", sims.val))
+      }
     } else {
       plot.network(obj, vertex.sides = vertex.sides, vertex.rot = vertex.rot,
                    vertex.cex = vertex.cex, displaylabels = FALSE, ...)

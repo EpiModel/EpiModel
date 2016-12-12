@@ -156,6 +156,16 @@ quantile range. By default, the interquartile range is shown: that is the
 middle 50\% of the data. This is specified by \code{qnts=0.5}. To show the
 middle 95\% of the data, specify \code{qnts=0.95}. To toggle off the polygons
 where they are plotted by default, specify \code{qnts=FALSE}.
+
+When \code{type="network"}, this function will plot cross sections of the simulated
+networks at specified time steps. Because it is only possible to plot one time
+step from one simulation at a time, it is necessary to enter these in the
+\code{at} and \code{sims} parameters. To aide in visualizing representative
+and extreme simulations at specific time steps, the sims parameter may be set
+to \code{"mean"} to plot the simulation in which the disease prevalence is
+closest to the average across all simulations, \code{"min"} to plot the simulation
+in which the prevalence is lowest, and \code{"max"} to plot the simulation
+in which the prevalence is highest.
 }
 \examples{
 \dontrun{
