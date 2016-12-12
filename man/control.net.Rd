@@ -158,10 +158,11 @@ the attribute list, "attr", at the final time step.}
 \code{x} prints progress after each \code{x} time steps. The default
 is to print progress after each time step.}
 
-\item{skip.check}{If \code{TRUE}, skips the error check for parameter values,
-initial conditions, and control settings before running the models.
-This is suggested only if encountering unnecessary errors when running
-new models.}
+\item{skip.check}{If \code{TRUE}, skips the default error checking for the
+structure and consistency of the parameter values, initial conditions,
+and control settings before running integrated epidemic models. Setting
+this to \code{FALSE} is recommended when running models with new modules
+specified.}
 
 \item{...}{Additional control settings passed to model.}
 }
@@ -182,7 +183,7 @@ and it has no default.
 
 The \code{attr.rules} parameter is used to specify the rules for how nodal
 attribute values for incoming nodes should be set. These rules are only
-necessary for models in which there are incoming nodes (i.e., births) and 
+necessary for models in which there are incoming nodes (i.e., births) and
 there is also a nodal attribute in the network model formation formula set in
 \code{\link{netest}}. There are three rules available for each attribute
 value:

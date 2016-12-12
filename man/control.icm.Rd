@@ -65,10 +65,11 @@ with the default function of \code{\link{get_prev.icm}}.}
 positive integer \code{x} prints progress after each \code{x} time
 steps.}
 
-\item{skip.check}{If \code{TRUE}, skips the error check for parameter values,
-initial conditions, and control settings before running the models.
-This is suggested only if encountering unnecessary errors when running
-new models.}
+\item{skip.check}{If \code{TRUE}, skips the default error checking for the
+structure and consistency of the parameter values, initial conditions,
+and control settings before running integrated epidemic models. Setting
+this to \code{FALSE} is recommended when running models with new modules
+specified.}
 
 \item{...}{Additional control settings passed to model.}
 }
