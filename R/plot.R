@@ -1,5 +1,4 @@
 
-
 # Main Exported Methods ---------------------------------------------------
 
 #' @title Plot Data from a Deterministic Compartmental Epidemic Model

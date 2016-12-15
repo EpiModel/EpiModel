@@ -36,7 +36,7 @@ Creates a new color-named temporally-extended attribute (TEA)
              status TEA in numeric format.
 }
 \details{
-The \code{ndtv} package (\url{http://cran.r-project.org/package=ndtv}) produces
+The \code{ndtv} package (\url{https://cran.r-project.org/package=ndtv}) produces
 animated visuals for dynamic networks with evolving edge structures and nodal
 attributes. Nodal attribute dynamics in \code{ndtv} movies require a temporally
 extended attribute (TEA) containing a standard R color for each node at each
