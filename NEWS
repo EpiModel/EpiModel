@@ -1,19 +1,35 @@
+Version 1.2.8
+------------------------------------------------------------------------------
+
+NEW FEATURES
+* Print simulation number and prevalence value for static network plots in
+  `print.netsim` when `sims` is `mean`, `min`, or `max.
+
+BUG FIXES
+* Add new line at end of `print.coefdiss` output.
+* Tighten the default ylim ranges for `plot.netsim`
+
+OTHER
+* Include error check for duration < 1 in `dissolution_coefs`.
+* Update documentation in a number of places.
+
+
 Version 1.2.7
 ------------------------------------------------------------------------------
 
 NEW FEATURES
-* Add new `mutate_epi` function inspired by the `dplyr` package, to add 
+* Add new `mutate_epi` function inspired by the `dplyr` package, to add
   post-hoc summary statistic calculations to completed network simulations.
   See the function help file for examples.
-* Added a speedy `get_degree` function that returns a vector of current 
-  network degree for each person in a network. 
+* Added a speedy `get_degree` function that returns a vector of current
+  network degree for each person in a network.
 
 BUG FIXES
 * Updated internal plot functions that calculate prevalences.
 * Disable verbose output if running network models in parallel.
 
 OTHER
-* Allow network simulations of 1 time step (mainly used for debugging and 
+* Allow network simulations of 1 time step (mainly used for debugging and
   testing).
 
 
@@ -21,7 +37,7 @@ Version 1.2.6
 ------------------------------------------------------------------------------
 
 NEW FEATURES
-* Updates to `as.phylo.transmat` to fix issues with vertex exit times and to 
+* Updates to `as.phylo.transmat` to fix issues with vertex exit times and to
   now accept multiple seed vertices if multiple seeds are detected, returning
   a list of phylo objects of class `multiPhylo` following the convention of
   `ape::read.tree`.
@@ -41,7 +57,7 @@ NEW FEATURES
 * Added multicore functionality to simulating stochastic network models with `netsim`. This
   only supports single-node frameworks currently, using the `doParallel` package. Run models
   in parallel by using the `ncores` parameter in `control.net`.
-* Modifications to the `as.phylo.transmat` function to construct the phylo tree with all 
+* Modifications to the `as.phylo.transmat` function to construct the phylo tree with all
   network vertices as phylo-tips and all transmissions as phylo nodes.
 
 OTHER
