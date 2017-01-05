@@ -114,11 +114,11 @@ resim_nets <- function(dat, at) {
       dat <- tergmLite::updateModelTermInputs(dat)
 
       # fast version of tergm::simulate.network
-      dat$el <- tergmLite::simulate_network(p = dat$p,
-                                            el = dat$el,
-                                            coef.form = nwparam$coef.form,
-                                            coef.diss = nwparam$coef.diss$coef.adj,
-                                            save.changes = TRUE)
+      dat$el[[1]] <- tergmLite::simulate_network(p = dat$p[[1]],
+                                                 el = dat$el[[1]],
+                                                 coef.form = nwparam$coef.form,
+                                                 coef.diss = nwparam$coef.diss$coef.adj,
+                                                 save.changes = TRUE)
 
     }
   }

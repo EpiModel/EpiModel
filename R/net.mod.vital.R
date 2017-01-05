@@ -26,7 +26,7 @@ deaths.net <- function(dat, at) {
     mode <- idmode(dat$nw)
   } else {
     # assume that if in edgelist mode, must not be two mode
-    mode <-rep.int(1,attr(dat$el,'n'))
+    mode <-rep.int(1,attr(dat$el[[1]], 'n'))
   }
 
   type <- dat$control$type
@@ -254,7 +254,7 @@ births.net <- function(dat, at) {
   if(!is.null(dat[['nw']])){
     nCurr <- network.size(dat$nw)
   } else {
-    nCurr <-attr(dat$el,'n')
+    nCurr <-attr(dat$el[[1]],'n')
   }
   b.rand <- dat$control$b.rand
   delete.nodes <- dat$control$delete.nodes
@@ -431,14 +431,14 @@ terminate_vertices<-function(dat,at,vids.to.terminate){
   } else{
     # assume we are running in fast_edgelist mode
     # and remove from edgelist using tergmLite utils
-    dat$el <- tergmLite::delete_vertices(el = dat$el,vid = vids.to.terminate)
+    dat$el[[1]] <- tergmLite::delete_vertices(el = dat$el,vid = vids.to.terminate)
     # also need to remove corresponding attribute rows
     dat$attr <- deleteAttr(dat$attr,vids.to.terminate)
   }
   return(dat)
 }
 
-# internal function to either initialize vertices in the network object, 
+# internal function to either initialize vertices in the network object,
 # or in the edgelist, depending on mode of operation
 initiate_vertices<-function(dat,at,n){
   # if the network object exists, assume we are in network mode
@@ -447,7 +447,7 @@ initiate_vertices<-function(dat,at,n){
     dat$nw <- add.vertices.active(dat$nw, nv = n,onset=at, terminus=Inf)
   } else {
     # increment the vertex counter on the edgelist
-    dat$el<-tergmLite::add_vertices(dat$el,n)
+    dat$el[[1]] <- tergmLite::add_vertices(dat$el,n)
   }
   return(dat)
 }

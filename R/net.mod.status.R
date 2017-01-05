@@ -45,7 +45,7 @@ infection.net <- function(dat, at) {
       mode <- idmode(dat$nw)
     } else {
       # assume that if using edgelist, must be one-mode
-      mode <-rep(1,attr(dat$el,'n'))
+      mode <-rep(1, attr(dat$el[[1]], 'n'))
     }
 
     inf.prob <- dat$param$inf.prob
@@ -222,7 +222,7 @@ discord_edgelist <- function(dat, idsInf, idsSus, at) {
     #el <- as.edgelist(el,n<-network.size(nw),directed=is.directed(nw),
     #                  bipartite=is.bipartite(nw),loops=has.loops(nw))
   } else {
-    el <- dat$el
+    el <- dat$el[[1]]
     # uncomment enforce sort and column order for consistency between fast.edgelist and normal modes
     # el <- as.edgelist(el,n=attr(el,'n'),directed=FALSE)
   }
@@ -279,7 +279,7 @@ recovery.net <- function(dat, at) {
     mode <- idmode(dat$nw)
   } else {
     # assume that if using edgelist, must be one-mode
-    mode <- rep.int(1,attr(dat$el,'n'))
+    mode <- rep.int(1, attr(dat$el[[1]], 'n'))
   }
 
   type <- dat$control$type
