@@ -100,7 +100,7 @@ initialize.net <- function(x, param, init, control, s) {
       # note that the network may contain terminated edges, so must extract at the current timestep
       dat$el <- list()
       dat$el[[1]] <- as.edgelist(network.collapse(nw, at = 1))
-      attributes(dat$el)$vnames <- NULL
+      attributes(dat$el[[1]])$vnames <- NULL
       # copy any non-standard vertex attributes (probably user attached)
       # TODO: check model terms and only copy those actually used and in vector form
       vattrs <- list.vertex.attributes(nw)
@@ -219,7 +219,7 @@ init_status.net <- function(dat) {
   if(!is.null(dat[['nw']])){
     num <- network.size(dat[['nw']])
   } else {
-    num <- attr(dat$el,'n')
+    num <- attr(dat$el[[1]], 'n')
   }
   form <- get_nwparam(dat)$form
   statOnNw <- "status" %in% get_formula_terms(form)
