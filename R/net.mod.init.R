@@ -98,7 +98,8 @@ initialize.net <- function(x, param, init, control, s) {
       # store the edgelist instead of the network object
       dat$nw <- NULL
       # note that the network may contain terminated edges, so must extract at the current timestep
-      dat$el <- as.edgelist(network.collapse(nw, at = 1))
+      dat$el <- list()
+      dat$el[[1]] <- as.edgelist(network.collapse(nw, at = 1))
       attributes(dat$el)$vnames <- NULL
       # copy any non-standard vertex attributes (probably user attached)
       # TODO: check model terms and only copy those actually used and in vector form
@@ -117,7 +118,8 @@ initialize.net <- function(x, param, init, control, s) {
                                   x$constraints)
       p$model.form$formula <- NULL
       p$model.diss$formula <- NULL
-      dat$p <- p
+      dat$p <- list()
+      dat$p[[1]] <- p
 
     }
 
