@@ -420,34 +420,34 @@ births.net <- function(dat, at) {
 
 # internal function to either terminate nodes in the network object, or in the edgelist
 # depending on the mode of operation
-terminate_vertices<-function(dat,at,vids.to.terminate){
+terminate_vertices <- function(dat, at, vids.to.terminate) {
   # if no vids, give back the dat
   if (length(vids.to.terminate) == 0) return(dat)
   # if the network object exists, assume we are in network mode
-  if(!is.null(dat[['nw']])){
+  if (!is.null(dat[['nw']])) {
     # deactivate the vertices on the network object
     dat$nw <- deactivate.vertices(dat$nw, onset = at, terminus = Inf,
                                   v = vids.to.terminate, deactivate.edges = TRUE)
-  } else{
+  } else {
     # assume we are running in fast_edgelist mode
     # and remove from edgelist using tergmLite utils
-    dat$el[[1]] <- tergmLite::delete_vertices(el = dat$el,vid = vids.to.terminate)
+    dat$el[[1]] <- tergmLite::delete_vertices(el = dat$el[[1]], vid = vids.to.terminate)
     # also need to remove corresponding attribute rows
-    dat$attr <- deleteAttr(dat$attr,vids.to.terminate)
+    dat$attr <- deleteAttr(dat$attr, vids.to.terminate)
   }
   return(dat)
 }
 
 # internal function to either initialize vertices in the network object,
 # or in the edgelist, depending on mode of operation
-initiate_vertices<-function(dat,at,n){
+initiate_vertices <- function(dat,at,n){
   # if the network object exists, assume we are in network mode
-  if(!is.null(dat[['nw']])){
+  if (!is.null(dat[['nw']])) {
     # add and activate new vertices
-    dat$nw <- add.vertices.active(dat$nw, nv = n,onset=at, terminus=Inf)
+    dat$nw <- add.vertices.active(dat$nw, nv = n, onset = at, terminus = Inf)
   } else {
     # increment the vertex counter on the edgelist
-    dat$el[[1]] <- tergmLite::add_vertices(dat$el,n)
+    dat$el[[1]] <- tergmLite::add_vertices(dat$el[[1]], n)
   }
   return(dat)
 }
