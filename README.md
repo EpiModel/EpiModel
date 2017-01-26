@@ -3,7 +3,7 @@ EpiModel
 
 [![Version](http://img.shields.io/badge/Version-1.2.8-orange.svg?style=flat)](https://github.com/statnet/EpiModel/releases/tag/v1.2.8)
 [![](http://cranlogs.r-pkg.org/badges/grand-total/EpiModel?color=yellow)](http://cran.rstudio.com/web/packages/EpiModel/index.html)
-<a href='https://travis-ci.org/statnet/EpiModel' target="_blank"><img src='http://img.shields.io/travis/statnet/EpiModel/master.svg?style=flat' alt='Build Status' /></a>
+[![Build Status](https://travis-ci.org/statnet/EpiModel.svg?branch=master)](https://travis-ci.org/statnet/EpiModel)
 <a href='https://coveralls.io/r/statnet/EpiModel?branch=master' target="_blank"><img src='https://coveralls.io/repos/statnet/EpiModel/badge.svg?branch=master' alt='Coverage Status' /></a>
 [![Vignette](https://img.shields.io/badge/docs-Vignette-943ad8.svg)](http://statnet.github.io/tut/EpiModelVignette.pdf)
 <a href='http://dx.doi.org/10.5281/zenodo.16767' target="_blank"><img src='http://img.shields.io/badge/DOI-10.5281%2Fzenodo.16767-blue.svg?style=flat' alt='DOI' /></a>
