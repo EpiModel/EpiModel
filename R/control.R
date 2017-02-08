@@ -93,7 +93,7 @@ control.dcm <- function(type, nsteps, dt = 1, odemethod = "rk4",
   }
 
   ## Output
-  class(p) <- "control.dcm"
+  class(p) <- c("control.dcm", "list")
   return(p)
 }
 
@@ -218,7 +218,7 @@ control.icm <- function(type, nsteps, nsims = 1, rec.rand = TRUE, b.rand = TRUE,
 
 
   ## Output
-  class(p) <- "control.icm"
+  class(p) <- c("control.icm", "list")
   return(p)
 }
 
@@ -476,6 +476,6 @@ control.net <- function(type, nsteps, start = 1, nsims = 1, ncores = 1,
   }
 
   ## Output
-  class(p) <- "control.net"
+  class(p) <- c("control.net", "list")
   return(p)
 }

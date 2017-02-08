@@ -139,7 +139,7 @@ param.dcm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
     p$inter.start <- 1
   }
 
-  class(p) <- "param.dcm"
+  class(p) <- c("param.dcm", "list")
   return(p)
 }
 
@@ -238,7 +238,7 @@ param.icm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
   }
 
   ## Output
-  class(p) <- "param.icm"
+  class(p) <- c("param.icm", "list")
   return(p)
 }
 
@@ -397,7 +397,7 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
   }
 
   ## Output
-  class(p) <- "param.net"
+  class(p) <- c("param.net", "list")
   return(p)
 }
 

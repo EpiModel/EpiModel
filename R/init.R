@@ -68,7 +68,7 @@ init.dcm <- function(s.num, i.num, r.num, s.num.g2, i.num.g2, r.num.g2,
   }
 
   ## Output
-  class(out.p) <- "init.dcm"
+  class(out.p) <- c("init.dcm", "list")
   return(out.p)
 }
 
@@ -133,7 +133,7 @@ init.icm <- function(s.num, i.num, r.num, s.num.g2, i.num.g2, r.num.g2,
 
 
   ## Output
-  class(p) <- "init.icm"
+  class(p) <- c("init.icm", "list")
   return(p)
 }
 
@@ -207,6 +207,6 @@ init.net <- function(i.num, r.num, i.num.m2, r.num.m2,
   }
 
   ## Output
-  class(p) <- "init.net"
+  class(p) <- c("init.net", "list")
   return(p)
 }
