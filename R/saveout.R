@@ -20,7 +20,12 @@ saveout.dcm <- function(df, s, param, control, out = NULL) {
     out <- list()
     out$param <- param
     out$control <- control
-    out$control$timesteps <- seq(1, control$nsteps, control$dt)
+    if (length(control$nsteps) == 1) {
+      out$control$timesteps <- seq(1, control$nsteps, control$dt)
+    } else {
+      out$control$timesteps <- control$nsteps
+    }
+
     out$epi <- list()
     for (j in 2:ncol(df)) {
       out$epi[[names(df)[j]]] <- data.frame(df[, j])

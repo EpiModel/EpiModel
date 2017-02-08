@@ -218,7 +218,12 @@ dcm <- function(param, init, control){
     }
 
     ## Timesteps
-    times <- seq(1, control$nsteps, control$dt)
+    if (length(control$nsteps) == 1) {
+      times <- seq(1, control$nsteps, control$dt)
+    } else {
+      times <- control$nsteps
+    }
+
 
     ## Differential equation solvers
     if (control$dede == FALSE) {

@@ -8,8 +8,9 @@
 #'        Susceptible-Infected diseases, \code{"SIR"} for
 #'        Susceptible-Infected-Recovered diseases, and \code{"SIS"} for
 #'        Susceptible-Infected-Susceptible diseases.
-#' @param nsteps Number of time steps to solve the model over. This must be a
-#'        positive integer.
+#' @param nsteps Number of time steps to solve the model over or vector of times
+#'        to solve the model over. If the number of time steps, then this must be
+#'        a positive integer of length 1.
 #' @param dt Time unit for model solutions, with the default of 1. Model
 #'        solutions for fractional time steps may be obtained by setting this to a
 #'        number between 0 and 1.
