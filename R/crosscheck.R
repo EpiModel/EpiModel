@@ -137,13 +137,13 @@ crosscheck.dcm <- function(param, init, control) {
 crosscheck.icm <- function(param, init, control) {
 
   ## Main class check
-  if (class(param) != "param.icm") {
+  if (!inherits(param, "param.icm")) {
     stop("param must an object of class param.icm", call. = FALSE)
   }
-  if (class(init) != "init.icm") {
+  if (!inherits(init, "init.icm")) {
     stop("init must an object of class init.icm", call. = FALSE)
   }
-  if (class(control) != "control.icm") {
+  if (!inherits(control, "control.icm")) {
     stop("control must an object of class control.icm", call. = FALSE)
   }
 
@@ -234,13 +234,13 @@ crosscheck.net <- function(x, param, init, control) {
       stop("x must be either an object of class netest or class netsim",
            call. = FALSE)
     }
-    if (class(param) != "param.net") {
+    if (!inherits(param, "param.net")) {
       stop("param must an object of class param.net", call. = FALSE)
     }
-    if (class(init) != "init.net") {
+    if (!inherits(init, "init.net")) {
       stop("init must an object of class init.net", call. = FALSE)
     }
-    if (class(control) != "control.net") {
+    if (!inherits(control, "control.net")) {
       stop("control must an object of class control.net", call. = FALSE)
     }
 
