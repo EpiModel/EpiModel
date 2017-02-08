@@ -49,10 +49,9 @@ merge.icm <- function(x, y, ...) {
     stop("x and y have different structure")
   }
   if (x$control$nsims > 1 & y$control$nsims > 1 &
-      !all(sapply(x, class) == sapply(y, class))) {
+      !identical(sapply(x, class), sapply(y, class))) {
     stop("x and y have different structure")
   }
-
 
   ## Check params
   check1 <- identical(x$param, y$param)
@@ -120,8 +119,8 @@ merge.icm <- function(x, y, ...) {
 #' parallelization of model simulations.
 #'
 #' This merge function does not work the same as the default merge, which allows
-#' for a combined object where the structure differs between the input elements. 
-#' Instead, the function checks that objects are identical in model parameterization 
+#' for a combined object where the structure differs between the input elements.
+#' Instead, the function checks that objects are identical in model parameterization
 #' in every respect (except number of simulations) and binds the results.
 #'
 #' @method merge netsim
