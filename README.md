@@ -55,6 +55,19 @@ A good place to start learning about EpiModel is the main vignette, currently un
 If using EpiModel for teaching or research, please include a citation:
 > Jenness SM, Goodreau SM, Morris M (2017). *EpiModel: Mathematical Modeling of Infectious Disease.* R Package Version 1.2.8. URL: http://epimodel.org/. DOI: 10.5281/zenodo.16767.
 
+Please also send us an email if you have used EpiModel in your work.
+
+#### Citing Articles
+
+EpiModel has been used in the following scientific articles:
+
+1. Jenness SM, Goodreau SM, Morris M, Cassels S. Effectiveness of Combination Packages for HIV-1 Prevention in Sub-Saharan Africa Depends on Partnership Network Structure. _Sexually Transmitted Infections._ 2016; 92(8): 619-624. [LINK](http://sti.bmj.com/content/early/2016/06/09/sextrans-2015-052476.abstract)
+
+2. Jenness SM, Goodreau SM, Rosenberg E, Beylerian EN, Hoover KW, Smith DK, Sullivan P. Impact of CDC’s HIV Preexposure Prophylaxis Guidelines among MSM in the United States. _Journal of Infectious Diseases._ 2016; 214(12): 1800-1807. [LINK](http://jid.oxfordjournals.org/content/early/2016/07/12/infdis.jiw223.full)
+
+3. Jenness SM, Sharma A, Goodreau SM, Rosenberg ES, Weiss KM, Hoover KW, Smith DK, Sullivan P. Individual HIV Risk versus Population Impact of Risk Compensation after HIV Preexposure Prophylaxis Initiation among Men Who Have Sex with Men. _PLoS One._ 2017; 12(1): e0169484. [LINK](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0169484)
+
+
 #### Funding
 Development of this software has been supported by the following grants: 
 
