@@ -343,8 +343,9 @@ print.init.net <- function(x, ...) {
 print.control.dcm <- function(x, ...) {
 
   pToPrint <- seq_along(names(x))
-  if (is.null(x$new.mod)) {
-    pToPrint <- pToPrint[-which(names(x) == "new.mod")]
+  pToPrint <- pToPrint[-which(names(x) == "new.mod")]
+  if (!is.null(x$new.mod)) {
+    names(x)[which(names(x) == "new.mod.name")] <- "new.mod"
   }
 
   cat("DCM Control Settings")

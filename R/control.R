@@ -77,7 +77,9 @@ control.dcm <- function(type, nsteps, dt = 1, odemethod = "rk4",
       p[[names.dot.args[i]]] <- dot.args[[i]]
     }
   }
-
+  if (!is.null(p$new.mod)) {
+    p$new.mod.name <- as.list(match.call())$new.mod
+  }
 
   ## Defaults and checks
   if (is.null(p$nsteps)) {
