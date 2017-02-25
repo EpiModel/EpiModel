@@ -50,6 +50,6 @@ Suggests:
     shiny,
     testthat,
     tergmLite (>= 0.1.2)
-Remotes: github::statnet/tergmLite/tergmLite
+Remotes: github::statnet/tergmLite
 VignetteBuilder: knitr
 RoxygenNote: 5.0.1
