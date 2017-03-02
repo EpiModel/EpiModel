@@ -29,12 +29,7 @@ print.dcm <- function(x, ...) {
 
   cat("\nModel Output")
   cat("\n-----------------------")
-  if (new.mod == FALSE) {
-    cat("\nCompartments:", names(x$epi)[grep("num", names(x$epi))], fill = 60)
-    cat("Flows:", names(x$epi)[grep("flow", names(x$epi))], fill = 60)
-  } else {
-    cat("\nAll Output:", names(x$epi), fill = 60)
-  }
+  cat("\nVariables:", names(x$epi), fill = 60)
 
   invisible()
 }
@@ -64,8 +59,7 @@ print.icm <- function(x, ...) {
 
   cat("\nModel Output")
   cat("\n-----------------------")
-  cat("\nCompartments:", names(x$epi)[grep("num", names(x$epi))], fill = 60)
-  cat("Flows:", names(x$epi)[grep("flow", names(x$epi))], fill = 60)
+  cat("\nVariables:", names(x$epi), fill = 60)
 
   invisible()
 }
@@ -166,12 +160,7 @@ print.netsim <- function(x, ...) {
 
   cat("\nModel Output")
   cat("\n-----------------------")
-  cat("\nCompartments:", names(x$epi)[grep("num", names(x$epi))], fill = 60)
-  cat("Flows:", names(x$epi)[grep("flow", names(x$epi))], fill = 60)
-  othOut <- names(x$epi)[-c(grep("num", names(x$epi)), grep("flow", names(x$epi)))]
-  if (length(othOut) > 0) {
-    cat("Other Output:", othOut, fill = 60)
-  }
+  cat("\nVariables:", names(x$epi), fill = 60)
   if (!(is.null(x$network))) {
     cat("Networks:", simnames)
   }
