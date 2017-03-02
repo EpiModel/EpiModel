@@ -4,8 +4,8 @@
 \alias{plot.dcm}
 \title{Plot Data from a Deterministic Compartmental Epidemic Model}
 \usage{
-\method{plot}{dcm}(x, y, popfrac, run, col, lwd, lty, alpha = 0.9, leg,
-  leg.name, leg.cex = 0.8, axs = "r", add = FALSE, ...)
+\method{plot}{dcm}(x, y, popfrac = FALSE, run, col, lwd, lty, alpha = 0.9,
+  leg, leg.name, leg.cex = 0.8, axs = "r", add = FALSE, ...)
 }
 \arguments{
 \item{x}{An \code{EpiModel} object of class \code{dcm}.}
@@ -61,7 +61,7 @@ and in multiple run models the specific run may also be specified.
 
 Compartment prevalences are the size of a compartment over some denominator.
 To plot the raw numbers from any compartment, use \code{popfrac=FALSE}; this
-is the default for any plots of flows. The \code{popfrac} parameter calculates
+is the default. The \code{popfrac} parameter calculates
 and plots the denominators of all specified compartments using these rules: 1)
 for one-group models, the prevalence of any compartment is the compartment size
 divided by the total population size; 2) for two-group models, the prevalence
@@ -103,7 +103,7 @@ mod <- dcm(param, init, control)
 plot(mod)
 
 # Plot prevalence of susceptibles
-plot(mod, y = "s.num", col = "Greys")
+plot(mod, y = "s.num", popfrac = TRUE, col = "Greys")
 
 # Plot number of susceptibles
 plot(mod, y = "s.num", popfrac = FALSE, col = "Greys")

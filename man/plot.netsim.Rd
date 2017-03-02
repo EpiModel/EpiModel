@@ -4,13 +4,13 @@
 \alias{plot.netsim}
 \title{Plot Data from a Stochastic Network Epidemic Model}
 \usage{
-\method{plot}{netsim}(x, type = "epi", y, popfrac, sim.lines = FALSE, sims,
-  sim.col, sim.lwd, sim.alpha, mean.line = TRUE, mean.smooth = TRUE,
-  mean.col, mean.lwd = 2, mean.lty = 1, qnts = 0.5, qnts.col, qnts.alpha,
-  qnts.smooth = TRUE, leg, leg.cex = 0.8, axs = "r", add = FALSE,
-  network = 1, at = 1, col.status = FALSE, shp.bip = NULL, stats,
-  targ.line = TRUE, targ.col, targ.lwd = 2, targ.lty = 2, plots.joined,
-  ...)
+\method{plot}{netsim}(x, type = "epi", y, popfrac = FALSE,
+  sim.lines = FALSE, sims, sim.col, sim.lwd, sim.alpha, mean.line = TRUE,
+  mean.smooth = TRUE, mean.col, mean.lwd = 2, mean.lty = 1, qnts = 0.5,
+  qnts.col, qnts.alpha, qnts.smooth = TRUE, leg, leg.cex = 0.8, axs = "r",
+  add = FALSE, network = 1, at = 1, col.status = FALSE,
+  shp.bip = NULL, stats, targ.line = TRUE, targ.col, targ.lwd = 2,
+  targ.lty = 2, plots.joined, ...)
 }
 \arguments{
 \item{x}{An \code{EpiModel} model object of class \code{netsim}.}
@@ -168,7 +168,6 @@ in which the prevalence is lowest, and \code{"max"} to plot the simulation
 in which the prevalence is highest.
 }
 \examples{
-\dontrun{
 ## Independent SI Model
 # Initialize network and set network model parameters
 nw <- network.initialize(n = 100, bipartite = 50, directed = FALSE)
@@ -189,7 +188,7 @@ mod <- netsim(est, param, init, control)
 
 # Plot epidemic trajectory (default type)
 plot(mod, type = "epi")
-plot(mod, type = "epi", popfrac = FALSE)
+plot(mod, type = "epi", popfrac = TRUE)
 plot(mod, type = "epi", y = "si.flow", qnts = 1)
 
 # Plot static networks
@@ -217,7 +216,6 @@ plot(mod, type = "formation", plots.joined = FALSE,
      stats = c("edges", "concurrent"))
 plot(mod, type = "formation", stats = "meandeg",
      sim.lwd = 2, sim.col = "seagreen")
-}
 
 }
 \seealso{

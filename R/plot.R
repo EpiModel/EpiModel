@@ -41,7 +41,7 @@
 #' @section The \code{popfrac} Argument:
 #' Compartment prevalences are the size of a compartment over some denominator.
 #' To plot the raw numbers from any compartment, use \code{popfrac=FALSE}; this
-#' is the default for any plots of flows. The \code{popfrac} parameter calculates
+#' is the default. The \code{popfrac} parameter calculates
 #' and plots the denominators of all specified compartments using these rules: 1)
 #' for one-group models, the prevalence of any compartment is the compartment size
 #' divided by the total population size; 2) for two-group models, the prevalence
@@ -85,7 +85,7 @@
 #' plot(mod)
 #'
 #' # Plot prevalence of susceptibles
-#' plot(mod, y = "s.num", col = "Greys")
+#' plot(mod, y = "s.num", popfrac = TRUE, col = "Greys")
 #'
 #' # Plot number of susceptibles
 #' plot(mod, y = "s.num", popfrac = FALSE, col = "Greys")
@@ -96,9 +96,8 @@
 #' plot(mod, y = c("s.num", "i.num"),
 #'      run = 10, lty = 2, leg = "n", add = TRUE)
 #'
-plot.dcm <- function(x, y, popfrac, run, col, lwd, lty, alpha = 0.9, leg,
+plot.dcm <- function(x, y, popfrac = FALSE, run, col, lwd, lty, alpha = 0.9, leg,
                      leg.name, leg.cex = 0.8, axs = "r", add = FALSE, ...) {
-
 
   ## Set missing flags
   noy <- ifelse(missing(y), TRUE, FALSE)
@@ -151,12 +150,6 @@ plot.dcm <- function(x, y, popfrac, run, col, lwd, lty, alpha = 0.9, leg,
 
 
   ## Prevalence calculations
-  if (missing(popfrac)) {
-    popfrac <- TRUE
-  }
-  if (any(grepl(".flow", y)) | !is.null(x$control$new.mod)) {
-    popfrac <- FALSE
-  }
   x <- denom(x, y, popfrac)
 
 
@@ -469,7 +462,6 @@ plot.dcm <- function(x, y, popfrac, run, col, lwd, lty, alpha = 0.9, leg,
 #' @seealso \code{\link{icm}}
 #'
 #' @examples
-#' \dontrun{
 #' ## Example 1: Plotting multiple compartment values from SIR model
 #' param <- param.icm(inf.prob = 0.5, act.rate = 0.5, rec.rate = 0.02)
 #' init <- init.icm(s.num = 500, i.num = 1, r.num = 0)
@@ -486,14 +478,14 @@ plot.dcm <- function(x, y, popfrac, run, col, lwd, lty, alpha = 0.9, leg,
 #' mod2 <- icm(param, init, control)
 #'
 #' # Plot prevalence
-#' plot(mod2, y = "i.num", mean.line = FALSE)
+#' plot(mod2, y = "i.num", mean.line = FALSE, sim.lines = TRUE)
 #'
 #' # Plot incidence
+#' par(mfrow = c(1, 2))
 #' plot(mod2, y = "si.flow", mean.smooth = TRUE)
 #' plot(mod2, y = "si.flow", qnts.smooth = FALSE, qnts = 1)
-#' }
 #'
-plot.icm <- function(x, y, popfrac, sim.lines = FALSE, sims, sim.col, sim.lwd,
+plot.icm <- function(x, y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col, sim.lwd,
                      sim.alpha, mean.line = TRUE, mean.smooth = TRUE,
                      mean.col, mean.lwd = 2, mean.lty = 1, qnts = 0.5, qnts.col,
                      qnts.alpha, qnts.smooth = TRUE, leg, leg.cex = 0.8,
@@ -606,18 +598,6 @@ plot.icm <- function(x, y, popfrac, sim.lines = FALSE, sims, sim.col, sim.lwd,
 
 
   ## Prevalence calculations ##
-  nopopfrac <- ifelse(missing(popfrac), TRUE, FALSE)
-  if (nopopfrac == TRUE) {
-    popfrac <- TRUE
-  }
-  if (nopopfrac == TRUE) {
-    if (any(grepl(".flow", y)) |
-        (modes == 1 & all(grepl(".num$", y)) == FALSE) |
-        (modes == 2 & all(c(grepl(".num$", y), grepl(".m2$", y)) == FALSE)) |
-        any(y %in% c("num", "num.m2", "num.g2"))) {
-      popfrac <- FALSE
-    }
-  }
   x <- denom(x, y, popfrac)
 
   # Compartment max
@@ -1616,7 +1596,6 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #' @seealso \code{\link{plot.network}} \code{\link{mutate_epi}}
 #'
 #' @examples
-#' \dontrun{
 #' ## Independent SI Model
 #' # Initialize network and set network model parameters
 #' nw <- network.initialize(n = 100, bipartite = 50, directed = FALSE)
@@ -1637,7 +1616,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #'
 #' # Plot epidemic trajectory (default type)
 #' plot(mod, type = "epi")
-#' plot(mod, type = "epi", popfrac = FALSE)
+#' plot(mod, type = "epi", popfrac = TRUE)
 #' plot(mod, type = "epi", y = "si.flow", qnts = 1)
 #'
 #' # Plot static networks
@@ -1665,9 +1644,8 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #'      stats = c("edges", "concurrent"))
 #' plot(mod, type = "formation", stats = "meandeg",
 #'      sim.lwd = 2, sim.col = "seagreen")
-#' }
 #'
-plot.netsim <- function(x, type = "epi", y, popfrac, sim.lines = FALSE, sims, sim.col,
+plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col,
                         sim.lwd, sim.alpha, mean.line = TRUE, mean.smooth = TRUE,
                         mean.col, mean.lwd = 2, mean.lty = 1, qnts = 0.5, qnts.col,
                         qnts.alpha, qnts.smooth = TRUE, leg, leg.cex = 0.8, axs = "r",

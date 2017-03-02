@@ -4,10 +4,10 @@
 \alias{plot.icm}
 \title{Plot Data from a Stochastic Individual Contact Epidemic Model}
 \usage{
-\method{plot}{icm}(x, y, popfrac, sim.lines = FALSE, sims, sim.col, sim.lwd,
-  sim.alpha, mean.line = TRUE, mean.smooth = TRUE, mean.col, mean.lwd = 2,
-  mean.lty = 1, qnts = 0.5, qnts.col, qnts.alpha, qnts.smooth = TRUE, leg,
-  leg.cex = 0.8, axs = "r", add = FALSE, ...)
+\method{plot}{icm}(x, y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col,
+  sim.lwd, sim.alpha, mean.line = TRUE, mean.smooth = TRUE, mean.col,
+  mean.lwd = 2, mean.lty = 1, qnts = 0.5, qnts.col, qnts.alpha,
+  qnts.smooth = TRUE, leg, leg.cex = 0.8, axs = "r", add = FALSE, ...)
 }
 \arguments{
 \item{x}{An \code{EpiModel} model object of class \code{netsim}.}
@@ -73,7 +73,6 @@ Plots epidemiological data from a stochastic individual contact
              model simulated with \code{icm}.
 }
 \examples{
-\dontrun{
 ## Example 1: Plotting multiple compartment values from SIR model
 param <- param.icm(inf.prob = 0.5, act.rate = 0.5, rec.rate = 0.02)
 init <- init.icm(s.num = 500, i.num = 1, r.num = 0)
@@ -90,12 +89,12 @@ control <- control.icm(type = "SI", nsteps = 100,
 mod2 <- icm(param, init, control)
 
 # Plot prevalence
-plot(mod2, y = "i.num", mean.line = FALSE)
+plot(mod2, y = "i.num", mean.line = FALSE, sim.lines = TRUE)
 
 # Plot incidence
+par(mfrow = c(1, 2))
 plot(mod2, y = "si.flow", mean.smooth = TRUE)
 plot(mod2, y = "si.flow", qnts.smooth = FALSE, qnts = 1)
-}
 
 }
 \seealso{
