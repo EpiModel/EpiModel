@@ -36,6 +36,17 @@ saveout.dcm <- function(df, s, param, control, out = NULL) {
     }
   }
 
+  # Remove NA's from flows by setting last value to penultimate value
+  ns <- control$nsteps
+  lr.na <- sapply(out$epi, function(x) is.na(x[ns, s]) & !is.na(x[ns - 1, s]))
+  wh.lr.na <- as.numeric(which(lr.na == TRUE))
+  if (length(wh.lr.na) > 0) {
+    for (jj in wh.lr.na) {
+      out$epi[[jj]][ns, s] <- out$epi[[jj]][ns - 1, s]
+    }
+  }
+
+
   ## Processing for final run
   if (s == control$nruns) {
 
