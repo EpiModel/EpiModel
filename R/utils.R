@@ -156,36 +156,20 @@ deleteAttr <- function(attrList, ids) {
 #'
 transco <- function(col, alpha = 1, invisible = FALSE) {
 
-  if (length(alpha) > 1 && length(col) > 1) {
-    stop("Length of col or length of alpha must be 1", call. = FALSE)
-  }
-
-  if (alpha > 1 || alpha < 0) {
-    stop("Specify alpha between 0 and 1", call. = FALSE)
-  }
-
-  newa <- floor(alpha * 255)
-  t1 <- col2rgb(col, alpha = FALSE)
-  t2 <- rep(NA, length(col))
-
-  if (length(col) > 1) {
-    for (i in seq_along(col)) {
-      t2[i] <- rgb(t1[1, i], t1[2, i], t1[3, i], newa, maxColorValue = 255)
-    }
-  }
-  if (length(alpha) > 1) {
-    for (i in seq_along(alpha)) {
-      t2[i] <- rgb(t1[1, 1], t1[2, 1], t1[3, 1], newa[i], maxColorValue = 255)
-    }
-  }
-  if (length(col) == 1 && length(alpha) == 1) {
-    t2 <- rgb(t1[1, 1], t1[2, 1], t1[3, 1], newa, maxColorValue = 255)
+  if (length(col) == 1 & length(alpha) == 1) {
+    out <- adjustcolor(col, alpha.f = alpha)
+  } else if (length(col) > 1 & length(alpha == 1)) {
+    out <- sapply(col, function(x) adjustcolor(x, alpha.f = alpha))
+  } else if (length(col) == 1 & length(alpha) > 1) {
+    out <- sapply(alpha, function(x) adjustcolor(col, alpha.f = x))
+  } else {
+    stop("length of col or alpha must be 1 if other is >1")
   }
 
   if (invisible == TRUE) {
-    invisible(t2)
+    invisible(out)
   } else {
-    return(t2)
+    return(out)
   }
 }
 
