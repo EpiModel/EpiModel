@@ -10,8 +10,7 @@ test_that("print.dcm", {
   expect_output(print(mod), "Model type: SI")
   expect_output(print(mod), "inf.prob = 0.2")
   expect_output(print(mod), "act.rate = 0.25")
-  expect_output(print(mod), "Compartments: s.num i.num num")
-  expect_output(print(mod), "Flows: si.flow")
+  expect_output(print(mod), "Variables: s.num i.num si.flow num")
 })
 
 test_that("print.icm", {
@@ -24,8 +23,7 @@ test_that("print.icm", {
   expect_output(print(mod), "Model type: SI")
   expect_output(print(mod), "inf.prob = 0.2")
   expect_output(print(mod), "act.rate = 0.25")
-  expect_output(print(mod), "Compartments: s.num i.num num")
-  expect_output(print(mod), "Flows: si.flow")
+  expect_output(print(mod), "Variables: s.num i.num num si.flow")
 })
 
 test_that("print.netest", {
@@ -56,8 +54,7 @@ test_that("print.netsim", {
   expect_output(print(mod), "Model class: netsim")
   expect_output(print(mod), "Model type: SI")
   expect_output(print(mod), "No. NW modes: 2")
-  expect_output(print(mod), "Compartments: s.num i.num num s.num.m2 i.num.m2 num.m2")
-  expect_output(print(mod), "Flows: si.flow si.flow.m2")
+  expect_output(print(mod), "Variables: s.num i.num num s.num.m2 i.num.m2 num.m2")
 })
 
 test_that("print.disscoefs", {
