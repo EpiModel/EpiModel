@@ -1639,7 +1639,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #' par(mfrow = c(1,1), mar = c(3,3,1,1), mgp = c(2,1,0))
 #' plot(mod, type = "formation")
 #' plot(mod, type = "formation", plots.joined = FALSE)
-#' plot(mod, type = "formation", sim = 2:4)
+#' plot(mod, type = "formation", sims = 2:4)
 #' plot(mod, type = "formation", plots.joined = FALSE,
 #'      stats = c("edges", "concurrent"))
 #' plot(mod, type = "formation", stats = "meandeg",
