@@ -8,7 +8,7 @@ control.icm(type, nsteps, nsims = 1, rec.rand = TRUE, b.rand = TRUE,
   d.rand = TRUE, initialize.FUN = initialize.icm,
   infection.FUN = infection.icm, recovery.FUN = recovery.icm,
   deaths.FUN = deaths.icm, births.FUN = births.icm,
-  get_prev.FUN = get_prev.icm, verbose = TRUE, verbose.int = 0,
+  get_prev.FUN = get_prev.icm, verbose = FALSE, verbose.int = 0,
   skip.check = FALSE, ...)
 }
 \arguments{

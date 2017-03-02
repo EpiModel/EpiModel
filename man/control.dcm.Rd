@@ -5,7 +5,7 @@
 \title{Control Settings for Deterministic Compartmental Models}
 \usage{
 control.dcm(type, nsteps, dt = 1, odemethod = "rk4", dede = FALSE,
-  new.mod = NULL, sens.param = TRUE, print.mod = FALSE, verbose = TRUE,
+  new.mod = NULL, sens.param = TRUE, print.mod = FALSE, verbose = FALSE,
   ...)
 }
 \arguments{
