@@ -214,39 +214,39 @@ ssample <- function(x, size, replace = FALSE, prob = NULL) {
 #' @param x Either an object of class \code{network} or \code{edgelist} generated
 #'        from a network. If \code{x} is an edgelist, then it must contain
 #'        an attribute for the total network size, \code{n}.
-#'        
-#' @details 
+#'
+#' @details
 #' Individual-level data on the current degree of nodes within a network is
 #' often useful for summary statistics and modeling complex interactions between
-#' degree. Given a \code{network} class object, \code{net}, one way to look 
+#' degree. Given a \code{network} class object, \code{net}, one way to look
 #' up the current degree is to get a summary of the ERGM term, \code{sociality},
 #' as in: \code{summary(net ~ sociality(base = 0))}. But that is computionally
-#' inefficient for a number of reasons. This function provide a fast method 
+#' inefficient for a number of reasons. This function provide a fast method
 #' for generating the vector of degree using a query of the edgelist. It is
 #' even faster if the parameter \code{x} is already transformed as an edgelist.
-#' 
+#'
 #' @export
-#' 
-#' @examples 
-#' nw <- network.initialize(500, directed = FALSE) 
-#' 
+#'
+#' @examples
+#' nw <- network.initialize(500, directed = FALSE)
+#'
 #' set.seed(1)
 #' fit <- ergm(nw ~ edges, target.stats = 250)
 #' sim <- simulate(fit)
 #'
 #' # Slow ERGM-based method
 #' ergm.method <- unname(summary(sim ~ sociality(base = 0)))
-#' ergm.method  
-#'  
-#' # Fast tabulate method with network object  
+#' ergm.method
+#'
+#' # Fast tabulate method with network object
 #' deg.net <- get_degree(sim)
 #' deg.net
-#' 
+#'
 #' # Even faster if network already transformed into an edgelist
 #' el <- as.edgelist(sim)
 #' deg.el <- get_degree(el)
 #' deg.el
-#' 
+#'
 #' identical(ergm.method, deg.net, deg.el)
 #'
 get_degree <- function(x) {
