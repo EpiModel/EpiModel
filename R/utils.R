@@ -264,53 +264,57 @@ get_degree <- function(x) {
 
 #' @title Add New Epidemiology Variables
 #'
-#' @description Inspired by \code{dplyr::mutate}, \code{mutate_epi} adds new 
-#'              variables to the epidemiological and related variables within 
-#'              an object of class \code{netsim}.
+#' @description Inspired by \code{dplyr::mutate}, \code{mutate_epi} adds new
+#'              variables to the epidemiological and related variables within
+#'              simulated model objects of any class in \code{EpiModel}.
 #'
-#' @param sim An object of class \code{netsim}.
+#' @param x An \code{EpiModel} object of class \code{dcm}, \code{icm}, or
+#'        \code{netsim}.
 #' @param ... Name-value pairs of expressions (see examples below).
-#'  
-#' @return 
-#' An object of class \code{netsim} with the additional variables.      
-#'  
+#'
 #' @export
-#' 
-#' @examples 
+#'
+#' @examples
+#' # DCM example
+#' param <- param.dcm(inf.prob = 0.2, act.rate = 0.25)
+#' init <- init.dcm(s.num = 500, i.num = 1)
+#' control <- control.dcm(type = "SI", nsteps = 500)
+#' mod1 <- dcm(param, init, control)
+#' mod1 <- mutate_epi(mod1, prev = i.num/num)
+#' plot(mod1, y = "prev")
+#'
+#' # Network model example
 #' nw <- network.initialize(n = 100, bipartite = 50, directed = FALSE)
 #' formation <- ~edges
 #' target.stats <- 50
 #' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
 #' est1 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
-#' 
+#'
 #' # Epidemic model
 #' param <- param.net(inf.prob = 0.3, inf.prob.m2 = 0.15)
 #' init <- init.net(i.num = 1, i.num.m2 = 0)
-#' control <- control.net(type = "SI", nsteps = 100, nsims = 5, 
+#' control <- control.net(type = "SI", nsteps = 10, nsims = 3,
 #'                        verbose = FALSE)
 #' mod1 <- netsim(est1, param, init, control)
 #' mod1
-#' 
+#'
 #' # Add the prevalences to the dataset
 #' mod1 <- mutate_epi(mod1, i.prev = i.num / num,
 #'                          i.prev.m2 = i.num.m2 / num.m2)
-#' plot(mod1, y = c("i.prev", "i.prev.m2"), qnts = 0.5, leg = TRUE)                        
-#'                          
+#' plot(mod1, y = c("i.prev", "i.prev.m2"), qnts = 0.5, leg = TRUE)
+#'
 #' # Add incidence rate per 100 person years (assume time step = 1 week)
-#' mod1 <- mutate_epi(mod1, ir100 = 5200*(si.flow + si.flow.m2) / 
-#'                                       (s.num + s.num.m2))       
+#' mod1 <- mutate_epi(mod1, ir100 = 5200*(si.flow + si.flow.m2) /
+#'                                       (s.num + s.num.m2))
 #' df <- as.data.frame(mod1)
 #' df$ir100
 #'
-mutate_epi <- function(sim, ...) {
-  
-  if (!inherits(sim, "netsim")) {
-    stop("sim must an an object of class netsim", call. = FALSE)
-  }
-  
+mutate_epi <- function(x, ...) {
+
   dt <- lazy_dots(...)
-  ndat <- lazy_eval(dt, sim$epi)
-  
-  sim$epi <- c(sim$epi, ndat)
-  return(sim)
+  ndat <- lazy_eval(dt, x$epi)
+
+  x$epi <- c(x$epi, ndat)
+  return(x)
+
 }
