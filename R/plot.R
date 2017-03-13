@@ -1609,7 +1609,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #' # Simulate the epidemic model
 #' param <- param.net(inf.prob = 0.3, inf.prob.m2 = 0.15)
 #' init <- init.net(i.num = 10, i.num.m2 = 10)
-#' control <- control.net(type = "SI", nsteps = 100, nsims = 5,
+#' control <- control.net(type = "SI", nsteps = 50, nsims = 3,
 #'                        verbose = FALSE, save.nwstats = TRUE,
 #'                        nwstats.formula = ~edges + meandeg + concurrent)
 #' mod <- netsim(est, param, init, control)
@@ -1639,7 +1639,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #' par(mfrow = c(1,1), mar = c(3,3,1,1), mgp = c(2,1,0))
 #' plot(mod, type = "formation")
 #' plot(mod, type = "formation", plots.joined = FALSE)
-#' plot(mod, type = "formation", sims = 2:4)
+#' plot(mod, type = "formation", sims = 2:3)
 #' plot(mod, type = "formation", plots.joined = FALSE,
 #'      stats = c("edges", "concurrent"))
 #' plot(mod, type = "formation", stats = "meandeg",
