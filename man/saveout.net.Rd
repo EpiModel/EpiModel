@@ -19,4 +19,3 @@ This function transfers the data from the master \code{dat}
              simulation in \code{\link{netsim}}.
 }
 \keyword{internal}
-

@@ -25,4 +25,3 @@ This function checks that the estimation object from
              \code{\link{control.net}} are consistent.
 }
 \keyword{internal}
-

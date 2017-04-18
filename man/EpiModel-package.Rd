@@ -2,8 +2,8 @@
 % Please edit documentation in R/EpiModel-package.r
 \docType{package}
 \name{EpiModel-package}
-\alias{EpiModel}
 \alias{EpiModel-package}
+\alias{EpiModel}
 \title{Mathematical Modeling of Infectious Disease}
 \description{
 \tabular{ll}{
@@ -113,10 +113,10 @@ model are:
  }
 }
 }
+
 \references{
 The main website is at \url{http://epimodel.org/},
             and the source code is at \url{http://github.com/statnet/EpiModel}.
             Bug reports and feature requests may be filed there.
 }
 \keyword{package}
-

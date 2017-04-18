@@ -18,4 +18,3 @@ Extracts a list of network model parameters saved in the
 }
 \keyword{extract}
 \keyword{internal}
-

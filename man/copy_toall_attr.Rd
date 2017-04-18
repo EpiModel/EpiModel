@@ -24,4 +24,3 @@ Copies the vertex attributes stored on the network object to the
 }
 \keyword{internal}
 \keyword{netUtils}
-

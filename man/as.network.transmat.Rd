@@ -19,4 +19,3 @@ Converts the edges of the infection tree described in the
              'actRate', and 'finalProb' and constructing a vertex attribute
              for 'at'.
 }
-

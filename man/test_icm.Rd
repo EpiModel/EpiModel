@@ -15,4 +15,3 @@ Tests whether the model output from an individual contact model
              flow sizes for each simulation for each time step.
 }
 \keyword{internal}
-

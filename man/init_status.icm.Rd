@@ -17,4 +17,3 @@ This function sets the initial disease status on the
 This is an initialization module for \code{\link{icm}}.
 }
 \keyword{internal}
-

@@ -54,4 +54,3 @@ summary(mod, at = 100)
 \code{\link{netsim}}
 }
 \keyword{extract}
-

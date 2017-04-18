@@ -29,4 +29,3 @@ Adds new values for attributes in a bipartite network in which
 }
 \keyword{internal}
 \keyword{netUtils}
-

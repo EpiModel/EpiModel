@@ -21,4 +21,3 @@ This function simulates new births into the network
 }
 \keyword{internal}
 \keyword{netMod}
-

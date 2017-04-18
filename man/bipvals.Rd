@@ -25,4 +25,3 @@ bipvals(nw, mode = 1, "male")
 }
 \keyword{internal}
 \keyword{netUtils}
-

@@ -106,6 +106,7 @@ the \code{control.ergm()} function, with the available parameters listed in the
 \code{\link[ergm:control.ergm]{control.ergm}} help page in the \code{ergm}
 package. An example is below.
 }
+
 \examples{
 # Initialize a network of 100 nodes
 nw <- network.initialize(n = 100, directed = FALSE)
@@ -143,4 +144,3 @@ Use \code{\link{netdx}} to diagnose the fitted network model, and
          dynamic network consistent with the model fit.
 }
 \keyword{model}
-

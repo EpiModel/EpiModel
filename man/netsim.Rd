@@ -125,4 +125,3 @@ Extract the model results with \code{\link{as.data.frame.netsim}}.
          Plot the model results with \code{\link{plot.netsim}}.
 }
 \keyword{model}
-

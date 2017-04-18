@@ -56,4 +56,3 @@ tail(as.data.frame(mod2))
 
 }
 \keyword{extract}
-

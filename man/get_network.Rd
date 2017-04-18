@@ -47,4 +47,3 @@ get_network(mod, collapse = TRUE, at = 5)
 
 }
 \keyword{extract}
-

@@ -48,4 +48,3 @@ deg.el
 identical(ergm.method, deg.net, deg.el)
 
 }
-

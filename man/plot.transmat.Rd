@@ -30,4 +30,3 @@ wrappers to other plot calls with some appropriate preset arguments.
 \seealso{
 \code{\link{plot.network}},\code{\link[ape]{plot.phylo}}
 }
-

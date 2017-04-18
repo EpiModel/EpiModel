@@ -99,10 +99,10 @@ For original models, one may substitute replacement module functions for any of
 the default functions. New modules may be added to the workflow at each time
 step by passing a module function via the \code{...} argument.
 }
+
 \seealso{
 Use \code{\link{param.icm}} to specify model parameters and
          \code{\link{init.icm}} to specify the initial conditions. Run the
          parameterized model with \code{\link{icm}}.
 }
 \keyword{parameterization}
-

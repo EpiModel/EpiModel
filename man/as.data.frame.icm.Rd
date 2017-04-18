@@ -68,4 +68,3 @@ as.data.frame(mod, out = "vals", sim = 2)
 
 }
 \keyword{extract}
-

@@ -15,4 +15,3 @@ Tests whether the model output from a network model is consistent
              each simulation for each time step.
 }
 \keyword{internal}
-

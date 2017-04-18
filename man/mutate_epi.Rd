@@ -53,4 +53,3 @@ df <- as.data.frame(mod1)
 df$ir100
 
 }
-

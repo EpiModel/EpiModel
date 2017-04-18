@@ -15,4 +15,3 @@ deleteAttr(attrList, ids)
 Deletes elements from the master attribute list.
 }
 \keyword{internal}
-

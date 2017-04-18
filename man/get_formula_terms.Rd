@@ -20,4 +20,3 @@ Given a formation formula for a network model, outputs it into
 }
 \keyword{internal}
 \keyword{netUtils}
-

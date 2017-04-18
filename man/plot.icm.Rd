@@ -101,4 +101,3 @@ plot(mod2, y = "si.flow", qnts.smooth = FALSE, qnts = 1)
 \code{\link{icm}}
 }
 \keyword{plot}
-

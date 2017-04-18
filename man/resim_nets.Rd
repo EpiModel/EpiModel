@@ -19,4 +19,3 @@ This function resimulates the dynamic network in stochastic
 }
 \keyword{internal}
 \keyword{netUtils}
-

@@ -31,4 +31,3 @@ Updates the vertex attributes on a network for new nodes incoming
 }
 \keyword{internal}
 \keyword{netUtils}
-

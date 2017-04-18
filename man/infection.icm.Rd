@@ -16,4 +16,3 @@ This function simulates the main infection process given the
              current state of the actors in the system.
 }
 \keyword{internal}
-

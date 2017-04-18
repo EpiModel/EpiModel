@@ -61,4 +61,3 @@ calc_eql(x, nsteps = 100, numer = "i.num.g2", denom = "num.g2",
          threshold = 0.00001)
 
 }
-

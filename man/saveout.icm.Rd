@@ -19,4 +19,3 @@ This function transfers the data from the master \code{all}
              simulation in \code{\link{icm}}.
 }
 \keyword{internal}
-

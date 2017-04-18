@@ -38,4 +38,3 @@ summary(mod, at = 50)
 \code{\link{icm}}
 }
 \keyword{extract}
-

@@ -19,4 +19,3 @@ This function simulates recovery from the infected state
              \code{\link{netsim}}.
 }
 \keyword{internal}
-

@@ -44,4 +44,3 @@ summary(mod, at = 26, run = 3)
 \code{\link{dcm}}
 }
 \keyword{extract}
-

@@ -24,4 +24,3 @@ modeids(nw, mode = 2)
 }
 \keyword{internal}
 \keyword{netUtils}
-

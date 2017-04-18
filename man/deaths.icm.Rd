@@ -19,4 +19,3 @@ This function simulates death for use in \code{\link{icm}}
 \code{\link{icm}}
 }
 \keyword{internal}
-

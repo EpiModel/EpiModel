@@ -20,4 +20,3 @@ This function simulates death for use in \link{netsim} simulations.
 }
 \keyword{internal}
 \keyword{netMod}
-

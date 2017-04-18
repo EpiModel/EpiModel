@@ -19,4 +19,3 @@ This function simulates birth for use in \code{\link{icm}}
 \code{\link{icm}}
 }
 \keyword{internal}
-

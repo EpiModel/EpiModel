@@ -27,4 +27,3 @@ Calculates the proportional distribution of each vertex attribute
 }
 \keyword{internal}
 \keyword{netUtils}
-

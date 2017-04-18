@@ -222,4 +222,3 @@ plot(mod, type = "formation", stats = "meandeg",
 \code{\link{plot.network}} \code{\link{mutate_epi}}
 }
 \keyword{plot}
-

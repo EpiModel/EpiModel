@@ -23,4 +23,3 @@ Subsets the entire \code{netsim} object to a subset of
              \code{merge}.
 }
 \keyword{extract}
-

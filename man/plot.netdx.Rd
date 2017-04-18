@@ -171,4 +171,3 @@ plot(dx2, type = "dissolution", method = "b", col = "pink1")
 \code{\link{netdx}}
 }
 \keyword{plot}
-

@@ -220,10 +220,10 @@ step by passing a module function via the \code{...} argument. Consult the
 One may remove existing modules, such as \code{births.FUN}, from the workflow
 by setting the parameter value for that argument to \code{NULL}.
 }
+
 \seealso{
 Use \code{\link{param.net}} to specify model parameters and
          \code{\link{init.net}} to specify the initial conditions. Run the
          parameterized model with \code{\link{netsim}}.
 }
 \keyword{parameterization}
-

@@ -17,4 +17,3 @@ Adjusts the edges coefficient in a dynamic network model
              degree of nodes in the network.
 }
 \keyword{internal}
-

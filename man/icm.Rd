@@ -96,4 +96,3 @@ Plot the model results with \code{\link{plot.icm}}. Plot a compartment flow
 diagram with \code{\link{comp_plot}}.
 }
 \keyword{model}
-

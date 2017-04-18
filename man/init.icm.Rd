@@ -50,4 +50,3 @@ Use \code{\link{param.icm}} to specify model parameters and
          parameterized model with \code{\link{icm}}.
 }
 \keyword{parameterization}
-

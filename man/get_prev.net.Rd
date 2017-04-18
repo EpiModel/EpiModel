@@ -24,4 +24,3 @@ size for each mode, and overall is provided.
 }
 \keyword{internal}
 \keyword{netUtils}
-

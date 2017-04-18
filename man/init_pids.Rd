@@ -43,4 +43,3 @@ nw \%v\% "vertex.names"
 }
 \keyword{internal}
 \keyword{netMod}
-

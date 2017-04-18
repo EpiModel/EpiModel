@@ -53,4 +53,3 @@ RStudio. shiny: Web Application Framework for R. R package version 0.12.2.
 \code{\link{dcm}}, \code{\link{icm}}, \code{\link{netsim}}
 }
 \keyword{GUI}
-

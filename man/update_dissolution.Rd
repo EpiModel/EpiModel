@@ -52,4 +52,3 @@ est200.compare <- update_dissolution(est300, diss.200)
 identical(est200$coef.form, est200.compare$coef.form)
 
 }
-

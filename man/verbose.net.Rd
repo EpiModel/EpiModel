@@ -23,4 +23,3 @@ This function prints progress from stochastic network models
              simulated with \code{netsim} to the console.
 }
 \keyword{internal}
-

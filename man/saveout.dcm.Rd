@@ -23,4 +23,3 @@ This function transfers the data from the master \code{df}
              simulation in \code{\link{dcm}}.
 }
 \keyword{internal}
-

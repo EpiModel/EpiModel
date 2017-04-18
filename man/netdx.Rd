@@ -73,6 +73,7 @@ through the \code{control.simulate.network()} function, with the available
 parameters listed in the \code{\link{control.simulate.network}} help page in
 the \code{tergm} package. An example is shown below.
 }
+
 \examples{
 \dontrun{
 # Network initialization and model parameterization
@@ -104,4 +105,3 @@ plot(dx2, type = "dissolution", method = "b", col = "bisque")
 \seealso{
 Plot these model diagnostics with \code{\link{plot.netdx}}.
 }
-

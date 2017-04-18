@@ -23,4 +23,3 @@ This function prints progress from stochastic individual contact
              models simulated with \code{icm} to the console.
 }
 \keyword{internal}
-

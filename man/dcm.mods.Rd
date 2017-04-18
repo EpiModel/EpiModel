@@ -2,6 +2,10 @@
 % Please edit documentation in R/dcm.mods.R
 \name{dcm.mods}
 \alias{dcm.mods}
+\alias{mod_SI_1g_cl}
+\alias{mod_SI_1g_op}
+\alias{mod_SI_2g_cl}
+\alias{mod_SI_2g_op}
 \alias{mod_SIR_1g_cl}
 \alias{mod_SIR_1g_op}
 \alias{mod_SIR_2g_cl}
@@ -10,10 +14,6 @@
 \alias{mod_SIS_1g_op}
 \alias{mod_SIS_2g_cl}
 \alias{mod_SIS_2g_op}
-\alias{mod_SI_1g_cl}
-\alias{mod_SI_1g_op}
-\alias{mod_SI_2g_cl}
-\alias{mod_SI_2g_op}
 \title{Deterministic Compartmental Model Functions}
 \usage{
 mod_SI_1g_cl(t, t0, parms)
@@ -69,4 +69,3 @@ vital dynamic options are closed (fixed population composition) or open (with
 births and deaths).
 }
 \keyword{internal}
-

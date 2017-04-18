@@ -42,4 +42,3 @@ edgelist_censor(el)
 
 }
 \keyword{netUtils}
-

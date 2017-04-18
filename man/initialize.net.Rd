@@ -23,4 +23,3 @@ This function initializes the master \code{dat} object on which
              simulates disease status and other attributes.
 }
 \keyword{internal}
-

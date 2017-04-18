@@ -138,10 +138,10 @@ the user to pass an arbitrary set of original model parameters into
 \code{param.net}. Whereas there are strict checks with default modules for
 parameter validity, these checks are the user's responsibility with new modules.
 }
+
 \seealso{
 Use \code{\link{init.net}} to specify the initial conditions and
          \code{\link{control.net}} to specify the control settings. Run the
          parameterized model with \code{\link{netsim}}.
 }
 \keyword{parameterization}
-

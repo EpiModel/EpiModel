@@ -51,4 +51,3 @@ Use \code{\link{param.dcm}} to specify model parameters and
          parameterized model with \code{\link{dcm}}.
 }
 \keyword{parameterization}
-

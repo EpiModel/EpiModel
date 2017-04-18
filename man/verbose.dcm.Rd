@@ -21,4 +21,3 @@ This function prints progress from deterministic compartmental
              models simulated with \code{dcm} to the console.
 }
 \keyword{internal}
-

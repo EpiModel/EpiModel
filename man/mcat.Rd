@@ -14,4 +14,3 @@ Writes the name of a test and \code{...} to console for
              showing testing progress.
 }
 \keyword{internal}
-

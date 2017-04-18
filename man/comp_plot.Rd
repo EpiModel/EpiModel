@@ -70,4 +70,3 @@ comp_plot(mod2, at = 25, digits = 1)
 
 }
 \keyword{plot}
-

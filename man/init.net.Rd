@@ -50,4 +50,3 @@ Use \code{\link{param.net}} to specify model parameters and
          parameterized model with \code{\link{netsim}}.
 }
 \keyword{parameterization}
-

@@ -22,4 +22,3 @@ This function checks that the three parameter lists from
              \code{\link{control.icm}} are consistent.
 }
 \keyword{internal}
-

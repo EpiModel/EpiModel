@@ -23,4 +23,3 @@ Provides a sampling function useful for dynamic simulations, in
              the size of the sample may be 0.
 }
 \keyword{internal}
-

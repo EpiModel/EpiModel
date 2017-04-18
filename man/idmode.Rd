@@ -26,4 +26,3 @@ idmode(nw, ids = c(3, 6))
 }
 \keyword{internal}
 \keyword{netUtils}
-

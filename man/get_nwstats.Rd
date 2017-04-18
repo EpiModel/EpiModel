@@ -38,4 +38,3 @@ get_nwstats(mod, sim = c(1,3))
 
 }
 \keyword{extract}
-

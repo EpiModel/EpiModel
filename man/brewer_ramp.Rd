@@ -45,4 +45,3 @@ for (i in seq_along(pals)) {
 }
 \keyword{colorUtils}
 \keyword{internal}
-

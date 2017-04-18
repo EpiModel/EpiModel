@@ -60,4 +60,3 @@ set to \code{TRUE} in \code{\link{control.net}}.
 \code{\link{netsim}} and the \code{ndtv} package documentation.
 }
 \keyword{colorUtils}
-

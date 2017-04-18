@@ -125,10 +125,10 @@ the user to pass an arbitrary set of original model parameters into
 \code{param.icm}. Whereas there are strict checks with default modules for
 parameter validity, these checks are the user's responsibility with new modules.
 }
+
 \seealso{
 Use \code{\link{init.icm}} to specify the initial conditions and
          \code{\link{control.icm}} to specify the control settings. Run the
          parameterized model with \code{\link{icm}}.
 }
 \keyword{parameterization}
-

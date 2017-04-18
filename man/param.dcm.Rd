@@ -136,10 +136,10 @@ arbitrary set of new model parameters into \code{param.dcm}. Whereas there are
 strict checks for integrated models that the model parameters are valid,
 parameter validity is the user's responsibility with these original models.
 }
+
 \seealso{
 Use \code{\link{init.dcm}} to specify the initial conditions and
          \code{\link{control.dcm}} to specify the control settings. Run the
          parameterized model with \code{\link{dcm}}.
 }
 \keyword{parameterization}
-

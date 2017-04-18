@@ -104,4 +104,3 @@ Plot the model results with \code{\link{plot.dcm}}. Plot a compartment flow
 diagram with \code{\link{comp_plot}}.
 }
 \keyword{model}
-

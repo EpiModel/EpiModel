@@ -43,4 +43,3 @@ to obtain a discordant edgelist.
 }
 \keyword{internal}
 \keyword{netMod}
-

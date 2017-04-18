@@ -21,4 +21,3 @@ was used to fit the temporal ERGM, then the dissolution coefficient information
 will be printed.
 }
 \keyword{internal}
-

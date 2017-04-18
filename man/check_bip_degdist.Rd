@@ -45,4 +45,3 @@ For a detailed explanation of this function, see the tutorial:
 Utility Functions}.
 }
 \keyword{netUtils}
-

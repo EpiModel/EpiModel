@@ -59,4 +59,3 @@ plot(tmPhylo, show.node.label = TRUE,
               cex = 0.5)
 
 }
-

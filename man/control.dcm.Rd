@@ -68,10 +68,10 @@ These new models may be input and solved with \code{\link{dcm}} using the
 examples are found in the \href{http://statnet.github.io/tut/NewDCMs.html}{Solving
 New DCMs} tutorial.
 }
+
 \seealso{
 Use \code{\link{param.dcm}} to specify model parameters and
          \code{\link{init.dcm}} to specify the initial conditions. Run the
          parameterized model with \code{\link{dcm}}.
 }
 \keyword{parameterization}
-

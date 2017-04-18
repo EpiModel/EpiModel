@@ -43,4 +43,3 @@ with one susceptible and one infected node.
 }
 \keyword{internal}
 \keyword{netMod}
-

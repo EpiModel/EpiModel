@@ -17,4 +17,3 @@ This function provides all active model state sizes from
              vectors.
 }
 \keyword{internal}
-

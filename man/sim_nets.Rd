@@ -23,4 +23,3 @@ This function simulates a dynamic network over one or multiple
 }
 \keyword{internal}
 \keyword{netUtils}
-

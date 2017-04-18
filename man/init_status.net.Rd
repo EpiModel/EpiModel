@@ -40,4 +40,3 @@ This is an initialization module for \code{\link{netsim}}.
 }
 \keyword{internal}
 \keyword{netMod}
-

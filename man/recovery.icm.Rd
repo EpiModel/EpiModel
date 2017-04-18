@@ -18,4 +18,3 @@ This function simulates recovery from the infected state
              \code{\link{icm}}.
 }
 \keyword{internal}
-

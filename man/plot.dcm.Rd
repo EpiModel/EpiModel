@@ -90,6 +90,7 @@ to the highest and lowest values of the varying parameter in the model. In cases
 where the default legend names are not helpful, one may override those names
 with the \code{leg.name} argument.
 }
+
 \examples{
 # Deterministic SIR model with varying act rate
 param <- param.dcm(inf.prob = 0.2, act.rate = 1:10,
@@ -119,4 +120,3 @@ plot(mod, y = c("s.num", "i.num"),
 \code{\link{dcm}}, \code{\link{brewer.pal.info}}
 }
 \keyword{plot}
-

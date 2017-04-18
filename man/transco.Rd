@@ -62,4 +62,3 @@ plot(net, vertex.col = vcol, vertex.border = "grey70",
 }
 \keyword{colorUtils}
 \keyword{internal}
-
