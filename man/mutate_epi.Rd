@@ -44,7 +44,7 @@ mod1
 # Add the prevalences to the dataset
 mod1 <- mutate_epi(mod1, i.prev = i.num / num,
                          i.prev.m2 = i.num.m2 / num.m2)
-plot(mod1, y = c("i.prev", "i.prev.m2"), qnts = 0.5, leg = TRUE)
+plot(mod1, y = c("i.prev", "i.prev.m2"), qnts = 0.5, legend = TRUE)
 
 # Add incidence rate per 100 person years (assume time step = 1 week)
 mod1 <- mutate_epi(mod1, ir100 = 5200*(si.flow + si.flow.m2) /

@@ -7,7 +7,8 @@
 \method{plot}{icm}(x, y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col,
   sim.lwd, sim.alpha, mean.line = TRUE, mean.smooth = TRUE, mean.col,
   mean.lwd = 2, mean.lty = 1, qnts = 0.5, qnts.col, qnts.alpha,
-  qnts.smooth = TRUE, leg, leg.cex = 0.8, axs = "r", add = FALSE, ...)
+  qnts.smooth = TRUE, legend, leg.cex = 0.8, axs = "r", add = FALSE,
+  ...)
 }
 \arguments{
 \item{x}{An \code{EpiModel} model object of class \code{netsim}.}
@@ -56,7 +57,7 @@ transparent and 1 = opaque (see \code{\link{transco}}).}
 
 \item{qnts.smooth}{If \code{TRUE}, use a lowess smoother on quantile polygons.}
 
-\item{leg}{If \code{TRUE}, plot default legend.}
+\item{legend}{If \code{TRUE}, plot default legend.}
 
 \item{leg.cex}{Legend scale size.}
 

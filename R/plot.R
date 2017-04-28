@@ -18,7 +18,7 @@
 #' @param lty Line type for output lines.
 #' @param alpha Transparency level for lines, where 0 = transparent and 1 = opaque
 #'        (see \code{\link{transco}}).
-#' @param leg Type of legend to plot. Values are "n" for no legend, "full" for
+#' @param legend Type of legend to plot. Values are "n" for no legend, "full" for
 #'        full legend, and "lim" for limited legend (see details).
 #' @param leg.name Character string to use for legend, with the default
 #'        determined automatically based on the \code{y} input.
@@ -58,10 +58,10 @@
 #'
 #' @section Plot Legends:
 #' There are three automatic legend types available, and the legend is
-#' added by default for plots. To turn off the legend, use \code{leg="n"}. To
+#' added by default for plots. To turn off the legend, use \code{legend="n"}. To
 #' plot a legend with values for every line in a sensitivity analysis, use
-#' \code{leg="full"}. With models with many runs, this may be visually
-#' overwhelming. In those cases, use \code{leg="lim"} to plot a legend limited
+#' \code{legend="full"}. With models with many runs, this may be visually
+#' overwhelming. In those cases, use \code{legend="lim"} to plot a legend limited
 #' to the highest and lowest values of the varying parameter in the model. In cases
 #' where the default legend names are not helpful, one may override those names
 #' with the \code{leg.name} argument.
@@ -94,10 +94,10 @@
 #' plot(mod, y = c("s.num", "i.num"),
 #'      run = 5, xlim = c(0, 50))
 #' plot(mod, y = c("s.num", "i.num"),
-#'      run = 10, lty = 2, leg = "n", add = TRUE)
+#'      run = 10, lty = 2, legend = "n", add = TRUE)
 #'
-plot.dcm <- function(x, y, popfrac = FALSE, run, col, lwd, lty, alpha = 0.9, leg,
-                     leg.name, leg.cex = 0.8, axs = "r", add = FALSE, ...) {
+plot.dcm <- function(x, y, popfrac = FALSE, run, col, lwd, lty, alpha = 0.9,
+                     legend, leg.name, leg.cex = 0.8, axs = "r", add = FALSE, ...) {
 
   ## Set missing flags
   noy <- ifelse(missing(y), TRUE, FALSE)
@@ -105,7 +105,7 @@ plot.dcm <- function(x, y, popfrac = FALSE, run, col, lwd, lty, alpha = 0.9, leg
   nocol <- ifelse(missing(col), TRUE, FALSE)
   nolwd <- ifelse(missing(lwd), TRUE, FALSE)
   nolty <- ifelse(missing(lty), TRUE, FALSE)
-  noleg <- ifelse(missing(leg), TRUE, FALSE)
+  noleg <- ifelse(missing(legend), TRUE, FALSE)
 
 
   ## Dot args
@@ -362,25 +362,25 @@ plot.dcm <- function(x, y, popfrac = FALSE, run, col, lwd, lty, alpha = 0.9, leg
 
   # Default legend type
   if (noleg == TRUE) {
-    leg <- "n"
+    legend <- "n"
     if (lcomp == 1 & nruns < 3) {
-      leg <- "full"
+      legend <- "full"
     }
     if (lcomp == 1 & nruns >= 3) {
-      leg <- "lim"
+      legend <- "lim"
     }
     if (lcomp > 1) {
-      leg <- "full"
+      legend <- "full"
     }
     if (noy == FALSE) {
-      leg <- "n"
+      legend <- "n"
     }
   } else {
-    if (leg == "lim" & nruns < 3) {
-      leg <- "full"
+    if (legend == "lim" & nruns < 3) {
+      legend <- "full"
     }
-    if (leg == "lim" & lcomp == 2) {
-      leg <- "full"
+    if (legend == "lim" & lcomp == 2) {
+      legend <- "full"
     }
   }
 
@@ -418,12 +418,12 @@ plot.dcm <- function(x, y, popfrac = FALSE, run, col, lwd, lty, alpha = 0.9, leg
 
   # Legend
   if (norun == TRUE) {
-    if (leg == "full") {
+    if (legend == "full") {
       legend("topright", legend = leg.names,
              bg = "white", lty = lty, lwd = lwd,
              col = pal, cex = leg.cex)
     }
-    if (leg == "lim") {
+    if (legend == "lim") {
       legend("topright",
              legend = c(leg.names[1], "...", leg.names[nruns]),
              bg = "white",
@@ -431,7 +431,7 @@ plot.dcm <- function(x, y, popfrac = FALSE, run, col, lwd, lty, alpha = 0.9, leg
              col = c(pal[1], "white", pal[nruns]), cex = leg.cex)
     }
   }
-  if (norun == FALSE & leg != "n") {
+  if (norun == FALSE & legend != "n") {
     if (lcomp == 1) {
       legend("topright", legend = leg.names,
              bg = "white", lty = lty[1:length(run)],
@@ -488,7 +488,7 @@ plot.dcm <- function(x, y, popfrac = FALSE, run, col, lwd, lty, alpha = 0.9, leg
 plot.icm <- function(x, y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col, sim.lwd,
                      sim.alpha, mean.line = TRUE, mean.smooth = TRUE,
                      mean.col, mean.lwd = 2, mean.lty = 1, qnts = 0.5, qnts.col,
-                     qnts.alpha, qnts.smooth = TRUE, leg, leg.cex = 0.8,
+                     qnts.alpha, qnts.smooth = TRUE, legend, leg.cex = 0.8,
                      axs = "r", add = FALSE, ...) {
 
   ## Model dimensions and class ##
@@ -524,8 +524,8 @@ plot.icm <- function(x, y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col, si
                grep(".num.g2$", names(x$epi), value = TRUE))
       }
     }
-    if (missing(leg)) {
-      leg <- TRUE
+    if (missing(legend)) {
+      legend <- TRUE
     }
   }
   if (nocomp == FALSE) {
@@ -709,7 +709,7 @@ plot.icm <- function(x, y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col, si
 
 
   ## Legends ##
-  if (!missing(leg) && leg == TRUE) {
+  if (!missing(legend) && legend == TRUE) {
     if (modes == 2 & nocomp == TRUE) {
       leg.lty <- mean.lty
     } else {
@@ -880,7 +880,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
                        mean.smooth = TRUE, mean.col, mean.lwd = 2, mean.lty = 1,
                        qnts = 0.5, qnts.col, qnts.alpha, qnts.smooth = TRUE,
                        targ.line = TRUE, targ.col, targ.lwd = 2, targ.lty = 2,
-                       plots.joined, leg, ...) {
+                       plots.joined, legend, ...) {
 
   # Checks and Variables ----------------------------------------------------
 
@@ -996,11 +996,11 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 
         ## Default legend
         if (nstats == 1) {
-          if (missing(leg)) {
-            leg <- FALSE
+          if (missing(legend)) {
+            legend <- FALSE
           }
         } else {
-          leg <- TRUE
+          legend <- TRUE
         }
 
         ## Default ylim
@@ -1107,7 +1107,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
           }
 
         }
-        if (leg == TRUE) {
+        if (legend == TRUE) {
           legend("topleft", legend = nmstats[outsts], lwd = 3,
                  col = sim.col[1:nstats], cex = 0.75, bg = "white")
         }
@@ -1502,7 +1502,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #' @param qnts.alpha Transparency level for quantile polygons, where 0 =
 #'        transparent and 1 = opaque (see \code{\link{transco}}).
 #' @param qnts.smooth If \code{TRUE}, use a lowess smoother on quantile polygons.
-#' @param leg If \code{TRUE}, plot default legend.
+#' @param legend If \code{TRUE}, plot default legend.
 #' @param leg.cex Legend scale size.
 #' @param axs Plot axis type (see \code{\link{par}} for details), with default
 #'        to \code{"r"}.
@@ -1648,7 +1648,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col,
                         sim.lwd, sim.alpha, mean.line = TRUE, mean.smooth = TRUE,
                         mean.col, mean.lwd = 2, mean.lty = 1, qnts = 0.5, qnts.col,
-                        qnts.alpha, qnts.smooth = TRUE, leg, leg.cex = 0.8, axs = "r",
+                        qnts.alpha, qnts.smooth = TRUE, legend, leg.cex = 0.8, axs = "r",
                         add = FALSE, network = 1, at = 1, col.status = FALSE,
                         shp.bip = NULL, stats, targ.line = TRUE, targ.col,
                         targ.lwd = 2, targ.lty = 2, plots.joined, ...) {
@@ -1796,8 +1796,8 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
                  grep(".num.m2$", names(x$epi), value = TRUE))
         }
       }
-      if (missing(leg)) {
-        leg <- TRUE
+      if (missing(legend)) {
+        legend <- TRUE
       }
     }
     if (nocomp == FALSE) {
@@ -1993,7 +1993,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
 
 
     ## Legends ##
-    if (!missing(leg) && leg == TRUE) {
+    if (!missing(legend) && legend == TRUE) {
       if (modes == 2 & nocomp == TRUE) {
         leg.lty <- mean.lty
       } else {
@@ -2094,11 +2094,11 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
 
       ## Default legend
       if (nstats == 1) {
-        if (missing(leg)) {
-          leg <- FALSE
+        if (missing(legend)) {
+          legend <- FALSE
         }
       } else {
-        leg <- TRUE
+        legend <- TRUE
       }
 
       ## Default ylim
@@ -2203,7 +2203,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
         }
 
       }
-      if (leg == TRUE) {
+      if (legend == TRUE) {
         legend("topleft", legend = nmstats[outsts], lwd = 3,
                col = sim.col[1:nstats], cex = 0.75, bg = "white")
       }

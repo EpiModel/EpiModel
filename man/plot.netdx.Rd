@@ -8,7 +8,7 @@
   sim.lines, sim.col, sim.lwd, mean.line = TRUE, mean.smooth = TRUE,
   mean.col, mean.lwd = 2, mean.lty = 1, qnts = 0.5, qnts.col, qnts.alpha,
   qnts.smooth = TRUE, targ.line = TRUE, targ.col, targ.lwd = 2,
-  targ.lty = 2, plots.joined, leg, ...)
+  targ.lty = 2, plots.joined, legend, ...)
 }
 \arguments{
 \item{x}{An \code{EpiModel} object of class \code{netdx}.}
@@ -76,7 +76,7 @@ default colors based on \code{RColorBrewer} color palettes.}
 target statistics in one plot, versus one plot per target statistic if
 \code{FALSE}.}
 
-\item{leg}{If \code{TRUE}, plot default legend.}
+\item{legend}{If \code{TRUE}, plot default legend.}
 
 \item{...}{additional arguments to pass.}
 }

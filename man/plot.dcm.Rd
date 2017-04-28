@@ -5,7 +5,7 @@
 \title{Plot Data from a Deterministic Compartmental Epidemic Model}
 \usage{
 \method{plot}{dcm}(x, y, popfrac = FALSE, run, col, lwd, lty, alpha = 0.9,
-  leg, leg.name, leg.cex = 0.8, axs = "r", add = FALSE, ...)
+  legend, leg.name, leg.cex = 0.8, axs = "r", add = FALSE, ...)
 }
 \arguments{
 \item{x}{An \code{EpiModel} object of class \code{dcm}.}
@@ -28,7 +28,7 @@ R color format, or alternatively as a color palette from
 \item{alpha}{Transparency level for lines, where 0 = transparent and 1 = opaque
 (see \code{\link{transco}}).}
 
-\item{leg}{Type of legend to plot. Values are "n" for no legend, "full" for
+\item{legend}{Type of legend to plot. Values are "n" for no legend, "full" for
 full legend, and "lim" for limited legend (see details).}
 
 \item{leg.name}{Character string to use for legend, with the default
@@ -82,10 +82,10 @@ which include a range of linked colors using named palettes. For
 \section{Plot Legends}{
 
 There are three automatic legend types available, and the legend is
-added by default for plots. To turn off the legend, use \code{leg="n"}. To
+added by default for plots. To turn off the legend, use \code{legend="n"}. To
 plot a legend with values for every line in a sensitivity analysis, use
-\code{leg="full"}. With models with many runs, this may be visually
-overwhelming. In those cases, use \code{leg="lim"} to plot a legend limited
+\code{legend="full"}. With models with many runs, this may be visually
+overwhelming. In those cases, use \code{legend="lim"} to plot a legend limited
 to the highest and lowest values of the varying parameter in the model. In cases
 where the default legend names are not helpful, one may override those names
 with the \code{leg.name} argument.
@@ -113,7 +113,7 @@ plot(mod, y = "s.num", popfrac = FALSE, col = "Greys")
 plot(mod, y = c("s.num", "i.num"),
      run = 5, xlim = c(0, 50))
 plot(mod, y = c("s.num", "i.num"),
-     run = 10, lty = 2, leg = "n", add = TRUE)
+     run = 10, lty = 2, legend = "n", add = TRUE)
 
 }
 \seealso{
