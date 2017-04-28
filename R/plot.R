@@ -553,7 +553,7 @@ plot.icm <- function(x, y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col, si
     qnts.col <- bpal
   }
   if (missing(qnts.alpha)) {
-    qnts.alpha <- 0.4
+    qnts.alpha <- 0.65
   }
   qnts.pal <- transco(qnts.col, qnts.alpha)
 
@@ -1060,7 +1060,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
               qnts.col <- sim.col
             }
             if (missing(qnts.alpha)) {
-              qnts.alpha <- 0.35
+              qnts.alpha <- 0.65
             }
             qnts.col <- transco(qnts.col, qnts.alpha)
             quants <- c((1 - qnts) / 2, 1 - ((1 - qnts) / 2))
@@ -1152,7 +1152,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
               qnts.col <- sim.col
             }
             if (missing(qnts.alpha)) {
-              qnts.alpha <- 0.35
+              qnts.alpha <- 0.65
             }
             qnts.col <- transco(qnts.col, qnts.alpha)
             quants <- c((1 - qnts) / 2, 1 - ((1 - qnts) / 2))
@@ -1290,7 +1290,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
           qnts.col <- sim.col
         }
         if (missing(qnts.alpha)) {
-          qnts.alpha <- 0.35
+          qnts.alpha <- 0.65
         }
         qnts.col <- transco(qnts.col, qnts.alpha)
         quants <- c((1 - qnts) / 2, 1 - ((1 - qnts) / 2))
@@ -1409,7 +1409,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
           qnts.col <- sim.col
         }
         if (missing(qnts.alpha)) {
-          qnts.alpha <- 0.35
+          qnts.alpha <- 0.65
         }
         qnts.col <- transco(qnts.col, qnts.alpha)
         quants <- c((1 - qnts) / 2, 1 - ((1 - qnts) / 2))
@@ -1825,7 +1825,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
       qnts.col <- bpal
     }
     if (missing(qnts.alpha)) {
-      qnts.alpha <- 0.4
+      qnts.alpha <- 0.65
     }
     qnts.pal <- transco(qnts.col, qnts.alpha)
 
@@ -2160,7 +2160,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
             qnts.col <- sim.col
           }
           if (missing(qnts.alpha)) {
-            qnts.alpha <- 0.35
+            qnts.alpha <- 0.65
           }
           qnts.col <- transco(qnts.col, qnts.alpha)
           quants <- c((1 - qnts) / 2, 1 - ((1 - qnts) / 2))
@@ -2250,7 +2250,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
             qnts.col <- sim.col
           }
           if (missing(qnts.alpha)) {
-            qnts.alpha <- 0.35
+            qnts.alpha <- 0.65
           }
           qnts.col <- transco(qnts.col, qnts.alpha)
           quants <- c((1 - qnts) / 2, 1 - ((1 - qnts) / 2))
