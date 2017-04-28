@@ -71,7 +71,7 @@ EpiModel has been used in the following scientific articles:
 
 
 #### Funding
-Development of this software has been supported by the following grants: 
+Development of this software has been supported by the following grants from the National Institutes of Health (NIH) and Centers for Disease Control and Prevention (CDC): 
 
 * [NIH R01HD68395](https://projectreporter.nih.gov/project_info_description.cfm?aid=8841605)
 * [NIH R21HD075662](https://projectreporter.nih.gov/project_info_description.cfm?aid=8601779) 
