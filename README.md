@@ -67,6 +67,8 @@ EpiModel has been used in the following scientific articles:
 
 3. Jenness SM, Sharma A, Goodreau SM, Rosenberg ES, Weiss KM, Hoover KW, Smith DK, Sullivan P. Individual HIV Risk versus Population Impact of Risk Compensation after HIV Preexposure Prophylaxis Initiation among Men Who Have Sex with Men. _PLoS One._ 2017; 12(1): e0169484. [LINK](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0169484)
 
+4. Goodreau SM, Rosenberg ES, Jenness SM, Luisi N, Stansfield SE, Millett G, Sullivan P. Sources of Racial Disparities in HIV Prevalence among Men Who Have Sex with Men in Atlanta, GA: A Modeling Study. _Lancet HIV._ Epub ahead of print. DOI: 10.1016/ S2352-3018(17)30067. [LINK](https://www.ncbi.nlm.nih.gov/pubmed/28431923)
+
 
 #### Funding
 Development of this software has been supported by the following grants: 
