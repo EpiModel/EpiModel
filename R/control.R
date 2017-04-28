@@ -412,7 +412,7 @@ control.net <- function(type, nsteps, start = 1, nsims = 1, ncores = 1,
                         module.order = NULL, set.control.stergm,
                         save.nwstats = TRUE, nwstats.formula = "formation",
                         delete.nodes = FALSE, save.transmat = TRUE,
-                        save.network = TRUE, save.other, verbose = FALSE,
+                        save.network = TRUE, save.other, verbose = TRUE,
                         verbose.int = 1, skip.check = FALSE, ...) {
 
   # Get arguments
