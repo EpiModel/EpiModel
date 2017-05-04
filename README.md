@@ -74,13 +74,13 @@ EpiModel has been used in the following scientific articles:
 #### Funding
 Development of this software has been supported by the following grants from the National Institutes of Health (NIH) and Centers for Disease Control and Prevention (CDC): 
 
-* [NIH R01HD68395](https://projectreporter.nih.gov/project_info_description.cfm?aid=8841605)
-* [NIH R21HD075662](https://projectreporter.nih.gov/project_info_description.cfm?aid=8601779) 
-* [NIH R01AI108490](https://projectreporter.nih.gov/project_info_description.cfm?aid=9024415)
-* [NIH R21MH112449](https://projectreporter.nih.gov/project_info_description.cfm?aid=9271672)
-* [NIH P30AI050409](https://projectreporter.nih.gov/project_info_description.cfm?aid=9120767) 
-* [NIH P30AI027757](https://projectreporter.nih.gov/project_info_description.cfm?aid=9069392)
-* [CDC U38PS004646](https://projectreporter.nih.gov/project_info_details.cfm?aid=8926715)
+* [NIH R01HD68395](https://projectreporter.nih.gov/project_info_description.cfm?aid=8841605): Statistical Methods for Network Epidemiology (PI: Martina Morris)
+* [NIH R21HD075662](https://projectreporter.nih.gov/project_info_description.cfm?aid=8601779): Using Sexual Network Transmission Models to Explain HIV Disparities Between Black and White MSM (PI: Steven Goodreau)
+* [NIH R01AI108490](https://projectreporter.nih.gov/project_info_description.cfm?aid=9024415): Integrated Bio-Social Models for HIV Epidemiology (MPIs: Steven Goodreau, Joshua Herbeck, and John Mittler)
+* [NIH R21MH112449](https://projectreporter.nih.gov/project_info_description.cfm?aid=9271672): Modeling Antiretroviral-Based Prevention among MSM in the US (PI: Samuel Jenness)
+* [NIH P30AI050409](https://projectreporter.nih.gov/project_info_description.cfm?aid=9120767): Center for AIDS Research at Emory University (MPIs: Carlos del Rio and James Curran)
+* [NIH P30AI027757](https://projectreporter.nih.gov/project_info_description.cfm?aid=9069392): Center for AIDS Research at the University of Washington (PI: King Holmes)
+* [CDC U38PS004646](https://projectreporter.nih.gov/project_info_details.cfm?aid=8926715): Enhancing Models of HIV, Viral Hepatitis, STIs, and Tuberculosis to Inform and Improve Public Health Impact (PI: Patrick Sullivan)
 
 #### Copyright
 These materials are distributed under the GPL-3 license, with the following copyright and attribution requirements listed <a href="http://statnet.csde.washington.edu/attribution.shtml" target="_blank">here</a>.
