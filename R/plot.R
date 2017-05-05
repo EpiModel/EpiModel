@@ -362,7 +362,7 @@ plot.dcm <- function(x, y, popfrac = FALSE, run, col, lwd, lty, alpha = 0.9,
   ## Grid
   if (grid == TRUE) {
      grid()
-  } 
+  }
 
   ## Legend
 
@@ -716,7 +716,7 @@ plot.icm <- function(x, y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col, si
   ## Grid
   if (grid == TRUE) {
       grid()
-  } 
+  }
 
   ## Legends ##
   if (!missing(legend) && legend == TRUE) {
@@ -865,19 +865,19 @@ draw_means <- function(x, y, mean.smooth, mean.lwd,
 #' # Formation statistics plots, joined and separate
 #' plot(dx2)
 #' plot(dx2, type = "formation", plots.joined = TRUE)
-#' plot(dx2, type = "formation", sim = 1, plots.joined = TRUE,
+#' plot(dx2, type = "formation", sims = 1, plots.joined = TRUE,
 #'      qnts = FALSE, sim.lines = TRUE, mean.line = FALSE)
 #' plot(dx2, type = "formation", plots.joined = FALSE,
 #'      stats = c("edges", "concurrent"))
 #' plot(dx2, type = "formation", stats = "nodefactor.sex.0",
-#'      sim = 1, sim.lwd = 5, sim.col = "darkmagenta")
+#'      sims = 1, sim.lwd = 5, sim.col = "darkmagenta")
 #'
 #' plot(dx2, method = "b", col = "bisque")
 #' plot(dx2, method = "b", stats = "meandeg", col = "dodgerblue")
 #'
 #' # Duration statistics plot
 #' plot(dx2, type = "duration", mean.col = "black")
-#' plot(dx2, type = "duration", sim = 10, mean.line = FALSE, sim.line = TRUE,
+#' plot(dx2, type = "duration", sims = 10, mean.line = FALSE, sim.line = TRUE,
 #'      sim.col = "steelblue", sim.lwd = 3, targ.lty = 1, targ.lwd = 0.5)
 #'
 #' # Dissolution statistics plot
@@ -2002,11 +2002,11 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
       }
       draw_means(x, y, mean.smooth, mean.lwd, mean.pal, mean.lty)
     }
-    
+
     ## Grid
     if (grid == TRUE) {
         grid()
-    } 
+    }
 
     ## Legends ##
     if (!missing(legend) && legend == TRUE) {
@@ -2219,12 +2219,12 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
         }
 
       }
-      
+
       ## Grid
       if (grid == TRUE) {
           grid()
-      } 
-      
+      }
+
       if (legend == TRUE) {
         legend("topleft", legend = nmstats[outsts], lwd = 3,
                col = sim.col[1:nstats], cex = 0.75, bg = "white")
@@ -2313,12 +2313,12 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
                    col = targ.col[which(j == outsts)])
           }
         }
-        
+
         ## Grid
         if (grid == TRUE) {
             grid()
-        } 
-        
+        }
+
       }
 
       # Reset graphical parameters

@@ -146,19 +146,19 @@ dx2
 # Formation statistics plots, joined and separate
 plot(dx2)
 plot(dx2, type = "formation", plots.joined = TRUE)
-plot(dx2, type = "formation", sim = 1, plots.joined = TRUE,
+plot(dx2, type = "formation", sims = 1, plots.joined = TRUE,
      qnts = FALSE, sim.lines = TRUE, mean.line = FALSE)
 plot(dx2, type = "formation", plots.joined = FALSE,
      stats = c("edges", "concurrent"))
 plot(dx2, type = "formation", stats = "nodefactor.sex.0",
-     sim = 1, sim.lwd = 5, sim.col = "darkmagenta")
+     sims = 1, sim.lwd = 5, sim.col = "darkmagenta")
 
 plot(dx2, method = "b", col = "bisque")
 plot(dx2, method = "b", stats = "meandeg", col = "dodgerblue")
 
 # Duration statistics plot
 plot(dx2, type = "duration", mean.col = "black")
-plot(dx2, type = "duration", sim = 10, mean.line = FALSE, sim.line = TRUE,
+plot(dx2, type = "duration", sims = 10, mean.line = FALSE, sim.line = TRUE,
      sim.col = "steelblue", sim.lwd = 3, targ.lty = 1, targ.lwd = 0.5)
 
 # Dissolution statistics plot
