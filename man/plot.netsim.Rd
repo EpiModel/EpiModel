@@ -8,7 +8,7 @@
   sim.lines = FALSE, sims, sim.col, sim.lwd, sim.alpha, mean.line = TRUE,
   mean.smooth = TRUE, mean.col, mean.lwd = 2, mean.lty = 1, qnts = 0.5,
   qnts.col, qnts.alpha, qnts.smooth = TRUE, legend, leg.cex = 0.8,
-  axs = "r", grid = TRUE, add = FALSE, network = 1, at = 1,
+  axs = "r", grid = FALSE, add = FALSE, network = 1, at = 1,
   col.status = FALSE, shp.bip = NULL, stats, targ.line = TRUE, targ.col,
   targ.lwd = 2, targ.lty = 2, plots.joined, ...)
 }
@@ -70,8 +70,8 @@ transparent and 1 = opaque (see \code{\link{transco}}).}
 \item{axs}{Plot axis type (see \code{\link{par}} for details), with default
 to \code{"r"}.}
 
-\item{grid}{If \code{TRUE}, a grid is added to the background of plot (see \code{\link{grid}} for details), with default
-of nx by ny.}
+\item{grid}{If \code{TRUE}, a grid is added to the background of plot 
+(see \code{\link{grid}} for details), with default of nx by ny.}
 
 \item{add}{If \code{TRUE}, new plot window is not called and lines are added to
 existing plot window.}
@@ -190,7 +190,7 @@ control <- control.net(type = "SI", nsteps = 50, nsims = 3,
 mod <- netsim(est, param, init, control)
 
 # Plot epidemic trajectory (default type)
-plot(mod, type = "epi")
+plot(mod, type = "epi", grid = TRUE)
 plot(mod, type = "epi", popfrac = TRUE)
 plot(mod, type = "epi", y = "si.flow", qnts = 1)
 
@@ -212,7 +212,7 @@ plot(mod, type = "network", at = 50, col.status = TRUE, shp.bip = "triangle")
 
 # Plot formation statistics
 par(mfrow = c(1,1), mar = c(3,3,1,1), mgp = c(2,1,0))
-plot(mod, type = "formation")
+plot(mod, type = "formation", grid = TRUE)
 plot(mod, type = "formation", plots.joined = FALSE)
 plot(mod, type = "formation", sims = 2:3)
 plot(mod, type = "formation", plots.joined = FALSE,

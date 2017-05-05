@@ -5,7 +5,7 @@
 \title{Plot Data from a Deterministic Compartmental Epidemic Model}
 \usage{
 \method{plot}{dcm}(x, y, popfrac = FALSE, run, col, lwd, lty, alpha = 0.9,
-  legend, leg.name, leg.cex = 0.8, axs = "r", grid = TRUE, add = FALSE,
+  legend, leg.name, leg.cex = 0.8, axs = "r", grid = FALSE, add = FALSE,
   ...)
 }
 \arguments{
@@ -40,8 +40,8 @@ determined automatically based on the \code{y} input.}
 \item{axs}{Plot axis type (see \code{\link{par}} for details), with default
 of "r".}
 
-\item{grid}{If \code{TRUE}, a grid is added to the background of plot (see \code{\link{grid}} for details), with default
-of nx by ny.}
+\item{grid}{If \code{TRUE}, a grid is added to the background of plot 
+(see \code{\link{grid}} for details), with default of nx by ny.}
 
 \item{add}{If \code{TRUE}, new plot window is not called and lines are added to
 existing plot window.}
@@ -111,13 +111,13 @@ plot(mod)
 plot(mod, y = "s.num", popfrac = TRUE, col = "Greys")
 
 # Plot number of susceptibles
-plot(mod, y = "s.num", popfrac = FALSE, col = "Greys")
+plot(mod, y = "s.num", popfrac = FALSE, col = "Greys", grid = TRUE)
 
 # Plot multiple runs of multiple compartments together
 plot(mod, y = c("s.num", "i.num"),
-     run = 5, xlim = c(0, 50))
+     run = 5, xlim = c(0, 50), grid = TRUE)
 plot(mod, y = c("s.num", "i.num"),
-     run = 10, lty = 2, legend = "n", grid = TRUE, add = TRUE)
+     run = 10, lty = 2, legend = "n", add = TRUE)
 
 }
 \seealso{

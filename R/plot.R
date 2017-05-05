@@ -25,8 +25,8 @@
 #' @param leg.cex Legend scale size.
 #' @param axs Plot axis type (see \code{\link{par}} for details), with default
 #'        of "r".
-#' @param grid If \code{TRUE}, a grid is added to the background of plot (see \code{\link{grid}} for details), with default
-#'        of nx by ny.
+#' @param grid If \code{TRUE}, a grid is added to the background of plot 
+#'        (see \code{\link{grid}} for details), with default of nx by ny.
 #' @param add If \code{TRUE}, new plot window is not called and lines are added to
 #'        existing plot window.
 #' @param ... Additional arguments to pass to main plot window (see
@@ -90,16 +90,16 @@
 #' plot(mod, y = "s.num", popfrac = TRUE, col = "Greys")
 #'
 #' # Plot number of susceptibles
-#' plot(mod, y = "s.num", popfrac = FALSE, col = "Greys")
+#' plot(mod, y = "s.num", popfrac = FALSE, col = "Greys", grid = TRUE)
 #'
 #' # Plot multiple runs of multiple compartments together
 #' plot(mod, y = c("s.num", "i.num"),
-#'      run = 5, xlim = c(0, 50))
+#'      run = 5, xlim = c(0, 50), grid = TRUE)
 #' plot(mod, y = c("s.num", "i.num"),
-#'      run = 10, lty = 2, legend = "n", grid = TRUE, add = TRUE)
+#'      run = 10, lty = 2, legend = "n", add = TRUE)
 #'
 plot.dcm <- function(x, y, popfrac = FALSE, run, col, lwd, lty, alpha = 0.9,
-                     legend, leg.name, leg.cex = 0.8, axs = "r", grid = TRUE, add = FALSE, ...) {
+                     legend, leg.name, leg.cex = 0.8, axs = "r", grid = FALSE, add = FALSE, ...) {
 
   ## Set missing flags
   noy <- ifelse(missing(y), TRUE, FALSE)
@@ -474,7 +474,7 @@ plot.dcm <- function(x, y, popfrac = FALSE, run, col, lwd, lty, alpha = 0.9,
 #' control <- control.icm(type = "SIR", nsteps = 100,
 #'                        nsims = 3, verbose = FALSE)
 #' mod <- icm(param, init, control)
-#' plot(mod)
+#' plot(mod, grid = TRUE)
 #'
 #' ## Example 2: Plot only infected with specific output from SI model
 #' param <- param.icm(inf.prob = 0.25, act.rate = 0.25)
@@ -488,14 +488,14 @@ plot.dcm <- function(x, y, popfrac = FALSE, run, col, lwd, lty, alpha = 0.9,
 #'
 #' # Plot incidence
 #' par(mfrow = c(1, 2))
-#' plot(mod2, y = "si.flow", mean.smooth = TRUE)
+#' plot(mod2, y = "si.flow", mean.smooth = TRUE, grid = TRUE)
 #' plot(mod2, y = "si.flow", qnts.smooth = FALSE, qnts = 1)
 #'
 plot.icm <- function(x, y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col, sim.lwd,
                      sim.alpha, mean.line = TRUE, mean.smooth = TRUE,
                      mean.col, mean.lwd = 2, mean.lty = 1, qnts = 0.5, qnts.col,
                      qnts.alpha, qnts.smooth = TRUE, legend, leg.cex = 0.8,
-                     axs = "r", grid = TRUE, add = FALSE, ...) {
+                     axs = "r", grid = FALSE, add = FALSE, ...) {
 
   ## Model dimensions and class ##
   nsteps <- x$control$nsteps
@@ -851,7 +851,7 @@ draw_means <- function(x, y, mean.smooth, mean.lwd,
 #' # Only formation diagnostics are available to plot
 #' plot(dx1, stats = "edges")
 #' plot(dx1, stats = c("edges", "concurrent"))
-#' plot(dx1, stats = "edges", method = "b", col = "seagreen3")
+#' plot(dx1, stats = "edges", method = "b", col = "seagreen3", grid = TRUE)
 #' plot(dx1, stats = c("nodefactor.sex.0", "nodefactor.sex.1"),
 #'      method = "b", col = transco(2:3, 0.5))
 #'
@@ -863,25 +863,25 @@ draw_means <- function(x, y, mean.smooth, mean.lwd,
 #' dx2
 #'
 #' # Formation statistics plots, joined and separate
-#' plot(dx2)
+#' plot(dx2, grid = TRUE)
 #' plot(dx2, type = "formation", plots.joined = TRUE)
 #' plot(dx2, type = "formation", sims = 1, plots.joined = TRUE,
 #'      qnts = FALSE, sim.lines = TRUE, mean.line = FALSE)
 #' plot(dx2, type = "formation", plots.joined = FALSE,
-#'      stats = c("edges", "concurrent"))
+#'      stats = c("edges", "concurrent"), grid = TRUE)
 #' plot(dx2, type = "formation", stats = "nodefactor.sex.0",
 #'      sims = 1, sim.lwd = 5, sim.col = "darkmagenta")
 #'
-#' plot(dx2, method = "b", col = "bisque")
+#' plot(dx2, method = "b", col = "bisque", grid = TRUE)
 #' plot(dx2, method = "b", stats = "meandeg", col = "dodgerblue")
 #'
 #' # Duration statistics plot
-#' plot(dx2, type = "duration", mean.col = "black")
+#' plot(dx2, type = "duration", mean.col = "black", grid = TRUE)
 #' plot(dx2, type = "duration", sims = 10, mean.line = FALSE, sim.line = TRUE,
 #'      sim.col = "steelblue", sim.lwd = 3, targ.lty = 1, targ.lwd = 0.5)
 #'
 #' # Dissolution statistics plot
-#' plot(dx2, type = "dissolution", mean.col = "black")
+#' plot(dx2, type = "dissolution", mean.col = "black", grid = TRUE)
 #' plot(dx2, type = "dissolution", method = "b", col = "pink1")
 #' }
 #'
@@ -890,7 +890,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
                        mean.smooth = TRUE, mean.col, mean.lwd = 2, mean.lty = 1,
                        qnts = 0.5, qnts.col, qnts.alpha, qnts.smooth = TRUE,
                        targ.line = TRUE, targ.col, targ.lwd = 2, targ.lty = 2,
-                       plots.joined, legend, ...) {
+                       plots.joined, legend, grid = FALSE, ...) {
 
   # Checks and Variables ----------------------------------------------------
 
@@ -989,8 +989,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         }
       }
     }
-
-
+    
     ## Joined Plots
     if (method == "l") {
 
@@ -1001,9 +1000,14 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
           sim.lines <- TRUE
         }
       }
+        
+      ## Grid
+      if (grid == TRUE) {
+         grid()
+      }
 
       if (plots.joined == TRUE) {
-
+          
         ## Default legend
         if (nstats == 1) {
           if (missing(legend)) {
@@ -1117,6 +1121,13 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
           }
 
         }
+        
+        ## Grid
+        if (grid == TRUE) {
+            grid()
+        }
+        
+        
         if (legend == TRUE) {
           legend("topleft", legend = nmstats[outsts], lwd = 3,
                  col = sim.col[1:nstats], cex = 0.75, bg = "white")
@@ -1208,8 +1219,13 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
                      col = targ.col[which(j == outsts)])
             }
           }
+          
+          ## Grid
+          if (grid == TRUE) {
+              grid()
+          }
         }
-
+        
         # Reset graphical parameters
         on.exit(par(ops))
       }
@@ -1230,6 +1246,10 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
           points(x = outsts[j], y = nwstats.table$Target[j],
                  pch = 16, cex = 1.5, col = "blue")
         }
+          ## Grid
+          if (grid == TRUE) {
+              grid()
+          }
       }
 
     }
@@ -1345,6 +1365,11 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
                lty = targ.lty, lwd = targ.lwd,
                col = targ.col)
       }
+      
+      ## Grid
+      if (grid == TRUE) {
+          grid()
+      }
     }
 
     if (method == "b") {
@@ -1352,6 +1377,12 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
       boxplot(data, ...)
       points(x = 1, y = as.numeric(x$coef.diss[2]),
              pch = 16, cex = 1.5, col = "blue")
+    
+      ## Grid
+      if (grid == TRUE) {
+          grid()
+      }  
+      
     }
 
   }
@@ -1461,6 +1492,11 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         abline(h = as.numeric(1 / (x$coef.diss[2]$duration)),
                lty = targ.lty, lwd = targ.lwd, col = targ.col)
       }
+      
+      ## Grid
+      if (grid == TRUE) {
+          grid()
+      }
     }
 
     if (method == "b") {
@@ -1468,10 +1504,13 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
       boxplot(data, ...)
       points(x = 1, y = as.numeric(1 / (x$coef.diss[2]$duration)),
              pch = 16, cex = 1.5, col = "blue")
+    
+      ## Grid
+      if (grid == TRUE) {
+          grid()
+      }
     }
-
   }
-
 }
 
 
@@ -1516,8 +1555,8 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #' @param leg.cex Legend scale size.
 #' @param axs Plot axis type (see \code{\link{par}} for details), with default
 #'        to \code{"r"}.
-#' @param grid If \code{TRUE}, a grid is added to the background of plot (see \code{\link{grid}} for details), with default
-#'        of nx by ny.
+#' @param grid If \code{TRUE}, a grid is added to the background of plot 
+#'        (see \code{\link{grid}} for details), with default of nx by ny.
 #' @param add If \code{TRUE}, new plot window is not called and lines are added to
 #'        existing plot window.
 #' @param network Network number, for simulations with multiple networks
@@ -1627,7 +1666,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #' mod <- netsim(est, param, init, control)
 #'
 #' # Plot epidemic trajectory (default type)
-#' plot(mod, type = "epi")
+#' plot(mod, type = "epi", grid = TRUE)
 #' plot(mod, type = "epi", popfrac = TRUE)
 #' plot(mod, type = "epi", y = "si.flow", qnts = 1)
 #'
@@ -1649,7 +1688,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #'
 #' # Plot formation statistics
 #' par(mfrow = c(1,1), mar = c(3,3,1,1), mgp = c(2,1,0))
-#' plot(mod, type = "formation")
+#' plot(mod, type = "formation", grid = TRUE)
 #' plot(mod, type = "formation", plots.joined = FALSE)
 #' plot(mod, type = "formation", sims = 2:3)
 #' plot(mod, type = "formation", plots.joined = FALSE,
@@ -1661,7 +1700,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
                         sim.lwd, sim.alpha, mean.line = TRUE, mean.smooth = TRUE,
                         mean.col, mean.lwd = 2, mean.lty = 1, qnts = 0.5, qnts.col,
                         qnts.alpha, qnts.smooth = TRUE, legend, leg.cex = 0.8, axs = "r",
-                        grid = TRUE, add = FALSE, network = 1, at = 1, col.status = FALSE,
+                        grid = FALSE, add = FALSE, network = 1, at = 1, col.status = FALSE,
                         shp.bip = NULL, stats, targ.line = TRUE, targ.col,
                         targ.lwd = 2, targ.lty = 2, plots.joined, ...) {
 
