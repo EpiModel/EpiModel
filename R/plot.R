@@ -25,6 +25,8 @@
 #' @param leg.cex Legend scale size.
 #' @param axs Plot axis type (see \code{\link{par}} for details), with default
 #'        of "r".
+#' @param grid If \code{TRUE}, a grid is added to the background of plot (see \code{\link{grid}} for details), with default
+#'        of nx by ny.
 #' @param add If \code{TRUE}, new plot window is not called and lines are added to
 #'        existing plot window.
 #' @param ... Additional arguments to pass to main plot window (see
@@ -94,10 +96,10 @@
 #' plot(mod, y = c("s.num", "i.num"),
 #'      run = 5, xlim = c(0, 50))
 #' plot(mod, y = c("s.num", "i.num"),
-#'      run = 10, lty = 2, legend = "n", add = TRUE)
+#'      run = 10, lty = 2, legend = "n", grid = TRUE, add = TRUE)
 #'
 plot.dcm <- function(x, y, popfrac = FALSE, run, col, lwd, lty, alpha = 0.9,
-                     legend, leg.name, leg.cex = 0.8, axs = "r", add = FALSE, ...) {
+                     legend, leg.name, leg.cex = 0.8, axs = "r", grid = TRUE, add = FALSE, ...) {
 
   ## Set missing flags
   noy <- ifelse(missing(y), TRUE, FALSE)
@@ -357,6 +359,10 @@ plot.dcm <- function(x, y, popfrac = FALSE, run, col, lwd, lty, alpha = 0.9,
     }
   }
 
+  ## Grid
+  if (grid == TRUE) {
+     grid()
+  } 
 
   ## Legend
 
@@ -489,7 +495,7 @@ plot.icm <- function(x, y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col, si
                      sim.alpha, mean.line = TRUE, mean.smooth = TRUE,
                      mean.col, mean.lwd = 2, mean.lty = 1, qnts = 0.5, qnts.col,
                      qnts.alpha, qnts.smooth = TRUE, legend, leg.cex = 0.8,
-                     axs = "r", add = FALSE, ...) {
+                     axs = "r", grid = TRUE, add = FALSE, ...) {
 
   ## Model dimensions and class ##
   nsteps <- x$control$nsteps
@@ -707,6 +713,10 @@ plot.icm <- function(x, y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col, si
     draw_means(x, y, mean.smooth, mean.lwd, mean.pal, mean.lty)
   }
 
+  ## Grid
+  if (grid == TRUE) {
+      grid()
+  } 
 
   ## Legends ##
   if (!missing(legend) && legend == TRUE) {
@@ -1506,6 +1516,8 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #' @param leg.cex Legend scale size.
 #' @param axs Plot axis type (see \code{\link{par}} for details), with default
 #'        to \code{"r"}.
+#' @param grid If \code{TRUE}, a grid is added to the background of plot (see \code{\link{grid}} for details), with default
+#'        of nx by ny.
 #' @param add If \code{TRUE}, new plot window is not called and lines are added to
 #'        existing plot window.
 #' @param network Network number, for simulations with multiple networks
@@ -1649,7 +1661,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
                         sim.lwd, sim.alpha, mean.line = TRUE, mean.smooth = TRUE,
                         mean.col, mean.lwd = 2, mean.lty = 1, qnts = 0.5, qnts.col,
                         qnts.alpha, qnts.smooth = TRUE, legend, leg.cex = 0.8, axs = "r",
-                        add = FALSE, network = 1, at = 1, col.status = FALSE,
+                        grid = TRUE, add = FALSE, network = 1, at = 1, col.status = FALSE,
                         shp.bip = NULL, stats, targ.line = TRUE, targ.col,
                         targ.lwd = 2, targ.lty = 2, plots.joined, ...) {
 
@@ -1990,7 +2002,11 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
       }
       draw_means(x, y, mean.smooth, mean.lwd, mean.pal, mean.lty)
     }
-
+    
+    ## Grid
+    if (grid == TRUE) {
+        grid()
+    } 
 
     ## Legends ##
     if (!missing(legend) && legend == TRUE) {
@@ -2203,6 +2219,12 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
         }
 
       }
+      
+      ## Grid
+      if (grid == TRUE) {
+          grid()
+      } 
+      
       if (legend == TRUE) {
         legend("topleft", legend = nmstats[outsts], lwd = 3,
                col = sim.col[1:nstats], cex = 0.75, bg = "white")
@@ -2291,6 +2313,12 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
                    col = targ.col[which(j == outsts)])
           }
         }
+        
+        ## Grid
+        if (grid == TRUE) {
+            grid()
+        } 
+        
       }
 
       # Reset graphical parameters

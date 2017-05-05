@@ -8,9 +8,9 @@
   sim.lines = FALSE, sims, sim.col, sim.lwd, sim.alpha, mean.line = TRUE,
   mean.smooth = TRUE, mean.col, mean.lwd = 2, mean.lty = 1, qnts = 0.5,
   qnts.col, qnts.alpha, qnts.smooth = TRUE, legend, leg.cex = 0.8,
-  axs = "r", add = FALSE, network = 1, at = 1, col.status = FALSE,
-  shp.bip = NULL, stats, targ.line = TRUE, targ.col, targ.lwd = 2,
-  targ.lty = 2, plots.joined, ...)
+  axs = "r", grid = TRUE, add = FALSE, network = 1, at = 1,
+  col.status = FALSE, shp.bip = NULL, stats, targ.line = TRUE, targ.col,
+  targ.lwd = 2, targ.lty = 2, plots.joined, ...)
 }
 \arguments{
 \item{x}{An \code{EpiModel} model object of class \code{netsim}.}
@@ -69,6 +69,9 @@ transparent and 1 = opaque (see \code{\link{transco}}).}
 
 \item{axs}{Plot axis type (see \code{\link{par}} for details), with default
 to \code{"r"}.}
+
+\item{grid}{If \code{TRUE}, a grid is added to the background of plot (see \code{\link{grid}} for details), with default
+of nx by ny.}
 
 \item{add}{If \code{TRUE}, new plot window is not called and lines are added to
 existing plot window.}

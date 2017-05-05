@@ -5,7 +5,8 @@
 \title{Plot Data from a Deterministic Compartmental Epidemic Model}
 \usage{
 \method{plot}{dcm}(x, y, popfrac = FALSE, run, col, lwd, lty, alpha = 0.9,
-  legend, leg.name, leg.cex = 0.8, axs = "r", add = FALSE, ...)
+  legend, leg.name, leg.cex = 0.8, axs = "r", grid = TRUE, add = FALSE,
+  ...)
 }
 \arguments{
 \item{x}{An \code{EpiModel} object of class \code{dcm}.}
@@ -38,6 +39,9 @@ determined automatically based on the \code{y} input.}
 
 \item{axs}{Plot axis type (see \code{\link{par}} for details), with default
 of "r".}
+
+\item{grid}{If \code{TRUE}, a grid is added to the background of plot (see \code{\link{grid}} for details), with default
+of nx by ny.}
 
 \item{add}{If \code{TRUE}, new plot window is not called and lines are added to
 existing plot window.}
@@ -113,7 +117,7 @@ plot(mod, y = "s.num", popfrac = FALSE, col = "Greys")
 plot(mod, y = c("s.num", "i.num"),
      run = 5, xlim = c(0, 50))
 plot(mod, y = c("s.num", "i.num"),
-     run = 10, lty = 2, legend = "n", add = TRUE)
+     run = 10, lty = 2, legend = "n", grid = TRUE, add = TRUE)
 
 }
 \seealso{
