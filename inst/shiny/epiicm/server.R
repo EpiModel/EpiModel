@@ -52,7 +52,7 @@ shinyServer(function(input, output) {
            mean.line = input$showmean,
            sim.lines = input$showsims,
            qnts = showqnts(),
-           leg = input$showleg,
+           legend = input$showleg,
            leg.cex = 1.1,
            lwd = 3.5,
            main = "")
@@ -63,7 +63,7 @@ shinyServer(function(input, output) {
            mean.line = input$showmean,
            sim.lines = input$showsims,
            qnts = showqnts(),
-           leg = input$showleg,
+           legend = input$showleg,
            leg.cex = 1.1,
            lwd = 3.5,
            main = "")
@@ -75,7 +75,7 @@ shinyServer(function(input, output) {
            mean.line = input$showmean,
            sim.lines = input$showsims,
            qnts = showqnts(),
-           leg = input$showleg,
+           legend = input$showleg,
            leg.cex = 1.1,
            lwd = 3.5,
            main = "")
@@ -91,7 +91,7 @@ shinyServer(function(input, output) {
              mean.line = input$showmean,
              sim.lines = input$showsims,
              qnts = showqnts(),
-             leg = input$showleg,
+             legend = input$showleg,
              leg.cex = 1.1,
              lwd = 3.5)
       }
@@ -100,7 +100,7 @@ shinyServer(function(input, output) {
              mean.line = input$showmean,
              sim.lines = input$showsims,
              qnts = showqnts(),
-             leg = input$showleg,
+             legend = input$showleg,
              popfrac = FALSE,
              leg.cex = 1.1,
              lwd = 3.5)
@@ -112,7 +112,7 @@ shinyServer(function(input, output) {
              mean.line = input$showmean,
              sim.lines = input$showsims,
              qnts = showqnts(),
-             leg = input$showleg,
+             legend = input$showleg,
              leg.cex = 1.1,
              lwd = 3.5)
       }

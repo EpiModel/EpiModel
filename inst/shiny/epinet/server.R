@@ -264,7 +264,7 @@ shinyServer(function(input, output, session) {
            sim.lines = input$dx.showsims,
            qnts = dx.showqnts(),
            plots.joined = input$plots.joined,
-           leg = input$dx.showleg,
+           legend = input$dx.showleg,
            leg.cex = 1.1,
            lwd = 3.5,
            main = "")
@@ -284,7 +284,7 @@ shinyServer(function(input, output, session) {
              mean.line = input$dx.showmean,
              sim.lines = input$dx.showsims,
              qnts = dx.showqnts(),
-             leg = input$dx.showleg,
+             legend = input$dx.showleg,
              leg.cex = 1.1,
              lwd = 3.5,
              main = "")
@@ -306,7 +306,7 @@ shinyServer(function(input, output, session) {
            mean.line = input$epi.showmean,
            sim.lines = input$epi.showsims,
            qnts = epi.showqnts(),
-           leg = input$epi.showleg,
+           legend = input$epi.showleg,
            leg.cex = 1.1,
            lwd = 3.5,
            main = "")
@@ -316,7 +316,7 @@ shinyServer(function(input, output, session) {
            mean.line = input$epi.showmean,
            sim.lines = input$epi.showsims,
            qnts = epi.showqnts(),
-           leg = input$epi.showleg,
+           legend = input$epi.showleg,
            leg.cex = 1.1,
            lwd = 3.5,
            main = "")
@@ -327,7 +327,7 @@ shinyServer(function(input, output, session) {
            mean.line = input$epi.showmean,
            sim.lines = input$epi.showsims,
            qnts = epi.showqnts(),
-           leg = input$epi.showleg,
+           legend = input$epi.showleg,
            leg.cex = 1.1,
            lwd = 3.5,
            main = "")
@@ -344,7 +344,7 @@ shinyServer(function(input, output, session) {
              mean.line = input$epi.showmean,
              sim.lines = input$epi.showsims,
              qnts = epi.showqnts(),
-             leg = input$epi.showleg,
+             legend = input$epi.showleg,
              leg.cex = 1.1,
              lwd = 3.5,
              main = "")
@@ -354,7 +354,7 @@ shinyServer(function(input, output, session) {
              mean.line = input$epi.showmean,
              sim.lines = input$epi.showsims,
              qnts = epi.showqnts(),
-             leg = input$epi.showleg,
+             legend = input$epi.showleg,
              leg.cex = 1.1,
              lwd = 3.5,
              main = "")
@@ -365,7 +365,7 @@ shinyServer(function(input, output, session) {
              mean.line = input$epi.showmean,
              sim.lines = input$epi.showsims,
              qnts = epi.showqnts(),
-             leg = input$epi.showleg,
+             legend = input$epi.showleg,
              leg.cex = 1.1,
              lwd = 3.5,
              main = "")
