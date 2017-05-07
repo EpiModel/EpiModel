@@ -55,7 +55,7 @@ shinyServer(function(input, output) {
            leg.cex = 1.1,
            alpha = input$alpha,
            lwd = 3.5,
-           leg = sleg(),
+           legend = sleg(),
            main = "")
     }
     if (input$compsel == "Compartment Size") {
@@ -64,7 +64,7 @@ shinyServer(function(input, output) {
            leg.cex = 1.1,
            alpha = input$alpha,
            lwd = 3.5,
-           leg = sleg(),
+           legend = sleg(),
            main = "")
     }
     if (input$compsel == "Disease Incidence") {
@@ -74,7 +74,7 @@ shinyServer(function(input, output) {
            leg.cex = 1.1,
            alpha = input$alpha,
            lwd = 3.5,
-           leg = sleg(),
+           legend = sleg(),
            main = "")
     }
   })
@@ -88,7 +88,7 @@ shinyServer(function(input, output) {
              leg.cex = 1.1,
              alpha = input$alpha,
              lwd = 3.5,
-             leg = sleg(),
+             legend = sleg(),
              main = "")
       }
       if (input$compsel == "Compartment Size") {
@@ -97,7 +97,7 @@ shinyServer(function(input, output) {
              leg.cex = 1.1,
              alpha = input$alpha,
              lwd = 3.5,
-             leg = sleg(),
+             legend = sleg(),
              main = "")
       }
       if (input$compsel == "Disease Incidence") {
@@ -107,7 +107,7 @@ shinyServer(function(input, output) {
              leg.cex = 1.1,
              alpha = input$alpha,
              lwd = 3.5,
-             leg = sleg(),
+             legend = sleg(),
              main = "")
       }
       dev.off()

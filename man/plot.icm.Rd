@@ -7,8 +7,8 @@
 \method{plot}{icm}(x, y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col,
   sim.lwd, sim.alpha, mean.line = TRUE, mean.smooth = TRUE, mean.col,
   mean.lwd = 2, mean.lty = 1, qnts = 0.5, qnts.col, qnts.alpha,
-  qnts.smooth = TRUE, legend, leg.cex = 0.8, axs = "r", add = FALSE,
-  ...)
+  qnts.smooth = TRUE, legend, leg.cex = 0.8, axs = "r", grid = FALSE,
+  add = FALSE, ...)
 }
 \arguments{
 \item{x}{An \code{EpiModel} model object of class \code{netsim}.}
@@ -64,6 +64,9 @@ transparent and 1 = opaque (see \code{\link{transco}}).}
 \item{axs}{Plot axis type (see \code{\link{par}} for details), with default
 to \code{"r"}.}
 
+\item{grid}{If \code{TRUE}, a grid is added to the background of plot 
+(see \code{\link{grid}} for details), with default of nx by ny.}
+
 \item{add}{If \code{TRUE}, new plot window is not called and lines are added to
 existing plot window.}
 
@@ -80,7 +83,7 @@ init <- init.icm(s.num = 500, i.num = 1, r.num = 0)
 control <- control.icm(type = "SIR", nsteps = 100,
                        nsims = 3, verbose = FALSE)
 mod <- icm(param, init, control)
-plot(mod)
+plot(mod, grid = TRUE)
 
 ## Example 2: Plot only infected with specific output from SI model
 param <- param.icm(inf.prob = 0.25, act.rate = 0.25)
@@ -94,7 +97,7 @@ plot(mod2, y = "i.num", mean.line = FALSE, sim.lines = TRUE)
 
 # Plot incidence
 par(mfrow = c(1, 2))
-plot(mod2, y = "si.flow", mean.smooth = TRUE)
+plot(mod2, y = "si.flow", mean.smooth = TRUE, grid = TRUE)
 plot(mod2, y = "si.flow", qnts.smooth = FALSE, qnts = 1)
 
 }
