@@ -78,7 +78,7 @@ target statistics in one plot, versus one plot per target statistic if
 
 \item{legend}{If \code{TRUE}, plot default legend.}
 
-\item{grid}{If \code{TRUE}, a grid is added to the background of plot 
+\item{grid}{If \code{TRUE}, a grid is added to the background of plot
 (see \code{\link{grid}} for details), with default of nx by ny.}
 
 \item{...}{additional arguments to pass.}

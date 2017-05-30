@@ -25,7 +25,7 @@
 #' @param leg.cex Legend scale size.
 #' @param axs Plot axis type (see \code{\link{par}} for details), with default
 #'        of "r".
-#' @param grid If \code{TRUE}, a grid is added to the background of plot 
+#' @param grid If \code{TRUE}, a grid is added to the background of plot
 #'        (see \code{\link{grid}} for details), with default of nx by ny.
 #' @param add If \code{TRUE}, new plot window is not called and lines are added to
 #'        existing plot window.
@@ -559,7 +559,7 @@ plot.icm <- function(x, y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col, si
     qnts.col <- bpal
   }
   if (missing(qnts.alpha)) {
-    qnts.alpha <- 0.65
+    qnts.alpha <- 0.5
   }
   qnts.pal <- transco(qnts.col, qnts.alpha)
 
@@ -989,7 +989,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         }
       }
     }
-    
+
     ## Joined Plots
     if (method == "l") {
 
@@ -1000,14 +1000,14 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
           sim.lines <- TRUE
         }
       }
-        
+
       ## Grid
       if (grid == TRUE) {
          grid()
       }
 
       if (plots.joined == TRUE) {
-          
+
         ## Default legend
         if (nstats == 1) {
           if (missing(legend)) {
@@ -1074,7 +1074,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
               qnts.col <- sim.col
             }
             if (missing(qnts.alpha)) {
-              qnts.alpha <- 0.65
+              qnts.alpha <- 0.5
             }
             qnts.col <- transco(qnts.col, qnts.alpha)
             quants <- c((1 - qnts) / 2, 1 - ((1 - qnts) / 2))
@@ -1121,13 +1121,13 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
           }
 
         }
-        
+
         ## Grid
         if (grid == TRUE) {
             grid()
         }
-        
-        
+
+
         if (legend == TRUE) {
           legend("topleft", legend = nmstats[outsts], lwd = 3,
                  col = sim.col[1:nstats], cex = 0.75, bg = "white")
@@ -1173,7 +1173,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
               qnts.col <- sim.col
             }
             if (missing(qnts.alpha)) {
-              qnts.alpha <- 0.65
+              qnts.alpha <- 0.5
             }
             qnts.col <- transco(qnts.col, qnts.alpha)
             quants <- c((1 - qnts) / 2, 1 - ((1 - qnts) / 2))
@@ -1219,13 +1219,13 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
                      col = targ.col[which(j == outsts)])
             }
           }
-          
+
           ## Grid
           if (grid == TRUE) {
               grid()
           }
         }
-        
+
         # Reset graphical parameters
         on.exit(par(ops))
       }
@@ -1320,7 +1320,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
           qnts.col <- sim.col
         }
         if (missing(qnts.alpha)) {
-          qnts.alpha <- 0.65
+          qnts.alpha <- 0.5
         }
         qnts.col <- transco(qnts.col, qnts.alpha)
         quants <- c((1 - qnts) / 2, 1 - ((1 - qnts) / 2))
@@ -1365,7 +1365,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
                lty = targ.lty, lwd = targ.lwd,
                col = targ.col)
       }
-      
+
       ## Grid
       if (grid == TRUE) {
           grid()
@@ -1377,12 +1377,12 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
       boxplot(data, ...)
       points(x = 1, y = as.numeric(x$coef.diss[2]),
              pch = 16, cex = 1.5, col = "blue")
-    
+
       ## Grid
       if (grid == TRUE) {
           grid()
-      }  
-      
+      }
+
     }
 
   }
@@ -1450,7 +1450,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
           qnts.col <- sim.col
         }
         if (missing(qnts.alpha)) {
-          qnts.alpha <- 0.65
+          qnts.alpha <- 0.5
         }
         qnts.col <- transco(qnts.col, qnts.alpha)
         quants <- c((1 - qnts) / 2, 1 - ((1 - qnts) / 2))
@@ -1492,7 +1492,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         abline(h = as.numeric(1 / (x$coef.diss[2]$duration)),
                lty = targ.lty, lwd = targ.lwd, col = targ.col)
       }
-      
+
       ## Grid
       if (grid == TRUE) {
           grid()
@@ -1504,7 +1504,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
       boxplot(data, ...)
       points(x = 1, y = as.numeric(1 / (x$coef.diss[2]$duration)),
              pch = 16, cex = 1.5, col = "blue")
-    
+
       ## Grid
       if (grid == TRUE) {
           grid()
@@ -1555,7 +1555,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #' @param leg.cex Legend scale size.
 #' @param axs Plot axis type (see \code{\link{par}} for details), with default
 #'        to \code{"r"}.
-#' @param grid If \code{TRUE}, a grid is added to the background of plot 
+#' @param grid If \code{TRUE}, a grid is added to the background of plot
 #'        (see \code{\link{grid}} for details), with default of nx by ny.
 #' @param add If \code{TRUE}, new plot window is not called and lines are added to
 #'        existing plot window.
@@ -1876,7 +1876,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
       qnts.col <- bpal
     }
     if (missing(qnts.alpha)) {
-      qnts.alpha <- 0.65
+      qnts.alpha <- 0.5
     }
     qnts.pal <- transco(qnts.col, qnts.alpha)
 
@@ -2215,7 +2215,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
             qnts.col <- sim.col
           }
           if (missing(qnts.alpha)) {
-            qnts.alpha <- 0.65
+            qnts.alpha <- 0.5
           }
           qnts.col <- transco(qnts.col, qnts.alpha)
           quants <- c((1 - qnts) / 2, 1 - ((1 - qnts) / 2))
@@ -2311,7 +2311,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
             qnts.col <- sim.col
           }
           if (missing(qnts.alpha)) {
-            qnts.alpha <- 0.65
+            qnts.alpha <- 0.5
           }
           qnts.col <- transco(qnts.col, qnts.alpha)
           quants <- c((1 - qnts) / 2, 1 - ((1 - qnts) / 2))
