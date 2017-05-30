@@ -88,12 +88,12 @@ Sets the epidemic parameters for stochastic individual contact
 \details{
 \code{param.icm} sets the epidemic parameters for the stochastic individual
 contact models simulated with the \code{\link{icm}} function. Models
-may use the integrated types, for which these parameters are used, or new process
+may use the base types, for which these parameters are used, or new process
 modules which may use these parameters (but not necessarily). A detailed
-description of ICM parameterization for integrated models is found in the
+description of ICM parameterization for base models is found in the
 \href{http://statnet.github.io/tut/BasicICMs.html}{Basic ICMs} tutorial.
 
-For integrated models, the model specification will be chosen as a result of
+For base models, the model specification will be chosen as a result of
 the model parameters entered here and the control settings in
 \code{\link{control.icm}}. One-group and two-group models are available, where
 the former assumes a homogenous mixing in the population and the latter
@@ -116,7 +116,7 @@ act rate should control the others with respect to balancing. See the
 
 \section{New Modules}{
 
-To build original models outside of the integrated models, new process modules
+To build original models outside of the base models, new process modules
 may be constructed to replace the existing modules or to supplement the existing
 set. These are passed into the control settings in \code{\link{control.icm}}.
 New modules may use either the existing model parameters named here, an

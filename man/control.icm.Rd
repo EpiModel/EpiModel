@@ -67,7 +67,7 @@ steps.}
 
 \item{skip.check}{If \code{TRUE}, skips the default error checking for the
 structure and consistency of the parameter values, initial conditions,
-and control settings before running integrated epidemic models. Setting
+and control settings before running base epidemic models. Setting
 this to \code{FALSE} is recommended when running models with new modules
 specified.}
 
@@ -80,10 +80,10 @@ Sets the controls for stochastic individual contact models
 \details{
 \code{control.icm} sets the required control settings for any stochastic
 individual contact model solved with the \code{\link{icm}} function. Controls
-are required for both integrated model types and when passing original process
-modules. For an overview of control settings for integrated ICM class models,
+are required for both base model types and when passing original process
+modules. For an overview of control settings for base ICM class models,
 consult the \href{http://statnet.github.io/tut/BasicICMs.html}{Basic ICMs}
-tutorial. For all integrated models, the \code{type} argument is a necessary
+tutorial. For all base models, the \code{type} argument is a necessary
 parameter and it has no default.
 }
 \section{New Modules}{

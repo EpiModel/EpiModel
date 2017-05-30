@@ -28,7 +28,7 @@ crosscheck.dcm <- function(param, init, control) {
     stop("control must an object of class control.dcm", call. = FALSE)
   }
 
-  # Parameter checks for integrated models ----------------------------------
+  # Parameter checks for base models ----------------------------------
   if (is.null(control$new.mod)) {
 
     ## Defaults

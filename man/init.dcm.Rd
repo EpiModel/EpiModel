@@ -35,8 +35,8 @@ Sets the initial conditions for deterministic compartmental
 \details{
 The initial conditions for a model solved with \code{\link{dcm}} should be
 input into the \code{init.dcm} function. This function handles initial
-conditions for both integrated model types and original models. For an overview
-of initial conditions for integrated DCM class models, consult the
+conditions for both base model types and original models. For an overview
+of initial conditions for base DCM class models, consult the
 \href{http://statnet.github.io/tut/BasicDCMs.html}{Basic DCMs} tutorial.
 
 Original models may use the parameter names listed as arguments here, a new

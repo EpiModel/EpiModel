@@ -39,8 +39,8 @@ Sets the initial conditions for stochastic network models
 \details{
 The initial conditions for a model solved with \code{\link{netsim}} should be
 input into the \code{init.net} function. This function handles initial
-conditions for both integrated models and new modules. For an overview of
-specifying initial conditions across a variety of integrated network models,
+conditions for both base models and new modules. For an overview of
+specifying initial conditions across a variety of base network models,
 consult the \href{http://statnet.github.io/tut/BasicNet.html}{Basic Network
 Models} tutorial.
 }

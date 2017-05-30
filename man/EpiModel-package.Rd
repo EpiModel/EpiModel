@@ -19,7 +19,7 @@
 The EpiModel package provides functions for building, solving, and
 plotting mathematical models of infectious disease. The goals of the package
 are to provide basic tools for modeling in multiple frameworks for pedagogical
-purposes ("integrated models"), and to support users in developing and
+purposes ("base models"), and to support users in developing and
 expanding these tools using the package's utility functions for their own
 research.
 }
@@ -80,7 +80,7 @@ necessary parameters, initial conditions, and control settings:
        outset.
  \item \code{\link{control.dcm}}, \code{\link{control.icm}}, and
        \code{\link{control.net}} are used to specify the remaining control
-       settings for each simulation. The core controls for integrated model
+       settings for each simulation. The core controls for base model
        types include the disease type, number of time steps, and number of
        simulations. Controls are also used to input new model functions (for
        DCMs) and new model modules (for ICMs and network models) to allow the

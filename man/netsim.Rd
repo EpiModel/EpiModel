@@ -26,7 +26,7 @@ A list of class \code{netsim} with the following elements:
  \item \strong{control:} the control settings passed into the model through
        \code{control}, with additional controls added as necessary.
  \item \strong{epi:} a list of data frames, one for each epidemiological
-       output from the model. Outputs for integrated models always include the
+       output from the model. Outputs for base models always include the
        size of each compartment, as well as flows in, out of, and between
        compartments.
  \item \strong{stats:} a list containing two sublists, \code{nwstats} for any
@@ -52,7 +52,7 @@ description of these models, along with examples, is found in the
 \href{http://statnet.github.io/tut/BasicNet.html}{Basic Network Models}
 tutorial.
 
-The \code{netsim} function performs modeling of both the integrated model types
+The \code{netsim} function performs modeling of both the base model types
 and original models. Integrated model types include one-mode and bipartite models
 with disease types for Susceptible-Infected (SI), Susceptible-Infected-Recovered
 (SIR), and Susceptible-Infected-Susceptible (SIS).

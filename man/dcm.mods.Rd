@@ -52,11 +52,11 @@ through \code{\link{dcm}} via the initial conditions in
 \code{\link{dcm}} via the parameter settings in \code{\link{param.dcm}}.}
 }
 \description{
-These functions parameterize the integrated deterministic
+These functions parameterize the base deterministic
              compartmental models solved using the \code{dcm} function.
 }
 \details{
-This help page shows the names of all the integrated deterministic compartmental
+This help page shows the names of all the base deterministic compartmental
 model functions supported in EpiModel. Integrated models are those already
 programmed interally within the software. The model functions may be printed
 to see their internal structure, either directly on the console or by using

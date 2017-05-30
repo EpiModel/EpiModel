@@ -62,13 +62,13 @@
 #' @details
 #' \code{param.dcm} sets the epidemic parameters for deterministic compartmental
 #' models solved with the \code{\link{dcm}} function. The models may use the
-#' integrated types, for which these parameters are used, or original model
+#' base types, for which these parameters are used, or original model
 #' specifications for which these parameters may be used (but not necessarily).
-#' A detailed description of DCM parameterization for integrated models is found
+#' A detailed description of DCM parameterization for base models is found
 #' in the
 #' \href{http://statnet.github.io/tut/BasicDCMs.html}{Basic DCMs} tutorial.
 #'
-#' For integrated models, the model specification will be selected as a function
+#' For base models, the model specification will be selected as a function
 #' of the model parameters entered here and the control settings in
 #' \code{\link{control.dcm}}. One-group and two-group models are available, where
 #' the former assumes a homogenous mixing in the population and the latter
@@ -96,13 +96,13 @@
 #' \href{http://statnet.github.io/tut/BasicDCMs.html}{Basic DCMs} tutorial.
 #'
 #' @section New Model Types:
-#' To build original model specifications outside of the integrated models, start
+#' To build original model specifications outside of the base models, start
 #' by consulting the \href{http://statnet.github.io/tut/NewDCMs.html}{Solving
 #' New DCMs with EpiModel} tutorial. Briefly, an original model may use either
 #' the existing model parameters named here, an original set of parameters, or
 #' a combination of both. The \code{...} argument allows the user to pass an
 #' arbitrary set of new model parameters into \code{param.dcm}. Whereas there are
-#' strict checks for integrated models that the model parameters are valid,
+#' strict checks for base models that the model parameters are valid,
 #' parameter validity is the user's responsibility with these original models.
 #'
 #' @seealso Use \code{\link{init.dcm}} to specify the initial conditions and
@@ -154,12 +154,12 @@ param.dcm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
 #' @details
 #' \code{param.icm} sets the epidemic parameters for the stochastic individual
 #' contact models simulated with the \code{\link{icm}} function. Models
-#' may use the integrated types, for which these parameters are used, or new process
+#' may use the base types, for which these parameters are used, or new process
 #' modules which may use these parameters (but not necessarily). A detailed
-#' description of ICM parameterization for integrated models is found in the
+#' description of ICM parameterization for base models is found in the
 #' \href{http://statnet.github.io/tut/BasicICMs.html}{Basic ICMs} tutorial.
 #'
-#' For integrated models, the model specification will be chosen as a result of
+#' For base models, the model specification will be chosen as a result of
 #' the model parameters entered here and the control settings in
 #' \code{\link{control.icm}}. One-group and two-group models are available, where
 #' the former assumes a homogenous mixing in the population and the latter
@@ -179,7 +179,7 @@ param.dcm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
 #' \href{http://statnet.github.io/tut/BasicDCMs.html}{Basic DCMs} tutorial.
 #'
 #' @section New Modules:
-#' To build original models outside of the integrated models, new process modules
+#' To build original models outside of the base models, new process modules
 #' may be constructed to replace the existing modules or to supplement the existing
 #' set. These are passed into the control settings in \code{\link{control.icm}}.
 #' New modules may use either the existing model parameters named here, an
@@ -304,13 +304,13 @@ param.icm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
 #' @details
 #' \code{param.net} sets the epidemic parameters for the stochastic network
 #' models simulated with the \code{\link{netsim}} function. Models
-#' may use the integrated types, for which these parameters are used, or new process
+#' may use the base types, for which these parameters are used, or new process
 #' modules which may use these parameters (but not necessarily). A detailed
-#' description of network model parameterization for integrated models is found in
+#' description of network model parameterization for base models is found in
 #' the \href{http://statnet.github.io/tut/BasicNet.html}{Basic Network Models}
 #' tutorial.
 #'
-#' For integrated models, the model specification will be chosen as a result of
+#' For base models, the model specification will be chosen as a result of
 #' the model parameters entered here and the control settings in
 #' \code{\link{control.net}}. One-mode and two-mode models are available, where
 #' the the latter assumes a heterogenous mixing between two distinct partitions
@@ -344,7 +344,7 @@ param.icm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
 #' \href{http://statnet.github.io/nme/d3-tut3.html}{Time-Varying Biology & Behavior}.
 #'
 #' @section New Modules:
-#' To build original models outside of the integrated models, new process modules
+#' To build original models outside of the base models, new process modules
 #' may be constructed to replace the existing modules or to supplement the existing
 #' set. These are passed into the control settings in \code{\link{control.net}}.
 #' New modules may use either the existing model parameters named here, an
