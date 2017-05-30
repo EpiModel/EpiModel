@@ -19,7 +19,7 @@
 #' tutorial.
 #'
 #' The \code{dcm} function performs  modeling of both base model types and
-#' original models with new structures. Integrated model types include one-group
+#' original models with new structures. Base model types include one-group
 #' and two-group models with disease types for Susceptible-Infected (SI),
 #' Susceptible-Infected-Recovered (SIR), and Susceptible-Infected-Susceptible (SIS).
 #' New model types may be written and input into \code{dcm} following the steps

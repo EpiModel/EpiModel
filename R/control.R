@@ -161,7 +161,7 @@ control.dcm <- function(type, nsteps, dt = 1, odemethod = "rk4",
 #' parameter and it has no default.
 #'
 #' @section New Modules:
-#' Integrated ICM models use a set of module functions that specify
+#' Base ICM models use a set of module functions that specify
 #' how the individual agents in the population are subjected to infection, recovery,
 #' demographics, and other processes. Core modules are those listed in the
 #' \code{.FUN} arguments. For each module, there is a default function used in
@@ -378,7 +378,7 @@ control.icm <- function(type, nsteps, nsims = 1, rec.rand = TRUE, b.rand = TRUE,
 #' in which case it is "s" (that is, all incoming nodes are susceptible).
 #'
 #' @section New Modules:
-#' Integrated network models use a set of module functions that specify how the
+#' Base network models use a set of module functions that specify how the
 #' individual nodes in the network are subjected to infection, recovery,
 #' demographics, and other processes. Core modules are those listed in the
 #' \code{.FUN} arguments. For each module, there is a default function used in

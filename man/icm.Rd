@@ -41,7 +41,7 @@ may be found in the \href{http://statnet.github.io/tut/BasicICMs.html}{Basic
 ICMs} tutorial.
 
 The \code{icm} function performs  modeling of both the base model types
-and original models. Integrated model types include one-group and two-group
+and original models. Base model types include one-group and two-group
 models with disease types for Susceptible-Infected (SI),
 Susceptible-Infected-Recovered (SIR), and Susceptible-Infected-Susceptible (SIS).
 Original models may be built by writing new process modules that either take

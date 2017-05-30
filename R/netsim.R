@@ -23,7 +23,7 @@
 #' tutorial.
 #'
 #' The \code{netsim} function performs modeling of both the base model types
-#' and original models. Integrated model types include one-mode and bipartite models
+#' and original models. Base model types include one-mode and bipartite models
 #' with disease types for Susceptible-Infected (SI), Susceptible-Infected-Recovered
 #' (SIR), and Susceptible-Infected-Susceptible (SIS).
 #'

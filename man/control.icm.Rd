@@ -88,7 +88,7 @@ parameter and it has no default.
 }
 \section{New Modules}{
 
-Integrated ICM models use a set of module functions that specify
+Base ICM models use a set of module functions that specify
 how the individual agents in the population are subjected to infection, recovery,
 demographics, and other processes. Core modules are those listed in the
 \code{.FUN} arguments. For each module, there is a default function used in

@@ -57,7 +57,7 @@ These functions parameterize the base deterministic
 }
 \details{
 This help page shows the names of all the base deterministic compartmental
-model functions supported in EpiModel. Integrated models are those already
+model functions supported in EpiModel. Base models are those already
 programmed interally within the software. The model functions may be printed
 to see their internal structure, either directly on the console or by using
 the \code{print.mod} argument in \code{\link{control.dcm}}.
