@@ -14,8 +14,8 @@ object}
 }
 \description{
 Converts the edges of the infection tree described in the
-             \code{\link{transmat}} object into a \code{\link{network}} object, copying in
-             appropriate edge attributes for 'at', 'infDur', 'transProb',
+             \code{\link{transmat}} object into a \code{\link{network}} object,
+             copying in appropriate edge attributes for 'at', 'infDur', 'transProb',
              'actRate', and 'finalProb' and constructing a vertex attribute
              for 'at'.
 }
