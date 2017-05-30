@@ -286,7 +286,7 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps, nwstats.formula = "forma
   ts.attr.names <- x$target.stats.names
   if (length(ts.attr.names) != length(target.stats)) {
     target.stats <- target.stats[which(target.stats > 0)]
-  } 
+  }
   ts.out <- data.frame(names = ts.attr.names,
                        targets = target.stats)
 

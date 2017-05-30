@@ -38,8 +38,8 @@
 #'        spread on that network.
 #'  }
 #'
-#' EpiModel supports three infectious disease types to be run across all
-#' of the three classes:
+#' EpiModel supports three infectious disease types to be run across all of the
+#' three classes:
 #'  \itemize{
 #'   \item \strong{Susceptible-Infectious (SI):} a two-state disease in which
 #'         there is life-long infection without recovery. HIV/AIDS is one example,
@@ -63,8 +63,8 @@
 #'  \item \code{\link{param.dcm}}, \code{\link{param.icm}}, and
 #'        \code{\link{param.net}} are used to input epidemic parameters for each
 #'        of the three model classes. Parameters include the rate of contacts or
-#'        acts between actors, the probability of transmission per contact, and recovery and
-#'        demographic rates for models that include those transitions.
+#'        acts between actors, the probability of transmission per contact, and
+#'        recovery and demographic rates for models that include those transitions.
 #'  \item \code{\link{init.dcm}}, \code{\link{init.icm}}, and \code{\link{init.net}}
 #'        are used to input the initial conditions for each class. The main
 #'        conditions are limited to the numbers or, if applicable, the specific
@@ -105,9 +105,9 @@
 #'  }
 #' }
 #'
-#' @references The main website is at \url{http://epimodel.org/},
-#'             and the source code is at \url{http://github.com/statnet/EpiModel}.
-#'             Bug reports and feature requests may be filed there.
+#' @references The main website is at \url{http://epimodel.org/}, and the source
+#'             code is at \url{http://github.com/statnet/EpiModel}. Bug reports
+#'             and feature requests may be filed there.
 #'
 #' @name EpiModel-package
 #' @aliases EpiModel
