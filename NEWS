@@ -1,3 +1,27 @@
+Version 1.5.0
+------------------------------------------------------------------------------
+
+NOTE
+* This version of EpiModel has been used to prepare the examples in the manuscript
+  "EpiModel: An R Package for Mathematical Modeling of Infectious Disease over
+  Networks", currently in press (2017-06-01) at the Journal of Statistical
+  Software.
+
+NEW FEATURES
+* Add `grid` argument to plot functions to overlay a grid on line plots.
+
+BUG FIXES
+* Fix bug in `plot.netdx` examples in help file.
+
+OTHER
+* Reset the `verbose` default for network models to `TRUE` (reverts change in
+  v1.3.0 specifically for network models).
+* Rename `leg` argument name (to add default legends to plots) to `legend`. Note
+  this is backwards-incompatible because of fuzzy matching with other function
+  arguments starting `leg`; prior model code must be updated.
+* Change default transparency level to 0.5 (if unspecified).
+
+
 Version 1.3.0
 ------------------------------------------------------------------------------
 
