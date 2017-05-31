@@ -590,7 +590,6 @@ plot.icm <- function(x, y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col, si
 
   # Special case for 2-mode/group models
   if (modes == 2 & nocomp == TRUE) {
-    pal <- brewer.pal(3, "Set1")
     if (dis.type == "SIR") {
       mean.pal <- rep(mean.pal, 2)
       qnts.pal <- rep(qnts.pal, 2)
@@ -601,7 +600,6 @@ plot.icm <- function(x, y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col, si
       sim.pal <- rep(sim.pal[1:2], 2)
     }
   }
-
 
   ## Prevalence calculations ##
   x <- denom(x, y, popfrac)

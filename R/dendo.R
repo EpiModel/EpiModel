@@ -56,91 +56,95 @@
 #' tm <- get_transmat(mod1)
 #' tmPhylo <- as.phylo.transmat(tm)
 #' plot(tmPhylo, show.node.label = TRUE,
-#'               root.edge=TRUE,
+#'               root.edge = TRUE,
 #'               cex = 0.5)
 #'
-as.phylo.transmat <- function(x, collapse.singles, vertex.exit.times, ...) {
+as.phylo.transmat <- function(x,
+                              collapse.singles,
+                              vertex.exit.times,
+                              ...) {
 
   # warnings if somone tries to use old args that are no longer supported
-  if(!missing(collapse.singles)){
-    warning("the 'collapse.singles' argument to as.phylo.transmat is no longer supported and will be ignored")
+  if (!missing(collapse.singles)) {
+    warning("the 'collapse.singles' argument to as.phylo.transmat is no longer
+            supported and will be ignored")
   }
 
-  # if not named properly, assume inf,sus at
-  if(!all(c('inf','sus','at')%in%names(x))){
-    warning("input does not have appropriate column names for transmat, assuming first 3 should be 'inf','sus','at'")
-    names(x)<-c('inf','sus','at')
+  # if not named properly, assume inf, sus at
+  if (!all(c("inf", "sus", "at") %in% names(x))) {
+    warning("input does not have appropriate column names for transmat,
+            assuming first 3 should be 'inf','sus','at'")
+    names(x) <- c("inf", "sus", "at")
   }
   tm <- x
-  if(missing(vertex.exit.times)){
-    vertex.exit.times<-NULL
+  if (missing(vertex.exit.times)) {
+    vertex.exit.times <- NULL
   }
   # find roots (infectors that never appear as sus)
   v <- setdiff(unique(tm$inf), unique(tm$sus))
   if (length(v) > 1) {
     message("found multiple trees, returning a list of ", length(v), " phylo objects")
     # need to extract the portions of the edgelist and call seperately
-    sub_phylos<-lapply(v,function(v_sub){
+    sub_phylos <- lapply(v, function(v_sub) {
       # walk down the list to find elements below v_sub
-      sub_rows<-which(tm$inf==v_sub)
-      toFind<-v_sub
-      while(length(toFind)>0){
-        i<-toFind[1]
-        sub_rows<-unique(c(sub_rows,which(tm$inf==i)))
-        toFind<-c(toFind[-1],tm$sus[which(tm$inf==i)])
+      sub_rows <- which(tm$inf == v_sub)
+      toFind <- v_sub
+      while (length(toFind) > 0) {
+        i <- toFind[1]
+        sub_rows <- unique(c(sub_rows,which(tm$inf == i)))
+        toFind <- c(toFind[-1], tm$sus[which(tm$inf == i)])
       }
       # call as.phylo on the subset of the edgelist
-      as.phylo.transmat(tm[sub_rows,,drop=FALSE],vertex.exit.times=vertex.exit.times)
+      as.phylo.transmat(tm[sub_rows, , drop = FALSE],
+                        vertex.exit.times = vertex.exit.times)
 
     })
-    names(sub_phylos)<-paste('seed',v,sep='_')
-    class(sub_phylos)<-c('multiPhylo',class(sub_phylos))
+    names(sub_phylos) <- paste("seed", v, sep = "_")
+    class(sub_phylos) <- c("multiPhylo", class(sub_phylos))
     return(sub_phylos)
   }
 
   el <- cbind(tm$inf,tm$sus)
   origNodes <- unique(as.vector(el))
   # if vertex.exit.times included check that it is consistant
-  if (!is.null(vertex.exit.times)){
-    if(length(origNodes) > length(vertex.exit.times) | any(origNodes > length(vertex.exit.times))){
-      stop('Vertex ids in edgelist imply a larger network size than vertex.exit.times')
+  if (!is.null(vertex.exit.times)) {
+    if (length(origNodes) > length(vertex.exit.times) |
+        any(origNodes > length(vertex.exit.times))) {
+      stop("Vertex ids in edgelist imply a larger network size than vertex.exit.times")
     }
   }
   # translate ids in el to sequential integers starting from one
-  el[,1]<-match(el[,1],origNodes)
-  el[,2]<-match(el[,2],origNodes)
+  el[, 1] <- match(el[, 1], origNodes)
+  el[, 2] <- match(el[, 2], origNodes)
 
-  maxTip<-max(el)  # need to know what phylo node ids will start
+  maxTip <- max(el)  # need to know what phylo node ids will start
 
-
-
-  maxTime<-max(x$at)+1
-  if(!is.null(vertex.exit.times)){
-    maxTime<-max(maxTime,vertex.exit.times,na.rm = TRUE)
+  maxTime <- max(x$at) + 1
+  if (!is.null(vertex.exit.times)) {
+    maxTime <- max(maxTime, vertex.exit.times, na.rm = TRUE)
   }
   # create new ids for phyloNodes
-  phyloNodes <- seq(from=maxTip+1,length.out=length(origNodes)-1)
-  Nnode<-length(phyloNodes)
+  phyloNodes <- seq(from = maxTip + 1,length.out = length(origNodes) - 1)
+  Nnode <- length(phyloNodes)
   # create labels for each phylo node based on infector id
   phylo.label <- tm$inf
   # this is an alternate label form like i_j
   #phylo.label <- sapply(1:length(phyloNodes),function(r){
-  #  paste(tm[r,'inf'],tm[r,'sus'],sep='_')
+  #  paste(tm[r,"inf"],tm[r,"sus"],sep="_")
   #})
 
   # set default durations
   # since we don't know how long the graph vertices live, assume entire duration
-  durations <-rep(NA,length(phyloNodes)*2)
-  tipExitTimes<- rep(maxTime,maxTip)
-  if(!is.null(vertex.exit.times)){
+  durations <- rep(NA, length(phyloNodes) * 2)
+  tipExitTimes <- rep(maxTime, maxTip)
+  if (!is.null(vertex.exit.times)) {
     # replace any NA values with max time
-    vertex.exit.times[is.na(vertex.exit.times)]<-maxTime+1
+    vertex.exit.times[is.na(vertex.exit.times)] <- maxTime + 1
     # copy the vertex exit times into the appropriate positions in the durations array
-    durations[seq_len(maxTip)]<-vertex.exit.times[origNodes]
+    durations[seq_len(maxTip)] <- vertex.exit.times[origNodes]
     # reorder the vertex.exit times to match new ids of tips
-    tipExitTimes<-vertex.exit.times[origNodes]
+    tipExitTimes <- vertex.exit.times[origNodes]
   }
-
 
   # create a new edgelist by stepping through the existing edgelist
   # and creating the new links from phylo nodes to graph vertices (tips)
@@ -150,38 +154,38 @@ as.phylo.transmat <- function(x, collapse.singles, vertex.exit.times, ...) {
   # assume at least one xmit has occured
   # create the phylo node linking to the first
   # infector and infectee
-  phyloEl <-rbind(cbind(phyloNodes[1],el[1,1]),
-                  cbind(phyloNodes[1],el[1,2]))
+  phyloEl <- rbind(cbind(phyloNodes[1], el[1, 1]),
+                   cbind(phyloNodes[1], el[1, 2]))
 
-  durations[1]<-tipExitTimes[el[1,1]]-tm[["at"]][1]
-  durations[2]<-tipExitTimes[el[1,2]]-tm[["at"]][1]
+  durations[1] <- tipExitTimes[el[1,1]] - tm[["at"]][1]
+  durations[2] <- tipExitTimes[el[1,2]] - tm[["at"]][1]
 
-  phyloN<-1
+  phyloN <- 1
   # loop over remaining rows
-  if(nrow(el)>1){
-    for(r in 2:nrow(el)){
+  if (nrow(el) > 1) {
+    for (r in 2:nrow(el)) {
       # find id of infector
-      infector<-el[r,1]
+      infector <- el[r, 1]
       # find the phylo row of phylo node corresponding to the infector
-      phyNRow<-which(phyloEl[,2]==infector)
+      phyNRow <- which(phyloEl[, 2] == infector)
       # replace the infector with a new phylo node
-      phyloEl[phyNRow,2]<-phyloNodes[phyloN+1]
+      phyloEl[phyNRow, 2] <- phyloNodes[phyloN + 1]
       # link the new phylo node to the infector
-      phyloEl<-rbind(phyloEl,cbind(phyloNodes[phyloN+1],infector))
+      phyloEl <- rbind(phyloEl, cbind(phyloNodes[phyloN + 1], infector))
       # link the new phylo node to the infectee (tip)
-      phyloEl<-rbind(phyloEl,cbind(phyloNodes[phyloN+1],el[r,2]))
+      phyloEl <- rbind(phyloEl, cbind(phyloNodes[phyloN + 1],el[r, 2]))
 
       # update the timing on the replaced row that linked to tip
       durations[phyNRow] <- durations[phyNRow] - (tipExitTimes[infector] - tm[["at"]][r])
       # add timings for new rows equal to remaining time
       # infector
-      durations[nrow(phyloEl)-1]<- tipExitTimes[infector] - tm[["at"]][r]
+      durations[nrow(phyloEl) - 1] <- tipExitTimes[infector] - tm[["at"]][r]
       # infectee
-      durations[nrow(phyloEl)]<- tipExitTimes[el[r,2]] - tm[["at"]][r]
+      durations[nrow(phyloEl)] <- tipExitTimes[el[r,2]] - tm[["at"]][r]
 
 
       # increment the phylo node counter
-      phyloN<- phyloN+1
+      phyloN <- phyloN + 1
     }
   }
 
@@ -271,8 +275,8 @@ plot.transmat <- function(x,
     # "gv_tree" = tm_gv_tree_plot(x, ...),
     "phylo" = plot(as.phylo.transmat(x),
                    show.node.label = TRUE,
-                   root.edge=TRUE,
-                   label.offset=0.1,
+                   root.edge = TRUE,
+                   label.offset = 0.1,
                    ...
                    )
   )

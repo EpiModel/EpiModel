@@ -201,7 +201,7 @@ summary.dcm <- function(object, at, run = 1, digits = 3, ...) {
   cat("\nTime:", at)
   cat("\t Run:", run, "\n")
   cat(statsep, "\n")
-  a <- print(mat, print.gap = 2)
+  print(mat, print.gap = 2)
   cat(statsep, "\n")
 
 }

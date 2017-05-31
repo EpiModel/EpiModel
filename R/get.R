@@ -135,11 +135,10 @@ get_transmat <- function(x, sim = 1) {
          call. = FALSE)
   }
 
-
   ## Extraction
   out <- x$stats$transmat[[sim]]
   out <- as.data.frame(out)
-  class(out)<-c('transmat',class(out))
+  class(out) <- c("transmat", class(out))
   return(out)
 }
 

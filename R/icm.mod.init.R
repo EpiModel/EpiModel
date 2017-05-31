@@ -62,7 +62,6 @@ init_status.icm <- function(dat) {
 
   # Variables ---------------------------------------------------------------
   type <- dat$control$type
-  active <- dat$attr$active
   group <- dat$attr$group
   nGroups <- dat$param$groups
 

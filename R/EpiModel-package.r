@@ -16,7 +16,7 @@
 #' to simulate epidemic models in multiple frameworks for both pedagogical
 #' purposes ("base models") and novel research purposes ("extension models").
 #'
-#' @section Model Classes and Infectious Disease Types
+#' @section Model Classes and Infectious Disease Types:
 #' EpiModel provides functionality for three classes of epidemic models:
 #' \itemize{
 #'  \item \strong{Deterministic Compartmental Models:} these continuous-time
@@ -54,7 +54,7 @@
 #' These basic disease types may be extended in any arbitrarily complex way to
 #' simulate specific diseases for research questions.
 #'
-#' @section Model Parameterization and Simulation
+#' @section Model Parameterization and Simulation:
 #' EpiModel uses three model setup functions for each model class to input the
 #' necessary parameters, initial conditions, and control settings:
 #' \itemize{

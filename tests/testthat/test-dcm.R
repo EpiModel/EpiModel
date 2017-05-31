@@ -57,7 +57,7 @@ test_that("SI, 2G, OP: varying inf.prob", {
 
 test_that("SIR, 1G, CL: varying inf.prob", {
   param <- param.dcm(inf.prob = seq(0.1, 0.5, 0.05),
-                     act.rate = 0.25, rec.rate = 1/50,)
+                     act.rate = 0.25, rec.rate = 1/50)
   init <- init.dcm(s.num = 500, i.num = 1, r.num = 0)
   control <- control.dcm(type = "SIR", nsteps = 10, verbose = FALSE)
   x <- dcm(param, init, control)

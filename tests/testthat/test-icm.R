@@ -44,7 +44,7 @@ test_that("SI, 2G, OP: 2 sims", {
 
 test_that("SIR, 1G, CL: 1 sim", {
   param <- param.icm(inf.prob = 0.2,
-                     act.rate = 0.25, rec.rate = 1/50,)
+                     act.rate = 0.25, rec.rate = 1/50)
   init <- init.icm(s.num = 500, i.num = 1, r.num = 0)
   control <- control.icm(type = "SIR", nsteps = 5, nsims = 1, verbose = FALSE)
   x <- icm(param, init, control)
@@ -146,7 +146,7 @@ test_that("init.icm setting for status.rand",{
   control <- control.icm(type = "SIS", nsteps = 5, nsims = 1, verbose = FALSE)
   x <- icm(param, init, control)
   expect_is(x, "icm")
-  
+
   param <- param.icm(inf.prob = 0.2, inf.prob.g2 = 0.1,
                      act.rate = 1, balance = "g1",
                      rec.rate = 1/50, rec.rate.g2 = 1/50,

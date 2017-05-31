@@ -139,7 +139,7 @@ edges_correct <- function(dat, at) {
       new.num.m2 <- sum(dat$attr$active == 1 & mode == 2)
       dat$nwparam[[1]]$coef.form[1] <- dat$nwparam[[1]]$coef.form[1] +
         log(2 * old.num.m1 * old.num.m2 / (old.num.m1 + old.num.m2)) -
-        log(2 * new.num.m1 * new.num.m2/ (new.num.m1 + new.num.m2))
+        log(2 * new.num.m1 * new.num.m2 / (new.num.m1 + new.num.m2))
     }
   }
   return(dat)

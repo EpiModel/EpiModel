@@ -63,7 +63,7 @@ mod1 <- netsim(est1, param, init, control)
 tm <- get_transmat(mod1)
 tmPhylo <- as.phylo.transmat(tm)
 plot(tmPhylo, show.node.label = TRUE,
-              root.edge=TRUE,
+              root.edge = TRUE,
               cex = 0.5)
 
 }

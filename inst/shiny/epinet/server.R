@@ -20,10 +20,9 @@ shinyServer(function(input, output, session) {
   lowestconc <- reactive({
     n <- input$num
     e <- input$edge.target
-    s <- 0
     conc <- 0
-    if(e > n/2){
-      if(e <= n-1){
+    if (e > n/2) {
+      if (e <= n - 1) {
         # can put all edges on one node
         conc <- 1
       } else {
@@ -32,18 +31,18 @@ shinyServer(function(input, output, session) {
         # first extra edge creates two concurrent nodes
         conc <- 3
         leftovers <- e - n
-        if(leftovers > 0){
+        if (leftovers > 0) {
           moreconc <- floor((-1 + sqrt(1 + 8*leftovers))/2)
         }
         conc <- conc + moreconc
       }
     }
-    if(e > .3 * n){
+    if (e > 0.3 * n) {
       # add buffer 10%
       conc <- conc + (.1 * n)
-      if(e > .5 * n){
+      if (e > 0.5 * n) {
         #add buffer 10% for md over 1
-        conc <- conc + (.1 * n)
+        conc <- conc + (0.1 * n)
       }
     }
 
@@ -105,7 +104,7 @@ shinyServer(function(input, output, session) {
                       selected = conc)
   })
   observeEvent(input$formation, {
-    if(input$formation == "~edges"){
+    if (input$formation == "~edges") {
       track <- "edges"
     } else {
       track <- c("edges", "concurrent")
@@ -144,7 +143,7 @@ shinyServer(function(input, output, session) {
                       duration = input$dur)
   })
   target.stats <- reactive({
-    if(input$formation == "~edges"){
+    if (input$formation == "~edges") {
       c(input$edge.target)
     } else {
       c(input$edge.target, input$conc.target)
@@ -154,7 +153,7 @@ shinyServer(function(input, output, session) {
     as.formula(paste0("~", paste(input$nwstats, collapse = "+")))
   })
   fit <- reactive({
-    if(input$runMod == 0){return()}
+    if (input$runMod == 0) { return() }
     isolate({
       fit.progress <- Progress$new(session, min = 0, max = 1)
       on.exit(fit.progress$close())
@@ -171,7 +170,7 @@ shinyServer(function(input, output, session) {
     })
   })
   dxsim <- reactive({
-    if(input$runMod == 0){return()}
+    if (input$runMod == 0) { return() }
     input$runDx
     isolate({
       dx.progress <- Progress$new(session, min = 0, max = 1)
@@ -206,7 +205,7 @@ shinyServer(function(input, output, session) {
                 verbose = FALSE)
   })
   episim <- reactive({
-    if(input$runEpi == 0){return()}
+    if (input$runEpi == 0) { return() }
     isolate({
       epi.progress <- Progress$new(session, min = 0, max = 1)
       on.exit(epi.progress$close())
@@ -220,8 +219,8 @@ shinyServer(function(input, output, session) {
                   param = param(),
                   init = init(),
                   control = control())
-      if(nsims > 1){
-        for(i in 2:nsims){
+      if (nsims > 1) {
+        for (i in 2:nsims) {
           epi.progress$inc(amount = 1/nsims,
                            detail = paste0("Sim ", i, "/", nsims))
           y <- netsim(fit(),
@@ -255,7 +254,7 @@ shinyServer(function(input, output, session) {
   output$dxplot <- renderPlot({
     input$runMod
     par(mar = c(5, 4, 2, 2))
-    if(!is.null(dxsim())){
+    if (!is.null(dxsim())) {
       stats <- isolate(input$nwstats)
       plot(dxsim(),
            stats = stats,
@@ -275,7 +274,7 @@ shinyServer(function(input, output, session) {
     content = function(file) {
       pdf(file = file, height = 6, width = 10)
       par(mar = c(5, 4, 2, 2), mgp = c(2.1, 1, 0))
-      if(!is.null(dxsim())){
+      if (!is.null(dxsim())) {
         input$runMod
         stats <- isolate(input$nwstats)
         plot(dxsim(),
@@ -292,14 +291,14 @@ shinyServer(function(input, output, session) {
       dev.off()
   })
   output$modeldx <- renderPrint({
-    if(!is.null(dxsim())){
+    if (!is.null(dxsim())) {
       dxsim()
     }
   })
 
   ## Epi page
   output$epiplot <- renderPlot({
-    if(input$runEpi == 0){return()}
+    if (input$runEpi == 0) { return() }
     par(mar = c(3.5, 3.5, 1.2, 1), mgp = c(2.1, 1, 0))
     if (input$compsel == "Compartment Prevalence") {
       plot(episim(),
@@ -382,13 +381,13 @@ shinyServer(function(input, output, session) {
                  max = input$epi.nsteps)
   })
   output$episum <- renderPrint({
-    if(is.null(input$sumtime)) {return()}
+    if (is.null(input$sumtime)) { return() }
     summary(episim(), at = input$sumtime)
   })
 
   ## nw plots page
   output$nwplot <- renderPlot({
-    if(input$runEpi == 0){return()}
+    if (input$runEpi == 0) { return() }
     simno <- ifelse(input$nwplotsim == "mean",
                     yes = "mean",
                     no = as.numeric(input$nwplotsim))
@@ -439,7 +438,7 @@ shinyServer(function(input, output, session) {
   )
 
   output$plotUI <- renderUI({
-    if(input$secondplot){
+    if (input$secondplot) {
       out <- fluidRow(
         column(6, style = "padding-right: 0px;",
                plotOutput("nwplot")),

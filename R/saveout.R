@@ -149,7 +149,7 @@ saveout.net <- function(dat, s, out = NULL) {
       } else {
         out$stats$transmat <- list(data.frame())
       }
-      class(out$stats$transmat)<-c('transmat',class(out$stats$transmat))
+      class(out$stats$transmat) <- c("transmat", class(out$stats$transmat))
     }
 
     if (dat$control$save.network == TRUE) {

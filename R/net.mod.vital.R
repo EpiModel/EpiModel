@@ -236,7 +236,6 @@ births.net <- function(dat, at) {
   # Variables ---------------------------------------------------------------
   b.rate <- dat$param$b.rate
   b.rate.m2 <- dat$param$b.rate.m2
-  formation <- get_nwparam(dat)$formation
   modes <- dat$param$modes
   tea.status <- dat$control$tea.status
   nOld <- dat$epi$num[at - 1]

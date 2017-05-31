@@ -465,7 +465,6 @@ mod_SIS_2g_cl <- function(t, t0, parms) {
     # Derivations
     num.g1 <- s.num + i.num
     num.g2 <- s.num.g2 + i.num.g2
-    num <- num.g1 + num.g2
 
     # Act Balancing
     if (balance == "g1") {
