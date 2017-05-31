@@ -11,52 +11,50 @@
 #' }
 #'
 #' @details
-#' The EpiModel package provides functions for building, solving, and
-#' plotting mathematical models of infectious disease. The goals of the package
-#' are to provide basic tools for modeling in multiple frameworks for pedagogical
-#' purposes ("base models"), and to support users in developing and
-#' expanding these tools using the package's utility functions for their own
-#' research.
+#' The EpiModel software package provides tools for building, solving, and
+#' visualizing mathematical models of infectious disease. These tools allow users
+#' to simulate epidemic models in multiple frameworks for both pedagogical
+#' purposes ("base models") and novel research purposes ("extension models").
 #'
-#' @section Model Classes and Disease Types:
-#' EpiModel currently provides functionality for three classes of epidemic
-#' models:
+#' @section Model Classes and Infectious Disease Types
+#' EpiModel provides functionality for three classes of epidemic models:
 #' \itemize{
 #'  \item \strong{Deterministic Compartmental Models:} these continuous-time
 #'        models are solved using ordinary differential equations. EpiModel
-#'        allows for easy specification of sensitivity models to compare multiple
-#'        runs of the same model with different parameter values.
+#'        allows for easy specification of sensitivity analyses to compare multiple
+#'        scenarios f the same model across different parameter values.
 #'  \item \strong{Stochastic Individual Contact Models:} a novel class of
-#'        microsimulation models that were developed to mirror the deterministic models
-#'        but add random variation in all components of the transmission dynamics
-#'        system, from infection to recovery to vital dynamics (births and deaths).
-#'  \item \strong{Stochastic Network Models:} using the underlying statistical
-#'        framework of dynamic exponential random graph models (ERGMs) recently
-#'        developed in the \strong{Statnet} suite of software in R, our network
-#'        models simulate partnership formation and dissolution stochastically
-#'        according to a user-defined statistical model, as well as disease
-#'        spread on that network.
+#'        individual-based, microsimulation models that were developed to add
+#'        random variation in all components of the transmission system, from
+#'        infection to recovery to vital dynamics (births and deaths).
+#'  \item \strong{Stochastic Network Models:} with the underlying statistical
+#'        framework of temporal exponential random graph models (ERGMs) recently
+#'        developed in the \strong{Statnet} suite of software in R, network
+#'        models over epidemics simulate edge (e.g., partnership) formation and
+#'        dissolution stochastically according to a specified statistical model,
+#'        with disease spread across that network.
 #'  }
 #'
 #' EpiModel supports three infectious disease types to be run across all of the
-#' three classes:
+#' three classes.
 #'  \itemize{
 #'   \item \strong{Susceptible-Infectious (SI):} a two-state disease in which
 #'         there is life-long infection without recovery. HIV/AIDS is one example,
-#'         although for this case it is more common to model infection stages as
-#'         separate compartments (forthcoming in a future release).
+#'         although for this case it is common to model infection stages as
+#'         separate compartments.
 #'   \item \strong{Susceptible-Infectious-Recovered (SIR):} a three-stage disease
 #'         in which one has life-long recovery with immunity after infection.
 #'         Measles is one example, but modern models for the disease also require
-#'         consideration of vaccination patterns in the population (forthcoming
-#'         in a future release).
+#'         consideration of vaccination patterns in the population.
 #'   \item \strong{Susceptible-Infectious-Susceptible (SIS):} a two-stage disease
 #'         in which one may transition back and forth from the susceptible to
 #'         infected states throughout life. Examples include bacterial sexually
 #'         transmitted diseases like gonorrhea.
 #'  }
+#' These basic disease types may be extended in any arbitrarily complex way to
+#' simulate specific diseases for research questions.
 #'
-#' @section Model Parameterization and Simulation:
+#' @section Model Parameterization and Simulation
 #' EpiModel uses three model setup functions for each model class to input the
 #' necessary parameters, initial conditions, and control settings:
 #' \itemize{
@@ -77,24 +75,23 @@
 #'        simulations. Controls are also used to input new model functions (for
 #'        DCMs) and new model modules (for ICMs and network models) to allow the
 #'        user to simulate fully original epidemic models in EpiModel. See the
-#'        extensive documention linked to on the control function help pages for
-#'        further details.
+#'        documention for the specific control functions help pages.
 #' }
 #'
-#' With the models parameterized, the functions for simulating the epidemic
-#' model are:
+#' With the models parameterized, the functions for simulating epidemic models are:
 #' \itemize{
-#'  \item \code{\link{dcm}} for deterministic compartmental epidemic models.
-#'  \item \code{\link{icm}} for individual contact epidemic models.
+#'  \item \code{\link{dcm}} for deterministic compartmental models.
+#'  \item \code{\link{icm}} for individual contact models.
 #'  \item Network models are simulated in a three-step process:
 #'  \enumerate{
-#'    \item \code{\link{netest}} estimates the statistical models underlying
-#'          partnership formation and dissolution. This function is a wrapper
+#'    \item \code{\link{netest}} estimates the statistical model for the network
+#'          structure itself (i.e., how partnerships form and dissolve over time
+#'          given the parameterization of those processes). This function is a wrapper
 #'          around the \code{ergm} and \code{stergm} functions in the \code{ergm}
-#'          and \code{tergm} packages. The current framework for model simulation
-#'          is one in which key target statistics guiding the formation formula
-#'          from an egocentric sample of the population is passed along with an
-#'          estimate of the average duration of edges in the network.
+#'          and \code{tergm} packages. The current statistical framework for model
+#'          simulation is called "egocentric inference": target statistics summarizing
+#'          these formation and dissolution processes collected from an egocentric
+#'          sample of the population.
 #'    \item \code{\link{netdx}} runs diagnostics on the dynamic model fit by
 #'          simulating the base network over time to ensure the model fits the
 #'          targets for formation and dissolution.
@@ -105,9 +102,12 @@
 #'  }
 #' }
 #'
-#' @references The main website is at \url{http://epimodel.org/}, and the source
+#' @references The EpiModel website is at \url{http://epimodel.org/}, and the source
 #'             code is at \url{http://github.com/statnet/EpiModel}. Bug reports
-#'             and feature requests may be filed there.
+#'             and feature requests may be filed there. We have also developed an
+#'             extension package specifically for modeling HIV and related
+#'             sexually transmitted infections, called EpiModelHIV and available
+#'             on Github at \url{http://github.com/statnet/EpiModelHIV}
 #'
 #' @name EpiModel-package
 #' @aliases EpiModel
