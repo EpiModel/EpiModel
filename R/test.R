@@ -243,7 +243,7 @@ test_icm <- function(x) {
           test <- with(df, r.num[i] == r.num[i - 1] + ir.flow[i] - dr.flow[i])
           if (test == FALSE) stop("\nFailed *r.num* at SIM", s, "TIME", i)
           if (groups == 2) {
-            test <- with(df, num.g2[i] == num[i - 1] + b.flow.g2[i] - ds.flow.g2[i] -
+            test <- with(df, num.g2[i] == num.g2[i - 1] + b.flow.g2[i] - ds.flow.g2[i] -
                            di.flow.g2[i] - dr.flow.g2[i])
             if (test == FALSE) stop("\nFailed *num.g2* at SIM", s, "TIME", i, sep = " ")
             test <- with(df, s.num.g2[i] == s.num.g2[i - 1] - si.flow.g2[i] +
