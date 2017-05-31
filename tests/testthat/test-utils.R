@@ -165,3 +165,26 @@ test_that("edgelist_censor", {
   el <- sim$edgelist[[1]]
   expect_is(edgelist_censor(el), "matrix")
 })
+
+test_that("get_degree", {
+  nw <- network.initialize(500, directed = FALSE)
+
+  set.seed(1)
+  fit <- ergm(nw ~ edges, target.stats = 250, eval.loglik = FALSE)
+  sim <- simulate(fit)
+
+  # Slow ERGM-based method
+  ergm.method <- unname(summary(sim ~ sociality(base = 0)))
+  ergm.method
+
+  # Fast tabulate method with network object
+  deg.net <- get_degree(sim)
+  deg.net
+
+  # Even faster if network already transformed into an edgelist
+  el <- as.edgelist(sim)
+  deg.el <- get_degree(el)
+  deg.el
+
+  identical(ergm.method, deg.net, deg.el)
+})
