@@ -48,7 +48,7 @@ deaths.icm <- function(dat, at) {
       dat$attr$active[ssample(idsElig[gElig == 1], nDeaths)] <- 0
       if (groups == 2) {
         nDeathsG2 <- min(round(sum(ratesElig[gElig == 2])), sum(gElig == 2))
-        dat$attr$active[ssample(idsElig[gElig == 2], nDeaths)] <- 0
+        dat$attr$active[ssample(idsElig[gElig == 2], nDeathsG2)] <- 0
       }
     }
   }
@@ -89,7 +89,7 @@ deaths.icm <- function(dat, at) {
       dat$attr$active[ssample(idsElig[gElig == 1], nDeaths)] <- 0
       if (groups == 2) {
         nDeathsG2 <- min(round(sum(ratesElig[gElig == 2])), sum(gElig == 2))
-        dat$attr$active[ssample(idsElig[gElig == 2], nDeaths)] <- 0
+        dat$attr$active[ssample(idsElig[gElig == 2], nDeathsG2)] <- 0
       }
     }
   }
@@ -130,7 +130,7 @@ deaths.icm <- function(dat, at) {
       dat$attr$active[ssample(idsElig[gElig == 1], nDeaths)] <- 0
       if (groups == 2) {
         nDeathsG2 <- min(round(sum(ratesElig[gElig == 2])), sum(gElig == 2))
-        dat$attr$active[ssample(idsElig[gElig == 2], nDeaths)] <- 0
+        dat$attr$active[ssample(idsElig[gElig == 2], nDeathsG2)] <- 0
       }
     }
   }
