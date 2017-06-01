@@ -1,7 +1,7 @@
 EpiModel
 ===============
 
-[![Version](http://img.shields.io/badge/Version-1.3.0-orange.svg?style=flat)](https://github.com/statnet/EpiModel/releases/tag/v1.3.0)
+[![Version](http://img.shields.io/badge/Version-1.5.0-orange.svg?style=flat)](https://github.com/statnet/EpiModel/releases/tag/v1.5.0)
 [![](http://cranlogs.r-pkg.org/badges/grand-total/EpiModel?color=yellow)](http://cran.rstudio.com/web/packages/EpiModel/index.html)
 [![Build Status](https://travis-ci.org/statnet/EpiModel.svg?branch=master)](https://travis-ci.org/statnet/EpiModel)
 <a href='https://coveralls.io/r/statnet/EpiModel?branch=master' target="_blank"><img src='https://coveralls.io/repos/statnet/EpiModel/badge.svg?branch=master' alt='Coverage Status' /></a>
@@ -53,7 +53,7 @@ A good place to start learning about EpiModel is the main vignette, currently un
 
 #### Citation
 If using EpiModel for teaching or research, please include a citation:
-> Jenness SM, Goodreau SM, Morris M (2017). *EpiModel: Mathematical Modeling of Infectious Disease.* R Package Version 1.3.0. URL: http://epimodel.org/. DOI: 10.5281/zenodo.16767.
+> Jenness SM, Goodreau SM, Morris M (2017). *EpiModel: Mathematical Modeling of Infectious Disease.* R Package Version 1.5.0. URL: http://epimodel.org/. DOI: 10.5281/zenodo.16767.
 
 Please also send us an email if you have used EpiModel in your work.
 
