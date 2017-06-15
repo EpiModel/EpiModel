@@ -12,6 +12,7 @@ notifications:
   email:
     on_success: never
     on_failure: change
+  slack: epimodel:ARrkdZn2p9KKRZxkcGFK9Ns0
 
 after_success:
   - Rscript -e 'covr::coveralls()'
