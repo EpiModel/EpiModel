@@ -184,12 +184,14 @@ est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 # Simulate the epidemic model
 param <- param.net(inf.prob = 0.3, inf.prob.m2 = 0.15)
 init <- init.net(i.num = 10, i.num.m2 = 10)
-control <- control.net(type = "SI", nsteps = 50, nsims = 3,
+control <- control.net(type = "SI", nsteps = 20, nsims = 3,
                        verbose = FALSE, save.nwstats = TRUE,
                        nwstats.formula = ~edges + meandeg + concurrent)
 mod <- netsim(est, param, init, control)
 
-# Plot epidemic trajectory (default type)
+# Plot epidemic trajectory
+plot(mod)
+plot(mod, type = "epi")
 plot(mod, type = "epi", grid = TRUE)
 plot(mod, type = "epi", popfrac = TRUE)
 plot(mod, type = "epi", y = "si.flow", qnts = 1)
@@ -201,14 +203,14 @@ plot(mod, type = "network")
 # Automatic coloring of infected nodes as red
 par(mfrow = c(1, 2), mar = c(0, 0, 2, 0))
 plot(mod, type = "network", main = "Min Prev | Time 50",
-     col.status = TRUE, at = 50, sims = "min")
+     col.status = TRUE, at = 20, sims = "min")
 plot(mod, type = "network", main = "Max Prev | Time 50",
-     col.status = TRUE, at = 50, sims = "max")
+     col.status = TRUE, at = 20, sims = "max")
 
 # Automatic shape by mode number (circle = mode 1)
 par(mar = c(0,0,0,0))
-plot(mod, type = "network", at = 50, col.status = TRUE, shp.bip = "square")
-plot(mod, type = "network", at = 50, col.status = TRUE, shp.bip = "triangle")
+plot(mod, type = "network", at = 20, col.status = TRUE, shp.bip = "square")
+plot(mod, type = "network", at = 20, col.status = TRUE, shp.bip = "triangle")
 
 # Plot formation statistics
 par(mfrow = c(1,1), mar = c(3,3,1,1), mgp = c(2,1,0))
