@@ -14,7 +14,7 @@ EpiModel
 EpiModel: tools for simulating mathematical models of infectious disease. Epidemic model classes include deterministic compartmental models, stochastic individual contact models, and stochastic network models. Disease types include SI, SIR, and SIS epidemics with and without demography, with tools available for expansion to model complex epidemic processes.
 
 
-#### Installation
+### Installation
 The current release version can be found on <a href="http://cran.r-project.org/web/packages/EpiModel/index.html" target="_blank">CRAN</a> and installed with:
 ```r
 install.packages("EpiModel", dependencies = TRUE)
@@ -26,7 +26,7 @@ if (!require("devtools")) install.packages("devtools")
 devtools::install_github("statnet/EpiModel")
 ```
 
-#### Lead Authors
+### Lead Authors
 <table>
   <tr>
     <td><a href="http://samueljenness.org/" target="_blank">Samuel M. Jenness</a></th>
@@ -46,20 +46,22 @@ devtools::install_github("statnet/EpiModel")
 </table>
 
 
-#### Documentation
+### Documentation
 The main website for EpiModel, with tutorials and other supporting files is <a href="http://epimodel.org/" target="_blank">http://epimodel.org/</a>. Users are encouraged to join the <a href="http://mailman11.u.washington.edu/mailman/listinfo/epimodel" target="_blank">email list for EpiModel</a> as a place to ask questions, report bugs, and tell us about your research using these tools.
 
 A good place to start learning about EpiModel is the main vignette, currently under review, but <a href="http://statnet.github.io/tut/EpiModelVignette.pdf" target="_blank">currently available in pre-press form here!</a>
 
-#### Citation
+### Citation
 If using EpiModel for teaching or research, please include a citation:
 > Jenness SM, Goodreau SM, Morris M (2017). *EpiModel: Mathematical Modeling of Infectious Disease.* R Package Version 1.5.0. URL: http://epimodel.org/. DOI: 10.5281/zenodo.16767.
 
 Please also send us an email if you have used EpiModel in your work.
 
-#### Citing Articles
+### Applied Uses of EpiModel in the Literature
 
-EpiModel has been used in the following scientific articles:
+EpiModel has been used in the following scientific articles.
+
+#### HIV and Other Sexually Transmitted Infections
 
 1. Jenness SM, Goodreau SM, Morris M, Cassels S. Effectiveness of Combination Packages for HIV-1 Prevention in Sub-Saharan Africa Depends on Partnership Network Structure. _Sexually Transmitted Infections._ 2016; 92(8): 619-624. [LINK](http://sti.bmj.com/content/early/2016/06/09/sextrans-2015-052476.abstract)
 
@@ -71,7 +73,14 @@ EpiModel has been used in the following scientific articles:
 
 5. Jenness SM, Weiss KM, Goodreau SM, Rosenberg E, Gift T, Chesson H, Hoover KW, Smith DK, Liu AY, Sullivan P. Incidence of Gonorrhea and Chlamydia Following HIV Preexposure Prophylaxis among Men Who Have Sex with Men: A Modeling Study. _Clinical Infectious Diseases._ Epub ahead of print. DOI: 10.1093/cid/cix439. [LINK](https://academic.oup.com/cid/article-lookup/doi/10.1093/cid/cix439)
 
-#### Funding
+#### Other
+
+1. Ezenwa VO, Archie EA, Craft ME, Hawley DM, Martin LB, Moore J, White L. Host behaviour-parasite feedback: an essential link between animal behaviour and disease ecology. Proc Biol Sci. 2016; 283(1828). [LINK](https://www.ncbi.nlm.nih.gov/pubmed/27053751)
+
+2. Goldstein ND, Eppes SC, Mackley A, Tuttle D, Paul DA. A Network Model of Hand Hygiene: How Good Is Good Enough to Stop the Spread of MRSA? Infect Control Hosp Epidemiol. 2017:1-8. [LINK](https://www.ncbi.nlm.nih.gov/pubmed/28656884)
+
+
+### Funding
 Development of this software has been supported by the following grants from the National Institutes of Health (NIH) and Centers for Disease Control and Prevention (CDC): 
 
 * [NIH R01HD68395](https://projectreporter.nih.gov/project_info_description.cfm?aid=8841605): Statistical Methods for Network Epidemiology (PI: Martina Morris)
@@ -83,5 +92,5 @@ Development of this software has been supported by the following grants from the
 * [CDC U38PS004646](https://projectreporter.nih.gov/project_info_details.cfm?aid=8926715): Enhancing Models of HIV, Viral Hepatitis, STIs, and Tuberculosis to Inform and Improve Public Health Impact (PI: Patrick Sullivan)
 * [NIH P30DA027828](https://projectreporter.nih.gov/project_info_description.cfm?aid=9204281): Center for Prevention Implementation Methodology for Drug Abuse and HIV (Ce-PIM) (PI: Henricks Brown and Brian Mustanski)
 
-#### Copyright
+### Copyright
 These materials are distributed under the GPL-3 license, with the following copyright and attribution requirements listed <a href="http://statnet.csde.washington.edu/attribution.shtml" target="_blank">here</a>.
