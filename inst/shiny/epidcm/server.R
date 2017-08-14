@@ -52,6 +52,7 @@ shinyServer(function(input, output) {
     par(mar = c(3.5, 3.5, 1.2, 1), mgp = c(2.1, 1, 0))
     if (input$compsel == "Compartment Prevalence") {
       plot(mod(),
+           popfrac = TRUE,
            leg.cex = 1.1,
            alpha = input$alpha,
            lwd = 3.5,
