@@ -5,8 +5,8 @@
 \alias{as.data.frame.netsim}
 \title{Extract Model Data for Stochastic Models}
 \usage{
-\method{as.data.frame}{icm}(x, row.names = NULL, optional = FALSE, sim,
-  out = "mean", qval, ...)
+\method{as.data.frame}{icm}(x, row.names = NULL, optional = FALSE,
+  sim = "all", out = "mean", qval, ...)
 
 \method{as.data.frame}{netsim}(x, row.names = NULL, optional = FALSE, sim,
   out = "mean", ...)
@@ -18,14 +18,13 @@
 
 \item{optional}{See \code{\link{as.data.frame.default}}.}
 
-\item{sim}{Simulation number from model; used only if more than 1 simulation
-and \code{out="vals"}.}
+\item{sim}{If \code{out="vals"}, the simulation number to output, or the default of
+\code{out="all"}, which outputs data from all simulations bound together.}
 
 \item{out}{Data output to data frame: \code{"mean"} for row means across
 simulations, \code{"sd"} for row standard deviations across simulations,
 \code{"qnt"} for row quantiles at the level specified in \code{qval},
-or \code{"vals"} for values from one specific simulation (with simulation
-number set with \code{sim} argument).}
+or \code{"vals"} for values from one individuals simulation(s).}
 
 \item{qval}{Quantile value necessary when \code{out="qnt"}.}
 
@@ -62,7 +61,7 @@ as.data.frame(mod, out = "sd")
 as.data.frame(mod, out = "qnt", qval = 0.25)
 as.data.frame(mod, out = "qnt", qval = 0.75)
 
-# Individual simulation runs, with default sim=1
+# Individual simulation runs, with default sim="all"
 as.data.frame(mod, out = "vals")
 as.data.frame(mod, out = "vals", sim = 2)
 
