@@ -2638,7 +2638,7 @@ comp_plot.netsim <- function(x, at = 1, digits = 3, ...) {
 #' mod1 <- icm(param, init, control)
 #' df <- as.data.frame(mod1, out = "vals")
 #'
-#' ggplot(mdf, aes(x = time)) +
+#' ggplot(df, aes(x = time)) +
 #'    geom_line(aes(y = i.num, group = sim), alpha = 0.25,
 #'              lwd = 0.25, color = "firebrick") +
 #'    geom_bands(aes(y = i.num), fill = "firebrick") +

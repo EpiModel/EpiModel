@@ -28,10 +28,10 @@ BugReports: https://github.com/statnet/EpiModel/issues
 Depends:
     R (>= 3.2),
     deSolve (>= 1.12),
+    ggplot2,
     networkDynamic (>= 0.9.0),
     tergm (>= 3.3.1)
 Imports:
-    ggplot2,
     graphics,
     grDevices,
     stats,
