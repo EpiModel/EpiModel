@@ -2611,6 +2611,48 @@ comp_plot.netsim <- function(x, at = 1, digits = 3, ...) {
 
 
 
+# ggplot ------------------------------------------------------------------
+
+#' @title ggplot2 geom for Quantile Bands
+#'
+#' @description Plots quantile bands given a data.frame with stochastic model
+#'              results from \code{icm} or \code{netsim}.
+#'
+#' @param mapping standard aesthetic mapping \code{aes()} input for ggplot2.
+#' @param lower Lower quantile for the time series.
+#' @param upper Upper quantile for the time series.
+#' @param alpha Transparency of the ribbon fill.
+#' @param ... Additional arguments passed to \code{stat_summary}.
+#'
+#' @details
+#' This is a wrapper around \code{ggplot::stat_summary} with a ribbon geom as
+#' aesthetic output.
+#'
+#' @export
+#' @keywords plot
+#'
+#' @examples
+#' param <- param.icm(inf.prob = 0.2, act.rate = 0.25)
+#' init <- init.icm(s.num = 500, i.num = 1)
+#' control <- control.icm(type = "SI", nsteps = 500, nsims = 10)
+#' mod1 <- icm(param, init, control)
+#' df <- as.data.frame(mod1, out = "vals")
+#'
+#' ggplot(mdf, aes(x = time)) +
+#'    geom_line(aes(y = i.num, group = sim), alpha = 0.25,
+#'              lwd = 0.25, color = "firebrick") +
+#'    geom_bands(aes(y = i.num), fill = "firebrick") +
+#'    theme_minimal()
+#'
+geom_bands <- function(mapping, lower = 0.25, upper = 0.75, alpha = 0.25, ...) {
+  stat_summary(mapping,
+               geom = "ribbon",
+               fun.ymin = function(x) quantile(x, lower),
+               fun.ymax = function(x) quantile(x, upper),
+               alpha = alpha, ...)
+}
+
+
 # Helper Functions --------------------------------------------------------
 
 

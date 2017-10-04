@@ -111,7 +111,7 @@
 #'
 #' @name EpiModel-package
 #' @aliases EpiModel
-#' @import ergm network networkDynamic tergm
+#' @import ergm network networkDynamic tergm ggplot2
 #' @importFrom deSolve dede ode
 #' @importFrom doParallel registerDoParallel
 #' @importFrom foreach foreach "%dopar%"
