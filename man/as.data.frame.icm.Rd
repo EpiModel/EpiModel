@@ -8,8 +8,8 @@
 \method{as.data.frame}{icm}(x, row.names = NULL, optional = FALSE,
   sim = "all", out = "mean", qval, ...)
 
-\method{as.data.frame}{netsim}(x, row.names = NULL, optional = FALSE, sim,
-  out = "mean", ...)
+\method{as.data.frame}{netsim}(x, row.names = NULL, optional = FALSE,
+  sim = "all", out = "mean", ...)
 }
 \arguments{
 \item{x}{An \code{EpiModel} object of class \code{icm} or \code{netsim}.}

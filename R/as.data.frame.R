@@ -240,7 +240,7 @@ as.data.frame.icm <- function(x, row.names = NULL, optional = FALSE,
 #' @export
 #' @rdname as.data.frame.icm
 as.data.frame.netsim <- function(x, row.names = NULL, optional = FALSE,
-                                 sim, out = "mean", ...) {
+                                 sim = "all", out = "mean", ...) {
 
   df <- as.data.frame.icm(x, row.names = row.names, optional = optional,
                           sim = sim, out = out, ...)
