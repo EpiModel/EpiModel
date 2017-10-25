@@ -7,7 +7,7 @@
 truncate_sim(x, at)
 }
 \arguments{
-\item{x}{Object of class \code{netsim}.}
+\item{x}{Object of class \code{netsim} or \code{icm}.}
 
 \item{at}{Time step at which to left-truncate the time series.}
 }
