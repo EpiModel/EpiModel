@@ -6,7 +6,7 @@ EpiModel
 [![](http://cranlogs.r-pkg.org/badges/grand-total/EpiModel?color=yellow)](http://cran.rstudio.com/web/packages/EpiModel/index.html)
 [![Build Status](https://travis-ci.org/statnet/EpiModel.svg?branch=master)](https://travis-ci.org/statnet/EpiModel)
 [![Vignette](https://img.shields.io/badge/docs-Vignette-943ad8.svg)](http://statnet.github.io/tut/EpiModelVignette.pdf)
-<a href='http://dx.doi.org/10.5281/zenodo.16767' target="_blank"><img src='http://img.shields.io/badge/DOI-10.5281%2Fzenodo.16767-blue.svg?style=flat' alt='DOI' /></a>
+<a href='https://www.biorxiv.org/content/early/2017/11/03/213009' target="_blank"><img src='http://img.shields.io/badge/DOI-10.1101%2F213009-blue.svg?style=flat' alt='DOI' /></a>
 
 <br>
 <img align="right" src="http://www.epimodel.org/movie.gif">
