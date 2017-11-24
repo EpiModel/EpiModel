@@ -2637,11 +2637,14 @@ comp_plot.netsim <- function(x, at = 1, digits = 3, ...) {
 #' control <- control.icm(type = "SI", nsteps = 500, nsims = 10)
 #' mod1 <- icm(param, init, control)
 #' df <- as.data.frame(mod1, out = "vals")
+#' df.mean <- as.data.frame(mod1)
 #'
-#' ggplot(df, aes(x = time)) +
-#'    geom_line(aes(y = i.num, group = sim), alpha = 0.25,
+#' ggplot() +
+#'    geom_line(data = df, mapping = aes(time, i.num, group = sim), alpha = 0.25,
 #'              lwd = 0.25, color = "firebrick") +
-#'    geom_bands(aes(y = i.num), lower = 0.1, upper = 0.9, fill = "firebrick") +
+#'    geom_bands(data = df, mapping = aes(time, i.num),
+#'               lower = 0.1, upper = 0.9, fill = "firebrick") +
+#'    geom_line(data = df.mean, mapping = aes(time, i.num)) +
 #'    theme_minimal()
 #'
 geom_bands <- function(mapping, lower = 0.25, upper = 0.75, alpha = 0.25, ...) {
