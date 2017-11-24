@@ -130,6 +130,21 @@ as.data.frame.dcm <- function(x, row.names = NULL, optional = FALSE, run = 1,
 #' as.data.frame(mod, out = "vals")
 #' as.data.frame(mod, out = "vals", sim = 2)
 #'
+#' ## Stochastic SI network model
+#' nw <- network.initialize(n = 100, directed = FALSE)
+#' formation <- ~edges
+#' target.stats <- 50
+#' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
+#' est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
+#'
+#' param <- param.net(inf.prob = 0.5)
+#' init <- init.net(i.num = 10)
+#' control <- control.net(type = "SI", nsteps = 10, nsims = 3, verbose = FALSE)
+#' mod <- netsim(est, param, init, control)
+#'
+#' as.data.frame(mod)
+#' as.data.frame(mod, out = "vals")
+#'
 as.data.frame.icm <- function(x, row.names = NULL, optional = FALSE,
                               sim = "all", out = "mean", qval, ...) {
 
