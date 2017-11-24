@@ -2642,6 +2642,7 @@ comp_plot.netsim <- function(x, at = 1, digits = 3, ...) {
 #'    geom_line(aes(y = i.num, group = sim), alpha = 0.25,
 #'              lwd = 0.25, color = "firebrick") +
 #'    geom_bands(aes(y = i.num), fill = "firebrick") +
+#'    geom_smooth(aes(y = i.num), lwd = 0.75, col = "firebrick") +
 #'    theme_minimal()
 #'
 geom_bands <- function(mapping, lower = 0.25, upper = 0.75, alpha = 0.25, ...) {
