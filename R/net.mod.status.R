@@ -51,7 +51,6 @@ infection.net <- function(dat, at) {
     tea.status <- dat$control$tea.status
 
     # Vector of infected and susceptible IDs
-    idsSus <- which(active == 1 & status == "s")
     idsInf <- which(active == 1 & status == "i")
     nActive <- sum(active == 1)
     nElig <- length(idsInf)
@@ -65,7 +64,7 @@ infection.net <- function(dat, at) {
     if (nElig > 0 && nElig < nActive) {
 
       # Get discordant edgelist
-      del <- discord_edgelist(dat, idsInf, idsSus, at)
+      del <- discord_edgelist(dat, at)
 
       # If some discordant edges, then proceed
       if (!(is.null(del))) {

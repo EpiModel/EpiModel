@@ -200,7 +200,6 @@ init_status.net <- function(dat) {
   ## Set up inf.time vector
   idsInf <- which(status == "i")
   infTime <- rep(NA, length(status))
-  if (dat$init$recov.)
 
   # If vital=TRUE, infTime is a uniform draw over the duration of infection
   if (dat$param$vital == TRUE && dat$param$di.rate > 0) {
