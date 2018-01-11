@@ -31,7 +31,7 @@ test_that("edges models", {
 
   ## "SI, 1M, CL: 1 sim, inf.prob = 0"
   param <- param.net(inf.prob = 0)
-  init <- init.net(i.num = 1, status.rand = FALSE)
+  init <- init.net(i.num = 1)
   control <- control.net(type = "SI", nsims = 1, nsteps = 25, verbose = TRUE)
   x <- netsim(est, param, init, control)
   expect_is(x, "netsim")
@@ -72,7 +72,7 @@ test_that("edges models", {
 
   ## "SI, 1M, CL: 2 sim, use TEAs"
   param <- param.net(inf.prob = 1)
-  init <- init.net(i.num = 1, status.rand = FALSE)
+  init <- init.net(i.num = 1)
   control <- control.net(type = "SI", nsims = 2, nsteps = 25,
                          verbose = TRUE, tea.status = TRUE)
   x <- netsim(est, param, init, control)
@@ -133,7 +133,7 @@ test_that("edges models", {
 
   ## "SIR, 1M, CL: 1 sim, inf.prob=0"
   param <- param.net(inf.prob = 0, rec.rate = 0.02)
-  init <- init.net(i.num = 10, r.num = 0, status.rand = FALSE)
+  init <- init.net(i.num = 10, r.num = 0)
   control <- control.net(type = "SIR", nsims = 1,
                          nsteps = 25, verbose = TRUE)
   x <- netsim(est, param, init, control)
@@ -210,7 +210,7 @@ test_that("edges models", {
 
   ## "SIS, 1M, CL: 1 sim, inf.prob=0"
   param <- param.net(inf.prob = 0, rec.rate = 0.01)
-  init <- init.net(i.num = 1, status.rand = FALSE)
+  init <- init.net(i.num = 1)
   control <- control.net(type = "SIS", nsims = 1, nsteps = 25,
                          verbose = TRUE)
   x <- netsim(est, param, init, control)
@@ -246,7 +246,7 @@ test_that("edges models", {
 
   ## "SIS, 1M, CL: 2 sim, test TEAs"
   param <- param.net(inf.prob = 1, rec.rate = 0.01)
-  init <- init.net(i.num = 1, status.rand = FALSE)
+  init <- init.net(i.num = 1)
   control <- control.net(type = "SIS", nsims = 2, nsteps = 25,
                          tea.status = TRUE, verbose = TRUE)
   x <- netsim(est, param, init, control)
@@ -342,7 +342,7 @@ test_that("edges bipartite models", {
 
   ## "SI, 2M, CL: 2 sim"
   param <- param.net(inf.prob = 0.5, inf.prob.m2 = 0.1)
-  init <- init.net(i.num = 10, i.num.m2 = 0, status.rand = FALSE)
+  init <- init.net(i.num = 10, i.num.m2 = 0)
   control <- control.net(type = "SI", nsims = 2, nsteps = 25,
                          verbose = TRUE, tea.status = FALSE)
   x <- netsim(est5, param, init, control)
@@ -363,8 +363,7 @@ test_that("edges bipartite models", {
   param <- param.net(inf.prob = 0.5, inf.prob.m2 = 0.1,
                      rec.rate = 0.1, rec.rate.m2 = 0.1)
   init <- init.net(i.num = 10, i.num.m2 = 10,
-                   r.num = 0, r.num.m2 = 0,
-                   status.rand = FALSE)
+                   r.num = 0, r.num.m2 = 0)
   control <- control.net(type = "SIR", nsims = 2, nsteps = 25,
                          verbose = TRUE, tea.status = FALSE)
   x <- netsim(est5, param, init, control)
@@ -398,8 +397,7 @@ test_that("edges bipartite models", {
   ## "SIS, 2M, CL: 2 sim"
   param <- param.net(inf.prob = 0.5, inf.prob.m2 = 0.25,
                      rec.rate = 0.01, rec.rate.m2 = 0.01)
-  init <- init.net(i.num = 10, i.num.m2 = 10,
-                   status.rand = FALSE)
+  init <- init.net(i.num = 10, i.num.m2 = 10)
   control <- control.net(type = "SIS", nsims = 2, nsteps = 25,
                          tea.status = FALSE, verbose = TRUE)
   x <- netsim(est5, param, init, control)

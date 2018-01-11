@@ -154,11 +154,7 @@ init.icm <- function(s.num, i.num, r.num, s.num.g2, i.num.g2, r.num.g2,
 #'        only used for bipartite \code{SIR} models.
 #' @param status.vector A vector of length equal to the size of the input network,
 #'        containing the status of each node. Setting status
-#'        here overrides any inputs passed in the \code{.num} arguments and also
-#'        overrides \code{status.rand=TRUE}.
-#' @param status.rand If \code{TRUE} and not using \code{status.vector}, sets
-#'        infection based on random binomial draws from the distribution implied
-#'        by the number infected and recovered in each mode.
+#'        here overrides any inputs passed in the \code{.num} arguments.
 #' @param ... Additional initial conditions passed to model.
 #'
 #' @details
@@ -178,7 +174,7 @@ init.icm <- function(s.num, i.num, r.num, s.num.g2, i.num.g2, r.num.g2,
 #' @export
 #'
 init.net <- function(i.num, r.num, i.num.m2, r.num.m2,
-                     status.vector, status.rand = FALSE, ...) {
+                     status.vector, ...) {
 
   # Get arguments
   p <- list()
@@ -197,14 +193,11 @@ init.net <- function(i.num, r.num, i.num.m2, r.num.m2,
     }
   }
 
-
   ## Defaults and checks
   if (!is.null(p$i.num) & !is.null(p$status.vector)) {
     stop("Use i.num OR status.vector to set initial infected")
   }
-  if (!is.null(p$status.vector)) {
-    p$status.rand <- FALSE
-  }
+
 
   ## Output
   class(p) <- c("init.net", "list")

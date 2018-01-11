@@ -4,8 +4,7 @@
 \alias{init.net}
 \title{Initial Conditions for Stochastic Network Models}
 \usage{
-init.net(i.num, r.num, i.num.m2, r.num.m2, status.vector, status.rand = FALSE,
-  ...)
+init.net(i.num, r.num, i.num.m2, r.num.m2, status.vector, ...)
 }
 \arguments{
 \item{i.num}{Number of initial infected. For bipartite models, this is the
@@ -23,12 +22,7 @@ only used for bipartite \code{SIR} models.}
 
 \item{status.vector}{A vector of length equal to the size of the input network,
 containing the status of each node. Setting status
-here overrides any inputs passed in the \code{.num} arguments and also
-overrides \code{status.rand=TRUE}.}
-
-\item{status.rand}{If \code{TRUE} and not using \code{status.vector}, sets
-infection based on random binomial draws from the distribution implied
-by the number infected and recovered in each mode.}
+here overrides any inputs passed in the \code{.num} arguments.}
 
 \item{...}{Additional initial conditions passed to model.}
 }
