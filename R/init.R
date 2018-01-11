@@ -150,8 +150,13 @@ init.icm <- function(s.num, i.num, r.num,
 #' @param r.num.m2 Number of initial recovered in mode 2. This parameter is
 #'        only used for bipartite \code{SIR} models.
 #' @param status.vector A vector of length equal to the size of the input network,
-#'        containing the status of each node. Setting status
-#'        here overrides any inputs passed in the \code{.num} arguments.
+#'        containing the status of each node. Setting status here overrides any
+#'        inputs passed in the \code{.num} arguments.
+#' @param infTime.vector A vector of length equal to the size of the input network,
+#'        containing the (historical) time of infection for each of those nodes
+#'        with a current status of \code{"i"}. Can only be used if \code{status.vector}
+#'        is used, and must contain \code{NA} values for any nodes whose status
+#'        is not \code{"i"}.
 #' @param ... Additional initial conditions passed to model.
 #'
 #' @details
@@ -170,8 +175,17 @@ init.icm <- function(s.num, i.num, r.num,
 #'
 #' @export
 #'
+#' @examples
+#' # Example of using status.vector and infTime.vector together
+#' n <- 100
+#' status <- sample(c("s", "i"), size = n, replace = TRUE, prob = c(0.8, 0.2))
+#' infTime <- rep(NA, n)
+#' infTime[which(status == "i")] <- -rgeom(sum(status == "i"), prob = 0.01) + 2
+#'
+#' init.net(status.vector = status, infTime.vector = infTime)
+#'
 init.net <- function(i.num, r.num, i.num.m2, r.num.m2,
-                     status.vector, ...) {
+                     status.vector, infTime.vector, ...) {
 
   # Get arguments
   p <- list()
@@ -193,6 +207,12 @@ init.net <- function(i.num, r.num, i.num.m2, r.num.m2,
   ## Defaults and checks
   if (!is.null(p$i.num) & !is.null(p$status.vector)) {
     stop("Use i.num OR status.vector to set initial infected")
+  }
+  if (!is.null(p$infTime.vector) & is.null(p$status.vector)) {
+    stop("infTime.vector may only be used if status.vector is used")
+  }
+  if (!is.null(p$infTime.vector) & length(p$infTime.vector) != length(p$status.vector)) {
+    stop("Length of infTime.vector must match length of status.vector")
   }
 
 

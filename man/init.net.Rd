@@ -4,7 +4,7 @@
 \alias{init.net}
 \title{Initial Conditions for Stochastic Network Models}
 \usage{
-init.net(i.num, r.num, i.num.m2, r.num.m2, status.vector, ...)
+init.net(i.num, r.num, i.num.m2, r.num.m2, status.vector, infTime.vector, ...)
 }
 \arguments{
 \item{i.num}{Number of initial infected. For bipartite models, this is the
@@ -21,8 +21,14 @@ used for bipartite models.}
 only used for bipartite \code{SIR} models.}
 
 \item{status.vector}{A vector of length equal to the size of the input network,
-containing the status of each node. Setting status
-here overrides any inputs passed in the \code{.num} arguments.}
+containing the status of each node. Setting status here overrides any
+inputs passed in the \code{.num} arguments.}
+
+\item{infTime.vector}{A vector of length equal to the size of the input network,
+containing the (historical) time of infection for each of those nodes
+with a current status of \code{"i"}. Can only be used if \code{status.vector}
+is used, and must contain \code{NA} values for any nodes whose status
+is not \code{"i"}.}
 
 \item{...}{Additional initial conditions passed to model.}
 }
@@ -37,6 +43,16 @@ conditions for both base models and new modules. For an overview of
 specifying initial conditions across a variety of base network models,
 consult the \href{http://statnet.github.io/tut/BasicNet.html}{Basic Network
 Models} tutorial.
+}
+\examples{
+# Example of using status.vector and infTime.vector together
+n <- 100
+status <- sample(c("s", "i"), size = n, replace = TRUE, prob = c(0.8, 0.2))
+infTime <- rep(NA, n)
+infTime[which(status == "i")] <- -rgeom(sum(status == "i"), prob = 0.01) + 2
+
+init.net(status.vector = status, infTime.vector = infTime)
+
 }
 \seealso{
 Use \code{\link{param.net}} to specify model parameters and

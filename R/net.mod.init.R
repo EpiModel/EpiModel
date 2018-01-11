@@ -199,30 +199,29 @@ init_status.net <- function(dat) {
   idsInf <- which(status == "i")
   infTime <- rep(NA, length(status))
 
-  # If vital=TRUE, infTime is a uniform draw over the duration of infection
-  if (dat$param$vital == TRUE && dat$param$di.rate > 0) {
-    infTime[idsInf] <- -rgeom(n = length(idsInf), prob = dat$param$di.rate) + 2
+  if (!is.null(dat$init$infTime.vector)) {
+    infTime <- dat$init$infTime.vector
   } else {
-    if (dat$control$type == "SI" || mean(dat$param$rec.rate) == 0) {
-      # infTime a uniform draw over the number of sim time steps
-      infTime[idsInf] <- ssample(1:(-dat$control$nsteps + 2),
-                                     length(idsInf), replace = TRUE)
-    } else {
-      if (modes == 1) {
-        infTime[idsInf] <- ssample(1:(-round(1 / mean(dat$param$rec.rate)) + 2),
-                                   length(idsInf), replace = TRUE)
+    # If vital dynamics, infTime is a geometric draw over the duration of infection
+    if (dat$param$vital == TRUE && dat$param$di.rate > 0) {
+      if (dat$control$type != "SI") {
+        infTime[idsInf] <- -rgeom(n = length(idsInf), prob = dat$param$di.rate) + 2
+      } else {
+        infTime[idsInf] <- -rgeom(n = length(idsInf),
+                                  prob = dat$param$di.rate +
+                                    (1 - dat$param$di.rate)*mean(dat$param$rec.rate)) + 2
       }
-      if (modes == 2) {
-        infM1 <- which(status == "i" & mode == 1)
-        infTime[infM1] <- ssample(1:(-round(1 / mean(dat$param$rec.rate)) + 2),
-                                   length(infM1), replace = TRUE)
-        infM2 <- which(status == "i" & mode == 2)
-        infTime[infM2] <- ssample(1:(-round(1 / mean(dat$param$rec.rate.m2)) + 2),
-                                  length(infM2), replace = TRUE)
-
+    } else {
+      if (dat$control$type == "SI" || mean(dat$param$rec.rate) == 0) {
+        # if no recovery, infTime a uniform draw over the number of sim time steps
+        infTime[idsInf] <- ssample(1:(-dat$control$nsteps + 2),
+                                   length(idsInf), replace = TRUE)
+      } else {
+        infTime[idsInf] <- -rgeom(n = length(idsInf), prob = mean(dat$param$rec.rate)) + 2
       }
     }
   }
+
   dat$attr$infTime <- infTime
 
   return(dat)
