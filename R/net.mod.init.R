@@ -152,8 +152,6 @@ init_status.net <- function(dat) {
   } else {
     mode <- idmode(dat$nw)
   }
-  nM1 <- sum(mode == 1)
-  nM2 <- sum(mode == 2)
 
   type <- dat$control$type
 
