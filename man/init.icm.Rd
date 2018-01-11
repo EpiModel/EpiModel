@@ -4,8 +4,7 @@
 \alias{init.icm}
 \title{Initial Conditions for Stochastic Individual Contact Models}
 \usage{
-init.icm(s.num, i.num, r.num, s.num.g2, i.num.g2, r.num.g2,
-  status.rand = FALSE, ...)
+init.icm(s.num, i.num, r.num, s.num.g2, i.num.g2, r.num.g2, ...)
 }
 \arguments{
 \item{s.num}{Number of initial susceptible. For two-group models, this is
@@ -26,10 +25,6 @@ used for two-group models.}
 
 \item{r.num.g2}{Number of initial recovered in group 2. This parameter is
 only used for two-group \code{SIR} models.}
-
-\item{status.rand}{If \code{TRUE}, sets infection based on random binomial
-draws from the distribution implied by the number susceptible, infected,
-and recovered in each group.}
 
 \item{...}{Additional initial conditions passed to model.}
 }

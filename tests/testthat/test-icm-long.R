@@ -51,10 +51,10 @@ test_that("SI, 1G, CL: 2 sim", {
   test_icm(x)
 })
 
-test_that("SI, 1G, CL: inf.prob = 0, status.rand = FALSE", {
+test_that("SI, 1G, CL: inf.prob = 0", {
   skip_on_cran()
   param <- param.icm(inf.prob = 0, act.rate = 0.25)
-  init <- init.icm(s.num = 500, i.num = 1, status.rand = FALSE)
+  init <- init.icm(s.num = 500, i.num = 1)
   control <- control.icm(type = "SI", nsteps = 25, nsims = 10, verbose = TRUE)
   x <- icm(param, init, control)
   expect_is(x, "icm")
@@ -271,10 +271,10 @@ test_that("SIR, 1G, CL: 2 sim", {
   test_icm(x)
 })
 
-test_that("SIR, 1G, CL: inf.prob = 0, status.rand = FALSE", {
+test_that("SIR, 1G, CL: inf.prob = 0", {
   skip_on_cran()
   param <- param.icm(inf.prob = 0, act.rate = 0.25, rec.rate = 0)
-  init <- init.icm(s.num = 500, i.num = 1, r.num = 0, status.rand = FALSE)
+  init <- init.icm(s.num = 500, i.num = 1, r.num = 0)
   control <- control.icm(type = "SIR", nsteps = 10, nsims = 10, verbose = TRUE)
   x <- icm(param, init, control)
   expect_is(x, "icm")
@@ -501,10 +501,10 @@ test_that("SIS, 1G, CL: 2 sim", {
   test_icm(x)
 })
 
-test_that("SIS, 1G, CL: inf.prob = 0, status.rand = FALSE", {
+test_that("SIS, 1G, CL: inf.prob = 0", {
   skip_on_cran()
   param <- param.icm(inf.prob = 0, act.rate = 0.25, rec.rate = 0)
-  init <- init.icm(s.num = 500, i.num = 1, status.rand = FALSE)
+  init <- init.icm(s.num = 500, i.num = 1)
   control <- control.icm(type = "SIS", nsteps = 10, nsims = 10, verbose = TRUE)
   x <- icm(param, init, control)
   expect_is(x, "icm")

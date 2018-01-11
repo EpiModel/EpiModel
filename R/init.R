@@ -91,9 +91,6 @@ init.dcm <- function(s.num, i.num, r.num, s.num.g2, i.num.g2, r.num.g2,
 #'        used for two-group models.
 #' @param r.num.g2 Number of initial recovered in group 2. This parameter is
 #'        only used for two-group \code{SIR} models.
-#' @param status.rand If \code{TRUE}, sets infection based on random binomial
-#'        draws from the distribution implied by the number susceptible, infected,
-#'        and recovered in each group.
 #' @param ... Additional initial conditions passed to model.
 #'
 #' @details
@@ -111,8 +108,8 @@ init.dcm <- function(s.num, i.num, r.num, s.num.g2, i.num.g2, r.num.g2,
 #'
 #' @export
 #'
-init.icm <- function(s.num, i.num, r.num, s.num.g2, i.num.g2, r.num.g2,
-                     status.rand = FALSE, ...) {
+init.icm <- function(s.num, i.num, r.num,
+                     s.num.g2, i.num.g2, r.num.g2, ...) {
 
   # Get arguments
   p <- list()
