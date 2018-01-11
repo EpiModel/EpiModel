@@ -204,7 +204,7 @@ init_status.net <- function(dat) {
   } else {
     # If vital dynamics, infTime is a geometric draw over the duration of infection
     if (dat$param$vital == TRUE && dat$param$di.rate > 0) {
-      if (dat$control$type != "SI") {
+      if (dat$control$type == "SI") {
         infTime[idsInf] <- -rgeom(n = length(idsInf), prob = dat$param$di.rate) + 2
       } else {
         infTime[idsInf] <- -rgeom(n = length(idsInf),
