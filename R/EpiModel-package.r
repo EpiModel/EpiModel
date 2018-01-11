@@ -1,11 +1,11 @@
 
-#' Mathematical Modeling of Infectious Disease
+#' Mathematical Modeling of Infectious Disease Dynamics
 #'
 #' \tabular{ll}{
 #'    Package: \tab EpiModel\cr
 #'    Type: \tab Package\cr
 #'    Version: \tab 1.5.1\cr
-#'    Date: \tab 2017-06-02\cr
+#'    Date: \tab 2018-01-11\cr
 #'    License: \tab GPL-3\cr
 #'    LazyLoad: \tab yes\cr
 #' }
