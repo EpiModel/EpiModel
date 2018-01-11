@@ -784,3 +784,35 @@ test_that("Extended post-simulation diagnosntic tests", {
   plot(sim, type = "formation")
 
 })
+
+
+################################################################################
+
+test_that("status.vector and infTime.vector", {
+
+  n <- 100
+  nw <- network.initialize(n = n, directed = FALSE)
+  formation <- ~edges
+  target.stats <- 50
+  coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
+  est1 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
+
+  # Epidemic model
+  param <- param.net(inf.prob = 0.3, rec.rate = 0.01)
+
+  status <- sample(c("s", "i"), size = n, replace = TRUE, prob = c(0.8, 0.2))
+  infTime <- rep(NA, n)
+  infTime[which(status == "i")] <- -rgeom(sum(status == "i"), prob = 0.01) + 2
+  init <- init.net(status.vector = status, infTime.vector = infTime)
+
+  control <- control.net(type = "SIS", nsteps = 100, nsims = 5, verbose.int = 0)
+  mod1 <- netsim(est1, param, init, control)
+  expect_is(mod1, "netsim")
+
+  control <- control.net(type = "SIR", nsteps = 100, nsims = 5, verbose.int = 0)
+  mod2 <- netsim(est1, param, init, control)
+  expect_is(mod2, "netsim")
+
+})
+
+
