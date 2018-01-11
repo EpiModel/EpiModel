@@ -73,69 +73,17 @@ init_status.icm <- function(dat) {
   i.num.g2 <- dat$init$i.num.g2
   r.num.g2 <- dat$init$r.num.g2
 
-  status.rand <- dat$init$status.rand
-
 
   # Status ------------------------------------------------------------------
-  if (status.rand == FALSE) {
-    status <- rep("s", nG1 + nG2)
-    status[sample(which(group == 1), size = i.num)] <- "i"
+  status <- rep("s", nG1 + nG2)
+  status[sample(which(group == 1), size = i.num)] <- "i"
+  if (nGroups == 2) {
+    status[sample(which(group == 2), size = i.num.g2)] <- "i"
+  }
+  if (type == "SIR") {
+    status[sample(which(group == 1 & status == "s"), size = r.num)] <- "r"
     if (nGroups == 2) {
-      status[sample(which(group == 2), size = i.num.g2)] <- "i"
-    }
-    if (type == "SIR") {
-      status[sample(which(group == 1 & status == "s"), size = r.num)] <- "r"
-      if (nGroups == 2) {
-        status[sample(which(group == 2 & status == "s"), size = r.num.g2)] <- "r"
-      }
-    }
-  } else {
-    status <- rep(NA, nG1 + nG2)
-    if (type == "SIR") {
-      status[which(group == 1)] <- sample(
-        x = c("s", "i", "r"),
-        size = nG1,
-        replace = TRUE,
-        prob = c(1 - (i.num / nG1) - (r.num / nG1), i.num / nG1, r.num / nG1))
-      if (sum(status == "i" & group == 1) == 0 & i.num > 0) {
-        status[sample(which(group == 1), size = i.num)] <- "i"
-      }
-      if (sum(status == "r" & group == 1) == 0 & r.num > 0) {
-        status[sample(which(group == 1), size = r.num)] <- "r"
-      }
-      if (nGroups == 2) {
-        status[which(group == 2)] <- sample(
-          x = c("s", "i", "r"),
-          size = nG2,
-          replace = TRUE,
-          prob = c(1 - (i.num.g2 / nG2) - (r.num.g2 / nG2),
-                   i.num.g2 / nG2, r.num.g2 / nG2))
-        if (sum(status == "i" & group == 2) == 0 & i.num.g2 > 0) {
-          status[sample(which(group == 2), size = i.num.g2)] <- "i"
-        }
-        if (sum(status == "r" & group == 2) == 0 & r.num.g2 > 0) {
-          status[sample(which(group == 2), size = r.num.g2)] <- "r"
-        }
-      }
-    } else {
-      status[which(group == 1)] <- sample(
-        x = c("s", "i"),
-        size = nG1,
-        replace = TRUE,
-        prob = c(1 - (i.num / nG1), i.num / nG1))
-      if (sum(status == "i" & group == 1) == 0 & i.num > 0) {
-        status[sample(which(group == 1), size = i.num)] <- "i"
-      }
-      if (nGroups == 2) {
-        status[which(group == 2)] <- sample(
-          x = c("s", "i"),
-          size = nG2,
-          replace = TRUE,
-          prob = c(1 - (i.num.g2 / nG2), i.num.g2 / nG2))
-        if (sum(status == "i" & group == 2) == 0 & i.num.g2 > 0) {
-          status[sample(which(group == 2), size = i.num.g2)] <- "i"
-        }
-      }
+      status[sample(which(group == 2 & status == "s"), size = r.num.g2)] <- "r"
     }
   }
   dat$attr$status <- status

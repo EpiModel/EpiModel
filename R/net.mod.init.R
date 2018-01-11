@@ -142,7 +142,6 @@ init_status.net <- function(dat) {
   r.num.m2 <- dat$init$r.num.m2
 
   status.vector <- dat$init$status.vector
-  status.rand <- dat$init$status.rand
   num <- network.size(dat$nw)
   form <- get_nwparam(dat)$form
   statOnNw <- "status" %in% get_formula_terms(form)
@@ -153,8 +152,6 @@ init_status.net <- function(dat) {
   } else {
     mode <- idmode(dat$nw)
   }
-  nM1 <- sum(mode == 1)
-  nM2 <- sum(mode == 2)
 
   type <- dat$control$type
 
@@ -168,74 +165,17 @@ init_status.net <- function(dat) {
     if (!is.null(status.vector)) {
       status <- status.vector
     } else {
-      ## Stochastic status
-      if (status.rand == TRUE) {
-        status <- rep(NA, num)
-        if (type == "SIR") {
-          status[which(mode == 1)] <- sample(
-            x = c("s", "i", "r"),
-            size = nM1,
-            replace = TRUE,
-            prob = c(1 - (i.num / nM1) - (r.num / nM1),
-                     i.num / nM1, r.num / nM1))
-          if (sum(status == "i" & mode == 1) == 0 & i.num > 0) {
-            status[sample(which(mode == 1), size = i.num)] <- "i"
-          }
-          if (sum(status == "r" & mode == 1) == 0 & r.num > 0) {
-            status[sample(which(mode == 1), size = r.num)] <- "r"
-          }
-          if (modes == 2) {
-            status[which(mode == 2)] <- sample(
-              x = c("s", "i", "r"),
-              size = nM2,
-              replace = TRUE,
-              prob = c(1 - (i.num.m2 / nM2) - (r.num.m2 / nM2),
-                       i.num.m2 / nM2, r.num.m2 / nM2))
-            if (sum(status == "i" & mode == 2) == 0 & i.num.m2 > 0) {
-              status[sample(which(mode == 2), size = i.num.m2)] <- "i"
-            }
-            if (sum(status == "r" & mode == 2) == 0 & r.num.m2 > 0) {
-              status[sample(which(mode == 2), size = r.num.m2)] <- "r"
-            }
-          }
-        } else {
-          status[which(mode == 1)] <- sample(
-            x = c("s", "i"),
-            size = nM1,
-            replace = TRUE,
-            prob = c(1 - (i.num / nM1), i.num / nM1))
-          if (sum(status == "i" & mode == 1) == 0 & i.num > 0) {
-            status[sample(which(mode == 1), size = i.num)] <- "i"
-          }
-          if (modes == 2) {
-            status[which(mode == 2)] <- sample(
-              x = c("s", "i"),
-              size = nM2,
-              replace = TRUE,
-              prob = c(1 - (i.num.m2 / nM2), i.num.m2 / nM2))
-            if (sum(status == "i" & mode == 2) == 0 & i.num.m2 > 0) {
-              status[sample(which(mode == 2), size = i.num.m2)] <- "i"
-            }
-          }
-        }
+      status <- rep("s", num)
+      status[sample(which(mode == 1), size = i.num)] <- "i"
+      if (modes == 2) {
+        status[sample(which(mode == 2), size = i.num.m2)] <- "i"
       }
-
-      ## Deterministic status
-      if (status.rand == FALSE) {
-        status <- rep("s", num)
-        status[sample(which(mode == 1), size = i.num)] <- "i"
+      if (type == "SIR") {
+        status[sample(which(mode == 1 & status == "s"), size = r.num)] <- "r"
         if (modes == 2) {
-          status[sample(which(mode == 2), size = i.num.m2)] <- "i"
-        }
-        if (type == "SIR") {
-          status[sample(which(mode == 1 & status == "s"), size = r.num)] <- "r"
-          if (modes == 2) {
-            status[sample(which(mode == 2 & status == "s"), size = r.num.m2)] <- "r"
-          }
+          status[sample(which(mode == 2 & status == "s"), size = r.num.m2)] <- "r"
         }
       }
-
-
     }
   }
   dat$attr$status <- status
@@ -259,30 +199,29 @@ init_status.net <- function(dat) {
   idsInf <- which(status == "i")
   infTime <- rep(NA, length(status))
 
-  # If vital=TRUE, infTime is a uniform draw over the duration of infection
-  if (dat$param$vital == TRUE && dat$param$di.rate > 0) {
-    infTime[idsInf] <- -rgeom(n = length(idsInf), prob = dat$param$di.rate) + 2
+  if (!is.null(dat$init$infTime.vector)) {
+    infTime <- dat$init$infTime.vector
   } else {
-    if (dat$control$type == "SI" || mean(dat$param$rec.rate) == 0) {
-      # infTime a uniform draw over the number of sim time steps
-      infTime[idsInf] <- ssample(1:(-dat$control$nsteps + 2),
-                                     length(idsInf), replace = TRUE)
-    } else {
-      if (modes == 1) {
-        infTime[idsInf] <- ssample(1:(-round(1 / mean(dat$param$rec.rate)) + 2),
-                                   length(idsInf), replace = TRUE)
+    # If vital dynamics, infTime is a geometric draw over the duration of infection
+    if (dat$param$vital == TRUE && dat$param$di.rate > 0) {
+      if (dat$control$type == "SI") {
+        infTime[idsInf] <- -rgeom(n = length(idsInf), prob = dat$param$di.rate) + 2
+      } else {
+        infTime[idsInf] <- -rgeom(n = length(idsInf),
+                                  prob = dat$param$di.rate +
+                                    (1 - dat$param$di.rate)*mean(dat$param$rec.rate)) + 2
       }
-      if (modes == 2) {
-        infM1 <- which(status == "i" & mode == 1)
-        infTime[infM1] <- ssample(1:(-round(1 / mean(dat$param$rec.rate)) + 2),
-                                   length(infM1), replace = TRUE)
-        infM2 <- which(status == "i" & mode == 2)
-        infTime[infM2] <- ssample(1:(-round(1 / mean(dat$param$rec.rate.m2)) + 2),
-                                  length(infM2), replace = TRUE)
-
+    } else {
+      if (dat$control$type == "SI" || mean(dat$param$rec.rate) == 0) {
+        # if no recovery, infTime a uniform draw over the number of sim time steps
+        infTime[idsInf] <- ssample(1:(-dat$control$nsteps + 2),
+                                   length(idsInf), replace = TRUE)
+      } else {
+        infTime[idsInf] <- -rgeom(n = length(idsInf), prob = mean(dat$param$rec.rate)) + 2
       }
     }
   }
+
   dat$attr$infTime <- infTime
 
   return(dat)

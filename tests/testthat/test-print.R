@@ -98,11 +98,9 @@ test_that("print.init", {
 
   i <- init.icm(s.num = 10, i.num = 10)
   expect_output(print(i), "ICM Initial Conditions")
-  expect_output(print(i), "status.rand = FALSE")
 
   i <- init.net(s.num = 10, i.num = 10)
   expect_output(print(i), "Network Model Initial Conditions")
-  expect_output(print(i), "status.rand = FALSE")
 })
 
 test_that("print.control", {

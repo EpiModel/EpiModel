@@ -91,9 +91,6 @@ init.dcm <- function(s.num, i.num, r.num, s.num.g2, i.num.g2, r.num.g2,
 #'        used for two-group models.
 #' @param r.num.g2 Number of initial recovered in group 2. This parameter is
 #'        only used for two-group \code{SIR} models.
-#' @param status.rand If \code{TRUE}, sets infection based on random binomial
-#'        draws from the distribution implied by the number susceptible, infected,
-#'        and recovered in each group.
 #' @param ... Additional initial conditions passed to model.
 #'
 #' @details
@@ -111,8 +108,8 @@ init.dcm <- function(s.num, i.num, r.num, s.num.g2, i.num.g2, r.num.g2,
 #'
 #' @export
 #'
-init.icm <- function(s.num, i.num, r.num, s.num.g2, i.num.g2, r.num.g2,
-                     status.rand = FALSE, ...) {
+init.icm <- function(s.num, i.num, r.num,
+                     s.num.g2, i.num.g2, r.num.g2, ...) {
 
   # Get arguments
   p <- list()
@@ -153,12 +150,13 @@ init.icm <- function(s.num, i.num, r.num, s.num.g2, i.num.g2, r.num.g2,
 #' @param r.num.m2 Number of initial recovered in mode 2. This parameter is
 #'        only used for bipartite \code{SIR} models.
 #' @param status.vector A vector of length equal to the size of the input network,
-#'        containing the status of each node. Setting status
-#'        here overrides any inputs passed in the \code{.num} arguments and also
-#'        overrides \code{status.rand=TRUE}.
-#' @param status.rand If \code{TRUE} and not using \code{status.vector}, sets
-#'        infection based on random binomial draws from the distribution implied
-#'        by the number infected and recovered in each mode.
+#'        containing the status of each node. Setting status here overrides any
+#'        inputs passed in the \code{.num} arguments.
+#' @param infTime.vector A vector of length equal to the size of the input network,
+#'        containing the (historical) time of infection for each of those nodes
+#'        with a current status of \code{"i"}. Can only be used if \code{status.vector}
+#'        is used, and must contain \code{NA} values for any nodes whose status
+#'        is not \code{"i"}.
 #' @param ... Additional initial conditions passed to model.
 #'
 #' @details
@@ -177,8 +175,17 @@ init.icm <- function(s.num, i.num, r.num, s.num.g2, i.num.g2, r.num.g2,
 #'
 #' @export
 #'
+#' @examples
+#' # Example of using status.vector and infTime.vector together
+#' n <- 100
+#' status <- sample(c("s", "i"), size = n, replace = TRUE, prob = c(0.8, 0.2))
+#' infTime <- rep(NA, n)
+#' infTime[which(status == "i")] <- -rgeom(sum(status == "i"), prob = 0.01) + 2
+#'
+#' init.net(status.vector = status, infTime.vector = infTime)
+#'
 init.net <- function(i.num, r.num, i.num.m2, r.num.m2,
-                     status.vector, status.rand = FALSE, ...) {
+                     status.vector, infTime.vector, ...) {
 
   # Get arguments
   p <- list()
@@ -197,14 +204,17 @@ init.net <- function(i.num, r.num, i.num.m2, r.num.m2,
     }
   }
 
-
   ## Defaults and checks
   if (!is.null(p$i.num) & !is.null(p$status.vector)) {
     stop("Use i.num OR status.vector to set initial infected")
   }
-  if (!is.null(p$status.vector)) {
-    p$status.rand <- FALSE
+  if (!is.null(p$infTime.vector) & is.null(p$status.vector)) {
+    stop("infTime.vector may only be used if status.vector is used")
   }
+  if (!is.null(p$infTime.vector) & length(p$infTime.vector) != length(p$status.vector)) {
+    stop("Length of infTime.vector must match length of status.vector")
+  }
+
 
   ## Output
   class(p) <- c("init.net", "list")

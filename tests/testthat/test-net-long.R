@@ -31,7 +31,7 @@ test_that("edges models", {
 
   ## "SI, 1M, CL: 1 sim, inf.prob = 0"
   param <- param.net(inf.prob = 0)
-  init <- init.net(i.num = 1, status.rand = FALSE)
+  init <- init.net(i.num = 1)
   control <- control.net(type = "SI", nsims = 1, nsteps = 25, verbose = TRUE)
   x <- netsim(est, param, init, control)
   expect_is(x, "netsim")
@@ -72,7 +72,7 @@ test_that("edges models", {
 
   ## "SI, 1M, CL: 2 sim, use TEAs"
   param <- param.net(inf.prob = 1)
-  init <- init.net(i.num = 1, status.rand = FALSE)
+  init <- init.net(i.num = 1)
   control <- control.net(type = "SI", nsims = 2, nsteps = 25,
                          verbose = TRUE, tea.status = TRUE)
   x <- netsim(est, param, init, control)
@@ -133,7 +133,7 @@ test_that("edges models", {
 
   ## "SIR, 1M, CL: 1 sim, inf.prob=0"
   param <- param.net(inf.prob = 0, rec.rate = 0.02)
-  init <- init.net(i.num = 10, r.num = 0, status.rand = FALSE)
+  init <- init.net(i.num = 10, r.num = 0)
   control <- control.net(type = "SIR", nsims = 1,
                          nsteps = 25, verbose = TRUE)
   x <- netsim(est, param, init, control)
@@ -210,7 +210,7 @@ test_that("edges models", {
 
   ## "SIS, 1M, CL: 1 sim, inf.prob=0"
   param <- param.net(inf.prob = 0, rec.rate = 0.01)
-  init <- init.net(i.num = 1, status.rand = FALSE)
+  init <- init.net(i.num = 1)
   control <- control.net(type = "SIS", nsims = 1, nsteps = 25,
                          verbose = TRUE)
   x <- netsim(est, param, init, control)
@@ -246,7 +246,7 @@ test_that("edges models", {
 
   ## "SIS, 1M, CL: 2 sim, test TEAs"
   param <- param.net(inf.prob = 1, rec.rate = 0.01)
-  init <- init.net(i.num = 1, status.rand = FALSE)
+  init <- init.net(i.num = 1)
   control <- control.net(type = "SIS", nsims = 2, nsteps = 25,
                          tea.status = TRUE, verbose = TRUE)
   x <- netsim(est, param, init, control)
@@ -342,7 +342,7 @@ test_that("edges bipartite models", {
 
   ## "SI, 2M, CL: 2 sim"
   param <- param.net(inf.prob = 0.5, inf.prob.m2 = 0.1)
-  init <- init.net(i.num = 10, i.num.m2 = 0, status.rand = FALSE)
+  init <- init.net(i.num = 10, i.num.m2 = 0)
   control <- control.net(type = "SI", nsims = 2, nsteps = 25,
                          verbose = TRUE, tea.status = FALSE)
   x <- netsim(est5, param, init, control)
@@ -363,8 +363,7 @@ test_that("edges bipartite models", {
   param <- param.net(inf.prob = 0.5, inf.prob.m2 = 0.1,
                      rec.rate = 0.1, rec.rate.m2 = 0.1)
   init <- init.net(i.num = 10, i.num.m2 = 10,
-                   r.num = 0, r.num.m2 = 0,
-                   status.rand = FALSE)
+                   r.num = 0, r.num.m2 = 0)
   control <- control.net(type = "SIR", nsims = 2, nsteps = 25,
                          verbose = TRUE, tea.status = FALSE)
   x <- netsim(est5, param, init, control)
@@ -398,8 +397,7 @@ test_that("edges bipartite models", {
   ## "SIS, 2M, CL: 2 sim"
   param <- param.net(inf.prob = 0.5, inf.prob.m2 = 0.25,
                      rec.rate = 0.01, rec.rate.m2 = 0.01)
-  init <- init.net(i.num = 10, i.num.m2 = 10,
-                   status.rand = FALSE)
+  init <- init.net(i.num = 10, i.num.m2 = 10)
   control <- control.net(type = "SIS", nsims = 2, nsteps = 25,
                          tea.status = FALSE, verbose = TRUE)
   x <- netsim(est5, param, init, control)
@@ -786,3 +784,35 @@ test_that("Extended post-simulation diagnosntic tests", {
   plot(sim, type = "formation")
 
 })
+
+
+################################################################################
+
+test_that("status.vector and infTime.vector", {
+
+  n <- 100
+  nw <- network.initialize(n = n, directed = FALSE)
+  formation <- ~edges
+  target.stats <- 50
+  coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
+  est1 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
+
+  # Epidemic model
+  param <- param.net(inf.prob = 0.3, rec.rate = 0.01)
+
+  status <- sample(c("s", "i"), size = n, replace = TRUE, prob = c(0.8, 0.2))
+  infTime <- rep(NA, n)
+  infTime[which(status == "i")] <- -rgeom(sum(status == "i"), prob = 0.01) + 2
+  init <- init.net(status.vector = status, infTime.vector = infTime)
+
+  control <- control.net(type = "SIS", nsteps = 100, nsims = 5, verbose.int = 0)
+  mod1 <- netsim(est1, param, init, control)
+  expect_is(mod1, "netsim")
+
+  control <- control.net(type = "SIR", nsteps = 100, nsims = 5, verbose.int = 0)
+  mod2 <- netsim(est1, param, init, control)
+  expect_is(mod2, "netsim")
+
+})
+
+

@@ -4,15 +4,11 @@
 \alias{discord_edgelist}
 \title{Discordant Edgelist from NetworkDynamic Object}
 \usage{
-discord_edgelist(dat, idsInf, idsSus, at)
+discord_edgelist(dat, at)
 }
 \arguments{
 \item{dat}{Master list object containing a \code{networkDynamic} object and other
 initialization information passed from \code{\link{netsim}}.}
-
-\item{idsInf}{Vector of IDs for currently infecteds.}
-
-\item{idsSus}{Vector of IDs for currently susceptible.}
 
 \item{at}{Current time step.}
 }

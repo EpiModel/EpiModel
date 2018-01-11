@@ -51,7 +51,6 @@ infection.net <- function(dat, at) {
     tea.status <- dat$control$tea.status
 
     # Vector of infected and susceptible IDs
-    idsSus <- which(active == 1 & status == "s")
     idsInf <- which(active == 1 & status == "i")
     nActive <- sum(active == 1)
     nElig <- length(idsInf)
@@ -65,7 +64,7 @@ infection.net <- function(dat, at) {
     if (nElig > 0 && nElig < nActive) {
 
       # Get discordant edgelist
-      del <- discord_edgelist(dat, idsInf, idsSus, at)
+      del <- discord_edgelist(dat, at)
 
       # If some discordant edges, then proceed
       if (!(is.null(del))) {
@@ -174,8 +173,6 @@ infection.net <- function(dat, at) {
 }
 
 
-
-
 #' @title Discordant Edgelist from NetworkDynamic Object
 #'
 #' @description This function returns a \code{data.frame} with a discordant
@@ -184,8 +181,6 @@ infection.net <- function(dat, at) {
 #'
 #' @param dat Master list object containing a \code{networkDynamic} object and other
 #'        initialization information passed from \code{\link{netsim}}.
-#' @param idsInf Vector of IDs for currently infecteds.
-#' @param idsSus Vector of IDs for currently susceptible.
 #' @param at Current time step.
 #'
 #' @details
@@ -210,7 +205,7 @@ infection.net <- function(dat, at) {
 #' @export
 #' @keywords netMod internal
 #'
-discord_edgelist <- function(dat, idsInf, idsSus, at) {
+discord_edgelist <- function(dat, at) {
 
   status <- dat$attr$status
   el <- get.dyads.active(dat$nw, at = at)
