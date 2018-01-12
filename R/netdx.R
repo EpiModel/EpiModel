@@ -121,7 +121,11 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps, nwstats.formula = "forma
   }
 
   if (verbose == TRUE) {
-    cat("- Simulating", nsims, "networks")
+    if (nsims == 1) {
+      cat("- Simulating 1 network")
+    } else {
+      cat("- Simulating", nsims, "networks")
+    }
   }
 
   if (edapprox == FALSE) {
