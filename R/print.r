@@ -370,6 +370,7 @@ print.control.net <- function(x, ...) {
 
   pToPrint <- which(!grepl(".FUN", names(x)) &
                     names(x) != "set.control.stergm" &
+                    names(x) != "set.control.ergm" &
                     !(names(x) %in% c("bi.mods", "user.mods")))
 
   cat("Network Model Control Settings")
