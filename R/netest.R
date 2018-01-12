@@ -216,7 +216,7 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
     out$constraints <- constraints
     out$edapprox <- edapprox
     if (output == "sim") {
-      out$fit <- simulate(out$fit)
+      out$fit <- simulate(out$fit, control = control.simulate.ergm(MCMC.burnin = 2e5))
       environment(fit$constraints) <- NULL
     }
 
