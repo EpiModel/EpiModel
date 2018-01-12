@@ -11,8 +11,8 @@ control.net(type, nsteps, start = 1, nsims = 1, ncores = 1, depend,
   births.FUN = births.net, recovery.FUN = recovery.net,
   edges_correct.FUN = edges_correct, resim_nets.FUN = resim_nets,
   infection.FUN = infection.net, get_prev.FUN = get_prev.net,
-  verbose.FUN = verbose.net, module.order = NULL, set.control.stergm,
-  save.nwstats = TRUE, nwstats.formula = "formation",
+  verbose.FUN = verbose.net, module.order = NULL, set.control.ergm,
+  set.control.stergm, save.nwstats = TRUE, nwstats.formula = "formation",
   delete.nodes = FALSE, save.transmat = TRUE, save.network = TRUE,
   save.other, verbose = TRUE, verbose.int = 1, skip.check = FALSE, ...)
 }
@@ -121,6 +121,10 @@ new modules supplied through \code{...} in the order in which they are
 listed, then the built-in modules in their order of the function listing.
 The \code{initialize.FUN} will always be run first and the
 \code{verbose.FUN} always last.}
+
+\item{set.control.ergm}{Control arguments passed to simulate.ergm. See the
+help file for \code{\link{netdx}} for details and examples on specifying
+this parameter.}
 
 \item{set.control.stergm}{Control arguments passed to simulate.stergm. See the
 help file for \code{\link{netdx}} for details and examples on specifying

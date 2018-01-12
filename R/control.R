@@ -311,6 +311,9 @@ control.icm <- function(type, nsteps, nsims = 1, rec.rand = TRUE, b.rand = TRUE,
 #'        listed, then the built-in modules in their order of the function listing.
 #'        The \code{initialize.FUN} will always be run first and the
 #'        \code{verbose.FUN} always last.
+#' @param set.control.ergm Control arguments passed to simulate.ergm. See the
+#'        help file for \code{\link{netdx}} for details and examples on specifying
+#'        this parameter.
 #' @param set.control.stergm Control arguments passed to simulate.stergm. See the
 #'        help file for \code{\link{netdx}} for details and examples on specifying
 #'        this parameter.
@@ -409,7 +412,7 @@ control.net <- function(type, nsteps, start = 1, nsims = 1, ncores = 1,
                         edges_correct.FUN = edges_correct,
                         resim_nets.FUN = resim_nets, infection.FUN = infection.net,
                         get_prev.FUN = get_prev.net, verbose.FUN = verbose.net,
-                        module.order = NULL, set.control.stergm,
+                        module.order = NULL, set.control.ergm, set.control.stergm,
                         save.nwstats = TRUE, nwstats.formula = "formation",
                         delete.nodes = FALSE, save.transmat = TRUE,
                         save.network = TRUE, save.other, verbose = TRUE,
@@ -471,6 +474,9 @@ control.net <- function(type, nsteps, start = 1, nsims = 1, ncores = 1,
 
   if (is.null(p$set.control.stergm)) {
     p$set.control.stergm <- control.simulate.network(MCMC.burnin.min = 1000)
+  }
+  if (is.null(p$set.control.ergm)) {
+    p$set.control.ergm <- control.simulate.ergm(MCMC.burnin = 2e5)
   }
 
   if (p$delete.nodes == TRUE) {
