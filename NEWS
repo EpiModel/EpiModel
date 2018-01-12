@@ -1,3 +1,47 @@
+Version 1.5.1
+------------------------------------------------------------------------------
+
+NEW FEATURES
+* `as.data.frame` methods for `netsim` and `icm` classes now allow creation of a
+  single data frame with epidemic outcomes across multiple simulations, where
+  previous only single individual simulations would be output. This is specified
+  with the `sim = "all"` parameter when `out = "vals"`. See the help page for
+  examples. This "tidy" data format allows for easier integration with external
+  plotting and analysis approaches, including ggplot2
+* `geom_bands` is a new "geom" for use by `ggplot2` to facilitate plotting of
+  simulation intervals given a specified lower and upper quantile set. Examples
+  of plotting ICM simulations are provided, and the same principle applies for
+  network models. As a result of this, `ggplot2` was added as a depend.
+* `truncate_sims` is a new utility function that takes truncates the time series
+  of a `netsim` or `icm` class object at a specified time step. This truncation
+  will remove all epidemic output before that time step, and reset the control
+  settings to start at that time step. This is useful in our modeling workflows
+  when we need to remove a pre-intervention burnin period from the model
+  simulations.
+* `init.net` allows you to pass in a vector of backwards-looking infection times
+  for those initally infected at t_1 through the `infTime.vector` parameter.
+  Combined with the `status.vector` parameter, this provides users maximal control
+  over who is infected and for how long as initial conditions.
+
+
+BUG FIXES
+* Fixed bug in DCM Shiny app related to plotting prevalence vs count outcomes.
+* Removed unneeded and unused input parameters from `discord_edgelist` function.
+* Fixed issue where SIS/SIR models with vital dynamics, and a low mortality rate
+  relative to the recovery rate (which is typical) would get very long initial
+  infection times assigned at t_1
+
+
+OTHER
+* Changed the title (actually it's a subtitle) in the DESCRIPTION to: "Mathematical
+  Modeling of Infectious Disease Dynamics".
+* Deprecated the `status.rand` argument for `init.net` and `init.icm` that allowed
+  users to specify a random number of initially infected. Support for this got
+  too complex for a little (or never) used argument, and users interested in
+  randomly setting the initial number infected may control this more flexibly
+  with the `status.vector` parameter.
+
+
 Version 1.5.0
 ------------------------------------------------------------------------------
 
