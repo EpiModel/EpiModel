@@ -55,29 +55,44 @@ A good place to start learning about EpiModel is the main methods paper. It is c
 If using EpiModel for teaching or research, please include a citation:
 > Jenness SM, Goodreau SM, Morris M. EpiModel: An R Package for Mathematical Modeling of Infectious Disease over Networks. *bioRxiv* 2017;  213009. DOI: https://doi.org/10.1101/213009.
 
-Please also send us an email if you have used EpiModel in your work.
+Please also send us an email if you have used EpiModel in your work so we can add the citation below.
 
-### Applied Uses of EpiModel in the Literature
+### Applied Uses of EpiModel in the Scientific Literature
 
-EpiModel has been used in the following scientific articles.
+EpiModel has been used in the following scientific journal articles.
 
 #### HIV and Other Sexually Transmitted Infections
 
-1. Jenness SM, Goodreau SM, Morris M, Cassels S. Effectiveness of Combination Packages for HIV-1 Prevention in Sub-Saharan Africa Depends on Partnership Network Structure. _Sexually Transmitted Infections._ 2016; 92(8): 619-624. [LINK](http://sti.bmj.com/content/early/2016/06/09/sextrans-2015-052476.abstract)
+1. Delaney KP, Rosenberg ES, Kramer MR, Waller LA, Sullivan PS. Optimizing Human Immunodeficiency Virus Testing Interventions for Men Who Have Sex With Men in the United States: A Modeling Study. _Open Forum Infect Dis._ 2015;2(4): ofv153. [LINK](https://www.ncbi.nlm.nih.gov/pubmed/26613096)
 
-2. Jenness SM, Goodreau SM, Rosenberg E, Beylerian EN, Hoover KW, Smith DK, Sullivan P. Impact of CDC’s HIV Preexposure Prophylaxis Guidelines among MSM in the United States. _Journal of Infectious Diseases._ 2016; 214(12): 1800-1807. [LINK](http://jid.oxfordjournals.org/content/early/2016/07/12/infdis.jiw223.full)
+2. Jenness SM, Goodreau SM, Morris M, Cassels S. Effectiveness of Combination Packages for HIV-1 Prevention in Sub-Saharan Africa Depends on Partnership Network Structure. _Sexually Transmitted Infections._ 2016; 92(8): 619-624. [LINK](http://sti.bmj.com/content/early/2016/06/09/sextrans-2015-052476.abstract)
 
-3. Jenness SM, Sharma A, Goodreau SM, Rosenberg ES, Weiss KM, Hoover KW, Smith DK, Sullivan P. Individual HIV Risk versus Population Impact of Risk Compensation after HIV Preexposure Prophylaxis Initiation among Men Who Have Sex with Men. _PLoS One._ 2017; 12(1): e0169484. [LINK](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0169484)
+3. Jenness SM, Goodreau SM, Rosenberg E, Beylerian EN, Hoover KW, Smith DK, Sullivan P. Impact of CDC’s HIV Preexposure Prophylaxis Guidelines among MSM in the United States. _Journal of Infectious Diseases._ 2016; 214(12): 1800-1807. [LINK](http://jid.oxfordjournals.org/content/early/2016/07/12/infdis.jiw223.full)
 
-4. Goodreau SM, Rosenberg ES, Jenness SM, Luisi N, Stansfield SE, Millett G, Sullivan P. Sources of Racial Disparities in HIV Prevalence among Men Who Have Sex with Men in Atlanta, GA: A Modeling Study. _Lancet HIV._ 2017; 4(7):e311-e320. [LINK](https://www.ncbi.nlm.nih.gov/pubmed/28431923)
+4. Jenness SM, Sharma A, Goodreau SM, Rosenberg ES, Weiss KM, Hoover KW, Smith DK, Sullivan P. Individual HIV Risk versus Population Impact of Risk Compensation after HIV Preexposure Prophylaxis Initiation among Men Who Have Sex with Men. _PLoS One._ 2017; 12(1): e0169484. [LINK](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0169484)
 
-5. Jenness SM, Weiss KM, Goodreau SM, Rosenberg E, Gift T, Chesson H, Hoover KW, Smith DK, Liu AY, Sullivan P. Incidence of Gonorrhea and Chlamydia Following HIV Preexposure Prophylaxis among Men Who Have Sex with Men: A Modeling Study. _Clinical Infectious Diseases._ 2017; 65(5): 712-718. [LINK](https://academic.oup.com/cid/article-lookup/doi/10.1093/cid/cix439)
+5. Goodreau SM, Rosenberg ES, Jenness SM, Luisi N, Stansfield SE, Millett G, Sullivan P. Sources of Racial Disparities in HIV Prevalence among Men Who Have Sex with Men in Atlanta, GA: A Modeling Study. _Lancet HIV._ 2017; 4(7):e311-e320. [LINK](https://www.ncbi.nlm.nih.gov/pubmed/28431923)
+
+6. Jenness SM, Weiss KM, Goodreau SM, Rosenberg E, Gift T, Chesson H, Hoover KW, Smith DK, Liu AY, Sullivan P. Incidence of Gonorrhea and Chlamydia Following HIV Preexposure Prophylaxis among Men Who Have Sex with Men: A Modeling Study. _Clinical Infectious Diseases._ 2017; 65(5): 712-718. [LINK](https://academic.oup.com/cid/article-lookup/doi/10.1093/cid/cix439)
+
+7. Vandormael A, Dobra A, Bärnighausen T, de Oliveira T, Tanser F. Incidence rate estimation, periodic testing and the limitations of the mid-point imputation approach. _International Journal of Epidemiology._ Epub 2017 Aug 9. [LINK](https://www.ncbi.nlm.nih.gov/pubmed/29024978)
+
+8. Goodreau SM, Hamilton DT, Jenness SM, Sullivan PS, Valencia RK, Wang LY, Dunville RL, Barrios LC, Rosenberg ES. Targeting Human Immunodeficiency Virus Pre-Exposure Prophylaxis to Adolescent Sexual Minority Males in Higher Prevalence Areas of the United States: A Modeling Study. _J Adolesc Health._ Epub 2017. [LINK](https://www.ncbi.nlm.nih.gov/pubmed/29248392)
+
+9. Herbeck JT, Peebles K, Edlefsen PT, Rolland M, Murphy JT, Gottlieb GS, Abernethy N, Mullins JI, Mittler JE, Goodreau SM. HIV population-level adaptation can rapidly diminish the impact of a partially effective vaccine. _Vaccine._ 2018;36(4): 514-520. [LINK](https://www.ncbi.nlm.nih.gov/pubmed/29241646)
+
 
 #### Other
 
 1. Ezenwa VO, Archie EA, Craft ME, Hawley DM, Martin LB, Moore J, White L. Host behaviour-parasite feedback: an essential link between animal behaviour and disease ecology. Proc Biol Sci. 2016; 283(1828). [LINK](https://www.ncbi.nlm.nih.gov/pubmed/27053751)
 
-2. Goldstein ND, Eppes SC, Mackley A, Tuttle D, Paul DA. A Network Model of Hand Hygiene: How Good Is Good Enough to Stop the Spread of MRSA? Infect Control Hosp Epidemiol. 2017:1-8. [LINK](https://www.ncbi.nlm.nih.gov/pubmed/28656884)
+2. Goldstein ND, Eppes SC, Mackley A, Tuttle D, Paul DA. A Network Model of Hand Hygiene: How Good Is Good Enough to Stop the Spread of MRSA? _Infect Control Hosp Epidemiol._ 2017:1-8. [LINK](https://www.ncbi.nlm.nih.gov/pubmed/28656884)
+
+3. White LA, Forester JD, Craft ME. Covariation between the physiological and behavioral components of pathogen transmission: Host heterogeneity determines epidemic outcomes. _Oikos._ Epub 2017 November. [LINK](http://onlinelibrary.wiley.com/doi/10.1111/oik.04527/full).
+
+4. Haeussler K, Hout AV, Baio G. A dynamic Bayesian Markov model for health economic evaluations of interventions against infectious diseases. _arXiv._ arXiv:1512.06881. [LINK](https://arxiv.org/abs/1512.06881)
+
+5. Webber QM, Brigham RM, Park AD, Gillam EH, O’Shea TJ, Willis CK. Social network characteristics and predicted pathogen transmission in summer colonies of female big brown bats (Eptesicus fuscus). _Behavioral Ecology and Sociobiology._ 2016;70(5): 701-12. [LINK](https://link.springer.com/article/10.1007/s00265-016-2093-3)
 
 
 ### Funding
