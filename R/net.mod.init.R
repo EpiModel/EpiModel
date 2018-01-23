@@ -35,9 +35,10 @@ initialize.net <- function(x, param, init, control, s) {
       nw <- simulate(x$formation,
                      basis = x$fit,
                      coef = x$coef.form.crude,
-                     constraints = x$constraints)
+                     constraints = x$constraints,
+                     control = control.simulate.formula(MCMC.burnin = 2e6))
     } else {
-      nw <- simulate(x$fit)
+      nw <- simulate(x$fit, control = control.simulate.ergm(MCMC.burnin = 2e6))
     }
     modes <- ifelse(nw %n% "bipartite", 2, 1)
 
