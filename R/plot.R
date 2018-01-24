@@ -1650,7 +1650,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #' @export
 #'
 #' @keywords plot
-#' @seealso \code{\link{plot.network}} \code{\link{mutate_epi}}
+#' @seealso \code{\link{plot.network}}, \code{\link{mutate_epi}}
 #'
 #' @examples
 #' ## Independent SI Model
