@@ -17,7 +17,7 @@
 }
 \details{
 The EpiModel software package provides tools for building, solving, and
-visualizing mathematical models of infectious disease. These tools allow users
+visualizing mathematical models of infectious disease dynamics. These tools allow users
 to simulate epidemic models in multiple frameworks for both pedagogical
 purposes ("base models") and novel research purposes ("extension models").
 }
