@@ -1436,10 +1436,6 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         sim.lines <- FALSE
       }
 
-      plot(x = 1, y = 1, type = "n",
-           xlim = xlim, ylim = ylim,
-           xlab = xlab, ylab = ylab)
-
       if (is.numeric(qnts)) {
         if (qnts < 0 | qnts > 1) {
           stop("qnts must be between 0 and 1", call. = FALSE)
@@ -1463,6 +1459,18 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
           yy <- c(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[1, ]))$y,
                   rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[2, ]))$y))
         }
+
+        if (sim.lines == FALSE) {
+          ylim <- c(0, max(yy) * 1.1)
+          if (length(da) > 0 & !is.null(da$ylim)) {
+            ylim <- da$ylim
+          }
+        }
+
+        plot(x = 1, y = 1, type = "n",
+             xlim = xlim, ylim = ylim,
+             xlab = xlab, ylab = ylab)
+
         polygon(xx, yy, col = qnts.col, border = NA)
       }
 

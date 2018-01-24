@@ -98,6 +98,7 @@ dx2 <- netdx(est, nsims = 5, nsteps = 500,
 dx2
 plot(dx2, stats = c("edges", "meandeg"), plots.joined = FALSE)
 plot(dx2, type = "duration")
+plot(dx2, type = "dissolution", qnts.col = "orange2")
 plot(dx2, type = "dissolution", method = "b", col = "bisque")
 }
 
