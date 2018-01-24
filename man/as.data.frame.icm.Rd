@@ -48,7 +48,7 @@ simulations for each time step in the model output.
 param <- param.icm(inf.prob = 0.8, act.rate = 2, rec.rate = 0.1)
 init <- init.icm(s.num = 500, i.num = 1)
 control <- control.icm(type = "SIS", nsteps = 25,
-                       nsims = 5, verbose = FALSE)
+                       nsims = 2, verbose = FALSE)
 mod <- icm(param, init, control)
 
 # Default output is mean across simulations
@@ -74,7 +74,7 @@ est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 
 param <- param.net(inf.prob = 0.5)
 init <- init.net(i.num = 10)
-control <- control.net(type = "SI", nsteps = 10, nsims = 3, verbose = FALSE)
+control <- control.net(type = "SI", nsteps = 10, nsims = 2, verbose = FALSE)
 mod <- netsim(est, param, init, control)
 
 as.data.frame(mod)
