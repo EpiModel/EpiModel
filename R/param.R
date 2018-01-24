@@ -341,7 +341,7 @@ param.icm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
 #' population by the fourth time step, the third element in the vector will carry
 #' forward until one of those events occurs or the simulation ends. For further examples,
 #' see the NME tutorial,
-#' \href{http://statnet.github.io/nme/d3-tut3.html}{Time-Varying Biology & Behavior}.
+#' \href{https://statnet.github.io/nme/d3-s6.html}{Time-Varying Biology & Behavior}.
 #'
 #' @section New Modules:
 #' To build original models outside of the base models, new process modules

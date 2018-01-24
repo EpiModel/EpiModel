@@ -2642,7 +2642,7 @@ comp_plot.netsim <- function(x, at = 1, digits = 3, ...) {
 #' @examples
 #' param <- param.icm(inf.prob = 0.2, act.rate = 0.25)
 #' init <- init.icm(s.num = 500, i.num = 1)
-#' control <- control.icm(type = "SI", nsteps = 500, nsims = 10)
+#' control <- control.icm(type = "SI", nsteps = 250, nsims = 5)
 #' mod1 <- icm(param, init, control)
 #' df <- as.data.frame(mod1, out = "vals")
 #' df.mean <- as.data.frame(mod1)
