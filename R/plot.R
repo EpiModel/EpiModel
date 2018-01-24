@@ -1676,7 +1676,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #' plot(mod, type = "epi")
 #' plot(mod, type = "epi", grid = TRUE)
 #' plot(mod, type = "epi", popfrac = TRUE)
-#' plot(mod, type = "epi", y = "si.flow", qnts = 1)
+#' plot(mod, type = "epi", y = "si.flow", qnts = 1, ylim = c(0, 4))
 #'
 #' # Plot static networks
 #' par(mar = c(0,0,0,0))
