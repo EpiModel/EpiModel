@@ -1,3 +1,11 @@
+Version 1.6.1
+------------------------------------------------------------------------------
+
+OTHER
+* Fixed minor issue with unit tests using `identical` function causing some to
+  fail under alternative BLAS/LAPACK implementations.
+
+
 Version 1.6.0
 ------------------------------------------------------------------------------
 
