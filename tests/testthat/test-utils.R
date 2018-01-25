@@ -186,5 +186,5 @@ test_that("get_degree", {
   deg.el <- get_degree(el)
   deg.el
 
-  identical(ergm.method, deg.net, deg.el)
+  all.equal(ergm.method, deg.net, deg.el)
 })
