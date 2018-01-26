@@ -90,10 +90,11 @@ EpiModel has been used in the following scientific journal articles.
 
 3. White LA, Forester JD, Craft ME. Covariation between the physiological and behavioral components of pathogen transmission: Host heterogeneity determines epidemic outcomes. _Oikos._ Epub 2017 November. [LINK](http://onlinelibrary.wiley.com/doi/10.1111/oik.04527/full).
 
-4. Haeussler K, Hout AV, Baio G. A dynamic Bayesian Markov model for health economic evaluations of interventions against infectious diseases. _arXiv._ arXiv:1512.06881. [LINK](https://arxiv.org/abs/1512.06881)
+4. Haeussler K, Hout AV, Baio G. A dynamic Bayesian Markov model for health economic evaluations of interventions against infectious diseases. _arXiv._ arXiv:1512.06881. [LINK](https://arxiv.org/abs/1512.06881). 
 
-5. Webber QM, Brigham RM, Park AD, Gillam EH, O’Shea TJ, Willis CK. Social network characteristics and predicted pathogen transmission in summer colonies of female big brown bats (Eptesicus fuscus). _Behavioral Ecology and Sociobiology._ 2016;70(5): 701-12. [LINK](https://link.springer.com/article/10.1007/s00265-016-2093-3)
+5. Webber QM, Brigham RM, Park AD, Gillam EH, O’Shea TJ, Willis CK. Social network characteristics and predicted pathogen transmission in summer colonies of female big brown bats (Eptesicus fuscus). _Behavioral Ecology and Sociobiology._ 2016;70(5): 701-12. [LINK](https://link.springer.com/article/10.1007/s00265-016-2093-3). 
 
+6. Robinson SJ, Barbieri MM, Murphy S, Baker JD, Harting AL, Craft ME, Littnan CL. Model recommendations meet management reality: implementation and evaluation of a network-informed vaccination effort for endangered Hawaiian monk seals. _Proceeding of the Royal Society B._ 2018; DOI: 10.1098/rspb.2017.1899. [LINK](https://www.ncbi.nlm.nih.gov/pubmed/29321294).
 
 ### Funding
 Development of this software has been supported by the following grants from the National Institutes of Health (NIH) and Centers for Disease Control and Prevention (CDC): 
