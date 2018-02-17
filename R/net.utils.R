@@ -740,7 +740,7 @@ get_formula_terms <- function(formula) {
   # if it has an offset term, needs to be processed differently
   if(!is.null(attr(terms.formula(formula),'offset'))){
     offTerm <- attr(terms.formula(formula),'offset')
-    fterms <-c(fterms,attr(terms.formula(formula),'variables')[[offTerm+1]])
+    fterms <-c(fterms, lapply(offTerm, function(x) { attr(terms.formula(formula),'variables')[[x+1]] }))
   }
   fterms <- strsplit(as.character(fterms), split = "[\"]")
   tl <- sapply(fterms, length)
