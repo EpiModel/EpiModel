@@ -39,7 +39,7 @@ test_that("SIR model with epi.by parameter", {
   param <- param.net(inf.prob = 0.1, act.rate = 1, rec.rate = 0.005)
   init <- init.net(i.num = 10, r.num = 0)
   control <- control.net(type = "SIR", nsteps = 10, nsims = 1,
-                         epi.by = "race", verbose = TRUE, verbose.int = 0)
+                         epi.by = "race", verbose = FALSE, verbose.int = 0)
   sim <- netsim(est, param, init, control)
   expect_is(sim, "netsim")
   expect_true(all(c("s.num.race0", "s.num.race1", "i.num.race0", "i.num.race1",
