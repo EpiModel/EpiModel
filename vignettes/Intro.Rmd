@@ -1,5 +1,5 @@
 ---
-title: 'EpiModel: Mathematical Modeling of Infectious Disease'
+title: 'EpiModel: Mathematical Modeling of Infectious Disease Dynamics'
 author: "Samuel M. Jenness, Steven M. Goodreau, Martina Morris"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
