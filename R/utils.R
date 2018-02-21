@@ -258,6 +258,14 @@ mutate_epi <- function(x, ...) {
   dt <- lazy_dots(...)
   ndat <- lazy_eval(dt, x$epi)
 
+  not.df <- which(sapply(ndat, class) != "data.frame")
+  if (length(not.df) > 0) {
+    for (jj in not.df) {
+      ndat[jj][[1]] <- data.frame(rep(ndat[jj][[1]], length.out = x$control$nsteps))
+      names(ndat[[jj]]) <- "run1"
+    }
+  }
+
   x$epi <- c(x$epi, ndat)
   return(x)
 
