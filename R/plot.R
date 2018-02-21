@@ -2647,6 +2647,7 @@ comp_plot.netsim <- function(x, at = 1, digits = 3, ...) {
 #' df <- as.data.frame(mod1, out = "vals")
 #' df.mean <- as.data.frame(mod1)
 #'
+#' library(ggplot2)
 #' ggplot() +
 #'    geom_line(data = df, mapping = aes(time, i.num, group = sim), alpha = 0.25,
 #'              lwd = 0.25, color = "firebrick") +
