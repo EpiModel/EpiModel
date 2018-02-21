@@ -88,3 +88,20 @@ test_that("mutate_epi.dcm, new mod", {
   expect_true("num" %in% names(sim$epi))
   expect_true("prev" %in% names(sim$epi))
 })
+
+test_that("mutate DCM with constant", {
+  param <- param.dcm(inf.prob = 0.2, act.rate = 0.25)
+  init <- init.dcm(s.num = 500, i.num = 1)
+  control <- control.dcm(type = "SI", nsteps = 500)
+  mod1 <- dcm(param, init, control)
+  mod1 <- mutate_epi(mod1, prev = i.num/num,
+                     cm = 3)
+  expect_true(all(sapply(mod1$epi, class) == "data.frame"))
+  expect_true(length(unique(sapply(mod1$epi, nrow))) == 1)
+
+  # by itself
+  mod1 <- dcm(param, init, control)
+  mod1 <- mutate_epi(mod1, cm = 3)
+  expect_true(all(sapply(mod1$epi, class) == "data.frame"))
+  expect_true(length(unique(sapply(mod1$epi, nrow))) == 1)
+})
