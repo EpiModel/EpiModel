@@ -17,6 +17,10 @@
 #'        details).
 #' @param set.control.stergm Control arguments passed to \code{simulate.stergm} (see
 #'        details).
+#' @param sequential For static diagnostics (\code{dynamic=FALSE}): if \code{FALSE},
+#'        each of the \code{nsims} simulated Markov chains begins at the initial
+#'        network; If \code{TRUE}, the end of one simulation is used as the start
+#'        of the next.
 #' @param keep.tedgelist If \code{TRUE}, keep the timed edgelist generated from
 #'        the dynamic simulations, for further analysis on edge durations.
 #' @param verbose Print progress to the console.
@@ -87,8 +91,8 @@
 #' }
 #'
 netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps, nwstats.formula = "formation",
-                  set.control.ergm, set.control.stergm, keep.tedgelist = FALSE,
-                  verbose = TRUE, ncores = 1) {
+                  set.control.ergm, set.control.stergm, sequential = TRUE,
+                  keep.tedgelist = FALSE, verbose = TRUE, ncores = 1) {
 
   if (class(x) != "netest") {
     stop("x must be an object of class netest", call. = FALSE)
@@ -242,11 +246,13 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps, nwstats.formula = "forma
                              constraints = constraints,
                              nsim = nsims,
                              statsonly = TRUE,
+                             sequential = sequential,
                              monitor = nwstats.formula)
       } else {
         diag.sim <- simulate(fit, nsim = nsims,
                              statsonly = TRUE,
                              control = set.control.ergm,
+                             sequential = sequential,
                              monitor = nwstats.formula)
       }
     }
