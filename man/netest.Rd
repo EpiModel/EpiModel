@@ -136,7 +136,11 @@ Krivitsky PN, Handcock MS. "A separable model for dynamic networks." JRSS(B).
 
 Carnegie NB, Krivitsky PN, Hunter DR, Goodreau SM. An approximation method for
 improving dynamic network model fitting. Journal of Computational and Graphical
-Statistics. 2014; In press.
+Statistics. 2014; 24(2): 502-519.
+
+Jenness SM, Goodreau SM and Morris M. EpiModel: An R Package for Mathematical
+Modeling of Infectious Disease over Networks. Journal of Statistical Software.
+2018; 84(8): 1-47.
 }
 \seealso{
 Use \code{\link{netdx}} to diagnose the fitted network model, and

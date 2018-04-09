@@ -116,8 +116,9 @@ summary(mod2, at = 100)
 
 }
 \references{
-Goodreau SM, Carnegie NB, et al. What drives the US and Peruvian HIV epidemics
-in men who have sex with men (MSM)? PloS One. 2012; 7(11): e50522.
+Jenness SM, Goodreau SM and Morris M. EpiModel: An R Package for Mathematical
+Modeling of Infectious Disease over Networks. Journal of Statistical Software.
+2018; 84(8): 1-47.
 }
 \seealso{
 Extract the model results with \code{\link{as.data.frame.netsim}}.

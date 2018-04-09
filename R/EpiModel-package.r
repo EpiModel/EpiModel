@@ -102,12 +102,21 @@
 #'  }
 #' }
 #'
-#' @references The EpiModel website is at \url{http://epimodel.org/}, and the source
-#'             code is at \url{http://github.com/statnet/EpiModel}. Bug reports
-#'             and feature requests may be filed there. We have also developed an
-#'             extension package specifically for modeling HIV and related
-#'             sexually transmitted infections, called EpiModelHIV and available
-#'             on Github at \url{http://github.com/statnet/EpiModelHIV}
+#' @references
+#' The EpiModel website is at \url{http://epimodel.org/}, and the source
+#' code is at \url{http://github.com/statnet/EpiModel}. Bug reports and feature
+#' requests are welcome there.
+#'
+#' Our primary methods paper on EpiModel is published in the \strong{Journal of Statistical Software}.
+#' If you use EpiModel for any research or teaching purposes, please cite this reference:
+#'
+#' Jenness SM, Goodreau SM and Morris M. EpiModel: An R Package for Mathematical
+#' Modeling of Infectious Disease over Networks. Journal of Statistical Software.
+#' 2018; 84(8): 1-47. doi: 10.18637/jss.v084.i08 (\url{http://doi.org/10.18637/jss.v084.i08}).
+#'
+#' We have also developed an extension package specifically for modeling HIV and related
+#' sexually transmitted infections, called \code{EpiModelHIV} and available on Github
+#' at \url{http://github.com/statnet/EpiModelHIV}.
 #'
 #' @name EpiModel-package
 #' @aliases EpiModel
