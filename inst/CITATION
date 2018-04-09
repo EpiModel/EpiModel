@@ -1,0 +1,19 @@
+bibentry(bibtype = "Article",
+  title        = "{EpiModel}: An {R} Package for Mathematical Modeling of Infectious Disease over Networks",
+  author       = c(person(given = c("Samuel", "M."),
+                          family = "Jenness",
+                          email = "samuel.m.jenness@emory.edu"),
+                   person(given = c("Steven", "M."),
+                          family = "Goodreau"),
+                   person(given = "Martina",
+                          family = "Morris")),
+  journal      = "Journal of Statistical Software",
+  year         = "2018",
+  volume       = "84",
+  number       = "8",
+  pages        = "1--47",
+  doi          = "10.18637/jss.v084.i08",
+
+  header       = "To cite EpiModel in publications use:"
+)
+
