@@ -24,13 +24,6 @@ with user input on model type, state sizes, and parameters. Model output may
 be plotted, summarized, and saved as raw data using the core \code{EpiModel}
 functionality for these model classes. These applications are built using
 the \code{shiny} package framework.
-
-These apps are also hosted online at Rstudio's shinyapps site here:
-\itemize{
-   \item DCM App: \samp{https://statnet.shinyapps.io/epidcm/}
-   \item ICM App: \samp{https://statnet.shinyapps.io/epiicm/}
-   \item NET App: \samp{https://statnet.shinyapps.io/epinet/}
-}
 }
 \examples{
 \dontrun{
@@ -46,7 +39,7 @@ epiweb(class = "net")
 
 }
 \references{
-RStudio. shiny: Web Application Framework for R. R package version 0.12.2.
+RStudio. shiny: Web Application Framework for R. R package version 1.0.5.
 2015. \url{http://www.rstudio.com/shiny/}
 }
 \seealso{
