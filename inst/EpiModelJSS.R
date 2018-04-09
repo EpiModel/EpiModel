@@ -1,175 +1,167 @@
-
 ##
 ## R Script File for Journal of Statistical Software Manuscript
 ## EpiModel: An R Package for Mathematical Modeling of Infectious Disease over Networks
 ##
-## Date: June 1, 2017
-## EpiModel v1.5.0
-##
 
+## Section 2. Orientation --------------------------------------------------
 
-# Section 2. Orientation --------------------------------------------------
-
-# Install the packages
+## Install the packages
 install.packages("EpiModel", dependencies = TRUE)
 library("EpiModel")
 
-# Access the help files
+## Access the help files
 help(package = "EpiModel")
 
-# Running the Shiny web applications
-epiweb("dcm")
-epiweb("icm")
-epiweb("net")
+## Running the Shiny web applications
+if (interactive()) {
+  epiweb("dcm")
+  epiweb("icm")
+  epiweb("net")
+}
 
+## Section 4. Base models --------------------------------------------------
 
-# Section 4. Base models --------------------------------------------------
-
-## Example 1: Independent SIS Model ##
+## Example 1: Independent SIS Model
 
 set.seed(12345)
 
-# Initialize the network
+## Initialize the network
 nw <- network::network.initialize(n = 1000, directed = FALSE)
 nw <- network::set.vertex.attribute(nw, "risk", rep(0:1, each = 500))
 
-# ERGM formation formula
-formation <- ~edges + nodefactor("risk") + nodematch("risk") + concurrent
+## ERGM formation formula
+formation <- ~ edges + nodefactor("risk") + nodematch("risk") + concurrent
 
-# Target statistics for formula
+## Target statistics for formula
 target.stats <- c(250, 375, 225, 100)
 
-# ERGM dissolution coefficients
-coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 80)
-print(coef.diss)
+## ERGM dissolution coefficients
+coef.diss <- dissolution_coefs(dissolution = ~ offset(edges), duration = 80)
+coef.diss
 
-# Estimate the model
+## Estimate the model
 est1 <- netest(nw, formation, target.stats, coef.diss)
 
-# Run diagnostics on the model
+## Run diagnostics on the model
 dx <- netdx(est1, nsims = 10, nsteps = 1000)
-print(dx)
+dx
 
-# Plot the diagnostics for the formation formula
+## Plot the diagnostics for the formation formula
 par(mar = c(3, 3, 1, 1), mgp = c(2, 1, 0))
 plot(dx)
 
-# Plot the diagnostics for the dissolution formula
+## Plot the diagnostics for the dissolution formula
 par(mfrow = c(1, 2))
 plot(dx, type = "duration")
 plot(dx, type = "dissolution")
 
-# Set the initial conditions for the epidemic model
+## Set the initial conditions for the epidemic model
 init <- init.net(i.num = 50)
 
-# Set the epidemic parameters
+## Set the epidemic parameters
 param <- param.net(inf.prob = 0.1, act.rate = 5, rec.rate = 0.02)
 
-# Set the controls
+## Set the controls
 control <- control.net(type = "SIS", nsteps = 500,
                        nsims = 10, epi.by = "risk")
 
-# Simulate the epidemic model
+## Simulate the epidemic model
 sim1 <- netsim(est1, param, init, control)
 
-# Print the model results
-print(sim1)
+## Print the model results
+sim1
 
-# Summarize the model results at time step 500
+## Summarize the model results at time step 500
 summary(sim1, at = 500)
 
-# Plot the model results (default prevalence plot)
+## Plot the model results (default prevalence plot)
 par(mfrow = c(1, 1))
 plot(sim1)
 
-# Plot the incidence and recoveries
+## Plot the incidence and recoveries
 plot(sim1, y = c("si.flow", "is.flow"), legend = TRUE)
 
-# Plot prevalence stratified by risk group
+## Plot prevalence stratified by risk group
 plot(sim1, y = c("i.num.risk0", "i.num.risk1"), legend = TRUE)
 
-# Plot the static network structure at time steps 1 and 500
+## Plot the static network structure at time steps 1 and 500
 par(mfrow = c(1, 2), mar = c(2, 0, 2, 0), mgp = c(1, 1, 0))
 plot(sim1, type = "network", at = 1, sims = "mean",
      col.status = TRUE, main = "Prevalence at t1")
 plot(sim1, type = "network", at = 500, sims = "mean",
      col.status = TRUE, main = "Prevalence at t500")
 
-
-## Example 2: Dependent SI Model ##
+## Example 2: Dependent SI Model
 
 set.seed(12345)
 
-# Initial the network
+## Initial the network
 num.m1 <- num.m2 <- 500
 nw <- network::network.initialize(num.m1 + num.m2,
                                   bipartite = num.m1, directed = FALSE)
 
-# Enter the sex-specific degree distributions
+## Enter the sex-specific degree distributions
 deg.dist.m1 <- c(0.40, 0.55, 0.04, 0.01)
 deg.dist.m2 <- c(0.48, 0.41, 0.08, 0.03)
 
-# Check the balancing of the degree distributions
+## Check the balancing of the degree distributions
 check_bip_degdist(num.m1, num.m2, deg.dist.m1, deg.dist.m2)
 
-# Enter the formation model for the ERGM
-formation <- ~edges + b1degree(0:1) + b2degree(0:1)
+## Enter the formation model for the ERGM
+formation <- ~ edges + b1degree(0:1) + b2degree(0:1)
 
-# Target statistics for the formation model
+## Target statistics for the formation model
 target.stats <- c(330, 200, 275, 240, 205)
 
-# Calculate coefficients for the dissolution model
-coef.diss <- dissolution_coefs(dissolution = ~offset(edges),
+## Calculate coefficients for the dissolution model
+coef.diss <- dissolution_coefs(dissolution = ~ offset(edges),
                                duration = 25, d.rate = 0.006)
-print(coef.diss)
+coef.diss
 
-# Estimate the ERGM
+## Estimate the ERGM
 est2 <- netest(nw, formation, target.stats, coef.diss)
 
-# Run diagnostics on the model fit
+## Run diagnostics on the model fit
 dx <- netdx(est2, nsims = 10, nsteps = 1000)
-print(dx)
+dx
 
-# Plot the diagnostics
-par(mfrow = c(1, 1), mar = c(3, 3, 2, 1), mgp = c(2, 1, 0))
+## Plot the diagnostics
+par(mfrow = c(1, 1))
 plot(dx, plots.joined = TRUE)
 
-# Initial conditions for the epidemic model
+## Initial conditions for the epidemic model
 init <- init.net(i.num = 50, i.num.m2 = 50)
 
-# Epidemic model parameters
+## Epidemic model parameters
 param <- param.net(inf.prob = 0.3, inf.prob.m2 = 0.1,
                    b.rate = 0.006, b.rate.m2 = NA,
                    ds.rate = 0.005, ds.rate.m2 = 0.006,
                    di.rate = 0.008, di.rate.m2 = 0.009)
 
-# Control settings
+## Control settings
 control <- control.net(type = "SI", nsims = 10, nsteps = 500,
-                       nwstats.formula = ~edges + meandeg, delete.nodes = TRUE)
+                       nwstats.formula = ~ edges + meandeg, delete.nodes = TRUE)
 
-# Simulate the epidemic model
+## Simulate the epidemic model
 sim2 <- netsim(est2, param, init, control)
 
-# Post-simulation diagnostics for ERGM target statistics
-pdf(file = "fig/IntEx2-simplot1.pdf", width = 7, height = 4)
-par(mfrow = c(1, 1), mar = c(3, 3, 2, 1), mgp = c(2, 1, 0))
+## Post-simulation diagnostics for ERGM target statistics
 plot(sim2, type = "formation", plots.joined = FALSE)
 abline(h = 0.66, lty = 2, lwd = 2)
-dev.off()
 
-# Plot the epidemic output from the model
+## Plot the epidemic output from the model
 par(mfrow = c(1, 2))
 plot(sim2, popfrac = TRUE)
 plot(sim2, popfrac = FALSE)
 
 
-# Section 5. Model extension API ------------------------------------------
+## Section 5. Model extension API ------------------------------------------
 
 ## Example 1: Age-Dependent Mortality Extension ##
 
 set.seed(12345)
 
-# New aging module
+## New aging module
 aging <- function(dat, at) {
 
   ## Attributes
@@ -183,7 +175,7 @@ aging <- function(dat, at) {
 
   ## Summary statistics
   if (at == 2) {
-    dat$epi$meanAge <- c(NA, mean(dat$attr$age, na.rm = TRUE))
+    dat$epi$meanAge <- c(NA_real_, mean(dat$attr$age, na.rm = TRUE))
   } else {
     dat$epi$meanAge[at] <- mean(dat$attr$age, na.rm = TRUE)
   }
@@ -191,13 +183,13 @@ aging <- function(dat, at) {
   return(dat)
 }
 
-# Express mortality rate as a function of proximity to upper age of 70
+## Express mortality rate as a function of proximity to upper age of 70
 ages <- 18:69
-death.rates <- 1/(70*12 - ages*12)
+death.rates <- 1 / (70 * 12 - ages * 12)
 par(mfrow = c(1, 1), mar = c(3, 3, 1, 1), mgp = c(2, 1, 0))
 plot(ages, death.rates, type = "b", xlab = "age", ylab = "Death Risk")
 
-# Death function
+## Death function
 dfunc <- function(dat, at) {
 
   idsElig <- which(dat$attr$active == 1)
@@ -207,7 +199,7 @@ dfunc <- function(dat, at) {
   if (nElig > 0) {
     ages <- dat$attr$age[idsElig]
     max.age <- dat$param$max.age
-    death.rates <- pmin(1, 1/(max.age*12 - ages*12))
+    death.rates <- pmin(1, 1 / (max.age * 12 - ages * 12))
     vecDeaths <- which(rbinom(nElig, 1, death.rates) == 1)
     idsDeaths <- idsElig[vecDeaths]
     nDeaths <- length(idsDeaths)
@@ -229,7 +221,7 @@ dfunc <- function(dat, at) {
   return(dat)
 }
 
-# Birth function
+## Birth function
 bfunc <- function(dat, at) {
 
   growth.rate <- dat$param$growth.rate
@@ -247,9 +239,7 @@ bfunc <- function(dat, at) {
     newNodes <- (n + 1):(n + nBirths)
     dat$nw <- activate.vertices(dat$nw, onset = at,
                                 terminus = Inf, v = newNodes)
-  }
 
-  if (nBirths > 0) {
     dat$attr$active <- c(dat$attr$active, rep(1, nBirths))
     dat$attr$status <- c(dat$attr$status, rep("s", nBirths))
     dat$attr$infTime <- c(dat$attr$infTime, rep(NA, nBirths))
@@ -265,41 +255,39 @@ bfunc <- function(dat, at) {
   return(dat)
 }
 
-# Initialize the network and estimate the ERGM
+## Initialize the network and estimate the ERGM
 nw <- network::network.initialize(500, directed = FALSE)
-est3 <- netest(nw, formation = ~edges, target.stats = 150,
-               coef.diss = dissolution_coefs(~offset(edges), 60,
-                                            mean(death.rates)))
+est3 <- netest(nw, formation = ~ edges, target.stats = 150,
+               coef.diss = dissolution_coefs(~ offset(edges), 60,
+                                             mean(death.rates)))
 
-# Epidemic model parameterization
+## Epidemic model parameterization
 param <- param.net(inf.prob = 0.15, growth.rate = 0.01/12, max.age = 70)
 init <- init.net(i.num = 50)
 control <- control.net(type = "SI", nsims = 5, nsteps = 500,
                        deaths.FUN = dfunc, births.FUN = bfunc,
                        aging.FUN = aging, depend = TRUE)
 
-# Simulate the epidemic model
+## Simulate the epidemic model
 sim3 <- netsim(est3, param, init, control)
-print(sim3)
+sim3
 
-# Plot the results of the simulation
+## Plot the results of the simulation
 plot(sim3, popfrac = TRUE, main = "State Prevalences")
 plot(sim3, popfrac = FALSE, main = "State Sizes", sim.lines = TRUE,
      qnts = FALSE, mean.smooth = FALSE)
-
 
 ## Example 2: SEIR Epidemic Model ##
 
 set.seed(12345)
 
-# Modified infection module
+## Modified infection module
 infect <- function(dat, at) {
 
   active <- dat$attr$active
   status <- dat$attr$status
   nw <- dat$nw
 
-  idsSus <- which(active == 1 & status == "s")
   idsInf <- which(active == 1 & status == "i")
   nActive <- sum(active == 1)
 
@@ -307,7 +295,7 @@ infect <- function(dat, at) {
   nInf <- 0
 
   if (nElig > 0 && nElig < nActive) {
-    del <- discord_edgelist(dat, idsInf, idsSus, at)
+    del <- discord_edgelist(dat, at)
     if (!(is.null(del))) {
       del$transProb <- dat$param$inf.prob
       del$actRate <- dat$param$act.rate
@@ -334,7 +322,7 @@ infect <- function(dat, at) {
 }
 
 
-# New disease progression module
+## New disease progression module
 progress <- function(dat, at) {
 
   active <- dat$attr$active
@@ -389,22 +377,22 @@ progress <- function(dat, at) {
   return(dat)
 }
 
-# Initialize the network and estimate the ERGM
+## Initialize the network and estimate the ERGM
 nw <- network::network.initialize(500, directed = FALSE)
-est4 <- netest(nw, formation = ~edges, target.stats = 150,
-               coef.diss = dissolution_coefs(~offset(edges), 10))
+est4 <- netest(nw, formation = ~ edges, target.stats = 150,
+               coef.diss = dissolution_coefs(~ offset(edges), 10))
 
-# Epidemic model parameterization
+## Epidemic model parameterization
 param <- param.net(inf.prob = 0.5, act.rate = 2, ei.rate = 0.01, ir.rate = 0.005)
 init <- init.net(i.num = 10)
 control <- control.net(nsteps = 500, nsims = 5, infection.FUN = infect,
                        progress.FUN = progress, recovery.FUN = NULL,
                        skip.check = TRUE, depend = FALSE, verbose.int = 0)
 
-# Simulate the epidemic model
+## Simulate the epidemic model
 sim4 <- netsim(est4, param, init, control)
 
-# Plot the results
+## Plot the results
 par(mfrow = c(1, 1))
 plot(sim4, y = c("s.num", "i.num", "e.num", "r.num"),
      mean.col = 1:4, qnts = 1, qnts.col = 1:4, legend = TRUE)
