@@ -2,7 +2,6 @@
 title: 'EpiModel: Mathematical Modeling of Infectious Disease Dynamics'
 author: "Samuel M. Jenness, Steven M. Goodreau, Martina Morris"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{EpiModel Introduction}
   %\VignetteEngine{knitr::rmarkdown}
@@ -15,13 +14,15 @@ vers <- packageVersion("EpiModel")
 year <- format(Sys.time(), "%Y")
 ```
 
-<br>
+### Introduction
 
 The **EpiModel** package provides tools for simulating mathematical models of infectious disease dynamics. Epidemic model classes include deterministic compartmental models, stochastic agent-based models, and stochastic network models. Network models use the robust statistical methods of exponential-family random graph models (ERGMs) from the Statnet suite of software packages in R. Standard templates for epidemic modeling include SI, SIR, and SIS disease types. EpiModel features an easy API for extending these templates to address novel scientific research aims.
 
+### Documentation
+
 This vignette is a placeholder for the **EpiModel** tutorials and documentation hosted online and external to the package to minimize testing and building timing. Tutorials may be found at the **EpiModel** website (http://epimodel.org).
 
-A good place to start learning about **EpiModel** is the main methods paper. It is currently in press at the *Journal of Statistical Software* but available as pre-press at bioRxiv here: https://www.biorxiv.org/content/early/2017/11/03/213009.
+A good place to start learning about **EpiModel** is the main methods paper. It is published *Journal of Statistical Software* at the reference below.
 
 Within the package, please consult the extensive help documentation:
 ```{r, eval=FALSE}
@@ -33,6 +34,8 @@ To see the latest updates to **EpiModel**, consult the software `NEWS`:
 news(package = "EpiModel")
 ```
 
+### Citation
+
 If using EpiModel for teaching or research, please include a citation:
 
-> Jenness SM, Goodreau SM, Morris M. EpiModel: An R Package for Mathematical Modeling of Infectious Disease over Networks. *bioRxiv* 2017;  213009. DOI: https://doi.org/10.1101/213009.
+> Jenness SM, Goodreau SM and Morris M. EpiModel: An R Package for Mathematical Modeling of Infectious Disease over Networks. _Journal of Statistical Software._ 2018; 84(8): 1-47. doi: 10.18637/jss.v084.i08 (http://doi.org/10.18637/jss.v084.i08).
