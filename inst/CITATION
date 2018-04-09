@@ -13,7 +13,10 @@ bibentry(bibtype = "Article",
   number       = "8",
   pages        = "1--47",
   doi          = "10.18637/jss.v084.i08",
-
-  header       = "To cite EpiModel in publications use:"
+  keywords     = "mathematical model, infectious disease, epidemiology, networks, R",
+  textVersion  =  paste("Jenness SM, Goodreau SM, Morris M.",
+                       "EpiModel: An R Package for Mathematical Modeling of Infectious Disease over Networks.",
+                       "Journal of Statistical Software. 2018; 84(8): 1-47.",
+                       "DOI: 10.18637/jss.v084.i08."),
+  header       = "To cite EpiModel in publications, please use:"
 )
-
