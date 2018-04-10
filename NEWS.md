@@ -1,15 +1,38 @@
-Version 1.6.1
+EpiModel 1.6.5
 ------------------------------------------------------------------------------
 
-OTHER
+### NEW FEATURES
+* `netdx` now includes a new argument, `sequential`, for static diagnostics
+  that mirrors the same argument from `ergm::simulate.ergm` to simulate from
+  MCMC chains based on previous draws versus new draws.
+
+### BUG FIXES
+* Fix `mutate_epi` output when new variable is a constant.
+
+### OTHER
+* Move `ggplot2` from depend to import.
+* References added for publication of Journal of Statistical Software methods
+  paper on EpiModel: Jenness SM, Goodreau SM, Morris M. EpiModel: An R Package 
+  for Mathematical Modeling of Infectious Disease over Networks. _Journal of 
+  Statistical Software._ 2018; 84(8): 1-47. DOI: 10.18637/jss.v084.i08.
+
+<br>
+
+
+EpiModel 1.6.1
+------------------------------------------------------------------------------
+
+### OTHER
 * Fixed minor issue with unit tests using `identical` function causing some to
   fail under alternative BLAS/LAPACK implementations.
 
+<br>
 
-Version 1.6.0
+
+EpiModel 1.6.0
 ------------------------------------------------------------------------------
 
-NEW FEATURES
+### NEW FEATURES
 * `as.data.frame` methods for `netsim` and `icm` classes now allow creation of a
   single data frame with epidemic outcomes across multiple simulations, where
   previous only single individual simulations would be output. This is specified
@@ -31,14 +54,14 @@ NEW FEATURES
   Combined with the `status.vector` parameter, this provides users maximal control
   over who is infected and for how long as initial conditions.
 
-BUG FIXES
+### BUG FIXES
 * Fixed bug in DCM Shiny app related to plotting prevalence vs count outcomes.
 * Removed unneeded and unused input parameters from `discord_edgelist` function.
 * Fixed issue where SIS/SIR models with vital dynamics, and a low mortality rate
   relative to the recovery rate (which is typical) would get very long initial
   infection times assigned at t_1.
 
-OTHER
+### OTHER
 * Changed the title (actually, it's a subtitle) in the DESCRIPTION to: "Mathematical
   Modeling of Infectious Disease Dynamics".
 * Deprecated the `status.rand` argument for `init.net` and `init.icm` that allowed
@@ -47,23 +70,19 @@ OTHER
   randomly setting the initial number infected may control this more flexibly
   with the `status.vector` parameter.
 
+<br>
 
-Version 1.5.0
+
+EpiModel 1.5.0
 ------------------------------------------------------------------------------
 
-NOTE
-* This version of EpiModel has been used to prepare the examples in the manuscript
-  "EpiModel: An R Package for Mathematical Modeling of Infectious Disease over
-  Networks", currently in press (2017-06-01) at the Journal of Statistical
-  Software.
-
-NEW FEATURES
+### NEW FEATURES
 * Add `grid` argument to plot functions to overlay a grid on line plots.
 
-BUG FIXES
+### BUG FIXES
 * Fix bug in `plot.netdx` examples in help file.
 
-OTHER
+### OTHER
 * Reset the `verbose` default for network models to `TRUE` (reverts change in
   v1.3.0 specifically for network models).
 * Rename `leg` argument name (to add default legends to plots) to `legend`. Note
@@ -71,11 +90,13 @@ OTHER
   arguments starting `leg`; prior model code must be updated.
 * Change default transparency level to 0.5 (if unspecified).
 
+<br>
 
-Version 1.3.0
+
+EpiModel 1.3.0
 ------------------------------------------------------------------------------
 
-NEW FEATURES
+### NEW FEATURES
 * In `control.dcm`, `nsteps` may now be a vector of time steps or, as before, an
   integer containing the number of time steps within a DCM simulation. For example,
   `control.dcm(..., nsteps = seq(1980, 2015, 1/12), ...)` for solve for monthly
@@ -83,13 +104,13 @@ NEW FEATURES
 * `mutate_epi` for adding new variables to a epidemic simulation object now works
    for all three model classes.
 
-BUG FIXES
+### BUG FIXES
 * Outputs from `param`, `init`, and `control` functions are now dual-classed as
   lists as well as their native classes.
 * When passing a `new.mod` into `control.dcm`, printing the `control.dcm` object
   no longer yields a warning and instead prints the function name.
 
-OTHER
+### OTHER
 * Update handling of transparent colors within `transco` to use the base
   `adjustcolor` function.
 * Derivatives tracking a "flow" or the size of a transition between compartments
@@ -103,82 +124,91 @@ OTHER
   the model simulation.
 * Change the `verbose` default for control functions to `FALSE`.
 
+<br>
 
-Version 1.2.8
+
+EpiModel 1.2.8
 ------------------------------------------------------------------------------
 
-NEW FEATURES
+### NEW FEATURES
 * Print simulation number and prevalence value for static network plots in
   `print.netsim` when `sims` is `mean`, `min`, or `max.
 
-BUG FIXES
+### BUG FIXES
 * Add new line at end of `print.coefdiss` output.
 * Tighten the default ylim ranges for `plot.netsim`
 
-OTHER
+### OTHER
 * Include error check for duration < 1 in `dissolution_coefs`.
 * Update documentation in a number of places.
 
+<br>
 
-Version 1.2.7
+
+EpiModel 1.2.7
 ------------------------------------------------------------------------------
 
-NEW FEATURES
+### NEW FEATURES
 * Add new `mutate_epi` function inspired by the `dplyr` package, to add
   post-hoc summary statistic calculations to completed network simulations.
   See the function help file for examples.
 * Added a speedy `get_degree` function that returns a vector of current
   network degree for each person in a network.
 
-BUG FIXES
+### BUG FIXES
 * Updated internal plot functions that calculate prevalences.
 * Disable verbose output if running network models in parallel.
 
-OTHER
+### OTHER
 * Allow network simulations of 1 time step (mainly used for debugging and
   testing).
 
+<br>
 
-Version 1.2.6
+
+EpiModel 1.2.6
 ------------------------------------------------------------------------------
 
-NEW FEATURES
+### NEW FEATURES
 * Updates to `as.phylo.transmat` to fix issues with vertex exit times and to
   now accept multiple seed vertices if multiple seeds are detected, returning
   a list of phylo objects of class `multiPhylo` following the convention of
   `ape::read.tree`.
 
-BUG FIXES
+### BUG FIXES
 * Corrected an error governing the birth rate of 2-group, open-population
   deterministic compartmental models (DCMs).
 
-OTHER
+### OTHER
 * Updated license to GPL-3.
 
+<br>
 
-Version 1.2.5
+
+EpiModel 1.2.5
 ------------------------------------------------------------------------------
 
-NEW FEATURES
+### NEW FEATURES
 * Added multicore functionality to simulating stochastic network models with `netsim`. This
   only supports single-node frameworks currently, using the `doParallel` package. Run models
   in parallel by using the `ncores` parameter in `control.net`.
 * Modifications to the `as.phylo.transmat` function to construct the phylo tree with all
   network vertices as phylo-tips and all transmissions as phylo nodes.
 
-OTHER
+### OTHER
 * General code cleanup and improvement of package tests to increase coverage about 90%.
 
+<br>
 
 
-Version 1.2.3
+EpiModel 1.2.3
 ------------------------------------------------------------------------------
 
-NEW FEATURES
+### NEW FEATURES
 * The stochastic network model Shiny application now features adaptive concurrency
   levels with ERGMs including that network statistic.
 
-BUG FIXES
+### BUG FIXES
 * `plot.netsim` now correctly functions for diagnostic plots (`type = "formation"`)
   when summary statistics contain variable names with numeric values as suffixes.
 * Avoided duplicate reinitialization of persistent IDs for network models started
@@ -188,11 +218,13 @@ BUG FIXES
 * Automatically set `depend` parameter to `TRUE` in `control.net` when user
   passes in any new birth or death modules.
 
+<br>
 
-Version 1.2.2
+
+EpiModel 1.2.2
 ------------------------------------------------------------------------------
 
-NEW FEATURES
+### NEW FEATURES
 * New translation and plotting functions for temporal transmission chains measured
   in stochastic network models. These include a dendogram using methods from the
   `ape` package and a transmission timeline from the `ndtv` package. See the help
@@ -208,7 +240,7 @@ NEW FEATURES
   `netsim` classes. This will provide a data frame of output corresponding to
   defined quantiles across all simulations contained within a model object.
 
-BUG FIXES
+### BUG FIXES
 * Supress warnings with the lowess smoother in `plot.netsim` in cases where there
   are `NA` values in the epidemiological output.
 * Removed error check for `control.net` when `type` is missing, and automatically
@@ -217,7 +249,7 @@ BUG FIXES
 * Fixed bug in `netdx` on calculating summary statistics from models with multiple
   structural zeros for target statistics.
 
-OTHER
+### OTHER
 * Changed the default of `status.rand`, which controls whether the number initially
   infected in stochastic epidemic models, to `FALSE`. This will ensure that
   exactly the number specified in `init.icm` and `init.net` are matched in each
@@ -226,11 +258,13 @@ OTHER
   extension package at http://github.com/statnet/EpiModelHPC for running network
   simulations in parallel.
 
+<br>
 
-Version 1.2.1
+
+EpiModel 1.2.1
 ------------------------------------------------------------------------------
 
-BUG FIXES
+### BUG FIXES
 * `check_bip_degdist` now uses more tolerant checks of equality when comparing
   bipartite mode statistics.
 * Fixes a formatting issue with output for DCMs run with the `dcm` function.
@@ -241,11 +275,13 @@ BUG FIXES
   `births.FUN`, from the dynamic workflow by setting the argument value for that
   module to `NULL` in the `control.net` inputs.
 
+<br>
 
-Version 1.2.0
+
+EpiModel 1.2.0
 ------------------------------------------------------------------------------
 
-NEW FEATURES
+### NEW FEATURES
 * The `calc_eql` function now returns test statistics invisibly.
 * Major overhaul of plotting functions for stochastic model plots. `plot.netsim`
   is now a separate method for epidemic plots (it was previously a function call
@@ -262,7 +298,7 @@ NEW FEATURES
   formula was already specified in the `dissolution_coefs` function, the output
   of which is passed to `netest`, thereby removing the duplication.
 
-BUG FIXES
+### BUG FIXES
 * `as.data.frame` methods for stochastic models remove `NA` from individual
   simulations when calculating row means.
 * Fixed bug in network birth module for assigning infection status for incoming
@@ -272,17 +308,19 @@ BUG FIXES
 * `merge.netsim` now correctly checks elements of two objects to be merged when
   the classes of those elements may be of length greater than 1.
 
-OTHER
+### OTHER
 * Major updated internal package function testing for more reliable performance.
 * Added `...` argument to `epiweb` to pass additional arguments to `shiny::runApp`.
 * Importing the `graphics`, `grDevices`, `stats`, and `utils` packages as
   required by CRAN.
 
+<br>
 
-Version 1.1.6
+
+EpiModel 1.1.6
 ------------------------------------------------------------------------------
 
-NEW FEATURES
+### NEW FEATURES
 * Built-in parallelization of stochastic network model simulations directly within
   the package with the `netsim_parallel` function has been deprecated. This
   functionality has been replaced with model simulation functions within the
@@ -301,7 +339,7 @@ NEW FEATURES
   to be returned. Requiring an error may be helpful when running a number of
   models in batch mode.
 
-BUG FIXES
+### BUG FIXES
 * Within the built-in deterministic compartmental models solved with the `dcm`
   function, there was an error in the calculation of flows (e.g., disease incidence
   or number of deaths per unit time) when the models were integrated with methods
@@ -310,16 +348,18 @@ BUG FIXES
 * Minor bugs in the default deaths module for stochastic network models were
   corrected.
 
-OTHER
+### OTHER
 * `netest` will now check to ensure that the formation and dissolution models are
   in allignment (terms specified in the same order) and that dissolution model is
   of proper forms (see v1.1.4 notes).
 
+<br>
 
-Version 1.1.4
+
+EpiModel 1.1.4
 ------------------------------------------------------------------------------
 
-NEW FEATURES
+### NEW FEATURES
 * A limited set of heterogeneous dissolution models now allowed for network
   models (#184): edges + nodematch, nodemix, or nodefactor formulas now supported.
   See help file for `dissolution_coefs` for examples.
@@ -333,22 +373,24 @@ NEW FEATURES
   of reducing the probability of transmission given a contact between a susceptible
   and infected person by the efficacy parameter.
 
-BUG FIXES
+### BUG FIXES
 * Fixed error in `births.net` module that set the default `entrTime` and
   `exitTime` attributes twice for bipartite models (#205).
 * Plotting for all model classes now allow setting `xlab` and `ylab` (#206).
 * `get_sims` extraction now outputs correct data when object contains single
   simulation.
 
-OTHER
+### OTHER
 * More robust testing of functions.
 * Updated hyperlinks within doc files to new github-based website.
 
+<br>
 
-Version 1.1.3
+
+EpiModel 1.1.3
 ------------------------------------------------------------------------------
 
-NEW FEATURES
+### NEW FEATURES
 * The `skip.check` argument for `control.net` is even more flexible, to allow
   for passing different class elements into `netsim` with original models.
 * New `param.error` argument for `merge.netsim` that allows bypassing the stop
@@ -358,22 +400,24 @@ NEW FEATURES
   in which modules are evaluated within each time step. The default ordering is
   maintained as explained in the updated help file.
 
-BUG FIXES
+### BUG FIXES
 * `netsim_parallel` now returns the correct object if used for single simulations
   or on single cores.
 * `plot.icm` removes NA values from the data when calculating `ylim` and the
   quantile bands.
 
-OTHER
+### OTHER
 * `netest` now implements an improved "Edges Dissolution Approximation" via the
   `edapprox` argument.
 * Several documentation updates.
 
+<br>
 
-Version 1.1.2
+
+EpiModel 1.1.2
 ------------------------------------------------------------------------------
 
-NEW FEATURES
+### NEW FEATURES
 * Implement `control.dcm` option `dede`, which if true allows for delayed
   differential equations to be passed into a new model solved with `dcm`.
 * New option for `netdx` to simulate static diagnostics from an ERGM, rather
@@ -396,20 +440,22 @@ NEW FEATURES
   specified, or if set as "mean", the simulation with the infected prevalence
   closest to the means across all simulations will be chosen.
 
-BUG FIXES
+### BUG FIXES
 * Object elements saved in stochastic network models with the `save.other`
   parameter in `control.net` may now be merged with `merge.netsim` (#185).
 * Quantile band is displayed in `plot` for ICMs and network models when the `y`
   argument is specified (#188).
 
-OTHER
+### OTHER
 * Package `deSolve` moved from import to depend (#194).
 
+<br>
 
-Version 1.1.1
+
+EpiModel 1.1.1
 ------------------------------------------------------------------------------
 
-NEW FEATURES
+### NEW FEATURES
 * Added dissolution diagnostics in `netdx`, for the proportion of edges that
   dissolve per time step, as another diagnostic for the dissolution model (#53).
 * Network plots with `plot.netsim` now allow specifying `"mean"`, `"min"`, or
@@ -423,7 +469,7 @@ NEW FEATURES
   analyses. This should be used for single-run models if passing in parameters
   with arbitrary form.
 
-BUG FIXES
+### BUG FIXES
 * Print functions for initial condition processing functions now handle list and
   data frame structures (#135).
 * Fix bug for new DCMs in which the initial condition names include standard
@@ -437,7 +483,7 @@ BUG FIXES
   dependent network simulations, not just if built-in vital dynamics modules are
   called (#141).
 
-OTHER
+### OTHER
 * The new website for the EpiModel project is http://epimodel.org/
 * Added a new example of a SEIR Ebola DCM in the "Solving New DCMs with EpiModel"
   tutorial.
@@ -446,11 +492,13 @@ OTHER
 * Other elements saved in network simulations with the `save.other` control
   setting in `control.net` are now printed as output in `print.netsim` (#174).
 
+<br>
 
-Version 1.1
+
+EpiModel 1.1
 ------------------------------------------------------------------------------
 
-NEW FEATURES
+### NEW FEATURES
 * Added three new extraction functions for network models (`get_network`,
   `get_transmat`, and `get_nwstats`) which extract the network objects,
   transmission matrices, and data frame of network statistics from a completed
@@ -494,7 +542,7 @@ NEW FEATURES
   object as an element of the `netest` output. This is mainly for file size
   efficiency.
 
-USER INTERFACE CHANGES
+### USER INTERFACE CHANGES
 * The internal representation of disease status as an individual-level attribute
   in the stochastic ICM and network models has been changed from number
   `(0, 1, 2)` to character `("s", "i", "r")`. This changes little when running
@@ -506,7 +554,7 @@ USER INTERFACE CHANGES
   plots (`type = "network"`) to reduce potential issues with setting default
   margins on plots. Now they must explicitly be set with standard par options.
 
-API CHANGES
+### API CHANGES
 * For ICMs and network models, the internal master data object has been renamed
   from `all` to `dat` to prevent function name conflicts. Additionally, all
   summary output is now stored within `dat$epi`, whereas the previous location
@@ -541,7 +589,7 @@ API CHANGES
   multiple networks simulated (e.g., a main partnership network and a casual
   partnership network).
 
-BUG FIXES
+### BUG FIXES
 * Minor updates and bug fixes to the two built-in Shiny applications (accessed
   via the `epiweb` function). These apps now benefit from the more stable
   parameterization functions.
@@ -551,15 +599,17 @@ BUG FIXES
   `nwstats.formula` control, previously preventing proper merging of some network
   model simulations.
 
-OTHER
+### OTHER
 * Added new test cases for running new DCMs, ICMs, and network models, following
   the vignette examples (see http://epimodel.org/).
 
+<br>
 
-Version 1.0.2
+
+EpiModel 1.0.2
 ------------------------------------------------------------------------------
 
-INTERFACE CHANGES
+### INTERFACE CHANGES
 * The trans.rate and trans.rate.g2/m2 parameters have been renamed to inf.prob
   and inf.prob.g2/m2 to better characterize that they are probabilities, rather
   than rates, and towards infection of persons in that group/mode.
@@ -574,7 +624,7 @@ INTERFACE CHANGES
   status in the formation formula, and which require setting status as a vertex
   attribute on the network before calling netest.
 
-BUG FIXES
+### BUG FIXES
 * Network models with passed network attributes in the formation formula in open
   populations now do not generate an error for persistent ID numbers in the latest
   versions of the tergm and networkDynamic package.
@@ -587,17 +637,19 @@ BUG FIXES
 * Fix bug when calling netdx for one simulation only with a network model fit with
   the full STERGM method (i.e., using the edapprox = FALSE in netest).
 
-OTHER
+### OTHER
 * The dissolution_coefs function now stores and prints the death/exit rate.
 * Removed explicit parameters for xlim, ylim, and main from plot.dcm and plot.icm
   functions, although they still may be passed through the ... argument.
 * Introduction vignette has been updated to list new EpiModel website.
 
+<br>
 
-Version 1.0.1
+
+EpiModel 1.0.1
 ------------------------------------------------------------------------------
 
-NEW FEATURES
+### NEW FEATURES
 * Added coef.form argument to netest for network model formation formulas with
   offset terms.
 * Allow edge duration of 1 in netest when using the edges dissolution approximation
@@ -608,7 +660,7 @@ NEW FEATURES
 * Automated plotting of target statistic lines to plot.netsim formation plots,
   matching the methods of plot.netdx formation plots.
 
-BUG FIXES
+### BUG FIXES
 * netdx now simulates from a different starting network at the begining of each
   dynamic simulation, eliminating correlation at time 1 across simulations.
 * Can now pass status.vector into init.net for bipartite simulations.
@@ -616,14 +668,16 @@ BUG FIXES
 * Fixed bug in network models for open populations in which an attribute was
   passed to the network in the formation formula (e.g., serostatus mixing models).
 
-OTHER
+### OTHER
 * Added internal test structure for build checking.
 * Added a help file document for building ICM modules at ?modules.icm.
 * Expanded and clarified tutorial documentation, available at:
   http://statnet.github.io/EpiModel
 
+<br>
 
-Version 1.0
+
+EpiModel 1.0
 ------------------------------------------------------------------------------
 
 * Model parameterization for all model classes has been substantially revised
@@ -662,11 +716,13 @@ Version 1.0
   build time. They are now available at the EpiModel homepage at:
   http://statnet.org/trac/wiki/EpiModel
 
+<br>
 
-Version 0.95
+
+EpiModel 0.95
 ------------------------------------------------------------------------------
 
-INITIAL RELEASE
+### INITIAL RELEASE
 
 * The EpiModel package provides functions for building, solving, and
   plotting mathematical models of infectious disease.
