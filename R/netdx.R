@@ -22,7 +22,11 @@
 #'        network; If \code{TRUE}, the end of one simulation is used as the start
 #'        of the next.
 #' @param keep.tedgelist If \code{TRUE}, keep the timed edgelist generated from
-#'        the dynamic simulations, for further analysis on edge durations.
+#'        the dynamic simulations. Returned in the form of a list of matrices, with
+#'        one entry per simulation. Accessible at \code{$edgelist}.
+#' @param keep.tnetwork If \code{TRUE}, keep the full networkDynamic objects from
+#'        the dynamic simulations. Returned in the form of a list of nD objects, with
+#'        one entry per simulation. Accessible at \code{$network}.
 #' @param verbose Print progress to the console.
 #' @param ncores Number of processor cores to run multiple simulations
 #'        on, using the \code{foreach} and \code{doParallel} implementations.
@@ -92,7 +96,8 @@
 #'
 netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps, nwstats.formula = "formation",
                   set.control.ergm, set.control.stergm, sequential = TRUE,
-                  keep.tedgelist = FALSE, verbose = TRUE, ncores = 1) {
+                  keep.tedgelist = FALSE, keep.tnetwork = FALSE,
+                  verbose = TRUE, ncores = 1) {
 
   if (class(x) != "netest") {
     stop("x must be an object of class netest", call. = FALSE)
@@ -452,6 +457,9 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps, nwstats.formula = "forma
     out$prop.diss <- prop.diss
     if (keep.tedgelist == TRUE) {
       out$tedgelist <- sim.df
+    }
+    if (keep.tnetwork == TRUE) {
+      out$network <- diag.sim
     }
   }
 

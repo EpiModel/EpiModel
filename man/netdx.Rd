@@ -6,7 +6,8 @@
 \usage{
 netdx(x, nsims = 1, dynamic = TRUE, nsteps, nwstats.formula = "formation",
   set.control.ergm, set.control.stergm, sequential = TRUE,
-  keep.tedgelist = FALSE, verbose = TRUE, ncores = 1)
+  keep.tedgelist = FALSE, keep.tnetwork = FALSE, verbose = TRUE,
+  ncores = 1)
 }
 \arguments{
 \item{x}{An \code{EpiModel} object of class \code{netest}.}
@@ -35,7 +36,12 @@ network; If \code{TRUE}, the end of one simulation is used as the start
 of the next.}
 
 \item{keep.tedgelist}{If \code{TRUE}, keep the timed edgelist generated from
-the dynamic simulations, for further analysis on edge durations.}
+the dynamic simulations. Returned in the form of a list of matrices, with
+one entry per simulation. Accessible at \code{$edgelist}.}
+
+\item{keep.tnetwork}{If \code{TRUE}, keep the full networkDynamic objects from
+the dynamic simulations. Returned in the form of a list of nD objects, with
+one entry per simulation. Accessible at \code{$network}.}
 
 \item{verbose}{Print progress to the console.}
 
