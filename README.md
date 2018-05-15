@@ -5,7 +5,7 @@ EpiModel
 [![](http://cranlogs.r-pkg.org/badges/EpiModel?color=yellow)](http://cran.rstudio.com/web/packages/EpiModel/index.html)
 [![](http://cranlogs.r-pkg.org/badges/grand-total/EpiModel?color=blue)](http://cran.rstudio.com/web/packages/EpiModel/index.html)
 [![Build Status](https://travis-ci.org/statnet/EpiModel.svg?branch=master)](https://travis-ci.org/statnet/EpiModel)
-[![Methods](https://img.shields.io/badge/docs-Methods-943ad8.svg)](https://www.biorxiv.org/content/early/2017/11/03/213009)
+[![Methods](https://img.shields.io/badge/docs-Methods-943ad8.svg)](http://doi.org/10.18637/jss.v084.i08)
 
 <br>
 <img align="right" src="http://www.epimodel.org/movie.gif">
@@ -45,14 +45,17 @@ devtools::install_github("statnet/EpiModel")
 </table>
 
 
-### Documentation
+### Support
 The main website for EpiModel, with tutorials and other supporting files is <a href="http://epimodel.org/" target="_blank">http://epimodel.org/</a>. Users are encouraged to join the <a href="http://mailman11.u.washington.edu/mailman/listinfo/epimodel" target="_blank">email list for EpiModel</a> as a place to ask questions, report bugs, and tell us about your research using these tools.
 
-A good place to start learning about EpiModel is the main methods paper. It is currently in-press at the *Journal of Statistical Software* but available as <a href="https://www.biorxiv.org/content/early/2017/11/03/213009" target="_blank">pre-press at bioRxiv here</a>.
+### Methods
+
+A good place to start learning about EpiModel is the main methods paper published in the *Journal of Statistical Software.* It is available at <a href="http://doi.org/10.18637/jss.v084.i08" target="_blank">http://doi.org/10.18637/jss.v084.i08</a>.
 
 ### Citation
 If using EpiModel for teaching or research, please include a citation:
-> Jenness SM, Goodreau SM, Morris M. EpiModel: An R Package for Mathematical Modeling of Infectious Disease over Networks. *bioRxiv* 2017;  213009. DOI: https://doi.org/10.1101/213009.
+
+> Jenness SM, Goodreau SM and Morris M. EpiModel: An R Package for Mathematical Modeling of Infectious Disease over Networks. *Journal of Statistical Software.* 2018; 84(8): 1-47. doi: 10.18637/jss.v084.i08
 
 Please also send us an email if you have used EpiModel in your work so we can add the citation below.
 
