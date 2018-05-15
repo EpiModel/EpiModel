@@ -95,6 +95,9 @@ EpiModel has been used in the following scientific journal articles.
 
 6. Robinson SJ, Barbieri MM, Murphy S, Baker JD, Harting AL, Craft ME, Littnan CL. Model recommendations meet management reality: implementation and evaluation of a network-informed vaccination effort for endangered Hawaiian monk seals. _Proceeding of the Royal Society B._ 2018; DOI: 10.1098/rspb.2017.1899. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/29321294).
 
+7. Goldstein ND, Jenness SM, Tuttle D, Power M, Paul DA, Eppes SC. Evaluating a neonatal intensive care unit HRSA surveillance programme using agent-based network modeling. Journal of Hospital Infection. EPUB AHEAD OF PRINT. DOI: 10.1016/j.jhin.2018.05.002. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/29751022)
+
+
 ### Funding
 Development of this software has been supported by the following grants from the National Institutes of Health (NIH) and Centers for Disease Control and Prevention (CDC): 
 
