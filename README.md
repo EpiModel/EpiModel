@@ -83,6 +83,8 @@ EpiModel has been used in the following scientific journal articles.
 
 9. Herbeck JT, Peebles K, Edlefsen PT, Rolland M, Murphy JT, Gottlieb GS, Abernethy N, Mullins JI, Mittler JE, Goodreau SM. HIV population-level adaptation can rapidly diminish the impact of a partially effective vaccine. _Vaccine._ 2018;36(4): 514-520. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/29241646)
 
+10. Luo W, Katz DA, Hamilton DT, McKenney J, Jenness SM, Goodreau SM, Stekler JD, Rosenberg ES, Sullivan P, Cassels S. Development of an Agent-Based Model to Investigate the Impact of HIV Self-Testing Programs for Men Who Have Sex with Men in Atlanta and Seattle. _Journal of Medical Internet Research Public Health Surveillance._ 2018; 4(2): e58. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/29959112)
+
 
 #### Other
 
