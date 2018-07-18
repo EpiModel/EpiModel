@@ -235,17 +235,41 @@ get_nwparam <- function(x, network = 1) {
 #'              \code{merge}.
 #'
 #' @param x An object of class \code{netsim}.
-#' @param sims A vector of simulation numbers to retain in the output object,
+#' @param sims A numeric vector of simulation numbers to retain in the output object,
 #'        or \code{"mean"} which selects the one simulation with the value of the
 #'        variable specified in \code{var} closest to the mean of \code{var}
 #'        across all simulations.
-#' @param var Variable to use when \code{sims = "mean"} for selecting the average
-#'        simulation from the set.
+#' @param var A character vector of variables to retain from \code{x} if \code{sims}
+#'        is a numeric vector, or a single variable name for selecting the average
+#'        simulation from the set if \code{sims = "mean"}.
 #'
 #' @keywords extract
 #' @export
 #'
-get_sims <- function(x, sims, var = "i.num") {
+#' @examples
+#' # Network model estimation
+#' nw <- network.initialize(n = 100, directed = FALSE)
+#' formation <- ~edges
+#' target.stats <- 50
+#' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
+#' est1 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
+#'
+#' # Epidemic model
+#' param <- param.net(inf.prob = 0.3)
+#' init <- init.net(i.num = 10)
+#' control <- control.net(type = "SI", nsteps = 10, nsims = 3, verbose.int = 0)
+#' mod1 <- netsim(est1, param, init, control)
+#'
+#' # Get sim 2
+#' sim2 <- get_sims(mod1, sims = 2)
+#'
+#' # Get sims 2 and 3 and keep only a subset of variables
+#' sim2.small <- get_sims(mod1, sims = 2:3, var = c("i.num", "si.flow"))
+#'
+#' # Extract the mean simulation for the variable i.num
+#' sim.mean <- get_sims(mod1, sims = "mean", var = "i.num")
+#'
+get_sims <- function(x, sims, var) {
 
   if (class(x) != "netsim") {
     stop("x must be of class netsim", call. = FALSE)
@@ -256,11 +280,18 @@ get_sims <- function(x, sims, var = "i.num") {
   if (missing(sims)) {
     stop("Specify sims as a vector of simulations or \"mean\" ", call. = FALSE)
   }
+  if (sims == "mean" && (missing(var) || length(var) > 1)) {
+    stop("If sims == 'mean' then var must be a single varible name", call. = FALSE)
+  }
 
   if (length(sims) == 1 && sims == "mean") {
     d <- tail(x$epi[[var]], 1)
     md <- mean(as.numeric(d))
     sims <- which.min(abs(d - md))
+  }
+
+  if (sims != "mean" && max(sims) > nsims) {
+    stop("Maximum sims value for this object is ", nsims, call. = FALSE)
   }
 
   delsim <- setdiff(1:nsims, sims)
@@ -286,5 +317,11 @@ get_sims <- function(x, sims, var = "i.num") {
     }
   }
   out$control$nsims <- length(sims)
+
+  if (!missing(var) && var != "mean") {
+    match.vars <- which(var %in% names(x$epi))
+    out$epi <- out$epi[match.vars]
+  }
+
   return(out)
 }

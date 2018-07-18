@@ -4,22 +4,47 @@
 \alias{get_sims}
 \title{Extract Network Simulations}
 \usage{
-get_sims(x, sims, var = "i.num")
+get_sims(x, sims, var)
 }
 \arguments{
 \item{x}{An object of class \code{netsim}.}
 
-\item{sims}{A vector of simulation numbers to retain in the output object,
+\item{sims}{A numeric vector of simulation numbers to retain in the output object,
 or \code{"mean"} which selects the one simulation with the value of the
 variable specified in \code{var} closest to the mean of \code{var}
 across all simulations.}
 
-\item{var}{Variable to use when \code{sims = "mean"} for selecting the average
-simulation from the set.}
+\item{var}{A character vector of variables to retain from \code{x} if \code{sims}
+is a numeric vector, or a single variable name for selecting the average
+simulation from the set if \code{sims = "mean"}.}
 }
 \description{
 Subsets the entire \code{netsim} object to a subset of
              simulations, essentially functioning like a reverse of
              \code{merge}.
+}
+\examples{
+# Network model estimation
+nw <- network.initialize(n = 100, directed = FALSE)
+formation <- ~edges
+target.stats <- 50
+coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
+est1 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
+
+# Epidemic model
+param <- param.net(inf.prob = 0.3)
+init <- init.net(i.num = 10)
+control <- control.net(type = "SI", nsteps = 10, nsims = 3, verbose.int = 0)
+mod1 <- netsim(est1, param, init, control)
+
+# Get sim 2
+sim2 <- get_sims(mod1, sims = 2)
+
+# Get sims 2 and 3 and keep only a subset of variables
+sim2.small <- get_sims(mod1, sims = 2:3, var = c("i.num", "si.flow"))
+
+# Extract the mean simulation for the variable i.num
+sim.mean <- get_sims(mod1, sims = "mean", var = "i.num")
+
 }
 \keyword{extract}
