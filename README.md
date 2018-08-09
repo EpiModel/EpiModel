@@ -19,7 +19,7 @@ The current release version can be found on <a href="http://cran.r-project.org/w
 install.packages("EpiModel", dependencies = TRUE)
 ```
 
-To install this development version, use the <a href="https://github.com/hadley/devtools" target="_blank">devtools package</a>:
+To install this development version, use the <a href="https://github.com/r-lib/devtools" target="_blank">devtools package</a>:
 ```r
 if (!require("devtools")) install.packages("devtools")
 devtools::install_github("statnet/EpiModel")
