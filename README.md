@@ -93,7 +93,7 @@ Our team also receives institutional support through the following center-level 
 
 
 
-### Applied Uses of EpiModel in the Scientific Literature
+### Uses of EpiModel in the Scientific Literature
 
 EpiModel and its [extension packages](https://github.com/statnet/EpiModelHIV) have been used in the following scientific journal articles. (If you are aware of others, send us an email at samuel.m.jenness@emory.edu to be included in this list.)
 
@@ -137,6 +137,7 @@ EpiModel and its [extension packages](https://github.com/statnet/EpiModelHIV) ha
 7. Haeussler K, Hout AV, Baio G. A dynamic Bayesian Markov model for health economic evaluations of interventions against infectious diseases. _arXiv._ arXiv:1512.06881. [[LINK]](https://arxiv.org/abs/1512.06881). 
 
 8. Amirpour Haredasht S, Tavornpanich S, Jansen MD, Lyngstad TM, Yatabe T, Brun E, Martínez-López B. A stochastic network-based model to simulate the spread of pancreas disease (PD) in the Norwegian salmon industry based on the observed vessel movements and seaway distance between marine farms. _Prev Vet Med._ 2018. Epub DOI: 10.1016/j.prevetmed.2018.05.019. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/30055856)
+
 
 ### Copyright
 These materials are distributed under the GPL-3 license, with the following copyright and attribution requirements listed in the [LICENSE](https://github.com/statnet/EpiModel/blob/master/LICENSE.md) document above.
