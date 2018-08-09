@@ -95,7 +95,7 @@ Our team also receives institutional support through the following center-level 
 
 ### Applied Uses of EpiModel in the Scientific Literature
 
-EpiModel and its extension packages have been used in the following scientific journal articles. If you are aware of others, send us an email at samuel.m.jenness@emory.edu) to be included in this list.
+EpiModel and its [extension packages](https://github.com/statnet/EpiModelHIV) have been used in the following scientific journal articles. (If you are aware of others, send us an email at samuel.m.jenness@emory.edu to be included in this list.)
 
 #### HIV and Other Sexually Transmitted Infections
 
@@ -111,9 +111,9 @@ EpiModel and its extension packages have been used in the following scientific j
 
 6. Jenness SM, Weiss KM, Goodreau SM, Rosenberg E, Gift T, Chesson H, Hoover KW, Smith DK, Liu AY, Sullivan P. Incidence of Gonorrhea and Chlamydia Following HIV Preexposure Prophylaxis among Men Who Have Sex with Men: A Modeling Study. _Clinical Infectious Diseases._ 2017; 65(5): 712-718. [[LINK]](https://academic.oup.com/cid/article-lookup/doi/10.1093/cid/cix439)
 
-7. Vandormael A, Dobra A, Bärnighausen T, de Oliveira T, Tanser F. Incidence rate estimation, periodic testing and the limitations of the mid-point imputation approach. _International Journal of Epidemiology._ Epub 2017 Aug 9. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/29024978)
+7. Vandormael A, Dobra A, Bärnighausen T, de Oliveira T, Tanser F. Incidence rate estimation, periodic testing and the limitations of the mid-point imputation approach. _International Journal of Epidemiology._ 2018; 47(1): 236-245. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/29024978)
 
-8. Goodreau SM, Hamilton DT, Jenness SM, Sullivan PS, Valencia RK, Wang LY, Dunville RL, Barrios LC, Rosenberg ES. Targeting Human Immunodeficiency Virus Pre-Exposure Prophylaxis to Adolescent Sexual Minority Males in Higher Prevalence Areas of the United States: A Modeling Study. _J Adolesc Health._ Epub 2017. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/29248392)
+8. Goodreau SM, Hamilton DT, Jenness SM, Sullivan PS, Valencia RK, Wang LY, Dunville RL, Barrios LC, Rosenberg ES. Targeting Human Immunodeficiency Virus Pre-Exposure Prophylaxis to Adolescent Sexual Minority Males in Higher Prevalence Areas of the United States: A Modeling Study. _J Adolesc Health._ 2018; 62(3): 311-319. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/29248392)
 
 9. Herbeck JT, Peebles K, Edlefsen PT, Rolland M, Murphy JT, Gottlieb GS, Abernethy N, Mullins JI, Mittler JE, Goodreau SM. HIV population-level adaptation can rapidly diminish the impact of a partially effective vaccine. _Vaccine._ 2018;36(4): 514-520. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/29241646)
 
@@ -122,21 +122,20 @@ EpiModel and its extension packages have been used in the following scientific j
 
 #### Other
 
-1. Ezenwa VO, Archie EA, Craft ME, Hawley DM, Martin LB, Moore J, White L. Host behaviour-parasite feedback: an essential link between animal behaviour and disease ecology. Proc Biol Sci. 2016; 283(1828). [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/27053751)
+1. Ezenwa VO, Archie EA, Craft ME, Hawley DM, Martin LB, Moore J, White L. Host behaviour-parasite feedback: an essential link between animal behaviour and disease ecology. _Proc Biol Sci._ 2016; 283(1828). [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/27053751)
 
-2. Goldstein ND, Eppes SC, Mackley A, Tuttle D, Paul DA. A Network Model of Hand Hygiene: How Good Is Good Enough to Stop the Spread of MRSA? _Infect Control Hosp Epidemiol._ 2017:1-8. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/28656884)
+2. Webber QM, Brigham RM, Park AD, Gillam EH, O’Shea TJ, Willis CK. Social network characteristics and predicted pathogen transmission in summer colonies of female big brown bats (Eptesicus fuscus). _Behavioral Ecology and Sociobiology._ 2016;70(5): 701-12. [[LINK]](https://link.springer.com/article/10.1007/s00265-016-2093-3). 
 
-3. White LA, Forester JD, Craft ME. Covariation between the physiological and behavioral components of pathogen transmission: Host heterogeneity determines epidemic outcomes. _Oikos._ Epub 2017 November. [[LINK]](http://onlinelibrary.wiley.com/doi/10.1111/oik.04527/full).
+3. Goldstein ND, Eppes SC, Mackley A, Tuttle D, Paul DA. A Network Model of Hand Hygiene: How Good Is Good Enough to Stop the Spread of MRSA? _Infect Control Hosp Epidemiol._ 2017:1-8. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/28656884)
 
-4. Haeussler K, Hout AV, Baio G. A dynamic Bayesian Markov model for health economic evaluations of interventions against infectious diseases. _arXiv._ arXiv:1512.06881. [[LINK]](https://arxiv.org/abs/1512.06881). 
+4. White LA, Forester JD, Craft ME. Covariation between the physiological and behavioral components of pathogen transmission: Host heterogeneity determines epidemic outcomes. _Oikos._ 2018; 127(4): 538-52. [[LINK]](http://onlinelibrary.wiley.com/doi/10.1111/oik.04527/full).
 
-5. Webber QM, Brigham RM, Park AD, Gillam EH, O’Shea TJ, Willis CK. Social network characteristics and predicted pathogen transmission in summer colonies of female big brown bats (Eptesicus fuscus). _Behavioral Ecology and Sociobiology._ 2016;70(5): 701-12. [[LINK]](https://link.springer.com/article/10.1007/s00265-016-2093-3). 
+5. Robinson SJ, Barbieri MM, Murphy S, Baker JD, Harting AL, Craft ME, Littnan CL. Model recommendations meet management reality: implementation and evaluation of a network-informed vaccination effort for endangered Hawaiian monk seals. _Proceeding of the Royal Society B._ 2018; 285(1870): 20171899. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/29321294).
 
-6. Robinson SJ, Barbieri MM, Murphy S, Baker JD, Harting AL, Craft ME, Littnan CL. Model recommendations meet management reality: implementation and evaluation of a network-informed vaccination effort for endangered Hawaiian monk seals. _Proceeding of the Royal Society B._ 2018; DOI: 10.1098/rspb.2017.1899. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/29321294).
+6. Goldstein ND, Jenness SM, Tuttle D, Power M, Paul DA, Eppes SC. Evaluating a neonatal intensive care unit HRSA surveillance programme using agent-based network modeling. _Journal of Hospital Infection._ Epub DOI: 10.1016/j.jhin.2018.05.002. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/29751022)
 
-7. Goldstein ND, Jenness SM, Tuttle D, Power M, Paul DA, Eppes SC. Evaluating a neonatal intensive care unit HRSA surveillance programme using agent-based network modeling. Journal of Hospital Infection. EPUB AHEAD OF PRINT. DOI: 10.1016/j.jhin.2018.05.002. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/29751022)
+7. Haeussler K, Hout AV, Baio G. A dynamic Bayesian Markov model for health economic evaluations of interventions against infectious diseases. _arXiv._ arXiv:1512.06881. [[LINK]](https://arxiv.org/abs/1512.06881). 
 
 
 ### Copyright
 These materials are distributed under the GPL-3 license, with the following copyright and attribution requirements listed in the [LICENSE](https://github.com/statnet/EpiModel/blob/master/LICENSE.md) document above.
-
