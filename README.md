@@ -132,10 +132,11 @@ EpiModel and its [extension packages](https://github.com/statnet/EpiModelHIV) ha
 
 5. Robinson SJ, Barbieri MM, Murphy S, Baker JD, Harting AL, Craft ME, Littnan CL. Model recommendations meet management reality: implementation and evaluation of a network-informed vaccination effort for endangered Hawaiian monk seals. _Proceeding of the Royal Society B._ 2018; 285(1870): 20171899. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/29321294).
 
-6. Goldstein ND, Jenness SM, Tuttle D, Power M, Paul DA, Eppes SC. Evaluating a neonatal intensive care unit HRSA surveillance programme using agent-based network modeling. _Journal of Hospital Infection._ Epub DOI: 10.1016/j.jhin.2018.05.002. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/29751022)
+6. Goldstein ND, Jenness SM, Tuttle D, Power M, Paul DA, Eppes SC. Evaluating a neonatal intensive care unit HRSA surveillance programme using agent-based network modeling. _Journal of Hospital Infection._ 2018. Epub DOI: 10.1016/j.jhin.2018.05.002. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/29751022)
 
 7. Haeussler K, Hout AV, Baio G. A dynamic Bayesian Markov model for health economic evaluations of interventions against infectious diseases. _arXiv._ arXiv:1512.06881. [[LINK]](https://arxiv.org/abs/1512.06881). 
 
+8. Amirpour Haredasht S, Tavornpanich S, Jansen MD, Lyngstad TM, Yatabe T, Brun E, Martínez-López B. A stochastic network-based model to simulate the spread of pancreas disease (PD) in the Norwegian salmon industry based on the observed vessel movements and seaway distance between marine farms. _Prev Vet Med._ 2018. Epub DOI: 10.1016/j.prevetmed.2018.05.019. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/30055856)
 
 ### Copyright
 These materials are distributed under the GPL-3 license, with the following copyright and attribution requirements listed in the [LICENSE](https://github.com/statnet/EpiModel/blob/master/LICENSE.md) document above.
