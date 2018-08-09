@@ -25,7 +25,7 @@ if (!require("devtools")) install.packages("devtools")
 devtools::install_github("statnet/EpiModel")
 ```
 
-### Lead Authors
+### Authors
 <table>
   <tr>
     <td><a href="http://samueljenness.org/" target="_blank">Samuel M. Jenness</a></th>
@@ -43,6 +43,8 @@ devtools::install_github("statnet/EpiModel")
     <td>University of Washington</td>
   </tr>
 </table>
+
+Additional contributors to the EpiModel package include Emily Beylerian, Skye Bender-deMoll, and Kevin Weiss. 
 
 ### Copyright
 These materials are distributed under the GPL-3 license, with the following copyright and attribution requirements listed in the [LICENSE](https://github.com/statnet/EpiModel/blob/master/LICENSE.md) document above.
