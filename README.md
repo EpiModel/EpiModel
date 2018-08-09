@@ -45,7 +45,7 @@ devtools::install_github("statnet/EpiModel")
 </table>
 
 ### Copyright
-These materials are distributed under the GPL-3 license, with the following copyright and attribution requirements listed <a href="http://statnet.csde.washington.edu/attribution.shtml" target="_blank">here</a>.
+These materials are distributed under the GPL-3 license, with the following copyright and attribution requirements listed in the [LICENSE](https://github.com/statnet/EpiModel/blob/master/LICENSE.md) document above.
 
 ### Documentation and Support
 The main website for EpiModel, with tutorials and other supporting files is <a href="http://epimodel.org/" target="_blank">http://epimodel.org/</a>. 
