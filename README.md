@@ -44,7 +44,7 @@ devtools::install_github("statnet/EpiModel")
   </tr>
 </table>
 
-Additional contributors to the EpiModel package include Emily Beylerian, Skye Bender-deMoll, and Kevin Weiss. 
+Additional [contributors](https://github.com/statnet/EpiModel/graphs/contributors) to the EpiModel package include Emily Beylerian, Skye Bender-deMoll, and Kevin Weiss. 
 
 ### Copyright
 These materials are distributed under the GPL-3 license, with the following copyright and attribution requirements listed in the [LICENSE](https://github.com/statnet/EpiModel/blob/master/LICENSE.md) document above.
