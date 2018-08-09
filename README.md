@@ -12,19 +12,6 @@ EpiModel
 
 Tools for simulating mathematical models of infectious disease dynamics. Epidemic model classes include deterministic compartmental models, stochastic agent-based models, and stochastic network models. Network models use the robust statistical methods of exponential-family random graph models (ERGMs) from the Statnet suite of software packages in R. Standard templates for epidemic modeling include SI, SIR, and SIS disease types. EpiModel features an easy API for extending these templates to address novel scientific research aims.
 
-
-### Installation
-The current release version can be found on <a href="http://cran.r-project.org/web/packages/EpiModel/index.html" target="_blank">CRAN</a> and installed with:
-```r
-install.packages("EpiModel", dependencies = TRUE)
-```
-
-To install this development version, use the <a href="https://github.com/r-lib/devtools" target="_blank">devtools package</a>:
-```r
-if (!require("devtools")) install.packages("devtools")
-devtools::install_github("statnet/EpiModel")
-```
-
 ### Authors
 <table>
   <tr>
@@ -46,15 +33,32 @@ devtools::install_github("statnet/EpiModel")
 
 Additional [contributors](https://github.com/statnet/EpiModel/graphs/contributors) to the EpiModel package include Emily Beylerian, Skye Bender-deMoll, and Kevin Weiss. 
 
-### Copyright
-These materials are distributed under the GPL-3 license, with the following copyright and attribution requirements listed in the [LICENSE](https://github.com/statnet/EpiModel/blob/master/LICENSE.md) document above.
+
+### Installation
+The current release version can be found on <a href="http://cran.r-project.org/web/packages/EpiModel/index.html" target="_blank">CRAN</a> and installed with:
+```r
+install.packages("EpiModel", dependencies = TRUE)
+```
+
+To install this development version, use the <a href="https://github.com/r-lib/devtools" target="_blank">devtools package</a>:
+```r
+if (!require("devtools")) install.packages("devtools")
+devtools::install_github("statnet/EpiModel")
+```
 
 ### Documentation and Support
-The main website for EpiModel, with tutorials and other supporting files is <a href="http://epimodel.org/" target="_blank">http://epimodel.org/</a>. 
 
-A good place to start learning about EpiModel is the main methods paper published in the *Journal of Statistical Software.* It is available at <a href="http://doi.org/10.18637/jss.v084.i08" target="_blank">http://doi.org/10.18637/jss.v084.i08</a>.
+**Website.** The main website for EpiModel, with tutorials and other supporting files is <a href="http://epimodel.org/" target="_blank">http://epimodel.org/</a>.
 
-Users are encouraged to join the <a href="http://mailman11.u.washington.edu/mailman/listinfo/epimodel" target="_blank">email list for EpiModel</a> as a place to ask questions, report bugs, and tell us about your research using these tools.
+**Methods Paper.** A good place to start learning about EpiModel is the main methods paper published in the *Journal of Statistical Software.* It is available at <a href="http://doi.org/10.18637/jss.v084.i08" target="_blank">http://doi.org/10.18637/jss.v084.i08</a>.
+
+**Summer Course.** Network Modeling for Epidemics is our annual 5-day course at the University of Washington where we teach the statistical theory, software tools, and applied modeling methods using EpiModel. Our course materials [[LINK]](http://statnet.github.io/nme/) are fully open-source and updated annually around the time of the course.
+
+**Email listserv.** Users are encouraged to join the <a href="http://mailman11.u.washington.edu/mailman/listinfo/epimodel" target="_blank">email list for EpiModel</a> as a place to ask questions, report bugs, and tell us about your research using these tools.
+
+
+### The EpiModel Gallery
+We recently started a new [EpiModel Gallery](https://github.com/statnet/EpiModel-Gallery) that contains templates of extensions to EpiModel, for now focused on network-based mathematical models. We will be continuing to add new examples the gallery, and encourage users to either file requests for new examples or contribute them following our guidelines. 
 
 
 ### Citation
@@ -63,6 +67,9 @@ If using EpiModel for teaching or research, please include a citation:
 > Jenness SM, Goodreau SM and Morris M. EpiModel: An R Package for Mathematical Modeling of Infectious Disease over Networks. *Journal of Statistical Software.* 2018; 84(8): 1-47. doi: 10.18637/jss.v084.i08
 
 Please also send us an email (samuel.m.jenness@emory.edu) if you have used EpiModel in your work so we can add the citation below.
+
+
+
 
 
 ### Funding
@@ -81,7 +88,7 @@ Development of this software has been supported by the following grants from the
 
 ### Applied Uses of EpiModel in the Scientific Literature
 
-EpiModel has been used in the following scientific journal articles.
+EpiModel and its extension packages have been used in the following scientific journal articles. If you are aware of others, send us an email at samuel.m.jenness@emory.edu) to be included in this list.
 
 #### HIV and Other Sexually Transmitted Infections
 
@@ -122,4 +129,7 @@ EpiModel has been used in the following scientific journal articles.
 
 7. Goldstein ND, Jenness SM, Tuttle D, Power M, Paul DA, Eppes SC. Evaluating a neonatal intensive care unit HRSA surveillance programme using agent-based network modeling. Journal of Hospital Infection. EPUB AHEAD OF PRINT. DOI: 10.1016/j.jhin.2018.05.002. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/29751022)
 
+
+### Copyright
+These materials are distributed under the GPL-3 license, with the following copyright and attribution requirements listed in the [LICENSE](https://github.com/statnet/EpiModel/blob/master/LICENSE.md) document above.
 
