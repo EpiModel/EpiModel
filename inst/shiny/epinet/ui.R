@@ -40,8 +40,9 @@ navbarPage(title = NULL, windowTitle = "EpiModel: Network Models",
              static network plots, as well as viewing numerical data summaries."),
            p("The author of this application is Emily Beylerian, Software Developer
              at the University of Washington Centers for Studies in Demoraphy and
-             Ecology. The authors of the larger EpiModel project are Samuel Jenness,
-             Steven Goodreau, and Martina Morris at the University of Washington.
+             Ecology. The authors of the larger EpiModel project are Samuel Jenness
+             at Emory University, and Steven Goodreau and Martina Morris at the
+             University of Washington.
              Development of this software is supported by the following grants from
              the National Institutes of Health: R01HD68395 (NICHD), T32HD007543 (NICHD),
              and R24HD042828 (NICHD).")

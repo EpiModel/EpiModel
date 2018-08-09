@@ -201,7 +201,7 @@ shinyUI(fluidPage(
            browser (no R needed)", a("here.", href = "http://statnet.shinyapps.io/epiicm/")),
          br(),
          strong("Authors"), p("Samuel M. Jenness, Department of Epidemiology,
-                              University of Washington"),
+                              Emory University"),
          p("Steven M. Goodreau, Department of Anthropology,
            University of Washington"),
          p("Martina Morris, Departments of Statistics and Sociology,
