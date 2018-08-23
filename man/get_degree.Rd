@@ -45,6 +45,6 @@ el <- as.edgelist(sim)
 deg.el <- get_degree(el)
 deg.el
 
-identical(ergm.method, deg.net, deg.el)
+identical(as.integer(ergm.method), deg.net, deg.el)
 
 }

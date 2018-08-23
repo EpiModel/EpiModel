@@ -944,7 +944,7 @@ update_nwattr <- function(nw, newNodes, rules, curr.tab, t1.tab) {
 #' deg.el <- get_degree(el)
 #' deg.el
 #'
-#' identical(ergm.method, deg.net, deg.el)
+#' identical(as.integer(ergm.method), deg.net, deg.el)
 #'
 get_degree <- function(x) {
   if (inherits(x, "network")) {
