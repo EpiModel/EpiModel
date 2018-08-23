@@ -4,9 +4,9 @@
 \alias{netest}
 \title{Dynamic Network Model Estimation}
 \usage{
-netest(nw, formation, target.stats, coef.diss, constraints, coef.form = NULL,
-  edapprox = TRUE, output = "fit", set.control.ergm, set.control.stergm,
-  verbose = FALSE)
+netest(nw, formation, target.stats, coef.diss, constraints,
+  coef.form = NULL, edapprox = TRUE, output = "fit",
+  set.control.ergm, set.control.stergm, verbose = FALSE)
 }
 \arguments{
 \item{nw}{An object of class \code{network}.}

@@ -4,8 +4,8 @@
 \alias{calc_eql}
 \title{Calculate Equilibrium for Infection Prevalence}
 \usage{
-calc_eql(x, numer = "i.num", denom = "num", nsteps, threshold = 0.001,
-  digits = 4, invisible = FALSE)
+calc_eql(x, numer = "i.num", denom = "num", nsteps,
+  threshold = 0.001, digits = 4, invisible = FALSE)
 }
 \arguments{
 \item{x}{An \code{EpiModel} object of class \code{dcm}, \code{icm}, or
