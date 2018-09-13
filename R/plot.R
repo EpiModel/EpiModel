@@ -1064,6 +1064,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
           }
         }
 
+        ## Quantile band transparency and color
         if (missing(qnts.alpha)) {
           qnts.alpha <- 0.5
         }
@@ -1163,6 +1164,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
           targ.col <- rep("black", nstats)
         }
 
+        ## Quantile band transparency and color
         if (missing(qnts.alpha)) {
           qnts.alpha <- 0.5
         }
