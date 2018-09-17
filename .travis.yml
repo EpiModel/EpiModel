@@ -14,7 +14,5 @@ r_github_packages:
 warnings_are_errors: true
 
 notifications:
-  email:
-    on_success: never
-    on_failure: change
-  slack: epimodel:ARrkdZn2p9KKRZxkcGFK9Ns0
+  email: false
+  slack: epimodel:iY6F3MeHlZ2LCM4MwuVRJj7D
