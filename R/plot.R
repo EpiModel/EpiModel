@@ -976,6 +976,53 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
       }
     }
 
+    ## Color Vector Validation
+    #1. Sim.col, mean.col, qnts.col, targ.col must be missing or a vector of length 1 or nstats
+    #2. If sim.col, mean.col, qnts.col, or targ.col is not missing 
+    #   but is a vector of length 1 and nstats is greater than 1, 
+    #   then replicate the color vector nstats times to achieve a vector of size nstats.
+    
+    #Sim.col
+    if (!missing(sim.col)) {
+      if (!(length(sim.col) %in% c(1,nstats))) {
+        stop("sim.col must be either missing or a vector of length 1  or nstats (", nstats, ")", call. = FALSE)
+      }
+      else if (length(sim.col) == 1 & nstats > 1) {
+        sim.col <- rep(sim.col,nstats)
+      }
+    }
+    
+    
+    #Mean.col
+    if (!missing(mean.col)) {
+      if (!(length(mean.col) %in% c(1,nstats))) {
+        stop("mean.col must be either missing or a vector of length 1 or nstats (", nstats, ")", call. = FALSE)
+      }
+      else if (length(mean.col) == 1 & nstats > 1) {
+        mean.col <- rep(mean.col,nstats)
+      }
+    }
+    
+    #Qnts.col
+    if (!missing(qnts.col)) {
+      if (!(length(qnts.col) %in% c(1,nstats))) {
+        stop("qnts.col must be either missing or a vector of length 1 or nstats (", nstats, ")", call. = FALSE)
+      }
+      else if (length(qnts.col) == 1 & nstats > 1) {
+        qnts.col <- rep(qnts.col,nstats)
+      }
+    }
+    
+    #Targ.col
+    if (!missing(targ.col)) {
+      if (!(length(targ.col) %in% c(1,nstats))) {
+        stop("targ.col must be either missing or a vector of length 1 or nstats (", nstats, ")", call. = FALSE)
+      }
+      else if (length(targ.col) == 1 & nstats > 1) {
+        targ.col <- rep(targ.col,nstats)
+      }
+    }
+    
     # Default colors
     #If sim color is missing and using joined plots, sim color uses brewer ramp pallette
     #If sim color is missing and using split plots, default color for each plot set to blue (dodgerblue3)
