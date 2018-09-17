@@ -6,6 +6,11 @@ r:
   - release
   - devel
 
+r_github_packages:
+  - statnet/statnet.common
+  - statnet/network
+  - statnet/ergm
+
 warnings_are_errors: true
 
 notifications:
