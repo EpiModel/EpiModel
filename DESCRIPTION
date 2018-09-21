@@ -38,7 +38,7 @@ Imports:
     doParallel,
     ergm (>= 3.9),
     foreach,
-    network (>= 1.14),
+    network (>= 1.13),
     RColorBrewer,
     ape,
     lazyeval,
