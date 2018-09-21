@@ -1,6 +1,4 @@
 language: r
-sudo: false
-cache: packages
 
 r:
   - release
