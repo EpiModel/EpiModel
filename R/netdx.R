@@ -103,6 +103,8 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps, nwstats.formula = "forma
     stop("x must be an object of class netest", call. = FALSE)
   }
 
+  ncores <- ifelse(nsims == 1, 1, min(parallel::detectCores(), ncores))
+
   if (class(x$fit) == "network") {
     nw <- x$fit
   } else {
