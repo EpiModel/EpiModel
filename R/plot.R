@@ -889,7 +889,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
                        qnts = 0.5, qnts.col, qnts.alpha, qnts.smooth = TRUE,
                        targ.line = TRUE, targ.col, targ.lwd = 2, targ.lty = 2,
                        plots.joined, legend, grid = FALSE, ...) {
-
+  
   # Checks and Variables ----------------------------------------------------
 
   ## Check Object
@@ -976,15 +976,69 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
       }
     }
 
+    ## Color Vector Validation
+    #1. Sim.col, mean.col, qnts.col, targ.col must be missing or a vector of length 1 or nstats
+    #2. If sim.col, mean.col, qnts.col, or targ.col is not missing 
+    #   but is a vector of length 1 and nstats is greater than 1, 
+    #   then replicate the color vector nstats times to achieve a vector of size nstats.
+    
+    #Sim.col
+    if (!missing(sim.col)) {
+      if (!(length(sim.col) %in% c(1,nstats))) {
+        stop("sim.col must be either missing or a vector of length 1  or nstats (", nstats, ")", call. = FALSE)
+      }
+      else if (length(sim.col) == 1 & nstats > 1) {
+        sim.col <- rep(sim.col,nstats)
+      }
+    }
+    
+    
+    #Mean.col
+    if (!missing(mean.col)) {
+      if (!(length(mean.col) %in% c(1,nstats))) {
+        stop("mean.col must be either missing or a vector of length 1 or nstats (", nstats, ")", call. = FALSE)
+      }
+      else if (length(mean.col) == 1 & nstats > 1) {
+        mean.col <- rep(mean.col,nstats)
+      }
+    }
+    
+    #Qnts.col
+    if (!missing(qnts.col)) {
+      if (!(length(qnts.col) %in% c(1,nstats))) {
+        stop("qnts.col must be either missing or a vector of length 1 or nstats (", nstats, ")", call. = FALSE)
+      }
+      else if (length(qnts.col) == 1 & nstats > 1) {
+        qnts.col <- rep(qnts.col,nstats)
+      }
+    }
+    
+    #Targ.col
+    if (!missing(targ.col)) {
+      if (!(length(targ.col) %in% c(1,nstats))) {
+        stop("targ.col must be either missing or a vector of length 1 or nstats (", nstats, ")", call. = FALSE)
+      }
+      else if (length(targ.col) == 1 & nstats > 1) {
+        targ.col <- rep(targ.col,nstats)
+      }
+    }
+    
     # Default colors
+    #If sim color is missing and using joined plots, sim color uses brewer ramp pallette
+    #If sim color is missing and using split plots, default color for each plot set to blue (dodgerblue3)
     if (missing(sim.col)) {
-      if (nstats > 8) {
-        sim.col <- brewer_ramp(nstats, "Set1")
-      } else {
-        sim.col <- brewer.pal(9, "Set1")[1:(nstats + 1)]
-        if (nstats >= 6) {
-          sim.col <- sim.col[-which(sim.col == "#FFFF33")]
+      if (plots.joined == TRUE) {
+        if (nstats > 8) {
+          sim.col <- brewer_ramp(nstats, "Set1")
+        } else {
+          sim.col <- brewer.pal(9, "Set1")[1:(nstats + 1)]
+          if (nstats >= 6) {
+            sim.col <- sim.col[-which(sim.col == "#FFFF33")]
+          }
         }
+      }
+      if (missing(plots.joined) | plots.joined == FALSE) {
+        sim.col <- rep("dodgerblue3",nstats)
       }
     }
 
@@ -1057,6 +1111,15 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
           }
         }
 
+        ## Quantile band transparency and color
+        if (missing(qnts.alpha)) {
+          qnts.alpha <- 0.5
+        }
+        if (missing(qnts.col)) {
+          qnts.col <- transco(sim.col, qnts.alpha)
+        } else {
+          qnts.col <- transco(qnts.col, qnts.alpha)
+        }
 
         ## Main plot window
         plot(1, 1, xlim = xlim, ylim = ylim,
@@ -1068,13 +1131,6 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
             if (qnts < 0 | qnts > 1) {
               stop("qnts must be between 0 and 1", call. = FALSE)
             }
-            if (missing(qnts.col)) {
-              qnts.col <- sim.col
-            }
-            if (missing(qnts.alpha)) {
-              qnts.alpha <- 0.5
-            }
-            qnts.col <- transco(qnts.col, qnts.alpha)
             quants <- c((1 - qnts) / 2, 1 - ((1 - qnts) / 2))
             qnt.prev <- apply(dataj, 1, function(x) {
                  quantile(x, c(quants[1], quants[2]))
@@ -1155,6 +1211,16 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
           targ.col <- rep("black", nstats)
         }
 
+        ## Quantile band transparency and color
+        if (missing(qnts.alpha)) {
+          qnts.alpha <- 0.5
+        }
+        if (missing(qnts.col)) {
+          qnts.col <- transco(sim.col, qnts.alpha)
+        } else {
+          qnts.col <- transco(qnts.col, qnts.alpha)
+        }
+        
         for (j in outsts) {
           dataj <- data[, colnames(data) %in% nmstats[j], drop = FALSE]
           plot(x = 1, y = 1,
@@ -1167,13 +1233,6 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
             if (qnts < 0 | qnts > 1) {
               stop("qnts must be between 0 and 1", call. = FALSE)
             }
-            if (missing(qnts.col)) {
-              qnts.col <- sim.col
-            }
-            if (missing(qnts.alpha)) {
-              qnts.alpha <- 0.5
-            }
-            qnts.col <- transco(qnts.col, qnts.alpha)
             quants <- c((1 - qnts) / 2, 1 - ((1 - qnts) / 2))
             qnt.prev <- apply(dataj, 1, function(x) {
                   quantile(x, c(quants[1], quants[2]))
@@ -1200,7 +1259,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 
           if (mean.line == TRUE) {
             if (missing(mean.col)) {
-              mean.col <- sim.col
+              mean.col <- rep("black",nstats)
             }
             mean.prev <- rowMeans(dataj)
             if (mean.smooth == TRUE) {
