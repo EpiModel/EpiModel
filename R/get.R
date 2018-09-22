@@ -157,7 +157,7 @@ get_transmat <- function(x, sim = 1) {
 #' @export
 #'
 #' @examples
-#' ## Simulate SI epidemic on bipartite Bernoulli random graph
+#' # Simulate SI epidemic on bipartite Bernoulli random graph
 #' nw <- network.initialize(n = 100, bipartite = 50, directed = FALSE)
 #' formation <- ~edges
 #' target.stats <- 50
@@ -170,9 +170,15 @@ get_transmat <- function(x, sim = 1) {
 #'                        verbose = FALSE)
 #' mod <- netsim(est, param, init, control)
 #'
-#' ## Extract the network statistics from simulation 2
+#' # Extract the network statistics from all or sets simulations as list of df's
 #' get_nwstats(mod)
-#' get_nwstats(mod, sim = c(1,3))
+#' get_nwstats(mod, sim = c(1, 3))
+#'
+#' # If extracting only one sim, then it will output directly into a df
+#' get_nwstats(mod, sim = 1)
+#'
+#' # Calculate summary stats on the fly
+#' apply(get_nwstats(mod, sim = 1), 2, summary)
 #'
 get_nwstats <- function(x, sim, network = 1) {
 
@@ -206,6 +212,10 @@ get_nwstats <- function(x, sim, network = 1) {
   }
 
   out <- lapply(out, as.data.frame)
+
+  if (length(sim) == 1) {
+    out <- out[[1]]
+  }
 
   return(out)
 }

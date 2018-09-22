@@ -19,7 +19,7 @@ Extracts a data frame of network statistics from a network
              epidemic model.
 }
 \examples{
-## Simulate SI epidemic on bipartite Bernoulli random graph
+# Simulate SI epidemic on bipartite Bernoulli random graph
 nw <- network.initialize(n = 100, bipartite = 50, directed = FALSE)
 formation <- ~edges
 target.stats <- 50
@@ -32,9 +32,15 @@ control <- control.net(type = "SI", nsteps = 10, nsims = 3,
                        verbose = FALSE)
 mod <- netsim(est, param, init, control)
 
-## Extract the network statistics from simulation 2
+# Extract the network statistics from all or sets simulations as list of df's
 get_nwstats(mod)
-get_nwstats(mod, sim = c(1,3))
+get_nwstats(mod, sim = c(1, 3))
+
+# If extracting only one sim, then it will output directly into a df
+get_nwstats(mod, sim = 1)
+
+# Calculate summary stats on the fly
+apply(get_nwstats(mod, sim = 1), 2, summary)
 
 }
 \keyword{extract}
