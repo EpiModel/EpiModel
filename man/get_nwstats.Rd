@@ -32,15 +32,12 @@ control <- control.net(type = "SI", nsteps = 10, nsims = 3,
                        verbose = FALSE)
 mod <- netsim(est, param, init, control)
 
-# Extract the network statistics from all or sets simulations as list of df's
+# Extract the network statistics from all or sets of simulations as list of df's
 get_nwstats(mod)
 get_nwstats(mod, sim = c(1, 3))
 
-# If extracting only one sim, then it will output directly into a df
-get_nwstats(mod, sim = 1)
-
 # Calculate summary stats on the fly
-apply(get_nwstats(mod, sim = 1), 2, summary)
+apply(get_nwstats(mod, sim = 1)[[1]], 2, summary)
 
 }
 \keyword{extract}
