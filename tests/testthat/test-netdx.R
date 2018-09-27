@@ -58,7 +58,7 @@ test_that("Edges only models", {
 
 test_that("Formation plot color vector length", {
   n = 100
-  mean.degree <- ((0*.10)+(1*.41)+(2*.25)+(3*.22))
+  mean.degree <- ((0*0.10) + (1*0.41) + (2*0.25) + (3*0.22))
   expected.concurrent <- n*0.49
   expected.edges <- (mean.degree)*(n/2)
   nw <- network.initialize(n, directed = FALSE)
@@ -69,17 +69,14 @@ test_that("Formation plot color vector length", {
   dx <- netdx(est, nsims = 2, nsteps = 500,
               nwstats.formula = ~edges + meandeg + degree(0:4) + concurrent)
 
-  ##Sim.col
-  expect_error(plot(dx, sim.col = c("green","orange")), cat("sim.col must be either missing or a vector of length 1 or nstats (", dx$nstats,")"))
-
-  ##Mean.col
-  expect_error(plot(dx, mean.col = c("green","orange")), cat("mean.col must be either missing or a vector of length 1 or nstats (", dx$nstats,")"))
-
-  ##Targ.col
-  expect_error(plot(dx, targ.col = c("green","orange")), cat("targ.col must be either missing or a vector of length 1 or nstats (", dx$nstats,")"))
-
-  ##Qnts.col
-  expect_error(plot(dx, qnts.col = c("green","orange")), cat("qnts.col must be either missing or a vector of length 1 or nstats (", dx$nstats,")"))
+  expect_error(plot(dx, sim.col = c("green","orange")),
+               cat("sim.col must be either missing or a vector of length 1 or nstats (", dx$nstats,")"))
+  expect_error(plot(dx, mean.col = c("green","orange")),
+               cat("mean.col must be either missing or a vector of length 1 or nstats (", dx$nstats,")"))
+  expect_error(plot(dx, targ.col = c("green","orange")),
+               cat("targ.col must be either missing or a vector of length 1 or nstats (", dx$nstats,")"))
+  expect_error(plot(dx, qnts.col = c("green","orange")),
+               cat("qnts.col must be either missing or a vector of length 1 or nstats (", dx$nstats,")"))
 })
 
 test_that("Offset terms", {
