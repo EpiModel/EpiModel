@@ -119,6 +119,10 @@ EpiModel and its [extension packages](https://github.com/statnet/EpiModelHIV) ha
 
 10. Luo W, Katz DA, Hamilton DT, McKenney J, Jenness SM, Goodreau SM, Stekler JD, Rosenberg ES, Sullivan P, Cassels S. Development of an Agent-Based Model to Investigate the Impact of HIV Self-Testing Programs for Men Who Have Sex with Men in Atlanta and Seattle. _Journal of Medical Internet Research Public Health Surveillance._ 2018; 4(2): e58. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/29959112)
 
+11. Jenness SM, Maloney K, Smith SK, Hoover KW, Rosenberg ES, Goodreau SM, Weiss KM, Liu AY, Rao D, Sullivan PS. Addressing Gaps in HIV Preexposure Prophylaxis Care to Reduce Racial Disparities in HIV Incidence in the United States. _American Journal of Epidemiology._ Epub DOI: 10.1093/aje/kwy230. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/30312365)
+
+12. Stansfield SE, Mittler JE, Gottlieb GS, Murphy JT, Hamilton DT, Detels R, Wolinsky SM, Jacobson LP, Margolick JB, Rinaldo CR, Herbeck JT, Goodreau SM. Sexual Role and HIV-1 Set Point Viral Load among Men who Have Sex with Men. Epub DOI: 10.1016/j.epidem.2018.08.006. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/30193771)
+
 
 #### Other
 
