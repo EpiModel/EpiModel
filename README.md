@@ -40,10 +40,10 @@ The current release version can be found on <a href="http://cran.r-project.org/w
 install.packages("EpiModel", dependencies = TRUE)
 ```
 
-To install this development version, use the <a href="https://github.com/r-lib/devtools" target="_blank">devtools package</a>:
+To install this development version, use the <a href="https://github.com/r-lib/remotes" target="_blank">remotes package</a>:
 ```r
-if (!require("devtools")) install.packages("devtools")
-devtools::install_github("statnet/EpiModel")
+if (!require("remotes")) install.packages("remotes")
+remotes::install_github("statnet/EpiModel")
 ```
 
 ### Documentation and Support
@@ -66,16 +66,12 @@ If using EpiModel for teaching or research, please include a citation:
 
 > Jenness SM, Goodreau SM and Morris M. EpiModel: An R Package for Mathematical Modeling of Infectious Disease over Networks. *Journal of Statistical Software.* 2018; 84(8): 1-47. doi: 10.18637/jss.v084.i08
 
-Please also send us an email (samuel.m.jenness@emory.edu) if you have used EpiModel in your work so we can add the citation below.
-
-
-
-
+Please also send Sam an email (samuel.m.jenness@emory.edu) if you have used EpiModel in your work so we can add the citation below.
 
 ### Funding
 The primary support for the development of these software tools and statistical methods has been by  two National Institutes of Health (NIH) grants:
 
-* [NIH R01 AI138783](https://projectreporter.nih.gov/project_info_description.cfm?aid=9623724): EpiModel 2.0: Integrated Network Models for HIV/STI Prevention Science.
+* [NIH R01 AI138783](https://projectreporter.nih.gov/project_info_description.cfm?aid=9623724): EpiModel 2.0: Integrated Network Models for HIV/STI Prevention Science (PI: Samuel Jenness)
 * [NIH R01 HD68395](https://projectreporter.nih.gov/project_info_description.cfm?aid=8841605): Statistical Methods for Network Epidemiology (PI: Martina Morris)
 
 Our applied research projects using EpiModel have received funding from the NIH and Centers for Disease Control and Prevention (CDC):
