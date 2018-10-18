@@ -252,12 +252,12 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps, nwstats.formula = "forma
                              coef = x$coef.form.crude,
                              constraints = constraints,
                              nsim = nsims,
-                             statsonly = TRUE,
+                             output = "stats",
                              sequential = sequential,
                              monitor = nwstats.formula)
       } else {
         diag.sim <- simulate(fit, nsim = nsims,
-                             statsonly = TRUE,
+                             output = "stats",
                              control = set.control.ergm,
                              sequential = sequential,
                              monitor = nwstats.formula)
