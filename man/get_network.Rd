@@ -2,48 +2,70 @@
 % Please edit documentation in R/get.R
 \name{get_network}
 \alias{get_network}
-\title{Extract networkDynamic Object from Network Epidemic Model}
+\title{Extract networkDynamic and network Objects from Network Simulations}
 \usage{
 get_network(x, sim = 1, network = 1, collapse = FALSE, at)
 }
 \arguments{
-\item{x}{An \code{EpiModel} object of class \code{\link{netsim}}.}
+\item{x}{An \code{EpiModel} object of class \code{\link{netsim}} or
+\code{\link{netdx}}.}
 
 \item{sim}{Simulation number of extracted network.}
 
-\item{network}{Network number, for simulations with multiple networks
-representing the population.}
+\item{network}{Network number, for \code{netsim} objects with multiple
+overlapping networks (advanced use, and not applicable to \code{netdx}
+objects.}
 
 \item{collapse}{If \code{TRUE}, collapse the \code{networkDynamic} object to
 a static \code{network} object at a specified time step.}
 
-\item{at}{If \code{collapse} is used, the time step at which the extracted
-network should be collapsed.}
+\item{at}{If \code{collapse} is \code{TRUE}, the time step at which the
+extracted network should be collapsed.}
 }
 \description{
-Extracts the \code{networkDynamic} object from a network epidemic model
-             simulated with \code{netsim}, with the option to collapse the
-             extracted network at a specific time step.
+Extracts the \code{networkDynamic} object from a either a network
+             epidemic model object generated with \code{netsim} or a network
+             diagnostic simulation generated with \code{netdx}, with the option to
+             collapse the extracted \code{networkDynamic} object down to a static
+             \code{network} object.
+}
+\details{
+This function requires that the \code{networkDynamic} is saved during the
+network simulation while running either \code{\link{netsim}} or \code{\link{netdx}}.
+For the former, that is specified with the \code{save.network} parameter in
+\code{\link{control.net}}. For the latter, that is specified with the
+\code{keep.tedgelist} parameter directly in \code{\link{netdx}}.
 }
 \examples{
-\dontrun{
-## Simulate SI epidemic on bipartite Bernoulli random graph
+# Set up network and TERGM formiula
 nw <- network.initialize(n = 100, bipartite = 50, directed = FALSE)
 formation <- ~edges
 target.stats <- 50
 coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
-est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
+
+# Estimate the model
+est <- netest(nw, formation, target.stats, coef.diss)
+
+# Run diagnostics, saving the networkDynamic objects
+dx <- netdx(est, nsteps = 10, nsims = 3, keep.tnetwork = TRUE, verbose = FALSE)
+
+# Extract the network for simulation 2 from dx object
+get_network(dx, sim = 2)
+
+# Extract and collapse the network from simulation 1 at time step 5
+get_network(dx, collapse = TRUE, at = 5)
+
+# Parameterize the epidemic model, and simulate it
 param <- param.net(inf.prob = 0.3, inf.prob.m2 = 0.15)
 init <- init.net(i.num = 10, i.num.m2 = 10)
 control <- control.net(type = "SI", nsteps = 10, nsims = 3, verbose = FALSE)
 mod <- netsim(est, param, init, control)
 
-## Extract the network from simulation 2
+# Extract the network for simulation 2 from mod object
 get_network(mod, sim = 2)
 
-## Extract and collapse the network from simulation 1
+## Extract and collapse the network from simulation 1 at time step 5
 get_network(mod, collapse = TRUE, at = 5)
-}
 
 }
 \keyword{extract}
