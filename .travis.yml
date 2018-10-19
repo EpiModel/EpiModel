@@ -1,4 +1,7 @@
 language: r
+sudo: false
+cache: packages
+latex: false
 
 r:
   - release
