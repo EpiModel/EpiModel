@@ -86,49 +86,49 @@ as.data.frame.dcm <- function(x, row.names = NULL, optional = FALSE, run = 1,
 #'
 #' @param x An \code{EpiModel} object of class \code{icm} or \code{netsim}.
 #' @param sim If \code{out="vals"}, the simulation number to output, or the default of
-#'        \code{out="all"}, which outputs data from all simulations bound together.
+#'        \code{out="all"}, which outputs data from all simulations stacked together.
 #' @param out Data output to data frame: \code{"mean"} for row means across
 #'        simulations, \code{"sd"} for row standard deviations across simulations,
 #'        \code{"qnt"} for row quantiles at the level specified in \code{qval},
-#'        or \code{"vals"} for values from one individuals simulation(s).
-#' @param qval Quantile value necessary when \code{out="qnt"}.
+#'        or \code{"vals"} for values from individual simulations.
+#' @param qval Quantile value required when \code{out="qnt"}.
 #' @param row.names See \code{\link{as.data.frame.default}}.
 #' @param optional See \code{\link{as.data.frame.default}}.
 #' @param ...  See \code{\link{as.data.frame.default}}.
 #'
 #' @details
-#' These methods work for both \code{icm} and \code{netsim}
-#' class models. The available output includes time-specific means,
-#' standard deviations, quantiles, and simulation values (compartment and flow
-#' sizes from one simulation) from these stochastic model classes. Means and
-#' standard deviations are calculated by taking the row summary across all
-#' simulations for each time step in the model output.
+#' These methods work for both \code{icm} and \code{netsim} class models. The
+#' available output includes time-specific means, standard deviations, quantiles,
+#' and simulation values (compartment and flow sizes) from these stochastic model
+#' classes. Means, standard deviations, and quantiles are calculated by taking the
+#' row summary (i.e., each row of data is corresponds to a time step) across all
+#' simulations in the model output.
 #'
 #' @method as.data.frame icm
 #' @keywords extract
 #' @export
 #'
 #' @examples
-#' ## Stochastic ICM SIS model with 5 simulations
+#' ## Stochastic ICM SIS model
 #' param <- param.icm(inf.prob = 0.8, act.rate = 2, rec.rate = 0.1)
 #' init <- init.icm(s.num = 500, i.num = 1)
 #' control <- control.icm(type = "SIS", nsteps = 25,
 #'                        nsims = 2, verbose = FALSE)
 #' mod <- icm(param, init, control)
 #'
-#' # Default output is mean across simulations
+#' # Default output all simulation runs, default to all in stacked data.frame
 #' as.data.frame(mod)
+#' as.data.frame(mod, sim = 2)
 #'
-#' # Standard deviations of simulations
+#' # Time-specific means across simulations
+#' as.data.frame(mod, out = "mean")
+#'
+#' # Time-specific standard deviations across simulations
 #' as.data.frame(mod, out = "sd")
 #'
-#' # Quantile values for interquartile interval
+#' # Time-specific quantile values across simulations
 #' as.data.frame(mod, out = "qnt", qval = 0.25)
 #' as.data.frame(mod, out = "qnt", qval = 0.75)
-#'
-#' # Individual simulation runs, with default sim="all"
-#' as.data.frame(mod, out = "vals")
-#' as.data.frame(mod, out = "vals", sim = 2)
 #'
 #' ## Stochastic SI network model
 #' nw <- network.initialize(n = 100, directed = FALSE)
@@ -139,14 +139,18 @@ as.data.frame.dcm <- function(x, row.names = NULL, optional = FALSE, run = 1,
 #'
 #' param <- param.net(inf.prob = 0.5)
 #' init <- init.net(i.num = 10)
-#' control <- control.net(type = "SI", nsteps = 10, nsims = 2, verbose = FALSE)
+#' control <- control.net(type = "SI", nsteps = 10, nsims = 3, verbose = FALSE)
 #' mod <- netsim(est, param, init, control)
 #'
+#' # Same data extraction methods as with ICMs
 #' as.data.frame(mod)
-#' as.data.frame(mod, out = "vals")
+#' as.data.frame(mod, out = "mean")
+#' as.data.frame(mod, out = "sd")
+#' as.data.frame(mod, out = "qnt", qval = 0.25)
+#' as.data.frame(mod, out = "qnt", qval = 0.75)
 #'
 as.data.frame.icm <- function(x, row.names = NULL, optional = FALSE,
-                              sim = "all", out = "mean", qval, ...) {
+                              sim = "all", out = "vals", qval, ...) {
 
   df <- data.frame(time = 1:x$control$nsteps)
   nsims <- x$control$nsims
@@ -255,7 +259,7 @@ as.data.frame.icm <- function(x, row.names = NULL, optional = FALSE,
 #' @export
 #' @rdname as.data.frame.icm
 as.data.frame.netsim <- function(x, row.names = NULL, optional = FALSE,
-                                 sim = "all", out = "mean", ...) {
+                                 sim = "all", out = "vals", ...) {
 
   df <- as.data.frame.icm(x, row.names = row.names, optional = optional,
                           sim = sim, out = out, ...)
