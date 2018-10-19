@@ -92,7 +92,12 @@ calc_eql <- function(x, numer = "i.num", denom = "num",
   options(scipen = digits + 1)
 
   # Convert model to df and calculate prevalence
-  df <- as.data.frame(x)
+  if (class(x) == "dcm") {
+    df <- as.data.frame(x, run = 1)
+  } else {
+    df <- as.data.frame(x, out = "mean")
+  }
+
   if (!(numer %in% names(df))) {
     stop("numer must be an output compartment on x", call. = FALSE)
   }
@@ -980,16 +985,14 @@ get_degree <- function(x) {
 #' init <- init.icm(s.num = 500, i.num = 1)
 #' control <- control.icm(type = "SI", nsteps = 200, nsims = 1)
 #' mod1 <- icm(param, init, control)
-#' df <- as.data.frame(mod1, out = "vals")
+#' df <- as.data.frame(mod1)
 #' print(df)
 #' plot(mod1)
-#' mod1$control$nsteps
 #'
 #' mod2 <- truncate_sim(mod1, at = 150)
 #' df2 <- as.data.frame(mod2)
 #' print(df2)
 #' plot(mod2)
-#' mod2$control$nsteps
 #'
 truncate_sim <- function(x, at) {
 

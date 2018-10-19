@@ -249,10 +249,11 @@ summary.icm <- function(object, at, digits = 3, ...) {
     stop("Specify a time step between 1 and ", nsteps)
   }
 
-  df.mn <- as.data.frame(object, time = at)
-    df.mn <- df.mn[df.mn$time == at, ]
-  df.sd <- as.data.frame(object, time = at, out = "sd")
-    df.sd <- df.sd[df.sd$time == at, ]
+  df.mn <- as.data.frame(object, out = "mean")
+  df.mn <- df.mn[df.mn$time == at, ]
+
+  df.sd <- as.data.frame(object, out = "sd")
+  df.sd <- df.sd[df.sd$time == at, ]
 
   if (type == "SI") {
 
@@ -463,7 +464,6 @@ summary.icm <- function(object, at, digits = 3, ...) {
 #' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
 #'
 #' # Estimate the ERGM models (see help for netest)
-#' # Skipping model diagnostics for this, but one should always run these
 #' est1 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 #'
 #' # Parameters, initial conditions, and controls for model
@@ -491,10 +491,11 @@ summary.netsim <- function(object, at, digits = 3, ...) {
     stop("Specify at between 1 and ", nsteps)
   }
 
-  df.mn <- as.data.frame(object, time = at)
-    df.mn <- df.mn[df.mn$time == at, ]
-  df.sd <- as.data.frame(object, time = at, out = "sd")
-    df.sd <- df.sd[df.sd$time == at, ]
+  df.mn <- as.data.frame(object, out = "mean")
+  df.mn <- df.mn[df.mn$time == at, ]
+
+  df.sd <- as.data.frame(object, out = "sd")
+  df.sd <- df.sd[df.sd$time == at, ]
 
   if (type == "SI") {
 

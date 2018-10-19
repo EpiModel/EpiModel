@@ -889,7 +889,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
                        qnts = 0.5, qnts.col, qnts.alpha, qnts.smooth = TRUE,
                        targ.line = TRUE, targ.col, targ.lwd = 2, targ.lty = 2,
                        plots.joined, legend, grid = FALSE, ...) {
-  
+
   # Checks and Variables ----------------------------------------------------
 
   ## Check Object
@@ -978,10 +978,10 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 
     ## Color Vector Validation
     #1. Sim.col, mean.col, qnts.col, targ.col must be missing or a vector of length 1 or nstats
-    #2. If sim.col, mean.col, qnts.col, or targ.col is not missing 
-    #   but is a vector of length 1 and nstats is greater than 1, 
+    #2. If sim.col, mean.col, qnts.col, or targ.col is not missing
+    #   but is a vector of length 1 and nstats is greater than 1,
     #   then replicate the color vector nstats times to achieve a vector of size nstats.
-    
+
     #Sim.col
     if (!missing(sim.col)) {
       if (!(length(sim.col) %in% c(1,nstats))) {
@@ -991,8 +991,8 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         sim.col <- rep(sim.col,nstats)
       }
     }
-    
-    
+
+
     #Mean.col
     if (!missing(mean.col)) {
       if (!(length(mean.col) %in% c(1,nstats))) {
@@ -1002,7 +1002,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         mean.col <- rep(mean.col,nstats)
       }
     }
-    
+
     #Qnts.col
     if (!missing(qnts.col)) {
       if (!(length(qnts.col) %in% c(1,nstats))) {
@@ -1012,7 +1012,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         qnts.col <- rep(qnts.col,nstats)
       }
     }
-    
+
     #Targ.col
     if (!missing(targ.col)) {
       if (!(length(targ.col) %in% c(1,nstats))) {
@@ -1022,7 +1022,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         targ.col <- rep(targ.col,nstats)
       }
     }
-    
+
     # Default colors
     #If sim color is missing and using joined plots, sim color uses brewer ramp pallette
     #If sim color is missing and using split plots, default color for each plot set to blue (dodgerblue3)
@@ -1220,7 +1220,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         } else {
           qnts.col <- transco(qnts.col, qnts.alpha)
         }
-        
+
         for (j in outsts) {
           dataj <- data[, colnames(data) %in% nmstats[j], drop = FALSE]
           plot(x = 1, y = 1,
@@ -2703,8 +2703,8 @@ comp_plot.netsim <- function(x, at = 1, digits = 3, ...) {
 #' init <- init.icm(s.num = 500, i.num = 1)
 #' control <- control.icm(type = "SI", nsteps = 250, nsims = 5)
 #' mod1 <- icm(param, init, control)
-#' df <- as.data.frame(mod1, out = "vals")
-#' df.mean <- as.data.frame(mod1)
+#' df <- as.data.frame(mod1)
+#' df.mean <- as.data.frame(mod1, out = "mean")
 #'
 #' library(ggplot2)
 #' ggplot() +
