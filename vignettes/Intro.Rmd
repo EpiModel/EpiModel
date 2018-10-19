@@ -4,8 +4,10 @@ author: "Samuel M. Jenness, Steven M. Goodreau, Martina Morris"
 date: "`r Sys.Date()`"
 vignette: >
   %\VignetteIndexEntry{EpiModel Introduction}
-  %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
 ---
 
 
@@ -16,7 +18,7 @@ year <- format(Sys.time(), "%Y")
 
 ### Introduction
 
-The **EpiModel** package provides tools for simulating mathematical models of infectious disease dynamics. Epidemic model classes include deterministic compartmental models, stochastic agent-based models, and stochastic network models. Network models use the robust statistical methods of exponential-family random graph models (ERGMs) from the Statnet suite of software packages in R. Standard templates for epidemic modeling include SI, SIR, and SIS disease types. EpiModel features an easy API for extending these templates to address novel scientific research aims.
+The **EpiModel** package provides tools for simulating mathematical models of infectious disease dynamics. Epidemic model classes include deterministic compartmental models, stochastic agent-based models, and stochastic network models. Network models use the robust statistical methods of temporal exponential-family random graph models (ERGMs) from the Statnet suite of software packages in R. Standard templates for epidemic modeling include SI, SIR, and SIS disease types. EpiModel features an API for extending these templates to address novel scientific research aims.
 
 ### Documentation
 
@@ -29,10 +31,7 @@ Within the package, please consult the extensive help documentation:
 help(package = "EpiModel")
 ```
 
-To see the latest updates to **EpiModel**, consult the software `NEWS`:
-```{r, eval=FALSE}
-news(package = "EpiModel")
-```
+To see the latest updates to **EpiModel**, consult the software `NEWS` file on Github: https://github.com/statnet/EpiModel/releases.
 
 ### Citation
 
