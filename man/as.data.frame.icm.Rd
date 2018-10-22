@@ -6,10 +6,10 @@
 \title{Extract Model Data for Stochastic Models}
 \usage{
 \method{as.data.frame}{icm}(x, row.names = NULL, optional = FALSE,
-  sim = "all", out = "vals", qval, ...)
+  out = "vals", sim, qval, ...)
 
 \method{as.data.frame}{netsim}(x, row.names = NULL, optional = FALSE,
-  sim = "all", out = "vals", ...)
+  out = "vals", sim, ...)
 }
 \arguments{
 \item{x}{An \code{EpiModel} object of class \code{icm} or \code{netsim}.}
@@ -18,13 +18,13 @@
 
 \item{optional}{See \code{\link{as.data.frame.default}}.}
 
-\item{sim}{If \code{out="vals"}, the simulation number to output, or the default of
-\code{out="all"}, which outputs data from all simulations stacked together.}
-
 \item{out}{Data output to data frame: \code{"mean"} for row means across
 simulations, \code{"sd"} for row standard deviations across simulations,
 \code{"qnt"} for row quantiles at the level specified in \code{qval},
 or \code{"vals"} for values from individual simulations.}
+
+\item{sim}{If \code{out="vals"}, the simulation number to output. If not
+specified, then data from all simulations will be output.}
 
 \item{qval}{Quantile value required when \code{out="qnt"}.}
 

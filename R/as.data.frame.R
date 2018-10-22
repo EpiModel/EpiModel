@@ -85,12 +85,12 @@ as.data.frame.dcm <- function(x, row.names = NULL, optional = FALSE, run = 1,
 #'              the generic \code{as.data.frame} function.
 #'
 #' @param x An \code{EpiModel} object of class \code{icm} or \code{netsim}.
-#' @param sim If \code{out="vals"}, the simulation number to output, or the default of
-#'        \code{out="all"}, which outputs data from all simulations stacked together.
 #' @param out Data output to data frame: \code{"mean"} for row means across
 #'        simulations, \code{"sd"} for row standard deviations across simulations,
 #'        \code{"qnt"} for row quantiles at the level specified in \code{qval},
 #'        or \code{"vals"} for values from individual simulations.
+#' @param sim If \code{out="vals"}, the simulation number to output. If not
+#'        specified, then data from all simulations will be output.
 #' @param qval Quantile value required when \code{out="qnt"}.
 #' @param row.names See \code{\link{as.data.frame.default}}.
 #' @param optional See \code{\link{as.data.frame.default}}.
@@ -150,7 +150,7 @@ as.data.frame.dcm <- function(x, row.names = NULL, optional = FALSE, run = 1,
 #' as.data.frame(mod, out = "qnt", qval = 0.75)
 #'
 as.data.frame.icm <- function(x, row.names = NULL, optional = FALSE,
-                              sim = "all", out = "vals", qval, ...) {
+                              out = "vals", sim, qval, ...) {
 
   df <- data.frame(time = 1:x$control$nsteps)
   nsims <- x$control$nsims
@@ -165,6 +165,10 @@ as.data.frame.icm <- function(x, row.names = NULL, optional = FALSE,
 
 
   if (out == "vals") {
+
+    if (missing(sim)) {
+      sim <- "all"
+    }
 
     # Output for models with 1 sim
     if (nsims == 1) {
@@ -259,8 +263,10 @@ as.data.frame.icm <- function(x, row.names = NULL, optional = FALSE,
 #' @export
 #' @rdname as.data.frame.icm
 as.data.frame.netsim <- function(x, row.names = NULL, optional = FALSE,
-                                 sim = "all", out = "vals", ...) {
-
+                                 out = "vals", sim, ...) {
+  if (missing(sim)) {
+    sim <- "all"
+  }
   df <- as.data.frame.icm(x, row.names = row.names, optional = optional,
                           sim = sim, out = out, ...)
   return(df)
