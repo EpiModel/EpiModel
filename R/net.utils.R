@@ -418,8 +418,7 @@ copy_toall_attr <- function(dat, at, fterms) {
 #'
 #'
 dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
-
-  # Error check for duration < 1
+    # Error check for duration < 1
   if (any(duration < 1)) {
     stop("All values in duration must be >= 1", call. = FALSE)
   }
@@ -439,7 +438,6 @@ dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
       t2.term <- "nodemix"
     }
   }
-
   model.type <- NA
   if (form.length == 1 && t1.edges == TRUE) {
     model.type <- "homog"
@@ -466,8 +464,12 @@ dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
     pg <- (duration[1] - 1) / duration[1]
     ps2 <- (1 - d.rate) ^ 2
     coef.crude <- log(pg / (1 - pg))
-    if (sqrt(ps2) <= pg) {
-      stop("The competing risk of mortality is too high given the duration. Specify a lower d.rate",
+    if (ps2 <= pg) {
+        stop("The competing risk of mortality is too high given the duration. Specify a lower d.rate",
+           call. = FALSE)
+    }
+    else if (log(pg/(ps2-pg)) >= Inf){
+        stop("Risk of mortality is too similar to the given duration. Specify a lower d.rate",
            call. = FALSE)
     }
     coef.adj <- log(pg / (ps2 - pg))
