@@ -6,16 +6,21 @@
 #'              \code{as.data.frame} function.
 #'
 #' @param x An \code{EpiModel} object of class \code{\link{dcm}}.
-#' @param run Run number for model; used for multiple-run sensitivity models.
+#' @param run Run number for model; used for multiple-run sensitivity models. If
+#'        not specified, will output data from all runs in a stacked data frame.
 #' @param row.names See \code{\link{as.data.frame.default}}.
 #' @param optional See \code{\link{as.data.frame.default}}.
 #' @param ...  See \code{\link{as.data.frame.default}}.
 #'
 #' @details
-#' Model output from a \code{dcm} simulation are available as a data
+#' Model output from \code{dcm} simulations are available as a data
 #' frame with this helper function. The output data frame will include
 #' columns for time, the size of each compartment, the overall population
 #' size (the sum of compartment sizes), and the size of each flow.
+#'
+#' For models with multiple runs (i.e., varying parameters - see example below),
+#' the default with the \code{run} parameter not specified will output all runs
+#' in a single stacked data frame.
 #'
 #' @method as.data.frame dcm
 #' @keywords extract
@@ -26,10 +31,11 @@
 #' param <- param.dcm(inf.prob = 0.2, act.rate = seq(0.05, 0.5, 0.05),
 #'                    rec.rate = 1/50)
 #' init <- init.dcm(s.num = 500, i.num = 1)
-#' control <- control.dcm(type = "SIS", nsteps = 500)
+#' control <- control.dcm(type = "SIS", nsteps = 10)
 #' mod1 <- dcm(param, init, control)
-#' head(as.data.frame(mod1, run = 1))
-#' head(as.data.frame(mod1, run = 10))
+#' as.data.frame(mod1)
+#' as.data.frame(mod1, run = 1)
+#' as.data.frame(mod1, run = 10)
 #'
 #' ## Example 2: Two-group SIR model with vital dynamics
 #' param <- param.dcm(inf.prob = 0.2, inf.prob.g2 = 0.1,
@@ -41,21 +47,23 @@
 #'                    dr.rate = 1/100, dr.rate.g2 = 1/100)
 #' init <- init.dcm(s.num = 500, i.num = 1, r.num = 0,
 #'                  s.num.g2 = 500, i.num.g2 = 1, r.num.g2 = 0)
-#' control <- control.dcm(type = "SIR", nsteps = 500)
+#' control <- control.dcm(type = "SIR", nsteps = 10)
 #' mod2 <- dcm(param, init, control)
-#' head(as.data.frame(mod2))
-#' tail(as.data.frame(mod2))
+#' as.data.frame(mod2)
 #'
-as.data.frame.dcm <- function(x, row.names = NULL, optional = FALSE, run = 1,
+as.data.frame.dcm <- function(x, row.names = NULL, optional = FALSE, run,
                               ...) {
 
   df <- data.frame(time = x$control$timesteps)
   nruns <- x$control$nruns
+  if (missing(run)) {
+    run <- 1:nruns
+  }
 
   # Output for models with 1 run
   if (nruns == 1) {
-    if (run > 1) {
-      stop("Specify run = 1")
+    if (length(run) > 1 || max(run) > 1) {
+      stop("Maximum run is 1")
     }
     for (i in seq_along(x$epi)) {
       df[, i + 1] <- x$epi[[i]]
@@ -64,15 +72,32 @@ as.data.frame.dcm <- function(x, row.names = NULL, optional = FALSE, run = 1,
 
   # Output for models with multiple runs
   if (nruns > 1) {
-    if (run > nruns) {
-      stop(paste("Specify run between 1 and", nruns))
+    if (max(run) > nruns) {
+      stop(paste("Maximum run is", nruns))
     }
-    for (i in seq_along(x$epi)) {
-      df[, i + 1] <- x$epi[[i]][, run]
+    for (j in run) {
+      if (j == min(run)) {
+        for (i in seq_along(x$epi)) {
+          df[, i + 1] <- x$epi[[i]][, j]
+        }
+        df$run <- j
+      } else {
+        tdf <- data.frame(time = 1:x$control$nsteps)
+        for (i in seq_along(x$epi)) {
+          tdf[, i + 1] <- x$epi[[i]][, j]
+        }
+        tdf$run <- j
+        df <- rbind(df, tdf)
+      }
     }
+    df <- df[, c(ncol(df), 1:(ncol(df) - 1))]
   }
 
-  names(df)[2:ncol(df)] <- names(x$epi)
+  if (nruns > 1) {
+    names(df)[3:ncol(df)] <- names(x$epi)
+  } else {
+    names(df)[2:ncol(df)] <- names(x$epi)
+  }
 
   return(df)
 }
