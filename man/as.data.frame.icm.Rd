@@ -80,6 +80,7 @@ mod <- netsim(est, param, init, control)
 
 # Same data extraction methods as with ICMs
 as.data.frame(mod)
+as.data.frame(mod, sim = 2)
 as.data.frame(mod, out = "mean")
 as.data.frame(mod, out = "sd")
 as.data.frame(mod, out = "qnt", qval = 0.25)
