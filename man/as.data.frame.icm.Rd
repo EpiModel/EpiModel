@@ -47,8 +47,8 @@ simulations in the model output.
 ## Stochastic ICM SIS model
 param <- param.icm(inf.prob = 0.8, act.rate = 2, rec.rate = 0.1)
 init <- init.icm(s.num = 500, i.num = 1)
-control <- control.icm(type = "SIS", nsteps = 25,
-                       nsims = 2, verbose = FALSE)
+control <- control.icm(type = "SIS", nsteps = 10,
+                       nsims = 3, verbose = FALSE)
 mod <- icm(param, init, control)
 
 # Default output all simulation runs, default to all in stacked data.frame
@@ -65,6 +65,7 @@ as.data.frame(mod, out = "sd")
 as.data.frame(mod, out = "qnt", qval = 0.25)
 as.data.frame(mod, out = "qnt", qval = 0.75)
 
+\dontrun{
 ## Stochastic SI network model
 nw <- network.initialize(n = 100, directed = FALSE)
 formation <- ~edges
@@ -83,6 +84,7 @@ as.data.frame(mod, out = "mean")
 as.data.frame(mod, out = "sd")
 as.data.frame(mod, out = "qnt", qval = 0.25)
 as.data.frame(mod, out = "qnt", qval = 0.75)
+}
 
 }
 \keyword{extract}
