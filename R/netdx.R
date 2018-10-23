@@ -246,7 +246,7 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps, nwstats.formula = "forma
       }
     }
     if (dynamic == FALSE) {
-      if (packageVersion("ergm") >= 3.10) {
+      if (packageVersion("ergm") >= "3.10") {
         if (class(x$fit) == "network") {
           diag.sim <- simulate(formation,
                                basis = nw,
