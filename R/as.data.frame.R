@@ -310,7 +310,7 @@ as.data.frame.netsim <- function(x, row.names = NULL, optional = FALSE,
 #' est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 #'
 #' # Simulate the network with netdx
-#' dx <- netdx(est, nsims = 3, nsteps = 10, verbose = FALSE)
+#' dx <- netdx(est, nsims = 3, nsteps = 10, keep.tedgelist = TRUE, verbose = FALSE)
 #'
 #' # Extract data from the first simulation
 #' as.data.frame(dx, sim = 1)
@@ -320,6 +320,11 @@ as.data.frame.netsim <- function(x, row.names = NULL, optional = FALSE,
 #'
 as.data.frame.netdx <- function(x, row.names = NULL, optional = FALSE,
                                 sim, ...) {
+
+  if (is.null(x$tedgelist)) {
+    stop("Edgelist not saved in netdx object, check keep.tedgelist parameter",
+         call. = FALSE)
+  }
 
   if (missing(sim)) {
     sim <- 1:x$nsims
