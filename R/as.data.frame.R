@@ -334,14 +334,14 @@ as.data.frame.netdx <- function(x, row.names = NULL, optional = FALSE,
   }
 
   if (length(sim) == 1) {
-    df <- x$edgelist[[sim]]
+    df <- x$tedgelist[[sim]]
   } else {
     for (j in sim) {
       if (j == min(sim)) {
-        df <- x$edgelist[[j]]
+        df <- x$tedgelist[[j]]
         df$sim <- j
       } else {
-        tdf <- x$edgelist[[j]]
+        tdf <- x$tedgelist[[j]]
         tdf$sim <- j
         df <- rbind(df, tdf)
       }
