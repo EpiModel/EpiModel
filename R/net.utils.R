@@ -622,15 +622,16 @@ edgelist_censor <- function(el) {
 #' est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 #'
 #' # Simulate the network and extract a timed edgelist
-#' sim <- netdx(est, nsims = 1, nsteps = 100, verbose = FALSE)
-#' el <- sim$edgelist[[1]]
+#' dx <- netdx(est, nsims = 1, nsteps = 100, keep.tedgelist = TRUE, verbose = FALSE)
+#' el <- as.data.frame(dx)
 #'
 #' # Calculate ages directly from edgelist
-#' ( ma <- edgelist_meanage(el = el) )
+#' mean_ages <- edgelist_meanage(el = el)
+#' mean_ages
 #'
 #' # Alternatively, netdx calculates these
-#' sim$pages
-#' identical(sim$pages[[1]], ma)
+#' dx$pages
+#' identical(dx$pages[[1]], mean_ages)
 #'
 edgelist_meanage <- function(x, el) {
 
