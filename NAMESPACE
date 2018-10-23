@@ -2,6 +2,7 @@
 
 S3method(as.data.frame,dcm)
 S3method(as.data.frame,icm)
+S3method(as.data.frame,netdx)
 S3method(as.data.frame,netsim)
 S3method(as.network,transmat)
 S3method(comp_plot,dcm)

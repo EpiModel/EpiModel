@@ -299,3 +299,68 @@ as.data.frame.netsim <- function(x, row.names = NULL, optional = FALSE,
   return(df)
 
 }
+
+#' @title Extract Timed Edgelists netdx Objects
+#'
+#' @description This function extracts timed edgelists for objects of class
+#'              \code{netdx} into a data frame using the generic
+#'              \code{as.data.frame} function.
+#'
+#' @param x An \code{EpiModel} object of class \code{netdx}.
+#' @param sim The simulation number to output. If not specified, then data from
+#'        all simulations will be output.
+#' @param row.names See \code{\link{as.data.frame.default}}.
+#' @param optional See \code{\link{as.data.frame.default}}.
+#' @param ...  See \code{\link{as.data.frame.default}}.
+#'
+#' @method as.data.frame netdx
+#' @keywords extract
+#' @export
+#'
+#' @examples
+#' # Initialize and parameterize the network model
+#' nw <- network.initialize(n = 100, directed = FALSE)
+#' formation <- ~edges
+#' target.stats <- 50
+#' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
+#'
+#' # Model estimation
+#' est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
+#'
+#' # Simulate the network with netdx
+#' dx <- netdx(est, nsims = 3, nsteps = 10, verbose = FALSE)
+#'
+#' # Extract data from the first simulation
+#' as.data.frame(dx, sim = 1)
+#'
+#' # Extract data from all simulations
+#' as.data.frame(dx)
+#'
+as.data.frame.netdx <- function(x, row.names = NULL, optional = FALSE,
+                                sim, ...) {
+
+  if (missing(sim)) {
+    sim <- 1:x$nsims
+  }
+  if (max(sim) > x$nsims) {
+    stop(paste("Maximum sim is", x$nsims), call. = FALSE)
+  }
+
+  if (length(sim) == 1) {
+    df <- x$edgelist[[sim]]
+  } else {
+    for (j in sim) {
+      if (j == min(sim)) {
+        df <- x$edgelist[[j]]
+        df$sim <- j
+      } else {
+        tdf <- x$edgelist[[j]]
+        tdf$sim <- j
+        df <- rbind(df, tdf)
+      }
+    }
+    df <- df[, c(ncol(df), 1:(ncol(df) - 1))]
+  }
+
+  return(df)
+}
