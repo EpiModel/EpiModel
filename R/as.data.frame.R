@@ -170,6 +170,7 @@ as.data.frame.dcm <- function(x, row.names = NULL, optional = FALSE, run,
 #'
 #' # Same data extraction methods as with ICMs
 #' as.data.frame(mod)
+#' as.data.frame(mod, sim = 2)
 #' as.data.frame(mod, out = "mean")
 #' as.data.frame(mod, out = "sd")
 #' as.data.frame(mod, out = "qnt", qval = 0.25)
@@ -194,48 +195,29 @@ as.data.frame.icm <- function(x, row.names = NULL, optional = FALSE,
   if (out == "vals") {
 
     if (missing(sim)) {
-      sim <- "all"
+      sim <- 1:nsims
+    }
+    if (max(sim) > nsims) {
+      stop("Maximum sim is ", nsims, call. = FALSE)
     }
 
-    # Output for models with 1 sim
-    if (nsims == 1) {
-      for (i in seq_along(x$epi)) {
-        df[, i + 1] <- x$epi[[i]]
-      }
-      df$sim <- 1
-      df <- df[, c(ncol(df), 1:(ncol(df) - 1))]
-    }
-
-    # Output for models with multiple sims
-    if (nsims > 1) {
-      if (sim == "all") {
-        for (j in 1:nsims) {
-          if (j == 1) {
-            for (i in seq_along(x$epi)) {
-              df[, i + 1] <- x$epi[[i]][, j]
-            }
-            df$sim <- j
-          } else {
-            tdf <- data.frame(time = 1:x$control$nsteps)
-            for (i in seq_along(x$epi)) {
-              tdf[, i + 1] <- x$epi[[i]][, j]
-            }
-            tdf$sim <- j
-            df <- rbind(df, tdf)
-          }
-        }
-        df <- df[, c(ncol(df), 1:(ncol(df) - 1))]
-      } else {
-        if (sim > nsims) {
-          stop(paste("Specify sim between 1 and", nsims))
-        }
+    for (j in sim) {
+      if (j == min(sim)) {
         for (i in seq_along(x$epi)) {
-          df[, i + 1] <- x$epi[[i]][, sim]
+          df[, i + 1] <- x$epi[[i]][, j]
         }
-        df$sim <- sim
-        df <- df[, c(ncol(df), 1:(ncol(df) - 1))]
+        df$sim <- j
+      } else {
+        tdf <- data.frame(time = 1:x$control$nsteps)
+        for (i in seq_along(x$epi)) {
+          tdf[, i + 1] <- x$epi[[i]][, j]
+        }
+        tdf$sim <- j
+        df <- rbind(df, tdf)
       }
     }
+    df <- df[, c(ncol(df), 1:(ncol(df) - 1))]
+
   }
 
   ## Output means
@@ -292,7 +274,7 @@ as.data.frame.icm <- function(x, row.names = NULL, optional = FALSE,
 as.data.frame.netsim <- function(x, row.names = NULL, optional = FALSE,
                                  out = "vals", sim, ...) {
   if (missing(sim)) {
-    sim <- "all"
+    sim <- 1:x$control$nsims
   }
   df <- as.data.frame.icm(x, row.names = row.names, optional = optional,
                           sim = sim, out = out, ...)
