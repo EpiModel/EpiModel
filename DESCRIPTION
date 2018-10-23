@@ -29,7 +29,7 @@ Depends:
     R (>= 3.2),
     deSolve (>= 1.21),
     networkDynamic (>= 0.9),
-    tergm (>= 3.6)
+    tergm (>= 3.5)
 Imports:
     graphics,
     grDevices,
