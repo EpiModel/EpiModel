@@ -579,7 +579,7 @@ edgelist_censor <- function(el) {
 
   ## Table
   nums <- rbind(leftcens.num, rightcens.num, lrcens.num, nocens.num)
-  pcts <- rbind(leftcens.pct, rightcens.pct, lrcens.pct, nocens.pct)
+  pcts <- round(rbind(leftcens.pct, rightcens.pct, lrcens.pct, nocens.pct), 3)
   out <- cbind(nums, pcts)
   rownames(out) <- c("Left Cens.", "Right Cens.", "Both Cens.", "No Cens.")
   colnames(out) <- c("num", "pct")
