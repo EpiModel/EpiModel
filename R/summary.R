@@ -79,8 +79,8 @@ summary.dcm <- function(object, at, run = 1, digits = 3, ...) {
                           ds.flow, NA,
                           di.flow, NA))
       mat <- rbind(mat, matrix(stats, byrow = TRUE, nrow = length(stats) / 2))
-      rownames(mat)[rownames(mat) == ""] <- c("Birth ->", "S Death ->",
-                                              "I Death ->")
+      rownames(mat)[rownames(mat) == ""] <- c("Arrival ->", "S Departure ->",
+                                              "I Departure ->")
     }
     if (groups == 2) {
       stats <- with(df, c(s.num.g2, s.prev.g2,
@@ -89,7 +89,7 @@ summary.dcm <- function(object, at, run = 1, digits = 3, ...) {
                           si.flow.g2, NA))
       mat.g2 <- matrix(stats, byrow = TRUE, nrow = length(stats) / 2)
       if (vital == TRUE) {
-        stats <- with(df, c(b.flow.g2, NA,
+        stats <- with(df, c(a.flow.g2, NA,
                             ds.flow.g2, NA,
                             di.flow.g2, NA))
         mat.g2 <- rbind(mat.g2, matrix(stats, byrow = TRUE, nrow = length(stats) / 2))
@@ -108,13 +108,13 @@ summary.dcm <- function(object, at, run = 1, digits = 3, ...) {
     rownames(mat) <- c("Suscept.", "Infect.", "Recov.", "Total",
                        "S -> I", "I -> R")
     if (vital == TRUE) {
-      stats <- c(df$b.flow, NA,
+      stats <- c(df$a.flow, NA,
                  df$ds.flow, NA,
                  df$di.flow, NA,
                  df$dr.flow, NA)
       mat <- rbind(mat, matrix(stats, byrow = TRUE, nrow = length(stats) / 2))
-      rownames(mat)[rownames(mat) == ""] <- c("Birth ->", "S Death ->",
-                                              "I Death ->", "R Death ->")
+      rownames(mat)[rownames(mat) == ""] <- c("Arrival ->", "S Departure ->",
+                                              "I Departure ->", "R Departure ->")
     }
     if (groups == 2) {
       stats <- with(df, c(s.num.g2, s.prev.g2,
@@ -125,7 +125,7 @@ summary.dcm <- function(object, at, run = 1, digits = 3, ...) {
                           ir.flow.g2, NA))
       mat.g2 <- matrix(stats, byrow = TRUE, nrow = length(stats) / 2)
       if (vital == TRUE) {
-        stats <- with(df, c(b.flow.g2, NA,
+        stats <- with(df, c(a.flow.g2, NA,
                             ds.flow.g2, NA,
                             di.flow.g2, NA,
                             dr.flow.g2, NA))
@@ -143,12 +143,12 @@ summary.dcm <- function(object, at, run = 1, digits = 3, ...) {
     mat <- matrix(stats, byrow = TRUE, nrow = length(stats) / 2)
     rownames(mat) <- c("Suscept.", "Infect.", "Total", "S -> I", "I -> S")
     if (vital == TRUE) {
-      stats <- c(df$b.flow, NA,
+      stats <- c(df$a.flow, NA,
                  df$ds.flow, NA,
                  df$di.flow, NA)
       mat <- rbind(mat, matrix(stats, byrow = TRUE, nrow = length(stats) / 2))
-      rownames(mat)[rownames(mat) == ""] <- c("Birth ->", "S Death ->",
-                                              "I Death ->")
+      rownames(mat)[rownames(mat) == ""] <- c("Arrival ->", "S Departure ->",
+                                              "I Departure ->")
     }
     if (groups == 2) {
       stats <- with(df, c(s.num.g2, s.prev.g2,
@@ -158,7 +158,7 @@ summary.dcm <- function(object, at, run = 1, digits = 3, ...) {
                           is.flow.g2, NA))
       mat.g2 <- matrix(stats, byrow = TRUE, nrow = length(stats) / 2)
       if (vital == TRUE) {
-        stats <- with(df, c(b.flow.g2, NA,
+        stats <- with(df, c(a.flow.g2, NA,
                             ds.flow.g2, NA,
                             di.flow.g2, NA))
         mat.g2 <- rbind(mat.g2, matrix(stats, byrow = TRUE,
@@ -272,12 +272,12 @@ summary.icm <- function(object, at, digits = 3, ...) {
     mat <- matrix(stats, byrow = TRUE, nrow = length(stats) / 3)
     rownames(mat) <- c("Suscept.", "Infect.", "Total", "S -> I")
     if (vital == TRUE) {
-      stats <- c(df.mn$b.flow, df.sd$b.flow, NA,
+      stats <- c(df.mn$a.flow, df.sd$a.flow, NA,
                  df.mn$ds.flow, df.sd$ds.flow, NA,
                  df.mn$di.flow, df.sd$di.flow, NA)
       mat <- rbind(mat, matrix(stats, byrow = TRUE, nrow = length(stats) / 3))
-      rownames(mat)[rownames(mat) == ""] <- c("Birth ->", "S Death ->",
-                                              "I Death ->")
+      rownames(mat)[rownames(mat) == ""] <- c("Arrival ->", "S Departure ->",
+                                              "I Departure ->")
     }
 
     ## Group 2 stats
@@ -288,7 +288,7 @@ summary.icm <- function(object, at, digits = 3, ...) {
                  df.mn$si.flow.g2, df.sd$si.flow.g2, NA)
       mat.g2 <- matrix(stats, byrow = TRUE, nrow = length(stats) / 3)
       if (vital == TRUE) {
-        stats <- c(df.mn$b.flow.g2, df.sd$b.flow.g2, NA,
+        stats <- c(df.mn$a.flow.g2, df.sd$a.flow.g2, NA,
                    df.mn$ds.flow.g2, df.sd$ds.flow.g2, NA,
                    df.mn$di.flow.g2, df.sd$di.flow.g2, NA)
         mat.g2 <- rbind(mat.g2, matrix(stats, byrow = TRUE,
@@ -323,13 +323,13 @@ summary.icm <- function(object, at, digits = 3, ...) {
     rownames(mat) <- c("Suscept.", "Infect.", "Recov.", "Total",
                        "S -> I", "I -> R")
     if (vital == TRUE) {
-      stats <- c(df.mn$b.flow, df.sd$b.flow, NA,
+      stats <- c(df.mn$a.flow, df.sd$a.flow, NA,
                  df.mn$ds.flow, df.sd$ds.flow, NA,
                  df.mn$di.flow, df.sd$di.flow, NA,
                  df.mn$dr.flow, df.sd$dr.flow, NA)
       mat <- rbind(mat, matrix(stats, byrow = TRUE, nrow = length(stats) / 3))
-      rownames(mat)[rownames(mat) == ""] <- c("Birth ->", "S Death ->",
-                                              "I Death ->", "R Death ->")
+      rownames(mat)[rownames(mat) == ""] <- c("Arrival ->", "S Departure ->",
+                                              "I Departure ->", "R Departure ->")
     }
 
     ## Group 2 stats
@@ -342,7 +342,7 @@ summary.icm <- function(object, at, digits = 3, ...) {
                  df.mn$ir.flow.g2, df.sd$ir.flow.g2, NA)
       mat.g2 <- matrix(stats, byrow = TRUE, nrow = length(stats) / 3)
       if (vital == TRUE) {
-        stats <- c(df.mn$b.flow.g2, df.sd$b.flow.g2, NA,
+        stats <- c(df.mn$a.flow.g2, df.sd$a.flow.g2, NA,
                    df.mn$ds.flow.g2, df.sd$ds.flow.g2, NA,
                    df.mn$di.flow.g2, df.sd$di.flow.g2, NA,
                    df.mn$dr.flow.g2, df.sd$dr.flow.g2, NA)
@@ -373,12 +373,12 @@ summary.icm <- function(object, at, digits = 3, ...) {
     mat <- matrix(stats, byrow = TRUE, nrow = length(stats) / 3)
     rownames(mat) <- c("Suscept.", "Infect.", "Total", "S -> I", "I -> S")
     if (vital == TRUE) {
-      stats <- c(df.mn$b.flow, df.sd$b.flow, NA,
+      stats <- c(df.mn$a.flow, df.sd$a.flow, NA,
                  df.mn$ds.flow, df.sd$ds.flow, NA,
                  df.mn$di.flow, df.sd$di.flow, NA)
       mat <- rbind(mat, matrix(stats, byrow = TRUE, nrow = length(stats) / 3))
-      rownames(mat)[rownames(mat) == ""] <- c("Birth ->", "S Death ->",
-                                            "I Death ->")
+      rownames(mat)[rownames(mat) == ""] <- c("Arrival ->", "S Departure ->",
+                                            "I Departure ->")
     }
 
     ## Group 2 stats
@@ -390,7 +390,7 @@ summary.icm <- function(object, at, digits = 3, ...) {
                  df.mn$is.flow.g2, df.sd$is.flow.g2, NA)
       mat.g2 <- matrix(stats, byrow = TRUE, nrow = length(stats) / 3)
       if (vital == TRUE) {
-        stats <- c(df.mn$b.flow.g2, df.sd$b.flow.g2, NA,
+        stats <- c(df.mn$a.flow.g2, df.sd$a.flow.g2, NA,
                    df.mn$ds.flow.g2, df.sd$ds.flow.g2, NA,
                    df.mn$di.flow.g2, df.sd$di.flow.g2, NA)
         mat.g2 <- rbind(mat.g2, matrix(stats, byrow = TRUE,
@@ -514,12 +514,12 @@ summary.netsim <- function(object, at, digits = 3, ...) {
     mat <- matrix(stats, byrow = TRUE, nrow = length(stats) / 3)
     rownames(mat) <- c("Suscept.", "Infect.", "Total", "S -> I")
     if (vital == TRUE) {
-      stats <- c(df.mn$b.flow, df.sd$b.flow, NA,
+      stats <- c(df.mn$a.flow, df.sd$a.flow, NA,
                  df.mn$ds.flow, df.sd$ds.flow, NA,
                  df.mn$di.flow, df.sd$di.flow, NA)
       mat <- rbind(mat, matrix(stats, byrow = TRUE, nrow = length(stats) / 3))
-      rownames(mat)[rownames(mat) == ""] <- c("Birth ->", "S Death ->",
-                                              "I Death ->")
+      rownames(mat)[rownames(mat) == ""] <- c("Arrival ->", "S Departure ->",
+                                              "I Departure ->")
     }
 
     ## Group 2 stats
@@ -530,7 +530,7 @@ summary.netsim <- function(object, at, digits = 3, ...) {
                  df.mn$si.flow.m2, df.sd$si.flow.m2, NA)
       mat.m2 <- matrix(stats, byrow = TRUE, nrow = 4)
       if (vital == TRUE) {
-        stats <- c(df.mn$b.flow.m2, df.sd$b.flow.m2, NA,
+        stats <- c(df.mn$a.flow.m2, df.sd$a.flow.m2, NA,
                    df.mn$ds.flow.m2, df.sd$ds.flow.m2, NA,
                    df.mn$di.flow.m2, df.sd$di.flow.m2, NA)
         mat.m2 <- rbind(mat.m2, matrix(stats, byrow = TRUE,
@@ -565,13 +565,13 @@ summary.netsim <- function(object, at, digits = 3, ...) {
     rownames(mat) <- c("Suscept.", "Infect.", "Recov.", "Total",
                        "S -> I", "I -> R")
     if (vital == TRUE) {
-      stats <- c(df.mn$b.flow, df.sd$b.flow, NA,
+      stats <- c(df.mn$a.flow, df.sd$a.flow, NA,
                  df.mn$ds.flow, df.sd$ds.flow, NA,
                  df.mn$di.flow, df.sd$di.flow, NA,
                  df.mn$dr.flow, df.sd$dr.flow, NA)
       mat <- rbind(mat, matrix(stats, byrow = TRUE, nrow = length(stats) / 3))
-      rownames(mat)[rownames(mat) == ""] <- c("Birth ->", "S Death ->",
-                                              "I Death ->", "R Death ->")
+      rownames(mat)[rownames(mat) == ""] <- c("Arrival ->", "S Departure ->",
+                                              "I Departure ->", "R Departure ->")
     }
 
     ## Group 2 stats
@@ -584,7 +584,7 @@ summary.netsim <- function(object, at, digits = 3, ...) {
                  df.mn$ir.flow.m2, df.sd$ir.flow.m2, NA)
       mat.m2 <- matrix(stats, byrow = TRUE, nrow = length(stats) / 3)
       if (vital == TRUE) {
-        stats <- c(df.mn$b.flow.m2, df.sd$b.flow.m2, NA,
+        stats <- c(df.mn$a.flow.m2, df.sd$a.flow.m2, NA,
                    df.mn$ds.flow.m2, df.sd$ds.flow.m2, NA,
                    df.mn$di.flow.m2, df.sd$di.flow.m2, NA,
                    df.mn$dr.flow.m2, df.sd$dr.flow.m2, NA)
@@ -616,12 +616,12 @@ summary.netsim <- function(object, at, digits = 3, ...) {
     rownames(mat) <- c("Suscept.", "Infect.", "Total",
                        "S -> I", "I -> S")
     if (vital == TRUE) {
-      stats <- c(df.mn$b.flow, df.sd$b.flow, NA,
+      stats <- c(df.mn$a.flow, df.sd$a.flow, NA,
                  df.mn$ds.flow, df.sd$ds.flow, NA,
                  df.mn$di.flow, df.sd$di.flow, NA)
       mat <- rbind(mat, matrix(stats, byrow = TRUE, nrow = length(stats) / 3))
-      rownames(mat)[rownames(mat) == ""] <- c("Birth ->", "S Death ->",
-                                              "I Death ->")
+      rownames(mat)[rownames(mat) == ""] <- c("Arrival ->", "S Departure ->",
+                                              "I Departure ->")
     }
 
     ## Group 2 stats
@@ -633,7 +633,7 @@ summary.netsim <- function(object, at, digits = 3, ...) {
                  df.mn$is.flow.m2, df.sd$is.flow.m2, NA)
       mat.m2 <- matrix(stats, byrow = TRUE, nrow = length(stats) / 3)
       if (vital == TRUE) {
-        stats <- c(df.mn$b.flow.m2, df.sd$b.flow.m2, NA,
+        stats <- c(df.mn$a.flow.m2, df.sd$a.flow.m2, NA,
                    df.mn$ds.flow.m2, df.sd$ds.flow.m2, NA,
                    df.mn$di.flow.m2, df.sd$di.flow.m2, NA)
         mat.m2 <- rbind(mat.m2, matrix(stats, byrow = TRUE,

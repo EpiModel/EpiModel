@@ -121,21 +121,21 @@ verbose.icm <- function(x, type, s = 1, at = 2) {
         }
         if (x$param$vital == TRUE) {
           if (x$param$groups == 1) {
-            cat("\nBirths:", x$epi$b.flow[at])
-            cat("\nDeaths, susceptibles:", x$epi$ds.flow[at])
-            cat("\nDeaths, infecteds:", x$epi$di.flow[at])
+            cat("\nArrivals:", x$epi$a.flow[at])
+            cat("\nDepartures, susceptibles:", x$epi$ds.flow[at])
+            cat("\nDepartures, infecteds:", x$epi$di.flow[at])
             if (x$control$type == "SIR") {
-              cat("\nDeaths, recovered:", x$epi$dr.flow[at])
+              cat("\nDepartures, recovered:", x$epi$dr.flow[at])
             }
           }
           if (x$param$groups == 2) {
-            cat("\nBirths:", x$epi$b.flow[at] + x$epi$b.flow.g2[at])
-            cat("\nDeaths, susceptible:", x$epi$ds.flow[at] +
+            cat("\nArrivals:", x$epi$a.flow[at] + x$epi$a.flow.g2[at])
+            cat("\nDepartures, susceptible:", x$epi$ds.flow[at] +
                                           x$epi$ds.flow.g2[at])
-            cat("\nDeaths, infected:", x$epi$di.flow[at] +
+            cat("\nDepartures, infected:", x$epi$di.flow[at] +
                                        x$epi$di.flow.g2[at])
             if (x$control$type == "SIR") {
-              cat("\nDeaths, recovered:", x$epi$dr.flow[at] +
+              cat("\nDepartures, recovered:", x$epi$dr.flow[at] +
                                           x$epi$dr.flow.g2[at])
             }
           }
@@ -239,21 +239,21 @@ verbose.net <- function(x, type, s = 1, at = 2) {
         }
         if (x$param$vital == TRUE) {
           if (x$param$modes == 1) {
-            cat("\nBirths:", x$epi$b.flow[at])
-            cat("\nDeaths, susceptibles:", x$epi$ds.flow[at])
-            cat("\nDeaths, infecteds:", x$epi$di.flow[at])
+            cat("\nArrivals:", x$epi$a.flow[at])
+            cat("\nDepartures, susceptibles:", x$epi$ds.flow[at])
+            cat("\nDepartures, infecteds:", x$epi$di.flow[at])
             if (x$control$type == "SIR") {
-              cat("\nDeaths, recovered:", x$epi$dr.flow[at])
+              cat("\nDepartures, recovered:", x$epi$dr.flow[at])
             }
           }
           if (x$param$modes == 2) {
-            cat("\nBirths:", x$epi$b.flow[at] + x$epi$b.flow.m2[at])
-            cat("\nDeaths, susceptible:", x$epi$ds.flow[at] +
+            cat("\nArrivals:", x$epi$a.flow[at] + x$epi$a.flow.m2[at])
+            cat("\nDepartures, susceptible:", x$epi$ds.flow[at] +
                                           x$epi$ds.flow.m2[at])
-            cat("\nDeaths, infected:", x$epi$di.flow[at] +
+            cat("\nDepartures, infected:", x$epi$di.flow[at] +
                                        x$epi$di.flow.m2[at])
             if (x$control$type == "SIR") {
-              cat("\nDeaths, recovered:", x$epi$dr.flow[at] +
+              cat("\nDepartures, recovered:", x$epi$dr.flow[at] +
                                           x$epi$dr.flow.m2[at])
             }
           }

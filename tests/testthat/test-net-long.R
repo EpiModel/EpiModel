@@ -288,7 +288,7 @@ test_that("edges models", {
 
 ################################################################################
 
-test_that("High death rate models", {
+test_that("High departure rate models", {
 
   ## "netsim: 1M, ds.rate = 0.5"
   nw <- network.initialize(n = 25, directed = FALSE)
@@ -456,8 +456,8 @@ test_that("Open population 1 mode models", {
   test_net(x)
   rm(x)
 
-  ## "SI, 1M, OP, deterministic births and deaths: 1 sim"
-  param <- param.net(inf.prob = 0.5, act.rate = 2, b.rate = 0.02,
+  ## "SI, 1M, OP, deterministic arrivals and departures: 1 sim"
+  param <- param.net(inf.prob = 0.5, act.rate = 2, a.rate = 0.02,
                      ds.rate = 0.02, di.rate = 0.02)
   init <- init.net(i.num = 10)
   control <- control.net(type = "SI", nsteps = 25, nsims = 1,
@@ -508,9 +508,9 @@ test_that("Open population 1 mode models", {
   test_net(x)
   rm(x)
 
-  ## "SIR, 1M OP, deterministic births, recoveries and deaths: 1 sim"
+  ## "SIR, 1M OP, deterministic arrivals, recoveries and departures: 1 sim"
   param <- param.net(inf.prob = 0.5, rec.rate = 0.1, act.rate = 2,
-                     b.rate = 0.02, ds.rate = 0.02, di.rate = 0.02,
+                     a.rate = 0.02, ds.rate = 0.02, di.rate = 0.02,
                      dr.rate = 0.02)
   init <- init.net(i.num = 10, r.num = 0)
   control <- control.net(type = "SIR", nsteps = 25, nsims = 1,
@@ -526,7 +526,7 @@ test_that("Open population 1 mode models", {
 
   ## "SIR, 1M, OP: 2 sim"
   param <- param.net(inf.prob = 0.5, rec.rate = 0.1, act.rate = 2,
-                     b.rate = 0.02, ds.rate = 0.02, di.rate = 0.02,
+                     a.rate = 0.02, ds.rate = 0.02, di.rate = 0.02,
                      dr.rate = 0.02)
   init <- init.net(i.num = 10, r.num = 0)
   control <- control.net(type = "SIR", nsteps = 10, nsims = 2,
@@ -544,7 +544,7 @@ test_that("Open population 1 mode models", {
 
   ## "SIS, 1M, OP: 1 sim"
   param <- param.net(inf.prob = 0.5, rec.rate = 0.01, act.rate = 2,
-                     b.rate = 0.02, ds.rate = 0.02, di.rate = 0.02)
+                     a.rate = 0.02, ds.rate = 0.02, di.rate = 0.02)
   init <- init.net(i.num = 10)
   control <- control.net(type = "SIS", nsteps = 10, nsims = 1,
                          verbose = FALSE, tea.status = FALSE)
@@ -587,8 +587,8 @@ test_that("Open-population bipartite models", {
 
   ## "SI, 2M, OP: 1 sim"
   param <- param.net(inf.prob = 0.5, inf.prob.m2 = 0.1, act.rate = 2,
-                     b.rate = 0.02, ds.rate = 0.02, di.rate = 0.02,
-                     b.rate.m2 = 0.02, ds.rate.m2 = 0.02, di.rate.m2 = 0.02)
+                     a.rate = 0.02, ds.rate = 0.02, di.rate = 0.02,
+                     a.rate.m2 = 0.02, ds.rate.m2 = 0.02, di.rate.m2 = 0.02)
   init <- init.net(i.num = 10, i.num.m2 = 10)
   control <- control.net(type = "SI", nsteps = 10, nsims = 1,
                          verbose = FALSE, tea.status = FALSE)
@@ -603,10 +603,10 @@ test_that("Open-population bipartite models", {
   test_net(x)
   rm(x)
 
-  ## "SI, 2M, OP, deterministic births and deaths: 1 sim"
+  ## "SI, 2M, OP, deterministic arrivals and departures: 1 sim"
   param <- param.net(inf.prob = 0.5, inf.prob.m2 = 0.1, act.rate = 2,
-                     b.rate = 0.02, ds.rate = 0.02, di.rate = 0.02,
-                     b.rate.m2 = 0.02, ds.rate.m2 = 0.02, di.rate.m2 = 0.02)
+                     a.rate = 0.02, ds.rate = 0.02, di.rate = 0.02,
+                     a.rate.m2 = 0.02, ds.rate.m2 = 0.02, di.rate.m2 = 0.02)
   init <- init.net(i.num = 10, i.num.m2 = 10)
   control <- control.net(type = "SI", nsteps = 25, nsims = 1,
                          verbose = FALSE, tea.status = FALSE,
@@ -621,8 +621,8 @@ test_that("Open-population bipartite models", {
 
   ## "SI, 2M, OP: 2 sim"
   param <- param.net(inf.prob = 0.5, inf.prob.m2 = 0.1, act.rate = 2,
-                     b.rate = 0.02, ds.rate = 0.02, di.rate = 0.02,
-                     b.rate.m2 = 0.02, ds.rate.m2 = 0.02, di.rate.m2 = 0.02)
+                     a.rate = 0.02, ds.rate = 0.02, di.rate = 0.02,
+                     a.rate.m2 = 0.02, ds.rate.m2 = 0.02, di.rate.m2 = 0.02)
   init <- init.net(i.num = 10, i.num.m2 = 10)
   control <- control.net(type = "SI", nsteps = 10, nsims = 2,
                          verbose = FALSE, tea.status = FALSE)
@@ -639,8 +639,8 @@ test_that("Open-population bipartite models", {
 
   ## "SIR, 2M, OP: 1 sim"
   param <- param.net(inf.prob = 0.5, inf.prob.m2 = 0.1, rec.rate = 0.1,
-                     rec.rate.m2 = 0.1, act.rate = 2, b.rate = 0.02,
-                     b.rate.m2 = NA, ds.rate = 0.02, ds.rate.m2 = 0.02,
+                     rec.rate.m2 = 0.1, act.rate = 2, a.rate = 0.02,
+                     a.rate.m2 = NA, ds.rate = 0.02, ds.rate.m2 = 0.02,
                      di.rate = 0.02, di.rate.m2 = 0.02, dr.rate = 0.02,
                      dr.rate.m2 = 0.02)
   init <- init.net(i.num = 10, i.num.m2 = 0,
@@ -659,10 +659,10 @@ test_that("Open-population bipartite models", {
   rm(x)
 
 
-  ## "SIR, 2M, OP, deterministic births, deaths, and recoveries: 1 sim"
+  ## "SIR, 2M, OP, deterministic arrivals, departures, and recoveries: 1 sim"
   param <- param.net(inf.prob = 0.5, inf.prob.m2 = 0.1, rec.rate = 0.1,
-                     rec.rate.m2 = 0.1, act.rate = 2, b.rate = 0.02,
-                     b.rate.m2 = NA, ds.rate = 0.02, ds.rate.m2 = 0.02,
+                     rec.rate.m2 = 0.1, act.rate = 2, a.rate = 0.02,
+                     a.rate.m2 = NA, ds.rate = 0.02, ds.rate.m2 = 0.02,
                      di.rate = 0.02, di.rate.m2 = 0.02, dr.rate = 0.02,
                      dr.rate.m2 = 0.02)
   init <- init.net(i.num = 10, i.num.m2 = 0,
@@ -706,8 +706,8 @@ test_that("Extinction open-population models", {
 
   ## "netsim: 2M, ds.rate = 0.5"
   param <- param.net(inf.prob = 0.1, inf.prob.m2 = 0.1, act.rate = 2,
-                     b.rate = 0.02, ds.rate = 0.5, di.rate = 0.5,
-                     b.rate.m2 = 0.02, ds.rate.m2 = 0.02, di.rate.m2 = 0.02)
+                     a.rate = 0.02, ds.rate = 0.5, di.rate = 0.5,
+                     a.rate.m2 = 0.02, ds.rate.m2 = 0.02, di.rate.m2 = 0.02)
   init <- init.net(i.num = 1, i.num.m2 = 0)
   control <- control.net(type = "SI", nsteps = 30, nsims = 1,
                          tea.status = FALSE, verbose = FALSE)
@@ -721,8 +721,8 @@ test_that("Extinction open-population models", {
 
   ## "netsim: 2M, ds.rate.m2 = 0.5"
   param <- param.net(inf.prob = 0.1, inf.prob.m2 = 0.1, act.rate = 2,
-                     b.rate = 0.02, ds.rate = 0.02, di.rate = 0.02,
-                     b.rate.m2 = 0.02, ds.rate.m2 = 0.5, di.rate.m2 = 0.5)
+                     a.rate = 0.02, ds.rate = 0.02, di.rate = 0.02,
+                     a.rate.m2 = 0.02, ds.rate.m2 = 0.5, di.rate.m2 = 0.5)
   init <- init.net(i.num = 1, i.num.m2 = 0)
   control <- control.net(type = "SI", nsteps = 30, nsims = 1,
                          tea.status = FALSE, verbose = FALSE)

@@ -189,10 +189,13 @@ test_that("get_degree", {
   all.equal(ergm.method, deg.net, deg.el)
 })
 
-test_that("dissolution_coefs returns appropriate error for incompatible death rate",{
-  #Dividing by zero:
-  err.msg <- "The competing risk of mortality is too high given the duration. Specify a lower d.rate"
+test_that("dissolution_coefs returns appropriate error for incompatible departure rate",{
   dissolution = ~offset(edges)
+  d.rate_ <- round(1-sqrt(59/60), 5)
+  duration <- 60
+  err.msg <- paste("The competing risk of mortality is too high for the given", 
+                   " duration of ", duration[1], "; specify a d.rate lower than ", 
+                   d.rate_,".",sep="")
   expect_that(dissolution_coefs(dissolution, duration = 60, d.rate = 1/60), throws_error(err.msg))
   expect_that(dissolution_coefs(dissolution, duration = 60, d.rate = 0.01), throws_error(err.msg))
 })

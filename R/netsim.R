@@ -89,7 +89,7 @@
 #' summary(mod1, at = 50)
 #'
 #' ## Example 2: Dependent SIR Model
-#' # Recalculate dissolution coefficient with death rate
+#' # Recalculate dissolution coefficient with departure rate
 #' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20,
 #'                                d.rate = 0.0021)
 #'

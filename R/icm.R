@@ -125,15 +125,15 @@ icm <- function(param, init, control) {
       }
 
 
-      ## Mortality
-      if (!is.null(control[["deaths.FUN"]])) {
-        dat <- do.call(control[["deaths.FUN"]], list(dat, at))
+      ## Departure Module
+      if (!is.null(control[["departures.FUN"]])) {
+        dat <- do.call(control[["departures.FUN"]], list(dat, at))
       }
 
 
-      ## Birth Module
-      if (!is.null(control[["births.FUN"]])) {
-        dat <- do.call(control[["births.FUN"]], list(dat, at))
+      ## Arrival Module
+      if (!is.null(control[["arrivals.FUN"]])) {
+        dat <- do.call(control[["arrivals.FUN"]], list(dat, at))
       }
 
 
