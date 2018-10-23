@@ -319,6 +319,7 @@ diss_check <- function(formation, dissolution){
 #' @export
 #'
 #' @examples
+#' \dontrun{
 #' nw <- network.initialize(1000, directed = FALSE)
 #'
 #' # Two dissolutions: an average duration of 300 versus 200
@@ -340,6 +341,7 @@ diss_check <- function(formation, dissolution){
 #' est200.compare <- update_dissolution(est300, diss.200)
 #'
 #' identical(est200$coef.form, est200.compare$coef.form)
+#'}
 #'
 update_dissolution <- function(old.netest, new.coef.diss) {
 
