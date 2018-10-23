@@ -473,7 +473,6 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps, nwstats.formula = "forma
   if (dynamic == TRUE) {
     out$nsteps <- nsteps
     out$stats.table.dissolution <- stats.table.dissolution
-    out$edgelist <- sim.df
     out$pages <- pages
     out$prop.diss <- prop.diss
     if (keep.tedgelist == TRUE) {
