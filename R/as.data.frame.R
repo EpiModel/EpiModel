@@ -73,7 +73,7 @@ as.data.frame.dcm <- function(x, row.names = NULL, optional = FALSE, run,
   # Output for models with multiple runs
   if (nruns > 1) {
     if (max(run) > nruns) {
-      stop(paste("Maximum run is", nruns))
+      stop("Maximum run is ", nruns, call. = FALSE)
     }
     for (j in run) {
       if (j == min(run)) {
