@@ -246,21 +246,40 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps, nwstats.formula = "forma
       }
     }
     if (dynamic == FALSE) {
-      if (class(x$fit) == "network") {
-        diag.sim <- simulate(formation,
-                             basis = nw,
-                             coef = x$coef.form.crude,
-                             constraints = constraints,
-                             nsim = nsims,
-                             output = "stats",
-                             sequential = sequential,
-                             monitor = nwstats.formula)
+      if (packageVersion("ergm") >= 3.10) {
+        if (class(x$fit) == "network") {
+          diag.sim <- simulate(formation,
+                               basis = nw,
+                               coef = x$coef.form.crude,
+                               constraints = constraints,
+                               nsim = nsims,
+                               output = "stats",
+                               sequential = sequential,
+                               monitor = nwstats.formula)
+        } else {
+          diag.sim <- simulate(fit, nsim = nsims,
+                               output = "stats",
+                               control = set.control.ergm,
+                               sequential = sequential,
+                               monitor = nwstats.formula)
+        }
       } else {
-        diag.sim <- simulate(fit, nsim = nsims,
-                             output = "stats",
-                             control = set.control.ergm,
-                             sequential = sequential,
-                             monitor = nwstats.formula)
+        if (class(x$fit) == "network") {
+          diag.sim <- simulate(formation,
+                               basis = nw,
+                               coef = x$coef.form.crude,
+                               constraints = constraints,
+                               nsim = nsims,
+                               statsonly = TRUE,
+                               sequential = sequential,
+                               monitor = nwstats.formula)
+        } else {
+          diag.sim <- simulate(fit, nsim = nsims,
+                               statsonly = TRUE,
+                               control = set.control.ergm,
+                               sequential = sequential,
+                               monitor = nwstats.formula)
+        }
       }
     }
   } # end edapprox = TRUE condition
