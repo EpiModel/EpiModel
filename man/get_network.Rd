@@ -14,7 +14,7 @@ get_network(x, sim = 1, network = 1, collapse = FALSE, at)
 
 \item{network}{Network number, for \code{netsim} objects with multiple
 overlapping networks (advanced use, and not applicable to \code{netdx}
-objects.}
+objects).}
 
 \item{collapse}{If \code{TRUE}, collapse the \code{networkDynamic} object to
 a static \code{network} object at a specified time step.}

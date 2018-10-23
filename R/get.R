@@ -12,7 +12,7 @@
 #' @param sim Simulation number of extracted network.
 #' @param network Network number, for \code{netsim} objects with multiple
 #'        overlapping networks (advanced use, and not applicable to \code{netdx}
-#'        objects.
+#'        objects).
 #' @param collapse If \code{TRUE}, collapse the \code{networkDynamic} object to
 #'        a static \code{network} object at a specified time step.
 #' @param at If \code{collapse} is \code{TRUE}, the time step at which the
@@ -179,26 +179,36 @@ get_transmat <- function(x, sim = 1) {
 }
 
 
-#' @title Extract Network Statistics from Network Epidemic Model
+#' @title Extract Network Statistics from netsim or netdx Object
 #'
 #' @description Extracts a data frame of network statistics from a network
-#'              epidemic model.
+#'              epidemic model simulated with \code{netsim} or a network diagnostics
+#'              object simulated with \code{netdx}.
 #'
-#' @param x An \code{EpiModel} object of class \code{\link{netsim}}.
-#' @param sim A vector of simulation numbers from the extracted network.
-#' @param network Network number, for simulations with multiple networks
-#'        representing the population.
+#' @param x An \code{EpiModel} object of class \code{\link{netsim}} or
+#'        \code{\link{netdx}}.
+#' @param sim A vector of simulation numbers from the extracted object
+#' @param network Network number, for \code{netsim} objects with multiple
+#'        overlapping networks (advanced use, and not applicable to \code{netdx}
+#'        objects).
 #'
 #' @keywords extract
 #' @export
 #'
 #' @examples
-#' # Simulate SI epidemic on bipartite Bernoulli random graph
+#' # Bipartite Bernoulli random graph TERGM
 #' nw <- network.initialize(n = 100, bipartite = 50, directed = FALSE)
 #' formation <- ~edges
 #' target.stats <- 50
 #' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
 #' est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
+#'
+#' dx <- netdx(est, nsim = 3, nsteps = 10, verbose = FALSE,
+#'             nwstats.formula = ~edges + isolates)
+#' get_nwstats(dx)
+#' get_nwstats(dx, sim = 1)
+#'
+#' # SI epidemic model
 #' param <- param.net(inf.prob = 0.3, inf.prob.m2 = 0.15)
 #' init <- init.net(i.num = 10, i.num.m2 = 10)
 #' control <- control.net(type = "SI", nsteps = 10, nsims = 3,
@@ -206,45 +216,74 @@ get_transmat <- function(x, sim = 1) {
 #'                        verbose = FALSE)
 #' mod <- netsim(est, param, init, control)
 #'
-#' # Extract the network statistics from all or sets of simulations as list of df's
+#' # Extract the network statistics from all or sets of simulations
 #' get_nwstats(mod)
+#' get_nwstats(mod, sim = 2)
 #' get_nwstats(mod, sim = c(1, 3))
 #'
-#' # Calculate summary stats on the fly
-#' apply(get_nwstats(mod, sim = 1)[[1]], 2, summary)
+#' # On the fly summary stats
+#' summary(get_nwstats(mod))
+#' colMeans(get_nwstats(mod))
 #'
 get_nwstats <- function(x, sim, network = 1) {
 
-  ## Warnings and checks
-  if (class(x) != "netsim") {
-    stop("x must be of class netsim", call. = FALSE)
+  ## Warnings and checks ##
+  if (!(class(x) %in% c("netsim", "netdx"))) {
+    stop("x must be of class netsim or netdx", call. = FALSE)
+  }
+
+  if (class(x) == "netsim") {
+    nsims <- x$control$nsims
+    nsteps <- x$control$nsteps
+  } else {
+    if (x$dynamic == TRUE) {
+      nsims <- x$nsims
+      nsteps <- x$nsteps
+    } else {
+      nsims <- 1
+      nsteps <- x$nsims
+    }
   }
 
   if (missing(sim)) {
-    sim <- 1:x$control$nsims
+    sim <- 1:nsims
   }
-  if (max(sim) > x$control$nsims) {
-    stop("Specify sims less than or equal to ", x$control$nsims, call. = FALSE)
-  }
-
-  if (x$control$save.nwstats == FALSE || is.null(x$stats$nwstats)) {
-    stop("Network statistics not saved in netsim object, check control.net settings",
-         call. = FALSE)
+  if (max(sim) > nsims) {
+    stop("Specify sims less than or equal to ", nsims, call. = FALSE)
   }
 
-  if (network > x$control$num.nw) {
-    stop("Specify network between 1 and ", x$control$num.nw, call. = FALSE)
+  if (class(x) == "netsim") {
+    if (x$control$save.nwstats == FALSE || is.null(x$stats$nwstats)) {
+      stop("Network statistics not saved in netsim object, check control.net settings",
+           call. = FALSE)
+    }
+    if (network > x$control$num.nw) {
+      stop("Specify network between 1 and ", x$control$num.nw, call. = FALSE)
+    }
   }
 
   ## Extraction
-  if (x$control$num.nw == 1) {
-    out <- x$stats$nwstats[sim]
-  } else {
-    out <- lapply(x$stats$nwstats, function(n) n[[network]])
-    out <- out[sim]
+  if (class(x) == "netsim") {
+    if (x$control$num.nw == 1) {
+      out <- x$stats$nwstats[sim]
+    } else {
+      out <- lapply(x$stats$nwstats, function(n) n[[network]])
+      out <- out[sim]
+    }
+  } else if (class(x) == "netdx") {
+    out <- x$stats[sim]
   }
 
-  out <- lapply(out, as.data.frame)
+  out <- as.data.frame(do.call("rbind", out))
+  out$time <- rep(1:nsteps, length(sim))
+  out$sim <- rep(sim, each = nsteps)
+  row.names(out) <- 1:nrow(out)
+  out <- out[, c((ncol(out)-1):ncol(out), 1:(ncol(out)-2))]
+
+  if (class(x) == "netdx" && x$dynamic == FALSE) {
+    out <- out[, -2]
+    names(out)[1] <- "sim"
+  }
 
   return(out)
 }
