@@ -204,13 +204,21 @@ as.data.frame.icm <- function(x, row.names = NULL, optional = FALSE,
     for (j in sim) {
       if (j == min(sim)) {
         for (i in seq_along(x$epi)) {
-          df[, i + 1] <- x$epi[[i]][, j]
+          if (nsims == 1) {
+            df[, i + 1] <- x$epi[[i]]
+          } else {
+            df[, i + 1] <- x$epi[[i]][, j]
+          }
         }
         df$sim <- j
       } else {
         tdf <- data.frame(time = 1:x$control$nsteps)
         for (i in seq_along(x$epi)) {
-          tdf[, i + 1] <- x$epi[[i]][, j]
+          if (nsims == 1) {
+            tdf[, i + 1] <- x$epi[[i]]
+          } else {
+            tdf[, i + 1] <- x$epi[[i]][, j]
+          }
         }
         tdf$sim <- j
         df <- rbind(df, tdf)
