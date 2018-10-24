@@ -114,8 +114,8 @@
 #' @export
 #'
 param.dcm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
-                      b.rate, ds.rate, di.rate, dr.rate, inf.prob.g2,
-                      act.rate.g2, rec.rate.g2, b.rate.g2, ds.rate.g2,
+                      a.rate, ds.rate, di.rate, dr.rate, inf.prob.g2,
+                      act.rate.g2, rec.rate.g2, a.rate.g2, ds.rate.g2,
                       di.rate.g2, dr.rate.g2, balance, ...) {
 
   # Get arguments
@@ -197,8 +197,8 @@ param.dcm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
 #' @export
 #'
 param.icm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
-                      b.rate, ds.rate, di.rate, dr.rate, inf.prob.g2,
-                      act.rate.g2, rec.rate.g2, b.rate.g2, ds.rate.g2,
+                      a.rate, ds.rate, di.rate, dr.rate, inf.prob.g2,
+                      act.rate.g2, rec.rate.g2, a.rate.g2, ds.rate.g2,
                       di.rate.g2, dr.rate.g2, balance, ...) {
 
   # Get arguments
@@ -223,7 +223,7 @@ param.icm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
   if (is.null(p$act.rate)) {
     p$act.rate <- 1
   }
-  p$vital <- ifelse(!is.null(p$b.rate) | !is.null(p$ds.rate) |
+  p$vital <- ifelse(!is.null(p$a.rate) | !is.null(p$ds.rate) |
                     !is.null(p$di.rate) | !is.null(p$dr.rate), TRUE, FALSE)
 
   p$groups <- ifelse(any(grepl(".g2", names(p))) == TRUE, 2, 1)
@@ -274,7 +274,7 @@ param.icm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
 #' @param a.rate Arrival or entry rate. For one-mode models, the arrival rate is the
 #'        rate of new arrivals per person per unit time. For bipartite models, the
 #'        arrival rate may be parameterized as a rate per mode 1 person time (with
-#'        mode 1 persons representing females), and with the \code{b.rate.g2}
+#'        mode 1 persons representing females), and with the \code{a.rate.g2}
 #'        rate set as described below.
 #' @param ds.rate Departure or exit rate for susceptible. For bipartite models, it
 #'        is the rate for the mode 1 susceptible only.

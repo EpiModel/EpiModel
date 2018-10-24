@@ -99,7 +99,7 @@
 #' # Reset parameters to include demographic rates
 #' param <- param.net(inf.prob = 0.3, inf.prob.m2 = 0.15,
 #'                    rec.rate = 0.02, rec.rate.m2 = 0.02,
-#'                    b.rate = 0.002, b.rate.m2 = NA,
+#'                    a.rate = 0.002, a.rate.m2 = NA,
 #'                    ds.rate = 0.001, ds.rate.m2 = 0.001,
 #'                    di.rate = 0.001, di.rate.m2 = 0.001,
 #'                    dr.rate = 0.001, dr.rate.m2 = 0.001)

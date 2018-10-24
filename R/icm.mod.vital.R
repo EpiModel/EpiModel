@@ -173,8 +173,8 @@ arrivals.icm <- function(dat, at) {
   }
 
   # Variables ---------------------------------------------------------------
-  b.rate <- dat$param$b.rate
-  b.rate.g2 <- dat$param$b.rate.g2
+  a.rate <- dat$param$a.rate
+  a.rate.g2 <- dat$param$a.rate.g2
   b.rand <- dat$control$b.rand
   groups <- dat$param$groups
   nOld <- dat$epi$num[at - 1]
@@ -185,30 +185,30 @@ arrivals.icm <- function(dat, at) {
 
   if (groups == 1) {
     if (b.rand == TRUE) {
-      nArrivals <- sum(rbinom(nOld, 1, b.rate))
+      nArrivals <- sum(rbinom(nOld, 1, a.rate))
     }
     if (b.rand == FALSE) {
-      nArrivals <- round(nOld * b.rate)
+      nArrivals <- round(nOld * a.rate)
     }
   }
   if (groups == 2) {
     nOldG2 <- dat$epi$num.g2[at - 1]
     if (b.rand == TRUE) {
-      if (is.na(b.rate.g2)) {
-        nArrivals <- sum(rbinom(nOld, 1, b.rate))
-        nArrivalsG2 <- sum(rbinom(nOld, 1, b.rate))
+      if (is.na(a.rate.g2)) {
+        nArrivals <- sum(rbinom(nOld, 1, a.rate))
+        nArrivalsG2 <- sum(rbinom(nOld, 1, a.rate))
       } else {
-        nArrivals <- sum(rbinom(nOld, 1, b.rate))
-        nArrivalsG2 <- sum(rbinom(nOldG2, 1, b.rate.g2))
+        nArrivals <- sum(rbinom(nOld, 1, a.rate))
+        nArrivalsG2 <- sum(rbinom(nOldG2, 1, a.rate.g2))
       }
     }
     if (b.rand == FALSE) {
-      if (is.na(b.rate.g2)) {
-        nArrivals <- round(nOld * b.rate)
-        nArrivalsG2 <- round(nOld * b.rate)
+      if (is.na(a.rate.g2)) {
+        nArrivals <- round(nOld * a.rate)
+        nArrivalsG2 <- round(nOld * a.rate)
       } else {
-        nArrivals <- round(nOld * b.rate)
-        nArrivalsG2 <- round(nOldG2 * b.rate.g2)
+        nArrivals <- round(nOld * a.rate)
+        nArrivalsG2 <- round(nOldG2 * a.rate.g2)
       }
     }
   }
@@ -223,15 +223,15 @@ arrivals.icm <- function(dat, at) {
 
   # Output ------------------------------------------------------------------
   if (at == 2) {
-    dat$epi$b.flow <- c(0, nArrivals)
+    dat$epi$a.flow <- c(0, nArrivals)
   } else {
-    dat$epi$b.flow[at] <- nArrivals
+    dat$epi$a.flow[at] <- nArrivals
   }
   if (dat$param$groups == 2) {
     if (at == 2) {
-      dat$epi$b.flow.g2 <- c(0, nArrivalsG2)
+      dat$epi$a.flow.g2 <- c(0, nArrivalsG2)
     } else {
-      dat$epi$b.flow.g2[at] <- nArrivalsG2
+      dat$epi$a.flow.g2[at] <- nArrivalsG2
     }
   }
 

@@ -234,8 +234,8 @@ arrivals.net <- function(dat, at) {
 
 
   # Variables ---------------------------------------------------------------
-  b.rate <- dat$param$b.rate
-  b.rate.m2 <- dat$param$b.rate.m2
+  a.rate <- dat$param$a.rate
+  a.rate.m2 <- dat$param$a.rate.m2
   modes <- dat$param$modes
   tea.status <- dat$control$tea.status
   nOld <- dat$epi$num[at - 1]
@@ -250,10 +250,10 @@ arrivals.net <- function(dat, at) {
   # Add Nodes ---------------------------------------------------------------
   if (modes == 1 && nOld > 0) {
     if (b.rand == TRUE) {
-      nArrivals <- sum(rbinom(nOld, 1, b.rate))
+      nArrivals <- sum(rbinom(nOld, 1, a.rate))
     }
     if (b.rand == FALSE) {
-      nArrivals <- round(nOld * b.rate)
+      nArrivals <- round(nOld * a.rate)
     }
     if (nArrivals > 0) {
       dat$nw <- add.vertices(dat$nw, nv = nArrivals)
@@ -264,21 +264,21 @@ arrivals.net <- function(dat, at) {
   if (modes == 2 && nOld > 0) {
     nOldM2 <- dat$epi$num.m2[at - 1]
     if (b.rand == TRUE) {
-      if (is.na(b.rate.m2)) {
-        nArrivals <- sum(rbinom(nOld, 1, b.rate))
-        nArrivalsM2 <- sum(rbinom(nOld, 1, b.rate))
+      if (is.na(a.rate.m2)) {
+        nArrivals <- sum(rbinom(nOld, 1, a.rate))
+        nArrivalsM2 <- sum(rbinom(nOld, 1, a.rate))
       } else {
-        nArrivals <- sum(rbinom(nOld, 1, b.rate))
-        nArrivalsM2 <- sum(rbinom(nOldM2, 1, b.rate.m2))
+        nArrivals <- sum(rbinom(nOld, 1, a.rate))
+        nArrivalsM2 <- sum(rbinom(nOldM2, 1, a.rate.m2))
       }
     }
     if (b.rand == FALSE) {
-      if (is.na(b.rate.m2)) {
-        nArrivals <- round(nOld * b.rate)
-        nArrivalsM2 <- round(nOld * b.rate)
+      if (is.na(a.rate.m2)) {
+        nArrivals <- round(nOld * a.rate)
+        nArrivalsM2 <- round(nOld * a.rate)
       } else {
-        nArrivals <- round(nOld * b.rate)
-        nArrivalsM2 <- round(nOldM2 * b.rate.m2)
+        nArrivals <- round(nOld * a.rate)
+        nArrivalsM2 <- round(nOldM2 * a.rate.m2)
       }
     }
 
