@@ -19,14 +19,14 @@
 #' bipvals(nw, mode = 1, "male")
 #'
 bipvals <- function(nw, mode, val) {
-
+  
   if (!is.numeric(nw$gal$bipartite)) {
     stop("nw must be a bipartite network", call. = FALSE)
   }
   if (missing(mode)) {
     stop("Specify mode=1 or mode=2", call. = FALSE)
   }
-
+  
   nw %s% modeids(nw, mode) %v% val
 }
 
@@ -82,22 +82,17 @@ bipvals <- function(nw, mode, val) {
 #'
 calc_eql <- function(x, numer = "i.num", denom = "num",
                      nsteps, threshold = 0.001, digits = 4, invisible = FALSE) {
-
+  
   if (!(class(x) %in% c("dcm", "icm", "netsim"))) {
     stop("x must an object of class dcm, icm, or netsim", call. = FALSE)
   }
-
+  
   # Change scipen based on digits
   old.scipen <- options()$scipen
   options(scipen = digits + 1)
-
+  
   # Convert model to df and calculate prevalence
-  if (class(x) == "dcm") {
-    df <- as.data.frame(x, run = 1)
-  } else {
-    df <- as.data.frame(x, out = "mean")
-  }
-
+  df <- as.data.frame(x)
   if (!(numer %in% names(df))) {
     stop("numer must be an output compartment on x", call. = FALSE)
   }
@@ -105,11 +100,11 @@ calc_eql <- function(x, numer = "i.num", denom = "num",
     stop("denom must be an output compartment on x", call. = FALSE)
   }
   prev <- df[[numer]]/df[[denom]]
-
+  
   # Truncate vector and calculate difference
   tprev <- tail(prev, nsteps)
   diff <- abs(max(tprev) - min(tprev))
-
+  
   if (invisible == FALSE) {
     cat("Equilibrium Results")
     cat("\n=================================")
@@ -120,7 +115,7 @@ calc_eql <- function(x, numer = "i.num", denom = "num",
     cat("\nRel. Diff.:   ", round(diff, digits))
     cat("\n<= Threshold: ", diff <= threshold)
   }
-
+  
   on.exit(options(scipen = old.scipen))
   out <- list(strprev = round(head(tprev, 1), digits),
               endprev = round(tail(tprev, 1), digits),
@@ -129,7 +124,7 @@ calc_eql <- function(x, numer = "i.num", denom = "num",
               reldiff = round(diff, digits),
               thresh = diff <= threshold)
   invisible(out)
-
+  
 }
 
 
@@ -172,28 +167,28 @@ calc_eql <- function(x, numer = "i.num", denom = "num",
 #'
 check_bip_degdist <- function(num.m1, num.m2,
                               deg.dist.m1, deg.dist.m2) {
-
+  
   deg.counts.m1 <- deg.dist.m1 * num.m1
   deg.counts.m2 <- deg.dist.m2 * num.m2
-
+  
   tot.deg.m1 <- sum(deg.counts.m1 * (1:length(deg.dist.m1) - 1))
   tot.deg.m2 <- sum(deg.counts.m2 * (1:length(deg.dist.m2) - 1))
-
+  
   mat <- matrix(c(deg.dist.m1, deg.counts.m1,
                   deg.dist.m2, deg.counts.m2), ncol = 4)
   mat <- rbind(mat, c(sum(deg.dist.m1), tot.deg.m1, sum(deg.dist.m2), tot.deg.m2))
-
+  
   colnames(mat) <- c("m1.dist", "m1.cnt", "m2.dist", "m2.cnt")
   rownames(mat) <- c(paste0("Deg", 0:(length(deg.dist.m1) - 1)), "Edges")
-
+  
   cat("Bipartite Degree Distribution Check\n")
   cat("=============================================\n")
   print(mat, print.gap = 3)
   cat("=============================================\n")
-
+  
   reldiff <- (tot.deg.m1 - tot.deg.m2) / tot.deg.m2
   absdiff <- abs(tot.deg.m1 - tot.deg.m2)
-
+  
   if (sum(deg.dist.m1) <= 0.999 | sum(deg.dist.m1) >= 1.001 |
       sum(deg.dist.m2) <= 0.999 | sum(deg.dist.m2) >= 1.001 | absdiff > 1) {
     if (sum(deg.dist.m1) <= 0.999 | sum(deg.dist.m1) >= 1.001) {
@@ -202,7 +197,7 @@ check_bip_degdist <- function(num.m1, num.m2,
     if (sum(deg.dist.m2) <= 0.999 | sum(deg.dist.m2) >= 1.001) {
       cat("** deg.dist.m2 TOTAL != 1 \n")
     }
-
+    
     if (absdiff > 1) {
       if (tot.deg.m1 > tot.deg.m2) {
         msg <- "Mode 1 Edges > Mode 2 Edges:"
@@ -264,7 +259,7 @@ check_bip_degdist <- function(num.m1, num.m2,
 color_tea <- function(nd, old.var = "testatus", old.sus = "s", old.inf = "i",
                       old.rec = "r", new.var = "ndtvcol", new.sus, new.inf,
                       new.rec, verbose = TRUE) {
-
+  
   if (missing(new.inf)) {
     new.inf <- transco("firebrick", 0.75)
   }
@@ -274,28 +269,28 @@ color_tea <- function(nd, old.var = "testatus", old.sus = "s", old.inf = "i",
   if (missing(new.rec)) {
     new.rec <- transco("seagreen", 0.75)
   }
-
+  
   times <- 1:max(get.change.times(nd))
-
+  
   for (at in times) {
-
+    
     stat <- get.vertex.attribute.active(nd, old.var, at = at)
     infected <- which(stat == old.inf)
     uninfected <- which(stat == old.sus)
     recovered <- which(stat == old.rec)
-
+    
     nd <- activate.vertex.attribute(nd, prefix = new.var, value = new.inf,
-                              onset = at, terminus = Inf, v = infected)
+                                    onset = at, terminus = Inf, v = infected)
     nd <- activate.vertex.attribute(nd, prefix = new.var, value = new.sus,
-                              onset = at, terminus = Inf, v = uninfected)
+                                    onset = at, terminus = Inf, v = uninfected)
     nd <- activate.vertex.attribute(nd, prefix = new.var, value = new.rec,
-                              onset = at, terminus = Inf, v = recovered)
-
+                                    onset = at, terminus = Inf, v = recovered)
+    
     if (verbose == TRUE) {
       cat("\n", at, "/", max(times), "\t", sep = "")
     }
   }
-
+  
   return(nd)
 }
 
@@ -316,10 +311,10 @@ color_tea <- function(nd, old.var = "testatus", old.sus = "s", old.inf = "i",
 #' @export
 #'
 copy_toall_attr <- function(dat, at, fterms) {
-
+  
   otha <- names(dat$nw$val[[1]])
   otha <- otha[which(otha %in% fterms)]
-
+  
   if (length(otha) > 0) {
     for (i in seq_along(otha)) {
       va <- get.vertex.attribute(dat$nw, otha[i])
@@ -331,7 +326,7 @@ copy_toall_attr <- function(dat, at, fterms) {
       }
     }
   }
-
+  
   return(dat)
 }
 
@@ -346,7 +341,7 @@ copy_toall_attr <- function(dat, at, fterms) {
 #'        (see \code{\link{netest}}). See below for list of supported dissolution
 #'        models.
 #' @param duration A vector of mean edge durations in arbitrary time units.
-#' @param d.rate Death or exit rate from the population, as a single homogenous
+#' @param d.rate Departure or exit rate from the population, as a single homogenous
 #'        rate that applies to the entire population.
 #'
 #' @details
@@ -356,9 +351,9 @@ copy_toall_attr <- function(dat, at, fterms) {
 #'  \item \strong{Transformation:} the mean duration of edges in a network are
 #'        mathematically transformed to logit coefficients.
 #'  \item \strong{Adjustment:} in a dynamic network simulation in an open
-#'        population (in which there are deaths), it is further necessary to
+#'        population (in which there are departures), it is further necessary to
 #'        adjust these coefficients for dynamic simulations; this upward adjustment
-#'        accounts for death as a competing risk to edge dissolution.
+#'        accounts for departure as a competing risk to edge dissolution.
 #' }
 #'
 #' The current dissolution models supported by this function and in network
@@ -391,8 +386,8 @@ copy_toall_attr <- function(dat, at, fterms) {
 #'  \item \strong{coef.crude:} mean durations transformed into logit
 #'        coefficients.
 #'  \item \strong{coef.adj:} crude coefficients adjusted for the risk of
-#'        death on edge persistence, if the \code{d.rate} argument is supplied.
-#'  \item \strong{d.rate:} the death rate.
+#'        departure on edge persistence, if the \code{d.rate} argument is supplied.
+#'  \item \strong{d.rate:} the departure rate.
 #' }
 #'
 #' @seealso
@@ -404,31 +399,30 @@ copy_toall_attr <- function(dat, at, fterms) {
 #' @keywords netUtils
 #'
 #' @examples
-#' # Homogeneous dissolution model with no deaths
+#' # Homogeneous dissolution model with no departures
 #' dissolution_coefs(dissolution = ~offset(edges), duration = 25)
 #'
-#' # Homogeneous dissolution model with deaths
+#' # Homogeneous dissolution model with departures
 #' dissolution_coefs(dissolution = ~offset(edges), duration = 25,
 #'                   d.rate = 0.001)
 #'
 #' # Heterogeneous dissolution model in which same-race edges have
-#' # shorter duration compared to mixed-race edges, with no deaths
+#' # shorter duration compared to mixed-race edges, with no departures
 #' dissolution_coefs(dissolution = ~offset(edges) + offset(nodematch("race")),
 #'                   duration = c(20, 10))
 #'
 #' # Heterogeneous dissolution model in which same-race edges have
-#' # shorter duration compared to mixed-race edges, with deaths
+#' # shorter duration compared to mixed-race edges, with departures
 #' dissolution_coefs(dissolution = ~offset(edges) + offset(nodematch("race")),
 #'                   duration = c(20, 10), d.rate = 0.001)
 #'
 #'
 dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
-
   # Error check for duration < 1
   if (any(duration < 1)) {
     stop("All values in duration must be >= 1", call. = FALSE)
   }
-
+  
   # Check form of dissolution formula
   form.length <- length(strsplit(as.character(dissolution)[2], "[+]")[[1]])
   t1.edges <- grepl("offset[(]edges",
@@ -444,21 +438,20 @@ dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
       t2.term <- "nodemix"
     }
   }
-
   model.type <- NA
   if (form.length == 1 && t1.edges == TRUE) {
     model.type <- "homog"
   } else if (form.length == 2 && t1.edges == TRUE &&
-      t2.term %in% c("nodematch", "nodefactor", "nodemix")) {
+             t2.term %in% c("nodematch", "nodefactor", "nodemix")) {
     model.type <- "hetero"
   } else {
     model.type <- "invalid"
   }
-
+  
   if (length(d.rate) > 1) {
     stop("Length of d.rate must be 1", call. = FALSE)
   }
-
+  
   # Log transformation of duration to coefficent
   if (t1.edges == FALSE) {
     stop("Dissolution models must start with offset(edges)", call. = FALSE)
@@ -471,40 +464,43 @@ dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
     pg <- (duration[1] - 1) / duration[1]
     ps2 <- (1 - d.rate) ^ 2
     coef.crude <- log(pg / (1 - pg))
-    if (sqrt(ps2) <= pg) {
-      stop("The competing risk of mortality is too high given the duration. Specify a lower d.rate",
-           call. = FALSE)
+    if (ps2 <= pg) {
+      d.rate_ <- round(1-sqrt(pg),5)
+      str <- paste("The competing departure risk is too high for the given", 
+                   " duration of ", duration[1], "; specify a d.rate lower than ", 
+                   d.rate_,".",sep="")
+      stop(str, call. = FALSE)
     }
     coef.adj <- log(pg / (ps2 - pg))
   }
   if (form.length == 2) {
-   if (t2.term %in% c("nodematch", "nodefactor", "nodemix")) {
-
-     coef.crude <- coef.adj <- NA
-     for (i in 1:length(duration)) {
-
-       pg.thetaX <- (duration[i] - 1) / duration[i]
-       ps2.thetaX <- (1 - d.rate) ^ 2
-       if (sqrt(ps2.thetaX) <= pg.thetaX) {
-         stop("The competing risk of mortality is too high for the given the ",
-              "duration in place ", i, ". Specify a lower d.rate", call. = FALSE)
-       }
-       if (i == 1) {
-         coef.crude[i] <- log(pg.thetaX / (1 - pg.thetaX))
-         coef.adj[i] <- log(pg.thetaX / (ps2.thetaX - pg.thetaX))
-       } else {
-         coef.crude[i] <- log(pg.thetaX / (1 - pg.thetaX)) - coef.crude[1]
-         coef.adj[i] <- log(pg.thetaX / (ps2.thetaX - pg.thetaX)) - coef.adj[1]
-       }
-
-     }
-
-   } else {
-     stop("Supported heterogeneous dissolution model terms are nodematch, ",
-          "nodefactor, or nodemix", call. = FALSE)
-   }
+    if (t2.term %in% c("nodematch", "nodefactor", "nodemix")) {
+      
+      coef.crude <- coef.adj <- NA
+      for (i in 1:length(duration)) {
+        
+        pg.thetaX <- (duration[i] - 1) / duration[i]
+        ps2.thetaX <- (1 - d.rate) ^ 2
+        if (sqrt(ps2.thetaX) <= pg.thetaX) {
+          stop("The competing risk of departure is too high for the given the ",
+               "duration in place ", i, ". Specify a lower d.rate", call. = FALSE)
+        }
+        if (i == 1) {
+          coef.crude[i] <- log(pg.thetaX / (1 - pg.thetaX))
+          coef.adj[i] <- log(pg.thetaX / (ps2.thetaX - pg.thetaX))
+        } else {
+          coef.crude[i] <- log(pg.thetaX / (1 - pg.thetaX)) - coef.crude[1]
+          coef.adj[i] <- log(pg.thetaX / (ps2.thetaX - pg.thetaX)) - coef.adj[1]
+        }
+        
+      }
+      
+    } else {
+      stop("Supported heterogeneous dissolution model terms are nodematch, ",
+           "nodefactor, or nodemix", call. = FALSE)
+    }
   }
-
+  
   out <- list()
   out$dissolution <- dissolution
   out$duration <- duration
@@ -512,7 +508,7 @@ dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
   out$coef.adj <- coef.adj
   out$d.rate <- d.rate
   out$model.type <- model.type
-
+  
   class(out) <- "disscoef"
   return(out)
 }
@@ -549,41 +545,41 @@ dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
 #' est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 #'
 #' # Simulate the network and extract a timed edgelist
-#' dx <- netdx(est, nsims = 1, nsteps = 100, keep.tedgelist = TRUE, verbose = FALSE)
-#' el <- as.data.frame(dx)
+#' sim <- netdx(est, nsims = 1, nsteps = 100, verbose = FALSE)
+#' el <- sim$edgelist[[1]]
 #'
 #' # Calculate censoring
 #' edgelist_censor(el)
 #'
 edgelist_censor <- function(el) {
-
+  
   # left censored
   leftcens <- el$onset.censored
   leftcens.num <- sum(leftcens)
   leftcens.pct <- leftcens.num / nrow(el)
-
+  
   # right censored
   rightcens <- el$terminus.censored
   rightcens.num <- sum(rightcens)
   rightcens.pct <- rightcens.num / nrow(el)
-
+  
   # partnership lasts for entire window (left and right censored)
   lrcens <- el$onset.censored & el$terminus.censored
   lrcens.num <- sum(lrcens)
   lrcens.pct <- lrcens.num / nrow(el)
-
+  
   # fully observed
   nocens <- el$onset.censored == FALSE & el$terminus.censored == FALSE
   nocens.num <- sum(nocens)
   nocens.pct <- nocens.num / nrow(el)
-
+  
   ## Table
   nums <- rbind(leftcens.num, rightcens.num, lrcens.num, nocens.num)
-  pcts <- round(rbind(leftcens.pct, rightcens.pct, lrcens.pct, nocens.pct), 3)
+  pcts <- rbind(leftcens.pct, rightcens.pct, lrcens.pct, nocens.pct)
   out <- cbind(nums, pcts)
   rownames(out) <- c("Left Cens.", "Right Cens.", "Both Cens.", "No Cens.")
   colnames(out) <- c("num", "pct")
-
+  
   return(out)
 }
 
@@ -622,39 +618,38 @@ edgelist_censor <- function(el) {
 #' est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 #'
 #' # Simulate the network and extract a timed edgelist
-#' dx <- netdx(est, nsims = 1, nsteps = 100, keep.tedgelist = TRUE, verbose = FALSE)
-#' el <- as.data.frame(dx)
+#' sim <- netdx(est, nsims = 1, nsteps = 100, verbose = FALSE)
+#' el <- sim$edgelist[[1]]
 #'
 #' # Calculate ages directly from edgelist
-#' mean_ages <- edgelist_meanage(el = el)
-#' mean_ages
+#' ( ma <- edgelist_meanage(el = el) )
 #'
 #' # Alternatively, netdx calculates these
-#' dx$pages
-#' identical(dx$pages[[1]], mean_ages)
+#' sim$pages
+#' identical(sim$pages[[1]], ma)
 #'
 edgelist_meanage <- function(x, el) {
-
+  
   # If passing a netest object directly
   if (!(missing(x))) {
     el <- x$edgelist
   }
-
+  
   terminus <- el$terminus
   onset <- el$onset
   minterm <- min(terminus)
   maxterm <- max(terminus)
-
+  
   meanpage <- rep(NA, maxterm)
   for (at in minterm:maxterm) {
     actp <- (onset <= at & terminus > at) |
-            (onset == at & terminus == at);
+      (onset == at & terminus == at);
     page <- at - onset[actp] + 1
     meanpage[at] <- mean(page)
   }
-
+  
   meanpage <- meanpage[1:(length(meanpage) - 1)]
-
+  
   return(meanpage)
 }
 
@@ -678,23 +673,23 @@ edgelist_meanage <- function(x, el) {
 #' @export
 #'
 get_attr_prop <- function(nw, fterms, only.formula = TRUE) {
-
+  
   if (is.null(fterms)) {
     return(NULL)
   }
-
+  
   nwVal <- names(nw$val[[1]])
   if (only.formula == TRUE) {
     nwVal <- nwVal[which(nwVal %in% fterms)]
   }
-
+  
   out <- list()
   for (i in 1:length(nwVal)) {
     tab <- prop.table(table(nw %v% nwVal[i]))
     out[[i]] <- tab
   }
   names(out) <- nwVal
-
+  
   return(out)
 }
 
@@ -713,7 +708,7 @@ get_attr_prop <- function(nw, fterms, only.formula = TRUE) {
 #' @export
 #'
 get_formula_terms <- function(formula) {
-
+  
   fterms <- attributes(terms.formula(formula))$term.labels
   fterms <- strsplit(fterms, split = "[\"]")
   tl <- sapply(fterms, length)
@@ -723,7 +718,7 @@ get_formula_terms <- function(formula) {
     fterms <- fterms[tl > 1]
     fterms <- unique(sapply(fterms, function(x) x[2]))
   }
-
+  
   return(fterms)
 }
 
@@ -747,17 +742,17 @@ get_formula_terms <- function(formula) {
 #' idmode(nw, ids = c(3, 6))
 #'
 idmode <- function(nw, ids) {
-
+  
   n <- network.size(nw)
-
+  
   if (missing(ids)) {
     ids <- seq_len(n)
   }
-
+  
   if (any(ids > n)) {
     stop("Specify ids between 1 and ", n)
   }
-
+  
   if (!is.bipartite(nw)) {
     out <- rep(1, n)
   } else {
@@ -766,7 +761,7 @@ idmode <- function(nw, ids) {
                rep(2, n - m1size))
     out <- modes[ids]
   }
-
+  
   return(out)
 }
 
@@ -788,24 +783,24 @@ idmode <- function(nw, ids) {
 #' modeids(nw, mode = 2)
 #'
 modeids <- function(nw, mode) {
-
+  
   if (!is.numeric(nw$gal$bipartite)) {
     stop("nw must be a bipartite network")
   }
   if (missing(mode)) {
     stop("Specify mode=1 or mode=2")
   }
-
+  
   n <- network.size(nw)
   m1size <- nw$gal$bipartite
-
+  
   if (mode == 1) {
     out <- 1:m1size
   }
   if (mode == 2) {
     out <- (m1size + 1):n
   }
-
+  
   return(out)
 }
 
@@ -829,17 +824,17 @@ modeids <- function(nw, mode) {
 #' @keywords netUtils internal
 #'
 split_bip <- function(dat, var, val, nCurrM1, nCurrM2, nBirths, nBirthsM2) {
-
+  
   oldVarM1 <- dat$attr[[var]][1:nCurrM1]
   oldVarM2 <- dat$attr[[var]][(nCurrM1 + 1):(nCurrM1 + nCurrM2)]
-
+  
   newVarM1 <- c(oldVarM1, rep(val, nBirths))
   newVarM2 <- c(oldVarM2, rep(val, nBirthsM2))
-
+  
   newVar <- c(newVarM1, newVarM2)
-
+  
   dat$attr[[var]] <- newVar
-
+  
   return(dat)
 }
 
@@ -865,7 +860,7 @@ split_bip <- function(dat, var, val, nCurrM1, nCurrM2, nBirths, nBirthsM2) {
 #' @export
 #'
 update_nwattr <- function(nw, newNodes, rules, curr.tab, t1.tab) {
-
+  
   for (i in 1:length(curr.tab)) {
     vname <- names(curr.tab)[i]
     rule <- rules[[vname]]
@@ -904,7 +899,7 @@ update_nwattr <- function(nw, newNodes, rules, curr.tab, t1.tab) {
     nw <- set.vertex.attribute(nw, attrname = vname,
                                value = nattr, v = newNodes)
   }
-
+  
   return(nw)
 }
 
@@ -986,31 +981,33 @@ get_degree <- function(x) {
 #' init <- init.icm(s.num = 500, i.num = 1)
 #' control <- control.icm(type = "SI", nsteps = 200, nsims = 1)
 #' mod1 <- icm(param, init, control)
-#' df <- as.data.frame(mod1)
+#' df <- as.data.frame(mod1, out = "vals")
 #' print(df)
 #' plot(mod1)
+#' mod1$control$nsteps
 #'
 #' mod2 <- truncate_sim(mod1, at = 150)
 #' df2 <- as.data.frame(mod2)
 #' print(df2)
 #' plot(mod2)
+#' mod2$control$nsteps
 #'
 truncate_sim <- function(x, at) {
-
+  
   if (class(x) != "icm" && class(x) != "netsim") {
     stop("x must be either an object of class icm or class netsim",
          call. = FALSE)
   }
-
+  
   rows <- at:(x$control$nsteps)
-
+  
   # epi
   x$epi <- lapply(x$epi, function(r) r[rows, ])
-
+  
   # control settings
   x$control$start <- 1
   x$control$nsteps <- max(seq_along(rows))
-
+  
   return(x)
 }
 
