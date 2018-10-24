@@ -161,8 +161,8 @@ test_that("edgelist_censor", {
   target.stats <- 50
   coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
   est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
-  sim <- netdx(est, nsims = 1, nsteps = 100, verbose = FALSE)
-  el <- sim$edgelist[[1]]
+  sim <- netdx(est, nsims = 1, nsteps = 100, keep.tedgelist = TRUE, verbose = FALSE)
+  el <- as.data.frame(sim)
   expect_is(edgelist_censor(el), "matrix")
 })
 
