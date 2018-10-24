@@ -191,7 +191,9 @@ test_that("get_degree", {
 
 test_that("dissolution_coefs returns appropriate error for incompatible death rate",{
   #Dividing by zero:
-  err.msg <- "The competing risk of mortality is too high given the duration. Specify a lower d.rate"
+  err.msg <- paste("The competing risk of death is too high for the given", 
+                   " edge duration of ", 60, "; specify a d.rate lower than ", 
+                   0.00837,".",sep="")
   dissolution = ~offset(edges)
   expect_that(dissolution_coefs(dissolution, duration = 60, d.rate = 1/60), throws_error(err.msg))
   expect_that(dissolution_coefs(dissolution, duration = 60, d.rate = 0.01), throws_error(err.msg))
