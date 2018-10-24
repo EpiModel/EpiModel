@@ -192,7 +192,6 @@ mod <- netsim(est, param, init, control)
 
 # Plot epidemic trajectory
 plot(mod)
-plot(mod, type = "epi")
 plot(mod, type = "epi", grid = TRUE)
 plot(mod, type = "epi", popfrac = TRUE)
 plot(mod, type = "epi", y = "si.flow", qnts = 1, ylim = c(0, 4))

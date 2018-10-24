@@ -981,7 +981,6 @@ get_degree <- function(x) {
 #' @export
 #'
 #' @examples
-#' set.seed(12345)
 #' param <- param.icm(inf.prob = 0.2, act.rate = 0.25)
 #' init <- init.icm(s.num = 500, i.num = 1)
 #' control <- control.icm(type = "SI", nsteps = 200, nsims = 1)
