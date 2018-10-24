@@ -808,7 +808,7 @@ modeids <- function(nw, mode) {
 #' @title Update Attribute Values for a Bipartite Network
 #'
 #' @description Adds new values for attributes in a bipartite network in which
-#'              there may be births/entries in the first mode, which requires
+#'              there may be arrivals/entries in the first mode, which requires
 #'              splitting the attribute vector into two, adding the new values,
 #'              and re-concatenating the two updated vectors.
 #'
@@ -817,19 +817,19 @@ modeids <- function(nw, mode) {
 #' @param val Fixed value to set for all incoming nodes.
 #' @param nCurrM1 Number currently in mode 1.
 #' @param nCurrM2 Number currently in mode 2.
-#' @param nBirths Number of births/entries in mode 1.
-#' @param nBirthsM2 Number of births/entries in mode 2.
+#' @param nArrivals Number of arrivals/entries in mode 1.
+#' @param nArrivalsM2 Number of arrivals/entries in mode 2.
 #'
 #' @export
 #' @keywords netUtils internal
 #'
-split_bip <- function(dat, var, val, nCurrM1, nCurrM2, nBirths, nBirthsM2) {
+split_bip <- function(dat, var, val, nCurrM1, nCurrM2, nArrivals, nArrivalsM2) {
   
   oldVarM1 <- dat$attr[[var]][1:nCurrM1]
   oldVarM2 <- dat$attr[[var]][(nCurrM1 + 1):(nCurrM1 + nCurrM2)]
   
-  newVarM1 <- c(oldVarM1, rep(val, nBirths))
-  newVarM2 <- c(oldVarM2, rep(val, nBirthsM2))
+  newVarM1 <- c(oldVarM1, rep(val, nArrivals))
+  newVarM2 <- c(oldVarM2, rep(val, nArrivalsM2))
   
   newVar <- c(newVarM1, newVarM2)
   
@@ -976,6 +976,7 @@ get_degree <- function(x) {
 #' @export
 #'
 #' @examples
+#' set.seed(12345)
 #' param <- param.icm(inf.prob = 0.2, act.rate = 0.25)
 #' init <- init.icm(s.num = 500, i.num = 1)
 #' control <- control.icm(type = "SI", nsteps = 200, nsims = 1)
