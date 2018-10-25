@@ -2198,14 +2198,77 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
     }
 
     # Default colors
+   # if (missing(sim.col)) {
+  #    if (nstats > 8) {
+    #    sim.col <- brewer_ramp(nstats, "Set1")
+    #  } else {
+    #    sim.col <- brewer.pal(9, "Set1")[1:(nstats + 1)]
+    #    if (nstats >= 6) {
+    #      sim.col <- sim.col[-which(sim.col == "#FFFF33")]
+    #    }
+    #  }
+    #}
+
+    if (!missing(sim.col)) {
+      if (!(length(sim.col) %in% c(1,nstats))) {
+        stop("sim.col must be either missing or a vector of length 1  or nstats (",
+             nstats, ")", call. = FALSE)
+      }
+      else if (length(sim.col) == 1 & nstats > 1) {
+        sim.col <- rep(sim.col,nstats)
+      }
+    }
+
+
+    #Mean.col
+    if (!missing(mean.col)) {
+      if (!(length(mean.col) %in% c(1, nstats))) {
+        stop("mean.col must be either missing or a vector of length 1 or nstats (",
+             nstats, ")", call. = FALSE)
+      }
+      else if (length(mean.col) == 1 & nstats > 1) {
+        mean.col <- rep(mean.col, nstats)
+      }
+    }
+
+    #Qnts.col
+    if (!missing(qnts.col)) {
+      if (!(length(qnts.col) %in% c(1,nstats))) {
+        stop("qnts.col must be either missing or a vector of length 1 or nstats (",
+             nstats, ")", call. = FALSE)
+      }
+      else if (length(qnts.col) == 1 & nstats > 1) {
+        qnts.col <- rep(qnts.col, nstats)
+      }
+    }
+
+    #Targ.col
+    if (!missing(targ.col)) {
+      if (!(length(targ.col) %in% c(1,nstats))) {
+        stop("targ.col must be either missing or a vector of length 1 or nstats (",
+             nstats, ")", call. = FALSE)
+      }
+      else if (length(targ.col) == 1 & nstats > 1) {
+        targ.col <- rep(targ.col, nstats)
+      }
+    }
+
+    # Default colors
+    #If sim color is missing and using joined plots, sim color uses brewer ramp pallette
+    #If sim color is missing and using split plots, default color for each plot set to blue (dodgerblue3)
     if (missing(sim.col)) {
-      if (nstats > 8) {
-        sim.col <- brewer_ramp(nstats, "Set1")
-      } else {
-        sim.col <- brewer.pal(9, "Set1")[1:(nstats + 1)]
-        if (nstats >= 6) {
-          sim.col <- sim.col[-which(sim.col == "#FFFF33")]
+      if (plots.joined == TRUE) {
+        if (nstats > 8) {
+          sim.col <- brewer_ramp(nstats, "Set1")
+        } else {
+          sim.col <- brewer.pal(9, "Set1")[1:(nstats + 1)]
+          if (nstats >= 6) {
+            sim.col <- sim.col[-which(sim.col == "#FFFF33")]
+          }
         }
+      }
+      if (missing(plots.joined) | plots.joined == FALSE) {
+        sim.col <- rep("dodgerblue3",nstats)
       }
     }
 
