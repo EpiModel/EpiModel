@@ -7,11 +7,6 @@ r:
   - release
   - devel
 
-r_github_packages:
-  - statnet/network
-  - statnet/ergm
-  - statnet/tergm
-
 warnings_are_errors: true
 
 notifications:
