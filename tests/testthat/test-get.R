@@ -66,9 +66,7 @@ test_that("get_transmat error flags", {
 
 test_that("get_nwstats extracts data frame", {
   a <- get_nwstats(mod, sim = 1)
-  b <- a[[1]]
-  expect_is(a, "list")
-  expect_is(b, "data.frame")
+  expect_is(a, "data.frame")
   expect_equal(get_nwstats(mod, sim = 1:3), get_nwstats(mod))
 })
 

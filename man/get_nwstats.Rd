@@ -2,29 +2,39 @@
 % Please edit documentation in R/get.R
 \name{get_nwstats}
 \alias{get_nwstats}
-\title{Extract Network Statistics from Network Epidemic Model}
+\title{Extract Network Statistics from netsim or netdx Object}
 \usage{
 get_nwstats(x, sim, network = 1)
 }
 \arguments{
-\item{x}{An \code{EpiModel} object of class \code{\link{netsim}}.}
+\item{x}{An \code{EpiModel} object of class \code{\link{netsim}} or
+\code{\link{netdx}}.}
 
-\item{sim}{A vector of simulation numbers from the extracted network.}
+\item{sim}{A vector of simulation numbers from the extracted object}
 
-\item{network}{Network number, for simulations with multiple networks
-representing the population.}
+\item{network}{Network number, for \code{netsim} objects with multiple
+overlapping networks (advanced use, and not applicable to \code{netdx}
+objects).}
 }
 \description{
 Extracts a data frame of network statistics from a network
-             epidemic model.
+             epidemic model simulated with \code{netsim} or a network diagnostics
+             object simulated with \code{netdx}.
 }
 \examples{
-# Simulate SI epidemic on bipartite Bernoulli random graph
+# Bipartite Bernoulli random graph TERGM
 nw <- network.initialize(n = 100, bipartite = 50, directed = FALSE)
 formation <- ~edges
 target.stats <- 50
 coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
 est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
+
+dx <- netdx(est, nsim = 3, nsteps = 10, verbose = FALSE,
+            nwstats.formula = ~edges + isolates)
+get_nwstats(dx)
+get_nwstats(dx, sim = 1)
+
+# SI epidemic model
 param <- param.net(inf.prob = 0.3, inf.prob.m2 = 0.15)
 init <- init.net(i.num = 10, i.num.m2 = 10)
 control <- control.net(type = "SI", nsteps = 10, nsims = 3,
@@ -32,12 +42,14 @@ control <- control.net(type = "SI", nsteps = 10, nsims = 3,
                        verbose = FALSE)
 mod <- netsim(est, param, init, control)
 
-# Extract the network statistics from all or sets of simulations as list of df's
+# Extract the network statistics from all or sets of simulations
 get_nwstats(mod)
+get_nwstats(mod, sim = 2)
 get_nwstats(mod, sim = c(1, 3))
 
-# Calculate summary stats on the fly
-apply(get_nwstats(mod, sim = 1)[[1]], 2, summary)
+# On the fly summary stats
+summary(get_nwstats(mod))
+colMeans(get_nwstats(mod))
 
 }
 \keyword{extract}

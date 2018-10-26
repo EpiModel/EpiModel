@@ -10,7 +10,7 @@ EpiModel
 <br>
 <img align="right" src="http://www.epimodel.org/movie.gif">
 
-Tools for simulating mathematical models of infectious disease dynamics. Epidemic model classes include deterministic compartmental models, stochastic agent-based models, and stochastic network models. Network models use the robust statistical methods of exponential-family random graph models (ERGMs) from the Statnet suite of software packages in R. Standard templates for epidemic modeling include SI, SIR, and SIS disease types. EpiModel features an easy API for extending these templates to address novel scientific research aims.
+Tools for simulating mathematical models of infectious disease dynamics. Epidemic model classes include deterministic compartmental models, stochastic individual-contact models, and stochastic network models. Network models use the robust statistical methods of exponential-family random graph models (ERGMs) from the Statnet suite of software packages in R. Standard templates for epidemic modeling include SI, SIR, and SIS disease types. EpiModel features an easy API for extending these templates to address novel scientific research aims.
 
 ### Authors
 <table>
@@ -117,7 +117,7 @@ EpiModel and its [extension packages](https://github.com/statnet/EpiModelHIV) ha
 
 11. Jenness SM, Maloney K, Smith SK, Hoover KW, Rosenberg ES, Goodreau SM, Weiss KM, Liu AY, Rao D, Sullivan PS. Addressing Gaps in HIV Preexposure Prophylaxis Care to Reduce Racial Disparities in HIV Incidence in the United States. _American Journal of Epidemiology._ Epub DOI: 10.1093/aje/kwy230. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/30312365)
 
-12. Stansfield SE, Mittler JE, Gottlieb GS, Murphy JT, Hamilton DT, Detels R, Wolinsky SM, Jacobson LP, Margolick JB, Rinaldo CR, Herbeck JT, Goodreau SM. Sexual Role and HIV-1 Set Point Viral Load among Men who Have Sex with Men. Epub DOI: 10.1016/j.epidem.2018.08.006. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/30193771)
+12. Stansfield SE, Mittler JE, Gottlieb GS, Murphy JT, Hamilton DT, Detels R, Wolinsky SM, Jacobson LP, Margolick JB, Rinaldo CR, Herbeck JT, Goodreau SM. Sexual Role and HIV-1 Set Point Viral Load among Men who Have Sex with Men. _Epidemics._ Epub DOI: 10.1016/j.epidem.2018.08.006. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/30193771)
 
 
 #### Other

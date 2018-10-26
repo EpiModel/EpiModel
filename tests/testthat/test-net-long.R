@@ -304,7 +304,10 @@ test_that("High departure rate models", {
                          verbose = FALSE)
   x <- netsim(est, param, init, control)
   expect_equal(unique(sapply(x$epi, nrow)), 25)
+  summary(x, at = 25)
   expect_output(summary(x, at = 25), "EpiModel Summary")
+  get_nwstats(x)
+
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")

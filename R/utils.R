@@ -234,7 +234,6 @@ ssample <- function(x, size, replace = FALSE, prob = NULL) {
 #' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
 #' est1 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 #'
-#' # Epidemic model
 #' param <- param.net(inf.prob = 0.3, inf.prob.m2 = 0.15)
 #' init <- init.net(i.num = 1, i.num.m2 = 0)
 #' control <- control.net(type = "SI", nsteps = 10, nsims = 3,
@@ -250,8 +249,8 @@ ssample <- function(x, size, replace = FALSE, prob = NULL) {
 #' # Add incidence rate per 100 person years (assume time step = 1 week)
 #' mod1 <- mutate_epi(mod1, ir100 = 5200*(si.flow + si.flow.m2) /
 #'                                       (s.num + s.num.m2))
-#' df <- as.data.frame(mod1)
-#' df$ir100
+#' as.data.frame(mod1)
+#' as.data.frame(mod1, out = "mean")
 #'
 mutate_epi <- function(x, ...) {
 
