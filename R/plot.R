@@ -1765,7 +1765,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #' plot(mod, type = "formation", plots.joined = FALSE,
 #'      stats = c("edges", "concurrent"))
 #' plot(mod, type = "formation", stats = "meandeg",
-#'      sim.lwd = 2, sim.col = "seagreen")
+#'      mean.lwd = 1, qnts.col = "seagreen", mean.col = "black")
 #'
 plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col,
                         sim.lwd, sim.alpha, mean.line = TRUE, mean.smooth = TRUE,
