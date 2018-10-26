@@ -954,6 +954,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 
     if (nstats == 1) {
       plots.joined <- TRUE
+      sim.col <- "dodgerblue3"
     }
 
     if (dynamic == TRUE) {
@@ -2184,6 +2185,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
     }
     if (nstats == 1) {
       plots.joined <- TRUE
+      sim.col <- "dodgerblue3"
     }
     xlim <- c(1, nsteps)
     if (!is.null(da$xlim)) {
@@ -2197,18 +2199,6 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
       }
     }
 
-    # Default colors
-   # if (missing(sim.col)) {
-  #    if (nstats > 8) {
-    #    sim.col <- brewer_ramp(nstats, "Set1")
-    #  } else {
-    #    sim.col <- brewer.pal(9, "Set1")[1:(nstats + 1)]
-    #    if (nstats >= 6) {
-    #      sim.col <- sim.col[-which(sim.col == "#FFFF33")]
-    #    }
-    #  }
-    #}
-
     if (!missing(sim.col)) {
       if (!(length(sim.col) %in% c(1,nstats))) {
         stop("sim.col must be either missing or a vector of length 1  or nstats (",
@@ -2218,7 +2208,6 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
         sim.col <- rep(sim.col,nstats)
       }
     }
-
 
     #Mean.col
     if (!missing(mean.col)) {
@@ -2271,7 +2260,6 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
         sim.col <- rep("dodgerblue3",nstats)
       }
     }
-
 
     ## Joined Plots
     if (plots.joined == TRUE) {
