@@ -220,7 +220,7 @@ plot(mod, type = "formation", sims = 2:3)
 plot(mod, type = "formation", plots.joined = FALSE,
      stats = c("edges", "concurrent"))
 plot(mod, type = "formation", stats = "meandeg",
-     sim.lwd = 2, sim.col = "seagreen")
+     mean.lwd = 1, qnts.col = "seagreen", mean.col = "black")
 
 }
 \seealso{
