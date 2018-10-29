@@ -17,9 +17,9 @@ split_bip(dat, var, val, nCurrM1, nCurrM2, nBirths, nBirthsM2)
 
 \item{nCurrM2}{Number currently in mode 2.}
 
-\item{nBirths}{Number of births/entries in mode 1.}
+\item{nbirths}{Number of births/entries in mode 1.}
 
-\item{nBirthsM2}{Number of births/entries in mode 2.}
+\item{nbirthsM2}{Number of births/entries in mode 2.}
 }
 \description{
 Adds new values for attributes in a bipartite network in which
