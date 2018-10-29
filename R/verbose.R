@@ -95,22 +95,7 @@ verbose.icm <- function(x, type, s = 1, at = 2) {
         if (x$param$groups == 2) {
           cat("\nPrevalence:", x$epi$i.num[at] + x$epi$i.num.g2[at])
         }
-        if (x$control$type %in% c("SI", "SIS")) {
-          if (x$param$groups == 1) {
-            cat("\nPopulation:", sum(x$attr$active == 1))
-          }
-          if (x$param$groups == 2) {
-            cat("\nPopulation:", sum(x$attr$active == 1))
-          }
-        }
-        if (x$control$type == "SIR") {
-          if (x$param$groups == 1) {
-            cat("\nPopulation:", sum(x$attr$active == 1))
-          }
-          if (x$param$groups == 2) {
-            cat("\nPopulation:", sum(x$attr$active == 1))
-          }
-        }
+        cat("\nPopulation:", sum(x$attr$active == 1))
         if (x$param$vital == TRUE) {
           if (x$param$groups == 1) {
             cat("\nBirths:", x$epi$b.flow[at])
@@ -205,22 +190,7 @@ verbose.net <- function(x, type, s = 1, at = 2) {
         if (x$param$modes == 2) {
           cat("\nPrevalence:", x$epi$i.num[at] + x$epi$i.num.m2[at])
         }
-        if (x$control$type %in% c("SI", "SIS")) {
-          if (x$param$modes == 1) {
-            cat("\nPopulation:", sum(x$attr$active == 1))
-          }
-          if (x$param$modes == 2) {
-            cat("\nPopulation:", sum(x$attr$active == 1))
-          }
-        }
-        if (x$control$type == "SIR") {
-          if (x$param$modes == 1) {
-            cat("\nPopulation:", sum(x$attr$active == 1))
-          }
-          if (x$param$modes == 2) {
-            cat("\nPopulation:", sum(x$attr$active == 1))
-          }
-        }
+        cat("\nPopulation:", sum(x$attr$active == 1))
         if (x$param$vital == TRUE) {
           if (x$param$modes == 1) {
             cat("\nBirths:", x$epi$b.flow[at])
