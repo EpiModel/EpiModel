@@ -315,7 +315,7 @@ copy_toall_attr <- function(dat, at, fterms) {
 #'        (see \code{\link{netest}}). See below for list of supported dissolution
 #'        models.
 #' @param duration A vector of mean edge durations in arbitrary time units.
-#' @param d.rate Departure or exit rate from the population, as a single homogenous
+#' @param d.rate Death or exit rate from the population, as a single homogenous
 #'        rate that applies to the entire population.
 #'
 #' @details
@@ -325,9 +325,9 @@ copy_toall_attr <- function(dat, at, fterms) {
 #'  \item \strong{Transformation:} the mean duration of edges in a network are
 #'        mathematically transformed to logit coefficients.
 #'  \item \strong{Adjustment:} in a dynamic network simulation in an open
-#'        population (in which there are departures), it is further necessary to
+#'        population (in which there are deaths), it is further necessary to
 #'        adjust these coefficients for dynamic simulations; this upward adjustment
-#'        accounts for departure as a competing risk to edge dissolution.
+#'        accounts for death as a competing risk to edge dissolution.
 #' }
 #'
 #' The current dissolution models supported by this function and in network
@@ -360,8 +360,8 @@ copy_toall_attr <- function(dat, at, fterms) {
 #'  \item \strong{coef.crude:} mean durations transformed into logit
 #'        coefficients.
 #'  \item \strong{coef.adj:} crude coefficients adjusted for the risk of
-#'        departure on edge persistence, if the \code{d.rate} argument is supplied.
-#'  \item \strong{d.rate:} the departure rate.
+#'        death on edge persistence, if the \code{d.rate} argument is supplied.
+#'  \item \strong{d.rate:} the death rate.
 #' }
 #'
 #' @seealso
@@ -373,20 +373,20 @@ copy_toall_attr <- function(dat, at, fterms) {
 #' @keywords netUtils
 #'
 #' @examples
-#' # Homogeneous dissolution model with no departures
+#' # Homogeneous dissolution model with no deaths
 #' dissolution_coefs(dissolution = ~offset(edges), duration = 25)
 #'
-#' # Homogeneous dissolution model with departures
+#' # Homogeneous dissolution model with deaths
 #' dissolution_coefs(dissolution = ~offset(edges), duration = 25,
 #'                   d.rate = 0.001)
 #'
 #' # Heterogeneous dissolution model in which same-race edges have
-#' # shorter duration compared to mixed-race edges, with no departures
+#' # shorter duration compared to mixed-race edges, with no deaths
 #' dissolution_coefs(dissolution = ~offset(edges) + offset(nodematch("race")),
 #'                   duration = c(20, 10))
 #'
 #' # Heterogeneous dissolution model in which same-race edges have
-#' # shorter duration compared to mixed-race edges, with departures
+#' # shorter duration compared to mixed-race edges, with deaths
 #' dissolution_coefs(dissolution = ~offset(edges) + offset(nodematch("race")),
 #'                   duration = c(20, 10), d.rate = 0.001)
 #'
@@ -451,7 +451,7 @@ dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
         pg.thetaX <- (duration[i] - 1) / duration[i]
         ps2.thetaX <- (1 - d.rate) ^ 2
         if (sqrt(ps2.thetaX) <= pg.thetaX) {
-          stop("The competing risk of departure is too high for the given the ",
+          stop("The competing risk of death is too high for the given the ",
                "duration in place ", i, ". Specify a lower d.rate", call. = FALSE)
         }
         if (i == 1) {
