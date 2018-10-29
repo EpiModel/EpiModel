@@ -29,6 +29,7 @@ a typical use case may be to fit several different models with different
 average edge durations as targets. The example below exhibits that case.
 }
 \examples{
+\dontrun{
 nw <- network.initialize(1000, directed = FALSE)
 
 # Two dissolutions: an average duration of 300 versus 200
@@ -50,5 +51,6 @@ est200 <- netest(nw = nw,
 est200.compare <- update_dissolution(est300, diss.200)
 
 identical(est200$coef.form, est200.compare$coef.form)
+}
 
 }

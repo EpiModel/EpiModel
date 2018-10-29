@@ -889,7 +889,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
                        qnts = 0.5, qnts.col, qnts.alpha, qnts.smooth = TRUE,
                        targ.line = TRUE, targ.col, targ.lwd = 2, targ.lty = 2,
                        plots.joined, legend, grid = FALSE, ...) {
-  
+
   # Checks and Variables ----------------------------------------------------
 
   ## Check Object
@@ -954,6 +954,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 
     if (nstats == 1) {
       plots.joined <- TRUE
+      sim.col <- "dodgerblue3"
     }
 
     if (dynamic == TRUE) {
@@ -978,51 +979,55 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 
     ## Color Vector Validation
     #1. Sim.col, mean.col, qnts.col, targ.col must be missing or a vector of length 1 or nstats
-    #2. If sim.col, mean.col, qnts.col, or targ.col is not missing 
-    #   but is a vector of length 1 and nstats is greater than 1, 
+    #2. If sim.col, mean.col, qnts.col, or targ.col is not missing
+    #   but is a vector of length 1 and nstats is greater than 1,
     #   then replicate the color vector nstats times to achieve a vector of size nstats.
-    
+
     #Sim.col
     if (!missing(sim.col)) {
       if (!(length(sim.col) %in% c(1,nstats))) {
-        stop("sim.col must be either missing or a vector of length 1  or nstats (", nstats, ")", call. = FALSE)
+        stop("sim.col must be either missing or a vector of length 1  or nstats (",
+             nstats, ")", call. = FALSE)
       }
       else if (length(sim.col) == 1 & nstats > 1) {
         sim.col <- rep(sim.col,nstats)
       }
     }
-    
-    
+
+
     #Mean.col
     if (!missing(mean.col)) {
-      if (!(length(mean.col) %in% c(1,nstats))) {
-        stop("mean.col must be either missing or a vector of length 1 or nstats (", nstats, ")", call. = FALSE)
+      if (!(length(mean.col) %in% c(1, nstats))) {
+        stop("mean.col must be either missing or a vector of length 1 or nstats (",
+             nstats, ")", call. = FALSE)
       }
       else if (length(mean.col) == 1 & nstats > 1) {
-        mean.col <- rep(mean.col,nstats)
+        mean.col <- rep(mean.col, nstats)
       }
     }
-    
+
     #Qnts.col
     if (!missing(qnts.col)) {
       if (!(length(qnts.col) %in% c(1,nstats))) {
-        stop("qnts.col must be either missing or a vector of length 1 or nstats (", nstats, ")", call. = FALSE)
+        stop("qnts.col must be either missing or a vector of length 1 or nstats (",
+             nstats, ")", call. = FALSE)
       }
       else if (length(qnts.col) == 1 & nstats > 1) {
-        qnts.col <- rep(qnts.col,nstats)
+        qnts.col <- rep(qnts.col, nstats)
       }
     }
-    
+
     #Targ.col
     if (!missing(targ.col)) {
       if (!(length(targ.col) %in% c(1,nstats))) {
-        stop("targ.col must be either missing or a vector of length 1 or nstats (", nstats, ")", call. = FALSE)
+        stop("targ.col must be either missing or a vector of length 1 or nstats (",
+             nstats, ")", call. = FALSE)
       }
       else if (length(targ.col) == 1 & nstats > 1) {
-        targ.col <- rep(targ.col,nstats)
+        targ.col <- rep(targ.col, nstats)
       }
     }
-    
+
     # Default colors
     #If sim color is missing and using joined plots, sim color uses brewer ramp pallette
     #If sim color is missing and using split plots, default color for each plot set to blue (dodgerblue3)
@@ -1220,7 +1225,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         } else {
           qnts.col <- transco(qnts.col, qnts.alpha)
         }
-        
+
         for (j in outsts) {
           dataj <- data[, colnames(data) %in% nmstats[j], drop = FALSE]
           plot(x = 1, y = 1,
@@ -1732,7 +1737,6 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #'
 #' # Plot epidemic trajectory
 #' plot(mod)
-#' plot(mod, type = "epi")
 #' plot(mod, type = "epi", grid = TRUE)
 #' plot(mod, type = "epi", popfrac = TRUE)
 #' plot(mod, type = "epi", y = "si.flow", qnts = 1, ylim = c(0, 4))
@@ -1761,7 +1765,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #' plot(mod, type = "formation", plots.joined = FALSE,
 #'      stats = c("edges", "concurrent"))
 #' plot(mod, type = "formation", stats = "meandeg",
-#'      sim.lwd = 2, sim.col = "seagreen")
+#'      mean.lwd = 1, qnts.col = "seagreen", mean.col = "black")
 #'
 plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col,
                         sim.lwd, sim.alpha, mean.line = TRUE, mean.smooth = TRUE,
@@ -2139,34 +2143,30 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
       stop("Maximum sims for this object is ", nsims, call. = FALSE)
     }
 
-    nwstats <- get_nwstats(x, sims, network)
+    data <- get_nwstats(x, sims, network)
     nsims <- length(sims)
     nsteps <- x$control$nsteps
 
     ## Find available stats
-    nmstats <- colnames(nwstats[[1]])
+    name_stats <- setdiff(names(data), c("time", "sim"))
 
     ## Pull and check stat argument
     if (missing(stats)) {
-      stats <- nmstats
+      stats <- name_stats
     }
-    if (any(stats %in% nmstats == FALSE)) {
+    if (any(stats %in% name_stats == FALSE)) {
       stop("One or more requested stats not contained in netsim object",
            call. = FALSE)
     }
-    outsts <- which(nmstats %in% stats)
-    nstats <- length(outsts)
-
-    names(nwstats) <- rep("", length(nwstats))
-    data <- as.matrix(do.call("cbind", args = nwstats))
-    data <- data[, colnames(data) %in% nmstats[outsts], drop = FALSE]
+    name_stats <- intersect(name_stats, stats)
+    nstats <- length(stats)
 
     ## target stats
     nwparam <- get_nwparam(x, network)
     formation.terms <- nwparam$target.stats.names
     target.stats <- nwparam$target.stats
 
-    st <- data.frame(sorder = 1:length(nmstats), names = nmstats)
+    st <- data.frame(sorder = 1:length(name_stats), names = name_stats)
     if (length(formation.terms) != length(target.stats)) {
       target.stats <- target.stats[which(target.stats > 0)]
     }
@@ -2185,6 +2185,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
     }
     if (nstats == 1) {
       plots.joined <- TRUE
+      sim.col <- "dodgerblue3"
     }
     xlim <- c(1, nsteps)
     if (!is.null(da$xlim)) {
@@ -2198,18 +2199,67 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
       }
     }
 
-    # Default colors
-    if (missing(sim.col)) {
-      if (nstats > 8) {
-        sim.col <- brewer_ramp(nstats, "Set1")
-      } else {
-        sim.col <- brewer.pal(9, "Set1")[1:(nstats + 1)]
-        if (nstats >= 6) {
-          sim.col <- sim.col[-which(sim.col == "#FFFF33")]
-        }
+    if (!missing(sim.col)) {
+      if (!(length(sim.col) %in% c(1,nstats))) {
+        stop("sim.col must be either missing or a vector of length 1  or nstats (",
+             nstats, ")", call. = FALSE)
+      }
+      else if (length(sim.col) == 1 & nstats > 1) {
+        sim.col <- rep(sim.col,nstats)
       }
     }
 
+    #Mean.col
+    if (!missing(mean.col)) {
+      if (!(length(mean.col) %in% c(1, nstats))) {
+        stop("mean.col must be either missing or a vector of length 1 or nstats (",
+             nstats, ")", call. = FALSE)
+      }
+      else if (length(mean.col) == 1 & nstats > 1) {
+        mean.col <- rep(mean.col, nstats)
+      }
+    }
+
+    #Qnts.col
+    if (!missing(qnts.col)) {
+      if (!(length(qnts.col) %in% c(1,nstats))) {
+        stop("qnts.col must be either missing or a vector of length 1 or nstats (",
+             nstats, ")", call. = FALSE)
+      }
+      else if (length(qnts.col) == 1 & nstats > 1) {
+        qnts.col <- rep(qnts.col, nstats)
+      }
+    }
+
+    #Targ.col
+    if (!missing(targ.col)) {
+      if (!(length(targ.col) %in% c(1,nstats))) {
+        stop("targ.col must be either missing or a vector of length 1 or nstats (",
+             nstats, ")", call. = FALSE)
+      }
+      else if (length(targ.col) == 1 & nstats > 1) {
+        targ.col <- rep(targ.col, nstats)
+      }
+    }
+
+    # Default colors
+    #If sim color is missing and using joined plots, sim color uses brewer ramp pallette
+    #If sim color is missing and using split plots, default color for each plot set to blue (dodgerblue3)
+    if (missing(sim.col)) {
+      if (plots.joined == TRUE) {
+        if (nstats > 8) {
+          sim.col <- brewer_ramp(nstats, "Set1")
+        } else {
+          sim.col <- brewer.pal(9, "Set1")[1:(nstats + 1)]
+          if (nstats >= 6) {
+            sim.col <- sim.col[-which(sim.col == "#FFFF33")]
+          }
+        }
+      }
+      if (missing(plots.joined) | plots.joined == FALSE) {
+        sim.col <- rep("dodgerblue3",nstats)
+      }
+    }
 
     ## Joined Plots
     if (plots.joined == TRUE) {
@@ -2224,13 +2274,9 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
       }
 
       ## Default ylim
-      if (ncol(nwstats[[1]]) == 1) {
-        mins <- sapply(nwstats, function(x) apply(x, 2, min))
-        maxs <- sapply(nwstats, function(x) apply(x, 2, max))
-      } else {
-        mins <- sapply(nwstats, function(x) apply(x, 2, min))[outsts, ]
-        maxs <- sapply(nwstats, function(x) apply(x, 2, max))[outsts, ]
-      }
+      mins <- apply(data[, name_stats, drop = FALSE], 2, min)
+      maxs <- apply(data[, name_stats, drop = FALSE], 2, max)
+
       ymin <- min(mins)
       ymax <- max(maxs)
       if (!is.null(da$ylim)) {
@@ -2244,7 +2290,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
         ylab <- da$ylab
       } else {
         if (nstats == 1) {
-          ylab <- nmstats[outsts]
+          ylab <- name_stats
         } else {
           ylab <- "Statistic"
         }
@@ -2254,7 +2300,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
       if (!is.null(da$xlab)) {
         xlab <- da$xlab
       } else {
-        xlab <- "time"
+        xlab <- "Time"
       }
 
       ## Default target line color
@@ -2266,29 +2312,33 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
         }
       }
 
-
       ## Main plot window
       plot(1, 1, xlim = xlim, ylim = ylim,
            type = "n", xlab = xlab, ylab = ylab)
-      for (j in outsts) {
 
-        dataj <- data[, colnames(data) %in% nmstats[j], drop = FALSE]
+      # Default qnts.col
+      if (missing(qnts.col)) {
+        qnts.col <- sim.col
+      }
+      if (missing(qnts.alpha)) {
+        qnts.alpha <- 0.5
+      }
+      qnts.col <- transco(qnts.col, qnts.alpha)
+
+      for (j in 1:nstats) {
+
+        dataj <- data[, union("time", name_stats[j]), drop = FALSE]
 
         if (is.numeric(qnts)) {
           if (qnts < 0 | qnts > 1) {
             stop("qnts must be between 0 and 1", call. = FALSE)
           }
-          if (missing(qnts.col)) {
-            qnts.col <- sim.col
-          }
-          if (missing(qnts.alpha)) {
-            qnts.alpha <- 0.5
-          }
-          qnts.col <- transco(qnts.col, qnts.alpha)
+
           quants <- c((1 - qnts) / 2, 1 - ((1 - qnts) / 2))
-          qnt.prev <- apply(dataj, 1, function(x) {
+          qnt.prev <- tapply(dataj[, -1], dataj[, 1], function(x) {
             quantile(x, c(quants[1], quants[2]))
           })
+          qnt.prev <- do.call("cbind", qnt.prev)
           xx <- c(1:(ncol(qnt.prev)), (ncol(qnt.prev)):1)
           if (qnts.smooth == FALSE) {
             yy <- c(qnt.prev[1, ], rev(qnt.prev[2, ]))
@@ -2296,31 +2346,31 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
             yy <- c(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[1, ]))$y,
                     rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[2, ]))$y))
           }
-          polygon(xx, yy, col = qnts.col[which(j == outsts)], border = NA)
+          polygon(xx, yy, col = qnts.col[j], border = NA)
         }
 
         if (sim.lines == TRUE) {
           for (i in sims) {
-            lines(dataj[,i], lwd = sim.lwd,
-                  col = sim.col[which(j == outsts)])
+            lines(dataj[data$sim == i, -1], lwd = sim.lwd,
+                  col = sim.col[j])
           }
         }
         if (mean.line == TRUE) {
           if (missing(mean.col)) {
             mean.col <- sim.col
           }
-          mean.prev <- rowMeans(dataj)
+          mean.prev <- as.numeric(tapply(dataj[, -1], dataj[, 1], mean))
           if (mean.smooth == TRUE) {
             mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev), y = mean.prev))$y
           }
           lines(mean.prev, lwd = mean.lwd,
-                col = mean.col[which(j == outsts)], lty = mean.lty)
+                col = mean.col[j], lty = mean.lty)
         }
 
         if (targ.line == TRUE) {
           if (j %in% targs) {
             abline(h = m$targets[j], lty = targ.lty, lwd = targ.lwd,
-                   col = targ.col[which(j == outsts)])
+                   col = targ.col[j])
           }
         }
 
@@ -2332,7 +2382,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
       }
 
       if (legend == TRUE) {
-        legend("topleft", legend = nmstats[outsts], lwd = 3,
+        legend("topleft", legend = name_stats, lwd = 3,
                col = sim.col[1:nstats], cex = 0.75, bg = "white")
       }
     }
@@ -2355,36 +2405,43 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
       ops <- list(mar = par()$mar, mfrow = par()$mfrow, mgp = par()$mgp)
       par(mar = c(2.5, 2.5, 2, 1), mgp = c(2, 1, 0), mfrow = dimens)
 
-      mins <- sapply(nwstats, function(x) apply(x, 2, min))
-      maxs <- sapply(nwstats, function(x) apply(x, 2, max))
-
       if (missing(targ.col)) {
         targ.col <- rep("black", nstats)
       }
 
-      for (j in outsts) {
-        dataj <- data[, colnames(data) %in% nmstats[j], drop = FALSE]
+      if (missing(qnts.col)) {
+        qnts.col <- sim.col
+      }
+      if (missing(qnts.alpha)) {
+        qnts.alpha <- 0.5
+      }
+      qnts.col <- transco(qnts.col, qnts.alpha)
+
+
+      for (j in 1:nstats) {
+
+        dataj <- data[, union("time", name_stats[j]), drop = FALSE]
+
+        min <- min(dataj[, -1])
+        max <- max(dataj[, -1])
+        ylim <- c(min * 0.8, max * 1.2)
+
         plot(x = 1, y = 1,
              xlim = xlim,
-             ylim = c(min(dataj) * 0.8, max(dataj) * 1.2),
-             type = "n", main = nmstats[j],
+             ylim = ylim,
+             type = "n", main = name_stats[j],
              xlab = "", ylab = "")
 
         if (is.numeric(qnts)) {
           if (qnts < 0 | qnts > 1) {
             stop("qnts must be between 0 and 1", call. = FALSE)
           }
-          if (missing(qnts.col)) {
-            qnts.col <- sim.col
-          }
-          if (missing(qnts.alpha)) {
-            qnts.alpha <- 0.5
-          }
-          qnts.col <- transco(qnts.col, qnts.alpha)
+
           quants <- c((1 - qnts) / 2, 1 - ((1 - qnts) / 2))
-          qnt.prev <- apply(dataj, 1, function(x) {
+          qnt.prev <- tapply(dataj[, -1], dataj[, 1], function(x) {
             quantile(x, c(quants[1], quants[2]))
           })
+          qnt.prev <- do.call("cbind", qnt.prev)
           xx <- c(1:(ncol(qnt.prev)), (ncol(qnt.prev)):1)
           if (qnts.smooth == FALSE) {
             yy <- c(qnt.prev[1, ], rev(qnt.prev[2, ]))
@@ -2392,12 +2449,13 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
             yy <- c(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[1, ]))$y,
                     rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[2, ]))$y))
           }
-          polygon(xx, yy, col = qnts.col[which(j == outsts)], border = NA)
+          polygon(xx, yy, col = qnts.col[j], border = NA)
         }
 
         if (sim.lines == TRUE) {
           for (i in sims) {
-            lines(dataj[, i], lwd = sim.lwd, col = sim.col[which(j == outsts)])
+            lines(dataj[data$sim == i, -1], lwd = sim.lwd,
+                  col = sim.col[j])
           }
         }
 
@@ -2405,18 +2463,18 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
           if (missing(mean.col)) {
             mean.col <- sim.col
           }
-          mean.prev <- rowMeans(dataj)
+          mean.prev <- as.numeric(tapply(dataj[, -1], dataj[, 1], mean))
           if (mean.smooth == TRUE) {
             mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev), y = mean.prev))$y
           }
           lines(mean.prev, lwd = mean.lwd,
-                col = mean.col[which(j == outsts)], lty = mean.lty)
+                col = mean.col[j], lty = mean.lty)
         }
 
         if (targ.line == TRUE) {
           if (j %in% targs) {
             abline(h = m$targets[j], lty = targ.lty, lwd = targ.lwd,
-                   col = targ.col[which(j == outsts)])
+                   col = targ.col[j])
           }
         }
 
@@ -2703,8 +2761,8 @@ comp_plot.netsim <- function(x, at = 1, digits = 3, ...) {
 #' init <- init.icm(s.num = 500, i.num = 1)
 #' control <- control.icm(type = "SI", nsteps = 250, nsims = 5)
 #' mod1 <- icm(param, init, control)
-#' df <- as.data.frame(mod1, out = "vals")
-#' df.mean <- as.data.frame(mod1)
+#' df <- as.data.frame(mod1)
+#' df.mean <- as.data.frame(mod1, out = "mean")
 #'
 #' library(ggplot2)
 #' ggplot() +

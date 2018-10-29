@@ -4,8 +4,8 @@
 \alias{as.data.frame.dcm}
 \title{Extract Model Data for Deterministic Compartmental Models}
 \usage{
-\method{as.data.frame}{dcm}(x, row.names = NULL, optional = FALSE,
-  run = 1, ...)
+\method{as.data.frame}{dcm}(x, row.names = NULL, optional = FALSE, run,
+  ...)
 }
 \arguments{
 \item{x}{An \code{EpiModel} object of class \code{\link{dcm}}.}
@@ -14,7 +14,8 @@
 
 \item{optional}{See \code{\link{as.data.frame.default}}.}
 
-\item{run}{Run number for model; used for multiple-run sensitivity models.}
+\item{run}{Run number for model; used for multiple-run sensitivity models. If
+not specified, will output data from all runs in a stacked data frame.}
 
 \item{...}{See \code{\link{as.data.frame.default}}.}
 }
@@ -24,20 +25,25 @@ This function extracts a model run from an object of class
              \code{as.data.frame} function.
 }
 \details{
-Model output from a \code{dcm} simulation are available as a data
+Model output from \code{dcm} simulations are available as a data
 frame with this helper function. The output data frame will include
 columns for time, the size of each compartment, the overall population
 size (the sum of compartment sizes), and the size of each flow.
+
+For models with multiple runs (i.e., varying parameters - see example below),
+the default with the \code{run} parameter not specified will output all runs
+in a single stacked data frame.
 }
 \examples{
 ## Example 1: One-group SIS model with varying act.rate
 param <- param.dcm(inf.prob = 0.2, act.rate = seq(0.05, 0.5, 0.05),
                    rec.rate = 1/50)
 init <- init.dcm(s.num = 500, i.num = 1)
-control <- control.dcm(type = "SIS", nsteps = 500)
+control <- control.dcm(type = "SIS", nsteps = 10)
 mod1 <- dcm(param, init, control)
-head(as.data.frame(mod1, run = 1))
-head(as.data.frame(mod1, run = 10))
+as.data.frame(mod1)
+as.data.frame(mod1, run = 1)
+as.data.frame(mod1, run = 10)
 
 ## Example 2: Two-group SIR model with vital dynamics
 param <- param.dcm(inf.prob = 0.2, inf.prob.g2 = 0.1,
@@ -49,10 +55,9 @@ param <- param.dcm(inf.prob = 0.2, inf.prob.g2 = 0.1,
                    dr.rate = 1/100, dr.rate.g2 = 1/100)
 init <- init.dcm(s.num = 500, i.num = 1, r.num = 0,
                  s.num.g2 = 500, i.num.g2 = 1, r.num.g2 = 0)
-control <- control.dcm(type = "SIR", nsteps = 500)
+control <- control.dcm(type = "SIR", nsteps = 10)
 mod2 <- dcm(param, init, control)
-head(as.data.frame(mod2))
-tail(as.data.frame(mod2))
+as.data.frame(mod2)
 
 }
 \keyword{extract}

@@ -34,8 +34,8 @@ coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
 est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 
 # Simulate the network and extract a timed edgelist
-sim <- netdx(est, nsims = 1, nsteps = 100, verbose = FALSE)
-el <- sim$edgelist[[1]]
+dx <- netdx(est, nsims = 1, nsteps = 100, keep.tedgelist = TRUE, verbose = FALSE)
+el <- as.data.frame(dx)
 
 # Calculate censoring
 edgelist_censor(el)

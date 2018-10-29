@@ -6,16 +6,21 @@
 #'              \code{as.data.frame} function.
 #'
 #' @param x An \code{EpiModel} object of class \code{\link{dcm}}.
-#' @param run Run number for model; used for multiple-run sensitivity models.
+#' @param run Run number for model; used for multiple-run sensitivity models. If
+#'        not specified, will output data from all runs in a stacked data frame.
 #' @param row.names See \code{\link{as.data.frame.default}}.
 #' @param optional See \code{\link{as.data.frame.default}}.
 #' @param ...  See \code{\link{as.data.frame.default}}.
 #'
 #' @details
-#' Model output from a \code{dcm} simulation are available as a data
+#' Model output from \code{dcm} simulations are available as a data
 #' frame with this helper function. The output data frame will include
 #' columns for time, the size of each compartment, the overall population
 #' size (the sum of compartment sizes), and the size of each flow.
+#'
+#' For models with multiple runs (i.e., varying parameters - see example below),
+#' the default with the \code{run} parameter not specified will output all runs
+#' in a single stacked data frame.
 #'
 #' @method as.data.frame dcm
 #' @keywords extract
@@ -26,10 +31,11 @@
 #' param <- param.dcm(inf.prob = 0.2, act.rate = seq(0.05, 0.5, 0.05),
 #'                    rec.rate = 1/50)
 #' init <- init.dcm(s.num = 500, i.num = 1)
-#' control <- control.dcm(type = "SIS", nsteps = 500)
+#' control <- control.dcm(type = "SIS", nsteps = 10)
 #' mod1 <- dcm(param, init, control)
-#' head(as.data.frame(mod1, run = 1))
-#' head(as.data.frame(mod1, run = 10))
+#' as.data.frame(mod1)
+#' as.data.frame(mod1, run = 1)
+#' as.data.frame(mod1, run = 10)
 #'
 #' ## Example 2: Two-group SIR model with vital dynamics
 #' param <- param.dcm(inf.prob = 0.2, inf.prob.g2 = 0.1,
@@ -41,21 +47,23 @@
 #'                    dr.rate = 1/100, dr.rate.g2 = 1/100)
 #' init <- init.dcm(s.num = 500, i.num = 1, r.num = 0,
 #'                  s.num.g2 = 500, i.num.g2 = 1, r.num.g2 = 0)
-#' control <- control.dcm(type = "SIR", nsteps = 500)
+#' control <- control.dcm(type = "SIR", nsteps = 10)
 #' mod2 <- dcm(param, init, control)
-#' head(as.data.frame(mod2))
-#' tail(as.data.frame(mod2))
+#' as.data.frame(mod2)
 #'
-as.data.frame.dcm <- function(x, row.names = NULL, optional = FALSE, run = 1,
+as.data.frame.dcm <- function(x, row.names = NULL, optional = FALSE, run,
                               ...) {
 
   df <- data.frame(time = x$control$timesteps)
   nruns <- x$control$nruns
+  if (missing(run)) {
+    run <- 1:nruns
+  }
 
   # Output for models with 1 run
   if (nruns == 1) {
-    if (run > 1) {
-      stop("Specify run = 1")
+    if (length(run) > 1 || max(run) > 1) {
+      stop("Maximum run is 1")
     }
     for (i in seq_along(x$epi)) {
       df[, i + 1] <- x$epi[[i]]
@@ -64,15 +72,32 @@ as.data.frame.dcm <- function(x, row.names = NULL, optional = FALSE, run = 1,
 
   # Output for models with multiple runs
   if (nruns > 1) {
-    if (run > nruns) {
-      stop(paste("Specify run between 1 and", nruns))
+    if (max(run) > nruns) {
+      stop("Maximum run is ", nruns, call. = FALSE)
     }
-    for (i in seq_along(x$epi)) {
-      df[, i + 1] <- x$epi[[i]][, run]
+    for (j in run) {
+      if (j == min(run)) {
+        for (i in seq_along(x$epi)) {
+          df[, i + 1] <- x$epi[[i]][, j]
+        }
+        df$run <- j
+      } else {
+        tdf <- data.frame(time = 1:x$control$nsteps)
+        for (i in seq_along(x$epi)) {
+          tdf[, i + 1] <- x$epi[[i]][, j]
+        }
+        tdf$run <- j
+        df <- rbind(df, tdf)
+      }
     }
+    df <- df[, c(ncol(df), 1:(ncol(df) - 1))]
   }
 
-  names(df)[2:ncol(df)] <- names(x$epi)
+  if (nruns > 1) {
+    names(df)[3:ncol(df)] <- names(x$epi)
+  } else {
+    names(df)[2:ncol(df)] <- names(x$epi)
+  }
 
   return(df)
 }
@@ -85,51 +110,52 @@ as.data.frame.dcm <- function(x, row.names = NULL, optional = FALSE, run = 1,
 #'              the generic \code{as.data.frame} function.
 #'
 #' @param x An \code{EpiModel} object of class \code{icm} or \code{netsim}.
-#' @param sim If \code{out="vals"}, the simulation number to output, or the default of
-#'        \code{out="all"}, which outputs data from all simulations bound together.
 #' @param out Data output to data frame: \code{"mean"} for row means across
 #'        simulations, \code{"sd"} for row standard deviations across simulations,
 #'        \code{"qnt"} for row quantiles at the level specified in \code{qval},
-#'        or \code{"vals"} for values from one individuals simulation(s).
-#' @param qval Quantile value necessary when \code{out="qnt"}.
+#'        or \code{"vals"} for values from individual simulations.
+#' @param sim If \code{out="vals"}, the simulation number to output. If not
+#'        specified, then data from all simulations will be output.
+#' @param qval Quantile value required when \code{out="qnt"}.
 #' @param row.names See \code{\link{as.data.frame.default}}.
 #' @param optional See \code{\link{as.data.frame.default}}.
 #' @param ...  See \code{\link{as.data.frame.default}}.
 #'
 #' @details
-#' These methods work for both \code{icm} and \code{netsim}
-#' class models. The available output includes time-specific means,
-#' standard deviations, quantiles, and simulation values (compartment and flow
-#' sizes from one simulation) from these stochastic model classes. Means and
-#' standard deviations are calculated by taking the row summary across all
-#' simulations for each time step in the model output.
+#' These methods work for both \code{icm} and \code{netsim} class models. The
+#' available output includes time-specific means, standard deviations, quantiles,
+#' and simulation values (compartment and flow sizes) from these stochastic model
+#' classes. Means, standard deviations, and quantiles are calculated by taking the
+#' row summary (i.e., each row of data is corresponds to a time step) across all
+#' simulations in the model output.
 #'
 #' @method as.data.frame icm
 #' @keywords extract
 #' @export
 #'
 #' @examples
-#' ## Stochastic ICM SIS model with 5 simulations
+#' ## Stochastic ICM SIS model
 #' param <- param.icm(inf.prob = 0.8, act.rate = 2, rec.rate = 0.1)
 #' init <- init.icm(s.num = 500, i.num = 1)
-#' control <- control.icm(type = "SIS", nsteps = 25,
-#'                        nsims = 2, verbose = FALSE)
+#' control <- control.icm(type = "SIS", nsteps = 10,
+#'                        nsims = 3, verbose = FALSE)
 #' mod <- icm(param, init, control)
 #'
-#' # Default output is mean across simulations
+#' # Default output all simulation runs, default to all in stacked data.frame
 #' as.data.frame(mod)
+#' as.data.frame(mod, sim = 2)
 #'
-#' # Standard deviations of simulations
+#' # Time-specific means across simulations
+#' as.data.frame(mod, out = "mean")
+#'
+#' # Time-specific standard deviations across simulations
 #' as.data.frame(mod, out = "sd")
 #'
-#' # Quantile values for interquartile interval
+#' # Time-specific quantile values across simulations
 #' as.data.frame(mod, out = "qnt", qval = 0.25)
 #' as.data.frame(mod, out = "qnt", qval = 0.75)
 #'
-#' # Individual simulation runs, with default sim="all"
-#' as.data.frame(mod, out = "vals")
-#' as.data.frame(mod, out = "vals", sim = 2)
-#'
+#' \dontrun{
 #' ## Stochastic SI network model
 #' nw <- network.initialize(n = 100, directed = FALSE)
 #' formation <- ~edges
@@ -139,14 +165,20 @@ as.data.frame.dcm <- function(x, row.names = NULL, optional = FALSE, run = 1,
 #'
 #' param <- param.net(inf.prob = 0.5)
 #' init <- init.net(i.num = 10)
-#' control <- control.net(type = "SI", nsteps = 10, nsims = 2, verbose = FALSE)
+#' control <- control.net(type = "SI", nsteps = 10, nsims = 3, verbose = FALSE)
 #' mod <- netsim(est, param, init, control)
 #'
+#' # Same data extraction methods as with ICMs
 #' as.data.frame(mod)
-#' as.data.frame(mod, out = "vals")
+#' as.data.frame(mod, sim = 2)
+#' as.data.frame(mod, out = "mean")
+#' as.data.frame(mod, out = "sd")
+#' as.data.frame(mod, out = "qnt", qval = 0.25)
+#' as.data.frame(mod, out = "qnt", qval = 0.75)
+#' }
 #'
 as.data.frame.icm <- function(x, row.names = NULL, optional = FALSE,
-                              sim = "all", out = "mean", qval, ...) {
+                              out = "vals", sim, qval, ...) {
 
   df <- data.frame(time = 1:x$control$nsteps)
   nsims <- x$control$nsims
@@ -162,45 +194,38 @@ as.data.frame.icm <- function(x, row.names = NULL, optional = FALSE,
 
   if (out == "vals") {
 
-    # Output for models with 1 sim
-    if (nsims == 1) {
-      for (i in seq_along(x$epi)) {
-        df[, i + 1] <- x$epi[[i]]
-      }
-      df$sim <- 1
-      df <- df[, c(ncol(df), 1:(ncol(df) - 1))]
+    if (missing(sim)) {
+      sim <- 1:nsims
+    }
+    if (max(sim) > nsims) {
+      stop("Maximum sim is ", nsims, call. = FALSE)
     }
 
-    # Output for models with multiple sims
-    if (nsims > 1) {
-      if (sim == "all") {
-        for (j in 1:nsims) {
-          if (j == 1) {
-            for (i in seq_along(x$epi)) {
-              df[, i + 1] <- x$epi[[i]][, j]
-            }
-            df$sim <- j
+    for (j in sim) {
+      if (j == min(sim)) {
+        for (i in seq_along(x$epi)) {
+          if (nsims == 1) {
+            df[, i + 1] <- x$epi[[i]]
           } else {
-            tdf <- data.frame(time = 1:x$control$nsteps)
-            for (i in seq_along(x$epi)) {
-              tdf[, i + 1] <- x$epi[[i]][, j]
-            }
-            tdf$sim <- j
-            df <- rbind(df, tdf)
+            df[, i + 1] <- x$epi[[i]][, j]
           }
         }
-        df <- df[, c(ncol(df), 1:(ncol(df) - 1))]
+        df$sim <- j
       } else {
-        if (sim > nsims) {
-          stop(paste("Specify sim between 1 and", nsims))
-        }
+        tdf <- data.frame(time = 1:x$control$nsteps)
         for (i in seq_along(x$epi)) {
-          df[, i + 1] <- x$epi[[i]][, sim]
+          if (nsims == 1) {
+            tdf[, i + 1] <- x$epi[[i]]
+          } else {
+            tdf[, i + 1] <- x$epi[[i]][, j]
+          }
         }
-        df$sim <- sim
-        df <- df[, c(ncol(df), 1:(ncol(df) - 1))]
+        tdf$sim <- j
+        df <- rbind(df, tdf)
       }
     }
+    df <- df[, c(ncol(df), 1:(ncol(df) - 1))]
+
   }
 
   ## Output means
@@ -255,10 +280,82 @@ as.data.frame.icm <- function(x, row.names = NULL, optional = FALSE,
 #' @export
 #' @rdname as.data.frame.icm
 as.data.frame.netsim <- function(x, row.names = NULL, optional = FALSE,
-                                 sim = "all", out = "mean", ...) {
-
+                                 out = "vals", sim, ...) {
+  if (missing(sim)) {
+    sim <- 1:x$control$nsims
+  }
   df <- as.data.frame.icm(x, row.names = row.names, optional = optional,
                           sim = sim, out = out, ...)
   return(df)
 
+}
+
+#' @title Extract Timed Edgelists netdx Objects
+#'
+#' @description This function extracts timed edgelists for objects of class
+#'              \code{netdx} into a data frame using the generic
+#'              \code{as.data.frame} function.
+#'
+#' @param x An \code{EpiModel} object of class \code{netdx}.
+#' @param sim The simulation number to output. If not specified, then data from
+#'        all simulations will be output.
+#' @param row.names See \code{\link{as.data.frame.default}}.
+#' @param optional See \code{\link{as.data.frame.default}}.
+#' @param ...  See \code{\link{as.data.frame.default}}.
+#'
+#' @method as.data.frame netdx
+#' @keywords extract
+#' @export
+#'
+#' @examples
+#' # Initialize and parameterize the network model
+#' nw <- network.initialize(n = 100, directed = FALSE)
+#' formation <- ~edges
+#' target.stats <- 50
+#' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
+#'
+#' # Model estimation
+#' est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
+#'
+#' # Simulate the network with netdx
+#' dx <- netdx(est, nsims = 3, nsteps = 10, keep.tedgelist = TRUE, verbose = FALSE)
+#'
+#' # Extract data from the first simulation
+#' as.data.frame(dx, sim = 1)
+#'
+#' # Extract data from all simulations
+#' as.data.frame(dx)
+#'
+as.data.frame.netdx <- function(x, row.names = NULL, optional = FALSE,
+                                sim, ...) {
+
+  if (is.null(x$tedgelist)) {
+    stop("Edgelist not saved in netdx object, check keep.tedgelist parameter",
+         call. = FALSE)
+  }
+
+  if (missing(sim)) {
+    sim <- 1:x$nsims
+  }
+  if (max(sim) > x$nsims) {
+    stop(paste("Maximum sim is", x$nsims), call. = FALSE)
+  }
+
+  if (length(sim) == 1) {
+    df <- x$tedgelist[[sim]]
+  } else {
+    for (j in sim) {
+      if (j == min(sim)) {
+        df <- x$tedgelist[[j]]
+        df$sim <- j
+      } else {
+        tdf <- x$tedgelist[[j]]
+        tdf$sim <- j
+        df <- rbind(df, tdf)
+      }
+    }
+    df <- df[, c(ncol(df), 1:(ncol(df) - 1))]
+  }
+
+  return(df)
 }

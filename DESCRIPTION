@@ -1,14 +1,14 @@
 Package: EpiModel
 Version: 1.6.6
-Date: 2018-09-01
+Date: 2018-10-18
 Title: Mathematical Modeling of Infectious Disease Dynamics
 Description: Tools for simulating mathematical models of infectious disease dynamics. 
     Epidemic model classes include deterministic compartmental models, stochastic 
-    agent-based models, and stochastic network models. Network models use the
+    individual-contact models, and stochastic network models. Network models use the
     robust statistical methods of exponential-family random graph models (ERGMs) 
     from the Statnet suite of software packages in R. Standard templates for epidemic 
     modeling include SI, SIR, and SIS disease types. EpiModel features 
-    an easy API for extending these templates to address novel scientific research aims.
+    an API for extending these templates to address novel scientific research aims.
 Maintainer: Samuel Jenness <samuel.m.jenness@emory.edu>
 Authors@R: c(person("Samuel", "Jenness",
     role=c("cre","aut"), email="samuel.m.jenness@emory.edu"),
@@ -27,7 +27,7 @@ URL: http://epimodel.org/, http://github.com/statnet/EpiModel
 BugReports: https://github.com/statnet/EpiModel/issues
 Depends:
     R (>= 3.2),
-    deSolve (>= 1.12),
+    deSolve (>= 1.21),
     networkDynamic (>= 0.9),
     tergm (>= 3.5)
 Imports:

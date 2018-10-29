@@ -10,7 +10,7 @@ EpiModel
 <br>
 <img align="right" src="http://www.epimodel.org/movie.gif">
 
-Tools for simulating mathematical models of infectious disease dynamics. Epidemic model classes include deterministic compartmental models, stochastic agent-based models, and stochastic network models. Network models use the robust statistical methods of exponential-family random graph models (ERGMs) from the Statnet suite of software packages in R. Standard templates for epidemic modeling include SI, SIR, and SIS disease types. EpiModel features an easy API for extending these templates to address novel scientific research aims.
+Tools for simulating mathematical models of infectious disease dynamics. Epidemic model classes include deterministic compartmental models, stochastic individual-contact models, and stochastic network models. Network models use the robust statistical methods of exponential-family random graph models (ERGMs) from the Statnet suite of software packages in R. Standard templates for epidemic modeling include SI, SIR, and SIS disease types. EpiModel features an easy API for extending these templates to address novel scientific research aims.
 
 ### Authors
 <table>
@@ -40,10 +40,10 @@ The current release version can be found on <a href="http://cran.r-project.org/w
 install.packages("EpiModel", dependencies = TRUE)
 ```
 
-To install this development version, use the <a href="https://github.com/r-lib/devtools" target="_blank">devtools package</a>:
+To install this development version, use the <a href="https://github.com/r-lib/remotes" target="_blank">remotes package</a>:
 ```r
-if (!require("devtools")) install.packages("devtools")
-devtools::install_github("statnet/EpiModel")
+if (!require("remotes")) install.packages("remotes")
+remotes::install_github("statnet/EpiModel")
 ```
 
 ### Documentation and Support
@@ -66,16 +66,12 @@ If using EpiModel for teaching or research, please include a citation:
 
 > Jenness SM, Goodreau SM and Morris M. EpiModel: An R Package for Mathematical Modeling of Infectious Disease over Networks. *Journal of Statistical Software.* 2018; 84(8): 1-47. doi: 10.18637/jss.v084.i08
 
-Please also send us an email (samuel.m.jenness@emory.edu) if you have used EpiModel in your work so we can add the citation below.
-
-
-
-
+Please also send Sam an email (samuel.m.jenness@emory.edu) if you have used EpiModel in your work so we can add the citation below.
 
 ### Funding
 The primary support for the development of these software tools and statistical methods has been by  two National Institutes of Health (NIH) grants:
 
-* [NIH R01 AI138783](https://projectreporter.nih.gov/project_info_description.cfm?aid=9623724): EpiModel 2.0: Integrated Network Models for HIV/STI Prevention Science.
+* [NIH R01 AI138783](https://projectreporter.nih.gov/project_info_description.cfm?aid=9623724): EpiModel 2.0: Integrated Network Models for HIV/STI Prevention Science (PI: Samuel Jenness)
 * [NIH R01 HD68395](https://projectreporter.nih.gov/project_info_description.cfm?aid=8841605): Statistical Methods for Network Epidemiology (PI: Martina Morris)
 
 Our applied research projects using EpiModel have received funding from the NIH and Centers for Disease Control and Prevention (CDC):
@@ -118,6 +114,10 @@ EpiModel and its [extension packages](https://github.com/statnet/EpiModelHIV) ha
 9. Herbeck JT, Peebles K, Edlefsen PT, Rolland M, Murphy JT, Gottlieb GS, Abernethy N, Mullins JI, Mittler JE, Goodreau SM. HIV population-level adaptation can rapidly diminish the impact of a partially effective vaccine. _Vaccine._ 2018;36(4): 514-520. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/29241646)
 
 10. Luo W, Katz DA, Hamilton DT, McKenney J, Jenness SM, Goodreau SM, Stekler JD, Rosenberg ES, Sullivan P, Cassels S. Development of an Agent-Based Model to Investigate the Impact of HIV Self-Testing Programs for Men Who Have Sex with Men in Atlanta and Seattle. _Journal of Medical Internet Research Public Health Surveillance._ 2018; 4(2): e58. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/29959112)
+
+11. Jenness SM, Maloney K, Smith SK, Hoover KW, Rosenberg ES, Goodreau SM, Weiss KM, Liu AY, Rao D, Sullivan PS. Addressing Gaps in HIV Preexposure Prophylaxis Care to Reduce Racial Disparities in HIV Incidence in the United States. _American Journal of Epidemiology._ Epub DOI: 10.1093/aje/kwy230. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/30312365)
+
+12. Stansfield SE, Mittler JE, Gottlieb GS, Murphy JT, Hamilton DT, Detels R, Wolinsky SM, Jacobson LP, Margolick JB, Rinaldo CR, Herbeck JT, Goodreau SM. Sexual Role and HIV-1 Set Point Viral Load among Men who Have Sex with Men. _Epidemics._ Epub DOI: 10.1016/j.epidem.2018.08.006. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/30193771)
 
 
 #### Other

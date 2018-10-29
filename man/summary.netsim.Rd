@@ -33,7 +33,6 @@ target.stats <- 50
 coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
 
 # Estimate the ERGM models (see help for netest)
-# Skipping model diagnostics for this, but one should always run these
 est1 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 
 # Parameters, initial conditions, and controls for model

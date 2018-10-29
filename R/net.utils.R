@@ -92,7 +92,12 @@ calc_eql <- function(x, numer = "i.num", denom = "num",
   options(scipen = digits + 1)
 
   # Convert model to df and calculate prevalence
-  df <- as.data.frame(x)
+  if (class(x) == "dcm") {
+    df <- as.data.frame(x, run = 1)
+  } else {
+    df <- as.data.frame(x, out = "mean")
+  }
+
   if (!(numer %in% names(df))) {
     stop("numer must be an output compartment on x", call. = FALSE)
   }
@@ -544,8 +549,8 @@ dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
 #' est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 #'
 #' # Simulate the network and extract a timed edgelist
-#' sim <- netdx(est, nsims = 1, nsteps = 100, verbose = FALSE)
-#' el <- sim$edgelist[[1]]
+#' dx <- netdx(est, nsims = 1, nsteps = 100, keep.tedgelist = TRUE, verbose = FALSE)
+#' el <- as.data.frame(dx)
 #'
 #' # Calculate censoring
 #' edgelist_censor(el)
@@ -574,7 +579,7 @@ edgelist_censor <- function(el) {
 
   ## Table
   nums <- rbind(leftcens.num, rightcens.num, lrcens.num, nocens.num)
-  pcts <- rbind(leftcens.pct, rightcens.pct, lrcens.pct, nocens.pct)
+  pcts <- round(rbind(leftcens.pct, rightcens.pct, lrcens.pct, nocens.pct), 3)
   out <- cbind(nums, pcts)
   rownames(out) <- c("Left Cens.", "Right Cens.", "Both Cens.", "No Cens.")
   colnames(out) <- c("num", "pct")
@@ -617,15 +622,16 @@ edgelist_censor <- function(el) {
 #' est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 #'
 #' # Simulate the network and extract a timed edgelist
-#' sim <- netdx(est, nsims = 1, nsteps = 100, verbose = FALSE)
-#' el <- sim$edgelist[[1]]
+#' dx <- netdx(est, nsims = 1, nsteps = 100, keep.tedgelist = TRUE, verbose = FALSE)
+#' el <- as.data.frame(dx)
 #'
 #' # Calculate ages directly from edgelist
-#' ( ma <- edgelist_meanage(el = el) )
+#' mean_ages <- edgelist_meanage(el = el)
+#' mean_ages
 #'
 #' # Alternatively, netdx calculates these
-#' sim$pages
-#' identical(sim$pages[[1]], ma)
+#' dx$pages
+#' identical(dx$pages[[1]], mean_ages)
 #'
 edgelist_meanage <- function(x, el) {
 
@@ -975,21 +981,18 @@ get_degree <- function(x) {
 #' @export
 #'
 #' @examples
-#' set.seed(12345)
 #' param <- param.icm(inf.prob = 0.2, act.rate = 0.25)
 #' init <- init.icm(s.num = 500, i.num = 1)
 #' control <- control.icm(type = "SI", nsteps = 200, nsims = 1)
 #' mod1 <- icm(param, init, control)
-#' df <- as.data.frame(mod1, out = "vals")
+#' df <- as.data.frame(mod1)
 #' print(df)
 #' plot(mod1)
-#' mod1$control$nsteps
 #'
 #' mod2 <- truncate_sim(mod1, at = 150)
 #' df2 <- as.data.frame(mod2)
 #' print(df2)
 #' plot(mod2)
-#' mod2$control$nsteps
 #'
 truncate_sim <- function(x, at) {
 

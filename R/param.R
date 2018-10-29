@@ -383,13 +383,16 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
     }
   }
 
-
   ## Defaults and checks
   if (missing(act.rate)) {
     p$act.rate <- 1
   }
   p$vital <- ifelse(!missing(b.rate) | !missing(ds.rate) |
                     !missing(di.rate) | !missing(dr.rate), TRUE, FALSE)
+  if ("act.rate.m2" %in% names.dot.args) {
+    warning("act.rate.m2 parameter was entered. If using built-in models, only act.rate parameter will apply.",
+            call. = FALSE)
+  }
 
 
   if (!is.null(p$inter.eff) && is.null(p$inter.start)) {
