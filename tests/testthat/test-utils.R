@@ -137,12 +137,12 @@ test_that("bipvals", {
 
 test_that("check_bip_degdist", {
   expect_output(check_bip_degdist(num.m1 = 500, num.m2 = 500,
-                    deg.dist.m2 = c(0.40, 0.55, 0.03, 0.02),
-                    deg.dist.m1 = c(0.48, 0.41, 0.08, 0.03)),
+                                  deg.dist.m2 = c(0.40, 0.55, 0.03, 0.02),
+                                  deg.dist.m1 = c(0.48, 0.41, 0.08, 0.03)),
                 "-0.015 Rel Diff")
   expect_output(check_bip_degdist(num.m1 = 500, num.m2 = 500,
-                    deg.dist.m1 = c(0.40, 0.55, 0.04, 0.01),
-                    deg.dist.m2 = c(0.48, 0.41, 0.08, 0.03)),
+                                  deg.dist.m1 = c(0.40, 0.55, 0.04, 0.01),
+                                  deg.dist.m2 = c(0.48, 0.41, 0.08, 0.03)),
                 "Edges balanced")
   expect_output(check_bip_degdist(num.m1 = 500, num.m2 = 500,
                                   deg.dist.m1 = c(0.45, 0.55, 0.04, 0.01),
@@ -189,22 +189,13 @@ test_that("get_degree", {
   all.equal(ergm.method, deg.net, deg.el)
 })
 
-<<<<<<< HEAD
 test_that("dissolution_coefs returns appropriate error for incompatible departure rate",{
-=======
-test_that("dissolution_coefs returns appropriate error for incompatible death rate",{
   #Dividing by zero:
   d.rate_ <- round(1-sqrt(59/60), 5)
-  err.msg <- paste("The competing risk of death is too high for the given", 
-                   " duration of ", 60, "; specify a d.rate lower than ", 
+  err.msg <- paste("The competing risk of departure is too high for the given",
+                   " duration of ", 60, "; specify a d.rate lower than ",
                    d.rate_,".",sep="")
->>>>>>> master
   dissolution = ~offset(edges)
-  d.rate_ <- round(1-sqrt(59/60), 5)
-  duration <- 60
-  err.msg <- paste("The competing risk of mortality is too high for the given", 
-                   " duration of ", duration[1], "; specify a d.rate lower than ", 
-                   d.rate_,".",sep="")
   expect_that(dissolution_coefs(dissolution, duration = 60, d.rate = 1/60), throws_error(err.msg))
   expect_that(dissolution_coefs(dissolution, duration = 60, d.rate = 0.01), throws_error(err.msg))
 })

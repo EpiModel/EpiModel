@@ -10,7 +10,7 @@ test_that("PIDs for one-mode models", {
   est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 
   param <- param.net(inf.prob = 0.1, rec.rate = 0.02,
-                     b.rate = 0.01, ds.rate = 0.01, di.rate = 0.01)
+                     a.rate = 0.01, ds.rate = 0.01, di.rate = 0.01)
   init <- init.net(i.num = 10)
 
   # Use pids
@@ -38,8 +38,8 @@ test_that("PIDs for bipartite models", {
   est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 
   param <- param.net(inf.prob = 0.1, inf.prob.m2 = 0.1,
-                     b.rate = 0.01, ds.rate = 0.01, di.rate = 0.01,
-                     b.rate.m2 = 0.01, ds.rate.m2 = 0.01, di.rate.m2 = 0.01)
+                     a.rate = 0.01, ds.rate = 0.01, di.rate = 0.01,
+                     a.rate.m2 = 0.01, ds.rate.m2 = 0.01, di.rate.m2 = 0.01)
   init <- init.net(i.num = 10, i.num.m2 = 10)
 
   # Use pids

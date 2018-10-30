@@ -296,7 +296,7 @@ test_that("High departure rate models", {
                 coef.diss = dissolution_coefs(~offset(edges), 10, 0.01),
                 edapprox = TRUE, verbose = FALSE)
   param <- param.net(inf.prob = 0.5, act.rate = 2,
-                     b.rate = 0.01, ds.rate = 0.5,
+                     a.rate = 0.01, ds.rate = 0.5,
                      di.rate = 0.25)
   init <- init.net(i.num = 10)
   control <- control.net(type = "SI", nsteps = 25,
@@ -315,7 +315,7 @@ test_that("High departure rate models", {
   rm(x)
 
   ## "netsim: 1M, di.rate = 0.5"
-  param <- param.net(inf.prob = 0.1, act.rate = 2, b.rate = 0.01,
+  param <- param.net(inf.prob = 0.1, act.rate = 2, a.rate = 0.01,
                      ds.rate = 0.01, di.rate = 0.5)
   init <- init.net(i.num = 10)
   control <- control.net(type = "SI", nsteps = 25,
@@ -443,7 +443,7 @@ test_that("Open population 1 mode models", {
                     verbose = FALSE)
 
   ## "SI, 1M, OP: 1 sim"
-  param <- param.net(inf.prob = 0.5, act.rate = 2, b.rate = 0.02,
+  param <- param.net(inf.prob = 0.5, act.rate = 2, a.rate = 0.02,
                      ds.rate = 0.02, di.rate = 0.02)
   init <- init.net(i.num = 10)
   control <- control.net(type = "SI", nsteps = 10, nsims = 1,
@@ -465,7 +465,7 @@ test_that("Open population 1 mode models", {
   init <- init.net(i.num = 10)
   control <- control.net(type = "SI", nsteps = 25, nsims = 1,
                          verbose = FALSE, tea.status = FALSE,
-                         b.rand = FALSE, d.rand = FALSE)
+                         a.rand = FALSE, d.rand = FALSE)
   x <- netsim(est.vit, param, init, control)
   expect_is(x, "netsim")
   expect_is(as.data.frame(x), "data.frame")
@@ -475,7 +475,7 @@ test_that("Open population 1 mode models", {
   rm(x)
 
   ## "SI, 1M, OP: 2 sim"
-  param <- param.net(inf.prob = 0.5, act.rate = 2, b.rate = 0.02,
+  param <- param.net(inf.prob = 0.5, act.rate = 2, a.rate = 0.02,
                      ds.rate = 0.02, di.rate = 0.02)
   init <- init.net(i.num = 10)
   control <- control.net(type = "SI", nsteps = 10,
@@ -495,7 +495,7 @@ test_that("Open population 1 mode models", {
 
   ## "SIR, 1M OP: 1 sim"
   param <- param.net(inf.prob = 0.5, rec.rate = 0.1, act.rate = 2,
-                     b.rate = 0.02, ds.rate = 0.02, di.rate = 0.02,
+                     a.rate = 0.02, ds.rate = 0.02, di.rate = 0.02,
                      dr.rate = 0.02)
   init <- init.net(i.num = 10, r.num = 0)
   control <- control.net(type = "SIR", nsteps = 10, nsims = 1,
@@ -518,7 +518,7 @@ test_that("Open population 1 mode models", {
   init <- init.net(i.num = 10, r.num = 0)
   control <- control.net(type = "SIR", nsteps = 25, nsims = 1,
                          verbose = FALSE, tea.status = FALSE,
-                         b.rand = FALSE, d.rand = FALSE, rec.rand = FALSE)
+                         a.rand = FALSE, d.rand = FALSE, rec.rand = FALSE)
   x <- netsim(est.vit, param, init, control)
   expect_is(x, "netsim")
   expect_is(as.data.frame(x), "data.frame")
@@ -613,7 +613,7 @@ test_that("Open-population bipartite models", {
   init <- init.net(i.num = 10, i.num.m2 = 10)
   control <- control.net(type = "SI", nsteps = 25, nsims = 1,
                          verbose = FALSE, tea.status = FALSE,
-                         b.rand = FALSE, d.rand = FALSE)
+                         a.rand = FALSE, d.rand = FALSE)
   x <- netsim(est5.vit, param, init, control)
   expect_is(x, "netsim")
   expect_is(as.data.frame(x), "data.frame")
@@ -672,7 +672,7 @@ test_that("Open-population bipartite models", {
                    r.num = 0, r.num.m2 = 10)
   control <- control.net(type = "SIR", nsteps = 10, nsims = 1,
                          verbose = FALSE, tea.status = FALSE,
-                         b.rand = FALSE, d.rand = FALSE, rec.rand = FALSE)
+                         a.rand = FALSE, d.rand = FALSE, rec.rand = FALSE)
   x <- netsim(est5.vit, param, init, control)
   expect_is(x, "netsim")
   expect_is(as.data.frame(x), "data.frame")

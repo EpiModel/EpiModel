@@ -119,7 +119,7 @@ test_that("SI, 2G, CL: varying inf.prob", {
 test_that("SI, 1G, OP: 1 run", {
   skip_on_cran()
   param <- param.dcm(inf.prob = 0.2, act.rate = 0.25,
-                     b.rate = 1 / 100, ds.rate = 1 / 100, di.rate = 1 / 90)
+                     a.rate = 1 / 100, ds.rate = 1 / 100, di.rate = 1 / 90)
   init <- init.dcm(s.num = 500, i.num = 1)
   control <- control.dcm(type = "SI", nsteps = 500, verbose = FALSE)
   x <- dcm(param, init, control)
@@ -134,7 +134,7 @@ test_that("SI, 1G, OP: 1 run", {
 test_that("SI, 1G, OP: varying inf.prob", {
   skip_on_cran()
   param <- param.dcm(inf.prob = seq(0.1, 0.5, 0.05),
-                     act.rate = 0.25, b.rate = 1 / 100,
+                     act.rate = 0.25, a.rate = 1 / 100,
                      ds.rate = 1 / 100, di.rate = 1 / 90)
   init <- init.dcm(s.num = 500, i.num = 1)
   control <- control.dcm(type = "SI", nsteps = 500, verbose = FALSE)
@@ -151,7 +151,7 @@ test_that("SI, 2G, OP: 1 run", {
   skip_on_cran()
   param <- param.dcm(inf.prob = 0.2,
                      act.rate = 0.25, inf.prob.g2 = 0.1, balance = "g1",
-                     b.rate = 1 / 100, b.rate.g2 = NA, ds.rate = 1 / 100,
+                     a.rate = 1 / 100, a.rate.g2 = NA, ds.rate = 1 / 100,
                      ds.rate.g2 = 1 / 100, di.rate = 1 / 90, di.rate.g2 = 1 / 90)
   init <- init.dcm(s.num = 500, i.num = 1, s.num.g2 = 500, i.num.g2 = 0)
   control <- control.dcm(type = "SI", nsteps = 500, verbose = FALSE)
@@ -170,7 +170,7 @@ test_that("SI, 2G, OP: varying inf.prob", {
   skip_on_cran()
   param <- param.dcm(inf.prob = seq(0.1, 0.5, 0.05),
                      act.rate = 0.25, inf.prob.g2 = 0.1, balance = "g1",
-                     b.rate = 1 / 100, b.rate.g2 = NA, ds.rate = 1 / 100,
+                     a.rate = 1 / 100, a.rate.g2 = NA, ds.rate = 1 / 100,
                      ds.rate.g2 = 1 / 100, di.rate = 1 / 90, di.rate.g2 = 1 / 90)
   init <- init.dcm(s.num = 500, i.num = 1, s.num.g2 = 500, i.num.g2 = 0)
   control <- control.dcm(type = "SI", nsteps = 500, verbose = FALSE)
@@ -259,7 +259,7 @@ test_that("SIR, 2G, CL: varying inf.prob", {
 test_that("SIR, 1G, OP: 1 run", {
   skip_on_cran()
   param <- param.dcm(inf.prob = 0.2,
-                     act.rate = 2, rec.rate = 1 / 50, b.rate = 1 / 100,
+                     act.rate = 2, rec.rate = 1 / 50, a.rate = 1 / 100,
                      ds.rate = 1 / 100, di.rate = 1 / 90, dr.rate = 1 / 100)
   init <- init.dcm(s.num = 500, i.num = 1, r.num = 0)
   control <- control.dcm(type = "SIR", nsteps = 500, verbose = FALSE)
@@ -274,7 +274,7 @@ test_that("SIR, 1G, OP: 1 run", {
 test_that("SIR, 1G, OP: varying inf.prob", {
   skip_on_cran()
   param <- param.dcm(inf.prob = seq(0.1, 0.5, 0.05),
-                     act.rate = 1, rec.rate = 1 / 50, b.rate = 1 / 100,
+                     act.rate = 1, rec.rate = 1 / 50, a.rate = 1 / 100,
                      ds.rate = 1 / 100, di.rate = 1 / 90, dr.rate = 1 / 100)
   init <- init.dcm(s.num = 500, i.num = 1, r.num = 0)
   control <- control.dcm(type = "SIR", nsteps = 500, verbose = FALSE)
@@ -292,7 +292,7 @@ test_that("SIR, 2G, OP: 1 run", {
   param <- param.dcm(inf.prob = 0.2, inf.prob.g2 = 0.1,
                      act.rate = 1, balance = "g1",
                      rec.rate = 1 / 50, rec.rate.g2 = 1 / 50,
-                     b.rate = 1 / 100, b.rate.g2 = NA,
+                     a.rate = 1 / 100, a.rate.g2 = NA,
                      ds.rate = 1 / 100, ds.rate.g2 = 1 / 100,
                      di.rate = 1 / 90, di.rate.g2 = 1 / 90,
                      dr.rate = 1 / 100, dr.rate.g2 = 1 / 100)
@@ -313,7 +313,7 @@ test_that("SIR, 2G, OP: varying inf.prob", {
   param <- param.dcm(inf.prob = seq(0.1, 0.5, 0.05), inf.prob.g2 = 0.1,
                      act.rate = 1, balance = "g1",
                      rec.rate = 1 / 50, rec.rate.g2 = 1 / 50,
-                     b.rate = 1 / 100, b.rate.g2 = NA,
+                     a.rate = 1 / 100, a.rate.g2 = NA,
                      ds.rate = 1 / 100, ds.rate.g2 = 1 / 100,
                      di.rate = 1 / 90, di.rate.g2 = 1 / 90,
                      dr.rate = 1 / 100, dr.rate.g2 = 1 / 100)
@@ -409,7 +409,7 @@ test_that("SIS, 1G, OP: 1 run", {
   skip_on_cran()
   param <- param.dcm(inf.prob = 0.2,
                      act.rate = 0.5, rec.rate = 1 / 50,
-                     b.rate = 1 / 100, ds.rate = 1 / 100, di.rate = 1 / 90)
+                     a.rate = 1 / 100, ds.rate = 1 / 100, di.rate = 1 / 90)
   init <- init.dcm(s.num = 500, i.num = 1)
   control <- control.dcm(type = "SIS", nsteps = 500, verbose = FALSE)
   x <- dcm(param, init, control)
@@ -424,7 +424,7 @@ test_that("SIS, 1G, OP: varying inf.prob", {
   skip_on_cran()
   param <- param.dcm(inf.prob = seq(0.1, 0.9, 0.1),
                      act.rate = 0.5, rec.rate = 1 / 50,
-                     b.rate = 1 / 100, ds.rate = 1 / 100, di.rate = 1 / 90)
+                     a.rate = 1 / 100, ds.rate = 1 / 100, di.rate = 1 / 90)
   init <- init.dcm(s.num = 500, i.num = 1)
   control <- control.dcm(type = "SIS", nsteps = 500, verbose = FALSE)
   x <- dcm(param, init, control)
@@ -441,7 +441,7 @@ test_that("SIS, 2G, OP: 1 run", {
   param <- param.dcm(inf.prob = 0.2,
                      inf.prob.g2 = 0.1, act.rate = 0.5,
                      balance = "g1", rec.rate = 1 / 50, rec.rate.g2 = 1 / 50,
-                     b.rate = 1 / 100, b.rate.g2 = NA, ds.rate = 1 / 100,
+                     a.rate = 1 / 100, a.rate.g2 = NA, ds.rate = 1 / 100,
                      ds.rate.g2 = 1 / 100, di.rate = 1 / 90, di.rate.g2 = 1 / 90)
   init <- init.dcm(s.num = 500, i.num = 1,
                    s.num.g2 = 500, i.num.g2 = 1)
@@ -460,7 +460,7 @@ test_that("SIS, 2G, OP: varying inf.prob", {
   param <- param.dcm(inf.prob = seq(0.1, 0.9, 0.1), inf.prob.g2 = 0.1,
                      act.rate = 0.5, balance = "g1",
                      rec.rate = 1 / 50, rec.rate.g2 = 1 / 50,
-                     b.rate = 1 / 100, b.rate.g2 = NA,
+                     a.rate = 1 / 100, a.rate.g2 = NA,
                      ds.rate = 1 / 100, ds.rate.g2 = 1 / 100,
                      di.rate = 1 / 90, di.rate.g2 = 1 / 90)
   init <- init.dcm(s.num = 500, i.num = 1,
@@ -485,7 +485,7 @@ test_that("SIS, 2G, OP: balance = g2", {
   param <- param.dcm(inf.prob = seq(0.1, 0.9, 0.1), inf.prob.g2 = 0.1,
                      act.rate.g2 = 0.5, balance = "g2",
                      rec.rate = 1 / 50, rec.rate.g2 = 1 / 50,
-                     b.rate = 1 / 100, b.rate.g2 = NA,
+                     a.rate = 1 / 100, a.rate.g2 = NA,
                      ds.rate = 1 / 100, ds.rate.g2 = 1 / 100,
                      di.rate = 1 / 90, di.rate.g2 = 1 / 90)
   init <- init.dcm(s.num = 5000, i.num = 1,
