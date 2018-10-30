@@ -1,4 +1,3 @@
-
 # Exported Functions ------------------------------------------------------
 
 #' @title Vertex Attributes for Bipartite Network
@@ -19,13 +18,13 @@
 #' bipvals(nw, mode = 1, "male")
 #'
 bipvals <- function(nw, mode, val) {
-    if (!is.numeric(nw$gal$bipartite)) {
+  if (!is.numeric(nw$gal$bipartite)) {
     stop("nw must be a bipartite network", call. = FALSE)
   }
   if (missing(mode)) {
     stop("Specify mode=1 or mode=2", call. = FALSE)
   }
-    nw %s% modeids(nw, mode) %v% val
+  nw %s% modeids(nw, mode) %v% val
 }
 
 
@@ -80,7 +79,7 @@ bipvals <- function(nw, mode, val) {
 #'
 calc_eql <- function(x, numer = "i.num", denom = "num",
                      nsteps, threshold = 0.001, digits = 4, invisible = FALSE) {
-    if (!(class(x) %in% c("dcm", "icm", "netsim"))) {
+  if (!(class(x) %in% c("dcm", "icm", "netsim"))) {
     stop("x must an object of class dcm, icm, or netsim", call. = FALSE)
   }
   # Change scipen based on digits
@@ -436,57 +435,22 @@ dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
     ps2 <- (1 - d.rate) ^ 2
     coef.crude <- log(pg / (1 - pg))
     if (ps2 <= pg) {
-<<<<<<< HEAD
-        d.rate_ <- round(1-sqrt(pg),5)
-        str <- paste("The competing risk of departure is too high for the given", 
-        " duration of ", duration[1], "; specify a d.rate lower than ", 
-        d.rate_,".",sep="")
-        stop(str, call. = FALSE)
-=======
       d.rate_ <- round(1-sqrt(pg),5)
-      str <- paste("The competing risk of death is too high for the given",
+      str <- paste("The competing risk of departure is too high for the given",
                    " duration of ", duration[1], "; specify a d.rate lower than ",
                    d.rate_,".",sep="")
       stop(str, call. = FALSE)
->>>>>>> master
     }
     coef.adj <- log(pg / (ps2 - pg))
   }
   if (form.length == 2) {
-<<<<<<< HEAD
-   if (t2.term %in% c("nodematch", "nodefactor", "nodemix")) {
-
-     coef.crude <- coef.adj <- NA
-     for (i in 1:length(duration)) {
-
-       pg.thetaX <- (duration[i] - 1) / duration[i]
-       ps2.thetaX <- (1 - d.rate) ^ 2
-       if (sqrt(ps2.thetaX) <= pg.thetaX) {
-         stop("The competing risk of departure is too high for the given the ",
-              "duration in place ", i, ". Specify a lower d.rate", call. = FALSE)
-       }
-       if (i == 1) {
-         coef.crude[i] <- log(pg.thetaX / (1 - pg.thetaX))
-         coef.adj[i] <- log(pg.thetaX / (ps2.thetaX - pg.thetaX))
-       } else {
-         coef.crude[i] <- log(pg.thetaX / (1 - pg.thetaX)) - coef.crude[1]
-         coef.adj[i] <- log(pg.thetaX / (ps2.thetaX - pg.thetaX)) - coef.adj[1]
-       }
-
-     }
-
-   } else {
-     stop("Supported heterogeneous dissolution model terms are nodematch, ",
-          "nodefactor, or nodemix", call. = FALSE)
-   }
-=======
     if (t2.term %in% c("nodematch", "nodefactor", "nodemix")) {
       coef.crude <- coef.adj <- NA
       for (i in 1:length(duration)) {
         pg.thetaX <- (duration[i] - 1) / duration[i]
         ps2.thetaX <- (1 - d.rate) ^ 2
         if (sqrt(ps2.thetaX) <= pg.thetaX) {
-          stop("The competing risk of death is too high for the given the ",
+          stop("The competing risk of departure is too high for the given the ",
                "duration in place ", i, ". Specify a lower d.rate", call. = FALSE)
         }
         if (i == 1) {
@@ -501,7 +465,6 @@ dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
       stop("Supported heterogeneous dissolution model terms are nodematch, ",
            "nodefactor, or nodemix", call. = FALSE)
     }
->>>>>>> master
   }
   out <- list()
   out$dissolution <- dissolution
@@ -793,33 +756,17 @@ modeids <- function(nw, mode) {
 #' @param val Fixed value to set for all incoming nodes.
 #' @param nCurrM1 Number currently in mode 1.
 #' @param nCurrM2 Number currently in mode 2.
-<<<<<<< HEAD
-#' @param nArrivals Number of arrivals/entries in mode 1.
-#' @param nArrivalsM2 Number of arrivals/entries in mode 2.
-=======
-#' @param nbirths Number of births/entries in mode 1.
-#' @param nbirthsM2 Number of births/entries in mode 2.
->>>>>>> master
+#' @param narrivals Number of arrivals/entries in mode 1.
+#' @param narrivalsM2 Number of arrivals/entries in mode 2.
 #'
 #' @export
 #' @keywords netUtils internal
 #'
-<<<<<<< HEAD
 split_bip <- function(dat, var, val, nCurrM1, nCurrM2, nArrivals, nArrivalsM2) {
-
   oldVarM1 <- dat$attr[[var]][1:nCurrM1]
   oldVarM2 <- dat$attr[[var]][(nCurrM1 + 1):(nCurrM1 + nCurrM2)]
-
   newVarM1 <- c(oldVarM1, rep(val, nArrivals))
   newVarM2 <- c(oldVarM2, rep(val, nArrivalsM2))
-
-=======
-split_bip <- function(dat, var, val, nCurrM1, nCurrM2, nBirths, nBirthsM2) {
-  oldVarM1 <- dat$attr[[var]][1:nCurrM1]
-  oldVarM2 <- dat$attr[[var]][(nCurrM1 + 1):(nCurrM1 + nCurrM2)]
-  newVarM1 <- c(oldVarM1, rep(val, nBirths))
-  newVarM2 <- c(oldVarM2, rep(val, nBirthsM2))
->>>>>>> master
   newVar <- c(newVarM1, newVarM2)
   dat$attr[[var]] <- newVar
   return(dat)
