@@ -12,10 +12,10 @@
 
 \item{collapse.singles}{logical, DEPRECATED}
 
-\item{vertex.exit.times}{optional numeric vector providing the time of death
+\item{vertex.exit.times}{optional numeric vector providing the time of departure
 of vertices, to be used to scale the lengths of branches reaching to
 the tips. Index position on vector corresponds to network id. NA indicates
-no death, so branch will extend to the end of the tree.}
+no departure, so branch will extend to the end of the tree.}
 
 \item{...}{further arguments (unused)}
 }

@@ -4,8 +4,8 @@
 \alias{param.net}
 \title{Epidemic Parameters for Stochastic Network Models}
 \usage{
-param.net(inf.prob, inter.eff, inter.start, act.rate, rec.rate, b.rate,
-  ds.rate, di.rate, dr.rate, inf.prob.m2, rec.rate.m2, b.rate.m2,
+param.net(inf.prob, inter.eff, inter.start, act.rate, rec.rate, a.rate,
+  ds.rate, di.rate, dr.rate, inf.prob.m2, rec.rate.m2, a.rate.m2,
   ds.rate.m2, di.rate.m2, dr.rate.m2, ...)
 }
 \arguments{
@@ -37,19 +37,19 @@ recovery rate for mode 1 persons only. This parameter is only used for
 of rates, with each element corresponding to the rate in that time step
 of infection (see Time-Varying Parameters below).}
 
-\item{b.rate}{Birth or entry rate. For one-mode models, the birth rate is the
-rate of new births per person per unit time. For bipartite models, the
-birth rate may be parameterized as a rate per mode 1 person time (with
-mode 1 persons representing females), and with the \code{b.rate.g2}
+\item{a.rate}{Arrival or entry rate. For one-mode models, the arrival rate is the
+rate of new arrivals per person per unit time. For bipartite models, the
+arrival rate may be parameterized as a rate per mode 1 person time (with
+mode 1 persons representing females), and with the \code{a.rate.g2}
 rate set as described below.}
 
-\item{ds.rate}{Death or exit rate for susceptible. For bipartite models, it
+\item{ds.rate}{Departure or exit rate for susceptible. For bipartite models, it
 is the rate for the mode 1 susceptible only.}
 
-\item{di.rate}{Death or exit rate for infected. For bipartite models, it is
+\item{di.rate}{Departure or exit rate for infected. For bipartite models, it is
 the rate for the mode 1 infected only.}
 
-\item{dr.rate}{Death or exit rate for recovered. For bipartite models, it is
+\item{dr.rate}{Departure or exit rate for recovered. For bipartite models, it is
 the rate for the mode 1 recovered only. This parameter is only used for
 \code{SIR} models.}
 
@@ -61,18 +61,18 @@ It is the probability of transmission to mode 2 members.}
 or re-susceptibility (in \code{SIS} models) for mode 2 persons. This
 parameter is only used for bipartite \code{SIR} and \code{SIS} models.}
 
-\item{b.rate.m2}{Birth or entry rate for mode 2. This may either be specified
-numerically as the rate of new births per mode 2 persons per unit time,
-or as \code{NA} in which case the mode 1 rate, \code{b.rate}, governs
+\item{a.rate.m2}{Arrival or entry rate for mode 2. This may either be specified
+numerically as the rate of new arrivals per mode 2 persons per unit time,
+or as \code{NA} in which case the mode 1 rate, \code{a.rate}, governs
 the mode 2 rate. The latter is used when, for example, the first mode
 is conceptualized as female, and the female population size determines
-the birth rate. Such births are evenly allocated between the two modes.}
+the arrival rate. Such arrivalss are evenly allocated between the two modes.}
 
-\item{ds.rate.m2}{Death or exit rate for mode 2 susceptible.}
+\item{ds.rate.m2}{Departure or exit rate for mode 2 susceptible.}
 
-\item{di.rate.m2}{Death or exit rate for mode 2 infected.}
+\item{di.rate.m2}{Departure or exit rate for mode 2 infected.}
 
-\item{dr.rate.m2}{Death or exit rate for mode 2 recovered. This parameter is
+\item{dr.rate.m2}{Departure or exit rate for mode 2 recovered. This parameter is
 only used for \code{SIR} model types.}
 
 \item{...}{Additional arguments passed to model.}

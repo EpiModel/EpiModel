@@ -60,19 +60,19 @@ also calculate summary flow measures such as disease incidence.
 
 \section{Demographic Modules}{
 
-Demographics such as birth and death processes are simulated at each time
+Demographics such as arrival and departure processes are simulated at each time
 step to update entries into and exits from the network. These are used in
 dependent network models, in which the network is resimulated at each time
 step to account for the nodal changes affecting the edges.
 \itemize{
- \item \code{\link{deaths.net}}: randomly simulates death for nodes given
+ \item \code{\link{departures.net}}: randomly simulates departure for nodes given
        their disease status (susceptible, infected, recovered), and their
-       mode-specific death rates specified in \code{\link{param.net}}. Deaths
+       mode-specific departure rates specified in \code{\link{param.net}}. departures
        involve deactivating nodes, which are then deleted from the network
        if \code{delete.nodes=TRUE} is set in \code{\link{control.net}}.
- \item \code{\link{births.net}}: randomly simulates new births into the network
-       given the current population size and the birth rate specified in the
-       \code{b.rate} parameters. This involves adding new nodes into the network.
+ \item \code{\link{arrivals.net}}: randomly simulates new arrivals into the network
+       given the current population size and the arrival rate specified in the
+       \code{a.rate} parameters. This involves adding new nodes into the network.
 }
 }
 

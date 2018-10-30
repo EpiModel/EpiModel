@@ -4,7 +4,7 @@
 \alias{split_bip}
 \title{Update Attribute Values for a Bipartite Network}
 \usage{
-split_bip(dat, var, val, nCurrM1, nCurrM2, nBirths, nBirthsM2)
+split_bip(dat, var, val, nCurrM1, nCurrM2, nArrivals, nArrivalsM2)
 }
 \arguments{
 \item{dat}{Master data object passed through \code{netsim} simulations.}
@@ -17,13 +17,13 @@ split_bip(dat, var, val, nCurrM1, nCurrM2, nBirths, nBirthsM2)
 
 \item{nCurrM2}{Number currently in mode 2.}
 
-\item{nbirths}{Number of births/entries in mode 1.}
+\item{narrivals}{Number of arrivals/entries in mode 1.}
 
-\item{nbirthsM2}{Number of births/entries in mode 2.}
+\item{narrivalsM2}{Number of arrivals/entries in mode 2.}
 }
 \description{
 Adds new values for attributes in a bipartite network in which
-             there may be births/entries in the first mode, which requires
+             there may be arrivals/entries in the first mode, which requires
              splitting the attribute vector into two, adding the new values,
              and re-concatenating the two updated vectors.
 }
