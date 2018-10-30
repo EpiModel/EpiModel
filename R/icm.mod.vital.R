@@ -175,7 +175,7 @@ arrivals.icm <- function(dat, at) {
   # Variables ---------------------------------------------------------------
   a.rate <- dat$param$a.rate
   a.rate.g2 <- dat$param$a.rate.g2
-  b.rand <- dat$control$b.rand
+  a.rand <- dat$control$a.rand
   groups <- dat$param$groups
   nOld <- dat$epi$num[at - 1]
 
@@ -184,16 +184,16 @@ arrivals.icm <- function(dat, at) {
   nArrivals <- nArrivalsG2 <- 0
 
   if (groups == 1) {
-    if (b.rand == TRUE) {
+    if (a.rand == TRUE) {
       nArrivals <- sum(rbinom(nOld, 1, a.rate))
     }
-    if (b.rand == FALSE) {
+    if (a.rand == FALSE) {
       nArrivals <- round(nOld * a.rate)
     }
   }
   if (groups == 2) {
     nOldG2 <- dat$epi$num.g2[at - 1]
-    if (b.rand == TRUE) {
+    if (a.rand == TRUE) {
       if (is.na(a.rate.g2)) {
         nArrivals <- sum(rbinom(nOld, 1, a.rate))
         nArrivalsG2 <- sum(rbinom(nOld, 1, a.rate))
@@ -202,7 +202,7 @@ arrivals.icm <- function(dat, at) {
         nArrivalsG2 <- sum(rbinom(nOldG2, 1, a.rate.g2))
       }
     }
-    if (b.rand == FALSE) {
+    if (a.rand == FALSE) {
       if (is.na(a.rate.g2)) {
         nArrivals <- round(nOld * a.rate)
         nArrivalsG2 <- round(nOld * a.rate)

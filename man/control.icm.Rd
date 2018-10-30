@@ -4,7 +4,7 @@
 \alias{control.icm}
 \title{Control Settings for Stochastic Individual Contact Models}
 \usage{
-control.icm(type, nsteps, nsims = 1, rec.rand = TRUE, b.rand = TRUE,
+control.icm(type, nsteps, nsims = 1, rec.rand = TRUE, a.rand = TRUE,
   d.rand = TRUE, initialize.FUN = initialize.icm,
   infection.FUN = infection.icm, recovery.FUN = recovery.icm,
   departures.FUN = departures.icm, arrivals.FUN = arrivals.icm,
@@ -28,7 +28,7 @@ a binomial distribution with the probability equal to \code{rec.rate}.
 If \code{FALSE}, then a deterministic rounded count of the expectation
 implied by that rate.}
 
-\item{b.rand}{If \code{TRUE}, use a stochastic arrival model, with the
+\item{a.rand}{If \code{TRUE}, use a stochastic arrival model, with the
 number of arrivals at each time step a function of random draws from a
 binomial distribution with the probability equal to the governing arrival
 rates. If \code{FALSE}, then a deterministic rounded count of the

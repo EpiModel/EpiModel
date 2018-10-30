@@ -240,7 +240,7 @@ arrivals.net <- function(dat, at) {
   tea.status <- dat$control$tea.status
   nOld <- dat$epi$num[at - 1]
   nCurr <- network.size(dat$nw)
-  b.rand <- dat$control$b.rand
+  a.rand <- dat$control$a.rand
   delete.nodes <- dat$control$delete.nodes
 
   nArrivals <- nArrivalsM2 <- 0
@@ -249,10 +249,10 @@ arrivals.net <- function(dat, at) {
 
   # Add Nodes ---------------------------------------------------------------
   if (modes == 1 && nOld > 0) {
-    if (b.rand == TRUE) {
+    if (a.rand == TRUE) {
       nArrivals <- sum(rbinom(nOld, 1, a.rate))
     }
-    if (b.rand == FALSE) {
+    if (a.rand == FALSE) {
       nArrivals <- round(nOld * a.rate)
     }
     if (nArrivals > 0) {
@@ -263,7 +263,7 @@ arrivals.net <- function(dat, at) {
   }
   if (modes == 2 && nOld > 0) {
     nOldM2 <- dat$epi$num.m2[at - 1]
-    if (b.rand == TRUE) {
+    if (a.rand == TRUE) {
       if (is.na(a.rate.m2)) {
         nArrivals <- sum(rbinom(nOld, 1, a.rate))
         nArrivalsM2 <- sum(rbinom(nOld, 1, a.rate))
@@ -272,7 +272,7 @@ arrivals.net <- function(dat, at) {
         nArrivalsM2 <- sum(rbinom(nOldM2, 1, a.rate.m2))
       }
     }
-    if (b.rand == FALSE) {
+    if (a.rand == FALSE) {
       if (is.na(a.rate.m2)) {
         nArrivals <- round(nOld * a.rate)
         nArrivalsM2 <- round(nOld * a.rate)

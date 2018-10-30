@@ -117,7 +117,7 @@ control.dcm <- function(type, nsteps, dt = 1, odemethod = "rk4",
 #'        a binomial distribution with the probability equal to \code{rec.rate}.
 #'        If \code{FALSE}, then a deterministic rounded count of the expectation
 #'        implied by that rate.
-#' @param b.rand If \code{TRUE}, use a stochastic arrival model, with the
+#' @param a.rand If \code{TRUE}, use a stochastic arrival model, with the
 #'        number of arrivals at each time step a function of random draws from a
 #'        binomial distribution with the probability equal to the governing arrival
 #'        rates. If \code{FALSE}, then a deterministic rounded count of the
@@ -180,7 +180,7 @@ control.dcm <- function(type, nsteps, dt = 1, odemethod = "rk4",
 #'
 #' @export
 #'
-control.icm <- function(type, nsteps, nsims = 1, rec.rand = TRUE, b.rand = TRUE,
+control.icm <- function(type, nsteps, nsims = 1, rec.rand = TRUE, a.rand = TRUE,
                         d.rand = TRUE, initialize.FUN = initialize.icm,
                         infection.FUN = infection.icm, recovery.FUN = recovery.icm,
                         departures.FUN = departures.icm, arrivals.FUN = arrivals.icm,
@@ -255,7 +255,7 @@ control.icm <- function(type, nsteps, nsims = 1, rec.rand = TRUE, b.rand = TRUE,
 #'        a binomial distribution with the probability equal to \code{rec.rate}.
 #'        If \code{FALSE}, then a deterministic rounded count of the expectation
 #'        implied by that rate.
-#' @param b.rand If \code{TRUE}, use a stochastic arrival model, with the
+#' @param a.rand If \code{TRUE}, use a stochastic arrival model, with the
 #'        number of arrivals at each time step a function of random draws from a
 #'        binomial distribution with the probability equal to the governing arrival
 #'        rates. If \code{FALSE}, then a deterministic rounded count of the
@@ -288,7 +288,7 @@ control.icm <- function(type, nsteps, nsims = 1, rec.rand = TRUE, b.rand = TRUE,
 #' @param initialize.FUN Module to initialize the model at time 1, with the
 #'        default function of \code{\link{initialize.net}}.
 #' @param departures.FUN Module to simulate departure or exit, with the default function
-#'        of \code{\link{departure.net}}.
+#'        of \code{\link{departures.net}}.
 #' @param arrivals.FUN Module to simulate arrivals or entries, with the default
 #'        function of \code{\link{arrivals.net}}.
 #' @param recovery.FUN Module to simulate disease recovery, with the default
@@ -405,7 +405,7 @@ control.icm <- function(type, nsteps, nsims = 1, rec.rand = TRUE, b.rand = TRUE,
 #'
 control.net <- function(type, nsteps, start = 1, nsims = 1, ncores = 1,
                         depend, rec.rand = TRUE,
-                        b.rand = TRUE, d.rand = TRUE, tea.status = TRUE,
+                        a.rand = TRUE, d.rand = TRUE, tea.status = TRUE,
                         attr.rules, epi.by, use.pids = TRUE, pid.prefix,
                         initialize.FUN = initialize.net, departures.FUN = departures.net,
                         arrivals.FUN = arrivals.net, recovery.FUN = recovery.net,

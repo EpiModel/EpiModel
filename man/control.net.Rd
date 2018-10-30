@@ -5,7 +5,7 @@
 \title{Control Settings for Stochastic Network Models}
 \usage{
 control.net(type, nsteps, start = 1, nsims = 1, ncores = 1, depend,
-  rec.rand = TRUE, b.rand = TRUE, d.rand = TRUE, tea.status = TRUE,
+  rec.rand = TRUE, a.rand = TRUE, d.rand = TRUE, tea.status = TRUE,
   attr.rules, epi.by, use.pids = TRUE, pid.prefix,
   initialize.FUN = initialize.net, departures.FUN = departures.net,
   arrivals.FUN = arrivals.net, recovery.FUN = recovery.net,
@@ -50,7 +50,7 @@ a binomial distribution with the probability equal to \code{rec.rate}.
 If \code{FALSE}, then a deterministic rounded count of the expectation
 implied by that rate.}
 
-\item{b.rand}{If \code{TRUE}, use a stochastic arrival model, with the
+\item{a.rand}{If \code{TRUE}, use a stochastic arrival model, with the
 number of arrivals at each time step a function of random draws from a
 binomial distribution with the probability equal to the governing arrival
 rates. If \code{FALSE}, then a deterministic rounded count of the
@@ -91,7 +91,7 @@ default of \code{c("F", "M")}.}
 default function of \code{\link{initialize.net}}.}
 
 \item{departures.FUN}{Module to simulate departure or exit, with the default function
-of \code{\link{departure.net}}.}
+of \code{\link{departures.net}}.}
 
 \item{arrivals.FUN}{Module to simulate arrivals or entries, with the default
 function of \code{\link{arrivals.net}}.}
