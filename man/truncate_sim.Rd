@@ -29,10 +29,12 @@ mod1 <- icm(param, init, control)
 df <- as.data.frame(mod1)
 print(df)
 plot(mod1)
+mod1$control$nsteps
 
 mod2 <- truncate_sim(mod1, at = 150)
 df2 <- as.data.frame(mod2)
 print(df2)
 plot(mod2)
+mod2$control$nsteps
 
 }
