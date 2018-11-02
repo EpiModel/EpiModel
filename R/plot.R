@@ -491,6 +491,7 @@ plot.dcm <- function(x, y, popfrac = FALSE, run, col, lwd, lty, alpha = 0.9,
 #' plot(mod2, y = "si.flow", mean.smooth = TRUE, grid = TRUE)
 #' plot(mod2, y = "si.flow", qnts.smooth = FALSE, qnts = 1)
 #'
+
 plot.icm <- function(x, y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col, sim.lwd,
                      sim.alpha, mean.line = TRUE, mean.smooth = TRUE,
                      mean.col, mean.lwd = 2, mean.lty = 1, qnts = 0.5, qnts.col,
@@ -622,11 +623,65 @@ plot.icm <- function(x, y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col, si
   } else {
     xlim <- da$xlim
   }
-  if (is.null(da$ylim)) {
-    ylim <- c(0, max.prev)
+
+  #Initialize ylim max values
+  qnt.max <- 0
+  mean.max <- 0
+
+  ## Quantiles - ylim max ##
+  if (missing(qnts) || qnts == FALSE) {
+    disp.qnts <- FALSE
   } else {
+    disp.qnts <- TRUE
+  }
+  if (nsims == 1) {
+    disp.qnts <- FALSE
+  }
+  if (modes == 1 & missing(qnts)) {
+    disp.qnts <- TRUE
+    qnts <- 0.5
+  }
+  if (disp.qnts == TRUE) {
+    if (qnts > 1 | qnts < 0) {
+      stop("qnts must be between 0 and 1", call. = FALSE)
+    }
+    qnt.max <- draw_qnts(x, y, qnts, qnts.pal, qnts.smooth, "epi", 0)
+  }
+
+  ## Mean lines - ylim max ##
+  if (mean.line == TRUE) {
+
+    if (!missing(mean.lwd) && length(mean.lwd) < lcomp) {
+      mean.lwd <- rep(mean.lwd, lcomp)
+    }
+    if (missing(mean.lwd)) {
+      mean.lwd <- rep(2.5, lcomp)
+    }
+
+    if (!missing(mean.lty) && length(mean.lty) < lcomp) {
+      mean.lty <- rep(mean.lty, lcomp)
+    }
+    if (missing(mean.lty)) {
+      if (nocomp == FALSE || (nocomp == TRUE && modes == 1)) {
+        mean.lty <- rep(1, lcomp)
+      } else {
+        mean.lty <- rep(1:2, each = lcomp / 2)
+      }
+    }
+    mean.max <- draw_means(x, y, mean.smooth, mean.lwd, mean.pal, mean.lty, "epi", 0)
+  }
+
+  #Dynamic scaling based on sim.lines and smoothed or unsmoothed mean lines and quantile bands
+  if (is.null(da$ylim) & sim.lines == TRUE) {
+    #ylim <- c(0, max(qnt.max,mean.max,max.prev))
+    ylim <- c(0, max.prev)
+  } else if (is.null(da$ylim) & sim.lines == FALSE) {
+    ylim <- c(0, max(qnt.max * 1.1, mean.max * 1.1))
+  }
+  else {
     ylim <- da$ylim
   }
+
   if (is.null(da$main)) {
     main <- ""
   } else {
@@ -657,7 +712,7 @@ plot.icm <- function(x, y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col, si
   }
 
 
-  ## Quantiles ##
+  ## Quantiles - Plotting ##
   if (missing(qnts) || qnts == FALSE) {
     disp.qnts <- FALSE
   } else {
@@ -677,7 +732,6 @@ plot.icm <- function(x, y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col, si
     draw_qnts(x, y, qnts, qnts.pal, qnts.smooth)
   }
 
-
   ## Simulation lines ##
   if (sim.lines == TRUE) {
     for (j in seq_len(lcomp)) {
@@ -688,7 +742,7 @@ plot.icm <- function(x, y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col, si
   }
 
 
-  ## Mean lines ##
+  ## Mean lines - plotting ##
   if (mean.line == TRUE) {
 
     if (!missing(mean.lwd) && length(mean.lwd) < lcomp) {
@@ -732,8 +786,9 @@ plot.icm <- function(x, y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col, si
 
 
 ## Helper utilities
-draw_qnts <- function(x, y, qnts, qnts.pal, qnts.smooth, loc = "epi") {
+draw_qnts <- function(x, y, qnts, qnts.pal, qnts.smooth, loc = "epi", plot.qnts = 1) {
 
+  qnt.max <- 0
   lcomp <- length(y)
   for (j in seq_len(lcomp)) {
     quants <- c((1 - qnts) / 2, 1 - ((1 - qnts) / 2))
@@ -749,14 +804,23 @@ draw_qnts <- function(x, y, qnts, qnts.pal, qnts.smooth, loc = "epi") {
       yy <- c(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[1, ]))$y,
               rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[2, ]))$y))
     }
-    polygon(xx, yy, col = qnts.pal[j], border = NA)
+    if(plot.qnts == 1) {
+      polygon(xx, yy, col = qnts.pal[j], border = NA)
+    }
+    else{
+      qnt.max[j] = max(yy)
+    }
   }
-
+if(plot.qnts == 0) {
+  return(max(qnt.max))
+}
 }
 
 
 draw_means <- function(x, y, mean.smooth, mean.lwd,
-                       mean.pal, mean.lty, loc = "epi") {
+                       mean.pal, mean.lty, loc = "epi", plot.means = 1) {
+
+  mean.max <- 0
 
   lcomp <- length(y)
   nsims <- x$control$nsims
@@ -770,10 +834,17 @@ draw_means <- function(x, y, mean.smooth, mean.lwd,
     if (mean.smooth == TRUE) {
       mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev), y = mean.prev))$y
     }
+    if(plot.means == 1) {
     lines(mean.prev, lwd = mean.lwd[j],
           col = mean.pal[j], lty = mean.lty[j])
+    }
+    else {
+    mean.max[j] = max(mean.prev)
+    }
   }
-
+  if(plot.means == 0) {
+    return(max(mean.max))
+  }
 }
 
 
