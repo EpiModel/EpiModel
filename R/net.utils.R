@@ -1,4 +1,3 @@
-
 # Exported Functions ------------------------------------------------------
 
 #' @title Vertex Attributes for Bipartite Network
@@ -19,13 +18,13 @@
 #' bipvals(nw, mode = 1, "male")
 #'
 bipvals <- function(nw, mode, val) {
-    if (!is.numeric(nw$gal$bipartite)) {
+  if (!is.numeric(nw$gal$bipartite)) {
     stop("nw must be a bipartite network", call. = FALSE)
   }
   if (missing(mode)) {
     stop("Specify mode=1 or mode=2", call. = FALSE)
   }
-    nw %s% modeids(nw, mode) %v% val
+  nw %s% modeids(nw, mode) %v% val
 }
 
 
@@ -62,7 +61,7 @@ bipvals <- function(nw, mode, val) {
 #' # Calculate equilibrium for a DCM
 #' param <- param.dcm(inf.prob = 0.2, inf.prob.g2 = 0.1, act.rate = 0.5,
 #'                    balance = "g1", rec.rate = 1 / 50, rec.rate.g2 = 1 / 50,
-#'                    b.rate = 1 / 100, b.rate.g2 = NA, ds.rate = 1 / 100,
+#'                    a.rate = 1 / 100, a.rate.g2 = NA, ds.rate = 1 / 100,
 #'                    ds.rate.g2 = 1 / 100, di.rate = 1 / 90,
 #'                    di.rate.g2 = 1 / 90)
 #' init <- init.dcm(s.num = 500, i.num = 1,
@@ -80,7 +79,7 @@ bipvals <- function(nw, mode, val) {
 #'
 calc_eql <- function(x, numer = "i.num", denom = "num",
                      nsteps, threshold = 0.001, digits = 4, invisible = FALSE) {
-    if (!(class(x) %in% c("dcm", "icm", "netsim"))) {
+  if (!(class(x) %in% c("dcm", "icm", "netsim"))) {
     stop("x must an object of class dcm, icm, or netsim", call. = FALSE)
   }
   # Change scipen based on digits
@@ -315,7 +314,7 @@ copy_toall_attr <- function(dat, at, fterms) {
 #'        (see \code{\link{netest}}). See below for list of supported dissolution
 #'        models.
 #' @param duration A vector of mean edge durations in arbitrary time units.
-#' @param d.rate Death or exit rate from the population, as a single homogenous
+#' @param d.rate Departure or exit rate from the population, as a single homogenous
 #'        rate that applies to the entire population.
 #'
 #' @details
@@ -325,9 +324,9 @@ copy_toall_attr <- function(dat, at, fterms) {
 #'  \item \strong{Transformation:} the mean duration of edges in a network are
 #'        mathematically transformed to logit coefficients.
 #'  \item \strong{Adjustment:} in a dynamic network simulation in an open
-#'        population (in which there are deaths), it is further necessary to
+#'        population (in which there are departures), it is further necessary to
 #'        adjust these coefficients for dynamic simulations; this upward adjustment
-#'        accounts for death as a competing risk to edge dissolution.
+#'        accounts for departure as a competing risk to edge dissolution.
 #' }
 #'
 #' The current dissolution models supported by this function and in network
@@ -360,8 +359,8 @@ copy_toall_attr <- function(dat, at, fterms) {
 #'  \item \strong{coef.crude:} mean durations transformed into logit
 #'        coefficients.
 #'  \item \strong{coef.adj:} crude coefficients adjusted for the risk of
-#'        death on edge persistence, if the \code{d.rate} argument is supplied.
-#'  \item \strong{d.rate:} the death rate.
+#'        departure on edge persistence, if the \code{d.rate} argument is supplied.
+#'  \item \strong{d.rate:} the departure rate.
 #' }
 #'
 #' @seealso
@@ -373,20 +372,20 @@ copy_toall_attr <- function(dat, at, fterms) {
 #' @keywords netUtils
 #'
 #' @examples
-#' # Homogeneous dissolution model with no deaths
+#' # Homogeneous dissolution model with no departures
 #' dissolution_coefs(dissolution = ~offset(edges), duration = 25)
 #'
-#' # Homogeneous dissolution model with deaths
+#' # Homogeneous dissolution model with departures
 #' dissolution_coefs(dissolution = ~offset(edges), duration = 25,
 #'                   d.rate = 0.001)
 #'
 #' # Heterogeneous dissolution model in which same-race edges have
-#' # shorter duration compared to mixed-race edges, with no deaths
+#' # shorter duration compared to mixed-race edges, with no departures
 #' dissolution_coefs(dissolution = ~offset(edges) + offset(nodematch("race")),
 #'                   duration = c(20, 10))
 #'
 #' # Heterogeneous dissolution model in which same-race edges have
-#' # shorter duration compared to mixed-race edges, with deaths
+#' # shorter duration compared to mixed-race edges, with departures
 #' dissolution_coefs(dissolution = ~offset(edges) + offset(nodematch("race")),
 #'                   duration = c(20, 10), d.rate = 0.001)
 #'
@@ -437,7 +436,7 @@ dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
     coef.crude <- log(pg / (1 - pg))
     if (ps2 <= pg) {
       d.rate_ <- round(1-sqrt(pg),5)
-      str <- paste("The competing risk of death is too high for the given",
+      str <- paste("The competing risk of departure is too high for the given",
                    " duration of ", duration[1], "; specify a d.rate lower than ",
                    d.rate_,".",sep="")
       stop(str, call. = FALSE)
@@ -451,7 +450,7 @@ dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
         pg.thetaX <- (duration[i] - 1) / duration[i]
         ps2.thetaX <- (1 - d.rate) ^ 2
         if (sqrt(ps2.thetaX) <= pg.thetaX) {
-          stop("The competing risk of death is too high for the given the ",
+          stop("The competing risk of departure is too high for the given the ",
                "duration in place ", i, ". Specify a lower d.rate", call. = FALSE)
         }
         if (i == 1) {
@@ -748,7 +747,7 @@ modeids <- function(nw, mode) {
 #' @title Update Attribute Values for a Bipartite Network
 #'
 #' @description Adds new values for attributes in a bipartite network in which
-#'              there may be births/entries in the first mode, which requires
+#'              there may be arrivals/entries in the first mode, which requires
 #'              splitting the attribute vector into two, adding the new values,
 #'              and re-concatenating the two updated vectors.
 #'
@@ -757,17 +756,17 @@ modeids <- function(nw, mode) {
 #' @param val Fixed value to set for all incoming nodes.
 #' @param nCurrM1 Number currently in mode 1.
 #' @param nCurrM2 Number currently in mode 2.
-#' @param nbirths Number of births/entries in mode 1.
-#' @param nbirthsM2 Number of births/entries in mode 2.
+#' @param narrivals Number of arrivals/entries in mode 1.
+#' @param narrivalsM2 Number of arrivals/entries in mode 2.
 #'
 #' @export
 #' @keywords netUtils internal
 #'
-split_bip <- function(dat, var, val, nCurrM1, nCurrM2, nBirths, nBirthsM2) {
+split_bip <- function(dat, var, val, nCurrM1, nCurrM2, nArrivals, nArrivalsM2) {
   oldVarM1 <- dat$attr[[var]][1:nCurrM1]
   oldVarM2 <- dat$attr[[var]][(nCurrM1 + 1):(nCurrM1 + nCurrM2)]
-  newVarM1 <- c(oldVarM1, rep(val, nBirths))
-  newVarM2 <- c(oldVarM2, rep(val, nBirthsM2))
+  newVarM1 <- c(oldVarM1, rep(val, nArrivals))
+  newVarM2 <- c(oldVarM2, rep(val, nArrivalsM2))
   newVar <- c(newVarM1, newVarM2)
   dat$attr[[var]] <- newVar
   return(dat)

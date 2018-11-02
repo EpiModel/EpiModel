@@ -5,10 +5,10 @@
 \title{Control Settings for Stochastic Network Models}
 \usage{
 control.net(type, nsteps, start = 1, nsims = 1, ncores = 1, depend,
-  rec.rand = TRUE, b.rand = TRUE, d.rand = TRUE, tea.status = TRUE,
+  rec.rand = TRUE, a.rand = TRUE, d.rand = TRUE, tea.status = TRUE,
   attr.rules, epi.by, use.pids = TRUE, pid.prefix,
-  initialize.FUN = initialize.net, deaths.FUN = deaths.net,
-  births.FUN = births.net, recovery.FUN = recovery.net,
+  initialize.FUN = initialize.net, departures.FUN = departures.net,
+  arrivals.FUN = arrivals.net, recovery.FUN = recovery.net,
   edges_correct.FUN = edges_correct, resim_nets.FUN = resim_nets,
   infection.FUN = infection.net, get_prev.FUN = get_prev.net,
   verbose.FUN = verbose.net, module.order = NULL, set.control.ergm,
@@ -40,8 +40,8 @@ on, using the \code{foreach} and \code{doParallel} implementations.}
 
 \item{depend}{If \code{TRUE}, resimulate the network at each time step. This
 occurs by default with two varieties of dependent models: if there are
-any vital dynamic parameters in the model (or if non-standard birth or
-death modules are passed into \code{control.net}), or if the network model
+any vital dynamic parameters in the model (or if non-standard arrival or
+departures modules are passed into \code{control.net}), or if the network model
 formation formula includes the "status" attribute.}
 
 \item{rec.rand}{If \code{TRUE}, use a stochastic recovery model, with the
@@ -50,15 +50,15 @@ a binomial distribution with the probability equal to \code{rec.rate}.
 If \code{FALSE}, then a deterministic rounded count of the expectation
 implied by that rate.}
 
-\item{b.rand}{If \code{TRUE}, use a stochastic birth model, with the
-number of births at each time step a function of random draws from a
-binomial distribution with the probability equal to the governing birth
+\item{a.rand}{If \code{TRUE}, use a stochastic arrival model, with the
+number of arrivals at each time step a function of random draws from a
+binomial distribution with the probability equal to the governing arrival
 rates. If \code{FALSE}, then a deterministic rounded count of the
 expectation implied by those rates.}
 
-\item{d.rand}{If \code{TRUE}, use a stochastic death model, with the number of
-deaths at each time step a function of random draws from a binomial
-distribution with the probability equal to the governing death rates.
+\item{d.rand}{If \code{TRUE}, use a stochastic departure model, with the number of
+departures at each time step a function of random draws from a binomial
+distribution with the probability equal to the governing departure rates.
 If \code{FALSE}, then a deterministic rounded count of the expectation
 implied by those rates.}
 
@@ -90,11 +90,11 @@ default of \code{c("F", "M")}.}
 \item{initialize.FUN}{Module to initialize the model at time 1, with the
 default function of \code{\link{initialize.net}}.}
 
-\item{deaths.FUN}{Module to simulate death or exit, with the default function
-of \code{\link{deaths.net}}.}
+\item{departures.FUN}{Module to simulate departure or exit, with the default function
+of \code{\link{departures.net}}.}
 
-\item{births.FUN}{Module to simulate births or entries, with the default
-function of \code{\link{births.net}}.}
+\item{arrivals.FUN}{Module to simulate arrivals or entries, with the default
+function of \code{\link{arrivals.net}}.}
 
 \item{recovery.FUN}{Module to simulate disease recovery, with the default
 function of \code{\link{recovery.net}}.}
@@ -188,7 +188,7 @@ and it has no default.
 
 The \code{attr.rules} parameter is used to specify the rules for how nodal
 attribute values for incoming nodes should be set. These rules are only
-necessary for models in which there are incoming nodes (i.e., births) and
+necessary for models in which there are incoming nodes (i.e., arrivals) and
 there is also a nodal attribute in the network model formation formula set in
 \code{\link{netest}}. There are three rules available for each attribute
 value:
@@ -222,7 +222,7 @@ For original models, one may substitute replacement module functions for any of
 the default functions. New modules may be added to the workflow at each time
 step by passing a module function via the \code{...} argument. Consult the
 \href{http://statnet.github.io/tut/NewNet.html}{New Network Models} tutorial.
-One may remove existing modules, such as \code{births.FUN}, from the workflow
+One may remove existing modules, such as \code{arrivals.FUN}, from the workflow
 by setting the parameter value for that argument to \code{NULL}.
 }
 

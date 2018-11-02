@@ -77,7 +77,7 @@ plot(mod3)
 ## Example 4: SI Model with Vital Dynamics (Two-Group)
 param <- param.icm(inf.prob = 0.4,  inf.prob.g2 = 0.1,
                    act.rate = 0.25, balance = "g1",
-                   b.rate = 1/100, b.rate.g2 = NA,
+                   a.rate = 1/100, a.rate.g2 = NA,
                    ds.rate = 1/100, ds.rate.g2 = 1/100,
                    di.rate = 1/50, di.rate.g2 = 1/50)
 init <- init.icm(s.num = 500, i.num = 1,

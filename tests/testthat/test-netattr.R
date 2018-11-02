@@ -1,4 +1,4 @@
-context("Network attributes with births")
+context("Network attributes with arrivals")
 
 test_that("Updating attributes in open populations", {
   nw <- network.initialize(n = 50, bipartite = 25, directed = FALSE)
@@ -16,7 +16,7 @@ test_that("Updating attributes in open populations", {
   inf.probsf <- inf.probs*2
   param <- param.net(inf.prob = inf.probsf, act.rate = 1,
                      inf.prob.m2 = inf.probs,
-                     b.rate = 0.05, b.rate.m2 = NA,
+                     a.rate = 0.05, a.rate.m2 = NA,
                      ds.rate = 0.002, ds.rate.m2 = 0.002,
                      di.rate = 0.008, di.rate.m2 = 0.008)
 
@@ -63,7 +63,7 @@ test_that("Serosorting model in open population", {
   coef.diss <- dissolution_coefs(dissolution = ~offset(edges), 50, d.rate = 0.01)
   est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 
-  param <- param.net(inf.prob = 0.03, b.rate = 0.01,
+  param <- param.net(inf.prob = 0.03, a.rate = 0.01,
                      ds.rate = 0.01, di.rate = 0.01)
   init <- init.net()
   control <- control.net(type = "SI", nsteps = 10, nsims = 1,
@@ -89,7 +89,7 @@ test_that("Save attributes to output", {
 
   param <- param.net(inf.prob = 0.2, act.rate = 1,
                      inf.prob.m2 = 0.2,
-                     b.rate = 0.01, b.rate.m2 = NA,
+                     a.rate = 0.01, a.rate.m2 = NA,
                      ds.rate = 0.01, ds.rate.m2 = 0.01,
                      di.rate = 0.01, di.rate.m2 = 0.01)
 

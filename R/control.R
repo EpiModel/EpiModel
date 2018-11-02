@@ -117,14 +117,14 @@ control.dcm <- function(type, nsteps, dt = 1, odemethod = "rk4",
 #'        a binomial distribution with the probability equal to \code{rec.rate}.
 #'        If \code{FALSE}, then a deterministic rounded count of the expectation
 #'        implied by that rate.
-#' @param b.rand If \code{TRUE}, use a stochastic birth model, with the
-#'        number of births at each time step a function of random draws from a
-#'        binomial distribution with the probability equal to the governing birth
+#' @param a.rand If \code{TRUE}, use a stochastic arrival model, with the
+#'        number of arrivals at each time step a function of random draws from a
+#'        binomial distribution with the probability equal to the governing arrival
 #'        rates. If \code{FALSE}, then a deterministic rounded count of the
 #'        expectation implied by those rates.
-#' @param d.rand If \code{TRUE}, use a stochastic death model, with the number of
-#'        deaths at each time step a function of random draws from a binomial
-#'        distribution with the probability equal to the governing death rates.
+#' @param d.rand If \code{TRUE}, use a stochastic departure model, with the number of
+#'        departures at each time step a function of random draws from a binomial
+#'        distribution with the probability equal to the governing departure rates.
 #'        If \code{FALSE}, then a deterministic rounded count of the expectation
 #'        implied by those rates.
 #' @param initialize.FUN Module to initialize the model at the outset, with the
@@ -133,10 +133,10 @@ control.dcm <- function(type, nsteps, dt = 1, odemethod = "rk4",
 #'        function of \code{\link{infection.icm}}.
 #' @param recovery.FUN Module to simulate disease recovery, with the default
 #'        function of \code{\link{recovery.icm}}.
-#' @param deaths.FUN Module to simulate deaths or exits, with the default
-#'        function of \code{\link{deaths.icm}}.
-#' @param births.FUN Module to simulate births or entries, with the default
-#'        function of \code{\link{births.icm}}.
+#' @param departures.FUN Module to simulate departures or exits, with the default
+#'        function of \code{\link{departures.icm}}.
+#' @param arrivals.FUN Module to simulate arrivals or entries, with the default
+#'        function of \code{\link{arrivals.icm}}.
 #' @param get_prev.FUN Module to calculate disease prevalence at each time step,
 #'        with the default function of \code{\link{get_prev.icm}}.
 #' @param verbose If \code{TRUE}, print model progress to the console.
@@ -180,10 +180,10 @@ control.dcm <- function(type, nsteps, dt = 1, odemethod = "rk4",
 #'
 #' @export
 #'
-control.icm <- function(type, nsteps, nsims = 1, rec.rand = TRUE, b.rand = TRUE,
+control.icm <- function(type, nsteps, nsims = 1, rec.rand = TRUE, a.rand = TRUE,
                         d.rand = TRUE, initialize.FUN = initialize.icm,
                         infection.FUN = infection.icm, recovery.FUN = recovery.icm,
-                        deaths.FUN = deaths.icm, births.FUN = births.icm,
+                        departures.FUN = departures.icm, arrivals.FUN = arrivals.icm,
                         get_prev.FUN = get_prev.icm, verbose = FALSE,
                         verbose.int = 0, skip.check = FALSE, ...) {
 
@@ -247,22 +247,22 @@ control.icm <- function(type, nsteps, nsims = 1, rec.rand = TRUE, b.rand = TRUE,
 #'        \code{nsteps}.
 #' @param depend If \code{TRUE}, resimulate the network at each time step. This
 #'        occurs by default with two varieties of dependent models: if there are
-#'        any vital dynamic parameters in the model (or if non-standard birth or
-#'        death modules are passed into \code{control.net}), or if the network model
+#'        any vital dynamic parameters in the model (or if non-standard arrival or
+#'        departures modules are passed into \code{control.net}), or if the network model
 #'        formation formula includes the "status" attribute.
 #' @param rec.rand If \code{TRUE}, use a stochastic recovery model, with the
 #'        number of recovered at each time step a function of random draws from
 #'        a binomial distribution with the probability equal to \code{rec.rate}.
 #'        If \code{FALSE}, then a deterministic rounded count of the expectation
 #'        implied by that rate.
-#' @param b.rand If \code{TRUE}, use a stochastic birth model, with the
-#'        number of births at each time step a function of random draws from a
-#'        binomial distribution with the probability equal to the governing birth
+#' @param a.rand If \code{TRUE}, use a stochastic arrival model, with the
+#'        number of arrivals at each time step a function of random draws from a
+#'        binomial distribution with the probability equal to the governing arrival
 #'        rates. If \code{FALSE}, then a deterministic rounded count of the
 #'        expectation implied by those rates.
-#' @param d.rand If \code{TRUE}, use a stochastic death model, with the number of
-#'        deaths at each time step a function of random draws from a binomial
-#'        distribution with the probability equal to the governing death rates.
+#' @param d.rand If \code{TRUE}, use a stochastic departure model, with the number of
+#'        departures at each time step a function of random draws from a binomial
+#'        distribution with the probability equal to the governing departure rates.
 #'        If \code{FALSE}, then a deterministic rounded count of the expectation
 #'        implied by those rates.
 #' @param tea.status If \code{TRUE}, use a temporally extended attribute (TEA)
@@ -287,10 +287,10 @@ control.icm <- function(type, nsteps, nsims = 1, rec.rand = TRUE, b.rand = TRUE,
 #'        default of \code{c("F", "M")}.
 #' @param initialize.FUN Module to initialize the model at time 1, with the
 #'        default function of \code{\link{initialize.net}}.
-#' @param deaths.FUN Module to simulate death or exit, with the default function
-#'        of \code{\link{deaths.net}}.
-#' @param births.FUN Module to simulate births or entries, with the default
-#'        function of \code{\link{births.net}}.
+#' @param departures.FUN Module to simulate departure or exit, with the default function
+#'        of \code{\link{departures.net}}.
+#' @param arrivals.FUN Module to simulate arrivals or entries, with the default
+#'        function of \code{\link{arrivals.net}}.
 #' @param recovery.FUN Module to simulate disease recovery, with the default
 #'        function of \code{\link{recovery.net}}.
 #' @param edges_correct.FUN Module to adjust the edges coefficient in response
@@ -360,7 +360,7 @@ control.icm <- function(type, nsteps, nsims = 1, rec.rand = TRUE, b.rand = TRUE,
 #' @section The attr.rules Argument:
 #' The \code{attr.rules} parameter is used to specify the rules for how nodal
 #' attribute values for incoming nodes should be set. These rules are only
-#' necessary for models in which there are incoming nodes (i.e., births) and
+#' necessary for models in which there are incoming nodes (i.e., arrivals) and
 #' there is also a nodal attribute in the network model formation formula set in
 #' \code{\link{netest}}. There are three rules available for each attribute
 #' value:
@@ -392,7 +392,7 @@ control.icm <- function(type, nsteps, nsims = 1, rec.rand = TRUE, b.rand = TRUE,
 #' the default functions. New modules may be added to the workflow at each time
 #' step by passing a module function via the \code{...} argument. Consult the
 #' \href{http://statnet.github.io/tut/NewNet.html}{New Network Models} tutorial.
-#' One may remove existing modules, such as \code{births.FUN}, from the workflow
+#' One may remove existing modules, such as \code{arrivals.FUN}, from the workflow
 #' by setting the parameter value for that argument to \code{NULL}.
 #'
 #' @seealso Use \code{\link{param.net}} to specify model parameters and
@@ -405,10 +405,10 @@ control.icm <- function(type, nsteps, nsims = 1, rec.rand = TRUE, b.rand = TRUE,
 #'
 control.net <- function(type, nsteps, start = 1, nsims = 1, ncores = 1,
                         depend, rec.rand = TRUE,
-                        b.rand = TRUE, d.rand = TRUE, tea.status = TRUE,
+                        a.rand = TRUE, d.rand = TRUE, tea.status = TRUE,
                         attr.rules, epi.by, use.pids = TRUE, pid.prefix,
-                        initialize.FUN = initialize.net, deaths.FUN = deaths.net,
-                        births.FUN = births.net, recovery.FUN = recovery.net,
+                        initialize.FUN = initialize.net, departures.FUN = departures.net,
+                        arrivals.FUN = arrivals.net, recovery.FUN = recovery.net,
                         edges_correct.FUN = edges_correct,
                         resim_nets.FUN = resim_nets, infection.FUN = infection.net,
                         get_prev.FUN = get_prev.net, verbose.FUN = verbose.net,
@@ -446,8 +446,8 @@ control.net <- function(type, nsteps, start = 1, nsims = 1, ncores = 1,
 
   if (missing(depend)) {
     arg.list <- as.list(match.call())
-    if ((!is.null(arg.list$deaths.FUN) && arg.list$deaths.FUN != "deaths.net") |
-        (!is.null(arg.list$births.FUN) && arg.list$births.FUN != "births.net")) {
+    if ((!is.null(arg.list$departures.FUN) && arg.list$departures.FUN != "departures.net") |
+        (!is.null(arg.list$arrivals.FUN) && arg.list$arrivals.FUN != "arrivals.net")) {
       p$depend <- TRUE
     }
   }

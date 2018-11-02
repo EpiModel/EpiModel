@@ -26,7 +26,7 @@
 #'  \item \strong{Stochastic Individual Contact Models:} a novel class of
 #'        individual-based, microsimulation models that were developed to add
 #'        random variation in all components of the transmission system, from
-#'        infection to recovery to vital dynamics (births and deaths).
+#'        infection to recovery to vital dynamics (arrivals and departures).
 #'  \item \strong{Stochastic Network Models:} with the underlying statistical
 #'        framework of temporal exponential random graph models (ERGMs) recently
 #'        developed in the \strong{Statnet} suite of software in R, network

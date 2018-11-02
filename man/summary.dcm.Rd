@@ -30,7 +30,7 @@ models (sensitivity analyses), input a model run number. See examples below.
 \examples{
 ## Deterministic SIR model with varying act.rate
 param <- param.dcm(inf.prob = 0.2, act.rate = 2:4, rec.rate = 1/3,
-                   b.rate = 0.011, ds.rate = 0.01,
+                   a.rate = 0.011, ds.rate = 0.01,
                    di.rate = 0.03, dr.rate = 0.01)
 init <- init.dcm(s.num = 1000, i.num = 1, r.num = 0)
 control <- control.dcm(type = "SIR", nsteps = 50)

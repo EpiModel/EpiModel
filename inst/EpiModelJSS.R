@@ -221,8 +221,8 @@ dfunc <- function(dat, at) {
   return(dat)
 }
 
-## Birth function
-bfunc <- function(dat, at) {
+## Arrivals function
+afunc <- function(dat, at) {
 
   growth.rate <- dat$param$growth.rate
   exptPopSize <- dat$epi$num[1]*(1 + growth.rate*at)
@@ -230,26 +230,26 @@ bfunc <- function(dat, at) {
 
   numNeeded <- exptPopSize - sum(dat$attr$active == 1)
   if (numNeeded > 0) {
-    nBirths <- rpois(1, numNeeded)
+    nArrvls <- rpois(1, numNeeded)
   } else {
-    nBirths <- 0
+    nArrvls <- 0
   }
-  if (nBirths > 0) {
-    dat$nw <- add.vertices(dat$nw, nv = nBirths)
-    newNodes <- (n + 1):(n + nBirths)
+  if (nArrvls > 0) {
+    dat$nw <- add.vertices(dat$nw, nv = nArrvls)
+    newNodes <- (n + 1):(n + nArrvls)
     dat$nw <- activate.vertices(dat$nw, onset = at,
                                 terminus = Inf, v = newNodes)
 
-    dat$attr$active <- c(dat$attr$active, rep(1, nBirths))
-    dat$attr$status <- c(dat$attr$status, rep("s", nBirths))
-    dat$attr$infTime <- c(dat$attr$infTime, rep(NA, nBirths))
-    dat$attr$age <- c(dat$attr$age, rep(18, nBirths))
+    dat$attr$active <- c(dat$attr$active, rep(1, nArrvls))
+    dat$attr$status <- c(dat$attr$status, rep("s", nArrvls))
+    dat$attr$infTime <- c(dat$attr$infTime, rep(NA, nArrvls))
+    dat$attr$age <- c(dat$attr$age, rep(18, nArrvls))
   }
 
   if (at == 2) {
-    dat$epi$b.flow <- c(0, nBirths)
+    dat$epi$b.flow <- c(0, nArrvls)
   } else {
-    dat$epi$b.flow[at] <- nBirths
+    dat$epi$b.flow[at] <- nArrvls
   }
 
   return(dat)

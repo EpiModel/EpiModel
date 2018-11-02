@@ -36,7 +36,7 @@ crosscheck.dcm <- function(param, init, control) {
       param$act.rate <- 1
     }
     if (is.null(param$vital)) {
-      if (!is.null(param$b.rate) |
+      if (!is.null(param$a.rate) |
           !is.null(param$ds.rate) |
           !is.null(param$di.rate) |
           !is.null(param$dr.rate)) {
@@ -343,8 +343,8 @@ crosscheck.net <- function(x, param, init, control) {
 
     # Check demographic parameters for bipartite
     if (bip == TRUE & param$vital == TRUE) {
-      if (is.null(param$b.rate.m2)) {
-        stop("Specify b.rate.m2 in param.net", call. = FALSE)
+      if (is.null(param$a.rate.m2)) {
+        stop("Specify a.rate.m2 in param.net", call. = FALSE)
       }
       if (is.null(param$ds.rate.m2)) {
         stop("Specify ds.rate.m2 in param.net", call. = FALSE)

@@ -66,7 +66,7 @@
 #'
 #' ## Example 2: SIR Model with Vital Dynamics (One-Group)
 #' param <- param.dcm(inf.prob = 0.2, act.rate = 5,
-#'                    rec.rate = 1/3, b.rate = 1/90, ds.rate = 1/100,
+#'                    rec.rate = 1/3, a.rate = 1/90, ds.rate = 1/100,
 #'                    di.rate = 1/35, dr.rate = 1/100)
 #' init <- init.dcm(s.num = 500, i.num = 1, r.num = 0)
 #' control <- control.dcm(type = "SIR", nsteps = 500)
@@ -86,7 +86,7 @@
 #' ## Example 4: SI Model with Vital Dynamics (Two-Group)
 #' param <- param.dcm(inf.prob = 0.4,  inf.prob.g2 = 0.1,
 #'                    act.rate = 0.25, balance = "g1",
-#'                    b.rate = 1/100, b.rate.g2 = NA,
+#'                    a.rate = 1/100, a.rate.g2 = NA,
 #'                    ds.rate = 1/100, ds.rate.g2 = 1/100,
 #'                    di.rate = 1/50, di.rate.g2 = 1/50)
 #' init <- init.dcm(s.num = 500, i.num = 1,
@@ -110,7 +110,7 @@ dcm <- function(param, init, control){
           init <- c(init, si.flow = 0)
         } else {
           model <- mod_SI_1g_op
-          init <- c(init, si.flow = 0, b.flow = 0, ds.flow = 0, di.flow = 0)
+          init <- c(init, si.flow = 0, a.flow = 0, ds.flow = 0, di.flow = 0)
         }
       } else {
         if (param$vital == FALSE) {
@@ -119,8 +119,8 @@ dcm <- function(param, init, control){
         } else {
           model <- mod_SI_2g_op
           init <- c(init,
-                    si.flow = 0, b.flow = 0, ds.flow = 0, di.flow = 0,
-                    si.flow.g2 = 0, b.flow.g2 = 0, ds.flow.g2 = 0, di.flow.g2 = 0)
+                    si.flow = 0, a.flow = 0, ds.flow = 0, di.flow = 0,
+                    si.flow.g2 = 0, a.flow.g2 = 0, ds.flow.g2 = 0, di.flow.g2 = 0)
         }
       }
     }
@@ -131,7 +131,7 @@ dcm <- function(param, init, control){
           init <- c(init, si.flow = 0, ir.flow = 0)
         } else {
           model <- mod_SIR_1g_op
-          init <- c(init, si.flow = 0, ir.flow = 0, b.flow = 0,
+          init <- c(init, si.flow = 0, ir.flow = 0, a.flow = 0,
                     ds.flow = 0, di.flow = 0, dr.flow = 0)
         }
       } else {
@@ -141,9 +141,9 @@ dcm <- function(param, init, control){
                     si.flow.g2 = 0, ir.flow.g2 = 0)
         } else {
           model <- mod_SIR_2g_op
-          init <- c(init, si.flow = 0, ir.flow = 0, b.flow = 0,
+          init <- c(init, si.flow = 0, ir.flow = 0, a.flow = 0,
                     ds.flow = 0, di.flow = 0, dr.flow = 0,
-                    si.flow.g2 = 0, ir.flow.g2 = 0, b.flow.g2 = 0,
+                    si.flow.g2 = 0, ir.flow.g2 = 0, a.flow.g2 = 0,
                     ds.flow.g2 = 0, di.flow.g2 = 0, dr.flow.g2 = 0)
         }
       }
@@ -156,7 +156,7 @@ dcm <- function(param, init, control){
         } else {
           model <- mod_SIS_1g_op
           init <- c(init, si.flow = 0, is.flow = 0,
-                    b.flow = 0, ds.flow = 0, di.flow = 0)
+                    a.flow = 0, ds.flow = 0, di.flow = 0)
         }
       } else {
         if (param$vital == FALSE) {
@@ -166,9 +166,9 @@ dcm <- function(param, init, control){
         } else {
           model <- mod_SIS_2g_op
           init <- c(init, si.flow = 0, is.flow = 0,
-                    b.flow = 0, ds.flow = 0, di.flow = 0,
+                    a.flow = 0, ds.flow = 0, di.flow = 0,
                     si.flow.g2 = 0, is.flow.g2 = 0,
-                    b.flow.g2 = 0, ds.flow.g2 = 0, di.flow.g2 = 0)
+                    a.flow.g2 = 0, ds.flow.g2 = 0, di.flow.g2 = 0)
         }
       }
     }

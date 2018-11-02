@@ -56,7 +56,7 @@ test_that("color_tea", {
 test_that("calc_eql for dcm", {
   param <- param.dcm(inf.prob = 0.2, inf.prob.g2 = 0.1, act.rate = 0.5,
                      balance = "g1", rec.rate = 1 / 50, rec.rate.g2 = 1 / 50,
-                     b.rate = 1 / 100, b.rate.g2 = NA, ds.rate = 1 / 100,
+                     a.rate = 1 / 100, a.rate.g2 = NA, ds.rate = 1 / 100,
                      ds.rate.g2 = 1 / 100, di.rate = 1 / 90, di.rate.g2 = 1 / 90)
   init <- init.dcm(s.num = 500, i.num = 1,
                    s.num.g2 = 500, i.num.g2 = 1)
@@ -75,7 +75,7 @@ test_that("calc_eql for dcm", {
 test_that("calc_eql for icm", {
   skip_on_cran()
   set.seed(1)
-  param <- param.icm(inf.prob = 0.2, act.rate = 0.25, b.rate = 1/100,
+  param <- param.icm(inf.prob = 0.2, act.rate = 0.25, a.rate = 1/100,
                      ds.rate = 1/100, di.rate = 1/90)
   init <- init.icm(s.num = 500, i.num = 1)
   control <- control.icm(type = "SI", nsteps = 500, nsims = 1, verbose = FALSE)
@@ -137,12 +137,12 @@ test_that("bipvals", {
 
 test_that("check_bip_degdist", {
   expect_output(check_bip_degdist(num.m1 = 500, num.m2 = 500,
-                    deg.dist.m2 = c(0.40, 0.55, 0.03, 0.02),
-                    deg.dist.m1 = c(0.48, 0.41, 0.08, 0.03)),
+                                  deg.dist.m2 = c(0.40, 0.55, 0.03, 0.02),
+                                  deg.dist.m1 = c(0.48, 0.41, 0.08, 0.03)),
                 "-0.015 Rel Diff")
   expect_output(check_bip_degdist(num.m1 = 500, num.m2 = 500,
-                    deg.dist.m1 = c(0.40, 0.55, 0.04, 0.01),
-                    deg.dist.m2 = c(0.48, 0.41, 0.08, 0.03)),
+                                  deg.dist.m1 = c(0.40, 0.55, 0.04, 0.01),
+                                  deg.dist.m2 = c(0.48, 0.41, 0.08, 0.03)),
                 "Edges balanced")
   expect_output(check_bip_degdist(num.m1 = 500, num.m2 = 500,
                                   deg.dist.m1 = c(0.45, 0.55, 0.04, 0.01),
@@ -189,11 +189,11 @@ test_that("get_degree", {
   all.equal(ergm.method, deg.net, deg.el)
 })
 
-test_that("dissolution_coefs returns appropriate error for incompatible death rate",{
+test_that("dissolution_coefs returns appropriate error for incompatible departure rate",{
   #Dividing by zero:
   d.rate_ <- round(1-sqrt(59/60), 5)
-  err.msg <- paste("The competing risk of death is too high for the given", 
-                   " duration of ", 60, "; specify a d.rate lower than ", 
+  err.msg <- paste("The competing risk of departure is too high for the given",
+                   " duration of ", 60, "; specify a d.rate lower than ",
                    d.rate_,".",sep="")
   dissolution = ~offset(edges)
   expect_that(dissolution_coefs(dissolution, duration = 60, d.rate = 1/60), throws_error(err.msg))

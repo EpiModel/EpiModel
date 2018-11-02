@@ -243,7 +243,7 @@ init_status.net <- function(dat) {
 #' first mode in a bipartite network, the IDs for the second mode shift
 #' upward. Persistent IDs allow for an analysis of disease transmission
 #' chains for these simulations. These IDs are also invoked in the
-#' \code{\link{births.net}} module when the persistent IDs of incoming nodes
+#' \code{\link{arrivals.net}} module when the persistent IDs of incoming nodes
 #' must be set.
 #'
 #' @export

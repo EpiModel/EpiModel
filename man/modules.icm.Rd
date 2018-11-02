@@ -58,17 +58,17 @@ flows for summary measures such as disease incidence.
 
 \section{Demographic Modules}{
 
-Vital dynamics such as birth and death processes are simulated at each time
+Vital dynamics such as arrival and departure processes are simulated at each time
 step to update entries into and exits from the population. These are used in
 open-population ICMs.
 \itemize{
- \item \code{\link{deaths.icm}}: randomly simulates death or exits for
-       agents given the death rate specified in the disease-state and
-       group-specific death parameters in \code{\link{param.icm}}. This involves
+ \item \code{\link{departures.icm}}: randomly simulates departures or exits for
+       agents given the departure rate specified in the disease-state and
+       group-specific departure parameters in \code{\link{param.icm}}. This involves
        deactivating agents from the population, but their historical data is
        preserved in the simulation.
- \item \code{\link{births.icm}}: randomly simulates new births into the
-       population given the current population size and the birth rate
+ \item \code{\link{arrivals.icm}}: randomly simulates new arrivals into the
+       population given the current population size and the arrival rate
        parameters. This involves adding new agents into the population.
 }
 }

@@ -1,7 +1,7 @@
 
-#' @title Deaths: icm Module
+#' @title Departure: icm Module
 #'
-#' @description This function simulates death for use in \code{\link{icm}}
+#' @description This function simulates departure for use in \code{\link{icm}}
 #'              simulations.
 #'
 #' @param dat Master data list object.
@@ -12,7 +12,7 @@
 #' @export
 #' @keywords internal
 #'
-deaths.icm <- function(dat, at) {
+departures.icm <- function(dat, at) {
 
   # Conditions --------------------------------------------------------------
   if (dat$param$vital == FALSE) {
@@ -25,8 +25,8 @@ deaths.icm <- function(dat, at) {
   group <- dat$attr$group
 
 
-  # Susceptible deaths ------------------------------------------------------
-  nDeaths <- nDeathsG2 <- 0
+  # Susceptible departures ------------------------------------------------------
+  nDepartures <- nDeparturesG2 <- 0
   idsElig <- which(dat$attr$active == 1 & dat$attr$status == "s")
   nElig <- length(idsElig)
   if (nElig > 0) {
@@ -36,38 +36,38 @@ deaths.icm <- function(dat, at) {
     ratesElig <- rates[gElig]
 
     if (dat$control$d.rand == TRUE) {
-      vecDeaths <- which(rbinom(nElig, 1, ratesElig) == 1)
-      if (length(vecDeaths) > 0) {
-        idsDth <- idsElig[vecDeaths]
-        nDeaths <- sum(group[idsDth] == 1)
-        nDeathsG2 <- sum(group[idsDth] == 2)
-        dat$attr$active[idsDth] <- 0
+      vecDepartures <- which(rbinom(nElig, 1, ratesElig) == 1)
+      if (length(vecDepartures) > 0) {
+        idsDpt <- idsElig[vecDepartures]
+        nDepartures <- sum(group[idsDpt] == 1)
+        nDeparturesG2 <- sum(group[idsDpt] == 2)
+        dat$attr$active[idsDpt] <- 0
       }
     } else {
-      nDeaths <- min(round(sum(ratesElig[gElig == 1])), sum(gElig == 1))
-      dat$attr$active[ssample(idsElig[gElig == 1], nDeaths)] <- 0
+      nDepartures <- min(round(sum(ratesElig[gElig == 1])), sum(gElig == 1))
+      dat$attr$active[ssample(idsElig[gElig == 1], nDepartures)] <- 0
       if (groups == 2) {
-        nDeathsG2 <- min(round(sum(ratesElig[gElig == 2])), sum(gElig == 2))
-        dat$attr$active[ssample(idsElig[gElig == 2], nDeathsG2)] <- 0
+        nDeparturesG2 <- min(round(sum(ratesElig[gElig == 2])), sum(gElig == 2))
+        dat$attr$active[ssample(idsElig[gElig == 2], nDeparturesG2)] <- 0
       }
     }
   }
 
   if (at == 2) {
-    dat$epi$ds.flow <- c(0, nDeaths)
+    dat$epi$ds.flow <- c(0, nDepartures)
     if (groups == 2) {
-      dat$epi$ds.flow.g2 <- c(0, nDeathsG2)
+      dat$epi$ds.flow.g2 <- c(0, nDeparturesG2)
     }
   } else {
-    dat$epi$ds.flow[at] <- nDeaths
+    dat$epi$ds.flow[at] <- nDepartures
     if (groups == 2) {
-      dat$epi$ds.flow.g2[at] <- nDeathsG2
+      dat$epi$ds.flow.g2[at] <- nDeparturesG2
     }
   }
 
 
-  # Infected Deaths ---------------------------------------------------------
-  nDeaths <- nDeathsG2 <- 0
+  # Infected Departures ---------------------------------------------------------
+  nDepartures <- nDeparturesG2 <- 0
   idsElig <- which(dat$attr$active == 1 & dat$attr$status == "i")
   nElig <- length(idsElig)
   if (nElig > 0) {
@@ -77,38 +77,38 @@ deaths.icm <- function(dat, at) {
     ratesElig <- rates[gElig]
 
     if (dat$control$d.rand == TRUE) {
-      vecDeaths <- which(rbinom(nElig, 1, ratesElig) == 1)
-      if (length(vecDeaths) > 0) {
-        idsDth <- idsElig[vecDeaths]
-        nDeaths <- sum(group[idsDth] == 1)
-        nDeathsG2 <- sum(group[idsDth] == 2)
-        dat$attr$active[idsDth] <- 0
+      vecDepartures <- which(rbinom(nElig, 1, ratesElig) == 1)
+      if (length(vecDepartures) > 0) {
+        idsDpt <- idsElig[vecDepartures]
+        nDepartures <- sum(group[idsDpt] == 1)
+        nDeparturesG2 <- sum(group[idsDpt] == 2)
+        dat$attr$active[idsDpt] <- 0
       }
     } else {
-      nDeaths <- min(round(sum(ratesElig[gElig == 1])), sum(gElig == 1))
-      dat$attr$active[ssample(idsElig[gElig == 1], nDeaths)] <- 0
+      nDepartures <- min(round(sum(ratesElig[gElig == 1])), sum(gElig == 1))
+      dat$attr$active[ssample(idsElig[gElig == 1], nDepartures)] <- 0
       if (groups == 2) {
-        nDeathsG2 <- min(round(sum(ratesElig[gElig == 2])), sum(gElig == 2))
-        dat$attr$active[ssample(idsElig[gElig == 2], nDeathsG2)] <- 0
+        nDeparturesG2 <- min(round(sum(ratesElig[gElig == 2])), sum(gElig == 2))
+        dat$attr$active[ssample(idsElig[gElig == 2], nDeparturesG2)] <- 0
       }
     }
   }
 
   if (at == 2) {
-    dat$epi$di.flow <- c(0, nDeaths)
+    dat$epi$di.flow <- c(0, nDepartures)
     if (groups == 2) {
-      dat$epi$di.flow.g2 <- c(0, nDeathsG2)
+      dat$epi$di.flow.g2 <- c(0, nDeparturesG2)
     }
   } else {
-    dat$epi$di.flow[at] <- nDeaths
+    dat$epi$di.flow[at] <- nDepartures
     if (groups == 2) {
-      dat$epi$di.flow.g2[at] <- nDeathsG2
+      dat$epi$di.flow.g2[at] <- nDeparturesG2
     }
   }
 
 
-  # Recovered Deaths --------------------------------------------------------
-  nDeaths <- nDeathsG2 <- 0
+  # Recovered Departures --------------------------------------------------------
+  nDepartures <- nDeparturesG2 <- 0
   idsElig <- which(dat$attr$active == 1 & dat$attr$status == "r")
   nElig <- length(idsElig)
   if (nElig > 0) {
@@ -118,32 +118,32 @@ deaths.icm <- function(dat, at) {
     ratesElig <- rates[gElig]
 
     if (dat$control$d.rand == TRUE) {
-      vecDeaths <- which(rbinom(nElig, 1, ratesElig) == 1)
-      if (length(vecDeaths) > 0) {
-        idsDth <- idsElig[vecDeaths]
-        nDeaths <- sum(group[idsDth] == 1)
-        nDeathsG2 <- sum(group[idsDth] == 2)
-        dat$attr$active[idsDth] <- 0
+      vecDepartures <- which(rbinom(nElig, 1, ratesElig) == 1)
+      if (length(vecDepartures) > 0) {
+        idsDpt <- idsElig[vecDepartures]
+        nDepartures <- sum(group[idsDpt] == 1)
+        nDeparturesG2 <- sum(group[idsDpt] == 2)
+        dat$attr$active[idsDpt] <- 0
       }
     } else {
-      nDeaths <- min(round(sum(ratesElig[gElig == 1])), sum(gElig == 1))
-      dat$attr$active[ssample(idsElig[gElig == 1], nDeaths)] <- 0
+      nDepartures <- min(round(sum(ratesElig[gElig == 1])), sum(gElig == 1))
+      dat$attr$active[ssample(idsElig[gElig == 1], nDepartures)] <- 0
       if (groups == 2) {
-        nDeathsG2 <- min(round(sum(ratesElig[gElig == 2])), sum(gElig == 2))
-        dat$attr$active[ssample(idsElig[gElig == 2], nDeathsG2)] <- 0
+        nDeparturesG2 <- min(round(sum(ratesElig[gElig == 2])), sum(gElig == 2))
+        dat$attr$active[ssample(idsElig[gElig == 2], nDeparturesG2)] <- 0
       }
     }
   }
 
   if (at == 2) {
-    dat$epi$dr.flow <- c(0, nDeaths)
+    dat$epi$dr.flow <- c(0, nDepartures)
     if (groups == 2) {
-      dat$epi$dr.flow.g2 <- c(0, nDeathsG2)
+      dat$epi$dr.flow.g2 <- c(0, nDeparturesG2)
     }
   } else {
-    dat$epi$dr.flow[at] <- nDeaths
+    dat$epi$dr.flow[at] <- nDepartures
     if (groups == 2) {
-      dat$epi$dr.flow.g2[at] <- nDeathsG2
+      dat$epi$dr.flow.g2[at] <- nDeparturesG2
     }
   }
 
@@ -152,9 +152,9 @@ deaths.icm <- function(dat, at) {
 
 
 
-#' @title Births: icm Module
+#' @title Arrivals: icm Module
 #'
-#' @description This function simulates birth for use in \code{\link{icm}}
+#' @description This function simulates arrival for use in \code{\link{icm}}
 #'              simulations.
 #'
 #' @param dat Master data list object.
@@ -165,7 +165,7 @@ deaths.icm <- function(dat, at) {
 #' @export
 #' @keywords internal
 #'
-births.icm <- function(dat, at) {
+arrivals.icm <- function(dat, at) {
 
   # Conditions --------------------------------------------------------------
   if (dat$param$vital == FALSE) {
@@ -173,65 +173,65 @@ births.icm <- function(dat, at) {
   }
 
   # Variables ---------------------------------------------------------------
-  b.rate <- dat$param$b.rate
-  b.rate.g2 <- dat$param$b.rate.g2
-  b.rand <- dat$control$b.rand
+  a.rate <- dat$param$a.rate
+  a.rate.g2 <- dat$param$a.rate.g2
+  a.rand <- dat$control$a.rand
   groups <- dat$param$groups
   nOld <- dat$epi$num[at - 1]
 
 
   # Process -----------------------------------------------------------------
-  nBirths <- nBirthsG2 <- 0
+  nArrivals <- nArrivalsG2 <- 0
 
   if (groups == 1) {
-    if (b.rand == TRUE) {
-      nBirths <- sum(rbinom(nOld, 1, b.rate))
+    if (a.rand == TRUE) {
+      nArrivals <- sum(rbinom(nOld, 1, a.rate))
     }
-    if (b.rand == FALSE) {
-      nBirths <- round(nOld * b.rate)
+    if (a.rand == FALSE) {
+      nArrivals <- round(nOld * a.rate)
     }
   }
   if (groups == 2) {
     nOldG2 <- dat$epi$num.g2[at - 1]
-    if (b.rand == TRUE) {
-      if (is.na(b.rate.g2)) {
-        nBirths <- sum(rbinom(nOld, 1, b.rate))
-        nBirthsG2 <- sum(rbinom(nOld, 1, b.rate))
+    if (a.rand == TRUE) {
+      if (is.na(a.rate.g2)) {
+        nArrivals <- sum(rbinom(nOld, 1, a.rate))
+        nArrivalsG2 <- sum(rbinom(nOld, 1, a.rate))
       } else {
-        nBirths <- sum(rbinom(nOld, 1, b.rate))
-        nBirthsG2 <- sum(rbinom(nOldG2, 1, b.rate.g2))
+        nArrivals <- sum(rbinom(nOld, 1, a.rate))
+        nArrivalsG2 <- sum(rbinom(nOldG2, 1, a.rate.g2))
       }
     }
-    if (b.rand == FALSE) {
-      if (is.na(b.rate.g2)) {
-        nBirths <- round(nOld * b.rate)
-        nBirthsG2 <- round(nOld * b.rate)
+    if (a.rand == FALSE) {
+      if (is.na(a.rate.g2)) {
+        nArrivals <- round(nOld * a.rate)
+        nArrivalsG2 <- round(nOld * a.rate)
       } else {
-        nBirths <- round(nOld * b.rate)
-        nBirthsG2 <- round(nOldG2 * b.rate.g2)
+        nArrivals <- round(nOld * a.rate)
+        nArrivalsG2 <- round(nOldG2 * a.rate.g2)
       }
     }
   }
 
   ## Set attributes
-  totBirths <- nBirths + nBirthsG2
-  dat$attr$active <- c(dat$attr$active, rep(1, totBirths))
-  dat$attr$group <- c(dat$attr$group, c(rep(1, nBirths), rep(2, nBirthsG2)))
-  dat$attr$status <- c(dat$attr$status, rep("s", totBirths))
-  dat$attr$infTime <- c(dat$attr$infTime, rep(NA, totBirths))
+  totArrivals <- nArrivals + nArrivalsG2
+  dat$attr$active <- c(dat$attr$active, rep(1, totArrivals))
+  dat$attr$group <- c(dat$attr$group, c(rep(1, nArrivals), rep(2, nArrivalsG2)))
+  dat$attr$status <- c(dat$attr$status, rep("s", totArrivals))
+  dat$attr$infTime <- c(dat$attr$infTime, rep(NA, totArrivals))
 
 
   # Output ------------------------------------------------------------------
   if (at == 2) {
-    dat$epi$b.flow <- c(0, nBirths)
+    dat$epi$a.flow <- c(0, nArrivals)
   } else {
-    dat$epi$b.flow[at] <- nBirths
+    dat$epi$a.flow[at] <- nArrivals
   }
   if (dat$param$groups == 2) {
     if (at == 2) {
-      dat$epi$b.flow.g2 <- c(0, nBirthsG2)
+      dat$epi$a.flow.g2 <- c(0, nArrivalsG2)
     } else {
-      dat$epi$b.flow.g2[at] <- nBirthsG2
+      dat$epi$a.flow.g2[at] <- nArrivalsG2
     }
   }
 
