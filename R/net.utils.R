@@ -279,9 +279,9 @@ color_tea <- function(nd, old.var = "testatus", old.sus = "s", old.inf = "i",
 #' @param dat Master data object passed through \code{netsim} simulations.
 #' @param at Current time step.
 #' @param fterms Vector of attributes used in formation formula, usually as
-#'        output of \code{\link{get_formula_terms}}.
+#'        output of \code{\link{get_formula_term_attr}}.
 #'
-#' @seealso \code{\link{get_formula_terms}}, \code{\link{get_attr_prop}},
+#' @seealso \code{\link{get_formula_term_attr}}, \code{\link{get_attr_prop}},
 #'          \code{\link{update_nwattr}}.
 #' @keywords netUtils internal
 #' @export
@@ -617,11 +617,11 @@ edgelist_meanage <- function(x, el) {
 #' @param nw The \code{networkDynamic} object contained in the \code{netsim}
 #'        simulation.
 #' @param fterms Vector of attributes used in formation formula, usually as
-#'        output of \code{\link{get_formula_terms}}.
+#'        output of \code{\link{get_formula_term_attr}}.
 #' @param only.formula Limit the tables to those terms only in \code{fterms},
 #'        otherwise output proportions for all attributes on the network object.
 #'
-#' @seealso \code{\link{get_formula_terms}}, \code{\link{copy_toall_attr}},
+#' @seealso \code{\link{get_formula_term_attr}}, \code{\link{copy_toall_attr}},
 #'          \code{\link{update_nwattr}}.
 #' @keywords netUtils internal
 #' @export
@@ -644,32 +644,36 @@ get_attr_prop <- function(nw, fterms, only.formula = TRUE) {
 }
 
 
-#' @title Outputs Formula Terms into a Character Vector
+#' @title Outputs ERGM Formula Attributes into a Character Vector
 #'
 #' @description Given a formation formula for a network model, outputs it into
-#'              a character vector of terms to be used in \code{netsim}
+#'              a character vector of vertex attributes to be used in \code{netsim}
 #'              simulations.
 #'
-#' @param formula Right-hand sided formation formula.
+#' @param form an ergm model formula
+#' @param nw a network object
 #'
-#' @seealso \code{\link{copy_toall_attr}}, \code{\link{get_attr_prop}},
-#'          \code{\link{update_nwattr}}.
-#' @keywords netUtils internal
 #' @export
 #'
-get_formula_terms <- function(formula) {
-  fterms <- attributes(terms.formula(formula))$term.labels
-  fterms <- strsplit(fterms, split = "[\"]")
-  tl <- sapply(fterms, length)
-  if (all(tl == 1)) {
-    fterms <- NULL
-  } else {
-    fterms <- fterms[tl > 1]
-    fterms <- unique(sapply(fterms, function(x) x[2]))
-  }
-  return(fterms)
-}
+get_formula_term_attr <- function(form, nw) {
 
+  nw_attr <- names(nw$val[[1]])
+  nw_attr <- setdiff(nw_attr, c("active", "vertex.names", "na"))
+
+  if (length(nw_attr) == 0) {
+    return(NULL)
+  }
+  matches <- sapply(nw_attr, function(x) grepl(x, form))
+  matches <- colSums(matches)
+
+  out <- names(matches)[which(matches == 1)]
+  if (length(out) == 0) {
+    return(NULL)
+  } else {
+    return(out)
+  }
+
+}
 
 #' @title Mode Numbers for Bipartite Network
 #'

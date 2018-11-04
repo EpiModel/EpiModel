@@ -60,7 +60,7 @@ resim_nets <- function(dat, at) {
   nwparam <- get_nwparam(dat)
 
   # Serosorting model check
-  statOnNw <- ("status" %in% get_formula_terms(nwparam$formation))
+  statOnNw <- ("status" %in% dat$temp$fterms)
   status <- dat$attr$status
   if (statOnNw == TRUE && length(unique(status)) == 1) {
     stop("Stopping simulation because status in formation formula and ",

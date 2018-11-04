@@ -253,7 +253,7 @@ crosscheck.net <- function(x, param, init, control) {
     # Defaults ----------------------------------------------------------------
 
     # Is status in network formation formula?
-    statOnNw <- ("status" %in% get_formula_terms(x$formation))
+    statOnNw <- ("status" %in% get_formula_term_attr(x$formation, x$fit$network))
 
     # Set dependent modeling defaults if vital or status on nw
     if (is.null(control$depend)) {

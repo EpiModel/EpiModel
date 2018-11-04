@@ -58,25 +58,23 @@ initialize.net <- function(x, param, init, control, s) {
 
     # Initialization ----------------------------------------------------------
 
-    ## Infection Status and Time Modules
-    dat <- init_status.net(dat)
-
-
     ## Initialize persistent IDs
     if (control$use.pids == TRUE) {
       dat$nw <- init_pids(dat$nw, dat$control$pid.prefix)
     }
 
-
     ## Pull network val to attr
     form <- get_nwparam(dat)$formation
-    fterms <- get_formula_terms(form)
+    fterms <- get_formula_term_attr(form, nw)
     dat <- copy_toall_attr(dat, at = 1, fterms)
 
-
     ## Store current proportions of attr
+    dat$temp$fterms <- fterms
     dat$temp$t1.tab <- get_attr_prop(dat$nw, fterms)
 
+
+    ## Infection Status and Time Modules
+    dat <- init_status.net(dat)
 
     ## Get initial prevalence
     dat <- get_prev.net(dat, at = 1)
@@ -143,8 +141,7 @@ init_status.net <- function(dat) {
 
   status.vector <- dat$init$status.vector
   num <- network.size(dat$nw)
-  form <- get_nwparam(dat)$form
-  statOnNw <- "status" %in% get_formula_terms(form)
+  statOnNw <- "status" %in% dat$temp$fterms
 
   modes <- dat$param$modes
   if (modes == 1) {

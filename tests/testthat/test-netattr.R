@@ -48,7 +48,7 @@ test_that("SIR model with epi.by parameter", {
 
 
 test_that("Serosorting model in open population", {
-  n <- 50
+  n <- 100
   nw <- network.initialize(n, directed = FALSE)
 
   prev <- 0.2
@@ -59,7 +59,7 @@ test_that("Serosorting model in open population", {
 
   formation <- ~edges + nodefactor("status", base = 1) +
                 nodematch("status") + nodematch("race")
-  target.stats <- c(18, 3, 15, 10)
+  target.stats <- c(36, 55, 25, 18)
   coef.diss <- dissolution_coefs(dissolution = ~offset(edges), 50, d.rate = 0.01)
   est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 

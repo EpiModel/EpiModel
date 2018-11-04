@@ -12,14 +12,14 @@ copy_toall_attr(dat, at, fterms)
 \item{at}{Current time step.}
 
 \item{fterms}{Vector of attributes used in formation formula, usually as
-output of \code{\link{get_formula_terms}}.}
+output of \code{\link{get_formula_term_attr}}.}
 }
 \description{
 Copies the vertex attributes stored on the network object to the
              master attr list in the dat data object.
 }
 \seealso{
-\code{\link{get_formula_terms}}, \code{\link{get_attr_prop}},
+\code{\link{get_formula_term_attr}}, \code{\link{get_attr_prop}},
          \code{\link{update_nwattr}}.
 }
 \keyword{internal}
