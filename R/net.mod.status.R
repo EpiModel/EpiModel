@@ -126,9 +126,7 @@ infection.net <- function(dat, at) {
           dat$attr$status[idsNewInf] <- "i"
           dat$attr$infTime[idsNewInf] <- at
 
-          form <- get_nwparam(dat)$formation
-          fterms <- get_formula_terms(form)
-          if ("status" %in% fterms) {
+          if ("status" %in% dat$temp$fterms) {
             nw <- set.vertex.attribute(nw, "status", dat$attr$status)
           }
         }
@@ -339,9 +337,7 @@ recovery.net <- function(dat, at) {
   }
 
   dat$attr$status <- status
-  form <- get_nwparam(dat)$formation
-  fterms <- get_formula_terms(form)
-  if ("status" %in% fterms) {
+  if ("status" %in% dat$temp$fterms) {
     dat$nw <- set.vertex.attribute(dat$nw, "status", dat$attr$status)
   }
 

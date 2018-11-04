@@ -328,8 +328,7 @@ arrivals.net <- function(dat, at) {
   if (length(newNodes) > 0) {
 
     # Set attributes on nw
-    form <- get_nwparam(dat)$formation
-    fterms <- get_formula_terms(form)
+    fterms <- dat$temp$fterms
     curr.tab <- get_attr_prop(dat$nw, fterms)
     if (length(curr.tab) > 0) {
       dat$nw <- update_nwattr(dat$nw, newNodes, dat$control$attr.rules,

@@ -11,7 +11,7 @@ get_attr_prop(nw, fterms, only.formula = TRUE)
 simulation.}
 
 \item{fterms}{Vector of attributes used in formation formula, usually as
-output of \code{\link{get_formula_terms}}.}
+output of \code{\link{get_formula_term_attr}}.}
 
 \item{only.formula}{Limit the tables to those terms only in \code{fterms},
 otherwise output proportions for all attributes on the network object.}
@@ -22,7 +22,7 @@ Calculates the proportional distribution of each vertex attribute
              attributes contained in the formation formula only.
 }
 \seealso{
-\code{\link{get_formula_terms}}, \code{\link{copy_toall_attr}},
+\code{\link{get_formula_term_attr}}, \code{\link{copy_toall_attr}},
          \code{\link{update_nwattr}}.
 }
 \keyword{internal}

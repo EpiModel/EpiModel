@@ -199,3 +199,24 @@ test_that("dissolution_coefs returns appropriate error for incompatible departur
   expect_that(dissolution_coefs(dissolution, duration = 60, d.rate = 1/60), throws_error(err.msg))
   expect_that(dissolution_coefs(dissolution, duration = 60, d.rate = 0.01), throws_error(err.msg))
 })
+
+
+test_that("get_formula_term_attr checks", {
+  nw <- network.initialize(100, directed = FALSE)
+
+  expect_null(get_formula_term_attr(~edges, nw))
+
+  nw <- network.initialize(100, directed = FALSE)
+  riskg <- sample(rep(1:2, each = 50))
+  race <- sample(rep(0:1, each = 50))
+  nw <- set.vertex.attribute(nw, "riskg", riskg)
+  nw <- set.vertex.attribute(nw, "race", race)
+  expect_null(get_formula_term_attr(~edges, nw))
+
+  expect_equal(get_formula_term_attr(~edges + nodefactor("race"), nw), "race")
+  expect_equal(get_formula_term_attr(~edges + nodefactor("race") + nodematch("riskg"), nw),
+               c("riskg", "race"))
+  expect_equal(get_formula_term_attr(~edges + nodefactor(c("race", "riskg")) + nodematch("riskg"), nw),
+               c("riskg", "race"))
+
+})
