@@ -75,14 +75,6 @@ test_that("Error if incorrect coef.diss parameter", {
                 verbose = FALSE))
 })
 
-test_that("output = sim", {
-  nw <- network.initialize(n = 50, directed = FALSE)
-  est <- netest(nw, formation = ~edges, target.stats = 25,
-                coef.diss = dissolution_coefs(~offset(edges), 10, 0),
-                output = "sim", verbose = FALSE)
-  expect_is(est$fit, "network")
-})
-
 test_that("update_dissolution tests", {
   nw <- network.initialize(1000, directed = FALSE)
 
