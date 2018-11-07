@@ -244,16 +244,12 @@ crosscheck.net <- function(x, param, init, control) {
       stop("control must an object of class control.net", call. = FALSE)
     }
 
-    if (class(x$fit) == "network") {
-      nw <- x$fit
-    } else {
-      nw <- x$fit$network
-    }
+    nw <- x$fit$newnetwork
 
     # Defaults ----------------------------------------------------------------
 
     # Is status in network formation formula?
-    statOnNw <- ("status" %in% get_formula_term_attr(x$formation, x$fit$network))
+    statOnNw <- ("status" %in% get_formula_term_attr(x$formation, nw))
 
     # Set dependent modeling defaults if vital or status on nw
     if (is.null(control$depend)) {
