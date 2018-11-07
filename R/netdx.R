@@ -200,7 +200,8 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps, nwstats.formula = "forma
                                 coef = x$coef.form.crude,
                                 constraints = constraints)
           } else {
-            fit.sim <- simulate(fit, control = set.control.ergm)
+            fit.sim <- simulate(fit, basis = fit$newnetwork,
+                                control = set.control.ergm)
           }
           diag.sim[[i]] <- simulate(fit.sim,
                                     formation = formation,
@@ -230,7 +231,8 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps, nwstats.formula = "forma
                                 coef = x$coef.form.crude,
                                 constraints = constraints)
           } else {
-            fit.sim <- simulate(fit, control = set.control.ergm)
+            fit.sim <- simulate(fit, basis = fit$newnetwork,
+                                control = set.control.ergm)
           }
           simulate(fit.sim,
                    formation = formation,

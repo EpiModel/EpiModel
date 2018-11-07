@@ -35,7 +35,8 @@ initialize.net <- function(x, param, init, control, s) {
                      coef = x$coef.form.crude,
                      constraints = x$constraints)
     } else {
-      nw <- simulate(x$fit, control = control$set.control.ergm)
+      nw <- simulate(x$fit, basis = x$fit$newnetwork,
+                     control = control$set.control.ergm)
     }
     modes <- ifelse(nw %n% "bipartite", 2, 1)
     if (control$depend == TRUE) {
