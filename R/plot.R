@@ -101,8 +101,6 @@
 plot.dcm <- function(x, y, popfrac = FALSE, run, col, lwd, lty, alpha = 0.9,
                      legend, leg.name, leg.cex = 0.8, axs = "r", grid = FALSE, add = FALSE, ...) {
 
-
-
   ## Set missing flags
   noy <- ifelse(missing(y), TRUE, FALSE)
   norun <- ifelse(missing(run), TRUE, FALSE)
@@ -499,8 +497,6 @@ plot.icm <- function(x, y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col, si
                      mean.col, mean.lwd = 2, mean.lty = 1, qnts = 0.5, qnts.col,
                      qnts.alpha, qnts.smooth = TRUE, legend, leg.cex = 0.8,
                      axs = "r", grid = FALSE, add = FALSE, ...) {
-
-
 
   ## Model dimensions and class ##
   nsteps <- x$control$nsteps
@@ -979,8 +975,6 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
                        qnts = 0.5, qnts.col, qnts.alpha, qnts.smooth = TRUE,
                        targ.line = TRUE, targ.col, targ.lwd = 2, targ.lty = 2,
                        plots.joined, legend, grid = FALSE, ...) {
-
-
 
   # Checks and Variables ----------------------------------------------------
 
@@ -2040,8 +2034,6 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
                         shp.bip = NULL, stats, targ.line = TRUE, targ.col,
                         targ.lwd = 2, targ.lty = 2, plots.joined, ...) {
 
-
-
   # type check
   if ((type %in% c("epi", "network", "formation")) == FALSE) {
     stop("type must be one of: \"epi\", \"network\", or \"formation\" ", call. = FALSE)
@@ -2839,7 +2831,6 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
           } else {
             ylim <- c(min * 0.9, max * 1.1)
           }
-
 
         plot(x = 1, y = 1,
              xlim = xlim,
