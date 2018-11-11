@@ -23,7 +23,7 @@
 #' \code{mod_<disease type>_<number of groups>_<vital dynamics>}. The supported
 #' disease types are SI, SIS, and SIR; the number of groups are 1 or 2; and the
 #' vital dynamic options are closed (fixed population composition) or open (with
-#' births and deaths).
+#' arrivals and departures).
 #' @name dcm.mods
 #'
 NULL
@@ -78,17 +78,17 @@ mod_SI_1g_op <- function(t, t0, parms) {
 
     # Flows
     si.flow <- lambda * s.num
-    b.flow <- b.rate * num
+    a.flow <- a.rate * num
     ds.flow <- ds.rate * s.num
     di.flow <- di.rate * i.num
 
     # ODEs
-    dS <- -si.flow + b.flow - ds.flow
+    dS <- -si.flow + a.flow - ds.flow
     dI <- si.flow - di.flow
 
     # Output
     list(c(dS, dI,
-           si.flow, b.flow, ds.flow, di.flow),
+           si.flow, a.flow, ds.flow, di.flow),
          num = num)
   })
 }
@@ -173,12 +173,12 @@ mod_SI_2g_op <- function(t, t0, parms) {
     # Flows
     si.flow <- lambda.g1 * s.num
     si.flow.g2 <- lambda.g2 * s.num.g2
-    if (is.na(b.rate.g2)) {
-      b.flow <- b.rate * num.g1
-      b.flow.g2 <- b.rate * num.g1
+    if (is.na(a.rate.g2)) {
+      a.flow <- a.rate * num.g1
+      a.flow.g2 <- a.rate * num.g1
     } else {
-      b.flow <- b.rate * num.g1
-      b.flow.g2 <- b.rate.g2 * num.g2
+      a.flow <- a.rate * num.g1
+      a.flow.g2 <- a.rate.g2 * num.g2
     }
     ds.flow <- ds.rate * s.num
     ds.flow.g2 <- ds.rate.g2 * s.num.g2
@@ -186,15 +186,15 @@ mod_SI_2g_op <- function(t, t0, parms) {
     di.flow.g2 <- di.rate.g2 * i.num.g2
 
     # ODEs
-    dSm1 <- -si.flow + b.flow - ds.flow
+    dSm1 <- -si.flow + a.flow - ds.flow
     dIm1 <-  si.flow - di.flow
-    dSm2 <- -si.flow.g2 + b.flow.g2 - ds.flow.g2
+    dSm2 <- -si.flow.g2 + a.flow.g2 - ds.flow.g2
     dIm2 <-  si.flow.g2 - di.flow.g2
 
     # Output
     list(c(dSm1, dIm1, dSm2, dIm2,
-           si.flow, b.flow, ds.flow, di.flow,
-           si.flow.g2, b.flow.g2, ds.flow.g2, di.flow.g2),
+           si.flow, a.flow, ds.flow, di.flow,
+           si.flow.g2, a.flow.g2, ds.flow.g2, di.flow.g2),
          num = num.g1,
          num.g2 = num.g2)
   })
@@ -253,19 +253,19 @@ mod_SIR_1g_op <- function(t, t0, parms) {
     # Flows
     si.flow <- lambda * s.num
     ir.flow <- rec.rate * i.num
-    b.flow <- b.rate * num
+    a.flow <- a.rate * num
     ds.flow <- ds.rate * s.num
     di.flow <- di.rate * i.num
     dr.flow <- dr.rate * r.num
 
     # ODEs
-    dS <- -si.flow + b.flow - ds.flow
+    dS <- -si.flow + a.flow - ds.flow
     dI <- si.flow - ir.flow - di.flow
     dR <- ir.flow - dr.flow
 
     # Output
     list(c(dS, dI, dR,
-           si.flow, ir.flow, b.flow,
+           si.flow, ir.flow, a.flow,
            ds.flow, di.flow, dr.flow),
          num = num)
   })
@@ -358,12 +358,12 @@ mod_SIR_2g_op <- function(t, t0, parms) {
     si.flow.g2 <- lambda.g2 * s.num.g2
     ir.flow <- rec.rate * i.num
     ir.flow.g2 <- rec.rate.g2 * i.num.g2
-    if (is.na(b.rate.g2)) {
-      b.flow <- b.rate * num.g1
-      b.flow.g2 <- b.rate * num.g1
+    if (is.na(a.rate.g2)) {
+      a.flow <- a.rate * num.g1
+      a.flow.g2 <- a.rate * num.g1
     } else {
-      b.flow <- b.rate * num.g1
-      b.flow.g2 <- b.rate.g2 * num.g2
+      a.flow <- a.rate * num.g1
+      a.flow.g2 <- a.rate.g2 * num.g2
     }
     ds.flow <- ds.rate * s.num
     ds.flow.g2 <- ds.rate.g2 * s.num.g2
@@ -373,17 +373,17 @@ mod_SIR_2g_op <- function(t, t0, parms) {
     dr.flow.g2 <- dr.rate.g2 * r.num.g2
 
     # ODEs
-    dSm1 <- -si.flow + b.flow - ds.flow
+    dSm1 <- -si.flow + a.flow - ds.flow
     dIm1 <- si.flow - ir.flow - di.flow
     dRm1 <- ir.flow - dr.flow
-    dSm2 <- -si.flow.g2 + b.flow.g2 - ds.flow.g2
+    dSm2 <- -si.flow.g2 + a.flow.g2 - ds.flow.g2
     dIm2 <- si.flow.g2 - ir.flow.g2 - di.flow.g2
     dRm2 <- ir.flow.g2 - dr.flow.g2
 
     # Output
     list(c(dSm1, dIm1, dRm1, dSm2, dIm2, dRm2,
-           si.flow, ir.flow, b.flow, ds.flow, di.flow, dr.flow,
-           si.flow.g2, ir.flow.g2, b.flow.g2, ds.flow.g2,
+           si.flow, ir.flow, a.flow, ds.flow, di.flow, dr.flow,
+           si.flow.g2, ir.flow.g2, a.flow.g2, ds.flow.g2,
            di.flow.g2, dr.flow.g2),
          num = num.g1, num.g2 = num.g2)
   })
@@ -440,16 +440,16 @@ mod_SIS_1g_op <- function(t, t0, parms) {
     # Flows
     si.flow <- lambda * s.num
     is.flow <- rec.rate * i.num
-    b.flow <- b.rate * num
+    a.flow <- a.rate * num
     ds.flow <- ds.rate * s.num
     di.flow <- di.rate * i.num
 
     # ODEs
-    dS <- -si.flow + is.flow + b.flow - ds.flow
+    dS <- -si.flow + is.flow + a.flow - ds.flow
     dI <- si.flow - is.flow - di.flow
 
     # Output
-    list(c(dS, dI, si.flow, is.flow, b.flow, ds.flow, di.flow),
+    list(c(dS, dI, si.flow, is.flow, a.flow, ds.flow, di.flow),
          num = num)
   })
 }
@@ -538,12 +538,12 @@ mod_SIS_2g_op <- function(t, t0, parms) {
     si.flow.g2 <- lambda.g2 * s.num.g2
     is.flow <- rec.rate * i.num
     is.flow.g2 <- rec.rate.g2 * i.num.g2
-    if (is.na(b.rate.g2)) {
-      b.flow <- b.rate * num.g1
-      b.flow.g2 <- b.rate * num.g1
+    if (is.na(a.rate.g2)) {
+      a.flow <- a.rate * num.g1
+      a.flow.g2 <- a.rate * num.g1
     } else {
-      b.flow <- b.rate * num.g1
-      b.flow.g2 <- b.rate.g2 * num.g2
+      a.flow <- a.rate * num.g1
+      a.flow.g2 <- a.rate.g2 * num.g2
     }
     ds.flow <- ds.rate * s.num
     ds.flow.g2 <- ds.rate.g2 * s.num.g2
@@ -551,15 +551,15 @@ mod_SIS_2g_op <- function(t, t0, parms) {
     di.flow.g2 <- di.rate.g2 * i.num.g2
 
     # ODEs
-    dSm1 <- -si.flow + is.flow + b.flow - ds.flow
+    dSm1 <- -si.flow + is.flow + a.flow - ds.flow
     dIm1 <-  si.flow - is.flow - di.flow
-    dSm2 <- -si.flow.g2 + is.flow.g2 + b.flow.g2 - ds.flow.g2
+    dSm2 <- -si.flow.g2 + is.flow.g2 + a.flow.g2 - ds.flow.g2
     dIm2 <-  si.flow.g2 - is.flow.g2 - di.flow.g2
 
     # Output
     list(c(dSm1, dIm1, dSm2, dIm2,
-           si.flow, is.flow, b.flow, ds.flow, di.flow,
-           si.flow.g2, is.flow.g2, b.flow.g2, ds.flow.g2, di.flow.g2),
+           si.flow, is.flow, a.flow, ds.flow, di.flow,
+           si.flow.g2, is.flow.g2, a.flow.g2, ds.flow.g2, di.flow.g2),
          num = num.g1, num.g2 = num.g2)
   })
 }

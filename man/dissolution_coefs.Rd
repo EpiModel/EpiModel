@@ -13,7 +13,7 @@ models.}
 
 \item{duration}{A vector of mean edge durations in arbitrary time units.}
 
-\item{d.rate}{Death or exit rate from the population, as a single homogenous
+\item{d.rate}{Departure or exit rate from the population, as a single homogenous
 rate that applies to the entire population.}
 }
 \value{
@@ -25,8 +25,8 @@ A list of class \code{disscoef} with the following elements:
  \item \strong{coef.crude:} mean durations transformed into logit
        coefficients.
  \item \strong{coef.adj:} crude coefficients adjusted for the risk of
-       death on edge persistence, if the \code{d.rate} argument is supplied.
- \item \strong{d.rate:} the death rate.
+       departure on edge persistence, if the \code{d.rate} argument is supplied.
+ \item \strong{d.rate:} the departure rate.
 }
 }
 \description{
@@ -41,9 +41,9 @@ used in a network model estimated with \code{\link{netest}}:
  \item \strong{Transformation:} the mean duration of edges in a network are
        mathematically transformed to logit coefficients.
  \item \strong{Adjustment:} in a dynamic network simulation in an open
-       population (in which there are deaths), it is further necessary to
+       population (in which there are departures), it is further necessary to
        adjust these coefficients for dynamic simulations; this upward adjustment
-       accounts for death as a competing risk to edge dissolution.
+       accounts for departure as a competing risk to edge dissolution.
 }
 
 The current dissolution models supported by this function and in network
@@ -68,20 +68,20 @@ model estimation in \code{\link{netest}} are as follows:
 }
 }
 \examples{
-# Homogeneous dissolution model with no deaths
+# Homogeneous dissolution model with no departures
 dissolution_coefs(dissolution = ~offset(edges), duration = 25)
 
-# Homogeneous dissolution model with deaths
+# Homogeneous dissolution model with departures
 dissolution_coefs(dissolution = ~offset(edges), duration = 25,
                   d.rate = 0.001)
 
 # Heterogeneous dissolution model in which same-race edges have
-# shorter duration compared to mixed-race edges, with no deaths
+# shorter duration compared to mixed-race edges, with no departures
 dissolution_coefs(dissolution = ~offset(edges) + offset(nodematch("race")),
                   duration = c(20, 10))
 
 # Heterogeneous dissolution model in which same-race edges have
-# shorter duration compared to mixed-race edges, with deaths
+# shorter duration compared to mixed-race edges, with departures
 dissolution_coefs(dissolution = ~offset(edges) + offset(nodematch("race")),
                   duration = c(20, 10), d.rate = 0.001)
 

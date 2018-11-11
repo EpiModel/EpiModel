@@ -41,7 +41,7 @@
 #' param <- param.dcm(inf.prob = 0.2, inf.prob.g2 = 0.1,
 #'                    act.rate = 3, balance = "g1",
 #'                    rec.rate = 1/50, rec.rate.g2 = 1/50,
-#'                    b.rate = 1/100, b.rate.g2 = NA,
+#'                    a.rate = 1/100, a.rate.g2 = NA,
 #'                    ds.rate = 1/100, ds.rate.g2 = 1/100,
 #'                    di.rate = 1/90, di.rate.g2 = 1/90,
 #'                    dr.rate = 1/100, dr.rate.g2 = 1/100)

@@ -4,10 +4,10 @@
 \alias{control.icm}
 \title{Control Settings for Stochastic Individual Contact Models}
 \usage{
-control.icm(type, nsteps, nsims = 1, rec.rand = TRUE, b.rand = TRUE,
+control.icm(type, nsteps, nsims = 1, rec.rand = TRUE, a.rand = TRUE,
   d.rand = TRUE, initialize.FUN = initialize.icm,
   infection.FUN = infection.icm, recovery.FUN = recovery.icm,
-  deaths.FUN = deaths.icm, births.FUN = births.icm,
+  departures.FUN = departures.icm, arrivals.FUN = arrivals.icm,
   get_prev.FUN = get_prev.icm, verbose = FALSE, verbose.int = 0,
   skip.check = FALSE, ...)
 }
@@ -28,15 +28,15 @@ a binomial distribution with the probability equal to \code{rec.rate}.
 If \code{FALSE}, then a deterministic rounded count of the expectation
 implied by that rate.}
 
-\item{b.rand}{If \code{TRUE}, use a stochastic birth model, with the
-number of births at each time step a function of random draws from a
-binomial distribution with the probability equal to the governing birth
+\item{a.rand}{If \code{TRUE}, use a stochastic arrival model, with the
+number of arrivals at each time step a function of random draws from a
+binomial distribution with the probability equal to the governing arrival
 rates. If \code{FALSE}, then a deterministic rounded count of the
 expectation implied by those rates.}
 
-\item{d.rand}{If \code{TRUE}, use a stochastic death model, with the number of
-deaths at each time step a function of random draws from a binomial
-distribution with the probability equal to the governing death rates.
+\item{d.rand}{If \code{TRUE}, use a stochastic departure model, with the number of
+departures at each time step a function of random draws from a binomial
+distribution with the probability equal to the governing departure rates.
 If \code{FALSE}, then a deterministic rounded count of the expectation
 implied by those rates.}
 
@@ -49,11 +49,11 @@ function of \code{\link{infection.icm}}.}
 \item{recovery.FUN}{Module to simulate disease recovery, with the default
 function of \code{\link{recovery.icm}}.}
 
-\item{deaths.FUN}{Module to simulate deaths or exits, with the default
-function of \code{\link{deaths.icm}}.}
+\item{departures.FUN}{Module to simulate departures or exits, with the default
+function of \code{\link{departures.icm}}.}
 
-\item{births.FUN}{Module to simulate births or entries, with the default
-function of \code{\link{births.icm}}.}
+\item{arrivals.FUN}{Module to simulate arrivals or entries, with the default
+function of \code{\link{arrivals.icm}}.}
 
 \item{get_prev.FUN}{Module to calculate disease prevalence at each time step,
 with the default function of \code{\link{get_prev.icm}}.}

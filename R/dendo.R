@@ -7,10 +7,10 @@
 #' @param x An object of class \code{"transmat"}, the output from
 #'        \code{\link{get_transmat}}.
 #' @param collapse.singles logical, DEPRECATED
-#' @param vertex.exit.times  optional numeric vector providing the time of death
+#' @param vertex.exit.times  optional numeric vector providing the time of departure
 #'        of vertices, to be used to scale the lengths of branches reaching to
 #'        the tips. Index position on vector corresponds to network id. NA indicates
-#'        no death, so branch will extend to the end of the tree.
+#'        no departure, so branch will extend to the end of the tree.
 #' @param ...  further arguments (unused)
 #'
 #' @details

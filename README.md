@@ -119,6 +119,8 @@ EpiModel and its [extension packages](https://github.com/statnet/EpiModelHIV) ha
 
 12. Stansfield SE, Mittler JE, Gottlieb GS, Murphy JT, Hamilton DT, Detels R, Wolinsky SM, Jacobson LP, Margolick JB, Rinaldo CR, Herbeck JT, Goodreau SM. Sexual Role and HIV-1 Set Point Viral Load among Men who Have Sex with Men. _Epidemics._ Epub DOI: 10.1016/j.epidem.2018.08.006. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/30193771)
 
+13. Hamilton DT, Goodreau SM, Jenness SM, Sullivan PS, Wang LY, Dunville RL, Barrios LC, Rosenberg ES. Potential Impact of HIV Preexposure Prophylaxis Among Black and White Adolescent Sexual Minority Males: A Modeling Study. _American Journal of Public Health._ 2018; 108(S4): S284–S291. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/30383415)
+
 
 #### Other
 
@@ -126,13 +128,13 @@ EpiModel and its [extension packages](https://github.com/statnet/EpiModelHIV) ha
 
 2. Webber QM, Brigham RM, Park AD, Gillam EH, O’Shea TJ, Willis CK. Social network characteristics and predicted pathogen transmission in summer colonies of female big brown bats (Eptesicus fuscus). _Behavioral Ecology and Sociobiology._ 2016;70(5): 701-12. [[LINK]](https://link.springer.com/article/10.1007/s00265-016-2093-3). 
 
-3. Goldstein ND, Eppes SC, Mackley A, Tuttle D, Paul DA. A Network Model of Hand Hygiene: How Good Is Good Enough to Stop the Spread of MRSA? _Infect Control Hosp Epidemiol._ 2017:1-8. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/28656884)
+3. Goldstein ND, Eppes SC, Mackley A, Tuttle D, Paul DA. A Network Model of Hand Hygiene: How Good Is Good Enough to Stop the Spread of MRSA? _Infect Control Hosp Epidemiol._ 2017; 38(8): 945-52. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/28656884)
 
 4. White LA, Forester JD, Craft ME. Covariation between the physiological and behavioral components of pathogen transmission: Host heterogeneity determines epidemic outcomes. _Oikos._ 2018; 127(4): 538-52. [[LINK]](http://onlinelibrary.wiley.com/doi/10.1111/oik.04527/full).
 
 5. Robinson SJ, Barbieri MM, Murphy S, Baker JD, Harting AL, Craft ME, Littnan CL. Model recommendations meet management reality: implementation and evaluation of a network-informed vaccination effort for endangered Hawaiian monk seals. _Proceeding of the Royal Society B._ 2018; 285(1870): 20171899. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/29321294).
 
-6. Goldstein ND, Jenness SM, Tuttle D, Power M, Paul DA, Eppes SC. Evaluating a neonatal intensive care unit HRSA surveillance programme using agent-based network modeling. _Journal of Hospital Infection._ 2018. Epub DOI: 10.1016/j.jhin.2018.05.002. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/29751022)
+6. Goldstein ND, Jenness SM, Tuttle D, Power M, Paul DA, Eppes SC. Evaluating a neonatal intensive care unit HRSA surveillance programme using agent-based network modeling. _Journal of Hospital Infection._ 2018; 100(3): 337-43.  [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/29751022)
 
 7. Haeussler K, Hout AV, Baio G. A dynamic Bayesian Markov model for health economic evaluations of interventions against infectious diseases. _arXiv._ arXiv:1512.06881. [[LINK]](https://arxiv.org/abs/1512.06881). 
 

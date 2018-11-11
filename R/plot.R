@@ -77,7 +77,7 @@
 #' @examples
 #' # Deterministic SIR model with varying act rate
 #' param <- param.dcm(inf.prob = 0.2, act.rate = 1:10,
-#'                    rec.rate = 1/3, b.rate = 0.011, ds.rate = 0.01,
+#'                    rec.rate = 1/3, a.rate = 0.011, ds.rate = 0.01,
 #'                    di.rate = 0.03, dr.rate = 0.01)
 #' init <- init.dcm(s.num = 1000, i.num = 1, r.num = 0)
 #' control <- control.dcm(type = "SIR", nsteps = 100, dt = 0.25)
@@ -2932,7 +2932,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
 #' @examples
 #' ## Example 1: DCM SIR model with varying act.rate
 #' param <- param.dcm(inf.prob = 0.2, act.rate = 5:7,
-#'                    rec.rate = 1/3, b.rate = 1/90, ds.rate = 1/100,
+#'                    rec.rate = 1/3, a.rate = 1/90, ds.rate = 1/100,
 #'                    di.rate = 1/35, dr.rate = 1/100)
 #' init <- init.dcm(s.num = 1000, i.num = 1, r.num = 0)
 #' control <- control.dcm(type = "SIR", nsteps = 25, verbose = FALSE)
@@ -2941,7 +2941,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
 #'
 #' ## Example 2: ICM SIR model with 3 simulations
 #' param <- param.icm(inf.prob = 0.2, act.rate = 3, rec.rate = 1/50,
-#'                    b.rate = 1/100, ds.rate = 1/100,
+#'                    a.rate = 1/100, ds.rate = 1/100,
 #'                    di.rate = 1/90, dr.rate = 1/100)
 #' init <- init.icm(s.num = 500, i.num = 1, r.num = 0)
 #' control <- control.icm(type = "SIR", nsteps = 25,
@@ -3004,7 +3004,7 @@ comp_plot.dcm <- function(x, at = 1, digits = 3, run = 1, ...) {
     if (vital == TRUE) {
       varrow(22, 40, "ds.flow", df$ds.flow, dir = "out")
       varrow(57, 40, "di.flow", df$di.flow, dir = "out")
-      varrow(22, 40, "b.flow", df$b.flow, dir = "in")
+      varrow(22, 40, "a.flow", df$a.flow, dir = "in")
     }
   }
 
@@ -3019,7 +3019,7 @@ comp_plot.dcm <- function(x, at = 1, digits = 3, run = 1, ...) {
       varrow(5, 40, "ds.flow", df$ds.flow, dir = "out")
       varrow(40, 40, "di.flow", df$di.flow, dir = "out")
       varrow(75, 40, "dr.flow", df$dr.flow, dir = "out")
-      varrow(5, 40, "b.flow", df$b.flow, dir = "in")
+      varrow(5, 40, "a.flow", df$a.flow, dir = "in")
     }
   }
 
@@ -3032,7 +3032,7 @@ comp_plot.dcm <- function(x, at = 1, digits = 3, run = 1, ...) {
     if (vital == TRUE) {
       varrow(22, 40, "ds.flow", df$ds.flow, dir = "out")
       varrow(57, 40, "di.flow", df$di.flow, dir = "out")
-      varrow(22, 40, "b.flow", df$b.flow, dir = "in")
+      varrow(22, 40, "a.flow", df$a.flow, dir = "in")
     }
   }
 
@@ -3094,7 +3094,7 @@ comp_plot.icm <- function(x, at = 1, digits = 3, ...) {
     if (vital == TRUE) {
       varrow(22, 40, "ds.flow", df.mn$ds.flow, dir = "out")
       varrow(57, 40, "di.flow", df.mn$di.flow, dir = "out")
-      varrow(22, 40, "b.flow", df.mn$b.flow, dir = "in")
+      varrow(22, 40, "a.flow", df.mn$a.flow, dir = "in")
     }
   }
 
@@ -3109,7 +3109,7 @@ comp_plot.icm <- function(x, at = 1, digits = 3, ...) {
       varrow(5, 40, "ds.flow", df.mn$ds.flow, dir = "out")
       varrow(40, 40, "di.flow", df.mn$di.flow, dir = "out")
       varrow(75, 40, "dr.flow", df.mn$dr.flow, dir = "out")
-      varrow(5, 40, "b.flow", df.mn$b.flow, dir = "in")
+      varrow(5, 40, "a.flow", df.mn$a.flow, dir = "in")
     }
   }
 
@@ -3122,7 +3122,7 @@ comp_plot.icm <- function(x, at = 1, digits = 3, ...) {
     if (vital == TRUE) {
       varrow(22, 40, "ds.flow", df.mn$ds.flow, dir = "out")
       varrow(57, 40, "di.flow", df.mn$di.flow, dir = "out")
-      varrow(22, 40, "b.flow", df.mn$b.flow, dir = "in")
+      varrow(22, 40, "a.flow", df.mn$a.flow, dir = "in")
     }
   }
 

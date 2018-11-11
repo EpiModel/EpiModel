@@ -103,7 +103,7 @@ test_that("merge works for open sims saving nw stats", {
   est <- netest(nw, formation = ~edges, target.stats = 10,
                 coef.diss = dissolution_coefs(~offset(edges), 10, 0),
                 verbose = FALSE)
-  param <- param.net(inf.prob = 0.9, b.rate = 0.01, ds.rate = 0.01, di.rate = 0.01)
+  param <- param.net(inf.prob = 0.9, a.rate = 0.01, ds.rate = 0.01, di.rate = 0.01)
   init <- init.net(i.num = 1)
   control <- control.net(type = "SI", nsteps = 5, save.stats = TRUE,
                          nwstats.formula = ~edges + meandeg + degree(0) + concurrent,

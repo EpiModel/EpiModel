@@ -4,9 +4,9 @@
 \alias{param.icm}
 \title{Epidemic Parameters for Stochastic Individual Contact Models}
 \usage{
-param.icm(inf.prob, inter.eff, inter.start, act.rate, rec.rate, b.rate,
+param.icm(inf.prob, inter.eff, inter.start, act.rate, rec.rate, a.rate,
   ds.rate, di.rate, dr.rate, inf.prob.g2, act.rate.g2, rec.rate.g2,
-  b.rate.g2, ds.rate.g2, di.rate.g2, dr.rate.g2, balance, ...)
+  a.rate.g2, ds.rate.g2, di.rate.g2, dr.rate.g2, balance, ...)
 }
 \arguments{
 \item{inf.prob}{Probability of infection per transmissible act between
@@ -33,19 +33,19 @@ reciprocal of the disease duration. For two-group models, this is the
 recovery rate for group 1 persons only. This parameter is only used for
 \code{SIR} and \code{SIS} models.}
 
-\item{b.rate}{Birth or entry rate. For one-group models, the birth rate is the
-rate of new births per person per unit time. For two-group models, the
-birth rate may be parameterized as a rate per group 1 person time (with
-group 1 persons representing females), and with the \code{b.rate.g2}
+\item{a.rate}{Arrival or entry rate. For one-group models, the arrival rate is the
+rate of new arrivals per person per unit time. For two-group models, the
+arrival rate may be parameterized as a rate per group 1 person time (with
+group 1 persons representing females), and with the \code{a.rate.g2}
 rate set as described below.}
 
-\item{ds.rate}{Death or exit rate for susceptible. For two-group models, it
+\item{ds.rate}{Departure or exit rate for susceptible. For two-group models, it
 is the rate for the group 1 susceptible only.}
 
-\item{di.rate}{Death or exit rate for infected. For two-group models, it is
+\item{di.rate}{Departure or exit rate for infected. For two-group models, it is
 the rate for the group 1 infected only.}
 
-\item{dr.rate}{Death or exit rate for recovered. For two-group models, it is
+\item{dr.rate}{Departure or exit rate for recovered. For two-group models, it is
 the rate for the group 1 recovered only. This parameter is only used for
 \code{SIR} models.}
 
@@ -61,18 +61,18 @@ and set using the \code{balance} parameter (see details).}
 or re-susceptibility (in \code{SIS} models) for group 2 persons. This
 parameter is only used for two-group \code{SIR} and \code{SIS} models.}
 
-\item{b.rate.g2}{Birth or entry rate for group 2. This may either be specified
-numerically as the rate of new births per group 2 persons per unit time,
-or as \code{NA} in which case the group 1 rate, \code{b.rate}, governs
+\item{a.rate.g2}{Arrival or entry rate for group 2. This may either be specified
+numerically as the rate of new arrivals per group 2 persons per unit time,
+or as \code{NA} in which case the group 1 rate, \code{a.rate}, governs
 the group 2 rate. The latter is used when, for example, the first group
 is conceptualized as female, and the female population size determines
-the birth rate. Such births are evenly allocated between the two groups.}
+the arrival rate. Such arrivals are evenly allocated between the two groups.}
 
-\item{ds.rate.g2}{Death or exit rate for group 2 susceptible.}
+\item{ds.rate.g2}{Departure or exit rate for group 2 susceptible.}
 
-\item{di.rate.g2}{Death or exit rate for group 2 infected.}
+\item{di.rate.g2}{Departure or exit rate for group 2 infected.}
 
-\item{dr.rate.g2}{Death or exit rate for group 2 recovered. This parameter is
+\item{dr.rate.g2}{Departure or exit rate for group 2 recovered. This parameter is
 only used for \code{SIR} model types.}
 
 \item{balance}{For two-group models, balance the \code{act.rate} to the rate

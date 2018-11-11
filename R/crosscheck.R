@@ -36,7 +36,7 @@ crosscheck.dcm <- function(param, init, control) {
       param$act.rate <- 1
     }
     if (is.null(param$vital)) {
-      if (!is.null(param$b.rate) |
+      if (!is.null(param$a.rate) |
           !is.null(param$ds.rate) |
           !is.null(param$di.rate) |
           !is.null(param$dr.rate)) {
@@ -244,16 +244,12 @@ crosscheck.net <- function(x, param, init, control) {
       stop("control must an object of class control.net", call. = FALSE)
     }
 
-    if (class(x$fit) == "network") {
-      nw <- x$fit
-    } else {
-      nw <- x$fit$network
-    }
+    nw <- x$fit$newnetwork
 
     # Defaults ----------------------------------------------------------------
 
     # Is status in network formation formula?
-    statOnNw <- ("status" %in% get_formula_terms(x$formation))
+    statOnNw <- ("status" %in% get_formula_term_attr(x$formation, nw))
 
     # Set dependent modeling defaults if vital or status on nw
     if (is.null(control$depend)) {
@@ -343,8 +339,8 @@ crosscheck.net <- function(x, param, init, control) {
 
     # Check demographic parameters for bipartite
     if (bip == TRUE & param$vital == TRUE) {
-      if (is.null(param$b.rate.m2)) {
-        stop("Specify b.rate.m2 in param.net", call. = FALSE)
+      if (is.null(param$a.rate.m2)) {
+        stop("Specify a.rate.m2 in param.net", call. = FALSE)
       }
       if (is.null(param$ds.rate.m2)) {
         stop("Specify ds.rate.m2 in param.net", call. = FALSE)

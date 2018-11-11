@@ -8,7 +8,7 @@ test_that("network models can be restarted", {
                     coef.diss = dissolution_coefs(~offset(edges), 10, 0.02),
                     verbose = FALSE)
 
-  param <- param.net(inf.prob = 0.5, act.rate = 2, b.rate = 0.02,
+  param <- param.net(inf.prob = 0.5, act.rate = 2, a.rate = 0.02,
                      ds.rate = 0.02, di.rate = 0.02)
   init <- init.net(i.num = 10)
   control <- control.net(type = "SI", nsteps = 5, nsims = 1,
@@ -38,7 +38,7 @@ test_that("restart error flags", {
                     coef.diss = dissolution_coefs(~offset(edges), 10, 0.02),
                     verbose = FALSE)
 
-  param <- param.net(inf.prob = 0.5, act.rate = 2, b.rate = 0.02,
+  param <- param.net(inf.prob = 0.5, act.rate = 2, a.rate = 0.02,
                      ds.rate = 0.02, di.rate = 0.02)
   init <- init.net(i.num = 10)
   control <- control.net(type = "SI", nsteps = 5,

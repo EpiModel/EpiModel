@@ -205,18 +205,6 @@ test_that("error checking", {
   expect_error(netdx(est), "Specify number of time steps with nsteps")
 })
 
-test_that("pass in netest with sim", {
-  skip_on_cran()
-  num <- 50
-  nw <- network.initialize(num, directed = FALSE)
-  formation <- ~edges
-  target.stats <- 15
-  coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
-  est1 <- netest(nw, formation, target.stats, coef.diss, output = "sim", verbose = FALSE)
-  dx <- netdx(est1, nsims = 1, nsteps = 10, verbose = FALSE)
-
-})
-
 test_that("Full STERGM", {
   skip_on_cran()
   nw <- network.initialize(n = 50, directed = FALSE)

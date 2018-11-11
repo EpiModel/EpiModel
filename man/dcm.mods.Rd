@@ -66,6 +66,6 @@ The naming convention for the models listed here follows the format:
 \code{mod_<disease type>_<number of groups>_<vital dynamics>}. The supported
 disease types are SI, SIS, and SIR; the number of groups are 1 or 2; and the
 vital dynamic options are closed (fixed population composition) or open (with
-births and deaths).
+arrivals and departures).
 }
 \keyword{internal}

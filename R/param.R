@@ -23,16 +23,16 @@
 #'        reciprocal of the disease duration. For two-group models, this is the
 #'        recovery rate for group 1 persons only. This parameter is only used for
 #'        \code{SIR} and \code{SIS} models.
-#' @param b.rate Birth or entry rate. For one-group models, the birth rate is the
-#'        rate of new births per person per unit time. For two-group models, the
-#'        birth rate may be parameterized as a rate per group 1 person time (with
-#'        group 1 persons representing females), and with the \code{b.rate.g2}
+#' @param a.rate Arrival or entry rate. For one-group models, the arrival rate is the
+#'        rate of new arrivals per person per unit time. For two-group models, the
+#'        arrival rate may be parameterized as a rate per group 1 person time (with
+#'        group 1 persons representing females), and with the \code{a.rate.g2}
 #'        rate set as described below.
-#' @param ds.rate Death or exit rate for susceptible. For two-group models, it
+#' @param ds.rate Departure or exit rate for susceptible. For two-group models, it
 #'        is the rate for the group 1 susceptible only.
-#' @param di.rate Death or exit rate for infected. For two-group models, it is
+#' @param di.rate Departure or exit rate for infected. For two-group models, it is
 #'        the rate for the group 1 infected only.
-#' @param dr.rate Death or exit rate for recovered. For two-group models, it is
+#' @param dr.rate Departure or exit rate for recovered. For two-group models, it is
 #'        the rate for the group 1 recovered only. This parameter is only used for
 #'        \code{SIR} models.
 #' @param inf.prob.g2 Probability of infection per transmissible act
@@ -44,15 +44,15 @@
 #' @param rec.rate.g2 Average rate of recovery with immunity (in \code{SIR} models)
 #'        or re-susceptibility (in \code{SIS} models) for group 2 persons. This
 #'        parameter is only used for two-group \code{SIR} and \code{SIS} models.
-#' @param b.rate.g2 Birth or entry rate for group 2. This may either be specified
-#'        numerically as the rate of new births per group 2 persons per unit time,
-#'        or as \code{NA} in which case the group 1 rate, \code{b.rate}, governs
+#' @param a.rate.g2 Arrival or entry rate for group 2. This may either be specified
+#'        numerically as the rate of new arrivals per group 2 persons per unit time,
+#'        or as \code{NA} in which case the group 1 rate, \code{a.rate}, governs
 #'        the group 2 rate. The latter is used when, for example, the first group
 #'        is conceptualized as female, and the female population size determines
-#'        the birth rate. Such births are evenly allocated between the two groups.
-#' @param ds.rate.g2 Death or exit rate for group 2 susceptible.
-#' @param di.rate.g2 Death or exit rate for group 2 infected.
-#' @param dr.rate.g2 Death or exit rate for group 2 recovered. This parameter is
+#'        the arrival rate. Such arrivals are evenly allocated between the two groups.
+#' @param ds.rate.g2 Departure or exit rate for group 2 susceptible.
+#' @param di.rate.g2 Departure or exit rate for group 2 infected.
+#' @param dr.rate.g2 Departure or exit rate for group 2 recovered. This parameter is
 #'        only used for \code{SIR} model types.
 #' @param balance For two-group models, balance the \code{act.rate} to the rate
 #'        set for group 1 (with \code{balance="g1"}) or group 2 (with
@@ -114,8 +114,8 @@
 #' @export
 #'
 param.dcm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
-                      b.rate, ds.rate, di.rate, dr.rate, inf.prob.g2,
-                      act.rate.g2, rec.rate.g2, b.rate.g2, ds.rate.g2,
+                      a.rate, ds.rate, di.rate, dr.rate, inf.prob.g2,
+                      act.rate.g2, rec.rate.g2, a.rate.g2, ds.rate.g2,
                       di.rate.g2, dr.rate.g2, balance, ...) {
 
   # Get arguments
@@ -197,8 +197,8 @@ param.dcm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
 #' @export
 #'
 param.icm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
-                      b.rate, ds.rate, di.rate, dr.rate, inf.prob.g2,
-                      act.rate.g2, rec.rate.g2, b.rate.g2, ds.rate.g2,
+                      a.rate, ds.rate, di.rate, dr.rate, inf.prob.g2,
+                      act.rate.g2, rec.rate.g2, a.rate.g2, ds.rate.g2,
                       di.rate.g2, dr.rate.g2, balance, ...) {
 
   # Get arguments
@@ -223,7 +223,7 @@ param.icm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
   if (is.null(p$act.rate)) {
     p$act.rate <- 1
   }
-  p$vital <- ifelse(!is.null(p$b.rate) | !is.null(p$ds.rate) |
+  p$vital <- ifelse(!is.null(p$a.rate) | !is.null(p$ds.rate) |
                     !is.null(p$di.rate) | !is.null(p$dr.rate), TRUE, FALSE)
 
   p$groups <- ifelse(any(grepl(".g2", names(p))) == TRUE, 2, 1)
@@ -271,16 +271,16 @@ param.icm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
 #'        \code{SIR} and \code{SIS} models. This may also be a vector
 #'        of rates, with each element corresponding to the rate in that time step
 #'        of infection (see Time-Varying Parameters below).
-#' @param b.rate Birth or entry rate. For one-mode models, the birth rate is the
-#'        rate of new births per person per unit time. For bipartite models, the
-#'        birth rate may be parameterized as a rate per mode 1 person time (with
-#'        mode 1 persons representing females), and with the \code{b.rate.g2}
+#' @param a.rate Arrival or entry rate. For one-mode models, the arrival rate is the
+#'        rate of new arrivals per person per unit time. For bipartite models, the
+#'        arrival rate may be parameterized as a rate per mode 1 person time (with
+#'        mode 1 persons representing females), and with the \code{a.rate.g2}
 #'        rate set as described below.
-#' @param ds.rate Death or exit rate for susceptible. For bipartite models, it
+#' @param ds.rate Departure or exit rate for susceptible. For bipartite models, it
 #'        is the rate for the mode 1 susceptible only.
-#' @param di.rate Death or exit rate for infected. For bipartite models, it is
+#' @param di.rate Departure or exit rate for infected. For bipartite models, it is
 #'        the rate for the mode 1 infected only.
-#' @param dr.rate Death or exit rate for recovered. For bipartite models, it is
+#' @param dr.rate Departure or exit rate for recovered. For bipartite models, it is
 #'        the rate for the mode 1 recovered only. This parameter is only used for
 #'        \code{SIR} models.
 #' @param inf.prob.m2 Probability of transmission given a transmissible act
@@ -289,15 +289,15 @@ param.icm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
 #' @param rec.rate.m2 Average rate of recovery with immunity (in \code{SIR} models)
 #'        or re-susceptibility (in \code{SIS} models) for mode 2 persons. This
 #'        parameter is only used for bipartite \code{SIR} and \code{SIS} models.
-#' @param b.rate.m2 Birth or entry rate for mode 2. This may either be specified
-#'        numerically as the rate of new births per mode 2 persons per unit time,
-#'        or as \code{NA} in which case the mode 1 rate, \code{b.rate}, governs
+#' @param a.rate.m2 Arrival or entry rate for mode 2. This may either be specified
+#'        numerically as the rate of new arrivals per mode 2 persons per unit time,
+#'        or as \code{NA} in which case the mode 1 rate, \code{a.rate}, governs
 #'        the mode 2 rate. The latter is used when, for example, the first mode
 #'        is conceptualized as female, and the female population size determines
-#'        the birth rate. Such births are evenly allocated between the two modes.
-#' @param ds.rate.m2 Death or exit rate for mode 2 susceptible.
-#' @param di.rate.m2 Death or exit rate for mode 2 infected.
-#' @param dr.rate.m2 Death or exit rate for mode 2 recovered. This parameter is
+#'        the arrival rate. Such arrivalss are evenly allocated between the two modes.
+#' @param ds.rate.m2 Departure or exit rate for mode 2 susceptible.
+#' @param di.rate.m2 Departure or exit rate for mode 2 infected.
+#' @param dr.rate.m2 Departure or exit rate for mode 2 recovered. This parameter is
 #'        only used for \code{SIR} model types.
 #' @param ... Additional arguments passed to model.
 #'
@@ -362,8 +362,8 @@ param.icm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
 #' @export
 #'
 param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
-                      b.rate, ds.rate, di.rate, dr.rate, inf.prob.m2,
-                      rec.rate.m2, b.rate.m2, ds.rate.m2, di.rate.m2,
+                      a.rate, ds.rate, di.rate, dr.rate, inf.prob.m2,
+                      rec.rate.m2, a.rate.m2, ds.rate.m2, di.rate.m2,
                       dr.rate.m2, ...) {
 
   # Get arguments
@@ -387,7 +387,7 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
   if (missing(act.rate)) {
     p$act.rate <- 1
   }
-  p$vital <- ifelse(!missing(b.rate) | !missing(ds.rate) |
+  p$vital <- ifelse(!missing(a.rate) | !missing(ds.rate) |
                     !missing(di.rate) | !missing(dr.rate), TRUE, FALSE)
   if ("act.rate.m2" %in% names.dot.args) {
     warning("act.rate.m2 parameter was entered. If using built-in models, only act.rate parameter will apply.",

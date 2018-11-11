@@ -43,11 +43,11 @@ test_that("as.phylo.transmat",{
   colnames(tiny) <- c('inf', 'sus', 'at')
   as.phylo(tiny)
 
-  # check adding death times
+  # check adding departure times
   expect_equal(as.phylo(tiny, vertex.exit.times = c(3,11,7,15))$edge.length,
                c(3,5,5,2,1,5))
 
-  # check death time with NA
+  # check departure time with NA
   expect_equal(as.phylo(tiny,vertex.exit.times = c(3,11,7,NA))$edge.length,
                c(3,5,5,2,1,2))
 
