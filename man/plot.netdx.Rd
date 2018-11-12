@@ -141,7 +141,7 @@ plot(dx1, stats = c("nodefactor.sex.0", "nodefactor.sex.1"),
      method = "b", col = transco(2:3, 0.5))
 
 # Dynamic diagnostics
-dx2 <- netdx(est, nsims = 10, nsteps = 500,
+dx2 <- netdx(est, nsims = 1000, nsteps = 500, dynamic=FALSE,
              nwstats.formula = ~edges + meandeg + concurrent +
                                 nodefactor("sex", base = 0) +
                                 nodematch("sex"))

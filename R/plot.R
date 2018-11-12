@@ -1135,14 +1135,12 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 
     ## Joined Plots
     if (method == "l") {
-
-      if (missing(sim.lines)) {
-        if (dynamic == TRUE) {
-          sim.lines <- FALSE
-        } else {
-          sim.lines <- TRUE
-        }
+      if(missing(sim.lines)){
+        sim.lines <- FALSE
       }
+       else {
+          simlines <- TRUE
+       }
 
       ## Grid
       if (grid == TRUE) {
