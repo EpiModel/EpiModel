@@ -224,8 +224,6 @@ test_that("get_formula_term_attr checks", {
 test_that("Users using birth parameters are informed of change in language",{
   expect_that(param.net(b.rate=2), shows_message("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate to a.rate. See documentation for details."))
   expect_that(param.dcm(b.rate=2), shows_message("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate to a.rate. See documentation for details."))
-  expect_that(param.dcm(b.flow=2), shows_message("EpiModel 1.7.0 onward renamed the birth summary statistic b.flow to a.flow. See documentation for details."))
   expect_that(param.icm(b.rate=2), shows_message("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate to a.rate. See documentation for details."))
-  expect_that(param.icm(b.flow=2), shows_message("EpiModel 1.7.0 onward renamed the birth summary statistic b.flow to a.flow. See documentation for details."))
   expect_that(param.icm(b.rand=0.5), shows_message("EpiModel 1.7.0 onward renamed the stochastic birth model flag b.rand to a.rand. See documentation for details."))
  })

@@ -140,11 +140,6 @@ param.dcm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
     message("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate to a.rate. See documentation for details.")
   }
 
-  if ("b.flow" %in% names.dot.args) {
-    a.flow <- dot.args$b.flow
-    message("EpiModel 1.7.0 onward renamed the birth summary statistic b.flow to a.flow. See documentation for details.")
-  }
-
   if (!is.null(p$inter.eff) && is.null(p$inter.start)) {
     p$inter.start <- 1
   }
@@ -231,11 +226,6 @@ param.icm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
   if ("b.rate" %in% names.dot.args) {
     a.rate <- dot.args$b.rate
     message("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate to a.rate. See documentation for details.")
-  }
-
-  if ("b.flow" %in% names.dot.args) {
-    a.flow <- dot.args$b.flow
-    message("EpiModel 1.7.0 onward renamed the birth summary statistic b.flow to a.flow. See documentation for details.")
   }
 
   if ("b.rand" %in% names.dot.args) {
