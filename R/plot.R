@@ -851,8 +851,8 @@ draw_means <- function(x, y, mean.smooth, mean.lwd,
           col = mean.pal[j], lty = mean.lty[j])
     }
     else {
-    mean.max[j] = max(mean.prev)
-    mean.min[j] = min(mean.prev)
+    mean.max[j] = max(mean.prev, na.rm = TRUE)
+    mean.min[j] = min(mean.prev, na.rm = TRUE)
     }
   }
   if(plot.means == 0 & mean.min_max == "max") {
