@@ -114,63 +114,6 @@ The default is based on the number of network statistics requested. The
 layout of the separate plots within the larger plot window is also based on
 the number of statistics.
 }
-\examples{
-\dontrun{
-# Network initialization and model parameterization
-nw <- network.initialize(100, directed = FALSE)
-nw <- set.vertex.attribute(nw, "sex", rbinom(100, 1, 0.5))
-formation <- ~edges + nodematch("sex")
-target.stats <- c(50, 40)
-coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 50)
-
-# Estimate the model
-est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
-
-# Static diagnostics
-dx1 <- netdx(est, nsims = 1e4, dynamic = FALSE,
-             nwstats.formula = ~edges + meandeg + concurrent +
-                                nodefactor("sex", base = 0) +
-                                nodematch("sex"))
-dx1
-
-# Only formation diagnostics are available to plot
-plot(dx1, stats = "edges")
-plot(dx1, stats = c("edges", "concurrent"))
-plot(dx1, stats = "edges", method = "b", col = "seagreen3", grid = TRUE)
-plot(dx1, stats = c("nodefactor.sex.0", "nodefactor.sex.1"),
-     method = "b", col = transco(2:3, 0.5))
-
-# Dynamic diagnostics
-dx2 <- netdx(est, nsims = 1000, nsteps = 500, dynamic=FALSE,
-             nwstats.formula = ~edges + meandeg + concurrent +
-                                nodefactor("sex", base = 0) +
-                                nodematch("sex"))
-dx2
-
-# Formation statistics plots, joined and separate
-plot(dx2, grid = TRUE)
-plot(dx2, type = "formation", plots.joined = TRUE)
-plot(dx2, type = "formation", sims = 1, plots.joined = TRUE,
-     qnts = FALSE, sim.lines = TRUE, mean.line = FALSE)
-plot(dx2, type = "formation", plots.joined = FALSE,
-     stats = c("edges", "concurrent"), grid = TRUE)
-plot(dx2, type = "formation", stats = "nodefactor.sex.0",
-     sims = 1, sim.lwd = 5, sim.col = "darkmagenta")
-
-plot(dx2, method = "b", col = "bisque", grid = TRUE)
-plot(dx2, method = "b", stats = "meandeg", col = "dodgerblue")
-
-# Duration statistics plot
-plot(dx2, type = "duration", mean.col = "black", grid = TRUE)
-plot(dx2, type = "duration", sims = 10, mean.line = FALSE, sim.line = TRUE,
-     sim.col = "steelblue", sim.lwd = 3, targ.lty = 1, targ.lwd = 0.5)
-
-# Dissolution statistics plot
-plot(dx2, type = "dissolution", mean.col = "black", grid = TRUE)
-plot(dx2, type = "dissolution", method = "b", col = "pink1")
-}
-
-}
 \seealso{
 \code{\link{netdx}}
 }
