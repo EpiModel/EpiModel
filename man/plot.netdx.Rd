@@ -133,12 +133,12 @@ dx1 <- netdx(est, nsims = 1e4, dynamic = FALSE,
                                 nodematch("sex"))
 dx1
 
-# Only formation diagnostics are available to plot
-plot(dx1, stats = "edges")
-plot(dx1, stats = c("edges", "concurrent"))
-plot(dx1, stats = "edges", method = "b", col = "seagreen3", grid = TRUE)
-plot(dx1, stats = c("nodefactor.sex.0", "nodefactor.sex.1"),
-     method = "b", col = transco(2:3, 0.5))
+# Plot diagnostics
+plot(dx1)
+plot(dx1, stats = c("edges", "concurrent"), mean.col = "black",
+     sim.lines = TRUE, plots.joined = FALSE)
+plot(dx1, stats = "edges", method = "b",
+     col = "seagreen3", grid = TRUE)
 
 # Dynamic diagnostics
 dx2 <- netdx(est, nsims = 10, nsteps = 500,
@@ -154,8 +154,6 @@ plot(dx2, type = "formation", sims = 1, plots.joined = TRUE,
      qnts = FALSE, sim.lines = TRUE, mean.line = FALSE)
 plot(dx2, type = "formation", plots.joined = FALSE,
      stats = c("edges", "concurrent"), grid = TRUE)
-plot(dx2, type = "formation", stats = "nodefactor.sex.0",
-     sims = 1, sim.lwd = 5, sim.col = "darkmagenta")
 
 plot(dx2, method = "b", col = "bisque", grid = TRUE)
 plot(dx2, method = "b", stats = "meandeg", col = "dodgerblue")

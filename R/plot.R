@@ -932,12 +932,12 @@ draw_means <- function(x, y, mean.smooth, mean.lwd,
 #'                                 nodematch("sex"))
 #' dx1
 #'
-#' # Only formation diagnostics are available to plot
-#' plot(dx1, stats = "edges")
-#' plot(dx1, stats = c("edges", "concurrent"))
-#' plot(dx1, stats = "edges", method = "b", col = "seagreen3", grid = TRUE)
-#' plot(dx1, stats = c("nodefactor.sex.0", "nodefactor.sex.1"),
-#'      method = "b", col = transco(2:3, 0.5))
+#' # Plot diagnostics
+#' plot(dx1)
+#' plot(dx1, stats = c("edges", "concurrent"), mean.col = "black",
+#'      sim.lines = TRUE, plots.joined = FALSE)
+#' plot(dx1, stats = "edges", method = "b",
+#'      col = "seagreen3", grid = TRUE)
 #'
 #' # Dynamic diagnostics
 #' dx2 <- netdx(est, nsims = 10, nsteps = 500,
@@ -953,8 +953,6 @@ draw_means <- function(x, y, mean.smooth, mean.lwd,
 #'      qnts = FALSE, sim.lines = TRUE, mean.line = FALSE)
 #' plot(dx2, type = "formation", plots.joined = FALSE,
 #'      stats = c("edges", "concurrent"), grid = TRUE)
-#' plot(dx2, type = "formation", stats = "nodefactor.sex.0",
-#'      sims = 1, sim.lwd = 5, sim.col = "darkmagenta")
 #'
 #' plot(dx2, method = "b", col = "bisque", grid = TRUE)
 #' plot(dx2, method = "b", stats = "meandeg", col = "dodgerblue")
@@ -1135,14 +1133,12 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 
     ## Joined Plots
     if (method == "l") {
-
-      if (missing(sim.lines)) {
-        if (dynamic == TRUE) {
-          sim.lines <- FALSE
-        } else {
-          sim.lines <- TRUE
-        }
+      if(missing(sim.lines)){
+        sim.lines <- FALSE
       }
+       else {
+          sim.lines <- sim.lines
+       }
 
       ## Grid
       if (grid == TRUE) {
@@ -1170,6 +1166,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
           dataj <- data[, colnames(data) %in% nmstats[j], drop = FALSE]
 
           ## Quantiles - ylim min and max ##
+        if (dynamic == TRUE) {
           if (is.numeric(qnts)) {
             if (qnts < 0 | qnts > 1) {
               stop("qnts must be between 0 and 1", call. = FALSE)
@@ -1188,6 +1185,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
             qnt.min[j] = min(yy)
             qnt.max[j] = max(yy)
           }
+        }
 
           ## Mean lines - ylim min and max ##
           if (mean.line == TRUE) {
@@ -1202,9 +1200,9 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         }
 
         ## Default ylim
-        if (length(da) > 0 && !is.null(da$ylim)) {
+        if (length(da) > 0 && !is.null(da$ylim) && dynamic == TRUE) {
           ylim <- da$ylim
-        } else if (is.null(da$ylim) & sim.lines == FALSE & (mean.line == TRUE || qnts == TRUE)) {
+        } else if (is.null(da$ylim) & sim.lines == FALSE & dynamic == TRUE & (mean.line == TRUE || qnts == TRUE)) {
           ylim <- c(min(min(qnt.min, na.rm = TRUE) * 0.9, min(mean.min, na.rm = TRUE) * 0.9), max(max(qnt.max, na.rm = TRUE) * 1.1, max(mean.max, na.rm = TRUE) * 1.1))
         } else {
           ylim <- c(min(data) * 0.9, max(data) * 1.1)
@@ -1247,13 +1245,15 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         }
 
         ## Quantile band transparency and color
-        if (missing(qnts.alpha)) {
-          qnts.alpha <- 0.5
-        }
-        if (missing(qnts.col)) {
-          qnts.col <- transco(sim.col, qnts.alpha)
-        } else {
-          qnts.col <- transco(qnts.col, qnts.alpha)
+        if (dynamic == TRUE) {
+          if (missing(qnts.alpha)) {
+            qnts.alpha <- 0.5
+          }
+          if (missing(qnts.col)) {
+            qnts.col <- transco(sim.col, qnts.alpha)
+          } else {
+            qnts.col <- transco(qnts.col, qnts.alpha)
+          }
         }
 
         ## Main plot window
@@ -1262,22 +1262,24 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         for (j in outsts) {
           dataj <- data[, colnames(data) %in% nmstats[j], drop = FALSE]
 
-          if (is.numeric(qnts)) {
-            if (qnts < 0 | qnts > 1) {
-              stop("qnts must be between 0 and 1", call. = FALSE)
-            }
-            quants <- c((1 - qnts) / 2, 1 - ((1 - qnts) / 2))
-            qnt.prev <- apply(dataj, 1, function(x) {
-                 quantile(x, c(quants[1], quants[2]))
-              })
-            xx <- c(1:(ncol(qnt.prev)), (ncol(qnt.prev)):1)
-            if (qnts.smooth == FALSE) {
-              yy <- c(qnt.prev[1, ], rev(qnt.prev[2, ]))
-            } else {
-              yy <- c(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[1, ]))$y,
+          if (dynamic == TRUE) {
+            if (is.numeric(qnts)) {
+              if (qnts < 0 | qnts > 1) {
+                stop("qnts must be between 0 and 1", call. = FALSE)
+              }
+              quants <- c((1 - qnts) / 2, 1 - ((1 - qnts) / 2))
+              qnt.prev <- apply(dataj, 1, function(x) {
+                  quantile(x, c(quants[1], quants[2]))
+                })
+              xx <- c(1:(ncol(qnt.prev)), (ncol(qnt.prev)):1)
+              if (qnts.smooth == FALSE) {
+                yy <- c(qnt.prev[1, ], rev(qnt.prev[2, ]))
+              } else {
+                yy <- c(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[1, ]))$y,
                       rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[2, ]))$y))
+              }
+              polygon(xx, yy, col = qnts.col[which(j == outsts)], border = NA)
             }
-            polygon(xx, yy, col = qnts.col[which(j == outsts)], border = NA)
           }
 
           if (sim.lines == TRUE) {
@@ -1347,42 +1349,47 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         }
 
         ## Quantile band transparency and color
-        if (missing(qnts.alpha)) {
-          qnts.alpha <- 0.5
-        }
-        if (missing(qnts.col)) {
-          qnts.col <- transco(sim.col, qnts.alpha)
-        } else {
-          qnts.col <- transco(qnts.col, qnts.alpha)
+        if (dynamic == TRUE) {
+          if (missing(qnts.alpha)) {
+            qnts.alpha <- 0.5
+          }
+          if (missing(qnts.col)) {
+            qnts.col <- transco(sim.col, qnts.alpha)
+          } else {
+            qnts.col <- transco(qnts.col, qnts.alpha)
+          }
         }
 
         for (j in outsts) {
           dataj <- data[, colnames(data) %in% nmstats[j], drop = FALSE]
 
-          #Initialize ylim min max values
-          qnt.min <- 1E10
-          qnt.max <- -1E10
-          mean.min <- 1E10
-          mean.max <- -1E10
-
           ## Quantiles - ylim min max ##
-          if (is.numeric(qnts)) {
-            if (qnts < 0 | qnts > 1) {
-              stop("qnts must be between 0 and 1", call. = FALSE)
-            }
-            quants <- c((1 - qnts) / 2, 1 - ((1 - qnts) / 2))
-            qnt.prev <- apply(dataj, 1, function(x) {
-              quantile(x, c(quants[1], quants[2]))
-            })
-            xx <- c(1:(ncol(qnt.prev)), (ncol(qnt.prev)):1)
-            if (qnts.smooth == FALSE) {
-              yy <- c(qnt.prev[1, ], rev(qnt.prev[2, ]))
-            } else {
-              yy <- c(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[1, ]))$y,
+          if (dynamic == TRUE) {
+
+            #Initialize ylim min max values
+            qnt.min <- 1E10
+            qnt.max <- -1E10
+            mean.min <- 1E10
+            mean.max <- -1E10
+
+            if (is.numeric(qnts)) {
+              if (qnts < 0 | qnts > 1) {
+                stop("qnts must be between 0 and 1", call. = FALSE)
+              }
+              quants <- c((1 - qnts) / 2, 1 - ((1 - qnts) / 2))
+              qnt.prev <- apply(dataj, 1, function(x) {
+                quantile(x, c(quants[1], quants[2]))
+              })
+              xx <- c(1:(ncol(qnt.prev)), (ncol(qnt.prev)):1)
+              if (qnts.smooth == FALSE) {
+                yy <- c(qnt.prev[1, ], rev(qnt.prev[2, ]))
+              } else {
+                yy <- c(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[1, ]))$y,
                       rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[2, ]))$y))
+              }
+              qnt.min = min(yy)
+              qnt.max = max(yy)
             }
-            qnt.min = min(yy)
-            qnt.max = max(yy)
           }
 
           ## Mean lines - ylim min max ##
@@ -1399,9 +1406,9 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
           }
 
           ## Default ylim
-          if (length(da) > 0 && !is.null(da$ylim)) {
+          if (length(da) > 0 && !is.null(da$ylim) && dynamic == TRUE) {
             ylim <- da$ylim
-          } else if (is.null(da$ylim) & sim.lines == FALSE & (mean.line == TRUE || qnts == TRUE)) {
+          } else if (is.null(da$ylim) & sim.lines == FALSE & dynamic == TRUE & (mean.line == TRUE || qnts == TRUE)) {
             ylim <- c(min(qnt.min * 0.9, mean.min * 0.9), max(qnt.max * 1.1, mean.max * 1.1))
           } else {
             ylim <- c(min(dataj) * 0.9, max(dataj) * 1.1)
@@ -1413,7 +1420,8 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
                type = "n", main = nmstats[j],
                xlab = "", ylab = "")
 
-          if (is.numeric(qnts)) {
+          if (dynamic == TRUE) {
+            if (is.numeric(qnts)) {
             if (qnts < 0 | qnts > 1) {
               stop("qnts must be between 0 and 1", call. = FALSE)
             }
@@ -1429,6 +1437,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
                       rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[2, ]))$y))
             }
             polygon(xx, yy, col = qnts.col[which(j == outsts)], border = NA)
+            }
           }
 
           if (sim.lines == TRUE) {
@@ -1518,6 +1527,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
     mean.max <- -1E10
 
     ## Quantiles - ylim max ##
+    if (dynamic == TRUE){
     if (is.numeric(qnts) & nsims > 1) {
       if (qnts < 0 | qnts > 1) {
         stop("qnts must be between 0 and 1", call. = FALSE)
@@ -1537,6 +1547,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
       }
       qnt.max = max(yy)
     }
+    }
 
     ## Mean lines - ylim max ##
     if (mean.line == TRUE) {
@@ -1554,7 +1565,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
     }
 
     #Dynamic scaling based on sim.lines and smoothed or unsmoothed mean lines and quantile bands
-    if (length(da) > 0 && !is.null(da$ylim)) {
+    if (length(da) > 0 && !is.null(da$ylim) && dynamic == TRUE) {
       ylim <- da$ylim
     } else if (is.null(da$ylim) & sim.lines == FALSE & (mean.line == TRUE || qnts == TRUE)) {
       ylim <- c(0, max(qnt.max * 1.1, mean.max * 1.1))
@@ -1597,6 +1608,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
            xlim = xlim, ylim = ylim,
            xlab = xlab, ylab = ylab)
 
+      if (dynamic == TRUE){
       if (is.numeric(qnts) & nsims > 1) {
         if (qnts < 0 | qnts > 1) {
           stop("qnts must be between 0 and 1", call. = FALSE)
@@ -1622,6 +1634,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
                   rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[2, ]))$y))
         }
         polygon(xx, yy, col = qnts.col, border = NA)
+      }
       }
 
       ## Sim lines
@@ -1688,13 +1701,15 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
       xlim <- da$xlim
     }
 
-    #Initialize ylim min max values
-    qnt.min <- 1E10
-    qnt.max <- -1E10
-    mean.min <- 1E10
-    mean.max <- -1E10
+
 
     ## Quantiles - ylim min max ##
+    if (dynamic == TRUE){
+      #Initialize ylim min max values
+      qnt.min <- 1E10
+      qnt.max <- -1E10
+      mean.min <- 1E10
+      mean.max <- -1E10
     if (is.numeric(qnts)) {
       if (qnts < 0 | qnts > 1) {
         stop("qnts must be between 0 and 1", call. = FALSE)
@@ -1714,6 +1729,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
       qnt.min <- min(yy)
       qnt.max <- max(yy)
     }
+    }
 
     ## Mean lines - ylim min max ##
     if (mean.line == TRUE) {
@@ -1731,9 +1747,9 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
     }
 
     #Dynamic scaling based on sim.lines and smoothed or unsmoothed mean lines and quantile bands
-    if (length(da) > 0 && !is.null(da$ylim)) {
+    if (length(da) > 0 && !is.null(da$ylim) && dynamic == TRUE) {
       ylim <- da$ylim
-    } else if (is.null(da$ylim) & sim.lines == FALSE & (mean.line == TRUE || qnts == TRUE)) {
+    } else if (is.null(da$ylim) & sim.lines == FALSE & dynamic == TRUE & (mean.line == TRUE || qnts == TRUE)) {
       ylim <- c(min(qnt.min * 1.1, mean.min * 1.1), max(qnt.max * 1.1, mean.max * 1.1))
     } else {
       ylim <- c(0, max(sapply(prop.diss, max, na.rm = TRUE)) * 1.1)
@@ -1771,6 +1787,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
              xlab = xlab, ylab = ylab)
 
       #Quantile bands
+      if (dynamic == TRUE){
       if (is.numeric(qnts)) {
         if (qnts < 0 | qnts > 1) {
           stop("qnts must be between 0 and 1", call. = FALSE)
@@ -1795,6 +1812,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
                   rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[2, ]))$y))
         }
         polygon(xx, yy, col = qnts.col, border = NA)
+      }
       }
 
       # Sim lines
