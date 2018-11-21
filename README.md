@@ -31,7 +31,7 @@ Tools for simulating mathematical models of infectious disease dynamics. Epidemi
   </tr>
 </table>
 
-Additional [contributors](https://github.com/statnet/EpiModel/graphs/contributors) to the EpiModel package include Emily Beylerian, Skye Bender-deMoll, and Kevin Weiss. 
+Additional contributors to EpiModel are listed on the [contributors](https://github.com/statnet/EpiModel/graphs/contributors) page.
 
 
 ### Installation
