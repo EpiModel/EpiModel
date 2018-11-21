@@ -1,14 +1,44 @@
-EpiModel 1.6.6
+EpiModel 1.7.0
 ------------------------------------------------------------------------------
 
 ### NEW FEATURES
-* 
+* Add `keep.tnetwork` parameter to `netdx` to allow for retaining the full 
+  `networkDynamic` object during dynamic network simulations. Relatedly, add
+  support for `get_network` to extract those networks from `netdx` objects.
+* Change the default handling of `as.data.frame` function for processing model
+  output for all three model classes (DCM, ICM, and Network Models) to generate
+  a stacked data frame of all simulations (instead of row means across 
+  simulations). **This is a breaking change that may require updating old code.**
+* New `as.data.frame.netdx` function extracts the timed edgelists directly from
+  a `netdx` object.
+* The `get_nwstats` function now extracts data frames of network statistics from
+  both `netdx` and `netsim` objects.
 
 ### BUG FIXES
-* 
+* Improve functionality and error handling of `get_sims`.
+* Fix problems with color handling of network statistics plots in `plot.netdx`
+  and `plot.netsim`. 
+* Enforce maximum number `ncores` argument in `netdx` to prevent over 
+  parallelization of simulations.
+* Removed the redundant storage of the timed edgelist data in `netdx` objects.
+* Fix errors in calculation of population sizes in verbose module that prints
+  simulation output to the console.
 
 ### OTHER
-* 
+* Add warning for input parameter with a name `act.rate.m2` for network models
+  in `param.net`, as this is an unused parameter for built-in models.
+* Updated parameters and documentation throughout EpiModel for vital dynamics
+  parameters and processes to reflect a more general method of demographic 
+  in-flows and out-flows from the population. Previous terms were births and 
+  deaths; new terms are arrivals and departures. The default parameter for 
+  births was previously `b.rate`; it is now `a.rate`. Inputs of a `b.rate` 
+  parameter yield a message and will automatically set `a.rate` to the `b.rate`
+  value. **This is a breaking change that may require updating old code.**
+* Adapted y-axis limit calculation for all stochastic plots to depend on dynamic
+  range of data displayed instead of full data range. 
+* Changed the default plot type for static diagnostics in `netdx` (when `dynamic`
+  is set to `FALSE`) to smoothed rolling averages instead of the full MCMC trace.
+  The trace plots may be turned back on with `sim.lines = TRUE`.
 
 <br>
 
