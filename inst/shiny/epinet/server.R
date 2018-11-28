@@ -493,9 +493,9 @@ shinyServer(function(input, output, session) {
   })
   output$outData <- renderDataTable({
     if (input$datasel == "Means") {
-      round(as.data.frame(episim()), input$tabdig)
+      round(as.data.frame(episim(), out = "mean"), digits = input$tabdig)
     } else if (input$datasel == "Standard Deviations") {
-      round(as.data.frame(episim(), out = "sd"), input$tabdig)
+      round(as.data.frame(episim(), out = "sd"), digits = input$tabdig)
     } else if (input$datasel == "Simulations") {
       as.data.frame(episim(), out = "vals", sim = max(1, input$datasim))
     }
