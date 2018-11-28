@@ -136,8 +136,14 @@ param.dcm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
   }
 
   if ("b.rate" %in% names.dot.args) {
-    a.rate <- dot.args$b.rate
-    message("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate to a.rate. See documentation for details.")
+    p$a.rate <- dot.args$b.rate
+    message("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate to a.rate. ",
+            "See documentation for details.")
+  }
+  if ("b.rate.g2" %in% names.dot.args) {
+    p$a.rate.g2 <- dot.args$b.rate.g2
+    message("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate to a.rate. ",
+            "See documentation for details.")
   }
 
   if (!is.null(p$inter.eff) && is.null(p$inter.start)) {
@@ -224,17 +230,21 @@ param.icm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
   }
 
   if ("b.rate" %in% names.dot.args) {
-    a.rate <- dot.args$b.rate
-    message("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate to a.rate. See documentation for details.")
+    p$a.rate <- dot.args$b.rate
+    message("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate to a.rate. ",
+            "See documentation for details.")
+  }
+  if ("b.rate.g2" %in% names.dot.args) {
+    p$a.rate.g2 <- dot.args$b.rate.g2
+    message("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate.g2 to a.rate.g2. ",
+            "See documentation for details.")
   }
 
   if ("b.rand" %in% names.dot.args) {
-    a.rand <- dot.args$b.rand
-    message("EpiModel 1.7.0 onward renamed the stochastic birth model flag b.rand to a.rand. See documentation for details.")
+    p$a.rand <- dot.args$b.rand
+    message("EpiModel 1.7.0 onward renamed the stochastic birth flag b.rand to a.rand. ",
+            "See documentation for details.")
   }
-
-
-
 
   ## Defaults and checks
   if (is.null(p$act.rate)) {
@@ -402,8 +412,14 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
 
   ##Updated parameter names
   if ("b.rate" %in% names.dot.args) {
-    a.rate <- dot.args$b.rate
-    message("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate to a.rate. See documentation for details.")
+    p$a.rate <- dot.args$b.rate
+    message("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate to a.rate. ",
+            "See documentation for details.")
+  }
+  if ("b.rate.m2" %in% names.dot.args) {
+    p$a.rate.m2 <- dot.args$b.rate.m2
+    message("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate.m2 to a.rate.m2. ",
+            "See documentation for details.")
   }
 
   ## Defaults and checks
@@ -413,7 +429,8 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
   p$vital <- ifelse(!missing(a.rate) | !missing(ds.rate) |
                     !missing(di.rate) | !missing(dr.rate), TRUE, FALSE)
   if ("act.rate.m2" %in% names.dot.args) {
-    warning("act.rate.m2 parameter was entered. If using built-in models, only act.rate parameter will apply.",
+    warning("act.rate.m2 parameter was entered. ",
+            "If using built-in models, only act.rate parameter will apply.",
             call. = FALSE)
   }
 
