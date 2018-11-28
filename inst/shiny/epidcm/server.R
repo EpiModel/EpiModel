@@ -15,7 +15,7 @@ shinyServer(function(input, output) {
     param.dcm(inf.prob = input$inf.prob,
               act.rate = input$act.rate,
               rec.rate = input$rec.rate,
-              b.rate = input$b.rate,
+              a.rate = input$a.rate,
               ds.rate = input$ds.rate,
               di.rate = input$di.rate,
               dr.rate = input$dr.rate)
