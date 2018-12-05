@@ -231,8 +231,8 @@ test_that("Users using birth parameters are informed of change in language",{
 test_that("Users using birth and death functions are informed of change 
 in language",{
   temp <- function(x){x=x; return(x)}
-  expect_that(control.icm(type="SI",nsteps=10,birth.FUN=temp), shows_message("EpiModel 1.7.0 onward renamed the birth function birth.FUN to arrival.FUN. See documentationfor details."))
+  expect_that(control.icm(type="SI",nsteps=10,birth.FUN=temp), shows_message("EpiModel 1.7.0 onward renamed the birth function birth.FUN to arrival.FUN. See documentation for details."))
   expect_that(control.icm(type="SI",nsteps=10,death.FUN=temp), shows_message("EpiModel 1.7.0 onward renamed the death function death.FUN to departure.FUN. See documentation for details."))
-  expect_that(control.net(type="SI",nsteps=10,birth.FUN=temp), shows_message("EpiModel 1.7.0 onward renamed the birth function birth.FUN to arrival.FUN. See documentationfor details."))
+  expect_that(control.net(type="SI",nsteps=10,birth.FUN=temp), shows_message("EpiModel 1.7.0 onward renamed the birth function birth.FUN to arrival.FUN. See documentation for details."))
   expect_that(control.net(type="SI",nsteps=10,death.FUN=temp), shows_message("EpiModel 1.7.0 onward renamed the death function death.FUN to departure.FUN. See documentation for details."))
 })
