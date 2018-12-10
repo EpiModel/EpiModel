@@ -134,6 +134,8 @@
 #' @importFrom ape as.phylo collapse.singles
 #' @importFrom lazyeval lazy_dots lazy_eval
 #'
+#' @useDynLib EpiModel, .registration = TRUE
+#'
 #' @docType package
 #' @keywords package
 #'
