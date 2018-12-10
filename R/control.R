@@ -62,21 +62,8 @@ control.dcm <- function(type, nsteps, dt = 1, odemethod = "rk4",
                         print.mod = FALSE, verbose = FALSE, ...) {
 
   # Get arguments
-  p <- list()
-  formal.args <- formals(sys.function())
-  formal.args[["..."]] <- NULL
-  for (arg in names(formal.args)) {
-    if (as.logical(mget(arg) != "")) {
-      p[arg] <- list(get(arg))
-    }
-  }
-  dot.args <- list(...)
-  names.dot.args <- names(dot.args)
-  if (length(dot.args) > 0) {
-    for (i in 1:length(dot.args)) {
-      p[[names.dot.args[i]]] <- dot.args[[i]]
-    }
-  }
+  p <- get_args(formal.args = formals(sys.function()),
+                dot.args = list(...))
   if (!is.null(p$new.mod)) {
     p$new.mod.name <- as.list(match.call())$new.mod
   }
@@ -188,22 +175,8 @@ control.icm <- function(type, nsteps, nsims = 1, rec.rand = TRUE, a.rand = TRUE,
                         verbose.int = 0, skip.check = FALSE, ...) {
 
   # Get arguments
-  p <- list()
-  formal.args <- formals(sys.function())
-  formal.args[["..."]] <- NULL
-  for (arg in names(formal.args)) {
-    if (as.logical(mget(arg) != "")) {
-      p[arg] <- list(get(arg))
-    }
-  }
-  dot.args <- list(...)
-  names.dot.args <- names(dot.args)
-  if (length(dot.args) > 0) {
-    for (i in 1:length(dot.args)) {
-      p[[names.dot.args[i]]] <- dot.args[[i]]
-    }
-  }
-
+  p <- get_args(formal.args = formals(sys.function()),
+                dot.args = list(...))
 
   ## Module classification
   p$bi.mods <- grep(".FUN", names(formal.args), value = TRUE)
@@ -419,22 +392,8 @@ control.net <- function(type, nsteps, start = 1, nsims = 1, ncores = 1,
                         verbose.int = 1, skip.check = FALSE, ...) {
 
   # Get arguments
-  p <- list()
-  formal.args <- formals(sys.function())
-  formal.args[["..."]] <- NULL
-  for (arg in names(formal.args)) {
-    if (as.logical(mget(arg) != "")) {
-      p[arg] <- list(get(arg))
-    }
-  }
-  dot.args <- list(...)
-  names.dot.args <- names(dot.args)
-  if (length(dot.args) > 0) {
-    for (i in 1:length(dot.args)) {
-      p[[names.dot.args[i]]] <- dot.args[[i]]
-    }
-  }
-
+  p <- get_args(formal.args = formals(sys.function()),
+                dot.args = list(...))
 
   ## Module classification
   bi.mods <- grep(".FUN", names(formal.args), value = TRUE)
