@@ -107,6 +107,7 @@ departures.net <- function(dat, at) {
       }
 
     }
+  }
 
 
     # Output ------------------------------------------------------------------
@@ -166,12 +167,8 @@ departures.net <- function(dat, at) {
 
     # Add Nodes ---------------------------------------------------------------
     if (nOld > 0) {
-      if (a.rand == TRUE) {
         nArrivals <- sum(rbinom(nOld, 1, a.rate))
-      }
-      if (a.rand == FALSE) {
-        nArrivals <- round(nOld * a.rate)
-      }
+
       if (nArrivals > 0) {
         dat$nw <- add.vertices(dat$nw, nv = nArrivals)
         newNodes <- (nCurr + 1):(nCurr + nArrivals)
@@ -427,7 +424,6 @@ departures.net <- function(dat, at) {
 
     if (nOld > 0) {
       nOldM2 <- dat$epi$num.m2[at - 1]
-      if (a.rand == TRUE) {
         if (is.na(a.rate.m2)) {
           nArrivals <- sum(rbinom(nOld, 1, a.rate))
           nArrivalsM2 <- sum(rbinom(nOld, 1, a.rate))
@@ -435,16 +431,8 @@ departures.net <- function(dat, at) {
           nArrivals <- sum(rbinom(nOld, 1, a.rate))
           nArrivalsM2 <- sum(rbinom(nOldM2, 1, a.rate.m2))
         }
-      }
-      if (a.rand == FALSE) {
-        if (is.na(a.rate.m2)) {
-          nArrivals <- round(nOld * a.rate)
-          nArrivalsM2 <- round(nOld * a.rate)
-        } else {
-          nArrivals <- round(nOld * a.rate)
-          nArrivalsM2 <- round(nOldM2 * a.rate.m2)
-        }
-      }
+
+
 
       nCurrM1 <- length(modeids(dat$nw, 1))
       nCurrM2 <- length(modeids(dat$nw, 2))
