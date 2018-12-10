@@ -18,7 +18,7 @@ verbose.dcm <- function(x, type, s = 1) {
 
   if (type == "startup") {
     if (x$verbose == TRUE & x$nruns > 1) {
-      cat("\n* Starting DCM Simulation")
+      cat("\nStarting DCM Simulation...")
     }
   }
 
@@ -50,7 +50,7 @@ verbose.icm <- function(x, type, s = 1, at = 2) {
 
   if (type == "startup") {
     if (x$verbose == TRUE) {
-      cat("\n* Starting ICM Simulation")
+      cat("\nStarting ICM Simulation...")
     }
   }
 
@@ -65,58 +65,8 @@ verbose.icm <- function(x, type, s = 1, at = 2) {
         cat("\n----------------------------")
         cat("\nSimulation: ", s, "/", x$control$nsims, sep = "")
         cat("\nTimestep: ", at, "/", x$control$nsteps, sep = "")
-        if (x$param$groups == 1) {
-          cat("\nIncidence:", x$epi$si.flow[at])
-        }
-        if (x$param$groups == 2) {
-          cat("\nIncidence:", x$epi$si.flow[at] + x$epi$si.flow.g2[at])
-        }
-        if (x$control$type == "SIR") {
-          if (x$param$groups == 1) {
-            cat("\nRecoveries:", x$epi$ir.flow[at])
-          }
-          if (x$param$groups == 2) {
-            cat("\nRecoveries:", x$epi$ir.flow[at] +
-                                 x$epi$ir.flow.g2[at])
-          }
-        }
-        if (x$control$type == "SIS") {
-          if (x$param$groups == 1) {
-            cat("\nRecoveries:", x$epi$is.flow[at])
-          }
-          if (x$param$groups == 2) {
-            cat("\nRecoveries:", x$epi$is.flow[at] +
-                                 x$epi$is.flow.g2[at])
-          }
-        }
-        if (x$param$groups == 1) {
-          cat("\nPrevalence:", x$epi$i.num[at])
-        }
-        if (x$param$groups == 2) {
-          cat("\nPrevalence:", x$epi$i.num[at] + x$epi$i.num.g2[at])
-        }
-        cat("\nPopulation:", sum(x$attr$active == 1))
-        if (x$param$vital == TRUE) {
-          if (x$param$groups == 1) {
-            cat("\nArrivals:", x$epi$a.flow[at])
-            cat("\nDepartures, susceptibles:", x$epi$ds.flow[at])
-            cat("\nDepartures, infecteds:", x$epi$di.flow[at])
-            if (x$control$type == "SIR") {
-              cat("\nDepartures, recovered:", x$epi$dr.flow[at])
-            }
-          }
-          if (x$param$groups == 2) {
-            cat("\nArrivals:", x$epi$a.flow[at] + x$epi$a.flow.g2[at])
-            cat("\nDepartures, susceptible:", x$epi$ds.flow[at] +
-                                          x$epi$ds.flow.g2[at])
-            cat("\nDepartures, infected:", x$epi$di.flow[at] +
-                                       x$epi$di.flow.g2[at])
-            if (x$control$type == "SIR") {
-              cat("\nDepartures, recovered:", x$epi$dr.flow[at] +
-                                          x$epi$dr.flow.g2[at])
-            }
-          }
-        }
+        cat("\nPrevalence:", sum(x$attr$status == "i", na.rm = TRUE))
+        cat("\nPopulation Size:", sum(x$attr$active == 1))
         cat("\n----------------------------")
       }
     }
