@@ -145,7 +145,7 @@ verbose.net <- function(x, type, s = 1, at = 2) {
 
   if (type == "startup" && x$ncores == 1) {
     if (x$verbose == TRUE) {
-      cat("\n* Starting Network Simulation")
+      cat("\nStarting Network Simulation...")
     }
   }
 
