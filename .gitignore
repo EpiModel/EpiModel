@@ -6,3 +6,6 @@ inst/shiny/epidcm/rsconnect/
 inst/shiny/epiicm/rsconnect/
 inst/shiny/epinet/rsconnect/
 .DS_Store
+src/*.o
+src/*.so
+src/*.dll

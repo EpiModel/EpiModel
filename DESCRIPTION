@@ -50,5 +50,6 @@ Suggests:
     shiny,
     testthat
 VignetteBuilder: knitr
+LinkingTo: ergm
 RoxygenNote: 6.1.1
 Encoding: UTF-8
