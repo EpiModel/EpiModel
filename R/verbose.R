@@ -65,7 +65,11 @@ verbose.icm <- function(x, type, s = 1, at = 2) {
         cat("\n----------------------------")
         cat("\nSimulation: ", s, "/", x$control$nsims, sep = "")
         cat("\nTimestep: ", at, "/", x$control$nsteps, sep = "")
-        cat("\nPrevalence:", sum(x$attr$status == "i", na.rm = TRUE))
+        status <- x$attr$status
+        if (class(status) == "character") {
+          status <- ifelse(status == "i", 1, 0)
+        }
+        cat("\nPrevalence:", sum(status, na.rm = TRUE))
         cat("\nPopulation Size:", sum(x$attr$active == 1))
         cat("\n----------------------------")
       }
@@ -110,6 +114,10 @@ verbose.net <- function(x, type, s = 1, at = 2) {
         cat("\n----------------------------")
         cat("\nSimulation: ", s, "/", x$control$nsims, sep = "")
         cat("\nTimestep: ", at, "/", x$control$nsteps, sep = "")
+        status <- x$attr$status
+        if (class(status) == "character") {
+          status <- ifelse(status == "i", 1, 0)
+        }
         cat("\nPrevalence:", sum(x$attr$status == "i", na.rm = TRUE))
         cat("\nPopulation Size:", sum(x$attr$active == 1))
         cat("\n----------------------------")
