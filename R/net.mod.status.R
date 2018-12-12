@@ -409,7 +409,7 @@ recovery.net <- function(dat, at) {
   rec.rand <- dat$control$rec.rand
   rec.rate <- dat$param$rec.rate
 
-  nRecov <- nRecovM2 <- 0
+  nRecov <- 0
   idsElig <- which(active == 1 & status == "i")
   nElig <- length(idsElig)
 
@@ -419,7 +419,12 @@ recovery.net <- function(dat, at) {
   infDur[infDur == 0] <- 1
 
   lrec.rate <- length(rec.rate)
-  ratesElig <- rec.rate[idsElig]
+  if (lrec.rate == 1) {
+    ratesElig <- rec.rate[idsElig]
+  } else {
+    #mElig <- mode[idsElig]
+    rateseLIG <- ifelse(infDur <= lrec.rate, rec.rate[infDur], rec.rate[lrec.rate])
+  }
 
 
 
@@ -440,7 +445,7 @@ recovery.net <- function(dat, at) {
       }
     } else {
       idsRecov <- NULL
-      nRecov <- min(round(sum(ratesElig)), sum(mElig))
+      nRecov <- min(round(sum(ratesElig)), length(idsElig))
       if (nRecov > 0) {
         idsRecov <- ssample(idsElig, nRecov)
         status[idsRecov] <- recovState
@@ -522,6 +527,7 @@ recovery.net.bip <- function(dat, at) {
   } else {
     mElig <- mode[idsElig]
     if (is.null(rec.rate.m2)) {
+      #Is this equiv. to a check of whether modes = 2?
       rates <- ifelse(infDur <= lrec.rate, rec.rate[infDur], rec.rate[lrec.rate])
     } else {
       rates <- ifelse(mElig == 1, ifelse(infDur <= lrec.rate,
