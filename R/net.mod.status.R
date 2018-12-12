@@ -74,19 +74,9 @@ infection.net <- function(dat, at) {
 
       # Calculate infection-stage transmission rates
       linf.prob <- length(inf.prob)
-      if (is.null(inf.prob.m2)) {
         del$transProb <- ifelse(del$infDur <= linf.prob,
                                 inf.prob[del$infDur],
                                 inf.prob[linf.prob])
-      } else {
-        del$transProb <- ifelse(del$sus <= nw %n% "bipartite",
-                                ifelse(del$infDur <= linf.prob,
-                                       inf.prob[del$infDur],
-                                       inf.prob[linf.prob]),
-                                ifelse(del$infDur <= linf.prob,
-                                       inf.prob.m2[del$infDur],
-                                       inf.prob.m2[linf.prob]))
-      }
 
       # Interventions
       if (!is.null(dat$param$inter.eff) && at >= dat$param$inter.start) {
