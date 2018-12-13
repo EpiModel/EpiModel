@@ -7,6 +7,11 @@ r:
   - release
   - devel
 
+addons:
+  apt:
+    packages:
+      - libmagick++-dev
+
 warnings_are_errors: true
 
 notifications:
