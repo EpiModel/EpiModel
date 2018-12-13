@@ -7,8 +7,8 @@
 infection.net.bip(dat, at)
 }
 \arguments{
-\item{dat}{A list object containing a \code{networkDynamic.bip} object and other
-initialization information passed from \code{\link{netsim.bip}}.}
+\item{dat}{A list object containing a \code{networkDynamic} object and other
+initialization information passed from \code{\link{netsim}}.}
 
 \item{at}{Current time step.}
 }
@@ -25,7 +25,7 @@ The main steps in this infection module are as follows:
 \enumerate{
  \item Get IDs for current infected and susceptibles given the current disease
        status.
- \item Call \code{\link{discord_edgelist.bip}} to get the current discordant edgelist
+ \item Call \code{\link{discord_edgelist}} to get the current discordant edgelist
        given step 1.
  \item Determine the transmission rates (e.g., as a function of mode).
  \item Pull the number of acts per partnership in a time step from the
@@ -38,7 +38,7 @@ The main steps in this infection module are as follows:
 }
 }
 \seealso{
-\code{\link{discord_edgelist.bip}} is used within \code{infection.net.bip}
+\code{\link{discord_edgelist}} is used within \code{infection.net.bip}
 to obtain a discordant edgelist.
 }
 \keyword{internal}

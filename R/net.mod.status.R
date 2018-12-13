@@ -157,8 +157,8 @@ infection.net <- function(dat, at) {
 #' @description This function simulates the main infection process given the
 #'              current state of the partnerships and disease in the system.
 #'
-#' @param dat A list object containing a \code{networkDynamic.bip} object and other
-#'        initialization information passed from \code{\link{netsim.bip}}.
+#' @param dat A list object containing a \code{networkDynamic} object and other
+#'        initialization information passed from \code{\link{netsim}}.
 #' @param at Current time step.
 #'
 #' @details
@@ -166,7 +166,7 @@ infection.net <- function(dat, at) {
 #' \enumerate{
 #'  \item Get IDs for current infected and susceptibles given the current disease
 #'        status.
-#'  \item Call \code{\link{discord_edgelist.bip}} to get the current discordant edgelist
+#'  \item Call \code{\link{discord_edgelist}} to get the current discordant edgelist
 #'        given step 1.
 #'  \item Determine the transmission rates (e.g., as a function of mode).
 #'  \item Pull the number of acts per partnership in a time step from the
@@ -185,7 +185,7 @@ infection.net <- function(dat, at) {
 #' @export
 #' @keywords netMod internal
 #'
-#' @seealso \code{\link{discord_edgelist.bip}} is used within \code{infection.net.bip}
+#' @seealso \code{\link{discord_edgelist}} is used within \code{infection.net.bip}
 #' to obtain a discordant edgelist.
 #'
 infection.net.bip <- function(dat, at) {
