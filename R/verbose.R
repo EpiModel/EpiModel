@@ -118,7 +118,7 @@ verbose.net <- function(x, type, s = 1, at = 2) {
         if (class(status) == "character") {
           status <- ifelse(status == "i", 1, 0)
         }
-        cat("\nPrevalence:", sum(x$attr$status == "i", na.rm = TRUE))
+        cat("\nPrevalence:", sum(status, na.rm = TRUE))
         cat("\nPopulation Size:", sum(x$attr$active == 1))
         cat("\n----------------------------")
       }
