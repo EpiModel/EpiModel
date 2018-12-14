@@ -222,7 +222,7 @@ dfunc <- function(dat, at) {
 }
 
 ## Arrivals function
-afunc <- function(dat, at) {
+bfunc <- function(dat, at) {
 
   growth.rate <- dat$param$growth.rate
   exptPopSize <- dat$epi$num[1]*(1 + growth.rate*at)
