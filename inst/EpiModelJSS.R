@@ -185,44 +185,44 @@ aging <- function(dat, at) {
 
 ## Express mortality rate as a function of proximity to upper age of 70
 ages <- 18:69
-departure.rates <- 1 / (70 * 12 - ages * 12)
+death.rates <- 1 / (70 * 12 - ages * 12)
 par(mfrow = c(1, 1), mar = c(3, 3, 1, 1), mgp = c(2, 1, 0))
-plot(ages, departure.rates, type = "b", xlab = "age", ylab = "departure Risk")
+plot(ages, death.rates, type = "b", xlab = "age", ylab = "Death Risk")
 
-## departure function
+## Death function
 dfunc <- function(dat, at) {
 
   idsElig <- which(dat$attr$active == 1)
   nElig <- length(idsElig)
-  ndepartures <- 0
+  nDeaths <- 0
 
   if (nElig > 0) {
     ages <- dat$attr$age[idsElig]
     max.age <- dat$param$max.age
-    departure.rates <- pmin(1, 1 / (max.age * 12 - ages * 12))
-    vecdepartures <- which(rbinom(nElig, 1, departure.rates) == 1)
-    idsdepartures <- idsElig[vecdepartures]
-    ndepartures <- length(idsdepartures)
+    death.rates <- pmin(1, 1 / (max.age * 12 - ages * 12))
+    vecDeaths <- which(rbinom(nElig, 1, death.rates) == 1)
+    idsDeaths <- idsElig[vecDeaths]
+    nDeaths <- length(idsDeaths)
 
-    if (ndepartures > 0) {
-      dat$attr$active[idsdepartures] <- 0
-      dat$attr$exitTime[idsdepartures] <- at
+    if (nDeaths > 0) {
+      dat$attr$active[idsDeaths] <- 0
+      dat$attr$exitTime[idsDeaths] <- at
       dat$nw <- deactivate.vertices(dat$nw, onset = at, terminus = Inf,
-                                    v = idsdepartures, deactivate.edges = TRUE)
+                                    v = idsDeaths, deactivate.edges = TRUE)
     }
   }
 
   if (at == 2) {
-    dat$epi$d.flow <- c(0, ndepartures)
+    dat$epi$d.flow <- c(0, nDeaths)
   } else {
-    dat$epi$d.flow[at] <- ndepartures
+    dat$epi$d.flow[at] <- nDeaths
   }
 
   return(dat)
 }
 
 ## Arrivals function
-afunc <- function(dat, at) {
+bfunc <- function(dat, at) {
 
   growth.rate <- dat$param$growth.rate
   exptPopSize <- dat$epi$num[1]*(1 + growth.rate*at)
@@ -259,13 +259,13 @@ afunc <- function(dat, at) {
 nw <- network::network.initialize(500, directed = FALSE)
 est3 <- netest(nw, formation = ~ edges, target.stats = 150,
                coef.diss = dissolution_coefs(~ offset(edges), 60,
-                                             mean(departure.rates)))
+                                             mean(death.rates)))
 
 ## Epidemic model parameterization
 param <- param.net(inf.prob = 0.15, growth.rate = 0.01/12, max.age = 70)
 init <- init.net(i.num = 50)
 control <- control.net(type = "SI", nsims = 5, nsteps = 500,
-                       departures.FUN = dfunc, arrivals.FUN = afunc,
+                       deaths.FUN = dfunc, births.FUN = bfunc,
                        aging.FUN = aging, depend = TRUE)
 
 ## Simulate the epidemic model
