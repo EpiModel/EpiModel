@@ -201,6 +201,34 @@ crosscheck.icm <- function(param, init, control) {
 
   }
 
+
+  ## Assign modules based on group parameter
+  if (!is.null(control$type)) {
+    def <- grep(".FUN",names(control))
+    args <- names(control)[def]
+
+    if (param$groups == 1) {
+      for (i in 1:length(args)) {
+        if (is.null(control[[args[i]]])) {
+          temp <- get(gsub(".FUN",".icm",args[i]))
+          control[[args[i]]] <- temp
+        }
+      }
+      message("Default modules set to appropriate two-group functions. See documentation ",
+              "for details.")
+    }
+    else {
+      for (i in 1:length(args)) {
+        if (is.null(control[[args[i]]])) {
+          temp <- get(gsub(".FUN",".icm.bip",args[i]))
+          control[[args[i]]] <- temp
+        }
+      }
+     message("Default modules set to appropriate two-group functions. See documentation ",
+             "for details.")
+    }
+  }
+
   ## In-place assignment to update param and control
   on.exit(assign("param", param, pos = parent.frame()))
   on.exit(assign("control", control, pos = parent.frame()), add = TRUE)
@@ -403,6 +431,32 @@ crosscheck.net <- function(x, param, init, control) {
 
   }
 
+  ## Assign modules based on group parameter
+  if (!is.null(control$type)) {
+    def <- grep(".FUN",names(control))
+    args <- names(control)[def]
+
+    if (param$groups == 1) {
+      for (i in 1:length(args)) {
+        if (is.null(control[[args[i]]])) {
+          temp <- get(gsub(".FUN",".net",args[i]))
+          control[[args[i]]] <- temp
+        }
+      }
+      message("Default modules set to appropriate two-mode functions. See documentation ",
+              "for details.")
+    }
+    else {
+      for (i in 1:length(args)) {
+        if (is.null(control[[args[i]]])) {
+          temp <- get(gsub(".FUN",".net.bip",args[i]))
+          control[[args[i]]] <- temp
+        }
+      }
+      message("Default modules set to appropriate two-mode functions. See documentation ",
+              "for details.")
+    }
+  }
 
   ## In-place assignment to update param and control
   assign("param", param, pos = parent.frame())
