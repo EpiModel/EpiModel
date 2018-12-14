@@ -403,3 +403,30 @@ get_sims <- function(x, sims, var) {
 
   return(out)
 }
+
+
+#' @title Get Arguments from EpiModel Parameterization Functions
+#'
+#' @description Returns a list of argument names and values for use for parameter
+#'              processing functions.
+#'
+#' @param formal.args The output of \code{formals(sys.function())}.
+#' @param dot.args The output of \code{list(...)}.
+#'
+#' @export
+#'
+get_args <- function(formal.args, dot.args){
+  p <- list()
+  formal.args[["..."]] <- NULL
+  for (arg in names(formal.args)) {
+    p[arg] <- list(get(arg, pos = parent.frame()))
+  }
+
+  names.dot.args <- names(dot.args)
+  if (length(dot.args) > 0) {
+    for (i in 1:length(dot.args)) {
+      p[[names.dot.args[i]]] <- dot.args[[i]]
+    }
+  }
+  return(p)
+}

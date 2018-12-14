@@ -4,8 +4,8 @@
 #' \tabular{ll}{
 #'    Package: \tab EpiModel\cr
 #'    Type: \tab Package\cr
-#'    Version: \tab 1.7.0\cr
-#'    Date: \tab 2018-11-21\cr
+#'    Version: \tab 1.7.1\cr
+#'    Date: \tab 2018-12-10\cr
 #'    License: \tab GPL-3\cr
 #'    LazyLoad: \tab yes\cr
 #' }
@@ -133,6 +133,8 @@
 #' @importFrom utils head tail packageVersion
 #' @importFrom ape as.phylo collapse.singles
 #' @importFrom lazyeval lazy_dots lazy_eval
+#'
+#' @useDynLib EpiModel, .registration = TRUE
 #'
 #' @docType package
 #' @keywords package
