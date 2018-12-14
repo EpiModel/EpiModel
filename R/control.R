@@ -60,8 +60,8 @@
 control.dcm <- function(type, nsteps, dt = 1, odemethod = "rk4",
                         dede = FALSE, new.mod = NULL, sens.param = TRUE,
                         print.mod = FALSE, verbose = FALSE, ...) {
-  
-  
+
+
 
   # Get arguments
   p <- list()
@@ -205,13 +205,13 @@ control.icm <- function(type, nsteps, nsims = 1, rec.rand = TRUE, a.rand = TRUE,
       p[[names.dot.args[i]]] <- dot.args[[i]]
     }
   }
-  
-  if ("birth.FUN" %in% names.dot.args) {
+
+  if (!("arrival.FUN" %in% names.dot.args)) {
     p$arrival.FUN <- dot.args$birth.FUN
     message("EpiModel 1.7.0 onward renamed the birth function birth.FUN to arrival.FUN. See documentation for details.")
   }
-  
-  if ("death.FUN" %in% names.dot.args) {
+
+  if (!("departure.FUN" %in% names.dot.args)) {
     p$departure.FUN <- dot.args$death.FUN
     message("EpiModel 1.7.0 onward renamed the death function death.FUN to departure.FUN. See documentation for details.")
   }
@@ -446,13 +446,13 @@ control.net <- function(type, nsteps, start = 1, nsims = 1, ncores = 1,
       p[[names.dot.args[i]]] <- dot.args[[i]]
     }
   }
-  
-  if ("birth.FUN" %in% names.dot.args) {
+
+  if (!("arrival.FUN" %in% names.dot.args)) {
     p$arrival.FUN <- dot.args$birth.FUN
     message("EpiModel 1.7.0 onward renamed the birth function birth.FUN to arrival.FUN. See documentation for details.")
   }
-  
-  if ("death.FUN" %in% names.dot.args) {
+
+  if (!("departure.FUN" %in% names.dot.args)) {
     p$departure.FUN <- dot.args$death.FUN
     message("EpiModel 1.7.0 onward renamed the death function death.FUN to departure.FUN. See documentation for details.")
   }
