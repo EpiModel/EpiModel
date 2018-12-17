@@ -206,12 +206,12 @@ control.icm <- function(type, nsteps, nsims = 1, rec.rand = TRUE, a.rand = TRUE,
     }
   }
 
-  if (!("arrivals.FUN" %in% names(formal.args))) {
+  if ("birth.FUN" %in% names.dot.args) {
     p$arrivals.FUN <- dot.args$birth.FUN
     message("EpiModel 1.7.0 onward renamed the birth function birth.FUN to arrivals.FUN. See documentation for details.")
   }
 
-  if (!("departures.FUN" %in% names(formal.args))) {
+  if ("death.FUN" %in% names.dot.args) {
     p$departures.FUN <- dot.args$death.FUN
     message("EpiModel 1.7.0 onward renamed the death function death.FUN to departures.FUN. See documentation for details.")
   }
@@ -447,12 +447,12 @@ control.net <- function(type, nsteps, start = 1, nsims = 1, ncores = 1,
     }
   }
 
-  if (!("arrivals.FUN" %in% names(formal.args))) {
+  if ("birth.FUN" %in% names.dot.args) {
     p$arrivals.FUN <- dot.args$birth.FUN
     message("EpiModel 1.7.0 onward renamed the birth function birth.FUN to arrivals.FUN. See documentation for details.")
   }
 
-  if (!("departures.FUN" %in% names(formal.args))) {
+  if ("death.FUN" %in% names.dot.args) {
     p$departures.FUN <- dot.args$death.FUN
     message("EpiModel 1.7.0 onward renamed the death function death.FUN to departures.FUN. See documentation for details.")
   }
