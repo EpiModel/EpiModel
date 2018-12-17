@@ -21,7 +21,9 @@ Authors@R: c(person("Samuel", "Jenness",
     person("Skye", "Bender-deMoll",
     role=c("ctb"), email="skyebend@uw.edu"),
     person("Kevin", "Weiss",
-    role=c("ctb"), email="kevin.weiss@emory.edu"))
+    role=c("ctb"), email="kevin.weiss@emory.edu"),
+    person("Shawnee", "Anderson",
+    role=c("ctb"), email="shawnee.marcell.anderson@emory.edu"))
 License: GPL-3
 URL: http://epimodel.org/, http://github.com/statnet/EpiModel
 BugReports: https://github.com/statnet/EpiModel/issues
