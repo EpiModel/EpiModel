@@ -436,7 +436,7 @@ crosscheck.net <- function(x, param, init, control) {
     def <- grep(".FUN",names(control))
     args <- names(control)[def]
 
-    if (param$groups == 1) {
+    if (bip == FALSE) {
       for (i in 1:length(args)) {
         if (is.null(control[[args[i]]])) {
           temp <- get(gsub(".FUN",".net",args[i]))
@@ -461,5 +461,7 @@ crosscheck.net <- function(x, param, init, control) {
   ## In-place assignment to update param and control
   assign("param", param, pos = parent.frame())
   assign("control", control, pos = parent.frame())
+  #assign("param", param, envir = .GlobalEnv)
+  #assign("control", control, envir = .GlobalEnv)
 }
 
