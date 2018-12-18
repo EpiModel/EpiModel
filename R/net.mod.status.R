@@ -419,7 +419,7 @@ recovery.net <- function(dat, at) {
   rec.rand <- dat$control$rec.rand
   rec.rate <- dat$param$rec.rate
 
-  nRecov <- nRecovM2 <- 0
+  nRecov <- 0
   idsElig <- which(active == 1 & status == "i")
   nElig <- length(idsElig)
 
