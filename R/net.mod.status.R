@@ -273,7 +273,6 @@ recovery.net <- function(dat, at) {
   # Time-Varying Recovery Rate ----------------------------------------------
   infDur <- at - infTime[active == 1 & status == "i"]
   infDur[infDur == 0] <- 1
-
   lrec.rate <- length(rec.rate)
   if (lrec.rate == 1) {
     mElig <- mode[idsElig]
@@ -284,12 +283,11 @@ recovery.net <- function(dat, at) {
     if (is.null(rec.rate.m2)) {
       rates <- ifelse(infDur <= lrec.rate, rec.rate[infDur], rec.rate[lrec.rate])
     } else {
-      rates <- ifelse(mElig == 1, ifelse(infDur <= lrec.rate,
-                                         rec.rate[infDur],
-                                         rec.rate[lrec.rate]),
-                                  ifelse(infDur <= lrec.rate,
-                                         rec.rate.m2[infDur],
-                                         rec.rate.m2[lrec.rate]))
+      rates <- rep(NA, length(infDur))
+      rates[mElig == 1] <- ifelse(infDur[mElig == 1] <= lrec.rate,
+                                  rec.rate[infDur[mElig == 1]], rec.rate[lrec.rate])
+      rates[mElig == 2] <- ifelse(infDur[mElig == 2] <= length(rec.rate.m2),
+                                  rec.rate.m2[infDur[mElig == 2]], rec.rate.m2[length(rec.rate.m2)])
     }
     ratesElig <- rates
   }
