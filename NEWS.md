@@ -1,3 +1,11 @@
+EpiModel 1.7.2
+------------------------------------------------------------------------------
+
+### BUG FIXES
+* Fix logical evaluations in `get_sims` and unit tests in `plot.transmat` found
+  during CRAN submission for v1.7.1.
+
+
 EpiModel 1.7.1
 ------------------------------------------------------------------------------
 
