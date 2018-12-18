@@ -74,9 +74,19 @@ infection.net <- function(dat, at) {
 
       # Calculate infection-stage transmission rates
       linf.prob <- length(inf.prob)
+      if (is.null(inf.prob.m2)) {
         del$transProb <- ifelse(del$infDur <= linf.prob,
                                 inf.prob[del$infDur],
                                 inf.prob[linf.prob])
+      } else {
+        del$transProb <- ifelse(del$sus <= nw %n% "bipartite",
+                                ifelse(del$infDur <= linf.prob,
+                                       inf.prob[del$infDur],
+                                       inf.prob[linf.prob]),
+                                ifelse(del$infDur <= linf.prob,
+                                       inf.prob.m2[del$infDur],
+                                       inf.prob.m2[linf.prob]))
+      }
 
       # Interventions
       if (!is.null(dat$param$inter.eff) && at >= dat$param$inter.start) {
@@ -157,8 +167,8 @@ infection.net <- function(dat, at) {
 #' @description This function simulates the main infection process given the
 #'              current state of the partnerships and disease in the system.
 #'
-#' @param dat A list object containing a \code{networkDynamic} object and other
-#'        initialization information passed from \code{\link{netsim}}.
+#' @param dat A list object containing a \code{networkDynamic.bip} object and other
+#'        initialization information passed from \code{\link{netsim.bip}}.
 #' @param at Current time step.
 #'
 #' @details
@@ -166,7 +176,7 @@ infection.net <- function(dat, at) {
 #' \enumerate{
 #'  \item Get IDs for current infected and susceptibles given the current disease
 #'        status.
-#'  \item Call \code{\link{discord_edgelist}} to get the current discordant edgelist
+#'  \item Call \code{\link{discord_edgelist.bip}} to get the current discordant edgelist
 #'        given step 1.
 #'  \item Determine the transmission rates (e.g., as a function of mode).
 #'  \item Pull the number of acts per partnership in a time step from the
@@ -185,7 +195,7 @@ infection.net <- function(dat, at) {
 #' @export
 #' @keywords netMod internal
 #'
-#' @seealso \code{\link{discord_edgelist}} is used within \code{infection.net.bip}
+#' @seealso \code{\link{discord_edgelist.bip}} is used within \code{infection.net.bip}
 #' to obtain a discordant edgelist.
 #'
 infection.net.bip <- function(dat, at) {
@@ -409,7 +419,7 @@ recovery.net <- function(dat, at) {
   rec.rand <- dat$control$rec.rand
   rec.rate <- dat$param$rec.rate
 
-  nRecov <- 0
+  nRecov <- nRecovM2 <- 0
   idsElig <- which(active == 1 & status == "i")
   nElig <- length(idsElig)
 
@@ -417,15 +427,12 @@ recovery.net <- function(dat, at) {
   # Time-Varying Recovery Rate ----------------------------------------------
   infDur <- at - infTime[active == 1 & status == "i"]
   infDur[infDur == 0] <- 1
-
   lrec.rate <- length(rec.rate)
   if (lrec.rate == 1) {
-    ratesElig <- rec.rate[idsElig]
+    ratesElig <- rec.rate
   } else {
-    #mElig <- mode[idsElig]
-    rateseLIG <- ifelse(infDur <= lrec.rate, rec.rate[infDur], rec.rate[lrec.rate])
+    ratesElig <- ifelse(infDur <= lrec.rate, rec.rate[infDur], rec.rate[lrec.rate])
   }
-
 
 
   # Process -----------------------------------------------------------------
@@ -445,7 +452,7 @@ recovery.net <- function(dat, at) {
       }
     } else {
       idsRecov <- NULL
-      nRecov <- min(round(sum(ratesElig)), length(idsElig))
+      nRecov <- min(round(sum(ratesElig)), sum(mElig))
       if (nRecov > 0) {
         idsRecov <- ssample(idsElig, nRecov)
         status[idsRecov] <- recovState
@@ -514,11 +521,9 @@ recovery.net.bip <- function(dat, at) {
   idsElig <- which(active == 1 & status == "i")
   nElig <- length(idsElig)
 
-
   # Time-Varying Recovery Rate ----------------------------------------------
   infDur <- at - infTime[active == 1 & status == "i"]
   infDur[infDur == 0] <- 1
-
   lrec.rate <- length(rec.rate)
   if (lrec.rate == 1) {
     mElig <- mode[idsElig]
@@ -527,15 +532,13 @@ recovery.net.bip <- function(dat, at) {
   } else {
     mElig <- mode[idsElig]
     if (is.null(rec.rate.m2)) {
-      #Is this equiv. to a check of whether modes = 2?
       rates <- ifelse(infDur <= lrec.rate, rec.rate[infDur], rec.rate[lrec.rate])
     } else {
-      rates <- ifelse(mElig == 1, ifelse(infDur <= lrec.rate,
-                                         rec.rate[infDur],
-                                         rec.rate[lrec.rate]),
-                      ifelse(infDur <= lrec.rate,
-                             rec.rate.m2[infDur],
-                             rec.rate.m2[lrec.rate]))
+      rates <- rep(NA, length(infDur))
+      rates[mElig == 1] <- ifelse(infDur[mElig == 1] <= lrec.rate,
+                                  rec.rate[infDur[mElig == 1]], rec.rate[lrec.rate])
+      rates[mElig == 2] <- ifelse(infDur[mElig == 2] <= length(rec.rate.m2),
+                                  rec.rate.m2[infDur[mElig == 2]], rec.rate.m2[length(rec.rate.m2)])
     }
     ratesElig <- rates
   }
