@@ -6,10 +6,9 @@
 \usage{
 control.icm(type, nsteps, nsims = 1, rec.rand = TRUE, a.rand = TRUE,
   d.rand = TRUE, initialize.FUN = initialize.icm,
-  infection.FUN = infection.icm, recovery.FUN = recovery.icm,
-  departures.FUN = departures.icm, arrivals.FUN = arrivals.icm,
-  get_prev.FUN = get_prev.icm, verbose = FALSE, verbose.int = 0,
-  skip.check = FALSE, ...)
+  infection.FUN = NULL, recovery.FUN = NULL, departures.FUN = NULL,
+  arrivals.FUN = NULL, get_prev.FUN = NULL, verbose = FALSE,
+  verbose.int = 0, skip.check = FALSE, ...)
 }
 \arguments{
 \item{type}{Disease type to be modeled, with the choice of \code{"SI"} for

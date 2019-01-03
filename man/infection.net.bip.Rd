@@ -2,7 +2,7 @@
 % Please edit documentation in R/net.mod.status.R
 \name{infection.net.bip}
 \alias{infection.net.bip}
-\title{Primary Infection Module for netsim.bip}
+\title{Primary Infection Module for netsim}
 \usage{
 infection.net.bip(dat, at)
 }
@@ -38,7 +38,7 @@ The main steps in this infection module are as follows:
 }
 }
 \seealso{
-\code{\link{discord_edgelist}} is used within \code{infection.net.bip}
+\code{\link{discord_edgelist}} is used within \code{infection.net}
 to obtain a discordant edgelist.
 }
 \keyword{internal}

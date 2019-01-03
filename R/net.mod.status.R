@@ -40,8 +40,6 @@ infection.net <- function(dat, at) {
   # Variables ---------------------------------------------------------------
   active <- dat$attr$active
   status <- dat$attr$status
-  modes <- dat$param$modes
-  mode <- idmode(dat$nw)
 
   inf.prob <- dat$param$inf.prob
   act.rate <- dat$param$act.rate
@@ -56,6 +54,7 @@ infection.net <- function(dat, at) {
 
   # Initialize vectors
   nInf <- totInf <- 0
+
 
 
   # Process -----------------------------------------------------------------
@@ -74,19 +73,9 @@ infection.net <- function(dat, at) {
 
       # Calculate infection-stage transmission rates
       linf.prob <- length(inf.prob)
-      if (is.null(inf.prob.m2)) {
-        del$transProb <- ifelse(del$infDur <= linf.prob,
-                                inf.prob[del$infDur],
-                                inf.prob[linf.prob])
-      } else {
-        del$transProb <- ifelse(del$sus <= nw %n% "bipartite",
-                                ifelse(del$infDur <= linf.prob,
-                                       inf.prob[del$infDur],
-                                       inf.prob[linf.prob]),
-                                ifelse(del$infDur <= linf.prob,
-                                       inf.prob.m2[del$infDur],
-                                       inf.prob.m2[linf.prob]))
-      }
+      del$transProb <- ifelse(del$infDur <= linf.prob,
+                              inf.prob[del$infDur],
+                              inf.prob[linf.prob])
 
       # Interventions
       if (!is.null(dat$param$inter.eff) && at >= dat$param$inter.start) {
@@ -162,13 +151,13 @@ infection.net <- function(dat, at) {
   return(dat)
 }
 
-#' @title Primary Infection Module for netsim.bip
+#' @title Primary Infection Module for netsim
 #'
 #' @description This function simulates the main infection process given the
 #'              current state of the partnerships and disease in the system.
 #'
-#' @param dat A list object containing a \code{networkDynamic.bip} object and other
-#'        initialization information passed from \code{\link{netsim.bip}}.
+#' @param dat A list object containing a \code{networkDynamic} object and other
+#'        initialization information passed from \code{\link{netsim}}.
 #' @param at Current time step.
 #'
 #' @details
@@ -176,7 +165,7 @@ infection.net <- function(dat, at) {
 #' \enumerate{
 #'  \item Get IDs for current infected and susceptibles given the current disease
 #'        status.
-#'  \item Call \code{\link{discord_edgelist.bip}} to get the current discordant edgelist
+#'  \item Call \code{\link{discord_edgelist}} to get the current discordant edgelist
 #'        given step 1.
 #'  \item Determine the transmission rates (e.g., as a function of mode).
 #'  \item Pull the number of acts per partnership in a time step from the
@@ -195,7 +184,7 @@ infection.net <- function(dat, at) {
 #' @export
 #' @keywords netMod internal
 #'
-#' @seealso \code{\link{discord_edgelist.bip}} is used within \code{infection.net.bip}
+#' @seealso \code{\link{discord_edgelist}} is used within \code{infection.net}
 #' to obtain a discordant edgelist.
 #'
 infection.net.bip <- function(dat, at) {
@@ -416,7 +405,6 @@ recovery.net <- function(dat, at) {
   type <- dat$control$type
   recovState <- ifelse(type == "SIR", "r", "s")
 
-  rec.rand <- dat$control$rec.rand
   rec.rate <- dat$param$rec.rate
 
   nRecov <- 0
@@ -437,8 +425,6 @@ recovery.net <- function(dat, at) {
 
   # Process -----------------------------------------------------------------
   if (nElig > 0) {
-
-    if (rec.rand == TRUE) {
       vecRecov <- which(rbinom(nElig, 1, ratesElig) == 1)
       if (length(vecRecov) > 0) {
         idsRecov <- idsElig[vecRecov]
@@ -450,20 +436,6 @@ recovery.net <- function(dat, at) {
                                               terminus = Inf, v = idsRecov)
         }
       }
-    } else {
-      idsRecov <- NULL
-      nRecov <- min(round(sum(ratesElig)), sum(mElig))
-      if (nRecov > 0) {
-        idsRecov <- ssample(idsElig, nRecov)
-        status[idsRecov] <- recovState
-      }
-
-      if (tea.status == TRUE & nRecov > 0) {
-        dat$nw <- activate.vertex.attribute(dat$nw, prefix = "testatus",
-                                            value = recovState, onset = at,
-                                            terminus = Inf, v = idsRecov)
-      }
-    }
   }
 
   dat$attr$status <- status
@@ -513,7 +485,6 @@ recovery.net.bip <- function(dat, at) {
   type <- dat$control$type
   recovState <- ifelse(type == "SIR", "r", "s")
 
-  rec.rand <- dat$control$rec.rand
   rec.rate <- dat$param$rec.rate
   rec.rate.m2 <- dat$param$rec.rate.m2
 
@@ -546,8 +517,6 @@ recovery.net.bip <- function(dat, at) {
 
   # Process -----------------------------------------------------------------
   if (nElig > 0) {
-
-    if (rec.rand == TRUE) {
       vecRecov <- which(rbinom(nElig, 1, ratesElig) == 1)
       if (length(vecRecov) > 0) {
         idsRecov <- idsElig[vecRecov]
@@ -560,29 +529,7 @@ recovery.net.bip <- function(dat, at) {
                                               terminus = Inf, v = idsRecov)
         }
       }
-    } else {
-      idsRecov <- idsRecovM2 <- NULL
-      nRecov <- min(round(sum(ratesElig[mElig == 1])), sum(mElig == 1))
-      if (nRecov > 0) {
-        idsRecov <- ssample(idsElig[mElig == 1], nRecov)
-        status[idsRecov] <- recovState
-      }
-
-      nRecovM2 <- min(round(sum(ratesElig[mElig == 2])), sum(mElig == 2))
-      if (nRecovM2 > 0) {
-        idsRecovM2 <- ssample(idsElig[mElig == 2], nRecovM2)
-        status[idsRecovM2] <- recovState
-      }
-
-      totRecov <- nRecov + nRecovM2
-      if (tea.status == TRUE & totRecov > 0) {
-        allids <- c(idsRecov, idsRecovM2)
-        dat$nw <- activate.vertex.attribute(dat$nw, prefix = "testatus",
-                                            value = recovState, onset = at,
-                                            terminus = Inf, v = allids)
-      }
-    }
-  }
+     }
 
   dat$attr$status <- status
   if ("status" %in% dat$temp$fterms) {
