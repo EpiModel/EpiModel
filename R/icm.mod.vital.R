@@ -21,7 +21,7 @@ departures.icm <- function(dat, at) {
 
   # Susceptible departures ------------------------------------------------------
   nDepartures <- 0
-  idsElig <- which(dat$attr$status == "s")
+  idsElig <- which(dat$attr$active == 1 & dat$attr$status == "s")
   nElig <- length(idsElig)
   if (nElig > 0) {
 
@@ -44,7 +44,7 @@ departures.icm <- function(dat, at) {
 
   # Infected Departures ---------------------------------------------------------
   nDepartures <- 0
-  idsElig <- which(dat$attr$status == "i")
+  idsElig <- which(dat$attr$active == 1 & dat$attr$status == "i")
   nElig <- length(idsElig)
   if (nElig > 0) {
 
@@ -67,7 +67,7 @@ departures.icm <- function(dat, at) {
 
   # Recovered Departures --------------------------------------------------------
   nDepartures <- 0
-  idsElig <- which(dat$attr$status == "r")
+  idsElig <- which(dat$attr$active == 1 & dat$attr$status == "r")
   nElig <- length(idsElig)
   if (nElig > 0) {
 

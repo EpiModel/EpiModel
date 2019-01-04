@@ -40,7 +40,8 @@ initialize.icm <- function(param, init, control) {
 
 
   # Summary out list
-  dat <- get_prev.icm(dat, at = 1)
+  #dat <- get_prev.icm(dat, at = 1)
+  dat <- do.call(control[["get_prev.FUN"]],list(dat, at = 1))
 
   return(dat)
 }

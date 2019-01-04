@@ -71,7 +71,7 @@ initialize.net <- function(x, param, init, control, s) {
     dat <- init_status.net(dat)
 
     ## Get initial prevalence
-    dat <- get_prev.net(dat, at = 1)
+    dat <- do.call(control[["get_prev.FUN"]],list(dat, at = 1))
   } else {
     dat <- list()
 
