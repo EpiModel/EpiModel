@@ -443,7 +443,7 @@ crosscheck.net <- function(x, param, init, control) {
           control[[args[i]]] <- temp
         }
       }
-      message("Default modules set to appropriate two-mode functions. See documentation ",
+      message("Default modules set to appropriate one-mode functions. See documentation ",
               "for details.")
     }
     else {
