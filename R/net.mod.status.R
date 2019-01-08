@@ -97,7 +97,7 @@ infection.net <- function(dat, at) {
 
       # Set new infections vector
       idsNewInf <- unique(del$sus)
-      nInf <- sum(mode[idsNewInf] == 1)
+      nInf <- length(idsNewInf)
       totInf <- nInf
 
       # Update nw attributes
@@ -428,7 +428,7 @@ recovery.net <- function(dat, at) {
       vecRecov <- which(rbinom(nElig, 1, ratesElig) == 1)
       if (length(vecRecov) > 0) {
         idsRecov <- idsElig[vecRecov]
-        nRecov <- sum(mode[idsRecov])
+        nRecov <- length(idsRecov)
         status[idsRecov] <- recovState
         if (tea.status == TRUE) {
           dat$nw <- activate.vertex.attribute(dat$nw, prefix = "testatus",

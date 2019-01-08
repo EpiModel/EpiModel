@@ -21,8 +21,6 @@ departures.net <- function(dat, at) {
 
   # Variables ---------------------------------------------------------------
   type <- dat$control$type
-  d.rand <- TRUE
-
 
   # Susceptible departures ------------------------------------------------------
 
@@ -37,7 +35,6 @@ departures.net <- function(dat, at) {
     rates.sus <- dat$param$ds.rate
 
     # Stochastic exits
-    if (d.rand == TRUE) {
       vecDepartures.sus <- which(rbinom(nElig.sus, 1, rates.sus) == 1)
       if (length(vecDepartures.sus) > 0) {
         idsDpt.sus <- idsElig.sus[vecDepartures.sus]
@@ -48,8 +45,6 @@ departures.net <- function(dat, at) {
                                       v = idsDpt.sus, deactivate.edges = TRUE)
       }
     }
-
-  }
 
 
   # Infected departures ---------------------------------------------------------
@@ -65,7 +60,6 @@ departures.net <- function(dat, at) {
     rates.inf <- dat$param$di.rate
 
     # Stochastic exits
-    if (d.rand == TRUE) {
       vecDepartures.inf <- which(rbinom(nElig.inf, 1, rates.inf) == 1)
       if (length(vecDepartures.inf) > 0) {
         idsDpt.inf <- idsElig.inf[vecDepartures.inf]
@@ -76,8 +70,6 @@ departures.net <- function(dat, at) {
                                       v = idsDpt.inf, deactivate.edges = TRUE)
       }
     }
-
-  }
 
 
   # Recovered departures --------------------------------------------------------
@@ -94,7 +86,6 @@ departures.net <- function(dat, at) {
       rates.rec <- dat$param$dr.rate
 
       # Stochastic exits
-      if (d.rand == TRUE) {
         vecDepartures.rec <- which(rbinom(nElig.rec, 1, rates.rec) == 1)
         if (length(vecDepartures.rec) > 0) {
           idsDpt.rec <- idsElig.rec[vecDepartures.rec]
@@ -104,8 +95,6 @@ departures.net <- function(dat, at) {
           dat$nw <- deactivate.vertices(dat$nw, onset = at, terminus = Inf,
                                         v = idsDpt.rec, deactivate.edges = TRUE)
         }
-      }
-
     }
   }
 
@@ -130,78 +119,74 @@ departures.net <- function(dat, at) {
   }
 
 
-  #' @title Arrivals: netsim Module
-  #'
-  #' @description This function simulates new arrivals into the network
-  #'   for use in \code{\link{netsim}} simulations.
-  #'
-  #' @param dat Master list object containing a \code{networkDynamic} object and other
-  #'   initialization information passed from \code{\link{netsim}}.
-  #' @param at Current time step.
-  #'
-  #' @seealso \code{\link{netsim}}
-  #'
-  #' @export
-  #' @keywords netMod internal
-  #'
-  arrivals.net <- function(dat, at) {
-
-    # Conditions --------------------------------------------------------------
-    if (dat$param$vital == FALSE) {
-      return(dat)
+#' @title Arrivals: netsim Module
+#'
+#' @description This function simulates new arrivals into the network
+#'   for use in \code{\link{netsim}} simulations.
+#'
+#' @param dat Master list object containing a \code{networkDynamic} object and other
+#'   initialization information passed from \code{\link{netsim}}.
+#' @param at Current time step.
+#'
+#' @seealso \code{\link{netsim}}
+#'
+#' @export
+#' @keywords netMod internal
+#'
+arrivals.net <- function(dat, at) {
+  
+  # Conditions --------------------------------------------------------------
+  if (dat$param$vital == FALSE) {
+    return(dat)
+  }
+  
+  
+  # Variables ---------------------------------------------------------------
+  a.rate <- dat$param$a.rate
+  tea.status <- dat$control$tea.status
+  nOld <- dat$epi$num[at - 1]
+  nCurr <- network.size(dat$nw)
+  
+  nArrivals <- 0
+  newNodes <- NULL
+  
+  
+  # Add Nodes ---------------------------------------------------------------
+  if (nOld > 0) {
+    nArrivals <- sum(rbinom(nOld, 1, a.rate))
+    if (nArrivals > 0) {
+      dat$nw <- add.vertices(dat$nw, nv = nArrivals)
+      newNodes <- (nCurr + 1):(nCurr + nArrivals)
+      dat$nw <- activate.vertices(dat$nw, onset = at, terminus = Inf, v = newNodes)
     }
-
-
-    # Variables ---------------------------------------------------------------
-    a.rate <- dat$param$a.rate
-    modes <- dat$param$modes
-    tea.status <- dat$control$tea.status
-    nOld <- dat$epi$num[at - 1]
-    nCurr <- network.size(dat$nw)
-    a.rand <- dat$control$a.rand
-    delete.nodes <- dat$control$delete.nodes
-
-    nArrivals <- 0
-    newNodes <- newNodesM2 <- NULL
-
-
-    # Add Nodes ---------------------------------------------------------------
-    if (nOld > 0) {
-        nArrivals <- sum(rbinom(nOld, 1, a.rate))
-
-      if (nArrivals > 0) {
-        dat$nw <- add.vertices(dat$nw, nv = nArrivals)
-        newNodes <- (nCurr + 1):(nCurr + nArrivals)
-        dat$nw <- activate.vertices(dat$nw, onset = at, terminus = Inf, v = newNodes)
+  }
+  
+  # Update Nodal Attributes -------------------------------------------------
+  if (length(newNodes) > 0) {
+    
+    # Set attributes on nw
+    fterms <- dat$temp$fterms
+    curr.tab <- get_attr_prop(dat$nw, fterms)
+    if (length(curr.tab) > 0) {
+      dat$nw <- update_nwattr(dat$nw, newNodes, dat$control$attr.rules,
+                              curr.tab, dat$temp$t1.tab)
+    }
+    
+    # Save any val on attr
+    dat <- copy_toall_attr(dat, at, fterms)
+    
+    if (tea.status == TRUE) {
+      if ("status" %in% fterms) {
+        dat$nw <- activate.vertex.attribute(dat$nw, prefix = "testatus",
+                                            value = dat$attr$status[newNodes],
+                                            onset = at, terminus = Inf,
+                                            v = newNodes)
+      } else {
+        dat$nw <- activate.vertex.attribute(dat$nw, prefix = "testatus",
+                                            value = "s", onset = at, terminus = Inf,
+                                            v = newNodes)
       }
     }
-
-    # Update Nodal Attributes -------------------------------------------------
-    if (length(newNodes) > 0) {
-
-      # Set attributes on nw
-      fterms <- dat$temp$fterms
-      curr.tab <- get_attr_prop(dat$nw, fterms)
-      if (length(curr.tab) > 0) {
-        dat$nw <- update_nwattr(dat$nw, newNodes, dat$control$attr.rules,
-                                curr.tab, dat$temp$t1.tab)
-      }
-
-      # Save any val on attr
-      dat <- copy_toall_attr(dat, at, fterms)
-
-      if (tea.status == TRUE) {
-        if ("status" %in% fterms) {
-          dat$nw <- activate.vertex.attribute(dat$nw, prefix = "testatus",
-                                              value = dat$attr$status[newNodes],
-                                              onset = at, terminus = Inf,
-                                              v = newNodes)
-        } else {
-          dat$nw <- activate.vertex.attribute(dat$nw, prefix = "testatus",
-                                              value = "s", onset = at, terminus = Inf,
-                                              v = newNodes)
-        }
-      }
       if (!("status" %in% fterms)) {
         dat$attr$status <- c(dat$attr$status, rep("s", length(newNodes)))
       }
@@ -209,28 +194,27 @@ departures.net <- function(dat, at) {
       dat$attr$infTime <- c(dat$attr$infTime, rep(NA, length(newNodes)))
       dat$attr$entrTime <- c(dat$attr$entrTime, rep(at, length(newNodes)))
       dat$attr$exitTime <- c(dat$attr$exitTime, rep(NA, length(newNodes)))
-
-
-      ## Handles infTime when incoming nodes are infected
-      newNodesInf <- intersect(newNodes, which(dat$attr$status == "i"))
-      dat$attr$infTime[newNodesInf] <- at
-
-      if (length(unique(sapply(dat$attr, length))) != 1) {
-        stop("Attribute list of unequal length. Check arrivals.net module.")
-      }
-
+    
+    ## Handles infTime when incoming nodes are infected
+    newNodesInf <- intersect(newNodes, which(dat$attr$status == "i"))
+    dat$attr$infTime[newNodesInf] <- at
+    
+    if (length(unique(sapply(dat$attr, length))) != 1) {
+      stop("Attribute list of unequal length. Check arrivals.net module.")
     }
-
-
-    # Output ------------------------------------------------------------------
-    if (at == 2) {
-      dat$epi$a.flow <- c(0, nArrivals)
-    } else {
-      dat$epi$a.flow[at] <- nArrivals
-    }
-
-    return(dat)
+    
   }
+  
+  
+  # Output ------------------------------------------------------------------
+  if (at == 2) {
+    dat$epi$a.flow <- c(0, nArrivals)
+  } else {
+    dat$epi$a.flow[at] <- nArrivals
+  }
+  
+  return(dat)
+}
 
 
   #' @title Departures: netsim Module
@@ -255,12 +239,7 @@ departures.net <- function(dat, at) {
 
 
     # Variables ---------------------------------------------------------------
-    #modes <- dat$param$modes
-    #mode <- idmode(dat$nw)
-
     type <- dat$control$type
-    d.rand <- TRUE
-
 
     # Susceptible departures ------------------------------------------------------
 
@@ -276,7 +255,6 @@ departures.net <- function(dat, at) {
       ratesElig.sus <- rates.sus[idsElig.sus]
 
       # Stochastic exits
-      if (d.rand == TRUE) {
         vecDepartures.sus <- which(rbinom(nElig.sus, 1, ratesElig.sus) == 1)
         if (length(vecDepartures.sus) > 0) {
           idsDpt.sus <- idsElig.sus[vecDepartures.sus]
@@ -288,8 +266,6 @@ departures.net <- function(dat, at) {
                                         v = idsDpt.sus, deactivate.edges = TRUE)
         }
       }
-
-    }
 
 
     # Infected departures ---------------------------------------------------------
@@ -306,7 +282,6 @@ departures.net <- function(dat, at) {
       ratesElig.inf <- rates.inf[idsElig.inf]
 
       # Stochastic exits
-      if (d.rand == TRUE) {
         vecDepartures.inf <- which(rbinom(nElig.inf, 1, ratesElig.inf) == 1)
         if (length(vecDepartures.inf) > 0) {
           idsDpt.inf <- idsElig.inf[vecDepartures.inf]
@@ -318,8 +293,6 @@ departures.net <- function(dat, at) {
                                         v = idsDpt.inf, deactivate.edges = TRUE)
         }
       }
-
-    }
 
 
     # Recovered departures --------------------------------------------------------
@@ -337,7 +310,6 @@ departures.net <- function(dat, at) {
         ratesElig.rec <- rates.rec[idsElig.rec]
 
         # Stochastic exits
-        if (d.rand == TRUE) {
           vecDepartures.rec <- which(rbinom(nElig.rec, 1, ratesElig.rec) == 1)
           if (length(vecDepartures.rec) > 0) {
             idsDpt.rec <- idsElig.rec[vecDepartures.rec]
@@ -349,7 +321,6 @@ departures.net <- function(dat, at) {
                                           v = idsDpt.rec, deactivate.edges = TRUE)
           }
         }
-      }
     }
 
 
@@ -385,152 +356,145 @@ departures.net <- function(dat, at) {
   }
 
 
-  #' @title Arrivals: netsim Module
-  #'
-  #' @description This function simulates new arrivals into the network
-  #'   for use in \code{\link{netsim}} simulations.
-  #'
-  #' @param dat Master list object containing a \code{networkDynamic} object and other
-  #'   initialization information passed from \code{\link{netsim}}.
-  #' @param at Current time step.
-  #'
-  #' @seealso \code{\link{netsim}}
-  #'
-  #' @export
-  #' @keywords netMod internal
-  #'
-  arrivals.net.bip <- function(dat, at) {
-
-    # Conditions --------------------------------------------------------------
-    if (dat$param$vital == FALSE) {
-      return(dat)
-    }
-
-
-    # Variables ---------------------------------------------------------------
-    a.rate <- dat$param$a.rate
-    a.rate.m2 <- dat$param$a.rate.m2
-    tea.status <- dat$control$tea.status
-    nOld <- dat$epi$num[at - 1]
-    nCurr <- network.size(dat$nw)
-    a.rand <- dat$control$a.rand
-    delete.nodes <- dat$control$delete.nodes
-
-    nArrivals <- nArrivalsM2 <- 0
-    newNodes <- newNodesM2 <- NULL
-
-
-    # Add Nodes ---------------------------------------------------------------
-
-    if (nOld > 0) {
-      nOldM2 <- dat$epi$num.m2[at - 1]
-        if (is.na(a.rate.m2)) {
-          nArrivals <- sum(rbinom(nOld, 1, a.rate))
-          nArrivalsM2 <- sum(rbinom(nOld, 1, a.rate))
-        } else {
-          nArrivals <- sum(rbinom(nOld, 1, a.rate))
-          nArrivalsM2 <- sum(rbinom(nOldM2, 1, a.rate.m2))
-        }
-
-
-
-      nCurrM1 <- length(modeids(dat$nw, 1))
-      nCurrM2 <- length(modeids(dat$nw, 2))
-      prefixes <- unique(substr(dat$nw %v% "vertex.names", 1, 1))
-
-      if (nArrivals > 0) {
-        newNodeIDs <- (nCurrM1 + 1):(nCurrM1 + nArrivals)
-        if (delete.nodes == FALSE) {
-          newPids <- paste0(prefixes[1], newNodeIDs)
-          dat$nw <- add.vertices(dat$nw,
-                                 nv = nArrivals,
-                                 last.mode = FALSE,
-                                 vertex.pid = newPids)
-        } else {
-          dat$nw <- add.vertices(dat$nw,
-                                 nv = nArrivals,
-                                 last.mode = FALSE)
-        }
-        newNodes <- newNodeIDs
-      }
-      if (nArrivalsM2 > 0) {
-        newNodeIDs <- (nCurrM2 + 1):(nCurrM2 + nArrivalsM2)
-        if (delete.nodes == FALSE) {
-          newPids <- paste0(prefixes[2], newNodeIDs)
-          dat$nw <- add.vertices(dat$nw,
-                                 nv = nArrivalsM2,
-                                 last.mode = TRUE,
-                                 vertex.pid = newPids)
-        } else {
-          dat$nw <- add.vertices(dat$nw,
-                                 nv = nArrivalsM2,
-                                 last.mode = TRUE)
-        }
-        newSize <- network.size(dat$nw)
-        newNodesM2 <- (newSize - nArrivalsM2 + 1):newSize
-      }
-      newNodes <- c(newNodes, newNodesM2)
-      if (!is.null(newNodes)) {
-        dat$nw <- activate.vertices(dat$nw, onset = at, terminus = Inf, v = newNodes)
-      }
-    }
-
-
-    # Update Nodal Attributes -------------------------------------------------
-    if (length(newNodes) > 0) {
-
-      # Set attributes on nw
-      fterms <- dat$temp$fterms
-      curr.tab <- get_attr_prop(dat$nw, fterms)
-      if (length(curr.tab) > 0) {
-        dat$nw <- update_nwattr(dat$nw, newNodes, dat$control$attr.rules,
-                                curr.tab, dat$temp$t1.tab)
-      }
-
-      # Save any val on attr
-      dat <- copy_toall_attr(dat, at, fterms)
-
-      if (tea.status == TRUE) {
-        if ("status" %in% fterms) {
-          dat$nw <- activate.vertex.attribute(dat$nw, prefix = "testatus",
-                                              value = dat$attr$status[newNodes],
-                                              onset = at, terminus = Inf,
-                                              v = newNodes)
-        } else {
-          dat$nw <- activate.vertex.attribute(dat$nw, prefix = "testatus",
-                                              value = "s", onset = at, terminus = Inf,
-                                              v = newNodes)
-        }
-      }
-      if (!("status" %in% fterms)) {
-        dat <- split_bip(dat, "status", "s", nCurrM1, nCurrM2, nArrivals, nArrivalsM2)
-      }
-      dat <- split_bip(dat, "active", 1, nCurrM1, nCurrM2, nArrivals, nArrivalsM2)
-      dat <- split_bip(dat, "infTime", NA, nCurrM1, nCurrM2, nArrivals, nArrivalsM2)
-      dat <- split_bip(dat, "entrTime", at, nCurrM1, nCurrM2, nArrivals, nArrivalsM2)
-      dat <- split_bip(dat, "exitTime", NA, nCurrM1, nCurrM2, nArrivals, nArrivalsM2)
-
-
-      ## Handles infTime when incoming nodes are infected
-      newNodesInf <- intersect(newNodes, which(dat$attr$status == "i"))
-      dat$attr$infTime[newNodesInf] <- at
-
-      if (length(unique(sapply(dat$attr, length))) != 1) {
-        stop("Attribute list of unequal length. Check arrivals.net module.")
-      }
-
-    }
-
-
-    # Output ------------------------------------------------------------------
-    if (at == 2) {
-      dat$epi$a.flow <- c(0, nArrivals)
-      dat$epi$a.flow.m2 <- c(0, nArrivalsM2)
-    } else {
-      dat$epi$a.flow[at] <- nArrivals
-      dat$epi$a.flow.m2[at] <- nArrivalsM2
-    }
-
+#' @title Arrivals: netsim Module
+#'
+#' @description This function simulates new arrivals into the network
+#'   for use in \code{\link{netsim}} simulations.
+#'
+#' @param dat Master list object containing a \code{networkDynamic} object and other
+#'   initialization information passed from \code{\link{netsim}}.
+#' @param at Current time step.
+#'
+#' @seealso \code{\link{netsim}}
+#'
+#' @export
+#' @keywords netMod internal
+#'
+arrivals.net.bip <- function(dat, at) {
+  
+  # Conditions --------------------------------------------------------------
+  if (dat$param$vital == FALSE) {
     return(dat)
   }
-
+  
+  
+  # Variables ---------------------------------------------------------------
+  a.rate <- dat$param$a.rate
+  a.rate.m2 <- dat$param$a.rate.m2
+  tea.status <- dat$control$tea.status
+  nOld <- dat$epi$num[at - 1]
+  nCurr <- network.size(dat$nw)
+  
+  nArrivals <- nArrivalsM2 <- 0
+  newNodes <- newNodesM2 <- NULL
+  
+  
+  # Add Nodes ---------------------------------------------------------------
+  if (nOld > 0) {
+    nOldM2 <- dat$epi$num.m2[at - 1]
+    if (is.na(a.rate.m2)) {
+      nArrivals <- sum(rbinom(nOld, 1, a.rate))
+      nArrivalsM2 <- sum(rbinom(nOld, 1, a.rate))
+    } else {
+      nArrivals <- sum(rbinom(nOld, 1, a.rate))
+      nArrivalsM2 <- sum(rbinom(nOldM2, 1, a.rate.m2))
+    }
+    
+    nCurrM1 <- length(modeids(dat$nw, 1))
+    nCurrM2 <- length(modeids(dat$nw, 2))
+    prefixes <- unique(substr(dat$nw %v% "vertex.names", 1, 1))
+    
+    if (nArrivals > 0) {
+      newNodeIDs <- (nCurrM1 + 1):(nCurrM1 + nArrivals)
+      if (delete.nodes == FALSE) {
+        newPids <- paste0(prefixes[1], newNodeIDs)
+        dat$nw <- add.vertices(dat$nw,
+                               nv = nArrivals,
+                               last.mode = FALSE,
+                               vertex.pid = newPids)
+      } else {
+        dat$nw <- add.vertices(dat$nw,
+                               nv = nArrivals,
+                               last.mode = FALSE)
+      }
+      newNodes <- newNodeIDs
+    }
+    if (nArrivalsM2 > 0) {
+      newNodeIDs <- (nCurrM2 + 1):(nCurrM2 + nArrivalsM2)
+      if (delete.nodes == FALSE) {
+        newPids <- paste0(prefixes[2], newNodeIDs)
+        dat$nw <- add.vertices(dat$nw,
+                               nv = nArrivalsM2,
+                               last.mode = TRUE,
+                               vertex.pid = newPids)
+      } else {
+        dat$nw <- add.vertices(dat$nw,
+                               nv = nArrivalsM2,
+                               last.mode = TRUE)
+      }
+      newSize <- network.size(dat$nw)
+      newNodesM2 <- (newSize - nArrivalsM2 + 1):newSize
+    }
+    newNodes <- c(newNodes, newNodesM2)
+    if (!is.null(newNodes)) {
+      dat$nw <- activate.vertices(dat$nw, onset = at, terminus = Inf, v = newNodes)
+    }
+  }
+  
+  
+  # Update Nodal Attributes -------------------------------------------------
+  if (length(newNodes) > 0) {
+    
+    # Set attributes on nw
+    fterms <- dat$temp$fterms
+    curr.tab <- get_attr_prop(dat$nw, fterms)
+    if (length(curr.tab) > 0) {
+      dat$nw <- update_nwattr(dat$nw, newNodes, dat$control$attr.rules,
+                              curr.tab, dat$temp$t1.tab)
+    }
+    
+    # Save any val on attr
+    dat <- copy_toall_attr(dat, at, fterms)
+    
+    if (tea.status == TRUE) {
+      if ("status" %in% fterms) {
+        dat$nw <- activate.vertex.attribute(dat$nw, prefix = "testatus",
+                                            value = dat$attr$status[newNodes],
+                                            onset = at, terminus = Inf,
+                                            v = newNodes)
+      } else {
+        dat$nw <- activate.vertex.attribute(dat$nw, prefix = "testatus",
+                                            value = "s", onset = at, terminus = Inf,
+                                            v = newNodes)
+      }
+    }
+    if (!("status" %in% fterms)) {
+      dat <- split_bip(dat, "status", "s", nCurrM1, nCurrM2, nArrivals, nArrivalsM2)
+    }
+    dat <- split_bip(dat, "active", 1, nCurrM1, nCurrM2, nArrivals, nArrivalsM2)
+    dat <- split_bip(dat, "infTime", NA, nCurrM1, nCurrM2, nArrivals, nArrivalsM2)
+    dat <- split_bip(dat, "entrTime", at, nCurrM1, nCurrM2, nArrivals, nArrivalsM2)
+    dat <- split_bip(dat, "exitTime", NA, nCurrM1, nCurrM2, nArrivals, nArrivalsM2)
+    
+    ## Handles infTime when incoming nodes are infected
+    newNodesInf <- intersect(newNodes, which(dat$attr$status == "i"))
+    dat$attr$infTime[newNodesInf] <- at
+    
+    if (length(unique(sapply(dat$attr, length))) != 1) {
+      stop("Attribute list of unequal length. Check arrivals.net module.")
+    }
+    
+  }
+  
+  
+  # Output ------------------------------------------------------------------
+  if (at == 2) {
+    dat$epi$a.flow <- c(0, nArrivals)
+    dat$epi$a.flow.m2 <- c(0, nArrivalsM2)
+  } else {
+    dat$epi$a.flow[at] <- nArrivals
+    dat$epi$a.flow.m2[at] <- nArrivalsM2
+  }
+  
+  return(dat)
+}
