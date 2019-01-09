@@ -481,7 +481,9 @@ recovery.net.bip <- function(dat, at) {
   status <- dat$attr$status
   infTime <- dat$attr$infTime
   tea.status <- dat$control$tea.status
-
+  
+  mode <- idmode(dat$nw)
+   
   type <- dat$control$type
   recovState <- ifelse(type == "SIR", "r", "s")
 

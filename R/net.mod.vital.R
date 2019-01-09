@@ -51,7 +51,7 @@ departures.net <- function(dat, at) {
 
   # Initialize counts and query rates
   nDepartures.inf <- 0
-  idsElig.inf <- which(dat$attr$active == 1 & dat$attr$status == "s")
+  idsElig.inf <- which(dat$attr$active == 1 & dat$attr$status == "i")
   nElig.inf <- length(idsElig.inf)
 
   if (nElig.inf > 0) {
@@ -77,7 +77,7 @@ departures.net <- function(dat, at) {
 
     # Initialize counts and query rates
     nDepartures.rec <- 0
-    idsElig.rec <- which(dat$attr$active == 1 & dat$attr$status == "s")
+    idsElig.rec <- which(dat$attr$active == 1 & dat$attr$status == "r")
     nElig.rec <- length(idsElig.rec)
 
     if (nElig.rec > 0) {
@@ -217,144 +217,129 @@ arrivals.net <- function(dat, at) {
 }
 
 
-  #' @title Departures: netsim Module
-  #'
-  #' @description This function simulates departure for use in \link{netsim} simulations.
-  #'
-  #' @param dat Master list object containing a \code{networkDynamic} object and other
-  #'        initialization information passed from \code{\link{netsim}}.
-  #' @param at Current time step.
-  #'
-  #' @seealso \code{\link{netsim}}
-  #'
-  #' @export
-  #' @keywords netMod internal
-  #'
-  departures.net.bip <- function(dat, at) {
+#' @title Departures: netsim Module
+#'
+#' @description This function simulates departure for use in \link{netsim} simulations.
+#'
+#' @param dat Master list object containing a \code{networkDynamic} object and other
+#'        initialization information passed from \code{\link{netsim}}.
+#' @param at Current time step.
+#'
+#' @seealso \code{\link{netsim}}
+#'
+#' @export
+#' @keywords netMod internal
+#'
+departures.net.bip <- function(dat, at) {
 
-    # Conditions --------------------------------------------------------------
-    if (dat$param$vital == FALSE) {
-      return(dat)
-    }
-
-
-    # Variables ---------------------------------------------------------------
-    type <- dat$control$type
-
-    # Susceptible departures ------------------------------------------------------
-
-    # Initialize counts and pull rates
-    nDepartures.sus <- nDeparturesM2.sus <- 0
-    idsElig.sus <- which(dat$attr$active == 1 & dat$attr$status == "s")
-    nElig.sus <- length(idsElig.sus)
-
-    if (nElig.sus > 0) {
-
-      # Departure rates by mode
-      rates.sus <- c(dat$param$ds.rate, dat$param$ds.rate.m2)
-      ratesElig.sus <- rates.sus[idsElig.sus]
-
-      # Stochastic exits
-        vecDepartures.sus <- which(rbinom(nElig.sus, 1, ratesElig.sus) == 1)
-        if (length(vecDepartures.sus) > 0) {
-          idsDpt.sus <- idsElig.sus[vecDepartures.sus]
-          nDepartures.sus <- sum(mode[idsDpt.sus] == 1)
-          nDeparturesM2.sus <- sum(mode[idsDpt.sus] == 2)
-          dat$attr$active[idsDpt.sus] <- 0
-          dat$attr$exitTime[idsDpt.sus] <- at
-          dat$nw <- deactivate.vertices(dat$nw, onset = at, terminus = Inf,
-                                        v = idsDpt.sus, deactivate.edges = TRUE)
-        }
-      }
-
-
-    # Infected departures ---------------------------------------------------------
-
-    # Initialize counts and query rates
-    nDepartures.inf <- nDeparturesM2.inf <- 0
-    idsElig.inf <- which(dat$attr$active == 1 & dat$attr$status == "s")
-    nElig.inf <- length(idsElig.inf)
-
-    if (nElig.inf > 0) {
-
-      # Departure rates by mode
-      rates.inf <- c(dat$param$ds.rate, dat$param$ds.rate.m2)
-      ratesElig.inf <- rates.inf[idsElig.inf]
-
-      # Stochastic exits
-        vecDepartures.inf <- which(rbinom(nElig.inf, 1, ratesElig.inf) == 1)
-        if (length(vecDepartures.inf) > 0) {
-          idsDpt.inf <- idsElig.inf[vecDepartures.inf]
-          nDepartures.inf <- sum(mode[idsDpt.inf] == 1)
-          nDeparturesM2.inf <- sum(mode[idsDpt.inf] == 2)
-          dat$attr$active[idsDpt.inf] <- 0
-          dat$attr$exitTime[idsDpt.inf] <- at
-          dat$nw <- deactivate.vertices(dat$nw, onset = at, terminus = Inf,
-                                        v = idsDpt.inf, deactivate.edges = TRUE)
-        }
-      }
-
-
-    # Recovered departures --------------------------------------------------------
-    if (type == "SIR") {
-
-      # Initialize counts and query rates
-      nDepartures.rec <- nDeparturesM2.rec <- 0
-      idsElig.rec <- which(dat$attr$active == 1 & dat$attr$status == "s")
-      nElig.rec <- length(idsElig.rec)
-
-      if (nElig.rec > 0) {
-
-        # Departure rates by mode
-        rates.rec <- c(dat$param$ds.rate, dat$param$ds.rate.m2)
-        ratesElig.rec <- rates.rec[idsElig.rec]
-
-        # Stochastic exits
-          vecDepartures.rec <- which(rbinom(nElig.rec, 1, ratesElig.rec) == 1)
-          if (length(vecDepartures.rec) > 0) {
-            idsDpt.rec <- idsElig.rec[vecDepartures.rec]
-            nDepartures.rec <- sum(mode[idsDpt.rec] == 1)
-            nDeparturesM2.rec <- sum(mode[idsDpt.rec] == 2)
-            dat$attr$active[idsDpt.rec] <- 0
-            dat$attr$exitTime[idsDpt.rec] <- at
-            dat$nw <- deactivate.vertices(dat$nw, onset = at, terminus = Inf,
-                                          v = idsDpt.rec, deactivate.edges = TRUE)
-          }
-        }
-    }
-
-
-    # Output ------------------------------------------------------------------
-
-    if (at == 2) {
-      dat$epi$ds.flow <- c(0, nDepartures.sus)
-      dat$epi$di.flow <- c(0, nDepartures.inf)
-      if (type == "SIR") {
-        dat$epi$dr.flow <- c(0, nDepartures.rec)
-      }
-      dat$epi$ds.flow.m2 <- c(0, nDeparturesM2.sus)
-      dat$epi$di.flow.m2 <- c(0, nDeparturesM2.inf)
-      if (type == "SIR") {
-        dat$epi$dr.flow.m2 <- c(0, nDeparturesM2.rec)
-      }
-
-    } else {
-      dat$epi$ds.flow[at] <- nDepartures.sus
-      dat$epi$di.flow[at] <- nDepartures.inf
-      if (type == "SIR") {
-        dat$epi$dr.flow[at] <- nDepartures.rec
-      }
-      dat$epi$ds.flow.m2[at] <- nDeparturesM2.sus
-      dat$epi$di.flow.m2[at] <- nDeparturesM2.inf
-      if (type == "SIR") {
-        dat$epi$dr.flow.m2[at] <- nDeparturesM2.rec
-      }
-
-    }
-
+  # Conditions --------------------------------------------------------------
+  if (dat$param$vital == FALSE) {
     return(dat)
   }
 
+  # Variables ---------------------------------------------------------------
+  mode <- idmode(dat$nw)
+  type <- dat$control$type
+
+  # Susceptible departures ------------------------------------------------------
+
+  # Initialize counts and pull rates
+  nDepartures.sus <- nDeparturesM2.sus <- 0
+  idsElig.sus <- which(dat$attr$active == 1 & dat$attr$status == "s")
+  nElig.sus <- length(idsElig.sus)
+    if (nElig.sus > 0) {
+      # Departure rates by mode
+    mElig.sus <- mode[idsElig.sus]
+    rates.sus <- c(dat$param$ds.rate, dat$param$ds.rate.m2)
+    ratesElig.sus <- rates.sus[mElig.sus]
+      # Stochastic exits
+      vecDepartures.sus <- which(rbinom(nElig.sus, 1, ratesElig.sus) == 1)
+      if (length(vecDepartures.sus) > 0) {
+        idsDpt.sus <- idsElig.sus[vecDepartures.sus]
+        nDepartures.sus <- sum(mode[idsDpt.sus] == 1)
+        nDeparturesM2.sus <- sum(mode[idsDpt.sus] == 2)
+        dat$attr$active[idsDpt.sus] <- 0
+        dat$attr$exitTime[idsDpt.sus] <- at
+        dat$nw <- deactivate.vertices(dat$nw, onset = at, terminus = Inf,
+                                      v = idsDpt.sus, deactivate.edges = TRUE)
+      }
+    }
+
+  # Infected departures ---------------------------------------------------------
+  # Initialize counts and query rates
+  nDepartures.inf <- nDeparturesM2.inf <- 0
+  idsElig.inf <- which(dat$attr$active == 1 & dat$attr$status == "i")
+  nElig.inf <- length(idsElig.inf)
+
+  if (nElig.inf > 0) {
+      # Departure rates by mode
+    mElig.inf <- mode[idsElig.inf]
+    rates.inf <- c(dat$param$ds.rate, dat$param$ds.rate.m2)
+    ratesElig.inf <- rates.inf[mElig.inf]
+      # Stochastic exits
+      vecDepartures.inf <- which(rbinom(nElig.inf, 1, ratesElig.inf) == 1)
+      if (length(vecDepartures.inf) > 0) {
+        idsDpt.inf <- idsElig.inf[vecDepartures.inf]
+        nDepartures.inf <- sum(mode[idsDpt.inf] == 1)
+        nDeparturesM2.inf <- sum(mode[idsDpt.inf] == 2)
+        dat$attr$active[idsDpt.inf] <- 0
+        dat$attr$exitTime[idsDpt.inf] <- at
+        dat$nw <- deactivate.vertices(dat$nw, onset = at, terminus = Inf,
+                                      v = idsDpt.inf, deactivate.edges = TRUE)
+      }
+    }
+
+  # Recovered departures --------------------------------------------------------
+  if (type == "SIR") {
+      # Initialize counts and query rates
+    nDepartures.rec <- nDeparturesM2.rec <- 0
+    idsElig.rec <- which(dat$attr$active == 1 & dat$attr$status == "r")
+    nElig.rec <- length(idsElig.rec)
+      if (nElig.rec > 0) {
+        # Departure rates by mode
+      mElig.rec <- mode[idsElig.rec]
+      rates.rec <- c(dat$param$ds.rate, dat$param$ds.rate.m2)
+      ratesElig.rec <- rates.rec[mElig.rec]
+        # Stochastic exits
+        vecDepartures.rec <- which(rbinom(nElig.rec, 1, ratesElig.rec) == 1)
+        if (length(vecDepartures.rec) > 0) {
+          idsDpt.rec <- idsElig.rec[vecDepartures.rec]
+          nDepartures.rec <- sum(mode[idsDpt.rec] == 1)
+          nDeparturesM2.rec <- sum(mode[idsDpt.rec] == 2)
+          dat$attr$active[idsDpt.rec] <- 0
+          dat$attr$exitTime[idsDpt.rec] <- at
+          dat$nw <- deactivate.vertices(dat$nw, onset = at, terminus = Inf,
+                                        v = idsDpt.rec, deactivate.edges = TRUE)
+        }
+      }
+  }
+
+  # Output ------------------------------------------------------------------
+    if (at == 2) {
+    dat$epi$ds.flow <- c(0, nDepartures.sus)
+    dat$epi$di.flow <- c(0, nDepartures.inf)
+    if (type == "SIR") {
+      dat$epi$dr.flow <- c(0, nDepartures.rec)
+    }
+    dat$epi$ds.flow.m2 <- c(0, nDeparturesM2.sus)
+    dat$epi$di.flow.m2 <- c(0, nDeparturesM2.inf)
+    if (type == "SIR") {
+      dat$epi$dr.flow.m2 <- c(0, nDeparturesM2.rec)
+    }
+    } else {
+    dat$epi$ds.flow[at] <- nDepartures.sus
+    dat$epi$di.flow[at] <- nDepartures.inf
+    if (type == "SIR") {
+      dat$epi$dr.flow[at] <- nDepartures.rec
+    }
+    dat$epi$ds.flow.m2[at] <- nDeparturesM2.sus
+    dat$epi$di.flow.m2[at] <- nDeparturesM2.inf
+    if (type == "SIR") {
+      dat$epi$dr.flow.m2[at] <- nDeparturesM2.rec
+    }
+    }
+    return(dat)
+}
 
 #' @title Arrivals: netsim Module
 #'
@@ -383,7 +368,8 @@ arrivals.net.bip <- function(dat, at) {
   a.rate.m2 <- dat$param$a.rate.m2
   tea.status <- dat$control$tea.status
   nOld <- dat$epi$num[at - 1]
-  nCurr <- network.size(dat$nw)
+  a.rand <- dat$control$a.rand
+  delete.nodes <- dat$control$delete.nodes
   
   nArrivals <- nArrivalsM2 <- 0
   newNodes <- newNodesM2 <- NULL
@@ -392,12 +378,14 @@ arrivals.net.bip <- function(dat, at) {
   # Add Nodes ---------------------------------------------------------------
   if (nOld > 0) {
     nOldM2 <- dat$epi$num.m2[at - 1]
-    if (is.na(a.rate.m2)) {
-      nArrivals <- sum(rbinom(nOld, 1, a.rate))
-      nArrivalsM2 <- sum(rbinom(nOld, 1, a.rate))
-    } else {
-      nArrivals <- sum(rbinom(nOld, 1, a.rate))
-      nArrivalsM2 <- sum(rbinom(nOldM2, 1, a.rate.m2))
+    if (a.rand == TRUE) {
+      if (is.na(a.rate.m2)) {
+        nArrivals <- sum(rbinom(nOld, 1, a.rate))
+        nArrivalsM2 <- sum(rbinom(nOld, 1, a.rate))
+      } else {
+        nArrivals <- sum(rbinom(nOld, 1, a.rate))
+        nArrivalsM2 <- sum(rbinom(nOldM2, 1, a.rate.m2))
+      }
     }
     
     nCurrM1 <- length(modeids(dat$nw, 1))
