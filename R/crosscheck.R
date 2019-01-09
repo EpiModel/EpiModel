@@ -431,14 +431,14 @@ crosscheck.net <- function(x, param, init, control) {
 
   }
 
-  bip <- ifelse(is.bipartite(nw), TRUE, FALSE)
   
   ## Assign modules based on group parameter
   if (!is.null(control$type)) {
     def <- grep(".FUN",names(control))
     args <- names(control)[def]
+    flag <- length(grep(".m2",names(param)))
 
-    if (bip == FALSE) {
+    if (flag == 0) {
       for (i in 1:length(args)) {
         if (is.null(control[[args[i]]])) {
           temp <- get(gsub(".FUN",".net",args[i]))
