@@ -434,12 +434,9 @@ control.net <- function(type, nsteps, start = 1, nsims = 1, ncores = 1,
       p[[names.dot.args[i]]] <- dot.args[[i]]
     }
   }
-
-
+  
   ## Module classification
   bi.mods <- grep(".FUN", names(formal.args), value = TRUE)
-  #bi.mods <- bi.mods[which(sapply(bi.mods, function(x) !is.null(eval(parse(text = x))),
-  #                               USE.NAMES = FALSE) == TRUE)]
   p$bi.mods <- bi.mods
   p$user.mods <- grep(".FUN", names.dot.args, value = TRUE)
 
@@ -453,9 +450,41 @@ control.net <- function(type, nsteps, start = 1, nsims = 1, ncores = 1,
   }
 
   ## Defaults and checks
-  if (is.null(p$type)) {
-    p$type <- "SI"
+
+  #Check whether any base modules have been redefined by user (note: must come after above)
+  bi.nms <- p$bi.mods
+  bi.nms <- bi.nms[-which(bi.nms %in% c("initialize.FUN", "edges_correct.FUN", 
+                                        "resim_nets.FUN", "verbose.FUN"))]
+  flag1 <- logical()
+  for (args in 1:length(bi.nms)) {
+    if (!(is.null(p[[bi.nms[args]]])) ) {
+      temp1 <- get(gsub(".FUN",".net",bi.nms[args]))
+      temp2 <- p[[bi.nms[args]]]
+      flag1[args] <- identical(temp1,temp2)
+    }
   }
+  
+  if (!is.null(p$type) && sum(flag1) != length(flag1)) {
+    stop("Control parameter 'type' must be null if any user defined base modules are present")
+  }
+  
+  flag2 <- logical()
+  for (args in 1:length(bi.nms)) {
+    flag2[args] <- ifelse(is.null(p[[bi.nms[args]]]), TRUE, FALSE)
+  }
+  
+  if (is.null(p$type) && sum(flag2) != 0) {
+    stop("If control parameter 'type' is not specified, user must specify all base modules 
+         (departures.FUN, arrivals.FUN, etc). See modules.net for details.")
+  }
+  
+  #if (!is.null(control$type) && length(control$user.mods) == 0) {
+  #}
+  
+  if (!is.null(p$type) && length(p$user.mods) > 0) {
+    stop("Control parameter 'type' must be null if any user specified modules are present")
+  }
+
   if (is.null(p$nsteps)) {
     stop("Specify nsteps")
   }
@@ -471,6 +500,7 @@ control.net <- function(type, nsteps, start = 1, nsims = 1, ncores = 1,
       p$epi.by <- epi.by
     }
   }
+
 
   if (is.null(p$set.control.stergm)) {
     p$set.control.stergm <- control.simulate.network(MCMC.burnin.min = 1000)

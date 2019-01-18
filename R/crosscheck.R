@@ -254,7 +254,6 @@ crosscheck.icm <- function(param, init, control) {
 #' @keywords internal
 #'
 crosscheck.net <- function(x, param, init, control) {
-
   if (control$start == 1 && control$skip.check == FALSE) {
 
     # Main class check --------------------------------------------------------
@@ -459,7 +458,7 @@ crosscheck.net <- function(x, param, init, control) {
               "for details.")
     }
   }
-  
+
   ## In-place assignment to update param and control
   assign("param", param, pos = parent.frame())
   assign("control", control, pos = parent.frame())
