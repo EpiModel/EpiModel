@@ -254,6 +254,8 @@ crosscheck.icm <- function(param, init, control) {
 #' @keywords internal
 #'
 crosscheck.net <- function(x, param, init, control) {
+  
+  if (!is.null(control$type) && length(control$user.mods) == 0) {
 
   if (control$start == 1 && control$skip.check == FALSE) {
 
@@ -463,5 +465,17 @@ crosscheck.net <- function(x, param, init, control) {
   ## In-place assignment to update param and control
   assign("param", param, pos = parent.frame())
   assign("control", control, pos = parent.frame())
+  }
+  
+  if (is.null(control$type) & length(grep("rec", names(param))) != 0){
+    control$type <- "SIR"
+  }
+  else {
+    control$type <- "SI"
+    }
+
+  if (!is.null(control$type) & length(control$user.mods) > 0) {
+    stop("Control parameter 'type' must be null if any user specified modules are present")
+  }
 }
 
