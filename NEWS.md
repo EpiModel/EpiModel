@@ -1,3 +1,30 @@
+EpiModel 1.7.2
+------------------------------------------------------------------------------
+
+### BUG FIXES
+* Fix logical evaluations in `get_sims` and unit tests in `plot.transmat` found
+  during CRAN submission for v1.7.1.
+
+
+EpiModel 1.7.1
+------------------------------------------------------------------------------
+
+### NEW FEATURES
+* Two helper functions, `get_args` and `apportion_lr`, ported over from 
+  EpiModelHIV.
+* Two custom ERGM terms, `absdiffby` and `absdiffnodemix`, ported over from
+  EpiModelHIV.
+
+
+### BUG FIXES
+* Fix linked functions in embedded Shiny apps broken in v1.7.0.
+* Update handling of parameter and module name changes related to births/deaths
+  to arrivals/departures renames in v1.7.0.
+* Reduce complexity of verbose output so that it can generalize across EpiModel
+  extension packages.
+* Fix bug in `as.data.frame.dcm` when `dt` control setting < 1.
+
+
 EpiModel 1.7.0
 ------------------------------------------------------------------------------
 

@@ -1,6 +1,6 @@
 Package: EpiModel
-Version: 1.7.1
-Date: 2018-12-10
+Version: 1.7.3
+Date: 2018-12-20
 Title: Mathematical Modeling of Infectious Disease Dynamics
 Description: Tools for simulating mathematical models of infectious disease dynamics. 
     Epidemic model classes include deterministic compartmental models, stochastic 
@@ -21,7 +21,9 @@ Authors@R: c(person("Samuel", "Jenness",
     person("Skye", "Bender-deMoll",
     role=c("ctb"), email="skyebend@uw.edu"),
     person("Kevin", "Weiss",
-    role=c("ctb"), email="kevin.weiss@emory.edu"))
+    role=c("ctb"), email="kevin.weiss@emory.edu"),
+    person("Shawnee", "Anderson",
+    role=c("ctb"), email="shawnee.marcell.anderson@emory.edu"))
 License: GPL-3
 URL: http://epimodel.org/, http://github.com/statnet/EpiModel
 BugReports: https://github.com/statnet/EpiModel/issues

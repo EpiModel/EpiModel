@@ -94,7 +94,7 @@ resim_nets <- function(dat, at) {
     # Set up nwstats df
     if (dat$control$save.nwstats == TRUE) {
       dat$stats$nwstats <- rbind(dat$stats$nwstats,
-                                 tail(attributes(dat$nw)$stats, 1))
+                                 tail(attributes(dat$nw)$stats, 1)[,])
     }
 
     if (dat$control$delete.nodes == TRUE) {

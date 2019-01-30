@@ -358,7 +358,7 @@ get_sims <- function(x, sims, var) {
   if (missing(sims)) {
     stop("Specify sims as a vector of simulations or \"mean\" ", call. = FALSE)
   }
-  if (sims == "mean" && (missing(var) || length(var) > 1)) {
+  if (length(sims) == 1 && sims == "mean" && (missing(var) || length(var) > 1)) {
     stop("If sims == 'mean' then var must be a single varible name", call. = FALSE)
   }
 
@@ -368,7 +368,7 @@ get_sims <- function(x, sims, var) {
     sims <- which.min(abs(d - md))
   }
 
-  if (sims != "mean" && max(sims) > nsims) {
+  if (max(sims) > nsims) {
     stop("Maximum sims value for this object is ", nsims, call. = FALSE)
   }
 
@@ -396,7 +396,7 @@ get_sims <- function(x, sims, var) {
   }
   out$control$nsims <- length(sims)
 
-  if (!missing(var) && var != "mean") {
+  if (!missing(var)) {
     match.vars <- which(var %in% names(x$epi))
     out$epi <- out$epi[match.vars]
   }

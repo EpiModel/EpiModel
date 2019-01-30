@@ -61,6 +61,8 @@ control.dcm <- function(type, nsteps, dt = 1, odemethod = "rk4",
                         dede = FALSE, new.mod = NULL, sens.param = TRUE,
                         print.mod = FALSE, verbose = FALSE, ...) {
 
+
+
   # Get arguments
   p <- list()
   formal.args <- formals(sys.function())
@@ -204,10 +206,21 @@ control.icm <- function(type, nsteps, nsims = 1, rec.rand = TRUE, a.rand = TRUE,
     }
   }
 
+  if ("births.FUN" %in% names(dot.args)) {
+    p$arrivals.FUN <- dot.args$births.FUN
+    p$births.FUN <- dot.args$births.FUN <- NULL
+    message("EpiModel 1.7.0 onward renamed the birth function births.FUN to arrivals.FUN. See documentation for details.")
+  }
+  if ("deaths.FUN" %in% names(dot.args)) {
+    p$departures.FUN <- dot.args$deaths.FUN
+    p$deaths.FUN <- dot.args$deaths.FUN <- NULL
+    message("EpiModel 1.7.0 onward renamed the death function deaths.FUN to departures.FUN. See documentation for details.")
+  }
+
 
   ## Module classification
   p$bi.mods <- grep(".FUN", names(formal.args), value = TRUE)
-  p$user.mods <- grep(".FUN", names.dot.args, value = TRUE)
+  p$user.mods <- grep(".FUN", names(dot.args), value = TRUE)
 
 
   ## Defaults and checks
@@ -435,13 +448,23 @@ control.net <- function(type, nsteps, start = 1, nsims = 1, ncores = 1,
     }
   }
 
+  if ("births.FUN" %in% names(dot.args)) {
+    p$arrivals.FUN <- dot.args$births.FUN
+    p$births.FUN <- dot.args$births.FUN <- NULL
+    message("EpiModel 1.7.0 onward renamed the birth function births.FUN to arrivals.FUN. See documentation for details.")
+  }
+  if ("deaths.FUN" %in% names(dot.args)) {
+    p$departures.FUN <- dot.args$deaths.FUN
+    p$deaths.FUN <- dot.args$deaths.FUN <- NULL
+    message("EpiModel 1.7.0 onward renamed the death function deaths.FUN to departures.FUN. See documentation for details.")
+  }
 
   ## Module classification
   bi.mods <- grep(".FUN", names(formal.args), value = TRUE)
   #bi.mods <- bi.mods[which(sapply(bi.mods, function(x) !is.null(eval(parse(text = x))),
   #                               USE.NAMES = FALSE) == TRUE)]
   p$bi.mods <- bi.mods
-  p$user.mods <- grep(".FUN", names.dot.args, value = TRUE)
+  p$user.mods <- grep(".FUN", names(dot.args), value = TRUE)
 
 
   if (missing(depend)) {

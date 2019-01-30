@@ -82,7 +82,7 @@ as.data.frame.dcm <- function(x, row.names = NULL, optional = FALSE, run,
         }
         df$run <- j
       } else {
-        tdf <- data.frame(time = 1:x$control$nsteps)
+        tdf <- data.frame(time = seq(1, x$control$nsteps, x$control$dt))
         for (i in seq_along(x$epi)) {
           tdf[, i + 1] <- x$epi[[i]][, j]
         }

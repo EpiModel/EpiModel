@@ -45,7 +45,7 @@
 merge.icm <- function(x, y, ...) {
 
   ## Check structure
-  if (length(x) != length(y) || names(x) != names(y)) {
+  if (length(x) != length(y) || !identical(names(x), names(y))) {
     stop("x and y have different structure")
   }
   if (x$control$nsims > 1 & y$control$nsims > 1 &
@@ -155,7 +155,7 @@ merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
                          param.error = TRUE, ...) {
 
   ## Check structure
-  if (length(x) != length(y) || names(x) != names(y)) {
+  if (length(x) != length(y) || !identical(names(x), names(y))) {
     stop("x and y have different structure")
   }
   x$control$nsims <- as.integer(x$control$nsims)
