@@ -72,7 +72,7 @@ print.netest <- function(x, digits = 3, ...) {
   cat("\n=======================")
   cat("\nModel class:", class(x))
   estmeth <- ifelse(x$edapprox == TRUE, "ERGM with Edges Approximation",
-                                        "Full STERGM Fit")
+                    "Full STERGM Fit")
   cat(paste("\nEstimation Method:", estmeth))
 
   cat("\n\nModel Form")
@@ -104,7 +104,7 @@ print.netdx <- function(x, digits = 3, ...) {
   cat("\n----------------------- \n")
   print(round(x$stats.table.formation, digits = digits))
 
-  if (x$dynamic == TRUE) {
+  if (x$dynamic == TRUE & !is.null(x$stats.table.dissolution)) {
     cat("\nDissolution Diagnostics")
     cat("\n----------------------- \n")
     print(round(x$stats.table.dissolution, digits = digits))
@@ -350,7 +350,7 @@ print.control.dcm <- function(x, ...) {
 print.control.icm <- function(x, ...) {
 
   pToPrint <- which(!grepl(".FUN", names(x)) &
-                    !(names(x) %in% c("bi.mods", "user.mods")))
+                      !(names(x) %in% c("bi.mods", "user.mods")))
 
   cat("ICM Control Settings")
   cat("\n===========================\n")
@@ -369,9 +369,9 @@ print.control.icm <- function(x, ...) {
 print.control.net <- function(x, ...) {
 
   pToPrint <- which(!grepl(".FUN", names(x)) &
-                    names(x) != "set.control.stergm" &
-                    names(x) != "set.control.ergm" &
-                    !(names(x) %in% c("bi.mods", "user.mods")))
+                      names(x) != "set.control.stergm" &
+                      names(x) != "set.control.ergm" &
+                      !(names(x) %in% c("bi.mods", "user.mods")))
 
   cat("Network Model Control Settings")
   cat("\n===============================\n")
