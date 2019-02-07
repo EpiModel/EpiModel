@@ -264,8 +264,9 @@ est3 <- netest(nw, formation = ~ edges, target.stats = 150,
 ## Epidemic model parameterization
 param <- param.net(inf.prob = 0.15, growth.rate = 0.01/12, max.age = 70)
 init <- init.net(i.num = 50)
-control <- control.net(type = "SI", nsims = 5, nsteps = 500,
+control <- control.net(type = NULL, nsims = 5, nsteps = 500,
                        deaths.FUN = dfunc, births.FUN = bfunc,
+                       get_prev.FUN = get_prev.net, infection.FUN = infection.net,
                        aging.FUN = aging, depend = TRUE)
 
 ## Simulate the epidemic model

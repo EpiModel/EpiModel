@@ -447,8 +447,6 @@ crosscheck.net <- function(x, param, init, control) {
           control[[args[i]]] <- temp
         }
       }
-      message("Default modules set to appropriate one-mode functions. See documentation ",
-              "for details.")
     }
     else {
       for (i in 1:length(args)) {
@@ -457,8 +455,6 @@ crosscheck.net <- function(x, param, init, control) {
           control[[args[i]]] <- temp
         }
       }
-      message("Default modules set to appropriate two-mode functions. See documentation ",
-              "for details.")
     }
   }
   
@@ -475,7 +471,8 @@ crosscheck.net <- function(x, param, init, control) {
     }
 
   if (!is.null(control$type) & length(control$user.mods) > 0) {
-    stop("Control parameter 'type' must be null if any user specified modules are present")
+    stop("Control setting 'type' must be NULL if any user-specified modules specified.",
+         call. = FALSE)
   }
 }
 
