@@ -79,6 +79,20 @@ test_that("Formation plot color vector length", {
                cat("qnts.col must be either missing or a vector of length 1 or nstats (", dx$nstats,")"))
 })
 
+test_that("Netdx duration and dissolution plots error when skip.dissolution = TRUE", {
+  nw <- network.initialize(100, directed = FALSE)
+  formation <- ~edges
+  target.stats <- 50
+  coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 2)
+  est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
+  dx2 <- netdx(est, nsims = 1, nsteps = 500, skip.dissolution = TRUE)
+
+  expect_error(plot(dx2, type = "duration"),
+               "Plots of type duration and dissolution only available if netdx run with skip.dissolution = FALSE")
+  expect_error(plot(dx2, type = "dissolution"),
+               "Plots of type duration and dissolution only available if netdx run with skip.dissolution = FALSE")
+})
+
 test_that("Offset terms", {
   n <- 50
   nw <- network.initialize(n, directed = FALSE)
