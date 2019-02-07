@@ -30,6 +30,8 @@
 #' @param verbose Print progress to the console.
 #' @param ncores Number of processor cores to run multiple simulations
 #'        on, using the \code{foreach} and \code{doParallel} implementations.
+#' @param skip.dissolution If \code{TRUE}, skip over the calculations of duration
+#'        and dissolution stats in netdx.
 #'
 #' @details
 #' The \code{netdx} function handles dynamic network diagnostics for network

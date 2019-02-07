@@ -47,6 +47,9 @@ one entry per simulation. Accessible at \code{$network}.}
 
 \item{ncores}{Number of processor cores to run multiple simulations
 on, using the \code{foreach} and \code{doParallel} implementations.}
+
+\item{skip.dissolution}{If \code{TRUE}, skip over the calculations of duration
+and dissolution stats in netdx.}
 }
 \description{
 Runs dynamic diagnostics on an ERGM/STERGM estimated through
