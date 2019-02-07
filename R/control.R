@@ -533,11 +533,6 @@ control.net <- function(type, nsteps, start = 1, nsims = 1, ncores = 1,
     p$tea.status <- FALSE
   }
   
-  #if (is.null(p$type)) {
-  #  p$type <- "NTS"
-  #  warning("No epidemic type specified.")
-  #}
-  
   ## Output
   class(p) <- c("control.net", "list")
   return(p)
