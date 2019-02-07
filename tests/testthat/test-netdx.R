@@ -219,6 +219,16 @@ test_that("error checking", {
   expect_error(netdx(est), "Specify number of time steps with nsteps")
 })
 
+test_that("Cross sectional ergm dynamic error check", {
+  nw <- network.initialize(100, directed = FALSE)
+  formation <- ~edges
+  target.stats <- 50
+  coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 1)
+  est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
+  expect_error(netdx(est, nsims = 5, nsteps = 500),
+               "Running dynamic diagnostics on a cross-sectional")
+})
+
 test_that("Full STERGM", {
   skip_on_cran()
   nw <- network.initialize(n = 50, directed = FALSE)
