@@ -161,7 +161,7 @@ init_status.net <- function(dat) {
       if (modes == 2) {
         status[sample(which(mode == 2), size = i.num.m2)] <- "i"
       }
-      if (type == "SIR") {
+      if (type == "SIR"  && !is.null(type)) {
         status[sample(which(mode == 1 & status == "s"), size = r.num)] <- "r"
         if (modes == 2) {
           status[sample(which(mode == 2 & status == "s"), size = r.num.m2)] <- "r"
@@ -187,6 +187,7 @@ init_status.net <- function(dat) {
 
   # Infection Time ----------------------------------------------------------
   ## Set up inf.time vector
+  if(!is.null(type)){
   idsInf <- which(status == "i")
   infTime <- rep(NA, length(status))
 
@@ -214,6 +215,7 @@ init_status.net <- function(dat) {
   }
 
   dat$attr$infTime <- infTime
+}
 
   return(dat)
 }

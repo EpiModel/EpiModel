@@ -1,3 +1,4 @@
+
 #' @title Control Settings for Deterministic Compartmental Models
 #'
 #' @description Sets the controls for deterministic compartmental models
@@ -59,6 +60,8 @@
 control.dcm <- function(type, nsteps, dt = 1, odemethod = "rk4",
                         dede = FALSE, new.mod = NULL, sens.param = TRUE,
                         print.mod = FALSE, verbose = FALSE, ...) {
+  
+  
   
   # Get arguments
   p <- list()
@@ -203,10 +206,21 @@ control.icm <- function(type, nsteps, nsims = 1, rec.rand = TRUE, a.rand = TRUE,
     }
   }
   
+  if ("births.FUN" %in% names(dot.args)) {
+    p$arrivals.FUN <- dot.args$births.FUN
+    p$births.FUN <- dot.args$births.FUN <- NULL
+    message("EpiModel 1.7.0 onward renamed the birth function births.FUN to arrivals.FUN. See documentation for details.")
+  }
+  if ("deaths.FUN" %in% names(dot.args)) {
+    p$departures.FUN <- dot.args$deaths.FUN
+    p$deaths.FUN <- dot.args$deaths.FUN <- NULL
+    message("EpiModel 1.7.0 onward renamed the death function deaths.FUN to departures.FUN. See documentation for details.")
+  }
+  
   
   ## Module classification
   p$bi.mods <- grep(".FUN", names(formal.args), value = TRUE)
-  p$user.mods <- grep(".FUN", names.dot.args, value = TRUE)
+  p$user.mods <- grep(".FUN", names(dot.args), value = TRUE)
   
   
   ## Defaults and checks
@@ -434,10 +448,23 @@ control.net <- function(type, nsteps, start = 1, nsims = 1, ncores = 1,
     }
   }
   
+  if ("births.FUN" %in% names(dot.args)) {
+    p$arrivals.FUN <- dot.args$births.FUN
+    p$births.FUN <- dot.args$births.FUN <- NULL
+    message("EpiModel 1.7.0 onward renamed the birth function births.FUN to arrivals.FUN. See documentation for details.")
+  }
+  if ("deaths.FUN" %in% names(dot.args)) {
+    p$departures.FUN <- dot.args$deaths.FUN
+    p$deaths.FUN <- dot.args$deaths.FUN <- NULL
+    message("EpiModel 1.7.0 onward renamed the death function deaths.FUN to departures.FUN. See documentation for details.")
+  }
+  
   ## Module classification
   bi.mods <- grep(".FUN", names(formal.args), value = TRUE)
+  bi.mods <- bi.mods[which(sapply(bi.mods, function(x) !is.null(eval(parse(text = x))),
+                                  USE.NAMES = FALSE) == TRUE)]
   p$bi.mods <- bi.mods
-  p$user.mods <- grep(".FUN", names.dot.args, value = TRUE)
+  p$user.mods <- grep(".FUN", names(dot.args), value = TRUE)
   
   
   if (missing(depend)) {
@@ -449,7 +476,7 @@ control.net <- function(type, nsteps, start = 1, nsims = 1, ncores = 1,
   }
   
   ## Defaults and checks
-
+  
   #Check whether any base modules have been redefined by user (note: must come after above)
   bi.nms <- p$bi.mods
   bi.nms <- bi.nms[-which(bi.nms %in% c("initialize.FUN", "edges_correct.FUN", 
@@ -466,10 +493,19 @@ control.net <- function(type, nsteps, start = 1, nsims = 1, ncores = 1,
   if (!is.null(p$type) && sum(flag1) != length(flag1)) {
     stop("Control parameter 'type' must be null if any user defined base modules are present")
   }
-
+  
+  flag2 <- logical()
+  for (args in 1:length(bi.nms)) {
+    flag2[args] <- ifelse(is.null(p[[bi.nms[args]]]), TRUE, FALSE)
+  }
+  
+  if (is.null(p$type) && sum(flag2) != 0) {
+    stop(paste("If control parameter 'type' is not specified, user must specify all base modules. 
+               Missing: ",paste(bi.nms[flag2==TRUE], collapse=' '),". See modules.net for details."))
+  }
+  
   if (!is.null(p$type) && length(p$user.mods) > 0) {
-    stop("Control setting 'type' must be NULL if any user-specified modules specified.",
-         calll. = FALSE)
+    stop("Control parameter 'type' must be null if any user specified modules are present")
   }
   
   if (is.null(p$nsteps)) {
@@ -487,7 +523,6 @@ control.net <- function(type, nsteps, start = 1, nsims = 1, ncores = 1,
       p$epi.by <- epi.by
     }
   }
-  
   
   if (is.null(p$set.control.stergm)) {
     p$set.control.stergm <- control.simulate.network(MCMC.burnin.min = 1000)

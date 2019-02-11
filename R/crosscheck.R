@@ -463,16 +463,20 @@ crosscheck.net <- function(x, param, init, control) {
   assign("control", control, pos = parent.frame())
   }
   
-  if (is.null(control$type) & length(grep("rec", names(param))) != 0){
-    control$type <- "SIR"
-  }
-  else {
-    control$type <- "SI"
-    }
 
   if (!is.null(control$type) & length(control$user.mods) > 0) {
     stop("Control setting 'type' must be NULL if any user-specified modules specified.",
          call. = FALSE)
   }
+  
+  if (is.null(control$type) & length(grep("rec", names(param))) != 0){
+    control$type <- "SIR"
+  }
+  else {
+    control$type <- "SI"
+  }
+  ## In-place assignment to update param and control
+  assign("param", param, pos = parent.frame())
+  assign("control", control, pos = parent.frame())
 }
 
