@@ -466,40 +466,7 @@ control.net <- function(type, nsteps, start = 1, nsims = 1, ncores = 1,
   if (!is.null(p$type) && sum(flag1) != length(flag1)) {
     stop("Control parameter 'type' must be null if any user defined base modules are present")
   }
-  
-  
-  ##Base modes: adjusting for recovery module
-  #Note: likely not the best way to do this as references obj. out of scope
-  
-  flag.rec <- sum(grep("rec", names(param)) > 0)
-  
-  if ( flag.rec == TRUE) {
-    flag2 <- logical()
-    for (args in 1:length(bi.nms)) {
-      flag2[args] <- ifelse(is.null(p[[bi.nms[args]]]), TRUE, FALSE)
-    }
-  
-    if (is.null(p$type) && sum(flag2) != 0) {
-      stop(paste("If control parameter 'type' is not specified, user must specify all base modules. 
-           Missing: ",paste(bi.nms[flag2==TRUE], collapse=' '),". See modules.net for details."),
-           call. = FALSE)
-    }
-  }
-  else {
-    bi.nms <- bi.nms[-which(bi.nms %in% c("recovery.FUN"))]
-    flag2 <- logical()
-    for (args in 1:length(bi.nms)) {
-      flag2[args] <- ifelse(is.null(p[[bi.nms[args]]]), TRUE, FALSE)
-    }
-    
-    if (is.null(p$type) && sum(flag2) != 0) {
-      stop(paste("If control parameter 'type' is not specified, user must specify all base modules. 
-           Missing: ",paste(bi.nms[flag2==TRUE], collapse=' '),". See modules.net for details."),
-           call. = FALSE)
-    }
-  }
 
-  
   if (!is.null(p$type) && length(p$user.mods) > 0) {
     stop("Control setting 'type' must be NULL if any user-specified modules specified.",
          calll. = FALSE)
