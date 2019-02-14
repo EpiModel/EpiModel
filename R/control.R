@@ -528,6 +528,25 @@ control.net <- function(type, nsteps, start = 1, nsims = 1, ncores = 1,
     p$tea.status <- FALSE
   }
   
+  if (is.null(p$type)) {
+    names <- unlist(lapply(sys.call()[-1], as.character))
+    pos <- which(names(names) %in% grep(".FUN", names(names), value = TRUE))
+    p$f.names <- as.vector(names)[pos]
+    p$f.args  <- grep(".FUN", names(names), value = TRUE)
+  }
+  
+  if (p$type != "SIR" && !is.null(p$type)) {
+    p$f.names <- c("arrivals.FUN", "departures.FUN", "infection.FUN", "get_prev.FUN")
+    p$f.args  <- c("arrivals.net", "departures.net", "infection.net", "get_prev.net")
+  }
+  
+  if (p$type %in% c("SIR", "SIS") && !is.null(p$type)) {
+    p$f.names <- c("arrivals.FUN", "departures.FUN", "infection.FUN", 
+                   "recovery.FUN", "get_prev.FUN")
+    p$f.args  <- c("arrivals.net", "departures.net", "infection.net",
+                   "recovery.net", "get_prev.net")
+  }
+  
   ## Output
   class(p) <- c("control.net", "list")
   return(p)

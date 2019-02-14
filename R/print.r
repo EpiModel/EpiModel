@@ -157,7 +157,14 @@ print.netsim <- function(x, ...) {
       cat(names(x$param)[i], "=", x$param[[i]], fill = 80)
     }
   }
-
+  
+  cat("\n\nModel Functions")
+  cat("\n-----------------------\n")
+  for (i in 1:length(control$f.args)){
+    (cat(control$f.args[i],"=", control$f.names[i],"\n"))
+  }
+  cat("\n")
+  
   cat("\nModel Output")
   cat("\n-----------------------")
   cat("\nVariables:", names(x$epi), fill = 60)
@@ -387,10 +394,5 @@ print.control.net <- function(x, ...) {
       cat(names(x)[i], "=", x[[i]], fill = 80)
     }
   }
-  cat("Base Modules:", x$bi.mods, fill = 80)
-  if (length(x$user.mods) > 0) {
-    cat("Extension Modules:", x$user.mods, fill = 80)
-  }
-
   invisible()
 }
