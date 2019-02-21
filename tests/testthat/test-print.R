@@ -106,13 +106,10 @@ test_that("print.init", {
 test_that("print.control", {
   co <- control.dcm(type = "SI", nsteps = 10)
   expect_output(print(co), "DCM Control Settings")
-  expect_output(print(co), "odemethod = rk4")
 
   co <- control.icm(type = "SI", nsteps = 10)
   expect_output(print(co), "ICM Control Settings")
-  expect_output(print(co), "Base Modules: initialize.FUN")
 
   co <- control.net(type = "SI", nsteps = 10)
   expect_output(print(co), "Network Model Control Settings")
-  expect_output(print(co), "Base Modules: initialize.FUN")
 })

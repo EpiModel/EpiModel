@@ -49,7 +49,6 @@ print.icm <- function(x, ...) {
   cat("\nNo. time steps:", x$control$nsteps)
   cat("\nNo. groups:", x$param$groups)
 
-
   cat("\n\nModel Parameters")
   cat("\n-----------------------\n")
   pToPrint <- which(!(names(x$param) %in% c("groups", "vital")))
