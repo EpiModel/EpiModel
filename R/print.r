@@ -36,37 +36,30 @@ print.dcm <- function(x, ...) {
 
 
 #' @export
-print.dcm <- function(x, ...) {
-  
-  # New model
-  new.mod <- ifelse(!is.null(x$control$new.mod), TRUE, FALSE)
-  
+print.icm <- function(x, ...) {
+
   cat("EpiModel Simulation")
   cat("\n=======================")
   cat("\nModel class:", class(x))
-  
+
   cat("\n\nSimulation Summary")
   cat("\n-----------------------")
-  if (new.mod == FALSE) {
-    cat("\nModel type:", x$control$type)
-  }
-  cat("\nNo. runs:", x$control$nruns)
+  cat("\nModel type:", x$control$type)
+  cat("\nNo. simulations:", x$control$nsims)
   cat("\nNo. time steps:", x$control$nsteps)
-  if (new.mod == FALSE) {
-    cat("\nNo. groups:", x$param$groups)
-  }
-  
+  cat("\nNo. groups:", x$param$groups)
+
   cat("\n\nModel Parameters")
   cat("\n-----------------------\n")
   pToPrint <- which(!(names(x$param) %in% c("groups", "vital")))
   for (i in pToPrint) {
     cat(names(x$param)[i], "=", x$param[[i]], fill = 60)
   }
-  
+
   cat("\nModel Output")
   cat("\n-----------------------")
   cat("\nVariables:", names(x$epi), fill = 60)
-  
+
   invisible()
 }
 
@@ -166,8 +159,8 @@ print.netsim <- function(x, ...) {
   
   cat("\n\nModel Functions")
   cat("\n-----------------------\n")
-  for (i in 1:length(control$f.args)){
-    (cat(control$f.args[i],"=", control$f.names[i],"\n"))
+  for (i in 1:length(x$control$f.args)){
+    (cat(x$control$f.args[i],"=", x$control$f.names[i],"\n"))
   }
   cat("\n")
   
