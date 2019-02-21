@@ -457,11 +457,6 @@ crosscheck.net <- function(x, param, init, control) {
       }
     }
   }
-    
-  #names <- unlist(lapply(sys.call()[-1], as.character))
-  #pos <- which(names(names) %in% grep(".FUN", names(names), value = TRUE))
-  #p$f.names <- as.vector(names)[pos]
-  #p$f.args  <- grep(".FUN", names(names), value = TRUE)
   
   ## In-place assignment to update param and control
   assign("param", param, pos = parent.frame())

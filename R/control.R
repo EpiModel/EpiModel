@@ -462,8 +462,6 @@ control.net <- function(type, nsteps, start = 1, nsims = 1, ncores = 1,
   ## Module classification
   bi.mods <- grep(".FUN", names(formal.args), value = TRUE)
   bi.nms <- bi.mods
-  #bi.mods <- bi.mods[which(sapply(bi.mods, function(x) !is.null(eval(parse(text = x))),
-  #                                USE.NAMES = FALSE) == TRUE)]
   p$bi.mods <- bi.mods
   p$user.mods <- grep(".FUN", names(dot.args), value = TRUE)
   
@@ -479,7 +477,6 @@ control.net <- function(type, nsteps, start = 1, nsims = 1, ncores = 1,
   ## Defaults and checks
   
   #Check whether any base modules have been redefined by user (note: must come after above)
-  #bi.nms <- p$bi.mods
   bi.nms <- bi.nms[-which(bi.nms %in% c("initialize.FUN", "edges_correct.FUN", 
                                         "resim_nets.FUN", "verbose.FUN"))]
     if (length(bi.nms) > 0){
