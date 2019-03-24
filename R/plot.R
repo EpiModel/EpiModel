@@ -2005,8 +2005,8 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #' est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 #'
 #' # Simulate the epidemic model
-#' param <- param.net(inf.prob = 0.3, inf.prob.m2 = 0.15)
-#' init <- init.net(i.num = 10, i.num.m2 = 10)
+#' param <- param.net(inf.prob = 0.3, inf.prob.g2 = 0.15)
+#' init <- init.net(i.num = 10, i.num.g2 = 10)
 #' control <- control.net(type = "SI", nsteps = 20, nsims = 3,
 #'                        verbose = FALSE, save.nwstats = TRUE,
 #'                        nwstats.formula = ~edges + meandeg + concurrent)
@@ -2191,7 +2191,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
         }
         if (class(x) == "netsim") {
           y <- c(grep(".num$", names(x$epi), value = TRUE),
-                 grep(".num.m2$", names(x$epi), value = TRUE))
+                 grep(".num.g2$", names(x$epi), value = TRUE))
         }
       }
       if (missing(legend)) {
@@ -2275,8 +2275,8 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
     if (nopopfrac == TRUE) {
       if (any(grepl(".flow", y)) |
           (modes == 1 & all(grepl(".num$", y)) == FALSE) |
-          (modes == 2 & all(c(grepl(".num$", y), grepl(".m2$", y)) == FALSE)) |
-          any(y %in% c("num", "num.m2", "num.g2"))) {
+          (modes == 2 & all(c(grepl(".num$", y), grepl(".g2$", y)) == FALSE)) |
+          any(y %in% c("num", "num.g2", "num.g2"))) {
         popfrac <- FALSE
       }
     }

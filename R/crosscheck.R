@@ -98,7 +98,7 @@ crosscheck.dcm <- function(param, init, control) {
     }
 
     # Over-specified initial conditions
-    if (control$type != "SIR" & any(c("r.num", "r.num.m2") %in% names(init))) {
+    if (control$type != "SIR" & any(c("r.num", "r.num.g2") %in% names(init))) {
       stop("Specified initial number recovered for non-SIR model",
            call. = FALSE)
     }
@@ -343,9 +343,9 @@ crosscheck.net <- function(x, param, init, control) {
     }
 
     # Bipartite model checks for inital conditions
-    if (bip == TRUE & is.null(init$i.num.m2) &
+    if (bip == TRUE & is.null(init$i.num.g2) &
           is.null(init$status.vector) & statOnNw == FALSE) {
-      stop("Specify i.num.m2 for bipartite simulations", call. = FALSE)
+      stop("Specify i.num.g2 for bipartite simulations", call. = FALSE)
     }
 
     # Recovery rate and initial recovered checks
@@ -353,34 +353,34 @@ crosscheck.net <- function(x, param, init, control) {
       if (is.null(param$rec.rate)) {
         stop("Specify rec.rate in param.net", call. = FALSE)
       }
-      if (bip == TRUE & is.null(param$rec.rate.m2)) {
-        stop("Specify rec.rate.m2 in param.net", call. = FALSE)
+      if (bip == TRUE & is.null(param$rec.rate.g2)) {
+        stop("Specify rec.rate.g2 in param.net", call. = FALSE)
       }
     }
     if (control$type == "SIR") {
       if (is.null(init$r.num) & is.null(init$status.vector) & statOnNw == FALSE) {
         stop("Specify r.num in init.net", call. = FALSE)
       }
-      if (bip == TRUE & is.null(init$r.num.m2) & is.null(init$status.vector) &
+      if (bip == TRUE & is.null(init$r.num.g2) & is.null(init$status.vector) &
           statOnNw == FALSE) {
-        stop("Specify r.num.m2 in init.net", call. = FALSE)
+        stop("Specify r.num.g2 in init.net", call. = FALSE)
       }
     }
 
     # Check demographic parameters for bipartite
     if (bip == TRUE & param$vital == TRUE) {
-      if (is.null(param$a.rate.m2)) {
-        stop("Specify a.rate.m2 in param.net", call. = FALSE)
+      if (is.null(param$a.rate.g2)) {
+        stop("Specify a.rate.g2 in param.net", call. = FALSE)
       }
-      if (is.null(param$ds.rate.m2)) {
-        stop("Specify ds.rate.m2 in param.net", call. = FALSE)
+      if (is.null(param$ds.rate.g2)) {
+        stop("Specify ds.rate.g2 in param.net", call. = FALSE)
       }
-      if (is.null(param$di.rate.m2)) {
-        stop("Specify di.rate.m2 in param.net", call. = FALSE)
+      if (is.null(param$di.rate.g2)) {
+        stop("Specify di.rate.g2 in param.net", call. = FALSE)
       }
       if (control$type == "SIR") {
-        if (is.null(param$dr.rate.m2)) {
-          stop("Specify dr.rate.m2 in param.net", call. = FALSE)
+        if (is.null(param$dr.rate.g2)) {
+          stop("Specify dr.rate.g2 in param.net", call. = FALSE)
         }
       }
     }
@@ -394,8 +394,8 @@ crosscheck.net <- function(x, param, init, control) {
         stop("The trans.rate parameter is deprecated. Use the inf.prob ",
              "parameter instead.", call. = FALSE)
       }
-      if (!is.null(param$trans.rate.m2)) {
-        stop("The trans.rate.m2 parameter is deprecated. Use the inf.prob.m2 ",
+      if (!is.null(param$trans.rate.g2)) {
+        stop("The trans.rate.g2 parameter is deprecated. Use the inf.prob.g2 ",
              "parameter instead.", call. = FALSE)
       }
     }
@@ -438,7 +438,7 @@ crosscheck.net <- function(x, param, init, control) {
   if (!is.null(control$type)) {
     def <- grep(".FUN",names(control))
     args <- names(control)[def]
-    flag <- length(grep(".m2",names(param)))
+    flag <- length(grep(".g2",names(param)))
 
     if (flag == 0) {
       for (i in 1:length(args)) {

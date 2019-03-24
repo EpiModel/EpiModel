@@ -120,7 +120,7 @@ get_prev.net <- function(dat, at) {
 #' @export
 #' @keywords netUtils internal
 #'
-get_prev.net.bip <- function(dat, at) {
+get_prev.net.grp <- function(dat, at) {
 
   active <- dat$attr$active
 
@@ -130,8 +130,8 @@ get_prev.net.bip <- function(dat, at) {
   l$active <- l$infTime <- NULL
 
   status <- l$status
-  mode <- idmode(dat$nw)[active == 1]
-
+  #mode <- idmode(dat$nw)[active == 1]
+  mode <- get.vertex.attribute(nw, "group")[active == 1]
 
   ## Subsetting for epi.by control
   eb <- !is.null(dat$control$epi.by)
@@ -177,36 +177,36 @@ get_prev.net.bip <- function(dat, at) {
                                                    get(ebn) == ebv[i])
       }
     }
-    dat$epi$s.num.m2 <- sum(status == "s" & mode == 2)
+    dat$epi$s.num.g2 <- sum(status == "s" & mode == 2)
     if (eb == TRUE) {
       for (i in 1:length(ebun)) {
-        dat$epi[[paste0("s.num.m2", ebun[i])]] <- sum(status == "s" &
+        dat$epi[[paste0("s.num.g2", ebun[i])]] <- sum(status == "s" &
                                                         mode == 2 &
                                                         get(ebn) == ebv[i])
       }
     }
-    dat$epi$i.num.m2 <- sum(status == "i" & mode == 2)
+    dat$epi$i.num.g2 <- sum(status == "i" & mode == 2)
     if (eb == TRUE) {
       for (i in 1:length(ebun)) {
-        dat$epi[[paste0("i.num.m2", ebun[i])]] <- sum(status == "i" &
+        dat$epi[[paste0("i.num.g2", ebun[i])]] <- sum(status == "i" &
                                                         mode == 2 &
                                                         get(ebn) == ebv[i])
       }
     }
     if (dat$control$type == "SIR") {
-      dat$epi$r.num.m2 <- sum(status == "r" & mode == 2)
+      dat$epi$r.num.g2 <- sum(status == "r" & mode == 2)
       if (eb == TRUE) {
         for (i in 1:length(ebun)) {
-          dat$epi[[paste0("r.num.m2", ebun[i])]] <- sum(status == "r" &
+          dat$epi[[paste0("r.num.g2", ebun[i])]] <- sum(status == "r" &
                                                           mode == 2 &
                                                           get(ebn) == ebv[i])
         }
       }
     }
-    dat$epi$num.m2 <- sum(mode == 2)
+    dat$epi$num.g2 <- sum(mode == 2)
     if (eb == TRUE) {
       for (i in 1:length(ebun)) {
-        dat$epi[[paste0("num.m2", ebun[i])]] <- sum(mode == 2 &
+        dat$epi[[paste0("num.g2", ebun[i])]] <- sum(mode == 2 &
                                                       get(ebn) == ebv[i])
       }
     }
@@ -245,36 +245,36 @@ get_prev.net.bip <- function(dat, at) {
                                                        get(ebn) == ebv[i])
       }
     }
-    dat$epi$s.num.m2[at] <- sum(status == "s" & mode == 2)
+    dat$epi$s.num.g2[at] <- sum(status == "s" & mode == 2)
     if (eb == TRUE) {
       for (i in 1:length(ebun)) {
-        dat$epi[[paste0("s.num.m2", ebun[i])]][at] <- sum(status == "s" &
+        dat$epi[[paste0("s.num.g2", ebun[i])]][at] <- sum(status == "s" &
                                                             mode == 2 &
                                                             get(ebn) == ebv[i])
       }
     }
-    dat$epi$i.num.m2[at] <- sum(status == "i" & mode == 2)
+    dat$epi$i.num.g2[at] <- sum(status == "i" & mode == 2)
     if (eb == TRUE) {
       for (i in 1:length(ebun)) {
-        dat$epi[[paste0("i.num.m2", ebun[i])]][at] <- sum(status == "i" &
+        dat$epi[[paste0("i.num.g2", ebun[i])]][at] <- sum(status == "i" &
                                                             mode == 2 &
                                                             get(ebn) == ebv[i])
       }
     }
     if (dat$control$type == "SIR") {
-      dat$epi$r.num.m2[at] <- sum(status == "r" & mode == 2)
+      dat$epi$r.num.g2[at] <- sum(status == "r" & mode == 2)
       if (eb == TRUE) {
         for (i in 1:length(ebun)) {
-          dat$epi[[paste0("r.num.m2", ebun[i])]][at] <- sum(status == "r" &
+          dat$epi[[paste0("r.num.g2", ebun[i])]][at] <- sum(status == "r" &
                                                               mode == 2 &
                                                               get(ebn) == ebv[i])
         }
       }
     }
-    dat$epi$num.m2[at] <- sum(mode == 2)
+    dat$epi$num.g2[at] <- sum(mode == 2)
     if (eb == TRUE) {
       for (i in 1:length(ebun)) {
-        dat$epi[[paste0("num.m2", ebun[i])]][at] <- sum(mode == 2 &
+        dat$epi[[paste0("num.g2", ebun[i])]][at] <- sum(mode == 2 &
                                                           get(ebn) == ebv[i])
       }
     }

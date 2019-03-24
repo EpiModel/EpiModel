@@ -310,21 +310,21 @@ param.icm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
 #' @param dr.rate Departure or exit rate for recovered. For bipartite models, it is
 #'        the rate for the mode 1 recovered only. This parameter is only used for
 #'        \code{SIR} models.
-#' @param inf.prob.m2 Probability of transmission given a transmissible act
+#' @param inf.prob.g2 Probability of transmission given a transmissible act
 #'        between a susceptible mode 2 person and an infected mode 1 person.
 #'        It is the probability of transmission to mode 2 members.
-#' @param rec.rate.m2 Average rate of recovery with immunity (in \code{SIR} models)
+#' @param rec.rate.g2 Average rate of recovery with immunity (in \code{SIR} models)
 #'        or re-susceptibility (in \code{SIS} models) for mode 2 persons. This
 #'        parameter is only used for bipartite \code{SIR} and \code{SIS} models.
-#' @param a.rate.m2 Arrival or entry rate for mode 2. This may either be specified
+#' @param a.rate.g2 Arrival or entry rate for mode 2. This may either be specified
 #'        numerically as the rate of new arrivals per mode 2 persons per unit time,
 #'        or as \code{NA} in which case the mode 1 rate, \code{a.rate}, governs
 #'        the mode 2 rate. The latter is used when, for example, the first mode
 #'        is conceptualized as female, and the female population size determines
 #'        the arrival rate. Such arrivalss are evenly allocated between the two modes.
-#' @param ds.rate.m2 Departure or exit rate for mode 2 susceptible.
-#' @param di.rate.m2 Departure or exit rate for mode 2 infected.
-#' @param dr.rate.m2 Departure or exit rate for mode 2 recovered. This parameter is
+#' @param ds.rate.g2 Departure or exit rate for mode 2 susceptible.
+#' @param di.rate.g2 Departure or exit rate for mode 2 infected.
+#' @param dr.rate.g2 Departure or exit rate for mode 2 recovered. This parameter is
 #'        only used for \code{SIR} model types.
 #' @param ... Additional arguments passed to model.
 #'
@@ -342,7 +342,7 @@ param.icm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
 #' \code{\link{control.net}}. One-mode and two-mode models are available, where
 #' the the latter assumes a heterogenous mixing between two distinct partitions
 #' in the population (e.g., men and women). Specifying any bipartite parameters
-#' (those with a \code{.m2}) implies the simulation of a bipartite model. All the
+#' (those with a \code{.g2}) implies the simulation of a bipartite model. All the
 #' parameters for a desired model type must be specified, even if they are zero.
 #'
 #' @section The \code{act.rate} Parameter:
@@ -358,7 +358,7 @@ param.icm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
 #'
 #' @section Time-Varying Parameters:
 #' The \code{inf.prob}, \code{act.rate}, \code{rec.rate} arguments (and their
-#' \code{.m2} companions) may be specified as time-varying parameters by passing
+#' \code{.g2} companions) may be specified as time-varying parameters by passing
 #' in a vector of probabilities or rates, respectively. The value in each
 #' position on the vector then corresponds to the probability or rate at that
 #' discrete time step for the infected partner. For example, an \code{inf.prob}
@@ -389,9 +389,9 @@ param.icm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
 #' @export
 #'
 param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
-                      a.rate, ds.rate, di.rate, dr.rate, inf.prob.m2,
-                      rec.rate.m2, a.rate.m2, ds.rate.m2, di.rate.m2,
-                      dr.rate.m2, ...) {
+                      a.rate, ds.rate, di.rate, dr.rate, inf.prob.g2,
+                      rec.rate.g2, a.rate.g2, ds.rate.g2, di.rate.g2,
+                      dr.rate.g2, ...) {
 
   # Get arguments
   p <- list()
@@ -416,9 +416,9 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
     message("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate to a.rate. ",
             "See documentation for details.")
   }
-  if ("b.rate.m2" %in% names.dot.args) {
-    p$a.rate.m2 <- dot.args$b.rate.m2
-    message("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate.m2 to a.rate.m2. ",
+  if ("b.rate.g2" %in% names.dot.args) {
+    p$a.rate.g2 <- dot.args$b.rate.g2
+    message("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate.g2 to a.rate.g2. ",
             "See documentation for details.")
   }
 
@@ -428,8 +428,8 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
   }
   p$vital <- ifelse(!missing(a.rate) | !missing(ds.rate) |
                     !missing(di.rate) | !missing(dr.rate), TRUE, FALSE)
-  if ("act.rate.m2" %in% names.dot.args) {
-    warning("act.rate.m2 parameter was entered. ",
+  if ("act.rate.g2" %in% names.dot.args) {
+    warning("act.rate.g2 parameter was entered. ",
             "If using built-in models, only act.rate parameter will apply.",
             call. = FALSE)
   }

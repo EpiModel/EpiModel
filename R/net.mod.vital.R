@@ -230,7 +230,7 @@ arrivals.net <- function(dat, at) {
 #' @export
 #' @keywords netMod internal
 #'
-departures.net.bip <- function(dat, at) {
+departures.net.grp <- function(dat, at) {
 
   # Conditions --------------------------------------------------------------
   if (dat$param$vital == FALSE) {
@@ -238,7 +238,8 @@ departures.net.bip <- function(dat, at) {
   }
 
   # Variables ---------------------------------------------------------------
-  mode <- idmode(dat$nw)
+  #mode <- idmode(dat$nw)
+  mode <- get.vertex.attribute(nw, "group")
   type <- dat$control$type
 
   # Susceptible departures ------------------------------------------------------
@@ -250,7 +251,7 @@ departures.net.bip <- function(dat, at) {
     if (nElig.sus > 0) {
       # Departure rates by mode
     mElig.sus <- mode[idsElig.sus]
-    rates.sus <- c(dat$param$ds.rate, dat$param$ds.rate.m2)
+    rates.sus <- c(dat$param$ds.rate, dat$param$ds.rate.g2)
     ratesElig.sus <- rates.sus[mElig.sus]
       # Stochastic exits
       vecDepartures.sus <- which(rbinom(nElig.sus, 1, ratesElig.sus) == 1)
@@ -274,7 +275,7 @@ departures.net.bip <- function(dat, at) {
   if (nElig.inf > 0) {
       # Departure rates by mode
     mElig.inf <- mode[idsElig.inf]
-    rates.inf <- c(dat$param$ds.rate, dat$param$ds.rate.m2)
+    rates.inf <- c(dat$param$ds.rate, dat$param$ds.rate.g2)
     ratesElig.inf <- rates.inf[mElig.inf]
       # Stochastic exits
       vecDepartures.inf <- which(rbinom(nElig.inf, 1, ratesElig.inf) == 1)
@@ -298,7 +299,7 @@ departures.net.bip <- function(dat, at) {
       if (nElig.rec > 0) {
         # Departure rates by mode
       mElig.rec <- mode[idsElig.rec]
-      rates.rec <- c(dat$param$ds.rate, dat$param$ds.rate.m2)
+      rates.rec <- c(dat$param$ds.rate, dat$param$ds.rate.g2)
       ratesElig.rec <- rates.rec[mElig.rec]
         # Stochastic exits
         vecDepartures.rec <- which(rbinom(nElig.rec, 1, ratesElig.rec) == 1)
@@ -321,10 +322,10 @@ departures.net.bip <- function(dat, at) {
     if (type == "SIR") {
       dat$epi$dr.flow <- c(0, nDepartures.rec)
     }
-    dat$epi$ds.flow.m2 <- c(0, nDeparturesM2.sus)
-    dat$epi$di.flow.m2 <- c(0, nDeparturesM2.inf)
+    dat$epi$ds.flow.g2 <- c(0, nDeparturesM2.sus)
+    dat$epi$di.flow.g2 <- c(0, nDeparturesM2.inf)
     if (type == "SIR") {
-      dat$epi$dr.flow.m2 <- c(0, nDeparturesM2.rec)
+      dat$epi$dr.flow.g2 <- c(0, nDeparturesM2.rec)
     }
     } else {
     dat$epi$ds.flow[at] <- nDepartures.sus
@@ -332,10 +333,10 @@ departures.net.bip <- function(dat, at) {
     if (type == "SIR") {
       dat$epi$dr.flow[at] <- nDepartures.rec
     }
-    dat$epi$ds.flow.m2[at] <- nDeparturesM2.sus
-    dat$epi$di.flow.m2[at] <- nDeparturesM2.inf
+    dat$epi$ds.flow.g2[at] <- nDeparturesM2.sus
+    dat$epi$di.flow.g2[at] <- nDeparturesM2.inf
     if (type == "SIR") {
-      dat$epi$dr.flow.m2[at] <- nDeparturesM2.rec
+      dat$epi$dr.flow.g2[at] <- nDeparturesM2.rec
     }
     }
     return(dat)
@@ -355,7 +356,7 @@ departures.net.bip <- function(dat, at) {
 #' @export
 #' @keywords netMod internal
 #'
-arrivals.net.bip <- function(dat, at) {
+arrivals.net.grp <- function(dat, at) {
   
   # Conditions --------------------------------------------------------------
   if (dat$param$vital == FALSE) {
@@ -365,7 +366,7 @@ arrivals.net.bip <- function(dat, at) {
   
   # Variables ---------------------------------------------------------------
   a.rate <- dat$param$a.rate
-  a.rate.m2 <- dat$param$a.rate.m2
+  a.rate.g2 <- dat$param$a.rate.g2
   tea.status <- dat$control$tea.status
   nOld <- dat$epi$num[at - 1]
   a.rand <- dat$control$a.rand
@@ -377,14 +378,14 @@ arrivals.net.bip <- function(dat, at) {
   
   # Add Nodes ---------------------------------------------------------------
   if (nOld > 0) {
-    nOldM2 <- dat$epi$num.m2[at - 1]
+    nOldM2 <- dat$epi$num.g2[at - 1]
     if (a.rand == TRUE) {
-      if (is.na(a.rate.m2)) {
+      if (is.na(a.rate.g2)) {
         nArrivals <- sum(rbinom(nOld, 1, a.rate))
         nArrivalsM2 <- sum(rbinom(nOld, 1, a.rate))
       } else {
         nArrivals <- sum(rbinom(nOld, 1, a.rate))
-        nArrivalsM2 <- sum(rbinom(nOldM2, 1, a.rate.m2))
+        nArrivalsM2 <- sum(rbinom(nOldM2, 1, a.rate.g2))
       }
     }
     
@@ -478,10 +479,10 @@ arrivals.net.bip <- function(dat, at) {
   # Output ------------------------------------------------------------------
   if (at == 2) {
     dat$epi$a.flow <- c(0, nArrivals)
-    dat$epi$a.flow.m2 <- c(0, nArrivalsM2)
+    dat$epi$a.flow.g2 <- c(0, nArrivalsM2)
   } else {
     dat$epi$a.flow[at] <- nArrivals
-    dat$epi$a.flow.m2[at] <- nArrivalsM2
+    dat$epi$a.flow.g2[at] <- nArrivalsM2
   }
   
   return(dat)

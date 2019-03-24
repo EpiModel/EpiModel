@@ -15,12 +15,12 @@ test_that("Updating attributes in open populations", {
   inf.probs <- rep(probs, durs)
   inf.probsf <- inf.probs*2
   param <- param.net(inf.prob = inf.probsf, act.rate = 1,
-                     inf.prob.m2 = inf.probs,
-                     a.rate = 0.05, a.rate.m2 = NA,
-                     ds.rate = 0.002, ds.rate.m2 = 0.002,
-                     di.rate = 0.008, di.rate.m2 = 0.008)
+                     inf.prob.g2 = inf.probs,
+                     a.rate = 0.05, a.rate.g2 = NA,
+                     ds.rate = 0.002, ds.rate.g2 = 0.002,
+                     di.rate = 0.008, di.rate.g2 = 0.008)
 
-  init <- init.net(i.num = 10, i.num.m2 = 10)
+  init <- init.net(i.num = 10, i.num.g2 = 10)
   control <- control.net(type = "SI", nsteps = 10, nsims = 1,
                          epi.by = "risk", verbose = FALSE)
 
@@ -88,12 +88,12 @@ test_that("Save attributes to output", {
   est1 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 
   param <- param.net(inf.prob = 0.2, act.rate = 1,
-                     inf.prob.m2 = 0.2,
-                     a.rate = 0.01, a.rate.m2 = NA,
-                     ds.rate = 0.01, ds.rate.m2 = 0.01,
-                     di.rate = 0.01, di.rate.m2 = 0.01)
+                     inf.prob.g2 = 0.2,
+                     a.rate = 0.01, a.rate.g2 = NA,
+                     ds.rate = 0.01, ds.rate.g2 = 0.01,
+                     di.rate = 0.01, di.rate.g2 = 0.01)
 
-  init <- init.net(i.num = 10, i.num.m2 = 10)
+  init <- init.net(i.num = 10, i.num.g2 = 10)
   control <- control.net(type = "SI", nsteps = 10, nsims = 2,
                          save.other = "attr", verbose = FALSE)
 

@@ -187,7 +187,7 @@ infection.net <- function(dat, at) {
 #' @seealso \code{\link{discord_edgelist}} is used within \code{infection.net}
 #' to obtain a discordant edgelist.
 #'
-infection.net.bip <- function(dat, at) {
+infection.net.grp <- function(dat, at) {
 
   # Variables ---------------------------------------------------------------
   active <- dat$attr$active
@@ -195,7 +195,7 @@ infection.net.bip <- function(dat, at) {
   mode <- idmode(dat$nw)
 
   inf.prob <- dat$param$inf.prob
-  inf.prob.m2 <- dat$param$inf.prob.m2
+  inf.prob.g2 <- dat$param$inf.prob.g2
   act.rate <- dat$param$act.rate
 
   nw <- dat$nw
@@ -226,7 +226,7 @@ infection.net.bip <- function(dat, at) {
 
       # Calculate infection-stage transmission rates
       linf.prob <- length(inf.prob)
-      if (is.null(inf.prob.m2)) {
+      if (is.null(inf.prob.g2)) {
         del$transProb <- ifelse(del$infDur <= linf.prob,
                                 inf.prob[del$infDur],
                                 inf.prob[linf.prob])
@@ -236,8 +236,8 @@ infection.net.bip <- function(dat, at) {
                                        inf.prob[del$infDur],
                                        inf.prob[linf.prob]),
                                 ifelse(del$infDur <= linf.prob,
-                                       inf.prob.m2[del$infDur],
-                                       inf.prob.m2[linf.prob]))
+                                       inf.prob.g2[del$infDur],
+                                       inf.prob.g2[linf.prob]))
       }
 
       # Interventions
@@ -307,11 +307,11 @@ infection.net.bip <- function(dat, at) {
   ## Save incidence vector
   if (at == 2) {
     dat$epi$si.flow <- c(0, nInf)
-    dat$epi$si.flow.m2 <- c(0, nInfM2)
+    dat$epi$si.flow.g2 <- c(0, nInfM2)
 
   } else {
     dat$epi$si.flow[at] <- nInf
-    dat$epi$si.flow.m2[at] <- nInfM2
+    dat$epi$si.flow.g2[at] <- nInfM2
   }
 
   dat$nw <- nw
@@ -469,7 +469,7 @@ recovery.net <- function(dat, at) {
 #' @export
 #' @keywords internal
 #'
-recovery.net.bip <- function(dat, at) {
+recovery.net.grp <- function(dat, at) {
 
   ## Only run with SIR/SIS
   if (!(dat$control$type %in% c("SIR", "SIS"))) {
@@ -482,13 +482,14 @@ recovery.net.bip <- function(dat, at) {
   infTime <- dat$attr$infTime
   tea.status <- dat$control$tea.status
   
-  mode <- idmode(dat$nw)
+  #mode <- idmode(dat$nw)
+  mode <- get.vertex.attribute(nw, "group")
    
   type <- dat$control$type
   recovState <- ifelse(type == "SIR", "r", "s")
 
   rec.rate <- dat$param$rec.rate
-  rec.rate.m2 <- dat$param$rec.rate.m2
+  rec.rate.g2 <- dat$param$rec.rate.g2
 
   nRecov <- nRecovM2 <- 0
   idsElig <- which(active == 1 & status == "i")
@@ -500,18 +501,18 @@ recovery.net.bip <- function(dat, at) {
   lrec.rate <- length(rec.rate)
   if (lrec.rate == 1) {
     mElig <- mode[idsElig]
-    rates <- c(rec.rate, rec.rate.m2)
+    rates <- c(rec.rate, rec.rate.g2)
     ratesElig <- rates[mElig]
   } else {
     mElig <- mode[idsElig]
-    if (is.null(rec.rate.m2)) {
+    if (is.null(rec.rate.g2)) {
       rates <- ifelse(infDur <= lrec.rate, rec.rate[infDur], rec.rate[lrec.rate])
     } else {
       rates <- rep(NA, length(infDur))
       rates[mElig == 1] <- ifelse(infDur[mElig == 1] <= lrec.rate,
                                   rec.rate[infDur[mElig == 1]], rec.rate[lrec.rate])
-      rates[mElig == 2] <- ifelse(infDur[mElig == 2] <= length(rec.rate.m2),
-                                  rec.rate.m2[infDur[mElig == 2]], rec.rate.m2[length(rec.rate.m2)])
+      rates[mElig == 2] <- ifelse(infDur[mElig == 2] <= length(rec.rate.g2),
+                                  rec.rate.g2[infDur[mElig == 2]], rec.rate.g2[length(rec.rate.g2)])
     }
     ratesElig <- rates
   }
@@ -540,7 +541,7 @@ recovery.net.bip <- function(dat, at) {
 
   # Output ------------------------------------------------------------------
   outName <- ifelse(type == "SIR", "ir.flow", "is.flow")
-  outName[2] <- paste0(outName, ".m2")
+  outName[2] <- paste0(outName, ".g2")
 
   if (at == 2) {
     dat$epi[[outName[1]]] <- c(0, nRecov)

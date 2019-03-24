@@ -31,7 +31,10 @@ initialize.net <- function(x, param, init, control, s) {
     # Network Simulation ------------------------------------------------------
     nw <- simulate(x$fit, basis = x$fit$newnetwork,
                    control = control$set.control.ergm)
-    modes <- ifelse(nw %n% "bipartite", 2, 1)
+    #How does nw work without 'bipartite': nodefactor/nodematch (one-mode) and degree 
+    #(two-mode) term
+    #modes <- ifelse(nw %n% "bipartite", 2, 1)
+    #modes <- ifelse(length(unique)
     if (control$depend == TRUE) {
       if (class(x$fit) == "stergm") {
         nw <- network.collapse(nw, at = 1)
@@ -129,9 +132,9 @@ init_status.net <- function(dat) {
   # Variables ---------------------------------------------------------------
   tea.status <- dat$control$tea.status
   i.num <- dat$init$i.num
-  i.num.m2 <- dat$init$i.num.m2
+  i.num.g2 <- dat$init$i.num.g2
   r.num <- dat$init$r.num
-  r.num.m2 <- dat$init$r.num.m2
+  r.num.g2 <- dat$init$r.num.g2
 
   status.vector <- dat$init$status.vector
   num <- network.size(dat$nw)
@@ -159,12 +162,12 @@ init_status.net <- function(dat) {
       status <- rep("s", num)
       status[sample(which(mode == 1), size = i.num)] <- "i"
       if (modes == 2) {
-        status[sample(which(mode == 2), size = i.num.m2)] <- "i"
+        status[sample(which(mode == 2), size = i.num.g2)] <- "i"
       }
       if (type == "SIR"  && !is.null(type)) {
         status[sample(which(mode == 1 & status == "s"), size = r.num)] <- "r"
         if (modes == 2) {
-          status[sample(which(mode == 2 & status == "s"), size = r.num.m2)] <- "r"
+          status[sample(which(mode == 2 & status == "s"), size = r.num.g2)] <- "r"
         }
       }
     }

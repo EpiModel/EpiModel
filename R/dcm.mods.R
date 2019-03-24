@@ -130,11 +130,11 @@ mod_SI_2g_cl <- function(t, t0, parms) {
     # ODEs
     dSm1 <- -si.flow
     dIm1 <-  si.flow
-    dSm2 <- -si.flow.g2
-    dIm2 <-  si.flow.g2
+    d.g2 <- -si.flow.g2
+    d.g2 <-  si.flow.g2
 
     # Output
-    list(c(dSm1, dIm1, dSm2, dIm2,
+    list(c(dSm1, dIm1, d.g2, d.g2,
            si.flow, si.flow.g2),
          num = num.g1, num.g2 = num.g2)
   })
@@ -188,11 +188,11 @@ mod_SI_2g_op <- function(t, t0, parms) {
     # ODEs
     dSm1 <- -si.flow + a.flow - ds.flow
     dIm1 <-  si.flow - di.flow
-    dSm2 <- -si.flow.g2 + a.flow.g2 - ds.flow.g2
-    dIm2 <-  si.flow.g2 - di.flow.g2
+    d.g2 <- -si.flow.g2 + a.flow.g2 - ds.flow.g2
+    d.g2 <-  si.flow.g2 - di.flow.g2
 
     # Output
-    list(c(dSm1, dIm1, dSm2, dIm2,
+    list(c(dSm1, dIm1, d.g2, d.g2,
            si.flow, a.flow, ds.flow, di.flow,
            si.flow.g2, a.flow.g2, ds.flow.g2, di.flow.g2),
          num = num.g1,
@@ -311,12 +311,12 @@ mod_SIR_2g_cl <- function(t, t0, parms) {
     dSm1 <- -si.flow
     dIm1 <- si.flow - ir.flow
     dRm1 <- ir.flow
-    dSm2 <- -si.flow.g2
-    dIm2 <- si.flow.g2 - ir.flow.g2
-    dRm2 <- ir.flow.g2
+    d.g2 <- -si.flow.g2
+    d.g2 <- si.flow.g2 - ir.flow.g2
+    d.g2 <- ir.flow.g2
 
     # Output
-    list(c(dSm1, dIm1, dRm1, dSm2, dIm2, dRm2,
+    list(c(dSm1, dIm1, dRm1, d.g2, d.g2, d.g2,
            si.flow, ir.flow, si.flow.g2, ir.flow.g2),
          num = num.g1,
          num.g2 = num.g2)
@@ -376,12 +376,12 @@ mod_SIR_2g_op <- function(t, t0, parms) {
     dSm1 <- -si.flow + a.flow - ds.flow
     dIm1 <- si.flow - ir.flow - di.flow
     dRm1 <- ir.flow - dr.flow
-    dSm2 <- -si.flow.g2 + a.flow.g2 - ds.flow.g2
-    dIm2 <- si.flow.g2 - ir.flow.g2 - di.flow.g2
-    dRm2 <- ir.flow.g2 - dr.flow.g2
+    d.g2 <- -si.flow.g2 + a.flow.g2 - ds.flow.g2
+    d.g2 <- si.flow.g2 - ir.flow.g2 - di.flow.g2
+    d.g2 <- ir.flow.g2 - dr.flow.g2
 
     # Output
-    list(c(dSm1, dIm1, dRm1, dSm2, dIm2, dRm2,
+    list(c(dSm1, dIm1, dRm1, d.g2, d.g2, d.g2,
            si.flow, ir.flow, a.flow, ds.flow, di.flow, dr.flow,
            si.flow.g2, ir.flow.g2, a.flow.g2, ds.flow.g2,
            di.flow.g2, dr.flow.g2),
@@ -493,11 +493,11 @@ mod_SIS_2g_cl <- function(t, t0, parms) {
     # ODEs
     dSm1 <- -si.flow + is.flow
     dIm1 <-  si.flow - is.flow
-    dSm2 <- -si.flow.g2 + is.flow.g2
-    dIm2 <-  si.flow.g2 - is.flow.g2
+    d.g2 <- -si.flow.g2 + is.flow.g2
+    d.g2 <-  si.flow.g2 - is.flow.g2
 
     # Output
-    list(c(dSm1, dIm1, dSm2, dIm2,
+    list(c(dSm1, dIm1, d.g2, d.g2,
            si.flow, is.flow, si.flow.g2, is.flow.g2),
          num = num.g1, num.g2 = num.g2)
   })
@@ -553,11 +553,11 @@ mod_SIS_2g_op <- function(t, t0, parms) {
     # ODEs
     dSm1 <- -si.flow + is.flow + a.flow - ds.flow
     dIm1 <-  si.flow - is.flow - di.flow
-    dSm2 <- -si.flow.g2 + is.flow.g2 + a.flow.g2 - ds.flow.g2
-    dIm2 <-  si.flow.g2 - is.flow.g2 - di.flow.g2
+    d.g2 <- -si.flow.g2 + is.flow.g2 + a.flow.g2 - ds.flow.g2
+    d.g2 <-  si.flow.g2 - is.flow.g2 - di.flow.g2
 
     # Output
-    list(c(dSm1, dIm1, dSm2, dIm2,
+    list(c(dSm1, dIm1, d.g2, d.g2,
            si.flow, is.flow, a.flow, ds.flow, di.flow,
            si.flow.g2, is.flow.g2, a.flow.g2, ds.flow.g2, di.flow.g2),
          num = num.g1, num.g2 = num.g2)

@@ -48,8 +48,8 @@
 #' get_network(dx, collapse = TRUE, at = 5)
 #'
 #' # Parameterize the epidemic model, and simulate it
-#' param <- param.net(inf.prob = 0.3, inf.prob.m2 = 0.15)
-#' init <- init.net(i.num = 10, i.num.m2 = 10)
+#' param <- param.net(inf.prob = 0.3, inf.prob.g2 = 0.15)
+#' init <- init.net(i.num = 10, i.num.g2 = 10)
 #' control <- control.net(type = "SI", nsteps = 10, nsims = 3, verbose = FALSE)
 #' mod <- netsim(est, param, init, control)
 #'
@@ -147,8 +147,8 @@ get_network <- function(x, sim = 1, network = 1, collapse = FALSE, at) {
 #' target.stats <- 50
 #' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
 #' est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
-#' param <- param.net(inf.prob = 0.3, inf.prob.m2 = 0.15)
-#' init <- init.net(i.num = 10, i.num.m2 = 10)
+#' param <- param.net(inf.prob = 0.3, inf.prob.g2 = 0.15)
+#' init <- init.net(i.num = 10, i.num.g2 = 10)
 #' control <- control.net(type = "SI", nsteps = 10, nsims = 3, verbose = FALSE)
 #' mod <- netsim(est, param, init, control)
 #'
@@ -209,8 +209,8 @@ get_transmat <- function(x, sim = 1) {
 #' get_nwstats(dx, sim = 1)
 #'
 #' # SI epidemic model
-#' param <- param.net(inf.prob = 0.3, inf.prob.m2 = 0.15)
-#' init <- init.net(i.num = 10, i.num.m2 = 10)
+#' param <- param.net(inf.prob = 0.3, inf.prob.g2 = 0.15)
+#' init <- init.net(i.num = 10, i.num.g2 = 10)
 #' control <- control.net(type = "SI", nsteps = 10, nsims = 3,
 #'                        nwstats.formula = ~edges + meandeg + degree(0:5),
 #'                        verbose = FALSE)
@@ -339,10 +339,10 @@ get_nwparam <- function(x, network = 1) {
 #' mod1 <- netsim(est1, param, init, control)
 #'
 #' # Get sim 2
-#' sim2 <- get_sims(mod1, sims = 2)
+#' s.g2 <- get_sims(mod1, sims = 2)
 #'
 #' # Get sims 2 and 3 and keep only a subset of variables
-#' sim2.small <- get_sims(mod1, sims = 2:3, var = c("i.num", "si.flow"))
+#' s.g2.small <- get_sims(mod1, sims = 2:3, var = c("i.num", "si.flow"))
 #'
 #' # Extract the mean simulation for the variable i.num
 #' sim.mean <- get_sims(mod1, sims = "mean", var = "i.num")

@@ -8,20 +8,20 @@ test_that("mutate_epi.netsim", {
   est1 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 
   # Epidemic model
-  param <- param.net(inf.prob = 0.3, inf.prob.m2 = 0.15)
-  init <- init.net(i.num = 1, i.num.m2 = 0)
+  param <- param.net(inf.prob = 0.3, inf.prob.g2 = 0.15)
+  init <- init.net(i.num = 1, i.num.g2 = 0)
   control <- control.net(type = "SI", nsteps = 10, nsims = 2,
                          verbose = FALSE)
   mod1 <- netsim(est1, param, init, control)
 
   mod1 <- mutate_epi(mod1, i.prev = i.num / num,
-                     i.prev.m2 = i.num.m2 / num.m2)
-  expect_equal(names(mod1$epi), c("s.num", "i.num", "num", "s.num.m2", "i.num.m2", "num.m2",
-                                  "si.flow", "si.flow.m2", "i.prev", "i.prev.m2"))
+                     i.prev.g2 = i.num.g2 / num.g2)
+  expect_equal(names(mod1$epi), c("s.num", "i.num", "num", "s.num.g2", "i.num.g2", "num.g2",
+                                  "si.flow", "si.flow.g2", "i.prev", "i.prev.g2"))
 
   # Add incidence rate per 100 person years (assume time step = 1 week)
-  mod1 <- mutate_epi(mod1, ir100 = 5200*(si.flow + si.flow.m2) /
-                       (s.num + s.num.m2))
+  mod1 <- mutate_epi(mod1, ir100 = 5200*(si.flow + si.flow.g2) /
+                       (s.num + s.num.g2))
   df <- as.data.frame(mod1)
   expect_true("ir100" %in% names(df))
 })

@@ -145,9 +145,9 @@ init.icm <- function(s.num, i.num, r.num,
 #' @param r.num Number of initial recovered. For bipartite models, this is the
 #'        number of initial mode 1 recovered. This parameter is only used for
 #'        the \code{SIR} model type.
-#' @param i.num.m2 Number of initial infected in mode 2. This parameter is only
+#' @param i.num.g2 Number of initial infected in mode 2. This parameter is only
 #'        used for bipartite models.
-#' @param r.num.m2 Number of initial recovered in mode 2. This parameter is
+#' @param r.num.g2 Number of initial recovered in mode 2. This parameter is
 #'        only used for bipartite \code{SIR} models.
 #' @param status.vector A vector of length equal to the size of the input network,
 #'        containing the status of each node. Setting status here overrides any
@@ -184,7 +184,7 @@ init.icm <- function(s.num, i.num, r.num,
 #'
 #' init.net(status.vector = status, infTime.vector = infTime)
 #'
-init.net <- function(i.num, r.num, i.num.m2, r.num.m2,
+init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
                      status.vector, infTime.vector, ...) {
 
   # Get arguments
