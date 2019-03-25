@@ -31,7 +31,8 @@ initialize.net <- function(x, param, init, control, s) {
     # Network Simulation ------------------------------------------------------
     nw <- simulate(x$fit, basis = x$fit$newnetwork,
                    control = control$set.control.ergm)
-    modes <- ifelse(nw %n% "bipartite", 2, 1)
+    #modes <- ifelse(nw %n% "bipartite", 2, 1)
+    modes <- length(unique(get.vertex.attribute(x$nw, "group")))
     if (control$depend == TRUE) {
       if (class(x$fit) == "stergm") {
         nw <- network.collapse(nw, at = 1)

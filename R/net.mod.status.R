@@ -187,12 +187,13 @@ infection.net <- function(dat, at) {
 #' @seealso \code{\link{discord_edgelist}} is used within \code{infection.net}
 #' to obtain a discordant edgelist.
 #'
-infection.net.bip <- function(dat, at) {
+infection.net.grp <- function(dat, at) {
 
   # Variables ---------------------------------------------------------------
   active <- dat$attr$active
   status <- dat$attr$status
-  mode <- idmode(dat$nw)
+  #mode <- idmode(dat$nw)
+  mode <- get.vertex.attribute(nw, "group")
 
   inf.prob <- dat$param$inf.prob
   inf.prob.m2 <- dat$param$inf.prob.m2
@@ -469,7 +470,7 @@ recovery.net <- function(dat, at) {
 #' @export
 #' @keywords internal
 #'
-recovery.net.bip <- function(dat, at) {
+recovery.net.grp <- function(dat, at) {
 
   ## Only run with SIR/SIS
   if (!(dat$control$type %in% c("SIR", "SIS"))) {
@@ -482,7 +483,8 @@ recovery.net.bip <- function(dat, at) {
   infTime <- dat$attr$infTime
   tea.status <- dat$control$tea.status
   
-  mode <- idmode(dat$nw)
+  #mode <- idmode(dat$nw)
+  mode <- get.vertex.attribute(nw, "group")
    
   type <- dat$control$type
   recovState <- ifelse(type == "SIR", "r", "s")

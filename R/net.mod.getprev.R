@@ -120,7 +120,7 @@ get_prev.net <- function(dat, at) {
 #' @export
 #' @keywords netUtils internal
 #'
-get_prev.net.bip <- function(dat, at) {
+get_prev.net.grp <- function(dat, at) {
 
   active <- dat$attr$active
 
@@ -130,8 +130,8 @@ get_prev.net.bip <- function(dat, at) {
   l$active <- l$infTime <- NULL
 
   status <- l$status
-  mode <- idmode(dat$nw)[active == 1]
-
+  #mode <- idmode(dat$nw)[active == 1]
+  mode <- get.vertex.attribute(nw, "group")[active == 1]
 
   ## Subsetting for epi.by control
   eb <- !is.null(dat$control$epi.by)

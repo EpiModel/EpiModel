@@ -27,10 +27,10 @@ set.seed(12345)
 
 ## Initialize the network
 nw <- network::network.initialize(n = 1000, directed = FALSE)
-nw <- network::set.vertex.attribute(nw, "risk", rep(0:1, each = 500))
+nw <- network::set.vertex.attribute(nw, "group", rep(1:2, each = 500))
 
 ## ERGM formation formula
-formation <- ~ edges + nodefactor("risk") + nodematch("risk") + concurrent
+formation <- ~ edges + nodefactor("group") + nodematch("group") + concurrent
 
 ## Target statistics for formula
 target.stats <- c(250, 375, 225, 100)
@@ -97,9 +97,10 @@ set.seed(12345)
 
 ## Initial the network
 num.m1 <- num.m2 <- 500
-nw <- network::network.initialize(num.m1 + num.m2,
-                                  bipartite = num.m1, directed = FALSE)
-
+#nw <- network::network.initialize(num.m1 + num.m2,
+#                                  bipartite = num.m1, directed = FALSE)
+nw <- network::network.initialize(n = num.m1 + num.m2, directed = FALSE)
+nw <- network::set.vertex.attribute(nw, "group", rep(1:2, each = 500))
 ## Enter the sex-specific degree distributions
 deg.dist.m1 <- c(0.40, 0.55, 0.04, 0.01)
 deg.dist.m2 <- c(0.48, 0.41, 0.08, 0.03)
@@ -108,7 +109,8 @@ deg.dist.m2 <- c(0.48, 0.41, 0.08, 0.03)
 check_bip_degdist(num.m1, num.m2, deg.dist.m1, deg.dist.m2)
 
 ## Enter the formation model for the ERGM
-formation <- ~ edges + b1degree(0:1) + b2degree(0:1)
+#formation <- ~ edges + b1degree(0:1) + b2degree(0:1)
+formation <- ~ edges + nodefactor("group") + nodematch("group") + concurrent
 
 ## Target statistics for the formation model
 target.stats <- c(330, 200, 275, 240, 205)

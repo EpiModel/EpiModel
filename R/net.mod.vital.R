@@ -230,7 +230,7 @@ arrivals.net <- function(dat, at) {
 #' @export
 #' @keywords netMod internal
 #'
-departures.net.bip <- function(dat, at) {
+departures.net.grp <- function(dat, at) {
 
   # Conditions --------------------------------------------------------------
   if (dat$param$vital == FALSE) {
@@ -238,7 +238,8 @@ departures.net.bip <- function(dat, at) {
   }
 
   # Variables ---------------------------------------------------------------
-  mode <- idmode(dat$nw)
+  #mode <- idmode(dat$nw)
+  mode <- get.vertex.attribute(nw, "group")
   type <- dat$control$type
 
   # Susceptible departures ------------------------------------------------------
@@ -355,7 +356,7 @@ departures.net.bip <- function(dat, at) {
 #' @export
 #' @keywords netMod internal
 #'
-arrivals.net.bip <- function(dat, at) {
+arrivals.net.grp <- function(dat, at) {
   
   # Conditions --------------------------------------------------------------
   if (dat$param$vital == FALSE) {
