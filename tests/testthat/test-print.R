@@ -46,15 +46,15 @@ test_that("print.netsim", {
   target.stats <- 50
   coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
   est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
-  param <- param.net(inf.prob = 0.3, inf.prob.m2 = 0.15)
-  init <- init.net(i.num = 10, i.num.m2 = 10)
+  param <- param.net(inf.prob = 0.3, inf.prob.g2 = 0.15)
+  init <- init.net(i.num = 10, i.num.g2 = 10)
   control <- control.net(type = "SI", nsteps = 10, nsims = 1, verbose = FALSE)
   mod <- netsim(est, param, init, control)
   expect_output(print(mod), "EpiModel Simulation")
   expect_output(print(mod), "Model class: netsim")
   expect_output(print(mod), "Model type: SI")
   expect_output(print(mod), "No. NW modes: 2")
-  expect_output(print(mod), "Variables: s.num i.num num s.num.m2 i.num.m2 num.m2")
+  expect_output(print(mod), "Variables: s.num i.num num s.num.g2 i.num.g2 num.g2")
 })
 
 test_that("print.disscoefs", {
@@ -106,10 +106,13 @@ test_that("print.init", {
 test_that("print.control", {
   co <- control.dcm(type = "SI", nsteps = 10)
   expect_output(print(co), "DCM Control Settings")
+  expect_output(print(co), "odemethod = rk4")
 
   co <- control.icm(type = "SI", nsteps = 10)
   expect_output(print(co), "ICM Control Settings")
+  expect_output(print(co), "Base Modules: initialize.FUN")
 
   co <- control.net(type = "SI", nsteps = 10)
   expect_output(print(co), "Network Model Control Settings")
+  expect_output(print(co), "Base Modules: initialize.FUN")
 })

@@ -4,7 +4,7 @@
 \alias{init.net}
 \title{Initial Conditions for Stochastic Network Models}
 \usage{
-init.net(i.num, r.num, i.num.m2, r.num.m2, status.vector, infTime.vector,
+init.net(i.num, r.num, i.num.g2, r.num.g2, status.vector, infTime.vector,
   ...)
 }
 \arguments{
@@ -15,10 +15,10 @@ number of initial mode 1 infected.}
 number of initial mode 1 recovered. This parameter is only used for
 the \code{SIR} model type.}
 
-\item{i.num.m2}{Number of initial infected in mode 2. This parameter is only
+\item{i.num.g2}{Number of initial infected in mode 2. This parameter is only
 used for bipartite models.}
 
-\item{r.num.m2}{Number of initial recovered in mode 2. This parameter is
+\item{r.num.g2}{Number of initial recovered in mode 2. This parameter is
 only used for bipartite \code{SIR} models.}
 
 \item{status.vector}{A vector of length equal to the size of the input network,

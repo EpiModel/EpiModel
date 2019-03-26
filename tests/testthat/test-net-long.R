@@ -344,8 +344,8 @@ test_that("edges bipartite models", {
   expect_is(est5, "netest")
 
   ## "SI, 2M, CL: 2 sim"
-  param <- param.net(inf.prob = 0.5, inf.prob.m2 = 0.1)
-  init <- init.net(i.num = 10, i.num.m2 = 0)
+  param <- param.net(inf.prob = 0.5, inf.prob.g2 = 0.1)
+  init <- init.net(i.num = 10, i.num.g2 = 0)
   control <- control.net(type = "SI", nsims = 2, nsteps = 25,
                          verbose = FALSE, tea.status = FALSE)
   x <- netsim(est5, param, init, control)
@@ -363,10 +363,10 @@ test_that("edges bipartite models", {
   rm(x)
 
   ## "SIR, 2M, CL: 2 sim"
-  param <- param.net(inf.prob = 0.5, inf.prob.m2 = 0.1,
-                     rec.rate = 0.1, rec.rate.m2 = 0.1)
-  init <- init.net(i.num = 10, i.num.m2 = 10,
-                   r.num = 0, r.num.m2 = 0)
+  param <- param.net(inf.prob = 0.5, inf.prob.g2 = 0.1,
+                     rec.rate = 0.1, rec.rate.g2 = 0.1)
+  init <- init.net(i.num = 10, i.num.g2 = 10,
+                   r.num = 0, r.num.g2 = 0)
   control <- control.net(type = "SIR", nsims = 2, nsteps = 25,
                          verbose = FALSE, tea.status = FALSE)
   x <- netsim(est5, param, init, control)
@@ -381,15 +381,15 @@ test_that("edges bipartite models", {
   rm(x)
 
   ## "SIR, 2M, CL: rec.rate = 0"
-  param <- param.net(inf.prob = 0.5, inf.prob.m2 = 0.25,
-                     rec.rate = 0, rec.rate.m2 = 0, act.rate = 2)
-  init <- init.net(i.num = 10, i.num.m2 = 10,
-                   r.num = 0, r.num.m2 = 0)
+  param <- param.net(inf.prob = 0.5, inf.prob.g2 = 0.25,
+                     rec.rate = 0, rec.rate.g2 = 0, act.rate = 2)
+  init <- init.net(i.num = 10, i.num.g2 = 10,
+                   r.num = 0, r.num.g2 = 0)
   control <- control.net(type = "SIR", nsteps = 10, nsims = 2,
                          verbose = FALSE, tea.status = FALSE)
   x <- netsim(est5, param, init, control)
   expect_equal(max(x$epi$ir.flow), 0)
-  expect_equal(max(x$epi$ir.flow.m2), 0)
+  expect_equal(max(x$epi$ir.flow.g2), 0)
   expect_output(summary(x, at = 10), "EpiModel Summary")
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
@@ -398,9 +398,9 @@ test_that("edges bipartite models", {
   rm(x)
 
   ## "SIS, 2M, CL: 2 sim"
-  param <- param.net(inf.prob = 0.5, inf.prob.m2 = 0.25,
-                     rec.rate = 0.01, rec.rate.m2 = 0.01)
-  init <- init.net(i.num = 10, i.num.m2 = 10)
+  param <- param.net(inf.prob = 0.5, inf.prob.g2 = 0.25,
+                     rec.rate = 0.01, rec.rate.g2 = 0.01)
+  init <- init.net(i.num = 10, i.num.g2 = 10)
   control <- control.net(type = "SIS", nsims = 2, nsteps = 25,
                          tea.status = FALSE, verbose = FALSE)
   x <- netsim(est5, param, init, control)
@@ -415,14 +415,14 @@ test_that("edges bipartite models", {
   rm(x)
 
   ## "SIS, 2M, CL: rec.rate = 0"
-  param <- param.net(inf.prob = 0.5, inf.prob.m2 = 0.25,
-                     rec.rate = 0, rec.rate.m2 = 0, act.rate = 2)
-  init <- init.net(i.num = 10, i.num.m2 = 10)
+  param <- param.net(inf.prob = 0.5, inf.prob.g2 = 0.25,
+                     rec.rate = 0, rec.rate.g2 = 0, act.rate = 2)
+  init <- init.net(i.num = 10, i.num.g2 = 10)
   control <- control.net(type = "SIS", nsteps = 10, nsims = 2,
                          verbose = FALSE, tea.status = FALSE)
   x <- netsim(est5, param, init, control)
   expect_equal(max(x$epi$is.flow), 0)
-  expect_equal(max(x$epi$is.flow.m2), 0)
+  expect_equal(max(x$epi$is.flow.g2), 0)
   expect_output(summary(x, at = 10), "EpiModel Summary")
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
@@ -589,10 +589,10 @@ test_that("Open-population bipartite models", {
                      edapprox = TRUE, verbose = FALSE)
 
   ## "SI, 2M, OP: 1 sim"
-  param <- param.net(inf.prob = 0.5, inf.prob.m2 = 0.1, act.rate = 2,
+  param <- param.net(inf.prob = 0.5, inf.prob.g2 = 0.1, act.rate = 2,
                      a.rate = 0.02, ds.rate = 0.02, di.rate = 0.02,
-                     a.rate.m2 = 0.02, ds.rate.m2 = 0.02, di.rate.m2 = 0.02)
-  init <- init.net(i.num = 10, i.num.m2 = 10)
+                     a.rate.g2 = 0.02, ds.rate.g2 = 0.02, di.rate.g2 = 0.02)
+  init <- init.net(i.num = 10, i.num.g2 = 10)
   control <- control.net(type = "SI", nsteps = 10, nsims = 1,
                          verbose = FALSE, tea.status = FALSE)
   x <- netsim(est5.vit, param, init, control)
@@ -607,10 +607,10 @@ test_that("Open-population bipartite models", {
   rm(x)
 
   ## "SI, 2M, OP, deterministic arrivals and departures: 1 sim"
-  param <- param.net(inf.prob = 0.5, inf.prob.m2 = 0.1, act.rate = 2,
+  param <- param.net(inf.prob = 0.5, inf.prob.g2 = 0.1, act.rate = 2,
                      a.rate = 0.02, ds.rate = 0.02, di.rate = 0.02,
-                     a.rate.m2 = 0.02, ds.rate.m2 = 0.02, di.rate.m2 = 0.02)
-  init <- init.net(i.num = 10, i.num.m2 = 10)
+                     a.rate.g2 = 0.02, ds.rate.g2 = 0.02, di.rate.g2 = 0.02)
+  init <- init.net(i.num = 10, i.num.g2 = 10)
   control <- control.net(type = "SI", nsteps = 25, nsims = 1,
                          verbose = FALSE, tea.status = FALSE,
                          a.rand = FALSE, d.rand = FALSE)
@@ -623,10 +623,10 @@ test_that("Open-population bipartite models", {
   rm(x)
 
   ## "SI, 2M, OP: 2 sim"
-  param <- param.net(inf.prob = 0.5, inf.prob.m2 = 0.1, act.rate = 2,
+  param <- param.net(inf.prob = 0.5, inf.prob.g2 = 0.1, act.rate = 2,
                      a.rate = 0.02, ds.rate = 0.02, di.rate = 0.02,
-                     a.rate.m2 = 0.02, ds.rate.m2 = 0.02, di.rate.m2 = 0.02)
-  init <- init.net(i.num = 10, i.num.m2 = 10)
+                     a.rate.g2 = 0.02, ds.rate.g2 = 0.02, di.rate.g2 = 0.02)
+  init <- init.net(i.num = 10, i.num.g2 = 10)
   control <- control.net(type = "SI", nsteps = 10, nsims = 2,
                          verbose = FALSE, tea.status = FALSE)
   x <- netsim(est5.vit, param, init, control)
@@ -641,13 +641,13 @@ test_that("Open-population bipartite models", {
   rm(x)
 
   ## "SIR, 2M, OP: 1 sim"
-  param <- param.net(inf.prob = 0.5, inf.prob.m2 = 0.1, rec.rate = 0.1,
-                     rec.rate.m2 = 0.1, act.rate = 2, a.rate = 0.02,
-                     a.rate.m2 = NA, ds.rate = 0.02, ds.rate.m2 = 0.02,
-                     di.rate = 0.02, di.rate.m2 = 0.02, dr.rate = 0.02,
-                     dr.rate.m2 = 0.02)
-  init <- init.net(i.num = 10, i.num.m2 = 0,
-                   r.num = 0, r.num.m2 = 10)
+  param <- param.net(inf.prob = 0.5, inf.prob.g2 = 0.1, rec.rate = 0.1,
+                     rec.rate.g2 = 0.1, act.rate = 2, a.rate = 0.02,
+                     a.rate.g2 = NA, ds.rate = 0.02, ds.rate.g2 = 0.02,
+                     di.rate = 0.02, di.rate.g2 = 0.02, dr.rate = 0.02,
+                     dr.rate.g2 = 0.02)
+  init <- init.net(i.num = 10, i.num.g2 = 0,
+                   r.num = 0, r.num.g2 = 10)
   control <- control.net(type = "SIR", nsteps = 10, nsims = 1,
                          verbose = FALSE, tea.status = FALSE)
   x <- netsim(est5.vit, param, init, control)
@@ -663,13 +663,13 @@ test_that("Open-population bipartite models", {
 
 
   ## "SIR, 2M, OP, deterministic arrivals, departures, and recoveries: 1 sim"
-  param <- param.net(inf.prob = 0.5, inf.prob.m2 = 0.1, rec.rate = 0.1,
-                     rec.rate.m2 = 0.1, act.rate = 2, a.rate = 0.02,
-                     a.rate.m2 = NA, ds.rate = 0.02, ds.rate.m2 = 0.02,
-                     di.rate = 0.02, di.rate.m2 = 0.02, dr.rate = 0.02,
-                     dr.rate.m2 = 0.02)
-  init <- init.net(i.num = 10, i.num.m2 = 0,
-                   r.num = 0, r.num.m2 = 10)
+  param <- param.net(inf.prob = 0.5, inf.prob.g2 = 0.1, rec.rate = 0.1,
+                     rec.rate.g2 = 0.1, act.rate = 2, a.rate = 0.02,
+                     a.rate.g2 = NA, ds.rate = 0.02, ds.rate.g2 = 0.02,
+                     di.rate = 0.02, di.rate.g2 = 0.02, dr.rate = 0.02,
+                     dr.rate.g2 = 0.02)
+  init <- init.net(i.num = 10, i.num.g2 = 0,
+                   r.num = 0, r.num.g2 = 10)
   control <- control.net(type = "SIR", nsteps = 10, nsims = 1,
                          verbose = FALSE, tea.status = FALSE,
                          a.rand = FALSE, d.rand = FALSE, rec.rand = FALSE)
@@ -708,10 +708,10 @@ test_that("Extinction open-population models", {
                 edapprox = TRUE, verbose = FALSE)
 
   ## "netsim: 2M, ds.rate = 0.5"
-  param <- param.net(inf.prob = 0.1, inf.prob.m2 = 0.1, act.rate = 2,
+  param <- param.net(inf.prob = 0.1, inf.prob.g2 = 0.1, act.rate = 2,
                      a.rate = 0.02, ds.rate = 0.5, di.rate = 0.5,
-                     a.rate.m2 = 0.02, ds.rate.m2 = 0.02, di.rate.m2 = 0.02)
-  init <- init.net(i.num = 1, i.num.m2 = 0)
+                     a.rate.g2 = 0.02, ds.rate.g2 = 0.02, di.rate.g2 = 0.02)
+  init <- init.net(i.num = 1, i.num.g2 = 0)
   control <- control.net(type = "SI", nsteps = 30, nsims = 1,
                          tea.status = FALSE, verbose = FALSE)
   x <- netsim(est, param, init, control)
@@ -722,11 +722,11 @@ test_that("Extinction open-population models", {
   test_net(x)
   rm(x)
 
-  ## "netsim: 2M, ds.rate.m2 = 0.5"
-  param <- param.net(inf.prob = 0.1, inf.prob.m2 = 0.1, act.rate = 2,
+  ## "netsim: 2M, ds.rate.g2 = 0.5"
+  param <- param.net(inf.prob = 0.1, inf.prob.g2 = 0.1, act.rate = 2,
                      a.rate = 0.02, ds.rate = 0.02, di.rate = 0.02,
-                     a.rate.m2 = 0.02, ds.rate.m2 = 0.5, di.rate.m2 = 0.5)
-  init <- init.net(i.num = 1, i.num.m2 = 0)
+                     a.rate.g2 = 0.02, ds.rate.g2 = 0.5, di.rate.g2 = 0.5)
+  init <- init.net(i.num = 1, i.num.g2 = 0)
   control <- control.net(type = "SI", nsteps = 30, nsims = 1,
                          tea.status = FALSE, verbose = FALSE)
   x <- netsim(est, param, init, control)

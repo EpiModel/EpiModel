@@ -136,22 +136,22 @@ test_that("bipvals", {
 })
 
 test_that("check_bip_degdist", {
-  expect_output(check_bip_degdist(num.m1 = 500, num.m2 = 500,
-                                  deg.dist.m2 = c(0.40, 0.55, 0.03, 0.02),
-                                  deg.dist.m1 = c(0.48, 0.41, 0.08, 0.03)),
+  expect_output(check_bip_degdist(num.g1 = 500, num.g2 = 500,
+                                  deg.dist.g2 = c(0.40, 0.55, 0.03, 0.02),
+                                  deg.dist.g1 = c(0.48, 0.41, 0.08, 0.03)),
                 "-0.015 Rel Diff")
-  expect_output(check_bip_degdist(num.m1 = 500, num.m2 = 500,
-                                  deg.dist.m1 = c(0.40, 0.55, 0.04, 0.01),
-                                  deg.dist.m2 = c(0.48, 0.41, 0.08, 0.03)),
+  expect_output(check_bip_degdist(num.g1 = 500, num.g2 = 500,
+                                  deg.dist.g1 = c(0.40, 0.55, 0.04, 0.01),
+                                  deg.dist.g2 = c(0.48, 0.41, 0.08, 0.03)),
                 "Edges balanced")
-  expect_output(check_bip_degdist(num.m1 = 500, num.m2 = 500,
-                                  deg.dist.m1 = c(0.45, 0.55, 0.04, 0.01),
-                                  deg.dist.m2 = c(0.48, 0.41, 0.08, 0.03)),
-                "deg.dist.m1 TOTAL != 1")
-  expect_output(check_bip_degdist(num.m1 = 500, num.m2 = 500,
-                                  deg.dist.m1 = c(0.40, 0.55, 0.04, 0.01),
-                                  deg.dist.m2 = c(0.55, 0.41, 0.08, 0.03)),
-                "deg.dist.m2 TOTAL != 1")
+  expect_output(check_bip_degdist(num.g1 = 500, num.g2 = 500,
+                                  deg.dist.g1 = c(0.45, 0.55, 0.04, 0.01),
+                                  deg.dist.g2 = c(0.48, 0.41, 0.08, 0.03)),
+                "deg.dist.g1 TOTAL != 1")
+  expect_output(check_bip_degdist(num.g1 = 500, num.g2 = 500,
+                                  deg.dist.g1 = c(0.40, 0.55, 0.04, 0.01),
+                                  deg.dist.g2 = c(0.55, 0.41, 0.08, 0.03)),
+                "deg.dist.g2 TOTAL != 1")
 })
 
 test_that("edgelist_censor", {
@@ -233,10 +233,6 @@ in language",{
   temp <- function(x){x=x; return(x)}
   expect_that(control.icm(type="SI",nsteps=10,births.FUN=temp), shows_message("EpiModel 1.7.0 onward renamed the birth function births.FUN to arrivals.FUN. See documentation for details."))
   expect_that(control.icm(type="SI",nsteps=10,deaths.FUN=temp), shows_message("EpiModel 1.7.0 onward renamed the death function deaths.FUN to departures.FUN. See documentation for details."))
-  expect_that(control.net(type=NULL,nsteps=10,births.FUN=temp, departures.FUN = departures.net,
-                          infection.FUN = infection.net, recovery.FUN = recovery.net,
-                          get_prev.FUN = get_prev.net), shows_message("EpiModel 1.7.0 onward renamed the birth function births.FUN to arrivals.FUN. See documentation for details."))
-  expect_that(control.net(type=NULL,nsteps=10,deaths.FUN=temp, arrivals.FUN = arrivals.net,
-                          infection.FUN = infection.net, recovery.FUN = recovery.net,
-                          get_prev.FUN = get_prev.net), shows_message("EpiModel 1.7.0 onward renamed the death function deaths.FUN to departures.FUN. See documentation for details."))
+  expect_that(control.net(type="SI",nsteps=10,births.FUN=temp), shows_message("EpiModel 1.7.0 onward renamed the birth function births.FUN to arrivals.FUN. See documentation for details."))
+  expect_that(control.net(type="SI",nsteps=10,deaths.FUN=temp), shows_message("EpiModel 1.7.0 onward renamed the death function deaths.FUN to departures.FUN. See documentation for details."))
 })

@@ -234,8 +234,8 @@ ssample <- function(x, size, replace = FALSE, prob = NULL) {
 #' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
 #' est1 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 #'
-#' param <- param.net(inf.prob = 0.3, inf.prob.m2 = 0.15)
-#' init <- init.net(i.num = 1, i.num.m2 = 0)
+#' param <- param.net(inf.prob = 0.3, inf.prob.g2 = 0.15)
+#' init <- init.net(i.num = 1, i.num.g2 = 0)
 #' control <- control.net(type = "SI", nsteps = 10, nsims = 3,
 #'                        verbose = FALSE)
 #' mod1 <- netsim(est1, param, init, control)
@@ -243,12 +243,12 @@ ssample <- function(x, size, replace = FALSE, prob = NULL) {
 #'
 #' # Add the prevalences to the dataset
 #' mod1 <- mutate_epi(mod1, i.prev = i.num / num,
-#'                          i.prev.m2 = i.num.m2 / num.m2)
-#' plot(mod1, y = c("i.prev", "i.prev.m2"), qnts = 0.5, legend = TRUE)
+#'                          i.prev.g2 = i.num.g2 / num.g2)
+#' plot(mod1, y = c("i.prev", "i.prev.g2"), qnts = 0.5, legend = TRUE)
 #'
 #' # Add incidence rate per 100 person years (assume time step = 1 week)
-#' mod1 <- mutate_epi(mod1, ir100 = 5200*(si.flow + si.flow.m2) /
-#'                                       (s.num + s.num.m2))
+#' mod1 <- mutate_epi(mod1, ir100 = 5200*(si.flow + si.flow.g2) /
+#'                                       (s.num + s.num.g2))
 #' as.data.frame(mod1)
 #' as.data.frame(mod1, out = "mean")
 #'

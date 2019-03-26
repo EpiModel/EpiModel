@@ -63,7 +63,7 @@ param <- param.net(inf.prob = 0.1, act.rate = 5, rec.rate = 0.02)
 
 ## Set the controls
 control <- control.net(type = "SIS", nsteps = 500,
-                       nsims = 10, epi.by = "risk")
+                       nsims = 10, epi.by = "group")
 
 ## Simulate the epidemic model
 sim1 <- netsim(est1, param, init, control)

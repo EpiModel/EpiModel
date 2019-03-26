@@ -35,8 +35,8 @@ get_nwstats(dx)
 get_nwstats(dx, sim = 1)
 
 # SI epidemic model
-param <- param.net(inf.prob = 0.3, inf.prob.m2 = 0.15)
-init <- init.net(i.num = 10, i.num.m2 = 10)
+param <- param.net(inf.prob = 0.3, inf.prob.g2 = 0.15)
+init <- init.net(i.num = 10, i.num.g2 = 10)
 control <- control.net(type = "SI", nsteps = 10, nsims = 3,
                        nwstats.formula = ~edges + meandeg + degree(0:5),
                        verbose = FALSE)

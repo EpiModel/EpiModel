@@ -183,8 +183,8 @@ coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
 est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 
 # Simulate the epidemic model
-param <- param.net(inf.prob = 0.3, inf.prob.m2 = 0.15)
-init <- init.net(i.num = 10, i.num.m2 = 10)
+param <- param.net(inf.prob = 0.3, inf.prob.g2 = 0.15)
+init <- init.net(i.num = 10, i.num.g2 = 10)
 control <- control.net(type = "SI", nsteps = 20, nsims = 3,
                        verbose = FALSE, save.nwstats = TRUE,
                        nwstats.formula = ~edges + meandeg + concurrent)

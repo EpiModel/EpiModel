@@ -37,10 +37,10 @@ test_that("PIDs for bipartite models", {
                                  d.rate = 0.01)
   est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 
-  param <- param.net(inf.prob = 0.1, inf.prob.m2 = 0.1,
+  param <- param.net(inf.prob = 0.1, inf.prob.g2 = 0.1,
                      a.rate = 0.01, ds.rate = 0.01, di.rate = 0.01,
-                     a.rate.m2 = 0.01, ds.rate.m2 = 0.01, di.rate.m2 = 0.01)
-  init <- init.net(i.num = 10, i.num.m2 = 10)
+                     a.rate.g2 = 0.01, ds.rate.g2 = 0.01, di.rate.g2 = 0.01)
+  init <- init.net(i.num = 10, i.num.g2 = 10)
 
   # Use pids
   control <- control.net(type = "SI", nsteps = 10, verbose = FALSE,

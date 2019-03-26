@@ -56,8 +56,8 @@ get_network(dx, sim = 2)
 get_network(dx, collapse = TRUE, at = 5)
 
 # Parameterize the epidemic model, and simulate it
-param <- param.net(inf.prob = 0.3, inf.prob.m2 = 0.15)
-init <- init.net(i.num = 10, i.num.m2 = 10)
+param <- param.net(inf.prob = 0.3, inf.prob.g2 = 0.15)
+init <- init.net(i.num = 10, i.num.g2 = 10)
 control <- control.net(type = "SI", nsteps = 10, nsims = 3, verbose = FALSE)
 mod <- netsim(est, param, init, control)
 

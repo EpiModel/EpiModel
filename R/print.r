@@ -125,7 +125,7 @@ print.netsim <- function(x, ...) {
     simnames <- "sim1"
   }
   if (nsims == 2) {
-    simnames <- "sim1 sim2"
+    simnames <- "sim1 s.g2"
   }
   if (nsims > 2) {
     simnames <- paste0("sim1 ... sim", nsims)

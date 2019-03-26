@@ -76,8 +76,8 @@ coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
 est1 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 
 # Epidemic model
-param <- param.net(inf.prob = 0.3, inf.prob.m2 = 0.15)
-init <- init.net(i.num = 10, i.num.m2 = 10)
+param <- param.net(inf.prob = 0.3, inf.prob.g2 = 0.15)
+init <- init.net(i.num = 10, i.num.g2 = 10)
 control <- control.net(type = "SI", nsteps = 100, nsims = 5, verbose.int = 0)
 mod1 <- netsim(est1, param, init, control)
 
@@ -95,14 +95,14 @@ coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20,
 est2 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 
 # Reset parameters to include demographic rates
-param <- param.net(inf.prob = 0.3, inf.prob.m2 = 0.15,
-                   rec.rate = 0.02, rec.rate.m2 = 0.02,
-                   a.rate = 0.002, a.rate.m2 = NA,
-                   ds.rate = 0.001, ds.rate.m2 = 0.001,
-                   di.rate = 0.001, di.rate.m2 = 0.001,
-                   dr.rate = 0.001, dr.rate.m2 = 0.001)
-init <- init.net(i.num = 10, i.num.m2 = 10,
-                 r.num = 0, r.num.m2 = 0)
+param <- param.net(inf.prob = 0.3, inf.prob.g2 = 0.15,
+                   rec.rate = 0.02, rec.rate.g2 = 0.02,
+                   a.rate = 0.002, a.rate.g2 = NA,
+                   ds.rate = 0.001, ds.rate.g2 = 0.001,
+                   di.rate = 0.001, di.rate.g2 = 0.001,
+                   dr.rate = 0.001, dr.rate.g2 = 0.001)
+init <- init.net(i.num = 10, i.num.g2 = 10,
+                 r.num = 0, r.num.g2 = 0)
 control <- control.net(type = "SIR", nsteps = 100, nsims = 5)
 
 # Simulate the model with new network fit

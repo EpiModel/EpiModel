@@ -125,10 +125,10 @@ calc_eql <- function(x, numer = "i.num", denom = "num",
 #'              of a bipartite network in which the mode size and mode-specific
 #'              degree distributions are specified.
 #'
-#' @param num.m1 Number of nodes in mode 1.
-#' @param num.m2 Number of nodes in mode 2.
-#' @param deg.dist.m1 Vector with fractional degree distribution for mode 1.
-#' @param deg.dist.m2 Vector with fractional degree distribution for mode 2.
+#' @param num Number of nodes in mode 1.
+#' @param num.g2 Number of nodes in mode 2.
+#' @param deg.dist.g1 Vector with fractional degree distribution for mode 1.
+#' @param deg.dist.g2 Vector with fractional degree distribution for mode 2.
 #'
 #' @details
 #' This function outputs the number of nodes of degree 0 to m, where m is the
@@ -147,42 +147,42 @@ calc_eql <- function(x, numer = "i.num", denom = "num",
 #'
 #' @examples
 #' # An imbalanced distribution
-#' check_bip_degdist(num.m1 = 500, num.m2 = 500,
-#'                   deg.dist.m2 = c(0.40, 0.55, 0.03, 0.02),
-#'                   deg.dist.m1 = c(0.48, 0.41, 0.08, 0.03))
+#' check_bip_degdist(num.g1 = 500, num.g2 = 500,
+#'                   deg.dist.g2 = c(0.40, 0.55, 0.03, 0.02),
+#'                   deg.dist.g1 = c(0.48, 0.41, 0.08, 0.03))
 #'
 #' # A balanced distribution
-#' check_bip_degdist(num.m1 = 500, num.m2 = 500,
-#'                   deg.dist.m1 = c(0.40, 0.55, 0.04, 0.01),
-#'                   deg.dist.m2 = c(0.48, 0.41, 0.08, 0.03))
+#' check_bip_degdist(num.g1 = 500, num.g2 = 500,
+#'                   deg.dist.g1 = c(0.40, 0.55, 0.04, 0.01),
+#'                   deg.dist.g2 = c(0.48, 0.41, 0.08, 0.03))
 #'
-check_bip_degdist <- function(num.m1, num.m2,
-                              deg.dist.m1, deg.dist.m2) {
-  deg.counts.m1 <- deg.dist.m1 * num.m1
-  deg.counts.m2 <- deg.dist.m2 * num.m2
-  tot.deg.m1 <- sum(deg.counts.m1 * (1:length(deg.dist.m1) - 1))
-  tot.deg.m2 <- sum(deg.counts.m2 * (1:length(deg.dist.m2) - 1))
-  mat <- matrix(c(deg.dist.m1, deg.counts.m1,
-                  deg.dist.m2, deg.counts.m2), ncol = 4)
-  mat <- rbind(mat, c(sum(deg.dist.m1), tot.deg.m1, sum(deg.dist.m2), tot.deg.m2))
+check_bip_degdist <- function(num.g1, num.g2,
+                              deg.dist.g1, deg.dist.g2) {
+  deg.counts.g1 <- deg.dist.g1 * num.g1
+  deg.counts.g2 <- deg.dist.g2 * num.g2
+  tot.deg.g1 <- sum(deg.counts.g1 * (1:length(deg.dist.g1) - 1))
+  tot.deg.g2 <- sum(deg.counts.g2 * (1:length(deg.dist.g2) - 1))
+  mat <- matrix(c(deg.dist.g1, deg.counts.g1,
+                  deg.dist.g2, deg.counts.g2), ncol = 4)
+  mat <- rbind(mat, c(sum(deg.dist.g1), tot.deg.g1, sum(deg.dist.g2), tot.deg.g2))
   colnames(mat) <- c("m1.dist", "m1.cnt", "m2.dist", "m2.cnt")
-  rownames(mat) <- c(paste0("Deg", 0:(length(deg.dist.m1) - 1)), "Edges")
+  rownames(mat) <- c(paste0("Deg", 0:(length(deg.dist.g1) - 1)), "Edges")
   cat("Bipartite Degree Distribution Check\n")
   cat("=============================================\n")
   print(mat, print.gap = 3)
   cat("=============================================\n")
-  reldiff <- (tot.deg.m1 - tot.deg.m2) / tot.deg.m2
-  absdiff <- abs(tot.deg.m1 - tot.deg.m2)
-  if (sum(deg.dist.m1) <= 0.999 | sum(deg.dist.m1) >= 1.001 |
-      sum(deg.dist.m2) <= 0.999 | sum(deg.dist.m2) >= 1.001 | absdiff > 1) {
-    if (sum(deg.dist.m1) <= 0.999 | sum(deg.dist.m1) >= 1.001) {
-      cat("** deg.dist.m1 TOTAL != 1 \n")
+  reldiff <- (tot.deg.g1 - tot.deg.g2) / tot.deg.g2
+  absdiff <- abs(tot.deg.g1 - tot.deg.g2)
+  if (sum(deg.dist.g1) <= 0.999 | sum(deg.dist.g1) >= 1.001 |
+      sum(deg.dist.g2) <= 0.999 | sum(deg.dist.g2) >= 1.001 | absdiff > 1) {
+    if (sum(deg.dist.g1) <= 0.999 | sum(deg.dist.g1) >= 1.001) {
+      cat("** deg.dist.g1 TOTAL != 1 \n")
     }
-    if (sum(deg.dist.m2) <= 0.999 | sum(deg.dist.m2) >= 1.001) {
-      cat("** deg.dist.m2 TOTAL != 1 \n")
+    if (sum(deg.dist.g2) <= 0.999 | sum(deg.dist.g2) >= 1.001) {
+      cat("** deg.dist.g2 TOTAL != 1 \n")
     }
     if (absdiff > 1) {
-      if (tot.deg.m1 > tot.deg.m2) {
+      if (tot.deg.g1 > tot.deg.g2) {
         msg <- "Mode 1 Edges > Mode 2 Edges:"
       } else {
         msg <- "Mode 1 Edges < Mode 2 Edges:"
@@ -192,7 +192,7 @@ check_bip_degdist <- function(num.m1, num.m2,
   } else {
     cat("** Edges balanced ** \n")
   }
-  invisible(c(tot.deg.m1, deg.counts.m1, deg.counts.m2))
+  invisible(c(tot.deg.g1, deg.counts.g1, deg.counts.g2))
 }
 
 

@@ -107,21 +107,16 @@ test_that("New network models vignette example", {
   ## EpiModel
   param <- param.net(inf.prob = 0.35, growth.rate = 0.00083, life.expt = 70)
   init <- init.net(i.num = 10)
-  control <- control.net(type = NULL, nsims = 1, nsteps = 10,
+  control <- control.net(type = "SI", nsims = 1, nsteps = 10,
                          departures.FUN = dfunc, arrivals.FUN = afunc, aging.FUN = aging,
-                         get_prev.FUN = get_prev.net, infection.FUN = infection.net,
-                         recovery.FUN = recovery.net, depend = TRUE, save.network = FALSE, 
-                         verbose = FALSE)
+                         depend = TRUE, save.network = FALSE, verbose = FALSE)
   mod <- netsim(est, param, init, control)
   expect_is(mod, "netsim")
 
   ## Test module reordering
-  control <- control.net(type = NULL, nsims = 1, nsteps = 10,
+  control <- control.net(type = "SI", nsims = 1, nsteps = 10,
                          departures.FUN = dfunc, arrivals.FUN = afunc, aging.FUN = aging,
-                         get_prev.FUN = get_prev.net, infection.FUN = infection.net,
-                         recovery.FUN = recovery.net, 
-                         module.order = c("aging.FUN", "arrivals.FUN", "departures.FUN", 
-                                          "get_prev.FUN", "infection.FUN", "recovery.FUN"),
+                         module.order = c("aging.FUN", "arrivals.FUN", "departures.FUN"),
                          depend = TRUE, save.network = FALSE, verbose = FALSE)
   mod <- netsim(est, param, init, control)
   expect_is(mod, "netsim")

@@ -32,7 +32,7 @@ initialize.net <- function(x, param, init, control, s) {
     nw <- simulate(x$fit, basis = x$fit$newnetwork,
                    control = control$set.control.ergm)
     #modes <- ifelse(nw %n% "bipartite", 2, 1)
-    modes <- length(unique(get.vertex.attribute(x$nw, "group")))
+    modes <- length(unique(get.vertex.attribute(nw, "group")))
     #modes <- ifelse(nw %n% "bipartite", 2, 1)
     #modes <- ifelse(length(unique)
     if (control$depend == TRUE) {
