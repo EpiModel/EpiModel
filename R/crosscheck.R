@@ -451,7 +451,7 @@ crosscheck.net <- function(x, param, init, control) {
     else {
       for (i in 1:length(args)) {
         if (is.null(control[[args[i]]])) {
-          temp <- get(gsub(".FUN",".net.bip",args[i]))
+          temp <- get(gsub(".FUN",".net.grp",args[i]))
           control[[args[i]]] <- temp
         }
       }
@@ -481,4 +481,3 @@ crosscheck.net <- function(x, param, init, control) {
   assign("param", param, pos = parent.frame())
   assign("control", control, pos = parent.frame())
 }
-
