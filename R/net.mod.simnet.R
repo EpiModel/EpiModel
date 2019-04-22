@@ -51,8 +51,12 @@ resim_nets <- function(dat, at) {
   idsActive <- which(dat$attr$active == 1)
   anyActive <- ifelse(length(idsActive) > 0, TRUE, FALSE)
   if (dat$param$modes == 2) {
-    nActiveM1 <- length(intersect(modeids(dat$nw, mode = 1), idsActive))
-    nActiveM2 <- length(intersect(modeids(dat$nw, mode = 2), idsActive))
+    modeids.1 <- which(get.vertex.attribute(dat$nw, "group") == 1)
+    modeids.2 <- which(get.vertex.attribute(dat$nw, "group") == 2)
+    #nActiveM1 <- length(intersect(modeids(dat$nw, mode = 1), idsActive))
+    #nActiveM2 <- length(intersect(modeids(dat$nw, mode = 2), idsActive))
+    nActiveM1 <- length(intersect(modeids.1, idsActive))
+    nActiveM2 <- length(intersect(modeids.2, idsActive))
     anyActive <- ifelse(nActiveM1 > 0 & nActiveM2 > 0, TRUE, FALSE)
   }
 

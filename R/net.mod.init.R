@@ -144,7 +144,8 @@ init_status.net <- function(dat) {
   if (modes == 1) {
     mode <- rep(1, num)
   } else {
-    mode <- idmode(dat$nw)
+    mode <- get.vertex.attribute(dat$nw, "group")
+    #mode <- idmode(dat$nw)
   }
 
   type <- dat$control$type

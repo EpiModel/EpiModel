@@ -290,7 +290,9 @@ crosscheck.net <- function(x, param, init, control) {
       }
     }
 
-    bip <- ifelse(is.bipartite(nw), TRUE, FALSE)
+    #bip <- ifelse(is.bipartite(nw), TRUE, FALSE)
+    bip <- length(unique(get.vertex.attribute(nw, "group")))
+    bip <- ifelse(bip == 2, TRUE, FALSE)
 
     if (bip == TRUE & is.null(control$pid.prefix)) {
       control$pid.prefix <- c("F", "M")
