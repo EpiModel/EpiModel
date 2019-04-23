@@ -302,7 +302,7 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps, nwstats.formula = "forma
                                      stats.table[, "sorder", drop = FALSE]), , drop = FALSE]
   rownames(stats.table) <- stats.table$names
 
-  stats.table$reldiff <- (stats.table$stats.means - stats.table$targets) /
+  stats.table$reldiff <- 100 * (stats.table$stats.means - stats.table$targets) /
     stats.table$targets
   stats.table.formation <- stats.table[, c(2, 4, 6, 5)]
   colnames(stats.table.formation) <- c("Target", "Sim Mean", "Pct Diff", "Sim SD")
@@ -401,13 +401,13 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps, nwstats.formula = "forma
       duration.mean <- mean(durVec)
       duration.sd <- sd(durVec)
       duration.expected <- exp(coef.diss$coef.crude[1]) + 1
-      duration.pctdiff <- (duration.mean - duration.expected) / duration.expected
+      duration.pctdiff <- 100 * (duration.mean - duration.expected) / duration.expected
 
 
       dissolution.mean <- mean(unlist(prop.diss))
       dissolution.sd <- sd(unlist(prop.diss))
       dissolution.expected <- 1 / (exp(coef.diss$coef.crude[1]) + 1)
-      dissolution.pctdiff <- (dissolution.mean - dissolution.expected) /
+      dissolution.pctdiff <- 100 * (dissolution.mean - dissolution.expected) /
         dissolution.expected
 
       stats.table.dissolution <- data.frame(Targets = c(duration.expected,
