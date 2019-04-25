@@ -13,7 +13,7 @@
 \arguments{
 \item{x}{An \code{EpiModel} model object of class \code{netsim}.}
 
-\item{y}{Output compartments or flows from \code{icm} object to plot.}
+\item{y}{Output compartments or flows from \code{netsim} object to plot.}
 
 \item{popfrac}{If \code{TRUE}, plot prevalence of values rather than numbers
 (see details).}

@@ -20,7 +20,7 @@
 \code{"network"} for a static network plot (\code{plot.network}),
 or \code{"formation"} for network formation statistics.}
 
-\item{y}{Output compartments or flows from \code{icm} object to plot.}
+\item{y}{Output compartments or flows from \code{netsim} object to plot.}
 
 \item{popfrac}{If \code{TRUE}, plot prevalence of values rather than numbers
 (see details).}

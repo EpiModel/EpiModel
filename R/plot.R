@@ -1875,7 +1875,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #' @param type Type of plot: \code{"epi"} for epidemic model results,
 #'        \code{"network"} for a static network plot (\code{plot.network}),
 #'        or \code{"formation"} for network formation statistics.
-#' @param y Output compartments or flows from \code{icm} object to plot.
+#' @param y Output compartments or flows from \code{netsim} object to plot.
 #' @param popfrac If \code{TRUE}, plot prevalence of values rather than numbers
 #'        (see details).
 #' @param sim.lines If \code{TRUE}, plot individual simulation lines. Default is
