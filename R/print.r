@@ -250,10 +250,12 @@ print.param.net <- function(x, ...) {
   for (i in pToPrint) {
     if (class(x[[i]]) %in% c("integer", "numeric") && length(x[[i]]) > 10) {
       cat(names(x)[i], "=", x[[i]][1:5], "...", fill = 80)
-    } else if (class(x[[i]]) == "data.frame") {
+    } else if (inherits(x[[i]], "data.frame")) {
       cat(names(x)[i], "= <data.frame>\n")
-    } else if (class(x[[i]]) == "list") {
+    } else if (inherits(x[[i]], "list")) {
       cat(names(x)[i], "= <list>\n")
+    } else if (inherits(x[[i]], "lm")) {
+      cat(names(x)[i], "= <lm/glm>\n")
     } else {
       cat(names(x)[i], "=", x[[i]], fill = 80)
     }
