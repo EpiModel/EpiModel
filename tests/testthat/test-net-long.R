@@ -359,6 +359,7 @@ test_that("edges two-group models", {
   plot(x, type = "formation")
   plot(x, type = "network")
   plot(x, type = "network", shp.bip = "triangle")
+  #FLAG: Adding "two-group" attribute to network type
   expect_error(plot(x, type = "network", shp.bip = TRUE))
   test_net(x)
   rm(x)
