@@ -244,7 +244,7 @@ departures.net.grp <- function(dat, at) {
   # Susceptible departures ------------------------------------------------------
 
   # Initialize counts and pull rates
-  nDepartures.sus <- nDeparturesM2.sus <- 0
+  nDepartures.sus <- nDeparturesG2.sus <- 0
   idsElig.sus <- which(dat$attr$active == 1 & dat$attr$status == "s")
   nElig.sus <- length(idsElig.sus)
     if (nElig.sus > 0) {
@@ -257,7 +257,7 @@ departures.net.grp <- function(dat, at) {
       if (length(vecDepartures.sus) > 0) {
         idsDpt.sus <- idsElig.sus[vecDepartures.sus]
         nDepartures.sus <- sum(mode[idsDpt.sus] == 1)
-        nDeparturesM2.sus <- sum(mode[idsDpt.sus] == 2)
+        nDeparturesG2.sus <- sum(mode[idsDpt.sus] == 2)
         dat$attr$active[idsDpt.sus] <- 0
         dat$attr$exitTime[idsDpt.sus] <- at
         dat$nw <- deactivate.vertices(dat$nw, onset = at, terminus = Inf,
@@ -267,7 +267,7 @@ departures.net.grp <- function(dat, at) {
 
   # Infected departures ---------------------------------------------------------
   # Initialize counts and query rates
-  nDepartures.inf <- nDeparturesM2.inf <- 0
+  nDepartures.inf <- nDeparturesG2.inf <- 0
   idsElig.inf <- which(dat$attr$active == 1 & dat$attr$status == "i")
   nElig.inf <- length(idsElig.inf)
 
@@ -281,7 +281,7 @@ departures.net.grp <- function(dat, at) {
       if (length(vecDepartures.inf) > 0) {
         idsDpt.inf <- idsElig.inf[vecDepartures.inf]
         nDepartures.inf <- sum(mode[idsDpt.inf] == 1)
-        nDeparturesM2.inf <- sum(mode[idsDpt.inf] == 2)
+        nDeparturesG2.inf <- sum(mode[idsDpt.inf] == 2)
         dat$attr$active[idsDpt.inf] <- 0
         dat$attr$exitTime[idsDpt.inf] <- at
         dat$nw <- deactivate.vertices(dat$nw, onset = at, terminus = Inf,
@@ -292,7 +292,7 @@ departures.net.grp <- function(dat, at) {
   # Recovered departures --------------------------------------------------------
   if (type == "SIR") {
       # Initialize counts and query rates
-    nDepartures.rec <- nDeparturesM2.rec <- 0
+    nDepartures.rec <- nDeparturesG2.rec <- 0
     idsElig.rec <- which(dat$attr$active == 1 & dat$attr$status == "r")
     nElig.rec <- length(idsElig.rec)
       if (nElig.rec > 0) {
@@ -305,7 +305,7 @@ departures.net.grp <- function(dat, at) {
         if (length(vecDepartures.rec) > 0) {
           idsDpt.rec <- idsElig.rec[vecDepartures.rec]
           nDepartures.rec <- sum(mode[idsDpt.rec] == 1)
-          nDeparturesM2.rec <- sum(mode[idsDpt.rec] == 2)
+          nDeparturesG2.rec <- sum(mode[idsDpt.rec] == 2)
           dat$attr$active[idsDpt.rec] <- 0
           dat$attr$exitTime[idsDpt.rec] <- at
           dat$nw <- deactivate.vertices(dat$nw, onset = at, terminus = Inf,
@@ -321,10 +321,10 @@ departures.net.grp <- function(dat, at) {
     if (type == "SIR") {
       dat$epi$dr.flow <- c(0, nDepartures.rec)
     }
-    dat$epi$ds.flow.g2 <- c(0, nDeparturesM2.sus)
-    dat$epi$di.flow.g2 <- c(0, nDeparturesM2.inf)
+    dat$epi$ds.flow.g2 <- c(0, nDeparturesG2.sus)
+    dat$epi$di.flow.g2 <- c(0, nDeparturesG2.inf)
     if (type == "SIR") {
-      dat$epi$dr.flow.g2 <- c(0, nDeparturesM2.rec)
+      dat$epi$dr.flow.g2 <- c(0, nDeparturesG2.rec)
     }
     } else {
     dat$epi$ds.flow[at] <- nDepartures.sus
@@ -332,10 +332,10 @@ departures.net.grp <- function(dat, at) {
     if (type == "SIR") {
       dat$epi$dr.flow[at] <- nDepartures.rec
     }
-    dat$epi$ds.flow.g2[at] <- nDeparturesM2.sus
-    dat$epi$di.flow.g2[at] <- nDeparturesM2.inf
+    dat$epi$ds.flow.g2[at] <- nDeparturesG2.sus
+    dat$epi$di.flow.g2[at] <- nDeparturesG2.inf
     if (type == "SIR") {
-      dat$epi$dr.flow.g2[at] <- nDeparturesM2.rec
+      dat$epi$dr.flow.g2[at] <- nDeparturesG2.rec
     }
     }
     return(dat)
@@ -355,6 +355,7 @@ departures.net.grp <- function(dat, at) {
 #' @export
 #' @keywords netMod internal
 #'
+
 arrivals.net.grp <- function(dat, at) {
   
   # Conditions --------------------------------------------------------------
@@ -368,62 +369,69 @@ arrivals.net.grp <- function(dat, at) {
   a.rate.g2 <- dat$param$a.rate.g2
   tea.status <- dat$control$tea.status
   nOld <- dat$epi$num[at - 1]
+  nOldG2 <- dat$epi$num.g2[at - 1]
   a.rand <- dat$control$a.rand
   delete.nodes <- dat$control$delete.nodes
   
-  nArrivals <- nArrivalsM2 <- 0
-  newNodes <- newNodesM2 <- NULL
+  nArrivals <- nArrivalsG2 <- 0
+  newNodes <- newNodesG2 <- NULL
   
   
   # Add Nodes ---------------------------------------------------------------
   if (nOld > 0) {
-    nOldM2 <- dat$epi$num.g2[at - 1]
+    
     if (a.rand == TRUE) {
       if (is.na(a.rate.g2)) {
         nArrivals <- sum(rbinom(nOld, 1, a.rate))
-        nArrivalsM2 <- sum(rbinom(nOld, 1, a.rate))
+        nArrivalsG2 <- sum(rbinom(nOld, 1, a.rate))
       } else {
         nArrivals <- sum(rbinom(nOld, 1, a.rate))
-        nArrivalsM2 <- sum(rbinom(nOldM2, 1, a.rate.g2))
+        nArrivalsG2 <- sum(rbinom(nOldG2, 1, a.rate.g2))
       }
     }
     
-    nCurrM1 <- length(modeids(dat$nw, 1))
-    nCurrM2 <- length(modeids(dat$nw, 2))
+    nCurrM1 <- length(groupids(dat$nw, 1))
+    nCurrG2 <- length(groupids(dat$nw, 2))
     prefixes <- unique(substr(dat$nw %v% "vertex.names", 1, 1))
     
     if (nArrivals > 0) {
+      vat <- replicate(nArrivals, list(group = 1), simplify = FALSE)
       newNodeIDs <- (nCurrM1 + 1):(nCurrM1 + nArrivals)
       if (delete.nodes == FALSE) {
         newPids <- paste0(prefixes[1], newNodeIDs)
         dat$nw <- add.vertices(dat$nw,
                                nv = nArrivals,
                                last.mode = FALSE,
+                               vattr = vat,
                                vertex.pid = newPids)
       } else {
         dat$nw <- add.vertices(dat$nw,
                                nv = nArrivals,
-                               last.mode = FALSE)
+                               last.mode = FALSE,
+                               vattr = vat)
       }
       newNodes <- newNodeIDs
     }
-    if (nArrivalsM2 > 0) {
-      newNodeIDs <- (nCurrM2 + 1):(nCurrM2 + nArrivalsM2)
+    if (nArrivalsG2 > 0) {
+      vat <- replicate(nArrivalsG2, list(group = 2), simplify = FALSE)
+      newNodeIDs <- (nCurrG2 + 1):(nCurrG2 + nArrivalsG2)
       if (delete.nodes == FALSE) {
         newPids <- paste0(prefixes[2], newNodeIDs)
         dat$nw <- add.vertices(dat$nw,
-                               nv = nArrivalsM2,
+                               nv = nArrivalsG2,
                                last.mode = TRUE,
+                               vattr = vat,
                                vertex.pid = newPids)
       } else {
         dat$nw <- add.vertices(dat$nw,
-                               nv = nArrivalsM2,
-                               last.mode = TRUE)
+                               nv = nArrivalsG2,
+                               last.mode = TRUE,
+                               vattr = vat)
       }
       newSize <- network.size(dat$nw)
-      newNodesM2 <- (newSize - nArrivalsM2 + 1):newSize
+      newNodesG2 <- (newSize - nArrivalsG2 + 1):newSize
     }
-    newNodes <- c(newNodes, newNodesM2)
+    newNodes <- c(newNodes, newNodesG2)
     if (!is.null(newNodes)) {
       dat$nw <- activate.vertices(dat$nw, onset = at, terminus = Inf, v = newNodes)
     }
@@ -457,12 +465,12 @@ arrivals.net.grp <- function(dat, at) {
       }
     }
     if (!("status" %in% fterms)) {
-      dat <- split_bip(dat, "status", "s", nCurrM1, nCurrM2, nArrivals, nArrivalsM2)
+      dat <- split_bip(dat, "status", "s", nCurrM1, nCurrG2, nArrivals, nArrivalsG2)
     }
-    dat <- split_bip(dat, "active", 1, nCurrM1, nCurrM2, nArrivals, nArrivalsM2)
-    dat <- split_bip(dat, "infTime", NA, nCurrM1, nCurrM2, nArrivals, nArrivalsM2)
-    dat <- split_bip(dat, "entrTime", at, nCurrM1, nCurrM2, nArrivals, nArrivalsM2)
-    dat <- split_bip(dat, "exitTime", NA, nCurrM1, nCurrM2, nArrivals, nArrivalsM2)
+    dat <- split_bip(dat, "active", 1, nCurrM1, nCurrG2, nArrivals, nArrivalsG2)
+    dat <- split_bip(dat, "infTime", NA, nCurrM1, nCurrG2, nArrivals, nArrivalsG2)
+    dat <- split_bip(dat, "entrTime", at, nCurrM1, nCurrG2, nArrivals, nArrivalsG2)
+    dat <- split_bip(dat, "exitTime", NA, nCurrM1, nCurrG2, nArrivals, nArrivalsG2)
     
     ## Handles infTime when incoming nodes are infected
     newNodesInf <- intersect(newNodes, which(dat$attr$status == "i"))
@@ -478,10 +486,10 @@ arrivals.net.grp <- function(dat, at) {
   # Output ------------------------------------------------------------------
   if (at == 2) {
     dat$epi$a.flow <- c(0, nArrivals)
-    dat$epi$a.flow.g2 <- c(0, nArrivalsM2)
+    dat$epi$a.flow.g2 <- c(0, nArrivalsG2)
   } else {
     dat$epi$a.flow[at] <- nArrivals
-    dat$epi$a.flow.g2[at] <- nArrivalsM2
+    dat$epi$a.flow.g2[at] <- nArrivalsG2
   }
   
   return(dat)

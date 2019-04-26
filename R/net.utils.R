@@ -844,13 +844,12 @@ groupids <- function(nw, group) {
   if (missing(group)) {
     stop("Specify group=1 or group=2")
   }
-  n <- network.size(nw)
-  g1size <- length(which(get.vertex.attribute(nw, "group") == 1))
+
   if (group == 1) {
-    out <- 1:g1size
+    out <- which(get.vertex.attribute(nw, "group") == 1)
   }
   if (group == 2) {
-    out <- (g1size + 1):n
+    out <- which(get.vertex.attribute(nw, "group") == 2)
   }
   return(out)
 }
@@ -875,10 +874,15 @@ groupids <- function(nw, group) {
 #' @keywords netUtils internal
 #'
 split_bip <- function(dat, var, val, nCurrG1, nCurrG2, nArrivals, nArrivalsG2) {
-  oldVarG1 <- dat$attr[[var]][1:nCurrG1]
-  oldVarG2 <- dat$attr[[var]][(nCurrG1 + 1):(nCurrG1 + nCurrG2)]
-  newVarG1 <- c(oldVarG1, rep(val, nArrivals))
-  newVarG2 <- c(oldVarG2, rep(val, nArrivalsG2))
+  VarG1  <- dat$attr[[var]][groupids(dat$nw, group = 1)]
+  VarG2  <- dat$attr[[var]][groupids(dat$nw, group = 2)]
+  newVarG1 <- as.vector(sapply(VarG1, function(x) ifelse(is.na(x) == TRUE, val, x)))
+  newVarG2 <- as.vector(sapply(VarG2, function(x) ifelse(is.na(x) == TRUE, val, x)))
+  #FLAG 4/26
+  #oldVarG1 <- dat$attr[[var]][1:nCurrG1]
+  #oldVarG2 <- dat$attr[[var]][(nCurrG1 + 1):(nCurrG1 + nCurrG2)]
+  #newVarG1 <- c(oldVarG1, rep(val, nArrivals))
+  #newVarG2 <- c(oldVarG2, rep(val, nArrivalsG2))
   newVar <- c(newVarG1, newVarG2)
   dat$attr[[var]] <- newVar
   return(dat)

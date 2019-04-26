@@ -111,8 +111,8 @@ recovery.icm <- function(dat, at) {
   nElig <- length(idsElig)
 
   if (nElig > 0) {
-    ratesElig <- rec.rate[idsElig]
-      vecRecov <- which(rbinom(nElig, 1, ratesElig) == 1)
+    #ratesElig <- rec.rate[idsElig]
+      vecRecov <- which(rbinom(nElig, 1, rec.rate) == 1)
       if (length(vecRecov) > 0) {
         idsRecov <- idsElig[vecRecov]
         nRecov <- length(idsRecov)

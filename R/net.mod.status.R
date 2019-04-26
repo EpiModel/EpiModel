@@ -187,18 +187,19 @@ infection.net <- function(dat, at) {
 #' @seealso \code{\link{discord_edgelist}} is used within \code{infection.net}
 #' to obtain a discordant edgelist.
 #'
+
 infection.net.grp <- function(dat, at) {
 
   # Variables ---------------------------------------------------------------
   active <- dat$attr$active
   status <- dat$attr$status
+  nw <- dat$nw
   mode <- get.vertex.attribute(nw, "group")
 
   inf.prob <- dat$param$inf.prob
   inf.prob.g2 <- dat$param$inf.prob.g2
   act.rate <- dat$param$act.rate
 
-  nw <- dat$nw
   tea.status <- dat$control$tea.status
 
   # Vector of infected and susceptible IDs
@@ -261,6 +262,7 @@ infection.net.grp <- function(dat, at) {
 
       # Set new infections vector
       idsNewInf <- unique(del$sus)
+      #FLAG 4/42 - getting NA's for mode assignment
       nInf <- sum(mode[idsNewInf] == 1)
       nInfM2 <- sum(mode[idsNewInf] == 2)
       totInf <- nInf + nInfM2
