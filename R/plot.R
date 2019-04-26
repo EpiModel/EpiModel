@@ -986,6 +986,11 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
          "run with dynamic = TRUE", call. = FALSE)
   }
 
+  if (is.null(x$stats.table.dissolution) & type %in% c("duration", "dissolution")) {
+    stop("Plots of type duration and dissolution only available if netdx ",
+         "run with skip.dissolution = FALSE", call. = FALSE)
+  }
+
   ## Check sims
   nsims <- x$nsims
   if (missing(sims)) {
@@ -1750,7 +1755,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
     if (length(da) > 0 && !is.null(da$ylim) && dynamic == TRUE) {
       ylim <- da$ylim
     } else if (is.null(da$ylim) & sim.lines == FALSE & dynamic == TRUE & (mean.line == TRUE || qnts == TRUE)) {
-      ylim <- c(min(qnt.min * 1.1, mean.min * 1.1), max(qnt.max * 1.1, mean.max * 1.1))
+      ylim <- c(min(qnt.min * 0.9, mean.min * 0.9), max(qnt.max * 1.1, mean.max * 1.1))
     } else {
       ylim <- c(0, max(sapply(prop.diss, max, na.rm = TRUE)) * 1.1)
     }
@@ -1870,7 +1875,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #' @param type Type of plot: \code{"epi"} for epidemic model results,
 #'        \code{"network"} for a static network plot (\code{plot.network}),
 #'        or \code{"formation"} for network formation statistics.
-#' @param y Output compartments or flows from \code{icm} object to plot.
+#' @param y Output compartments or flows from \code{netsim} object to plot.
 #' @param popfrac If \code{TRUE}, plot prevalence of values rather than numbers
 #'        (see details).
 #' @param sim.lines If \code{TRUE}, plot individual simulation lines. Default is

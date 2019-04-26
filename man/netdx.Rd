@@ -7,7 +7,7 @@
 netdx(x, nsims = 1, dynamic = TRUE, nsteps,
   nwstats.formula = "formation", set.control.ergm, set.control.stergm,
   sequential = TRUE, keep.tedgelist = FALSE, keep.tnetwork = FALSE,
-  verbose = TRUE, ncores = 1)
+  verbose = TRUE, ncores = 1, skip.dissolution = FALSE)
 }
 \arguments{
 \item{x}{An \code{EpiModel} object of class \code{netest}.}
@@ -47,6 +47,9 @@ one entry per simulation. Accessible at \code{$network}.}
 
 \item{ncores}{Number of processor cores to run multiple simulations
 on, using the \code{foreach} and \code{doParallel} implementations.}
+
+\item{skip.dissolution}{If \code{TRUE}, skip over the calculations of duration
+and dissolution stats in netdx.}
 }
 \description{
 Runs dynamic diagnostics on an ERGM/STERGM estimated through

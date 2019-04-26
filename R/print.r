@@ -71,7 +71,7 @@ print.netest <- function(x, digits = 3, ...) {
   cat("\n=======================")
   cat("\nModel class:", class(x))
   estmeth <- ifelse(x$edapprox == TRUE, "ERGM with Edges Approximation",
-                                        "Full STERGM Fit")
+                    "Full STERGM Fit")
   cat(paste("\nEstimation Method:", estmeth))
 
   cat("\n\nModel Form")
@@ -103,7 +103,7 @@ print.netdx <- function(x, digits = 3, ...) {
   cat("\n----------------------- \n")
   print(round(x$stats.table.formation, digits = digits))
 
-  if (x$dynamic == TRUE) {
+  if (x$dynamic == TRUE & !is.null(x$stats.table.dissolution)) {
     cat("\nDissolution Diagnostics")
     cat("\n----------------------- \n")
     print(round(x$stats.table.dissolution, digits = digits))
@@ -256,10 +256,12 @@ print.param.net <- function(x, ...) {
   for (i in pToPrint) {
     if (class(x[[i]]) %in% c("integer", "numeric") && length(x[[i]]) > 10) {
       cat(names(x)[i], "=", x[[i]][1:5], "...", fill = 80)
-    } else if (class(x[[i]]) == "data.frame") {
+    } else if (inherits(x[[i]], "data.frame")) {
       cat(names(x)[i], "= <data.frame>\n")
-    } else if (class(x[[i]]) == "list") {
+    } else if (inherits(x[[i]], "list")) {
       cat(names(x)[i], "= <list>\n")
+    } else if (inherits(x[[i]], "lm")) {
+      cat(names(x)[i], "= <lm/glm>\n")
     } else {
       cat(names(x)[i], "=", x[[i]], fill = 80)
     }
@@ -356,7 +358,7 @@ print.control.dcm <- function(x, ...) {
 print.control.icm <- function(x, ...) {
 
   pToPrint <- which(!grepl(".FUN", names(x)) &
-                    !(names(x) %in% c("bi.mods", "user.mods")))
+                      !(names(x) %in% c("bi.mods", "user.mods")))
 
   cat("ICM Control Settings")
   cat("\n===========================\n")
@@ -375,9 +377,9 @@ print.control.icm <- function(x, ...) {
 print.control.net <- function(x, ...) {
 
   pToPrint <- which(!grepl(".FUN", names(x)) &
-                    names(x) != "set.control.stergm" &
-                    names(x) != "set.control.ergm" &
-                    !(names(x) %in% c("bi.mods", "user.mods")))
+                      names(x) != "set.control.stergm" &
+                      names(x) != "set.control.ergm" &
+                      !(names(x) %in% c("bi.mods", "user.mods")))
 
   cat("Network Model Control Settings")
   cat("\n===============================\n")
