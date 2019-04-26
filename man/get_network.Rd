@@ -38,7 +38,8 @@ For the former, that is specified with the \code{save.network} parameter in
 }
 \examples{
 # Set up network and TERGM formiula
-nw <- network.initialize(n = 100, bipartite = 50, directed = FALSE)
+nw <- network.initialize(n = 100, directed = FALSE)
+nw <- set.vertex.attribute(nw, "group", rep(c(1,2), each = 50))
 formation <- ~edges
 target.stats <- 50
 coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)

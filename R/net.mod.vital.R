@@ -238,8 +238,7 @@ departures.net.grp <- function(dat, at) {
   }
 
   # Variables ---------------------------------------------------------------
-  #mode <- idmode(dat$nw)
-  mode <- get.vertex.attribute(nw, "group")
+  mode <- get.vertex.attribute(dat$nw, "group")
   type <- dat$control$type
 
   # Susceptible departures ------------------------------------------------------

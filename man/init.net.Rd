@@ -8,18 +8,18 @@ init.net(i.num, r.num, i.num.g2, r.num.g2, status.vector, infTime.vector,
   ...)
 }
 \arguments{
-\item{i.num}{Number of initial infected. For bipartite models, this is the
-number of initial mode 1 infected.}
+\item{i.num}{Number of initial infected. For two-group models, this is the
+number of initial group 1 infected.}
 
-\item{r.num}{Number of initial recovered. For bipartite models, this is the
-number of initial mode 1 recovered. This parameter is only used for
+\item{r.num}{Number of initial recovered. For two-group models, this is the
+number of initial group 1 recovered. This parameter is only used for
 the \code{SIR} model type.}
 
-\item{i.num.g2}{Number of initial infected in mode 2. This parameter is only
-used for bipartite models.}
+\item{i.num.g2}{Number of initial infected in group 2. This parameter is only
+used for two-group models.}
 
-\item{r.num.g2}{Number of initial recovered in mode 2. This parameter is
-only used for bipartite \code{SIR} models.}
+\item{r.num.g2}{Number of initial recovered in group 2. This parameter is
+only used for two-group \code{SIR} models.}
 
 \item{status.vector}{A vector of length equal to the size of the input network,
 containing the status of each node. Setting status here overrides any

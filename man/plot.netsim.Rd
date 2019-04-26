@@ -85,9 +85,9 @@ representing the population.}
 \item{col.status}{If \code{TRUE} and \code{type="network"}, automatic disease
 status colors (blue = susceptible, red = infected, green = recovered).}
 
-\item{shp.bip}{If \code{type="network"} and a bipartite simulation, shapes
-for the mode 2 vertices, with acceptable inputs of "triangle" and
-"square". Mode 1 vertices will be circles.}
+\item{shp.bip}{If \code{type="network"} and a two-group simulation, shapes
+for the group 2 vertices, with acceptable inputs of "triangle" and
+"square". Group 1 vertices will be circles.}
 
 \item{stats}{If \code{type="formation"}, network statistics to plot, among
 those specified in \code{nwstats.formula} of \code{\link{control.net}},
@@ -174,7 +174,8 @@ in which the prevalence is highest.
 \examples{
 ## Independent SI Model
 # Initialize network and set network model parameters
-nw <- network.initialize(n = 100, bipartite = 50, directed = FALSE)
+nw <- network.initialize(n = 100, directed = FALSE)
+nw <- set.vertex.attribute(nw, "group", rep(c(1,2), each = 50))
 formation <- ~edges
 target.stats <- 50
 coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)

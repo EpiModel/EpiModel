@@ -118,7 +118,7 @@ infection.net <- function(dat, at) {
         }
       }
 
-      # Substitute PIDs for vital bipartite sims
+      # Substitute PIDs for vital two-mode sims
       if (any(names(nw$gal) %in% "vertex.pid")) {
         del$sus <- get.vertex.pid(nw, del$sus)
         del$inf <- get.vertex.pid(nw, del$inf)
@@ -192,7 +192,6 @@ infection.net.grp <- function(dat, at) {
   # Variables ---------------------------------------------------------------
   active <- dat$attr$active
   status <- dat$attr$status
-  #mode <- idmode(dat$nw)
   mode <- get.vertex.attribute(nw, "group")
 
   inf.prob <- dat$param$inf.prob
@@ -232,6 +231,7 @@ infection.net.grp <- function(dat, at) {
                                 inf.prob[del$infDur],
                                 inf.prob[linf.prob])
       } else {
+        #FLAG
         del$transProb <- ifelse(del$sus <= nw %n% "bipartite",
                                 ifelse(del$infDur <= linf.prob,
                                        inf.prob[del$infDur],
@@ -483,8 +483,7 @@ recovery.net.grp <- function(dat, at) {
   infTime <- dat$attr$infTime
   tea.status <- dat$control$tea.status
   
-  #mode <- idmode(dat$nw)
-  mode <- get.vertex.attribute(nw, "group")
+  mode <- get.vertex.attribute(dat$nw, "group")
    
   type <- dat$control$type
   recovState <- ifelse(type == "SIR", "r", "s")

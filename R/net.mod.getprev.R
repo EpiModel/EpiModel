@@ -11,8 +11,8 @@
 #' @details
 #' This network utility is used during the \code{\link{netsim}} simulation
 #' process to efficiently query the current size of each state or compartment
-#' in the model at any given timestep. For a bipartite network, the current state
-#' size for each mode, and overall is provided.
+#' in the model at any given timestep. For a two-group network, the current state
+#' size for each group and overall is provided.
 #'
 #' @export
 #' @keywords netUtils internal
@@ -131,7 +131,7 @@ get_prev.net.grp <- function(dat, at) {
 
   status <- l$status
   #mode <- idmode(dat$nw)[active == 1]
-  mode <- get.vertex.attribute(nw, "group")[active == 1]
+  mode <- get.vertex.attribute(dat$nw, "group")[active == 1]
 
   ## Subsetting for epi.by control
   eb <- !is.null(dat$control$epi.by)

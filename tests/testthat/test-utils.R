@@ -123,17 +123,18 @@ test_that("ssample", {
 
 })
 
-test_that("bipvals", {
-  nw <- network.initialize(n = 10, bipartite = 5)
-  nw <- set.vertex.attribute(nw, "male", rep(0:1, each = 5))
-  expect_true(all(bipvals(nw, mode = 1, "male")) == 0)
-  expect_true(all(bipvals(nw, mode = 2, "male")) == 1)
-  expect_error(bipvals(nw, val = "male"))
-
-  nw <- network.initialize(n = 10)
-  nw <- set.vertex.attribute(nw, "male", rep(0:1, each = 5))
-  expect_error(bipvals(nw, 1, "male"), "nw must be a bipartite network")
-})
+#Apr. 23: New function needed here?
+#test_that("bipvals", {
+#  nw <- network.initialize(n = 10, bipartite = 5)
+#  nw <- set.vertex.attribute(nw, "male", rep(0:1, each = 5))
+#  expect_true(all(bipvals(nw, mode = 1, "male")) == 0)
+#  expect_true(all(bipvals(nw, mode = 2, "male")) == 1)
+#  expect_error(bipvals(nw, val = "male"))
+#
+#  nw <- network.initialize(n = 10)
+#  nw <- set.vertex.attribute(nw, "male", rep(0:1, each = 5))
+#  expect_error(bipvals(nw, 1, "male"), "nw must be a bipartite network")
+#})
 
 test_that("check_bip_degdist", {
   expect_output(check_bip_degdist(num.g1 = 500, num.g2 = 500,

@@ -290,7 +290,6 @@ crosscheck.net <- function(x, param, init, control) {
       }
     }
 
-    #bip <- ifelse(is.bipartite(nw), TRUE, FALSE)
     bip <- length(unique(get.vertex.attribute(nw, "group")))
     bip <- ifelse(bip == 2, TRUE, FALSE)
 
@@ -344,10 +343,10 @@ crosscheck.net <- function(x, param, init, control) {
       }
     }
 
-    # Bipartite model checks for inital conditions
+    # Two-group model checks for inital conditions
     if (bip == TRUE & is.null(init$i.num.g2) &
           is.null(init$status.vector) & statOnNw == FALSE) {
-      stop("Specify i.num.g2 for bipartite simulations", call. = FALSE)
+      stop("Specify i.num.g2 for two-group model simulations", call. = FALSE)
     }
 
     # Recovery rate and initial recovered checks
@@ -369,7 +368,7 @@ crosscheck.net <- function(x, param, init, control) {
       }
     }
 
-    # Check demographic parameters for bipartite
+    # Check demographic parameters for two-group models
     if (bip == TRUE & param$vital == TRUE) {
       if (is.null(param$a.rate.g2)) {
         stop("Specify a.rate.g2 in param.net", call. = FALSE)

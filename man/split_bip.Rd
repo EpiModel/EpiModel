@@ -2,9 +2,9 @@
 % Please edit documentation in R/net.utils.R
 \name{split_bip}
 \alias{split_bip}
-\title{Update Attribute Values for a Bipartite Network}
+\title{Update Attribute Values for a Two-Group Network}
 \usage{
-split_bip(dat, var, val, nCurrM1, nCurrM2, nArrivals, nArrivalsM2)
+split_bip(dat, var, val, nCurrG1, nCurrG2, nArrivals, nArrivalsG2)
 }
 \arguments{
 \item{dat}{Master data object passed through \code{netsim} simulations.}
@@ -13,16 +13,16 @@ split_bip(dat, var, val, nCurrM1, nCurrM2, nArrivals, nArrivalsM2)
 
 \item{val}{Fixed value to set for all incoming nodes.}
 
-\item{nCurrM1}{Number currently in mode 1.}
+\item{nCurrG1}{Number currently in group 1.}
 
-\item{nCurrM2}{Number currently in mode 2.}
+\item{nCurrG2}{Number currently in group 2.}
 
-\item{narrivals}{Number of arrivals/entries in mode 1.}
+\item{narrivals}{Number of arrivals/entries in group 1.}
 
-\item{narrivalsM2}{Number of arrivals/entries in mode 2.}
+\item{narrivalsG2}{Number of arrivals/entries in group 2.}
 }
 \description{
-Adds new values for attributes in a bipartite network in which
+Adds new values for attributes in a two-group network in which
              there may be arrivals/entries in the first mode, which requires
              splitting the attribute vector into two, adding the new values,
              and re-concatenating the two updated vectors.

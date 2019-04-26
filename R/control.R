@@ -292,10 +292,10 @@ control.icm <- function(type, nsteps, nsims = 1, rec.rand = TRUE, a.rand = TRUE,
 #'        attribute must be contained in the network model formation formula,
 #'        otherwise it is ignored.
 #' @param use.pids If \code{TRUE}, use persistent ids for vertices; otherwise,
-#'        numeric ids will be recycled in models with vital dynamics. For one-mode
-#'        simulations, this will be a random hexidecimal value; for bipartite
+#'        numeric ids will be recycled in models with vital dynamics. For one-group
+#'        simulations, this will be a random hexidecimal value; for two-group
 #'        simulations, it will be based on \code{pid.prefix}.
-#' @param pid.prefix For bipartite network simulations with vital dynamics,
+#' @param pid.prefix For two-group network simulations with vital dynamics,
 #'        a character vector of length 2 containing the prefixes, with the
 #'        default of \code{c("F", "M")}.
 #' @param initialize.FUN Module to initialize the model at time 1, with the

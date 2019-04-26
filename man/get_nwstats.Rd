@@ -22,8 +22,9 @@ Extracts a data frame of network statistics from a network
              object simulated with \code{netdx}.
 }
 \examples{
-# Bipartite Bernoulli random graph TERGM
-nw <- network.initialize(n = 100, bipartite = 50, directed = FALSE)
+# Two-group Bernoulli random graph TERGM
+nw <- network.initialize(n = 100, directed = FALSE)
+nw <- set.vertex.attribute(nw, "group", rep(c(1,2), each = 50))
 formation <- ~edges
 target.stats <- 50
 coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)

@@ -334,10 +334,11 @@ test_that("High departure rate models", {
 
 ################################################################################
 
-test_that("edges bipartite models", {
+test_that("edges two-group models", {
   skip_on_cran()
 
-  nw <- network.initialize(n = 100, bipartite = 50, directed = FALSE)
+  nw <- network.initialize(n = 100, directed = FALSE)
+  nw <- set.vertex.attribute(nw, "group", rep(c(1,2), each = 50))
   est5 <- netest(nw, formation = ~edges, target.stats = 25,
                  coef.diss = dissolution_coefs(~offset(edges), 10, 0),
                  edapprox = TRUE, verbose = FALSE)
@@ -580,10 +581,11 @@ test_that("Open population 1 mode models", {
 
 ################################################################################
 
-test_that("Open-population bipartite models", {
+test_that("Open-population two-group models", {
   skip_on_cran()
 
-  nw <- network.initialize(n = 100, bipartite = 50, directed = FALSE)
+  nw <- network.initialize(n = 100, directed = FALSE)
+  nw <- set.vertex.attribute(nw, "group", rep(c(1,2), each = 50))
   est5.vit <- netest(nw, formation = ~edges, target.stats = 25,
                      coef.diss = dissolution_coefs(~offset(edges), 10, 0.02),
                      edapprox = TRUE, verbose = FALSE)
@@ -702,7 +704,8 @@ test_that("Open-population bipartite models", {
 test_that("Extinction open-population models", {
   skip_on_cran()
 
-  nw <- network.initialize(n = 25, bipartite = 10, directed = FALSE)
+  nw <- network.initialize(n = 25, directed = FALSE)
+  nw <- set.vertex.attribute(nw, "group", rep(c(1,2), c(10,15)))
   est <- netest(nw, formation = ~edges, target.stats = 15,
                 coef.diss = dissolution_coefs(~offset(edges), 10, 0.02),
                 edapprox = TRUE, verbose = FALSE)

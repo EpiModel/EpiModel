@@ -1,7 +1,7 @@
 context("Network attributes with arrivals")
 
 test_that("Updating attributes in open populations", {
-  nw <- network.initialize(n = 50, bipartite = 25, directed = FALSE)
+  nw <- network.initialize(n = 50, directed = FALSE)
   nw <- set.vertex.attribute(nw, attrname = "risk",
                              value = rbinom(50, 1, 0.5))
 
@@ -81,7 +81,8 @@ test_that("Serosorting model in open population", {
 
 test_that("Save attributes to output", {
   skip_on_cran()
-  nw <- network.initialize(n = 50, bipartite = 25, directed = FALSE)
+  nw <- network.initialize(n = 50, directed = FALSE)
+  nw <- set.vertex.attribute(nw, "group", rep(c(1,2), each = 25))
   formation <- ~edges
   target.stats <- 25
   coef.diss <- dissolution_coefs(dissolution = ~offset(edges), 38, d.rate = 0.01)

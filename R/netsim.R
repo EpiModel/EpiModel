@@ -23,7 +23,7 @@
 #' tutorial.
 #'
 #' The \code{netsim} function performs modeling of both the base model types
-#' and original models. Base model types include one-mode and bipartite models
+#' and original models. Base model types include one-mode and two-group models
 #' with disease types for Susceptible-Infected (SI), Susceptible-Infected-Recovered
 #' (SIR), and Susceptible-Infected-Susceptible (SIS).
 #'
@@ -72,6 +72,7 @@
 #' ## Example 1: Independent SI Model
 #' # Network model estimation
 #' nw <- network.initialize(n = 100, bipartite = 50, directed = FALSE)
+#' nw <- set.vertex.attribute(nw, "group", rep(c(1,2), each = 50))
 #' formation <- ~edges
 #' target.stats <- 50
 #' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)

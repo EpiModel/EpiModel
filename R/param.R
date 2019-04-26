@@ -276,8 +276,8 @@ param.icm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
 #'              simulated with \code{\link{netsim}}.
 #'
 #' @param inf.prob Probability of infection per transmissible act between
-#'        a susceptible and an infected person. In bipartite models, this is the
-#'        probability of infection to the mode 1 nodes. This may also be a vector
+#'        a susceptible and an infected person. In two-group models, this is the
+#'        probability of infection to the group 1 nodes. This may also be a vector
 #'        of probabilities, with each element corresponding to the probability
 #'        in that time step of infection (see Time-Varying Parameters below).
 #' @param inter.eff Efficacy of an intervention which affects the per-act
@@ -293,38 +293,38 @@ param.icm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
 #'        step of infection (see Time-Varying Parameters below).
 #' @param rec.rate Average rate of recovery with immunity (in \code{SIR} models)
 #'        or re-susceptibility (in \code{SIS} models). The recovery rate is the
-#'        reciprocal of the disease duration. For bipartite models, this is the
+#'        reciprocal of the disease duration. For two-group models, this is the
 #'        recovery rate for mode 1 persons only. This parameter is only used for
 #'        \code{SIR} and \code{SIS} models. This may also be a vector
 #'        of rates, with each element corresponding to the rate in that time step
 #'        of infection (see Time-Varying Parameters below).
 #' @param a.rate Arrival or entry rate. For one-mode models, the arrival rate is the
-#'        rate of new arrivals per person per unit time. For bipartite models, the
+#'        rate of new arrivals per person per unit time. For two-group models, the
 #'        arrival rate may be parameterized as a rate per mode 1 person time (with
 #'        mode 1 persons representing females), and with the \code{a.rate.g2}
 #'        rate set as described below.
-#' @param ds.rate Departure or exit rate for susceptible. For bipartite models, it
-#'        is the rate for the mode 1 susceptible only.
-#' @param di.rate Departure or exit rate for infected. For bipartite models, it is
-#'        the rate for the mode 1 infected only.
-#' @param dr.rate Departure or exit rate for recovered. For bipartite models, it is
-#'        the rate for the mode 1 recovered only. This parameter is only used for
+#' @param ds.rate Departure or exit rate for susceptible. For two-group models, it
+#'        is the rate for the group 1 susceptible only.
+#' @param di.rate Departure or exit rate for infected. For two-group models, it is
+#'        the rate for the group 1 infected only.
+#' @param dr.rate Departure or exit rate for recovered. For two-group models, it is
+#'        the rate for the group 1 recovered only. This parameter is only used for
 #'        \code{SIR} models.
 #' @param inf.prob.g2 Probability of transmission given a transmissible act
-#'        between a susceptible mode 2 person and an infected mode 1 person.
-#'        It is the probability of transmission to mode 2 members.
+#'        between a susceptible group 2 person and an infected group 1 person.
+#'        It is the probability of transmission to group 2 members.
 #' @param rec.rate.g2 Average rate of recovery with immunity (in \code{SIR} models)
-#'        or re-susceptibility (in \code{SIS} models) for mode 2 persons. This
-#'        parameter is only used for bipartite \code{SIR} and \code{SIS} models.
-#' @param a.rate.g2 Arrival or entry rate for mode 2. This may either be specified
-#'        numerically as the rate of new arrivals per mode 2 persons per unit time,
+#'        or re-susceptibility (in \code{SIS} models) for group 2 persons. This
+#'        parameter is only used for two-group \code{SIR} and \code{SIS} models.
+#' @param a.rate.g2 Arrival or entry rate for group 2. This may either be specified
+#'        numerically as the rate of new arrivals per group 2 persons per unit time,
 #'        or as \code{NA} in which case the mode 1 rate, \code{a.rate}, governs
-#'        the mode 2 rate. The latter is used when, for example, the first mode
+#'        the group 2 rate. The latter is used when, for example, the first group
 #'        is conceptualized as female, and the female population size determines
-#'        the arrival rate. Such arrivalss are evenly allocated between the two modes.
-#' @param ds.rate.g2 Departure or exit rate for mode 2 susceptible.
-#' @param di.rate.g2 Departure or exit rate for mode 2 infected.
-#' @param dr.rate.g2 Departure or exit rate for mode 2 recovered. This parameter is
+#'        the arrival rate. Such arrivalss are evenly allocated between the two groups.
+#' @param ds.rate.g2 Departure or exit rate for group 2 susceptible.
+#' @param di.rate.g2 Departure or exit rate for group 2 infected.
+#' @param dr.rate.g2 Departure or exit rate for group 2 recovered. This parameter is
 #'        only used for \code{SIR} model types.
 #' @param ... Additional arguments passed to model.
 #'
@@ -339,10 +339,10 @@ param.icm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
 #'
 #' For base models, the model specification will be chosen as a result of
 #' the model parameters entered here and the control settings in
-#' \code{\link{control.net}}. One-mode and two-mode models are available, where
-#' the the latter assumes a heterogenous mixing between two distinct partitions
-#' in the population (e.g., men and women). Specifying any bipartite parameters
-#' (those with a \code{.g2}) implies the simulation of a bipartite model. All the
+#' \code{\link{control.net}}. One-group and two-group models are available, where
+#' the latter assumes a heterogenous mixing between two distinct partitions
+#' in the population (e.g., men and women). Specifying any two-group parameters
+#' (those with a \code{.g2}) implies the simulation of a two-group model. All the
 #' parameters for a desired model type must be specified, even if they are zero.
 #'
 #' @section The \code{act.rate} Parameter:

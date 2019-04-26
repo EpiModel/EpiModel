@@ -140,15 +140,15 @@ init.icm <- function(s.num, i.num, r.num,
 #' @description Sets the initial conditions for stochastic network models
 #'              simulated with \code{netsim}.
 #'
-#' @param i.num Number of initial infected. For bipartite models, this is the
-#'        number of initial mode 1 infected.
-#' @param r.num Number of initial recovered. For bipartite models, this is the
-#'        number of initial mode 1 recovered. This parameter is only used for
+#' @param i.num Number of initial infected. For two-group models, this is the
+#'        number of initial group 1 infected.
+#' @param r.num Number of initial recovered. For two-group models, this is the
+#'        number of initial group 1 recovered. This parameter is only used for
 #'        the \code{SIR} model type.
-#' @param i.num.g2 Number of initial infected in mode 2. This parameter is only
-#'        used for bipartite models.
-#' @param r.num.g2 Number of initial recovered in mode 2. This parameter is
-#'        only used for bipartite \code{SIR} models.
+#' @param i.num.g2 Number of initial infected in group 2. This parameter is only
+#'        used for two-group models.
+#' @param r.num.g2 Number of initial recovered in group 2. This parameter is
+#'        only used for two-group \code{SIR} models.
 #' @param status.vector A vector of length equal to the size of the input network,
 #'        containing the status of each node. Setting status here overrides any
 #'        inputs passed in the \code{.num} arguments.

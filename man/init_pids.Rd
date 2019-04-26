@@ -17,9 +17,9 @@ This function initializes the persistent IDs for
 }
 \details{
 This function is used for \code{\link{netsim}} simulations
-over bipartite networks for populations with vital dynamics. Persistent IDs are
+over two-group networks for populations with vital dynamics. Persistent IDs are
 required in this situation because when new nodes are added to the
-first mode in a bipartite network, the IDs for the second mode shift
+first mode in a two-group network, the IDs for the second mode shift
 upward. Persistent IDs allow for an analysis of disease transmission
 chains for these simulations. These IDs are also invoked in the
 \code{\link{arrivals.net}} module when the persistent IDs of incoming nodes
@@ -27,7 +27,8 @@ must be set.
 }
 \examples{
 # Initialize network with 25 female and 75 male
-nw <- network.initialize(100, bipartite = 25)
+nw <- network.initialize(100)
+nw <- set.vertex.attribute(nw, "male", rep(c(25, 75), c(25,75)))
 
 # Set persistent IDs using the default F/M prefix
 nw <- init_pids(nw)
