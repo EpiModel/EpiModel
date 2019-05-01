@@ -2109,7 +2109,8 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
              call. = FALSE)
       }
       #FLAG: obj$gal$bipartite
-      if (is.numeric(obj$gal$bipartite)) {
+      grp.flag <- length(unique(get.vertex.attribute(obj, "group")))
+      if (is.numeric(grp.flag)) {
         mids <- idmode(obj)
         if (shp.bip == "square") {
           vertex.sides <- ifelse(mids == 1, 50, 4)

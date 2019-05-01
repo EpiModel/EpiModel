@@ -131,6 +131,7 @@ get_prev.net.grp <- function(dat, at) {
 
   status <- l$status
   #mode <- idmode(dat$nw)[active == 1]
+  #FLAG 4/30
   mode <- get.vertex.attribute(dat$nw, "group")[active == 1]
 
   ## Subsetting for epi.by control

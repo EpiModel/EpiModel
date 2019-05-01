@@ -47,7 +47,7 @@ test_that("PIDs for two-group models", {
   control <- control.net(type = "SI", nsteps = 10, verbose = FALSE,
                          save.network = TRUE, nsims = 1)
   simb <- netsim(est, param, init, control)
-  expect_true(simb$network$sim1$gal$vertex.pid == "vertex.names")
+  expect_true(simb$network$sim1$gal$vertex.pid == "vertex.pid") #FLAG: Change from vertex.names
 
   # Do not use pids
   control <- control.net(type = "SI", nsteps = 10, verbose = FALSE,

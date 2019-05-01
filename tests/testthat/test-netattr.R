@@ -2,10 +2,10 @@ context("Network attributes with arrivals")
 
 test_that("Updating attributes in open populations", {
   nw <- network.initialize(n = 50, directed = FALSE)
-  nw <- set.vertex.attribute(nw, attrname = "risk",
-                             value = rbinom(50, 1, 0.5))
+  nw <- set.vertex.attribute(nw, attrname = "group",
+                             value = rbinom(50, 1, 0.5)+1) #FLAG
 
-  formation <- ~edges + nodefactor("risk")
+  formation <- ~edges + nodefactor("group")
   target.stats <- c(25, 36)
   coef.diss <- dissolution_coefs(dissolution = ~offset(edges), 38, d.rate = 0.002)
   est1 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
@@ -14,15 +14,15 @@ test_that("Updating attributes in open populations", {
   durs <- c(3, 100, 9, 10)
   inf.probs <- rep(probs, durs)
   inf.probsf <- inf.probs*2
-  param <- param.net(inf.prob = inf.probsf, act.rate = 1,
+  param <- param.net(inf.prob = inf.probs, act.rate = 1,
                      inf.prob.g2 = inf.probs,
-                     a.rate = 0.05, a.rate.g2 = NA,
+                     a.rate = 0.05, a.rate.g2 = NA, 
                      ds.rate = 0.002, ds.rate.g2 = 0.002,
                      di.rate = 0.008, di.rate.g2 = 0.008)
 
   init <- init.net(i.num = 10, i.num.g2 = 10)
   control <- control.net(type = "SI", nsteps = 10, nsims = 1,
-                         epi.by = "risk", verbose = FALSE)
+                         epi.by = "group", verbose = FALSE)
 
   sim1 <- netsim(est1, param, init, control)
   expect_is(sim1, "netsim")

@@ -706,7 +706,7 @@ test_that("Extinction open-population models", {
   skip_on_cran()
 
   nw <- network.initialize(n = 25, directed = FALSE)
-  nw <- set.vertex.attribute(nw, "group", rep(c(1,2), c(10,15)))
+  nw <- set.vertex.attribute(nw, "group", rep(c(1,2), c(15,10)))
   est <- netest(nw, formation = ~edges, target.stats = 15,
                 coef.diss = dissolution_coefs(~offset(edges), 10, 0.02),
                 edapprox = TRUE, verbose = FALSE)
