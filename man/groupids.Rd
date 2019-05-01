@@ -21,7 +21,7 @@ groupids(nw, group = 2)
 
 }
 \seealso{
-\code{\link{idmode}} provides the reverse functionality.
+\code{\link{idgroup}} provides the reverse functionality.
 }
 \keyword{internal}
 \keyword{netUtils}

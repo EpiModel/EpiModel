@@ -53,8 +53,8 @@ resim_nets <- function(dat, at) {
   if (dat$param$modes == 2) {
     modeids.1 <- which(get.vertex.attribute(dat$nw, "group") == 1)
     modeids.2 <- which(get.vertex.attribute(dat$nw, "group") == 2)
-    nActiveM1 <- length(intersect(modeids.1, idsActive))
-    nActiveM2 <- length(intersect(modeids.2, idsActive))
+    nActiveG1 <- length(intersect(modeids.1, idsActive))
+    nActiveG2 <- length(intersect(modeids.2, idsActive))
     anyActive <- ifelse(nActiveM1 > 0 & nActiveM2 > 0, TRUE, FALSE)
   }
 
@@ -134,7 +134,7 @@ edges_correct <- function(dat, at) {
         log(new.num)
     }
     if (dat$param$modes == 2) {
-      mode <- idmode(dat$nw)
+      mode <- idgroup(dat$nw)
       old.num.g1 <- dat$epi$num[at - 1]
       old.num.g2 <- dat$epi$num.g2[at - 1]
       new.num.g1 <- sum(dat$attr$active == 1 & mode == 1)

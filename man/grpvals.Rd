@@ -19,8 +19,8 @@ Outputs static vertex attributes for a two-group network for one
 }
 \examples{
 nw <- network.initialize(n = 10)
-nw <- set.vertex.attribute(nw, "male", rep(0:1, each = 5))
-grpvals(nw, group = 1, "male")
+nw <- set.vertex.attribute(nw, "group", rep(1:2, each = 5))
+grpvals(nw, group = 1, "group")
 
 }
 \keyword{internal}

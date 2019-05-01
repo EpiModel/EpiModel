@@ -431,16 +431,8 @@ arrivals.net.grp <- function(dat, at) {
 
 
     if (!("status" %in% fterms)) {
-      #FLAG: Set this on network or dat; 4/30
-      # dat <- split_bip(dat, "status", "s", nCurrM1, nCurrG2, nArrivals, nArrivalsG2)
-      #dat$nw <- set.vertex.attribute(dat$nw, "status", "s", newNodes)
       dat$attr$status <- c(dat$attr$status, rep("s", length(newNodes)))
     }
-
-
-    # these get set in the same way as status
-    # after that is done, remove split_bip function from package
-
     dat$attr$active <- c(dat$attr$active, rep(1, length(newNodes)))
     dat$attr$infTime <- c(dat$attr$infTime, rep(NA, length(newNodes)))
     dat$attr$entrTime <- c(dat$attr$entrTime, rep(at, length(newNodes)))

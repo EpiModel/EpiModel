@@ -2,36 +2,6 @@
 
 #' @title Vertex Attributes for Two-Group Network
 #'
-#' @description Outputs static vertex attributes for a bipartite network for one
-#'              specified mode.
-#'
-#' @param nw An object of class \code{network} or \code{networkDynamic}.
-#' @param mode Mode number.
-#' @param val Nodal attribute to return.
-#'
-#' @export
-#' @keywords netUtils internal
-#'
-#' @examples
-#' nw <- network.initialize(n = 10, bipartite = 5)
-#' nw <- set.vertex.attribute(nw, "male", rep(0:1, each = 5))
-#' bipvals(nw, mode = 1, "male")
-#'
-bipvals <- function(nw, mode, val) {
-  if (!is.numeric(nw$gal$bipartite)) {
-    stop("nw must be a bipartite network", call. = FALSE)
-  }
-  if (missing(mode)) {
-    stop("Specify mode=1 or mode=2", call. = FALSE)
-  }
-  nw %s% modeids(nw, mode) %v% val
-}
-
-
-# Exported Functions ------------------------------------------------------
-
-#' @title Vertex Attributes for Two-Group Network
-#'
 #' @description Outputs static vertex attributes for a two-group network for one
 #'              specified group.
 #'
@@ -44,8 +14,8 @@ bipvals <- function(nw, mode, val) {
 #'
 #' @examples
 #' nw <- network.initialize(n = 10)
-#' nw <- set.vertex.attribute(nw, "male", rep(0:1, each = 5))
-#' grpvals(nw, group = 1, "male")
+#' nw <- set.vertex.attribute(nw, "group", rep(1:2, each = 5))
+#' grpvals(nw, group = 1, "group")
 #'
 grpvals <- function(nw, group, val) {
   flag <- "group" %in% names(nw$val[[1]])
@@ -615,44 +585,6 @@ get_formula_term_attr <- function(form, nw) {
 
 }
 
-#' @title Mode Numbers for Bipartite Network
-#'
-#' @description Outputs mode numbers give ID numbers for a bipartite network.
-#'
-#' @param nw Object of class \code{network} or \code{networkDynamic}.
-#' @param ids Vector of ID numbers for which the mode number
-#'        should be returned.
-#'
-#' @seealso \code{\link{modeids}} provides the reverse functionality.
-#'
-#' @export
-#' @keywords netUtils internal
-#'
-#' @examples
-#' nw <- network.initialize(10, bipartite = 5)
-#' idmode(nw)
-#' idmode(nw, ids = c(3, 6))
-#'
-idmode <- function(nw, ids) {
-  n <- network.size(nw)
-  if (missing(ids)) {
-    ids <- seq_len(n)
-  }
-  if (any(ids > n)) {
-    stop("Specify ids between 1 and ", n)
-  }
-  if (!is.bipartite(nw)) {
-    out <- rep(1, n)
-  } else {
-    m1size <- nw$gal$bipartite
-    modes <- c(rep(1, m1size),
-               rep(2, n - m1size))
-    out <- modes[ids]
-  }
-  return(out)
-}
-
-
 #' @title Mode Numbers for Two-Group Network
 #'
 #' @description Outputs group numbers give ID numbers for a two-group network.
@@ -692,42 +624,6 @@ idgroup <- function(nw, ids) {
   return(out)
 }
 
-
-#' @title ID Numbers for Bipartite Network
-#'
-#' @description Outputs ID numbers for a mode number for a bipartite network.
-#'
-#' @param nw Object of class \code{network} or \code{networkDynamic}.
-#' @param mode Mode number to return ID numbers for.
-#'
-#' @seealso \code{\link{idmode}} provides the reverse functionality.
-#'
-#' @export
-#' @keywords netUtils internal
-#'
-#' @examples
-#' nw <- network.initialize(10, bipartite = 5)
-#' modeids(nw, mode = 2)
-#'
-modeids <- function(nw, mode) {
-  if (!is.numeric(nw$gal$bipartite)) {
-    stop("nw must be a bipartite network")
-  }
-  if (missing(mode)) {
-    stop("Specify mode=1 or mode=2")
-  }
-  n <- network.size(nw)
-  m1size <- nw$gal$bipartite
-  if (mode == 1) {
-    out <- 1:m1size
-  }
-  if (mode == 2) {
-    out <- (m1size + 1):n
-  }
-  return(out)
-}
-
-
 #' @title ID Numbers for Two-Group Network
 #'
 #' @description Outputs ID numbers for a group number for a two-group network.
@@ -735,7 +631,7 @@ modeids <- function(nw, mode) {
 #' @param nw Object of class \code{network} or \code{networkDynamic}.
 #' @param group Group number to return ID numbers for.
 #'
-#' @seealso \code{\link{idmode}} provides the reverse functionality.
+#' @seealso \code{\link{idgroup}} provides the reverse functionality.
 #'
 #' @export
 #' @keywords netUtils internal
@@ -762,41 +658,6 @@ groupids <- function(nw, group) {
   }
   return(out)
 }
-
-
-#' @title Update Attribute Values for a Two-Group Network
-#'
-#' @description Adds new values for attributes in a two-group network in which
-#'              there may be arrivals/entries in the first mode, which requires
-#'              splitting the attribute vector into two, adding the new values,
-#'              and re-concatenating the two updated vectors.
-#'
-#' @param dat Master data object passed through \code{netsim} simulations.
-#' @param var Variable to update.
-#' @param val Fixed value to set for all incoming nodes.
-#' @param nCurrG1 Number currently in group 1.
-#' @param nCurrG2 Number currently in group 2.
-#' @param narrivals Number of arrivals/entries in group 1.
-#' @param narrivalsG2 Number of arrivals/entries in group 2.
-#'
-#' @export
-#' @keywords netUtils internal
-#'
-split_bip <- function(dat, var, val, nCurrG1, nCurrG2, nArrivals, nArrivalsG2) {
-  VarG1  <- dat$attr[[var]][groupids(dat$nw, group = 1)]
-  VarG2  <- dat$attr[[var]][groupids(dat$nw, group = 2)]
-  newVarG1 <- as.vector(sapply(VarG1, function(x) ifelse(is.na(x) == TRUE, val, x)))
-  newVarG2 <- as.vector(sapply(VarG2, function(x) ifelse(is.na(x) == TRUE, val, x)))
-  #FLAG 4/26
-  #oldVarG1 <- dat$attr[[var]][1:nCurrG1]
-  #oldVarG2 <- dat$attr[[var]][(nCurrG1 + 1):(nCurrG1 + nCurrG2)]
-  #newVarG1 <- c(oldVarG1, rep(val, nArrivals))
-  #newVarG2 <- c(oldVarG2, rep(val, nArrivalsG2))
-  newVar <- c(newVarG1, newVarG2)
-  dat$attr[[var]] <- newVar
-  return(dat)
-}
-
 
 #' @title Updates Vertex Attributes for Incoming Vertices
 #'
