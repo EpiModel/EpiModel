@@ -371,10 +371,10 @@ arrivals.net.grp <- function(dat, at) {
   nOld <- dat$epi$num[at - 1]
   nOldG2 <- dat$epi$num.g2[at - 1]
   a.rand <- dat$control$a.rand
-  delete.nodes <- dat$control$delete.nodes
 
   nArrivals <- nArrivalsG2 <- 0
   newNodes <- newNodesG2 <- NULL
+  nCurr <- network.size(dat$nw)
 
 
   # Add Nodes ---------------------------------------------------------------
@@ -389,52 +389,15 @@ arrivals.net.grp <- function(dat, at) {
         nArrivalsG2 <- sum(rbinom(nOldG2, 1, a.rate.g2))
       }
     }
+    nArrivals.tot <- nArrivals + nArrivalsG2
 
-    nCurrG1 <- length(groupids(dat$nw, 1))
-    nCurrG2 <- length(groupids(dat$nw, 2))
-    prefixes <- unique(substr(dat$nw %v% "vertex.names", 1, 1))
-
-    if (nArrivals > 0) {
-
-      vat <- replicate(nArrivals, list(group = 1), simplify = FALSE)
-      newNodeIDs <- (nCurrG1 + 1):(nCurrG1 + nArrivals)
-      if (delete.nodes == FALSE) {
-        newPids <- paste0(prefixes[1], newNodeIDs)
-        dat$nw <- add.vertices(dat$nw,
-                               nv = nArrivals,
-                               last.mode = FALSE,
-                               vattr = vat,
-                               vertex.pid = newPids)
-      } else {
-        dat$nw <- add.vertices(dat$nw,
-                               nv = nArrivals,
-                               last.mode = FALSE,
-                               vattr = vat)
-      }
-      newNodes <- newNodeIDs
-    }
-    if (nArrivalsG2 > 0) {
-      vat <- replicate(nArrivalsG2, list(group = 2), simplify = FALSE)
-      newNodeIDs <- (nCurrG2 + 1):(nCurrG2 + nArrivalsG2)
-      if (delete.nodes == FALSE) {
-        newPids <- paste0(prefixes[2], newNodeIDs)
-        dat$nw <- add.vertices(dat$nw,
-                               nv = nArrivalsG2,
-                               last.mode = TRUE,
-                               vattr = vat,
-                               vertex.pid = newPids)
-      } else {
-        dat$nw <- add.vertices(dat$nw,
-                               nv = nArrivalsG2,
-                               last.mode = TRUE,
-                               vattr = vat)
-      }
-      newSize <- network.size(dat$nw)
-      newNodesG2 <- (newSize - nArrivalsG2 + 1):newSize
-    }
-    newNodes <- c(newNodes, newNodesG2)
-    if (!is.null(newNodes)) {
+    if (nArrivals.tot > 0) {
+      newNodes <- (nCurr + 1):(nCurr + nArrivals.tot)
+      dat$nw <- add.vertices(dat$nw, nv = nArrivals.tot)
       dat$nw <- activate.vertices(dat$nw, onset = at, terminus = Inf, v = newNodes)
+      dat$nw <- set.vertex.attribute(dat$nw, "group",
+                                     rep(1:2, c(nArrivals, nArrivalsG2)),
+                                     newNodes)
     }
   }
 
@@ -465,13 +428,23 @@ arrivals.net.grp <- function(dat, at) {
                                             v = newNodes)
       }
     }
+
+
     if (!("status" %in% fterms)) {
-      dat <- split_bip(dat, "status", "s", nCurrG1, nCurrG2, nArrivals, nArrivalsG2)
+      #FLAG: Set this on network or dat; 4/30
+      # dat <- split_bip(dat, "status", "s", nCurrM1, nCurrG2, nArrivals, nArrivalsG2)
+      #dat$nw <- set.vertex.attribute(dat$nw, "status", "s", newNodes)
+      dat$attr$status <- c(dat$attr$status, rep("s", length(newNodes)))
     }
-    dat <- split_bip(dat, "active", 1, nCurrG1, nCurrG2, nArrivals, nArrivalsG2)
-    dat <- split_bip(dat, "infTime", NA, nCurrG1, nCurrG2, nArrivals, nArrivalsG2)
-    dat <- split_bip(dat, "entrTime", at, nCurrG1, nCurrG2, nArrivals, nArrivalsG2)
-    dat <- split_bip(dat, "exitTime", NA, nCurrG1, nCurrG2, nArrivals, nArrivalsG2)
+
+
+    # these get set in the same way as status
+    # after that is done, remove split_bip function from package
+
+    dat$attr$active <- c(dat$attr$active, rep(1, length(newNodes)))
+    dat$attr$infTime <- c(dat$attr$infTime, rep(NA, length(newNodes)))
+    dat$attr$entrTime <- c(dat$attr$entrTime, rep(at, length(newNodes)))
+    dat$attr$exitTime <- c(dat$attr$exitTime, rep(NA, length(newNodes)))
 
     ## Handles infTime when incoming nodes are infected
     newNodesInf <- intersect(newNodes, which(dat$attr$status == "i"))
