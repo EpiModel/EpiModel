@@ -55,7 +55,7 @@ resim_nets <- function(dat, at) {
     modeids.2 <- which(get.vertex.attribute(dat$nw, "group") == 2)
     nActiveG1 <- length(intersect(modeids.1, idsActive))
     nActiveG2 <- length(intersect(modeids.2, idsActive))
-    anyActive <- ifelse(nActiveM1 > 0 & nActiveM2 > 0, TRUE, FALSE)
+    anyActive <- ifelse(nActiveG1 > 0 & nActiveG2 > 0, TRUE, FALSE)
   }
 
   # Pull network model parameters

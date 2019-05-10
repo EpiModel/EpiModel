@@ -230,6 +230,7 @@ arrivals.net <- function(dat, at) {
 #' @export
 #' @keywords netMod internal
 #'
+
 departures.net.grp <- function(dat, at) {
 
   # Conditions --------------------------------------------------------------
@@ -238,7 +239,7 @@ departures.net.grp <- function(dat, at) {
   }
 
   # Variables ---------------------------------------------------------------
-  mode <- get.vertex.attribute(dat$nw, "group")
+  group <- get.vertex.attribute(dat$nw, "group")
   type <- dat$control$type
 
   # Susceptible departures ------------------------------------------------------
@@ -249,15 +250,15 @@ departures.net.grp <- function(dat, at) {
   nElig.sus <- length(idsElig.sus)
     if (nElig.sus > 0) {
       # Departure rates by mode
-    mElig.sus <- mode[idsElig.sus]
+    gElig.sus <- group[idsElig.sus]
     rates.sus <- c(dat$param$ds.rate, dat$param$ds.rate.g2)
-    ratesElig.sus <- rates.sus[mElig.sus]
+    ratesElig.sus <- rates.sus[gElig.sus]
       # Stochastic exits
       vecDepartures.sus <- which(rbinom(nElig.sus, 1, ratesElig.sus) == 1)
       if (length(vecDepartures.sus) > 0) {
         idsDpt.sus <- idsElig.sus[vecDepartures.sus]
-        nDepartures.sus <- sum(mode[idsDpt.sus] == 1)
-        nDeparturesG2.sus <- sum(mode[idsDpt.sus] == 2)
+        nDepartures.sus <- sum(group[idsDpt.sus] == 1)
+        nDeparturesG2.sus <- sum(group[idsDpt.sus] == 2)
         dat$attr$active[idsDpt.sus] <- 0
         dat$attr$exitTime[idsDpt.sus] <- at
         dat$nw <- deactivate.vertices(dat$nw, onset = at, terminus = Inf,
@@ -273,15 +274,15 @@ departures.net.grp <- function(dat, at) {
 
   if (nElig.inf > 0) {
       # Departure rates by mode
-    mElig.inf <- mode[idsElig.inf]
-    rates.inf <- c(dat$param$ds.rate, dat$param$ds.rate.g2)
-    ratesElig.inf <- rates.inf[mElig.inf]
+    gElig.inf <- group[idsElig.inf]
+    rates.inf <- c(dat$param$di.rate, dat$param$di.rate.g2)
+    ratesElig.inf <- rates.inf[gElig.inf]
       # Stochastic exits
       vecDepartures.inf <- which(rbinom(nElig.inf, 1, ratesElig.inf) == 1)
       if (length(vecDepartures.inf) > 0) {
         idsDpt.inf <- idsElig.inf[vecDepartures.inf]
-        nDepartures.inf <- sum(mode[idsDpt.inf] == 1)
-        nDeparturesG2.inf <- sum(mode[idsDpt.inf] == 2)
+        nDepartures.inf <- sum(group[idsDpt.inf] == 1)
+        nDeparturesG2.inf <- sum(group[idsDpt.inf] == 2)
         dat$attr$active[idsDpt.inf] <- 0
         dat$attr$exitTime[idsDpt.inf] <- at
         dat$nw <- deactivate.vertices(dat$nw, onset = at, terminus = Inf,
@@ -297,15 +298,15 @@ departures.net.grp <- function(dat, at) {
     nElig.rec <- length(idsElig.rec)
       if (nElig.rec > 0) {
         # Departure rates by mode
-      mElig.rec <- mode[idsElig.rec]
-      rates.rec <- c(dat$param$ds.rate, dat$param$ds.rate.g2)
-      ratesElig.rec <- rates.rec[mElig.rec]
+      gElig.rec <- group[idsElig.rec]
+      rates.rec <- c(dat$param$dr.rate, dat$param$dr.rate.g2)
+      ratesElig.rec <- rates.rec[gElig.rec]
         # Stochastic exits
         vecDepartures.rec <- which(rbinom(nElig.rec, 1, ratesElig.rec) == 1)
         if (length(vecDepartures.rec) > 0) {
           idsDpt.rec <- idsElig.rec[vecDepartures.rec]
-          nDepartures.rec <- sum(mode[idsDpt.rec] == 1)
-          nDeparturesG2.rec <- sum(mode[idsDpt.rec] == 2)
+          nDepartures.rec <- sum(group[idsDpt.rec] == 1)
+          nDeparturesG2.rec <- sum(group[idsDpt.rec] == 2)
           dat$attr$active[idsDpt.rec] <- 0
           dat$attr$exitTime[idsDpt.rec] <- at
           dat$nw <- deactivate.vertices(dat$nw, onset = at, terminus = Inf,
