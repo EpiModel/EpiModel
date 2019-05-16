@@ -50,11 +50,11 @@ resim_nets <- function(dat, at) {
 
   idsActive <- which(dat$attr$active == 1)
   anyActive <- ifelse(length(idsActive) > 0, TRUE, FALSE)
-  if (dat$param$modes == 2) {
-    modeids.1 <- which(get.vertex.attribute(dat$nw, "group") == 1)
-    modeids.2 <- which(get.vertex.attribute(dat$nw, "group") == 2)
-    nActiveG1 <- length(intersect(modeids.1, idsActive))
-    nActiveG2 <- length(intersect(modeids.2, idsActive))
+  if (dat$param$groups == 2) {
+    groupids.1 <- which(get.vertex.attribute(dat$nw, "group") == 1)
+    groupids.2 <- which(get.vertex.attribute(dat$nw, "group") == 2)
+    nActiveG1 <- length(intersect(groupids.1, idsActive))
+    nActiveG2 <- length(intersect(groupids.2, idsActive))
     anyActive <- ifelse(nActiveG1 > 0 & nActiveG2 > 0, TRUE, FALSE)
   }
 
@@ -126,19 +126,19 @@ resim_nets <- function(dat, at) {
 edges_correct <- function(dat, at) {
 
   if (dat$control$depend == TRUE) {
-    if (dat$param$modes == 1) {
+    if (dat$param$groups == 1) {
       old.num <- dat$epi$num[at - 1]
       new.num <- sum(dat$attr$active == 1)
       dat$nwparam[[1]]$coef.form[1] <- dat$nwparam[[1]]$coef.form[1] +
         log(old.num) -
         log(new.num)
     }
-    if (dat$param$modes == 2) {
-      mode <- idgroup(dat$nw)
+    if (dat$param$groups == 2) {
+      group <- idgroup(dat$nw)
       old.num.g1 <- dat$epi$num[at - 1]
       old.num.g2 <- dat$epi$num.g2[at - 1]
-      new.num.g1 <- sum(dat$attr$active == 1 & mode == 1)
-      new.num.g2 <- sum(dat$attr$active == 1 & mode == 2)
+      new.num.g1 <- sum(dat$attr$active == 1 & group == 1)
+      new.num.g2 <- sum(dat$attr$active == 1 & group == 2)
       dat$nwparam[[1]]$coef.form[1] <- dat$nwparam[[1]]$coef.form[1] +
         log(2 * old.num.g1 * old.num.g2 / (old.num.g1 + old.num.g2)) -
         log(2 * new.num.g1 * new.num.g2 / (new.num.g1 + new.num.g2))

@@ -37,7 +37,7 @@ test_net <- function(x) {
   type <- x$control$type
   nsims <- x$control$nsims
   vital <- x$param$vital
-  modes <- x$param$modes
+  groups <- x$param$groups
 
   for (s in 1:nsims) {
     df <- as.data.frame(x, out = "vals", sim = s)
@@ -49,7 +49,7 @@ test_net <- function(x) {
           if (test == FALSE) stop("\nFailed *s.num* at SIM", s, "TIME", i)
           test <- with(df, i.num[i] == i.num[i - 1] + si.flow[i])
           if (test == FALSE) stop("\nFailed *i.num* at SIM", s, "TIME", i)
-          if (modes == 2) {
+          if (groups == 2) {
             test <- with(df, s.num.g2[i] == s.num.g2[i - 1] - si.flow.g2[i])
             if (test == FALSE) stop("\nFailed *s.num.g2* at SIM", s, "TIME", i)
             test <- with(df, i.num.g2[i] == i.num.g2[i - 1] + si.flow.g2[i])
@@ -63,7 +63,7 @@ test_net <- function(x) {
           if (test == FALSE) stop("\nFailed *s.num* at SIM", s, "TIME", i)
           test <- with(df, i.num[i] == i.num[i - 1] + si.flow[i] - di.flow[i])
           if (test == FALSE) stop("\nFailed *i.num* at SIM", s, "TIME", i)
-          if (modes == 2) {
+          if (groups == 2) {
             test <- df$num.g2[i] == df$num.g2[i - 1] + df$a.flow.g2[i] -
                                     df$ds.flow.g2[i] - df$di.flow.g2[i]
             if (test == FALSE) stop("\nFailed *num.g2* at SIM", s, "TIME", i)
@@ -84,7 +84,7 @@ test_net <- function(x) {
           if (test == FALSE) stop("\nFailed *i.num* at SIM", s, "TIME", i)
           test <- with(df, r.num[i] == r.num[i - 1] + ir.flow[i])
           if (test == FALSE) stop("\nFailed *r.num* at SIM", s, "TIME", i)
-          if (modes == 2) {
+          if (groups == 2) {
             test <- with(df, s.num.g2[i] == s.num.g2[i - 1] - si.flow.g2[i])
             if (test == FALSE) stop("\nFailed *s.num.g2* at SIM", s, "TIME", i)
             test <- with(df, i.num.g2[i] == i.num.g2[i - 1] + si.flow.g2[i] - ir.flow.g2[i])
@@ -103,7 +103,7 @@ test_net <- function(x) {
           if (test == FALSE) stop("\nFailed *i.num* at SIM", s, "TIME", i)
           test <- with(df, r.num[i] == r.num[i - 1] + ir.flow[i] - dr.flow[i])
           if (test == FALSE) stop("\nFailed *r.num* at SIM", s, "TIME", i)
-          if (modes == 2) {
+          if (groups == 2) {
             test <- with(df, num.g2[i] == num.g2[i - 1] + a.flow.g2[i] - ds.flow.g2[i] -
                                           di.flow.g2[i] - dr.flow.g2[i])
             if (test == FALSE) stop("\nFailed *num* at SIM", s, "TIME", i)
@@ -125,7 +125,7 @@ test_net <- function(x) {
           if (test == FALSE) stop("\nFailed *s.num* at SIM", s, "TIME", i)
           test <- with(df, i.num[i] == i.num[i - 1] + si.flow[i] - is.flow[i])
           if (test == FALSE) stop("\nFailed *i.num* at SIM", s, "TIME", i)
-          if (modes == 2) {
+          if (groups == 2) {
             test <- with(df, s.num.g2[i] == s.num.g2[i - 1] - si.flow.g2[i] + is.flow.g2[i])
             if (test == FALSE) stop("\nFailed *s.num.g2* at SIM", s, "TIME", i)
             test <- with(df, i.num.g2[i] == i.num.g2[i - 1] + si.flow.g2[i] - is.flow.g2[i])
@@ -140,7 +140,7 @@ test_net <- function(x) {
           if (test == FALSE) stop("\nFailed *s.num* at SIM", s, "TIME", i)
           test <- with(df, i.num[i] == i.num[i - 1] + si.flow[i] - is.flow[i] - di.flow[i])
           if (test == FALSE) stop("\nFailed *i.num* at SIM", s, "TIME", i)
-          if (modes == 2) {
+          if (groups == 2) {
             test <- with(df, num.g2[i] == num.g2[i - 1] + a.flow.g2[i] -
                            ds.flow.g2[i] - di.flow.g2[i])
             if (test == FALSE) stop("\nFailed *num* at SIM", s, "TIME", i)

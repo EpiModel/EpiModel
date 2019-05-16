@@ -140,11 +140,11 @@ print.netsim <- function(x, ...) {
   cat("\nModel type:", x$control$type)
   cat("\nNo. simulations:", nsims)
   cat("\nNo. time steps:", x$control$nsteps)
-  cat("\nNo. NW modes:", x$param$modes)
+  cat("\nNo. NW groups:", x$param$groups)
 
   cat("\n\nModel Parameters")
   cat("\n-----------------------\n")
-  pToPrint <- which(!(names(x$param) %in% c("modes", "vital")))
+  pToPrint <- which(!(names(x$param) %in% c("groups", "vital")))
   for (i in pToPrint) {
     if (class(x$param[[i]]) == "numeric" && length(x$param[[i]]) > 5) {
       cat(names(x$param)[i], "=", x$param[[i]][1:3], "...", fill = 80)
@@ -156,14 +156,14 @@ print.netsim <- function(x, ...) {
       cat(names(x$param)[i], "=", x$param[[i]], fill = 80)
     }
   }
-  
+
   cat("\n\nModel Functions")
   cat("\n-----------------------\n")
   for (i in 1:length(x$control$f.args)){
     (cat(x$control$f.args[i],"=", x$control$f.names[i],"\n"))
   }
   cat("\n")
-  
+
   cat("\nModel Output")
   cat("\n-----------------------")
   cat("\nVariables:", names(x$epi), fill = 60)

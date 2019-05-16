@@ -9,7 +9,7 @@ init_pids(nw, prefixes = c("F", "M"))
 \arguments{
 \item{nw}{An object of class \code{networkDynamic}.}
 
-\item{prefixes}{Character string prefix for mode-specific ID.}
+\item{prefixes}{Character string prefix for group-specific ID.}
 }
 \description{
 This function initializes the persistent IDs for
@@ -19,7 +19,7 @@ This function initializes the persistent IDs for
 This function is used for \code{\link{netsim}} simulations
 over two-group networks for populations with vital dynamics. Persistent IDs are
 required in this situation because when new nodes are added to the
-first mode in a two-group network, the IDs for the second mode shift
+first group in a two-group network, the IDs for the second mode shift
 upward. Persistent IDs allow for an analysis of disease transmission
 chains for these simulations. These IDs are also invoked in the
 \code{\link{arrivals.net}} module when the persistent IDs of incoming nodes

@@ -31,7 +31,7 @@ initialize.net <- function(x, param, init, control, s) {
     # Network Simulation ------------------------------------------------------
     nw <- simulate(x$fit, basis = x$fit$newnetwork,
                    control = control$set.control.ergm)
-    modes <- length(unique(get.vertex.attribute(nw, "group")))
+    groups <- length(unique(get.vertex.attribute(nw, "group")))
 
     if (control$depend == TRUE) {
       if (class(x$fit) == "stergm") {
@@ -48,7 +48,7 @@ initialize.net <- function(x, param, init, control, s) {
     # Network Parameters ------------------------------------------------------
     dat$nw <- nw
     dat$nwparam <- list(x[-which(names(x) == "fit")])
-    dat$param$modes <- modes
+    dat$param$groups <- groups
 
 
     # Initialization ----------------------------------------------------------
@@ -138,11 +138,11 @@ init_status.net <- function(dat) {
   num <- network.size(dat$nw)
   statOnNw <- "status" %in% dat$temp$fterms
 
-  modes <- dat$param$modes
-  if (modes == 1) {
-    mode <- rep(1, num)
+  groups <- dat$param$groups
+  if (groups == 1) {
+    group <- rep(1, num)
   } else {
-    mode <- idgroup(dat$nw)
+    group <- idgroup(dat$nw)
   }
 
   type <- dat$control$type
@@ -158,14 +158,14 @@ init_status.net <- function(dat) {
       status <- status.vector
     } else {
       status <- rep("s", num)
-      status[sample(which(mode == 1), size = i.num)] <- "i"
-      if (modes == 2) {
-        status[sample(which(mode == 2), size = i.num.g2)] <- "i"
+      status[sample(which(group == 1), size = i.num)] <- "i"
+      if (groups == 2) {
+        status[sample(which(group == 2), size = i.num.g2)] <- "i"
       }
       if (type == "SIR"  && !is.null(type)) {
-        status[sample(which(mode == 1 & status == "s"), size = r.num)] <- "r"
-        if (modes == 2) {
-          status[sample(which(mode == 2 & status == "s"), size = r.num.g2)] <- "r"
+        status[sample(which(group == 1 & status == "s"), size = r.num)] <- "r"
+        if (groups == 2) {
+          status[sample(which(group == 2 & status == "s"), size = r.num.g2)] <- "r"
         }
       }
     }
@@ -228,13 +228,13 @@ init_status.net <- function(dat) {
 #'              a \code{networkDynamic} object.
 #'
 #' @param nw An object of class \code{networkDynamic}.
-#' @param prefixes Character string prefix for mode-specific ID.
+#' @param prefixes Character string prefix for group-specific ID.
 #'
 #' @details
 #' This function is used for \code{\link{netsim}} simulations
 #' over two-group networks for populations with vital dynamics. Persistent IDs are
 #' required in this situation because when new nodes are added to the
-#' first mode in a two-group network, the IDs for the second mode shift
+#' first group in a two-group network, the IDs for the second mode shift
 #' upward. Persistent IDs allow for an analysis of disease transmission
 #' chains for these simulations. These IDs are also invoked in the
 #' \code{\link{arrivals.net}} module when the persistent IDs of incoming nodes
@@ -264,8 +264,8 @@ init_pids <- function(nw, prefixes=c("F", "M")) {
     if (nw$gal$bipartite == FALSE) {
       nw <- initialize.pids(nw)
     } else {
-      t0.pids <- c(paste0(prefixes[1], 1:length(modeids(nw, 1))),
-                   paste0(prefixes[2], 1:length(modeids(nw, 2))))
+      t0.pids <- c(paste0(prefixes[1], 1:length(groupids(nw, 1))),
+                   paste0(prefixes[2], 1:length(groupids(nw, 2))))
 
       nw <- set.network.attribute(nw, "vertex.pid", "vertex.names")
       nw <- set.vertex.attribute(nw, "vertex.names", t0.pids)

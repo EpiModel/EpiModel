@@ -32,20 +32,20 @@ grpvals <- function(nw, group, val) {
 #' @title Check Degree Distribution for Bipartite Target Statistics
 #'
 #' @description Checks for consistency in the implied network statistics
-#'              of a bipartite network in which the mode size and mode-specific
+#'              of a bipartite network in which the group size and group-specific
 #'              degree distributions are specified.
 #'
-#' @param num Number of nodes in mode 1.
-#' @param num.g2 Number of nodes in mode 2.
-#' @param deg.dist.g1 Vector with fractional degree distribution for mode 1.
-#' @param deg.dist.g2 Vector with fractional degree distribution for mode 2.
+#' @param num.g1 Number of nodes in group 1.
+#' @param num.g2 Number of nodes in group 2.
+#' @param deg.dist.g1 Vector with fractional degree distribution for group 1.
+#' @param deg.dist.g2 Vector with fractional degree distribution for group 2.
 #'
 #' @details
 #' This function outputs the number of nodes of degree 0 to m, where m is the
 #' length of a fractional degree distribution vector, given that vector and the
-#' size of the mode. This utility is used to check for balance in implied degree
+#' size of the group. This utility is used to check for balance in implied degree
 #' given that fractional distribution within bipartite network simulations, in
-#' which the degree-constrained counts must be equal across modes.
+#' which the degree-constrained counts must be equal across groups.
 #'
 #' @seealso
 #' For a detailed explanation of this function, see the tutorial:

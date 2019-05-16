@@ -15,7 +15,7 @@
 #'        status.
 #'  \item Call \code{\link{discord_edgelist}} to get the current discordant edgelist
 #'        given step 1.
-#'  \item Determine the transmission rates (e.g., as a function of mode).
+#'  \item Determine the transmission rates (e.g., as a function of group).
 #'  \item Pull the number of acts per partnership in a time step from the
 #'        \code{act.rate} parameter.
 #'  \item Calculate the final transmission probabilities given the transmission
@@ -118,7 +118,7 @@ infection.net <- function(dat, at) {
         }
       }
 
-      # Substitute PIDs for vital two-mode sims
+      # Substitute PIDs for vital two-group sims
       if (any(names(nw$gal) %in% "vertex.pid")) {
         del$sus <- get.vertex.pid(nw, del$sus)
         del$inf <- get.vertex.pid(nw, del$inf)
@@ -167,7 +167,7 @@ infection.net <- function(dat, at) {
 #'        status.
 #'  \item Call \code{\link{discord_edgelist}} to get the current discordant edgelist
 #'        given step 1.
-#'  \item Determine the transmission rates (e.g., as a function of mode).
+#'  \item Determine the transmission rates (e.g., as a function of group).
 #'  \item Pull the number of acts per partnership in a time step from the
 #'        \code{act.rate} parameter.
 #'  \item Calculate the final transmission probabilities given the transmission
@@ -485,7 +485,7 @@ recovery.net.grp <- function(dat, at) {
   infTime <- dat$attr$infTime
   tea.status <- dat$control$tea.status
 
-  mode <- get.vertex.attribute(dat$nw, "group")
+  group <- get.vertex.attribute(dat$nw, "group")
 
   type <- dat$control$type
   recovState <- ifelse(type == "SIR", "r", "s")
@@ -493,7 +493,7 @@ recovery.net.grp <- function(dat, at) {
   rec.rate <- dat$param$rec.rate
   rec.rate.g2 <- dat$param$rec.rate.g2
 
-  nRecov <- nRecovM2 <- 0
+  nRecov <- nRecovG2 <- 0
   idsElig <- which(active == 1 & status == "i")
   nElig <- length(idsElig)
 
@@ -502,19 +502,19 @@ recovery.net.grp <- function(dat, at) {
   infDur[infDur == 0] <- 1
   lrec.rate <- length(rec.rate)
   if (lrec.rate == 1) {
-    mElig <- mode[idsElig]
+    gElig <- group[idsElig]
     rates <- c(rec.rate, rec.rate.g2)
-    ratesElig <- rates[mElig]
+    ratesElig <- rates[gElig]
   } else {
-    mElig <- mode[idsElig]
+    gElig <- group[idsElig]
     if (is.null(rec.rate.g2)) {
       rates <- ifelse(infDur <= lrec.rate, rec.rate[infDur], rec.rate[lrec.rate])
     } else {
       rates <- rep(NA, length(infDur))
-      rates[mElig == 1] <- ifelse(infDur[mElig == 1] <= lrec.rate,
-                                  rec.rate[infDur[mElig == 1]], rec.rate[lrec.rate])
-      rates[mElig == 2] <- ifelse(infDur[mElig == 2] <= length(rec.rate.g2),
-                                  rec.rate.g2[infDur[mElig == 2]], rec.rate.g2[length(rec.rate.g2)])
+      rates[gElig == 1] <- ifelse(infDur[gElig == 1] <= lrec.rate,
+                                  rec.rate[infDur[gElig == 1]], rec.rate[lrec.rate])
+      rates[gElig == 2] <- ifelse(infDur[gElig == 2] <= length(rec.rate.g2),
+                                  rec.rate.g2[infDur[gElig == 2]], rec.rate.g2[length(rec.rate.g2)])
     }
     ratesElig <- rates
   }
@@ -525,8 +525,8 @@ recovery.net.grp <- function(dat, at) {
       vecRecov <- which(rbinom(nElig, 1, ratesElig) == 1)
       if (length(vecRecov) > 0) {
         idsRecov <- idsElig[vecRecov]
-        nRecov <- sum(mode[idsRecov] == 1)
-        nRecovM2 <- sum(mode[idsRecov] == 2)
+        nRecov <- sum(group[idsRecov] == 1)
+        nRecovG2 <- sum(group[idsRecov] == 2)
         status[idsRecov] <- recovState
         if (tea.status == TRUE) {
           dat$nw <- activate.vertex.attribute(dat$nw, prefix = "testatus",
@@ -551,9 +551,9 @@ recovery.net.grp <- function(dat, at) {
     dat$epi[[outName[1]]][at] <- nRecov
   }
   if (at == 2) {
-    dat$epi[[outName[2]]] <- c(0, nRecovM2)
+    dat$epi[[outName[2]]] <- c(0, nRecovG2)
   } else {
-    dat$epi[[outName[2]]][at] <- nRecovM2
+    dat$epi[[outName[2]]][at] <- nRecovG2
   }
 
 

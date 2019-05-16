@@ -54,7 +54,7 @@ test_that("print.netsim", {
   expect_output(print(mod), "EpiModel Simulation")
   expect_output(print(mod), "Model class: netsim")
   expect_output(print(mod), "Model type: SI")
-  expect_output(print(mod), "No. NW modes: 2")
+  expect_output(print(mod), "No. NW groups: 2")
   expect_output(print(mod), "Variables: s.num i.num num s.num.g2 i.num.g2 num.g2")
 })
 

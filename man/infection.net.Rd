@@ -27,7 +27,7 @@ The main steps in this infection module are as follows:
        status.
  \item Call \code{\link{discord_edgelist}} to get the current discordant edgelist
        given step 1.
- \item Determine the transmission rates (e.g., as a function of mode).
+ \item Determine the transmission rates (e.g., as a function of group).
  \item Pull the number of acts per partnership in a time step from the
        \code{act.rate} parameter.
  \item Calculate the final transmission probabilities given the transmission

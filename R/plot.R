@@ -509,10 +509,10 @@ plot.icm <- function(x, y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col, si
   }
   dis.type <- x$control$type
   if (is.null(x$param$groups) | !is.numeric(x$param$groups)) {
-    modes <- 1
+    group <- 1
     x$param$groups <- 1
   } else {
-    modes <- x$param$groups
+    groups <- x$param$groups
   }
 
   # dotargs
@@ -522,10 +522,10 @@ plot.icm <- function(x, y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col, si
   ## Compartments ##
   nocomp <- ifelse(missing(y), TRUE, FALSE)
   if (nocomp == TRUE) {
-    if (modes == 1) {
+    if (groups == 1) {
       y <- grep(".num$", names(x$epi), value = TRUE)
     }
-    if (modes == 2) {
+    if (groups == 2) {
       if (class(x) == "icm") {
         y <- c(grep(".num$", names(x$epi), value = TRUE),
                grep(".num.g2$", names(x$epi), value = TRUE))
@@ -589,8 +589,8 @@ plot.icm <- function(x, y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col, si
   }
   sim.pal <- transco(sim.col, sim.alpha)
 
-  # Special case for 2-mode/group models
-  if (modes == 2 & nocomp == TRUE) {
+  # Special case for 2-group models
+  if (groups == 2 & nocomp == TRUE) {
     if (dis.type == "SIR") {
       mean.pal <- rep(mean.pal, 2)
       qnts.pal <- rep(qnts.pal, 2)
@@ -642,7 +642,7 @@ plot.icm <- function(x, y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col, si
   if (nsims == 1) {
     disp.qnts <- FALSE
   }
-  if (modes == 1 & missing(qnts)) {
+  if (groups == 1 & missing(qnts)) {
     disp.qnts <- TRUE
     qnts <- 0.5
   }
@@ -668,7 +668,7 @@ plot.icm <- function(x, y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col, si
       mean.lty <- rep(mean.lty, lcomp)
     }
     if (missing(mean.lty)) {
-      if (nocomp == FALSE || (nocomp == TRUE && modes == 1)) {
+      if (nocomp == FALSE || (nocomp == TRUE && groups == 1)) {
         mean.lty <- rep(1, lcomp)
       } else {
         mean.lty <- rep(1:2, each = lcomp / 2)
@@ -727,7 +727,7 @@ plot.icm <- function(x, y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col, si
   if (nsims == 1) {
     disp.qnts <- FALSE
   }
-  if (modes == 1 & missing(qnts)) {
+  if (groups == 1 & missing(qnts)) {
     disp.qnts <- TRUE
     qnts <- 0.5
   }
@@ -762,7 +762,7 @@ plot.icm <- function(x, y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col, si
       mean.lty <- rep(mean.lty, lcomp)
     }
     if (missing(mean.lty)) {
-      if (nocomp == FALSE || (nocomp == TRUE && modes == 1)) {
+      if (nocomp == FALSE || (nocomp == TRUE && groups == 1)) {
         mean.lty <- rep(1, lcomp)
       } else {
         mean.lty <- rep(1:2, each = lcomp / 2)
@@ -778,7 +778,7 @@ plot.icm <- function(x, y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col, si
 
   ## Legends ##
   if (!missing(legend) && legend == TRUE) {
-    if (modes == 2 & nocomp == TRUE) {
+    if (groups == 2 & nocomp == TRUE) {
       leg.lty <- mean.lty
     } else {
       leg.lty <- 1
@@ -2035,7 +2035,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #' plot(mod, type = "network", main = "Max Prev | Time 50",
 #'      col.status = TRUE, at = 20, sims = "max")
 #'
-#' # Automatic shape by mode number (circle = mode 1)
+#' # Automatic shape by group number (circle = group 1)
 #' par(mar = c(0,0,0,0))
 #' plot(mod, type = "network", at = 20, col.status = TRUE, shp.bip = "square")
 #' plot(mod, type = "network", at = 20, col.status = TRUE, shp.bip = "triangle")
@@ -2173,11 +2173,11 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
       stop("Set sim to between 1 and ", nsims, call. = FALSE)
     }
     dis.type <- x$control$type
-    if (is.null(x$param$modes) | !is.numeric(x$param$modes)) {
+    if (is.null(x$param$groups) | !is.numeric(x$param$groups)) {
       modes <- 1
-      x$param$modes <- 1
+      x$param$groups <- 1
     } else {
-      modes <- x$param$modes
+      groups <- x$param$groups
     }
 
 
@@ -2188,10 +2188,10 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
     ## Compartments ##
     nocomp <- ifelse(missing(y), TRUE, FALSE)
     if (nocomp == TRUE) {
-      if (modes == 1) {
+      if (groups == 1) {
         y <- grep(".num$", names(x$epi), value = TRUE)
       }
-      if (modes == 2) {
+      if (groups == 2) {
         if (class(x) == "icm") {
           y <- c(grep(".num$", names(x$epi), value = TRUE),
                  grep(".num.g2$", names(x$epi), value = TRUE))
@@ -2259,8 +2259,8 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
     }
     sim.pal <- transco(sim.col, sim.alpha)
 
-    # Special case for 2-mode/group models
-    if (modes == 2 & nocomp == TRUE) {
+    # Special case for 2-group models
+    if (groups == 2 & nocomp == TRUE) {
       pal <- brewer.pal(3, "Set1")
       if (dis.type == "SIR") {
         mean.pal <- rep(mean.pal, 2)
@@ -2281,8 +2281,8 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
     }
     if (nopopfrac == TRUE) {
       if (any(grepl(".flow", y)) |
-          (modes == 1 & all(grepl(".num$", y)) == FALSE) |
-          (modes == 2 & all(c(grepl(".num$", y), grepl(".g2$", y)) == FALSE)) |
+          (groups == 1 & all(grepl(".num$", y)) == FALSE) |
+          (groups == 2 & all(c(grepl(".num$", y), grepl(".g2$", y)) == FALSE)) |
           any(y %in% c("num", "num.g2", "num.g2"))) {
         popfrac <- FALSE
       }
@@ -2318,7 +2318,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
     if (nsims == 1) {
       disp.qnts <- FALSE
     }
-    if (modes == 1 & missing(qnts)) {
+    if (groups == 1 & missing(qnts)) {
       disp.qnts <- TRUE
       qnts <- 0.5
     }
@@ -2344,7 +2344,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
         mean.lty <- rep(mean.lty, lcomp)
       }
       if (missing(mean.lty)) {
-        if (nocomp == FALSE || (nocomp == TRUE && modes == 1)) {
+        if (nocomp == FALSE || (nocomp == TRUE && groups == 1)) {
           mean.lty <- rep(1, lcomp)
         } else {
           mean.lty <- rep(1:2, each = lcomp / 2)
@@ -2406,7 +2406,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
     if (nsims == 1) {
       disp.qnts <- FALSE
     }
-    if (modes == 1 & missing(qnts)) {
+    if (groups == 1 & missing(qnts)) {
       disp.qnts <- TRUE
       qnts <- 0.5
     }
@@ -2442,7 +2442,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
         mean.lty <- rep(mean.lty, lcomp)
       }
       if (missing(mean.lty)) {
-        if (nocomp == FALSE || (nocomp == TRUE && modes == 1)) {
+        if (nocomp == FALSE || (nocomp == TRUE && groups == 1)) {
           mean.lty <- rep(1, lcomp)
         } else {
           mean.lty <- rep(1:2, each = lcomp / 2)
@@ -2458,7 +2458,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
 
     ## Legends ##
     if (!missing(legend) && legend == TRUE) {
-      if (modes == 2 & nocomp == TRUE) {
+      if (groups == 2 & nocomp == TRUE) {
         leg.lty <- mean.lty
       } else {
         leg.lty <- 1
@@ -3081,10 +3081,10 @@ comp_plot.icm <- function(x, at = 1, digits = 3, ...) {
     groups <- x$param$groups
   }
   if (class(x) == "netsim") {
-    groups <- x$param$modes
+    groups <- x$param$groups
   }
   if (groups != 1) {
-    stop("Only 1-group/mode models currently supported",
+    stop("Only 1-mode models currently supported",
          call. = FALSE)
   }
 

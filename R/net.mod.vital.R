@@ -31,7 +31,7 @@ departures.net <- function(dat, at) {
 
   if (nElig.sus > 0) {
 
-    # Departure rates by mode
+    # Departure rates by group
     rates.sus <- dat$param$ds.rate
 
     # Stochastic exits
@@ -56,7 +56,7 @@ departures.net <- function(dat, at) {
 
   if (nElig.inf > 0) {
 
-    # Departure rates by mode
+    # Departure rates by group
     rates.inf <- dat$param$di.rate
 
     # Stochastic exits
@@ -82,7 +82,7 @@ departures.net <- function(dat, at) {
 
     if (nElig.rec > 0) {
 
-      # Departure rates by mode
+      # Departure rates by group
       rates.rec <- dat$param$dr.rate
 
       # Stochastic exits
@@ -249,7 +249,7 @@ departures.net.grp <- function(dat, at) {
   idsElig.sus <- which(dat$attr$active == 1 & dat$attr$status == "s")
   nElig.sus <- length(idsElig.sus)
     if (nElig.sus > 0) {
-      # Departure rates by mode
+      # Departure rates by group
     gElig.sus <- group[idsElig.sus]
     rates.sus <- c(dat$param$ds.rate, dat$param$ds.rate.g2)
     ratesElig.sus <- rates.sus[gElig.sus]
@@ -297,7 +297,7 @@ departures.net.grp <- function(dat, at) {
     idsElig.rec <- which(dat$attr$active == 1 & dat$attr$status == "r")
     nElig.rec <- length(idsElig.rec)
       if (nElig.rec > 0) {
-        # Departure rates by mode
+        # Departure rates by group
       gElig.rec <- group[idsElig.rec]
       rates.rec <- c(dat$param$dr.rate, dat$param$dr.rate.g2)
       ratesElig.rec <- rates.rec[gElig.rec]

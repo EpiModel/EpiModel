@@ -484,7 +484,7 @@ summary.netsim <- function(object, at, digits = 3, ...) {
 
   nsims <- object$control$nsims
   type <- object$control$type
-  modes <- object$param$modes
+  groups <- object$param$groups
   vital <- object$param$vital
   nsteps <- object$control$nsteps
 
@@ -503,7 +503,7 @@ summary.netsim <- function(object, at, digits = 3, ...) {
     ## Prevalence calcs
     s.prev <- df.mn$s.num / df.mn$num
     i.prev <- df.mn$i.num / df.mn$num
-    if (modes == 2) {
+    if (groups == 2) {
       s.prev.g2 <- df.mn$s.num.g2 / df.mn$num.g2
       i.prev.g2 <- df.mn$i.num.g2 / df.mn$num.g2
     }
@@ -525,7 +525,7 @@ summary.netsim <- function(object, at, digits = 3, ...) {
     }
 
     ## Group 2 stats
-    if (modes == 2) {
+    if (groups == 2) {
       stats <- c(df.mn$s.num.g2, df.sd$s.num.g2, s.prev.g2,
                  df.mn$i.num.g2, df.sd$i.num.g2, i.prev.g2,
                  df.mn$num.g2, df.sd$num.g2, 1,
@@ -550,7 +550,7 @@ summary.netsim <- function(object, at, digits = 3, ...) {
     s.prev <- df.mn$s.num / df.mn$num
     i.prev <- df.mn$i.num / df.mn$num
     r.prev <- df.mn$r.num / df.mn$num
-    if (modes == 2) {
+    if (groups == 2) {
       s.prev.g2 <- df.mn$s.num.g2 / df.mn$num.g2
       i.prev.g2 <- df.mn$i.num.g2 / df.mn$num.g2
       r.prev.g2 <- df.mn$r.num.g2 / df.mn$num.g2
@@ -577,7 +577,7 @@ summary.netsim <- function(object, at, digits = 3, ...) {
     }
 
     ## Group 2 stats
-    if (modes == 2) {
+    if (groups == 2) {
       stats <- c(df.mn$s.num.g2, df.sd$s.num.g2, s.prev.g2,
                  df.mn$i.num.g2, df.sd$i.num.g2, i.prev.g2,
                  df.mn$r.num.g2, df.sd$r.num.g2, r.prev.g2,
@@ -603,7 +603,7 @@ summary.netsim <- function(object, at, digits = 3, ...) {
     ## Prevalence calcs
     s.prev <- df.mn$s.num / df.mn$num
     i.prev <- df.mn$i.num / df.mn$num
-    if (modes == 2) {
+    if (groups == 2) {
       s.prev.g2 <- df.mn$s.num.g2 / df.mn$num.g2
       i.prev.g2 <- df.mn$i.num.g2 / df.mn$num.g2
     }
@@ -627,7 +627,7 @@ summary.netsim <- function(object, at, digits = 3, ...) {
     }
 
     ## Group 2 stats
-    if (modes == 2) {
+    if (groups == 2) {
       stats <- c(df.mn$s.num.g2, df.sd$s.num.g2, s.prev.g2,
                  df.mn$i.num.g2, df.sd$i.num.g2, i.prev.g2,
                  df.mn$num.g2, df.sd$num.g2, 1,
@@ -645,10 +645,10 @@ summary.netsim <- function(object, at, digits = 3, ...) {
     }
   }
 
-  if (modes == 1) {
+  if (groups == 1) {
     colnames(mat) <- c("mean", "sd", "pct")
   }
-  if (modes == 2) {
+  if (groups == 2) {
     colnames(mat) <- c("mean:m1", "sd:m1", "pct:m1",
                        "mean.g2", "sd.g2", "pct.g2")
   }
@@ -664,12 +664,12 @@ summary.netsim <- function(object, at, digits = 3, ...) {
   cat("\nModel type:", type)
   cat("\nNo. simulations:", nsims)
   cat("\nNo. time steps:", nsteps)
-  cat("\nNo. NW modes:", modes)
+  cat("\nNo. NW groups:", groups)
 
-  if (modes == 1) {
+  if (groups == 1) {
     statsep <- paste(rep("-", 30), collapse = "")
   }
-  if (modes == 2) {
+  if (groups == 2) {
     statsep <- paste(rep("-", 60), collapse = "")
   }
 

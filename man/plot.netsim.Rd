@@ -208,7 +208,7 @@ plot(mod, type = "network", main = "Min Prev | Time 50",
 plot(mod, type = "network", main = "Max Prev | Time 50",
      col.status = TRUE, at = 20, sims = "max")
 
-# Automatic shape by mode number (circle = mode 1)
+# Automatic shape by group number (circle = group 1)
 par(mar = c(0,0,0,0))
 plot(mod, type = "network", at = 20, col.status = TRUE, shp.bip = "square")
 plot(mod, type = "network", at = 20, col.status = TRUE, shp.bip = "triangle")

@@ -301,7 +301,7 @@ param.icm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
 #' @param a.rate Arrival or entry rate. For one-mode models, the arrival rate is the
 #'        rate of new arrivals per person per unit time. For two-group models, the
 #'        arrival rate may be parameterized as a rate per mode 1 person time (with
-#'        mode 1 persons representing females), and with the \code{a.rate.g2}
+#'        group 1 persons representing females), and with the \code{a.rate.g2}
 #'        rate set as described below.
 #' @param ds.rate Departure or exit rate for susceptible. For two-group models, it
 #'        is the rate for the group 1 susceptible only.
