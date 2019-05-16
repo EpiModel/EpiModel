@@ -194,7 +194,7 @@ infection.net.grp <- function(dat, at) {
   active <- dat$attr$active
   status <- dat$attr$status
   nw <- dat$nw
-  mode <- get.vertex.attribute(nw, "group")
+  group <- get.vertex.attribute(nw, "group")
 
   inf.prob <- dat$param$inf.prob
   inf.prob.g2 <- dat$param$inf.prob.g2
@@ -208,7 +208,7 @@ infection.net.grp <- function(dat, at) {
   nElig <- length(idsInf)
 
   # Initialize vectors
-  nInf <- nInfM2 <- totInf <- 0
+  nInf <- nInfG2 <- totInf <- 0
 
 
   # Process -----------------------------------------------------------------
@@ -263,9 +263,9 @@ infection.net.grp <- function(dat, at) {
       # Set new infections vector
       idsNewInf <- unique(del$sus)
       #FLAG 4/42 - getting NA's for mode assignment
-      nInf <- sum(mode[idsNewInf] == 1)
-      nInfM2 <- sum(mode[idsNewInf] == 2)
-      totInf <- nInf + nInfM2
+      nInf <- sum(group[idsNewInf] == 1)
+      nInfG2 <- sum(group[idsNewInf] == 2)
+      totInf <- nInf + nInfG2
 
       # Update nw attributes
       if (totInf > 0) {
@@ -310,11 +310,11 @@ infection.net.grp <- function(dat, at) {
   ## Save incidence vector
   if (at == 2) {
     dat$epi$si.flow <- c(0, nInf)
-    dat$epi$si.flow.g2 <- c(0, nInfM2)
+    dat$epi$si.flow.g2 <- c(0, nInfG2)
 
   } else {
     dat$epi$si.flow[at] <- nInf
-    dat$epi$si.flow.g2[at] <- nInfM2
+    dat$epi$si.flow.g2[at] <- nInfG2
   }
 
   dat$nw <- nw
@@ -484,9 +484,9 @@ recovery.net.grp <- function(dat, at) {
   status <- dat$attr$status
   infTime <- dat$attr$infTime
   tea.status <- dat$control$tea.status
-  
+
   mode <- get.vertex.attribute(dat$nw, "group")
-   
+
   type <- dat$control$type
   recovState <- ifelse(type == "SIR", "r", "s")
 

@@ -612,13 +612,16 @@ idgroup <- function(nw, ids) {
   if (any(ids > n)) {
     stop("Specify ids between 1 and ", n)
   }
+  #Flag for bipartite network
   flag <- "group" %in% names(nw$val[[1]])
   if (!flag) {
     out <- rep(1, n)
   } else {
-    g1size <- length(which(get.vertex.attribute(nw, "group") == 1))
-    groups <- c(rep(1, g1size),
-                rep(2, n - g1size))
+    #FLAG 5/16
+    #g1size <- length(which(get.vertex.attribute(nw, "group") == 1))
+    #groups <- c(rep(1, g1size),
+    #            rep(2, n - g1size))
+    groups <- get.vertex.attribute(nw, "group")
     out <- groups[ids]
   }
   return(out)
