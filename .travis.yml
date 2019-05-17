@@ -7,6 +7,9 @@ r:
   - release
   - devel
 
+r_packages:
+  - nlme
+
 addons:
   apt:
     packages:
