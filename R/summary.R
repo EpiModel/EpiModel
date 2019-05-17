@@ -649,8 +649,8 @@ summary.netsim <- function(object, at, digits = 3, ...) {
     colnames(mat) <- c("mean", "sd", "pct")
   }
   if (groups == 2) {
-    colnames(mat) <- c("mean:m1", "sd:m1", "pct:m1",
-                       "mean.g2", "sd.g2", "pct.g2")
+    colnames(mat) <- c("mean:g1", "sd:g1", "pct:g1",
+                       "mean:g2", "sd:g2", "pct:g2")
   }
   mat <- round(mat, digits)
 

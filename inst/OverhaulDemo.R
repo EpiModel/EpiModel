@@ -5,8 +5,8 @@ suppressMessages(library(EpiModel))
 
 
 # Example - One Group
-# Network with no attribute
 
+# Network with no attribute
 num <- 200
 nw <- network::network.initialize(num, directed = FALSE)
 formation <- ~ edges
@@ -33,7 +33,7 @@ plot(sim1)
 # Network with 'group' (.g2) attribute
 num1 <- num2 <- 250
 nw <- network::network.initialize(num1+num2, directed = FALSE)
-nw <- network::set.vertex.attribute(nw, "group", rep(c(1,2), each = num))
+nw <- network::set.vertex.attribute(nw, "group", rep(c(1,2), each = num1))
 formation <- ~ edges + nodematch("group") + nodefactor("group")
 target.stats <- c(150, 125, 62.5)
 coef.diss <- dissolution_coefs(dissolution = ~ offset(edges), duration = 50)
@@ -85,7 +85,7 @@ death.rates <- 1 / (70 * 12 - ages * 12)
 par(mfrow = c(1, 1), mar = c(3, 3, 1, 1), mgp = c(2, 1, 0))
 plot(ages, death.rates, type = "b", xlab = "age", ylab = "Death Risk")
 
-## Death function
+## User-defined departure function
 dfunc <- function(dat, at) {
 
   idsElig <- which(dat$attr$active == 1)
@@ -117,7 +117,7 @@ dfunc <- function(dat, at) {
   return(dat)
 }
 
-## Arrivals function
+## User-defined arrivals function
 bfunc <- function(dat, at) {
 
   growth.rate <- dat$param$growth.rate
@@ -160,6 +160,7 @@ est3 <- netest(nw, formation = ~ edges, target.stats = 150,
 ## Epidemic model parameterization
 param <- param.net(inf.prob = 0.15, growth.rate = 0.01/12, max.age = 70)
 init <- init.net(i.num = 50)
+#User must specify all base functions when "type" is NULL
 control <- control.net(type = NULL, nsims = 1, nsteps = 100,
                        departures.FUN = dfunc, arrivals.FUN = bfunc,
                        get_prev.FUN = get_prev.net, infection.FUN = infection.net,
