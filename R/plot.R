@@ -2108,7 +2108,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
         stop("shp.bip accepts inputs of either \"square\" or \"triangle\" ",
              call. = FALSE)
       }
-      #FLAG: obj$gal$bipartite
+
       grp.flag <- length(unique(get.vertex.attribute(obj, "group")))
       if (is.numeric(grp.flag)) {
         mids <- idgroup(obj)
@@ -2124,7 +2124,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
         }
 
       } else {
-        warning("shp.bip applies to bipartite networks only, so ignoring argument")
+        warning("shp.bip applies to two-group networks only, so ignoring argument")
         vertex.sides <- 50
         vertex.rot <- 0
         vertex.cex <- 1

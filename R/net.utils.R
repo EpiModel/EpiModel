@@ -32,7 +32,7 @@ grpvals <- function(nw, group, val) {
 #' @title Check Degree Distribution for Bipartite Target Statistics
 #'
 #' @description Checks for consistency in the implied network statistics
-#'              of a bipartite network in which the group size and group-specific
+#'              of a two group network in which the group size and group-specific
 #'              degree distributions are specified.
 #'
 #' @param num.g1 Number of nodes in group 1.
@@ -612,15 +612,11 @@ idgroup <- function(nw, ids) {
   if (any(ids > n)) {
     stop("Specify ids between 1 and ", n)
   }
-  #Flag for bipartite network
+
   flag <- "group" %in% names(nw$val[[1]])
   if (!flag) {
     out <- rep(1, n)
   } else {
-    #FLAG 5/16
-    #g1size <- length(which(get.vertex.attribute(nw, "group") == 1))
-    #groups <- c(rep(1, g1size),
-    #            rep(2, n - g1size))
     groups <- get.vertex.attribute(nw, "group")
     out <- groups[ids]
   }

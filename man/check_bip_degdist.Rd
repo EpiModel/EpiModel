@@ -17,7 +17,7 @@ check_bip_degdist(num.g1, num.g2, deg.dist.g1, deg.dist.g2)
 }
 \description{
 Checks for consistency in the implied network statistics
-             of a bipartite network in which the group size and group-specific
+             of a two group network in which the group size and group-specific
              degree distributions are specified.
 }
 \details{

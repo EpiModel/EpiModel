@@ -260,7 +260,6 @@ init_status.net <- function(dat) {
 init_pids <- function(nw, prefixes=c("F", "M")) {
 
   if (is.null(nw$gal$vertex.pid)) {
-    #FLAG
     if (nw$gal$bipartite == FALSE) {
       nw <- initialize.pids(nw)
     } else {
