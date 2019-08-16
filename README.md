@@ -121,6 +121,7 @@ EpiModel and its [extension packages](https://github.com/statnet/EpiModelHIV) ha
 
 13. Hamilton DT, Goodreau SM, Jenness SM, Sullivan PS, Wang LY, Dunville RL, Barrios LC, Rosenberg ES. Potential Impact of HIV Preexposure Prophylaxis Among Black and White Adolescent Sexual Minority Males: A Modeling Study. _American Journal of Public Health._ 2018; 108(S4): S284–S291. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/30383415)
 
+14. Goldstein ND, LeVasseur MT, Tran NK, Purtle J, Welles SL, Eppes SC. Modeling HPV vaccination scale-up among urban young men who have sex with men in the context of HIV. _Vaccine._ 2019; 37(29): 3883-3891. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/31155416)
 
 #### Other
 
