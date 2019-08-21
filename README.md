@@ -117,7 +117,7 @@ EpiModel and its [extension packages](https://github.com/statnet/EpiModelHIV) ha
 
 11. Jenness SM, Maloney K, Smith SK, Hoover KW, Rosenberg ES, Goodreau SM, Weiss KM, Liu AY, Rao D, Sullivan PS. Addressing Gaps in HIV Preexposure Prophylaxis Care to Reduce Racial Disparities in HIV Incidence in the United States. _American Journal of Epidemiology._ 2019; 188(4): 743-752. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/30312365)
 
-12. Stansfield SE, Mittler JE, Gottlieb GS, Murphy JT, Hamilton DT, Detels R, Wolinsky SM, Jacobson LP, Margolick JB, Rinaldo CR, Herbeck JT, Goodreau SM. Sexual Role and HIV-1 Set Point Viral Load among Men who Have Sex with Men. _Epidemics._ Epub DOI: 10.1016/j.epidem.2018.08.006. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/30193771)
+12. Stansfield SE, Mittler JE, Gottlieb GS, Murphy JT, Hamilton DT, Detels R, Wolinsky SM, Jacobson LP, Margolick JB, Rinaldo CR, Herbeck JT, Goodreau SM. Sexual Role and HIV-1 Set Point Viral Load among Men who Have Sex with Men. _Epidemics._ 2019; 26: 68-76. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/30193771)
 
 13. Hamilton DT, Goodreau SM, Jenness SM, Sullivan PS, Wang LY, Dunville RL, Barrios LC, Rosenberg ES. Potential Impact of HIV Preexposure Prophylaxis Among Black and White Adolescent Sexual Minority Males: A Modeling Study. _American Journal of Public Health._ 2018; 108(S4): S284–S291. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/30383415)
 
