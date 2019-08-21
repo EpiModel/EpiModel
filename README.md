@@ -121,11 +121,13 @@ EpiModel and its [extension packages](https://github.com/statnet/EpiModelHIV) ha
 
 13. Hamilton DT, Goodreau SM, Jenness SM, Sullivan PS, Wang LY, Dunville RL, Barrios LC, Rosenberg ES. Potential Impact of HIV Preexposure Prophylaxis Among Black and White Adolescent Sexual Minority Males: A Modeling Study. _American Journal of Public Health._ 2018; 108(S4): S284–S291. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/30383415)
 
-14. Goldstein ND, LeVasseur MT, Tran NK, Purtle J, Welles SL, Eppes SC. Modeling HPV vaccination scale-up among urban young men who have sex with men in the context of HIV. _Vaccine._ 2019; 37(29): 3883-3891. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/31155416)
+14. Goodreau SM, Stansfield SE, Murphy JT, Peebles KC, Gottlieb GS, Abernethy NF, Herbeck JT, Mittler JE. Relational concurrency, stages of infection, and the evolution of HIV set point viral load. _Virus Evolution._ 2018; 4(2): vey032. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/30483403)
 
-15. Jones J, Weiss K, Mermin J, Dietz P, Rosenberg ES, Gift TL, Chesson H, Sullivan PS, Lyles C, Bernstein KT, Jenness SM. Proportion of Incident Human Immunodeficiency Virus Cases Among Men Who Have Sex With Men Attributable to Gonorrhea and Chlamydia: A Modeling Analysis. Sexually transmitted diseases. 2019; 46(6): 357-63. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/31095100)
+15. Goldstein ND, LeVasseur MT, Tran NK, Purtle J, Welles SL, Eppes SC. Modeling HPV vaccination scale-up among urban young men who have sex with men in the context of HIV. _Vaccine._ 2019; 37(29): 3883-3891. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/31155416)
 
-16. Hamilton DT, Rosenberg ES, Jenness SM, Sullivan PS, Wang LY, Dunville RL, Barrios LC, Aslam M, Goodreau SM. Modeling the Joint Effects of Adolescent and Adult PrEP for Sexual Minority Males in the United States. PloS One. 2019; 14(5): e0217315. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/31116802)
+16. Jones J, Weiss K, Mermin J, Dietz P, Rosenberg ES, Gift TL, Chesson H, Sullivan PS, Lyles C, Bernstein KT, Jenness SM. Proportion of Incident Human Immunodeficiency Virus Cases Among Men Who Have Sex With Men Attributable to Gonorrhea and Chlamydia: A Modeling Analysis. Sexually transmitted diseases. 2019; 46(6): 357-63. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/31095100)
+
+17. Hamilton DT, Rosenberg ES, Jenness SM, Sullivan PS, Wang LY, Dunville RL, Barrios LC, Aslam M, Goodreau SM. Modeling the Joint Effects of Adolescent and Adult PrEP for Sexual Minority Males in the United States. PloS One. 2019; 14(5): e0217315. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/31116802)
 
 #### Other
 
