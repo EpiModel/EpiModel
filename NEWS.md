@@ -1,3 +1,18 @@
+EpiModel 1.7.3
+------------------------------------------------------------------------------
+
+### NEW FEATURES
+* Add a `skip.dissolution` argument to `netdx` to skip dissolution diagnostics 
+  for computational efficiency.
+
+### BUG FIXES
+* Fixes output formatting of network stats saved during `netsim` runs. 
+* Correctly errors when running dynamic network diagnostics with `netdx` on a 
+  cross-sectional ergm. 
+* Remove old unused utility functions.
+* Enforce depend on ergm >= 3.10 package.
+
+
 EpiModel 1.7.2
 ------------------------------------------------------------------------------
 
