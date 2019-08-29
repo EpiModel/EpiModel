@@ -115,12 +115,19 @@ EpiModel and its [extension packages](https://github.com/statnet/EpiModelHIV) ha
 
 10. Luo W, Katz DA, Hamilton DT, McKenney J, Jenness SM, Goodreau SM, Stekler JD, Rosenberg ES, Sullivan P, Cassels S. Development of an Agent-Based Model to Investigate the Impact of HIV Self-Testing Programs for Men Who Have Sex with Men in Atlanta and Seattle. _Journal of Medical Internet Research Public Health Surveillance._ 2018; 4(2): e58. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/29959112)
 
-11. Jenness SM, Maloney K, Smith SK, Hoover KW, Rosenberg ES, Goodreau SM, Weiss KM, Liu AY, Rao D, Sullivan PS. Addressing Gaps in HIV Preexposure Prophylaxis Care to Reduce Racial Disparities in HIV Incidence in the United States. _American Journal of Epidemiology._ Epub DOI: 10.1093/aje/kwy230. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/30312365)
+11. Jenness SM, Maloney K, Smith SK, Hoover KW, Rosenberg ES, Goodreau SM, Weiss KM, Liu AY, Rao D, Sullivan PS. Addressing Gaps in HIV Preexposure Prophylaxis Care to Reduce Racial Disparities in HIV Incidence in the United States. _American Journal of Epidemiology._ 2019; 188(4): 743-752. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/30312365)
 
-12. Stansfield SE, Mittler JE, Gottlieb GS, Murphy JT, Hamilton DT, Detels R, Wolinsky SM, Jacobson LP, Margolick JB, Rinaldo CR, Herbeck JT, Goodreau SM. Sexual Role and HIV-1 Set Point Viral Load among Men who Have Sex with Men. _Epidemics._ Epub DOI: 10.1016/j.epidem.2018.08.006. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/30193771)
+12. Stansfield SE, Mittler JE, Gottlieb GS, Murphy JT, Hamilton DT, Detels R, Wolinsky SM, Jacobson LP, Margolick JB, Rinaldo CR, Herbeck JT, Goodreau SM. Sexual Role and HIV-1 Set Point Viral Load among Men who Have Sex with Men. _Epidemics._ 2019; 26: 68-76. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/30193771)
 
 13. Hamilton DT, Goodreau SM, Jenness SM, Sullivan PS, Wang LY, Dunville RL, Barrios LC, Rosenberg ES. Potential Impact of HIV Preexposure Prophylaxis Among Black and White Adolescent Sexual Minority Males: A Modeling Study. _American Journal of Public Health._ 2018; 108(S4): S284–S291. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/30383415)
 
+14. Goodreau SM, Stansfield SE, Murphy JT, Peebles KC, Gottlieb GS, Abernethy NF, Herbeck JT, Mittler JE. Relational concurrency, stages of infection, and the evolution of HIV set point viral load. _Virus Evolution._ 2018; 4(2): vey032. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/30483403)
+
+15. Goldstein ND, LeVasseur MT, Tran NK, Purtle J, Welles SL, Eppes SC. Modeling HPV vaccination scale-up among urban young men who have sex with men in the context of HIV. _Vaccine._ 2019; 37(29): 3883-3891. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/31155416)
+
+16. Jones J, Weiss K, Mermin J, Dietz P, Rosenberg ES, Gift TL, Chesson H, Sullivan PS, Lyles C, Bernstein KT, Jenness SM. Proportion of Incident Human Immunodeficiency Virus Cases Among Men Who Have Sex With Men Attributable to Gonorrhea and Chlamydia: A Modeling Analysis. Sexually transmitted diseases. 2019; 46(6): 357-63. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/31095100)
+
+17. Hamilton DT, Rosenberg ES, Jenness SM, Sullivan PS, Wang LY, Dunville RL, Barrios LC, Aslam M, Goodreau SM. Modeling the Joint Effects of Adolescent and Adult PrEP for Sexual Minority Males in the United States. PloS One. 2019; 14(5): e0217315. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/31116802)
 
 #### Other
 
@@ -138,7 +145,9 @@ EpiModel and its [extension packages](https://github.com/statnet/EpiModelHIV) ha
 
 7. Haeussler K, Hout AV, Baio G. A dynamic Bayesian Markov model for health economic evaluations of interventions against infectious diseases. _arXiv._ arXiv:1512.06881. [[LINK]](https://arxiv.org/abs/1512.06881). 
 
-8. Amirpour Haredasht S, Tavornpanich S, Jansen MD, Lyngstad TM, Yatabe T, Brun E, Martínez-López B. A stochastic network-based model to simulate the spread of pancreas disease (PD) in the Norwegian salmon industry based on the observed vessel movements and seaway distance between marine farms. _Prev Vet Med._ 2018. Epub DOI: 10.1016/j.prevetmed.2018.05.019. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/30055856)
+8. Amirpour Haredasht S, Tavornpanich S, Jansen MD, Lyngstad TM, Yatabe T, Brun E, Martínez-López B. A stochastic network-based model to simulate the spread of pancreas disease (PD) in the Norwegian salmon industry based on the observed vessel movements and seaway distance between marine farms. _Prev Vet Med._ 2019; 167: 174-181. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/30055856)
+
+9. Wilson-Aggarwal JK, Ozella L, Tizzoni M, Cattuto C, Swan GJ, Moundai T, Silk MJ, Zingeser JA, McDonald RA. High-resolution contact networks of free-ranging domestic dogs Canis familiaris and implications for transmission of infection. _PLoS Neglected Tropical Diseases._ 2019; 13(7): e0007565. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/31306425)
 
 
 ### Copyright
