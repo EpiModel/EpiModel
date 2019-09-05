@@ -59,7 +59,11 @@ initialize.net <- function(x, param, init, control, s) {
 
     ## Pull network val to attr
     form <- get_nwparam(dat)$formation
-    fterms <- get_formula_term_attr(form, nw)
+    
+    #fterms <- get_formula_term_attr(form, nw)
+    fterms <- setdiff(list.vertex.attributes(nw), c("active", "vertex.names", "na"))
+    if(length(fterms) == 0) fterms <- NULL
+    
     dat <- copy_toall_attr(dat, at = 1, fterms)
 
     ## Store current proportions of attr
