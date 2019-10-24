@@ -129,6 +129,8 @@ EpiModel and its [extension packages](https://github.com/statnet/EpiModelHIV) ha
 
 17. Hamilton DT, Rosenberg ES, Jenness SM, Sullivan PS, Wang LY, Dunville RL, Barrios LC, Aslam M, Goodreau SM. Modeling the Joint Effects of Adolescent and Adult PrEP for Sexual Minority Males in the United States. _PloS One._ 2019; 14(5): e0217315. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/31116802)
 
+18. Weiss KM, Jones J, Katz DA, Gift TL, Bernstein K, Workowski K, Rosenberg E, Jenness SM. Epidemiological Impact of Expedited Partner Therapy for Men Who Have Sex with Men: A Modeling Study. _Sexually Transmitted Diseases._ 2019; 46(11): 697–705. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/31644497)
+
 #### Other
 
 1. Ezenwa VO, Archie EA, Craft ME, Hawley DM, Martin LB, Moore J, White L. Host behaviour-parasite feedback: an essential link between animal behaviour and disease ecology. _Proc Biol Sci._ 2016; 283(1828). [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/27053751)
