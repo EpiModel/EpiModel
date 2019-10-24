@@ -93,7 +93,7 @@ Our team also receives institutional support through the following center-level 
 
 EpiModel and its [extension packages](https://github.com/statnet/EpiModelHIV) have been used in the following scientific journal articles. (If you are aware of others, send us an email at samuel.m.jenness@emory.edu to be included in this list.)
 
-#### HIV and Other Sexually Transmitted Infections
+#### HIV and Sexually Transmitted Infections
 
 1. Delaney KP, Rosenberg ES, Kramer MR, Waller LA, Sullivan PS. Optimizing Human Immunodeficiency Virus Testing Interventions for Men Who Have Sex With Men in the United States: A Modeling Study. _Open Forum Infect Dis._ 2015;2(4): ofv153. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/26613096)
 
@@ -131,7 +131,10 @@ EpiModel and its [extension packages](https://github.com/statnet/EpiModelHIV) ha
 
 18. Weiss KM, Jones J, Katz DA, Gift TL, Bernstein K, Workowski K, Rosenberg E, Jenness SM. Epidemiological Impact of Expedited Partner Therapy for Men Who Have Sex with Men: A Modeling Study. _Sexually Transmitted Diseases._ 2019; 46(11): 697–705. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/31644497)
 
-#### Other
+19. Goldstein ND, LeVasseur MT, Tran NK, Purtle J, Welles SL, Eppes SC. Modeling HPV vaccination scale-up among urban young men who have sex with men in the context of HIV. _Vaccine._ 2019; 37(29): 3883-3891. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/31155416)
+
+
+#### Other Infectious Diseases
 
 1. Ezenwa VO, Archie EA, Craft ME, Hawley DM, Martin LB, Moore J, White L. Host behaviour-parasite feedback: an essential link between animal behaviour and disease ecology. _Proc Biol Sci._ 2016; 283(1828). [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/27053751)
 
@@ -150,6 +153,9 @@ EpiModel and its [extension packages](https://github.com/statnet/EpiModelHIV) ha
 8. Amirpour Haredasht S, Tavornpanich S, Jansen MD, Lyngstad TM, Yatabe T, Brun E, Martínez-López B. A stochastic network-based model to simulate the spread of pancreas disease (PD) in the Norwegian salmon industry based on the observed vessel movements and seaway distance between marine farms. _Prev Vet Med._ 2019; 167: 174-181. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/30055856)
 
 9. Wilson-Aggarwal JK, Ozella L, Tizzoni M, Cattuto C, Swan GJ, Moundai T, Silk MJ, Zingeser JA, McDonald RA. High-resolution contact networks of free-ranging domestic dogs Canis familiaris and implications for transmission of infection. _PLoS Neglected Tropical Diseases._ 2019; 13(7): e0007565. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/31306425)
+
+10. Baker E, Challenor P, Eames M. Predicting the Output From a Stochastic Computer Model When a Deterministic Approximation is Available. _arXiv._ 2019; 1902.01290. [[LINK]](https://arxiv.org/abs/1902.01290)
+
 
 
 ### Copyright
