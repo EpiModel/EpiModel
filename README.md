@@ -133,6 +133,8 @@ EpiModel and its [extension packages](https://github.com/statnet/EpiModelHIV) ha
 
 19. Goldstein ND, LeVasseur MT, Tran NK, Purtle J, Welles SL, Eppes SC. Modeling HPV vaccination scale-up among urban young men who have sex with men in the context of HIV. _Vaccine._ 2019; 37(29): 3883-3891. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/31155416)
 
+20. Weiss KM, Jones JS, Anderson EJ, Gift T, Chesson H, Bernstein K, Workowski K, Tuite A, Rosenberg ES, Sullivan PS, Jenness SM. Optimizing Coverage versus Frequency for Sexually Transmitted Infection Screening of Men Who Have Sex with Men. _Open Forum Infectious Diseases._ 2019; 6(10): ofz405. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/31667198)
+
 
 #### Other Infectious Diseases
 
@@ -156,7 +158,7 @@ EpiModel and its [extension packages](https://github.com/statnet/EpiModelHIV) ha
 
 10. Baker E, Challenor P, Eames M. Predicting the Output From a Stochastic Computer Model When a Deterministic Approximation is Available. _arXiv._ 2019; 1902.01290. [[LINK]](https://arxiv.org/abs/1902.01290)
 
-
+11. Milwid RM, O'Sullivan TL, Poljak Z, Laskowski M, Greer AL. Comparing the effects of non-homogenous mixing patterns on epidemiological outcomes in equine populations: A mathematical modelling study. _Sci Rep._ 2019; 9(1): 3227. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/30824806)
 
 ### Copyright
 These materials are distributed under the GPL-3 license, with the following copyright and attribution requirements listed in the [LICENSE](https://github.com/statnet/EpiModel/blob/master/LICENSE.md) document above.

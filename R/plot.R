@@ -2214,8 +2214,11 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
     ## Color palettes ##
 
     # Main color palette
-    bpal <- brewer.pal(3, "Set1")
-    bpal <- c(bpal[2], bpal[1], bpal[3])
+    bpal <- c(brewer.pal(9, "Set1"), brewer.pal(8, "Set2"), brewer.pal(12, "Set3"))
+    bpal2 <- bpal[2]
+    bpal1 <- bpal[1]
+    bpal[1] <- bpal2
+    bpal[2] <- bpal1
 
     # Mean line
     if (missing(mean.col)) {
