@@ -53,7 +53,7 @@ infection.net <- function(dat, at) {
   nElig <- length(idsInf)
 
   # Initialize vectors
-  nInf <- totInf <- 0
+  nInf <- 0
 
 
 
@@ -98,25 +98,9 @@ infection.net <- function(dat, at) {
       # Set new infections vector
       idsNewInf <- unique(del$sus)
       nInf <- length(idsNewInf)
-      totInf <- nInf
 
-      # Update nw attributes
-      if (totInf > 0) {
-        if (tea.status == TRUE) {
-          nw <- activate.vertex.attribute(nw,
-                                          prefix = "testatus",
-                                          value = "i",
-                                          onset = at,
-                                          terminus = Inf,
-                                          v = idsNewInf)
-        }
-        dat$attr$status[idsNewInf] <- "i"
-        dat$attr$infTime[idsNewInf] <- at
-
-        if ("status" %in% dat$temp$fterms) {
-          nw <- set.vertex.attribute(nw, "status", dat$attr$status)
-        }
-      }
+      #Output to nw.update
+      dat$nw.update$inf$idsNewInf <- idsNewInf
 
       # Substitute PIDs for vital two-group sims
       if (any(names(nw$gal) %in% "vertex.pid")) {
@@ -131,7 +115,8 @@ infection.net <- function(dat, at) {
   # Output ------------------------------------------------------------------
 
   # Save transmission matrix
-  if (totInf > 0) {
+
+  if (nInf > 0) {
     del <- del[!duplicated(del$sus), ]
     if (at == 2) {
       dat$stats$transmat <- del
@@ -264,25 +249,10 @@ infection.net.grp <- function(dat, at) {
       idsNewInf <- unique(del$sus)
       nInf <- sum(group[idsNewInf] == 1)
       nInfG2 <- sum(group[idsNewInf] == 2)
-      totInf <- nInf + nInfG2
 
-      # Update nw attributes
-      if (totInf > 0) {
-        if (tea.status == TRUE) {
-          nw <- activate.vertex.attribute(nw,
-                                          prefix = "testatus",
-                                          value = "i",
-                                          onset = at,
-                                          terminus = Inf,
-                                          v = idsNewInf)
-        }
-        dat$attr$status[idsNewInf] <- "i"
-        dat$attr$infTime[idsNewInf] <- at
-
-        if ("status" %in% dat$temp$fterms) {
-          nw <- set.vertex.attribute(nw, "status", dat$attr$status)
-        }
-      }
+      #Out to network upate
+      dat$nw.update$inf$nInf <- nInf + nInfG2
+      dat$nw.update$inf$idsNewInf
 
       # Substitute PIDs for vital bipartite sims
       if (any(names(nw$gal) %in% "vertex.pid")) {

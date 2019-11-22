@@ -19,6 +19,28 @@ nw_update.net <- function(dat, at) {
     dat$attr <- deleteAttr(dat$attr, inactive)
   }
 
+  #Infection----
+
+  #Active and set vertex attribute of infected
+  idsNewInf <- dat$nw.update$inf$idsNewInf
+  tea.status <- dat$control$tea.status
+  if (length(idsNewInf) > 0) {
+    if (tea.status == TRUE) {
+      nw <- activate.vertex.attribute(nw,
+                                      prefix = "testatus",
+                                      value = "i",
+                                      onset = at,
+                                      terminus = Inf,
+                                      v = idsNewInf)
+    }
+    dat$attr$status[idsNewInf] <- "i"
+    dat$attr$infTime[idsNewInf] <- at
+
+    if ("status" %in% dat$temp$fterms) {
+      nw <- set.vertex.attribute(nw, "status", dat$attr$status)
+    }
+  }
+
   #Departures----
 
   if (dat$param$vital != FALSE) {
