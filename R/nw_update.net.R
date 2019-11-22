@@ -26,7 +26,7 @@ nw_update.net <- function(dat, at) {
   tea.status <- dat$control$tea.status
   if (length(idsNewInf) > 0) {
     if (tea.status == TRUE) {
-      nw <- activate.vertex.attribute(nw,
+      dat$nw <- activate.vertex.attribute(dat$nw,
                                       prefix = "testatus",
                                       value = "i",
                                       onset = at,
@@ -37,17 +37,23 @@ nw_update.net <- function(dat, at) {
     dat$attr$infTime[idsNewInf] <- at
 
     if ("status" %in% dat$temp$fterms) {
-      nw <- set.vertex.attribute(nw, "status", dat$attr$status)
+      dat$nw <- set.vertex.attribute(dat$nw, "status", dat$attr$status)
     }
   }
 
-  #Departures----
-
   if (dat$param$vital != FALSE) {
-    idsDpt <- unlist(dat$nw.update$dep)
+    #Departures----
+
+    idsDpt <- unlist(dat$nw.update$dpt$idsDpt)
+    idsDpt <- as.vector(idsDpt)
     #Deactive all departures on the network -
+
+    if (length(idsDpt) > 0) {
     dat$nw <- deactivate.vertices(dat$nw, onset = at, terminus = Inf,
                                   v = idsDpt, deactivate.edges = TRUE)
+    }
+
+    #Arrivals----
   }
 
 

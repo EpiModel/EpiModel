@@ -99,7 +99,7 @@ departures.net <- function(dat, at) {
 
   # Output ------------------------------------------------------------------
 
-  dat$nw.touch$dpt$idsDpt <- idsDpt
+  dat$nw.update$dpt$idsDpt <- idsDpt
 
   if (at == 2) {
     dat$epi$ds.flow <- c(0, nDepartures.sus)
