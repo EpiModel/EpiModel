@@ -101,31 +101,11 @@ resim_nets <- function(dat, at) {
 
     if (dat$control$delete.nodes == TRUE) {
       dat$nw <- network.extract(dat$nw, at = at)
-      inactive <- which(dat$attr$active == 0)
-      dat$attr <- deleteAttr(dat$attr, inactive)
+      inactive <- which(dat$attr$active == 0) #Merge
+      dat$nw.update$resim$inactive <- inactive
     }
 
-  }
-
-  return(dat)
-}
-
-
-#' @title Adjustment for the Edges Coefficient with Changing Network Size
-#'
-#' @description Adjusts the edges coefficient in a dynamic network model
-#'              simulated in \code{\link{netsim}} to preserve the mean
-#'              degree of nodes in the network.
-#'
-#' @param dat Master object in \code{netsim} simulations.
-#' @param at Current time step.
-#'
-#' @keywords internal
-#' @export
-#'
-edges_correct <- function(dat, at) {
-
-  if (dat$control$depend == TRUE) {
+    #Edges Correction
     if (dat$param$groups == 1) {
       old.num <- dat$epi$num[at - 1]
       new.num <- sum(dat$attr$active == 1)

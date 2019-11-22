@@ -7,15 +7,15 @@
 control.net(type, nsteps, start = 1, nsims = 1, ncores = 1, depend,
   rec.rand = TRUE, a.rand = TRUE, d.rand = TRUE, tea.status = TRUE,
   attr.rules, epi.by, use.pids = TRUE, pid.prefix,
-  initialize.FUN = initialize.net, departures.FUN = NULL,
-  arrivals.FUN = NULL, recovery.FUN = NULL,
-  edges_correct.FUN = edges_correct, resim_nets.FUN = resim_nets,
-  infection.FUN = NULL, get_prev.FUN = NULL,
-  verbose.FUN = verbose.net, module.order = NULL, set.control.ergm,
-  set.control.stergm, save.nwstats = TRUE,
-  nwstats.formula = "formation", delete.nodes = FALSE,
-  save.transmat = TRUE, save.network = TRUE, save.other,
-  verbose = TRUE, verbose.int = 1, skip.check = FALSE, ...)
+  initialize.FUN = initialize.net, resim_nets.FUN = resim_nets,
+  infection.FUN = NULL, recovery.FUN = NULL, departures.FUN = NULL,
+  arrivals.FUN = NULL, nw_update.FUN = nw_update.net,
+  get_prev.FUN = NULL, verbose.FUN = verbose.net,
+  module.order = NULL, set.control.ergm, set.control.stergm,
+  save.nwstats = TRUE, nwstats.formula = "formation",
+  delete.nodes = FALSE, save.transmat = TRUE, save.network = TRUE,
+  save.other, verbose = TRUE, verbose.int = 1, skip.check = FALSE,
+  ...)
 }
 \arguments{
 \item{type}{Disease type to be modeled, with the choice of \code{"SI"} for
@@ -90,24 +90,20 @@ default of \code{c("F", "M")}.}
 \item{initialize.FUN}{Module to initialize the model at time 1, with the
 default function of \code{\link{initialize.net}}.}
 
-\item{departures.FUN}{Module to simulate departure or exit, with the default function
-of \code{\link{departures.net}}.}
-
-\item{arrivals.FUN}{Module to simulate arrivals or entries, with the default
-function of \code{\link{arrivals.net}}.}
-
-\item{recovery.FUN}{Module to simulate disease recovery, with the default
-function of \code{\link{recovery.net}}.}
-
-\item{edges_correct.FUN}{Module to adjust the edges coefficient in response
-to changes to the population size, with the default function of
-\code{\link{edges_correct}} that preserves mean degree.}
-
 \item{resim_nets.FUN}{Module to resimulate the network at each time step,
 with the default function of \code{\link{resim_nets}}.}
 
 \item{infection.FUN}{Module to simulate disease infection, with the default
 function of \code{\link{infection.net}}.}
+
+\item{recovery.FUN}{Module to simulate disease recovery, with the default
+function of \code{\link{recovery.net}}.}
+
+\item{departures.FUN}{Module to simulate departure or exit, with the default function
+of \code{\link{departures.net}}.}
+
+\item{arrivals.FUN}{Module to simulate arrivals or entries, with the default
+function of \code{\link{arrivals.net}}.}
 
 \item{get_prev.FUN}{Module to calculate disease prevalence at each time step,
 with the default function of \code{\link{get_prev.net}}.}
@@ -170,6 +166,10 @@ this to \code{FALSE} is recommended when running models with new modules
 specified.}
 
 \item{...}{Additional control settings passed to model.}
+
+\item{edges_correct.FUN}{Module to adjust the edges coefficient in response
+to changes to the population size, with the default function of
+\code{\link{edges_correct}} that preserves mean degree.}
 }
 \description{
 Sets the controls for stochastic network models simulated with
