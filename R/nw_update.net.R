@@ -21,7 +21,14 @@ nw_update.net <- function(dat, at) {
 
   #Departures----
 
-  #Deactive all departures on the network -
+  if (dat$param$vital != FALSE) {
+    idsDpt <- unlist(dat$nw.update$dep)
+    #Deactive all departures on the network -
+    dat$nw <- deactivate.vertices(dat$nw, onset = at, terminus = Inf,
+                                  v = idsDpt, deactivate.edges = TRUE)
+  }
+
+
 
 
   #Output-----
