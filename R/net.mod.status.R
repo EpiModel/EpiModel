@@ -397,17 +397,14 @@ recovery.net <- function(dat, at) {
 
   # Process -----------------------------------------------------------------
   if (nElig > 0) {
-      vecRecov <- which(rbinom(nElig, 1, ratesElig) == 1)
-      if (length(vecRecov) > 0) {
-        idsRecov <- idsElig[vecRecov]
-        nRecov <- length(idsRecov)
-        status[idsRecov] <- recovState
-        if (tea.status == TRUE) {
-          dat$nw <- activate.vertex.attribute(dat$nw, prefix = "testatus",
-                                              value = recovState, onset = at,
-                                              terminus = Inf, v = idsRecov)
-        }
-      }
+    vecRecov <- which(rbinom(nElig, 1, ratesElig) == 1)
+    if (length(vecRecov) > 0) {
+      idsRecov <- idsElig[vecRecov]
+      nRecov <- length(idsRecov)
+      status[idsRecov] <- recovState
+      dat$nw.update$rec$idsRecov <- idsRecov
+      dat$nw.update$rec$recovState <- recovState
+    }
   }
 
   dat$attr$status <- status
@@ -491,19 +488,14 @@ recovery.net.grp <- function(dat, at) {
 
   # Process -----------------------------------------------------------------
   if (nElig > 0) {
-      vecRecov <- which(rbinom(nElig, 1, ratesElig) == 1)
-      if (length(vecRecov) > 0) {
-        idsRecov <- idsElig[vecRecov]
-        nRecov <- sum(group[idsRecov] == 1)
-        nRecovG2 <- sum(group[idsRecov] == 2)
-        status[idsRecov] <- recovState
-        if (tea.status == TRUE) {
-          dat$nw <- activate.vertex.attribute(dat$nw, prefix = "testatus",
-                                              value = recovState, onset = at,
-                                              terminus = Inf, v = idsRecov)
-        }
-      }
-     }
+    vecRecov <- which(rbinom(nElig, 1, ratesElig) == 1)
+    if (length(vecRecov) > 0) {
+      dat$nw.update$rec$idsRecov <- idsRecov <- idsElig[vecRecov]
+      nRecov <- sum(group[idsRecov] == 1)
+      nRecovG2 <- sum(group[idsRecov] == 2)
+      dat$nw.update$rec$recovState <- recovState <- status[idsRecov]
+    }
+  }
 
   dat$attr$status <- status
   if ("status" %in% dat$temp$fterms) {

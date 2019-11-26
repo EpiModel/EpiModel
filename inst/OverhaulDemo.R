@@ -42,8 +42,8 @@ dx2 <- netdx(est2, nsims = 5, nsteps = 250)
 print(dx2)
 
 #Parameters
-init <- init.net(i.num = 5, i.num.g2 = 5)
-param <- param.net(inf.prob = 0.1, inf.prob.g2 = 0.2,
+init <- init.net(i.num = 50, i.num.g2 = 5)
+param <- param.net(inf.prob = 0.4, inf.prob.g2 = 0.2,
                    rec.rate = 0.02, rec.rate.g2 = 0.02,
                    act.rate = 5)
 control <- control.net(type = "SIS", nsteps = 100, nsims = 5)

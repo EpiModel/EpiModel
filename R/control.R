@@ -306,9 +306,6 @@ control.icm <- function(type, nsteps, nsims = 1, rec.rand = TRUE, a.rand = TRUE,
 #'        function of \code{\link{arrivals.net}}.
 #' @param recovery.FUN Module to simulate disease recovery, with the default
 #'        function of \code{\link{recovery.net}}.
-#' @param edges_correct.FUN Module to adjust the edges coefficient in response
-#'        to changes to the population size, with the default function of
-#'        \code{\link{edges_correct}} that preserves mean degree.
 #' @param resim_nets.FUN Module to resimulate the network at each time step,
 #'        with the default function of \code{\link{resim_nets}}.
 #' @param infection.FUN Module to simulate disease infection, with the default

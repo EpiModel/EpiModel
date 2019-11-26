@@ -166,10 +166,6 @@ this to \code{FALSE} is recommended when running models with new modules
 specified.}
 
 \item{...}{Additional control settings passed to model.}
-
-\item{edges_correct.FUN}{Module to adjust the edges coefficient in response
-to changes to the population size, with the default function of
-\code{\link{edges_correct}} that preserves mean degree.}
 }
 \description{
 Sets the controls for stochastic network models simulated with

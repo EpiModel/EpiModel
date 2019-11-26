@@ -74,10 +74,6 @@
 #' step to account for changes in the size of the network (changed through entries
 #' and exits), and the disease status of the nodes.
 #' \itemize{
-#'  \item \code{\link{edges_correct}}: adjusts the edges coefficient of a network
-#'        model to account for changes in the population size due to entries and
-#'        exits. The default behavior is to preserve the mean degree (average
-#'        number of edges per person) in response to change population sizes.
 #'  \item \code{\link{resim_nets}}: resimulates the network object one time step
 #'        forward given the set of formation and dissolution coefficients estimated
 #'        in \code{\link{netest}}. This function also deletes the inactive nodes
@@ -95,13 +91,13 @@
 #'  \item \code{\link{verbose.net}}: summarizes the current state of the simulation
 #'        and prints this to the console.
 #' }
-#' 
+#'
 #' @section One- & Two-Mode Modules:
-#' If epidemic \code{type} is supplied within \code{\link{control.net}}, EpiModel 
-#' defaults each of the base epidemic modules described above (arrivals.FUN, 
-#' departures.FUN, infection.FUN, recovery.FUN and get_prev.FUN) to the correct .net 
+#' If epidemic \code{type} is supplied within \code{\link{control.net}}, EpiModel
+#' defaults each of the base epidemic modules described above (arrivals.FUN,
+#' departures.FUN, infection.FUN, recovery.FUN and get_prev.FUN) to the correct .net
 #' function based on variables passed to \code{\link{param.net}} (e.g. num.g2, denoting
-#' population size of mode two, would select the two-mode variants of the aformentioned 
+#' population size of mode two, would select the two-mode variants of the aformentioned
 #' modules). Two-mode modules are denoted by a .bip affix (e.g., recovery.net.bip)
 #'
 #'

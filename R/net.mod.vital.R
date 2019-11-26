@@ -154,59 +154,11 @@ arrivals.net <- function(dat, at) {
   # Add Nodes ---------------------------------------------------------------
   if (nOld > 0) {
     nArrivals <- sum(rbinom(nOld, 1, a.rate))
-    if (nArrivals > 0) {
-      dat$nw <- add.vertices(dat$nw, nv = nArrivals)
-      newNodes <- (nCurr + 1):(nCurr + nArrivals)
-      dat$nw <- activate.vertices(dat$nw, onset = at, terminus = Inf, v = newNodes)
-    }
-  }
-
-  # Update Nodal Attributes -------------------------------------------------
-  if (length(newNodes) > 0) {
-
-    # Set attributes on nw
-    fterms <- dat$temp$fterms
-    curr.tab <- get_attr_prop(dat$nw, fterms)
-    if (length(curr.tab) > 0) {
-      dat$nw <- update_nwattr(dat$nw, newNodes, dat$control$attr.rules,
-                              curr.tab, dat$temp$t1.tab)
-    }
-
-    # Save any val on attr
-    dat <- copy_toall_attr(dat, at, fterms)
-
-    if (tea.status == TRUE) {
-      if ("status" %in% fterms) {
-        dat$nw <- activate.vertex.attribute(dat$nw, prefix = "testatus",
-                                            value = dat$attr$status[newNodes],
-                                            onset = at, terminus = Inf,
-                                            v = newNodes)
-      } else {
-        dat$nw <- activate.vertex.attribute(dat$nw, prefix = "testatus",
-                                            value = "s", onset = at, terminus = Inf,
-                                            v = newNodes)
-      }
-    }
-    if (!("status" %in% fterms)) {
-      dat$attr$status <- c(dat$attr$status, rep("s", length(newNodes)))
-    }
-    dat$attr$active <- c(dat$attr$active, rep(1, length(newNodes)))
-    dat$attr$infTime <- c(dat$attr$infTime, rep(NA, length(newNodes)))
-    dat$attr$entrTime <- c(dat$attr$entrTime, rep(at, length(newNodes)))
-    dat$attr$exitTime <- c(dat$attr$exitTime, rep(NA, length(newNodes)))
-
-    ## Handles infTime when incoming nodes are infected
-    newNodesInf <- intersect(newNodes, which(dat$attr$status == "i"))
-    dat$attr$infTime[newNodesInf] <- at
-
-    if (length(unique(sapply(dat$attr, length))) != 1) {
-      stop("Attribute list of unequal length. Check arrivals.net module.")
-    }
-
   }
 
 
   # Output ------------------------------------------------------------------
+  dat$nw.update$arr$nArrivals <- nArrivals
   if (at == 2) {
     dat$epi$a.flow <- c(0, nArrivals)
   } else {
@@ -380,76 +332,17 @@ arrivals.net.grp <- function(dat, at) {
   # Add Nodes ---------------------------------------------------------------
   if (nOld > 0) {
 
-    if (a.rand == TRUE) {
-      if (is.na(a.rate.g2)) {
-        nArrivals <- sum(rbinom(nOld, 1, a.rate))
-        nArrivalsG2 <- sum(rbinom(nOld, 1, a.rate))
-      } else {
-        nArrivals <- sum(rbinom(nOld, 1, a.rate))
-        nArrivalsG2 <- sum(rbinom(nOldG2, 1, a.rate.g2))
-      }
-    }
-    nArrivals.tot <- nArrivals + nArrivalsG2
-
-    if (nArrivals.tot > 0) {
-      newNodes <- (nCurr + 1):(nCurr + nArrivals.tot)
-      dat$nw <- add.vertices(dat$nw, nv = nArrivals.tot)
-      dat$nw <- activate.vertices(dat$nw, onset = at, terminus = Inf, v = newNodes)
-      dat$nw <- set.vertex.attribute(dat$nw, "group",
-                                     rep(1:2, c(nArrivals, nArrivalsG2)),
-                                     newNodes)
+    if (is.na(a.rate.g2)) {
+      nArrivals <- sum(rbinom(nOld, 1, a.rate))
+      nArrivalsG2 <- sum(rbinom(nOld, 1, a.rate))
+    } else {
+      nArrivals <- sum(rbinom(nOld, 1, a.rate))
+      nArrivalsG2 <- sum(rbinom(nOldG2, 1, a.rate.g2))
     }
   }
-
-
-  # Update Nodal Attributes -------------------------------------------------
-  if (length(newNodes) > 0) {
-
-    # Set attributes on nw
-    fterms <- dat$temp$fterms
-    curr.tab <- get_attr_prop(dat$nw, fterms)
-    if (length(curr.tab) > 0) {
-      dat$nw <- update_nwattr(dat$nw, newNodes, dat$control$attr.rules,
-                              curr.tab, dat$temp$t1.tab)
-    }
-
-    # Save any val on attr
-    dat <- copy_toall_attr(dat, at, fterms)
-
-    if (tea.status == TRUE) {
-      if ("status" %in% fterms) {
-        dat$nw <- activate.vertex.attribute(dat$nw, prefix = "testatus",
-                                            value = dat$attr$status[newNodes],
-                                            onset = at, terminus = Inf,
-                                            v = newNodes)
-      } else {
-        dat$nw <- activate.vertex.attribute(dat$nw, prefix = "testatus",
-                                            value = "s", onset = at, terminus = Inf,
-                                            v = newNodes)
-      }
-    }
-
-
-    if (!("status" %in% fterms)) {
-      dat$attr$status <- c(dat$attr$status, rep("s", length(newNodes)))
-    }
-    dat$attr$active <- c(dat$attr$active, rep(1, length(newNodes)))
-    dat$attr$infTime <- c(dat$attr$infTime, rep(NA, length(newNodes)))
-    dat$attr$entrTime <- c(dat$attr$entrTime, rep(at, length(newNodes)))
-    dat$attr$exitTime <- c(dat$attr$exitTime, rep(NA, length(newNodes)))
-
-    ## Handles infTime when incoming nodes are infected
-    newNodesInf <- intersect(newNodes, which(dat$attr$status == "i"))
-    dat$attr$infTime[newNodesInf] <- at
-
-    if (length(unique(sapply(dat$attr, length))) != 1) {
-      stop("Attribute list of unequal length. Check arrivals.net module.")
-    }
-
-  }
-
 
   # Output ------------------------------------------------------------------
+  dat$nw.update$arr$nArrivals <- c(nArrivals, nArrivalsG2)
   if (at == 2) {
     dat$epi$a.flow <- c(0, nArrivals)
     dat$epi$a.flow.g2 <- c(0, nArrivalsG2)
