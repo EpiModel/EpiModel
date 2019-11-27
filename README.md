@@ -135,6 +135,9 @@ EpiModel and its [extension packages](https://github.com/statnet/EpiModelHIV) ha
 
 20. Weiss KM, Jones JS, Anderson EJ, Gift T, Chesson H, Bernstein K, Workowski K, Tuite A, Rosenberg ES, Sullivan PS, Jenness SM. Optimizing Coverage versus Frequency for Sexually Transmitted Infection Screening of Men Who Have Sex with Men. _Open Forum Infectious Diseases._ 2019; 6(10): ofz405. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/31667198)
 
+21. Maloney KM, Driggers RA, Sarkar S, Anderson E, Malik A, Jenness SM. Expanded Choices with Greater HIV Prevention Benefits: A Mathematical Model of Long-Acting Injectable and Daily-Oral Pre-Exposure Prophylaxis. _medRxiv._ 2019; DOI: 10.1101/19012443. [[LINK]](https://doi.org/10.1101/19012443)
+
+22. Wang LY, Hamilton DT, Rosenberg ES, Aslam MV, Sullivan PS, Katz DA, Dunville RL, Barrios LC, Goodreau SM. Cost-Effectiveness of Pre-Exposure Prophylaxis Among Adolescent Sexual Minority Males. _J Adolesc Health._ 2019; pii: S1054-139X(19)30415-X. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/31757626)
 
 #### Other Infectious Diseases
 
