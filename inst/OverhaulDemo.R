@@ -1,8 +1,10 @@
 
-## Demo of EpiModel 2.0 Overhaul Functionality
+## Demo of EpiModel Overhaul Functionality
 
 suppressMessages(library(EpiModel))
 
+
+#EpiModel Overhaul - Version 2----
 
 # Example - One Group
 
@@ -42,8 +44,8 @@ dx2 <- netdx(est2, nsims = 5, nsteps = 250)
 print(dx2)
 
 #Parameters
-init <- init.net(i.num = 50, i.num.g2 = 5)
-param <- param.net(inf.prob = 0.4, inf.prob.g2 = 0.2,
+init <- init.net(i.num = 5, i.num.g2 = 5)
+param <- param.net(inf.prob = 0.1, inf.prob.g2 = 0.2,
                    rec.rate = 0.02, rec.rate.g2 = 0.02,
                    act.rate = 5)
 control <- control.net(type = "SIS", nsteps = 100, nsims = 5)
@@ -168,3 +170,34 @@ control <- control.net(type = NULL, nsims = 1, nsteps = 100,
 
 ## Simulate the epidemic model
 sim3 <- netsim(est3, param, init, control)
+
+#EpiModel Overhaul - Version 3----
+
+#Closed Population; type = "SI"
+num <- 200
+nw <- network::network.initialize(num, directed = FALSE)
+formation <- ~ edges
+target.stats <- 60
+coef.diss <- dissolution_coefs(dissolution = ~ offset(edges), duration = 50)
+est <- netest(nw, formation, target.stats, coef.diss)
+
+# Parameters
+init <- init.net(i.num = 50)
+param <- param.net(inf.prob = 0.4, act.rate = 5, rec.rate = 0.02)
+control <- control.net(type = "SI", nsteps = 100, nsims = 1, depend = TRUE)
+
+sim <- netsim(est, param, init, control)
+
+#Open Population; type = "SIR"
+nw <- network.initialize(n = 500, directed = FALSE)
+formation <- ~edges + concurrent + degrange(from = 4)
+target.stats <- c(175, 110, 0)
+coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 50)
+
+# Parameters
+init <- init.net(i.num = 10, r.num = 15)
+param <- param.net(inf.prob = 0.1, act.rate = 5,
+                   a.rate = 0.01, rec.rate = 0.02,
+                   ds.rate = 0.01, di.rate = 0.01, dr.rate = 0.01)
+control <- control.net(type = "SIR", nsims = 1, nsteps = 500, depend = TRUE)
+sim <- netsim(est, param, init, control)

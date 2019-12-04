@@ -148,8 +148,6 @@ arrivals.net <- function(dat, at) {
   nCurr <- network.size(dat$nw)
 
   nArrivals <- 0
-  newNodes <- NULL
-
 
   # Add Nodes ---------------------------------------------------------------
   if (nOld > 0) {
