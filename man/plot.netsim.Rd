@@ -4,14 +4,42 @@
 \alias{plot.netsim}
 \title{Plot Data from a Stochastic Network Epidemic Model}
 \usage{
-\method{plot}{netsim}(x, type = "epi", y, popfrac = FALSE,
-  sim.lines = FALSE, sims, sim.col, sim.lwd, sim.alpha,
-  mean.line = TRUE, mean.smooth = TRUE, mean.col, mean.lwd = 2,
-  mean.lty = 1, qnts = 0.5, qnts.col, qnts.alpha, qnts.smooth = TRUE,
-  legend, leg.cex = 0.8, axs = "r", grid = FALSE, add = FALSE,
-  network = 1, at = 1, col.status = FALSE, shp.bip = NULL, stats,
-  targ.line = TRUE, targ.col, targ.lwd = 2, targ.lty = 2,
-  plots.joined, ...)
+\method{plot}{netsim}(
+  x,
+  type = "epi",
+  y,
+  popfrac = FALSE,
+  sim.lines = FALSE,
+  sims,
+  sim.col,
+  sim.lwd,
+  sim.alpha,
+  mean.line = TRUE,
+  mean.smooth = TRUE,
+  mean.col,
+  mean.lwd = 2,
+  mean.lty = 1,
+  qnts = 0.5,
+  qnts.col,
+  qnts.alpha,
+  qnts.smooth = TRUE,
+  legend,
+  leg.cex = 0.8,
+  axs = "r",
+  grid = FALSE,
+  add = FALSE,
+  network = 1,
+  at = 1,
+  col.status = FALSE,
+  shp.bip = NULL,
+  stats,
+  targ.line = TRUE,
+  targ.col,
+  targ.lwd = 2,
+  targ.lty = 2,
+  plots.joined,
+  ...
+)
 }
 \arguments{
 \item{x}{An \code{EpiModel} model object of class \code{netsim}.}

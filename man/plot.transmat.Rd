@@ -4,8 +4,7 @@
 \alias{plot.transmat}
 \title{Plot transmat infection tree in one of several styles}
 \usage{
-\method{plot}{transmat}(x, style = c("phylo", "network",
-  "transmissionTimeline"), ...)
+\method{plot}{transmat}(x, style = c("phylo", "network", "transmissionTimeline"), ...)
 }
 \arguments{
 \item{x}{A \code{\link{transmat}} object to be plotted}

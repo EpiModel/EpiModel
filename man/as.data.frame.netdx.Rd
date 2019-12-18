@@ -4,8 +4,7 @@
 \alias{as.data.frame.netdx}
 \title{Extract Timed Edgelists netdx Objects}
 \usage{
-\method{as.data.frame}{netdx}(x, row.names = NULL, optional = FALSE,
-  sim, ...)
+\method{as.data.frame}{netdx}(x, row.names = NULL, optional = FALSE, sim, ...)
 }
 \arguments{
 \item{x}{An \code{EpiModel} object of class \code{netdx}.}

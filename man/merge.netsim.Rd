@@ -4,8 +4,16 @@
 \alias{merge.netsim}
 \title{Merge Model Simulations Across netsim Objects}
 \usage{
-\method{merge}{netsim}(x, y, keep.transmat = TRUE, keep.network = TRUE,
-  keep.nwstats = TRUE, keep.other = TRUE, param.error = TRUE, ...)
+\method{merge}{netsim}(
+  x,
+  y,
+  keep.transmat = TRUE,
+  keep.network = TRUE,
+  keep.nwstats = TRUE,
+  keep.other = TRUE,
+  param.error = TRUE,
+  ...
+)
 }
 \arguments{
 \item{x}{An \code{EpiModel} object of class \code{\link{netsim}}.}

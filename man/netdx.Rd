@@ -4,10 +4,21 @@
 \alias{netdx}
 \title{Dynamic Network Model Diagnostics}
 \usage{
-netdx(x, nsims = 1, dynamic = TRUE, nsteps,
-  nwstats.formula = "formation", set.control.ergm, set.control.stergm,
-  sequential = TRUE, keep.tedgelist = FALSE, keep.tnetwork = FALSE,
-  verbose = TRUE, ncores = 1, skip.dissolution = FALSE)
+netdx(
+  x,
+  nsims = 1,
+  dynamic = TRUE,
+  nsteps,
+  nwstats.formula = "formation",
+  set.control.ergm,
+  set.control.stergm,
+  sequential = TRUE,
+  keep.tedgelist = FALSE,
+  keep.tnetwork = FALSE,
+  verbose = TRUE,
+  ncores = 1,
+  skip.dissolution = FALSE
+)
 }
 \arguments{
 \item{x}{An \code{EpiModel} object of class \code{netest}.}

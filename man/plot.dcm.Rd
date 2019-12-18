@@ -4,9 +4,23 @@
 \alias{plot.dcm}
 \title{Plot Data from a Deterministic Compartmental Epidemic Model}
 \usage{
-\method{plot}{dcm}(x, y, popfrac = FALSE, run, col, lwd, lty,
-  alpha = 0.9, legend, leg.name, leg.cex = 0.8, axs = "r",
-  grid = FALSE, add = FALSE, ...)
+\method{plot}{dcm}(
+  x,
+  y,
+  popfrac = FALSE,
+  run,
+  col,
+  lwd,
+  lty,
+  alpha = 0.9,
+  legend,
+  leg.name,
+  leg.cex = 0.8,
+  axs = "r",
+  grid = FALSE,
+  add = FALSE,
+  ...
+)
 }
 \arguments{
 \item{x}{An \code{EpiModel} object of class \code{dcm}.}

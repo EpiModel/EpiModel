@@ -4,8 +4,7 @@
 \alias{init.net}
 \title{Initial Conditions for Stochastic Network Models}
 \usage{
-init.net(i.num, r.num, i.num.m2, r.num.m2, status.vector, infTime.vector,
-  ...)
+init.net(i.num, r.num, i.num.m2, r.num.m2, status.vector, infTime.vector, ...)
 }
 \arguments{
 \item{i.num}{Number of initial infected. For bipartite models, this is the
