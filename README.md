@@ -139,7 +139,7 @@ EpiModel and its [extension packages](https://github.com/statnet/EpiModelHIV) ha
 
 22. Wang LY, Hamilton DT, Rosenberg ES, Aslam MV, Sullivan PS, Katz DA, Dunville RL, Barrios LC, Goodreau SM. Cost-Effectiveness of Pre-Exposure Prophylaxis Among Adolescent Sexual Minority Males. _J Adolesc Health._ 2019; pii: S1054-139X(19)30415-X. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/31757626)
 
-#### Other Infectious Diseases
+#### Other Infectious Diseases and Contagious Processes
 
 1. Ezenwa VO, Archie EA, Craft ME, Hawley DM, Martin LB, Moore J, White L. Host behaviour-parasite feedback: an essential link between animal behaviour and disease ecology. _Proc Biol Sci._ 2016; 283(1828). [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/27053751)
 
@@ -162,6 +162,8 @@ EpiModel and its [extension packages](https://github.com/statnet/EpiModelHIV) ha
 10. Baker E, Challenor P, Eames M. Predicting the Output From a Stochastic Computer Model When a Deterministic Approximation is Available. _arXiv._ 2019; 1902.01290. [[LINK]](https://arxiv.org/abs/1902.01290)
 
 11. Milwid RM, O'Sullivan TL, Poljak Z, Laskowski M, Greer AL. Comparing the effects of non-homogenous mixing patterns on epidemiological outcomes in equine populations: A mathematical modelling study. _Sci Rep._ 2019; 9(1): 3227. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/30824806)
+
+12. Everton SF, Schroeder R. Plagues, Pagans, and Christians: Differential Survival, Social Networks, and the Rise of Christianity. _Journal for the Scientific Study of Religion._ 2019; DOI: 10.1111/jssr.12631. [[LINK]](https://doi.org/10.1111/jssr.12631)
 
 ### Copyright
 These materials are distributed under the GPL-3 license, with the following copyright and attribution requirements listed in the [LICENSE](https://github.com/statnet/EpiModel/blob/master/LICENSE.md) document above.
