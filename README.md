@@ -139,6 +139,8 @@ EpiModel and its [extension packages](https://github.com/statnet/EpiModelHIV) ha
 
 22. Wang LY, Hamilton DT, Rosenberg ES, Aslam MV, Sullivan PS, Katz DA, Dunville RL, Barrios LC, Goodreau SM. Cost-Effectiveness of Pre-Exposure Prophylaxis Among Adolescent Sexual Minority Males. _J Adolesc Health._ 2019; pii: S1054-139X(19)30415-X. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/31757626)
 
+23. Mittler JE, Murphy JT, Stansfield SE, Peebles KC, Gottlieb GS, Abernethy NF, Reid MC, Goodreau SM, Herbeck JT. Large benefits to youth-focused HIV treatment-as-prevention efforts in generalized heterosexual populations: An agent-based simulation model. PLoS Comput Biol. 2019 Dec 17;15(12):e1007561. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/31846456)
+
 #### Other Infectious Diseases and Contagious Processes
 
 1. Ezenwa VO, Archie EA, Craft ME, Hawley DM, Martin LB, Moore J, White L. Host behaviour-parasite feedback: an essential link between animal behaviour and disease ecology. _Proc Biol Sci._ 2016; 283(1828). [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/27053751)
