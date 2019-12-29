@@ -89,7 +89,7 @@ Our team also receives institutional support through the following center-level 
 
 
 
-### Uses of EpiModel in the Scientific Literature
+### EpiModel in the Scientific Literature
 
 EpiModel and its [extension packages](https://github.com/statnet/EpiModelHIV) have been used in the following scientific journal articles. (If you are aware of others, send us an email at samuel.m.jenness@emory.edu to be included in this list.)
 
