@@ -43,7 +43,7 @@ est <- netest(nw, formation, target.stats, coef.diss)
 
 # Parameters
 init <- init.net(i.num = 50)
-param <- param.net(inf.prob = 0.4, act.rate = 5, rec.rate = 0.2)
+param <- param.net(inf.prob = 0.4, act.rate = 5, rec.rate = 0.02)
 control <- control.net(type = "SIS", nsteps = 100, nsims = 5)
 
 set.seed(123)
@@ -51,11 +51,11 @@ crosscheck.net(est, param, init, control)
 dat <- initialize.net(est, param, init, control, s = 1)
 
 for (at in 2:100) {
-  dat <- resim_nets(dat, at = i)
-  dat <- recovery.net(dat, at = i)
-  dat <- infection.net(dat, at = i)
-  dat <- nw.update.net(dat, at = i)
-  dat <- get_prev.net(dat, at = i)
+  dat <- resim_nets(dat, at)
+  dat <- recovery.net(dat, at)
+  dat <- infection.net(dat, at)
+  dat <- nw.update.net(dat, at)
+  dat <- get_prev.net(dat, at)
 }
 
 num <- 200
@@ -66,8 +66,8 @@ coef.diss <- dissolution_coefs(dissolution = ~ offset(edges), duration = 50)
 est <- netest(nw, formation, target.stats, coef.diss)
 
 # Parameters
-init <- init.net(i.num = 50)
-param <- param.net(inf.prob = 0.4, act.rate = 5, rec.rate = 0.2)
+init <- init.net(i.num = 50, r.num = 20)
+param <- param.net(inf.prob = 0.4, act.rate = 5, rec.rate = 0.02)
 control <- control.net(type = "SIR", nsteps = 100, nsims = 5)
 
 set.seed(123)
@@ -75,11 +75,11 @@ crosscheck.net(est, param, init, control)
 dat <- initialize.net(est, param, init, control, s = 1)
 
 for (at in 2:100) {
-  dat <- resim_nets(dat, at = i)
-  dat <- recovery.net(dat, at = i)
-  dat <- infection.net(dat, at = i)
-  dat <- nw.update.net(dat, at = i)
-  dat <- get_prev.net(dat, at = i)
+  dat <- resim_nets(dat, at)
+  dat <- recovery.net(dat, at)
+  dat <- infection.net(dat, at)
+  dat <- nw.update.net(dat, at)
+  dat <- get_prev.net(dat, at)
 }
 
 #Arrivals/Departures
