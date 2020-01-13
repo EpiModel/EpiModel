@@ -413,6 +413,7 @@ control.icm <- function(type, nsteps, nsims = 1, rec.rand = TRUE, a.rand = TRUE,
 #'
 #' @export
 #'
+
 control.net <- function(type, nsteps, start = 1, nsims = 1, ncores = 1,
                         depend, rec.rand = TRUE,
                         a.rand = TRUE, d.rand = TRUE, tea.status = TRUE,
@@ -420,7 +421,7 @@ control.net <- function(type, nsteps, start = 1, nsims = 1, ncores = 1,
                         initialize.FUN = initialize.net, resim_nets.FUN = resim_nets,
                         infection.FUN = NULL, recovery.FUN = NULL,
                         departures.FUN = NULL, arrivals.FUN = NULL,
-                        nw_update.FUN = nw_update.net, get_prev.FUN = NULL,
+                        nw.update.FUN = nw.update.net, get_prev.FUN = NULL,
                         verbose.FUN = verbose.net, module.order = NULL,
                         set.control.ergm, set.control.stergm,
                         save.nwstats = TRUE, nwstats.formula = "formation",
@@ -475,7 +476,7 @@ control.net <- function(type, nsteps, start = 1, nsims = 1, ncores = 1,
 
   #Check whether any base modules have been redefined by user (note: must come after above)
   bi.nms <- bi.nms[-which(bi.nms %in% c("initialize.FUN", "edges_correct.FUN",
-                                        "resim_nets.FUN", "verbose.FUN", "nw_update.FUN"))]
+                                        "resim_nets.FUN", "verbose.FUN", "nw.update.FUN"))]
     if (length(bi.nms) > 0){
     flag1 <- logical()
     for (args in 1:length(bi.nms)) {
