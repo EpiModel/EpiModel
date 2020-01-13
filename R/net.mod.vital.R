@@ -190,7 +190,7 @@ departures.net.grp <- function(dat, at) {
 
   # Variables ---------------------------------------------------------------
   group <- get.vertex.attribute(dat$nw, "group")
-  idsDpt <-
+  idsDpt <- list()
 
     # Bookkeeping
     type <- dat$control$type

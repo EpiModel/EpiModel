@@ -167,8 +167,8 @@ nw.update.net <- function(dat, at) {
     if (sum(nArrivals) > 0) {
       nCurr <- network.size(dat$nw)
       #New Arrivals
-      dat$nw <- add.vertices(dat$nw, nv = nArrivals)
-      newNodes <- (nCurr + 1):(nCurr + nArrivals)
+      dat$nw <- add.vertices(dat$nw, nv = sum(nArrivals))
+      newNodes <- (nCurr + 1):(nCurr + sum(nArrivals))
       dat$nw <- activate.vertices(dat$nw, onset = at, terminus = Inf, v = newNodes)
       if (length(nArrivals) > 1) {
         dat$nw <- set.vertex.attribute(dat$nw, "group",

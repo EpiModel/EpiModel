@@ -249,10 +249,12 @@ infection.net.grp <- function(dat, at) {
       idsNewInf <- unique(del$sus)
       nInf <- sum(group[idsNewInf] == 1)
       nInfG2 <- sum(group[idsNewInf] == 2)
+      totInf <- nInf + nInfG2
+
 
       #Out to network upate
       dat$nw.update$inf$nInf <- nInf + nInfG2
-      dat$nw.update$inf$idsNewInf
+      dat$nw.update$inf$idsNewInf <- idsNewInf
 
       # Substitute PIDs for vital bipartite sims
       if (any(names(nw$gal) %in% "vertex.pid")) {
@@ -493,7 +495,8 @@ recovery.net.grp <- function(dat, at) {
       dat$nw.update$rec$idsRecov <- idsRecov <- idsElig[vecRecov]
       nRecov <- sum(group[idsRecov] == 1)
       nRecovG2 <- sum(group[idsRecov] == 2)
-      dat$nw.update$rec$recovState <- recovState <- status[idsRecov]
+      dat$nw.update$rec$recovState <- recovState
+      status[idsRecov] <- recovState
     }
   }
 
