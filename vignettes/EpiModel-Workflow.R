@@ -1,6 +1,7 @@
 #EpiModel Overhaul v3: Worked Examples
 
 remotes::install_github("statnet/EpiModel", ref = "overhaul_s3_b")
+suppressMessages(library("EpiModel"))
 
 ##One Group
 
