@@ -166,5 +166,8 @@ EpiModel and its [extension packages](https://github.com/statnet/EpiModelHIV) ha
 
 12. Everton SF, Schroeder R. Plagues, Pagans, and Christians: Differential Survival, Social Networks, and the Rise of Christianity. _Journal for the Scientific Study of Religion._ 2019; DOI: 10.1111/jssr.12631. [[LINK]](https://doi.org/10.1111/jssr.12631)
 
+13. Amusan O, Thompson AF, Aderinola TB, Alese BK. Modelling Malicious Attack in Social Networks. Network and Communication Technologies. 2020; 5(1): 37-43. [[LINK]](http://www.ccsenet.org/journal/index.php/nct/article/view/0/41983)
+
+
 ### Copyright
 These materials are distributed under the GPL-3 license, with the following copyright and attribution requirements listed in the [LICENSE](https://github.com/statnet/EpiModel/blob/master/LICENSE.md) document above.
