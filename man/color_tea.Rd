@@ -4,9 +4,18 @@
 \alias{color_tea}
 \title{Creates a TEA Variable for Infection Status for \code{ndtv} Animations}
 \usage{
-color_tea(nd, old.var = "testatus", old.sus = "s", old.inf = "i",
-  old.rec = "r", new.var = "ndtvcol", new.sus, new.inf, new.rec,
-  verbose = TRUE)
+color_tea(
+  nd,
+  old.var = "testatus",
+  old.sus = "s",
+  old.inf = "i",
+  old.rec = "r",
+  new.var = "ndtvcol",
+  new.sus,
+  new.inf,
+  new.rec,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{nd}{An object of class \code{networkDynamic}.}

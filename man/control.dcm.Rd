@@ -4,9 +4,18 @@
 \alias{control.dcm}
 \title{Control Settings for Deterministic Compartmental Models}
 \usage{
-control.dcm(type, nsteps, dt = 1, odemethod = "rk4", dede = FALSE,
-  new.mod = NULL, sens.param = TRUE, print.mod = FALSE,
-  verbose = FALSE, ...)
+control.dcm(
+  type,
+  nsteps,
+  dt = 1,
+  odemethod = "rk4",
+  dede = FALSE,
+  new.mod = NULL,
+  sens.param = TRUE,
+  print.mod = FALSE,
+  verbose = FALSE,
+  ...
+)
 }
 \arguments{
 \item{type}{Disease type to be modeled, with the choice of \code{"SI"} for

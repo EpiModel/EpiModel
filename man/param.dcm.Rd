@@ -4,9 +4,26 @@
 \alias{param.dcm}
 \title{Epidemic Parameters for Deterministic Compartmental Models}
 \usage{
-param.dcm(inf.prob, inter.eff, inter.start, act.rate, rec.rate, a.rate,
-  ds.rate, di.rate, dr.rate, inf.prob.g2, act.rate.g2, rec.rate.g2,
-  a.rate.g2, ds.rate.g2, di.rate.g2, dr.rate.g2, balance, ...)
+param.dcm(
+  inf.prob,
+  inter.eff,
+  inter.start,
+  act.rate,
+  rec.rate,
+  a.rate,
+  ds.rate,
+  di.rate,
+  dr.rate,
+  inf.prob.g2,
+  act.rate.g2,
+  rec.rate.g2,
+  a.rate.g2,
+  ds.rate.g2,
+  di.rate.g2,
+  dr.rate.g2,
+  balance,
+  ...
+)
 }
 \arguments{
 \item{inf.prob}{Probability of infection per transmissible act between

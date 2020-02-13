@@ -4,11 +4,31 @@
 \alias{plot.icm}
 \title{Plot Data from a Stochastic Individual Contact Epidemic Model}
 \usage{
-\method{plot}{icm}(x, y, popfrac = FALSE, sim.lines = FALSE, sims,
-  sim.col, sim.lwd, sim.alpha, mean.line = TRUE, mean.smooth = TRUE,
-  mean.col, mean.lwd = 2, mean.lty = 1, qnts = 0.5, qnts.col,
-  qnts.alpha, qnts.smooth = TRUE, legend, leg.cex = 0.8, axs = "r",
-  grid = FALSE, add = FALSE, ...)
+\method{plot}{icm}(
+  x,
+  y,
+  popfrac = FALSE,
+  sim.lines = FALSE,
+  sims,
+  sim.col,
+  sim.lwd,
+  sim.alpha,
+  mean.line = TRUE,
+  mean.smooth = TRUE,
+  mean.col,
+  mean.lwd = 2,
+  mean.lty = 1,
+  qnts = 0.5,
+  qnts.col,
+  qnts.alpha,
+  qnts.smooth = TRUE,
+  legend,
+  leg.cex = 0.8,
+  axs = "r",
+  grid = FALSE,
+  add = FALSE,
+  ...
+)
 }
 \arguments{
 \item{x}{An \code{EpiModel} model object of class \code{netsim}.}

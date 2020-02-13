@@ -1,7 +1,7 @@
 EpiModel
 ===============
 
-[![Version](http://img.shields.io/badge/Version-1.7.3-orange.svg?style=flat)](https://github.com/statnet/EpiModel/releases/tag/v1.7.3)
+[![Version](http://img.shields.io/badge/Version-1.7.5-orange.svg?style=flat)](https://github.com/statnet/EpiModel/releases/tag/v1.7.5)
 [![](http://cranlogs.r-pkg.org/badges/EpiModel?color=yellow)](http://cran.rstudio.com/web/packages/EpiModel/index.html)
 [![](http://cranlogs.r-pkg.org/badges/grand-total/EpiModel?color=blue)](http://cran.rstudio.com/web/packages/EpiModel/index.html)
 [![Build Status](https://travis-ci.org/statnet/EpiModel.svg?branch=master)](https://travis-ci.org/statnet/EpiModel)
@@ -12,7 +12,7 @@ EpiModel
 
 Tools for simulating mathematical models of infectious disease dynamics. Epidemic model classes include deterministic compartmental models, stochastic individual-contact models, and stochastic network models. Network models use the robust statistical methods of exponential-family random graph models (ERGMs) from the Statnet suite of software packages in R. Standard templates for epidemic modeling include SI, SIR, and SIS disease types. EpiModel features an easy API for extending these templates to address novel scientific research aims.
 
-### Authors
+### Lead Authors
 <table>
   <tr>
     <td><a href="http://samueljenness.org/" target="_blank">Samuel M. Jenness</a></th>
@@ -52,21 +52,20 @@ remotes::install_github("statnet/EpiModel")
 
 **Methods Paper.** A good place to start learning about EpiModel is the main methods paper published in the *Journal of Statistical Software.* It is available at <a href="http://doi.org/10.18637/jss.v084.i08" target="_blank">http://doi.org/10.18637/jss.v084.i08</a>.
 
-**Summer Course.** Network Modeling for Epidemics is our annual 5-day course at the University of Washington where we teach the statistical theory, software tools, and applied modeling methods using EpiModel. Our course materials [[LINK]](http://statnet.github.io/nme/) are fully open-source and updated annually around the time of the course.
+**Summer Course.** Network Modeling for Epidemics is our annual 5-day course at the University of Washington where we teach the statistical theory, software tools, and applied modeling methods using EpiModel. <a href="http://statnet.github.io/nme/" target="_blank">Our course materials</a> are open-source and updated annually around the time of the course.
 
 **Email listserv.** Users are encouraged to join the <a href="http://mailman11.u.washington.edu/mailman/listinfo/epimodel" target="_blank">email list for EpiModel</a> as a place to ask questions, report bugs, and tell us about your research using these tools.
 
 
 ### The EpiModel Gallery
-We recently started a new [EpiModel Gallery](https://github.com/statnet/EpiModel-Gallery) that contains templates of extensions to EpiModel, for now focused on network-based mathematical models. We will be continuing to add new examples the gallery, and encourage users to either file requests for new examples or contribute them following our guidelines. 
-
+We recently started a new <a href="https://github.com/statnet/EpiModel-Gallery" target="_blank">EpiModel Gallery</a> that contains templates of extensions to EpiModel, for now focused on network-based mathematical models. We will be continuing to add new examples the gallery, and encourage users to either file requests for new examples or contribute them following our guidelines.
 
 ### Citation
-If using EpiModel for teaching or research, please include a citation:
+If using EpiModel for teaching or research, please include a citation our main methods paper:
 
 > Jenness SM, Goodreau SM and Morris M. EpiModel: An R Package for Mathematical Modeling of Infectious Disease over Networks. *Journal of Statistical Software.* 2018; 84(8): 1-47. doi: 10.18637/jss.v084.i08
 
-Please also send Sam an email (samuel.m.jenness@emory.edu) if you have used EpiModel in your work so we can add the citation below.
+Please also <a href="mailto:samuel.m.jenness@emory.edu?Subject=We Used EpiModel in Our Study!" target="_top">send us an email </a> if you have used EpiModel in your work so we can add the citation below.
 
 ### Funding
 The primary support for the development of these software tools and statistical methods has been by  two National Institutes of Health (NIH) grants:
@@ -89,7 +88,7 @@ Our team also receives institutional support through the following center-level 
 
 
 
-### Uses of EpiModel in the Scientific Literature
+### EpiModel in the Scientific Literature
 
 EpiModel and its [extension packages](https://github.com/statnet/EpiModelHIV) have been used in the following scientific journal articles. (If you are aware of others, send us an email at samuel.m.jenness@emory.edu to be included in this list.)
 
@@ -135,8 +134,13 @@ EpiModel and its [extension packages](https://github.com/statnet/EpiModelHIV) ha
 
 20. Weiss KM, Jones JS, Anderson EJ, Gift T, Chesson H, Bernstein K, Workowski K, Tuite A, Rosenberg ES, Sullivan PS, Jenness SM. Optimizing Coverage versus Frequency for Sexually Transmitted Infection Screening of Men Who Have Sex with Men. _Open Forum Infectious Diseases._ 2019; 6(10): ofz405. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/31667198)
 
+21. Maloney KM, Driggers RA, Sarkar S, Anderson E, Malik A, Jenness SM. Expanded Choices with Greater HIV Prevention Benefits: A Mathematical Model of Long-Acting Injectable and Daily-Oral Pre-Exposure Prophylaxis. _medRxiv._ 2019; DOI: 10.1101/19012443. [[LINK]](https://doi.org/10.1101/19012443)
 
-#### Other Infectious Diseases
+22. Wang LY, Hamilton DT, Rosenberg ES, Aslam MV, Sullivan PS, Katz DA, Dunville RL, Barrios LC, Goodreau SM. Cost-Effectiveness of Pre-Exposure Prophylaxis Among Adolescent Sexual Minority Males. _J Adolesc Health._ 2019; pii: S1054-139X(19)30415-X. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/31757626)
+
+23. Mittler JE, Murphy JT, Stansfield SE, Peebles KC, Gottlieb GS, Abernethy NF, Reid MC, Goodreau SM, Herbeck JT. Large benefits to youth-focused HIV treatment-as-prevention efforts in generalized heterosexual populations: An agent-based simulation model. PLoS Comput Biol. 2019 Dec 17;15(12):e1007561. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/31846456)
+
+#### Other Infectious Diseases and Contagious Processes
 
 1. Ezenwa VO, Archie EA, Craft ME, Hawley DM, Martin LB, Moore J, White L. Host behaviour-parasite feedback: an essential link between animal behaviour and disease ecology. _Proc Biol Sci._ 2016; 283(1828). [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/27053751)
 
@@ -159,6 +163,11 @@ EpiModel and its [extension packages](https://github.com/statnet/EpiModelHIV) ha
 10. Baker E, Challenor P, Eames M. Predicting the Output From a Stochastic Computer Model When a Deterministic Approximation is Available. _arXiv._ 2019; 1902.01290. [[LINK]](https://arxiv.org/abs/1902.01290)
 
 11. Milwid RM, O'Sullivan TL, Poljak Z, Laskowski M, Greer AL. Comparing the effects of non-homogenous mixing patterns on epidemiological outcomes in equine populations: A mathematical modelling study. _Sci Rep._ 2019; 9(1): 3227. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/30824806)
+
+12. Everton SF, Schroeder R. Plagues, Pagans, and Christians: Differential Survival, Social Networks, and the Rise of Christianity. _Journal for the Scientific Study of Religion._ 2019; DOI: 10.1111/jssr.12631. [[LINK]](https://doi.org/10.1111/jssr.12631)
+
+13. Amusan O, Thompson AF, Aderinola TB, Alese BK. Modelling Malicious Attack in Social Networks. _Network and Communication Technologies._ 2020; 5(1): 37-43. [[LINK]](http://www.ccsenet.org/journal/index.php/nct/article/view/0/41983)
+
 
 ### Copyright
 These materials are distributed under the GPL-3 license, with the following copyright and attribution requirements listed in the [LICENSE](https://github.com/statnet/EpiModel/blob/master/LICENSE.md) document above.

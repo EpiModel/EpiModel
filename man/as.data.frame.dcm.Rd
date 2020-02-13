@@ -4,8 +4,7 @@
 \alias{as.data.frame.dcm}
 \title{Extract Model Data for Deterministic Compartmental Models}
 \usage{
-\method{as.data.frame}{dcm}(x, row.names = NULL, optional = FALSE, run,
-  ...)
+\method{as.data.frame}{dcm}(x, row.names = NULL, optional = FALSE, run, ...)
 }
 \arguments{
 \item{x}{An \code{EpiModel} object of class \code{\link{dcm}}.}

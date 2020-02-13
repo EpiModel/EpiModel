@@ -4,18 +4,44 @@
 \alias{control.net}
 \title{Control Settings for Stochastic Network Models}
 \usage{
-control.net(type, nsteps, start = 1, nsims = 1, ncores = 1, depend,
-  rec.rand = TRUE, a.rand = TRUE, d.rand = TRUE, tea.status = TRUE,
-  attr.rules, epi.by, use.pids = TRUE, pid.prefix,
-  initialize.FUN = initialize.net, departures.FUN = departures.net,
-  arrivals.FUN = arrivals.net, recovery.FUN = recovery.net,
-  edges_correct.FUN = edges_correct, resim_nets.FUN = resim_nets,
-  infection.FUN = infection.net, get_prev.FUN = get_prev.net,
-  verbose.FUN = verbose.net, module.order = NULL, set.control.ergm,
-  set.control.stergm, save.nwstats = TRUE,
-  nwstats.formula = "formation", delete.nodes = FALSE,
-  save.transmat = TRUE, save.network = TRUE, save.other,
-  verbose = TRUE, verbose.int = 1, skip.check = FALSE, ...)
+control.net(
+  type,
+  nsteps,
+  start = 1,
+  nsims = 1,
+  ncores = 1,
+  depend,
+  rec.rand = TRUE,
+  a.rand = TRUE,
+  d.rand = TRUE,
+  tea.status = TRUE,
+  attr.rules,
+  epi.by,
+  use.pids = TRUE,
+  pid.prefix,
+  initialize.FUN = initialize.net,
+  departures.FUN = departures.net,
+  arrivals.FUN = arrivals.net,
+  recovery.FUN = recovery.net,
+  edges_correct.FUN = edges_correct,
+  resim_nets.FUN = resim_nets,
+  infection.FUN = infection.net,
+  get_prev.FUN = get_prev.net,
+  verbose.FUN = verbose.net,
+  module.order = NULL,
+  set.control.ergm,
+  set.control.stergm,
+  save.nwstats = TRUE,
+  nwstats.formula = "formation",
+  delete.nodes = FALSE,
+  save.transmat = TRUE,
+  save.network = TRUE,
+  save.other,
+  verbose = TRUE,
+  verbose.int = 1,
+  skip.check = FALSE,
+  ...
+)
 }
 \arguments{
 \item{type}{Disease type to be modeled, with the choice of \code{"SI"} for
