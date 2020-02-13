@@ -218,7 +218,7 @@ infection.net.grp <- function(dat, at) {
                                 inf.prob[linf.prob])
       } else {
         #FLAG
-        del$transProb <- ifelse(del$sus <= nw %n% "bipartite",
+        del$transProb <- ifelse(group[del$sus] == 1,
                                 ifelse(del$infDur <= linf.prob,
                                        inf.prob[del$infDur],
                                        inf.prob[linf.prob]),
