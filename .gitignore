@@ -9,3 +9,4 @@ inst/shiny/epinet/rsconnect/
 src/*.o
 src/*.so
 src/*.dll
+*.rda
