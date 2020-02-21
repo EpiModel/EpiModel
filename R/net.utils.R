@@ -417,8 +417,8 @@ dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
         if (ps2 <= pg) {
           d.rate_ <- round(1-sqrt(pg),5)
           stop("The competing risk of departure is too high for the given",
-               "duration in place ", duration[i], " in place", i,
-               ". Specify a d.rate lower than ", d.rate_,".",sep="")
+               " edge duration of ", duration[i]," in place ",i, ". ",
+               "Specify a d.rate lower than ", d.rate_,".",sep="")
         }
         if (i == 1) {
           coef.crude[i] <- log(pg / (1 - pg))
