@@ -5,11 +5,17 @@
 \alias{as.data.frame.netsim}
 \title{Extract Model Data for Stochastic Models}
 \usage{
-\method{as.data.frame}{icm}(x, row.names = NULL, optional = FALSE,
-  out = "vals", sim, qval, ...)
+\method{as.data.frame}{icm}(
+  x,
+  row.names = NULL,
+  optional = FALSE,
+  out = "vals",
+  sim,
+  qval,
+  ...
+)
 
-\method{as.data.frame}{netsim}(x, row.names = NULL, optional = FALSE,
-  out = "vals", sim, ...)
+\method{as.data.frame}{netsim}(x, row.names = NULL, optional = FALSE, out = "vals", sim, ...)
 }
 \arguments{
 \item{x}{An \code{EpiModel} object of class \code{icm} or \code{netsim}.}

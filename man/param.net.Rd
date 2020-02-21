@@ -4,9 +4,24 @@
 \alias{param.net}
 \title{Epidemic Parameters for Stochastic Network Models}
 \usage{
-param.net(inf.prob, inter.eff, inter.start, act.rate, rec.rate, a.rate,
-  ds.rate, di.rate, dr.rate, inf.prob.g2, rec.rate.g2, a.rate.g2,
-  ds.rate.g2, di.rate.g2, dr.rate.g2, ...)
+param.net(
+  inf.prob,
+  inter.eff,
+  inter.start,
+  act.rate,
+  rec.rate,
+  a.rate,
+  ds.rate,
+  di.rate,
+  dr.rate,
+  inf.prob.g2,
+  rec.rate.g2,
+  a.rate.g2,
+  ds.rate.g2,
+  di.rate.g2,
+  dr.rate.g2,
+  ...
+)
 }
 \arguments{
 \item{inf.prob}{Probability of infection per transmissible act between
