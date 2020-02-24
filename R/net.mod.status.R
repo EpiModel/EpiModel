@@ -247,6 +247,8 @@ infection.net.grp <- function(dat, at) {
 
       # Set new infections vector
       idsNewInf <- unique(del$sus)
+      dat$attr$status[idsNewInf] <- "i"
+      dat$attr$infTime[idsNewInf] <- at
       nInf <- sum(group[idsNewInf] == 1)
       nInfG2 <- sum(group[idsNewInf] == 2)
       totInf <- nInf + nInfG2
