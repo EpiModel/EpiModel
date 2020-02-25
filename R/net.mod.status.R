@@ -97,6 +97,8 @@ infection.net <- function(dat, at) {
 
       # Set new infections vector
       idsNewInf <- unique(del$sus)
+      dat$attr$status[idsNewInf] <- "i"
+      dat$attr$infTime[idsNewInf] <- at
       nInf <- length(idsNewInf)
 
       #Output to nw.update
