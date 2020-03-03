@@ -396,7 +396,6 @@ dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
     }
     pg <- (duration[1] - 1) / duration[1]
     ps2 <- (1 - d.rate) ^ 2
-    coef.crude <- log(pg / (1 - pg))
     if (ps2 <= pg) {
       d.rate_ <- round(1-sqrt(pg),5)
       str <- paste("The competing risk of departure is too high for the given",
@@ -404,24 +403,29 @@ dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
                    d.rate_,".",sep="")
       stop(str, call. = FALSE)
     }
+
+    coef.crude <- log(pg / (1 - pg))
     coef.adj <- log(pg / (ps2 - pg))
   }
   if (form.length == 2) {
     if (t2.term %in% c("nodematch", "nodefactor", "nodemix")) {
       coef.crude <- coef.adj <- NA
       for (i in 1:length(duration)) {
-        pg.thetaX <- (duration[i] - 1) / duration[i]
-        ps2.thetaX <- (1 - d.rate) ^ 2
-        if (sqrt(ps2.thetaX) <= pg.thetaX) {
-          stop("The competing risk of departure is too high for the given the ",
-               "duration in place ", i, ". Specify a lower d.rate", call. = FALSE)
+        pg <- (duration[i] - 1) / duration[i]
+        ps2 <- (1 - d.rate) ^ 2
+
+        if (ps2 <= pg) {
+          d.rate_ <- round(1-sqrt(pg),5)
+          stop("The competing risk of departure is too high for the given",
+               " edge duration of ", duration[i]," in place ",i, ". ",
+               "Specify a d.rate lower than ", d.rate_,".",sep="")
         }
         if (i == 1) {
-          coef.crude[i] <- log(pg.thetaX / (1 - pg.thetaX))
-          coef.adj[i] <- log(pg.thetaX / (ps2.thetaX - pg.thetaX))
+          coef.crude[i] <- log(pg / (1 - pg))
+          coef.adj[i] <- log(pg / (ps2 - pg))
         } else {
-          coef.crude[i] <- log(pg.thetaX / (1 - pg.thetaX)) - coef.crude[1]
-          coef.adj[i] <- log(pg.thetaX / (ps2.thetaX - pg.thetaX)) - coef.adj[1]
+          coef.crude[i] <- log(pg/ (1 - pg)) - coef.crude[1]
+          coef.adj[i] <- log(pg / (ps2- pg)) - coef.adj[1]
         }
       }
     } else {

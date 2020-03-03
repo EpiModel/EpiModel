@@ -151,6 +151,13 @@ test_that("dissolution_coefs returns appropriate error for incompatible departur
   dissolution = ~offset(edges)
   expect_that(dissolution_coefs(dissolution, duration = 60, d.rate = 1/60), throws_error(err.msg))
   expect_that(dissolution_coefs(dissolution, duration = 60, d.rate = 0.01), throws_error(err.msg))
+  dissolution = ~offset(edges)+offset(nodematch("group", diff = TRUE))
+  duration <- c(60, 30, 80, 100, 125, 160)
+  dissolution = ~offset(edges) + offset(nodematch("age.grp", diff = TRUE))
+  err.msg <- paste("The competing risk of departure is too high for the given",
+                   "edge duration of 60 in place 1.",
+                    "Specify a d.rate lower than 0.00837.")
+  expect_that(dissolution_coefs(dissolution, duration = duration, d.rate = 1/60), throws_error(err.msg))
 })
 
 
