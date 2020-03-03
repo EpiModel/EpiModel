@@ -680,42 +680,47 @@ groupids <- function(nw, group) {
 #'
 update_nwattr <- function(nw, newNodes, rules, curr.tab, t1.tab) {
   for (i in 1:length(curr.tab)) {
-    vname <- names(curr.tab)[i]
-    rule <- rules[[vname]]
-    if (is.null(rule)) {
-      rule <- "current"
-    }
-    if (rule == "current") {
-      vclass <- class(nw %v% vname)
-      if (vclass == "character") {
-        nattr <- sample(names(curr.tab[[vname]]),
-                        size = length(newNodes),
-                        replace = TRUE,
-                        prob = curr.tab[[vname]])
-      } else {
-        nattr <- sample(as.numeric(names(curr.tab[[i]])),
-                        size = length(newNodes),
-                        replace = TRUE,
-                        prob = curr.tab[[i]])
+    vname_ <- names(curr.tab)[i]
+    vname <- vname_[!(vname_ %in% "group")]
+
+    if (length(vname) > 0) {
+      rule <- rules[[vname]]
+
+      if (is.null(rule)) {
+        rule <- "current"
       }
-    } else if (rule == "t1") {
-      vclass <- class(nw %v% vname)
-      if (vclass == "character") {
-        nattr <- sample(names(t1.tab[[vname]]),
-                        size = length(newNodes),
-                        replace = TRUE,
-                        prob = t1.tab[[vname]])
+      if (rule == "current") {
+        vclass <- class(nw %v% vname)
+        if (vclass == "character") {
+          nattr <- sample(names(curr.tab[[vname]]),
+                          size = length(newNodes),
+                          replace = TRUE,
+                          prob = curr.tab[[vname]])
+        } else {
+          nattr <- sample(as.numeric(names(curr.tab[[i]])),
+                          size = length(newNodes),
+                          replace = TRUE,
+                          prob = curr.tab[[i]])
+        }
+      } else if (rule == "t1") {
+        vclass <- class(nw %v% vname)
+        if (vclass == "character") {
+          nattr <- sample(names(t1.tab[[vname]]),
+                          size = length(newNodes),
+                          replace = TRUE,
+                          prob = t1.tab[[vname]])
+        } else {
+          nattr <- sample(as.numeric(names(t1.tab[[i]])),
+                          size = length(newNodes),
+                          replace = TRUE,
+                          prob = t1.tab[[i]])
+        }
       } else {
-        nattr <- sample(as.numeric(names(t1.tab[[i]])),
-                        size = length(newNodes),
-                        replace = TRUE,
-                        prob = t1.tab[[i]])
+        nattr <- rep(rules[[vname]], length(newNodes))
       }
-    } else {
-      nattr <- rep(rules[[vname]], length(newNodes))
+      nw <- set.vertex.attribute(nw, attrname = vname,
+                                 value = nattr, v = newNodes)
     }
-    nw <- set.vertex.attribute(nw, attrname = vname,
-                               value = nattr, v = newNodes)
   }
   return(nw)
 }

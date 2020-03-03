@@ -178,11 +178,11 @@ nw.update.net <- function(dat, at) {
 
       # Set attributes on nw
       fterms <- dat$temp$fterms
-      #curr.tab <- get_attr_prop(dat$nw, fterms)
-      #if (length(curr.tab) > 0) {
-      #  dat$nw <- update_nwattr(dat$nw, newNodes, dat$control$attr.rules,
-      #                          curr.tab, dat$temp$t1.tab)
-      #}
+      curr.tab <- get_attr_prop(dat$nw, fterms)
+      if (length(curr.tab) > 0) {
+        dat$nw <- update_nwattr(dat$nw, newNodes, dat$control$attr.rules,
+                                curr.tab, dat$temp$t1.tab)
+      }
 
       # Save any val on attr
       dat <- copy_toall_attr(dat, at, fterms)
