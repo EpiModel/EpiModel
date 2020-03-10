@@ -29,9 +29,9 @@ initialize.net <- function(x, param, init, control, s) {
 
 
     # Network Simulation ------------------------------------------------------
+
     nw <- simulate(x$fit, basis = x$fit$newnetwork,
                    control = control$set.control.ergm)
-    groups <- length(unique(get.vertex.attribute(nw, "group")))
 
     if (control$depend == TRUE) {
       if (class(x$fit) == "stergm") {
@@ -43,11 +43,16 @@ initialize.net <- function(x, param, init, control, s) {
       nw <- sim_nets(x, nw, nsteps = control$nsteps, control)
     }
     nw <- activate.vertices(nw, onset = 1, terminus = Inf)
+    dat$nw <- nw
+
+    if (tgl == TRUE) {
+      nw <- tergmLite::init_tergmLite(dat)
+    }
 
 
     # Network Parameters ------------------------------------------------------
-    dat$nw <- nw
     dat$nwparam <- list(x[-which(names(x) == "fit")])
+    groups <- length(unique(get.vertex.attribute(nw, "group")))
     dat$param$groups <- groups
 
 

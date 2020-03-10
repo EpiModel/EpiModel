@@ -284,6 +284,9 @@ control.icm <- function(type, nsteps, nsims = 1, rec.rand = TRUE, a.rand = TRUE,
 #'        status. TEAs are computationally inefficient for large simulations and
 #'        should be toggled off in those cases. This argument automatically set
 #'        to \code{FALSE} if \code{delete.nodes=TRUE}.
+#'
+#' @param tgl Logical indicating usage of either \code{tergm} (\code{tgl = TRUE}),
+#'        or \code{tergmLite} (\code{tgl = FALSE}). Default of \code{FALSE}.
 #' @param attr.rules A list containing the  rules for setting the attributes of
 #'        incoming nodes, with one list element per attribute to be set (see
 #'        details below).
@@ -416,7 +419,7 @@ control.icm <- function(type, nsteps, nsims = 1, rec.rand = TRUE, a.rand = TRUE,
 
 control.net <- function(type, nsteps, start = 1, nsims = 1, ncores = 1,
                         depend, rec.rand = TRUE,
-                        a.rand = TRUE, d.rand = TRUE, tea.status = TRUE,
+                        a.rand = TRUE, d.rand = TRUE, tea.status = TRUE, tgl = FALSE,
                         attr.rules, epi.by, use.pids = TRUE, pid.prefix,
                         initialize.FUN = initialize.net, resim_nets.FUN = resim_nets,
                         infection.FUN = NULL, recovery.FUN = NULL,
@@ -477,7 +480,7 @@ control.net <- function(type, nsteps, start = 1, nsims = 1, ncores = 1,
   #Check whether any base modules have been redefined by user (note: must come after above)
   bi.nms <- bi.nms[-which(bi.nms %in% c("initialize.FUN", "edges_correct.FUN",
                                         "resim_nets.FUN", "verbose.FUN", "nw.update.FUN"))]
-    if (length(bi.nms) > 0){
+  if (length(bi.nms) > 0){
     flag1 <- logical()
     for (args in 1:length(bi.nms)) {
       if (!(is.null(p[[bi.nms[args]]])) ) {
@@ -545,4 +548,4 @@ control.net <- function(type, nsteps, start = 1, nsims = 1, ncores = 1,
   ## Output
   class(p) <- c("control.net", "list")
   return(p)
-  }
+}
