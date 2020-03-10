@@ -45,22 +45,26 @@ initialize.net <- function(x, param, init, control, s) {
     nw <- activate.vertices(nw, onset = 1, terminus = Inf)
     dat$nw <- nw
 
-    if (tgl == TRUE) {
-      nw <- tergmLite::init_tergmLite(dat)
-    }
-
 
     # Network Parameters ------------------------------------------------------
     dat$nwparam <- list(x[-which(names(x) == "fit")])
     groups <- length(unique(get.vertex.attribute(nw, "group")))
     dat$param$groups <- groups
 
+    # Convert to tergmLite method
+    if (control$tgl == TRUE) {
+      nw <- tergmLite::init_tergmLite(dat)
+      dat$nw <- nw
+    }
+
 
     # Initialization ----------------------------------------------------------
 
     ## Initialize persistent IDs
-    if (control$use.pids == TRUE) {
-      dat$nw <- init_pids(dat$nw, dat$control$pid.prefix)
+    if (control$tgl == FALSE) {
+      if (control$use.pids == TRUE) {
+        dat$nw <- init_pids(dat$nw, dat$param$groups, dat$control$pid.prefix)
+      }
     }
 
     ## Pull network val to attr
@@ -194,34 +198,34 @@ init_status.net <- function(dat) {
   # Infection Time ----------------------------------------------------------
   ## Set up inf.time vector
   if(!is.null(type)){
-  idsInf <- which(status == "i")
-  infTime <- rep(NA, length(status))
+    idsInf <- which(status == "i")
+    infTime <- rep(NA, length(status))
 
-  if (!is.null(dat$init$infTime.vector)) {
-    infTime <- dat$init$infTime.vector
-  } else {
-    # If vital dynamics, infTime is a geometric draw over the duration of infection
-    if (dat$param$vital == TRUE && dat$param$di.rate > 0) {
-      if (dat$control$type == "SI") {
-        infTime[idsInf] <- -rgeom(n = length(idsInf), prob = dat$param$di.rate) + 2
-      } else {
-        infTime[idsInf] <- -rgeom(n = length(idsInf),
-                                  prob = dat$param$di.rate +
-                                    (1 - dat$param$di.rate)*mean(dat$param$rec.rate)) + 2
-      }
+    if (!is.null(dat$init$infTime.vector)) {
+      infTime <- dat$init$infTime.vector
     } else {
-      if (dat$control$type == "SI" || mean(dat$param$rec.rate) == 0) {
-        # if no recovery, infTime a uniform draw over the number of sim time steps
-        infTime[idsInf] <- ssample(1:(-dat$control$nsteps + 2),
-                                   length(idsInf), replace = TRUE)
+      # If vital dynamics, infTime is a geometric draw over the duration of infection
+      if (dat$param$vital == TRUE && dat$param$di.rate > 0) {
+        if (dat$control$type == "SI") {
+          infTime[idsInf] <- -rgeom(n = length(idsInf), prob = dat$param$di.rate) + 2
+        } else {
+          infTime[idsInf] <- -rgeom(n = length(idsInf),
+                                    prob = dat$param$di.rate +
+                                      (1 - dat$param$di.rate)*mean(dat$param$rec.rate)) + 2
+        }
       } else {
-        infTime[idsInf] <- -rgeom(n = length(idsInf), prob = mean(dat$param$rec.rate)) + 2
+        if (dat$control$type == "SI" || mean(dat$param$rec.rate) == 0) {
+          # if no recovery, infTime a uniform draw over the number of sim time steps
+          infTime[idsInf] <- ssample(1:(-dat$control$nsteps + 2),
+                                     length(idsInf), replace = TRUE)
+        } else {
+          infTime[idsInf] <- -rgeom(n = length(idsInf), prob = mean(dat$param$rec.rate)) + 2
+        }
       }
     }
-  }
 
-  dat$attr$infTime <- infTime
-}
+    dat$attr$infTime <- infTime
+  }
 
   return(dat)
 }
@@ -262,10 +266,10 @@ init_status.net <- function(dat) {
 #' nw <- init_pids(nw, c("A", "B"))
 #' nw %v% "vertex.names"
 #'
-init_pids <- function(nw, prefixes=c("F", "M")) {
+init_pids <- function(nw, groups, prefixes=c("F", "M")) {
 
   if (is.null(nw$gal$vertex.pid)) {
-    if (nw$gal$bipartite == FALSE) {
+    if (groups == 1) {
       nw <- initialize.pids(nw)
     } else {
       t0.pids <- c(paste0(prefixes[1], 1:length(groupids(nw, 1))),
