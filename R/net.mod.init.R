@@ -53,8 +53,15 @@ initialize.net <- function(x, param, init, control, s) {
 
     # Convert to tergmLite method
     if (control$tgl == TRUE) {
+      num <- network.size(nw)
+      if (groups == 1){
+      dat$attr$group <- rep(1, num)
+      } else {
+        dat$attr$group <- groupids(dat$nw)
+      }
       nw <- tergmLite::init_tergmLite(dat)
       dat$nw <- nw
+      dat$param$num <- num
     }
 
 
@@ -78,7 +85,11 @@ initialize.net <- function(x, param, init, control, s) {
 
 
     ## Infection Status and Time Modules
+    if (control$tgl == FALSE) {
     dat <- init_status.net(dat)
+    } else{
+      dat <- init_status.net.tgl(dat)
+    }
 
     ## Get initial prevalence
     dat <- do.call(control[["get_prev.FUN"]],list(dat, at = 1))
@@ -228,6 +239,109 @@ init_status.net <- function(dat) {
   }
 
   return(dat)
+}
+
+
+#' @title TergmLite: Disease Status Initialization Module for netsim
+#'
+#' @description This function sets the initial disease status on the
+#'              network given the specified initial conditions.
+#'
+#' @param dat Master list object containing a \code{networkDynamic} object and other
+#'        initialization information passed from \code{\link{netsim}}.
+#'
+#' @details
+#' This internal function sets randomly, the nodes that are infected at the
+#' starting time of network simulations, \eqn{t_1}. If the number to be initially
+#' infected is passed, this function sets the initial number infected based
+#' on the number specified as a a set of random draws from a binomial
+#' distribution or as the exact number specified.
+#'
+#' This module sets the time of infection for those nodes set infected
+#' at the starting time of network simulations, \eqn{t_1}. For vital
+#' dynamics models, the infection time for those nodes is a random draw from an
+#' exponential distribution with the rate parameter defined by the \code{di.rate}
+#' argument. For models without vital dynamics, the infection time is a random
+#' draw from a uniform distribution of integers with a minimum of 1 and a maximum
+#' of the number of time steps in the model. In both cases, to set the infection
+#' times to be in the past, these times are multiplied by -1, and 2 is added to
+#' allow for possible infection times up until step 2, when the disease simulation
+#' time loop starts.
+#'
+#' @seealso This is an initialization module for \code{\link{netsim}}.
+#'
+#' @export
+#' @keywords netMod internal
+#'
+init_status.net.tgl <- function(dat) {
+
+  # Variables ---------------------------------------------------------------
+  i.num <- dat$init$i.num
+  i.num.g2 <- dat$init$i.num.g2
+  r.num <- dat$init$r.num
+  r.num.g2 <- dat$init$r.num.g2
+
+  active <- dat$attr$active
+  num <- dat$param$num
+  groups <- dat$param$groups
+  group <- dat$attr$group
+
+  type <- dat$control$type
+
+  # Status ---------------------------------------------------------------
+  status <- rep("s", num)
+  status[sample(which(group == 1), size = i.num)] <- "i"
+  if (groups == 2) {
+    status[sample(which(group == 2), size = i.num.g2)] <- "i"
+  }
+  if (type == "SIR"  && !is.null(type)) {
+    status[sample(which(group == 1 & status == "s"), size = r.num)] <- "r"
+    if (groups == 2) {
+      status[sample(which(group == 2 & status == "s"), size = r.num.g2)] <- "r"
+    }
+  }
+
+
+  ## Save out other attr
+  dat$attr$active <- rep(1, length(status))
+  dat$attr$entrTime <- rep(1, length(status))
+  dat$attr$exitTime <- rep(NA, length(status))
+
+
+  # Infection Time ----------------------------------------------------------
+  ## Set up inf.time vector
+  if(!is.null(type)){
+    idsInf <- which(status == "i")
+    infTime <- rep(NA, length(status))
+
+    if (!is.null(dat$init$infTime.vector)) {
+      infTime <- dat$init$infTime.vector
+    } else {
+      # If vital dynamics, infTime is a geometric draw over the duration of infection
+      if (dat$param$vital == TRUE && dat$param$di.rate > 0) {
+        if (dat$control$type == "SI") {
+          infTime[idsInf] <- -rgeom(n = length(idsInf), prob = dat$param$di.rate) + 2
+        } else {
+          infTime[idsInf] <- -rgeom(n = length(idsInf),
+                                    prob = dat$param$di.rate +
+                                      (1 - dat$param$di.rate)*mean(dat$param$rec.rate)) + 2
+        }
+      } else {
+        if (dat$control$type == "SI" || mean(dat$param$rec.rate) == 0) {
+          # if no recovery, infTime a uniform draw over the number of sim time steps
+          infTime[idsInf] <- ssample(1:(-dat$control$nsteps + 2),
+                                     length(idsInf), replace = TRUE)
+        } else {
+          infTime[idsInf] <- -rgeom(n = length(idsInf), prob = mean(dat$param$rec.rate)) + 2
+        }
+      }
+    }
+
+    dat$attr$infTime <- infTime
+  }
+
+  return(dat)
+
 }
 
 
