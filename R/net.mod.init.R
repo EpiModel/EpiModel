@@ -55,7 +55,7 @@ initialize.net <- function(x, param, init, control, s) {
     if (control$tgl == TRUE) {
       num <- network.size(nw)
       if (groups == 1){
-      dat$attr$group <- rep(1, num)
+        dat$attr$group <- rep(1, num)
       } else {
         dat$attr$group <- groupids(dat$nw)
       }
@@ -86,7 +86,7 @@ initialize.net <- function(x, param, init, control, s) {
 
     ## Infection Status and Time Modules
     if (control$tgl == FALSE) {
-    dat <- init_status.net(dat)
+      dat <- init_status.net(dat)
     } else{
       dat <- init_status.net.tgl(dat)
     }
@@ -105,6 +105,11 @@ initialize.net <- function(x, param, init, control, s) {
     dat$attr <- x$attr[[s]]
     dat$stats <- sapply(x$stats, function(var) var[[s]])
     dat$temp <- list()
+
+    ## Create first Discordant Edgelist for tergmLite use
+    if (dat$control$tgl == TRUE) {
+      dat$temp$del <- discord_edgelist.tgl(dat, at = 1)
+    }
   }
 
   return(dat)

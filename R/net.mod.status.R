@@ -62,7 +62,7 @@ infection.net <- function(dat, at) {
   if (nElig > 0 && nElig < nActive) {
 
     # Get discordant edgelist
-    del <- discord_edgelist(dat, at)
+    del <- dat$temp$del
 
     # If some discordant edges, then proceed
     if (!(is.null(del))) {
@@ -203,7 +203,7 @@ infection.net.grp <- function(dat, at) {
   if (nElig > 0 && nElig < nActive) {
 
     # Get discordant edgelist
-    del <- discord_edgelist(dat, at)
+    del <- dat$temp$del
 
     # If some discordant edges, then proceed
     if (!(is.null(del))) {
