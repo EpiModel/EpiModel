@@ -145,7 +145,7 @@ arrivals.net <- function(dat, at) {
   a.rate <- dat$param$a.rate
   tea.status <- dat$control$tea.status
   nOld <- dat$epi$num[at - 1]
-  nCurr <- network.size(dat$nw)
+  nCurr <- length(which(dat$attr$active == 1))
 
   nArrivals <- 0
 
@@ -324,7 +324,7 @@ arrivals.net.grp <- function(dat, at) {
 
   nArrivals <- nArrivalsG2 <- 0
   newNodes <- newNodesG2 <- NULL
-  nCurr <- network.size(dat$nw)
+  nCurr <- length(which(dat$attr$active == 1))
 
 
   # Add Nodes ---------------------------------------------------------------
