@@ -49,6 +49,8 @@ sim_nets <- function(x, nw, nsteps, control) {
 resim_nets <- function(dat, at) {
 
   idsActive <- which(dat$attr$active == 1)
+  anyActive <- ifelse(length(idsActive) > 0, TRUE, FALSE)
+
   if (dat$param$groups == 2) {
     groupids.1 <- which(get.vertex.attribute(dat$nw, "group") == 1)
     groupids.2 <- which(get.vertex.attribute(dat$nw, "group") == 2)
@@ -311,6 +313,7 @@ nw.update.net <- function(dat, at) {
 
   idsRecov <- dat$nw.update$rec$idsRecov
   recovState <- dat$nw.update$rec$recovState
+  status <- dat$attr$status
 
   if (length(idsRecov) > 0) {
     if (tea.status == TRUE) {
@@ -318,6 +321,10 @@ nw.update.net <- function(dat, at) {
                                           value = recovState, onset = at,
                                           terminus = Inf, v = idsRecov)
     }
+  }
+
+  if ("status" %in% dat$temp$fterms) {
+    dat$nw <- set.vertex.attribute(dat$nw, "status", dat$attr$status)
   }
 
   #Infection----
