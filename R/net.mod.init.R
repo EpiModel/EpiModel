@@ -301,6 +301,7 @@ init_status.net.tgl <- function(dat) {
     }
   }
 
+  dat$attr$status <- status
 
   ## Save out other attr
   dat$attr$active <- rep(1, length(status))
