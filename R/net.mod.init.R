@@ -93,6 +93,11 @@ initialize.net <- function(x, param, init, control, s) {
 
     ## Get initial prevalence
     dat <- do.call(control[["get_prev.FUN"]],list(dat, at = 1))
+
+    ## Create first Discordant Edgelist for tergmLite use
+    if (dat$control$tgl == TRUE) {
+      dat$temp$del <- discord_edgelist.tgl(dat, at = 1)
+    }
   } else {
     dat <- list()
 

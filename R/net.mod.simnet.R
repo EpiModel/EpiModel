@@ -189,11 +189,15 @@ resim_nets.tgl <- function(dat, at) {
 
   nwparam <- get_nwparam(dat)
 
-  dat$nw$el[[1]] <- tergmLite::simulate_network(p = dat$nw$p[[1]],
-                                                el = dat$nw$el[[1]],
-                                                coef.form = nwparam$coef.form,
-                                                coef.diss = nwparam$coef.diss$coef.adj,
-                                                save.changes = TRUE)
+  if (anyActive > 0 & dat$control$depend == TRUE) {
+
+    dat$nw$el[[1]] <- tergmLite::simulate_network(p = dat$nw$p[[1]],
+                                                  el = dat$nw$el[[1]],
+                                                  coef.form = nwparam$coef.form,
+                                                  coef.diss = nwparam$coef.diss$coef.adj,
+                                                  save.changes = TRUE)
+  }
+
 
   #Edges Correction
   if (dat$param$groups == 1) {
@@ -373,11 +377,15 @@ nw.update.net.tgl <- function(dat, at) {
   ## Resimulate Network----
 
   #Deactive inactive nodes
-  inactive <- dat$nw.update$resim$inactive
-  if (length(inactive) > 0) {
-    el.temp <- dat$nw$el[[1]]
-    el.temp <- delete_vertices(el.temp, inactive)
-    dat$nw$el[[1]] <- el.temp
+
+  if (dat$control$delete.nodes == TRUE) {
+    inactive <- which(dat$attr$active == 0)
+
+    if (length(inactive) > 0) {
+      el.temp <- dat$nw$el[[1]]
+      el.temp <- delete_vertices(el.temp, inactive)
+      dat$nw$el[[1]] <- el.temp
+    }
   }
 
   if (dat$param$vital != FALSE) {
@@ -390,7 +398,7 @@ nw.update.net.tgl <- function(dat, at) {
 
     if (length(idsDpt) > 0) {
       el.temp <- dat$nw$el[[1]]
-      el.temp <- delete_vertices(el.temp, inactive)
+      el.temp <- delete_vertices(el.temp, idsDpt)
       dat$nw$el[[1]] <- el.temp
     }
 
@@ -398,24 +406,26 @@ nw.update.net.tgl <- function(dat, at) {
     nArrivals <- dat$nw.update$arr$nArrivals
     if (sum(nArrivals) > 0) {
       el.temp <- dat$nw$el[[1]]
-      nCurr <- attributes(dat$nw$el[[1]])$n
+      nCurr <- length(dat$attr$group)
       #New Arrivals
       el.temp <- add_vertices(el.temp, nv = sum(nArrivals))
 
       if (length(nArrivals) > 1) {
         dat$attr$group <- c(dat$attr$group, c(rep(1, nArrivals[1]),
                                               rep(2, nArrivals[2])))
+      } else {
+        dat$attr$group <- c(dat$attr$group, rep(1, nArrivals))
       }
 
-      if (!("status" %in% fterms)) {
-        dat$attr$status <- c(dat$attr$status, rep("s", sum(nArrivals)))
-      }
+      dat$attr$status <- c(dat$attr$status, rep("s", sum(nArrivals)))
       dat$attr$active <- c(dat$attr$active, rep(1, sum(nArrivals)))
       dat$attr$infTime <- c(dat$attr$infTime, rep(NA, sum(nArrivals)))
       dat$attr$entrTime <- c(dat$attr$entrTime, rep(at, sum(nArrivals)))
       dat$attr$exitTime <- c(dat$attr$exitTime, rep(NA, sum(nArrivals)))
 
       ## Handles infTime when incoming nodes are infected
+      #When would this happen? - Infection occurs before arrivals
+      newNodes <- c((nCurr+1):(nCurr+sum(nArrivals)))
       newNodesInf <- intersect(newNodes, which(dat$attr$status == "i"))
       dat$attr$infTime[newNodesInf] <- at
 
