@@ -84,8 +84,6 @@ Our team also receives institutional support through the following center-level 
 
 * [NIH P30 AI050409](https://projectreporter.nih.gov/project_info_description.cfm?aid=9120767): Center for AIDS Research at Emory University (MPIs: Carlos del Rio and James Curran)
 * [NIH P30 AI027757](https://projectreporter.nih.gov/project_info_description.cfm?aid=9069392): Center for AIDS Research at the University of Washington (PI: King Holmes)
-* [NIH P30 DA027828](https://projectreporter.nih.gov/project_info_description.cfm?aid=9204281): Center for Prevention Implementation Methodology for Drug Abuse and HIV (Ce-PIM) (PI: Henricks Brown and Brian Mustanski)
-
 
 
 ### EpiModel in the Scientific Literature
@@ -139,6 +137,8 @@ EpiModel and its [extension packages](https://github.com/statnet/EpiModelHIV) ha
 22. Wang LY, Hamilton DT, Rosenberg ES, Aslam MV, Sullivan PS, Katz DA, Dunville RL, Barrios LC, Goodreau SM. Cost-Effectiveness of Pre-Exposure Prophylaxis Among Adolescent Sexual Minority Males. _J Adolesc Health._ 2019; pii: S1054-139X(19)30415-X. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/31757626)
 
 23. Mittler JE, Murphy JT, Stansfield SE, Peebles KC, Gottlieb GS, Abernethy NF, Reid MC, Goodreau SM, Herbeck JT. Large benefits to youth-focused HIV treatment-as-prevention efforts in generalized heterosexual populations: An agent-based simulation model. PLoS Comput Biol. 2019 Dec 17;15(12):e1007561. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/31846456)
+
+24. 4.	Jenness SM, Johnson JA, Hoover KW, Smith DK, Delaney K. Modeling an Integrated HIV Prevention and Care Continuum to Achieve the 2030 Ending the HIV Epidemic Goals. _medRxiv._ [[LINK]](https://doi.org/10.1101/2020.03.02.20030254).
 
 #### Other Infectious Diseases and Contagious Processes
 
