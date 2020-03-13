@@ -138,7 +138,7 @@ EpiModel and its [extension packages](https://github.com/statnet/EpiModelHIV) ha
 
 23. Mittler JE, Murphy JT, Stansfield SE, Peebles KC, Gottlieb GS, Abernethy NF, Reid MC, Goodreau SM, Herbeck JT. Large benefits to youth-focused HIV treatment-as-prevention efforts in generalized heterosexual populations: An agent-based simulation model. PLoS Comput Biol. 2019 Dec 17;15(12):e1007561. [[LINK]](https://www.ncbi.nlm.nih.gov/pubmed/31846456)
 
-24. 4.	Jenness SM, Johnson JA, Hoover KW, Smith DK, Delaney K. Modeling an Integrated HIV Prevention and Care Continuum to Achieve the 2030 Ending the HIV Epidemic Goals. _medRxiv._ [[LINK]](https://doi.org/10.1101/2020.03.02.20030254).
+24. Jenness SM, Johnson JA, Hoover KW, Smith DK, Delaney K. Modeling an Integrated HIV Prevention and Care Continuum to Achieve the 2030 Ending the HIV Epidemic Goals. _medRxiv._ [[LINK]](https://doi.org/10.1101/2020.03.02.20030254).
 
 #### Other Infectious Diseases and Contagious Processes
 
