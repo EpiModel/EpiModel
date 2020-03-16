@@ -191,8 +191,8 @@ resim_nets.tgl <- function(dat, at) {
 
   if (anyActive > 0 & dat$control$depend == TRUE) {
 
-    dat$nw$el[[1]] <- tergmLite::simulate_network(p = dat$nw$p[[1]],
-                                                  el = dat$nw$el[[1]],
+    dat$el[[1]] <- tergmLite::simulate_network(p = dat$p[[1]],
+                                                  el = dat$el[[1]],
                                                   coef.form = nwparam$coef.form,
                                                   coef.diss = nwparam$coef.diss$coef.adj,
                                                   save.changes = TRUE)
@@ -352,9 +352,6 @@ nw.update.net <- function(dat, at) {
     }
   }
 
-  # Discordant Edgelist Calculattion----
-  dat$temp$del <- discord_edgelist(dat, at)
-
   #Output-----
   return(dat)
 }
@@ -442,9 +439,6 @@ nw.update.net.tgl <- function(dat, at) {
   ## Infection----
 
   #No network updates needed
-
-  # Discordant Edgelist Calculattion----
-  dat$temp$del <- discord_edgelist.tgl(dat, at)
 
   #Output-----
   return(dat)

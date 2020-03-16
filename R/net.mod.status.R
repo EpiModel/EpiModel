@@ -62,7 +62,7 @@ infection.net <- function(dat, at) {
   if (nElig > 0 && nElig < nActive) {
 
     # Get discordant edgelist
-    del <- dat$temp$del
+    del <- discord_edgelist(dat, at)
 
     # If some discordant edges, then proceed
     if (!(is.null(del))) {
@@ -105,11 +105,9 @@ infection.net <- function(dat, at) {
       dat$nw.update$inf$idsNewInf <- idsNewInf
 
       # Substitute PIDs for vital two-group sims
-      if (dat$control$tgl == FALSE) {
-        if (any(names(nw$gal) %in% "vertex.pid")) {
-          del$sus <- get.vertex.pid(nw, del$sus)
-          del$inf <- get.vertex.pid(nw, del$inf)
-        }
+      if (any(names(nw$gal) %in% "vertex.pid")) {
+        del$sus <- get.vertex.pid(nw, del$sus)
+        del$inf <- get.vertex.pid(nw, del$inf)
       }
 
     } # end some discordant edges condition
@@ -205,7 +203,7 @@ infection.net.grp <- function(dat, at) {
   if (nElig > 0 && nElig < nActive) {
 
     # Get discordant edgelist
-    del <- dat$temp$del
+    del <- discord_edgelist(dat, at)
 
     # If some discordant edges, then proceed
     if (!(is.null(del))) {
@@ -333,63 +331,12 @@ infection.net.grp <- function(dat, at) {
 discord_edgelist <- function(dat, at) {
 
   status <- dat$attr$status
-  el <- get.dyads.active(dat$nw, at = at)
 
-  del <- NULL
-  if (nrow(el) > 0) {
-    el <- el[sample(1:nrow(el)), , drop = FALSE]
-    stat <- matrix(status[el], ncol = 2)
-    isInf <- matrix(stat %in% "i", ncol = 2)
-    isSus <- matrix(stat %in% "s", ncol = 2)
-    SIpairs <- el[isSus[, 1] * isInf[, 2] == 1, , drop = FALSE]
-    ISpairs <- el[isSus[, 2] * isInf[, 1] == 1, , drop = FALSE]
-    pairs <- rbind(SIpairs, ISpairs[, 2:1])
-    if (nrow(pairs) > 0) {
-      sus <- pairs[, 1]
-      inf <- pairs[, 2]
-      del <- data.frame(at, sus, inf)
-    }
+  if (dat$control$tgl == TRUE) {
+    el <- dat$el[[1]]
+  } else {
+    el <- get.dyads.active(dat$nw, at = at)
   }
-
-  return(del)
-}
-
-#' @title TergmLite: Discordant Edgelist from NetworkDynamic Object
-#'
-#' @description This function returns a \code{data.frame} with a discordant
-#'              edgelist, defined as the set of edges in which the status of the
-#'              two partners is one susceptible and one infected.
-#'
-#' @param dat Master list object containing a \code{networkDynamic} object and other
-#'        initialization information passed from \code{\link{netsim}}.
-#' @param at Current time step.
-#'
-#' @details
-#' This internal function works within the parent \code{\link{infection.net}} function
-#' to pull the current edgelist from the dynamic network object, look up the disease
-#' status of the head and tails on the edge, and subset the list to those edges
-#' with one susceptible and one infected node.
-#'
-#' @return
-#' This function returns a \code{data.frame} with the following columns:
-#' \itemize{
-#'  \item \strong{time:} time step queried
-#'  \item \strong{sus:} ID number for the susceptible partner
-#'  \item \strong{inf:} ID number for the infected partner
-#' }
-#' The output from this function is added to the transmission \code{data.frame}
-#' object that is requested as output in \code{netsim} simulations with
-#' the \code{save.trans=TRUE} argument.
-#'
-#' @seealso \code{\link{netsim}}, \code{\link{infection.net}}
-#'
-#' @export
-#' @keywords netMod internal
-#'
-discord_edgelist.tgl <- function(dat, at) {
-
-  status <- dat$attr$status
-  el <- dat$el[[1]]
 
   del <- NULL
   if (nrow(el) > 0) {
@@ -472,6 +419,9 @@ recovery.net <- function(dat, at) {
   }
 
   dat$attr$status <- status
+  if ("status" %in% dat$temp$fterms) {
+    dat$nw <- set.vertex.attribute(dat$nw, "status", dat$attr$status)
+  }
 
   # Output ------------------------------------------------------------------
   outName <- ifelse(type == "SIR", "ir.flow", "is.flow")
@@ -560,6 +510,9 @@ recovery.net.grp <- function(dat, at) {
   }
 
   dat$attr$status <- status
+  if ("status" %in% dat$temp$fterms) {
+    dat$nw <- set.vertex.attribute(dat$nw, "status", dat$attr$status)
+  }
 
   # Output ------------------------------------------------------------------
   outName <- ifelse(type == "SIR", "ir.flow", "is.flow")

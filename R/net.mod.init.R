@@ -95,12 +95,6 @@ initialize.net <- function(x, param, init, control, s) {
     ## Get initial prevalence
     dat <- do.call(control[["get_prev.FUN"]],list(dat, at = 1))
 
-    ## Create first Discordant Edgelist
-    if (dat$control$tgl == TRUE) {
-      dat$temp$del <- discord_edgelist.tgl(dat, at = 1)
-    } else {
-      dat$temp$del <- discord_edgelist(dat, at = 1)
-    }
   } else {
     dat <- list()
 
@@ -113,13 +107,6 @@ initialize.net <- function(x, param, init, control, s) {
     dat$attr <- x$attr[[s]]
     dat$stats <- sapply(x$stats, function(var) var[[s]])
     dat$temp <- list()
-
-    ## Create first Discordant Edgelist
-    if (dat$control$tgl == TRUE) {
-      dat$temp$del <- discord_edgelist.tgl(dat, at = 1)
-    } else {
-      dat$temp$del <- discord_edgelist(dat, at = 1)
-    }
   }
 
   return(dat)

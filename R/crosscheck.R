@@ -254,7 +254,7 @@ crosscheck.icm <- function(param, init, control) {
 #' @keywords internal
 #'
 crosscheck.net <- function(x, param, init, control) {
-  
+
   if (!is.null(control$type) && length(control$user.mods) == 0) {
 
   if (control$start == 1 && control$skip.check == FALSE) {
@@ -299,6 +299,12 @@ crosscheck.net <- function(x, param, init, control) {
 
     if (statOnNw == TRUE && is.null(control$attr.rules$status)) {
       control$attr.rules$status <- "s"
+    }
+
+    # Using tergmLite; then 'depend = TRUE':
+
+    if (control$tgl == TRUE) {
+      control$depend <- TRUE
     }
 
 
@@ -434,7 +440,7 @@ crosscheck.net <- function(x, param, init, control) {
 
   }
 
-  
+
   ## Assign modules based on group parameter
   if (!is.null(control$type)) {
     def <- grep(".FUN",names(control))
@@ -458,22 +464,22 @@ crosscheck.net <- function(x, param, init, control) {
       }
     }
   }
-  
+
   ## In-place assignment to update param and control
   assign("param", param, pos = parent.frame())
   assign("control", control, pos = parent.frame())
   }
-  
+
 
   if (!is.null(control$type) && length(control$user.mods) > 0) {
     stop("Control setting 'type' must be NULL if any user-specified modules specified.",
          call. = FALSE)
   }
-  
+
   if (is.null(control$type)) {
     control$type <- "SI"
   }
-  
+
   if (is.null(control$type) && length(grep("rec", names(param))) != 0){
     control$type <- "SIR"
   }
