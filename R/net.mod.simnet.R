@@ -394,7 +394,7 @@ nw.update.net.tgl <- function(dat, at) {
     #Deactive all departures on the network -
 
     if (length(idsDpt) > 0) {
-      el.temp <- dat$nw$el[[1]]
+      el.temp <- dat$el[[1]]
       el.temp <- delete_vertices(el.temp, idsDpt)
       dat$nw$el[[1]] <- el.temp
     }
@@ -402,7 +402,7 @@ nw.update.net.tgl <- function(dat, at) {
     ## Arrivals----
     nArrivals <- dat$nw.update$arr$nArrivals
     if (sum(nArrivals) > 0) {
-      el.temp <- dat$nw$el[[1]]
+      el.temp <- dat$el[[1]]
       nCurr <- length(dat$attr$group)
       #New Arrivals
       el.temp <- add_vertices(el.temp, nv = sum(nArrivals))
