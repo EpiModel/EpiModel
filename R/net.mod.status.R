@@ -105,9 +105,11 @@ infection.net <- function(dat, at) {
       dat$nw.update$inf$idsNewInf <- idsNewInf
 
       # Substitute PIDs for vital two-group sims
-      if (any(names(nw$gal) %in% "vertex.pid")) {
-        del$sus <- get.vertex.pid(nw, del$sus)
-        del$inf <- get.vertex.pid(nw, del$inf)
+      if (dat$control$tgl == FALSE) {
+        if (any(names(nw$gal) %in% "vertex.pid")) {
+          del$sus <- get.vertex.pid(nw, del$sus)
+          del$inf <- get.vertex.pid(nw, del$inf)
+        }
       }
 
     } # end some discordant edges condition
@@ -387,7 +389,7 @@ discord_edgelist <- function(dat, at) {
 discord_edgelist.tgl <- function(dat, at) {
 
   status <- dat$attr$status
-  el <- dat$nw$el[[1]]
+  el <- dat$el[[1]]
 
   del <- NULL
   if (nrow(el) > 0) {

@@ -59,8 +59,7 @@ initialize.net <- function(x, param, init, control, s) {
       } else {
         dat$attr$group <- groupids(dat$nw)
       }
-      nw <- tergmLite::init_tergmLite(dat)
-      dat$nw <- nw
+      dat <- tergmLite::init_tergmLite(dat)
       dat$param$num <- num
     }
 
@@ -72,16 +71,18 @@ initialize.net <- function(x, param, init, control, s) {
       if (control$use.pids == TRUE) {
         dat$nw <- init_pids(dat$nw, dat$param$groups, dat$control$pid.prefix)
       }
+
+
+      ## Pull network val to attr
+      form <- get_nwparam(dat)$formation
+      fterms <- get_formula_term_attr(form, nw)
+      dat <- copy_toall_attr(dat, at = 1, fterms)
+
+
+      ## Store current proportions of attr
+      dat$temp$fterms <- fterms
+      dat$temp$t1.tab <- get_attr_prop(dat$nw, fterms)
     }
-
-    ## Pull network val to attr
-    form <- get_nwparam(dat)$formation
-    fterms <- get_formula_term_attr(form, nw)
-    dat <- copy_toall_attr(dat, at = 1, fterms)
-
-    ## Store current proportions of attr
-    dat$temp$fterms <- fterms
-    dat$temp$t1.tab <- get_attr_prop(dat$nw, fterms)
 
 
     ## Infection Status and Time Modules
@@ -94,9 +95,11 @@ initialize.net <- function(x, param, init, control, s) {
     ## Get initial prevalence
     dat <- do.call(control[["get_prev.FUN"]],list(dat, at = 1))
 
-    ## Create first Discordant Edgelist for tergmLite use
+    ## Create first Discordant Edgelist
     if (dat$control$tgl == TRUE) {
       dat$temp$del <- discord_edgelist.tgl(dat, at = 1)
+    } else {
+      dat$temp$del <- discord_edgelist(dat, at = 1)
     }
   } else {
     dat <- list()
@@ -111,9 +114,11 @@ initialize.net <- function(x, param, init, control, s) {
     dat$stats <- sapply(x$stats, function(var) var[[s]])
     dat$temp <- list()
 
-    ## Create first Discordant Edgelist for tergmLite use
+    ## Create first Discordant Edgelist
     if (dat$control$tgl == TRUE) {
       dat$temp$del <- discord_edgelist.tgl(dat, at = 1)
+    } else {
+      dat$temp$del <- discord_edgelist(dat, at = 1)
     }
   }
 
