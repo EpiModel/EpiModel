@@ -1,7 +1,8 @@
-#EpiModel Overhaul v3: Worked Examples
+#EpiModel Overhaul: Worked Examples
 
-remotes::install_github("statnet/EpiModel", ref = "overhaul_s3_b")
+remotes::install_github("statnet/EpiModel", ref = "EpiModel_Overhaul_s4")
 suppressMessages(library("EpiModel"))
+suppressMessages(library("tergmLite"))
 
 # No Vital Dynamics----
 
@@ -18,17 +19,18 @@ est <- netest(nw, formation, target.stats, coef.diss)
 
 # Parameters
 init <- init.net(i.num = 10)
-param <- param.net(inf.prob = 0.4, act.rate = 5)
-control <- control.net(type = "SI", nsteps = 100, nsims = 5)
+param <- param.net(inf.prob = 0.1, act.rate = 5)
+control <- control.net(type = "SI", nsteps = 100, nsims = 5, tgl = TRUE,
+                       save.nwstats = FALSE)
 
 set.seed(123)
 crosscheck.net(est, param, init, control)
 dat <- initialize.net(est, param, init, control, s = 1)
 
-for (i in 2:100) {
-  dat <- resim_nets(dat, at)
+for (at in 2:100) {
+  dat <- resim_nets.tgl(dat, at)
   dat <- infection.net(dat, at)
-  dat <- nw.update.net(dat, at)
+  dat <- nw.update.net.tgl(dat, at)
   dat <- get_prev.net(dat, at)
 }
 
@@ -43,18 +45,19 @@ est <- netest(nw, formation, target.stats, coef.diss)
 
 # Parameters
 init <- init.net(i.num = 50)
-param <- param.net(inf.prob = 0.4, act.rate = 5, rec.rate = 0.02)
-control <- control.net(type = "SIS", nsteps = 100, nsims = 5)
+param <- param.net(inf.prob = 0.02, act.rate = 5, rec.rate = 0.02)
+control <- control.net(type = "SIS", nsteps = 100, nsims = 5, tgl = TRUE,
+                       save.nwstats = FALSE)
 
 set.seed(123)
 crosscheck.net(est, param, init, control)
 dat <- initialize.net(est, param, init, control, s = 1)
 
 for (at in 2:100) {
-  dat <- resim_nets(dat, at)
-  dat <- recovery.net(dat, at)
+  dat <- resim_nets.tgl(dat, at)
   dat <- infection.net(dat, at)
-  dat <- nw.update.net(dat, at)
+  dat <- recovery.net(dat, at)
+  dat <- nw.update.net.tgl(dat, at)
   dat <- get_prev.net(dat, at)
 }
 
@@ -66,19 +69,20 @@ coef.diss <- dissolution_coefs(dissolution = ~ offset(edges), duration = 50)
 est <- netest(nw, formation, target.stats, coef.diss)
 
 # Parameters
-init <- init.net(i.num = 50, r.num = 20)
-param <- param.net(inf.prob = 0.4, act.rate = 5, rec.rate = 0.02)
-control <- control.net(type = "SIR", nsteps = 100, nsims = 5)
+init <- init.net(i.num = 10, r.num = 5)
+param <- param.net(inf.prob = 0.02, act.rate = 5, rec.rate = 0.02)
+control <- control.net(type = "SIR", nsteps = 100, nsims = 5, tgl = TRUE,
+                       save.nwstats = FALSE)
 
 set.seed(123)
 crosscheck.net(est, param, init, control)
 dat <- initialize.net(est, param, init, control, s = 1)
 
 for (at in 2:100) {
-  dat <- resim_nets(dat, at)
-  dat <- recovery.net(dat, at)
+  dat <- resim_nets.tgl(dat, at)
   dat <- infection.net(dat, at)
-  dat <- nw.update.net(dat, at)
+  dat <- recovery.net(dat, at)
+  dat <- nw.update.net.tgl(dat, at)
   dat <- get_prev.net(dat, at)
 }
 
@@ -97,19 +101,20 @@ coef.diss <- dissolution_coefs(dissolution = ~ offset(edges), duration = 50)
 est <- netest(nw, formation, target.stats, coef.diss)
 
 # Parameters
-init <- init.net(i.num = 50, i.num.g2 = 50)
-param <- param.net(inf.prob = 0.1, inf.prob.g2 = 0.2,
+init <- init.net(i.num = 20, i.num.g2 = 20)
+param <- param.net(inf.prob = 0.1, inf.prob.g2 = 0.1,
                    act.rate = 5)
-control <- control.net(type = "SI", nsteps = 100)
+control <- control.net(type = "SI", nsteps = 100, nsims =5, tgl = TRUE,
+                       save.nwstats = FALSE)
 
 set.seed(123)
 crosscheck.net(est, param, init, control)
 dat <- initialize.net(est, param, init, control, s = 1)
 
 for (at in 2:100) {
-  dat <- resim_nets(dat, at)
+  dat <- resim_nets.tgl(dat, at)
   dat <- infection.net.grp(dat, at)
-  dat <- nw.update.net(dat, at)
+  dat <- nw.update.net.tgl(dat, at)
   dat <- get_prev.net.grp(dat, at)
 }
 
@@ -124,22 +129,23 @@ coef.diss <- dissolution_coefs(dissolution = ~ offset(edges), duration = 50)
 est <- netest(nw, formation, target.stats, coef.diss)
 
 # Parameters
-init <- init.net(i.num = 50, i.num.g2 = 50)
-param <- param.net(inf.prob = 0.1, inf.prob.g2 = 0.2,
+init <- init.net(i.num = 20, i.num.g2 = 20)
+param <- param.net(inf.prob = 0.02, inf.prob.g2 = 0.02,
                    rec.rate = 0.02, rec.rate.g2 = 0.02,
                    act.rate = 5)
-control <- control.net(type = "SIS", nsteps = 100)
+control <- control.net(type = "SIS", nsteps = 100, nsims = 5, tgl = TRUE,
+                       save.nwstats = FALSE)
 
 set.seed(123)
 crosscheck.net(est, param, init, control)
 dat <- initialize.net(est, param, init, control, s = 1)
 
 for (at in 2:100) {
-  dat <- resim_nets(dat, at = i)
-  dat <- recovery.net(dat, at = i)
-  dat <- infection.net(dat, at = i)
-  dat <- nw.update.net(dat, at = i)
-  dat <- get_prev.net(dat, at = i)
+  dat <- resim_nets.tgl(dat, at)
+  dat <- infection.net(dat, at)
+  dat <- recovery.net(dat, at)
+  dat <- nw.update.net.tgl(dat, at)
+  dat <- get_prev.net(dat, at)
 }
 
 num1 <- num2 <- 250
@@ -152,20 +158,21 @@ est <- netest(nw, formation, target.stats, coef.diss)
 
 # Parameters
 init <- init.net(i.num = 10, i.num.g2 = 10, r.num = 5, r.num.g2 = 5)
-param <- param.net(inf.prob = 0.1, inf.prob.g2 = 0.2,
-                   rec.rate = 0.1, rec.rate.g2 = 0.1,
+param <- param.net(inf.prob = 0.02, inf.prob.g2 = 0.02,
+                   rec.rate = 0.02, rec.rate.g2 = 0.02,
                    act.rate = 5)
-control <- control.net(type = "SIR", nsteps = 100)
+control <- control.net(type = "SIR", nsteps = 100, nsims = 5, tgl = TRUE,
+                       save.nwstats = FALSE)
 
 set.seed(123)
 crosscheck.net(est, param, init, control)
 dat <- initialize.net(est, param, init, control, s = 1)
 
 for (at in 2:100) {
-  dat <- resim_nets(dat, at)
-  dat <- recovery.net.grp(dat, at)
+  dat <- resim_nets.tgl(dat, at)
   dat <- infection.net.grp(dat, at)
-  dat <- nw.update.net(dat, at)
+  dat <- recovery.net.grp(dat, at)
+  dat <- nw.update.net.tgl(dat, at)
   dat <- get_prev.net.grp(dat, at)
 }
 
@@ -183,16 +190,19 @@ init <- init.net(i.num = 10)
 param <- param.net(inf.prob = 0.4, act.rate = 5,
                    a.rate = 0.02, ds.rate = 0.02,
                    di.rate = 0.02)
-control <- control.net(type = "SI", nsteps = 100, nsims = 5)
+control <- control.net(type = "SI", nsteps = 100, nsims = 5, tgl = TRUE,
+                       save.nwstats = FALSE)
 
 set.seed(123)
 crosscheck.net(est, param, init, control)
 dat <- initialize.net(est, param, init, control, s = 1)
 
-for (i in 2:100) {
-  dat <- resim_nets(dat, at)
+for (at in 2:100) {
+  dat <- resim_nets.tgl(dat, at)
   dat <- infection.net(dat, at)
-  dat <- nw.update.net(dat, at)
+  dat <- departures.net(dat, at)
+  dat <- arrivals.net(dat, at)
+  dat <- nw.update.net.tgl(dat, at)
   dat <- get_prev.net(dat, at)
 }
 
@@ -206,20 +216,23 @@ coef.diss <- dissolution_coefs(dissolution = ~ offset(edges), duration = 50)
 est <- netest(nw, formation, target.stats, coef.diss)
 
 # Parameters
-init <- init.net(i.num = 50)
-param <- param.net(inf.prob = 0.4, act.rate = 5, rec.rate = 0.02,
+init <- init.net(i.num = 10)
+param <- param.net(inf.prob = 0.02, act.rate = 5, rec.rate = 0.02,
                    a.rate = 0.02, ds.rate = 0.02, di.rate = 0.02)
-control <- control.net(type = "SIS", nsteps = 100, nsims = 5)
+control <- control.net(type = "SIS", nsteps = 100, nsims = 5, tgl = TRUE,
+                       save.nwstats = FALSE)
 
 set.seed(123)
 crosscheck.net(est, param, init, control)
 dat <- initialize.net(est, param, init, control, s = 1)
 
 for (at in 2:100) {
-  dat <- resim_nets(dat, at)
-  dat <- recovery.net(dat, at)
+  dat <- resim_nets.tgl(dat, at)
   dat <- infection.net(dat, at)
-  dat <- nw.update.net(dat, at)
+  dat <- recovery.net(dat, at)
+  dat <- departures.net(dat, at)
+  dat <- arrivals.net(dat, at)
+  dat <- nw.update.net.tgl(dat, at)
   dat <- get_prev.net(dat, at)
 }
 
@@ -231,21 +244,24 @@ coef.diss <- dissolution_coefs(dissolution = ~ offset(edges), duration = 50)
 est <- netest(nw, formation, target.stats, coef.diss)
 
 # Parameters
-init <- init.net(i.num = 50, r.num = 20)
+init <- init.net(i.num = 10, r.num = 10)
 param <- param.net(inf.prob = 0.4, act.rate = 5, rec.rate = 0.02,
                    a.rate = 0.02, di.rate = 0.02, ds.rate = 0.02,
                    dr.rate = 0.02)
-control <- control.net(type = "SIR", nsteps = 100, nsims = 5)
+control <- control.net(type = "SIR", nsteps = 100, nsims = 5, tgl = TRUE,
+                       save.nwstats = FALSE)
 
 set.seed(123)
 crosscheck.net(est, param, init, control)
 dat <- initialize.net(est, param, init, control, s = 1)
 
 for (at in 2:100) {
-  dat <- resim_nets(dat, at)
-  dat <- recovery.net(dat, at)
+  dat <- resim_nets.tgl(dat, at)
   dat <- infection.net(dat, at)
-  dat <- nw.update.net(dat, at)
+  dat <- recovery.net(dat, at)
+  dat <- departures.net(dat, at)
+  dat <- arrivals.net(dat,at)
+  dat <- nw.update.net.tgl(dat, at)
   dat <- get_prev.net(dat, at)
 }
 
@@ -269,16 +285,19 @@ param <- param.net(inf.prob = 0.1, inf.prob.g2 = 0.2,
                    act.rate = 5, a.rate = 0.02, a.rate.g2 = 0.02,
                    di.rate = 0.03, ds.rate = 0.03,
                    di.rate.g2 = 0.03, ds.rate.g2 = 0.03)
-control <- control.net(type = "SI", nsteps = 100)
+control <- control.net(type = "SI", nsteps = 100, nsims = 5, tgl = TRUE,
+                       save.nwstats = FALSE)
 
 set.seed(123)
 crosscheck.net(est, param, init, control)
 dat <- initialize.net(est, param, init, control, s = 1)
 
 for (at in 2:100) {
-  dat <- resim_nets(dat, at)
+  dat <- resim_nets.tgl(dat, at)
   dat <- infection.net.grp(dat, at)
-  dat <- nw.update.net(dat, at)
+  dat <- departures.net.grp(dat, at)
+  dat <- arrivals.net.grp(dat, at)
+  dat <- nw.update.net.tgl(dat, at)
   dat <- get_prev.net.grp(dat, at)
 }
 
@@ -299,18 +318,21 @@ param <- param.net(inf.prob = 0.1, inf.prob.g2 = 0.2,
                    di.rate = 0.03, ds.rate = 0.03,
                    di.rate.g2 = 0.03, ds.rate.g2 = 0.03,
                    rec.rate = 0.02, rec.rate.g2 = 0.02)
-control <- control.net(type = "SIS", nsteps = 100)
+control <- control.net(type = "SIS", nsteps = 100, nsims =5, tgl = TRUE,
+                       save.nwstats = FALSE)
 
 set.seed(123)
 crosscheck.net(est, param, init, control)
 dat <- initialize.net(est, param, init, control, s = 1)
 
 for (at in 2:100) {
-  dat <- resim_nets(dat, at = i)
-  dat <- recovery.net(dat, at = i)
-  dat <- infection.net(dat, at = i)
-  dat <- nw.update.net(dat, at = i)
-  dat <- get_prev.net(dat, at = i)
+  dat <- resim_nets.tgl(dat, at)
+  dat <- infection.net.grp(dat, at)
+  dat <- recovery.net.grp(dat, at)
+  dat <- departures.net.grp(dat, at)
+  dat <- arrivals.net.grp(dat, at)
+  dat <- nw.update.net.tgl(dat, at)
+  dat <- get_prev.net.grp(dat, at)
 }
 
 num1 <- num2 <- 250
@@ -329,16 +351,19 @@ param <- param.net(inf.prob = 0.1, inf.prob.g2 = 0.2,
                    di.rate.g2 = 0.03, ds.rate.g2 = 0.03,
                    dr.rate = 0.02, dr.rate.g2 = 0.02,
                    rec.rate = 0.02, rec.rate.g2 = 0.02)
-control <- control.net(type = "SIR", nsteps = 100)
+control <- control.net(type = "SIR", nsteps = 100, nsims = 5, tgl = TRUE,
+                       save.nwstats = FALSE)
 
 set.seed(123)
 crosscheck.net(est, param, init, control)
 dat <- initialize.net(est, param, init, control, s = 1)
 
 for (at in 2:100) {
-  dat <- resim_nets(dat, at)
-  dat <- recovery.net.grp(dat, at)
+  dat <- resim_nets.tgl(dat, at)
   dat <- infection.net.grp(dat, at)
-  dat <- nw.update.net(dat, at)
+  dat <- recovery.net.grp(dat, at)
+  dat <- departures.net.grp(dat, at)
+  dat <- arrivals.net.grp(dat, at)
+  dat <- nw.update.net.tgl(dat, at)
   dat <- get_prev.net.grp(dat, at)
 }
