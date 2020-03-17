@@ -181,7 +181,11 @@ infection.net.grp <- function(dat, at) {
   active <- dat$attr$active
   status <- dat$attr$status
   nw <- dat$nw
-  group <- get.vertex.attribute(nw, "group")
+  if (dat$control$tgl == FALSE) {
+    group <- get.vertex.attribute(nw, "group")
+  } else {
+    group <- dat$attr$group
+  }
 
   inf.prob <- dat$param$inf.prob
   inf.prob.g2 <- dat$param$inf.prob.g2
@@ -462,7 +466,11 @@ recovery.net.grp <- function(dat, at) {
   infTime <- dat$attr$infTime
   tea.status <- dat$control$tea.status
 
-  group <- get.vertex.attribute(dat$nw, "group")
+  if (dat$control$tgl == FALSE) {
+    group <- get.vertex.attribute(dat$nw, "group")
+  } else {
+    group <- dat$attr$group
+  }
 
   type <- dat$control$type
   recovState <- ifelse(type == "SIR", "r", "s")

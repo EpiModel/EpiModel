@@ -57,7 +57,7 @@ initialize.net <- function(x, param, init, control, s) {
       if (groups == 1){
         dat$attr$group <- rep(1, num)
       } else {
-        dat$attr$group <- groupids(dat$nw)
+        dat$attr$group <- get.vertex.attribute(dat$nw, "group")
       }
       dat <- tergmLite::init_tergmLite(dat)
       dat$param$num <- num
