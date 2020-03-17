@@ -189,11 +189,16 @@ departures.net.grp <- function(dat, at) {
   }
 
   # Variables ---------------------------------------------------------------
-  group <- get.vertex.attribute(dat$nw, "group")
+  if (dat$control$tgl == FALSE){
+    group <- get.vertex.attribute(dat$nw, "group")
+  } else {
+    group <- dat$attr$group
+  }
+
   idsDpt <- list()
 
-    # Bookkeeping
-    type <- dat$control$type
+  # Bookkeeping
+  type <- dat$control$type
 
   # Susceptible departures ------------------------------------------------------
 
