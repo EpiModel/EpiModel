@@ -15,6 +15,7 @@ control.net(
   a.rand = TRUE,
   d.rand = TRUE,
   tea.status = TRUE,
+  tgl = FALSE,
   attr.rules,
   epi.by,
   use.pids = TRUE,
@@ -94,6 +95,9 @@ at different time steps and for animating dynamic networks with evolving
 status. TEAs are computationally inefficient for large simulations and
 should be toggled off in those cases. This argument automatically set
 to \code{FALSE} if \code{delete.nodes=TRUE}.}
+
+\item{tgl}{Logical indicating usage of either \code{tergm} (\code{tgl = TRUE}),
+or \code{tergmLite} (\code{tgl = FALSE}). Default of \code{FALSE}.}
 
 \item{attr.rules}{A list containing the  rules for setting the attributes of
 incoming nodes, with one list element per attribute to be set (see

@@ -23,6 +23,8 @@ param <- param.net(inf.prob = 0.1, act.rate = 5)
 control <- control.net(type = "SI", nsteps = 100, nsims = 5, tgl = TRUE,
                        save.nwstats = FALSE)
 
+sim <- netsim(est, param, init, control)
+
 set.seed(123)
 crosscheck.net(est, param, init, control)
 dat <- initialize.net(est, param, init, control, s = 1)
