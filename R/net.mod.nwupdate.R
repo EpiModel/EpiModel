@@ -10,7 +10,7 @@
 #'
 #' @export
 #'
-nw.update.net <- function(dat, at) {
+nwupdate.net <- function(dat, at) {
 
   if (dat$control$tgl == FALSE) {
 

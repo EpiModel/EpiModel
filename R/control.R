@@ -313,9 +313,9 @@ control.icm <- function(type, nsteps, nsims = 1, rec.rand = TRUE, a.rand = TRUE,
 #'        with the default function of \code{\link{resim_nets}}.
 #' @param infection.FUN Module to simulate disease infection, with the default
 #'        function of \code{\link{infection.net}}.
-#' @param nw.update.FUN Module to handle updating of network structure and nodal
+#' @param nwupdate.FUN Module to handle updating of network structure and nodal
 #'        attributes due to exogenous epidemic model processes, with the default
-#'        function of \code{\link{nw.update.net}}.
+#'        function of \code{\link{nwupdate.net}}.
 #' @param get_prev.FUN Module to calculate disease prevalence at each time step,
 #'        with the default function of \code{\link{get_prev.net}}.
 #' @param verbose.FUN Module to print simulation progress to screen, with the
@@ -428,7 +428,7 @@ control.net <- function(type,
                         recovery.FUN = NULL,
                         departures.FUN = NULL,
                         arrivals.FUN = NULL,
-                        nw.update.FUN = nw.update.net,
+                        nwupdate.FUN = nwupdate.net,
                         get_prev.FUN = NULL,
                         verbose.FUN = verbose.net,
                         module.order = NULL,
