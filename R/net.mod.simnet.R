@@ -48,6 +48,25 @@ sim_nets <- function(x, nw, nsteps, control) {
 #'
 resim_nets <- function(dat, at) {
 
+  #Edges Correction
+  if (dat$param$groups == 1) {
+    old.num <- dat$epi$num[at - 1]
+    new.num <- sum(dat$attr$active == 1)
+    dat$nwparam[[1]]$coef.form[1] <- dat$nwparam[[1]]$coef.form[1] +
+      log(old.num) -
+      log(new.num)
+  }
+  if (dat$param$groups == 2) {
+    group <- idgroup(dat$nw)
+    old.num.g1 <- dat$epi$num[at - 1]
+    old.num.g2 <- dat$epi$num.g2[at - 1]
+    new.num.g1 <- sum(dat$attr$active == 1 & group == 1)
+    new.num.g2 <- sum(dat$attr$active == 1 & group == 2)
+    dat$nwparam[[1]]$coef.form[1] <- dat$nwparam[[1]]$coef.form[1] +
+      log(2 * old.num.g1 * old.num.g2 / (old.num.g1 + old.num.g2)) -
+      log(2 * new.num.g1 * new.num.g2 / (new.num.g1 + new.num.g2))
+  }
+
   idsActive <- which(dat$attr$active == 1)
   anyActive <- ifelse(length(idsActive) > 0, TRUE, FALSE)
 
@@ -100,24 +119,7 @@ resim_nets <- function(dat, at) {
                                  tail(attributes(dat$nw)$stats, 1)[,])
     }
 
-    #Edges Correction
-    if (dat$param$groups == 1) {
-      old.num <- dat$epi$num[at - 1]
-      new.num <- sum(dat$attr$active == 1)
-      dat$nwparam[[1]]$coef.form[1] <- dat$nwparam[[1]]$coef.form[1] +
-        log(old.num) -
-        log(new.num)
-    }
-    if (dat$param$groups == 2) {
-      group <- idgroup(dat$nw)
-      old.num.g1 <- dat$epi$num[at - 1]
-      old.num.g2 <- dat$epi$num.g2[at - 1]
-      new.num.g1 <- sum(dat$attr$active == 1 & group == 1)
-      new.num.g2 <- sum(dat$attr$active == 1 & group == 2)
-      dat$nwparam[[1]]$coef.form[1] <- dat$nwparam[[1]]$coef.form[1] +
-        log(2 * old.num.g1 * old.num.g2 / (old.num.g1 + old.num.g2)) -
-        log(2 * new.num.g1 * new.num.g2 / (new.num.g1 + new.num.g2))
-    }
+
   }
   return(dat)
 }
@@ -171,6 +173,25 @@ sim_nets <- function(x, nw, nsteps, control) {
 #'
 resim_nets.tgl <- function(dat, at) {
 
+  #Edges Correction
+  if (dat$param$groups == 1) {
+    old.num <- dat$epi$num[at - 1]
+    new.num <- sum(dat$attr$active == 1)
+    dat$nwparam[[1]]$coef.form[1] <- dat$nwparam[[1]]$coef.form[1] +
+      log(old.num) -
+      log(new.num)
+  }
+  if (dat$param$groups == 2) {
+    group <- dat$attr$group
+    old.num.g1 <- dat$epi$num[at - 1]
+    old.num.g2 <- dat$epi$num.g2[at - 1]
+    new.num.g1 <- sum(dat$attr$active == 1 & group == 1)
+    new.num.g2 <- sum(dat$attr$active == 1 & group == 2)
+    dat$nwparam[[1]]$coef.form[1] <- dat$nwparam[[1]]$coef.form[1] +
+      log(2 * old.num.g1 * old.num.g2 / (old.num.g1 + old.num.g2)) -
+      log(2 * new.num.g1 * new.num.g2 / (new.num.g1 + new.num.g2))
+  }
+
   idsActive <- which(dat$attr$active == 1)
   anyActive <- ifelse(length(idsActive) > 0, TRUE, FALSE)
   if (dat$param$groups == 2) {
@@ -191,27 +212,6 @@ resim_nets.tgl <- function(dat, at) {
                                                   coef.diss = nwparam$coef.diss$coef.adj,
                                                   save.changes = TRUE)
   }
-
-
-  #Edges Correction
-  if (dat$param$groups == 1) {
-    old.num <- dat$epi$num[at - 1]
-    new.num <- sum(dat$attr$active == 1)
-    dat$nwparam[[1]]$coef.form[1] <- dat$nwparam[[1]]$coef.form[1] +
-      log(old.num) -
-      log(new.num)
-  }
-  if (dat$param$groups == 2) {
-    group <- dat$attr$group
-    old.num.g1 <- dat$epi$num[at - 1]
-    old.num.g2 <- dat$epi$num.g2[at - 1]
-    new.num.g1 <- sum(dat$attr$active == 1 & group == 1)
-    new.num.g2 <- sum(dat$attr$active == 1 & group == 2)
-    dat$nwparam[[1]]$coef.form[1] <- dat$nwparam[[1]]$coef.form[1] +
-      log(2 * old.num.g1 * old.num.g2 / (old.num.g1 + old.num.g2)) -
-      log(2 * new.num.g1 * new.num.g2 / (new.num.g1 + new.num.g2))
-  }
-
 
   return(dat)
 }
