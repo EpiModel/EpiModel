@@ -283,7 +283,7 @@ control.icm <- function(type, nsteps, nsims = 1, rec.rand = TRUE, a.rand = TRUE,
 #'        at different time steps and for animating dynamic networks with evolving
 #'        status. TEAs are computationally inefficient for large simulations and
 #'        should be toggled off in those cases. This argument automatically set
-#'        to \code{FALSE} if \code{delete.nodes=TRUE}.
+#'        to \code{FALSE} if \code{tgl=TRUE}.
 #'
 #' @param tgl Logical indicating usage of either \code{tergm} (\code{tgl = TRUE}),
 #'        or \code{tergmLite} (\code{tgl = FALSE}). Default of \code{FALSE}.
@@ -335,17 +335,11 @@ control.icm <- function(type, nsteps, nsims = 1, rec.rand = TRUE, a.rand = TRUE,
 #'        argument.
 #' @param nwstats.formula A right-hand sided ERGM formula that includes network
 #'        statistics of interest, with the default to the formation formula terms.
-#' @param delete.nodes If \code{TRUE}, delete inactive nodes from the network
-#'        after each time step, otherwise deactivate them but keep them in the
-#'        network object. Deleting nodes increases computational efficiency in
-#'        large network simulations.
 #' @param save.transmat If \code{TRUE}, save a transmission matrix for each
 #'        simulation. This object contains one row for each transmission event
 #'        (see \code{\link{discord_edgelist}}).
 #' @param save.network If \code{TRUE}, save a \code{networkDynamic} object
-#'        containing full edge history for each simulation. If \code{delete.nodes}
-#'        is set to \code{TRUE}, this will only contain a static network with the
-#'        edge configuration at the final time step of each simulation.
+#'        containing full edge history for each simulation.
 #' @param save.other A vector of elements on the \code{dat} master data list
 #'        to save out after each simulation. One example for base models is
 #'        the attribute list, "attr", at the final time step.
@@ -417,19 +411,28 @@ control.icm <- function(type, nsteps, nsims = 1, rec.rand = TRUE, a.rand = TRUE,
 #' @export
 #'
 
-control.net <- function(type, nsteps, start = 1, nsims = 1, ncores = 1,
+control.net <- function(type,
+                        nsteps, start = 1,
+                        nsims = 1, ncores = 1,
                         depend, rec.rand = TRUE,
-                        a.rand = TRUE, d.rand = TRUE, tea.status = TRUE, tgl = FALSE,
-                        attr.rules, epi.by, use.pids = TRUE, pid.prefix,
-                        initialize.FUN = initialize.net, resim_nets.FUN = resim_nets,
-                        infection.FUN = NULL, recovery.FUN = NULL,
-                        departures.FUN = NULL, arrivals.FUN = NULL,
-                        nw.update.FUN = nw.update.net, get_prev.FUN = NULL,
-                        verbose.FUN = verbose.net, module.order = NULL,
+                        a.rand = TRUE, d.rand = TRUE,
+                        tea.status = TRUE, tgl = FALSE,
+                        attr.rules, epi.by,
+                        use.pids = TRUE, pid.prefix,
+                        initialize.FUN = initialize.net,
+                        resim_nets.FUN = resim_nets,
+                        infection.FUN = NULL,
+                        recovery.FUN = NULL,
+                        departures.FUN = NULL,
+                        arrivals.FUN = NULL,
+                        nw.update.FUN = nw.update.net,
+                        get_prev.FUN = NULL,
+                        verbose.FUN = verbose.net,
+                        module.order = NULL,
                         set.control.ergm, set.control.stergm,
                         save.nwstats = TRUE, nwstats.formula = "formation",
-                        delete.nodes = FALSE, save.transmat = TRUE,
-                        save.network = TRUE, save.other, verbose = TRUE,
+                        save.transmat = TRUE, save.network = TRUE,
+                        save.other, verbose = TRUE,
                         verbose.int = 1, skip.check = FALSE, ...) {
 
   # Get arguments
@@ -522,7 +525,7 @@ control.net <- function(type, nsteps, start = 1, nsims = 1, ncores = 1,
     p$set.control.ergm <- control.simulate.ergm(MCMC.burnin = 2e5)
   }
 
-  if (p$delete.nodes == TRUE) {
+  if (p$tgl == TRUE) {
     p$tea.status <- FALSE
   }
 
