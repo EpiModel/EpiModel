@@ -141,22 +141,23 @@ resim_nets <- function(dat, at) {
 edges_correct <- function(dat, at) {
 
   if (dat$control$depend == TRUE) {
-    if (dat$param$modes == 1) {
+
+    if (dat$param$groups == 1) {
       old.num <- dat$epi$num[at - 1]
       new.num <- sum(dat$attr$active == 1)
       dat$nwparam[[1]]$coef.form[1] <- dat$nwparam[[1]]$coef.form[1] +
         log(old.num) -
         log(new.num)
     }
-    if (dat$param$modes == 2) {
-      mode <- idmode(dat$nw)
-      old.num.m1 <- dat$epi$num[at - 1]
-      old.num.m2 <- dat$epi$num.m2[at - 1]
-      new.num.m1 <- sum(dat$attr$active == 1 & mode == 1)
-      new.num.m2 <- sum(dat$attr$active == 1 & mode == 2)
+    if (dat$param$groups == 2) {
+      group <- idgroup(dat$nw)
+      old.num.g1 <- dat$epi$num[at - 1]
+      old.num.g2 <- dat$epi$num.g2[at - 1]
+      new.num.g1 <- sum(dat$attr$active == 1 & group == 1)
+      new.num.g2 <- sum(dat$attr$active == 1 & group == 2)
       dat$nwparam[[1]]$coef.form[1] <- dat$nwparam[[1]]$coef.form[1] +
-        log(2 * old.num.m1 * old.num.m2 / (old.num.m1 + old.num.m2)) -
-        log(2 * new.num.m1 * new.num.m2 / (new.num.m1 + new.num.m2))
+        log(2 * old.num.g1 * old.num.g2 / (old.num.g1 + old.num.g2)) -
+        log(2 * new.num.g1 * new.num.g2 / (new.num.g1 + new.num.g2))
     }
   }
   return(dat)
