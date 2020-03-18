@@ -108,40 +108,6 @@ resim_nets <- function(dat, at) {
   return(dat)
 }
 
-#' @title Simulate Dynamic Network at Time 1
-#'
-#' @description This function simulates a dynamic network over one or multiple
-#'              time steps, to be used in \code{\link{netsim}} models.
-#'
-#' @param x An \code{EpiModel} object of class \code{\link{netest}}.
-#' @param nw A \code{networkDynamic} object.
-#' @param nsteps Number of time steps to simulate the network over.
-#' @param nsims Number of independent network simulations.
-#' @param control An \code{EpiModel} object of class \code{\link{control.net}}.
-#'
-#' @export
-#' @keywords netUtils internal
-#'
-sim_nets <- function(x, nw, nsteps, control) {
-
-  suppressWarnings(
-    sim <- simulate(nw,
-                    formation = x$formation,
-                    dissolution = x$coef.diss$dissolution,
-                    coef.form = x$coef.form,
-                    coef.diss = x$coef.diss$coef.crude,
-                    time.slices = nsteps,
-                    time.start = 1,
-                    time.offset = 0,
-                    constraints = x$constraints,
-                    monitor = control$nwstats.formula,
-                    nsim = 1,
-                    control = control$set.control.stergm))
-
-  return(sim)
-}
-
-
 #' @title TergmLite: Resimulate Dynamic Network at Time 2+
 #'
 #' @description This function resimulates the dynamic network in stochastic
