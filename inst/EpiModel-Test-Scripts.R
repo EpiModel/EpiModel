@@ -23,7 +23,7 @@ est <- netest(nw, formation, target.stats, coef.diss)
 # Parameters
 init <- init.net(i.num = 10)
 param <- param.net(inf.prob = 0.1, act.rate = 5)
-control <- control.net(type = "SI", nsteps = 100, nsims = 5, ncores = 5, tgl = TRUE, depend = FALSE,
+control <- control.net(type = "SI", nsteps = 100, nsims = 1, ncores = 1, tgl = FALSE,
                        save.nwstats = FALSE)
 
 sim <- netsim(est, param, init, control)
