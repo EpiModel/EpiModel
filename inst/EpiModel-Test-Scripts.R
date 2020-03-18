@@ -23,8 +23,8 @@ est <- netest(nw, formation, target.stats, coef.diss)
 # Parameters
 init <- init.net(i.num = 10)
 param <- param.net(inf.prob = 0.1, act.rate = 5)
-control <- control.net(type = "SI", nsteps = 100, nsims = 1, ncores = 1, tgl = FALSE,
-                       save.nwstats = FALSE)
+control <- control.net(type = "SI", nsteps = 100, nsims = 1, ncores = 1,
+                       tgl = FALSE, depend = TRUE)
 
 sim <- netsim(est, param, init, control)
 plot(sim)
@@ -52,8 +52,7 @@ est <- netest(nw, formation, target.stats, coef.diss)
 # Parameters
 init <- init.net(i.num = 50)
 param <- param.net(inf.prob = 0.02, act.rate = 5, rec.rate = 0.02)
-control <- control.net(type = "SIS", nsteps = 100, nsims = 5, tgl = TRUE,
-                       save.nwstats = FALSE)
+control <- control.net(type = "SIS", nsteps = 100, nsims = 5, tgl = TRUE)
 
 set.seed(123)
 crosscheck.net(est, param, init, control)
@@ -79,8 +78,7 @@ est <- netest(nw, formation, target.stats, coef.diss)
 # Parameters
 init <- init.net(i.num = 10, r.num = 5)
 param <- param.net(inf.prob = 0.02, act.rate = 5, rec.rate = 0.02)
-control <- control.net(type = "SIR", nsteps = 100, nsims = 5, tgl = TRUE,
-                       save.nwstats = FALSE)
+control <- control.net(type = "SIR", nsteps = 100, nsims = 5, tgl = TRUE)
 
 set.seed(123)
 crosscheck.net(est, param, init, control)
@@ -110,8 +108,7 @@ est <- netest(nw, formation, target.stats, coef.diss)
 # Parameters
 init <- init.net(i.num = 20, i.num.g2 = 20)
 param <- param.net(inf.prob = 0.1, inf.prob.g2 = 0.1, act.rate = 5)
-control <- control.net(type = "SI", nsteps = 100, nsims =5, tgl = TRUE,
-                       save.nwstats = FALSE)
+control <- control.net(type = "SI", nsteps = 100, nsims =5, tgl = TRUE)
 
 set.seed(123)
 crosscheck.net(est, param, init, control)
@@ -139,8 +136,7 @@ init <- init.net(i.num = 20, i.num.g2 = 20)
 param <- param.net(inf.prob = 0.02, inf.prob.g2 = 0.02,
                    rec.rate = 0.02, rec.rate.g2 = 0.02,
                    act.rate = 5)
-control <- control.net(type = "SIS", nsteps = 100, nsims = 5, tgl = TRUE,
-                       save.nwstats = FALSE)
+control <- control.net(type = "SIS", nsteps = 100, nsims = 5, tgl = TRUE)
 
 set.seed(123)
 crosscheck.net(est, param, init, control)
@@ -169,8 +165,7 @@ init <- init.net(i.num = 10, i.num.g2 = 10, r.num = 5, r.num.g2 = 5)
 param <- param.net(inf.prob = 0.02, inf.prob.g2 = 0.02,
                    rec.rate = 0.02, rec.rate.g2 = 0.02,
                    act.rate = 5)
-control <- control.net(type = "SIR", nsteps = 100, nsims = 5, tgl = TRUE,
-                       save.nwstats = FALSE)
+control <- control.net(type = "SIR", nsteps = 100, nsims = 5, tgl = TRUE)
 
 set.seed(123)
 crosscheck.net(est, param, init, control)
@@ -203,8 +198,7 @@ init <- init.net(i.num = 10)
 param <- param.net(inf.prob = 0.4, act.rate = 5,
                    a.rate = 0.02, ds.rate = 0.02,
                    di.rate = 0.02)
-control <- control.net(type = "SI", nsteps = 100, nsims = 5, tgl = TRUE,
-                       save.nwstats = FALSE)
+control <- control.net(type = "SI", nsteps = 100, nsims = 5, tgl = TRUE)
 
 set.seed(123)
 crosscheck.net(est, param, init, control)
@@ -232,8 +226,7 @@ est <- netest(nw, formation, target.stats, coef.diss)
 init <- init.net(i.num = 10)
 param <- param.net(inf.prob = 0.02, act.rate = 5, rec.rate = 0.02,
                    a.rate = 0.02, ds.rate = 0.02, di.rate = 0.02)
-control <- control.net(type = "SIS", nsteps = 100, nsims = 5, tgl = TRUE,
-                       save.nwstats = FALSE)
+control <- control.net(type = "SIS", nsteps = 100, nsims = 5, tgl = TRUE)
 
 set.seed(123)
 crosscheck.net(est, param, init, control)
@@ -263,8 +256,7 @@ init <- init.net(i.num = 10, r.num = 10)
 param <- param.net(inf.prob = 0.4, act.rate = 5, rec.rate = 0.02,
                    a.rate = 0.02, di.rate = 0.02, ds.rate = 0.02,
                    dr.rate = 0.02)
-control <- control.net(type = "SIR", nsteps = 100, nsims = 5, tgl = TRUE,
-                       save.nwstats = FALSE)
+control <- control.net(type = "SIR", nsteps = 100, nsims = 5, tgl = TRUE)
 
 set.seed(123)
 crosscheck.net(est, param, init, control)
@@ -299,8 +291,7 @@ param <- param.net(inf.prob = 0.1, inf.prob.g2 = 0.2,
                    act.rate = 5, a.rate = 0.02, a.rate.g2 = 0.02,
                    di.rate = 0.03, ds.rate = 0.03,
                    di.rate.g2 = 0.03, ds.rate.g2 = 0.03)
-control <- control.net(type = "SI", nsteps = 100, nsims = 5, tgl = TRUE,
-                       save.nwstats = FALSE)
+control <- control.net(type = "SI", nsteps = 100, nsims = 5, tgl = TRUE)
 
 set.seed(123)
 crosscheck.net(est, param, init, control)
@@ -332,8 +323,7 @@ param <- param.net(inf.prob = 0.1, inf.prob.g2 = 0.2,
                    di.rate = 0.03, ds.rate = 0.03,
                    di.rate.g2 = 0.03, ds.rate.g2 = 0.03,
                    rec.rate = 0.02, rec.rate.g2 = 0.02)
-control <- control.net(type = "SIS", nsteps = 100, nsims =5, tgl = TRUE,
-                       save.nwstats = FALSE)
+control <- control.net(type = "SIS", nsteps = 100, nsims =5, tgl = TRUE)
 
 set.seed(123)
 crosscheck.net(est, param, init, control)
@@ -367,8 +357,7 @@ param <- param.net(inf.prob = 0.1, inf.prob.g2 = 0.2,
                    di.rate.g2 = 0.03, ds.rate.g2 = 0.03,
                    dr.rate = 0.02, dr.rate.g2 = 0.02,
                    rec.rate = 0.02, rec.rate.g2 = 0.02)
-control <- control.net(type = "SIR", nsteps = 100, nsims = 5, tgl = TRUE,
-                       save.nwstats = FALSE)
+control <- control.net(type = "SIR", nsteps = 100, nsims = 5, tgl = TRUE)
 
 set.seed(123)
 crosscheck.net(est, param, init, control)
