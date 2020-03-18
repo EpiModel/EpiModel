@@ -34,6 +34,7 @@ for (at in 2:100) {
   dat <- infection.net(dat, at)
   dat <- nwupdate.net(dat, at)
   dat <- prevalence.net(dat, at)
+  cat("*")
 }
 
 #SIR/S

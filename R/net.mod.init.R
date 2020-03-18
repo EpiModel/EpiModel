@@ -93,7 +93,7 @@ initialize.net <- function(x, param, init, control, s) {
     }
 
     ## Get initial prevalence
-    dat <- do.call(control[["prevalance.FUN"]],list(dat, at = 1))
+    dat <- do.call(control[["prevalence.FUN"]],list(dat, at = 1))
 
   } else {
     dat <- list()

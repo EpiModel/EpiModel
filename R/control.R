@@ -484,8 +484,7 @@ control.net <- function(type,
   ## Defaults and checks
 
   #Check whether any base modules have been redefined by user (note: must come after above)
-  bi.nms <- bi.nms[-which(bi.nms %in% c("initialize.FUN", "edges_correct.FUN",
-                                        "resim_nets.FUN", "verbose.FUN", "nw.update.FUN"))]
+  bi.nms <- bi.nms[-which(bi.nms %in% c("initialize.FUN", "resim_nets.FUN", "verbose.FUN", "nwupdate.FUN"))]
   if (length(bi.nms) > 0){
     flag1 <- logical()
     for (args in 1:length(bi.nms)) {
