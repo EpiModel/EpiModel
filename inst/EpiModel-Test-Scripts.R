@@ -14,17 +14,17 @@ par(mar = c(3,3,2,1), mgp = c(2,1,0))
 
 # SI
 num <- 1000
-nw <- network::network.initialize(num, directed = FALSE)
-formation <- ~ edges
-target.stats <- 60
-coef.diss <- dissolution_coefs(dissolution = ~ offset(edges), duration = 100)
+nw <- network.initialize(num, directed = FALSE)
+formation <- ~edges
+target.stats <- 400
+coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 100)
 est <- netest(nw, formation, target.stats, coef.diss)
 
 # Parameters
 init <- init.net(i.num = 10)
 param <- param.net(inf.prob = 0.1, act.rate = 5)
 control <- control.net(type = "SI", nsteps = 100, nsims = 1, ncores = 1,
-                       tgl = TRUE, depend = TRUE)
+                       tgl = FALSE, depend = TRUE)
 
 sim <- netsim(est, param, init, control)
 plot(sim)
@@ -43,10 +43,10 @@ for (at in 2:control$nsteps) {
 
 # SIS
 num <- 1000
-nw <- network::network.initialize(num, directed = FALSE)
-formation <- ~ edges
-target.stats <- 60
-coef.diss <- dissolution_coefs(dissolution = ~ offset(edges), duration = 100)
+nw <- network.initialize(num, directed = FALSE)
+formation <- ~edges
+target.stats <- 400
+coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 100)
 est <- netest(nw, formation, target.stats, coef.diss)
 
 # Parameters
@@ -69,10 +69,10 @@ for (at in 2:control$nsteps) {
 
 # SIR
 num <- 1000
-nw <- network::network.initialize(num, directed = FALSE)
-formation <- ~ edges
-target.stats <- 60
-coef.diss <- dissolution_coefs(dissolution = ~ offset(edges), duration = 100)
+nw <- network.initialize(num, directed = FALSE)
+formation <- ~edges
+target.stats <- 400
+coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 100)
 est <- netest(nw, formation, target.stats, coef.diss)
 
 # Parameters
@@ -98,17 +98,17 @@ for (at in 2:control$nsteps) {
 
 # SI
 num1 <- num2 <- 500
-nw <- network::network.initialize(num1 + num2, directed = FALSE)
-nw <- network::set.vertex.attribute(nw, "group", rep(1:2, each = num1))
+nw <- network.initialize(num1 + num2, directed = FALSE)
+nw <- set.vertex.attribute(nw, "group", rep(1:2, each = num1))
 formation <- ~edges + nodefactor("group") + nodematch("group")
-target.stats <- c(150, 150, 75)
-coef.diss <- dissolution_coefs(dissolution = ~ offset(edges), duration = 100)
+target.stats <- c(400, 400, 0)
+coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 100)
 est <- netest(nw, formation, target.stats, coef.diss)
 
 # Parameters
 init <- init.net(i.num = 20, i.num.g2 = 20)
 param <- param.net(inf.prob = 0.1, inf.prob.g2 = 0.1, act.rate = 5)
-control <- control.net(type = "SI", nsteps = 100, nsims =5, tgl = TRUE)
+control <- control.net(type = "SI", nsteps = 100, nsims = 5, tgl = TRUE)
 
 set.seed(123)
 crosscheck.net(est, param, init, control)
@@ -124,11 +124,11 @@ for (at in 2:control$nsteps) {
 
 # SIS
 num1 <- num2 <- 500
-nw <- network::network.initialize(num1+num2, directed = FALSE)
-nw <- network::set.vertex.attribute(nw, "group", rep(1:2, each = num1))
-formation <- ~ edges + nodefactor("group") + nodematch("group")
-target.stats <- c(150, 150, 75)
-coef.diss <- dissolution_coefs(dissolution = ~ offset(edges), duration = 100)
+nw <- network.initialize(num1 + num2, directed = FALSE)
+nw <- set.vertex.attribute(nw, "group", rep(1:2, each = num1))
+formation <- ~edges + nodefactor("group") + nodematch("group")
+target.stats <- c(400, 400, 0)
+coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 100)
 est <- netest(nw, formation, target.stats, coef.diss)
 
 # Parameters
@@ -153,11 +153,11 @@ for (at in 2:control$nsteps) {
 
 # SIR
 num1 <- num2 <- 500
-nw <- network::network.initialize(num1+num2, directed = FALSE)
-nw <- network::set.vertex.attribute(nw, "group", rep(c(1,2), each = num1))
+nw <- network.initialize(num1 + num2, directed = FALSE)
+nw <- set.vertex.attribute(nw, "group", rep(1:2, each = num1))
 formation <- ~ edges + nodefactor("group") + nodematch("group")
-target.stats <- c(150, 150, 75)
-coef.diss <- dissolution_coefs(dissolution = ~ offset(edges), duration = 100)
+target.stats <- c(400, 400, 0)
+coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 100)
 est <- netest(nw, formation, target.stats, coef.diss)
 
 # Parameters
@@ -187,10 +187,10 @@ for (at in 2:control$nsteps) {
 
 # SI
 num <- 1000
-nw <- network::network.initialize(num, directed = FALSE)
-formation <- ~ edges
-target.stats <- 60
-coef.diss <- dissolution_coefs(dissolution = ~ offset(edges), duration = 100, d.rate = 0.005)
+nw <- network.initialize(num, directed = FALSE)
+formation <- ~edges
+target.stats <- 400
+coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 100, d.rate = 0.005)
 est <- netest(nw, formation, target.stats, coef.diss)
 
 # Parameters
@@ -216,10 +216,10 @@ for (at in 2:control$nsteps) {
 
 # SIS
 num <- 1000
-nw <- network::network.initialize(num, directed = FALSE)
-formation <- ~ edges
-target.stats <- 60
-coef.diss <- dissolution_coefs(dissolution = ~ offset(edges), duration = 100, d.rate = 0.005)
+nw <- network.initialize(num, directed = FALSE)
+formation <- ~edges
+target.stats <- 400
+coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 100, d.rate = 0.005)
 est <- netest(nw, formation, target.stats, coef.diss)
 
 # Parameters
@@ -245,10 +245,10 @@ for (at in 2:control$nsteps) {
 
 # SIR
 num <- 1000
-nw <- network::network.initialize(num, directed = FALSE)
-formation <- ~ edges
-target.stats <- 60
-coef.diss <- dissolution_coefs(dissolution = ~ offset(edges), duration = 100, d.rate = 0.005)
+nw <- network.initialize(num, directed = FALSE)
+formation <- ~edges
+target.stats <- 400
+coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 100, d.rate = 0.005)
 est <- netest(nw, formation, target.stats, coef.diss)
 
 # Parameters
@@ -278,10 +278,10 @@ for (at in 2:control$nsteps) {
 
 # SI
 num1 <- num2 <- 500
-nw <- network::network.initialize(num1+num2, directed = FALSE)
-nw <- network::set.vertex.attribute(nw, "group", rep(c(1,2), each = num1))
+nw <- network.initialize(num1 + num2, directed = FALSE)
+nw <- set.vertex.attribute(nw, "group", rep(1:2, each = num1))
 formation <- ~ edges + nodefactor("group") + nodematch("group")
-target.stats <- c(150, 150, 75)
+target.stats <- c(400, 400, 0)
 coef.diss <- dissolution_coefs(dissolution = ~ offset(edges), duration = 100, d.rate = 0.005)
 est <- netest(nw, formation, target.stats, coef.diss)
 
@@ -309,11 +309,11 @@ for (at in 2:control$nsteps) {
 
 # SIS
 num1 <- num2 <- 500
-nw <- network::network.initialize(num1+num2, directed = FALSE)
-nw <- network::set.vertex.attribute(nw, "group", rep(c(1,2), each = num1))
+nw <- network.initialize(num1 + num2, directed = FALSE)
+nw <- set.vertex.attribute(nw, "group", rep(1:2, each = num1))
 formation <- ~ edges + nodefactor("group") + nodematch("group")
-target.stats <- c(150, 150, 75)
-coef.diss <- dissolution_coefs(dissolution = ~ offset(edges), duration = 100, d.rate = 0.005)
+target.stats <- c(400, 400, 0)
+coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 100, d.rate = 0.005)
 est <- netest(nw, formation, target.stats, coef.diss)
 
 # Parameters
@@ -342,11 +342,11 @@ for (at in 2:control$nsteps) {
 
 # SIR
 num1 <- num2 <- 500
-nw <- network::network.initialize(num1+num2, directed = FALSE)
-nw <- network::set.vertex.attribute(nw, "group", rep(c(1,2), each = num1))
-formation <- ~ edges + nodefactor("group") + nodematch("group")
-target.stats <- c(150, 150, 75)
-coef.diss <- dissolution_coefs(dissolution = ~ offset(edges), duration = 100, d.rate = 0.005)
+nw <- network.initialize(num1 + num2, directed = FALSE)
+nw <- set.vertex.attribute(nw, "group", rep(1:2, each = num1))
+formation <- ~edges + nodefactor("group") + nodematch("group")
+target.stats <- c(400, 400, 0)
+coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 100, d.rate = 0.005)
 est <- netest(nw, formation, target.stats, coef.diss)
 
 # Parameters
