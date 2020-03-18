@@ -18,10 +18,10 @@ nwupdate.net <- function(dat, at) {
 
     if (dat$param$vital != FALSE) {
 
-      #Departures
-      inactive <- which(dat$attr$active == 0)
+      ## Departures
+      inactive <- unlist(dat$nw.update$idsDpt)
+      inactive <- as.vector(inactive)
       if (length(inactive) > 0) {
-        dat$attr <- deleteAttr(dat$attr, inactive)
         dat$nw <- deactivate.vertices(dat$nw, onset = at, terminus = Inf,
                                       v = inactive, deactivate.edges = TRUE)
       }
@@ -81,7 +81,7 @@ nwupdate.net <- function(dat, at) {
       }
     }
 
-    # Recovery
+    ## Recovery
     idsRecov <- dat$nw.update$rec$idsRecov
     recovState <- dat$nw.update$rec$recovState
     status <- dat$attr$status
@@ -98,8 +98,8 @@ nwupdate.net <- function(dat, at) {
       dat$nw <- set.vertex.attribute(dat$nw, "status", dat$attr$status)
     }
 
-    # Infection
-    #Active and set vertex attribute of infected
+    ## Infection
+    #Activate vertex attribute of infected
     idsNewInf <- dat$nw.update$inf$idsNewInf
     tea.status <- dat$control$tea.status
     if (length(idsNewInf) > 0) {
@@ -165,6 +165,6 @@ nwupdate.net <- function(dat, at) {
 
   }
 
-  # Output
+  ## Output
   return(dat)
 }
