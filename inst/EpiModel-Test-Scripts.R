@@ -1,15 +1,18 @@
-#EpiModel Overhaul: Worked Examples
 
-remotes::install_github("statnet/EpiModel", ref = "EpiModel_Overhaul_s4")
+###
+### EpiModel Overhaul
+### Worked Examples
+###
+
+# remotes::install_github("statnet/EpiModel", ref = "EpiModel_Overhaul_s4")
 suppressMessages(library("EpiModel"))
-suppressMessages(library("tergmLite"))
 
-# No Vital Dynamics----
 
-##One Group----
+# No Vital Dynamics -------------------------------------------------------
 
-#SI
+## One Group ##
 
+# SI
 num <- 200
 nw <- network::network.initialize(num, directed = FALSE)
 formation <- ~ edges
@@ -29,7 +32,7 @@ set.seed(123)
 crosscheck.net(est, param, init, control)
 dat <- initialize.net(est, param, init, control, s = 1)
 
-for (at in 2:100) {
+for (at in 2:control$nsteps) {
   dat <- resim_nets(dat, at)
   dat <- infection.net(dat, at)
   dat <- nwupdate.net(dat, at)
@@ -37,8 +40,7 @@ for (at in 2:100) {
   cat("*")
 }
 
-#SIR/S
-
+# SIS
 num <- 200
 nw <- network::network.initialize(num, directed = FALSE)
 formation <- ~ edges
@@ -56,14 +58,16 @@ set.seed(123)
 crosscheck.net(est, param, init, control)
 dat <- initialize.net(est, param, init, control, s = 1)
 
-for (at in 2:100) {
+for (at in 2:control$nsteps) {
   dat <- resim_nets(dat, at)
   dat <- infection.net(dat, at)
   dat <- recovery.net(dat, at)
   dat <- nwupdate.net(dat, at)
   dat <- prevalence.net(dat, at)
+  cat("*")
 }
 
+# SIR
 num <- 200
 nw <- network::network.initialize(num, directed = FALSE)
 formation <- ~ edges
@@ -81,32 +85,30 @@ set.seed(123)
 crosscheck.net(est, param, init, control)
 dat <- initialize.net(est, param, init, control, s = 1)
 
-for (at in 2:100) {
+for (at in 2:control$nsteps) {
   dat <- resim_nets(dat, at)
   dat <- infection.net(dat, at)
   dat <- recovery.net(dat, at)
   dat <- nwupdate.net(dat, at)
   dat <- prevalence.net(dat, at)
+  cat("*")
 }
 
 
+## Two Group ##
 
-##Two Group----
-
-#SI
-
+# SI
 num1 <- num2 <- 250
-nw <- network::network.initialize(num1+num2, directed = FALSE)
-nw <- network::set.vertex.attribute(nw, "group", rep(c(1,2), each = num1))
-formation <- ~ edges + nodefactor("group") + nodematch("group")
+nw <- network::network.initialize(num1 + num2, directed = FALSE)
+nw <- network::set.vertex.attribute(nw, "group", rep(1:2, each = num1))
+formation <- ~edges + nodefactor("group") + nodematch("group")
 target.stats <- c(150, 150, 75)
 coef.diss <- dissolution_coefs(dissolution = ~ offset(edges), duration = 50)
 est <- netest(nw, formation, target.stats, coef.diss)
 
 # Parameters
 init <- init.net(i.num = 20, i.num.g2 = 20)
-param <- param.net(inf.prob = 0.1, inf.prob.g2 = 0.1,
-                   act.rate = 5)
+param <- param.net(inf.prob = 0.1, inf.prob.g2 = 0.1, act.rate = 5)
 control <- control.net(type = "SI", nsteps = 100, nsims =5, tgl = TRUE,
                        save.nwstats = FALSE)
 
@@ -114,18 +116,18 @@ set.seed(123)
 crosscheck.net(est, param, init, control)
 dat <- initialize.net(est, param, init, control, s = 1)
 
-for (at in 2:100) {
+for (at in 2:control$nsteps) {
   dat <- resim_nets(dat, at)
   dat <- infection.net.grp(dat, at)
   dat <- nwupdate.net(dat, at)
   dat <- prevalence.net.grp(dat, at)
+  cat("*")
 }
 
-#SIR/S
-
+# SIS
 num1 <- num2 <- 250
 nw <- network::network.initialize(num1+num2, directed = FALSE)
-nw <- network::set.vertex.attribute(nw, "group", rep(c(1,2), each = num1))
+nw <- network::set.vertex.attribute(nw, "group", rep(1:2, each = num1))
 formation <- ~ edges + nodefactor("group") + nodematch("group")
 target.stats <- c(150, 150, 75)
 coef.diss <- dissolution_coefs(dissolution = ~ offset(edges), duration = 50)
@@ -143,14 +145,16 @@ set.seed(123)
 crosscheck.net(est, param, init, control)
 dat <- initialize.net(est, param, init, control, s = 1)
 
-for (at in 2:100) {
+for (at in 2:control$nsteps) {
   dat <- resim_nets(dat, at)
   dat <- infection.net(dat, at)
   dat <- recovery.net(dat, at)
   dat <- nwupdate.net(dat, at)
   dat <- prevalence.net(dat, at)
+  cat("*")
 }
 
+# SIR
 num1 <- num2 <- 250
 nw <- network::network.initialize(num1+num2, directed = FALSE)
 nw <- network::set.vertex.attribute(nw, "group", rep(c(1,2), each = num1))
@@ -171,16 +175,21 @@ set.seed(123)
 crosscheck.net(est, param, init, control)
 dat <- initialize.net(est, param, init, control, s = 1)
 
-for (at in 2:100) {
+for (at in 2:control$nsteps) {
   dat <- resim_nets(dat, at)
   dat <- infection.net.grp(dat, at)
   dat <- recovery.net.grp(dat, at)
   dat <- nwupdate.net(dat, at)
   dat <- prevalence.net.grp(dat, at)
+  cat("*")
 }
 
-## Vital Dynamics----
 
+# Vital Dynamics -----------------------------------------------------------
+
+## One Group ##
+
+# SI
 num <- 200
 nw <- network::network.initialize(num, directed = FALSE)
 formation <- ~ edges
@@ -200,17 +209,17 @@ set.seed(123)
 crosscheck.net(est, param, init, control)
 dat <- initialize.net(est, param, init, control, s = 1)
 
-for (at in 2:100) {
+for (at in 2:control$nsteps) {
   dat <- resim_nets(dat, at)
   dat <- infection.net(dat, at)
   dat <- departures.net(dat, at)
   dat <- arrivals.net(dat, at)
   dat <- nwupdate.net(dat, at)
   dat <- prevalence.net(dat, at)
+  cat("*")
 }
 
-#SIR/S
-
+# SIS
 num <- 200
 nw <- network::network.initialize(num, directed = FALSE)
 formation <- ~ edges
@@ -229,7 +238,7 @@ set.seed(123)
 crosscheck.net(est, param, init, control)
 dat <- initialize.net(est, param, init, control, s = 1)
 
-for (at in 2:100) {
+for (at in 2:control$nsteps) {
   dat <- resim_nets(dat, at)
   dat <- infection.net(dat, at)
   dat <- recovery.net(dat, at)
@@ -237,8 +246,10 @@ for (at in 2:100) {
   dat <- arrivals.net(dat, at)
   dat <- nwupdate.net(dat, at)
   dat <- prevalence.net(dat, at)
+  cat("*")
 }
 
+# SIR
 num <- 200
 nw <- network::network.initialize(num, directed = FALSE)
 formation <- ~ edges
@@ -258,7 +269,7 @@ set.seed(123)
 crosscheck.net(est, param, init, control)
 dat <- initialize.net(est, param, init, control, s = 1)
 
-for (at in 2:100) {
+for (at in 2:control$nsteps) {
   dat <- resim_nets(dat, at)
   dat <- infection.net(dat, at)
   dat <- recovery.net(dat, at)
@@ -266,14 +277,13 @@ for (at in 2:100) {
   dat <- arrivals.net(dat,at)
   dat <- nwupdate.net(dat, at)
   dat <- prevalence.net(dat, at)
+  cat("*")
 }
 
 
+## Two Group ##
 
-##Two Group----
-
-#SI
-
+# SI
 num1 <- num2 <- 250
 nw <- network::network.initialize(num1+num2, directed = FALSE)
 nw <- network::set.vertex.attribute(nw, "group", rep(c(1,2), each = num1))
@@ -295,17 +305,17 @@ set.seed(123)
 crosscheck.net(est, param, init, control)
 dat <- initialize.net(est, param, init, control, s = 1)
 
-for (at in 2:100) {
+for (at in 2:control$nsteps) {
   dat <- resim_nets(dat, at)
   dat <- infection.net.grp(dat, at)
   dat <- departures.net.grp(dat, at)
   dat <- arrivals.net.grp(dat, at)
   dat <- nwupdate.net(dat, at)
   dat <- prevalence.net.grp(dat, at)
+  cat("*")
 }
 
-#SIR/S
-
+# SIS
 num1 <- num2 <- 250
 nw <- network::network.initialize(num1+num2, directed = FALSE)
 nw <- network::set.vertex.attribute(nw, "group", rep(c(1,2), each = num1))
@@ -328,7 +338,7 @@ set.seed(123)
 crosscheck.net(est, param, init, control)
 dat <- initialize.net(est, param, init, control, s = 1)
 
-for (at in 2:100) {
+for (at in 2:control$nsteps) {
   dat <- resim_nets(dat, at)
   dat <- infection.net.grp(dat, at)
   dat <- recovery.net.grp(dat, at)
@@ -336,8 +346,10 @@ for (at in 2:100) {
   dat <- arrivals.net.grp(dat, at)
   dat <- nwupdate.net(dat, at)
   dat <- prevalence.net.grp(dat, at)
+  cat("*")
 }
 
+# SIR
 num1 <- num2 <- 250
 nw <- network::network.initialize(num1+num2, directed = FALSE)
 nw <- network::set.vertex.attribute(nw, "group", rep(c(1,2), each = num1))
@@ -361,7 +373,7 @@ set.seed(123)
 crosscheck.net(est, param, init, control)
 dat <- initialize.net(est, param, init, control, s = 1)
 
-for (at in 2:100) {
+for (at in 2:control$nsteps) {
   dat <- resim_nets(dat, at)
   dat <- infection.net.grp(dat, at)
   dat <- recovery.net.grp(dat, at)
@@ -369,4 +381,5 @@ for (at in 2:100) {
   dat <- arrivals.net.grp(dat, at)
   dat <- nwupdate.net(dat, at)
   dat <- prevalence.net.grp(dat, at)
+  cat("*")
 }
