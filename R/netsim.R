@@ -135,7 +135,7 @@ netsim <- function(x, param, init, control) {
   if (ncores == 1) {
     for (s in 1:control$nsims) {
       # Run the simulation
-      dat <- netsim.loop(x, param, init, control, s)
+      dat <- netsim_loop(x, param, init, control, s)
 
       # Set output
       if (s == 1) {
@@ -156,7 +156,7 @@ netsim <- function(x, param, init, control) {
       control$currsim <- s
 
       # Run the simulation
-      dat <- netsim.loop(x, param, init, control, s)
+      dat <- netsim_loop(x, param, init, control, s)
 
       # Set output
       out <- saveout.net(dat, s = 1)
@@ -181,7 +181,7 @@ netsim <- function(x, param, init, control) {
 #'              simulation
 #' @inheritParams initialize.net
 #' @keywords internal
-netsim.loop <- function(x, param, init, control, s) {
+netsim_loop <- function(x, param, init, control, s) {
   ## Initialization Module
   if (!is.null(control[["initialize.FUN"]])) {
     dat <- do.call(control[["initialize.FUN"]], list(x, param, init, control, s))
