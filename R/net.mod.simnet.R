@@ -100,12 +100,6 @@ resim_nets <- function(dat, at) {
                                  tail(attributes(dat$nw)$stats, 1)[,])
     }
 
-    if (dat$control$delete.nodes == TRUE) {
-      dat$nw <- network.extract(dat$nw, at = at)
-      inactive <- which(dat$attr$active == 0) #Merge
-      dat$nw.update$resim$inactive <- inactive
-    }
-
     #Edges Correction
     if (dat$param$groups == 1) {
       old.num <- dat$epi$num[at - 1]
@@ -373,17 +367,15 @@ nw.update.net.tgl <- function(dat, at) {
 
   ## Resimulate Network----
 
-  #Deactive inactive nodes
+  # Delete inactive nodes
+  inactive <- which(dat$attr$active == 0)
 
-  if (dat$control$delete.nodes == TRUE) {
-    inactive <- which(dat$attr$active == 0)
-
-    if (length(inactive) > 0) {
-      el.temp <- dat$nw$el[[1]]
-      el.temp <- delete_vertices(el.temp, inactive)
-      dat$nw$el[[1]] <- el.temp
-    }
+  if (length(inactive) > 0) {
+    el.temp <- dat$nw$el[[1]]
+    el.temp <- delete_vertices(el.temp, inactive)
+    dat$nw$el[[1]] <- el.temp
   }
+
 
   if (dat$param$vital != FALSE) {
 
@@ -391,7 +383,7 @@ nw.update.net.tgl <- function(dat, at) {
 
     idsDpt <- unlist(dat$nw.update$idsDpt)
     idsDpt <- as.vector(idsDpt)
-    #Deactive all departures on the network -
+    # Deactive all departures on the network -
 
     if (length(idsDpt) > 0) {
       el.temp <- dat$el[[1]]

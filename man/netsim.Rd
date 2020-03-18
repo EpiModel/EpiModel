@@ -33,8 +33,7 @@ A list of class \code{netsim} with the following elements:
        network statistics saved in the simulation, and \code{transmat} for
        the transmission matrix saved in the simulation. See
        \code{\link{control.net}} and the Tutorial for further details.
- \item \strong{network:} a list of \code{networkDynamic} objects (or
-       \code{network} objects if \code{delete.nodes} was set to \code{TRUE}),
+ \item \strong{network:} a list of \code{networkDynamic} objects,
        one for each model simulation.
 }
 }
