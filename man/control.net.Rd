@@ -134,6 +134,10 @@ of \code{\link{departures.net}}.}
 \item{arrivals.FUN}{Module to simulate arrivals or entries, with the default
 function of \code{\link{arrivals.net}}.}
 
+\item{nw.update.FUN}{Module to handle updating of network structure and nodal
+attributes due to exogenous epidemic model processes, with the default
+function of \code{\link{nw.update.net}}.}
+
 \item{get_prev.FUN}{Module to calculate disease prevalence at each time step,
 with the default function of \code{\link{get_prev.net}}.}
 
