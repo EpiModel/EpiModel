@@ -301,11 +301,6 @@ crosscheck.net <- function(x, param, init, control) {
       control$attr.rules$status <- "s"
     }
 
-    # Using tergmLite; then 'depend = TRUE':
-
-    if (control$tgl == TRUE) {
-      control$depend <- TRUE
-    }
 
 
     # Checks ------------------------------------------------------------------

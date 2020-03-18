@@ -481,6 +481,11 @@ control.net <- function(type,
     }
   }
 
+  # Using tergmLite --> depend = TRUE
+  if (tgl == TRUE) {
+    p$depend <- TRUE
+  }
+
   ## Defaults and checks
 
   #Check whether any base modules have been redefined by user (note: must come after above)

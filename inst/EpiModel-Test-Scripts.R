@@ -6,7 +6,7 @@
 
 # remotes::install_github("statnet/EpiModel", ref = "EpiModel_Overhaul_s4")
 suppressMessages(library("EpiModel"))
-
+par(mar = c(3,3,2,1), mgp = c(2,1,0))
 
 # No Vital Dynamics -------------------------------------------------------
 
@@ -23,10 +23,11 @@ est <- netest(nw, formation, target.stats, coef.diss)
 # Parameters
 init <- init.net(i.num = 10)
 param <- param.net(inf.prob = 0.1, act.rate = 5)
-control <- control.net(type = "SI", nsteps = 100, nsims = 5, tgl = TRUE,
+control <- control.net(type = "SI", nsteps = 100, nsims = 5, ncores = 5, tgl = TRUE, depend = FALSE,
                        save.nwstats = FALSE)
 
 sim <- netsim(est, param, init, control)
+plot(sim)
 
 set.seed(123)
 crosscheck.net(est, param, init, control)
