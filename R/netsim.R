@@ -50,8 +50,7 @@
 #'        network statistics saved in the simulation, and \code{transmat} for
 #'        the transmission matrix saved in the simulation. See
 #'        \code{\link{control.net}} and the Tutorial for further details.
-#'  \item \strong{network:} a list of \code{networkDynamic} objects (or
-#'        \code{network} objects if \code{delete.nodes} was set to \code{TRUE}),
+#'  \item \strong{network:} a list of \code{networkDynamic} objects,
 #'        one for each model simulation.
 #' }
 #'
@@ -134,37 +133,8 @@ netsim <- function(x, param, init, control) {
 
   if (ncores == 1) {
     for (s in 1:control$nsims) {
-
-      ## Initialization Module
-      if (!is.null(control[["initialize.FUN"]])) {
-        dat <- do.call(control[["initialize.FUN"]], list(x, param, init, control, s))
-      }
-
-
-      ### TIME LOOP
-      if (control$nsteps > 1) {
-        for (at in max(2, control$start):control$nsteps) {
-
-          ## Module order
-          morder <- control$module.order
-          if (is.null(morder)) {
-            lim.bi.mods <- control$bi.mods[-which(control$bi.mods %in%
-                                                    c("initialize.FUN", "verbose.FUN"))]
-            morder <- c(control$user.mods, lim.bi.mods)
-          }
-
-          ## Evaluate modules
-          for (i in seq_along(morder)) {
-            dat <- do.call(control[[morder[i]]], list(dat, at))
-          }
-
-          ## Verbose module
-          if (!is.null(control[["verbose.FUN"]])) {
-            do.call(control[["verbose.FUN"]], list(dat, type = "progress", s, at))
-          }
-
-        }
-      }
+      # Run the simulation
+      dat <- netsim_loop(x, param, init, control, s)
 
       # Set output
       if (s == 1) {
@@ -184,36 +154,8 @@ netsim <- function(x, param, init, control) {
       control$nsims <- 1
       control$currsim <- s
 
-      ## Initialization Module
-      if (!is.null(control[["initialize.FUN"]])) {
-        dat <- do.call(control[["initialize.FUN"]], list(x, param, init, control, s))
-      }
-
-
-      ### TIME LOOP
-      if (control$nsteps > 1) {
-        for (at in max(2, control$start):control$nsteps) {
-
-          ## Module order
-          morder <- control$module.order
-          if (is.null(morder)) {
-            lim.bi.mods <- control$bi.mods[-which(control$bi.mods %in%
-                                                    c("initialize.FUN", "verbose.FUN"))]
-            morder <- c(control$user.mods, lim.bi.mods)
-          }
-
-          ## Evaluate modules
-          for (i in seq_along(morder)) {
-            dat <- do.call(control[[morder[i]]], list(dat, at))
-          }
-
-          ## Verbose module
-          if (!is.null(control[["verbose.FUN"]])) {
-            do.call(control[["verbose.FUN"]], list(dat, type = "progress", s, at))
-          }
-
-        }
-      }
+      # Run the simulation
+      dat <- netsim_loop(x, param, init, control, s)
 
       # Set output
       out <- saveout.net(dat, s = 1)
@@ -232,3 +174,42 @@ netsim <- function(x, param, init, control) {
   return(out)
 }
 
+#' @title Internal function running the network simulation loop
+#'
+#' @description This function run the initialization and simulation loop for one
+#'              simulation
+#' @inheritParams initialize.net
+#' @keywords internal
+netsim_loop <- function(x, param, init, control, s) {
+  ## Initialization Module
+  if (!is.null(control[["initialize.FUN"]])) {
+    dat <- do.call(control[["initialize.FUN"]], list(x, param, init, control, s))
+  }
+
+  ### TIME LOOP
+  if (control$nsteps > 1) {
+    for (at in max(2, control$start):control$nsteps) {
+
+      ## Module order
+      morder <- control$module.order
+      if (is.null(morder)) {
+        lim.bi.mods <- control$bi.mods[-which(control$bi.mods %in%
+                                              c("initialize.FUN", "verbose.FUN"))]
+        morder <- c(control$user.mods, lim.bi.mods)
+      }
+
+      ## Evaluate modules
+      for (i in seq_along(morder)) {
+        dat <- do.call(control[[morder[i]]], list(dat, at))
+      }
+
+      ## Verbose module
+      if (!is.null(control[["verbose.FUN"]])) {
+        do.call(control[["verbose.FUN"]], list(dat, type = "progress", s, at))
+      }
+
+    }
+  }
+
+  return(dat)
+}

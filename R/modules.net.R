@@ -52,7 +52,6 @@
 #'        specified in \code{\link{param.net}}.
 #' }
 #'
-#'
 #' @section Demographic Modules:
 #' Demographics such as arrival and departure processes are simulated at each time
 #' step to update entries into and exits from the network. These are used in
@@ -61,9 +60,8 @@
 #' \itemize{
 #'  \item \code{\link{departures.net}}: randomly simulates departure for nodes given
 #'        their disease status (susceptible, infected, recovered), and their
-#'        mode-specific departure rates specified in \code{\link{param.net}}. departures
-#'        involve deactivating nodes, which are then deleted from the network
-#'        if \code{delete.nodes=TRUE} is set in \code{\link{control.net}}.
+#'        mode-specific departure rates specified in \code{\link{param.net}}. Departures
+#'        involve deactivating nodes.
 #'  \item \code{\link{arrivals.net}}: randomly simulates new arrivals into the network
 #'        given the current population size and the arrival rate specified in the
 #'        \code{a.rate} parameters. This involves adding new nodes into the network.
@@ -76,8 +74,7 @@
 #' \itemize{
 #'  \item \code{\link{resim_nets}}: resimulates the network object one time step
 #'        forward given the set of formation and dissolution coefficients estimated
-#'        in \code{\link{netest}}. This function also deletes the inactive nodes
-#'        if the \code{delete.nodes} control is set to \code{TRUE}.
+#'        in \code{\link{netest}}.
 #' }
 #'
 #' @section Bookkeeping Module:

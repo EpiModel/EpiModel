@@ -4,7 +4,7 @@
 \alias{init_pids}
 \title{Persistent ID Initialization}
 \usage{
-init_pids(nw, prefixes = c("F", "M"))
+init_pids(nw, groups, prefixes = c("F", "M"))
 }
 \arguments{
 \item{nw}{An object of class \code{networkDynamic}.}

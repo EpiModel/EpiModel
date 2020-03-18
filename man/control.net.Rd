@@ -15,6 +15,7 @@ control.net(
   a.rand = TRUE,
   d.rand = TRUE,
   tea.status = TRUE,
+  tgl = FALSE,
   attr.rules,
   epi.by,
   use.pids = TRUE,
@@ -33,7 +34,6 @@ control.net(
   set.control.stergm,
   save.nwstats = TRUE,
   nwstats.formula = "formation",
-  delete.nodes = FALSE,
   save.transmat = TRUE,
   save.network = TRUE,
   save.other,
@@ -93,7 +93,10 @@ to store disease status. A TEA is needed for plotting static networks
 at different time steps and for animating dynamic networks with evolving
 status. TEAs are computationally inefficient for large simulations and
 should be toggled off in those cases. This argument automatically set
-to \code{FALSE} if \code{delete.nodes=TRUE}.}
+to \code{FALSE} if \code{tgl=TRUE}.}
+
+\item{tgl}{Logical indicating usage of either \code{tergm} (\code{tgl = TRUE}),
+or \code{tergmLite} (\code{tgl = FALSE}). Default of \code{FALSE}.}
 
 \item{attr.rules}{A list containing the  rules for setting the attributes of
 incoming nodes, with one list element per attribute to be set (see
@@ -160,19 +163,12 @@ argument.}
 \item{nwstats.formula}{A right-hand sided ERGM formula that includes network
 statistics of interest, with the default to the formation formula terms.}
 
-\item{delete.nodes}{If \code{TRUE}, delete inactive nodes from the network
-after each time step, otherwise deactivate them but keep them in the
-network object. Deleting nodes increases computational efficiency in
-large network simulations.}
-
 \item{save.transmat}{If \code{TRUE}, save a transmission matrix for each
 simulation. This object contains one row for each transmission event
 (see \code{\link{discord_edgelist}}).}
 
 \item{save.network}{If \code{TRUE}, save a \code{networkDynamic} object
-containing full edge history for each simulation. If \code{delete.nodes}
-is set to \code{TRUE}, this will only contain a static network with the
-edge configuration at the final time step of each simulation.}
+containing full edge history for each simulation.}
 
 \item{save.other}{A vector of elements on the \code{dat} master data list
 to save out after each simulation. One example for base models is
