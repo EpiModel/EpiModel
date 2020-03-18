@@ -16,28 +16,17 @@ nwupdate.net <- function(dat, at) {
 
     tea.status <- dat$control$tea.status
 
-    #Resimulate Network----
-
-    #Deactive inactive nodes
-    inactive <- dat$nw.update$resim$inactive
-    if (length(inactive) > 0) {
-      dat$attr <- deleteAttr(dat$attr, inactive)
-    }
-
     if (dat$param$vital != FALSE) {
 
-      #Departures----
-
-      idsDpt <- unlist(dat$nw.update$idsDpt)
-      idsDpt <- as.vector(idsDpt)
-      #Deactive all departures on the network -
-
-      if (length(idsDpt) > 0) {
+      #Departures
+      inactive <- which(dat$attr$active == 0)
+      if (length(inactive) > 0) {
+        dat$attr <- deleteAttr(dat$attr, inactive)
         dat$nw <- deactivate.vertices(dat$nw, onset = at, terminus = Inf,
-                                      v = idsDpt, deactivate.edges = TRUE)
+                                      v = inactive, deactivate.edges = TRUE)
       }
 
-      #Arrivals----
+      ## Arrivals
       nArrivals <- dat$nw.update$arr$nArrivals
       if (sum(nArrivals) > 0) {
         nCurr <- network.size(dat$nw)
@@ -92,8 +81,7 @@ nwupdate.net <- function(dat, at) {
       }
     }
 
-    #Recovery----
-
+    # Recovery
     idsRecov <- dat$nw.update$rec$idsRecov
     recovState <- dat$nw.update$rec$recovState
     status <- dat$attr$status
@@ -110,8 +98,7 @@ nwupdate.net <- function(dat, at) {
       dat$nw <- set.vertex.attribute(dat$nw, "status", dat$attr$status)
     }
 
-    #Infection----
-
+    # Infection
     #Active and set vertex attribute of infected
     idsNewInf <- dat$nw.update$inf$idsNewInf
     tea.status <- dat$control$tea.status
@@ -134,40 +121,22 @@ nwupdate.net <- function(dat, at) {
 
   if (dat$control$tgl == TRUE) {
 
-    tea.status <- dat$control$tea.status
-
-    ## Resimulate Network----
-
-    # Delete inactive nodes
-    inactive <- which(dat$attr$active == 0)
-
-    if (length(inactive) > 0) {
-      el.temp <- dat$nw$el[[1]]
-      el.temp <- delete_vertices(el.temp, inactive)
-      dat$nw$el[[1]] <- el.temp
-    }
-
-
     if (dat$param$vital != FALSE) {
 
-      ## Departures----
-
-      idsDpt <- unlist(dat$nw.update$idsDpt)
-      idsDpt <- as.vector(idsDpt)
-      # Deactive all departures on the network -
-
-      if (length(idsDpt) > 0) {
+      ## Departures
+      inactive <- which(dat$attr$active == 0)
+      if (length(inactive) > 0) {
         el.temp <- dat$el[[1]]
-        el.temp <- delete_vertices(el.temp, idsDpt)
-        dat$nw$el[[1]] <- el.temp
+        el.temp <- delete_vertices(el.temp, inactive)
+        dat$el[[1]] <- el.temp
       }
 
-      ## Arrivals----
+      ## Arrivals
       nArrivals <- dat$nw.update$arr$nArrivals
       if (sum(nArrivals) > 0) {
         el.temp <- dat$el[[1]]
         nCurr <- length(dat$attr$group)
-        #New Arrivals
+
         el.temp <- add_vertices(el.temp, nv = sum(nArrivals))
 
         if (length(nArrivals) > 1) {
@@ -184,7 +153,6 @@ nwupdate.net <- function(dat, at) {
         dat$attr$exitTime <- c(dat$attr$exitTime, rep(NA, sum(nArrivals)))
 
         ## Handles infTime when incoming nodes are infected
-        #When would this happen? - Infection occurs before arrivals
         newNodes <- c((nCurr+1):(nCurr+sum(nArrivals)))
         newNodesInf <- intersect(newNodes, which(dat$attr$status == "i"))
         dat$attr$infTime[newNodesInf] <- at
@@ -194,14 +162,6 @@ nwupdate.net <- function(dat, at) {
         }
       }
     }
-
-    ## Recovery----
-
-    #No network updates
-
-    ## Infection----
-
-    #No network updates needed
 
   }
 
