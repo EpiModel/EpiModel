@@ -113,8 +113,8 @@ resim_nets <- function(dat, at) {
   # networkLite/tergmLite Method
   if (dat$control$tgl == TRUE) {
     if (dat$param$groups == 2) {
-      groupids.1 <- which(dat$attr$groups == 1)
-      groupids.2 <- which(dat$attr$groups == 2)
+      groupids.1 <- which(dat$attr$group == 1)
+      groupids.2 <- which(dat$attr$group == 2)
       nActiveG1 <- length(intersect(groupids.1, idsActive))
       nActiveG2 <- length(intersect(groupids.2, idsActive))
       anyActive <- ifelse(nActiveG1 > 0 & nActiveG2 > 0, TRUE, FALSE)
