@@ -17,7 +17,7 @@
 #' @export
 #' @keywords netUtils internal
 #'
-get_prev.net <- function(dat, at) {
+prevalence.net <- function(dat, at) {
 
   active <- dat$attr$active
 
@@ -120,7 +120,7 @@ get_prev.net <- function(dat, at) {
 #' @export
 #' @keywords netUtils internal
 #'
-get_prev.net.grp <- function(dat, at) {
+prevalence.net.grp <- function(dat, at) {
 
   active <- dat$attr$active
 

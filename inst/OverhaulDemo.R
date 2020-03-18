@@ -165,7 +165,7 @@ init <- init.net(i.num = 50)
 #User must specify all base functions when "type" is NULL
 control <- control.net(type = NULL, nsims = 1, nsteps = 100,
                        departures.FUN = dfunc, arrivals.FUN = bfunc,
-                       get_prev.FUN = get_prev.net, infection.FUN = infection.net,
+                       prevalence.FUN = prevalence.net, infection.FUN = infection.net,
                        recovery.FUN = recovery.net, aging.FUN = aging, depend = TRUE)
 
 ## Simulate the epidemic model

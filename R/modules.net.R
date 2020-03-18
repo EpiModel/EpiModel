@@ -81,7 +81,7 @@
 #' Network simulations require bookkeeping at each time step to calculate the
 #' summary epidemiological statistics used in the model output analysis.
 #' \itemize{
-#'  \item \code{\link{get_prev.net}}: calculates the number in each disease state
+#'  \item \code{\link{prevalence.net}}: calculates the number in each disease state
 #'        (susceptible, infected, recovered) at each time step for those active
 #'        nodes in the network. If the \code{epi.by} control is used, it calculates
 #'        these statistics by a set of specified nodal attributes.
@@ -92,7 +92,7 @@
 #' @section One- & Two-Mode Modules:
 #' If epidemic \code{type} is supplied within \code{\link{control.net}}, EpiModel
 #' defaults each of the base epidemic modules described above (arrivals.FUN,
-#' departures.FUN, infection.FUN, recovery.FUN and get_prev.FUN) to the correct .net
+#' departures.FUN, infection.FUN, recovery.FUN and prevalence.FUN) to the correct .net
 #' function based on variables passed to \code{\link{param.net}} (e.g. num.g2, denoting
 #' population size of mode two, would select the two-mode variants of the aformentioned
 #' modules). Two-mode modules are denoted by a .bip affix (e.g., recovery.net.bip)

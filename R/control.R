@@ -139,8 +139,8 @@ control.dcm <- function(type, nsteps, dt = 1, odemethod = "rk4",
 #'        function of \code{\link{departures.icm}}.
 #' @param arrivals.FUN Module to simulate arrivals or entries, with the default
 #'        function of \code{\link{arrivals.icm}}.
-#' @param get_prev.FUN Module to calculate disease prevalence at each time step,
-#'        with the default function of \code{\link{get_prev.icm}}.
+#' @param prevalence.FUN Module to calculate disease prevalence at each time step,
+#'        with the default function of \code{\link{prevalence.icm}}.
 #' @param verbose If \code{TRUE}, print model progress to the console.
 #' @param verbose.int Time step interval for printing progress to console, where
 #'        0 (the default) prints completion status of entire simulation and
@@ -186,7 +186,7 @@ control.icm <- function(type, nsteps, nsims = 1, rec.rand = TRUE, a.rand = TRUE,
                         d.rand = TRUE, initialize.FUN = initialize.icm,
                         infection.FUN = NULL, recovery.FUN = NULL,
                         departures.FUN = NULL, arrivals.FUN = NULL,
-                        get_prev.FUN = NULL, verbose = FALSE,
+                        prevalence.FUN = NULL, verbose = FALSE,
                         verbose.int = 0, skip.check = FALSE, ...) {
 
   # Get arguments
@@ -316,8 +316,8 @@ control.icm <- function(type, nsteps, nsims = 1, rec.rand = TRUE, a.rand = TRUE,
 #' @param nwupdate.FUN Module to handle updating of network structure and nodal
 #'        attributes due to exogenous epidemic model processes, with the default
 #'        function of \code{\link{nwupdate.net}}.
-#' @param get_prev.FUN Module to calculate disease prevalence at each time step,
-#'        with the default function of \code{\link{get_prev.net}}.
+#' @param prevalence.FUN Module to calculate disease prevalence at each time step,
+#'        with the default function of \code{\link{prevalence.net}}.
 #' @param verbose.FUN Module to print simulation progress to screen, with the
 #'        default function of \code{\link{verbose.net}}.
 #' @param module.order A character vector of module names that lists modules the
@@ -429,7 +429,7 @@ control.net <- function(type,
                         departures.FUN = NULL,
                         arrivals.FUN = NULL,
                         nwupdate.FUN = nwupdate.net,
-                        get_prev.FUN = NULL,
+                        prevalence.FUN = NULL,
                         verbose.FUN = verbose.net,
                         module.order = NULL,
                         set.control.ergm, set.control.stergm,
@@ -540,15 +540,15 @@ control.net <- function(type,
   }
 
   if (p$type != "SIR" && !is.null(p$type)) {
-    p$f.names <- c("arrivals.FUN", "departures.FUN", "infection.FUN", "get_prev.FUN")
-    p$f.args  <- c("arrivals.net", "departures.net", "infection.net", "get_prev.net")
+    p$f.names <- c("arrivals.FUN", "departures.FUN", "infection.FUN", "prevalence.FUN")
+    p$f.args  <- c("arrivals.net", "departures.net", "infection.net", "prevalence.net")
   }
 
   if (p$type %in% c("SIR", "SIS") && !is.null(p$type)) {
     p$f.names <- c("arrivals.FUN", "departures.FUN", "infection.FUN",
-                   "recovery.FUN", "get_prev.FUN")
+                   "recovery.FUN", "prevalence.FUN")
     p$f.args  <- c("arrivals.net", "departures.net", "infection.net",
-                   "recovery.net", "get_prev.net")
+                   "recovery.net", "prevalence.net")
   }
 
   ## Output

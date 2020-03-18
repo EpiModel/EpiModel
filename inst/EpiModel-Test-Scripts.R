@@ -33,7 +33,7 @@ for (at in 2:100) {
   dat <- resim_nets(dat, at)
   dat <- infection.net(dat, at)
   dat <- nwupdate.net(dat, at)
-  dat <- get_prev.net(dat, at)
+  dat <- prevalence.net(dat, at)
 }
 
 #SIR/S
@@ -60,7 +60,7 @@ for (at in 2:100) {
   dat <- infection.net(dat, at)
   dat <- recovery.net(dat, at)
   dat <- nwupdate.net(dat, at)
-  dat <- get_prev.net(dat, at)
+  dat <- prevalence.net(dat, at)
 }
 
 num <- 200
@@ -85,7 +85,7 @@ for (at in 2:100) {
   dat <- infection.net(dat, at)
   dat <- recovery.net(dat, at)
   dat <- nwupdate.net(dat, at)
-  dat <- get_prev.net(dat, at)
+  dat <- prevalence.net(dat, at)
 }
 
 
@@ -117,7 +117,7 @@ for (at in 2:100) {
   dat <- resim_nets(dat, at)
   dat <- infection.net.grp(dat, at)
   dat <- nwupdate.net(dat, at)
-  dat <- get_prev.net.grp(dat, at)
+  dat <- prevalence.net.grp(dat, at)
 }
 
 #SIR/S
@@ -147,7 +147,7 @@ for (at in 2:100) {
   dat <- infection.net(dat, at)
   dat <- recovery.net(dat, at)
   dat <- nwupdate.net(dat, at)
-  dat <- get_prev.net(dat, at)
+  dat <- prevalence.net(dat, at)
 }
 
 num1 <- num2 <- 250
@@ -175,7 +175,7 @@ for (at in 2:100) {
   dat <- infection.net.grp(dat, at)
   dat <- recovery.net.grp(dat, at)
   dat <- nwupdate.net(dat, at)
-  dat <- get_prev.net.grp(dat, at)
+  dat <- prevalence.net.grp(dat, at)
 }
 
 ## Vital Dynamics----
@@ -205,7 +205,7 @@ for (at in 2:100) {
   dat <- departures.net(dat, at)
   dat <- arrivals.net(dat, at)
   dat <- nwupdate.net(dat, at)
-  dat <- get_prev.net(dat, at)
+  dat <- prevalence.net(dat, at)
 }
 
 #SIR/S
@@ -235,7 +235,7 @@ for (at in 2:100) {
   dat <- departures.net(dat, at)
   dat <- arrivals.net(dat, at)
   dat <- nwupdate.net(dat, at)
-  dat <- get_prev.net(dat, at)
+  dat <- prevalence.net(dat, at)
 }
 
 num <- 200
@@ -264,7 +264,7 @@ for (at in 2:100) {
   dat <- departures.net(dat, at)
   dat <- arrivals.net(dat,at)
   dat <- nwupdate.net(dat, at)
-  dat <- get_prev.net(dat, at)
+  dat <- prevalence.net(dat, at)
 }
 
 
@@ -300,7 +300,7 @@ for (at in 2:100) {
   dat <- departures.net.grp(dat, at)
   dat <- arrivals.net.grp(dat, at)
   dat <- nwupdate.net(dat, at)
-  dat <- get_prev.net.grp(dat, at)
+  dat <- prevalence.net.grp(dat, at)
 }
 
 #SIR/S
@@ -334,7 +334,7 @@ for (at in 2:100) {
   dat <- departures.net.grp(dat, at)
   dat <- arrivals.net.grp(dat, at)
   dat <- nwupdate.net(dat, at)
-  dat <- get_prev.net.grp(dat, at)
+  dat <- prevalence.net.grp(dat, at)
 }
 
 num1 <- num2 <- 250
@@ -367,5 +367,5 @@ for (at in 2:100) {
   dat <- departures.net.grp(dat, at)
   dat <- arrivals.net.grp(dat, at)
   dat <- nwupdate.net(dat, at)
-  dat <- get_prev.net.grp(dat, at)
+  dat <- prevalence.net.grp(dat, at)
 }

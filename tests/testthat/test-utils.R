@@ -176,10 +176,10 @@ in language",{
   expect_that(control.icm(type="SI",nsteps=10,deaths.FUN=temp), shows_message("EpiModel 1.7.0 onward renamed the death function deaths.FUN to departures.FUN. See documentation for details."))
   expect_that(control.net(type = NULL, nsims = 1, nsteps = 10,
                           departures.FUN = temp, arrivals.FUN = temp,
-                          get_prev.FUN = get_prev.net, infection.FUN = infection.net,
+                          prevalence.FUN = prevalence.net, infection.FUN = infection.net,
                           recovery.FUN = recovery.net, births.FUN=temp, depend = FALSE), shows_message("EpiModel 1.7.0 onward renamed the birth function births.FUN to arrivals.FUN. See documentation for details."))
   expect_that(control.net(type = NULL, nsims = 1, nsteps = 10,
                           departures.FUN = temp, arrivals.FUN = temp,
-                          get_prev.FUN = get_prev.net, infection.FUN = infection.net,
+                          prevalence.FUN = prevalence.net, infection.FUN = infection.net,
                           recovery.FUN = recovery.net, deaths.FUN=temp, depend = FALSE), shows_message("EpiModel 1.7.0 onward renamed the death function deaths.FUN to departures.FUN. See documentation for details."))
 })
