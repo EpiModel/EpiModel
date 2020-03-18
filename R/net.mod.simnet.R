@@ -53,20 +53,19 @@ resim_nets <- function(dat, at) {
 
   idsActive <- which(dat$attr$active == 1)
   anyActive <- ifelse(length(idsActive) > 0, TRUE, FALSE)
+  if (dat$param$groups == 2) {
+    groupids.1 <- which(dat$attr$group == 1)
+    groupids.2 <- which(dat$attr$group == 2)
+    nActiveG1 <- length(intersect(groupids.1, idsActive))
+    nActiveG2 <- length(intersect(groupids.2, idsActive))
+    anyActive <- ifelse(nActiveG1 > 0 & nActiveG2 > 0, TRUE, FALSE)
+  }
+
+  # Pull network model parameters
+  nwparam <- get_nwparam(dat)
 
   # Full tergm/network Method
   if (dat$control$tgl == FALSE) {
-
-    if (dat$param$groups == 2) {
-      groupids.1 <- which(get.vertex.attribute(dat$nw, "group") == 1)
-      groupids.2 <- which(get.vertex.attribute(dat$nw, "group") == 2)
-      nActiveG1 <- length(intersect(groupids.1, idsActive))
-      nActiveG2 <- length(intersect(groupids.2, idsActive))
-      anyActive <- ifelse(nActiveG1 > 0 & nActiveG2 > 0, TRUE, FALSE)
-    }
-
-    # Pull network model parameters
-    nwparam <- get_nwparam(dat)
 
     # Serosorting model check
     statOnNw <- ("status" %in% dat$temp$fterms)
@@ -112,15 +111,6 @@ resim_nets <- function(dat, at) {
 
   # networkLite/tergmLite Method
   if (dat$control$tgl == TRUE) {
-    if (dat$param$groups == 2) {
-      groupids.1 <- which(dat$attr$group == 1)
-      groupids.2 <- which(dat$attr$group == 2)
-      nActiveG1 <- length(intersect(groupids.1, idsActive))
-      nActiveG2 <- length(intersect(groupids.2, idsActive))
-      anyActive <- ifelse(nActiveG1 > 0 & nActiveG2 > 0, TRUE, FALSE)
-    }
-
-    nwparam <- get_nwparam(dat)
 
     if (anyActive > 0 & dat$control$depend == TRUE) {
 
