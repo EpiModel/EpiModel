@@ -54,101 +54,87 @@ resim_nets <- function(dat, at) {
   idsActive <- which(dat$attr$active == 1)
   anyActive <- ifelse(length(idsActive) > 0, TRUE, FALSE)
 
-  if (dat$param$groups == 2) {
-    groupids.1 <- which(get.vertex.attribute(dat$nw, "group") == 1)
-    groupids.2 <- which(get.vertex.attribute(dat$nw, "group") == 2)
-    nActiveG1 <- length(intersect(groupids.1, idsActive))
-    nActiveG2 <- length(intersect(groupids.2, idsActive))
-    anyActive <- ifelse(nActiveG1 > 0 & nActiveG2 > 0, TRUE, FALSE)
-  }
+  # Full tergm/network Method
+  if (dat$control$tgl == FALSE) {
 
-  # Pull network model parameters
-  nwparam <- get_nwparam(dat)
-
-  # Serosorting model check
-  statOnNw <- ("status" %in% dat$temp$fterms)
-  status <- dat$attr$status
-  if (statOnNw == TRUE && length(unique(status)) == 1) {
-    stop("Stopping simulation because status in formation formula and ",
-         "no longer any discordant nodes",
-         call. = TRUE)
-  }
-
-  # Set up nwstats df
-  if (dat$control$save.nwstats == TRUE) {
-    if (at == 2) {
-      nwstats <- attributes(dat$nw)$stats
-      dat$stats$nwstats <- as.data.frame(nwstats)
+    if (dat$param$groups == 2) {
+      groupids.1 <- which(get.vertex.attribute(dat$nw, "group") == 1)
+      groupids.2 <- which(get.vertex.attribute(dat$nw, "group") == 2)
+      nActiveG1 <- length(intersect(groupids.1, idsActive))
+      nActiveG2 <- length(intersect(groupids.2, idsActive))
+      anyActive <- ifelse(nActiveG1 > 0 & nActiveG2 > 0, TRUE, FALSE)
     }
-  }
 
-  # Network simulation
-  if (anyActive > 0 & dat$control$depend == TRUE) {
-    suppressWarnings(
-      dat$nw <- simulate(dat$nw,
-                         formation = nwparam$formation,
-                         dissolution = nwparam$coef.diss$dissolution,
-                         coef.form = nwparam$coef.form,
-                         coef.diss = nwparam$coef.diss$coef.adj,
-                         constraints = nwparam$constraints,
-                         time.start = at,
-                         time.slices = 1,
-                         time.offset = 0,
-                         monitor = dat$control$nwstats.formula,
-                         control = dat$control$set.control.stergm))
+    # Pull network model parameters
+    nwparam <- get_nwparam(dat)
+
+    # Serosorting model check
+    statOnNw <- ("status" %in% dat$temp$fterms)
+    status <- dat$attr$status
+    if (statOnNw == TRUE && length(unique(status)) == 1) {
+      stop("Stopping simulation because status in formation formula and ",
+           "no longer any discordant nodes",
+           call. = TRUE)
+    }
 
     # Set up nwstats df
     if (dat$control$save.nwstats == TRUE) {
-      dat$stats$nwstats <- rbind(dat$stats$nwstats,
-                                 tail(attributes(dat$nw)$stats, 1)[,])
+      if (at == 2) {
+        nwstats <- attributes(dat$nw)$stats
+        dat$stats$nwstats <- as.data.frame(nwstats)
+      }
     }
 
+    # Network simulation
+    if (anyActive > 0 & dat$control$depend == TRUE) {
+      suppressWarnings(
+        dat$nw <- simulate(dat$nw,
+                           formation = nwparam$formation,
+                           dissolution = nwparam$coef.diss$dissolution,
+                           coef.form = nwparam$coef.form,
+                           coef.diss = nwparam$coef.diss$coef.adj,
+                           constraints = nwparam$constraints,
+                           time.start = at,
+                           time.slices = 1,
+                           time.offset = 0,
+                           monitor = dat$control$nwstats.formula,
+                           control = dat$control$set.control.stergm))
+
+      # Set up nwstats df
+      if (dat$control$save.nwstats == TRUE) {
+        dat$stats$nwstats <- rbind(dat$stats$nwstats,
+                                   tail(attributes(dat$nw)$stats, 1)[,])
+      }
+
+    }
 
   }
+
+  # networkLite/tergmLite Method
+  if (dat$control$tgl == TRUE) {
+    if (dat$param$groups == 2) {
+      groupids.1 <- which(dat$attr$groups == 1)
+      groupids.2 <- which(dat$attr$groups == 2)
+      nActiveG1 <- length(intersect(groupids.1, idsActive))
+      nActiveG2 <- length(intersect(groupids.2, idsActive))
+      anyActive <- ifelse(nActiveG1 > 0 & nActiveG2 > 0, TRUE, FALSE)
+    }
+
+    nwparam <- get_nwparam(dat)
+
+    if (anyActive > 0 & dat$control$depend == TRUE) {
+
+      dat$el[[1]] <- tergmLite::simulate_network(p = dat$p[[1]],
+                                                 el = dat$el[[1]],
+                                                 coef.form = nwparam$coef.form,
+                                                 coef.diss = nwparam$coef.diss$coef.adj,
+                                                 save.changes = TRUE)
+    }
+  }
+
   return(dat)
 }
 
-#' @title TergmLite: Resimulate Dynamic Network at Time 2+
-#'
-#' @description This function resimulates the dynamic network in stochastic
-#'              network models simulated in \code{\link{netsim}} with dependence
-#'              between the epidemic and demographic processes and the network
-#'              structure.
-#'
-#' @param x A master object passed through \code{\link{netsim}}.
-#' @param at Current time step.
-#'
-#' @export
-#' @keywords netUtils internal
-#'
-resim_nets.tgl <- function(dat, at) {
-
-  # Edges Correction
-  dat <- edges_correct(dat, at)
-
-  idsActive <- which(dat$attr$active == 1)
-  anyActive <- ifelse(length(idsActive) > 0, TRUE, FALSE)
-  if (dat$param$groups == 2) {
-    groupids.1 <- which(dat$attr$groups == 1)
-    groupids.2 <- which(dat$attr$groups == 2)
-    nActiveG1 <- length(intersect(groupids.1, idsActive))
-    nActiveG2 <- length(intersect(groupids.2, idsActive))
-    anyActive <- ifelse(nActiveG1 > 0 & nActiveG2 > 0, TRUE, FALSE)
-  }
-
-  nwparam <- get_nwparam(dat)
-
-  if (anyActive > 0 & dat$control$depend == TRUE) {
-
-    dat$el[[1]] <- tergmLite::simulate_network(p = dat$p[[1]],
-                                                  el = dat$el[[1]],
-                                                  coef.form = nwparam$coef.form,
-                                                  coef.diss = nwparam$coef.diss$coef.adj,
-                                                  save.changes = TRUE)
-  }
-
-  return(dat)
-}
 
 #' @title Adjustment for the Edges Coefficient with Changing Network Size
 #'
