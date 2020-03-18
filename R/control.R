@@ -486,6 +486,11 @@ control.net <- function(type,
     p$depend <- TRUE
   }
 
+  # Temporary until we develop a nwstats fix for tergmLite
+  if (tgl == TRUE) {
+    p$save.nwstats <- FALSE
+  }
+
   ## Defaults and checks
 
   #Check whether any base modules have been redefined by user (note: must come after above)
