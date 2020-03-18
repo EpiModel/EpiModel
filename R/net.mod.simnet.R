@@ -71,8 +71,7 @@ resim_nets <- function(dat, at) {
     status <- dat$attr$status
     if (statOnNw == TRUE && length(unique(status)) == 1) {
       stop("Stopping simulation because status in formation formula and ",
-           "no longer any discordant nodes",
-           call. = TRUE)
+           "no longer any discordant nodes", call. = TRUE)
     }
 
     # Set up nwstats df
@@ -98,7 +97,7 @@ resim_nets <- function(dat, at) {
                            monitor = dat$control$nwstats.formula,
                            control = dat$control$set.control.stergm))
 
-      # Set up nwstats df
+      # Update nwstats df
       if (dat$control$save.nwstats == TRUE) {
         dat$stats$nwstats <- rbind(dat$stats$nwstats,
                                    tail(attributes(dat$nw)$stats, 1)[,])
@@ -108,14 +107,12 @@ resim_nets <- function(dat, at) {
 
   # networkLite/tergmLite Method
   if (dat$control$tgl == TRUE) {
-
     if (anyActive > 0 & dat$control$depend == TRUE) {
-
       dat$el[[1]] <- tergmLite::simulate_network(p = dat$p[[1]],
                                                  el = dat$el[[1]],
                                                  coef.form = nwparam$coef.form,
                                                  coef.diss = nwparam$coef.diss$coef.adj,
-                                                 save.changes = TRUE)
+                                                 save.changes = FALSE)
     }
   }
 
