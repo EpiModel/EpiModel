@@ -11,6 +11,8 @@
 #' @param init Initial conditions, as an object of class \code{init.net}.
 #' @param control Control settings, as an object of class
 #'        \code{control.net}.
+#' @param raw_output If TRUE, the output is not processed but a list of the
+#'        nestim Data (default = FALSE)
 #'
 #' @details
 #' Stochastic network models explicitly represent phenomena within and across edges
@@ -51,8 +53,10 @@
 #'        the transmission matrix saved in the simulation. See
 #'        \code{\link{control.net}} and the Tutorial for further details.
 #'  \item \strong{network:} a list of \code{networkDynamic} objects,
-#'        one for each model simulation.
+#'         one for each model simulation.
 #' }
+#' If \code{raw_output == TRUE}: A list of the nestsim Data
+#' (one per simulation)
 #'
 #' @references
 #' Jenness SM, Goodreau SM and Morris M. EpiModel: An R Package for Mathematical
@@ -116,7 +120,7 @@
 #' summary(mod2, at = 100)
 #' }
 #'
-netsim <- function(x, param, init, control) {
+netsim <- function(x, param, init, control, raw_output = FALSE) {
 
   crosscheck.net(x, param, init, control)
   if (!is.null(control[["verbose.FUN"]])) {
@@ -132,44 +136,22 @@ netsim <- function(x, param, init, control) {
   }
 
   if (ncores == 1) {
-    for (s in 1:control$nsims) {
+    sout <- lapply(seq_len(control$nsims), function(s) {
       # Run the simulation
-      dat <- netsim_loop(x, param, init, control, s)
-
-      # Set output
-      if (s == 1) {
-        out <- saveout.net(dat, s)
-      } else {
-        out <- saveout.net(dat, s, out)
-      }
-      class(out) <- "netsim"
-    }
+      netsim_loop(x, param, init, control, s)
+    })
   }
 
   if (ncores > 1) {
     doParallel::registerDoParallel(ncores)
-
     sout <- foreach(s = 1:nsims) %dopar% {
-
-      control$nsims <- 1
-      control$currsim <- s
-
       # Run the simulation
-      dat <- netsim_loop(x, param, init, control, s)
-
-      # Set output
-      out <- saveout.net(dat, s = 1)
-      class(out) <- "netsim"
-      return(out)
+      netsim_loop(x, param, init, control, s)
     }
-
-    merged.out <- sout[[1]]
-    for (i in 2:length(sout)) {
-      merged.out <- merge(merged.out, sout[[i]], param.error = FALSE)
-    }
-    out <- merged.out
-    class(out) <- "netsim"
   }
+
+  # Process the outputs if `raw_output == FALSE`
+  out <- if (raw_output) sout else process_out.net(sout)
 
   return(out)
 }

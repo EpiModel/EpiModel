@@ -4,7 +4,7 @@
 \alias{netsim}
 \title{Stochastic Network Models}
 \usage{
-netsim(x, param, init, control)
+netsim(x, param, init, control, raw_output = FALSE)
 }
 \arguments{
 \item{x}{Fitted network model object, as an object of class \code{netest}.
@@ -17,6 +17,9 @@ class \code{netsim}.}
 
 \item{control}{Control settings, as an object of class
 \code{control.net}.}
+
+\item{raw_output}{If TRUE, the output is not processed but a list of the
+nestim Data (default = FALSE)}
 }
 \value{
 A list of class \code{netsim} with the following elements:
@@ -34,8 +37,10 @@ A list of class \code{netsim} with the following elements:
        the transmission matrix saved in the simulation. See
        \code{\link{control.net}} and the Tutorial for further details.
  \item \strong{network:} a list of \code{networkDynamic} objects,
-       one for each model simulation.
+        one for each model simulation.
 }
+If \code{raw_output == TRUE}: A list of the nestsim Data
+(one per simulation)
 }
 \description{
 Simulates stochastic network epidemic models for infectious
