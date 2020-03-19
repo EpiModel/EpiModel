@@ -24,7 +24,7 @@ est <- netest(nw, formation, target.stats, coef.diss)
 init <- init.net(i.num = 10)
 param <- param.net(inf.prob = 0.1, act.rate = 5)
 control <- control.net(type = "SI", nsteps = 250, nsims = 5, ncores = 5,
-                       tgl = FALSE)
+                       tgl = FALSE, depend = TRUE)
 
 sim <- netsim(est, param, init, control)
 plot(sim)

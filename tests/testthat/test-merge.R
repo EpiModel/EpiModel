@@ -98,9 +98,9 @@ test_that("merge for netsim", {
 })
 
 test_that("merge works for open sims saving nw stats", {
-  nw <- network.initialize(n = 50, directed = FALSE)
-  est <- netest(nw, formation = ~edges, target.stats = 10,
-                coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+  nw <- network.initialize(n = 100, directed = FALSE)
+  est <- netest(nw, formation = ~edges, target.stats = 20,
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0.01),
                 verbose = FALSE)
   param <- param.net(inf.prob = 0.9, a.rate = 0.01, ds.rate = 0.01, di.rate = 0.01)
   init <- init.net(i.num = 1)

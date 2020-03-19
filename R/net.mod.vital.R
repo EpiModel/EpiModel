@@ -180,7 +180,6 @@ arrivals.net <- function(dat, at) {
 #' @export
 #' @keywords netMod internal
 #'
-
 departures.net.grp <- function(dat, at) {
 
   # Conditions --------------------------------------------------------------

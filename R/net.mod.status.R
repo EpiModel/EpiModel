@@ -174,7 +174,6 @@ infection.net <- function(dat, at) {
 #' @seealso \code{\link{discord_edgelist}} is used within \code{infection.net}
 #' to obtain a discordant edgelist.
 #'
-
 infection.net.grp <- function(dat, at) {
 
   # Variables ---------------------------------------------------------------

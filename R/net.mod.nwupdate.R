@@ -135,15 +135,13 @@ nwupdate.net <- function(dat, at) {
       nArrivals <- dat$nw.update$arr$nArrivals
       if (sum(nArrivals) > 0) {
         el.temp <- dat$el[[1]]
-        nCurr <- length(dat$attr$group)
+        nCurr <- sum(dat$attr$active == 1)
 
         el.temp <- add_vertices(el.temp, nv = sum(nArrivals))
 
         if (length(nArrivals) > 1) {
           dat$attr$group <- c(dat$attr$group, c(rep(1, nArrivals[1]),
                                                 rep(2, nArrivals[2])))
-        } else {
-          dat$attr$group <- c(dat$attr$group, rep(1, nArrivals))
         }
 
         dat$attr$status <- c(dat$attr$status, rep("s", sum(nArrivals)))

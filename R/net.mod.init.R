@@ -56,9 +56,7 @@ initialize.net <- function(x, param, init, control, s) {
     dat$nwparam <- list(x[-which(names(x) == "fit")])
     groups <- length(unique(get.vertex.attribute(nw, "group")))
     dat$param$groups <- groups
-    if (groups == 1){
-      dat$attr$group <- rep(1, num)
-    } else {
+    if (groups == 2){
       dat$attr$group <- get.vertex.attribute(dat$nw, "group")
     }
 
@@ -159,7 +157,11 @@ init_status.net <- function(dat) {
   statOnNw <- "status" %in% dat$temp$fterms
 
   groups <- dat$param$groups
-  group <- dat$attr$group
+  if (groups == 2) {
+    group <- dat$attr$group
+  } else {
+    group <- rep(1, num)
+  }
 
   type <- dat$control$type
 

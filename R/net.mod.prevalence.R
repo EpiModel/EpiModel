@@ -132,7 +132,7 @@ prevalence.net.grp <- function(dat, at) {
   status <- l$status
 
   if(dat$control$tgl == FALSE){
-  group <- idgroup(dat$nw)[active == 1]
+    group <- idgroup(dat$nw)[active == 1]
   } else {
     group <- dat$attr$group[active == 1]
   }
