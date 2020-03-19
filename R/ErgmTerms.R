@@ -26,13 +26,14 @@ InitErgmTerm.absdiffnodemix <- function(nw, arglist, ...) {
                       arglist,
                       directed = FALSE,
                       bipartite = FALSE,
-                      varnames = c("attrname", "byattrname"),
-                      vartypes = c("character", "character"),
+                      varnames = c("attr", "by"),
+                      vartypes = c(ERGM_VATTR_SPEC, ERGM_VATTR_SPEC),
                       defaultvalues = list(NULL, NULL),
                       required = c(TRUE, TRUE))
 
-  nodecov <- get.node.attr(nw, a$attrname)
-  nodecovby <- get.node.attr(nw, a$byattrname)
+  nodecov <- ergm_get_vattr(a$attr, nw, accept = "numeric")
+  nodecovby <- ergm_get_vattr(a$by, nw)
+  nodecovbyname <- attr(nodecovby, "name")
   u <- sort(unique(nodecovby))
   if (any(is.na(nodecovby))) {
     u <- c(u, NA)
@@ -53,7 +54,7 @@ InitErgmTerm.absdiffnodemix <- function(nw, arglist, ...) {
   inputs = c(length(nodecov), length(urm), nodecov, nodecovby, urm, ucm)
 
   list(name = "absdiffnodemix",
-       coef.names = paste("absdiffnodemix", a$attrname, a$byattrname, uun, sep = "."),
+       coef.names = paste("absdiffnodemix", attr(nodecov, "name"), nodecovbyname, uun, sep = "."),
        pkgname = "EpiModel",
        inputs = inputs,
        dependence = FALSE)
@@ -85,14 +86,14 @@ InitErgmTerm.absdiffby <- function(nw, arglist, ...) {
                       arglist,
                       directed = FALSE,
                       bipartite = FALSE,
-                      varnames = c("attrname", "by", "assym"),
-                      vartypes = c("character", "character", "numeric"),
+                      varnames = c("attr", "by", "assym"),
+                      vartypes = c(ERGM_VATTR_SPEC, ERGM_VATTR_SPEC, "numeric"),
                       required = c(TRUE, TRUE, TRUE),
                       defaultvalues = list(NULL, NULL, NULL))
 
-  nodecov <- get.node.attr(nw, a$attrname)
-  nodeby <- get.node.attr(nw, a$by)
-  coef.names <- paste("absdiffby", a$attrname, a$by, sep = ".")
+  nodecov <- ergm_get_vattr(a$attr, nw, accept = "numeric")
+  nodeby <- ergm_get_vattr(a$by, nw)
+  coef.names <- paste("absdiffby", attr(nodecov, "name"), attr(nodeby, "name"), sep = ".")
 
   list(name = "absdiffby",
        coef.names = coef.names,

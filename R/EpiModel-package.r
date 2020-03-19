@@ -4,8 +4,8 @@
 #' \tabular{ll}{
 #'    Package: \tab EpiModel\cr
 #'    Type: \tab Package\cr
-#'    Version: \tab 1.7.3\cr
-#'    Date: \tab 2019-04-24\cr
+#'    Version: \tab 1.8.0\cr
+#'    Date: \tab 2019-01-09\cr
 #'    License: \tab GPL-3\cr
 #'    LazyLoad: \tab yes\cr
 #' }
