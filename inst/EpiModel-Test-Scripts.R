@@ -17,17 +17,18 @@ num <- 1000
 nw <- network.initialize(num, directed = FALSE)
 formation <- ~edges
 target.stats <- 400
-coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 100)
+coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 25)
 est <- netest(nw, formation, target.stats, coef.diss)
 
 # Parameters
 init <- init.net(i.num = 10)
 param <- param.net(inf.prob = 0.1, act.rate = 5)
-control <- control.net(type = "SI", nsteps = 100, nsims = 1, ncores = 1,
-                       tgl = FALSE, depend = TRUE)
+control <- control.net(type = "SI", nsteps = 250, nsims = 5, ncores = 5,
+                       tgl = FALSE)
 
 sim <- netsim(est, param, init, control)
 plot(sim)
+summary(sim, at = 50)
 
 set.seed(123)
 crosscheck.net(est, param, init, control)
@@ -46,13 +47,17 @@ num <- 1000
 nw <- network.initialize(num, directed = FALSE)
 formation <- ~edges
 target.stats <- 400
-coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 100)
+coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 25)
 est <- netest(nw, formation, target.stats, coef.diss)
 
 # Parameters
 init <- init.net(i.num = 50)
-param <- param.net(inf.prob = 0.02, act.rate = 5, rec.rate = 0.02)
-control <- control.net(type = "SIS", nsteps = 100, nsims = 5, tgl = TRUE)
+param <- param.net(inf.prob = 0.5, act.rate = 1, rec.rate = 0.02)
+control <- control.net(type = "SIS", nsteps = 250, nsims = 5, ncores = 5, tgl = FALSE)
+
+sim <- netsim(est, param, init, control)
+plot(sim)
+summary(sim, at = 250)
 
 set.seed(123)
 crosscheck.net(est, param, init, control)
