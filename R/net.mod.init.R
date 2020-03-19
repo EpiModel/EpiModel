@@ -278,8 +278,10 @@ init_pids <- function(nw, groups = 1, prefixes = c("g1.", "g2.")) {
     if (groups == 1) {
       nw <- initialize.pids(nw)
     } else {
-      t0.pids <- c(paste0(prefixes[1], 1:length(groupids(nw, 1))),
-                   paste0(prefixes[2], 1:length(groupids(nw, 2))))
+      n <- network.size(nw)
+      t0.pids <- rep(NA, n)
+      t0.pids[groupids(nw, 1)] <- paste0(prefixes[1], seq_len(length(groupids(nw, 1))))
+      t0.pids[groupids(nw, 2)] <- paste0(prefixes[2], seq_len(length(groupids(nw, 2))))
 
       nw <- set.network.attribute(nw, "vertex.pid", "vertex.names")
       nw <- set.vertex.attribute(nw, "vertex.names", t0.pids)
