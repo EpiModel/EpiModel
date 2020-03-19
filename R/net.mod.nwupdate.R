@@ -149,6 +149,9 @@ nwupdate.net <- function(dat, at) {
         dat$attr$infTime <- c(dat$attr$infTime, rep(NA, sum(nArrivals)))
         dat$attr$entrTime <- c(dat$attr$entrTime, rep(at, sum(nArrivals)))
         dat$attr$exitTime <- c(dat$attr$exitTime, rep(NA, sum(nArrivals)))
+        if (dat$param$groups == 2) {
+          dat$attr$group <- c(dat$attr$group, rep(1:2, c(nArrivals[1], nArrivals[2])))
+        }
 
         ## Handles infTime when incoming nodes are infected
         newNodes <- c((nCurr+1):(nCurr+sum(nArrivals)))

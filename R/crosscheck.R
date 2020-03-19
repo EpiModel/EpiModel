@@ -294,7 +294,7 @@ crosscheck.net <- function(x, param, init, control) {
     bip <- ifelse(bip == 2, TRUE, FALSE)
 
     if (bip == TRUE & is.null(control$pid.prefix)) {
-      control$pid.prefix <- c("F", "M")
+      control$pid.prefix <- c("g1.", "g2.")
     }
 
     if (statOnNw == TRUE && is.null(control$attr.rules$status)) {
