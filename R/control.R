@@ -413,7 +413,6 @@ control.icm <- function(type, nsteps, nsims = 1, rec.rand = TRUE, a.rand = TRUE,
 #'
 #' @export
 #'
-
 control.net <- function(type,
                         nsteps, start = 1,
                         nsims = 1, ncores = 1,

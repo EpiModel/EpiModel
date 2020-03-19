@@ -436,7 +436,7 @@ test_that("edges two-group models", {
 
 ################################################################################
 
-test_that("Open population 1 mode models", {
+test_that("Open population 1 group models", {
   skip_on_cran()
 
   nw <- network.initialize(n = 100, directed = FALSE)
@@ -586,8 +586,9 @@ test_that("Open-population two-group models", {
   skip_on_cran()
 
   nw <- network.initialize(n = 100, directed = FALSE)
-  nw <- set.vertex.attribute(nw, "group", rep(c(1,2), each = 50))
-  est5.vit <- netest(nw, formation = ~edges, target.stats = 25,
+  nw <- set.vertex.attribute(nw, "group", rep(1:2, each = 50))
+  est5.vit <- netest(nw, formation = ~edges + nodematch("group"),
+                     target.stats = c(25, 0),
                      coef.diss = dissolution_coefs(~offset(edges), 10, 0.02),
                      edapprox = TRUE, verbose = FALSE)
 
@@ -706,8 +707,9 @@ test_that("Extinction open-population models", {
   skip_on_cran()
 
   nw <- network.initialize(n = 25, directed = FALSE)
-  nw <- set.vertex.attribute(nw, "group", rep(c(1,2), c(15,10)))
-  est <- netest(nw, formation = ~edges, target.stats = 15,
+  nw <- set.vertex.attribute(nw, "group", rep(1:2, c(15,10)))
+  est <- netest(nw, formation = ~edges + nodematch("group"),
+                target.stats = c(15, 0),
                 coef.diss = dissolution_coefs(~offset(edges), 10, 0.02),
                 edapprox = TRUE, verbose = FALSE)
 
