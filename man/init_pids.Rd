@@ -4,7 +4,7 @@
 \alias{init_pids}
 \title{Persistent ID Initialization}
 \usage{
-init_pids(nw, groups, prefixes = c("F", "M"))
+init_pids(nw, groups = 1, prefixes = c("g1.", "g2."))
 }
 \arguments{
 \item{nw}{An object of class \code{networkDynamic}.}
@@ -16,8 +16,8 @@ This function initializes the persistent IDs for
              a \code{networkDynamic} object.
 }
 \details{
-This function is used for \code{\link{netsim}} simulations
-over two-group networks for populations with vital dynamics. Persistent IDs are
+This function is used for \code{\link{netsim}} simulations over two-group
+networks for populations with vital dynamics. Persistent IDs are
 required in this situation because when new nodes are added to the
 first group in a two-group network, the IDs for the second mode shift
 upward. Persistent IDs allow for an analysis of disease transmission
@@ -28,15 +28,18 @@ must be set.
 \examples{
 # Initialize network with 25 female and 75 male
 nw <- network.initialize(100)
-nw <- set.vertex.attribute(nw, "male", rep(c(25, 75), c(25,75)))
+group <- sample(rep(1:2, c(25, 75)))
+nw <- set.vertex.attribute(nw, "group", group)
 
-# Set persistent IDs using the default F/M prefix
-nw <- init_pids(nw)
-nw \%v\% "vertex.names"
+# Set persistent IDs using the default g1/g2 prefix
+nw <- init_pids(nw, groups = 2)
+get.vertex.attribute(nw, "vertex.names")
 
 # Use another prefix combination
-nw <- init_pids(nw, c("A", "B"))
-nw \%v\% "vertex.names"
+nw <- network.initialize(100)
+nw <- set.vertex.attribute(nw, "group", group)
+nw <- init_pids(nw, groups = 2, prefixes = c("F", "M"))
+get.vertex.attribute(nw, "vertex.names")
 
 }
 \seealso{

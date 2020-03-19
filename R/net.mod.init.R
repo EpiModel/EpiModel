@@ -243,8 +243,8 @@ init_status.net <- function(dat) {
 #' @param prefixes Character string prefix for group-specific ID.
 #'
 #' @details
-#' This function is used for \code{\link{netsim}} simulations
-#' over two-group networks for populations with vital dynamics. Persistent IDs are
+#' This function is used for \code{\link{netsim}} simulations over two-group
+#' networks for populations with vital dynamics. Persistent IDs are
 #' required in this situation because when new nodes are added to the
 #' first group in a two-group network, the IDs for the second mode shift
 #' upward. Persistent IDs allow for an analysis of disease transmission
@@ -259,17 +259,20 @@ init_status.net <- function(dat) {
 #' @examples
 #' # Initialize network with 25 female and 75 male
 #' nw <- network.initialize(100)
-#' nw <- set.vertex.attribute(nw, "male", rep(c(25, 75), c(25,75)))
+#' group <- sample(rep(1:2, c(25, 75)))
+#' nw <- set.vertex.attribute(nw, "group", group)
 #'
-#' # Set persistent IDs using the default F/M prefix
-#' nw <- init_pids(nw)
-#' nw %v% "vertex.names"
+#' # Set persistent IDs using the default g1/g2 prefix
+#' nw <- init_pids(nw, groups = 2)
+#' get.vertex.attribute(nw, "vertex.names")
 #'
 #' # Use another prefix combination
-#' nw <- init_pids(nw, c("A", "B"))
-#' nw %v% "vertex.names"
+#' nw <- network.initialize(100)
+#' nw <- set.vertex.attribute(nw, "group", group)
+#' nw <- init_pids(nw, groups = 2, prefixes = c("F", "M"))
+#' get.vertex.attribute(nw, "vertex.names")
 #'
-init_pids <- function(nw, groups, prefixes=c("F", "M")) {
+init_pids <- function(nw, groups = 1, prefixes = c("g1.", "g2.")) {
 
   if (is.null(nw$gal$vertex.pid)) {
     if (groups == 1) {
@@ -282,6 +285,5 @@ init_pids <- function(nw, groups, prefixes=c("F", "M")) {
       nw <- set.vertex.attribute(nw, "vertex.names", t0.pids)
     }
   }
-
   return(nw)
 }
