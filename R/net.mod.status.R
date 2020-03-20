@@ -174,7 +174,7 @@ infection.net <- function(dat, at) {
 #' @seealso \code{\link{discord_edgelist}} is used within \code{infection.net}
 #' to obtain a discordant edgelist.
 #'
-infection.net.grp <- function(dat, at) {
+infection.2g.net <- function(dat, at) {
 
   # Variables ---------------------------------------------------------------
   active <- dat$attr$active
@@ -452,7 +452,7 @@ recovery.net <- function(dat, at) {
 #' @export
 #' @keywords internal
 #'
-recovery.net.grp <- function(dat, at) {
+recovery.2g.net <- function(dat, at) {
 
   ## Only run with SIR/SIS
   if (!(dat$control$type %in% c("SIR", "SIS"))) {

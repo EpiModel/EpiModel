@@ -120,7 +120,7 @@ prevalence.net <- function(dat, at) {
 #' @export
 #' @keywords netUtils internal
 #'
-prevalence.net.grp <- function(dat, at) {
+prevalence.2g.net <- function(dat, at) {
 
   active <- dat$attr$active
 

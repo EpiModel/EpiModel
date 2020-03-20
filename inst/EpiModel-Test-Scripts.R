@@ -106,7 +106,7 @@ num1 <- num2 <- 500
 nw <- network.initialize(num1 + num2, directed = FALSE)
 nw <- set.vertex.attribute(nw, "group", rep(1:2, each = num1))
 formation <- ~edges + nodefactor("group") + nodematch("group")
-target.stats <- c(400, 400, 0)
+target.stats <- c(400, 200, 0)
 coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 100)
 est <- netest(nw, formation, target.stats, coef.diss)
 
@@ -132,7 +132,7 @@ num1 <- num2 <- 500
 nw <- network.initialize(num1 + num2, directed = FALSE)
 nw <- set.vertex.attribute(nw, "group", rep(1:2, each = num1))
 formation <- ~edges + nodefactor("group") + nodematch("group")
-target.stats <- c(400, 400, 0)
+target.stats <- c(400, 200, 0)
 coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 100)
 est <- netest(nw, formation, target.stats, coef.diss)
 
@@ -161,7 +161,7 @@ num1 <- num2 <- 500
 nw <- network.initialize(num1 + num2, directed = FALSE)
 nw <- set.vertex.attribute(nw, "group", rep(1:2, each = num1))
 formation <- ~ edges + nodefactor("group") + nodematch("group")
-target.stats <- c(400, 400, 0)
+target.stats <- c(400, 200, 0)
 coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 100)
 est <- netest(nw, formation, target.stats, coef.diss)
 
@@ -286,7 +286,7 @@ num1 <- num2 <- 500
 nw <- network.initialize(num1 + num2, directed = FALSE)
 nw <- set.vertex.attribute(nw, "group", rep(1:2, each = num1))
 formation <- ~ edges + nodefactor("group") + nodematch("group")
-target.stats <- c(400, 400, 0)
+target.stats <- c(400, 200, 0)
 coef.diss <- dissolution_coefs(dissolution = ~ offset(edges), duration = 100, d.rate = 0.005)
 est <- netest(nw, formation, target.stats, coef.diss)
 
@@ -296,7 +296,7 @@ param <- param.net(inf.prob = 0.1, inf.prob.g2 = 0.2,
                    act.rate = 5, a.rate = 0.005, a.rate.g2 = 0.005,
                    di.rate = 0.005, ds.rate = 0.005,
                    di.rate.g2 = 0.005, ds.rate.g2 = 0.005)
-control <- control.net(type = "SI", nsteps = 100, nsims = 5, tgl = TRUE)
+control <- control.net(type = "SI", nsteps = 100, nsims = 1, tgl = TRUE)
 
 set.seed(123)
 crosscheck.net(est, param, init, control)
@@ -317,7 +317,7 @@ num1 <- num2 <- 500
 nw <- network.initialize(num1 + num2, directed = FALSE)
 nw <- set.vertex.attribute(nw, "group", rep(1:2, each = num1))
 formation <- ~ edges + nodefactor("group") + nodematch("group")
-target.stats <- c(400, 400, 0)
+target.stats <- c(400, 200, 0)
 coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 100, d.rate = 0.005)
 est <- netest(nw, formation, target.stats, coef.diss)
 
@@ -350,7 +350,7 @@ num1 <- num2 <- 500
 nw <- network.initialize(num1 + num2, directed = FALSE)
 nw <- set.vertex.attribute(nw, "group", rep(1:2, each = num1))
 formation <- ~edges + nodefactor("group") + nodematch("group")
-target.stats <- c(400, 400, 0)
+target.stats <- c(400, 200, 0)
 coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 100, d.rate = 0.005)
 est <- netest(nw, formation, target.stats, coef.diss)
 

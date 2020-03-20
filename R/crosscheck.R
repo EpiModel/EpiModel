@@ -453,7 +453,7 @@ crosscheck.net <- function(x, param, init, control) {
     else {
       for (i in 1:length(args)) {
         if (is.null(control[[args[i]]])) {
-          temp <- get(gsub(".FUN",".net.grp",args[i]))
+          temp <- get(gsub(".FUN",".2g.net",args[i]))
           control[[args[i]]] <- temp
         }
       }
