@@ -11,8 +11,6 @@
 #' @param init Initial conditions, as an object of class \code{init.net}.
 #' @param control Control settings, as an object of class
 #'        \code{control.net}.
-#' @param raw_output If TRUE, the output is not processed but a list of the
-#'        nestim Data (default = FALSE)
 #'
 #' @details
 #' Stochastic network models explicitly represent phenomena within and across edges
@@ -55,7 +53,7 @@
 #'  \item \strong{network:} a list of \code{networkDynamic} objects,
 #'         one for each model simulation.
 #' }
-#' If \code{raw_output == TRUE}: A list of the nestsim Data
+#' If \code{control$raw_output == TRUE}: A list of the nestsim Data
 #' (one per simulation)
 #'
 #' @references
@@ -120,7 +118,7 @@
 #' summary(mod2, at = 100)
 #' }
 #'
-netsim <- function(x, param, init, control, raw_output = FALSE) {
+netsim <- function(x, param, init, control) {
 
   crosscheck.net(x, param, init, control)
   if (!is.null(control[["verbose.FUN"]])) {
@@ -150,8 +148,12 @@ netsim <- function(x, param, init, control, raw_output = FALSE) {
     }
   }
 
-  # Process the outputs if `raw_output == FALSE`
-  out <- if (raw_output) sout else process_out.net(sout)
+  # Process the outputs unless `control$raw_output` is `TRUE`
+  if (!is.null(control$raw_output) && control$raw_output) {
+    out <- sout
+  } else {
+    out <- process_out.net(sout)
+  }
 
   return(out)
 }
