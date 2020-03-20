@@ -17,7 +17,7 @@
 #' @export
 #' @keywords netUtils internal
 #'
-get_prev.net <- function(dat, at) {
+prevalence.net <- function(dat, at) {
 
   active <- dat$attr$active
 
@@ -120,7 +120,7 @@ get_prev.net <- function(dat, at) {
 #' @export
 #' @keywords netUtils internal
 #'
-get_prev.net.grp <- function(dat, at) {
+prevalence.2g.net <- function(dat, at) {
 
   active <- dat$attr$active
 
@@ -132,7 +132,7 @@ get_prev.net.grp <- function(dat, at) {
   status <- l$status
 
   if(dat$control$tgl == FALSE){
-  group <- idgroup(dat$nw)[active == 1]
+    group <- idgroup(dat$nw)[active == 1]
   } else {
     group <- dat$attr$group[active == 1]
   }

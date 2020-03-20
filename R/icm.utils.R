@@ -11,7 +11,7 @@
 #' @export
 #' @keywords internal
 #'
-get_prev.icm <- function(dat, at) {
+prevalence.icm <- function(dat, at) {
 
   if (at == 1) {
     dat$epi <- list()
@@ -64,7 +64,7 @@ get_prev.icm <- function(dat, at) {
 #' @export
 #' @keywords internal
 #'
-get_prev.icm.bip <- function(dat, at) {
+prevalence.icm.bip <- function(dat, at) {
 
   if (at == 1) {
     dat$epi <- list()

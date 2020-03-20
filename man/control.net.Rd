@@ -26,8 +26,8 @@ control.net(
   recovery.FUN = NULL,
   departures.FUN = NULL,
   arrivals.FUN = NULL,
-  nw.update.FUN = nw.update.net,
-  get_prev.FUN = NULL,
+  nwupdate.FUN = nwupdate.net,
+  prevalence.FUN = NULL,
   verbose.FUN = verbose.net,
   module.order = NULL,
   set.control.ergm,
@@ -134,8 +134,12 @@ of \code{\link{departures.net}}.}
 \item{arrivals.FUN}{Module to simulate arrivals or entries, with the default
 function of \code{\link{arrivals.net}}.}
 
-\item{get_prev.FUN}{Module to calculate disease prevalence at each time step,
-with the default function of \code{\link{get_prev.net}}.}
+\item{nwupdate.FUN}{Module to handle updating of network structure and nodal
+attributes due to exogenous epidemic model processes, with the default
+function of \code{\link{nwupdate.net}}.}
+
+\item{prevalence.FUN}{Module to calculate disease prevalence at each time step,
+with the default function of \code{\link{prevalence.net}}.}
 
 \item{verbose.FUN}{Module to print simulation progress to screen, with the
 default function of \code{\link{verbose.net}}.}

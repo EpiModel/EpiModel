@@ -16,7 +16,7 @@ test_that("Updating attributes in open populations", {
   inf.probsf <- inf.probs*2
   param <- param.net(inf.prob = inf.probs, act.rate = 1,
                      inf.prob.g2 = inf.probs,
-                     a.rate = 0.05, a.rate.g2 = NA, 
+                     a.rate = 0.05, a.rate.g2 = NA,
                      ds.rate = 0.002, ds.rate.g2 = 0.002,
                      di.rate = 0.008, di.rate.g2 = 0.008)
 
@@ -82,9 +82,9 @@ test_that("Serosorting model in open population", {
 test_that("Save attributes to output", {
   skip_on_cran()
   nw <- network.initialize(n = 50, directed = FALSE)
-  nw <- set.vertex.attribute(nw, "group", rep(c(1,2), each = 25))
-  formation <- ~edges
-  target.stats <- 25
+  nw <- set.vertex.attribute(nw, "group", rep(1:2, each = 25))
+  formation <- ~edges + nodematch("group")
+  target.stats <- c(25, 0)
   coef.diss <- dissolution_coefs(dissolution = ~offset(edges), 38, d.rate = 0.01)
   est1 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 

@@ -136,7 +136,15 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
          call. = FALSE)
   }
   dissolution <- coef.diss$dissolution
-  diss_check(formation, dissolution)
+  if (coef.diss$coef.crude[1] == -Inf) {
+    is.tergm <- FALSE
+  } else {
+    is.tergm <- TRUE
+  }
+
+  if (is.tergm == TRUE) {
+    diss_check(formation, dissolution)
+  }
 
   if (edapprox == FALSE) {
 
@@ -189,7 +197,7 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
 
     coef.form <- fit$coef
     coef.form.crude <- coef.form
-    if (coef.diss$coef.crude[1] > -Inf) {
+    if (is.tergm == TRUE) {
       l.cd <- length(coef.diss$coef.crude)
       coef.form[1:l.cd] <- coef.form[1:l.cd] - coef.diss$coef.crude
     }
