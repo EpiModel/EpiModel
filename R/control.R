@@ -356,6 +356,8 @@ control.icm <- function(type, nsteps, nsims = 1, rec.rand = TRUE, a.rand = TRUE,
 #'        and control settings before running base epidemic models. Setting
 #'        this to \code{FALSE} is recommended when running models with new modules
 #'        specified.
+#' @param raw_output If \code{TRUE}, \code{netsim} will output a list of nestsim
+#'        Data (one per simulation) instead of a formatted \code{netsim} object.
 #' @param ... Additional control settings passed to model.
 #'
 #' @details
@@ -435,7 +437,8 @@ control.net <- function(type,
                         save.nwstats = TRUE, nwstats.formula = "formation",
                         save.transmat = TRUE, save.network = TRUE,
                         save.other, verbose = TRUE,
-                        verbose.int = 1, skip.check = FALSE, ...) {
+                        verbose.int = 1, skip.check = FALSE,
+                        raw_output = FALSE, ...) {
 
   # Get arguments
   p <- list()
