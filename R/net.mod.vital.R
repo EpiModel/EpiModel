@@ -180,8 +180,7 @@ arrivals.net <- function(dat, at) {
 #' @export
 #' @keywords netMod internal
 #'
-
-departures.net.grp <- function(dat, at) {
+departures.2g.net <- function(dat, at) {
 
   # Conditions --------------------------------------------------------------
   if (dat$param$vital == FALSE) {
@@ -311,7 +310,7 @@ departures.net.grp <- function(dat, at) {
 #' @keywords netMod internal
 #'
 
-arrivals.net.grp <- function(dat, at) {
+arrivals.2g.net <- function(dat, at) {
 
   # Conditions --------------------------------------------------------------
   if (dat$param$vital == FALSE) {

@@ -31,9 +31,9 @@ test_that("PIDs for one-mode models", {
 test_that("PIDs for two-group models", {
 
   nw <- network.initialize(n = 100, directed = FALSE)
-  nw <- set.vertex.attribute(nw, "group", rep(c(1,2), each = 50))
-  formation <- ~edges
-  target.stats <- 50
+  nw <- set.vertex.attribute(nw, "group", rep(1:2, each = 50))
+  formation <- ~edges + nodematch("group")
+  target.stats <- c(50, 0)
   coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 50,
                                  d.rate = 0.01)
   est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
@@ -47,7 +47,7 @@ test_that("PIDs for two-group models", {
   control <- control.net(type = "SI", nsteps = 10, verbose = FALSE,
                          save.network = TRUE, nsims = 1)
   simb <- netsim(est, param, init, control)
-  expect_true(simb$network$sim1$gal$vertex.pid == "vertex.pid") #FLAG: Change from vertex.names
+  expect_true(simb$network$sim1$gal$vertex.pid == "vertex.names")
 
   # Do not use pids
   control <- control.net(type = "SI", nsteps = 10, verbose = FALSE,

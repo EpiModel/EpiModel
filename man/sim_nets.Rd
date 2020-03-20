@@ -5,8 +5,6 @@
 \title{Simulate Dynamic Network at Time 1}
 \usage{
 sim_nets(x, nw, nsteps, control)
-
-sim_nets(x, nw, nsteps, control)
 }
 \arguments{
 \item{x}{An \code{EpiModel} object of class \code{\link{netest}}.}
@@ -20,9 +18,6 @@ sim_nets(x, nw, nsteps, control)
 \item{nsims}{Number of independent network simulations.}
 }
 \description{
-This function simulates a dynamic network over one or multiple
-             time steps, to be used in \code{\link{netsim}} models.
-
 This function simulates a dynamic network over one or multiple
              time steps, to be used in \code{\link{netsim}} models.
 }
