@@ -105,8 +105,8 @@ for (at in 2:control$nsteps) {
 num1 <- num2 <- 500
 nw <- network.initialize(num1 + num2, directed = FALSE)
 nw <- set.vertex.attribute(nw, "group", rep(1:2, each = num1))
-formation <- ~edges + nodefactor("group") + nodematch("group")
-target.stats <- c(400, 200, 0)
+formation <- ~edges + nodematch("group")
+target.stats <- c(400, 0)
 coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 100)
 est <- netest(nw, formation, target.stats, coef.diss)
 
@@ -131,8 +131,8 @@ for (at in 2:control$nsteps) {
 num1 <- num2 <- 500
 nw <- network.initialize(num1 + num2, directed = FALSE)
 nw <- set.vertex.attribute(nw, "group", rep(1:2, each = num1))
-formation <- ~edges + nodefactor("group") + nodematch("group")
-target.stats <- c(400, 200, 0)
+formation <- ~edges + nodematch("group")
+target.stats <- c(400, 0)
 coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 100)
 est <- netest(nw, formation, target.stats, coef.diss)
 
@@ -160,8 +160,8 @@ for (at in 2:control$nsteps) {
 num1 <- num2 <- 500
 nw <- network.initialize(num1 + num2, directed = FALSE)
 nw <- set.vertex.attribute(nw, "group", rep(1:2, each = num1))
-formation <- ~ edges + nodefactor("group") + nodematch("group")
-target.stats <- c(400, 200, 0)
+formation <- ~ edges + nodematch("group")
+target.stats <- c(400, 0)
 coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 100)
 est <- netest(nw, formation, target.stats, coef.diss)
 
@@ -285,8 +285,8 @@ for (at in 2:control$nsteps) {
 num1 <- num2 <- 500
 nw <- network.initialize(num1 + num2, directed = FALSE)
 nw <- set.vertex.attribute(nw, "group", rep(1:2, each = num1))
-formation <- ~ edges + nodefactor("group") + nodematch("group")
-target.stats <- c(400, 200, 0)
+formation <- ~ edges + nodematch("group")
+target.stats <- c(400, 0)
 coef.diss <- dissolution_coefs(dissolution = ~ offset(edges), duration = 100, d.rate = 0.005)
 est <- netest(nw, formation, target.stats, coef.diss)
 
@@ -316,8 +316,8 @@ for (at in 2:control$nsteps) {
 num1 <- num2 <- 500
 nw <- network.initialize(num1 + num2, directed = FALSE)
 nw <- set.vertex.attribute(nw, "group", rep(1:2, each = num1))
-formation <- ~ edges + nodefactor("group") + nodematch("group")
-target.stats <- c(400, 200, 0)
+formation <- ~ edges + nodematch("group")
+target.stats <- c(400, 0)
 coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 100, d.rate = 0.005)
 est <- netest(nw, formation, target.stats, coef.diss)
 
@@ -349,8 +349,8 @@ for (at in 2:control$nsteps) {
 num1 <- num2 <- 500
 nw <- network.initialize(num1 + num2, directed = FALSE)
 nw <- set.vertex.attribute(nw, "group", rep(1:2, each = num1))
-formation <- ~edges + nodefactor("group") + nodematch("group")
-target.stats <- c(400, 200, 0)
+formation <- ~edges + nodematch("group")
+target.stats <- c(400, 0)
 coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 100, d.rate = 0.005)
 est <- netest(nw, formation, target.stats, coef.diss)
 
