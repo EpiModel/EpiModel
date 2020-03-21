@@ -126,18 +126,16 @@ nwupdate.net <- function(dat, at) {
       ## Departures
       inactive <- which(dat$attr$active == 0)
       if (length(inactive) > 0) {
-        el.temp <- dat$el[[1]]
-        el.temp <- delete_vertices(el.temp, inactive)
-        dat$el[[1]] <- el.temp
+        dat$attr <- deleteAttr(dat$attr, inactive)
+        dat$el[[1]] <- delete_vertices(dat$el[[1]], inactive)
       }
 
       ## Arrivals
       nArrivals <- dat$nw.update$arr$nArrivals
       if (sum(nArrivals) > 0) {
-        el.temp <- dat$el[[1]]
         nCurr <- sum(dat$attr$active == 1)
 
-        el.temp <- add_vertices(el.temp, nv = sum(nArrivals))
+        dat$el[[1]] <- add_vertices(dat$el[[1]], nv = sum(nArrivals))
 
         if (length(nArrivals) > 1) {
           dat$attr$group <- c(dat$attr$group, c(rep(1, nArrivals[1]),
