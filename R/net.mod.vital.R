@@ -18,12 +18,10 @@ departures.net <- function(dat, at) {
     return(dat)
   }
 
-
   # Variables ---------------------------------------------------------------
   type <- dat$control$type
 
   #Book-keeping
-
   idsDpt <- list()
 
   # Susceptible departures ------------------------------------------------------
@@ -47,7 +45,6 @@ departures.net <- function(dat, at) {
       dat$attr$exitTime[idsDpt.sus] <- at
     }
   }
-
 
   # Infected departures ---------------------------------------------------------
 
@@ -140,7 +137,6 @@ arrivals.net <- function(dat, at) {
     return(dat)
   }
 
-
   # Variables ---------------------------------------------------------------
   a.rate <- dat$param$a.rate
   tea.status <- dat$control$tea.status
@@ -153,7 +149,6 @@ arrivals.net <- function(dat, at) {
   if (nOld > 0) {
     nArrivals <- sum(rbinom(nOld, 1, a.rate))
   }
-
 
   # Output ------------------------------------------------------------------
   dat$nw.update$arr$nArrivals <- nArrivals
@@ -295,6 +290,7 @@ departures.2g.net <- function(dat, at) {
   return(dat)
 }
 
+
 #' @title Arrivals: netsim Module
 #'
 #' @description This function simulates new arrivals into the network
@@ -317,7 +313,6 @@ arrivals.2g.net <- function(dat, at) {
     return(dat)
   }
 
-
   # Variables ---------------------------------------------------------------
   a.rate <- dat$param$a.rate
   a.rate.g2 <- dat$param$a.rate.g2
@@ -329,7 +324,6 @@ arrivals.2g.net <- function(dat, at) {
   nArrivals <- nArrivalsG2 <- 0
   newNodes <- newNodesG2 <- NULL
   nCurr <- length(which(dat$attr$active == 1))
-
 
   # Add Nodes ---------------------------------------------------------------
   if (nOld > 0) {
