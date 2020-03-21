@@ -139,7 +139,6 @@ arrivals.net <- function(dat, at) {
 
   # Variables ---------------------------------------------------------------
   a.rate <- dat$param$a.rate
-  tea.status <- dat$control$tea.status
   nOld <- dat$epi$num[at - 1]
   nCurr <- length(which(dat$attr$active == 1))
 
@@ -316,7 +315,6 @@ arrivals.2g.net <- function(dat, at) {
   # Variables ---------------------------------------------------------------
   a.rate <- dat$param$a.rate
   a.rate.g2 <- dat$param$a.rate.g2
-  tea.status <- dat$control$tea.status
   nOld <- dat$epi$num[at - 1]
   nOldG2 <- dat$epi$num.g2[at - 1]
   a.rand <- dat$control$a.rand

@@ -9,7 +9,7 @@ coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 10)
 est1 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 param <- param.net(inf.prob = 1)
 init <- init.net(i.num = 1)
-control <- control.net(type = "SI", nsteps = 100, nsims = 1, verbose = FALSE, use.pids = FALSE)
+control <- control.net(type = "SI", nsteps = 100, nsims = 1, verbose = FALSE)
 mod1 <- netsim(est1, param, init, control)
 tm <- get_transmat(mod1)
 
