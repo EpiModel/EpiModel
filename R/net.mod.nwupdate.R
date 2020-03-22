@@ -17,8 +17,7 @@ nwupdate.net <- function(dat, at) {
     if (dat$param$vital != FALSE) {
 
       ## Departures
-      inactive <- unlist(dat$nw.update$idsDpt)
-      inactive <- as.vector(inactive)
+      inactive <- which(dat$attr$active == 0 & dat$attr$exitTime == at)
       if (length(inactive) > 0) {
         dat$nw <- deactivate.vertices(dat$nw, onset = at, terminus = Inf,
                                       v = inactive, deactivate.edges = TRUE)
@@ -48,21 +47,12 @@ nwupdate.net <- function(dat, at) {
 
         # Save any val on attr
         dat <- copy_toall_attr(dat, at, fterms)
+        dat$nw <- activate.vertex.attribute(dat$nw, prefix = "testatus",
+                                            value = dat$attr$status[newNodes],
+                                            onset = at, terminus = Inf,
+                                            v = newNodes)
 
-        if ("status" %in% fterms) {
-          dat$nw <- activate.vertex.attribute(dat$nw, prefix = "testatus",
-                                              value = dat$attr$status[newNodes],
-                                              onset = at, terminus = Inf,
-                                              v = newNodes)
-        } else {
-          dat$nw <- activate.vertex.attribute(dat$nw, prefix = "testatus",
-                                              value = "s", onset = at, terminus = Inf,
-                                              v = newNodes)
-        }
-
-        if (!("status" %in% fterms)) {
-          dat$attr$status <- c(dat$attr$status, rep("s", length(newNodes)))
-        }
+        dat$attr$status <- c(dat$attr$status, rep("s", length(newNodes)))
         dat$attr$active <- c(dat$attr$active, rep(1, length(newNodes)))
         dat$attr$infTime <- c(dat$attr$infTime, rep(NA, length(newNodes)))
         dat$attr$entrTime <- c(dat$attr$entrTime, rep(at, length(newNodes)))
@@ -89,12 +79,7 @@ nwupdate.net <- function(dat, at) {
                                           terminus = Inf, v = idsRecov)
     }
 
-    if ("status" %in% dat$temp$fterms) {
-      dat$nw <- set.vertex.attribute(dat$nw, "status", dat$attr$status)
-    }
-
     ## Infection
-    #Activate vertex attribute of infected
     idsNewInf <- dat$nw.update$inf$idsNewInf
     if (length(idsNewInf) > 0) {
       dat$nw <- activate.vertex.attribute(dat$nw,
@@ -103,10 +88,7 @@ nwupdate.net <- function(dat, at) {
                                           onset = at,
                                           terminus = Inf,
                                           v = idsNewInf)
-
-      if ("status" %in% dat$temp$fterms) {
-        dat$nw <- set.vertex.attribute(dat$nw, "status", dat$attr$status)
-      }
+      dat$nw <- set.vertex.attribute(dat$nw, "status", dat$attr$status)
     }
 
   }
@@ -116,7 +98,7 @@ nwupdate.net <- function(dat, at) {
     if (dat$param$vital != FALSE) {
 
       ## Departures
-      inactive <- which(dat$attr$active == 0)
+      inactive <- which(dat$attr$active == 0 & dat$attr$exitTime == at)
       if (length(inactive) > 0) {
         dat$attr <- deleteAttr(dat$attr, inactive)
         dat$el[[1]] <- delete_vertices(dat$el[[1]], inactive)
