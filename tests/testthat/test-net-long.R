@@ -107,7 +107,7 @@ test_that("edges models", {
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
-  expect_error(plot(x, type = "network", col.status = TRUE))
+  plot(x, type = "network", col.status = TRUE)
   test_net(x)
   rm(x)
 
@@ -279,7 +279,7 @@ test_that("edges models", {
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
   plot(x, type = "network")
-  expect_error(plot(x, type = "network", sims = "mean", col.status = TRUE))
+  plot(x, type = "network", sims = "mean", col.status = TRUE)
   test_net(x)
 })
 
