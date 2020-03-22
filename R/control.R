@@ -278,13 +278,6 @@ control.icm <- function(type, nsteps, nsims = 1, rec.rand = TRUE, a.rand = TRUE,
 #'        distribution with the probability equal to the governing departure rates.
 #'        If \code{FALSE}, then a deterministic rounded count of the expectation
 #'        implied by those rates.
-#' @param tea.status If \code{TRUE}, use a temporally extended attribute (TEA)
-#'        to store disease status. A TEA is needed for plotting static networks
-#'        at different time steps and for animating dynamic networks with evolving
-#'        status. TEAs are computationally inefficient for large simulations and
-#'        should be toggled off in those cases. This argument automatically set
-#'        to \code{FALSE} if \code{tgl=TRUE}.
-#'
 #' @param tgl Logical indicating usage of either \code{tergm} (\code{tgl = TRUE}),
 #'        or \code{tergmLite} (\code{tgl = FALSE}). Default of \code{FALSE}.
 #' @param attr.rules A list containing the  rules for setting the attributes of
@@ -294,13 +287,6 @@ control.icm <- function(type, nsteps, nsims = 1, rec.rand = TRUE, a.rand = TRUE,
 #'        which subgroup epidemic prevalences should be calculated. This nodal
 #'        attribute must be contained in the network model formation formula,
 #'        otherwise it is ignored.
-#' @param use.pids If \code{TRUE}, use persistent ids for vertices; otherwise,
-#'        numeric ids will be recycled in models with vital dynamics. For one-group
-#'        simulations, this will be a random hexidecimal value; for two-group
-#'        simulations, it will be based on \code{pid.prefix}.
-#' @param pid.prefix For two-group network simulations with vital dynamics,
-#'        a character vector of length 2 containing the prefixes, with the
-#'        default of \code{c("F", "M")}.
 #' @param initialize.FUN Module to initialize the model at time 1, with the
 #'        default function of \code{\link{initialize.net}}.
 #' @param departures.FUN Module to simulate departure or exit, with the default function
@@ -416,13 +402,17 @@ control.icm <- function(type, nsteps, nsims = 1, rec.rand = TRUE, a.rand = TRUE,
 #' @export
 #'
 control.net <- function(type,
-                        nsteps, start = 1,
-                        nsims = 1, ncores = 1,
-                        depend, rec.rand = TRUE,
-                        a.rand = TRUE, d.rand = TRUE,
-                        tea.status = TRUE, tgl = FALSE,
-                        attr.rules, epi.by,
-                        use.pids = TRUE, pid.prefix,
+                        nsteps,
+                        start = 1,
+                        nsims = 1,
+                        ncores = 1,
+                        depend,
+                        rec.rand = TRUE,
+                        a.rand = TRUE,
+                        d.rand = TRUE,
+                        tgl = FALSE,
+                        attr.rules,
+                        epi.by,
                         initialize.FUN = initialize.net,
                         resim_nets.FUN = resim_nets,
                         infection.FUN = NULL,
@@ -433,12 +423,18 @@ control.net <- function(type,
                         prevalence.FUN = NULL,
                         verbose.FUN = verbose.net,
                         module.order = NULL,
-                        set.control.ergm, set.control.stergm,
-                        save.nwstats = TRUE, nwstats.formula = "formation",
-                        save.transmat = TRUE, save.network = TRUE,
-                        save.other, verbose = TRUE,
-                        verbose.int = 1, skip.check = FALSE,
-                        raw_output = FALSE, ...) {
+                        set.control.ergm,
+                        set.control.stergm,
+                        save.nwstats = TRUE,
+                        nwstats.formula = "formation",
+                        save.transmat = TRUE,
+                        save.network = TRUE,
+                        save.other,
+                        verbose = TRUE,
+                        verbose.int = 1,
+                        skip.check = FALSE,
+                        raw_output = FALSE,
+                        ...) {
 
   # Get arguments
   p <- list()
@@ -537,10 +533,6 @@ control.net <- function(type,
   }
   if (is.null(p$set.control.ergm)) {
     p$set.control.ergm <- control.simulate.ergm(MCMC.burnin = 2e5)
-  }
-
-  if (p$tgl == TRUE) {
-    p$tea.status <- FALSE
   }
 
   if (is.null(p$type)) {

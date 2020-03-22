@@ -14,8 +14,6 @@ nwupdate.net <- function(dat, at) {
 
   if (dat$control$tgl == FALSE) {
 
-    tea.status <- dat$control$tea.status
-
     if (dat$param$vital != FALSE) {
 
       ## Departures
@@ -51,18 +49,17 @@ nwupdate.net <- function(dat, at) {
         # Save any val on attr
         dat <- copy_toall_attr(dat, at, fterms)
 
-        if (tea.status == TRUE) {
-          if ("status" %in% fterms) {
-            dat$nw <- activate.vertex.attribute(dat$nw, prefix = "testatus",
-                                                value = dat$attr$status[newNodes],
-                                                onset = at, terminus = Inf,
-                                                v = newNodes)
-          } else {
-            dat$nw <- activate.vertex.attribute(dat$nw, prefix = "testatus",
-                                                value = "s", onset = at, terminus = Inf,
-                                                v = newNodes)
-          }
+        if ("status" %in% fterms) {
+          dat$nw <- activate.vertex.attribute(dat$nw, prefix = "testatus",
+                                              value = dat$attr$status[newNodes],
+                                              onset = at, terminus = Inf,
+                                              v = newNodes)
+        } else {
+          dat$nw <- activate.vertex.attribute(dat$nw, prefix = "testatus",
+                                              value = "s", onset = at, terminus = Inf,
+                                              v = newNodes)
         }
+
         if (!("status" %in% fterms)) {
           dat$attr$status <- c(dat$attr$status, rep("s", length(newNodes)))
         }
@@ -87,11 +84,9 @@ nwupdate.net <- function(dat, at) {
     status <- dat$attr$status
 
     if (length(idsRecov) > 0) {
-      if (tea.status == TRUE) {
-        dat$nw <- activate.vertex.attribute(dat$nw, prefix = "testatus",
-                                            value = recovState, onset = at,
-                                            terminus = Inf, v = idsRecov)
-      }
+      dat$nw <- activate.vertex.attribute(dat$nw, prefix = "testatus",
+                                          value = recovState, onset = at,
+                                          terminus = Inf, v = idsRecov)
     }
 
     if ("status" %in% dat$temp$fterms) {
@@ -101,16 +96,13 @@ nwupdate.net <- function(dat, at) {
     ## Infection
     #Activate vertex attribute of infected
     idsNewInf <- dat$nw.update$inf$idsNewInf
-    tea.status <- dat$control$tea.status
     if (length(idsNewInf) > 0) {
-      if (tea.status == TRUE) {
-        dat$nw <- activate.vertex.attribute(dat$nw,
-                                            prefix = "testatus",
-                                            value = "i",
-                                            onset = at,
-                                            terminus = Inf,
-                                            v = idsNewInf)
-      }
+      dat$nw <- activate.vertex.attribute(dat$nw,
+                                          prefix = "testatus",
+                                          value = "i",
+                                          onset = at,
+                                          terminus = Inf,
+                                          v = idsNewInf)
 
       if ("status" %in% dat$temp$fterms) {
         dat$nw <- set.vertex.attribute(dat$nw, "status", dat$attr$status)

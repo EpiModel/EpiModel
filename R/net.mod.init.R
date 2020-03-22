@@ -69,11 +69,6 @@ initialize.net <- function(x, param, init, control, s) {
 
     if (control$tgl == FALSE) {
 
-      ## Initialize persistent IDs
-      if (control$use.pids == TRUE) {
-        dat$nw <- init_pids(dat$nw, dat$param$groups, dat$control$pid.prefix)
-      }
-
       ## Pull network val to attr
       form <- get_nwparam(dat)$formation
       fterms <- get_formula_term_attr(form, nw)
@@ -145,7 +140,6 @@ initialize.net <- function(x, param, init, control, s) {
 init_status.net <- function(dat) {
 
   # Variables ---------------------------------------------------------------
-  tea.status <- dat$control$tea.status
   i.num <- dat$init$i.num
   i.num.g2 <- dat$init$i.num.g2
   r.num <- dat$init$r.num
@@ -191,7 +185,7 @@ init_status.net <- function(dat) {
   dat$attr$status <- status
 
   ## Set up TEA status
-  if (tea.status == TRUE) {
+  if (dat$control$tgl == FALSE) {
     dat$nw <- activate.vertex.attribute(dat$nw,
                                         prefix = "testatus",
                                         value = status,
@@ -233,61 +227,4 @@ init_status.net <- function(dat) {
   }
 
   return(dat)
-}
-
-
-#' @title Persistent ID Initialization
-#'
-#' @description This function initializes the persistent IDs for
-#'              a \code{networkDynamic} object.
-#'
-#' @param nw An object of class \code{networkDynamic}.
-#' @param prefixes Character string prefix for group-specific ID.
-#'
-#' @details
-#' This function is used for \code{\link{netsim}} simulations over two-group
-#' networks for populations with vital dynamics. Persistent IDs are
-#' required in this situation because when new nodes are added to the
-#' first group in a two-group network, the IDs for the second mode shift
-#' upward. Persistent IDs allow for an analysis of disease transmission
-#' chains for these simulations. These IDs are also invoked in the
-#' \code{\link{arrivals.net}} module when the persistent IDs of incoming nodes
-#' must be set.
-#'
-#' @export
-#' @keywords netMod internal
-#' @seealso \code{\link{initialize.pids}}
-#'
-#' @examples
-#' # Initialize network with 25 female and 75 male
-#' nw <- network.initialize(100)
-#' group <- sample(rep(1:2, c(25, 75)))
-#' nw <- set.vertex.attribute(nw, "group", group)
-#'
-#' # Set persistent IDs using the default g1/g2 prefix
-#' nw <- init_pids(nw, groups = 2)
-#' get.vertex.attribute(nw, "vertex.names")
-#'
-#' # Use another prefix combination
-#' nw <- network.initialize(100)
-#' nw <- set.vertex.attribute(nw, "group", group)
-#' nw <- init_pids(nw, groups = 2, prefixes = c("F", "M"))
-#' get.vertex.attribute(nw, "vertex.names")
-#'
-init_pids <- function(nw, groups = 1, prefixes = c("g1.", "g2.")) {
-
-  if (is.null(nw$gal$vertex.pid)) {
-    if (groups == 1) {
-      nw <- initialize.pids(nw)
-    } else {
-      n <- network.size(nw)
-      t0.pids <- rep(NA, n)
-      t0.pids[groupids(nw, 1)] <- paste0(prefixes[1], seq_len(length(groupids(nw, 1))))
-      t0.pids[groupids(nw, 2)] <- paste0(prefixes[2], seq_len(length(groupids(nw, 2))))
-
-      nw <- set.network.attribute(nw, "vertex.pid", "vertex.names")
-      nw <- set.vertex.attribute(nw, "vertex.names", t0.pids)
-    }
-  }
-  return(nw)
 }

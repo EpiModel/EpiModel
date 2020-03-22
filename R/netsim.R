@@ -53,8 +53,8 @@
 #'  \item \strong{network:} a list of \code{networkDynamic} objects,
 #'         one for each model simulation.
 #' }
-#' If \code{control$raw_output == TRUE}: A list of the nestsim Data
-#' (one per simulation)
+#' If \code{control$raw_output == TRUE}: A list of the raw (pre-processed) nestsim
+#' dat objects, for use in simulation continuation.
 #'
 #' @references
 #' Jenness SM, Goodreau SM and Morris M. EpiModel: An R Package for Mathematical
@@ -133,6 +133,7 @@ netsim <- function(x, param, init, control) {
     control$depend <- FALSE
   }
 
+  s <- NULL
   if (ncores == 1) {
     sout <- lapply(seq_len(control$nsims), function(s) {
       # Run the simulation
