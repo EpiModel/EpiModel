@@ -613,7 +613,7 @@ test_that("Open-population two-group models", {
                      a.rate.g2 = 0.02, ds.rate.g2 = 0.02, di.rate.g2 = 0.02)
   init <- init.net(i.num = 10, i.num.g2 = 10)
   control <- control.net(type = "SI", nsteps = 25, nsims = 1,
-                         verbose = FALSE
+                         verbose = FALSE,
                          a.rand = FALSE, d.rand = FALSE)
   x <- netsim(est5.vit, param, init, control)
   expect_is(x, "netsim")
