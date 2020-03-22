@@ -10,3 +10,4 @@ src/*.o
 src/*.so
 src/*.dll
 *.rda
+vignettes/Intro.R
