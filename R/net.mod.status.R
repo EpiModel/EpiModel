@@ -398,7 +398,6 @@ recovery.net <- function(dat, at) {
       nRecov <- length(idsRecov)
       status[idsRecov] <- recovState
       dat$nw.update$rec$idsRecov <- idsRecov
-      dat$nw.update$rec$recovState <- recovState
     }
   }
   dat$attr$status <- status
@@ -487,7 +486,6 @@ recovery.2g.net <- function(dat, at) {
       dat$nw.update$rec$idsRecov <- idsRecov <- idsElig[vecRecov]
       nRecov <- sum(group[idsRecov] == 1)
       nRecovG2 <- sum(group[idsRecov] == 2)
-      dat$nw.update$rec$recovState <- recovState
       status[idsRecov] <- recovState
     }
   }

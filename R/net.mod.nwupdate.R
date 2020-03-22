@@ -70,7 +70,7 @@ nwupdate.net <- function(dat, at) {
 
     ## Recovery
     idsRecov <- dat$nw.update$rec$idsRecov
-    recovState <- dat$nw.update$rec$recovState
+    recovState <- ifelse(dat$control$type == "SIR", "r", "s")
     status <- dat$attr$status
 
     if (length(idsRecov) > 0) {
