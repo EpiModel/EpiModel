@@ -66,14 +66,6 @@ resim_nets <- function(dat, at) {
   # Full tergm/network Method
   if (dat$control$tgl == FALSE) {
 
-    # Serosorting model check
-    statOnNw <- ("status" %in% dat$temp$fterms)
-    status <- dat$attr$status
-    if (statOnNw == TRUE && length(unique(status)) == 1) {
-      stop("Stopping simulation because status in formation formula and ",
-           "no longer any discordant nodes", call. = TRUE)
-    }
-
     # Set up nwstats df
     if (dat$control$save.nwstats == TRUE) {
       if (at == 2) {
