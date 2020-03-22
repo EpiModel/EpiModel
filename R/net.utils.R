@@ -142,7 +142,7 @@ check_bip_degdist <- function(num.g1, num.g2,
 #'
 #' Using the \code{color_tea} function with a \code{netsim} object requires that
 #' TEAs for disease status be used and that the \code{networkDynamic} object be
-#' saved in the output: both \code{tea.status} and \code{save.network} must be
+#' saved in the output: both \code{tgl} and \code{save.network} must be
 #' set to \code{TRUE} in \code{\link{control.net}}.
 #'
 #' @seealso \code{\link{netsim}} and the \code{ndtv} package documentation.
@@ -282,23 +282,77 @@ copy_toall_attr <- function(dat, at, fterms) {
 #' @keywords netUtils
 #'
 #' @examples
-#' # Homogeneous dissolution model with no departures
+#' ## Homogeneous dissolution model with no departures
 #' dissolution_coefs(dissolution = ~offset(edges), duration = 25)
 #'
-#' # Homogeneous dissolution model with departures
+#' ## Homogeneous dissolution model with departures
 #' dissolution_coefs(dissolution = ~offset(edges), duration = 25,
 #'                   d.rate = 0.001)
 #'
-#' # Heterogeneous dissolution model in which same-race edges have
-#' # shorter duration compared to mixed-race edges, with no departures
+#' ## Heterogeneous dissolution model in which same-race edges have
+#' ## shorter duration compared to mixed-race edges, with no departures
 #' dissolution_coefs(dissolution = ~offset(edges) + offset(nodematch("race")),
 #'                   duration = c(20, 10))
 #'
-#' # Heterogeneous dissolution model in which same-race edges have
-#' # shorter duration compared to mixed-race edges, with departures
+#' ## Heterogeneous dissolution model in which same-race edges have
+#' ## shorter duration compared to mixed-race edges, with departures
 #' dissolution_coefs(dissolution = ~offset(edges) + offset(nodematch("race")),
 #'                   duration = c(20, 10), d.rate = 0.001)
 #'
+#' \dontrun{
+#' ## Extended example for differential homophily by age group
+#' # Set up the network with nodes categorized into 5 age groups
+#' nw <- network.initialize(1000, directed = FALSE)
+#' age.grp <- sample(1:5, 1000, TRUE)
+#' nw <- set.vertex.attribute(nw, "age.grp", age.grp)
+#'
+#' # durations = non-matched, age.grp1 & age.grp1, age.grp2 & age.grp2, ...
+#' # TERGM will include differential homophily by age group with nodematch term
+#' # Target stats for the formation model are overall edges, and then the number
+#' #    matched within age.grp 1, age.grp 2, ..., age.grp 5
+#' form <- ~edges + nodematch("age.grp", diff = TRUE)
+#' target.stats <- c(450, 100, 125, 40, 80, 100)
+#'
+#' # Target stats for the dissolution model are duration of non-matched edges, then
+#' #    duration of edges matched within age.grp 1, age.grp 2, ..., age.grp 5
+#' durs <- c(60, 30, 80, 100, 125, 160)
+#' diss <- dissolution_coefs(~offset(edges) +
+#'                             offset(nodematch("age.grp", diff = TRUE)),
+#'                           duration = durs)
+#'
+#' # Fit the TERGM
+#' fit <- netest(nw, form, target.stats, diss)
+#'
+#' # Full diagnostics to evaluate model fit
+#' dx <- netdx(fit, nsims = 10, ncores = 4, nsteps = 300)
+#' print(dx)
+#'
+#' # Simulate one long time series to examine timed edgelist
+#' dx <- netdx(fit, nsims = 1, nsteps = 5000, keep.tedgelist = TRUE)
+#'
+#' # Extract timed-edgelist
+#' te <- as.data.frame(dx)
+#' head(te)
+#'
+#' # Limit to non-censored edges
+#' te <- te[which(te$onset.censored == FALSE & te$terminus.censored == FALSE),
+#'          c("head", "tail", "duration")]
+#' head(te)
+#'
+#' # Look up the age group of head and tail nodes
+#' te$ag.head <- age.grp[te$head]
+#' te$ag.tail <- age.grp[te$tail]
+#' head(te)
+#'
+#' # Recover average edge durations for age-group pairing
+#' mean(te$duration[te$ag.head != te$ag.tail])
+#' mean(te$duration[te$ag.head == 1 & te$ag.tail == 1])
+#' mean(te$duration[te$ag.head == 2 & te$ag.tail == 2])
+#' mean(te$duration[te$ag.head == 3 & te$ag.tail == 3])
+#' mean(te$duration[te$ag.head == 4 & te$ag.tail == 4])
+#' mean(te$duration[te$ag.head == 5 & te$ag.tail == 5])
+#' durs
+#' }
 #'
 dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
   # Error check for duration < 1
@@ -343,7 +397,6 @@ dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
     }
     pg <- (duration[1] - 1) / duration[1]
     ps2 <- (1 - d.rate) ^ 2
-    coef.crude <- log(pg / (1 - pg))
     if (ps2 <= pg) {
       d.rate_ <- round(1-sqrt(pg),5)
       str <- paste("The competing risk of departure is too high for the given",
@@ -351,24 +404,29 @@ dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
                    d.rate_,".",sep="")
       stop(str, call. = FALSE)
     }
+
+    coef.crude <- log(pg / (1 - pg))
     coef.adj <- log(pg / (ps2 - pg))
   }
   if (form.length == 2) {
     if (t2.term %in% c("nodematch", "nodefactor", "nodemix")) {
       coef.crude <- coef.adj <- NA
       for (i in 1:length(duration)) {
-        pg.thetaX <- (duration[i] - 1) / duration[i]
-        ps2.thetaX <- (1 - d.rate) ^ 2
-        if (sqrt(ps2.thetaX) <= pg.thetaX) {
-          stop("The competing risk of departure is too high for the given the ",
-               "duration in place ", i, ". Specify a lower d.rate", call. = FALSE)
+        pg <- (duration[i] - 1) / duration[i]
+        ps2 <- (1 - d.rate) ^ 2
+
+        if (ps2 <= pg) {
+          d.rate_ <- round(1-sqrt(pg),5)
+          stop("The competing risk of departure is too high for the given",
+               " edge duration of ", duration[i]," in place ",i, ". ",
+               "Specify a d.rate lower than ", d.rate_,".",sep="")
         }
         if (i == 1) {
-          coef.crude[i] <- log(pg.thetaX / (1 - pg.thetaX))
-          coef.adj[i] <- log(pg.thetaX / (ps2.thetaX - pg.thetaX))
+          coef.crude[i] <- log(pg / (1 - pg))
+          coef.adj[i] <- log(pg / (ps2 - pg))
         } else {
-          coef.crude[i] <- log(pg.thetaX / (1 - pg.thetaX)) - coef.crude[1]
-          coef.adj[i] <- log(pg.thetaX / (ps2.thetaX - pg.thetaX)) - coef.adj[1]
+          coef.crude[i] <- log(pg/ (1 - pg)) - coef.crude[1]
+          coef.adj[i] <- log(pg / (ps2- pg)) - coef.adj[1]
         }
       }
     } else {

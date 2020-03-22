@@ -71,7 +71,7 @@
 #' Simulations require bookkeeping at each time step to calculate the
 #' summary epidemiological statistics used in the model output analysis.
 #' \itemize{
-#'  \item \code{\link{get_prev.icm}}: calculates the number in each disease state
+#'  \item \code{\link{prevalence.icm}}: calculates the number in each disease state
 #'        (susceptible, infected, recovered) at each time step for those active
 #'        agents in the population.
 #' }

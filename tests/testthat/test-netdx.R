@@ -69,14 +69,10 @@ test_that("Formation plot color vector length", {
   dx <- netdx(est, nsims = 2, nsteps = 500,
               nwstats.formula = ~edges + meandeg + degree(0:4) + concurrent)
 
-  expect_error(plot(dx, sim.col = c("green","orange")),
-               cat("sim.col must be either missing or a vector of length 1 or nstats (", dx$nstats,")"))
-  expect_error(plot(dx, mean.col = c("green","orange")),
-               cat("mean.col must be either missing or a vector of length 1 or nstats (", dx$nstats,")"))
-  expect_error(plot(dx, targ.col = c("green","orange")),
-               cat("targ.col must be either missing or a vector of length 1 or nstats (", dx$nstats,")"))
-  expect_error(plot(dx, qnts.col = c("green","orange")),
-               cat("qnts.col must be either missing or a vector of length 1 or nstats (", dx$nstats,")"))
+  expect_error(plot(dx, sim.col = c("green","orange")))
+  expect_error(plot(dx, mean.col = c("green","orange")))
+  expect_error(plot(dx, targ.col = c("green","orange")))
+  expect_error(plot(dx, qnts.col = c("green","orange")))
 })
 
 test_that("Netdx duration and dissolution plots error when skip.dissolution = TRUE", {
@@ -154,7 +150,7 @@ test_that("Faux offset term", {
 
 
 test_that("More complicated faux offset term", {
-  # skip_on_cran()
+  skip_on_cran()
   nw <- network.initialize(1000, directed = FALSE)
   nw <- set.vertex.attribute(nw, "sexor",
                              sample(c(rep(1,20), rep(2,460),

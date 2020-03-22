@@ -1,3 +1,33 @@
+EpiModel 1.7.5
+------------------------------------------------------------------------------
+
+### NEW FEATURES
+* Add foundation updates to support the `tergmLite` package (to be released). 
+* Print network statistic diagnostics stored in `netsim` object with 
+  `print.netsim(x, formation.stats = TRUE)`.
+
+### BUG FIXES
+* Fix issue `plot.netsim` default colors when number of variables exceeds 3.
+
+### OTHER
+* Add example for differential homophily in a TERGM dissolution model in 
+  `dissolution_coefs` documentation.
+
+EpiModel 1.7.3
+------------------------------------------------------------------------------
+
+### NEW FEATURES
+* Add a `skip.dissolution` argument to `netdx` to skip dissolution diagnostics 
+  for computational efficiency.
+
+### BUG FIXES
+* Fixes output formatting of network stats saved during `netsim` runs. 
+* Correctly errors when running dynamic network diagnostics with `netdx` on a 
+  cross-sectional ergm. 
+* Remove old unused utility functions.
+* Enforce depend on ergm >= 3.10 package.
+
+
 EpiModel 1.7.2
 ------------------------------------------------------------------------------
 

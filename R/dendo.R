@@ -49,8 +49,7 @@
 #'
 #' param <- param.net(inf.prob = 0.5)
 #' init <- init.net(i.num = 1)
-#' control <- control.net(type = "SI", nsteps = 40, nsims = 1, verbose = FALSE,
-#'                        use.pids = FALSE)
+#' control <- control.net(type = "SI", nsteps = 40, nsims = 1, verbose = FALSE)
 #'
 #' mod1 <- netsim(est1, param, init, control)
 #' tm <- get_transmat(mod1)

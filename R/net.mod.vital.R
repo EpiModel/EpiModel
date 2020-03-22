@@ -18,12 +18,10 @@ departures.net <- function(dat, at) {
     return(dat)
   }
 
-
   # Variables ---------------------------------------------------------------
   type <- dat$control$type
 
   #Book-keeping
-
   idsDpt <- list()
 
   # Susceptible departures ------------------------------------------------------
@@ -47,7 +45,6 @@ departures.net <- function(dat, at) {
       dat$attr$exitTime[idsDpt.sus] <- at
     }
   }
-
 
   # Infected departures ---------------------------------------------------------
 
@@ -140,10 +137,8 @@ arrivals.net <- function(dat, at) {
     return(dat)
   }
 
-
   # Variables ---------------------------------------------------------------
   a.rate <- dat$param$a.rate
-  tea.status <- dat$control$tea.status
   nOld <- dat$epi$num[at - 1]
   nCurr <- length(which(dat$attr$active == 1))
 
@@ -153,7 +148,6 @@ arrivals.net <- function(dat, at) {
   if (nOld > 0) {
     nArrivals <- sum(rbinom(nOld, 1, a.rate))
   }
-
 
   # Output ------------------------------------------------------------------
   dat$nw.update$arr$nArrivals <- nArrivals
@@ -180,8 +174,7 @@ arrivals.net <- function(dat, at) {
 #' @export
 #' @keywords netMod internal
 #'
-
-departures.net.grp <- function(dat, at) {
+departures.2g.net <- function(dat, at) {
 
   # Conditions --------------------------------------------------------------
   if (dat$param$vital == FALSE) {
@@ -296,6 +289,7 @@ departures.net.grp <- function(dat, at) {
   return(dat)
 }
 
+
 #' @title Arrivals: netsim Module
 #'
 #' @description This function simulates new arrivals into the network
@@ -311,18 +305,16 @@ departures.net.grp <- function(dat, at) {
 #' @keywords netMod internal
 #'
 
-arrivals.net.grp <- function(dat, at) {
+arrivals.2g.net <- function(dat, at) {
 
   # Conditions --------------------------------------------------------------
   if (dat$param$vital == FALSE) {
     return(dat)
   }
 
-
   # Variables ---------------------------------------------------------------
   a.rate <- dat$param$a.rate
   a.rate.g2 <- dat$param$a.rate.g2
-  tea.status <- dat$control$tea.status
   nOld <- dat$epi$num[at - 1]
   nOldG2 <- dat$epi$num.g2[at - 1]
   a.rand <- dat$control$a.rand
@@ -330,7 +322,6 @@ arrivals.net.grp <- function(dat, at) {
   nArrivals <- nArrivalsG2 <- 0
   newNodes <- newNodesG2 <- NULL
   nCurr <- length(which(dat$attr$active == 1))
-
 
   # Add Nodes ---------------------------------------------------------------
   if (nOld > 0) {

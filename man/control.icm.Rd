@@ -16,7 +16,7 @@ control.icm(
   recovery.FUN = NULL,
   departures.FUN = NULL,
   arrivals.FUN = NULL,
-  get_prev.FUN = NULL,
+  prevalence.FUN = NULL,
   verbose = FALSE,
   verbose.int = 0,
   skip.check = FALSE,
@@ -67,8 +67,8 @@ function of \code{\link{departures.icm}}.}
 \item{arrivals.FUN}{Module to simulate arrivals or entries, with the default
 function of \code{\link{arrivals.icm}}.}
 
-\item{get_prev.FUN}{Module to calculate disease prevalence at each time step,
-with the default function of \code{\link{get_prev.icm}}.}
+\item{prevalence.FUN}{Module to calculate disease prevalence at each time step,
+with the default function of \code{\link{prevalence.icm}}.}
 
 \item{verbose}{If \code{TRUE}, print model progress to the console.}
 

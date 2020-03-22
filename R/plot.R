@@ -2101,7 +2101,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
     }
 
     obj <- get_network(x, sims, network, collapse = TRUE, at = at)
-    tea.status <- x$control$tea.status
+    tgl <- x$control$tgl
 
     if (!is.null(shp.bip)) {
       if (all(shp.bip != c("square", "triangle"))) {
@@ -2135,12 +2135,12 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
       vertex.cex <- 1
     }
     if (col.status == TRUE) {
-      if (is.null(tea.status) || tea.status == FALSE) {
-        stop("Plotting status colors requires tea.status=TRUE in netsim control settings",
+      if (tgl == TRUE) {
+        stop("Plotting status colors requires tgl=FALSE in netsim control settings",
              call. = FALSE)
       }
       pal <- transco(c("firebrick", "steelblue", "seagreen"), 0.75)
-      if (tea.status == TRUE) {
+      if (tgl == FALSE) {
         cols <- ifelse(get.vertex.attribute.active(obj, "testatus", at = at) == "i",
                        pal[1], pal[2])
         cols <- ifelse(get.vertex.attribute.active(obj, "testatus", at = at) == "r",
@@ -2216,8 +2216,11 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
     ## Color palettes ##
 
     # Main color palette
-    bpal <- brewer.pal(3, "Set1")
-    bpal <- c(bpal[2], bpal[1], bpal[3])
+    bpal <- c(brewer.pal(9, "Set1"), brewer.pal(8, "Set2"), brewer.pal(12, "Set3"))
+    bpal2 <- bpal[2]
+    bpal1 <- bpal[1]
+    bpal[1] <- bpal2
+    bpal[2] <- bpal1
 
     # Mean line
     if (missing(mean.col)) {

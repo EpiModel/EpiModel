@@ -51,8 +51,10 @@
 #'        the transmission matrix saved in the simulation. See
 #'        \code{\link{control.net}} and the Tutorial for further details.
 #'  \item \strong{network:} a list of \code{networkDynamic} objects,
-#'        one for each model simulation.
+#'         one for each model simulation.
 #' }
+#' If \code{control$raw_output == TRUE}: A list of the raw (pre-processed) nestsim
+#' dat objects, for use in simulation continuation.
 #'
 #' @references
 #' Jenness SM, Goodreau SM and Morris M. EpiModel: An R Package for Mathematical
@@ -131,44 +133,27 @@ netsim <- function(x, param, init, control) {
     control$depend <- FALSE
   }
 
+  s <- NULL
   if (ncores == 1) {
-    for (s in 1:control$nsims) {
+    sout <- lapply(seq_len(control$nsims), function(s) {
       # Run the simulation
-      dat <- netsim_loop(x, param, init, control, s)
-
-      # Set output
-      if (s == 1) {
-        out <- saveout.net(dat, s)
-      } else {
-        out <- saveout.net(dat, s, out)
-      }
-      class(out) <- "netsim"
-    }
+      netsim_loop(x, param, init, control, s)
+    })
   }
 
   if (ncores > 1) {
     doParallel::registerDoParallel(ncores)
-
     sout <- foreach(s = 1:nsims) %dopar% {
-
-      control$nsims <- 1
-      control$currsim <- s
-
       # Run the simulation
-      dat <- netsim_loop(x, param, init, control, s)
-
-      # Set output
-      out <- saveout.net(dat, s = 1)
-      class(out) <- "netsim"
-      return(out)
+      netsim_loop(x, param, init, control, s)
     }
+  }
 
-    merged.out <- sout[[1]]
-    for (i in 2:length(sout)) {
-      merged.out <- merge(merged.out, sout[[i]], param.error = FALSE)
-    }
-    out <- merged.out
-    class(out) <- "netsim"
+  # Process the outputs unless `control$raw_output` is `TRUE`
+  if (!is.null(control$raw_output) && control$raw_output) {
+    out <- sout
+  } else {
+    out <- process_out.net(sout)
   }
 
   return(out)

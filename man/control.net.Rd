@@ -14,20 +14,17 @@ control.net(
   rec.rand = TRUE,
   a.rand = TRUE,
   d.rand = TRUE,
-  tea.status = TRUE,
   tgl = FALSE,
   attr.rules,
   epi.by,
-  use.pids = TRUE,
-  pid.prefix,
   initialize.FUN = initialize.net,
   resim_nets.FUN = resim_nets,
   infection.FUN = NULL,
   recovery.FUN = NULL,
   departures.FUN = NULL,
   arrivals.FUN = NULL,
-  nw.update.FUN = nw.update.net,
-  get_prev.FUN = NULL,
+  nwupdate.FUN = nwupdate.net,
+  prevalence.FUN = NULL,
   verbose.FUN = verbose.net,
   module.order = NULL,
   set.control.ergm,
@@ -40,6 +37,7 @@ control.net(
   verbose = TRUE,
   verbose.int = 1,
   skip.check = FALSE,
+  raw_output = FALSE,
   ...
 )
 }
@@ -88,13 +86,6 @@ distribution with the probability equal to the governing departure rates.
 If \code{FALSE}, then a deterministic rounded count of the expectation
 implied by those rates.}
 
-\item{tea.status}{If \code{TRUE}, use a temporally extended attribute (TEA)
-to store disease status. A TEA is needed for plotting static networks
-at different time steps and for animating dynamic networks with evolving
-status. TEAs are computationally inefficient for large simulations and
-should be toggled off in those cases. This argument automatically set
-to \code{FALSE} if \code{tgl=TRUE}.}
-
 \item{tgl}{Logical indicating usage of either \code{tergm} (\code{tgl = TRUE}),
 or \code{tergmLite} (\code{tgl = FALSE}). Default of \code{FALSE}.}
 
@@ -106,15 +97,6 @@ details below).}
 which subgroup epidemic prevalences should be calculated. This nodal
 attribute must be contained in the network model formation formula,
 otherwise it is ignored.}
-
-\item{use.pids}{If \code{TRUE}, use persistent ids for vertices; otherwise,
-numeric ids will be recycled in models with vital dynamics. For one-group
-simulations, this will be a random hexidecimal value; for two-group
-simulations, it will be based on \code{pid.prefix}.}
-
-\item{pid.prefix}{For two-group network simulations with vital dynamics,
-a character vector of length 2 containing the prefixes, with the
-default of \code{c("F", "M")}.}
 
 \item{initialize.FUN}{Module to initialize the model at time 1, with the
 default function of \code{\link{initialize.net}}.}
@@ -134,8 +116,12 @@ of \code{\link{departures.net}}.}
 \item{arrivals.FUN}{Module to simulate arrivals or entries, with the default
 function of \code{\link{arrivals.net}}.}
 
-\item{get_prev.FUN}{Module to calculate disease prevalence at each time step,
-with the default function of \code{\link{get_prev.net}}.}
+\item{nwupdate.FUN}{Module to handle updating of network structure and nodal
+attributes due to exogenous epidemic model processes, with the default
+function of \code{\link{nwupdate.net}}.}
+
+\item{prevalence.FUN}{Module to calculate disease prevalence at each time step,
+with the default function of \code{\link{prevalence.net}}.}
 
 \item{verbose.FUN}{Module to print simulation progress to screen, with the
 default function of \code{\link{verbose.net}}.}
@@ -186,6 +172,9 @@ structure and consistency of the parameter values, initial conditions,
 and control settings before running base epidemic models. Setting
 this to \code{FALSE} is recommended when running models with new modules
 specified.}
+
+\item{raw_output}{If \code{TRUE}, \code{netsim} will output a list of nestsim
+Data (one per simulation) instead of a formatted \code{netsim} object.}
 
 \item{...}{Additional control settings passed to model.}
 }

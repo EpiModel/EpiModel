@@ -294,18 +294,13 @@ crosscheck.net <- function(x, param, init, control) {
     bip <- ifelse(bip == 2, TRUE, FALSE)
 
     if (bip == TRUE & is.null(control$pid.prefix)) {
-      control$pid.prefix <- c("F", "M")
+      control$pid.prefix <- c("g1.", "g2.")
     }
 
     if (statOnNw == TRUE && is.null(control$attr.rules$status)) {
       control$attr.rules$status <- "s"
     }
 
-    # Using tergmLite; then 'depend = TRUE':
-
-    if (control$tgl == TRUE) {
-      control$depend <- TRUE
-    }
 
 
     # Checks ------------------------------------------------------------------
@@ -458,7 +453,7 @@ crosscheck.net <- function(x, param, init, control) {
     else {
       for (i in 1:length(args)) {
         if (is.null(control[[args[i]]])) {
-          temp <- get(gsub(".FUN",".net.grp",args[i]))
+          temp <- get(gsub(".FUN",".2g.net",args[i]))
           control[[args[i]]] <- temp
         }
       }

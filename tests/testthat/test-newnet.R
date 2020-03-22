@@ -56,7 +56,7 @@ test_that("New network models vignette example", {
     growth.rate <- dat$param$growth.rate
     exptPopSize <- dat$epi$num[1] * (1 + growth.rate*at)
     n <- network.size(dat$nw)
-    tea.status <- dat$control$tea.status
+    tgl <- dat$control$tgl
 
     numNeeded <- exptPopSize - sum(dat$attr$active == 1)
     if (numNeeded > 0) {
@@ -75,7 +75,7 @@ test_that("New network models vignette example", {
     # Update Nodal Attributes -------------------------------------------------
     if (nArrivals > 0) {
       dat$attr$active <- c(dat$attr$active, rep(1, nArrivals))
-      if (tea.status == TRUE) {
+      if (tgl == TRUE) {
         dat$nw <- activate.vertex.attribute(dat$nw, prefix = "testatus",
                                             value = 0, onset = at,
                                             terminus = Inf, v = newNodes)
@@ -108,8 +108,8 @@ test_that("New network models vignette example", {
   param <- param.net(inf.prob = 0.35, growth.rate = 0.00083, life.expt = 70)
   init <- init.net(i.num = 10)
   control <- control.net(type = NULL, nsims = 1, nsteps = 10,
-                         get_prev.FUN = get_prev.net, recovery.FUN = recovery.net, 
-                         infection.FUN = infection.net, departures.FUN = dfunc, 
+                         prevalence.FUN = prevalence.net, recovery.FUN = recovery.net,
+                         infection.FUN = infection.net, departures.FUN = dfunc,
                          arrivals.FUN = afunc, aging.FUN = aging,
                          depend = TRUE, save.network = FALSE, verbose = FALSE)
   mod <- netsim(est, param, init, control)
@@ -118,10 +118,10 @@ test_that("New network models vignette example", {
   ## Test module reordering
   control <- control.net(type = NULL, nsims = 1, nsteps = 10,
                          departures.FUN = dfunc, arrivals.FUN = afunc, aging.FUN = aging,
-                         get_prev.FUN = get_prev.net, recovery.FUN = recovery.net, 
+                         prevalence.FUN = prevalence.net, recovery.FUN = recovery.net,
                          infection.FUN = infection.net,
                          module.order = c("aging.FUN", "arrivals.FUN", "departures.FUN",
-                                          "get_prev.FUN", "recovery.FUN", "infection.FUN"),
+                                          "prevalence.FUN", "recovery.FUN", "infection.FUN"),
                          depend = TRUE, save.network = FALSE, verbose = FALSE)
   mod <- netsim(est, param, init, control)
   expect_is(mod, "netsim")

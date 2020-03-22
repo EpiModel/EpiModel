@@ -45,7 +45,6 @@ infection.net <- function(dat, at) {
   act.rate <- dat$param$act.rate
 
   nw <- dat$nw
-  tea.status <- dat$control$tea.status
 
   # Vector of infected and susceptible IDs
   idsInf <- which(active == 1 & status == "i")
@@ -103,12 +102,6 @@ infection.net <- function(dat, at) {
 
       #Output to nw.update
       dat$nw.update$inf$idsNewInf <- idsNewInf
-
-      # Substitute PIDs for vital two-group sims
-      if (any(names(nw$gal) %in% "vertex.pid")) {
-        del$sus <- get.vertex.pid(nw, del$sus)
-        del$inf <- get.vertex.pid(nw, del$inf)
-      }
 
     } # end some discordant edges condition
   } # end some active discordant nodes condition
@@ -174,8 +167,7 @@ infection.net <- function(dat, at) {
 #' @seealso \code{\link{discord_edgelist}} is used within \code{infection.net}
 #' to obtain a discordant edgelist.
 #'
-
-infection.net.grp <- function(dat, at) {
+infection.2g.net <- function(dat, at) {
 
   # Variables ---------------------------------------------------------------
   active <- dat$attr$active
@@ -190,8 +182,6 @@ infection.net.grp <- function(dat, at) {
   inf.prob <- dat$param$inf.prob
   inf.prob.g2 <- dat$param$inf.prob.g2
   act.rate <- dat$param$act.rate
-
-  tea.status <- dat$control$tea.status
 
   # Vector of infected and susceptible IDs
   idsInf <- which(active == 1 & status == "i")
@@ -259,16 +249,10 @@ infection.net.grp <- function(dat, at) {
       nInfG2 <- sum(group[idsNewInf] == 2)
       totInf <- nInf + nInfG2
 
-
       #Out to network upate
       dat$nw.update$inf$nInf <- nInf + nInfG2
       dat$nw.update$inf$idsNewInf <- idsNewInf
 
-      # Substitute PIDs for vital bipartite sims
-      if (any(names(nw$gal) %in% "vertex.pid")) {
-        del$sus <- get.vertex.pid(nw, del$sus)
-        del$inf <- get.vertex.pid(nw, del$inf)
-      }
 
     } # end some discordant edges condition
   } # end some active discordant nodes condition
@@ -387,7 +371,6 @@ recovery.net <- function(dat, at) {
   active <- dat$attr$active
   status <- dat$attr$status
   infTime <- dat$attr$infTime
-  tea.status <- dat$control$tea.status
 
   type <- dat$control$type
   recovState <- ifelse(type == "SIR", "r", "s")
@@ -453,7 +436,7 @@ recovery.net <- function(dat, at) {
 #' @export
 #' @keywords internal
 #'
-recovery.net.grp <- function(dat, at) {
+recovery.2g.net <- function(dat, at) {
 
   ## Only run with SIR/SIS
   if (!(dat$control$type %in% c("SIR", "SIS"))) {
@@ -464,7 +447,6 @@ recovery.net.grp <- function(dat, at) {
   active <- dat$attr$active
   status <- dat$attr$status
   infTime <- dat$attr$infTime
-  tea.status <- dat$control$tea.status
 
   if (dat$control$tgl == FALSE) {
     group <- get.vertex.attribute(dat$nw, "group")
