@@ -54,8 +54,6 @@ infection.net <- function(dat, at) {
   # Initialize vectors
   nInf <- 0
 
-
-
   # Process -----------------------------------------------------------------
   # If some infected AND some susceptible, then proceed
   if (nElig > 0 && nElig < nActive) {
@@ -253,7 +251,6 @@ infection.2g.net <- function(dat, at) {
       dat$nw.update$inf$nInf <- nInf + nInfG2
       dat$nw.update$inf$idsNewInf <- idsNewInf
 
-
     } # end some discordant edges condition
   } # end some active discordant nodes condition
 
@@ -404,11 +401,7 @@ recovery.net <- function(dat, at) {
       dat$nw.update$rec$recovState <- recovState
     }
   }
-
   dat$attr$status <- status
-  if ("status" %in% dat$temp$fterms) {
-    dat$nw <- set.vertex.attribute(dat$nw, "status", dat$attr$status)
-  }
 
   # Output ------------------------------------------------------------------
   outName <- ifelse(type == "SIR", "ir.flow", "is.flow")
@@ -498,11 +491,7 @@ recovery.2g.net <- function(dat, at) {
       status[idsRecov] <- recovState
     }
   }
-
   dat$attr$status <- status
-  if ("status" %in% dat$temp$fterms) {
-    dat$nw <- set.vertex.attribute(dat$nw, "status", dat$attr$status)
-  }
 
   # Output ------------------------------------------------------------------
   outName <- ifelse(type == "SIR", "ir.flow", "is.flow")
