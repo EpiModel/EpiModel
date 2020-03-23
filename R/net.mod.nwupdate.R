@@ -56,21 +56,6 @@ nwupdate.net <- function(dat, at) {
                                             value = dat$attr$status[newNodes],
                                             onset = at, terminus = Inf,
                                             v = newNodes)
-        if (!("status" %in% fterms)) {
-          dat$attr$status <- c(dat$attr$status, rep("s", length(newNodes)))
-        }
-        dat$attr$active <- c(dat$attr$active, rep(1, length(newNodes)))
-        dat$attr$infTime <- c(dat$attr$infTime, rep(NA, length(newNodes)))
-        dat$attr$entrTime <- c(dat$attr$entrTime, rep(at, length(newNodes)))
-        dat$attr$exitTime <- c(dat$attr$exitTime, rep(NA, length(newNodes)))
-
-        ## Handles infTime when incoming nodes are infected
-        newNodesInf <- intersect(newNodes, which(dat$attr$status == "i"))
-        dat$attr$infTime[newNodesInf] <- at
-
-        if (length(unique(sapply(dat$attr, length))) != 1) {
-          stop("Attribute list of unequal length. Check arrivals.net module.")
-        }
       }
     }
 
@@ -121,25 +106,6 @@ nwupdate.net <- function(dat, at) {
 
         dat$el[[1]] <- add_vertices(dat$el[[1]], nv = sum(nArrivals))
 
-        if (length(nArrivals) > 1) {
-          dat$attr$group <- c(dat$attr$group, c(rep(1, nArrivals[1]),
-                                                rep(2, nArrivals[2])))
-        }
-
-        dat$attr$status <- c(dat$attr$status, rep("s", sum(nArrivals)))
-        dat$attr$active <- c(dat$attr$active, rep(1, sum(nArrivals)))
-        dat$attr$infTime <- c(dat$attr$infTime, rep(NA, sum(nArrivals)))
-        dat$attr$entrTime <- c(dat$attr$entrTime, rep(at, sum(nArrivals)))
-        dat$attr$exitTime <- c(dat$attr$exitTime, rep(NA, sum(nArrivals)))
-
-        ## Handles infTime when incoming nodes are infected
-        newNodes <- c((nCurr+1):(nCurr+sum(nArrivals)))
-        newNodesInf <- intersect(newNodes, which(dat$attr$status == "i"))
-        dat$attr$infTime[newNodesInf] <- at
-
-        if (length(unique(sapply(dat$attr, length))) != 1) {
-          stop("Attribute list of unequal length. Check arrivals.net module.")
-        }
       }
     }
 
