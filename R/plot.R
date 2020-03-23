@@ -928,7 +928,7 @@ draw_means <- function(x, y, mean.smooth, mean.lwd,
 #' # Static diagnostics
 #' dx1 <- netdx(est, nsims = 1e4, dynamic = FALSE,
 #'              nwstats.formula = ~edges + meandeg + concurrent +
-#'                                 nodefactor("sex", base = 0) +
+#'                                 nodefactor("sex", levels = NULL) +
 #'                                 nodematch("sex"))
 #' dx1
 #'
@@ -942,7 +942,7 @@ draw_means <- function(x, y, mean.smooth, mean.lwd,
 #' # Dynamic diagnostics
 #' dx2 <- netdx(est, nsims = 10, nsteps = 500,
 #'              nwstats.formula = ~edges + meandeg + concurrent +
-#'                                 nodefactor("sex", base = 0) +
+#'                                 nodefactor("sex", levels = NULL) +
 #'                                 nodematch("sex"))
 #' dx2
 #'

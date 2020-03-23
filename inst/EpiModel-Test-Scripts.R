@@ -181,7 +181,7 @@ est <- netest(nw, formation, target.stats, coef.diss)
 param <- param.net(inf.prob = 0.4, act.rate = 1,
                    a.rate = 0.005, ds.rate = 0.005, di.rate = 0.005)
 init <- init.net(i.num = 10)
-control <- control.net(type = "SI", nsteps = 250, nsims = 16, ncores = 8, tgl = TRUE, verbose = TRUE)
+control <- control.net(type = "SI", nsteps = 250, nsims = 1, ncores = 1, tgl = FALSE, verbose = TRUE)
 
 sim <- netsim(est, param, init, control)
 plot(sim, qnts = FALSE, sim.lines = TRUE)
