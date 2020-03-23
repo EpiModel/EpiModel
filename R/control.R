@@ -258,7 +258,7 @@ control.icm <- function(type, nsteps, nsims = 1, rec.rand = TRUE, a.rand = TRUE,
 #'        For restarted simulations, this must be one greater than the final time
 #'        step in the prior simulation and must be less than the value in
 #'        \code{nsteps}.
-#' @param depend If \code{TRUE}, resimulate the network at each time step. This
+#' @param resimulate.network If \code{TRUE}, resimulate the network at each time step. This
 #'        occurs by default with two varieties of dependent models: if there are
 #'        any vital dynamic parameters in the model (or if non-standard arrival or
 #'        departures modules are passed into \code{control.net}), or if the network model
@@ -406,7 +406,7 @@ control.net <- function(type,
                         start = 1,
                         nsims = 1,
                         ncores = 1,
-                        depend,
+                        resimulate.network,
                         rec.rand = TRUE,
                         a.rand = TRUE,
                         d.rand = TRUE,
@@ -471,17 +471,17 @@ control.net <- function(type,
   p$user.mods <- grep(".FUN", names(dot.args), value = TRUE)
 
 
-  if (missing(depend)) {
+  if (missing(resimulate.network)) {
     arg.list <- as.list(match.call())
     if ((!is.null(arg.list$departures.FUN) && arg.list$departures.FUN != "departures.net") |
         (!is.null(arg.list$arrivals.FUN) && arg.list$arrivals.FUN != "arrivals.net")) {
-      p$depend <- TRUE
+      p$resimulate.network <- TRUE
     }
   }
 
-  # Using tergmLite --> depend = TRUE
+  # Using tergmLite --> resimulate.network = TRUE
   if (tgl == TRUE) {
-    p$depend <- TRUE
+    p$resimulate.network <- TRUE
   }
 
   # Temporary until we develop a nwstats fix for tergmLite

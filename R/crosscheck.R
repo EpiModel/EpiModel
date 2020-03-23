@@ -282,11 +282,11 @@ crosscheck.net <- function(x, param, init, control) {
     statOnNw <- ("status" %in% get_formula_term_attr(x$formation, nw))
 
     # Set dependent modeling defaults if vital or status on nw
-    if (is.null(control$depend)) {
+    if (is.null(control$resimulate.network)) {
       if (param$vital == TRUE | statOnNw == TRUE) {
-        control$depend <- TRUE
+        control$resimulate.network <- TRUE
       } else {
-        control$depend <- FALSE
+        control$resimulate.network <- FALSE
       }
     }
 
@@ -406,7 +406,7 @@ crosscheck.net <- function(x, param, init, control) {
 
   if (control$start > 1) {
 
-    control$depend <- TRUE
+    control$resimulate.network <- TRUE
 
     if (control$skip.check == FALSE) {
       if (class(x) != "netsim") {

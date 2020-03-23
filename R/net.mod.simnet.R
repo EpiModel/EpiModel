@@ -75,7 +75,7 @@ resim_nets <- function(dat, at) {
     }
 
     # Network simulation
-    if (anyActive > 0 & dat$control$depend == TRUE) {
+    if (anyActive > 0 & dat$control$resimulate.network == TRUE) {
       suppressWarnings(
         dat$nw <- simulate(dat$nw,
                            formation = nwparam$formation,
@@ -125,7 +125,7 @@ resim_nets <- function(dat, at) {
 #'
 edges_correct <- function(dat, at) {
 
-  if (dat$control$depend == TRUE) {
+  if (dat$control$resimulate.network == TRUE) {
 
     if (dat$param$groups == 1) {
       old.num <- dat$epi$num[at - 1]

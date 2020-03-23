@@ -33,13 +33,13 @@ initialize.net <- function(x, param, init, control, s) {
     nw <- simulate(x$fit, basis = x$fit$newnetwork,
                    control = control$set.control.ergm)
 
-    if (control$depend == TRUE) {
+    if (control$resimulate.network == TRUE) {
       if (class(x$fit) == "stergm") {
         nw <- network.collapse(nw, at = 1)
       }
       nw <- sim_nets(x, nw, nsteps = 1, control)
     }
-    if (control$depend == FALSE) {
+    if (control$resimulate.network == FALSE) {
       nw <- sim_nets(x, nw, nsteps = control$nsteps, control)
     }
     nw <- activate.vertices(nw, onset = 1, terminus = Inf)
