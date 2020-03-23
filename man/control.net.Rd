@@ -10,7 +10,7 @@ control.net(
   start = 1,
   nsims = 1,
   ncores = 1,
-  depend,
+  resimulate.network,
   rec.rand = TRUE,
   a.rand = TRUE,
   d.rand = TRUE,
@@ -62,7 +62,7 @@ step in the prior simulation and must be less than the value in
 \item{ncores}{Number of processor cores to run multiple simulations
 on, using the \code{foreach} and \code{doParallel} implementations.}
 
-\item{depend}{If \code{TRUE}, resimulate the network at each time step. This
+\item{resimulate.network}{If \code{TRUE}, resimulate the network at each time step. This
 occurs by default with two varieties of dependent models: if there are
 any vital dynamic parameters in the model (or if non-standard arrival or
 departures modules are passed into \code{control.net}), or if the network model
