@@ -86,7 +86,7 @@ nwupdate.net <- function(dat, at) {
     }
 
     ## Infection
-    idsNewInf <- dat$nw.update$inf$idsNewInf
+    idsNewInf <- which(dat$attr$status == "i" & dat$attr$infTime == at)
     if (length(idsNewInf) > 0) {
       dat$nw <- activate.vertex.attribute(dat$nw,
                                           prefix = "testatus",

@@ -98,9 +98,6 @@ infection.net <- function(dat, at) {
       dat$attr$infTime[idsNewInf] <- at
       nInf <- length(idsNewInf)
 
-      #Output to nw.update
-      dat$nw.update$inf$idsNewInf <- idsNewInf
-
     } # end some discordant edges condition
   } # end some active discordant nodes condition
 
@@ -246,10 +243,6 @@ infection.2g.net <- function(dat, at) {
       nInf <- sum(group[idsNewInf] == 1)
       nInfG2 <- sum(group[idsNewInf] == 2)
       totInf <- nInf + nInfG2
-
-      #Out to network upate
-      dat$nw.update$inf$nInf <- nInf + nInfG2
-      dat$nw.update$inf$idsNewInf <- idsNewInf
 
     } # end some discordant edges condition
   } # end some active discordant nodes condition
