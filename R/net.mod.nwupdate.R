@@ -12,6 +12,8 @@
 #'
 nwupdate.net <- function(dat, at) {
 
+  groups <- dat$param$groups
+
   if (dat$control$tgl == FALSE) {
 
     if (dat$param$vital != FALSE) {
@@ -24,7 +26,11 @@ nwupdate.net <- function(dat, at) {
       }
 
       ## Arrivals
-      nArrivals <- dat$nw.update$arr$nArrivals
+      if (groups == 1) {
+        nArrivals <- dat$epi$a.flow[at]
+      } else {
+        nArrivals <- c(dat$epi$a.flow[at], dat$epi$a.flow.g2[at])
+      }
       if (sum(nArrivals) > 0) {
         nCurr <- network.size(dat$nw)
         dat$nw <- add.vertices(dat$nw, nv = sum(nArrivals))
@@ -105,7 +111,11 @@ nwupdate.net <- function(dat, at) {
       }
 
       ## Arrivals
-      nArrivals <- dat$nw.update$arr$nArrivals
+      if (groups == 1) {
+        nArrivals <- dat$epi$a.flow[at]
+      } else {
+        nArrivals <- c(dat$epi$a.flow[at], dat$epi$a.flow.g2[at])
+      }
       if (sum(nArrivals) > 0) {
         nCurr <- sum(dat$attr$active == 1)
 

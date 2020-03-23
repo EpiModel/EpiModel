@@ -120,7 +120,6 @@ arrivals.net <- function(dat, at) {
   }
 
   # Output ------------------------------------------------------------------
-  dat$nw.update$arr$nArrivals <- nArrivals
   if (at == 2) {
     dat$epi$a.flow <- c(0, nArrivals)
   } else {
@@ -217,7 +216,6 @@ departures.2g.net <- function(dat, at) {
   }
 
   # Output ------------------------------------------------------------------
-
   if (at == 2) {
     dat$epi$ds.flow <- c(0, nDepartures.sus)
     dat$epi$di.flow <- c(0, nDepartures.inf)
@@ -259,7 +257,6 @@ departures.2g.net <- function(dat, at) {
 #' @export
 #' @keywords netMod internal
 #'
-
 arrivals.2g.net <- function(dat, at) {
 
   # Conditions --------------------------------------------------------------
@@ -291,7 +288,6 @@ arrivals.2g.net <- function(dat, at) {
   }
 
   # Output ------------------------------------------------------------------
-  dat$nw.update$arr$nArrivals <- c(nArrivals, nArrivalsG2)
   if (at == 2) {
     dat$epi$a.flow <- c(0, nArrivals)
     dat$epi$a.flow.g2 <- c(0, nArrivalsG2)
