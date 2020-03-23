@@ -27,7 +27,6 @@ nwupdate.net <- function(dat, at) {
       nArrivals <- dat$nw.update$arr$nArrivals
       if (sum(nArrivals) > 0) {
         nCurr <- network.size(dat$nw)
-        #New Arrivals
         dat$nw <- add.vertices(dat$nw, nv = sum(nArrivals))
         newNodes <- (nCurr + 1):(nCurr + sum(nArrivals))
         dat$nw <- activate.vertices(dat$nw, onset = at, terminus = Inf, v = newNodes)
@@ -51,8 +50,9 @@ nwupdate.net <- function(dat, at) {
                                             value = dat$attr$status[newNodes],
                                             onset = at, terminus = Inf,
                                             v = newNodes)
-
-        dat$attr$status <- c(dat$attr$status, rep("s", length(newNodes)))
+        if (!("status" %in% fterms)) {
+          dat$attr$status <- c(dat$attr$status, rep("s", length(newNodes)))
+        }
         dat$attr$active <- c(dat$attr$active, rep(1, length(newNodes)))
         dat$attr$infTime <- c(dat$attr$infTime, rep(NA, length(newNodes)))
         dat$attr$entrTime <- c(dat$attr$entrTime, rep(at, length(newNodes)))
