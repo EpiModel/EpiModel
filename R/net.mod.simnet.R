@@ -64,7 +64,7 @@ resim_nets <- function(dat, at) {
   nwparam <- get_nwparam(dat)
 
   # Full tergm/network Method
-  if (dat$control$tgl == FALSE) {
+  if (dat$control$tergmLite == FALSE) {
 
     # Set up nwstats df
     if (dat$control$save.nwstats == TRUE) {
@@ -98,7 +98,7 @@ resim_nets <- function(dat, at) {
   }
 
   # networkLite/tergmLite Method
-  if (dat$control$tgl == TRUE) {
+  if (dat$control$tergmLite == TRUE) {
     dat <- tergmLite::updateModelTermInputs(dat)
     dat$el[[1]] <- tergmLite::simulate_network(p = dat$p[[1]],
                                                el = dat$el[[1]],
@@ -135,7 +135,7 @@ edges_correct <- function(dat, at) {
         log(new.num)
     }
     if (dat$param$groups == 2) {
-      if (dat$control$tgl == FALSE){
+      if (dat$control$tergmLite == FALSE){
         group <- idgroup(dat$nw)
       } else {
         group <- dat$attr$group

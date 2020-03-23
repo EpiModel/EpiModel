@@ -110,7 +110,7 @@ arrivals.net <- function(dat, at) {
   # Variables ---------------------------------------------------------------
   a.rate <- dat$param$a.rate
   nOld <- dat$epi$num[at - 1]
-  tgl <- dat$control$tgl
+  tergmLite <- dat$control$tergmLite
   nCurr <- length(dat$attr$active)
 
   nArrivals <- 0
@@ -119,7 +119,7 @@ arrivals.net <- function(dat, at) {
   if (nOld > 0) {
     nArrivals <- sum(rbinom(nOld, 1, a.rate))
     if (nArrivals > 0) {
-      if (tgl == FALSE) {
+      if (tergmLite == FALSE) {
         fterms <- dat$temp$fterms
         #At this point, network attributes would be read and then copied to dat$attr
         if (!("status" %in% fterms)) {
@@ -140,7 +140,7 @@ arrivals.net <- function(dat, at) {
         }
       }
 
-      if (tgl == TRUE) {
+      if (tergmLite == TRUE) {
         dat$attr$status <- c(dat$attr$status, rep("s", nArrivals))
         dat$attr$active <- c(dat$attr$active, rep(1, nArrivals))
         dat$attr$infTime <- c(dat$attr$infTime, rep(NA, nArrivals))
@@ -193,7 +193,7 @@ departures.2g.net <- function(dat, at) {
   }
 
   # Variables ---------------------------------------------------------------
-  if (dat$control$tgl == FALSE){
+  if (dat$control$tergmLite == FALSE){
     group <- get.vertex.attribute(dat$nw, "group")
   } else {
     group <- dat$attr$group
@@ -312,7 +312,7 @@ arrivals.2g.net <- function(dat, at) {
   nOld <- dat$epi$num[at - 1]
   nOldG2 <- dat$epi$num.g2[at - 1]
   a.rand <- dat$control$a.rand
-  tgl <- dat$control$tgl
+  tergmLite <- dat$control$tergmLite
 
   totArr <- nArrivals <- nArrivalsG2 <- 0
   newNodes <- newNodesG2 <- NULL
@@ -331,7 +331,7 @@ arrivals.2g.net <- function(dat, at) {
     }
 
     if (totArr > 0) {
-      if (tgl == FALSE) {
+      if (tergmLite == FALSE) {
         nCurr <- length(dat$attr$active)
         newNodes <- (nCurr + 1):(nCurr + totArr)
         fterms <- dat$temp$fterms
@@ -354,7 +354,7 @@ arrivals.2g.net <- function(dat, at) {
         }
       }
 
-      if (tgl == TRUE) {
+      if (tergmLite == TRUE) {
         nCurr <- length(which(dat$attr$active == 1))
         newNodes <- (nCurr + 1):(nCurr + totArr)
 

@@ -278,8 +278,8 @@ control.icm <- function(type, nsteps, nsims = 1, rec.rand = TRUE, a.rand = TRUE,
 #'        distribution with the probability equal to the governing departure rates.
 #'        If \code{FALSE}, then a deterministic rounded count of the expectation
 #'        implied by those rates.
-#' @param tgl Logical indicating usage of either \code{tergm} (\code{tgl = TRUE}),
-#'        or \code{tergmLite} (\code{tgl = FALSE}). Default of \code{FALSE}.
+#' @param tergmLite Logical indicating usage of either \code{tergm} (\code{tergmLite = FALSE}),
+#'        or \code{tergmLite} (\code{tergmLite = TRUE}). Default of \code{FALSE}.
 #' @param attr.rules A list containing the  rules for setting the attributes of
 #'        incoming nodes, with one list element per attribute to be set (see
 #'        details below).
@@ -410,7 +410,7 @@ control.net <- function(type,
                         rec.rand = TRUE,
                         a.rand = TRUE,
                         d.rand = TRUE,
-                        tgl = FALSE,
+                        tergmLite = FALSE,
                         attr.rules,
                         epi.by,
                         initialize.FUN = initialize.net,
@@ -480,12 +480,12 @@ control.net <- function(type,
   }
 
   # Using tergmLite --> resimulate.network = TRUE
-  if (tgl == TRUE) {
+  if (tergmLite == TRUE) {
     p$resimulate.network <- TRUE
   }
 
   # Temporary until we develop a nwstats fix for tergmLite
-  if (tgl == TRUE) {
+  if (tergmLite == TRUE) {
     p$save.nwstats <- FALSE
   }
 

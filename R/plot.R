@@ -2101,7 +2101,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
     }
 
     obj <- get_network(x, sims, network, collapse = TRUE, at = at)
-    tgl <- x$control$tgl
+    tergmLite <- x$control$tergmLite
 
     if (!is.null(shp.bip)) {
       if (all(shp.bip != c("square", "triangle"))) {
@@ -2135,12 +2135,12 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
       vertex.cex <- 1
     }
     if (col.status == TRUE) {
-      if (tgl == TRUE) {
-        stop("Plotting status colors requires tgl=FALSE in netsim control settings",
+      if (tergmLite == TRUE) {
+        stop("Plotting status colors requires tergmLite=FALSE in netsim control settings",
              call. = FALSE)
       }
       pal <- transco(c("firebrick", "steelblue", "seagreen"), 0.75)
-      if (tgl == FALSE) {
+      if (tergmLite == FALSE) {
         cols <- ifelse(get.vertex.attribute.active(obj, "testatus", at = at) == "i",
                        pal[1], pal[2])
         cols <- ifelse(get.vertex.attribute.active(obj, "testatus", at = at) == "r",

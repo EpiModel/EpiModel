@@ -168,7 +168,7 @@ infection.2g.net <- function(dat, at) {
   active <- dat$attr$active
   status <- dat$attr$status
   nw <- dat$nw
-  if (dat$control$tgl == FALSE) {
+  if (dat$control$tergmLite == FALSE) {
     group <- get.vertex.attribute(nw, "group")
   } else {
     group <- dat$attr$group
@@ -310,7 +310,7 @@ discord_edgelist <- function(dat, at) {
 
   status <- dat$attr$status
 
-  if (dat$control$tgl == TRUE) {
+  if (dat$control$tergmLite == TRUE) {
     el <- dat$el[[1]]
   } else {
     el <- get.dyads.active(dat$nw, at = at)
@@ -433,7 +433,7 @@ recovery.2g.net <- function(dat, at) {
   status <- dat$attr$status
   infTime <- dat$attr$infTime
 
-  if (dat$control$tgl == FALSE) {
+  if (dat$control$tergmLite == FALSE) {
     group <- get.vertex.attribute(dat$nw, "group")
   } else {
     group <- dat$attr$group

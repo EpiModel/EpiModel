@@ -142,7 +142,7 @@ check_bip_degdist <- function(num.g1, num.g2,
 #'
 #' Using the \code{color_tea} function with a \code{netsim} object requires that
 #' TEAs for disease status be used and that the \code{networkDynamic} object be
-#' saved in the output: both \code{tgl} and \code{save.network} must be
+#' saved in the output: both \code{tergmLite} and \code{save.network} must be
 #' set to \code{TRUE} in \code{\link{control.net}}.
 #'
 #' @seealso \code{\link{netsim}} and the \code{ndtv} package documentation.

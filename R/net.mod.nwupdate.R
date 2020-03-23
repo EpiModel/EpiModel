@@ -14,7 +14,7 @@ nwupdate.net <- function(dat, at) {
 
   groups <- dat$param$groups
 
-  if (dat$control$tgl == FALSE) {
+  if (dat$control$tergmLite == FALSE) {
 
     if (dat$param$vital != FALSE) {
 
@@ -84,7 +84,7 @@ nwupdate.net <- function(dat, at) {
 
   }
 
-  if (dat$control$tgl == TRUE) {
+  if (dat$control$tergmLite == TRUE) {
 
     if (dat$param$vital != FALSE) {
 

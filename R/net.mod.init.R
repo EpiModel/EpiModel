@@ -61,13 +61,13 @@ initialize.net <- function(x, param, init, control, s) {
     }
 
     # Conversions for tergmLite
-    if (control$tgl == TRUE) {
+    if (control$tergmLite == TRUE) {
       dat <- tergmLite::init_tergmLite(dat)
     }
 
     # Initialization ----------------------------------------------------------
 
-    if (control$tgl == FALSE) {
+    if (control$tergmLite == FALSE) {
 
       ## Pull network val to attr
       form <- get_nwparam(dat)$formation
@@ -185,7 +185,7 @@ init_status.net <- function(dat) {
   dat$attr$status <- status
 
   ## Set up TEA status
-  if (dat$control$tgl == FALSE) {
+  if (dat$control$tergmLite == FALSE) {
     dat$nw <- activate.vertex.attribute(dat$nw,
                                         prefix = "testatus",
                                         value = status,
