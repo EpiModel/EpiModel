@@ -150,7 +150,7 @@ est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 # Static diagnostics
 dx1 <- netdx(est, nsims = 1e4, dynamic = FALSE,
              nwstats.formula = ~edges + meandeg + concurrent +
-                                nodefactor("sex", base = 0) +
+                                nodefactor("sex", levels = NULL) +
                                 nodematch("sex"))
 dx1
 
@@ -164,7 +164,7 @@ plot(dx1, stats = "edges", method = "b",
 # Dynamic diagnostics
 dx2 <- netdx(est, nsims = 10, nsteps = 500,
              nwstats.formula = ~edges + meandeg + concurrent +
-                                nodefactor("sex", base = 0) +
+                                nodefactor("sex", levels = NULL) +
                                 nodematch("sex"))
 dx2
 

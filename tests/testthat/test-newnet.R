@@ -56,7 +56,7 @@ test_that("New network models vignette example", {
     growth.rate <- dat$param$growth.rate
     exptPopSize <- dat$epi$num[1] * (1 + growth.rate*at)
     n <- network.size(dat$nw)
-    tgl <- dat$control$tgl
+    tergmLite <- dat$control$tergmLite
 
     numNeeded <- exptPopSize - sum(dat$attr$active == 1)
     if (numNeeded > 0) {
@@ -75,7 +75,7 @@ test_that("New network models vignette example", {
     # Update Nodal Attributes -------------------------------------------------
     if (nArrivals > 0) {
       dat$attr$active <- c(dat$attr$active, rep(1, nArrivals))
-      if (tgl == TRUE) {
+      if (tergmLite == TRUE) {
         dat$nw <- activate.vertex.attribute(dat$nw, prefix = "testatus",
                                             value = 0, onset = at,
                                             terminus = Inf, v = newNodes)
