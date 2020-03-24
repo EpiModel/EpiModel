@@ -510,6 +510,7 @@ control.net <- function(type,
   # Temporary until we develop a nwstats fix for tergmLite
   if (tergmLite == TRUE) {
     p$save.nwstats <- FALSE
+    p$save.transmat <- FALSE
   }
 
   ## Defaults and checks
