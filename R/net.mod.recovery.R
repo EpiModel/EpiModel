@@ -53,7 +53,6 @@ recovery.net <- function(dat, at) {
       idsRecov <- idsElig[vecRecov]
       nRecov <- length(idsRecov)
       status[idsRecov] <- recovState
-      dat$temp$idsRecov <- idsRecov
     }
   }
   dat$attr$status <- status
@@ -139,7 +138,7 @@ recovery.2g.net <- function(dat, at) {
   if (nElig > 0) {
     vecRecov <- which(rbinom(nElig, 1, ratesElig) == 1)
     if (length(vecRecov) > 0) {
-      dat$temp$idsRecov <- idsRecov <- idsElig[vecRecov]
+      idsRecov <- idsElig[vecRecov]
       nRecov <- sum(group[idsRecov] == 1)
       nRecovG2 <- sum(group[idsRecov] == 2)
       status[idsRecov] <- recovState

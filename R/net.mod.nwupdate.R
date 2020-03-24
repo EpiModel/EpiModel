@@ -67,11 +67,10 @@ nwupdate.net <- function(dat, at) {
 
     ## Recovery
     status <- dat$attr$status
-    attr.status <- which(status == "r")
+    recovState <- ifelse(dat$control$type == "SIR", "r", "s")
+    attr.status <- which(status == recovState)
     nw.status <- get.vertex.attribute(dat$nw, "status")
     idsRecov <- setdiff(attr.status, nw.status)
-    recovState <- ifelse(dat$control$type == "SIR", "r", "s")
-
 
     if (length(idsRecov) > 0) {
       dat$nw <- activate.vertex.attribute(dat$nw, prefix = "testatus",
