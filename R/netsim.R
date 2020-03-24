@@ -129,8 +129,8 @@ netsim <- function(x, param, init, control) {
   ncores <- ifelse(nsims == 1, 1, min(parallel::detectCores(), control$ncores))
   control$ncores <- ncores
 
-  if (is.null(control$depend)) {
-    control$depend <- FALSE
+  if (is.null(control$resimulate.network)) {
+    control$resimulate.network <- FALSE
   }
 
   s <- NULL

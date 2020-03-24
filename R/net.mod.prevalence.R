@@ -131,7 +131,7 @@ prevalence.2g.net <- function(dat, at) {
 
   status <- l$status
 
-  if(dat$control$tgl == FALSE){
+  if(dat$control$tergmLite == FALSE){
     group <- idgroup(dat$nw)[active == 1]
   } else {
     group <- dat$attr$group[active == 1]

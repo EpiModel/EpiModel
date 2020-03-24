@@ -1,6 +1,6 @@
 Package: EpiModel
-Version: 1.8.0
-Date: 2020-01-09
+Version: 2.0.0
+Date: 2020-03-22
 Title: Mathematical Modeling of Infectious Disease Dynamics
 Description: Tools for simulating mathematical models of infectious disease dynamics. 
     Epidemic model classes include deterministic compartmental models, stochastic 

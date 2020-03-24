@@ -64,15 +64,7 @@ resim_nets <- function(dat, at) {
   nwparam <- get_nwparam(dat)
 
   # Full tergm/network Method
-  if (dat$control$tgl == FALSE) {
-
-    # Serosorting model check
-    statOnNw <- ("status" %in% dat$temp$fterms)
-    status <- dat$attr$status
-    if (statOnNw == TRUE && length(unique(status)) == 1) {
-      stop("Stopping simulation because status in formation formula and ",
-           "no longer any discordant nodes", call. = TRUE)
-    }
+  if (dat$control$tergmLite == FALSE) {
 
     # Set up nwstats df
     if (dat$control$save.nwstats == TRUE) {
@@ -83,7 +75,7 @@ resim_nets <- function(dat, at) {
     }
 
     # Network simulation
-    if (anyActive > 0 & dat$control$depend == TRUE) {
+    if (anyActive > 0 & dat$control$resimulate.network == TRUE) {
       suppressWarnings(
         dat$nw <- simulate(dat$nw,
                            formation = nwparam$formation,
@@ -106,7 +98,7 @@ resim_nets <- function(dat, at) {
   }
 
   # networkLite/tergmLite Method
-  if (dat$control$tgl == TRUE) {
+  if (dat$control$tergmLite == TRUE) {
     dat <- tergmLite::updateModelTermInputs(dat)
     dat$el[[1]] <- tergmLite::simulate_network(p = dat$p[[1]],
                                                el = dat$el[[1]],
@@ -133,7 +125,7 @@ resim_nets <- function(dat, at) {
 #'
 edges_correct <- function(dat, at) {
 
-  if (dat$control$depend == TRUE) {
+  if (dat$control$resimulate.network == TRUE) {
 
     if (dat$param$groups == 1) {
       old.num <- dat$epi$num[at - 1]
@@ -143,7 +135,7 @@ edges_correct <- function(dat, at) {
         log(new.num)
     }
     if (dat$param$groups == 2) {
-      if (dat$control$tgl == FALSE){
+      if (dat$control$tergmLite == FALSE){
         group <- idgroup(dat$nw)
       } else {
         group <- dat$attr$group

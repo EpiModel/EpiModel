@@ -33,13 +33,13 @@ initialize.net <- function(x, param, init, control, s) {
     nw <- simulate(x$fit, basis = x$fit$newnetwork,
                    control = control$set.control.ergm)
 
-    if (control$depend == TRUE) {
+    if (control$resimulate.network == TRUE) {
       if (class(x$fit) == "stergm") {
         nw <- network.collapse(nw, at = 1)
       }
       nw <- sim_nets(x, nw, nsteps = 1, control)
     }
-    if (control$depend == FALSE) {
+    if (control$resimulate.network == FALSE) {
       nw <- sim_nets(x, nw, nsteps = control$nsteps, control)
     }
     nw <- activate.vertices(nw, onset = 1, terminus = Inf)
@@ -61,13 +61,13 @@ initialize.net <- function(x, param, init, control, s) {
     }
 
     # Conversions for tergmLite
-    if (control$tgl == TRUE) {
+    if (control$tergmLite == TRUE) {
       dat <- tergmLite::init_tergmLite(dat)
     }
 
     # Initialization ----------------------------------------------------------
 
-    if (control$tgl == FALSE) {
+    if (control$tergmLite == FALSE) {
 
       ## Pull network val to attr
       form <- get_nwparam(dat)$formation
@@ -185,7 +185,7 @@ init_status.net <- function(dat) {
   dat$attr$status <- status
 
   ## Set up TEA status
-  if (dat$control$tgl == FALSE) {
+  if (dat$control$tergmLite == FALSE) {
     dat$nw <- activate.vertex.attribute(dat$nw,
                                         prefix = "testatus",
                                         value = status,

@@ -57,7 +57,7 @@ test_that("Serosorting model in open population", {
   nw <- set.vertex.attribute(nw, "status", "i", infIds)
   nw <- set.vertex.attribute(nw, "race", rbinom(n, 1, 0.5))
 
-  formation <- ~edges + nodefactor("status", base = 1) +
+  formation <- ~edges + nodefactor("status", levels = -1) +
                 nodematch("status") + nodematch("race")
   target.stats <- c(36, 55, 25, 18)
   coef.diss <- dissolution_coefs(dissolution = ~offset(edges), 50, d.rate = 0.01)
@@ -69,7 +69,7 @@ test_that("Serosorting model in open population", {
   control <- control.net(type = "SI", nsteps = 10, nsims = 1,
                          nwstats.formula = ~edges +
                                             meandeg +
-                                            nodefactor("status", base = 0) +
+                                            nodefactor("status", levels = NULL) +
                                             nodematch("status"),
                          save.network = FALSE,
                          verbose = FALSE)

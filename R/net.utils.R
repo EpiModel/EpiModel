@@ -142,7 +142,7 @@ check_bip_degdist <- function(num.g1, num.g2,
 #'
 #' Using the \code{color_tea} function with a \code{netsim} object requires that
 #' TEAs for disease status be used and that the \code{networkDynamic} object be
-#' saved in the output: both \code{tgl} and \code{save.network} must be
+#' saved in the output: both \code{tergmLite} and \code{save.network} must be
 #' set to \code{TRUE} in \code{\link{control.net}}.
 #'
 #' @seealso \code{\link{netsim}} and the \code{ndtv} package documentation.
@@ -798,7 +798,7 @@ update_nwattr <- function(nw, newNodes, rules, curr.tab, t1.tab) {
 #' often useful for summary statistics and modeling complex interactions between
 #' degree. Given a \code{network} class object, \code{net}, one way to look
 #' up the current degree is to get a summary of the ERGM term, \code{sociality},
-#' as in: \code{summary(net ~ sociality(base = 0))}. But that is computionally
+#' as in: \code{summary(net ~ sociality(nodes = NULL))}. But that is computationally
 #' inefficient for a number of reasons. This function provide a fast method
 #' for generating the vector of degree using a query of the edgelist. It is
 #' even faster if the parameter \code{x} is already transformed as an edgelist.
@@ -813,7 +813,7 @@ update_nwattr <- function(nw, newNodes, rules, curr.tab, t1.tab) {
 #' sim <- simulate(fit)
 #'
 #' # Slow ERGM-based method
-#' ergm.method <- unname(summary(sim ~ sociality(base = 0)))
+#' ergm.method <- unname(summary(sim ~ sociality(nodes = NULL)))
 #' ergm.method
 #'
 #' # Fast tabulate method with network object

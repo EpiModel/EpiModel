@@ -17,29 +17,17 @@ departures.net <- function(dat, at) {
   if (dat$param$vital == FALSE) {
     return(dat)
   }
-
-  # Variables ---------------------------------------------------------------
   type <- dat$control$type
 
-  #Book-keeping
-  idsDpt <- list()
-
   # Susceptible departures ------------------------------------------------------
-
-  # Initialize counts and pull rates
   nDepartures.sus <- 0
   idsElig.sus <- which(dat$attr$active == 1 & dat$attr$status == "s")
   nElig.sus <- length(idsElig.sus)
-
   if (nElig.sus > 0) {
-
-    # Departure rates by group
     rates.sus <- dat$param$ds.rate
-
-    # Stochastic exits
     vecDepartures.sus <- which(rbinom(nElig.sus, 1, rates.sus) == 1)
     if (length(vecDepartures.sus) > 0) {
-      idsDpt.sus <- idsDpt$sus <- idsElig.sus[vecDepartures.sus]
+      idsDpt.sus <- idsElig.sus[vecDepartures.sus]
       nDepartures.sus <- length(idsDpt.sus)
       dat$attr$active[idsDpt.sus] <- 0
       dat$attr$exitTime[idsDpt.sus] <- at
@@ -47,45 +35,30 @@ departures.net <- function(dat, at) {
   }
 
   # Infected departures ---------------------------------------------------------
-
-  # Initialize counts and query rates
   nDepartures.inf <- 0
   idsElig.inf <- which(dat$attr$active == 1 & dat$attr$status == "i")
   nElig.inf <- length(idsElig.inf)
-
   if (nElig.inf > 0) {
-
-    # Departure rates by group
     rates.inf <- dat$param$di.rate
-
-    # Stochastic exits
     vecDepartures.inf <- which(rbinom(nElig.inf, 1, rates.inf) == 1)
     if (length(vecDepartures.inf) > 0) {
-      idsDpt.inf <- idsDpt$inf <- idsElig.inf[vecDepartures.inf]
+      idsDpt.inf <- idsElig.inf[vecDepartures.inf]
       nDepartures.inf <- length(idsDpt.inf)
       dat$attr$active[idsDpt.inf] <- 0
       dat$attr$exitTime[idsDpt.inf] <- at
     }
   }
 
-
   # Recovered departures --------------------------------------------------------
   if (type == "SIR") {
-
-    # Initialize counts and query rates
     nDepartures.rec <- 0
     idsElig.rec <- which(dat$attr$active == 1 & dat$attr$status == "r")
     nElig.rec <- length(idsElig.rec)
-
     if (nElig.rec > 0) {
-
-      # Departure rates by group
       rates.rec <- dat$param$dr.rate
-
-      # Stochastic exits
       vecDepartures.rec <- which(rbinom(nElig.rec, 1, rates.rec) == 1)
       if (length(vecDepartures.rec) > 0) {
-        idsDpt.rec <- idsDpt$rec <- idsElig.rec[vecDepartures.rec]
+        idsDpt.rec <- idsElig.rec[vecDepartures.rec]
         nDepartures.rec <- length(idsDpt.rec)
         dat$attr$active[idsDpt.rec] <- 0
         dat$attr$exitTime[idsDpt.rec] <- at
@@ -93,10 +66,7 @@ departures.net <- function(dat, at) {
     }
   }
 
-
   # Output ------------------------------------------------------------------
-
-  dat$nw.update$idsDpt <- idsDpt
 
   if (at == 2) {
     dat$epi$ds.flow <- c(0, nDepartures.sus)
@@ -140,17 +110,57 @@ arrivals.net <- function(dat, at) {
   # Variables ---------------------------------------------------------------
   a.rate <- dat$param$a.rate
   nOld <- dat$epi$num[at - 1]
-  nCurr <- length(which(dat$attr$active == 1))
+  tergmLite <- dat$control$tergmLite
+  nCurr <- length(dat$attr$active)
 
   nArrivals <- 0
 
   # Add Nodes ---------------------------------------------------------------
   if (nOld > 0) {
     nArrivals <- sum(rbinom(nOld, 1, a.rate))
+    if (nArrivals > 0) {
+      if (tergmLite == FALSE) {
+        fterms <- dat$temp$fterms
+        if (!("status" %in% fterms)) {
+          dat$attr$status <- c(dat$attr$status, rep("s", nArrivals))
+        }
+        dat$attr$active <- c(dat$attr$active, rep(1, nArrivals))
+        dat$attr$infTime <- c(dat$attr$infTime, rep(NA, nArrivals))
+        dat$attr$entrTime <- c(dat$attr$entrTime, rep(at, nArrivals))
+        dat$attr$exitTime <- c(dat$attr$exitTime, rep(NA, nArrivals))
+
+        ## Handles infTime when incoming nodes are infected
+        newNodes <- c((nCurr+1):(nCurr+nArrivals))
+        newNodesInf <- intersect(newNodes, which(dat$attr$status == "i"))
+        dat$attr$infTime[newNodesInf] <- at
+
+        if (length(unique(sapply(dat$attr, length))) != 1 & is.null(fterms)) {
+          stop("Attribute list of unequal length. Check arrivals.net module.")
+        }
+      }
+
+      if (tergmLite == TRUE) {
+        dat$attr$status <- c(dat$attr$status, rep("s", nArrivals))
+        dat$attr$active <- c(dat$attr$active, rep(1, nArrivals))
+        dat$attr$infTime <- c(dat$attr$infTime, rep(NA, nArrivals))
+        dat$attr$entrTime <- c(dat$attr$entrTime, rep(at, nArrivals))
+        dat$attr$exitTime <- c(dat$attr$exitTime, rep(NA, nArrivals))
+
+        ## Handles infTime when incoming nodes are infected
+        newNodes <- c((nCurr+1):(nCurr+nArrivals))
+        newNodesInf <- intersect(newNodes, which(dat$attr$status == "i"))
+        dat$attr$infTime[newNodesInf] <- at
+
+        if (length(unique(sapply(dat$attr, length))) != 1) {
+          stop("Attribute list of unequal length. Check arrivals.net module.")
+        }
+      }
+    }
   }
 
+
+
   # Output ------------------------------------------------------------------
-  dat$nw.update$arr$nArrivals <- nArrivals
   if (at == 2) {
     dat$epi$a.flow <- c(0, nArrivals)
   } else {
@@ -182,32 +192,25 @@ departures.2g.net <- function(dat, at) {
   }
 
   # Variables ---------------------------------------------------------------
-  if (dat$control$tgl == FALSE){
+  if (dat$control$tergmLite == FALSE){
     group <- get.vertex.attribute(dat$nw, "group")
   } else {
     group <- dat$attr$group
   }
 
-  idsDpt <- list()
-
-  # Bookkeeping
   type <- dat$control$type
 
   # Susceptible departures ------------------------------------------------------
-
-  # Initialize counts and pull rates
   nDepartures.sus <- nDeparturesG2.sus <- 0
   idsElig.sus <- which(dat$attr$active == 1 & dat$attr$status == "s")
   nElig.sus <- length(idsElig.sus)
   if (nElig.sus > 0) {
-    # Departure rates by group
     gElig.sus <- group[idsElig.sus]
     rates.sus <- c(dat$param$ds.rate, dat$param$ds.rate.g2)
     ratesElig.sus <- rates.sus[gElig.sus]
-    # Stochastic exits
     vecDepartures.sus <- which(rbinom(nElig.sus, 1, ratesElig.sus) == 1)
     if (length(vecDepartures.sus) > 0) {
-      idsDpt.sus <- idsDpt$sus <- idsElig.sus[vecDepartures.sus]
+      idsDpt.sus <- idsElig.sus[vecDepartures.sus]
       nDepartures.sus <- sum(group[idsDpt.sus] == 1)
       nDeparturesG2.sus <- sum(group[idsDpt.sus] == 2)
       dat$attr$active[idsDpt.sus] <- 0
@@ -216,20 +219,16 @@ departures.2g.net <- function(dat, at) {
   }
 
   # Infected departures ---------------------------------------------------------
-  # Initialize counts and query rates
   nDepartures.inf <- nDeparturesG2.inf <- 0
   idsElig.inf <- which(dat$attr$active == 1 & dat$attr$status == "i")
   nElig.inf <- length(idsElig.inf)
-
   if (nElig.inf > 0) {
-    # Departure rates by mode
     gElig.inf <- group[idsElig.inf]
     rates.inf <- c(dat$param$di.rate, dat$param$di.rate.g2)
     ratesElig.inf <- rates.inf[gElig.inf]
-    # Stochastic exits
     vecDepartures.inf <- which(rbinom(nElig.inf, 1, ratesElig.inf) == 1)
     if (length(vecDepartures.inf) > 0) {
-      idsDpt.inf <- idsDpt$inf <- idsElig.inf[vecDepartures.inf]
+      idsDpt.inf <- idsElig.inf[vecDepartures.inf]
       nDepartures.inf <- sum(group[idsDpt.inf] == 1)
       nDeparturesG2.inf <- sum(group[idsDpt.inf] == 2)
       dat$attr$active[idsDpt.inf] <- 0
@@ -239,19 +238,16 @@ departures.2g.net <- function(dat, at) {
 
   # Recovered departures --------------------------------------------------------
   if (type == "SIR") {
-    # Initialize counts and query rates
     nDepartures.rec <- nDeparturesG2.rec <- 0
     idsElig.rec <- which(dat$attr$active == 1 & dat$attr$status == "r")
     nElig.rec <- length(idsElig.rec)
     if (nElig.rec > 0) {
-      # Departure rates by group
       gElig.rec <- group[idsElig.rec]
       rates.rec <- c(dat$param$dr.rate, dat$param$dr.rate.g2)
       ratesElig.rec <- rates.rec[gElig.rec]
-      # Stochastic exits
       vecDepartures.rec <- which(rbinom(nElig.rec, 1, ratesElig.rec) == 1)
       if (length(vecDepartures.rec) > 0) {
-        idsDpt.rec <- idsDpt$rec <- idsElig.rec[vecDepartures.rec]
+        idsDpt.rec <- idsElig.rec[vecDepartures.rec]
         nDepartures.rec <- sum(group[idsDpt.rec] == 1)
         nDeparturesG2.rec <- sum(group[idsDpt.rec] == 2)
         dat$attr$active[idsDpt.rec] <- 0
@@ -261,8 +257,6 @@ departures.2g.net <- function(dat, at) {
   }
 
   # Output ------------------------------------------------------------------
-  dat$nw.update$idsDpt <- idsDpt
-
   if (at == 2) {
     dat$epi$ds.flow <- c(0, nDepartures.sus)
     dat$epi$di.flow <- c(0, nDepartures.inf)
@@ -304,7 +298,6 @@ departures.2g.net <- function(dat, at) {
 #' @export
 #' @keywords netMod internal
 #'
-
 arrivals.2g.net <- function(dat, at) {
 
   # Conditions --------------------------------------------------------------
@@ -318,10 +311,10 @@ arrivals.2g.net <- function(dat, at) {
   nOld <- dat$epi$num[at - 1]
   nOldG2 <- dat$epi$num.g2[at - 1]
   a.rand <- dat$control$a.rand
+  tergmLite <- dat$control$tergmLite
 
-  nArrivals <- nArrivalsG2 <- 0
+  totArr <- nArrivals <- nArrivalsG2 <- 0
   newNodes <- newNodesG2 <- NULL
-  nCurr <- length(which(dat$attr$active == 1))
 
   # Add Nodes ---------------------------------------------------------------
   if (nOld > 0) {
@@ -329,14 +322,61 @@ arrivals.2g.net <- function(dat, at) {
     if (is.na(a.rate.g2)) {
       nArrivals <- sum(rbinom(nOld, 1, a.rate))
       nArrivalsG2 <- sum(rbinom(nOld, 1, a.rate))
+      totArr <- nArrivals + nArrivalsG2
     } else {
       nArrivals <- sum(rbinom(nOld, 1, a.rate))
       nArrivalsG2 <- sum(rbinom(nOldG2, 1, a.rate.g2))
+      totArr <- nArrivals + nArrivalsG2
+    }
+
+    if (totArr > 0) {
+      if (tergmLite == FALSE) {
+        nCurr <- length(dat$attr$active)
+        newNodes <- (nCurr + 1):(nCurr + totArr)
+        fterms <- dat$temp$fterms
+        if (!("status" %in% fterms)) {
+          dat$attr$status <- c(dat$attr$status, rep("s", totArr))
+        }
+        dat$attr$group <- c(dat$attr$group, c(rep(1, nArrivals),
+                                              rep(2, nArrivalsG2)))
+        dat$attr$active <- c(dat$attr$active, rep(1, totArr))
+        dat$attr$infTime <- c(dat$attr$infTime, rep(NA, totArr))
+        dat$attr$entrTime <- c(dat$attr$entrTime, rep(at, totArr))
+        dat$attr$exitTime <- c(dat$attr$exitTime, rep(NA, totArr))
+
+        ## Handles infTime when incoming nodes are infected
+        newNodesInf <- intersect(newNodes, which(dat$attr$status == "i"))
+        dat$attr$infTime[newNodesInf] <- at
+
+        if (length(unique(sapply(dat$attr, length))) != 1) {
+          stop("Attribute list of unequal length. Check arrivals.net module.")
+        }
+      }
+
+      if (tergmLite == TRUE) {
+        nCurr <- length(which(dat$attr$active == 1))
+        newNodes <- (nCurr + 1):(nCurr + totArr)
+
+        dat$attr$group <- c(dat$attr$group, c(rep(1, nArrivals),
+                                              rep(2, nArrivalsG2)))
+        dat$attr$status <- c(dat$attr$status, rep("s", sum(totArr)))
+        dat$attr$active <- c(dat$attr$active, rep(1, sum(totArr)))
+        dat$attr$infTime <- c(dat$attr$infTime, rep(NA, sum(totArr)))
+        dat$attr$entrTime <- c(dat$attr$entrTime, rep(at, sum(totArr)))
+        dat$attr$exitTime <- c(dat$attr$exitTime, rep(NA, sum(totArr)))
+
+        ## Handles infTime when incoming nodes are infected
+        newNodesInf <- intersect(newNodes, which(dat$attr$status == "i"))
+        dat$attr$infTime[newNodesInf] <- at
+
+        if (length(unique(sapply(dat$attr, length))) != 1) {
+          stop("Attribute list of unequal length. Check arrivals.net module.")
+        }
+      }
     }
   }
 
   # Output ------------------------------------------------------------------
-  dat$nw.update$arr$nArrivals <- c(nArrivals, nArrivalsG2)
   if (at == 2) {
     dat$epi$a.flow <- c(0, nArrivals)
     dat$epi$a.flow.g2 <- c(0, nArrivalsG2)
