@@ -638,10 +638,10 @@ crosscheck.net <- function(x, param, init, control) {
         }
       }
 
-      bip <- length(unique(get.vertex.attribute(nw, "group")))
-      bip <- ifelse(bip == 2, TRUE, FALSE)
+      nGroups <- length(unique(get.vertex.attribute(nw, "group")))
+      nGroups <- ifelse(nGroups == 2, 2, 1)
 
-      if (bip == TRUE & is.null(control$pid.prefix)) {
+      if (nGroups == 2 & is.null(control$pid.prefix)) {
         control$pid.prefix <- c("g1.", "g2.")
       }
 
@@ -693,7 +693,7 @@ crosscheck.net <- function(x, param, init, control) {
       }
 
       # Two-group model checks for inital conditions
-      if (bip == TRUE & is.null(init$i.num.g2) &
+      if (nGroups == 2 & is.null(init$i.num.g2) &
           is.null(init$status.vector) & statOnNw == FALSE) {
         stop("Specify i.num.g2 for two-group model simulations", call. = FALSE)
       }
@@ -703,7 +703,7 @@ crosscheck.net <- function(x, param, init, control) {
         if (is.null(param$rec.rate)) {
           stop("Specify rec.rate in param.net", call. = FALSE)
         }
-        if (bip == TRUE & is.null(param$rec.rate.g2)) {
+        if (nGroups == 2 & is.null(param$rec.rate.g2)) {
           stop("Specify rec.rate.g2 in param.net", call. = FALSE)
         }
       }
@@ -711,14 +711,14 @@ crosscheck.net <- function(x, param, init, control) {
         if (is.null(init$r.num) & is.null(init$status.vector) & statOnNw == FALSE) {
           stop("Specify r.num in init.net", call. = FALSE)
         }
-        if (bip == TRUE & is.null(init$r.num.g2) & is.null(init$status.vector) &
+        if (nGroups == 2 & is.null(init$r.num.g2) & is.null(init$status.vector) &
             statOnNw == FALSE) {
           stop("Specify r.num.g2 in init.net", call. = FALSE)
         }
       }
 
       # Check demographic parameters for two-group models
-      if (bip == TRUE & param$vital == TRUE) {
+      if (nGroups == 2 & param$vital == TRUE) {
         if (is.null(param$a.rate.g2)) {
           stop("Specify a.rate.g2 in param.net", call. = FALSE)
         }
