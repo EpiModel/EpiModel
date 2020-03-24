@@ -51,11 +51,17 @@ nwupdate.net <- function(dat, at) {
         }
 
         # Save any val on attr
-        dat <- copy_toall_attr(dat, at, fterms)
+        if (!is.null(fterms)) {
+          dat <- copy_toall_attr(dat, at, fterms)
+          if (length(unique(sapply(dat$attr, length))) != 1) {
+            stop("Attribute list of unequal length. Check arrivals.net module.")
+          }
+        }
         dat$nw <- activate.vertex.attribute(dat$nw, prefix = "testatus",
                                             value = dat$attr$status[newNodes],
                                             onset = at, terminus = Inf,
                                             v = newNodes)
+
       }
     }
 

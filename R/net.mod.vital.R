@@ -121,7 +121,6 @@ arrivals.net <- function(dat, at) {
     if (nArrivals > 0) {
       if (tergmLite == FALSE) {
         fterms <- dat$temp$fterms
-        #At this point, network attributes would be read and then copied to dat$attr
         if (!("status" %in% fterms)) {
           dat$attr$status <- c(dat$attr$status, rep("s", nArrivals))
         }
@@ -135,7 +134,7 @@ arrivals.net <- function(dat, at) {
         newNodesInf <- intersect(newNodes, which(dat$attr$status == "i"))
         dat$attr$infTime[newNodesInf] <- at
 
-        if (length(unique(sapply(dat$attr, length))) != 1) {
+        if (length(unique(sapply(dat$attr, length))) != 1 & is.null(fterms)) {
           stop("Attribute list of unequal length. Check arrivals.net module.")
         }
       }
