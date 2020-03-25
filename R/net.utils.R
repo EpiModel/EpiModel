@@ -188,7 +188,7 @@ color_tea <- function(nd, old.var = "testatus", old.sus = "s", old.inf = "i",
 #'
 #' @param dat Master data object passed through \code{netsim} simulations.
 #' @param at Current time step.
-#' @param fterms Vector of attributes used in formation formula, usually as
+#' @param nwterms Vector of attributes on network object, usually as
 #'        output of \code{\link{get_formula_term_attr}}.
 #'
 #' @seealso \code{\link{get_formula_term_attr}}, \code{\link{get_attr_prop}},
@@ -196,9 +196,9 @@ color_tea <- function(nd, old.var = "testatus", old.sus = "s", old.inf = "i",
 #' @keywords netUtils internal
 #' @export
 #'
-copy_toall_attr <- function(dat, at, fterms) {
+copy_toall_attr <- function(dat, at, nwterms) {
   otha <- names(dat$nw$val[[1]])
-  otha <- otha[which(otha %in% fterms)]
+  otha <- otha[which(otha %in% nwterms)]
   if (length(otha) > 0) {
     for (i in seq_along(otha)) {
       va <- get.vertex.attribute(dat$nw, otha[i])
@@ -584,7 +584,7 @@ edgelist_meanage <- function(x, el) {
 #'
 #' @param nw The \code{networkDynamic} object contained in the \code{netsim}
 #'        simulation.
-#' @param fterms Vector of attributes used in formation formula, usually as
+#' @param nwterms Vector of attributes on network object, usually as
 #'        output of \code{\link{get_formula_term_attr}}.
 #' @param only.formula Limit the tables to those terms only in \code{fterms},
 #'        otherwise output proportions for all attributes on the network object.
@@ -594,13 +594,13 @@ edgelist_meanage <- function(x, el) {
 #' @keywords netUtils internal
 #' @export
 #'
-get_attr_prop <- function(nw, fterms, only.formula = TRUE) {
-  if (is.null(fterms)) {
+get_attr_prop <- function(nw, nwterms, only.formula = TRUE) {
+  if (is.null(nwterms)) {
     return(NULL)
   }
   nwVal <- names(nw$val[[1]])
   if (only.formula == TRUE) {
-    nwVal <- nwVal[which(nwVal %in% fterms)]
+    nwVal <- nwVal[which(nwVal %in% nwterms)]
   }
   out <- list()
   for (i in 1:length(nwVal)) {
@@ -635,6 +635,34 @@ get_formula_term_attr <- function(form, nw) {
   matches <- colSums(matches)
 
   out <- names(matches)[which(matches == 1)]
+  if (length(out) == 0) {
+    return(NULL)
+  } else {
+    return(out)
+  }
+
+}
+
+#' @title Outputs ERGM Formula Attributes into a Character Vector
+#'
+#' @description Given a simulated network, outputs into
+#'              a character vector of vertex attributes to be used in \code{netsim}
+#'              simulations.
+#'
+#' @param nw a network object
+#'
+#' @export
+#'
+get_network_term_attr <- function(nw) {
+
+  nw_attr <- names(nw$val[[1]])
+  nw_attr <- setdiff(nw_attr, c("active", "vertex.names", "na"))
+
+  if (length(nw_attr) == 0) {
+    return(NULL)
+  }
+
+  out <- nw_attr
   if (length(out) == 0) {
     return(NULL)
   } else {

@@ -43,16 +43,16 @@ nwupdate.net <- function(dat, at) {
         }
 
         # Set attributes on nw
-        fterms <- dat$temp$fterms
-        curr.tab <- get_attr_prop(dat$nw, fterms)
+        nwterms <- dat$temp$nwterms
+        curr.tab <- get_attr_prop(dat$nw, nwterms)
         if (length(curr.tab) > 0) {
           dat$nw <- update_nwattr(dat$nw, newNodes, dat$control$attr.rules,
                                   curr.tab, dat$temp$t1.tab)
         }
 
         # Save any val on attr
-        if (!is.null(fterms)) {
-          dat <- copy_toall_attr(dat, at, fterms)
+        if (!is.null(nwterms)) {
+          dat <- copy_toall_attr(dat, at, nwterms)
           if (length(unique(sapply(dat$attr, length))) != 1) {
             stop("Attribute list of unequal length. Check arrivals.net module.")
           }

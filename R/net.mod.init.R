@@ -52,6 +52,20 @@ initialize.net <- function(x, param, init, control, s) {
     dat$attr$entrTime <- rep(1, num)
     dat$attr$exitTime <- rep(NA, num)
 
+    # Network Attributes ------------------------------------------------------
+    ## Pull network val to attr
+    #form <- get_nwparam(dat)$formation
+    #fterms <- get_formula_term_attr(form, nw)
+
+    nwterms <- get_network_term_attr(nw)
+    dat <- copy_toall_attr(dat, at = 1, nwterms)
+
+    ## Store current proportions of attr
+    #dat$temp$fterms <- fterms
+    #dat$temp$t1.tab <- get_attr_prop(dat$nw, fterms)
+    dat$temp$nwterms <- nwterms
+    dat$temp$t2.tab <- get_attr_prop(dat$nw, nwterms)
+
     # Network Parameters ------------------------------------------------------
     dat$nwparam <- list(x[-which(names(x) == "fit")])
     groups <- length(unique(get.vertex.attribute(nw, "group")))
@@ -69,14 +83,7 @@ initialize.net <- function(x, param, init, control, s) {
 
     if (control$tergmLite == FALSE) {
 
-      ## Pull network val to attr
-      form <- get_nwparam(dat)$formation
-      fterms <- get_formula_term_attr(form, nw)
-      dat <- copy_toall_attr(dat, at = 1, fterms)
 
-      ## Store current proportions of attr
-      dat$temp$fterms <- fterms
-      dat$temp$t1.tab <- get_attr_prop(dat$nw, fterms)
     }
 
     ## Infection Status and Time
@@ -148,7 +155,7 @@ init_status.net <- function(dat) {
   status.vector <- dat$init$status.vector
   num <- sum(dat$attr$active == 1)
   #TODO: check that this works for tergmLite
-  statOnNw <- "status" %in% dat$temp$fterms
+  statOnNw <- "status" %in% dat$temp$nwterms
 
   groups <- dat$param$groups
   if (groups == 2) {

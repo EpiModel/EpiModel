@@ -120,8 +120,8 @@ arrivals.net <- function(dat, at) {
     nArrivals <- sum(rbinom(nOld, 1, a.rate))
     if (nArrivals > 0) {
       if (tergmLite == FALSE) {
-        fterms <- dat$temp$fterms
-        if (!("status" %in% fterms)) {
+        nwterms <- dat$temp$nwterms
+        if (!("status" %in% nwterms)) {
           dat$attr$status <- c(dat$attr$status, rep("s", nArrivals))
         }
         dat$attr$active <- c(dat$attr$active, rep(1, nArrivals))
@@ -134,7 +134,7 @@ arrivals.net <- function(dat, at) {
         newNodesInf <- intersect(newNodes, which(dat$attr$status == "i"))
         dat$attr$infTime[newNodesInf] <- at
 
-        if (length(unique(sapply(dat$attr, length))) != 1 & is.null(fterms)) {
+        if (length(unique(sapply(dat$attr, length))) != 1 & is.null(nwterms)) {
           stop("Attribute list of unequal length. Check arrivals.net module.")
         }
       }
@@ -333,8 +333,8 @@ arrivals.2g.net <- function(dat, at) {
       if (tergmLite == FALSE) {
         nCurr <- length(dat$attr$active)
         newNodes <- (nCurr + 1):(nCurr + totArr)
-        fterms <- dat$temp$fterms
-        if (!("status" %in% fterms)) {
+        nwterms <- dat$temp$nwterms
+        if (!("status" %in% nwterms)) {
           dat$attr$status <- c(dat$attr$status, rep("s", totArr))
         }
         dat$attr$group <- c(dat$attr$group, c(rep(1, nArrivals),
