@@ -586,7 +586,7 @@ edgelist_meanage <- function(x, el) {
 #'        simulation.
 #' @param nwterms Vector of attributes on network object, usually as
 #'        output of \code{\link{get_formula_term_attr}}.
-#' @param only.formula Limit the tables to those terms only in formation,
+#' @param only.formula Limit the tables to those terms only in formation model,
 #'        otherwise output proportions for all attributes on the network object.
 #'
 #' @seealso \code{\link{get_formula_term_attr}}, \code{\link{copy_toall_attr}},
@@ -598,16 +598,31 @@ get_attr_prop <- function(nw, nwterms, only.formula = TRUE) {
   if (is.null(nwterms)) {
     return(NULL)
   }
-  nwVal <- names(nw$val[[1]])
-  if (only.formula == TRUE) {
-    nwVal <- nwVal[which(nwVal %in% nwterms)]
+  if ( tergmLite == FALSE) {
+    nwVal <- names(nw$val[[1]])
+    if (only.formula == TRUE) {
+      nwVal <- nwVal[which(nwVal %in% fterms)]
+    }
+    out <- list()
+    for (i in 1:length(nwVal)) {
+      tab <- prop.table(table(nw %v% nwVal[i]))
+      out[[i]] <- tab
+    }
+    names(out) <- nwVal
   }
-  out <- list()
-  for (i in 1:length(nwVal)) {
-    tab <- prop.table(table(nw %v% nwVal[i]))
-    out[[i]] <- tab
+
+  if (tergmLite == TRUE) {
+    nwVal <- names(nw$val[[1]])
+    if (only.formula == TRUE) {
+      nwVal <- nwVal[which(nwVal %in% fterms)]
+    }
+    out <- list()
+    for (i in 1:length(nwVal)) {
+      tab <- prop.table(table(nw %v% nwVal[i]))
+      out[[i]] <- tab
+    }
+    names(out) <- nwVal
   }
-  names(out) <- nwVal
   return(out)
 }
 
