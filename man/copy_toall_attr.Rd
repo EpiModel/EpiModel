@@ -4,14 +4,14 @@
 \alias{copy_toall_attr}
 \title{Copies Vertex Attributes in Formation Formula to attr List}
 \usage{
-copy_toall_attr(dat, at, fterms)
+copy_toall_attr(dat, at, nwterms)
 }
 \arguments{
 \item{dat}{Master data object passed through \code{netsim} simulations.}
 
 \item{at}{Current time step.}
 
-\item{fterms}{Vector of attributes used in formation formula, usually as
+\item{nwterms}{Vector of attributes on network object, usually as
 output of \code{\link{get_formula_term_attr}}.}
 }
 \description{

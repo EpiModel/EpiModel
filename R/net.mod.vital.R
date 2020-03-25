@@ -347,10 +347,6 @@ arrivals.2g.net <- function(dat, at) {
         ## Handles infTime when incoming nodes are infected
         newNodesInf <- intersect(newNodes, which(dat$attr$status == "i"))
         dat$attr$infTime[newNodesInf] <- at
-
-        if (length(unique(sapply(dat$attr, length))) != 1) {
-          stop("Attribute list of unequal length. Check arrivals.net module.")
-        }
       }
 
       if (tergmLite == TRUE) {

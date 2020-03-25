@@ -586,7 +586,7 @@ edgelist_meanage <- function(x, el) {
 #'        simulation.
 #' @param nwterms Vector of attributes on network object, usually as
 #'        output of \code{\link{get_formula_term_attr}}.
-#' @param only.formula Limit the tables to those terms only in \code{fterms},
+#' @param only.formula Limit the tables to those terms only in formation,
 #'        otherwise output proportions for all attributes on the network object.
 #'
 #' @seealso \code{\link{get_formula_term_attr}}, \code{\link{copy_toall_attr}},
