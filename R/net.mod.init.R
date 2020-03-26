@@ -45,6 +45,14 @@ initialize.net <- function(x, param, init, control, s) {
     nw <- activate.vertices(nw, onset = 1, terminus = Inf)
     dat$nw <- nw
 
+    # Network Parameters ------------------------------------------------------
+    dat$nwparam <- list(x[-which(names(x) == "fit")])
+    groups <- length(unique(get.vertex.attribute(nw, "group")))
+    dat$param$groups <- groups
+    if (groups == 2){
+      dat$attr$group <- get.vertex.attribute(dat$nw, "group")
+    }
+
 
     # Initial Attributes ------------------------------------------------------
     num <- network.size(nw)
@@ -54,25 +62,16 @@ initialize.net <- function(x, param, init, control, s) {
 
     # Network Attributes ------------------------------------------------------
     ## Pull network val to attr
-    #form <- get_nwparam(dat)$formation
-    #fterms <- get_formula_term_attr(form, nw)
+    form <- get_nwparam(dat)$formation
+    fterms <- get_formula_term_attr(form, nw)
 
     nwterms <- get_network_term_attr(nw)
     dat <- copy_toall_attr(dat, at = 1, nwterms)
 
     ## Store current proportions of attr
-    #dat$temp$fterms <- fterms
-    #dat$temp$t1.tab <- get_attr_prop(dat$nw, fterms)
+    dat$temp$fterms <- fterms
     dat$temp$nwterms <- nwterms
-    dat$temp$t2.tab <- get_attr_prop(dat$nw, nwterms)
-
-    # Network Parameters ------------------------------------------------------
-    dat$nwparam <- list(x[-which(names(x) == "fit")])
-    groups <- length(unique(get.vertex.attribute(nw, "group")))
-    dat$param$groups <- groups
-    if (groups == 2){
-      dat$attr$group <- get.vertex.attribute(dat$nw, "group")
-    }
+    dat$temp$t2.tab <- get_attr_prop(dat, nwterms)
 
     # Conversions for tergmLite
     if (control$tergmLite == TRUE) {
@@ -80,11 +79,6 @@ initialize.net <- function(x, param, init, control, s) {
     }
 
     # Initialization ----------------------------------------------------------
-
-    if (control$tergmLite == FALSE) {
-
-
-    }
 
     ## Infection Status and Time
     dat <- init_status.net(dat)
