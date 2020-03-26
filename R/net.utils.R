@@ -587,19 +587,26 @@ edgelist_meanage <- function(x, el) {
 #' @param nwterms Vector of attributes on network object, usually as
 #'        output of \code{\link{get_formula_term_attr}}.
 #' @param only.formula Limit the tables to those terms only in formation model,
-#'        otherwise output proportions for all attributes on the network object.
+#'        through \code{fterms}, otherwise output proportions for all attributes
+#'        on the network object.
 #'
 #' @seealso \code{\link{get_formula_term_attr}}, \code{\link{copy_toall_attr}},
 #'          \code{\link{update_nwattr}}.
 #' @keywords netUtils internal
 #' @export
 #'
-get_attr_prop <- function(nw, nwterms, only.formula = TRUE) {
+get_attr_prop <- function(dat, nwterms, only.formula = FALSE) {
   if (is.null(nwterms)) {
     return(NULL)
   }
+
+  fterms <- dat$temp$fterms
+  tergmLite <- dat$control$tergmLite
+  nw <- dat$nw
+
   if ( tergmLite == FALSE) {
     nwVal <- names(nw$val[[1]])
+    nwVal <- setdiff(nwVal, c("na", "vertex.names"))
     if (only.formula == TRUE) {
       nwVal <- nwVal[which(nwVal %in% fterms)]
     }
@@ -612,13 +619,14 @@ get_attr_prop <- function(nw, nwterms, only.formula = TRUE) {
   }
 
   if (tergmLite == TRUE) {
-    nwVal <- names(nw$val[[1]])
+    nwVal <- names(dat$attr)
+    nwVal <- setdiff(nwVal, c("active", "entrTime", "exitTime"))
     if (only.formula == TRUE) {
       nwVal <- nwVal[which(nwVal %in% fterms)]
     }
     out <- list()
     for (i in 1:length(nwVal)) {
-      tab <- prop.table(table(nw %v% nwVal[i]))
+      tab <- prop.table(table(dat$attr[[nwVal[i]]]))
       out[[i]] <- tab
     }
     names(out) <- nwVal

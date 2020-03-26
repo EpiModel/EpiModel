@@ -4,17 +4,18 @@
 \alias{get_attr_prop}
 \title{Proportional Table of Vertex Attributes}
 \usage{
-get_attr_prop(nw, nwterms, only.formula = TRUE)
+get_attr_prop(dat, nwterms, only.formula = FALSE)
 }
 \arguments{
-\item{nw}{The \code{networkDynamic} object contained in the \code{netsim}
-simulation.}
-
 \item{nwterms}{Vector of attributes on network object, usually as
 output of \code{\link{get_formula_term_attr}}.}
 
-\item{only.formula}{Limit the tables to those terms only in formation,
-otherwise output proportions for all attributes on the network object.}
+\item{only.formula}{Limit the tables to those terms only in formation model,
+through \code{fterms}, otherwise output proportions for all attributes
+on the network object.}
+
+\item{nw}{The \code{networkDynamic} object contained in the \code{netsim}
+simulation.}
 }
 \description{
 Calculates the proportional distribution of each vertex attribute

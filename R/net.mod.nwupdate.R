@@ -44,10 +44,10 @@ nwupdate.net <- function(dat, at) {
 
         # Set attributes on nw
         nwterms <- dat$temp$nwterms
-        curr.tab <- get_attr_prop(dat$nw, nwterms)
+        curr.tab <- get_attr_prop(dat, nwterms)
         if (length(curr.tab) > 0) {
           dat$nw <- update_nwattr(dat$nw, newNodes, dat$control$attr.rules,
-                                  curr.tab, dat$temp$t1.tab)
+                                  curr.tab, dat$temp$t2.tab)
         }
 
         # Save any val on attr
