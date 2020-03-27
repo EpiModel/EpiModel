@@ -610,9 +610,6 @@ get_attr_prop <- function(dat, nwterms) {
   if (tergmLite == TRUE) {
     nwVal <- names(dat$attr)
     nwVal <- setdiff(nwVal, c("active", "entrTime", "exitTime"))
-    if (only.formula == TRUE) {
-      nwVal <- nwVal[which(nwVal %in% fterms)]
-    }
     out <- list()
     for (i in 1:length(nwVal)) {
       tab <- prop.table(table(dat$attr[[nwVal[i]]]))
