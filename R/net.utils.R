@@ -187,77 +187,22 @@ color_tea <- function(nd, old.var = "testatus", old.sus = "s", old.inf = "i",
 #'              master attr list in the dat data object.
 #'
 #' @param dat Master data object passed through \code{netsim} simulations.
-#' @param at Current time step.
-#' @param nwterms Vector of attributes on network object, usually as
-#'        output of \code{\link{get_formula_term_attr}}.
-#'
+#' @param at Current time step.#'
 #' @seealso \code{\link{get_formula_term_attr}}, \code{\link{get_attr_prop}},
 #'          \code{\link{update_nwattr}}.
 #' @keywords netUtils internal
 #' @export
 #'
-copy_toall_attr <- function(dat, at, nwterms) {
-
-  if (at == 1) {
-    otha <- names(dat$nw$val[[1]])
-    otha <- otha[which(otha %in% nwterms)]
-    if (length(otha) > 0) {
-      for (i in seq_along(otha)) {
-        va <- get.vertex.attribute(dat$nw, otha[i])
-        dat$attr[[otha[i]]] <- va
+copy_toall_attr <- function(dat, at) {
+  otha <- names(dat$nw$val[[1]])
+  if (length(otha) > 0) {
+    for (i in seq_along(otha)) {
+      va <- get.vertex.attribute(dat$nw, otha[i])
+      dat$attr[[otha[i]]] <- va
+      if (at == 1) {
         if (!is.null(dat$control$epi.by) && dat$control$epi.by == otha[i]) {
           dat$temp$epi.by.vals <- unique(va)
         }
-      }
-    }
-
-  }
-
-
-  if (at > 1) {
-    if (dat$control$tergmLite == FALSE) {
-      otha <- names(dat$nw$val[[1]])
-      otha <- otha[which(otha %in% nwterms)]
-      if (length(otha) > 0) {
-        for (i in seq_along(otha)) {
-          va <- get.vertex.attribute(dat$nw, otha[i])
-          dat$attr[[otha[i]]] <- va
-        }
-      }
-    }
-
-    if (dat$control$tergmLite == TRUE) {
-      otha <- names(dat$attr)
-      otha <- otha[which(otha %in% nwterms)]
-      otha <- setdiff(otha, c("active", "entrTime", "exitTime", "group"))
-      if (length(otha) > 0) {
-
-        nArr <- sum(c(dat$epi$a.flow[at], dat$epi$a.flow.g2[at]), na.rm = TRUE)
-        curr.tab <- get_attr_prop(dat, nwterms)
-        t2.tab <- dat$temp$t2.tab
-
-        if (dat$control$attr.rules == "current") {
-          for (i in seq_along(otha)) {
-            nattr <- sample(names(curr.tab[[otha[i]]]),
-                            size = nArr,
-                            replace = TRUE,
-                            prob = curr.tab[[otha[i]]])
-            dat$attr[[otha[i]]] <- c(dat$attr[[otha[i]]], nattr)
-          }
-        }
-
-        if (dat$control$attr.rules == "t1") {
-          for (i in seq_along(otha)) {
-            nattr <- sample(names(t2.tab[[otha[i]]]),
-                            size = nArr,
-                            replace = TRUE,
-                            prob = t2.tab[[otha[i]]])
-            dat$attr[[otha[i]]] <- c(dat$attr[[otha[i]]], nattr)
-          }
-        }
-
-
-
       }
     }
   }
