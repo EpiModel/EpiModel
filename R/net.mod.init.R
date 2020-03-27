@@ -62,16 +62,12 @@ initialize.net <- function(x, param, init, control, s) {
 
     # Network Attributes ------------------------------------------------------
     ## Pull network val to attr
-    form <- get_nwparam(dat)$formation
-    fterms <- get_formula_term_attr(form, nw)
-
     nwterms <- get_network_term_attr(nw)
     dat <- copy_toall_attr(dat, at = 1, nwterms)
 
     ## Store current proportions of attr
-    dat$temp$fterms <- fterms
     dat$temp$nwterms <- nwterms
-    dat$temp$t2.tab <- get_attr_prop(dat, nwterms)
+    dat$temp$t1.tab <- get_attr_prop(dat, nwterms)
 
     # Conversions for tergmLite
     if (control$tergmLite == TRUE) {
