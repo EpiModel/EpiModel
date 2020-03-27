@@ -263,6 +263,7 @@ plot(sim, y = "num", ylim = c(800, 1200))
 num1 <- num2 <- 500
 nw <- network.initialize(num1 + num2, directed = FALSE)
 nw <- set.vertex.attribute(nw, "group", rep(1:2, each = num1))
+nw <- set.vertex.attribute(nw, "race", sample(c("B","W"), num1+num2, replace = TRUE))
 formation <- ~ edges + nodematch("group")
 target.stats <- c(400, 0)
 coef.diss <- dissolution_coefs(dissolution = ~ offset(edges), duration = 25, d.rate = 0.005)
@@ -335,6 +336,43 @@ control <- control.net(type = "SIR", nsteps = 250, nsims = 5, ncores = 5, tergmL
 sim <- netsim(est, param, init, control)
 plot(sim, qnts = FALSE, sim.lines = TRUE)
 plot(sim, qnts = 1, ylim = c(0, 500))
+
+# set.seed(123)
+# crosscheck.net(est, param, init, control)
+# dat <- initialize.net(est, param, init, control, s = 1)
+#
+# for (at in 2:control$nsteps) {
+#   dat <- resim_nets(dat, at)
+#   dat <- infection.net.grp(dat, at)
+#   dat <- recovery.net.grp(dat, at)
+#   dat <- departures.net.grp(dat, at)
+#   dat <- arrivals.net.grp(dat, at)
+#   dat <- nwupdate.net(dat, at)
+#   dat <- prevalence.net.grp(dat, at)
+#   cat("*")
+# }
+
+# SIR: race and group attributes on network
+
+num1 <- num2 <- 500
+nw <- network.initialize(num1 + num2, directed = FALSE)
+nw <- set.vertex.attribute(nw, "group", rep(1:2, each = num1))
+nw <- set.vertex.attribute(nw, "race", sample(c("B","W"), num1+num2, replace = TRUE))
+formation <- ~ edges + nodematch("group")
+target.stats <- c(400, 0)
+coef.diss <- dissolution_coefs(dissolution = ~ offset(edges), duration = 25, d.rate = 0.005)
+est <- netest(nw, formation, target.stats, coef.diss)
+
+param <- param.net(inf.prob = 0.1, inf.prob.g2 = 0.2,
+                   act.rate = 5, a.rate = 0.005, a.rate.g2 = 0.005,
+                   di.rate = 0.005, ds.rate = 0.005,
+                   di.rate.g2 = 0.005, ds.rate.g2 = 0.005,
+                   dr.rate = 0.005, dr.rate.g2 = 0.005,
+                   rec.rate = 0.005, rec.rate.g2 = 0.005)
+init <- init.net(i.num = 10, i.num.g2 = 10, r.num = 5, r.num.g2 = 5)
+control <- control.net(type = "SIR", nsteps = 250, nsims = 5, ncores = 5, tergmLite = TRUE)
+
+sim <- netsim(est, param, init, control)
 
 # set.seed(123)
 # crosscheck.net(est, param, init, control)
