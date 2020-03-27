@@ -181,7 +181,8 @@ est <- netest(nw, formation, target.stats, coef.diss)
 param <- param.net(inf.prob = 0.4, act.rate = 1,
                    a.rate = 0.005, ds.rate = 0.005, di.rate = 0.005)
 init <- init.net(i.num = 10)
-control <- control.net(type = "SI", nsteps = 250, nsims = 1, ncores = 1, tergmLite = FALSE, verbose = TRUE)
+control <- control.net(type = "SI", nsteps = 250, nsims = 1, ncores = 1,
+                       tergmLite = FALSE, verbose = TRUE)
 
 sim <- netsim(est, param, init, control)
 plot(sim, qnts = FALSE, sim.lines = TRUE)
@@ -263,7 +264,6 @@ plot(sim, y = "num", ylim = c(800, 1200))
 num1 <- num2 <- 500
 nw <- network.initialize(num1 + num2, directed = FALSE)
 nw <- set.vertex.attribute(nw, "group", rep(1:2, each = num1))
-nw <- set.vertex.attribute(nw, "race", sample(c("B","W"), num1+num2, replace = TRUE))
 formation <- ~ edges + nodematch("group")
 target.stats <- c(400, 0)
 coef.diss <- dissolution_coefs(dissolution = ~ offset(edges), duration = 25, d.rate = 0.005)
@@ -388,3 +388,29 @@ sim <- netsim(est, param, init, control)
 #   dat <- prevalence.net.grp(dat, at)
 #   cat("*")
 # }
+
+
+
+# Attr Copying Tests ------------------------------------------------------
+
+# SI
+num1 <- num2 <- 500
+nw <- network.initialize(num1 + num2, directed = FALSE)
+nw <- set.vertex.attribute(nw, "group", rep(1:2, each = num1))
+nw <- set.vertex.attribute(nw, "race", sample(c("B","W"), num1+num2, replace = TRUE))
+formation <- ~ edges + nodematch("group")
+target.stats <- c(400, 0)
+coef.diss <- dissolution_coefs(dissolution = ~ offset(edges), duration = 25, d.rate = 0.005)
+est <- netest(nw, formation, target.stats, coef.diss)
+
+# Parameters
+param <- param.net(inf.prob = 0.5, inf.prob.g2 = 0.3,
+                   act.rate = 1, a.rate = 0.005, a.rate.g2 = NA,
+                   di.rate = 0.005, ds.rate = 0.005,
+                   di.rate.g2 = 0.005, ds.rate.g2 = 0.005)
+init <- init.net(i.num = 50, i.num.g2 = 50)
+control <- control.net(type = "SI", nsteps = 250, nsims = 5, ncores = 5, tergmLite = TRUE)
+
+sim <- netsim(est, param, init, control)
+plot(sim, qnts = FALSE, sim.lines = TRUE)
+plot(sim, qnts = 1, ylim = c(0, 500))
