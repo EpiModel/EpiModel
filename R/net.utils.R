@@ -576,37 +576,29 @@ edgelist_meanage <- function(x, el) {
 #' @title Proportional Table of Vertex Attributes
 #'
 #' @description Calculates the proportional distribution of each vertex attribute
-#'              contained on the network, with a possible limitation to those
-#'              attributes contained in the formation formula only.
+#'              contained on the network.
 #'
 #' @param nw The \code{networkDynamic} object contained in the \code{netsim}
 #'        simulation.
 #' @param nwterms Vector of attributes on network object, usually as
 #'        output of \code{\link{get_formula_term_attr}}.
-#' @param only.formula Limit the tables to those terms only in formation model,
-#'        through \code{fterms}, otherwise output proportions for all attributes
-#'        on the network object.
 #'
 #' @seealso \code{\link{get_formula_term_attr}}, \code{\link{copy_toall_attr}},
 #'          \code{\link{update_nwattr}}.
 #' @keywords netUtils internal
 #' @export
 #'
-get_attr_prop <- function(dat, nwterms, only.formula = FALSE) {
+get_attr_prop <- function(dat, nwterms) {
   if (is.null(nwterms)) {
     return(NULL)
   }
 
-  fterms <- dat$temp$fterms
   tergmLite <- dat$control$tergmLite
   nw <- dat$nw
 
   if ( tergmLite == FALSE) {
     nwVal <- names(nw$val[[1]])
     nwVal <- setdiff(nwVal, c("na", "vertex.names"))
-    if (only.formula == TRUE) {
-      nwVal <- nwVal[which(nwVal %in% fterms)]
-    }
     out <- list()
     for (i in 1:length(nwVal)) {
       tab <- prop.table(table(nw %v% nwVal[i]))
