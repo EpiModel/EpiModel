@@ -46,8 +46,8 @@ nwupdate.net <- function(dat, at) {
         nwterms <- dat$temp$nwterms
         curr.tab <- get_attr_prop(dat, nwterms)
         if (length(curr.tab) > 0) {
-          dat$nw <- update_nwattr(dat$nw, newNodes, dat$control$attr.rules,
-                                  curr.tab, dat$temp$t2.tab)
+          dat$nw <- auto_update_attr(dat, newNodes, dat$control$attr.rules,
+                                  curr.tab, dat$temp$t1.tab)
         }
 
         # Save any val on attr
@@ -104,6 +104,9 @@ nwupdate.net <- function(dat, at) {
       }
 
       ## Arrivals
+      nwterms <- dat$temp$nwterms
+      curr.tab <- get_attr_prop(dat, nwterms)
+
       if (groups == 1) {
         nArrivals <- dat$epi$a.flow[at]
       } else {
@@ -111,8 +114,9 @@ nwupdate.net <- function(dat, at) {
       }
       if (sum(nArrivals) > 0) {
         nCurr <- sum(dat$attr$active == 1)
-
         dat$el[[1]] <- add_vertices(dat$el[[1]], nv = sum(nArrivals))
+        dat <- auto_update_attr(dat, nArrivals, dat$control$attr.rules,
+                                curr.tab, dat$temp$t1.tab)
 
       }
     }
