@@ -7,6 +7,8 @@
 auto_update_attr(dat, newNodes, rules, curr.tab, t1.tab)
 }
 \arguments{
+\item{dat}{Master object in \code{netsim} simulations.}
+
 \item{newNodes}{Vector of nodal IDs for incoming nodes at the current time
 step.}
 
@@ -17,8 +19,6 @@ the values of each attribute.}
 
 \item{t1.tab}{Proportional distribution of all vertex attributes at the outset
 of the simulation.}
-
-\item{nw}{The \code{networkDynamic} object used in \code{netsim} simulations.}
 }
 \description{
 Updates the vertex attributes on a network for new nodes incoming

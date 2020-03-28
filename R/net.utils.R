@@ -771,7 +771,7 @@ groupids <- function(nw, group) {
 #'              into that network, based on a set of rules for each attribute
 #'              that the user specifies in \code{control.net}.
 #'
-#' @param nw The \code{networkDynamic} object used in \code{netsim} simulations.
+#' @param dat Master object in \code{netsim} simulations.
 #' @param newNodes Vector of nodal IDs for incoming nodes at the current time
 #'        step.
 #' @param rules List of rules, one per attribute to be set, governing how to set
@@ -787,52 +787,6 @@ groupids <- function(nw, group) {
 #'
 auto_update_attr <- function(dat, newNodes, rules, curr.tab, t1.tab) {
 
-  if (dat$control$tergmLite == FALSE) {
-
-    for (i in 1:length(curr.tab)) {
-      vname <- names(curr.tab)[i]
-      if (length(vname) > 0) {
-        rule <- rules[[vname]]
-
-        if (is.null(rule)) {
-          rule <- "current"
-        }
-        if (rule == "current") {
-          vclass <- class(nw %v% vname)
-          if (vclass == "character") {
-            nattr <- sample(names(curr.tab[[vname]]),
-                            size = length(newNodes),
-                            replace = TRUE,
-                            prob = curr.tab[[vname]])
-          } else {
-            nattr <- sample(as.numeric(names(curr.tab[[i]])),
-                            size = length(newNodes),
-                            replace = TRUE,
-                            prob = curr.tab[[i]])
-          }
-        } else if (rule == "t1") {
-          vclass <- class(nw %v% vname)
-          if (vclass == "character") {
-            nattr <- sample(names(t1.tab[[vname]]),
-                            size = length(newNodes),
-                            replace = TRUE,
-                            prob = t1.tab[[vname]])
-          } else {
-            nattr <- sample(as.numeric(names(t1.tab[[i]])),
-                            size = length(newNodes),
-                            replace = TRUE,
-                            prob = t1.tab[[i]])
-          }
-        } else {
-          nattr <- rep(rules[[vname]], length(newNodes))
-        }
-        dat$nw <- set.vertex.attribute(dat$nw, attrname = vname,
-                                       value = nattr, v = newNodes)
-      }
-    }
-  }
-
-  if (dat$control$tergmLite == TRUE) {
     for (i in 1:length(curr.tab)) {
       vname <- names(curr.tab)[i]
       if (length(vname) > 0) {
@@ -873,7 +827,7 @@ auto_update_attr <- function(dat, newNodes, rules, curr.tab, t1.tab) {
         dat$attr[[vname]] <- c(dat$attr[[vname]], nattr)
       }
     }
-  }
+
   return(dat)
 }
 
