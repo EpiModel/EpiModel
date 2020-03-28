@@ -784,9 +784,11 @@ groupids <- function(nw, group) {
 #'
 auto_update_attr <- function(dat, newNodes, rules, curr.tab, t1.tab) {
 
-  for (i in 1:length(curr.tab)) {
+  for (i in seq_along(curr.tab)) {
     vname <- names(curr.tab)[i]
-    if (length(vname) > 0) {
+    needs.updating <- ifelse(length(dat$attr[[vname]]) < length(dat$attr$active),
+                             TRUE, FALSE)
+    if (length(vname) > 0 & needs.updating == TRUE) {
       rule <- rules[[vname]]
 
       if (is.null(rule)) {
