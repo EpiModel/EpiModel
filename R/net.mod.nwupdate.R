@@ -13,12 +13,12 @@
 nwupdate.net <- function(dat, at) {
 
   groups <- dat$param$groups
+  tL <- dat$control$tergmLite
 
-  if (dat$control$tergmLite == FALSE) {
+  if (dat$param$vital != FALSE) {
 
-    if (dat$param$vital != FALSE) {
-
-      ## Arrivals
+    ## Arrivals
+    if (tL == FALSE) {
       if (groups == 1) {
         nArrivals <- dat$epi$a.flow[at]
       } else {
@@ -58,50 +58,11 @@ nwupdate.net <- function(dat, at) {
                                               onset = at, terminus = Inf,
                                               v = newNodes)
         }
-
-      }
-
-      ## Departures
-      inactive <- which(dat$attr$active == 0 & dat$attr$exitTime == at)
-      if (length(inactive) > 0) {
-        dat$nw <- deactivate.vertices(dat$nw, onset = at, terminus = Inf,
-                                      v = inactive, deactivate.edges = TRUE)
       }
     }
 
-    ## Recovery
-    status <- dat$attr$status
-    recovState <- ifelse(dat$control$type == "SIR", "r", "s")
-    attr.status <- which(status == recovState)
-    nw.status <- get.vertex.attribute(dat$nw, "status")
-    idsRecov <- setdiff(attr.status, nw.status)
-
-    if (length(idsRecov) > 0) {
-      dat$nw <- activate.vertex.attribute(dat$nw, prefix = "testatus",
-                                          value = recovState, onset = at,
-                                          terminus = Inf, v = idsRecov)
-    }
-
-    ## Infection
-    idsNewInf <- which(dat$attr$status == "i" & dat$attr$infTime == at)
-    if (length(idsNewInf) > 0) {
-      dat$nw <- activate.vertex.attribute(dat$nw,
-                                          prefix = "testatus",
-                                          value = "i",
-                                          onset = at,
-                                          terminus = Inf,
-                                          v = idsNewInf)
-      dat$nw <- set.vertex.attribute(dat$nw, "status", dat$attr$status)
-    }
-
-  }
-
-  if (dat$control$tergmLite == TRUE) {
-
-    if (dat$param$vital != FALSE) {
-      ## Arrivals
+    if (tL == TRUE) {
       nwterms <- dat$temp$nwterms
-
       if (!is.null(nwterms)) {
         curr.tab <- get_attr_prop(dat, nwterms)
 
@@ -118,15 +79,59 @@ nwupdate.net <- function(dat, at) {
 
         }
       }
+    }
 
-      ## Departures
+
+    ## Departures
+    if (tL == FALSE) {
+      inactive <- which(dat$attr$active == 0 & dat$attr$exitTime == at)
+      if (length(inactive) > 0) {
+        dat$nw <- deactivate.vertices(dat$nw, onset = at, terminus = Inf,
+                                      v = inactive, deactivate.edges = TRUE)
+      }
+    }
+    if (tL == TRUE) {
       inactive <- which(dat$attr$active == 0 & dat$attr$exitTime == at)
       if (length(inactive) > 0) {
         dat$attr <- deleteAttr(dat$attr, inactive)
         dat$el[[1]] <- delete_vertices(dat$el[[1]], inactive)
       }
     }
+
   }
+
+  ## Recovery
+  if (tL == FALSE) {
+    status <- dat$attr$status
+    recovState <- ifelse(dat$control$type == "SIR", "r", "s")
+    attr.status <- which(status == recovState)
+    nw.status <- get.vertex.attribute(dat$nw, "status")
+    idsRecov <- setdiff(attr.status, nw.status)
+
+    if (length(idsRecov) > 0) {
+      dat$nw <- activate.vertex.attribute(dat$nw, prefix = "testatus",
+                                          value = recovState, onset = at,
+                                          terminus = Inf, v = idsRecov)
+    }
+  }
+
+
+  ## Infection
+  if (tL == FALSE) {
+    idsNewInf <- which(dat$attr$status == "i" & dat$attr$infTime == at)
+    if (length(idsNewInf) > 0) {
+      dat$nw <- activate.vertex.attribute(dat$nw,
+                                          prefix = "testatus",
+                                          value = "i",
+                                          onset = at,
+                                          terminus = Inf,
+                                          v = idsNewInf)
+      dat$nw <- set.vertex.attribute(dat$nw, "status", dat$attr$status)
+    }
+  }
+
+
+
 
   ## Output
   return(dat)
