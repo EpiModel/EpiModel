@@ -212,12 +212,12 @@ copy_nwattr_to_datattr <- function(dat) {
 
 #' @export
 copy_datattr_to_nwattr <- function(dat) {
-browser()
   nwterms <- dat$temp$nwterms
-  attr <- dat$attr
-  attr.names <- names(attr)
-  if (length(attr.names) > 0) {
-    dat$nw <- set.vertex.attribute(dat$nw, attr.names, attr)
+  special.attr <- "status"
+  attr.to.copy <- union(nwterms, special.attr)
+  attr <- dat$attr[attr.to.copy]
+  if (length(attr.to.copy) > 0) {
+    dat$nw <- set.vertex.attribute(dat$nw, names(attr), attr)
   }
 
   return(dat)
