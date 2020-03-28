@@ -4,7 +4,7 @@
 \alias{auto_update_attr}
 \title{Updates Vertex Attributes for Incoming Vertices}
 \usage{
-auto_update_attr(dat, newNodes, rules, curr.tab, t1.tab)
+auto_update_attr(dat, newNodes, curr.tab)
 }
 \arguments{
 \item{dat}{Master object in \code{netsim} simulations.}
@@ -12,13 +12,7 @@ auto_update_attr(dat, newNodes, rules, curr.tab, t1.tab)
 \item{newNodes}{Vector of nodal IDs for incoming nodes at the current time
 step.}
 
-\item{rules}{List of rules, one per attribute to be set, governing how to set
-the values of each attribute.}
-
 \item{curr.tab}{Current proportional distribution of all vertex attributes.}
-
-\item{t1.tab}{Proportional distribution of all vertex attributes at the outset
-of the simulation.}
 }
 \description{
 Updates the vertex attributes on a network for new nodes incoming
