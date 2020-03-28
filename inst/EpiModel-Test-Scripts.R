@@ -360,7 +360,7 @@ plot(sim, qnts = 1, ylim = c(0, 500))
 
 # Attr Copying Tests ------------------------------------------------------
 
-# Closed Pop
+## Closed Pop, 1G
 
 num <- 1000
 nw <- network.initialize(num, directed = FALSE)
@@ -379,7 +379,32 @@ plot(sim, qnts = 1)
 summary(sim, at = 50)
 
 
-# Open Pop
+## Closed Pop, 2G
+
+
+## Open Pop, 1G
+num <- 1000
+nw <- network.initialize(num, directed = FALSE)
+nw <- set.vertex.attribute(nw, "race", sample(c("B","W"), num, TRUE))
+nw <- set.vertex.attribute(nw, "age", sample(15:65, num, TRUE))
+formation <- ~ edges + nodematch("race") + absdiff("age")
+target.stats <- c(400, 0, 800)
+coef.diss <- dissolution_coefs(dissolution = ~ offset(edges), duration = 25, d.rate = 0.005)
+est <- netest(nw, formation, target.stats, coef.diss)
+summary(est)
+
+# Parameters
+param <- param.net(inf.prob = 0.5, act.rate = 1, rec.rate = 0.2,
+                   a.rate = 0.005, ds.rate = 0.005, di.rate = 0.005, dr.rate = 0.005)
+init <- init.net(i.num = 50, r.num = 0)
+control <- control.net(type = "SIR", nsteps = 25, nsims = 1, ncores = 1, tergmLite = FALSE)
+
+sim <- netsim(est, param, init, control)
+plot(sim, qnts = FALSE, sim.lines = TRUE)
+plot(sim, qnts = 1, ylim = c(0, 500))
+
+
+## Open Pop, 2G
 num1 <- num2 <- 500
 nw <- network.initialize(num1 + num2, directed = FALSE)
 nw <- set.vertex.attribute(nw, "group", rep(1:2, each = num1))
@@ -402,17 +427,7 @@ plot(sim, qnts = FALSE, sim.lines = TRUE)
 plot(sim, qnts = 1, ylim = c(0, 500))
 
 
-# SIR: race and group attributes on network
-
-num1 <- num2 <- 500
-nw <- network.initialize(num1 + num2, directed = FALSE)
-nw <- set.vertex.attribute(nw, "group", rep(1:2, each = num1))
-nw <- set.vertex.attribute(nw, "race", sample(c("B","W"), num1+num2, replace = TRUE))
-formation <- ~ edges + nodematch("group")
-target.stats <- c(400, 0)
-coef.diss <- dissolution_coefs(dissolution = ~ offset(edges), duration = 25, d.rate = 0.005)
-est <- netest(nw, formation, target.stats, coef.diss)
-
+# SIR
 param <- param.net(inf.prob = 0.1, inf.prob.g2 = 0.2,
                    act.rate = 5, a.rate = 0.005, a.rate.g2 = 0.005,
                    di.rate = 0.005, ds.rate = 0.005,
