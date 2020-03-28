@@ -771,18 +771,17 @@ groupids <- function(nw, group) {
 #' @param dat Master object in \code{netsim} simulations.
 #' @param newNodes Vector of nodal IDs for incoming nodes at the current time
 #'        step.
-#' @param rules List of rules, one per attribute to be set, governing how to set
-#'        the values of each attribute.
 #' @param curr.tab Current proportional distribution of all vertex attributes.
-#' @param t1.tab Proportional distribution of all vertex attributes at the outset
-#'        of the simulation.
 #'
 #' @seealso \code{\link{copy_nwattr_to_datattr}}, \code{\link{get_attr_prop}},
 #'          \code{\link{auto_update_attr}}.
 #' @keywords netUtils internal
 #' @export
 #'
-auto_update_attr <- function(dat, newNodes, rules, curr.tab, t1.tab) {
+auto_update_attr <- function(dat, newNodes, curr.tab) {
+
+  rules <- dat$control$attr.rules
+  t1.tab <- dat$temp$t1.tab
 
   for (i in seq_along(curr.tab)) {
     vname <- names(curr.tab)[i]
