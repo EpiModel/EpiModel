@@ -14,6 +14,7 @@ nwupdate.net <- function(dat, at) {
 
   groups <- dat$param$groups
   tL <- dat$control$tergmLite
+  nwterms <- dat$temp$nwterms
 
   ## Arrivals
   if (tL == FALSE) {
@@ -35,7 +36,6 @@ nwupdate.net <- function(dat, at) {
       # }
 
       # Set attributes on nw
-      nwterms <- dat$temp$nwterms
       if (!is.null(nwterms)) {
         curr.tab <- get_attr_prop(dat, nwterms)
         if (length(curr.tab) > 0) {
@@ -60,7 +60,6 @@ nwupdate.net <- function(dat, at) {
   }
 
   if (tL == TRUE) {
-    nwterms <- dat$temp$nwterms
     if (!is.null(nwterms)) {
       curr.tab <- get_attr_prop(dat, nwterms)
 
@@ -74,22 +73,20 @@ nwupdate.net <- function(dat, at) {
         dat$el[[1]] <- add_vertices(dat$el[[1]], nv = sum(nArrivals))
         dat <- auto_update_attr(dat, nArrivals, dat$control$attr.rules,
                                 curr.tab, dat$temp$t1.tab)
-
       }
     }
   }
 
 
   ## Departures
+  inactive <- which(dat$attr$active == 0 & dat$attr$exitTime == at)
   if (tL == FALSE) {
-    inactive <- which(dat$attr$active == 0 & dat$attr$exitTime == at)
     if (length(inactive) > 0) {
       dat$nw <- deactivate.vertices(dat$nw, onset = at, terminus = Inf,
                                     v = inactive, deactivate.edges = TRUE)
     }
   }
   if (tL == TRUE) {
-    inactive <- which(dat$attr$active == 0 & dat$attr$exitTime == at)
     if (length(inactive) > 0) {
       dat$attr <- deleteAttr(dat$attr, inactive)
       dat$el[[1]] <- delete_vertices(dat$el[[1]], inactive)
