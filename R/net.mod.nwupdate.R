@@ -29,7 +29,8 @@ nwupdate.net <- function(dat, at) {
   if (tL == FALSE) {
     type <- dat$control$type
     if (type %in% c("SIS", "SIR")) {
-      status <- dat$attr$status
+      nCurr <- dat$epi$num[at - 1]
+      status <- dat$attr$status[1:nCurr]
       recovState <- ifelse(type == "SIR", "r", "s")
       attr.status <- which(status == recovState)
       nw.status <- which(get.vertex.attribute(dat$nw, "status") == recovState)
