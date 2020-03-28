@@ -810,12 +810,12 @@ auto_update_attr <- function(dat, newNodes, curr.tab) {
         vclass <- class(dat$attr[[vname]])
         if (vclass == "character") {
           nattr <- sample(names(curr.tab[[vname]]),
-                          size = sum(newNodes),
+                          size = length(newNodes),
                           replace = TRUE,
                           prob = curr.tab[[vname]])
         } else {
           nattr <- sample(as.numeric(names(curr.tab[[i]])),
-                          size = sum(newNodes),
+                          size = length(newNodes),
                           replace = TRUE,
                           prob = curr.tab[[i]])
         }
@@ -823,12 +823,12 @@ auto_update_attr <- function(dat, newNodes, curr.tab) {
         vclass <- class(dat$attr[[vname]])
         if (vclass == "character") {
           nattr <- sample(names(t1.tab[[vname]]),
-                          size = sum(newNodes),
+                          size = length(newNodes),
                           replace = TRUE,
                           prob = t1.tab[[vname]])
         } else {
           nattr <- sample(as.numeric(names(t1.tab[[i]])),
-                          size = sum(newNodes),
+                          size = length(newNodes),
                           replace = TRUE,
                           prob = t1.tab[[i]])
         }
