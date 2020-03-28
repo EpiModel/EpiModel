@@ -11,9 +11,6 @@ control.net(
   nsims = 1,
   ncores = 1,
   resimulate.network,
-  rec.rand = TRUE,
-  a.rand = TRUE,
-  d.rand = TRUE,
   tergmLite = FALSE,
   attr.rules,
   epi.by,
@@ -67,24 +64,6 @@ occurs by default with two varieties of dependent models: if there are
 any vital dynamic parameters in the model (or if non-standard arrival or
 departures modules are passed into \code{control.net}), or if the network model
 formation formula includes the "status" attribute.}
-
-\item{rec.rand}{If \code{TRUE}, use a stochastic recovery model, with the
-number of recovered at each time step a function of random draws from
-a binomial distribution with the probability equal to \code{rec.rate}.
-If \code{FALSE}, then a deterministic rounded count of the expectation
-implied by that rate.}
-
-\item{a.rand}{If \code{TRUE}, use a stochastic arrival model, with the
-number of arrivals at each time step a function of random draws from a
-binomial distribution with the probability equal to the governing arrival
-rates. If \code{FALSE}, then a deterministic rounded count of the
-expectation implied by those rates.}
-
-\item{d.rand}{If \code{TRUE}, use a stochastic departure model, with the number of
-departures at each time step a function of random draws from a binomial
-distribution with the probability equal to the governing departure rates.
-If \code{FALSE}, then a deterministic rounded count of the expectation
-implied by those rates.}
 
 \item{tergmLite}{Logical indicating usage of either \code{tergm} (\code{tergmLite = FALSE}),
 or \code{tergmLite} (\code{tergmLite = TRUE}). Default of \code{FALSE}.}

@@ -84,12 +84,6 @@ param.icm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
             "See documentation for details.")
   }
 
-  if ("b.rand" %in% names.dot.args) {
-    p$a.rand <- dot.args$b.rand
-    message("EpiModel 1.7.0 onward renamed the stochastic birth flag b.rand to a.rand. ",
-            "See documentation for details.")
-  }
-
   ## Defaults and checks
   if (is.null(p$act.rate)) {
     p$act.rate <- 1
@@ -188,21 +182,6 @@ init.icm <- function(s.num, i.num, r.num,
 #' @param nsteps Number of time steps to solve the model over. This must be a
 #'        positive integer.
 #' @param nsims Number of simulations to run.
-#' @param rec.rand If \code{TRUE}, use a stochastic recovery model, with the
-#'        number of recovered at each time step a function of random draws from
-#'        a binomial distribution with the probability equal to \code{rec.rate}.
-#'        If \code{FALSE}, then a deterministic rounded count of the expectation
-#'        implied by that rate.
-#' @param a.rand If \code{TRUE}, use a stochastic arrival model, with the
-#'        number of arrivals at each time step a function of random draws from a
-#'        binomial distribution with the probability equal to the governing arrival
-#'        rates. If \code{FALSE}, then a deterministic rounded count of the
-#'        expectation implied by those rates.
-#' @param d.rand If \code{TRUE}, use a stochastic departure model, with the number of
-#'        departures at each time step a function of random draws from a binomial
-#'        distribution with the probability equal to the governing departure rates.
-#'        If \code{FALSE}, then a deterministic rounded count of the expectation
-#'        implied by those rates.
 #' @param initialize.FUN Module to initialize the model at the outset, with the
 #'        default function of \code{\link{initialize.icm}}.
 #' @param infection.FUN Module to simulate disease infection, with the default
@@ -256,8 +235,8 @@ init.icm <- function(s.num, i.num, r.num,
 #'
 #' @export
 #'
-control.icm <- function(type, nsteps, nsims = 1, rec.rand = TRUE, a.rand = TRUE,
-                        d.rand = TRUE, initialize.FUN = initialize.icm,
+control.icm <- function(type, nsteps, nsims = 1,
+                        initialize.FUN = initialize.icm,
                         infection.FUN = NULL, recovery.FUN = NULL,
                         departures.FUN = NULL, arrivals.FUN = NULL,
                         prevalence.FUN = NULL, verbose = FALSE,

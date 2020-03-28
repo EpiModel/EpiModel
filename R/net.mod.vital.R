@@ -269,7 +269,6 @@ arrivals.2g.net <- function(dat, at) {
   a.rate.g2 <- dat$param$a.rate.g2
   nOld <- dat$epi$num[at - 1]
   nOldG2 <- dat$epi$num.g2[at - 1]
-  a.rand <- dat$control$a.rand
   tergmLite <- dat$control$tergmLite
 
   totArr <- nArrivals <- nArrivalsG2 <- 0
