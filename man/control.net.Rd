@@ -195,10 +195,8 @@ and it has no default.
 
 The \code{attr.rules} parameter is used to specify the rules for how nodal
 attribute values for incoming nodes should be set. These rules are only
-necessary for models in which there are incoming nodes (i.e., arrivals) and
-there is also a nodal attribute in the network model formation formula set in
-\code{\link{netest}}. There are three rules available for each attribute
-value:
+necessary for models in which there are incoming nodes (i.e., arrivals) There
+are three rules available for each attribute value:
 \itemize{
  \item \strong{"current":} new nodes will be assigned this attribute in
        proportion to the distribution of that attribute among existing nodes
