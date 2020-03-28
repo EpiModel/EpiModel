@@ -49,7 +49,7 @@ nwupdate.net <- function(dat, at) {
     nArrivals <- c(dat$epi$a.flow[at], dat$epi$a.flow.g2[at])
   }
   if (sum(nArrivals) > 0) {
-    nCurr <- length(dat$attr$active)
+    nCurr <- dat$epi$num[at - 1]
     newNodes <- (nCurr + 1):(nCurr + sum(nArrivals))
     nwterms <- dat$temp$nwterms
     if (!is.null(nwterms)) {
