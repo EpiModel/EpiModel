@@ -15,6 +15,33 @@ nwupdate.net <- function(dat, at) {
   groups <- dat$param$groups
   tL <- dat$control$tergmLite
 
+  ## Infection
+  if (tL == FALSE) {
+    idsNewInf <- which(dat$attr$status == "i" & dat$attr$infTime == at)
+    if (length(idsNewInf) > 0) {
+      dat$nw <- activate.vertex.attribute(dat$nw, prefix = "testatus",
+                                          value = "i", onset = at,
+                                          terminus = Inf, v = idsNewInf)
+    }
+  }
+
+  ## Recovery
+  if (tL == FALSE) {
+    type <- dat$control$type
+    if (type %in% c("SIS", "SIR")) {
+      status <- dat$attr$status
+      recovState <- ifelse(type == "SIR", "r", "s")
+      attr.status <- which(status == recovState)
+      nw.status <- which(get.vertex.attribute(dat$nw, "status") == recovState)
+      idsRecov <- setdiff(attr.status, nw.status)
+      if (length(idsRecov) > 0) {
+        dat$nw <- activate.vertex.attribute(dat$nw, prefix = "testatus",
+                                            value = recovState, onset = at,
+                                            terminus = Inf, v = idsRecov)
+      }
+    }
+  }
+
   ## Arrivals
   if (groups == 1) {
     nArrivals <- dat$epi$a.flow[at]
@@ -61,34 +88,7 @@ nwupdate.net <- function(dat, at) {
     }
   }
 
-  ## Recovery
-  if (tL == FALSE) {
-    status <- dat$attr$status
-    recovState <- ifelse(dat$control$type == "SIR", "r", "s")
-    attr.status <- which(status == recovState)
-    nw.status <- get.vertex.attribute(dat$nw, "status")
-    idsRecov <- setdiff(attr.status, nw.status)
-    if (length(idsRecov) > 0) {
-      dat$nw <- activate.vertex.attribute(dat$nw, prefix = "testatus",
-                                          value = recovState, onset = at,
-                                          terminus = Inf, v = idsRecov)
-    }
-  }
 
-
-  ## Infection
-  if (tL == FALSE) {
-    idsNewInf <- which(dat$attr$status == "i" & dat$attr$infTime == at)
-    if (length(idsNewInf) > 0) {
-      dat$nw <- activate.vertex.attribute(dat$nw,
-                                          prefix = "testatus",
-                                          value = "i",
-                                          onset = at,
-                                          terminus = Inf,
-                                          v = idsNewInf)
-      dat$nw <- set.vertex.attribute(dat$nw, "status", dat$attr$status)
-    }
-  }
 
 
   ## Output
