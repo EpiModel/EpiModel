@@ -62,7 +62,8 @@ initialize.net <- function(x, param, init, control, s) {
     # Network Attributes ------------------------------------------------------
     ## Pull network val to attr
     nwterms <- get_network_term_attr(nw)
-    dat <- copy_nwattr_to_datattr(dat, at = 1)
+    ## Pull attr on nw to dat$attr
+    dat <- copy_nwattr_to_datattr(dat)
 
     ## Store current proportions of attr
     dat$temp$nwterms <- nwterms

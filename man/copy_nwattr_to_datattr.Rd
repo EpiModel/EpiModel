@@ -4,12 +4,12 @@
 \alias{copy_nwattr_to_datattr}
 \title{Copies Vertex Attributes in Formation Formula to attr List}
 \usage{
-copy_nwattr_to_datattr(dat, at)
+copy_nwattr_to_datattr(dat)
 }
 \arguments{
 \item{dat}{Master data object passed through \code{netsim} simulations.}
 
-\item{at}{Current time step.#'}
+\item{at}{Current time step.}
 }
 \description{
 Copies the vertex attributes stored on the network object to the

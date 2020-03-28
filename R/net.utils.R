@@ -187,13 +187,13 @@ color_tea <- function(nd, old.var = "testatus", old.sus = "s", old.inf = "i",
 #'              master attr list in the dat data object.
 #'
 #' @param dat Master data object passed through \code{netsim} simulations.
-#' @param at Current time step.#'
+#' @param at Current time step.
 #' @seealso \code{\link{get_formula_term_attr}}, \code{\link{get_attr_prop}},
 #'          \code{\link{auto_update_attr}}.
 #' @keywords netUtils internal
 #' @export
 #'
-copy_nwattr_to_datattr <- function(dat, at) {
+copy_nwattr_to_datattr <- function(dat) {
   otha <- names(dat$nw$val[[1]])
   otha <- setdiff(otha, c("na", "vertex.names", "active", "group", "status",
                           "testatus.active", "tergm_pid"))
@@ -201,16 +201,13 @@ copy_nwattr_to_datattr <- function(dat, at) {
     for (i in seq_along(otha)) {
       va <- get.vertex.attribute(dat$nw, otha[i])
       dat$attr[[otha[i]]] <- va
-      if (at == 1) {
-        if (!is.null(dat$control$epi.by) && dat$control$epi.by == otha[i]) {
-          dat$temp$epi.by.vals <- unique(va)
-        }
+      if (!is.null(dat$control$epi.by) && dat$control$epi.by == otha[i]) {
+        dat$temp$epi.by.vals <- unique(va)
       }
     }
   }
   return(dat)
 }
-
 
 
 #' @title Dissolution Coefficients for Stochastic Network Models
