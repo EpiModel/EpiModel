@@ -210,6 +210,19 @@ copy_nwattr_to_datattr <- function(dat) {
 }
 
 
+#' @export
+copy_datattr_to_nwattr <- function(dat) {
+browser()
+  nwterms <- dat$temp$nwterms
+  attr <- dat$attr
+  attr.names <- names(attr)
+  if (length(attr.names) > 0) {
+    dat$nw <- set.vertex.attribute(dat$nw, attr.names, attr)
+  }
+
+  return(dat)
+}
+
 #' @title Dissolution Coefficients for Stochastic Network Models
 #'
 #' @description Calculates dissolution coefficients, given a dissolution model

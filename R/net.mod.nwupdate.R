@@ -27,17 +27,16 @@ nwupdate.net <- function(dat, at) {
     nwterms <- dat$temp$nwterms
     if (!is.null(nwterms)) {
       curr.tab <- get_attr_prop(dat, nwterms)
-      if (length(curr.tab) > 0) {
-        dat <- auto_update_attr(dat, newNodes, dat$control$attr.rules,
-                                curr.tab, dat$temp$t1.tab)
-      }
+      dat <- auto_update_attr(dat, newNodes, curr.tab)
     }
     if (length(unique(sapply(dat$attr, length))) != 1) {
-      stop("Attribute list of unequal length. Check arrivals.net module.")
+      stop("Attribute list of unequal length. Check arrivals.net module.\n",
+           print(sapply(dat$attr, length)))
     }
     if (tL == FALSE) {
       dat$nw <- add.vertices(dat$nw, nv = sum(nArrivals))
       dat$nw <- activate.vertices(dat$nw, onset = at, terminus = Inf, v = newNodes)
+      dat <- copy_datattr_to_nwattr(dat)
       dat$nw <- activate.vertex.attribute(dat$nw, prefix = "testatus",
                                           value = dat$attr$status[newNodes],
                                           onset = at, terminus = Inf,
@@ -69,7 +68,6 @@ nwupdate.net <- function(dat, at) {
     attr.status <- which(status == recovState)
     nw.status <- get.vertex.attribute(dat$nw, "status")
     idsRecov <- setdiff(attr.status, nw.status)
-
     if (length(idsRecov) > 0) {
       dat$nw <- activate.vertex.attribute(dat$nw, prefix = "testatus",
                                           value = recovState, onset = at,
