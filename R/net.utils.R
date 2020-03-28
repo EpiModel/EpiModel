@@ -195,6 +195,8 @@ color_tea <- function(nd, old.var = "testatus", old.sus = "s", old.inf = "i",
 #'
 copy_toall_attr <- function(dat, at) {
   otha <- names(dat$nw$val[[1]])
+  otha <- setdiff(otha, c("na", "vertex.names", "active", "group", "status",
+                          "testatus.active", "tergm_pid"))
   if (length(otha) > 0) {
     for (i in seq_along(otha)) {
       va <- get.vertex.attribute(dat$nw, otha[i])
