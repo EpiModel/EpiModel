@@ -225,6 +225,9 @@ copy_nwattr_to_datattr <- function(dat) {
 copy_datattr_to_nwattr <- function(dat) {
   nwterms <- dat$temp$nwterms
   special.attr <- "status"
+  if (dat$param$groups == 2) {
+    special.attr <- c(special.attr, "group")
+  }
   attr.to.copy <- union(nwterms, special.attr)
   attr <- dat$attr[attr.to.copy]
   if (length(attr.to.copy) > 0) {
