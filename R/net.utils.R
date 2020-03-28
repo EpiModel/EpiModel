@@ -181,15 +181,15 @@ color_tea <- function(nd, old.var = "testatus", old.sus = "s", old.inf = "i",
 }
 
 
-#' @title Copies Vertex Attributes in Formation Formula to attr List
+#' @title Copies Vertex Attributes From Network to dat List
 #'
 #' @description Copies the vertex attributes stored on the network object to the
 #'              master attr list in the dat data object.
 #'
 #' @param dat Master data object passed through \code{netsim} simulations.
-#' @param at Current time step.
+#'
 #' @seealso \code{\link{get_formula_term_attr}}, \code{\link{get_attr_prop}},
-#'          \code{\link{auto_update_attr}}.
+#'          \code{\link{auto_update_attr}}, and \code{\link{copy_datattr_to_nwattr}}.
 #' @keywords netUtils internal
 #' @export
 #'
@@ -210,7 +210,18 @@ copy_nwattr_to_datattr <- function(dat) {
 }
 
 
+#' @title Copies Vertex Attributes from the dat List to the Network Object
+#'
+#' @description Copies the vertex attributes stored on the master attr list on
+#'              dat to the network object on dat.
+#'
+#' @param dat Master data object passed through \code{netsim} simulations.
+#'
+#' @seealso \code{\link{get_formula_term_attr}}, \code{\link{get_attr_prop}},
+#'          \code{\link{auto_update_attr}}, and \code{\link{copy_nwattr_to_datattr}}.
+#' @keywords netUtils internal
 #' @export
+#'
 copy_datattr_to_nwattr <- function(dat) {
   nwterms <- dat$temp$nwterms
   special.attr <- "status"
