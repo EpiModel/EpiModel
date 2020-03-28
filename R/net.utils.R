@@ -675,7 +675,8 @@ get_formula_term_attr <- function(form, nw) {
 get_network_term_attr <- function(nw) {
 
   nw_attr <- names(nw$val[[1]])
-  nw_attr <- setdiff(nw_attr, c("active", "vertex.names", "na"))
+  nw_attr <- setdiff(nw_attr, c("active", "vertex.names", "na",
+                                "testatus.active", "tergm_pid", "group", "status"))
 
   if (length(nw_attr) == 0) {
     return(NULL)
