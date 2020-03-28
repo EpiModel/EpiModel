@@ -53,21 +53,21 @@ initialize.net <- function(x, param, init, control, s) {
       dat$attr$group <- get.vertex.attribute(dat$nw, "group")
     }
 
-    # Initial Attributes ------------------------------------------------------
+    # Nodal Attributes --------------------------------------------------------
+
+    # Standard attributes
     num <- network.size(nw)
     dat$attr$active <- rep(1, num)
     dat$attr$entrTime <- rep(1, num)
     dat$attr$exitTime <- rep(NA, num)
 
-    # Network Attributes ------------------------------------------------------
-    ## Pull network val to attr
-    nwterms <- get_network_term_attr(nw)
     ## Pull attr on nw to dat$attr
     dat <- copy_nwattr_to_datattr(dat)
 
     ## Store current proportions of attr
-    dat$temp$nwterms <- nwterms
+    nwterms <- get_network_term_attr(nw)
     if (!is.null(nwterms)){
+      dat$temp$nwterms <- nwterms
       dat$temp$t1.tab <- get_attr_prop(dat, nwterms)
     }
 
@@ -76,15 +76,16 @@ initialize.net <- function(x, param, init, control, s) {
       dat <- tergmLite::init_tergmLite(dat)
     }
 
-    # Initialization ----------------------------------------------------------
-
     ## Infection Status and Time
     dat <- init_status.net(dat)
 
-    ## Get initial prevalence
+
+    # Summary Stats -----------------------------------------------------------
     dat <- do.call(control[["prevalence.FUN"]],list(dat, at = 1))
 
-  } else {
+
+  # Restart/Reinit Simulations ----------------------------------------------
+  } else if (control$start > 1) {
     dat <- list()
 
     dat$nw <- x$network[[s]]
