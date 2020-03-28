@@ -182,8 +182,8 @@ est <- netest(nw, formation, target.stats, coef.diss)
 param <- param.net(inf.prob = 0.4, act.rate = 1,
                    a.rate = 0.005, ds.rate = 0.005, di.rate = 0.005)
 init <- init.net(i.num = 10)
-control <- control.net(type = "SI", nsteps = 250, nsims = 1, ncores = 1,
-                       tergmLite = TRUE, verbose = TRUE)
+control <- control.net(type = "SI", nsteps = 100, nsims = 1, ncores = 1,
+                       tergmLite = FALSE, verbose = TRUE)
 
 sim <- netsim(est, param, init, control)
 plot(sim, qnts = FALSE, sim.lines = TRUE)
@@ -208,7 +208,7 @@ summary(sim, at = 250)
 param <- param.net(inf.prob = 0.4, act.rate = 1, rec.rate = 0.02,
                    a.rate = 0.005, ds.rate = 0.005, di.rate = 0.005)
 init <- init.net(i.num = 10)
-control <- control.net(type = "SIS", nsteps = 250, nsims = 10, ncores = 5,
+control <- control.net(type = "SIS", nsteps = 250, nsims = 1, ncores = 1,
                        tergmLite = FALSE)
 
 sim <- netsim(est, param, init, control)
@@ -280,11 +280,13 @@ param <- param.net(inf.prob = 0.5, inf.prob.g2 = 0.3,
                    di.rate.g2 = 0.005, ds.rate.g2 = 0.005)
 init <- init.net(i.num = 50, i.num.g2 = 50)
 control <- control.net(type = "SI", nsteps = 250, nsims = 1, ncores = 1,
-                       tergmLite = TRUE)
+                       tergmLite = FALSE)
 
 sim <- netsim(est, param, init, control)
 plot(sim, qnts = FALSE, sim.lines = TRUE)
-plot(sim, qnts = 1, ylim = c(0, 500))
+
+df <- as.data.frame(sim, out = "mean")
+df
 
 # set.seed(123)
 # crosscheck.net(est, param, init, control)
@@ -361,28 +363,6 @@ plot(sim, qnts = 1, ylim = c(0, 500))
 # Attr Copying Tests ------------------------------------------------------
 
 ## Closed Pop, 1G
-
-num <- 1000
-nw <- network.initialize(num, directed = FALSE)
-formation <- ~edges
-target.stats <- 400
-coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 25)
-est <- netest(nw, formation, target.stats, coef.diss)
-
-param <- param.net(inf.prob = 0.1, act.rate = 5)
-init <- init.net(i.num = 10)
-control <- control.net(type = "SI", nsteps = 250, nsims = 5, ncores = 5,
-                       tergmLite = FALSE)
-
-sim <- netsim(est, param, init, control)
-plot(sim, qnts = 1)
-summary(sim, at = 50)
-
-
-## Closed Pop, 2G
-
-
-## Open Pop, 1G
 num <- 1000
 nw <- network.initialize(num, directed = FALSE)
 nw <- set.vertex.attribute(nw, "race", sample(c("B","W"), num, TRUE))
@@ -393,34 +373,58 @@ coef.diss <- dissolution_coefs(dissolution = ~ offset(edges), duration = 25, d.r
 est <- netest(nw, formation, target.stats, coef.diss)
 summary(est)
 
-# Parameters
-param <- param.net(inf.prob = 0.5, act.rate = 1, rec.rate = 0.2,
+param <- param.net(inf.prob = 0.1, act.rate = 5)
+init <- init.net(i.num = 10)
+control <- control.net(type = "SI", nsteps = 250, nsims = 5, ncores = 5,
+                       tergmLite = TRUE)
+
+sim <- netsim(est, param, init, control)
+plot(sim, qnts = 1)
+summary(sim, at = 50)
+
+
+## Open Pop, 1G
+param <- param.net(inf.prob = 0.4, act.rate = 1, rec.rate = 0.02,
                    a.rate = 0.005, ds.rate = 0.005, di.rate = 0.005, dr.rate = 0.005)
 init <- init.net(i.num = 50, r.num = 0)
-control <- control.net(type = "SIR", nsteps = 25, nsims = 1, ncores = 1, tergmLite = FALSE)
+control <- control.net(type = "SIS", nsteps = 100, nsims = 1, ncores = 1, tergmLite = FALSE)
 
 sim <- netsim(est, param, init, control)
 plot(sim, qnts = FALSE, sim.lines = TRUE)
-plot(sim, qnts = 1, ylim = c(0, 500))
 
 
-## Open Pop, 2G
+
+## Closed Pop, 2G
 num1 <- num2 <- 500
 nw <- network.initialize(num1 + num2, directed = FALSE)
 nw <- set.vertex.attribute(nw, "group", rep(1:2, each = num1))
 nw <- set.vertex.attribute(nw, "race", sample(c("B","W"), num1+num2, replace = TRUE))
-formation <- ~ edges + nodematch("group")
-target.stats <- c(400, 0)
+nw <- set.vertex.attribute(nw, "age", sample(15:65, num1+num2, TRUE))
+formation <- ~ edges + nodematch("group") + absdiff("age")
+target.stats <- c(400, 0, 800)
 coef.diss <- dissolution_coefs(dissolution = ~ offset(edges), duration = 25, d.rate = 0.005)
 est <- netest(nw, formation, target.stats, coef.diss)
 
 # Parameters
+param <- param.net(inf.prob = 0.5, inf.prob.g2 = 0.3, act.rate = 1,
+                   rec.rate = 0.02, rec.rate.g2 = 0.02)
+init <- init.net(i.num = 50, i.num.g2 = 50)
+control <- control.net(type = "SIS", nsteps = 100, nsims = 1, ncores = 1, tergmLite = TRUE)
+
+sim <- netsim(est, param, init, control)
+plot(sim, qnts = FALSE, sim.lines = TRUE)
+
+
+
+## Open Pop, 2G
 param <- param.net(inf.prob = 0.5, inf.prob.g2 = 0.3,
                    act.rate = 1, a.rate = 0.005, a.rate.g2 = NA,
-                   di.rate = 0.005, ds.rate = 0.005,
-                   di.rate.g2 = 0.005, ds.rate.g2 = 0.005)
-init <- init.net(i.num = 50, i.num.g2 = 50)
-control <- control.net(type = "SI", nsteps = 250, nsims = 5, ncores = 5, tergmLite = TRUE)
+                   rec.rate = 0.01, rec.rate.g2 = 0.01,
+                   ds.rate = 0.005, di.rate = 0.005,
+                   ds.rate.g2 = 0.005, di.rate.g2 = 0.005,
+                   dr.rate = 0.005, dr.rate.g2 = 0.005)
+init <- init.net(i.num = 50, i.num.g2 = 50, r.num = 0, r.num.g2 = 0)
+control <- control.net(type = "SI", nsteps = 100, nsims = 1, ncores = 1, tergmLite = FALSE)
 
 sim <- netsim(est, param, init, control)
 plot(sim, qnts = FALSE, sim.lines = TRUE)
