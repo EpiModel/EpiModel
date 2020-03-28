@@ -189,7 +189,7 @@ color_tea <- function(nd, old.var = "testatus", old.sus = "s", old.inf = "i",
 #' @param dat Master data object passed through \code{netsim} simulations.
 #' @param at Current time step.#'
 #' @seealso \code{\link{get_formula_term_attr}}, \code{\link{get_attr_prop}},
-#'          \code{\link{update_nwattr}}.
+#'          \code{\link{auto_update_attr}}.
 #' @keywords netUtils internal
 #' @export
 #'
@@ -586,7 +586,7 @@ edgelist_meanage <- function(x, el) {
 #'        output of \code{\link{get_formula_term_attr}}.
 #'
 #' @seealso \code{\link{get_formula_term_attr}}, \code{\link{copy_nwattr_to_datattr}},
-#'          \code{\link{update_nwattr}}.
+#'          \code{\link{auto_update_attr}}.
 #' @keywords netUtils internal
 #' @export
 #'

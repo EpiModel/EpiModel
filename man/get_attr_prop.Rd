@@ -19,7 +19,7 @@ Calculates the proportional distribution of each vertex attribute
 }
 \seealso{
 \code{\link{get_formula_term_attr}}, \code{\link{copy_nwattr_to_datattr}},
-         \code{\link{update_nwattr}}.
+         \code{\link{auto_update_attr}}.
 }
 \keyword{internal}
 \keyword{netUtils}
