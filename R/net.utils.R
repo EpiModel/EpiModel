@@ -786,11 +786,10 @@ groupids <- function(nw, group) {
 #'
 auto_update_attr <- function(dat, newNodes, rules, curr.tab, t1.tab) {
 
-  if (dat$tergmLite == FALSE) {
-    for (i in 1:length(curr.tab)) {
-      vname_ <- names(curr.tab)[i]
-      vname <- vname_[!(vname_ %in% c("group", "status"))]
+  if (dat$control$tergmLite == FALSE) {
 
+    for (i in 1:length(curr.tab)) {
+      vname <- names(curr.tab)[i]
       if (length(vname) > 0) {
         rule <- rules[[vname]]
 
@@ -826,57 +825,55 @@ auto_update_attr <- function(dat, newNodes, rules, curr.tab, t1.tab) {
         } else {
           nattr <- rep(rules[[vname]], length(newNodes))
         }
-        nw <- set.vertex.attribute(nw, attrname = vname,
-                                   value = nattr, v = newNodes)
+        dat$nw <- set.vertex.attribute(dat$nw, attrname = vname,
+                                       value = nattr, v = newNodes)
       }
     }
   }
 
-  if (dat$tergmLite == TRUE) {
-      for (i in 1:length(curr.tab)) {
-        vname_ <- names(curr.tab)[i]
-        vname <- vname_[!(vname_ %in% c("group", "status", "entrTime",
-                                        "exitTime", "active"))]
-        if (length(vname) > 0) {
-          rule <- rules[[vname]]
+  if (dat$control$tergmLite == TRUE) {
+    for (i in 1:length(curr.tab)) {
+      vname <- names(curr.tab)[i]
+      if (length(vname) > 0) {
+        rule <- rules[[vname]]
 
-          if (is.null(rule)) {
-            rule <- "current"
-          }
-          if (rule == "current") {
-            class(curr.tab[[vname]])
-            if (vclass == "character") {
-              nattr <- sample(names(curr.tab[[vname]]),
-                              size = newNodes,
-                              replace = TRUE,
-                              prob = curr.tab[[vname]])
-            } else {
-              nattr <- sample(as.numeric(names(curr.tab[[i]])),
-                              size = newNodes,
-                              replace = TRUE,
-                              prob = curr.tab[[i]])
-            }
-          } else if (rule == "t1") {
-            vclass <- class(curr.tab[[vname]])
-            if (vclass == "character") {
-              nattr <- sample(names(t1.tab[[vname]]),
-                              size = newNodes,
-                              replace = TRUE,
-                              prob = t1.tab[[vname]])
-            } else {
-              nattr <- sample(as.numeric(names(t1.tab[[i]])),
-                              size = newNodes,
-                              replace = TRUE,
-                              prob = t1.tab[[i]])
-            }
-          } else {
-            nattr <- rep(rules[[vname]], length(newNodes))
-          }
-          dat$attr[[vname]] <- c(dat$attr[[vname]], nattr)
+        if (is.null(rule)) {
+          rule <- "current"
         }
+        if (rule == "current") {
+          vclass <- class(dat$attr[[vname]])
+          if (vclass == "character") {
+            nattr <- sample(names(curr.tab[[vname]]),
+                            size = sum(newNodes),
+                            replace = TRUE,
+                            prob = curr.tab[[vname]])
+          } else {
+            nattr <- sample(as.numeric(names(curr.tab[[i]])),
+                            size = sum(newNodes),
+                            replace = TRUE,
+                            prob = curr.tab[[i]])
+          }
+        } else if (rule == "t1") {
+          vclass <- class(dat$attr[[vname]])
+          if (vclass == "character") {
+            nattr <- sample(names(t1.tab[[vname]]),
+                            size = sum(newNodes),
+                            replace = TRUE,
+                            prob = t1.tab[[vname]])
+          } else {
+            nattr <- sample(as.numeric(names(t1.tab[[i]])),
+                            size = sum(newNodes),
+                            replace = TRUE,
+                            prob = t1.tab[[i]])
+          }
+        } else {
+          nattr <- rep(rules[[vname]], length(newNodes))
+        }
+        dat$attr[[vname]] <- c(dat$attr[[vname]], nattr)
       }
+    }
   }
-  return(nw)
+  return(dat)
 }
 
 
