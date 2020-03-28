@@ -459,21 +459,6 @@ test_that("Open population 1 group models", {
   test_net(x)
   rm(x)
 
-  ## "SI, 1M, OP, deterministic arrivals and departures: 1 sim"
-  param <- param.net(inf.prob = 0.5, act.rate = 2, a.rate = 0.02,
-                     ds.rate = 0.02, di.rate = 0.02)
-  init <- init.net(i.num = 10)
-  control <- control.net(type = "SI", nsteps = 25, nsims = 1,
-                         verbose = FALSE,
-                         a.rand = FALSE, d.rand = FALSE)
-  x <- netsim(est.vit, param, init, control)
-  expect_is(x, "netsim")
-  expect_is(as.data.frame(x), "data.frame")
-  expect_equal(x$param$vital, TRUE)
-  expect_output(summary(x, at = 10), "EpiModel Summary")
-  test_net(x)
-  rm(x)
-
   ## "SI, 1M, OP: 2 sim"
   param <- param.net(inf.prob = 0.5, act.rate = 2, a.rate = 0.02,
                      ds.rate = 0.02, di.rate = 0.02)
