@@ -18,7 +18,7 @@ Calculates the proportional distribution of each vertex attribute
              contained on the network.
 }
 \seealso{
-\code{\link{get_formula_term_attr}}, \code{\link{copy_toall_attr}},
+\code{\link{get_formula_term_attr}}, \code{\link{copy_nwattr_to_datattr}},
          \code{\link{update_nwattr}}.
 }
 \keyword{internal}

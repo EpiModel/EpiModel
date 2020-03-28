@@ -29,11 +29,12 @@ nwupdate.net <- function(dat, at) {
         dat$nw <- add.vertices(dat$nw, nv = sum(nArrivals))
         newNodes <- (nCurr + 1):(nCurr + sum(nArrivals))
         dat$nw <- activate.vertices(dat$nw, onset = at, terminus = Inf, v = newNodes)
-        if (length(nArrivals) > 1) {
-          dat$nw <- set.vertex.attribute(dat$nw, "group",
-                                         rep(1:2, c(nArrivals[1], nArrivals[2])),
-                                         newNodes)
-        }
+        # TODO: not updating group on the nw like this
+        # if (length(nArrivals) > 1) {
+        #   dat$nw <- set.vertex.attribute(dat$nw, "group",
+        #                                  rep(1:2, c(nArrivals[1], nArrivals[2])),
+        #                                  newNodes)
+        # }
 
         # Set attributes on nw
         nwterms <- dat$temp$nwterms
@@ -46,7 +47,8 @@ nwupdate.net <- function(dat, at) {
 
           # Save any val on attr
           if (!is.null(nwterms)) {
-            dat <- copy_toall_attr(dat, at)
+            # TODO: remove this
+            # dat <- copy_toall_attr(dat, at)
             if (length(unique(sapply(dat$attr, length))) != 1) {
               stop("Attribute list of unequal length. Check arrivals.net module.")
             }

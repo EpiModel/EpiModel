@@ -26,7 +26,7 @@ Updates the vertex attributes on a network for new nodes incoming
              that the user specifies in \code{control.net}.
 }
 \seealso{
-\code{\link{copy_toall_attr}}, \code{\link{get_attr_prop}},
+\code{\link{copy_nwattr_to_datattr}}, \code{\link{get_attr_prop}},
          \code{\link{auto_update_attr}}.
 }
 \keyword{internal}

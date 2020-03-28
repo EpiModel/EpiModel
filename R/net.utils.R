@@ -193,7 +193,7 @@ color_tea <- function(nd, old.var = "testatus", old.sus = "s", old.inf = "i",
 #' @keywords netUtils internal
 #' @export
 #'
-copy_toall_attr <- function(dat, at) {
+copy_nwattr_to_datattr <- function(dat, at) {
   otha <- names(dat$nw$val[[1]])
   otha <- setdiff(otha, c("na", "vertex.names", "active", "group", "status",
                           "testatus.active", "tergm_pid"))
@@ -585,7 +585,7 @@ edgelist_meanage <- function(x, el) {
 #' @param nwterms Vector of attributes on network object, usually as
 #'        output of \code{\link{get_formula_term_attr}}.
 #'
-#' @seealso \code{\link{get_formula_term_attr}}, \code{\link{copy_toall_attr}},
+#' @seealso \code{\link{get_formula_term_attr}}, \code{\link{copy_nwattr_to_datattr}},
 #'          \code{\link{update_nwattr}}.
 #' @keywords netUtils internal
 #' @export
@@ -676,7 +676,8 @@ get_network_term_attr <- function(nw) {
 
   nw_attr <- names(nw$val[[1]])
   nw_attr <- setdiff(nw_attr, c("active", "vertex.names", "na",
-                                "testatus.active", "tergm_pid", "group", "status"))
+                                "testatus.active", "tergm_pid",
+                                "group", "status"))
 
   if (length(nw_attr) == 0) {
     return(NULL)
@@ -779,7 +780,7 @@ groupids <- function(nw, group) {
 #' @param t1.tab Proportional distribution of all vertex attributes at the outset
 #'        of the simulation.
 #'
-#' @seealso \code{\link{copy_toall_attr}}, \code{\link{get_attr_prop}},
+#' @seealso \code{\link{copy_nwattr_to_datattr}}, \code{\link{get_attr_prop}},
 #'          \code{\link{auto_update_attr}}.
 #' @keywords netUtils internal
 #' @export

@@ -53,7 +53,6 @@ initialize.net <- function(x, param, init, control, s) {
       dat$attr$group <- get.vertex.attribute(dat$nw, "group")
     }
 
-
     # Initial Attributes ------------------------------------------------------
     num <- network.size(nw)
     dat$attr$active <- rep(1, num)
@@ -63,12 +62,12 @@ initialize.net <- function(x, param, init, control, s) {
     # Network Attributes ------------------------------------------------------
     ## Pull network val to attr
     nwterms <- get_network_term_attr(nw)
-    dat <- copy_toall_attr(dat, at = 1)
+    dat <- copy_nwattr_to_datattr(dat, at = 1)
 
     ## Store current proportions of attr
     dat$temp$nwterms <- nwterms
     if (!is.null(nwterms)){
-    dat$temp$t1.tab <- get_attr_prop(dat, nwterms)
+      dat$temp$t1.tab <- get_attr_prop(dat, nwterms)
     }
 
     # Conversions for tergmLite
