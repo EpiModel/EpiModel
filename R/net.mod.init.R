@@ -63,11 +63,13 @@ initialize.net <- function(x, param, init, control, s) {
     # Network Attributes ------------------------------------------------------
     ## Pull network val to attr
     nwterms <- get_network_term_attr(nw)
-    dat <- copy_toall_attr(dat, at = 1, nwterms)
+    dat <- copy_toall_attr(dat, at = 1)
 
     ## Store current proportions of attr
     dat$temp$nwterms <- nwterms
+    if (!is.null(nwterms)){
     dat$temp$t1.tab <- get_attr_prop(dat, nwterms)
+    }
 
     # Conversions for tergmLite
     if (control$tergmLite == TRUE) {
