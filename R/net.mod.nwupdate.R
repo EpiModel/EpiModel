@@ -18,13 +18,6 @@ nwupdate.net <- function(dat, at) {
 
     if (dat$param$vital != FALSE) {
 
-      ## Departures
-      inactive <- which(dat$attr$active == 0 & dat$attr$exitTime == at)
-      if (length(inactive) > 0) {
-        dat$nw <- deactivate.vertices(dat$nw, onset = at, terminus = Inf,
-                                      v = inactive, deactivate.edges = TRUE)
-      }
-
       ## Arrivals
       if (groups == 1) {
         nArrivals <- dat$epi$a.flow[at]
@@ -44,24 +37,33 @@ nwupdate.net <- function(dat, at) {
 
         # Set attributes on nw
         nwterms <- dat$temp$nwterms
-        curr.tab <- get_attr_prop(dat, nwterms)
-        if (length(curr.tab) > 0) {
-          dat$nw <- auto_update_attr(dat, newNodes, dat$control$attr.rules,
-                                  curr.tab, dat$temp$t1.tab)
-        }
-
-        # Save any val on attr
         if (!is.null(nwterms)) {
-          dat <- copy_toall_attr(dat, at, nwterms)
-          if (length(unique(sapply(dat$attr, length))) != 1) {
-            stop("Attribute list of unequal length. Check arrivals.net module.")
+          curr.tab <- get_attr_prop(dat, nwterms)
+          if (length(curr.tab) > 0) {
+            dat <- auto_update_attr(dat, newNodes, dat$control$attr.rules,
+                                    curr.tab, dat$temp$t1.tab)
           }
-        }
-        dat$nw <- activate.vertex.attribute(dat$nw, prefix = "testatus",
-                                            value = dat$attr$status[newNodes],
-                                            onset = at, terminus = Inf,
-                                            v = newNodes)
 
+          # Save any val on attr
+          if (!is.null(nwterms)) {
+            dat <- copy_toall_attr(dat, at)
+            if (length(unique(sapply(dat$attr, length))) != 1) {
+              stop("Attribute list of unequal length. Check arrivals.net module.")
+            }
+          }
+          dat$nw <- activate.vertex.attribute(dat$nw, prefix = "testatus",
+                                              value = dat$attr$status[newNodes],
+                                              onset = at, terminus = Inf,
+                                              v = newNodes)
+        }
+
+      }
+
+      ## Departures
+      inactive <- which(dat$attr$active == 0 & dat$attr$exitTime == at)
+      if (length(inactive) > 0) {
+        dat$nw <- deactivate.vertices(dat$nw, onset = at, terminus = Inf,
+                                      v = inactive, deactivate.edges = TRUE)
       }
     }
 
@@ -95,6 +97,25 @@ nwupdate.net <- function(dat, at) {
   if (dat$control$tergmLite == TRUE) {
 
     if (dat$param$vital != FALSE) {
+      ## Arrivals
+      nwterms <- dat$temp$nwterms
+
+      if (!is.null(nwterms)) {
+        curr.tab <- get_attr_prop(dat, nwterms)
+
+        if (groups == 1) {
+          nArrivals <- dat$epi$a.flow[at]
+        } else {
+          nArrivals <- c(dat$epi$a.flow[at], dat$epi$a.flow.g2[at])
+        }
+        if (sum(nArrivals) > 0) {
+          nCurr <- sum(dat$attr$active == 1)
+          dat$el[[1]] <- add_vertices(dat$el[[1]], nv = sum(nArrivals))
+          dat <- auto_update_attr(dat, nArrivals, dat$control$attr.rules,
+                                  curr.tab, dat$temp$t1.tab)
+
+        }
+      }
 
       ## Departures
       inactive <- which(dat$attr$active == 0 & dat$attr$exitTime == at)
@@ -102,25 +123,7 @@ nwupdate.net <- function(dat, at) {
         dat$attr <- deleteAttr(dat$attr, inactive)
         dat$el[[1]] <- delete_vertices(dat$el[[1]], inactive)
       }
-
-      ## Arrivals
-      nwterms <- dat$temp$nwterms
-      curr.tab <- get_attr_prop(dat, nwterms)
-
-      if (groups == 1) {
-        nArrivals <- dat$epi$a.flow[at]
-      } else {
-        nArrivals <- c(dat$epi$a.flow[at], dat$epi$a.flow.g2[at])
-      }
-      if (sum(nArrivals) > 0) {
-        nCurr <- sum(dat$attr$active == 1)
-        dat$el[[1]] <- add_vertices(dat$el[[1]], nv = sum(nArrivals))
-        dat <- auto_update_attr(dat, nArrivals, dat$control$attr.rules,
-                                curr.tab, dat$temp$t1.tab)
-
-      }
     }
-
   }
 
   ## Output
