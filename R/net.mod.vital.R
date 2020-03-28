@@ -156,12 +156,7 @@ departures.2g.net <- function(dat, at) {
   }
 
   # Variables ---------------------------------------------------------------
-  if (dat$control$tergmLite == FALSE){
-    group <- get.vertex.attribute(dat$nw, "group")
-  } else {
-    group <- dat$attr$group
-  }
-
+  group <- dat$attr$group
   type <- dat$control$type
 
   # Susceptible departures ------------------------------------------------------
