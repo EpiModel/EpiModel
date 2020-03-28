@@ -186,6 +186,9 @@ init_status.net <- function(dat) {
 
   ## Set up TEA status
   if (dat$control$tergmLite == FALSE) {
+    if (statOnNw == FALSE) {
+      dat$nw <- set.vertex.attribute(dat$nw, "status", status)
+    }
     dat$nw <- activate.vertex.attribute(dat$nw,
                                         prefix = "testatus",
                                         value = status,
