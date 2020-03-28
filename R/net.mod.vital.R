@@ -110,55 +110,19 @@ arrivals.net <- function(dat, at) {
   # Variables ---------------------------------------------------------------
   a.rate <- dat$param$a.rate
   nOld <- dat$epi$num[at - 1]
-  tergmLite <- dat$control$tergmLite
-  nCurr <- length(dat$attr$active)
-
   nArrivals <- 0
 
   # Add Nodes ---------------------------------------------------------------
   if (nOld > 0) {
     nArrivals <- sum(rbinom(nOld, 1, a.rate))
     if (nArrivals > 0) {
-      if (tergmLite == FALSE) {
-        nwterms <- dat$temp$nwterms
-        if (!("status" %in% nwterms)) {
-          dat$attr$status <- c(dat$attr$status, rep("s", nArrivals))
-        }
-        dat$attr$active <- c(dat$attr$active, rep(1, nArrivals))
-        dat$attr$infTime <- c(dat$attr$infTime, rep(NA, nArrivals))
-        dat$attr$entrTime <- c(dat$attr$entrTime, rep(at, nArrivals))
-        dat$attr$exitTime <- c(dat$attr$exitTime, rep(NA, nArrivals))
-
-        ## Handles infTime when incoming nodes are infected
-        newNodes <- c((nCurr+1):(nCurr+nArrivals))
-        newNodesInf <- intersect(newNodes, which(dat$attr$status == "i"))
-        dat$attr$infTime[newNodesInf] <- at
-
-        if (length(unique(sapply(dat$attr, length))) != 1 & is.null(nwterms)) {
-          stop("Attribute list of unequal length. Check arrivals.net module.")
-        }
-      }
-
-      if (tergmLite == TRUE) {
-        dat$attr$status <- c(dat$attr$status, rep("s", nArrivals))
-        dat$attr$active <- c(dat$attr$active, rep(1, nArrivals))
-        dat$attr$infTime <- c(dat$attr$infTime, rep(NA, nArrivals))
-        dat$attr$entrTime <- c(dat$attr$entrTime, rep(at, nArrivals))
-        dat$attr$exitTime <- c(dat$attr$exitTime, rep(NA, nArrivals))
-
-        ## Handles infTime when incoming nodes are infected
-        newNodes <- c((nCurr+1):(nCurr+nArrivals))
-        newNodesInf <- intersect(newNodes, which(dat$attr$status == "i"))
-        dat$attr$infTime[newNodesInf] <- at
-
-        if (length(unique(sapply(dat$attr, length))) != 1) {
-          stop("Attribute list of unequal length. Check arrivals.net module.")
-        }
-      }
+      dat$attr$status <- c(dat$attr$status, rep("s", nArrivals))
+      dat$attr$active <- c(dat$attr$active, rep(1, nArrivals))
+      dat$attr$infTime <- c(dat$attr$infTime, rep(NA, nArrivals))
+      dat$attr$entrTime <- c(dat$attr$entrTime, rep(at, nArrivals))
+      dat$attr$exitTime <- c(dat$attr$exitTime, rep(NA, nArrivals))
     }
   }
-
-
 
   # Output ------------------------------------------------------------------
   if (at == 2) {
@@ -330,45 +294,15 @@ arrivals.2g.net <- function(dat, at) {
     }
 
     if (totArr > 0) {
-      if (tergmLite == FALSE) {
-        nCurr <- length(dat$attr$active)
-        newNodes <- (nCurr + 1):(nCurr + totArr)
-        nwterms <- dat$temp$nwterms
-        if (!("status" %in% nwterms)) {
-          dat$attr$status <- c(dat$attr$status, rep("s", totArr))
-        }
-        dat$attr$group <- c(dat$attr$group, c(rep(1, nArrivals),
-                                              rep(2, nArrivalsG2)))
-        dat$attr$active <- c(dat$attr$active, rep(1, totArr))
-        dat$attr$infTime <- c(dat$attr$infTime, rep(NA, totArr))
-        dat$attr$entrTime <- c(dat$attr$entrTime, rep(at, totArr))
-        dat$attr$exitTime <- c(dat$attr$exitTime, rep(NA, totArr))
-
-        ## Handles infTime when incoming nodes are infected
-        newNodesInf <- intersect(newNodes, which(dat$attr$status == "i"))
-        dat$attr$infTime[newNodesInf] <- at
-      }
-
-      if (tergmLite == TRUE) {
-        nCurr <- length(which(dat$attr$active == 1))
-        newNodes <- (nCurr + 1):(nCurr + totArr)
-
-        dat$attr$group <- c(dat$attr$group, c(rep(1, nArrivals),
-                                              rep(2, nArrivalsG2)))
-        dat$attr$status <- c(dat$attr$status, rep("s", sum(totArr)))
-        dat$attr$active <- c(dat$attr$active, rep(1, sum(totArr)))
-        dat$attr$infTime <- c(dat$attr$infTime, rep(NA, sum(totArr)))
-        dat$attr$entrTime <- c(dat$attr$entrTime, rep(at, sum(totArr)))
-        dat$attr$exitTime <- c(dat$attr$exitTime, rep(NA, sum(totArr)))
-
-        ## Handles infTime when incoming nodes are infected
-        newNodesInf <- intersect(newNodes, which(dat$attr$status == "i"))
-        dat$attr$infTime[newNodesInf] <- at
-
-        #if (length(unique(sapply(dat$attr, length))) != 1) {
-        #  stop("Attribute list of unequal length. Check arrivals.net module.")
-        #}
-      }
+      nCurr <- length(dat$attr$active)
+      newNodes <- (nCurr + 1):(nCurr + totArr)
+      dat$attr$group <- c(dat$attr$group, c(rep(1, nArrivals),
+                                            rep(2, nArrivalsG2)))
+      dat$attr$status <- c(dat$attr$status, rep("s", totArr))
+      dat$attr$active <- c(dat$attr$active, rep(1, totArr))
+      dat$attr$infTime <- c(dat$attr$infTime, rep(NA, totArr))
+      dat$attr$entrTime <- c(dat$attr$entrTime, rep(at, totArr))
+      dat$attr$exitTime <- c(dat$attr$exitTime, rep(NA, totArr))
     }
   }
 
