@@ -58,7 +58,7 @@ nwupdate.net <- function(dat, at) {
     }
     if (length(unique(sapply(dat$attr, length))) != 1) {
       stop("Attribute list of unequal length. Check arrivals.net module.\n",
-           print(sapply(dat$attr, length)))
+           print(cbind(sapply(dat$attr, length))))
     }
     if (tL == FALSE) {
       dat$nw <- add.vertices(dat$nw, nv = sum(nArrivals))
