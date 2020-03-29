@@ -648,7 +648,7 @@ test_that("Extinction open-population models", {
   param <- param.net(inf.prob = 0.1, inf.prob.g2 = 0.1, act.rate = 2,
                      a.rate = 0.02, ds.rate = 0.5, di.rate = 0.5,
                      a.rate.g2 = 0.02, ds.rate.g2 = 0.02, di.rate.g2 = 0.02)
-  init <- init.net(i.num = 1, i.num.g2 = 0)
+  init <- init.net(i.num = 5, i.num.g2 = 0)
   control <- control.net(type = "SI", nsteps = 30, nsims = 1,
                          verbose = FALSE)
   x <- netsim(est, param, init, control)
@@ -663,7 +663,7 @@ test_that("Extinction open-population models", {
   param <- param.net(inf.prob = 0.1, inf.prob.g2 = 0.1, act.rate = 2,
                      a.rate = 0.02, ds.rate = 0.02, di.rate = 0.02,
                      a.rate.g2 = 0.02, ds.rate.g2 = 0.5, di.rate.g2 = 0.5)
-  init <- init.net(i.num = 1, i.num.g2 = 0)
+  init <- init.net(i.num = 5, i.num.g2 = 0)
   control <- control.net(type = "SI", nsteps = 30, nsims = 1,
                          erbose = FALSE)
   x <- netsim(est, param, init, control)
