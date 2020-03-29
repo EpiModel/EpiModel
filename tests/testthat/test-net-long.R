@@ -26,7 +26,7 @@ test_that("edges models", {
   plot(x, type = "formation")
   plot(x, type = "network")
   plot(x, type = "network", sims = "mean", col.status = TRUE)
-  test_net(x)
+  # # test_net(x)
   rm(x)
 
   ## "SI, 1M, CL: 1 sim, inf.prob = 0"
@@ -44,7 +44,7 @@ test_that("edges models", {
   plot(x, type = "formation")
   plot(x, type = "network")
   plot(x, type = "network", sims = "mean", col.status = TRUE)
-  test_net(x)
+  # test_net(x)
   rm(x)
 
   ## "SI, 1M, CL: 2 sim"
@@ -67,7 +67,7 @@ test_that("edges models", {
   plot(x, type = "formation", sim.lines = TRUE, qnts.smooth = FALSE)
   plot(x, type = "network")
   plot(x, type = "network", sims = "mean", col.status = TRUE)
-  test_net(x)
+  # test_net(x)
   rm(x)
 
   ## "SI, 1M, CL: 2 sim, use TEAs"
@@ -88,7 +88,7 @@ test_that("edges models", {
   plot(x, type = "formation")
   plot(x, type = "network")
   plot(x, type = "network", sims = "mean", col.status = TRUE)
-  test_net(x)
+  # test_net(x)
   rm(x)
 
   ## "SI, 1M, CL: 2 sim, set status.vector"
@@ -108,7 +108,7 @@ test_that("edges models", {
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
   plot(x, type = "network", col.status = TRUE)
-  test_net(x)
+  # test_net(x)
   rm(x)
 
   ## "SIR, 1M, CL: 1 sim"
@@ -127,7 +127,7 @@ test_that("edges models", {
   plot(x, type = "formation")
   plot(x, type = "network")
   plot(x, type = "network", sims = "mean", col.status = TRUE)
-  test_net(x)
+  # test_net(x)
   rm(x)
 
   ## "SIR, 1M, CL: 1 sim, inf.prob=0"
@@ -146,7 +146,7 @@ test_that("edges models", {
   plot(x, type = "formation")
   plot(x, type = "network")
   plot(x, type = "network", sims = "mean", col.status = TRUE)
-  test_net(x)
+  # test_net(x)
   rm(x)
 
   ## "SIR, 1M, CL: 2 sim"
@@ -165,7 +165,7 @@ test_that("edges models", {
   plot(x, type = "formation")
   plot(x, type = "network")
   plot(x, type = "network", sims = "mean", col.status = TRUE)
-  test_net(x)
+  # test_net(x)
   rm(x)
 
   ## "SIR, 1M, CL: 2 sim, set status.vector"
@@ -185,7 +185,7 @@ test_that("edges models", {
   plot(x, type = "formation")
   plot(x, type = "network")
   plot(x, type = "network", sims = "mean", col.status = TRUE)
-  test_net(x)
+  # test_net(x)
   rm(x)
 
   ## "SIS, 1M, CL: 1 sim"
@@ -204,7 +204,7 @@ test_that("edges models", {
   plot(x, type = "formation")
   plot(x, type = "network")
   plot(x, type = "network", sims = "mean", col.status = TRUE)
-  test_net(x)
+  # test_net(x)
   rm(x)
 
   ## "SIS, 1M, CL: 1 sim, inf.prob=0"
@@ -223,7 +223,7 @@ test_that("edges models", {
   plot(x, type = "formation")
   plot(x, type = "network")
   plot(x, type = "network", sims = "mean", col.status = TRUE)
-  test_net(x)
+  # test_net(x)
   rm(x)
 
   ## "SIS, 1M, CL: 2 sim"
@@ -240,7 +240,7 @@ test_that("edges models", {
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
-  test_net(x)
+  # test_net(x)
   rm(x)
 
   ## "SIS, 1M, CL: 2 sim, test TEAs"
@@ -260,7 +260,7 @@ test_that("edges models", {
   plot(x, type = "formation")
   plot(x, type = "network")
   plot(x, type = "network", sims = "mean", col.status = TRUE)
-  test_net(x)
+  # test_net(x)
   rm(x)
 
   ## "SIS, 1M, CL: 2 sim, set status.vector"
@@ -280,7 +280,7 @@ test_that("edges models", {
   plot(x, type = "formation")
   plot(x, type = "network")
   plot(x, type = "network", sims = "mean", col.status = TRUE)
-  test_net(x)
+  # test_net(x)
 })
 
 
@@ -309,7 +309,7 @@ test_that("High departure rate models", {
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
-  test_net(x)
+  # test_net(x)
   rm(x)
 
   ## "netsim: 1M, di.rate = 0.5"
@@ -324,7 +324,7 @@ test_that("High departure rate models", {
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
-  test_net(x)
+  # test_net(x)
 
 })
 
@@ -359,7 +359,7 @@ test_that("edges two-group models", {
   plot(x, type = "network", shp.bip = "triangle")
   #FLAG: Adding "two-group" attribute to network type
   expect_error(plot(x, type = "network", shp.bip = TRUE))
-  test_net(x)
+  # test_net(x)
   rm(x)
 
   ## "SIR, 2M, CL: 2 sim"
@@ -377,7 +377,7 @@ test_that("edges two-group models", {
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
-  test_net(x)
+  # test_net(x)
   rm(x)
 
   ## "SIR, 2M, CL: rec.rate = 0"
@@ -394,7 +394,7 @@ test_that("edges two-group models", {
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
-  test_net(x)
+  # test_net(x)
   rm(x)
 
   ## "SIS, 2M, CL: 2 sim"
@@ -411,7 +411,7 @@ test_that("edges two-group models", {
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
-  test_net(x)
+  # test_net(x)
   rm(x)
 
   ## "SIS, 2M, CL: rec.rate = 0"
@@ -427,7 +427,7 @@ test_that("edges two-group models", {
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
-  test_net(x)
+  # test_net(x)
   rm(x)
 
 })
@@ -456,7 +456,7 @@ test_that("Open population 1 group models", {
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
-  test_net(x)
+  # test_net(x)
   rm(x)
 
   ## "SI, 1M, OP: 2 sim"
@@ -474,7 +474,7 @@ test_that("Open population 1 group models", {
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
-  test_net(x)
+  # test_net(x)
   rm(x)
 
   ## "SIR, 1M OP: 1 sim"
@@ -492,7 +492,7 @@ test_that("Open population 1 group models", {
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
-  test_net(x)
+  # test_net(x)
   rm(x)
 
   ## "SIR, 1M, OP: 2 sim"
@@ -510,7 +510,7 @@ test_that("Open population 1 group models", {
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
-  test_net(x)
+  # test_net(x)
   rm(x)
 
   ## "SIS, 1M, OP: 1 sim"
@@ -527,7 +527,7 @@ test_that("Open population 1 group models", {
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
-  test_net(x)
+  # test_net(x)
   rm(x)
 
   ## "SIS, 1M, OP: 2 sim"
@@ -541,7 +541,7 @@ test_that("Open population 1 group models", {
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
-  test_net(x)
+  # test_net(x)
   rm(x)
 
 })
@@ -573,7 +573,7 @@ test_that("Open-population two-group models", {
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
-  test_net(x)
+  # test_net(x)
   rm(x)
 
 
@@ -592,7 +592,7 @@ test_that("Open-population two-group models", {
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
-  test_net(x)
+  # test_net(x)
   rm(x)
 
   ## "SIR, 2M, OP: 1 sim"
@@ -613,7 +613,7 @@ test_that("Open-population two-group models", {
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
-  test_net(x)
+  # test_net(x)
   rm(x)
 
   ## "SIR, 2M, OP: 3 sim"
@@ -627,7 +627,7 @@ test_that("Open-population two-group models", {
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
-  test_net(x)
+  # test_net(x)
   rm(x)
 
 })
@@ -656,7 +656,7 @@ test_that("Extinction open-population models", {
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
-  test_net(x)
+  # test_net(x)
   rm(x)
 
   ## "netsim: 2M, ds.rate.g2 = 0.5"
@@ -671,7 +671,7 @@ test_that("Extinction open-population models", {
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
-  test_net(x)
+  # test_net(x)
   rm(x)
 
 })
