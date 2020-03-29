@@ -195,7 +195,7 @@ color_tea <- function(nd, old.var = "testatus", old.sus = "s", old.inf = "i",
 #'
 copy_nwattr_to_datattr <- function(dat) {
   otha <- names(dat$nw$val[[1]])
-  otha <- setdiff(otha, c("na", "vertex.names", "active", "group", "status",
+  otha <- setdiff(otha, c("na", "vertex.names", "active",
                           "testatus.active", "tergm_pid"))
   if (length(otha) > 0) {
     for (i in seq_along(otha)) {
@@ -228,6 +228,7 @@ copy_datattr_to_nwattr <- function(dat) {
   if (dat$param$groups == 2) {
     special.attr <- c(special.attr, "group")
   }
+  nwterms <- union(nwterms, special.attr)
   attr.to.copy <- union(nwterms, special.attr)
   attr <- dat$attr[attr.to.copy]
   if (length(attr.to.copy) > 0) {
@@ -700,8 +701,7 @@ get_network_term_attr <- function(nw) {
 
   nw_attr <- names(nw$val[[1]])
   nw_attr <- setdiff(nw_attr, c("active", "vertex.names", "na",
-                                "testatus.active", "tergm_pid",
-                                "group", "status"))
+                                "testatus.active", "tergm_pid"))
 
   if (length(nw_attr) == 0) {
     return(NULL)
