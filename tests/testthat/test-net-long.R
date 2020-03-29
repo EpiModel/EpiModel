@@ -112,7 +112,7 @@ test_that("edges models", {
   rm(x)
 
   ## "SIR, 1M, CL: 1 sim"
-  param <- param.net(inf.prob = 0.5, rec.rate = 0.02)
+  param <- param.net(inf.prob = 0.5, rec.rate = 0.01)
   init <- init.net(i.num = 10, r.num = 0)
   control <- control.net(type = "SIR", nsims = 1, nsteps = 25,
                          verbose = FALSE)
@@ -131,7 +131,7 @@ test_that("edges models", {
   rm(x)
 
   ## "SIR, 1M, CL: 1 sim, inf.prob=0"
-  param <- param.net(inf.prob = 0, rec.rate = 0.02)
+  param <- param.net(inf.prob = 0, rec.rate = 0.01)
   init <- init.net(i.num = 10, r.num = 0)
   control <- control.net(type = "SIR", nsims = 1,
                          nsteps = 25, verbose = FALSE)
@@ -439,12 +439,12 @@ test_that("Open population 1 group models", {
 
   nw <- network.initialize(n = 100, directed = FALSE)
   est.vit <- netest(nw, formation = ~edges, target.stats = 25,
-                    coef.diss = dissolution_coefs(~offset(edges), 10, 0.02),
+                    coef.diss = dissolution_coefs(~offset(edges), 10, 0.01),
                     verbose = FALSE)
 
   ## "SI, 1M, OP: 1 sim"
-  param <- param.net(inf.prob = 0.5, act.rate = 2, a.rate = 0.02,
-                     ds.rate = 0.02, di.rate = 0.02)
+  param <- param.net(inf.prob = 0.5, act.rate = 2, a.rate = 0.01,
+                     ds.rate = 0.01, di.rate = 0.01)
   init <- init.net(i.num = 10)
   control <- control.net(type = "SI", nsteps = 10, nsims = 1,
                          verbose = FALSE)
@@ -460,8 +460,8 @@ test_that("Open population 1 group models", {
   rm(x)
 
   ## "SI, 1M, OP: 2 sim"
-  param <- param.net(inf.prob = 0.5, act.rate = 2, a.rate = 0.02,
-                     ds.rate = 0.02, di.rate = 0.02)
+  param <- param.net(inf.prob = 0.5, act.rate = 2, a.rate = 0.01,
+                     ds.rate = 0.01, di.rate = 0.01)
   init <- init.net(i.num = 10)
   control <- control.net(type = "SI", nsteps = 10,
                          nsims = 2,
@@ -479,8 +479,8 @@ test_that("Open population 1 group models", {
 
   ## "SIR, 1M OP: 1 sim"
   param <- param.net(inf.prob = 0.5, rec.rate = 0.1, act.rate = 2,
-                     a.rate = 0.02, ds.rate = 0.02, di.rate = 0.02,
-                     dr.rate = 0.02)
+                     a.rate = 0.01, ds.rate = 0.01, di.rate = 0.01,
+                     dr.rate = 0.01)
   init <- init.net(i.num = 10, r.num = 0)
   control <- control.net(type = "SIR", nsteps = 10, nsims = 1,
                          verbose = FALSE)
@@ -497,8 +497,8 @@ test_that("Open population 1 group models", {
 
   ## "SIR, 1M, OP: 2 sim"
   param <- param.net(inf.prob = 0.5, rec.rate = 0.1, act.rate = 2,
-                     a.rate = 0.02, ds.rate = 0.02, di.rate = 0.02,
-                     dr.rate = 0.02)
+                     a.rate = 0.01, ds.rate = 0.01, di.rate = 0.01,
+                     dr.rate = 0.01)
   init <- init.net(i.num = 10, r.num = 0)
   control <- control.net(type = "SIR", nsteps = 10, nsims = 2,
                          verbose = FALSE)
@@ -515,7 +515,7 @@ test_that("Open population 1 group models", {
 
   ## "SIS, 1M, OP: 1 sim"
   param <- param.net(inf.prob = 0.5, rec.rate = 0.01, act.rate = 2,
-                     a.rate = 0.02, ds.rate = 0.02, di.rate = 0.02)
+                     a.rate = 0.01, ds.rate = 0.01, di.rate = 0.01)
   init <- init.net(i.num = 10)
   control <- control.net(type = "SIS", nsteps = 10, nsims = 1,
                          verbose = FALSE)
@@ -555,13 +555,13 @@ test_that("Open-population two-group models", {
   nw <- set.vertex.attribute(nw, "group", rep(1:2, each = 50))
   est5.vit <- netest(nw, formation = ~edges + nodematch("group"),
                      target.stats = c(25, 0),
-                     coef.diss = dissolution_coefs(~offset(edges), 10, 0.02),
+                     coef.diss = dissolution_coefs(~offset(edges), 10, 0.01),
                      edapprox = TRUE, verbose = FALSE)
 
   ## "SI, 2M, OP: 1 sim"
   param <- param.net(inf.prob = 0.5, inf.prob.g2 = 0.1, act.rate = 2,
-                     a.rate = 0.02, ds.rate = 0.02, di.rate = 0.02,
-                     a.rate.g2 = 0.02, ds.rate.g2 = 0.02, di.rate.g2 = 0.02)
+                     a.rate = 0.01, ds.rate = 0.01, di.rate = 0.01,
+                     a.rate.g2 = 0.01, ds.rate.g2 = 0.01, di.rate.g2 = 0.01)
   init <- init.net(i.num = 10, i.num.g2 = 10)
   control <- control.net(type = "SI", nsteps = 10, nsims = 1,
                          verbose = FALSE)
@@ -579,8 +579,8 @@ test_that("Open-population two-group models", {
 
   ## "SI, 2M, OP: 2 sim"
   param <- param.net(inf.prob = 0.5, inf.prob.g2 = 0.1, act.rate = 2,
-                     a.rate = 0.02, ds.rate = 0.02, di.rate = 0.02,
-                     a.rate.g2 = 0.02, ds.rate.g2 = 0.02, di.rate.g2 = 0.02)
+                     a.rate = 0.01, ds.rate = 0.01, di.rate = 0.01,
+                     a.rate.g2 = 0.01, ds.rate.g2 = 0.01, di.rate.g2 = 0.01)
   init <- init.net(i.num = 10, i.num.g2 = 10)
   control <- control.net(type = "SI", nsteps = 10, nsims = 2,
                          verbose = FALSE)
@@ -597,10 +597,10 @@ test_that("Open-population two-group models", {
 
   ## "SIR, 2M, OP: 1 sim"
   param <- param.net(inf.prob = 0.5, inf.prob.g2 = 0.1, rec.rate = 0.1,
-                     rec.rate.g2 = 0.1, act.rate = 2, a.rate = 0.02,
-                     a.rate.g2 = NA, ds.rate = 0.02, ds.rate.g2 = 0.02,
-                     di.rate = 0.02, di.rate.g2 = 0.02, dr.rate = 0.02,
-                     dr.rate.g2 = 0.02)
+                     rec.rate.g2 = 0.1, act.rate = 2, a.rate = 0.01,
+                     a.rate.g2 = NA, ds.rate = 0.01, ds.rate.g2 = 0.01,
+                     di.rate = 0.01, di.rate.g2 = 0.01, dr.rate = 0.01,
+                     dr.rate.g2 = 0.01)
   init <- init.net(i.num = 10, i.num.g2 = 0,
                    r.num = 0, r.num.g2 = 10)
   control <- control.net(type = "SIR", nsteps = 10, nsims = 1,
@@ -641,13 +641,13 @@ test_that("Extinction open-population models", {
   nw <- set.vertex.attribute(nw, "group", rep(1:2, c(15,10)))
   est <- netest(nw, formation = ~edges + nodematch("group"),
                 target.stats = c(15, 0),
-                coef.diss = dissolution_coefs(~offset(edges), 10, 0.02),
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0.01),
                 edapprox = TRUE, verbose = FALSE)
 
   ## "netsim: 2M, ds.rate = 0.5"
   param <- param.net(inf.prob = 0.1, inf.prob.g2 = 0.1, act.rate = 2,
-                     a.rate = 0.02, ds.rate = 0.5, di.rate = 0.5,
-                     a.rate.g2 = 0.02, ds.rate.g2 = 0.02, di.rate.g2 = 0.02)
+                     a.rate = 0.01, ds.rate = 0.5, di.rate = 0.5,
+                     a.rate.g2 = 0.01, ds.rate.g2 = 0.01, di.rate.g2 = 0.01)
   init <- init.net(i.num = 5, i.num.g2 = 0)
   control <- control.net(type = "SI", nsteps = 30, nsims = 1,
                          verbose = FALSE)
@@ -661,8 +661,8 @@ test_that("Extinction open-population models", {
 
   ## "netsim: 2M, ds.rate.g2 = 0.5"
   param <- param.net(inf.prob = 0.1, inf.prob.g2 = 0.1, act.rate = 2,
-                     a.rate = 0.02, ds.rate = 0.02, di.rate = 0.02,
-                     a.rate.g2 = 0.02, ds.rate.g2 = 0.5, di.rate.g2 = 0.5)
+                     a.rate = 0.01, ds.rate = 0.01, di.rate = 0.01,
+                     a.rate.g2 = 0.01, ds.rate.g2 = 0.5, di.rate.g2 = 0.5)
   init <- init.net(i.num = 5, i.num.g2 = 0)
   control <- control.net(type = "SI", nsteps = 30, nsims = 1,
                          erbose = FALSE)
