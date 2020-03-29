@@ -616,42 +616,23 @@ edgelist_meanage <- function(x, el) {
 #' @export
 #'
 get_attr_prop <- function(dat, nwterms) {
+
   if (is.null(nwterms)) {
     return(NULL)
   }
 
-  tergmLite <- dat$control$tergmLite
-  nw <- dat$nw
-
-  if ( tergmLite == FALSE) {
-    nwVal <- names(nw$val[[1]])
-    nwVal <- setdiff(nwVal, c("na", "vertex.names", "active", "group", "status",
-                              "testatus.active", "tergm_pid"))
-    if (length(nwVal) > 0) {
-      out <- list()
-      for (i in 1:length(nwVal)) {
-        tab <- prop.table(table(nw %v% nwVal[i]))
-        out[[i]] <- tab
-      }
-      names(out) <- nwVal
+  nwVal <- names(dat$attr)
+  nwVal <- setdiff(nwVal, c("na", "vertex.names", "active", "entrTime",
+                            "exitTime", "infTime", "group", "status"))
+  out <- list()
+  if (length(nwVal) > 0) {
+    for (i in 1:length(nwVal)) {
+      tab <- prop.table(table(dat$attr[[nwVal[i]]]))
+      out[[i]] <- tab
     }
-
+    names(out) <- nwVal
   }
 
-  if (tergmLite == TRUE) {
-    nwVal <- names(dat$attr)
-    nwVal <- setdiff(nwVal, c("na", "vertex.names", "active", "entrTime",
-                              "exitTime", "infTime", "group", "status"))
-    out <- list()
-    if (length(nwVal) > 0) {
-      for (i in 1:length(nwVal)) {
-        tab <- prop.table(table(dat$attr[[nwVal[i]]]))
-        out[[i]] <- tab
-      }
-      names(out) <- nwVal
-    }
-
-  }
   return(out)
 }
 
