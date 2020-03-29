@@ -49,9 +49,6 @@ initialize.net <- function(x, param, init, control, s) {
     dat$nwparam <- list(x[-which(names(x) == "fit")])
     groups <- length(unique(get.vertex.attribute(nw, "group")))
     dat$param$groups <- groups
-    if (groups == 2){
-      dat$attr$group <- get.vertex.attribute(dat$nw, "group")
-    }
 
     # Nodal Attributes --------------------------------------------------------
 
@@ -163,9 +160,7 @@ init_status.net <- function(dat) {
   # Status ------------------------------------------------------------------
 
   ## Status passed on input network
-  if (statOnNw == TRUE) {
-    status <- get.vertex.attribute(dat$nw, "status")
-  } else {
+  if (statOnNw == FALSE) {
     if (!is.null(status.vector)) {
       status <- status.vector
     } else {
@@ -181,8 +176,11 @@ init_status.net <- function(dat) {
         }
       }
     }
+    dat$attr$status <- status
+  } else {
+    status <- dat$attr$status
   }
-  dat$attr$status <- status
+
 
   ## Set up TEA status
   if (dat$control$tergmLite == FALSE) {
