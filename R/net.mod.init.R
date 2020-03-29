@@ -45,19 +45,27 @@ initialize.net <- function(x, param, init, control, s) {
     nw <- activate.vertices(nw, onset = 1, terminus = Inf)
     dat$nw <- nw
 
+    # Network Parameters ------------------------------------------------------
+    dat$nwparam <- list(x[-which(names(x) == "fit")])
+    groups <- length(unique(get.vertex.attribute(nw, "group")))
+    dat$param$groups <- groups
 
-    # Initial Attributes ------------------------------------------------------
+    # Nodal Attributes --------------------------------------------------------
+
+    # Standard attributes
     num <- network.size(nw)
     dat$attr$active <- rep(1, num)
     dat$attr$entrTime <- rep(1, num)
     dat$attr$exitTime <- rep(NA, num)
 
-    # Network Parameters ------------------------------------------------------
-    dat$nwparam <- list(x[-which(names(x) == "fit")])
-    groups <- length(unique(get.vertex.attribute(nw, "group")))
-    dat$param$groups <- groups
-    if (groups == 2){
-      dat$attr$group <- get.vertex.attribute(dat$nw, "group")
+    ## Pull attr on nw to dat$attr
+    dat <- copy_nwattr_to_datattr(dat)
+
+    ## Store current proportions of attr
+    nwterms <- get_network_term_attr(nw)
+    if (!is.null(nwterms)){
+      dat$temp$nwterms <- nwterms
+      dat$temp$t1.tab <- get_attr_prop(dat, nwterms)
     }
 
     # Conversions for tergmLite
@@ -65,27 +73,16 @@ initialize.net <- function(x, param, init, control, s) {
       dat <- tergmLite::init_tergmLite(dat)
     }
 
-    # Initialization ----------------------------------------------------------
-
-    if (control$tergmLite == FALSE) {
-
-      ## Pull network val to attr
-      form <- get_nwparam(dat)$formation
-      fterms <- get_formula_term_attr(form, nw)
-      dat <- copy_toall_attr(dat, at = 1, fterms)
-
-      ## Store current proportions of attr
-      dat$temp$fterms <- fterms
-      dat$temp$t1.tab <- get_attr_prop(dat$nw, fterms)
-    }
-
     ## Infection Status and Time
     dat <- init_status.net(dat)
 
-    ## Get initial prevalence
+
+    # Summary Stats -----------------------------------------------------------
     dat <- do.call(control[["prevalence.FUN"]],list(dat, at = 1))
 
-  } else {
+
+  # Restart/Reinit Simulations ----------------------------------------------
+  } else if (control$start > 1) {
     dat <- list()
 
     dat$nw <- x$network[[s]]
@@ -148,7 +145,7 @@ init_status.net <- function(dat) {
   status.vector <- dat$init$status.vector
   num <- sum(dat$attr$active == 1)
   #TODO: check that this works for tergmLite
-  statOnNw <- "status" %in% dat$temp$fterms
+  statOnNw <- "status" %in% dat$temp$nwterms
 
   groups <- dat$param$groups
   if (groups == 2) {
@@ -163,9 +160,7 @@ init_status.net <- function(dat) {
   # Status ------------------------------------------------------------------
 
   ## Status passed on input network
-  if (statOnNw == TRUE) {
-    status <- get.vertex.attribute(dat$nw, "status")
-  } else {
+  if (statOnNw == FALSE) {
     if (!is.null(status.vector)) {
       status <- status.vector
     } else {
@@ -181,11 +176,17 @@ init_status.net <- function(dat) {
         }
       }
     }
+    dat$attr$status <- status
+  } else {
+    status <- dat$attr$status
   }
-  dat$attr$status <- status
+
 
   ## Set up TEA status
   if (dat$control$tergmLite == FALSE) {
+    if (statOnNw == FALSE) {
+      dat$nw <- set.vertex.attribute(dat$nw, "status", status)
+    }
     dat$nw <- activate.vertex.attribute(dat$nw,
                                         prefix = "testatus",
                                         value = status,

@@ -286,21 +286,6 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #'        any vital dynamic parameters in the model (or if non-standard arrival or
 #'        departures modules are passed into \code{control.net}), or if the network model
 #'        formation formula includes the "status" attribute.
-#' @param rec.rand If \code{TRUE}, use a stochastic recovery model, with the
-#'        number of recovered at each time step a function of random draws from
-#'        a binomial distribution with the probability equal to \code{rec.rate}.
-#'        If \code{FALSE}, then a deterministic rounded count of the expectation
-#'        implied by that rate.
-#' @param a.rand If \code{TRUE}, use a stochastic arrival model, with the
-#'        number of arrivals at each time step a function of random draws from a
-#'        binomial distribution with the probability equal to the governing arrival
-#'        rates. If \code{FALSE}, then a deterministic rounded count of the
-#'        expectation implied by those rates.
-#' @param d.rand If \code{TRUE}, use a stochastic departure model, with the number of
-#'        departures at each time step a function of random draws from a binomial
-#'        distribution with the probability equal to the governing departure rates.
-#'        If \code{FALSE}, then a deterministic rounded count of the expectation
-#'        implied by those rates.
 #' @param tergmLite Logical indicating usage of either \code{tergm} (\code{tergmLite = FALSE}),
 #'        or \code{tergmLite} (\code{tergmLite = TRUE}). Default of \code{FALSE}.
 #' @param attr.rules A list containing the  rules for setting the attributes of
@@ -381,10 +366,8 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #' @section The attr.rules Argument:
 #' The \code{attr.rules} parameter is used to specify the rules for how nodal
 #' attribute values for incoming nodes should be set. These rules are only
-#' necessary for models in which there are incoming nodes (i.e., arrivals) and
-#' there is also a nodal attribute in the network model formation formula set in
-#' \code{\link{netest}}. There are three rules available for each attribute
-#' value:
+#' necessary for models in which there are incoming nodes (i.e., arrivals) There
+#' are three rules available for each attribute value:
 #' \itemize{
 #'  \item \strong{"current":} new nodes will be assigned this attribute in
 #'        proportion to the distribution of that attribute among existing nodes
@@ -430,9 +413,6 @@ control.net <- function(type,
                         nsims = 1,
                         ncores = 1,
                         resimulate.network,
-                        rec.rand = TRUE,
-                        a.rand = TRUE,
-                        d.rand = TRUE,
                         tergmLite = FALSE,
                         attr.rules,
                         epi.by,
@@ -510,6 +490,7 @@ control.net <- function(type,
   # Temporary until we develop a nwstats fix for tergmLite
   if (tergmLite == TRUE) {
     p$save.nwstats <- FALSE
+    p$save.transmat <- FALSE
   }
 
   ## Defaults and checks
@@ -638,10 +619,10 @@ crosscheck.net <- function(x, param, init, control) {
         }
       }
 
-      bip <- length(unique(get.vertex.attribute(nw, "group")))
-      bip <- ifelse(bip == 2, TRUE, FALSE)
+      nGroups <- length(unique(get.vertex.attribute(nw, "group")))
+      nGroups <- ifelse(nGroups == 2, 2, 1)
 
-      if (bip == TRUE & is.null(control$pid.prefix)) {
+      if (nGroups == 2 & is.null(control$pid.prefix)) {
         control$pid.prefix <- c("g1.", "g2.")
       }
 
@@ -693,7 +674,7 @@ crosscheck.net <- function(x, param, init, control) {
       }
 
       # Two-group model checks for inital conditions
-      if (bip == TRUE & is.null(init$i.num.g2) &
+      if (nGroups == 2 & is.null(init$i.num.g2) &
           is.null(init$status.vector) & statOnNw == FALSE) {
         stop("Specify i.num.g2 for two-group model simulations", call. = FALSE)
       }
@@ -703,7 +684,7 @@ crosscheck.net <- function(x, param, init, control) {
         if (is.null(param$rec.rate)) {
           stop("Specify rec.rate in param.net", call. = FALSE)
         }
-        if (bip == TRUE & is.null(param$rec.rate.g2)) {
+        if (nGroups == 2 & is.null(param$rec.rate.g2)) {
           stop("Specify rec.rate.g2 in param.net", call. = FALSE)
         }
       }
@@ -711,14 +692,14 @@ crosscheck.net <- function(x, param, init, control) {
         if (is.null(init$r.num) & is.null(init$status.vector) & statOnNw == FALSE) {
           stop("Specify r.num in init.net", call. = FALSE)
         }
-        if (bip == TRUE & is.null(init$r.num.g2) & is.null(init$status.vector) &
+        if (nGroups == 2 & is.null(init$r.num.g2) & is.null(init$status.vector) &
             statOnNw == FALSE) {
           stop("Specify r.num.g2 in init.net", call. = FALSE)
         }
       }
 
       # Check demographic parameters for two-group models
-      if (bip == TRUE & param$vital == TRUE) {
+      if (nGroups == 2 & param$vital == TRUE) {
         if (is.null(param$a.rate.g2)) {
           stop("Specify a.rate.g2 in param.net", call. = FALSE)
         }

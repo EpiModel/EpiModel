@@ -181,38 +181,62 @@ color_tea <- function(nd, old.var = "testatus", old.sus = "s", old.inf = "i",
 }
 
 
-#' @title Copies Vertex Attributes in Formation Formula to attr List
+#' @title Copies Vertex Attributes From Network to dat List
 #'
 #' @description Copies the vertex attributes stored on the network object to the
 #'              master attr list in the dat data object.
 #'
 #' @param dat Master data object passed through \code{netsim} simulations.
-#' @param at Current time step.
-#' @param fterms Vector of attributes used in formation formula, usually as
-#'        output of \code{\link{get_formula_term_attr}}.
 #'
 #' @seealso \code{\link{get_formula_term_attr}}, \code{\link{get_attr_prop}},
-#'          \code{\link{update_nwattr}}.
+#'          \code{\link{auto_update_attr}}, and \code{\link{copy_datattr_to_nwattr}}.
 #' @keywords netUtils internal
 #' @export
 #'
-copy_toall_attr <- function(dat, at, fterms) {
+copy_nwattr_to_datattr <- function(dat) {
   otha <- names(dat$nw$val[[1]])
-  otha <- otha[which(otha %in% fterms)]
+  otha <- setdiff(otha, c("na", "vertex.names", "active",
+                          "testatus.active", "tergm_pid"))
   if (length(otha) > 0) {
     for (i in seq_along(otha)) {
       va <- get.vertex.attribute(dat$nw, otha[i])
       dat$attr[[otha[i]]] <- va
-      if (at == 1) {
-        if (!is.null(dat$control$epi.by) && dat$control$epi.by == otha[i]) {
-          dat$temp$epi.by.vals <- unique(va)
-        }
+      if (!is.null(dat$control$epi.by) && dat$control$epi.by == otha[i]) {
+        dat$temp$epi.by.vals <- unique(va)
       }
     }
   }
   return(dat)
 }
 
+
+#' @title Copies Vertex Attributes from the dat List to the Network Object
+#'
+#' @description Copies the vertex attributes stored on the master attr list on
+#'              dat to the network object on dat.
+#'
+#' @param dat Master data object passed through \code{netsim} simulations.
+#'
+#' @seealso \code{\link{get_formula_term_attr}}, \code{\link{get_attr_prop}},
+#'          \code{\link{auto_update_attr}}, and \code{\link{copy_nwattr_to_datattr}}.
+#' @keywords netUtils internal
+#' @export
+#'
+copy_datattr_to_nwattr <- function(dat) {
+  nwterms <- dat$temp$nwterms
+  special.attr <- "status"
+  if (dat$param$groups == 2) {
+    special.attr <- c(special.attr, "group")
+  }
+  nwterms <- union(nwterms, special.attr)
+  attr.to.copy <- union(nwterms, special.attr)
+  attr <- dat$attr[attr.to.copy]
+  if (length(attr.to.copy) > 0) {
+    dat$nw <- set.vertex.attribute(dat$nw, names(attr), attr)
+  }
+
+  return(dat)
+}
 
 #' @title Dissolution Coefficients for Stochastic Network Models
 #'
@@ -579,35 +603,36 @@ edgelist_meanage <- function(x, el) {
 #' @title Proportional Table of Vertex Attributes
 #'
 #' @description Calculates the proportional distribution of each vertex attribute
-#'              contained on the network, with a possible limitation to those
-#'              attributes contained in the formation formula only.
+#'              contained on the network.
 #'
 #' @param nw The \code{networkDynamic} object contained in the \code{netsim}
 #'        simulation.
-#' @param fterms Vector of attributes used in formation formula, usually as
+#' @param nwterms Vector of attributes on network object, usually as
 #'        output of \code{\link{get_formula_term_attr}}.
-#' @param only.formula Limit the tables to those terms only in \code{fterms},
-#'        otherwise output proportions for all attributes on the network object.
 #'
-#' @seealso \code{\link{get_formula_term_attr}}, \code{\link{copy_toall_attr}},
-#'          \code{\link{update_nwattr}}.
+#' @seealso \code{\link{get_formula_term_attr}}, \code{\link{copy_nwattr_to_datattr}},
+#'          \code{\link{auto_update_attr}}.
 #' @keywords netUtils internal
 #' @export
 #'
-get_attr_prop <- function(nw, fterms, only.formula = TRUE) {
-  if (is.null(fterms)) {
+get_attr_prop <- function(dat, nwterms) {
+
+  if (is.null(nwterms)) {
     return(NULL)
   }
-  nwVal <- names(nw$val[[1]])
-  if (only.formula == TRUE) {
-    nwVal <- nwVal[which(nwVal %in% fterms)]
-  }
+
+  nwVal <- names(dat$attr)
+  nwVal <- setdiff(nwVal, c("na", "vertex.names", "active", "entrTime",
+                            "exitTime", "infTime", "group", "status"))
   out <- list()
-  for (i in 1:length(nwVal)) {
-    tab <- prop.table(table(nw %v% nwVal[i]))
-    out[[i]] <- tab
+  if (length(nwVal) > 0) {
+    for (i in 1:length(nwVal)) {
+      tab <- prop.table(table(dat$attr[[nwVal[i]]]))
+      out[[i]] <- tab
+    }
+    names(out) <- nwVal
   }
-  names(out) <- nwVal
+
   return(out)
 }
 
@@ -635,6 +660,35 @@ get_formula_term_attr <- function(form, nw) {
   matches <- colSums(matches)
 
   out <- names(matches)[which(matches == 1)]
+  if (length(out) == 0) {
+    return(NULL)
+  } else {
+    return(out)
+  }
+
+}
+
+#' @title Outputs ERGM Formula Attributes into a Character Vector
+#'
+#' @description Given a simulated network, outputs into
+#'              a character vector of vertex attributes to be used in \code{netsim}
+#'              simulations.
+#'
+#' @param nw a network object
+#'
+#' @export
+#'
+get_network_term_attr <- function(nw) {
+
+  nw_attr <- names(nw$val[[1]])
+  nw_attr <- setdiff(nw_attr, c("active", "vertex.names", "na",
+                                "testatus.active", "tergm_pid"))
+
+  if (length(nw_attr) == 0) {
+    return(NULL)
+  }
+
+  out <- nw_attr
   if (length(out) == 0) {
     return(NULL)
   } else {
@@ -722,33 +776,33 @@ groupids <- function(nw, group) {
 #'              into that network, based on a set of rules for each attribute
 #'              that the user specifies in \code{control.net}.
 #'
-#' @param nw The \code{networkDynamic} object used in \code{netsim} simulations.
+#' @param dat Master object in \code{netsim} simulations.
 #' @param newNodes Vector of nodal IDs for incoming nodes at the current time
 #'        step.
-#' @param rules List of rules, one per attribute to be set, governing how to set
-#'        the values of each attribute.
 #' @param curr.tab Current proportional distribution of all vertex attributes.
-#' @param t1.tab Proportional distribution of all vertex attributes at the outset
-#'        of the simulation.
 #'
-#' @seealso \code{\link{copy_toall_attr}}, \code{\link{get_attr_prop}},
-#'          \code{\link{update_nwattr}}.
+#' @seealso \code{\link{copy_nwattr_to_datattr}}, \code{\link{get_attr_prop}},
+#'          \code{\link{auto_update_attr}}.
 #' @keywords netUtils internal
 #' @export
 #'
-update_nwattr <- function(nw, newNodes, rules, curr.tab, t1.tab) {
-  for (i in 1:length(curr.tab)) {
-    vname_ <- names(curr.tab)[i]
-    vname <- vname_[!(vname_ %in% "group")]
+auto_update_attr <- function(dat, newNodes, curr.tab) {
 
-    if (length(vname) > 0) {
+  rules <- dat$control$attr.rules
+  t1.tab <- dat$temp$t1.tab
+
+  for (i in seq_along(curr.tab)) {
+    vname <- names(curr.tab)[i]
+    needs.updating <- ifelse(length(dat$attr[[vname]]) < length(dat$attr$active),
+                             TRUE, FALSE)
+    if (length(vname) > 0 & needs.updating == TRUE) {
       rule <- rules[[vname]]
 
       if (is.null(rule)) {
         rule <- "current"
       }
       if (rule == "current") {
-        vclass <- class(nw %v% vname)
+        vclass <- class(dat$attr[[vname]])
         if (vclass == "character") {
           nattr <- sample(names(curr.tab[[vname]]),
                           size = length(newNodes),
@@ -761,7 +815,7 @@ update_nwattr <- function(nw, newNodes, rules, curr.tab, t1.tab) {
                           prob = curr.tab[[i]])
         }
       } else if (rule == "t1") {
-        vclass <- class(nw %v% vname)
+        vclass <- class(dat$attr[[vname]])
         if (vclass == "character") {
           nattr <- sample(names(t1.tab[[vname]]),
                           size = length(newNodes),
@@ -776,11 +830,11 @@ update_nwattr <- function(nw, newNodes, rules, curr.tab, t1.tab) {
       } else {
         nattr <- rep(rules[[vname]], length(newNodes))
       }
-      nw <- set.vertex.attribute(nw, attrname = vname,
-                                 value = nattr, v = newNodes)
+      dat$attr[[vname]] <- c(dat$attr[[vname]], nattr)
     }
   }
-  return(nw)
+
+  return(dat)
 }
 
 
