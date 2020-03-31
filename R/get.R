@@ -22,8 +22,9 @@
 #' This function requires that the \code{networkDynamic} is saved during the
 #' network simulation while running either \code{\link{netsim}} or \code{\link{netdx}}.
 #' For the former, that is specified with the \code{save.network} parameter in
-#' \code{\link{control.net}}. For the latter, that is specified with the
-#' \code{keep.tedgelist} parameter directly in \code{\link{netdx}}.
+#' \code{\link{control.net}} and only for simulations running the full \code{tergm}
+#' routine. For the latter, that is specified with the \code{keep.tedgelist}
+#' parameter directly in \code{\link{netdx}}.
 #'
 #' @keywords extract
 #' @export
@@ -65,6 +66,11 @@ get_network <- function(x, sim = 1, network = 1, collapse = FALSE, at) {
   ## Warnings and checks ##
   if (!(class(x) %in% c("netsim", "netdx"))) {
     stop("x must be of class netsim or netdx", call. = FALSE)
+  }
+
+  if (x$control$tergmLite == TRUE) {
+    stop("network not available when 'tergmLite == TRUE', check control.net settings",
+         call. = FALSE)
   }
 
   nsims <- ifelse(class(x) == "netsim", x$control$nsims, x$nsims)
