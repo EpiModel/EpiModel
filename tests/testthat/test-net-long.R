@@ -3,7 +3,7 @@ context("Network extended models")
 ################################################################################
 
 test_that("edges models", {
-  skip_on_cran()
+  #skip_on_cran()
 
   nw <- network.initialize(n = 100, directed = FALSE)
   est <- netest(nw, formation = ~edges, target.stats = 25,
@@ -333,7 +333,7 @@ test_that("High departure rate models", {
 ################################################################################
 
 test_that("edges two-group models", {
-  skip_on_cran()
+  #skip_on_cran()
 
   nw <- network.initialize(n = 100, directed = FALSE)
   nw <- set.vertex.attribute(nw, "group", rep(c(1,2), each = 50))
@@ -435,7 +435,7 @@ test_that("edges two-group models", {
 ################################################################################
 
 test_that("Open population 1 group models", {
-  skip_on_cran()
+  #skip_on_cran()
 
   nw <- network.initialize(n = 100, directed = FALSE)
   est.vit <- netest(nw, formation = ~edges, target.stats = 25,
@@ -549,7 +549,7 @@ test_that("Open population 1 group models", {
 ################################################################################
 
 test_that("Open-population two-group models", {
-  skip_on_cran()
+  #skip_on_cran()
 
   nw <- network.initialize(n = 100, directed = FALSE)
   nw <- set.vertex.attribute(nw, "group", rep(1:2, each = 50))
@@ -635,7 +635,7 @@ test_that("Open-population two-group models", {
 ################################################################################
 
 test_that("Extinction open-population models", {
-  skip_on_cran()
+  #skip_on_cran()
 
   nw <- network.initialize(n = 25, directed = FALSE)
   nw <- set.vertex.attribute(nw, "group", rep(1:2, c(15,10)))
@@ -680,7 +680,7 @@ test_that("Extinction open-population models", {
 ################################################################################
 
 test_that("Extended post-simulation diagnosntic tests", {
-  skip_on_cran()
+  #skip_on_cran()
 
   nw <- network.initialize(100, directed = FALSE)
   nw <- set.vertex.attribute(nw, "risk", rep(1:5, each = 20))
