@@ -68,17 +68,17 @@ get_network <- function(x, sim = 1, network = 1, collapse = FALSE, at) {
     stop("x must be of class netsim or netdx", call. = FALSE)
   }
 
-  if (x$control$tergmLite == TRUE) {
-    stop("network not available when 'tergmLite == TRUE', check control.net settings",
-         call. = FALSE)
-  }
-
   nsims <- ifelse(class(x) == "netsim", x$control$nsims, x$nsims)
   if (sim > nsims) {
     stop("Specify sim between 1 and ", nsims, call. = FALSE)
   }
 
   if (class(x) == "netsim") {
+    if (x$control$tergmLite != FALSE) {
+      stop("Network object not saved in netsim object when 'tergmLite == TRUE',
+           check control.net settings",
+           call. = FALSE)
+    }
     if (x$control$save.network == FALSE || is.null(x$network)) {
       stop("Network object not saved in netsim object, check control.net settings",
            call. = FALSE)
