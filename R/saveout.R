@@ -143,20 +143,17 @@ saveout.net <- function(dat, s, out = NULL) {
       out$stats$nwstats <- list(dat$stats$nwstats)
     }
 
-    if (dat$control$tergmLite != TRUE) {
-      if (dat$control$save.transmat == TRUE) {
-        if (!is.null(dat$stats$transmat)) {
-          row.names(dat$stats$transmat) <- 1:nrow(dat$stats$transmat)
-          out$stats$transmat <- list(dat$stats$transmat)
-        } else {
-          out$stats$transmat <- list(data.frame())
-        }
-        class(out$stats$transmat) <- c("transmat", class(out$stats$transmat))
+    if (dat$control$tergmLite == FALSE) {
+      if (!is.null(dat$stats$transmat)) {
+        row.names(dat$stats$transmat) <- 1:nrow(dat$stats$transmat)
+        out$stats$transmat <- list(dat$stats$transmat)
+      } else {
+        out$stats$transmat <- list(data.frame())
       }
+      class(out$stats$transmat) <- c("transmat", class(out$stats$transmat))
 
-      if (dat$control$save.network == TRUE) {
-        out$network <- list(dat$nw)
-      }
+      out$network <- list(dat$nw)
+
     }
 
     if (!is.null(dat$control$save.other)) {
@@ -177,17 +174,14 @@ saveout.net <- function(dat, s, out = NULL) {
     }
 
     if (dat$control$tergmLite != TRUE) {
-      if (dat$control$save.transmat == TRUE) {
-        if (!is.null(dat$stats$transmat)) {
-          row.names(dat$stats$transmat) <- 1:nrow(dat$stats$transmat)
-          out$stats$transmat[[s]] <- dat$stats$transmat
-        } else {
-          out$stats$transmat[[s]] <- data.frame()
-        }
+      if (!is.null(dat$stats$transmat)) {
+        row.names(dat$stats$transmat) <- 1:nrow(dat$stats$transmat)
+        out$stats$transmat[[s]] <- dat$stats$transmat
+      } else {
+        out$stats$transmat[[s]] <- data.frame()
       }
-      if (dat$control$save.network == TRUE) {
-        out$network[[s]] <- dat$nw
-      }
+      out$network[[s]] <- dat$nw
+
     }
 
     if (!is.null(dat$control$save.other)) {
@@ -211,12 +205,10 @@ saveout.net <- function(dat, s, out = NULL) {
     }
 
     if (dat$control$tergmLite != TRUE) {
-      if (dat$control$save.transmat == TRUE) {
-        names(out$stats$transmat) <- simnames[1:length(out$stats$transmat)]
-      }
-      if (dat$control$save.network == TRUE) {
-        names(out$network) <- simnames
-      }
+      names(out$stats$transmat) <- simnames[1:length(out$stats$transmat)]
+
+      names(out$network) <- simnames
+
     }
 
     # Remove functions from control list

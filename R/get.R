@@ -22,9 +22,8 @@
 #' This function requires that the \code{networkDynamic} is saved during the
 #' network simulation while running either \code{\link{netsim}} or \code{\link{netdx}}.
 #' For the former, that is specified with the \code{tergmLite} parameter in
-#' \code{\link{control.net}} and only for simulations running the full \code{tergm}
-#' routine. \code{tergmLite == FALSE}.. For the latter, that is specified with the \code{keep.tedgelist}
-#' parameter directly in \code{\link{netdx}}.
+#' \code{\link{control.net}} set to \code{FALSE}. For the latter, that is
+#' specified with the \code{keep.tedgelist} parameter directly in \code{\link{netdx}}.
 #'
 #' @keywords extract
 #' @export
