@@ -332,11 +332,6 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #'        argument.
 #' @param nwstats.formula A right-hand sided ERGM formula that includes network
 #'        statistics of interest, with the default to the formation formula terms.
-#' @param save.transmat If \code{TRUE}, save a transmission matrix for each
-#'        simulation. This object contains one row for each transmission event
-#'        (see \code{\link{discord_edgelist}}).
-#' @param save.network If \code{TRUE}, save a \code{networkDynamic} object
-#'        containing full edge history for each simulation.
 #' @param save.other A vector of elements on the \code{dat} master data list
 #'        to save out after each simulation. One example for base models is
 #'        the attribute list, "attr", at the final time step.
@@ -430,8 +425,6 @@ control.net <- function(type,
                         set.control.stergm,
                         save.nwstats = TRUE,
                         nwstats.formula = "formation",
-                        save.transmat = TRUE,
-                        save.network = TRUE,
                         save.other,
                         verbose = TRUE,
                         verbose.int = 1,
@@ -747,7 +740,7 @@ crosscheck.net <- function(x, param, init, control) {
         }
         if (is.null(x$network)) {
           stop("x must contain network object to restart simulation, ",
-               "see save.network control setting", call. = FALSE)
+               call. = FALSE)
         }
         if (control$nsteps < control$start) {
           stop("control setting nsteps must be > control setting start in ",
