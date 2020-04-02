@@ -144,14 +144,9 @@ saveout.net <- function(dat, s, out = NULL) {
     }
 
     if (dat$control$tergmLite == FALSE) {
-      if (!is.null(dat$stats$transmat)) {
-        row.names(dat$stats$transmat) <- 1:nrow(dat$stats$transmat)
-        out$stats$transmat <- list(dat$stats$transmat)
-      } else {
-        out$stats$transmat <- list(data.frame())
-      }
+      row.names(dat$stats$transmat) <- 1:nrow(dat$stats$transmat)
+      out$stats$transmat <- list(dat$stats$transmat)
       class(out$stats$transmat) <- c("transmat", class(out$stats$transmat))
-
       out$network <- list(dat$nw)
 
     }

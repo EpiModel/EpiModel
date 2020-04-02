@@ -2066,14 +2066,11 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
   # Network plot ------------------------------------------------------------
   if (type == "network") {
 
-    if (is.null(x$network)) {
-      if (x$control$tergmLite == TRUE){
-        stop("networkDyanmic object not save in tergmLite netsim simulation. Check
+    if (x$control$tergmLite == TRUE) {
+        stop("networkDyanmic object is not saved in tergmLite netsim simulation. Check
              control settings", call. = FALSE)
       }
-      stop("networkDynamic object not saved in netsim simulation",
-           call. = FALSE)
-    }
+
 
     nsteps <- x$control$nsteps
     if (at > x$control$nsteps) {
