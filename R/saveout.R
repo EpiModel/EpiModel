@@ -144,9 +144,11 @@ saveout.net <- function(dat, s, out = NULL) {
     }
 
     if (dat$control$tergmLite == FALSE) {
-      row.names(dat$stats$transmat) <- 1:nrow(dat$stats$transmat)
-      out$stats$transmat <- list(dat$stats$transmat)
-      class(out$stats$transmat) <- c("transmat", class(out$stats$transmat))
+      if (!is.null(dat$stats$transmat)) {
+        row.names(dat$stats$transmat) <- 1:nrow(dat$stats$transmat)
+        out$stats$transmat <- list(dat$stats$transmat)
+        class(out$stats$transmat) <- c("transmat", class(out$stats$transmat))
+      }
       out$network <- list(dat$nw)
 
     }
@@ -168,7 +170,7 @@ saveout.net <- function(dat, s, out = NULL) {
       out$stats$nwstats[[s]] <- dat$stats$nwstats
     }
 
-    if (dat$control$tergmLite != TRUE) {
+    if (dat$control$tergmLite == FALSE) {
       if (!is.null(dat$stats$transmat)) {
         row.names(dat$stats$transmat) <- 1:nrow(dat$stats$transmat)
         out$stats$transmat[[s]] <- dat$stats$transmat
@@ -199,8 +201,10 @@ saveout.net <- function(dat, s, out = NULL) {
       names(out$stats$nwstats) <- simnames
     }
 
-    if (dat$control$tergmLite != TRUE) {
-      names(out$stats$transmat) <- simnames[1:length(out$stats$transmat)]
+    if (dat$control$tergmLite == FALSE) {
+      if (!is.null(out$stats$transmat)) {
+        names(out$stats$transmat) <- simnames[1:length(out$stats$transmat)]
+      }
 
       names(out$network) <- simnames
 
