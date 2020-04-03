@@ -147,8 +147,10 @@ saveout.net <- function(dat, s, out = NULL) {
       if (!is.null(dat$stats$transmat)) {
         row.names(dat$stats$transmat) <- 1:nrow(dat$stats$transmat)
         out$stats$transmat <- list(dat$stats$transmat)
-        class(out$stats$transmat) <- c("transmat", class(out$stats$transmat))
+      } else {
+        out$stats$transmat <- list(data.frame())
       }
+      class(out$stats$transmat) <- c("transmat", class(out$stats$transmat))
       out$network <- list(dat$nw)
 
     }
@@ -202,12 +204,8 @@ saveout.net <- function(dat, s, out = NULL) {
     }
 
     if (dat$control$tergmLite == FALSE) {
-      if (!is.null(out$stats$transmat)) {
-        names(out$stats$transmat) <- simnames[1:length(out$stats$transmat)]
-      }
-
+      names(out$stats$transmat) <- simnames[1:length(out$stats$transmat)]
       names(out$network) <- simnames
-
     }
 
     # Remove functions from control list
