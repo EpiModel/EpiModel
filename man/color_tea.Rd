@@ -62,7 +62,7 @@ colors may be specified using the \code{new.sus}, \code{new.inf}, and
 
 Using the \code{color_tea} function with a \code{netsim} object requires that
 TEAs for disease status be used and that the \code{networkDynamic} object be
-saved in the output: \code{tea.status} must be  set to \code{FALSE} in
+saved in the output: \code{tergmListe} must be  set to \code{FALSE} in
 \code{\link{control.net}}.
 }
 \seealso{
