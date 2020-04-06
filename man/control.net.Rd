@@ -28,8 +28,6 @@ control.net(
   set.control.stergm,
   save.nwstats = TRUE,
   nwstats.formula = "formation",
-  save.transmat = TRUE,
-  save.network = TRUE,
   save.other,
   verbose = TRUE,
   verbose.int = 1,
@@ -127,13 +125,6 @@ argument.}
 
 \item{nwstats.formula}{A right-hand sided ERGM formula that includes network
 statistics of interest, with the default to the formation formula terms.}
-
-\item{save.transmat}{If \code{TRUE}, save a transmission matrix for each
-simulation. This object contains one row for each transmission event
-(see \code{\link{discord_edgelist}}).}
-
-\item{save.network}{If \code{TRUE}, save a \code{networkDynamic} object
-containing full edge history for each simulation.}
 
 \item{save.other}{A vector of elements on the \code{dat} master data list
 to save out after each simulation. One example for base models is

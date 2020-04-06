@@ -142,7 +142,8 @@ saveout.net <- function(dat, s, out = NULL) {
     if (dat$control$save.nwstats == TRUE) {
       out$stats$nwstats <- list(dat$stats$nwstats)
     }
-    if (dat$control$save.transmat == TRUE) {
+
+    if (dat$control$tergmLite == FALSE) {
       if (!is.null(dat$stats$transmat)) {
         row.names(dat$stats$transmat) <- 1:nrow(dat$stats$transmat)
         out$stats$transmat <- list(dat$stats$transmat)
@@ -150,10 +151,8 @@ saveout.net <- function(dat, s, out = NULL) {
         out$stats$transmat <- list(data.frame())
       }
       class(out$stats$transmat) <- c("transmat", class(out$stats$transmat))
-    }
-
-    if (dat$control$save.network == TRUE) {
       out$network <- list(dat$nw)
+
     }
 
     if (!is.null(dat$control$save.other)) {
@@ -172,16 +171,16 @@ saveout.net <- function(dat, s, out = NULL) {
     if (dat$control$save.nwstats == TRUE) {
       out$stats$nwstats[[s]] <- dat$stats$nwstats
     }
-    if (dat$control$save.transmat == TRUE) {
+
+    if (dat$control$tergmLite == FALSE) {
       if (!is.null(dat$stats$transmat)) {
         row.names(dat$stats$transmat) <- 1:nrow(dat$stats$transmat)
         out$stats$transmat[[s]] <- dat$stats$transmat
       } else {
         out$stats$transmat[[s]] <- data.frame()
       }
-    }
-    if (dat$control$save.network == TRUE) {
       out$network[[s]] <- dat$nw
+
     }
 
     if (!is.null(dat$control$save.other)) {
@@ -203,10 +202,9 @@ saveout.net <- function(dat, s, out = NULL) {
     if (dat$control$save.nwstats == TRUE) {
       names(out$stats$nwstats) <- simnames
     }
-    if (dat$control$save.transmat == TRUE) {
+
+    if (dat$control$tergmLite == FALSE) {
       names(out$stats$transmat) <- simnames[1:length(out$stats$transmat)]
-    }
-    if (dat$control$save.network == TRUE) {
       names(out$network) <- simnames
     }
 
@@ -258,7 +256,7 @@ saveout.net <- function(dat, s, out = NULL) {
 #'
 process_out.net <- function(dat_list) {
   for (s in seq_along(dat_list)) {
-  # Set output
+    # Set output
     if (s == 1) {
       out <- saveout.net(dat_list[[s]], s)
     } else {

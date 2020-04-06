@@ -26,7 +26,7 @@ test_that("edges models", {
   plot(x, type = "formation")
   plot(x, type = "network")
   plot(x, type = "network", sims = "mean", col.status = TRUE)
-  # # test_net(x)
+  # test_net(x)
   rm(x)
 
   ## "SI, 1M, CL: 1 sim, inf.prob = 0"
