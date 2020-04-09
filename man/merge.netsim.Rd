@@ -22,10 +22,12 @@
 with the identical model parameterization as \code{x}.}
 
 \item{keep.transmat}{If \code{TRUE}, keep the transmission matrices from the
-original \code{x} and \code{y} elements.}
+original \code{x} and \code{y} elements. Note: transmission matrices
+only saved when (\code{tergmLite == FALSE}).}
 
 \item{keep.network}{If \code{TRUE}, keep the \code{networkDynamic} objects
-from the original \code{x} and \code{y} elements.}
+from the original \code{x} and \code{y} elements. Note: network
+only saved when (\code{tergmLite == FALSE}).}
 
 \item{keep.nwstats}{If \code{TRUE}, keep the network statistics (as set by
 the \code{nwstats.formula} parameter in \code{control.netsim}) from
