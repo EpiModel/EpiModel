@@ -76,6 +76,8 @@ Can be of length > 1 for `get_*_list` functions}
 \item{indexes}{for `get_epi` and `get_attr`, a numeric vector of indexes or
 a logical vector to subset the desired `item`}
 
+\item{value}{new value to be attributed in the `set_` functions}
+
 \item{at}{timestep where to add the new value for the Epidemic Outuput `item`}
 }
 \value{
