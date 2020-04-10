@@ -2175,7 +2175,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
     }
     dis.type <- x$control$type
     if (is.null(x$param$groups) | !is.numeric(x$param$groups)) {
-      modes <- 1
+      groups <- 1
       x$param$groups <- 1
     } else {
       groups <- x$param$groups
@@ -2452,6 +2452,8 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
           mean.lty <- rep(1:2, each = lcomp / 2)
         }
       }
+      y.n <- length(y)/groups
+      mean.pal <- rep(mean.pal[1:y.n], 2)
       draw_means(x, y, mean.smooth, mean.lwd, mean.pal, mean.lty)
     }
 
