@@ -78,7 +78,7 @@ a logical vector to subset the desired `item`}
 
 \item{value}{new value to be attributed in the `set_` functions}
 
-\item{at}{timestep where to add the new value for the Epidemic Outuput `item`}
+\item{at}{timestep where to add the new value for the epi output `item`}
 }
 \value{
 a vector or a list of vector for `get_` functions. And the Master
@@ -101,3 +101,57 @@ The `set_` functions edit a pre-existing element or create a new one if it
 does not exist already by calling the `add_` functions internally.
 }
 
+\examples{
+dat <- list(
+  attr = list(
+    active = rbinom(100, 1, 0.9)
+  ),
+  epi = list(),
+  param = list(),
+  init = list(),
+  control = list(
+    nsteps = 150
+  )
+)
+
+dat <- add_attr(dat, "age")
+dat <- set_attr(dat, "age", runif(100))
+dat <- set_attr(dat, "status", rbinom(100, 1, 0.9))
+get_attr_list(dat)
+get_attr_list(dat, c("age", "active"))
+get_attr(dat, "status")
+get_attr(dat, "status", c(1, 4))
+get_attr(dat, "status", rbinom(100, 1, 0.2) == 1)
+
+dat <- add_epi(dat, "i")
+dat <- set_epi(dat, "i", runif(150))
+dat <- set_epi(dat, "s", runif(150))
+dat <- set_epi_at(dat, "s", 150, 8)
+get_epi_list(dat)
+get_epi_list(dat, c("i", "s"))
+get_epi(dat, "i")
+get_epi(dat, "i", c(1, 4))
+get_epi(dat, "i", rbinom(150, 1, 0.2) == 1)
+
+dat <- add_param(dat, "x")
+dat <- set_param(dat, "x", 0.4)
+dat <- set_param(dat, "y", 0.8)
+get_param_list(dat)
+get_param_list(dat, c("x", "y"))
+get_param(dat, "x")
+
+dat <- add_init(dat, "x")
+dat <- set_init(dat, "x", 0.4)
+dat <- set_init(dat, "y", 0.8)
+get_init_list(dat)
+get_init_list(dat, c("x", "y"))
+get_init(dat, "x")
+
+dat <- add_control(dat, "x")
+dat <- set_control(dat, "x", 0.4)
+dat <- set_control(dat, "y", 0.8)
+get_control_list(dat)
+get_control_list(dat, c("x", "y"))
+get_control(dat, "x")
+
+}

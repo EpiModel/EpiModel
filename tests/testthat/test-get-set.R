@@ -32,7 +32,7 @@ test_that("`dat` getters and setter", {
   expect_error(get_attr(dat, "age", c(1, 1000)))
   expect_error(get_attr(dat, "age", c(TRUE, FALSE)))
 
-  expect_message(dat <- set_attr(dat, "status",
+  expect_silent(dat <- set_attr(dat, "status",
                           rbinom(length(dat$attr$active), 1, 0.4)))
 
   expect_equal(get_attr_list(dat), dat$attr)
@@ -62,7 +62,7 @@ test_that("`dat` getters and setter", {
   dat <- set_epi_at(dat, "i", 160, 8)
   expect_length(dat$epi$i, 200)
 
-  expect_message(dat <- set_epi(dat, "s", rbinom(dat$control$nsteps, 1, 0.4)))
+  expect_silent(dat <- set_epi(dat, "s", rbinom(dat$control$nsteps, 1, 0.4)))
 
   expect_equal(get_epi_list(dat), dat$epi)
   expect_equal(get_epi_list(dat, c("i", "s")), dat$epi[c("i", "s")])
@@ -79,9 +79,9 @@ test_that("`dat` getters and setter", {
   expect_equal(dat$init$x, NA)
   expect_equal(dat$control$x, NA)
 
-  expect_message(dat <- set_param(dat, "y", 4))
-  expect_message(dat <- set_init(dat, "y", 4))
-  expect_message(dat <- set_control(dat, "y", 4))
+  expect_silent(dat <- set_param(dat, "y", 4))
+  expect_silent(dat <- set_init(dat, "y", 4))
+  expect_silent(dat <- set_control(dat, "y", 4))
 
   dat <- set_param(dat, "y", 5)
   dat <- set_init(dat, "y", 5)

@@ -21,6 +21,59 @@
 #' @return a vector or a list of vector for `get_` functions. And the Master
 #'         list object for `set_` and `add_` functions
 #'
+#' @examples
+#' dat <- list(
+#'   attr = list(
+#'     active = rbinom(100, 1, 0.9)
+#'   ),
+#'   epi = list(),
+#'   param = list(),
+#'   init = list(),
+#'   control = list(
+#'     nsteps = 150
+#'   )
+#' )
+#'
+#' dat <- add_attr(dat, "age")
+#' dat <- set_attr(dat, "age", runif(100))
+#' dat <- set_attr(dat, "status", rbinom(100, 1, 0.9))
+#' get_attr_list(dat)
+#' get_attr_list(dat, c("age", "active"))
+#' get_attr(dat, "status")
+#' get_attr(dat, "status", c(1, 4))
+#' get_attr(dat, "status", rbinom(100, 1, 0.2) == 1)
+#'
+#' dat <- add_epi(dat, "i")
+#' dat <- set_epi(dat, "i", runif(150))
+#' dat <- set_epi(dat, "s", runif(150))
+#' dat <- set_epi_at(dat, "s", 150, 8)
+#' get_epi_list(dat)
+#' get_epi_list(dat, c("i", "s"))
+#' get_epi(dat, "i")
+#' get_epi(dat, "i", c(1, 4))
+#' get_epi(dat, "i", rbinom(150, 1, 0.2) == 1)
+#'
+#' dat <- add_param(dat, "x")
+#' dat <- set_param(dat, "x", 0.4)
+#' dat <- set_param(dat, "y", 0.8)
+#' get_param_list(dat)
+#' get_param_list(dat, c("x", "y"))
+#' get_param(dat, "x")
+#'
+#' dat <- add_init(dat, "x")
+#' dat <- set_init(dat, "x", 0.4)
+#' dat <- set_init(dat, "y", 0.8)
+#' get_init_list(dat)
+#' get_init_list(dat, c("x", "y"))
+#' get_init(dat, "x")
+#'
+#' dat <- add_control(dat, "x")
+#' dat <- set_control(dat, "x", 0.4)
+#' dat <- set_control(dat, "y", 0.8)
+#' get_control_list(dat)
+#' get_control_list(dat, c("x", "y"))
+#' get_control(dat, "x")
+#'
 #' @name dat_get_set
 NULL
 
@@ -32,10 +85,11 @@ get_attr_list <- function(dat, item = NULL) {
 
   } else {
     missing_item <- setdiff(item, names(dat[["attr"]]))
-    if (length(missing_item) > 0)
+    if (length(missing_item) > 0) {
       stop(paste("There is no attributes called",
                  paste(missing_item, collapse = ", "),
                  "in the attributes list of the Master list object (dat)"))
+    }
 
     out <- dat[["attr"]][item]
   }
@@ -46,22 +100,25 @@ get_attr_list <- function(dat, item = NULL) {
 #' @rdname dat_get_set
 #' @export
 get_attr <- function(dat, item, indexes = NULL) {
-  if (!item %in% names(dat[["attr"]]))
+  if (!item %in% names(dat[["attr"]])) {
       stop(paste("There is no attribute called", item,
                  "in the attributes list of the Master list object (dat)"))
+  }
 
   if (is.null(indexes)) {
     out <- dat[["attr"]][[item]]
 
   } else {
     if (is.logical(indexes)) {
-      if (length(indexes) != length(dat[["attr"]][[item]]))
+      if (length(indexes) != length(dat[["attr"]][[item]])) {
         stop("(logical) `indexes` has to have a length equal to the number of
               nodes in the network")
+      }
     } else if(is.numeric(indexes)) {
-      if (any(indexes > length(dat[["attr"]][[item]])))
+      if (any(indexes > length(dat[["attr"]][[item]]))) {
         stop("Some (numeric) `indexes` are larger than the number of nodes in
               the network")
+      }
     } else {
       stop("`indexes` must be logical, numeric, or NULL")
     }
@@ -75,9 +132,10 @@ get_attr <- function(dat, item, indexes = NULL) {
 #' @rdname dat_get_set
 #' @export
 add_attr <- function(dat, item) {
-  if (item %in% names(dat[["attr"]]))
+  if (item %in% names(dat[["attr"]])) {
     stop(paste0("Cannot create the attribute '", item,
                "': exists already"))
+  }
 
   dat[["attr"]][[item]] <- rep(NA, length(dat$attr$active))
 
@@ -88,19 +146,16 @@ add_attr <- function(dat, item) {
 #' @export
 set_attr <- function(dat, item, value) {
   if (!item %in% names(dat[["attr"]])) {
-    message(paste0("Creating attribute: '", item,
-               "' in the attributes list of the Master list object (dat)"))
-
-
     dat <- add_attr(dat, item)
   }
 
-  if (length(value) != length(dat$attr$active))
+  if (length(value) != length(dat$attr$active)) {
     stop(paste0(
-      "When trying to edit the ", `item`, " nodale attribute: The size",
+      "When trying to edit the ", `item`, " nodal attribute: The size",
        " of the `value` vector is not equal to the number of node in
        the network. Expected: ", length(dat$attr$active), ", given : ",
        length(value)))
+  }
 
   dat[["attr"]][[item]] <- value
 
@@ -115,10 +170,11 @@ get_epi_list <- function(dat, item = NULL) {
 
   } else {
     missing_item <- setdiff(item,names(dat[["epi"]]))
-    if (length(missing_item) > 0)
-      stop(paste("There is no Epidemic output called",
+    if (length(missing_item) > 0) {
+      stop(paste("There is no epi output called",
                  paste(missing_item, collapse = ", "),
-                 "in the Epidemic output list of the Master list object (dat)"))
+                 "in the epi output list of the Master list object (dat)"))
+    }
 
     out <- dat[["epi"]][item]
   }
@@ -129,22 +185,20 @@ get_epi_list <- function(dat, item = NULL) {
 #' @rdname dat_get_set
 #' @export
 get_epi <- function(dat, item, indexes = NULL) {
-  if (!item %in% names(dat[["epi"]]))
-      stop(paste("There is no Epidemic output called", item,
-                 "in the Epidemic output list of the Master list object (dat)"))
-
   if (is.null(indexes)) {
     out <- dat[["epi"]][[item]]
 
   } else {
     if (is.logical(indexes)) {
-      if (length(indexes) != dat$control$nsteps)
+      if (length(indexes) != dat$control$nsteps) {
         stop("(logical) `indexes` has to have a length equal to the number of
               steps planned for for the simulation (control$nsteps)")
+      }
     } else if(is.numeric(indexes)) {
-      if (any(indexes > dat$control$nsteps))
+      if (any(indexes > dat$control$nsteps)) {
         stop("Some (numeric) `indexes` are larger than the number of
               steps planned for for the simulation (control$nsteps)")
+      }
     } else {
       stop("`indexes` must be logical, numeric, or NULL")
     }
@@ -158,9 +212,10 @@ get_epi <- function(dat, item, indexes = NULL) {
 #' @rdname dat_get_set
 #' @export
 add_epi <- function(dat, item) {
-  if (item %in% names(dat[["epi"]]))
-    stop(paste("Cannot create the Epidemic outpout, ", item,
+  if (item %in% names(dat[["epi"]])) {
+    stop(paste("Cannot create the epi output, ", item,
                ": exists already"))
+  }
 
   dat[["epi"]][[item]] <- rep(NA, dat$control$nsteps)
 
@@ -171,9 +226,6 @@ add_epi <- function(dat, item) {
 #' @export
 set_epi <- function(dat, item, value) {
   if (!item %in% names(dat[["epi"]])) {
-    message(paste("Creating Epidemic output: '", item,
-               "'in the Epidemic output list of the Master list object (dat)"))
-
     dat <- add_epi(dat, item)
   }
 
@@ -182,17 +234,15 @@ set_epi <- function(dat, item, value) {
   return(dat)
 }
 
-#' @param at timestep where to add the new value for the Epidemic Outuput `item`
+#' @param at timestep where to add the new value for the epi output `item`
 #' @rdname dat_get_set
 #' @export
 set_epi_at <- function(dat, item, at,  value) {
-  if (length(at) != 1 || !is.numeric(at))
+  if (length(at) != 1 || !is.numeric(at)) {
     stop("`at` must be numeric and of length one")
+  }
 
   if (!item %in% names(dat[["epi"]])) {
-    message(paste("Creating Epidemic output: '", item,
-               "'in the Epidemic output list of the Master list object (dat)"))
-
     dat <- add_epi(dat, item)
   }
 
@@ -216,11 +266,12 @@ get_param_list <- function(dat, item = NULL) {
     out <- dat[["param"]]
 
   } else {
-    missing_item <- setdiff(item,names(dat[["param"]]))
-    if (length(missing_item) > 0)
+    missing_item <- setdiff(item, names(dat[["param"]]))
+    if (length(missing_item) > 0) {
       stop(paste("There is no parameters called",
                  paste(missing_item, collapse = ", "),
                  "in the parameter list of the Master list object (dat)"))
+    }
 
     out <- dat[["param"]][item]
   }
@@ -231,9 +282,10 @@ get_param_list <- function(dat, item = NULL) {
 #' @rdname dat_get_set
 #' @export
 get_param <- function(dat, item) {
-  if (!item %in% names(dat[["param"]]))
+  if (!item %in% names(dat[["param"]])) {
       stop(paste("There is no parameter called", item,
                  "in the parameter list of the Master list object (dat)"))
+  }
 
   out <- dat[["param"]][[item]]
 
@@ -243,9 +295,10 @@ get_param <- function(dat, item) {
 #' @rdname dat_get_set
 #' @export
 add_param <- function(dat, item) {
-  if (item %in% names(dat[["param"]]))
+  if (item %in% names(dat[["param"]])) {
     stop(paste("Cannot create the parameter, ", item,
                ": exists already"))
+  }
 
   dat[["param"]][[item]] <- NA
 
@@ -256,9 +309,6 @@ add_param <- function(dat, item) {
 #' @export
 set_param <- function(dat, item, value) {
   if (!item %in% names(dat[["param"]])) {
-    message(paste("Creating parameter: '", item,
-               "'in the parameter list of the Master list object (dat)"))
-
     dat <- add_param(dat, item)
   }
 
@@ -275,10 +325,11 @@ get_control_list <- function(dat, item = NULL) {
 
   } else {
     missing_item <- setdiff(item,names(dat[["control"]]))
-    if (length(missing_item) > 0)
+    if (length(missing_item) > 0) {
       stop(paste("There is no control value called",
                  paste(missing_item, collapse = ", "),
                  "in the control list of the Master list object (dat)"))
+    }
 
     out <- dat[["control"]][item]
   }
@@ -289,9 +340,10 @@ get_control_list <- function(dat, item = NULL) {
 #' @rdname dat_get_set
 #' @export
 get_control <- function(dat, item) {
-  if (!item %in% names(dat[["control"]]))
+  if (!item %in% names(dat[["control"]])) {
       stop(paste("There is no control value called", item,
                  "in the control list of the Master list object (dat)"))
+  }
 
   out <- dat[["control"]][[item]]
 
@@ -301,9 +353,10 @@ get_control <- function(dat, item) {
 #' @rdname dat_get_set
 #' @export
 add_control <- function(dat, item) {
-  if (item %in% names(dat[["control"]]))
+  if (item %in% names(dat[["control"]])) {
     stop(paste("Cannot create the control value, ", item,
                ": exists already"))
+  }
 
   dat[["control"]][[item]] <- NA
 
@@ -314,9 +367,6 @@ add_control <- function(dat, item) {
 #' @export
 set_control <- function(dat, item, value) {
   if (!item %in% names(dat[["control"]])) {
-    message(paste("Creating control value: '", item,
-               "'in the control list of the Master list object (dat)"))
-
     dat <- add_control(dat, item)
   }
 
@@ -333,10 +383,11 @@ get_init_list <- function(dat, item = NULL) {
 
   } else {
     missing_item <- setdiff(item,names(dat[["init"]]))
-    if (length(missing_item) > 0)
+    if (length(missing_item) > 0) {
       stop(paste("There is no init value called",
                  paste(missing_item, collapse = ", "),
                  "in the init list of the Master list object (dat)"))
+    }
 
     out <- dat[["init"]][item]
   }
@@ -347,9 +398,10 @@ get_init_list <- function(dat, item = NULL) {
 #' @rdname dat_get_set
 #' @export
 get_init <- function(dat, item) {
-  if (!item %in% names(dat[["init"]]))
+  if (!item %in% names(dat[["init"]])) {
       stop(paste("There is no init value called", item,
                  "in the init list of the Master list object (dat)"))
+  }
 
   out <- dat[["init"]][[item]]
 
@@ -359,9 +411,10 @@ get_init <- function(dat, item) {
 #' @rdname dat_get_set
 #' @export
 add_init <- function(dat, item) {
-  if (item %in% names(dat[["init"]]))
+  if (item %in% names(dat[["init"]])) {
     stop(paste("Cannot create the init value, ", item,
                ": exists already"))
+  }
 
   dat[["init"]][[item]] <- NA
 
@@ -372,9 +425,6 @@ add_init <- function(dat, item) {
 #' @export
 set_init <- function(dat, item, value) {
   if (!item %in% names(dat[["init"]])) {
-    message(paste("Creating init value: '", item,
-               "'in the init list of the Master list object (dat)"))
-
     dat <- add_init(dat, item)
   }
 
