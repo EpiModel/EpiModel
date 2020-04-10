@@ -168,11 +168,7 @@ infection.2g.net <- function(dat, at) {
   active <- dat$attr$active
   status <- dat$attr$status
   nw <- dat$nw
-  if (dat$control$tergmLite == FALSE) {
-    group <- get.vertex.attribute(nw, "group")
-  } else {
-    group <- dat$attr$group
-  }
+  group <- dat$attr$group
 
   inf.prob <- dat$param$inf.prob
   inf.prob.g2 <- dat$param$inf.prob.g2
