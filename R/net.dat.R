@@ -17,6 +17,7 @@
 #'        Can be of length > 1 for `get_*_list` functions
 #' @param indexes for `get_epi` and `get_attr`, a numeric vector of indexes or
 #'        a logical vector to subset the desired `item`
+#' @param value new value to be attributed in the `set_` functions
 #' @return a vector or a list of vector for `get_` functions. And the Master
 #'         list object for `set_` and `add_` functions
 #'
