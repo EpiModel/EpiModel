@@ -1,6 +1,6 @@
 context("`dat` object getters and setters")
 
-test_that("Delayed differntial equation models function", {
+test_that("`dat` getters and setter", {
 
   dat <- list(
     attr = list(
