@@ -33,10 +33,11 @@ A list of class \code{netsim} with the following elements:
        network statistics saved in the simulation, and \code{transmat} for
        the transmission matrix saved in the simulation. See
        \code{\link{control.net}} and the Tutorial for further details.
- \item \strong{network:} a list of \code{networkDynamic} objects (or
-       \code{network} objects if \code{delete.nodes} was set to \code{TRUE}),
-       one for each model simulation.
+ \item \strong{network:} a list of \code{networkDynamic} objects,
+        one for each model simulation.
 }
+If \code{control$raw_output == TRUE}: A list of the raw (pre-processed) nestsim
+dat objects, for use in simulation continuation.
 }
 \description{
 Simulates stochastic network epidemic models for infectious

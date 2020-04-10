@@ -139,6 +139,13 @@ test_that("dissolution_coefs returns appropriate error for incompatible departur
   dissolution = ~offset(edges)
   expect_that(dissolution_coefs(dissolution, duration = 60, d.rate = 1/60), throws_error(err.msg))
   expect_that(dissolution_coefs(dissolution, duration = 60, d.rate = 0.01), throws_error(err.msg))
+  dissolution = ~offset(edges)+offset(nodematch("group", diff = TRUE))
+  duration <- c(60, 30, 80, 100, 125, 160)
+  dissolution = ~offset(edges) + offset(nodematch("age.grp", diff = TRUE))
+  err.msg <- paste("The competing risk of departure is too high for the given",
+                   "edge duration of 60 in place 1.",
+                    "Specify a d.rate lower than 0.00837.")
+  expect_that(dissolution_coefs(dissolution, duration = duration, d.rate = 1/60), throws_error(err.msg))
 })
 
 
@@ -166,7 +173,6 @@ test_that("Users using birth parameters are informed of change in language",{
   expect_that(param.net(b.rate = 2), shows_message("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate to a.rate. See documentation for details."))
   expect_that(param.dcm(b.rate = 2), shows_message("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate to a.rate. See documentation for details."))
   expect_that(param.icm(b.rate = 2), shows_message("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate to a.rate. See documentation for details."))
-  expect_that(param.icm(b.rand = TRUE), shows_message("EpiModel 1.7.0 onward renamed the stochastic birth flag b.rand to a.rand. See documentation for details."))
 })
 
 test_that("Users using birth and death functions are informed of change
@@ -176,10 +182,10 @@ in language",{
   expect_that(control.icm(type="SI",nsteps=10,deaths.FUN=temp), shows_message("EpiModel 1.7.0 onward renamed the death function deaths.FUN to departures.FUN. See documentation for details."))
   expect_that(control.net(type = NULL, nsims = 1, nsteps = 10,
                           departures.FUN = temp, arrivals.FUN = temp,
-                          get_prev.FUN = get_prev.net, infection.FUN = infection.net,
+                          prevalence.FUN = prevalence.net, infection.FUN = infection.net,
                           recovery.FUN = recovery.net, births.FUN=temp, depend = FALSE), shows_message("EpiModel 1.7.0 onward renamed the birth function births.FUN to arrivals.FUN. See documentation for details."))
   expect_that(control.net(type = NULL, nsims = 1, nsteps = 10,
                           departures.FUN = temp, arrivals.FUN = temp,
-                          get_prev.FUN = get_prev.net, infection.FUN = infection.net,
+                          prevalence.FUN = prevalence.net, infection.FUN = infection.net,
                           recovery.FUN = recovery.net, deaths.FUN=temp, depend = FALSE), shows_message("EpiModel 1.7.0 onward renamed the death function deaths.FUN to departures.FUN. See documentation for details."))
 })

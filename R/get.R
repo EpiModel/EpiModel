@@ -21,9 +21,9 @@
 #' @details
 #' This function requires that the \code{networkDynamic} is saved during the
 #' network simulation while running either \code{\link{netsim}} or \code{\link{netdx}}.
-#' For the former, that is specified with the \code{save.network} parameter in
-#' \code{\link{control.net}}. For the latter, that is specified with the
-#' \code{keep.tedgelist} parameter directly in \code{\link{netdx}}.
+#' For the former, that is specified with the \code{tergmLite} parameter in
+#' \code{\link{control.net}} set to \code{FALSE}. For the latter, that is
+#' specified with the \code{keep.tedgelist} parameter directly in \code{\link{netdx}}.
 #'
 #' @keywords extract
 #' @export
@@ -73,7 +73,12 @@ get_network <- function(x, sim = 1, network = 1, collapse = FALSE, at) {
   }
 
   if (class(x) == "netsim") {
-    if (x$control$save.network == FALSE || is.null(x$network)) {
+    if (x$control$tergmLite == TRUE) {
+      stop("Network object not saved in netsim object when 'tergmLite == TRUE',
+           check control.net settings",
+           call. = FALSE)
+    }
+    if (x$control$tergmLite == TRUE || is.null(x$network)) {
       stop("Network object not saved in netsim object, check control.net settings",
            call. = FALSE)
     }
@@ -164,11 +169,16 @@ get_transmat <- function(x, sim = 1) {
     stop("x must be of class netsim", call. = FALSE)
   }
 
+  if (x$control$tergmLite == TRUE) {
+    stop("transmat not saved when 'tergmLite == TRUE', check control.net settings",
+         call. = FALSE)
+  }
+
   if (sim > x$control$nsims) {
     stop("Specify sim between 1 and ", x$control$nsims, call. = FALSE)
   }
 
-  if (x$control$save.transmat == FALSE || is.null(x$stats$transmat)) {
+  if (x$control$tergmLite == TRUE  || is.null(x$stats$transmat)) {
     stop("transmat not saved in netsim object, check control.net settings",
          call. = FALSE)
   }

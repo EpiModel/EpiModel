@@ -50,10 +50,11 @@
 #'        network statistics saved in the simulation, and \code{transmat} for
 #'        the transmission matrix saved in the simulation. See
 #'        \code{\link{control.net}} and the Tutorial for further details.
-#'  \item \strong{network:} a list of \code{networkDynamic} objects (or
-#'        \code{network} objects if \code{delete.nodes} was set to \code{TRUE}),
-#'        one for each model simulation.
+#'  \item \strong{network:} a list of \code{networkDynamic} objects,
+#'         one for each model simulation.
 #' }
+#' If \code{control$raw_output == TRUE}: A list of the raw (pre-processed) nestsim
+#' dat objects, for use in simulation continuation.
 #'
 #' @references
 #' Jenness SM, Goodreau SM and Morris M. EpiModel: An R Package for Mathematical
@@ -128,107 +129,72 @@ netsim <- function(x, param, init, control) {
   ncores <- ifelse(nsims == 1, 1, min(parallel::detectCores(), control$ncores))
   control$ncores <- ncores
 
-  if (is.null(control$depend)) {
-    control$depend <- FALSE
+  if (is.null(control$resimulate.network)) {
+    control$resimulate.network <- FALSE
   }
 
+  s <- NULL
   if (ncores == 1) {
-    for (s in 1:control$nsims) {
-
-      ## Initialization Module
-      if (!is.null(control[["initialize.FUN"]])) {
-        dat <- do.call(control[["initialize.FUN"]], list(x, param, init, control, s))
-      }
-
-
-      ### TIME LOOP
-      if (control$nsteps > 1) {
-        for (at in max(2, control$start):control$nsteps) {
-
-          ## Module order
-          morder <- control$module.order
-          if (is.null(morder)) {
-            lim.bi.mods <- control$bi.mods[-which(control$bi.mods %in%
-                                                    c("initialize.FUN", "verbose.FUN"))]
-            morder <- c(control$user.mods, lim.bi.mods)
-          }
-
-          ## Evaluate modules
-          for (i in seq_along(morder)) {
-            dat <- do.call(control[[morder[i]]], list(dat, at))
-          }
-
-          ## Verbose module
-          if (!is.null(control[["verbose.FUN"]])) {
-            do.call(control[["verbose.FUN"]], list(dat, type = "progress", s, at))
-          }
-
-        }
-      }
-
-      # Set output
-      if (s == 1) {
-        out <- saveout.net(dat, s)
-      } else {
-        out <- saveout.net(dat, s, out)
-      }
-      class(out) <- "netsim"
-    }
+    sout <- lapply(seq_len(control$nsims), function(s) {
+      # Run the simulation
+      netsim_loop(x, param, init, control, s)
+    })
   }
 
   if (ncores > 1) {
     doParallel::registerDoParallel(ncores)
-
     sout <- foreach(s = 1:nsims) %dopar% {
-
-      control$nsims <- 1
-      control$currsim <- s
-
-      ## Initialization Module
-      if (!is.null(control[["initialize.FUN"]])) {
-        dat <- do.call(control[["initialize.FUN"]], list(x, param, init, control, s))
-      }
-
-
-      ### TIME LOOP
-      if (control$nsteps > 1) {
-        for (at in max(2, control$start):control$nsteps) {
-
-          ## Module order
-          morder <- control$module.order
-          if (is.null(morder)) {
-            lim.bi.mods <- control$bi.mods[-which(control$bi.mods %in%
-                                                    c("initialize.FUN", "verbose.FUN"))]
-            morder <- c(control$user.mods, lim.bi.mods)
-          }
-
-          ## Evaluate modules
-          for (i in seq_along(morder)) {
-            dat <- do.call(control[[morder[i]]], list(dat, at))
-          }
-
-          ## Verbose module
-          if (!is.null(control[["verbose.FUN"]])) {
-            do.call(control[["verbose.FUN"]], list(dat, type = "progress", s, at))
-          }
-
-        }
-      }
-
-      # Set output
-      out <- saveout.net(dat, s = 1)
-      class(out) <- "netsim"
-      return(out)
+      # Run the simulation
+      netsim_loop(x, param, init, control, s)
     }
+  }
 
-    merged.out <- sout[[1]]
-    for (i in 2:length(sout)) {
-      merged.out <- merge(merged.out, sout[[i]], param.error = FALSE)
-    }
-    out <- merged.out
-    class(out) <- "netsim"
+  # Process the outputs unless `control$raw_output` is `TRUE`
+  if (!is.null(control$raw_output) && control$raw_output) {
+    out <- sout
+  } else {
+    out <- process_out.net(sout)
   }
 
   return(out)
 }
 
+#' @title Internal function running the network simulation loop
+#'
+#' @description This function run the initialization and simulation loop for one
+#'              simulation
+#' @inheritParams initialize.net
+#' @keywords internal
+netsim_loop <- function(x, param, init, control, s) {
+  ## Initialization Module
+  if (!is.null(control[["initialize.FUN"]])) {
+    dat <- do.call(control[["initialize.FUN"]], list(x, param, init, control, s))
+  }
+
+  ### TIME LOOP
+  if (control$nsteps > 1) {
+    for (at in max(2, control$start):control$nsteps) {
+
+      ## Module order
+      morder <- control$module.order
+      if (is.null(morder)) {
+        lim.bi.mods <- control$bi.mods[-which(control$bi.mods %in%
+                                              c("initialize.FUN", "verbose.FUN"))]
+        morder <- c(control$user.mods, lim.bi.mods)
+      }
+
+      ## Evaluate modules
+      for (i in seq_along(morder)) {
+        dat <- do.call(control[[morder[i]]], list(dat, at))
+      }
+
+      ## Verbose module
+      if (!is.null(control[["verbose.FUN"]])) {
+        do.call(control[["verbose.FUN"]], list(dat, type = "progress", s, at))
+      }
+
+    }
+  }
+
+  return(dat)
+}

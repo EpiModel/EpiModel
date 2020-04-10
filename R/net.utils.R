@@ -142,8 +142,8 @@ check_bip_degdist <- function(num.g1, num.g2,
 #'
 #' Using the \code{color_tea} function with a \code{netsim} object requires that
 #' TEAs for disease status be used and that the \code{networkDynamic} object be
-#' saved in the output: both \code{tea.status} and \code{save.network} must be
-#' set to \code{TRUE} in \code{\link{control.net}}.
+#' saved in the output: \code{tergmListe} must be  set to \code{FALSE} in
+#' \code{\link{control.net}}.
 #'
 #' @seealso \code{\link{netsim}} and the \code{ndtv} package documentation.
 #' @keywords colorUtils
@@ -181,38 +181,62 @@ color_tea <- function(nd, old.var = "testatus", old.sus = "s", old.inf = "i",
 }
 
 
-#' @title Copies Vertex Attributes in Formation Formula to attr List
+#' @title Copies Vertex Attributes From Network to dat List
 #'
 #' @description Copies the vertex attributes stored on the network object to the
 #'              master attr list in the dat data object.
 #'
 #' @param dat Master data object passed through \code{netsim} simulations.
-#' @param at Current time step.
-#' @param fterms Vector of attributes used in formation formula, usually as
-#'        output of \code{\link{get_formula_term_attr}}.
 #'
 #' @seealso \code{\link{get_formula_term_attr}}, \code{\link{get_attr_prop}},
-#'          \code{\link{update_nwattr}}.
+#'          \code{\link{auto_update_attr}}, and \code{\link{copy_datattr_to_nwattr}}.
 #' @keywords netUtils internal
 #' @export
 #'
-copy_toall_attr <- function(dat, at, fterms) {
+copy_nwattr_to_datattr <- function(dat) {
   otha <- names(dat$nw$val[[1]])
-  otha <- otha[which(otha %in% fterms)]
+  otha <- setdiff(otha, c("na", "vertex.names", "active",
+                          "testatus.active", "tergm_pid"))
   if (length(otha) > 0) {
     for (i in seq_along(otha)) {
       va <- get.vertex.attribute(dat$nw, otha[i])
       dat$attr[[otha[i]]] <- va
-      if (at == 1) {
-        if (!is.null(dat$control$epi.by) && dat$control$epi.by == otha[i]) {
-          dat$temp$epi.by.vals <- unique(va)
-        }
+      if (!is.null(dat$control$epi.by) && dat$control$epi.by == otha[i]) {
+        dat$temp$epi.by.vals <- unique(va)
       }
     }
   }
   return(dat)
 }
 
+
+#' @title Copies Vertex Attributes from the dat List to the Network Object
+#'
+#' @description Copies the vertex attributes stored on the master attr list on
+#'              dat to the network object on dat.
+#'
+#' @param dat Master data object passed through \code{netsim} simulations.
+#'
+#' @seealso \code{\link{get_formula_term_attr}}, \code{\link{get_attr_prop}},
+#'          \code{\link{auto_update_attr}}, and \code{\link{copy_nwattr_to_datattr}}.
+#' @keywords netUtils internal
+#' @export
+#'
+copy_datattr_to_nwattr <- function(dat) {
+  nwterms <- dat$temp$nwterms
+  special.attr <- "status"
+  if (dat$param$groups == 2) {
+    special.attr <- c(special.attr, "group")
+  }
+  nwterms <- union(nwterms, special.attr)
+  attr.to.copy <- union(nwterms, special.attr)
+  attr <- dat$attr[attr.to.copy]
+  if (length(attr.to.copy) > 0) {
+    dat$nw <- set.vertex.attribute(dat$nw, names(attr), attr)
+  }
+
+  return(dat)
+}
 
 #' @title Dissolution Coefficients for Stochastic Network Models
 #'
@@ -282,23 +306,77 @@ copy_toall_attr <- function(dat, at, fterms) {
 #' @keywords netUtils
 #'
 #' @examples
-#' # Homogeneous dissolution model with no departures
+#' ## Homogeneous dissolution model with no departures
 #' dissolution_coefs(dissolution = ~offset(edges), duration = 25)
 #'
-#' # Homogeneous dissolution model with departures
+#' ## Homogeneous dissolution model with departures
 #' dissolution_coefs(dissolution = ~offset(edges), duration = 25,
 #'                   d.rate = 0.001)
 #'
-#' # Heterogeneous dissolution model in which same-race edges have
-#' # shorter duration compared to mixed-race edges, with no departures
+#' ## Heterogeneous dissolution model in which same-race edges have
+#' ## shorter duration compared to mixed-race edges, with no departures
 #' dissolution_coefs(dissolution = ~offset(edges) + offset(nodematch("race")),
 #'                   duration = c(20, 10))
 #'
-#' # Heterogeneous dissolution model in which same-race edges have
-#' # shorter duration compared to mixed-race edges, with departures
+#' ## Heterogeneous dissolution model in which same-race edges have
+#' ## shorter duration compared to mixed-race edges, with departures
 #' dissolution_coefs(dissolution = ~offset(edges) + offset(nodematch("race")),
 #'                   duration = c(20, 10), d.rate = 0.001)
 #'
+#' \dontrun{
+#' ## Extended example for differential homophily by age group
+#' # Set up the network with nodes categorized into 5 age groups
+#' nw <- network.initialize(1000, directed = FALSE)
+#' age.grp <- sample(1:5, 1000, TRUE)
+#' nw <- set.vertex.attribute(nw, "age.grp", age.grp)
+#'
+#' # durations = non-matched, age.grp1 & age.grp1, age.grp2 & age.grp2, ...
+#' # TERGM will include differential homophily by age group with nodematch term
+#' # Target stats for the formation model are overall edges, and then the number
+#' #    matched within age.grp 1, age.grp 2, ..., age.grp 5
+#' form <- ~edges + nodematch("age.grp", diff = TRUE)
+#' target.stats <- c(450, 100, 125, 40, 80, 100)
+#'
+#' # Target stats for the dissolution model are duration of non-matched edges, then
+#' #    duration of edges matched within age.grp 1, age.grp 2, ..., age.grp 5
+#' durs <- c(60, 30, 80, 100, 125, 160)
+#' diss <- dissolution_coefs(~offset(edges) +
+#'                             offset(nodematch("age.grp", diff = TRUE)),
+#'                           duration = durs)
+#'
+#' # Fit the TERGM
+#' fit <- netest(nw, form, target.stats, diss)
+#'
+#' # Full diagnostics to evaluate model fit
+#' dx <- netdx(fit, nsims = 10, ncores = 4, nsteps = 300)
+#' print(dx)
+#'
+#' # Simulate one long time series to examine timed edgelist
+#' dx <- netdx(fit, nsims = 1, nsteps = 5000, keep.tedgelist = TRUE)
+#'
+#' # Extract timed-edgelist
+#' te <- as.data.frame(dx)
+#' head(te)
+#'
+#' # Limit to non-censored edges
+#' te <- te[which(te$onset.censored == FALSE & te$terminus.censored == FALSE),
+#'          c("head", "tail", "duration")]
+#' head(te)
+#'
+#' # Look up the age group of head and tail nodes
+#' te$ag.head <- age.grp[te$head]
+#' te$ag.tail <- age.grp[te$tail]
+#' head(te)
+#'
+#' # Recover average edge durations for age-group pairing
+#' mean(te$duration[te$ag.head != te$ag.tail])
+#' mean(te$duration[te$ag.head == 1 & te$ag.tail == 1])
+#' mean(te$duration[te$ag.head == 2 & te$ag.tail == 2])
+#' mean(te$duration[te$ag.head == 3 & te$ag.tail == 3])
+#' mean(te$duration[te$ag.head == 4 & te$ag.tail == 4])
+#' mean(te$duration[te$ag.head == 5 & te$ag.tail == 5])
+#' durs
+#' }
 #'
 dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
   # Error check for duration < 1
@@ -343,7 +421,6 @@ dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
     }
     pg <- (duration[1] - 1) / duration[1]
     ps2 <- (1 - d.rate) ^ 2
-    coef.crude <- log(pg / (1 - pg))
     if (ps2 <= pg) {
       d.rate_ <- round(1-sqrt(pg),5)
       str <- paste("The competing risk of departure is too high for the given",
@@ -351,24 +428,29 @@ dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
                    d.rate_,".",sep="")
       stop(str, call. = FALSE)
     }
+
+    coef.crude <- log(pg / (1 - pg))
     coef.adj <- log(pg / (ps2 - pg))
   }
   if (form.length == 2) {
     if (t2.term %in% c("nodematch", "nodefactor", "nodemix")) {
       coef.crude <- coef.adj <- NA
       for (i in 1:length(duration)) {
-        pg.thetaX <- (duration[i] - 1) / duration[i]
-        ps2.thetaX <- (1 - d.rate) ^ 2
-        if (sqrt(ps2.thetaX) <= pg.thetaX) {
-          stop("The competing risk of departure is too high for the given the ",
-               "duration in place ", i, ". Specify a lower d.rate", call. = FALSE)
+        pg <- (duration[i] - 1) / duration[i]
+        ps2 <- (1 - d.rate) ^ 2
+
+        if (ps2 <= pg) {
+          d.rate_ <- round(1-sqrt(pg),5)
+          stop("The competing risk of departure is too high for the given",
+               " edge duration of ", duration[i]," in place ",i, ". ",
+               "Specify a d.rate lower than ", d.rate_,".",sep="")
         }
         if (i == 1) {
-          coef.crude[i] <- log(pg.thetaX / (1 - pg.thetaX))
-          coef.adj[i] <- log(pg.thetaX / (ps2.thetaX - pg.thetaX))
+          coef.crude[i] <- log(pg / (1 - pg))
+          coef.adj[i] <- log(pg / (ps2 - pg))
         } else {
-          coef.crude[i] <- log(pg.thetaX / (1 - pg.thetaX)) - coef.crude[1]
-          coef.adj[i] <- log(pg.thetaX / (ps2.thetaX - pg.thetaX)) - coef.adj[1]
+          coef.crude[i] <- log(pg/ (1 - pg)) - coef.crude[1]
+          coef.adj[i] <- log(pg / (ps2- pg)) - coef.adj[1]
         }
       }
     } else {
@@ -521,35 +603,36 @@ edgelist_meanage <- function(x, el) {
 #' @title Proportional Table of Vertex Attributes
 #'
 #' @description Calculates the proportional distribution of each vertex attribute
-#'              contained on the network, with a possible limitation to those
-#'              attributes contained in the formation formula only.
+#'              contained on the network.
 #'
 #' @param nw The \code{networkDynamic} object contained in the \code{netsim}
 #'        simulation.
-#' @param fterms Vector of attributes used in formation formula, usually as
+#' @param nwterms Vector of attributes on network object, usually as
 #'        output of \code{\link{get_formula_term_attr}}.
-#' @param only.formula Limit the tables to those terms only in \code{fterms},
-#'        otherwise output proportions for all attributes on the network object.
 #'
-#' @seealso \code{\link{get_formula_term_attr}}, \code{\link{copy_toall_attr}},
-#'          \code{\link{update_nwattr}}.
+#' @seealso \code{\link{get_formula_term_attr}}, \code{\link{copy_nwattr_to_datattr}},
+#'          \code{\link{auto_update_attr}}.
 #' @keywords netUtils internal
 #' @export
 #'
-get_attr_prop <- function(nw, fterms, only.formula = TRUE) {
-  if (is.null(fterms)) {
+get_attr_prop <- function(dat, nwterms) {
+
+  if (is.null(nwterms)) {
     return(NULL)
   }
-  nwVal <- names(nw$val[[1]])
-  if (only.formula == TRUE) {
-    nwVal <- nwVal[which(nwVal %in% fterms)]
-  }
+
+  nwVal <- names(dat$attr)
+  nwVal <- setdiff(nwVal, c("na", "vertex.names", "active", "entrTime",
+                            "exitTime", "infTime", "group", "status"))
   out <- list()
-  for (i in 1:length(nwVal)) {
-    tab <- prop.table(table(nw %v% nwVal[i]))
-    out[[i]] <- tab
+  if (length(nwVal) > 0) {
+    for (i in 1:length(nwVal)) {
+      tab <- prop.table(table(dat$attr[[nwVal[i]]]))
+      out[[i]] <- tab
+    }
+    names(out) <- nwVal
   }
-  names(out) <- nwVal
+
   return(out)
 }
 
@@ -577,6 +660,35 @@ get_formula_term_attr <- function(form, nw) {
   matches <- colSums(matches)
 
   out <- names(matches)[which(matches == 1)]
+  if (length(out) == 0) {
+    return(NULL)
+  } else {
+    return(out)
+  }
+
+}
+
+#' @title Outputs ERGM Formula Attributes into a Character Vector
+#'
+#' @description Given a simulated network, outputs into
+#'              a character vector of vertex attributes to be used in \code{netsim}
+#'              simulations.
+#'
+#' @param nw a network object
+#'
+#' @export
+#'
+get_network_term_attr <- function(nw) {
+
+  nw_attr <- names(nw$val[[1]])
+  nw_attr <- setdiff(nw_attr, c("active", "vertex.names", "na",
+                                "testatus.active", "tergm_pid"))
+
+  if (length(nw_attr) == 0) {
+    return(NULL)
+  }
+
+  out <- nw_attr
   if (length(out) == 0) {
     return(NULL)
   } else {
@@ -664,33 +776,33 @@ groupids <- function(nw, group) {
 #'              into that network, based on a set of rules for each attribute
 #'              that the user specifies in \code{control.net}.
 #'
-#' @param nw The \code{networkDynamic} object used in \code{netsim} simulations.
+#' @param dat Master object in \code{netsim} simulations.
 #' @param newNodes Vector of nodal IDs for incoming nodes at the current time
 #'        step.
-#' @param rules List of rules, one per attribute to be set, governing how to set
-#'        the values of each attribute.
 #' @param curr.tab Current proportional distribution of all vertex attributes.
-#' @param t1.tab Proportional distribution of all vertex attributes at the outset
-#'        of the simulation.
 #'
-#' @seealso \code{\link{copy_toall_attr}}, \code{\link{get_attr_prop}},
-#'          \code{\link{update_nwattr}}.
+#' @seealso \code{\link{copy_nwattr_to_datattr}}, \code{\link{get_attr_prop}},
+#'          \code{\link{auto_update_attr}}.
 #' @keywords netUtils internal
 #' @export
 #'
-update_nwattr <- function(nw, newNodes, rules, curr.tab, t1.tab) {
-  for (i in 1:length(curr.tab)) {
-    vname_ <- names(curr.tab)[i]
-    vname <- vname_[!(vname_ %in% "group")]
+auto_update_attr <- function(dat, newNodes, curr.tab) {
 
-    if (length(vname) > 0) {
+  rules <- dat$control$attr.rules
+  t1.tab <- dat$temp$t1.tab
+
+  for (i in seq_along(curr.tab)) {
+    vname <- names(curr.tab)[i]
+    needs.updating <- ifelse(length(dat$attr[[vname]]) < length(dat$attr$active),
+                             TRUE, FALSE)
+    if (length(vname) > 0 & needs.updating == TRUE) {
       rule <- rules[[vname]]
 
       if (is.null(rule)) {
         rule <- "current"
       }
       if (rule == "current") {
-        vclass <- class(nw %v% vname)
+        vclass <- class(dat$attr[[vname]])
         if (vclass == "character") {
           nattr <- sample(names(curr.tab[[vname]]),
                           size = length(newNodes),
@@ -703,7 +815,7 @@ update_nwattr <- function(nw, newNodes, rules, curr.tab, t1.tab) {
                           prob = curr.tab[[i]])
         }
       } else if (rule == "t1") {
-        vclass <- class(nw %v% vname)
+        vclass <- class(dat$attr[[vname]])
         if (vclass == "character") {
           nattr <- sample(names(t1.tab[[vname]]),
                           size = length(newNodes),
@@ -718,11 +830,11 @@ update_nwattr <- function(nw, newNodes, rules, curr.tab, t1.tab) {
       } else {
         nattr <- rep(rules[[vname]], length(newNodes))
       }
-      nw <- set.vertex.attribute(nw, attrname = vname,
-                                 value = nattr, v = newNodes)
+      dat$attr[[vname]] <- c(dat$attr[[vname]], nattr)
     }
   }
-  return(nw)
+
+  return(dat)
 }
 
 
@@ -740,7 +852,7 @@ update_nwattr <- function(nw, newNodes, rules, curr.tab, t1.tab) {
 #' often useful for summary statistics and modeling complex interactions between
 #' degree. Given a \code{network} class object, \code{net}, one way to look
 #' up the current degree is to get a summary of the ERGM term, \code{sociality},
-#' as in: \code{summary(net ~ sociality(base = 0))}. But that is computionally
+#' as in: \code{summary(net ~ sociality(nodes = NULL))}. But that is computationally
 #' inefficient for a number of reasons. This function provide a fast method
 #' for generating the vector of degree using a query of the edgelist. It is
 #' even faster if the parameter \code{x} is already transformed as an edgelist.
@@ -755,7 +867,7 @@ update_nwattr <- function(nw, newNodes, rules, curr.tab, t1.tab) {
 #' sim <- simulate(fit)
 #'
 #' # Slow ERGM-based method
-#' ergm.method <- unname(summary(sim ~ sociality(base = 0)))
+#' ergm.method <- unname(summary(sim ~ sociality(nodes = NULL)))
 #' ergm.method
 #'
 #' # Fast tabulate method with network object

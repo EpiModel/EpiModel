@@ -52,7 +52,6 @@
 #'        specified in \code{\link{param.net}}.
 #' }
 #'
-#'
 #' @section Demographic Modules:
 #' Demographics such as arrival and departure processes are simulated at each time
 #' step to update entries into and exits from the network. These are used in
@@ -61,9 +60,8 @@
 #' \itemize{
 #'  \item \code{\link{departures.net}}: randomly simulates departure for nodes given
 #'        their disease status (susceptible, infected, recovered), and their
-#'        mode-specific departure rates specified in \code{\link{param.net}}. departures
-#'        involve deactivating nodes, which are then deleted from the network
-#'        if \code{delete.nodes=TRUE} is set in \code{\link{control.net}}.
+#'        mode-specific departure rates specified in \code{\link{param.net}}. Departures
+#'        involve deactivating nodes.
 #'  \item \code{\link{arrivals.net}}: randomly simulates new arrivals into the network
 #'        given the current population size and the arrival rate specified in the
 #'        \code{a.rate} parameters. This involves adding new nodes into the network.
@@ -76,15 +74,14 @@
 #' \itemize{
 #'  \item \code{\link{resim_nets}}: resimulates the network object one time step
 #'        forward given the set of formation and dissolution coefficients estimated
-#'        in \code{\link{netest}}. This function also deletes the inactive nodes
-#'        if the \code{delete.nodes} control is set to \code{TRUE}.
+#'        in \code{\link{netest}}.
 #' }
 #'
 #' @section Bookkeeping Module:
 #' Network simulations require bookkeeping at each time step to calculate the
 #' summary epidemiological statistics used in the model output analysis.
 #' \itemize{
-#'  \item \code{\link{get_prev.net}}: calculates the number in each disease state
+#'  \item \code{\link{prevalence.net}}: calculates the number in each disease state
 #'        (susceptible, infected, recovered) at each time step for those active
 #'        nodes in the network. If the \code{epi.by} control is used, it calculates
 #'        these statistics by a set of specified nodal attributes.
@@ -95,7 +92,7 @@
 #' @section One- & Two-Mode Modules:
 #' If epidemic \code{type} is supplied within \code{\link{control.net}}, EpiModel
 #' defaults each of the base epidemic modules described above (arrivals.FUN,
-#' departures.FUN, infection.FUN, recovery.FUN and get_prev.FUN) to the correct .net
+#' departures.FUN, infection.FUN, recovery.FUN and prevalence.FUN) to the correct .net
 #' function based on variables passed to \code{\link{param.net}} (e.g. num.g2, denoting
 #' population size of mode two, would select the two-mode variants of the aformentioned
 #' modules). Two-mode modules are denoted by a .bip affix (e.g., recovery.net.bip)

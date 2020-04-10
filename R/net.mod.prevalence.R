@@ -17,7 +17,7 @@
 #' @export
 #' @keywords netUtils internal
 #'
-get_prev.net <- function(dat, at) {
+prevalence.net <- function(dat, at) {
 
   active <- dat$attr$active
 
@@ -120,7 +120,7 @@ get_prev.net <- function(dat, at) {
 #' @export
 #' @keywords netUtils internal
 #'
-get_prev.net.grp <- function(dat, at) {
+prevalence.2g.net <- function(dat, at) {
 
   active <- dat$attr$active
 
@@ -130,7 +130,12 @@ get_prev.net.grp <- function(dat, at) {
   l$active <- l$infTime <- NULL
 
   status <- l$status
-  group <- idgroup(dat$nw)[active == 1]
+
+  if(dat$control$tergmLite == FALSE){
+    group <- idgroup(dat$nw)[active == 1]
+  } else {
+    group <- dat$attr$group[active == 1]
+  }
 
   ## Subsetting for epi.by control
   eb <- !is.null(dat$control$epi.by)

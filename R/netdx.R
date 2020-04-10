@@ -106,7 +106,7 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps, nwstats.formula = "forma
 
   ncores <- ifelse(nsims == 1, 1, min(parallel::detectCores(), ncores))
 
-  
+
   nw <- x$fit$newnetwork
   fit <- x$fit
   formation <- x$formation
@@ -237,19 +237,11 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps, nwstats.formula = "forma
       }
     }
     if (dynamic == FALSE) {
-      if (packageVersion("ergm") >= "3.10") {
-        diag.sim <- simulate(fit, nsim = nsims,
-                             output = "stats",
-                             control = set.control.ergm,
-                             sequential = sequential,
-                             monitor = nwstats.formula)
-      } else {
-        diag.sim <- simulate(fit, nsim = nsims,
-                             statsonly = TRUE,
-                             control = set.control.ergm,
-                             sequential = sequential,
-                             monitor = nwstats.formula)
-      }
+      diag.sim <- simulate(fit, nsim = nsims,
+                           output = "stats",
+                           control = set.control.ergm,
+                           sequential = sequential,
+                           monitor = nwstats.formula)
     }
   } # end edapprox = TRUE condition
 

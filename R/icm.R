@@ -138,8 +138,8 @@ icm <- function(param, init, control) {
 
 
       ## Outputs
-      if (!is.null(control[["get_prev.FUN"]])) {
-        dat <- do.call(control[["get_prev.FUN"]], list(dat, at))
+      if (!is.null(control[["prevalence.FUN"]])) {
+        dat <- do.call(control[["prevalence.FUN"]], list(dat, at))
       }
 
 

@@ -9,7 +9,7 @@ coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 10)
 est1 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 param <- param.net(inf.prob = 1)
 init <- init.net(i.num = 1)
-control <- control.net(type = "SI", nsteps = 100, nsims = 1, verbose = FALSE, use.pids = FALSE)
+control <- control.net(type = "SI", nsteps = 100, nsims = 1, verbose = FALSE)
 mod1 <- netsim(est1, param, init, control)
 tm <- get_transmat(mod1)
 
@@ -194,5 +194,20 @@ test_that("plot.transmat", {
   plot(tm, style = "network")
   # plot(tm, style = "gv_tree")
   plot(tm, style = "transmissionTimeline")
+})
+
+test_that("'tergmLite == TRUE' correctly errors", {
+  skip_on_cran()
+  nw <- network.initialize(n = 100, directed = FALSE)
+  formation <- ~edges
+  target.stats <- 50
+  coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 10)
+  est1 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
+  param <- param.net(inf.prob = 1)
+  init <- init.net(i.num = 1)
+  control <- control.net(type = "SI", nsteps = 100, nsims = 1, verbose = FALSE,
+                         tergmLite = TRUE)
+  mod2 <- netsim(est1, param, init, control)
+  expect_error(get_transmat(mod2),"transmat not saved when 'tergmLite == TRUE', check control.net settings")
 })
 

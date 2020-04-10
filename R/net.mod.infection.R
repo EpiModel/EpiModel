@@ -45,7 +45,6 @@ infection.net <- function(dat, at) {
   act.rate <- dat$param$act.rate
 
   nw <- dat$nw
-  tea.status <- dat$control$tea.status
 
   # Vector of infected and susceptible IDs
   idsInf <- which(active == 1 & status == "i")
@@ -54,8 +53,6 @@ infection.net <- function(dat, at) {
 
   # Initialize vectors
   nInf <- 0
-
-
 
   # Process -----------------------------------------------------------------
   # If some infected AND some susceptible, then proceed
@@ -100,15 +97,6 @@ infection.net <- function(dat, at) {
       dat$attr$status[idsNewInf] <- "i"
       dat$attr$infTime[idsNewInf] <- at
       nInf <- length(idsNewInf)
-
-      #Output to nw.update
-      dat$nw.update$inf$idsNewInf <- idsNewInf
-
-      # Substitute PIDs for vital two-group sims
-      if (any(names(nw$gal) %in% "vertex.pid")) {
-        del$sus <- get.vertex.pid(nw, del$sus)
-        del$inf <- get.vertex.pid(nw, del$inf)
-      }
 
     } # end some discordant edges condition
   } # end some active discordant nodes condition
@@ -174,20 +162,21 @@ infection.net <- function(dat, at) {
 #' @seealso \code{\link{discord_edgelist}} is used within \code{infection.net}
 #' to obtain a discordant edgelist.
 #'
-
-infection.net.grp <- function(dat, at) {
+infection.2g.net <- function(dat, at) {
 
   # Variables ---------------------------------------------------------------
   active <- dat$attr$active
   status <- dat$attr$status
   nw <- dat$nw
-  group <- get.vertex.attribute(nw, "group")
+  if (dat$control$tergmLite == FALSE) {
+    group <- get.vertex.attribute(nw, "group")
+  } else {
+    group <- dat$attr$group
+  }
 
   inf.prob <- dat$param$inf.prob
   inf.prob.g2 <- dat$param$inf.prob.g2
   act.rate <- dat$param$act.rate
-
-  tea.status <- dat$control$tea.status
 
   # Vector of infected and susceptible IDs
   idsInf <- which(active == 1 & status == "i")
@@ -255,17 +244,6 @@ infection.net.grp <- function(dat, at) {
       nInfG2 <- sum(group[idsNewInf] == 2)
       totInf <- nInf + nInfG2
 
-
-      #Out to network upate
-      dat$nw.update$inf$nInf <- nInf + nInfG2
-      dat$nw.update$inf$idsNewInf <- idsNewInf
-
-      # Substitute PIDs for vital bipartite sims
-      if (any(names(nw$gal) %in% "vertex.pid")) {
-        del$sus <- get.vertex.pid(nw, del$sus)
-        del$inf <- get.vertex.pid(nw, del$inf)
-      }
-
     } # end some discordant edges condition
   } # end some active discordant nodes condition
 
@@ -331,7 +309,12 @@ infection.net.grp <- function(dat, at) {
 discord_edgelist <- function(dat, at) {
 
   status <- dat$attr$status
-  el <- get.dyads.active(dat$nw, at = at)
+
+  if (dat$control$tergmLite == TRUE) {
+    el <- dat$el[[1]]
+  } else {
+    el <- get.dyads.active(dat$nw, at = at)
+  }
 
   del <- NULL
   if (nrow(el) > 0) {
@@ -350,180 +333,4 @@ discord_edgelist <- function(dat, at) {
   }
 
   return(del)
-}
-
-
-#' @title Recovery: netsim Module
-#'
-#' @description This function simulates recovery from the infected state
-#'              either to an distinct recovered state (SIR model type) or back
-#'              to a susceptible state (SIS model type), for use in
-#'              \code{\link{netsim}}.
-#'
-#' @param dat Master list object containing a \code{networkDynamic} object and other
-#'        initialization information passed from \code{\link{netsim}}.
-#' @param at Current time step.
-#'
-#' @export
-#' @keywords internal
-#'
-recovery.net <- function(dat, at) {
-
-  ## Only run with SIR/SIS
-  if (!(dat$control$type %in% c("SIR", "SIS"))) {
-    return(dat)
-  }
-
-  # Variables ---------------------------------------------------------------
-  active <- dat$attr$active
-  status <- dat$attr$status
-  infTime <- dat$attr$infTime
-  tea.status <- dat$control$tea.status
-
-  type <- dat$control$type
-  recovState <- ifelse(type == "SIR", "r", "s")
-
-  rec.rate <- dat$param$rec.rate
-
-  nRecov <- 0
-  idsElig <- which(active == 1 & status == "i")
-  nElig <- length(idsElig)
-
-
-  # Time-Varying Recovery Rate ----------------------------------------------
-  infDur <- at - infTime[active == 1 & status == "i"]
-  infDur[infDur == 0] <- 1
-  lrec.rate <- length(rec.rate)
-  if (lrec.rate == 1) {
-    ratesElig <- rec.rate
-  } else {
-    ratesElig <- ifelse(infDur <= lrec.rate, rec.rate[infDur], rec.rate[lrec.rate])
-  }
-
-
-  # Process -----------------------------------------------------------------
-  if (nElig > 0) {
-    vecRecov <- which(rbinom(nElig, 1, ratesElig) == 1)
-    if (length(vecRecov) > 0) {
-      idsRecov <- idsElig[vecRecov]
-      nRecov <- length(idsRecov)
-      status[idsRecov] <- recovState
-      dat$nw.update$rec$idsRecov <- idsRecov
-      dat$nw.update$rec$recovState <- recovState
-    }
-  }
-
-  dat$attr$status <- status
-  if ("status" %in% dat$temp$fterms) {
-    dat$nw <- set.vertex.attribute(dat$nw, "status", dat$attr$status)
-  }
-
-  # Output ------------------------------------------------------------------
-  outName <- ifelse(type == "SIR", "ir.flow", "is.flow")
-
-  if (at == 2) {
-    dat$epi[[outName[1]]] <- c(0, nRecov)
-  } else {
-    dat$epi[[outName[1]]][at] <- nRecov
-  }
-
-  return(dat)
-}
-
-#' @title Recovery: netsim Module
-#'
-#' @description This function simulates recovery from the infected state
-#'              either to an distinct recovered state (SIR model type) or back
-#'              to a susceptible state (SIS model type), for use in
-#'              \code{\link{netsim}}.
-#'
-#' @param dat Master list object containing a \code{networkDynamic} object and other
-#'        initialization information passed from \code{\link{netsim}}.
-#' @param at Current time step.
-#'
-#' @export
-#' @keywords internal
-#'
-recovery.net.grp <- function(dat, at) {
-
-  ## Only run with SIR/SIS
-  if (!(dat$control$type %in% c("SIR", "SIS"))) {
-    return(dat)
-  }
-
-  # Variables ---------------------------------------------------------------
-  active <- dat$attr$active
-  status <- dat$attr$status
-  infTime <- dat$attr$infTime
-  tea.status <- dat$control$tea.status
-
-  group <- get.vertex.attribute(dat$nw, "group")
-
-  type <- dat$control$type
-  recovState <- ifelse(type == "SIR", "r", "s")
-
-  rec.rate <- dat$param$rec.rate
-  rec.rate.g2 <- dat$param$rec.rate.g2
-
-  nRecov <- nRecovG2 <- 0
-  idsElig <- which(active == 1 & status == "i")
-  nElig <- length(idsElig)
-
-  # Time-Varying Recovery Rate ----------------------------------------------
-  infDur <- at - infTime[active == 1 & status == "i"]
-  infDur[infDur == 0] <- 1
-  lrec.rate <- length(rec.rate)
-  if (lrec.rate == 1) {
-    gElig <- group[idsElig]
-    rates <- c(rec.rate, rec.rate.g2)
-    ratesElig <- rates[gElig]
-  } else {
-    gElig <- group[idsElig]
-    if (is.null(rec.rate.g2)) {
-      rates <- ifelse(infDur <= lrec.rate, rec.rate[infDur], rec.rate[lrec.rate])
-    } else {
-      rates <- rep(NA, length(infDur))
-      rates[gElig == 1] <- ifelse(infDur[gElig == 1] <= lrec.rate,
-                                  rec.rate[infDur[gElig == 1]], rec.rate[lrec.rate])
-      rates[gElig == 2] <- ifelse(infDur[gElig == 2] <= length(rec.rate.g2),
-                                  rec.rate.g2[infDur[gElig == 2]], rec.rate.g2[length(rec.rate.g2)])
-    }
-    ratesElig <- rates
-  }
-
-
-  # Process -----------------------------------------------------------------
-  if (nElig > 0) {
-    vecRecov <- which(rbinom(nElig, 1, ratesElig) == 1)
-    if (length(vecRecov) > 0) {
-      dat$nw.update$rec$idsRecov <- idsRecov <- idsElig[vecRecov]
-      nRecov <- sum(group[idsRecov] == 1)
-      nRecovG2 <- sum(group[idsRecov] == 2)
-      dat$nw.update$rec$recovState <- recovState
-      status[idsRecov] <- recovState
-    }
-  }
-
-  dat$attr$status <- status
-  if ("status" %in% dat$temp$fterms) {
-    dat$nw <- set.vertex.attribute(dat$nw, "status", dat$attr$status)
-  }
-
-  # Output ------------------------------------------------------------------
-  outName <- ifelse(type == "SIR", "ir.flow", "is.flow")
-  outName[2] <- paste0(outName, ".g2")
-
-  if (at == 2) {
-    dat$epi[[outName[1]]] <- c(0, nRecov)
-  } else {
-    dat$epi[[outName[1]]][at] <- nRecov
-  }
-  if (at == 2) {
-    dat$epi[[outName[2]]] <- c(0, nRecovG2)
-  } else {
-    dat$epi[[outName[2]]][at] <- nRecovG2
-  }
-
-
-  return(dat)
 }

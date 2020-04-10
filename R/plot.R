@@ -928,7 +928,7 @@ draw_means <- function(x, y, mean.smooth, mean.lwd,
 #' # Static diagnostics
 #' dx1 <- netdx(est, nsims = 1e4, dynamic = FALSE,
 #'              nwstats.formula = ~edges + meandeg + concurrent +
-#'                                 nodefactor("sex", base = 0) +
+#'                                 nodefactor("sex", levels = NULL) +
 #'                                 nodematch("sex"))
 #' dx1
 #'
@@ -942,7 +942,7 @@ draw_means <- function(x, y, mean.smooth, mean.lwd,
 #' # Dynamic diagnostics
 #' dx2 <- netdx(est, nsims = 10, nsteps = 500,
 #'              nwstats.formula = ~edges + meandeg + concurrent +
-#'                                 nodefactor("sex", base = 0) +
+#'                                 nodefactor("sex", levels = NULL) +
 #'                                 nodematch("sex"))
 #' dx2
 #'
@@ -2066,10 +2066,11 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
   # Network plot ------------------------------------------------------------
   if (type == "network") {
 
-    if (is.null(x$network)) {
-      stop("networkDynamic object not saved in netsim simulation",
-           call. = FALSE)
-    }
+    if (x$control$tergmLite == TRUE) {
+        stop("networkDyanmic object is not saved in tergmLite netsim simulation. Check
+             control settings", call. = FALSE)
+      }
+
 
     nsteps <- x$control$nsteps
     if (at > x$control$nsteps) {
@@ -2101,7 +2102,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
     }
 
     obj <- get_network(x, sims, network, collapse = TRUE, at = at)
-    tea.status <- x$control$tea.status
+    tergmLite <- x$control$tergmLite
 
     if (!is.null(shp.bip)) {
       if (all(shp.bip != c("square", "triangle"))) {
@@ -2135,12 +2136,12 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
       vertex.cex <- 1
     }
     if (col.status == TRUE) {
-      if (is.null(tea.status) || tea.status == FALSE) {
-        stop("Plotting status colors requires tea.status=TRUE in netsim control settings",
+      if (tergmLite == TRUE) {
+        stop("Plotting status colors requires tergmLite=FALSE in netsim control settings",
              call. = FALSE)
       }
       pal <- transco(c("firebrick", "steelblue", "seagreen"), 0.75)
-      if (tea.status == TRUE) {
+      if (tergmLite == FALSE) {
         cols <- ifelse(get.vertex.attribute.active(obj, "testatus", at = at) == "i",
                        pal[1], pal[2])
         cols <- ifelse(get.vertex.attribute.active(obj, "testatus", at = at) == "r",
@@ -2174,7 +2175,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
     }
     dis.type <- x$control$type
     if (is.null(x$param$groups) | !is.numeric(x$param$groups)) {
-      modes <- 1
+      groups <- 1
       x$param$groups <- 1
     } else {
       groups <- x$param$groups
@@ -2216,8 +2217,11 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
     ## Color palettes ##
 
     # Main color palette
-    bpal <- brewer.pal(3, "Set1")
-    bpal <- c(bpal[2], bpal[1], bpal[3])
+    bpal <- c(brewer.pal(9, "Set1"), brewer.pal(8, "Set2"), brewer.pal(12, "Set3"))
+    bpal2 <- bpal[2]
+    bpal1 <- bpal[1]
+    bpal[1] <- bpal2
+    bpal[2] <- bpal1
 
     # Mean line
     if (missing(mean.col)) {
@@ -2448,6 +2452,8 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
           mean.lty <- rep(1:2, each = lcomp / 2)
         }
       }
+      y.n <- length(y)/groups
+      mean.pal <- rep(mean.pal[1:y.n], 2)
       draw_means(x, y, mean.smooth, mean.lwd, mean.pal, mean.lty)
     }
 
