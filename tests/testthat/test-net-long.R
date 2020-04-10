@@ -636,7 +636,7 @@ test_that("Open-population two-group models", {
 
 test_that("Extinction open-population models", {
   skip_on_cran()
-
+  set.seed(12345)
   nw <- network.initialize(n = 25, directed = FALSE)
   nw <- set.vertex.attribute(nw, "group", rep(1:2, c(15,10)))
   est <- netest(nw, formation = ~edges + nodematch("group"),
@@ -665,7 +665,7 @@ test_that("Extinction open-population models", {
                      a.rate.g2 = 0.01, ds.rate.g2 = 0.5, di.rate.g2 = 0.5)
   init <- init.net(i.num = 5, i.num.g2 = 0)
   control <- control.net(type = "SI", nsteps = 30, nsims = 1,
-                         erbose = FALSE)
+                         verbose = FALSE)
   x <- netsim(est, param, init, control)
   expect_output(summary(x, at = 10), "EpiModel Summary")
   plot(x)
