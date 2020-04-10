@@ -1,218 +1,383 @@
-#' @title Get the nodale attributes of a Master list object in network models
+#' Helper functions to access and edit the Master list object of network models
 #'
-#' @description Helper function to access the nodale attributes list of the
-#'              Master list object passed by modules during the course of a
-#'              network simulation
+#' These `get_`, `set_` and `add` functions allow a safe and efficient way to
+#' retrieve and mutate the Master list object of network models (`dat`).
 #'
-#' @param attr_names the name of the attribute(s) to get (default = NULL)
-#' @param list_out Should the output be a list containing the element(s)?
-#'                 See **Value**. (default = FALSE)
-#' @inheritParams nwupdate.net
+#' @section mutability:
+#' The `set_` and `add_` functions DO NOT mutate the dat object in place.
+#' The result must be assigned back to `dat` in order to be registered
+#' `dat <- set_*(dat, item, value)`
 #'
-#' @return If `attr_names` is null, the full nodal attribute list. If `attr_names`
-#'         is of length one and `list_out == FALSE` (default), the `attr_names`
-#'         element of the nodal attribute list. If `list_out == TRUE`, a list
-#'         containing the `attr_names` element(s)  of the nodale attribute list.
+#' @section `set_` vs `add_`:
+#' The `set_` functions edit a pre-existing element or create a new one if it
+#' does not exist already by calling the `add_` functions internally.
 #'
-#' @examples
+#' @param dat a Master list object of network models
+#' @param item a character vector conaining the name of the element to access.
+#'        Can be of length > 1 for `get_*_list` functions
+#' @param indexes for `get_epi` and `get_attr`, a numeric vector of indexes or
+#'        a logical vector to subset the desired `item`
+#' @return a vector or a list of vector for `get_` functions. And the Master
+#'         list object for `set_` and `add_` functions
 #'
-#' ```
-#' get_attr(dat)
-#' get_attr(dat, "age")
-#' get_attr(dat, "age", list_out = TRUE)
-#' get_attr(dat, c("age", "status"), list_out = TRUE)
-#' ```
-#'
-#' @export
-get_attr <- function(dat, attr_names = NULL, list_out = FALSE) {
-  return(get_dat_elt(dat, "attr", attr_names, list_out))
-}
+#' @name dat_get_set
+NULL
 
-#' @title Get the parameters of a Master list object in network models
-#'
-#' @description Helper function to access the parameters list of the
-#'              Master list object passed by modules during the course of a
-#'              network simulation
-#'
-#' @param param_names the name(s) of the parameter(s) to get (default = NULL)
-#' @param list_out Should the output be a list containing the element(s)?
-#'                 See **Value**. (default = FALSE)
-#' @inheritParams nwupdate.net
-#'
-#' @return
-#'   If `param_names` is null, the full parameters list.
-#'   If `param_names` is of length one and `list_out == FALSE` (default),
-#'   the `param_names` element of the nodal param_ibute list.
-#'   If `list_out == TRUE`, a list containing the `param_name` element(s)
-#'   of the paramets list.
-#'
-#' @examples
-#'
-#' ```
-#' get_param(dat)
-#' get_param(dat, "inf.prob")
-#' get_param(dat, "inf.prob", list_out = TRUE)
-#' get_param(dat, c("inf.prob", "act.rate"), list_out = TRUE)
-#' ```
-#'
+#' @rdname dat_get_set
 #' @export
-get_param <- function(dat, param_names = NULL, list_out = FALSE) {
-  return(get_dat_elt(dat, "param", param_names, list_out))
-}
+get_attr_list <- function(dat, item = NULL) {
+  if (is.null(item)) {
+    out <- dat[["attr"]]
 
-#' @title Get the Epidemic Outputs of a Master list object in network models
-#'
-#' @description Helper function to access the Epidemic Outputs list of the
-#'              Master list object passed by modules during the course of a
-#'              network simulation
-#'
-#' @param epi_names the name(s) of the output(s) to get (default = NULL)
-#' @param list_out Should the output be a list containing the element(s)?
-#'                 See **Value**. (default = FALSE)
-#' @inheritParams nwupdate.net
-#'
-#' @return
-#'   If `epi_names` is null, the full Epidemic Outputs list.
-#'   If `epi_names` is of length one and `list_out == FALSE` (default),
-#'   the `epi_names` elements of the Output list.
-#'   If `list_out == TRUE`, a list containing the `out_name` element(s)
-#'   of the parameters list.
-#'
-#' @examples
-#'
-#' ```
-#' get_epi(dat)
-#' get_epi(dat, "i")
-#' get_epi(dat, "i", list_out = TRUE)
-#' get_epi(dat, c("i", "s"), list_out = TRUE)
-#' ```
-#'
-#' @export
-get_epi <- function(dat, epi_names = NULL, list_out = FALSE) {
-  return(get_dat_elt(dat, "epi", epi_names, list_out))
-}
-
-#' @title internal helper function to get elements of a Master list object
-#'
-#' @param elt the name of the sublist to access
-#' @param attrnames the name(s) of the `elt` list elements to get
-#' @param list_out Should the output be a list containing the element(s)?
-#'                 See **Value**.
-#' @inheritParams nwupdate.net
-#'
-#' @return
-#'   If `attrname` is null, the full `elt` list.
-#'   If `attrname` is of length one and `list_out == FALSE` (default),
-#'   the `attrname` elements of the `elt` list.
-#'   If `list_out == TRUE`, a list containing the `attrname` element(s)
-#'   of the `elt` list.
-#'
-#' @examples
-#'
-#' ```
-#' get_dat_elt(dat, "attr")
-#' get_dat_elt(dat, "attr", "age")
-#' get_dat_elt(dat, "attr", "age", list_out = TRUE)
-#' get_dat_elt(dat, "attr", c("age", "status"), list_out = TRUE)
-#' ```
-#'
-#' @keywords Internal
-get_dat_elt <- function(dat, elt, attrnames, list_out) {
- if (is.null(attrnames)) {
-    return(dat[[elt]])
-  } else if (list_out) {
-    return(dat[[elt]][attrnames])
   } else {
-    return(dat[[elt]][[attrnames]])
+    missing_item <- setdiff(item, names(dat[["attr"]]))
+    if (length(missing_item) > 0)
+      stop(paste("There is no attributes called",
+                 paste(missing_item, collapse = ", "),
+                 "in the attributes list of the Master list object (dat)"))
+
+    out <- dat[["attr"]][item]
   }
+
+  return(out)
 }
 
-#' @title Edit an element of the nodale attributes of a Master list object
-#'
-#' @description Helper function to modify the nodale attribute list of the
-#'              Master list object passed by modules during the course of a
-#'              network simulation
-#'
-#' @param attr_name the name of the attribute to modify
-#' @param value the new value for `attr_name`
-#' @inheritParams nwupdate.net
-#'
-#' @return The modified Master list object
-#'
-#' @examples
-#'
-#' ```
-#' dat <- set_attr(dat, "age", new_ages)
-#' ```
-#'
-#' @keywords Internal
-set_attr <- function(dat, attr_name, value) {
-  return(set_dat_elt(dat, "attr", attr_name, value))
+#' @rdname dat_get_set
+#' @export
+get_attr <- function(dat, item, indexes = NULL) {
+  if (!item %in% names(dat[["attr"]]))
+      stop(paste("There is no attribute called", item,
+                 "in the attributes list of the Master list object (dat)"))
+
+  if (is.null(indexes)) {
+    out <- dat[["attr"]][[item]]
+
+  } else {
+    if (is.logical(indexes)) {
+      if (length(indexes) != length(dat[["attr"]][[item]]))
+        stop("(logical) `indexes` has to have a length equal to the number of
+              nodes in the network")
+    } else if(is.numeric(indexes)) {
+      if (any(indexes > length(dat[["attr"]][[item]])))
+        stop("Some (numeric) `indexes` are larger than the number of nodes in
+              the network")
+    } else {
+      stop("`indexes` must be logical, numeric, or NULL")
+    }
+
+    out <- dat[["attr"]][[item]][indexes]
+  }
+
+  return(out)
 }
 
-#' @title Edit an element of the parameters of a Master list object
-#'
-#' @description Helper function to modify the parameters list of the
-#'              Master list object passed by modules during the course of a
-#'              network simulation
-#'
-#' @param param_name the name of the parameter to modify
-#' @param value the new value for `param_name`
-#' @inheritParams nwupdate.net
-#'
-#' @return The modified Master list object
-#'
-#' @examples
-#'
-#' ```
-#' dat <- set_param(dat, "act.rate", new_rate)
-#' ```
-#'
-#' @keywords Internal
-set_param <- function(dat, param_name, value) {
-  return(set_dat_elt(dat, "param", param_name, value))
-}
+#' @rdname dat_get_set
+#' @export
+add_attr <- function(dat, item) {
+  if (item %in% names(dat[["attr"]]))
+    stop(paste0("Cannot create the attribute '", item,
+               "': exists already"))
 
-#' @title Edit an Epidemic Outcome of the parameters of a Master list object
-#'
-#' @description Helper function to modify the Epidemic Outcome list of the
-#'              Master list object passed by modules during the course of a
-#'              network simulation
-#'
-#' @param epi_name the name of the outcome to modify
-#' @param value the new value for `epi_name`
-#' @inheritParams nwupdate.net
-#'
-#' @return The modified Master list object
-#'
-#' @examples
-#'
-#' ```
-#' dat <- set_epi(dat, "i", new_rate)
-#' ```
-#'
-#' @keywords Internal
-set_epi <- function(dat, epi_name, value) {
-  return(set_dat_elt(dat, "epi", epi_name, value))
-}
-
-#' @title internal helper function to edit elements of a Master list object
-#'
-#' @param elt the name of the sublist to access
-#' @param attrname the name of the output(s) to get (default = NULL)
-#' @inheritParams nwupdate.net
-#'
-#' @return The modified Master list object
-#'
-#' @examples
-#'
-#' ```
-#' dat <- set_dat_elt(dat, "attr", "age", new_ages)
-#' ```
-#'
-#' @keywords Internal
-set_dat_elt <- function(dat, elt, attrname, value) {
-  dat[[elt]][[attrname]] <- value
+  dat[["attr"]][[item]] <- rep(NA, length(dat$attr$active))
 
   return(dat)
 }
+
+#' @rdname dat_get_set
+#' @export
+set_attr <- function(dat, item, value) {
+  if (!item %in% names(dat[["attr"]])) {
+    message(paste0("Creating attribute: '", item,
+               "' in the attributes list of the Master list object (dat)"))
+
+
+    dat <- add_attr(dat, item)
+  }
+
+  if (length(value) != length(dat$attr$active))
+    stop(paste0("When trying to edit the ", `item`, " nodale attribute: The size
+                 of the `value` vector is not equal to the number of node in
+                 the network. Expected: ", length(dat$attr$active), ", given : ",
+                 lenght(value)))
+
+  dat[["attr"]][[item]] <- value
+
+  return(dat)
+}
+
+#' @rdname dat_get_set
+#' @export
+get_epi_list <- function(dat, item = NULL) {
+  if (is.null(item)) {
+    out <- dat[["epi"]]
+
+  } else {
+    missing_item <- setdiff(item,names(dat[["epi"]]))
+    if (length(missing_item) > 0)
+      stop(paste("There is no Epidemic output called",
+                 paste(missing_item, collapse = ", "),
+                 "in the Epidemic output list of the Master list object (dat)"))
+
+    out <- dat[["epi"]][item]
+  }
+
+  return(out)
+}
+
+#' @rdname dat_get_set
+#' @export
+get_epi <- function(dat, item, indexes = NULL) {
+  if (!item %in% names(dat[["epi"]]))
+      stop(paste("There is no Epidemic output called", item,
+                 "in the Epidemic output list of the Master list object (dat)"))
+
+  if (is.null(indexes)) {
+    out <- dat[["epi"]][[item]]
+
+  } else {
+    if (is.logical(indexes)) {
+      if (length(indexes) != dat$control$nsteps)
+        stop("(logical) `indexes` has to have a length equal to the number of
+              steps planned for for the simulation (control$nsteps)")
+    } else if(is.numeric(indexes)) {
+      if (any(indexes > dat$control$nsteps))
+        stop("Some (numeric) `indexes` are larger than the number of
+              steps planned for for the simulation (control$nsteps)")
+    } else {
+      stop("`indexes` must be logical, numeric, or NULL")
+    }
+
+    out <- dat[["epi"]][[item]][indexes]
+  }
+
+  return(out)
+}
+
+#' @rdname dat_get_set
+#' @export
+add_epi <- function(dat, item) {
+  if (item %in% names(dat[["epi"]]))
+    stop(paste("Cannot create the Epidemic outpout, ", item,
+               ": exists already"))
+
+  dat[["epi"]][[item]] <- rep(NA, dat$control$nsteps)
+
+  return(dat)
+}
+
+#' @rdname dat_get_set
+#' @export
+set_epi <- function(dat, item, value) {
+  if (!item %in% names(dat[["epi"]])) {
+    message(paste("Creating Epidemic output: '", item,
+               "'in the Epidemic output list of the Master list object (dat)"))
+
+    dat <- add_epi(dat, item)
+  }
+
+  dat[["epi"]][[item]] <- value
+
+  return(dat)
+}
+
+#' @param at timestep where to add the new value for the Epidemic Outuput `item`
+#' @rdname dat_get_set
+#' @export
+set_epi_at <- function(dat, item, at,  value) {
+  if (length(at) != 1 || !is.numeric(at))
+    stop("`at` must be numeric and of length one")
+
+  if (!item %in% names(dat[["epi"]])) {
+    message(paste("Creating Epidemic output: '", item,
+               "'in the Epidemic output list of the Master list object (dat)"))
+
+    dat <- add_epi(dat, item)
+  }
+
+  if (at > length(dat[["epi"]][[item]])) {
+
+      dat[["epi"]][[item]] <- c(
+        dat[["epi"]][[item]],
+        rep(NA, dat$control$nsteps - length(dat[["epi"]][[item]]))
+      )
+  }
+
+  dat[["epi"]][[item]][at] <- value
+
+  return(dat)
+}
+
+#' @rdname dat_get_set
+#' @export
+get_param_list <- function(dat, item = NULL) {
+  if (is.null(item)) {
+    out <- dat[["param"]]
+
+  } else {
+    missing_item <- setdiff(item,names(dat[["param"]]))
+    if (length(missing_item) > 0)
+      stop(paste("There is no parameters called",
+                 paste(missing_item, collapse = ", "),
+                 "in the parameter list of the Master list object (dat)"))
+
+    out <- dat[["param"]][item]
+  }
+
+  return(out)
+}
+
+#' @rdname dat_get_set
+#' @export
+get_param <- function(dat, item) {
+  if (!item %in% names(dat[["param"]]))
+      stop(paste("There is no parameter called", item,
+                 "in the parameter list of the Master list object (dat)"))
+
+  out <- dat[["param"]][[item]]
+
+  return(out)
+}
+
+#' @rdname dat_get_set
+#' @export
+add_param <- function(dat, item) {
+  if (item %in% names(dat[["param"]]))
+    stop(paste("Cannot create the parameter, ", item,
+               ": exists already"))
+
+  dat[["param"]][[item]] <- NA
+
+  return(dat)
+}
+
+#' @rdname dat_get_set
+#' @export
+set_param <- function(dat, item, value) {
+  if (!item %in% names(dat[["param"]])) {
+    message(paste("Creating parameter: '", item,
+               "'in the parameter list of the Master list object (dat)"))
+
+    dat <- add_param(dat, item)
+  }
+
+  dat[["param"]][[item]] <- value
+
+  return(dat)
+}
+
+#' @rdname dat_get_set
+#' @export
+get_control_list <- function(dat, item = NULL) {
+  if (is.null(item)) {
+    out <- dat[["control"]]
+
+  } else {
+    missing_item <- setdiff(item,names(dat[["control"]]))
+    if (length(missing_item) > 0)
+      stop(paste("There is no control value called",
+                 paste(missing_item, collapse = ", "),
+                 "in the control list of the Master list object (dat)"))
+
+    out <- dat[["control"]][item]
+  }
+
+  return(out)
+}
+
+#' @rdname dat_get_set
+#' @export
+get_control <- function(dat, item) {
+  if (!item %in% names(dat[["control"]]))
+      stop(paste("There is no control value called", item,
+                 "in the control list of the Master list object (dat)"))
+
+  out <- dat[["control"]][[item]]
+
+  return(out)
+}
+
+#' @rdname dat_get_set
+#' @export
+add_control <- function(dat, item) {
+  if (item %in% names(dat[["param"]]))
+    stop(paste("Cannot create the control value, ", item,
+               ": exists already"))
+
+  dat[["control"]][[item]] <- NA
+
+  return(dat)
+}
+
+#' @rdname dat_get_set
+#' @export
+set_control <- function(dat, item, value) {
+  if (!item %in% names(dat[["control"]])) {
+    message(paste("Creating control value: '", item,
+               "'in the control list of the Master list object (dat)"))
+
+    dat <- add_control(dat, item)
+  }
+
+  dat[["control"]][[item]] <- value
+
+  return(dat)
+}
+
+#' @rdname dat_get_set
+#' @export
+get_init_list <- function(dat, item = NULL) {
+  if (is.null(item)) {
+    out <- dat[["init"]]
+
+  } else {
+    missing_item <- setdiff(item,names(dat[["init"]]))
+    if (length(missing_item) > 0)
+      stop(paste("There is no init value called",
+                 paste(missing_item, collapse = ", "),
+                 "in the init list of the Master list object (dat)"))
+
+    out <- dat[["init"]][item]
+  }
+
+  return(out)
+}
+
+#' @rdname dat_get_set
+#' @export
+get_init <- function(dat, item) {
+  if (!item %in% names(dat[["init"]]))
+      stop(paste("There is no init value called", item,
+                 "in the init list of the Master list object (dat)"))
+
+  out <- dat[["init"]][[item]]
+
+  return(out)
+}
+
+#' @rdname dat_get_set
+#' @export
+add_init <- function(dat, item) {
+  if (item %in% names(dat[["param"]]))
+    stop(paste("Cannot create the init value, ", item,
+               ": exists already"))
+
+  dat[["init"]][[item]] <- NA
+
+  return(dat)
+}
+
+#' @rdname dat_get_set
+#' @export
+set_init <- function(dat, item, value) {
+  if (!item %in% names(dat[["init"]])) {
+    message(paste("Creating init value: '", item,
+               "'in the init list of the Master list object (dat)"))
+
+    dat <- add_init(dat, item)
+  }
+
+  dat[["init"]][[item]] <- value
+
+  return(dat)
+}
+
