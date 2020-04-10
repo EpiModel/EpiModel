@@ -95,10 +95,11 @@ set_attr <- function(dat, item, value) {
   }
 
   if (length(value) != length(dat$attr$active))
-    stop(paste0("When trying to edit the ", `item`, " nodale attribute: The size
-                 of the `value` vector is not equal to the number of node in
-                 the network. Expected: ", length(dat$attr$active), ", given : ",
-                 lenght(value)))
+    stop(paste0(
+      "When trying to edit the ", `item`, " nodale attribute: The size",
+       " of the `value` vector is not equal to the number of node in
+       the network. Expected: ", length(dat$attr$active), ", given : ",
+       length(value)))
 
   dat[["attr"]][[item]] <- value
 
@@ -299,7 +300,7 @@ get_control <- function(dat, item) {
 #' @rdname dat_get_set
 #' @export
 add_control <- function(dat, item) {
-  if (item %in% names(dat[["param"]]))
+  if (item %in% names(dat[["control"]]))
     stop(paste("Cannot create the control value, ", item,
                ": exists already"))
 
@@ -357,7 +358,7 @@ get_init <- function(dat, item) {
 #' @rdname dat_get_set
 #' @export
 add_init <- function(dat, item) {
-  if (item %in% names(dat[["param"]]))
+  if (item %in% names(dat[["init"]]))
     stop(paste("Cannot create the init value, ", item,
                ": exists already"))
 
