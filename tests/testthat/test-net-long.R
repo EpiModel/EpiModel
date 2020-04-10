@@ -287,15 +287,15 @@ test_that("edges models", {
 ################################################################################
 
 test_that("High departure rate models", {
-
+  skip_on_cran()
   ## "netsim: 1M, ds.rate = 0.5"
   nw <- network.initialize(n = 25, directed = FALSE)
   est <- netest(nw, formation = ~edges, target.stats = 12,
                 coef.diss = dissolution_coefs(~offset(edges), 10, 0.01),
                 edapprox = TRUE, verbose = FALSE)
   param <- param.net(inf.prob = 0.5, act.rate = 2,
-                     a.rate = 0.01, ds.rate = 0.5,
-                     di.rate = 0.25)
+                     a.rate = 0.01, ds.rate = 0.25,
+                     di.rate = 0.1)
   init <- init.net(i.num = 10)
   control <- control.net(type = "SI", nsteps = 25,
                          nsims = 1,
@@ -314,7 +314,7 @@ test_that("High departure rate models", {
 
   ## "netsim: 1M, di.rate = 0.5"
   param <- param.net(inf.prob = 0.1, act.rate = 2, a.rate = 0.01,
-                     ds.rate = 0.01, di.rate = 0.5)
+                     ds.rate = 0.01, di.rate = 0.25)
   init <- init.net(i.num = 10)
   control <- control.net(type = "SI", nsteps = 25,
                          nsims = 1, verbose = FALSE)
