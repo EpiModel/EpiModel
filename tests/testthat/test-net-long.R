@@ -636,7 +636,7 @@ test_that("Open-population two-group models", {
 
 test_that("Extinction open-population models", {
   skip_on_cran()
-  set.seed(12345)
+
   nw <- network.initialize(n = 25, directed = FALSE)
   nw <- set.vertex.attribute(nw, "group", rep(1:2, c(15,10)))
   est <- netest(nw, formation = ~edges + nodematch("group"),

@@ -325,6 +325,11 @@ discord_edgelist <- function(dat, at) {
       sus <- pairs[, 1]
       inf <- pairs[, 2]
       del <- data.frame(at, sus, inf)
+
+      # Check for active status
+      active <- dat$attr$active
+      keep <- rowSums(matrix(c(active[del$sus], active[del$inf]), ncol = 2)) == 2
+      del <- del[keep, ]
     }
   }
 
