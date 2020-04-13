@@ -13,6 +13,6 @@ initialization information passed from \code{\link{netsim}}.}
 \item{at}{Current time step.}
 }
 \description{
-This function handles all call to network object contained in
-\code{dat$nw} during simulation, whether a direct or indirect manipulation.
+This function handles all calls to the network object contained in
+\code{dat$nw[[1]]} during simulation, whether a direct or indirect manipulation.
 }
