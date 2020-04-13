@@ -1,4 +1,5 @@
 language: r
+r_github_packages: statnet/tergmLite@tergmLite_nwobjupdate
 sudo: false
 cache: packages
 latex: false
