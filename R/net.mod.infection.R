@@ -175,7 +175,7 @@ infection.2g.net <- function(dat, at) {
   nw <- dat$nw
 
   inf.prob <- get_param(dat, "inf.prob")
-  inf.prob <- get_param(dat, "inf.prob.g2")
+  inf.prob.g2 <- get_param(dat, "inf.prob.g2")
   act.rate <- get_param(dat, "act.rate")
 
   # Vector of infected and susceptible IDs
