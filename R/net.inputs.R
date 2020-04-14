@@ -781,6 +781,28 @@ crosscheck.net <- function(x, param, init, control) {
       }
     }
 
+    ## Update f.names/args
+    if (flag == 0) {
+    if (control$type != "SIR" && !is.null(control$type)) {
+      control$f.args  <- c("arrivals.net", "departures.net", "infection.net", "prevalence.net")
+    }
+
+    if (control$type %in% c("SIR", "SIS") && !is.null(control$type)) {
+      control$f.args  <- c("arrivals.net", "departures.net", "infection.net",
+                     "recovery.net", "prevalence.net")
+    }
+    } else{
+      if (control$type != "SIR" && !is.null(control$type)) {
+        control$f.args  <- c("arrivals.2g.net", "departures.2g.net",
+                       "infection.2g.net", "prevalence.2g.net")
+      }
+
+      if (control$type %in% c("SIR", "SIS") && !is.null(control$type)) {
+        control$f.args  <- c("arrivals.2g.net", "departures.2g.net", "infection.2g.net",
+                       "recovery.2g.net", "prevalence.2g.net")
+      }
+    }
+
     ## In-place assignment to update param and control
     assign("param", param, pos = parent.frame())
     assign("control", control, pos = parent.frame())
