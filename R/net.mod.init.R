@@ -54,9 +54,12 @@ initialize.net <- function(x, param, init, control, s) {
 
     # Standard attributes
     num <- network.size(nw)
-    dat <- set_attr(dat, "active", rep(1, num))
+    dat$attr$active <- rep(1, num)
     dat <- set_attr(dat, "entrTime", rep(1, num))
     dat <- set_attr(dat, "exitTime", rep(NA, num))
+    #dat <- set_attr(dat, "active", rep(1, num))
+    #dat <- set_attr(dat, "entrTime", rep(1, num))
+    #dat <- set_attr(dat, "exitTime", rep(NA, num))
 
     ## Pull attr on nw to dat$attr
     dat <- copy_nwattr_to_datattr(dat)
@@ -81,7 +84,7 @@ initialize.net <- function(x, param, init, control, s) {
     dat <- do.call(control[["prevalence.FUN"]],list(dat, at = 1))
 
 
-  # Restart/Reinit Simulations ----------------------------------------------
+    # Restart/Reinit Simulations ----------------------------------------------
   } else if (control$start > 1) {
     dat <- list()
 
@@ -138,21 +141,26 @@ init_status.net <- function(dat) {
 
   # Variables ---------------------------------------------------------------
   i.num <- get_init(dat, "i.num")
-  i.num.g2 <- get_init(dat, "i.num.g2")
   r.num <- get_init(dat, "r.num")
-  r.num.g2 <- get_init(dat, "r.num.g2")
+
+  if (groups == 2) {
+    group <- get_attr(dat, "group")
+  } else {
+    group <- rep(1, num)
+  }
+
+  if (groups == 2) {
+    i.num.g2 <- get_init(dat, "i.num.g2")
+    r.num.g2 <- get_init(dat, "r.num.g2")
+  }
 
   status.vector <- dat$init$status.vector
   num <- sum(get_attr(dat, "active") == 1)
   #TODO: check that this works for tergmLite
   statOnNw <- "status" %in% dat$temp$nwterms
 
-  groups <- get_param(dat, "groups")
-  if (groups == 2) {
-    group <- get_attr(dat, "group")
-  } else {
-    group <- rep(1, num)
-  }
+
+
 
   type <- get_control(dat, "type")
 
