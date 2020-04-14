@@ -124,7 +124,7 @@ saveout.icm <- function(dat, s, out = NULL) {
 saveout.net <- function(dat, s, out = NULL) {
 
   # Counts number of simulated networks
-  num.nw <- ifelse(any(class(dat$nw[[1]]) == "network"), 1, length(dat$nw[[1]]))
+  num.nw <- length(dat$nw)
 
   if (s == 1) {
     out <- list()
@@ -151,7 +151,7 @@ saveout.net <- function(dat, s, out = NULL) {
         out$stats$transmat <- list(data.frame())
       }
       class(out$stats$transmat) <- c("transmat", class(out$stats$transmat))
-      out$network <- list(dat$nw[[1]])
+      out$network <- list(dat$nw)
 
     }
 
@@ -179,7 +179,7 @@ saveout.net <- function(dat, s, out = NULL) {
       } else {
         out$stats$transmat[[s]] <- data.frame()
       }
-      out$network[[s]] <- dat$nw[[1]]
+      out$network[[s]] <- dat$nw
 
     }
 
