@@ -38,11 +38,11 @@
 infection.net <- function(dat, at) {
 
   # Variables ---------------------------------------------------------------
-  active <- dat$attr$active
-  status <- dat$attr$status
+  active <- get_attr(dat, "active")
+  status <- get_attr(dat, "status")
 
-  inf.prob <- dat$param$inf.prob
-  act.rate <- dat$param$act.rate
+  inf.prob <- get_param(dat, "inf.prob")
+  act.rate <- get_param(dat, "act.rate")
 
   nw <- dat$nw
 
@@ -94,8 +94,12 @@ infection.net <- function(dat, at) {
 
       # Set new infections vector
       idsNewInf <- unique(del$sus)
-      dat$attr$status[idsNewInf] <- "i"
-      dat$attr$infTime[idsNewInf] <- at
+      status.temp <- get_attr(dat, "status")
+      status.temp[idsNewInf] <- "i"
+      dat <- set_attr(dat, "status", status.temp)
+      infTime.temp <- get_attr(dat, "infTime")
+      infTime.temp[idsNewInf] <- at
+      dat <- set_attr(dat, "infTime", infTime.temp)
       nInf <- length(idsNewInf)
 
     } # end some discordant edges condition
@@ -117,9 +121,9 @@ infection.net <- function(dat, at) {
 
   ## Save incidence vector
   if (at == 2) {
-    dat$epi$si.flow <- c(0, nInf)
+    dat <- set_epi(dat, "si.flow", c(0, nInf))
   } else {
-    dat$epi$si.flow[at] <- nInf
+    dat <- set_epi_at(dat, "si.flow", at, nInf)
   }
 
   dat$nw <- nw
@@ -165,14 +169,14 @@ infection.net <- function(dat, at) {
 infection.2g.net <- function(dat, at) {
 
   # Variables ---------------------------------------------------------------
-  active <- dat$attr$active
-  status <- dat$attr$status
+  active <- get_attr(dat, "active")
+  status <- get_attr(dat, "status")
+  group <- get_attr(dat, "group")
   nw <- dat$nw
-  group <- dat$attr$group
 
-  inf.prob <- dat$param$inf.prob
-  inf.prob.g2 <- dat$param$inf.prob.g2
-  act.rate <- dat$param$act.rate
+  inf.prob <- get_param(dat, "inf.prob")
+  inf.prob <- get_param(dat, "inf.prob.g2")
+  act.rate <- get_param(dat, "act.rate")
 
   # Vector of infected and susceptible IDs
   idsInf <- which(active == 1 & status == "i")
@@ -234,8 +238,12 @@ infection.2g.net <- function(dat, at) {
 
       # Set new infections vector
       idsNewInf <- unique(del$sus)
-      dat$attr$status[idsNewInf] <- "i"
-      dat$attr$infTime[idsNewInf] <- at
+      status.temp <- get_attr(dat, "status")
+      status.temp[idsNewInf] <- "i"
+      dat <- set_attr(dat, "status", status.temp)
+      infTime.temp <- get_attr(dat, "infTime")
+      infTime.temp[idsNewInf] <- at
+      dat <- set_attr(dat, "infTime", infTime.temp)
       nInf <- sum(group[idsNewInf] == 1)
       nInfG2 <- sum(group[idsNewInf] == 2)
       totInf <- nInf + nInfG2
