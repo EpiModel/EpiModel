@@ -85,7 +85,7 @@ initialize.net <- function(x, param, init, control, s) {
   } else if (control$start > 1) {
     dat <- list()
 
-    dat$nw[[1]] <- x$network[[s]]
+    dat$nw <- x$network[[s]]
     dat$param <- x$param
     dat$control <- control
     dat$nwparam <- x$nwparam
