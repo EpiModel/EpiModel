@@ -21,14 +21,14 @@ recovery.net <- function(dat, at) {
   }
 
   # Variables ---------------------------------------------------------------
-  active <- dat$attr$active
-  status <- dat$attr$status
-  infTime <- dat$attr$infTime
+  active <- get_attr(dat, "active")
+  status <- get_attr(dat, "status")
+  infTime <- get_attr(dat, "infTime")
 
   type <- dat$control$type
   recovState <- ifelse(type == "SIR", "r", "s")
 
-  rec.rate <- dat$param$rec.rate
+  rec.rate <- get_param(dat, "rec.rate")
 
   nRecov <- 0
   idsElig <- which(active == 1 & status == "i")
@@ -55,7 +55,7 @@ recovery.net <- function(dat, at) {
       status[idsRecov] <- recovState
     }
   }
-  dat$attr$status <- status
+  dat <- set_attr(dat, "status", status)
 
   # Output ------------------------------------------------------------------
   outName <- ifelse(type == "SIR", "ir.flow", "is.flow")
@@ -91,16 +91,16 @@ recovery.2g.net <- function(dat, at) {
   }
 
   # Variables ---------------------------------------------------------------
-  active <- dat$attr$active
-  status <- dat$attr$status
-  infTime <- dat$attr$infTime
-  group <- dat$attr$group
+  active <- get_attr(dat, "active")
+  status <- get_attr(dat, "status")
+  infTime <- get_attr(dat, "infTime")
+  group <- get_attr(dat, "group")
 
-  type <- dat$control$type
+  type <- get_control(dat, "type")
   recovState <- ifelse(type == "SIR", "r", "s")
 
-  rec.rate <- dat$param$rec.rate
-  rec.rate.g2 <- dat$param$rec.rate.g2
+  rec.rate <- get_param(dat, "rec.rate")
+  rec.rate.g2 <- get_param(dat, "rec.rate.g2")
 
   nRecov <- nRecovG2 <- 0
   idsElig <- which(active == 1 & status == "i")
@@ -139,7 +139,7 @@ recovery.2g.net <- function(dat, at) {
       status[idsRecov] <- recovState
     }
   }
-  dat$attr$status <- status
+  dat <- set_attr(dat, "status", status)
 
   # Output ------------------------------------------------------------------
   outName <- ifelse(type == "SIR", "ir.flow", "is.flow")
