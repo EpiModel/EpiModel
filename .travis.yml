@@ -10,6 +10,9 @@ r:
 r_packages:
   - nlme
 
+r_github_packages:
+  statnet/tergmLite@EpiModel2
+
 addons:
   apt:
     packages:

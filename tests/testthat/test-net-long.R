@@ -80,7 +80,7 @@ test_that("edges models", {
   expect_is(as.data.frame(x), "data.frame")
   expect_true(max(x$epi$i.num) >= 1)
   expect_true(max(x$epi$i.num) <= 100)
-  expect_true(sum(get.vertex.attribute.active(x$network[[1]],
+  expect_true(sum(get.vertex.attribute.active(x$network[[1]][[1]],
                                               prefix = "testatus", at = 1) == "i") >= 0)
   expect_output(summary(x, at = 25), "EpiModel Summary")
   plot(x)
@@ -252,7 +252,7 @@ test_that("edges models", {
   expect_is(x, "netsim")
   expect_is(as.data.frame(x), "data.frame")
   expect_true(max(x$epi$i.num) <= 100)
-  expect_true(sum(get.vertex.attribute.active(x$network[[1]],
+  expect_true(sum(get.vertex.attribute.active(x$network[[1]][[1]],
                                               prefix = "testatus", at = 1) == "i") >= 0)
   expect_output(summary(x, at = 25), "EpiModel Summary")
   plot(x)

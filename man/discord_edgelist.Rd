@@ -2,13 +2,14 @@
 % Please edit documentation in R/net.mod.infection.R
 \name{discord_edgelist}
 \alias{discord_edgelist}
-\title{Discordant Edgelist from NetworkDynamic Object}
+\title{Discordant Edgelist}
 \usage{
 discord_edgelist(dat, at)
 }
 \arguments{
-\item{dat}{Master list object containing a \code{networkDynamic} object and other
-initialization information passed from \code{\link{netsim}}.}
+\item{dat}{Master list object containing a \code{networkDynamic} object or
+edgelist (if tergmLite is used) and other initialization information
+passed from \code{\link{netsim}}.}
 
 \item{at}{Current time step.}
 }
