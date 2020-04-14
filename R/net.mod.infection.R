@@ -265,14 +265,15 @@ infection.2g.net <- function(dat, at) {
   return(dat)
 }
 
-#' @title Discordant Edgelist from NetworkDynamic Object
+#' @title Discordant Edgelist
 #'
 #' @description This function returns a \code{data.frame} with a discordant
 #'              edgelist, defined as the set of edges in which the status of the
 #'              two partners is one susceptible and one infected.
 #'
-#' @param dat Master list object containing a \code{networkDynamic} object and other
-#'        initialization information passed from \code{\link{netsim}}.
+#' @param dat Master list object containing a \code{networkDynamic} object or
+#'        edgelist (if tergmLite is used) and other initialization information
+#'        passed from \code{\link{netsim}}.
 #' @param at Current time step.
 #'
 #' @details

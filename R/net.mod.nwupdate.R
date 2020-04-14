@@ -1,11 +1,12 @@
 
-#' @title EpiModel Network Writes
+#' @title Dynamic Network Updates
 #'
-#' @description This function handles all calls to the network object contained in
-#' \code{dat$nw[[1]]} during simulation, whether a direct or indirect manipulation.
+#' @description This function handles all calls to the network object contained
+#'              on the master dat object handled in \code{netsim}..
 #'
-#' @param dat Master list object containing a \code{networkDynamic} object and other
-#'        initialization information passed from \code{\link{netsim}}.
+#' @param dat Master list object containing a full \code{networkDynamic} object
+#'        or networkLite edgelist (if using tergmLite), and other initialization
+#'        information passed from \code{\link{netsim}}.
 #' @param at Current time step.
 #'
 #' @export
