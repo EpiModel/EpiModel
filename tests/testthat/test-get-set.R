@@ -41,6 +41,14 @@ test_that("`dat` getters and setter", {
 
   expect_error(get_attr_list(dat, "sex"))
 
+  expect_error(dat <- append_attr(dat, "status",
+                          rbinom(length(dat$attr$active), 10)))
+
+  expect_error(dat <- append_attr(dat, "status", 1, -1))
+
+  dat <- append_attr(dat, "active", 1, 10)
+  expect_length(get_attr(dat, "active"), 110)
+
   ## Epi tests
   dat <- add_epi(dat, "i")
   expect_equal(dat$epi$i, rep(NA, dat$control$nsteps))
