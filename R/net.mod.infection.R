@@ -44,8 +44,6 @@ infection.net <- function(dat, at) {
   inf.prob <- dat$param$inf.prob
   act.rate <- dat$param$act.rate
 
-  nw <- dat$nw[[1]]
-
   # Vector of infected and susceptible IDs
   idsInf <- which(active == 1 & status == "i")
   nActive <- sum(active == 1)
@@ -122,7 +120,6 @@ infection.net <- function(dat, at) {
     dat$epi$si.flow[at] <- nInf
   }
 
-  dat$nw[[1]] <- nw
   return(dat)
 }
 
@@ -167,7 +164,6 @@ infection.2g.net <- function(dat, at) {
   # Variables ---------------------------------------------------------------
   active <- dat$attr$active
   status <- dat$attr$status
-  nw <- dat$nw[[1]]
   group <- dat$attr$group
 
   inf.prob <- dat$param$inf.prob
@@ -266,7 +262,6 @@ infection.2g.net <- function(dat, at) {
     dat$epi$si.flow.g2[at] <- nInfG2
   }
 
-  dat$nw[[1]] <- nw
   return(dat)
 }
 
