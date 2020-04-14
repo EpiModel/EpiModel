@@ -49,6 +49,9 @@ test_that("`dat` getters and setter", {
   dat <- append_attr(dat, "active", 1, 10)
   expect_length(get_attr(dat, "active"), 110)
 
+  dat <- append_attr(dat, "status", sample(0:1, 10, TRUE), 10)
+  expect_length(get_attr(dat, "status"), 110)
+
   ## Epi tests
   dat <- add_epi(dat, "i")
   expect_equal(dat$epi$i, rep(NA, dat$control$nsteps))

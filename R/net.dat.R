@@ -167,24 +167,28 @@ set_attr <- function(dat, item, value) {
   return(dat)
 }
 
-#' @param n_new the number of new elements to append at the end of `item`
+#' @param n.new the number of new elements to append at the end of `item`
 #' @rdname dat_get_set
 #' @export
-append_attr <- function(dat, item, value, n_new) {
+append_attr <- function(dat, item, value, n.new) {
   if (!item %in% names(dat[["attr"]])) {
       stop(paste("There is no attribute called", item,
                  "in the attributes list of the Master list object (dat)"))
   }
 
-  if (length(value) != 1) {
-    stop("`value` must be of length one.")
-  }
-
-  if (!is.numeric(n_new) || n_new < 0) {
+  if (!is.numeric(n.new) || n.new < 0) {
     stop("`n_new` must be numeric and greater than or equal to zero.")
   }
 
-  dat[["attr"]][[item]] <- c(dat[["attr"]][[item]], rep(value, n_new))
+  if (length(value) == 1) {
+    new_vals <- rep(value, n.new)
+  } else if (length(value) == n.new) {
+    new_vals <- value
+  } else {
+    stop("`value` must be of length one or `n.new`.")
+  }
+
+  dat[["attr"]][[item]] <- c(dat[["attr"]][[item]], new_vals)
 
   return(dat)
 }
