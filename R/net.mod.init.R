@@ -137,24 +137,24 @@ initialize.net <- function(x, param, init, control, s) {
 init_status.net <- function(dat) {
 
   # Variables ---------------------------------------------------------------
-  i.num <- dat$init$i.num
-  i.num.g2 <- dat$init$i.num.g2
-  r.num <- dat$init$r.num
-  r.num.g2 <- dat$init$r.num.g2
+  i.num <- get_init(dat, "i.num")
+  i.num.g2 <- get_init(dat, "i.num.g2")
+  r.num <- get_init(dat, "r.num")
+  r.num.g2 <- get_init(dat, "r.num.g2")
 
   status.vector <- dat$init$status.vector
-  num <- sum(dat$attr$active == 1)
+  num <- sum(get_attr(dat, "active") == 1)
   #TODO: check that this works for tergmLite
   statOnNw <- "status" %in% dat$temp$nwterms
 
-  groups <- dat$param$groups
+  groups <- get_param(dat, "groups")
   if (groups == 2) {
     group <- get_attr(dat, "group")
   } else {
     group <- rep(1, num)
   }
 
-  type <- dat$control$type
+  type <- get_control(dat, "type")
 
 
   # Status ------------------------------------------------------------------
@@ -207,8 +207,8 @@ init_status.net <- function(dat) {
       infTime <- dat$init$infTime.vector
     } else {
       # If vital dynamics, infTime is a geometric draw over the duration of infection
-      if (dat$param$vital == TRUE && dat$param$di.rate > 0) {
-        if (dat$control$type == "SI") {
+      if (dat$param$vital == TRUE && get_param(dat, "di.rate") > 0) {
+        if (type == "SI") {
           infTime[idsInf] <- -rgeom(n = length(idsInf), prob = dat$param$di.rate) + 2
         } else {
           infTime[idsInf] <- -rgeom(n = length(idsInf),
@@ -216,18 +216,17 @@ init_status.net <- function(dat) {
                                       (1 - dat$param$di.rate)*mean(dat$param$rec.rate)) + 2
         }
       } else {
-        if (dat$control$type == "SI" || mean(dat$param$rec.rate) == 0) {
+        if (type == "SI" || mean(get_param(dat,"rec.rate")) == 0) {
           # if no recovery, infTime a uniform draw over the number of sim time steps
           infTime[idsInf] <- ssample(1:(-dat$control$nsteps + 2),
                                      length(idsInf), replace = TRUE)
         } else {
-          infTime[idsInf] <- -rgeom(n = length(idsInf), prob = mean(dat$param$rec.rate)) + 2
+          infTime[idsInf] <- -rgeom(n = length(idsInf), prob = mean(get_param(dat,"rec.rate"))) + 2
         }
       }
     }
 
     dat <- set_attr(dat, "infTime", infTime)
-    #dat$attr$infTime <- infTime
   }
 
   return(dat)
