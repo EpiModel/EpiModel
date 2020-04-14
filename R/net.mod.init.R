@@ -54,9 +54,9 @@ initialize.net <- function(x, param, init, control, s) {
 
     # Standard attributes
     num <- network.size(nw)
-    dat$attr$active <- rep(1, num)
-    dat$attr$entrTime <- rep(1, num)
-    dat$attr$exitTime <- rep(NA, num)
+    dat <- set_attr(dat, "active", rep(1, num))
+    dat <- set_attr(dat, "entrTime", rep(1, num))
+    dat <- set_attr(dat, "exitTime", rep(NA, num))
 
     ## Pull attr on nw to dat$attr
     dat <- copy_nwattr_to_datattr(dat)
@@ -149,7 +149,7 @@ init_status.net <- function(dat) {
 
   groups <- dat$param$groups
   if (groups == 2) {
-    group <- dat$attr$group
+    group <- get_attr(dat, "group")
   } else {
     group <- rep(1, num)
   }
@@ -176,8 +176,10 @@ init_status.net <- function(dat) {
         }
       }
     }
-    dat$attr$status <- status
+    #dat$attr$status <- status
+    dat <- set_attr(dat, "status", status)
   } else {
+    #TODO: Where is status set before this? NULL if statonNW = TRUE
     status <- dat$attr$status
   }
 
@@ -224,7 +226,8 @@ init_status.net <- function(dat) {
       }
     }
 
-    dat$attr$infTime <- infTime
+    dat <- set_attr(dat, "infTime", infTime)
+    #dat$attr$infTime <- infTime
   }
 
   return(dat)
