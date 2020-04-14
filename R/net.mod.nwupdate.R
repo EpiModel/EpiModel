@@ -1,11 +1,12 @@
 
-#' @title EpiModel Network Writes
+#' @title Dynamic Network Updates
 #'
-#' @description This function handles all call to network object contained in
-#' \code{dat$nw} during simulation, whether a direct or indirect manipulation.
+#' @description This function handles all calls to the network object contained
+#'              on the master dat object handled in \code{netsim}..
 #'
-#' @param dat Master list object containing a \code{networkDynamic} object and other
-#'        initialization information passed from \code{\link{netsim}}.
+#' @param dat Master list object containing a full \code{networkDynamic} object
+#'        or networkLite edgelist (if using tergmLite), and other initialization
+#'        information passed from \code{\link{netsim}}.
 #' @param at Current time step.
 #'
 #' @export
@@ -23,7 +24,7 @@ nwupdate.net <- function(dat, at) {
   if (tL == FALSE) {
     idsNewInf <- which(status == "i" & infTime == at)
     if (length(idsNewInf) > 0) {
-      dat$nw <- activate.vertex.attribute(dat$nw, prefix = "testatus",
+      dat$nw[[1]] <- activate.vertex.attribute(dat$nw[[1]], prefix = "testatus",
                                           value = "i", onset = at,
                                           terminus = Inf, v = idsNewInf)
     }
@@ -37,10 +38,10 @@ nwupdate.net <- function(dat, at) {
       nCurr <- get_epi(dat, "num", index)
       recovState <- ifelse(type == "SIR", "r", "s")
       attr.status <- which(status == recovState)
-      nw.status <- which(get.vertex.attribute(dat$nw, "status") == recovState)
+      nw.status <- which(get.vertex.attribute(dat$nw[[1]], "status") == recovState)
       idsRecov <- setdiff(attr.status, nw.status)
       if (length(idsRecov) > 0) {
-        dat$nw <- activate.vertex.attribute(dat$nw, prefix = "testatus",
+        dat$nw[[1]] <- activate.vertex.attribute(dat$nw[[1]], prefix = "testatus",
                                             value = recovState, onset = at,
                                             terminus = Inf, v = idsRecov)
       }
@@ -68,10 +69,10 @@ nwupdate.net <- function(dat, at) {
            print(cbind(sapply(get_attr_list(dat), length))))
     }
     if (tL == FALSE) {
-      dat$nw <- add.vertices(dat$nw, nv = sum(nArrivals))
-      dat$nw <- activate.vertices(dat$nw, onset = at, terminus = Inf, v = newNodes)
+      dat$nw[[1]] <- add.vertices(dat$nw[[1]], nv = sum(nArrivals))
+      dat$nw[[1]] <- activate.vertices(dat$nw[[1]], onset = at, terminus = Inf, v = newNodes)
       dat <- copy_datattr_to_nwattr(dat)
-      dat$nw <- activate.vertex.attribute(dat$nw, prefix = "testatus",
+      dat$nw[[1]] <- activate.vertex.attribute(dat$nw[[1]], prefix = "testatus",
                                           value = dat$attr$status[newNodes],
                                           onset = at, terminus = Inf,
                                           v = newNodes)
@@ -86,7 +87,7 @@ nwupdate.net <- function(dat, at) {
   inactive <- which(active == 0 & exitTime == at)
   if (length(inactive) > 0) {
     if (tL == FALSE) {
-      dat$nw <- deactivate.vertices(dat$nw, onset = at, terminus = Inf,
+      dat$nw[[1]] <- deactivate.vertices(dat$nw[[1]], onset = at, terminus = Inf,
                                     v = inactive, deactivate.edges = TRUE)
     }
     if (tL == TRUE) {
