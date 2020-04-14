@@ -44,8 +44,6 @@ infection.net <- function(dat, at) {
   inf.prob <- get_param(dat, "inf.prob")
   act.rate <- get_param(dat, "act.rate")
 
-  nw <- dat$nw
-
   # Vector of infected and susceptible IDs
   idsInf <- which(active == 1 & status == "i")
   nActive <- sum(active == 1)
@@ -126,7 +124,6 @@ infection.net <- function(dat, at) {
     dat <- set_epi_at(dat, "si.flow", at, nInf)
   }
 
-  dat$nw <- nw
   return(dat)
 }
 
@@ -169,10 +166,10 @@ infection.net <- function(dat, at) {
 infection.2g.net <- function(dat, at) {
 
   # Variables ---------------------------------------------------------------
+
   active <- get_attr(dat, "active")
   status <- get_attr(dat, "status")
   group <- get_attr(dat, "group")
-  nw <- dat$nw
 
   inf.prob <- get_param(dat, "inf.prob")
   inf.prob.g2 <- get_param(dat, "inf.prob.g2")
@@ -274,18 +271,18 @@ infection.2g.net <- function(dat, at) {
     dat$epi$si.flow.g2[at] <- nInfG2
   }
 
-  dat$nw <- nw
   return(dat)
 }
 
-#' @title Discordant Edgelist from NetworkDynamic Object
+#' @title Discordant Edgelist
 #'
 #' @description This function returns a \code{data.frame} with a discordant
 #'              edgelist, defined as the set of edges in which the status of the
 #'              two partners is one susceptible and one infected.
 #'
-#' @param dat Master list object containing a \code{networkDynamic} object and other
-#'        initialization information passed from \code{\link{netsim}}.
+#' @param dat Master list object containing a \code{networkDynamic} object or
+#'        edgelist (if tergmLite is used) and other initialization information
+#'        passed from \code{\link{netsim}}.
 #' @param at Current time step.
 #'
 #' @details
@@ -317,7 +314,7 @@ discord_edgelist <- function(dat, at) {
   if (dat$control$tergmLite == TRUE) {
     el <- dat$el[[1]]
   } else {
-    el <- get.dyads.active(dat$nw, at = at)
+    el <- get.dyads.active(dat$nw[[1]], at = at)
   }
 
   del <- NULL

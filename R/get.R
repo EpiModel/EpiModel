@@ -31,7 +31,7 @@
 #' @examples
 #' # Set up network and TERGM formiula
 #' nw <- network.initialize(n = 100, directed = FALSE)
-#' nw <- set.vertex.attribute(nw, "group", rep(c(1,2), each = 50))
+#' nw <- set.vertex.attribute(nw, "group", rep(1:2, each = 50))
 #' formation <- ~edges
 #' target.stats <- 50
 #' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
@@ -103,11 +103,7 @@ get_network <- function(x, sim = 1, network = 1, collapse = FALSE, at) {
 
   ## Extraction ##
   if (class(x) == "netsim") {
-    if (x$control$num.nw == 1) {
-      out <- x$network[[sim]]
-    } else {
-      out <- x$network[[sim]][[network]]
-    }
+    out <- x$network[[sim]][[network]]
   } else if (class(x) == "netdx") {
     out <- x$network[[sim]]
   }

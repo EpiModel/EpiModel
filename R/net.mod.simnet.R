@@ -74,7 +74,7 @@ resim_nets <- function(dat, at) {
     # Set up nwstats df
     if (save.nwstats == TRUE) {
       if (at == 2) {
-        nwstats <- attributes(dat$nw)$stats
+        nwstats <- attributes(dat$nw[[1]])$stats
         dat$stats$nwstats <- as.data.frame(nwstats)
       }
     }
@@ -82,7 +82,7 @@ resim_nets <- function(dat, at) {
     # Network simulation
     if (anyActive > 0 & dat$control$resimulate.network == TRUE) {
       suppressWarnings(
-        dat$nw <- simulate(dat$nw,
+        dat$nw[[1]] <- simulate(dat$nw[[1]],
                            formation = nwparam$formation,
                            dissolution = nwparam$coef.diss$dissolution,
                            coef.form = nwparam$coef.form,
@@ -97,7 +97,7 @@ resim_nets <- function(dat, at) {
       # Update nwstats df
       if (dat$control$save.nwstats == TRUE) {
         dat$stats$nwstats <- rbind(dat$stats$nwstats,
-                                   tail(attributes(dat$nw)$stats, 1)[,])
+                                   tail(attributes(dat$nw[[1]])$stats, 1)[,])
       }
     }
   }

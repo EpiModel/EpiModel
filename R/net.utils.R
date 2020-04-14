@@ -194,12 +194,12 @@ color_tea <- function(nd, old.var = "testatus", old.sus = "s", old.inf = "i",
 #' @export
 #'
 copy_nwattr_to_datattr <- function(dat) {
-  otha <- names(dat$nw$val[[1]])
+  otha <- names(dat$nw[[1]]$val[[1]])
   otha <- setdiff(otha, c("na", "vertex.names", "active",
                           "testatus.active", "tergm_pid"))
   if (length(otha) > 0) {
     for (i in seq_along(otha)) {
-      va <- get.vertex.attribute(dat$nw, otha[i])
+      va <- get.vertex.attribute(dat$nw[[1]], otha[i])
       dat$attr[[otha[i]]] <- va
       if (!is.null(dat$control$epi.by) && dat$control$epi.by == otha[i]) {
         dat$temp$epi.by.vals <- unique(va)
@@ -232,7 +232,7 @@ copy_datattr_to_nwattr <- function(dat) {
   attr.to.copy <- union(nwterms, special.attr)
   attr <- dat$attr[attr.to.copy]
   if (length(attr.to.copy) > 0) {
-    dat$nw <- set.vertex.attribute(dat$nw, names(attr), attr)
+    dat$nw[[1]] <- set.vertex.attribute(dat$nw[[1]], names(attr), attr)
   }
 
   return(dat)

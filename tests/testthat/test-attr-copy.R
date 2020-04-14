@@ -1,4 +1,4 @@
-context("Attribute copying between network and data object attribute list")
+context("Attribute copying between network and dat$attr")
 
 ################################################################################
 
@@ -14,9 +14,9 @@ test_that("Copying attributes from network to attribute list",{
   coef.diss <- dissolution_coefs(dissolution = ~ offset(edges), duration = 25)
   est <- netest(nw, formation, target.stats, coef.diss)
 
-  init <- init.net(i.num = 50, i.num.g2 = 50)
   param <- param.net(inf.prob = 0.1, inf.prob.g2 = 0.2,
                      act.rate = 5)
+  init <- init.net(i.num = 50, i.num.g2 = 50)
   control <- control.net(type = "SI", nsteps = 10, nsims = 2, tergmLite = FALSE,
                          raw_output = TRUE, verbose = FALSE)
 
@@ -24,24 +24,24 @@ test_that("Copying attributes from network to attribute list",{
 
   # Character attribute
   dat.attr <- prop.table(table(sim[[1]]$attr$race))
-  nw.attr <- prop.table(table(get.vertex.attribute(sim[[1]]$nw, "race")))
+  nw.attr <- prop.table(table(get.vertex.attribute(sim[[1]]$nw[[1]], "race")))
 
   expect_equal(dat.attr, nw.attr)
 
   # Numeric attribute
   dat.attr <- prop.table(table(sim[[1]]$attr$region))
-  nw.attr <- prop.table(table(get.vertex.attribute(sim[[1]]$nw, "region")))
+  nw.attr <- prop.table(table(get.vertex.attribute(sim[[1]]$nw[[1]], "region")))
 
   expect_equal(dat.attr, nw.attr)
 
   # Second simulation
   dat.attr <- prop.table(table(sim[[2]]$attr$race))
-  nw.attr <- prop.table(table(get.vertex.attribute(sim[[2]]$nw, "race")))
+  nw.attr <- prop.table(table(get.vertex.attribute(sim[[2]]$nw[[1]], "race")))
 
   expect_equal(dat.attr, nw.attr)
 
   dat.attr <- prop.table(table(sim[[2]]$attr$region))
-  nw.attr <- prop.table(table(get.vertex.attribute(sim[[2]]$nw, "region")))
+  nw.attr <- prop.table(table(get.vertex.attribute(sim[[2]]$nw[[1]], "region")))
 
   expect_equal(dat.attr, nw.attr)
 
