@@ -131,6 +131,7 @@ resim_nets <- function(dat, at) {
 edges_correct <- function(dat, at) {
 
   resimulate.network <- get_control(dat, "resimulate.network")
+  tergmLite <- get_control(dat, "tergmLite")
   groups <- get_param(dat, "groups")
   active <- get_attr(dat, "active")
 
