@@ -1,5 +1,4 @@
 language: r
-r_github_packages: statnet/tergmLite@tergmLite_nwobjupdate
 sudo: false
 cache: packages
 latex: false
@@ -10,6 +9,9 @@ r:
 
 r_packages:
   - nlme
+
+r_github_packages:
+  statnet/tergmLite@EpiModel2
 
 addons:
   apt:
