@@ -12,12 +12,16 @@
 #'
 nwupdate.net <- function(dat, at) {
 
-  groups <- dat$param$groups
-  tL <- dat$control$tergmLite
+  groups <- get_param(dat, "groups")
+  tL <- get_control(dat, "tergmLite")
+  status <- get_attr(dat, "status")
+  infTime <- get_attr(dat, "infTime")
+  active <- get_attr(dat, "active")
+  exitTime <- get_attr(dat, "exitTime")
 
   ## Infection
   if (tL == FALSE) {
-    idsNewInf <- which(dat$attr$status == "i" & dat$attr$infTime == at)
+    idsNewInf <- which(status == "i" & infTime == at)
     if (length(idsNewInf) > 0) {
       dat$nw <- activate.vertex.attribute(dat$nw, prefix = "testatus",
                                           value = "i", onset = at,
@@ -27,10 +31,10 @@ nwupdate.net <- function(dat, at) {
 
   ## Recovery
   if (tL == FALSE) {
-    type <- dat$control$type
+    type <- get_control(dat, "type")
     if (type %in% c("SIS", "SIR")) {
-      nCurr <- dat$epi$num[at - 1]
-      status <- dat$attr$status[1:nCurr]
+      index <- at - 1
+      nCurr <- get_epi(dat, "num", index)
       recovState <- ifelse(type == "SIR", "r", "s")
       attr.status <- which(status == recovState)
       nw.status <- which(get.vertex.attribute(dat$nw, "status") == recovState)
@@ -45,12 +49,14 @@ nwupdate.net <- function(dat, at) {
 
   ## Arrivals
   if (groups == 1) {
-    nArrivals <- dat$epi$a.flow[at]
+    nArrivals <- get_epi(dat, "a.flow", at)
   } else {
-    nArrivals <- c(dat$epi$a.flow[at], dat$epi$a.flow.g2[at])
+    nArrivals <- c(get_epi(dat, "a.flow", at),
+                   get_epi(dat, "a.flow.g2", at))
   }
   if (sum(nArrivals) > 0) {
-    nCurr <- dat$epi$num[at - 1]
+    index <- at - 1
+    nCurr <- get_epi(dat, "num", index)
     newNodes <- (nCurr + 1):(nCurr + sum(nArrivals))
     nwterms <- dat$temp$nwterms
     if (!is.null(nwterms)) {
@@ -59,7 +65,7 @@ nwupdate.net <- function(dat, at) {
     }
     if (length(unique(sapply(dat$attr, length))) != 1) {
       stop("Attribute list of unequal length. Check arrivals.net module.\n",
-           print(cbind(sapply(dat$attr, length))))
+           print(cbind(sapply(get_attr_list(dat), length))))
     }
     if (tL == FALSE) {
       dat$nw <- add.vertices(dat$nw, nv = sum(nArrivals))
@@ -77,7 +83,7 @@ nwupdate.net <- function(dat, at) {
 
 
   ## Departures
-  inactive <- which(dat$attr$active == 0 & dat$attr$exitTime == at)
+  inactive <- which(active == 0 & exitTime == at)
   if (length(inactive) > 0) {
     if (tL == FALSE) {
       dat$nw <- deactivate.vertices(dat$nw, onset = at, terminus = Inf,
