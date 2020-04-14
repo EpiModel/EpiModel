@@ -346,7 +346,7 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #'        this to \code{FALSE} is recommended when running models with new modules
 #'        specified.
 #' @param raw_output If \code{TRUE}, \code{netsim} will output a list of nestsim
-#'        Data (one per simulation) instead of a formatted \code{netsim} object.
+#'        data (one per simulation) instead of a formatted \code{netsim} object.
 #' @param ... Additional control settings passed to model.
 #'
 #' @details
