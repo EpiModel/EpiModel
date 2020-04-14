@@ -1,11 +1,12 @@
 #' Helper functions to access and edit the Master list object of network models
 #'
-#' These `get_`, `set_` and `add` functions allow a safe and efficient way to
-#' retrieve and mutate the Master list object of network models (`dat`).
+#' These `get_`, `set_`, `append_` and `add` functions allow a safe and
+#' efficient way to retrieve and mutate the Master list object of network models
+#' (`dat`).
 #'
 #' @section mutability:
-#' The `set_` and `add_` functions DO NOT mutate the dat object in place.
-#' The result must be assigned back to `dat` in order to be registered
+#' The `set_`, `append_` and `add_` functions DO NOT mutate the dat object in
+#' place. The result must be assigned back to `dat` in order to be registered
 #' `dat <- set_*(dat, item, value)`
 #'
 #' @section `set_` vs `add_`:
@@ -17,11 +18,12 @@
 #'        Can be of length > 1 for `get_*_list` functions
 #' @param indexes for `get_epi` and `get_attr`, a numeric vector of indexes or
 #'        a logical vector to subset the desired `item`
-#' @param value new value to be attributed in the `set_` functions
+#' @param value new value to be attributed in the `set_` and `append_` functions
 #' @return a vector or a list of vector for `get_` functions. And the Master
 #'         list object for `set_` and `add_` functions
 #'
 #' @examples
+#' \dontrun{
 #' dat <- list(
 #'   attr = list(
 #'     active = rbinom(100, 1, 0.9)
@@ -37,6 +39,8 @@
 #' dat <- add_attr(dat, "age")
 #' dat <- set_attr(dat, "age", runif(100))
 #' dat <- set_attr(dat, "status", rbinom(100, 1, 0.9))
+#' dat <- append_attr(dat, "status", 1, 10)
+#' dat <- append_attr(dat, "age", NA, 10)
 #' get_attr_list(dat)
 #' get_attr_list(dat, c("age", "active"))
 #' get_attr(dat, "status")
@@ -73,6 +77,7 @@
 #' get_control_list(dat)
 #' get_control_list(dat, c("x", "y"))
 #' get_control(dat, "x")
+#' }
 #'
 #' @name dat_get_set
 NULL
@@ -158,6 +163,32 @@ set_attr <- function(dat, item, value) {
   }
 
   dat[["attr"]][[item]] <- value
+
+  return(dat)
+}
+
+#' @param n.new the number of new elements to append at the end of `item`
+#' @rdname dat_get_set
+#' @export
+append_attr <- function(dat, item, value, n.new) {
+  if (!item %in% names(dat[["attr"]])) {
+      stop(paste("There is no attribute called", item,
+                 "in the attributes list of the Master list object (dat)"))
+  }
+
+  if (!is.numeric(n.new) || n.new < 0) {
+    stop("`n_new` must be numeric and greater than or equal to zero.")
+  }
+
+  if (length(value) == 1) {
+    new_vals <- rep(value, n.new)
+  } else if (length(value) == n.new) {
+    new_vals <- value
+  } else {
+    stop("`value` must be of length one or `n.new`.")
+  }
+
+  dat[["attr"]][[item]] <- c(dat[["attr"]][[item]], new_vals)
 
   return(dat)
 }
