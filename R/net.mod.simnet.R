@@ -135,11 +135,7 @@ edges_correct <- function(dat, at) {
         log(new.num)
     }
     if (dat$param$groups == 2) {
-      if (dat$control$tergmLite == FALSE){
-        group <- idgroup(dat$nw[[1]])
-      } else {
-        group <- dat$attr$group
-      }
+      group <- dat$attr$group
       old.num.g1 <- dat$epi$num[at - 1]
       old.num.g2 <- dat$epi$num.g2[at - 1]
       new.num.g1 <- sum(dat$attr$active == 1 & group == 1)
