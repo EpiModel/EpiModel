@@ -139,31 +139,29 @@ initialize.net <- function(x, param, init, control, s) {
 #'
 init_status.net <- function(dat) {
 
+  type <- get_control(dat, "type")
+
   # Variables ---------------------------------------------------------------
   i.num <- get_init(dat, "i.num")
-  r.num <- get_init(dat, "r.num")
-
-  if (groups == 2) {
-    group <- get_attr(dat, "group")
-  } else {
-    group <- rep(1, num)
-  }
-
-  if (groups == 2) {
-    i.num.g2 <- get_init(dat, "i.num.g2")
-    r.num.g2 <- get_init(dat, "r.num.g2")
+  if (type  == "SIR"){
+    r.num <- get_init(dat, "r.num")
   }
 
   status.vector <- dat$init$status.vector
   num <- sum(get_attr(dat, "active") == 1)
+
+  if (groups == 2) {
+    i.num.g2 <- get_init(dat, "i.num.g2")
+    group <- get_attr(dat, "group")
+    if (type  == "SIR"){
+      r.num.g2 <- get_init(dat, "r.num.g2")
+    }
+  } else {
+    group <- rep(1, num)
+  }
+
   #TODO: check that this works for tergmLite
   statOnNw <- "status" %in% dat$temp$nwterms
-
-
-
-
-  type <- get_control(dat, "type")
-
 
   # Status ------------------------------------------------------------------
 
@@ -198,10 +196,10 @@ init_status.net <- function(dat) {
       dat$nw[[1]] <- set.vertex.attribute(dat$nw[[1]], "status", status)
     }
     dat$nw[[1]] <- activate.vertex.attribute(dat$nw[[1]],
-                                        prefix = "testatus",
-                                        value = status,
-                                        onset = 1,
-                                        terminus = Inf)
+                                             prefix = "testatus",
+                                             value = status,
+                                             onset = 1,
+                                             terminus = Inf)
   }
 
 
