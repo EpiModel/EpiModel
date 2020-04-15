@@ -28,7 +28,7 @@
 \usage{
 get_attr_list(dat, item = NULL)
 
-get_attr(dat, item, indexes = NULL)
+get_attr(dat, item, indexes = NULL, override.null.error = FALSE)
 
 add_attr(dat, item)
 
@@ -38,7 +38,7 @@ append_attr(dat, item, value, n.new)
 
 get_epi_list(dat, item = NULL)
 
-get_epi(dat, item, indexes = NULL)
+get_epi(dat, item, indexes = NULL, override.null.error = FALSE)
 
 add_epi(dat, item)
 
@@ -48,7 +48,7 @@ set_epi_at(dat, item, at, value)
 
 get_param_list(dat, item = NULL)
 
-get_param(dat, item)
+get_param(dat, item, override.null.error = FALSE)
 
 add_param(dat, item)
 
@@ -56,7 +56,7 @@ set_param(dat, item, value)
 
 get_control_list(dat, item = NULL)
 
-get_control(dat, item)
+get_control(dat, item, override.null.error = FALSE)
 
 add_control(dat, item)
 
@@ -64,7 +64,7 @@ set_control(dat, item, value)
 
 get_init_list(dat, item = NULL)
 
-get_init(dat, item)
+get_init(dat, item, override.null.error = FALSE)
 
 add_init(dat, item)
 
@@ -78,6 +78,9 @@ Can be of length > 1 for `get_*_list` functions}
 
 \item{indexes}{for `get_epi` and `get_attr`, a numeric vector of indexes or
 a logical vector to subset the desired `item`}
+
+\item{override.null.error}{if TRUE, `get_` return NULL if the `item` does not
+exist instead of throwing an error. (default = FALSE)}
 
 \item{value}{new value to be attributed in the `set_` and `append_` functions}
 
