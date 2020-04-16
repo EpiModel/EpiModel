@@ -717,7 +717,7 @@ get_network_term_attr <- function(nw) {
 #' idgroup(nw, ids = c(3, 6))
 #'
 idgroup <- function(nw, ids) {
-  n <- network.size(nw)
+  n <- network.size(nw[[1]])
   if (missing(ids)) {
     ids <- seq_len(n)
   }
@@ -729,7 +729,7 @@ idgroup <- function(nw, ids) {
   if (!flag) {
     out <- rep(1, n)
   } else {
-    groups <- get.vertex.attribute(nw, "group")
+    groups <- get.vertex.attribute(nw[[1]], "group")
     out <- groups[ids]
   }
   return(out)
