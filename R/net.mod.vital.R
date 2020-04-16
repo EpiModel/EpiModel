@@ -135,9 +135,9 @@ arrivals.net <- function(dat, at) {
 
   # Output ------------------------------------------------------------------
   if (at == 2) {
-    dat <- set_epi(dat, "a.flow", at, c(0,nArrivals))
+    dat <- set_epi(dat, "a.flow", c(0,nArrivals))
   } else {
-    dat <- set_epi_at(dat, "a.flow", at, nArrivals)
+    dat <- set_epi_at(dat, "a.flow", nArrivals)
   }
 
   return(dat)
@@ -245,7 +245,7 @@ departures.2g.net <- function(dat, at) {
   } else {
     dat <- set_epi_at(dat, "ds.flow", at, c(get_epi_list(dat, "ds.flow"),
                                             nDepartures.sus))
-    dat <- set_epi_at(dat, "di.flow", at, c(get_epi_list(dat, "di.,flow"),
+    dat <- set_epi_at(dat, "di.flow", at, c(get_epi_list(dat, "di.flow"),
                                             nDepartures.inf))
     if (type == "SIR") {
       dat <- set_epi_at(dat, "dr.flow", at, c(get_epi_list(dat, "dr.flow"),
@@ -253,7 +253,7 @@ departures.2g.net <- function(dat, at) {
     }
     dat <- set_epi_at(dat, "ds.flow.g2", at, c(get_epi_list(dat, "ds.flow.g2"),
                                                nDepartures.sus))
-    dat <- set_epi_at(dat, "di.flow.g2", at, c(get_epi_list(dat, "di.,flow.g2"),
+    dat <- set_epi_at(dat, "di.flow.g2", at, c(get_epi_list(dat, "di.flow.g2"),
                                                nDepartures.inf))
     if (type == "SIR") {
       dat <- set_epi_at(dat, "dr.flow.g2", at, c(get_epi_list(dat, "dr.flow.g2"),
