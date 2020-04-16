@@ -140,9 +140,9 @@ init_status.net <- function(dat) {
   groups <- get_param(dat, "groups")
 
   # Variables ---------------------------------------------------------------
-  i.num <- get_init(dat, "i.num")
+  i.num <- get_init(dat, "i.num", override.null.error = TRUE)
   if (type  == "SIR"){
-    r.num <- get_init(dat, "r.num")
+    r.num <- get_init(dat, "r.num", override.null.error = TRUE)
   }
 
   status.vector <- get_init(dat, "status.vector", override.null.error = TRUE)
