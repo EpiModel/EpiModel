@@ -20,34 +20,6 @@ nwupdate.net <- function(dat, at) {
   active <- get_attr(dat, "active")
   exitTime <- get_attr(dat, "exitTime")
 
-  ## Infection
-  if (tL == FALSE) {
-    idsNewInf <- which(status == "i" & infTime == at)
-    if (length(idsNewInf) > 0) {
-      dat$nw[[1]] <- activate.vertex.attribute(dat$nw[[1]], prefix = "testatus",
-                                               value = "i", onset = at,
-                                               terminus = Inf, v = idsNewInf)
-    }
-  }
-
-  ## Recovery
-  if (tL == FALSE) {
-    type <- get_control(dat, "type")
-    if (type %in% c("SIS", "SIR")) {
-      index <- at - 1
-      nCurr <- get_epi(dat, "num", index)
-      recovState <- ifelse(type == "SIR", "r", "s")
-      attr.status <- which(status == recovState)
-      nw.status <- which(get.vertex.attribute(dat$nw[[1]], "status") == recovState)
-      idsRecov <- setdiff(attr.status, nw.status)
-      if (length(idsRecov) > 0) {
-        dat$nw[[1]] <- activate.vertex.attribute(dat$nw[[1]], prefix = "testatus",
-                                                 value = recovState, onset = at,
-                                                 terminus = Inf, v = idsRecov)
-      }
-    }
-  }
-
   ## Vital Dynamics
 
   if (get_param(dat, "vital")) {
@@ -101,8 +73,33 @@ nwupdate.net <- function(dat, at) {
     }
   }
 
+  ## Infection
+  if (tL == FALSE) {
+    idsNewInf <- which(status == "i" & infTime == at)
+    if (length(idsNewInf) > 0) {
+      dat$nw[[1]] <- activate.vertex.attribute(dat$nw[[1]], prefix = "testatus",
+                                               value = "i", onset = at,
+                                               terminus = Inf, v = idsNewInf)
+    }
+  }
 
-
+  ## Recovery
+  if (tL == FALSE) {
+    type <- get_control(dat, "type")
+    if (type %in% c("SIS", "SIR")) {
+      index <- at - 1
+      nCurr <- get_epi(dat, "num", index)
+      recovState <- ifelse(type == "SIR", "r", "s")
+      attr.status <- which(status == recovState)
+      nw.status <- which(get.vertex.attribute(dat$nw[[1]], "status") == recovState)
+      idsRecov <- setdiff(attr.status, nw.status)
+      if (length(idsRecov) > 0) {
+        dat$nw[[1]] <- activate.vertex.attribute(dat$nw[[1]], prefix = "testatus",
+                                                 value = recovState, onset = at,
+                                                 terminus = Inf, v = idsRecov)
+      }
+    }
+  }
 
   ## Output
   return(dat)
