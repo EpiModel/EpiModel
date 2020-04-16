@@ -150,7 +150,7 @@ edges_correct <- function(dat, at) {
       if (tergmLite == FALSE){
         group <- idgroup(dat$nw)
       } else {
-        group <- get_attr(dat, "groups")
+        group <- get_attr(dat, "group")
       }
       old.num.g1 <- get_epi(dat, "num", index)
       old.num.g2 <- get_epi(dat, "num.g2", index)
