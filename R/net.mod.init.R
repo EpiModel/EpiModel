@@ -140,6 +140,7 @@ initialize.net <- function(x, param, init, control, s) {
 init_status.net <- function(dat) {
 
   type <- get_control(dat, "type")
+  groups <- get_param(dat, "groups")
 
   # Variables ---------------------------------------------------------------
   i.num <- get_init(dat, "i.num")
