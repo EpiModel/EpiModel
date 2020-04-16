@@ -48,7 +48,7 @@ initialize.net <- function(x, param, init, control, s) {
     # Network Parameters ------------------------------------------------------
     dat$nwparam <- list(x[-which(names(x) == "fit")])
     groups <- length(unique(get.vertex.attribute(nw, "group")))
-    dat$param$groups <- groups
+    dat <- set_param(dat, "groups", groups)
 
     # Nodal Attributes --------------------------------------------------------
 
@@ -57,9 +57,6 @@ initialize.net <- function(x, param, init, control, s) {
     dat$attr$active <- rep(1, num)
     dat <- set_attr(dat, "entrTime", rep(1, num))
     dat <- set_attr(dat, "exitTime", rep(NA, num))
-    #dat <- set_attr(dat, "active", rep(1, num))
-    #dat <- set_attr(dat, "entrTime", rep(1, num))
-    #dat <- set_attr(dat, "exitTime", rep(NA, num))
 
     ## Pull attr on nw to dat$attr
     dat <- copy_nwattr_to_datattr(dat)
@@ -139,7 +136,7 @@ initialize.net <- function(x, param, init, control, s) {
 #'
 init_status.net <- function(dat) {
 
-  type <- get_control(dat, "type")
+  type <- get_control(dat, "type", override.null.error = TRUE)
   groups <- get_param(dat, "groups")
 
   # Variables ---------------------------------------------------------------
@@ -148,7 +145,7 @@ init_status.net <- function(dat) {
     r.num <- get_init(dat, "r.num")
   }
 
-  status.vector <- dat$init$status.vector
+  status.vector <- get_init(dat, "status.vector", override.null.error = TRUE)
   num <- sum(get_attr(dat, "active") == 1)
 
   if (groups == 2) {
@@ -209,23 +206,24 @@ init_status.net <- function(dat) {
   if(!is.null(type)){
     idsInf <- which(status == "i")
     infTime <- rep(NA, length(status))
+    infTime.vector <- get_init(dat, "infTime.vector", override.null.error = TRUE)
 
-    if (!is.null(dat$init$infTime.vector)) {
-      infTime <- dat$init$infTime.vector
+    if (!is.null(infTime.vector)) {
+      infTime <- infTime.vector
     } else {
       # If vital dynamics, infTime is a geometric draw over the duration of infection
-      if (dat$param$vital == TRUE && get_param(dat, "di.rate") > 0) {
+      if (get_param(dat, "vital") && get_param(dat, "di.rate") > 0) {
         if (type == "SI") {
-          infTime[idsInf] <- -rgeom(n = length(idsInf), prob = dat$param$di.rate) + 2
+          infTime[idsInf] <- -rgeom(n = length(idsInf), prob = get_param(dat, "di.rate")) + 2
         } else {
           infTime[idsInf] <- -rgeom(n = length(idsInf),
-                                    prob = dat$param$di.rate +
-                                      (1 - dat$param$di.rate)*mean(dat$param$rec.rate)) + 2
+                                    prob = get_param(dat, "di.rate") +
+                                      (1 - get_param(dat, "di.rate"))*mean(get_param(dat, "rec.rate"))) + 2
         }
       } else {
         if (type == "SI" || mean(get_param(dat,"rec.rate")) == 0) {
           # if no recovery, infTime a uniform draw over the number of sim time steps
-          infTime[idsInf] <- ssample(1:(-dat$control$nsteps + 2),
+          infTime[idsInf] <- ssample(1:(-get_control(dat, "nsteps") + 2),
                                      length(idsInf), replace = TRUE)
         } else {
           infTime[idsInf] <- -rgeom(n = length(idsInf), prob = mean(get_param(dat,"rec.rate"))) + 2
