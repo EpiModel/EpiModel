@@ -25,8 +25,8 @@ nwupdate.net <- function(dat, at) {
     idsNewInf <- which(status == "i" & infTime == at)
     if (length(idsNewInf) > 0) {
       dat$nw[[1]] <- activate.vertex.attribute(dat$nw[[1]], prefix = "testatus",
-                                          value = "i", onset = at,
-                                          terminus = Inf, v = idsNewInf)
+                                               value = "i", onset = at,
+                                               terminus = Inf, v = idsNewInf)
     }
   }
 
@@ -42,57 +42,62 @@ nwupdate.net <- function(dat, at) {
       idsRecov <- setdiff(attr.status, nw.status)
       if (length(idsRecov) > 0) {
         dat$nw[[1]] <- activate.vertex.attribute(dat$nw[[1]], prefix = "testatus",
-                                            value = recovState, onset = at,
-                                            terminus = Inf, v = idsRecov)
+                                                 value = recovState, onset = at,
+                                                 terminus = Inf, v = idsRecov)
       }
     }
   }
 
-  ## Arrivals
-  if (groups == 1) {
-    nArrivals <- get_epi(dat, "a.flow", at)
-  } else {
-    nArrivals <- c(get_epi(dat, "a.flow", at),
-                   get_epi(dat, "a.flow.g2", at))
-  }
-  if (sum(nArrivals) > 0) {
-    index <- at - 1
-    nCurr <- get_epi(dat, "num", index)
-    newNodes <- (nCurr + 1):(nCurr + sum(nArrivals))
-    nwterms <- dat$temp$nwterms
-    if (!is.null(nwterms)) {
-      curr.tab <- get_attr_prop(dat, nwterms)
-      dat <- auto_update_attr(dat, newNodes, curr.tab)
+  ## Vital Dynamics
+
+  if (get_param(dat, "vital")) {
+
+    ## Arrivals
+    if (groups == 1) {
+      nArrivals <- get_epi(dat, "a.flow")[at]
+    } else {
+      nArrivals <- c(get_epi(dat, "a.flow")[at],
+                     get_epi(dat, "a.flow.g2")[at])
     }
-    if (length(unique(sapply(dat$attr, length))) != 1) {
-      stop("Attribute list of unequal length. Check arrivals.net module.\n",
-           print(cbind(sapply(get_attr_list(dat), length))))
+    if (sum(nArrivals) > 0) {
+      index <- at - 1
+      nCurr <- get_epi(dat, "num", index)
+      newNodes <- (nCurr + 1):(nCurr + sum(nArrivals))
+      nwterms <- dat$temp$nwterms
+      if (!is.null(nwterms)) {
+        curr.tab <- get_attr_prop(dat, nwterms)
+        dat <- auto_update_attr(dat, newNodes, curr.tab)
+      }
+      if (length(unique(sapply(dat$attr, length))) != 1) {
+        stop("Attribute list of unequal length. Check arrivals.net module.\n",
+             print(cbind(sapply(get_attr_list(dat), length))))
+      }
+      if (tL == FALSE) {
+        dat$nw[[1]] <- add.vertices(dat$nw[[1]], nv = sum(nArrivals))
+        dat$nw[[1]] <- activate.vertices(dat$nw[[1]], onset = at, terminus = Inf, v = newNodes)
+        dat <- copy_datattr_to_nwattr(dat)
+        dat$nw[[1]] <- activate.vertex.attribute(dat$nw[[1]], prefix = "testatus",
+                                                 value = dat$attr$status[newNodes],
+                                                 onset = at, terminus = Inf,
+                                                 v = newNodes)
+      }
+      if (tL == TRUE) {
+        dat$el[[1]] <- add_vertices(dat$el[[1]], nv = sum(nArrivals))
+      }
     }
-    if (tL == FALSE) {
-      dat$nw[[1]] <- add.vertices(dat$nw[[1]], nv = sum(nArrivals))
-      dat$nw[[1]] <- activate.vertices(dat$nw[[1]], onset = at, terminus = Inf, v = newNodes)
-      dat <- copy_datattr_to_nwattr(dat)
-      dat$nw[[1]] <- activate.vertex.attribute(dat$nw[[1]], prefix = "testatus",
-                                          value = dat$attr$status[newNodes],
-                                          onset = at, terminus = Inf,
-                                          v = newNodes)
-    }
-    if (tL == TRUE) {
-      dat$el[[1]] <- add_vertices(dat$el[[1]], nv = sum(nArrivals))
-    }
-  }
 
 
-  ## Departures
-  inactive <- which(active == 0 & exitTime == at)
-  if (length(inactive) > 0) {
-    if (tL == FALSE) {
-      dat$nw[[1]] <- deactivate.vertices(dat$nw[[1]], onset = at, terminus = Inf,
-                                    v = inactive, deactivate.edges = TRUE)
-    }
-    if (tL == TRUE) {
-      dat$attr <- deleteAttr(dat$attr, inactive)
-      dat$el[[1]] <- delete_vertices(dat$el[[1]], inactive)
+    ## Departures
+    inactive <- which(active == 0 & exitTime == at)
+    if (length(inactive) > 0) {
+      if (tL == FALSE) {
+        dat$nw[[1]] <- deactivate.vertices(dat$nw[[1]], onset = at, terminus = Inf,
+                                           v = inactive, deactivate.edges = TRUE)
+      }
+      if (tL == TRUE) {
+        dat$attr <- deleteAttr(dat$attr, inactive)
+        dat$el[[1]] <- delete_vertices(dat$el[[1]], inactive)
+      }
     }
   }
 
