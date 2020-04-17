@@ -40,9 +40,12 @@ infection.net <- function(dat, at) {
   # Variables ---------------------------------------------------------------
   active <- get_attr(dat, "active")
   status <- get_attr(dat, "status")
+  infTime <- get_attr(dat, "infTime")
 
   inf.prob <- get_param(dat, "inf.prob")
   act.rate <- get_param(dat, "act.rate")
+  inter.eff <- get_param(dat, "inter.eff", override.null.error = TRUE)
+  inter.start <- get_param(dat, "inter.start", override.null.error = TRUE)
 
   # Vector of infected and susceptible IDs
   idsInf <- which(active == 1 & status == "i")
@@ -63,7 +66,7 @@ infection.net <- function(dat, at) {
     if (!(is.null(del))) {
 
       # Infection duration to at
-      del$infDur <- at - dat$attr$infTime[del$inf]
+      del$infDur <- at - infTime[del$inf]
       del$infDur[del$infDur == 0] <- 1
 
       # Calculate infection-stage transmission rates
@@ -73,8 +76,8 @@ infection.net <- function(dat, at) {
                               inf.prob[linf.prob])
 
       # Interventions
-      if (!is.null(dat$param$inter.eff) && at >= dat$param$inter.start) {
-        del$transProb <- del$transProb * (1 - dat$param$inter.eff)
+      if (!is.null(inter.eff) && at >= inter.start) {
+        del$transProb <- del$transProb * (1 - inter.eff)
       }
 
       # Calculate infection-stage act/contact rates
@@ -92,12 +95,11 @@ infection.net <- function(dat, at) {
 
       # Set new infections vector
       idsNewInf <- unique(del$sus)
-      status.temp <- get_attr(dat, "status")
-      status.temp[idsNewInf] <- "i"
-      dat <- set_attr(dat, "status", status.temp)
-      infTime.temp <- get_attr(dat, "infTime")
-      infTime.temp[idsNewInf] <- at
-      dat <- set_attr(dat, "infTime", infTime.temp)
+      status <- get_attr(dat, "status")
+      status[idsNewInf] <- "i"
+      dat <- set_attr(dat, "status", status)
+      infTime[idsNewInf] <- at
+      dat <- set_attr(dat, "infTime", infTime)
       nInf <- length(idsNewInf)
 
     } # end some discordant edges condition
@@ -168,12 +170,16 @@ infection.2g.net <- function(dat, at) {
   # Variables ---------------------------------------------------------------
 
   active <- get_attr(dat, "active")
+  infTime <- get_attr(dat, "infTime")
   status <- get_attr(dat, "status")
   group <- get_attr(dat, "group")
 
   inf.prob <- get_param(dat, "inf.prob")
   inf.prob.g2 <- get_param(dat, "inf.prob.g2")
   act.rate <- get_param(dat, "act.rate")
+  inter.eff <- get_param(dat, "inter.eff", override.null.error = TRUE)
+  inter.start <- get_param(dat, "inter.start", override.null.error = TRUE)
+
 
   # Vector of infected and susceptible IDs
   idsInf <- which(active == 1 & status == "i")
@@ -195,7 +201,7 @@ infection.2g.net <- function(dat, at) {
     if (!(is.null(del))) {
 
       # Infection duration to at
-      del$infDur <- at - dat$attr$infTime[del$inf]
+      del$infDur <- at - infTime[del$inf]
       del$infDur[del$infDur == 0] <- 1
 
       # Calculate infection-stage transmission rates
@@ -216,8 +222,8 @@ infection.2g.net <- function(dat, at) {
       }
 
       # Interventions
-      if (!is.null(dat$param$inter.eff) && at >= dat$param$inter.start) {
-        del$transProb <- del$transProb * (1 - dat$param$inter.eff)
+      if (!is.null(inter.eff) && at >= inter.start) {
+        del$transProb <- del$transProb * (1 - inter.eff)
       }
 
       # Calculate infection-stage act/contact rates
@@ -235,12 +241,10 @@ infection.2g.net <- function(dat, at) {
 
       # Set new infections vector
       idsNewInf <- unique(del$sus)
-      status.temp <- get_attr(dat, "status")
-      status.temp[idsNewInf] <- "i"
-      dat <- set_attr(dat, "status", status.temp)
-      infTime.temp <- get_attr(dat, "infTime")
-      infTime.temp[idsNewInf] <- at
-      dat <- set_attr(dat, "infTime", infTime.temp)
+      status[idsNewInf] <- "i"
+      dat <- set_attr(dat, "status", status)
+      infTime[idsNewInf] <- at
+      dat <- set_attr(dat, "infTime", infTime)
       nInf <- sum(group[idsNewInf] == 1)
       nInfG2 <- sum(group[idsNewInf] == 2)
       totInf <- nInf + nInfG2
@@ -263,12 +267,11 @@ infection.2g.net <- function(dat, at) {
 
   ## Save incidence vector
   if (at == 2) {
-    dat$epi$si.flow <- c(0, nInf)
-    dat$epi$si.flow.g2 <- c(0, nInfG2)
-
+    dat <- set_epi(dat, "si.flow", c(0, nInf))
+    dat <- set_epi(dat, "si.flow.g2", c(0, nInfG2))
   } else {
-    dat$epi$si.flow[at] <- nInf
-    dat$epi$si.flow.g2[at] <- nInfG2
+    dat <- set_epi_at(dat, "si.flow", at, nInf)
+    dat <- set_epi_at(dat, "si.flow.g2", at, nInfG2)
   }
 
   return(dat)
@@ -309,9 +312,11 @@ infection.2g.net <- function(dat, at) {
 #'
 discord_edgelist <- function(dat, at) {
 
-  status <- dat$attr$status
+  status <- get_attr(dat, "status")
+  active <- get_attr(dat, "active")
+  tgl <- get_control(dat, "tergmLite")
 
-  if (dat$control$tergmLite == TRUE) {
+  if (tgl) {
     el <- dat$el[[1]]
   } else {
     el <- get.dyads.active(dat$nw[[1]], at = at)
@@ -332,7 +337,6 @@ discord_edgelist <- function(dat, at) {
       del <- data.frame(at, sus, inf)
 
       # Check for active status
-      active <- dat$attr$active
       keep <- rowSums(matrix(c(active[del$sus], active[del$inf]), ncol = 2)) == 2
       del <- del[keep, ]
     }
