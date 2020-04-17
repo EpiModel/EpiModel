@@ -138,7 +138,7 @@ init_status.net <- function(dat) {
 
   type <- get_control(dat, "type", override.null.error = TRUE)
   nsteps <- get_control(dat, "nsteps")
-  tgl <- get_control(dat, "tergmLite")
+  tergmLite <- get_control(dat, "tergmLite")
   vital <- get_param(dat, "vital")
   groups <- get_param(dat, "groups")
   if (type %in% c("SIS", "SIR")){
@@ -151,7 +151,7 @@ init_status.net <- function(dat) {
   # Variables ---------------------------------------------------------------
   i.num <- get_init(dat, "i.num", override.null.error = TRUE)
   if (type  == "SIR"){
-    r.num <- get_init(dat, "r.num", override.null.error = TRUE)
+    r.num <- get_init(dat, "r.num")
   }
 
   status.vector <- get_init(dat, "status.vector", override.null.error = TRUE)
@@ -160,14 +160,13 @@ init_status.net <- function(dat) {
   if (groups == 2) {
     group <- get_attr(dat, "group")
     i.num.g2 <- get_init(dat, "i.num.g2")
-    if (type  == "SIR"){
+    if (type  == c("SIS","SIR")) {
       r.num.g2 <- get_init(dat, "r.num.g2")
     }
   } else {
     group <- rep(1, num)
   }
 
-  #TODO: check that this works for tergmLite
   statOnNw <- "status" %in% dat$temp$nwterms
 
   # Status ------------------------------------------------------------------
@@ -197,7 +196,7 @@ init_status.net <- function(dat) {
 
 
   ## Set up TEA status
-  if (!tgl) {
+  if (tergmLite == FALSE) {
     if (statOnNw == FALSE) {
       dat$nw[[1]] <- set.vertex.attribute(dat$nw[[1]], "status", status)
     }
@@ -220,7 +219,7 @@ init_status.net <- function(dat) {
       infTime <- infTime.vector
     } else {
       # If vital dynamics, infTime is a geometric draw over the duration of infection
-      if (vital && di.rate > 0) {
+      if (vital == TRUE && di.rate > 0) {
         if (type == "SI") {
           infTime[idsInf] <- -rgeom(n = length(idsInf), prob = di.rate) + 2
         } else {

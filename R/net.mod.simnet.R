@@ -96,7 +96,7 @@ resim_nets <- function(dat, at) {
                            control = dat$control$set.control.stergm))
 
       # Update nwstats df
-      if (save.nwstats) {
+      if (save.nwstats == TRUE) {
         dat$stats$nwstats <- rbind(dat$stats$nwstats,
                                    tail(attributes(dat$nw[[1]])$stats, 1)[,])
       }

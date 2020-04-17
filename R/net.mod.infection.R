@@ -314,9 +314,9 @@ discord_edgelist <- function(dat, at) {
 
   status <- get_attr(dat, "status")
   active <- get_attr(dat, "active")
-  tgl <- get_control(dat, "tergmLite")
+  tergmLite <- get_control(dat, "tergmLite")
 
-  if (tgl) {
+  if (tergmLite) {
     el <- dat$el[[1]]
   } else {
     el <- get.dyads.active(dat$nw[[1]], at = at)

@@ -20,6 +20,7 @@
 prevalence.net <- function(dat, at) {
 
   active <- get_attr(dat, "active")
+  type <- get_control(dat, "type")
 
   # Subset attr to active == 1
   l <- lapply(1:length(dat$attr), function(x) dat$attr[[x]][active == 1])
@@ -84,7 +85,7 @@ prevalence.net <- function(dat, at) {
                                                          get(ebn) == ebv[i])
       }
     }
-    if (get_control(dat, "type") == "SIR") {
+    if (type == "SIR") {
       dat <- set_epi_at(dat, "r.num", at, sum(status == "r"))
       if (eb == TRUE) {
         for (i in 1:length(ebun)) {
@@ -123,6 +124,7 @@ prevalence.net <- function(dat, at) {
 prevalence.2g.net <- function(dat, at) {
 
   active <- get_attr(dat, "active")
+  type <- get_control(dat, "type")
 
   # Subset attr to active == 1
   l <- lapply(1:length(dat$attr), function(x) dat$attr[[x]][active == 1])
@@ -160,7 +162,7 @@ prevalence.2g.net <- function(dat, at) {
                                                      get(ebn) == ebv[i])
       }
     }
-    if (get_control(dat, "type") == "SIR") {
+    if (type == "SIR") {
       dat <- set_epi(dat, "r.num", sum(status == "r" & group == 1))
       if (eb == TRUE) {
         for (i in 1:length(ebun)) {
@@ -193,7 +195,7 @@ prevalence.2g.net <- function(dat, at) {
                                                         get(ebn) == ebv[i])
       }
     }
-    if (get_control(dat, "type") == "SIR") {
+    if (type == "SIR") {
       dat <- set_epi(dat, "r.num.g2", sum(status == "r" & group == 2))
       if (eb == TRUE) {
         for (i in 1:length(ebun)) {
@@ -228,7 +230,7 @@ prevalence.2g.net <- function(dat, at) {
                                                          get(ebn) == ebv[i])
       }
     }
-    if (get_control(dat, "type") == "SIR") {
+    if (type == "SIR") {
       dat <- set_epi_at(dat, "r.num", at, sum(status == "r" & group == 1))
       if (eb == TRUE) {
         for (i in 1:length(ebun)) {
@@ -262,7 +264,7 @@ prevalence.2g.net <- function(dat, at) {
                                                             get(ebn) == ebv[i])
       }
     }
-    if (get_control(dat, "type") == "SIR") {
+    if (type == "SIR") {
       dat <- set_epi_at(dat, "r.num.g2", at, sum(status == "r" & group == 2))
       if (eb == TRUE) {
         for (i in 1:length(ebun)) {
