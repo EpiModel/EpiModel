@@ -121,9 +121,10 @@ infection.net <- function(dat, at) {
 
   ## Save incidence vector
   if (at == 2) {
-    dat <- set_epi(dat, "si.flow", c(0, nInf))
+    dat <- set_epi(dat, "si.flow", 1, 0)
+    dat <- set_epi(dat, "si.flow", 2, nInf)
   } else {
-    dat <- set_epi_at(dat, "si.flow", at, nInf)
+    dat <- set_epi(dat, "si.flow", at, nInf)
   }
 
   return(dat)
@@ -267,11 +268,13 @@ infection.2g.net <- function(dat, at) {
 
   ## Save incidence vector
   if (at == 2) {
-    dat <- set_epi(dat, "si.flow", c(0, nInf))
-    dat <- set_epi(dat, "si.flow.g2", c(0, nInfG2))
+    dat <- set_epi(dat, "si.flow", 1, 0)
+    dat <- set_epi(dat, "si.flow", 2, nInf)
+    dat <- set_epi(dat, "si.flow.g2", 1, 0)
+    dat <- set_epi(dat, "si.flow.g2", 2, nInfG2)
   } else {
-    dat <- set_epi_at(dat, "si.flow", at, nInf)
-    dat <- set_epi_at(dat, "si.flow.g2", at, nInfG2)
+    dat <- set_epi(dat, "si.flow", at, nInf)
+    dat <- set_epi(dat, "si.flow.g2", at, nInfG2)
   }
 
   return(dat)
