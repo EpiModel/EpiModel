@@ -14,7 +14,7 @@
 departures.net <- function(dat, at) {
 
   # Conditions --------------------------------------------------------------
-  if (dat$param$vital == FALSE) {
+  if (!get_param(dat, "vital")) {
     return(dat)
   }
   type <- get_control(dat, "type")
@@ -22,13 +22,17 @@ departures.net <- function(dat, at) {
   active <- get_attr(dat, "active")
   status <- get_attr(dat, "status")
   exitTime <- get_attr(dat, "exitTime")
+  rates.sus <- get_param(dat, "ds.rate")
+  rates.inf <- get_param(dat, "di.rate")
+  if (type %in% c("SIR")) {
+    rates.rec <- get_param(dat, "dr.rate")
+  }
 
   # Susceptible departures ------------------------------------------------------
   nDepartures.sus <- 0
   idsElig.sus <- which(active == 1 & status == "s")
   nElig.sus <- length(idsElig.sus)
   if (nElig.sus > 0) {
-    rates.sus <- get_param(dat, "ds.rate")
     vecDepartures.sus <- which(rbinom(nElig.sus, 1, rates.sus) == 1)
     if (length(vecDepartures.sus) > 0) {
       idsDpt.sus <- idsElig.sus[vecDepartures.sus]
@@ -43,7 +47,6 @@ departures.net <- function(dat, at) {
   idsElig.inf <- which(active == 1 & status == "i")
   nElig.inf <- length(idsElig.inf)
   if (nElig.inf > 0) {
-    rates.inf <- get_param(dat, "di.rate")
     vecDepartures.inf <- which(rbinom(nElig.inf, 1, rates.inf) == 1)
     if (length(vecDepartures.inf) > 0) {
       idsDpt.inf <- idsElig.inf[vecDepartures.inf]
@@ -59,7 +62,6 @@ departures.net <- function(dat, at) {
     idsElig.rec <- which(active == 1 & status == "r")
     nElig.rec <- length(idsElig.rec)
     if (nElig.rec > 0) {
-      rates.rec <- get_param(dat, "dr.rate")
       vecDepartures.rec <- which(rbinom(nElig.rec, 1, rates.rec) == 1)
       if (length(vecDepartures.rec) > 0) {
         idsDpt.rec <- idsElig.rec[vecDepartures.rec]
@@ -173,6 +175,9 @@ departures.2g.net <- function(dat, at) {
   status <- get_attr(dat, "status")
   exitTime <- get_attr(dat, "exitTime")
   group <- get_attr(dat, "group")
+  rates.sus <- c(get_param(dat, "ds.rate"), get_param(dat, "ds.rate.g2"))
+  rates.inf <- c(get_param(dat, "di.rate"), get_param(dat, "di.rate.g2"))
+  rates.rec <- c(get_param(dat, "dr.rate"), get_param(dat, "dr.rate.g2"))
 
   # Susceptible departures ------------------------------------------------------
   nDepartures.sus <- nDeparturesG2.sus <- 0
@@ -180,7 +185,6 @@ departures.2g.net <- function(dat, at) {
   nElig.sus <- length(idsElig.sus)
   if (nElig.sus > 0) {
     gElig.sus <- group[idsElig.sus]
-    rates.sus <- c(get_param(dat, "ds.rate"), get_param(dat, "ds.rate.g2"))
     ratesElig.sus <- rates.sus[gElig.sus]
     vecDepartures.sus <- which(rbinom(nElig.sus, 1, ratesElig.sus) == 1)
     if (length(vecDepartures.sus) > 0) {
@@ -198,7 +202,6 @@ departures.2g.net <- function(dat, at) {
   nElig.inf <- length(idsElig.inf)
   if (nElig.inf > 0) {
     gElig.inf <- group[idsElig.inf]
-    rates.inf <- c(get_param(dat, "di.rate"), get_param(dat, "di.rate.g2"))
     ratesElig.inf <- rates.inf[gElig.inf]
     vecDepartures.inf <- which(rbinom(nElig.inf, 1, ratesElig.inf) == 1)
     if (length(vecDepartures.inf) > 0) {
@@ -217,7 +220,6 @@ departures.2g.net <- function(dat, at) {
     nElig.rec <- length(idsElig.rec)
     if (nElig.rec > 0) {
       gElig.rec <- group[idsElig.rec]
-      rates.rec <- c(get_param(dat, "dr.rate"), get_param(dat, "dr.rate.g2"))
       ratesElig.rec <- rates.rec[gElig.rec]
       vecDepartures.rec <- which(rbinom(nElig.rec, 1, ratesElig.rec) == 1)
       if (length(vecDepartures.rec) > 0) {
@@ -285,6 +287,7 @@ arrivals.2g.net <- function(dat, at) {
   a.rate <- get_param(dat, "a.rate")
   a.rate.g2 <- get_param(dat, "a.rate.g2")
   index <- at-1
+  nCurr <- length(get_attr(dat, "active"))
   nOld <- get_epi(dat, "num", index)
   nOldG2 <- get_epi(dat, "num.g2", index)
   tergmLite <- get_control(dat, "tergmLite")
@@ -305,11 +308,9 @@ arrivals.2g.net <- function(dat, at) {
     }
 
     if (totArr > 0) {
-      nCurr <- length(get_attr(dat, "active"))
       newNodes <- (nCurr + 1):(nCurr + totArr)
       dat <- append_attr(dat, "group", 1, nArrivals)
       dat <- append_attr(dat, "group", 2, nArrivalsG2)
-
       dat <- append_attr(dat, "status", "s", totArr)
       dat <- append_attr(dat, "active", 1, totArr)
       dat <- append_attr(dat, "infTime", NA, totArr)
