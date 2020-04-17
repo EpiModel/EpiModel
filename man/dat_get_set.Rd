@@ -11,7 +11,6 @@
 \alias{get_epi}
 \alias{add_epi}
 \alias{set_epi}
-\alias{set_epi_at}
 \alias{get_param_list}
 \alias{get_param}
 \alias{add_param}
@@ -42,9 +41,7 @@ get_epi(dat, item, indexes = NULL, override.null.error = FALSE)
 
 add_epi(dat, item)
 
-set_epi(dat, item, value)
-
-set_epi_at(dat, item, at, value)
+set_epi(dat, item, at, value)
 
 get_param_list(dat, item = NULL)
 
@@ -135,9 +132,9 @@ get_attr(dat, "status")
 get_attr(dat, "status", c(1, 4))
 get_attr(dat, "status", rbinom(100, 1, 0.2) == 1)
 
-dat <- add_epi(dat, "i")
-dat <- set_epi(dat, "i", runif(150))
-dat <- set_epi(dat, "s", runif(150))
+dat <- add_epi(dat, "i.num")
+dat <- set_epi(dat, "i.num", 150, 10)
+dat <- set_epi(dat, "s.num", 150, 90)
 dat <- set_epi_at(dat, "s", 150, 8)
 get_epi_list(dat)
 get_epi_list(dat, c("i", "s"))
