@@ -78,8 +78,6 @@ test_that("`dat` getters and setter", {
   dat <- set_epi(dat, "i", 160, 8)
   expect_length(dat$epi$i, 200)
 
-  expect_silent(dat <- set_epi(dat, "s", rbinom(dat$control$nsteps, 1, 0.4)))
-
   expect_equal(get_epi_list(dat), dat$epi)
   expect_equal(get_epi_list(dat, c("i", "s")), dat$epi[c("i", "s")])
 
