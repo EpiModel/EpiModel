@@ -49,15 +49,15 @@
 #' get_attr(dat, "status", c(1, 4))
 #' get_attr(dat, "status", rbinom(100, 1, 0.2) == 1)
 #'
-#' dat <- add_epi(dat, "i")
-#' dat <- set_epi(dat, "i", runif(150))
-#' dat <- set_epi(dat, "s", runif(150))
-#' dat <- set_epi_at(dat, "s", 150, 8)
+#' dat <- add_epi(dat, "i.num")
+#' dat <- set_epi(dat, "i.num", 150, 10)
+#' dat <- set_epi(dat, "s.num", 150, 90)
+#' dat <- set_epi_at(dat, "s.num", 150, 8)
 #' get_epi_list(dat)
-#' get_epi_list(dat, c("i", "s"))
-#' get_epi(dat, "i")
-#' get_epi(dat, "i", c(1, 4))
-#' get_epi(dat, "i", rbinom(150, 1, 0.2) == 1)
+#' get_epi_list(dat, c("i.num", "s.num"))
+#' get_epi(dat, "i.num")
+#' get_epi(dat, "i.num", c(1, 4))
+#' get_epi(dat, "i.num", rbinom(150, 1, 0.2) == 1)
 #'
 #' dat <- add_param(dat, "x")
 #' dat <- set_param(dat, "x", 0.4)
@@ -266,22 +266,10 @@ add_epi <- function(dat, item) {
   return(dat)
 }
 
-#' @rdname dat_get_set
-#' @export
-set_epi <- function(dat, item, value) {
-  if (!item %in% names(dat[["epi"]])) {
-    dat <- add_epi(dat, item)
-  }
-
-  dat[["epi"]][[item]] <- value
-
-  return(dat)
-}
-
 #' @param at timestep where to add the new value for the epi output `item`
 #' @rdname dat_get_set
 #' @export
-set_epi_at <- function(dat, item, at,  value) {
+set_epi <- function(dat, item, at,  value) {
   if (length(at) != 1 || !is.numeric(at)) {
     stop("`at` must be numeric and of length one")
   }
