@@ -14,6 +14,7 @@
 nwupdate.net <- function(dat, at) {
 
   groups <- get_param(dat, "groups")
+  vital <- get_param(dat, "vital")
   tL <- get_control(dat, "tergmLite")
   status <- get_attr(dat, "status")
   infTime <- get_attr(dat, "infTime")
@@ -22,14 +23,14 @@ nwupdate.net <- function(dat, at) {
 
   ## Vital Dynamics
 
-  if (get_param(dat, "vital")) {
+  if (vital) {
 
     ## Arrivals
     if (groups == 1) {
-      nArrivals <- get_epi(dat, "a.flow")[at]
+      nArrivals <- get_epi(dat, "a.flow", at)
     } else {
-      nArrivals <- c(get_epi(dat, "a.flow")[at],
-                     get_epi(dat, "a.flow.g2")[at])
+      nArrivals <- c(get_epi(dat, "a.flow", at),
+                     get_epi(dat, "a.flow.g2", at))
     }
     if (sum(nArrivals) > 0) {
       index <- at - 1
@@ -49,7 +50,7 @@ nwupdate.net <- function(dat, at) {
         dat$nw[[1]] <- activate.vertices(dat$nw[[1]], onset = at, terminus = Inf, v = newNodes)
         dat <- copy_datattr_to_nwattr(dat)
         dat$nw[[1]] <- activate.vertex.attribute(dat$nw[[1]], prefix = "testatus",
-                                                 value = dat$attr$status[newNodes],
+                                                 value = status[newNodes],
                                                  onset = at, terminus = Inf,
                                                  v = newNodes)
       }
