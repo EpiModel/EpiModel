@@ -137,7 +137,16 @@ initialize.net <- function(x, param, init, control, s) {
 init_status.net <- function(dat) {
 
   type <- get_control(dat, "type", override.null.error = TRUE)
+  nsteps <- get_control(dat, "nsteps")
+  tgl <- get_control(dat, "tergmLite")
+  vital <- get_param(dat, "vital")
   groups <- get_param(dat, "groups")
+  if (type %in% c("SIR")){
+    rec.rate <- get_param(dat, "rec.rate")
+  }
+  if (vital) {
+    di.rate <- get_param(dat, "di.rate")
+  }
 
   # Variables ---------------------------------------------------------------
   i.num <- get_init(dat, "i.num", override.null.error = TRUE)
@@ -149,8 +158,8 @@ init_status.net <- function(dat) {
   num <- sum(get_attr(dat, "active") == 1)
 
   if (groups == 2) {
-    i.num.g2 <- get_init(dat, "i.num.g2")
     group <- get_attr(dat, "group")
+    i.num.g2 <- get_init(dat, "i.num.g2")
     if (type  == "SIR"){
       r.num.g2 <- get_init(dat, "r.num.g2")
     }
@@ -180,16 +189,15 @@ init_status.net <- function(dat) {
         }
       }
     }
-    #dat$attr$status <- status
     dat <- set_attr(dat, "status", status)
   } else {
     #TODO: Where is status set before this? NULL if statonNW = TRUE
-    status <- dat$attr$status
+    status <- get_attr(dat, "status")
   }
 
 
   ## Set up TEA status
-  if (dat$control$tergmLite == FALSE) {
+  if (!tgl) {
     if (statOnNw == FALSE) {
       dat$nw[[1]] <- set.vertex.attribute(dat$nw[[1]], "status", status)
     }
@@ -212,21 +220,21 @@ init_status.net <- function(dat) {
       infTime <- infTime.vector
     } else {
       # If vital dynamics, infTime is a geometric draw over the duration of infection
-      if (get_param(dat, "vital") && get_param(dat, "di.rate") > 0) {
+      if (vital && di.rate > 0) {
         if (type == "SI") {
-          infTime[idsInf] <- -rgeom(n = length(idsInf), prob = get_param(dat, "di.rate")) + 2
+          infTime[idsInf] <- -rgeom(n = length(idsInf), prob = di.rate) + 2
         } else {
           infTime[idsInf] <- -rgeom(n = length(idsInf),
-                                    prob = get_param(dat, "di.rate") +
-                                      (1 - get_param(dat, "di.rate"))*mean(get_param(dat, "rec.rate"))) + 2
+                                    prob = di.rate +
+                                      (1 - di.rate)*mean(rec.rate)) + 2
         }
       } else {
-        if (type == "SI" || mean(get_param(dat,"rec.rate")) == 0) {
+        if (type == "SI" || mean(rec.rate) == 0) {
           # if no recovery, infTime a uniform draw over the number of sim time steps
-          infTime[idsInf] <- ssample(1:(-get_control(dat, "nsteps") + 2),
+          infTime[idsInf] <- ssample(1:(-nsteps + 2),
                                      length(idsInf), replace = TRUE)
         } else {
-          infTime[idsInf] <- -rgeom(n = length(idsInf), prob = mean(get_param(dat,"rec.rate"))) + 2
+          infTime[idsInf] <- -rgeom(n = length(idsInf), prob = mean(rec.rate)) + 2
         }
       }
     }
