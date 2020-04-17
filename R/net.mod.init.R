@@ -160,7 +160,7 @@ init_status.net <- function(dat) {
   if (groups == 2) {
     group <- get_attr(dat, "group")
     i.num.g2 <- get_init(dat, "i.num.g2")
-    if (type  == c("SIS","SIR")) {
+    if (type  == "SIR") {
       r.num.g2 <- get_init(dat, "r.num.g2")
     }
   } else {

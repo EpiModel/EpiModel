@@ -170,7 +170,7 @@ test_that("edges models", {
 
   ## "SIR, 1M, CL: 2 sim, set status.vector"
   param <- param.net(inf.prob = 0.5, rec.rate = 0.1)
-  init <- init.net(status.vector = rep(c("s", "i"), each = 50))
+  init <- init.net(status.vector = rep(c("s", "i"), each = 50), r.num = 0)
   control <- control.net(type = "SIR", nsims = 2, nsteps = 25,
                          verbose = FALSE)
   x <- netsim(est, param, init, control)
