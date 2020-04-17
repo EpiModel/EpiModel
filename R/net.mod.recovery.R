@@ -16,7 +16,8 @@
 recovery.net <- function(dat, at) {
 
   ## Only run with SIR/SIS
-  if (!(dat$control$type %in% c("SIR", "SIS"))) {
+  type <- get_control(dat, "type")
+  if (!(type %in% c("SIR", "SIS"))) {
     return(dat)
   }
 
@@ -24,8 +25,6 @@ recovery.net <- function(dat, at) {
   active <- get_attr(dat, "active")
   status <- get_attr(dat, "status")
   infTime <- get_attr(dat, "infTime")
-
-  type <- dat$control$type
   recovState <- ifelse(type == "SIR", "r", "s")
 
   rec.rate <- get_param(dat, "rec.rate")
@@ -86,7 +85,8 @@ recovery.net <- function(dat, at) {
 recovery.2g.net <- function(dat, at) {
 
   ## Only run with SIR/SIS
-  if (!(dat$control$type %in% c("SIR", "SIS"))) {
+  type <- get_control(dat, "type")
+  if (!(type %in% c("SIR", "SIS"))) {
     return(dat)
   }
 
@@ -95,8 +95,6 @@ recovery.2g.net <- function(dat, at) {
   status <- get_attr(dat, "status")
   infTime <- get_attr(dat, "infTime")
   group <- get_attr(dat, "group")
-
-  type <- get_control(dat, "type")
   recovState <- ifelse(type == "SIR", "r", "s")
 
   rec.rate <- get_param(dat, "rec.rate")
