@@ -141,7 +141,7 @@ init_status.net <- function(dat) {
   tgl <- get_control(dat, "tergmLite")
   vital <- get_param(dat, "vital")
   groups <- get_param(dat, "groups")
-  if (type %in% c("SIR", "SIR")){
+  if (type %in% c("SIS", "SIR")){
     rec.rate <- get_param(dat, "rec.rate")
   }
   if (vital) {
