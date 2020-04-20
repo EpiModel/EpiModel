@@ -94,12 +94,7 @@ recovery.2g.net <- function(dat, at) {
   active <- dat$attr$active
   status <- dat$attr$status
   infTime <- dat$attr$infTime
-
-  if (dat$control$tergmLite == FALSE) {
-    group <- get.vertex.attribute(dat$nw, "group")
-  } else {
-    group <- dat$attr$group
-  }
+  group <- dat$attr$group
 
   type <- dat$control$type
   recovState <- ifelse(type == "SIR", "r", "s")

@@ -130,12 +130,7 @@ prevalence.2g.net <- function(dat, at) {
   l$active <- l$infTime <- NULL
 
   status <- l$status
-
-  if(dat$control$tergmLite == FALSE){
-    group <- idgroup(dat$nw)[active == 1]
-  } else {
-    group <- dat$attr$group[active == 1]
-  }
+  group <- dat$attr$group[active == 1]
 
   ## Subsetting for epi.by control
   eb <- !is.null(dat$control$epi.by)

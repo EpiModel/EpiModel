@@ -26,7 +26,7 @@ test_that("edges models", {
   plot(x, type = "formation")
   plot(x, type = "network")
   plot(x, type = "network", sims = "mean", col.status = TRUE)
-  # test_net(x)
+  test_net(x)
   rm(x)
 
   ## "SI, 1M, CL: 1 sim, inf.prob = 0"
@@ -44,7 +44,7 @@ test_that("edges models", {
   plot(x, type = "formation")
   plot(x, type = "network")
   plot(x, type = "network", sims = "mean", col.status = TRUE)
-  # test_net(x)
+  test_net(x)
   rm(x)
 
   ## "SI, 1M, CL: 2 sim"
@@ -67,7 +67,7 @@ test_that("edges models", {
   plot(x, type = "formation", sim.lines = TRUE, qnts.smooth = FALSE)
   plot(x, type = "network")
   plot(x, type = "network", sims = "mean", col.status = TRUE)
-  # test_net(x)
+  test_net(x)
   rm(x)
 
   ## "SI, 1M, CL: 2 sim, use TEAs"
@@ -80,7 +80,7 @@ test_that("edges models", {
   expect_is(as.data.frame(x), "data.frame")
   expect_true(max(x$epi$i.num) >= 1)
   expect_true(max(x$epi$i.num) <= 100)
-  expect_true(sum(get.vertex.attribute.active(x$network[[1]],
+  expect_true(sum(get.vertex.attribute.active(x$network[[1]][[1]],
                                               prefix = "testatus", at = 1) == "i") >= 0)
   expect_output(summary(x, at = 25), "EpiModel Summary")
   plot(x)
@@ -88,7 +88,7 @@ test_that("edges models", {
   plot(x, type = "formation")
   plot(x, type = "network")
   plot(x, type = "network", sims = "mean", col.status = TRUE)
-  # test_net(x)
+  test_net(x)
   rm(x)
 
   ## "SI, 1M, CL: 2 sim, set status.vector"
@@ -108,7 +108,7 @@ test_that("edges models", {
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
   plot(x, type = "network", col.status = TRUE)
-  # test_net(x)
+  test_net(x)
   rm(x)
 
   ## "SIR, 1M, CL: 1 sim"
@@ -127,7 +127,7 @@ test_that("edges models", {
   plot(x, type = "formation")
   plot(x, type = "network")
   plot(x, type = "network", sims = "mean", col.status = TRUE)
-  # test_net(x)
+  test_net(x)
   rm(x)
 
   ## "SIR, 1M, CL: 1 sim, inf.prob=0"
@@ -146,7 +146,7 @@ test_that("edges models", {
   plot(x, type = "formation")
   plot(x, type = "network")
   plot(x, type = "network", sims = "mean", col.status = TRUE)
-  # test_net(x)
+  test_net(x)
   rm(x)
 
   ## "SIR, 1M, CL: 2 sim"
@@ -165,7 +165,7 @@ test_that("edges models", {
   plot(x, type = "formation")
   plot(x, type = "network")
   plot(x, type = "network", sims = "mean", col.status = TRUE)
-  # test_net(x)
+  test_net(x)
   rm(x)
 
   ## "SIR, 1M, CL: 2 sim, set status.vector"
@@ -185,7 +185,7 @@ test_that("edges models", {
   plot(x, type = "formation")
   plot(x, type = "network")
   plot(x, type = "network", sims = "mean", col.status = TRUE)
-  # test_net(x)
+  test_net(x)
   rm(x)
 
   ## "SIS, 1M, CL: 1 sim"
@@ -204,7 +204,7 @@ test_that("edges models", {
   plot(x, type = "formation")
   plot(x, type = "network")
   plot(x, type = "network", sims = "mean", col.status = TRUE)
-  # test_net(x)
+  test_net(x)
   rm(x)
 
   ## "SIS, 1M, CL: 1 sim, inf.prob=0"
@@ -223,7 +223,7 @@ test_that("edges models", {
   plot(x, type = "formation")
   plot(x, type = "network")
   plot(x, type = "network", sims = "mean", col.status = TRUE)
-  # test_net(x)
+  test_net(x)
   rm(x)
 
   ## "SIS, 1M, CL: 2 sim"
@@ -240,7 +240,7 @@ test_that("edges models", {
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
-  # test_net(x)
+  test_net(x)
   rm(x)
 
   ## "SIS, 1M, CL: 2 sim, test TEAs"
@@ -252,7 +252,7 @@ test_that("edges models", {
   expect_is(x, "netsim")
   expect_is(as.data.frame(x), "data.frame")
   expect_true(max(x$epi$i.num) <= 100)
-  expect_true(sum(get.vertex.attribute.active(x$network[[1]],
+  expect_true(sum(get.vertex.attribute.active(x$network[[1]][[1]],
                                               prefix = "testatus", at = 1) == "i") >= 0)
   expect_output(summary(x, at = 25), "EpiModel Summary")
   plot(x)
@@ -260,7 +260,7 @@ test_that("edges models", {
   plot(x, type = "formation")
   plot(x, type = "network")
   plot(x, type = "network", sims = "mean", col.status = TRUE)
-  # test_net(x)
+  test_net(x)
   rm(x)
 
   ## "SIS, 1M, CL: 2 sim, set status.vector"
@@ -280,22 +280,22 @@ test_that("edges models", {
   plot(x, type = "formation")
   plot(x, type = "network")
   plot(x, type = "network", sims = "mean", col.status = TRUE)
-  # test_net(x)
+  test_net(x)
 })
 
 
 ################################################################################
 
 test_that("High departure rate models", {
-
+  skip_on_cran()
   ## "netsim: 1M, ds.rate = 0.5"
   nw <- network.initialize(n = 25, directed = FALSE)
   est <- netest(nw, formation = ~edges, target.stats = 12,
                 coef.diss = dissolution_coefs(~offset(edges), 10, 0.01),
                 edapprox = TRUE, verbose = FALSE)
   param <- param.net(inf.prob = 0.5, act.rate = 2,
-                     a.rate = 0.01, ds.rate = 0.5,
-                     di.rate = 0.25)
+                     a.rate = 0.01, ds.rate = 0.25,
+                     di.rate = 0.1)
   init <- init.net(i.num = 10)
   control <- control.net(type = "SI", nsteps = 25,
                          nsims = 1,
@@ -309,12 +309,12 @@ test_that("High departure rate models", {
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
-  # test_net(x)
+  test_net(x)
   rm(x)
 
   ## "netsim: 1M, di.rate = 0.5"
   param <- param.net(inf.prob = 0.1, act.rate = 2, a.rate = 0.01,
-                     ds.rate = 0.01, di.rate = 0.5)
+                     ds.rate = 0.01, di.rate = 0.25)
   init <- init.net(i.num = 10)
   control <- control.net(type = "SI", nsteps = 25,
                          nsims = 1, verbose = FALSE)
@@ -324,7 +324,7 @@ test_that("High departure rate models", {
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
-  # test_net(x)
+  test_net(x)
 
 })
 
@@ -359,7 +359,7 @@ test_that("edges two-group models", {
   plot(x, type = "network", shp.bip = "triangle")
   #FLAG: Adding "two-group" attribute to network type
   expect_error(plot(x, type = "network", shp.bip = TRUE))
-  # test_net(x)
+  test_net(x)
   rm(x)
 
   ## "SIR, 2M, CL: 2 sim"
@@ -377,7 +377,7 @@ test_that("edges two-group models", {
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
-  # test_net(x)
+  test_net(x)
   rm(x)
 
   ## "SIR, 2M, CL: rec.rate = 0"
@@ -394,7 +394,7 @@ test_that("edges two-group models", {
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
-  # test_net(x)
+  test_net(x)
   rm(x)
 
   ## "SIS, 2M, CL: 2 sim"
@@ -411,7 +411,7 @@ test_that("edges two-group models", {
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
-  # test_net(x)
+  test_net(x)
   rm(x)
 
   ## "SIS, 2M, CL: rec.rate = 0"
@@ -427,7 +427,7 @@ test_that("edges two-group models", {
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
-  # test_net(x)
+  test_net(x)
   rm(x)
 
 })
@@ -456,7 +456,7 @@ test_that("Open population 1 group models", {
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
-  # test_net(x)
+  test_net(x)
   rm(x)
 
   ## "SI, 1M, OP: 2 sim"
@@ -474,7 +474,7 @@ test_that("Open population 1 group models", {
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
-  # test_net(x)
+  test_net(x)
   rm(x)
 
   ## "SIR, 1M OP: 1 sim"
@@ -492,7 +492,7 @@ test_that("Open population 1 group models", {
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
-  # test_net(x)
+  test_net(x)
   rm(x)
 
   ## "SIR, 1M, OP: 2 sim"
@@ -510,7 +510,7 @@ test_that("Open population 1 group models", {
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
-  # test_net(x)
+  test_net(x)
   rm(x)
 
   ## "SIS, 1M, OP: 1 sim"
@@ -527,7 +527,7 @@ test_that("Open population 1 group models", {
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
-  # test_net(x)
+  test_net(x)
   rm(x)
 
   ## "SIS, 1M, OP: 2 sim"
@@ -541,7 +541,7 @@ test_that("Open population 1 group models", {
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
-  # test_net(x)
+  test_net(x)
   rm(x)
 
 })
@@ -573,7 +573,7 @@ test_that("Open-population two-group models", {
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
-  # test_net(x)
+  test_net(x)
   rm(x)
 
 
@@ -592,7 +592,7 @@ test_that("Open-population two-group models", {
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
-  # test_net(x)
+  test_net(x)
   rm(x)
 
   ## "SIR, 2M, OP: 1 sim"
@@ -613,7 +613,7 @@ test_that("Open-population two-group models", {
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
-  # test_net(x)
+  test_net(x)
   rm(x)
 
   ## "SIR, 2M, OP: 3 sim"
@@ -627,7 +627,7 @@ test_that("Open-population two-group models", {
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
-  # test_net(x)
+  test_net(x)
   rm(x)
 
 })
@@ -656,7 +656,7 @@ test_that("Extinction open-population models", {
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
-  # test_net(x)
+  test_net(x)
   rm(x)
 
   ## "netsim: 2M, ds.rate.g2 = 0.5"
@@ -665,13 +665,13 @@ test_that("Extinction open-population models", {
                      a.rate.g2 = 0.01, ds.rate.g2 = 0.5, di.rate.g2 = 0.5)
   init <- init.net(i.num = 5, i.num.g2 = 0)
   control <- control.net(type = "SI", nsteps = 30, nsims = 1,
-                         erbose = FALSE)
+                         verbose = FALSE)
   x <- netsim(est, param, init, control)
   expect_output(summary(x, at = 10), "EpiModel Summary")
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
-  # test_net(x)
+  test_net(x)
   rm(x)
 
 })

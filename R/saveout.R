@@ -124,7 +124,7 @@ saveout.icm <- function(dat, s, out = NULL) {
 saveout.net <- function(dat, s, out = NULL) {
 
   # Counts number of simulated networks
-  num.nw <- ifelse(any(class(dat$nw) == "network"), 1, length(dat$nw))
+  num.nw <- length(dat$nw)
 
   if (s == 1) {
     out <- list()
