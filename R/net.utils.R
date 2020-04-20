@@ -717,10 +717,6 @@ get_network_term_attr <- function(nw) {
 #' idgroup(nw, ids = c(3, 6))
 #'
 idgroup <- function(nw, ids) {
-
-  if (class(nw) == "list") {
-    nw <- nw[[1]]
-  }
   n <- network.size(nw)
   if (missing(ids)) {
     ids <- seq_len(n)

@@ -141,6 +141,7 @@ init_status.net <- function(dat) {
   tergmLite <- get_control(dat, "tergmLite")
   vital <- get_param(dat, "vital")
   groups <- get_param(dat, "groups")
+  status.vector <- get_init(dat, "status.vector", override.null.error = TRUE)
   if (type %in% c("SIS", "SIR")){
     rec.rate <- get_param(dat, "rec.rate")
   }
@@ -150,18 +151,17 @@ init_status.net <- function(dat) {
 
   # Variables ---------------------------------------------------------------
   i.num <- get_init(dat, "i.num", override.null.error = TRUE)
-  if (type  == "SIR"){
+  if (type  == "SIR" & is.null(status.vector)){
     r.num <- get_init(dat, "r.num")
   }
 
-  status.vector <- get_init(dat, "status.vector", override.null.error = TRUE)
   num <- sum(get_attr(dat, "active") == 1)
 
   if (groups == 2) {
     group <- get_attr(dat, "group")
     i.num.g2 <- get_init(dat, "i.num.g2")
-    if (type  == "SIR") {
-      r.num.g2 <- get_init(dat, "r.num.g2")
+    if (type  == "SIR" & is.null(status.vector)) {
+      r.num.g2 <- get_init(dat, "r.num.g2", override.null.error = TRUE)
     }
   } else {
     group <- rep(1, num)
