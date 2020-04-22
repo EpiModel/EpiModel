@@ -58,12 +58,7 @@ recovery.net <- function(dat, at) {
 
   # Output ------------------------------------------------------------------
   outName <- ifelse(type == "SIR", "ir.flow", "is.flow")
-
-  if (at == 2) {
-    dat$epi[[outName[1]]] <- c(0, nRecov)
-  } else {
-    dat$epi[[outName[1]]][at] <- nRecov
-  }
+  dat <- set_epi(dat, outName, at, nRecov)
 
   return(dat)
 }
@@ -143,16 +138,8 @@ recovery.2g.net <- function(dat, at) {
   outName <- ifelse(type == "SIR", "ir.flow", "is.flow")
   outName[2] <- paste0(outName, ".g2")
 
-  if (at == 2) {
-    dat$epi[[outName[1]]] <- c(0, nRecov)
-  } else {
-    dat$epi[[outName[1]]][at] <- nRecov
-  }
-  if (at == 2) {
-    dat$epi[[outName[2]]] <- c(0, nRecovG2)
-  } else {
-    dat$epi[[outName[2]]][at] <- nRecovG2
-  }
+  dat <- set_epi(dat, outName[1], at, nRecov)
+  dat <- set_epi(dat, outName[2], at, nRecovG2)
 
 
   return(dat)
