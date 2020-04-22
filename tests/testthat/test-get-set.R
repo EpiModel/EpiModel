@@ -25,6 +25,12 @@ test_that("`dat` getters and setter", {
   dat <- set_attr(dat, "age", new_ages)
   expect_equal(dat$attr$age, new_ages)
 
+  dat <- set_attr(dat, "age2", new_ages)
+  expect_silent(dat <- set_attr(dat, "age2", rep(new_ages, 2),
+                                override.length.check = TRUE))
+  expect_length(get_attr(dat, "age2"), 2 * length(new_ages))
+
+
   expect_equal(get_attr(dat, "age"), new_ages)
   expect_equal(get_attr(dat, "age", c(1, 5)), new_ages[c(1, 5)])
   expect_equal(get_attr(dat, "age", new_ages > 0.5), new_ages[new_ages > 0.5])

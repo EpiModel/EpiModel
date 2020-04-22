@@ -21,6 +21,8 @@
 #' @param value new value to be attributed in the `set_` and `append_` functions
 #' @param override.null.error if TRUE, `get_` return NULL if the `item` does not
 #'        exist instead of throwing an error. (default = FALSE)
+#' @param override.length.check if TRUE, `set_attr` allows the modification of
+#'        the `item` size. (default = FALSE)
 #' @return a vector or a list of vector for `get_` functions. And the Master
 #'         list object for `set_` and `add_` functions
 #'
@@ -41,6 +43,7 @@
 #' dat <- add_attr(dat, "age")
 #' dat <- set_attr(dat, "age", runif(100))
 #' dat <- set_attr(dat, "status", rbinom(100, 1, 0.9))
+#' dat <- set_attr(dat, "status", rep(1, 150), override.length.error = TRUE)
 #' dat <- append_attr(dat, "status", 1, 10)
 #' dat <- append_attr(dat, "age", NA, 10)
 #' get_attr_list(dat)
@@ -154,12 +157,12 @@ add_attr <- function(dat, item) {
 
 #' @rdname dat_get_set
 #' @export
-set_attr <- function(dat, item, value) {
+set_attr <- function(dat, item, value, override.length.check = FALSE) {
   if (!item %in% names(dat[["attr"]])) {
     dat <- add_attr(dat, item)
   }
 
-  if (length(value) != length(dat$attr$active)) {
+  if (length(value) != length(dat$attr$active) & !override.length.check) {
     stop(paste0(
       "When trying to edit the ", `item`, " nodal attribute: The size",
        " of the `value` vector is not equal to the number of node in
