@@ -191,8 +191,8 @@ init_status.net <- function(dat) {
     }
     dat <- set_attr(dat, "status", status)
   } else {
-    #TODO: Where is status set before this? NULL if statonNW = TRUE
-    status <- get_attr(dat, "status")
+    status <- get.vertex.attribute(dat$nw[[1]], "status")
+    dat <- set_attr(dat, "status", status)
   }
 
 
