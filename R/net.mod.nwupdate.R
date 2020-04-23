@@ -85,7 +85,7 @@ nwupdate.net <- function(dat, at) {
                                     v = inactive, deactivate.edges = TRUE)
     }
     if (tL == TRUE) {
-      dat$attr <- deleteAttr(dat$attr, inactive)
+      dat$attr <- delete_attr(dat, inactive)
       dat$el[[1]] <- delete_vertices(dat$el[[1]], inactive)
     }
   }
