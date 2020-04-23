@@ -167,8 +167,9 @@ departures.2g.net <- function(dat, at) {
   group <- get_attr(dat, "group")
   rates.sus <- c(get_param(dat, "ds.rate"), get_param(dat, "ds.rate.g2"))
   rates.inf <- c(get_param(dat, "di.rate"), get_param(dat, "di.rate.g2"))
-  if (type == "SIR")
-  rates.rec <- c(get_param(dat, "dr.rate"), get_param(dat, "dr.rate.g2"))
+  if (type == "SIR") {
+    rates.rec <- c(get_param(dat, "dr.rate"), get_param(dat, "dr.rate.g2"))
+  }
 
   # Susceptible departures ------------------------------------------------------
   nDepartures.sus <- nDeparturesG2.sus <- 0

@@ -55,6 +55,7 @@ initialize.net <- function(x, param, init, control, s) {
     # Standard attributes
     num <- network.size(nw)
     dat$attr$active <- rep(1, num)
+    dat <- set_attr(dat, "active", rep(1, num), override.length.check = TRUE)
     dat <- set_attr(dat, "entrTime", rep(1, num))
     dat <- set_attr(dat, "exitTime", rep(NA, num))
 
@@ -145,7 +146,7 @@ init_status.net <- function(dat) {
   if (type %in% c("SIS", "SIR")){
     rec.rate <- get_param(dat, "rec.rate")
   }
-  if (vital) {
+  if (vital == TRUE) {
     di.rate <- get_param(dat, "di.rate")
   }
 

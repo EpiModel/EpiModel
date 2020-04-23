@@ -127,7 +127,7 @@ dat <- list(
 dat <- add_attr(dat, "age")
 dat <- set_attr(dat, "age", runif(100))
 dat <- set_attr(dat, "status", rbinom(100, 1, 0.9))
-dat <- set_attr(dat, "status", rep(1, 150), override.length.error = TRUE)
+dat <- set_attr(dat, "status", rep(1, 150), override.length.check = TRUE)
 dat <- append_attr(dat, "status", 1, 10)
 dat <- append_attr(dat, "age", NA, 10)
 get_attr_list(dat)
