@@ -457,7 +457,8 @@ print.control.net <- function(x, ...) {
     cat("Dynamic Modules:", funToPrint)
   } else {
     order <- unlist(lapply(funToPrint, function(y) which(y == x$module.order)))
-    funToPrint <- funToPrint[order]
+    funToPrint.mo <- funToPrint[order]
+    funtoPrint.nmo <- funToPrint[-which(funToPrint %in% x$module.order)]
     cat("Dynamic Modules:", funToPrint)
   }
 
