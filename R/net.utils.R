@@ -732,6 +732,7 @@ idgroup <- function(nw, ids) {
     groups <- get.vertex.attribute(nw, "group")
     out <- groups[ids]
   }
+
   return(out)
 }
 
@@ -788,12 +789,13 @@ groupids <- function(nw, group) {
 #'
 auto_update_attr <- function(dat, newNodes, curr.tab) {
 
-  rules <- dat$control$attr.rules
+  rules <- get_control(dat, "attr.rules")
+  active <- get_attr(dat, "active")
   t1.tab <- dat$temp$t1.tab
 
   for (i in seq_along(curr.tab)) {
     vname <- names(curr.tab)[i]
-    needs.updating <- ifelse(length(dat$attr[[vname]]) < length(dat$attr$active),
+    needs.updating <- ifelse(length(get_attr(dat, vname)) < length(active),
                              TRUE, FALSE)
     if (length(vname) > 0 & needs.updating == TRUE) {
       rule <- rules[[vname]]
@@ -802,7 +804,7 @@ auto_update_attr <- function(dat, newNodes, curr.tab) {
         rule <- "current"
       }
       if (rule == "current") {
-        vclass <- class(dat$attr[[vname]])
+        vclass <- class(get_attr(dat, vname))
         if (vclass == "character") {
           nattr <- sample(names(curr.tab[[vname]]),
                           size = length(newNodes),
@@ -815,7 +817,7 @@ auto_update_attr <- function(dat, newNodes, curr.tab) {
                           prob = curr.tab[[i]])
         }
       } else if (rule == "t1") {
-        vclass <- class(dat$attr[[vname]])
+        vclass <- class(get_attr(dat, vname))
         if (vclass == "character") {
           nattr <- sample(names(t1.tab[[vname]]),
                           size = length(newNodes),

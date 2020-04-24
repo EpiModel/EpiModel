@@ -11,7 +11,6 @@
 \alias{get_epi}
 \alias{add_epi}
 \alias{set_epi}
-\alias{set_epi_at}
 \alias{get_param_list}
 \alias{get_param}
 \alias{add_param}
@@ -28,27 +27,25 @@
 \usage{
 get_attr_list(dat, item = NULL)
 
-get_attr(dat, item, indexes = NULL)
+get_attr(dat, item, indexes = NULL, override.null.error = FALSE)
 
 add_attr(dat, item)
 
-set_attr(dat, item, value)
+set_attr(dat, item, value, override.length.check = FALSE)
 
 append_attr(dat, item, value, n.new)
 
 get_epi_list(dat, item = NULL)
 
-get_epi(dat, item, indexes = NULL)
+get_epi(dat, item, indexes = NULL, override.null.error = FALSE)
 
 add_epi(dat, item)
 
-set_epi(dat, item, value)
-
-set_epi_at(dat, item, at, value)
+set_epi(dat, item, at, value)
 
 get_param_list(dat, item = NULL)
 
-get_param(dat, item)
+get_param(dat, item, override.null.error = FALSE)
 
 add_param(dat, item)
 
@@ -56,7 +53,7 @@ set_param(dat, item, value)
 
 get_control_list(dat, item = NULL)
 
-get_control(dat, item)
+get_control(dat, item, override.null.error = FALSE)
 
 add_control(dat, item)
 
@@ -64,7 +61,7 @@ set_control(dat, item, value)
 
 get_init_list(dat, item = NULL)
 
-get_init(dat, item)
+get_init(dat, item, override.null.error = FALSE)
 
 add_init(dat, item)
 
@@ -79,7 +76,13 @@ Can be of length > 1 for `get_*_list` functions}
 \item{indexes}{for `get_epi` and `get_attr`, a numeric vector of indexes or
 a logical vector to subset the desired `item`}
 
+\item{override.null.error}{if TRUE, `get_` return NULL if the `item` does not
+exist instead of throwing an error. (default = FALSE)}
+
 \item{value}{new value to be attributed in the `set_` and `append_` functions}
+
+\item{override.length.check}{if TRUE, `set_attr` allows the modification of
+the `item` size. (default = FALSE)}
 
 \item{n.new}{the number of new elements to append at the end of `item`}
 
@@ -124,6 +127,7 @@ dat <- list(
 dat <- add_attr(dat, "age")
 dat <- set_attr(dat, "age", runif(100))
 dat <- set_attr(dat, "status", rbinom(100, 1, 0.9))
+dat <- set_attr(dat, "status", rep(1, 150), override.length.check = TRUE)
 dat <- append_attr(dat, "status", 1, 10)
 dat <- append_attr(dat, "age", NA, 10)
 get_attr_list(dat)
@@ -132,15 +136,14 @@ get_attr(dat, "status")
 get_attr(dat, "status", c(1, 4))
 get_attr(dat, "status", rbinom(100, 1, 0.2) == 1)
 
-dat <- add_epi(dat, "i")
-dat <- set_epi(dat, "i", runif(150))
-dat <- set_epi(dat, "s", runif(150))
-dat <- set_epi_at(dat, "s", 150, 8)
+dat <- add_epi(dat, "i.num")
+dat <- set_epi(dat, "i.num", 150, 10)
+dat <- set_epi(dat, "s.num", 150, 90)
 get_epi_list(dat)
-get_epi_list(dat, c("i", "s"))
-get_epi(dat, "i")
-get_epi(dat, "i", c(1, 4))
-get_epi(dat, "i", rbinom(150, 1, 0.2) == 1)
+get_epi_list(dat, c("i.num", "s.num"))
+get_epi(dat, "i.num")
+get_epi(dat, "i.num", c(1, 4))
+get_epi(dat, "i.num", rbinom(150, 1, 0.2) == 1)
 
 dat <- add_param(dat, "x")
 dat <- set_param(dat, "x", 0.4)
