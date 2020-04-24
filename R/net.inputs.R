@@ -600,7 +600,9 @@ crosscheck.net <- function(x, param, init, control) {
       # Defaults ----------------------------------------------------------------
 
       # Is status in network formation formula?
-      statOnNw <- ("status" %in% get_formula_term_attr(x$formation, nw))
+      #statOnNw <- ("status" %in% get_formula_term_attr(x$formation, nw))
+      statOnNw <- get.vertex.attribute(nw, "status") %in% c("s", "i", "r")
+      statOnNw <- ifelse(sum(statOnNw) > 0, TRUE, FALSE)
 
       # Set dependent modeling defaults if vital or status on nw
       if (is.null(control$resimulate.network)) {
@@ -636,15 +638,6 @@ crosscheck.net <- function(x, param, init, control) {
           if (interactive()) Sys.sleep(4)
         }
       }
-
-      # If status not in formation formula but set on original network, state that it
-      #   will be ignored
-      if (statOnNw == FALSE & "status" %in% names(nw$val[[1]])) {
-        warning("Overriding status vertex attribute on network with init.net conditions",
-                call. = FALSE, immediate. = TRUE)
-        if (interactive()) Sys.sleep(4)
-      }
-
 
       # Check consistency of status vector to network structure
       if (!is.null(init$status.vector)) {

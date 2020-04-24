@@ -43,7 +43,7 @@
 #' dat <- add_attr(dat, "age")
 #' dat <- set_attr(dat, "age", runif(100))
 #' dat <- set_attr(dat, "status", rbinom(100, 1, 0.9))
-#' dat <- set_attr(dat, "status", rep(1, 150), override.length.error = TRUE)
+#' dat <- set_attr(dat, "status", rep(1, 150), override.length.check = TRUE)
 #' dat <- append_attr(dat, "status", 1, 10)
 #' dat <- append_attr(dat, "age", NA, 10)
 #' get_attr_list(dat)
@@ -55,7 +55,6 @@
 #' dat <- add_epi(dat, "i.num")
 #' dat <- set_epi(dat, "i.num", 150, 10)
 #' dat <- set_epi(dat, "s.num", 150, 90)
-#' dat <- set_epi_at(dat, "s.num", 150, 8)
 #' get_epi_list(dat)
 #' get_epi_list(dat, c("i.num", "s.num"))
 #' get_epi(dat, "i.num")
@@ -166,7 +165,7 @@ set_attr <- function(dat, item, value, override.length.check = FALSE) {
     stop(paste0(
       "When trying to edit the ", `item`, " nodal attribute: The size",
        " of the `value` vector is not equal to the number of node in
-       the network. Expected: ", length(dat$attr$active), ", given : ",
+       the network. Expected: ", length(dat$attr$active), ", given: ",
        length(value)))
   }
 
