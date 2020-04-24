@@ -165,7 +165,7 @@ set_attr <- function(dat, item, value, override.length.check = FALSE) {
     stop(paste0(
       "When trying to edit the ", `item`, " nodal attribute: The size",
        " of the `value` vector is not equal to the number of node in
-       the network. Expected: ", length(dat$attr$active), ", given : ",
+       the network. Expected: ", length(dat$attr$active), ", given: ",
        length(value)))
   }
 
