@@ -19,6 +19,10 @@
 #' @param indexes for `get_epi` and `get_attr`, a numeric vector of indexes or
 #'        a logical vector to subset the desired `item`
 #' @param value new value to be attributed in the `set_` and `append_` functions
+#' @param override.null.error if TRUE, `get_` return NULL if the `item` does not
+#'        exist instead of throwing an error. (default = FALSE)
+#' @param override.length.check if TRUE, `set_attr` allows the modification of
+#'        the `item` size. (default = FALSE)
 #' @return a vector or a list of vector for `get_` functions. And the Master
 #'         list object for `set_` and `add_` functions
 #'
@@ -39,6 +43,7 @@
 #' dat <- add_attr(dat, "age")
 #' dat <- set_attr(dat, "age", runif(100))
 #' dat <- set_attr(dat, "status", rbinom(100, 1, 0.9))
+#' dat <- set_attr(dat, "status", rep(1, 150), override.length.check = TRUE)
 #' dat <- append_attr(dat, "status", 1, 10)
 #' dat <- append_attr(dat, "age", NA, 10)
 #' get_attr_list(dat)
@@ -47,15 +52,14 @@
 #' get_attr(dat, "status", c(1, 4))
 #' get_attr(dat, "status", rbinom(100, 1, 0.2) == 1)
 #'
-#' dat <- add_epi(dat, "i")
-#' dat <- set_epi(dat, "i", runif(150))
-#' dat <- set_epi(dat, "s", runif(150))
-#' dat <- set_epi_at(dat, "s", 150, 8)
+#' dat <- add_epi(dat, "i.num")
+#' dat <- set_epi(dat, "i.num", 150, 10)
+#' dat <- set_epi(dat, "s.num", 150, 90)
 #' get_epi_list(dat)
-#' get_epi_list(dat, c("i", "s"))
-#' get_epi(dat, "i")
-#' get_epi(dat, "i", c(1, 4))
-#' get_epi(dat, "i", rbinom(150, 1, 0.2) == 1)
+#' get_epi_list(dat, c("i.num", "s.num"))
+#' get_epi(dat, "i.num")
+#' get_epi(dat, "i.num", c(1, 4))
+#' get_epi(dat, "i.num", rbinom(150, 1, 0.2) == 1)
 #'
 #' dat <- add_param(dat, "x")
 #' dat <- set_param(dat, "x", 0.4)
@@ -104,31 +108,34 @@ get_attr_list <- function(dat, item = NULL) {
 
 #' @rdname dat_get_set
 #' @export
-get_attr <- function(dat, item, indexes = NULL) {
+get_attr <- function(dat, item, indexes = NULL, override.null.error = FALSE) {
   if (!item %in% names(dat[["attr"]])) {
+    if (override.null.error) {
+      out <- NULL
+    } else {
       stop(paste("There is no attribute called", item,
                  "in the attributes list of the Master list object (dat)"))
-  }
-
-  if (is.null(indexes)) {
-    out <- dat[["attr"]][[item]]
-
-  } else {
-    if (is.logical(indexes)) {
-      if (length(indexes) != length(dat[["attr"]][[item]])) {
-        stop("(logical) `indexes` has to have a length equal to the number of
-              nodes in the network")
-      }
-    } else if(is.numeric(indexes)) {
-      if (any(indexes > length(dat[["attr"]][[item]]))) {
-        stop("Some (numeric) `indexes` are larger than the number of nodes in
-              the network")
-      }
-    } else {
-      stop("`indexes` must be logical, numeric, or NULL")
     }
+  } else {
+    if (is.null(indexes)) {
+      out <- dat[["attr"]][[item]]
+    } else {
+      if (is.logical(indexes)) {
+        if (length(indexes) != length(dat[["attr"]][[item]])) {
+          stop("(logical) `indexes` has to have a length equal to the number of
+              nodes in the network")
+        }
+      } else if(is.numeric(indexes)) {
+        if (any(indexes > length(dat[["attr"]][[item]]))) {
+          stop("Some (numeric) `indexes` are larger than the number of nodes in
+              the network")
+        }
+      } else {
+        stop("`indexes` must be logical, numeric, or NULL")
+      }
 
-    out <- dat[["attr"]][[item]][indexes]
+      out <- dat[["attr"]][[item]][indexes]
+    }
   }
 
   return(out)
@@ -149,16 +156,16 @@ add_attr <- function(dat, item) {
 
 #' @rdname dat_get_set
 #' @export
-set_attr <- function(dat, item, value) {
+set_attr <- function(dat, item, value, override.length.check = FALSE) {
   if (!item %in% names(dat[["attr"]])) {
     dat <- add_attr(dat, item)
   }
 
-  if (length(value) != length(dat$attr$active)) {
+  if (length(value) != length(dat$attr$active) & !override.length.check) {
     stop(paste0(
       "When trying to edit the ", `item`, " nodal attribute: The size",
        " of the `value` vector is not equal to the number of node in
-       the network. Expected: ", length(dat$attr$active), ", given : ",
+       the network. Expected: ", length(dat$attr$active), ", given: ",
        length(value)))
   }
 
@@ -215,26 +222,34 @@ get_epi_list <- function(dat, item = NULL) {
 
 #' @rdname dat_get_set
 #' @export
-get_epi <- function(dat, item, indexes = NULL) {
-  if (is.null(indexes)) {
-    out <- dat[["epi"]][[item]]
-
-  } else {
-    if (is.logical(indexes)) {
-      if (length(indexes) != dat$control$nsteps) {
-        stop("(logical) `indexes` has to have a length equal to the number of
-              steps planned for for the simulation (control$nsteps)")
-      }
-    } else if(is.numeric(indexes)) {
-      if (any(indexes > dat$control$nsteps)) {
-        stop("Some (numeric) `indexes` are larger than the number of
-              steps planned for for the simulation (control$nsteps)")
-      }
+get_epi <- function(dat, item, indexes = NULL, override.null.error = FALSE) {
+  if (!item %in% names(dat[["epi"]])) {
+    if (override.null.error) {
+      out <- NULL
     } else {
-      stop("`indexes` must be logical, numeric, or NULL")
+      stop(paste("There is no epi out called", item,
+                 "in the epi out list of the Master list object (dat)"))
     }
+  } else {
+    if (is.null(indexes)) {
+      out <- dat[["epi"]][[item]]
+    } else {
+      if (is.logical(indexes)) {
+        if (length(indexes) != dat$control$nsteps) {
+          stop("(logical) `indexes` has to have a length equal to the number of
+              steps planned for for the simulation (control$nsteps)")
+        }
+      } else if(is.numeric(indexes)) {
+        if (any(indexes > dat$control$nsteps)) {
+          stop("Some (numeric) `indexes` are larger than the number of
+              steps planned for for the simulation (control$nsteps)")
+        }
+      } else {
+        stop("`indexes` must be logical, numeric, or NULL")
+      }
 
-    out <- dat[["epi"]][[item]][indexes]
+      out <- dat[["epi"]][[item]][indexes]
+    }
   }
 
   return(out)
@@ -253,22 +268,10 @@ add_epi <- function(dat, item) {
   return(dat)
 }
 
-#' @rdname dat_get_set
-#' @export
-set_epi <- function(dat, item, value) {
-  if (!item %in% names(dat[["epi"]])) {
-    dat <- add_epi(dat, item)
-  }
-
-  dat[["epi"]][[item]] <- value
-
-  return(dat)
-}
-
 #' @param at timestep where to add the new value for the epi output `item`
 #' @rdname dat_get_set
 #' @export
-set_epi_at <- function(dat, item, at,  value) {
+set_epi <- function(dat, item, at,  value) {
   if (length(at) != 1 || !is.numeric(at)) {
     stop("`at` must be numeric and of length one")
   }
@@ -312,13 +315,17 @@ get_param_list <- function(dat, item = NULL) {
 
 #' @rdname dat_get_set
 #' @export
-get_param <- function(dat, item) {
+get_param <- function(dat, item, override.null.error = FALSE) {
   if (!item %in% names(dat[["param"]])) {
+    if (override.null.error) {
+      out <- NULL
+    } else {
       stop(paste("There is no parameter called", item,
                  "in the parameter list of the Master list object (dat)"))
+    }
+  } else {
+    out <- dat[["param"]][[item]]
   }
-
-  out <- dat[["param"]][[item]]
 
   return(out)
 }
@@ -370,13 +377,17 @@ get_control_list <- function(dat, item = NULL) {
 
 #' @rdname dat_get_set
 #' @export
-get_control <- function(dat, item) {
+get_control <- function(dat, item, override.null.error = FALSE) {
   if (!item %in% names(dat[["control"]])) {
+    if (override.null.error) {
+      out <- NULL
+    } else {
       stop(paste("There is no control value called", item,
                  "in the control list of the Master list object (dat)"))
+    }
+  } else {
+    out <- dat[["control"]][[item]]
   }
-
-  out <- dat[["control"]][[item]]
 
   return(out)
 }
@@ -428,13 +439,17 @@ get_init_list <- function(dat, item = NULL) {
 
 #' @rdname dat_get_set
 #' @export
-get_init <- function(dat, item) {
+get_init <- function(dat, item, override.null.error = FALSE) {
   if (!item %in% names(dat[["init"]])) {
+    if (override.null.error) {
+      out <- NULL
+    } else {
       stop(paste("There is no init value called", item,
                  "in the init list of the Master list object (dat)"))
+    }
+  } else {
+    out <- dat[["init"]][[item]]
   }
-
-  out <- dat[["init"]][[item]]
 
   return(out)
 }

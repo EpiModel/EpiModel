@@ -25,10 +25,18 @@ test_that("`dat` getters and setter", {
   dat <- set_attr(dat, "age", new_ages)
   expect_equal(dat$attr$age, new_ages)
 
+  dat <- set_attr(dat, "age2", new_ages)
+  expect_silent(dat <- set_attr(dat, "age2", rep(new_ages, 2),
+                                override.length.check = TRUE))
+  expect_length(get_attr(dat, "age2"), 2 * length(new_ages))
+
+
   expect_equal(get_attr(dat, "age"), new_ages)
   expect_equal(get_attr(dat, "age", c(1, 5)), new_ages[c(1, 5)])
   expect_equal(get_attr(dat, "age", new_ages > 0.5), new_ages[new_ages > 0.5])
 
+  expect_error(get_attr(dat, "age_absent"))
+  expect_null(get_attr(dat, "age_absent", override.null.error = TRUE))
   expect_error(get_attr(dat, "age", c(1, 1000)))
   expect_error(get_attr(dat, "age", c(TRUE, FALSE)))
 
@@ -56,24 +64,25 @@ test_that("`dat` getters and setter", {
   dat <- add_epi(dat, "i")
   expect_equal(dat$epi$i, rep(NA, dat$control$nsteps))
 
-  expect_error(set_epi_at(dat, "i", c(1, 4), 4))
+  expect_error(set_epi(dat, "i", c(1, 4), 4))
 
-  new_i <- runif(dat$control$nsteps)
+  dat <- set_epi(dat, "i", 150, 10)
+  expect_equal(dat$epi$i[150], 10)
 
-  dat <- set_epi(dat, "i", new_i)
-  expect_equal(dat$epi$i, new_i)
+  dat <- set_epi(dat, "s", 110, 10)
+  expect_equal(dat$epi$s[110], 10)
 
   expect_equal(get_epi(dat, "i", c(1, 100)), dat$epi$i[c(1, 100)])
   expect_equal(get_epi(dat, "i", dat$epi$i > 0.5), dat$epi$i[dat$epi$i > 0.5])
 
+  expect_error(get_epi(dat, "age_absent"))
+  expect_null(get_epi(dat, "age_absent", override.null.error = TRUE))
   expect_error(get_epi(dat, "i", c(1, 300)))
   expect_error(get_epi(dat, "i", c(TRUE, FALSE)))
 
   dat$control$nsteps <- 200
-  dat <- set_epi_at(dat, "i", 160, 8)
+  dat <- set_epi(dat, "i", 160, 8)
   expect_length(dat$epi$i, 200)
-
-  expect_silent(dat <- set_epi(dat, "s", rbinom(dat$control$nsteps, 1, 0.4)))
 
   expect_equal(get_epi_list(dat), dat$epi)
   expect_equal(get_epi_list(dat, c("i", "s")), dat$epi[c("i", "s")])
@@ -109,6 +118,10 @@ test_that("`dat` getters and setter", {
   expect_error(get_param(dat, "z"))
   expect_error(get_init(dat, "z"))
   expect_error(get_control(dat, "z"))
+
+  expect_null(get_param(dat, "z", override.null.error = TRUE))
+  expect_null(get_init(dat, "z", override.null.error = TRUE))
+  expect_null(get_control(dat, "z", override.null.error = TRUE))
 
   expect_equal(get_param_list(dat), dat$param)
   expect_equal(get_init_list(dat), dat$init)

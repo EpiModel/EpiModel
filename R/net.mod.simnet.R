@@ -46,15 +46,21 @@ sim_nets <- function(x, nw, nsteps, control) {
 #' @keywords netUtils internal
 #'
 resim_nets <- function(dat, at) {
+  #Variables
+  tergmLite <- get_control(dat, "tergmLite")
+  save.nwstats <- get_control(dat, "save.nwstats")
+  resimulate.network <- get_control(dat, "resimulate.network")
 
   # Edges Correction
   dat <- edges_correct(dat, at)
 
-  idsActive <- which(dat$attr$active == 1)
+  active <- get_attr(dat, "active")
+  idsActive <- which(active == 1)
   anyActive <- ifelse(length(idsActive) > 0, TRUE, FALSE)
   if (dat$param$groups == 2) {
-    groupids.1 <- which(dat$attr$group == 1)
-    groupids.2 <- which(dat$attr$group == 2)
+    group <- get_attr(dat, "group")
+    groupids.1 <- which(group == 1)
+    groupids.2 <- which(group == 2)
     nActiveG1 <- length(intersect(groupids.1, idsActive))
     nActiveG2 <- length(intersect(groupids.2, idsActive))
     anyActive <- ifelse(nActiveG1 > 0 & nActiveG2 > 0, TRUE, FALSE)
@@ -64,10 +70,10 @@ resim_nets <- function(dat, at) {
   nwparam <- get_nwparam(dat)
 
   # Full tergm/network Method
-  if (dat$control$tergmLite == FALSE) {
+  if (tergmLite == FALSE) {
 
     # Set up nwstats df
-    if (dat$control$save.nwstats == TRUE) {
+    if (save.nwstats == TRUE) {
       if (at == 2) {
         nwstats <- attributes(dat$nw[[1]])$stats
         dat$stats$nwstats <- as.data.frame(nwstats)
@@ -75,7 +81,7 @@ resim_nets <- function(dat, at) {
     }
 
     # Network simulation
-    if (anyActive > 0 & dat$control$resimulate.network == TRUE) {
+    if (anyActive > 0 & resimulate.network) {
       suppressWarnings(
         dat$nw[[1]] <- simulate(dat$nw[[1]],
                            formation = nwparam$formation,
@@ -90,7 +96,7 @@ resim_nets <- function(dat, at) {
                            control = dat$control$set.control.stergm))
 
       # Update nwstats df
-      if (dat$control$save.nwstats == TRUE) {
+      if (save.nwstats == TRUE) {
         dat$stats$nwstats <- rbind(dat$stats$nwstats,
                                    tail(attributes(dat$nw[[1]])$stats, 1)[,])
       }
@@ -98,7 +104,7 @@ resim_nets <- function(dat, at) {
   }
 
   # networkLite/tergmLite Method
-  if (dat$control$tergmLite == TRUE) {
+  if (tergmLite == TRUE) {
     dat <- tergmLite::updateModelTermInputs(dat)
     dat$el[[1]] <- tergmLite::simulate_network(p = dat$p[[1]],
                                                el = dat$el[[1]],
@@ -125,25 +131,28 @@ resim_nets <- function(dat, at) {
 #'
 edges_correct <- function(dat, at) {
 
-  if (dat$control$resimulate.network == TRUE) {
+  resimulate.network <- get_control(dat, "resimulate.network")
+  tergmLite <- get_control(dat, "tergmLite")
+  groups <- get_param(dat, "groups")
+  active <- get_attr(dat, "active")
 
-    if (dat$param$groups == 1) {
-      old.num <- dat$epi$num[at - 1]
-      new.num <- sum(dat$attr$active == 1)
+  if (resimulate.network == TRUE) {
+
+    if (groups == 1) {
+      index <- at-1
+      old.num <- get_epi(dat, "num", index)
+      new.num <- sum(active == 1)
       dat$nwparam[[1]]$coef.form[1] <- dat$nwparam[[1]]$coef.form[1] +
         log(old.num) -
         log(new.num)
     }
-    if (dat$param$groups == 2) {
-      if (dat$control$tergmLite == FALSE){
-        group <- idgroup(dat$nw[[1]])
-      } else {
-        group <- dat$attr$group
-      }
-      old.num.g1 <- dat$epi$num[at - 1]
-      old.num.g2 <- dat$epi$num.g2[at - 1]
-      new.num.g1 <- sum(dat$attr$active == 1 & group == 1)
-      new.num.g2 <- sum(dat$attr$active == 1 & group == 2)
+    if (groups == 2) {
+      index <- at-1
+      group <- get_attr(dat, "group")
+      old.num.g1 <- get_epi(dat, "num", index)
+      old.num.g2 <- get_epi(dat, "num.g2", index)
+      new.num.g1 <- sum(active == 1 & group == 1)
+      new.num.g2 <- sum(active == 1 & group == 2)
       dat$nwparam[[1]]$coef.form[1] <- dat$nwparam[[1]]$coef.form[1] +
         log(2 * old.num.g1 * old.num.g2 / (old.num.g1 + old.num.g2)) -
         log(2 * new.num.g1 * new.num.g2 / (new.num.g1 + new.num.g2))
