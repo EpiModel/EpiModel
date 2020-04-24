@@ -456,8 +456,9 @@ print.control.net <- function(x, ...) {
   if(is.null(x$module.order)) {
     cat("Dynamic Modules:", funToPrint)
   } else {
-    cat("Dynamic Modules:", intersect(x$module.order,
-                                      funToPrint))
+    order <- unlist(lapply(funToPrint, function(y) which(y == x$module.order)))
+    funToPrint <- funToPrint[order]
+    cat("Dynamic Modules:", funToPrint)
   }
 
   invisible()
