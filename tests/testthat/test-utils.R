@@ -70,7 +70,7 @@ test_that("delete_attr", {
   expect_equal(l2, l3)
 
   l4 <- list(a = 1:3, b = 5:20)
-  dat$attr <- l2
+  dat$attr <- l4
   expect_error(delete_attr(dat, 2:4))
   expect_error(delete_attr(dat, 1))
 
