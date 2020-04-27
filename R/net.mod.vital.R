@@ -126,12 +126,7 @@ arrivals.net <- function(dat, at) {
   }
 
   # Output ------------------------------------------------------------------
-  if (at == 2) {
-    dat <- set_epi(dat, "a.flow", 1, 0)
-    dat <- set_epi(dat, "a.flow", 2, nArrivals)
-  } else {
-    dat <- set_epi(dat, "a.flow", at, nArrivals)
-  }
+  dat <- set_epi(dat, "a.flow", at, nArrivals)
 
   return(dat)
 }

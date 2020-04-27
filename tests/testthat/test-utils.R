@@ -53,17 +53,28 @@ test_that("color_tea", {
   expect_true(length(unique(get.vertex.attribute.active(nd, "ndtvcol", at = 1))) == 3)
 })
 
-test_that("deleteAttr", {
+test_that("delete_attr", {
+  dat <- list()
 
-  l <- list(a = 1:5, b = 6:10)
-  expect_is(deleteAttr(l, 5), "list")
-  expect_true(length(unique(sapply(deleteAttr(l, 2:3), length))) == 1)
+  l1 <- list(a = 1:5, b = 6:10)
+  dat$attr <- l1
+  dat <- delete_attr(dat, 5)
+  expect_is(dat, "list")
 
-  l2 <- list(a = 1:3, b = 5:20)
-  expect_error(deleteAttr(l2, 2:4))
-  expect_error(deleteAttr(as.data.frame(l), 1))
+  dat <- delete_attr(dat, 2:3)
+  expect_true(length(unique(sapply(dat$attr, length))) == 1)
 
-  expect_equal(l, deleteAttr(l, NULL))
+  l2 <- dat
+  l3 <- delete_attr(dat, NULL)
+
+  expect_equal(l2, l3)
+
+  l4 <- list(a = 1:3, b = 5:20)
+  dat$attr <- l4
+  expect_error(delete_attr(dat, 2:4))
+  expect_error(delete_attr(dat, 1))
+
+
 
 })
 

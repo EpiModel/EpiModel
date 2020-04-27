@@ -54,7 +54,6 @@ initialize.net <- function(x, param, init, control, s) {
 
     # Standard attributes
     num <- network.size(nw)
-    dat$attr$active <- rep(1, num)
     dat <- set_attr(dat, "active", rep(1, num), override.length.check = TRUE)
     dat <- set_attr(dat, "entrTime", rep(1, num))
     dat <- set_attr(dat, "exitTime", rep(NA, num))
@@ -191,8 +190,8 @@ init_status.net <- function(dat) {
     }
     dat <- set_attr(dat, "status", status)
   } else {
-    #TODO: Where is status set before this? NULL if statonNW = TRUE
-    status <- get_attr(dat, "status")
+    status <- get.vertex.attribute(dat$nw[[1]], "status")
+    dat <- set_attr(dat, "status", status)
   }
 
 

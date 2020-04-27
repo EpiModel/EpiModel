@@ -100,6 +100,33 @@ deleteAttr <- function(attrList, ids) {
   return(attrList)
 }
 
+#' @title Delete Elements from Attribute List
+#'
+#' @description Deletes elements from the master attribute list.
+#'
+#' @param dat Master list object containing a sublist of attributes.
+#' @param ids ID numbers to delete from the list.
+#'
+#' @export
+#' @keywords internal
+delete_attr <- function(dat, ids) {
+  attrList <- dat$attr
+
+  if (class(attrList) != "list") {
+    stop("dat object does not contain a valid attribute list", call. = FALSE)
+  }
+  if (length(unique(sapply(attrList, length))) != 1) {
+    stop("attribute list must be rectangular (same number of obs per element)")
+  }
+
+  if (length(ids) > 0) {
+    attrList <- lapply(attrList, function(x) x[-ids])
+  }
+
+  dat$attr <- attrList
+  return(dat)
+}
+
 
 #' @title Obtain Transparent Colors
 #'

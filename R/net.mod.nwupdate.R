@@ -15,7 +15,7 @@ nwupdate.net <- function(dat, at) {
 
   groups <- get_param(dat, "groups")
   vital <- get_param(dat, "vital")
-  tL <- get_control(dat, "tergmLite")
+  tergmLite <- get_control(dat, "tergmLite")
   status <- get_attr(dat, "status")
   infTime <- get_attr(dat, "infTime")
   active <- get_attr(dat, "active")
@@ -23,7 +23,7 @@ nwupdate.net <- function(dat, at) {
 
   ## Vital Dynamics
 
-  if (vital) {
+  if (vital == TRUE) {
 
     ## Arrivals
     if (groups == 1) {
@@ -45,7 +45,7 @@ nwupdate.net <- function(dat, at) {
         stop("Attribute list of unequal length. Check arrivals.net module.\n",
              print(cbind(sapply(get_attr_list(dat), length))))
       }
-      if (tL == FALSE) {
+      if (tergmLite == FALSE) {
         dat$nw[[1]] <- add.vertices(dat$nw[[1]], nv = sum(nArrivals))
         dat$nw[[1]] <- activate.vertices(dat$nw[[1]], onset = at, terminus = Inf, v = newNodes)
         dat <- copy_datattr_to_nwattr(dat)
@@ -54,7 +54,7 @@ nwupdate.net <- function(dat, at) {
                                                  onset = at, terminus = Inf,
                                                  v = newNodes)
       }
-      if (tL == TRUE) {
+      if (tergmLite == TRUE) {
         dat$el[[1]] <- add_vertices(dat$el[[1]], nv = sum(nArrivals))
       }
     }
@@ -63,19 +63,19 @@ nwupdate.net <- function(dat, at) {
     ## Departures
     inactive <- which(active == 0 & exitTime == at)
     if (length(inactive) > 0) {
-      if (tL == FALSE) {
+      if (tergmLite == FALSE) {
         dat$nw[[1]] <- deactivate.vertices(dat$nw[[1]], onset = at, terminus = Inf,
                                            v = inactive, deactivate.edges = TRUE)
       }
-      if (tL == TRUE) {
-        dat$attr <- deleteAttr(dat$attr, inactive)
+      if (tergmLite == TRUE) {
+        dat <- delete_attr(dat, inactive)
         dat$el[[1]] <- delete_vertices(dat$el[[1]], inactive)
       }
     }
   }
 
   ## Infection
-  if (tL == FALSE) {
+  if (tergmLite == FALSE) {
     idsNewInf <- which(status == "i" & infTime == at)
     if (length(idsNewInf) > 0) {
       dat$nw[[1]] <- activate.vertex.attribute(dat$nw[[1]], prefix = "testatus",
@@ -85,7 +85,7 @@ nwupdate.net <- function(dat, at) {
   }
 
   ## Recovery
-  if (tL == FALSE) {
+  if (tergmLite == FALSE) {
     type <- get_control(dat, "type")
     if (type %in% c("SIS", "SIR")) {
       index <- at - 1

@@ -111,12 +111,7 @@ infection.net <- function(dat, at) {
   # Save transmission matrix
 
   if (nInf > 0) {
-    del <- del[!duplicated(del$sus), ]
-    if (at == 2) {
-      dat$stats$transmat <- del
-    } else {
-      dat$stats$transmat <- rbind(dat$stats$transmat, del)
-    }
+    dat <- set_transmat(dat, del, at)
   }
 
   ## Save incidence vector
@@ -253,12 +248,7 @@ infection.2g.net <- function(dat, at) {
 
   # Save transmission matrix
   if (totInf > 0) {
-    del <- del[!duplicated(del$sus), ]
-    if (at == 2) {
-      dat$stats$transmat <- del
-    } else {
-      dat$stats$transmat <- rbind(dat$stats$transmat, del)
-    }
+    dat <- set_transmat(dat, del, at)
   }
 
   ## Save incidence vector
@@ -278,8 +268,6 @@ infection.2g.net <- function(dat, at) {
 #'        edgelist (if tergmLite is used) and other initialization information
 #'        passed from \code{\link{netsim}}.
 #' @param at Current time step.
-#' @param network In case of models with multiple networks, the network to pull
-#'        the current edgelist from. Default of \code{1}.
 #'
 #' @details
 #' This internal function works within the parent \code{\link{infection.net}} function
@@ -303,16 +291,16 @@ infection.2g.net <- function(dat, at) {
 #' @export
 #' @keywords netMod internal
 #'
-discord_edgelist <- function(dat, at, network = 1) {
+discord_edgelist <- function(dat, at) {
 
   status <- get_attr(dat, "status")
   active <- get_attr(dat, "active")
   tergmLite <- get_control(dat, "tergmLite")
 
-  if (tergmLite) {
-    el <- dat$el[[network]]
+  if (tergmLite == TRUE) {
+    el <- dat$el[[1]]
   } else {
-    el <- get.dyads.active(dat$nw[[network]], at = at)
+    el <- get.dyads.active(dat$nw[[1]], at = at)
   }
 
   del <- NULL
@@ -336,4 +324,31 @@ discord_edgelist <- function(dat, at, network = 1) {
   }
 
   return(del)
+}
+
+#' @title Save Transmission Matrix
+#'
+#' @description This function appends the transmission matrix created during
+#'              \code{infection.net} and \code{infection.2g.net}.
+#'
+#' @param dat Master list object containing a \code{networkDynamic} object or
+#'        edgelist (if tergmLite is used) and other initialization information
+#'        passed from \code{\link{netsim}}.
+#' @param at Current time step.
+#' @param del Discordant edgelist created within \code{infection.net} and
+#'        \code{infection.2g.net}.
+#'
+#' @details
+#' This internal function works within the parent \code{\link{infection.net}} functions
+#' to save the transmission matrix created at time step \code{at} to the master list object
+#' \code{dat}.
+#' @export
+set_transmat <- function(dat, del, at) {
+  del <- del[!duplicated(del$sus), ]
+  if (at == 2) {
+    dat$stats$transmat <- del
+  } else {
+    dat$stats$transmat <- rbind(dat$stats$transmat, del)
+  }
+  return(dat)
 }
