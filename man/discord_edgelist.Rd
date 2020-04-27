@@ -4,7 +4,7 @@
 \alias{discord_edgelist}
 \title{Discordant Edgelist}
 \usage{
-discord_edgelist(dat, at)
+discord_edgelist(dat, at, network = 1)
 }
 \arguments{
 \item{dat}{Master list object containing a \code{networkDynamic} object or
@@ -12,6 +12,9 @@ edgelist (if tergmLite is used) and other initialization information
 passed from \code{\link{netsim}}.}
 
 \item{at}{Current time step.}
+
+\item{network}{In case of models with multiple networks, the network to pull
+the current edgelist from. Default of \code{1}.}
 }
 \value{
 This function returns a \code{data.frame} with the following columns:

@@ -60,7 +60,7 @@ infection.net <- function(dat, at) {
   if (nElig > 0 && nElig < nActive) {
 
     # Get discordant edgelist
-    del <- discord_edgelist(dat, at)
+    del <- discord_edgelist(dat, at, network = 1)
 
     # If some discordant edges, then proceed
     if (!(is.null(del))) {
@@ -186,7 +186,7 @@ infection.2g.net <- function(dat, at) {
   if (nElig > 0 && nElig < nActive) {
 
     # Get discordant edgelist
-    del <- discord_edgelist(dat, at)
+    del <- discord_edgelist(dat, at, network = 1)
 
     # If some discordant edges, then proceed
     if (!(is.null(del))) {
@@ -268,6 +268,8 @@ infection.2g.net <- function(dat, at) {
 #'        edgelist (if tergmLite is used) and other initialization information
 #'        passed from \code{\link{netsim}}.
 #' @param at Current time step.
+#' @param network In case of models with multiple networks, the network to pull
+#'        the current edgelist from. Default of \code{network = 1}.
 #'
 #' @details
 #' This internal function works within the parent \code{\link{infection.net}} function
@@ -291,16 +293,16 @@ infection.2g.net <- function(dat, at) {
 #' @export
 #' @keywords netMod internal
 #'
-discord_edgelist <- function(dat, at) {
+discord_edgelist <- function(dat, at, network = 1) {
 
   status <- get_attr(dat, "status")
   active <- get_attr(dat, "active")
   tergmLite <- get_control(dat, "tergmLite")
 
   if (tergmLite == TRUE) {
-    el <- dat$el[[1]]
+    el <- dat$el[[network]]
   } else {
-    el <- get.dyads.active(dat$nw[[1]], at = at)
+    el <- get.dyads.active(dat$nw[[network]], at = at)
   }
 
   del <- NULL
