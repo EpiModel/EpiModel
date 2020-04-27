@@ -1,34 +1,5 @@
 # Exported Functions ------------------------------------------------------
 
-#' @title Vertex Attributes for Two-Group Network
-#'
-#' @description Outputs static vertex attributes for a two-group network for one
-#'              specified group.
-#'
-#' @param nw An object of class \code{network} or \code{networkDynamic}.
-#' @param group group number.
-#' @param val Nodal attribute to return.
-#'
-#' @export
-#' @keywords netUtils internal
-#'
-#' @examples
-#' nw <- network.initialize(n = 10)
-#' nw <- set.vertex.attribute(nw, "group", rep(1:2, each = 5))
-#' grpvals(nw, group = 1, "group")
-#'
-grpvals <- function(nw, group, val) {
-  flag <- "group" %in% names(nw$val[[1]])
-  if (flag == FALSE) {
-    stop("nw must be a two-group network")
-  }
-  if (missing(group)) {
-    stop("Specify group=1 or group=2", call. = FALSE)
-  }
-  nw %s% groupids(nw, group) %v% val
-}
-
-
 #' @title Check Degree Distribution for Bipartite Target Statistics
 #'
 #' @description Checks for consistency in the implied network statistics
