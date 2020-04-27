@@ -11,8 +11,7 @@ r_packages:
   - nlme
 
 r_github_packages:
-  statnet/tergmLite@EpiModel2
-
+  statnet/tergmLite@delete_vertices
 addons:
   apt:
     packages:
