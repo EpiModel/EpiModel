@@ -427,9 +427,13 @@ print.control.icm <- function(x, ...) {
 print.control.net <- function(x, ...) {
 
   pToPrint <- which(!grepl(".FUN", names(x)) &
+                      names(x) != "f.args" &
+                      names(x) != "f.names" &
                       names(x) != "set.control.stergm" &
                       names(x) != "set.control.ergm" &
                       !(names(x) %in% c("bi.mods", "user.mods")))
+
+
 
   cat("Network Model Control Settings")
   cat("\n===============================\n")
@@ -445,5 +449,18 @@ print.control.net <- function(x, ...) {
       cat(names(x)[i], "=", x[[i]], fill = 80)
     }
   }
+
+  funToPrint <- names(x)[grep(".FUN", names(x))]
+  funToPrint <- funToPrint[-which(funToPrint %in% c("initialize.FUN",
+                                                    "verbose.FUN"))]
+  if(is.null(x$module.order)) {
+    cat("Dynamic Modules:", funToPrint)
+  } else {
+    order <- unlist(lapply(funToPrint, function(y) which(y == x$module.order)))
+    funToPrint.mo <- funToPrint[order]
+    funtoPrint.nmo <- funToPrint[-which(funToPrint %in% x$module.order)]
+    cat("Dynamic Modules:", funToPrint)
+  }
+
   invisible()
 }

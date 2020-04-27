@@ -48,15 +48,16 @@ initialize.net <- function(x, param, init, control, s) {
     # Network Parameters ------------------------------------------------------
     dat$nwparam <- list(x[-which(names(x) == "fit")])
     groups <- length(unique(get.vertex.attribute(nw, "group")))
-    dat$param$groups <- groups
+    dat <- set_param(dat, "groups", groups)
 
     # Nodal Attributes --------------------------------------------------------
 
     # Standard attributes
     num <- network.size(nw)
     dat$attr$active <- rep(1, num)
-    dat$attr$entrTime <- rep(1, num)
-    dat$attr$exitTime <- rep(NA, num)
+    dat <- set_attr(dat, "active", rep(1, num), override.length.check = TRUE)
+    dat <- set_attr(dat, "entrTime", rep(1, num))
+    dat <- set_attr(dat, "exitTime", rep(NA, num))
 
     ## Pull attr on nw to dat$attr
     dat <- copy_nwattr_to_datattr(dat)
@@ -81,7 +82,7 @@ initialize.net <- function(x, param, init, control, s) {
     dat <- do.call(control[["prevalence.FUN"]],list(dat, at = 1))
 
 
-  # Restart/Reinit Simulations ----------------------------------------------
+    # Restart/Reinit Simulations ----------------------------------------------
   } else if (control$start > 1) {
     dat <- list()
 
@@ -136,26 +137,38 @@ initialize.net <- function(x, param, init, control, s) {
 #'
 init_status.net <- function(dat) {
 
+  type <- get_control(dat, "type", override.null.error = TRUE)
+  nsteps <- get_control(dat, "nsteps")
+  tergmLite <- get_control(dat, "tergmLite")
+  vital <- get_param(dat, "vital")
+  groups <- get_param(dat, "groups")
+  status.vector <- get_init(dat, "status.vector", override.null.error = TRUE)
+  if (type %in% c("SIS", "SIR")){
+    rec.rate <- get_param(dat, "rec.rate")
+  }
+  if (vital == TRUE) {
+    di.rate <- get_param(dat, "di.rate")
+  }
+
   # Variables ---------------------------------------------------------------
-  i.num <- dat$init$i.num
-  i.num.g2 <- dat$init$i.num.g2
-  r.num <- dat$init$r.num
-  r.num.g2 <- dat$init$r.num.g2
+  i.num <- get_init(dat, "i.num", override.null.error = TRUE)
+  if (type  == "SIR" & is.null(status.vector)){
+    r.num <- get_init(dat, "r.num")
+  }
 
-  status.vector <- dat$init$status.vector
-  num <- sum(dat$attr$active == 1)
-  #TODO: check that this works for tergmLite
-  statOnNw <- "status" %in% dat$temp$nwterms
+  num <- sum(get_attr(dat, "active") == 1)
 
-  groups <- dat$param$groups
   if (groups == 2) {
-    group <- dat$attr$group
+    group <- get_attr(dat, "group")
+    i.num.g2 <- get_init(dat, "i.num.g2")
+    if (type  == "SIR" & is.null(status.vector)) {
+      r.num.g2 <- get_init(dat, "r.num.g2", override.null.error = TRUE)
+    }
   } else {
     group <- rep(1, num)
   }
 
-  type <- dat$control$type
-
+  statOnNw <- "status" %in% dat$temp$nwterms
 
   # Status ------------------------------------------------------------------
 
@@ -176,22 +189,23 @@ init_status.net <- function(dat) {
         }
       }
     }
-    dat$attr$status <- status
+    dat <- set_attr(dat, "status", status)
   } else {
-    status <- dat$attr$status
+    status <- get.vertex.attribute(dat$nw[[1]], "status")
+    dat <- set_attr(dat, "status", status)
   }
 
 
   ## Set up TEA status
-  if (dat$control$tergmLite == FALSE) {
+  if (tergmLite == FALSE) {
     if (statOnNw == FALSE) {
       dat$nw[[1]] <- set.vertex.attribute(dat$nw[[1]], "status", status)
     }
     dat$nw[[1]] <- activate.vertex.attribute(dat$nw[[1]],
-                                        prefix = "testatus",
-                                        value = status,
-                                        onset = 1,
-                                        terminus = Inf)
+                                             prefix = "testatus",
+                                             value = status,
+                                             onset = 1,
+                                             terminus = Inf)
   }
 
 
@@ -200,31 +214,32 @@ init_status.net <- function(dat) {
   if(!is.null(type)){
     idsInf <- which(status == "i")
     infTime <- rep(NA, length(status))
+    infTime.vector <- get_init(dat, "infTime.vector", override.null.error = TRUE)
 
-    if (!is.null(dat$init$infTime.vector)) {
-      infTime <- dat$init$infTime.vector
+    if (!is.null(infTime.vector)) {
+      infTime <- infTime.vector
     } else {
       # If vital dynamics, infTime is a geometric draw over the duration of infection
-      if (dat$param$vital == TRUE && dat$param$di.rate > 0) {
-        if (dat$control$type == "SI") {
-          infTime[idsInf] <- -rgeom(n = length(idsInf), prob = dat$param$di.rate) + 2
+      if (vital == TRUE && di.rate > 0) {
+        if (type == "SI") {
+          infTime[idsInf] <- -rgeom(n = length(idsInf), prob = di.rate) + 2
         } else {
           infTime[idsInf] <- -rgeom(n = length(idsInf),
-                                    prob = dat$param$di.rate +
-                                      (1 - dat$param$di.rate)*mean(dat$param$rec.rate)) + 2
+                                    prob = di.rate +
+                                      (1 - di.rate)*mean(rec.rate)) + 2
         }
       } else {
-        if (dat$control$type == "SI" || mean(dat$param$rec.rate) == 0) {
+        if (type == "SI" || mean(rec.rate) == 0) {
           # if no recovery, infTime a uniform draw over the number of sim time steps
-          infTime[idsInf] <- ssample(1:(-dat$control$nsteps + 2),
+          infTime[idsInf] <- ssample(1:(-nsteps + 2),
                                      length(idsInf), replace = TRUE)
         } else {
-          infTime[idsInf] <- -rgeom(n = length(idsInf), prob = mean(dat$param$rec.rate)) + 2
+          infTime[idsInf] <- -rgeom(n = length(idsInf), prob = mean(rec.rate)) + 2
         }
       }
     }
 
-    dat$attr$infTime <- infTime
+    dat <- set_attr(dat, "infTime", infTime)
   }
 
   return(dat)
