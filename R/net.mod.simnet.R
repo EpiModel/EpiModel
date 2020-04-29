@@ -83,7 +83,8 @@ resim_nets <- function(dat, at) {
     # Network simulation
     if (anyActive > 0 & resimulate.network) {
       suppressWarnings(
-        dat$nw[[1]] <- simulate(dat$nw[[1]],
+        dat <- set_network(dat,
+                           simulate(dat$nw[[1]],
                            formation = nwparam$formation,
                            dissolution = nwparam$coef.diss$dissolution,
                            coef.form = nwparam$coef.form,
@@ -93,7 +94,7 @@ resim_nets <- function(dat, at) {
                            time.slices = 1,
                            time.offset = 0,
                            monitor = dat$control$nwstats.formula,
-                           control = dat$control$set.control.stergm))
+                           control = dat$control$set.control.stergm), 1))
 
       # Update nwstats df
       if (save.nwstats == TRUE) {
@@ -106,11 +107,11 @@ resim_nets <- function(dat, at) {
   # networkLite/tergmLite Method
   if (tergmLite == TRUE) {
     dat <- tergmLite::updateModelTermInputs(dat)
-    dat$el[[1]] <- tergmLite::simulate_network(p = dat$p[[1]],
+    dat <- set_network(dat, tergmLite::simulate_network(p = dat$p[[1]],
                                                el = dat$el[[1]],
                                                coef.form = nwparam$coef.form,
                                                coef.diss = nwparam$coef.diss$coef.adj,
-                                               save.changes = TRUE)
+                                               save.changes = TRUE), 1)
   }
 
   return(dat)
