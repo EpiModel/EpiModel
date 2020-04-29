@@ -43,7 +43,7 @@ initialize.net <- function(x, param, init, control, s) {
       nw <- sim_nets(x, nw, nsteps = control$nsteps, control)
     }
     nw <- activate.vertices(nw, onset = 1, terminus = Inf)
-    dat <- set_network(dat, nw, 1)
+    dat$nw[[1]] <- nw
 
     # Network Parameters ------------------------------------------------------
     dat$nwparam <- list(x[-which(names(x) == "fit")])
