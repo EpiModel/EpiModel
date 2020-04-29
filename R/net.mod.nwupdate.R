@@ -46,16 +46,18 @@ nwupdate.net <- function(dat, at) {
              print(cbind(sapply(get_attr_list(dat), length))))
       }
       if (tergmLite == FALSE) {
-        dat$nw[[1]] <- add.vertices(dat$nw[[1]], nv = sum(nArrivals))
-        dat$nw[[1]] <- activate.vertices(dat$nw[[1]], onset = at, terminus = Inf, v = newNodes)
+        nw <- add.vertices(dat$nw[[1]], nv = sum(nArrivals))
+        dat <- set_network(dat, nw, 1)
+        dat <- set_network(dat, activate.vertices(dat$nw[[1]], onset = at,
+                                                  terminus = Inf, v = newNodes), 1)
         dat <- copy_datattr_to_nwattr(dat)
-        dat$nw[[1]] <- activate.vertex.attribute(dat$nw[[1]], prefix = "testatus",
+        dat <- set_network(dat, activate.vertex.attribute(dat$nw[[1]], prefix = "testatus",
                                                  value = status[newNodes],
                                                  onset = at, terminus = Inf,
-                                                 v = newNodes)
+                                                 v = newNodes), 1)
       }
       if (tergmLite == TRUE) {
-        dat$el[[1]] <- add_vertices(dat$el[[1]], nv = sum(nArrivals))
+        dat <- set_network(dat, add_vertices(dat$el[[1]], nv = sum(nArrivals)), 1)
       }
     }
 
@@ -64,12 +66,13 @@ nwupdate.net <- function(dat, at) {
     inactive <- which(active == 0 & exitTime == at)
     if (length(inactive) > 0) {
       if (tergmLite == FALSE) {
-        dat$nw[[1]] <- deactivate.vertices(dat$nw[[1]], onset = at, terminus = Inf,
-                                           v = inactive, deactivate.edges = TRUE)
+        dat <- set_network(dat, deactivate.vertices(dat$nw[[1]], onset = at, terminus = Inf,
+                                           v = inactive, deactivate.edges = TRUE), 1)
       }
       if (tergmLite == TRUE) {
         dat <- delete_attr(dat, inactive)
-        dat$el[[1]] <- delete_vertices(dat$el[[1]], inactive)
+        el <- delete_vertices(dat$el[[1]], inactive)
+        dat <- set_network(dat, el, 1)
       }
     }
   }
@@ -78,9 +81,9 @@ nwupdate.net <- function(dat, at) {
   if (tergmLite == FALSE) {
     idsNewInf <- which(status == "i" & infTime == at)
     if (length(idsNewInf) > 0) {
-      dat$nw[[1]] <- activate.vertex.attribute(dat$nw[[1]], prefix = "testatus",
+      dat <- set_network(dat, activate.vertex.attribute(dat$nw[[1]], prefix = "testatus",
                                                value = "i", onset = at,
-                                               terminus = Inf, v = idsNewInf)
+                                               terminus = Inf, v = idsNewInf), 1)
     }
   }
 
@@ -95,9 +98,9 @@ nwupdate.net <- function(dat, at) {
       nw.status <- which(get.vertex.attribute(dat$nw[[1]], "status") == recovState)
       idsRecov <- setdiff(attr.status, nw.status)
       if (length(idsRecov) > 0) {
-        dat$nw[[1]] <- activate.vertex.attribute(dat$nw[[1]], prefix = "testatus",
+        dat <- set_network(dat, activate.vertex.attribute(dat$nw[[1]], prefix = "testatus",
                                                  value = recovState, onset = at,
-                                                 terminus = Inf, v = idsRecov)
+                                                 terminus = Inf, v = idsRecov), 1)
       }
     }
   }
