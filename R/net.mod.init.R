@@ -43,7 +43,7 @@ initialize.net <- function(x, param, init, control, s) {
       nw <- sim_nets(x, nw, nsteps = control$nsteps, control)
     }
     nw <- activate.vertices(nw, onset = 1, terminus = Inf)
-    dat$nw[[1]] <- nw
+    dat <- set_network(dat, nw, 1)
 
     # Network Parameters ------------------------------------------------------
     dat$nwparam <- list(x[-which(names(x) == "fit")])
@@ -198,13 +198,15 @@ init_status.net <- function(dat) {
   ## Set up TEA status
   if (tergmLite == FALSE) {
     if (statOnNw == FALSE) {
-      dat$nw[[1]] <- set.vertex.attribute(dat$nw[[1]], "status", status)
+      nw <- set.vertex.attribute(dat$nw[[1]], "status", status)
+      dat <- set_network(dat, nw, 1)
     }
-    dat$nw[[1]] <- activate.vertex.attribute(dat$nw[[1]],
-                                             prefix = "testatus",
-                                             value = status,
-                                             onset = 1,
-                                             terminus = Inf)
+    nw <- activate.vertex.attribute(dat$nw[[1]],
+                                    prefix = "testatus",
+                                    value = status,
+                                    onset = 1,
+                                    terminus = Inf)
+    dat <- set_network(dat, nw, 1)
   }
 
 
