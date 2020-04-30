@@ -52,11 +52,10 @@ test_that("New network models vignette example", {
     # Variables ---------------------------------------------------------------
     growth.rate <- get_param(dat, "growth.rate")
     exptPopSize <- get_epi(dat, "num", 1)*(1 + growth.rate*at)
-    n <- network.size(dat$nw[[1]])
-    tea.status <- get_control(dat, "tea.status")
-
-    active <- get_attr(dat, "active")
+    n <- sum(get_attr(dat, "active") == 1)
+        active <- get_attr(dat, "active")
     numNeeded <- exptPopSize - sum(active == 1)
+
     if (numNeeded > 0) {
       nArrivals <- rpois(1, numNeeded)
     } else {
@@ -64,7 +63,7 @@ test_that("New network models vignette example", {
     }
 
     # Output ------------------------------------------------------------------
-    dat <- set_ep(dat, "a.flow", at, nArrivals)
+    dat <- set_epi(dat, "a.flow", at, nArrivals)
 
     return(dat)
   }
@@ -80,18 +79,46 @@ test_that("New network models vignette example", {
   ## EpiModel
   param <- param.net(inf.prob = 0.35, growth.rate = 0.00083, life.expt = 70)
   init <- init.net(i.num = 10)
-  control <- control.net(type = "SI", nsims = 1, nsteps = 10,
+  control <- control.net(type = NULL, nsims = 1, nsteps = 10,
+                         resim_net.FUN = resim_nets, infection.FUN = infection.net,
+                         recovery.FUN = recovery.net, prevalence.FUN = prevalence.net,
                          departures.FUN = dfunc, arrivals.FUN = afunc, aging.FUN = aging,
-                         depend = TRUE, save.network = FALSE, verbose = FALSE)
-  mod <- netsim(est, param, init, control)
-  expect_is(mod, "netsim")
+                         tergmLite = FALSE, save.network = FALSE, verbose = FALSE)
+  mod1 <- netsim(est, param, init, control)
+  expect_is(mod1, "netsim")
 
   ## Test module reordering
-  control <- control.net(type = "SI", nsims = 1, nsteps = 10,
+  control <- control.net(type = NULL, nsims = 1, nsteps = 10,
+                         resim_net.FUN = resim_nets, infection.FUN = infection.net,
+                         recovery.FUN = recovery.net, prevalence.FUN = prevalence.net,
                          departures.FUN = dfunc, arrivals.FUN = afunc, aging.FUN = aging,
-                         module.order = c("aging.FUN", "arrivals.FUN", "departures.FUN"),
-                         depend = TRUE, save.network = FALSE, verbose = FALSE)
-  mod <- netsim(est, param, init, control)
-  expect_is(mod, "netsim")
+                         module.order = c("aging.FUN", "arrivals.FUN", "departures.FUN",
+                                          "resim_net.FUN", "infection.FUN", "recovery.FUN",
+                                          "prevalence.FUN"),
+                         tergmLite = FALSE, save.network = FALSE, verbose = FALSE)
+  mod2 <- netsim(est, param, init, control)
+  expect_is(mod2, "netsim")
+
+  param <- param.net(inf.prob = 0.35, growth.rate = 0.00083, life.expt = 70)
+  init <- init.net(i.num = 10)
+  control <- control.net(type = NULL, nsims = 1, nsteps = 10,
+                         resim_net.FUN = resim_nets, infection.FUN = infection.net,
+                         recovery.FUN = recovery.net, prevalence.FUN = prevalence.net,
+                         departures.FUN = dfunc, arrivals.FUN = afunc, aging.FUN = aging,
+                         tergmLite = TRUE, save.network = FALSE, verbose = FALSE)
+  mod3 <- netsim(est, param, init, control)
+  expect_is(mod3, "netsim")
+
+  ## Test module reordering
+  control <- control.net(type = NULL, nsims = 1, nsteps = 10,
+                         resim_net.FUN = resim_nets, infection.FUN = infection.net,
+                         recovery.FUN = recovery.net, prevalence.FUN = prevalence.net,
+                         departures.FUN = dfunc, arrivals.FUN = afunc, aging.FUN = aging,
+                         module.order = c("aging.FUN", "arrivals.FUN", "departures.FUN",
+                                          "resim_net.FUN", "infection.FUN", "recovery.FUN",
+                                          "prevalence.FUN"),
+                         tergmLite = TRUE, save.network = FALSE, verbose = FALSE)
+  mod4 <- netsim(est, param, init, control)
+  expect_is(mod4, "netsim")
 
 })
