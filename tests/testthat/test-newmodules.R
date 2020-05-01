@@ -5,15 +5,15 @@ test_that("New network models vignette example", {
   ## New Aging Module
   aging <- function(dat, at) {
 
-    if (at == 2) {
+    age <- get_attr(dat, "age", override.null.error = TRUE)
+    if (is.null(age)) {
       active <- get_attr(dat, "active")
       n <- sum(active == 1)
       age <- sample(18:49, n, replace = TRUE)
-      dat <- set_attr(dat, "age", age)
     } else {
       age <- get_attr(dat, "age") + 1/12
-      dat <- set_attr(dat, "age", age)
     }
+    dat <- set_attr(dat, "age", age)
 
     return(dat)
   }
