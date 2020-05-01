@@ -2,7 +2,7 @@ context("transmat functions")
 
 # test that transmat output has right class
 require(EpiModel)
-nw <- network.initialize(n = 100, directed = FALSE)
+nw <- network_initialize(n = 100, directed = FALSE)
 formation <- ~edges
 target.stats <- 50
 coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 10)
@@ -198,7 +198,7 @@ test_that("plot.transmat", {
 
 test_that("'tergmLite == TRUE' correctly errors", {
   skip_on_cran()
-  nw <- network.initialize(n = 100, directed = FALSE)
+  nw <- network_initialize(n = 100, directed = FALSE)
   formation <- ~edges
   target.stats <- 50
   coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 10)

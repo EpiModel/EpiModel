@@ -92,7 +92,7 @@ nwupdate.net <- function(dat, at) {
       nCurr <- get_epi(dat, "num", index)
       recovState <- ifelse(type == "SIR", "r", "s")
       attr.status <- which(status == recovState)
-      nw.status <- which(get.vertex.attribute(dat$nw[[1]], "status") == recovState)
+      nw.status <- which(get_vertex_attribute(dat$nw[[1]], "status") == recovState)
       idsRecov <- setdiff(attr.status, nw.status)
       if (length(idsRecov) > 0) {
         dat$nw[[1]] <- activate.vertex.attribute(dat$nw[[1]], prefix = "testatus",

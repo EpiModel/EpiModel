@@ -38,8 +38,8 @@ specified with the \code{keep.tedgelist} parameter directly in \code{\link{netdx
 }
 \examples{
 # Set up network and TERGM formiula
-nw <- network.initialize(n = 100, directed = FALSE)
-nw <- set.vertex.attribute(nw, "group", rep(1:2, each = 50))
+nw <- network_initialize(n = 100, directed = FALSE)
+nw <- set_vertex_attribute(nw, "group", rep(1:2, each = 50))
 formation <- ~edges
 target.stats <- 50
 coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)

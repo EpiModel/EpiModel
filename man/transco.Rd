@@ -49,7 +49,7 @@ axis(1, seq(0, 250, 50), cex.axis = 0.9,
 abline(h = seq(100, 500, 100), col = cols[2])
 
 ## Example 2: Network plot with multiple length alpha vector
-net <- network.initialize(500, directed = FALSE)
+net <- network_initialize(500, directed = FALSE)
 vcol <- transco("firebrick",
                 alpha = seq(0, 1, length = network.size(net)))
 par(mar = c(0, 0, 0, 0))

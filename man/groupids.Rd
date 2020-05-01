@@ -15,8 +15,8 @@ groupids(nw, group)
 Outputs ID numbers for a group number for a two-group network.
 }
 \examples{
-nw <- network.initialize(10)
-nw <- set.vertex.attribute(nw, "group", rep(c(1,2), each = 5))
+nw <- network_initialize(10)
+nw <- set_vertex_attribute(nw, "group", rep(c(1,2), each = 5))
 groupids(nw, group = 2)
 
 }

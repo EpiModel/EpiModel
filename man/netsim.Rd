@@ -70,8 +70,8 @@ is listed in \code{\link{modules.net}}.
 \dontrun{
 ## Example 1: Independent SI Model
 # Network model estimation
-nw <- network.initialize(n = 100, directed = FALSE)
-nw <- set.vertex.attribute(nw, "group", rep(c(1,2), each = 50))
+nw <- network_initialize(n = 100, directed = FALSE)
+nw <- set_vertex_attribute(nw, "group", rep(c(1,2), each = 50))
 formation <- ~edges
 target.stats <- 50
 coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)

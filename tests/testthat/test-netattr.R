@@ -1,8 +1,8 @@
 context("Network attributes with arrivals")
 
 test_that("Updating attributes in open populations", {
-  nw <- network.initialize(n = 50, directed = FALSE)
-  nw <- set.vertex.attribute(nw, attrname = "group",
+  nw <- network_initialize(n = 50, directed = FALSE)
+  nw <- set_vertex_attribute(nw, attrname = "group",
                              value = rbinom(50, 1, 0.5)+1) #FLAG
 
   formation <- ~edges + nodefactor("group")
@@ -30,8 +30,8 @@ test_that("Updating attributes in open populations", {
 
 test_that("SIR model with epi.by parameter", {
   skip_on_cran()
-  nw <- network.initialize(n = 50, directed = FALSE)
-  nw <- set.vertex.attribute(nw, attrname = "race", rep(0:1, each = 25))
+  nw <- network_initialize(n = 50, directed = FALSE)
+  nw <- set_vertex_attribute(nw, attrname = "race", rep(0:1, each = 25))
   formation <- ~edges + nodefactor("race")
   target.stats <- c(25, 25)
   coef.diss <- dissolution_coefs(dissolution = ~offset(edges), 50)
@@ -49,13 +49,13 @@ test_that("SIR model with epi.by parameter", {
 
 test_that("Serosorting model in open population", {
   n <- 100
-  nw <- network.initialize(n, directed = FALSE)
+  nw <- network_initialize(n, directed = FALSE)
 
   prev <- 0.2
   infIds <- sample(1:n, n*prev)
-  nw <- set.vertex.attribute(nw, "status", "s")
-  nw <- set.vertex.attribute(nw, "status", "i", infIds)
-  nw <- set.vertex.attribute(nw, "race", rbinom(n, 1, 0.5))
+  nw <- set_vertex_attribute(nw, "status", "s")
+  nw <- set_vertex_attribute(nw, "status", "i", infIds)
+  nw <- set_vertex_attribute(nw, "race", rbinom(n, 1, 0.5))
 
   formation <- ~edges + nodefactor("status", levels = -1) +
                 nodematch("status") + nodematch("race")
@@ -81,8 +81,8 @@ test_that("Serosorting model in open population", {
 
 test_that("Save attributes to output", {
   skip_on_cran()
-  nw <- network.initialize(n = 50, directed = FALSE)
-  nw <- set.vertex.attribute(nw, "group", rep(1:2, each = 25))
+  nw <- network_initialize(n = 50, directed = FALSE)
+  nw <- set_vertex_attribute(nw, "group", rep(1:2, each = 25))
   formation <- ~edges + nodematch("group")
   target.stats <- c(25, 0)
   coef.diss <- dissolution_coefs(dissolution = ~offset(edges), 38, d.rate = 0.01)

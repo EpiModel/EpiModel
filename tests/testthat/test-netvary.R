@@ -1,7 +1,7 @@
 context("Time Varying Network Parameters")
 
 test_that("time varying parameters for one-mode", {
-  nw <- network.initialize(n = 100, directed = FALSE)
+  nw <- network_initialize(n = 100, directed = FALSE)
   formation <- ~edges
   target.stats <- 50
   coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration  = 20)
@@ -29,8 +29,8 @@ test_that("time varying parameters for one-mode", {
 
 
 test_that("time varying parameters for two-group models", {
-  nw <- network.initialize(n = 100, directed = FALSE)
-  nw <- set.vertex.attribute(nw, "group", rep(c(1,2), each = 50))
+  nw <- network_initialize(n = 100, directed = FALSE)
+  nw <- set_vertex_attribute(nw, "group", rep(c(1,2), each = 50))
   formation <- ~edges
   target.stats <- 50
   coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration  = 20)

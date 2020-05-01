@@ -2,7 +2,7 @@ context("Network diagnostics")
 
 test_that("Edges only models", {
   num <- 50
-  nw <- network.initialize(num, directed = FALSE)
+  nw <- network_initialize(num, directed = FALSE)
   formation <- ~edges
   target.stats <- 15
   coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
@@ -61,7 +61,7 @@ test_that("Formation plot color vector length", {
   mean.degree <- ((0*0.10) + (1*0.41) + (2*0.25) + (3*0.22))
   expected.concurrent <- n*0.49
   expected.edges <- (mean.degree)*(n/2)
-  nw <- network.initialize(n, directed = FALSE)
+  nw <- network_initialize(n, directed = FALSE)
   formation <- ~edges + concurrent + degrange(from = 4)
   target.stats <- c(expected.edges, expected.concurrent, 0)
   coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 40, d.rate = 0.01)
@@ -76,7 +76,7 @@ test_that("Formation plot color vector length", {
 })
 
 test_that("Netdx duration and dissolution plots error when skip.dissolution = TRUE", {
-  nw <- network.initialize(100, directed = FALSE)
+  nw <- network_initialize(100, directed = FALSE)
   formation <- ~edges
   target.stats <- 50
   coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 2)
@@ -91,8 +91,8 @@ test_that("Netdx duration and dissolution plots error when skip.dissolution = TR
 
 test_that("Offset terms", {
   n <- 50
-  nw <- network.initialize(n, directed = FALSE)
-  nw <- set.vertex.attribute(nw, "loc", rep(0:1, each = n/2))
+  nw <- network_initialize(n, directed = FALSE)
+  nw <- set_vertex_attribute(nw, "loc", rep(0:1, each = n/2))
   dissolution <- ~offset(edges)
   duration <- 40
   coef.diss <- dissolution_coefs(dissolution, duration)
@@ -129,8 +129,8 @@ test_that("Offset terms", {
 
 test_that("Faux offset term", {
   n <- 50
-  nw <- network.initialize(n, directed = FALSE)
-  nw <- set.vertex.attribute(nw, "loc", rep(0:1, each = n/2))
+  nw <- network_initialize(n, directed = FALSE)
+  nw <- set_vertex_attribute(nw, "loc", rep(0:1, each = n/2))
   coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 40)
   formation <- ~edges + nodemix("loc", base = c(1, 3))
   target.stats <- c(15, 0)
@@ -151,11 +151,11 @@ test_that("Faux offset term", {
 
 test_that("More complicated faux offset term", {
   skip_on_cran()
-  nw <- network.initialize(1000, directed = FALSE)
-  nw <- set.vertex.attribute(nw, "sexor",
+  nw <- network_initialize(1000, directed = FALSE)
+  nw <- set_vertex_attribute(nw, "sexor",
                              sample(c(rep(1,20), rep(2,460),
                                       rep(3,20), rep(4,500))))
-  nw <- set.vertex.attribute(nw, "region", sample(rep(1:5,200)))
+  nw <- set_vertex_attribute(nw, "region", sample(rep(1:5,200)))
   fit <- netest(nw,
                 formation = ~edges +
                              nodemix("sexor", base = 1) +
@@ -168,7 +168,7 @@ test_that("More complicated faux offset term", {
 
 
 test_that("Static diagnostic simulations", {
-  nw <- network.initialize(100, directed = FALSE)
+  nw <- network_initialize(100, directed = FALSE)
   formation <- ~edges + concurrent
   target.stats <- c(50, 20)
   coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 10)
@@ -196,7 +196,7 @@ test_that("Static diagnostic simulations", {
 test_that("Parallel methods", {
   skip_on_cran()
   num <- 50
-  nw <- network.initialize(num, directed = FALSE)
+  nw <- network_initialize(num, directed = FALSE)
   formation <- ~edges
   target.stats <- 15
   coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
@@ -207,7 +207,7 @@ test_that("Parallel methods", {
 })
 
 test_that("error checking", {
-  nw <- network.initialize(25, directed = FALSE)
+  nw <- network_initialize(25, directed = FALSE)
   est <- netest(nw, formation = ~edges, target.stats = 25,
                 coef.diss = dissolution_coefs(~offset(edges), 10, 0),
                 edapprox = TRUE, verbose = FALSE)
@@ -216,7 +216,7 @@ test_that("error checking", {
 })
 
 test_that("Cross sectional ergm dynamic error check", {
-  nw <- network.initialize(100, directed = FALSE)
+  nw <- network_initialize(100, directed = FALSE)
   formation <- ~edges
   target.stats <- 50
   coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 1)
@@ -227,7 +227,7 @@ test_that("Cross sectional ergm dynamic error check", {
 
 test_that("Full STERGM", {
   skip_on_cran()
-  nw <- network.initialize(n = 50, directed = FALSE)
+  nw <- network_initialize(n = 50, directed = FALSE)
   est <- netest(nw, formation = ~edges, target.stats = 25,
                 coef.diss = dissolution_coefs(~offset(edges), 10, 0),
                 edapprox = FALSE, verbose = FALSE)

@@ -30,8 +30,8 @@
 #'
 #' @examples
 #' # Set up network and TERGM formiula
-#' nw <- network.initialize(n = 100, directed = FALSE)
-#' nw <- set.vertex.attribute(nw, "group", rep(1:2, each = 50))
+#' nw <- network_initialize(n = 100, directed = FALSE)
+#' nw <- set_vertex_attribute(nw, "group", rep(1:2, each = 50))
 #' formation <- ~edges
 #' target.stats <- 50
 #' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
@@ -144,8 +144,8 @@ get_network <- function(x, sim = 1, network = 1, collapse = FALSE, at) {
 #'
 #' @examples
 #' ## Simulate SI epidemic on two-group Bernoulli random graph
-#' nw <- network.initialize(n = 100, directed = FALSE)
-#' nw <- set.vertex.attribute(nw, "group", rep(c(1,2), each = 50))
+#' nw <- network_initialize(n = 100, directed = FALSE)
+#' nw <- set_vertex_attribute(nw, "group", rep(c(1,2), each = 50))
 #' formation <- ~edges
 #' target.stats <- 50
 #' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
@@ -205,8 +205,8 @@ get_transmat <- function(x, sim = 1) {
 #'
 #' @examples
 #' # Two-group Bernoulli random graph TERGM
-#' nw <- network.initialize(n = 100, directed = FALSE)
-#' nw <- set.vertex.attribute(nw, "group", rep(c(1,2), each = 50))
+#' nw <- network_initialize(n = 100, directed = FALSE)
+#' nw <- set_vertex_attribute(nw, "group", rep(c(1,2), each = 50))
 #' formation <- ~edges
 #' target.stats <- 50
 #' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
@@ -335,7 +335,7 @@ get_nwparam <- function(x, network = 1) {
 #'
 #' @examples
 #' # Network model estimation
-#' nw <- network.initialize(n = 100, directed = FALSE)
+#' nw <- network_initialize(n = 100, directed = FALSE)
 #' formation <- ~edges
 #' target.stats <- 50
 #' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)

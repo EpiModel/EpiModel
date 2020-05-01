@@ -102,7 +102,7 @@ the \code{tergm} package. An example is shown below.
 \examples{
 \dontrun{
 # Network initialization and model parameterization
-nw <- network.initialize(100, directed = FALSE)
+nw <- network_initialize(100, directed = FALSE)
 formation <- ~edges
 target.stats <- 50
 coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 25)

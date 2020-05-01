@@ -1,7 +1,7 @@
 context("Standard network models")
 
-nw <- network.initialize(n = 50, directed = FALSE)
-nw <- set.vertex.attribute(nw, "race", rbinom(50, 1, 0.5))
+nw <- network_initialize(n = 50, directed = FALSE)
+nw <- set_vertex_attribute(nw, "race", rbinom(50, 1, 0.5))
 est <- netest(nw, formation = ~edges + nodematch("race"), target.stats = c(25, 10),
               coef.diss = dissolution_coefs(~offset(edges), 10, 0),
               verbose = FALSE)

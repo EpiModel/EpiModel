@@ -3,8 +3,8 @@ context("Get functions for network models")
 
 # Model simulation --------------------------------------------------------
 
-nw <- network.initialize(n = 100,directed = FALSE)
-nw <- set.vertex.attribute(nw, "group", rep(c(1,2), each = 50))
+nw <- network0initialize(n = 100,directed = FALSE)
+nw <- set_vertex_attribute(nw, "group", rep(c(1,2), each = 50))
 formation <- ~edges
 target.stats <- 50
 dissolution <- ~offset(edges)

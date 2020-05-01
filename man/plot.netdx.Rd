@@ -138,8 +138,8 @@ the number of statistics.
 \examples{
 \dontrun{
 # Network initialization and model parameterization
-nw <- network.initialize(100, directed = FALSE)
-nw <- set.vertex.attribute(nw, "sex", rbinom(100, 1, 0.5))
+nw <- network_initialize(100, directed = FALSE)
+nw <- set_vertex_attribute(nw, "sex", rbinom(100, 1, 0.5))
 formation <- ~edges + nodematch("sex")
 target.stats <- c(50, 40)
 coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 50)
