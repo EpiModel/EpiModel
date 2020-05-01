@@ -658,6 +658,18 @@ crosscheck.net <- function(x, param, init, control) {
         }
       }
 
+      # Checks that .m2 syntax update to .g2
+      m2.param <- grep("m2", names(param), value = TRUE)
+      if (length(m2.param) > 0) {
+        stop("EpiModel has moved from 'mode' to 'group' functionality; second group",
+             " syntax has changed from '.m2' to '.g2'.", call. = FALSE)
+      }
+      m2.init <- grep("m2", names(init), value = TRUE)
+      if (length(m2.init) > 0) {
+        stop("EpiModel has moved from 'mode' to 'group' functionality; second group",
+             " syntax has changed from '.m2' to '.g2'.", call. = FALSE)
+      }
+
       # Two-group model checks for inital conditions
       if (nGroups == 2 & is.null(init$i.num.g2) &
           is.null(init$status.vector) & statOnNw == FALSE) {
@@ -715,7 +727,6 @@ crosscheck.net <- function(x, param, init, control) {
                "parameter instead.", call. = FALSE)
         }
       }
-
     }
 
     if (control$start > 1) {
