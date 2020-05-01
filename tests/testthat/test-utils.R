@@ -201,21 +201,13 @@ test_that("Users using birth and death functions are informed of change in langu
 })
 
 test_that("Users using old mode syntax are informed of change to group syntax", {
-  num1 <- num2 <- 10
-  nw <- network::network.initialize(num1+num2, directed = FALSE)
-  nw <- set.vertex.attribute(nw, "group", rep(1:2, each = num1))
-  formation <- ~edges
-  target.stats <- 5
-  coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 25)
-  est <- netest(nw, formation, target.stats, coef.diss)
 
-  param <- param.net(inf.prob = 0.1, inf.prob.m2 = 0.1, act.rate = 1)
-  init <- init.net(i.num = 1, i.num.m2 = 1)
-  control <- control.net(type = "SI", nsims = 1, nsteps = 10)
-  err.msg <- paste("EpiModel has moved from 'mode' to 'group' functionality; second group",
-                   "syntax has changed from '.m2' to '.g2'.")
-
-  expect_that(sim <- netsim(est, param, init, control),
-              throws_error(err.msg))
+  err.param <- paste("EpiModel has moved from 'mode' to 'group' functionality; second group",
+                   "parameters have changed from '.m2' to '.g2'.")
+  expect_that(param <- param.net(inf.prob = 0.1, inf.prob.m2 = 0.1, act.rate = 1),
+              throws_error(err.param))
+  err.init <- paste("EpiModel has moved from 'mode' to 'group' functionality; second group",
+                     "initial condition identifiers have changed from '.m2' to '.g2'.")
+  expect_that(init <- init.net(i.num = 1, i.num.m2 = 1), throws_error(err.init))
 })
 
