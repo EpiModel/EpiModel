@@ -14,7 +14,7 @@ passed from \code{\link{netsim}}.}
 \item{at}{Current time step.}
 
 \item{network}{In case of models with multiple networks, the network to pull
-the current edgelist from. Default of \code{1}.}
+the current edgelist from. Default of \code{network = 1}.}
 }
 \value{
 This function returns a \code{data.frame} with the following columns:
