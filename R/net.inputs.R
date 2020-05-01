@@ -163,6 +163,13 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
             call. = FALSE)
   }
 
+  # Checks that .m2 syntax update to .g2
+  m2.param <- grep("m2", names(p), value = TRUE)
+  if (length(m2.param) > 0) {
+    stop("EpiModel has moved from 'mode' to 'group' functionality; second group",
+         " parameters have changed from '.m2' to '.g2'.", call. = FALSE)
+  }
+
 
   if (!is.null(p$inter.eff) && is.null(p$inter.start)) {
     p$inter.start <- 1
@@ -244,6 +251,13 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
   }
 
   ## Defaults and checks
+
+  # Checks that .m2 syntax is change to .g2
+  m2.init <- grep("m2", names(p), value = TRUE)
+  if (length(m2.init) > 0) {
+    stop("EpiModel has moved from 'mode' to 'group' functionality; second group",
+         " initial condition identifiers have changed from '.m2' to '.g2'.", call. = FALSE)
+  }
   if (!is.null(p$i.num) & !is.null(p$status.vector)) {
     stop("Use i.num OR status.vector to set initial infected")
   }
@@ -656,18 +670,6 @@ crosscheck.net <- function(x, param, init, control) {
                  call. = FALSE)
           }
         }
-      }
-
-      # Checks that .m2 syntax update to .g2
-      m2.param <- grep("m2", names(param), value = TRUE)
-      if (length(m2.param) > 0) {
-        stop("EpiModel has moved from 'mode' to 'group' functionality; second group",
-             " syntax has changed from '.m2' to '.g2'.", call. = FALSE)
-      }
-      m2.init <- grep("m2", names(init), value = TRUE)
-      if (length(m2.init) > 0) {
-        stop("EpiModel has moved from 'mode' to 'group' functionality; second group",
-             " syntax has changed from '.m2' to '.g2'.", call. = FALSE)
       }
 
       # Two-group model checks for inital conditions
