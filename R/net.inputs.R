@@ -502,7 +502,7 @@ control.net <- function(type,
   ## Defaults and checks
 
   # Check whether depend is being used
-  if ("depend" %in% names(control)){
+  if ("depend" %in% names(p)){
     stop("Input parameter depend has been replaced by resimulate.network.",
          call. = FALSE)
   }
