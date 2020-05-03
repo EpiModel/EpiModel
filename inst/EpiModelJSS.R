@@ -6,7 +6,7 @@
 ## Section 2. Orientation --------------------------------------------------
 
 ## Install the packages
-install.packages("EpiModel", dependencies = TRUE)
+## install.packages("EpiModel", dependencies = TRUE)
 library("EpiModel")
 
 ## Access the help files
@@ -27,10 +27,10 @@ set.seed(12345)
 
 ## Initialize the network
 nw <- network::network.initialize(n = 1000, directed = FALSE)
-nw <- network::set.vertex.attribute(nw, "group", rep(1:2, each = 500))
+nw <- network::set.vertex.attribute(nw, "risk", rep(0:1, each = 500))
 
 ## ERGM formation formula
-formation <- ~ edges + nodefactor("group") + nodematch("group") + concurrent
+formation <- ~ edges + nodefactor("risk") + nodematch("risk") + concurrent
 
 ## Target statistics for formula
 target.stats <- c(250, 375, 225, 100)
@@ -63,7 +63,7 @@ param <- param.net(inf.prob = 0.1, act.rate = 5, rec.rate = 0.02)
 
 ## Set the controls
 control <- control.net(type = "SIS", nsteps = 500,
-                       nsims = 10, epi.by = "group")
+                       nsims = 10, epi.by = "risk")
 
 ## Simulate the epidemic model
 sim1 <- netsim(est1, param, init, control)
@@ -97,10 +97,9 @@ set.seed(12345)
 
 ## Initial the network
 num.m1 <- num.m2 <- 500
-#nw <- network::network.initialize(num.m1 + num.m2,
-#                                  bipartite = num.m1, directed = FALSE)
-nw <- network::network.initialize(n = num.m1 + num.m2, directed = FALSE)
-nw <- network::set.vertex.attribute(nw, "group", rep(1:2, each = 500))
+nw <- network::network.initialize(num.m1 + num.m2,
+                                  bipartite = num.m1, directed = FALSE)
+
 ## Enter the sex-specific degree distributions
 deg.dist.m1 <- c(0.40, 0.55, 0.04, 0.01)
 deg.dist.m2 <- c(0.48, 0.41, 0.08, 0.03)
@@ -109,8 +108,7 @@ deg.dist.m2 <- c(0.48, 0.41, 0.08, 0.03)
 check_bip_degdist(num.m1, num.m2, deg.dist.m1, deg.dist.m2)
 
 ## Enter the formation model for the ERGM
-#formation <- ~ edges + b1degree(0:1) + b2degree(0:1)
-formation <- ~ edges + nodefactor("group") + nodematch("group") + concurrent
+formation <- ~ edges + b1degree(0:1) + b2degree(0:1)
 
 ## Target statistics for the formation model
 target.stats <- c(330, 200, 275, 240, 205)
@@ -223,7 +221,7 @@ dfunc <- function(dat, at) {
   return(dat)
 }
 
-## Arrivals function
+## Birth function
 bfunc <- function(dat, at) {
 
   growth.rate <- dat$param$growth.rate
@@ -232,26 +230,26 @@ bfunc <- function(dat, at) {
 
   numNeeded <- exptPopSize - sum(dat$attr$active == 1)
   if (numNeeded > 0) {
-    nArrvls <- rpois(1, numNeeded)
+    nBirths <- rpois(1, numNeeded)
   } else {
-    nArrvls <- 0
+    nBirths <- 0
   }
-  if (nArrvls > 0) {
-    dat$nw <- add.vertices(dat$nw, nv = nArrvls)
-    newNodes <- (n + 1):(n + nArrvls)
+  if (nBirths > 0) {
+    dat$nw <- add.vertices(dat$nw, nv = nBirths)
+    newNodes <- (n + 1):(n + nBirths)
     dat$nw <- activate.vertices(dat$nw, onset = at,
                                 terminus = Inf, v = newNodes)
 
-    dat$attr$active <- c(dat$attr$active, rep(1, nArrvls))
-    dat$attr$status <- c(dat$attr$status, rep("s", nArrvls))
-    dat$attr$infTime <- c(dat$attr$infTime, rep(NA, nArrvls))
-    dat$attr$age <- c(dat$attr$age, rep(18, nArrvls))
+    dat$attr$active <- c(dat$attr$active, rep(1, nBirths))
+    dat$attr$status <- c(dat$attr$status, rep("s", nBirths))
+    dat$attr$infTime <- c(dat$attr$infTime, rep(NA, nBirths))
+    dat$attr$age <- c(dat$attr$age, rep(18, nBirths))
   }
 
   if (at == 2) {
-    dat$epi$b.flow <- c(0, nArrvls)
+    dat$epi$b.flow <- c(0, nBirths)
   } else {
-    dat$epi$b.flow[at] <- nArrvls
+    dat$epi$b.flow[at] <- nBirths
   }
 
   return(dat)
@@ -266,9 +264,8 @@ est3 <- netest(nw, formation = ~ edges, target.stats = 150,
 ## Epidemic model parameterization
 param <- param.net(inf.prob = 0.15, growth.rate = 0.01/12, max.age = 70)
 init <- init.net(i.num = 50)
-control <- control.net(type = NULL, nsims = 5, nsteps = 500,
-                       departures.FUN = dfunc, arrivals.FUN = bfunc,
-                       get_prev.FUN = get_prev.net, infection.FUN = infection.net,
+control <- control.net(type = "SI", nsims = 5, nsteps = 500,
+                       deaths.FUN = dfunc, births.FUN = bfunc,
                        aging.FUN = aging, depend = TRUE)
 
 ## Simulate the epidemic model
