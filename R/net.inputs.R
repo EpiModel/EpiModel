@@ -501,6 +501,12 @@ control.net <- function(type,
 
   ## Defaults and checks
 
+  # Check whether depend is being used
+  if ("depend" %in% names(control)){
+    stop("Input parameter depend has been replaced by resimulate.network.",
+         call. = FALSE)
+  }
+
   #Check whether any base modules have been redefined by user (note: must come after above)
   bi.nms <- bi.nms[-which(bi.nms %in% c("initialize.FUN", "resim_nets.FUN", "verbose.FUN", "nwupdate.FUN"))]
   if (length(bi.nms) > 0){
