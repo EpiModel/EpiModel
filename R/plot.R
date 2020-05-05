@@ -2142,9 +2142,9 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
       }
       pal <- transco(c("firebrick", "steelblue", "seagreen"), 0.75)
       if (tergmLite == FALSE) {
-        cols <- ifelse(get_vertex_attribute.active(obj, "testatus", at = at) == "i",
+        cols <- ifelse(get.vertex.attribute.active(obj, "testatus", at = at) == "i",
                        pal[1], pal[2])
-        cols <- ifelse(get_vertex_attribute.active(obj, "testatus", at = at) == "r",
+        cols <- ifelse(get.vertex.attribute.active(obj, "testatus", at = at) == "r",
                        pal[3], cols)
       }
       plot.network(obj, vertex.col = cols, vertex.border = "grey60",
