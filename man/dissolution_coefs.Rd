@@ -88,9 +88,9 @@ dissolution_coefs(dissolution = ~offset(edges) + offset(nodematch("race")),
 \dontrun{
 ## Extended example for differential homophily by age group
 # Set up the network with nodes categorized into 5 age groups
-nw <- network.initialize(1000, directed = FALSE)
+nw <- network_initialize(n = 1000)
 age.grp <- sample(1:5, 1000, TRUE)
-nw <- set.vertex.attribute(nw, "age.grp", age.grp)
+nw <- set_vertex_attribute(nw, "age.grp", age.grp)
 
 # durations = non-matched, age.grp1 & age.grp1, age.grp2 & age.grp2, ...
 # TERGM will include differential homophily by age group with nodematch term

@@ -27,7 +27,7 @@ test_that("print.icm", {
 })
 
 test_that("print.netest", {
-  nw <- network.initialize(n = 100, directed = FALSE)
+  nw <- network_initialize(n = 100)
   formation <- ~edges
   target.stats <- 50
   coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 10)
@@ -41,8 +41,8 @@ test_that("print.netest", {
 })
 
 test_that("print.netsim", {
-  nw <- network.initialize(n = 100, directed = FALSE)
-  nw <- set.vertex.attribute(nw, "group", rep(c(1,2), each = 50))
+  nw <- network_initialize(n = 100)
+  nw <- set_vertex_attribute(nw, "group", rep(c(1,2), each = 50))
   formation <- ~edges
   target.stats <- 50
   coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)

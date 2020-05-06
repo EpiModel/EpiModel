@@ -114,7 +114,7 @@ package. An example is below.
 
 \examples{
 # Initialize a network of 100 nodes
-nw <- network.initialize(n = 100, directed = FALSE)
+nw <- network_initialize(n = 100)
 
 # Set formation formula
 formation <- ~edges + concurrent

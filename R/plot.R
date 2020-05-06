@@ -916,8 +916,8 @@ draw_means <- function(x, y, mean.smooth, mean.lwd,
 #' @examples
 #' \dontrun{
 #' # Network initialization and model parameterization
-#' nw <- network.initialize(100, directed = FALSE)
-#' nw <- set.vertex.attribute(nw, "sex", rbinom(100, 1, 0.5))
+#' nw <- network_initialize(n = 100)
+#' nw <- set_vertex_attribute(nw, "sex", rbinom(100, 1, 0.5))
 #' formation <- ~edges + nodematch("sex")
 #' target.stats <- c(50, 40)
 #' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 50)
@@ -2001,8 +2001,8 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #' @examples
 #' ## Independent SI Model
 #' # Initialize network and set network model parameters
-#' nw <- network.initialize(n = 100, directed = FALSE)
-#' nw <- set.vertex.attribute(nw, "group", rep(c(1,2), each = 50))
+#' nw <- network_initialize(n = 100)
+#' nw <- set_vertex_attribute(nw, "group", rep(c(1,2), each = 50))
 #' formation <- ~edges
 #' target.stats <- 50
 #' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
@@ -2110,7 +2110,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
              call. = FALSE)
       }
 
-      grp.flag <- length(unique(get.vertex.attribute(obj, "group")))
+      grp.flag <- length(unique(get_vertex_attribute(obj, "group")))
       if (is.numeric(grp.flag)) {
         mids <- idgroup(obj)
         if (shp.bip == "square") {

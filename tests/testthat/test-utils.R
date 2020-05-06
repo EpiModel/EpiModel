@@ -38,7 +38,7 @@ test_that("transco", {
 })
 
 test_that("color_tea", {
-  nw <- network.initialize(n = 100, directed = FALSE)
+  nw <- network_initialize(n = 100)
   formation <- ~edges
   target.stats <- 50
   coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
@@ -108,7 +108,7 @@ test_that("check_bip_degdist", {
 
 test_that("edgelist_censor", {
   skip_on_cran()
-  nw <- network.initialize(n = 100, directed = FALSE)
+  nw <- network_initialize(n = 100)
   formation <- ~edges
   target.stats <- 50
   coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
@@ -119,7 +119,7 @@ test_that("edgelist_censor", {
 })
 
 test_that("get_degree", {
-  nw <- network.initialize(500, directed = FALSE)
+  nw <- network_initialize(n = 500)
 
   set.seed(1)
   fit <- ergm(nw ~ edges, target.stats = 250, eval.loglik = FALSE)
@@ -161,15 +161,15 @@ test_that("dissolution_coefs returns appropriate error for incompatible departur
 
 
 test_that("get_formula_term_attr checks", {
-  nw <- network.initialize(100, directed = FALSE)
+  nw <- network_initialize(n = 100)
 
   expect_null(get_formula_term_attr(~edges, nw))
 
-  nw <- network.initialize(100, directed = FALSE)
+  nw <- network_initialize(n = 100)
   riskg <- sample(rep(1:2, each = 50))
   race <- sample(rep(0:1, each = 50))
-  nw <- set.vertex.attribute(nw, "riskg", riskg)
-  nw <- set.vertex.attribute(nw, "race", race)
+  nw <- set_vertex_attribute(nw, "riskg", riskg)
+  nw <- set_vertex_attribute(nw, "race", race)
   expect_null(get_formula_term_attr(~edges, nw))
 
   expect_equal(get_formula_term_attr(~edges + nodefactor("race"), nw), "race")
