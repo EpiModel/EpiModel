@@ -676,8 +676,6 @@ get_network_term_attr <- function(nw) {
 #' @param ids Vector of ID numbers for which the group number
 #'        should be returned.
 #'
-#' @seealso \code{\link{groupids}} provides the reverse functionality.
-#'
 #' @export
 #' @keywords netUtils internal
 #'
