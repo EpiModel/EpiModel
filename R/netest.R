@@ -102,7 +102,7 @@
 #'
 #' @examples
 #' # Initialize a network of 100 nodes
-#' nw <- network_initialize(n = 100, directed = FALSE)
+#' nw <- network_initialize(n = 100)
 #'
 #' # Set formation formula
 #' formation <- ~edges + concurrent
@@ -321,7 +321,7 @@ diss_check <- function(formation, dissolution){
 #'
 #' @examples
 #' \dontrun{
-#' nw <- network_initialize(1000, directed = FALSE)
+#' nw <- network_initialize(n = 1000)
 #'
 #' # Two dissolutions: an average duration of 300 versus 200
 #' diss.300 <- dissolution_coefs(~offset(edges), 300, 0.001)

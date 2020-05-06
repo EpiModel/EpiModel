@@ -88,7 +88,7 @@ dissolution_coefs(dissolution = ~offset(edges) + offset(nodematch("race")),
 \dontrun{
 ## Extended example for differential homophily by age group
 # Set up the network with nodes categorized into 5 age groups
-nw <- network_initialize(1000, directed = FALSE)
+nw <- network_initialize(n = 1000)
 age.grp <- sample(1:5, 1000, TRUE)
 nw <- set_vertex_attribute(nw, "age.grp", age.grp)
 

@@ -27,7 +27,7 @@ measures are provided, so it is necessary to input a time of interest.
 \dontrun{
 ## Independent SI Model
 # Initialize network and set network model parameters
-nw <- network_initialize(n = 100, directed = FALSE)
+nw <- network_initialize(n = 100)
 nw <- set_vertex_attribute(nw, "group", rep(c(1,2), each = 50))
 formation <- ~edges
 target.stats <- 50

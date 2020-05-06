@@ -202,7 +202,7 @@ in which the prevalence is highest.
 \examples{
 ## Independent SI Model
 # Initialize network and set network model parameters
-nw <- network_initialize(n = 100, directed = FALSE)
+nw <- network_initialize(n = 100)
 nw <- set_vertex_attribute(nw, "group", rep(c(1,2), each = 50))
 formation <- ~edges
 target.stats <- 50

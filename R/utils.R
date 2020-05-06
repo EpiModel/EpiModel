@@ -174,7 +174,7 @@ delete_attr <- function(dat, ids) {
 #' abline(h = seq(100, 500, 100), col = cols[2])
 #'
 #' ## Example 2: Network plot with multiple length alpha vector
-#' net <- network_initialize(500, directed = FALSE)
+#' net <- network_initialize(n = 500)
 #' vcol <- transco("firebrick",
 #'                 alpha = seq(0, 1, length = network.size(net)))
 #' par(mar = c(0, 0, 0, 0))
@@ -255,7 +255,7 @@ ssample <- function(x, size, replace = FALSE, prob = NULL) {
 #' plot(mod1, y = "prev")
 #'
 #' # Network model example
-#' nw <- network_initialize(n = 100, directed = FALSE)
+#' nw <- network_initialize(n = 100)
 #' nw <- set_vertex_attribute(nw, "group", rep(c(1,2), each = 50))
 #' formation <- ~edges
 #' target.stats <- 50

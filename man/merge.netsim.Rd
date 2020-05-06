@@ -62,7 +62,7 @@ in every respect (except number of simulations) and binds the results.
 }
 \examples{
 # Network model
-nw <- network_initialize(n = 100, directed = FALSE)
+nw <- network_initialize(n = 100)
 coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 10)
 est <- netest(nw, formation = ~edges, target.stats = 25,
               coef.diss = coef.diss, verbose = FALSE)

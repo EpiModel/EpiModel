@@ -3,7 +3,7 @@ context("Network model restart")
 test_that("network models can be restarted", {
   skip_on_cran()
 
-  nw <- network_initialize(n = 100, directed = FALSE)
+  nw <- network_initialize(n = 100)
   est.vit <- netest(nw, formation = ~edges, target.stats = 25,
                     coef.diss = dissolution_coefs(~offset(edges), 10, 0.02),
                     verbose = FALSE)
@@ -33,7 +33,7 @@ test_that("network models can be restarted", {
 test_that("restart error flags", {
   skip_on_cran()
 
-  nw <- network_initialize(n = 100, directed = FALSE)
+  nw <- network_initialize(n = 100)
   est.vit <- netest(nw, formation = ~edges, target.stats = 25,
                     coef.diss = dissolution_coefs(~offset(edges), 10, 0.02),
                     verbose = FALSE)

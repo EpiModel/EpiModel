@@ -40,7 +40,7 @@
 #'
 #' @examples
 #' set.seed(10)
-#' nw <- network_initialize(n = 100, directed = FALSE)
+#' nw <- network_initialize(n = 100)
 #' formation <- ~edges
 #' target.stats <- 50
 #' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
@@ -235,7 +235,7 @@ as.network.transmat <- function(x, ...){
   set.edge.attribute(net, "finalProb", tm$finalProb)
 
   net %v% "at" <- 0
-  set_vertex_attribute(net, "at", tm$at, v = tm$sus)
+  net <- set_vertex_attribute(net, "at", tm$at, v = tm$sus)
 
   return(net)
 }

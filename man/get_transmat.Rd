@@ -35,7 +35,7 @@ Extracts the matrix of transmission data for each transmission
 }
 \examples{
 ## Simulate SI epidemic on two-group Bernoulli random graph
-nw <- network_initialize(n = 100, directed = FALSE)
+nw <- network_initialize(n = 100)
 nw <- set_vertex_attribute(nw, "group", rep(c(1,2), each = 50))
 formation <- ~edges
 target.stats <- 50

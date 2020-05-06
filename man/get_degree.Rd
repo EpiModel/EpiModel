@@ -26,7 +26,7 @@ for generating the vector of degree using a query of the edgelist. It is
 even faster if the parameter \code{x} is already transformed as an edgelist.
 }
 \examples{
-nw <- network_initialize(500, directed = FALSE)
+nw <- network_initialize(n = 500)
 
 set.seed(1)
 fit <- ergm(nw ~ edges, target.stats = 250)

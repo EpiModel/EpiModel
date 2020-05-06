@@ -47,7 +47,7 @@ requiring 'collapse.singles' to prune it to an appropriate branching structure.
 }
 \examples{
 set.seed(10)
-nw <- network_initialize(n = 100, directed = FALSE)
+nw <- network_initialize(n = 100)
 formation <- ~edges
 target.stats <- 50
 coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)

@@ -16,7 +16,7 @@ should be returned.}
 Outputs group numbers give ID numbers for a two-group network.
 }
 \examples{
-nw <- network_initialize(10)
+nw <- network_initialize(n = 10)
 nw <- set_vertex_attribute(nw, "group", rep(c(1,2), each = 5))
 idgroup(nw)
 idgroup(nw, ids = c(3, 6))

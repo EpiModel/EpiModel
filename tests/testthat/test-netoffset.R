@@ -1,7 +1,7 @@
 context("Network models with formation offsets")
 
 test_that("netsim works with standard offset models", {
-  nw <- network_initialize(n = 50, directed = FALSE)
+  nw <- network_initialize(n = 50)
   nw <- set_vertex_attribute(nw, "race", rbinom(50, 1, 0.5))
   est <- netest(nw, formation = ~edges + offset(nodematch("race")),
                 target.stats = 25, coef.form = -Inf,
@@ -19,7 +19,7 @@ test_that("netsim works with standard offset models", {
 })
 
 test_that("netsim works with faux offset models", {
-  nw <- network_initialize(n = 50, directed = FALSE)
+  nw <- network_initialize(n = 50)
   nw <- set_vertex_attribute(nw, "race", rbinom(50, 1, 0.5))
   est <- netest(nw, formation = ~edges + nodematch("race"),
                 target.stats = c(25, 0),

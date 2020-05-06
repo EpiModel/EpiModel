@@ -5,7 +5,7 @@ context("Network extended models")
 test_that("edges models", {
   skip_on_cran()
 
-  nw <- network_initialize(n = 100, directed = FALSE)
+  nw <- network_initialize(n = 100)
   est <- netest(nw, formation = ~edges, target.stats = 25,
                 coef.diss = dissolution_coefs(~offset(edges), 10, 0),
                 verbose = FALSE)
@@ -289,7 +289,7 @@ test_that("edges models", {
 test_that("High departure rate models", {
   skip_on_cran()
   ## "netsim: 1M, ds.rate = 0.5"
-  nw <- network_initialize(n = 25, directed = FALSE)
+  nw <- network_initialize(n = 25)
   est <- netest(nw, formation = ~edges, target.stats = 12,
                 coef.diss = dissolution_coefs(~offset(edges), 10, 0.01),
                 edapprox = TRUE, verbose = FALSE)
@@ -335,7 +335,7 @@ test_that("High departure rate models", {
 test_that("edges two-group models", {
   skip_on_cran()
 
-  nw <- network_initialize(n = 100, directed = FALSE)
+  nw <- network_initialize(n = 100)
   nw <- set_vertex_attribute(nw, "group", rep(c(1,2), each = 50))
   est5 <- netest(nw, formation = ~edges, target.stats = 25,
                  coef.diss = dissolution_coefs(~offset(edges), 10, 0),
@@ -437,7 +437,7 @@ test_that("edges two-group models", {
 test_that("Open population 1 group models", {
   skip_on_cran()
 
-  nw <- network_initialize(n = 100, directed = FALSE)
+  nw <- network_initialize(n = 100)
   est.vit <- netest(nw, formation = ~edges, target.stats = 25,
                     coef.diss = dissolution_coefs(~offset(edges), 10, 0.01),
                     verbose = FALSE)
@@ -637,7 +637,7 @@ test_that("Open-population two-group models", {
 test_that("Extinction open-population models", {
   skip_on_cran()
 
-  nw <- network_initialize(n = 25, directed = FALSE)
+  nw <- network_initialize(n = 25)
   nw <- set_vertex_attribute(nw, "group", rep(1:2, c(15,10)))
   est <- netest(nw, formation = ~edges + nodematch("group"),
                 target.stats = c(15, 0),
@@ -682,7 +682,7 @@ test_that("Extinction open-population models", {
 test_that("Extended post-simulation diagnosntic tests", {
   skip_on_cran()
 
-  nw <- network_initialize(100, directed = FALSE)
+  nw <- network_initialize(n = 100)
   nw <- set_vertex_attribute(nw, "risk", rep(1:5, each = 20))
 
   est <- netest(nw,
@@ -731,7 +731,7 @@ test_that("Extended post-simulation diagnosntic tests", {
 test_that("status.vector and infTime.vector", {
 
   n <- 100
-  nw <- network_initialize(n = n, directed = FALSE)
+  nw <- network_initialize(n = n)
   formation <- ~edges
   target.stats <- 50
   coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)

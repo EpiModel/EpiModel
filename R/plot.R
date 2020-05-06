@@ -916,7 +916,7 @@ draw_means <- function(x, y, mean.smooth, mean.lwd,
 #' @examples
 #' \dontrun{
 #' # Network initialization and model parameterization
-#' nw <- network_initialize(100, directed = FALSE)
+#' nw <- network_initialize(n = 100)
 #' nw <- set_vertex_attribute(nw, "sex", rbinom(100, 1, 0.5))
 #' formation <- ~edges + nodematch("sex")
 #' target.stats <- c(50, 40)
@@ -2001,7 +2001,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #' @examples
 #' ## Independent SI Model
 #' # Initialize network and set network model parameters
-#' nw <- network_initialize(n = 100, directed = FALSE)
+#' nw <- network_initialize(n = 100)
 #' nw <- set_vertex_attribute(nw, "group", rep(c(1,2), each = 50))
 #' formation <- ~edges
 #' target.stats <- 50

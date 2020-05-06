@@ -25,7 +25,7 @@ duration approaches the length of the simulation.
 }
 \examples{
 # Initialize and parameterize network model
-nw <- network_initialize(n = 100, directed = FALSE)
+nw <- network_initialize(n = 100)
 formation <- ~edges
 target.stats <- 50
 coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)

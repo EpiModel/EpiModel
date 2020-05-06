@@ -1,7 +1,7 @@
 context("Network attributes with arrivals")
 
 test_that("Updating attributes in open populations", {
-  nw <- network_initialize(n = 50, directed = FALSE)
+  nw <- network_initialize(n = 50, )
   nw <- set_vertex_attribute(nw, attrname = "group",
                              value = rbinom(50, 1, 0.5)+1) #FLAG
 
@@ -30,7 +30,7 @@ test_that("Updating attributes in open populations", {
 
 test_that("SIR model with epi.by parameter", {
   skip_on_cran()
-  nw <- network_initialize(n = 50, directed = FALSE)
+  nw <- network_initialize(n = 50)
   nw <- set_vertex_attribute(nw, attrname = "race", rep(0:1, each = 25))
   formation <- ~edges + nodefactor("race")
   target.stats <- c(25, 25)
@@ -49,7 +49,7 @@ test_that("SIR model with epi.by parameter", {
 
 test_that("Serosorting model in open population", {
   n <- 100
-  nw <- network_initialize(n, directed = FALSE)
+  nw <- network_initialize(n = n)
 
   prev <- 0.2
   infIds <- sample(1:n, n*prev)
@@ -81,7 +81,7 @@ test_that("Serosorting model in open population", {
 
 test_that("Save attributes to output", {
   skip_on_cran()
-  nw <- network_initialize(n = 50, directed = FALSE)
+  nw <- network_initialize(n = 50)
   nw <- set_vertex_attribute(nw, "group", rep(1:2, each = 25))
   formation <- ~edges + nodematch("group")
   target.stats <- c(25, 0)

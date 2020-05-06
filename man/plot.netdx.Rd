@@ -138,7 +138,7 @@ the number of statistics.
 \examples{
 \dontrun{
 # Network initialization and model parameterization
-nw <- network_initialize(100, directed = FALSE)
+nw <- network_initialize(n = 100)
 nw <- set_vertex_attribute(nw, "sex", rbinom(100, 1, 0.5))
 formation <- ~edges + nodematch("sex")
 target.stats <- c(50, 40)

@@ -27,7 +27,7 @@ mod1 <- mutate_epi(mod1, prev = i.num/num)
 plot(mod1, y = "prev")
 
 # Network model example
-nw <- network_initialize(n = 100, directed = FALSE)
+nw <- network_initialize(n = 100)
 nw <- set_vertex_attribute(nw, "group", rep(c(1,2), each = 50))
 formation <- ~edges
 target.stats <- 50

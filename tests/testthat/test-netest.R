@@ -4,7 +4,7 @@ context("Network estimation functions")
 # Test formation models ---------------------------------------------------
 
 test_that("netest works for edges only model", {
-  nw <- network_initialize(n = 50, directed = FALSE)
+  nw <- network_initialize(n = 50)
   est <- netest(nw, formation = ~edges, target.stats = 25,
                 coef.diss = dissolution_coefs(~offset(edges), 10, 0),
                 verbose = FALSE)
@@ -13,7 +13,7 @@ test_that("netest works for edges only model", {
 
 
 test_that("netest works for edges + nodematch model", {
-  nw <- network_initialize(n = 50, directed = FALSE)
+  nw <- network_initialize(n = 50)
   nw <- set_vertex_attribute(nw, "race", rbinom(50, 1, 0.5))
   est <- netest(nw, formation = ~edges + nodematch("race"), target.stats = c(25, 10),
                 coef.diss = dissolution_coefs(~offset(edges), 10, 0),
@@ -23,7 +23,7 @@ test_that("netest works for edges + nodematch model", {
 
 
 test_that("netest works with offset.coef terms", {
-  nw <- network_initialize(100, directed = FALSE)
+  nw <- network_initialize(n = 100)
   nw <- set_vertex_attribute(nw, "role", rep(c("I", "V", "R"), c(10, 80, 10)))
   est <- netest(nw, formation = ~edges + offset(nodematch('role', diff = TRUE, keep = 1:2)),
                 coef.form = c(-Inf, -Inf), target.stats = c(40),
@@ -37,7 +37,7 @@ test_that("netest works with offset.coef terms", {
 # Test dissolution models -------------------------------------------------
 
 test_that("netest works for heterogeneous dissolutions", {
-  nw <- network_initialize(100, directed = FALSE)
+  nw <- network_initialize(n = 100)
   nw <- set_vertex_attribute(nw, "race", rbinom(50, 1, 0.5))
   est <- netest(nw, formation = ~edges + nodematch("race"), target.stats = c(50, 20),
                 coef.diss = dissolution_coefs(~offset(edges) +
@@ -48,7 +48,7 @@ test_that("netest works for heterogeneous dissolutions", {
 })
 
 test_that("netest diss_check flags bad models", {
-  nw <- network_initialize(100, directed = FALSE)
+  nw <- network_initialize(n = 100)
   nw <- set_vertex_attribute(nw, "race", rbinom(50, 1, 0.5))
 
   formation <- ~edges + nodematch("race")
@@ -69,14 +69,14 @@ test_that("netest diss_check flags bad models", {
 # Other tests -----------------------------------------------------------------------
 
 test_that("Error if incorrect coef.diss parameter", {
-  nw <- network_initialize(n = 50, directed = FALSE)
+  nw <- network_initialize(n = 50)
   coef.diss <- 1
   expect_error(netest(nw, formation = ~edges, target.stats = 25, coef.diss = coef.diss,
                 verbose = FALSE))
 })
 
 test_that("update_dissolution tests", {
-  nw <- network_initialize(1000, directed = FALSE)
+  nw <- network_initialize(n = 1000)
 
   diss.300 <- dissolution_coefs(~offset(edges), 300, 0.001)
   diss.200 <- dissolution_coefs(~offset(edges), 200, 0.001)
@@ -104,7 +104,7 @@ test_that("update_dissolution tests", {
 
 test_that("Basic STERGM fit", {
   skip_on_cran()
-  nw <- network_initialize(n = 50, directed = FALSE)
+  nw <- network_initialize(n = 50)
   est <- netest(nw, formation = ~edges, target.stats = 25,
                 coef.diss = dissolution_coefs(~offset(edges), 10, 0),
                 edapprox = FALSE, verbose = FALSE)

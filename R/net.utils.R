@@ -297,7 +297,7 @@ copy_datattr_to_nwattr <- function(dat) {
 #' \dontrun{
 #' ## Extended example for differential homophily by age group
 #' # Set up the network with nodes categorized into 5 age groups
-#' nw <- network_initialize(1000, directed = FALSE)
+#' nw <- network_initialize(n = 1000)
 #' age.grp <- sample(1:5, 1000, TRUE)
 #' nw <- set_vertex_attribute(nw, "age.grp", age.grp)
 #'
@@ -463,7 +463,7 @@ dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
 #'
 #' @examples
 #' # Initialize and parameterize network model
-#' nw <- network_initialize(n = 100, directed = FALSE)
+#' nw <- network_initialize(n = 100)
 #' formation <- ~edges
 #' target.stats <- 50
 #' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
@@ -530,7 +530,7 @@ edgelist_censor <- function(el) {
 #'
 #' @examples
 #' # Initialize and parameterize the network model
-#' nw <- network_initialize(n = 100, directed = FALSE)
+#' nw <- network_initialize(n = 100)
 #' formation <- ~edges
 #' target.stats <- 50
 #' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
@@ -682,7 +682,7 @@ get_network_term_attr <- function(nw) {
 #' @keywords netUtils internal
 #'
 #' @examples
-#' nw <- network_initialize(10)
+#' nw <- network_initialize(n = 10)
 #' nw <- set_vertex_attribute(nw, "group", rep(c(1,2), each = 5))
 #' idgroup(nw)
 #' idgroup(nw, ids = c(3, 6))
@@ -720,7 +720,7 @@ idgroup <- function(nw, ids) {
 #' @keywords netUtils internal
 #'
 #' @examples
-#' nw <- network_initialize(10)
+#' nw <- network_initialize(n = 10)
 #' nw <- set_vertex_attribute(nw, "group", rep(c(1,2), each = 5))
 #' groupids(nw, group = 2)
 #'
@@ -833,7 +833,7 @@ auto_update_attr <- function(dat, newNodes, curr.tab) {
 #' @export
 #'
 #' @examples
-#' nw <- network_initialize(500, directed = FALSE)
+#' nw <- network_initialize(n = 500)
 #'
 #' set.seed(1)
 #' fit <- ergm(nw ~ edges, target.stats = 250)
