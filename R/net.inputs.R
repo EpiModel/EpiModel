@@ -601,7 +601,7 @@ crosscheck.net <- function(x, param, init, control) {
 
       # Is status in network formation formula?
       #statOnNw <- ("status" %in% get_formula_term_attr(x$formation, nw))
-      statOnNw <- get.vertex.attribute(nw, "status") %in% c("s", "i", "r")
+      statOnNw <- get_vertex_attribute(nw, "status") %in% c("s", "i", "r")
       statOnNw <- ifelse(sum(statOnNw) > 0, TRUE, FALSE)
 
       # Set dependent modeling defaults if vital or status on nw
@@ -613,7 +613,7 @@ crosscheck.net <- function(x, param, init, control) {
         }
       }
 
-      nGroups <- length(unique(get.vertex.attribute(nw, "group")))
+      nGroups <- length(unique(get_vertex_attribute(nw, "group")))
       nGroups <- ifelse(nGroups == 2, 2, 1)
 
       if (nGroups == 2 & is.null(control$pid.prefix)) {
@@ -630,7 +630,7 @@ crosscheck.net <- function(x, param, init, control) {
 
       # Check that prevalence in NW attr status and initial conditions match
       if (statOnNw == TRUE) {
-        nw1 <- sum(get.vertex.attribute(nw, "status") == 1)
+        nw1 <- sum(get_vertex_attribute(nw, "status") == 1)
         init1 <- sum(unlist(init[grep("i.num", names(init), value = TRUE)]))
         if ("i.num" %in% names(init) && nw1 != init1) {
           warning("Overriding init infected settings with network status attribute",
