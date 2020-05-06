@@ -707,41 +707,6 @@ idgroup <- function(nw, ids) {
   return(out)
 }
 
-#' @title ID Numbers for Two-Group Network
-#'
-#' @description Outputs ID numbers for a group number for a two-group network.
-#'
-#' @param nw Object of class \code{network} or \code{networkDynamic}.
-#' @param group Group number to return ID numbers for.
-#'
-#' @seealso \code{\link{idgroup}} provides the reverse functionality.
-#'
-#' @export
-#' @keywords netUtils internal
-#'
-#' @examples
-#' nw <- network.initialize(10)
-#' nw <- set.vertex.attribute(nw, "group", rep(c(1,2), each = 5))
-#' groupids(nw, group = 2)
-#'
-groupids <- function(nw, group) {
-  flag <- "group" %in% names(nw$val[[1]])
-  if (!flag) {
-    stop("nw must be a two-group network")
-  }
-  if (missing(group)) {
-    stop("Specify group=1 or group=2")
-  }
-
-  if (group == 1) {
-    out <- which(get.vertex.attribute(nw, "group") == 1)
-  }
-  if (group == 2) {
-    out <- which(get.vertex.attribute(nw, "group") == 2)
-  }
-  return(out)
-}
-
 #' @title Updates Vertex Attributes for Incoming Vertices
 #'
 #' @description Updates the vertex attributes on a network for new nodes incoming
