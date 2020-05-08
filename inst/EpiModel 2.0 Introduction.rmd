@@ -252,20 +252,3 @@ param <- param.net(inf.prob = 0.1, inf.prob.g2 = 0.1,
                    rec.rate = 0.02, rec.rate.g2 = 0.02,
                    act.rate = 5)
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
