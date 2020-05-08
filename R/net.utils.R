@@ -676,8 +676,6 @@ get_network_term_attr <- function(nw) {
 #' @param ids Vector of ID numbers for which the group number
 #'        should be returned.
 #'
-#' @seealso \code{\link{groupids}} provides the reverse functionality.
-#'
 #' @export
 #' @keywords netUtils internal
 #'
@@ -704,41 +702,6 @@ idgroup <- function(nw, ids) {
     out <- groups[ids]
   }
 
-  return(out)
-}
-
-#' @title ID Numbers for Two-Group Network
-#'
-#' @description Outputs ID numbers for a group number for a two-group network.
-#'
-#' @param nw Object of class \code{network} or \code{networkDynamic}.
-#' @param group Group number to return ID numbers for.
-#'
-#' @seealso \code{\link{idgroup}} provides the reverse functionality.
-#'
-#' @export
-#' @keywords netUtils internal
-#'
-#' @examples
-#' nw <- network_initialize(n = 10)
-#' nw <- set_vertex_attribute(nw, "group", rep(c(1,2), each = 5))
-#' groupids(nw, group = 2)
-#'
-groupids <- function(nw, group) {
-  flag <- "group" %in% names(nw$val[[1]])
-  if (!flag) {
-    stop("nw must be a two-group network")
-  }
-  if (missing(group)) {
-    stop("Specify group=1 or group=2")
-  }
-
-  if (group == 1) {
-    out <- which(get_vertex_attribute(nw, "group") == 1)
-  }
-  if (group == 2) {
-    out <- which(get_vertex_attribute(nw, "group") == 2)
-  }
   return(out)
 }
 

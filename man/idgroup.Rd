@@ -22,8 +22,5 @@ idgroup(nw)
 idgroup(nw, ids = c(3, 6))
 
 }
-\seealso{
-\code{\link{groupids}} provides the reverse functionality.
-}
 \keyword{internal}
 \keyword{netUtils}
