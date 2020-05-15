@@ -149,7 +149,7 @@ add_attr <- function(dat, item) {
                "': exists already"))
   }
 
-  dat[["attr"]][[item]] <- rep(NA, length(dat$attr$active))
+  dat[["attr"]][[item]] <- rep(NA, length(dat[["attr"]][["active"]]))
 
   return(dat)
 }
@@ -161,11 +161,11 @@ set_attr <- function(dat, item, value, override.length.check = FALSE) {
     dat <- add_attr(dat, item)
   }
 
-  if (length(value) != length(dat$attr$active) & !override.length.check) {
+  if (length(value) != length(dat[["attr"]][["active"]]) & !override.length.check) {
     stop(paste0(
       "When trying to edit the ", `item`, " nodal attribute: The size",
        " of the `value` vector is not equal to the number of node in
-       the network. Expected: ", length(dat$attr$active), ", given: ",
+       the network. Expected: ", length(dat[["attr"]][["active"]]), ", given: ",
        length(value)))
   }
 
@@ -235,14 +235,14 @@ get_epi <- function(dat, item, indexes = NULL, override.null.error = FALSE) {
       out <- dat[["epi"]][[item]]
     } else {
       if (is.logical(indexes)) {
-        if (length(indexes) != dat$control$nsteps) {
+        if (length(indexes) != dat[["control"]][["nsteps"]]) {
           stop("(logical) `indexes` has to have a length equal to the number of
-              steps planned for for the simulation (control$nsteps)")
+              steps planned for for the simulation (control[['nsteps']])")
         }
       } else if(is.numeric(indexes)) {
-        if (any(indexes > dat$control$nsteps)) {
+        if (any(indexes > dat[["control"]][["nsteps"]])) {
           stop("Some (numeric) `indexes` are larger than the number of
-              steps planned for for the simulation (control$nsteps)")
+              steps planned for for the simulation (control[['nsteps']])")
         }
       } else {
         stop("`indexes` must be logical, numeric, or NULL")
@@ -263,7 +263,7 @@ add_epi <- function(dat, item) {
                ": exists already"))
   }
 
-  dat[["epi"]][[item]] <- rep(NA, dat$control$nsteps)
+  dat[["epi"]][[item]] <- rep(NA, dat[["control"]][["nsteps"]])
 
   return(dat)
 }
@@ -284,7 +284,7 @@ set_epi <- function(dat, item, at,  value) {
 
       dat[["epi"]][[item]] <- c(
         dat[["epi"]][[item]],
-        rep(NA, dat$control$nsteps - length(dat[["epi"]][[item]]))
+        rep(NA, dat[["control"]][["nsteps"]] - length(dat[["epi"]][[item]]))
       )
   }
 
