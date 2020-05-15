@@ -30,20 +30,20 @@ num1 <- num2 <- 50
 nw <- network.initialize(num1 + num2)
 ```
 
-This creates a mutli-modal (or bipartite) network in which there were 50 vertices in mode one and 50 vertices in mode two and in which intermodal mixing does not occur (i.e., no edges match on mode assignment). In order to make modeling in EpiModel more flexible, in EpiModel 2.0 we move away from the language of modes and instead refer to heterogeneous sub-populations as groups. This change requires a change in how one sets up initial networks as well:
+This creates a mutli-modal (or bipartite) network in which there were 50 vertices in mode one and 50 vertices in mode two and in which intermodal mixing does not occur, i.e., no edges (links formed between vertices: relationships, partnerships, etc.) match on mode assignment. In order to make modeling in EpiModel more flexible, in EpiModel 2.0 we move away from the language of modes and instead refer to heterogeneous sub-populations as groups. This change requires a change in how one sets up initial networks as well:
 
 ```{r echo = TRUE, eval = FALSE}
 num1 <- num2 <- 50
-nw <- network.initialize(n = num1+num2)
-nw <- set.vertex.attribute(nw, "group", rep(1:2, c(num1, num2)))
+nw <- network_initialize(n = num1+num2)
+nw <- set_vertex_attribute(nw, "group", rep(1:2, c(num1, num2)))
 ```
 
-Above we have the updated syntax for creating bipartite, now called "multigroup", networks within the EpiModel workflow. The network is initialized as usual using `network_initialize` (a new version of `network.initialize` explained in "network_initialize, get_ and set_vertex_attribute"), however, in order to capture the previous two-mode structure, we set heterogeneity as a vertex attribute instead of a network feature; in the case of the new EpiModel workflow, this is done using the attribute `group`. This change allows for more flexibility both in interpretation as well as network structure: in a `bipartite` network, mixing between the two groups is not allowed. However, in a multigroup network, as group assignment is now a vertex attribute we can model within group mixing. For example, in a population of males and females, this new workflow allows us to model more than just heterosexual relationships as below:
+Above we have the updated syntax for creating bipartite, now called "multigroup", networks within the EpiModel workflow. The network is initialized as usual using `network_initialize` (a new version of `network.initialize` explained in "network_initialize, get_ and set_vertex_attribute"), however, in order to capture the previous two-mode structure, we set heterogeneity as a vertex attribute instead of a network feature using `set_vertex_initialize` (a new version of `set.vertex.attribute`); in the case of the new EpiModel workflow, this is done using the attribute `group`. This change allows for more flexibility both in interpretation as well as network structure: in a `bipartite` network, mixing between the two groups is not allowed. However, in a multigroup network, as group assignment is now a vertex attribute we can model within group mixing. For example, in a population of males and females, this new workflow allows us to model more than just heterosexual relationships as below:
 
 ```{r echo = TRUE, eval = FALSE}
 num1 <- num2 <- 50
-nw <- network.initialize(n = num1+num2)
-nw <- set.vertex.attribute(nw, "group", rep(1:2, c(num1, num2)))
+nw <- network_initialize(n = num1+num2)
+nw <- set_vertex_attribute(nw, "group", rep(1:2, c(num1, num2)))
 formation <- ~ edges + nodefactor("group") + nodematch("group")
 target.stats <- c(30, 2)
 ```
@@ -133,7 +133,7 @@ New `tergmLite` versions of `network.initialize`, `get.vertex.attribute` and `se
 
 ## Accessor Functions
 
-Several accessor functions have been added to EpiModel that make it clear the indexing and assignment operations that are being done on the master `dat` object during simulation, which means moving away from the `$` operator. These functions belong to the `get` and `set` family of functions and act on the various lists contained within the master `dat` object, including but not limited to the attribute, epi, control and param lists. These functions take as input, at minimum, the master `dat` object and the item (as a character string) to "get" or "set" ("age" or "group" in the attribute list or "inf.prob" in the parameter list for example).
+Several accessor functions have been added to EpiModel that make it clear the indexing and assignment operations that are being done on the master `dat` object during simulation, which means moving away from the `$` and `[[ ]]` operators. These functions belong to the `get` and `set` family of functions and act on the various lists contained within the master `dat` object, including but not limited to the attribute, epi, control and param lists. These functions take as input, at minimum, the master `dat` object and the item (as a character string) to "get" or "set" ("age" or "group" in the attribute list or "inf.prob" in the parameter list for example).
 
 ### Set Functions
 
@@ -156,7 +156,7 @@ a.rate <- get_param(dat, "a.rate")
 nOld <- get_epi(dat, "num", index)
 ```
 
-Here we are pulling the arrival rate, `a.rate` from the parameter list and querying the epidemic tracker list for the population size at the previous step. Note: the set functions do not modify dat in place but return an altered dat object that must be assigned back for the changes to be saved (`dat <- set_xxx`).
+Here we are pulling the arrival rate, `a.rate` from the parameter list and querying the epidemic tracker list for the population size at the previous step. Note that the set functions do not modify `dat` in place but return an altered dat object that must be assigned back for the changes to be saved: `dat <- set_attr(dat, "status")` as an example.
 
 Details of all available accessor functions can be found using
 
@@ -270,12 +270,20 @@ param <- param.net(inf.prob = 0.1, inf.prob.g2 = 0.1,
 ## Using accessor functions
 
 The new asseccor functions are easy to use utilities for getting, setting and appending
-data, replacing `$` operations.
+data, replacing `$`  and `[[ ]]` operations.
 
 ```{r echo = TRUE, eval = FALSE}
 dat <- list()
 partners <- rpois(100, 1)
 dat$attr$partners <- partners
+```
+
+or 
+
+```{r echo = TRUE, eval = FALSE}
+dat <- list()
+partners <- rpois(100, 1)
+dat[["attr"]][["partners"]] <- partners
 ```
 
 should be updated in script to:
@@ -292,6 +300,12 @@ Similarly for retrieval and setting of list elements.
 partners <- dat$attr$partners
 ```
 
+or 
+
+```{r echo = TRUE, eval = FALSE}
+partners <- dat[["attr"]][["partners"]]
+```
+
 should be updated to
 
 ```{r echo = TRUE, eval = FALSE}
@@ -303,6 +317,13 @@ And
 ```{r echo = TRUE, eval = FALSE}
 newPartners <- rpois(2, 1)
 dat$attr$partners[101:102] <- newPartners
+```
+
+or 
+
+```{r echo = TRUE, eval = FALSE}
+newPartners <- rpois(2, 1)
+dat[["attr"]][["partners"]][101:102] <- newPartners
 ```
 
 should be updated to
@@ -329,9 +350,16 @@ target.stats <- 400
 ```
 
 ```{r echo = TRUE, eval = FALSE}
-## EpiModel 2.0 Workflow
+## EpiModel 2.0 
 num1 <- num2 <- 500
+
+#update to new initialization function network_initialize.
 nw <- network_initialize(n = num1 + num2)
+
+#Update to new vertex assignment function set_vertex_attribute
+nw <- set_vertex_attribute(nw, "group", rep(c(1,2), c(num1,num2)))
+
+#If looking to replicate 'bipartite' network:
 formation <- ~edges + nodematch("group")
 target.stats <- c(400, 0)
 ```
@@ -349,6 +377,7 @@ init <- init.net(i.num = 20, i.num.m2 = 20)
 
 ```{r echo = TRUE, eval = FALSE}
 ## EpiModel 2.0 Workflow
+#Update all parameters and initial conditions from ".m2" to ".g2" language.
 param <- param.net(inf.prob = 0.4, inf.prob.g2 = 0.2)
 init <- init.net(i.num = 20, i.num.g2 = 20)
 ```
@@ -361,6 +390,8 @@ control <- control.net(type = "SI", nsteps = 100, depend = TRUE,
 
 ```{r echo = TRUE, eval = FALSE}
 ## EpiModel 2.0 Workflow
+#control.net parameter depend updated to resimulate.network; save.network folded
+#into tergmLite.
 control <- control.net(type = "SI", nsteps = 100, resimulate.network = TRUE,
                        tergmLite = FALSE)
 ```
@@ -460,6 +491,7 @@ infect <- function(dat, at) {
 
 ```{r echo = TRUE, eval = FALSE}
 ## EpiModel 2.0
+#Update `$` operations to accessor functions
 ## Modified infection module
 infect <- function(dat, at) {
   
@@ -559,6 +591,7 @@ progress <- function(dat, at) {
 
 ```{r echo = TRUE, eval = FALSE}
 ## EpiModel 2.0
+#Update `$` operations to accessor functions
 ## New disease progression module
 progress <- function(dat, at) {
   
@@ -639,6 +672,8 @@ sim <- netsim(est, param, init, control)
 ## Epidemic model parameterization
 param <- param.net(inf.prob = 0.5, act.rate = 2, ei.rate = 0.01, ir.rate = 0.005)
 init <- init.net(i.num = 10)
+#If any user defined functions, type must equal NULL and ALL base epidemic modules
+# must be present.
 control <- control.net(type = NULL, nsteps = 100, nsims = 1, infection.FUN = infect,
                        progress.FUN = progress, recovery.FUN = recovery.net,
                        departures.FUN = departures.net, arrivals.FUN = arrivals.net,
