@@ -1,10 +1,11 @@
-#' Helper functions to access and edit the Master list object of network models
+
+#' @title Functions to Access and Edit the Master List Object in Network Models
 #'
-#' These `get_`, `set_`, `append_` and `add` functions allow a safe and
-#' efficient way to retrieve and mutate the Master list object of network models
-#' (`dat`).
+#' @description These `get_`, `set_`, `append_` and `add` functions allow a safe
+#'              and efficient way to retrieve and mutate the Master list object
+#'              of network models (`dat`).
 #'
-#' @section mutability:
+#' @section Mutability:
 #' The `set_`, `append_` and `add_` functions DO NOT mutate the dat object in
 #' place. The result must be assigned back to `dat` in order to be registered
 #' `dat <- set_*(dat, item, value)`
