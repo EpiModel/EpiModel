@@ -27,7 +27,6 @@
 #'         list object for `set_` and `add_` functions
 #'
 #' @examples
-#' \dontrun{
 #' dat <- list(
 #'   attr = list(
 #'     active = rbinom(100, 1, 0.9)
@@ -50,7 +49,6 @@
 #' get_attr_list(dat, c("age", "active"))
 #' get_attr(dat, "status")
 #' get_attr(dat, "status", c(1, 4))
-#' get_attr(dat, "status", rbinom(100, 1, 0.2) == 1)
 #'
 #' dat <- add_epi(dat, "i.num")
 #' dat <- set_epi(dat, "i.num", 150, 10)
@@ -81,7 +79,6 @@
 #' get_control_list(dat)
 #' get_control_list(dat, c("x", "y"))
 #' get_control(dat, "x")
-#' }
 #'
 #' @name net-accessor
 NULL
