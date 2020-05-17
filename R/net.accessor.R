@@ -5,15 +5,6 @@
 #'              and efficient way to retrieve and mutate the Master list object
 #'              of network models (`dat`).
 #'
-#' @section Mutability:
-#' The `set_`, `append_` and `add_` functions DO NOT mutate the dat object in
-#' place. The result must be assigned back to `dat` in order to be registered
-#' `dat <- set_*(dat, item, value)`
-#'
-#' @section `set_` vs `add_`:
-#' The `set_` functions edit a pre-existing element or create a new one if it
-#' does not exist already by calling the `add_` functions internally.
-#'
 #' @param dat a Master list object of network models
 #' @param item a character vector conaining the name of the element to access.
 #'        Can be of length > 1 for `get_*_list` functions
@@ -26,6 +17,15 @@
 #'        the `item` size. (default = FALSE)
 #' @return a vector or a list of vector for `get_` functions. And the Master
 #'         list object for `set_` and `add_` functions
+#'
+#' @section Mutability:
+#' The `set_`, `append_` and `add_` functions DO NOT mutate the dat object in
+#' place. The result must be assigned back to `dat` in order to be registered
+#' `dat <- set_*(dat, item, value)`
+#'
+#' @section `set_` vs `add_`:
+#' The `set_` functions edit a pre-existing element or create a new one if it
+#' does not exist already by calling the `add_` functions internally.
 #'
 #' @examples
 #' dat <- list(
