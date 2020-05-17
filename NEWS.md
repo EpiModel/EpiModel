@@ -1,3 +1,15 @@
+EpiModel 1.8.0
+------------------------------------------------------------------------------
+
+### BUG FIXES
+* Improve error handling for inputs to `dissolution_coefs`.
+* Skip dissolution diagnostics in `netdx` if a static ERGM is passed.
+
+### NOTE
+* This will be the last version of EpiModel 1.0 before major revisions to the 
+  package infrastructure and API to be released in EpiModel 2.0. 
+
+
 EpiModel 1.7.5
 ------------------------------------------------------------------------------
 
