@@ -27,7 +27,6 @@
 #'         list object for `set_` and `add_` functions
 #'
 #' @examples
-#' \dontrun{
 #' dat <- list(
 #'   attr = list(
 #'     active = rbinom(100, 1, 0.9)
@@ -81,7 +80,6 @@
 #' get_control_list(dat)
 #' get_control_list(dat, c("x", "y"))
 #' get_control(dat, "x")
-#' }
 #'
 #' @name dat_get_set
 NULL

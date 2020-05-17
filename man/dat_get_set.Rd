@@ -111,7 +111,6 @@ does not exist already by calling the `add_` functions internally.
 }
 
 \examples{
-\dontrun{
 dat <- list(
   attr = list(
     active = rbinom(100, 1, 0.9)
@@ -165,6 +164,5 @@ dat <- set_control(dat, "y", 0.8)
 get_control_list(dat)
 get_control_list(dat, c("x", "y"))
 get_control(dat, "x")
-}
 
 }
