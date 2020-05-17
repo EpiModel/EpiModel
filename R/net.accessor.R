@@ -81,10 +81,10 @@
 #' get_control_list(dat, c("x", "y"))
 #' get_control(dat, "x")
 #'
-#' @name dat_get_set
+#' @name net-accessor
 NULL
 
-#' @rdname dat_get_set
+#' @rdname net-accessor
 #' @export
 get_attr_list <- function(dat, item = NULL) {
   if (is.null(item)) {
@@ -104,7 +104,7 @@ get_attr_list <- function(dat, item = NULL) {
   return(out)
 }
 
-#' @rdname dat_get_set
+#' @rdname net-accessor
 #' @export
 get_attr <- function(dat, item, indexes = NULL, override.null.error = FALSE) {
   if (!item %in% names(dat[["attr"]])) {
@@ -139,7 +139,7 @@ get_attr <- function(dat, item, indexes = NULL, override.null.error = FALSE) {
   return(out)
 }
 
-#' @rdname dat_get_set
+#' @rdname net-accessor
 #' @export
 add_attr <- function(dat, item) {
   if (item %in% names(dat[["attr"]])) {
@@ -152,7 +152,7 @@ add_attr <- function(dat, item) {
   return(dat)
 }
 
-#' @rdname dat_get_set
+#' @rdname net-accessor
 #' @export
 set_attr <- function(dat, item, value, override.length.check = FALSE) {
   if (!item %in% names(dat[["attr"]])) {
@@ -173,7 +173,7 @@ set_attr <- function(dat, item, value, override.length.check = FALSE) {
 }
 
 #' @param n.new the number of new elements to append at the end of `item`
-#' @rdname dat_get_set
+#' @rdname net-accessor
 #' @export
 append_attr <- function(dat, item, value, n.new) {
   if (!item %in% names(dat[["attr"]])) {
@@ -198,7 +198,7 @@ append_attr <- function(dat, item, value, n.new) {
   return(dat)
 }
 
-#' @rdname dat_get_set
+#' @rdname net-accessor
 #' @export
 get_epi_list <- function(dat, item = NULL) {
   if (is.null(item)) {
@@ -218,7 +218,7 @@ get_epi_list <- function(dat, item = NULL) {
   return(out)
 }
 
-#' @rdname dat_get_set
+#' @rdname net-accessor
 #' @export
 get_epi <- function(dat, item, indexes = NULL, override.null.error = FALSE) {
   if (!item %in% names(dat[["epi"]])) {
@@ -253,7 +253,7 @@ get_epi <- function(dat, item, indexes = NULL, override.null.error = FALSE) {
   return(out)
 }
 
-#' @rdname dat_get_set
+#' @rdname net-accessor
 #' @export
 add_epi <- function(dat, item) {
   if (item %in% names(dat[["epi"]])) {
@@ -267,7 +267,7 @@ add_epi <- function(dat, item) {
 }
 
 #' @param at timestep where to add the new value for the epi output `item`
-#' @rdname dat_get_set
+#' @rdname net-accessor
 #' @export
 set_epi <- function(dat, item, at,  value) {
   if (length(at) != 1 || !is.numeric(at)) {
@@ -291,7 +291,7 @@ set_epi <- function(dat, item, at,  value) {
   return(dat)
 }
 
-#' @rdname dat_get_set
+#' @rdname net-accessor
 #' @export
 get_param_list <- function(dat, item = NULL) {
   if (is.null(item)) {
@@ -311,7 +311,7 @@ get_param_list <- function(dat, item = NULL) {
   return(out)
 }
 
-#' @rdname dat_get_set
+#' @rdname net-accessor
 #' @export
 get_param <- function(dat, item, override.null.error = FALSE) {
   if (!item %in% names(dat[["param"]])) {
@@ -328,7 +328,7 @@ get_param <- function(dat, item, override.null.error = FALSE) {
   return(out)
 }
 
-#' @rdname dat_get_set
+#' @rdname net-accessor
 #' @export
 add_param <- function(dat, item) {
   if (item %in% names(dat[["param"]])) {
@@ -341,7 +341,7 @@ add_param <- function(dat, item) {
   return(dat)
 }
 
-#' @rdname dat_get_set
+#' @rdname net-accessor
 #' @export
 set_param <- function(dat, item, value) {
   if (!item %in% names(dat[["param"]])) {
@@ -353,7 +353,7 @@ set_param <- function(dat, item, value) {
   return(dat)
 }
 
-#' @rdname dat_get_set
+#' @rdname net-accessor
 #' @export
 get_control_list <- function(dat, item = NULL) {
   if (is.null(item)) {
@@ -373,7 +373,7 @@ get_control_list <- function(dat, item = NULL) {
   return(out)
 }
 
-#' @rdname dat_get_set
+#' @rdname net-accessor
 #' @export
 get_control <- function(dat, item, override.null.error = FALSE) {
   if (!item %in% names(dat[["control"]])) {
@@ -390,7 +390,7 @@ get_control <- function(dat, item, override.null.error = FALSE) {
   return(out)
 }
 
-#' @rdname dat_get_set
+#' @rdname net-accessor
 #' @export
 add_control <- function(dat, item) {
   if (item %in% names(dat[["control"]])) {
@@ -403,7 +403,7 @@ add_control <- function(dat, item) {
   return(dat)
 }
 
-#' @rdname dat_get_set
+#' @rdname net-accessor
 #' @export
 set_control <- function(dat, item, value) {
   if (!item %in% names(dat[["control"]])) {
@@ -415,7 +415,7 @@ set_control <- function(dat, item, value) {
   return(dat)
 }
 
-#' @rdname dat_get_set
+#' @rdname net-accessor
 #' @export
 get_init_list <- function(dat, item = NULL) {
   if (is.null(item)) {
@@ -435,7 +435,7 @@ get_init_list <- function(dat, item = NULL) {
   return(out)
 }
 
-#' @rdname dat_get_set
+#' @rdname net-accessor
 #' @export
 get_init <- function(dat, item, override.null.error = FALSE) {
   if (!item %in% names(dat[["init"]])) {
@@ -452,7 +452,7 @@ get_init <- function(dat, item, override.null.error = FALSE) {
   return(out)
 }
 
-#' @rdname dat_get_set
+#' @rdname net-accessor
 #' @export
 add_init <- function(dat, item) {
   if (item %in% names(dat[["init"]])) {
@@ -465,7 +465,7 @@ add_init <- function(dat, item) {
   return(dat)
 }
 
-#' @rdname dat_get_set
+#' @rdname net-accessor
 #' @export
 set_init <- function(dat, item, value) {
   if (!item %in% names(dat[["init"]])) {
