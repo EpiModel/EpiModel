@@ -460,6 +460,16 @@ control.net <- function(type,
     message("EpiModel 1.7.0 onward renamed the death function deaths.FUN to departures.FUN. See documentation for details.")
   }
 
+  if ("depend" %in% names(dot.args)) {
+    p$resimulate.network <- dot.args$depend
+    message("EpiModel 2.0 onwward has replaced the control.net setting depend with resimulate.network for clarity. Please update your code accordingly.")
+  }
+
+  if ("save.network" %in% names(dot.args) || "save.transmat" %in% names(dot.args)) {
+    p$tergmLite <- FALSE
+    message("EpiModel 2.0 onward has folded saving of the network object and transmission matrix into control.net setting tergmLite: if FALSE, these are saved automatically; if true, they are not saved. Please update code accordingly.")
+  }
+
   ## Module classification
   bi.mods <- grep(".FUN", names(formal.args), value = TRUE)
   p$bi.mods <- character()
