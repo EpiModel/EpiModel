@@ -462,8 +462,15 @@ control.net <- function(type,
 
   ## Module classification
   bi.mods <- grep(".FUN", names(formal.args), value = TRUE)
+  p$bi.mods <- character()
   bi.nms <- bi.mods
-  p$bi.mods <- bi.mods
+  index <- 1
+  for (i in 1:length(bi.mods)) {
+    if (!is.null(p[[bi.mods[i]]])) {
+      p$bi.mods[index] <- bi.mods[i]
+      index <- index + 1
+    }
+  }
   p$user.mods <- grep(".FUN", names(dot.args), value = TRUE)
 
 
