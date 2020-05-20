@@ -139,7 +139,7 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
     }
   }
 
-  ##Updated parameter names
+  ## Defaults and Checks
   if ("b.rate" %in% names.dot.args) {
     p$a.rate <- dot.args$b.rate
     message("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate to a.rate. ",
@@ -151,7 +151,13 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
             "See documentation for details.")
   }
 
-  ## Defaults and checks
+  m2.flag <- grep(".m2", names(p))
+  if (length(m2.flag) > 0) {
+    names(p) <- gsub(".m2", ".g2", names(p))
+    warning("EpiModel 2.0 onward has updated parameter suffixes reflecting a move from mode to group networks. ",
+            "All .m2 parameters changed to .g2. See documentation for more details.")
+
+  }
   if (missing(act.rate)) {
     p$act.rate <- 1
   }
@@ -452,22 +458,27 @@ control.net <- function(type,
   if ("births.FUN" %in% names(dot.args)) {
     p$arrivals.FUN <- dot.args$births.FUN
     p$births.FUN <- dot.args$births.FUN <- NULL
-    message("EpiModel 1.7.0 onward renamed the birth function births.FUN to arrivals.FUN. See documentation for details.")
+    message("EpiModel 1.7.0 onward renamed the birth function births.FUN to arrivals.FUN. ",
+            "See documentation for details.")
   }
   if ("deaths.FUN" %in% names(dot.args)) {
     p$departures.FUN <- dot.args$deaths.FUN
     p$deaths.FUN <- dot.args$deaths.FUN <- NULL
-    message("EpiModel 1.7.0 onward renamed the death function deaths.FUN to departures.FUN. See documentation for details.")
+    message("EpiModel 1.7.0 onward renamed the death function deaths.FUN to departures.FUN. ",
+            "See documentation for details.")
   }
 
   if ("depend" %in% names(dot.args)) {
     p$resimulate.network <- dot.args$depend
-    message("EpiModel 2.0 onwward has replaced the control.net setting depend with resimulate.network for clarity. Please update your code accordingly.")
+    message("EpiModel 2.0 onwward has replaced the control.net setting depend with ",
+            "resimulate.network for clarity. Please update your code accordingly.")
   }
 
   if ("save.network" %in% names(dot.args) || "save.transmat" %in% names(dot.args)) {
     p$tergmLite <- FALSE
-    message("EpiModel 2.0 onward has folded saving of the network object and transmission matrix into control.net setting tergmLite: if FALSE, these are saved automatically; if true, they are not saved. Please update code accordingly.")
+    message("EpiModel 2.0 onward has folded saving of the network object and transmission ",
+            "matrix into control.net setting tergmLite: if FALSE, these are saved automatically; ",
+            "if true, they are not saved. Please update code accordingly.")
   }
 
   ## Module classification
