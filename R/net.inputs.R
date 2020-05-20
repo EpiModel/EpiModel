@@ -418,7 +418,7 @@ control.net <- function(type,
                         departures.FUN = NULL,
                         arrivals.FUN = NULL,
                         nwupdate.FUN = nwupdate.net,
-                        prevalence.FUN = NULL,
+                        prevalence.FUN = prevalence.net,
                         verbose.FUN = verbose.net,
                         module.order = NULL,
                         set.control.ergm,
@@ -488,8 +488,9 @@ control.net <- function(type,
   ## Defaults and checks
 
   #Check whether any base modules have been redefined by user (note: must come after above)
-  bi.nms <- bi.nms[-which(bi.nms %in% c("initialize.FUN", "resim_nets.FUN", "verbose.FUN", "nwupdate.FUN"))]
-  if (length(bi.nms) > 0){
+  bi.nms <- bi.nms[-which(bi.nms %in% c("initialize.FUN", "resim_nets.FUN",
+                                        "verbose.FUN", "nwupdate.FUN", "prevalence.FUN"))]
+  if (length(bi.nms) > 0) {
     flag1 <- logical()
     for (args in 1:length(bi.nms)) {
       if (!(is.null(p[[bi.nms[args]]])) ) {
@@ -789,7 +790,7 @@ crosscheck.net <- function(x, param, init, control) {
     control$type <- "SI"
   }
 
-  if (is.null(control$type) && length(grep("rec", names(param))) != 0){
+  if (is.null(control$type) && length(grep("rec", names(param))) != 0) {
     control$type <- "SIR"
   }
 
