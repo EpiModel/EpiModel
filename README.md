@@ -68,22 +68,7 @@ If using EpiModel for teaching or research, please include a citation our main m
 Please also <a href="mailto:samuel.m.jenness@emory.edu?Subject=We Used EpiModel in Our Study!" target="_top">send us an email </a> if you have used EpiModel in your work so we can add the citation below.
 
 ### Funding
-The primary support for the development of these software tools and statistical methods has been by  two National Institutes of Health (NIH) grants:
-
-* [NIH R01 AI138783](https://projectreporter.nih.gov/project_info_description.cfm?aid=9623724): EpiModel 2.0: Integrated Network Models for HIV/STI Prevention Science (PI: Samuel Jenness)
-* [NIH R01 HD68395](https://projectreporter.nih.gov/project_info_description.cfm?aid=8841605): Statistical Methods for Network Epidemiology (PI: Martina Morris)
-
-Our applied research projects using EpiModel have received funding from the NIH and Centers for Disease Control and Prevention (CDC):
-
-* [NIH R21 MH112449](https://projectreporter.nih.gov/project_info_description.cfm?aid=9271672): Modeling Antiretroviral-Based Prevention among MSM in the US (PI: Samuel Jenness)
-* [NIH R21 HD075662](https://projectreporter.nih.gov/project_info_description.cfm?aid=8601779): Using Sexual Network Transmission Models to Explain HIV Disparities Between Black and White MSM (PI: Steven Goodreau)
-* [NIH R01 AI108490](https://projectreporter.nih.gov/project_info_description.cfm?aid=9024415): Integrated Bio-Social Models for HIV Epidemiology (MPIs: Steven Goodreau, Joshua Herbeck, and John Mittler)
-* [CDC U38 PS004646](https://projectreporter.nih.gov/project_info_details.cfm?aid=8926715): Enhancing Models of HIV, Viral Hepatitis, STIs, and Tuberculosis to Inform and Improve Public Health Impact (PI: Patrick Sullivan)
-
-Our team also receives institutional support through the following center-level NIH grants:
-
-* [NIH P30 AI050409](https://projectreporter.nih.gov/project_info_description.cfm?aid=9120767): Center for AIDS Research at Emory University (MPIs: Carlos del Rio and James Curran)
-* [NIH P30 AI027757](https://projectreporter.nih.gov/project_info_description.cfm?aid=9069392): Center for AIDS Research at the University of Washington (PI: King Holmes)
+The primary support for the development of these software tools and statistical methods has been by two National Institutes of Health (NIH) grants. Our applied research projects using EpiModel have received funding from the NIH and Centers for Disease Control and Prevention (CDC). Our team also receives institutional support through center-level NIH grants. A full list of our funding support can be found [here](https://github.com/statnet/EpiModel/wiki/EpiModel-Funding).
 
 
 ### EpiModel in the Scientific Literature
