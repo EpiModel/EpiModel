@@ -17,30 +17,37 @@ suppressMessages(suppressWarnings(library(EpiModel)))
 
 The newest release of EpiModel, dubbed "EpiModel 2.0", brings with it several changes to the EpiModel workflow you may be accustomed to from previous version of EpiModel, as well as adding new functionality to the platform in order to make running dynamic infectious disease models even easier. In this tutorial, we will go through the major changes to EpiModel, detail the new features that have been added and in the final sections provide examples on how to migrate your code from EpiModel 1.x to EpiModel 2.0.
 
+Throughout this document, `R` code blocks have been commeneted with the relevant EpiModel version to aid users: `# EpiModel 1.x` refers to code used in previous versions of EpiModel and `# EpiModel 2.0` refers to code from the current version of EpiModel. Uncommented code remains unchanged between versions of EpiModel.
+
+As always information on EpiModel may be found using `help(package = "EpiModel")` or visiting [EpiModel on Github](https://github.com/statnet/EpiModel).
+
 # EpiModel Changes
 
 In this section, we will detail the core functions that remain in EpiModel 2.0 yet received an overhaul for efficiency, flexibility and/or user accessibility. All changes listed in this section will be further demonstrated in the "EpiModel 1.x Code Migration" section of this document.
 
-## Mode to Group
+## Rethinking Networks
 
 The most significant change in EpiModel 2.0 is in how we approach defining, estimating and using networks in epidemic simulations as well as the resultant changes in the EpiModel workflow. The most significant change to the EpiModel workflow is in how we handle heterogeneous sub-populations. In the original EpiModel workflow, designation of a second population was done by initializing a new network and setting it's `bipartite` input parameter equal to the number of vertices in the first mode:
 
 ```{r echo = TRUE, eval = FALSE}
+# EpiModel 1.x
 num1 <- num2 <- 50
 nw <- network.initialize(num1 + num2, directed = FALSE, bipartite = num1)
 ```
 
-This creates a network in which there were 50 vertices in mode one and 50 vertices in mode two and in which inter-modal mixing does not occur, i.e., no mixing within modes. It should be noted, that this interpretation of a bipartite network is not standard. Examples of bipartite networks include relationships between heterosexual men and women (groups are men and women, with an edge formed if they are in a relationship), health care providers and type of insurance accepted (with groups health care provider and insurance agency, with a link formed if the provider accepts this form of insurance) or business density in a city (with groups businesses and, say, zip-code and a link formed if a business resides within that area). In order to make modeling in EpiModel more flexible, in EpiModel 2.0 we move away from the language of modes and instead refer to heterogeneous sub-populations as groups. This change requires a change in how one sets up initial networks as well:
+This creates a network in which there are 50 vertices in mode one and 50 vertices in mode two and in which inter-modal mixing does not occur, i.e., no mixing within modes. It should be noted, that this interpretation of a bipartite network is not standard. Examples of bipartite networks include health care providers and type of insurance accepted (with modes health care provider and insurance agency, with a link formed if the provider accepts this form of insurance) or business density in a city (with modes businesses and, say, zip-code and a link formed if a business resides within that area). In order to make modeling in EpiModel consistent with expected social network theory, in EpiModel 2.0 we move away from defining our networks as bipartite and instead refer to heterogeneous sub-populations as groups. This requires a change in how users set up initial networks:
 
 ```{r echo = TRUE, eval = FALSE}
+# EpiModel 2.0
 num1 <- num2 <- 50
 nw <- network_initialize(n = num1+num2)
 nw <- set_vertex_attribute(nw, "group", rep(1:2, c(num1, num2)))
 ```
 
-Above we have the updated syntax for creating bipartite, now called "two-group", networks within the EpiModel workflow. The network is initialized as usual using `network_initialize` (a new version of `network.initialize` detailed in section "network_initialize, get_ and set_vertex_attribute"), however, in order to capture the previous two-mode structure, we set heterogeneity as a vertex attribute instead of a network feature using `set_vertex_initialize` (a new version of `set.vertex.attribute`); in the case of the new EpiModel workflow, this is done using the attribute `group`. This change allows for more flexibility both in interpretation as well as network structure: in the `bipartite` networks we have developed using EpiModel 1.x, mixing between the two modes is not allowed. However, in a two-group network, as group assignment is now a vertex attribute we can model within group mixing. For example, in a population of males and females, this new workflow allows us to model more than just heterosexual relationships as below:
+Above we have the updated syntax for creating bipartite, now called "two-group", networks within the EpiModel workflow. The network is initialized as usual using `network_initialize` (a new version of `network.initialize` detailed in section "Network Initialization Functions"), however, in order to capture the previous bipartite structure, we set heterogeneity as a vertex attribute instead of a network feature using `set_vertex_initialize` (a new version of `set.vertex.attribute`); in the case of the new EpiModel workflow, this is done using the attribute `group`. This change allows for consistency in interpretation as well as flexibility of network structure: in the bipartite networks we have developed using EpiModel 1.x, mixing between the two modes is not allowed. However, in a two-group network, as group assignment is now a vertex attribute, we can model within group mixing. For example, in a population of males and females, this new workflow allows us to model more than just heterosexual relationships as below:
 
 ```{r echo = TRUE, eval = FALSE}
+# EpiModel 2.0
 num1 <- num2 <- 50
 nw <- network_initialize(n = num1+num2)
 nw <- set_vertex_attribute(nw, "group", rep(1:2, c(num1, num2)))
@@ -56,13 +63,13 @@ target.stats <- c(30, 0)
 
 It is important to note, that the vertex attribute "group" now takes on a special meaning within the context of EpiModel modeling, separate from other attribute names. Users should be mindful when constructing networks in which "group" is a vertex attribute and note whether or not the interpretation of group aligns with that detailed above.
 
-Further, the group vertex attribute is restricted to levels of 1 and 2; other combinations of attribute levels - 0 and 1 or "male" and "female" - are not permitted here and will result in unexpected behavior in EpiModel. Further note that we are not limited to replicating bipartite networks and the target statistic for `nodematch("group")` can be any number from 0 to the total number of edges in the network.
+Further, the group vertex attribute is restricted to levels of 1 and 2; other combinations of attribute levels - say, 0 and 1 or "male" and "female" - are not permitted here and may result in EpiModel producing unintended results. Finally, we are not limited to replicating bipartite networks and the target statistic for `nodematch("group")` can be any number from 0 to the total number of edges in the network.
 
 The above restrictions on the group vertex attribute must be taken into account or EpiModel may behave in unpredictable or unexpected ways.
 
 ### Attribute Copying
 
-In line with the above change, we have introduced new helper functions `copy_nwattr_to_datattr` and `copy_datattr_to_nwattr` to streamline copying of attributes between the newtwork and master dat objects. In the new EpiModel 2.0 workflow, any attribute present on the network at time of epidemic simulation is copied to the dat object as a tracked attribute. Similarly, in the course of epidemic simulation, the network object is updated with the current attribute lists. This updating is done automatically with a new function, `nwupdate.net`, that handles all interaction with the network object (explained in more detail in "Network Update" in section "EpiModel Additions & New Features") during the simulation process.
+In line with the above change, we have introduced new helper functions `copy_nwattr_to_datattr` and `copy_datattr_to_nwattr` to streamline copying of attributes between the network and master dat objects. In the new EpiModel 2.0 workflow, any attribute present on the network at time of epidemic simulation is copied to the dat object as a tracked attribute. Similarly, in the course of epidemic simulation, the network object is updated with the current attribute lists. This updating is done automatically with a new function - `nwupdate.net` - that handles all interaction with the network object (explained in more detail in "Network Update" in section "EpiModel Additions & New Features") during the simulation process.
 
 Users should be mindful of the relationship between the network object and formation model used during network estimation. The below table details the scenarios (with example code) in which attributes may or may not be on the network object and formation models: allowed scenarios are in blue, with those in red invalid for estimation.
 
@@ -79,6 +86,7 @@ Along with the change to how we build two-group networks, we have also changed t
 Input parameters for each of these two functions, for the second group, have also changed with EpiModel moving from mode to group language. Second group parameters or initial conditions are now denoted by a `.g2` suffix as opposed to the `.m2` suffix that was used previously:
 
 ```{r echo = TRUE, eval = TRUE}
+# EpiModel 2.0
 init <- init.net(i.num = 10, i.num.g2 = 10)
 param <- param.net(inf.prob = 0.1, inf.prob.g2 = 0.2)
 ```
@@ -112,6 +120,7 @@ The package `tergmLite` has been added as a dependent package for EpiModel. `ter
 The use of `tergmLite` is fairly straightforward and uses one of two versions of the full network object during network simulations. If `tergmLite = TRUE` is passed in as a control setting, EpiModel will use the `networkLite` version of the full network, a two-column edgelist representation of the full network. Alternatively, if `tergmLite = FALSE` is passed through, EpiModel will use the original `network` object for resimulations. As an example:
 
 ```{r echo = TRUE, eval = FALSE}
+# EpiModel 2.0
 nw <- network_initialize(100)
 formation <- ~edges
 target.stats <- 30
@@ -155,6 +164,7 @@ TO standardize the methods for reading and writing to the `dat` object, several 
 The `set` group of functions sets the value of an item on a sub-list of the `dat` object; these functions are often used at the end of a modules sequence to update attributes or for tracking of epidemic statistics. As an example: 
 
 ```{r echo = TRUE, eval = FALSE}
+# EpiModel 2.0
 ## Code snippet from one-Group infection module:
 dat <- set_epi(dat, "si.flow", at, nInf)
 ```
@@ -166,6 +176,7 @@ Here, we want to record the number of new infected - `nInf` -  at the current ti
 The `get` group of functions retrieve the value of an item on a sub-list of the `dat` objects, and are most often used when retrieving input parameters of `init`, `param` and `control` objects or for querying current attribute or epidemic tracker lists. As an example:
 
 ```{r echo = TRUE, eval = FALSE}
+# EpiModel 2.0
 ## Code snippet from One-Group arrivals module
 a.rate <- get_param(dat, "a.rate")
 nOld <- get_epi(dat, "num", index)
@@ -188,17 +199,20 @@ The following section will help EpiModel users update code written in EpiModel 1
 New `tergmLite` version of network initialization function:
 
 ```{r, echo = TRUE, eval = FALSE}
+# EpiModel 1.x
 nw <- network.initialize(num = 100, directed = FALSE)
 ```
 
 should be updated to:
 
 ```{r, echo = TRUE, eval = FALSE}
+# EpiModel 2.0
 nw <- network_initialize(num = 100)
 ```
 
 Similarly, `set.vertex.attribute` and `get.vertex.attribute` have been updated as well:
 ```{r echo = TRUE, eval = FALSE}
+# EpiModel 1.x
 nw <- set.vertex.attribute(nw, "group", rep(1:2, 50))
 group <- get.vertex.attribute(nw, "group")
 ```
@@ -206,6 +220,7 @@ group <- get.vertex.attribute(nw, "group")
 should be updated to:
 
 ```{r echo = TRUE, eval = FALSE}
+# EpiModel 2.0
 nw <- set_vertex_attribute(nw, "group", rep(1:2, 50))
 group <- get_vertex_attribute(nw, "group")
 ```
@@ -217,7 +232,7 @@ group <- get_vertex_attribute(nw, "group")
 The construction of bipartite networks for use in EpiModel:
 
 ```{r echo = TRUE, eval = FALSE}
-## Need to consolidate all the last three
+# EpiModel 1.x
 num1 <- num2 <- 50
 nw <- network.initialize(num = num1+num2, bipartite = num1, directed = FALSE)
 formation <- ~edges
@@ -227,6 +242,7 @@ target.stats <- 30
 should be updated to two-group network models with "group" as a vertex attribute and no within-group mixing:
 
 ```{r echo = TRUE, eval = FALSE}
+# EpiModel 2.0
 num1 <- num2 <- 50
 nw <- network_initialize(num = num1 + num2)
 nw <- set_vertex_attribute(nw, "group", rep(1:2, c(num1, num2)))
@@ -239,6 +255,7 @@ target.stats <- c(30, 0)
 Mode syntax has been updated to group syntax where appropriate. The following:
 
 ```{r echo = TRUE, eval = FALSE}
+# EpiModel 1.x
 init <- init.net(i.num = 50, i.num.m2 = 50)
 param <- param.net(inf.prob = 0.1, inf.prob.m2 = 0.1,
                    rec.rate = 0.02, rec.rate.m2 = 0.02,
@@ -248,6 +265,7 @@ param <- param.net(inf.prob = 0.1, inf.prob.m2 = 0.1,
 should be updated to:
 
 ```{r echo = TRUE, eval = FALSE}
+# EpiModel 2.0
 init <- init.net(i.num = 50, i.num.g2 = 50)
 param <- param.net(inf.prob = 0.1, inf.prob.g2 = 0.1,
                    rec.rate = 0.02, rec.rate.g2 = 0.02,
@@ -259,19 +277,48 @@ param <- param.net(inf.prob = 0.1, inf.prob.g2 = 0.1,
 When the user provides any user-defined functions, or passes in non-standard functions to base modules:
 
 ```{r echo = TRUE, eval = FALSE}
-infect2 <- function(x, at){return(x)}
-aging <- function(x, at){return(x)}
+# EpiModel 2.0
+## Example schema of non-standard infection.FUN to replace build in infection.net
+infect2 <- function(dat, at) {
+## 1. Pull in parameters relevant to infection process process. E.g.,
+# Exposure rate
+e.rate <- get_param(dat, "e.rate")
+## 2. Pull current attribute list identifying succeptible and infectious 
+## individuals. E.g.,
+status <- get_attr(dat, "status")
+## 3. Run infection process
+## 4. Update newly exposed
+status[newExp] <- "e"
+dat <- set_attr(dat, "status")
+##5. Return updated dat object
+return(dat)
+}
+
+## Example schema of user-defined function: aging
+aging <- function(dat, at) {
+## 1. Pull current age
+age <- get_attr(dat, "attr")
+## 2. Advance age attribute by one time step
+age <- age + 1
+## 3. Set updated age attribute on dat object
+dat <- set_attr(dat, "age")
+## 4. Return updated dat object
+return(dat)
+}
+```
+
+```{r echo = TRUE, eval = FALSE}
+# EpiModel 1.x
 control <- control.net(type = SI, nsims = 10, nsteps = 10,
                        infection.FUN = infect2, aging.FUN = aging)
 ```
 
-the `control.net` input parameter `type` must be `NULL` and the user must specify all base modules, updating code as follows:
+the `control.net` input parameter `type` must be `NULL`, updating code as follows:
 
 ```{r echo = TRUE, eval = FALSE}
+# EpiModel 2.0
 control <- control.net(type = NULL, nsims = 10, nsteps = 10,
-                       resim_net.FUN = resim_nets, infection.FUN = infect2, aging.FUN = aging,
-                       recovery.FUN = recovery.net, prevalence.FUN = prevalence.net,
-                       departures.FUN = departures.net, arrivals.FUN = arrivals.net)
+                       resim_net.FUN = resim_nets, infection.FUN = infect2, aging.FUN = aging)
 ```
 
 As mentioned previously, this change was done in order to emphasize to the user that this is a non-standard modeling type that is not handled by base EpiModel and may lead to unexpected results.
@@ -281,12 +328,14 @@ As mentioned previously, this change was done in order to emphasize to the user 
 To make clear the role that the network re-simulation parameter plays, the `control.net` parameter used to resimulate the network at each time has been renamed from `depend`:
 
 ```{r echo = TRUE, eval = FALSE}
+# EpiModel 1.x
 control <- control.net(type = "SI", nsims = 10, nsteps = 10, depend = TRUE)
 ```
 
 to `resimulate.network`:
 
 ```{r echo = TRUE, eval = FALSE}
+# EpiModel 2.0
 control <- control.net(type = "SI", nsims = 10, nsteps = 10, resimulate.network = TRUE)
 ```
 
@@ -295,6 +344,7 @@ control <- control.net(type = "SI", nsims = 10, nsteps = 10, resimulate.network 
 The new accessor functions are easy to use utilities for getting, setting and appending data, replacing `$`  and `[[ ]]` operations. Base EpiModel functions have already been updated reflecting this change; the following examples detail how users should update any changes to base EpiModel functions or any user-defined functions. For a robust example of how EpiModel 1.x code needs to be updated when using these functions in module extension, refer to "User Defined Modules: SEIR Epidemic Model" in the "Worked Examples" section. Below are example code chunks from extension API:
 
 ```{r echo = TRUE, eval = FALSE}
+# EpiModel 1.x
 newAge <- sample(15:65, 100, replace = TRUE)
 dat$attr$age <- age
 ```
@@ -302,6 +352,7 @@ dat$attr$age <- age
 or 
 
 ```{r echo = TRUE, eval = FALSE}
+# EpiModel 1.x
 newAge <- sample(15:65, 100, replace = TRUE)
 dat[["attr"]][["age"]] <- age
 ```
@@ -309,6 +360,7 @@ dat[["attr"]][["age"]] <- age
 should be updated to:
 
 ```{r echo = TRUE, eval = FALSE}
+# EpiModel 2.0
 newAge <- sample(15:65, 100, replace = TRUE)
 dat <- set_attr(dat, "age", age)
 ```
@@ -316,24 +368,28 @@ dat <- set_attr(dat, "age", age)
 Similarly for retrieval and setting of list elements:
 
 ```{r echo = TRUE, eval = FALSE}
+# EpiModel 1.x
 age <- dat$attr$age
 ```
 
 or 
 
 ```{r echo = TRUE, eval = FALSE}
+# EpiModel 1.x
 age <- dat[["attr"]][["age"]]
 ```
 
 should be updated to:
 
 ```{r echo = TRUE, eval = FALSE}
+# EpiModel 2.0
 age <- get_attr(dat, "age")
 ```
 
 And
 
 ```{r echo = TRUE, eval = FALSE}
+# EpiModel 1.x
 newAge <- sample(15:65, 2, replace = TRUE)
 dat$attr$age[101:102] <- newAge
 ```
@@ -341,6 +397,7 @@ dat$attr$age[101:102] <- newAge
 or 
 
 ```{r echo = TRUE, eval = FALSE}
+# EpiModel 1.x
 newAge <- sample(15:65, 2, replace = TRUE)
 dat[["attr"]][["age"]][101:102] <- newAge
 ```
@@ -348,6 +405,7 @@ dat[["attr"]][["age"]][101:102] <- newAge
 should be updated to:
 
 ```{r echo = TRUE, eval = FALSE}
+# EpiModel 2.0
 newAge <- sample(15:65, 2, replace = TRUE)
 dat <- append_attr(dat, "age", newAge, 2)
 ```
@@ -360,7 +418,7 @@ The following section presents three worked examples of models built in EpiModel
 
 ## SI Model With No Vital Dynamics
 
-Here we have a simple SI (susceptible to infected) epidemic model, overlaid with a bipartite network. As we have moved away from bipartite networks to two-group networks, we need to first update our old network formation code. The old bipartite syntax:
+Here we have a simple SI (susceptible to infected) epidemic model on a bipartite network. As we have moved away from bipartite networks to two-group networks, we need to first update our old network formation code. The old bipartite syntax:
 
 ```{r echo = TRUE, eval = FALSE}
 ## EpiModel 1.x Workflow
@@ -376,15 +434,18 @@ need to be updated to the two-group syntax, noting that to replicate the biparti
 ## EpiModel 2.0 
 num1 <- num2 <- 500
 
-# update to new initialization function network_initialize.
+## update to new initialization function network_initialize.
 nw <- network_initialize(n = num1 + num2)
 
-# Update to new vertex assignment function set_vertex_attribute
+##Update to new vertex assignment function set_vertex_attribute
 nw <- set_vertex_attribute(nw, "group", rep(1:2, c(num1,num2)))
 
-# If looking to replicate 'bipartite' network:
+## If looking to replicate 'bipartite' network:
 formation <- ~edges + nodematch("group")
 target.stats <- c(400, 0)
+
+## If interested in within group mixing; here 100 of the total edges match on group:
+target.stats <- c(400, 100)
 ```
 
 Next we find the coefficient of dissolution and then estimate our network.
@@ -397,7 +458,7 @@ est <- netest(nw, formation, target.stats, coef.diss)
 Similar to moving network formation from bipartite to two-group, we need to update input parameters for initial conditions and epidemic parameters from mode (".m2" suffixes):
 
 ```{r echo = TRUE, eval = FALSE}
-## EpiModel 1.x Workflow
+## EpiModel 1.x
 param <- param.net(inf.prob = 0.4, inf.prob.m2 = 0.2)
 init <- init.net(i.num = 20, i.num.m2 = 20)
 ```
@@ -422,7 +483,7 @@ control <- control.net(type = "SI", nsteps = 100, depend = TRUE,
 should be updated to:
 
 ```{r echo = TRUE, eval = FALSE}
-## EpiModel 2.0 Workflow
+## EpiModel 2.0
 # control.net parameter depend updated to resimulate.network; save.network folded
 # into tergmLite.
 control <- control.net(type = "SI", nsteps = 100, resimulate.network = TRUE,
@@ -437,10 +498,10 @@ sim <- netsim(est, param, init, control)
 
 ## SIR Model With Vital Dynamics
 
-Here we have an SIR model (recovery from infection that grants immunity) in an open population, with a one-group network overlaid on top. As we are dealing with a one-group network, network formation is fairly straightforward with only a change needed to the function initializing the network. Thus
+Here we have an SIR model (recovery from infection that grants immunity) in an open population, with a one-group network on top. As we are dealing with a one-group network, network formation is fairly straightforward with only a change needed to the function initializing the network. Thus
 
 ```{r echo = TRUE, eval = FALSE}
-## EpiModel 1.x Workflow
+## EpiModel 1.x
 num <- 1000
 nw <- network.initialize(num, directed = FALSE)
 ```
@@ -448,7 +509,7 @@ nw <- network.initialize(num, directed = FALSE)
 should be updated to:
 
 ```{r echo = TRUE, eval = FALSE}
-## EpiModel 2.0 Workflow
+## EpiModel 2.0
 num <- 1000
 nw <- network_initialize(num)
 ```
@@ -465,7 +526,7 @@ est <- netest(nw, formation, target.stats, coef.diss)
 In EpiModel 1.70, the language of "births" and "deaths" was updated to "arrivals" and "departures." Epidemic input parameter "b.rate"
 
 ```{r echo = TRUE, eval = FALSE}
-## EpiModel 1.x Workflow
+## EpiModel 1.x
 param <- param.net(inf.prob = 0.4, act.rate = 1, rec.rate = 0.02,
                    b.rate = 0.005, di.rate = 0.005, ds.rate = 0.005,
                    dr.rate = 0.005)
@@ -473,7 +534,7 @@ param <- param.net(inf.prob = 0.4, act.rate = 1, rec.rate = 0.02,
 
 should be updated to "a.rate":
 ```{r echo = TRUE, eval = FALSE}
-## EpiModel 2.0 Workflow
+## EpiModel 2.0
 param <- param.net(inf.prob = 0.4, act.rate = 1, rec.rate = 0.02,
                    a.rate = 0.005, di.rate = 0.005, ds.rate = 0.005,
                    dr.rate = 0.005)
@@ -482,13 +543,13 @@ param <- param.net(inf.prob = 0.4, act.rate = 1, rec.rate = 0.02,
 The input parameters for departures do not need to be updated however users should be aware of the change in interpretation. As with the previous SI example, control settings for `depend` and `save.network` (and `save.transmat`) should be updated to `resimulate.network` and `tergmLite` respectively.
 
 ```{r echo = TRUE, eval = FALSE}
-## EpiModel 1.x Workflow
+## EpiModel 1.x
 control <- control.net(type = "SIR", nsteps = 100, depend = FALSE, 
                        save.network = FALSE)
 ```
 
 ```{r echo = TRUE, eval = FALSE}
-## EpiModel 2.0 Workflow
+## EpiModel 2.0
 control <- control.net(type = "SIR", nsteps = 100, resimulate.network = FALSE,
                        tergmLite = TRUE)
 ```
