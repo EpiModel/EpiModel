@@ -1,0 +1,39 @@
+---
+title: "Table of Common ERGM Terms"
+author: "Day 2 | NME"
+output:
+  html_document:
+    fig_width: 15
+---
+
+<br>
+
+#### For full list, in R type: `help("ergm-terms")`
+
+<br>
+
+Name | Unit of counting | Description | Num. of statistics | Dep/ind | Dir/undir | Unip/bip
+---- | ---------------- | ----------- | ---------- | ---- | ---------- | --------- | 
+edges | edges | number of edges | 1 | ind  | both | both
+nodefactor | units of the attribute  | number of times that nodes with a given level of a categorical nodal attribute appear within the edgeset | 1 per level of attribute included | ind | both | both
+nodematch | edges | number of edges whose incident nodes match on value of nodal attribute | if diff=F, 1;  if diff=T, 1 per level of attribute included | ind | both | both
+nodemix | edges | number of edges whose incident nodes fall into each combination of values for a nodal attribute | 1 per combo of attribute included | ind | both | both
+nodecov | units of the attribute | the sum of a nodal attribute value for the incident nodes of an edge, summed across all edges | 1 | ind | both | both
+absdiff | units of the attribute | the absolute difference in a nodal attribute between incident nodes for an edge, summed across all edges | 1 | ind | both | both
+mutual | dyad | number of mutual edges (a->b and b->a) | 1 | dep | dir | both 
+degree | node | number of nodes of degree x | 1 per each value of x included | dep | undir | unip
+idegree | node | number of nodes of in-degree x | 1 per each value of x included | dep | dir | unip
+odegree | node | number of nodes of out-degree x | 1 per each value of x included | dep | dir | unip
+b1degree | node | number of mode 1 nodes of degree x | 1 per each value of x included | dep | undir | bip
+b2degree | node | number of mode 2 nodes of degree x | 1 per each value of x included | dep | undir | bip
+mindegree | node | number of nodes of at least degree x | 1 per each value of x included | dep | undir | unip
+triangles | triangles | number of triangles | 1 (more if attributes used) | dep | undir | unip
+gwesp | complex | geometrically weighted edgewise shared partners | 1 | dep | both | unip
+
+Notes: 
+
+- Dep/indep = A term involving statistical dependence or independence among relations
+
+- Dir/undir = works for directed and/or indirected networks
+
+- Unip/bip = works for unipartite and.or bipartite networks
