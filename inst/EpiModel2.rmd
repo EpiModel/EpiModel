@@ -157,7 +157,7 @@ New `tergmLite` versions of `network.initialize`, `get.vertex.attribute` and `se
 
 ## Accessor Functions
 
-TO standardize the methods for reading and writing to the `dat` object, several accessor functions have been added to EpiModel that make it clear the indexing and assignment operations that are being done on the master `dat` object during simulation, which means moving away from the `$` and `[[ ]]` operators. These functions belong to the `get` and `set` family of functions and act on the various lists contained within the master `dat` object, including but not limited to the attribute, epi, control and param lists. These functions take as input, at minimum, the master `dat` object and the item (as a character string) to "get" or "set" ("age" or "group" in the attribute list or "inf.prob" in the parameter list for example). Note that these functions and their usage only apply to module extension, where the users is either modifying existing modules or creating their own; they are not meant to be used outside of this setting.
+To standardize the methods for reading and writing to the `dat` object, several accessor functions have been added to EpiModel that make it clear the indexing and assignment operations that are being done on the master `dat` object during simulation, which means moving away from the `$` and `[[ ]]` operators. These functions belong to the `get` and `set` family of functions and act on the various lists contained within the master `dat` object, including but not limited to the attribute, epi, control and param lists. These functions take as input, at minimum, the master `dat` object and the item (as a character string) to "get" or "set" ("age" or "group" in the attribute list or "inf.prob" in the parameter list for example). Note that these functions and their usage only apply to module extension, where the users is either modifying existing modules or creating their own; they are not meant to be used outside of this setting.
 
 ### Set Functions
 
@@ -414,11 +414,11 @@ See `help("dat_get_set", "EpiModel")` for the complete list of accessor function
 
 # Worked Examples
 
-The following section presents three worked examples of models built in EpiModel 1.x and the corresponding changes needed in EpiModel 2.0. Changes will be highlighted by comments.
+The following section presents three worked examples of models built in EpiModel 1.x and the corresponding changes needed in EpiModel 2.0. Changes will be highlighted by comments. Link to full R scripts may be found by clicking the appropriate link.
 
 ## SI Model With No Vital Dynamics
 
-Here we have a simple SI (susceptible to infected) epidemic model on a bipartite network. As we have moved away from bipartite networks to two-group networks, we need to first update our old network formation code. The old bipartite syntax:
+Here we have a simple SI (susceptible to infected) epidemic model on a bipartite network, with [complete R script found here](https://github.com/statnet/EpiModel/tree/master/inst/2020-05-SITwoGroup). As we have moved away from bipartite networks to two-group networks, we need to first update our old network formation code. The old bipartite syntax:
 
 ```{r echo = TRUE, eval = FALSE}
 ## EpiModel 1.x Workflow
@@ -498,7 +498,7 @@ sim <- netsim(est, param, init, control)
 
 ## SIR Model With Vital Dynamics
 
-Here we have an SIR model (recovery from infection that grants immunity) in an open population, with a one-group network on top. As we are dealing with a one-group network, network formation is fairly straightforward with only a change needed to the function initializing the network. Thus
+Here we have an SIR model (recovery from infection that grants immunity) in an open population, with a one-group network on top, [complete R script located here](https://github.com/statnet/EpiModel/tree/master/inst/2020-05-SIRwithVitalDynamics). As we are dealing with a one-group network, network formation is fairly straightforward with only a change needed to the function initializing the network. Thus
 
 ```{r echo = TRUE, eval = FALSE}
 ## EpiModel 1.x
@@ -544,12 +544,14 @@ The input parameters for departures do not need to be updated however users shou
 
 ```{r echo = TRUE, eval = FALSE}
 ## EpiModel 1.x
+init <- init.net(i.num = 30)
 control <- control.net(type = "SIR", nsteps = 100, depend = FALSE, 
                        save.network = FALSE)
 ```
 
 ```{r echo = TRUE, eval = FALSE}
 ## EpiModel 2.0
+init <- init.net(i.num = 30)
 control <- control.net(type = "SIR", nsteps = 100, resimulate.network = FALSE,
                        tergmLite = TRUE)
 ```
@@ -557,13 +559,12 @@ control <- control.net(type = "SIR", nsteps = 100, resimulate.network = FALSE,
 Modeling continues as normal.
 
 ```{r echo = TRUE, eval = FALSE}
-init <- init.net(i.num = 30)
 sim <- netsim(est, param, init, control)
 ```
 
 ## User Defined Modules: SEIR Epidemic Model
 
-Our final example is an extension of the SIR model not represented in base EpiModel: an SEIR-epidemic that introduces an exposed state to the epidemic process, necessitating an updated infection module and a new disease progression module. Below, we have the new infection module that is based on EpiModel 1.x syntax.
+Our final example, [R script found here](https://github.com/statnet/EpiModel/tree/master/inst/2020-05-SEIRModuleExtension), is an extension of the SIR model not represented in base EpiModel: an SEIR-epidemic that introduces an exposed state to the epidemic process, necessitating an updated infection module and a new disease progression module. Below, we have the new infection module that is based on EpiModel 1.x syntax.
 
 ```{r echo = TRUE, eval = FALSE}
 ## EpiModel 1.x
@@ -796,8 +797,7 @@ In EpiModel 2.0, if any base modules have been changed or any user defined modul
 ```{r echo = TRUE, eval = FALSE}
 ## EpiModel 2.0
 ## Epidemic model parameterization
-# If any user defined functions, type must equal NULL and ALL base epidemic modules
-# must be present.
+# If any user defined functions, type must equal NULL
 control <- control.net(type = NULL, nsteps = 100, nsims = 1, infection.FUN = infect,
                        progress.FUN = progress)
 ```
