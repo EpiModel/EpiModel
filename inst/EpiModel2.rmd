@@ -49,7 +49,7 @@ Above we have the updated syntax for creating bipartite, now called "two-group",
 ```{r echo = TRUE, eval = FALSE}
 # EpiModel 2.0
 num1 <- num2 <- 50
-nw <- network_initialize(n = num1+num2)
+nw <- network_initialize(n = num1 + num2)
 nw <- set_vertex_attribute(nw, "group", rep(1:2, c(num1, num2)))
 formation <- ~edges + nodematch("group")
 target.stats <- c(30, 2)
