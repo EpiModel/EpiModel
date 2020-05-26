@@ -466,7 +466,7 @@ init <- init.net(i.num = 20, i.num.m2 = 20)
 to group (".g2" suffixes)
 
 ```{r echo = TRUE, eval = FALSE}
-## EpiModel 2.0 Workflow
+## EpiModel 2.0:
 # Update all parameters and initial conditions from ".m2" to ".g2" language.
 param <- param.net(inf.prob = 0.4, inf.prob.g2 = 0.2)
 init <- init.net(i.num = 20, i.num.g2 = 20)
@@ -475,7 +475,7 @@ init <- init.net(i.num = 20, i.num.g2 = 20)
 Finally, control parameters `depend` and `save.network` (along with `save.transmat`) have been replaced. The control parameter `resimulate.network` has replaced `depend` when a user wishes to resimulate the network at each timestep of simulation; this is to make it clearer what the parameter is actually doing. The parameters `save.network` and `save.transmat` have been replaced with `tergmLite`: if a user wishes to save the network and transmission matrix, they must use the full estimation routine provided by `tergm` (`tergmLite == FALSE`); otherwise, `tergmLite` is used, and no network of transmission matrix is saved. Thus
 
 ```{r echo = TRUE, eval = FALSE}
-## EpiModel 1.x Workflow
+## EpiModel 1.x
 control <- control.net(type = "SI", nsteps = 100, depend = TRUE, 
                        save.network = TRUE)
 ```
@@ -483,9 +483,8 @@ control <- control.net(type = "SI", nsteps = 100, depend = TRUE,
 should be updated to:
 
 ```{r echo = TRUE, eval = FALSE}
-## EpiModel 2.0
-# control.net parameter depend updated to resimulate.network; save.network folded
-# into tergmLite.
+## EpiModel 2.0:
+# control.net parameter depend updated to resimulate.network; save.network folded into tergmLite.
 control <- control.net(type = "SI", nsteps = 100, resimulate.network = TRUE,
                        tergmLite = FALSE)
 ```
@@ -611,8 +610,10 @@ infect <- function(dat, at) {
 The `$` operations must all be updated with their respective accessor functions.
 
 ```{r echo = TRUE, eval = FALSE}
-## EpiModel 2.0
+## EpiModel 2.0:
 # Update `$` operations to accessor functions
+ 
+
 ## Modified infection module
 infect2 <- function(dat, at) {
   
@@ -654,6 +655,7 @@ infect2 <- function(dat, at) {
 Next, we have the disease progression module, which moves individuals from the exposed to infected state. As with the previous infection function we must update all `$` operations:
 ```{r echo = TRUE, eval = FALSE}
 ## EpiModel 1.x
+
 ## New disease progression module
 progress <- function(dat, at) {
   
@@ -712,8 +714,9 @@ progress <- function(dat, at) {
 with their respective accessor versions.
 
 ```{r echo = TRUE, eval = FALSE}
-## EpiModel 2.0
+## EpiModel 2.0:
 # Update `$` operations to accessor functions
+
 ## New disease progression module
 progress2 <- function(dat, at) {
   
@@ -787,6 +790,7 @@ init <- init.net(i.num = 10)
 In the EpiModel 1.x workflow, the user passes their updated base module (`infect`) and new epidemic module (`progress`) through to `control.net` for use in their epidemic simulation.
 ```{r echo = TRUE, eval = FALSE}
 ## EpiModel 1.x
+
 ## Epidemic model parameterization
 control <- control.net(nsteps = 100, nsims = 1, infection.FUN = infect,
                        progress.FUN = progress, recovery.FUN = NULL)
@@ -796,6 +800,7 @@ In EpiModel 2.0, if any base modules have been changed or any user defined modul
 
 ```{r echo = TRUE, eval = FALSE}
 ## EpiModel 2.0
+
 ## Epidemic model parameterization
 # If any user defined functions, type must equal NULL
 control <- control.net(type = NULL, nsteps = 100, nsims = 1, infection.FUN = infect,
