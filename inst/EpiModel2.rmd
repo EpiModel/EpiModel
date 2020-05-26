@@ -40,7 +40,7 @@ This creates a network in which there are 50 vertices in mode one and 50 vertice
 ```{r echo = TRUE, eval = FALSE}
 # EpiModel 2.0
 num1 <- num2 <- 50
-nw <- network_initialize(n = num1+num2)
+nw <- network_initialize(n = num1 + num2)
 nw <- set_vertex_attribute(nw, "group", rep(1:2, c(num1, num2)))
 ```
 
