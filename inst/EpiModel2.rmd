@@ -103,7 +103,7 @@ Below we present a table classifying each of the built in modules according to t
 
 EpiModel has been set up to assist new users in their modeling efforts, while being flexible enough to allow for complex simulation scenarios not handled by base EpiModel modules. If a user passes in an epidemic type through the `control.net` input parameter `type` (e.g., `type = SI`, `SIR` or `SIS`) EpiModel will run the model as specified, using input parameters to automate the selection of appropriate base modules. If however, the user does not pass in a specified epidemic type or the three listed, or passes in `type = NULL` to control settings, then EpiModel will run the model as specified by the user; this includes running any non-standard base modules or additional user created modules in their workflow (examples of which are provided in the "Worked Example" section of this document). Conversely, if a user passes any non-standard base modules or module extensions, the epidemic type is required to be `NULL`. EpiModel will otherwise return an error if these rules are not followed. This change was made to emphasize to more advanced users of EpiModel (e.g., in the development module extensions) that EpiModel will run the model as specified, though the results may not be as expected.
 
-Note: for two-group models, if `type` is `NULL`, the user must be mindful to select the correct version of built in modules as described in Two-Group Functions above.
+Note: for two-group models, if `type` is `NULL`, the user must be mindful to select the correct version of built-in modules as described in Two-Group Functions above.
 
 ## Arrivals & Departures
 
