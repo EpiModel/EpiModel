@@ -182,7 +182,7 @@ a.rate <- get_param(dat, "a.rate")
 nOld <- get_epi(dat, "num", index)
 ```
 
-Here we are pulling the arrival rate, `a.rate` from the parameter list and querying the epidemic tracker list for the population size at the previous step. Note that the set functions do not modify `dat` in place but return an altered dat object that must be assigned back for the changes to be saved: `dat <- set_attr(dat, "status")` as an example.
+Here we are pulling the arrival rate, `a.rate` from the parameter list and querying the epidemic tracker list for the population size at the previous step. 
 
 Details of all available accessor functions can be found using:
 
