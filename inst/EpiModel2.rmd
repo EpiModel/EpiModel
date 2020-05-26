@@ -77,7 +77,7 @@ Users should be mindful of the relationship between the network object and forma
 ![](images/attr_copy.jpg)
 </center>
 
-As shown above, if an attribute (in this case "group") is on the network and both present and absent in the formation model, a valid network can be estimated; if an attribute is missing from both the network and the formation model, a valid network will still result. If, however, an attribute is not present on the network and not in the formation model, this will not lead to a valid network as we can not estimate edge formation with attributes not present in the networks attribute list.
+As shown above, if an attribute (in this case "group") is on the network and either present or absent in the formation model, a valid network can be estimated; if an attribute is missing from both the network and the formation model, a valid network will still result. If, however, an attribute is not present on the network and not in the formation model, this will not lead to a valid network as we can not estimate edge formation with attributes not present in the networks attribute list.
 
 ## Base Function Changes
 
