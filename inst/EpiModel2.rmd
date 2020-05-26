@@ -341,7 +341,7 @@ control <- control.net(type = "SI", nsims = 10, nsteps = 10, resimulate.network 
 
 ## Using Accessor Functions in Module Extension 
 
-The new accessor functions are easy to use utilities for getting, setting and appending data, replacing `$`  and `[[ ]]` operations. Base EpiModel functions have already been updated reflecting this change; the following examples detail how users should update any changes to base EpiModel functions or any user-defined functions. For a robust example of how EpiModel 1.x code needs to be updated when using these functions in module extension, refer to "User Defined Modules: SEIR Epidemic Model" in the "Worked Examples" section. Below are example code chunks from extension API:
+The new accessor functions are easy-to-use utilities for getting, setting, and appending data, replacing `$`  and `[[ ]]` operations. Base EpiModel functions have already been updated reflecting this change. The following examples detail how users should update any changes to base EpiModel functions or any user-defined functions. For a robust example of how EpiModel 1.x code needs to be updated when using these functions in module extension, refer to "User-Defined Modules: SEIR Epidemic Model" in the "Worked Examples" section. Below are example code chunks from extension API:
 
 ```{r echo = TRUE, eval = FALSE}
 # EpiModel 1.x
