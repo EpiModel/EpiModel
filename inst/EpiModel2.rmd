@@ -438,7 +438,7 @@ num1 <- num2 <- 500
 nw <- network_initialize(n = num1 + num2)
 
 ##Update to new vertex assignment function set_vertex_attribute
-nw <- set_vertex_attribute(nw, "group", rep(1:2, c(num1,num2)))
+nw <- set_vertex_attribute(nw, "group", rep(1:2, c(num1, num2)))
 
 ## If looking to replicate 'bipartite' network:
 formation <- ~edges + nodematch("group")
