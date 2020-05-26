@@ -540,7 +540,7 @@ param <- param.net(inf.prob = 0.4, act.rate = 1, rec.rate = 0.02,
                    dr.rate = 0.005)
 ```
 
-The input parameters for departures do not need to be updated however users should be aware of the change in interpretation. As with the previous SI example, control settings for `depend` and `save.network` (and `save.transmat`) should be updated to `resimulate.network` and `tergmLite` respectively.
+The input parameters for departures do not need to be updated. However, users should be aware of the change in interpretation. As with the previous SI example, control settings for `depend` and `save.network` (and `save.transmat`) should be updated to `resimulate.network` and `tergmLite` respectively.
 
 ```{r echo = TRUE, eval = FALSE}
 ## EpiModel 1.x
