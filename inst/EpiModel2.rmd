@@ -40,7 +40,7 @@ This creates a network in which there are 50 vertices in mode one and 50 vertice
 ```{r echo = TRUE, eval = FALSE}
 # EpiModel 2.0
 num1 <- num2 <- 50
-nw <- network_initialize(n = num1+num2)
+nw <- network_initialize(n = num1 + num2)
 nw <- set_vertex_attribute(nw, "group", rep(1:2, c(num1, num2)))
 ```
 
@@ -49,7 +49,7 @@ Above we have the updated syntax for creating bipartite, now called "two-group",
 ```{r echo = TRUE, eval = FALSE}
 # EpiModel 2.0
 num1 <- num2 <- 50
-nw <- network_initialize(n = num1+num2)
+nw <- network_initialize(n = num1 + num2)
 nw <- set_vertex_attribute(nw, "group", rep(1:2, c(num1, num2)))
 formation <- ~edges + nodematch("group")
 target.stats <- c(30, 2)
@@ -77,7 +77,7 @@ Users should be mindful of the relationship between the network object and forma
 ![](images/attr_copy.jpg)
 </center>
 
-As shown above, if an attribute (in this case "group") is on the network and both present and absent in the formation model, a valid network can be estimated; if an attribute is missing from both the network and the formation model, a valid network will still result. If, however, an attribute is not present on the network and not in the formation model, this will not lead to a valid network as we can not estimate edge formation with attributes not present in the networks attribute list.
+As shown above, if an attribute (in this case "group") is on the network and either present or absent in the formation model, a valid network can be estimated; if an attribute is missing from both the network and the formation model, a valid network will still result. If, however, an attribute is not present on the network and not in the formation model, this will not lead to a valid network as we can not estimate edge formation with attributes not present in the networks attribute list.
 
 ## Base Function Changes
 
@@ -103,7 +103,7 @@ Below we present a table classifying each of the built in modules according to t
 
 EpiModel has been set up to assist new users in their modeling efforts, while being flexible enough to allow for complex simulation scenarios not handled by base EpiModel modules. If a user passes in an epidemic type through the `control.net` input parameter `type` (e.g., `type = SI`, `SIR` or `SIS`) EpiModel will run the model as specified, using input parameters to automate the selection of appropriate base modules. If however, the user does not pass in a specified epidemic type or the three listed, or passes in `type = NULL` to control settings, then EpiModel will run the model as specified by the user; this includes running any non-standard base modules or additional user created modules in their workflow (examples of which are provided in the "Worked Example" section of this document). Conversely, if a user passes any non-standard base modules or module extensions, the epidemic type is required to be `NULL`. EpiModel will otherwise return an error if these rules are not followed. This change was made to emphasize to more advanced users of EpiModel (e.g., in the development module extensions) that EpiModel will run the model as specified, though the results may not be as expected.
 
-Note: for two-group models, if `type` is `NULL`, the user must be mindful to select the correct version of built in modules as described in Two-Group Functions above.
+Note: for two-group models, if `type` is `NULL`, the user must be mindful to select the correct version of built-in modules as described in Two-Group Functions above.
 
 ## Arrivals & Departures
 
@@ -131,12 +131,12 @@ init <- init.net(i.num = 5)
 param <- param.net(inf.prob = 0.1)
 
 ## tergmLite = FALSE: use full network object
-control <- control.net(type = "SI", nsteps = 100, nsims = 1, tergmLite = FALSE)
-sim1 <- netsim(est, param, init, control)
+control1 <- control.net(type = "SI", nsteps = 100, nsims = 1, tergmLite = FALSE)
+sim1 <- netsim(est, param, init, control1)
 
 ## tergmLite = TRUE: use reduced cross-sectional edgelist
-control <- control.net(type = "SI", nsteps = 100, nsims = 1, tergmLite = TRUE)
-sim2 <- netsim(est, param, init, control)
+control2 <- control.net(type = "SI", nsteps = 100, nsims = 1, tergmLite = TRUE)
+sim2 <- netsim(est, param, init, control2)
 ```
 
 By default, the use of `tergmLite` is set to `FALSE` for EpiModel simulations.
@@ -169,7 +169,7 @@ The `set` group of functions sets the value of an item on a sub-list of the `dat
 dat <- set_epi(dat, "si.flow", at, nInf)
 ```
 
-Here, we want to record the number of new infected - `nInf` -  at the current time step `at`. We do so using the `set_epi` accessor function and record the flow of susceptible to infected on to the master `dat` object. All set functions follow this naming scheme, with "set_" followed by the sub-list of interest. Note: the set functions returns an updated `dat` object.
+Here, we want to record the number of new infected - `nInf` -  at the current time step `at`. We do so using the `set_epi` accessor function and record the flow of susceptible to infected on to the master `dat` object. All set functions follow this naming scheme, with "set_" followed by the sub-list of interest. Note: that the `set` functions do not modify `dat` in place but return an altered `dat` object that must be assigned back for the changes to be saved,  `dat <- set_attr(dat, "status")` as an example.
 
 ### Get Functions
 
@@ -182,7 +182,7 @@ a.rate <- get_param(dat, "a.rate")
 nOld <- get_epi(dat, "num", index)
 ```
 
-Here we are pulling the arrival rate, `a.rate` from the parameter list and querying the epidemic tracker list for the population size at the previous step. Note that the set functions do not modify `dat` in place but return an altered dat object that must be assigned back for the changes to be saved: `dat <- set_attr(dat, "status")` as an example.
+Here we are pulling the arrival rate, `a.rate` from the parameter list and querying the epidemic tracker list for the population size at the previous step. 
 
 Details of all available accessor functions can be found using:
 
@@ -341,7 +341,7 @@ control <- control.net(type = "SI", nsims = 10, nsteps = 10, resimulate.network 
 
 ## Using Accessor Functions in Module Extension 
 
-The new accessor functions are easy to use utilities for getting, setting and appending data, replacing `$`  and `[[ ]]` operations. Base EpiModel functions have already been updated reflecting this change; the following examples detail how users should update any changes to base EpiModel functions or any user-defined functions. For a robust example of how EpiModel 1.x code needs to be updated when using these functions in module extension, refer to "User Defined Modules: SEIR Epidemic Model" in the "Worked Examples" section. Below are example code chunks from extension API:
+The new accessor functions are easy-to-use utilities for getting, setting, and appending data, replacing `$`  and `[[ ]]` operations. Base EpiModel functions have already been updated reflecting this change. The following examples detail how users should update any changes to base EpiModel functions or any user-defined functions. For a robust example of how EpiModel 1.x code needs to be updated when using these functions in module extension, refer to "User-Defined Modules: SEIR Epidemic Model" in the "Worked Examples" section. Below are example code chunks from extension API:
 
 ```{r echo = TRUE, eval = FALSE}
 # EpiModel 1.x
@@ -438,7 +438,7 @@ num1 <- num2 <- 500
 nw <- network_initialize(n = num1 + num2)
 
 ##Update to new vertex assignment function set_vertex_attribute
-nw <- set_vertex_attribute(nw, "group", rep(1:2, c(num1,num2)))
+nw <- set_vertex_attribute(nw, "group", rep(1:2, c(num1, num2)))
 
 ## If looking to replicate 'bipartite' network:
 formation <- ~edges + nodematch("group")
@@ -539,7 +539,7 @@ param <- param.net(inf.prob = 0.4, act.rate = 1, rec.rate = 0.02,
                    dr.rate = 0.005)
 ```
 
-The input parameters for departures do not need to be updated however users should be aware of the change in interpretation. As with the previous SI example, control settings for `depend` and `save.network` (and `save.transmat`) should be updated to `resimulate.network` and `tergmLite` respectively.
+The input parameters for departures do not need to be updated. However, users should be aware of the change in interpretation. As with the previous SI example, control settings for `depend` and `save.network` (and `save.transmat`) should be updated to `resimulate.network` and `tergmLite` respectively.
 
 ```{r echo = TRUE, eval = FALSE}
 ## EpiModel 1.x
