@@ -131,12 +131,12 @@ init <- init.net(i.num = 5)
 param <- param.net(inf.prob = 0.1)
 
 ## tergmLite = FALSE: use full network object
-control <- control.net(type = "SI", nsteps = 100, nsims = 1, tergmLite = FALSE)
-sim1 <- netsim(est, param, init, control)
+control1 <- control.net(type = "SI", nsteps = 100, nsims = 1, tergmLite = FALSE)
+sim1 <- netsim(est, param, init, control1)
 
 ## tergmLite = TRUE: use reduced cross-sectional edgelist
-control <- control.net(type = "SI", nsteps = 100, nsims = 1, tergmLite = TRUE)
-sim2 <- netsim(est, param, init, control)
+control2 <- control.net(type = "SI", nsteps = 100, nsims = 1, tergmLite = TRUE)
+sim2 <- netsim(est, param, init, control2)
 ```
 
 By default, the use of `tergmLite` is set to `FALSE` for EpiModel simulations.
