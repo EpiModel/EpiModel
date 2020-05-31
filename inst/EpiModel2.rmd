@@ -170,7 +170,7 @@ The `set` group of functions sets the value of an item on a sub-list of the `dat
 dat <- set_epi(dat, "si.flow", at, nInf)
 ```
 
-Here, we want to record the number of new infected - `nInf` -  at the current time step `at`. We do so using the `set_epi` accessor function and record the flow of susceptible to infected on to the master `dat` object. All set functions follow this naming scheme, with "set_" followed by the sub-list of interest. Note: that the `set` functions do not modify `dat` in place but return an altered `dat` object that must be assigned back for the changes to be saved,  `dat <- set_attr(dat, "status")` as an example.
+Here, we want to record the number of new infected - `nInf` -  at the current time step `at`. We do so using the `set_epi` accessor function and record the flow of susceptible to infected on to the master `dat` object. All set functions follow this naming scheme, with "set_" followed by the sub-list of interest. Note: that the `set` functions do not modify `dat` in place but return an altered `dat` object that must be assigned back for the changes to be saved,  `dat <- set_attr(dat, "status", new_status)` as an example.
 
 ### Get Functions
 
