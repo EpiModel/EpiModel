@@ -426,7 +426,7 @@ The following section presents three worked examples of models built in EpiModel
 
 ## SI Model With No Vital Dynamics
 
-Here we have a simple SI (susceptible to infected) epidemic model on a bipartite network, with [complete R script found here](https://github.com/statnet/EpiModel/tree/master/inst/2020-05-SITwoGroup). As we have moved away from bipartite networks to two-group networks, we need to first update our old network formation code. The old bipartite syntax:
+Here we have a simple SI (susceptible to infected) epidemic model on a bipartite network, with [complete R script found here](https://www.EpiModel.org). As we have moved away from bipartite networks to two-group networks, we need to first update our old network formation code. The old bipartite syntax:
 
 ```{r echo = TRUE, eval = FALSE}
 ## EpiModel 1.x Workflow
@@ -505,7 +505,7 @@ sim <- netsim(est, param, init, control)
 
 ## SIR Model With Vital Dynamics
 
-Here we have an SIR model (recovery from infection that grants immunity) in an open population, with a one-group network on top, [complete R script located here](https://github.com/statnet/EpiModel/tree/master/inst/2020-05-SIRwithVitalDynamics). As we are dealing with a one-group network, network formation is fairly straightforward with only a change needed to the function initializing the network. Thus
+Here we have an SIR model (recovery from infection that grants immunity) in an open population, with a one-group network on top, [complete R script located here](https://www.EpiModel.org). As we are dealing with a one-group network, network formation is fairly straightforward with only a change needed to the function initializing the network. Thus
 
 ```{r echo = TRUE, eval = FALSE}
 ## EpiModel 1.x
@@ -571,7 +571,7 @@ sim <- netsim(est, param, init, control)
 
 ## User Defined Modules: SEIR Epidemic Model
 
-Our final example, [R script found here](https://github.com/statnet/EpiModel/tree/master/inst/2020-05-SEIRModuleExtension), is an extension of the SIR model not represented in base EpiModel: an SEIR-epidemic that introduces an exposed state to the epidemic process, necessitating an updated infection module and a new disease progression module. Below, we have the new infection module that is based on EpiModel 1.x syntax.
+Our final example, [R script found here](https://www.EpiModel.org), is an extension of the SIR model not represented in base EpiModel: an SEIR-epidemic that introduces an exposed state to the epidemic process, necessitating an updated infection module and a new disease progression module. Below, we have the new infection module that is based on EpiModel 1.x syntax.
 
 ```{r echo = TRUE, eval = FALSE}
 ## EpiModel 1.x
