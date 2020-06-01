@@ -19,15 +19,15 @@ The newest release of EpiModel, dubbed "EpiModel 2.0", brings with it several ch
 
 Throughout this document, `R` code blocks have been commeneted with the relevant EpiModel version to aid users: `## EpiModel 1.x` refers to code used in previous versions of EpiModel and `## EpiModel 2.0` refers to code from the current version of EpiModel. Uncommented code remains unchanged between versions of EpiModel.
 
-As always information on EpiModel may be found using `help(package = "EpiModel")` or visiting [EpiModel on Github](https://github.com/statnet/EpiModel).
+As always information on EpiModel may be found using `help(package = "EpiModel")` or by visiting [EpiModel on Github](https://github.com/statnet/EpiModel).
 
 # EpiModel Changes
 
-In this section, we will detail the core functions that remain in EpiModel 2.0 yet received an overhaul for efficiency, flexibility and/or user accessibility. All changes listed in this section will be further demonstrated in the "EpiModel 1.x Code Migration" section of this document.
+In this section, we will detail those core functions that remain in EpiModel 2.0 that have received an overhaul for efficiency, flexibility and user accessibility. All changes listed in this section will be further demonstrated in the "EpiModel 1.x Code Migration" section of this document.
 
 ## Rethinking Networks
 
-The most significant change in EpiModel 2.0 is in how we approach defining, estimating and using networks in epidemic simulations as well as the resultant changes in the EpiModel workflow. The most significant change to the EpiModel workflow is in how we handle heterogeneous sub-populations. In the original EpiModel workflow, designation of a second population was done by initializing a new network and setting it's `bipartite` input parameter equal to the number of vertices in the first mode:
+The most significant change in EpiModel 2.0 is in how we approach defining, estimating and using networks in epidemic simulations as well as the resultant changes in the EpiModel workflow. The most significant change to the EpiModel workflow is in how we handle heterogeneous sub-populations. In the original EpiModel workflow, designation of a second population was done by initializing a new network and setting its `bipartite` input parameter equal to the number of vertices in the first mode:
 
 ```{r echo = TRUE, eval = FALSE}
 ## EpiModel 1.x
@@ -44,7 +44,9 @@ nw <- network_initialize(n = num1 + num2)
 nw <- set_vertex_attribute(nw, "group", rep(1:2, c(num1, num2)))
 ```
 
-Above we have the updated syntax for creating bipartite, now called "two-group", networks within the EpiModel workflow. The network is initialized as usual using `network_initialize` (a new version of `network.initialize` detailed in section "Network Initialization Functions"), however, in order to capture the previous bipartite structure, we set heterogeneity as a vertex attribute instead of a network feature using `set_vertex_initialize` (a new version of `set.vertex.attribute`); in the case of the new EpiModel workflow, this is done using the attribute `group`. This change allows for consistency in interpretation as well as flexibility of network structure: in the bipartite networks we have developed using EpiModel 1.x, mixing between the two modes is not allowed. However, in a two-group network, as group assignment is now a vertex attribute, we can model within group mixing. For example, in a population of males and females, this new workflow allows us to model more than just heterosexual relationships as below:
+Above we have the updated syntax for creating bipartite, now called "two-group", networks within the EpiModel workflow. The network is initialized as usual using `network_initialize` (a new version of `network.initialize` detailed in section "Network Initialization Functions"), however, in order to capture the previous bipartite structure, we set heterogeneity as a vertex attribute instead of a network feature using `set_vertex_initialize` (a new version of `set.vertex.attribute`); in the case of the new EpiModel workflow, this is done using the attribute `group`. 
+
+This change allows for consistency in interpretation as well as flexibility of network structure: in the bipartite networks we have developed using EpiModel 1.x, mixing between the two modes is not allowed. However, in a two-group network, as group assignment is now a vertex attribute, we can model within group mixing. For example, in a population of males and females, this new workflow allows us to model more than just heterosexual relationships as below:
 
 ```{r echo = TRUE, eval = FALSE}
 ## EpiModel 2.0
@@ -61,11 +63,11 @@ In this network we have a total of 30 edges in the population, two of which invo
 target.stats <- c(30, 0)
 ```
 
-It is important to note, that the vertex attribute "group" now takes on a special meaning within the context of EpiModel modeling, separate from other attribute names. Users should be mindful when constructing networks in which "group" is a vertex attribute and note whether or not the interpretation of group aligns with that detailed above.
+It is important to note, that the vertex attribute `group` now takes on a special meaning within the context of EpiModel modeling, separate from other attribute names. Users should be mindful when constructing networks in which `group` is a vertex attribute and note whether or not the interpretation of "group" membership aligns with that detailed above.
 
-Further, the group vertex attribute is restricted to levels of 1 and 2; other combinations of attribute levels - say, 0 and 1 or "male" and "female" - are not permitted here and may result in EpiModel producing unintended results. Finally, we are not limited to replicating bipartite networks and the target statistic for `nodematch("group")` can be any number from 0 to the total number of edges in the network.
+Further, the `group` vertex attribute is restricted to levels of 1 and 2; other combinations of attribute levels - say, 0 and 1 or "male" and "female" - are not permitted here and may result in EpiModel producing unintended results. Finally, we are not limited to replicating bipartite networks and the target statistic for `nodematch("group")` can be any number from 0 to the total number of edges in the network.
 
-The above restrictions on the group vertex attribute must be taken into account or EpiModel may behave in unpredictable or unexpected ways.
+The above restrictions on the `group` vertex attribute must be taken into account or EpiModel may behave in unpredictable or unexpected ways.
 
 ### Attribute Copying
 
@@ -81,9 +83,9 @@ As shown above, if an attribute (in this case "group") is on the network and eit
 
 ## Base Function Changes
 
-Along with the change to how we build two-group networks, we have also changed the built in EpiModel functions to make the workflow clearer (particularly for module development on the part of the user). In EpiModel 1.x, no distinction in module functionality was made for bipartite and non-bipartite networks. With EpiModel 2.0, we have split each of the appropriate core modules into one and two-group sub-functions. Assignment of the correction function is done automatically by EpiModel based on the based on the input parameters passed through to `init.net` or `param.net`, if `control.net` input parameter `type` is specified (see next section).  
+Along with the change to how we build two-group networks, we have also changed the built in EpiModel functions to make the workflow clearer (particularly for module development on the part of the user). In EpiModel 1.x, no distinction in module functionality was made for bipartite and non-bipartite networks. With EpiModel 2.0, we have split each of the appropriate core modules into one and two-group sub-functions. Assignment of the correction function is done automatically by EpiModel based on the input parameters passed through to `init.net` or `param.net`, if `control.net` input parameter `type` is specified (see next section).  
 
-Input parameters for each of these two functions, for the second group, have also changed with EpiModel moving from mode to group language. Second group parameters or initial conditions are now denoted by a `.g2` suffix as opposed to the `.m2` suffix that was used previously:
+Input parameters for each of these functions have also changed with EpiModel moving from mode to group language. Second group parameters or initial conditions are now denoted by a `.g2` suffix as opposed to the `.m2` suffix that was used previously:
 
 ```{r echo = TRUE, eval = TRUE}
 ## EpiModel 2.0
@@ -107,7 +109,7 @@ Note: for two-group models, if `type` is `NULL`, the user must be mindful to sel
 
 ## Arrivals & Departures
 
-A further change made to the EpiModel workflow, one that was implemented in EpiModel 1.70 yet bears repeating, was moving away from the language of "births" and "deaths" in models with vital dynamics, to "arrivals" and "departures" to account for a wider range of models in which entry into and exiting from the population is not necessarily through a mortality process (e.g. entry and exit through an age process). To this end, all input parameters based on births and deaths have been renamed based on arrivals and departures. For example the birth rate `b.rate` passed to `param.net`, has been renamed `a.rate` for "arrival rate." The rate for deaths remains named `d.rate` though its interpretation has changed to that of departures. Module functions based on birth and death rates have been changed: `births.FUN` and it's associated base module `births.net` are now `arrivals.FUN` and `arrivals.net` (`arrivals.2g.net` in the two group case) respectively. Similar changes exists for `deaths.FUN` and `deaths.net`, which are now `departures.FUN` and `departures.net` respectively.
+A further change made to the EpiModel workflow, one that was implemented in EpiModel 1.70 yet bears repeating, was moving away from the language of "births" and "deaths" in models with vital dynamics, to "arrivals" and "departures" to account for a wider range of models in which entry into and exiting from the population is not necessarily through a mortality process (e.g. entry and exit through an age process). To this end, all input parameters based on births and deaths have been renamed based on arrivals and departures. For example the birth rate `b.rate` passed to `param.net`, has been renamed `a.rate` for "arrival rate." The rate for deaths remains named `d.rate` though its interpretation has changed to that of departures. Module functions based on birth and death rates have been changed: `births.FUN` and its associated base module `births.net` are now `arrivals.FUN` and `arrivals.net` (`arrivals.2g.net` in the two group case) respectively. Similar changes exists for `deaths.FUN` and `deaths.net`, which are now `departures.FUN` and `departures.net` respectively.
 
 # EpiModel Additions & New Features
 
@@ -117,7 +119,7 @@ Along with the changes to EpiModel detailed in the previous section, several add
 
 The package `tergmLite` has been added as a dependent package for EpiModel. `tergmLite` reduces the overall computational burden that comes with using the full network object in EpiModel simulations. For users whose research needs require only summary epidemiological statistics `tergmLite` gives significant computational efficiency, with simulation times sped up between 25 to 50 fold depending on the model in question. Details of `tergmLite`, as well as examples of what types of research projects it may be useful for, can be found on [Github at tergmLite](https://github.com/statnet/tergmLite).
 
-The use of `tergmLite` is fairly straightforward and uses one of two versions of the full network object during network simulations. If `tergmLite = TRUE` is passed in as a control setting, EpiModel will use the `networkLite` version of the full network, a two-column edgelist representation of the full network. Alternatively, if `tergmLite = FALSE` is passed through, EpiModel will use the original `network` object for resimulations. As an example:
+`tergmLite` uses one of two versions of the full network object during network simulations. If `tergmLite = TRUE` is passed in as a control setting, EpiModel will use the `networkLite` version of the full network, a two-column edgelist representation of the full network. Alternatively, if `tergmLite = FALSE` is passed through, EpiModel will use the original `network` object for resimulations. As an example:
 
 ```{r echo = TRUE, eval = FALSE}
 ## EpiModel 2.0
@@ -236,7 +238,7 @@ The construction of bipartite networks for use in EpiModel:
 ```{r echo = TRUE, eval = FALSE}
 ## EpiModel 1.x
 num1 <- num2 <- 50
-nw <- network.initialize(num = num1+num2, bipartite = num1, directed = FALSE)
+nw <- network.initialize(num = num1 + num2, bipartite = num1, directed = FALSE)
 formation <- ~edges
 target.stats <- 30
 ```
@@ -371,28 +373,29 @@ dat <- set_attr(dat, "age", age)
 Similarly for retrieval and setting of list elements:
 
 ```{r echo = TRUE, eval = FALSE}
-# EpiModel 1.x
+## EpiModel 1.x
 age <- dat$attr$age
 ```
 
 or 
 
 ```{r echo = TRUE, eval = FALSE}
-# EpiModel 1.x
+## EpiModel 1.x
 age <- dat[["attr"]][["age"]]
 ```
 
 should be updated to:
 
 ```{r echo = TRUE, eval = FALSE}
-# EpiModel 2.0
+## EpiModel 2.0
 age <- get_attr(dat, "age")
 ```
 
-And
+In the case where we are updating or adding new values to the attribute list:
 
 ```{r echo = TRUE, eval = FALSE}
-# EpiModel 1.x
+## EpiModel 1.x
+# Append two new values to age list
 newAge <- sample(15:65, 2, replace = TRUE)
 dat$attr$age[101:102] <- newAge
 ```
@@ -401,6 +404,7 @@ or
 
 ```{r echo = TRUE, eval = FALSE}
 ## EpiModel 1.x
+# Append two new values to age list
 newAge <- sample(15:65, 2, replace = TRUE)
 dat[["attr"]][["age"]][101:102] <- newAge
 ```
@@ -409,6 +413,7 @@ should be updated to:
 
 ```{r echo = TRUE, eval = FALSE}
 ## EpiModel 2.0
+# Append two new values to age list
 newAge <- sample(15:65, 2, replace = TRUE)
 dat <- append_attr(dat, "age", newAge, 2)
 ```
@@ -458,7 +463,7 @@ coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
 est <- netest(nw, formation, target.stats, coef.diss)
 ```
 
-Similar to moving network formation from bipartite to two-group, we need to update input parameters for initial conditions and epidemic parameters from mode (".m2" suffixes):
+Similar to moving network formation from bipartite to two-group, we need to update input parameters for initial conditions and epidemic parameters from mode (`.m2` suffixes):
 
 ```{r echo = TRUE, eval = FALSE}
 ## EpiModel 1.x
@@ -466,7 +471,7 @@ param <- param.net(inf.prob = 0.4, inf.prob.m2 = 0.2)
 init <- init.net(i.num = 20, i.num.m2 = 20)
 ```
 
-to group (".g2" suffixes)
+to group (`.g2` suffixes)
 
 ```{r echo = TRUE, eval = FALSE}
 ## EpiModel 2.0:
@@ -516,7 +521,7 @@ num <- 1000
 nw <- network_initialize(num)
 ```
 
-The function `network_initialize` has several defaults, one of which is `directed = FALSE`, and requires only the total size of the network in most applications. Subsequent estimation of the network proceeds as normal.
+The function `network_initialize` has several default parameter values, one of which is `directed = FALSE`, and requires only the total size of the network in most applications. Subsequent estimation of the network proceeds as normal.
 
 ```{r echo = TRUE, eval = FALSE}
 formation <- ~edges
