@@ -1,0 +1,272 @@
+---
+title: "Tutorial: SIS Epidemic in a One-Mode Network"
+author: "Day 3 | Network Modeling for Epidemics"
+output:
+  html_document:
+    toc: yes
+    toc_float: yes
+    collapsed: no
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include = FALSE}
+library(knitr)
+opts_chunk$set(comment = NA)
+par(mar = c(3, 3, 1, 1), mgp = c(2, 1, 0))
+```
+
+EpiModel uses separable-temporal exponential-family random graph models (STERGMs) to estimate and simulate complete networks based on individual-level, dyad-level, and network-level patterns of density, degree, assortivity, and other features influencing edge formation and dissolution. Building and simulating a network-based epidemic models in EpiModel is a multi-step process, starting with estimation of a temporal ERGM and continuing with simulation of a dynamic network and epidemic processes on top of that network. 
+
+In this tutorial, we work through a model of a *Susceptible-Infected-Susceptible (SIS)* epidemic in a closed population. An example of an SIS disease would be a bacterial sexually transmitted infection such as *Gonorrhea*, in which persons may acquire infection from sexual contact with an infected partner, and then recover from infection either through natural clearance or through antibiotic treatment. We will use a simplifying assumption of a closed population, in which there are no entries or exits from the network; this may be justified by the short time span over which the epidemic will be simulated.
+
+To get started, load the EpiModel library.
+```{r loadEM, message = FALSE, warning=FALSE}
+library(EpiModel)
+```
+
+
+# Network Model Estimation
+The first step in our network model is to specify a network structure, including features like size and nodal attributes. The `network.initialize` function creates an object of class `network`. Below we show an example of initializing a network of 500 nodes, with no edges between them at the start. Edges represent sexual partnerships (mutual person-to-person contact), so this is an undirected network.
+```{r initNw}
+nw <- network.initialize(n = 500, directed = FALSE)
+```
+The sizes of the networks represented in this workshop are small for computational efficiency. Larger network sizes over longer time intervals would ordinarily be used for research purposes.
+
+## Model Parameterization
+This example will start simple, with a formula that represents the network density and the level of concurrency (overlapping sexual partnerships) in the population. This is a dyad-dependent model, since the probability of edge formation between any two nodes depends on the existence of edges between those nodes and other nodes. The concurrent term is defined as the number of nodes with at least two partners at any time. Following the notation of the `tergm` package, we specify this using a right-hand side (RHS) formula. In addition to concurrency, we will use a constraint on the degree distribution. This will cap the degree of any person at 3, with no nodes allowed to have 4 or more ongoing partnerships. This will replicate a truncated sampling scheme for partnerships within a survey (e.g., persons only asked about their 3 most recent partners).
+```{r formMod}
+formation <- ~edges + concurrent + degrange(from = 4)
+```
+
+Target statistics will be the input mechanism for formation model terms. The `edges` term will be a function of mean degree, or the average number of ongoing partnerships. With an arbitrarily specified mean degree of 0.7, the corresponding target statistic is 175 (`edges = mean degree * (n / 2)`). We will also specify that 22% of persons exhibit concurrency, which is slightly higher than the 16% expected in a Poisson model conditional on that mean degree. The target statistic for the number of persons with a momentary degree of 4 or more is 0.
+```{r targStats}
+target.stats <- c(175, 110, 0)
+```
+
+The dissolution model is parameterized from a mean partnership duration estimated from cross-sectional egocentric data. Dissolution models differ from formation models in two respects. First, the dissolution models are not estimated in an ERGM but instead passed in as a fixed coefficient conditional on which the formation model is to be estimated. The dissolution model terms are calculated analytically using the `dissolution_coefs` function, the output of which is passed into the `netest` model estimation function. Second, whereas formation models may be arbitrarily complex, dissolution models are limited to a set of dyad-independent models listed in the `dissolution_coefs` function help page. The model we will use is a simple edges-only model, implying a homogeneous probability of dissolution for all partnerships in the network. The average duration of these partnerships will be specified at 50 time steps, which will be days in our model.
+```{r dissMod}
+coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 50)
+coef.diss
+```
+
+The output from this function indicates both an adjusted and crude coefficient. In this case, they are equivalent. Upcoming tutorials will show a case when they differ as result of exits from the network.
+
+
+## Model Estimation and Diagnostics
+In EpiModel, network model estimation is performed with the `netest` function, which is a wrapper around the estimation functions in the `ergm` and `tergm` packages. The function arguments are as follows: 
+```{r netestArgs, echo = FALSE}
+args(netest)
+```
+
+The four arguments that must be specified with each function call are:
+
+* `nw`: an initialized empty network.
+* `formation`: a RHS formation formula..
+* `target.stats`: target statistics for the formation model.
+* `coef.diss`: output object from `dissolution_coefs`, containing the dissolution coefficients.
+
+Other arguments that may be helpful to understand when getting started are:
+
+* `constraints`: sets the model constraints, passed to `ergm` and `stergm` (see `help("ergm")`).
+* `coef.form`: sets the coefficient values of any offset terms in the formation model.
+* `edapprox`: selects the dynamic estimation method. If `TRUE`, uses the direct method, otherwise the approximation method.
+    - *Direct method:* uses the functionality of the `tergm` package to estimate the separable formation and dissolution models for the network.
+    - *Approximation method:* uses `ergm` estimation for a cross-sectional network (the prevalence of edges) with an analytic adjustment of the edges coefficient to account for dissolution (i.e., transformation from prevalence to incidence). This approximation method may introduce bias into estimation in certain cases (high density and short durations) but these are typically not a concern for the low density cases in epidemiologically relevant networks.
+
+
+### Estimation
+Because we have a dyad-dependent model, MCMC will be used to estimate the coefficients of the model given the target statistics.
+```{r estim, results = "hide", message=FALSE}
+est <- netest(nw, formation, target.stats, coef.diss)
+```
+
+### Diagnostics
+There are two forms of model diagnostics for a dynamic ERGM fit with `netest`: static and dynamic diagnostics. When the approximation method has been used, static diagnostics check the fit of the cross-sectional model to target statistics. Dynamic diagnostics check the fit of the model adjusted to account for edge dissolution. 
+
+When running a dynamic network simulation, it is good to *start* with the **dynamic diagnostics,** and if there are fit problems, work back to the **static diagnostics** to determine if the problem is due to the cross-sectional fit itself or with the dynamic adjustment (i.e., the approximation method). A proper fitting ERGM using the approximation method does not guarantee well-performing dynamic simulations.
+
+Here we will examine dynamic diagnostics only. These are run with the `netdx` function, which simulates from the model fit object returned by `netest`. One must specify the number of simulations from the dynamic model and the number of time steps per simulation. Choice of both simulation parameters depends on the stochasticity in the model, which is a function of network size, model complexity, and other factors. The `nwstats.formula` contains the network statistics to monitor in the diagnostics: it may contain statistics in the formation model and also others. By default, it is the formation model.
+```{r dx, results = "hide", warning=FALSE}
+dx <- netdx(est, nsims = 10, nsteps = 1000,
+            nwstats.formula = ~edges + meandeg + degree(0:4) + concurrent)
+```
+
+Printing the object will show the object structure and diagnostics. Both Formation and duration diagnostics  show a good fit relative to their targets. For the formation diagnostics, the mean statistics are the mean of the cross sectional statistics at each time step across all simulations. The `Pct Diff` column shows the relative difference between the mean and targets. There are two forms of dissolution diagnostics. The edge duration row shows the mean duration of partnerships across the simulations; it tends to be lower than the target unless the diagnostic simulation interval is very long since its average includes a burn-in period where all edges start at a duration of zero (illustrated below in the plot). The next row shows the percent of current edges dissolving at each time step, and is not subject to bias related to burn-in. The percentage of edges dissolution is the inverse of the expected duration: if the duration is 50 days, then we expect that 1/50 or 2% dissolve each day.
+```{r printDx}
+dx
+```
+
+Plotting the diagnostics object will show the time series of the target statistics against any targets. The other options used here specify to smooth the mean lines, give them a thicker line width, and plot each statistic in a separate panel. The black dashed lines show the value of the target statistics for any terms in the model. Similiar to the numeric summaries, the plots show a good fit over the time series.
+```{r plotDx}
+plot(dx)
+```
+
+The simulated network statistics from diagnostic object may be extracted into a `data.frame` with `get_nwstats`.
+```{r}
+nwstats1 <- get_nwstats(dx, sim = 1)
+head(nwstats1, 20)
+```
+
+The dissolution model fit may also be assessed with plots by specifying either the `duration` or `dissolution` type, as defined above. The duration diagnostic is based on the average age of edges at each time step, up to that time step; there is a *burn-in period* because edges at $t_1$ are censored. Both metrics show a good fit of the dissolution model to the target duration of 50 time steps.
+```{r plotDx2}
+par(mfrow = c(1, 2))
+plot(dx, type = "duration", mean.col = "black")
+plot(dx, type = "dissolution", qnts = 0.5, 
+     mean.lines = FALSE, sim.lines = FALSE)
+```
+
+If the model diagnostics had suggested poor fit, then additional diagnostics and fitting would be necessary. If using the approximation method, one should first start by running the cross-sectional diagnostics (setting `dynamic` to `FALSE` in `netdx`). Note that the number of simulations may be very large here and there are no time steps specified because each simulation is a cross-sectional network.
+```{r plotDx3}
+dx.static <- netdx(est, nsims = 10000, dynamic = FALSE)
+dx.static
+```
+
+The plots now represent individual simulations from an MCMC chain, rather than time steps.
+```{r plotDx3b}
+par(mfrow = c(1,1))
+plot(dx.static, sim.lines = TRUE, sim.lwd = 0.1)
+```
+
+This is evident when looking at the raw data.
+```{r plotDx3c}
+nwstats2 <- get_nwstats(dx.static)
+head(nwstats2, 20)
+```
+
+If the cross-sectional model fits well but the dynamic model does not, then a full STERGM estimation may be necessary. If the cross-sectional model does not fit well, different control parameters for the ERGM estimation may be necessary (see the help file for `netdx` for instructions).
+
+
+# Epidemic Simulation
+EpiModel simulates disease epidemics over dynamic networks by integrating dynamic model simulations with the simulation of other epidemiological processes such as disease transmission and recovery. Like the network model simulations, these processes are also simulated stochastically so that the range of potential outcomes under the model specifications is estimated. The specification of epidemiological processes to model may be arbitrarily complex, but EpiModel includes a number of "built-in" model types within the software. Additional components must be programmed and plugged into the simulation API. Here, we will start simple with an SIS epidemic using this built-in functionality.
+
+## Epidemic Model Parameters
+Our SIS model will rely on three parameters. The *act rate* is the number of sexual acts between that occur within a partnership each time unit. The overall frequency of acts per person per unit time is a function of the incidence rate of partnerships and this act parameter. The *infection probability* is the risk of transmission given contact with an infected person. The *recovery rate* for an SIS epidemic is the speed at which infected persons become susceptible again. For a bacterial STI like gonorrhea, this may be a function of biological attributes like gender or use of curative agents like antibiotics. 
+
+EpiModel uses three helper functions to input epidemic parameters, initial conditions, and other control settings for the epidemic model. First, we use the `param.net` function to input the per-act transmission probability in `inf.prob` and the number of acts per partnership per unit time in `act.rate`. The recovery rate implies that the average duration of disease is 100 days.
+```{r modParam}
+param <- param.net(inf.prob = 0.4, act.rate = 2, rec.rate = 0.01)
+```
+
+For initial conditions in this model, we only need to specify the number of infected persons at the outset of the epidemic. The remaining persons in the network will be classified as disease susceptible.
+```{r modInit}
+init <- init.net(i.num = 10)
+```
+
+The control settings specify the structural elements of the model. These include the disease type, number of simulations, and number of time steps per simulation.
+```{r modCont, results = "hide"}
+control <- control.net(type = "SIS", nsims = 5, nsteps = 500)
+```
+
+
+## Simulating the Epidemic Model
+Once the model has been parameterized, simulating the model is straightforward. One must pass the fitted network model object from `netest` along with the parameters, initial conditions, and control settings to the `netsim` function. With an no-feedback model like this (i.e., there are no vital dynamic parameters), the full dynamic network time series is simulated at the start of each epidemic simulation, and then the epidemiological processes are simulated over that structure.
+```{r runSim, results = "hide", cache = TRUE}
+sim <- netsim(est, param, init, control)
+```
+
+Printing the model output lists the inputs and outputs of the model. The output includes the sizes of the compartments (`s.num` is the number susceptible and `i.num` is the number infected) and flows (`si.flow` is the number of infections and `is.flow` is the number of recoveries). Methods for extracting this output is discussed below.
+```{r printSim}
+sim
+```
+
+
+## Model Analysis 
+Now the the model has been simulated, the next step is to analyze the data. This includes plotting the epidemiological output, the networks over time, and extracting the data.
+
+### Epidemic Plots
+Plotting the output from the epidemic model using the default arguments will display the size of the compartments in the model across simulations. The means across simulations at each time step are plotted with lines, and the polygon band shows the inter-quartile range across simulations.
+```{r plotSim2}
+par(mfrow = c(1, 1))
+plot(sim)
+```
+
+Graphical elements may be toggled on and off. The `popfrac` argument specifies whether to use the absolute size of compartments versus proportions.
+```{r plotSim3}
+par(mfrow = c(1, 2))
+plot(sim, sim.lines = TRUE, mean.line = FALSE, qnts = FALSE, popfrac = TRUE)
+plot(sim, mean.smooth = FALSE, qnts = 1, qnts.smooth = FALSE, popfrac = TRUE)
+```
+
+Whereas the default will print the compartment proportions, other elements of the simulation may be plotted by name with the `y` argument. Here we plot both flow sizes using smoothed means, which converge at model equilibrium by the end of the time series. 
+```{r plotSim4}
+par(mfrow = c(1,1))
+plot(sim, y = c("si.flow", "is.flow"), qnts = FALSE, 
+     ylim = c(0, 10), legend = TRUE, main = "Flow Sizes")
+```
+
+
+### Network Plots
+Another available plot type is a network plot to visualize the individual nodes and edges at a specific time point. Network plots are output by setting the `type` parameter to `"network"`. To plot the disease infection status on the nodes, use the `col.status` argument: blue indicates susceptible and red infected. It is necessary to specify both a time step and a simulation number to plot these networks.
+```{r plotSimNet1}
+par(mar = c(0, 0, 0, 0), mfrow = c(1, 2))
+plot(sim, type = "network", col.status = TRUE, at = 1, sims = 1)
+plot(sim, type = "network", col.status = TRUE, at = 500, sims = 1)
+```
+
+
+### Time-Specific Model Summaries
+The summary function with the output of `netsim` will show the model statistics at a specific time step. Here we output the statistics at the final time step, where roughly two-thirds of the population are infected.
+```{r summSim}
+summary(sim, at = 500)
+```
+
+
+### Data Extraction
+The `as.data.frame` function may be used to extract the model output into a data frame object for easy analysis outside of the built-in EpiModel functions. The function default will output the raw data for all simulations for each time step.
+```{r adf1}
+df <- as.data.frame(sim)
+head(df, 10)
+tail(df, 10)
+```
+
+The `out` argument may be changed to specify the output of means across the models (with `out = "mean"`). The output below shows all compartment and flow sizes as integers, reinforcing this as an individual-level model.
+```{r adf3}
+df <- as.data.frame(sim, out = "mean")
+head(df, 10)
+tail(df, 10)
+```
+
+The `networkDynamic` objects are stored in the `netsim` object, and may be extracted with the `get_network` function. By default the dynamic networks are saved, and contain the full edge history for every node that has existed in the network, along with the disease status history of those nodes.
+```{r getNet}
+nw1 <- get_network(sim, sim = 1)
+nw1
+```
+
+One thing you can do with that network dynamic object is to extract a temporal edgelist of all ties that have existing for that simulation. 
+```{r}
+nwdf <- as.data.frame(nw1)
+head(nwdf, 25)
+```
+
+A matrix is stored that records some key details about each transmission event that occurred. Shown below are the first 10 transmission events for simulation number 1. The `sus` column shows the unique ID of the previously susceptible, newly infected node in the event. The `inf` column shows the ID of the transmitting node. The other columns show the duration of the transmitting node's infection at the time of transmission, the per-act transmission probability, act rate during the transmission, and final per-partnership transmission rate (which is the per-act probability raised to the number of acts).
+```{r getTM}
+tm1 <- get_transmat(sim, sim = 1)
+head(tm1, 10)
+```
+
+
+### Data Exporting and Plotting with ggplot
+
+We built in plotting methods directly for `netsim` class objects so you can easily plot multiple types of summary statistics from the simulated model object. However, if you prefer to an external plotting tool in R, such as `ggplot`, it is easy to extract the data in `tidy` format for analysis and plotting. Here is an example how to do so for out model above. See the help for the ggplot if you are unfamiliar with this syntax.
+
+```{r}
+df <- as.data.frame(sim)
+df.mean <- as.data.frame(sim, out = "mean")
+
+library(ggplot2)
+ggplot() +
+  geom_line(data = df, mapping = aes(time, i.num, group = sim), alpha = 0.25,
+            lwd = 0.25, color = "firebrick") +
+  geom_bands(data = df, mapping = aes(time, i.num),
+             lower = 0.1, upper = 0.9, fill = "firebrick") +
+  geom_line(data = df.mean, mapping = aes(time, i.num)) +
+  theme_minimal()
+```
+
+<br>
+<hr style="background-color:#909090;height:1px;width:100%">
+<small>
+*Last updated:* `r format(Sys.time(), "%Y-%m-%d")`
+`r if ("EpiModel" %in% names(sessionInfo()$otherPkgs)) paste0(" with EpiModel v", packageVersion("EpiModel"))`
+</small>

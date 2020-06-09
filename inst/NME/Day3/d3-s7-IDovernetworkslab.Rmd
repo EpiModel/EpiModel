@@ -1,0 +1,97 @@
+---
+title: "Lab: Infectious Disease over Networks"
+author: "Day 3 | Network Modeling for Epidemics"
+output:
+  html_document:
+    toc: no
+---
+
+<br>
+
+## Case 1: One-Mode MSM Population
+
+### Description
+The HPTN-036 study interviewed men who have sex with men (MSM) in six Peruvian cities, as part of a study of acceptability for an intervention of HSV-2 suppression as a method to reduce HIV transmission. In this study, men were asked partner-specific qustions for their most recent sex partners in the last year (up to 3). Among the questions they were asked include whether they anticipated having sex with the partners again (options = yes, no, don't know). We can thus get two bounds on the momentary degree distribution:
+
+Degree | % (DK = No) | % (DK = Yes)
+------ | ----------- | ------------
+0      | 35%         | 10%
+1      | 45%         | 41%
+2      | 14%         | 25%
+3      | 6%          | 24%
+
+
+For those relationships in which men expected to have sex with the partner again, the mean age of the relationship at the time of interview was 26 months. If one also includes relationships in which the respondent said they were unsure of having sex again, the mean relational age was 22 months.
+
+### Tasks
+
+1. Estimate a model for either or both data types. Include a degree constraint so that nobody can have more than 3 ties using `degrange`.
+2. Run diagnostics for this model fit.
+3. Simulate an epidemic of your choice with this fitted network model. We suggest that modeling an SIS epidemic (e.g., gonorrhea or another bacterial STI) may be most illuminating given the lack of vital dynamics in this model iteration.
+4. Simulate the transmission of disease on either or both of the two different MSM networks: the lower-degree one and the higher-degree one. 
+5. Additionally or alternatively, explore changing different aspects of network structure -- perhaps compare to a fully random network, or to one with different momentary degree distributions, or different relational lengths. How do each of these affect the trajectory of the epidemic? What are the implications of the different counterfactual scenarios you have chosen?
+6. For your various scenarios, numerically summarize and visualize the results in multiple ways. For example, add a standardized incidence rate or calculate cumulative incidence. 
+
+<br>
+
+## Case 2: Bipartite Heterosexual Population
+
+### Description
+Data from the mid-1990s in rural Uganda (Morris and Kretzschmar 2000), before balancing, show the following cross-sectional sexual network features:
+
+Sex ratio: 361 adult males to every 372 adult females
+
+Momentary degree distributions:
+
+ Degree |  Males |  Females 
+ -------| -------| --------
+ 0      |  28.3% |    24.5% 
+ 1      |  56.8% |    74.2% 
+ 2      |  12.8% |     1.1% 
+ 3      |   2.0% |     0.3% 
+
+Mean relational duration: 38 months
+
+### Tasks
+1. Explore ways of balancing these data using `check_bip_degdist`. One approach to balancing is at the bottom of this page, if you wish to use that and skip this step.
+2. Develop and estimate a model to capture this network structure. How would you interpret the coefficients for each model?
+3. Conduct model diagnostics.
+4. Conduct infectious disease transmisson simulations on this network, using a set of infection-related parameters of your choice. We suggest that modeling an SIS epidemic (e.g., gonorrhea or another bacterial STI) may be most illuminating given the lack of vital dynamics in this model iteration.
+
+**Next, try exploring different scenarios.** For example:
+
+5. You can model mode-specific disease parameters, using the `.m2` parameters in `param.net`. For an SIS model, not only the transmission probability will vary by mode, but the recovery rate may also vary by mode. For example, if you increase the mode 2 transmission probability to be 25% higher than the mode 1 transmission probability (does this result in a relative difference of 25% to the equilibrium prevalence comparing mode 2 to mode 1?).
+6. Or, you can explore the impact of changing different aspects of behavior -- the number of acts per time step in each partnership ($\alpha$), partnership length, or the momentary degree distribution.  For the latter, you can consider the following degree distribution from the US.  The data come from the ["National Health and Social Life Survey"](http://popcenter.uchicago.edu/data/nhsls.shtml) in 1992, the same timeframe as the Uganda data (1994).
+
+The sex ratio for the US distribution is 1.01 (M:F), and the degree distribution is:
+
+Degree | Males  | Females
+-------| -------| --------
+0      | 22.3%  | 19.1% 
+1      | 73.2%  | 79.0% 
+2      |  4.5%  |  1.8% 
+3      |  0.01% |  0.01% 
+
+7. For your various scenarios, numerically summarize and visualize the results in multiple ways. For example, add a standardized incidence rate or calculate cumulative incidence. 
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+### Case 2 Hint
+
+One balanced version of the Uganda data, which preserves the proportion of each sex that has concurrent partners:
+
+Degree | Males | Females
+-------| ------| -------
+0      | 32.8% | 20.0%
+1      | 52.4% | 78.6%
+2      | 12.7% |  1.1%
+3      |  2.1% |  0.3%
+
