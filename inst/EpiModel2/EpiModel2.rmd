@@ -84,7 +84,7 @@ Note that these two-group network models with the group attribute were possible 
 The group attribute may be on the network object and that attribute may also be referenced within an ERGM formation model. This approach would be used when one wants to have a two-group epidemic model (with group-specific epidemic model parameters) and also a network structure that incorporates heterogeneity in activity or mixing by group. But one may also have an epidemic model in which the group attribute is on the network object but not in the ERGM formation model. This would be used in the case when one wants to have group-specific epidemic model parameters but no network structure specific to groups.
 
 <center>
-![](EpiModel2-attr_copy.jpg) 
+![](EpiModel2-attr_copy.png) 
 </center>
 
 The above table details the scenarios (with example code) in which attributes may or may not be on the network object and formation models: allowed scenarios are in blue, with those in red invalid for estimation.
@@ -101,7 +101,7 @@ Further, the default ordering of how the modules are executed within `netsim` ha
 The table below presents a classification of the built-in modules according to two types: protected and disease. Protected modules (in red) are typically not meant to be modified by the user in most applied extension cases. Those modules of class disease (in blue) are often modified based on novel research cases. For built-in models, the protected modules have hard-coded default functions in `control.net`, while the disease modules have no hard-coded default functions because the appropriate function is selected based on the input parameters from `param.net` and initial conditions in `init.net`.
 
 <center>
-![](EpiModel2_modules.jpg){ width=50% }
+![](EpiModel2_modules.png){ width=75% }
 </center>
 
 ## Epidemic Type
