@@ -486,11 +486,15 @@ control.net <- function(type,
   p$bi.mods <- character()
   bi.nms <- bi.mods
   index <- 1
-  for (i in 1:length(bi.mods)) {
-    if (!is.null(p[[bi.mods[i]]])) {
-      p$bi.mods[index] <- bi.mods[i]
-      index <- index + 1
+  if (is.null(p$type)) {
+    for (i in 1:length(bi.mods)) {
+      if (!is.null(p[[bi.mods[i]]])) {
+        p$bi.mods[index] <- bi.mods[i]
+        index <- index + 1
+      }
     }
+  } else{
+    p$bi.mods <- bi.mods
   }
   p$user.mods <- grep(".FUN", names(dot.args), value = TRUE)
 
