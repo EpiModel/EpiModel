@@ -30,7 +30,7 @@ average edge durations as targets. The example below exhibits that case.
 }
 \examples{
 \dontrun{
-nw <- network.initialize(1000, directed = FALSE)
+nw <- network_initialize(n = 1000)
 
 # Two dissolutions: an average duration of 300 versus 200
 diss.300 <- dissolution_coefs(~offset(edges), 300, 0.001)

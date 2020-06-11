@@ -139,7 +139,7 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
     }
   }
 
-  ##Updated parameter names
+  ## Defaults and Checks
   if ("b.rate" %in% names.dot.args) {
     p$a.rate <- dot.args$b.rate
     message("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate to a.rate. ",
@@ -151,7 +151,13 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
             "See documentation for details.")
   }
 
-  ## Defaults and checks
+  m2.flag <- grep(".m2", names(p))
+  if (length(m2.flag) > 0) {
+    names(p) <- gsub(".m2", ".g2", names(p))
+    warning("EpiModel 2.0 onward has updated parameter suffixes reflecting a move from mode to group networks. ",
+            "All .m2 parameters changed to .g2. See documentation for more details.")
+
+  }
   if (missing(act.rate)) {
     p$act.rate <- 1
   }
@@ -466,18 +472,44 @@ control.net <- function(type,
   if ("births.FUN" %in% names(dot.args)) {
     p$arrivals.FUN <- dot.args$births.FUN
     p$births.FUN <- dot.args$births.FUN <- NULL
-    message("EpiModel 1.7.0 onward renamed the birth function births.FUN to arrivals.FUN. See documentation for details.")
+    message("EpiModel 1.7.0 onward renamed the birth function births.FUN to arrivals.FUN. ",
+            "See documentation for details.")
   }
   if ("deaths.FUN" %in% names(dot.args)) {
     p$departures.FUN <- dot.args$deaths.FUN
     p$deaths.FUN <- dot.args$deaths.FUN <- NULL
-    message("EpiModel 1.7.0 onward renamed the death function deaths.FUN to departures.FUN. See documentation for details.")
+    message("EpiModel 1.7.0 onward renamed the death function deaths.FUN to departures.FUN. ",
+            "See documentation for details.")
+  }
+
+  if ("depend" %in% names(dot.args)) {
+    p$resimulate.network <- dot.args$depend
+    message("EpiModel 2.0 onwward has replaced the control.net setting depend with ",
+            "resimulate.network for clarity. Please update your code accordingly.")
+  }
+
+  if ("save.network" %in% names(dot.args) || "save.transmat" %in% names(dot.args)) {
+    p$tergmLite <- FALSE
+    message("EpiModel 2.0 onward has folded saving of the network object and transmission ",
+            "matrix into control.net setting tergmLite: if FALSE, these are saved automatically; ",
+            "if true, they are not saved. Please update code accordingly.")
   }
 
   ## Module classification
   bi.mods <- grep(".FUN", names(formal.args), value = TRUE)
+  p$bi.mods <- character()
   bi.nms <- bi.mods
-  p$bi.mods <- bi.mods
+  index <- 1
+  if (is.null(p$type)) {
+    for (i in 1:length(bi.mods)) {
+      if (!is.null(p[[bi.mods[i]]])) {
+        p$bi.mods[index] <- bi.mods[i]
+        index <- index + 1
+      }
+    }
+  } else{
+    p$bi.mods <- bi.mods
+  }
   p$user.mods <- grep(".FUN", names(dot.args), value = TRUE)
 
 
@@ -508,8 +540,9 @@ control.net <- function(type,
   }
 
   #Check whether any base modules have been redefined by user (note: must come after above)
-  bi.nms <- bi.nms[-which(bi.nms %in% c("initialize.FUN", "resim_nets.FUN", "verbose.FUN", "nwupdate.FUN"))]
-  if (length(bi.nms) > 0){
+  bi.nms <- bi.nms[-which(bi.nms %in% c("initialize.FUN", "resim_nets.FUN",
+                                        "verbose.FUN", "nwupdate.FUN", "prevalence.FUN"))]
+  if (length(bi.nms) > 0) {
     flag1 <- logical()
     for (args in 1:length(bi.nms)) {
       if (!(is.null(p[[bi.nms[args]]])) ) {
@@ -621,7 +654,7 @@ crosscheck.net <- function(x, param, init, control) {
 
       # Is status in network formation formula?
       #statOnNw <- ("status" %in% get_formula_term_attr(x$formation, nw))
-      statOnNw <- get.vertex.attribute(nw, "status") %in% c("s", "i", "r")
+      statOnNw <- get_vertex_attribute(nw, "status") %in% c("s", "i", "r")
       statOnNw <- ifelse(sum(statOnNw) > 0, TRUE, FALSE)
 
       # Set dependent modeling defaults if vital or status on nw
@@ -633,7 +666,7 @@ crosscheck.net <- function(x, param, init, control) {
         }
       }
 
-      nGroups <- length(unique(get.vertex.attribute(nw, "group")))
+      nGroups <- length(unique(get_vertex_attribute(nw, "group")))
       nGroups <- ifelse(nGroups == 2, 2, 1)
 
       if (nGroups == 2 & is.null(control$pid.prefix)) {
@@ -650,7 +683,7 @@ crosscheck.net <- function(x, param, init, control) {
 
       # Check that prevalence in NW attr status and initial conditions match
       if (statOnNw == TRUE) {
-        nw1 <- sum(get.vertex.attribute(nw, "status") == 1)
+        nw1 <- sum(get_vertex_attribute(nw, "status") == 1)
         init1 <- sum(unlist(init[grep("i.num", names(init), value = TRUE)]))
         if ("i.num" %in% names(init) && nw1 != init1) {
           warning("Overriding init infected settings with network status attribute",
@@ -808,7 +841,7 @@ crosscheck.net <- function(x, param, init, control) {
     control$type <- "SI"
   }
 
-  if (is.null(control$type) && length(grep("rec", names(param))) != 0){
+  if (is.null(control$type) && length(grep("rec", names(param))) != 0) {
     control$type <- "SIR"
   }
 

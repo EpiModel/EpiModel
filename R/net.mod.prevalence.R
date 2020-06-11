@@ -57,12 +57,15 @@ prevalence.net <- function(dat, at) {
                                                    get(ebn) == ebv[i])
     }
   }
-  if (type == "SIR") {
-    dat <- set_epi(dat, "r.num", at, sum(status == "r"))
-    if (eb == TRUE) {
-      for (i in 1:length(ebun)) {
-        dat$epi[[paste0("r.num", ebun[i])]] <- sum(status == "r" &
-                                                     get(ebn) == ebv[i])
+
+  if(!is.null(type)) {
+    if (type == "SIR") {
+      dat <- set_epi(dat, "r.num", at, sum(status == "r"))
+      if (eb == TRUE) {
+        for (i in 1:length(ebun)) {
+          dat$epi[[paste0("r.num", ebun[i])]] <- sum(status == "r" &
+                                                       get(ebn) == ebv[i])
+        }
       }
     }
   }
@@ -135,13 +138,15 @@ prevalence.2g.net <- function(dat, at) {
                                                        get(ebn) == ebv[i])
     }
   }
-  if (type == "SIR") {
-    dat <- set_epi(dat, "r.num", at, sum(status == "r" & group == 1))
-    if (eb == TRUE) {
-      for (i in 1:length(ebun)) {
-        dat$epi[[paste0("s.num", ebun[i])]][at] <- sum(status == "r" &
-                                                         group == 1 &
-                                                         get(ebn) == ebv[i])
+  if (!is.null(type)) {
+    if (type == "SIR") {
+      dat <- set_epi(dat, "r.num", at, sum(status == "r" & group == 1))
+      if (eb == TRUE) {
+        for (i in 1:length(ebun)) {
+          dat$epi[[paste0("s.num", ebun[i])]][at] <- sum(status == "r" &
+                                                           group == 1 &
+                                                           get(ebn) == ebv[i])
+        }
       }
     }
   }
@@ -169,13 +174,15 @@ prevalence.2g.net <- function(dat, at) {
                                                           get(ebn) == ebv[i])
     }
   }
-  if (type == "SIR") {
-    dat <- set_epi(dat, "r.num.g2", at, sum(status == "r" & group == 2))
-    if (eb == TRUE) {
-      for (i in 1:length(ebun)) {
-        dat$epi[[paste0("r.num.g2", ebun[i])]][at] <- sum(status == "r" &
-                                                            group == 2 &
-                                                            get(ebn) == ebv[i])
+  if (!is.null(type)) {
+    if (type == "SIR") {
+      dat <- set_epi(dat, "r.num.g2", at, sum(status == "r" & group == 2))
+      if (eb == TRUE) {
+        for (i in 1:length(ebun)) {
+          dat$epi[[paste0("r.num.g2", ebun[i])]][at] <- sum(status == "r" &
+                                                              group == 2 &
+                                                              get(ebn) == ebv[i])
+        }
       }
     }
   }

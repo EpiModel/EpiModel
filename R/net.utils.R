@@ -170,7 +170,7 @@ copy_nwattr_to_datattr <- function(dat) {
                           "testatus.active", "tergm_pid"))
   if (length(otha) > 0) {
     for (i in seq_along(otha)) {
-      va <- get.vertex.attribute(dat$nw[[1]], otha[i])
+      va <- get_vertex_attribute(dat$nw[[1]], otha[i])
       dat$attr[[otha[i]]] <- va
       if (!is.null(dat$control$epi.by) && dat$control$epi.by == otha[i]) {
         dat$temp$epi.by.vals <- unique(va)
@@ -203,7 +203,7 @@ copy_datattr_to_nwattr <- function(dat) {
   attr.to.copy <- union(nwterms, special.attr)
   attr <- dat$attr[attr.to.copy]
   if (length(attr.to.copy) > 0) {
-    dat$nw[[1]] <- set.vertex.attribute(dat$nw[[1]], names(attr), attr)
+    dat$nw[[1]] <- set_vertex_attribute(dat$nw[[1]], names(attr), attr)
   }
 
   return(dat)
@@ -297,9 +297,9 @@ copy_datattr_to_nwattr <- function(dat) {
 #' \dontrun{
 #' ## Extended example for differential homophily by age group
 #' # Set up the network with nodes categorized into 5 age groups
-#' nw <- network.initialize(1000, directed = FALSE)
+#' nw <- network_initialize(n = 1000)
 #' age.grp <- sample(1:5, 1000, TRUE)
-#' nw <- set.vertex.attribute(nw, "age.grp", age.grp)
+#' nw <- set_vertex_attribute(nw, "age.grp", age.grp)
 #'
 #' # durations = non-matched, age.grp1 & age.grp1, age.grp2 & age.grp2, ...
 #' # TERGM will include differential homophily by age group with nodematch term
@@ -463,7 +463,7 @@ dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
 #'
 #' @examples
 #' # Initialize and parameterize network model
-#' nw <- network.initialize(n = 100, directed = FALSE)
+#' nw <- network_initialize(n = 100)
 #' formation <- ~edges
 #' target.stats <- 50
 #' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
@@ -530,7 +530,7 @@ edgelist_censor <- function(el) {
 #'
 #' @examples
 #' # Initialize and parameterize the network model
-#' nw <- network.initialize(n = 100, directed = FALSE)
+#' nw <- network_initialize(n = 100)
 #' formation <- ~edges
 #' target.stats <- 50
 #' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
@@ -676,14 +676,12 @@ get_network_term_attr <- function(nw) {
 #' @param ids Vector of ID numbers for which the group number
 #'        should be returned.
 #'
-#' @seealso \code{\link{groupids}} provides the reverse functionality.
-#'
 #' @export
 #' @keywords netUtils internal
 #'
 #' @examples
-#' nw <- network.initialize(10)
-#' nw <- set.vertex.attribute(nw, "group", rep(c(1,2), each = 5))
+#' nw <- network_initialize(n = 10)
+#' nw <- set_vertex_attribute(nw, "group", rep(c(1,2), each = 5))
 #' idgroup(nw)
 #' idgroup(nw, ids = c(3, 6))
 #'
@@ -700,45 +698,10 @@ idgroup <- function(nw, ids) {
   if (!flag) {
     out <- rep(1, n)
   } else {
-    groups <- get.vertex.attribute(nw, "group")
+    groups <- get_vertex_attribute(nw, "group")
     out <- groups[ids]
   }
 
-  return(out)
-}
-
-#' @title ID Numbers for Two-Group Network
-#'
-#' @description Outputs ID numbers for a group number for a two-group network.
-#'
-#' @param nw Object of class \code{network} or \code{networkDynamic}.
-#' @param group Group number to return ID numbers for.
-#'
-#' @seealso \code{\link{idgroup}} provides the reverse functionality.
-#'
-#' @export
-#' @keywords netUtils internal
-#'
-#' @examples
-#' nw <- network.initialize(10)
-#' nw <- set.vertex.attribute(nw, "group", rep(c(1,2), each = 5))
-#' groupids(nw, group = 2)
-#'
-groupids <- function(nw, group) {
-  flag <- "group" %in% names(nw$val[[1]])
-  if (!flag) {
-    stop("nw must be a two-group network")
-  }
-  if (missing(group)) {
-    stop("Specify group=1 or group=2")
-  }
-
-  if (group == 1) {
-    out <- which(get.vertex.attribute(nw, "group") == 1)
-  }
-  if (group == 2) {
-    out <- which(get.vertex.attribute(nw, "group") == 2)
-  }
   return(out)
 }
 
@@ -833,7 +796,7 @@ auto_update_attr <- function(dat, newNodes, curr.tab) {
 #' @export
 #'
 #' @examples
-#' nw <- network.initialize(500, directed = FALSE)
+#' nw <- network_initialize(n = 500)
 #'
 #' set.seed(1)
 #' fit <- ergm(nw ~ edges, target.stats = 250)

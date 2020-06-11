@@ -58,7 +58,7 @@ test_that("merge errors", {
 # merge.netsim ------------------------------------------------------------
 
 test_that("merge for netsim", {
-  nw <- network.initialize(n = 100, directed = FALSE)
+  nw <- network_initialize(n = 100)
   coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 10)
   est <- netest(nw, formation = ~edges, target.stats = 25,
                 coef.diss = coef.diss, verbose = FALSE)
@@ -77,7 +77,7 @@ test_that("merge for netsim", {
 })
 
 test_that("merge for netsim", {
-  nw <- network.initialize(n = 100, directed = FALSE)
+  nw <- network_initialize(n = 100)
   coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 10)
   est <- netest(nw, formation = ~edges, target.stats = 25,
                 coef.diss = coef.diss, verbose = FALSE)
@@ -98,7 +98,7 @@ test_that("merge for netsim", {
 })
 
 test_that("merge works for open sims saving nw stats", {
-  nw <- network.initialize(n = 100, directed = FALSE)
+  nw <- network_initialize(n = 100)
   est <- netest(nw, formation = ~edges, target.stats = 20,
                 coef.diss = dissolution_coefs(~offset(edges), 10, 0.01),
                 verbose = FALSE)

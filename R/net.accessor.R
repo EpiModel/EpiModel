@@ -1,17 +1,9 @@
-#' Helper functions to access and edit the Master list object of network models
+
+#' @title Functions to Access and Edit the Master List Object in Network Models
 #'
-#' These `get_`, `set_`, `append_` and `add` functions allow a safe and
-#' efficient way to retrieve and mutate the Master list object of network models
-#' (`dat`).
-#'
-#' @section mutability:
-#' The `set_`, `append_` and `add_` functions DO NOT mutate the dat object in
-#' place. The result must be assigned back to `dat` in order to be registered
-#' `dat <- set_*(dat, item, value)`
-#'
-#' @section `set_` vs `add_`:
-#' The `set_` functions edit a pre-existing element or create a new one if it
-#' does not exist already by calling the `add_` functions internally.
+#' @description These `get_`, `set_`, `append_` and `add` functions allow a safe
+#'              and efficient way to retrieve and mutate the Master list object
+#'              of network models (`dat`).
 #'
 #' @param dat a Master list object of network models
 #' @param item a character vector conaining the name of the element to access.
@@ -26,8 +18,16 @@
 #' @return a vector or a list of vector for `get_` functions. And the Master
 #'         list object for `set_` and `add_` functions
 #'
+#' @section Mutability:
+#' The `set_`, `append_` and `add_` functions DO NOT mutate the dat object in
+#' place. The result must be assigned back to `dat` in order to be registered
+#' `dat <- set_*(dat, item, value)`
+#'
+#' @section `set_` vs `add_`:
+#' The `set_` functions edit a pre-existing element or create a new one if it
+#' does not exist already by calling the `add_` functions internally.
+#'
 #' @examples
-#' \dontrun{
 #' dat <- list(
 #'   attr = list(
 #'     active = rbinom(100, 1, 0.9)
@@ -50,7 +50,6 @@
 #' get_attr_list(dat, c("age", "active"))
 #' get_attr(dat, "status")
 #' get_attr(dat, "status", c(1, 4))
-#' get_attr(dat, "status", rbinom(100, 1, 0.2) == 1)
 #'
 #' dat <- add_epi(dat, "i.num")
 #' dat <- set_epi(dat, "i.num", 150, 10)
@@ -81,12 +80,11 @@
 #' get_control_list(dat)
 #' get_control_list(dat, c("x", "y"))
 #' get_control(dat, "x")
-#' }
 #'
-#' @name dat_get_set
+#' @name net-accessor
 NULL
 
-#' @rdname dat_get_set
+#' @rdname net-accessor
 #' @export
 get_attr_list <- function(dat, item = NULL) {
   if (is.null(item)) {
@@ -106,7 +104,7 @@ get_attr_list <- function(dat, item = NULL) {
   return(out)
 }
 
-#' @rdname dat_get_set
+#' @rdname net-accessor
 #' @export
 get_attr <- function(dat, item, indexes = NULL, override.null.error = FALSE) {
   if (!item %in% names(dat[["attr"]])) {
@@ -141,7 +139,7 @@ get_attr <- function(dat, item, indexes = NULL, override.null.error = FALSE) {
   return(out)
 }
 
-#' @rdname dat_get_set
+#' @rdname net-accessor
 #' @export
 add_attr <- function(dat, item) {
   if (item %in% names(dat[["attr"]])) {
@@ -149,23 +147,23 @@ add_attr <- function(dat, item) {
                "': exists already"))
   }
 
-  dat[["attr"]][[item]] <- rep(NA, length(dat$attr$active))
+  dat[["attr"]][[item]] <- rep(NA, length(dat[["attr"]][["active"]]))
 
   return(dat)
 }
 
-#' @rdname dat_get_set
+#' @rdname net-accessor
 #' @export
 set_attr <- function(dat, item, value, override.length.check = FALSE) {
   if (!item %in% names(dat[["attr"]])) {
     dat <- add_attr(dat, item)
   }
 
-  if (length(value) != length(dat$attr$active) & !override.length.check) {
+  if (length(value) != length(dat[["attr"]][["active"]]) & !override.length.check) {
     stop(paste0(
       "When trying to edit the ", `item`, " nodal attribute: The size",
        " of the `value` vector is not equal to the number of node in
-       the network. Expected: ", length(dat$attr$active), ", given: ",
+       the network. Expected: ", length(dat[["attr"]][["active"]]), ", given: ",
        length(value)))
   }
 
@@ -175,7 +173,7 @@ set_attr <- function(dat, item, value, override.length.check = FALSE) {
 }
 
 #' @param n.new the number of new elements to append at the end of `item`
-#' @rdname dat_get_set
+#' @rdname net-accessor
 #' @export
 append_attr <- function(dat, item, value, n.new) {
   if (!item %in% names(dat[["attr"]])) {
@@ -200,7 +198,7 @@ append_attr <- function(dat, item, value, n.new) {
   return(dat)
 }
 
-#' @rdname dat_get_set
+#' @rdname net-accessor
 #' @export
 get_epi_list <- function(dat, item = NULL) {
   if (is.null(item)) {
@@ -220,7 +218,7 @@ get_epi_list <- function(dat, item = NULL) {
   return(out)
 }
 
-#' @rdname dat_get_set
+#' @rdname net-accessor
 #' @export
 get_epi <- function(dat, item, indexes = NULL, override.null.error = FALSE) {
   if (!item %in% names(dat[["epi"]])) {
@@ -235,14 +233,14 @@ get_epi <- function(dat, item, indexes = NULL, override.null.error = FALSE) {
       out <- dat[["epi"]][[item]]
     } else {
       if (is.logical(indexes)) {
-        if (length(indexes) != dat$control$nsteps) {
+        if (length(indexes) != dat[["control"]][["nsteps"]]) {
           stop("(logical) `indexes` has to have a length equal to the number of
-              steps planned for for the simulation (control$nsteps)")
+              steps planned for for the simulation (control[['nsteps']])")
         }
       } else if(is.numeric(indexes)) {
-        if (any(indexes > dat$control$nsteps)) {
+        if (any(indexes > dat[["control"]][["nsteps"]])) {
           stop("Some (numeric) `indexes` are larger than the number of
-              steps planned for for the simulation (control$nsteps)")
+              steps planned for for the simulation (control[['nsteps']])")
         }
       } else {
         stop("`indexes` must be logical, numeric, or NULL")
@@ -255,7 +253,7 @@ get_epi <- function(dat, item, indexes = NULL, override.null.error = FALSE) {
   return(out)
 }
 
-#' @rdname dat_get_set
+#' @rdname net-accessor
 #' @export
 add_epi <- function(dat, item) {
   if (item %in% names(dat[["epi"]])) {
@@ -263,13 +261,13 @@ add_epi <- function(dat, item) {
                ": exists already"))
   }
 
-  dat[["epi"]][[item]] <- rep(NA, dat$control$nsteps)
+  dat[["epi"]][[item]] <- rep(NA, dat[["control"]][["nsteps"]])
 
   return(dat)
 }
 
 #' @param at timestep where to add the new value for the epi output `item`
-#' @rdname dat_get_set
+#' @rdname net-accessor
 #' @export
 set_epi <- function(dat, item, at,  value) {
   if (length(at) != 1 || !is.numeric(at)) {
@@ -284,7 +282,7 @@ set_epi <- function(dat, item, at,  value) {
 
       dat[["epi"]][[item]] <- c(
         dat[["epi"]][[item]],
-        rep(NA, dat$control$nsteps - length(dat[["epi"]][[item]]))
+        rep(NA, dat[["control"]][["nsteps"]] - length(dat[["epi"]][[item]]))
       )
   }
 
@@ -293,7 +291,7 @@ set_epi <- function(dat, item, at,  value) {
   return(dat)
 }
 
-#' @rdname dat_get_set
+#' @rdname net-accessor
 #' @export
 get_param_list <- function(dat, item = NULL) {
   if (is.null(item)) {
@@ -313,7 +311,7 @@ get_param_list <- function(dat, item = NULL) {
   return(out)
 }
 
-#' @rdname dat_get_set
+#' @rdname net-accessor
 #' @export
 get_param <- function(dat, item, override.null.error = FALSE) {
   if (!item %in% names(dat[["param"]])) {
@@ -330,7 +328,7 @@ get_param <- function(dat, item, override.null.error = FALSE) {
   return(out)
 }
 
-#' @rdname dat_get_set
+#' @rdname net-accessor
 #' @export
 add_param <- function(dat, item) {
   if (item %in% names(dat[["param"]])) {
@@ -343,7 +341,7 @@ add_param <- function(dat, item) {
   return(dat)
 }
 
-#' @rdname dat_get_set
+#' @rdname net-accessor
 #' @export
 set_param <- function(dat, item, value) {
   if (!item %in% names(dat[["param"]])) {
@@ -355,7 +353,7 @@ set_param <- function(dat, item, value) {
   return(dat)
 }
 
-#' @rdname dat_get_set
+#' @rdname net-accessor
 #' @export
 get_control_list <- function(dat, item = NULL) {
   if (is.null(item)) {
@@ -375,7 +373,7 @@ get_control_list <- function(dat, item = NULL) {
   return(out)
 }
 
-#' @rdname dat_get_set
+#' @rdname net-accessor
 #' @export
 get_control <- function(dat, item, override.null.error = FALSE) {
   if (!item %in% names(dat[["control"]])) {
@@ -392,7 +390,7 @@ get_control <- function(dat, item, override.null.error = FALSE) {
   return(out)
 }
 
-#' @rdname dat_get_set
+#' @rdname net-accessor
 #' @export
 add_control <- function(dat, item) {
   if (item %in% names(dat[["control"]])) {
@@ -405,7 +403,7 @@ add_control <- function(dat, item) {
   return(dat)
 }
 
-#' @rdname dat_get_set
+#' @rdname net-accessor
 #' @export
 set_control <- function(dat, item, value) {
   if (!item %in% names(dat[["control"]])) {
@@ -417,7 +415,7 @@ set_control <- function(dat, item, value) {
   return(dat)
 }
 
-#' @rdname dat_get_set
+#' @rdname net-accessor
 #' @export
 get_init_list <- function(dat, item = NULL) {
   if (is.null(item)) {
@@ -437,7 +435,7 @@ get_init_list <- function(dat, item = NULL) {
   return(out)
 }
 
-#' @rdname dat_get_set
+#' @rdname net-accessor
 #' @export
 get_init <- function(dat, item, override.null.error = FALSE) {
   if (!item %in% names(dat[["init"]])) {
@@ -454,7 +452,7 @@ get_init <- function(dat, item, override.null.error = FALSE) {
   return(out)
 }
 
-#' @rdname dat_get_set
+#' @rdname net-accessor
 #' @export
 add_init <- function(dat, item) {
   if (item %in% names(dat[["init"]])) {
@@ -467,7 +465,7 @@ add_init <- function(dat, item) {
   return(dat)
 }
 
-#' @rdname dat_get_set
+#' @rdname net-accessor
 #' @export
 set_init <- function(dat, item, value) {
   if (!item %in% names(dat[["init"]])) {

@@ -8,7 +8,7 @@ test_that("tergmLite: 1G, Closed", {
 
 # SI
 num <- 1000
-nw <- network.initialize(num, directed = FALSE)
+nw <- network_initialize(n = num)
 formation <- ~edges
 target.stats <- 400
 coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 25)
@@ -49,8 +49,8 @@ test_that("tergmLite: 2G, Closed", {
 
 # SI
 num1 <- num2 <- 500
-nw <- network.initialize(num1 + num2, directed = FALSE)
-nw <- set.vertex.attribute(nw, "group", rep(1:2, each = num1))
+nw <- network_initialize(n = num1 + num2)
+nw <- set_vertex_attribute(nw, "group", rep(1:2, each = num1))
 formation <- ~edges + nodematch("group")
 target.stats <- c(400, 0)
 coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
@@ -91,7 +91,7 @@ test_that("tergmLite: 1G, Open", {
 
 # SI
 num <- 1000
-nw <- network.initialize(num, directed = FALSE)
+nw <- network_initialize(n = num)
 formation <- ~edges
 target.stats <- 400
 coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 25,
@@ -139,8 +139,8 @@ test_that("tergmLite: 2G, Open", {
 
 # SI
 num1 <- num2 <- 500
-nw <- network.initialize(num1 + num2, directed = FALSE)
-nw <- set.vertex.attribute(nw, "group", rep(1:2, each = num1))
+nw <- network_initialize(n = num1 + num2)
+nw <- set_vertex_attribute(nw, "group", rep(1:2, each = num1))
 formation <- ~ edges + nodematch("group")
 target.stats <- c(400, 0)
 coef.diss <- dissolution_coefs(dissolution = ~ offset(edges), duration = 25, d.rate = 0.005)
@@ -193,7 +193,7 @@ test_that("tergmLite: 1G, Closed", {
 
   # SI
   num <- 1000
-  nw <- network.initialize(num, directed = FALSE)
+  nw <- network_initialize(n = num)
   formation <- ~edges
   target.stats <- 400
   coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 25)
@@ -234,8 +234,8 @@ test_that("tergmLite: 2G, Closed", {
 
   # SI
   num1 <- num2 <- 500
-  nw <- network.initialize(num1 + num2, directed = FALSE)
-  nw <- set.vertex.attribute(nw, "group", rep(1:2, each = num1))
+  nw <- network_initialize(n = num1 + num2)
+  nw <- set_vertex_attribute(nw, "group", rep(1:2, each = num1))
   formation <- ~edges + nodematch("group")
   target.stats <- c(400, 0)
   coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
@@ -276,7 +276,7 @@ test_that("tergmLite: 1G, Open", {
 
   # SI
   num <- 1000
-  nw <- network.initialize(num, directed = FALSE)
+  nw <- network_initialize(n = num)
   formation <- ~edges
   target.stats <- 400
   coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 25,
@@ -324,8 +324,8 @@ test_that("tergmLite: 2G, Open", {
 
   # SI
   num1 <- num2 <- 500
-  nw <- network.initialize(num1 + num2, directed = FALSE)
-  nw <- set.vertex.attribute(nw, "group", rep(1:2, each = num1))
+  nw <- network_initialize(n = num1 + num2)
+  nw <- set_vertex_attribute(nw, "group", rep(1:2, each = num1))
   formation <- ~ edges + nodematch("group")
   target.stats <- c(400, 0)
   coef.diss <- dissolution_coefs(dissolution = ~ offset(edges), duration = 25, d.rate = 0.005)
@@ -376,7 +376,7 @@ test_that("tergmLite: 2G, Open", {
 test_that("tergmLite: Expected Output", {
 
   num <- 1000
-  nw <- network.initialize(num, directed = FALSE)
+  nw <- network_initialize(n = num)
   formation <- ~edges
   target.stats <- 400
   coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 25)
