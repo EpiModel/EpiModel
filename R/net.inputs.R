@@ -142,15 +142,17 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
   ## Defaults and Checks
   if ("b.rate" %in% names.dot.args) {
     p$a.rate <- dot.args$b.rate
-    message("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate to a.rate. ",
-            "See documentation for details.")
+    stop("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate to a.rate. ",
+            "See documentation for details.",
+         call. = FALSE)
   }
   if ("b.rate.g2" %in% names.dot.args) {
     p$a.rate.g2 <- dot.args$b.rate.g2
-    message("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate.g2 to a.rate.g2. ",
-            "See documentation for details.")
+    stop("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate.g2 to a.rate.g2. ",
+            "See documentation for details.",
+         call. = FALSE)
   }
-
+  # Check for mode to group suffix change
   m2.flag <- grep(".m2", names(p))
   if (length(m2.flag) > 0) {
     names(p) <- gsub(".m2", ".g2", names(p))
@@ -168,14 +170,6 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
             "If using built-in models, only act.rate parameter will apply.",
             call. = FALSE)
   }
-
-  # Checks that .m2 syntax update to .g2
-  m2.param <- grep("m2", names(p), value = TRUE)
-  if (length(m2.param) > 0) {
-    stop("EpiModel has moved from 'mode' to 'group' functionality; second group",
-         " parameters have changed from '.m2' to '.g2'.", call. = FALSE)
-  }
-
 
   if (!is.null(p$inter.eff) && is.null(p$inter.start)) {
     p$inter.start <- 1
@@ -473,27 +467,31 @@ control.net <- function(type,
   if ("births.FUN" %in% names(dot.args)) {
     p$arrivals.FUN <- dot.args$births.FUN
     p$births.FUN <- dot.args$births.FUN <- NULL
-    message("EpiModel 1.7.0 onward renamed the birth function births.FUN to arrivals.FUN. ",
-            "See documentation for details.")
+    stop("EpiModel 1.7.0 onward renamed the birth function births.FUN to arrivals.FUN. ",
+         "See documentation for details.",
+         call. = FALSE)
   }
   if ("deaths.FUN" %in% names(dot.args)) {
     p$departures.FUN <- dot.args$deaths.FUN
     p$deaths.FUN <- dot.args$deaths.FUN <- NULL
-    message("EpiModel 1.7.0 onward renamed the death function deaths.FUN to departures.FUN. ",
-            "See documentation for details.")
+    stop("EpiModel 1.7.0 onward renamed the death function deaths.FUN to departures.FUN. ",
+         "See documentation for details.",
+         call. = FALSE)
   }
 
   if ("depend" %in% names(dot.args)) {
     p$resimulate.network <- dot.args$depend
-    message("EpiModel 2.0 onwward has replaced the control.net setting depend with ",
-            "resimulate.network for clarity. Please update your code accordingly.")
+    stop("EpiModel 2.0 onwward has replaced the control.net setting depend with ",
+         "resimulate.network for clarity. Please update your code accordingly.",
+         call. = FALSE)
   }
 
   if ("save.network" %in% names(dot.args) || "save.transmat" %in% names(dot.args)) {
     p$tergmLite <- FALSE
-    message("EpiModel 2.0 onward has folded saving of the network object and transmission ",
-            "matrix into control.net setting tergmLite: if FALSE, these are saved automatically; ",
-            "if true, they are not saved. Please update code accordingly.")
+    stop("EpiModel 2.0 onward has folded saving of the network object and transmission ",
+         "matrix into control.net setting tergmLite: if FALSE, these are saved automatically; ",
+         "if true, they are not saved. Please update code accordingly.",
+         call. = FALSE)
   }
 
   ## Module classification
@@ -535,7 +533,7 @@ control.net <- function(type,
   ## Defaults and checks
 
   # Check whether depend is being used
-  if ("depend" %in% names(p)){
+  if ("depend" %in% names(p)) {
     stop("Input parameter depend has been replaced by resimulate.network.",
          call. = FALSE)
   }
@@ -554,16 +552,19 @@ control.net <- function(type,
     }
 
     if (!is.null(p$type) && sum(flag1, na.rm = TRUE) != length(flag1)) {
-      stop("Control parameter 'type' must be null if any user defined base modules are present")
+      stop("Control parameter 'type' must be null if any user defined base modules are present",
+           call. = FALSE)
     }
   }
 
   if (!is.null(p$type) && length(p$user.mods) > 0) {
-    stop("Control parameter 'type' must be null if any user specified modules are present")
+    stop("Control parameter 'type' must be null if any user specified modules are present",
+         call. = FALSE)
   }
 
   if (is.null(p$nsteps)) {
-    stop("Specify nsteps")
+    stop("Specify nsteps",
+         call. = FALSE)
   }
 
   if (missing(attr.rules)) {
