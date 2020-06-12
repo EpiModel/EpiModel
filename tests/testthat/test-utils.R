@@ -155,7 +155,7 @@ test_that("dissolution_coefs returns appropriate error for incompatible departur
   dissolution = ~offset(edges) + offset(nodematch("age.grp", diff = TRUE))
   err.msg <- paste("The competing risk of departure is too high for the given",
                    "edge duration of 60 in place 1.",
-                    "Specify a d.rate lower than 0.00837.")
+                   "Specify a d.rate lower than 0.00837.")
   expect_that(dissolution_coefs(dissolution, duration = duration, d.rate = 1/60), throws_error(err.msg))
 })
 
@@ -202,12 +202,12 @@ test_that("Users using birth and death functions are informed of change in langu
 
 test_that("Users using old mode syntax are informed of change to group syntax", {
 
-  err.param <- paste("EpiModel has moved from 'mode' to 'group' functionality; second group",
-                   "parameters have changed from '.m2' to '.g2'.")
-  expect_that(param <- param.net(inf.prob = 0.1, inf.prob.m2 = 0.1, act.rate = 1),
-              throws_error(err.param))
-  err.init <- paste("EpiModel has moved from 'mode' to 'group' functionality; second group",
-                     "initial condition identifiers have changed from '.m2' to '.g2'.")
-  expect_that(init <- init.net(i.num = 1, i.num.m2 = 1), throws_error(err.init))
+  err.param <- paste0("EpiModel 2.0 onward has updated parameter suffixes reflecting a move from mode to group networks. ",
+                      "All .m2 parameters changed to .g2. See documentation for more details.")
+  expect_warning(param <- param.net(inf.prob = 0.1, inf.prob.m2 = 0.1, act.rate = 1),
+                 err.param)
+  err.init <- paste0("EpiModel 2.0 onward has updated initial condition suffixes reflecting a move from mode to group networks. ",
+                    "All .m2 initial conditions changed to .g2. See documentation for more details.")
+  expect_warning(init <- init.net(i.num = 1, i.num.m2 = 1), err.init)
 })
 

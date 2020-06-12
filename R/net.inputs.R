@@ -261,8 +261,9 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
   # Checks that .m2 syntax is change to .g2
   m2.init <- grep("m2", names(p), value = TRUE)
   if (length(m2.init) > 0) {
-    stop("EpiModel has moved from 'mode' to 'group' functionality; second group",
-         " initial condition identifiers have changed from '.m2' to '.g2'.", call. = FALSE)
+    names(p) <- gsub(".m2", ".g2", names(p))
+    warning("EpiModel 2.0 onward has updated initial condition suffixes reflecting a move from mode to group networks. ",
+            "All .m2 initial conditions changed to .g2. See documentation for more details.")
   }
   if (!is.null(p$i.num) & !is.null(p$status.vector)) {
     stop("Use i.num OR status.vector to set initial infected")
