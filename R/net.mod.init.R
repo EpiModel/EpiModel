@@ -68,13 +68,15 @@ initialize.net <- function(x, param, init, control, s) {
       dat$temp$t1.tab <- get_attr_prop(dat, nwterms)
     }
 
+    ## Infection Status and Time
+    dat <- init_status.net(dat)
+
     # Conversions for tergmLite
     if (control$tergmLite == TRUE) {
       dat <- tergmLite::init_tergmLite(dat)
     }
 
-    ## Infection Status and Time
-    dat <- init_status.net(dat)
+
 
 
     # Summary Stats -----------------------------------------------------------
