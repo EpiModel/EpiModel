@@ -117,7 +117,7 @@ test_that("New network models vignette example", {
                          module.order = c("aging.FUN", "arrivals.FUN", "departures.FUN",
                                           "resim_net.FUN", "infection.FUN", "recovery.FUN",
                                           "prevalence.FUN"),
-                         tergmLite = TRUE, save.network = FALSE, verbose = FALSE)
+                         tergmLite = TRUE, verbose = FALSE)
   mod4 <- netsim(est, param, init, control)
   expect_is(mod4, "netsim")
 
