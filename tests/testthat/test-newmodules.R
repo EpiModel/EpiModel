@@ -83,7 +83,7 @@ test_that("New network models vignette example", {
                          resim_net.FUN = resim_nets, infection.FUN = infection.net,
                          recovery.FUN = recovery.net, prevalence.FUN = prevalence.net,
                          departures.FUN = dfunc, arrivals.FUN = afunc, aging.FUN = aging,
-                         tergmLite = FALSE, save.network = FALSE, verbose = FALSE)
+                         tergmLite = FALSE, verbose = FALSE)
   mod1 <- netsim(est, param, init, control)
   expect_is(mod1, "netsim")
 
@@ -95,7 +95,7 @@ test_that("New network models vignette example", {
                          module.order = c("aging.FUN", "arrivals.FUN", "departures.FUN",
                                           "resim_net.FUN", "infection.FUN", "recovery.FUN",
                                           "prevalence.FUN"),
-                         tergmLite = FALSE, save.network = FALSE, verbose = FALSE)
+                         tergmLite = FALSE, verbose = FALSE)
   mod2 <- netsim(est, param, init, control)
   expect_is(mod2, "netsim")
 
@@ -105,7 +105,7 @@ test_that("New network models vignette example", {
                          resim_net.FUN = resim_nets, infection.FUN = infection.net,
                          recovery.FUN = recovery.net, prevalence.FUN = prevalence.net,
                          departures.FUN = dfunc, arrivals.FUN = afunc, aging.FUN = aging,
-                         tergmLite = TRUE, save.network = FALSE, verbose = FALSE)
+                         tergmLite = TRUE, verbose = FALSE)
   mod3 <- netsim(est, param, init, control)
   expect_is(mod3, "netsim")
 

@@ -181,23 +181,21 @@ test_that("get_formula_term_attr checks", {
 })
 
 test_that("Users using birth parameters are informed of change in language",{
-  expect_that(param.net(b.rate = 2), shows_message("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate to a.rate. See documentation for details."))
+  expect_error(param.net(b.rate = 2), paste0("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate to a.rate. See documentation for details."))
   expect_that(param.dcm(b.rate = 2), shows_message("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate to a.rate. See documentation for details."))
   expect_that(param.icm(b.rate = 2), shows_message("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate to a.rate. See documentation for details."))
 })
 
 test_that("Users using birth and death functions are informed of change in language",{
-  temp <- function(x){x=x; return(x)}
-  expect_that(control.icm(type="SI",nsteps=10,births.FUN=temp), shows_message("EpiModel 1.7.0 onward renamed the birth function births.FUN to arrivals.FUN. See documentation for details."))
-  expect_that(control.icm(type="SI",nsteps=10,deaths.FUN=temp), shows_message("EpiModel 1.7.0 onward renamed the death function deaths.FUN to departures.FUN. See documentation for details."))
-  expect_that(control.net(type = NULL, nsims = 1, nsteps = 10,
+  temp <- function(x){x = x; return(x)}
+  expect_error(control.net(type = NULL, nsims = 1, nsteps = 10,
                           departures.FUN = temp, arrivals.FUN = temp,
                           prevalence.FUN = prevalence.net, infection.FUN = infection.net,
-                          recovery.FUN = recovery.net, births.FUN=temp, resimulate.network = FALSE), shows_message("EpiModel 1.7.0 onward renamed the birth function births.FUN to arrivals.FUN. See documentation for details."))
-  expect_that(control.net(type = NULL, nsims = 1, nsteps = 10,
+                          recovery.FUN = recovery.net, births.FUN = temp, resimulate.network = FALSE), paste0("EpiModel 1.7.0 onward renamed the birth function births.FUN to arrivals.FUN. See documentation for details."))
+  expect_error(control.net(type = NULL, nsims = 1, nsteps = 10,
                           departures.FUN = temp, arrivals.FUN = temp,
                           prevalence.FUN = prevalence.net, infection.FUN = infection.net,
-                          recovery.FUN = recovery.net, deaths.FUN=temp, resimulate.network = FALSE), shows_message("EpiModel 1.7.0 onward renamed the death function deaths.FUN to departures.FUN. See documentation for details."))
+                          recovery.FUN = recovery.net, deaths.FUN = temp, resimulate.network = FALSE), paste0("EpiModel 1.7.0 onward renamed the death function deaths.FUN to departures.FUN. See documentation for details."))
 })
 
 test_that("Users using old mode syntax are informed of change to group syntax", {

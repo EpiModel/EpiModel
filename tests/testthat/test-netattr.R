@@ -71,7 +71,7 @@ test_that("Serosorting model in open population", {
                                             meandeg +
                                             nodefactor("status", levels = NULL) +
                                             nodematch("status"),
-                         save.network = FALSE,
+                         tergmLite = TRUE,
                          verbose = FALSE)
 
   sim <- netsim(est, param, init, control)
