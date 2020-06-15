@@ -839,14 +839,6 @@ crosscheck.net <- function(x, param, init, control) {
          call. = FALSE)
   }
 
-  if (is.null(control$type)) {
-    control$type <- "SI"
-  }
-
-  if (is.null(control$type) && length(grep("rec", names(param))) != 0) {
-    control$type <- "SIR"
-  }
-
   ## In-place assignment to update param and control
   assign("param", param, pos = parent.frame())
   assign("control", control, pos = parent.frame())
