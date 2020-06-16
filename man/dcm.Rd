@@ -7,20 +7,20 @@
 dcm(param, init, control)
 }
 \arguments{
-\item{param}{Model parameters, as an object of class \code{\link{param.dcm}}.}
+\item{param}{Model parameters, as an object of class `\link{param.dcm}`.}
 
-\item{init}{Initial conditions, as an object of class \code{\link{init.dcm}}.}
+\item{init}{Initial conditions, as an object of class `\link{init.dcm}`.}
 
 \item{control}{Control settings, as an object of class
-\code{\link{control.dcm}}.}
+`\link{control.dcm}`.}
 }
 \value{
-A list of class \code{dcm} with the following elements:
+A list of class `dcm` with the following elements:
 \itemize{
  \item \strong{param:} the epidemic parameters passed into the model through
-       \code{param}, with additional parameters added as necessary.
+       `param`, with additional parameters added as necessary.
  \item \strong{control:} the control settings passed into the model through
-       \code{control}, with additional controls added as necessary.
+       `control`, with additional controls added as necessary.
  \item \strong{epi:} a list of data frames, one for each epidemiological
        output from the model. Outputs for base models always include the
        size of each compartment, as well as flows in, out of, and between
@@ -32,22 +32,22 @@ Solves deterministic compartmental epidemic models for
              infectious disease.
 }
 \details{
-The \code{dcm} function uses the ordinary differential equation solver in
-the \code{deSolve} package to model disease as a deterministic compartmental
+The `dcm` function uses the ordinary differential equation solver in
+the `deSolve` package to model disease as a deterministic compartmental
 system. The parameterization for these models follows the standard approach in
-\code{EpiModel}, with epidemic parameters, initial conditions, and control
-settings. A description of solving DCMs with the \code{dcm} function may be
+`EpiModel`, with epidemic parameters, initial conditions, and control
+settings. A description of solving DCMs with the `dcm` function may be
 found in the \href{http://statnet.github.io/tut/BasicDCMs.html}{Basic DCMs}
 tutorial.
 
-The \code{dcm} function performs  modeling of both base model types and
+The `dcm` function performs  modeling of both base model types and
 original models with new structures. Base model types include one-group
 and two-group models with disease types for Susceptible-Infected (SI),
 Susceptible-Infected-Recovered (SIR), and Susceptible-Infected-Susceptible (SIS).
-New model types may be written and input into \code{dcm} following the steps
+New model types may be written and input into `dcm` following the steps
 outlined in the \href{http://statnet.github.io/tut/NewDCMs.html}{Solving
 New DCMs} tutorial. Both base and original models require
-the \code{param}, \code{init}, and \code{control} inputs.
+the `param`, `init`, and `control` inputs.
 }
 \examples{
 ## Example 1: SI Model (One-Group)
@@ -98,9 +98,9 @@ deSolve. Journal of Statistical Software. 2010; 33(9): 1-25.
 \url{http://www.jstatsoft.org/v33/i09/}.
 }
 \seealso{
-Extract the model results with \code{\link{as.data.frame.dcm}}.
-Summarize the time-specific model results with \code{\link{summary.dcm}}.
-Plot the model results with \code{\link{plot.dcm}}. Plot a compartment flow
-diagram with \code{\link{comp_plot}}.
+Extract the model results with `\link{as.data.frame.dcm}`.
+Summarize the time-specific model results with `\link{summary.dcm}`.
+Plot the model results with `\link{plot.dcm}`. Plot a compartment flow
+diagram with `\link{comp_plot}`.
 }
 \keyword{model}

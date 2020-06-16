@@ -2,15 +2,15 @@
 #' @title RColorBrewer Color Ramp for EpiModel Plots
 #'
 #' @description Returns vector of colors consistent with a high-brightness set
-#'              of colors from an \code{RColorBrewer} palette.
+#'              of colors from an `RColorBrewer` palette.
 #'
-#' @param plt \code{RColorBrewer} palette from \code{\link{brewer.pal}}
+#' @param plt `RColorBrewer` palette from `\link{brewer.pal}`
 #' @param n Number of colors to return
 #' @param delete.lights Delete the lightest colors from the color palette,
 #'        helps with plotting in many high-contrast palettes
 #'
 #' @details
-#' \code{RColorBrewer} provides easy access to helpful color palettes, but the
+#' `RColorBrewer` provides easy access to helpful color palettes, but the
 #' built-in palettes are limited to the set of colors in the existing palette.
 #' This function expands the palette size to any number of colors by filling
 #' in the gaps. Also, colors within the "div" and "seq" set of palettes whose
@@ -18,10 +18,10 @@
 #' visualization of plots.
 #'
 #' @return
-#' A vector of length equal to \code{n} with a range of color values consistent
+#' A vector of length equal to `n` with a range of color values consistent
 #' with an RColorBrewer color palette.
 #'
-#' @seealso \code{\link{RColorBrewer}}
+#' @seealso `\link{RColorBrewer}`
 #' @keywords colorUtils internal
 #' @export
 #'
@@ -133,24 +133,24 @@ delete_attr <- function(dat, ids) {
 #' @description Returns an RGB transparent color from any standard R color.
 #'
 #' @param col Vector consisting of colors, of any of the three kinds of
-#'        \code{R} color specifications (named, hexadecimal, or integer; see
-#'        \code{\link{col2rgb}}).
+#'        `R` color specifications (named, hexadecimal, or integer; see
+#'        `\link{col2rgb}`).
 #' @param alpha Vector of transparency levels, where 0 is transparent and 1
 #'        is opaque.
 #' @param invisible Supresses printing of the RGB color.
 #'
 #' @details
 #' The purpose of this function is to facilitate color transparency, which is
-#' used widely in \code{EpiModel} plots. This is an internal function that is
+#' used widely in `EpiModel` plots. This is an internal function that is
 #' not ordinarily called by the end-user. This function allows that one of col
 #' or alpha may be of length greater than 1.
 #'
 #' @return
-#' A vector of length equal to the input \code{col} vector or the \code{alpha},
+#' A vector of length equal to the input `col` vector or the `alpha`,
 #' vector, if one or the other is of length greater than 1, containing the
 #' transformed color values in hexidemical format.
 #'
-#' @seealso \code{\link{rgb}}, \code{\link{col2rgb}}
+#' @seealso `\link{rgb}`, `\link{col2rgb}`
 #'
 #' @export
 #' @keywords colorUtils internal
@@ -235,12 +235,12 @@ ssample <- function(x, size, replace = FALSE, prob = NULL) {
 
 #' @title Add New Epidemiology Variables
 #'
-#' @description Inspired by \code{dplyr::mutate}, \code{mutate_epi} adds new
+#' @description Inspired by `dplyr::mutate`, `mutate_epi` adds new
 #'              variables to the epidemiological and related variables within
-#'              simulated model objects of any class in \code{EpiModel}.
+#'              simulated model objects of any class in `EpiModel`.
 #'
-#' @param x An \code{EpiModel} object of class \code{dcm}, \code{icm}, or
-#'        \code{netsim}.
+#' @param x An `EpiModel` object of class `dcm`, `icm`, or
+#'        `netsim`.
 #' @param ... Name-value pairs of expressions (see examples below).
 #'
 #' @export
@@ -308,7 +308,7 @@ mutate_epi <- function(x, ...) {
 #' @param values Values for the output vector.
 #' @param proportions Proportion distribution with one number for each value. This
 #'        must sum to 1.
-#' @param shuffled If \code{TRUE}, randomly shuffle the order of the vector.
+#' @param shuffled If `TRUE`, randomly shuffle the order of the vector.
 #'
 #' @export
 #'

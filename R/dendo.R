@@ -1,11 +1,11 @@
 
 #' @title Convert transmat infection tree into a phylo object
 #'
-#' @description Converts the edgelist matrix in the \code{transmat} object into a \code{phylo}
+#' @description Converts the edgelist matrix in the `transmat` object into a `phylo`
 #'              object by doing the required reordering and labeling.
 #'
-#' @param x An object of class \code{"transmat"}, the output from
-#'        \code{\link{get_transmat}}.
+#' @param x An object of class `"transmat"`, the output from
+#'        `\link{get_transmat}`.
 #' @param collapse.singles logical, DEPRECATED
 #' @param vertex.exit.times  optional numeric vector providing the time of departure
 #'        of vertices, to be used to scale the lengths of branches reaching to
@@ -14,9 +14,9 @@
 #' @param ...  further arguments (unused)
 #'
 #' @details
-#' Converts a \code{\link{transmat}} object containing information about the history
-#' of a simulated infection into a \code{\link{phylo}} object representation
-#' suitable for plotting as a tree with \code{\link[ape]{plot.phylo}}. Each
+#' Converts a `\link{transmat}` object containing information about the history
+#' of a simulated infection into a `\link{phylo}` object representation
+#' suitable for plotting as a tree with `\link[ape]{plot.phylo}`. Each
 #' infection event becomes a 'node' (horizontal branch) in the resulting phylo tree,
 #' and each network vertex becomes a 'tip' of the tree. The infection events are
 #' labeled with the vertex id of the infector to make it possible to trace the
@@ -24,12 +24,12 @@
 #'
 #' The infection timing information is included to position the phylo-nodes, with
 #' the lines to the tips drawn to the max time value +1 (unless
-#' \code{vertex.exit.times} are passed in it effectively assumes all vertices are
+#' `vertex.exit.times` are passed in it effectively assumes all vertices are
 #' active/alive until the end of the simulation).
 #'
 #' If the transmat contains multiple infection seeds (there are multiple trees
 #' with seperate root nodes) it will return a list of class 'multiPhylo', each
-#' element of which is a phylo object.  See \code{\link[ape]{read.tree}}.
+#' element of which is a phylo object.  See `\link[ape]{read.tree}`.
 #'
 #' Note that in EpiModel versions <= 1.2.4, the phylo tree was constructed
 #' differently, translating network vertices to both phylo-nodes and tips and
@@ -204,12 +204,12 @@ as.phylo.transmat <- function(x,
 #' @title Converts transmat infection tree into a network object
 #'
 #' @description Converts the edges of the infection tree described in the
-#'              \code{\link{transmat}} object into a \code{\link{network}} object,
+#'              `\link{transmat}` object into a `\link{network}` object,
 #'              copying in appropriate edge attributes for 'at', 'infDur', 'transProb',
 #'              'actRate', and 'finalProb' and constructing a vertex attribute
 #'              for 'at'.
 #'
-#' @param x an object of class \code{transmat} to be converted into a network
+#' @param x an object of class `transmat` to be converted into a network
 #'        object
 #' @param ... unused
 #'
@@ -242,25 +242,25 @@ as.network.transmat <- function(x, ...){
 
 #' @title Plot transmat infection tree in one of several styles
 #'
-#' @description Plots the infection tree described in a \code{\link{transmat}}
+#' @description Plots the infection tree described in a `\link{transmat}`
 #'              object in one of several styles: phylogenetic tree, an un-rooted
 #'              network, a hierarchical tree, or a transmissionTimeline.
 #'
-#' @param x A \code{\link{transmat}} object to be plotted
+#' @param x A `\link{transmat}` object to be plotted
 #' @param style Character name of plot style. One of "phylo", "network",
 #'        or "transmissionTimeline"
 #' @param ...  Additional plot arguments to be passed to lower-level plot
 #'        functions (plot.network, plot.phylo, etc)
 #'
-#' @details The phylo plot requires the \code{ape} package. The
-#' \code{ndtv::transmissionTimeline} requires that the \code{ndtv} package
+#' @details The phylo plot requires the `ape` package. The
+#' `ndtv::transmissionTimeline` requires that the `ndtv` package
 #' is installed. All of the options are essentially
 #' wrappers to other plot calls with some appropriate preset arguments.
 #'
 #' @export
 #' @method plot transmat
 #'
-#' @seealso \code{\link{plot.network}},\code{\link[ape]{plot.phylo}}
+#' @seealso `\link{plot.network}`,`\link[ape]{plot.phylo}`
 #'
 plot.transmat <- function(x,
                           style=c("phylo", "network", "transmissionTimeline"),

@@ -7,7 +7,7 @@
 \method{summary}{netest}(object, ...)
 }
 \arguments{
-\item{object}{An \code{EpiModel} object of class \code{netest}.}
+\item{object}{An `EpiModel` object of class `netest`.}
 
 \item{...}{Additional summary function arguments.}
 }
@@ -15,8 +15,8 @@
 Prints the summary model fit statistics for an ERGM or STERGM fit.
 }
 \details{
-This function is simply a wrapper function for \code{summary.ergm} and
-\code{summary.stergm}. Additionally, if the edges dissolution approximation
+This function is simply a wrapper function for `summary.ergm` and
+`summary.stergm`. Additionally, if the edges dissolution approximation
 was used to fit the temporal ERGM, then the dissolution coefficient information
 will be printed.
 }

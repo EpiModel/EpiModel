@@ -7,7 +7,7 @@
 auto_update_attr(dat, newNodes, curr.tab)
 }
 \arguments{
-\item{dat}{Master object in \code{netsim} simulations.}
+\item{dat}{Master object in `netsim` simulations.}
 
 \item{newNodes}{Vector of nodal IDs for incoming nodes at the current time
 step.}
@@ -17,11 +17,11 @@ step.}
 \description{
 Updates the vertex attributes on a network for new nodes incoming
              into that network, based on a set of rules for each attribute
-             that the user specifies in \code{control.net}.
+             that the user specifies in `control.net`.
 }
 \seealso{
-\code{\link{copy_nwattr_to_datattr}}, \code{\link{get_attr_prop}},
-         \code{\link{auto_update_attr}}.
+`\link{copy_nwattr_to_datattr}`, `\link{get_attr_prop}`,
+         `\link{auto_update_attr}`.
 }
 \keyword{internal}
 \keyword{netUtils}

@@ -12,10 +12,10 @@ arrivals.icm.bip(dat, at)
 \item{at}{Current time step.}
 }
 \description{
-This function simulates arrival for use in \code{\link{icm}}
+This function simulates arrival for use in `\link{icm}`
              simulations.
 }
 \seealso{
-\code{\link{icm}}
+`\link{icm}`
 }
 \keyword{internal}

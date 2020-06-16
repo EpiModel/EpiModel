@@ -18,32 +18,32 @@ netest(
 )
 }
 \arguments{
-\item{nw}{An object of class \code{network}.}
+\item{nw}{An object of class `network`.}
 
 \item{formation}{Right-hand sided STERGM formation formula in the form
-\code{~edges + ...}, where \code{...} are additional network statistics.}
+`~edges + ...`, where `...` are additional network statistics.}
 
 \item{target.stats}{Vector of target statistics for the formation model, with
 one number for each network statistic in the model.}
 
-\item{coef.diss}{An object of class \code{disscoef} output from the
-\code{\link{dissolution_coefs}} function.}
+\item{coef.diss}{An object of class `disscoef` output from the
+`\link{dissolution_coefs}` function.}
 
 \item{constraints}{Right-hand sided formula specifying constraints for the
-modeled network, in the form \code{~...}, where \code{...} are constraint
+modeled network, in the form `~...`, where `...` are constraint
 terms. By default, no constraints are set.}
 
 \item{coef.form}{Vector of coefficients for the offset terms in the formation
 formula.}
 
-\item{edapprox}{If \code{TRUE}, use the indirect edges dissolution approximation
+\item{edapprox}{If `TRUE`, use the indirect edges dissolution approximation
 method for the dynamic model fit, otherwise use the more time-intensive
 full STERGM estimation (see details).}
 
-\item{set.control.ergm}{Control arguments passed to \code{simulate.ergm} (see
+\item{set.control.ergm}{Control arguments passed to `simulate.ergm` (see
 details).}
 
-\item{set.control.stergm}{Control arguments passed to \code{simulate.stergm} (see
+\item{set.control.stergm}{Control arguments passed to `simulate.stergm` (see
 details).}
 
 \item{verbose}{Print model fitting progress to console.}
@@ -54,13 +54,13 @@ Estimates statistical network models using the exponential
              dynamic/temporal models (STERGM).
 }
 \details{
-\code{netest} is a wrapper function for the \code{ergm} and \code{stergm}
+`netest` is a wrapper function for the `ergm` and `stergm`
 functions that estimate static and dynamic network models, respectively.
 Network model estimation is the first step in simulating a stochastic network
-epidemic model in \code{EpiModel}. The output from \code{netest} is a
-necessary input for running the epidemic simulations in \code{\link{netsim}}.
+epidemic model in `EpiModel`. The output from `netest` is a
+necessary input for running the epidemic simulations in `\link{netsim}`.
 With a fitted network model, one should always first proceed to model
-diagnostics, available through the \code{\link{netdx}} function, to check
+diagnostics, available through the `\link{netdx}` function, to check
 model fit. A detailed description of fitting these models, along with examples,
 may be found in the
 \href{http://statnet.github.io/tut/BasicNet.html}{Basic Network Models}
@@ -91,24 +91,24 @@ estimation is to drive dynamic network simulations rather than to conduct
 inference on the formation model. The user is strongly encouraged to examine
 the behavior of the resulting simulations to confirm that the approximation
 is adequate for their purposes. For an example, see the vignette for the
-package \code{tergm}.
+package `tergm`.
 }
 
 \section{Control Arguments}{
 
-The \code{ergm} and \code{stergm} functions allow control settings for the
-model fitting process. When fitting a STERGM directly (setting \code{edapprox}
-to \code{FALSE}), control parameters may be passed to the \code{stergm}
-function with the \code{set.control.stergm} argument in \code{netest}. The
-controls should be input through the \code{control.stergm()} function, with
-the available parameters listed in the \code{\link{control.stergm}} help page
-in the \code{tergm} package.
+The `ergm` and `stergm` functions allow control settings for the
+model fitting process. When fitting a STERGM directly (setting `edapprox`
+to `FALSE`), control parameters may be passed to the `stergm`
+function with the `set.control.stergm` argument in `netest`. The
+controls should be input through the `control.stergm()` function, with
+the available parameters listed in the `\link{control.stergm}` help page
+in the `tergm` package.
 
-When fitting a STERGM indirectly (setting \code{edapprox} to \code{TRUE}),
-control settings may be passed to the \code{ergm} function using
-\code{set.control.ergm} in \code{netest}. The controls should be input through
-the \code{control.ergm()} function, with the available parameters listed in the
-\code{\link[ergm:control.ergm]{control.ergm}} help page in the \code{ergm}
+When fitting a STERGM indirectly (setting `edapprox` to `TRUE`),
+control settings may be passed to the `ergm` function using
+`set.control.ergm` in `netest`. The controls should be input through
+the `control.ergm()` function, with the available parameters listed in the
+`\link[ergm:control.ergm]{control.ergm}` help page in the `ergm`
 package. An example is below.
 }
 
@@ -148,8 +148,8 @@ Modeling of Infectious Disease over Networks. Journal of Statistical Software.
 2018; 84(8): 1-47.
 }
 \seealso{
-Use \code{\link{netdx}} to diagnose the fitted network model, and
-         \code{\link{netsim}} to simulate epidemic spread over a simulated
+Use `\link{netdx}` to diagnose the fitted network model, and
+         `\link{netsim}` to simulate epidemic spread over a simulated
          dynamic network consistent with the model fit.
 }
 \keyword{model}

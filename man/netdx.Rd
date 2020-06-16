@@ -21,82 +21,82 @@ netdx(
 )
 }
 \arguments{
-\item{x}{An \code{EpiModel} object of class \code{netest}.}
+\item{x}{An `EpiModel` object of class `netest`.}
 
 \item{nsims}{Number of simulations to run.}
 
-\item{dynamic}{If \code{TRUE}, runs dynamic diagnostics. If \code{FALSE} and
-the \code{netest} object was fit with the Edges Dissolution approximation
+\item{dynamic}{If `TRUE`, runs dynamic diagnostics. If `FALSE` and
+the `netest` object was fit with the Edges Dissolution approximation
 method, simulates from the static ERGM fit.}
 
 \item{nsteps}{Number of time steps per simulation (dynamic simulations only).}
 
 \item{nwstats.formula}{A right-hand sided ERGM formula with the network
 statistics of interest. The default is the formation formula of the
-network model contained in \code{x}.}
+network model contained in `x`.}
 
-\item{set.control.ergm}{Control arguments passed to \code{simulate.ergm} (see
+\item{set.control.ergm}{Control arguments passed to `simulate.ergm` (see
 details).}
 
-\item{set.control.stergm}{Control arguments passed to \code{simulate.stergm} (see
+\item{set.control.stergm}{Control arguments passed to `simulate.stergm` (see
 details).}
 
-\item{sequential}{For static diagnostics (\code{dynamic=FALSE}): if \code{FALSE},
-each of the \code{nsims} simulated Markov chains begins at the initial
-network; If \code{TRUE}, the end of one simulation is used as the start
+\item{sequential}{For static diagnostics (`dynamic=FALSE`): if `FALSE`,
+each of the `nsims` simulated Markov chains begins at the initial
+network; If `TRUE`, the end of one simulation is used as the start
 of the next.}
 
-\item{keep.tedgelist}{If \code{TRUE}, keep the timed edgelist generated from
+\item{keep.tedgelist}{If `TRUE`, keep the timed edgelist generated from
 the dynamic simulations. Returned in the form of a list of matrices, with
-one entry per simulation. Accessible at \code{$edgelist}.}
+one entry per simulation. Accessible at `$edgelist`.}
 
-\item{keep.tnetwork}{If \code{TRUE}, keep the full networkDynamic objects from
+\item{keep.tnetwork}{If `TRUE`, keep the full networkDynamic objects from
 the dynamic simulations. Returned in the form of a list of nD objects, with
-one entry per simulation. Accessible at \code{$network}.}
+one entry per simulation. Accessible at `$network`.}
 
 \item{verbose}{Print progress to the console.}
 
 \item{ncores}{Number of processor cores to run multiple simulations
-on, using the \code{foreach} and \code{doParallel} implementations.}
+on, using the `foreach` and `doParallel` implementations.}
 
-\item{skip.dissolution}{If \code{TRUE}, skip over the calculations of duration
+\item{skip.dissolution}{If `TRUE`, skip over the calculations of duration
 and dissolution stats in netdx.}
 }
 \description{
 Runs dynamic diagnostics on an ERGM/STERGM estimated through
-             \code{netest}.
+             `netest`.
 }
 \details{
-The \code{netdx} function handles dynamic network diagnostics for network
-models fit with the \code{netest} function. Given the fitted model, \code{netdx}
+The `netdx` function handles dynamic network diagnostics for network
+models fit with the `netest` function. Given the fitted model, `netdx`
 simulates a specified number of dynamic networks for a specified number of
-time steps per simulation. The network statistics in \code{nwstats.formula}
+time steps per simulation. The network statistics in `nwstats.formula`
 are saved for each time step. Summary statistics for the formation model terms,
 as well as dissolution model and relational duration statistics, are then
-calculated and can be accessed when printing or plotting the \code{netdx} object.
+calculated and can be accessed when printing or plotting the `netdx` object.
 }
 \section{Control Arguments}{
 
-Models fit with the full STERGM method in \code{netest} (setting \code{edapprox}
-argument to \code{FALSE}) require only a call to \code{simulate.stergm}.
+Models fit with the full STERGM method in `netest` (setting `edapprox`
+argument to `FALSE`) require only a call to `simulate.stergm`.
 Control parameters for those simulations may be set using
-\code{set.control.stergm} in \code{netdx}. The parameters should be input
-through the \code{control.simulate.stergm()} function, with the available
-parameters listed in the \code{\link{control.simulate.stergm}} help
-page in the \code{tergm} package.
+`set.control.stergm` in `netdx`. The parameters should be input
+through the `control.simulate.stergm()` function, with the available
+parameters listed in the `\link{control.simulate.stergm}` help
+page in the `tergm` package.
 
 Models fit with the ERGM method with the edges dissolution approximation
-(setting \code{edapprox} to \code{TRUE}) require a call first to
-\code{simulate.ergm} for simulating an initial network, and second to
-\code{simulate.network} for simulating that static network forward through
-time. Control parameters may be set for both processes in \code{netdx}.
+(setting `edapprox` to `TRUE`) require a call first to
+`simulate.ergm` for simulating an initial network, and second to
+`simulate.network` for simulating that static network forward through
+time. Control parameters may be set for both processes in `netdx`.
 For the first, the parameters should be input through the
-\code{control.simulate.ergm()} function, with the available parameters listed
-in the \code{\link[ergm:control.simulate.ergm]{control.simulate.ergm}} help
-page in the \code{ergm} package. For the second, parameters should be input
-through the \code{control.simulate.network()} function, with the available
-parameters listed in the \code{\link{control.simulate.network}} help page in
-the \code{tergm} package. An example is shown below.
+`control.simulate.ergm()` function, with the available parameters listed
+in the `\link[ergm:control.simulate.ergm]{control.simulate.ergm}` help
+page in the `ergm` package. For the second, parameters should be input
+through the `control.simulate.network()` function, with the available
+parameters listed in the `\link{control.simulate.network}` help page in
+the `tergm` package. An example is shown below.
 }
 
 \examples{
@@ -129,5 +129,5 @@ plot(dx2, type = "dissolution", method = "b", col = "bisque")
 
 }
 \seealso{
-Plot these model diagnostics with \code{\link{plot.netdx}}.
+Plot these model diagnostics with `\link{plot.netdx}`.
 }

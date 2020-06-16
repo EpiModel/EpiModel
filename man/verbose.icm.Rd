@@ -7,8 +7,8 @@
 verbose.icm(x, type, s = 1, at = 2)
 }
 \arguments{
-\item{x}{If the \code{type} is "startup", then an object of class
-\code{control.icm}, otherwise the all master data object in \code{icm}
+\item{x}{If the `type` is "startup", then an object of class
+`control.icm`, otherwise the all master data object in `icm`
 simulations.}
 
 \item{type}{Progress type, either of "startup" for starting messages before
@@ -20,6 +20,6 @@ all simulations, or "progress" for time step specific messages.}
 }
 \description{
 This function prints progress from stochastic individual contact
-             models simulated with \code{icm} to the console.
+             models simulated with `icm` to the console.
 }
 \keyword{internal}

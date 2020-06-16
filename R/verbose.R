@@ -2,10 +2,10 @@
 #' @title Progress Print Module for Deterministic Compartmental Models
 #'
 #' @description This function prints progress from deterministic compartmental
-#'              models simulated with \code{dcm} to the console.
+#'              models simulated with `dcm` to the console.
 #'
-#' @param x If the \code{type} is "startup", then an object of class
-#'        \code{control.icm}, otherwise the all master data object in \code{icm}
+#' @param x If the `type` is "startup", then an object of class
+#'        `control.icm`, otherwise the all master data object in `icm`
 #'        simulations.
 #' @param type Progress type, either of "startup" for starting messages before
 #'        all simulations, or "progress" for time step specific messages.
@@ -33,10 +33,10 @@ verbose.dcm <- function(x, type, s = 1) {
 #' @title Progress Print Module for Stochastic Individual Contact Models
 #'
 #' @description This function prints progress from stochastic individual contact
-#'              models simulated with \code{icm} to the console.
+#'              models simulated with `icm` to the console.
 #'
-#' @param x If the \code{type} is "startup", then an object of class
-#'        \code{control.icm}, otherwise the all master data object in \code{icm}
+#' @param x If the `type` is "startup", then an object of class
+#'        `control.icm`, otherwise the all master data object in `icm`
 #'        simulations.
 #' @param type Progress type, either of "startup" for starting messages before
 #'        all simulations, or "progress" for time step specific messages.
@@ -82,10 +82,10 @@ verbose.icm <- function(x, type, s = 1, at = 2) {
 #' @title Progress Print Module for Stochastic Network Models
 #'
 #' @description This function prints progress from stochastic network models
-#'              simulated with \code{netsim} to the console.
+#'              simulated with `netsim` to the console.
 #'
-#' @param x If the \code{type} is "startup", then an object of class
-#'        \code{control.net}, otherwise the all master data object in \code{netsim}
+#' @param x If the `type` is "startup", then an object of class
+#'        `control.net`, otherwise the all master data object in `netsim`
 #'        simulations.
 #' @param type Progress type, either of "startup" for starting messages before
 #'        all simulations, or "progress" for time step specific messages.

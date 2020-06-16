@@ -7,11 +7,11 @@
 \method{summary}{dcm}(object, at, run = 1, digits = 3, ...)
 }
 \arguments{
-\item{object}{An \code{EpiModel} object of class \code{dcm}.}
+\item{object}{An `EpiModel` object of class `dcm`.}
 
 \item{at}{Time step for model statistics.}
 
-\item{run}{Model run number, for \code{dcm} class models with multiple runs
+\item{run}{Model run number, for `dcm` class models with multiple runs
 (sensitivity analyses).}
 
 \item{digits}{Number of significant digits to print.}
@@ -19,11 +19,11 @@
 \item{...}{Additional summary function arguments (not used).}
 }
 \description{
-Extracts and prints model statistics solved with \code{dcm}.
+Extracts and prints model statistics solved with `dcm`.
 }
 \details{
 Summary statistics for the main epidemiological outcomes (state and transition
-size and prevalence) from an \code{dcm} model. Time-specific summary measures
+size and prevalence) from an `dcm` model. Time-specific summary measures
 are provided, so it is necessary to input a time of interest. For multiple-run
 models (sensitivity analyses), input a model run number. See examples below.
 }
@@ -41,6 +41,6 @@ summary(mod, at = 26, run = 3)
 
 }
 \seealso{
-\code{\link{dcm}}
+`\link{dcm}`
 }
 \keyword{extract}

@@ -1,29 +1,29 @@
 
 #' @title Extract networkDynamic and network Objects from Network Simulations
 #'
-#' @description Extracts the \code{networkDynamic} object from a either a network
-#'              epidemic model object generated with \code{netsim} or a network
-#'              diagnostic simulation generated with \code{netdx}, with the option to
-#'              collapse the extracted \code{networkDynamic} object down to a static
-#'              \code{network} object.
+#' @description Extracts the `networkDynamic` object from a either a network
+#'              epidemic model object generated with `netsim` or a network
+#'              diagnostic simulation generated with `netdx`, with the option to
+#'              collapse the extracted `networkDynamic` object down to a static
+#'              `network` object.
 #'
-#' @param x An \code{EpiModel} object of class \code{\link{netsim}} or
-#'        \code{\link{netdx}}.
+#' @param x An `EpiModel` object of class `\link{netsim}` or
+#'        `\link{netdx}`.
 #' @param sim Simulation number of extracted network.
-#' @param network Network number, for \code{netsim} objects with multiple
-#'        overlapping networks (advanced use, and not applicable to \code{netdx}
+#' @param network Network number, for `netsim` objects with multiple
+#'        overlapping networks (advanced use, and not applicable to `netdx`
 #'        objects).
-#' @param collapse If \code{TRUE}, collapse the \code{networkDynamic} object to
-#'        a static \code{network} object at a specified time step.
-#' @param at If \code{collapse} is \code{TRUE}, the time step at which the
+#' @param collapse If `TRUE`, collapse the `networkDynamic` object to
+#'        a static `network` object at a specified time step.
+#' @param at If `collapse` is `TRUE`, the time step at which the
 #'        extracted network should be collapsed.
 #'
 #' @details
-#' This function requires that the \code{networkDynamic} is saved during the
-#' network simulation while running either \code{\link{netsim}} or \code{\link{netdx}}.
-#' For the former, that is specified with the \code{tergmLite} parameter in
-#' \code{\link{control.net}} set to \code{FALSE}. For the latter, that is
-#' specified with the \code{keep.tedgelist} parameter directly in \code{\link{netdx}}.
+#' This function requires that the `networkDynamic` is saved during the
+#' network simulation while running either `\link{netsim}` or `\link{netdx}`.
+#' For the former, that is specified with the `tergmLite` parameter in
+#' `\link{control.net}` set to `FALSE`. For the latter, that is
+#' specified with the `keep.tedgelist` parameter directly in `\link{netdx}`.
 #'
 #' @keywords extract
 #' @export
@@ -122,7 +122,7 @@ get_network <- function(x, sim = 1, network = 1, collapse = FALSE, at) {
 #' @description Extracts the matrix of transmission data for each transmission
 #'              event that occured within a network epidemic model.
 #'
-#' @param x An \code{EpiModel} object of class \code{\link{netsim}}.
+#' @param x An `EpiModel` object of class `\link{netsim}`.
 #' @param sim Simulation number of extracted network.
 #'
 #' @return
@@ -190,14 +190,14 @@ get_transmat <- function(x, sim = 1) {
 #' @title Extract Network Statistics from netsim or netdx Object
 #'
 #' @description Extracts a data frame of network statistics from a network
-#'              epidemic model simulated with \code{netsim} or a network diagnostics
-#'              object simulated with \code{netdx}.
+#'              epidemic model simulated with `netsim` or a network diagnostics
+#'              object simulated with `netdx`.
 #'
-#' @param x An \code{EpiModel} object of class \code{\link{netsim}} or
-#'        \code{\link{netdx}}.
+#' @param x An `EpiModel` object of class `\link{netsim}` or
+#'        `\link{netdx}`.
 #' @param sim A vector of simulation numbers from the extracted object
-#' @param network Network number, for \code{netsim} objects with multiple
-#'        overlapping networks (advanced use, and not applicable to \code{netdx}
+#' @param network Network number, for `netsim` objects with multiple
+#'        overlapping networks (advanced use, and not applicable to `netdx`
 #'        objects).
 #'
 #' @keywords extract
@@ -303,7 +303,7 @@ get_nwstats <- function(x, sim, network = 1) {
 #' @description Extracts a list of network model parameters saved in the
 #'              initialization module.
 #'
-#' @param x Master data object used in \code{netsim} simulations.
+#' @param x Master data object used in `netsim` simulations.
 #' @param network Network number, for simulations with multiple networks
 #'        representing the population.
 #'
@@ -317,18 +317,18 @@ get_nwparam <- function(x, network = 1) {
 
 #' @title Extract Network Simulations
 #'
-#' @description Subsets the entire \code{netsim} object to a subset of
+#' @description Subsets the entire `netsim` object to a subset of
 #'              simulations, essentially functioning like a reverse of
-#'              \code{merge}.
+#'              `merge`.
 #'
-#' @param x An object of class \code{netsim}.
+#' @param x An object of class `netsim`.
 #' @param sims A numeric vector of simulation numbers to retain in the output object,
-#'        or \code{"mean"} which selects the one simulation with the value of the
-#'        variable specified in \code{var} closest to the mean of \code{var}
+#'        or `"mean"` which selects the one simulation with the value of the
+#'        variable specified in `var` closest to the mean of `var`
 #'        across all simulations.
-#' @param var A character vector of variables to retain from \code{x} if \code{sims}
+#' @param var A character vector of variables to retain from `x` if `sims`
 #'        is a numeric vector, or a single variable name for selecting the average
-#'        simulation from the set if \code{sims = "mean"}.
+#'        simulation from the set if `sims = "mean"`.
 #'
 #' @keywords extract
 #' @export
@@ -419,8 +419,8 @@ get_sims <- function(x, sims, var) {
 #' @description Returns a list of argument names and values for use for parameter
 #'              processing functions.
 #'
-#' @param formal.args The output of \code{formals(sys.function())}.
-#' @param dot.args The output of \code{list(...)}.
+#' @param formal.args The output of `formals(sys.function())`.
+#' @param dot.args The output of `list(...)`.
 #'
 #' @export
 #'

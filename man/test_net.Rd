@@ -7,7 +7,7 @@
 test_net(x)
 }
 \arguments{
-\item{x}{An object of class \code{netsim}.}
+\item{x}{An object of class `netsim`.}
 }
 \description{
 Tests whether the model output from a network model is consistent

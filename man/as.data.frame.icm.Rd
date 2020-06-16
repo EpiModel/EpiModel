@@ -18,31 +18,31 @@
 \method{as.data.frame}{netsim}(x, row.names = NULL, optional = FALSE, out = "vals", sim, ...)
 }
 \arguments{
-\item{x}{An \code{EpiModel} object of class \code{icm} or \code{netsim}.}
+\item{x}{An `EpiModel` object of class `icm` or `netsim`.}
 
-\item{row.names}{See \code{\link{as.data.frame.default}}.}
+\item{row.names}{See `\link{as.data.frame.default}`.}
 
-\item{optional}{See \code{\link{as.data.frame.default}}.}
+\item{optional}{See `\link{as.data.frame.default}`.}
 
-\item{out}{Data output to data frame: \code{"mean"} for row means across
-simulations, \code{"sd"} for row standard deviations across simulations,
-\code{"qnt"} for row quantiles at the level specified in \code{qval},
-or \code{"vals"} for values from individual simulations.}
+\item{out}{Data output to data frame: `"mean"` for row means across
+simulations, `"sd"` for row standard deviations across simulations,
+`"qnt"` for row quantiles at the level specified in `qval`,
+or `"vals"` for values from individual simulations.}
 
-\item{sim}{If \code{out="vals"}, the simulation number to output. If not
+\item{sim}{If `out="vals"`, the simulation number to output. If not
 specified, then data from all simulations will be output.}
 
-\item{qval}{Quantile value required when \code{out="qnt"}.}
+\item{qval}{Quantile value required when `out="qnt"`.}
 
-\item{...}{See \code{\link{as.data.frame.default}}.}
+\item{...}{See `\link{as.data.frame.default}`.}
 }
 \description{
 This function extracts model simulations for objects of classes
-             \code{icm} and \code{netsim} into a data frame using
-             the generic \code{as.data.frame} function.
+             `icm` and `netsim` into a data frame using
+             the generic `as.data.frame` function.
 }
 \details{
-These methods work for both \code{icm} and \code{netsim} class models. The
+These methods work for both `icm` and `netsim` class models. The
 available output includes time-specific means, standard deviations, quantiles,
 and simulation values (compartment and flow sizes) from these stochastic model
 classes. Means, standard deviations, and quantiles are calculated by taking the

@@ -81,7 +81,7 @@ infection.icm <- function(dat, at) {
 #' @description This function simulates recovery from the infected state
 #'              either to an distinct recovered state (SIR model type) or back
 #'              to a susceptible state (SIS model type), for use in
-#'              \code{\link{icm}}.
+#'              `\link{icm}`.
 #'
 #' @param dat Master data list object.
 #' @param at Current time step.
@@ -225,7 +225,7 @@ infection.icm.bip <- function(dat, at) {
 #' @description This function simulates recovery from the infected state
 #'              either to an distinct recovered state (SIR model type) or back
 #'              to a susceptible state (SIS model type), for use in
-#'              \code{\link{icm}}.
+#'              `\link{icm}`.
 #'
 #' @param dat Master data list object.
 #' @param at Current time step.

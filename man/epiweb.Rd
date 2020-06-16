@@ -7,10 +7,10 @@
 epiweb(class, ...)
 }
 \arguments{
-\item{class}{Model class, with options of \code{"dcm"}, \code{"icm"}
-and \code{"net"}.}
+\item{class}{Model class, with options of `"dcm"`, `"icm"`
+and `"net"`.}
 
-\item{...}{Additional arguments passed to \code{shiny::runApp}.}
+\item{...}{Additional arguments passed to `shiny::runApp`.}
 }
 \description{
 Runs a web browser-based GUI of deterministic compartmental
@@ -18,12 +18,12 @@ Runs a web browser-based GUI of deterministic compartmental
              models.
 }
 \details{
-\code{epiweb} runs a web-based GUI of one-group deterministic compartmental
+`epiweb` runs a web-based GUI of one-group deterministic compartmental
 models, stochastic individual contact models, and stochastic network models
 with user input on model type, state sizes, and parameters. Model output may
-be plotted, summarized, and saved as raw data using the core \code{EpiModel}
+be plotted, summarized, and saved as raw data using the core `EpiModel`
 functionality for these model classes. These applications are built using
-the \code{shiny} package framework.
+the `shiny` package framework.
 }
 \examples{
 \dontrun{
@@ -43,6 +43,6 @@ RStudio. shiny: Web Application Framework for R. R package version 1.0.5.
 2015. \url{http://www.rstudio.com/shiny/}
 }
 \seealso{
-\code{\link{dcm}}, \code{\link{icm}}, \code{\link{netsim}}
+`\link{dcm}`, `\link{icm}`, `\link{netsim}`
 }
 \keyword{GUI}

@@ -7,34 +7,34 @@
 get_network(x, sim = 1, network = 1, collapse = FALSE, at)
 }
 \arguments{
-\item{x}{An \code{EpiModel} object of class \code{\link{netsim}} or
-\code{\link{netdx}}.}
+\item{x}{An `EpiModel` object of class `\link{netsim}` or
+`\link{netdx}`.}
 
 \item{sim}{Simulation number of extracted network.}
 
-\item{network}{Network number, for \code{netsim} objects with multiple
-overlapping networks (advanced use, and not applicable to \code{netdx}
+\item{network}{Network number, for `netsim` objects with multiple
+overlapping networks (advanced use, and not applicable to `netdx`
 objects).}
 
-\item{collapse}{If \code{TRUE}, collapse the \code{networkDynamic} object to
-a static \code{network} object at a specified time step.}
+\item{collapse}{If `TRUE`, collapse the `networkDynamic` object to
+a static `network` object at a specified time step.}
 
-\item{at}{If \code{collapse} is \code{TRUE}, the time step at which the
+\item{at}{If `collapse` is `TRUE`, the time step at which the
 extracted network should be collapsed.}
 }
 \description{
-Extracts the \code{networkDynamic} object from a either a network
-             epidemic model object generated with \code{netsim} or a network
-             diagnostic simulation generated with \code{netdx}, with the option to
-             collapse the extracted \code{networkDynamic} object down to a static
-             \code{network} object.
+Extracts the `networkDynamic` object from a either a network
+             epidemic model object generated with `netsim` or a network
+             diagnostic simulation generated with `netdx`, with the option to
+             collapse the extracted `networkDynamic` object down to a static
+             `network` object.
 }
 \details{
-This function requires that the \code{networkDynamic} is saved during the
-network simulation while running either \code{\link{netsim}} or \code{\link{netdx}}.
-For the former, that is specified with the \code{tergmLite} parameter in
-\code{\link{control.net}} set to \code{FALSE}. For the latter, that is
-specified with the \code{keep.tedgelist} parameter directly in \code{\link{netdx}}.
+This function requires that the `networkDynamic` is saved during the
+network simulation while running either `\link{netsim}` or `\link{netdx}`.
+For the former, that is specified with the `tergmLite` parameter in
+`\link{control.net}` set to `FALSE`. For the latter, that is
+specified with the `keep.tedgelist` parameter directly in `\link{netdx}`.
 }
 \examples{
 # Set up network and TERGM formiula

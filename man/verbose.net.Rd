@@ -7,8 +7,8 @@
 verbose.net(x, type, s = 1, at = 2)
 }
 \arguments{
-\item{x}{If the \code{type} is "startup", then an object of class
-\code{control.net}, otherwise the all master data object in \code{netsim}
+\item{x}{If the `type` is "startup", then an object of class
+`control.net`, otherwise the all master data object in `netsim`
 simulations.}
 
 \item{type}{Progress type, either of "startup" for starting messages before
@@ -20,6 +20,6 @@ all simulations, or "progress" for time step specific messages.}
 }
 \description{
 This function prints progress from stochastic network models
-             simulated with \code{netsim} to the console.
+             simulated with `netsim` to the console.
 }
 \keyword{internal}

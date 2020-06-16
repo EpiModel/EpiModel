@@ -7,7 +7,7 @@
 \method{summary}{netsim}(object, at, digits = 3, ...)
 }
 \arguments{
-\item{object}{An \code{EpiModel} object of class \code{netsim}.}
+\item{object}{An `EpiModel` object of class `netsim`.}
 
 \item{at}{Time step for model statistics.}
 
@@ -16,11 +16,11 @@
 \item{...}{Additional summary function arguments.}
 }
 \description{
-Extracts and prints model statistics simulated with \code{netsim}.
+Extracts and prints model statistics simulated with `netsim`.
 }
 \details{
 Summary statistics for the main epidemiological outcomes (state and transition
-size and prevalence) from an \code{netsim} model. Time-specific summary
+size and prevalence) from an `netsim` model. Time-specific summary
 measures are provided, so it is necessary to input a time of interest.
 }
 \examples{
@@ -51,6 +51,6 @@ summary(mod, at = 100)
 
 }
 \seealso{
-\code{\link{netsim}}
+`\link{netsim}`
 }
 \keyword{extract}

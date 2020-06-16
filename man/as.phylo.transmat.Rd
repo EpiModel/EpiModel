@@ -7,8 +7,8 @@
 \method{as.phylo}{transmat}(x, collapse.singles, vertex.exit.times, ...)
 }
 \arguments{
-\item{x}{An object of class \code{"transmat"}, the output from
-\code{\link{get_transmat}}.}
+\item{x}{An object of class `"transmat"`, the output from
+`\link{get_transmat}`.}
 
 \item{collapse.singles}{logical, DEPRECATED}
 
@@ -20,13 +20,13 @@ no departure, so branch will extend to the end of the tree.}
 \item{...}{further arguments (unused)}
 }
 \description{
-Converts the edgelist matrix in the \code{transmat} object into a \code{phylo}
+Converts the edgelist matrix in the `transmat` object into a `phylo`
              object by doing the required reordering and labeling.
 }
 \details{
-Converts a \code{\link{transmat}} object containing information about the history
-of a simulated infection into a \code{\link{phylo}} object representation
-suitable for plotting as a tree with \code{\link[ape]{plot.phylo}}. Each
+Converts a `\link{transmat}` object containing information about the history
+of a simulated infection into a `\link{phylo}` object representation
+suitable for plotting as a tree with `\link[ape]{plot.phylo}`. Each
 infection event becomes a 'node' (horizontal branch) in the resulting phylo tree,
 and each network vertex becomes a 'tip' of the tree. The infection events are
 labeled with the vertex id of the infector to make it possible to trace the
@@ -34,12 +34,12 @@ path of infection.
 
 The infection timing information is included to position the phylo-nodes, with
 the lines to the tips drawn to the max time value +1 (unless
-\code{vertex.exit.times} are passed in it effectively assumes all vertices are
+`vertex.exit.times` are passed in it effectively assumes all vertices are
 active/alive until the end of the simulation).
 
 If the transmat contains multiple infection seeds (there are multiple trees
 with seperate root nodes) it will return a list of class 'multiPhylo', each
-element of which is a phylo object.  See \code{\link[ape]{read.tree}}.
+element of which is a phylo object.  See `\link[ape]{read.tree}`.
 
 Note that in EpiModel versions <= 1.2.4, the phylo tree was constructed
 differently, translating network vertices to both phylo-nodes and tips and
