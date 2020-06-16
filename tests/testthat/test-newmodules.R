@@ -81,8 +81,8 @@ test_that("New network models vignette example", {
   init <- init.net(i.num = 10)
   control <- control.net(type = NULL, nsims = 1, nsteps = 10,
                          resim_net.FUN = resim_nets, infection.FUN = infection.net,
-                         recovery.FUN = recovery.net, prevalence.FUN = prevalence.net,
-                         departures.FUN = dfunc, arrivals.FUN = afunc, aging.FUN = aging,
+                         prevalence.FUN = prevalence.net, departures.FUN = dfunc,
+                         arrivals.FUN = afunc, aging.FUN = aging,
                          tergmLite = FALSE, verbose = FALSE)
   mod1 <- netsim(est, param, init, control)
   expect_is(mod1, "netsim")
@@ -90,11 +90,10 @@ test_that("New network models vignette example", {
   ## Test module reordering
   control <- control.net(type = NULL, nsims = 1, nsteps = 10,
                          resim_net.FUN = resim_nets, infection.FUN = infection.net,
-                         recovery.FUN = recovery.net, prevalence.FUN = prevalence.net,
-                         departures.FUN = dfunc, arrivals.FUN = afunc, aging.FUN = aging,
+                         prevalence.FUN = prevalence.net, departures.FUN = dfunc,
+                         arrivals.FUN = afunc, aging.FUN = aging,
                          module.order = c("aging.FUN", "arrivals.FUN", "departures.FUN",
-                                          "resim_net.FUN", "infection.FUN", "recovery.FUN",
-                                          "prevalence.FUN"),
+                                          "resim_net.FUN", "infection.FUN", "prevalence.FUN"),
                          tergmLite = FALSE, verbose = FALSE)
   mod2 <- netsim(est, param, init, control)
   expect_is(mod2, "netsim")
@@ -103,8 +102,8 @@ test_that("New network models vignette example", {
   init <- init.net(i.num = 10)
   control <- control.net(type = NULL, nsims = 1, nsteps = 10,
                          resim_net.FUN = resim_nets, infection.FUN = infection.net,
-                         recovery.FUN = recovery.net, prevalence.FUN = prevalence.net,
-                         departures.FUN = dfunc, arrivals.FUN = afunc, aging.FUN = aging,
+                         prevalence.FUN = prevalence.net, departures.FUN = dfunc,
+                         arrivals.FUN = afunc, aging.FUN = aging,
                          tergmLite = TRUE, verbose = FALSE)
   mod3 <- netsim(est, param, init, control)
   expect_is(mod3, "netsim")
@@ -112,11 +111,10 @@ test_that("New network models vignette example", {
   ## Test module reordering
   control <- control.net(type = NULL, nsims = 1, nsteps = 10,
                          resim_net.FUN = resim_nets, infection.FUN = infection.net,
-                         recovery.FUN = recovery.net, prevalence.FUN = prevalence.net,
-                         departures.FUN = dfunc, arrivals.FUN = afunc, aging.FUN = aging,
+                         prevalence.FUN = prevalence.net, departures.FUN = dfunc,
+                         arrivals.FUN = afunc, aging.FUN = aging,
                          module.order = c("aging.FUN", "arrivals.FUN", "departures.FUN",
-                                          "resim_net.FUN", "infection.FUN", "recovery.FUN",
-                                          "prevalence.FUN"),
+                                          "resim_net.FUN", "infection.FUN", "prevalence.FUN"),
                          tergmLite = TRUE, verbose = FALSE)
   mod4 <- netsim(est, param, init, control)
   expect_is(mod4, "netsim")

@@ -87,7 +87,7 @@ nwupdate.net <- function(dat, at) {
   ## Recovery
   if (tergmLite == FALSE) {
     type <- get_control(dat, "type")
-    if (type %in% c("SIS", "SIR")) {
+    if (type %in% c("SIS", "SIR") && !is.null(type)) {
       index <- at - 1
       nCurr <- get_epi(dat, "num", index)
       recovState <- ifelse(type == "SIR", "r", "s")
