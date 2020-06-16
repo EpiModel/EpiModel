@@ -1,0 +1,213 @@
+---
+title: "Tutorial: Demography and Attributes"
+author: "Day 4 | Network Modeling for Epidemics"
+output:
+  html_document:
+    toc: yes
+    toc_float: yes
+    collapsed: no
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include = FALSE}
+library(knitr)
+knitr::opts_chunk$set(comment = NA)
+par(mar = c(3,3,1,1), mgp = c(2,1,0))
+```
+
+This tutorial demonstrates how to model a Susceptible-Infected (SI) epidemic in an open population. An example of an SI epidemic is HIV, with infected persons never leaving the infected stage before mortality. Modeling HIV is quite complicated, and this tutorial is not meant to be an HIV model per se: it does not include many components of HIV models, such as disease stage, drug therapy, and so on. This only represents SI dynamics generally with the possibility of vital dynamics.
+
+The population is open as we are now including arrivals and departures in the epidemic process. Simulating an epidemic in an open population requires adjustments that accommodate changes to the network structure over time. For the sake of simplicity, the departure processes will not depend on disease status, which will keep the population size stable over time.
+
+This tutorial will include two counterfactal network models that will allow behavior (mean degree and mixing) to vary across two hypothetical races. These behavioral differences are not meant to represent empirical data; they are just an extreme illustration of the impact of partnership structure on epidemic outcomes.
+
+Start with loading EpiModel:
+```{r, warning=FALSE, message=FALSE}
+library(EpiModel)
+```
+
+# Network Model
+The network is initialized as before, but now we set a vertex attribute of race onto the network. Race will be a binary variable, with the races evenly sized in the population.
+```{r nwInit}
+nw <- network.initialize(n = 500, directed = FALSE)  
+nw <- set.vertex.attribute(nw, attrname = "race", value = rep(0:1, each = 250))
+```
+
+We will proceed by fitting two network models: Model 1 will feature a scenario in which the mean degree is the same by both races and there is no race-based homophily; Model 2 will feature a scenario in which Race 1 has a higher mean degree and there is strong racial mixing.
+
+
+## Model 1: Random Mixing, Degree 
+The first model will assume that there is random mixing the population, with no preference for same-race partnerships, and that the two races have the same mean degree. In fact, this means that there is no need to include separate terms for degree and homophily in the network model (it is an edges-only model or Bernoulli random graph), but we include them for the sake of comparison.
+
+### Parameterization
+The formation formula for this first model will include terms for edges, mean degree by race (nodefactor), and mixing by race (nodematch). We will use the edges to control the overall mean degree in the network, the nodefactor term to allow it to vary by race, and the nodematch to control homophily.
+```{r fmod1}
+formation <- ~edges + nodefactor("race") + nodematch("race")
+```
+
+The target statistics for each of the terms is as follows. Both this model and Model 2 will use the same total mean degree in the population overall: a 0.5 mean degree translates into 125 edges in a population of 500 nodes. The second statistic controls the mean degree of Race 1 nodes (the reference value for Race 0 nodes does not need to be specified). Since the Race 1 group has a population size of 250, the target value of 125 can be translated as a mean degree of 0.5 for this group: that is, no differential mean degree by race. The nodematch statistic represents the number of edges that are between nodes of the same race. Given the equal population sizes, the expected number of same-race edges in a random mixing scenario is equal to 50% of the number of edges, or 62.5.
+```{r ts1}
+target.stats <- c(125, 125, 62.5)
+```
+
+The dissolution model components will be the same for both models. We specify a homogeneous dissolution model with an average partnership duration of 40 weeks. The dissolution coefficients must be adjusted to accommodate the exogenous probability of edge dissolution due to mortality. This adjustment has the impact of increasing the coefficient as seen below.
+```{r dissmod}
+coef.diss <- dissolution_coefs(dissolution = ~offset(edges), 
+                               duration = 40, d.rate = 0.01)
+coef.diss
+```
+
+
+### Estimation
+The network model is estimated using the `netest` function with all the inputs we specified above. 
+```{r netest1, results = "hide", message=FALSE, warning=FALSE}
+est1 <- netest(nw, formation, target.stats, coef.diss)
+```
+
+One way to see the impact of the target statistics on the network model is to use the `summary` function on the output object. This shows that the coefficients for the nodefactor and nodematch terms are nearly 0, with p-values of nearly 1, suggesting no statistical evidence for differential mean degree and racial homophily, as expected.
+```{r summary1}
+summary(est1)
+```
+
+### Diagnostics
+For the diagnostics for this model, we set the `nwstats.formula` to expand the formation formula slightly to specify a levels value for the nodefactor term. Setting `levels = NULL` in this term will output statistics for both races in the model. The `netdx` function can use multicore processor technology to run diagnostics in parallel. The `ncores` argument will specify how many of the computer's cores to use simultaneously for these diagnostics (use `parallel::detectCores()` to look up the maximum on any computer).
+```{r dx1, results = "hide"}
+dx1 <- netdx(est1, nsims = 10, nsteps = 1000, ncores = 4,
+             nwstats.formula = ~edges + 
+                                nodefactor("race", levels = NULL) + 
+                                nodematch("race"))
+```
+
+Printing the diagnostics shows a good fit between the targets and the simulated outputs. There is no difference between the simulated means for nodefactor statistics for Race 0 compared to Race 1, indicating no differentials in mean degree by race.
+```{r printDx1}
+dx1
+```
+
+Plotting the diagnostics shows that the simulations are right on target for all three modeled terms in the formation model. We will skip plotting the dissolution model diagnostics for this example.
+```{r plotDx1}
+plot(dx1)
+```
+
+
+## Model 2: Assortative Mixing and Differential Degree 
+The counterfactual in Model 2 will alter the nodefactor and nodematch target statistics to allow for differentials in mean degree by race and for homophily in race mixing. 
+
+### Parameterization
+The formula for the formation component of the model will be recycled from Model 1. Therefore, it is only necessary to specify the target statistics for the model. 
+
+As noted, the overall mean degree will remain the same at 0.5 across the two models, but the mean degree by race will differ. We will specify that the mean degree for Race 1 is 0.75; given the overall mean degree is 0.5 and the proportional distribution of races is equal, that implies that the mean degree for Race 0 will be 0.25. The target statistic for the nodefactor term is the product of the mean degree of Race 1 and the size of Race 1: `0.75 * 250 = 175`. Finally, we will specify that 90% of the partnerships occur between persons of the same race, or 112.5 partnerships.
+```{r ts2}
+target.stats <- c(125, 187.5, 112.5)
+```
+
+The other components of the model, including the network object and dissolution model components, are recycled from Model 1.
+
+### Estimation
+The new target statistics are entered in this new model with the remaining components from Model 1.
+```{r netest2, results = "hide", message=FALSE, warning=FALSE}
+est2 <- netest(nw, formation, target.stats, coef.diss)
+```
+
+To compare coefficients with Model 1, the estimates for the nodefactor and nodematch terms are now highly significant. The positive sign of both term shows these are greater than expected than under the null model, precisely as we have parameterized them.
+```{r summary2}
+summary(est2)
+```
+
+
+### Diagnostics
+The diagnostics on this second model are run using the same approach as Model 1, but we pass in the fitted model object for Model 2.
+```{r dx2, results = "hide"}
+dx2 <- netdx(est2, nsims = 10, nsteps = 1000, ncores = 4,
+            nwstats.formula = ~edges +
+                               nodefactor("race", levels = NULL) +
+                               nodematch("race"))
+```
+
+Printing the model shows that the simulated network statistics are consistent with the target statistics in the formation and dissolution model. The simulated mean for the nodefactor target statistic for Race 0 correspond to a mean degree of 0.25 in that group, as expected.
+```{r printDx2}
+dx2
+```
+
+The plots look fine here, so we move onto the epidemic simulation.
+```{r plotDx2}
+plot(dx2)
+```
+
+
+# Epidemic Simulation
+This epidemic simulation will investigate how variation in mean degree by race and highly assortative race mixing jointly impact epidemic prevalence overall and by race. We will use one set of epidemic parameters, initial conditions, and control settings shared across the two counterfactual models. 
+
+## Parameterization
+The parameters are entered into the `param.net` function as in previous tutorial. Since this is be an SI epidemic, there will be no recovery rate parameter. The three new parameters will control the arrival rate, departure rate among the susceptibles, and departure rate in the infected group. For this tutorial, we will assume that all three rates are equal, which implies that there is no disease-induced mortality and that there will be a stable population size.
+```{r param}
+param <- param.net(inf.prob = 0.1, act.rate = 5,
+                   a.rate = 0.01, ds.rate = 0.01, di.rate = 0.01)
+```
+
+Similar to the previous tutorial, we only need to specify the number infected at the outset. To generate stable epidemic conditions quickly, we will set that the prevalence is 10%, distributed randomly among the population.
+```{r init}
+init <- init.net(i.num = 50)
+```
+
+The inputs for the control settings will look similar to the previous tutorial. As we have discussed, the resimulation of networks at each time step is more computationally intensive than simulating the dynamic network structure in advance. Therefore, when running this simulation during the workshop, it is suggested that you only run one simulation (each counterfactual will take a couple of minutes). We have run 10 simulations to prepare this tutorial to show the stochastic variation. There are methods to running these simulations in parallel on multicore computing platforms. 
+
+A new argument for the control settings to discuss is `epi.by`, which provides stratified prevalence estimates by a categorical attribute in the network. Here we specify that as `"race"`, since that is the name our vertex attribute in the network models. Finally, the `delete.nodes` argument truncates the dynamic network object within the stored data to further improve on computational efficiency; simulations will run faster, but one limitation now will be that we cannot plot cross-sections of the network.
+```{r control}
+control <- control.net(type = "SI", nsteps = 500, nsims = 10, ncores = 4, 
+                       epi.by = "race", delete.nodes = TRUE)
+```
+
+
+## Simulation
+To simulate the two network models, we use two calls to the `netsim` function, one with the fitted estimation object from Model 1 and the other from Model 2. When run in interactive mode, basic output from the model progress will be printed to the console, with information on current prevalence, population size, and flows.
+```{r placeNetsim, results = "hide", cache = TRUE}
+sim1 <- netsim(est1, param, init, control)
+sim2 <- netsim(est2, param, init, control)
+```
+
+Print the `netsim` output object shows its contents. The output compartments now include both the overall susceptible and infected numbers but also the numbers stratified by values of the race variable.
+```{r printSim1}
+sim1
+```
+
+
+## Model Analysis
+Our model analysis will consist of model diagnostics, and then the examination of the epidemiological outcomes overall and by race.
+
+### Post-Simulation Diagnostics
+It is important to first examine the network model diagnostics after the epidemic simulation, since the vital dynamics within these simulations may have changed the fundamental structure of the network model in unexpected ways. Here we show how to plot model diagnostics recorded within the epidemic simulation. Although we have saved all the network statistics in the formation formula, here we plot the number of edges over time. Since the simulations are stochastically varying around the targets, we will proceed with analysis of the epidemiological data.
+```{r plotForm}
+par(mfrow = c(1, 2))
+plot(sim1, type = "formation", stats = "edges")
+plot(sim2, type = "formation", stats = "edges")
+```
+
+
+### Epidemiologic Outcomes
+This example shows how to plot outputs of two separate simulation objects onto one plot window using the `add` argument. Note that this does require a manual construction of a plot legend as shown below. The substantive result is that the total prevalence in the population is equal given the overlapping bounds of the simulations.
+```{r plotSim1}
+plot(sim1, y = "i.num", qnts = 1, mean.col = "steelblue",
+     qnts.col = "steelblue", main = "Total Prevalence")
+plot(sim2, y = "i.num", qnts = 1, mean.col = "firebrick", 
+     qnts.col = "firebrick", add = TRUE)
+legend("topleft", c("Model 1", "Model 2"), lwd = 3, 
+       col = c("steelblue", "firebrick"), bty = "n")
+```
+
+The next plot shows the prevalence by race in Model 1 compared to Model 2. Setting the `ylim` manually is necessary to ensure that the axes on both plots match. The substantive result is that Model 1 shows no differences in prevalence by race (as expected) and Model 2 shows large differences.
+```{r plotSim2}
+par(mfrow = c(1, 2))
+plot(sim1, y = c("i.num.race0", "i.num.race1"),  legend = TRUE, qnts = 1,
+     ylim = c(0, 200), main = "M1: Disease Prevalence by Race")
+plot(sim2, y = c("i.num.race0", "i.num.race1"), legend = TRUE,  qnts = 1, 
+     ylim = c(0, 200), main = "M2: Disease Prevalence by Race")
+```
+
+
+<br>
+<hr style="background-color:#909090;height:1px;width:100%">
+<small>
+*Last updated:* `r format(Sys.time(), "%Y-%m-%d")`
+`r if ("EpiModel" %in% names(sessionInfo()$otherPkgs)) paste0(" with EpiModel v", packageVersion("EpiModel"))`
+</small>
