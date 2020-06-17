@@ -66,18 +66,18 @@ simulate specific diseases for research questions.
 EpiModel uses three model setup functions for each model class to input the
 necessary parameters, initial conditions, and control settings:
 \itemize{
- \item \code{\link{param.dcm}}, \code{\link{param.icm}}, and
-       \code{\link{param.net}} are used to input epidemic parameters for each
+ \item `\link{param.dcm}`, `\link{param.icm}`, and
+       `\link{param.net}` are used to input epidemic parameters for each
        of the three model classes. Parameters include the rate of contacts or
        acts between actors, the probability of transmission per contact, and
        recovery and demographic rates for models that include those transitions.
- \item \code{\link{init.dcm}}, \code{\link{init.icm}}, and \code{\link{init.net}}
+ \item `\link{init.dcm}`, `\link{init.icm}`, and `\link{init.net}`
        are used to input the initial conditions for each class. The main
        conditions are limited to the numbers or, if applicable, the specific
        agents in the population who are infected or recovered at the simulation
        outset.
- \item \code{\link{control.dcm}}, \code{\link{control.icm}}, and
-       \code{\link{control.net}} are used to specify the remaining control
+ \item `\link{control.dcm}`, `\link{control.icm}`, and
+       `\link{control.net}` are used to specify the remaining control
        settings for each simulation. The core controls for base model
        types include the disease type, number of time steps, and number of
        simulations. Controls are also used to input new model functions (for
@@ -88,23 +88,23 @@ necessary parameters, initial conditions, and control settings:
 
 With the models parameterized, the functions for simulating epidemic models are:
 \itemize{
- \item \code{\link{dcm}} for deterministic compartmental models.
- \item \code{\link{icm}} for individual contact models.
+ \item `\link{dcm}` for deterministic compartmental models.
+ \item `\link{icm}` for individual contact models.
  \item Network models are simulated in a three-step process:
  \enumerate{
-   \item \code{\link{netest}} estimates the statistical model for the network
+   \item `\link{netest}` estimates the statistical model for the network
          structure itself (i.e., how partnerships form and dissolve over time
          given the parameterization of those processes). This function is a wrapper
-         around the \code{ergm} and \code{stergm} functions in the \code{ergm}
-         and \code{tergm} packages. The current statistical framework for model
+         around the `ergm` and `stergm` functions in the `ergm`
+         and `tergm` packages. The current statistical framework for model
          simulation is called "egocentric inference": target statistics summarizing
          these formation and dissolution processes collected from an egocentric
          sample of the population.
-   \item \code{\link{netdx}} runs diagnostics on the dynamic model fit by
+   \item `\link{netdx}` runs diagnostics on the dynamic model fit by
          simulating the base network over time to ensure the model fits the
          targets for formation and dissolution.
-   \item \code{\link{netsim}} simulates the stochastic network epidemic models,
-         with a given network model fit in \code{\link{netest}}. Here the
+   \item `\link{netsim}` simulates the stochastic network epidemic models,
+         with a given network model fit in `\link{netest}`. Here the
          function requires this model fit object along with the parameters,
          initial conditions, and control settings as defined above.
  }
@@ -124,7 +124,7 @@ Modeling of Infectious Disease over Networks. Journal of Statistical Software.
 2018; 84(8): 1-47. doi: 10.18637/jss.v084.i08 (\url{http://doi.org/10.18637/jss.v084.i08}).
 
 We have also developed an extension package specifically for modeling HIV and related
-sexually transmitted infections, called \code{EpiModelHIV} and available on Github
+sexually transmitted infections, called `EpiModelHIV` and available on Github
 at \url{http://github.com/statnet/EpiModelHIV}.
 }
 \keyword{package}

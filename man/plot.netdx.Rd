@@ -33,39 +33,39 @@
 )
 }
 \arguments{
-\item{x}{An \code{EpiModel} object of class \code{netdx}.}
+\item{x}{An `EpiModel` object of class `netdx`.}
 
-\item{type}{Plot type, with options of \code{"formation"} for network
-model formation statistics, \code{"duration"} for dissolution model
-statistics for average edge duration, or \code{"dissolution"} for
+\item{type}{Plot type, with options of `"formation"` for network
+model formation statistics, `"duration"` for dissolution model
+statistics for average edge duration, or `"dissolution"` for
 dissolution model statistics for proportion of ties dissolved per time
 step.}
 
-\item{method}{Plot method, with options of \code{"l"} for line plots and
-\code{"b"} for boxplots.}
+\item{method}{Plot method, with options of `"l"` for line plots and
+`"b"` for boxplots.}
 
-\item{sims}{If \code{type="epi"} or \code{"formation"}, a vector of
-simulation numbers to plot. If \code{type="network"}, a single
-simulation number for network plot, or else \code{"min"} to plot the
-simulation number with the lowest disease prevalence, \code{"max"} for
-the simulation with the highest disease prevalence, or \code{"mean"}
+\item{sims}{If `type="epi"` or `"formation"`, a vector of
+simulation numbers to plot. If `type="network"`, a single
+simulation number for network plot, or else `"min"` to plot the
+simulation number with the lowest disease prevalence, `"max"` for
+the simulation with the highest disease prevalence, or `"mean"`
 for the simulation with the prevalance closest to the mean across
 simulations at the specified time step.}
 
 \item{stats}{Network statistics to plot, among those specified in the call
-to \code{\link{netdx}}, with the default to plot all statistics
+to `\link{netdx}`, with the default to plot all statistics
 contained in the object.}
 
-\item{sim.lines}{If \code{TRUE}, plot individual simulation lines. Default is
+\item{sim.lines}{If `TRUE`, plot individual simulation lines. Default is
 to plot lines for one-group models but not for two-group models.}
 
 \item{sim.col}{Vector of any standard R color format for simulation lines.}
 
 \item{sim.lwd}{Line width for simulation lines.}
 
-\item{mean.line}{If \code{TRUE}, plot mean of simulations across time.}
+\item{mean.line}{If `TRUE`, plot mean of simulations across time.}
 
-\item{mean.smooth}{If \code{TRUE}, use a lowess smoother on the mean line.}
+\item{mean.smooth}{If `TRUE`, use a lowess smoother on the mean line.}
 
 \item{mean.col}{Vector of any standard R color format for mean lines.}
 
@@ -74,63 +74,63 @@ to plot lines for one-group models but not for two-group models.}
 \item{mean.lty}{Line type for mean lines.}
 
 \item{qnts}{If numeric, plot polygon of simulation quantiles based on the
-range implied by the argument (see details). If \code{FALSE}, suppress
+range implied by the argument (see details). If `FALSE`, suppress
 polygon from plot.}
 
 \item{qnts.col}{Vector of any standard R color format for polygons.}
 
 \item{qnts.alpha}{Transparency level for quantile polygons, where 0 =
-transparent and 1 = opaque (see \code{\link{transco}}).}
+transparent and 1 = opaque (see `\link{transco}`).}
 
-\item{qnts.smooth}{If \code{TRUE}, use a lowess smoother on quantile polygons.}
+\item{qnts.smooth}{If `TRUE`, use a lowess smoother on quantile polygons.}
 
-\item{targ.line}{If \code{TRUE}, plot target or expected value line for
+\item{targ.line}{If `TRUE`, plot target or expected value line for
 the statistic of interest.}
 
 \item{targ.col}{Vector of standard R colors for target statistic lines, with
-default colors based on \code{RColorBrewer} color palettes.}
+default colors based on `RColorBrewer` color palettes.}
 
 \item{targ.lwd}{Line width for the line showing the target statistic values.}
 
 \item{targ.lty}{Line type for the line showing the target statistic values.}
 
-\item{plots.joined}{If \code{TRUE} and \code{type="formation"}, combine all
+\item{plots.joined}{If `TRUE` and `type="formation"`, combine all
 target statistics in one plot, versus one plot per target statistic if
-\code{FALSE}.}
+`FALSE`.}
 
-\item{legend}{If \code{TRUE}, plot default legend.}
+\item{legend}{If `TRUE`, plot default legend.}
 
-\item{grid}{If \code{TRUE}, a grid is added to the background of plot
-(see \code{\link{grid}} for details), with default of nx by ny.}
+\item{grid}{If `TRUE`, a grid is added to the background of plot
+(see `\link{grid}` for details), with default of nx by ny.}
 
 \item{...}{additional arguments to pass.}
 }
 \description{
 Plots dynamic network model diagnostics calculated in
-             \code{netdx}.
+             `netdx`.
 }
 \details{
-The plot function for \code{netdx} objects will generate plots of two types of
+The plot function for `netdx` objects will generate plots of two types of
 model diagnostic statistics that run as part of the diagnostic tools within
-that function. The \code{formation} plot shows the summary statistics
-requested in \code{nwstats.formula}, where the default includes those
+that function. The `formation` plot shows the summary statistics
+requested in `nwstats.formula`, where the default includes those
 statistics in the network model formation formula specified in the original
-call to \code{\link{netest}}.
+call to `\link{netest}`.
 
-The \code{duration} plot shows the average age of existing edges at each time
+The `duration` plot shows the average age of existing edges at each time
 step, up until the maximum time step requested. This is calculated with the
-\code{\link{edgelist_meanage}} function. The age is used as an estimator of
+`\link{edgelist_meanage}` function. The age is used as an estimator of
 the average duration of edges in the equilibrium state.
 
-The \code{dissolution} plot shows the proportion of the extant ties that are
+The `dissolution` plot shows the proportion of the extant ties that are
 dissolved at each time step, up until the maximum time step requested.
 Typically, the proportion of ties that are dissolved is the reciprocal of the
 mean relational duration. This plot thus contains similar information to that
 in the duration plot, but should reach its expected value more quickly, since
 it is not subject to censoring.
 
-The \code{plots.joined} argument will control whether the statistics
-in the \code{formation} plot are joined in one plot or plotted separately.
+The `plots.joined` argument will control whether the statistics
+in the `formation` plot are joined in one plot or plotted separately.
 The default is based on the number of network statistics requested. The
 layout of the separate plots within the larger plot window is also based on
 the number of statistics.
@@ -191,6 +191,6 @@ plot(dx2, type = "dissolution", method = "b", col = "pink1")
 
 }
 \seealso{
-\code{\link{netdx}}
+`\link{netdx}`
 }
 \keyword{plot}

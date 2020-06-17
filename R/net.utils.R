@@ -77,18 +77,18 @@ check_bip_degdist <- function(num.g1, num.g2,
 }
 
 
-#' @title Creates a TEA Variable for Infection Status for \code{ndtv} Animations
+#' @title Creates a TEA Variable for Infection Status for `ndtv` Animations
 #'
 #' @description Creates a new color-named temporally-extended attribute (TEA)
-#'              variable in a \code{networkDynamic} object containing a disease
+#'              variable in a `networkDynamic` object containing a disease
 #'              status TEA in numeric format.
 #'
-#' @param nd An object of class \code{networkDynamic}.
+#' @param nd An object of class `networkDynamic`.
 #' @param old.var Old TEA variable name.
 #' @param old.sus Status value for susceptible in old TEA variable.
 #' @param old.inf Status value for infected in old TEA variable.
 #' @param old.rec Status value for recovered in old TEA variable.
-#' @param new.var New TEA variable name to be stored in \code{networkDynamic}
+#' @param new.var New TEA variable name to be stored in `networkDynamic`
 #'        object.
 #' @param new.sus Status value for susceptible in new TEA variable.
 #' @param new.inf Status value for infected in new TEA variable.
@@ -96,27 +96,27 @@ check_bip_degdist <- function(num.g1, num.g2,
 #' @param verbose Print progress to console.
 #'
 #' @details
-#' The \code{ndtv} package (\url{https://cran.r-project.org/package=ndtv}) produces
+#' The `ndtv` package (\url{https://cran.r-project.org/package=ndtv}) produces
 #' animated visuals for dynamic networks with evolving edge structures and nodal
-#' attributes. Nodal attribute dynamics in \code{ndtv} movies require a temporally
+#' attributes. Nodal attribute dynamics in `ndtv` movies require a temporally
 #' extended attribute (TEA) containing a standard R color for each node at each
-#' time step. By default, the \code{EpiModel} package uses TEAs to store disease
-#' status history in network model simulations run in \code{\link{netsim}}. But,
-#' that status TEA is in numeric format (0, 1, 2). The \code{color_tea} function
+#' time step. By default, the `EpiModel` package uses TEAs to store disease
+#' status history in network model simulations run in `\link{netsim}`. But,
+#' that status TEA is in numeric format (0, 1, 2). The `color_tea` function
 #' transforms those numeric values of that disease status TEA into a TEA with
-#' color values in order to visualize status changes in \code{ndtv}.
+#' color values in order to visualize status changes in `ndtv`.
 #'
-#' The convention in \code{\link{plot.netsim}} is to color the susceptible
+#' The convention in `\link{plot.netsim}` is to color the susceptible
 #' nodes as blue, infected nodes as red, and recovered nodes as green. Alternate
-#' colors may be specified using the \code{new.sus}, \code{new.inf}, and
-#' \code{new.rec} parameters, respectively.
+#' colors may be specified using the `new.sus`, `new.inf`, and
+#' `new.rec` parameters, respectively.
 #'
-#' Using the \code{color_tea} function with a \code{netsim} object requires that
-#' TEAs for disease status be used and that the \code{networkDynamic} object be
-#' saved in the output: \code{tergmListe} must be  set to \code{FALSE} in
-#' \code{\link{control.net}}.
+#' Using the `color_tea` function with a `netsim` object requires that
+#' TEAs for disease status be used and that the `networkDynamic` object be
+#' saved in the output: `tergmListe` must be  set to `FALSE` in
+#' `\link{control.net}`.
 #'
-#' @seealso \code{\link{netsim}} and the \code{ndtv} package documentation.
+#' @seealso `\link{netsim}` and the `ndtv` package documentation.
 #' @keywords colorUtils
 #' @export
 #'
@@ -157,10 +157,10 @@ color_tea <- function(nd, old.var = "testatus", old.sus = "s", old.inf = "i",
 #' @description Copies the vertex attributes stored on the network object to the
 #'              master attr list in the dat data object.
 #'
-#' @param dat Master data object passed through \code{netsim} simulations.
+#' @param dat Master data object passed through `netsim` simulations.
 #'
-#' @seealso \code{\link{get_formula_term_attr}}, \code{\link{get_attr_prop}},
-#'          \code{\link{auto_update_attr}}, and \code{\link{copy_datattr_to_nwattr}}.
+#' @seealso `\link{get_formula_term_attr}`, `\link{get_attr_prop}`,
+#'          `\link{auto_update_attr}`, and `\link{copy_datattr_to_nwattr}`.
 #' @keywords netUtils internal
 #' @export
 #'
@@ -186,10 +186,10 @@ copy_nwattr_to_datattr <- function(dat) {
 #' @description Copies the vertex attributes stored on the master attr list on
 #'              dat to the network object on dat.
 #'
-#' @param dat Master data object passed through \code{netsim} simulations.
+#' @param dat Master data object passed through `netsim` simulations.
 #'
-#' @seealso \code{\link{get_formula_term_attr}}, \code{\link{get_attr_prop}},
-#'          \code{\link{auto_update_attr}}, and \code{\link{copy_nwattr_to_datattr}}.
+#' @seealso `\link{get_formula_term_attr}`, `\link{get_attr_prop}`,
+#'          `\link{auto_update_attr}`, and `\link{copy_nwattr_to_datattr}`.
 #' @keywords netUtils internal
 #' @export
 #'
@@ -213,10 +213,10 @@ copy_datattr_to_nwattr <- function(dat) {
 #'
 #' @description Calculates dissolution coefficients, given a dissolution model
 #'              and average edge duration, to pass as offsets to an ERGM/STERGM
-#'              model fit in \code{netest}.
+#'              model fit in `netest`.
 #'
 #' @param dissolution Right-hand sided STERGM dissolution formula
-#'        (see \code{\link{netest}}). See below for list of supported dissolution
+#'        (see `\link{netest}`). See below for list of supported dissolution
 #'        models.
 #' @param duration A vector of mean edge durations in arbitrary time units.
 #' @param d.rate Departure or exit rate from the population, as a single homogenous
@@ -224,7 +224,7 @@ copy_datattr_to_nwattr <- function(dat) {
 #'
 #' @details
 #' This function performs two calculations for dissolution coefficients
-#' used in a network model estimated with \code{\link{netest}}:
+#' used in a network model estimated with `\link{netest}`:
 #' \enumerate{
 #'  \item \strong{Transformation:} the mean duration of edges in a network are
 #'        mathematically transformed to logit coefficients.
@@ -235,28 +235,28 @@ copy_datattr_to_nwattr <- function(dat) {
 #' }
 #'
 #' The current dissolution models supported by this function and in network
-#' model estimation in \code{\link{netest}} are as follows:
+#' model estimation in `\link{netest}` are as follows:
 #' \itemize{
-#'  \item \code{~offset(edges)}: a homogeneous dissolution model in which the
+#'  \item `~offset(edges)`: a homogeneous dissolution model in which the
 #'         edge duration is the same for all partnerships. This requires
 #'         specifying one duration value.
-#'  \item \code{~offset(edges) + offset(nodematch("<attr>"))}: a heterogeneous
+#'  \item `~offset(edges) + offset(nodematch("<attr>"))`: a heterogeneous
 #'         model in which the edge duration varies by whether the nodes in the
 #'         dyad have similar values of a specified attribute. The duration vector
 #'         should now contain two values: the first is the mean edge duration of
 #'         non-matched dyads, and the second is the duration of the matched dyads.
-#'  \item \code{~offset(edges) + offset(nodemix("<attr>"))}: a heterogenous model
+#'  \item `~offset(edges) + offset(nodemix("<attr>"))`: a heterogenous model
 #'         that extends the nodematch model to include non-binary attributes for
 #'         homophily. The duration vector should first contain the base value,
 #'         then the values for every other possible combination in the term.
-#'  \item \code{~offset(edges) + offset(nodefactor("<attr>"))}: a heterogenous
+#'  \item `~offset(edges) + offset(nodefactor("<attr>"))`: a heterogenous
 #'         model in which the edge duration varies by a specified attribute. The
 #'         duration vector should first contain the base value, then the values
 #'         for every other value of that attribute in the term.
 #' }
 #'
 #' @return
-#' A list of class \code{disscoef} with the following elements:
+#' A list of class `disscoef` with the following elements:
 #' \itemize{
 #'  \item \strong{dissolution:} right-hand sided STERGM dissolution formula
 #'         passed in the function call.
@@ -264,7 +264,7 @@ copy_datattr_to_nwattr <- function(dat) {
 #'  \item \strong{coef.crude:} mean durations transformed into logit
 #'        coefficients.
 #'  \item \strong{coef.adj:} crude coefficients adjusted for the risk of
-#'        departure on edge persistence, if the \code{d.rate} argument is supplied.
+#'        departure on edge persistence, if the `d.rate` argument is supplied.
 #'  \item \strong{d.rate:} the departure rate.
 #' }
 #'
@@ -445,10 +445,10 @@ dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
 #'
 #' @description Outputs a table of the number and percent of edges that are
 #'              left-censored, right-censored, both-censored, or uncensored for a
-#'              \code{networkDynamic} object.
+#'              `networkDynamic` object.
 #'
 #' @param el Timed edgelist with start and end times extracted from a
-#'        \code{networkDynamic} object using the \code{as.data.frame.networkDynamic}
+#'        `networkDynamic` object using the `as.data.frame.networkDynamic`
 #'        function.
 #'
 #' @export
@@ -509,20 +509,20 @@ edgelist_censor <- function(el) {
 #'
 #' @description Outputs a vector of mean ages of edges at a series of timesteps
 #'
-#' @param x An \code{EpiModel} object of class \code{\link{netest}}.
-#' @param el If not passing \code{x}, a timed edgelist from a \code{networkDynamic}
-#'        object extracted with the \code{as.data.frame.networkDynamic} function.
+#' @param x An `EpiModel` object of class `\link{netest}`.
+#' @param el If not passing `x`, a timed edgelist from a `networkDynamic`
+#'        object extracted with the `as.data.frame.networkDynamic` function.
 #'
 #' @details
 #' This function calculates the mean partnership age at each time step over
-#' a dynamic network simulation from \code{\link{netest}}. These objects
+#' a dynamic network simulation from `\link{netest}`. These objects
 #' contain the network, edgelist, and dissolution objects needed for the
 #' calculation. Alternatively, one may pass in these objects separately if
-#' \code{netest} was not used, or statistics were not run requested after
+#' `netest` was not used, or statistics were not run requested after
 #' the estimation.
 #'
 #' Currently, the calculations are limited to those dissolution formulas with a single
-#' homogenous dissolution (\code{~offset(edges)}). This functionality will be
+#' homogenous dissolution (`~offset(edges)`). This functionality will be
 #' expanded in future releases.
 #'
 #' @export
@@ -576,13 +576,13 @@ edgelist_meanage <- function(x, el) {
 #' @description Calculates the proportional distribution of each vertex attribute
 #'              contained on the network.
 #'
-#' @param nw The \code{networkDynamic} object contained in the \code{netsim}
+#' @param nw The `networkDynamic` object contained in the `netsim`
 #'        simulation.
 #' @param nwterms Vector of attributes on network object, usually as
-#'        output of \code{\link{get_formula_term_attr}}.
+#'        output of `\link{get_formula_term_attr}`.
 #'
-#' @seealso \code{\link{get_formula_term_attr}}, \code{\link{copy_nwattr_to_datattr}},
-#'          \code{\link{auto_update_attr}}.
+#' @seealso `\link{get_formula_term_attr}`, `\link{copy_nwattr_to_datattr}`,
+#'          `\link{auto_update_attr}`.
 #' @keywords netUtils internal
 #' @export
 #'
@@ -611,7 +611,7 @@ get_attr_prop <- function(dat, nwterms) {
 #' @title Outputs ERGM Formula Attributes into a Character Vector
 #'
 #' @description Given a formation formula for a network model, outputs it into
-#'              a character vector of vertex attributes to be used in \code{netsim}
+#'              a character vector of vertex attributes to be used in `netsim`
 #'              simulations.
 #'
 #' @param form an ergm model formula
@@ -642,7 +642,7 @@ get_formula_term_attr <- function(form, nw) {
 #' @title Outputs ERGM Formula Attributes into a Character Vector
 #'
 #' @description Given a simulated network, outputs into
-#'              a character vector of vertex attributes to be used in \code{netsim}
+#'              a character vector of vertex attributes to be used in `netsim`
 #'              simulations.
 #'
 #' @param nw a network object
@@ -672,7 +672,7 @@ get_network_term_attr <- function(nw) {
 #'
 #' @description Outputs group numbers give ID numbers for a two-group network.
 #'
-#' @param nw Object of class \code{network} or \code{networkDynamic}.
+#' @param nw Object of class `network` or `networkDynamic`.
 #' @param ids Vector of ID numbers for which the group number
 #'        should be returned.
 #'
@@ -709,15 +709,15 @@ idgroup <- function(nw, ids) {
 #'
 #' @description Updates the vertex attributes on a network for new nodes incoming
 #'              into that network, based on a set of rules for each attribute
-#'              that the user specifies in \code{control.net}.
+#'              that the user specifies in `control.net`.
 #'
-#' @param dat Master object in \code{netsim} simulations.
+#' @param dat Master object in `netsim` simulations.
 #' @param newNodes Vector of nodal IDs for incoming nodes at the current time
 #'        step.
 #' @param curr.tab Current proportional distribution of all vertex attributes.
 #'
-#' @seealso \code{\link{copy_nwattr_to_datattr}}, \code{\link{get_attr_prop}},
-#'          \code{\link{auto_update_attr}}.
+#' @seealso `\link{copy_nwattr_to_datattr}`, `\link{get_attr_prop}`,
+#'          `\link{auto_update_attr}`.
 #' @keywords netUtils internal
 #' @export
 #'
@@ -779,19 +779,19 @@ auto_update_attr <- function(dat, newNodes, curr.tab) {
 #' @description A fast method for querying the current degree of all individuals
 #'              within a network.
 #'
-#' @param x Either an object of class \code{network} or \code{edgelist} generated
-#'        from a network. If \code{x} is an edgelist, then it must contain
-#'        an attribute for the total network size, \code{n}.
+#' @param x Either an object of class `network` or `edgelist` generated
+#'        from a network. If `x` is an edgelist, then it must contain
+#'        an attribute for the total network size, `n`.
 #'
 #' @details
 #' Individual-level data on the current degree of nodes within a network is
 #' often useful for summary statistics and modeling complex interactions between
-#' degree. Given a \code{network} class object, \code{net}, one way to look
-#' up the current degree is to get a summary of the ERGM term, \code{sociality},
-#' as in: \code{summary(net ~ sociality(nodes = NULL))}. But that is computationally
+#' degree. Given a `network` class object, `net`, one way to look
+#' up the current degree is to get a summary of the ERGM term, `sociality`,
+#' as in: `summary(net ~ sociality(nodes = NULL))`. But that is computationally
 #' inefficient for a number of reasons. This function provide a fast method
 #' for generating the vector of degree using a query of the edgelist. It is
-#' even faster if the parameter \code{x} is already transformed as an edgelist.
+#' even faster if the parameter `x` is already transformed as an edgelist.
 #'
 #' @export
 #'
@@ -835,13 +835,13 @@ get_degree <- function(x) {
 #' @description Left-truncates a simulation epidemiological summary statistics and
 #'              network statistics at a specified time step.
 #'
-#' @param x Object of class \code{netsim} or \code{icm}.
+#' @param x Object of class `netsim` or `icm`.
 #' @param at Time step at which to left-truncate the time series.
 #'
 #' @details
 #' This function would be used when running a follow-up simulation from time steps
-#' \code{b} to \code{c} after a burnin period from time \code{a} to \code{b},
-#' where the final time window of interest for data analysis is \code{b} to \code{c}
+#' `b` to `c` after a burnin period from time `a` to `b`,
+#' where the final time window of interest for data analysis is `b` to `c`
 #' only.
 #'
 #' @export

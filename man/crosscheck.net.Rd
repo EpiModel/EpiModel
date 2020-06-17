@@ -7,21 +7,21 @@
 crosscheck.net(x, param, init, control)
 }
 \arguments{
-\item{x}{An \code{EpiModel} object of class \code{\link{netest}}.}
+\item{x}{An `EpiModel` object of class `\link{netest}`.}
 
-\item{param}{An \code{EpiModel} object of class \code{\link{param.net}}.}
+\item{param}{An `EpiModel` object of class `\link{param.net}`.}
 
-\item{init}{An \code{EpiModel} object of class \code{\link{init.net}}.}
+\item{init}{An `EpiModel` object of class `\link{init.net}`.}
 
-\item{control}{An \code{EpiModel} object of class \code{\link{control.net}}.}
+\item{control}{An `EpiModel` object of class `\link{control.net}`.}
 }
 \value{
 This function returns no objects.
 }
 \description{
 This function checks that the estimation object from
-             \code{\link{netest}} and the three parameter lists from
-             \code{\link{param.net}}, \code{\link{init.net}}, and
-             \code{\link{control.net}} are consistent.
+             `\link{netest}` and the three parameter lists from
+             `\link{param.net}`, `\link{init.net}`, and
+             `\link{control.net}` are consistent.
 }
 \keyword{internal}

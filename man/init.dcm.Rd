@@ -15,7 +15,7 @@ number of initial group 1 infected.}
 
 \item{r.num}{Number of initial recovered. For two-group models, this is the
 number of initial group 1 recovered. This parameter is only used for
-the \code{SIR} model type.}
+the `SIR` model type.}
 
 \item{s.num.g2}{Number of initial susceptible in group 2. This parameter is
 only used for two-group models.}
@@ -24,17 +24,17 @@ only used for two-group models.}
 used for two-group models.}
 
 \item{r.num.g2}{Number of initial recovered in group 2. This parameter is
-only used for two-group \code{SIR} models.}
+only used for two-group `SIR` models.}
 
 \item{...}{Additional initial conditions passed to model.}
 }
 \description{
 Sets the initial conditions for deterministic compartmental
-             models simulated with \code{dcm}.
+             models simulated with `dcm`.
 }
 \details{
-The initial conditions for a model solved with \code{\link{dcm}} should be
-input into the \code{init.dcm} function. This function handles initial
+The initial conditions for a model solved with `\link{dcm}` should be
+input into the `init.dcm` function. This function handles initial
 conditions for both base model types and original models. For an overview
 of initial conditions for base DCM class models, consult the
 \href{http://statnet.github.io/tut/BasicDCMs.html}{Basic DCMs} tutorial.
@@ -46,8 +46,8 @@ are output. More details on this requirement are outlined in the
 \href{http://statnet.github.io/tut/NewDCMs.html}{Solving New DCMs} tutorial.
 }
 \seealso{
-Use \code{\link{param.dcm}} to specify model parameters and
-         \code{\link{control.dcm}} to specify the control settings. Run the
-         parameterized model with \code{\link{dcm}}.
+Use `\link{param.dcm}` to specify model parameters and
+         `\link{control.dcm}` to specify the control settings. Run the
+         parameterized model with `\link{dcm}`.
 }
 \keyword{parameterization}

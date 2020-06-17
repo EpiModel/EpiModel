@@ -16,41 +16,41 @@
 )
 }
 \arguments{
-\item{x}{An \code{EpiModel} object of class \code{\link{netsim}}.}
+\item{x}{An `EpiModel` object of class `\link{netsim}`.}
 
-\item{y}{Another \code{EpiModel} object of class \code{\link{netsim}},
-with the identical model parameterization as \code{x}.}
+\item{y}{Another `EpiModel` object of class `\link{netsim}`,
+with the identical model parameterization as `x`.}
 
-\item{keep.transmat}{If \code{TRUE}, keep the transmission matrices from the
-original \code{x} and \code{y} elements. Note: transmission matrices
-only saved when (\code{tergmLite == FALSE}).}
+\item{keep.transmat}{If `TRUE`, keep the transmission matrices from the
+original `x` and `y` elements. Note: transmission matrices
+only saved when (`tergmLite == FALSE`).}
 
-\item{keep.network}{If \code{TRUE}, keep the \code{networkDynamic} objects
-from the original \code{x} and \code{y} elements. Note: network
-only saved when (\code{tergmLite == FALSE}).}
+\item{keep.network}{If `TRUE`, keep the `networkDynamic` objects
+from the original `x` and `y` elements. Note: network
+only saved when (`tergmLite == FALSE`).}
 
-\item{keep.nwstats}{If \code{TRUE}, keep the network statistics (as set by
-the \code{nwstats.formula} parameter in \code{control.netsim}) from
-the original \code{x} and \code{y} elements.}
+\item{keep.nwstats}{If `TRUE`, keep the network statistics (as set by
+the `nwstats.formula` parameter in `control.netsim`) from
+the original `x` and `y` elements.}
 
-\item{keep.other}{If \code{TRUE}, keep the other simulation elements (as set
-by the \code{save.other} parameter in \code{control.netsim}) from the
-original \code{x} and \code{y} elements.}
+\item{keep.other}{If `TRUE`, keep the other simulation elements (as set
+by the `save.other` parameter in `control.netsim`) from the
+original `x` and `y` elements.}
 
-\item{param.error}{If \code{TRUE}, if \code{x} and \code{y} have different
-params (in \code{param.net}) or controls (passed in \code{control.net})
-an error will prevent the merge. Use \code{FALSE} to override that
+\item{param.error}{If `TRUE`, if `x` and `y` have different
+params (in `param.net`) or controls (passed in `control.net`)
+an error will prevent the merge. Use `FALSE` to override that
 check.}
 
 \item{...}{Additional merge arguments (not currently used).}
 }
 \description{
 Merges epidemiological data from two independent simulations of
-             stochastic network models from \code{netsim}.
+             stochastic network models from `netsim`.
 }
 \details{
 This merge function combines the results of two independent simulations of
-\code{\link{netsim}} class models, simulated under separate function calls. The
+`\link{netsim}` class models, simulated under separate function calls. The
 model parameterization between the two calls must be exactly the same, except
 for the number of simulations in each call. This allows for manual
 parallelization of model simulations.

@@ -9,21 +9,21 @@ brewer_ramp(n, plt, delete.lights = TRUE)
 \arguments{
 \item{n}{Number of colors to return}
 
-\item{plt}{\code{RColorBrewer} palette from \code{\link{brewer.pal}}}
+\item{plt}{`RColorBrewer` palette from `\link{brewer.pal}`}
 
 \item{delete.lights}{Delete the lightest colors from the color palette,
 helps with plotting in many high-contrast palettes}
 }
 \value{
-A vector of length equal to \code{n} with a range of color values consistent
+A vector of length equal to `n` with a range of color values consistent
 with an RColorBrewer color palette.
 }
 \description{
 Returns vector of colors consistent with a high-brightness set
-             of colors from an \code{RColorBrewer} palette.
+             of colors from an `RColorBrewer` palette.
 }
 \details{
-\code{RColorBrewer} provides easy access to helpful color palettes, but the
+`RColorBrewer` provides easy access to helpful color palettes, but the
 built-in palettes are limited to the set of colors in the existing palette.
 This function expands the palette size to any number of colors by filling
 in the gaps. Also, colors within the "div" and "seq" set of palettes whose
@@ -41,7 +41,7 @@ for (i in seq_along(pals)) {
 
 }
 \seealso{
-\code{\link{RColorBrewer}}
+`\link{RColorBrewer}`
 }
 \keyword{colorUtils}
 \keyword{internal}

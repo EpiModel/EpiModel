@@ -2,13 +2,13 @@
 #' @title Simulate Dynamic Network at Time 1
 #'
 #' @description This function simulates a dynamic network over one or multiple
-#'              time steps, to be used in \code{\link{netsim}} models.
+#'              time steps, to be used in `\link{netsim}` models.
 #'
-#' @param x An \code{EpiModel} object of class \code{\link{netest}}.
-#' @param nw A \code{networkDynamic} object.
+#' @param x An `EpiModel` object of class `\link{netest}`.
+#' @param nw A `networkDynamic` object.
 #' @param nsteps Number of time steps to simulate the network over.
 #' @param nsims Number of independent network simulations.
-#' @param control An \code{EpiModel} object of class \code{\link{control.net}}.
+#' @param control An `EpiModel` object of class `\link{control.net}`.
 #'
 #' @export
 #' @keywords netUtils internal
@@ -35,11 +35,11 @@ sim_nets <- function(x, nw, nsteps, control) {
 #' @title Resimulate Dynamic Network at Time 2+
 #'
 #' @description This function resimulates the dynamic network in stochastic
-#'              network models simulated in \code{\link{netsim}} with dependence
+#'              network models simulated in `\link{netsim}` with dependence
 #'              between the epidemic and demographic processes and the network
 #'              structure.
 #'
-#' @param x A master object passed through \code{\link{netsim}}.
+#' @param x A master object passed through `\link{netsim}`.
 #' @param at Current time step.
 #'
 #' @export
@@ -120,10 +120,10 @@ resim_nets <- function(dat, at) {
 #' @title Adjustment for the Edges Coefficient with Changing Network Size
 #'
 #' @description Adjusts the edges coefficient in a dynamic network model
-#'              simulated in \code{\link{netsim}} to preserve the mean
+#'              simulated in `\link{netsim}` to preserve the mean
 #'              degree of nodes in the network.
 #'
-#' @param dat Master object in \code{netsim} simulations.
+#' @param dat Master object in `netsim` simulations.
 #' @param at Current time step.
 #'
 #' @keywords internal

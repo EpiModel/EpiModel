@@ -7,9 +7,9 @@
 get_args(formal.args, dot.args)
 }
 \arguments{
-\item{formal.args}{The output of \code{formals(sys.function())}.}
+\item{formal.args}{The output of `formals(sys.function())`.}
 
-\item{dot.args}{The output of \code{list(...)}.}
+\item{dot.args}{The output of `list(...)`.}
 }
 \description{
 Returns a list of argument names and values for use for parameter

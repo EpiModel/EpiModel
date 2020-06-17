@@ -14,7 +14,7 @@ apportion_lr(vector.length, values, proportions, shuffled = FALSE)
 \item{proportions}{Proportion distribution with one number for each value. This
 must sum to 1.}
 
-\item{shuffled}{If \code{TRUE}, randomly shuffle the order of the vector.}
+\item{shuffled}{If `TRUE`, randomly shuffle the order of the vector.}
 }
 \description{
 Apportions a vector of values given a specified frequency

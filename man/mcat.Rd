@@ -10,7 +10,7 @@ mcat(test)
 \item{test}{Character string with the name of a test.}
 }
 \description{
-Writes the name of a test and \code{...} to console for
+Writes the name of a test and `...` to console for
              showing testing progress.
 }
 \keyword{internal}

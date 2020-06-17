@@ -4,8 +4,8 @@
 #' @description This function simulates the main infection process given the
 #'              current state of the partnerships and disease in the system.
 #'
-#' @param dat A list object containing a \code{networkDynamic} object and other
-#'        initialization information passed from \code{\link{netsim}}.
+#' @param dat A list object containing a `networkDynamic` object and other
+#'        initialization information passed from `\link{netsim}`.
 #' @param at Current time step.
 #'
 #' @details
@@ -13,11 +13,11 @@
 #' \enumerate{
 #'  \item Get IDs for current infected and susceptibles given the current disease
 #'        status.
-#'  \item Call \code{\link{discord_edgelist}} to get the current discordant edgelist
+#'  \item Call `\link{discord_edgelist}` to get the current discordant edgelist
 #'        given step 1.
 #'  \item Determine the transmission rates (e.g., as a function of group).
 #'  \item Pull the number of acts per partnership in a time step from the
-#'        \code{act.rate} parameter.
+#'        `act.rate` parameter.
 #'  \item Calculate the final transmission probabilities given the transmission
 #'        rates and act rates.
 #'  \item Randomly transmit on the discordant edgelist.
@@ -26,13 +26,13 @@
 #' }
 #'
 #' @return
-#' The main \code{dat} object is returned with updated disease status and summary
+#' The main `dat` object is returned with updated disease status and summary
 #' incidence measures.
 #'
 #' @export
 #' @keywords netMod internal
 #'
-#' @seealso \code{\link{discord_edgelist}} is used within \code{infection.net}
+#' @seealso `\link{discord_edgelist}` is used within `infection.net`
 #' to obtain a discordant edgelist.
 #'
 infection.net <- function(dat, at) {
@@ -125,8 +125,8 @@ infection.net <- function(dat, at) {
 #' @description This function simulates the main infection process given the
 #'              current state of the partnerships and disease in the system.
 #'
-#' @param dat A list object containing a \code{networkDynamic} object and other
-#'        initialization information passed from \code{\link{netsim}}.
+#' @param dat A list object containing a `networkDynamic` object and other
+#'        initialization information passed from `\link{netsim}`.
 #' @param at Current time step.
 #'
 #' @details
@@ -134,11 +134,11 @@ infection.net <- function(dat, at) {
 #' \enumerate{
 #'  \item Get IDs for current infected and susceptibles given the current disease
 #'        status.
-#'  \item Call \code{\link{discord_edgelist}} to get the current discordant edgelist
+#'  \item Call `\link{discord_edgelist}` to get the current discordant edgelist
 #'        given step 1.
 #'  \item Determine the transmission rates (e.g., as a function of group).
 #'  \item Pull the number of acts per partnership in a time step from the
-#'        \code{act.rate} parameter.
+#'        `act.rate` parameter.
 #'  \item Calculate the final transmission probabilities given the transmission
 #'        rates and act rates.
 #'  \item Randomly transmit on the discordant edgelist.
@@ -147,13 +147,13 @@ infection.net <- function(dat, at) {
 #' }
 #'
 #' @return
-#' The main \code{dat} object is returned with updated disease status and summary
+#' The main `dat` object is returned with updated disease status and summary
 #' incidence measures.
 #'
 #' @export
 #' @keywords netMod internal
 #'
-#' @seealso \code{\link{discord_edgelist}} is used within \code{infection.net}
+#' @seealso `\link{discord_edgelist}` is used within `infection.net`
 #' to obtain a discordant edgelist.
 #'
 infection.2g.net <- function(dat, at) {
@@ -260,35 +260,35 @@ infection.2g.net <- function(dat, at) {
 
 #' @title Discordant Edgelist
 #'
-#' @description This function returns a \code{data.frame} with a discordant
+#' @description This function returns a `data.frame` with a discordant
 #'              edgelist, defined as the set of edges in which the status of the
 #'              two partners is one susceptible and one infected.
 #'
-#' @param dat Master list object containing a \code{networkDynamic} object or
+#' @param dat Master list object containing a `networkDynamic` object or
 #'        edgelist (if tergmLite is used) and other initialization information
-#'        passed from \code{\link{netsim}}.
+#'        passed from `\link{netsim}`.
 #' @param at Current time step.
 #' @param network In case of models with multiple networks, the network to pull
-#'        the current edgelist from. Default of \code{network = 1}.
+#'        the current edgelist from. Default of `network = 1`.
 #'
 #' @details
-#' This internal function works within the parent \code{\link{infection.net}} function
+#' This internal function works within the parent `\link{infection.net}` function
 #' to pull the current edgelist from the dynamic network object, look up the disease
 #' status of the head and tails on the edge, and subset the list to those edges
 #' with one susceptible and one infected node.
 #'
 #' @return
-#' This function returns a \code{data.frame} with the following columns:
+#' This function returns a `data.frame` with the following columns:
 #' \itemize{
 #'  \item \strong{time:} time step queried
 #'  \item \strong{sus:} ID number for the susceptible partner
 #'  \item \strong{inf:} ID number for the infected partner
 #' }
-#' The output from this function is added to the transmission \code{data.frame}
-#' object that is requested as output in \code{netsim} simulations with
-#' the \code{save.trans=TRUE} argument.
+#' The output from this function is added to the transmission `data.frame`
+#' object that is requested as output in `netsim` simulations with
+#' the `save.trans=TRUE` argument.
 #'
-#' @seealso \code{\link{netsim}}, \code{\link{infection.net}}
+#' @seealso `\link{netsim}`, `\link{infection.net}`
 #'
 #' @export
 #' @keywords netMod internal
@@ -331,19 +331,19 @@ discord_edgelist <- function(dat, at, network = 1) {
 #' @title Save Transmission Matrix
 #'
 #' @description This function appends the transmission matrix created during
-#'              \code{infection.net} and \code{infection.2g.net}.
+#'              `infection.net` and `infection.2g.net`.
 #'
-#' @param dat Master list object containing a \code{networkDynamic} object or
+#' @param dat Master list object containing a `networkDynamic` object or
 #'        edgelist (if tergmLite is used) and other initialization information
-#'        passed from \code{\link{netsim}}.
+#'        passed from `\link{netsim}`.
 #' @param at Current time step.
-#' @param del Discordant edgelist created within \code{infection.net} and
-#'        \code{infection.2g.net}.
+#' @param del Discordant edgelist created within `infection.net` and
+#'        `infection.2g.net`.
 #'
 #' @details
-#' This internal function works within the parent \code{\link{infection.net}} functions
-#' to save the transmission matrix created at time step \code{at} to the master list object
-#' \code{dat}.
+#' This internal function works within the parent `\link{infection.net}` functions
+#' to save the transmission matrix created at time step `at` to the master list object
+#' `dat`.
 #' @export
 set_transmat <- function(dat, del, at) {
   del <- del[!duplicated(del$sus), ]

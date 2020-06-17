@@ -7,18 +7,18 @@
 initialize.net(x, param, init, control, s)
 }
 \arguments{
-\item{x}{An \code{EpiModel} object of class \code{\link{netest}}.}
+\item{x}{An `EpiModel` object of class `\link{netest}`.}
 
-\item{param}{An \code{EpiModel} object of class \code{\link{param.net}}.}
+\item{param}{An `EpiModel` object of class `\link{param.net}`.}
 
-\item{init}{An \code{EpiModel} object of class \code{\link{init.net}}.}
+\item{init}{An `EpiModel` object of class `\link{init.net}`.}
 
-\item{control}{An \code{EpiModel} object of class \code{\link{control.net}}.}
+\item{control}{An `EpiModel` object of class `\link{control.net}`.}
 
 \item{s}{Simulation number, used for restarting dependent simulations.}
 }
 \description{
-This function initializes the master \code{dat} object on which
+This function initializes the master `dat` object on which
              data are stored, simulates the initial state of the network, and
              simulates disease status and other attributes.
 }

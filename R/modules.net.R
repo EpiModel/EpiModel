@@ -5,7 +5,7 @@
 #' Stochastic network models of infectious disease in EpiModel require statistical
 #' modeling of networks, simulation of those networks forward through time, and
 #' simulation of epidemic dynamics on top of those evolving networks. The
-#' \code{\link{netsim}} function handles both the network and epidemic simulation
+#' `\link{netsim}` function handles both the network and epidemic simulation
 #' tasks. Within this function are a series of modules that initialize the
 #' simulation and then simulate new infections, recoveries, and demographics on
 #' the network. Modules also handle the resimulation of the network and some
@@ -13,11 +13,11 @@
 #'
 #' Writing original network models that expand upon our "base" model set will
 #' require modifying the existing modules or adding new modules to the workflow
-#' in \code{\link{netsim}}. The existing modules may be used as a template for
+#' in `\link{netsim}`. The existing modules may be used as a template for
 #' replacement or new modules.
 #'
 #' This help page provides an orientation to these module functions, in the order
-#' in which they are used within \code{\link{netsim}}, to help guide users in
+#' in which they are used within `\link{netsim}`, to help guide users in
 #' writing their own functions. These module functions are not shown
 #' on the help index since they are not called directly by the end-user. To
 #' understand these functions in more detail, review the separate help pages
@@ -28,11 +28,11 @@
 #' at the starting time step of disease simulation, \eqn{t_1}. For multiple-simulation
 #' function calls, these are reset at the beginning of each individual simulation.
 #' \itemize{
-#'  \item \code{\link{initialize.net}}: sets up the master data structure used in
+#'  \item `\link{initialize.net}`: sets up the master data structure used in
 #'        the simulation, initializes which nodes are infected (via the initial
-#'        conditions passed in \code{\link{init.net}}), and simulates a first
+#'        conditions passed in `\link{init.net}`), and simulates a first
 #'        time step of the networks given the network model fit from
-#'        \code{\link{netest}}.
+#'        `\link{netest}`.
 #' }
 #'
 #' @section Disease Status Modification Modules:
@@ -42,14 +42,14 @@
 #' as a function of nodal attributes of those infected nodes. These functions
 #' also calculate summary flow measures such as disease incidence.
 #' \itemize{
-#'  \item \code{\link{infection.net}}: simulates disease transmission given an
+#'  \item `\link{infection.net}`: simulates disease transmission given an
 #'        edgelist of discordant partnerships by calculating the relevant
 #'        transmission and act rates for each edge, and then updating the nodal
 #'        attributes and summary statistics.
-#'  \item \code{\link{recovery.net}}: simulates recovery from infection either to
+#'  \item `\link{recovery.net}`: simulates recovery from infection either to
 #'        a lifelong immune state (for SIR models) or back to the susceptible
 #'        state (for SIS models), as a function of the recovery rate parameters
-#'        specified in \code{\link{param.net}}.
+#'        specified in `\link{param.net}`.
 #' }
 #'
 #' @section Demographic Modules:
@@ -58,13 +58,13 @@
 #' dependent network models, in which the network is resimulated at each time
 #' step to account for the nodal changes affecting the edges.
 #' \itemize{
-#'  \item \code{\link{departures.net}}: randomly simulates departure for nodes given
+#'  \item `\link{departures.net}`: randomly simulates departure for nodes given
 #'        their disease status (susceptible, infected, recovered), and their
-#'        mode-specific departure rates specified in \code{\link{param.net}}. Departures
+#'        mode-specific departure rates specified in `\link{param.net}`. Departures
 #'        involve deactivating nodes.
-#'  \item \code{\link{arrivals.net}}: randomly simulates new arrivals into the network
+#'  \item `\link{arrivals.net}`: randomly simulates new arrivals into the network
 #'        given the current population size and the arrival rate specified in the
-#'        \code{a.rate} parameters. This involves adding new nodes into the network.
+#'        `a.rate` parameters. This involves adding new nodes into the network.
 #' }
 #'
 #' @section Network Resimulation Module:
@@ -72,28 +72,28 @@
 #' step to account for changes in the size of the network (changed through entries
 #' and exits), and the disease status of the nodes.
 #' \itemize{
-#'  \item \code{\link{resim_nets}}: resimulates the network object one time step
+#'  \item `\link{resim_nets}`: resimulates the network object one time step
 #'        forward given the set of formation and dissolution coefficients estimated
-#'        in \code{\link{netest}}.
+#'        in `\link{netest}`.
 #' }
 #'
 #' @section Bookkeeping Module:
 #' Network simulations require bookkeeping at each time step to calculate the
 #' summary epidemiological statistics used in the model output analysis.
 #' \itemize{
-#'  \item \code{\link{prevalence.net}}: calculates the number in each disease state
+#'  \item `\link{prevalence.net}`: calculates the number in each disease state
 #'        (susceptible, infected, recovered) at each time step for those active
-#'        nodes in the network. If the \code{epi.by} control is used, it calculates
+#'        nodes in the network. If the `epi.by` control is used, it calculates
 #'        these statistics by a set of specified nodal attributes.
-#'  \item \code{\link{verbose.net}}: summarizes the current state of the simulation
+#'  \item `\link{verbose.net}`: summarizes the current state of the simulation
 #'        and prints this to the console.
 #' }
 #'
 #' @section One- & Two-Mode Modules:
-#' If epidemic \code{type} is supplied within \code{\link{control.net}}, EpiModel
+#' If epidemic `type` is supplied within `\link{control.net}`, EpiModel
 #' defaults each of the base epidemic modules described above (arrivals.FUN,
 #' departures.FUN, infection.FUN, recovery.FUN and prevalence.FUN) to the correct .net
-#' function based on variables passed to \code{\link{param.net}} (e.g. num.g2, denoting
+#' function based on variables passed to `\link{param.net}` (e.g. num.g2, denoting
 #' population size of mode two, would select the two-mode variants of the aformentioned
 #' modules). Two-mode modules are denoted by a .bip affix (e.g., recovery.net.bip)
 #'

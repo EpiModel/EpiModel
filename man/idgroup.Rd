@@ -7,7 +7,7 @@
 idgroup(nw, ids)
 }
 \arguments{
-\item{nw}{Object of class \code{network} or \code{networkDynamic}.}
+\item{nw}{Object of class `network` or `networkDynamic`.}
 
 \item{ids}{Vector of ID numbers for which the group number
 should be returned.}

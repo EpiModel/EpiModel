@@ -7,15 +7,15 @@
 saveout.icm(dat, s, out = NULL)
 }
 \arguments{
-\item{dat}{Master object in \code{icm} simulations.}
+\item{dat}{Master object in `icm` simulations.}
 
 \item{s}{Current run number.}
 
 \item{out}{Out list passed back in for updating at runs 2+.}
 }
 \description{
-This function transfers the data from the master \code{all}
-             object to the output \code{out} object at the end of each
-             simulation in \code{\link{icm}}.
+This function transfers the data from the master `all`
+             object to the output `out` object at the end of each
+             simulation in `\link{icm}`.
 }
 \keyword{internal}

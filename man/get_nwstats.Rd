@@ -7,19 +7,19 @@
 get_nwstats(x, sim, network = 1)
 }
 \arguments{
-\item{x}{An \code{EpiModel} object of class \code{\link{netsim}} or
-\code{\link{netdx}}.}
+\item{x}{An `EpiModel` object of class `\link{netsim}` or
+`\link{netdx}`.}
 
 \item{sim}{A vector of simulation numbers from the extracted object}
 
-\item{network}{Network number, for \code{netsim} objects with multiple
-overlapping networks (advanced use, and not applicable to \code{netdx}
+\item{network}{Network number, for `netsim` objects with multiple
+overlapping networks (advanced use, and not applicable to `netdx`
 objects).}
 }
 \description{
 Extracts a data frame of network statistics from a network
-             epidemic model simulated with \code{netsim} or a network diagnostics
-             object simulated with \code{netdx}.
+             epidemic model simulated with `netsim` or a network diagnostics
+             object simulated with `netdx`.
 }
 \examples{
 # Two-group Bernoulli random graph TERGM

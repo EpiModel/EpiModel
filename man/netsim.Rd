@@ -7,36 +7,36 @@
 netsim(x, param, init, control)
 }
 \arguments{
-\item{x}{Fitted network model object, as an object of class \code{netest}.
+\item{x}{Fitted network model object, as an object of class `netest`.
 Alternatively, if restarting a previous simulation, may be an object of
-class \code{netsim}.}
+class `netsim`.}
 
-\item{param}{Model parameters, as an object of class \code{param.net}.}
+\item{param}{Model parameters, as an object of class `param.net`.}
 
-\item{init}{Initial conditions, as an object of class \code{init.net}.}
+\item{init}{Initial conditions, as an object of class `init.net`.}
 
 \item{control}{Control settings, as an object of class
-\code{control.net}.}
+`control.net`.}
 }
 \value{
-A list of class \code{netsim} with the following elements:
+A list of class `netsim` with the following elements:
 \itemize{
  \item \strong{param:} the epidemic parameters passed into the model through
-       \code{param}, with additional parameters added as necessary.
+       `param`, with additional parameters added as necessary.
  \item \strong{control:} the control settings passed into the model through
-       \code{control}, with additional controls added as necessary.
+       `control`, with additional controls added as necessary.
  \item \strong{epi:} a list of data frames, one for each epidemiological
        output from the model. Outputs for base models always include the
        size of each compartment, as well as flows in, out of, and between
        compartments.
- \item \strong{stats:} a list containing two sublists, \code{nwstats} for any
-       network statistics saved in the simulation, and \code{transmat} for
+ \item \strong{stats:} a list containing two sublists, `nwstats` for any
+       network statistics saved in the simulation, and `transmat` for
        the transmission matrix saved in the simulation. See
-       \code{\link{control.net}} and the Tutorial for further details.
- \item \strong{network:} a list of \code{networkDynamic} objects,
+       `\link{control.net}` and the Tutorial for further details.
+ \item \strong{network:} a list of `networkDynamic` objects,
         one for each model simulation.
 }
-If \code{control$raw_output == TRUE}: A list of the raw (pre-processed) nestsim
+If `control$raw_output == TRUE`: A list of the raw (pre-processed) nestsim
 dat objects, for use in simulation continuation.
 }
 \description{
@@ -53,7 +53,7 @@ description of these models, along with examples, is found in the
 \href{http://statnet.github.io/tut/BasicNet.html}{Basic Network Models}
 tutorial.
 
-The \code{netsim} function performs modeling of both the base model types
+The `netsim` function performs modeling of both the base model types
 and original models. Base model types include one-mode and two-group models
 with disease types for Susceptible-Infected (SI), Susceptible-Infected-Recovered
 (SIR), and Susceptible-Infected-Susceptible (SIS).
@@ -63,8 +63,8 @@ either take the place of existing modules (for example, disease recovery), or
 supplement the set of existing processes with a new one contained in a new
 module. This functionality is documented in the
 \href{http://statnet.github.io/tut/NewNet.html}{Solving New Network Models}
-tutorial. The list of modules within \code{netsim} available for modification
-is listed in \code{\link{modules.net}}.
+tutorial. The list of modules within `netsim` available for modification
+is listed in `\link{modules.net}`.
 }
 \examples{
 \dontrun{
@@ -123,8 +123,8 @@ Modeling of Infectious Disease over Networks. Journal of Statistical Software.
 2018; 84(8): 1-47.
 }
 \seealso{
-Extract the model results with \code{\link{as.data.frame.netsim}}.
-         Summarize the time-specific model results with \code{\link{summary.netsim}}.
-         Plot the model results with \code{\link{plot.netsim}}.
+Extract the model results with `\link{as.data.frame.netsim}`.
+         Summarize the time-specific model results with `\link{summary.netsim}`.
+         Plot the model results with `\link{plot.netsim}`.
 }
 \keyword{model}

@@ -42,28 +42,28 @@ mod_SIS_2g_op(t, t0, parms)
 }
 \arguments{
 \item{t}{Time vector, passed into model function internally through
-\code{\link{dcm}} via the control settings in \code{\link{control.dcm}}.}
+`\link{dcm}` via the control settings in `\link{control.dcm}`.}
 
 \item{t0}{Initial conditions for model, passed into model function internally
-through \code{\link{dcm}} via the initial conditions in
-\code{\link{init.dcm}}.}
+through `\link{dcm}` via the initial conditions in
+`\link{init.dcm}`.}
 
 \item{parms}{Model parameters, passed into model function internally through
-\code{\link{dcm}} via the parameter settings in \code{\link{param.dcm}}.}
+`\link{dcm}` via the parameter settings in `\link{param.dcm}`.}
 }
 \description{
 These functions parameterize the base deterministic
-             compartmental models solved using the \code{dcm} function.
+             compartmental models solved using the `dcm` function.
 }
 \details{
 This help page shows the names of all the base deterministic compartmental
 model functions supported in EpiModel. Base models are those already
 programmed interally within the software. The model functions may be printed
 to see their internal structure, either directly on the console or by using
-the \code{print.mod} argument in \code{\link{control.dcm}}.
+the `print.mod` argument in `\link{control.dcm}`.
 
 The naming convention for the models listed here follows the format:
-\code{mod_<disease type>_<number of groups>_<vital dynamics>}. The supported
+`mod_<disease type>_<number of groups>_<vital dynamics>`. The supported
 disease types are SI, SIS, and SIR; the number of groups are 1 or 2; and the
 vital dynamic options are closed (fixed population composition) or open (with
 arrivals and departures).
