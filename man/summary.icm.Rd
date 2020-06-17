@@ -7,7 +7,7 @@
 \method{summary}{icm}(object, at, digits = 3, ...)
 }
 \arguments{
-\item{object}{An `EpiModel` object of class `icm`.}
+\item{object}{An \code{EpiModel} object of class \code{icm}.}
 
 \item{at}{Time step for model statistics.}
 
@@ -16,11 +16,11 @@
 \item{...}{Additional summary function arguments.}
 }
 \description{
-Extracts and prints model statistics simulated with `icm`.
+Extracts and prints model statistics simulated with \code{icm}.
 }
 \details{
 Summary statistics for the main epidemiological outcomes (state and transition
-size and prevalence) from an `icm` model. Time-specific summary measures
+size and prevalence) from an \code{icm} model. Time-specific summary measures
 are provided, so it is necessary to input a time of interest.
 }
 \examples{
@@ -35,6 +35,6 @@ summary(mod, at = 50)
 
 }
 \seealso{
-`\link{icm}`
+\code{\link{icm}}
 }
 \keyword{extract}

@@ -21,9 +21,9 @@ control.icm(
 )
 }
 \arguments{
-\item{type}{Disease type to be modeled, with the choice of `"SI"` for
-Susceptible-Infected diseases, `"SIR"` for
-Susceptible-Infected-Recovered diseases, and `"SIS"` for
+\item{type}{Disease type to be modeled, with the choice of \code{"SI"} for
+Susceptible-Infected diseases, \code{"SIR"} for
+Susceptible-Infected-Recovered diseases, and \code{"SIS"} for
 Susceptible-Infected-Susceptible diseases.}
 
 \item{nsteps}{Number of time steps to solve the model over. This must be a
@@ -32,49 +32,49 @@ positive integer.}
 \item{nsims}{Number of simulations to run.}
 
 \item{initialize.FUN}{Module to initialize the model at the outset, with the
-default function of `\link{initialize.icm}`.}
+default function of \code{\link{initialize.icm}}.}
 
 \item{infection.FUN}{Module to simulate disease infection, with the default
-function of `\link{infection.icm}`.}
+function of \code{\link{infection.icm}}.}
 
 \item{recovery.FUN}{Module to simulate disease recovery, with the default
-function of `\link{recovery.icm}`.}
+function of \code{\link{recovery.icm}}.}
 
 \item{departures.FUN}{Module to simulate departures or exits, with the default
-function of `\link{departures.icm}`.}
+function of \code{\link{departures.icm}}.}
 
 \item{arrivals.FUN}{Module to simulate arrivals or entries, with the default
-function of `\link{arrivals.icm}`.}
+function of \code{\link{arrivals.icm}}.}
 
 \item{prevalence.FUN}{Module to calculate disease prevalence at each time step,
-with the default function of `\link{prevalence.icm}`.}
+with the default function of \code{\link{prevalence.icm}}.}
 
-\item{verbose}{If `TRUE`, print model progress to the console.}
+\item{verbose}{If \code{TRUE}, print model progress to the console.}
 
 \item{verbose.int}{Time step interval for printing progress to console, where
 0 (the default) prints completion status of entire simulation and
-positive integer `x` prints progress after each `x` time
+positive integer \code{x} prints progress after each \code{x} time
 steps.}
 
-\item{skip.check}{If `TRUE`, skips the default error checking for the
+\item{skip.check}{If \code{TRUE}, skips the default error checking for the
 structure and consistency of the parameter values, initial conditions,
 and control settings before running base epidemic models. Setting
-this to `FALSE` is recommended when running models with new modules
+this to \code{FALSE} is recommended when running models with new modules
 specified.}
 
 \item{...}{Additional control settings passed to model.}
 }
 \description{
 Sets the controls for stochastic individual contact models
-             simulated with `\link{icm}`.
+             simulated with \code{\link{icm}}.
 }
 \details{
-`control.icm` sets the required control settings for any stochastic
-individual contact model solved with the `\link{icm}` function. Controls
+\code{control.icm} sets the required control settings for any stochastic
+individual contact model solved with the \code{\link{icm}} function. Controls
 are required for both base model types and when passing original process
 modules. For an overview of control settings for base ICM class models,
 consult the \href{http://statnet.github.io/tut/BasicICMs.html}{Basic ICMs}
-tutorial. For all base models, the `type` argument is a necessary
+tutorial. For all base models, the \code{type} argument is a necessary
 parameter and it has no default.
 }
 \section{New Modules}{
@@ -82,18 +82,18 @@ parameter and it has no default.
 Base ICM models use a set of module functions that specify
 how the individual agents in the population are subjected to infection, recovery,
 demographics, and other processes. Core modules are those listed in the
-`.FUN` arguments. For each module, there is a default function used in
+\code{.FUN} arguments. For each module, there is a default function used in
 the simulation. The default infection module, for example, is contained in
-the `\link{infection.icm}` function.
+the \code{\link{infection.icm}} function.
 
 For original models, one may substitute replacement module functions for any of
 the default functions. New modules may be added to the workflow at each time
-step by passing a module function via the `...` argument.
+step by passing a module function via the \code{...} argument.
 }
 
 \seealso{
-Use `\link{param.icm}` to specify model parameters and
-         `\link{init.icm}` to specify the initial conditions. Run the
-         parameterized model with `\link{icm}`.
+Use \code{\link{param.icm}} to specify model parameters and
+         \code{\link{init.icm}} to specify the initial conditions. Run the
+         parameterized model with \code{\link{icm}}.
 }
 \keyword{parameterization}

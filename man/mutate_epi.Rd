@@ -7,15 +7,15 @@
 mutate_epi(x, ...)
 }
 \arguments{
-\item{x}{An `EpiModel` object of class `dcm`, `icm`, or
-`netsim`.}
+\item{x}{An \code{EpiModel} object of class \code{dcm}, \code{icm}, or
+\code{netsim}.}
 
 \item{...}{Name-value pairs of expressions (see examples below).}
 }
 \description{
-Inspired by `dplyr::mutate`, `mutate_epi` adds new
+Inspired by \code{dplyr::mutate}, \code{mutate_epi} adds new
              variables to the epidemiological and related variables within
-             simulated model objects of any class in `EpiModel`.
+             simulated model objects of any class in \code{EpiModel}.
 }
 \examples{
 # DCM example

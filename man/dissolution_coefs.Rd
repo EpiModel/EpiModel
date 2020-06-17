@@ -8,7 +8,7 @@ dissolution_coefs(dissolution, duration, d.rate = 0)
 }
 \arguments{
 \item{dissolution}{Right-hand sided STERGM dissolution formula
-(see `\link{netest}`). See below for list of supported dissolution
+(see \code{\link{netest}}). See below for list of supported dissolution
 models.}
 
 \item{duration}{A vector of mean edge durations in arbitrary time units.}
@@ -17,7 +17,7 @@ models.}
 rate that applies to the entire population.}
 }
 \value{
-A list of class `disscoef` with the following elements:
+A list of class \code{disscoef} with the following elements:
 \itemize{
  \item \strong{dissolution:} right-hand sided STERGM dissolution formula
         passed in the function call.
@@ -25,18 +25,18 @@ A list of class `disscoef` with the following elements:
  \item \strong{coef.crude:} mean durations transformed into logit
        coefficients.
  \item \strong{coef.adj:} crude coefficients adjusted for the risk of
-       departure on edge persistence, if the `d.rate` argument is supplied.
+       departure on edge persistence, if the \code{d.rate} argument is supplied.
  \item \strong{d.rate:} the departure rate.
 }
 }
 \description{
 Calculates dissolution coefficients, given a dissolution model
              and average edge duration, to pass as offsets to an ERGM/STERGM
-             model fit in `netest`.
+             model fit in \code{netest}.
 }
 \details{
 This function performs two calculations for dissolution coefficients
-used in a network model estimated with `\link{netest}`:
+used in a network model estimated with \code{\link{netest}}:
 \enumerate{
  \item \strong{Transformation:} the mean duration of edges in a network are
        mathematically transformed to logit coefficients.
@@ -47,21 +47,21 @@ used in a network model estimated with `\link{netest}`:
 }
 
 The current dissolution models supported by this function and in network
-model estimation in `\link{netest}` are as follows:
+model estimation in \code{\link{netest}} are as follows:
 \itemize{
- \item `~offset(edges)`: a homogeneous dissolution model in which the
+ \item \code{~offset(edges)}: a homogeneous dissolution model in which the
         edge duration is the same for all partnerships. This requires
         specifying one duration value.
- \item `~offset(edges) + offset(nodematch("<attr>"))`: a heterogeneous
+ \item \code{~offset(edges) + offset(nodematch("<attr>"))}: a heterogeneous
         model in which the edge duration varies by whether the nodes in the
         dyad have similar values of a specified attribute. The duration vector
         should now contain two values: the first is the mean edge duration of
         non-matched dyads, and the second is the duration of the matched dyads.
- \item `~offset(edges) + offset(nodemix("<attr>"))`: a heterogenous model
+ \item \code{~offset(edges) + offset(nodemix("<attr>"))}: a heterogenous model
         that extends the nodematch model to include non-binary attributes for
         homophily. The duration vector should first contain the base value,
         then the values for every other possible combination in the term.
- \item `~offset(edges) + offset(nodefactor("<attr>"))`: a heterogenous
+ \item \code{~offset(edges) + offset(nodefactor("<attr>"))}: a heterogenous
         model in which the edge duration varies by a specified attribute. The
         duration vector should first contain the base value, then the values
         for every other value of that attribute in the term.

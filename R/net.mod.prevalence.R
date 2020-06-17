@@ -4,12 +4,12 @@
 #' @description Provides all active model state sizes from the network at the
 #'              specified time step, output to a list of vectors.
 #'
-#' @param dat Master list object containing a `networkDynamic` object and other
-#'        initialization information passed from `\link{netsim}`.
+#' @param dat Master list object containing a \code{networkDynamic} object and other
+#'        initialization information passed from \code{\link{netsim}}.
 #' @param at Current time step.
 #'
 #' @details
-#' This network utility is used during the `\link{netsim}` simulation
+#' This network utility is used during the \code{\link{netsim}} simulation
 #' process to efficiently query the current size of each state or compartment
 #' in the model at any given timestep. For a two-group network, the current state
 #' size for each group and overall is provided.
@@ -88,12 +88,12 @@ prevalence.net <- function(dat, at) {
 #' @description Provides all active model state sizes from the network at the
 #'              specified time step, output to a list of vectors.
 #'
-#' @param dat Master list object containing a `networkDynamic` object and other
-#'        initialization information passed from `\link{netsim}`.
+#' @param dat Master list object containing a \code{networkDynamic} object and other
+#'        initialization information passed from \code{\link{netsim}}.
 #' @param at Current time step.
 #'
 #' @details
-#' This network utility is used during the `\link{netsim}` simulation
+#' This network utility is used during the \code{\link{netsim}} simulation
 #' process to efficiently query the current  state size for each mode and overall.
 #'
 #' @export

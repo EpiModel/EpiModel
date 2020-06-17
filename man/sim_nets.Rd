@@ -7,19 +7,19 @@
 sim_nets(x, nw, nsteps, control)
 }
 \arguments{
-\item{x}{An `EpiModel` object of class `\link{netest}`.}
+\item{x}{An \code{EpiModel} object of class \code{\link{netest}}.}
 
-\item{nw}{A `networkDynamic` object.}
+\item{nw}{A \code{networkDynamic} object.}
 
 \item{nsteps}{Number of time steps to simulate the network over.}
 
-\item{control}{An `EpiModel` object of class `\link{control.net}`.}
+\item{control}{An \code{EpiModel} object of class \code{\link{control.net}}.}
 
 \item{nsims}{Number of independent network simulations.}
 }
 \description{
 This function simulates a dynamic network over one or multiple
-             time steps, to be used in `\link{netsim}` models.
+             time steps, to be used in \code{\link{netsim}} models.
 }
 \keyword{internal}
 \keyword{netUtils}

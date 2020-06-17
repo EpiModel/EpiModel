@@ -9,11 +9,11 @@ resim_nets(dat, at)
 \arguments{
 \item{at}{Current time step.}
 
-\item{x}{A master object passed through `\link{netsim}`.}
+\item{x}{A master object passed through \code{\link{netsim}}.}
 }
 \description{
 This function resimulates the dynamic network in stochastic
-             network models simulated in `\link{netsim}` with dependence
+             network models simulated in \code{\link{netsim}} with dependence
              between the epidemic and demographic processes and the network
              structure.
 }

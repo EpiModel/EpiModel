@@ -7,17 +7,17 @@
 arrivals.2g.net(dat, at)
 }
 \arguments{
-\item{dat}{Master list object containing a `networkDynamic` object and other
-initialization information passed from `\link{netsim}`.}
+\item{dat}{Master list object containing a \code{networkDynamic} object and other
+initialization information passed from \code{\link{netsim}}.}
 
 \item{at}{Current time step.}
 }
 \description{
 This function simulates new arrivals into the network
-  for use in `\link{netsim}` simulations.
+  for use in \code{\link{netsim}} simulations.
 }
 \seealso{
-`\link{netsim}`
+\code{\link{netsim}}
 }
 \keyword{internal}
 \keyword{netMod}

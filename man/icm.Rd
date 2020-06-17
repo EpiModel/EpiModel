@@ -7,20 +7,20 @@
 icm(param, init, control)
 }
 \arguments{
-\item{param}{Model parameters, as an object of class `\link{param.icm}`.}
+\item{param}{Model parameters, as an object of class \code{\link{param.icm}}.}
 
-\item{init}{Initial conditions, as an object of class `\link{init.icm}`.}
+\item{init}{Initial conditions, as an object of class \code{\link{init.icm}}.}
 
 \item{control}{Control settings, as an object of class
-`\link{control.icm}`.}
+\code{\link{control.icm}}.}
 }
 \value{
-A list of class `icm` with the following elements:
+A list of class \code{icm} with the following elements:
 \itemize{
  \item \strong{param:} the epidemic parameters passed into the model through
-       `param`, with additional parameters added as necessary.
+       \code{param}, with additional parameters added as necessary.
  \item \strong{control:} the control settings passed into the model through
-       `control`, with additional controls added as necessary.
+       \code{control}, with additional controls added as necessary.
  \item \strong{epi:} a list of data frames, one for each epidemiological
        output from the model. Outputs for base models always include the
        size of each compartment, as well as flows in, out of, and between
@@ -40,7 +40,7 @@ infection, recovery, and demographics. A detailed description of these models
 may be found in the \href{http://statnet.github.io/tut/BasicICMs.html}{Basic
 ICMs} tutorial.
 
-The `icm` function performs  modeling of both the base model types
+The \code{icm} function performs  modeling of both the base model types
 and original models. Base model types include one-group and two-group
 models with disease types for Susceptible-Infected (SI),
 Susceptible-Infected-Recovered (SIR), and Susceptible-Infected-Susceptible (SIS).
@@ -90,9 +90,9 @@ plot(mod4)
 
 }
 \seealso{
-Extract the model results with `\link{as.data.frame.icm}`.
-Summarize the time-specific model results with `\link{summary.icm}`.
-Plot the model results with `\link{plot.icm}`. Plot a compartment flow
-diagram with `\link{comp_plot}`.
+Extract the model results with \code{\link{as.data.frame.icm}}.
+Summarize the time-specific model results with \code{\link{summary.icm}}.
+Plot the model results with \code{\link{plot.icm}}. Plot a compartment flow
+diagram with \code{\link{comp_plot}}.
 }
 \keyword{model}

@@ -18,9 +18,9 @@ control.dcm(
 )
 }
 \arguments{
-\item{type}{Disease type to be modeled, with the choice of `"SI"` for
-Susceptible-Infected diseases, `"SIR"` for
-Susceptible-Infected-Recovered diseases, and `"SIS"` for
+\item{type}{Disease type to be modeled, with the choice of \code{"SI"} for
+Susceptible-Infected diseases, \code{"SIR"} for
+Susceptible-Infected-Recovered diseases, and \code{"SIS"} for
 Susceptible-Infected-Susceptible diseases.}
 
 \item{nsteps}{Number of time steps to solve the model over or vector of times
@@ -32,55 +32,55 @@ solutions for fractional time steps may be obtained by setting this to a
 number between 0 and 1.}
 
 \item{odemethod}{Ordinary differential equation (ODE) integration method, with
-the default of the "Runge-Kutta 4" method (see `\link{ode}` for
+the default of the "Runge-Kutta 4" method (see \code{\link{ode}} for
 other options).}
 
-\item{dede}{If `TRUE`, use the delayed differential equation solver,
+\item{dede}{If \code{TRUE}, use the delayed differential equation solver,
 which allows for time-lagged variables.}
 
 \item{new.mod}{If not running an base model type, a function with a new
 model to be simulated (see details).}
 
-\item{sens.param}{If `TRUE`, evaluate arguments in parameters with length
+\item{sens.param}{If \code{TRUE}, evaluate arguments in parameters with length
 greater than 1 as sensitivity analyses, with one model run per value of
-the parameter. If `FALSE`, one model will be run with parameters
+the parameter. If \code{FALSE}, one model will be run with parameters
 of arbitrary length.}
 
-\item{print.mod}{If `TRUE`, print the model form to the console.}
+\item{print.mod}{If \code{TRUE}, print the model form to the console.}
 
-\item{verbose}{If `TRUE`, print model progress to the console.}
+\item{verbose}{If \code{TRUE}, print model progress to the console.}
 
 \item{...}{additional control settings passed to model.}
 }
 \description{
 Sets the controls for deterministic compartmental models
-             simulated with `\link{dcm}`.
+             simulated with \code{\link{dcm}}.
 }
 \details{
-`control.dcm` sets the required control settings for any deterministic
-compartmental models solved with the `\link{dcm}` function. Controls are
+\code{control.dcm} sets the required control settings for any deterministic
+compartmental models solved with the \code{\link{dcm}} function. Controls are
 required for both base model types and original models. For an overview of
 control settings for base DCM class models, consult the
 \href{http://statnet.github.io/tut/BasicDCMs.html}{Basic DCMs} tutorial.
-For all base models, the `type` argument is a necessary parameter
+For all base models, the \code{type} argument is a necessary parameter
 and it has no default.
 }
 \section{New Model Functions}{
 
 The form of the model function for base models may be displayed with the
-`print.mod` argument set to `TRUE`. In this case, the model will not
+\code{print.mod} argument set to \code{TRUE}. In this case, the model will not
 be run. These model forms may be used as templates to write original model
 functions.
 
-These new models may be input and solved with `\link{dcm}` using the
-`new.mod` argument, which requires as input a model function. Details and
+These new models may be input and solved with \code{\link{dcm}} using the
+\code{new.mod} argument, which requires as input a model function. Details and
 examples are found in the \href{http://statnet.github.io/tut/NewDCMs.html}{Solving
 New DCMs} tutorial.
 }
 
 \seealso{
-Use `\link{param.dcm}` to specify model parameters and
-         `\link{init.dcm}` to specify the initial conditions. Run the
-         parameterized model with `\link{dcm}`.
+Use \code{\link{param.dcm}} to specify model parameters and
+         \code{\link{init.dcm}} to specify the initial conditions. Run the
+         parameterized model with \code{\link{dcm}}.
 }
 \keyword{parameterization}

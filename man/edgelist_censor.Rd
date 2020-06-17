@@ -8,13 +8,13 @@ edgelist_censor(el)
 }
 \arguments{
 \item{el}{Timed edgelist with start and end times extracted from a
-`networkDynamic` object using the `as.data.frame.networkDynamic`
+\code{networkDynamic} object using the \code{as.data.frame.networkDynamic}
 function.}
 }
 \description{
 Outputs a table of the number and percent of edges that are
              left-censored, right-censored, both-censored, or uncensored for a
-             `networkDynamic` object.
+             \code{networkDynamic} object.
 }
 \details{
 Given a STERGM simulation over a specified number of time steps, the edges

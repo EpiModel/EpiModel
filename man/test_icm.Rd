@@ -7,7 +7,7 @@
 test_icm(x)
 }
 \arguments{
-\item{x}{An object of class `icm`.}
+\item{x}{An object of class \code{icm}.}
 }
 \description{
 Tests whether the model output from an individual contact model

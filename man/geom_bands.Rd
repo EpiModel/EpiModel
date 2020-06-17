@@ -7,7 +7,7 @@
 geom_bands(mapping, lower = 0.25, upper = 0.75, alpha = 0.25, ...)
 }
 \arguments{
-\item{mapping}{standard aesthetic mapping `aes()` input for ggplot2.}
+\item{mapping}{standard aesthetic mapping \code{aes()} input for ggplot2.}
 
 \item{lower}{Lower quantile for the time series.}
 
@@ -15,14 +15,14 @@ geom_bands(mapping, lower = 0.25, upper = 0.75, alpha = 0.25, ...)
 
 \item{alpha}{Transparency of the ribbon fill.}
 
-\item{...}{Additional arguments passed to `stat_summary`.}
+\item{...}{Additional arguments passed to \code{stat_summary}.}
 }
 \description{
 Plots quantile bands given a data.frame with stochastic model
-             results from `icm` or `netsim`.
+             results from \code{icm} or \code{netsim}.
 }
 \details{
-This is a wrapper around `ggplot::stat_summary` with a ribbon geom as
+This is a wrapper around \code{ggplot::stat_summary} with a ribbon geom as
 aesthetic output.
 }
 \examples{

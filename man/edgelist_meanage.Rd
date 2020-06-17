@@ -7,24 +7,24 @@
 edgelist_meanage(x, el)
 }
 \arguments{
-\item{x}{An `EpiModel` object of class `\link{netest}`.}
+\item{x}{An \code{EpiModel} object of class \code{\link{netest}}.}
 
-\item{el}{If not passing `x`, a timed edgelist from a `networkDynamic`
-object extracted with the `as.data.frame.networkDynamic` function.}
+\item{el}{If not passing \code{x}, a timed edgelist from a \code{networkDynamic}
+object extracted with the \code{as.data.frame.networkDynamic} function.}
 }
 \description{
 Outputs a vector of mean ages of edges at a series of timesteps
 }
 \details{
 This function calculates the mean partnership age at each time step over
-a dynamic network simulation from `\link{netest}`. These objects
+a dynamic network simulation from \code{\link{netest}}. These objects
 contain the network, edgelist, and dissolution objects needed for the
 calculation. Alternatively, one may pass in these objects separately if
-`netest` was not used, or statistics were not run requested after
+\code{netest} was not used, or statistics were not run requested after
 the estimation.
 
 Currently, the calculations are limited to those dissolution formulas with a single
-homogenous dissolution (`~offset(edges)`). This functionality will be
+homogenous dissolution (\code{~offset(edges)}). This functionality will be
 expanded in future releases.
 }
 \examples{

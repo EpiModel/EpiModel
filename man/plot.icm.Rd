@@ -31,21 +31,21 @@
 )
 }
 \arguments{
-\item{x}{An `EpiModel` model object of class `netsim`.}
+\item{x}{An \code{EpiModel} model object of class \code{netsim}.}
 
-\item{y}{Output compartments or flows from `netsim` object to plot.}
+\item{y}{Output compartments or flows from \code{netsim} object to plot.}
 
-\item{popfrac}{If `TRUE`, plot prevalence of values rather than numbers
+\item{popfrac}{If \code{TRUE}, plot prevalence of values rather than numbers
 (see details).}
 
-\item{sim.lines}{If `TRUE`, plot individual simulation lines. Default is
+\item{sim.lines}{If \code{TRUE}, plot individual simulation lines. Default is
 to plot lines for one-group models but not for two-group models.}
 
-\item{sims}{If `type="epi"` or `"formation"`, a vector of
-simulation numbers to plot. If `type="network"`, a single
-simulation number for network plot, or else `"min"` to plot the
-simulation number with the lowest disease prevalence, `"max"` for
-the simulation with the highest disease prevalence, or `"mean"`
+\item{sims}{If \code{type="epi"} or \code{"formation"}, a vector of
+simulation numbers to plot. If \code{type="network"}, a single
+simulation number for network plot, or else \code{"min"} to plot the
+simulation number with the lowest disease prevalence, \code{"max"} for
+the simulation with the highest disease prevalence, or \code{"mean"}
 for the simulation with the prevalance closest to the mean across
 simulations at the specified time step.}
 
@@ -54,11 +54,11 @@ simulations at the specified time step.}
 \item{sim.lwd}{Line width for simulation lines.}
 
 \item{sim.alpha}{Transparency level for simulation lines, where 0 = transparent
-and 1 = opaque (see `\link{transco}`).}
+and 1 = opaque (see \code{\link{transco}}).}
 
-\item{mean.line}{If `TRUE`, plot mean of simulations across time.}
+\item{mean.line}{If \code{TRUE}, plot mean of simulations across time.}
 
-\item{mean.smooth}{If `TRUE`, use a lowess smoother on the mean line.}
+\item{mean.smooth}{If \code{TRUE}, use a lowess smoother on the mean line.}
 
 \item{mean.col}{Vector of any standard R color format for mean lines.}
 
@@ -67,34 +67,34 @@ and 1 = opaque (see `\link{transco}`).}
 \item{mean.lty}{Line type for mean lines.}
 
 \item{qnts}{If numeric, plot polygon of simulation quantiles based on the
-range implied by the argument (see details). If `FALSE`, suppress
+range implied by the argument (see details). If \code{FALSE}, suppress
 polygon from plot.}
 
 \item{qnts.col}{Vector of any standard R color format for polygons.}
 
 \item{qnts.alpha}{Transparency level for quantile polygons, where 0 =
-transparent and 1 = opaque (see `\link{transco}`).}
+transparent and 1 = opaque (see \code{\link{transco}}).}
 
-\item{qnts.smooth}{If `TRUE`, use a lowess smoother on quantile polygons.}
+\item{qnts.smooth}{If \code{TRUE}, use a lowess smoother on quantile polygons.}
 
-\item{legend}{If `TRUE`, plot default legend.}
+\item{legend}{If \code{TRUE}, plot default legend.}
 
 \item{leg.cex}{Legend scale size.}
 
-\item{axs}{Plot axis type (see `\link{par}` for details), with default
-to `"r"`.}
+\item{axs}{Plot axis type (see \code{\link{par}} for details), with default
+to \code{"r"}.}
 
-\item{grid}{If `TRUE`, a grid is added to the background of plot
-(see `\link{grid}` for details), with default of nx by ny.}
+\item{grid}{If \code{TRUE}, a grid is added to the background of plot
+(see \code{\link{grid}} for details), with default of nx by ny.}
 
-\item{add}{If `TRUE`, new plot window is not called and lines are added to
+\item{add}{If \code{TRUE}, new plot window is not called and lines are added to
 existing plot window.}
 
 \item{...}{additional arguments to pass.}
 }
 \description{
 Plots epidemiological data from a stochastic individual contact
-             model simulated with `icm`.
+             model simulated with \code{icm}.
 }
 \examples{
 ## Example 1: Plotting multiple compartment values from SIR model
@@ -122,6 +122,6 @@ plot(mod2, y = "si.flow", qnts.smooth = FALSE, qnts = 1)
 
 }
 \seealso{
-`\link{icm}`
+\code{\link{icm}}
 }
 \keyword{plot}

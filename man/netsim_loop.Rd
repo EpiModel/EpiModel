@@ -7,13 +7,13 @@
 netsim_loop(x, param, init, control, s)
 }
 \arguments{
-\item{x}{An `EpiModel` object of class `\link{netest}`.}
+\item{x}{An \code{EpiModel} object of class \code{\link{netest}}.}
 
-\item{param}{An `EpiModel` object of class `\link{param.net}`.}
+\item{param}{An \code{EpiModel} object of class \code{\link{param.net}}.}
 
-\item{init}{An `EpiModel` object of class `\link{init.net}`.}
+\item{init}{An \code{EpiModel} object of class \code{\link{init.net}}.}
 
-\item{control}{An `EpiModel` object of class `\link{control.net}`.}
+\item{control}{An \code{EpiModel} object of class \code{\link{control.net}}.}
 
 \item{s}{Simulation number, used for restarting dependent simulations.}
 }

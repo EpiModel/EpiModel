@@ -1,14 +1,14 @@
 
 #' @title Initialization: netsim Module
 #'
-#' @description This function initializes the master `dat` object on which
+#' @description This function initializes the master \code{dat} object on which
 #'              data are stored, simulates the initial state of the network, and
 #'              simulates disease status and other attributes.
 #'
-#' @param x An `EpiModel` object of class `\link{netest}`.
-#' @param param An `EpiModel` object of class `\link{param.net}`.
-#' @param init An `EpiModel` object of class `\link{init.net}`.
-#' @param control An `EpiModel` object of class `\link{control.net}`.
+#' @param x An \code{EpiModel} object of class \code{\link{netest}}.
+#' @param param An \code{EpiModel} object of class \code{\link{param.net}}.
+#' @param init An \code{EpiModel} object of class \code{\link{init.net}}.
+#' @param control An \code{EpiModel} object of class \code{\link{control.net}}.
 #' @param s Simulation number, used for restarting dependent simulations.
 #'
 #' @export
@@ -107,8 +107,8 @@ initialize.net <- function(x, param, init, control, s) {
 #' @description This function sets the initial disease status on the
 #'              network given the specified initial conditions.
 #'
-#' @param dat Master list object containing a `networkDynamic` object and other
-#'        initialization information passed from `\link{netsim}`.
+#' @param dat Master list object containing a \code{networkDynamic} object and other
+#'        initialization information passed from \code{\link{netsim}}.
 #'
 #' @details
 #' This internal function sets, either randomly or deterministically, the nodes
@@ -118,12 +118,12 @@ initialize.net <- function(x, param, init, control, s) {
 #' random draws from a binomial distribution or as the exact number specified. In
 #' either case, the specific nodes infected are a random sample from the network.
 #' In contrast, a set of specific nodes may be infected by passing the vector to
-#' `\link{netsim}`.
+#' \code{\link{netsim}}.
 #'
 #' This module sets the time of infection for those nodes set infected
 #' at the starting time of network simulations, \eqn{t_1}. For vital
 #' dynamics models, the infection time for those nodes is a random draw from an
-#' exponential distribution with the rate parameter defined by the `di.rate`
+#' exponential distribution with the rate parameter defined by the \code{di.rate}
 #' argument. For models without vital dynamics, the infection time is a random
 #' draw from a uniform distribution of integers with a minimum of 1 and a maximum
 #' of the number of time steps in the model. In both cases, to set the infection
@@ -131,7 +131,7 @@ initialize.net <- function(x, param, init, control, s) {
 #' allow for possible infection times up until step 2, when the disease simulation
 #' time loop starts.
 #'
-#' @seealso This is an initialization module for `\link{netsim}`.
+#' @seealso This is an initialization module for \code{\link{netsim}}.
 #'
 #' @export
 #' @keywords netMod internal

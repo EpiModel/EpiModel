@@ -2,7 +2,7 @@
 % Please edit documentation in R/net.utils.R
 \name{color_tea}
 \alias{color_tea}
-\title{Creates a TEA Variable for Infection Status for `ndtv` Animations}
+\title{Creates a TEA Variable for Infection Status for \code{ndtv} Animations}
 \usage{
 color_tea(
   nd,
@@ -18,7 +18,7 @@ color_tea(
 )
 }
 \arguments{
-\item{nd}{An object of class `networkDynamic`.}
+\item{nd}{An object of class \code{networkDynamic}.}
 
 \item{old.var}{Old TEA variable name.}
 
@@ -28,7 +28,7 @@ color_tea(
 
 \item{old.rec}{Status value for recovered in old TEA variable.}
 
-\item{new.var}{New TEA variable name to be stored in `networkDynamic`
+\item{new.var}{New TEA variable name to be stored in \code{networkDynamic}
 object.}
 
 \item{new.sus}{Status value for susceptible in new TEA variable.}
@@ -41,31 +41,31 @@ object.}
 }
 \description{
 Creates a new color-named temporally-extended attribute (TEA)
-             variable in a `networkDynamic` object containing a disease
+             variable in a \code{networkDynamic} object containing a disease
              status TEA in numeric format.
 }
 \details{
-The `ndtv` package (\url{https://cran.r-project.org/package=ndtv}) produces
+The \code{ndtv} package (\url{https://cran.r-project.org/package=ndtv}) produces
 animated visuals for dynamic networks with evolving edge structures and nodal
-attributes. Nodal attribute dynamics in `ndtv` movies require a temporally
+attributes. Nodal attribute dynamics in \code{ndtv} movies require a temporally
 extended attribute (TEA) containing a standard R color for each node at each
-time step. By default, the `EpiModel` package uses TEAs to store disease
-status history in network model simulations run in `\link{netsim}`. But,
-that status TEA is in numeric format (0, 1, 2). The `color_tea` function
+time step. By default, the \code{EpiModel} package uses TEAs to store disease
+status history in network model simulations run in \code{\link{netsim}}. But,
+that status TEA is in numeric format (0, 1, 2). The \code{color_tea} function
 transforms those numeric values of that disease status TEA into a TEA with
-color values in order to visualize status changes in `ndtv`.
+color values in order to visualize status changes in \code{ndtv}.
 
-The convention in `\link{plot.netsim}` is to color the susceptible
+The convention in \code{\link{plot.netsim}} is to color the susceptible
 nodes as blue, infected nodes as red, and recovered nodes as green. Alternate
-colors may be specified using the `new.sus`, `new.inf`, and
-`new.rec` parameters, respectively.
+colors may be specified using the \code{new.sus}, \code{new.inf}, and
+\code{new.rec} parameters, respectively.
 
-Using the `color_tea` function with a `netsim` object requires that
-TEAs for disease status be used and that the `networkDynamic` object be
-saved in the output: `tergmListe` must be  set to `FALSE` in
-`\link{control.net}`.
+Using the \code{color_tea} function with a \code{netsim} object requires that
+TEAs for disease status be used and that the \code{networkDynamic} object be
+saved in the output: \code{tergmListe} must be  set to \code{FALSE} in
+\code{\link{control.net}}.
 }
 \seealso{
-`\link{netsim}` and the `ndtv` package documentation.
+\code{\link{netsim}} and the \code{ndtv} package documentation.
 }
 \keyword{colorUtils}

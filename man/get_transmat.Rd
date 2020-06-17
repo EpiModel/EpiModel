@@ -11,7 +11,7 @@ is.transmat(x)
 get_transmat(x, sim = 1)
 }
 \arguments{
-\item{x}{An `EpiModel` object of class `\link{netsim}`.}
+\item{x}{An \code{EpiModel} object of class \code{\link{netsim}}.}
 
 \item{sim}{Simulation number of extracted network.}
 }

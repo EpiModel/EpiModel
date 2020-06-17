@@ -7,15 +7,15 @@
 copy_datattr_to_nwattr(dat)
 }
 \arguments{
-\item{dat}{Master data object passed through `netsim` simulations.}
+\item{dat}{Master data object passed through \code{netsim} simulations.}
 }
 \description{
 Copies the vertex attributes stored on the master attr list on
              dat to the network object on dat.
 }
 \seealso{
-`\link{get_formula_term_attr}`, `\link{get_attr_prop}`,
-         `\link{auto_update_attr}`, and `\link{copy_nwattr_to_datattr}`.
+\code{\link{get_formula_term_attr}}, \code{\link{get_attr_prop}},
+         \code{\link{auto_update_attr}}, and \code{\link{copy_nwattr_to_datattr}}.
 }
 \keyword{internal}
 \keyword{netUtils}

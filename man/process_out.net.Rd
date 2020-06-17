@@ -7,30 +7,30 @@
 process_out.net(dat_list)
 }
 \arguments{
-\item{dat_list}{A list of Master objects in `netsim` simulations.}
+\item{dat_list}{A list of Master objects in \code{netsim} simulations.}
 }
 \value{
-A list of class `netsim` with the following elements:
+A list of class \code{netsim} with the following elements:
 \itemize{
  \item \strong{param:} the epidemic parameters passed into the model through
-       `param`, with additional parameters added as necessary.
+       \code{param}, with additional parameters added as necessary.
  \item \strong{control:} the control settings passed into the model through
-       `control`, with additional controls added as necessary.
+       \code{control}, with additional controls added as necessary.
  \item \strong{epi:} a list of data frames, one for each epidemiological
        output from the model. Outputs for base models always include the
        size of each compartment, as well as flows in, out of, and between
        compartments.
- \item \strong{stats:} a list containing two sublists, `nwstats` for any
-       network statistics saved in the simulation, and `transmat` for
+ \item \strong{stats:} a list containing two sublists, \code{nwstats} for any
+       network statistics saved in the simulation, and \code{transmat} for
        the transmission matrix saved in the simulation. See
-       `\link{control.net}` and the Tutorial for further details.
- \item \strong{network:} a list of `networkDynamic` objects,
+       \code{\link{control.net}} and the Tutorial for further details.
+ \item \strong{network:} a list of \code{networkDynamic} objects,
         one for each model simulation.
 }
 }
 \description{
 This function transfers the data from a list of the master
-             `dat` objects to the output `out` object at the end of
-             all simulations in `\link{netsim}`.
+             \code{dat} objects to the output \code{out} object at the end of
+             all simulations in \code{\link{netsim}}.
 }
 \keyword{internal}

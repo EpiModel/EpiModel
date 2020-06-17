@@ -7,7 +7,7 @@
 get_nwparam(x, network = 1)
 }
 \arguments{
-\item{x}{Master data object used in `netsim` simulations.}
+\item{x}{Master data object used in \code{netsim} simulations.}
 
 \item{network}{Network number, for simulations with multiple networks
 representing the population.}

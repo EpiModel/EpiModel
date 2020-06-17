@@ -1,22 +1,22 @@
 
 #' @title Summary Model Statistics
 #'
-#' @description Extracts and prints model statistics solved with `dcm`.
+#' @description Extracts and prints model statistics solved with \code{dcm}.
 #'
-#' @param object An `EpiModel` object of class `dcm`.
+#' @param object An \code{EpiModel} object of class \code{dcm}.
 #' @param at Time step for model statistics.
-#' @param run Model run number, for `dcm` class models with multiple runs
+#' @param run Model run number, for \code{dcm} class models with multiple runs
 #'        (sensitivity analyses).
 #' @param digits Number of significant digits to print.
 #' @param ... Additional summary function arguments (not used).
 #'
 #' @details
 #' Summary statistics for the main epidemiological outcomes (state and transition
-#' size and prevalence) from an `dcm` model. Time-specific summary measures
+#' size and prevalence) from an \code{dcm} model. Time-specific summary measures
 #' are provided, so it is necessary to input a time of interest. For multiple-run
 #' models (sensitivity analyses), input a model run number. See examples below.
 #'
-#' @seealso `\link{dcm}`
+#' @seealso \code{\link{dcm}}
 #'
 #' @method summary dcm
 #' @keywords extract
@@ -209,19 +209,19 @@ summary.dcm <- function(object, at, run = 1, digits = 3, ...) {
 
 #' @title Summary Model Statistics
 #'
-#' @description Extracts and prints model statistics simulated with `icm`.
+#' @description Extracts and prints model statistics simulated with \code{icm}.
 #'
-#' @param object An `EpiModel` object of class `icm`.
+#' @param object An \code{EpiModel} object of class \code{icm}.
 #' @param at Time step for model statistics.
 #' @param digits Number of significant digits to print.
 #' @param ... Additional summary function arguments.
 #'
 #' @details
 #' Summary statistics for the main epidemiological outcomes (state and transition
-#' size and prevalence) from an `icm` model. Time-specific summary measures
+#' size and prevalence) from an \code{icm} model. Time-specific summary measures
 #' are provided, so it is necessary to input a time of interest.
 #'
-#' @seealso `\link{icm}`
+#' @seealso \code{\link{icm}}
 #'
 #' @method summary icm
 #' @keywords extract
@@ -436,19 +436,19 @@ summary.icm <- function(object, at, digits = 3, ...) {
 
 #' @title Summary Model Statistics
 #'
-#' @description Extracts and prints model statistics simulated with `netsim`.
+#' @description Extracts and prints model statistics simulated with \code{netsim}.
 #'
-#' @param object An `EpiModel` object of class `netsim`.
+#' @param object An \code{EpiModel} object of class \code{netsim}.
 #' @param at Time step for model statistics.
 #' @param digits Number of significant digits to print.
 #' @param ... Additional summary function arguments.
 #'
 #' @details
 #' Summary statistics for the main epidemiological outcomes (state and transition
-#' size and prevalence) from an `netsim` model. Time-specific summary
+#' size and prevalence) from an \code{netsim} model. Time-specific summary
 #' measures are provided, so it is necessary to input a time of interest.
 #'
-#' @seealso `\link{netsim}`
+#' @seealso \code{\link{netsim}}
 #'
 #' @method summary netsim
 #' @keywords extract
@@ -687,7 +687,7 @@ summary.netsim <- function(object, at, digits = 3, ...) {
 #'
 #' @description Prints the summary model fit statistics for an ERGM or STERGM fit.
 #'
-#' @param object An `EpiModel` object of class `netest`.
+#' @param object An \code{EpiModel} object of class \code{netest}.
 #' @param ... Additional summary function arguments.
 #'
 #' @method summary netest
@@ -695,8 +695,8 @@ summary.netsim <- function(object, at, digits = 3, ...) {
 #' @export
 #'
 #' @details
-#' This function is simply a wrapper function for `summary.ergm` and
-#' `summary.stergm`. Additionally, if the edges dissolution approximation
+#' This function is simply a wrapper function for \code{summary.ergm} and
+#' \code{summary.stergm}. Additionally, if the edges dissolution approximation
 #' was used to fit the temporal ERGM, then the dissolution coefficient information
 #' will be printed.
 #'

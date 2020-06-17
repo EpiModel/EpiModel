@@ -7,13 +7,13 @@
 InitErgmTerm.absdiffby(nw, arglist, ...)
 }
 \arguments{
-\item{nw}{An object of class `network`.}
+\item{nw}{An object of class \code{network}.}
 
-\item{arglist}{A list of arguments as specified in the `ergm.userterms`
+\item{arglist}{A list of arguments as specified in the \code{ergm.userterms}
 package framework.}
 
 \item{...}{Additional data passed into the function as specified in the
-`ergm.userterms` package framework.}
+\code{ergm.userterms} package framework.}
 }
 \description{
 This function defines and initialize the absdiffby ERGM term

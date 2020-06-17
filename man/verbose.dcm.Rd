@@ -7,8 +7,8 @@
 verbose.dcm(x, type, s = 1)
 }
 \arguments{
-\item{x}{If the `type` is "startup", then an object of class
-`control.icm`, otherwise the all master data object in `icm`
+\item{x}{If the \code{type} is "startup", then an object of class
+\code{control.icm}, otherwise the all master data object in \code{icm}
 simulations.}
 
 \item{type}{Progress type, either of "startup" for starting messages before
@@ -18,6 +18,6 @@ all simulations, or "progress" for time step specific messages.}
 }
 \description{
 This function prints progress from deterministic compartmental
-             models simulated with `dcm` to the console.
+             models simulated with \code{dcm} to the console.
 }
 \keyword{internal}

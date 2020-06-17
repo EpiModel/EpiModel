@@ -15,7 +15,7 @@ number of initial group 1 infected.}
 
 \item{r.num}{Number of initial recovered. For two-group models, this is the
 number of initial group 1 recovered. This parameter is only used for
-the `SIR` model type.}
+the \code{SIR} model type.}
 
 \item{s.num.g2}{Number of initial susceptible in group 2. This parameter is
 only used for two-group models.}
@@ -24,24 +24,24 @@ only used for two-group models.}
 used for two-group models.}
 
 \item{r.num.g2}{Number of initial recovered in group 2. This parameter is
-only used for two-group `SIR` models.}
+only used for two-group \code{SIR} models.}
 
 \item{...}{Additional initial conditions passed to model.}
 }
 \description{
 Sets the initial conditions for stochastic individual contact
-             models simulated with `icm`.
+             models simulated with \code{icm}.
 }
 \details{
-The initial conditions for a model solved with `\link{icm}` should be
-input into the `init.icm` function. This function handles initial
+The initial conditions for a model solved with \code{\link{icm}} should be
+input into the \code{init.icm} function. This function handles initial
 conditions for both base models and original models using new modules. For
 an overview of initial conditions for base ICM class models, consult the
 \href{http://statnet.github.io/tut/BasicICMs.html}{Basic ICMs} tutorial.
 }
 \seealso{
-Use `\link{param.icm}` to specify model parameters and
-         `\link{control.icm}` to specify the control settings. Run the
-         parameterized model with `\link{icm}`.
+Use \code{\link{param.icm}} to specify model parameters and
+         \code{\link{control.icm}} to specify the control settings. Run the
+         parameterized model with \code{\link{icm}}.
 }
 \keyword{parameterization}

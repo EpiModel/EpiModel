@@ -7,8 +7,8 @@
 prevalence.net(dat, at)
 }
 \arguments{
-\item{dat}{Master list object containing a `networkDynamic` object and other
-initialization information passed from `\link{netsim}`.}
+\item{dat}{Master list object containing a \code{networkDynamic} object and other
+initialization information passed from \code{\link{netsim}}.}
 
 \item{at}{Current time step.}
 }
@@ -17,7 +17,7 @@ Provides all active model state sizes from the network at the
              specified time step, output to a list of vectors.
 }
 \details{
-This network utility is used during the `\link{netsim}` simulation
+This network utility is used during the \code{\link{netsim}} simulation
 process to efficiently query the current size of each state or compartment
 in the model at any given timestep. For a two-group network, the current state
 size for each group and overall is provided.

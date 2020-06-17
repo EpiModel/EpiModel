@@ -7,21 +7,21 @@
 \method{as.data.frame}{netdx}(x, row.names = NULL, optional = FALSE, sim, ...)
 }
 \arguments{
-\item{x}{An `EpiModel` object of class `netdx`.}
+\item{x}{An \code{EpiModel} object of class \code{netdx}.}
 
-\item{row.names}{See `\link{as.data.frame.default}`.}
+\item{row.names}{See \code{\link{as.data.frame.default}}.}
 
-\item{optional}{See `\link{as.data.frame.default}`.}
+\item{optional}{See \code{\link{as.data.frame.default}}.}
 
 \item{sim}{The simulation number to output. If not specified, then data from
 all simulations will be output.}
 
-\item{...}{See `\link{as.data.frame.default}`.}
+\item{...}{See \code{\link{as.data.frame.default}}.}
 }
 \description{
 This function extracts timed edgelists for objects of class
-             `netdx` into a data frame using the generic
-             `as.data.frame` function.
+             \code{netdx} into a data frame using the generic
+             \code{as.data.frame} function.
 }
 \examples{
 # Initialize and parameterize the network model

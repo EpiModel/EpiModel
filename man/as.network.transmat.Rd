@@ -7,14 +7,14 @@
 \method{as.network}{transmat}(x, ...)
 }
 \arguments{
-\item{x}{an object of class `transmat` to be converted into a network
+\item{x}{an object of class \code{transmat} to be converted into a network
 object}
 
 \item{...}{unused}
 }
 \description{
 Converts the edges of the infection tree described in the
-             `\link{transmat}` object into a `\link{network}` object,
+             \code{\link{transmat}} object into a \code{\link{network}} object,
              copying in appropriate edge attributes for 'at', 'infDur', 'transProb',
              'actRate', and 'finalProb' and constructing a vertex attribute
              for 'at'.

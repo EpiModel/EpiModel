@@ -7,30 +7,30 @@
 \method{as.data.frame}{dcm}(x, row.names = NULL, optional = FALSE, run, ...)
 }
 \arguments{
-\item{x}{An `EpiModel` object of class `\link{dcm}`.}
+\item{x}{An \code{EpiModel} object of class \code{\link{dcm}}.}
 
-\item{row.names}{See `\link{as.data.frame.default}`.}
+\item{row.names}{See \code{\link{as.data.frame.default}}.}
 
-\item{optional}{See `\link{as.data.frame.default}`.}
+\item{optional}{See \code{\link{as.data.frame.default}}.}
 
 \item{run}{Run number for model; used for multiple-run sensitivity models. If
 not specified, will output data from all runs in a stacked data frame.}
 
-\item{...}{See `\link{as.data.frame.default}`.}
+\item{...}{See \code{\link{as.data.frame.default}}.}
 }
 \description{
 This function extracts a model run from an object of class
-             `dcm` into a data frame using the generic
-             `as.data.frame` function.
+             \code{dcm} into a data frame using the generic
+             \code{as.data.frame} function.
 }
 \details{
-Model output from `dcm` simulations are available as a data
+Model output from \code{dcm} simulations are available as a data
 frame with this helper function. The output data frame will include
 columns for time, the size of each compartment, the overall population
 size (the sum of compartment sizes), and the size of each flow.
 
 For models with multiple runs (i.e., varying parameters - see example below),
-the default with the `run` parameter not specified will output all runs
+the default with the \code{run} parameter not specified will output all runs
 in a single stacked data frame.
 }
 \examples{

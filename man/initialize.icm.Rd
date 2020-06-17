@@ -7,14 +7,14 @@
 initialize.icm(param, init, control)
 }
 \arguments{
-\item{param}{An `EpiModel` object of class `\link{param.icm}`.}
+\item{param}{An \code{EpiModel} object of class \code{\link{param.icm}}.}
 
-\item{init}{An `EpiModel` object of class `\link{init.icm}`.}
+\item{init}{An \code{EpiModel} object of class \code{\link{init.icm}}.}
 
-\item{control}{An `EpiModel` object of class `\link{control.icm}`.}
+\item{control}{An \code{EpiModel} object of class \code{\link{control.icm}}.}
 }
 \description{
-This function initializes the master `dat` object on which
+This function initializes the master \code{dat} object on which
              data are stored, and simulates disease status and other attributes.
 }
 \keyword{internal}

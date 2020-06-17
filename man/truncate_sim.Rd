@@ -7,7 +7,7 @@
 truncate_sim(x, at)
 }
 \arguments{
-\item{x}{Object of class `netsim` or `icm`.}
+\item{x}{Object of class \code{netsim} or \code{icm}.}
 
 \item{at}{Time step at which to left-truncate the time series.}
 }
@@ -17,8 +17,8 @@ Left-truncates a simulation epidemiological summary statistics and
 }
 \details{
 This function would be used when running a follow-up simulation from time steps
-`b` to `c` after a burnin period from time `a` to `b`,
-where the final time window of interest for data analysis is `b` to `c`
+\code{b} to \code{c} after a burnin period from time \code{a} to \code{b},
+where the final time window of interest for data analysis is \code{b} to \code{c}
 only.
 }
 \examples{

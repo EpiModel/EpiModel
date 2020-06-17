@@ -7,15 +7,15 @@
 update_dissolution(old.netest, new.coef.diss)
 }
 \arguments{
-\item{old.netest}{An object of class `netest`, from the `\link{netest}`
+\item{old.netest}{An object of class \code{netest}, from the \code{\link{netest}}
 function.}
 
-\item{new.coef.diss}{An object of class `disscoef`, from the
-`\link{dissolution_coefs}` function.}
+\item{new.coef.diss}{An object of class \code{disscoef}, from the
+\code{\link{dissolution_coefs}} function.}
 }
 \description{
 Adjusts the dissolution component of an dynamic ERGM fit using
-             the `netest` function with the edges dissolution approximation
+             the \code{netest} function with the edges dissolution approximation
              method.
 }
 \details{

@@ -7,19 +7,19 @@
 saveout.dcm(df, s, param, control, out = NULL)
 }
 \arguments{
-\item{df}{Master object in `\link{dcm}` simulations.}
+\item{df}{Master object in \code{\link{dcm}} simulations.}
 
 \item{s}{Current run number.}
 
-\item{param}{Param list set in `\link{param.dcm}`}
+\item{param}{Param list set in \code{\link{param.dcm}}}
 
-\item{control}{Control list set in `\link{control.dcm}`.}
+\item{control}{Control list set in \code{\link{control.dcm}}.}
 
 \item{out}{Out list passed back in for updating at runs 2+.}
 }
 \description{
-This function transfers the data from the master `df`
-             object to the output `out` object at the end of each
-             simulation in `\link{dcm}`.
+This function transfers the data from the master \code{df}
+             object to the output \code{out} object at the end of each
+             simulation in \code{\link{dcm}}.
 }
 \keyword{internal}

@@ -12,33 +12,33 @@ number of initial group 1 infected.}
 
 \item{r.num}{Number of initial recovered. For two-group models, this is the
 number of initial group 1 recovered. This parameter is only used for
-the `SIR` model type.}
+the \code{SIR} model type.}
 
 \item{i.num.g2}{Number of initial infected in group 2. This parameter is only
 used for two-group models.}
 
 \item{r.num.g2}{Number of initial recovered in group 2. This parameter is
-only used for two-group `SIR` models.}
+only used for two-group \code{SIR} models.}
 
 \item{status.vector}{A vector of length equal to the size of the input network,
 containing the status of each node. Setting status here overrides any
-inputs passed in the `.num` arguments.}
+inputs passed in the \code{.num} arguments.}
 
 \item{infTime.vector}{A vector of length equal to the size of the input network,
 containing the (historical) time of infection for each of those nodes
-with a current status of `"i"`. Can only be used if `status.vector`
-is used, and must contain `NA` values for any nodes whose status
-is not `"i"`.}
+with a current status of \code{"i"}. Can only be used if \code{status.vector}
+is used, and must contain \code{NA} values for any nodes whose status
+is not \code{"i"}.}
 
 \item{...}{Additional initial conditions passed to model.}
 }
 \description{
 Sets the initial conditions for stochastic network models
-             simulated with `netsim`.
+             simulated with \code{netsim}.
 }
 \details{
-The initial conditions for a model solved with `\link{netsim}` should be
-input into the `init.net` function. This function handles initial
+The initial conditions for a model solved with \code{\link{netsim}} should be
+input into the \code{init.net} function. This function handles initial
 conditions for both base models and new modules. For an overview of
 specifying initial conditions across a variety of base network models,
 consult the \href{http://statnet.github.io/tut/BasicNet.html}{Basic Network
@@ -55,8 +55,8 @@ init.net(status.vector = status, infTime.vector = infTime)
 
 }
 \seealso{
-Use `\link{param.net}` to specify model parameters and
-         `\link{control.net}` to specify the control settings. Run the
-         parameterized model with `\link{netsim}`.
+Use \code{\link{param.net}} to specify model parameters and
+         \code{\link{control.net}} to specify the control settings. Run the
+         parameterized model with \code{\link{netsim}}.
 }
 \keyword{parameterization}

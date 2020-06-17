@@ -1,12 +1,12 @@
 
 #' @title Initialization: icm Module
 #'
-#' @description This function initializes the master `dat` object on which
+#' @description This function initializes the master \code{dat} object on which
 #'              data are stored, and simulates disease status and other attributes.
 #'
-#' @param param An `EpiModel` object of class `\link{param.icm}`.
-#' @param init An `EpiModel` object of class `\link{init.icm}`.
-#' @param control An `EpiModel` object of class `\link{control.icm}`.
+#' @param param An \code{EpiModel} object of class \code{\link{param.icm}}.
+#' @param init An \code{EpiModel} object of class \code{\link{init.icm}}.
+#' @param control An \code{EpiModel} object of class \code{\link{control.icm}}.
 #'
 #' @export
 #' @keywords internal
@@ -53,7 +53,7 @@ initialize.icm <- function(param, init, control) {
 #'
 #' @param dat Master data list object.
 #'
-#' @seealso This is an initialization module for `\link{icm}`.
+#' @seealso This is an initialization module for \code{\link{icm}}.
 #'
 #' @export
 #' @keywords internal

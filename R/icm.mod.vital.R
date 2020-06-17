@@ -1,13 +1,13 @@
 
 #' @title Departure: icm Module
 #'
-#' @description This function simulates departure for use in `\link{icm}`
+#' @description This function simulates departure for use in \code{\link{icm}}
 #'              simulations.
 #'
 #' @param dat Master data list object.
 #' @param at Current time step.
 #'
-#' @seealso `\link{icm}`
+#' @seealso \code{\link{icm}}
 #'
 #' @export
 #' @keywords internal
@@ -93,13 +93,13 @@ departures.icm <- function(dat, at) {
 
 #' @title Arrivals: icm Module
 #'
-#' @description This function simulates arrival for use in `\link{icm}`
+#' @description This function simulates arrival for use in \code{\link{icm}}
 #'              simulations.
 #'
 #' @param dat Master data list object.
 #' @param at Current time step.
 #'
-#' @seealso `\link{icm}`
+#' @seealso \code{\link{icm}}
 #'
 #' @export
 #' @keywords internal
@@ -141,13 +141,13 @@ arrivals.icm <- function(dat, at) {
 
 #' @title Departure: bipartite icm Module
 #'
-#' @description This function simulates departure for use in `\link{icm}`
+#' @description This function simulates departure for use in \code{\link{icm}}
 #'              simulations.
 #'
 #' @param dat Master data list object.
 #' @param at Current time step.
 #'
-#' @seealso `\link{icm}`
+#' @seealso \code{\link{icm}}
 #'
 #' @export
 #' @keywords internal
@@ -252,13 +252,13 @@ departures.icm.bip <- function(dat, at) {
 
 #' @title Arrivals: bipartite icm Module
 #'
-#' @description This function simulates arrival for use in `\link{icm}`
+#' @description This function simulates arrival for use in \code{\link{icm}}
 #'              simulations.
 #'
 #' @param dat Master data list object.
 #' @param at Current time step.
 #'
-#' @seealso `\link{icm}`
+#' @seealso \code{\link{icm}}
 #'
 #' @export
 #' @keywords internal

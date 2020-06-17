@@ -37,23 +37,23 @@ exposure.}
 
 \item{inter.start}{Time step at which the intervention starts, between 1 and
 the number of time steps specified in the model. This will default to
-1 if the `inter.eff` is defined but this parameter is not.}
+1 if the \code{inter.eff} is defined but this parameter is not.}
 
 \item{act.rate}{Average number of transmissible acts per person per unit time.
 For two-group models, this is the number of acts per group 1 persons
 per unit time; a balance between the acts in groups 1 and 2 is necessary,
-and set using the `balance` parameter (see details).}
+and set using the \code{balance} parameter (see details).}
 
-\item{rec.rate}{Average rate of recovery with immunity (in `SIR` models)
-or re-susceptibility (in `SIS` models). The recovery rate is the
+\item{rec.rate}{Average rate of recovery with immunity (in \code{SIR} models)
+or re-susceptibility (in \code{SIS} models). The recovery rate is the
 reciprocal of the disease duration. For two-group models, this is the
 recovery rate for group 1 persons only. This parameter is only used for
-`SIR` and `SIS` models.}
+\code{SIR} and \code{SIS} models.}
 
 \item{a.rate}{Arrival or entry rate. For one-group models, the arrival rate is the
 rate of new arrivals per person per unit time. For two-group models, the
 arrival rate may be parameterized as a rate per group 1 person time (with
-group 1 persons representing females), and with the `a.rate.g2`
+group 1 persons representing females), and with the \code{a.rate.g2}
 rate set as described below.}
 
 \item{ds.rate}{Departure or exit rate for susceptible. For two-group models, it
@@ -64,7 +64,7 @@ the rate for the group 1 infected only.}
 
 \item{dr.rate}{Departure or exit rate for recovered. For two-group models, it is
 the rate for the group 1 recovered only. This parameter is only used for
-`SIR` models.}
+\code{SIR} models.}
 
 \item{inf.prob.g2}{Probability of infection per transmissible act
 between a susceptible group 2 person and an infected group 1 person.
@@ -72,15 +72,15 @@ It is the probability of infection to group 2 members.}
 
 \item{act.rate.g2}{Average number of transmissible acts per group 2 person per
 unit time; a balance between the acts in groups 1 and 2 is necessary,
-and set using the `balance` parameter (see details).}
+and set using the \code{balance} parameter (see details).}
 
-\item{rec.rate.g2}{Average rate of recovery with immunity (in `SIR` models)
-or re-susceptibility (in `SIS` models) for group 2 persons. This
-parameter is only used for two-group `SIR` and `SIS` models.}
+\item{rec.rate.g2}{Average rate of recovery with immunity (in \code{SIR} models)
+or re-susceptibility (in \code{SIS} models) for group 2 persons. This
+parameter is only used for two-group \code{SIR} and \code{SIS} models.}
 
 \item{a.rate.g2}{Arrival or entry rate for group 2. This may either be specified
 numerically as the rate of new arrivals per group 2 persons per unit time,
-or as `NA` in which case the group 1 rate, `a.rate`, governs
+or as \code{NA} in which case the group 1 rate, \code{a.rate}, governs
 the group 2 rate. The latter is used when, for example, the first group
 is conceptualized as female, and the female population size determines
 the arrival rate. Such arrivals are evenly allocated between the two groups.}
@@ -90,21 +90,21 @@ the arrival rate. Such arrivals are evenly allocated between the two groups.}
 \item{di.rate.g2}{Departure or exit rate for group 2 infected.}
 
 \item{dr.rate.g2}{Departure or exit rate for group 2 recovered. This parameter is
-only used for `SIR` model types.}
+only used for \code{SIR} model types.}
 
-\item{balance}{For two-group models, balance the `act.rate` to the rate
-set for group 1 (with `balance="g1"`) or group 2 (with
-`balance="g2"`). See details.}
+\item{balance}{For two-group models, balance the \code{act.rate} to the rate
+set for group 1 (with \code{balance="g1"}) or group 2 (with
+\code{balance="g2"}). See details.}
 
 \item{...}{Additional arguments passed to model.}
 }
 \description{
 Sets the epidemic parameters for deterministic compartmental
-             models simulated with `dcm`.
+             models simulated with \code{dcm}.
 }
 \details{
-`param.dcm` sets the epidemic parameters for deterministic compartmental
-models solved with the `\link{dcm}` function. The models may use the
+\code{param.dcm} sets the epidemic parameters for deterministic compartmental
+models solved with the \code{\link{dcm}} function. The models may use the
 base types, for which these parameters are used, or original model
 specifications for which these parameters may be used (but not necessarily).
 A detailed description of DCM parameterization for base models is found
@@ -113,11 +113,11 @@ in the
 
 For base models, the model specification will be selected as a function
 of the model parameters entered here and the control settings in
-`\link{control.dcm}`. One-group and two-group models are available, where
+\code{\link{control.dcm}}. One-group and two-group models are available, where
 the former assumes a homogenous mixing in the population and the latter
 assumes a purely heterogenous mixing between two distinct partitions in the
 population (e.g., men and women). Specifying any group two parameters (those
-with a `.g2`) implies the simulation of a two-group model. All the
+with a \code{.g2}) implies the simulation of a two-group model. All the
 parameters for a desired model type must be specified, even if they are zero.
 }
 \section{Act Balancing}{
@@ -127,7 +127,7 @@ and those for group 2 members must be maintained. With purely heterogenous
 mixing, the product of one group size and act rate must equal the product of
 the other group size and act rate: \eqn{N_1 \alpha_1 = N_2 \alpha_2}, where
 \eqn{N_i} is the group size and \eqn{\alpha_i} the group-specific act rates
-at time \eqn{t}. The `balance` parameter here specifies which group's
+at time \eqn{t}. The \code{balance} parameter here specifies which group's
 act rate should control the others with respect to balancing. See the
 \href{http://statnet.github.io/tut/BasicDCMs.html}{Basic DCMs} tutorial
 for further details.
@@ -135,7 +135,7 @@ for further details.
 
 \section{Sensitivity Analyses}{
 
-`dcm` has been designed to easily run DCM sensitivity analyses, where a
+\code{dcm} has been designed to easily run DCM sensitivity analyses, where a
 series of models varying one or more of the model parameters is run. This is
 possible by setting any parameter as a vector of length greater than one. See
 both the example below and the
@@ -148,15 +148,15 @@ To build original model specifications outside of the base models, start
 by consulting the \href{http://statnet.github.io/tut/NewDCMs.html}{Solving
 New DCMs with EpiModel} tutorial. Briefly, an original model may use either
 the existing model parameters named here, an original set of parameters, or
-a combination of both. The `...` argument allows the user to pass an
-arbitrary set of new model parameters into `param.dcm`. Whereas there are
+a combination of both. The \code{...} argument allows the user to pass an
+arbitrary set of new model parameters into \code{param.dcm}. Whereas there are
 strict checks for base models that the model parameters are valid,
 parameter validity is the user's responsibility with these original models.
 }
 
 \seealso{
-Use `\link{init.dcm}` to specify the initial conditions and
-         `\link{control.dcm}` to specify the control settings. Run the
-         parameterized model with `\link{dcm}`.
+Use \code{\link{init.dcm}} to specify the initial conditions and
+         \code{\link{control.dcm}} to specify the control settings. Run the
+         parameterized model with \code{\link{dcm}}.
 }
 \keyword{parameterization}

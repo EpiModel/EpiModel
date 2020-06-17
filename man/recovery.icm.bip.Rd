@@ -15,6 +15,6 @@ recovery.icm.bip(dat, at)
 This function simulates recovery from the infected state
              either to an distinct recovered state (SIR model type) or back
              to a susceptible state (SIS model type), for use in
-             `\link{icm}`.
+             \code{\link{icm}}.
 }
 \keyword{internal}

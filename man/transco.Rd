@@ -8,8 +8,8 @@ transco(col, alpha = 1, invisible = FALSE)
 }
 \arguments{
 \item{col}{Vector consisting of colors, of any of the three kinds of
-`R` color specifications (named, hexadecimal, or integer; see
-`\link{col2rgb}`).}
+\code{R} color specifications (named, hexadecimal, or integer; see
+\code{\link{col2rgb}}).}
 
 \item{alpha}{Vector of transparency levels, where 0 is transparent and 1
 is opaque.}
@@ -17,7 +17,7 @@ is opaque.}
 \item{invisible}{Supresses printing of the RGB color.}
 }
 \value{
-A vector of length equal to the input `col` vector or the `alpha`,
+A vector of length equal to the input \code{col} vector or the \code{alpha},
 vector, if one or the other is of length greater than 1, containing the
 transformed color values in hexidemical format.
 }
@@ -26,7 +26,7 @@ Returns an RGB transparent color from any standard R color.
 }
 \details{
 The purpose of this function is to facilitate color transparency, which is
-used widely in `EpiModel` plots. This is an internal function that is
+used widely in \code{EpiModel} plots. This is an internal function that is
 not ordinarily called by the end-user. This function allows that one of col
 or alpha may be of length greater than 1.
 }
@@ -58,7 +58,7 @@ plot(net, vertex.col = vcol, vertex.border = "grey70",
 
 }
 \seealso{
-`\link{rgb}`, `\link{col2rgb}`
+\code{\link{rgb}}, \code{\link{col2rgb}}
 }
 \keyword{colorUtils}
 \keyword{internal}

@@ -4,13 +4,13 @@
 #' @description Simulates stochastic network epidemic models for infectious
 #'              disease.
 #'
-#' @param x Fitted network model object, as an object of class `netest`.
+#' @param x Fitted network model object, as an object of class \code{netest}.
 #'        Alternatively, if restarting a previous simulation, may be an object of
-#'        class `netsim`.
-#' @param param Model parameters, as an object of class `param.net`.
-#' @param init Initial conditions, as an object of class `init.net`.
+#'        class \code{netsim}.
+#' @param param Model parameters, as an object of class \code{param.net}.
+#' @param init Initial conditions, as an object of class \code{init.net}.
 #' @param control Control settings, as an object of class
-#'        `control.net`.
+#'        \code{control.net}.
 #'
 #' @details
 #' Stochastic network models explicitly represent phenomena within and across edges
@@ -22,7 +22,7 @@
 #' \href{http://statnet.github.io/tut/BasicNet.html}{Basic Network Models}
 #' tutorial.
 #'
-#' The `netsim` function performs modeling of both the base model types
+#' The \code{netsim} function performs modeling of both the base model types
 #' and original models. Base model types include one-mode and two-group models
 #' with disease types for Susceptible-Infected (SI), Susceptible-Infected-Recovered
 #' (SIR), and Susceptible-Infected-Susceptible (SIS).
@@ -32,28 +32,28 @@
 #' supplement the set of existing processes with a new one contained in a new
 #' module. This functionality is documented in the
 #' \href{http://statnet.github.io/tut/NewNet.html}{Solving New Network Models}
-#' tutorial. The list of modules within `netsim` available for modification
-#' is listed in `\link{modules.net}`.
+#' tutorial. The list of modules within \code{netsim} available for modification
+#' is listed in \code{\link{modules.net}}.
 #'
 #' @return
-#' A list of class `netsim` with the following elements:
+#' A list of class \code{netsim} with the following elements:
 #' \itemize{
 #'  \item \strong{param:} the epidemic parameters passed into the model through
-#'        `param`, with additional parameters added as necessary.
+#'        \code{param}, with additional parameters added as necessary.
 #'  \item \strong{control:} the control settings passed into the model through
-#'        `control`, with additional controls added as necessary.
+#'        \code{control}, with additional controls added as necessary.
 #'  \item \strong{epi:} a list of data frames, one for each epidemiological
 #'        output from the model. Outputs for base models always include the
 #'        size of each compartment, as well as flows in, out of, and between
 #'        compartments.
-#'  \item \strong{stats:} a list containing two sublists, `nwstats` for any
-#'        network statistics saved in the simulation, and `transmat` for
+#'  \item \strong{stats:} a list containing two sublists, \code{nwstats} for any
+#'        network statistics saved in the simulation, and \code{transmat} for
 #'        the transmission matrix saved in the simulation. See
-#'        `\link{control.net}` and the Tutorial for further details.
-#'  \item \strong{network:} a list of `networkDynamic` objects,
+#'        \code{\link{control.net}} and the Tutorial for further details.
+#'  \item \strong{network:} a list of \code{networkDynamic} objects,
 #'         one for each model simulation.
 #' }
-#' If `control$raw_output == TRUE`: A list of the raw (pre-processed) nestsim
+#' If \code{control$raw_output == TRUE}: A list of the raw (pre-processed) nestsim
 #' dat objects, for use in simulation continuation.
 #'
 #' @references
@@ -61,9 +61,9 @@
 #' Modeling of Infectious Disease over Networks. Journal of Statistical Software.
 #' 2018; 84(8): 1-47.
 #'
-#' @seealso Extract the model results with `\link{as.data.frame.netsim}`.
-#'          Summarize the time-specific model results with `\link{summary.netsim}`.
-#'          Plot the model results with `\link{plot.netsim}`.
+#' @seealso Extract the model results with \code{\link{as.data.frame.netsim}}.
+#'          Summarize the time-specific model results with \code{\link{summary.netsim}}.
+#'          Plot the model results with \code{\link{plot.netsim}}.
 #'
 #' @keywords model
 #' @export

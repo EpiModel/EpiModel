@@ -7,13 +7,13 @@
 edges_correct(dat, at)
 }
 \arguments{
-\item{dat}{Master object in `netsim` simulations.}
+\item{dat}{Master object in \code{netsim} simulations.}
 
 \item{at}{Current time step.}
 }
 \description{
 Adjusts the edges coefficient in a dynamic network model
-             simulated in `\link{netsim}` to preserve the mean
+             simulated in \code{\link{netsim}} to preserve the mean
              degree of nodes in the network.
 }
 \keyword{internal}

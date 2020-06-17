@@ -1,12 +1,12 @@
 #' @title Departures: netsim Module
 #'
-#' @description This function simulates departure for use in `\link{netsim}`` simulations.
+#' @description This function simulates departure for use in \link{netsim} simulations.
 #'
-#' @param dat Master list object containing a `networkDynamic` object and other
-#'        initialization information passed from `\link{netsim}`.
+#' @param dat Master list object containing a \code{networkDynamic} object and other
+#'        initialization information passed from \code{\link{netsim}}.
 #' @param at Current time step.
 #'
-#' @seealso `\link{netsim}`
+#' @seealso \code{\link{netsim}}
 #'
 #' @export
 #' @keywords netMod internal
@@ -89,13 +89,13 @@ departures.net <- function(dat, at) {
 #' @title Arrivals: netsim Module
 #'
 #' @description This function simulates new arrivals into the network
-#'   for use in `\link{netsim}` simulations.
+#'   for use in \code{\link{netsim}} simulations.
 #'
-#' @param dat Master list object containing a `networkDynamic` object and other
-#'   initialization information passed from `\link{netsim}`.
+#' @param dat Master list object containing a \code{networkDynamic} object and other
+#'   initialization information passed from \code{\link{netsim}}.
 #' @param at Current time step.
 #'
-#' @seealso `\link{netsim}`
+#' @seealso \code{\link{netsim}}
 #'
 #' @export
 #' @keywords netMod internal
@@ -109,7 +109,7 @@ arrivals.net <- function(dat, at) {
 
   # Variables ---------------------------------------------------------------
   a.rate <- get_param(dat, "a.rate")
-  index <- at - 1
+  index <- at-1
   nOld <- get_epi(dat, "num", index)
   nArrivals <- 0
 
@@ -134,13 +134,13 @@ arrivals.net <- function(dat, at) {
 
 #' @title Departures: netsim Module
 #'
-#' @description This function simulates departure for use in `\link{netsim}`` simulations.
+#' @description This function simulates departure for use in \link{netsim} simulations.
 #'
-#' @param dat Master list object containing a `networkDynamic` object and other
-#'        initialization information passed from `\link{netsim}`.
+#' @param dat Master list object containing a \code{networkDynamic} object and other
+#'        initialization information passed from \code{\link{netsim}}.
 #' @param at Current time step.
 #'
-#' @seealso `\link{netsim}`
+#' @seealso \code{\link{netsim}}
 #'
 #' @export
 #' @keywords netMod internal
@@ -239,13 +239,13 @@ departures.2g.net <- function(dat, at) {
 #' @title Arrivals: netsim Module
 #'
 #' @description This function simulates new arrivals into the network
-#'   for use in `\link{netsim}` simulations.
+#'   for use in \code{\link{netsim}} simulations.
 #'
-#' @param dat Master list object containing a `networkDynamic` object and other
-#'   initialization information passed from `\link{netsim}`.
+#' @param dat Master list object containing a \code{networkDynamic} object and other
+#'   initialization information passed from \code{\link{netsim}}.
 #' @param at Current time step.
 #'
-#' @seealso `\link{netsim}`
+#' @seealso \code{\link{netsim}}
 #'
 #' @export
 #' @keywords netMod internal

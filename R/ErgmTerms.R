@@ -4,11 +4,11 @@
 #' @description This function defines and initialize the absdiffnodemix ERGM term
 #'              that allows for targeting age homophily by race.
 #'
-#' @param nw An object of class `network`.
-#' @param arglist A list of arguments as specified in the `ergm.userterms`
+#' @param nw An object of class \code{network}.
+#' @param arglist A list of arguments as specified in the \code{ergm.userterms}
 #'        package framework.
 #' @param ... Additional data passed into the function as specified in the
-#'        `ergm.userterms` package framework.
+#'        \code{ergm.userterms} package framework.
 #'
 #' @details
 #' This ERGM user term was written to allow for age-based homophily in partnership
@@ -66,11 +66,11 @@ InitErgmTerm.absdiffnodemix <- function(nw, arglist, ...) {
 #' @description This function defines and initialize the absdiffby ERGM term
 #'              that allows for targeting age homophily by sex.
 #'
-#' @param nw An object of class `network`.
-#' @param arglist A list of arguments as specified in the `ergm.userterms`
+#' @param nw An object of class \code{network}.
+#' @param arglist A list of arguments as specified in the \code{ergm.userterms}
 #'        package framework.
 #' @param ... Additional data passed into the function as specified in the
-#'        `ergm.userterms` package framework.
+#'        \code{ergm.userterms} package framework.
 #'
 #' @details
 #' This ERGM user term was written to allow for age-based homophily in partnership

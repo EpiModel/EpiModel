@@ -7,39 +7,39 @@
 discord_edgelist(dat, at, network = 1)
 }
 \arguments{
-\item{dat}{Master list object containing a `networkDynamic` object or
+\item{dat}{Master list object containing a \code{networkDynamic} object or
 edgelist (if tergmLite is used) and other initialization information
-passed from `\link{netsim}`.}
+passed from \code{\link{netsim}}.}
 
 \item{at}{Current time step.}
 
 \item{network}{In case of models with multiple networks, the network to pull
-the current edgelist from. Default of `network = 1`.}
+the current edgelist from. Default of \code{network = 1}.}
 }
 \value{
-This function returns a `data.frame` with the following columns:
+This function returns a \code{data.frame} with the following columns:
 \itemize{
  \item \strong{time:} time step queried
  \item \strong{sus:} ID number for the susceptible partner
  \item \strong{inf:} ID number for the infected partner
 }
-The output from this function is added to the transmission `data.frame`
-object that is requested as output in `netsim` simulations with
-the `save.trans=TRUE` argument.
+The output from this function is added to the transmission \code{data.frame}
+object that is requested as output in \code{netsim} simulations with
+the \code{save.trans=TRUE} argument.
 }
 \description{
-This function returns a `data.frame` with a discordant
+This function returns a \code{data.frame} with a discordant
              edgelist, defined as the set of edges in which the status of the
              two partners is one susceptible and one infected.
 }
 \details{
-This internal function works within the parent `\link{infection.net}` function
+This internal function works within the parent \code{\link{infection.net}} function
 to pull the current edgelist from the dynamic network object, look up the disease
 status of the head and tails on the edge, and subset the list to those edges
 with one susceptible and one infected node.
 }
 \seealso{
-`\link{netsim}`, `\link{infection.net}`
+\code{\link{netsim}}, \code{\link{infection.net}}
 }
 \keyword{internal}
 \keyword{netMod}

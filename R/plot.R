@@ -4,75 +4,75 @@
 #' @title Plot Data from a Deterministic Compartmental Epidemic Model
 #'
 #' @description Plots epidemiological data from a deterministic compartment
-#'              epidemic model solved with `dcm`.
+#'              epidemic model solved with \code{dcm}.
 #'
-#' @param x An `EpiModel` object of class `dcm`.
-#' @param y Output compartments or flows from `dcm` object to plot.
-#' @param popfrac If `TRUE`, plot prevalence of values rather than numbers
+#' @param x An \code{EpiModel} object of class \code{dcm}.
+#' @param y Output compartments or flows from \code{dcm} object to plot.
+#' @param popfrac If \code{TRUE}, plot prevalence of values rather than numbers
 #'        (see details).
 #' @param run Run number to plot, for models with multiple runs (default is run 1).
 #' @param col Color for lines, either specified as a single color in a standard
 #'        R color format, or alternatively as a color palette from
-#'        `\link{RColorBrewer}` (see details).
+#'        \code{\link{RColorBrewer}} (see details).
 #' @param lwd Line width for output lines.
 #' @param lty Line type for output lines.
 #' @param alpha Transparency level for lines, where 0 = transparent and 1 = opaque
-#'        (see `\link{transco}`).
+#'        (see \code{\link{transco}}).
 #' @param legend Type of legend to plot. Values are "n" for no legend, "full" for
 #'        full legend, and "lim" for limited legend (see details).
 #' @param leg.name Character string to use for legend, with the default
-#'        determined automatically based on the `y` input.
+#'        determined automatically based on the \code{y} input.
 #' @param leg.cex Legend scale size.
-#' @param axs Plot axis type (see `\link{par}` for details), with default
+#' @param axs Plot axis type (see \code{\link{par}} for details), with default
 #'        of "r".
-#' @param grid If `TRUE`, a grid is added to the background of plot
-#'        (see `\link{grid}` for details), with default of nx by ny.
-#' @param add If `TRUE`, new plot window is not called and lines are added to
+#' @param grid If \code{TRUE}, a grid is added to the background of plot
+#'        (see \code{\link{grid}} for details), with default of nx by ny.
+#' @param add If \code{TRUE}, new plot window is not called and lines are added to
 #'        existing plot window.
 #' @param ... Additional arguments to pass to main plot window (see
-#'        `\link{plot.default}`).
+#'        \code{\link{plot.default}}).
 #'
 #' @details
 #' This function plots epidemiological outcomes from a deterministic
-#' compartmental model solved with `\link{dcm}`. Depending on the number of
+#' compartmental model solved with \code{\link{dcm}}. Depending on the number of
 #' model runs (sensitivity analyses) and number of groups, the default plot is
 #' the fractional proportion of each compartment in the model over time. The
-#' specific compartments or flows to plot may be set using the `y` parameter,
+#' specific compartments or flows to plot may be set using the \code{y} parameter,
 #' and in multiple run models the specific run may also be specified.
 #'
-#' @section The `popfrac` Argument:
+#' @section The \code{popfrac} Argument:
 #' Compartment prevalences are the size of a compartment over some denominator.
-#' To plot the raw numbers from any compartment, use `popfrac=FALSE`; this
-#' is the default. The `popfrac` parameter calculates
+#' To plot the raw numbers from any compartment, use \code{popfrac=FALSE}; this
+#' is the default. The \code{popfrac} parameter calculates
 #' and plots the denominators of all specified compartments using these rules: 1)
 #' for one-group models, the prevalence of any compartment is the compartment size
 #' divided by the total population size; 2) for two-group models, the prevalence
 #' of any compartment is the compartment size divided by the group size.
 #'
 #' @section Color Palettes:
-#' Since `\link{dcm}` supports multiple run sensitivity models, plotting
+#' Since \code{\link{dcm}} supports multiple run sensitivity models, plotting
 #' the results of such models uses a complex color scheme for distinguishing runs.
-#' This is accomplished using the `\link{RColorBrewer}` color palettes,
+#' This is accomplished using the \code{\link{RColorBrewer}} color palettes,
 #' which include a range of linked colors using named palettes. For
-#' `plot.dcm`, one may either specify a brewer color palette listed in
-#' `\link{brewer.pal.info}`, or, alternatively, a vector of standard R colors
-#' (named, hexidecimal, or positive integers; see `\link{col2rgb}`).
+#' \code{plot.dcm}, one may either specify a brewer color palette listed in
+#' \code{\link{brewer.pal.info}}, or, alternatively, a vector of standard R colors
+#' (named, hexidecimal, or positive integers; see \code{\link{col2rgb}}).
 #'
 #' @section Plot Legends:
 #' There are three automatic legend types available, and the legend is
-#' added by default for plots. To turn off the legend, use `legend="n"`. To
+#' added by default for plots. To turn off the legend, use \code{legend="n"}. To
 #' plot a legend with values for every line in a sensitivity analysis, use
-#' `legend="full"`. With models with many runs, this may be visually
-#' overwhelming. In those cases, use `legend="lim"` to plot a legend limited
+#' \code{legend="full"}. With models with many runs, this may be visually
+#' overwhelming. In those cases, use \code{legend="lim"} to plot a legend limited
 #' to the highest and lowest values of the varying parameter in the model. In cases
 #' where the default legend names are not helpful, one may override those names
-#' with the `leg.name` argument.
+#' with the \code{leg.name} argument.
 #'
 #' @method plot dcm
 #' @export
 #'
 #' @keywords plot
-#' @seealso `\link{dcm}`, `\link{brewer.pal.info}`
+#' @seealso \code{\link{dcm}}, \code{\link{brewer.pal.info}}
 #'
 #' @examples
 #' # Deterministic SIR model with varying act rate
@@ -457,7 +457,7 @@ plot.dcm <- function(x, y, popfrac = FALSE, run, col, lwd, lty, alpha = 0.9,
 #' @title Plot Data from a Stochastic Individual Contact Epidemic Model
 #'
 #' @description Plots epidemiological data from a stochastic individual contact
-#'              model simulated with `icm`.
+#'              model simulated with \code{icm}.
 #'
 #' @inheritParams plot.netsim
 #'
@@ -465,7 +465,7 @@ plot.dcm <- function(x, y, popfrac = FALSE, run, col, lwd, lty, alpha = 0.9,
 #' @export
 #'
 #' @keywords plot
-#' @seealso `\link{icm}`
+#' @seealso \code{\link{icm}}
 #'
 #' @examples
 #' ## Example 1: Plotting multiple compartment values from SIR model
@@ -866,43 +866,43 @@ draw_means <- function(x, y, mean.smooth, mean.lwd,
 #' @title Plot Dynamic Network Model Diagnostics
 #'
 #' @description Plots dynamic network model diagnostics calculated in
-#'              `netdx`.
+#'              \code{netdx}.
 #'
-#' @param x An `EpiModel` object of class `netdx`.
-#' @param type Plot type, with options of `"formation"` for network
-#'        model formation statistics, `"duration"` for dissolution model
-#'        statistics for average edge duration, or `"dissolution"` for
+#' @param x An \code{EpiModel} object of class \code{netdx}.
+#' @param type Plot type, with options of \code{"formation"} for network
+#'        model formation statistics, \code{"duration"} for dissolution model
+#'        statistics for average edge duration, or \code{"dissolution"} for
 #'        dissolution model statistics for proportion of ties dissolved per time
 #'        step.
-#' @param method Plot method, with options of `"l"` for line plots and
-#'        `"b"` for boxplots.
+#' @param method Plot method, with options of \code{"l"} for line plots and
+#'        \code{"b"} for boxplots.
 #' @param stats Network statistics to plot, among those specified in the call
-#'        to `\link{netdx}`, with the default to plot all statistics
+#'        to \code{\link{netdx}}, with the default to plot all statistics
 #'        contained in the object.
 #' @inheritParams plot.netsim
 #'
 #' @details
-#' The plot function for `netdx` objects will generate plots of two types of
+#' The plot function for \code{netdx} objects will generate plots of two types of
 #' model diagnostic statistics that run as part of the diagnostic tools within
-#' that function. The `formation` plot shows the summary statistics
-#' requested in `nwstats.formula`, where the default includes those
+#' that function. The \code{formation} plot shows the summary statistics
+#' requested in \code{nwstats.formula}, where the default includes those
 #' statistics in the network model formation formula specified in the original
-#' call to `\link{netest}`.
+#' call to \code{\link{netest}}.
 #'
-#' The `duration` plot shows the average age of existing edges at each time
+#' The \code{duration} plot shows the average age of existing edges at each time
 #' step, up until the maximum time step requested. This is calculated with the
-#' `\link{edgelist_meanage}` function. The age is used as an estimator of
+#' \code{\link{edgelist_meanage}} function. The age is used as an estimator of
 #' the average duration of edges in the equilibrium state.
 #'
-#' The `dissolution` plot shows the proportion of the extant ties that are
+#' The \code{dissolution} plot shows the proportion of the extant ties that are
 #' dissolved at each time step, up until the maximum time step requested.
 #' Typically, the proportion of ties that are dissolved is the reciprocal of the
 #' mean relational duration. This plot thus contains similar information to that
 #' in the duration plot, but should reach its expected value more quickly, since
 #' it is not subject to censoring.
 #'
-#' The `plots.joined` argument will control whether the statistics
-#' in the `formation` plot are joined in one plot or plotted separately.
+#' The \code{plots.joined} argument will control whether the statistics
+#' in the \code{formation} plot are joined in one plot or plotted separately.
 #' The default is based on the number of network statistics requested. The
 #' layout of the separate plots within the larger plot window is also based on
 #' the number of statistics.
@@ -911,7 +911,7 @@ draw_means <- function(x, y, mean.smooth, mean.lwd,
 #' @export
 #'
 #' @keywords plot
-#' @seealso `\link{netdx}`
+#' @seealso \code{\link{netdx}}
 #'
 #' @examples
 #' \dontrun{
@@ -1869,134 +1869,134 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #' @title Plot Data from a Stochastic Network Epidemic Model
 #'
 #' @description Plots epidemiological and network data from a stochastic network
-#'              model simulated with `netsim`.
+#'              model simulated with \code{netsim}.
 #'
-#' @param x An `EpiModel` model object of class `netsim`.
-#' @param type Type of plot: `"epi"` for epidemic model results,
-#'        `"network"` for a static network plot (`plot.network`),
-#'        or `"formation"` for network formation statistics.
-#' @param y Output compartments or flows from `netsim` object to plot.
-#' @param popfrac If `TRUE`, plot prevalence of values rather than numbers
+#' @param x An \code{EpiModel} model object of class \code{netsim}.
+#' @param type Type of plot: \code{"epi"} for epidemic model results,
+#'        \code{"network"} for a static network plot (\code{plot.network}),
+#'        or \code{"formation"} for network formation statistics.
+#' @param y Output compartments or flows from \code{netsim} object to plot.
+#' @param popfrac If \code{TRUE}, plot prevalence of values rather than numbers
 #'        (see details).
-#' @param sim.lines If `TRUE`, plot individual simulation lines. Default is
+#' @param sim.lines If \code{TRUE}, plot individual simulation lines. Default is
 #'        to plot lines for one-group models but not for two-group models.
-#' @param sims If `type="epi"` or `"formation"`, a vector of
-#'        simulation numbers to plot. If `type="network"`, a single
-#'        simulation number for network plot, or else `"min"` to plot the
-#'        simulation number with the lowest disease prevalence, `"max"` for
-#'        the simulation with the highest disease prevalence, or `"mean"`
+#' @param sims If \code{type="epi"} or \code{"formation"}, a vector of
+#'        simulation numbers to plot. If \code{type="network"}, a single
+#'        simulation number for network plot, or else \code{"min"} to plot the
+#'        simulation number with the lowest disease prevalence, \code{"max"} for
+#'        the simulation with the highest disease prevalence, or \code{"mean"}
 #'        for the simulation with the prevalance closest to the mean across
 #'        simulations at the specified time step.
 #' @param sim.col Vector of any standard R color format for simulation lines.
 #' @param sim.lwd Line width for simulation lines.
 #' @param sim.alpha Transparency level for simulation lines, where 0 = transparent
-#'        and 1 = opaque (see `\link{transco}`).
-#' @param mean.line If `TRUE`, plot mean of simulations across time.
-#' @param mean.smooth If `TRUE`, use a lowess smoother on the mean line.
+#'        and 1 = opaque (see \code{\link{transco}}).
+#' @param mean.line If \code{TRUE}, plot mean of simulations across time.
+#' @param mean.smooth If \code{TRUE}, use a lowess smoother on the mean line.
 #' @param mean.col Vector of any standard R color format for mean lines.
 #' @param mean.lwd Line width for mean lines.
 #' @param mean.lty Line type for mean lines.
 #' @param qnts If numeric, plot polygon of simulation quantiles based on the
-#'        range implied by the argument (see details). If `FALSE`, suppress
+#'        range implied by the argument (see details). If \code{FALSE}, suppress
 #'        polygon from plot.
 #' @param qnts.col Vector of any standard R color format for polygons.
 #' @param qnts.alpha Transparency level for quantile polygons, where 0 =
-#'        transparent and 1 = opaque (see `\link{transco}`).
-#' @param qnts.smooth If `TRUE`, use a lowess smoother on quantile polygons.
-#' @param legend If `TRUE`, plot default legend.
+#'        transparent and 1 = opaque (see \code{\link{transco}}).
+#' @param qnts.smooth If \code{TRUE}, use a lowess smoother on quantile polygons.
+#' @param legend If \code{TRUE}, plot default legend.
 #' @param leg.cex Legend scale size.
-#' @param axs Plot axis type (see `\link{par}` for details), with default
-#'        to `"r"`.
-#' @param grid If `TRUE`, a grid is added to the background of plot
-#'        (see `\link{grid}` for details), with default of nx by ny.
-#' @param add If `TRUE`, new plot window is not called and lines are added to
+#' @param axs Plot axis type (see \code{\link{par}} for details), with default
+#'        to \code{"r"}.
+#' @param grid If \code{TRUE}, a grid is added to the background of plot
+#'        (see \code{\link{grid}} for details), with default of nx by ny.
+#' @param add If \code{TRUE}, new plot window is not called and lines are added to
 #'        existing plot window.
 #' @param network Network number, for simulations with multiple networks
 #'        representing the population.
-#' @param at If `type="network"`, time step for network graph.
-#' @param col.status If `TRUE` and `type="network"`, automatic disease
+#' @param at If \code{type="network"}, time step for network graph.
+#' @param col.status If \code{TRUE} and \code{type="network"}, automatic disease
 #'        status colors (blue = susceptible, red = infected, green = recovered).
-#' @param shp.bip If `type="network"` and a two-group simulation, shapes
+#' @param shp.bip If \code{type="network"} and a two-group simulation, shapes
 #'        for the group 2 vertices, with acceptable inputs of "triangle" and
 #'        "square". Group 1 vertices will be circles.
-#' @param stats If `type="formation"`, network statistics to plot, among
-#'        those specified in `nwstats.formula` of `\link{control.net}`,
+#' @param stats If \code{type="formation"}, network statistics to plot, among
+#'        those specified in \code{nwstats.formula} of \code{\link{control.net}},
 #'        with the default to plot all statistics.
-#' @param targ.line If `TRUE`, plot target or expected value line for
+#' @param targ.line If \code{TRUE}, plot target or expected value line for
 #'        the statistic of interest.
 #' @param targ.col Vector of standard R colors for target statistic lines, with
-#'        default colors based on `RColorBrewer` color palettes.
+#'        default colors based on \code{RColorBrewer} color palettes.
 #' @param targ.lwd Line width for the line showing the target statistic values.
 #' @param targ.lty Line type for the line showing the target statistic values.
-#' @param plots.joined If `TRUE` and `type="formation"`, combine all
+#' @param plots.joined If \code{TRUE} and \code{type="formation"}, combine all
 #'        target statistics in one plot, versus one plot per target statistic if
-#'        `FALSE`.
+#'        \code{FALSE}.
 #' @param ... additional arguments to pass.
 #'
 #' @details
 #' This plot function can produce three types of plots with a stochastic network
-#' model simulated through `\link{netsim}`:
+#' model simulated through \code{\link{netsim}}:
 #' \enumerate{
-#'  \item \strong{`type="epi"`}: epidemic model results (e.g., disease
+#'  \item \strong{\code{type="epi"}}: epidemic model results (e.g., disease
 #'        prevalence and incidence) may be plotted.
-#'  \item \strong{`type="network"`}: a static network plot will be generated.
+#'  \item \strong{\code{type="network"}}: a static network plot will be generated.
 #'        A static network plot of a dynamic network is a cross-sectional
 #'        extraction of that dynamic network at a specific time point. This
-#'        plotting function wraps the `\link{plot.network}` function in the
-#'        `network` package. Consult the help page for `plot.network`
+#'        plotting function wraps the \code{\link{plot.network}} function in the
+#'        \code{network} package. Consult the help page for \code{plot.network}
 #'        for all of the plotting parameters. In addition, four plotting parameters
-#'        specific to `netsim` plots are available: `sim`, `at`,
-#'        `col.status`, and `shp.bip`.
-#'  \item \strong{`type="formation"`}: summary network statistics related to
+#'        specific to \code{netsim} plots are available: \code{sim}, \code{at},
+#'        \code{col.status}, and \code{shp.bip}.
+#'  \item \strong{\code{type="formation"}}: summary network statistics related to
 #'        the network model formation are plotted. These plots are similar to the
-#'        formation plots for `netdx` objects. When running a `netsim`
-#'        simulation, one must specify there that `save.nwstats=TRUE`; the
+#'        formation plots for \code{netdx} objects. When running a \code{netsim}
+#'        simulation, one must specify there that \code{save.nwstats=TRUE}; the
 #'        plot here will then show the network statistics requested explicitly in
-#'        `nwstats.formula`, or will use the formation formula set in
-#'        `netest` otherwise.
+#'        \code{nwstats.formula}, or will use the formation formula set in
+#'        \code{netest} otherwise.
 #' }
 #'
 #' @details
-#' When `type="epi"`, this plotting function will extract the epidemiological
-#' output from a model object of class `netsim` and plot the time series
+#' When \code{type="epi"}, this plotting function will extract the epidemiological
+#' output from a model object of class \code{netsim} and plot the time series
 #' data of disease prevalence and other results. The summary statistics that the
 #' function calculates and plots are individual simulation lines, means of the
 #' individual simulation lines, and quantiles of those individual simulation lines.
-#' The mean line, toggled on with `mean.line=TRUE` is calculated as the row mean
+#' The mean line, toggled on with \code{mean.line=TRUE} is calculated as the row mean
 #' across simulations at each time step.
 #'
 #' Compartment prevalences are the size of a compartment over some denominator.
-#' To plot the raw numbers from any compartment, use `popfrac=FALSE`; this
-#' is the default for any plots of flows. The `popfrac` parameter calculates
+#' To plot the raw numbers from any compartment, use \code{popfrac=FALSE}; this
+#' is the default for any plots of flows. The \code{popfrac} parameter calculates
 #' and plots the denominators of all specified compartments using these rules: 1)
 #' for one-group models, the prevalence of any compartment is the compartment size
 #' divided by the total population size; 2) for two-group models, the prevalence
 #' of any compartment is the compartment size divided by the group population size.
 #' For any prevalences that are not automatically calculated, the
-#' `\link{mutate_epi}` may be used to add new variables to the `netsim`
+#' \code{\link{mutate_epi}} may be used to add new variables to the \code{netsim}
 #' object to plot or analyze.
 #'
 #' The quantiles show the range of outcome values within a certain specified
 #' quantile range. By default, the interquartile range is shown: that is the
-#' middle 50\% of the data. This is specified by `qnts=0.5`. To show the
-#' middle 95\% of the data, specify `qnts=0.95`. To toggle off the polygons
-#' where they are plotted by default, specify `qnts=FALSE`.
+#' middle 50\% of the data. This is specified by \code{qnts=0.5}. To show the
+#' middle 95\% of the data, specify \code{qnts=0.95}. To toggle off the polygons
+#' where they are plotted by default, specify \code{qnts=FALSE}.
 #'
-#' When `type="network"`, this function will plot cross sections of the simulated
+#' When \code{type="network"}, this function will plot cross sections of the simulated
 #' networks at specified time steps. Because it is only possible to plot one time
 #' step from one simulation at a time, it is necessary to enter these in the
-#' `at` and `sims` parameters. To aide in visualizing representative
+#' \code{at} and \code{sims} parameters. To aide in visualizing representative
 #' and extreme simulations at specific time steps, the sims parameter may be set
-#' to `"mean"` to plot the simulation in which the disease prevalence is
-#' closest to the average across all simulations, `"min"` to plot the simulation
-#' in which the prevalence is lowest, and `"max"` to plot the simulation
+#' to \code{"mean"} to plot the simulation in which the disease prevalence is
+#' closest to the average across all simulations, \code{"min"} to plot the simulation
+#' in which the prevalence is lowest, and \code{"max"} to plot the simulation
 #' in which the prevalence is highest.
 #'
 #' @method plot netsim
 #' @export
 #'
 #' @keywords plot
-#' @seealso `\link{plot.network}`, `\link{mutate_epi}`
+#' @seealso \code{\link{plot.network}}, \code{\link{mutate_epi}}
 #'
 #' @examples
 #' ## Independent SI Model
@@ -2936,21 +2936,21 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
 #'              models, stochastic individual contact models, and stochastic
 #'              network models.
 #'
-#' @param x An `EpiModel` object of class `dcm`, `icm`, or
-#'        `netsim`.
+#' @param x An \code{EpiModel} object of class \code{dcm}, \code{icm}, or
+#'        \code{netsim}.
 #' @param at Time step for model statistics.
 #' @param digits Number of significant digits to print.
 #' @param ... Additional arguments passed to plot (not currently used).
 #'
 #' @details
-#' The `comp_plot` function provides a visual summary of an epidemic model
-#' at a specific time step. The information contained in `comp_plot` is the
-#' same as in the `summary` functions for a model, but presented graphically
+#' The \code{comp_plot} function provides a visual summary of an epidemic model
+#' at a specific time step. The information contained in \code{comp_plot} is the
+#' same as in the \code{summary} functions for a model, but presented graphically
 #' as a compartment flow diagram.
 #'
-#' For `dcm` class plots, specify the model run number if the model contains
-#' multiple runs, as in a sensitivity analysis. For `icm` and `netsim`
-#' class plots, the `run` argument is not used; the plots show the means and
+#' For \code{dcm} class plots, specify the model run number if the model contains
+#' multiple runs, as in a sensitivity analysis. For \code{icm} and \code{netsim}
+#' class plots, the \code{run} argument is not used; the plots show the means and
 #' standard deviations across simulations at the specified time step.
 #'
 #' These plots are currently limited to one-group and one-mode models for each of
@@ -2985,7 +2985,7 @@ comp_plot <- function(x, at, digits, ...) {
 }
 
 
-#' @param run Model run number, for `dcm` class models with multiple runs
+#' @param run Model run number, for \code{dcm} class models with multiple runs
 #'        (sensitivity analyses).
 #' @method comp_plot dcm
 #' @rdname comp_plot
@@ -3178,16 +3178,16 @@ comp_plot.netsim <- function(x, at = 1, digits = 3, ...) {
 #' @title ggplot2 geom for Quantile Bands
 #'
 #' @description Plots quantile bands given a data.frame with stochastic model
-#'              results from `icm` or `netsim`.
+#'              results from \code{icm} or \code{netsim}.
 #'
-#' @param mapping standard aesthetic mapping `aes()` input for ggplot2.
+#' @param mapping standard aesthetic mapping \code{aes()} input for ggplot2.
 #' @param lower Lower quantile for the time series.
 #' @param upper Upper quantile for the time series.
 #' @param alpha Transparency of the ribbon fill.
-#' @param ... Additional arguments passed to `stat_summary`.
+#' @param ... Additional arguments passed to \code{stat_summary}.
 #'
 #' @details
-#' This is a wrapper around `ggplot::stat_summary` with a ribbon geom as
+#' This is a wrapper around \code{ggplot::stat_summary} with a ribbon geom as
 #' aesthetic output.
 #'
 #' @export

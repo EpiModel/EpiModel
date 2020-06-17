@@ -16,8 +16,8 @@ comp_plot(x, at, digits, ...)
 \method{comp_plot}{netsim}(x, at = 1, digits = 3, ...)
 }
 \arguments{
-\item{x}{An `EpiModel` object of class `dcm`, `icm`, or
-`netsim`.}
+\item{x}{An \code{EpiModel} object of class \code{dcm}, \code{icm}, or
+\code{netsim}.}
 
 \item{at}{Time step for model statistics.}
 
@@ -25,7 +25,7 @@ comp_plot(x, at, digits, ...)
 
 \item{...}{Additional arguments passed to plot (not currently used).}
 
-\item{run}{Model run number, for `dcm` class models with multiple runs
+\item{run}{Model run number, for \code{dcm} class models with multiple runs
 (sensitivity analyses).}
 }
 \description{
@@ -34,14 +34,14 @@ Plots a compartment flow diagram for deterministic compartmental
              network models.
 }
 \details{
-The `comp_plot` function provides a visual summary of an epidemic model
-at a specific time step. The information contained in `comp_plot` is the
-same as in the `summary` functions for a model, but presented graphically
+The \code{comp_plot} function provides a visual summary of an epidemic model
+at a specific time step. The information contained in \code{comp_plot} is the
+same as in the \code{summary} functions for a model, but presented graphically
 as a compartment flow diagram.
 
-For `dcm` class plots, specify the model run number if the model contains
-multiple runs, as in a sensitivity analysis. For `icm` and `netsim`
-class plots, the `run` argument is not used; the plots show the means and
+For \code{dcm} class plots, specify the model run number if the model contains
+multiple runs, as in a sensitivity analysis. For \code{icm} and \code{netsim}
+class plots, the \code{run} argument is not used; the plots show the means and
 standard deviations across simulations at the specified time step.
 
 These plots are currently limited to one-group and one-mode models for each of

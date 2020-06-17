@@ -7,15 +7,15 @@
 saveout.net(dat, s, out = NULL)
 }
 \arguments{
-\item{dat}{Master object in `netsim` simulations.}
+\item{dat}{Master object in \code{netsim} simulations.}
 
 \item{s}{Current simulation number.}
 
 \item{out}{Out list passed back in for updating at simulations 2+.}
 }
 \description{
-This function transfers the data from the master `dat`
-             object to the output `out` object at the end of each
-             simulation in `\link{netsim}`.
+This function transfers the data from the master \code{dat}
+             object to the output \code{out} object at the end of each
+             simulation in \code{\link{netsim}}.
 }
 \keyword{internal}

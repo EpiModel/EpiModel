@@ -7,20 +7,20 @@
 \method{merge}{icm}(x, y, ...)
 }
 \arguments{
-\item{x}{An `EpiModel` object of class `\link{icm}`.}
+\item{x}{An \code{EpiModel} object of class \code{\link{icm}}.}
 
-\item{y}{Another `EpiModel` object of class `\link{icm}`, with the
-identical model parameterization as `x`.}
+\item{y}{Another \code{EpiModel} object of class \code{\link{icm}}, with the
+identical model parameterization as \code{x}.}
 
 \item{...}{Additional merge arguments (not used).}
 }
 \description{
 Merges epidemiological data from two independent simulations of
-             stochastic individual contact models from `icm`.
+             stochastic individual contact models from \code{icm}.
 }
 \details{
 This merge function combines the results of two independent simulations of
-`\link{icm}` class models, simulated under separate function calls. The
+\code{\link{icm}} class models, simulated under separate function calls. The
 model parameterization between the two calls must be exactly the same, except
 for the number of simulations in each call. This allows for manual
 parallelization of model simulations.
