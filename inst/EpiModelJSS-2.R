@@ -26,8 +26,8 @@
 set.seed(12345)
 
 ## Initialize the network
-nw <- network::network.initialize(n = 1000, directed = FALSE)
-nw <- network::set.vertex.attribute(nw, "group", rep(1:2, each = 500))
+nw <- network_initialize(n = 1000)
+nw <- set_vertex_attribute(nw, "group", rep(1:2, each = 500))
 
 ## ERGM formation formula
 formation <- ~ edges + nodefactor("group") + nodematch("group") + concurrent
@@ -99,10 +99,8 @@ set.seed(12345)
 
 ## Initial the network
 num.m1 <- num.m2 <- 500
-#nw <- network::network.initialize(num.m1 + num.m2,
-#                                  bipartite = num.m1, directed = FALSE)
-nw <- network::network.initialize(n = num.m1 + num.m2, directed = FALSE)
-nw <- network::set.vertex.attribute(nw, "group", rep(1:2, each = 500))
+nw <- network_initialize(n = num.m1 + num.m2)
+nw <- set_vertex_attribute(nw, "group", rep(1:2, each = 500))
 ## Enter the sex-specific degree distributions
 deg.dist.m1 <- c(0.40, 0.55, 0.04, 0.01)
 deg.dist.m2 <- c(0.48, 0.41, 0.08, 0.03)
@@ -235,7 +233,7 @@ afunc <- function(dat, at) {
 }
 
 ## Initialize the network and estimate the ERGM
-nw <- network::network.initialize(500, directed = FALSE)
+nw <- network_initialize(500)
 est3 <- netest(nw, formation = ~ edges, target.stats = 150,
                coef.diss = dissolution_coefs(~ offset(edges), 60,
                                              mean(departure.rates)))
@@ -246,8 +244,7 @@ init <- init.net(i.num = 50)
 control <- control.net(type = NULL, nsims = 5, nsteps = 500,
                        departures.FUN = dfunc, arrivals.FUN = afunc,
                        prevalence.FUN = prevalence.net, infection.FUN = infection.net,
-                       resim_nets.FUN = resim_nets, recovery.FUN = recovery.net,
-                       aging.FUN = aging, tergmLite = FALSE)
+                       resim_nets.FUN = resim_nets, aging.FUN = aging, tergmLite = FALSE)
 
 ## Simulate the epidemic model
 sim3 <- netsim(est3, param, init, control)
@@ -280,6 +277,8 @@ infect <- function(dat, at) {
   if (nElig > 0 && nElig < nActive) {
     del <- discord_edgelist(dat, at)
     if (!(is.null(del))) {
+      del$transProb <- inf.prob
+      del$actRate <- act.rate
       del$finalProb <- 1 - (1 - del$transProb)^del$actRate
       transmit <- rbinom(nrow(del), 1, del$finalProb)
       del <- del[which(transmit == 1), ]
@@ -342,25 +341,24 @@ progress <- function(dat, at) {
 
   dat <- set_epi(dat, "ei.flow", at, nInf)
   dat <- set_epi(dat, "ir.flow", at, nRec)
-  dat <- set_epi(dat, "e.num", at, sum(active ==1 & status == "e"))
-  dat <- set_epi(dat, "r.num", at, sum(active ==1 & status == "r"))
+  dat <- set_epi(dat, "e.num", at, sum(active == 1 & status == "e"))
+  dat <- set_epi(dat, "r.num", at, sum(active == 1 & status == "r"))
 
   return(dat)
 }
 
 ## Initialize the network and estimate the ERGM
-nw <- network::network.initialize(500, directed = FALSE)
+nw <- network_initialize(500, directed = FALSE)
 est4 <- netest(nw, formation = ~ edges, target.stats = 150,
                coef.diss = dissolution_coefs(~ offset(edges), 10))
 
 ## Epidemic model parameterization
 param <- param.net(inf.prob = 0.5, act.rate = 2, ei.rate = 0.01, ir.rate = 0.005)
 init <- init.net(i.num = 10)
-control <- control.net(nsteps = 500, nsims = 5,
-                       skip.check = TRUE, tergmLite = FALSE, verbose.int = 0,
+control <- control.net(type = NULL, nsteps = 500, nsims = 5,
+                       skip.check = TRUE, tergmLite = TRUE, verbose.int = 0,
                        infection.FUN = infect, progress.FUN = progress,
-                       resim_net.FUN = resim_nets, prevalence.FUN = prevalence.net,
-                       save.network = FALSE)
+                       resim_net.FUN = resim_nets, prevalence.FUN = prevalence.net)
 
 ## Simulate the epidemic model
 sim4 <- netsim(est4, param, init, control)
