@@ -27,10 +27,10 @@ set.seed(12345)
 
 ## Initialize the network
 nw <- network_initialize(n = 1000)
-nw <- set_vertex_attribute(nw, "group", rep(1:2, each = 500))
+nw <- set_vertex_attribute(nw, "risk", rep(0:1, each = 500))
 
 ## ERGM formation formula
-formation <- ~ edges + nodefactor("group") + nodematch("group") + concurrent
+formation <- ~ edges + nodefactor("risk") + nodematch("risk") + concurrent
 
 ## Target statistics for formula
 target.stats <- c(250, 375, 225, 100)
@@ -56,16 +56,14 @@ plot(dx, type = "duration")
 plot(dx, type = "dissolution")
 
 ## Set the initial conditions for the epidemic model
-init <- init.net(i.num = 25, i.num.g2 = 25)
+init <- init.net(i.num = 50)
 
 ## Set the epidemic parameters
-param <- param.net(inf.prob = 0.1, rec.rate = 0.02,
-                   inf.prob.g2 = 0.1, rec.rate.g2 = 0.02,
-                   act.rate = 5)
+param <- param.net(inf.prob = 0.1, act.rate = 5, rec.rate = 0.02)
 
 ## Set the controls
 control <- control.net(type = "SIS", nsteps = 500,
-                       nsims = 10, epi.by = "group")
+                       nsims = 10, epi.by = "risk")
 
 ## Simulate the epidemic model
 sim1 <- netsim(est1, param, init, control)
@@ -109,11 +107,10 @@ deg.dist.m2 <- c(0.48, 0.41, 0.08, 0.03)
 check_bip_degdist(num.m1, num.m2, deg.dist.m1, deg.dist.m2)
 
 ## Enter the formation model for the ERGM
-#formation <- ~ edges + b1degree(0:1) + b2degree(0:1)
-formation <- ~ edges + nodefactor("group") + nodematch("group") + concurrent
+formation <- ~ edges + degree(0:1, by = "group")+ nodematch("group")
 
 ## Target statistics for the formation model
-target.stats <- c(330, 200, 275, 240)
+target.stats <- c(330, 200, 275, 240, 205, 0)
 
 ## Calculate coefficients for the dissolution model
 coef.diss <- dissolution_coefs(dissolution = ~ offset(edges),
@@ -140,7 +137,7 @@ param <- param.net(inf.prob = 0.3, inf.prob.g2 = 0.1,
                    di.rate = 0.008, di.rate.g2 = 0.009)
 
 ## Control settings
-control <- control.net(type = "SI", nsims = 10, nsteps = 500,
+control <- control.net(type = "SI", nsims = 5, nsteps = 500,
                        nwstats.formula = ~ edges + meandeg, delete.nodes = TRUE)
 
 ## Simulate the epidemic model
@@ -164,7 +161,7 @@ set.seed(12345)
 
 ## New Aging Module
 aging <- function(dat, at) {
-
+  
   if (at == 2) {
     active <- get_attr(dat, "active")
     n <- sum(active == 1)
@@ -174,7 +171,7 @@ aging <- function(dat, at) {
     age <- get_attr(dat, "age") + 1/12
     dat <- set_attr(dat, "age", age)
   }
-
+  
   return(dat)
 }
 
@@ -187,11 +184,12 @@ plot(ages, departure.rates, type = "b", xlab = "age", ylab = "Departure Risk")
 ## Departure function
 dfunc <- function(dat, at) {
   active <- get_attr(dat, "active")
+  exitTime <- get_attr(dat, "exitTime")
   idsElig <- which(active == 1)
   nElig <- length(idsElig)
-
+  
   nDepartures <- 0
-
+  
   if (nElig > 0) {
     ages <- get_attr(dat, "age")[idsElig]
     max.age <- get_param(dat, "max.age")
@@ -202,9 +200,17 @@ dfunc <- function(dat, at) {
     if (nDepartures > 0) {
       active[idsDepartures] <- 0
       dat <- set_attr(dat, "active", active)
+      exitTime[idsDepartures] <- at
+      dat <- set_attr(dat, "exitTime",exitTime)
+      if (get_control(dat, "tergmLite") == FALSE) {
+        dat$nw[[1]] <- deactivate.vertices(dat$nw[[1]], onset = at, terminus = Inf,
+                                           v = idsDepartures, deactivate.edges = TRUE)
+      } else {
+        dat <- delete_attr(dat, idsDepartures)
+        dat$el[[1]] <- delete_vertices(dat$el[[1]], idsDepartures)
+      }
     }
   }
-
   # Output ----------------------------------
   dat <- set_epi(dat, "d.flow", at, nDepartures)
   return(dat)
@@ -212,23 +218,41 @@ dfunc <- function(dat, at) {
 
 ## Arrivals function
 afunc <- function(dat, at) {
-
+  
   # Variables ---------------------------------------------------------------
   growth.rate <- get_param(dat, "growth.rate")
   exptPopSize <- get_epi(dat, "num", 1)*(1 + growth.rate*at)
   n <- sum(get_attr(dat, "active") == 1)
   active <- get_attr(dat, "active")
   numNeeded <- exptPopSize - sum(active == 1)
-
+  
   if (numNeeded > 0) {
     nArrivals <- rpois(1, numNeeded)
   } else {
     nArrivals <- 0
   }
-
+  
+  if (nArrivals > 0) {
+    newNodes <- (n + 1):(n + nArrivals)
+    if (get_control(dat, "tergmLite") == FALSE) {
+      dat$nw[[1]] <- add.vertices(dat$nw[[1]], nv = nArrivals)
+      dat$nw[[1]] <- activate.vertices(dat$nw[[1]], onset = at,
+                                       terminus = Inf, v = newNodes)
+    } else {
+      dat$el[[1]] <- add_vertices(dat$el[[1]], nv = sum(nArrivals))
+    }
+    
+    dat <- append_attr(dat, "active", 1, nArrivals)
+    dat <- append_attr(dat, "status", "s", nArrivals)
+    dat <- append_attr(dat, "infTime", NA, nArrivals)
+    dat <- append_attr(dat, "entrTime", at, nArrivals)
+    dat <- append_attr(dat, "exitTime", NA, nArrivals)
+    dat <- append_attr(dat, "age", 18, nArrivals)
+  }
+  
   # Output ------------------------------------------------------------------
   dat <- set_epi(dat, "a.flow", at, nArrivals)
-
+  
   return(dat)
 }
 
@@ -244,7 +268,7 @@ init <- init.net(i.num = 50)
 control <- control.net(type = NULL, nsims = 5, nsteps = 500,
                        departures.FUN = dfunc, arrivals.FUN = afunc,
                        prevalence.FUN = prevalence.net, infection.FUN = infection.net,
-                       resim_nets.FUN = resim_nets, aging.FUN = aging, tergmLite = FALSE)
+                       resim_nets.FUN = resim_nets, aging.FUN = aging)
 
 ## Simulate the epidemic model
 sim3 <- netsim(est3, param, init, control)
@@ -261,19 +285,19 @@ set.seed(12345)
 
 ## Modified infection module
 infect <- function(dat, at) {
-
+  
   active <- get_attr(dat, "active")
   status <- get_attr(dat, "status")
   infTime <- get_attr(dat, "infTime")
   inf.prob <- get_param(dat, "inf.prob")
   act.rate <- get_param(dat, "act.rate")
-
+  
   idsInf <- which(active == 1 & status == "i")
   nActive <- sum(active == 1)
-
+  
   nElig <- length(idsInf)
   nInf <- 0
-
+  
   if (nElig > 0 && nElig < nActive) {
     del <- discord_edgelist(dat, at)
     if (!(is.null(del))) {
@@ -292,28 +316,28 @@ infect <- function(dat, at) {
       }
     }
   }
-
+  
   # Output ---------------------------------
   dat <- set_epi(dat, "se.flow", at, nInf)
-
+  
   return(dat)
 }
 
 
 ## New disease progression module
 progress <- function(dat, at) {
-
+  
   active <- get_attr(dat, "active")
   status <- get_attr(dat, "status")
-
+  
   ei.rate <- get_param(dat, "ei.rate")
   ir.rate <- get_param(dat, "ir.rate")
-
+  
   ## E to I progression
   nInf <- 0
   idsEligInf <- which(active == 1 & status == "e")
   nEligInf <- length(idsEligInf)
-
+  
   if (nEligInf > 0) {
     vecInf <- which(rbinom(nEligInf, 1, ei.rate) == 1)
     if (length(vecInf) > 0) {
@@ -322,12 +346,12 @@ progress <- function(dat, at) {
       status[idsInf] <- "i"
     }
   }
-
+  
   ## I to R progression
   nRec <- 0
   idsEligRec <- which(active == 1 & status == "i")
   nEligRec <- length(idsEligRec)
-
+  
   if (nEligRec > 0) {
     vecRec <- which(rbinom(nEligRec, 1, ir.rate) == 1)
     if (length(vecRec) > 0) {
@@ -336,14 +360,14 @@ progress <- function(dat, at) {
       status[idsRec] <- "r"
     }
   }
-
+  
   dat <- set_attr(dat, "status", status)
-
+  
   dat <- set_epi(dat, "ei.flow", at, nInf)
   dat <- set_epi(dat, "ir.flow", at, nRec)
   dat <- set_epi(dat, "e.num", at, sum(active == 1 & status == "e"))
   dat <- set_epi(dat, "r.num", at, sum(active == 1 & status == "r"))
-
+  
   return(dat)
 }
 
@@ -358,7 +382,8 @@ init <- init.net(i.num = 10)
 control <- control.net(type = NULL, nsteps = 500, nsims = 5,
                        skip.check = TRUE, tergmLite = TRUE, verbose.int = 0,
                        infection.FUN = infect, progress.FUN = progress,
-                       resim_net.FUN = resim_nets, prevalence.FUN = prevalence.net)
+                       resim_net.FUN = resim_nets, prevalence.FUN = prevalence.net,
+                       resimulate.network = FALSE)
 
 ## Simulate the epidemic model
 sim4 <- netsim(est4, param, init, control)

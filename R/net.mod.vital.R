@@ -14,11 +14,12 @@
 departures.net <- function(dat, at) {
 
   # Conditions --------------------------------------------------------------
-  if (get_param(dat, "vital") == FALSE) {
+  vital <- get_param(dat, "vital")
+  if (vital == FALSE){
     return(dat)
   }
+  
   type <- get_control(dat, "type")
-
   active <- get_attr(dat, "active")
   status <- get_attr(dat, "status")
   exitTime <- get_attr(dat, "exitTime")
@@ -103,7 +104,8 @@ departures.net <- function(dat, at) {
 arrivals.net <- function(dat, at) {
 
   # Conditions --------------------------------------------------------------
-  if (get_param(dat, "vital") == FALSE) {
+  vital <- get_param(dat, "vital")
+  if (vital == FALSE){
     return(dat)
   }
 
@@ -148,7 +150,8 @@ arrivals.net <- function(dat, at) {
 departures.2g.net <- function(dat, at) {
 
   # Conditions --------------------------------------------------------------
-  if (get_param(dat, "vital") == FALSE) {
+  vital <- get_param(dat, "vital")
+  if (vital == FALSE){
     return(dat)
   }
 
@@ -253,7 +256,8 @@ departures.2g.net <- function(dat, at) {
 arrivals.2g.net <- function(dat, at) {
 
   # Conditions --------------------------------------------------------------
-  if (get_param(dat, "vital") == FALSE) {
+  vital <- get_param(dat, "vital")
+  if (vital == FALSE){
     return(dat)
   }
 
