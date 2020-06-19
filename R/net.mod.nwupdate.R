@@ -35,6 +35,11 @@ nwupdate.net <- function(dat, at) {
     if (sum(nArrivals) > 0) {
       index <- at - 1
       nCurr <- get_epi(dat, "num", index)
+      if (groups == 2) {
+        nCurr.g2 <- get_epi(dat,"num.g2", index)
+        nCurr <- nCurr + nCurr.g2
+      }
+
       newNodes <- (nCurr + 1):(nCurr + sum(nArrivals))
       nwterms <- dat$temp$nwterms
       if (!is.null(nwterms)) {

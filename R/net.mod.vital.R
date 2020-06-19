@@ -18,7 +18,7 @@ departures.net <- function(dat, at) {
   if (vital == FALSE){
     return(dat)
   }
-  
+
   type <- get_control(dat, "type")
   active <- get_attr(dat, "active")
   status <- get_attr(dat, "status")
@@ -224,6 +224,7 @@ departures.2g.net <- function(dat, at) {
 
   # Output ------------------------------------------------------------------
   dat <- set_attr(dat, "active", active)
+  dat <- set_attr(dat, "exitTime", exitTime)
 
   dat <- set_epi(dat, "ds.flow", at, nDepartures.sus)
   dat <- set_epi(dat, "di.flow", at, nDepartures.inf)
