@@ -140,7 +140,7 @@ param <- param.net(inf.prob = 0.3, inf.prob.g2 = 0.1,
 
 ## Control settings
 control <- control.net(type = "SI", nsims = 10, nsteps = 500,
-                       nwstats.formula = ~ edges + meandeg)
+                       nwstats.formula = ~edges + meandeg)
 
 ## Simulate the epidemic model
 sim2 <- netsim(est2, param, init, control)
