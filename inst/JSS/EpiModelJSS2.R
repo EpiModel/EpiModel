@@ -108,7 +108,7 @@ deg.dist.m2 <- c(0.48, 0.41, 0.08, 0.03)
 check_bip_degdist(num.m1, num.m2, deg.dist.m1, deg.dist.m2)
 
 ## Enter the formation model for the ERGM
-formation <- ~ edges + degree(0:1, by = "group") + nodematch("group")
+formation <- ~edges + degree(0:1, by = "group") + nodematch("group")
 
 ## Target statistics for the formation model
 target.stats <- c(330, 200, 275, 240, 205, 0)
@@ -260,8 +260,8 @@ afunc <- function(dat, at) {
 
 ## Initialize the network and estimate the ERGM
 nw <- network_initialize(500)
-est3 <- netest(nw, formation = ~ edges, target.stats = 150,
-               coef.diss = dissolution_coefs(~ offset(edges), 60,
+est3 <- netest(nw, formation = ~edges, target.stats = 150,
+               coef.diss = dissolution_coefs(~offset(edges), 60,
                                              mean(departure.rates)))
 
 ## Epidemic model parameterization
@@ -376,8 +376,8 @@ progress <- function(dat, at) {
 
 ## Initialize the network and estimate the ERGM
 nw <- network_initialize(500, directed = FALSE)
-est4 <- netest(nw, formation = ~ edges, target.stats = 150,
-               coef.diss = dissolution_coefs(~ offset(edges), 10))
+est4 <- netest(nw, formation = ~edges, target.stats = 150,
+               coef.diss = dissolution_coefs(~offset(edges), 10))
 
 ## Epidemic model parameterization
 param <- param.net(inf.prob = 0.5, act.rate = 2, ei.rate = 0.01, ir.rate = 0.005)
