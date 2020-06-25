@@ -12,3 +12,5 @@ src/*.dll
 *.rda
 inst/EpiModel2/*.pptx
 inst/EpiModel2/*.xlsx
+vignettes/Intro.html
+vignettes/Intro.R
