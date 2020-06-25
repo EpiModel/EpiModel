@@ -204,13 +204,6 @@ dfunc <- function(dat, at) {
       dat <- set_attr(dat, "active", active)
       exitTime[idsDepartures] <- at
       dat <- set_attr(dat, "exitTime",exitTime)
-      if (get_control(dat, "tergmLite") == FALSE) {
-        dat$nw[[1]] <- deactivate.vertices(dat$nw[[1]], onset = at, terminus = Inf,
-                                           v = idsDepartures, deactivate.edges = TRUE)
-      } else {
-        dat <- delete_attr(dat, idsDepartures)
-        dat$el[[1]] <- delete_vertices(dat$el[[1]], idsDepartures)
-      }
     }
   }
   # Output ----------------------------------
@@ -235,15 +228,6 @@ afunc <- function(dat, at) {
   }
 
   if (nArrivals > 0) {
-    newNodes <- (n + 1):(n + nArrivals)
-    if (get_control(dat, "tergmLite") == FALSE) {
-      dat$nw[[1]] <- add.vertices(dat$nw[[1]], nv = nArrivals)
-      dat$nw[[1]] <- activate.vertices(dat$nw[[1]], onset = at,
-                                       terminus = Inf, v = newNodes)
-    } else {
-      dat$el[[1]] <- add_vertices(dat$el[[1]], nv = sum(nArrivals))
-    }
-
     dat <- append_attr(dat, "active", 1, nArrivals)
     dat <- append_attr(dat, "status", "s", nArrivals)
     dat <- append_attr(dat, "infTime", NA, nArrivals)

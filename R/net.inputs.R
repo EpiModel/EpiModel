@@ -422,7 +422,7 @@ control.net <- function(type,
                         start = 1,
                         nsims = 1,
                         ncores = 1,
-                        resimulate.network,
+                        resimulate.network = FALSE,
                         tergmLite = FALSE,
                         attr.rules,
                         epi.by,
@@ -492,6 +492,11 @@ control.net <- function(type,
          "matrix into control.net setting tergmLite: if FALSE, these are saved automatically; ",
          "if true, they are not saved. Please update code accordingly.",
          call. = FALSE)
+  }
+
+  if (missing(resimulate.network)) {
+    warning("EpiModel 2.0 onward requires users to specify input parameter 'resimulate.network'. ",
+            "Default set to false; see help('control.net') for more information.")
   }
 
   ## Module classification

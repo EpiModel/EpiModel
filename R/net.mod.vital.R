@@ -105,13 +105,13 @@ arrivals.net <- function(dat, at) {
 
   # Conditions --------------------------------------------------------------
   vital <- get_param(dat, "vital")
-  if (vital == FALSE){
+  if (vital == FALSE) {
     return(dat)
   }
 
   # Variables ---------------------------------------------------------------
   a.rate <- get_param(dat, "a.rate")
-  index <- at-1
+  index <- at - 1
   nOld <- get_epi(dat, "num", index)
   nArrivals <- 0
 

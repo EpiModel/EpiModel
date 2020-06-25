@@ -14,16 +14,22 @@
 nwupdate.net <- function(dat, at) {
 
   groups <- get_param(dat, "groups")
-  vital <- get_param(dat, "vital")
+  type <- get_control(dat, "type", override.null.error = TRUE)
   tergmLite <- get_control(dat, "tergmLite")
   status <- get_attr(dat, "status")
   infTime <- get_attr(dat, "infTime")
   active <- get_attr(dat, "active")
+  entrTime <- get_attr(dat, "entrTime")
   exitTime <- get_attr(dat, "exitTime")
 
   ## Vital Dynamics
+  arr.flag <- ifelse(length(which(active == 1 & entrTime == at)) > 0,
+                     TRUE, FALSE)
 
-  if (vital == TRUE) {
+  dep.flag <- ifelse(length(which(active == 0 & exitTime == at)) > 0,
+                     TRUE, FALSE)
+
+  if (arr.flag == TRUE) {
 
     ## Arrivals
     if (groups == 1) {
@@ -63,9 +69,11 @@ nwupdate.net <- function(dat, at) {
         dat$el[[1]] <- add_vertices(dat$el[[1]], nv = sum(nArrivals))
       }
     }
+  }
 
 
-    ## Departures
+  ## Departures
+  if (dep.flag == TRUE) {
     inactive <- which(active == 0 & exitTime == at)
     if (length(inactive) > 0) {
       if (tergmLite == FALSE) {
@@ -91,7 +99,6 @@ nwupdate.net <- function(dat, at) {
 
   ## Recovery
   if (tergmLite == FALSE) {
-    type <- get_control(dat, "type")
     if (type %in% c("SIS", "SIR") && !is.null(type)) {
       index <- at - 1
       nCurr <- get_epi(dat, "num", index)
