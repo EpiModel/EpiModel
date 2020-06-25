@@ -30,13 +30,13 @@ nw <- network_initialize(n = 1000)
 nw <- set_vertex_attribute(nw, "risk", rep(0:1, each = 500))
 
 ## ERGM formation formula
-formation <- ~ edges + nodefactor("risk") + nodematch("risk") + concurrent
+formation <- ~edges + nodefactor("risk") + nodematch("risk") + concurrent
 
 ## Target statistics for formula
 target.stats <- c(250, 375, 225, 100)
 
 ## ERGM dissolution coefficients
-coef.diss <- dissolution_coefs(dissolution = ~ offset(edges), duration = 80)
+coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 80)
 coef.diss
 
 ## Estimate the model
@@ -82,7 +82,7 @@ plot(sim1)
 plot(sim1, y = c("si.flow", "is.flow"), legend = TRUE)
 
 ## Plot prevalence stratified by risk group
-plot(sim1, y = c("i.num", "i.num.g2"), legend = TRUE)
+plot(sim1, y = c("i.num.risk0", "i.num.risk1"), legend = TRUE)
 
 ## Plot the static network structure at time steps 1 and 500
 par(mfrow = c(1, 2), mar = c(2, 0, 2, 0), mgp = c(1, 1, 0))
@@ -90,6 +90,7 @@ plot(sim1, type = "network", at = 1, sims = "mean",
      col.status = TRUE, main = "Prevalence at t1")
 plot(sim1, type = "network", at = 500, sims = "mean",
      col.status = TRUE, main = "Prevalence at t500")
+
 
 ## Example 2: Dependent SI Model
 
@@ -107,13 +108,13 @@ deg.dist.m2 <- c(0.48, 0.41, 0.08, 0.03)
 check_bip_degdist(num.m1, num.m2, deg.dist.m1, deg.dist.m2)
 
 ## Enter the formation model for the ERGM
-formation <- ~ edges + degree(0:1, by = "group")+ nodematch("group")
+formation <- ~edges + degree(0:1, by = "group") + nodematch("group")
 
 ## Target statistics for the formation model
 target.stats <- c(330, 200, 275, 240, 205, 0)
 
 ## Calculate coefficients for the dissolution model
-coef.diss <- dissolution_coefs(dissolution = ~ offset(edges),
+coef.diss <- dissolution_coefs(dissolution = ~offset(edges),
                                duration = 25, d.rate = 0.006)
 coef.diss
 
@@ -123,6 +124,7 @@ est2 <- netest(nw, formation, target.stats, coef.diss)
 ## Run diagnostics on the model fit
 dx <- netdx(est2, nsims = 10, nsteps = 1000)
 dx
+
 ## Plot the diagnostics
 par(mfrow = c(1, 1))
 plot(dx, plots.joined = TRUE)
@@ -138,7 +140,7 @@ param <- param.net(inf.prob = 0.3, inf.prob.g2 = 0.1,
 
 ## Control settings
 control <- control.net(type = "SI", nsims = 10, nsteps = 500,
-                       nwstats.formula = ~ edges + meandeg)
+                       nwstats.formula = ~edges + meandeg)
 
 ## Simulate the epidemic model
 sim2 <- netsim(est2, param, init, control)
@@ -258,8 +260,8 @@ afunc <- function(dat, at) {
 
 ## Initialize the network and estimate the ERGM
 nw <- network_initialize(500)
-est3 <- netest(nw, formation = ~ edges, target.stats = 150,
-               coef.diss = dissolution_coefs(~ offset(edges), 60,
+est3 <- netest(nw, formation = ~edges, target.stats = 150,
+               coef.diss = dissolution_coefs(~offset(edges), 60,
                                              mean(departure.rates)))
 
 ## Epidemic model parameterization
@@ -278,6 +280,7 @@ sim3
 plot(sim3, popfrac = TRUE, main = "State Prevalences")
 plot(sim3, popfrac = FALSE, main = "State Sizes", sim.lines = TRUE,
      qnts = FALSE, mean.smooth = FALSE)
+
 
 ## Example 2: SEIR Epidemic Model ##
 
@@ -373,14 +376,14 @@ progress <- function(dat, at) {
 
 ## Initialize the network and estimate the ERGM
 nw <- network_initialize(500, directed = FALSE)
-est4 <- netest(nw, formation = ~ edges, target.stats = 150,
-               coef.diss = dissolution_coefs(~ offset(edges), 10))
+est4 <- netest(nw, formation = ~edges, target.stats = 150,
+               coef.diss = dissolution_coefs(~offset(edges), 10))
 
 ## Epidemic model parameterization
 param <- param.net(inf.prob = 0.5, act.rate = 2, ei.rate = 0.01, ir.rate = 0.005)
 init <- init.net(i.num = 10)
 control <- control.net(type = NULL, nsteps = 500, nsims = 5,
-                       skip.check = TRUE, tergmLite = TRUE, verbose.int = 0,
+                       skip.check = TRUE, verbose.int = 0,
                        infection.FUN = infect, progress.FUN = progress,
                        resim_net.FUN = resim_nets, prevalence.FUN = prevalence.net,
                        resimulate.network = FALSE)
