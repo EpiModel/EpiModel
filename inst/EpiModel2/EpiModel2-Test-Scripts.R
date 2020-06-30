@@ -183,7 +183,7 @@ param <- param.net(inf.prob = 0.4, act.rate = 1,
                    a.rate = 0.005, ds.rate = 0.005, di.rate = 0.005)
 init <- init.net(i.num = 10)
 control <- control.net(type = "SI", nsteps = 100, nsims = 1, ncores = 1,
-                       tergmLite = FALSE, verbose = TRUE)
+                       tergmLite = FALSE, verbose = TRUE, resimulate.network = TRUE)
 
 sim <- netsim(est, param, init, control)
 plot(sim, qnts = FALSE, sim.lines = TRUE)
