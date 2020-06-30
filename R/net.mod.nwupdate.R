@@ -66,7 +66,7 @@ nwupdate.net <- function(dat, at) {
                                            v = departures, deactivate.edges = TRUE)
       }
       if (tergmLite == TRUE) {
-        dat <- delete_attr(dat, inactive)
+        dat <- delete_attr(dat, departures)
         dat$el[[1]] <- delete_vertices(dat$el[[1]], departures)
       }
 
