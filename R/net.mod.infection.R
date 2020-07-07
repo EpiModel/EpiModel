@@ -202,6 +202,7 @@ infection.2g.net <- function(dat, at) {
                                 inf.prob[del$infDur],
                                 inf.prob[linf.prob])
       } else {
+        #FLAG
         del$transProb <- ifelse(group[del$sus] == 1,
                                 ifelse(del$infDur <= linf.prob,
                                        inf.prob[del$infDur],
