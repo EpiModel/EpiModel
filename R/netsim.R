@@ -166,7 +166,6 @@ netsim <- function(x, param, init, control) {
 #'              simulation
 #' @inheritParams initialize.net
 #' @keywords internal
-#' @export
 netsim_loop <- function(x, param, init, control, s) {
   ## Initialization Module
   if (!is.null(control[["initialize.FUN"]])) {

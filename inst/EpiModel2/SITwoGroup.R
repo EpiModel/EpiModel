@@ -23,7 +23,7 @@ est <- netest(nw, formation, target.stats, coef.diss)
 ## Epidemic model parameterization
 param <- param.net(inf.prob = 0.2, inf.prob.g2 = 0.2)
 init <- init.net(i.num = 20, i.num.g2 = 20)
-control <- control.net(type = "SI", nsteps = 100, resimulate.network = TRUE,
+control <- control.net(type = "SI", nsteps = 100, resimulate.network = FALSE,
                        tergmLite = FALSE)
 
 ## Simulate the epidemic model
