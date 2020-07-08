@@ -479,19 +479,18 @@ control.net <- function(type,
 
   if ("depend" %in% names(dot.args)) {
     p$resimulate.network <- dot.args$depend
-    stop("EpiModel 2.0 onwward has replaced the control.net setting depend with ",
-         "resimulate.network for clarity. Please update your code accordingly.",
+    stop("EpiModel >= 2.0 has renamed the control.net setting `depend` to ",
+         "`resimulate.network`. Update your code accordingly.",
          call. = FALSE)
   }
 
   if ("save.network" %in% names(dot.args) || "save.transmat" %in% names(dot.args)) {
     p$tergmLite <- FALSE
-    stop("EpiModel 2.0 onward has folded saving of the network object and transmission ",
+    stop("EpiModel >= 2.0 has integrated options for saving of the network object and transmission ",
          "matrix into control.net setting tergmLite: if FALSE, these are saved automatically; ",
-         "if true, they are not saved. Please update code accordingly.",
+         "if TRUE, they are not saved. Update your code accordingly.",
          call. = FALSE)
   }
-
 
   ## Module classification
   bi.mods <- grep(".FUN", names(formal.args), value = TRUE)

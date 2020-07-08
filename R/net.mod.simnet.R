@@ -140,7 +140,7 @@ edges_correct <- function(dat, at) {
   if (resimulate.network == TRUE) {
 
     if (groups == 1) {
-      index <- at-1
+      index <- at - 1
       old.num <- get_epi(dat, "num", index)
       new.num <- sum(active == 1)
       dat$nwparam[[1]]$coef.form[1] <- dat$nwparam[[1]]$coef.form[1] +
@@ -148,7 +148,7 @@ edges_correct <- function(dat, at) {
         log(new.num)
     }
     if (groups == 2) {
-      index <- at-1
+      index <- at - 1
       group <- get_attr(dat, "group")
       old.num.g1 <- get_epi(dat, "num", index)
       old.num.g2 <- get_epi(dat, "num.g2", index)

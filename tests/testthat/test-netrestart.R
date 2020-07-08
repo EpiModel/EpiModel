@@ -12,7 +12,7 @@ test_that("network models can be restarted", {
                      ds.rate = 0.02, di.rate = 0.02)
   init <- init.net(i.num = 10)
   control <- control.net(type = "SI", nsteps = 5, nsims = 1,
-                         verbose = FALSE, save.other = "attr")
+                         resimulate.network = TRUE, verbose = FALSE, save.other = "attr")
   x <- netsim(est.vit, param, init, control)
 
   control <- control.net(type = "SI", nsteps = 10, start = 6,
@@ -42,7 +42,7 @@ test_that("restart error flags", {
                      ds.rate = 0.02, di.rate = 0.02)
   init <- init.net(i.num = 10)
   control <- control.net(type = "SI", nsteps = 5,
-                         nsims = 1,
+                         nsims = 1, resimulate.network = TRUE,
                          verbose = FALSE,
                          save.other = "attr")
   x <- netsim(est.vit, param, init, control)

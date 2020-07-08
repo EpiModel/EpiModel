@@ -63,7 +63,7 @@ initialize.net <- function(x, param, init, control, s) {
 
     ## Store current proportions of attr
     nwterms <- get_network_term_attr(nw)
-    if (!is.null(nwterms)){
+    if (!is.null(nwterms)) {
       dat$temp$nwterms <- nwterms
       dat$temp$t1.tab <- get_attr_prop(dat, nwterms)
     }
@@ -75,8 +75,6 @@ initialize.net <- function(x, param, init, control, s) {
     if (control$tergmLite == TRUE) {
       dat <- tergmLite::init_tergmLite(dat)
     }
-
-
 
 
     # Summary Stats -----------------------------------------------------------
