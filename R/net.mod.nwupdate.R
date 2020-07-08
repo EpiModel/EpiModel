@@ -14,28 +14,26 @@
 nwupdate.net <- function(dat, at) {
 
   groups <- get_param(dat, "groups")
-  vital <- get_param(dat, "vital")
+  type <- get_control(dat, "type", override.null.error = TRUE)
   tergmLite <- get_control(dat, "tergmLite")
   status <- get_attr(dat, "status")
   infTime <- get_attr(dat, "infTime")
   active <- get_attr(dat, "active")
+  entrTime <- get_attr(dat, "entrTime")
   exitTime <- get_attr(dat, "exitTime")
 
   ## Vital Dynamics
+  arrivals <- which(active == 1 & entrTime == at)
+  departures <- which(active == 0 & exitTime == at)
 
-  if (vital == TRUE) {
+  if (length(arrivals) > 0) {
 
     ## Arrivals
-    if (groups == 1) {
-      nArrivals <- get_epi(dat, "a.flow", at)
-    } else {
-      nArrivals <- c(get_epi(dat, "a.flow", at),
-                     get_epi(dat, "a.flow.g2", at))
-    }
-    if (sum(nArrivals) > 0) {
       index <- at - 1
+      nArrivals <- length(arrivals)
       nCurr <- get_epi(dat, "num", index)
-      newNodes <- (nCurr + 1):(nCurr + sum(nArrivals))
+
+      newNodes <- (nCurr + 1):(nCurr + nArrivals)
       nwterms <- dat$temp$nwterms
       if (!is.null(nwterms)) {
         curr.tab <- get_attr_prop(dat, nwterms)
@@ -46,7 +44,7 @@ nwupdate.net <- function(dat, at) {
              print(cbind(sapply(get_attr_list(dat), length))))
       }
       if (tergmLite == FALSE) {
-        dat$nw[[1]] <- add.vertices(dat$nw[[1]], nv = sum(nArrivals))
+        dat$nw[[1]] <- add.vertices(dat$nw[[1]], nv = nArrivals)
         dat$nw[[1]] <- activate.vertices(dat$nw[[1]], onset = at, terminus = Inf, v = newNodes)
         dat <- copy_datattr_to_nwattr(dat)
         dat$nw[[1]] <- activate.vertex.attribute(dat$nw[[1]], prefix = "testatus",
@@ -55,23 +53,23 @@ nwupdate.net <- function(dat, at) {
                                                  v = newNodes)
       }
       if (tergmLite == TRUE) {
-        dat$el[[1]] <- add_vertices(dat$el[[1]], nv = sum(nArrivals))
+        dat$el[[1]] <- add_vertices(dat$el[[1]], nv = nArrivals)
       }
-    }
+
+  }
 
 
-    ## Departures
-    inactive <- which(active == 0 & exitTime == at)
-    if (length(inactive) > 0) {
+  ## Departures
+  if (length(departures) > 0) {
       if (tergmLite == FALSE) {
         dat$nw[[1]] <- deactivate.vertices(dat$nw[[1]], onset = at, terminus = Inf,
-                                           v = inactive, deactivate.edges = TRUE)
+                                           v = departures, deactivate.edges = TRUE)
       }
       if (tergmLite == TRUE) {
-        dat <- delete_attr(dat, inactive)
-        dat$el[[1]] <- delete_vertices(dat$el[[1]], inactive)
+        dat <- delete_attr(dat, departures)
+        dat$el[[1]] <- delete_vertices(dat$el[[1]], departures)
       }
-    }
+
   }
 
   ## Infection
@@ -86,8 +84,7 @@ nwupdate.net <- function(dat, at) {
 
   ## Recovery
   if (tergmLite == FALSE) {
-    type <- get_control(dat, "type")
-    if (type %in% c("SIS", "SIR")) {
+    if (type %in% c("SIS", "SIR") && !is.null(type)) {
       index <- at - 1
       nCurr <- get_epi(dat, "num", index)
       recovState <- ifelse(type == "SIR", "r", "s")

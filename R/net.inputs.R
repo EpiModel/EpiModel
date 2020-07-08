@@ -139,19 +139,27 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
     }
   }
 
-  ##Updated parameter names
+  ## Defaults and Checks
   if ("b.rate" %in% names.dot.args) {
     p$a.rate <- dot.args$b.rate
-    message("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate to a.rate. ",
-            "See documentation for details.")
+    stop("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate to a.rate. ",
+            "See documentation for details.",
+         call. = FALSE)
   }
   if ("b.rate.g2" %in% names.dot.args) {
     p$a.rate.g2 <- dot.args$b.rate.g2
-    message("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate.g2 to a.rate.g2. ",
-            "See documentation for details.")
+    stop("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate.g2 to a.rate.g2. ",
+            "See documentation for details.",
+         call. = FALSE)
   }
+  # Check for mode to group suffix change
+  m2.flag <- grep(".m2", names(p))
+  if (length(m2.flag) > 0) {
+    names(p) <- gsub(".m2", ".g2", names(p))
+    warning("EpiModel 2.0 onward has updated parameter suffixes reflecting a move from mode to group networks. ",
+            "All .m2 parameters changed to .g2. See documentation for more details.")
 
-  ## Defaults and checks
+  }
   if (missing(act.rate)) {
     p$act.rate <- 1
   }
@@ -162,7 +170,6 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
             "If using built-in models, only act.rate parameter will apply.",
             call. = FALSE)
   }
-
 
   if (!is.null(p$inter.eff) && is.null(p$inter.start)) {
     p$inter.start <- 1
@@ -244,6 +251,14 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
   }
 
   ## Defaults and checks
+
+  # Checks that .m2 syntax is change to .g2
+  m2.init <- grep("m2", names(p), value = TRUE)
+  if (length(m2.init) > 0) {
+    names(p) <- gsub(".m2", ".g2", names(p))
+    warning("EpiModel 2.0 onward has updated initial condition suffixes reflecting a move from mode to group networks. ",
+            "All .m2 initial conditions changed to .g2. See documentation for more details.")
+  }
   if (!is.null(p$i.num) & !is.null(p$status.vector)) {
     stop("Use i.num OR status.vector to set initial infected")
   }
@@ -407,7 +422,7 @@ control.net <- function(type,
                         start = 1,
                         nsims = 1,
                         ncores = 1,
-                        resimulate.network,
+                        resimulate.network = FALSE,
                         tergmLite = FALSE,
                         attr.rules,
                         epi.by,
@@ -452,18 +467,53 @@ control.net <- function(type,
   if ("births.FUN" %in% names(dot.args)) {
     p$arrivals.FUN <- dot.args$births.FUN
     p$births.FUN <- dot.args$births.FUN <- NULL
-    message("EpiModel 1.7.0 onward renamed the birth function births.FUN to arrivals.FUN. See documentation for details.")
+    stop("EpiModel 1.7.0 onward renamed the birth function births.FUN to arrivals.FUN. ",
+         "See documentation for details.",
+         call. = FALSE)
   }
   if ("deaths.FUN" %in% names(dot.args)) {
     p$departures.FUN <- dot.args$deaths.FUN
     p$deaths.FUN <- dot.args$deaths.FUN <- NULL
-    message("EpiModel 1.7.0 onward renamed the death function deaths.FUN to departures.FUN. See documentation for details.")
+    stop("EpiModel 1.7.0 onward renamed the death function deaths.FUN to departures.FUN. ",
+         "See documentation for details.",
+         call. = FALSE)
+  }
+
+  if ("depend" %in% names(dot.args)) {
+    p$resimulate.network <- dot.args$depend
+    stop("EpiModel 2.0 onwward has replaced the control.net setting depend with ",
+         "resimulate.network for clarity. Please update your code accordingly.",
+         call. = FALSE)
+  }
+
+  if ("save.network" %in% names(dot.args) || "save.transmat" %in% names(dot.args)) {
+    p$tergmLite <- FALSE
+    stop("EpiModel 2.0 onward has folded saving of the network object and transmission ",
+         "matrix into control.net setting tergmLite: if FALSE, these are saved automatically; ",
+         "if true, they are not saved. Please update code accordingly.",
+         call. = FALSE)
+  }
+
+  if (missing(resimulate.network)) {
+    warning("EpiModel 2.0 onward requires users to specify input parameter 'resimulate.network'. ",
+            "Default set to false; see help('control.net') for more information.")
   }
 
   ## Module classification
   bi.mods <- grep(".FUN", names(formal.args), value = TRUE)
+  p$bi.mods <- character()
   bi.nms <- bi.mods
-  p$bi.mods <- bi.mods
+  index <- 1
+  if (is.null(p$type)) {
+    for (i in 1:length(bi.mods)) {
+      if (!is.null(p[[bi.mods[i]]])) {
+        p$bi.mods[index] <- bi.mods[i]
+        index <- index + 1
+      }
+    }
+  } else{
+    p$bi.mods <- bi.mods
+  }
   p$user.mods <- grep(".FUN", names(dot.args), value = TRUE)
 
 
@@ -487,9 +537,16 @@ control.net <- function(type,
 
   ## Defaults and checks
 
+  # Check whether depend is being used
+  if ("depend" %in% names(p)) {
+    stop("Input parameter depend has been replaced by resimulate.network.",
+         call. = FALSE)
+  }
+
   #Check whether any base modules have been redefined by user (note: must come after above)
-  bi.nms <- bi.nms[-which(bi.nms %in% c("initialize.FUN", "resim_nets.FUN", "verbose.FUN", "nwupdate.FUN"))]
-  if (length(bi.nms) > 0){
+  bi.nms <- bi.nms[-which(bi.nms %in% c("initialize.FUN", "resim_nets.FUN",
+                                        "verbose.FUN", "nwupdate.FUN", "prevalence.FUN"))]
+  if (length(bi.nms) > 0) {
     flag1 <- logical()
     for (args in 1:length(bi.nms)) {
       if (!(is.null(p[[bi.nms[args]]])) ) {
@@ -500,16 +557,19 @@ control.net <- function(type,
     }
 
     if (!is.null(p$type) && sum(flag1, na.rm = TRUE) != length(flag1)) {
-      stop("Control parameter 'type' must be null if any user defined base modules are present")
+      stop("Control parameter 'type' must be null if any user defined base modules are present",
+           call. = FALSE)
     }
   }
 
   if (!is.null(p$type) && length(p$user.mods) > 0) {
-    stop("Control parameter 'type' must be null if any user specified modules are present")
+    stop("Control parameter 'type' must be null if any user specified modules are present",
+         call. = FALSE)
   }
 
   if (is.null(p$nsteps)) {
-    stop("Specify nsteps")
+    stop("Specify nsteps",
+         call. = FALSE)
   }
 
   if (missing(attr.rules)) {
@@ -715,7 +775,6 @@ crosscheck.net <- function(x, param, init, control) {
                "parameter instead.", call. = FALSE)
         }
       }
-
     }
 
     if (control$start > 1) {
@@ -783,14 +842,6 @@ crosscheck.net <- function(x, param, init, control) {
   if (!is.null(control$type) && length(control$user.mods) > 0) {
     stop("Control setting 'type' must be NULL if any user-specified modules specified.",
          call. = FALSE)
-  }
-
-  if (is.null(control$type)) {
-    control$type <- "SI"
-  }
-
-  if (is.null(control$type) && length(grep("rec", names(param))) != 0){
-    control$type <- "SIR"
   }
 
   ## In-place assignment to update param and control

@@ -2314,7 +2314,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
     mean.max <- -1E10
 
     ## Quantiles - ylim max ##
-    if (missing(qnts) || qnts == FALSE) {
+    if (qnts == FALSE) {
       disp.qnts <- FALSE
     } else {
       disp.qnts <- TRUE
@@ -2322,10 +2322,11 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
     if (nsims == 1) {
       disp.qnts <- FALSE
     }
-    if (groups == 1 & missing(qnts)) {
-      disp.qnts <- TRUE
-      qnts <- 0.5
-    }
+    # NOTE: What does this accomplish?
+    #if (groups == 1 & missing(qnts)) {
+    #  disp.qnts <- TRUE
+    #  qnts <- 0.5
+    #}
     if (disp.qnts == TRUE) {
       if (qnts > 1 | qnts < 0) {
         stop("qnts must be between 0 and 1", call. = FALSE)
@@ -2333,6 +2334,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
       qnt.max <- draw_qnts(x, y, qnts, qnts.pal, qnts.smooth, "epi", 0, "max")
       qnt.min <- draw_qnts(x, y, qnts, qnts.pal, qnts.smooth, "epi", 0, "min")
     }
+
 
     ## Mean lines - ylim max ##
     if (mean.line == TRUE) {
@@ -2402,7 +2404,8 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
 
 
     ## Quantiles ##
-    if (missing(qnts) || qnts == FALSE) {
+    ## NOTE: Why is this repeated from above?
+    if (qnts == FALSE) {
       disp.qnts <- FALSE
     } else {
       disp.qnts <- TRUE
@@ -2410,10 +2413,10 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
     if (nsims == 1) {
       disp.qnts <- FALSE
     }
-    if (groups == 1 & missing(qnts)) {
-      disp.qnts <- TRUE
-      qnts <- 0.5
-    }
+    #if (groups == 1 & missing(qnts)) {
+    #  disp.qnts <- TRUE
+    #  qnts <- 0.5
+    #}
     if (disp.qnts == TRUE) {
       if (qnts > 1 | qnts < 0) {
         stop("qnts must be between 0 and 1", call. = FALSE)

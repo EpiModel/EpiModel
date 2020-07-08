@@ -22,7 +22,7 @@ test_that("time varying parameters for one-mode", {
                      rec.rate = rec.rates)
   init <- init.net(i.num = 50)
   control <- control.net(type = "SIS", nsteps = 10, nsims = 1,
-                         save.transmat = TRUE, verbose = FALSE)
+                         tergmLite = FALSE, verbose = FALSE)
   mod <- netsim(est1, param, init, control)
   expect_is(mod, "netsim")
 })
@@ -56,7 +56,7 @@ test_that("time varying parameters for two-group models", {
   init <- init.net(i.num = 10, i.num.g2 = 10,
                    r.num = 0, r.num.g2 = 0)
   control <- control.net(type = "SIR", nsteps = 10, nsims = 1,
-                         save.transmat = TRUE, verbose = FALSE)
+                         tergmLite = FALSE, verbose = FALSE)
 
   mod <- netsim(est1, param, init, control)
   expect_is(mod, "netsim")

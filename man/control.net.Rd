@@ -10,7 +10,7 @@ control.net(
   start = 1,
   nsims = 1,
   ncores = 1,
-  resimulate.network,
+  resimulate.network = FALSE,
   tergmLite = FALSE,
   attr.rules,
   epi.by,
