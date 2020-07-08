@@ -96,7 +96,7 @@ param <- param.net(inf.prob = 0.5, act.rate = 2, ei.rate = 0.01, ir.rate = 0.005
 init <- init.net(i.num = 10)
 ## If any user defined functions, type must equal NULL
 control <- control.net(type = NULL, nsteps = 100, nsims = 1, infection.FUN = infect2,
-                       progress.FUN = progress)
+                       progress.FUN = progress, prevalence.FUN = prevalence.net)
 
 ## Simulate the epidemic model
 sim <- netsim(est, param, init, control)
