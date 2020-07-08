@@ -351,7 +351,7 @@ to `resimulate.network`:
 control <- control.net(type = "SI", nsims = 10, nsteps = 10, resimulate.network = TRUE)
 ```
 
-`resimulate.network` must be set in control settings by the user; as a default, `resimulate.network` is set to `FALSE`.
+`resimulate.network` must be set in control settings by the user if that functionality is desired; as a default, `resimulate.network` is set to `FALSE`.
 
 **This update applies to both built-in and extension models.**
 
