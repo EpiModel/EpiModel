@@ -35,7 +35,7 @@ plot(sim1)
 # Network with 'group' (.g2) attribute
 num1 <- num2 <- 250
 nw <- network::network.initialize(num1+num2, directed = FALSE)
-nw <- network::set.vertex.attribute(nw, "group", rep(c(1,2), each = num1))
+nw <- network::set.vertex.attribute(nw, "group", rep(1:2, each = num1))
 formation <- ~ edges + nodematch("group") + nodefactor("group")
 target.stats <- c(150, 125, 62.5)
 coef.diss <- dissolution_coefs(dissolution = ~ offset(edges), duration = 50)

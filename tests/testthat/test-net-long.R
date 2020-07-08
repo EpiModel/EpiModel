@@ -336,7 +336,7 @@ test_that("edges two-group models", {
   skip_on_cran()
 
   nw <- network_initialize(n = 100)
-  nw <- set_vertex_attribute(nw, "group", rep(c(1,2), each = 50))
+  nw <- set_vertex_attribute(nw, "group", rep(1:2, each = 50))
   est5 <- netest(nw, formation = ~edges, target.stats = 25,
                  coef.diss = dissolution_coefs(~offset(edges), 10, 0),
                  edapprox = TRUE, verbose = FALSE)

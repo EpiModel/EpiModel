@@ -1,9 +1,8 @@
 context("Network attributes with arrivals")
 
 test_that("Updating attributes in open populations", {
-  nw <- network_initialize(n = 50, )
-  nw <- set_vertex_attribute(nw, attrname = "group",
-                             value = rbinom(50, 1, 0.5)+1) #FLAG
+  nw <- network_initialize(n = 50)
+  nw <- set_vertex_attribute(nw, attrname = "group", rep(1:2, each = 25))
 
   formation <- ~edges + nodefactor("group")
   target.stats <- c(25, 36)
@@ -22,7 +21,7 @@ test_that("Updating attributes in open populations", {
 
   init <- init.net(i.num = 10, i.num.g2 = 10)
   control <- control.net(type = "SI", nsteps = 10, nsims = 1,
-                         epi.by = "group", verbose = FALSE)
+                         resimulate.network = TRUE, verbose = FALSE)
 
   sim1 <- netsim(est1, param, init, control)
   expect_is(sim1, "netsim")
@@ -72,6 +71,7 @@ test_that("Serosorting model in open population", {
                                             nodefactor("status", levels = NULL) +
                                             nodematch("status"),
                          tergmLite = TRUE,
+                         resimulate.network = TRUE,
                          verbose = FALSE)
 
   sim <- netsim(est, param, init, control)
@@ -96,7 +96,8 @@ test_that("Save attributes to output", {
 
   init <- init.net(i.num = 10, i.num.g2 = 10)
   control <- control.net(type = "SI", nsteps = 10, nsims = 2,
-                         save.other = "attr", verbose = FALSE)
+                         save.other = "attr", resimulate.network = TRUE,
+                         verbose = FALSE)
 
   sim1 <- netsim(est1, param, init, control)
   expect_is(sim1, "netsim")
