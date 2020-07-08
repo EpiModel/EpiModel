@@ -1999,10 +1999,10 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #' @seealso \code{\link{plot.network}}, \code{\link{mutate_epi}}
 #'
 #' @examples
-#' ## Independent SI Model
+#' ## SI Model without Network Feedback
 #' # Initialize network and set network model parameters
 #' nw <- network_initialize(n = 100)
-#' nw <- set_vertex_attribute(nw, "group", rep(c(1,2), each = 50))
+#' nw <- set_vertex_attribute(nw, "group", rep(1:2, each = 50))
 #' formation <- ~edges
 #' target.stats <- 50
 #' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)

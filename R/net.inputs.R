@@ -292,15 +292,13 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #' @param nsims The total number of disease simulations.
 #' @param ncores Number of processor cores to run multiple simulations
 #'        on, using the \code{foreach} and \code{doParallel} implementations.
-#' @param start For dependent simulations, time point to start up simulation.
+#' @param start For models with network resimulation , time point to start up simulation.
 #'        For restarted simulations, this must be one greater than the final time
 #'        step in the prior simulation and must be less than the value in
 #'        \code{nsteps}.
-#' @param resimulate.network If \code{TRUE}, resimulate the network at each time step. This
-#'        occurs by default with two varieties of dependent models: if there are
-#'        any vital dynamic parameters in the model (or if non-standard arrival or
-#'        departures modules are passed into \code{control.net}), or if the network model
-#'        formation formula includes the "status" attribute.
+#' @param resimulate.network If \code{TRUE}, resimulate the network at each time
+#'        step. This is required when the epidemic or demographic processes impact
+#'        the network structure (e.g., vital dynamics).
 #' @param tergmLite Logical indicating usage of either \code{tergm} (\code{tergmLite = FALSE}),
 #'        or \code{tergmLite} (\code{tergmLite = TRUE}). Default of \code{FALSE}.
 #' @param attr.rules A list containing the  rules for setting the attributes of
@@ -494,10 +492,6 @@ control.net <- function(type,
          call. = FALSE)
   }
 
-  if (missing(resimulate.network)) {
-    warning("EpiModel 2.0 onward requires users to specify input parameter 'resimulate.network'. ",
-            "Default set to false; see help('control.net') for more information.")
-  }
 
   ## Module classification
   bi.mods <- grep(".FUN", names(formal.args), value = TRUE)
@@ -515,20 +509,6 @@ control.net <- function(type,
     p$bi.mods <- bi.mods
   }
   p$user.mods <- grep(".FUN", names(dot.args), value = TRUE)
-
-
-  if (missing(resimulate.network)) {
-    arg.list <- as.list(match.call())
-    if ((!is.null(arg.list$departures.FUN) && arg.list$departures.FUN != "departures.net") |
-        (!is.null(arg.list$arrivals.FUN) && arg.list$arrivals.FUN != "arrivals.net")) {
-      p$resimulate.network <- TRUE
-    }
-  }
-
-  # Using tergmLite --> resimulate.network = TRUE
-  if (tergmLite == TRUE) {
-    p$resimulate.network <- TRUE
-  }
 
   # Temporary until we develop a nwstats fix for tergmLite
   if (tergmLite == TRUE) {
