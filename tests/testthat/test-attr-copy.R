@@ -18,7 +18,7 @@ test_that("Copying attributes from network to attribute list",{
                      act.rate = 5)
   init <- init.net(i.num = 50, i.num.g2 = 50)
   control <- control.net(type = "SI", nsteps = 10, nsims = 2, tergmLite = FALSE,
-                         raw_output = TRUE, verbose = FALSE)
+                         raw.output = TRUE, verbose = FALSE)
 
   sim <- netsim(est, param, init, control)
 

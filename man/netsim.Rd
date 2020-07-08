@@ -36,7 +36,7 @@ A list of class \code{netsim} with the following elements:
  \item \strong{network:} a list of \code{networkDynamic} objects,
         one for each model simulation.
 }
-If \code{control$raw_output == TRUE}: A list of the raw (pre-processed) nestsim
+If \code{control$raw.output == TRUE}: A list of the raw (pre-processed) nestsim
 dat objects, for use in simulation continuation.
 }
 \description{

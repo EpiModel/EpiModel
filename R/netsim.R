@@ -53,7 +53,7 @@
 #'  \item \strong{network:} a list of \code{networkDynamic} objects,
 #'         one for each model simulation.
 #' }
-#' If \code{control$raw_output == TRUE}: A list of the raw (pre-processed) nestsim
+#' If \code{control$raw.output == TRUE}: A list of the raw (pre-processed) nestsim
 #' dat objects, for use in simulation continuation.
 #'
 #' @references
@@ -150,8 +150,8 @@ netsim <- function(x, param, init, control) {
     }
   }
 
-  # Process the outputs unless `control$raw_output` is `TRUE`
-  if (!is.null(control$raw_output) && control$raw_output) {
+  # Process the outputs unless `control$raw.output` is `TRUE`
+  if (!is.null(control$raw.output) && control$raw.output == TRUE) {
     out <- sout
   } else {
     out <- process_out.net(sout)

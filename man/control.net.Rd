@@ -32,7 +32,7 @@ control.net(
   verbose = TRUE,
   verbose.int = 1,
   skip.check = FALSE,
-  raw_output = FALSE,
+  raw.output = FALSE,
   ...
 )
 }
@@ -141,7 +141,7 @@ and control settings before running base epidemic models. Setting
 this to \code{FALSE} is recommended when running models with new modules
 specified.}
 
-\item{raw_output}{If \code{TRUE}, \code{netsim} will output a list of nestsim
+\item{raw.output}{If \code{TRUE}, \code{netsim} will output a list of nestsim
 data (one per simulation) instead of a formatted \code{netsim} object.}
 
 \item{...}{Additional control settings passed to model.}
