@@ -88,7 +88,7 @@ progress <- function(dat, at) {
 }
 
 nw <- network_initialize(n = 500)
-est <- netest(nw, formation = ~ edges, target.stats = 150,
+est <- netest(nw, formation = ~edges, target.stats = 150,
               coef.diss = dissolution_coefs(~offset(edges), 10))
 
 ## Epidemic model parameterization

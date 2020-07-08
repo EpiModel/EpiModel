@@ -62,8 +62,8 @@ also calculate summary flow measures such as disease incidence.
 
 Demographics such as arrival and departure processes are simulated at each time
 step to update entries into and exits from the network. These are used in
-dependent network models, in which the network is resimulated at each time
-step to account for the nodal changes affecting the edges.
+epidemic models with network feedback, in which the network is resimulated at
+each time step to account for the nodal changes affecting the edges.
 \itemize{
  \item \code{\link{departures.net}}: randomly simulates departure for nodes given
        their disease status (susceptible, infected, recovered), and their

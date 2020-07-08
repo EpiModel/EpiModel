@@ -24,7 +24,7 @@ Extracts a data frame of network statistics from a network
 \examples{
 # Two-group Bernoulli random graph TERGM
 nw <- network_initialize(n = 100)
-nw <- set_vertex_attribute(nw, "group", rep(c(1,2), each = 50))
+nw <- set_vertex_attribute(nw, "group", rep(1:2, each = 50))
 formation <- ~edges
 target.stats <- 50
 coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)

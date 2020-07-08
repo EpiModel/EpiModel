@@ -98,7 +98,7 @@ Along with the change to how we build two-group networks, we have also changed t
 
 Further, the default ordering of how the modules are executed within `netsim` has been changed. EpiModel 1.x workflow processed each of the modules in the order as: departures (`departures.FUN`), arrivals (`arrivals.FUN`), recovery (`recovery.FUN`), network resimulation (`resim_nets.FUN`), infection (`infection.FUN`) and prevalence updates (`prevelance.FUN`). With EpiModel 2.0, this has been updated to: network resimulation, infection, recovery, departures, arrivals, network updates, and prevalence updates. The network updates (`nwupdate.FUN`) module is new, and consolidates all modifications to the network object (this is further detailed below). The default ordering of EpiModel functions can be changed using the module order control setting, `morder`, passed to `control.net`.
 
-The table below presents a classification of the built-in modules according to two types: protected and disease. Protected modules (in red) are typically not meant to be modified by the user in most applied extension cases. Those modules of class disease (in blue) are often modified based on novel research cases. For built-in models, the protected modules have hard-coded default functions in `control.net`, while the disease modules have no hard-coded default functions because the appropriate function is selected based on the input parameters from `param.net` and initial conditions in `init.net`.
+The table below presents a classification of the built-in modules according to two types: standard and flexible. Standard modules (in red) are typically not meant to be modified by the user in most applied extension cases. Those modules of class flexible (in blue) are often modified based on novel research cases and are typically related to diease modeling. For built-in models, the protected modules have hard-coded default functions in `control.net`, while the flexible modules have no hard-coded default functions because the appropriate function is selected based on the input parameters from `param.net` and initial conditions in `init.net`.
 
 <center>
 ![](EpiModel2_modules.png){ width=75% }
@@ -114,6 +114,16 @@ Note: for two-group models, if `type` is `NULL`, the user must be mindful to sel
 ## Arrivals & Departures
 One update implemented in EpiModel 1.70, but which bears repeating, was to move away from the language of "births" and "deaths" in models with vital dynamics to "arrivals" and "departures". This accounts for a wider range of models in which entry into and exiting from the population is not necessarily through a births or mortality processes. To this end, all input parameters based on births and deaths have been renamed based on arrivals and departures. For example the birth rate `b.rate` passed to `param.net` has been renamed `a.rate` for "arrival rate." The rate for deaths remains named `d.rate` though its interpretation has changed to that of departures. Module functions based on birth and death rates have been changed: `births.FUN` and its associated base module `births.net` are now `arrivals.FUN` and `arrivals.net` (`arrivals.2g.net` in the two group case) respectively. Similar changes exists for `deaths.FUN` and `deaths.net`, which are now `departures.FUN` and `departures.net` respectively.
 
+### Extending Arrivals & Departures
+Users looking to extend the base `arrivals.FUN` and/or `departures.FUN` modules, are now required to have the following attributes tracked within their model: `active` (a list of active nodes within the network, set to `1` for active and `0` for inactive), `entrTime` (the entry time of a node into the network) and `exitTime` (the exit time of a node from the network). These attributes are set initially within `initialize.net`, however changes to these attributes must now be updated within the appropriate module. For an example on how this is done, see the code base of `arrivals.net` and `departures.net`
+
+```{r echo = TRUE, eval = FALSE}
+## Full code base for arrivals.net:
+arrivals.net()
+
+## Full code base for departures.net:
+departures.net()
+```
 
 # EpiModel New Features
 Along with the changes to EpiModel, several new features have been added to EpiModel to improve usability and clarify the epidemic simulation workflow.
@@ -147,6 +157,9 @@ By default, the use of `tergmLite` is set to `FALSE` for EpiModel simulations.
 
 ### Saving Network Data
 In parallel with the introduction of `tergmLite` methods, we have consolidated the control settings for specifying the output that is saved during simulations. When `tergmLite = FALSE` is passed in as a `control.net`setting, at simulation conclusion the full network object and transmission matrix (line list of transmission events each time step) are saved to the statistics sub-list of the resultant netsim object. Alternatively, if `termLite = TRUE` is input, these objects are not saved. As `tergmLite = FALSE` by default, these two objects are saved by default.
+
+### Removal of delete.nodes
+In EpiModel 1.x, the control parameter `delete.nodes` was used to truncate the cross-sectional representation of the full network (without individual level history of nodes and edges). This was intended to save computational time, however, in most cases this reduction did not occur. `delete.nodes` has thus been removed, and - as stated above - the full network object is retained when the `tergmLite` input parameter is `FALSE`.
 
 ## Network Update
 Prior to EpiModel 2.0, the modules within `netsim` in EpiModel were built using functions both from `EpiModel` and `network` packages. In order to make the distinction between the two packages explicit and to make the EpiModel workflow clearer, a new base model for all modifications of the network object, `nwupdate.FUN`, has been introduced. This module consolidates all interactions (reading and writing) with the network object from base functions into a separate function, `nwupdate.net`.
@@ -270,7 +283,7 @@ param <- param.net(inf.prob = 0.1, inf.prob.g2 = 0.1,
                    act.rate = 5)
 ```
 
-**This update only applies to built-in models.**
+**This update applies to both built-in and extension models.**
 
 ## Epidemic Type Specification
 When the user provides any user-defined functions, or passes in non-standard functions to base modules, as in the following schematics for infection or aging modules:
@@ -307,7 +320,7 @@ aging <- function(dat, at) {
 }
 ```
 
-The control setting `type` used to be allowed to be set to one of the three built-in model types and EpiModel would guess which other modules would be needed. 
+the control setting `type` used to be allowed to be set to one of the three built-in model types and EpiModel would guess which other modules would be needed. 
 ```{r echo = TRUE, eval = FALSE}
 ## EpiModel 1.x
 control <- control.net(type = "SI", nsims = 10, nsteps = 10,
@@ -321,7 +334,7 @@ control <- control.net(type = NULL, nsims = 10, nsteps = 10,
                        resim_net.FUN = resim_nets, infection.FUN = infect2, aging.FUN = aging)
 ```
 
-As mentioned previously, this change was done in order to emphasize to the user that this is a non-standard model type that is not handled by base EpiModel and may lead to unexpected results. Instead, all of the disease (non-protected) modules must be specified.
+As mentioned previously, this change was done in order to emphasize to the user that this is a non-standard model type that is not handled by base EpiModel and may lead to unexpected results.
 
 **This update only applies to extension models.**
 
@@ -337,6 +350,8 @@ to `resimulate.network`:
 ## EpiModel 2.0
 control <- control.net(type = "SI", nsims = 10, nsteps = 10, resimulate.network = TRUE)
 ```
+
+`resimulate.network` must be set in control settings by the user if that functionality is desired; as a default, `resimulate.network` is set to `FALSE`.
 
 **This update applies to both built-in and extension models.**
 

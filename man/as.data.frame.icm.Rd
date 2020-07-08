@@ -72,7 +72,7 @@ as.data.frame(mod, out = "qnt", qval = 0.25)
 as.data.frame(mod, out = "qnt", qval = 0.75)
 
 \dontrun{
-## Stochastic SI network model
+## Stochastic SI Network Model
 nw <- network_initialize(n = 100)
 formation <- ~edges
 target.stats <- 50

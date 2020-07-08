@@ -322,6 +322,9 @@ discord_edgelist <- function(dat, at, network = 1) {
       # Check for active status
       keep <- rowSums(matrix(c(active[del$sus], active[del$inf]), ncol = 2)) == 2
       del <- del[keep, ]
+      if (nrow(del) < 1) {
+        del <- NULL
+      }
     }
   }
 

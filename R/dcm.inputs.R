@@ -335,12 +335,12 @@ control.dcm <- function(type, nsteps, dt = 1, odemethod = "rk4",
 #' @title Cross Checking of Inputs for Deterministic Compartmental Models
 #'
 #' @description This function checks that the three parameter lists from
-#'              \code{\link{param.dcm}}, \code{\link{init.dcm}}, and
-#'              \code{\link{control.dcm}} are consistent.
+#'              `\link{param.dcm}`, `\link{init.dcm}`, and
+#'              `\link{control.dcm}` are consistent.
 #'
-#' @param param An \code{EpiModel} object of class \code{\link{param.dcm}}.
-#' @param init An \code{EpiModel} object of class \code{\link{init.dcm}}.
-#' @param control An \code{EpiModel} object of class \code{\link{control.dcm}}.
+#' @param param An `EpiModel` object of class `\link{param.dcm}`.
+#' @param init An `EpiModel` object of class `\link{init.dcm}`.
+#' @param control An `EpiModel` object of class `\link{control.dcm}`.
 #'
 #' @return
 #' This function returns no objects.

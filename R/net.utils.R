@@ -681,7 +681,7 @@ get_network_term_attr <- function(nw) {
 #'
 #' @examples
 #' nw <- network_initialize(n = 10)
-#' nw <- set_vertex_attribute(nw, "group", rep(c(1,2), each = 5))
+#' nw <- set_vertex_attribute(nw, "group", rep(1:2, each = 5))
 #' idgroup(nw)
 #' idgroup(nw, ids = c(3, 6))
 #'

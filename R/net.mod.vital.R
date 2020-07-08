@@ -14,11 +14,12 @@
 departures.net <- function(dat, at) {
 
   # Conditions --------------------------------------------------------------
-  if (get_param(dat, "vital") == FALSE) {
+  vital <- get_param(dat, "vital")
+  if (vital == FALSE){
     return(dat)
   }
-  type <- get_control(dat, "type")
 
+  type <- get_control(dat, "type")
   active <- get_attr(dat, "active")
   status <- get_attr(dat, "status")
   exitTime <- get_attr(dat, "exitTime")
@@ -103,13 +104,14 @@ departures.net <- function(dat, at) {
 arrivals.net <- function(dat, at) {
 
   # Conditions --------------------------------------------------------------
-  if (get_param(dat, "vital") == FALSE) {
+  vital <- get_param(dat, "vital")
+  if (vital == FALSE) {
     return(dat)
   }
 
   # Variables ---------------------------------------------------------------
   a.rate <- get_param(dat, "a.rate")
-  index <- at-1
+  index <- at - 1
   nOld <- get_epi(dat, "num", index)
   nArrivals <- 0
 
@@ -148,7 +150,8 @@ arrivals.net <- function(dat, at) {
 departures.2g.net <- function(dat, at) {
 
   # Conditions --------------------------------------------------------------
-  if (get_param(dat, "vital") == FALSE) {
+  vital <- get_param(dat, "vital")
+  if (vital == FALSE){
     return(dat)
   }
 
@@ -221,6 +224,7 @@ departures.2g.net <- function(dat, at) {
 
   # Output ------------------------------------------------------------------
   dat <- set_attr(dat, "active", active)
+  dat <- set_attr(dat, "exitTime", exitTime)
 
   dat <- set_epi(dat, "ds.flow", at, nDepartures.sus)
   dat <- set_epi(dat, "di.flow", at, nDepartures.inf)
@@ -253,7 +257,8 @@ departures.2g.net <- function(dat, at) {
 arrivals.2g.net <- function(dat, at) {
 
   # Conditions --------------------------------------------------------------
-  if (get_param(dat, "vital") == FALSE) {
+  vital <- get_param(dat, "vital")
+  if (vital == FALSE){
     return(dat)
   }
 

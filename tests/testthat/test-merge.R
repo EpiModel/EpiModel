@@ -106,7 +106,7 @@ test_that("merge works for open sims saving nw stats", {
   init <- init.net(i.num = 1)
   control <- control.net(type = "SI", nsteps = 5, save.nwstats = TRUE,
                          nwstats.formula = ~edges + meandeg + degree(0) + concurrent,
-                         verbose = FALSE)
+                         resimulate.network = TRUE, verbose = FALSE)
 
   x <- netsim(est, param, init, control)
   y <- netsim(est, param, init, control)

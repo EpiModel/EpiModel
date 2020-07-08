@@ -139,19 +139,27 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
     }
   }
 
-  ##Updated parameter names
+  ## Defaults and Checks
   if ("b.rate" %in% names.dot.args) {
     p$a.rate <- dot.args$b.rate
-    message("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate to a.rate. ",
-            "See documentation for details.")
+    stop("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate to a.rate. ",
+            "See documentation for details.",
+         call. = FALSE)
   }
   if ("b.rate.g2" %in% names.dot.args) {
     p$a.rate.g2 <- dot.args$b.rate.g2
-    message("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate.g2 to a.rate.g2. ",
-            "See documentation for details.")
+    stop("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate.g2 to a.rate.g2. ",
+            "See documentation for details.",
+         call. = FALSE)
   }
+  # Check for mode to group suffix change
+  m2.flag <- grep(".m2", names(p))
+  if (length(m2.flag) > 0) {
+    names(p) <- gsub(".m2", ".g2", names(p))
+    warning("EpiModel 2.0 onward has updated parameter suffixes reflecting a move from mode to group networks. ",
+            "All .m2 parameters changed to .g2. See documentation for more details.")
 
-  ## Defaults and checks
+  }
   if (missing(act.rate)) {
     p$act.rate <- 1
   }
@@ -162,7 +170,6 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
             "If using built-in models, only act.rate parameter will apply.",
             call. = FALSE)
   }
-
 
   if (!is.null(p$inter.eff) && is.null(p$inter.start)) {
     p$inter.start <- 1
@@ -244,6 +251,14 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
   }
 
   ## Defaults and checks
+
+  # Checks that .m2 syntax is change to .g2
+  m2.init <- grep("m2", names(p), value = TRUE)
+  if (length(m2.init) > 0) {
+    names(p) <- gsub(".m2", ".g2", names(p))
+    warning("EpiModel 2.0 onward has updated initial condition suffixes reflecting a move from mode to group networks. ",
+            "All .m2 initial conditions changed to .g2. See documentation for more details.")
+  }
   if (!is.null(p$i.num) & !is.null(p$status.vector)) {
     stop("Use i.num OR status.vector to set initial infected")
   }
@@ -277,15 +292,13 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #' @param nsims The total number of disease simulations.
 #' @param ncores Number of processor cores to run multiple simulations
 #'        on, using the \code{foreach} and \code{doParallel} implementations.
-#' @param start For dependent simulations, time point to start up simulation.
+#' @param start For models with network resimulation , time point to start up simulation.
 #'        For restarted simulations, this must be one greater than the final time
 #'        step in the prior simulation and must be less than the value in
 #'        \code{nsteps}.
-#' @param resimulate.network If \code{TRUE}, resimulate the network at each time step. This
-#'        occurs by default with two varieties of dependent models: if there are
-#'        any vital dynamic parameters in the model (or if non-standard arrival or
-#'        departures modules are passed into \code{control.net}), or if the network model
-#'        formation formula includes the "status" attribute.
+#' @param resimulate.network If \code{TRUE}, resimulate the network at each time
+#'        step. This is required when the epidemic or demographic processes impact
+#'        the network structure (e.g., vital dynamics).
 #' @param tergmLite Logical indicating usage of either \code{tergm} (\code{tergmLite = FALSE}),
 #'        or \code{tergmLite} (\code{tergmLite = TRUE}). Default of \code{FALSE}.
 #' @param attr.rules A list containing the  rules for setting the attributes of
@@ -345,7 +358,7 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #'        and control settings before running base epidemic models. Setting
 #'        this to \code{FALSE} is recommended when running models with new modules
 #'        specified.
-#' @param raw_output If \code{TRUE}, \code{netsim} will output a list of nestsim
+#' @param raw.output If \code{TRUE}, \code{netsim} will output a list of nestsim
 #'        data (one per simulation) instead of a formatted \code{netsim} object.
 #' @param ... Additional control settings passed to model.
 #'
@@ -407,7 +420,7 @@ control.net <- function(type,
                         start = 1,
                         nsims = 1,
                         ncores = 1,
-                        resimulate.network,
+                        resimulate.network = FALSE,
                         tergmLite = FALSE,
                         attr.rules,
                         epi.by,
@@ -429,7 +442,7 @@ control.net <- function(type,
                         verbose = TRUE,
                         verbose.int = 1,
                         skip.check = FALSE,
-                        raw_output = FALSE,
+                        raw.output = FALSE,
                         ...) {
 
   # Get arguments
@@ -452,33 +465,49 @@ control.net <- function(type,
   if ("births.FUN" %in% names(dot.args)) {
     p$arrivals.FUN <- dot.args$births.FUN
     p$births.FUN <- dot.args$births.FUN <- NULL
-    message("EpiModel 1.7.0 onward renamed the birth function births.FUN to arrivals.FUN. See documentation for details.")
+    stop("EpiModel 1.7.0 onward renamed the birth function births.FUN to arrivals.FUN. ",
+         "See documentation for details.",
+         call. = FALSE)
   }
   if ("deaths.FUN" %in% names(dot.args)) {
     p$departures.FUN <- dot.args$deaths.FUN
     p$deaths.FUN <- dot.args$deaths.FUN <- NULL
-    message("EpiModel 1.7.0 onward renamed the death function deaths.FUN to departures.FUN. See documentation for details.")
+    stop("EpiModel 1.7.0 onward renamed the death function deaths.FUN to departures.FUN. ",
+         "See documentation for details.",
+         call. = FALSE)
+  }
+
+  if ("depend" %in% names(dot.args)) {
+    p$resimulate.network <- dot.args$depend
+    stop("EpiModel >= 2.0 has renamed the control.net setting `depend` to ",
+         "`resimulate.network`. Update your code accordingly.",
+         call. = FALSE)
+  }
+
+  if ("save.network" %in% names(dot.args) || "save.transmat" %in% names(dot.args)) {
+    p$tergmLite <- FALSE
+    stop("EpiModel >= 2.0 has integrated options for saving of the network object and transmission ",
+         "matrix into control.net setting tergmLite: if FALSE, these are saved automatically; ",
+         "if TRUE, they are not saved. Update your code accordingly.",
+         call. = FALSE)
   }
 
   ## Module classification
   bi.mods <- grep(".FUN", names(formal.args), value = TRUE)
+  p$bi.mods <- character()
   bi.nms <- bi.mods
-  p$bi.mods <- bi.mods
-  p$user.mods <- grep(".FUN", names(dot.args), value = TRUE)
-
-
-  if (missing(resimulate.network)) {
-    arg.list <- as.list(match.call())
-    if ((!is.null(arg.list$departures.FUN) && arg.list$departures.FUN != "departures.net") |
-        (!is.null(arg.list$arrivals.FUN) && arg.list$arrivals.FUN != "arrivals.net")) {
-      p$resimulate.network <- TRUE
+  index <- 1
+  if (is.null(p$type)) {
+    for (i in 1:length(bi.mods)) {
+      if (!is.null(p[[bi.mods[i]]])) {
+        p$bi.mods[index] <- bi.mods[i]
+        index <- index + 1
+      }
     }
+  } else{
+    p$bi.mods <- bi.mods
   }
-
-  # Using tergmLite --> resimulate.network = TRUE
-  if (tergmLite == TRUE) {
-    p$resimulate.network <- TRUE
-  }
+  p$user.mods <- grep(".FUN", names(dot.args), value = TRUE)
 
   # Temporary until we develop a nwstats fix for tergmLite
   if (tergmLite == TRUE) {
@@ -488,8 +517,9 @@ control.net <- function(type,
   ## Defaults and checks
 
   #Check whether any base modules have been redefined by user (note: must come after above)
-  bi.nms <- bi.nms[-which(bi.nms %in% c("initialize.FUN", "resim_nets.FUN", "verbose.FUN", "nwupdate.FUN"))]
-  if (length(bi.nms) > 0){
+  bi.nms <- bi.nms[-which(bi.nms %in% c("initialize.FUN", "resim_nets.FUN",
+                                        "verbose.FUN", "nwupdate.FUN", "prevalence.FUN"))]
+  if (length(bi.nms) > 0) {
     flag1 <- logical()
     for (args in 1:length(bi.nms)) {
       if (!(is.null(p[[bi.nms[args]]])) ) {
@@ -500,16 +530,19 @@ control.net <- function(type,
     }
 
     if (!is.null(p$type) && sum(flag1, na.rm = TRUE) != length(flag1)) {
-      stop("Control parameter 'type' must be null if any user defined base modules are present")
+      stop("Control parameter 'type' must be null if any user defined base modules are present",
+           call. = FALSE)
     }
   }
 
   if (!is.null(p$type) && length(p$user.mods) > 0) {
-    stop("Control parameter 'type' must be null if any user specified modules are present")
+    stop("Control parameter 'type' must be null if any user specified modules are present",
+         call. = FALSE)
   }
 
   if (is.null(p$nsteps)) {
-    stop("Specify nsteps")
+    stop("Specify nsteps",
+         call. = FALSE)
   }
 
   if (missing(attr.rules)) {
@@ -715,7 +748,6 @@ crosscheck.net <- function(x, param, init, control) {
                "parameter instead.", call. = FALSE)
         }
       }
-
     }
 
     if (control$start > 1) {
@@ -783,14 +815,6 @@ crosscheck.net <- function(x, param, init, control) {
   if (!is.null(control$type) && length(control$user.mods) > 0) {
     stop("Control setting 'type' must be NULL if any user-specified modules specified.",
          call. = FALSE)
-  }
-
-  if (is.null(control$type)) {
-    control$type <- "SI"
-  }
-
-  if (is.null(control$type) && length(grep("rec", names(param))) != 0){
-    control$type <- "SIR"
   }
 
   ## In-place assignment to update param and control

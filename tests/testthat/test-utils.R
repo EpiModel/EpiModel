@@ -155,7 +155,7 @@ test_that("dissolution_coefs returns appropriate error for incompatible departur
   dissolution = ~offset(edges) + offset(nodematch("age.grp", diff = TRUE))
   err.msg <- paste("The competing risk of departure is too high for the given",
                    "edge duration of 60 in place 1.",
-                    "Specify a d.rate lower than 0.00837.")
+                   "Specify a d.rate lower than 0.00837.")
   expect_that(dissolution_coefs(dissolution, duration = duration, d.rate = 1/60), throws_error(err.msg))
 })
 
@@ -181,22 +181,31 @@ test_that("get_formula_term_attr checks", {
 })
 
 test_that("Users using birth parameters are informed of change in language",{
-  expect_that(param.net(b.rate = 2), shows_message("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate to a.rate. See documentation for details."))
+  expect_error(param.net(b.rate = 2), paste0("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate to a.rate. See documentation for details."))
   expect_that(param.dcm(b.rate = 2), shows_message("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate to a.rate. See documentation for details."))
   expect_that(param.icm(b.rate = 2), shows_message("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate to a.rate. See documentation for details."))
 })
 
-test_that("Users using birth and death functions are informed of change
-in language",{
-  temp <- function(x){x=x; return(x)}
-  expect_that(control.icm(type="SI",nsteps=10,births.FUN=temp), shows_message("EpiModel 1.7.0 onward renamed the birth function births.FUN to arrivals.FUN. See documentation for details."))
-  expect_that(control.icm(type="SI",nsteps=10,deaths.FUN=temp), shows_message("EpiModel 1.7.0 onward renamed the death function deaths.FUN to departures.FUN. See documentation for details."))
-  expect_that(control.net(type = NULL, nsims = 1, nsteps = 10,
+test_that("Users using birth and death functions are informed of change in language",{
+  temp <- function(x){x = x; return(x)}
+  expect_error(control.net(type = NULL, nsims = 1, nsteps = 10,
                           departures.FUN = temp, arrivals.FUN = temp,
                           prevalence.FUN = prevalence.net, infection.FUN = infection.net,
-                          recovery.FUN = recovery.net, births.FUN=temp, depend = FALSE), shows_message("EpiModel 1.7.0 onward renamed the birth function births.FUN to arrivals.FUN. See documentation for details."))
-  expect_that(control.net(type = NULL, nsims = 1, nsteps = 10,
+                          recovery.FUN = recovery.net, births.FUN = temp, resimulate.network = FALSE), paste0("EpiModel 1.7.0 onward renamed the birth function births.FUN to arrivals.FUN. See documentation for details."))
+  expect_error(control.net(type = NULL, nsims = 1, nsteps = 10,
                           departures.FUN = temp, arrivals.FUN = temp,
                           prevalence.FUN = prevalence.net, infection.FUN = infection.net,
-                          recovery.FUN = recovery.net, deaths.FUN=temp, depend = FALSE), shows_message("EpiModel 1.7.0 onward renamed the death function deaths.FUN to departures.FUN. See documentation for details."))
+                          recovery.FUN = recovery.net, deaths.FUN = temp, resimulate.network = FALSE), paste0("EpiModel 1.7.0 onward renamed the death function deaths.FUN to departures.FUN. See documentation for details."))
 })
+
+test_that("Users using old mode syntax are informed of change to group syntax", {
+
+  err.param <- paste0("EpiModel 2.0 onward has updated parameter suffixes reflecting a move from mode to group networks. ",
+                      "All .m2 parameters changed to .g2. See documentation for more details.")
+  expect_warning(param <- param.net(inf.prob = 0.1, inf.prob.m2 = 0.1, act.rate = 1),
+                 err.param)
+  err.init <- paste0("EpiModel 2.0 onward has updated initial condition suffixes reflecting a move from mode to group networks. ",
+                    "All .m2 initial conditions changed to .g2. See documentation for more details.")
+  expect_warning(init <- init.net(i.num = 1, i.num.m2 = 1), err.init)
+})
+

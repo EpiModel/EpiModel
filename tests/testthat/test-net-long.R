@@ -297,9 +297,8 @@ test_that("High departure rate models", {
                      a.rate = 0.01, ds.rate = 0.25,
                      di.rate = 0.1)
   init <- init.net(i.num = 10)
-  control <- control.net(type = "SI", nsteps = 25,
-                         nsims = 1,
-                         verbose = FALSE)
+  control <- control.net(type = "SI", nsteps = 25, nsims = 1,
+                         resimulate.network = TRUE, verbose = FALSE)
   x <- netsim(est, param, init, control)
   expect_equal(unique(sapply(x$epi, nrow)), 25)
   summary(x, at = 25)
@@ -316,8 +315,8 @@ test_that("High departure rate models", {
   param <- param.net(inf.prob = 0.1, act.rate = 2, a.rate = 0.01,
                      ds.rate = 0.01, di.rate = 0.25)
   init <- init.net(i.num = 10)
-  control <- control.net(type = "SI", nsteps = 25,
-                         nsims = 1, verbose = FALSE)
+  control <- control.net(type = "SI", nsteps = 25, nsims = 1,
+                         resimulate.network = TRUE, verbose = FALSE)
   x <- netsim(est, param, init, control)
   expect_equal(unique(sapply(x$epi, nrow)), 25)
   expect_output(summary(x, at = 25), "EpiModel Summary")
@@ -336,7 +335,7 @@ test_that("edges two-group models", {
   skip_on_cran()
 
   nw <- network_initialize(n = 100)
-  nw <- set_vertex_attribute(nw, "group", rep(c(1,2), each = 50))
+  nw <- set_vertex_attribute(nw, "group", rep(1:2, each = 50))
   est5 <- netest(nw, formation = ~edges, target.stats = 25,
                  coef.diss = dissolution_coefs(~offset(edges), 10, 0),
                  edapprox = TRUE, verbose = FALSE)
@@ -447,7 +446,7 @@ test_that("Open population 1 group models", {
                      ds.rate = 0.01, di.rate = 0.01)
   init <- init.net(i.num = 10)
   control <- control.net(type = "SI", nsteps = 10, nsims = 1,
-                         verbose = FALSE)
+                         resimulate.network = TRUE, verbose = FALSE)
   x <- netsim(est.vit, param, init, control)
   expect_is(x, "netsim")
   expect_is(as.data.frame(x), "data.frame")
@@ -463,9 +462,8 @@ test_that("Open population 1 group models", {
   param <- param.net(inf.prob = 0.5, act.rate = 2, a.rate = 0.01,
                      ds.rate = 0.01, di.rate = 0.01)
   init <- init.net(i.num = 10)
-  control <- control.net(type = "SI", nsteps = 10,
-                         nsims = 2,
-                         verbose = FALSE)
+  control <- control.net(type = "SI", nsteps = 10, nsims = 2,
+                         resimulate.network = TRUE, verbose = FALSE)
   x <- netsim(est.vit, param, init, control)
   expect_is(x, "netsim")
   expect_is(as.data.frame(x), "data.frame")
@@ -483,7 +481,7 @@ test_that("Open population 1 group models", {
                      dr.rate = 0.01)
   init <- init.net(i.num = 10, r.num = 0)
   control <- control.net(type = "SIR", nsteps = 10, nsims = 1,
-                         verbose = FALSE)
+                         resimulate.network = TRUE, verbose = FALSE)
   x <- netsim(est.vit, param, init, control)
   expect_is(x, "netsim")
   expect_is(as.data.frame(x), "data.frame")
@@ -501,7 +499,7 @@ test_that("Open population 1 group models", {
                      dr.rate = 0.01)
   init <- init.net(i.num = 10, r.num = 0)
   control <- control.net(type = "SIR", nsteps = 10, nsims = 2,
-                         verbose = FALSE)
+                         resimulate.network = TRUE, verbose = FALSE)
   x <- netsim(est.vit, param, init, control)
   expect_is(x, "netsim")
   expect_is(as.data.frame(x), "data.frame")
@@ -518,7 +516,7 @@ test_that("Open population 1 group models", {
                      a.rate = 0.01, ds.rate = 0.01, di.rate = 0.01)
   init <- init.net(i.num = 10)
   control <- control.net(type = "SIS", nsteps = 10, nsims = 1,
-                         verbose = FALSE)
+                         resimulate.network = TRUE, verbose = FALSE)
   x <- netsim(est.vit, param, init, control)
   expect_is(x, "netsim")
   expect_is(as.data.frame(x), "data.frame")
@@ -532,7 +530,7 @@ test_that("Open population 1 group models", {
 
   ## "SIS, 1M, OP: 2 sim"
   control <- control.net(type = "SIS", nsteps = 10, nsims = 2,
-                         verbose = FALSE)
+                         resimulate.network = TRUE, verbose = FALSE)
   x <- netsim(est.vit, param, init, control)
   expect_is(x, "netsim")
   expect_is(as.data.frame(x), "data.frame")
@@ -564,7 +562,7 @@ test_that("Open-population two-group models", {
                      a.rate.g2 = 0.01, ds.rate.g2 = 0.01, di.rate.g2 = 0.01)
   init <- init.net(i.num = 10, i.num.g2 = 10)
   control <- control.net(type = "SI", nsteps = 10, nsims = 1,
-                         verbose = FALSE)
+                         resimulate.network = TRUE, verbose = FALSE)
   x <- netsim(est5.vit, param, init, control)
   expect_is(x, "netsim")
   expect_is(as.data.frame(x), "data.frame")
@@ -583,7 +581,7 @@ test_that("Open-population two-group models", {
                      a.rate.g2 = 0.01, ds.rate.g2 = 0.01, di.rate.g2 = 0.01)
   init <- init.net(i.num = 10, i.num.g2 = 10)
   control <- control.net(type = "SI", nsteps = 10, nsims = 2,
-                         verbose = FALSE)
+                         resimulate.network = TRUE, verbose = FALSE)
   x <- netsim(est5.vit, param, init, control)
   expect_is(x, "netsim")
   expect_is(as.data.frame(x), "data.frame")
@@ -604,7 +602,7 @@ test_that("Open-population two-group models", {
   init <- init.net(i.num = 10, i.num.g2 = 0,
                    r.num = 0, r.num.g2 = 10)
   control <- control.net(type = "SIR", nsteps = 10, nsims = 1,
-                         verbose = FALSE)
+                         resimulate.network = TRUE, verbose = FALSE)
   x <- netsim(est5.vit, param, init, control)
   expect_is(x, "netsim")
   expect_is(as.data.frame(x), "data.frame")
@@ -618,7 +616,7 @@ test_that("Open-population two-group models", {
 
   ## "SIR, 2M, OP: 3 sim"
   control <- control.net(type = "SIR", nsteps = 10, nsims = 2,
-                         verbose = FALSE)
+                         resimulate.network = TRUE, verbose = FALSE)
   x <- netsim(est5.vit, param, init, control)
   expect_is(x, "netsim")
   expect_is(as.data.frame(x), "data.frame")
@@ -650,7 +648,7 @@ test_that("Extinction open-population models", {
                      a.rate.g2 = 0.01, ds.rate.g2 = 0.01, di.rate.g2 = 0.01)
   init <- init.net(i.num = 5, i.num.g2 = 0)
   control <- control.net(type = "SI", nsteps = 30, nsims = 1,
-                         verbose = FALSE)
+                         resimulate.network = TRUE, verbose = FALSE)
   x <- netsim(est, param, init, control)
   expect_output(summary(x, at = 10), "EpiModel Summary")
   plot(x)
@@ -665,7 +663,7 @@ test_that("Extinction open-population models", {
                      a.rate.g2 = 0.01, ds.rate.g2 = 0.5, di.rate.g2 = 0.5)
   init <- init.net(i.num = 5, i.num.g2 = 0)
   control <- control.net(type = "SI", nsteps = 30, nsims = 1,
-                         verbose = FALSE)
+                         resimulate.network = TRUE, verbose = FALSE)
   x <- netsim(est, param, init, control)
   expect_output(summary(x, at = 10), "EpiModel Summary")
   plot(x)
