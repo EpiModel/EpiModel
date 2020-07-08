@@ -46,7 +46,8 @@ sim_nets <- function(x, nw, nsteps, control) {
 #' @keywords netUtils internal
 #'
 resim_nets <- function(dat, at) {
-  #Variables
+
+  # Variables
   tergmLite <- get_control(dat, "tergmLite")
   save.nwstats <- get_control(dat, "save.nwstats")
   resimulate.network <- get_control(dat, "resimulate.network")
@@ -81,7 +82,7 @@ resim_nets <- function(dat, at) {
     }
 
     # Network simulation
-    if (anyActive > 0 & resimulate.network) {
+    if (anyActive > 0 & resimulate.network == TRUE) {
       suppressWarnings(
         dat$nw[[1]] <- simulate(dat$nw[[1]],
                            formation = nwparam$formation,
@@ -104,7 +105,7 @@ resim_nets <- function(dat, at) {
   }
 
   # networkLite/tergmLite Method
-  if (tergmLite == TRUE) {
+  if (tergmLite == TRUE & resimulate.network == TRUE) {
     dat <- tergmLite::updateModelTermInputs(dat)
     dat$el[[1]] <- tergmLite::simulate_network(p = dat$p[[1]],
                                                el = dat$el[[1]],
