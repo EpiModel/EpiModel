@@ -9,9 +9,9 @@ test_that("Copying attributes from network to attribute list",{
   nw <- set_vertex_attribute(nw, "group", rep(1:2, each = num1))
   nw <- set_vertex_attribute(nw, "race", sample(c("B","W"), num1 + num2, replace = TRUE))
   nw <- set_vertex_attribute(nw, "region", sample(1:4, num1 + num2, replace = TRUE))
-  formation <- ~ edges + nodematch("group")
+  formation <- ~edges + nodematch("group")
   target.stats <- c(400, 0)
-  coef.diss <- dissolution_coefs(dissolution = ~ offset(edges), duration = 25)
+  coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 25)
   est <- netest(nw, formation, target.stats, coef.diss)
 
   param <- param.net(inf.prob = 0.1, inf.prob.g2 = 0.2,

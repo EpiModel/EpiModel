@@ -148,9 +148,9 @@ test_that("tergmLite: 2G, Open", {
 num1 <- num2 <- 500
 nw <- network_initialize(n = num1 + num2)
 nw <- set_vertex_attribute(nw, "group", rep(1:2, each = num1))
-formation <- ~ edges + nodematch("group")
+formation <- ~edges + nodematch("group")
 target.stats <- c(400, 0)
-coef.diss <- dissolution_coefs(dissolution = ~ offset(edges), duration = 25, d.rate = 0.005)
+coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 25, d.rate = 0.005)
 est <- netest(nw, formation, target.stats, coef.diss)
 
 # Parameters
@@ -339,9 +339,9 @@ test_that("tergmLite: 2G, Open", {
   num1 <- num2 <- 500
   nw <- network_initialize(n = num1 + num2)
   nw <- set_vertex_attribute(nw, "group", rep(1:2, each = num1))
-  formation <- ~ edges + nodematch("group")
+  formation <- ~edges + nodematch("group")
   target.stats <- c(400, 0)
-  coef.diss <- dissolution_coefs(dissolution = ~ offset(edges), duration = 25, d.rate = 0.005)
+  coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 25, d.rate = 0.005)
   est <- netest(nw, formation, target.stats, coef.diss)
 
   # Parameters
