@@ -25,7 +25,7 @@ measures are provided, so it is necessary to input a time of interest.
 }
 \examples{
 \dontrun{
-## Independent SI Model
+## SI Model without Network Feedback
 # Initialize network and set network model parameters
 nw <- network_initialize(n = 100)
 nw <- set_vertex_attribute(nw, "group", rep(1:2, each = 50))

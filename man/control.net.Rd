@@ -47,7 +47,7 @@ positive integer that is equal to the final step of a simulation. If
 simulation is restarted with \code{start} argument, this number must
 be at least one greater than that argument's value.}
 
-\item{start}{For dependent simulations, time point to start up simulation.
+\item{start}{For models with network resimulation , time point to start up simulation.
 For restarted simulations, this must be one greater than the final time
 step in the prior simulation and must be less than the value in
 \code{nsteps}.}
@@ -57,11 +57,9 @@ step in the prior simulation and must be less than the value in
 \item{ncores}{Number of processor cores to run multiple simulations
 on, using the \code{foreach} and \code{doParallel} implementations.}
 
-\item{resimulate.network}{If \code{TRUE}, resimulate the network at each time step. This
-occurs by default with two varieties of dependent models: if there are
-any vital dynamic parameters in the model (or if non-standard arrival or
-departures modules are passed into \code{control.net}), or if the network model
-formation formula includes the "status" attribute.}
+\item{resimulate.network}{If \code{TRUE}, resimulate the network at each time
+step. This is required when the epidemic or demographic processes impact
+the network structure (e.g., vital dynamics).}
 
 \item{tergmLite}{Logical indicating usage of either \code{tergm} (\code{tergmLite = FALSE}),
 or \code{tergmLite} (\code{tergmLite = TRUE}). Default of \code{FALSE}.}
