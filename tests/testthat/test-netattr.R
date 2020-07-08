@@ -70,7 +70,7 @@ test_that("Serosorting model in open population", {
                                             meandeg +
                                             nodefactor("status", levels = NULL) +
                                             nodematch("status"),
-                         tergmLite = TRUE,
+                         tergmLite = FALSE,
                          resimulate.network = TRUE,
                          verbose = FALSE)
 
