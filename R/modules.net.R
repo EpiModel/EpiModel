@@ -89,13 +89,13 @@
 #'        and prints this to the console.
 #' }
 #'
-#' @section One- & Two-Mode Modules:
+#' @section One- & Two-Group Modules:
 #' If epidemic \code{type} is supplied within \code{\link{control.net}}, EpiModel
-#' defaults each of the base epidemic modules described above (arrivals.FUN,
-#' departures.FUN, infection.FUN, recovery.FUN and prevalence.FUN) to the correct .net
+#' defaults each of the base epidemic and demographic modules described above (arrivals.FUN,
+#' departures.FUN, infection.FUN, recovery.FUN) to the correct .net
 #' function based on variables passed to \code{\link{param.net}} (e.g. num.g2, denoting
-#' population size of mode two, would select the two-mode variants of the aformentioned
-#' modules). Two-mode modules are denoted by a .bip affix (e.g., recovery.net.bip)
+#' population size of mode two, would select the two-mode variants of the aforementioned
+#' modules). Two-mode modules are denoted by a .2g affix (e.g., recovery.2g.net)
 #'
 #'
 #' @name modules.net
