@@ -108,7 +108,7 @@
 #' init <- init.net(i.num = 10, i.num.g2 = 10,
 #'                  r.num = 0, r.num.g2 = 0)
 #' control <- control.net(type = "SIR", nsteps = 100, nsims = 5,
-#'                        resimulate.network = TRUE)
+#'                        resimulate.network = TRUE, tergmLite = TRUE)
 #'
 #' # Simulate the model with new network fit
 #' mod2 <- netsim(est2, param, init, control)
@@ -116,7 +116,7 @@
 #' # Print, plot, and summarize the results
 #' mod2
 #' plot(mod2)
-#' summary(mod2, at = 100)
+#' summary(mod2, at = 40)
 #' }
 #'
 netsim <- function(x, param, init, control) {
