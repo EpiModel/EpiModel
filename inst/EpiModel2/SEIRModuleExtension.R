@@ -11,6 +11,8 @@ infect2 <- function(dat, at) {
   active <- get_attr(dat, "active")
   status <- get_attr(dat, "status")
   infTime <- get_attr(dat, "infTime")
+  act.rate <- get_param(dat, "act.rate")
+  inf.prob <- get_param(dat, "inf.prob")
 
   idsInf <- which(active == 1 & status == "i")
   nActive <- sum(active == 1)
@@ -21,6 +23,8 @@ infect2 <- function(dat, at) {
   if (nElig > 0 && nElig < nActive) {
     del <- discord_edgelist(dat, at)
     if (!(is.null(del))) {
+      del$transProb <- inf.prob
+      del$actRate <- act.rate
       del$finalProb <- 1 - (1 - del$transProb)^del$actRate
       transmit <- rbinom(nrow(del), 1, del$finalProb)
       del <- del[which(transmit == 1), ]

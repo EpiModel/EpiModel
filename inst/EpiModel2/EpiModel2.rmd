@@ -479,7 +479,7 @@ init <- init.net(i.num = 20, i.num.g2 = 20)
 Finally, control parameters `depend` and `save.network` (along with `save.transmat`) have been replaced. The control parameter `resimulate.network` has replaced `depend` when a user wishes to resimulate the network at each timestep of simulation; this is to make it clearer what the parameter is actually doing. The parameters `save.network` and `save.transmat` have been replaced with `tergmLite`: if a user wishes to save the network and transmission matrix, they must use the full simulation approach provided by `tergm` (`tergmLite == FALSE`); otherwise, `tergmLite` is used, and no network of transmission matrix is saved. Thus:
 ```{r echo = TRUE, eval = FALSE}
 ## EpiModel 1.x
-control <- control.net(type = "SI", nsteps = 100, depend = TRUE, 
+control <- control.net(type = "SI", nsteps = 100, depend = FALSE, 
                        save.network = TRUE)
 ```
 
@@ -487,7 +487,7 @@ should be updated to the following, where the network object is always saved if 
 ```{r echo = TRUE, eval = FALSE}
 ## EpiModel 2.0:
 # control.net parameter depend updated to resimulate.network; save.network folded into tergmLite.
-control <- control.net(type = "SI", nsteps = 100, resimulate.network = TRUE,
+control <- control.net(type = "SI", nsteps = 100, resimulate.network = FALSE,
                        tergmLite = FALSE)
 ```
 
@@ -539,14 +539,14 @@ The input parameters for departures do not need to be updated. However, users sh
 ```{r echo = TRUE, eval = FALSE}
 ## EpiModel 1.x
 init <- init.net(i.num = 30)
-control <- control.net(type = "SIR", nsteps = 100, depend = FALSE, 
+control <- control.net(type = "SIR", nsteps = 100, depend = TRUE, 
                        save.network = FALSE)
 ```
 
 ```{r echo = TRUE, eval = FALSE}
 ## EpiModel 2.0
 init <- init.net(i.num = 30)
-control <- control.net(type = "SIR", nsteps = 100, resimulate.network = FALSE,
+control <- control.net(type = "SIR", nsteps = 100, resimulate.network = TRUE,
                        tergmLite = TRUE)
 ```
 

@@ -21,7 +21,7 @@ control.net(
   departures.FUN = NULL,
   arrivals.FUN = NULL,
   nwupdate.FUN = nwupdate.net,
-  prevalence.FUN = NULL,
+  prevalence.FUN = prevalence.net,
   verbose.FUN = verbose.net,
   module.order = NULL,
   set.control.ergm,

@@ -256,7 +256,7 @@ init <- init.net(i.num = 50)
 control <- control.net(type = NULL, nsims = 5, nsteps = 500,
                        departures.FUN = dfunc, arrivals.FUN = afunc,
                        prevalence.FUN = prevalence.net, infection.FUN = infection.net,
-                       resim_nets.FUN = resim_nets, aging.FUN = aging)
+                       aging.FUN = aging, resimulate.network = TRUE)
 
 ## Simulate the epidemic model
 sim3 <- netsim(est3, param, init, control)
@@ -371,7 +371,7 @@ init <- init.net(i.num = 10)
 control <- control.net(type = NULL, nsteps = 500, nsims = 5,
                        skip.check = TRUE, verbose.int = 0,
                        infection.FUN = infect, progress.FUN = progress,
-                       resim_net.FUN = resim_nets, prevalence.FUN = prevalence.net,
+                       prevalence.FUN = prevalence.net,
                        resimulate.network = FALSE)
 
 ## Simulate the epidemic model

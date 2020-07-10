@@ -2421,6 +2421,8 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
       if (qnts > 1 | qnts < 0) {
         stop("qnts must be between 0 and 1", call. = FALSE)
       }
+      y.l <- length(y)/groups
+      qnts.pal <- rep(qnts.pal[1:y.l], 2)
       draw_qnts(x, y, qnts, qnts.pal, qnts.smooth)
     }
 
