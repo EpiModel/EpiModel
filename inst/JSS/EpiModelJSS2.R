@@ -97,15 +97,16 @@ plot(sim1, type = "network", at = 500, sims = "mean",
 set.seed(12345)
 
 ## Initial the network
-num.m1 <- num.m2 <- 500
-nw <- network_initialize(n = num.m1 + num.m2)
+num.g1 <- num.g2 <- 500
+nw <- network_initialize(n = num.g1 + num.g2)
 nw <- set_vertex_attribute(nw, "group", rep(1:2, each = 500))
+
 ## Enter the sex-specific degree distributions
-deg.dist.m1 <- c(0.40, 0.55, 0.04, 0.01)
-deg.dist.m2 <- c(0.48, 0.41, 0.08, 0.03)
+deg.dist.g1 <- c(0.40, 0.55, 0.04, 0.01)
+deg.dist.g2 <- c(0.48, 0.41, 0.08, 0.03)
 
 ## Check the balancing of the degree distributions
-check_bip_degdist(num.m1, num.m2, deg.dist.m1, deg.dist.m2)
+check_degdist_bal(num.g1, num.g2, deg.dist.g1, deg.dist.g2)
 
 ## Enter the formation model for the ERGM
 formation <- ~edges + degree(0:1, by = "group") + nodematch("group")
@@ -140,7 +141,8 @@ param <- param.net(inf.prob = 0.3, inf.prob.g2 = 0.1,
 
 ## Control settings
 control <- control.net(type = "SI", nsims = 10, nsteps = 500,
-                       nwstats.formula = ~edges + meandeg)
+                       nwstats.formula = ~edges + meandeg,
+                       resimulate.network = TRUE)
 
 ## Simulate the epidemic model
 sim2 <- netsim(est2, param, init, control)

@@ -1,9 +1,9 @@
 # Exported Functions ------------------------------------------------------
 
-#' @title Check Degree Distribution for Bipartite Target Statistics
+#' @title Check Degree Distribution for Balance in Target Statistics
 #'
 #' @description Checks for consistency in the implied network statistics
-#'              of a two group network in which the group size and group-specific
+#'              of a two-group network in which the group size and group-specific
 #'              degree distributions are specified.
 #'
 #' @param num.g1 Number of nodes in group 1.
@@ -12,32 +12,27 @@
 #' @param deg.dist.g2 Vector with fractional degree distribution for group 2.
 #'
 #' @details
-#' This function outputs the number of nodes of degree 0 to m, where m is the
+#' This function outputs the number of nodes of degree 0 to g, where g is the
 #' length of a fractional degree distribution vector, given that vector and the
 #' size of the group. This utility is used to check for balance in implied degree
-#' given that fractional distribution within bipartite network simulations, in
+#' given that fractional distribution within two-group network simulations, in
 #' which the degree-constrained counts must be equal across groups.
-#'
-#' @seealso
-#' For a detailed explanation of this function, see the tutorial:
-#' \href{http://statnet.github.io/tut/NetUtils.html}{EpiModel Network
-#' Utility Functions}.
 #'
 #' @export
 #' @keywords netUtils
 #'
 #' @examples
-#' # An imbalanced distribution
-#' check_bip_degdist(num.g1 = 500, num.g2 = 500,
+#' # An unbalanced distribution
+#' check_degdist_bal(num.g1 = 500, num.g2 = 500,
 #'                   deg.dist.g2 = c(0.40, 0.55, 0.03, 0.02),
 #'                   deg.dist.g1 = c(0.48, 0.41, 0.08, 0.03))
 #'
 #' # A balanced distribution
-#' check_bip_degdist(num.g1 = 500, num.g2 = 500,
+#' check_degdist_bal(num.g1 = 500, num.g2 = 500,
 #'                   deg.dist.g1 = c(0.40, 0.55, 0.04, 0.01),
 #'                   deg.dist.g2 = c(0.48, 0.41, 0.08, 0.03))
 #'
-check_bip_degdist <- function(num.g1, num.g2,
+check_degdist_bal <- function(num.g1, num.g2,
                               deg.dist.g1, deg.dist.g2) {
   deg.counts.g1 <- deg.dist.g1 * num.g1
   deg.counts.g2 <- deg.dist.g2 * num.g2
@@ -46,9 +41,9 @@ check_bip_degdist <- function(num.g1, num.g2,
   mat <- matrix(c(deg.dist.g1, deg.counts.g1,
                   deg.dist.g2, deg.counts.g2), ncol = 4)
   mat <- rbind(mat, c(sum(deg.dist.g1), tot.deg.g1, sum(deg.dist.g2), tot.deg.g2))
-  colnames(mat) <- c("m1.dist", "m1.cnt", "m2.dist", "m2.cnt")
+  colnames(mat) <- c("g1.dist", "g1.cnt", "g2.dist", "g2.cnt")
   rownames(mat) <- c(paste0("Deg", 0:(length(deg.dist.g1) - 1)), "Edges")
-  cat("Bipartite Degree Distribution Check\n")
+  cat("Degree Distribution Check\n")
   cat("=============================================\n")
   print(mat, print.gap = 3)
   cat("=============================================\n")
@@ -64,9 +59,9 @@ check_bip_degdist <- function(num.g1, num.g2,
     }
     if (absdiff > 1) {
       if (tot.deg.g1 > tot.deg.g2) {
-        msg <- "Mode 1 Edges > Mode 2 Edges:"
+        msg <- "Group 1 Edges > Group 2 Edges:"
       } else {
-        msg <- "Mode 1 Edges < Mode 2 Edges:"
+        msg <- "Group 1 Edges < Group 2 Edges:"
       }
       cat("**", msg, round(reldiff, 3), "Rel Diff \n")
     }

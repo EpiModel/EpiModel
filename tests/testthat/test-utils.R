@@ -87,20 +87,20 @@ test_that("ssample", {
 
 })
 
-test_that("check_bip_degdist", {
-  expect_output(check_bip_degdist(num.g1 = 500, num.g2 = 500,
+test_that("check_degdist_bal", {
+  expect_output(check_degdist_bal(num.g1 = 500, num.g2 = 500,
                                   deg.dist.g2 = c(0.40, 0.55, 0.03, 0.02),
                                   deg.dist.g1 = c(0.48, 0.41, 0.08, 0.03)),
                 "-0.015 Rel Diff")
-  expect_output(check_bip_degdist(num.g1 = 500, num.g2 = 500,
+  expect_output(check_degdist_bal(num.g1 = 500, num.g2 = 500,
                                   deg.dist.g1 = c(0.40, 0.55, 0.04, 0.01),
                                   deg.dist.g2 = c(0.48, 0.41, 0.08, 0.03)),
                 "Edges balanced")
-  expect_output(check_bip_degdist(num.g1 = 500, num.g2 = 500,
+  expect_output(check_degdist_bal(num.g1 = 500, num.g2 = 500,
                                   deg.dist.g1 = c(0.45, 0.55, 0.04, 0.01),
                                   deg.dist.g2 = c(0.48, 0.41, 0.08, 0.03)),
                 "deg.dist.g1 TOTAL != 1")
-  expect_output(check_bip_degdist(num.g1 = 500, num.g2 = 500,
+  expect_output(check_degdist_bal(num.g1 = 500, num.g2 = 500,
                                   deg.dist.g1 = c(0.40, 0.55, 0.04, 0.01),
                                   deg.dist.g2 = c(0.55, 0.41, 0.08, 0.03)),
                 "deg.dist.g2 TOTAL != 1")
