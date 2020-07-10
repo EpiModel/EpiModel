@@ -22,7 +22,7 @@
 #' @keywords netUtils
 #'
 #' @examples
-#' # An imbalanced distribution
+#' # An unbalanced distribution
 #' check_degdist_bal(num.g1 = 500, num.g2 = 500,
 #'                   deg.dist.g2 = c(0.40, 0.55, 0.03, 0.02),
 #'                   deg.dist.g1 = c(0.48, 0.41, 0.08, 0.03))
