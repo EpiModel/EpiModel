@@ -9,8 +9,8 @@
 \tabular{ll}{
    Package: \tab EpiModel\cr
    Type: \tab Package\cr
-   Version: \tab 1.8.0\cr
-   Date: \tab 2019-05-08\cr
+   Version: \tab 2.0.0\cr
+   Date: \tab 2020-07-08\cr
    License: \tab GPL-3\cr
    LazyLoad: \tab yes\cr
 }

@@ -6,7 +6,7 @@
 ## Section 2. Orientation --------------------------------------------------
 
 ## Install the packages
-install.packages("EpiModel", dependencies = TRUE)
+## install.packages("EpiModel", dependencies = TRUE)
 library("EpiModel")
 
 ## Access the help files
@@ -221,7 +221,7 @@ dfunc <- function(dat, at) {
   return(dat)
 }
 
-## Arrivals function
+## Birth function
 bfunc <- function(dat, at) {
 
   growth.rate <- dat$param$growth.rate
@@ -230,26 +230,26 @@ bfunc <- function(dat, at) {
 
   numNeeded <- exptPopSize - sum(dat$attr$active == 1)
   if (numNeeded > 0) {
-    nArrvls <- rpois(1, numNeeded)
+    nBirths <- rpois(1, numNeeded)
   } else {
-    nArrvls <- 0
+    nBirths <- 0
   }
-  if (nArrvls > 0) {
-    dat$nw <- add.vertices(dat$nw, nv = nArrvls)
-    newNodes <- (n + 1):(n + nArrvls)
+  if (nBirths > 0) {
+    dat$nw <- add.vertices(dat$nw, nv = nBirths)
+    newNodes <- (n + 1):(n + nBirths)
     dat$nw <- activate.vertices(dat$nw, onset = at,
                                 terminus = Inf, v = newNodes)
 
-    dat$attr$active <- c(dat$attr$active, rep(1, nArrvls))
-    dat$attr$status <- c(dat$attr$status, rep("s", nArrvls))
-    dat$attr$infTime <- c(dat$attr$infTime, rep(NA, nArrvls))
-    dat$attr$age <- c(dat$attr$age, rep(18, nArrvls))
+    dat$attr$active <- c(dat$attr$active, rep(1, nBirths))
+    dat$attr$status <- c(dat$attr$status, rep("s", nBirths))
+    dat$attr$infTime <- c(dat$attr$infTime, rep(NA, nBirths))
+    dat$attr$age <- c(dat$attr$age, rep(18, nBirths))
   }
 
   if (at == 2) {
-    dat$epi$b.flow <- c(0, nArrvls)
+    dat$epi$b.flow <- c(0, nBirths)
   } else {
-    dat$epi$b.flow[at] <- nArrvls
+    dat$epi$b.flow[at] <- nBirths
   }
 
   return(dat)

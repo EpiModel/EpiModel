@@ -1,7 +1,7 @@
 context("Time Varying Network Parameters")
 
 test_that("time varying parameters for one-mode", {
-  nw <- network.initialize(n = 100, directed = FALSE)
+  nw <- network_initialize(n = 100)
   formation <- ~edges
   target.stats <- 50
   coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration  = 20)
@@ -22,14 +22,15 @@ test_that("time varying parameters for one-mode", {
                      rec.rate = rec.rates)
   init <- init.net(i.num = 50)
   control <- control.net(type = "SIS", nsteps = 10, nsims = 1,
-                         save.transmat = TRUE, verbose = FALSE)
+                         tergmLite = FALSE, verbose = FALSE)
   mod <- netsim(est1, param, init, control)
   expect_is(mod, "netsim")
 })
 
 
-test_that("time varying parameters for bipartite", {
-  nw <- network.initialize(n = 100, bipartite = 50, directed = FALSE)
+test_that("time varying parameters for two-group models", {
+  nw <- network_initialize(n = 100)
+  nw <- set_vertex_attribute(nw, "group", rep(c(1,2), each = 50))
   formation <- ~edges
   target.stats <- 50
   coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration  = 20)
@@ -39,23 +40,23 @@ test_that("time varying parameters for bipartite", {
   probs <- c(0.25, 0.01)
   durs <- c(10, 1)
   inf.probs <- rep(probs, durs)
-  inf.probs.m2 <- inf.probs*2
+  inf.probs.g2 <- inf.probs*2
 
   acts <- c(1, 2)
   act.rates <- rep(acts, durs)
 
   rec.rates <- rep(0:1, c(20, 1))
-  rec.rates.m2 <- rep(0:1, c(10, 1))
+  rec.rates.g2 <- rep(0:1, c(10, 1))
 
   param <- param.net(inf.prob = inf.probs,
-                     inf.prob.m2 = inf.probs.m2,
+                     inf.prob.g2 = inf.probs.g2,
                      act.rate = act.rates,
                      rec.rate = rec.rates,
-                     rec.rate.m2 = rec.rates.m2)
-  init <- init.net(i.num = 10, i.num.m2 = 10,
-                   r.num = 0, r.num.m2 = 0)
+                     rec.rate.g2 = rec.rates.g2)
+  init <- init.net(i.num = 10, i.num.g2 = 10,
+                   r.num = 0, r.num.g2 = 0)
   control <- control.net(type = "SIR", nsteps = 10, nsims = 1,
-                         save.transmat = TRUE, verbose = FALSE)
+                         tergmLite = FALSE, verbose = FALSE)
 
   mod <- netsim(est1, param, init, control)
   expect_is(mod, "netsim")

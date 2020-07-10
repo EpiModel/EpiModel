@@ -1,3 +1,5 @@
+^renv$
+^renv\.lock$
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^\.travis\.yml$
@@ -6,3 +8,6 @@ inst/shiny/epidcm/rsconnect/*.*
 inst/shiny/epiicm/rsconnect/*.*
 ^.*\.o$
 LICENSE.md
+inst/EpiModel2/*.pptx
+inst/EpiModel2/*.xlsx
+inst/EpiModel2/*.png

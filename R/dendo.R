@@ -40,7 +40,7 @@
 #'
 #' @examples
 #' set.seed(10)
-#' nw <- network.initialize(n = 100, directed = FALSE)
+#' nw <- network_initialize(n = 100)
 #' formation <- ~edges
 #' target.stats <- 50
 #' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
@@ -49,8 +49,7 @@
 #'
 #' param <- param.net(inf.prob = 0.5)
 #' init <- init.net(i.num = 1)
-#' control <- control.net(type = "SI", nsteps = 40, nsims = 1, verbose = FALSE,
-#'                        use.pids = FALSE)
+#' control <- control.net(type = "SI", nsteps = 40, nsims = 1, verbose = FALSE)
 #'
 #' mod1 <- netsim(est1, param, init, control)
 #' tm <- get_transmat(mod1)
@@ -236,7 +235,7 @@ as.network.transmat <- function(x, ...){
   set.edge.attribute(net, "finalProb", tm$finalProb)
 
   net %v% "at" <- 0
-  set.vertex.attribute(net, "at", tm$at, v = tm$sus)
+  net <- set_vertex_attribute(net, "at", tm$at, v = tm$sus)
 
   return(net)
 }

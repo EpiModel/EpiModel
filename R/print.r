@@ -49,7 +49,6 @@ print.icm <- function(x, ...) {
   cat("\nNo. time steps:", x$control$nsteps)
   cat("\nNo. groups:", x$param$groups)
 
-
   cat("\n\nModel Parameters")
   cat("\n-----------------------\n")
   pToPrint <- which(!(names(x$param) %in% c("groups", "vital")))
@@ -126,7 +125,7 @@ print.netsim <- function(x, formation.stats = FALSE, ...) {
     simnames <- "sim1"
   }
   if (nsims == 2) {
-    simnames <- "sim1 sim2"
+    simnames <- "sim1 s.g2"
   }
   if (nsims > 2) {
     simnames <- paste0("sim1 ... sim", nsims)
@@ -141,11 +140,11 @@ print.netsim <- function(x, formation.stats = FALSE, ...) {
   cat("\nModel type:", x$control$type)
   cat("\nNo. simulations:", nsims)
   cat("\nNo. time steps:", x$control$nsteps)
-  cat("\nNo. NW modes:", x$param$modes)
+  cat("\nNo. NW groups:", x$param$groups)
 
   cat("\n\nModel Parameters")
   cat("\n-----------------------\n")
-  pToPrint <- which(!(names(x$param) %in% c("modes", "vital")))
+  pToPrint <- which(!(names(x$param) %in% c("groups", "vital")))
   for (i in pToPrint) {
     if (class(x$param[[i]]) == "numeric" && length(x$param[[i]]) > 5) {
       cat(names(x$param)[i], "=", x$param[[i]][1:3], "...", fill = 80)
@@ -157,6 +156,13 @@ print.netsim <- function(x, formation.stats = FALSE, ...) {
       cat(names(x$param)[i], "=", x$param[[i]], fill = 80)
     }
   }
+
+  cat("\nModel Functions")
+  cat("\n-----------------------\n")
+  for (i in 1:length(x$control$f.args)){
+    (cat(x$control$f.names[i],"=",x$control$f.args[i],"\n"))
+  }
+  #cat("\n")
 
   cat("\nModel Output")
   cat("\n-----------------------")
@@ -421,9 +427,13 @@ print.control.icm <- function(x, ...) {
 print.control.net <- function(x, ...) {
 
   pToPrint <- which(!grepl(".FUN", names(x)) &
+                      names(x) != "f.args" &
+                      names(x) != "f.names" &
                       names(x) != "set.control.stergm" &
                       names(x) != "set.control.ergm" &
                       !(names(x) %in% c("bi.mods", "user.mods")))
+
+
 
   cat("Network Model Control Settings")
   cat("\n===============================\n")
@@ -439,9 +449,17 @@ print.control.net <- function(x, ...) {
       cat(names(x)[i], "=", x[[i]], fill = 80)
     }
   }
-  cat("Base Modules:", x$bi.mods, fill = 80)
-  if (length(x$user.mods) > 0) {
-    cat("Extension Modules:", x$user.mods, fill = 80)
+
+  funToPrint <- names(x)[grep(".FUN", names(x))]
+  funToPrint <- funToPrint[-which(funToPrint %in% c("initialize.FUN",
+                                                    "verbose.FUN"))]
+  if(is.null(x$module.order)) {
+    cat("Dynamic Modules:", funToPrint)
+  } else {
+    order <- unlist(lapply(funToPrint, function(y) which(y == x$module.order)))
+    funToPrint.mo <- funToPrint[order]
+    funtoPrint.nmo <- funToPrint[-which(funToPrint %in% x$module.order)]
+    cat("Dynamic Modules:", funToPrint)
   }
 
   invisible()

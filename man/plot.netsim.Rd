@@ -113,9 +113,9 @@ representing the population.}
 \item{col.status}{If \code{TRUE} and \code{type="network"}, automatic disease
 status colors (blue = susceptible, red = infected, green = recovered).}
 
-\item{shp.bip}{If \code{type="network"} and a bipartite simulation, shapes
-for the mode 2 vertices, with acceptable inputs of "triangle" and
-"square". Mode 1 vertices will be circles.}
+\item{shp.bip}{If \code{type="network"} and a two-group simulation, shapes
+for the group 2 vertices, with acceptable inputs of "triangle" and
+"square". Group 1 vertices will be circles.}
 
 \item{stats}{If \code{type="formation"}, network statistics to plot, among
 those specified in \code{nwstats.formula} of \code{\link{control.net}},
@@ -200,9 +200,10 @@ in which the prevalence is lowest, and \code{"max"} to plot the simulation
 in which the prevalence is highest.
 }
 \examples{
-## Independent SI Model
+## SI Model without Network Feedback
 # Initialize network and set network model parameters
-nw <- network.initialize(n = 100, bipartite = 50, directed = FALSE)
+nw <- network_initialize(n = 100)
+nw <- set_vertex_attribute(nw, "group", rep(1:2, each = 50))
 formation <- ~edges
 target.stats <- 50
 coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
@@ -211,8 +212,8 @@ coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
 est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 
 # Simulate the epidemic model
-param <- param.net(inf.prob = 0.3, inf.prob.m2 = 0.15)
-init <- init.net(i.num = 10, i.num.m2 = 10)
+param <- param.net(inf.prob = 0.3, inf.prob.g2 = 0.15)
+init <- init.net(i.num = 10, i.num.g2 = 10)
 control <- control.net(type = "SI", nsteps = 20, nsims = 3,
                        verbose = FALSE, save.nwstats = TRUE,
                        nwstats.formula = ~edges + meandeg + concurrent)
@@ -235,7 +236,7 @@ plot(mod, type = "network", main = "Min Prev | Time 50",
 plot(mod, type = "network", main = "Max Prev | Time 50",
      col.status = TRUE, at = 20, sims = "max")
 
-# Automatic shape by mode number (circle = mode 1)
+# Automatic shape by group number (circle = group 1)
 par(mar = c(0,0,0,0))
 plot(mod, type = "network", at = 20, col.status = TRUE, shp.bip = "square")
 plot(mod, type = "network", at = 20, col.status = TRUE, shp.bip = "triangle")

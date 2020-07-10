@@ -96,9 +96,11 @@ merge.icm <- function(x, y, ...) {
 #' @param y Another \code{EpiModel} object of class \code{\link{netsim}},
 #'        with the identical model parameterization as \code{x}.
 #' @param keep.transmat If \code{TRUE}, keep the transmission matrices from the
-#'        original \code{x} and \code{y} elements.
+#'        original \code{x} and \code{y} elements. Note: transmission matrices
+#'        only saved when (\code{tergmLite == FALSE}).
 #' @param keep.network If \code{TRUE}, keep the \code{networkDynamic} objects
-#'        from the original \code{x} and \code{y} elements.
+#'        from the original \code{x} and \code{y} elements. Note: network
+#'        only saved when (\code{tergmLite == FALSE}).
 #' @param keep.nwstats If \code{TRUE}, keep the network statistics (as set by
 #'        the \code{nwstats.formula} parameter in \code{control.netsim}) from
 #'        the original \code{x} and \code{y} elements.
@@ -129,7 +131,7 @@ merge.icm <- function(x, y, ...) {
 #'
 #' @examples
 #' # Network model
-#' nw <- network.initialize(n = 100, directed = FALSE)
+#' nw <- network_initialize(n = 100)
 #' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 10)
 #' est <- netest(nw, formation = ~edges, target.stats = 25,
 #'               coef.diss = coef.diss, verbose = FALSE)

@@ -34,14 +34,15 @@ Extracts the matrix of transmission data for each transmission
              event that occured within a network epidemic model.
 }
 \examples{
-## Simulate SI epidemic on bipartite Bernoulli random graph
-nw <- network.initialize(n = 100, bipartite = 50, directed = FALSE)
+## Simulate SI epidemic on two-group Bernoulli random graph
+nw <- network_initialize(n = 100)
+nw <- set_vertex_attribute(nw, "group", rep(1:2, each = 50))
 formation <- ~edges
 target.stats <- 50
 coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
 est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
-param <- param.net(inf.prob = 0.3, inf.prob.m2 = 0.15)
-init <- init.net(i.num = 10, i.num.m2 = 10)
+param <- param.net(inf.prob = 0.3, inf.prob.g2 = 0.15)
+init <- init.net(i.num = 10, i.num.g2 = 10)
 control <- control.net(type = "SI", nsteps = 10, nsims = 3, verbose = FALSE)
 mod <- netsim(est, param, init, control)
 

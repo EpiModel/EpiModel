@@ -21,16 +21,17 @@
 #' @details
 #' This function requires that the \code{networkDynamic} is saved during the
 #' network simulation while running either \code{\link{netsim}} or \code{\link{netdx}}.
-#' For the former, that is specified with the \code{save.network} parameter in
-#' \code{\link{control.net}}. For the latter, that is specified with the
-#' \code{keep.tedgelist} parameter directly in \code{\link{netdx}}.
+#' For the former, that is specified with the \code{tergmLite} parameter in
+#' \code{\link{control.net}} set to \code{FALSE}. For the latter, that is
+#' specified with the \code{keep.tedgelist} parameter directly in \code{\link{netdx}}.
 #'
 #' @keywords extract
 #' @export
 #'
 #' @examples
 #' # Set up network and TERGM formiula
-#' nw <- network.initialize(n = 100, bipartite = 50, directed = FALSE)
+#' nw <- network_initialize(n = 100)
+#' nw <- set_vertex_attribute(nw, "group", rep(1:2, each = 50))
 #' formation <- ~edges
 #' target.stats <- 50
 #' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
@@ -48,8 +49,8 @@
 #' get_network(dx, collapse = TRUE, at = 5)
 #'
 #' # Parameterize the epidemic model, and simulate it
-#' param <- param.net(inf.prob = 0.3, inf.prob.m2 = 0.15)
-#' init <- init.net(i.num = 10, i.num.m2 = 10)
+#' param <- param.net(inf.prob = 0.3, inf.prob.g2 = 0.15)
+#' init <- init.net(i.num = 10, i.num.g2 = 10)
 #' control <- control.net(type = "SI", nsteps = 10, nsims = 3, verbose = FALSE)
 #' mod <- netsim(est, param, init, control)
 #'
@@ -72,7 +73,12 @@ get_network <- function(x, sim = 1, network = 1, collapse = FALSE, at) {
   }
 
   if (class(x) == "netsim") {
-    if (x$control$save.network == FALSE || is.null(x$network)) {
+    if (x$control$tergmLite == TRUE) {
+      stop("Network object not saved in netsim object when 'tergmLite == TRUE',
+           check control.net settings",
+           call. = FALSE)
+    }
+    if (x$control$tergmLite == TRUE || is.null(x$network)) {
       stop("Network object not saved in netsim object, check control.net settings",
            call. = FALSE)
     }
@@ -97,11 +103,7 @@ get_network <- function(x, sim = 1, network = 1, collapse = FALSE, at) {
 
   ## Extraction ##
   if (class(x) == "netsim") {
-    if (x$control$num.nw == 1) {
-      out <- x$network[[sim]]
-    } else {
-      out <- x$network[[sim]][[network]]
-    }
+    out <- x$network[[sim]][[network]]
   } else if (class(x) == "netdx") {
     out <- x$network[[sim]]
   }
@@ -141,14 +143,15 @@ get_network <- function(x, sim = 1, network = 1, collapse = FALSE, at) {
 #' @export
 #'
 #' @examples
-#' ## Simulate SI epidemic on bipartite Bernoulli random graph
-#' nw <- network.initialize(n = 100, bipartite = 50, directed = FALSE)
+#' ## Simulate SI epidemic on two-group Bernoulli random graph
+#' nw <- network_initialize(n = 100)
+#' nw <- set_vertex_attribute(nw, "group", rep(1:2, each = 50))
 #' formation <- ~edges
 #' target.stats <- 50
 #' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
 #' est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
-#' param <- param.net(inf.prob = 0.3, inf.prob.m2 = 0.15)
-#' init <- init.net(i.num = 10, i.num.m2 = 10)
+#' param <- param.net(inf.prob = 0.3, inf.prob.g2 = 0.15)
+#' init <- init.net(i.num = 10, i.num.g2 = 10)
 #' control <- control.net(type = "SI", nsteps = 10, nsims = 3, verbose = FALSE)
 #' mod <- netsim(est, param, init, control)
 #'
@@ -162,11 +165,16 @@ get_transmat <- function(x, sim = 1) {
     stop("x must be of class netsim", call. = FALSE)
   }
 
+  if (x$control$tergmLite == TRUE) {
+    stop("transmat not saved when 'tergmLite == TRUE', check control.net settings",
+         call. = FALSE)
+  }
+
   if (sim > x$control$nsims) {
     stop("Specify sim between 1 and ", x$control$nsims, call. = FALSE)
   }
 
-  if (x$control$save.transmat == FALSE || is.null(x$stats$transmat)) {
+  if (x$control$tergmLite == TRUE  || is.null(x$stats$transmat)) {
     stop("transmat not saved in netsim object, check control.net settings",
          call. = FALSE)
   }
@@ -196,8 +204,9 @@ get_transmat <- function(x, sim = 1) {
 #' @export
 #'
 #' @examples
-#' # Bipartite Bernoulli random graph TERGM
-#' nw <- network.initialize(n = 100, bipartite = 50, directed = FALSE)
+#' # Two-group Bernoulli random graph TERGM
+#' nw <- network_initialize(n = 100)
+#' nw <- set_vertex_attribute(nw, "group", rep(1:2, each = 50))
 #' formation <- ~edges
 #' target.stats <- 50
 #' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
@@ -209,8 +218,8 @@ get_transmat <- function(x, sim = 1) {
 #' get_nwstats(dx, sim = 1)
 #'
 #' # SI epidemic model
-#' param <- param.net(inf.prob = 0.3, inf.prob.m2 = 0.15)
-#' init <- init.net(i.num = 10, i.num.m2 = 10)
+#' param <- param.net(inf.prob = 0.3, inf.prob.g2 = 0.15)
+#' init <- init.net(i.num = 10, i.num.g2 = 10)
 #' control <- control.net(type = "SI", nsteps = 10, nsims = 3,
 #'                        nwstats.formula = ~edges + meandeg + degree(0:5),
 #'                        verbose = FALSE)
@@ -326,7 +335,7 @@ get_nwparam <- function(x, network = 1) {
 #'
 #' @examples
 #' # Network model estimation
-#' nw <- network.initialize(n = 100, directed = FALSE)
+#' nw <- network_initialize(n = 100)
 #' formation <- ~edges
 #' target.stats <- 50
 #' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
@@ -339,10 +348,10 @@ get_nwparam <- function(x, network = 1) {
 #' mod1 <- netsim(est1, param, init, control)
 #'
 #' # Get sim 2
-#' sim2 <- get_sims(mod1, sims = 2)
+#' s.g2 <- get_sims(mod1, sims = 2)
 #'
 #' # Get sims 2 and 3 and keep only a subset of variables
-#' sim2.small <- get_sims(mod1, sims = 2:3, var = c("i.num", "si.flow"))
+#' s.g2.small <- get_sims(mod1, sims = 2:3, var = c("i.num", "si.flow"))
 #'
 #' # Extract the mean simulation for the variable i.num
 #' sim.mean <- get_sims(mod1, sims = "mean", var = "i.num")

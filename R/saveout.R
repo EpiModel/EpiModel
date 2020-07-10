@@ -124,7 +124,7 @@ saveout.icm <- function(dat, s, out = NULL) {
 saveout.net <- function(dat, s, out = NULL) {
 
   # Counts number of simulated networks
-  num.nw <- ifelse(any(class(dat$nw) == "network"), 1, length(dat$nw))
+  num.nw <- length(dat$nw)
 
   if (s == 1) {
     out <- list()
@@ -142,7 +142,8 @@ saveout.net <- function(dat, s, out = NULL) {
     if (dat$control$save.nwstats == TRUE) {
       out$stats$nwstats <- list(dat$stats$nwstats)
     }
-    if (dat$control$save.transmat == TRUE) {
+
+    if (dat$control$tergmLite == FALSE) {
       if (!is.null(dat$stats$transmat)) {
         row.names(dat$stats$transmat) <- 1:nrow(dat$stats$transmat)
         out$stats$transmat <- list(dat$stats$transmat)
@@ -150,10 +151,8 @@ saveout.net <- function(dat, s, out = NULL) {
         out$stats$transmat <- list(data.frame())
       }
       class(out$stats$transmat) <- c("transmat", class(out$stats$transmat))
-    }
-
-    if (dat$control$save.network == TRUE) {
       out$network <- list(dat$nw)
+
     }
 
     if (!is.null(dat$control$save.other)) {
@@ -172,16 +171,16 @@ saveout.net <- function(dat, s, out = NULL) {
     if (dat$control$save.nwstats == TRUE) {
       out$stats$nwstats[[s]] <- dat$stats$nwstats
     }
-    if (dat$control$save.transmat == TRUE) {
+
+    if (dat$control$tergmLite == FALSE) {
       if (!is.null(dat$stats$transmat)) {
         row.names(dat$stats$transmat) <- 1:nrow(dat$stats$transmat)
         out$stats$transmat[[s]] <- dat$stats$transmat
       } else {
         out$stats$transmat[[s]] <- data.frame()
       }
-    }
-    if (dat$control$save.network == TRUE) {
       out$network[[s]] <- dat$nw
+
     }
 
     if (!is.null(dat$control$save.other)) {
@@ -203,10 +202,9 @@ saveout.net <- function(dat, s, out = NULL) {
     if (dat$control$save.nwstats == TRUE) {
       names(out$stats$nwstats) <- simnames
     }
-    if (dat$control$save.transmat == TRUE) {
+
+    if (dat$control$tergmLite == FALSE) {
       names(out$stats$transmat) <- simnames[1:length(out$stats$transmat)]
-    }
-    if (dat$control$save.network == TRUE) {
       names(out$network) <- simnames
     }
 
@@ -226,3 +224,46 @@ saveout.net <- function(dat, s, out = NULL) {
 }
 
 
+#' @title Save a list of netsim Data to Output List Format
+#'
+#' @description This function transfers the data from a list of the master
+#'              \code{dat} objects to the output \code{out} object at the end of
+#'              all simulations in \code{\link{netsim}}.
+#'
+#' @param dat_list A list of Master objects in \code{netsim} simulations.
+#'
+#' @return
+#' A list of class \code{netsim} with the following elements:
+#' \itemize{
+#'  \item \strong{param:} the epidemic parameters passed into the model through
+#'        \code{param}, with additional parameters added as necessary.
+#'  \item \strong{control:} the control settings passed into the model through
+#'        \code{control}, with additional controls added as necessary.
+#'  \item \strong{epi:} a list of data frames, one for each epidemiological
+#'        output from the model. Outputs for base models always include the
+#'        size of each compartment, as well as flows in, out of, and between
+#'        compartments.
+#'  \item \strong{stats:} a list containing two sublists, \code{nwstats} for any
+#'        network statistics saved in the simulation, and \code{transmat} for
+#'        the transmission matrix saved in the simulation. See
+#'        \code{\link{control.net}} and the Tutorial for further details.
+#'  \item \strong{network:} a list of \code{networkDynamic} objects,
+#'         one for each model simulation.
+#' }
+#'
+#' @keywords internal
+#' @export
+#'
+process_out.net <- function(dat_list) {
+  for (s in seq_along(dat_list)) {
+    # Set output
+    if (s == 1) {
+      out <- saveout.net(dat_list[[s]], s)
+    } else {
+      out <- saveout.net(dat_list[[s]], s, out)
+    }
+  }
+  class(out) <- "netsim"
+
+  return(out)
+}

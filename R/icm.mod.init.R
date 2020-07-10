@@ -40,7 +40,7 @@ initialize.icm <- function(param, init, control) {
 
 
   # Summary out list
-  dat <- get_prev.icm(dat, at = 1)
+  dat <- do.call(control[["prevalence.FUN"]],list(dat, at = 1))
 
   return(dat)
 }

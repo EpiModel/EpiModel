@@ -15,19 +15,18 @@
 #'
 sim_nets <- function(x, nw, nsteps, control) {
 
-  suppressWarnings(
-    sim <- simulate(nw,
-                    formation = x$formation,
-                    dissolution = x$coef.diss$dissolution,
-                    coef.form = x$coef.form,
-                    coef.diss = x$coef.diss$coef.crude,
-                    time.slices = nsteps,
-                    time.start = 1,
-                    time.offset = 0,
-                    constraints = x$constraints,
-                    monitor = control$nwstats.formula,
-                    nsim = 1,
-                    control = control$set.control.stergm))
+  sim <- simulate(nw,
+                  formation = x$formation,
+                  dissolution = x$coef.diss$dissolution,
+                  coef.form = x$coef.form,
+                  coef.diss = x$coef.diss$coef.crude,
+                  time.slices = nsteps,
+                  time.start = 1,
+                  time.offset = 0,
+                  constraints = x$constraints,
+                  monitor = control$nwstats.formula,
+                  nsim = 1,
+                  control = control$set.control.stergm)
 
   return(sim)
 }
@@ -48,61 +47,71 @@ sim_nets <- function(x, nw, nsteps, control) {
 #'
 resim_nets <- function(dat, at) {
 
-  idsActive <- which(dat$attr$active == 1)
+  # Variables
+  tergmLite <- get_control(dat, "tergmLite")
+  save.nwstats <- get_control(dat, "save.nwstats")
+  resimulate.network <- get_control(dat, "resimulate.network")
+
+  # Edges Correction
+  dat <- edges_correct(dat, at)
+
+  active <- get_attr(dat, "active")
+  idsActive <- which(active == 1)
   anyActive <- ifelse(length(idsActive) > 0, TRUE, FALSE)
-  if (dat$param$modes == 2) {
-    nActiveM1 <- length(intersect(modeids(dat$nw, mode = 1), idsActive))
-    nActiveM2 <- length(intersect(modeids(dat$nw, mode = 2), idsActive))
-    anyActive <- ifelse(nActiveM1 > 0 & nActiveM2 > 0, TRUE, FALSE)
+  if (dat$param$groups == 2) {
+    group <- get_attr(dat, "group")
+    groupids.1 <- which(group == 1)
+    groupids.2 <- which(group == 2)
+    nActiveG1 <- length(intersect(groupids.1, idsActive))
+    nActiveG2 <- length(intersect(groupids.2, idsActive))
+    anyActive <- ifelse(nActiveG1 > 0 & nActiveG2 > 0, TRUE, FALSE)
   }
 
   # Pull network model parameters
   nwparam <- get_nwparam(dat)
 
-  # Serosorting model check
-  statOnNw <- ("status" %in% dat$temp$fterms)
-  status <- dat$attr$status
-  if (statOnNw == TRUE && length(unique(status)) == 1) {
-    stop("Stopping simulation because status in formation formula and ",
-         "no longer any discordant nodes",
-         call. = TRUE)
-  }
-
-  # Set up nwstats df
-  if (dat$control$save.nwstats == TRUE) {
-    if (at == 2) {
-      nwstats <- attributes(dat$nw)$stats
-      dat$stats$nwstats <- as.data.frame(nwstats)
-    }
-  }
-
-  # Network simulation
-  if (anyActive > 0 & dat$control$depend == TRUE) {
-    suppressWarnings(
-      dat$nw <- simulate(dat$nw,
-                         formation = nwparam$formation,
-                         dissolution = nwparam$coef.diss$dissolution,
-                         coef.form = nwparam$coef.form,
-                         coef.diss = nwparam$coef.diss$coef.adj,
-                         constraints = nwparam$constraints,
-                         time.start = at,
-                         time.slices = 1,
-                         time.offset = 0,
-                         monitor = dat$control$nwstats.formula,
-                         control = dat$control$set.control.stergm))
+  # Full tergm/network Method
+  if (tergmLite == FALSE) {
 
     # Set up nwstats df
-    if (dat$control$save.nwstats == TRUE) {
-      dat$stats$nwstats <- rbind(dat$stats$nwstats,
-                                 tail(attributes(dat$nw)$stats, 1)[,])
+    if (save.nwstats == TRUE) {
+      if (at == 2) {
+        nwstats <- attributes(dat$nw[[1]])$stats
+        dat$stats$nwstats <- as.data.frame(nwstats)
+      }
     }
 
-    if (dat$control$delete.nodes == TRUE) {
-      dat$nw <- network.extract(dat$nw, at = at)
-      inactive <- which(dat$attr$active == 0)
-      dat$attr <- deleteAttr(dat$attr, inactive)
-    }
+    # Network simulation
+    if (anyActive > 0 & resimulate.network == TRUE) {
+      suppressWarnings(
+        dat$nw[[1]] <- simulate(dat$nw[[1]],
+                           formation = nwparam$formation,
+                           dissolution = nwparam$coef.diss$dissolution,
+                           coef.form = nwparam$coef.form,
+                           coef.diss = nwparam$coef.diss$coef.adj,
+                           constraints = nwparam$constraints,
+                           time.start = at,
+                           time.slices = 1,
+                           time.offset = 0,
+                           monitor = dat$control$nwstats.formula,
+                           control = dat$control$set.control.stergm))
 
+      # Update nwstats df
+      if (save.nwstats == TRUE) {
+        dat$stats$nwstats <- rbind(dat$stats$nwstats,
+                                   tail(attributes(dat$nw[[1]])$stats, 1)[,])
+      }
+    }
+  }
+
+  # networkLite/tergmLite Method
+  if (tergmLite == TRUE & resimulate.network == TRUE) {
+    dat <- tergmLite::updateModelTermInputs(dat)
+    dat$el[[1]] <- tergmLite::simulate_network(p = dat$p[[1]],
+                                               el = dat$el[[1]],
+                                               coef.form = nwparam$coef.form,
+                                               coef.diss = nwparam$coef.diss$coef.adj,
+                                               save.changes = TRUE)
   }
 
   return(dat)
@@ -123,23 +132,31 @@ resim_nets <- function(dat, at) {
 #'
 edges_correct <- function(dat, at) {
 
-  if (dat$control$depend == TRUE) {
-    if (dat$param$modes == 1) {
-      old.num <- dat$epi$num[at - 1]
-      new.num <- sum(dat$attr$active == 1)
+  resimulate.network <- get_control(dat, "resimulate.network")
+  tergmLite <- get_control(dat, "tergmLite")
+  groups <- get_param(dat, "groups")
+  active <- get_attr(dat, "active")
+
+  if (resimulate.network == TRUE) {
+
+    if (groups == 1) {
+      index <- at - 1
+      old.num <- get_epi(dat, "num", index)
+      new.num <- sum(active == 1)
       dat$nwparam[[1]]$coef.form[1] <- dat$nwparam[[1]]$coef.form[1] +
         log(old.num) -
         log(new.num)
     }
-    if (dat$param$modes == 2) {
-      mode <- idmode(dat$nw)
-      old.num.m1 <- dat$epi$num[at - 1]
-      old.num.m2 <- dat$epi$num.m2[at - 1]
-      new.num.m1 <- sum(dat$attr$active == 1 & mode == 1)
-      new.num.m2 <- sum(dat$attr$active == 1 & mode == 2)
+    if (groups == 2) {
+      index <- at - 1
+      group <- get_attr(dat, "group")
+      old.num.g1 <- get_epi(dat, "num", index)
+      old.num.g2 <- get_epi(dat, "num.g2", index)
+      new.num.g1 <- sum(active == 1 & group == 1)
+      new.num.g2 <- sum(active == 1 & group == 2)
       dat$nwparam[[1]]$coef.form[1] <- dat$nwparam[[1]]$coef.form[1] +
-        log(2 * old.num.m1 * old.num.m2 / (old.num.m1 + old.num.m2)) -
-        log(2 * new.num.m1 * new.num.m2 / (new.num.m1 + new.num.m2))
+        log(2 * old.num.g1 * old.num.g2 / (old.num.g1 + old.num.g2)) -
+        log(2 * new.num.g1 * new.num.g2 / (new.num.g1 + new.num.g2))
     }
   }
   return(dat)
