@@ -32,7 +32,8 @@ Depends:
     deSolve (>= 1.21),
     networkDynamic (>= 0.9),
     tergm (>= 3.5),
-    tergmLite (>= 2.2.0)
+    tergmLite (>= 2.2.0),
+    statnet.common (>= 4.4.0)
 Imports:
     graphics,
     grDevices,
