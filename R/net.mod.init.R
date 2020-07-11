@@ -82,7 +82,8 @@ initialize.net <- function(x, param, init, control, s) {
 
     dat$stats$summstats <- list()
     if (dat$control$extract.summary.stats == TRUE) {
-      dat$stats$summstats[[1]] <- c(summary(dat$p[[1]]$state), summary(dat$p[[1]]$state_mon))
+      summstats <- c(summary(dat$p[[1]]$state), summary(dat$p[[1]]$state_mon))
+      dat$stats$summstats[[1]] <- matrix(summstats, nrow=1, ncol = length(summstats), dimnames=list(NULL,names(summstats)))
     }
 
     # Restart/Reinit Simulations ----------------------------------------------
