@@ -11,7 +11,13 @@ r_packages:
   - nlme
 
 r_github_packages:
-  statnet/tergmLite
+- statnet/statnet.common
+- statnet/network
+- statnet/networkDynamic
+- statnet/ergm-private@dev
+- statnet/ergm.multi-private@dev
+- statnet/tergm-private@dev
+- statnet/tergmLite-private@dev
 
 addons:
   apt:
