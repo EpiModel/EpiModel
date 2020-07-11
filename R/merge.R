@@ -104,6 +104,8 @@ merge.icm <- function(x, y, ...) {
 #' @param keep.nwstats If \code{TRUE}, keep the network statistics (as set by
 #'        the \code{nwstats.formula} parameter in \code{control.netsim}) from
 #'        the original \code{x} and \code{y} elements.
+#' @param keep.summary.stats If \code{TRUE}, keep the summary statistics from
+#'        the original \code{x} and \code{y} elements.
 #' @param keep.other If \code{TRUE}, keep the other simulation elements (as set
 #'        by the \code{save.other} parameter in \code{control.netsim}) from the
 #'        original \code{x} and \code{y} elements.
@@ -153,8 +155,8 @@ merge.icm <- function(x, y, ...) {
 #' z$epi
 #'
 merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
-                         keep.nwstats = TRUE, keep.other = TRUE,
-                         param.error = TRUE, ...) {
+                         keep.nwstats = TRUE, keep.summary.stats = TRUE,
+                         keep.other = TRUE, param.error = TRUE, ...) {
 
   ## Check structure
   if (length(x) != length(y) || !identical(names(x), names(y))) {
@@ -167,18 +169,13 @@ merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
     stop("x and y have different structure")
   }
 
-  # Override environment of nwstats.formula
-  if (!is.null(x$control$nwstats.formula) & !is.null(y$control$nwstats.formula)) {
-    environment(x$control$nwstats.formula) <-
-      environment(y$control$nwstats.formula) <- environment()
-  }
-
-
   ## Check params
   check1 <- identical(x$param, y$param)
-  check2 <- identical(x$control[-which(names(x$control) == "nsims")],
-                      y$control[-which(names(y$control) == "nsims")])
+  check2 <- identical(x$control[-which(names(x$control) %in% c("nsims","monitors","nwstats.formula"))],
+                      y$control[-which(names(y$control) %in% c("nsims","monitors","nwstats.formula"))])
 
+  ## handle formulas separately due to environments
+  check2 <- check2 && isTRUE(all.equal(x$control$monitors, y$control$monitors)) && isTRUE(all.equal(x$control$nwstats.formula, y$control$nwstats.formula))
 
   if (check1 == FALSE && param.error == TRUE) {
     stop("x and y have different parameters")
@@ -239,6 +236,20 @@ merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
   } else {
     z$stats$nwstats <- NULL
   }
+
+
+  ## Summary statistics
+  if (keep.summary.stats == TRUE & !is.null(x$stats$summstats) & !is.null(y$stats$summstats)) {
+    for (i in new.range) {
+      z$stats$summstats[[i]] <- y$stats$summstats[[i - x$control$nsims]]
+      if (!is.null(z$stats$summstats)) {
+        names(z$stats$summstats)[i] <- paste0("sim", i)
+      }
+    }
+  } else {
+    z$stats$summstats <- NULL
+  }
+
 
   ## Other
   if (!is.null(x$control$save.other) & !is.null(y$control$save.other)) {

@@ -80,6 +80,10 @@ initialize.net <- function(x, param, init, control, s) {
     # Summary Stats -----------------------------------------------------------
     dat <- do.call(control[["prevalence.FUN"]],list(dat, at = 1))
 
+    dat$stats$summstats <- list()
+    if (dat$control$extract.summary.stats == TRUE) {
+      dat$stats$summstats[[1]] <- c(summary(dat$p[[1]]$state), summary(dat$p[[1]]$state_mon))
+    }
 
     # Restart/Reinit Simulations ----------------------------------------------
   } else if (control$start > 1) {

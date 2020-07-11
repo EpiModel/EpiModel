@@ -142,7 +142,11 @@ saveout.net <- function(dat, s, out = NULL) {
     if (dat$control$save.nwstats == TRUE) {
       out$stats$nwstats <- list(dat$stats$nwstats)
     }
-
+    
+    if (dat$control$extract.summary.stats == TRUE) {
+      out$stats$summstats <- list(dat$stats$summstats)
+    }
+    
     if (dat$control$tergmLite == FALSE) {
       if (!is.null(dat$stats$transmat)) {
         row.names(dat$stats$transmat) <- 1:nrow(dat$stats$transmat)
@@ -172,6 +176,10 @@ saveout.net <- function(dat, s, out = NULL) {
       out$stats$nwstats[[s]] <- dat$stats$nwstats
     }
 
+    if (dat$control$extract.summary.stats == TRUE) {
+      out$stats$summstats[[s]] <- dat$stats$summstats
+    }
+    
     if (dat$control$tergmLite == FALSE) {
       if (!is.null(dat$stats$transmat)) {
         row.names(dat$stats$transmat) <- 1:nrow(dat$stats$transmat)
@@ -203,6 +211,10 @@ saveout.net <- function(dat, s, out = NULL) {
       names(out$stats$nwstats) <- simnames
     }
 
+    if (dat$control$extract.summary.stats == TRUE) {
+      names(out$stats$summstats) <- simnames
+    }
+    
     if (dat$control$tergmLite == FALSE) {
       names(out$stats$transmat) <- simnames[1:length(out$stats$transmat)]
       names(out$network) <- simnames

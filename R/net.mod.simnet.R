@@ -107,11 +107,17 @@ resim_nets <- function(dat, at) {
   # networkLite/tergmLite Method
   if (tergmLite == TRUE & resimulate.network == TRUE) {
     dat <- tergmLite::updateModelTermInputs(dat)
-    dat$el[[1]] <- tergmLite::simulate_network(p = dat$p[[1]],
-                                               el = dat$el[[1]],
-                                               coef.form = nwparam$coef.form,
-                                               coef.diss = nwparam$coef.diss$coef.adj,
-                                               save.changes = TRUE)
+    rv <- tergmLite::simulate_network(state = dat$p[[1]]$state,
+                                      coef = c(nwparam$coef.form, nwparam$coef.diss$coef.adj),
+                                      control = dat$control$MCMC_control[[1]],
+                                      save.changes = TRUE)
+    dat$el[[1]] <- rv$el
+    dat$p[[1]]$state$el <- rv$state$el
+    dat$p[[1]]$state_mon$el <- rv$state$el
+
+    if (dat$control$extract.summary.stats == TRUE) {
+      dat$stats$summstats[[1]] <- rbind(dat$stats$summstats[[1]], c(summary(dat$p[[1]]$state), summary(dat$p[[1]]$state_mon)))
+    }
   }
 
   return(dat)
