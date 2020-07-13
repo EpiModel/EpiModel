@@ -166,8 +166,8 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
                   verbose = verbose)
 
     coef.form <- fit$fit # there is no longer a separate formation fit
-    which_form <- seq_len(nparam(ergm_model(formation, nw=nw), canonical = TRUE))
-
+    which_form <- grep("^Form", names(fit$fit$coef))
+    
     out <- list()
     out$fit <- fit
     out$formation <- formation
