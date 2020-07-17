@@ -3218,8 +3218,8 @@ comp_plot.netsim <- function(x, at = 1, digits = 3, ...) {
 geom_bands <- function(mapping, lower = 0.25, upper = 0.75, alpha = 0.25, ...) {
   stat_summary(mapping,
                geom = "ribbon",
-               fun.ymin = function(x) quantile(x, lower),
-               fun.ymax = function(x) quantile(x, upper),
+               fun.min = function(x) quantile(x, lower),
+               fun.max = function(x) quantile(x, upper),
                alpha = alpha, ...)
 }
 
