@@ -27,7 +27,6 @@
 			<div class="nav-collapse collapse">
 				<ul class="nav">
           <li class="active"><a style="color: #FDD262" href=tut.html>Tutorials</a></li>
-          <li><a href=gal.html>Gallery</a></li>
           <li><a href=ws.html>Workshops</a></li>
           <li><a href=det.html>Details</a></li>
 				</ul>
@@ -44,12 +43,25 @@
 			<h2 style="color: #445555;">Tutorials</h2>
 
   		<div id="Tutorials">
-        For each of the three model classes in EpiModel, the tutorials are
-        organized into basic integrated models to guide new users in the features
+  		  <p>
+  		  For each of the three model classes in EpiModel (deterministic compartmental
+        models; individual contact models, and network models) the tutorials are
+        organized into basic "built-in" models to guide new users in the features
         of the model class, and advanced extension models to build out the models
-        to answer new research questions.
+        to address new research questions.
+        </p>
 
-        <h3>Basic Integrated Models</h3>
+        <p>
+        In <strong>July 2020</strong>, we have consolidated all of the tutorial
+        materials for the network model class in our extended materials for the
+        <a href="https://statnet.org/nme/">Network Modeling for Epidemics</a>
+        course. This also coincided with the release of <strong>EpiModel 2.0</strong>, a major
+        update to the software package that improves the functionality of EpiModel
+        but may require some some updating of code (see the migration section below).
+  		  </p>
+
+
+        <h3>Basic Built-In Models</h3>
         <p>
           <strong>Basic DCMs with EpiModel</strong> &nbsp;&nbsp; This tutorial
           provides some mathematical background for deterministic compartmental
@@ -80,16 +92,9 @@
           <strong>Basic Network Models with EpiModel</strong> &nbsp;&nbsp; Stochastic
           network models build in arbitrarily complex contact or partnership
           relational structures that form and dissolve over time, using the framework
-          of temporal exponential random graph models. This tutorial shows how to
-          simulate epidemics over simple networks with easily defined network
-          structures.
-          <br>
-          <small>
-            <a href="http://statnet.github.io/tut/BasicNet.html">
-               <i class="fa fa-book"></i> Tutorial</a>&nbsp;&nbsp;&nbsp;
-            <a href="http://statnet.github.io/tut/BasicNet.R">
-               <i class="fa fa-code"></i> Code</a>
-          </small>
+          of temporal exponential random graph models. See the materials from Days
+          3 and 4 of the <a href="https://statnet.org/nme/">Network Modeling for Epidemics</a>
+          course for these tutorial materials.
         </p>
 
         <h3>Advanced Extension Models</h3>
@@ -113,29 +118,22 @@
           new network models requires creating modules that are
           plugged in to the epidemic simulation. This framework allows for
           new epidemiological processes of arbitrary complexity that interact
-          with the unique dynamic network structures of interest. In addition, we have
-          a growing library of examples for extension models for EpiModel at
-          our <a href="https://github.com/statnet/EpiModel-Gallery">EpiModel Gallery!</a>
-          <br>
-          <small>
-            <a href="http://statnet.github.io/tut/NewNet.html">
-               <i class="fa fa-book"></i> Tutorial</a> &nbsp;&nbsp;&nbsp;
-            <a href="http://statnet.github.io/tut/NewNet.R">
-               <i class="fa fa-code"></i> Code</a>
-          </small>
+          with the unique dynamic network structures of interest. See the materials
+          from Days 4 and 5 the <a href="https://statnet.org/nme/">Network Modeling
+          for Epidemics</a> course for these tutorial materials. In addition, we
+          have a growing library of examples for extension models for EpiModel at
+          our <a href="https://github.com/statnet/EpiModel-Gallery">EpiModel Gallery</a>.
         </p>
 
-        <h3>Utilities</h3>
+        <h3>EpiModel 2.0 Migration</h3>
         <p>
-          <strong>Network Utility Functions</strong> &nbsp;&nbsp;This tutorial
-          shows extended examples of utility functions within EpiModel that help
-          with the parameterization and simulation of stochastic network models.
-          <br>
-          <small>
-            <a href="http://statnet.github.io/tut/NetUtils.html">
-              <i class="fa fa-book">
-            </i> Tutorial</a>
-          </small>
+          <strong>EpiModel 2.0</strong> incorporates a substantial redesign of
+          many elements of the EpiModel infrastructure and application programming
+				  interface (API). We anticipate that there will be some minor backwards
+				  incompatibilities with any EpiModel code developed with versions 1.x. We
+				  have therefore prepare an <a href="http://statnet.github.io/tut/EpiModel2.html">
+				  EpiModel 2.0 Migration Guide</a> to outline these changes and assist users in
+				  transitioning.
         </p>
 
       </div>
