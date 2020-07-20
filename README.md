@@ -46,6 +46,11 @@ if (!require("remotes")) install.packages("remotes")
 remotes::install_github("statnet/EpiModel")
 ```
 
+### EpiModel 2.0
+
+In July 2020, we relased EpiModel version 2.0. This major software package update incorporates a substantial redesign of many elements of the EpiModel infrastructure and application programming interface (API). We anticipate that there will be some minor backwards incompatibilities with any EpiModel code developed with versions 1.x. There is a EpiModel 2.0 migration document available in the <a href="http://www.epimodel.org/tut.html" target="_blank"> Tutorials</a> page.
+
+
 ### Documentation and Support
 
 **Website.** The main website for EpiModel, with tutorials and other supporting files is <a href="http://epimodel.org/" target="_blank">http://epimodel.org/</a>.
