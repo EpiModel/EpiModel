@@ -6,7 +6,7 @@ EpiModel 2.0.0
   and application programming interface for both built-in models (primarily used
   for teaching purposes) and extension models (primarily used for research 
   purposes). The major substantive changes are summarized in a EpiModel 1.x to
-  EpiModel 2.0 migration guide on our primary website: https://epimodel.org/
+  EpiModel 2.0 migration guide on our primary website: https://epimodel.org/.
 
 
 EpiModel 1.8.0
