@@ -1,7 +1,6 @@
 EpiModel 2.0.0
 ------------------------------------------------------------------------------
 
-### NEW FEATURES
 * This release introduces a major update to the EpiModel package infrastructure
   and application programming interface for both built-in models (primarily used
   for teaching purposes) and extension models (primarily used for research 
