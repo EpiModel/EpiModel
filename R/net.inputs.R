@@ -628,12 +628,12 @@ crosscheck.net <- function(x, param, init, control) {
         stop("control must an object of class control.net", call. = FALSE)
       }
 
-      nw <- x$fit$newnetwork
+      # Pull network object from netest object
+      nw <- x$fit$network
 
       # Defaults ----------------------------------------------------------------
 
       # Is status in network formation formula?
-      #statOnNw <- ("status" %in% get_formula_term_attr(x$formation, nw))
       statOnNw <- get_vertex_attribute(nw, "status") %in% c("s", "i", "r")
       statOnNw <- ifelse(sum(statOnNw) > 0, TRUE, FALSE)
 
