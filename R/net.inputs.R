@@ -658,7 +658,6 @@ crosscheck.net <- function(x, param, init, control) {
       }
 
 
-
       # Checks ------------------------------------------------------------------
 
       # Check that prevalence in NW attr status and initial conditions match
@@ -734,20 +733,6 @@ crosscheck.net <- function(x, param, init, control) {
         }
       }
 
-
-      ## Deprecated parameters
-      bim <- grep(".FUN", names(formals(control.net)), value = TRUE)
-      um <- which(grepl(".FUN", names(control)) & !(names(control) %in% bim))
-      if (length(um) == 0 && !is.null(control$type)) {
-        if (!is.null(param$trans.rate)) {
-          stop("The trans.rate parameter is deprecated. Use the inf.prob ",
-               "parameter instead.", call. = FALSE)
-        }
-        if (!is.null(param$trans.rate.g2)) {
-          stop("The trans.rate.g2 parameter is deprecated. Use the inf.prob.g2 ",
-               "parameter instead.", call. = FALSE)
-        }
-      }
     }
 
     if (control$start > 1) {
