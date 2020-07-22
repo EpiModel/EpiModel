@@ -28,18 +28,16 @@ initialize.net <- function(x, param, init, control, s) {
     dat$stats <- list()
     dat$temp <- list()
 
-
     # Initial Network Simulation ----------------------------------------------
-    nw <- simulate(x$fit, basis = x$fit$newnetwork,
-                   control = control$set.control.ergm)
-
-    if (control$resimulate.network == TRUE) {
-      if (class(x$fit) == "stergm") {
-        nw <- network.collapse(nw, at = 1)
-      }
-      nw <- sim_nets(x, nw, nsteps = 1, control)
+    if (x$edapprox == TRUE) {
+      nw <- simulate(x$fit, basis = x$fit$newnetwork,
+                     control = control$set.control.ergm)
+    } else {
+      nw <- x$fit$network
     }
-    if (control$resimulate.network == FALSE) {
+    if (control$resimulate.network == TRUE) {
+      nw <- sim_nets(x, nw, nsteps = 1, control)
+    } else {
       nw <- sim_nets(x, nw, nsteps = control$nsteps, control)
     }
     nw <- activate.vertices(nw, onset = 1, terminus = Inf)
