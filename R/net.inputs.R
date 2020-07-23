@@ -143,13 +143,13 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
   if ("b.rate" %in% names.dot.args) {
     p$a.rate <- dot.args$b.rate
     stop("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate to a.rate. ",
-            "See documentation for details.",
+         "See documentation for details.",
          call. = FALSE)
   }
   if ("b.rate.g2" %in% names.dot.args) {
     p$a.rate.g2 <- dot.args$b.rate.g2
     stop("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate.g2 to a.rate.g2. ",
-            "See documentation for details.",
+         "See documentation for details.",
          call. = FALSE)
   }
   # Check for mode to group suffix change
@@ -564,23 +564,20 @@ control.net <- function(type,
     p$set.control.ergm <- control.simulate.ergm(MCMC.burnin = 2e5)
   }
 
-  if (is.null(p$type)) {
-    names <- unlist(lapply(sys.call()[-1], as.character))
-    pos <- which(names(names) %in% grep(".FUN", names(names), value = TRUE))
-    p$f.names <- as.vector(names)[pos]
-    p$f.args  <- grep(".FUN", names(names), value = TRUE)
+  ## Names and arguments for supplied functions
+  pos1 <- which(names(formal.args) %in% grep(".FUN", names(formal.args), value = TRUE))
+  p$f.names <- names(formal.args)[pos1]
+  for (i in 1:length(pos1)) {
+    if (!is.null(formal.args[[pos1[i]]])) {
+      p$f.args[i]  <- as.character(formal.args[[pos1[i]]])
+    }
   }
-
-  if (p$type != "SIR" && !is.null(p$type)) {
-    p$f.names <- c("arrivals.FUN", "departures.FUN", "infection.FUN", "prevalence.FUN")
-    p$f.args  <- c("arrivals.net", "departures.net", "infection.net", "prevalence.net")
-  }
-
-  if (p$type %in% c("SIR", "SIS") && !is.null(p$type)) {
-    p$f.names <- c("arrivals.FUN", "departures.FUN", "infection.FUN",
-                   "recovery.FUN", "prevalence.FUN")
-    p$f.args  <- c("arrivals.net", "departures.net", "infection.net",
-                   "recovery.net", "prevalence.net")
+  pos2 <- which(names(dot.args) %in% grep(".FUN", names(dot.args), value = TRUE))
+  if (length(pos2) > 0) {
+    start <- length(pos1) + 1
+    stop <- length(pos1) + length(pos2)
+    p$f.names[start:stop] <- names(dot.args)[pos2]
+    p$f.args[start:stop] <- gsub(".FUN", "", names(dot.args)[pos2])
   }
 
   ## Output
@@ -778,6 +775,7 @@ crosscheck.net <- function(x, param, init, control) {
           if (is.null(control[[args[i]]])) {
             temp <- get(gsub(".FUN",".net",args[i]))
             control[[args[i]]] <- temp
+            control[["f.args"]][i] <- gsub(".FUN",".net",args[i])
           }
         }
       }
@@ -786,6 +784,7 @@ crosscheck.net <- function(x, param, init, control) {
           if (is.null(control[[args[i]]])) {
             temp <- get(gsub(".FUN",".2g.net",args[i]))
             control[[args[i]]] <- temp
+            control[["f.args"]][i] <- gsub(".FUN",".2g.net",args[i])
           }
         }
       }
@@ -795,6 +794,23 @@ crosscheck.net <- function(x, param, init, control) {
     assign("param", param, pos = parent.frame())
     assign("control", control, pos = parent.frame())
   }
+
+  # Update function names and their arguments
+  if (param$vital == FALSE) {
+    temp1 <- grep("arrivals", control$f.names)
+    temp2 <- grep("departures", control$f.names)
+    control$f.names <- control$f.names[-c(temp1, temp2)]
+    control$f.args <- control$f.args[-c(temp1, temp2)]
+  }
+
+  if (!is.null(control$type) && control$type != "SIR") {
+    temp3 <- grep("recovery", control$f.names)
+    control$f.names <- control$f.names[-temp3]
+    control$f.args <- control$f.args[-temp3]
+  }
+
+  control$f.names <- control$f.names[!is.na(control$f.args)]
+  control$f.args <- control$f.args[!is.na(control$f.args)]
 
 
   if (!is.null(control$type) && length(control$user.mods) > 0) {
