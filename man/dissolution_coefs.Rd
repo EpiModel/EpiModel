@@ -57,11 +57,11 @@ model estimation in \code{\link{netest}} are as follows:
         dyad have similar values of a specified attribute. The duration vector
         should now contain two values: the first is the mean edge duration of
         non-matched dyads, and the second is the duration of the matched dyads.
- \item \code{~offset(edges) + offset(nodemix("<attr>"))}: a heterogenous model
+ \item \code{~offset(edges) + offset(nodemix("<attr>"))}: a heterogeneous model
         that extends the nodematch model to include non-binary attributes for
         homophily. The duration vector should first contain the base value,
         then the values for every other possible combination in the term.
- \item \code{~offset(edges) + offset(nodefactor("<attr>"))}: a heterogenous
+ \item \code{~offset(edges) + offset(nodefactor("<attr>"))}: a heterogeneous
         model in which the edge duration varies by a specified attribute. The
         duration vector should first contain the base value, then the values
         for every other value of that attribute in the term.
@@ -140,10 +140,5 @@ mean(te$duration[te$ag.head == 5 & te$ag.tail == 5])
 durs
 }
 
-}
-\seealso{
-The theory and details of this function are explained in detail in the
-\href{http://statnet.github.io/tut/NetUtils.html}{EpiModel Network
-Utility Functions} tutorial.
 }
 \keyword{netUtils}

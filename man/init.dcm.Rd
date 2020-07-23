@@ -37,13 +37,13 @@ The initial conditions for a model solved with \code{\link{dcm}} should be
 input into the \code{init.dcm} function. This function handles initial
 conditions for both base model types and original models. For an overview
 of initial conditions for base DCM class models, consult the
-\href{http://statnet.github.io/tut/BasicDCMs.html}{Basic DCMs} tutorial.
+\href{http://epimodel.org/tut.html}{Basic DCMs} tutorial.
 
 Original models may use the parameter names listed as arguments here, a new
 set of names, or a combination of both. With new models, initial conditions
 must be input in the same order that the solved derivatives from the model
 are output. More details on this requirement are outlined in the
-\href{http://statnet.github.io/tut/NewDCMs.html}{Solving New DCMs} tutorial.
+\href{http://epimodel.org/tut.html}{Solving New DCMs} tutorial.
 }
 \seealso{
 Use \code{\link{param.dcm}} to specify model parameters and

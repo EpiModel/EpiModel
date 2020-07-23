@@ -119,13 +119,13 @@ color_tea <- function(nd, old.var = "testatus", old.sus = "s", old.inf = "i",
                       old.rec = "r", new.var = "ndtvcol", new.sus, new.inf,
                       new.rec, verbose = TRUE) {
   if (missing(new.inf)) {
-    new.inf <- transco("firebrick", 0.75)
+    new.inf <- adjustcolor(2, 0.75)
   }
   if (missing(new.sus)) {
-    new.sus <- transco("steelblue", 0.75)
+    new.sus <- adjustcolor(4, 0.75)
   }
   if (missing(new.rec)) {
-    new.rec <- transco("seagreen", 0.75)
+    new.rec <- adjustcolor(3, 0.75)
   }
   times <- 1:max(get.change.times(nd))
   for (at in times) {
@@ -240,11 +240,11 @@ copy_datattr_to_nwattr <- function(dat) {
 #'         dyad have similar values of a specified attribute. The duration vector
 #'         should now contain two values: the first is the mean edge duration of
 #'         non-matched dyads, and the second is the duration of the matched dyads.
-#'  \item \code{~offset(edges) + offset(nodemix("<attr>"))}: a heterogenous model
+#'  \item \code{~offset(edges) + offset(nodemix("<attr>"))}: a heterogeneous model
 #'         that extends the nodematch model to include non-binary attributes for
 #'         homophily. The duration vector should first contain the base value,
 #'         then the values for every other possible combination in the term.
-#'  \item \code{~offset(edges) + offset(nodefactor("<attr>"))}: a heterogenous
+#'  \item \code{~offset(edges) + offset(nodefactor("<attr>"))}: a heterogeneous
 #'         model in which the edge duration varies by a specified attribute. The
 #'         duration vector should first contain the base value, then the values
 #'         for every other value of that attribute in the term.
@@ -262,11 +262,6 @@ copy_datattr_to_nwattr <- function(dat) {
 #'        departure on edge persistence, if the \code{d.rate} argument is supplied.
 #'  \item \strong{d.rate:} the departure rate.
 #' }
-#'
-#' @seealso
-#' The theory and details of this function are explained in detail in the
-#' \href{http://statnet.github.io/tut/NetUtils.html}{EpiModel Network
-#' Utility Functions} tutorial.
 #'
 #' @export
 #' @keywords netUtils
