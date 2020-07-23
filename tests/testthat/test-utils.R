@@ -21,21 +21,6 @@ test_that("brewer_ramp", {
 
 })
 
-test_that("transco", {
-
-  cols <- transco(c("steelblue", "black"), 0.5)
-  cols2 <- transco(1, c(0.5, 1))
-
-  expect_is(class(cols), "character")
-  expect_true(length(cols) == 2)
-  expect_is(class(cols2), "character")
-  expect_true(length(cols2) == 2)
-  expect_error(transco(1:2, c(0.2, 0.3)))
-  expect_is(class(transco(1, 1)), "character")
-  expect_is(transco(1, 1, invisible = TRUE), "character")
-  expect_error(transco("bob", 1))
-
-})
 
 test_that("color_tea", {
   nw <- network_initialize(n = 100)

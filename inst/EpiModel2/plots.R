@@ -22,6 +22,7 @@ mod <- netsim(est, param, init, control)
 plot(mod)
 plot(mod, y = c("i.num", "i.num.g2", "r.num", "r.num.g2"), legend = TRUE)
 plot(mod, y = c("i.num", "i.num.g2"), mean.col = 1:2, qnts.col = 1:2, legend = TRUE)
+
 plot(mod, type = "epi", grid = TRUE)
 plot(mod, type = "epi", popfrac = TRUE)
 plot(mod, type = "epi", y = "si.flow", qnts = 1, ylim = c(0, 4))
