@@ -17,7 +17,7 @@
 #' @param lwd Line width for output lines.
 #' @param lty Line type for output lines.
 #' @param alpha Transparency level for lines, where 0 = transparent and 1 = opaque
-#'        (see \code{\link{transco}}).
+#'        (see \code{adjustcolor} function).
 #' @param legend Type of legend to plot. Values are "n" for no legend, "full" for
 #'        full legend, and "lim" for limited legend (see details).
 #' @param leg.name Character string to use for legend, with the default
@@ -41,7 +41,7 @@
 #' and in multiple run models the specific run may also be specified.
 #'
 #' @section The \code{popfrac} Argument:
-#' Compartment prevalences are the size of a compartment over some denominator.
+#' Compartment prevalence are the size of a compartment over some denominator.
 #' To plot the raw numbers from any compartment, use \code{popfrac=FALSE}; this
 #' is the default. The \code{popfrac} parameter calculates
 #' and plots the denominators of all specified compartments using these rules: 1)
@@ -99,7 +99,8 @@
 #'      run = 10, lty = 2, legend = "n", add = TRUE)
 #'
 plot.dcm <- function(x, y, popfrac = FALSE, run, col, lwd, lty, alpha = 0.9,
-                     legend, leg.name, leg.cex = 0.8, axs = "r", grid = FALSE, add = FALSE, ...) {
+                     legend, leg.name, leg.cex = 0.8, axs = "r", grid = FALSE,
+                     add = FALSE, ...) {
 
   ## Set missing flags
   noy <- ifelse(missing(y), TRUE, FALSE)
@@ -265,27 +266,27 @@ plot.dcm <- function(x, y, popfrac = FALSE, run, col, lwd, lty, alpha = 0.9,
     if (lcomp == 1) {
       if (use.brewer == TRUE) {
         if (nruns < 6) {
-          pal <- transco(brewer.pal(5, col)[1:nruns], alpha)
+          pal <- adjustcolor(brewer.pal(5, col)[1:nruns], alpha)
         } else {
-          pal <- transco(brewer_ramp(nruns, col), alpha)
+          pal <- adjustcolor(brewer_ramp(nruns, col), alpha)
         }
       }
       if (use.brewer == FALSE) {
-        pal <- transco(rep(col, nruns), alpha)
+        pal <- adjustcolor(rep(col, nruns), alpha)
       }
     }
     if (lcomp > 1) {
       if (use.brewer == TRUE) {
         if (lcomp > 4) {
-          pal <- transco(brewer_ramp(lcomp, col), alpha)
+          pal <- adjustcolor(brewer_ramp(lcomp, col), alpha)
         } else {
-          pal <- transco(brewer.pal(max(c(lcomp, 4)), col), alpha)
+          pal <- adjustcolor(brewer.pal(max(c(lcomp, 4)), col), alpha)
           fixpal <- pal
           fixpal[1] <- pal[2]; fixpal[2] <- pal[1]
           pal <- fixpal
         }
         if (groups == 2 && noy == TRUE) {
-          pal <- transco(brewer.pal(3, col), alpha)
+          pal <- adjustcolor(brewer.pal(3, col), alpha)
           fixpal <- pal
           fixpal[1] <- pal[2]; fixpal[2] <- pal[1]
           pal <- fixpal
@@ -296,9 +297,9 @@ plot.dcm <- function(x, y, popfrac = FALSE, run, col, lwd, lty, alpha = 0.9,
         }
       }
       if (use.brewer == FALSE) {
-        pal <- transco(rep(col, lcomp), alpha)
+        pal <- adjustcolor(rep(col, lcomp), alpha)
         if (groups == 2 && noy == TRUE) {
-          pal <- transco(rep(col, times = 2), alpha)
+          pal <- adjustcolor(rep(col, times = 2), alpha)
         }
       }
     }
@@ -491,9 +492,8 @@ plot.dcm <- function(x, y, popfrac = FALSE, run, col, lwd, lty, alpha = 0.9,
 #' plot(mod2, y = "si.flow", mean.smooth = TRUE, grid = TRUE)
 #' plot(mod2, y = "si.flow", qnts.smooth = FALSE, qnts = 1)
 #'
-
-plot.icm <- function(x, y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col, sim.lwd,
-                     sim.alpha, mean.line = TRUE, mean.smooth = TRUE,
+plot.icm <- function(x, y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col,
+                     sim.lwd,  sim.alpha, mean.line = TRUE, mean.smooth = TRUE,
                      mean.col, mean.lwd = 2, mean.lty = 1, qnts = 0.5, qnts.col,
                      qnts.alpha, qnts.smooth = TRUE, legend, leg.cex = 0.8,
                      axs = "r", grid = FALSE, add = FALSE, ...) {
@@ -546,14 +546,13 @@ plot.icm <- function(x, y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col, si
   ## Color palettes ##
 
   # Main color palette
-  bpal <- brewer.pal(3, "Set1")
-  bpal <- c(bpal[2], bpal[1], bpal[3])
+  bpal <- c(4, 2, 3)
 
   # Mean line
   if (missing(mean.col)) {
     mean.col <- bpal
   }
-  mean.pal <- transco(mean.col, 0.9)
+  mean.pal <- adjustcolor(mean.col, 0.9)
 
   # Quantile bands
   if (missing(qnts.col)) {
@@ -562,7 +561,7 @@ plot.icm <- function(x, y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col, si
   if (missing(qnts.alpha)) {
     qnts.alpha <- 0.5
   }
-  qnts.pal <- transco(qnts.col, qnts.alpha)
+  qnts.pal <- adjustcolor(qnts.col, qnts.alpha)
 
   # Sim lines
   if (missing(sim.lwd)) {
@@ -587,20 +586,7 @@ plot.icm <- function(x, y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col, si
   if (missing(sim.alpha) & nsims > 1) {
     sim.alpha <- max(c(0.05, 1 - log10(nsims) / 3))
   }
-  sim.pal <- transco(sim.col, sim.alpha)
-
-  # Special case for 2-group models
-  if (groups == 2 & nocomp == TRUE) {
-    if (dis.type == "SIR") {
-      mean.pal <- rep(mean.pal, 2)
-      qnts.pal <- rep(qnts.pal, 2)
-      sim.pal <- rep(sim.pal, 2)
-    } else {
-      mean.pal <- rep(mean.pal[1:2], 2)
-      qnts.pal <- rep(qnts.pal[1:2], 2)
-      sim.pal <- rep(sim.pal[1:2], 2)
-    }
-  }
+  sim.pal <- adjustcolor(sim.col, sim.alpha)
 
   ## Prevalence calculations ##
   x <- denom(x, y, popfrac)
@@ -611,8 +597,10 @@ plot.icm <- function(x, y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col, si
       min.prev <- min(x$epi[[y]], na.rm = TRUE)
       max.prev <- max(x$epi[[y]], na.rm = TRUE)
     } else {
-      min.prev <- min(sapply(y, function(comps) min(x$epi[[comps]], na.rm = TRUE)))
-      max.prev <- max(sapply(y, function(comps) max(x$epi[[comps]], na.rm = TRUE)))
+      min.prev <- min(sapply(y, function(comps) min(x$epi[[comps]],
+                                                    na.rm = TRUE)))
+      max.prev <- max(sapply(y, function(comps) max(x$epi[[comps]],
+                                                    na.rm = TRUE)))
     }
   } else {
     min.prev <- 0
@@ -668,21 +656,21 @@ plot.icm <- function(x, y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col, si
       mean.lty <- rep(mean.lty, lcomp)
     }
     if (missing(mean.lty)) {
-      if (nocomp == FALSE || (nocomp == TRUE && groups == 1)) {
-        mean.lty <- rep(1, lcomp)
-      } else {
-        mean.lty <- rep(1:2, each = lcomp / 2)
-      }
+      mean.lty <- rep(1, lcomp)
     }
-    mean.min <- draw_means(x, y, mean.smooth, mean.lwd, mean.pal, mean.lty, "epi", 0, "min")
-    mean.max <- draw_means(x, y, mean.smooth, mean.lwd, mean.pal, mean.lty, "epi", 0, "max")
+    mean.min <- draw_means(x, y, mean.smooth, mean.lwd,
+                           mean.pal, mean.lty, "epi", 0, "min")
+    mean.max <- draw_means(x, y, mean.smooth, mean.lwd,
+                           mean.pal, mean.lty, "epi", 0, "max")
   }
 
-  #Dynamic scaling based on sim.lines and smoothed or unsmoothed mean lines and quantile bands
+  # Dynamic scaling based on sim.lines and mean lines and quantile bands
   if (!is.null(da$ylim)) {
     ylim <- da$ylim
-  } else if (is.null(da$ylim) & sim.lines == FALSE & (mean.line == TRUE || qnts == TRUE)) {
-    ylim <- c(min(qnt.min * 0.9, mean.min * 0.9), max(qnt.max * 1.1, mean.max * 1.1))
+  } else if (is.null(da$ylim) & sim.lines == FALSE &
+             (mean.line == TRUE || qnts == TRUE)) {
+    ylim <- c(min(qnt.min * 0.9, mean.min * 0.9),
+              max(qnt.max * 1.1, mean.max * 1.1))
   }
   else {
     ylim <- c(min.prev, max.prev)
@@ -792,7 +780,8 @@ plot.icm <- function(x, y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col, si
 
 
 ## Helper utilities
-draw_qnts <- function(x, y, qnts, qnts.pal, qnts.smooth, loc = "epi", plot.qnts = 1, qnts.min_max = "max") {
+draw_qnts <- function(x, y, qnts, qnts.pal, qnts.smooth,
+                      loc = "epi", plot.qnts = 1, qnts.min_max = "max") {
 
   qnt.min <- 1E10
   qnt.max <- -1E10
@@ -809,18 +798,19 @@ draw_qnts <- function(x, y, qnts, qnts.pal, qnts.smooth, loc = "epi", plot.qnts 
     if (qnts.smooth == FALSE) {
       yy <- c(qnt.prev[1, ], rev(qnt.prev[2, ]))
     } else {
-      yy <- c(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[1, ]))$y,
-              rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[2, ]))$y))
+      yy <- c(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
+                                      y = qnt.prev[1, ]))$y,
+              rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
+                                          y = qnt.prev[2, ]))$y))
     }
-    if(plot.qnts == 1) {
+    if (plot.qnts == 1) {
       polygon(xx, yy, col = qnts.pal[j], border = NA)
-    }
-    else{
+    } else{
       qnt.max[j] = max(yy)
       qnt.min[j] = min(yy)
     }
   }
-  if(plot.qnts == 0 & qnts.min_max == "max") {
+  if (plot.qnts == 0 & qnts.min_max == "max") {
     return(max(qnt.max))
   } else if (plot.qnts == 0 & qnts.min_max == "min") {
     return(min(qnt.min))
@@ -829,7 +819,8 @@ draw_qnts <- function(x, y, qnts, qnts.pal, qnts.smooth, loc = "epi", plot.qnts 
 
 
 draw_means <- function(x, y, mean.smooth, mean.lwd,
-                       mean.pal, mean.lty, loc = "epi", plot.means = 1, mean.min_max = "max") {
+                       mean.pal, mean.lty, loc = "epi",
+                       plot.means = 1, mean.min_max = "max") {
 
   mean.min <- 1E10
   mean.max <- -1E10
@@ -844,20 +835,20 @@ draw_means <- function(x, y, mean.smooth, mean.lwd,
       mean.prev <- rowMeans(x[[loc]][[y[j]]], na.rm = TRUE)
     }
     if (mean.smooth == TRUE) {
-      mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev), y = mean.prev))$y
+      mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev),
+                                           y = mean.prev))$y
     }
-    if(plot.means == 1) {
-    lines(mean.prev, lwd = mean.lwd[j],
-          col = mean.pal[j], lty = mean.lty[j])
-    }
-    else {
-    mean.max[j] = max(mean.prev, na.rm = TRUE)
-    mean.min[j] = min(mean.prev, na.rm = TRUE)
+    if (plot.means == 1) {
+      lines(mean.prev, lwd = mean.lwd[j],
+            col = mean.pal[j], lty = mean.lty[j])
+    } else {
+      mean.max[j] = max(mean.prev, na.rm = TRUE)
+      mean.min[j] = min(mean.prev, na.rm = TRUE)
     }
   }
-  if(plot.means == 0 & mean.min_max == "max") {
+  if (plot.means == 0 & mean.min_max == "max") {
     return(max(mean.max))
-  } else if(plot.means == 0 & mean.min_max == "min") {
+  } else if (plot.means == 0 & mean.min_max == "min") {
     return(min(mean.min))
   }
 }
@@ -1067,24 +1058,23 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
     }
 
     ## Color Vector Validation
-    #1. Sim.col, mean.col, qnts.col, targ.col must be missing or a vector of length 1 or nstats
-    #2. If sim.col, mean.col, qnts.col, or targ.col is not missing
-    #   but is a vector of length 1 and nstats is greater than 1,
-    #   then replicate the color vector nstats times to achieve a vector of size nstats.
+    # 1. Sim.col, mean.col, qnts.col, targ.col must be missing or a vector of length 1 or nstats
+    # 2. If sim.col, mean.col, qnts.col, or targ.col is not missing
+    #    but is a vector of length 1 and nstats is greater than 1,
+    #    then replicate the color vector nstats times to achieve a vector of size nstats.
 
-    #Sim.col
+    # Sim.col
     if (!missing(sim.col)) {
       if (!(length(sim.col) %in% c(1,nstats))) {
         stop("sim.col must be either missing or a vector of length 1  or nstats (",
              nstats, ")", call. = FALSE)
-      }
-      else if (length(sim.col) == 1 & nstats > 1) {
+      } else if (length(sim.col) == 1 & nstats > 1) {
         sim.col <- rep(sim.col,nstats)
       }
     }
 
 
-    #Mean.col
+    # Mean.col
     if (!missing(mean.col)) {
       if (!(length(mean.col) %in% c(1, nstats))) {
         stop("mean.col must be either missing or a vector of length 1 or nstats (",
@@ -1095,55 +1085,43 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
       }
     }
 
-    #Qnts.col
+    # Qnts.col
     if (!missing(qnts.col)) {
       if (!(length(qnts.col) %in% c(1,nstats))) {
         stop("qnts.col must be either missing or a vector of length 1 or nstats (",
              nstats, ")", call. = FALSE)
-      }
-      else if (length(qnts.col) == 1 & nstats > 1) {
+      } else if (length(qnts.col) == 1 & nstats > 1) {
         qnts.col <- rep(qnts.col, nstats)
       }
     }
 
-    #Targ.col
+    # Targ.col
     if (!missing(targ.col)) {
       if (!(length(targ.col) %in% c(1,nstats))) {
         stop("targ.col must be either missing or a vector of length 1 or nstats (",
              nstats, ")", call. = FALSE)
-      }
-      else if (length(targ.col) == 1 & nstats > 1) {
+      } else if (length(targ.col) == 1 & nstats > 1) {
         targ.col <- rep(targ.col, nstats)
       }
     }
 
     # Default colors
-    #If sim color is missing and using joined plots, sim color uses brewer ramp pallette
-    #If sim color is missing and using split plots, default color for each plot set to blue (dodgerblue3)
     if (missing(sim.col)) {
       if (plots.joined == TRUE) {
-        if (nstats > 8) {
-          sim.col <- brewer_ramp(nstats, "Set1")
-        } else {
-          sim.col <- brewer.pal(9, "Set1")[1:(nstats + 1)]
-          if (nstats >= 6) {
-            sim.col <- sim.col[-which(sim.col == "#FFFF33")]
-          }
-        }
+        sim.col <- 2:100
       }
       if (missing(plots.joined) | plots.joined == FALSE) {
-        sim.col <- rep("dodgerblue3",nstats)
+        sim.col <- rep("dodgerblue3", nstats)
       }
     }
 
     ## Joined Plots
     if (method == "l") {
-      if(missing(sim.lines)){
+      if (missing(sim.lines)) {
         sim.lines <- FALSE
+      } else {
+        sim.lines <- sim.lines
       }
-       else {
-          sim.lines <- sim.lines
-       }
 
       ## Grid
       if (grid == TRUE) {
@@ -1170,7 +1148,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         for (j in outsts) {
           dataj <- data[, colnames(data) %in% nmstats[j], drop = FALSE]
 
-          ## Quantiles - ylim min and max ##
+        ## Quantiles - ylim min and max ##
         if (dynamic == TRUE) {
           if (is.numeric(qnts)) {
             if (qnts < 0 | qnts > 1) {
@@ -1184,8 +1162,10 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
             if (qnts.smooth == FALSE) {
               yy <- c(qnt.prev[1, ], rev(qnt.prev[2, ]))
             } else {
-              yy <- c(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[1, ]))$y,
-                      rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[2, ]))$y))
+              yy <- c(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
+                                              y = qnt.prev[1, ]))$y,
+                      rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
+                                                  y = qnt.prev[2, ]))$y))
             }
             qnt.min[j] = min(yy)
             qnt.max[j] = max(yy)
@@ -1196,7 +1176,8 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
           if (mean.line == TRUE) {
             mean.prev <- rowMeans(dataj)
             if (mean.smooth == TRUE) {
-              mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev), y = mean.prev))$y
+              mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev),
+                                                   y = mean.prev))$y
             }
             mean.min[j] = min(mean.prev)
             mean.max[j] = max(mean.prev)
@@ -1207,8 +1188,12 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         ## Default ylim
         if (length(da) > 0 && !is.null(da$ylim) && dynamic == TRUE) {
           ylim <- da$ylim
-        } else if (is.null(da$ylim) & sim.lines == FALSE & dynamic == TRUE & (mean.line == TRUE || qnts == TRUE)) {
-          ylim <- c(min(min(qnt.min, na.rm = TRUE) * 0.9, min(mean.min, na.rm = TRUE) * 0.9), max(max(qnt.max, na.rm = TRUE) * 1.1, max(mean.max, na.rm = TRUE) * 1.1))
+        } else if (is.null(da$ylim) & sim.lines == FALSE & dynamic == TRUE &
+                   (mean.line == TRUE || qnts == TRUE)) {
+          ylim <- c(min(min(qnt.min, na.rm = TRUE) * 0.9,
+                        min(mean.min, na.rm = TRUE) * 0.9),
+                    max(max(qnt.max, na.rm = TRUE) * 1.1,
+                        max(mean.max, na.rm = TRUE) * 1.1))
         } else {
           ylim <- c(min(data) * 0.9, max(data) * 1.1)
         }
@@ -1255,9 +1240,9 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
             qnts.alpha <- 0.5
           }
           if (missing(qnts.col)) {
-            qnts.col <- transco(sim.col, qnts.alpha)
+            qnts.col <- adjustcolor(sim.col, qnts.alpha)
           } else {
-            qnts.col <- transco(qnts.col, qnts.alpha)
+            qnts.col <- adjustcolor(qnts.col, qnts.alpha)
           }
         }
 
@@ -1280,8 +1265,10 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
               if (qnts.smooth == FALSE) {
                 yy <- c(qnt.prev[1, ], rev(qnt.prev[2, ]))
               } else {
-                yy <- c(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[1, ]))$y,
-                      rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[2, ]))$y))
+                yy <- c(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
+                                                y = qnt.prev[1, ]))$y,
+                      rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
+                                                  y = qnt.prev[2, ]))$y))
               }
               polygon(xx, yy, col = qnts.col[which(j == outsts)], border = NA)
             }
@@ -1302,7 +1289,8 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
             }
             mean.prev <- rowMeans(dataj)
             if (mean.smooth == TRUE) {
-              mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev), y = mean.prev))$y
+              mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev),
+                                                   y = mean.prev))$y
             }
             lines(mean.prev, lwd = mean.lwd,
                   col = mean.col[which(j == outsts)], lty = mean.lty)
@@ -1359,9 +1347,9 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
             qnts.alpha <- 0.5
           }
           if (missing(qnts.col)) {
-            qnts.col <- transco(sim.col, qnts.alpha)
+            qnts.col <- adjustcolor(sim.col, qnts.alpha)
           } else {
-            qnts.col <- transco(qnts.col, qnts.alpha)
+            qnts.col <- adjustcolor(qnts.col, qnts.alpha)
           }
         }
 
@@ -1389,8 +1377,10 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
               if (qnts.smooth == FALSE) {
                 yy <- c(qnt.prev[1, ], rev(qnt.prev[2, ]))
               } else {
-                yy <- c(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[1, ]))$y,
-                      rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[2, ]))$y))
+                yy <- c(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
+                                                y = qnt.prev[1, ]))$y,
+                      rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
+                                                  y = qnt.prev[2, ]))$y))
               }
               qnt.min = min(yy)
               qnt.max = max(yy)
@@ -1404,7 +1394,8 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
             }
             mean.prev <- rowMeans(dataj)
             if (mean.smooth == TRUE) {
-              mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev), y = mean.prev))$y
+              mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev),
+                                                   y = mean.prev))$y
             }
             mean.min = min(mean.prev)
             mean.max = max(mean.prev)
@@ -1413,8 +1404,10 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
           ## Default ylim
           if (length(da) > 0 && !is.null(da$ylim) && dynamic == TRUE) {
             ylim <- da$ylim
-          } else if (is.null(da$ylim) & sim.lines == FALSE & dynamic == TRUE & (mean.line == TRUE || qnts == TRUE)) {
-            ylim <- c(min(qnt.min * 0.9, mean.min * 0.9), max(qnt.max * 1.1, mean.max * 1.1))
+          } else if (is.null(da$ylim) & sim.lines == FALSE & dynamic == TRUE &
+                     (mean.line == TRUE || qnts == TRUE)) {
+            ylim <- c(min(qnt.min * 0.9, mean.min * 0.9),
+                      max(qnt.max * 1.1, mean.max * 1.1))
           } else {
             ylim <- c(min(dataj) * 0.9, max(dataj) * 1.1)
           }
@@ -1438,8 +1431,10 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
             if (qnts.smooth == FALSE) {
               yy <- c(qnt.prev[1, ], rev(qnt.prev[2, ]))
             } else {
-              yy <- c(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[1, ]))$y,
-                      rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[2, ]))$y))
+              yy <- c(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
+                                              y = qnt.prev[1, ]))$y,
+                      rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
+                                                  y = qnt.prev[2, ]))$y))
             }
             polygon(xx, yy, col = qnts.col[which(j == outsts)], border = NA)
             }
@@ -1461,7 +1456,8 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
             }
             mean.prev <- rowMeans(dataj)
             if (mean.smooth == TRUE) {
-              mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev), y = mean.prev))$y
+              mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev),
+                                                   y = mean.prev))$y
             }
             lines(mean.prev, lwd = mean.lwd,
                   col = mean.col[which(j == outsts)], lty = mean.lty)
@@ -1532,7 +1528,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
     mean.max <- -1E10
 
     ## Quantiles - ylim max ##
-    if (dynamic == TRUE){
+    if (dynamic == TRUE) {
     if (is.numeric(qnts) & nsims > 1) {
       if (qnts < 0 | qnts > 1) {
         stop("qnts must be between 0 and 1", call. = FALSE)
@@ -1547,8 +1543,10 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
       if (qnts.smooth == FALSE) {
         yy <- c(qnt.prev[1, ], rev(qnt.prev[2, ]))
       } else {
-        yy <- c(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[1, ]))$y,
-                rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[2, ]))$y))
+        yy <- c(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
+                                        y = qnt.prev[1, ]))$y,
+                rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
+                                            y = qnt.prev[2, ]))$y))
       }
       qnt.max = max(yy)
     }
@@ -1560,7 +1558,8 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
       dataj <- dataj[complete.cases(dataj), , drop = FALSE]
       mean.prev <- rowMeans(dataj)
       if (mean.smooth == TRUE) {
-        mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev), y = mean.prev))$y
+        mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev),
+                                             y = mean.prev))$y
       }
       mean.max = max(mean.prev)
     }
@@ -1569,10 +1568,11 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
       sim.lines <- FALSE
     }
 
-    #Dynamic scaling based on sim.lines and smoothed or unsmoothed mean lines and quantile bands
+    #Dynamic scaling based on sim.lines and mean lines and quantile bands
     if (length(da) > 0 && !is.null(da$ylim) && dynamic == TRUE) {
       ylim <- da$ylim
-    } else if (is.null(da$ylim) & sim.lines == FALSE & (mean.line == TRUE || qnts == TRUE)) {
+    } else if (is.null(da$ylim) & sim.lines == FALSE &
+               (mean.line == TRUE || qnts == TRUE)) {
       ylim <- c(0, max(qnt.max * 1.1, mean.max * 1.1))
     } else {
       ylim <- c(0, max(sapply(pages, max, na.rm = TRUE)) * 1.1)
@@ -1613,7 +1613,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
            xlim = xlim, ylim = ylim,
            xlab = xlab, ylab = ylab)
 
-      if (dynamic == TRUE){
+      if (dynamic == TRUE) {
       if (is.numeric(qnts) & nsims > 1) {
         if (qnts < 0 | qnts > 1) {
           stop("qnts must be between 0 and 1", call. = FALSE)
@@ -1624,7 +1624,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         if (missing(qnts.alpha)) {
           qnts.alpha <- 0.5
         }
-        qnts.col <- transco(qnts.col, qnts.alpha)
+        qnts.col <- adjustcolor(qnts.col, qnts.alpha)
         quants <- c((1 - qnts) / 2, 1 - ((1 - qnts) / 2))
         dataj <- as.data.frame(pages)
         dataj <- dataj[complete.cases(dataj), , drop = FALSE]
@@ -1635,8 +1635,10 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         if (qnts.smooth == FALSE) {
           yy <- c(qnt.prev[1, ], rev(qnt.prev[2, ]))
         } else {
-          yy <- c(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[1, ]))$y,
-                  rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[2, ]))$y))
+          yy <- c(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
+                                          y = qnt.prev[1, ]))$y,
+                  rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
+                                              y = qnt.prev[2, ]))$y))
         }
         polygon(xx, yy, col = qnts.col, border = NA)
       }
@@ -1657,7 +1659,8 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         dataj <- dataj[complete.cases(dataj), , drop = FALSE]
         mean.prev <- rowMeans(dataj)
         if (mean.smooth == TRUE) {
-          mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev), y = mean.prev))$y
+          mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev),
+                                               y = mean.prev))$y
         }
         lines(mean.prev, lwd = mean.lwd,
               col = mean.col, lty = mean.lty)
@@ -1709,7 +1712,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 
 
     ## Quantiles - ylim min max ##
-    if (dynamic == TRUE){
+    if (dynamic == TRUE) {
       #Initialize ylim min max values
       qnt.min <- 1E10
       qnt.max <- -1E10
@@ -1728,8 +1731,10 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
       if (qnts.smooth == FALSE) {
         yy <- c(qnt.prev[1, ], rev(qnt.prev[2, ]))
       } else {
-        yy <- c(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[1, ]))$y,
-                rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[2, ]))$y))
+        yy <- c(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
+                                        y = qnt.prev[1, ]))$y,
+                rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
+                                            y = qnt.prev[2, ]))$y))
       }
       qnt.min <- min(yy)
       qnt.max <- max(yy)
@@ -1741,7 +1746,8 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
       dataj <- as.data.frame(prop.diss)
       mean.prev <- rowMeans(dataj)
       if (mean.smooth == TRUE) {
-        mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev), y = mean.prev))$y
+        mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev),
+                                             y = mean.prev))$y
       }
       mean.min <- min(mean.prev)
       mean.max <- max(mean.prev)
@@ -1751,11 +1757,13 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
       sim.lines <- FALSE
     }
 
-    #Dynamic scaling based on sim.lines and smoothed or unsmoothed mean lines and quantile bands
+    #Dynamic scaling based on sim.lines and mean lines and quantile bands
     if (length(da) > 0 && !is.null(da$ylim) && dynamic == TRUE) {
       ylim <- da$ylim
-    } else if (is.null(da$ylim) & sim.lines == FALSE & dynamic == TRUE & (mean.line == TRUE || qnts == TRUE)) {
-      ylim <- c(min(qnt.min * 0.9, mean.min * 0.9), max(qnt.max * 1.1, mean.max * 1.1))
+    } else if (is.null(da$ylim) & sim.lines == FALSE & dynamic == TRUE &
+               (mean.line == TRUE || qnts == TRUE)) {
+      ylim <- c(min(qnt.min * 0.9, mean.min * 0.9),
+                max(qnt.max * 1.1, mean.max * 1.1))
     } else {
       ylim <- c(0, max(sapply(prop.diss, max, na.rm = TRUE)) * 1.1)
     }
@@ -1791,8 +1799,8 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
              xlim = xlim, ylim = ylim,
              xlab = xlab, ylab = ylab)
 
-      #Quantile bands
-      if (dynamic == TRUE){
+      # Quantile bands
+      if (dynamic == TRUE) {
       if (is.numeric(qnts)) {
         if (qnts < 0 | qnts > 1) {
           stop("qnts must be between 0 and 1", call. = FALSE)
@@ -1803,7 +1811,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         if (missing(qnts.alpha)) {
           qnts.alpha <- 0.5
         }
-        qnts.col <- transco(qnts.col, qnts.alpha)
+        qnts.col <- adjustcolor(qnts.col, qnts.alpha)
         quants <- c((1 - qnts) / 2, 1 - ((1 - qnts) / 2))
         dataj <- as.data.frame(prop.diss)
         qnt.prev <- apply(dataj, 1, function(x)
@@ -1813,8 +1821,10 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         if (qnts.smooth == FALSE) {
           yy <- c(qnt.prev[1, ], rev(qnt.prev[2, ]))
         } else {
-          yy <- c(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[1, ]))$y,
-                  rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[2, ]))$y))
+          yy <- c(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
+                                          y = qnt.prev[1, ]))$y,
+                  rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
+                                              y = qnt.prev[2, ]))$y))
         }
         polygon(xx, yy, col = qnts.col, border = NA)
       }
@@ -1834,7 +1844,8 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         dataj <- as.data.frame(prop.diss)
         mean.prev <- rowMeans(dataj)
         if (mean.smooth == TRUE) {
-          mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev), y = mean.prev))$y
+          mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev),
+                                               y = mean.prev))$y
         }
         lines(mean.prev, lwd = mean.lwd,
               col = mean.col, lty = mean.lty)
@@ -1885,14 +1896,14 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #'        simulation number for network plot, or else \code{"min"} to plot the
 #'        simulation number with the lowest disease prevalence, \code{"max"} for
 #'        the simulation with the highest disease prevalence, or \code{"mean"}
-#'        for the simulation with the prevalance closest to the mean across
+#'        for the simulation with the prevalence closest to the mean across
 #'        simulations at the specified time step.
 #' @param sim.col Vector of any standard R color format for simulation lines.
 #' @param sim.lwd Line width for simulation lines.
 #' @param sim.alpha Transparency level for simulation lines, where 0 = transparent
-#'        and 1 = opaque (see \code{\link{transco}}).
+#'        and 1 = opaque (see \code{adjustcolor} function).
 #' @param mean.line If \code{TRUE}, plot mean of simulations across time.
-#' @param mean.smooth If \code{TRUE}, use a lowess smoother on the mean line.
+#' @param mean.smooth If \code{TRUE}, use a loess smoother on the mean line.
 #' @param mean.col Vector of any standard R color format for mean lines.
 #' @param mean.lwd Line width for mean lines.
 #' @param mean.lty Line type for mean lines.
@@ -1901,8 +1912,8 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #'        polygon from plot.
 #' @param qnts.col Vector of any standard R color format for polygons.
 #' @param qnts.alpha Transparency level for quantile polygons, where 0 =
-#'        transparent and 1 = opaque (see \code{\link{transco}}).
-#' @param qnts.smooth If \code{TRUE}, use a lowess smoother on quantile polygons.
+#'        transparent and 1 = opaque (see \code{adjustcolor} function).
+#' @param qnts.smooth If \code{TRUE}, use a loess smoother on quantile polygons.
 #' @param legend If \code{TRUE}, plot default legend.
 #' @param leg.cex Legend scale size.
 #' @param axs Plot axis type (see \code{\link{par}} for details), with default
@@ -1986,7 +1997,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #' networks at specified time steps. Because it is only possible to plot one time
 #' step from one simulation at a time, it is necessary to enter these in the
 #' \code{at} and \code{sims} parameters. To aide in visualizing representative
-#' and extreme simulations at specific time steps, the sims parameter may be set
+#' and extreme simulations at specific time steps, the \code{sims} parameter may be set
 #' to \code{"mean"} to plot the simulation in which the disease prevalence is
 #' closest to the average across all simulations, \code{"min"} to plot the simulation
 #' in which the prevalence is lowest, and \code{"max"} to plot the simulation
@@ -2025,7 +2036,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #' plot(mod, type = "epi", y = "si.flow", qnts = 1, ylim = c(0, 4))
 #'
 #' # Plot static networks
-#' par(mar = c(0,0,0,0))
+#' par(mar = c(0, 0, 0, 0))
 #' plot(mod, type = "network")
 #'
 #' # Automatic coloring of infected nodes as red
@@ -2036,7 +2047,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #'      col.status = TRUE, at = 20, sims = "max")
 #'
 #' # Automatic shape by group number (circle = group 1)
-#' par(mar = c(0,0,0,0))
+#' par(mar = c(0, 0, 0, 0))
 #' plot(mod, type = "network", at = 20, col.status = TRUE, shp.bip = "square")
 #' plot(mod, type = "network", at = 20, col.status = TRUE, shp.bip = "triangle")
 #'
@@ -2050,27 +2061,28 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #' plot(mod, type = "formation", stats = "meandeg",
 #'      mean.lwd = 1, qnts.col = "seagreen", mean.col = "black")
 #'
-plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col,
-                        sim.lwd, sim.alpha, mean.line = TRUE, mean.smooth = TRUE,
-                        mean.col, mean.lwd = 2, mean.lty = 1, qnts = 0.5, qnts.col,
-                        qnts.alpha, qnts.smooth = TRUE, legend, leg.cex = 0.8, axs = "r",
-                        grid = FALSE, add = FALSE, network = 1, at = 1, col.status = FALSE,
+plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
+                        sims, sim.col, sim.lwd, sim.alpha, mean.line = TRUE,
+                        mean.smooth = TRUE, mean.col, mean.lwd = 2, mean.lty = 1,
+                        qnts = 0.5, qnts.col, qnts.alpha, qnts.smooth = TRUE,
+                        legend, leg.cex = 0.8, axs = "r", grid = FALSE,
+                        add = FALSE, network = 1, at = 1, col.status = FALSE,
                         shp.bip = NULL, stats, targ.line = TRUE, targ.col,
                         targ.lwd = 2, targ.lty = 2, plots.joined, ...) {
 
   # type check
   if ((type %in% c("epi", "network", "formation")) == FALSE) {
-    stop("type must be one of: \"epi\", \"network\", or \"formation\" ", call. = FALSE)
+    stop("type must be one of: \"epi\", \"network\", or \"formation\" ",
+         call. = FALSE)
   }
 
   # Network plot ------------------------------------------------------------
   if (type == "network") {
 
     if (x$control$tergmLite == TRUE) {
-        stop("networkDyanmic object is not saved in tergmLite netsim simulation. Check
-             control settings", call. = FALSE)
-      }
-
+      stop("networkDyanmic object is not saved in tergmLite netsim simulation.
+            Check control setting tergmLite", call. = FALSE)
+    }
 
     nsteps <- x$control$nsteps
     if (at > x$control$nsteps) {
@@ -2081,7 +2093,8 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
     if (missing(sims)) {
       sims <- 1
     }
-    if (length(sims) > 1 || (!is.numeric(sims) && !(sims %in% c("mean", "max", "min")))) {
+    if (length(sims) > 1 || (!is.numeric(sims) &&
+                             !(sims %in% c("mean", "max", "min")))) {
       stop("sims argument must be single simulation number",
            "or \"mean\", \"max\", or \"min\" ", call. = FALSE)
     }
@@ -2140,7 +2153,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
         stop("Plotting status colors requires tergmLite=FALSE in netsim control settings",
              call. = FALSE)
       }
-      pal <- transco(c("firebrick", "steelblue", "seagreen"), 0.75)
+      pal <- adjustcolor(c(4,2,3), 0.75)
       if (tergmLite == FALSE) {
         cols <- ifelse(get.vertex.attribute.active(obj, "testatus", at = at) == "i",
                        pal[1], pal[2])
@@ -2173,7 +2186,6 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
     if (max(sims) > nsims) {
       stop("Set sim to between 1 and ", nsims, call. = FALSE)
     }
-    dis.type <- x$control$type
     if (is.null(x$param$groups) | !is.numeric(x$param$groups)) {
       groups <- 1
       x$param$groups <- 1
@@ -2181,10 +2193,8 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
       groups <- x$param$groups
     }
 
-
     # dotargs
     da <- list(...)
-
 
     ## Compartments ##
     nocomp <- ifelse(missing(y), TRUE, FALSE)
@@ -2217,17 +2227,13 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
     ## Color palettes ##
 
     # Main color palette
-    bpal <- c(brewer.pal(9, "Set1"), brewer.pal(8, "Set2"), brewer.pal(12, "Set3"))
-    bpal2 <- bpal[2]
-    bpal1 <- bpal[1]
-    bpal[1] <- bpal2
-    bpal[2] <- bpal1
+    bpal <- c(4, 2, 3, 5:100)
 
     # Mean line
     if (missing(mean.col)) {
       mean.col <- bpal
     }
-    mean.pal <- transco(mean.col, 0.9)
+    mean.pal <- adjustcolor(mean.col, 0.9)
 
     # Quantile bands
     if (missing(qnts.col)) {
@@ -2236,7 +2242,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
     if (missing(qnts.alpha)) {
       qnts.alpha <- 0.5
     }
-    qnts.pal <- transco(qnts.col, qnts.alpha)
+    qnts.pal <- adjustcolor(qnts.col, qnts.alpha)
 
     # Sim lines
     if (missing(sim.lwd)) {
@@ -2261,21 +2267,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
     if (missing(sim.alpha) & nsims > 1) {
       sim.alpha <- max(c(0.05, 1 - log10(nsims) / 3))
     }
-    sim.pal <- transco(sim.col, sim.alpha)
-
-    # Special case for 2-group models
-    if (groups == 2 & nocomp == TRUE) {
-      pal <- brewer.pal(3, "Set1")
-      if (dis.type == "SIR") {
-        mean.pal <- rep(mean.pal, 2)
-        qnts.pal <- rep(qnts.pal, 2)
-        sim.pal <- rep(sim.pal, 2)
-      } else {
-        mean.pal <- rep(mean.pal[1:2], 2)
-        qnts.pal <- rep(qnts.pal[1:2], 2)
-        sim.pal <- rep(sim.pal[1:2], 2)
-      }
-    }
+    sim.pal <- adjustcolor(sim.col, sim.alpha)
 
 
     ## Prevalence calculations ##
@@ -2322,11 +2314,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
     if (nsims == 1) {
       disp.qnts <- FALSE
     }
-    # NOTE: What does this accomplish?
-    #if (groups == 1 & missing(qnts)) {
-    #  disp.qnts <- TRUE
-    #  qnts <- 0.5
-    #}
+
     if (disp.qnts == TRUE) {
       if (qnts > 1 | qnts < 0) {
         stop("qnts must be between 0 and 1", call. = FALSE)
@@ -2343,21 +2331,19 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
         mean.lwd <- rep(mean.lwd, lcomp)
       }
       if (missing(mean.lwd)) {
-        mean.lwd <- rep(2.5, lcomp)
+        mean.lwd <- rep(1.5, lcomp)
       }
 
       if (!missing(mean.lty) && length(mean.lty) < lcomp) {
         mean.lty <- rep(mean.lty, lcomp)
       }
       if (missing(mean.lty)) {
-        if (nocomp == FALSE || (nocomp == TRUE && groups == 1)) {
-          mean.lty <- rep(1, lcomp)
-        } else {
-          mean.lty <- rep(1:2, each = lcomp / 2)
-        }
+        mean.lty <- rep(1, lcomp)
       }
-      mean.max <- draw_means(x, y, mean.smooth, mean.lwd, mean.pal, mean.lty, "epi", 0, "max")
-      mean.min <- draw_means(x, y, mean.smooth, mean.lwd, mean.pal, mean.lty, "epi", 0, "min")
+      mean.max <- draw_means(x, y, mean.smooth, mean.lwd, mean.pal,
+                             mean.lty, "epi", 0, "max")
+      mean.min <- draw_means(x, y, mean.smooth, mean.lwd, mean.pal,
+                             mean.lty, "epi", 0, "min")
     }
 
     ## Missing args ##
@@ -2368,8 +2354,10 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
     }
     if (is.null(da$ylim) & (popfrac == TRUE || sim.lines == TRUE)) {
       ylim <- c(min.prev, max.prev)
-    } else if (is.null(da$ylim) & popfrac == FALSE & sim.lines == FALSE & (mean.line == TRUE || qnts == TRUE)) {
-      ylim <- c(min(qnt.min * 0.9, mean.min * 0.9), max(qnt.max * 1.1, mean.max * 1.1))
+    } else if (is.null(da$ylim) & popfrac == FALSE & sim.lines == FALSE &
+               (mean.line == TRUE || qnts == TRUE)) {
+      ylim <- c(min(qnt.min * 0.9, mean.min * 0.9), max(qnt.max * 1.1,
+                                                        mean.max * 1.1))
     } else {
       ylim <- da$ylim
     }
@@ -2413,16 +2401,13 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
     if (nsims == 1) {
       disp.qnts <- FALSE
     }
-    #if (groups == 1 & missing(qnts)) {
-    #  disp.qnts <- TRUE
-    #  qnts <- 0.5
-    #}
+
     if (disp.qnts == TRUE) {
       if (qnts > 1 | qnts < 0) {
         stop("qnts must be between 0 and 1", call. = FALSE)
       }
-      y.l <- length(y)/groups
-      qnts.pal <- rep(qnts.pal[1:y.l], 2)
+      y.l <- length(y)
+      qnts.pal <- qnts.pal[1:y.l]
       draw_qnts(x, y, qnts, qnts.pal, qnts.smooth)
     }
 
@@ -2451,14 +2436,12 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
         mean.lty <- rep(mean.lty, lcomp)
       }
       if (missing(mean.lty)) {
-        if (nocomp == FALSE || (nocomp == TRUE && groups == 1)) {
+        if (nocomp == FALSE) {
           mean.lty <- rep(1, lcomp)
-        } else {
-          mean.lty <- rep(1:2, each = lcomp / 2)
         }
       }
-      y.n <- length(y)/groups
-      mean.pal <- rep(mean.pal[1:y.n], 2)
+      y.n <- length(y)
+      mean.pal <- mean.pal[1:y.n]
       draw_means(x, y, mean.smooth, mean.lwd, mean.pal, mean.lty)
     }
 
@@ -2477,6 +2460,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
       legend("topright", legend = y, lty = leg.lty, lwd = 3,
              col = mean.pal, cex = leg.cex, bg = "white")
     }
+
   }
 
 
@@ -2549,64 +2533,49 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
     }
 
     if (!missing(sim.col)) {
-      if (!(length(sim.col) %in% c(1,nstats))) {
+      if (!(length(sim.col) %in% c(1, nstats))) {
         stop("sim.col must be either missing or a vector of length 1  or nstats (",
              nstats, ")", call. = FALSE)
-      }
-      else if (length(sim.col) == 1 & nstats > 1) {
-        sim.col <- rep(sim.col,nstats)
+      } else if (length(sim.col) == 1 & nstats > 1) {
+        sim.col <- rep(sim.col, nstats)
       }
     }
 
-    #Mean.col
+    # Mean.col
     if (!missing(mean.col)) {
       if (!(length(mean.col) %in% c(1, nstats))) {
         stop("mean.col must be either missing or a vector of length 1 or nstats (",
              nstats, ")", call. = FALSE)
-      }
-      else if (length(mean.col) == 1 & nstats > 1) {
+      } else if (length(mean.col) == 1 & nstats > 1) {
         mean.col <- rep(mean.col, nstats)
       }
     }
 
-    #Qnts.col
+    # Qnts.col
     if (!missing(qnts.col)) {
-      if (!(length(qnts.col) %in% c(1,nstats))) {
+      if (!(length(qnts.col) %in% c(1, nstats))) {
         stop("qnts.col must be either missing or a vector of length 1 or nstats (",
              nstats, ")", call. = FALSE)
-      }
-      else if (length(qnts.col) == 1 & nstats > 1) {
+      } else if (length(qnts.col) == 1 & nstats > 1) {
         qnts.col <- rep(qnts.col, nstats)
       }
     }
 
-    #Targ.col
+    # Targ.col
     if (!missing(targ.col)) {
-      if (!(length(targ.col) %in% c(1,nstats))) {
+      if (!(length(targ.col) %in% c(1, nstats))) {
         stop("targ.col must be either missing or a vector of length 1 or nstats (",
              nstats, ")", call. = FALSE)
-      }
-      else if (length(targ.col) == 1 & nstats > 1) {
+      } else if (length(targ.col) == 1 & nstats > 1) {
         targ.col <- rep(targ.col, nstats)
       }
     }
 
     # Default colors
-    #If sim color is missing and using joined plots, sim color uses brewer ramp pallette
-    #If sim color is missing and using split plots, default color for each plot set to blue (dodgerblue3)
     if (missing(sim.col)) {
-      if (plots.joined == TRUE) {
-        if (nstats > 8) {
-          sim.col <- brewer_ramp(nstats, "Set1")
-        } else {
-          sim.col <- brewer.pal(9, "Set1")[1:(nstats + 1)]
-          if (nstats >= 6) {
-            sim.col <- sim.col[-which(sim.col == "#FFFF33")]
-          }
-        }
-      }
+        sim.col <- 2:100
       if (missing(plots.joined) | plots.joined == FALSE) {
-        sim.col <- rep("dodgerblue3",nstats)
+        sim.col <- rep("dodgerblue3", nstats)
       }
     }
 
@@ -2653,8 +2622,10 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
           if (qnts.smooth == FALSE) {
             yy <- c(qnt.prev[1, ], rev(qnt.prev[2, ]))
           } else {
-            yy <- c(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[1, ]))$y,
-                    rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[2, ]))$y))
+            yy <- c(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
+                                            y = qnt.prev[1, ]))$y,
+                    rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
+                                                y = qnt.prev[2, ]))$y))
           }
           qnt.min[j] = min(yy)
           qnt.max[j] = max(yy)
@@ -2663,18 +2634,23 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
         if (mean.line == TRUE) {
           mean.prev <- as.numeric(tapply(dataj[, -1], dataj[, 1], mean))
           if (mean.smooth == TRUE) {
-            mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev), y = mean.prev))$y
+            mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev),
+                                                 y = mean.prev))$y
           }
           mean.min[j] = min(mean.prev)
           mean.max[j] = max(mean.prev)
         }
       }
 
-      #Dynamic scaling based on sim.lines and smoothed or unsmoothed mean lines and quantile bands
+      # Dynamic scaling based on sim.lines and mean lines and quantile bands
       if (!is.null(da$ylim)) {
         ylim <- da$ylim
-      } else if (is.null(da$ylim) & sim.lines == FALSE & (mean.line == TRUE || qnts == TRUE)) {
-        ylim <- c(min(min(qnt.min, na.rm = TRUE) * 0.9, min(mean.min, na.rm = TRUE) * 0.9), max(max(qnt.max, na.rm = TRUE) * 1.1, max(mean.max, na.rm = TRUE) * 1.1))
+      } else if (is.null(da$ylim) & sim.lines == FALSE &
+                 (mean.line == TRUE || qnts == TRUE)) {
+        ylim <- c(min(min(qnt.min, na.rm = TRUE) * 0.9,
+                      min(mean.min, na.rm = TRUE) * 0.9),
+                  max(max(qnt.max, na.rm = TRUE) * 1.1,
+                      max(mean.max, na.rm = TRUE) * 1.1))
       } else {
         ylim <- c(ymin * 0.9, ymax * 1.1)
       }
@@ -2717,7 +2693,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
       if (missing(qnts.alpha)) {
         qnts.alpha <- 0.5
       }
-      qnts.col <- transco(qnts.col, qnts.alpha)
+      qnts.col <- adjustcolor(qnts.col, qnts.alpha)
 
       for (j in 1:nstats) {
 
@@ -2737,8 +2713,10 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
           if (qnts.smooth == FALSE) {
             yy <- c(qnt.prev[1, ], rev(qnt.prev[2, ]))
           } else {
-            yy <- c(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[1, ]))$y,
-                    rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[2, ]))$y))
+            yy <- c(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
+                                            y = qnt.prev[1, ]))$y,
+                    rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
+                                                y = qnt.prev[2, ]))$y))
           }
           polygon(xx, yy, col = qnts.col[j], border = NA)
         }
@@ -2755,7 +2733,8 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
           }
           mean.prev <- as.numeric(tapply(dataj[, -1], dataj[, 1], mean))
           if (mean.smooth == TRUE) {
-            mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev), y = mean.prev))$y
+            mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev),
+                                                 y = mean.prev))$y
           }
           lines(mean.prev, lwd = mean.lwd,
                 col = mean.col[j], lty = mean.lty)
@@ -2809,7 +2788,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
       if (missing(qnts.alpha)) {
         qnts.alpha <- 0.5
       }
-      qnts.col <- transco(qnts.col, qnts.alpha)
+      qnts.col <- adjustcolor(qnts.col, qnts.alpha)
 
 
       for (j in 1:nstats) {
@@ -2839,8 +2818,10 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
             if (qnts.smooth == FALSE) {
               yy <- c(qnt.prev[1, ], rev(qnt.prev[2, ]))
             } else {
-              yy <- c(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[1, ]))$y,
-                      rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[2, ]))$y))
+              yy <- c(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
+                                              y = qnt.prev[1, ]))$y,
+                      rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
+                                                  y = qnt.prev[2, ]))$y))
             }
             qnt.min = min(yy)
             qnt.max = max(yy)
@@ -2853,7 +2834,8 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
             }
             mean.prev <- as.numeric(tapply(dataj[, -1], dataj[, 1], mean))
             if (mean.smooth == TRUE) {
-              mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev), y = mean.prev))$y
+              mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev),
+                                                   y = mean.prev))$y
             }
             mean.min = min(mean.prev)
             mean.max = max(mean.prev)
@@ -2862,8 +2844,10 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
           ## Default ylim
           if (!is.null(da$ylim)) {
             ylim <- da$ylim
-          } else if (is.null(da$ylim) & sim.lines == FALSE & (mean.line == TRUE || qnts == TRUE)) {
-            ylim <- c(min(qnt.min * 0.9, mean.min * 0.9), max(qnt.max * 1.1, mean.max * 1.1))
+          } else if (is.null(da$ylim) & sim.lines == FALSE &
+                     (mean.line == TRUE || qnts == TRUE)) {
+            ylim <- c(min(qnt.min * 0.9, mean.min * 0.9),
+                      max(qnt.max * 1.1, mean.max * 1.1))
           } else {
             ylim <- c(min * 0.9, max * 1.1)
           }
@@ -2888,8 +2872,10 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
           if (qnts.smooth == FALSE) {
             yy <- c(qnt.prev[1, ], rev(qnt.prev[2, ]))
           } else {
-            yy <- c(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[1, ]))$y,
-                    rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)), y = qnt.prev[2, ]))$y))
+            yy <- c(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
+                                            y = qnt.prev[1, ]))$y,
+                    rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
+                                                y = qnt.prev[2, ]))$y))
           }
           polygon(xx, yy, col = qnts.col[j], border = NA)
         }
@@ -2907,7 +2893,8 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
           }
           mean.prev <- as.numeric(tapply(dataj[, -1], dataj[, 1], mean))
           if (mean.smooth == TRUE) {
-            mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev), y = mean.prev))$y
+            mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev),
+                                                 y = mean.prev))$y
           }
           lines(mean.prev, lwd = mean.lwd,
                 col = mean.col[j], lty = mean.lty)
