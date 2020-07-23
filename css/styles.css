@@ -40,3 +40,19 @@ h3 {
     padding-top: 45px;
     margin-top: -35px;
 }
+
+/*=========TEAM PAGE CSS=========*/
+.team-media-container{
+  margin-top: 20px; 
+  margin-bottom: 20px;
+  padding: 15px 0px;
+}
+.team-media-body{
+  margin-top: -10px;
+  overflow: hidden;
+}
+
+.team-media-body h4{
+  color: black;
+}
+
