@@ -771,7 +771,7 @@ plot.icm <- function(x, y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col,
     } else {
       leg.lty <- 1
     }
-    legend("topright", legend = y, lty = leg.lty, lwd = 3,
+    legend("topright", legend = y, lty = leg.lty, lwd = 2,
            col = mean.pal, cex = leg.cex, bg = "white")
   }
 
@@ -1313,7 +1313,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 
 
         if (legend == TRUE) {
-          legend("topleft", legend = nmstats[outsts], lwd = 3,
+          legend("topleft", legend = nmstats[outsts], lwd = 2,
                  col = sim.col[1:nstats], cex = 0.75, bg = "white")
         }
 
@@ -2457,7 +2457,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
       } else {
         leg.lty <- 1
       }
-      legend("topright", legend = y, lty = leg.lty, lwd = 3,
+      legend("topright", legend = y, lty = leg.lty, lwd = 2,
              col = mean.pal, cex = leg.cex, bg = "white")
     }
 
@@ -2755,7 +2755,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
       }
 
       if (legend == TRUE) {
-        legend("topleft", legend = name_stats, lwd = 3,
+        legend("topleft", legend = name_stats, lwd = 2,
                col = sim.col[1:nstats], cex = 0.75, bg = "white")
       }
     }
