@@ -47,6 +47,7 @@ h3 {
   margin-bottom: 20px;
   padding: 15px 0px;
 }
+
 .team-media-body{
   margin-top: -10px;
   overflow: hidden;
@@ -56,3 +57,13 @@ h3 {
   color: black;
 }
 
+.team-media-body-2{
+  margin-top: 20px; 
+  margin-bottom: 20px;
+  padding: 15px 0px;
+  margin-left: 125px;
+}
+
+.team-media-body-2 h4{
+  color: black;
+}
