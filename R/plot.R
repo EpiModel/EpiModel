@@ -1927,9 +1927,9 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #' @param at If \code{type="network"}, time step for network graph.
 #' @param col.status If \code{TRUE} and \code{type="network"}, automatic disease
 #'        status colors (blue = susceptible, red = infected, green = recovered).
-#' @param shp.bip If \code{type="network"} and a two-group simulation, shapes
-#'        for the group 2 vertices, with acceptable inputs of "triangle" and
-#'        "square". Group 1 vertices will be circles.
+#' @param shp.g2 If \code{type="network"} and a two-group simulation, shapes
+#'        for the Group 2 vertices, with acceptable inputs of "triangle" and
+#'        "square". Group 1 vertices will remain circles.
 #' @param stats If \code{type="formation"}, network statistics to plot, among
 #'        those specified in \code{nwstats.formula} of \code{\link{control.net}},
 #'        with the default to plot all statistics.
@@ -1957,7 +1957,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #'        \code{network} package. Consult the help page for \code{plot.network}
 #'        for all of the plotting parameters. In addition, four plotting parameters
 #'        specific to \code{netsim} plots are available: \code{sim}, \code{at},
-#'        \code{col.status}, and \code{shp.bip}.
+#'        \code{col.status}, and \code{shp.g2}.
 #'  \item \strong{\code{type="formation"}}: summary network statistics related to
 #'        the network model formation are plotted. These plots are similar to the
 #'        formation plots for \code{netdx} objects. When running a \code{netsim}
@@ -2048,8 +2048,8 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #'
 #' # Automatic shape by group number (circle = group 1)
 #' par(mar = c(0, 0, 0, 0))
-#' plot(mod, type = "network", at = 20, col.status = TRUE, shp.bip = "square")
-#' plot(mod, type = "network", at = 20, col.status = TRUE, shp.bip = "triangle")
+#' plot(mod, type = "network", at = 20, col.status = TRUE, shp.g2 = "square")
+#' plot(mod, type = "network", at = 20, col.status = TRUE, shp.g2 = "triangle")
 #'
 #' # Plot formation statistics
 #' par(mfrow = c(1,1), mar = c(3,3,1,1), mgp = c(2,1,0))
@@ -2067,7 +2067,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
                         qnts = 0.5, qnts.col, qnts.alpha, qnts.smooth = TRUE,
                         legend, leg.cex = 0.8, axs = "r", grid = FALSE,
                         add = FALSE, network = 1, at = 1, col.status = FALSE,
-                        shp.bip = NULL, stats, targ.line = TRUE, targ.col,
+                        shp.g2 = NULL, stats, targ.line = TRUE, targ.col,
                         targ.lwd = 2, targ.lty = 2, plots.joined, ...) {
 
   # type check
@@ -2117,28 +2117,28 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
     obj <- get_network(x, sims, network, collapse = TRUE, at = at)
     tergmLite <- x$control$tergmLite
 
-    if (!is.null(shp.bip)) {
-      if (all(shp.bip != c("square", "triangle"))) {
-        stop("shp.bip accepts inputs of either \"square\" or \"triangle\" ",
+    if (!is.null(shp.g2)) {
+      if (all(shp.g2 != c("square", "triangle"))) {
+        stop("shp.g2 accepts inputs of either \"square\" or \"triangle\" ",
              call. = FALSE)
       }
 
       grp.flag <- length(unique(get_vertex_attribute(obj, "group")))
       if (is.numeric(grp.flag)) {
         mids <- idgroup(obj)
-        if (shp.bip == "square") {
+        if (shp.g2 == "square") {
           vertex.sides <- ifelse(mids == 1, 50, 4)
           vertex.rot <- 45
           vertex.cex <- ifelse(mids == 1, 1, 1.3)
         }
-        if (shp.bip == "triangle") {
+        if (shp.g2 == "triangle") {
           vertex.sides <- ifelse(mids == 1, 50, 3)
           vertex.rot <- 90
           vertex.cex <- ifelse(mids == 1, 1, 1.4)
         }
 
       } else {
-        warning("shp.bip applies to two-group networks only, so ignoring argument")
+        warning("shp.g2 applies to two-group networks only, so ignoring.")
         vertex.sides <- 50
         vertex.rot <- 0
         vertex.cex <- 1
@@ -2150,7 +2150,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
     }
     if (col.status == TRUE) {
       if (tergmLite == TRUE) {
-        stop("Plotting status colors requires tergmLite=FALSE in netsim control settings",
+        stop("Plotting status colors requires tergmLite=FALSE in netsim control settings.",
              call. = FALSE)
       }
       pal <- adjustcolor(c(4,2,3), 0.75)

@@ -31,7 +31,7 @@
   network = 1,
   at = 1,
   col.status = FALSE,
-  shp.bip = NULL,
+  shp.g2 = NULL,
   stats,
   targ.line = TRUE,
   targ.col,
@@ -113,9 +113,9 @@ representing the population.}
 \item{col.status}{If \code{TRUE} and \code{type="network"}, automatic disease
 status colors (blue = susceptible, red = infected, green = recovered).}
 
-\item{shp.bip}{If \code{type="network"} and a two-group simulation, shapes
-for the group 2 vertices, with acceptable inputs of "triangle" and
-"square". Group 1 vertices will be circles.}
+\item{shp.g2}{If \code{type="network"} and a two-group simulation, shapes
+for the Group 2 vertices, with acceptable inputs of "triangle" and
+"square". Group 1 vertices will remain circles.}
 
 \item{stats}{If \code{type="formation"}, network statistics to plot, among
 those specified in \code{nwstats.formula} of \code{\link{control.net}},
@@ -154,7 +154,7 @@ model simulated through \code{\link{netsim}}:
        \code{network} package. Consult the help page for \code{plot.network}
        for all of the plotting parameters. In addition, four plotting parameters
        specific to \code{netsim} plots are available: \code{sim}, \code{at},
-       \code{col.status}, and \code{shp.bip}.
+       \code{col.status}, and \code{shp.g2}.
  \item \strong{\code{type="formation"}}: summary network statistics related to
        the network model formation are plotted. These plots are similar to the
        formation plots for \code{netdx} objects. When running a \code{netsim}
@@ -238,8 +238,8 @@ plot(mod, type = "network", main = "Max Prev | Time 50",
 
 # Automatic shape by group number (circle = group 1)
 par(mar = c(0, 0, 0, 0))
-plot(mod, type = "network", at = 20, col.status = TRUE, shp.bip = "square")
-plot(mod, type = "network", at = 20, col.status = TRUE, shp.bip = "triangle")
+plot(mod, type = "network", at = 20, col.status = TRUE, shp.g2 = "square")
+plot(mod, type = "network", at = 20, col.status = TRUE, shp.g2 = "triangle")
 
 # Plot formation statistics
 par(mfrow = c(1,1), mar = c(3,3,1,1), mgp = c(2,1,0))
