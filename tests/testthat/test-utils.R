@@ -38,7 +38,7 @@ test_that("transco", {
 })
 
 test_that("color_tea", {
-  nw <- network.initialize(n = 100, directed = FALSE)
+  nw <- network_initialize(n = 100)
   formation <- ~edges
   target.stats <- 50
   coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
@@ -53,17 +53,28 @@ test_that("color_tea", {
   expect_true(length(unique(get.vertex.attribute.active(nd, "ndtvcol", at = 1))) == 3)
 })
 
-test_that("deleteAttr", {
+test_that("delete_attr", {
+  dat <- list()
 
-  l <- list(a = 1:5, b = 6:10)
-  expect_is(deleteAttr(l, 5), "list")
-  expect_true(length(unique(sapply(deleteAttr(l, 2:3), length))) == 1)
+  l1 <- list(a = 1:5, b = 6:10)
+  dat$attr <- l1
+  dat <- delete_attr(dat, 5)
+  expect_is(dat, "list")
 
-  l2 <- list(a = 1:3, b = 5:20)
-  expect_error(deleteAttr(l2, 2:4))
-  expect_error(deleteAttr(as.data.frame(l), 1))
+  dat <- delete_attr(dat, 2:3)
+  expect_true(length(unique(sapply(dat$attr, length))) == 1)
 
-  expect_equal(l, deleteAttr(l, NULL))
+  l2 <- dat
+  l3 <- delete_attr(dat, NULL)
+
+  expect_equal(l2, l3)
+
+  l4 <- list(a = 1:3, b = 5:20)
+  dat$attr <- l4
+  expect_error(delete_attr(dat, 2:4))
+  expect_error(delete_attr(dat, 1))
+
+
 
 })
 
@@ -76,40 +87,28 @@ test_that("ssample", {
 
 })
 
-test_that("bipvals", {
-  nw <- network.initialize(n = 10, bipartite = 5)
-  nw <- set.vertex.attribute(nw, "male", rep(0:1, each = 5))
-  expect_true(all(bipvals(nw, mode = 1, "male")) == 0)
-  expect_true(all(bipvals(nw, mode = 2, "male")) == 1)
-  expect_error(bipvals(nw, val = "male"))
-
-  nw <- network.initialize(n = 10)
-  nw <- set.vertex.attribute(nw, "male", rep(0:1, each = 5))
-  expect_error(bipvals(nw, 1, "male"), "nw must be a bipartite network")
-})
-
-test_that("check_bip_degdist", {
-  expect_output(check_bip_degdist(num.m1 = 500, num.m2 = 500,
-                                  deg.dist.m2 = c(0.40, 0.55, 0.03, 0.02),
-                                  deg.dist.m1 = c(0.48, 0.41, 0.08, 0.03)),
+test_that("check_degdist_bal", {
+  expect_output(check_degdist_bal(num.g1 = 500, num.g2 = 500,
+                                  deg.dist.g2 = c(0.40, 0.55, 0.03, 0.02),
+                                  deg.dist.g1 = c(0.48, 0.41, 0.08, 0.03)),
                 "-0.015 Rel Diff")
-  expect_output(check_bip_degdist(num.m1 = 500, num.m2 = 500,
-                                  deg.dist.m1 = c(0.40, 0.55, 0.04, 0.01),
-                                  deg.dist.m2 = c(0.48, 0.41, 0.08, 0.03)),
+  expect_output(check_degdist_bal(num.g1 = 500, num.g2 = 500,
+                                  deg.dist.g1 = c(0.40, 0.55, 0.04, 0.01),
+                                  deg.dist.g2 = c(0.48, 0.41, 0.08, 0.03)),
                 "Edges balanced")
-  expect_output(check_bip_degdist(num.m1 = 500, num.m2 = 500,
-                                  deg.dist.m1 = c(0.45, 0.55, 0.04, 0.01),
-                                  deg.dist.m2 = c(0.48, 0.41, 0.08, 0.03)),
-                "deg.dist.m1 TOTAL != 1")
-  expect_output(check_bip_degdist(num.m1 = 500, num.m2 = 500,
-                                  deg.dist.m1 = c(0.40, 0.55, 0.04, 0.01),
-                                  deg.dist.m2 = c(0.55, 0.41, 0.08, 0.03)),
-                "deg.dist.m2 TOTAL != 1")
+  expect_output(check_degdist_bal(num.g1 = 500, num.g2 = 500,
+                                  deg.dist.g1 = c(0.45, 0.55, 0.04, 0.01),
+                                  deg.dist.g2 = c(0.48, 0.41, 0.08, 0.03)),
+                "deg.dist.g1 TOTAL != 1")
+  expect_output(check_degdist_bal(num.g1 = 500, num.g2 = 500,
+                                  deg.dist.g1 = c(0.40, 0.55, 0.04, 0.01),
+                                  deg.dist.g2 = c(0.55, 0.41, 0.08, 0.03)),
+                "deg.dist.g2 TOTAL != 1")
 })
 
 test_that("edgelist_censor", {
   skip_on_cran()
-  nw <- network.initialize(n = 100, directed = FALSE)
+  nw <- network_initialize(n = 100)
   formation <- ~edges
   target.stats <- 50
   coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
@@ -120,7 +119,7 @@ test_that("edgelist_censor", {
 })
 
 test_that("get_degree", {
-  nw <- network.initialize(500, directed = FALSE)
+  nw <- network_initialize(n = 500)
 
   set.seed(1)
   fit <- ergm(nw ~ edges, target.stats = 250, eval.loglik = FALSE)
@@ -156,21 +155,21 @@ test_that("dissolution_coefs returns appropriate error for incompatible departur
   dissolution = ~offset(edges) + offset(nodematch("age.grp", diff = TRUE))
   err.msg <- paste("The competing risk of departure is too high for the given",
                    "edge duration of 60 in place 1.",
-                    "Specify a d.rate lower than 0.00837.")
+                   "Specify a d.rate lower than 0.00837.")
   expect_that(dissolution_coefs(dissolution, duration = duration, d.rate = 1/60), throws_error(err.msg))
 })
 
 
 test_that("get_formula_term_attr checks", {
-  nw <- network.initialize(100, directed = FALSE)
+  nw <- network_initialize(n = 100)
 
   expect_null(get_formula_term_attr(~edges, nw))
 
-  nw <- network.initialize(100, directed = FALSE)
+  nw <- network_initialize(n = 100)
   riskg <- sample(rep(1:2, each = 50))
   race <- sample(rep(0:1, each = 50))
-  nw <- set.vertex.attribute(nw, "riskg", riskg)
-  nw <- set.vertex.attribute(nw, "race", race)
+  nw <- set_vertex_attribute(nw, "riskg", riskg)
+  nw <- set_vertex_attribute(nw, "race", race)
   expect_null(get_formula_term_attr(~edges, nw))
 
   expect_equal(get_formula_term_attr(~edges + nodefactor("race"), nw), "race")
@@ -182,17 +181,31 @@ test_that("get_formula_term_attr checks", {
 })
 
 test_that("Users using birth parameters are informed of change in language",{
-  expect_that(param.net(b.rate = 2), shows_message("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate to a.rate. See documentation for details."))
+  expect_error(param.net(b.rate = 2), paste0("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate to a.rate. See documentation for details."))
   expect_that(param.dcm(b.rate = 2), shows_message("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate to a.rate. See documentation for details."))
   expect_that(param.icm(b.rate = 2), shows_message("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate to a.rate. See documentation for details."))
-  expect_that(param.icm(b.rand = TRUE), shows_message("EpiModel 1.7.0 onward renamed the stochastic birth flag b.rand to a.rand. See documentation for details."))
 })
 
-test_that("Users using birth and death functions are informed of change
-in language",{
-  temp <- function(x){x=x; return(x)}
-  expect_that(control.icm(type="SI",nsteps=10,births.FUN=temp), shows_message("EpiModel 1.7.0 onward renamed the birth function births.FUN to arrivals.FUN. See documentation for details."))
-  expect_that(control.icm(type="SI",nsteps=10,deaths.FUN=temp), shows_message("EpiModel 1.7.0 onward renamed the death function deaths.FUN to departures.FUN. See documentation for details."))
-  expect_that(control.net(type="SI",nsteps=10,births.FUN=temp), shows_message("EpiModel 1.7.0 onward renamed the birth function births.FUN to arrivals.FUN. See documentation for details."))
-  expect_that(control.net(type="SI",nsteps=10,deaths.FUN=temp), shows_message("EpiModel 1.7.0 onward renamed the death function deaths.FUN to departures.FUN. See documentation for details."))
+test_that("Users using birth and death functions are informed of change in language",{
+  temp <- function(x){x = x; return(x)}
+  expect_error(control.net(type = NULL, nsims = 1, nsteps = 10,
+                          departures.FUN = temp, arrivals.FUN = temp,
+                          prevalence.FUN = prevalence.net, infection.FUN = infection.net,
+                          recovery.FUN = recovery.net, births.FUN = temp, resimulate.network = FALSE), paste0("EpiModel 1.7.0 onward renamed the birth function births.FUN to arrivals.FUN. See documentation for details."))
+  expect_error(control.net(type = NULL, nsims = 1, nsteps = 10,
+                          departures.FUN = temp, arrivals.FUN = temp,
+                          prevalence.FUN = prevalence.net, infection.FUN = infection.net,
+                          recovery.FUN = recovery.net, deaths.FUN = temp, resimulate.network = FALSE), paste0("EpiModel 1.7.0 onward renamed the death function deaths.FUN to departures.FUN. See documentation for details."))
 })
+
+test_that("Users using old mode syntax are informed of change to group syntax", {
+
+  err.param <- paste0("EpiModel 2.0 onward has updated parameter suffixes reflecting a move from mode to group networks. ",
+                      "All .m2 parameters changed to .g2. See documentation for more details.")
+  expect_warning(param <- param.net(inf.prob = 0.1, inf.prob.m2 = 0.1, act.rate = 1),
+                 err.param)
+  err.init <- paste0("EpiModel 2.0 onward has updated initial condition suffixes reflecting a move from mode to group networks. ",
+                    "All .m2 initial conditions changed to .g2. See documentation for more details.")
+  expect_warning(init <- init.net(i.num = 1, i.num.m2 = 1), err.init)
+})
+

@@ -23,7 +23,7 @@
 #' tutorial.
 #'
 #' The \code{netsim} function performs modeling of both the base model types
-#' and original models. Base model types include one-mode and bipartite models
+#' and original models. Base model types include one-mode and two-group models
 #' with disease types for Susceptible-Infected (SI), Susceptible-Infected-Recovered
 #' (SIR), and Susceptible-Infected-Susceptible (SIS).
 #'
@@ -50,10 +50,11 @@
 #'        network statistics saved in the simulation, and \code{transmat} for
 #'        the transmission matrix saved in the simulation. See
 #'        \code{\link{control.net}} and the Tutorial for further details.
-#'  \item \strong{network:} a list of \code{networkDynamic} objects (or
-#'        \code{network} objects if \code{delete.nodes} was set to \code{TRUE}),
-#'        one for each model simulation.
+#'  \item \strong{network:} a list of \code{networkDynamic} objects,
+#'         one for each model simulation.
 #' }
+#' If \code{control$raw.output == TRUE}: A list of the raw (pre-processed) nestsim
+#' dat objects, for use in simulation continuation.
 #'
 #' @references
 #' Jenness SM, Goodreau SM and Morris M. EpiModel: An R Package for Mathematical
@@ -69,17 +70,18 @@
 #'
 #' @examples
 #' \dontrun{
-#' ## Example 1: Independent SI Model
+#' ## Example 1: SI Model without Network Feedback
 #' # Network model estimation
-#' nw <- network.initialize(n = 100, bipartite = 50, directed = FALSE)
+#' nw <- network_initialize(n = 100)
+#' nw <- set_vertex_attribute(nw, "group", rep(1:2, each = 50))
 #' formation <- ~edges
 #' target.stats <- 50
 #' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
 #' est1 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 #'
 #' # Epidemic model
-#' param <- param.net(inf.prob = 0.3, inf.prob.m2 = 0.15)
-#' init <- init.net(i.num = 10, i.num.m2 = 10)
+#' param <- param.net(inf.prob = 0.3, inf.prob.g2 = 0.15)
+#' init <- init.net(i.num = 10, i.num.g2 = 10)
 #' control <- control.net(type = "SI", nsteps = 100, nsims = 5, verbose.int = 0)
 #' mod1 <- netsim(est1, param, init, control)
 #'
@@ -88,24 +90,25 @@
 #' plot(mod1)
 #' summary(mod1, at = 50)
 #'
-#' ## Example 2: Dependent SIR Model
+#' ## Example 2: SIR Model with Network Feedback
 #' # Recalculate dissolution coefficient with departure rate
 #' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20,
 #'                                d.rate = 0.0021)
 #'
 #' # Reestimate the model with new coefficient
-#' est2 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
+#' est2 <- netest(nw, formation, target.stats, coef.diss)
 #'
 #' # Reset parameters to include demographic rates
-#' param <- param.net(inf.prob = 0.3, inf.prob.m2 = 0.15,
-#'                    rec.rate = 0.02, rec.rate.m2 = 0.02,
-#'                    a.rate = 0.002, a.rate.m2 = NA,
-#'                    ds.rate = 0.001, ds.rate.m2 = 0.001,
-#'                    di.rate = 0.001, di.rate.m2 = 0.001,
-#'                    dr.rate = 0.001, dr.rate.m2 = 0.001)
-#' init <- init.net(i.num = 10, i.num.m2 = 10,
-#'                  r.num = 0, r.num.m2 = 0)
-#' control <- control.net(type = "SIR", nsteps = 100, nsims = 5)
+#' param <- param.net(inf.prob = 0.3, inf.prob.g2 = 0.15,
+#'                    rec.rate = 0.02, rec.rate.g2 = 0.02,
+#'                    a.rate = 0.002, a.rate.g2 = NA,
+#'                    ds.rate = 0.001, ds.rate.g2 = 0.001,
+#'                    di.rate = 0.001, di.rate.g2 = 0.001,
+#'                    dr.rate = 0.001, dr.rate.g2 = 0.001)
+#' init <- init.net(i.num = 10, i.num.g2 = 10,
+#'                  r.num = 0, r.num.g2 = 0)
+#' control <- control.net(type = "SIR", nsteps = 100, nsims = 5,
+#'                        resimulate.network = TRUE, tergmLite = TRUE)
 #'
 #' # Simulate the model with new network fit
 #' mod2 <- netsim(est2, param, init, control)
@@ -113,7 +116,7 @@
 #' # Print, plot, and summarize the results
 #' mod2
 #' plot(mod2)
-#' summary(mod2, at = 100)
+#' summary(mod2, at = 40)
 #' }
 #'
 netsim <- function(x, param, init, control) {
@@ -127,107 +130,72 @@ netsim <- function(x, param, init, control) {
   ncores <- ifelse(nsims == 1, 1, min(parallel::detectCores(), control$ncores))
   control$ncores <- ncores
 
-  if (is.null(control$depend)) {
-    control$depend <- FALSE
+  if (is.null(control$resimulate.network)) {
+    control$resimulate.network <- FALSE
   }
 
+  s <- NULL
   if (ncores == 1) {
-    for (s in 1:control$nsims) {
-
-      ## Initialization Module
-      if (!is.null(control[["initialize.FUN"]])) {
-        dat <- do.call(control[["initialize.FUN"]], list(x, param, init, control, s))
-      }
-
-
-      ### TIME LOOP
-      if (control$nsteps > 1) {
-        for (at in max(2, control$start):control$nsteps) {
-
-          ## Module order
-          morder <- control$module.order
-          if (is.null(morder)) {
-            lim.bi.mods <- control$bi.mods[-which(control$bi.mods %in%
-                                                    c("initialize.FUN", "verbose.FUN"))]
-            morder <- c(control$user.mods, lim.bi.mods)
-          }
-
-          ## Evaluate modules
-          for (i in seq_along(morder)) {
-            dat <- do.call(control[[morder[i]]], list(dat, at))
-          }
-
-          ## Verbose module
-          if (!is.null(control[["verbose.FUN"]])) {
-            do.call(control[["verbose.FUN"]], list(dat, type = "progress", s, at))
-          }
-
-        }
-      }
-
-      # Set output
-      if (s == 1) {
-        out <- saveout.net(dat, s)
-      } else {
-        out <- saveout.net(dat, s, out)
-      }
-      class(out) <- "netsim"
-    }
+    sout <- lapply(seq_len(control$nsims), function(s) {
+      # Run the simulation
+      netsim_loop(x, param, init, control, s)
+    })
   }
 
   if (ncores > 1) {
     doParallel::registerDoParallel(ncores)
-
     sout <- foreach(s = 1:nsims) %dopar% {
-
-      control$nsims <- 1
-      control$currsim <- s
-
-      ## Initialization Module
-      if (!is.null(control[["initialize.FUN"]])) {
-        dat <- do.call(control[["initialize.FUN"]], list(x, param, init, control, s))
-      }
-
-
-      ### TIME LOOP
-      if (control$nsteps > 1) {
-        for (at in max(2, control$start):control$nsteps) {
-
-          ## Module order
-          morder <- control$module.order
-          if (is.null(morder)) {
-            lim.bi.mods <- control$bi.mods[-which(control$bi.mods %in%
-                                                    c("initialize.FUN", "verbose.FUN"))]
-            morder <- c(control$user.mods, lim.bi.mods)
-          }
-
-          ## Evaluate modules
-          for (i in seq_along(morder)) {
-            dat <- do.call(control[[morder[i]]], list(dat, at))
-          }
-
-          ## Verbose module
-          if (!is.null(control[["verbose.FUN"]])) {
-            do.call(control[["verbose.FUN"]], list(dat, type = "progress", s, at))
-          }
-
-        }
-      }
-
-      # Set output
-      out <- saveout.net(dat, s = 1)
-      class(out) <- "netsim"
-      return(out)
+      # Run the simulation
+      netsim_loop(x, param, init, control, s)
     }
+  }
 
-    merged.out <- sout[[1]]
-    for (i in 2:length(sout)) {
-      merged.out <- merge(merged.out, sout[[i]], param.error = FALSE)
-    }
-    out <- merged.out
-    class(out) <- "netsim"
+  # Process the outputs unless `control$raw.output` is `TRUE`
+  if (!is.null(control$raw.output) && control$raw.output == TRUE) {
+    out <- sout
+  } else {
+    out <- process_out.net(sout)
   }
 
   return(out)
 }
 
+#' @title Internal function running the network simulation loop
+#'
+#' @description This function run the initialization and simulation loop for one
+#'              simulation
+#' @inheritParams initialize.net
+#' @keywords internal
+netsim_loop <- function(x, param, init, control, s) {
+  ## Initialization Module
+  if (!is.null(control[["initialize.FUN"]])) {
+    dat <- do.call(control[["initialize.FUN"]], list(x, param, init, control, s))
+  }
+
+  ### TIME LOOP
+  if (control$nsteps > 1) {
+    for (at in max(2, control$start):control$nsteps) {
+
+      ## Module order
+      morder <- control$module.order
+      if (is.null(morder)) {
+        lim.bi.mods <- control$bi.mods[-which(control$bi.mods %in%
+                                              c("initialize.FUN", "verbose.FUN"))]
+        morder <- c(control$user.mods, lim.bi.mods)
+      }
+
+      ## Evaluate modules
+      for (i in seq_along(morder)) {
+        dat <- do.call(control[[morder[i]]], list(dat, at))
+      }
+
+      ## Verbose module
+      if (!is.null(control[["verbose.FUN"]])) {
+        do.call(control[["verbose.FUN"]], list(dat, type = "progress", s, at))
+      }
+
+    }
+  }
+
+  return(dat)
+}

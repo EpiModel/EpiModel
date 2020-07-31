@@ -22,8 +22,9 @@ Extracts a data frame of network statistics from a network
              object simulated with \code{netdx}.
 }
 \examples{
-# Bipartite Bernoulli random graph TERGM
-nw <- network.initialize(n = 100, bipartite = 50, directed = FALSE)
+# Two-group Bernoulli random graph TERGM
+nw <- network_initialize(n = 100)
+nw <- set_vertex_attribute(nw, "group", rep(1:2, each = 50))
 formation <- ~edges
 target.stats <- 50
 coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
@@ -35,8 +36,8 @@ get_nwstats(dx)
 get_nwstats(dx, sim = 1)
 
 # SI epidemic model
-param <- param.net(inf.prob = 0.3, inf.prob.m2 = 0.15)
-init <- init.net(i.num = 10, i.num.m2 = 10)
+param <- param.net(inf.prob = 0.3, inf.prob.g2 = 0.15)
+init <- init.net(i.num = 10, i.num.g2 = 10)
 control <- control.net(type = "SI", nsteps = 10, nsims = 3,
                        nwstats.formula = ~edges + meandeg + degree(0:5),
                        verbose = FALSE)

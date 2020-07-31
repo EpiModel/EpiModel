@@ -3,15 +3,16 @@ context("Get functions for network models")
 
 # Model simulation --------------------------------------------------------
 
-nw <- network.initialize(n = 100, bipartite = 50, directed = FALSE)
+nw <- network_initialize(n = 100)
+nw <- set_vertex_attribute(nw, "group", rep(1:2, each = 50))
 formation <- ~edges
 target.stats <- 50
 dissolution <- ~offset(edges)
 duration <- 20
 coef.diss <- dissolution_coefs(dissolution, duration)
 est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
-param <- param.net(inf.prob = 0.3, inf.prob.m2 = 0.15)
-init <- init.net(i.num = 10, i.num.m2 = 10)
+param <- param.net(inf.prob = 0.3, inf.prob.g2 = 0.15)
+init <- init.net(i.num = 10, i.num.g2 = 10)
 control <- control.net(type = "SI", nsteps = 10, nsims = 3,
                        verbose = FALSE)
 mod <- netsim(est, param, init, control)

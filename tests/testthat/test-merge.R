@@ -58,7 +58,7 @@ test_that("merge errors", {
 # merge.netsim ------------------------------------------------------------
 
 test_that("merge for netsim", {
-  nw <- network.initialize(n = 100, directed = FALSE)
+  nw <- network_initialize(n = 100)
   coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 10)
   est <- netest(nw, formation = ~edges, target.stats = 25,
                 coef.diss = coef.diss, verbose = FALSE)
@@ -77,7 +77,7 @@ test_that("merge for netsim", {
 })
 
 test_that("merge for netsim", {
-  nw <- network.initialize(n = 100, directed = FALSE)
+  nw <- network_initialize(n = 100)
   coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 10)
   est <- netest(nw, formation = ~edges, target.stats = 25,
                 coef.diss = coef.diss, verbose = FALSE)
@@ -98,16 +98,15 @@ test_that("merge for netsim", {
 })
 
 test_that("merge works for open sims saving nw stats", {
-  skip_on_cran()
-  nw <- network.initialize(n = 50, directed = FALSE)
-  est <- netest(nw, formation = ~edges, target.stats = 10,
-                coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+  nw <- network_initialize(n = 100)
+  est <- netest(nw, formation = ~edges, target.stats = 20,
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0.01),
                 verbose = FALSE)
   param <- param.net(inf.prob = 0.9, a.rate = 0.01, ds.rate = 0.01, di.rate = 0.01)
   init <- init.net(i.num = 1)
-  control <- control.net(type = "SI", nsteps = 5, save.stats = TRUE,
+  control <- control.net(type = "SI", nsteps = 5, save.nwstats = TRUE,
                          nwstats.formula = ~edges + meandeg + degree(0) + concurrent,
-                         verbose = FALSE)
+                         resimulate.network = TRUE, verbose = FALSE)
 
   x <- netsim(est, param, init, control)
   y <- netsim(est, param, init, control)
@@ -117,6 +116,3 @@ test_that("merge works for open sims saving nw stats", {
   expect_true(all(sapply(z$stats$nwstats, dim)[1,] == 5) &
               all(sapply(z$stats$nwstats, dim)[2,] == 4))
 })
-
-
-

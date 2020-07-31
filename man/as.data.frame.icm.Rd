@@ -72,8 +72,8 @@ as.data.frame(mod, out = "qnt", qval = 0.25)
 as.data.frame(mod, out = "qnt", qval = 0.75)
 
 \dontrun{
-## Stochastic SI network model
-nw <- network.initialize(n = 100, directed = FALSE)
+## Stochastic SI Network Model
+nw <- network_initialize(n = 100)
 formation <- ~edges
 target.stats <- 50
 coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)

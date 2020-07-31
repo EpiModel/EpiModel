@@ -1,11 +1,10 @@
 context("Network attributes with arrivals")
 
 test_that("Updating attributes in open populations", {
-  nw <- network.initialize(n = 50, bipartite = 25, directed = FALSE)
-  nw <- set.vertex.attribute(nw, attrname = "risk",
-                             value = rbinom(50, 1, 0.5))
+  nw <- network_initialize(n = 50)
+  nw <- set_vertex_attribute(nw, attrname = "group", rep(1:2, each = 25))
 
-  formation <- ~edges + nodefactor("risk")
+  formation <- ~edges + nodefactor("group")
   target.stats <- c(25, 36)
   coef.diss <- dissolution_coefs(dissolution = ~offset(edges), 38, d.rate = 0.002)
   est1 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
@@ -14,15 +13,15 @@ test_that("Updating attributes in open populations", {
   durs <- c(3, 100, 9, 10)
   inf.probs <- rep(probs, durs)
   inf.probsf <- inf.probs*2
-  param <- param.net(inf.prob = inf.probsf, act.rate = 1,
-                     inf.prob.m2 = inf.probs,
-                     a.rate = 0.05, a.rate.m2 = NA,
-                     ds.rate = 0.002, ds.rate.m2 = 0.002,
-                     di.rate = 0.008, di.rate.m2 = 0.008)
+  param <- param.net(inf.prob = inf.probs, act.rate = 1,
+                     inf.prob.g2 = inf.probs,
+                     a.rate = 0.05, a.rate.g2 = NA,
+                     ds.rate = 0.002, ds.rate.g2 = 0.002,
+                     di.rate = 0.008, di.rate.g2 = 0.008)
 
-  init <- init.net(i.num = 10, i.num.m2 = 10)
+  init <- init.net(i.num = 10, i.num.g2 = 10)
   control <- control.net(type = "SI", nsteps = 10, nsims = 1,
-                         epi.by = "risk", verbose = FALSE)
+                         resimulate.network = TRUE, verbose = FALSE)
 
   sim1 <- netsim(est1, param, init, control)
   expect_is(sim1, "netsim")
@@ -30,8 +29,8 @@ test_that("Updating attributes in open populations", {
 
 test_that("SIR model with epi.by parameter", {
   skip_on_cran()
-  nw <- network.initialize(n = 50, directed = FALSE)
-  nw <- set.vertex.attribute(nw, attrname = "race", rep(0:1, each = 25))
+  nw <- network_initialize(n = 50)
+  nw <- set_vertex_attribute(nw, attrname = "race", rep(0:1, each = 25))
   formation <- ~edges + nodefactor("race")
   target.stats <- c(25, 25)
   coef.diss <- dissolution_coefs(dissolution = ~offset(edges), 50)
@@ -49,15 +48,15 @@ test_that("SIR model with epi.by parameter", {
 
 test_that("Serosorting model in open population", {
   n <- 100
-  nw <- network.initialize(n, directed = FALSE)
+  nw <- network_initialize(n = n)
 
   prev <- 0.2
   infIds <- sample(1:n, n*prev)
-  nw <- set.vertex.attribute(nw, "status", "s")
-  nw <- set.vertex.attribute(nw, "status", "i", infIds)
-  nw <- set.vertex.attribute(nw, "race", rbinom(n, 1, 0.5))
+  nw <- set_vertex_attribute(nw, "status", "s")
+  nw <- set_vertex_attribute(nw, "status", "i", infIds)
+  nw <- set_vertex_attribute(nw, "race", rbinom(n, 1, 0.5))
 
-  formation <- ~edges + nodefactor("status", base = 1) +
+  formation <- ~edges + nodefactor("status", levels = -1) +
                 nodematch("status") + nodematch("race")
   target.stats <- c(36, 55, 25, 18)
   coef.diss <- dissolution_coefs(dissolution = ~offset(edges), 50, d.rate = 0.01)
@@ -69,9 +68,10 @@ test_that("Serosorting model in open population", {
   control <- control.net(type = "SI", nsteps = 10, nsims = 1,
                          nwstats.formula = ~edges +
                                             meandeg +
-                                            nodefactor("status", base = 0) +
+                                            nodefactor("status", levels = NULL) +
                                             nodematch("status"),
-                         save.network = FALSE,
+                         tergmLite = FALSE,
+                         resimulate.network = TRUE,
                          verbose = FALSE)
 
   sim <- netsim(est, param, init, control)
@@ -81,21 +81,23 @@ test_that("Serosorting model in open population", {
 
 test_that("Save attributes to output", {
   skip_on_cran()
-  nw <- network.initialize(n = 50, bipartite = 25, directed = FALSE)
-  formation <- ~edges
-  target.stats <- 25
+  nw <- network_initialize(n = 50)
+  nw <- set_vertex_attribute(nw, "group", rep(1:2, each = 25))
+  formation <- ~edges + nodematch("group")
+  target.stats <- c(25, 0)
   coef.diss <- dissolution_coefs(dissolution = ~offset(edges), 38, d.rate = 0.01)
   est1 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 
   param <- param.net(inf.prob = 0.2, act.rate = 1,
-                     inf.prob.m2 = 0.2,
-                     a.rate = 0.01, a.rate.m2 = NA,
-                     ds.rate = 0.01, ds.rate.m2 = 0.01,
-                     di.rate = 0.01, di.rate.m2 = 0.01)
+                     inf.prob.g2 = 0.2,
+                     a.rate = 0.01, a.rate.g2 = NA,
+                     ds.rate = 0.01, ds.rate.g2 = 0.01,
+                     di.rate = 0.01, di.rate.g2 = 0.01)
 
-  init <- init.net(i.num = 10, i.num.m2 = 10)
+  init <- init.net(i.num = 10, i.num.g2 = 10)
   control <- control.net(type = "SI", nsteps = 10, nsims = 2,
-                         save.other = "attr", verbose = FALSE)
+                         save.other = "attr", resimulate.network = TRUE,
+                         verbose = FALSE)
 
   sim1 <- netsim(est1, param, init, control)
   expect_is(sim1, "netsim")

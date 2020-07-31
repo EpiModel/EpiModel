@@ -156,8 +156,8 @@ as.data.frame.dcm <- function(x, row.names = NULL, optional = FALSE, run,
 #' as.data.frame(mod, out = "qnt", qval = 0.75)
 #'
 #' \dontrun{
-#' ## Stochastic SI network model
-#' nw <- network.initialize(n = 100, directed = FALSE)
+#' ## Stochastic SI Network Model
+#' nw <- network_initialize(n = 100)
 #' formation <- ~edges
 #' target.stats <- 50
 #' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
@@ -309,7 +309,7 @@ as.data.frame.netsim <- function(x, row.names = NULL, optional = FALSE,
 #'
 #' @examples
 #' # Initialize and parameterize the network model
-#' nw <- network.initialize(n = 100, directed = FALSE)
+#' nw <- network_initialize(n = 100)
 #' formation <- ~edges
 #' target.stats <- 50
 #' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)

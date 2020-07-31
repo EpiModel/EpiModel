@@ -456,9 +456,10 @@ summary.icm <- function(object, at, digits = 3, ...) {
 #'
 #' @examples
 #' \dontrun{
-#' ## Independent SI Model
+#' ## SI Model without Network Feedback
 #' # Initialize network and set network model parameters
-#' nw <- network.initialize(n = 100, bipartite = 50, directed = FALSE)
+#' nw <- network_initialize(n = 100)
+#' nw <- set_vertex_attribute(nw, "group", rep(1:2, each = 50))
 #' formation <- ~edges
 #' target.stats <- 50
 #' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
@@ -467,8 +468,8 @@ summary.icm <- function(object, at, digits = 3, ...) {
 #' est1 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 #'
 #' # Parameters, initial conditions, and controls for model
-#' param <- param.net(inf.prob = 0.3, inf.prob.m2 = 0.15)
-#' init <- init.net(i.num = 10, i.num.m2 = 10)
+#' param <- param.net(inf.prob = 0.3, inf.prob.g2 = 0.15)
+#' init <- init.net(i.num = 10, i.num.g2 = 10)
 #' control <- control.net(type = "SI", nsteps = 100, nsims = 5, verbose.int = 0)
 #'
 #' # Run the model simulation
@@ -483,7 +484,7 @@ summary.netsim <- function(object, at, digits = 3, ...) {
 
   nsims <- object$control$nsims
   type <- object$control$type
-  modes <- object$param$modes
+  groups <- object$param$groups
   vital <- object$param$vital
   nsteps <- object$control$nsteps
 
@@ -502,9 +503,9 @@ summary.netsim <- function(object, at, digits = 3, ...) {
     ## Prevalence calcs
     s.prev <- df.mn$s.num / df.mn$num
     i.prev <- df.mn$i.num / df.mn$num
-    if (modes == 2) {
-      s.prev.m2 <- df.mn$s.num.m2 / df.mn$num.m2
-      i.prev.m2 <- df.mn$i.num.m2 / df.mn$num.m2
+    if (groups == 2) {
+      s.prev.g2 <- df.mn$s.num.g2 / df.mn$num.g2
+      i.prev.g2 <- df.mn$i.num.g2 / df.mn$num.g2
     }
 
     ## Group 1 stats
@@ -524,20 +525,20 @@ summary.netsim <- function(object, at, digits = 3, ...) {
     }
 
     ## Group 2 stats
-    if (modes == 2) {
-      stats <- c(df.mn$s.num.m2, df.sd$s.num.m2, s.prev.m2,
-                 df.mn$i.num.m2, df.sd$i.num.m2, i.prev.m2,
-                 df.mn$num.m2, df.sd$num.m2, 1,
-                 df.mn$si.flow.m2, df.sd$si.flow.m2, NA)
-      mat.m2 <- matrix(stats, byrow = TRUE, nrow = 4)
+    if (groups == 2) {
+      stats <- c(df.mn$s.num.g2, df.sd$s.num.g2, s.prev.g2,
+                 df.mn$i.num.g2, df.sd$i.num.g2, i.prev.g2,
+                 df.mn$num.g2, df.sd$num.g2, 1,
+                 df.mn$si.flow.g2, df.sd$si.flow.g2, NA)
+      mat.g2 <- matrix(stats, byrow = TRUE, nrow = 4)
       if (vital == TRUE) {
-        stats <- c(df.mn$a.flow.m2, df.sd$a.flow.m2, NA,
-                   df.mn$ds.flow.m2, df.sd$ds.flow.m2, NA,
-                   df.mn$di.flow.m2, df.sd$di.flow.m2, NA)
-        mat.m2 <- rbind(mat.m2, matrix(stats, byrow = TRUE,
+        stats <- c(df.mn$a.flow.g2, df.sd$a.flow.g2, NA,
+                   df.mn$ds.flow.g2, df.sd$ds.flow.g2, NA,
+                   df.mn$di.flow.g2, df.sd$di.flow.g2, NA)
+        mat.g2 <- rbind(mat.g2, matrix(stats, byrow = TRUE,
                                        nrow = length(stats) / 3))
       }
-      mat <- cbind(mat, mat.m2)
+      mat <- cbind(mat, mat.g2)
     }
 
   } ## end SI summary
@@ -549,10 +550,10 @@ summary.netsim <- function(object, at, digits = 3, ...) {
     s.prev <- df.mn$s.num / df.mn$num
     i.prev <- df.mn$i.num / df.mn$num
     r.prev <- df.mn$r.num / df.mn$num
-    if (modes == 2) {
-      s.prev.m2 <- df.mn$s.num.m2 / df.mn$num.m2
-      i.prev.m2 <- df.mn$i.num.m2 / df.mn$num.m2
-      r.prev.m2 <- df.mn$r.num.m2 / df.mn$num.m2
+    if (groups == 2) {
+      s.prev.g2 <- df.mn$s.num.g2 / df.mn$num.g2
+      i.prev.g2 <- df.mn$i.num.g2 / df.mn$num.g2
+      r.prev.g2 <- df.mn$r.num.g2 / df.mn$num.g2
     }
 
     ## Group 1 stats
@@ -576,23 +577,23 @@ summary.netsim <- function(object, at, digits = 3, ...) {
     }
 
     ## Group 2 stats
-    if (modes == 2) {
-      stats <- c(df.mn$s.num.m2, df.sd$s.num.m2, s.prev.m2,
-                 df.mn$i.num.m2, df.sd$i.num.m2, i.prev.m2,
-                 df.mn$r.num.m2, df.sd$r.num.m2, r.prev.m2,
-                 df.mn$num.m2, df.sd$num.m2, 1,
-                 df.mn$si.flow.m2, df.sd$si.flow.m2, NA,
-                 df.mn$ir.flow.m2, df.sd$ir.flow.m2, NA)
-      mat.m2 <- matrix(stats, byrow = TRUE, nrow = length(stats) / 3)
+    if (groups == 2) {
+      stats <- c(df.mn$s.num.g2, df.sd$s.num.g2, s.prev.g2,
+                 df.mn$i.num.g2, df.sd$i.num.g2, i.prev.g2,
+                 df.mn$r.num.g2, df.sd$r.num.g2, r.prev.g2,
+                 df.mn$num.g2, df.sd$num.g2, 1,
+                 df.mn$si.flow.g2, df.sd$si.flow.g2, NA,
+                 df.mn$ir.flow.g2, df.sd$ir.flow.g2, NA)
+      mat.g2 <- matrix(stats, byrow = TRUE, nrow = length(stats) / 3)
       if (vital == TRUE) {
-        stats <- c(df.mn$a.flow.m2, df.sd$a.flow.m2, NA,
-                   df.mn$ds.flow.m2, df.sd$ds.flow.m2, NA,
-                   df.mn$di.flow.m2, df.sd$di.flow.m2, NA,
-                   df.mn$dr.flow.m2, df.sd$dr.flow.m2, NA)
-        mat.m2 <- rbind(mat.m2, matrix(stats, byrow = TRUE,
+        stats <- c(df.mn$a.flow.g2, df.sd$a.flow.g2, NA,
+                   df.mn$ds.flow.g2, df.sd$ds.flow.g2, NA,
+                   df.mn$di.flow.g2, df.sd$di.flow.g2, NA,
+                   df.mn$dr.flow.g2, df.sd$dr.flow.g2, NA)
+        mat.g2 <- rbind(mat.g2, matrix(stats, byrow = TRUE,
                                        nrow = length(stats) / 3))
       }
-      mat <- cbind(mat, mat.m2)
+      mat <- cbind(mat, mat.g2)
     }
   }
 
@@ -602,9 +603,9 @@ summary.netsim <- function(object, at, digits = 3, ...) {
     ## Prevalence calcs
     s.prev <- df.mn$s.num / df.mn$num
     i.prev <- df.mn$i.num / df.mn$num
-    if (modes == 2) {
-      s.prev.m2 <- df.mn$s.num.m2 / df.mn$num.m2
-      i.prev.m2 <- df.mn$i.num.m2 / df.mn$num.m2
+    if (groups == 2) {
+      s.prev.g2 <- df.mn$s.num.g2 / df.mn$num.g2
+      i.prev.g2 <- df.mn$i.num.g2 / df.mn$num.g2
     }
 
     ## Group 1 stats
@@ -626,30 +627,30 @@ summary.netsim <- function(object, at, digits = 3, ...) {
     }
 
     ## Group 2 stats
-    if (modes == 2) {
-      stats <- c(df.mn$s.num.m2, df.sd$s.num.m2, s.prev.m2,
-                 df.mn$i.num.m2, df.sd$i.num.m2, i.prev.m2,
-                 df.mn$num.m2, df.sd$num.m2, 1,
-                 df.mn$si.flow.m2, df.sd$si.flow.m2, NA,
-                 df.mn$is.flow.m2, df.sd$is.flow.m2, NA)
-      mat.m2 <- matrix(stats, byrow = TRUE, nrow = length(stats) / 3)
+    if (groups == 2) {
+      stats <- c(df.mn$s.num.g2, df.sd$s.num.g2, s.prev.g2,
+                 df.mn$i.num.g2, df.sd$i.num.g2, i.prev.g2,
+                 df.mn$num.g2, df.sd$num.g2, 1,
+                 df.mn$si.flow.g2, df.sd$si.flow.g2, NA,
+                 df.mn$is.flow.g2, df.sd$is.flow.g2, NA)
+      mat.g2 <- matrix(stats, byrow = TRUE, nrow = length(stats) / 3)
       if (vital == TRUE) {
-        stats <- c(df.mn$a.flow.m2, df.sd$a.flow.m2, NA,
-                   df.mn$ds.flow.m2, df.sd$ds.flow.m2, NA,
-                   df.mn$di.flow.m2, df.sd$di.flow.m2, NA)
-        mat.m2 <- rbind(mat.m2, matrix(stats, byrow = TRUE,
+        stats <- c(df.mn$a.flow.g2, df.sd$a.flow.g2, NA,
+                   df.mn$ds.flow.g2, df.sd$ds.flow.g2, NA,
+                   df.mn$di.flow.g2, df.sd$di.flow.g2, NA)
+        mat.g2 <- rbind(mat.g2, matrix(stats, byrow = TRUE,
                                        nrow = length(stats) / 3))
       }
-      mat <- cbind(mat, mat.m2)
+      mat <- cbind(mat, mat.g2)
     }
   }
 
-  if (modes == 1) {
+  if (groups == 1) {
     colnames(mat) <- c("mean", "sd", "pct")
   }
-  if (modes == 2) {
-    colnames(mat) <- c("mean:m1", "sd:m1", "pct:m1",
-                       "mean:m2", "sd:m2", "pct:m2")
+  if (groups == 2) {
+    colnames(mat) <- c("mean:g1", "sd:g1", "pct:g1",
+                       "mean:g2", "sd:g2", "pct:g2")
   }
   mat <- round(mat, digits)
 
@@ -663,12 +664,12 @@ summary.netsim <- function(object, at, digits = 3, ...) {
   cat("\nModel type:", type)
   cat("\nNo. simulations:", nsims)
   cat("\nNo. time steps:", nsteps)
-  cat("\nNo. NW modes:", modes)
+  cat("\nNo. NW groups:", groups)
 
-  if (modes == 1) {
+  if (groups == 1) {
     statsep <- paste(rep("-", 30), collapse = "")
   }
-  if (modes == 2) {
+  if (groups == 2) {
     statsep <- paste(rep("-", 60), collapse = "")
   }
 

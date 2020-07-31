@@ -138,8 +138,8 @@ the number of statistics.
 \examples{
 \dontrun{
 # Network initialization and model parameterization
-nw <- network.initialize(100, directed = FALSE)
-nw <- set.vertex.attribute(nw, "sex", rbinom(100, 1, 0.5))
+nw <- network_initialize(n = 100)
+nw <- set_vertex_attribute(nw, "sex", rbinom(100, 1, 0.5))
 formation <- ~edges + nodematch("sex")
 target.stats <- c(50, 40)
 coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 50)
@@ -150,7 +150,7 @@ est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 # Static diagnostics
 dx1 <- netdx(est, nsims = 1e4, dynamic = FALSE,
              nwstats.formula = ~edges + meandeg + concurrent +
-                                nodefactor("sex", base = 0) +
+                                nodefactor("sex", levels = NULL) +
                                 nodematch("sex"))
 dx1
 
@@ -164,7 +164,7 @@ plot(dx1, stats = "edges", method = "b",
 # Dynamic diagnostics
 dx2 <- netdx(est, nsims = 10, nsteps = 500,
              nwstats.formula = ~edges + meandeg + concurrent +
-                                nodefactor("sex", base = 0) +
+                                nodefactor("sex", levels = NULL) +
                                 nodematch("sex"))
 dx2
 

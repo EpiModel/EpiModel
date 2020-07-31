@@ -33,10 +33,11 @@ A list of class \code{netsim} with the following elements:
        network statistics saved in the simulation, and \code{transmat} for
        the transmission matrix saved in the simulation. See
        \code{\link{control.net}} and the Tutorial for further details.
- \item \strong{network:} a list of \code{networkDynamic} objects (or
-       \code{network} objects if \code{delete.nodes} was set to \code{TRUE}),
-       one for each model simulation.
+ \item \strong{network:} a list of \code{networkDynamic} objects,
+        one for each model simulation.
 }
+If \code{control$raw.output == TRUE}: A list of the raw (pre-processed) nestsim
+dat objects, for use in simulation continuation.
 }
 \description{
 Simulates stochastic network epidemic models for infectious
@@ -53,7 +54,7 @@ description of these models, along with examples, is found in the
 tutorial.
 
 The \code{netsim} function performs modeling of both the base model types
-and original models. Base model types include one-mode and bipartite models
+and original models. Base model types include one-mode and two-group models
 with disease types for Susceptible-Infected (SI), Susceptible-Infected-Recovered
 (SIR), and Susceptible-Infected-Susceptible (SIS).
 
@@ -67,17 +68,18 @@ is listed in \code{\link{modules.net}}.
 }
 \examples{
 \dontrun{
-## Example 1: Independent SI Model
+## Example 1: SI Model without Network Feedback
 # Network model estimation
-nw <- network.initialize(n = 100, bipartite = 50, directed = FALSE)
+nw <- network_initialize(n = 100)
+nw <- set_vertex_attribute(nw, "group", rep(1:2, each = 50))
 formation <- ~edges
 target.stats <- 50
 coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
 est1 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 
 # Epidemic model
-param <- param.net(inf.prob = 0.3, inf.prob.m2 = 0.15)
-init <- init.net(i.num = 10, i.num.m2 = 10)
+param <- param.net(inf.prob = 0.3, inf.prob.g2 = 0.15)
+init <- init.net(i.num = 10, i.num.g2 = 10)
 control <- control.net(type = "SI", nsteps = 100, nsims = 5, verbose.int = 0)
 mod1 <- netsim(est1, param, init, control)
 
@@ -86,24 +88,25 @@ mod1
 plot(mod1)
 summary(mod1, at = 50)
 
-## Example 2: Dependent SIR Model
+## Example 2: SIR Model with Network Feedback
 # Recalculate dissolution coefficient with departure rate
 coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20,
                                d.rate = 0.0021)
 
 # Reestimate the model with new coefficient
-est2 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
+est2 <- netest(nw, formation, target.stats, coef.diss)
 
 # Reset parameters to include demographic rates
-param <- param.net(inf.prob = 0.3, inf.prob.m2 = 0.15,
-                   rec.rate = 0.02, rec.rate.m2 = 0.02,
-                   a.rate = 0.002, a.rate.m2 = NA,
-                   ds.rate = 0.001, ds.rate.m2 = 0.001,
-                   di.rate = 0.001, di.rate.m2 = 0.001,
-                   dr.rate = 0.001, dr.rate.m2 = 0.001)
-init <- init.net(i.num = 10, i.num.m2 = 10,
-                 r.num = 0, r.num.m2 = 0)
-control <- control.net(type = "SIR", nsteps = 100, nsims = 5)
+param <- param.net(inf.prob = 0.3, inf.prob.g2 = 0.15,
+                   rec.rate = 0.02, rec.rate.g2 = 0.02,
+                   a.rate = 0.002, a.rate.g2 = NA,
+                   ds.rate = 0.001, ds.rate.g2 = 0.001,
+                   di.rate = 0.001, di.rate.g2 = 0.001,
+                   dr.rate = 0.001, dr.rate.g2 = 0.001)
+init <- init.net(i.num = 10, i.num.g2 = 10,
+                 r.num = 0, r.num.g2 = 0)
+control <- control.net(type = "SIR", nsteps = 100, nsims = 5,
+                       resimulate.network = TRUE, tergmLite = TRUE)
 
 # Simulate the model with new network fit
 mod2 <- netsim(est2, param, init, control)
@@ -111,7 +114,7 @@ mod2 <- netsim(est2, param, init, control)
 # Print, plot, and summarize the results
 mod2
 plot(mod2)
-summary(mod2, at = 100)
+summary(mod2, at = 40)
 }
 
 }

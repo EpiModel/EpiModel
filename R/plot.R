@@ -509,10 +509,10 @@ plot.icm <- function(x, y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col, si
   }
   dis.type <- x$control$type
   if (is.null(x$param$groups) | !is.numeric(x$param$groups)) {
-    modes <- 1
+    group <- 1
     x$param$groups <- 1
   } else {
-    modes <- x$param$groups
+    groups <- x$param$groups
   }
 
   # dotargs
@@ -522,10 +522,10 @@ plot.icm <- function(x, y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col, si
   ## Compartments ##
   nocomp <- ifelse(missing(y), TRUE, FALSE)
   if (nocomp == TRUE) {
-    if (modes == 1) {
+    if (groups == 1) {
       y <- grep(".num$", names(x$epi), value = TRUE)
     }
-    if (modes == 2) {
+    if (groups == 2) {
       if (class(x) == "icm") {
         y <- c(grep(".num$", names(x$epi), value = TRUE),
                grep(".num.g2$", names(x$epi), value = TRUE))
@@ -589,8 +589,8 @@ plot.icm <- function(x, y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col, si
   }
   sim.pal <- transco(sim.col, sim.alpha)
 
-  # Special case for 2-mode/group models
-  if (modes == 2 & nocomp == TRUE) {
+  # Special case for 2-group models
+  if (groups == 2 & nocomp == TRUE) {
     if (dis.type == "SIR") {
       mean.pal <- rep(mean.pal, 2)
       qnts.pal <- rep(qnts.pal, 2)
@@ -642,7 +642,7 @@ plot.icm <- function(x, y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col, si
   if (nsims == 1) {
     disp.qnts <- FALSE
   }
-  if (modes == 1 & missing(qnts)) {
+  if (groups == 1 & missing(qnts)) {
     disp.qnts <- TRUE
     qnts <- 0.5
   }
@@ -668,7 +668,7 @@ plot.icm <- function(x, y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col, si
       mean.lty <- rep(mean.lty, lcomp)
     }
     if (missing(mean.lty)) {
-      if (nocomp == FALSE || (nocomp == TRUE && modes == 1)) {
+      if (nocomp == FALSE || (nocomp == TRUE && groups == 1)) {
         mean.lty <- rep(1, lcomp)
       } else {
         mean.lty <- rep(1:2, each = lcomp / 2)
@@ -727,7 +727,7 @@ plot.icm <- function(x, y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col, si
   if (nsims == 1) {
     disp.qnts <- FALSE
   }
-  if (modes == 1 & missing(qnts)) {
+  if (groups == 1 & missing(qnts)) {
     disp.qnts <- TRUE
     qnts <- 0.5
   }
@@ -762,7 +762,7 @@ plot.icm <- function(x, y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col, si
       mean.lty <- rep(mean.lty, lcomp)
     }
     if (missing(mean.lty)) {
-      if (nocomp == FALSE || (nocomp == TRUE && modes == 1)) {
+      if (nocomp == FALSE || (nocomp == TRUE && groups == 1)) {
         mean.lty <- rep(1, lcomp)
       } else {
         mean.lty <- rep(1:2, each = lcomp / 2)
@@ -778,7 +778,7 @@ plot.icm <- function(x, y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col, si
 
   ## Legends ##
   if (!missing(legend) && legend == TRUE) {
-    if (modes == 2 & nocomp == TRUE) {
+    if (groups == 2 & nocomp == TRUE) {
       leg.lty <- mean.lty
     } else {
       leg.lty <- 1
@@ -916,8 +916,8 @@ draw_means <- function(x, y, mean.smooth, mean.lwd,
 #' @examples
 #' \dontrun{
 #' # Network initialization and model parameterization
-#' nw <- network.initialize(100, directed = FALSE)
-#' nw <- set.vertex.attribute(nw, "sex", rbinom(100, 1, 0.5))
+#' nw <- network_initialize(n = 100)
+#' nw <- set_vertex_attribute(nw, "sex", rbinom(100, 1, 0.5))
 #' formation <- ~edges + nodematch("sex")
 #' target.stats <- c(50, 40)
 #' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 50)
@@ -928,7 +928,7 @@ draw_means <- function(x, y, mean.smooth, mean.lwd,
 #' # Static diagnostics
 #' dx1 <- netdx(est, nsims = 1e4, dynamic = FALSE,
 #'              nwstats.formula = ~edges + meandeg + concurrent +
-#'                                 nodefactor("sex", base = 0) +
+#'                                 nodefactor("sex", levels = NULL) +
 #'                                 nodematch("sex"))
 #' dx1
 #'
@@ -942,7 +942,7 @@ draw_means <- function(x, y, mean.smooth, mean.lwd,
 #' # Dynamic diagnostics
 #' dx2 <- netdx(est, nsims = 10, nsteps = 500,
 #'              nwstats.formula = ~edges + meandeg + concurrent +
-#'                                 nodefactor("sex", base = 0) +
+#'                                 nodefactor("sex", levels = NULL) +
 #'                                 nodematch("sex"))
 #' dx2
 #'
@@ -1916,9 +1916,9 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #' @param at If \code{type="network"}, time step for network graph.
 #' @param col.status If \code{TRUE} and \code{type="network"}, automatic disease
 #'        status colors (blue = susceptible, red = infected, green = recovered).
-#' @param shp.bip If \code{type="network"} and a bipartite simulation, shapes
-#'        for the mode 2 vertices, with acceptable inputs of "triangle" and
-#'        "square". Mode 1 vertices will be circles.
+#' @param shp.bip If \code{type="network"} and a two-group simulation, shapes
+#'        for the group 2 vertices, with acceptable inputs of "triangle" and
+#'        "square". Group 1 vertices will be circles.
 #' @param stats If \code{type="formation"}, network statistics to plot, among
 #'        those specified in \code{nwstats.formula} of \code{\link{control.net}},
 #'        with the default to plot all statistics.
@@ -1999,9 +1999,10 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #' @seealso \code{\link{plot.network}}, \code{\link{mutate_epi}}
 #'
 #' @examples
-#' ## Independent SI Model
+#' ## SI Model without Network Feedback
 #' # Initialize network and set network model parameters
-#' nw <- network.initialize(n = 100, bipartite = 50, directed = FALSE)
+#' nw <- network_initialize(n = 100)
+#' nw <- set_vertex_attribute(nw, "group", rep(1:2, each = 50))
 #' formation <- ~edges
 #' target.stats <- 50
 #' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
@@ -2010,8 +2011,8 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #' est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 #'
 #' # Simulate the epidemic model
-#' param <- param.net(inf.prob = 0.3, inf.prob.m2 = 0.15)
-#' init <- init.net(i.num = 10, i.num.m2 = 10)
+#' param <- param.net(inf.prob = 0.3, inf.prob.g2 = 0.15)
+#' init <- init.net(i.num = 10, i.num.g2 = 10)
 #' control <- control.net(type = "SI", nsteps = 20, nsims = 3,
 #'                        verbose = FALSE, save.nwstats = TRUE,
 #'                        nwstats.formula = ~edges + meandeg + concurrent)
@@ -2034,7 +2035,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #' plot(mod, type = "network", main = "Max Prev | Time 50",
 #'      col.status = TRUE, at = 20, sims = "max")
 #'
-#' # Automatic shape by mode number (circle = mode 1)
+#' # Automatic shape by group number (circle = group 1)
 #' par(mar = c(0,0,0,0))
 #' plot(mod, type = "network", at = 20, col.status = TRUE, shp.bip = "square")
 #' plot(mod, type = "network", at = 20, col.status = TRUE, shp.bip = "triangle")
@@ -2065,10 +2066,11 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
   # Network plot ------------------------------------------------------------
   if (type == "network") {
 
-    if (is.null(x$network)) {
-      stop("networkDynamic object not saved in netsim simulation",
-           call. = FALSE)
-    }
+    if (x$control$tergmLite == TRUE) {
+        stop("networkDyanmic object is not saved in tergmLite netsim simulation. Check
+             control settings", call. = FALSE)
+      }
+
 
     nsteps <- x$control$nsteps
     if (at > x$control$nsteps) {
@@ -2100,7 +2102,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
     }
 
     obj <- get_network(x, sims, network, collapse = TRUE, at = at)
-    tea.status <- x$control$tea.status
+    tergmLite <- x$control$tergmLite
 
     if (!is.null(shp.bip)) {
       if (all(shp.bip != c("square", "triangle"))) {
@@ -2108,8 +2110,9 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
              call. = FALSE)
       }
 
-      if (is.numeric(obj$gal$bipartite)) {
-        mids <- idmode(obj)
+      grp.flag <- length(unique(get_vertex_attribute(obj, "group")))
+      if (is.numeric(grp.flag)) {
+        mids <- idgroup(obj)
         if (shp.bip == "square") {
           vertex.sides <- ifelse(mids == 1, 50, 4)
           vertex.rot <- 45
@@ -2122,7 +2125,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
         }
 
       } else {
-        warning("shp.bip applies to bipartite networks only, so ignoring argument")
+        warning("shp.bip applies to two-group networks only, so ignoring argument")
         vertex.sides <- 50
         vertex.rot <- 0
         vertex.cex <- 1
@@ -2133,12 +2136,12 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
       vertex.cex <- 1
     }
     if (col.status == TRUE) {
-      if (is.null(tea.status) || tea.status == FALSE) {
-        stop("Plotting status colors requires tea.status=TRUE in netsim control settings",
+      if (tergmLite == TRUE) {
+        stop("Plotting status colors requires tergmLite=FALSE in netsim control settings",
              call. = FALSE)
       }
       pal <- transco(c("firebrick", "steelblue", "seagreen"), 0.75)
-      if (tea.status == TRUE) {
+      if (tergmLite == FALSE) {
         cols <- ifelse(get.vertex.attribute.active(obj, "testatus", at = at) == "i",
                        pal[1], pal[2])
         cols <- ifelse(get.vertex.attribute.active(obj, "testatus", at = at) == "r",
@@ -2171,11 +2174,11 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
       stop("Set sim to between 1 and ", nsims, call. = FALSE)
     }
     dis.type <- x$control$type
-    if (is.null(x$param$modes) | !is.numeric(x$param$modes)) {
-      modes <- 1
-      x$param$modes <- 1
+    if (is.null(x$param$groups) | !is.numeric(x$param$groups)) {
+      groups <- 1
+      x$param$groups <- 1
     } else {
-      modes <- x$param$modes
+      groups <- x$param$groups
     }
 
 
@@ -2186,17 +2189,17 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
     ## Compartments ##
     nocomp <- ifelse(missing(y), TRUE, FALSE)
     if (nocomp == TRUE) {
-      if (modes == 1) {
+      if (groups == 1) {
         y <- grep(".num$", names(x$epi), value = TRUE)
       }
-      if (modes == 2) {
+      if (groups == 2) {
         if (class(x) == "icm") {
           y <- c(grep(".num$", names(x$epi), value = TRUE),
                  grep(".num.g2$", names(x$epi), value = TRUE))
         }
         if (class(x) == "netsim") {
           y <- c(grep(".num$", names(x$epi), value = TRUE),
-                 grep(".num.m2$", names(x$epi), value = TRUE))
+                 grep(".num.g2$", names(x$epi), value = TRUE))
         }
       }
       if (missing(legend)) {
@@ -2260,8 +2263,8 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
     }
     sim.pal <- transco(sim.col, sim.alpha)
 
-    # Special case for 2-mode/group models
-    if (modes == 2 & nocomp == TRUE) {
+    # Special case for 2-group models
+    if (groups == 2 & nocomp == TRUE) {
       pal <- brewer.pal(3, "Set1")
       if (dis.type == "SIR") {
         mean.pal <- rep(mean.pal, 2)
@@ -2282,9 +2285,9 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
     }
     if (nopopfrac == TRUE) {
       if (any(grepl(".flow", y)) |
-          (modes == 1 & all(grepl(".num$", y)) == FALSE) |
-          (modes == 2 & all(c(grepl(".num$", y), grepl(".m2$", y)) == FALSE)) |
-          any(y %in% c("num", "num.m2", "num.g2"))) {
+          (groups == 1 & all(grepl(".num$", y)) == FALSE) |
+          (groups == 2 & all(c(grepl(".num$", y), grepl(".g2$", y)) == FALSE)) |
+          any(y %in% c("num", "num.g2", "num.g2"))) {
         popfrac <- FALSE
       }
     }
@@ -2311,7 +2314,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
     mean.max <- -1E10
 
     ## Quantiles - ylim max ##
-    if (missing(qnts) || qnts == FALSE) {
+    if (qnts == FALSE) {
       disp.qnts <- FALSE
     } else {
       disp.qnts <- TRUE
@@ -2319,10 +2322,11 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
     if (nsims == 1) {
       disp.qnts <- FALSE
     }
-    if (modes == 1 & missing(qnts)) {
-      disp.qnts <- TRUE
-      qnts <- 0.5
-    }
+    # NOTE: What does this accomplish?
+    #if (groups == 1 & missing(qnts)) {
+    #  disp.qnts <- TRUE
+    #  qnts <- 0.5
+    #}
     if (disp.qnts == TRUE) {
       if (qnts > 1 | qnts < 0) {
         stop("qnts must be between 0 and 1", call. = FALSE)
@@ -2330,6 +2334,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
       qnt.max <- draw_qnts(x, y, qnts, qnts.pal, qnts.smooth, "epi", 0, "max")
       qnt.min <- draw_qnts(x, y, qnts, qnts.pal, qnts.smooth, "epi", 0, "min")
     }
+
 
     ## Mean lines - ylim max ##
     if (mean.line == TRUE) {
@@ -2345,7 +2350,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
         mean.lty <- rep(mean.lty, lcomp)
       }
       if (missing(mean.lty)) {
-        if (nocomp == FALSE || (nocomp == TRUE && modes == 1)) {
+        if (nocomp == FALSE || (nocomp == TRUE && groups == 1)) {
           mean.lty <- rep(1, lcomp)
         } else {
           mean.lty <- rep(1:2, each = lcomp / 2)
@@ -2399,7 +2404,8 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
 
 
     ## Quantiles ##
-    if (missing(qnts) || qnts == FALSE) {
+    ## NOTE: Why is this repeated from above?
+    if (qnts == FALSE) {
       disp.qnts <- FALSE
     } else {
       disp.qnts <- TRUE
@@ -2407,14 +2413,16 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
     if (nsims == 1) {
       disp.qnts <- FALSE
     }
-    if (modes == 1 & missing(qnts)) {
-      disp.qnts <- TRUE
-      qnts <- 0.5
-    }
+    #if (groups == 1 & missing(qnts)) {
+    #  disp.qnts <- TRUE
+    #  qnts <- 0.5
+    #}
     if (disp.qnts == TRUE) {
       if (qnts > 1 | qnts < 0) {
         stop("qnts must be between 0 and 1", call. = FALSE)
       }
+      y.l <- length(y)/groups
+      qnts.pal <- rep(qnts.pal[1:y.l], 2)
       draw_qnts(x, y, qnts, qnts.pal, qnts.smooth)
     }
 
@@ -2443,12 +2451,14 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
         mean.lty <- rep(mean.lty, lcomp)
       }
       if (missing(mean.lty)) {
-        if (nocomp == FALSE || (nocomp == TRUE && modes == 1)) {
+        if (nocomp == FALSE || (nocomp == TRUE && groups == 1)) {
           mean.lty <- rep(1, lcomp)
         } else {
           mean.lty <- rep(1:2, each = lcomp / 2)
         }
       }
+      y.n <- length(y)/groups
+      mean.pal <- rep(mean.pal[1:y.n], 2)
       draw_means(x, y, mean.smooth, mean.lwd, mean.pal, mean.lty)
     }
 
@@ -2459,7 +2469,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE, 
 
     ## Legends ##
     if (!missing(legend) && legend == TRUE) {
-      if (modes == 2 & nocomp == TRUE) {
+      if (groups == 2 & nocomp == TRUE) {
         leg.lty <- mean.lty
       } else {
         leg.lty <- 1
@@ -3082,10 +3092,10 @@ comp_plot.icm <- function(x, at = 1, digits = 3, ...) {
     groups <- x$param$groups
   }
   if (class(x) == "netsim") {
-    groups <- x$param$modes
+    groups <- x$param$groups
   }
   if (groups != 1) {
-    stop("Only 1-group/mode models currently supported",
+    stop("Only 1-mode models currently supported",
          call. = FALSE)
   }
 
@@ -3208,8 +3218,8 @@ comp_plot.netsim <- function(x, at = 1, digits = 3, ...) {
 geom_bands <- function(mapping, lower = 0.25, upper = 0.75, alpha = 0.25, ...) {
   stat_summary(mapping,
                geom = "ribbon",
-               fun.ymin = function(x) quantile(x, lower),
-               fun.ymax = function(x) quantile(x, upper),
+               fun.min = function(x) quantile(x, lower),
+               fun.max = function(x) quantile(x, upper),
                alpha = alpha, ...)
 }
 

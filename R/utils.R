@@ -100,6 +100,33 @@ deleteAttr <- function(attrList, ids) {
   return(attrList)
 }
 
+#' @title Delete Elements from Attribute List
+#'
+#' @description Deletes elements from the master attribute list.
+#'
+#' @param dat Master list object containing a sublist of attributes.
+#' @param ids ID numbers to delete from the list.
+#'
+#' @export
+#' @keywords internal
+delete_attr <- function(dat, ids) {
+  attrList <- dat$attr
+
+  if (class(attrList) != "list") {
+    stop("dat object does not contain a valid attribute list", call. = FALSE)
+  }
+  if (length(unique(sapply(attrList, length))) != 1) {
+    stop("attribute list must be rectangular (same number of obs per element)")
+  }
+
+  if (length(ids) > 0) {
+    attrList <- lapply(attrList, function(x) x[-ids])
+  }
+
+  dat$attr <- attrList
+  return(dat)
+}
+
 
 #' @title Obtain Transparent Colors
 #'
@@ -147,7 +174,7 @@ deleteAttr <- function(attrList, ids) {
 #' abline(h = seq(100, 500, 100), col = cols[2])
 #'
 #' ## Example 2: Network plot with multiple length alpha vector
-#' net <- network.initialize(500, directed = FALSE)
+#' net <- network_initialize(n = 500)
 #' vcol <- transco("firebrick",
 #'                 alpha = seq(0, 1, length = network.size(net)))
 #' par(mar = c(0, 0, 0, 0))
@@ -228,14 +255,15 @@ ssample <- function(x, size, replace = FALSE, prob = NULL) {
 #' plot(mod1, y = "prev")
 #'
 #' # Network model example
-#' nw <- network.initialize(n = 100, bipartite = 50, directed = FALSE)
+#' nw <- network_initialize(n = 100)
+#' nw <- set_vertex_attribute(nw, "group", rep(1:2, each = 50))
 #' formation <- ~edges
 #' target.stats <- 50
 #' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
 #' est1 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 #'
-#' param <- param.net(inf.prob = 0.3, inf.prob.m2 = 0.15)
-#' init <- init.net(i.num = 1, i.num.m2 = 0)
+#' param <- param.net(inf.prob = 0.3, inf.prob.g2 = 0.15)
+#' init <- init.net(i.num = 1, i.num.g2 = 0)
 #' control <- control.net(type = "SI", nsteps = 10, nsims = 3,
 #'                        verbose = FALSE)
 #' mod1 <- netsim(est1, param, init, control)
@@ -243,12 +271,12 @@ ssample <- function(x, size, replace = FALSE, prob = NULL) {
 #'
 #' # Add the prevalences to the dataset
 #' mod1 <- mutate_epi(mod1, i.prev = i.num / num,
-#'                          i.prev.m2 = i.num.m2 / num.m2)
-#' plot(mod1, y = c("i.prev", "i.prev.m2"), qnts = 0.5, legend = TRUE)
+#'                          i.prev.g2 = i.num.g2 / num.g2)
+#' plot(mod1, y = c("i.prev", "i.prev.g2"), qnts = 0.5, legend = TRUE)
 #'
 #' # Add incidence rate per 100 person years (assume time step = 1 week)
-#' mod1 <- mutate_epi(mod1, ir100 = 5200*(si.flow + si.flow.m2) /
-#'                                       (s.num + s.num.m2))
+#' mod1 <- mutate_epi(mod1, ir100 = 5200*(si.flow + si.flow.g2) /
+#'                                       (s.num + s.num.g2))
 #' as.data.frame(mod1)
 #' as.data.frame(mod1, out = "mean")
 #'

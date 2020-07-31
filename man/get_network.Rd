@@ -32,13 +32,14 @@ Extracts the \code{networkDynamic} object from a either a network
 \details{
 This function requires that the \code{networkDynamic} is saved during the
 network simulation while running either \code{\link{netsim}} or \code{\link{netdx}}.
-For the former, that is specified with the \code{save.network} parameter in
-\code{\link{control.net}}. For the latter, that is specified with the
-\code{keep.tedgelist} parameter directly in \code{\link{netdx}}.
+For the former, that is specified with the \code{tergmLite} parameter in
+\code{\link{control.net}} set to \code{FALSE}. For the latter, that is
+specified with the \code{keep.tedgelist} parameter directly in \code{\link{netdx}}.
 }
 \examples{
 # Set up network and TERGM formiula
-nw <- network.initialize(n = 100, bipartite = 50, directed = FALSE)
+nw <- network_initialize(n = 100)
+nw <- set_vertex_attribute(nw, "group", rep(1:2, each = 50))
 formation <- ~edges
 target.stats <- 50
 coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
@@ -56,8 +57,8 @@ get_network(dx, sim = 2)
 get_network(dx, collapse = TRUE, at = 5)
 
 # Parameterize the epidemic model, and simulate it
-param <- param.net(inf.prob = 0.3, inf.prob.m2 = 0.15)
-init <- init.net(i.num = 10, i.num.m2 = 10)
+param <- param.net(inf.prob = 0.3, inf.prob.g2 = 0.15)
+init <- init.net(i.num = 10, i.num.g2 = 10)
 control <- control.net(type = "SI", nsteps = 10, nsims = 3, verbose = FALSE)
 mod <- netsim(est, param, init, control)
 

@@ -17,6 +17,7 @@
 initialize.net <- function(x, param, init, control, s) {
 
   if (control$start == 1) {
+
     # Master Data List --------------------------------------------------------
     dat <- list()
     dat$param <- param
@@ -28,55 +29,60 @@ initialize.net <- function(x, param, init, control, s) {
     dat$temp <- list()
 
 
-    # Network Simulation ------------------------------------------------------
+    # Initial Network Simulation ----------------------------------------------
     nw <- simulate(x$fit, basis = x$fit$newnetwork,
                    control = control$set.control.ergm)
-    modes <- ifelse(nw %n% "bipartite", 2, 1)
-    if (control$depend == TRUE) {
+
+    if (control$resimulate.network == TRUE) {
       if (class(x$fit) == "stergm") {
         nw <- network.collapse(nw, at = 1)
       }
       nw <- sim_nets(x, nw, nsteps = 1, control)
     }
-    if (control$depend == FALSE) {
+    if (control$resimulate.network == FALSE) {
       nw <- sim_nets(x, nw, nsteps = control$nsteps, control)
     }
     nw <- activate.vertices(nw, onset = 1, terminus = Inf)
-
+    dat$nw[[1]] <- nw
 
     # Network Parameters ------------------------------------------------------
-    dat$nw <- nw
     dat$nwparam <- list(x[-which(names(x) == "fit")])
-    dat$param$modes <- modes
+    groups <- length(unique(get_vertex_attribute(nw, "group")))
+    dat <- set_param(dat, "groups", groups)
 
+    # Nodal Attributes --------------------------------------------------------
 
-    # Initialization ----------------------------------------------------------
+    # Standard attributes
+    num <- network.size(nw)
+    dat <- set_attr(dat, "active", rep(1, num), override.length.check = TRUE)
+    dat <- set_attr(dat, "entrTime", rep(1, num))
+    dat <- set_attr(dat, "exitTime", rep(NA, num))
 
-    ## Initialize persistent IDs
-    if (control$use.pids == TRUE) {
-      dat$nw <- init_pids(dat$nw, dat$control$pid.prefix)
-    }
-
-    ## Pull network val to attr
-    form <- get_nwparam(dat)$formation
-    
-    #fterms <- get_formula_term_attr(form, nw)
-    fterms <- setdiff(list.vertex.attributes(nw), c("active", "vertex.names", "na"))
-    if(length(fterms) == 0) fterms <- NULL
-    
-    dat <- copy_toall_attr(dat, at = 1, fterms)
+    ## Pull attr on nw to dat$attr
+    dat <- copy_nwattr_to_datattr(dat)
 
     ## Store current proportions of attr
-    dat$temp$fterms <- fterms
-    dat$temp$t1.tab <- get_attr_prop(dat$nw, fterms)
+    nwterms <- get_network_term_attr(nw)
+    if (!is.null(nwterms)) {
+      dat$temp$nwterms <- nwterms
+      dat$temp$t1.tab <- get_attr_prop(dat, nwterms)
+    }
 
-
-    ## Infection Status and Time Modules
+    ## Infection Status and Time
     dat <- init_status.net(dat)
 
-    ## Get initial prevalence
-    dat <- get_prev.net(dat, at = 1)
-  } else {
+    # Conversions for tergmLite
+    if (control$tergmLite == TRUE) {
+      dat <- tergmLite::init_tergmLite(dat)
+    }
+
+
+    # Summary Stats -----------------------------------------------------------
+    dat <- do.call(control[["prevalence.FUN"]],list(dat, at = 1))
+
+
+    # Restart/Reinit Simulations ----------------------------------------------
+  } else if (control$start > 1) {
     dat <- list()
 
     dat$nw <- x$network[[s]]
@@ -130,146 +136,115 @@ initialize.net <- function(x, param, init, control, s) {
 #'
 init_status.net <- function(dat) {
 
-  # Variables ---------------------------------------------------------------
-  tea.status <- dat$control$tea.status
-  i.num <- dat$init$i.num
-  i.num.m2 <- dat$init$i.num.m2
-  r.num <- dat$init$r.num
-  r.num.m2 <- dat$init$r.num.m2
-
-  status.vector <- dat$init$status.vector
-  num <- network.size(dat$nw)
-  statOnNw <- "status" %in% dat$temp$fterms
-
-  modes <- dat$param$modes
-  if (modes == 1) {
-    mode <- rep(1, num)
-  } else {
-    mode <- idmode(dat$nw)
+  type <- get_control(dat, "type", override.null.error = TRUE)
+  nsteps <- get_control(dat, "nsteps")
+  tergmLite <- get_control(dat, "tergmLite")
+  vital <- get_param(dat, "vital")
+  groups <- get_param(dat, "groups")
+  status.vector <- get_init(dat, "status.vector", override.null.error = TRUE)
+  if (type %in% c("SIS", "SIR") && !is.null(type)) {
+    rec.rate <- get_param(dat, "rec.rate")
+  }
+  if (vital == TRUE) {
+    di.rate <- get_param(dat, "di.rate")
   }
 
-  type <- dat$control$type
+  # Variables ---------------------------------------------------------------
+  i.num <- get_init(dat, "i.num", override.null.error = TRUE)
+  if (type  == "SIR" && is.null(status.vector) && !is.null(type)) {
+    r.num <- get_init(dat, "r.num")
+  }
 
+  num <- sum(get_attr(dat, "active") == 1)
+
+  if (groups == 2) {
+    group <- get_attr(dat, "group")
+    i.num.g2 <- get_init(dat, "i.num.g2")
+    if (type  == "SIR" && is.null(status.vector) && !is.null(type)) {
+      r.num.g2 <- get_init(dat, "r.num.g2", override.null.error = TRUE)
+    }
+  } else {
+    group <- rep(1, num)
+  }
+
+  statOnNw <- "status" %in% dat$temp$nwterms
 
   # Status ------------------------------------------------------------------
 
   ## Status passed on input network
-  if (statOnNw == TRUE) {
-    status <- get.vertex.attribute(dat$nw, "status")
-  } else {
+  if (statOnNw == FALSE) {
     if (!is.null(status.vector)) {
       status <- status.vector
     } else {
       status <- rep("s", num)
-      status[sample(which(mode == 1), size = i.num)] <- "i"
-      if (modes == 2) {
-        status[sample(which(mode == 2), size = i.num.m2)] <- "i"
+      status[sample(which(group == 1), size = i.num)] <- "i"
+      if (groups == 2) {
+        status[sample(which(group == 2), size = i.num.g2)] <- "i"
       }
-      if (type == "SIR") {
-        status[sample(which(mode == 1 & status == "s"), size = r.num)] <- "r"
-        if (modes == 2) {
-          status[sample(which(mode == 2 & status == "s"), size = r.num.m2)] <- "r"
+      if (type == "SIR"  && !is.null(type)) {
+        status[sample(which(group == 1 & status == "s"), size = r.num)] <- "r"
+        if (groups == 2) {
+          status[sample(which(group == 2 & status == "s"), size = r.num.g2)] <- "r"
         }
       }
     }
+    dat <- set_attr(dat, "status", status)
+  } else {
+    status <- get_vertex_attribute(dat$nw[[1]], "status")
+    dat <- set_attr(dat, "status", status)
   }
-  dat$attr$status <- status
 
 
-  ## Save out other attr
-  dat$attr$active <- rep(1, length(status))
-  dat$attr$entrTime <- rep(1, length(status))
-  dat$attr$exitTime <- rep(NA, length(status))
-  if (tea.status == TRUE) {
-    dat$nw <- activate.vertex.attribute(dat$nw,
-                                        prefix = "testatus",
-                                        value = status,
-                                        onset = 1,
-                                        terminus = Inf)
+  ## Set up TEA status
+  if (tergmLite == FALSE) {
+    if (statOnNw == FALSE) {
+      dat$nw[[1]] <- set_vertex_attribute(dat$nw[[1]], "status", status)
+    }
+    dat$nw[[1]] <- activate.vertex.attribute(dat$nw[[1]],
+                                             prefix = "testatus",
+                                             value = status,
+                                             onset = 1,
+                                             terminus = Inf)
   }
 
 
   # Infection Time ----------------------------------------------------------
   ## Set up inf.time vector
-  idsInf <- which(status == "i")
-  infTime <- rep(NA, length(status))
+  if (!is.null(type)) {
+    idsInf <- which(status == "i")
+    infTime <- rep(NA, length(status))
+    infTime.vector <- get_init(dat, "infTime.vector", override.null.error = TRUE)
 
-  if (!is.null(dat$init$infTime.vector)) {
-    infTime <- dat$init$infTime.vector
-  } else {
-    # If vital dynamics, infTime is a geometric draw over the duration of infection
-    if (dat$param$vital == TRUE && dat$param$di.rate > 0) {
-      if (dat$control$type == "SI") {
-        infTime[idsInf] <- -rgeom(n = length(idsInf), prob = dat$param$di.rate) + 2
-      } else {
-        infTime[idsInf] <- -rgeom(n = length(idsInf),
-                                  prob = dat$param$di.rate +
-                                    (1 - dat$param$di.rate)*mean(dat$param$rec.rate)) + 2
-      }
+    if (!is.null(infTime.vector)) {
+      infTime <- infTime.vector
     } else {
-      if (dat$control$type == "SI" || mean(dat$param$rec.rate) == 0) {
-        # if no recovery, infTime a uniform draw over the number of sim time steps
-        infTime[idsInf] <- ssample(1:(-dat$control$nsteps + 2),
-                                   length(idsInf), replace = TRUE)
+      # If vital dynamics, infTime is a geometric draw over the duration of infection
+      if (vital == TRUE && di.rate > 0) {
+        if (type == "SI") {
+          infTime[idsInf] <- -rgeom(n = length(idsInf), prob = di.rate) + 2
+        } else {
+          infTime[idsInf] <- -rgeom(n = length(idsInf),
+                                    prob = di.rate +
+                                      (1 - di.rate)*mean(rec.rate)) + 2
+        }
       } else {
-        infTime[idsInf] <- -rgeom(n = length(idsInf), prob = mean(dat$param$rec.rate)) + 2
+        if (type == "SI" || mean(rec.rate) == 0) {
+          # if no recovery, infTime a uniform draw over the number of sim time steps
+          infTime[idsInf] <- ssample(1:(-nsteps + 2),
+                                     length(idsInf), replace = TRUE)
+        } else {
+          infTime[idsInf] <- -rgeom(n = length(idsInf), prob = mean(rec.rate)) + 2
+        }
       }
     }
-  }
 
-  dat$attr$infTime <- infTime
+    dat <- set_attr(dat, "infTime", infTime)
+  } else {
+    infTime <- rep(NA, num)
+    idsInf <- idsInf <- which(status == "i")
+    infTime[idsInf] <- 1
+    dat <- set_attr(dat, "infTime", infTime)
+  }
 
   return(dat)
-}
-
-
-#' @title Persistent ID Initialization
-#'
-#' @description This function initializes the persistent IDs for
-#'              a \code{networkDynamic} object.
-#'
-#' @param nw An object of class \code{networkDynamic}.
-#' @param prefixes Character string prefix for mode-specific ID.
-#'
-#' @details
-#' This function is used for \code{\link{netsim}} simulations
-#' over bipartite networks for populations with vital dynamics. Persistent IDs are
-#' required in this situation because when new nodes are added to the
-#' first mode in a bipartite network, the IDs for the second mode shift
-#' upward. Persistent IDs allow for an analysis of disease transmission
-#' chains for these simulations. These IDs are also invoked in the
-#' \code{\link{arrivals.net}} module when the persistent IDs of incoming nodes
-#' must be set.
-#'
-#' @export
-#' @keywords netMod internal
-#' @seealso \code{\link{initialize.pids}}
-#'
-#' @examples
-#' # Initialize network with 25 female and 75 male
-#' nw <- network.initialize(100, bipartite = 25)
-#'
-#' # Set persistent IDs using the default F/M prefix
-#' nw <- init_pids(nw)
-#' nw %v% "vertex.names"
-#'
-#' # Use another prefix combination
-#' nw <- init_pids(nw, c("A", "B"))
-#' nw %v% "vertex.names"
-#'
-init_pids <- function(nw, prefixes=c("F", "M")) {
-
-  if (is.null(nw$gal$vertex.pid)) {
-    if (nw$gal$bipartite == FALSE) {
-      nw <- initialize.pids(nw)
-    } else {
-      t0.pids <- c(paste0(prefixes[1], 1:length(modeids(nw, 1))),
-                   paste0(prefixes[2], 1:length(modeids(nw, 2))))
-
-      nw <- set.network.attribute(nw, "vertex.pid", "vertex.names")
-      nw <- set.vertex.attribute(nw, "vertex.names", t0.pids)
-    }
-  }
-
-  return(nw)
 }

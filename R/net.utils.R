@@ -1,107 +1,74 @@
 # Exported Functions ------------------------------------------------------
 
-#' @title Vertex Attributes for Bipartite Network
-#'
-#' @description Outputs static vertex attributes for a bipartite network for one
-#'              specified mode.
-#'
-#' @param nw An object of class \code{network} or \code{networkDynamic}.
-#' @param mode Mode number.
-#' @param val Nodal attribute to return.
-#'
-#' @export
-#' @keywords netUtils internal
-#'
-#' @examples
-#' nw <- network.initialize(n = 10, bipartite = 5)
-#' nw <- set.vertex.attribute(nw, "male", rep(0:1, each = 5))
-#' bipvals(nw, mode = 1, "male")
-#'
-bipvals <- function(nw, mode, val) {
-  if (!is.numeric(nw$gal$bipartite)) {
-    stop("nw must be a bipartite network", call. = FALSE)
-  }
-  if (missing(mode)) {
-    stop("Specify mode=1 or mode=2", call. = FALSE)
-  }
-  nw %s% modeids(nw, mode) %v% val
-}
-
-
-#' @title Check Degree Distribution for Bipartite Target Statistics
+#' @title Check Degree Distribution for Balance in Target Statistics
 #'
 #' @description Checks for consistency in the implied network statistics
-#'              of a bipartite network in which the mode size and mode-specific
+#'              of a two-group network in which the group size and group-specific
 #'              degree distributions are specified.
 #'
-#' @param num.m1 Number of nodes in mode 1.
-#' @param num.m2 Number of nodes in mode 2.
-#' @param deg.dist.m1 Vector with fractional degree distribution for mode 1.
-#' @param deg.dist.m2 Vector with fractional degree distribution for mode 2.
+#' @param num.g1 Number of nodes in group 1.
+#' @param num.g2 Number of nodes in group 2.
+#' @param deg.dist.g1 Vector with fractional degree distribution for group 1.
+#' @param deg.dist.g2 Vector with fractional degree distribution for group 2.
 #'
 #' @details
-#' This function outputs the number of nodes of degree 0 to m, where m is the
+#' This function outputs the number of nodes of degree 0 to g, where g is the
 #' length of a fractional degree distribution vector, given that vector and the
-#' size of the mode. This utility is used to check for balance in implied degree
-#' given that fractional distribution within bipartite network simulations, in
-#' which the degree-constrained counts must be equal across modes.
-#'
-#' @seealso
-#' For a detailed explanation of this function, see the tutorial:
-#' \href{http://statnet.github.io/tut/NetUtils.html}{EpiModel Network
-#' Utility Functions}.
+#' size of the group. This utility is used to check for balance in implied degree
+#' given that fractional distribution within two-group network simulations, in
+#' which the degree-constrained counts must be equal across groups.
 #'
 #' @export
 #' @keywords netUtils
 #'
 #' @examples
-#' # An imbalanced distribution
-#' check_bip_degdist(num.m1 = 500, num.m2 = 500,
-#'                   deg.dist.m2 = c(0.40, 0.55, 0.03, 0.02),
-#'                   deg.dist.m1 = c(0.48, 0.41, 0.08, 0.03))
+#' # An unbalanced distribution
+#' check_degdist_bal(num.g1 = 500, num.g2 = 500,
+#'                   deg.dist.g2 = c(0.40, 0.55, 0.03, 0.02),
+#'                   deg.dist.g1 = c(0.48, 0.41, 0.08, 0.03))
 #'
 #' # A balanced distribution
-#' check_bip_degdist(num.m1 = 500, num.m2 = 500,
-#'                   deg.dist.m1 = c(0.40, 0.55, 0.04, 0.01),
-#'                   deg.dist.m2 = c(0.48, 0.41, 0.08, 0.03))
+#' check_degdist_bal(num.g1 = 500, num.g2 = 500,
+#'                   deg.dist.g1 = c(0.40, 0.55, 0.04, 0.01),
+#'                   deg.dist.g2 = c(0.48, 0.41, 0.08, 0.03))
 #'
-check_bip_degdist <- function(num.m1, num.m2,
-                              deg.dist.m1, deg.dist.m2) {
-  deg.counts.m1 <- deg.dist.m1 * num.m1
-  deg.counts.m2 <- deg.dist.m2 * num.m2
-  tot.deg.m1 <- sum(deg.counts.m1 * (1:length(deg.dist.m1) - 1))
-  tot.deg.m2 <- sum(deg.counts.m2 * (1:length(deg.dist.m2) - 1))
-  mat <- matrix(c(deg.dist.m1, deg.counts.m1,
-                  deg.dist.m2, deg.counts.m2), ncol = 4)
-  mat <- rbind(mat, c(sum(deg.dist.m1), tot.deg.m1, sum(deg.dist.m2), tot.deg.m2))
-  colnames(mat) <- c("m1.dist", "m1.cnt", "m2.dist", "m2.cnt")
-  rownames(mat) <- c(paste0("Deg", 0:(length(deg.dist.m1) - 1)), "Edges")
-  cat("Bipartite Degree Distribution Check\n")
+check_degdist_bal <- function(num.g1, num.g2,
+                              deg.dist.g1, deg.dist.g2) {
+  deg.counts.g1 <- deg.dist.g1 * num.g1
+  deg.counts.g2 <- deg.dist.g2 * num.g2
+  tot.deg.g1 <- sum(deg.counts.g1 * (1:length(deg.dist.g1) - 1))
+  tot.deg.g2 <- sum(deg.counts.g2 * (1:length(deg.dist.g2) - 1))
+  mat <- matrix(c(deg.dist.g1, deg.counts.g1,
+                  deg.dist.g2, deg.counts.g2), ncol = 4)
+  mat <- rbind(mat, c(sum(deg.dist.g1), tot.deg.g1, sum(deg.dist.g2), tot.deg.g2))
+  colnames(mat) <- c("g1.dist", "g1.cnt", "g2.dist", "g2.cnt")
+  rownames(mat) <- c(paste0("Deg", 0:(length(deg.dist.g1) - 1)), "Edges")
+  cat("Degree Distribution Check\n")
   cat("=============================================\n")
   print(mat, print.gap = 3)
   cat("=============================================\n")
-  reldiff <- (tot.deg.m1 - tot.deg.m2) / tot.deg.m2
-  absdiff <- abs(tot.deg.m1 - tot.deg.m2)
-  if (sum(deg.dist.m1) <= 0.999 | sum(deg.dist.m1) >= 1.001 |
-      sum(deg.dist.m2) <= 0.999 | sum(deg.dist.m2) >= 1.001 | absdiff > 1) {
-    if (sum(deg.dist.m1) <= 0.999 | sum(deg.dist.m1) >= 1.001) {
-      cat("** deg.dist.m1 TOTAL != 1 \n")
+  reldiff <- (tot.deg.g1 - tot.deg.g2) / tot.deg.g2
+  absdiff <- abs(tot.deg.g1 - tot.deg.g2)
+  if (sum(deg.dist.g1) <= 0.999 | sum(deg.dist.g1) >= 1.001 |
+      sum(deg.dist.g2) <= 0.999 | sum(deg.dist.g2) >= 1.001 | absdiff > 1) {
+    if (sum(deg.dist.g1) <= 0.999 | sum(deg.dist.g1) >= 1.001) {
+      cat("** deg.dist.g1 TOTAL != 1 \n")
     }
-    if (sum(deg.dist.m2) <= 0.999 | sum(deg.dist.m2) >= 1.001) {
-      cat("** deg.dist.m2 TOTAL != 1 \n")
+    if (sum(deg.dist.g2) <= 0.999 | sum(deg.dist.g2) >= 1.001) {
+      cat("** deg.dist.g2 TOTAL != 1 \n")
     }
     if (absdiff > 1) {
-      if (tot.deg.m1 > tot.deg.m2) {
-        msg <- "Mode 1 Edges > Mode 2 Edges:"
+      if (tot.deg.g1 > tot.deg.g2) {
+        msg <- "Group 1 Edges > Group 2 Edges:"
       } else {
-        msg <- "Mode 1 Edges < Mode 2 Edges:"
+        msg <- "Group 1 Edges < Group 2 Edges:"
       }
       cat("**", msg, round(reldiff, 3), "Rel Diff \n")
     }
   } else {
     cat("** Edges balanced ** \n")
   }
-  invisible(c(tot.deg.m1, deg.counts.m1, deg.counts.m2))
+  invisible(c(tot.deg.g1, deg.counts.g1, deg.counts.g2))
 }
 
 
@@ -141,8 +108,8 @@ check_bip_degdist <- function(num.m1, num.m2,
 #'
 #' Using the \code{color_tea} function with a \code{netsim} object requires that
 #' TEAs for disease status be used and that the \code{networkDynamic} object be
-#' saved in the output: both \code{tea.status} and \code{save.network} must be
-#' set to \code{TRUE} in \code{\link{control.net}}.
+#' saved in the output: \code{tergmListe} must be  set to \code{FALSE} in
+#' \code{\link{control.net}}.
 #'
 #' @seealso \code{\link{netsim}} and the \code{ndtv} package documentation.
 #' @keywords colorUtils
@@ -180,38 +147,62 @@ color_tea <- function(nd, old.var = "testatus", old.sus = "s", old.inf = "i",
 }
 
 
-#' @title Copies Vertex Attributes in Formation Formula to attr List
+#' @title Copies Vertex Attributes From Network to dat List
 #'
 #' @description Copies the vertex attributes stored on the network object to the
 #'              master attr list in the dat data object.
 #'
 #' @param dat Master data object passed through \code{netsim} simulations.
-#' @param at Current time step.
-#' @param fterms Vector of attributes used in formation formula, usually as
-#'        output of \code{\link{get_formula_term_attr}}.
 #'
 #' @seealso \code{\link{get_formula_term_attr}}, \code{\link{get_attr_prop}},
-#'          \code{\link{update_nwattr}}.
+#'          \code{\link{auto_update_attr}}, and \code{\link{copy_datattr_to_nwattr}}.
 #' @keywords netUtils internal
 #' @export
 #'
-copy_toall_attr <- function(dat, at, fterms) {
-  otha <- names(dat$nw$val[[1]])
-  otha <- otha[which(otha %in% fterms)]
+copy_nwattr_to_datattr <- function(dat) {
+  otha <- names(dat$nw[[1]]$val[[1]])
+  otha <- setdiff(otha, c("na", "vertex.names", "active",
+                          "testatus.active", "tergm_pid"))
   if (length(otha) > 0) {
     for (i in seq_along(otha)) {
-      va <- get.vertex.attribute(dat$nw, otha[i])
+      va <- get_vertex_attribute(dat$nw[[1]], otha[i])
       dat$attr[[otha[i]]] <- va
-      if (at == 1) {
-        if (!is.null(dat$control$epi.by) && dat$control$epi.by == otha[i]) {
-          dat$temp$epi.by.vals <- unique(va)
-        }
+      if (!is.null(dat$control$epi.by) && dat$control$epi.by == otha[i]) {
+        dat$temp$epi.by.vals <- unique(va)
       }
     }
   }
   return(dat)
 }
 
+
+#' @title Copies Vertex Attributes from the dat List to the Network Object
+#'
+#' @description Copies the vertex attributes stored on the master attr list on
+#'              dat to the network object on dat.
+#'
+#' @param dat Master data object passed through \code{netsim} simulations.
+#'
+#' @seealso \code{\link{get_formula_term_attr}}, \code{\link{get_attr_prop}},
+#'          \code{\link{auto_update_attr}}, and \code{\link{copy_nwattr_to_datattr}}.
+#' @keywords netUtils internal
+#' @export
+#'
+copy_datattr_to_nwattr <- function(dat) {
+  nwterms <- dat$temp$nwterms
+  special.attr <- "status"
+  if (dat$param$groups == 2) {
+    special.attr <- c(special.attr, "group")
+  }
+  nwterms <- union(nwterms, special.attr)
+  attr.to.copy <- union(nwterms, special.attr)
+  attr <- dat$attr[attr.to.copy]
+  if (length(attr.to.copy) > 0) {
+    dat$nw[[1]] <- set_vertex_attribute(dat$nw[[1]], names(attr), attr)
+  }
+
+  return(dat)
+}
 
 #' @title Dissolution Coefficients for Stochastic Network Models
 #'
@@ -301,9 +292,9 @@ copy_toall_attr <- function(dat, at, fterms) {
 #' \dontrun{
 #' ## Extended example for differential homophily by age group
 #' # Set up the network with nodes categorized into 5 age groups
-#' nw <- network.initialize(1000, directed = FALSE)
+#' nw <- network_initialize(n = 1000)
 #' age.grp <- sample(1:5, 1000, TRUE)
-#' nw <- set.vertex.attribute(nw, "age.grp", age.grp)
+#' nw <- set_vertex_attribute(nw, "age.grp", age.grp)
 #'
 #' # durations = non-matched, age.grp1 & age.grp1, age.grp2 & age.grp2, ...
 #' # TERGM will include differential homophily by age group with nodematch term
@@ -467,7 +458,7 @@ dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
 #'
 #' @examples
 #' # Initialize and parameterize network model
-#' nw <- network.initialize(n = 100, directed = FALSE)
+#' nw <- network_initialize(n = 100)
 #' formation <- ~edges
 #' target.stats <- 50
 #' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
@@ -534,7 +525,7 @@ edgelist_censor <- function(el) {
 #'
 #' @examples
 #' # Initialize and parameterize the network model
-#' nw <- network.initialize(n = 100, directed = FALSE)
+#' nw <- network_initialize(n = 100)
 #' formation <- ~edges
 #' target.stats <- 50
 #' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
@@ -578,35 +569,36 @@ edgelist_meanage <- function(x, el) {
 #' @title Proportional Table of Vertex Attributes
 #'
 #' @description Calculates the proportional distribution of each vertex attribute
-#'              contained on the network, with a possible limitation to those
-#'              attributes contained in the formation formula only.
+#'              contained on the network.
 #'
 #' @param nw The \code{networkDynamic} object contained in the \code{netsim}
 #'        simulation.
-#' @param fterms Vector of attributes used in formation formula, usually as
+#' @param nwterms Vector of attributes on network object, usually as
 #'        output of \code{\link{get_formula_term_attr}}.
-#' @param only.formula Limit the tables to those terms only in \code{fterms},
-#'        otherwise output proportions for all attributes on the network object.
 #'
-#' @seealso \code{\link{get_formula_term_attr}}, \code{\link{copy_toall_attr}},
-#'          \code{\link{update_nwattr}}.
+#' @seealso \code{\link{get_formula_term_attr}}, \code{\link{copy_nwattr_to_datattr}},
+#'          \code{\link{auto_update_attr}}.
 #' @keywords netUtils internal
 #' @export
 #'
-get_attr_prop <- function(nw, fterms, only.formula = TRUE) {
-  if (is.null(fterms)) {
+get_attr_prop <- function(dat, nwterms) {
+
+  if (is.null(nwterms)) {
     return(NULL)
   }
-  nwVal <- names(nw$val[[1]])
-  if (only.formula == TRUE) {
-    nwVal <- nwVal[which(nwVal %in% fterms)]
-  }
+
+  nwVal <- names(dat$attr)
+  nwVal <- setdiff(nwVal, c("na", "vertex.names", "active", "entrTime",
+                            "exitTime", "infTime", "group", "status"))
   out <- list()
-  for (i in 1:length(nwVal)) {
-    tab <- prop.table(table(nw %v% nwVal[i]))
-    out[[i]] <- tab
+  if (length(nwVal) > 0) {
+    for (i in 1:length(nwVal)) {
+      tab <- prop.table(table(dat$attr[[nwVal[i]]]))
+      out[[i]] <- tab
+    }
+    names(out) <- nwVal
   }
-  names(out) <- nwVal
+
   return(out)
 }
 
@@ -642,25 +634,53 @@ get_formula_term_attr <- function(form, nw) {
 
 }
 
-#' @title Mode Numbers for Bipartite Network
+#' @title Outputs ERGM Formula Attributes into a Character Vector
 #'
-#' @description Outputs mode numbers give ID numbers for a bipartite network.
+#' @description Given a simulated network, outputs into
+#'              a character vector of vertex attributes to be used in \code{netsim}
+#'              simulations.
+#'
+#' @param nw a network object
+#'
+#' @export
+#'
+get_network_term_attr <- function(nw) {
+
+  nw_attr <- names(nw$val[[1]])
+  nw_attr <- setdiff(nw_attr, c("active", "vertex.names", "na",
+                                "testatus.active", "tergm_pid"))
+
+  if (length(nw_attr) == 0) {
+    return(NULL)
+  }
+
+  out <- nw_attr
+  if (length(out) == 0) {
+    return(NULL)
+  } else {
+    return(out)
+  }
+
+}
+
+#' @title Mode Numbers for Two-Group Network
+#'
+#' @description Outputs group numbers give ID numbers for a two-group network.
 #'
 #' @param nw Object of class \code{network} or \code{networkDynamic}.
-#' @param ids Vector of ID numbers for which the mode number
+#' @param ids Vector of ID numbers for which the group number
 #'        should be returned.
-#'
-#' @seealso \code{\link{modeids}} provides the reverse functionality.
 #'
 #' @export
 #' @keywords netUtils internal
 #'
 #' @examples
-#' nw <- network.initialize(10, bipartite = 5)
-#' idmode(nw)
-#' idmode(nw, ids = c(3, 6))
+#' nw <- network_initialize(n = 10)
+#' nw <- set_vertex_attribute(nw, "group", rep(1:2, each = 5))
+#' idgroup(nw)
+#' idgroup(nw, ids = c(3, 6))
 #'
-idmode <- function(nw, ids) {
+idgroup <- function(nw, ids) {
   n <- network.size(nw)
   if (missing(ids)) {
     ids <- seq_len(n)
@@ -668,81 +688,17 @@ idmode <- function(nw, ids) {
   if (any(ids > n)) {
     stop("Specify ids between 1 and ", n)
   }
-  if (!is.bipartite(nw)) {
+
+  flag <- "group" %in% names(nw$val[[1]])
+  if (!flag) {
     out <- rep(1, n)
   } else {
-    m1size <- nw$gal$bipartite
-    modes <- c(rep(1, m1size),
-               rep(2, n - m1size))
-    out <- modes[ids]
+    groups <- get_vertex_attribute(nw, "group")
+    out <- groups[ids]
   }
+
   return(out)
 }
-
-
-#' @title ID Numbers for Bipartite Network
-#'
-#' @description Outputs ID numbers for a mode number for a bipartite network.
-#'
-#' @param nw Object of class \code{network} or \code{networkDynamic}.
-#' @param mode Mode number to return ID numbers for.
-#'
-#' @seealso \code{\link{idmode}} provides the reverse functionality.
-#'
-#' @export
-#' @keywords netUtils internal
-#'
-#' @examples
-#' nw <- network.initialize(10, bipartite = 5)
-#' modeids(nw, mode = 2)
-#'
-modeids <- function(nw, mode) {
-  if (!is.numeric(nw$gal$bipartite)) {
-    stop("nw must be a bipartite network")
-  }
-  if (missing(mode)) {
-    stop("Specify mode=1 or mode=2")
-  }
-  n <- network.size(nw)
-  m1size <- nw$gal$bipartite
-  if (mode == 1) {
-    out <- 1:m1size
-  }
-  if (mode == 2) {
-    out <- (m1size + 1):n
-  }
-  return(out)
-}
-
-
-#' @title Update Attribute Values for a Bipartite Network
-#'
-#' @description Adds new values for attributes in a bipartite network in which
-#'              there may be arrivals/entries in the first mode, which requires
-#'              splitting the attribute vector into two, adding the new values,
-#'              and re-concatenating the two updated vectors.
-#'
-#' @param dat Master data object passed through \code{netsim} simulations.
-#' @param var Variable to update.
-#' @param val Fixed value to set for all incoming nodes.
-#' @param nCurrM1 Number currently in mode 1.
-#' @param nCurrM2 Number currently in mode 2.
-#' @param narrivals Number of arrivals/entries in mode 1.
-#' @param narrivalsM2 Number of arrivals/entries in mode 2.
-#'
-#' @export
-#' @keywords netUtils internal
-#'
-split_bip <- function(dat, var, val, nCurrM1, nCurrM2, nArrivals, nArrivalsM2) {
-  oldVarM1 <- dat$attr[[var]][1:nCurrM1]
-  oldVarM2 <- dat$attr[[var]][(nCurrM1 + 1):(nCurrM1 + nCurrM2)]
-  newVarM1 <- c(oldVarM1, rep(val, nArrivals))
-  newVarM2 <- c(oldVarM2, rep(val, nArrivalsM2))
-  newVar <- c(newVarM1, newVarM2)
-  dat$attr[[var]] <- newVar
-  return(dat)
-}
-
 
 #' @title Updates Vertex Attributes for Incoming Vertices
 #'
@@ -750,60 +706,66 @@ split_bip <- function(dat, var, val, nCurrM1, nCurrM2, nArrivals, nArrivalsM2) {
 #'              into that network, based on a set of rules for each attribute
 #'              that the user specifies in \code{control.net}.
 #'
-#' @param nw The \code{networkDynamic} object used in \code{netsim} simulations.
+#' @param dat Master object in \code{netsim} simulations.
 #' @param newNodes Vector of nodal IDs for incoming nodes at the current time
 #'        step.
-#' @param rules List of rules, one per attribute to be set, governing how to set
-#'        the values of each attribute.
 #' @param curr.tab Current proportional distribution of all vertex attributes.
-#' @param t1.tab Proportional distribution of all vertex attributes at the outset
-#'        of the simulation.
 #'
-#' @seealso \code{\link{copy_toall_attr}}, \code{\link{get_attr_prop}},
-#'          \code{\link{update_nwattr}}.
+#' @seealso \code{\link{copy_nwattr_to_datattr}}, \code{\link{get_attr_prop}},
+#'          \code{\link{auto_update_attr}}.
 #' @keywords netUtils internal
 #' @export
 #'
-update_nwattr <- function(nw, newNodes, rules, curr.tab, t1.tab) {
-  for (i in 1:length(curr.tab)) {
+auto_update_attr <- function(dat, newNodes, curr.tab) {
+
+  rules <- get_control(dat, "attr.rules")
+  active <- get_attr(dat, "active")
+  t1.tab <- dat$temp$t1.tab
+
+  for (i in seq_along(curr.tab)) {
     vname <- names(curr.tab)[i]
-    rule <- rules[[vname]]
-    if (is.null(rule)) {
-      rule <- "current"
-    }
-    if (rule == "current") {
-      vclass <- class(nw %v% vname)
-      if (vclass == "character") {
-        nattr <- sample(names(curr.tab[[vname]]),
-                        size = length(newNodes),
-                        replace = TRUE,
-                        prob = curr.tab[[vname]])
-      } else {
-        nattr <- sample(as.numeric(names(curr.tab[[i]])),
-                        size = length(newNodes),
-                        replace = TRUE,
-                        prob = curr.tab[[i]])
+    needs.updating <- ifelse(length(get_attr(dat, vname)) < length(active),
+                             TRUE, FALSE)
+    if (length(vname) > 0 & needs.updating == TRUE) {
+      rule <- rules[[vname]]
+
+      if (is.null(rule)) {
+        rule <- "current"
       }
-    } else if (rule == "t1") {
-      vclass <- class(nw %v% vname)
-      if (vclass == "character") {
-        nattr <- sample(names(t1.tab[[vname]]),
-                        size = length(newNodes),
-                        replace = TRUE,
-                        prob = t1.tab[[vname]])
+      if (rule == "current") {
+        vclass <- class(get_attr(dat, vname))
+        if (vclass == "character") {
+          nattr <- sample(names(curr.tab[[vname]]),
+                          size = length(newNodes),
+                          replace = TRUE,
+                          prob = curr.tab[[vname]])
+        } else {
+          nattr <- sample(as.numeric(names(curr.tab[[i]])),
+                          size = length(newNodes),
+                          replace = TRUE,
+                          prob = curr.tab[[i]])
+        }
+      } else if (rule == "t1") {
+        vclass <- class(get_attr(dat, vname))
+        if (vclass == "character") {
+          nattr <- sample(names(t1.tab[[vname]]),
+                          size = length(newNodes),
+                          replace = TRUE,
+                          prob = t1.tab[[vname]])
+        } else {
+          nattr <- sample(as.numeric(names(t1.tab[[i]])),
+                          size = length(newNodes),
+                          replace = TRUE,
+                          prob = t1.tab[[i]])
+        }
       } else {
-        nattr <- sample(as.numeric(names(t1.tab[[i]])),
-                        size = length(newNodes),
-                        replace = TRUE,
-                        prob = t1.tab[[i]])
+        nattr <- rep(rules[[vname]], length(newNodes))
       }
-    } else {
-      nattr <- rep(rules[[vname]], length(newNodes))
+      dat$attr[[vname]] <- c(dat$attr[[vname]], nattr)
     }
-    nw <- set.vertex.attribute(nw, attrname = vname,
-                               value = nattr, v = newNodes)
   }
-  return(nw)
+
+  return(dat)
 }
 
 
@@ -821,7 +783,7 @@ update_nwattr <- function(nw, newNodes, rules, curr.tab, t1.tab) {
 #' often useful for summary statistics and modeling complex interactions between
 #' degree. Given a \code{network} class object, \code{net}, one way to look
 #' up the current degree is to get a summary of the ERGM term, \code{sociality},
-#' as in: \code{summary(net ~ sociality(base = 0))}. But that is computionally
+#' as in: \code{summary(net ~ sociality(nodes = NULL))}. But that is computationally
 #' inefficient for a number of reasons. This function provide a fast method
 #' for generating the vector of degree using a query of the edgelist. It is
 #' even faster if the parameter \code{x} is already transformed as an edgelist.
@@ -829,14 +791,14 @@ update_nwattr <- function(nw, newNodes, rules, curr.tab, t1.tab) {
 #' @export
 #'
 #' @examples
-#' nw <- network.initialize(500, directed = FALSE)
+#' nw <- network_initialize(n = 500)
 #'
 #' set.seed(1)
 #' fit <- ergm(nw ~ edges, target.stats = 250)
 #' sim <- simulate(fit)
 #'
 #' # Slow ERGM-based method
-#' ergm.method <- unname(summary(sim ~ sociality(base = 0)))
+#' ergm.method <- unname(summary(sim ~ sociality(nodes = NULL)))
 #' ergm.method
 #'
 #' # Fast tabulate method with network object
