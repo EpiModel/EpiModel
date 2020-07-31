@@ -13,6 +13,10 @@
 #'
 nwupdate.net <- function(dat, at) {
 
+  if (dat$control$resimulate.network == FALSE) {
+    return(dat)
+  }
+
   ## Attributes
   type <- get_control(dat, "type", override.null.error = TRUE)
   tergmLite <- get_control(dat, "tergmLite")
@@ -29,7 +33,7 @@ nwupdate.net <- function(dat, at) {
   departures <- which(active == 0 & exitTime == at)
 
   nArrivals <- length(arrivals)
-  if (length(arrivals) > 0) {
+  if (nArrivals > 0) {
 
     ## Arrivals
       nwterms <- dat$temp$nwterms
@@ -100,18 +104,18 @@ nwupdate.net <- function(dat, at) {
   }
 
   # Attribute consistency checks
-  if (tergmLite == FALSE) {
-    tst <- get.vertex.attribute.active(dat$nw[[1]], "testatus", at = at)
-    if (any(is.na(tst))) {
-      stop("Error in nwupdate.net: NA's in testatus attribute.\n")
-    }
-    if (statOnNw == TRUE) {
-      fstat <- get_vertex_attribute(dat$nw[[1]], "status")
-      if (!identical(tst, fstat)) {
-        stop("Error in nwupdate.net: mismatch between status and testatus attribute.\n")
-      }
-    }
-  }
+  # if (tergmLite == FALSE) {
+  #   tst <- get.vertex.attribute.active(dat$nw[[1]], "testatus", at = at)
+  #   if (any(is.na(tst))) {
+  #     stop("Error in nwupdate.net: NA's in testatus attribute.\n")
+  #   }
+  #   if (statOnNw == TRUE) {
+  #     fstat <- get_vertex_attribute(dat$nw[[1]], "status")
+  #     if (!identical(tst, fstat)) {
+  #       stop("Error in nwupdate.net: mismatch between status and testatus attribute.\n")
+  #     }
+  #   }
+  # }
 
   ## Output
   return(dat)
