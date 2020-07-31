@@ -2155,10 +2155,10 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
       }
       pal <- adjustcolor(c(4,2,3), 0.75)
       if (tergmLite == FALSE) {
-        cols <- ifelse(get.vertex.attribute.active(obj, "testatus", at = at) == "i",
-                       pal[1], pal[2])
-        cols <- ifelse(get.vertex.attribute.active(obj, "testatus", at = at) == "r",
-                       pal[3], cols)
+        testatus <- get.vertex.attribute.active(obj, "testatus", at = at)
+        cols <- rep(pal[1], length(testatus))
+        cols[testatus == "i"] <- pal[2]
+        cols[testatus == "r"] <- pal[3]
       }
       plot.network(obj, vertex.col = cols, vertex.border = "grey60",
                    edge.col = "grey40", vertex.sides = vertex.sides,
