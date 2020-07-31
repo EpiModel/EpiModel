@@ -633,15 +633,6 @@ crosscheck.net <- function(x, param, init, control) {
       statOnNw <- get_vertex_attribute(nw, "status") %in% c("s", "i", "r")
       statOnNw <- ifelse(sum(statOnNw) > 0, TRUE, FALSE)
 
-      # Set dependent modeling defaults if vital or status on nw
-      if (is.null(control$resimulate.network)) {
-        if (param$vital == TRUE | statOnNw == TRUE) {
-          control$resimulate.network <- TRUE
-        } else {
-          control$resimulate.network <- FALSE
-        }
-      }
-
       nGroups <- length(unique(get_vertex_attribute(nw, "group")))
       nGroups <- ifelse(nGroups == 2, 2, 1)
 
