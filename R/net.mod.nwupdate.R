@@ -13,10 +13,6 @@
 #'
 nwupdate.net <- function(dat, at) {
 
-  if (dat$control$resimulate.network == FALSE) {
-    return(dat)
-  }
-
   ## Attributes
   type <- get_control(dat, "type", override.null.error = TRUE)
   tergmLite <- get_control(dat, "tergmLite")
@@ -26,7 +22,8 @@ nwupdate.net <- function(dat, at) {
   entrTime <- get_attr(dat, "entrTime")
   exitTime <- get_attr(dat, "exitTime")
 
-  statOnNw <- "status" %in% dat$temp$nwterms
+  # statOnNw <- "status" %in% dat$temp$nwterms
+  resimulate.network <- get_control(dat, "resimulate.network")
 
   ## Vital Dynamics
   arrivals <- which(active == 1 & entrTime == at)
@@ -62,15 +59,14 @@ nwupdate.net <- function(dat, at) {
 
   ## Departures
   if (length(departures) > 0) {
-      if (tergmLite == FALSE) {
-        dat$nw[[1]] <- deactivate.vertices(dat$nw[[1]], onset = at, terminus = Inf,
-                                           v = departures, deactivate.edges = TRUE)
-      }
-      if (tergmLite == TRUE) {
-        dat <- delete_attr(dat, departures)
-        dat$el[[1]] <- delete_vertices(dat$el[[1]], departures)
-      }
-
+    if (tergmLite == FALSE) {
+      dat$nw[[1]] <- deactivate.vertices(dat$nw[[1]], onset = at, terminus = Inf,
+                                         v = departures, deactivate.edges = TRUE)
+    }
+    if (tergmLite == TRUE) {
+      dat <- delete_attr(dat, departures)
+      dat$el[[1]] <- delete_vertices(dat$el[[1]], departures)
+    }
   }
 
   ## Infection
@@ -99,7 +95,7 @@ nwupdate.net <- function(dat, at) {
   }
 
   ## Copy static attributes to network object
-  if (tergmLite == FALSE) {
+  if (tergmLite == FALSE & resimulate.network == TRUE) {
     dat <- copy_datattr_to_nwattr(dat)
   }
 
