@@ -31,7 +31,7 @@
   network = 1,
   at = 1,
   col.status = FALSE,
-  shp.bip = NULL,
+  shp.g2 = NULL,
   stats,
   targ.line = TRUE,
   targ.col,
@@ -61,7 +61,7 @@ simulation numbers to plot. If \code{type="network"}, a single
 simulation number for network plot, or else \code{"min"} to plot the
 simulation number with the lowest disease prevalence, \code{"max"} for
 the simulation with the highest disease prevalence, or \code{"mean"}
-for the simulation with the prevalance closest to the mean across
+for the simulation with the prevalence closest to the mean across
 simulations at the specified time step.}
 
 \item{sim.col}{Vector of any standard R color format for simulation lines.}
@@ -69,11 +69,11 @@ simulations at the specified time step.}
 \item{sim.lwd}{Line width for simulation lines.}
 
 \item{sim.alpha}{Transparency level for simulation lines, where 0 = transparent
-and 1 = opaque (see \code{\link{transco}}).}
+and 1 = opaque (see \code{adjustcolor} function).}
 
 \item{mean.line}{If \code{TRUE}, plot mean of simulations across time.}
 
-\item{mean.smooth}{If \code{TRUE}, use a lowess smoother on the mean line.}
+\item{mean.smooth}{If \code{TRUE}, use a loess smoother on the mean line.}
 
 \item{mean.col}{Vector of any standard R color format for mean lines.}
 
@@ -88,9 +88,9 @@ polygon from plot.}
 \item{qnts.col}{Vector of any standard R color format for polygons.}
 
 \item{qnts.alpha}{Transparency level for quantile polygons, where 0 =
-transparent and 1 = opaque (see \code{\link{transco}}).}
+transparent and 1 = opaque (see \code{adjustcolor} function).}
 
-\item{qnts.smooth}{If \code{TRUE}, use a lowess smoother on quantile polygons.}
+\item{qnts.smooth}{If \code{TRUE}, use a loess smoother on quantile polygons.}
 
 \item{legend}{If \code{TRUE}, plot default legend.}
 
@@ -113,9 +113,9 @@ representing the population.}
 \item{col.status}{If \code{TRUE} and \code{type="network"}, automatic disease
 status colors (blue = susceptible, red = infected, green = recovered).}
 
-\item{shp.bip}{If \code{type="network"} and a two-group simulation, shapes
-for the group 2 vertices, with acceptable inputs of "triangle" and
-"square". Group 1 vertices will be circles.}
+\item{shp.g2}{If \code{type="network"} and a two-group simulation, shapes
+for the Group 2 vertices, with acceptable inputs of "triangle" and
+"square". Group 1 vertices will remain circles.}
 
 \item{stats}{If \code{type="formation"}, network statistics to plot, among
 those specified in \code{nwstats.formula} of \code{\link{control.net}},
@@ -154,7 +154,7 @@ model simulated through \code{\link{netsim}}:
        \code{network} package. Consult the help page for \code{plot.network}
        for all of the plotting parameters. In addition, four plotting parameters
        specific to \code{netsim} plots are available: \code{sim}, \code{at},
-       \code{col.status}, and \code{shp.bip}.
+       \code{col.status}, and \code{shp.g2}.
  \item \strong{\code{type="formation"}}: summary network statistics related to
        the network model formation are plotted. These plots are similar to the
        formation plots for \code{netdx} objects. When running a \code{netsim}
@@ -193,7 +193,7 @@ When \code{type="network"}, this function will plot cross sections of the simula
 networks at specified time steps. Because it is only possible to plot one time
 step from one simulation at a time, it is necessary to enter these in the
 \code{at} and \code{sims} parameters. To aide in visualizing representative
-and extreme simulations at specific time steps, the sims parameter may be set
+and extreme simulations at specific time steps, the \code{sims} parameter may be set
 to \code{"mean"} to plot the simulation in which the disease prevalence is
 closest to the average across all simulations, \code{"min"} to plot the simulation
 in which the prevalence is lowest, and \code{"max"} to plot the simulation
@@ -226,7 +226,7 @@ plot(mod, type = "epi", popfrac = TRUE)
 plot(mod, type = "epi", y = "si.flow", qnts = 1, ylim = c(0, 4))
 
 # Plot static networks
-par(mar = c(0,0,0,0))
+par(mar = c(0, 0, 0, 0))
 plot(mod, type = "network")
 
 # Automatic coloring of infected nodes as red
@@ -237,9 +237,9 @@ plot(mod, type = "network", main = "Max Prev | Time 50",
      col.status = TRUE, at = 20, sims = "max")
 
 # Automatic shape by group number (circle = group 1)
-par(mar = c(0,0,0,0))
-plot(mod, type = "network", at = 20, col.status = TRUE, shp.bip = "square")
-plot(mod, type = "network", at = 20, col.status = TRUE, shp.bip = "triangle")
+par(mar = c(0, 0, 0, 0))
+plot(mod, type = "network", at = 20, col.status = TRUE, shp.g2 = "square")
+plot(mod, type = "network", at = 20, col.status = TRUE, shp.g2 = "triangle")
 
 # Plot formation statistics
 par(mfrow = c(1,1), mar = c(3,3,1,1), mgp = c(2,1,0))

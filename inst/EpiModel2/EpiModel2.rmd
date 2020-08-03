@@ -1,6 +1,5 @@
 ---
 title: 'Introduction to EpiModel 2.0'
-author: "EpiModel Research Lab"
 output:
   html_document:
     toc: yes

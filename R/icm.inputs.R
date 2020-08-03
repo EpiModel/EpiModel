@@ -12,26 +12,26 @@
 #' may use the base types, for which these parameters are used, or new process
 #' modules which may use these parameters (but not necessarily). A detailed
 #' description of ICM parameterization for base models is found in the
-#' \href{http://statnet.github.io/tut/BasicICMs.html}{Basic ICMs} tutorial.
+#' \href{http://epimodel.org/tut.html}{Basic ICMs} tutorial.
 #'
 #' For base models, the model specification will be chosen as a result of
 #' the model parameters entered here and the control settings in
 #' \code{\link{control.icm}}. One-group and two-group models are available, where
-#' the former assumes a homogenous mixing in the population and the latter
-#' assumes a purely heterogenous mixing between two distinct partitions in the
+#' the former assumes a homogeneous mixing in the population and the latter
+#' assumes a purely heterogeneous mixing between two distinct partitions in the
 #' population (e.g., men and women). Specifying any group two parameters (those
 #' with a \code{.g2}) implies the simulation of a two-group model. All the
 #' parameters for a desired model type must be specified, even if they are zero.
 #'
 #' @section Act Balancing:
 #' In two-group models, a balance between the number of acts for group 1 members
-#' and those for group 2 members must be maintained. With purely heterogenous
+#' and those for group 2 members must be maintained. With purely heterogeneous
 #' mixing, the product of one group size and act rate must equal the product of
 #' the other group size and act rate: \eqn{N_1 \alpha_1 = N_2 \alpha_2}, where
 #' \eqn{N_i} is the group size and \eqn{\alpha_i} the group-specific act rates
 #' at time \eqn{t}. The \code{balance} parameter here specifies which group's
 #' act rate should control the others with respect to balancing. See the
-#' \href{http://statnet.github.io/tut/BasicDCMs.html}{Basic DCMs} tutorial.
+#' \href{http://epimodel.org/tut.html}{Basic DCMs} tutorial.
 #'
 #' @section New Modules:
 #' To build original models outside of the base models, new process modules
@@ -133,7 +133,7 @@ param.icm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
 #' input into the \code{init.icm} function. This function handles initial
 #' conditions for both base models and original models using new modules. For
 #' an overview of initial conditions for base ICM class models, consult the
-#' \href{http://statnet.github.io/tut/BasicICMs.html}{Basic ICMs} tutorial.
+#' \href{http://epimodel.org/tut.html}{Basic ICMs} tutorial.
 #'
 #' @seealso Use \code{\link{param.icm}} to specify model parameters and
 #'          \code{\link{control.icm}} to specify the control settings. Run the
@@ -211,9 +211,9 @@ init.icm <- function(s.num, i.num, r.num,
 #' individual contact model solved with the \code{\link{icm}} function. Controls
 #' are required for both base model types and when passing original process
 #' modules. For an overview of control settings for base ICM class models,
-#' consult the \href{http://statnet.github.io/tut/BasicICMs.html}{Basic ICMs}
-#' tutorial. For all base models, the \code{type} argument is a necessary
-#' parameter and it has no default.
+#' consult the \href{http://epimodel.org/tut.html}{Basic ICMs} tutorial. For all
+#' base models, the \code{type} argument is a necessary parameter and it has no
+#' default.
 #'
 #' @section New Modules:
 #' Base ICM models use a set of module functions that specify

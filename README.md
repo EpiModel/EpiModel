@@ -1,7 +1,7 @@
 EpiModel
 ===============
 
-[![Version](http://img.shields.io/badge/Version-1.8.0-orange.svg?style=flat)](https://github.com/statnet/EpiModel/releases/tag/v1.8.0)
+[![Version](http://img.shields.io/badge/Version-2.0.1-orange.svg?style=flat)](https://github.com/statnet/EpiModel/releases/tag/v2.0.1)
 [![](http://cranlogs.r-pkg.org/badges/EpiModel?color=yellow)](http://cran.rstudio.com/web/packages/EpiModel/index.html)
 [![](http://cranlogs.r-pkg.org/badges/grand-total/EpiModel?color=blue)](http://cran.rstudio.com/web/packages/EpiModel/index.html)
 [![Build Status](https://travis-ci.org/statnet/EpiModel.svg?branch=master)](https://travis-ci.org/statnet/EpiModel)
@@ -45,6 +45,11 @@ To install this development version, use the <a href="https://github.com/r-lib/r
 if (!require("remotes")) install.packages("remotes")
 remotes::install_github("statnet/EpiModel")
 ```
+
+### EpiModel 2.0
+
+In July 2020, we relased EpiModel version 2.0. This major software package update incorporates a substantial redesign of many elements of the EpiModel infrastructure and application programming interface (API). We anticipate that there will be some minor backwards incompatibilities with any EpiModel code developed with versions 1.x. There is a EpiModel 2.0 migration document available in the <a href="http://www.epimodel.org/tut.html" target="_blank"> Tutorials</a> page.
+
 
 ### Documentation and Support
 

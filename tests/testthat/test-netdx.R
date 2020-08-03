@@ -242,5 +242,6 @@ test_that("Full STERGM", {
   dx <- netdx(est, nsims = 2, nsteps = 10, ncores = 2, verbose = FALSE)
   expect_is(dx, "netdx")
   expect_true(dx$nsims == 2)
+  expect_is(dx$nw, "network")
 
 })

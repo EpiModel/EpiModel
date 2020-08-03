@@ -41,7 +41,7 @@ R color format, or alternatively as a color palette from
 \item{lty}{Line type for output lines.}
 
 \item{alpha}{Transparency level for lines, where 0 = transparent and 1 = opaque
-(see \code{\link{transco}}).}
+(see \code{adjustcolor} function).}
 
 \item{legend}{Type of legend to plot. Values are "n" for no legend, "full" for
 full legend, and "lim" for limited legend (see details).}
@@ -77,7 +77,7 @@ and in multiple run models the specific run may also be specified.
 }
 \section{The \code{popfrac} Argument}{
 
-Compartment prevalences are the size of a compartment over some denominator.
+Compartment prevalence are the size of a compartment over some denominator.
 To plot the raw numbers from any compartment, use \code{popfrac=FALSE}; this
 is the default. The \code{popfrac} parameter calculates
 and plots the denominators of all specified compartments using these rules: 1)

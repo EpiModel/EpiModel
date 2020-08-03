@@ -63,13 +63,12 @@
 #' may use the base types, for which these parameters are used, or new process
 #' modules which may use these parameters (but not necessarily). A detailed
 #' description of network model parameterization for base models is found in
-#' the \href{http://statnet.github.io/tut/BasicNet.html}{Basic Network Models}
-#' tutorial.
+#' the \href{http://epimodel.org/tut.html}{Basic Network Models} tutorial.
 #'
 #' For base models, the model specification will be chosen as a result of
 #' the model parameters entered here and the control settings in
 #' \code{\link{control.net}}. One-group and two-group models are available, where
-#' the latter assumes a heterogenous mixing between two distinct partitions
+#' the latter assumes a heterogeneous mixing between two distinct partitions
 #' in the population (e.g., men and women). Specifying any two-group parameters
 #' (those with a \code{.g2}) implies the simulation of a two-group model. All the
 #' parameters for a desired model type must be specified, even if they are zero.
@@ -143,13 +142,13 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
   if ("b.rate" %in% names.dot.args) {
     p$a.rate <- dot.args$b.rate
     stop("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate to a.rate. ",
-            "See documentation for details.",
+         "See documentation for details.",
          call. = FALSE)
   }
   if ("b.rate.g2" %in% names.dot.args) {
     p$a.rate.g2 <- dot.args$b.rate.g2
     stop("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate.g2 to a.rate.g2. ",
-            "See documentation for details.",
+         "See documentation for details.",
          call. = FALSE)
   }
   # Check for mode to group suffix change
@@ -210,8 +209,8 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
 #' input into the \code{init.net} function. This function handles initial
 #' conditions for both base models and new modules. For an overview of
 #' specifying initial conditions across a variety of base network models,
-#' consult the \href{http://statnet.github.io/tut/BasicNet.html}{Basic Network
-#' Models} tutorial.
+#' consult the \href{http://epimodel.org/tut.html}{Basic Network Models}
+#' tutorials.
 #'
 #' @seealso Use \code{\link{param.net}} to specify model parameters and
 #'          \code{\link{control.net}} to specify the control settings. Run the
@@ -367,7 +366,7 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #' solved with the \code{\link{netsim}} function. Controls are required for both
 #' base model types and when passing original process modules. For an overview
 #' of control settings for base models, consult the
-#' \href{http://statnet.github.io/tut/BasicNet.html}{Basic Network Models} tutorial.
+#' \href{http://epimodel.org/tut.html}{Basic Network Models} tutorials.
 #' For all base models, the \code{type} argument is a necessary parameter
 #' and it has no default.
 #'
@@ -403,8 +402,8 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #' For original models, one may substitute replacement module functions for any of
 #' the default functions. New modules may be added to the workflow at each time
 #' step by passing a module function via the \code{...} argument. Consult the
-#' \href{http://statnet.github.io/tut/NewNet.html}{New Network Models} tutorial.
-#' One may remove existing modules, such as \code{arrivals.FUN}, from the workflow
+#' \href{http://epimodel.org/tut.html}{New Network Models} tutorials. One may
+#' remove existing modules, such as \code{arrivals.FUN}, from the workflow
 #' by setting the parameter value for that argument to \code{NULL}.
 #'
 #' @seealso Use \code{\link{param.net}} to specify model parameters and
@@ -564,23 +563,20 @@ control.net <- function(type,
     p$set.control.ergm <- control.simulate.ergm(MCMC.burnin = 2e5)
   }
 
-  if (is.null(p$type)) {
-    names <- unlist(lapply(sys.call()[-1], as.character))
-    pos <- which(names(names) %in% grep(".FUN", names(names), value = TRUE))
-    p$f.names <- as.vector(names)[pos]
-    p$f.args  <- grep(".FUN", names(names), value = TRUE)
+  ## Names and arguments for supplied functions
+  pos1 <- which(names(formal.args) %in% grep(".FUN", names(formal.args), value = TRUE))
+  p$f.names <- names(formal.args)[pos1]
+  for (i in 1:length(pos1)) {
+    if (!is.null(formal.args[[pos1[i]]])) {
+      p$f.args[i]  <- as.character(formal.args[[pos1[i]]])
+    }
   }
-
-  if (p$type != "SIR" && !is.null(p$type)) {
-    p$f.names <- c("arrivals.FUN", "departures.FUN", "infection.FUN", "prevalence.FUN")
-    p$f.args  <- c("arrivals.net", "departures.net", "infection.net", "prevalence.net")
-  }
-
-  if (p$type %in% c("SIR", "SIS") && !is.null(p$type)) {
-    p$f.names <- c("arrivals.FUN", "departures.FUN", "infection.FUN",
-                   "recovery.FUN", "prevalence.FUN")
-    p$f.args  <- c("arrivals.net", "departures.net", "infection.net",
-                   "recovery.net", "prevalence.net")
+  pos2 <- which(names(dot.args) %in% grep(".FUN", names(dot.args), value = TRUE))
+  if (length(pos2) > 0) {
+    start <- length(pos1) + 1
+    stop <- length(pos1) + length(pos2)
+    p$f.names[start:stop] <- names(dot.args)[pos2]
+    p$f.args[start:stop] <- gsub(".FUN", "", names(dot.args)[pos2])
   }
 
   ## Output
@@ -628,23 +624,14 @@ crosscheck.net <- function(x, param, init, control) {
         stop("control must an object of class control.net", call. = FALSE)
       }
 
-      nw <- x$fit$newnetwork
+      # Pull network object from netest object
+      nw <- x$fit$network
 
       # Defaults ----------------------------------------------------------------
 
       # Is status in network formation formula?
-      #statOnNw <- ("status" %in% get_formula_term_attr(x$formation, nw))
       statOnNw <- get_vertex_attribute(nw, "status") %in% c("s", "i", "r")
       statOnNw <- ifelse(sum(statOnNw) > 0, TRUE, FALSE)
-
-      # Set dependent modeling defaults if vital or status on nw
-      if (is.null(control$resimulate.network)) {
-        if (param$vital == TRUE | statOnNw == TRUE) {
-          control$resimulate.network <- TRUE
-        } else {
-          control$resimulate.network <- FALSE
-        }
-      }
 
       nGroups <- length(unique(get_vertex_attribute(nw, "group")))
       nGroups <- ifelse(nGroups == 2, 2, 1)
@@ -656,7 +643,6 @@ crosscheck.net <- function(x, param, init, control) {
       if (statOnNw == TRUE && is.null(control$attr.rules$status)) {
         control$attr.rules$status <- "s"
       }
-
 
 
       # Checks ------------------------------------------------------------------
@@ -734,20 +720,6 @@ crosscheck.net <- function(x, param, init, control) {
         }
       }
 
-
-      ## Deprecated parameters
-      bim <- grep(".FUN", names(formals(control.net)), value = TRUE)
-      um <- which(grepl(".FUN", names(control)) & !(names(control) %in% bim))
-      if (length(um) == 0 && !is.null(control$type)) {
-        if (!is.null(param$trans.rate)) {
-          stop("The trans.rate parameter is deprecated. Use the inf.prob ",
-               "parameter instead.", call. = FALSE)
-        }
-        if (!is.null(param$trans.rate.g2)) {
-          stop("The trans.rate.g2 parameter is deprecated. Use the inf.prob.g2 ",
-               "parameter instead.", call. = FALSE)
-        }
-      }
     }
 
     if (control$start > 1) {
@@ -793,6 +765,7 @@ crosscheck.net <- function(x, param, init, control) {
           if (is.null(control[[args[i]]])) {
             temp <- get(gsub(".FUN",".net",args[i]))
             control[[args[i]]] <- temp
+            control[["f.args"]][i] <- gsub(".FUN",".net",args[i])
           }
         }
       }
@@ -801,6 +774,7 @@ crosscheck.net <- function(x, param, init, control) {
           if (is.null(control[[args[i]]])) {
             temp <- get(gsub(".FUN",".2g.net",args[i]))
             control[[args[i]]] <- temp
+            control[["f.args"]][i] <- gsub(".FUN",".2g.net",args[i])
           }
         }
       }
@@ -810,6 +784,23 @@ crosscheck.net <- function(x, param, init, control) {
     assign("param", param, pos = parent.frame())
     assign("control", control, pos = parent.frame())
   }
+
+  # Update function names and their arguments
+  if (param$vital == FALSE) {
+    temp1 <- grep("arrivals", control$f.names)
+    temp2 <- grep("departures", control$f.names)
+    control$f.names <- control$f.names[-c(temp1, temp2)]
+    control$f.args <- control$f.args[-c(temp1, temp2)]
+  }
+
+  if (!is.null(control$type) && control$type != "SIR") {
+    temp3 <- grep("recovery", control$f.names)
+    control$f.names <- control$f.names[-temp3]
+    control$f.args <- control$f.args[-temp3]
+  }
+
+  control$f.names <- control$f.names[!is.na(control$f.args)]
+  control$f.args <- control$f.args[!is.na(control$f.args)]
 
 
   if (!is.null(control$type) && length(control$user.mods) > 0) {

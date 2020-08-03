@@ -19,8 +19,7 @@
 #' edge formation and dissolution rates, control over the temporal sequencing of
 #' multiple edges, and specification of network-level features. A detailed
 #' description of these models, along with examples, is found in the
-#' \href{http://statnet.github.io/tut/BasicNet.html}{Basic Network Models}
-#' tutorial.
+#' \href{http://epimodel.org/tut.html}{Basic Network Models} tutorials.
 #'
 #' The \code{netsim} function performs modeling of both the base model types
 #' and original models. Base model types include one-mode and two-group models
@@ -31,9 +30,9 @@
 #' either take the place of existing modules (for example, disease recovery), or
 #' supplement the set of existing processes with a new one contained in a new
 #' module. This functionality is documented in the
-#' \href{http://statnet.github.io/tut/NewNet.html}{Solving New Network Models}
-#' tutorial. The list of modules within \code{netsim} available for modification
-#' is listed in \code{\link{modules.net}}.
+#' \href{http://epimodel.org/tut.html}{Extension Network Models} tutorials. The
+#' list of modules within \code{netsim} available for modification is listed in
+#' \code{\link{modules.net}}.
 #'
 #' @return
 #' A list of class \code{netsim} with the following elements:

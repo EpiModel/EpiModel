@@ -108,14 +108,13 @@ models solved with the \code{\link{dcm}} function. The models may use the
 base types, for which these parameters are used, or original model
 specifications for which these parameters may be used (but not necessarily).
 A detailed description of DCM parameterization for base models is found
-in the
-\href{http://statnet.github.io/tut/BasicDCMs.html}{Basic DCMs} tutorial.
+in the \href{http://epimodel.org/tut.html}{Basic DCMs} tutorial.
 
 For base models, the model specification will be selected as a function
 of the model parameters entered here and the control settings in
 \code{\link{control.dcm}}. One-group and two-group models are available, where
-the former assumes a homogenous mixing in the population and the latter
-assumes a purely heterogenous mixing between two distinct partitions in the
+the former assumes a homogeneous mixing in the population and the latter
+assumes a purely heterogeneous mixing between two distinct partitions in the
 population (e.g., men and women). Specifying any group two parameters (those
 with a \code{.g2}) implies the simulation of a two-group model. All the
 parameters for a desired model type must be specified, even if they are zero.
@@ -123,14 +122,13 @@ parameters for a desired model type must be specified, even if they are zero.
 \section{Act Balancing}{
 
 In two-group models, a balance between the number of acts for group 1 members
-and those for group 2 members must be maintained. With purely heterogenous
+and those for group 2 members must be maintained. With purely heterogeneous
 mixing, the product of one group size and act rate must equal the product of
 the other group size and act rate: \eqn{N_1 \alpha_1 = N_2 \alpha_2}, where
 \eqn{N_i} is the group size and \eqn{\alpha_i} the group-specific act rates
 at time \eqn{t}. The \code{balance} parameter here specifies which group's
 act rate should control the others with respect to balancing. See the
-\href{http://statnet.github.io/tut/BasicDCMs.html}{Basic DCMs} tutorial
-for further details.
+\href{http://epimodel.org/tut.html}{Basic DCMs} tutorial for further details.
 }
 
 \section{Sensitivity Analyses}{
@@ -138,20 +136,20 @@ for further details.
 \code{dcm} has been designed to easily run DCM sensitivity analyses, where a
 series of models varying one or more of the model parameters is run. This is
 possible by setting any parameter as a vector of length greater than one. See
-both the example below and the
-\href{http://statnet.github.io/tut/BasicDCMs.html}{Basic DCMs} tutorial.
+both the example below and the \href{http://epimodel.org/tut.html}{Basic DCMs}
+tutorial.
 }
 
 \section{New Model Types}{
 
 To build original model specifications outside of the base models, start
-by consulting the \href{http://statnet.github.io/tut/NewDCMs.html}{Solving
-New DCMs with EpiModel} tutorial. Briefly, an original model may use either
-the existing model parameters named here, an original set of parameters, or
-a combination of both. The \code{...} argument allows the user to pass an
-arbitrary set of new model parameters into \code{param.dcm}. Whereas there are
-strict checks for base models that the model parameters are valid,
-parameter validity is the user's responsibility with these original models.
+by consulting the \href{http://epimodel.org/tut.html}{New DCMs with EpiModel}
+tutorial. Briefly, an original model may use either the existing model
+parameters named here, an original set of parameters, or a combination of
+both. The \code{...} argument allows the user to pass an arbitrary set of new
+model parameters into \code{param.dcm}. Whereas there are strict checks for
+base models that the model parameters are valid, parameter validity is the
+user responsibility with these original models.
 }
 
 \seealso{

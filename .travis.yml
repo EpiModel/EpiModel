@@ -10,9 +10,6 @@ r:
 r_packages:
   - nlme
 
-r_github_packages:
-  statnet/tergmLite
-
 addons:
   apt:
     packages:
