@@ -46,7 +46,7 @@ simulation numbers to plot. If \code{type="network"}, a single
 simulation number for network plot, or else \code{"min"} to plot the
 simulation number with the lowest disease prevalence, \code{"max"} for
 the simulation with the highest disease prevalence, or \code{"mean"}
-for the simulation with the prevalance closest to the mean across
+for the simulation with the prevalence closest to the mean across
 simulations at the specified time step.}
 
 \item{sim.col}{Vector of any standard R color format for simulation lines.}
@@ -54,11 +54,11 @@ simulations at the specified time step.}
 \item{sim.lwd}{Line width for simulation lines.}
 
 \item{sim.alpha}{Transparency level for simulation lines, where 0 = transparent
-and 1 = opaque (see \code{\link{transco}}).}
+and 1 = opaque (see \code{adjustcolor} function).}
 
 \item{mean.line}{If \code{TRUE}, plot mean of simulations across time.}
 
-\item{mean.smooth}{If \code{TRUE}, use a lowess smoother on the mean line.}
+\item{mean.smooth}{If \code{TRUE}, use a loess smoother on the mean line.}
 
 \item{mean.col}{Vector of any standard R color format for mean lines.}
 
@@ -73,9 +73,9 @@ polygon from plot.}
 \item{qnts.col}{Vector of any standard R color format for polygons.}
 
 \item{qnts.alpha}{Transparency level for quantile polygons, where 0 =
-transparent and 1 = opaque (see \code{\link{transco}}).}
+transparent and 1 = opaque (see \code{adjustcolor} function).}
 
-\item{qnts.smooth}{If \code{TRUE}, use a lowess smoother on quantile polygons.}
+\item{qnts.smooth}{If \code{TRUE}, use a loess smoother on quantile polygons.}
 
 \item{legend}{If \code{TRUE}, plot default legend.}
 
