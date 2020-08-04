@@ -96,7 +96,6 @@ test_that("New network models vignette example", {
                                           "aging.FUN", "arrivals.FUN", "departures.FUN",
                                           "prevalence.FUN"),
                          tergmLite = FALSE, resimulate.network = TRUE)
-  undebug(EpiModel:::netsim_loop)
   mod2 <- netsim(est, param, init, control)
   expect_is(mod2, "netsim")
 
