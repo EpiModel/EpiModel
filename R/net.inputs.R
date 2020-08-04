@@ -794,17 +794,19 @@ crosscheck.net <- function(x, param, init, control) {
   }
 
   # Update function names and their arguments
-  if (param$vital == FALSE) {
-    temp1 <- grep("arrivals", control$f.names)
-    temp2 <- grep("departures", control$f.names)
-    control$f.names <- control$f.names[-c(temp1, temp2)]
-    control$f.args <- control$f.args[-c(temp1, temp2)]
-  }
+  if (!is.null(control$type)) {
+    if (param$vital == FALSE) {
+      temp1 <- grep("arrivals", control$f.names)
+      temp2 <- grep("departures", control$f.names)
+      control$f.names <- control$f.names[-c(temp1, temp2)]
+      control$f.args <- control$f.args[-c(temp1, temp2)]
+    }
 
-  if (!is.null(control$type) && control$type != "SIR") {
-    temp3 <- grep("recovery", control$f.names)
-    control$f.names <- control$f.names[-temp3]
-    control$f.args <- control$f.args[-temp3]
+    if (control$type != "SIR") {
+      temp3 <- grep("recovery", control$f.names)
+      control$f.names <- control$f.names[-temp3]
+      control$f.args <- control$f.args[-temp3]
+    }
   }
 
   control$f.names <- control$f.names[!is.na(control$f.args)]
