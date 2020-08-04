@@ -80,42 +80,46 @@ test_that("New network models vignette example", {
   param <- param.net(inf.prob = 0.35, growth.rate = 0.00083, life.expt = 70)
   init <- init.net(i.num = 10)
   control <- control.net(type = NULL, nsims = 1, nsteps = 10,
-                         resim_net.FUN = resim_nets, infection.FUN = infection.net,
-                         prevalence.FUN = prevalence.net, departures.FUN = dfunc,
+                         departures.FUN = dfunc,
                          arrivals.FUN = afunc, aging.FUN = aging,
-                         tergmLite = FALSE, verbose = FALSE)
+                         infection.FUN = infection.net,
+                         tergmLite = FALSE, resimulate.network = TRUE)
   mod1 <- netsim(est, param, init, control)
   expect_is(mod1, "netsim")
 
   ## Test module reordering
   control <- control.net(type = NULL, nsims = 1, nsteps = 10,
-                         resim_net.FUN = resim_nets, infection.FUN = infection.net,
-                         prevalence.FUN = prevalence.net, departures.FUN = dfunc,
+                         departures.FUN = dfunc,
                          arrivals.FUN = afunc, aging.FUN = aging,
-                         module.order = c("aging.FUN", "arrivals.FUN", "departures.FUN",
-                                          "resim_net.FUN", "infection.FUN", "prevalence.FUN"),
-                         tergmLite = FALSE, verbose = FALSE)
+                         infection.FUN = infection.net,
+                         module.order = c("resim_nets.FUN", "infection.FUN",
+                                          "aging.FUN", "arrivals.FUN", "departures.FUN",
+                                          "prevalence.FUN"),
+                         tergmLite = FALSE, resimulate.network = TRUE)
+  undebug(EpiModel:::netsim_loop)
   mod2 <- netsim(est, param, init, control)
   expect_is(mod2, "netsim")
 
+  ### tergmLite replication
   param <- param.net(inf.prob = 0.35, growth.rate = 0.00083, life.expt = 70)
   init <- init.net(i.num = 10)
   control <- control.net(type = NULL, nsims = 1, nsteps = 10,
-                         resim_net.FUN = resim_nets, infection.FUN = infection.net,
-                         prevalence.FUN = prevalence.net, departures.FUN = dfunc,
+                         infection.FUN = infection.net,
+                         departures.FUN = dfunc,
                          arrivals.FUN = afunc, aging.FUN = aging,
-                         tergmLite = TRUE, verbose = FALSE)
+                         tergmLite = TRUE, verbose = FALSE, resimulate.network = TRUE)
   mod3 <- netsim(est, param, init, control)
   expect_is(mod3, "netsim")
 
   ## Test module reordering
   control <- control.net(type = NULL, nsims = 1, nsteps = 10,
-                         resim_net.FUN = resim_nets, infection.FUN = infection.net,
-                         prevalence.FUN = prevalence.net, departures.FUN = dfunc,
+                         departures.FUN = dfunc,
                          arrivals.FUN = afunc, aging.FUN = aging,
-                         module.order = c("aging.FUN", "arrivals.FUN", "departures.FUN",
-                                          "resim_net.FUN", "infection.FUN", "prevalence.FUN"),
-                         tergmLite = TRUE, verbose = FALSE)
+                         infection.FUN = infection.net,
+                         module.order = c("resim_nets.FUN", "infection.FUN",
+                                          "aging.FUN", "arrivals.FUN", "departures.FUN",
+                                          "prevalence.FUN"),
+                         tergmLite = TRUE, resimulate.network = TRUE)
   mod4 <- netsim(est, param, init, control)
   expect_is(mod4, "netsim")
 
