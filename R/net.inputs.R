@@ -802,7 +802,7 @@ crosscheck.net <- function(x, param, init, control) {
       control$f.args <- control$f.args[-c(temp1, temp2)]
     }
 
-    if (control$type != "SIR") {
+    if (!(control$type %in% c("SIR", "SIS"))) {
       temp3 <- grep("recovery", control$f.names)
       control$f.names <- control$f.names[-temp3]
       control$f.args <- control$f.args[-temp3]
