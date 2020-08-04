@@ -355,9 +355,9 @@ test_that("edges two-group models", {
   plot(x, y = "si.flow", mean.smooth = TRUE)
   plot(x, type = "formation")
   plot(x, type = "network")
-  plot(x, type = "network", shp.bip = "triangle")
+  plot(x, type = "network", shp.g2 = "triangle")
   #FLAG: Adding "two-group" attribute to network type
-  expect_error(plot(x, type = "network", shp.bip = TRUE))
+  expect_error(plot(x, type = "network", shp.g2 = TRUE))
   test_net(x)
   rm(x)
 

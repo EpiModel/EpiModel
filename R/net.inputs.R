@@ -63,13 +63,12 @@
 #' may use the base types, for which these parameters are used, or new process
 #' modules which may use these parameters (but not necessarily). A detailed
 #' description of network model parameterization for base models is found in
-#' the \href{http://statnet.github.io/tut/BasicNet.html}{Basic Network Models}
-#' tutorial.
+#' the \href{http://epimodel.org/tut.html}{Basic Network Models} tutorial.
 #'
 #' For base models, the model specification will be chosen as a result of
 #' the model parameters entered here and the control settings in
 #' \code{\link{control.net}}. One-group and two-group models are available, where
-#' the latter assumes a heterogenous mixing between two distinct partitions
+#' the latter assumes a heterogeneous mixing between two distinct partitions
 #' in the population (e.g., men and women). Specifying any two-group parameters
 #' (those with a \code{.g2}) implies the simulation of a two-group model. All the
 #' parameters for a desired model type must be specified, even if they are zero.
@@ -210,8 +209,8 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
 #' input into the \code{init.net} function. This function handles initial
 #' conditions for both base models and new modules. For an overview of
 #' specifying initial conditions across a variety of base network models,
-#' consult the \href{http://statnet.github.io/tut/BasicNet.html}{Basic Network
-#' Models} tutorial.
+#' consult the \href{http://epimodel.org/tut.html}{Basic Network Models}
+#' tutorials.
 #'
 #' @seealso Use \code{\link{param.net}} to specify model parameters and
 #'          \code{\link{control.net}} to specify the control settings. Run the
@@ -367,7 +366,7 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #' solved with the \code{\link{netsim}} function. Controls are required for both
 #' base model types and when passing original process modules. For an overview
 #' of control settings for base models, consult the
-#' \href{http://statnet.github.io/tut/BasicNet.html}{Basic Network Models} tutorial.
+#' \href{http://epimodel.org/tut.html}{Basic Network Models} tutorials.
 #' For all base models, the \code{type} argument is a necessary parameter
 #' and it has no default.
 #'
@@ -403,8 +402,8 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #' For original models, one may substitute replacement module functions for any of
 #' the default functions. New modules may be added to the workflow at each time
 #' step by passing a module function via the \code{...} argument. Consult the
-#' \href{http://statnet.github.io/tut/NewNet.html}{New Network Models} tutorial.
-#' One may remove existing modules, such as \code{arrivals.FUN}, from the workflow
+#' \href{http://epimodel.org/tut.html}{New Network Models} tutorials. One may
+#' remove existing modules, such as \code{arrivals.FUN}, from the workflow
 #' by setting the parameter value for that argument to \code{NULL}.
 #'
 #' @seealso Use \code{\link{param.net}} to specify model parameters and
@@ -641,15 +640,6 @@ crosscheck.net <- function(x, param, init, control) {
       # Is status in network formation formula?
       statOnNw <- get_vertex_attribute(nw, "status") %in% c("s", "i", "r")
       statOnNw <- ifelse(sum(statOnNw) > 0, TRUE, FALSE)
-
-      # Set dependent modeling defaults if vital or status on nw
-      if (is.null(control$resimulate.network)) {
-        if (param$vital == TRUE | statOnNw == TRUE) {
-          control$resimulate.network <- TRUE
-        } else {
-          control$resimulate.network <- FALSE
-        }
-      }
 
       nGroups <- length(unique(get_vertex_attribute(nw, "group")))
       nGroups <- ifelse(nGroups == 2, 2, 1)

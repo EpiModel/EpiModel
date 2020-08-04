@@ -12,10 +12,10 @@
 #'
 #' @details
 #' This ERGM user term was written to allow for age-based homophily in partnership
-#' formation that is heterogenous by race. The absdiff component allows targets
-#' the distribution of age mixing on that continuous variable, and the nodemix
-#' component differentiates this for black-black, black-white, and white-white
-#' couples.
+#' formation that is heterogeneous by race. The \code{absdiff} component allows
+#' targets the distribution of age mixing on that continuous variable, and the
+#' \code{nodemix} component differentiates this for black-black, black-white,
+#' and white-white couples.
 #'
 #' @author Steven M. Goodreau
 #'
