@@ -11,6 +11,7 @@ r_packages:
   - nlme
 
 r_github_packages:
+- statnet/rle
 - statnet/statnet.common
 - statnet/network
 - statnet/networkDynamic

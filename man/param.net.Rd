@@ -102,13 +102,12 @@ models simulated with the \code{\link{netsim}} function. Models
 may use the base types, for which these parameters are used, or new process
 modules which may use these parameters (but not necessarily). A detailed
 description of network model parameterization for base models is found in
-the \href{http://statnet.github.io/tut/BasicNet.html}{Basic Network Models}
-tutorial.
+the \href{http://epimodel.org/tut.html}{Basic Network Models} tutorial.
 
 For base models, the model specification will be chosen as a result of
 the model parameters entered here and the control settings in
 \code{\link{control.net}}. One-group and two-group models are available, where
-the latter assumes a heterogenous mixing between two distinct partitions
+the latter assumes a heterogeneous mixing between two distinct partitions
 in the population (e.g., men and women). Specifying any two-group parameters
 (those with a \code{.g2}) implies the simulation of a two-group model. All the
 parameters for a desired model type must be specified, even if they are zero.
@@ -138,8 +137,7 @@ the first two time steps of a person's infection, followed by a 0.1 for the
 third time step. If the infected person has not recovered or exited the
 population by the fourth time step, the third element in the vector will carry
 forward until one of those events occurs or the simulation ends. For further examples,
-see the NME tutorial,
-\href{https://statnet.github.io/nme/d3-s6.html}{Time-Varying Biology & Behavior}.
+see the \href{https://statnet.org/nme/}{NME Course Tutorials}.
 }
 
 \section{New Modules}{

@@ -174,7 +174,7 @@ Sets the controls for stochastic network models simulated with
 solved with the \code{\link{netsim}} function. Controls are required for both
 base model types and when passing original process modules. For an overview
 of control settings for base models, consult the
-\href{http://statnet.github.io/tut/BasicNet.html}{Basic Network Models} tutorial.
+\href{http://epimodel.org/tut.html}{Basic Network Models} tutorials.
 For all base models, the \code{type} argument is a necessary parameter
 and it has no default.
 }
@@ -213,8 +213,8 @@ the \code{\link{infection.net}} function.
 For original models, one may substitute replacement module functions for any of
 the default functions. New modules may be added to the workflow at each time
 step by passing a module function via the \code{...} argument. Consult the
-\href{http://statnet.github.io/tut/NewNet.html}{New Network Models} tutorial.
-One may remove existing modules, such as \code{arrivals.FUN}, from the workflow
+\href{http://epimodel.org/tut.html}{New Network Models} tutorials. One may
+remove existing modules, such as \code{arrivals.FUN}, from the workflow
 by setting the parameter value for that argument to \code{NULL}.
 }
 

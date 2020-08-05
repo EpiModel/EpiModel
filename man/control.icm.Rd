@@ -73,9 +73,9 @@ Sets the controls for stochastic individual contact models
 individual contact model solved with the \code{\link{icm}} function. Controls
 are required for both base model types and when passing original process
 modules. For an overview of control settings for base ICM class models,
-consult the \href{http://statnet.github.io/tut/BasicICMs.html}{Basic ICMs}
-tutorial. For all base models, the \code{type} argument is a necessary
-parameter and it has no default.
+consult the \href{http://epimodel.org/tut.html}{Basic ICMs} tutorial. For all
+base models, the \code{type} argument is a necessary parameter and it has no
+default.
 }
 \section{New Modules}{
 

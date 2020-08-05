@@ -1,3 +1,25 @@
+EpiModel 2.0.2
+------------------------------------------------------------------------------
+
+* Minor updates for CRAN submission.
+
+
+EpiModel 2.0.1
+------------------------------------------------------------------------------
+
+* Minor updates for CRAN submission.
+
+
+EpiModel 2.0.0
+------------------------------------------------------------------------------
+
+* This release introduces a major update to the EpiModel package infrastructure
+  and application programming interface for both built-in models (primarily used
+  for teaching purposes) and extension models (primarily used for research 
+  purposes). The major substantive changes are summarized in a EpiModel 1.x to
+  EpiModel 2.0 migration guide on our primary website: https://epimodel.org/.
+
+
 EpiModel 1.8.0
 ------------------------------------------------------------------------------
 
