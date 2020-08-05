@@ -564,20 +564,28 @@ control.net <- function(type,
   }
 
   ## Names and arguments for supplied functions
-  pos1 <- which(names(formal.args) %in% grep(".FUN", names(formal.args), value = TRUE))
-  p$f.names <- names(formal.args)[pos1]
-  for (i in 1:length(pos1)) {
-    if (!is.null(formal.args[[pos1[i]]])) {
-      p$f.args[i]  <- as.character(formal.args[[pos1[i]]])
+  base.args <- formals(sys.function())
+  base.indx <- grep(".FUN", names(base.args))
+  for (i in 1:length(base.indx)) {
+    p$f.names[i] <- names(base.args)[base.indx[i]]
+    if (!is.null(base.args[[base.indx[i]]])) {
+      p$f.args[i] <- as.character(base.args[[base.indx[i]]])
     }
   }
-  pos2 <- which(names(dot.args) %in% grep(".FUN", names(dot.args), value = TRUE))
-  if (length(pos2) > 0) {
-    start <- length(pos1) + 1
-    stop <- length(pos1) + length(pos2)
-    p$f.names[start:stop] <- names(dot.args)[pos2]
-    p$f.args[start:stop] <- gsub(".FUN", "", names(dot.args)[pos2])
+
+  ## User defined/supplied functions
+  user.args <- as.list(match.call())
+  user.indx <- grep(".FUN", names(user.args))
+  start <- length(p$f.args) + 1
+  stop <- length(p$f.args) + length(user.indx)
+  index <- start:stop
+  if (length(user.indx) > 0) {
+    for (i in 1:length(index)) {
+      p$f.names[index[i]] <- names(user.args[user.indx[i]])
+      p$f.args[index[i]] <- as.character(user.args[[user.indx[i]]])
+    }
   }
+
 
   ## Output
   class(p) <- c("control.net", "list")
@@ -781,27 +789,28 @@ crosscheck.net <- function(x, param, init, control) {
     }
 
     ## In-place assignment to update param and control
-    assign("param", param, pos = parent.frame())
-    assign("control", control, pos = parent.frame())
+    #assign("param", param, pos = parent.frame())
+    #assign("control", control, pos = parent.frame())
   }
 
   # Update function names and their arguments
-  if (param$vital == FALSE) {
-    temp1 <- grep("arrivals", control$f.names)
-    temp2 <- grep("departures", control$f.names)
-    control$f.names <- control$f.names[-c(temp1, temp2)]
-    control$f.args <- control$f.args[-c(temp1, temp2)]
-  }
+  if (!is.null(control$type)) {
+    if (param$vital == FALSE) {
+      temp1 <- grep("arrivals", control$f.names)
+      temp2 <- grep("departures", control$f.names)
+      control$f.names <- control$f.names[-c(temp1, temp2)]
+      control$f.args <- control$f.args[-c(temp1, temp2)]
+    }
 
-  if (!is.null(control$type) && control$type != "SIR") {
-    temp3 <- grep("recovery", control$f.names)
-    control$f.names <- control$f.names[-temp3]
-    control$f.args <- control$f.args[-temp3]
+    if (!(control$type %in% c("SIR", "SIS"))) {
+      temp3 <- grep("recovery", control$f.names)
+      control$f.names <- control$f.names[-temp3]
+      control$f.args <- control$f.args[-temp3]
+    }
   }
 
   control$f.names <- control$f.names[!is.na(control$f.args)]
   control$f.args <- control$f.args[!is.na(control$f.args)]
-
 
   if (!is.null(control$type) && length(control$user.mods) > 0) {
     stop("Control setting 'type' must be NULL if any user-specified modules specified.",

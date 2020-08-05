@@ -14,6 +14,8 @@ test_that("netsim for edges only, SI, one-mode, closed, 1 sim", {
   control <- control.net(type = "SI", nsims = 1, nsteps = 5, verbose = FALSE)
   mod <- netsim(est, param, init, control)
   expect_is(mod, "netsim")
+  expect_output(print(mod), "infection.FUN = infection.net")
+  expect_output(print(mod), "nwupdate.FUN = nwupdate.net")
   plot(mod)
   plot(mod, type = "formation")
   plot(mod, type = "network")
@@ -49,6 +51,9 @@ test_that("netsim for edges only, SIS, one-mode, closed, 2 sim", {
   init <- init.net(i.num = 10)
   control <- control.net(type = "SIS", nsims = 2, nsteps = 5, verbose = FALSE)
   mod <- netsim(est, param, init, control)
+  expect_output(print(mod), "infection.FUN = infection.net")
+  expect_output(print(mod), "nwupdate.FUN = nwupdate.net")
+  expect_output(print(mod), "recovery.FUN = recovery.net")
   expect_is(mod, "netsim")
 })
 
