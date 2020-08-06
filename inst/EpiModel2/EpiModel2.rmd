@@ -262,6 +262,21 @@ Note also that it is now possible to have a continuum of mixing levels by specif
 
 **This update applies to both built-in and extension models.**
 
+## Update to Prevalence Function
+The function querying of current state or compartment sizes during simulation has been renamed from`get_prev.net` to `prevalance.net`. Control settings, passed through `control.net`, should be updated as such:
+
+```{r echo = TRUE, eval = FALSE}
+## EpiModel 1.x
+control <- control.net(get_prev.FUN = get_prev.net)
+```
+
+```{r echo = TRUE, eval = FALSE}
+## EpiModel 2.0
+control <- control.net(prevalence.FUN = prevalence.net)
+```
+
+**This update applies to both built-in and extension models.**
+
 ## Group-Specific Parameters
 Within the initial conditions and epidemic parameters, mode-specific parameters (ending with `.m2`) should be replaced with group-specific parameters (ending with `.g2`). For example, the following:
 
