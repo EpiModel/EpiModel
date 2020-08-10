@@ -621,6 +621,7 @@ infect2 <- function(dat, at) {
   if (nElig > 0 && nElig < nActive) {
     del <- discord_edgelist(dat, at)
     if (!(is.null(del))) {
+      del$transProb <- inf.prob
       del$finalProb <- 1 - (1 - del$transProb)^del$actRate
       transmit <- rbinom(nrow(del), 1, del$finalProb)
       del <- del[which(transmit == 1), ]
@@ -791,5 +792,5 @@ In EpiModel 2.0, if any base modules have been changed or any user defined modul
 ## Epidemic model control settings
 # If any user defined functions, type must be NULL
 control <- control.net(type = NULL, nsteps = 100, nsims = 1, 
-                       infection.FUN = infect, progress.FUN = progress)
+                       infection.FUN = infect2, progress.FUN = progress2)
 ```
