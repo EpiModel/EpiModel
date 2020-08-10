@@ -168,7 +168,12 @@ netsim <- function(x, param, init, control) {
 netsim_loop <- function(x, param, init, control, s) {
   ## Initialization Module
   if (!is.null(control[["initialize.FUN"]])) {
-    dat <- do.call(control[["initialize.FUN"]], list(x, param, init, control, s))
+
+    dat <- tryCatch(
+      do.call(control[["initialize.FUN"]], list(x, param, init, control, s)),
+      error = function(e) stop("In module 'initialize.FUN': ", e),
+      warning = function(e) warning("In module 'initialize.FUN'': ", e)
+    )
   }
 
   ### TIME LOOP
@@ -185,12 +190,22 @@ netsim_loop <- function(x, param, init, control, s) {
 
       ## Evaluate modules
       for (i in seq_along(morder)) {
-        dat <- do.call(control[[morder[i]]], list(dat, at))
+
+        dat <- tryCatch(
+          do.call(control[[morder[i]]], list(dat, at)),
+          error = function(e) stop("In module '", morder[[i]], "': ", e),
+          warning = function(e) warning("In module '", morder[[i]], "': ", e)
+        )
       }
 
       ## Verbose module
       if (!is.null(control[["verbose.FUN"]])) {
-        do.call(control[["verbose.FUN"]], list(dat, type = "progress", s, at))
+
+        tryCatch(
+          do.call(control[["verbose.FUN"]], list(dat, type = "progress", s, at)),
+          error = function(e) stop("In module 'verbose.FUN': ", e),
+          warning = function(e) warning("In module 'verbose.FUN'': ", e)
+        )
       }
 
     }
