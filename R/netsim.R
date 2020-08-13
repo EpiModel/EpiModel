@@ -162,7 +162,8 @@ netsim <- function(x, param, init, control) {
 #' @title Internal function running the network simulation loop
 #'
 #' @description This function run the initialization and simulation loop for one
-#'              simulation
+#'              simulation. Error, warning and messages are pretty printed using
+#'              the `netsim_cond_msg` (utils.R)
 #' @inheritParams initialize.net
 #' @keywords internal
 netsim_loop <- function(x, param, init, control, s) {
@@ -204,12 +205,9 @@ netsim_loop <- function(x, param, init, control, s) {
 
       dat
     },
-    message = function(e) message(
-      "A MESSAGE occured in module '", current_mod, "': \n\t", e),
-    warning = function(e) message(
-      "A WARNING occured in module '", current_mod, "': \n\t", e),
-    error = function(e) message(
-      "An ERROR occured in module '", current_mod, "': \n\t", e)
+    message = function(e) message(netsim_cond_msg("MESSAGE", current_mod, at, e)),
+    warning = function(e) message(netsim_cond_msg("WARNING", current_mod, at, e)),
+    error = function(e) message(netsim_cond_msg("ERROR", current_mod, at, e))
   )
 
   return(dat)

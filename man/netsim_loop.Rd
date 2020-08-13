@@ -19,6 +19,7 @@ netsim_loop(x, param, init, control, s)
 }
 \description{
 This function run the initialization and simulation loop for one
-             simulation
+             simulation. Error, warning and messages are pretty printed using
+             the `netsim_cond_msg` (utils.R)
 }
 \keyword{internal}
