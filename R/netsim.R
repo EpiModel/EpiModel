@@ -165,54 +165,6 @@ netsim <- function(x, param, init, control) {
 #'              simulation
 #' @inheritParams initialize.net
 #' @keywords internal
-## netsim_loop <- function(x, param, init, control, s) {
-##   ## Initialization Module
-##   if (!is.null(control[["initialize.FUN"]])) {
-
-##     dat <- tryCatch(
-##       do.call(control[["initialize.FUN"]], list(x, param, init, control, s)),
-##       error = function(e) stop("In module 'initialize.FUN': ", e),
-##       warning = function(e) warning("In module 'initialize.FUN'': ", e)
-##     )
-##   }
-
-##   ### TIME LOOP
-##   if (control$nsteps > 1) {
-##     for (at in max(2, control$start):control$nsteps) {
-
-##       ## Module order
-##       morder <- control$module.order
-##       if (is.null(morder)) {
-##         lim.bi.mods <- control$bi.mods[-which(control$bi.mods %in%
-##                                               c("initialize.FUN", "verbose.FUN"))]
-##         morder <- c(control$user.mods, lim.bi.mods)
-##       }
-
-##       ## Evaluate modules
-##       for (i in seq_along(morder)) {
-
-##         dat <- tryCatch(
-##           do.call(control[[morder[i]]], list(dat, at)),
-##           error = function(e) stop("In module '", morder[[i]], "': ", e),
-##           warning = function(e) warning("In module '", morder[[i]], "': ", e)
-##         )
-##       }
-
-##       ## Verbose module
-##       if (!is.null(control[["verbose.FUN"]])) {
-
-##         tryCatch(
-##           do.call(control[["verbose.FUN"]], list(dat, type = "progress", s, at)),
-##           error = function(e) stop("In module 'verbose.FUN': ", e),
-##           warning = function(e) warning("In module 'verbose.FUN'': ", e)
-##         )
-##       }
-
-##     }
-##   }
-
-##   return(dat)
-## }
 netsim_loop <- function(x, param, init, control, s) {
   dat <- tryCatch(
     expr = {
