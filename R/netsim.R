@@ -166,7 +166,7 @@ netsim <- function(x, param, init, control) {
 #' @inheritParams initialize.net
 #' @keywords internal
 netsim_loop <- function(x, param, init, control, s) {
-  dat <- tryCatch(
+  dat <- withCallingHandlers(
     expr = {
       ## Initialization Module
       if (!is.null(control[["initialize.FUN"]])) {
@@ -204,8 +204,12 @@ netsim_loop <- function(x, param, init, control, s) {
 
       dat
     },
-    error = function(e) stop("In module '", current_mod, "': ", e),
-    warning = function(e) warning("In module '", current_mod, "': ", e)
+    error = function(e) message(
+      "An error occured in module '", current_mod, "': \n\t", e),
+    warning = function(e) message(
+      "A warning occured in module '", current_mod, "': \n\t", e)
+    ## error = function(e) paste0("In module '", current_mod, "': ", e),
+    ## warning = function(e) paste0("In module '", current_mod, "': ", e)
   )
 
   return(dat)
