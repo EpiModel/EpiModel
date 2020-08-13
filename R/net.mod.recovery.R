@@ -16,8 +16,8 @@
 recovery.net <- function(dat, at) {
 
   ## Only run with SIR/SIS
-  type <- get_control(dat, "type")
-  if (!(type %in% c("SIR", "SIS")) && !is.null(type)) {
+  rec.rate <- get_param(dat, "rec.rate", override.null.error = TRUE)
+  if (is.null(rec.rate)) {
     return(dat)
   }
 
@@ -25,9 +25,10 @@ recovery.net <- function(dat, at) {
   active <- get_attr(dat, "active")
   status <- get_attr(dat, "status")
   infTime <- get_attr(dat, "infTime")
-  recovState <- ifelse(type == "SIR", "r", "s")
 
-  rec.rate <- get_param(dat, "rec.rate")
+  recov.flag <- get_init(dat, "r.num", override.null.error = TRUE)
+
+  recovState <- ifelse(is.null(recov.flag), "s", "r")
 
   nRecov <- 0
   idsElig <- which(active == 1 & status == "i")
@@ -57,7 +58,7 @@ recovery.net <- function(dat, at) {
   dat <- set_attr(dat, "status", status)
 
   # Output ------------------------------------------------------------------
-  outName <- ifelse(type == "SIR", "ir.flow", "is.flow")
+  outName <- ifelse(is.null(recov.flag), "is.flow", "ir.flow")
   dat <- set_epi(dat, outName, at, nRecov)
 
   return(dat)
@@ -80,8 +81,8 @@ recovery.net <- function(dat, at) {
 recovery.2g.net <- function(dat, at) {
 
   ## Only run with SIR/SIS
-  type <- get_control(dat, "type")
-  if (!(type %in% c("SIR", "SIS")) && !is.null(type)) {
+  rec.rate <- get_param(dat, "rec.rate", override.null.error = TRUE)
+  if (is.null(rec.rate)) {
     return(dat)
   }
 
@@ -90,10 +91,13 @@ recovery.2g.net <- function(dat, at) {
   status <- get_attr(dat, "status")
   infTime <- get_attr(dat, "infTime")
   group <- get_attr(dat, "group")
-  recovState <- ifelse(type == "SIR", "r", "s")
 
-  rec.rate <- get_param(dat, "rec.rate")
+  recov.flag <- get_init(dat, "r.num", override.null.error = TRUE)
   rec.rate.g2 <- get_param(dat, "rec.rate.g2")
+
+  recovState <- ifelse(is.null(recov.flag), "s", "r")
+
+
 
   nRecov <- nRecovG2 <- 0
   idsElig <- which(active == 1 & status == "i")
@@ -135,7 +139,7 @@ recovery.2g.net <- function(dat, at) {
   dat <- set_attr(dat, "status", status)
 
   # Output ------------------------------------------------------------------
-  outName <- ifelse(type == "SIR", "ir.flow", "is.flow")
+  outName <- ifelse(is.null(recov.flag), "is.flow", "ir.flow")
   outName[2] <- paste0(outName, ".g2")
 
   dat <- set_epi(dat, outName[1], at, nRecov)

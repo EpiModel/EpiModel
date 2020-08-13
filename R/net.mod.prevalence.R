@@ -23,6 +23,8 @@ prevalence.net <- function(dat, at) {
   type <- get_control(dat, "type")
   groups <- get_param(dat, "groups")
 
+  rec.rate <- get_param(dat, "rec.rate", override.null.error = TRUE)
+
   # Subset attr to active == 1
   l <- lapply(1:length(dat$attr), function(x) dat$attr[[x]][active == 1])
   names(l) <- names(dat$attr)
@@ -63,7 +65,7 @@ prevalence.net <- function(dat, at) {
       }
     }
 
-    if (!is.null(type)) {
+    if (!is.null(rec.rate)) {
       if (type == "SIR") {
         dat <- set_epi(dat, "r.num", at, sum(status == "r"))
         if (eb == TRUE) {
@@ -146,7 +148,7 @@ prevalence.net <- function(dat, at) {
                                                 get(ebn) == ebv[i]))
       }
     }
-    if (!is.null(type)) {
+    if (!is.null(rec.rate)) {
       if (type == "SIR") {
         dat <- set_epi(dat, "r.num.g2", at, sum(status == "r" & group == 2))
         if (eb == TRUE) {

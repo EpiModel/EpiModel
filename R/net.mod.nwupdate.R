@@ -80,8 +80,9 @@ nwupdate.net <- function(dat, at) {
   }
 
   ## Recovery
+  rec.rate <- get_param(dat, "rec.rate", override.null.error = TRUE)
   if (tergmLite == FALSE) {
-    if (type %in% c("SIS", "SIR") && !is.null(type)) {
+    if (type %in% c("SIS", "SIR") && !is.null(rec.rate)) {
       recovState <- ifelse(type == "SIR", "r", "s")
       attr.status <- which(status == recovState)
       nw.status <- which(get_vertex_attribute(dat$nw[[1]], "status") == recovState)
