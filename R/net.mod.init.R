@@ -31,7 +31,7 @@ initialize.net <- function(x, param, init, control, s) {
     # Initial Network Simulation ----------------------------------------------
     if (x$edapprox == TRUE) {
       nw <- simulate(x$fit, basis = x$fit$newnetwork,
-                     control = control$set.control.ergm)
+                     control = control$set.control.ergm, dynamic = FALSE)
     } else {
       nw <- x$fit$network
     }

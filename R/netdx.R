@@ -201,7 +201,7 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps, nwstats.formula = "forma
         }
         for (i in 1:nsims) {
           fit.sim <- simulate(fit, basis = fit$newnetwork,
-                              control = set.control.ergm)
+                              control = set.control.ergm, dynamic = FALSE)
           diag.sim[[i]] <- simulate(fit.sim,
                                     formation = formation,
                                     dissolution = dissolution,
@@ -225,7 +225,7 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps, nwstats.formula = "forma
 
         diag.sim <- foreach(i = 1:nsims) %dopar% {
           fit.sim <- simulate(fit, basis = fit$newnetwork,
-                              control = set.control.ergm)
+                              control = set.control.ergm, dynamic = FALSE)
           simulate(fit.sim,
                    formation = formation,
                    dissolution = dissolution,
@@ -244,7 +244,8 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps, nwstats.formula = "forma
                            output = "stats",
                            control = set.control.ergm,
                            sequential = sequential,
-                           monitor = nwstats.formula)
+                           monitor = nwstats.formula,
+                           dynamic = FALSE)
     }
   } # end edapprox = TRUE condition
 
