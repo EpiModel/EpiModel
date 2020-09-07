@@ -36,6 +36,7 @@ control.net(
   MCMC_control = NULL,
   extract.summary.stats = FALSE,
   monitors = NULL,
+  track_duration = FALSE,
   ...
 )
 }
@@ -162,6 +163,14 @@ when \code{extract.summary.stats} is \code{TRUE}.  The order of the
 formulas must correspond to that of models in the overall simulation.
 Monitoring statistics are included as additional columns at the end
 of the summary statistics matrices.}
+
+\item{track_duration}{logical; should we track durational information
+(\code{time} and \code{lasttoggle}) for \code{tergm} models in 
+\code{tergmLite} simulation?  If \code{TRUE}, the \code{time} and
+\code{lasttoggle} values are initialized from the network attributes
+of the networks passed to \code{init_tergmLite}, with \code{time}
+defaulting to \code{0} and \code{lasttoggle} defaulting to all 
+\code{lasttoggle} times unspecified (effectively \code{-INT_MAX/2}).}
 
 \item{...}{Additional control settings passed to model.}
 }
