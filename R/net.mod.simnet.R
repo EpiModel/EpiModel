@@ -109,16 +109,20 @@ resim_nets <- function(dat, at) {
   # networkLite/tergmLite Method
   if (tergmLite == TRUE & resimulate.network == TRUE) {
     dat <- tergmLite::updateModelTermInputs(dat)
+    
+    if (dat$control$extract.summary.stats == TRUE) {
+      dat$stats$summstats[[1]] <- rbind(dat$stats$summstats[[1]], c(summary(dat$p[[1]]$state), summary(dat$p[[1]]$state_mon)))
+    }    
+    
     rv <- tergmLite::simulate_network(state = dat$p[[1]]$state,
                                       coef = c(nwparam$coef.form, nwparam$coef.diss$coef.adj),
                                       control = dat$control$MCMC_control[[1]],
                                       save.changes = TRUE)
     dat$el[[1]] <- rv$el
-    dat$p[[1]]$state$el <- rv$state$el
-    dat$p[[1]]$state_mon$el <- rv$state$el
 
-    if (dat$control$extract.summary.stats == TRUE) {
-      dat$stats$summstats[[1]] <- rbind(dat$stats$summstats[[1]], c(summary(dat$p[[1]]$state), summary(dat$p[[1]]$state_mon)))
+    if(dat$control$track_duration) {
+      dat$p[[1]]$state$nw0 %n% "time" <- rv$state$nw0 %n% "time"  
+      dat$p[[1]]$state$nw0 %n% "lasttoggle" <- rv$state$nw0 %n% "lasttoggle"
     }
   }
 
