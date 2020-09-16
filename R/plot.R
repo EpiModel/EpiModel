@@ -1131,12 +1131,12 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
       if (plots.joined == TRUE) {
 
         ## Default legend
-        if (nstats == 1) {
-          if (missing(legend)) {
+        if (missing(legend)) {
+          if (nstats == 1) {
             legend <- FALSE
+          } else {
+            legend <- TRUE
           }
-        } else {
-          legend <- TRUE
         }
 
         #Initialize ylim min and max values
