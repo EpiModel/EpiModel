@@ -359,21 +359,21 @@ The new accessor functions provide utilities for getting, setting, and appending
 ```{r echo = TRUE, eval = FALSE}
 ## EpiModel 1.x
 newAge <- sample(15:65, 100, replace = TRUE)
-dat$attr$age <- age
+dat$attr$age <- newAge
 ```
 
 or 
 ```{r echo = TRUE, eval = FALSE}
 ## EpiModel 1.x
 newAge <- sample(15:65, 100, replace = TRUE)
-dat[["attr"]][["age"]] <- age
+dat[["attr"]][["age"]] <- newAge
 ```
 
 should be updated to:
 ```{r echo = TRUE, eval = FALSE}
 ## EpiModel 2.0
 newAge <- sample(15:65, 100, replace = TRUE)
-dat <- set_attr(dat, "age", age)
+dat <- set_attr(dat, "age", newAge)
 ```
 
 Similarly for retrieval and setting of list elements:
