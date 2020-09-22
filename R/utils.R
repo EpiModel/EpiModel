@@ -276,3 +276,23 @@ apportion_lr <- function(vector.length, values,
 
   return(result)
 }
+
+
+#' @title Message to find in which module a `condition` occured
+#'
+#' @description Returns vector of colors consistent with a high-brightness set
+#'              of colors from an \code{RColorBrewer} palette.
+#'
+#' @param cond The type of `condition` handled (message, warning, error)
+#' @param module The name of the module where the `condition` occured
+#' @param at The time step the `condition` occured
+#' @param msg The `condition`'s message
+#'
+#' @return A formatted string describing where and whe the `condition` occured
+#'         as well as the `condition`'s message.
+#'
+#' @keywords internal
+netsim_cond_msg <- function(cond, module, at, msg) {
+  paste0("A ", cond, " occured in module '", module,
+         "' at step ", at,": \n\t", msg)
+}

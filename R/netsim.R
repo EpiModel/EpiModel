@@ -162,39 +162,53 @@ netsim <- function(x, param, init, control) {
 #' @title Internal function running the network simulation loop
 #'
 #' @description This function run the initialization and simulation loop for one
-#'              simulation
+#'              simulation. Error, warning and messages are pretty printed using
+#'              the `netsim_cond_msg` (utils.R)
 #' @inheritParams initialize.net
 #' @keywords internal
 netsim_loop <- function(x, param, init, control, s) {
-  ## Initialization Module
-  if (!is.null(control[["initialize.FUN"]])) {
-    dat <- do.call(control[["initialize.FUN"]], list(x, param, init, control, s))
-  }
-
-  ### TIME LOOP
-  if (control$nsteps > 1) {
-    for (at in max(2, control$start):control$nsteps) {
-
-      ## Module order
-      morder <- control$module.order
-      if (is.null(morder)) {
-        lim.bi.mods <- control$bi.mods[-which(control$bi.mods %in%
-                                              c("initialize.FUN", "verbose.FUN"))]
-        morder <- c(control$user.mods, lim.bi.mods)
+  dat <- withCallingHandlers(
+    expr = {
+      ## Initialization Module
+      if (!is.null(control[["initialize.FUN"]])) {
+        current_mod <- "initialize.FUN"
+        dat <- do.call(control[[current_mod]], list(x, param, init, control, s))
       }
 
-      ## Evaluate modules
-      for (i in seq_along(morder)) {
-        dat <- do.call(control[[morder[i]]], list(dat, at))
+      ### TIME LOOP
+      if (control$nsteps > 1) {
+        for (at in max(2, control$start):control$nsteps) {
+
+          ## Module order
+          morder <- control$module.order
+          if (is.null(morder)) {
+            lim.bi.mods <- control$bi.mods[-which(
+              control$bi.mods %in% c("initialize.FUN", "verbose.FUN")
+            )]
+            morder <- c(control$user.mods, lim.bi.mods)
+          }
+
+          ## Evaluate modules
+          for (i in seq_along(morder)) {
+            current_mod <- morder[[i]]
+            dat <- do.call(control[[current_mod]], list(dat, at))
+          }
+
+          ## Verbose module
+          if (!is.null(control[["verbose.FUN"]])) {
+            current_mod <- "verbose.FUN"
+            do.call(control[[current_mod]], list(dat, type = "progress", s, at))
+          }
+
+        }
       }
 
-      ## Verbose module
-      if (!is.null(control[["verbose.FUN"]])) {
-        do.call(control[["verbose.FUN"]], list(dat, type = "progress", s, at))
-      }
-
-    }
-  }
+      dat
+    },
+    message = function(e) message(netsim_cond_msg("MESSAGE", current_mod, at, e)),
+    warning = function(e) message(netsim_cond_msg("WARNING", current_mod, at, e)),
+    error = function(e) message(netsim_cond_msg("ERROR", current_mod, at, e))
+  )
 
   return(dat)
 }
