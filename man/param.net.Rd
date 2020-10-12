@@ -137,8 +137,7 @@ the first two time steps of a person's infection, followed by a 0.1 for the
 third time step. If the infected person has not recovered or exited the
 population by the fourth time step, the third element in the vector will carry
 forward until one of those events occurs or the simulation ends. For further examples,
-see the NME tutorial,
-\href{https://statnet.github.io/nme/d3-s6.html}{Time-Varying Biology & Behavior}.
+see the \href{https://statnet.org/nme/}{NME Course Tutorials}.
 }
 
 \section{New Modules}{
