@@ -160,7 +160,7 @@ print.netsim <- function(x, formation.stats = FALSE, ...) {
   cat("\nModel Functions")
   cat("\n-----------------------\n")
   for (i in 1:length(x$control$f.args)) {
-    (cat(x$control$f.names[i],"=",x$control$f.args[i],"\n"))
+    cat(x$control$f.names[i])
   }
   #cat("\n")
 

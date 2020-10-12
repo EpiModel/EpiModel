@@ -565,10 +565,11 @@ control.net <- function(type,
   ## Names and arguments for supplied functions
   base.args <- formals(sys.function())
   base.indx <- grep(".FUN", names(base.args))
+  l <- 1
   for (i in 1:length(base.indx)) {
-    p$f.names[i] <- names(base.args)[base.indx[i]]
     if (!is.null(base.args[[base.indx[i]]])) {
-      p$f.args[i] <- as.character(base.args[[base.indx[i]]])
+      p$f.names[l] <- names(base.args)[base.indx[i]]
+      l <- l+1
     }
   }
 
@@ -581,7 +582,6 @@ control.net <- function(type,
   if (length(user.indx) > 0) {
     for (i in 1:length(index)) {
       p$f.names[index[i]] <- names(user.args[user.indx[i]])
-      p$f.args[index[i]] <- as.character(user.args[[user.indx[i]]])
     }
   }
 
