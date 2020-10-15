@@ -140,22 +140,22 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
   ## Defaults and Checks
   if ("b.rate" %in% names.dot.args) {
     p$a.rate <- dot.args$b.rate
-    stop("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate to a.rate. ",
-         "See documentation for details.",
+    stop("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate
+         to a.rate. ", "See documentation for details.",
          call. = FALSE)
   }
   if ("b.rate.g2" %in% names.dot.args) {
     p$a.rate.g2 <- dot.args$b.rate.g2
-    stop("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate.g2 to a.rate.g2. ",
-         "See documentation for details.",
+    stop("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate.g2 to
+         a.rate.g2. ", "See documentation for details.",
          call. = FALSE)
   }
   # Check for mode to group suffix change
   m2.flag <- grep(".m2", names(p))
   if (length(m2.flag) > 0) {
     names(p) <- gsub(".m2", ".g2", names(p))
-    warning("EpiModel 2.0 onward has updated parameter suffixes reflecting a move from mode to group networks. ",
-            "All .m2 parameters changed to .g2. See documentation for more details.")
+    warning("EpiModel 2.0+ has updated parameter suffixes. ",
+            "All .m2 parameters changed to .g2. See documentation.")
 
   }
   if (missing(act.rate)) {
@@ -254,8 +254,8 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
   m2.init <- grep("m2", names(p), value = TRUE)
   if (length(m2.init) > 0) {
     names(p) <- gsub(".m2", ".g2", names(p))
-    warning("EpiModel 2.0 onward has updated initial condition suffixes reflecting a move from mode to group networks. ",
-            "All .m2 initial conditions changed to .g2. See documentation for more details.")
+    warning("EpiModel 2.0+ updated initial condition suffixes. ",
+            "All .m2 initial conditions changed to .g2. See documentation.")
   }
   if (!is.null(p$i.num) & !is.null(p$status.vector)) {
     stop("Use i.num OR status.vector to set initial infected")
@@ -263,7 +263,8 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
   if (!is.null(p$infTime.vector) & is.null(p$status.vector)) {
     stop("infTime.vector may only be used if status.vector is used")
   }
-  if (!is.null(p$infTime.vector) & length(p$infTime.vector) != length(p$status.vector)) {
+  if (!is.null(p$infTime.vector) &
+      length(p$infTime.vector) != length(p$status.vector)) {
     stop("Length of infTime.vector must match length of status.vector")
   }
 
@@ -463,14 +464,14 @@ control.net <- function(type,
   if ("births.FUN" %in% names(dot.args)) {
     p$arrivals.FUN <- dot.args$births.FUN
     p$births.FUN <- dot.args$births.FUN <- NULL
-    stop("EpiModel 1.7.0 onward renamed the birth function births.FUN to arrivals.FUN. ",
+    stop("EpiModel 1.7.0+ renamed the birth function births.FUN to arrivals.FUN. ",
          "See documentation for details.",
          call. = FALSE)
   }
   if ("deaths.FUN" %in% names(dot.args)) {
     p$departures.FUN <- dot.args$deaths.FUN
     p$deaths.FUN <- dot.args$deaths.FUN <- NULL
-    stop("EpiModel 1.7.0 onward renamed the death function deaths.FUN to departures.FUN. ",
+    stop("EpiModel 1.7.0+ renamed the death function deaths.FUN to departures.FUN. ",
          "See documentation for details.",
          call. = FALSE)
   }
@@ -484,7 +485,7 @@ control.net <- function(type,
 
   if ("save.network" %in% names(dot.args) || "save.transmat" %in% names(dot.args)) {
     p$tergmLite <- FALSE
-    stop("EpiModel >= 2.0 has integrated options for saving of the network object and transmission ",
+    stop("EpiModel 2.0+ has integrated options for saving of the network object and transmission ",
          "matrix into control.net setting tergmLite: if FALSE, these are saved automatically; ",
          "if TRUE, they are not saved. Update your code accordingly.",
          call. = FALSE)
