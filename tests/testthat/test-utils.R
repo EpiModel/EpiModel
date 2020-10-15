@@ -3,15 +3,19 @@ context("Utility Functions")
 test_that("brewer_ramp", {
 
   expect_true(length(brewer_ramp(100, plt = "Spectral")) == 100)
-  expect_true(length(brewer_ramp(100, plt = "Spectral", delete.lights = FALSE)) == 100)
+  expect_true(length(brewer_ramp(100, plt = "Spectral",
+                                 delete.lights = FALSE)) == 100)
   expect_false(length(brewer_ramp(100, plt = "Spectral")) == 50)
-  expect_false(length(brewer_ramp(100, plt = "Spectral", delete.lights = FALSE)) == 50)
+  expect_false(length(brewer_ramp(100, plt = "Spectral",
+                                  delete.lights = FALSE)) == 50)
 
   expect_true(length(brewer_ramp(100, plt = "Accent")) == 100)
-  expect_true(length(brewer_ramp(100, plt = "Accent", delete.lights = FALSE)) == 100)
+  expect_true(length(brewer_ramp(100, plt = "Accent",
+                                 delete.lights = FALSE)) == 100)
 
   expect_true(length(brewer_ramp(100, plt = "Oranges")) == 100)
-  expect_true(length(brewer_ramp(100, plt = "Oranges", delete.lights = FALSE)) == 100)
+  expect_true(length(brewer_ramp(100, plt = "Oranges",
+                                 delete.lights = FALSE)) == 100)
 
   expect_true(length(brewer_ramp(100, plt = "Set1")) == 100)
 
@@ -35,7 +39,8 @@ test_that("color_tea", {
   nd <- get_network(mod)
   nd <- color_tea(nd)
   expect_is(nd, "networkDynamic")
-  expect_true(length(unique(get.vertex.attribute.active(nd, "ndtvcol", at = 1))) == 3)
+  expect_true(length(unique(
+    get.vertex.attribute.active(nd, "ndtvcol", at = 1))) == 3)
 })
 
 test_that("delete_attr", {
@@ -98,7 +103,8 @@ test_that("edgelist_censor", {
   target.stats <- 50
   coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
   est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
-  sim <- netdx(est, nsims = 1, nsteps = 100, keep.tedgelist = TRUE, verbose = FALSE)
+  sim <- netdx(est, nsims = 1, nsteps = 100,
+               keep.tedgelist = TRUE, verbose = FALSE)
   el <- as.data.frame(sim)
   expect_is(edgelist_censor(el), "matrix")
 })
@@ -126,22 +132,26 @@ test_that("get_degree", {
   all.equal(ergm.method, deg.net, deg.el)
 })
 
-test_that("dissolution_coefs returns appropriate error for incompatible departure rate",{
+test_that("dissolution_coefs returns error for incompatible departure rate", {
   #Dividing by zero:
-  d.rate_ <- round(1-sqrt(59/60), 5)
+  d.rate_ <- round(1 - sqrt(59 / 60), 5)
   err.msg <- paste("The competing risk of departure is too high for the given",
                    " duration of ", 60, "; specify a d.rate lower than ",
-                   d.rate_,".",sep="")
+                   d.rate_, ".", sep = "")
   dissolution = ~offset(edges)
-  expect_that(dissolution_coefs(dissolution, duration = 60, d.rate = 1/60), throws_error(err.msg))
-  expect_that(dissolution_coefs(dissolution, duration = 60, d.rate = 0.01), throws_error(err.msg))
+  expect_that(dissolution_coefs(dissolution, duration = 60, d.rate = 1/60),
+              throws_error(err.msg))
+  expect_that(dissolution_coefs(dissolution, duration = 60, d.rate = 0.01),
+              throws_error(err.msg))
   dissolution = ~offset(edges)+offset(nodematch("group", diff = TRUE))
   duration <- c(60, 30, 80, 100, 125, 160)
   dissolution = ~offset(edges) + offset(nodematch("age.grp", diff = TRUE))
   err.msg <- paste("The competing risk of departure is too high for the given",
                    "edge duration of 60 in place 1.",
                    "Specify a d.rate lower than 0.00837.")
-  expect_that(dissolution_coefs(dissolution, duration = duration, d.rate = 1/60), throws_error(err.msg))
+  expect_that(dissolution_coefs(dissolution,
+                                duration = duration, d.rate = 1/60),
+              throws_error(err.msg))
 })
 
 
@@ -158,39 +168,11 @@ test_that("get_formula_term_attr checks", {
   expect_null(get_formula_term_attr(~edges, nw))
 
   expect_equal(get_formula_term_attr(~edges + nodefactor("race"), nw), "race")
-  expect_equal(get_formula_term_attr(~edges + nodefactor("race") + nodematch("riskg"), nw),
+  expect_equal(get_formula_term_attr(~edges + nodefactor("race") +
+                                       nodematch("riskg"), nw),
                c("riskg", "race"))
-  expect_equal(get_formula_term_attr(~edges + nodefactor(c("race", "riskg")) + nodematch("riskg"), nw),
+  expect_equal(get_formula_term_attr(~edges + nodefactor(c("race", "riskg")) +
+                                       nodematch("riskg"), nw),
                c("riskg", "race"))
 
 })
-
-test_that("Users using birth parameters are informed of change in language",{
-  expect_error(param.net(b.rate = 2), paste0("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate to a.rate. See documentation for details."))
-  expect_that(param.dcm(b.rate = 2), shows_message("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate to a.rate. See documentation for details."))
-  expect_that(param.icm(b.rate = 2), shows_message("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate to a.rate. See documentation for details."))
-})
-
-test_that("Users using birth and death functions are informed of change in language",{
-  temp <- function(x){x = x; return(x)}
-  expect_error(control.net(type = NULL, nsims = 1, nsteps = 10,
-                          departures.FUN = temp, arrivals.FUN = temp,
-                          prevalence.FUN = prevalence.net, infection.FUN = infection.net,
-                          recovery.FUN = recovery.net, births.FUN = temp, resimulate.network = FALSE), paste0("EpiModel 1.7.0 onward renamed the birth function births.FUN to arrivals.FUN. See documentation for details."))
-  expect_error(control.net(type = NULL, nsims = 1, nsteps = 10,
-                          departures.FUN = temp, arrivals.FUN = temp,
-                          prevalence.FUN = prevalence.net, infection.FUN = infection.net,
-                          recovery.FUN = recovery.net, deaths.FUN = temp, resimulate.network = FALSE), paste0("EpiModel 1.7.0 onward renamed the death function deaths.FUN to departures.FUN. See documentation for details."))
-})
-
-test_that("Users using old mode syntax are informed of change to group syntax", {
-
-  err.param <- paste0("EpiModel 2.0 onward has updated parameter suffixes reflecting a move from mode to group networks. ",
-                      "All .m2 parameters changed to .g2. See documentation for more details.")
-  expect_warning(param <- param.net(inf.prob = 0.1, inf.prob.m2 = 0.1, act.rate = 1),
-                 err.param)
-  err.init <- paste0("EpiModel 2.0 onward has updated initial condition suffixes reflecting a move from mode to group networks. ",
-                    "All .m2 initial conditions changed to .g2. See documentation for more details.")
-  expect_warning(init <- init.net(i.num = 1, i.num.m2 = 1), err.init)
-})
-
