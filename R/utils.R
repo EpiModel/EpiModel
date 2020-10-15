@@ -42,8 +42,7 @@ brewer_ramp <- function(n, plt, delete.lights = TRUE){
 
   bpi <- brewer.pal.info
   if (!(plt %in% row.names(bpi))) {
-    stop("plt must match an RColorBrewer palette name.
-         See RColorBrewer::brewer.pal.info",
+    stop("plt must match an RColorBrewer palette name. See RColorBrewer::brewer.pal.info",
          .call = FALSE)
   }
 
@@ -216,8 +215,7 @@ mutate_epi <- function(x, ...) {
   not.df <- which(sapply(ndat, class) != "data.frame")
   if (length(not.df) > 0) {
     for (jj in not.df) {
-      ndat[jj][[1]] <- data.frame(rep(ndat[jj][[1]],
-                                      length.out = x$control$nsteps))
+      ndat[jj][[1]] <- data.frame(rep(ndat[jj][[1]], length.out = x$control$nsteps))
       names(ndat[[jj]]) <- "run1"
     }
   }
@@ -235,8 +233,8 @@ mutate_epi <- function(x, ...) {
 #'
 #' @param vector.length Length for the output vector.
 #' @param values Values for the output vector.
-#' @param proportions Proportion distribution with one number for each value.
-#'        This must sum to 1.
+#' @param proportions Proportion distribution with one number for each value. This
+#'        must sum to 1.
 #' @param shuffled If \code{TRUE}, randomly shuffle the order of the vector.
 #'
 #' @export
@@ -253,10 +251,8 @@ apportion_lr <- function(vector.length, values,
   if (is.vector(values) == FALSE) {
     stop("argument values must be a vector")
   }
-  if (!(length(proportions) == length(values) &&
-        round(sum(proportions), 10) == 1) &&
-      (!(length(proportions) == length(values) - 1 &&
-         round(sum(proportions), 10) <= 1 &&
+  if (!(length(proportions) == length(values) && round(sum(proportions), 10) == 1) &&
+      (!(length(proportions) == length(values) - 1 && round(sum(proportions), 10) <= 1 &&
          round(sum(proportions), 10) >= 0))) {
     stop("error in proportions length or proportions sum")
   }
