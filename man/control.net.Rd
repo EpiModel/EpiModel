@@ -47,10 +47,10 @@ positive integer that is equal to the final step of a simulation. If
 simulation is restarted with \code{start} argument, this number must
 be at least one greater than that argument's value.}
 
-\item{start}{For models with network resimulation , time point to start up simulation.
-For restarted simulations, this must be one greater than the final time
-step in the prior simulation and must be less than the value in
-\code{nsteps}.}
+\item{start}{For models with network resimulation, time step to start up
+simulation. For restarted simulations, this must be one greater than
+the final time step in the prior simulation and must be less than the
+value in \code{nsteps}.}
 
 \item{nsims}{The total number of disease simulations.}
 
@@ -58,11 +58,12 @@ step in the prior simulation and must be less than the value in
 on, using the \code{foreach} and \code{doParallel} implementations.}
 
 \item{resimulate.network}{If \code{TRUE}, resimulate the network at each time
-step. This is required when the epidemic or demographic processes impact
-the network structure (e.g., vital dynamics).}
+step. This is required when the epidemic or demographic processes
+impact the network structure (e.g., vital dynamics).}
 
-\item{tergmLite}{Logical indicating usage of either \code{tergm} (\code{tergmLite = FALSE}),
-or \code{tergmLite} (\code{tergmLite = TRUE}). Default of \code{FALSE}.}
+\item{tergmLite}{Logical indicating usage of either full network
+(\code{tergmLite = FALSE}), or sparse network
+(\code{tergmLite = TRUE}) representation.}
 
 \item{attr.rules}{A list containing the  rules for setting the attributes of
 incoming nodes, with one list element per attribute to be set (see
@@ -85,8 +86,8 @@ function of \code{\link{infection.net}}.}
 \item{recovery.FUN}{Module to simulate disease recovery, with the default
 function of \code{\link{recovery.net}}.}
 
-\item{departures.FUN}{Module to simulate departure or exit, with the default function
-of \code{\link{departures.net}}.}
+\item{departures.FUN}{Module to simulate departure or exit, with the default
+function of \code{\link{departures.net}}.}
 
 \item{arrivals.FUN}{Module to simulate arrivals or entries, with the default
 function of \code{\link{arrivals.net}}.}
@@ -95,8 +96,8 @@ function of \code{\link{arrivals.net}}.}
 attributes due to exogenous epidemic model processes, with the default
 function of \code{\link{nwupdate.net}}.}
 
-\item{prevalence.FUN}{Module to calculate disease prevalence at each time step,
-with the default function of \code{\link{prevalence.net}}.}
+\item{prevalence.FUN}{Module to calculate disease prevalence at each time
+step, with the default function of \code{\link{prevalence.net}}.}
 
 \item{verbose.FUN}{Module to print simulation progress to screen, with the
 default function of \code{\link{verbose.net}}.}
@@ -105,24 +106,25 @@ default function of \code{\link{verbose.net}}.}
 order in which they should be evaluated within each time step. If
 \code{NULL}, the modules will be evaluated as follows: first any
 new modules supplied through \code{...} in the order in which they are
-listed, then the built-in modules in their order of the function listing.
-The \code{initialize.FUN} will always be run first and the
+listed, then the built-in modules in their order of the function
+listing. The \code{initialize.FUN} will always be run first and the
 \code{verbose.FUN} always last.}
 
 \item{set.control.ergm}{Control arguments passed to simulate.ergm. See the
-help file for \code{\link{netdx}} for details and examples on specifying
-this parameter.}
+help file for \code{\link{netdx}} for details and examples on
+specifying this parameter.}
 
-\item{set.control.stergm}{Control arguments passed to simulate.stergm. See the
-help file for \code{\link{netdx}} for details and examples on specifying
-this parameter.}
+\item{set.control.stergm}{Control arguments passed to simulate.stergm. See
+the help file for \code{\link{netdx}} for details and examples on
+specifying this parameter.}
 
 \item{save.nwstats}{If \code{TRUE}, save network statistics in a data frame.
 The statistics to be saved are specified in the \code{nwstats.formula}
 argument.}
 
 \item{nwstats.formula}{A right-hand sided ERGM formula that includes network
-statistics of interest, with the default to the formation formula terms.}
+statistics of interest, with the default to the formation formula
+terms.}
 
 \item{save.other}{A vector of elements on the \code{dat} master data list
 to save out after each simulation. One example for base models is
@@ -138,8 +140,8 @@ is to print progress after each time step.}
 \item{skip.check}{If \code{TRUE}, skips the default error checking for the
 structure and consistency of the parameter values, initial conditions,
 and control settings before running base epidemic models. Setting
-this to \code{FALSE} is recommended when running models with new modules
-specified.}
+this to \code{FALSE} is recommended when running models with new
+modules specified.}
 
 \item{raw.output}{If \code{TRUE}, \code{netsim} will output a list of nestsim
 data (one per simulation) instead of a formatted \code{netsim} object.}
@@ -191,11 +193,11 @@ demographics, and other processes. Core modules are those listed in the
 the simulation. The default infection module, for example, is contained in
 the \code{\link{infection.net}} function.
 
-For original models, one may substitute replacement module functions for any of
-the default functions. New modules may be added to the workflow at each time
-step by passing a module function via the \code{...} argument. Consult the
-\href{http://epimodel.org/tut.html}{New Network Models} tutorials. One may
-remove existing modules, such as \code{arrivals.FUN}, from the workflow
+For original models, one may substitute replacement module functions for any
+of the default functions. New modules may be added to the workflow at each
+time step by passing a module function via the \code{...} argument. Consult
+the \href{http://epimodel.org/tut.html}{New Network Models} tutorials. One
+may remove existing modules, such as \code{arrivals.FUN}, from the workflow
 by setting the parameter value for that argument to \code{NULL}.
 }
 
