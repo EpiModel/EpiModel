@@ -27,6 +27,7 @@ control.net(
   set.control.ergm,
   set.control.stergm,
   save.nwstats = TRUE,
+  save.transmat = TRUE,
   nwstats.formula = "formation",
   save.other,
   verbose = TRUE,
@@ -120,6 +121,9 @@ this parameter.}
 \item{save.nwstats}{If \code{TRUE}, save network statistics in a data frame.
 The statistics to be saved are specified in the \code{nwstats.formula}
 argument.}
+
+\item{save.transmat}{If \code{TRUE}, complete transmission matrix is saved at
+simulation end. Default of \code{TRUE}.}
 
 \item{nwstats.formula}{A right-hand sided ERGM formula that includes network
 statistics of interest, with the default to the formation formula terms.}
