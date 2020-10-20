@@ -401,14 +401,14 @@ test_that("tergmLite: Expected Output", {
   param <- param.net(inf.prob = 0.1, act.rate = 5)
   init <- init.net(i.num = 10)
   control <- control.net(type = "SI", nsteps = 20, nsims = 1, ncores = 1,
-                         tergmLite = FALSE)
+                         tergmLite = FALSE, save.transmat = TRUE)
 
   sim <- netsim(est, param, init, control)
 
   expect_true(length(sim$stats$transmat) == 1)
 
   control <- control.net(type = "SI", nsteps = 20, nsims = 1, ncores = 1,
-                         tergmLite = TRUE)
+                         tergmLite = TRUE, save.transmat = FALSE)
 
   sim <- netsim(est, param, init, control)
 
