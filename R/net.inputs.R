@@ -342,6 +342,8 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #' @param save.nwstats If \code{TRUE}, save network statistics in a data frame.
 #'        The statistics to be saved are specified in the \code{nwstats.formula}
 #'        argument.
+#' @param save.transmat If \code{TRUE}, complete transmission matrix is saved at
+#'        simulation end. Default of \code{TRUE}.
 #' @param nwstats.formula A right-hand sided ERGM formula that includes network
 #'        statistics of interest, with the default to the formation formula terms.
 #' @param save.other A vector of elements on the \code{dat} master data list
@@ -436,6 +438,7 @@ control.net <- function(type,
                         set.control.ergm,
                         set.control.stergm,
                         save.nwstats = TRUE,
+                        save.transmat = TRUE,
                         nwstats.formula = "formation",
                         save.other,
                         verbose = TRUE,
