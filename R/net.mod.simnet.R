@@ -101,7 +101,7 @@ resim_nets <- function(dat, at) {
       # Update nwstats df
       if (save.nwstats == TRUE) {
         dat$stats$nwstats <- rbind(dat$stats$nwstats,
-                                   tail(attributes(dat$nw[[1]])$stats, 1)[,])
+                                   tail(attributes(dat$nw[[1]])$stats, 1)[, ])
       }
     }
   }
@@ -112,7 +112,8 @@ resim_nets <- function(dat, at) {
     dat$el[[1]] <- tergmLite::simulate_network(p = dat$p[[1]],
                                                el = dat$el[[1]],
                                                coef.form = nwparam$coef.form,
-                                               coef.diss = nwparam$coef.diss$coef.adj,
+                                               coef.diss =
+                                                 nwparam$coef.diss$coef.adj,
                                                save.changes = TRUE)
   }
 

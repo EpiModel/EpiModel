@@ -76,7 +76,7 @@ initialize.net <- function(x, param, init, control, s) {
 
 
     # Summary Stats -----------------------------------------------------------
-    dat <- do.call(control[["prevalence.FUN"]],list(dat, at = 1))
+    dat <- do.call(control[["prevalence.FUN"]], list(dat, at = 1))
 
 
     # Restart/Reinit Simulations ----------------------------------------------
@@ -103,29 +103,29 @@ initialize.net <- function(x, param, init, control, s) {
 #' @description This function sets the initial disease status on the
 #'              network given the specified initial conditions.
 #'
-#' @param dat Master list object containing a \code{networkDynamic} object and other
-#'        initialization information passed from \code{\link{netsim}}.
+#' @param dat Master list object containing a \code{networkDynamic} object and
+#'        other initialization information passed from \code{\link{netsim}}.
 #'
 #' @details
 #' This internal function sets, either randomly or deterministically, the nodes
 #' that are infected at the starting time of network simulations, \eqn{t_1}.
 #' If the number to be initially infected is passed, this function may set the
 #' initial number infected based on the number specified, either as a a set of
-#' random draws from a binomial distribution or as the exact number specified. In
-#' either case, the specific nodes infected are a random sample from the network.
-#' In contrast, a set of specific nodes may be infected by passing the vector to
-#' \code{\link{netsim}}.
+#' random draws from a binomial distribution or as the exact number specified.
+#' In either case, the specific nodes infected are a random sample from the
+#' network. In contrast, a set of specific nodes may be infected by passing the
+#' vector to \code{\link{netsim}}.
 #'
 #' This module sets the time of infection for those nodes set infected
 #' at the starting time of network simulations, \eqn{t_1}. For vital
 #' dynamics models, the infection time for those nodes is a random draw from an
-#' exponential distribution with the rate parameter defined by the \code{di.rate}
-#' argument. For models without vital dynamics, the infection time is a random
-#' draw from a uniform distribution of integers with a minimum of 1 and a maximum
-#' of the number of time steps in the model. In both cases, to set the infection
-#' times to be in the past, these times are multiplied by -1, and 2 is added to
-#' allow for possible infection times up until step 2, when the disease simulation
-#' time loop starts.
+#' exponential distribution with the rate parameter defined by the
+#' \code{di.rate} argument. For models without vital dynamics, the infection
+#' time is a random draw from a uniform distribution of integers with a minimum
+#' of 1 and a maximum of the number of time steps in the model. In both cases,
+#' to set the infection times to be in the past, these times are multiplied by
+#' -1, and 2 is added to allow for possible infection times up until step 2,
+#' when the disease simulation time loop starts.
 #'
 #' @seealso This is an initialization module for \code{\link{netsim}}.
 #'
@@ -182,7 +182,8 @@ init_status.net <- function(dat) {
       if (type == "SIR"  && !is.null(type)) {
         status[sample(which(group == 1 & status == "s"), size = r.num)] <- "r"
         if (groups == 2) {
-          status[sample(which(group == 2 & status == "s"), size = r.num.g2)] <- "r"
+          status[sample(which(group == 2 & status == "s"),
+                        size = r.num.g2)] <- "r"
         }
       }
     }
@@ -211,27 +212,31 @@ init_status.net <- function(dat) {
   if (!is.null(type)) {
     idsInf <- which(status == "i")
     infTime <- rep(NA, length(status))
-    infTime.vector <- get_init(dat, "infTime.vector", override.null.error = TRUE)
+    infTime.vector <- get_init(dat, "infTime.vector",
+                               override.null.error = TRUE)
 
     if (!is.null(infTime.vector)) {
       infTime <- infTime.vector
     } else {
-      # If vital dynamics, infTime is a geometric draw over the duration of infection
+      # If vital dynamics, infTime is a geometric draw over the duration of
+      # infection
       if (vital == TRUE && di.rate > 0) {
         if (type == "SI") {
           infTime[idsInf] <- -rgeom(n = length(idsInf), prob = di.rate) + 2
         } else {
           infTime[idsInf] <- -rgeom(n = length(idsInf),
                                     prob = di.rate +
-                                      (1 - di.rate)*mean(rec.rate)) + 2
+                                      (1 - di.rate) * mean(rec.rate)) + 2
         }
       } else {
         if (type == "SI" || mean(rec.rate) == 0) {
-          # if no recovery, infTime a uniform draw over the number of sim time steps
+          # if no recovery, infTime a uniform draw over the number of sim time
+          # steps
           infTime[idsInf] <- ssample(1:(-nsteps + 2),
                                      length(idsInf), replace = TRUE)
         } else {
-          infTime[idsInf] <- -rgeom(n = length(idsInf), prob = mean(rec.rate)) + 2
+          infTime[idsInf] <- -rgeom(n = length(idsInf),
+                                    prob = mean(rec.rate)) + 2
         }
       }
     }

@@ -16,12 +16,13 @@
 #'
 #' For base models, the model specification will be chosen as a result of
 #' the model parameters entered here and the control settings in
-#' \code{\link{control.icm}}. One-group and two-group models are available, where
-#' the former assumes a homogeneous mixing in the population and the latter
-#' assumes a purely heterogeneous mixing between two distinct partitions in the
-#' population (e.g., men and women). Specifying any group two parameters (those
-#' with a \code{.g2}) implies the simulation of a two-group model. All the
-#' parameters for a desired model type must be specified, even if they are zero.
+#' \code{\link{control.icm}}. One-group and two-group models are available,
+#' where the former assumes a homogeneous mixing in the population and the
+#' latter assumes a purely heterogeneous mixing between two distinct partitions
+#' in the population (e.g., men and women). Specifying any group two parameters
+#' (those with a \code{.g2}) implies the simulation of a two-group model. All
+#' the parameters for a desired model type must be specified, even if they are
+#' zero.
 #'
 #' @section Act Balancing:
 #' In two-group models, a balance between the number of acts for group 1 members
@@ -35,13 +36,14 @@
 #'
 #' @section New Modules:
 #' To build original models outside of the base models, new process modules
-#' may be constructed to replace the existing modules or to supplement the existing
-#' set. These are passed into the control settings in \code{\link{control.icm}}.
-#' New modules may use either the existing model parameters named here, an
-#' original set of parameters, or a combination of both. The \code{...} allows
-#' the user to pass an arbitrary set of original model parameters into
-#' \code{param.icm}. Whereas there are strict checks with default modules for
-#' parameter validity, these checks are the user's responsibility with new modules.
+#' may be constructed to replace the existing modules or to supplement the
+#' existing set. These are passed into the control settings in
+#' \code{\link{control.icm}}. New modules may use either the existing model
+#' parameters named here, an original set of parameters, or a combination of
+#' both. The \code{...} allows the user to pass an arbitrary set of original
+#' model parameters into \code{param.icm}. Whereas there are strict checks with
+#' default modules for parameter validity, these checks are the user's
+#' responsibility with new modules.
 #'
 #' @seealso Use \code{\link{init.icm}} to specify the initial conditions and
 #'          \code{\link{control.icm}} to specify the control settings. Run the
@@ -75,13 +77,13 @@ param.icm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
 
   if ("b.rate" %in% names.dot.args) {
     p$a.rate <- dot.args$b.rate
-    message("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate to a.rate. ",
-            "See documentation for details.")
+    message("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate to
+            a.rate. ", "See documentation for details.")
   }
   if ("b.rate.g2" %in% names.dot.args) {
     p$a.rate.g2 <- dot.args$b.rate.g2
-    message("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate.g2 to a.rate.g2. ",
-            "See documentation for details.")
+    message("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate.g2 to
+            a.rate.g2. ", "See documentation for details.")
   }
 
   ## Defaults and checks
@@ -188,12 +190,12 @@ init.icm <- function(s.num, i.num, r.num,
 #'        function of \code{\link{infection.icm}}.
 #' @param recovery.FUN Module to simulate disease recovery, with the default
 #'        function of \code{\link{recovery.icm}}.
-#' @param departures.FUN Module to simulate departures or exits, with the default
-#'        function of \code{\link{departures.icm}}.
+#' @param departures.FUN Module to simulate departures or exits, with the
+#'        default function of \code{\link{departures.icm}}.
 #' @param arrivals.FUN Module to simulate arrivals or entries, with the default
 #'        function of \code{\link{arrivals.icm}}.
-#' @param prevalence.FUN Module to calculate disease prevalence at each time step,
-#'        with the default function of \code{\link{prevalence.icm}}.
+#' @param prevalence.FUN Module to calculate disease prevalence at each time
+#'        step, with the default function of \code{\link{prevalence.icm}}.
 #' @param verbose If \code{TRUE}, print model progress to the console.
 #' @param verbose.int Time step interval for printing progress to console, where
 #'        0 (the default) prints completion status of entire simulation and
@@ -202,8 +204,8 @@ init.icm <- function(s.num, i.num, r.num,
 #' @param skip.check If \code{TRUE}, skips the default error checking for the
 #'        structure and consistency of the parameter values, initial conditions,
 #'        and control settings before running base epidemic models. Setting
-#'        this to \code{FALSE} is recommended when running models with new modules
-#'        specified.
+#'        this to \code{FALSE} is recommended when running models with new
+#'        modules specified.
 #' @param ... Additional control settings passed to model.
 #'
 #' @details
@@ -217,15 +219,15 @@ init.icm <- function(s.num, i.num, r.num,
 #'
 #' @section New Modules:
 #' Base ICM models use a set of module functions that specify
-#' how the individual agents in the population are subjected to infection, recovery,
-#' demographics, and other processes. Core modules are those listed in the
-#' \code{.FUN} arguments. For each module, there is a default function used in
-#' the simulation. The default infection module, for example, is contained in
+#' how the individual agents in the population are subjected to infection,
+#' recovery, demographics, and other processes. Core modules are those listed in
+#' the \code{.FUN} arguments. For each module, there is a default function used
+#' in the simulation. The default infection module, for example, is contained in
 #' the \code{\link{infection.icm}} function.
 #'
-#' For original models, one may substitute replacement module functions for any of
-#' the default functions. New modules may be added to the workflow at each time
-#' step by passing a module function via the \code{...} argument.
+#' For original models, one may substitute replacement module functions for any
+#' of the default functions. New modules may be added to the workflow at each
+#' time step by passing a module function via the \code{...} argument.
 #'
 #' @seealso Use \code{\link{param.icm}} to specify model parameters and
 #'          \code{\link{init.icm}} to specify the initial conditions. Run the
@@ -262,12 +264,14 @@ control.icm <- function(type, nsteps, nsims = 1,
   if ("births.FUN" %in% names(dot.args)) {
     p$arrivals.FUN <- dot.args$births.FUN
     p$births.FUN <- dot.args$births.FUN <- NULL
-    message("EpiModel 1.7.0 onward renamed the birth function births.FUN to arrivals.FUN. See documentation for details.")
+    message("EpiModel 1.7.0 onward renamed the birth function births.FUN to
+            arrivals.FUN. See documentation for details.")
   }
   if ("deaths.FUN" %in% names(dot.args)) {
     p$departures.FUN <- dot.args$deaths.FUN
     p$deaths.FUN <- dot.args$deaths.FUN <- NULL
-    message("EpiModel 1.7.0 onward renamed the death function deaths.FUN to departures.FUN. See documentation for details.")
+    message("EpiModel 1.7.0 onward renamed the death function deaths.FUN to
+            departures.FUN. See documentation for details.")
   }
 
 
@@ -377,28 +381,28 @@ crosscheck.icm <- function(param, init, control) {
 
   ## Assign modules based on group parameter
   if (!is.null(control$type)) {
-    def <- grep(".FUN",names(control))
+    def <- grep(".FUN", names(control))
     args <- names(control)[def]
 
     if (param$groups == 1) {
       for (i in 1:length(args)) {
         if (is.null(control[[args[i]]])) {
-          temp <- get(gsub(".FUN",".icm",args[i]))
+          temp <- get(gsub(".FUN", ".icm", args[i]))
           control[[args[i]]] <- temp
         }
       }
-      message("Default modules set to appropriate two-group functions. See documentation ",
-              "for details.")
+      message("Default modules set to appropriate two-group functions.
+              See documentation ", "for details.")
     }
     else {
       for (i in 1:length(args)) {
         if (is.null(control[[args[i]]])) {
-          temp <- get(gsub(".FUN",".icm.bip",args[i]))
+          temp <- get(gsub(".FUN", ".icm.bip", args[i]))
           control[[args[i]]] <- temp
         }
       }
-      message("Default modules set to appropriate two-group functions. See documentation ",
-              "for details.")
+      message("Default modules set to appropriate two-group functions.
+              See documentation ", "for details.")
     }
   }
 

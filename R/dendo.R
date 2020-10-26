@@ -1,31 +1,33 @@
 
 #' @title Convert transmat infection tree into a phylo object
 #'
-#' @description Converts the edgelist matrix in the \code{transmat} object into a \code{phylo}
-#'              object by doing the required reordering and labeling.
+#' @description Converts the edgelist matrix in the \code{transmat} object into
+#'              a \code{phylo} object by doing the required reordering and
+#'              labeling.
 #'
 #' @param x An object of class \code{"transmat"}, the output from
 #'        \code{\link{get_transmat}}.
 #' @param collapse.singles logical, DEPRECATED
-#' @param vertex.exit.times  optional numeric vector providing the time of departure
-#'        of vertices, to be used to scale the lengths of branches reaching to
-#'        the tips. Index position on vector corresponds to network id. NA indicates
-#'        no departure, so branch will extend to the end of the tree.
+#' @param vertex.exit.times  optional numeric vector providing the time of
+#'        departure of vertices, to be used to scale the lengths of branches
+#'        reaching to the tips. Index position on vector corresponds to network
+#'        id. NA indicates no departure, so branch will extend to the end of the
+#'        tree.
 #' @param ...  further arguments (unused)
 #'
 #' @details
-#' Converts a \code{\link{transmat}} object containing information about the history
-#' of a simulated infection into a \code{\link{phylo}} object representation
-#' suitable for plotting as a tree with \code{\link[ape]{plot.phylo}}. Each
-#' infection event becomes a 'node' (horizontal branch) in the resulting phylo tree,
-#' and each network vertex becomes a 'tip' of the tree. The infection events are
-#' labeled with the vertex id of the infector to make it possible to trace the
-#' path of infection.
+#' Converts a \code{\link{transmat}} object containing information about the
+#' history of a simulated infection into a \code{\link{phylo}} object
+#' representation suitable for plotting as a tree with
+#' \code{\link[ape]{plot.phylo}}. Each infection event becomes a 'node'
+#' (horizontal branch) in the resulting phylo tree, and each network vertex
+#' becomes a 'tip' of the tree. The infection events are labeled with the vertex
+#' id of the infector to make it possible to trace the path of infection.
 #'
-#' The infection timing information is included to position the phylo-nodes, with
-#' the lines to the tips drawn to the max time value +1 (unless
-#' \code{vertex.exit.times} are passed in it effectively assumes all vertices are
-#' active/alive until the end of the simulation).
+#' The infection timing information is included to position the phylo-nodes,
+#' with the lines to the tips drawn to the max time value +1 (unless
+#' \code{vertex.exit.times} are passed in it effectively assumes all vertices
+#' are active/alive until the end of the simulation).
 #'
 #' If the transmat contains multiple infection seeds (there are multiple trees
 #' with seperate root nodes) it will return a list of class 'multiPhylo', each
@@ -33,7 +35,8 @@
 #'
 #' Note that in EpiModel versions <= 1.2.4, the phylo tree was constructed
 #' differently, translating network vertices to both phylo-nodes and tips and
-#' requiring 'collapse.singles' to prune it to an appropriate branching structure.
+#' requiring 'collapse.singles' to prune it to an appropriate branching
+#' structure.
 #'
 #' @importFrom ape as.phylo
 #' @export as.phylo.transmat
@@ -82,7 +85,8 @@ as.phylo.transmat <- function(x,
   # find roots (infectors that never appear as sus)
   v <- setdiff(unique(tm$inf), unique(tm$sus))
   if (length(v) > 1) {
-    message("found multiple trees, returning a list of ", length(v), " phylo objects")
+    message("found multiple trees, returning a list of ", length(v),
+            "phylo objects")
     # need to extract the portions of the edgelist and call seperately
     sub_phylos <- lapply(v, function(v_sub) {
       # walk down the list to find elements below v_sub
@@ -90,7 +94,7 @@ as.phylo.transmat <- function(x,
       toFind <- v_sub
       while (length(toFind) > 0) {
         i <- toFind[1]
-        sub_rows <- unique(c(sub_rows,which(tm$inf == i)))
+        sub_rows <- unique(c(sub_rows, which(tm$inf == i)))
         toFind <- c(toFind[-1], tm$sus[which(tm$inf == i)])
       }
       # call as.phylo on the subset of the edgelist
@@ -103,13 +107,14 @@ as.phylo.transmat <- function(x,
     return(sub_phylos)
   }
 
-  el <- cbind(tm$inf,tm$sus)
+  el <- cbind(tm$inf, tm$sus)
   origNodes <- unique(as.vector(el))
   # if vertex.exit.times included check that it is consistant
   if (!is.null(vertex.exit.times)) {
     if (length(origNodes) > length(vertex.exit.times) |
         any(origNodes > length(vertex.exit.times))) {
-      stop("Vertex ids in edgelist imply a larger network size than vertex.exit.times")
+      stop("Vertex ids in edgelist imply a larger network size than
+           vertex.exit.times")
     }
   }
   # translate ids in el to sequential integers starting from one
@@ -123,12 +128,12 @@ as.phylo.transmat <- function(x,
     maxTime <- max(maxTime, vertex.exit.times, na.rm = TRUE)
   }
   # create new ids for phyloNodes
-  phyloNodes <- seq(from = maxTip + 1,length.out = length(origNodes) - 1)
+  phyloNodes <- seq(from = maxTip + 1, length.out = length(origNodes) - 1)
   Nnode <- length(phyloNodes)
   # create labels for each phylo node based on infector id
   phylo.label <- tm$inf
   # this is an alternate label form like i_j
-  #phylo.label <- sapply(1:length(phyloNodes),function(r){
+  #phylo.label <- sapply(1:length(phyloNodes),function(r) {
   #  paste(tm[r,"inf"],tm[r,"sus"],sep="_")
   #})
 
@@ -139,7 +144,8 @@ as.phylo.transmat <- function(x,
   if (!is.null(vertex.exit.times)) {
     # replace any NA values with max time
     vertex.exit.times[is.na(vertex.exit.times)] <- maxTime + 1
-    # copy the vertex exit times into the appropriate positions in the durations array
+    # copy the vertex exit times into the appropriate positions in the
+    # durations array
     durations[seq_len(maxTip)] <- vertex.exit.times[origNodes]
     # reorder the vertex.exit times to match new ids of tips
     tipExitTimes <- vertex.exit.times[origNodes]
@@ -156,8 +162,8 @@ as.phylo.transmat <- function(x,
   phyloEl <- rbind(cbind(phyloNodes[1], el[1, 1]),
                    cbind(phyloNodes[1], el[1, 2]))
 
-  durations[1] <- tipExitTimes[el[1,1]] - tm[["at"]][1]
-  durations[2] <- tipExitTimes[el[1,2]] - tm[["at"]][1]
+  durations[1] <- tipExitTimes[el[1, 1]] - tm[["at"]][1]
+  durations[2] <- tipExitTimes[el[1, 2]] - tm[["at"]][1]
 
   phyloN <- 1
   # loop over remaining rows
@@ -172,15 +178,16 @@ as.phylo.transmat <- function(x,
       # link the new phylo node to the infector
       phyloEl <- rbind(phyloEl, cbind(phyloNodes[phyloN + 1], infector))
       # link the new phylo node to the infectee (tip)
-      phyloEl <- rbind(phyloEl, cbind(phyloNodes[phyloN + 1],el[r, 2]))
+      phyloEl <- rbind(phyloEl, cbind(phyloNodes[phyloN + 1], el[r, 2]))
 
       # update the timing on the replaced row that linked to tip
-      durations[phyNRow] <- durations[phyNRow] - (tipExitTimes[infector] - tm[["at"]][r])
+      durations[phyNRow] <-
+        durations[phyNRow] - (tipExitTimes[infector] - tm[["at"]][r])
       # add timings for new rows equal to remaining time
       # infector
       durations[nrow(phyloEl) - 1] <- tipExitTimes[infector] - tm[["at"]][r]
       # infectee
-      durations[nrow(phyloEl)] <- tipExitTimes[el[r,2]] - tm[["at"]][r]
+      durations[nrow(phyloEl)] <- tipExitTimes[el[r, 2]] - tm[["at"]][r]
 
 
       # increment the phylo node counter
@@ -204,10 +211,10 @@ as.phylo.transmat <- function(x,
 #' @title Converts transmat infection tree into a network object
 #'
 #' @description Converts the edges of the infection tree described in the
-#'              \code{\link{transmat}} object into a \code{\link{network}} object,
-#'              copying in appropriate edge attributes for 'at', 'infDur', 'transProb',
-#'              'actRate', and 'finalProb' and constructing a vertex attribute
-#'              for 'at'.
+#'              \code{\link{transmat}} object into a \code{\link{network}}
+#'              object, copying in appropriate edge attributes for 'at',
+#'              'infDur', 'transProb', 'actRate', and 'finalProb' and
+#'              constructing a vertex attribute for 'at'.
 #'
 #' @param x an object of class \code{transmat} to be converted into a network
 #'        object
@@ -216,13 +223,13 @@ as.phylo.transmat <- function(x,
 #' @method as.network transmat
 #' @export
 #'
-as.network.transmat <- function(x, ...){
+as.network.transmat <- function(x, ...) {
   tm <- x
   ids <- unique(c(tm$sus, tm$inf))
 
   # remap the ids to a new set
-  tm$sus <- match(tm$sus,ids)
-  tm$inf <- match(tm$inf,ids)
+  tm$sus <- match(tm$sus, ids)
+  tm$inf <- match(tm$inf, ids)
   net <- network(cbind(tm$inf, tm$sus), matrix.type = "edgelist")
   network.vertex.names(net) <- ids
 
@@ -291,8 +298,9 @@ tm_gv_tree_plot <- function(tm, ...) {
 
   # calculate coords for transmission tree
   treeCoords <- ndtv::network.layout.animate.Graphviz(net,
-                                              layout.par = list(gv.engine = "dot",
-                                                                gv.args = "-Granksep=2"))
+                                              layout.par =
+                                                list(gv.engine = "dot",
+                                                     gv.args = "-Granksep=2"))
   treeCoords <- ndtv::layout.normalize(treeCoords, keep.aspect.ratio = FALSE)
 
   # peek at it
@@ -313,7 +321,6 @@ is.transmat <- function(x) {
 
 # this is a wrapper to load the namespace and call the transmissionTimeline
 tm_transsmissionTree_plot <- function(x, ...) {
-  requireNamespace('ndtv')
+  requireNamespace("ndtv")
   ndtv::transmissionTimeline(x, ...)
 }
-

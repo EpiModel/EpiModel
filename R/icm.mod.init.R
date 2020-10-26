@@ -2,7 +2,8 @@
 #' @title Initialization: icm Module
 #'
 #' @description This function initializes the master \code{dat} object on which
-#'              data are stored, and simulates disease status and other attributes.
+#'              data are stored, and simulates disease status and other
+#'              attributes.
 #'
 #' @param param An \code{EpiModel} object of class \code{\link{param.icm}}.
 #' @param init An \code{EpiModel} object of class \code{\link{init.icm}}.
@@ -40,7 +41,7 @@ initialize.icm <- function(param, init, control) {
 
 
   # Summary out list
-  dat <- do.call(control[["prevalence.FUN"]],list(dat, at = 1))
+  dat <- do.call(control[["prevalence.FUN"]], list(dat, at = 1))
 
   return(dat)
 }
