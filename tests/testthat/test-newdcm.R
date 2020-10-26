@@ -14,17 +14,17 @@ test_that("New DCMs Example 1", {
       # Intervention start time: if time > start,
       #   then multiply lambda by relative hazard
       if (t < start.time) {
-        lambda <- inf.prob*act.rate*i.num/num
+        lambda <- inf.prob * act.rate * i.num / num
       } else {
-        lambda <- (inf.prob*act.rate*i.num/num) * rel.haz
+        lambda <- (inf.prob * act.rate * i.num / num) * rel.haz
       }
 
       ## Flows
       si.flow <- lambda * s.num
 
       ## Differential Equations
-      dS <- -lambda*s.num
-      dI <- lambda*s.num
+      dS <- -lambda * s.num
+      dI <- lambda * s.num
 
       ## Output
       list(c(dS, dI, si.flow),
@@ -63,18 +63,18 @@ test_that("New DCMs Example 2", {
 
       # Contact rates for high specified as a function of
       #   mean and low rates
-      c.high <- (c.mean*num - c.low*l.num) / h.num
+      c.high <- (c.mean * num - c.low * l.num) / h.num
 
       # Mixing matrix calculations based on variable Q statistic
-      g.hh <- ((c.high*h.num) + (Q*c.low*l.num)) /
-        ((c.high*h.num) + (c.low*l.num))
+      g.hh <- ((c.high * h.num) + (Q * c.low * l.num)) /
+        ((c.high * h.num) + (c.low * l.num))
       g.lh <- 1 - g.hh
-      g.hl <- (1 - g.hh) * ((c.high*h.num) / (c.low*l.num))
+      g.hl <- (1 - g.hh) * ((c.high * h.num) / (c.low * l.num))
       g.ll <- 1 - g.hl
 
       # Probability that contact is infected based on mixing probabilities
-      p.high <- (g.hh*ih.num/h.num) + (g.lh*il.num/l.num)
-      p.low <- (g.ll*il.num/l.num) + (g.hl*ih.num/h.num)
+      p.high <- (g.hh * ih.num / h.num) + (g.lh * il.num / l.num)
+      p.low <- (g.ll * il.num / l.num) + (g.hl * ih.num / h.num)
 
       # Force of infection for high and low groups
       lambda.high <- rho * c.high * p.high
@@ -82,11 +82,11 @@ test_that("New DCMs Example 2", {
 
 
       ## Differential Equations ##
-      dS.high <- -lambda.high*sh.num + nu*ih.num
-      dI.high <- lambda.high*sh.num - nu*ih.num
+      dS.high <- -lambda.high * sh.num + nu * ih.num
+      dI.high <- lambda.high * sh.num - nu * ih.num
 
-      dS.low <- -lambda.low*sl.num + nu*il.num
-      dI.low <- lambda.low*sl.num - nu*il.num
+      dS.low <- -lambda.low * sl.num + nu * il.num
+      dI.low <- lambda.low * sl.num - nu * il.num
 
 
       ## Output ##
@@ -103,9 +103,9 @@ test_that("New DCMs Example 2", {
                      rho = 0.75,
                      nu = 6,
                      Q = c(-0.45, 0.5, 1))
-  init <- init.dcm(sh.num = 2e7*0.02,
+  init <- init.dcm(sh.num = 2e7 * 0.02,
                    ih.num = 1,
-                   sl.num = 2e7*0.98,
+                   sl.num = 2e7 * 0.98,
                    il.num = 1)
   control <- control.dcm(nsteps = 6, dt = 0.02, new.mod = Qmod, verbose = FALSE)
 
@@ -120,10 +120,10 @@ test_that("DCM inital conditions ordering correct", {
   SEIR <- function(t, t0, parms) {
     with(as.list(c(t0, parms)), {
       num <- s.num + e.num + i.num + r.num
-      lambda <- inf.prob * act.rate * i.num/num
-      se.flow = lambda * s.num
-      ei.flow = sx.rate * e.num
-      ir.flow = rec.rate * i.num
+      lambda <- inf.prob * act.rate * i.num / num
+      se.flow <-  lambda * s.num
+      ei.flow <-  sx.rate * e.num
+      ir.flow <-  rec.rate * i.num
       dS <- -lambda * s.num
       dE <- lambda * s.num - sx.rate * e.num
       dI <- sx.rate * e.num - rec.rate * i.num
@@ -138,7 +138,8 @@ test_that("DCM inital conditions ordering correct", {
   expect_identical(names(init), c("s.num", "e.num", "i.num", "r.num",
                                   "se.flow", "ei.flow", "ir.flow"))
 
-  param <- param.dcm(inf.prob = 0.2, act.rate = 0.5, sx.rate = 0.1, rec.rate = 0.05)
+  param <- param.dcm(inf.prob = 0.2, act.rate = 0.5, sx.rate = 0.1,
+                     rec.rate = 0.05)
   control <- control.dcm(nsteps = 10, dt = 1, new.mod = SEIR)
 
   mod <- dcm(param, init, control)
@@ -158,9 +159,9 @@ test_that("Non-sensitivity parameter vector", {
       num <- s.num + i.num
 
       if (t < start.time) {
-        lambda <- inf.prob[1]*act.rate*i.num/num
+        lambda <- inf.prob[1] * act.rate * i.num / num
       } else {
-        lambda <- inf.prob[2]*act.rate*i.num/num
+        lambda <- inf.prob[2] * act.rate * i.num / num
       }
 
       ## Flows

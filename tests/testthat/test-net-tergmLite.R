@@ -87,7 +87,7 @@ control <- control.net(type = "SIR", nsteps = 10, nsims = 1, ncores = 1,
                        resimulate.network = FALSE, tergmLite = TRUE)
 
 sim <- netsim(est, param, init, control)
-plot(sim, mean.col = c(1,2,3,1,2,3))
+plot(sim, mean.col = c(1, 2, 3, 1, 2, 3))
 summary(sim, at = 10)
 
 })
@@ -108,7 +108,8 @@ param <- param.net(inf.prob = 0.4, act.rate = 1,
                    a.rate = 0.005, ds.rate = 0.005, di.rate = 0.005)
 init <- init.net(i.num = 10)
 control <- control.net(type = "SI", nsteps = 10, nsims = 1, ncores = 1,
-                       resimulate.network = TRUE, tergmLite = TRUE, verbose = TRUE)
+                       resimulate.network = TRUE, tergmLite = TRUE,
+                       verbose = TRUE)
 
 sim <- netsim(est, param, init, control)
 plot(sim, qnts = FALSE, sim.lines = TRUE)
@@ -150,7 +151,8 @@ nw <- network_initialize(n = num1 + num2)
 nw <- set_vertex_attribute(nw, "group", rep(1:2, each = num1))
 formation <- ~edges + nodematch("group")
 target.stats <- c(400, 0)
-coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 25, d.rate = 0.005)
+coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 25,
+                               d.rate = 0.005)
 est <- netest(nw, formation, target.stats, coef.diss)
 
 # Parameters
@@ -220,7 +222,8 @@ test_that("tergmLite: 1G, Closed", {
   # SIS
   param <- param.net(inf.prob = 0.5, act.rate = 1, rec.rate = 0.02)
   init <- init.net(i.num = 10)
-  control <- control.net(type = "SIS", nsteps = 10, nsims = 1, ncores = 1, tergmLite = FALSE)
+  control <- control.net(type = "SIS", nsteps = 10, nsims = 1, ncores = 1,
+                         tergmLite = FALSE)
 
   sim <- netsim(est, param, init, control)
   plot(sim, qnts = 1)
@@ -230,7 +233,8 @@ test_that("tergmLite: 1G, Closed", {
   # SIR
   param <- param.net(inf.prob = 0.5, act.rate = 1, rec.rate = 0.02)
   init <- init.net(i.num = 10, r.num = 5)
-  control <- control.net(type = "SIR", nsteps = 10, nsims = 1, ncores = 1, tergmLite = FALSE)
+  control <- control.net(type = "SIR", nsteps = 10, nsims = 1, ncores = 1,
+                         tergmLite = FALSE)
 
   sim <- netsim(est, param, init, control)
   plot(sim, qnts = 1)
@@ -278,7 +282,7 @@ test_that("tergmLite: 2G, Closed", {
                          resimulate.network = FALSE, tergmLite = TRUE)
 
   sim <- netsim(est, param, init, control)
-  plot(sim, mean.col = c(1,2,3,1,2,3))
+  plot(sim, mean.col = c(1, 2, 3, 1, 2, 3))
   summary(sim, at = 10)
 
 })
@@ -299,7 +303,8 @@ test_that("tergmLite: 1G, Open", {
                      a.rate = 0.005, ds.rate = 0.005, di.rate = 0.005)
   init <- init.net(i.num = 10)
   control <- control.net(type = "SI", nsteps = 10, nsims = 1, ncores = 1,
-                         resimulate.network = TRUE, tergmLite = TRUE, verbose = TRUE)
+                         resimulate.network = TRUE, tergmLite = TRUE,
+                         verbose = TRUE)
 
   sim <- netsim(est, param, init, control)
   plot(sim, qnts = FALSE, sim.lines = TRUE)
@@ -341,7 +346,8 @@ test_that("tergmLite: 2G, Open", {
   nw <- set_vertex_attribute(nw, "group", rep(1:2, each = num1))
   formation <- ~edges + nodematch("group")
   target.stats <- c(400, 0)
-  coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 25, d.rate = 0.005)
+  coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 25,
+                                 d.rate = 0.005)
   est <- netest(nw, formation, target.stats, coef.diss)
 
   # Parameters

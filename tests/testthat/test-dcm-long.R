@@ -152,7 +152,8 @@ test_that("SI, 2G, OP: 1 run", {
   param <- param.dcm(inf.prob = 0.2,
                      act.rate = 0.25, inf.prob.g2 = 0.1, balance = "g1",
                      a.rate = 1 / 100, a.rate.g2 = NA, ds.rate = 1 / 100,
-                     ds.rate.g2 = 1 / 100, di.rate = 1 / 90, di.rate.g2 = 1 / 90)
+                     ds.rate.g2 = 1 / 100, di.rate = 1 / 90,
+                     di.rate.g2 = 1 / 90)
   init <- init.dcm(s.num = 500, i.num = 1, s.num.g2 = 500, i.num.g2 = 0)
   control <- control.dcm(type = "SI", nsteps = 500, verbose = FALSE)
   x <- dcm(param, init, control)
@@ -171,7 +172,8 @@ test_that("SI, 2G, OP: varying inf.prob", {
   param <- param.dcm(inf.prob = seq(0.1, 0.5, 0.05),
                      act.rate = 0.25, inf.prob.g2 = 0.1, balance = "g1",
                      a.rate = 1 / 100, a.rate.g2 = NA, ds.rate = 1 / 100,
-                     ds.rate.g2 = 1 / 100, di.rate = 1 / 90, di.rate.g2 = 1 / 90)
+                     ds.rate.g2 = 1 / 100, di.rate = 1 / 90,
+                     di.rate.g2 = 1 / 90)
   init <- init.dcm(s.num = 500, i.num = 1, s.num.g2 = 500, i.num.g2 = 0)
   control <- control.dcm(type = "SI", nsteps = 500, verbose = FALSE)
   x <- dcm(param, init, control)
@@ -442,7 +444,8 @@ test_that("SIS, 2G, OP: 1 run", {
                      inf.prob.g2 = 0.1, act.rate = 0.5,
                      balance = "g1", rec.rate = 1 / 50, rec.rate.g2 = 1 / 50,
                      a.rate = 1 / 100, a.rate.g2 = NA, ds.rate = 1 / 100,
-                     ds.rate.g2 = 1 / 100, di.rate = 1 / 90, di.rate.g2 = 1 / 90)
+                     ds.rate.g2 = 1 / 100, di.rate = 1 / 90,
+                     di.rate.g2 = 1 / 90)
   init <- init.dcm(s.num = 500, i.num = 1,
                    s.num.g2 = 500, i.num.g2 = 1)
   control <- control.dcm(type = "SIS", nsteps = 500, verbose = FALSE)
@@ -498,4 +501,3 @@ test_that("SIS, 2G, OP: balance = g2", {
   plot(x, y = c("i.num", "s.num"))
   expect_output(summary(x, at = 2), regexp = "EpiModel Summary")
 })
-
