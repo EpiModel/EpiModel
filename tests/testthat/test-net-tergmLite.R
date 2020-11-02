@@ -198,29 +198,23 @@ test_that("tergmLite: 2G, Open", {
 })
 
 
-test_that("tergmLite: Expected Output", {
+test_that("Models with duration = 1", {
 
   num <- 1000
   nw <- network_initialize(n = num)
   formation <- ~edges
   target.stats <- 400
-  coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 25)
+  coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 1)
   est <- netest(nw, formation, target.stats, coef.diss)
 
   param <- param.net(inf.prob = 0.1, act.rate = 5)
   init <- init.net(i.num = 10)
-  control <- control.net(type = "SI", nsteps = 20, nsims = 1, ncores = 1,
-                         tergmLite = FALSE)
-
+  control <- control.net(type = "SI", nsteps = 5, nsims = 1, ncores = 1,
+                         tergmLite = FALSE, resimulate.network = TRUE)
   sim <- netsim(est, param, init, control)
 
-  expect_true(length(sim$stats$transmat) == 1)
-
-  control <- control.net(type = "SI", nsteps = 20, nsims = 1, ncores = 1,
-                         tergmLite = TRUE)
-
+  control <- control.net(type = "SI", nsteps = 5, nsims = 1, ncores = 1,
+                         tergmLite = TRUE, resimulate.network = TRUE)
   sim <- netsim(est, param, init, control)
-
-  expect_true(is.null(sim$stats$transmat))
 
 })

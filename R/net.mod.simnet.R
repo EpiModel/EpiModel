@@ -108,12 +108,19 @@ resim_nets <- function(dat, at) {
 
   # networkLite/tergmLite Method
   if (tergmLite == TRUE & resimulate.network == TRUE) {
+    isTERGM <- ifelse(nwparam$coef.diss$duration > 1, TRUE, FALSE)
     dat <- tergmLite::updateModelTermInputs(dat)
-    dat$el[[1]] <- tergmLite::simulate_network(p = dat$p[[1]],
-                                               el = dat$el[[1]],
-                                               coef.form = nwparam$coef.form,
-                                               coef.diss = nwparam$coef.diss$coef.adj,
-                                               save.changes = TRUE)
+    if (isTERGM == TRUE) {
+      dat$el[[1]] <- tergmLite::simulate_network(p = dat$p[[1]],
+                                                 el = dat$el[[1]],
+                                                 coef.form = nwparam$coef.form,
+                                                 coef.diss = nwparam$coef.diss$coef.adj,
+                                                 save.changes = TRUE)
+    } else {
+      dat$el[[1]] <- tergmLite::simulate_ergm(p = dat$p[[1]],
+                                              el = dat$el[[1]],
+                                              coef = nwparam$coef.form)
+    }
   }
 
   return(dat)
