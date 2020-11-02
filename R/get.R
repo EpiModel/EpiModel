@@ -168,8 +168,7 @@ get_transmat <- function(x, sim = 1) {
   }
 
   if (x$control$tergmLite == TRUE) {
-    stop("transmat not saved when 'tergmLite == TRUE', check control.net
-         settings", call. = FALSE)
+    stop("transmat not saved when 'tergmLite == TRUE', check control.net settings", call. = FALSE)
   }
 
   if (sim > x$control$nsims) {

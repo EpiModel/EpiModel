@@ -86,11 +86,9 @@ test_that("Netdx duration and dissolution plots error when
   dx2 <- netdx(est, nsims = 1, nsteps = 500, skip.dissolution = TRUE)
 
   expect_error(plot(dx2, type = "duration"),
-               "Plots of type duration and dissolution only available if netdx
-               run with skip.dissolution = FALSE")
+               "Plots of type duration and dissolution only available if netdx run with skip.dissolution = FALSE")
   expect_error(plot(dx2, type = "dissolution"),
-               "Plots of type duration and dissolution only available if netdx
-               run with skip.dissolution = FALSE")
+               "Plots of type duration and dissolution only available if netdx run with skip.dissolution = FALSE")
 })
 
 test_that("Offset terms", {
@@ -162,9 +160,8 @@ test_that("More complicated faux offset term", {
                                       rep(3, 20), rep(4, 500))))
   nw <- set_vertex_attribute(nw, "region", sample(rep(1:5, 200)))
   fit <- netest(nw,
-                formation = ~edges +
-                             nodemix("sexor", base = 1) +
-                             nodematch("region"),
+                formation =
+                  ~edges + nodemix("sexor", base = 1) + nodematch("region"),
                 target.stats = c(463, 0, 0, 18, 0, 6, 0, 380, 25, 0, 400),
                 coef.diss = dissolution_coefs(~offset(edges), 60))
   dx <- netdx(fit, nsteps = 10, verbose = FALSE)

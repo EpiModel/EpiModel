@@ -286,6 +286,7 @@ test_that("'tergmLite == TRUE' correctly errors", {
   control <- control.net(type = "SI", nsteps = 100, nsims = 1, verbose = FALSE,
                          tergmLite = TRUE)
   mod2 <- netsim(est1, param, init, control)
-  expect_error(get_transmat(mod2), "transmat not saved when 'tergmLite == TRUE',
-               check control.net settings")
+  expect_error(get_transmat(mod2),
+                  "transmat not saved when 'tergmLite == TRUE', check control.net settings")
 })
+
