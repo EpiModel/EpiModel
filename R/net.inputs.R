@@ -562,30 +562,6 @@ control.net <- function(type,
     p$set.control.ergm <- control.simulate.ergm(MCMC.burnin = 2e5)
   }
 
-  ## Names and arguments for supplied functions
-  base.args <- formals(sys.function())
-  base.indx <- grep(".FUN", names(base.args))
-  l <- 1
-  for (i in 1:length(base.indx)) {
-    if (!is.null(base.args[[base.indx[i]]])) {
-      p$f.names[l] <- names(base.args)[base.indx[i]]
-      l <- l+1
-    }
-  }
-
-  ## User defined/supplied functions
-  user.args <- as.list(match.call())
-  user.indx <- grep(".FUN", names(user.args))
-  start <- length(p$f.args) + 1
-  stop <- length(p$f.args) + length(user.indx)
-  index <- start:stop
-  if (length(user.indx) > 0) {
-    for (i in 1:length(index)) {
-      p$f.names[index[i]] <- names(user.args[user.indx[i]])
-    }
-  }
-
-
   ## Output
   class(p) <- c("control.net", "list")
   return(p)
@@ -786,30 +762,7 @@ crosscheck.net <- function(x, param, init, control) {
         }
       }
     }
-
-    ## In-place assignment to update param and control
-    #assign("param", param, pos = parent.frame())
-    #assign("control", control, pos = parent.frame())
   }
-
-  # Update function names and their arguments
-  if (!is.null(control$type)) {
-    if (param$vital == FALSE) {
-      temp1 <- grep("arrivals", control$f.names)
-      temp2 <- grep("departures", control$f.names)
-      control$f.names <- control$f.names[-c(temp1, temp2)]
-      control$f.args <- control$f.args[-c(temp1, temp2)]
-    }
-
-    if (!(control$type %in% c("SIR", "SIS"))) {
-      temp3 <- grep("recovery", control$f.names)
-      control$f.names <- control$f.names[-temp3]
-      control$f.args <- control$f.args[-temp3]
-    }
-  }
-
-  control$f.names <- control$f.names[!is.na(control$f.args)]
-  control$f.args <- control$f.args[!is.na(control$f.args)]
 
   if (!is.null(control$type) && length(control$user.mods) > 0) {
     stop("Control setting 'type' must be NULL if any user-specified modules specified.",
