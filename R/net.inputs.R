@@ -507,6 +507,7 @@ control.net <- function(type,
     p$bi.mods <- bi.mods
   }
   p$user.mods <- grep(".FUN", names(dot.args), value = TRUE)
+  p$f.names <- c(p$bi.mods, p$user.mods)
 
   # Temporary until we develop a nwstats fix for tergmLite
   if (tergmLite == TRUE) {
