@@ -21,7 +21,7 @@ This function appends the transmission matrix created during
              \code{infection.net} and \code{infection.2g.net}.
 }
 \details{
-This internal function works within the parent \code{\link{infection.net}} functions
-to save the transmission matrix created at time step \code{at} to the master list object
-\code{dat}.
+This internal function works within the parent \code{\link{infection.net}}
+functions to save the transmission matrix created at time step \code{at} to
+the master list object \code{dat}.
 }

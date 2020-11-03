@@ -172,6 +172,7 @@ netsim_loop <- function(x, param, init, control, s) {
       ## Initialization Module
       if (!is.null(control[["initialize.FUN"]])) {
         current_mod <- "initialize.FUN"
+        at <- paste0("`Initialization Step` (", control$start, ")")
         dat <- do.call(control[[current_mod]], list(x, param, init, control, s))
       }
 
