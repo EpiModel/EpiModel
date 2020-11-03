@@ -486,11 +486,11 @@ control.net <- function(type,
          call. = FALSE)
   }
 
-  if ("save.network" %in% names(dot.args) || "save.transmat" %in% names(dot.args)) {
+  if ("save.network" %in% names(dot.args)) {
     p$tergmLite <- FALSE
-    stop("EpiModel 2.0+ has integrated options for saving of the network object and transmission ",
-         "matrix into control.net setting tergmLite: if FALSE, these are saved automatically; ",
-         "if TRUE, they are not saved. Update your code accordingly.",
+    stop("EpiModel 2.0+ has integrated options for saving of the network
+          object in control.net parameter tergmLite: if FALSE, this are
+          saved; if TRUE, they are not saved.",
          call. = FALSE)
   }
 
