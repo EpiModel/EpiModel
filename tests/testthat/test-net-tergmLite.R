@@ -209,6 +209,7 @@ test_that("Models with duration = 1", {
 
   param <- param.net(inf.prob = 0.1, act.rate = 5)
   init <- init.net(i.num = 10)
+  
   control <- control.net(type = "SI", nsteps = 5, nsims = 1, ncores = 1,
                          tergmLite = FALSE, resimulate.network = TRUE)
   sim <- netsim(est, param, init, control)
