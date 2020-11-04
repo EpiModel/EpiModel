@@ -437,6 +437,39 @@ See `help("dat_get_set", "EpiModel")` for the complete list of accessor function
 
 **This update only applies to extension models.**
 
+## Syntax in Extenstion Models with Population Dynamics
+With the update to EpiModel 2.0, and introduction of new helper modules (specifically `nwupdate.net`), we have implemented [ ]. In extension models with population dynamics (i.e. arrivals and departures from the population) it is necessary to include three individual level attributes within your workflow:
+* `active`: an attribute indicating whether an individual is active within the population.
+* `entrTime`: an attribute that indicates time of entry into the population.
+* `exitTime`: an attribute that indicates time of exit from the population.
+
+These two attributes should be created at initialization (see `initialize.net()` or below for a coding example) and updated in their associated modules: `arrivals.FUN` (for `active` and `entrTime`) and `departures.FUN` (for `active` and `exitTime`). These three attributes are used in the helper function `nwupdate.net` and are now required for the use of EpiModel when population dynamics are present.
+
+As an example (sample code for initialization and arrival modules):
+
+```{r echo = TRUE, eval = FALSE}
+my_initialize <- function() {
+  # Standard attributes
+  num <- network.size(nw)
+  dat <- set_attr(dat, "active", rep(1, num), override.length.check = TRUE)
+  dat <- set_attr(dat, "entrTime", rep(1, num))
+  dat <- set_attr(dat, "exitTime", rep(NA, num))
+  
+}
+```
+
+```{r echo = TRUE, eval = FALSE}
+# Given total new arrivals equal to nArrivals, update attributes
+my_arrivals <- function() {
+  dat <- append_attr(dat, "active", 1, nArrivals)
+  dat <- append_attr(dat, "entrTime", at, nArrivals)
+  dat <- append_attr(dat, "exitTime", NA, nArrivals)
+}
+```
+
+
+**This update only applies to extension models.**
+
 # Full Examples
 The following section presents three fully worked examples of models built in EpiModel 1.x and the corresponding changes needed in EpiModel 2.0. Changes will be highlighted by comments. Link to full R scripts may be found by clicking the appropriate link.
 
