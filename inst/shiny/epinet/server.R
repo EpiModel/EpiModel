@@ -21,7 +21,7 @@ shinyServer(function(input, output, session) {
     n <- input$num
     e <- input$edge.target
     conc <- 0
-    if (e > n/2) {
+    if (e > n / 2) {
       if (e <= n - 1) {
         # can put all edges on one node
         conc <- 1
@@ -32,7 +32,7 @@ shinyServer(function(input, output, session) {
         conc <- 3
         leftovers <- e - n
         if (leftovers > 0) {
-          moreconc <- floor((-1 + sqrt(1 + 8*leftovers))/2)
+          moreconc <- floor((-1 + sqrt(1 + 8 * leftovers)) / 2)
         }
         conc <- conc + moreconc
       }
@@ -46,7 +46,7 @@ shinyServer(function(input, output, session) {
       }
     }
 
-    conc/n
+    conc / n
   })
 
   #link duration slider and numeric input
@@ -133,7 +133,7 @@ shinyServer(function(input, output, session) {
     updateSliderInput(session, "percConc",
                       label = "Percent of nodes with concurrent partners",
                       value = input$conc.target / input$num * 100,
-                      min = lowestconc()*100,
+                      min = lowestconc() * 100,
                       max = 50,
                       step = 5)
   })
@@ -153,24 +153,30 @@ shinyServer(function(input, output, session) {
     as.formula(paste0("~", paste(input$nwstats, collapse = "+")))
   })
   fit <- reactive({
-    if (input$runMod == 0) { return() }
+    if (input$runMod == 0) {
+      return()
+      }
     isolate({
       fit.progress <- Progress$new(session, min = 0, max = 1)
       on.exit(fit.progress$close())
       fit.progress$set(value = NULL, message = "Fitting model")
-      fit <- tryCatch({netest(net(),
+      fit <- tryCatch({
+        netest(net(),
                               formation = as.formula(input$formation),
                               target.stats = target.stats(),
                               coef.diss = coef.diss(),
                               verbose = FALSE)},
                       error = function(e) e)
       validate(need(!("error" %in% class(fit)),
-        message = "There is a problem with model specification, please try again."))
+        message = "There is a problem with model specification,
+        please try again."))
       fit
     })
   })
   dxsim <- reactive({
-    if (input$runMod == 0) { return() }
+    if (input$runMod == 0) {
+      return()
+      }
     input$runDx
     isolate({
       dx.progress <- Progress$new(session, min = 0, max = 1)
@@ -205,14 +211,16 @@ shinyServer(function(input, output, session) {
                 verbose = FALSE)
   })
   episim <- reactive({
-    if (input$runEpi == 0) { return() }
+    if (input$runEpi == 0) {
+      return()
+      }
     isolate({
       epi.progress <- Progress$new(session, min = 0, max = 1)
       on.exit(epi.progress$close())
       epi.progress$set(value = 0, message = "Simulating Epidemic")
       nsims <- input$epi.nsims
 
-      epi.progress$inc(amount = 1/nsims,
+      epi.progress$inc(amount = 1 / nsims,
                        message = "Simulating Epidemic",
                        detail = paste0("Sim 1/", nsims))
       x <- netsim(fit(),
@@ -221,7 +229,7 @@ shinyServer(function(input, output, session) {
                   control = control())
       if (nsims > 1) {
         for (i in 2:nsims) {
-          epi.progress$inc(amount = 1/nsims,
+          epi.progress$inc(amount = 1 / nsims,
                            detail = paste0("Sim ", i, "/", nsims))
           y <- netsim(fit(),
                       param = param(),
@@ -245,7 +253,7 @@ shinyServer(function(input, output, session) {
     sliderInput("percConc",
                 "Percent of nodes with concurrent partners",
                 value = 10,
-                min = lowestconc()*100,
+                min = lowestconc() * 100,
                 max = 50,
                 step = 5,
                 post = "%")
@@ -298,7 +306,9 @@ shinyServer(function(input, output, session) {
 
   ## Epi page
   output$epiplot <- renderPlot({
-    if (input$runEpi == 0) { return() }
+    if (input$runEpi == 0) {
+      return()
+      }
     par(mar = c(3.5, 3.5, 1.2, 1), mgp = c(2.1, 1, 0))
     if (input$compsel == "Compartment Prevalence") {
       plot(episim(),
@@ -335,7 +345,7 @@ shinyServer(function(input, output, session) {
   outputOptions(output, "epiplot", suspendWhenHidden = FALSE)
   output$epiplotDL <- downloadHandler(
     filename = "epiplot.pdf",
-    content =  function(file){
+    content =  function(file) {
       pdf(file = file, height = 6, width = 10)
       par(mar = c(3.5, 3.5, 1.2, 1), mgp = c(2.1, 1, 0))
       if (input$compsel == "Compartment Prevalence") {
@@ -381,13 +391,17 @@ shinyServer(function(input, output, session) {
                  max = input$epi.nsteps)
   })
   output$episum <- renderPrint({
-    if (is.null(input$sumtime)) { return() }
+    if (is.null(input$sumtime)) {
+      return()
+      }
     summary(episim(), at = input$sumtime)
   })
 
   ## nw plots page
   output$nwplot <- renderPlot({
-    if (input$runEpi == 0) { return() }
+    if (input$runEpi == 0) {
+      return()
+      }
     simno <- ifelse(input$nwplotsim == "mean",
                     yes = "mean",
                     no = as.numeric(input$nwplotsim))
@@ -412,7 +426,7 @@ shinyServer(function(input, output, session) {
 
   output$nwplot1DL <- downloadHandler(
     filename = "nwplot.pdf",
-    content = function(file){
+    content = function(file) {
       pdf(file = file, height = 6, width = 6)
       par(mar = c(0, 0, 0, 0))
       plot(episim(),
@@ -425,7 +439,7 @@ shinyServer(function(input, output, session) {
   )
   output$nwplot2DL <- downloadHandler(
     filename = "nwplot.pdf",
-    content = function(file){
+    content = function(file) {
       pdf(file = file, height = 6, width = 6)
       par(mar = c(0, 0, 0, 0))
       plot(episim(),

@@ -12,7 +12,8 @@ test_that("network models can be restarted", {
                      ds.rate = 0.02, di.rate = 0.02)
   init <- init.net(i.num = 10)
   control <- control.net(type = "SI", nsteps = 5, nsims = 1,
-                         resimulate.network = TRUE, verbose = FALSE, save.other = "attr")
+                         resimulate.network = TRUE, verbose = FALSE,
+                         save.other = "attr")
   x <- netsim(est.vit, param, init, control)
 
   control <- control.net(type = "SI", nsteps = 10, start = 6,
@@ -49,11 +50,13 @@ test_that("restart error flags", {
 
   control <- control.net(type = "SI", nsteps = 5, start = 10,
                          nsims = 1, verbose = FALSE)
-  expect_error(netsim(x, param, init, control), "control setting nsteps must be >")
+  expect_error(netsim(x, param, init, control),
+               "control setting nsteps must be >")
 
   control <- control.net(type = "SI", nsteps = 10, start = 7,
                          nsims = 1, verbose = FALSE)
-  expect_error(netsim(x, param, init, control), "control setting start must be 1")
+  expect_error(netsim(x, param, init, control),
+               "control setting start must be 1")
 
   control <- control.net(type = "SI", nsteps = 10, start = 6,
                          nsims = 1, verbose = FALSE)
@@ -61,4 +64,3 @@ test_that("restart error flags", {
   expect_error(netsim(x, param, init, control), "x must contain attr")
 
 })
-

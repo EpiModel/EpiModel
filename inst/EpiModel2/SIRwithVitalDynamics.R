@@ -18,8 +18,9 @@ param <- param.net(inf.prob = 0.4, act.rate = 1, rec.rate = 0.02,
                    dr.rate = 0.005)
 init <- init.net(i.num = 30, r.num = 5)
 
-## control.net setting depend has been replaced by resimulate.network. control.net
-## settings save.network/save.transmat have been folded in tergmLite functionality.
+## control.net setting depend has been replaced by resimulate.network.
+## control.net settings save.network/save.transmat have been folded in tergmLite
+## functionality.
 control <- control.net(type = "SIR", nsteps = 100, resimulate.network = TRUE,
                        tergmLite = TRUE)
 
@@ -31,4 +32,3 @@ print(sim)
 
 ## Plot the results
 plot(sim)
-

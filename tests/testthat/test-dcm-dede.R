@@ -15,12 +15,12 @@ test_that("Delayed differntial equation models function", {
 
       lambda <- inf.prob * act.rate * i.num.foi / num
 
-      dS <- -lambda*s.num
-      dI <- lambda*s.num
+      dS <- -lambda * s.num
+      dI <- lambda * s.num
 
       list(c(dS, dI),
            num = num,
-           si.flow = lambda*s.num,
+           si.flow = lambda * s.num,
            i.num.foi = i.num.foi)
     })
   }

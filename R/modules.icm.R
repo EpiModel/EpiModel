@@ -10,7 +10,8 @@
 #' The \code{\link{icm}} function handles both the simulation tasks. Within this
 #' function are a series of modules that initialize the simulation and then
 #' simulate new infections, recoveries, and vital dynamics at each time step. A
-#' module also handles the basic bookkeeping calculations for disease prevalence.
+#' module also handles the basic bookkeeping calculations for disease
+#' prevalence.
 #'
 #' Writing original ICMs will require modifying the existing modules or
 #' adding new modules to the workflow in \code{\link{icm}}. The existing modules
@@ -25,42 +26,44 @@
 #'
 #' @section Initialization Module:
 #' This function sets up agent attributes, like disease status, on the network
-#' at the starting time step of disease simulation, \eqn{t_1}. For multiple-simulation
-#' function calls, these are reset at the beginning of each simulation.
+#' at the starting time step of disease simulation, \eqn{t_1}. For
+#' multiple-simulation function calls, these are reset at the beginning of each
+#' simulation.
 #' \itemize{
-#'  \item \code{\link{initialize.icm}}: sets which agents are initially infected,
-#'        through the initial conditions passed in \code{\link{init.icm}}.
+#'  \item \code{\link{initialize.icm}}: sets which agents are initially
+#'        infected, through the initial conditions passed in
+#'        \code{\link{init.icm}}.
 #' }
 #'
 #' @section Disease Status Modification Modules:
 #' The main disease simulation occurs at each time step given the current state
-#' of the population at that step. Infection of agents is simulated as a function
-#' of disease parameters and population composition. Recovery of agents is likewise
-#' simulated with respect to infected nodes. These functions also analyze the
-#' flows for summary measures such as disease incidence.
+#' of the population at that step. Infection of agents is simulated as a
+#' function of disease parameters and population composition. Recovery of agents
+#' is likewise simulated with respect to infected nodes. These functions also
+#' analyze the flows for summary measures such as disease incidence.
 #' \itemize{
 #'  \item \code{\link{infection.icm}}: randomly draws an edgelist given the
 #'        parameters, subsets the list for discordant pairs, and simulates
 #'        transmission on those discordant pairs through a series of draws from
 #'        a binomial distribution.
-#'  \item \code{\link{recovery.icm}}: simulates recovery from infection either to a
-#'        lifelong immune state (for SIR models) or back to the susceptible state
-#'        (for SIS models), as a function of the recovery rate specified in the
-#'        \code{rec.rate} parameter. The recovery rate may vary for two-group
-#'        models.
+#'  \item \code{\link{recovery.icm}}: simulates recovery from infection either
+#'        to a lifelong immune state (for SIR models) or back to the susceptible
+#'        state (for SIS models), as a function of the recovery rate specified
+#'        in the \code{rec.rate} parameter. The recovery rate may vary for
+#'        two-group models.
 #' }
 #'
 #'
 #' @section Demographic Modules:
-#' Vital dynamics such as arrival and departure processes are simulated at each time
-#' step to update entries into and exits from the population. These are used in
-#' open-population ICMs.
+#' Vital dynamics such as arrival and departure processes are simulated at each
+#' time step to update entries into and exits from the population. These are
+#' used in open-population ICMs.
 #' \itemize{
-#'  \item \code{\link{departures.icm}}: randomly simulates departures or exits for
-#'        agents given the departure rate specified in the disease-state and
-#'        group-specific departure parameters in \code{\link{param.icm}}. This involves
-#'        deactivating agents from the population, but their historical data is
-#'        preserved in the simulation.
+#'  \item \code{\link{departures.icm}}: randomly simulates departures or exits
+#'        for agents given the departure rate specified in the disease-state and
+#'        group-specific departure parameters in \code{\link{param.icm}}. This
+#'        involves deactivating agents from the population, but their historical
+#'        data is preserved in the simulation.
 #'  \item \code{\link{arrivals.icm}}: randomly simulates new arrivals into the
 #'        population given the current population size and the arrival rate
 #'        parameters. This involves adding new agents into the population.
@@ -71,9 +74,9 @@
 #' Simulations require bookkeeping at each time step to calculate the
 #' summary epidemiological statistics used in the model output analysis.
 #' \itemize{
-#'  \item \code{\link{prevalence.icm}}: calculates the number in each disease state
-#'        (susceptible, infected, recovered) at each time step for those active
-#'        agents in the population.
+#'  \item \code{\link{prevalence.icm}}: calculates the number in each disease
+#'        state (susceptible, infected, recovered) at each time step for those
+#'        active agents in the population.
 #' }
 #'
 #'

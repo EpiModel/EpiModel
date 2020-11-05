@@ -1,11 +1,11 @@
 
 #' @title Extract networkDynamic and network Objects from Network Simulations
 #'
-#' @description Extracts the \code{networkDynamic} object from a either a network
-#'              epidemic model object generated with \code{netsim} or a network
-#'              diagnostic simulation generated with \code{netdx}, with the option to
-#'              collapse the extracted \code{networkDynamic} object down to a static
-#'              \code{network} object.
+#' @description Extracts the \code{networkDynamic} object from a either a
+#'              network epidemic model object generated with \code{netsim} or a
+#'              network diagnostic simulation generated with \code{netdx}, with
+#'              the option to collapse the extracted \code{networkDynamic}
+#'              object down to a static \code{network} object.
 #'
 #' @param x An \code{EpiModel} object of class \code{\link{netsim}} or
 #'        \code{\link{netdx}}.
@@ -20,10 +20,11 @@
 #'
 #' @details
 #' This function requires that the \code{networkDynamic} is saved during the
-#' network simulation while running either \code{\link{netsim}} or \code{\link{netdx}}.
-#' For the former, that is specified with the \code{tergmLite} parameter in
-#' \code{\link{control.net}} set to \code{FALSE}. For the latter, that is
-#' specified with the \code{keep.tedgelist} parameter directly in \code{\link{netdx}}.
+#' network simulation while running either \code{\link{netsim}} or
+#' \code{\link{netdx}}. For the former, that is specified with the
+#' \code{tergmLite} parameter in \code{\link{control.net}} set to \code{FALSE}.
+#' For the latter, that is specified with the \code{keep.tedgelist} parameter
+#' directly in \code{\link{netdx}}.
 #'
 #' @keywords extract
 #' @export
@@ -40,7 +41,8 @@
 #' est <- netest(nw, formation, target.stats, coef.diss)
 #'
 #' # Run diagnostics, saving the networkDynamic objects
-#' dx <- netdx(est, nsteps = 10, nsims = 3, keep.tnetwork = TRUE, verbose = FALSE)
+#' dx <- netdx(est, nsteps = 10, nsims = 3, keep.tnetwork = TRUE,
+#'      verbose = FALSE)
 #'
 #' # Extract the network for simulation 2 from dx object
 #' get_network(dx, sim = 2)
@@ -79,13 +81,13 @@ get_network <- function(x, sim = 1, network = 1, collapse = FALSE, at) {
            call. = FALSE)
     }
     if (x$control$tergmLite == TRUE || is.null(x$network)) {
-      stop("Network object not saved in netsim object, check control.net settings",
-           call. = FALSE)
+      stop("Network object not saved in netsim object, check control.net
+           settings", call. = FALSE)
     }
   } else if (class(x) == "netdx") {
     if (is.null(x$network)) {
-      stop("Network object not saved in netdx object, check keep.tnetwork parameter",
-           call. = FALSE)
+      stop("Network object not saved in netdx object, check keep.tnetwork
+           parameter", call. = FALSE)
     }
   }
 
@@ -185,8 +187,8 @@ get_transmat <- function(x, sim = 1) {
 #' @title Extract Network Statistics from netsim or netdx Object
 #'
 #' @description Extracts a data frame of network statistics from a network
-#'              epidemic model simulated with \code{netsim} or a network diagnostics
-#'              object simulated with \code{netdx}.
+#'              epidemic model simulated with \code{netsim} or a network
+#'              diagnostics object simulated with \code{netdx}.
 #'
 #' @param x An \code{EpiModel} object of class \code{\link{netsim}} or
 #'        \code{\link{netdx}}.
@@ -258,8 +260,8 @@ get_nwstats <- function(x, sim, network = 1) {
 
   if (class(x) == "netsim") {
     if (x$control$save.nwstats == FALSE || is.null(x$stats$nwstats)) {
-      stop("Network statistics not saved in netsim object, check control.net settings",
-           call. = FALSE)
+      stop("Network statistics not saved in netsim object, check control.net
+           settings", call. = FALSE)
     }
     if (network > x$control$num.nw) {
       stop("Specify network between 1 and ", x$control$num.nw, call. = FALSE)
@@ -282,7 +284,7 @@ get_nwstats <- function(x, sim, network = 1) {
   out$time <- rep(1:min(nsteps, nrow(out)), length(sim))
   out$sim <- rep(sim, each = min(nsteps, nrow(out)))
   row.names(out) <- 1:nrow(out)
-  out <- out[, c((ncol(out)-1):ncol(out), 1:(ncol(out)-2))]
+  out <- out[, c((ncol(out) - 1):ncol(out), 1:(ncol(out) - 2))]
 
   if (class(x) == "netdx" && x$dynamic == FALSE) {
     out <- out[, -2]
@@ -317,13 +319,13 @@ get_nwparam <- function(x, network = 1) {
 #'              \code{merge}.
 #'
 #' @param x An object of class \code{netsim}.
-#' @param sims A numeric vector of simulation numbers to retain in the output object,
-#'        or \code{"mean"} which selects the one simulation with the value of the
-#'        variable specified in \code{var} closest to the mean of \code{var}
-#'        across all simulations.
-#' @param var A character vector of variables to retain from \code{x} if \code{sims}
-#'        is a numeric vector, or a single variable name for selecting the average
-#'        simulation from the set if \code{sims = "mean"}.
+#' @param sims A numeric vector of simulation numbers to retain in the output
+#'        object, or \code{"mean"} which selects the one simulation with the
+#'        value of the variable specified in \code{var} closest to the mean of
+#'        \code{var} across all simulations.
+#' @param var A character vector of variables to retain from \code{x} if
+#'        \code{sims} is a numeric vector, or a single variable name for
+#'        selecting the average simulation from the set if \code{sims = "mean"}.
 #'
 #' @keywords extract
 #' @export
@@ -362,8 +364,10 @@ get_sims <- function(x, sims, var) {
   if (missing(sims)) {
     stop("Specify sims as a vector of simulations or \"mean\" ", call. = FALSE)
   }
-  if (length(sims) == 1 && sims == "mean" && (missing(var) || length(var) > 1)) {
-    stop("If sims == 'mean' then var must be a single varible name", call. = FALSE)
+  if (length(sims) == 1 && sims ==
+      "mean" && (missing(var) || length(var) > 1)) {
+    stop("If sims == 'mean' then var must be a single varible name",
+         call. = FALSE)
   }
 
   if (length(sims) == 1 && sims == "mean") {
@@ -411,15 +415,15 @@ get_sims <- function(x, sims, var) {
 
 #' @title Get Arguments from EpiModel Parameterization Functions
 #'
-#' @description Returns a list of argument names and values for use for parameter
-#'              processing functions.
+#' @description Returns a list of argument names and values for use for
+#'              parameter processing functions.
 #'
 #' @param formal.args The output of \code{formals(sys.function())}.
 #' @param dot.args The output of \code{list(...)}.
 #'
 #' @export
 #'
-get_args <- function(formal.args, dot.args){
+get_args <- function(formal.args, dot.args) {
   p <- list()
   formal.args[["..."]] <- NULL
   for (arg in names(formal.args)) {

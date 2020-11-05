@@ -11,10 +11,10 @@
 #' @details
 #' The main steps in this infection module are as follows:
 #' \enumerate{
-#'  \item Get IDs for current infected and susceptibles given the current disease
-#'        status.
-#'  \item Call \code{\link{discord_edgelist}} to get the current discordant edgelist
-#'        given step 1.
+#'  \item Get IDs for current infected and susceptibles given the current
+#'        disease status.
+#'  \item Call \code{\link{discord_edgelist}} to get the current discordant
+#'        edgelist given step 1.
 #'  \item Determine the transmission rates (e.g., as a function of group).
 #'  \item Pull the number of acts per partnership in a time step from the
 #'        \code{act.rate} parameter.
@@ -26,8 +26,8 @@
 #' }
 #'
 #' @return
-#' The main \code{dat} object is returned with updated disease status and summary
-#' incidence measures.
+#' The main \code{dat} object is returned with updated disease status and
+#' summary incidence measures.
 #'
 #' @export
 #' @keywords netMod internal
@@ -132,10 +132,10 @@ infection.net <- function(dat, at) {
 #' @details
 #' The main steps in this infection module are as follows:
 #' \enumerate{
-#'  \item Get IDs for current infected and susceptibles given the current disease
-#'        status.
-#'  \item Call \code{\link{discord_edgelist}} to get the current discordant edgelist
-#'        given step 1.
+#'  \item Get IDs for current infected and susceptibles given the current
+#'        disease status.
+#'  \item Call \code{\link{discord_edgelist}} to get the current discordant
+#'        edgelist given step 1.
 #'  \item Determine the transmission rates (e.g., as a function of group).
 #'  \item Pull the number of acts per partnership in a time step from the
 #'        \code{act.rate} parameter.
@@ -147,8 +147,8 @@ infection.net <- function(dat, at) {
 #' }
 #'
 #' @return
-#' The main \code{dat} object is returned with updated disease status and summary
-#' incidence measures.
+#' The main \code{dat} object is returned with updated disease status and
+#' summary incidence measures.
 #'
 #' @export
 #' @keywords netMod internal
@@ -327,7 +327,8 @@ discord_edgelist <- function(dat, at, network = 1, infstat = "i") {
       del <- data.frame(at, sus, inf)
 
       # Check for active status
-      keep <- rowSums(matrix(c(active[del$sus], active[del$inf]), ncol = 2)) == 2
+      keep <- rowSums(matrix(c(active[del$sus], active[del$inf]),
+                             ncol = 2)) == 2
       del <- del[keep, ]
       if (nrow(del) < 1) {
         del <- NULL

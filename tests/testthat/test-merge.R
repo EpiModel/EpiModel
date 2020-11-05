@@ -102,10 +102,12 @@ test_that("merge works for open sims saving nw stats", {
   est <- netest(nw, formation = ~edges, target.stats = 20,
                 coef.diss = dissolution_coefs(~offset(edges), 10, 0.01),
                 verbose = FALSE)
-  param <- param.net(inf.prob = 0.9, a.rate = 0.01, ds.rate = 0.01, di.rate = 0.01)
+  param <- param.net(inf.prob = 0.9, a.rate = 0.01, ds.rate = 0.01,
+                     di.rate = 0.01)
   init <- init.net(i.num = 1)
   control <- control.net(type = "SI", nsteps = 5, save.nwstats = TRUE,
-                         nwstats.formula = ~edges + meandeg + degree(0) + concurrent,
+                         nwstats.formula =
+                           ~edges + meandeg + degree(0) + concurrent,
                          resimulate.network = TRUE, verbose = FALSE)
 
   x <- netsim(est, param, init, control)
@@ -113,6 +115,6 @@ test_that("merge works for open sims saving nw stats", {
   z <- merge(x, y)
 
   expect_equal(length(z$stats), 2)
-  expect_true(all(sapply(z$stats$nwstats, dim)[1,] == 5) &
-              all(sapply(z$stats$nwstats, dim)[2,] == 4))
+  expect_true(all(sapply(z$stats$nwstats, dim)[1, ] == 5) &
+              all(sapply(z$stats$nwstats, dim)[2, ] == 4))
 })

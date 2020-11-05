@@ -1,6 +1,7 @@
 ##
 ## R Script File for Journal of Statistical Software Manuscript
-## EpiModel: An R Package for Mathematical Modeling of Infectious Disease over Networks
+## EpiModel: An R Package for Mathematical Modeling of Infectious Disease over
+## Networks
 ##
 
 ## Section 2. Orientation --------------------------------------------------
@@ -167,10 +168,10 @@ aging <- function(dat, at) {
   ## Attributes
   if (at == 2) {
     n <- sum(dat$attr$active == 1)
-    dat$attr$age <- sample(seq(from = 18, to = 69 + 11/12, by = 1/12),
+    dat$attr$age <- sample(seq(from = 18, to = 69 + 11 / 12, by = 1 / 12),
                            n, replace = TRUE)
   } else {
-    dat$attr$age <- dat$attr$age + 1/12
+    dat$attr$age <- dat$attr$age + 1 / 12
   }
 
   ## Summary statistics
@@ -225,7 +226,7 @@ dfunc <- function(dat, at) {
 bfunc <- function(dat, at) {
 
   growth.rate <- dat$param$growth.rate
-  exptPopSize <- dat$epi$num[1]*(1 + growth.rate*at)
+  exptPopSize <- dat$epi$num[1] * (1 + growth.rate * at)
   n <- network.size(dat$nw)
 
   numNeeded <- exptPopSize - sum(dat$attr$active == 1)
@@ -262,7 +263,7 @@ est3 <- netest(nw, formation = ~ edges, target.stats = 150,
                                              mean(death.rates)))
 
 ## Epidemic model parameterization
-param <- param.net(inf.prob = 0.15, growth.rate = 0.01/12, max.age = 70)
+param <- param.net(inf.prob = 0.15, growth.rate = 0.01 / 12, max.age = 70)
 init <- init.net(i.num = 50)
 control <- control.net(type = "SI", nsims = 5, nsteps = 500,
                        deaths.FUN = dfunc, births.FUN = bfunc,
@@ -383,7 +384,8 @@ est4 <- netest(nw, formation = ~ edges, target.stats = 150,
                coef.diss = dissolution_coefs(~ offset(edges), 10))
 
 ## Epidemic model parameterization
-param <- param.net(inf.prob = 0.5, act.rate = 2, ei.rate = 0.01, ir.rate = 0.005)
+param <- param.net(inf.prob = 0.5, act.rate = 2, ei.rate = 0.01,
+                   ir.rate = 0.005)
 init <- init.net(i.num = 10)
 control <- control.net(nsteps = 500, nsims = 5, infection.FUN = infect,
                        progress.FUN = progress, recovery.FUN = NULL,
