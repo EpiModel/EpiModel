@@ -126,7 +126,7 @@ test_that("SI, 2G, CL: 2 sim", {
 test_that("SI, 1G, OP: 1 sim", {
   skip_on_cran()
   param <- param.icm(inf.prob = 0.2, act.rate = 0.25,
-                     a.rate = 1/100, ds.rate = 1/100, di.rate = 1/90)
+                     a.rate = 1 / 100, ds.rate = 1 / 100, di.rate = 1 / 90)
   init <- init.icm(s.num = 500, i.num = 1)
   control <- control.icm(type = "SI", nsteps = 100, nsims = 1, verbose = FALSE)
   x <- icm(param, init, control)
@@ -149,7 +149,7 @@ test_that("SI, 1G, OP: 1 sim", {
 test_that("SI, 1G, OP: 2 sim", {
   skip_on_cran()
   param <- param.icm(inf.prob = 0.2, act.rate = 0.25,
-                     a.rate = 1/100, ds.rate = 1/100, di.rate = 1/90)
+                     a.rate = 1 / 100, ds.rate = 1 / 100, di.rate = 1 / 90)
   init <- init.icm(s.num = 500, i.num = 1)
   control <- control.icm(type = "SI", nsteps = 50, nsims = 2, verbose = FALSE)
   x <- icm(param, init, control)
@@ -173,9 +173,9 @@ test_that("SI, 1G, OP: 2 sim", {
 test_that("SI, 2G, OP: 1 sim", {
   skip_on_cran()
   param <- param.icm(inf.prob = 0.2, act.rate = 0.25, inf.prob.g2 = 0.1,
-                     balance = "g1", a.rate = 1/100, a.rate.g2 = NA,
-                     ds.rate = 1/100, ds.rate.g2 = 1/100,
-                     di.rate = 1/90, di.rate.g2 = 1/90)
+                     balance = "g1", a.rate = 1 / 100, a.rate.g2 = NA,
+                     ds.rate = 1 / 100, ds.rate.g2 = 1 / 100,
+                     di.rate = 1 / 90, di.rate.g2 = 1 / 90)
   init <- init.icm(s.num = 500, i.num = 1, s.num.g2 = 500, i.num.g2 = 0)
   control <- control.icm(type = "SI", nsteps = 100, nsims = 1, verbose = FALSE)
   x <- icm(param, init, control)
@@ -198,9 +198,9 @@ test_that("SI, 2G, OP: 1 sim", {
 test_that("SI, 2G, OP: 2 sim", {
   skip_on_cran()
   param <- param.icm(inf.prob = 0.2, act.rate = 0.25, inf.prob.g2 = 0.1,
-                     balance = "g1", a.rate = 1/100, a.rate.g2 = NA,
-                     ds.rate = 1/100, ds.rate.g2 = 1/100,
-                     di.rate = 1/90, di.rate.g2 = 1/90)
+                     balance = "g1", a.rate = 1 / 100, a.rate.g2 = NA,
+                     ds.rate = 1 / 100, ds.rate.g2 = 1 / 100,
+                     di.rate = 1 / 90, di.rate.g2 = 1 / 90)
   init <- init.icm(s.num = 500, i.num = 1, s.num.g2 = 500, i.num.g2 = 0)
   control <- control.icm(type = "SI", nsteps = 50, nsims = 2, verbose = FALSE,
                          verbose.int = 5)
@@ -227,7 +227,7 @@ test_that("SI, 2G, OP: 2 sim", {
 
 test_that("SIR, 1G, CL: 1 sim", {
   skip_on_cran()
-  param <- param.icm(inf.prob = 0.2, act.rate = 0.25, rec.rate = 1/50)
+  param <- param.icm(inf.prob = 0.2, act.rate = 0.25, rec.rate = 1 / 50)
   init <- init.icm(s.num = 500, i.num = 1, r.num = 0)
   control <- control.icm(type = "SIR", nsteps = 100, nsims = 1, verbose = FALSE,
                          verbose.int = 1)
@@ -250,7 +250,7 @@ test_that("SIR, 1G, CL: 1 sim", {
 
 test_that("SIR, 1G, CL: 2 sim", {
   skip_on_cran()
-  param <- param.icm(inf.prob = 0.2, act.rate = 0.25, rec.rate = 1/50)
+  param <- param.icm(inf.prob = 0.2, act.rate = 0.25, rec.rate = 1 / 50)
   init <- init.icm(s.num = 500, i.num = 1, r.num = 0)
   control <- control.icm(type = "SIR", nsteps = 50, nsims = 2, verbose = FALSE)
   x <- icm(param, init, control)
@@ -299,7 +299,7 @@ test_that("SIR, 1G, CL: inf.prob = 0", {
 test_that("SIR, 2G, CL: 1 sim", {
   skip_on_cran()
   param <- param.icm(inf.prob = 0.2, act.rate = 0.25, inf.prob.g2 = 0.1,
-                     balance = "g1", rec.rate = 1/100, rec.rate.g2 = 1/100)
+                     balance = "g1", rec.rate = 1 / 100, rec.rate.g2 = 1 / 100)
   init <- init.icm(s.num = 500, i.num = 1, r.num = 0,
                    s.num.g2 = 500, i.num.g2 = 0, r.num.g2 = 0)
   control <- control.icm(type = "SIR", nsims = 1, nsteps = 100, verbose = FALSE)
@@ -323,7 +323,7 @@ test_that("SIR, 2G, CL: 1 sim", {
 test_that("SIR, 2G, CL: 2 sim", {
   skip_on_cran()
   param <- param.icm(inf.prob = 0.2, act.rate = 0.25, inf.prob.g2 = 0.1,
-                     balance = "g1", rec.rate = 1/100, rec.rate.g2 = 1/100)
+                     balance = "g1", rec.rate = 1 / 100, rec.rate.g2 = 1 / 100)
   init <- init.icm(s.num = 500, i.num = 1, r.num = 0,
                    s.num.g2 = 500, i.num.g2 = 0, r.num.g2 = 0)
   control <- control.icm(type = "SIR", nsims = 2, nsteps = 50, verbose = FALSE)
@@ -346,9 +346,9 @@ test_that("SIR, 2G, CL: 2 sim", {
 
 test_that("SIR, 1G, OP: 1 sim", {
   skip_on_cran()
-  param <- param.icm(inf.prob = 0.2, act.rate = 3, rec.rate = 1/50,
-                     a.rate = 1/100, ds.rate = 1/100, di.rate = 1/90,
-                     dr.rate = 1/100)
+  param <- param.icm(inf.prob = 0.2, act.rate = 3, rec.rate = 1 / 50,
+                     a.rate = 1 / 100, ds.rate = 1 / 100, di.rate = 1 / 90,
+                     dr.rate = 1 / 100)
   init <- init.icm(s.num = 500, i.num = 1, r.num = 0)
   control <- control.icm(type = "SIR", nsteps = 100, nsims = 1, verbose = FALSE)
   x <- icm(param, init, control)
@@ -370,9 +370,9 @@ test_that("SIR, 1G, OP: 1 sim", {
 
 test_that("SIR, 1G, OP: 2 sim", {
   skip_on_cran()
-  param <- param.icm(inf.prob = 0.2, act.rate = 3, rec.rate = 1/50,
-                     a.rate = 1/100, ds.rate = 1/100, di.rate = 1/90,
-                     dr.rate = 1/100)
+  param <- param.icm(inf.prob = 0.2, act.rate = 3, rec.rate = 1 / 50,
+                     a.rate = 1 / 100, ds.rate = 1 / 100, di.rate = 1 / 90,
+                     dr.rate = 1 / 100)
   init <- init.icm(s.num = 500, i.num = 1, r.num = 0)
   control <- control.icm(type = "SIR", nsteps = 50, nsims = 2, verbose = FALSE)
 
@@ -397,10 +397,11 @@ test_that("SIR, 1G, OP: 2 sim", {
 test_that("SIR, 2G, OP: 1 sim", {
   skip_on_cran()
   param <- param.icm(inf.prob = 0.2, inf.prob.g2 = 0.1, act.rate = 3,
-                     balance = "g1", rec.rate = 1/50, rec.rate.g2 = 1/50,
-                     a.rate = 1/100, a.rate.g2 = NA, ds.rate = 1/100,
-                     ds.rate.g2 = 1/100, di.rate = 1/90, di.rate.g2 = 1/90,
-                     dr.rate = 1/100, dr.rate.g2 = 1/100)
+                     balance = "g1", rec.rate = 1 / 50, rec.rate.g2 = 1 / 50,
+                     a.rate = 1 / 100, a.rate.g2 = NA, ds.rate = 1 / 100,
+                     ds.rate.g2 = 1 / 100, di.rate = 1 / 90,
+                     di.rate.g2 = 1 / 90, dr.rate = 1 / 100,
+                     dr.rate.g2 = 1 / 100)
   init <- init.icm(s.num = 500, i.num = 1, r.num = 0,
                    s.num.g2 = 500, i.num.g2 = 0, r.num.g2 = 0)
   control <- control.icm(type = "SIR", nsteps = 100, nsims = 1, verbose = FALSE,
@@ -425,10 +426,11 @@ test_that("SIR, 2G, OP: 1 sim", {
 test_that("SIR, 2G, OP: 2 sim", {
   skip_on_cran()
   param <- param.icm(inf.prob = 0.2, inf.prob.g2 = 0.1, act.rate = 3,
-                     balance = "g1", rec.rate = 1/50, rec.rate.g2 = 1/50,
-                     a.rate = 1/100, a.rate.g2 = NA, ds.rate = 1/100,
-                     ds.rate.g2 = 1/100, di.rate = 1/90, di.rate.g2 = 1/90,
-                     dr.rate = 1/100, dr.rate.g2 = 1/100)
+                     balance = "g1", rec.rate = 1 / 50, rec.rate.g2 = 1 / 50,
+                     a.rate = 1 / 100, a.rate.g2 = NA, ds.rate = 1 / 100,
+                     ds.rate.g2 = 1 / 100, di.rate = 1 / 90,
+                     di.rate.g2 = 1 / 90,  dr.rate = 1 / 100,
+                     dr.rate.g2 = 1 / 100)
   init <- init.icm(s.num = 500, i.num = 1, r.num = 0,
                    s.num.g2 = 500, i.num.g2 = 0, r.num.g2 = 0)
   control <- control.icm(type = "SIR", nsteps = 50, nsims = 2, verbose = FALSE,
@@ -455,7 +457,7 @@ test_that("SIR, 2G, OP: 2 sim", {
 
 test_that("SIS, 1G, CL: 1 sim", {
   skip_on_cran()
-  param <- param.icm(inf.prob = 0.2, act.rate = 0.25, rec.rate = 1/50)
+  param <- param.icm(inf.prob = 0.2, act.rate = 0.25, rec.rate = 1 / 50)
   init <- init.icm(s.num = 500, i.num = 1)
   control <- control.icm(type = "SIS", nsteps = 100, nsims = 1, verbose = FALSE,
                          verbose.int = 1)
@@ -479,7 +481,7 @@ test_that("SIS, 1G, CL: 1 sim", {
 
 test_that("SIS, 1G, CL: 2 sim", {
   skip_on_cran()
-  param <- param.icm(inf.prob = 0.2, act.rate = 0.25, rec.rate = 1/50)
+  param <- param.icm(inf.prob = 0.2, act.rate = 0.25, rec.rate = 1 / 50)
   init <- init.icm(s.num = 500, i.num = 1)
   control <- control.icm(type = "SIS", nsteps = 50, nsims = 2, verbose = FALSE)
   x <- icm(param, init, control)
@@ -527,7 +529,7 @@ test_that("SIS, 1G, CL: inf.prob = 0", {
 test_that("SIS, 2G, CL: 1 sim", {
   skip_on_cran()
   param <- param.icm(inf.prob = 0.2, act.rate = 0.25, inf.prob.g2 = 0.1,
-                     balance = "g1", rec.rate = 1/100, rec.rate.g2 = 1/100)
+                     balance = "g1", rec.rate = 1 / 100, rec.rate.g2 = 1 / 100)
   init <- init.icm(s.num = 500, i.num = 1, s.num.g2 = 500, i.num.g2 = 0)
   control <- control.icm(type = "SIS", nsteps = 100, nsims = 1, verbose = FALSE)
   x <- icm(param, init, control)
@@ -549,7 +551,7 @@ test_that("SIS, 2G, CL: 1 sim", {
 test_that("SIS, 2G, CL: 2 sim", {
   skip_on_cran()
   param <- param.icm(inf.prob = 0.2, act.rate = 0.25, inf.prob.g2 = 0.1,
-                     balance = "g1", rec.rate = 1/100, rec.rate.g2 = 1/100)
+                     balance = "g1", rec.rate = 1 / 100, rec.rate.g2 = 1 / 100)
   init <- init.icm(s.num = 500, i.num = 1, s.num.g2 = 500, i.num.g2 = 0)
   control <- control.icm(type = "SIS", nsteps = 50, nsims = 2, verbose = FALSE)
   x <- icm(param, init, control)
@@ -571,8 +573,8 @@ test_that("SIS, 2G, CL: 2 sim", {
 
 test_that("SIS, 1G, OP: 1 sim", {
   skip_on_cran()
-  param <- param.icm(inf.prob = 0.2, act.rate = 0.5, rec.rate = 1/50,
-                     a.rate = 1/100, ds.rate = 1/100, di.rate = 1/90)
+  param <- param.icm(inf.prob = 0.2, act.rate = 0.5, rec.rate = 1 / 50,
+                     a.rate = 1 / 100, ds.rate = 1 / 100, di.rate = 1 / 90)
   init <- init.icm(s.num = 500, i.num = 1)
   control <- control.icm(type = "SIS", nsteps = 100, nsims = 1, verbose = FALSE)
   x <- icm(param, init, control)
@@ -594,8 +596,8 @@ test_that("SIS, 1G, OP: 1 sim", {
 
 test_that("SIS, 1G, OP: 2 sim", {
   skip_on_cran()
-  param <- param.icm(inf.prob = 0.2, act.rate = 0.5, rec.rate = 1/50,
-                     a.rate = 1/100, ds.rate = 1/100, di.rate = 1/90)
+  param <- param.icm(inf.prob = 0.2, act.rate = 0.5, rec.rate = 1 / 50,
+                     a.rate = 1 / 100, ds.rate = 1 / 100, di.rate = 1 / 90)
   init <- init.icm(s.num = 500, i.num = 1)
   control <- control.icm(type = "SIS", nsteps = 50, nsims = 2, verbose = FALSE)
   x <- icm(param, init, control)
@@ -619,9 +621,10 @@ test_that("SIS, 1G, OP: 2 sim", {
 test_that("SIS, 2G, OP: 1 sim", {
   skip_on_cran()
   param <- param.icm(inf.prob = 0.2, inf.prob.g2 = 0.1, act.rate = 0.5,
-                     balance = "g1", rec.rate = 1/50, rec.rate.g2 = 1/50,
-                     a.rate = 1/100, a.rate.g2 = NA, ds.rate = 1/100,
-                     ds.rate.g2 = 1/100, di.rate = 1/90, di.rate.g2 = 1/90)
+                     balance = "g1", rec.rate = 1 / 50, rec.rate.g2 = 1 / 50,
+                     a.rate = 1 / 100, a.rate.g2 = NA, ds.rate = 1 / 100,
+                     ds.rate.g2 = 1 / 100, di.rate = 1 / 90,
+                     di.rate.g2 = 1 / 90)
   init <- init.icm(s.num = 500, i.num = 1, s.num.g2 = 500, i.num.g2 = 1)
   control <- control.icm(type = "SIS", nsteps = 100, nsims = 1, verbose = FALSE)
   x <- icm(param, init, control)
@@ -643,9 +646,10 @@ test_that("SIS, 2G, OP: 1 sim", {
 test_that("SIS, 2G, OP: 2 sim", {
   skip_on_cran()
   param <- param.icm(inf.prob = 0.2, inf.prob.g2 = 0.1, act.rate = 0.5,
-                     balance = "g1", rec.rate = 1/50, rec.rate.g2 = 1/50,
-                     a.rate = 1/100, a.rate.g2 = NA, ds.rate = 1/100,
-                     ds.rate.g2 = 1/100, di.rate = 1/90, di.rate.g2 = 1/90)
+                     balance = "g1", rec.rate = 1 / 50, rec.rate.g2 = 1 / 50,
+                     a.rate = 1 / 100, a.rate.g2 = NA, ds.rate = 1 / 100,
+                     ds.rate.g2 = 1 / 100, di.rate = 1 / 90,
+                     di.rate.g2 = 1 / 90)
   init <- init.icm(s.num = 500, i.num = 1, s.num.g2 = 500, i.num.g2 = 1)
   control <- control.icm(type = "SIS", nsteps = 50, nsims = 2, verbose = FALSE,
                          verbose.int = 5)

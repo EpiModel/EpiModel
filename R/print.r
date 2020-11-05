@@ -194,7 +194,7 @@ print.netsim <- function(x, formation.stats = FALSE, ...) {
       merged.stats <- matrix(NA, nrow = nrow(stats[[1]]) * nsims,
                              ncol = ncol(stats[[1]]))
       for (i in 1:ncol(stats[[1]])) {
-        merged.stats[,i] <- as.numeric(sapply(stats, function(x) c(x[,i])))
+        merged.stats[, i] <- as.numeric(sapply(stats, function(x) c(x[, i])))
       }
       colnames(merged.stats) <- colnames(stats[[1]])
     } else {
@@ -220,13 +220,15 @@ print.netsim <- function(x, formation.stats = FALSE, ...) {
     ## Create stats.formation table for output
     stats.table <- merge(ts.out, stats.table, all = TRUE)
     stats.table <- stats.table[do.call("order",
-                                       stats.table[, "sorder", drop = FALSE]), , drop = FALSE]
+                                       stats.table[, "sorder", drop = FALSE]), ,
+                               drop = FALSE]
     rownames(stats.table) <- stats.table$names
 
-    stats.table$reldiff <- 100 * (stats.table$stats.means - stats.table$targets) /
-      stats.table$targets
+    stats.table$reldiff <- 100 * (stats.table$stats.means -
+                                    stats.table$targets) / stats.table$targets
     stats.table.formation <- stats.table[, c(2, 4, 6, 5)]
-    colnames(stats.table.formation) <- c("Target", "Sim Mean", "Pct Diff", "Sim SD")
+    colnames(stats.table.formation) <- c("Target", "Sim Mean",
+                                         "Pct Diff", "Sim SD")
 
     cat("\n\nFormation Diagnostics")
     cat("\n----------------------- \n")
@@ -455,7 +457,7 @@ print.control.net <- function(x, ...) {
   funToPrint <- names(x)[grep(".FUN", names(x))]
   funToPrint <- funToPrint[-which(funToPrint %in% c("initialize.FUN",
                                                     "verbose.FUN"))]
-  if(is.null(x$module.order)) {
+  if (is.null(x$module.order)) {
     cat("Dynamic Modules:", funToPrint)
   } else {
     order <- unlist(lapply(funToPrint, function(y) which(y == x$module.order)))

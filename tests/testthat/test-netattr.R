@@ -6,13 +6,14 @@ test_that("Updating attributes in open populations", {
 
   formation <- ~edges + nodefactor("group")
   target.stats <- c(25, 36)
-  coef.diss <- dissolution_coefs(dissolution = ~offset(edges), 38, d.rate = 0.002)
+  coef.diss <- dissolution_coefs(dissolution = ~offset(edges), 38,
+                                 d.rate = 0.002)
   est1 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 
   probs <- c(0.2055, 0.0088, 0.0614, 0)
   durs <- c(3, 100, 9, 10)
   inf.probs <- rep(probs, durs)
-  inf.probsf <- inf.probs*2
+  inf.probsf <- inf.probs * 2
   param <- param.net(inf.prob = inf.probs, act.rate = 1,
                      inf.prob.g2 = inf.probs,
                      a.rate = 0.05, a.rate.g2 = NA,
@@ -52,7 +53,7 @@ test_that("Serosorting model in open population", {
   nw <- network_initialize(n = n)
 
   prev <- 0.2
-  infIds <- sample(1:n, n*prev)
+  infIds <- sample(1:n, n * prev)
   nw <- set_vertex_attribute(nw, "status", "s")
   nw <- set_vertex_attribute(nw, "status", "i", infIds)
   nw <- set_vertex_attribute(nw, "race", rbinom(n, 1, 0.5))
@@ -69,7 +70,8 @@ test_that("Serosorting model in open population", {
   control <- control.net(type = "SI", nsteps = 20, nsims = 1,
                          nwstats.formula = ~edges +
                                             meandeg +
-                                            nodefactor("status", levels = NULL) +
+                                            nodefactor("status",
+                                                       levels = NULL) +
                                             nodematch("status"),
                          tergmLite = FALSE,
                          resimulate.network = TRUE,
@@ -100,7 +102,7 @@ test_that("Serosorting model in closed population", {
   nw <- network_initialize(n = n)
 
   prev <- 0.2
-  infIds <- sample(1:n, n*prev)
+  infIds <- sample(1:n, n * prev)
   nw <- set_vertex_attribute(nw, "status", "s")
   nw <- set_vertex_attribute(nw, "status", "i", infIds)
   nw <- set_vertex_attribute(nw, "race", rbinom(n, 1, 0.5))
@@ -150,7 +152,7 @@ test_that("Serosorting model in open population, with tergmLite", {
   nw <- network_initialize(n = n)
 
   prev <- 0.2
-  infIds <- sample(1:n, n*prev)
+  infIds <- sample(1:n, n * prev)
   nw <- set_vertex_attribute(nw, "status", "s")
   nw <- set_vertex_attribute(nw, "status", "i", infIds)
   nw <- set_vertex_attribute(nw, "race", rbinom(n, 1, 0.5))
@@ -185,7 +187,8 @@ test_that("Save attributes to output", {
   nw <- set_vertex_attribute(nw, "group", rep(1:2, each = 25))
   formation <- ~edges + nodematch("group")
   target.stats <- c(25, 0)
-  coef.diss <- dissolution_coefs(dissolution = ~offset(edges), 38, d.rate = 0.01)
+  coef.diss <- dissolution_coefs(dissolution = ~offset(edges), 38,
+                                 d.rate = 0.01)
   est1 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 
   param <- param.net(inf.prob = 0.2, act.rate = 1,

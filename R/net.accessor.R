@@ -123,7 +123,7 @@ get_attr <- function(dat, item, indexes = NULL, override.null.error = FALSE) {
           stop("(logical) `indexes` has to have a length equal to the number of
               nodes in the network")
         }
-      } else if(is.numeric(indexes)) {
+      } else if (is.numeric(indexes)) {
         if (any(indexes > length(dat[["attr"]][[item]]))) {
           stop("Some (numeric) `indexes` are larger than the number of nodes in
               the network")
@@ -159,7 +159,8 @@ set_attr <- function(dat, item, value, override.length.check = FALSE) {
     dat <- add_attr(dat, item)
   }
 
-  if (length(value) != length(dat[["attr"]][["active"]]) & !override.length.check) {
+  if (length(value) !=
+      length(dat[["attr"]][["active"]]) & !override.length.check) {
     stop(paste0(
       "When trying to edit the ", `item`, " nodal attribute: The size",
        " of the `value` vector is not equal to the number of node in
@@ -205,7 +206,7 @@ get_epi_list <- function(dat, item = NULL) {
     out <- dat[["epi"]]
 
   } else {
-    missing_item <- setdiff(item,names(dat[["epi"]]))
+    missing_item <- setdiff(item, names(dat[["epi"]]))
     if (length(missing_item) > 0) {
       stop(paste("There is no epi output called",
                  paste(missing_item, collapse = ", "),
@@ -237,7 +238,7 @@ get_epi <- function(dat, item, indexes = NULL, override.null.error = FALSE) {
           stop("(logical) `indexes` has to have a length equal to the number of
               steps planned for for the simulation (control[['nsteps']])")
         }
-      } else if(is.numeric(indexes)) {
+      } else if (is.numeric(indexes)) {
         if (any(indexes > dat[["control"]][["nsteps"]])) {
           stop("Some (numeric) `indexes` are larger than the number of
               steps planned for for the simulation (control[['nsteps']])")
@@ -360,7 +361,7 @@ get_control_list <- function(dat, item = NULL) {
     out <- dat[["control"]]
 
   } else {
-    missing_item <- setdiff(item,names(dat[["control"]]))
+    missing_item <- setdiff(item, names(dat[["control"]]))
     if (length(missing_item) > 0) {
       stop(paste("There is no control value called",
                  paste(missing_item, collapse = ", "),
@@ -422,7 +423,7 @@ get_init_list <- function(dat, item = NULL) {
     out <- dat[["init"]]
 
   } else {
-    missing_item <- setdiff(item,names(dat[["init"]]))
+    missing_item <- setdiff(item, names(dat[["init"]]))
     if (length(missing_item) > 0) {
       stop(paste("There is no init value called",
                  paste(missing_item, collapse = ", "),
@@ -476,4 +477,3 @@ set_init <- function(dat, item, value) {
 
   return(dat)
 }
-

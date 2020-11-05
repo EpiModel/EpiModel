@@ -6,9 +6,10 @@
 #'
 #' @param inf.prob Probability of infection per transmissible act between
 #'        a susceptible and an infected person. In two-group models, this is the
-#'        probability of infection to the group 1 nodes. This may also be a vector
-#'        of probabilities, with each element corresponding to the probability
-#'        in that time step of infection (see Time-Varying Parameters below).
+#'        probability of infection to the group 1 nodes. This may also be a
+#'        vector of probabilities, with each element corresponding to the
+#'        probability in that time step of infection (see Time-Varying
+#'        Parameters below).
 #' @param inter.eff Efficacy of an intervention which affects the per-act
 #'        probability of infection. Efficacy is defined as 1 - the relative
 #'        hazard of infection given exposure to the intervention, compared to no
@@ -17,44 +18,46 @@
 #'        the number of time steps specified in the model. This will default to
 #'        1 if the \code{inter.eff} is defined but this parameter is not.
 #' @param act.rate Average number of transmissible acts \emph{per partnership}
-#'        per unit time (see \code{act.rate} Parameter below). This may also be a vector
-#'        of rates, with each element corresponding to the rate in in that time
-#'        step of infection (see Time-Varying Parameters below).
+#'        per unit time (see \code{act.rate} Parameter below). This may also be
+#'        a vector of rates, with each element corresponding to the rate in in
+#'        that time step of infection (see Time-Varying Parameters below).
 #' @param rec.rate Average rate of recovery with immunity (in \code{SIR} models)
 #'        or re-susceptibility (in \code{SIS} models). The recovery rate is the
 #'        reciprocal of the disease duration. For two-group models, this is the
 #'        recovery rate for mode 1 persons only. This parameter is only used for
 #'        \code{SIR} and \code{SIS} models. This may also be a vector
-#'        of rates, with each element corresponding to the rate in that time step
-#'        of infection (see Time-Varying Parameters below).
-#' @param a.rate Arrival or entry rate. For one-mode models, the arrival rate is the
-#'        rate of new arrivals per person per unit time. For two-group models, the
-#'        arrival rate may be parameterized as a rate per mode 1 person time (with
-#'        group 1 persons representing females), and with the \code{a.rate.g2}
-#'        rate set as described below.
-#' @param ds.rate Departure or exit rate for susceptible. For two-group models, it
-#'        is the rate for the group 1 susceptible only.
-#' @param di.rate Departure or exit rate for infected. For two-group models, it is
-#'        the rate for the group 1 infected only.
-#' @param dr.rate Departure or exit rate for recovered. For two-group models, it is
-#'        the rate for the group 1 recovered only. This parameter is only used for
-#'        \code{SIR} models.
+#'        of rates, with each element corresponding to the rate in that time
+#'        step of infection (see Time-Varying Parameters below).
+#' @param a.rate Arrival or entry rate. For one-mode models, the arrival rate is
+#'        the rate of new arrivals per person per unit time. For two-group
+#'        models, the arrival rate may be parameterized as a rate per mode 1
+#'        person time (with group 1 persons representing females), and with the
+#'        \code{a.rate.g2} rate set as described below.
+#' @param ds.rate Departure or exit rate for susceptible. For two-group models,
+#'        it is the rate for the group 1 susceptible only.
+#' @param di.rate Departure or exit rate for infected. For two-group models, it
+#'        is the rate for the group 1 infected only.
+#' @param dr.rate Departure or exit rate for recovered. For two-group models, it
+#'        is the rate for the group 1 recovered only. This parameter is only
+#'        used for \code{SIR} models.
 #' @param inf.prob.g2 Probability of transmission given a transmissible act
 #'        between a susceptible group 2 person and an infected group 1 person.
 #'        It is the probability of transmission to group 2 members.
-#' @param rec.rate.g2 Average rate of recovery with immunity (in \code{SIR} models)
-#'        or re-susceptibility (in \code{SIS} models) for group 2 persons. This
-#'        parameter is only used for two-group \code{SIR} and \code{SIS} models.
-#' @param a.rate.g2 Arrival or entry rate for group 2. This may either be specified
-#'        numerically as the rate of new arrivals per group 2 persons per unit time,
-#'        or as \code{NA} in which case the mode 1 rate, \code{a.rate}, governs
-#'        the group 2 rate. The latter is used when, for example, the first group
-#'        is conceptualized as female, and the female population size determines
-#'        the arrival rate. Such arrivalss are evenly allocated between the two groups.
+#' @param rec.rate.g2 Average rate of recovery with immunity (in \code{SIR}
+#'        models) or re-susceptibility (in \code{SIS} models) for group 2
+#'        persons. This parameter is only used for two-group \code{SIR} and
+#'        \code{SIS} models.
+#' @param a.rate.g2 Arrival or entry rate for group 2. This may either be
+#'        specified numerically as the rate of new arrivals per group 2 persons
+#'        per unit time, or as \code{NA} in which case the mode 1 rate,
+#'        \code{a.rate}, governs the group 2 rate. The latter is used when, for
+#'        example, the first group is conceptualized as female, and the female
+#'        population size determines the arrival rate. Such arrivalss are evenly
+#'        allocated between the two groups.
 #' @param ds.rate.g2 Departure or exit rate for group 2 susceptible.
 #' @param di.rate.g2 Departure or exit rate for group 2 infected.
-#' @param dr.rate.g2 Departure or exit rate for group 2 recovered. This parameter is
-#'        only used for \code{SIR} model types.
+#' @param dr.rate.g2 Departure or exit rate for group 2 recovered. This
+#'        parameter is only used for \code{SIR} model types.
 #' @param ... Additional arguments passed to model.
 #'
 #' @details
@@ -67,22 +70,23 @@
 #'
 #' For base models, the model specification will be chosen as a result of
 #' the model parameters entered here and the control settings in
-#' \code{\link{control.net}}. One-group and two-group models are available, where
-#' the latter assumes a heterogeneous mixing between two distinct partitions
-#' in the population (e.g., men and women). Specifying any two-group parameters
-#' (those with a \code{.g2}) implies the simulation of a two-group model. All the
-#' parameters for a desired model type must be specified, even if they are zero.
+#' \code{\link{control.net}}. One-group and two-group models are available,
+#' where the latter assumes a heterogeneous mixing between two distinct
+#' partitions in the population (e.g., men and women). Specifying any two-group
+#' parameters (those with a \code{.g2}) implies the simulation of a two-group
+#' model. All the parameters for a desired model type must be specified, even if
+#' they are zero.
 #'
 #' @section The \code{act.rate} Parameter:
 #' A key difference between these network models and DCM/ICM classes is the
-#' treatment of transmission events. With DCM and ICM, contacts or partnerships are
-#' mathematically instantaneous events: they have no duration in time, and thus
-#' no changes may occur within them over time. In contrast, network models allow
-#' for partnership durations defined by the dynamic network model, summarized in
-#' the model dissolution coefficients calculated in \code{\link{dissolution_coefs}}.
-#' Therefore, the \code{act.rate} parameter has a different interpretation here,
-#' where it is the number of transmissible acts \emph{per partnership} per unit
-#' time.
+#' treatment of transmission events. With DCM and ICM, contacts or partnerships
+#' are mathematically instantaneous events: they have no duration in time, and
+#' thus no changes may occur within them over time. In contrast, network models
+#' allow for partnership durations defined by the dynamic network model,
+#' summarized in the model dissolution coefficients calculated in
+#' \code{\link{dissolution_coefs}}. Therefore, the \code{act.rate} parameter has
+#' a different interpretation here, where it is the number of transmissible acts
+#' \emph{per partnership} per unit time.
 #'
 #' @section Time-Varying Parameters:
 #' The \code{inf.prob}, \code{act.rate}, \code{rec.rate} arguments (and their
@@ -93,19 +97,21 @@
 #' of \code{c(0.5, 0.5, 0.1)} would simulate a 0.5 transmission probability for
 #' the first two time steps of a person's infection, followed by a 0.1 for the
 #' third time step. If the infected person has not recovered or exited the
-#' population by the fourth time step, the third element in the vector will carry
-#' forward until one of those events occurs or the simulation ends. For further examples,
-#' see the \href{https://statnet.org/nme/}{NME Course Tutorials}.
+#' population by the fourth time step, the third element in the vector will
+#' carry forward until one of those events occurs or the simulation ends. For
+#' further examples, see the \href{https://statnet.org/nme/}{NME Course
+#' Tutorials}.
 #'
 #' @section New Modules:
 #' To build original models outside of the base models, new process modules
-#' may be constructed to replace the existing modules or to supplement the existing
-#' set. These are passed into the control settings in \code{\link{control.net}}.
-#' New modules may use either the existing model parameters named here, an
-#' original set of parameters, or a combination of both. The \code{...} allows
-#' the user to pass an arbitrary set of original model parameters into
-#' \code{param.net}. Whereas there are strict checks with default modules for
-#' parameter validity, these checks are the user's responsibility with new modules.
+#' may be constructed to replace the existing modules or to supplement the
+#' existing set. These are passed into the control settings in
+#' \code{\link{control.net}}. New modules may use either the existing model
+#' parameters named here, an original set of parameters, or a combination of
+#' both. The \code{...} allows the user to pass an arbitrary set of original
+#' model parameters into \code{param.net}. Whereas there are strict checks with
+#' default modules for parameter validity, these checks are the user's
+#' responsibility with new modules.
 #'
 #' @seealso Use \code{\link{init.net}} to specify the initial conditions and
 #'          \code{\link{control.net}} to specify the control settings. Run the
@@ -193,14 +199,14 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
 #'        used for two-group models.
 #' @param r.num.g2 Number of initial recovered in group 2. This parameter is
 #'        only used for two-group \code{SIR} models.
-#' @param status.vector A vector of length equal to the size of the input network,
-#'        containing the status of each node. Setting status here overrides any
-#'        inputs passed in the \code{.num} arguments.
-#' @param infTime.vector A vector of length equal to the size of the input network,
-#'        containing the (historical) time of infection for each of those nodes
-#'        with a current status of \code{"i"}. Can only be used if \code{status.vector}
-#'        is used, and must contain \code{NA} values for any nodes whose status
-#'        is not \code{"i"}.
+#' @param status.vector A vector of length equal to the size of the input
+#'        network, containing the status of each node. Setting status here
+#'        overrides any inputs passed in the \code{.num} arguments.
+#' @param infTime.vector A vector of length equal to the size of the input
+#'        network, containing the (historical) time of infection for each of
+#'        those nodes with a current status of \code{"i"}. Can only be used if
+#'        \code{status.vector} is used, and must contain \code{NA} values for
+#'        any nodes whose status is not \code{"i"}.
 #' @param ... Additional initial conditions passed to model.
 #'
 #' @details
@@ -291,15 +297,16 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #' @param nsims The total number of disease simulations.
 #' @param ncores Number of processor cores to run multiple simulations
 #'        on, using the \code{foreach} and \code{doParallel} implementations.
-#' @param start For models with network resimulation , time point to start up simulation.
-#'        For restarted simulations, this must be one greater than the final time
-#'        step in the prior simulation and must be less than the value in
-#'        \code{nsteps}.
+#' @param start For models with network resimulation , time point to start up
+#'        simulation. For restarted simulations, this must be one greater than
+#'        the final time step in the prior simulation and must be less than the
+#'        value in \code{nsteps}.
 #' @param resimulate.network If \code{TRUE}, resimulate the network at each time
-#'        step. This is required when the epidemic or demographic processes impact
-#'        the network structure (e.g., vital dynamics).
-#' @param tergmLite Logical indicating usage of either \code{tergm} (\code{tergmLite = FALSE}),
-#'        or \code{tergmLite} (\code{tergmLite = TRUE}). Default of \code{FALSE}.
+#'        step. This is required when the epidemic or demographic processes
+#'        impact the network structure (e.g., vital dynamics).
+#' @param tergmLite Logical indicating usage of either \code{tergm}
+#'        (\code{tergmLite = FALSE}), or \code{tergmLite}
+#'        (\code{tergmLite = TRUE}). Default of \code{FALSE}.
 #' @param attr.rules A list containing the  rules for setting the attributes of
 #'        incoming nodes, with one list element per attribute to be set (see
 #'        details below).
@@ -309,8 +316,8 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #'        otherwise it is ignored.
 #' @param initialize.FUN Module to initialize the model at time 1, with the
 #'        default function of \code{\link{initialize.net}}.
-#' @param departures.FUN Module to simulate departure or exit, with the default function
-#'        of \code{\link{departures.net}}.
+#' @param departures.FUN Module to simulate departure or exit, with the default
+#'        function of \code{\link{departures.net}}.
 #' @param arrivals.FUN Module to simulate arrivals or entries, with the default
 #'        function of \code{\link{arrivals.net}}.
 #' @param recovery.FUN Module to simulate disease recovery, with the default
@@ -322,28 +329,31 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #' @param nwupdate.FUN Module to handle updating of network structure and nodal
 #'        attributes due to exogenous epidemic model processes, with the default
 #'        function of \code{\link{nwupdate.net}}.
-#' @param prevalence.FUN Module to calculate disease prevalence at each time step,
-#'        with the default function of \code{\link{prevalence.net}}.
+#' @param prevalence.FUN Module to calculate disease prevalence at each time
+#'        step, with the default function of \code{\link{prevalence.net}}.
 #' @param verbose.FUN Module to print simulation progress to screen, with the
 #'        default function of \code{\link{verbose.net}}.
 #' @param module.order A character vector of module names that lists modules the
 #'        order in which they should be evaluated within each time step. If
 #'        \code{NULL}, the modules will be evaluated as follows: first any
 #'        new modules supplied through \code{...} in the order in which they are
-#'        listed, then the built-in modules in their order of the function listing.
-#'        The \code{initialize.FUN} will always be run first and the
+#'        listed, then the built-in modules in their order of the function
+#'        listing. The \code{initialize.FUN} will always be run first and the
 #'        \code{verbose.FUN} always last.
 #' @param set.control.ergm Control arguments passed to simulate.ergm. See the
-#'        help file for \code{\link{netdx}} for details and examples on specifying
-#'        this parameter.
-#' @param set.control.stergm Control arguments passed to simulate.stergm. See the
-#'        help file for \code{\link{netdx}} for details and examples on specifying
-#'        this parameter.
+#'        help file for \code{\link{netdx}} for details and examples on
+#'        specifying this parameter.
+#' @param set.control.stergm Control arguments passed to simulate.stergm. See
+#'        the help file for \code{\link{netdx}} for details and examples on
+#'        specifying this parameter.
 #' @param save.nwstats If \code{TRUE}, save network statistics in a data frame.
 #'        The statistics to be saved are specified in the \code{nwstats.formula}
 #'        argument.
+#' @param save.transmat If \code{TRUE}, complete transmission matrix is saved at
+#'        simulation end. Default of \code{TRUE}.
 #' @param nwstats.formula A right-hand sided ERGM formula that includes network
-#'        statistics of interest, with the default to the formation formula terms.
+#'        statistics of interest, with the default to the formation formula
+#'        terms.
 #' @param save.other A vector of elements on the \code{dat} master data list
 #'        to save out after each simulation. One example for base models is
 #'        the attribute list, "attr", at the final time step.
@@ -355,8 +365,8 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #' @param skip.check If \code{TRUE}, skips the default error checking for the
 #'        structure and consistency of the parameter values, initial conditions,
 #'        and control settings before running base epidemic models. Setting
-#'        this to \code{FALSE} is recommended when running models with new modules
-#'        specified.
+#'        this to \code{FALSE} is recommended when running models with new
+#'        modules specified.
 #' @param raw.output If \code{TRUE}, \code{netsim} will output a list of nestsim
 #'        data (one per simulation) instead of a formatted \code{netsim} object.
 #' @param ... Additional control settings passed to model.
@@ -399,11 +409,11 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #' the simulation. The default infection module, for example, is contained in
 #' the \code{\link{infection.net}} function.
 #'
-#' For original models, one may substitute replacement module functions for any of
-#' the default functions. New modules may be added to the workflow at each time
-#' step by passing a module function via the \code{...} argument. Consult the
-#' \href{http://epimodel.org/tut.html}{New Network Models} tutorials. One may
-#' remove existing modules, such as \code{arrivals.FUN}, from the workflow
+#' For original models, one may substitute replacement module functions for any
+#' of the default functions. New modules may be added to the workflow at each
+#' time step by passing a module function via the \code{...} argument. Consult
+#' the \href{http://epimodel.org/tut.html}{New Network Models} tutorials. One
+#' may remove existing modules, such as \code{arrivals.FUN}, from the workflow
 #' by setting the parameter value for that argument to \code{NULL}.
 #'
 #' @seealso Use \code{\link{param.net}} to specify model parameters and
@@ -436,6 +446,7 @@ control.net <- function(type,
                         set.control.ergm,
                         set.control.stergm,
                         save.nwstats = TRUE,
+                        save.transmat = TRUE,
                         nwstats.formula = "formation",
                         save.other,
                         verbose = TRUE,
@@ -464,16 +475,14 @@ control.net <- function(type,
   if ("births.FUN" %in% names(dot.args)) {
     p$arrivals.FUN <- dot.args$births.FUN
     p$births.FUN <- dot.args$births.FUN <- NULL
-    stop("EpiModel 1.7.0+ renamed the birth function births.FUN to arrivals.FUN. ",
-         "See documentation for details.",
-         call. = FALSE)
+    stop("EpiModel 1.7.0+ renamed the birth function births.FUN to
+         arrivals.FUN. ", "See documentation for details.", call. = FALSE)
   }
   if ("deaths.FUN" %in% names(dot.args)) {
     p$departures.FUN <- dot.args$deaths.FUN
     p$deaths.FUN <- dot.args$deaths.FUN <- NULL
-    stop("EpiModel 1.7.0+ renamed the death function deaths.FUN to departures.FUN. ",
-         "See documentation for details.",
-         call. = FALSE)
+    stop("EpiModel 1.7.0+ renamed the death function deaths.FUN to
+         departures.FUN. ", "See documentation for details.", call. = FALSE)
   }
 
   if ("depend" %in% names(dot.args)) {
@@ -483,11 +492,11 @@ control.net <- function(type,
          call. = FALSE)
   }
 
-  if ("save.network" %in% names(dot.args) || "save.transmat" %in% names(dot.args)) {
+  if ("save.network" %in% names(dot.args)) {
     p$tergmLite <- FALSE
-    stop("EpiModel 2.0+ has integrated options for saving of the network object and transmission ",
-         "matrix into control.net setting tergmLite: if FALSE, these are saved automatically; ",
-         "if TRUE, they are not saved. Update your code accordingly.",
+    stop("EpiModel 2.0+ has integrated options for saving of the network
+          object in control.net parameter tergmLite: if FALSE, this are
+          saved; if TRUE, they are not saved.",
          call. = FALSE)
   }
 
@@ -516,28 +525,30 @@ control.net <- function(type,
 
   ## Defaults and checks
 
-  #Check whether any base modules have been redefined by user (note: must come after above)
+  #Check whether any base modules have been redefined by user (note: must come
+  # after above)
   bi.nms <- bi.nms[-which(bi.nms %in% c("initialize.FUN", "resim_nets.FUN",
-                                        "verbose.FUN", "nwupdate.FUN", "prevalence.FUN"))]
+                                        "verbose.FUN", "nwupdate.FUN",
+                                        "prevalence.FUN"))]
   if (length(bi.nms) > 0) {
     flag1 <- logical()
     for (args in 1:length(bi.nms)) {
-      if (!(is.null(p[[bi.nms[args]]])) ) {
-        temp1 <- get(gsub(".FUN",".net",bi.nms[args]))
+      if (!(is.null(p[[bi.nms[args]]]))) {
+        temp1 <- get(gsub(".FUN", ".net", bi.nms[args]))
         temp2 <- p[[bi.nms[args]]]
-        flag1[args] <- identical(temp1,temp2)
+        flag1[args] <- identical(temp1, temp2)
       }
     }
 
     if (!is.null(p$type) && sum(flag1, na.rm = TRUE) != length(flag1)) {
-      stop("Control parameter 'type' must be null if any user defined base modules are present",
-           call. = FALSE)
+      stop("Control parameter 'type' must be null if any user defined base
+           modules are present", call. = FALSE)
     }
   }
 
   if (!is.null(p$type) && length(p$user.mods) > 0) {
-    stop("Control parameter 'type' must be null if any user specified modules are present",
-         call. = FALSE)
+    stop("Control parameter 'type' must be null if any user specified modules
+         are present", call. = FALSE)
   }
 
   if (is.null(p$nsteps)) {
@@ -594,7 +605,7 @@ crosscheck.net <- function(x, param, init, control) {
 
     if (control$start == 1 && control$skip.check == FALSE) {
 
-      # Main class check --------------------------------------------------------
+      # Main class check ----------------------------------------------------
       if (class(x) != "netest" && class(x) != "netsim") {
         stop("x must be either an object of class netest or class netsim",
              call. = FALSE)
@@ -612,7 +623,7 @@ crosscheck.net <- function(x, param, init, control) {
       # Pull network object from netest object
       nw <- x$fit$network
 
-      # Defaults ----------------------------------------------------------------
+      # Defaults ------------------------------------------------------------
 
       # Is status in network formation formula?
       statOnNw <- get_vertex_attribute(nw, "status") %in% c("s", "i", "r")
@@ -630,15 +641,15 @@ crosscheck.net <- function(x, param, init, control) {
       }
 
 
-      # Checks ------------------------------------------------------------------
+      # Checks -------------------------------------------------------------
 
       # Check that prevalence in NW attr status and initial conditions match
       if (statOnNw == TRUE) {
         nw1 <- sum(get_vertex_attribute(nw, "status") == 1)
         init1 <- sum(unlist(init[grep("i.num", names(init), value = TRUE)]))
         if ("i.num" %in% names(init) && nw1 != init1) {
-          warning("Overriding init infected settings with network status attribute",
-                  call. = FALSE, immediate. = TRUE)
+          warning("Overriding init infected settings with network
+                  status attribute", call. = FALSE, immediate. = TRUE)
           if (interactive()) Sys.sleep(4)
         }
       }
@@ -651,7 +662,8 @@ crosscheck.net <- function(x, param, init, control) {
         svals <- sort(unique(init$status.vector))
         if (control$type == "SIR") {
           if (any(svals %in% c("s", "i", "r") == FALSE)) {
-            stop("status.vector contains values other than \"s\", \"i\", and \"r\" ",
+            stop("status.vector contains values other than \"s\", \"i\",
+                 and \"r\" ",
                  call. = FALSE)
           }
         } else {
@@ -678,11 +690,12 @@ crosscheck.net <- function(x, param, init, control) {
         }
       }
       if (control$type == "SIR") {
-        if (is.null(init$r.num) & is.null(init$status.vector) & statOnNw == FALSE) {
+        if (is.null(init$r.num) & is.null(init$status.vector) &
+            statOnNw == FALSE) {
           stop("Specify r.num in init.net", call. = FALSE)
         }
-        if (nGroups == 2 & is.null(init$r.num.g2) & is.null(init$status.vector) &
-            statOnNw == FALSE) {
+        if (nGroups == 2 & is.null(init$r.num.g2) &
+            is.null(init$status.vector) & statOnNw == FALSE) {
           stop("Specify r.num.g2 in init.net", call. = FALSE)
         }
       }
@@ -729,8 +742,8 @@ crosscheck.net <- function(x, param, init, control) {
                "restarted simulations", call. = FALSE)
         }
         if (control$start > x$control$nsteps + 1) {
-          stop("control setting start must be 1 greater than the nsteps in the ",
-               "prior simulation", call. = FALSE)
+          stop("control setting start must be 1 greater than the nsteps in
+               the ", "prior simulation", call. = FALSE)
         }
 
 
@@ -741,25 +754,25 @@ crosscheck.net <- function(x, param, init, control) {
 
     ## Assign modules based on group parameter
     if (!is.null(control$type)) {
-      def <- grep(".FUN",names(control))
+      def <- grep(".FUN", names(control))
       args <- names(control)[def]
-      flag <- length(grep(".g2",names(param)))
+      flag <- length(grep(".g2", names(param)))
 
       if (flag == 0) {
         for (i in 1:length(args)) {
           if (is.null(control[[args[i]]])) {
-            temp <- get(gsub(".FUN",".net",args[i]))
+            temp <- get(gsub(".FUN", ".net", args[i]))
             control[[args[i]]] <- temp
-            control[["f.args"]][i] <- gsub(".FUN",".net",args[i])
+            control[["f.args"]][i] <- gsub(".FUN", ".net", args[i])
           }
         }
       }
       else {
         for (i in 1:length(args)) {
           if (is.null(control[[args[i]]])) {
-            temp <- get(gsub(".FUN",".2g.net",args[i]))
+            temp <- get(gsub(".FUN", ".2g.net", args[i]))
             control[[args[i]]] <- temp
-            control[["f.args"]][i] <- gsub(".FUN",".2g.net",args[i])
+            control[["f.args"]][i] <- gsub(".FUN", ".2g.net", args[i])
           }
         }
       }
@@ -767,8 +780,8 @@ crosscheck.net <- function(x, param, init, control) {
   }
 
   if (!is.null(control$type) && length(control$user.mods) > 0) {
-    stop("Control setting 'type' must be NULL if any user-specified modules specified.",
-         call. = FALSE)
+    stop("Control setting 'type' must be NULL if any user-specified modules
+         specified.", call. = FALSE)
   }
 
   ## In-place assignment to update param and control

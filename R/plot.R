@@ -10,16 +10,17 @@
 #' @param y Output compartments or flows from \code{dcm} object to plot.
 #' @param popfrac If \code{TRUE}, plot prevalence of values rather than numbers
 #'        (see details).
-#' @param run Run number to plot, for models with multiple runs (default is run 1).
+#' @param run Run number to plot, for models with multiple runs
+#'        (default is run 1).
 #' @param col Color for lines, either specified as a single color in a standard
 #'        R color format, or alternatively as a color palette from
 #'        \code{\link{RColorBrewer}} (see details).
 #' @param lwd Line width for output lines.
 #' @param lty Line type for output lines.
-#' @param alpha Transparency level for lines, where 0 = transparent and 1 = opaque
-#'        (see \code{adjustcolor} function).
-#' @param legend Type of legend to plot. Values are "n" for no legend, "full" for
-#'        full legend, and "lim" for limited legend (see details).
+#' @param alpha Transparency level for lines, where 0 = transparent and
+#'        1 = opaque (see \code{adjustcolor} function).
+#' @param legend Type of legend to plot. Values are "n" for no legend, "full"
+#'        for full legend, and "lim" for limited legend (see details).
 #' @param leg.name Character string to use for legend, with the default
 #'        determined automatically based on the \code{y} input.
 #' @param leg.cex Legend scale size.
@@ -27,8 +28,8 @@
 #'        of "r".
 #' @param grid If \code{TRUE}, a grid is added to the background of plot
 #'        (see \code{\link{grid}} for details), with default of nx by ny.
-#' @param add If \code{TRUE}, new plot window is not called and lines are added to
-#'        existing plot window.
+#' @param add If \code{TRUE}, new plot window is not called and lines are added
+#'        to existing plot window.
 #' @param ... Additional arguments to pass to main plot window (see
 #'        \code{\link{plot.default}}).
 #'
@@ -37,36 +38,37 @@
 #' compartmental model solved with \code{\link{dcm}}. Depending on the number of
 #' model runs (sensitivity analyses) and number of groups, the default plot is
 #' the fractional proportion of each compartment in the model over time. The
-#' specific compartments or flows to plot may be set using the \code{y} parameter,
-#' and in multiple run models the specific run may also be specified.
+#' specific compartments or flows to plot may be set using the \code{y}
+#' parameter, and in multiple run models the specific run may also be specified.
 #'
 #' @section The \code{popfrac} Argument:
 #' Compartment prevalence are the size of a compartment over some denominator.
 #' To plot the raw numbers from any compartment, use \code{popfrac=FALSE}; this
 #' is the default. The \code{popfrac} parameter calculates
-#' and plots the denominators of all specified compartments using these rules: 1)
-#' for one-group models, the prevalence of any compartment is the compartment size
-#' divided by the total population size; 2) for two-group models, the prevalence
-#' of any compartment is the compartment size divided by the group size.
+#' and plots the denominators of all specified compartments using these rules:
+#' 1) for one-group models, the prevalence of any compartment is the compartment
+#' size divided by the total population size; 2) for two-group models, the
+#' prevalence of any compartment is the compartment size divided by the group
+#' size.
 #'
 #' @section Color Palettes:
 #' Since \code{\link{dcm}} supports multiple run sensitivity models, plotting
-#' the results of such models uses a complex color scheme for distinguishing runs.
-#' This is accomplished using the \code{\link{RColorBrewer}} color palettes,
-#' which include a range of linked colors using named palettes. For
+#' the results of such models uses a complex color scheme for distinguishing
+#' runs. This is accomplished using the \code{\link{RColorBrewer}} color
+#' palettes, which include a range of linked colors using named palettes. For
 #' \code{plot.dcm}, one may either specify a brewer color palette listed in
-#' \code{\link{brewer.pal.info}}, or, alternatively, a vector of standard R colors
-#' (named, hexidecimal, or positive integers; see \code{\link{col2rgb}}).
+#' \code{\link{brewer.pal.info}}, or, alternatively, a vector of standard R
+#' colors (named, hexidecimal, or positive integers; see \code{\link{col2rgb}}).
 #'
 #' @section Plot Legends:
 #' There are three automatic legend types available, and the legend is
 #' added by default for plots. To turn off the legend, use \code{legend="n"}. To
 #' plot a legend with values for every line in a sensitivity analysis, use
 #' \code{legend="full"}. With models with many runs, this may be visually
-#' overwhelming. In those cases, use \code{legend="lim"} to plot a legend limited
-#' to the highest and lowest values of the varying parameter in the model. In cases
-#' where the default legend names are not helpful, one may override those names
-#' with the \code{leg.name} argument.
+#' overwhelming. In those cases, use \code{legend="lim"} to plot a legend
+#' limited to the highest and lowest values of the varying parameter in the
+#' model. In cases where the default legend names are not helpful, one may
+#' override those names with the \code{leg.name} argument.
 #'
 #' @method plot dcm
 #' @export
@@ -418,8 +420,8 @@ plot.dcm <- function(x, y, popfrac = FALSE, run, col, lwd, lty, alpha = 0.9,
     }
     if (lcomp > 1) {
       leg.names <- y
-      warning("Legend names ignored for multiple y plots of multiple run models",
-              call. = FALSE)
+      warning("Legend names ignored for multiple y plots of multiple run
+              models", call. = FALSE)
     }
   }
 
@@ -806,8 +808,8 @@ draw_qnts <- function(x, y, qnts, qnts.pal, qnts.smooth,
     if (plot.qnts == 1) {
       polygon(xx, yy, col = qnts.pal[j], border = NA)
     } else{
-      qnt.max[j] = max(yy)
-      qnt.min[j] = min(yy)
+      qnt.max[j] <-  max(yy)
+      qnt.min[j] <-  min(yy)
     }
   }
   if (plot.qnts == 0 & qnts.min_max == "max") {
@@ -842,8 +844,8 @@ draw_means <- function(x, y, mean.smooth, mean.lwd,
       lines(mean.prev, lwd = mean.lwd[j],
             col = mean.pal[j], lty = mean.lty[j])
     } else {
-      mean.max[j] = max(mean.prev, na.rm = TRUE)
-      mean.min[j] = min(mean.prev, na.rm = TRUE)
+      mean.max[j] <-  max(mean.prev, na.rm = TRUE)
+      mean.min[j] <-  min(mean.prev, na.rm = TRUE)
     }
   }
   if (plot.means == 0 & mean.min_max == "max") {
@@ -873,9 +875,9 @@ draw_means <- function(x, y, mean.smooth, mean.lwd,
 #' @inheritParams plot.netsim
 #'
 #' @details
-#' The plot function for \code{netdx} objects will generate plots of two types of
-#' model diagnostic statistics that run as part of the diagnostic tools within
-#' that function. The \code{formation} plot shows the summary statistics
+#' The plot function for \code{netdx} objects will generate plots of two types
+#' of model diagnostic statistics that run as part of the diagnostic tools
+#' within that function. The \code{formation} plot shows the summary statistics
 #' requested in \code{nwstats.formula}, where the default includes those
 #' statistics in the network model formation formula specified in the original
 #' call to \code{\link{netest}}.
@@ -977,7 +979,8 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
          "run with dynamic = TRUE", call. = FALSE)
   }
 
-  if (is.null(x$stats.table.dissolution) & type %in% c("duration", "dissolution")) {
+  if (is.null(x$stats.table.dissolution) & type %in% c("duration",
+                                                       "dissolution")) {
     stop("Plots of type duration and dissolution only available if netdx ",
          "run with skip.dissolution = FALSE", call. = FALSE)
   }
@@ -1058,18 +1061,20 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
     }
 
     ## Color Vector Validation
-    # 1. Sim.col, mean.col, qnts.col, targ.col must be missing or a vector of length 1 or nstats
+    # 1. Sim.col, mean.col, qnts.col, targ.col must be missing or a vector of
+    #    length 1 or nstats
     # 2. If sim.col, mean.col, qnts.col, or targ.col is not missing
     #    but is a vector of length 1 and nstats is greater than 1,
-    #    then replicate the color vector nstats times to achieve a vector of size nstats.
+    #    then replicate the color vector nstats times to achieve a vector of
+    #    size nstats.
 
     # Sim.col
     if (!missing(sim.col)) {
-      if (!(length(sim.col) %in% c(1,nstats))) {
-        stop("sim.col must be either missing or a vector of length 1  or nstats (",
-             nstats, ")", call. = FALSE)
+      if (!(length(sim.col) %in% c(1, nstats))) {
+        stop("sim.col must be either missing or a vector of length 1  or
+             nstats (", nstats, ")", call. = FALSE)
       } else if (length(sim.col) == 1 & nstats > 1) {
-        sim.col <- rep(sim.col,nstats)
+        sim.col <- rep(sim.col, nstats)
       }
     }
 
@@ -1077,8 +1082,8 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
     # Mean.col
     if (!missing(mean.col)) {
       if (!(length(mean.col) %in% c(1, nstats))) {
-        stop("mean.col must be either missing or a vector of length 1 or nstats (",
-             nstats, ")", call. = FALSE)
+        stop("mean.col must be either missing or a vector of length 1 or
+             nstats (", nstats, ")", call. = FALSE)
       }
       else if (length(mean.col) == 1 & nstats > 1) {
         mean.col <- rep(mean.col, nstats)
@@ -1087,9 +1092,9 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 
     # Qnts.col
     if (!missing(qnts.col)) {
-      if (!(length(qnts.col) %in% c(1,nstats))) {
-        stop("qnts.col must be either missing or a vector of length 1 or nstats (",
-             nstats, ")", call. = FALSE)
+      if (!(length(qnts.col) %in% c(1, nstats))) {
+        stop("qnts.col must be either missing or a vector of length 1 or
+             nstats (", nstats, ")", call. = FALSE)
       } else if (length(qnts.col) == 1 & nstats > 1) {
         qnts.col <- rep(qnts.col, nstats)
       }
@@ -1097,9 +1102,9 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 
     # Targ.col
     if (!missing(targ.col)) {
-      if (!(length(targ.col) %in% c(1,nstats))) {
-        stop("targ.col must be either missing or a vector of length 1 or nstats (",
-             nstats, ")", call. = FALSE)
+      if (!(length(targ.col) %in% c(1, nstats))) {
+        stop("targ.col must be either missing or a vector of length 1 or
+             nstats (", nstats, ")", call. = FALSE)
       } else if (length(targ.col) == 1 & nstats > 1) {
         targ.col <- rep(targ.col, nstats)
       }
@@ -1167,8 +1172,8 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
                       rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
                                                   y = qnt.prev[2, ]))$y))
             }
-            qnt.min[j] = min(yy)
-            qnt.max[j] = max(yy)
+            qnt.min[j] <-  min(yy)
+            qnt.max[j] <-  max(yy)
           }
         }
 
@@ -1179,8 +1184,8 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
               mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev),
                                                    y = mean.prev))$y
             }
-            mean.min[j] = min(mean.prev)
-            mean.max[j] = max(mean.prev)
+            mean.min[j] <-  min(mean.prev)
+            mean.max[j] <-  max(mean.prev)
           }
 
         }
@@ -1277,7 +1282,8 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
           if (sim.lines == TRUE) {
             if (dynamic == TRUE) {
               for (i in sims) {
-                lines(dataj[,i], lwd = sim.lwd, col = sim.col[which(j == outsts)])
+                lines(dataj[, i], lwd = sim.lwd,
+                      col = sim.col[which(j == outsts)])
               }
             } else {
               lines(dataj, lwd = sim.lwd, col = sim.col[which(j == outsts)])
@@ -1382,8 +1388,8 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
                       rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
                                                   y = qnt.prev[2, ]))$y))
               }
-              qnt.min = min(yy)
-              qnt.max = max(yy)
+              qnt.min <-  min(yy)
+              qnt.max <-  max(yy)
             }
           }
 
@@ -1397,8 +1403,8 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
               mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev),
                                                    y = mean.prev))$y
             }
-            mean.min = min(mean.prev)
-            mean.max = max(mean.prev)
+            mean.min <-  min(mean.prev)
+            mean.max <-  max(mean.prev)
           }
 
           ## Default ylim
@@ -1443,7 +1449,8 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
           if (sim.lines == TRUE) {
             if (dynamic == TRUE) {
               for (i in sims) {
-                lines(dataj[, i], lwd = sim.lwd, col = sim.col[which(j == outsts)])
+                lines(dataj[, i], lwd = sim.lwd,
+                      col = sim.col[which(j == outsts)])
               }
             } else {
               lines(dataj, lwd = sim.lwd, col = sim.col[which(j == outsts)])
@@ -1452,7 +1459,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 
           if (mean.line == TRUE) {
             if (missing(mean.col)) {
-              mean.col <- rep("black",nstats)
+              mean.col <- rep("black", nstats)
             }
             mean.prev <- rowMeans(dataj)
             if (mean.smooth == TRUE) {
@@ -1485,7 +1492,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 
       data <- list()
       for (j in seq_along(stats)) {
-        data[[j]] <- unlist(lapply(nwstats, function(x) x[,stats[j]]))
+        data[[j]] <- unlist(lapply(nwstats, function(x) x[, stats[j]]))
       }
       data <- do.call("cbind", data)
       colnames(data) <- stats
@@ -1512,8 +1519,8 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
   if (type == "duration") {
 
     if (x$coef.diss$model.type == "hetero") {
-      stop("Duration plots for heterogeneous dissolution models not currently available",
-           call. = FALSE)
+      stop("Duration plots for heterogeneous dissolution models not
+           currently available", call. = FALSE)
     }
 
     pages <- x$pages
@@ -1548,7 +1555,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
                 rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
                                             y = qnt.prev[2, ]))$y))
       }
-      qnt.max = max(yy)
+      qnt.max <-  max(yy)
     }
     }
 
@@ -1561,7 +1568,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev),
                                              y = mean.prev))$y
       }
-      mean.max = max(mean.prev)
+      mean.max <-  max(mean.prev)
     }
 
     if (missing(sim.lines)) {
@@ -1698,8 +1705,8 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
   if (type == "dissolution") {
 
     if (x$coef.diss$model.type == "hetero") {
-      stop("Dissolution plots for heterogeneous dissolution models not currently available",
-           call. = FALSE)
+      stop("Dissolution plots for heterogeneous dissolution models not
+           currently available", call. = FALSE)
     }
 
     prop.diss <- x$prop.diss
@@ -1900,8 +1907,8 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #'        simulations at the specified time step.
 #' @param sim.col Vector of any standard R color format for simulation lines.
 #' @param sim.lwd Line width for simulation lines.
-#' @param sim.alpha Transparency level for simulation lines, where 0 = transparent
-#'        and 1 = opaque (see \code{adjustcolor} function).
+#' @param sim.alpha Transparency level for simulation lines, where
+#'        0 = transparent and 1 = opaque (see \code{adjustcolor} function).
 #' @param mean.line If \code{TRUE}, plot mean of simulations across time.
 #' @param mean.smooth If \code{TRUE}, use a loess smoother on the mean line.
 #' @param mean.col Vector of any standard R color format for mean lines.
@@ -1920,8 +1927,8 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #'        to \code{"r"}.
 #' @param grid If \code{TRUE}, a grid is added to the background of plot
 #'        (see \code{\link{grid}} for details), with default of nx by ny.
-#' @param add If \code{TRUE}, new plot window is not called and lines are added to
-#'        existing plot window.
+#' @param add If \code{TRUE}, new plot window is not called and lines are added
+#'        to existing plot window.
 #' @param network Network number, for simulations with multiple networks
 #'        representing the population.
 #' @param at If \code{type="network"}, time step for network graph.
@@ -1933,8 +1940,8 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #' @param vertex.cex Relative size of plotted vertices if \code{type="network"},
 #'        with implicit default of 1.
 #' @param stats If \code{type="formation"}, network statistics to plot, among
-#'        those specified in \code{nwstats.formula} of \code{\link{control.net}},
-#'        with the default to plot all statistics.
+#'        those specified in \code{nwstats.formula} of
+#'        \code{\link{control.net}}, with the default to plot all statistics.
 #' @param targ.line If \code{TRUE}, plot target or expected value line for
 #'        the statistic of interest.
 #' @param targ.col Vector of standard R colors for target statistic lines, with
@@ -1952,42 +1959,44 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #' \enumerate{
 #'  \item \strong{\code{type="epi"}}: epidemic model results (e.g., disease
 #'        prevalence and incidence) may be plotted.
-#'  \item \strong{\code{type="network"}}: a static network plot will be generated.
-#'        A static network plot of a dynamic network is a cross-sectional
-#'        extraction of that dynamic network at a specific time point. This
-#'        plotting function wraps the \code{\link{plot.network}} function in the
-#'        \code{network} package. Consult the help page for \code{plot.network}
-#'        for all of the plotting parameters. In addition, four plotting parameters
-#'        specific to \code{netsim} plots are available: \code{sim}, \code{at},
+#'  \item \strong{\code{type="network"}}: a static network plot will be
+#'        generated. A static network plot of a dynamic network is a
+#'        cross-sectional extraction of that dynamic network at a specific
+#'        time point. This plotting function wraps the
+#'        \code{\link{plot.network}} function in the \code{network} package.
+#'        Consult the help page for \code{plot.network} for all of the plotting
+#'        parameters. In addition, four plotting parameters specific to
+#'        \code{netsim} plots are available: \code{sim}, \code{at},
 #'        \code{col.status}, and \code{shp.g2}.
-#'  \item \strong{\code{type="formation"}}: summary network statistics related to
-#'        the network model formation are plotted. These plots are similar to the
-#'        formation plots for \code{netdx} objects. When running a \code{netsim}
-#'        simulation, one must specify there that \code{save.nwstats=TRUE}; the
-#'        plot here will then show the network statistics requested explicitly in
-#'        \code{nwstats.formula}, or will use the formation formula set in
-#'        \code{netest} otherwise.
+#'  \item \strong{\code{type="formation"}}: summary network statistics related
+#'        to the network model formation are plotted. These plots are similar
+#'        to the formation plots for \code{netdx} objects. When running a
+#'        \code{netsim} simulation, one must specify there that
+#'        \code{save.nwstats=TRUE}; the plot here will then show the network
+#'        statistics requested explicitly in \code{nwstats.formula}, or will use
+#'        the formation formula set in \code{netest} otherwise.
 #' }
 #'
 #' @details
-#' When \code{type="epi"}, this plotting function will extract the epidemiological
-#' output from a model object of class \code{netsim} and plot the time series
-#' data of disease prevalence and other results. The summary statistics that the
-#' function calculates and plots are individual simulation lines, means of the
-#' individual simulation lines, and quantiles of those individual simulation lines.
-#' The mean line, toggled on with \code{mean.line=TRUE} is calculated as the row mean
-#' across simulations at each time step.
+#' When \code{type="epi"}, this plotting function will extract the
+#' epidemiological output from a model object of class \code{netsim} and plot
+#' the time series data of disease prevalence and other results. The summary
+#' statistics that the function calculates and plots are individual simulation
+#' lines, means of the individual simulation lines, and quantiles of those
+#' individual simulation lines. The mean line, toggled on with
+#' \code{mean.line=TRUE} is calculated as the row mean across simulations at
+#' each time step.
 #'
 #' Compartment prevalences are the size of a compartment over some denominator.
 #' To plot the raw numbers from any compartment, use \code{popfrac=FALSE}; this
-#' is the default for any plots of flows. The \code{popfrac} parameter calculates
-#' and plots the denominators of all specified compartments using these rules: 1)
-#' for one-group models, the prevalence of any compartment is the compartment size
-#' divided by the total population size; 2) for two-group models, the prevalence
-#' of any compartment is the compartment size divided by the group population size.
-#' For any prevalences that are not automatically calculated, the
-#' \code{\link{mutate_epi}} may be used to add new variables to the \code{netsim}
-#' object to plot or analyze.
+#' is the default for any plots of flows. The \code{popfrac} parameter
+#' calculates and plots the denominators of all specified compartments using
+#' these rules: 1) for one-group models, the prevalence of any compartment is
+#' the compartment size divided by the total population size; 2) for two-group
+#' models, the prevalence of any compartment is the compartment size divided by
+#' the group population size. For any prevalences that are not automatically
+#' calculated, the \code{\link{mutate_epi}} may be used to add new variables to
+#' the \code{netsim} object to plot or analyze.
 #'
 #' The quantiles show the range of outcome values within a certain specified
 #' quantile range. By default, the interquartile range is shown: that is the
@@ -1995,15 +2004,16 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #' middle 95\% of the data, specify \code{qnts=0.95}. To toggle off the polygons
 #' where they are plotted by default, specify \code{qnts=FALSE}.
 #'
-#' When \code{type="network"}, this function will plot cross sections of the simulated
-#' networks at specified time steps. Because it is only possible to plot one time
-#' step from one simulation at a time, it is necessary to enter these in the
-#' \code{at} and \code{sims} parameters. To aide in visualizing representative
-#' and extreme simulations at specific time steps, the \code{sims} parameter may be set
-#' to \code{"mean"} to plot the simulation in which the disease prevalence is
-#' closest to the average across all simulations, \code{"min"} to plot the simulation
-#' in which the prevalence is lowest, and \code{"max"} to plot the simulation
-#' in which the prevalence is highest.
+#' When \code{type="network"}, this function will plot cross sections of the
+#' simulated networks at specified time steps. Because it is only possible to
+#' plot one time step from one simulation at a time, it is necessary to enter
+#' these in the \code{at} and \code{sims} parameters. To aide in visualizing
+#' representative and extreme simulations at specific time steps, the
+#' \code{sims} parameter may be set to \code{"mean"} to plot the simulation in
+#' which the disease prevalence is closest to the average across all
+#' simulations, \code{"min"} to plot the simulation in which the prevalence is
+#' lowest, and \code{"max"} to plot the simulation in which the prevalence is
+#' highest.
 #'
 #' @method plot netsim
 #' @export
@@ -2067,12 +2077,13 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #'
 plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
                         sims, sim.col, sim.lwd, sim.alpha, mean.line = TRUE,
-                        mean.smooth = TRUE, mean.col, mean.lwd = 2, mean.lty = 1,
-                        qnts = 0.5, qnts.col, qnts.alpha, qnts.smooth = TRUE,
-                        legend, leg.cex = 0.8, axs = "r", grid = FALSE,
-                        add = FALSE, network = 1, at = 1, col.status = FALSE,
-                        shp.g2 = NULL, vertex.cex, stats, targ.line = TRUE,
-                        targ.col, targ.lwd = 2, targ.lty = 2, plots.joined, ...) {
+                        mean.smooth = TRUE, mean.col, mean.lwd = 2,
+                        mean.lty = 1, qnts = 0.5, qnts.col, qnts.alpha,
+                        qnts.smooth = TRUE, legend, leg.cex = 0.8, axs = "r",
+                        grid = FALSE, add = FALSE, network = 1, at = 1,
+                        col.status = FALSE, shp.g2 = NULL, vertex.cex, stats,
+                        targ.line = TRUE, targ.col, targ.lwd = 2, targ.lty = 2,
+                        plots.joined, ...) {
 
   # type check
   if ((type %in% c("epi", "network", "formation")) == FALSE) {
@@ -2164,10 +2175,10 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
     }
     if (col.status == TRUE) {
       if (tergmLite == TRUE) {
-        stop("Plotting status colors requires tergmLite=FALSE in netsim control settings.",
-             call. = FALSE)
+        stop("Plotting status colors requires tergmLite=FALSE in netsim
+             control settings.", call. = FALSE)
       }
-      pal <- adjustcolor(c(4,2,3), 0.75)
+      pal <- adjustcolor(c(4, 2, 3), 0.75)
       if (tergmLite == FALSE) {
         testatus <- get.vertex.attribute.active(obj, "testatus", at = at)
         cols <- rep(pal[1], length(testatus))
@@ -2305,8 +2316,10 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
         min.prev <- min(x$epi[[y]], na.rm = TRUE)
         max.prev <- max(x$epi[[y]], na.rm = TRUE)
       } else {
-        min.prev <- min(sapply(y, function(comps) min(x$epi[[comps]], na.rm = TRUE)))
-        max.prev <- max(sapply(y, function(comps) max(x$epi[[comps]], na.rm = TRUE)))
+        min.prev <- min(sapply(y, function(comps) min(x$epi[[comps]],
+                                                      na.rm = TRUE)))
+        max.prev <- max(sapply(y, function(comps) max(x$epi[[comps]],
+                                                      na.rm = TRUE)))
       }
     } else {
       min.prev <- 0
@@ -2548,8 +2561,8 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
 
     if (!missing(sim.col)) {
       if (!(length(sim.col) %in% c(1, nstats))) {
-        stop("sim.col must be either missing or a vector of length 1  or nstats (",
-             nstats, ")", call. = FALSE)
+        stop("sim.col must be either missing or a vector of length 1  or
+             nstats (", nstats, ")", call. = FALSE)
       } else if (length(sim.col) == 1 & nstats > 1) {
         sim.col <- rep(sim.col, nstats)
       }
@@ -2558,8 +2571,8 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
     # Mean.col
     if (!missing(mean.col)) {
       if (!(length(mean.col) %in% c(1, nstats))) {
-        stop("mean.col must be either missing or a vector of length 1 or nstats (",
-             nstats, ")", call. = FALSE)
+        stop("mean.col must be either missing or a vector of length 1 or
+             nstats (", nstats, ")", call. = FALSE)
       } else if (length(mean.col) == 1 & nstats > 1) {
         mean.col <- rep(mean.col, nstats)
       }
@@ -2568,8 +2581,8 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
     # Qnts.col
     if (!missing(qnts.col)) {
       if (!(length(qnts.col) %in% c(1, nstats))) {
-        stop("qnts.col must be either missing or a vector of length 1 or nstats (",
-             nstats, ")", call. = FALSE)
+        stop("qnts.col must be either missing or a vector of length 1 or
+             nstats (", nstats, ")", call. = FALSE)
       } else if (length(qnts.col) == 1 & nstats > 1) {
         qnts.col <- rep(qnts.col, nstats)
       }
@@ -2578,8 +2591,8 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
     # Targ.col
     if (!missing(targ.col)) {
       if (!(length(targ.col) %in% c(1, nstats))) {
-        stop("targ.col must be either missing or a vector of length 1 or nstats (",
-             nstats, ")", call. = FALSE)
+        stop("targ.col must be either missing or a vector of length 1 or
+             nstats (", nstats, ")", call. = FALSE)
       } else if (length(targ.col) == 1 & nstats > 1) {
         targ.col <- rep(targ.col, nstats)
       }
@@ -2641,8 +2654,8 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
                     rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
                                                 y = qnt.prev[2, ]))$y))
           }
-          qnt.min[j] = min(yy)
-          qnt.max[j] = max(yy)
+          qnt.min[j] <-  min(yy)
+          qnt.max[j] <-  max(yy)
         }
 
         if (mean.line == TRUE) {
@@ -2651,8 +2664,8 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
             mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev),
                                                  y = mean.prev))$y
           }
-          mean.min[j] = min(mean.prev)
-          mean.max[j] = max(mean.prev)
+          mean.min[j] <-  min(mean.prev)
+          mean.max[j] <-  max(mean.prev)
         }
       }
 
@@ -2837,8 +2850,8 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
                       rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
                                                   y = qnt.prev[2, ]))$y))
             }
-            qnt.min = min(yy)
-            qnt.max = max(yy)
+            qnt.min <-  min(yy)
+            qnt.max <-  max(yy)
           }
 
           ## Mean lines - ylim min max ##
@@ -2851,8 +2864,8 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
               mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev),
                                                    y = mean.prev))$y
             }
-            mean.min = min(mean.prev)
-            mean.max = max(mean.prev)
+            mean.min <-  min(mean.prev)
+            mean.max <-  max(mean.prev)
           }
 
           ## Default ylim
@@ -2951,17 +2964,18 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
 #' @details
 #' The \code{comp_plot} function provides a visual summary of an epidemic model
 #' at a specific time step. The information contained in \code{comp_plot} is the
-#' same as in the \code{summary} functions for a model, but presented graphically
-#' as a compartment flow diagram.
+#' same as in the \code{summary} functions for a model, but presented
+#' graphically as a compartment flow diagram.
 #'
-#' For \code{dcm} class plots, specify the model run number if the model contains
-#' multiple runs, as in a sensitivity analysis. For \code{icm} and \code{netsim}
-#' class plots, the \code{run} argument is not used; the plots show the means and
-#' standard deviations across simulations at the specified time step.
+#' For \code{dcm} class plots, specify the model run number if the model
+#' contains multiple runs, as in a sensitivity analysis. For \code{icm} and
+#' \code{netsim} class plots, the \code{run} argument is not used; the plots
+#' show the means and standard deviations across simulations at the specified
+#' time step.
 #'
-#' These plots are currently limited to one-group and one-mode models for each of
-#' the three model classes. That functionality may be expanded in future software
-#' releases.
+#' These plots are currently limited to one-group and one-mode models for each
+#' of the three model classes. That functionality may be expanded in future
+#' software releases.
 #'
 #' @export
 #' @keywords plot
@@ -3209,8 +3223,8 @@ comp_plot.netsim <- function(x, at = 1, digits = 3, ...) {
 #'
 #' library(ggplot2)
 #' ggplot() +
-#'    geom_line(data = df, mapping = aes(time, i.num, group = sim), alpha = 0.25,
-#'              lwd = 0.25, color = "firebrick") +
+#'    geom_line(data = df, mapping = aes(time, i.num, group = sim),
+#'    alpha = 0.25, lwd = 0.25, color = "firebrick") +
 #'    geom_bands(data = df, mapping = aes(time, i.num),
 #'               lower = 0.1, upper = 0.9, fill = "firebrick") +
 #'    geom_line(data = df.mean, mapping = aes(time, i.num)) +
@@ -3268,10 +3282,12 @@ harrow <- function(xbox, ybox, title, val, dir) {
 varrow <- function(xbox, ybox, title, val, dir) {
   if (dir == "out") {
     arrows(xbox + 10, ybox, xbox + 10, ybox - 25, lwd = 2, length = 0.15)
-    text(xbox + 10, ybox - 12.5, paste(title, val, sep = "="), cex = 0.8, pos = 4)
+    text(xbox + 10, ybox - 12.5, paste(title, val, sep = "="),
+         cex = 0.8, pos = 4)
   }
   if (dir == "in") {
     arrows(xbox + 10, ybox + 45, xbox + 10, ybox + 20, lwd = 2, length = 0.15)
-    text(xbox + 10, ybox + 32.5, paste(title, val, sep = "="), cex = 0.8, pos = 4)
+    text(xbox + 10, ybox + 32.5, paste(title, val, sep = "="),
+         cex = 0.8, pos = 4)
   }
 }

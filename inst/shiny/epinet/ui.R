@@ -13,45 +13,52 @@ navbarPage(title = NULL, windowTitle = "EpiModel: Network Models",
   tabPanel("About",
 
       column(6, offset = 1,
-           h2("Stochastic Network Models with EpiModel", style = "color: #445555;"),
-           p(a("EpiModel", href = "http://www.epimodel.org/", target = "_blank"),
+           h2("Stochastic Network Models with EpiModel",
+              style = "color: #445555;"),
+           p(a("EpiModel", href = "http://www.epimodel.org/",
+               target = "_blank"),
              "is an R package that provides tools for simulating and
              analyzing mathematical models of infectious disease.
              Details about the package, including the epidemic model classes
              supported by the software can be found at the link above."),
            p("This web-based application allows for simple modeling of epidemics
               over dynamic contact networks. These stochastic network models are
-             based on the statistical framework of", a("temporal exponential random
-             graph models.", href = "http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3891677/",
+             based on the statistical framework of",
+             a("temporal exponential random graph models.",
+               href = "http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3891677/",
              target = "_blank"), "This web application is built with",
              a("Shiny,", href = "http://shiny.rstudio.com/", target = "_blank"),
-             "and may be lauched via an R session with EpiModel and Shiny installed
-             (see the", code("epiweb"),"function), or directly on any web browser (no R
-             needed)", a("here.", href = "https://statnet.shinyapps.io/epinet",
-                         target = "_blank")),
-           p("To get started, create a statistical network model in the Model Estimation
-             page using one of the two model specification methods. This page fits
-             a temporal ERGM using the", code("netest"), "function and runs diagnostics on the
-             fitted model with the", code("netdx"), "function. After the model is properly
-             specified, simulate an epidemic on the network using the Epidemic
-             Simulation page. This runs the", code("netsim"), "function in EpiModel, and the
-             epidemic parameters are described in detail in the help pages there.
-             Model output may be plotted to show the epidemic time series or
-             static network plots, as well as viewing numerical data summaries."),
-           p("The author of this application is Emily Beylerian, Software Developer
-             at the University of Washington Centers for Studies in Demoraphy and
-             Ecology. The authors of the larger EpiModel project are Samuel Jenness
-             at Emory University, and Steven Goodreau and Martina Morris at the
-             University of Washington.
-             Development of this software is supported by the following grants from
-             the National Institutes of Health: R01HD68395 (NICHD), T32HD007543 (NICHD),
-             and R24HD042828 (NICHD).")
+             "and may be lauched via an R session with EpiModel and Shiny
+             installed (see the", code("epiweb"), "function), or directly on any
+             web browser (no R needed)",
+             a("here.", href = "https://statnet.shinyapps.io/epinet",
+               target = "_blank")),
+           p("To get started, create a statistical network model in the Model
+            Estimation page using one of the two model specification methods.
+            This page fits a temporal ERGM using the", code("netest"),
+            "function and runs diagnostics on the fitted model with the",
+            code("netdx"), "function. After the model is properly specified,
+            simulate an epidemic on the network using the Epidemic Simulation
+            page. This runs the", code("netsim"), "function in EpiModel, and the
+            epidemic parameters are described in detail in the help pages there.
+            Model output may be plotted to show the epidemic time series or
+            static network plots, as well as viewing numerical data
+            summaries."),
+           p("The author of this application is Emily Beylerian, Software
+            Developer at the University of Washington Centers for Studies in
+            Demoraphy and Ecology. The authors of the larger EpiModel project
+            are Samuel Jenness at Emory University, and Steven Goodreau and
+            Martina Morris at the University of Washington. Development of this
+            software is supported by the following grants from the National
+            Institutes of Health: R01HD68395 (NICHD), T32HD007543 (NICHD), and
+             R24HD042828 (NICHD).")
              )
            ),
   tabPanel("Network Model Estimation",
            tagList(
              tags$head(
-               tags$link(rel = "stylesheet", type = "text/css", href = "style.css")
+               tags$link(rel = "stylesheet", type = "text/css",
+                         href = "style.css")
              )
            ),
            fluidRow(
@@ -86,27 +93,34 @@ navbarPage(title = NULL, windowTitle = "EpiModel: Network Models",
                                   max = 100),
                       selectInput("conc",
                                   label = "Concurrency Rule",
-                                  choices = c("Concurrency not included in model",
-                                              "Target % concurrency")),
+                                  choices =
+                                    c("Concurrency not included in model",
+                                      "Target % concurrency")),
                       conditionalPanel("input.conc == 'Target % concurrency'",
-                                       helpText("Note: A mean degree greater than one always
-                                                implies some level of concurrency. The model
-                                                will not be run if concurrency is too low for
-                                                the chosen mean degree."),
+                                       helpText("Note: A mean degree greater
+                                                than one always implies some
+                                                level of concurrency. The model
+                                                will not be run if concurrency
+                                                is too low for the chosen mean
+                                                degree."),
                                        uiOutput("percConcSlider")
                                        ),
                       hr(),
                       h4("Specification: Method 2", style = "margin-bottom:0;"),
-                      helpText("Model and NW Stat Targets", style = "margin-top:0;"),
+                      helpText("Model and NW Stat Targets",
+                               style = "margin-top:0;"),
                       fluidRow(
                         column(7, selectInput("formation",
                                               label = "Formation Formula",
-                                              choices = c("~edges", "~edges + concurrent"))),
+                                              choices =
+                                                c("~edges",
+                                                  "~edges + concurrent"))),
                         column(5, numericInput("edge.target",
                                                label = "Target: edges",
                                                value = 25,
                                                step = 0.1),
-                               conditionalPanel("input.formation == '~edges + concurrent'",
+                               conditionalPanel("input.formation ==
+                                                '~edges + concurrent'",
                                   numericInput("conc.target",
                                                label = "Target: concurrent",
                                                value = 10)
@@ -140,7 +154,8 @@ navbarPage(title = NULL, windowTitle = "EpiModel: Network Models",
                                            choices = c("edges",
                                                        "concurrent",
                                                        "isolates",
-                                                       "mean degree" = "meandeg"),
+                                                       "mean degree" =
+                                                         "meandeg"),
                                            selected = "edges"))
                    ),
                    plotOutput("dxplot", height = "600px"),
@@ -150,7 +165,8 @@ navbarPage(title = NULL, windowTitle = "EpiModel: Network Models",
                        column(4,
                           selectInput("dxtype",
                                label = "Plot Type",
-                               choices = c("formation", "dissolution", "duration"))),
+                               choices = c("formation", "dissolution",
+                                           "duration"))),
                        column(5,
                               sliderInput(inputId = "dx.qntsrng",
                                           label = "Quantile Band",
@@ -253,7 +269,8 @@ navbarPage(title = NULL, windowTitle = "EpiModel: Network Models",
 #                               step = 0.005),
 #                  conditionalPanel("input.modtype == 'SIR'",
 #                                   numericInput(inputId = "dr.rate",
-#                                                label = "Departure Rate (Rec.)",
+#                                                label =
+#                                                   "Departure Rate (Rec.)",
 #                                                min = 0,
 #                                                value = 0.0,
 #                                                step = 0.005))
@@ -269,9 +286,10 @@ navbarPage(title = NULL, windowTitle = "EpiModel: Network Models",
                          column(5,
                                 selectInput(inputId = "compsel",
                                             label = strong("Plot Type"),
-                                            choices = c("Compartment Prevalence",
-                                                        "Compartment Size",
-                                                        "Disease Incidence"))),
+                                            choices =
+                                              c("Compartment Prevalence",
+                                                "Compartment Size",
+                                                "Disease Incidence"))),
                          column(5,
                                 sliderInput(inputId = "epi.qntsrng",
                                             label = "Quantile Band",
@@ -315,24 +333,28 @@ navbarPage(title = NULL, windowTitle = "EpiModel: Network Models",
                   tabPanel("Data",
                            div(style = "margin: auto; width: 90%;",
                                br(),
-                               helpText("Select output as the time-specific means
-                                      or standard deviations across simulations,
-                                        or individual simulation values (if the
-                                        last, also input the desired simulation
-                                        number)."),
+                               helpText("Select output as the time-specific
+                                        means or standard deviations across
+                                        simulations, or individual simulation
+                                        values (if the last, also input the
+                                        desired simulation number)."),
                                fluidRow(
                                  column(3,
                                         selectInput(inputId = "datasel",
-                                                    label = strong("Data Selection"),
-                                                    choices = c("Means",
-                                                                "Standard Deviations",
-                                                                "Simulations"))),
-                                 conditionalPanel("input.datasel == 'Simulations'",
+                                                    label =
+                                                      strong("Data Selection"),
+                                                    choices =
+                                                      c("Means",
+                                                        "Standard Deviations",
+                                                        "Simulations"))),
+                                 conditionalPanel("input.datasel ==
+                                                  'Simulations'",
                                         column(3,
                                                uiOutput("simnoControl"))),
                                  column(3,
                                         numericInput(inputId = "tabdig",
-                                                     label = "Significant Digits",
+                                                     label =
+                                                       "Significant Digits",
                                                      min = 0,
                                                      value = 2))),
                                fluidRow(

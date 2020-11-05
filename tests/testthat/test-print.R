@@ -42,7 +42,7 @@ test_that("print.netest", {
 
 test_that("print.netsim", {
   nw <- network_initialize(n = 100)
-  nw <- set_vertex_attribute(nw, "group", rep(c(1,2), each = 50))
+  nw <- set_vertex_attribute(nw, "group", rep(c(1, 2), each = 50))
   formation <- ~edges
   target.stats <- 50
   coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
@@ -55,7 +55,8 @@ test_that("print.netsim", {
   expect_output(print(mod), "Model class: netsim")
   expect_output(print(mod), "Model type: SI")
   expect_output(print(mod), "No. NW groups: 2")
-  expect_output(print(mod), "Variables: s.num i.num num s.num.g2 i.num.g2 num.g2")
+  expect_output(print(mod),
+                "Variables: s.num i.num num s.num.g2 i.num.g2 num.g2")
 })
 
 test_that("print.disscoefs", {
@@ -69,13 +70,15 @@ test_that("print.disscoefs", {
   expect_is(o, "disscoef")
   expect_output(print(o), "Mortality/Exit Rate: 0.001")
 
-  o <- dissolution_coefs(dissolution = ~offset(edges) + offset(nodematch("race")),
+  o <- dissolution_coefs(dissolution =
+                           ~offset(edges) + offset(nodematch("race")),
                          duration = c(20, 10))
   expect_output(print(o), "2.944439 -0.7472144")
   expect_output(print(o), "Mortality/Exit Rate: 0")
   expect_output(print(o), "Target Statistics: 20 10")
 
-  o <- dissolution_coefs(dissolution = ~offset(edges) + offset(nodematch("race")),
+  o <- dissolution_coefs(dissolution =
+                           ~offset(edges) + offset(nodematch("race")),
                          duration = c(20, 10), d.rate = 0.001)
   expect_output(print(o), "Crude Coefficient: 2.944439 -0.7472144")
   expect_output(print(o), "Adjusted Coefficient: 2.98524 -0.7678231")

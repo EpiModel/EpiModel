@@ -1,6 +1,7 @@
 ##
 ## R Script File for Journal of Statistical Software Manuscript
-## EpiModel: An R Package for Mathematical Modeling of Infectious Disease over Networks
+## EpiModel: An R Package for Mathematical Modeling of Infectious Disease over
+## Networks
 ##
 
 ## Section 2. Orientation --------------------------------------------------
@@ -172,7 +173,7 @@ aging <- function(dat, at) {
     age <- sample(18:69, n, replace = TRUE)
     dat <- set_attr(dat, "age", age)
   } else {
-    age <- get_attr(dat, "age") + 1/12
+    age <- get_attr(dat, "age") + 1 / 12
     dat <- set_attr(dat, "age", age)
   }
 
@@ -197,7 +198,7 @@ dfunc <- function(dat, at) {
   if (nElig > 0) {
     ages <- get_attr(dat, "age")[idsElig]
     max.age <- get_param(dat, "max.age")
-    departure.rates <- pmin(1, 1/(max.age*12 - ages*12))
+    departure.rates <- pmin(1, 1 / (max.age * 12 - ages * 12))
     vecDepartures <- which(rbinom(nElig, 1, departure.rates) == 1)
     idsDepartures <- idsElig[vecDepartures]
     nDepartures <- length(idsDepartures)
@@ -205,7 +206,7 @@ dfunc <- function(dat, at) {
       active[idsDepartures] <- 0
       dat <- set_attr(dat, "active", active)
       exitTime[idsDepartures] <- at
-      dat <- set_attr(dat, "exitTime",exitTime)
+      dat <- set_attr(dat, "exitTime", exitTime)
     }
   }
   # Output ----------------------------------
@@ -218,7 +219,7 @@ afunc <- function(dat, at) {
 
   # Variables ---------------------------------------------------------------
   growth.rate <- get_param(dat, "growth.rate")
-  exptPopSize <- get_epi(dat, "num", 1)*(1 + growth.rate*at)
+  exptPopSize <- get_epi(dat, "num", 1) * (1 + growth.rate * at)
   n <- sum(get_attr(dat, "active") == 1)
   active <- get_attr(dat, "active")
   numNeeded <- exptPopSize - sum(active == 1)
@@ -251,11 +252,12 @@ est3 <- netest(nw, formation = ~edges, target.stats = 150,
                                              mean(departure.rates)))
 
 ## Epidemic model parameterization
-param <- param.net(inf.prob = 0.15, growth.rate = 0.01/12, max.age = 70)
+param <- param.net(inf.prob = 0.15, growth.rate = 0.01 / 12, max.age = 70)
 init <- init.net(i.num = 50)
 control <- control.net(type = NULL, nsims = 5, nsteps = 500,
                        departures.FUN = dfunc, arrivals.FUN = afunc,
-                       prevalence.FUN = prevalence.net, infection.FUN = infection.net,
+                       prevalence.FUN = prevalence.net,
+                       infection.FUN = infection.net,
                        aging.FUN = aging, resimulate.network = TRUE)
 
 ## Simulate the epidemic model
@@ -366,7 +368,8 @@ est4 <- netest(nw, formation = ~edges, target.stats = 150,
                coef.diss = dissolution_coefs(~offset(edges), 10))
 
 ## Epidemic model parameterization
-param <- param.net(inf.prob = 0.5, act.rate = 2, ei.rate = 0.01, ir.rate = 0.005)
+param <- param.net(inf.prob = 0.5, act.rate = 2, ei.rate = 0.01,
+                   ir.rate = 0.005)
 init <- init.net(i.num = 10)
 control <- control.net(type = NULL, nsteps = 500, nsims = 5,
                        skip.check = TRUE, verbose.int = 0,

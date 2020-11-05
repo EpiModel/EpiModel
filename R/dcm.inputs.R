@@ -14,46 +14,48 @@
 #' @param inter.start Time step at which the intervention starts, between 1 and
 #'        the number of time steps specified in the model. This will default to
 #'        1 if the \code{inter.eff} is defined but this parameter is not.
-#' @param act.rate Average number of transmissible acts per person per unit time.
-#'        For two-group models, this is the number of acts per group 1 persons
-#'        per unit time; a balance between the acts in groups 1 and 2 is necessary,
-#'        and set using the \code{balance} parameter (see details).
+#' @param act.rate Average number of transmissible acts per person per unit
+#'        time. For two-group models, this is the number of acts per group 1
+#'        persons per unit time; a balance between the acts in groups 1 and 2 is
+#'        necessary, and set using the \code{balance} parameter (see details).
 #' @param rec.rate Average rate of recovery with immunity (in \code{SIR} models)
 #'        or re-susceptibility (in \code{SIS} models). The recovery rate is the
 #'        reciprocal of the disease duration. For two-group models, this is the
-#'        recovery rate for group 1 persons only. This parameter is only used for
-#'        \code{SIR} and \code{SIS} models.
-#' @param a.rate Arrival or entry rate. For one-group models, the arrival rate is the
-#'        rate of new arrivals per person per unit time. For two-group models, the
-#'        arrival rate may be parameterized as a rate per group 1 person time (with
-#'        group 1 persons representing females), and with the \code{a.rate.g2}
-#'        rate set as described below.
-#' @param ds.rate Departure or exit rate for susceptible. For two-group models, it
-#'        is the rate for the group 1 susceptible only.
-#' @param di.rate Departure or exit rate for infected. For two-group models, it is
-#'        the rate for the group 1 infected only.
-#' @param dr.rate Departure or exit rate for recovered. For two-group models, it is
-#'        the rate for the group 1 recovered only. This parameter is only used for
-#'        \code{SIR} models.
+#'        recovery rate for group 1 persons only. This parameter is only used
+#'        for \code{SIR} and \code{SIS} models.
+#' @param a.rate Arrival or entry rate. For one-group models, the arrival rate
+#'        is the rate of new arrivals per person per unit time. For two-group
+#'        models, the arrival rate may be parameterized as a rate per group 1
+#'        person time (with group 1 persons representing females), and with the
+#'        \code{a.rate.g2} rate set as described below.
+#' @param ds.rate Departure or exit rate for susceptible. For two-group models,
+#'        it is the rate for the group 1 susceptible only.
+#' @param di.rate Departure or exit rate for infected. For two-group models, it
+#'        is the rate for the group 1 infected only.
+#' @param dr.rate Departure or exit rate for recovered. For two-group models,
+#'        it is the rate for the group 1 recovered only. This parameter is only
+#'        used for \code{SIR} models.
 #' @param inf.prob.g2 Probability of infection per transmissible act
 #'        between a susceptible group 2 person and an infected group 1 person.
 #'        It is the probability of infection to group 2 members.
-#' @param act.rate.g2 Average number of transmissible acts per group 2 person per
-#'        unit time; a balance between the acts in groups 1 and 2 is necessary,
-#'        and set using the \code{balance} parameter (see details).
-#' @param rec.rate.g2 Average rate of recovery with immunity (in \code{SIR} models)
-#'        or re-susceptibility (in \code{SIS} models) for group 2 persons. This
-#'        parameter is only used for two-group \code{SIR} and \code{SIS} models.
-#' @param a.rate.g2 Arrival or entry rate for group 2. This may either be specified
-#'        numerically as the rate of new arrivals per group 2 persons per unit time,
-#'        or as \code{NA} in which case the group 1 rate, \code{a.rate}, governs
-#'        the group 2 rate. The latter is used when, for example, the first group
-#'        is conceptualized as female, and the female population size determines
-#'        the arrival rate. Such arrivals are evenly allocated between the two groups.
+#' @param act.rate.g2 Average number of transmissible acts per group 2 person
+#'        per unit time; a balance between the acts in groups 1 and 2 is
+#'        necessary, and set using the \code{balance} parameter (see details).
+#' @param rec.rate.g2 Average rate of recovery with immunity (in \code{SIR}
+#'        models) or re-susceptibility (in \code{SIS} models) for group 2
+#'        persons. This parameter is only used for two-group \code{SIR} and
+#'        \code{SIS} models.
+#' @param a.rate.g2 Arrival or entry rate for group 2. This may either be
+#'        specified numerically as the rate of new arrivals per group 2 persons
+#'        per unit time, or as \code{NA} in which case the group 1 rate,
+#'        \code{a.rate}, governs the group 2 rate. The latter is used when,
+#'        for example, the first group is conceptualized as female, and the
+#'        female population size determines the arrival rate. Such arrivals are
+#'        evenly allocated between the two groups.
 #' @param ds.rate.g2 Departure or exit rate for group 2 susceptible.
 #' @param di.rate.g2 Departure or exit rate for group 2 infected.
-#' @param dr.rate.g2 Departure or exit rate for group 2 recovered. This parameter is
-#'        only used for \code{SIR} model types.
+#' @param dr.rate.g2 Departure or exit rate for group 2 recovered. This
+#'        parameter is only used for \code{SIR} model types.
 #' @param balance For two-group models, balance the \code{act.rate} to the rate
 #'        set for group 1 (with \code{balance="g1"}) or group 2 (with
 #'        \code{balance="g2"}). See details.
@@ -69,12 +71,13 @@
 #'
 #' For base models, the model specification will be selected as a function
 #' of the model parameters entered here and the control settings in
-#' \code{\link{control.dcm}}. One-group and two-group models are available, where
-#' the former assumes a homogeneous mixing in the population and the latter
-#' assumes a purely heterogeneous mixing between two distinct partitions in the
-#' population (e.g., men and women). Specifying any group two parameters (those
-#' with a \code{.g2}) implies the simulation of a two-group model. All the
-#' parameters for a desired model type must be specified, even if they are zero.
+#' \code{\link{control.dcm}}. One-group and two-group models are available,
+#' where the former assumes a homogeneous mixing in the population and the
+#' latter assumes a purely heterogeneous mixing between two distinct partitions
+#' in the population (e.g., men and women). Specifying any group two parameters
+#' (those with a \code{.g2}) implies the simulation of a two-group model. All
+#' the parameters for a desired model type must be specified, even if they are
+#' zero.
 #'
 #' @section Act Balancing:
 #' In two-group models, a balance between the number of acts for group 1 members
@@ -90,8 +93,8 @@
 #' \code{dcm} has been designed to easily run DCM sensitivity analyses, where a
 #' series of models varying one or more of the model parameters is run. This is
 #' possible by setting any parameter as a vector of length greater than one. See
-#' both the example below and the \href{http://epimodel.org/tut.html}{Basic DCMs}
-#' tutorial.
+#' both the example below and the
+#' \href{http://epimodel.org/tut.html}{Basic DCMs} tutorial.
 #'
 #' @section New Model Types:
 #' To build original model specifications outside of the base models, start
@@ -135,13 +138,13 @@ param.dcm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
 
   if ("b.rate" %in% names.dot.args) {
     p$a.rate <- dot.args$b.rate
-    message("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate to a.rate. ",
-            "See documentation for details.")
+    message("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate to
+            a.rate. ", "See documentation for details.")
   }
   if ("b.rate.g2" %in% names.dot.args) {
     p$a.rate.g2 <- dot.args$b.rate.g2
-    message("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate to a.rate. ",
-            "See documentation for details.")
+    message("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate to
+            a.rate. ", "See documentation for details.")
   }
 
   if (!is.null(p$inter.eff) && is.null(p$inter.start)) {
@@ -237,22 +240,22 @@ init.dcm <- function(s.num, i.num, r.num, s.num.g2, i.num.g2, r.num.g2,
 #'        Susceptible-Infected-Recovered diseases, and \code{"SIS"} for
 #'        Susceptible-Infected-Susceptible diseases.
 #' @param nsteps Number of time steps to solve the model over or vector of times
-#'        to solve the model over. If the number of time steps, then this must be
-#'        a positive integer of length 1.
+#'        to solve the model over. If the number of time steps, then this must
+#'        be a positive integer of length 1.
 #' @param dt Time unit for model solutions, with the default of 1. Model
-#'        solutions for fractional time steps may be obtained by setting this to a
-#'        number between 0 and 1.
-#' @param odemethod Ordinary differential equation (ODE) integration method, with
-#'        the default of the "Runge-Kutta 4" method (see \code{\link{ode}} for
-#'        other options).
+#'        solutions for fractional time steps may be obtained by setting this to
+#'        a number between 0 and 1.
+#' @param odemethod Ordinary differential equation (ODE) integration method,
+#'        with the default of the "Runge-Kutta 4" method (see \code{\link{ode}}
+#'        for other options).
 #' @param dede If \code{TRUE}, use the delayed differential equation solver,
 #'        which allows for time-lagged variables.
 #' @param new.mod If not running an base model type, a function with a new
 #'        model to be simulated (see details).
-#' @param sens.param If \code{TRUE}, evaluate arguments in parameters with length
-#'        greater than 1 as sensitivity analyses, with one model run per value of
-#'        the parameter. If \code{FALSE}, one model will be run with parameters
-#'        of arbitrary length.
+#' @param sens.param If \code{TRUE}, evaluate arguments in parameters with
+#'        length greater than 1 as sensitivity analyses, with one model run per
+#'        value of the parameter. If \code{FALSE}, one model will be run with
+#'        parameters of arbitrary length.
 #' @param print.mod If \code{TRUE}, print the model form to the console.
 #' @param verbose If \code{TRUE}, print model progress to the console.
 #' @param ... additional control settings passed to model.
@@ -268,13 +271,13 @@ init.dcm <- function(s.num, i.num, r.num, s.num.g2, i.num.g2, r.num.g2,
 #'
 #' @section New Model Functions:
 #' The form of the model function for base models may be displayed with the
-#' \code{print.mod} argument set to \code{TRUE}. In this case, the model will not
-#' be run. These model forms may be used as templates to write original model
-#' functions.
+#' \code{print.mod} argument set to \code{TRUE}. In this case, the model will
+#' not be run. These model forms may be used as templates to write original
+#' model functions.
 #'
 #' These new models may be input and solved with \code{\link{dcm}} using the
-#' \code{new.mod} argument, which requires as input a model function. Details and
-#' examples are found in the \href{http://epimodel.org/tut.html}{New DCMs}
+#' \code{new.mod} argument, which requires as input a model function. Details
+#' and examples are found in the \href{http://epimodel.org/tut.html}{New DCMs}
 #' tutorial.
 #'
 #' @seealso Use \code{\link{param.dcm}} to specify model parameters and
@@ -436,12 +439,12 @@ crosscheck.dcm <- function(param, init, control) {
 
     # Deprecated parameters
     if (!is.null(param$trans.rate)) {
-      stop("The trans.rate parameter is deprecated. Use the inf.prob parameter instead.",
-           call. = FALSE)
+      stop("The trans.rate parameter is deprecated. Use the inf.prob parameter
+           instead.", call. = FALSE)
     }
     if (!is.null(param$trans.rate.g2)) {
-      stop("The trans.rate.g2 parameter is deprecated. Use the inf.prob.g2 parameter instead.",
-           call. = FALSE)
+      stop("The trans.rate.g2 parameter is deprecated. Use the inf.prob.g2
+           parameter instead.", call. = FALSE)
     }
   }
 
