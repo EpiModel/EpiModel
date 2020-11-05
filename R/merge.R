@@ -97,7 +97,7 @@ merge.icm <- function(x, y, ...) {
 #'        with the identical model parameterization as \code{x}.
 #' @param keep.transmat If \code{TRUE}, keep the transmission matrices from the
 #'        original \code{x} and \code{y} elements. Note: transmission matrices
-#'        only saved when (\code{tergmLite == FALSE}).
+#'        only saved when (\code{save.transmat == TRUE}).
 #' @param keep.network If \code{TRUE}, keep the \code{networkDynamic} objects
 #'        from the original \code{x} and \code{y} elements. Note: network
 #'        only saved when (\code{tergmLite == FALSE}).

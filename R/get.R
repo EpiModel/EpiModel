@@ -167,15 +167,11 @@ get_transmat <- function(x, sim = 1) {
     stop("x must be of class netsim", call. = FALSE)
   }
 
-  if (x$control$tergmLite == TRUE) {
-    stop("transmat not saved when 'tergmLite == TRUE', check control.net settings", call. = FALSE)
-  }
-
   if (sim > x$control$nsims) {
     stop("Specify sim between 1 and ", x$control$nsims, call. = FALSE)
   }
 
-  if (x$control$tergmLite == TRUE  || is.null(x$stats$transmat)) {
+  if (x$control$save.transmat == FALSE || is.null(x$stats$transmat)) {
     stop("transmat not saved in netsim object, check control.net settings",
          call. = FALSE)
   }

@@ -1937,6 +1937,8 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #' @param shp.g2 If \code{type="network"} and a two-group simulation, shapes
 #'        for the Group 2 vertices, with acceptable inputs of "triangle" and
 #'        "square". Group 1 vertices will remain circles.
+#' @param vertex.cex Relative size of plotted vertices if \code{type="network"},
+#'        with implicit default of 1.
 #' @param stats If \code{type="formation"}, network statistics to plot, among
 #'        those specified in \code{nwstats.formula} of
 #'        \code{\link{control.net}}, with the default to plot all statistics.
@@ -2047,19 +2049,21 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #'
 #' # Plot static networks
 #' par(mar = c(0, 0, 0, 0))
-#' plot(mod, type = "network")
+#' plot(mod, type = "network", vertex.cex = 1.5)
 #'
 #' # Automatic coloring of infected nodes as red
 #' par(mfrow = c(1, 2), mar = c(0, 0, 2, 0))
 #' plot(mod, type = "network", main = "Min Prev | Time 50",
-#'      col.status = TRUE, at = 20, sims = "min")
+#'      col.status = TRUE, at = 20, sims = "min", vertex.cex = 1.25)
 #' plot(mod, type = "network", main = "Max Prev | Time 50",
-#'      col.status = TRUE, at = 20, sims = "max")
+#'      col.status = TRUE, at = 20, sims = "max", vertex.cex = 1.25)
 #'
 #' # Automatic shape by group number (circle = group 1)
 #' par(mar = c(0, 0, 0, 0))
-#' plot(mod, type = "network", at = 20, col.status = TRUE, shp.g2 = "square")
-#' plot(mod, type = "network", at = 20, col.status = TRUE, shp.g2 = "triangle")
+#' plot(mod, type = "network", at = 20, col.status = TRUE,
+#'      shp.g2 = "square")
+#' plot(mod, type = "network", at = 20, col.status = TRUE,
+#'      shp.g2 = "triangle", vertex.cex = 2)
 #'
 #' # Plot formation statistics
 #' par(mfrow = c(1,1), mar = c(3,3,1,1), mgp = c(2,1,0))
@@ -2077,7 +2081,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
                         mean.lty = 1, qnts = 0.5, qnts.col, qnts.alpha,
                         qnts.smooth = TRUE, legend, leg.cex = 0.8, axs = "r",
                         grid = FALSE, add = FALSE, network = 1, at = 1,
-                        col.status = FALSE, shp.g2 = NULL, stats,
+                        col.status = FALSE, shp.g2 = NULL, vertex.cex, stats,
                         targ.line = TRUE, targ.col, targ.lwd = 2, targ.lty = 2,
                         plots.joined, ...) {
 
@@ -2128,6 +2132,8 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
     obj <- get_network(x, sims, network, collapse = TRUE, at = at)
     tergmLite <- x$control$tergmLite
 
+    miss_vertex.cex <- missing(vertex.cex)
+
     if (!is.null(shp.g2)) {
       if (all(shp.g2 != c("square", "triangle"))) {
         stop("shp.g2 accepts inputs of either \"square\" or \"triangle\" ",
@@ -2140,24 +2146,32 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
         if (shp.g2 == "square") {
           vertex.sides <- ifelse(mids == 1, 50, 4)
           vertex.rot <- 45
-          vertex.cex <- ifelse(mids == 1, 1, 1.3)
+          if (miss_vertex.cex == TRUE) {
+            vertex.cex <- 1
+          }
         }
         if (shp.g2 == "triangle") {
           vertex.sides <- ifelse(mids == 1, 50, 3)
           vertex.rot <- 90
-          vertex.cex <- ifelse(mids == 1, 1, 1.4)
+          if (miss_vertex.cex == TRUE) {
+            vertex.cex <- 1
+          }
         }
 
       } else {
         warning("shp.g2 applies to two-group networks only, so ignoring.")
         vertex.sides <- 50
         vertex.rot <- 0
-        vertex.cex <- 1
+        if (miss_vertex.cex == TRUE) {
+          vertex.cex <- 1
+        }
       }
     } else {
       vertex.sides <- 50
       vertex.rot <- 0
-      vertex.cex <- 1
+      if (miss_vertex.cex == TRUE) {
+        vertex.cex <- 1
+      }
     }
     if (col.status == TRUE) {
       if (tergmLite == TRUE) {

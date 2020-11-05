@@ -32,6 +32,7 @@
   at = 1,
   col.status = FALSE,
   shp.g2 = NULL,
+  vertex.cex,
   stats,
   targ.line = TRUE,
   targ.col,
@@ -116,6 +117,9 @@ status colors (blue = susceptible, red = infected, green = recovered).}
 \item{shp.g2}{If \code{type="network"} and a two-group simulation, shapes
 for the Group 2 vertices, with acceptable inputs of "triangle" and
 "square". Group 1 vertices will remain circles.}
+
+\item{vertex.cex}{Relative size of plotted vertices if \code{type="network"},
+with implicit default of 1.}
 
 \item{stats}{If \code{type="formation"}, network statistics to plot, among
 those specified in \code{nwstats.formula} of \code{\link{control.net}},
@@ -227,19 +231,21 @@ plot(mod, type = "epi", y = "si.flow", qnts = 1, ylim = c(0, 4))
 
 # Plot static networks
 par(mar = c(0, 0, 0, 0))
-plot(mod, type = "network")
+plot(mod, type = "network", vertex.cex = 1.5)
 
 # Automatic coloring of infected nodes as red
 par(mfrow = c(1, 2), mar = c(0, 0, 2, 0))
 plot(mod, type = "network", main = "Min Prev | Time 50",
-     col.status = TRUE, at = 20, sims = "min")
+     col.status = TRUE, at = 20, sims = "min", vertex.cex = 1.25)
 plot(mod, type = "network", main = "Max Prev | Time 50",
-     col.status = TRUE, at = 20, sims = "max")
+     col.status = TRUE, at = 20, sims = "max", vertex.cex = 1.25)
 
 # Automatic shape by group number (circle = group 1)
 par(mar = c(0, 0, 0, 0))
-plot(mod, type = "network", at = 20, col.status = TRUE, shp.g2 = "square")
-plot(mod, type = "network", at = 20, col.status = TRUE, shp.g2 = "triangle")
+plot(mod, type = "network", at = 20, col.status = TRUE,
+     shp.g2 = "square")
+plot(mod, type = "network", at = 20, col.status = TRUE,
+     shp.g2 = "triangle", vertex.cex = 2)
 
 # Plot formation statistics
 par(mfrow = c(1,1), mar = c(3,3,1,1), mgp = c(2,1,0))
