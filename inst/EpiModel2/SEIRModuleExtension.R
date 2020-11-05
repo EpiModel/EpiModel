@@ -1,8 +1,8 @@
 ## EpiModel 2.0 Worked Example - SEIR Module Extension:
 ## Description: An closed population of size 1000 in which an epidemic
-## of type SIER is introduced. The new exposed state is modeled by defining a new
-## infection.FUN module infect2; progression from an exposed state to infectivity
-## is handled by the user created function progress.net.
+## of type SIER is introduced. The new exposed state is modeled by defining a
+## new infection.FUN module infect2; progression from an exposed state to
+## infectivity is handled by the user created function progress.net.
 ## -----------------------------------------------------------------------------
 
 ## Modified infection module using new accessor functions
@@ -45,7 +45,7 @@ infect2 <- function(dat, at) {
 }
 
 ## New disease progression module using new accessor functions.
-progress <- function(dat, at) {
+progress2 <- function(dat, at) {
 
   active <- get_attr(dat, "active")
   status <- get_attr(dat, "status")
@@ -96,11 +96,12 @@ est <- netest(nw, formation = ~edges, target.stats = 150,
               coef.diss = dissolution_coefs(~offset(edges), 10))
 
 ## Epidemic model parameterization
-param <- param.net(inf.prob = 0.5, act.rate = 2, ei.rate = 0.01, ir.rate = 0.005)
+param <- param.net(inf.prob = 0.5, act.rate = 2, ei.rate = 0.01,
+                   ir.rate = 0.005)
 init <- init.net(i.num = 10)
 ## If any user defined functions, type must equal NULL
-control <- control.net(type = NULL, nsteps = 100, nsims = 1, infection.FUN = infect2,
-                       progress.FUN = progress)
+control <- control.net(type = NULL, nsteps = 100, nsims = 1,
+                       infection.FUN = infect2, progress.FUN = progress2)
 
 ## Simulate the epidemic model
 sim <- netsim(est, param, init, control)

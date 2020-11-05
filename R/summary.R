@@ -11,10 +11,11 @@
 #' @param ... Additional summary function arguments (not used).
 #'
 #' @details
-#' Summary statistics for the main epidemiological outcomes (state and transition
-#' size and prevalence) from an \code{dcm} model. Time-specific summary measures
-#' are provided, so it is necessary to input a time of interest. For multiple-run
-#' models (sensitivity analyses), input a model run number. See examples below.
+#' Summary statistics for the main epidemiological outcomes (state and
+#' transition size and prevalence) from an \code{dcm} model. Time-specific
+#' summary measures are provided, so it is necessary to input a time of
+#' interest. Formultiple-run models (sensitivity analyses), input a model run
+#' number. See examples below.
 #'
 #' @seealso \code{\link{dcm}}
 #'
@@ -92,7 +93,8 @@ summary.dcm <- function(object, at, run = 1, digits = 3, ...) {
         stats <- with(df, c(a.flow.g2, NA,
                             ds.flow.g2, NA,
                             di.flow.g2, NA))
-        mat.g2 <- rbind(mat.g2, matrix(stats, byrow = TRUE, nrow = length(stats) / 2))
+        mat.g2 <- rbind(mat.g2, matrix(stats, byrow = TRUE,
+                                       nrow = length(stats) / 2))
       }
       mat <- cbind(mat, mat.g2)
     }
@@ -113,8 +115,10 @@ summary.dcm <- function(object, at, run = 1, digits = 3, ...) {
                  df$di.flow, NA,
                  df$dr.flow, NA)
       mat <- rbind(mat, matrix(stats, byrow = TRUE, nrow = length(stats) / 2))
-      rownames(mat)[rownames(mat) == ""] <- c("Arrival ->", "S Departure ->",
-                                              "I Departure ->", "R Departure ->")
+      rownames(mat)[rownames(mat) == ""] <- c("Arrival ->",
+                                              "S Departure ->",
+                                              "I Departure ->",
+                                              "R Departure ->")
     }
     if (groups == 2) {
       stats <- with(df, c(s.num.g2, s.prev.g2,
@@ -129,7 +133,8 @@ summary.dcm <- function(object, at, run = 1, digits = 3, ...) {
                             ds.flow.g2, NA,
                             di.flow.g2, NA,
                             dr.flow.g2, NA))
-        mat.g2 <- rbind(mat.g2, matrix(stats, byrow = TRUE, nrow = length(stats) / 2))
+        mat.g2 <- rbind(mat.g2, matrix(stats, byrow = TRUE,
+                                       nrow = length(stats) / 2))
       }
       mat <- cbind(mat, mat.g2)
     }
@@ -217,9 +222,10 @@ summary.dcm <- function(object, at, run = 1, digits = 3, ...) {
 #' @param ... Additional summary function arguments.
 #'
 #' @details
-#' Summary statistics for the main epidemiological outcomes (state and transition
-#' size and prevalence) from an \code{icm} model. Time-specific summary measures
-#' are provided, so it is necessary to input a time of interest.
+#' Summary statistics for the main epidemiological outcomes (state and
+#' transition size and prevalence) from an \code{icm} model. Time-specific
+#' summary measures are provided, so it is necessary to input a time of
+#' interest.
 #'
 #' @seealso \code{\link{icm}}
 #'
@@ -329,8 +335,10 @@ summary.icm <- function(object, at, digits = 3, ...) {
                  df.mn$di.flow, df.sd$di.flow, NA,
                  df.mn$dr.flow, df.sd$dr.flow, NA)
       mat <- rbind(mat, matrix(stats, byrow = TRUE, nrow = length(stats) / 3))
-      rownames(mat)[rownames(mat) == ""] <- c("Arrival ->", "S Departure ->",
-                                              "I Departure ->", "R Departure ->")
+      rownames(mat)[rownames(mat) == ""] <- c("Arrival ->",
+                                              "S Departure ->",
+                                              "I Departure ->",
+                                              "R Departure ->")
     }
 
     ## Group 2 stats
@@ -436,7 +444,8 @@ summary.icm <- function(object, at, digits = 3, ...) {
 
 #' @title Summary Model Statistics
 #'
-#' @description Extracts and prints model statistics simulated with \code{netsim}.
+#' @description Extracts and prints model statistics simulated with
+#' \code{netsim}.
 #'
 #' @param object An \code{EpiModel} object of class \code{netsim}.
 #' @param at Time step for model statistics.
@@ -444,9 +453,10 @@ summary.icm <- function(object, at, digits = 3, ...) {
 #' @param ... Additional summary function arguments.
 #'
 #' @details
-#' Summary statistics for the main epidemiological outcomes (state and transition
-#' size and prevalence) from an \code{netsim} model. Time-specific summary
-#' measures are provided, so it is necessary to input a time of interest.
+#' Summary statistics for the main epidemiological outcomes (state and
+#' transition size and prevalence) from an \code{netsim} model. Time-specific
+#' summary measures are provided, so it is necessary to input a time of
+#' interest.
 #'
 #' @seealso \code{\link{netsim}}
 #'
@@ -572,8 +582,10 @@ summary.netsim <- function(object, at, digits = 3, ...) {
                  df.mn$di.flow, df.sd$di.flow, NA,
                  df.mn$dr.flow, df.sd$dr.flow, NA)
       mat <- rbind(mat, matrix(stats, byrow = TRUE, nrow = length(stats) / 3))
-      rownames(mat)[rownames(mat) == ""] <- c("Arrival ->", "S Departure ->",
-                                              "I Departure ->", "R Departure ->")
+      rownames(mat)[rownames(mat) == ""] <- c("Arrival ->",
+                                              "S Departure ->",
+                                              "I Departure ->",
+                                              "R Departure ->")
     }
 
     ## Group 2 stats
@@ -685,7 +697,8 @@ summary.netsim <- function(object, at, digits = 3, ...) {
 
 #' @title Summary for Network Model Fit
 #'
-#' @description Prints the summary model fit statistics for an ERGM or STERGM fit.
+#' @description Prints the summary model fit statistics for an ERGM or STERGM
+#'fit.
 #'
 #' @param object An \code{EpiModel} object of class \code{netest}.
 #' @param ... Additional summary function arguments.
@@ -697,8 +710,8 @@ summary.netsim <- function(object, at, digits = 3, ...) {
 #' @details
 #' This function is simply a wrapper function for \code{summary.ergm} and
 #' \code{summary.stergm}. Additionally, if the edges dissolution approximation
-#' was used to fit the temporal ERGM, then the dissolution coefficient information
-#' will be printed.
+#' was used to fit the temporal ERGM, then the dissolution coefficient
+#' information will be printed.
 #'
 summary.netest <- function(object, ...) {
 

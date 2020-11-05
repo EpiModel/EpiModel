@@ -11,10 +11,10 @@
 #' @details
 #' The main steps in this infection module are as follows:
 #' \enumerate{
-#'  \item Get IDs for current infected and susceptibles given the current disease
-#'        status.
-#'  \item Call \code{\link{discord_edgelist}} to get the current discordant edgelist
-#'        given step 1.
+#'  \item Get IDs for current infected and susceptibles given the current
+#'        disease status.
+#'  \item Call \code{\link{discord_edgelist}} to get the current discordant
+#'        edgelist given step 1.
 #'  \item Determine the transmission rates (e.g., as a function of group).
 #'  \item Pull the number of acts per partnership in a time step from the
 #'        \code{act.rate} parameter.
@@ -26,8 +26,8 @@
 #' }
 #'
 #' @return
-#' The main \code{dat} object is returned with updated disease status and summary
-#' incidence measures.
+#' The main \code{dat} object is returned with updated disease status and
+#' summary incidence measures.
 #'
 #' @export
 #' @keywords netMod internal
@@ -132,10 +132,10 @@ infection.net <- function(dat, at) {
 #' @details
 #' The main steps in this infection module are as follows:
 #' \enumerate{
-#'  \item Get IDs for current infected and susceptibles given the current disease
-#'        status.
-#'  \item Call \code{\link{discord_edgelist}} to get the current discordant edgelist
-#'        given step 1.
+#'  \item Get IDs for current infected and susceptibles given the current
+#'        disease status.
+#'  \item Call \code{\link{discord_edgelist}} to get the current discordant
+#'        edgelist given step 1.
 #'  \item Determine the transmission rates (e.g., as a function of group).
 #'  \item Pull the number of acts per partnership in a time step from the
 #'        \code{act.rate} parameter.
@@ -147,8 +147,8 @@ infection.net <- function(dat, at) {
 #' }
 #'
 #' @return
-#' The main \code{dat} object is returned with updated disease status and summary
-#' incidence measures.
+#' The main \code{dat} object is returned with updated disease status and
+#' summary incidence measures.
 #'
 #' @export
 #' @keywords netMod internal
@@ -270,19 +270,26 @@ infection.2g.net <- function(dat, at) {
 #' @param at Current time step.
 #' @param network In case of models with multiple networks, the network to pull
 #'        the current edgelist from. Default of \code{network = 1}.
+#' @param infstat Character vector of disease status values that are considered
+#'        infectious, defining the SI pairs.
 #'
 #' @details
-#' This internal function works within the parent \code{\link{infection.net}} function
-#' to pull the current edgelist from the dynamic network object, look up the disease
-#' status of the head and tails on the edge, and subset the list to those edges
-#' with one susceptible and one infected node.
+#' This internal function works within the parent \code{\link{infection.net}}
+#' function to pull the current edgelist from the dynamic network object, look
+#' up the disease status of the head and tails on the edge, and subset the list
+#' to those edges with one susceptible and one infected node.
+#'
+#' EpiModel v2.0.3 extended the function by allowing flexibility in the
+#' definition what disease status counts as infectious, with the \code{infstat}
+#' parameter. For extension models with multiple infectious states, this can be
+#' a vector of length greater than 1: \code{infstat = c("i", "a")}.
 #'
 #' @return
 #' This function returns a \code{data.frame} with the following columns:
 #' \itemize{
 #'  \item \strong{time:} time step queried
 #'  \item \strong{sus:} ID number for the susceptible partner
-#'  \item \strong{inf:} ID number for the infected partner
+#'  \item \strong{inf:} ID number for the infectious partner
 #' }
 #' The output from this function is added to the transmission \code{data.frame}
 #' object that is requested as output in \code{netsim} simulations with
@@ -293,7 +300,7 @@ infection.2g.net <- function(dat, at) {
 #' @export
 #' @keywords netMod internal
 #'
-discord_edgelist <- function(dat, at, network = 1) {
+discord_edgelist <- function(dat, at, network = 1, infstat = "i") {
 
   status <- get_attr(dat, "status")
   active <- get_attr(dat, "active")
@@ -309,7 +316,7 @@ discord_edgelist <- function(dat, at, network = 1) {
   if (nrow(el) > 0) {
     el <- el[sample(1:nrow(el)), , drop = FALSE]
     stat <- matrix(status[el], ncol = 2)
-    isInf <- matrix(stat %in% "i", ncol = 2)
+    isInf <- matrix(stat %in% infstat, ncol = 2)
     isSus <- matrix(stat %in% "s", ncol = 2)
     SIpairs <- el[isSus[, 1] * isInf[, 2] == 1, , drop = FALSE]
     ISpairs <- el[isSus[, 2] * isInf[, 1] == 1, , drop = FALSE]
@@ -320,7 +327,8 @@ discord_edgelist <- function(dat, at, network = 1) {
       del <- data.frame(at, sus, inf)
 
       # Check for active status
-      keep <- rowSums(matrix(c(active[del$sus], active[del$inf]), ncol = 2)) == 2
+      keep <- rowSums(matrix(c(active[del$sus], active[del$inf]),
+                             ncol = 2)) == 2
       del <- del[keep, ]
       if (nrow(del) < 1) {
         del <- NULL
@@ -344,10 +352,12 @@ discord_edgelist <- function(dat, at, network = 1) {
 #'        \code{infection.2g.net}.
 #'
 #' @details
-#' This internal function works within the parent \code{\link{infection.net}} functions
-#' to save the transmission matrix created at time step \code{at} to the master list object
-#' \code{dat}.
+#' This internal function works within the parent \code{\link{infection.net}}
+#' functions to save the transmission matrix created at time step \code{at} to
+#' the master list object \code{dat}.
+#'
 #' @export
+#'
 set_transmat <- function(dat, del, at) {
   del <- del[!duplicated(del$sus), ]
   if (at == 2) {

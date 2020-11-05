@@ -9,7 +9,7 @@ test_that("ICM new modules", {
       n <- sum(dat$attr$active == 1)
       dat$attr$age <- sample(18:49, n, replace = TRUE)
     } else {
-      dat$attr$age <- dat$attr$age + 1/12
+      dat$attr$age <- dat$attr$age + 1 / 12
     }
 
     return(dat)
@@ -23,7 +23,7 @@ test_that("ICM new modules", {
     if (nElig > 0) {
       ages <- dat$attr$age[idsElig]
       life.expt <- dat$param$life.expt
-      departure.rates <- pmin(1, 1/(life.expt*12 - ages*12))
+      departure.rates <- pmin(1, 1 / (life.expt * 12 - ages * 12))
       vecDepartures <- which(rbinom(nElig, 1, departure.rates) == 1)
       idsDepartures <- idsElig[vecDepartures]
       nDepartures <- length(idsDepartures)
@@ -48,7 +48,7 @@ test_that("ICM new modules", {
   afunc <- function(dat, at) {
 
     growth.rate <- dat$param$growth.rate
-    exptPopSize <- dat$epi$num[1] * (1 + growth.rate*at)
+    exptPopSize <- dat$epi$num[1] * (1 + growth.rate * at)
 
     numNeeded <- exptPopSize - sum(dat$attr$active == 1)
     if (numNeeded > 0) {
@@ -75,7 +75,7 @@ test_that("ICM new modules", {
 
   param <- param.icm(inf.prob = 0.15,
                      act.rate = 0.15,
-                     growth.rate = 0.01/12,
+                     growth.rate = 0.01 / 12,
                      life.expt = 70)
   init <- init.icm(s.num = 1000, i.num = 100)
   control <- control.icm(type = "SI", nsims = 2, nsteps = 250,
@@ -89,7 +89,3 @@ test_that("ICM new modules", {
   expect_is(mod, "icm")
 
 })
-
-
-
-

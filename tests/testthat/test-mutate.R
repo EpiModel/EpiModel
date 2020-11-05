@@ -17,11 +17,12 @@ test_that("mutate_epi.netsim", {
 
   mod1 <- mutate_epi(mod1, i.prev = i.num / num,
                      i.prev.g2 = i.num.g2 / num.g2)
-  expect_equal(names(mod1$epi), c("s.num", "i.num", "num", "s.num.g2", "i.num.g2", "num.g2",
-                                  "si.flow", "si.flow.g2", "i.prev", "i.prev.g2"))
+  expect_equal(names(mod1$epi), c("s.num", "i.num", "num", "s.num.g2",
+                                  "i.num.g2", "num.g2", "si.flow", "si.flow.g2",
+                                  "i.prev", "i.prev.g2"))
 
   # Add incidence rate per 100 person years (assume time step = 1 week)
-  mod1 <- mutate_epi(mod1, ir100 = 5200*(si.flow + si.flow.g2) /
+  mod1 <- mutate_epi(mod1, ir100 = 5200 * (si.flow + si.flow.g2) /
                        (s.num + s.num.g2))
   df <- as.data.frame(mod1)
   expect_true("ir100" %in% names(df))
@@ -41,7 +42,7 @@ test_that("mutate_epi.dcm", {
                                   "i.prev", "i.prev.g2"))
 
   # Add incidence rate per 100 person years (assume time step = 1 week)
-  mod1 <- mutate_epi(mod1, ir100 = 5200*(si.flow + si.flow.g2) /
+  mod1 <- mutate_epi(mod1, ir100 = 5200 * (si.flow + si.flow.g2) /
                        (s.num + s.num.g2))
   df <- as.data.frame(mod1)
   expect_true("ir100" %in% names(df))
@@ -57,15 +58,15 @@ test_that("mutate_epi.dcm, new mod", {
 
       # 2. define lambda, mu, gamma, and sigma
       ce <- R0 / dur.inf
-      lambda <- ce * i.num/num
-      mu <- 1/life.expt
-      gamma <- 1/dur.inf
-      sigma <- 1/dur.imm
+      lambda <- ce * i.num / num
+      mu <- 1 / life.expt
+      gamma <- 1 / dur.inf
+      sigma <- 1 / dur.imm
 
       # 3. Write out the four differential equations
-      dS <- -lambda*s.num + mu*num - mu*s.num + sigma*r.num
-      dI <- lambda*s.num - gamma*i.num - mu*i.num
-      dR <- gamma*i.num - mu*r.num - sigma*r.num
+      dS <- -lambda * s.num + mu * num - mu * s.num + sigma * r.num
+      dI <- lambda * s.num - gamma * i.num - mu * i.num
+      dR <- gamma * i.num - mu * r.num - sigma * r.num
 
       # 4. Outputs
       list(c(dS,
@@ -74,8 +75,8 @@ test_that("mutate_epi.dcm, new mod", {
     })
   }
 
-  param <- param.dcm(R0 = 1.5, life.expt = 365*30,
-                     dur.inf = 60, dur.imm = 365*c(8, 10, 12))
+  param <- param.dcm(R0 = 1.5, life.expt = 365 * 30,
+                     dur.inf = 60, dur.imm = 365 * c(8, 10, 12))
   init <- init.dcm(s.num = 1e5, i.num = 1, r.num = 0)
   control <- control.dcm(nsteps = 365, new.mod = syph)
   sim <- dcm(param, init, control)
@@ -95,7 +96,7 @@ test_that("mutate DCM with constant", {
   init <- init.dcm(s.num = 500, i.num = 1)
   control <- control.dcm(type = "SI", nsteps = 500)
   mod1 <- dcm(param, init, control)
-  mod1 <- mutate_epi(mod1, prev = i.num/num,
+  mod1 <- mutate_epi(mod1, prev = i.num / num,
                      cm = 3)
   expect_true(all(sapply(mod1$epi, class) == "data.frame"))
   expect_true(length(unique(sapply(mod1$epi, nrow))) == 1)

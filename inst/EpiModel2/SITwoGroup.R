@@ -1,6 +1,7 @@
-## EpiModel 2.0 Worked Example - SI Model with no Vital Dynamics on a Two-Group Network:
-## Description: A two-group closed population of size 1000 (500 individuals in each group)
-## in which an epidemic of type SI is introduced.
+## EpiModel 2.0 Worked Example - SI Model with no Vital Dynamics on a Two-Group
+## Network:
+## Description: A two-group closed population of size 1000 (500 individuals in
+## each group) in which an epidemic of type SI is introduced.
 ## -----------------------------------------------------------------------------
 
 ## update to new initialization function network_initialize.
@@ -8,13 +9,14 @@ num1 <- num2 <- 500
 nw <- network_initialize(n = num1 + num2)
 
 ##Update to new vertex assignment function set_vertex_attribute
-nw <- set_vertex_attribute(nw, "group", rep(1:2, c(num1,num2)))
+nw <- set_vertex_attribute(nw, "group", rep(1:2, c(num1, num2)))
 
 ## If looking to replicate 'bipartite' network:
 formation <- ~edges + nodematch("group")
 target.stats <- c(400, 0)
 
-## If interested instead in within group mixing; here 100 of the total edges match on group:
+## If interested instead in within group mixing; here 100 of the total edges
+## match on group:
 #target.stats <- c(400, 100)
 
 coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
