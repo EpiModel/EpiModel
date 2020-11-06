@@ -88,11 +88,11 @@ test_that("New network models vignette example", {
   mod1
 
   expect_is(mod1, "netsim")
-  expect_output(print(mod1), "resim_nets.FUN = resim_nets")
-  expect_output(print(mod1), "infection.FUN = infection.net")
-  expect_output(print(mod1), "departures.FUN = dfunc")
-  expect_output(print(mod1), "arrivals.FUN = afunc")
-  expect_output(print(mod1), "aging.FUN = aging")
+  expect_output(print(mod1), "resim_nets.FUN")
+  expect_output(print(mod1), "infection.FUN")
+  expect_output(print(mod1), "departures.FUN")
+  expect_output(print(mod1), "arrivals.FUN")
+  expect_output(print(mod1), "aging.FUN")
 
   ## Test module reordering
   control <- control.net(type = NULL, nsims = 1, nsteps = 10,
@@ -143,10 +143,10 @@ test_that("New network models vignette example", {
   mod5 <- netsim(est, param, init, control)
   expect_is(mod5, "netsim")
 
-  expect_output(print(mod5), "resim_nets.FUN = resim_nets")
-  expect_output(print(mod5), "infection.FUN = infect")
-  expect_output(print(mod5), "departures.FUN = dfunc")
-  expect_output(print(mod5), "arrivals.FUN = afunc")
-  expect_output(print(mod5), "aging.FUN = aging")
+  expect_output(print(mod5), "resim_nets.FUN")
+  expect_output(print(mod5), "infection.FUN")
+  expect_output(print(mod5), "departures.FUN")
+  expect_output(print(mod5), "arrivals.FUN")
+  expect_output(print(mod5), "aging.FUN")
 
 })
