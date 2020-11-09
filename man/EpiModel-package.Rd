@@ -116,8 +116,8 @@ are:
 }
 
 \references{
-The EpiModel website is at \url{http://epimodel.org/}, and the source
-code is at \url{http://github.com/statnet/EpiModel}. Bug reports and feature
+The EpiModel website is at \url{http://www.epimodel.org/}, and the source
+code is at \url{https://github.com/statnet/EpiModel}. Bug reports and feature
 requests are welcome there.
 
 Our primary methods paper on EpiModel is published in the \strong{Journal of
@@ -131,6 +131,6 @@ Software.2018; 84(8): 1-47. doi: 10.18637/jss.v084.i08
 
 We have also developed an extension package specifically for modeling HIV and
 related sexually transmitted infections, called \code{EpiModelHIV} and
-available on Github at \url{http://github.com/statnet/EpiModelHIV}.
+available on Github at \url{https://github.com/statnet/EpiModelHIV}.
 }
 \keyword{package}

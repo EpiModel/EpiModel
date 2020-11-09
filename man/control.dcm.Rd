@@ -61,7 +61,7 @@ Sets the controls for deterministic compartmental models
 compartmental models solved with the \code{\link{dcm}} function. Controls are
 required for both base model types and original models. For an overview of
 control settings for base DCM class models, consult the
-\href{http://epimodel.org/tut.html}{Basic DCMs} tutorial.
+\href{http://www.epimodel.org/tut.html}{Basic DCMs} tutorial.
 For all base models, the \code{type} argument is a necessary parameter
 and it has no default.
 }
@@ -74,8 +74,8 @@ model functions.
 
 These new models may be input and solved with \code{\link{dcm}} using the
 \code{new.mod} argument, which requires as input a model function. Details
-and examples are found in the \href{http://epimodel.org/tut.html}{New DCMs}
-tutorial.
+and examples are found in the
+\href{http://www.epimodel.org/tut.html}{New DCMs} tutorial.
 }
 
 \seealso{

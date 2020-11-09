@@ -66,7 +66,7 @@
 #' may use the base types, for which these parameters are used, or new process
 #' modules which may use these parameters (but not necessarily). A detailed
 #' description of network model parameterization for base models is found in
-#' the \href{http://epimodel.org/tut.html}{Basic Network Models} tutorial.
+#' the \href{http://www.epimodel.org/tut.html}{Basic Network Models} tutorial.
 #'
 #' For base models, the model specification will be chosen as a result of
 #' the model parameters entered here and the control settings in
@@ -214,7 +214,7 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
 #' input into the \code{init.net} function. This function handles initial
 #' conditions for both base models and new modules. For an overview of
 #' specifying initial conditions across a variety of base network models,
-#' consult the \href{http://epimodel.org/tut.html}{Basic Network Models}
+#' consult the \href{http://www.epimodel.org/tut.html}{Basic Network Models}
 #' tutorials.
 #'
 #' @seealso Use \code{\link{param.net}} to specify model parameters and
@@ -376,7 +376,7 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #' solved with the \code{\link{netsim}} function. Controls are required for both
 #' base model types and when passing original process modules. For an overview
 #' of control settings for base models, consult the
-#' \href{http://epimodel.org/tut.html}{Basic Network Models} tutorials.
+#' \href{http://www.epimodel.org/tut.html}{Basic Network Models} tutorials.
 #' For all base models, the \code{type} argument is a necessary parameter
 #' and it has no default.
 #'
@@ -412,9 +412,9 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #' For original models, one may substitute replacement module functions for any
 #' of the default functions. New modules may be added to the workflow at each
 #' time step by passing a module function via the \code{...} argument. Consult
-#' the \href{http://epimodel.org/tut.html}{New Network Models} tutorials. One
-#' may remove existing modules, such as \code{arrivals.FUN}, from the workflow
-#' by setting the parameter value for that argument to \code{NULL}.
+#' the \href{http://www.epimodel.org/tut.html}{New Network Models} tutorials.
+#' One may remove existing modules, such as \code{arrivals.FUN}, from the
+#' workflow by setting the parameter value for that argument to \code{NULL}.
 #'
 #' @seealso Use \code{\link{param.net}} to specify model parameters and
 #'          \code{\link{init.net}} to specify the initial conditions. Run the

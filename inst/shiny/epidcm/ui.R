@@ -179,7 +179,7 @@ shinyUI(fluidPage(
            documentation, tutorials, and workshop materials
            at the main", a("EpiModel website.", href = "http://epimodel.org/")),
          p("This web application, built with",
-           a("Shiny", href = "http://shiny.rstudio.com/"), "may be lauched via
+           a("Shiny", href = "https://shiny.rstudio.com/"), "may be lauched via
            an R session with EpiModel and Shiny installed (see the epiweb
            function), or directly on any web browser (no R needed)",
            a("here.", href = "http://statnet.shinyapps.io/epidcm/")),

@@ -110,7 +110,7 @@ contact models simulated with the \code{\link{icm}} function. Models
 may use the base types, for which these parameters are used, or new process
 modules which may use these parameters (but not necessarily). A detailed
 description of ICM parameterization for base models is found in the
-\href{http://epimodel.org/tut.html}{Basic ICMs} tutorial.
+\href{http://www.epimodel.org/tut.html}{Basic ICMs} tutorial.
 
 For base models, the model specification will be chosen as a result of
 the model parameters entered here and the control settings in
@@ -131,7 +131,7 @@ the other group size and act rate: \eqn{N_1 \alpha_1 = N_2 \alpha_2}, where
 \eqn{N_i} is the group size and \eqn{\alpha_i} the group-specific act rates
 at time \eqn{t}. The \code{balance} parameter here specifies which group's
 act rate should control the others with respect to balancing. See the
-\href{http://epimodel.org/tut.html}{Basic DCMs} tutorial.
+\href{http://www.epimodel.org/tut.html}{Basic DCMs} tutorial.
 }
 
 \section{New Modules}{

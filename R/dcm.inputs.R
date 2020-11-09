@@ -67,7 +67,7 @@
 #' base types, for which these parameters are used, or original model
 #' specifications for which these parameters may be used (but not necessarily).
 #' A detailed description of DCM parameterization for base models is found
-#' in the \href{http://epimodel.org/tut.html}{Basic DCMs} tutorial.
+#' in the \href{http://www.epimodel.org/tut.html}{Basic DCMs} tutorial.
 #'
 #' For base models, the model specification will be selected as a function
 #' of the model parameters entered here and the control settings in
@@ -87,24 +87,25 @@
 #' \eqn{N_i} is the group size and \eqn{\alpha_i} the group-specific act rates
 #' at time \eqn{t}. The \code{balance} parameter here specifies which group's
 #' act rate should control the others with respect to balancing. See the
-#' \href{http://epimodel.org/tut.html}{Basic DCMs} tutorial for further details.
+#' \href{http://www.epimodel.org/tut.html}{Basic DCMs} tutorial for further
+#' details.
 #'
 #' @section Sensitivity Analyses:
 #' \code{dcm} has been designed to easily run DCM sensitivity analyses, where a
 #' series of models varying one or more of the model parameters is run. This is
 #' possible by setting any parameter as a vector of length greater than one. See
 #' both the example below and the
-#' \href{http://epimodel.org/tut.html}{Basic DCMs} tutorial.
+#' \href{http://www.epimodel.org/tut.html}{Basic DCMs} tutorial.
 #'
 #' @section New Model Types:
 #' To build original model specifications outside of the base models, start
-#' by consulting the \href{http://epimodel.org/tut.html}{New DCMs with EpiModel}
-#' tutorial. Briefly, an original model may use either the existing model
-#' parameters named here, an original set of parameters, or a combination of
-#' both. The \code{...} argument allows the user to pass an arbitrary set of new
-#' model parameters into \code{param.dcm}. Whereas there are strict checks for
-#' base models that the model parameters are valid, parameter validity is the
-#' user responsibility with these original models.
+#' by consulting the \href{http://www.epimodel.org/tut.html}{New DCMs with
+#' EpiModel} tutorial. Briefly, an original model may use either the existing
+#' model parameters named here, an original set of parameters, or a combination
+#' of both. The \code{...} argument allows the user to pass an arbitrary set of
+#' new model parameters into \code{param.dcm}. Whereas there are strict checks
+#' for base models that the model parameters are valid, parameter validity is
+#' the user responsibility with these original models.
 #'
 #' @seealso Use \code{\link{init.dcm}} to specify the initial conditions and
 #'          \code{\link{control.dcm}} to specify the control settings. Run the
@@ -181,13 +182,13 @@ param.dcm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
 #' input into the \code{init.dcm} function. This function handles initial
 #' conditions for both base model types and original models. For an overview
 #' of initial conditions for base DCM class models, consult the
-#' \href{http://epimodel.org/tut.html}{Basic DCMs} tutorial.
+#' \href{http://www.epimodel.org/tut.html}{Basic DCMs} tutorial.
 #'
 #' Original models may use the parameter names listed as arguments here, a new
 #' set of names, or a combination of both. With new models, initial conditions
 #' must be input in the same order that the solved derivatives from the model
 #' are output. More details on this requirement are outlined in the
-#' \href{http://epimodel.org/tut.html}{Solving New DCMs} tutorial.
+#' \href{http://www.epimodel.org/tut.html}{Solving New DCMs} tutorial.
 #'
 #' @seealso Use \code{\link{param.dcm}} to specify model parameters and
 #'          \code{\link{control.dcm}} to specify the control settings. Run the
@@ -265,7 +266,7 @@ init.dcm <- function(s.num, i.num, r.num, s.num.g2, i.num.g2, r.num.g2,
 #' compartmental models solved with the \code{\link{dcm}} function. Controls are
 #' required for both base model types and original models. For an overview of
 #' control settings for base DCM class models, consult the
-#' \href{http://epimodel.org/tut.html}{Basic DCMs} tutorial.
+#' \href{http://www.epimodel.org/tut.html}{Basic DCMs} tutorial.
 #' For all base models, the \code{type} argument is a necessary parameter
 #' and it has no default.
 #'
@@ -277,8 +278,8 @@ init.dcm <- function(s.num, i.num, r.num, s.num.g2, i.num.g2, r.num.g2,
 #'
 #' These new models may be input and solved with \code{\link{dcm}} using the
 #' \code{new.mod} argument, which requires as input a model function. Details
-#' and examples are found in the \href{http://epimodel.org/tut.html}{New DCMs}
-#' tutorial.
+#' and examples are found in the
+#' \href{http://www.epimodel.org/tut.html}{New DCMs} tutorial.
 #'
 #' @seealso Use \code{\link{param.dcm}} to specify model parameters and
 #'          \code{\link{init.dcm}} to specify the initial conditions. Run the

@@ -12,7 +12,7 @@
 #' may use the base types, for which these parameters are used, or new process
 #' modules which may use these parameters (but not necessarily). A detailed
 #' description of ICM parameterization for base models is found in the
-#' \href{http://epimodel.org/tut.html}{Basic ICMs} tutorial.
+#' \href{http://www.epimodel.org/tut.html}{Basic ICMs} tutorial.
 #'
 #' For base models, the model specification will be chosen as a result of
 #' the model parameters entered here and the control settings in
@@ -32,7 +32,7 @@
 #' \eqn{N_i} is the group size and \eqn{\alpha_i} the group-specific act rates
 #' at time \eqn{t}. The \code{balance} parameter here specifies which group's
 #' act rate should control the others with respect to balancing. See the
-#' \href{http://epimodel.org/tut.html}{Basic DCMs} tutorial.
+#' \href{http://www.epimodel.org/tut.html}{Basic DCMs} tutorial.
 #'
 #' @section New Modules:
 #' To build original models outside of the base models, new process modules
@@ -135,7 +135,7 @@ param.icm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
 #' input into the \code{init.icm} function. This function handles initial
 #' conditions for both base models and original models using new modules. For
 #' an overview of initial conditions for base ICM class models, consult the
-#' \href{http://epimodel.org/tut.html}{Basic ICMs} tutorial.
+#' \href{http://www.epimodel.org/tut.html}{Basic ICMs} tutorial.
 #'
 #' @seealso Use \code{\link{param.icm}} to specify model parameters and
 #'          \code{\link{control.icm}} to specify the control settings. Run the
@@ -213,9 +213,9 @@ init.icm <- function(s.num, i.num, r.num,
 #' individual contact model solved with the \code{\link{icm}} function. Controls
 #' are required for both base model types and when passing original process
 #' modules. For an overview of control settings for base ICM class models,
-#' consult the \href{http://epimodel.org/tut.html}{Basic ICMs} tutorial. For all
-#' base models, the \code{type} argument is a necessary parameter and it has no
-#' default.
+#' consult the \href{http://www.epimodel.org/tut.html}{Basic ICMs} tutorial. For
+#' all base models, the \code{type} argument is a necessary parameter and it has
+#' no default.
 #'
 #' @section New Modules:
 #' Base ICM models use a set of module functions that specify

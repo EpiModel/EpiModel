@@ -27,7 +27,7 @@ navbarPage(title = NULL, windowTitle = "EpiModel: Network Models",
              a("temporal exponential random graph models.",
                href = "http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3891677/",
              target = "_blank"), "This web application is built with",
-             a("Shiny,", href = "http://shiny.rstudio.com/", target = "_blank"),
+             a("Shiny,", href = "https://shiny.rstudio.com/", target = "_blank"),
              "and may be lauched via an R session with EpiModel and Shiny
              installed (see the", code("epiweb"), "function), or directly on any
              web browser (no R needed)",

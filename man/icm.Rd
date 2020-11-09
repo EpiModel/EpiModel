@@ -38,7 +38,7 @@ on individual agents in discrete time as a function of processes with
 stochastic variation. The stochasticity is inherent in all transition
 processes: infection, recovery, and demographics. A detailed description of
 these models  may be found in the
-\href{http://epimodel.org/tut.html}{Basic ICMs} tutorial.
+\href{http://www.epimodel.org/tut.html}{Basic ICMs} tutorial.
 
 The \code{icm} function performs  modeling of both the base model types
 and original models. Base model types include one-group and two-group
