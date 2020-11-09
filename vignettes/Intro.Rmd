@@ -31,7 +31,11 @@ Within the package, please consult the extensive help documentation:
 help(package = "EpiModel")
 ```
 
-To see the latest updates to **EpiModel**, consult the software `NEWS` file on Github: https://github.com/statnet/EpiModel/releases.
+To see the latest updates to **EpiModel**, consult the software `NEWS` file on Github (https://github.com/statnet/EpiModel/releases).
+
+### Getting Help
+
+We have historically used both an email-based listserv and Github issues to address questions, bug reports, and feature requests for our users. With the release of EpiModel v2.0.3, we have decided to close the email listserv, and provide this user support entirely with Github issues. Any technical coding and non-technical conceptual EpiModel questions or requests may be posted as a Github issue at our main Github repository (https://github.com/statnet/EpiModel/issues).
 
 ### Citation
 
