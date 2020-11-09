@@ -22,7 +22,7 @@ The **EpiModel** package provides tools for simulating mathematical models of in
 
 ### Documentation
 
-This vignette is a placeholder for the **EpiModel** tutorials and documentation hosted online and external to the package to minimize testing and building timing. Tutorials may be found at the **EpiModel** website (http://epimodel.org).
+This vignette is a placeholder for the **EpiModel** tutorials and documentation hosted online and external to the package to minimize testing and building timing. Tutorials may be found at the **EpiModel** website (http://www.epimodel.org).
 
 A good place to start learning about **EpiModel** is the main methods paper. It is published *Journal of Statistical Software* at the reference below.
 
@@ -41,4 +41,4 @@ We have historically used both an email-based listserv and Github issues to addr
 
 If using EpiModel for teaching or research, please include a citation:
 
-> Jenness SM, Goodreau SM and Morris M. EpiModel: An R Package for Mathematical Modeling of Infectious Disease over Networks. _Journal of Statistical Software._ 2018; 84(8): 1-47. doi: 10.18637/jss.v084.i08 (http://doi.org/10.18637/jss.v084.i08).
+> Jenness SM, Goodreau SM and Morris M. EpiModel: An R Package for Mathematical Modeling of Infectious Disease over Networks. _Journal of Statistical Software._ 2018; 84(8): 1-47. doi: 10.18637/jss.v084.i08 (https://doi.org/10.18637/jss.v084.i08).
