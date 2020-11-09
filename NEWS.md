@@ -1,3 +1,30 @@
+EpiModel 2.0.3
+------------------------------------------------------------------------------
+
+### NEW FEATURES
+* Implemented an error catching approach for `netsim` so that epidemic modules 
+  with errors or warnings are clearly identified in the console. 
+* Allow saving the transmission matrix with `save.transmat` in `control.net` 
+  independently of using tergmLite methods (previously use of tergmLite did not
+  allow for saving these data).
+* Added an `infstat` parameter to the internal `discord_edgelist` function used
+  in the infection module, to allow for arbitrary specification of which disease
+  statuses are considered infectious for the purpose of dyad discordance.
+* Added ability to vary node size in `plot.netsim` with `type = 'network'` with
+  `vertex.cex` parameter.
+
+### BUG FIXES
+* Fix issue for `plot.netdx` when plot legend set to `FALSE`.
+* Updated `print.netsim` that does not error when displaying new epidemic 
+  modules for extension models.
+* Use appropriate tergmLite resimulation methods for `netsim` for networks with
+  duration of 1 (i.e., one-time contacts handled with cross-sectional ERGMs).
+
+### OTHER
+* Further minor edits/updates to EpiModel 2.0 migration documentation (posted on
+  http://epimodel.org/).
+  
+
 EpiModel 2.0.2
 ------------------------------------------------------------------------------
 
@@ -46,6 +73,7 @@ EpiModel 1.7.5
 ### OTHER
 * Add example for differential homophily in a TERGM dissolution model in 
   `dissolution_coefs` documentation.
+
 
 EpiModel 1.7.3
 ------------------------------------------------------------------------------
