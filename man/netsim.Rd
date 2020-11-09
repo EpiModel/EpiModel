@@ -8,8 +8,8 @@ netsim(x, param, init, control)
 }
 \arguments{
 \item{x}{Fitted network model object, as an object of class \code{netest}.
-Alternatively, if restarting a previous simulation, may be an object of
-class \code{netsim}.}
+Alternatively, if restarting a previous simulation, may be an object
+ofclass \code{netsim}.}
 
 \item{param}{Model parameters, as an object of class \code{param.net}.}
 
@@ -36,26 +36,28 @@ A list of class \code{netsim} with the following elements:
  \item \strong{network:} a list of \code{networkDynamic} objects,
         one for each model simulation.
 }
-If \code{control$raw.output == TRUE}: A list of the raw (pre-processed) nestsim
-dat objects, for use in simulation continuation.
+If \code{control$raw.output == TRUE}: A list of the raw (pre-processed)
+nestsim dat objects, for use in simulation continuation.
 }
 \description{
 Simulates stochastic network epidemic models for infectious
              disease.
 }
 \details{
-Stochastic network models explicitly represent phenomena within and across edges
-(pairs of nodes that remain connected) over time. This enables edges to have duration,
-allowing for repeated transmission-related acts within the same dyad, specification of
-edge formation and dissolution rates, control over the temporal sequencing of
-multiple edges, and specification of network-level features. A detailed
-description of these models, along with examples, is found in the
-\href{http://epimodel.org/tut.html}{Basic Network Models} tutorials.
+Stochastic network models explicitly represent phenomena within and across
+edges (pairs of nodes that remain connected) over time. This enables edges to
+have duration, allowing for repeated transmission-related acts within the
+same dyad, specification of edge formation and dissolution rates, control
+over the temporal sequencing of multiple edges, and specification of
+network-level features. A detailed description of these models, along with
+examples, is found in the \href{http://epimodel.org/tut.html}{Basic Network
+Models} tutorials.
 
 The \code{netsim} function performs modeling of both the base model types
 and original models. Base model types include one-mode and two-group models
-with disease types for Susceptible-Infected (SI), Susceptible-Infected-Recovered
-(SIR), and Susceptible-Infected-Susceptible (SIS).
+with disease types for Susceptible-Infected (SI),
+Susceptible-Infected-Recovered (SIR), and
+Susceptible-Infected-Susceptible (SIS).
 
 Original models may be parameterized by writing new process modules that
 either take the place of existing modules (for example, disease recovery), or
@@ -119,12 +121,13 @@ summary(mod2, at = 40)
 }
 \references{
 Jenness SM, Goodreau SM and Morris M. EpiModel: An R Package for Mathematical
-Modeling of Infectious Disease over Networks. Journal of Statistical Software.
-2018; 84(8): 1-47.
+Modeling of Infectious Disease over Networks. Journal of Statistical
+Software. 2018; 84(8): 1-47.
 }
 \seealso{
 Extract the model results with \code{\link{as.data.frame.netsim}}.
-         Summarize the time-specific model results with \code{\link{summary.netsim}}.
-         Plot the model results with \code{\link{plot.netsim}}.
+         Summarize the time-specific model results with
+         \code{\link{summary.netsim}}. Plot the model results with
+         \code{\link{plot.netsim}}.
 }
 \keyword{model}

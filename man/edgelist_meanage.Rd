@@ -9,8 +9,9 @@ edgelist_meanage(x, el)
 \arguments{
 \item{x}{An \code{EpiModel} object of class \code{\link{netest}}.}
 
-\item{el}{If not passing \code{x}, a timed edgelist from a \code{networkDynamic}
-object extracted with the \code{as.data.frame.networkDynamic} function.}
+\item{el}{If not passing \code{x}, a timed edgelist from a
+\code{networkDynamic} object extracted with the
+\code{as.data.frame.networkDynamic} function.}
 }
 \description{
 Outputs a vector of mean ages of edges at a series of timesteps
@@ -23,9 +24,9 @@ calculation. Alternatively, one may pass in these objects separately if
 \code{netest} was not used, or statistics were not run requested after
 the estimation.
 
-Currently, the calculations are limited to those dissolution formulas with a single
-homogenous dissolution (\code{~offset(edges)}). This functionality will be
-expanded in future releases.
+Currently, the calculations are limited to those dissolution formulas with a
+single homogenous dissolution (\code{~offset(edges)}). This functionality
+will be expanded in future releases.
 }
 \examples{
 # Initialize and parameterize the network model
@@ -38,7 +39,8 @@ coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
 est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 
 # Simulate the network and extract a timed edgelist
-dx <- netdx(est, nsims = 1, nsteps = 100, keep.tedgelist = TRUE, verbose = FALSE)
+dx <- netdx(est, nsims = 1, nsteps = 100, keep.tedgelist = TRUE,
+      verbose = FALSE)
 el <- as.data.frame(dx)
 
 # Calculate ages directly from edgelist

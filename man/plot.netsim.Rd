@@ -69,8 +69,8 @@ simulations at the specified time step.}
 
 \item{sim.lwd}{Line width for simulation lines.}
 
-\item{sim.alpha}{Transparency level for simulation lines, where 0 = transparent
-and 1 = opaque (see \code{adjustcolor} function).}
+\item{sim.alpha}{Transparency level for simulation lines, where
+0 = transparent and 1 = opaque (see \code{adjustcolor} function).}
 
 \item{mean.line}{If \code{TRUE}, plot mean of simulations across time.}
 
@@ -103,8 +103,8 @@ to \code{"r"}.}
 \item{grid}{If \code{TRUE}, a grid is added to the background of plot
 (see \code{\link{grid}} for details), with default of nx by ny.}
 
-\item{add}{If \code{TRUE}, new plot window is not called and lines are added to
-existing plot window.}
+\item{add}{If \code{TRUE}, new plot window is not called and lines are added
+to existing plot window.}
 
 \item{network}{Network number, for simulations with multiple networks
 representing the population.}
@@ -122,8 +122,8 @@ for the Group 2 vertices, with acceptable inputs of "triangle" and
 with implicit default of 1.}
 
 \item{stats}{If \code{type="formation"}, network statistics to plot, among
-those specified in \code{nwstats.formula} of \code{\link{control.net}},
-with the default to plot all statistics.}
+those specified in \code{nwstats.formula} of
+\code{\link{control.net}}, with the default to plot all statistics.}
 
 \item{targ.line}{If \code{TRUE}, plot target or expected value line for
 the statistic of interest.}
@@ -151,41 +151,43 @@ model simulated through \code{\link{netsim}}:
 \enumerate{
  \item \strong{\code{type="epi"}}: epidemic model results (e.g., disease
        prevalence and incidence) may be plotted.
- \item \strong{\code{type="network"}}: a static network plot will be generated.
-       A static network plot of a dynamic network is a cross-sectional
-       extraction of that dynamic network at a specific time point. This
-       plotting function wraps the \code{\link{plot.network}} function in the
-       \code{network} package. Consult the help page for \code{plot.network}
-       for all of the plotting parameters. In addition, four plotting parameters
-       specific to \code{netsim} plots are available: \code{sim}, \code{at},
+ \item \strong{\code{type="network"}}: a static network plot will be
+       generated. A static network plot of a dynamic network is a
+       cross-sectional extraction of that dynamic network at a specific
+       time point. This plotting function wraps the
+       \code{\link{plot.network}} function in the \code{network} package.
+       Consult the help page for \code{plot.network} for all of the plotting
+       parameters. In addition, four plotting parameters specific to
+       \code{netsim} plots are available: \code{sim}, \code{at},
        \code{col.status}, and \code{shp.g2}.
- \item \strong{\code{type="formation"}}: summary network statistics related to
-       the network model formation are plotted. These plots are similar to the
-       formation plots for \code{netdx} objects. When running a \code{netsim}
-       simulation, one must specify there that \code{save.nwstats=TRUE}; the
-       plot here will then show the network statistics requested explicitly in
-       \code{nwstats.formula}, or will use the formation formula set in
-       \code{netest} otherwise.
+ \item \strong{\code{type="formation"}}: summary network statistics related
+       to the network model formation are plotted. These plots are similar
+       to the formation plots for \code{netdx} objects. When running a
+       \code{netsim} simulation, one must specify there that
+       \code{save.nwstats=TRUE}; the plot here will then show the network
+       statistics requested explicitly in \code{nwstats.formula}, or will use
+       the formation formula set in \code{netest} otherwise.
 }
 
-When \code{type="epi"}, this plotting function will extract the epidemiological
-output from a model object of class \code{netsim} and plot the time series
-data of disease prevalence and other results. The summary statistics that the
-function calculates and plots are individual simulation lines, means of the
-individual simulation lines, and quantiles of those individual simulation lines.
-The mean line, toggled on with \code{mean.line=TRUE} is calculated as the row mean
-across simulations at each time step.
+When \code{type="epi"}, this plotting function will extract the
+epidemiological output from a model object of class \code{netsim} and plot
+the time series data of disease prevalence and other results. The summary
+statistics that the function calculates and plots are individual simulation
+lines, means of the individual simulation lines, and quantiles of those
+individual simulation lines. The mean line, toggled on with
+\code{mean.line=TRUE} is calculated as the row mean across simulations at
+each time step.
 
 Compartment prevalences are the size of a compartment over some denominator.
 To plot the raw numbers from any compartment, use \code{popfrac=FALSE}; this
-is the default for any plots of flows. The \code{popfrac} parameter calculates
-and plots the denominators of all specified compartments using these rules: 1)
-for one-group models, the prevalence of any compartment is the compartment size
-divided by the total population size; 2) for two-group models, the prevalence
-of any compartment is the compartment size divided by the group population size.
-For any prevalences that are not automatically calculated, the
-\code{\link{mutate_epi}} may be used to add new variables to the \code{netsim}
-object to plot or analyze.
+is the default for any plots of flows. The \code{popfrac} parameter
+calculates and plots the denominators of all specified compartments using
+these rules: 1) for one-group models, the prevalence of any compartment is
+the compartment size divided by the total population size; 2) for two-group
+models, the prevalence of any compartment is the compartment size divided by
+the group population size. For any prevalences that are not automatically
+calculated, the \code{\link{mutate_epi}} may be used to add new variables to
+the \code{netsim} object to plot or analyze.
 
 The quantiles show the range of outcome values within a certain specified
 quantile range. By default, the interquartile range is shown: that is the
@@ -193,15 +195,16 @@ middle 50\% of the data. This is specified by \code{qnts=0.5}. To show the
 middle 95\% of the data, specify \code{qnts=0.95}. To toggle off the polygons
 where they are plotted by default, specify \code{qnts=FALSE}.
 
-When \code{type="network"}, this function will plot cross sections of the simulated
-networks at specified time steps. Because it is only possible to plot one time
-step from one simulation at a time, it is necessary to enter these in the
-\code{at} and \code{sims} parameters. To aide in visualizing representative
-and extreme simulations at specific time steps, the \code{sims} parameter may be set
-to \code{"mean"} to plot the simulation in which the disease prevalence is
-closest to the average across all simulations, \code{"min"} to plot the simulation
-in which the prevalence is lowest, and \code{"max"} to plot the simulation
-in which the prevalence is highest.
+When \code{type="network"}, this function will plot cross sections of the
+simulated networks at specified time steps. Because it is only possible to
+plot one time step from one simulation at a time, it is necessary to enter
+these in the \code{at} and \code{sims} parameters. To aide in visualizing
+representative and extreme simulations at specific time steps, the
+\code{sims} parameter may be set to \code{"mean"} to plot the simulation in
+which the disease prevalence is closest to the average across all
+simulations, \code{"min"} to plot the simulation in which the prevalence is
+lowest, and \code{"max"} to plot the simulation in which the prevalence is
+highest.
 }
 \examples{
 ## SI Model without Network Feedback

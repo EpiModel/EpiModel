@@ -18,8 +18,8 @@ objects).}
 }
 \description{
 Extracts a data frame of network statistics from a network
-             epidemic model simulated with \code{netsim} or a network diagnostics
-             object simulated with \code{netdx}.
+             epidemic model simulated with \code{netsim} or a network
+             diagnostics object simulated with \code{netdx}.
 }
 \examples{
 # Two-group Bernoulli random graph TERGM

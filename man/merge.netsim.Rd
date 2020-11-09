@@ -38,9 +38,9 @@ by the \code{save.other} parameter in \code{control.netsim}) from the
 original \code{x} and \code{y} elements.}
 
 \item{param.error}{If \code{TRUE}, if \code{x} and \code{y} have different
-params (in \code{param.net}) or controls (passed in \code{control.net})
-an error will prevent the merge. Use \code{FALSE} to override that
-check.}
+params (in \code{param.net}) or controls (passed in
+\code{control.net}) an error will prevent the merge. Use \code{FALSE}
+to override that check.}
 
 \item{...}{Additional merge arguments (not currently used).}
 }
@@ -50,15 +50,16 @@ Merges epidemiological data from two independent simulations of
 }
 \details{
 This merge function combines the results of two independent simulations of
-\code{\link{netsim}} class models, simulated under separate function calls. The
-model parameterization between the two calls must be exactly the same, except
-for the number of simulations in each call. This allows for manual
+\code{\link{netsim}} class models, simulated under separate function calls.
+The model parameterization between the two calls must be exactly the same,
+except for the number of simulations in each call. This allows for manual
 parallelization of model simulations.
 
 This merge function does not work the same as the default merge, which allows
 for a combined object where the structure differs between the input elements.
-Instead, the function checks that objects are identical in model parameterization
-in every respect (except number of simulations) and binds the results.
+Instead, the function checks that objects are identical in model
+parameterization in every respect (except number of simulations) and binds
+the results.
 }
 \examples{
 # Network model

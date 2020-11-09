@@ -11,6 +11,6 @@ get_network_term_attr(nw)
 }
 \description{
 Given a simulated network, outputs into
-             a character vector of vertex attributes to be used in \code{netsim}
-             simulations.
+             a character vector of vertex attributes to be used in
+             \code{netsim} simulations.
 }

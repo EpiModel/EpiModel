@@ -36,17 +36,18 @@ Plots a compartment flow diagram for deterministic compartmental
 \details{
 The \code{comp_plot} function provides a visual summary of an epidemic model
 at a specific time step. The information contained in \code{comp_plot} is the
-same as in the \code{summary} functions for a model, but presented graphically
-as a compartment flow diagram.
+same as in the \code{summary} functions for a model, but presented
+graphically as a compartment flow diagram.
 
-For \code{dcm} class plots, specify the model run number if the model contains
-multiple runs, as in a sensitivity analysis. For \code{icm} and \code{netsim}
-class plots, the \code{run} argument is not used; the plots show the means and
-standard deviations across simulations at the specified time step.
+For \code{dcm} class plots, specify the model run number if the model
+contains multiple runs, as in a sensitivity analysis. For \code{icm} and
+\code{netsim} class plots, the \code{run} argument is not used; the plots
+show the means and standard deviations across simulations at the specified
+time step.
 
-These plots are currently limited to one-group and one-mode models for each of
-the three model classes. That functionality may be expanded in future software
-releases.
+These plots are currently limited to one-group and one-mode models for each
+of the three model classes. That functionality may be expanded in future
+software releases.
 }
 \examples{
 ## Example 1: DCM SIR model with varying act.rate

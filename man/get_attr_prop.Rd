@@ -14,11 +14,12 @@ output of \code{\link{get_formula_term_attr}}.}
 simulation.}
 }
 \description{
-Calculates the proportional distribution of each vertex attribute
-             contained on the network.
+Calculates the proportional distribution of each vertex
+             attribute contained on the network
 }
 \seealso{
-\code{\link{get_formula_term_attr}}, \code{\link{copy_nwattr_to_datattr}},
+\code{\link{get_formula_term_attr}},
+         \code{\link{copy_nwattr_to_datattr}},
          \code{\link{auto_update_attr}}.
 }
 \keyword{internal}

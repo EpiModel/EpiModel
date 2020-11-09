@@ -17,15 +17,16 @@ check_degdist_bal(num.g1, num.g2, deg.dist.g1, deg.dist.g2)
 }
 \description{
 Checks for consistency in the implied network statistics
-             of a two-group network in which the group size and group-specific
-             degree distributions are specified.
+             of a two-group network in which the group size and
+             group-specific degree distributions are specified.
 }
 \details{
 This function outputs the number of nodes of degree 0 to g, where g is the
 length of a fractional degree distribution vector, given that vector and the
-size of the group. This utility is used to check for balance in implied degree
-given that fractional distribution within two-group network simulations, in
-which the degree-constrained counts must be equal across groups.
+size of the group. This utility is used to check for balance in implied
+degree given that fractional distribution within two-group network
+simulations, in which the degree-constrained counts must be equal across
+groups.
 }
 \examples{
 # An unbalanced distribution

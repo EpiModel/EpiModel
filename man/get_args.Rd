@@ -12,6 +12,6 @@ get_args(formal.args, dot.args)
 \item{dot.args}{The output of \code{list(...)}.}
 }
 \description{
-Returns a list of argument names and values for use for parameter
-             processing functions.
+Returns a list of argument names and values for use for
+             parameter processing functions.
 }
