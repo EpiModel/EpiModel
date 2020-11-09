@@ -127,7 +127,7 @@ purposes, please cite this reference:
 Jenness SM, Goodreau SM and Morris M. EpiModel: An R Package for Mathematical
 Modeling of Infectious Disease over Networks. Journal of Statistical
 Software.2018; 84(8): 1-47. doi: 10.18637/jss.v084.i08
-(\url{http://doi.org/10.18637/jss.v084.i08}).
+(\url{https://doi.org/10.18637/jss.v084.i08}).
 
 We have also developed an extension package specifically for modeling HIV and
 related sexually transmitted infections, called \code{EpiModelHIV} and
