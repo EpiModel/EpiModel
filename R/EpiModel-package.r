@@ -139,6 +139,7 @@
 #' @importFrom utils head tail packageVersion
 #' @importFrom ape as.phylo collapse.singles
 #' @importFrom lazyeval lazy_dots lazy_eval
+#' @importFrom EasyABC ABC_sequential
 #'
 #' @useDynLib EpiModel, .registration = TRUE
 #'
