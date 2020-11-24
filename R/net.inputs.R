@@ -184,6 +184,50 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
   return(p)
 }
 
+#' @title Update Model Parameters for Stochastic Network Models
+#'
+#' @description Updates epidemic model parameters originally set with
+#'              \code{\link{param.net}} and adds new parameters.
+#'
+#' @param x Object of class \code{param.net}, output from function of same name.
+#' @param new.param.list Named list of new parameters to add to original
+#'        parameters.
+#'
+#' @details
+#' This function allows for updating any original parameters specified with
+#' \code{\link{param.net}} and adding new parameters. This function would be
+#' used when the inputs to \code{\link{param.net}} may be a long list of
+#' fixed model parameters that may need supplemental replacements or additions
+#' for particular model runs (e.g., changing an intervention efficacy parameter
+#' but leaving all other parameters fixed).
+#'
+#' The \code{new.param.list} object should be a named list object that may
+#' named parameters matching those already in \code{x} (in which case those
+#' original parameter values will be replaced) or not matching (in which case
+#' new parameters will be added to \code{x}).
+#'
+#' @return
+#' An updated list object of class \code{param.net}, which can be passed to
+#' EpiModel function \code{\link{netsim}}.
+#'
+#' @export
+#'
+update_params <- function(x, new.param.list) {
+
+  if (!inherits(x, "param.net")) {
+    stop("x should be object of class param.net")
+  }
+  if (class(new.param.list) != "list") {
+    stop("new.param.list should be object of class list")
+  }
+
+  for (ii in seq_along(new.param.list)) {
+    x[[names(new.param.list)[ii]]] <- new.param.list[[ii]]
+  }
+
+  return(x)
+}
+
 
 #' @title Initial Conditions for Stochastic Network Models
 #'
