@@ -33,3 +33,10 @@ named parameters matching those already in \code{x} (in which case those
 original parameter values will be replaced) or not matching (in which case
 new parameters will be added to \code{x}).
 }
+\examples{
+x <- param.net(inf.prob = 0.5, act.rate = 2)
+y <- list(inf.prob = 0.75, dx.rate = 0.2)
+z <- update_params(x, y)
+print(z)
+
+}

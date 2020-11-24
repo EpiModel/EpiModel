@@ -210,6 +210,12 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
 #' An updated list object of class \code{param.net}, which can be passed to
 #' EpiModel function \code{\link{netsim}}.
 #'
+#' @examples
+#' x <- param.net(inf.prob = 0.5, act.rate = 2)
+#' y <- list(inf.prob = 0.75, dx.rate = 0.2)
+#' z <- update_params(x, y)
+#' print(z)
+#'
 #' @export
 #'
 update_params <- function(x, new.param.list) {
