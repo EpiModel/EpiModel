@@ -308,14 +308,14 @@ generate_random_params <- function(param, verbose = FALSE) {
     stop("all elements of `random.params` must be named")
   }
 
-  if (! all(vapply(param$random.params, is.function, TRUE))) {
+  if (!all(vapply(param$random.params, is.function, TRUE))) {
     stop("all elements of `random.params` must be functions")
   }
 
   param[rng_names] <- lapply(param$random.params, do.call, args = list())
   if (verbose) {
     msg <-
-      "The following values were randomly generated for the given parameters: \n"
+     "The following values were randomly generated for the given parameters: \n"
     msg <- c(msg, paste0("`", rng_names, "`: ", param[rng_names], "\n"))
     message(msg)
   }
