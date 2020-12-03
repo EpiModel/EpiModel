@@ -58,6 +58,7 @@
 #' @param di.rate.g2 Departure or exit rate for group 2 infected.
 #' @param dr.rate.g2 Departure or exit rate for group 2 recovered. This
 #'        parameter is only used for \code{SIR} model types.
+#'
 #' @param ... Additional arguments passed to model.
 #'
 #' @details

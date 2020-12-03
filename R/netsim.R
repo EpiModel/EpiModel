@@ -172,6 +172,9 @@ netsim <- function(x, param, init, control) {
 netsim_loop <- function(x, param, init, control, s) {
   dat <- withCallingHandlers(
     expr = {
+      ## Instantiate random parameters
+      param <- generate_random_params(param)
+
       ## Initialization Module
       if (!is.null(control[["initialize.FUN"]])) {
         current_mod <- "initialize.FUN"
