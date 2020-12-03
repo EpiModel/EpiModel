@@ -4,10 +4,13 @@
 \alias{generate_random_params}
 \title{Generate values for the random parameters}
 \usage{
-generate_random_params(param)
+generate_random_params(param, verbose = FALSE)
 }
 \arguments{
 \item{param}{the `param` argument received by the `netsim` functions}
+
+\item{verbose}{should the function output the generated values
+(default = FALSE)}
 }
 \value{
 a fully instanciated `param` list
@@ -41,7 +44,7 @@ param <- param.net(
   )
 )
 
-param <- generate_random_params(param)
+param <- generate_random_params(param, verbose = TRUE)
 }
 
 }

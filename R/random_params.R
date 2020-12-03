@@ -15,7 +15,7 @@ param_random <- function(values, prob = NULL) {
   }
 
   f <- function() {
-    return(sample(x = values, size = 1, prob = weights, replace = TRUE))
+    return(sample(x = values, size = 1, prob = prob, replace = TRUE))
   }
 
   return(f)
@@ -27,6 +27,8 @@ param_random <- function(values, prob = NULL) {
 #' values for the parameters
 #'
 #' @param param the `param` argument received by the `netsim` functions
+#' @param verbose should the function output the generated values
+#' (default = FALSE)
 #' @return a fully instanciated `param` list
 #'
 #' @section `random_params`:
@@ -50,10 +52,10 @@ param_random <- function(values, prob = NULL) {
 #'   )
 #' )
 #'
-#' param <- generate_random_params(param)
+#' param <- generate_random_params(param, verbose = TRUE)
 #' }
 #'
-generate_random_params <- function(param) {
+generate_random_params <- function(param, verbose = FALSE) {
   if (is.null(param$random.params) || length(param$random.params) == 0) {
     return(param)
   }
@@ -72,6 +74,12 @@ generate_random_params <- function(param) {
   }
 
   param[rng_names] <- lapply(param$random.params, do.call, args = list())
+  if (verbose) {
+    msg <-
+      "The following values were randomly generated for the given parameters: \n"
+    msg <- c(msg, paste0("`", rng_names, "`: ", param[rng_names], "\n"))
+    message(msg)
+  }
 
   return(param)
 }
