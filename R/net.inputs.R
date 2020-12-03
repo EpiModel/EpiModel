@@ -291,13 +291,14 @@ param_random <- function(values, prob = NULL) {
 #' @examples
 #' param <- param.net(
 #'   inf.prob = 0.3,
-#'   random_params = list(
+#'   random.params = list(
 #'     act.rate = param_random(c(0.25, 0.5, 0.75), prob = c(0.1, 0.2, 0.7)),
 #'     tx.halt.part.prob = function() rbeta(1, 1, 2)
 #'   )
 #' )
 #'
 #' param <- generate_random_params(param, verbose = TRUE)
+#' param
 #'
 generate_random_params <- function(param, verbose = FALSE) {
   if (is.null(param$random.params) || length(param$random.params) == 0) {

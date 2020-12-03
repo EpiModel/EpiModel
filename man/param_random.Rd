@@ -2,20 +2,22 @@
 % Please edit documentation in R/net.inputs.R
 \name{param_random}
 \alias{param_random}
-\title{Create a value sampler for random parameters definition}
+\title{Create a Value Sampler for Random Parameters}
 \usage{
 param_random(values, prob = NULL)
 }
 \arguments{
-\item{values}{a vector of values to sample from}
+\item{values}{a vector of values to sample from.}
 
 \item{prob}{a vector of weights to use during sampling, if `NULL`,
-all values have the same probability of being picked (default = `NULL`)}
+all values have the same probability of being picked
+(default = `NULL`).}
 }
 \value{
-one of the values from the `values` vector
+one of the values from the `values` vector.
 }
 \description{
-This function return a 0 argument function that can be used as a generator
-function in the `random_params` argument of the `param.net` function.
+This function returns a 0 argument function that can be used as
+             a generator function in the `random_params` argument of the
+             `param.net` function.
 }

@@ -2,15 +2,15 @@
 % Please edit documentation in R/net.inputs.R
 \name{generate_random_params}
 \alias{generate_random_params}
-\title{Generate values for the random parameters}
+\title{Generate Values for Random Parameters}
 \usage{
 generate_random_params(param, verbose = FALSE)
 }
 \arguments{
-\item{param}{the `param` argument received by the `netsim` functions}
+\item{param}{the `param` argument received by the `netsim` functions.}
 
 \item{verbose}{should the function output the generated values
-(default = FALSE)}
+(default = FALSE)?}
 }
 \value{
 a fully instanciated `param` list
@@ -24,8 +24,8 @@ values for the parameters
 The `random_params` argument to the `param.net` function must be a named list
 of functions that return a values that can be used as the argument with the
 same name. In the example below, `param_random` is a function factory
-provided by EpiModel for `acte.rate` and `tx.halt.part.prob` we provide
-bespoke functions
+provided by EpiModel for `act.rate` and `tx.halt.part.prob` we provide
+bespoke functions.
 }
 
 \section{Generator Functions}{
@@ -37,12 +37,13 @@ returning a valid value for the parameter with the same name.
 \examples{
 param <- param.net(
   inf.prob = 0.3,
-  random_params = list(
+  random.params = list(
     act.rate = param_random(c(0.25, 0.5, 0.75), prob = c(0.1, 0.2, 0.7)),
     tx.halt.part.prob = function() rbeta(1, 1, 2)
   )
 )
 
 param <- generate_random_params(param, verbose = TRUE)
+param
 
 }
