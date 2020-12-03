@@ -7,30 +7,31 @@
 generate_random_params(param, verbose = FALSE)
 }
 \arguments{
-\item{param}{the `param` argument received by the `netsim` functions.}
+\item{param}{The \code{param} argument received by the \code{netsim}
+functions.}
 
-\item{verbose}{should the function output the generated values
+\item{verbose}{Should the function output the generated values
 (default = FALSE)?}
 }
 \value{
-a fully instanciated `param` list
+A fully instantiated \code{param} list.
 }
 \description{
-This function uses the generative function in `random.params` to create
-values for the parameters
+This function uses the generative functions in the
+             \code{random.params} list to create values for the parameters.
 }
-\section{`random_params`}{
+\section{\code{random_params}}{
 
-The `random_params` argument to the `param.net` function must be a named list
-of functions that return a values that can be used as the argument with the
-same name. In the example below, `param_random` is a function factory
-provided by EpiModel for `act.rate` and `tx.halt.part.prob` we provide
-bespoke functions.
+The \code{random_params} argument to the \code{param.net} function must be a
+named list of functions that return a values that can be used as the argument
+with the same name. In the example below, \code{param_random} is a function
+factory provided by EpiModel for \code{act.rate} and \code{tx.halt.part.prob}
+we provide bespoke functions.
 }
 
 \section{Generator Functions}{
 
-The function used inside `random_parameters` must be 0 argument functions
+The function used inside \code{random_params} must be 0 argument functions
 returning a valid value for the parameter with the same name.
 }
 

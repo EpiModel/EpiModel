@@ -239,15 +239,15 @@ update_params <- function(x, new.param.list) {
 #' @title Create a Value Sampler for Random Parameters
 #'
 #' @description This function returns a 0 argument function that can be used as
-#'              a generator function in the `random_params` argument of the
-#'              `param.net` function.
+#'              a generator function in the \code{random_params} argument of the
+#'              \code{\link{param.net}} function.
 #'
 #' @param values a vector of values to sample from.
-#' @param prob a vector of weights to use during sampling, if `NULL`,
+#' @param prob a vector of weights to use during sampling, if \code{NULL},
 #'        all values have the same probability of being picked
-#'        (default = `NULL`).
+#'        (default = \code{NULL}).
 
-#' @return one of the values from the `values` vector.
+#' @return one of the values from the \code{values} vector.
 #'
 #' @export
 #'
@@ -264,26 +264,27 @@ param_random <- function(values, prob = NULL) {
 }
 
 
-#' Generate Values for Random Parameters
+#' @title Generate Values for Random Parameters
 #'
-#' This function uses the generative function in `random.params` to create
-#' values for the parameters
+#' @description This function uses the generative functions in the
+#'              \code{random.params} list to create values for the parameters.
 #'
-#' @param param the `param` argument received by the `netsim` functions.
-#' @param verbose should the function output the generated values
+#' @param param The \code{param} argument received by the \code{netsim}
+#'              functions.
+#' @param verbose Should the function output the generated values
 #'                (default = FALSE)?
 #'
-#' @return a fully instanciated `param` list
+#' @return A fully instantiated \code{param} list.
 #'
-#' @section `random_params`:
-#' The `random_params` argument to the `param.net` function must be a named list
-#' of functions that return a values that can be used as the argument with the
-#' same name. In the example below, `param_random` is a function factory
-#' provided by EpiModel for `act.rate` and `tx.halt.part.prob` we provide
-#' bespoke functions.
+#' @section \code{random_params}:
+#' The \code{random_params} argument to the \code{param.net} function must be a
+#' named list of functions that return a values that can be used as the argument
+#' with the same name. In the example below, \code{param_random} is a function
+#' factory provided by EpiModel for \code{act.rate} and \code{tx.halt.part.prob}
+#' we provide bespoke functions.
 #'
 #' @section Generator Functions:
-#' The function used inside `random_parameters` must be 0 argument functions
+#' The function used inside \code{random_params} must be 0 argument functions
 #' returning a valid value for the parameter with the same name.
 #'
 #' @export

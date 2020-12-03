@@ -9,15 +9,15 @@ param_random(values, prob = NULL)
 \arguments{
 \item{values}{a vector of values to sample from.}
 
-\item{prob}{a vector of weights to use during sampling, if `NULL`,
+\item{prob}{a vector of weights to use during sampling, if \code{NULL},
 all values have the same probability of being picked
-(default = `NULL`).}
+(default = \code{NULL}).}
 }
 \value{
-one of the values from the `values` vector.
+one of the values from the \code{values} vector.
 }
 \description{
 This function returns a 0 argument function that can be used as
-             a generator function in the `random_params` argument of the
-             `param.net` function.
+             a generator function in the \code{random_params} argument of the
+             \code{\link{param.net}} function.
 }
