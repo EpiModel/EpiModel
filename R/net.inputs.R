@@ -281,8 +281,9 @@ param_random <- function(values, prob = NULL) {
 #' The function used inside `random_parameters` must be 0 argument functions
 #' returning a valid value for the parameter with the same name.
 #'
+#' @export
+#'
 #' @examples
-#' \dontrun{
 #' param <- param.net(
 #'   inf.prob = 0.3,
 #'   random_params = list(
@@ -292,7 +293,6 @@ param_random <- function(values, prob = NULL) {
 #' )
 #'
 #' param <- generate_random_params(param, verbose = TRUE)
-#' }
 #'
 generate_random_params <- function(param, verbose = FALSE) {
   if (is.null(param$random.params) || length(param$random.params) == 0) {

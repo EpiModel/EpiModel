@@ -35,7 +35,6 @@ returning a valid value for the parameter with the same name.
 }
 
 \examples{
-\dontrun{
 param <- param.net(
   inf.prob = 0.3,
   random_params = list(
@@ -45,6 +44,5 @@ param <- param.net(
 )
 
 param <- generate_random_params(param, verbose = TRUE)
-}
 
 }
