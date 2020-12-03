@@ -172,6 +172,10 @@ netsim <- function(x, param, init, control) {
 netsim_loop <- function(x, param, init, control, s) {
   dat <- withCallingHandlers(
     expr = {
+      ## Instantiate random parameters
+      verbose <- !is.null(control[["verbose.FUN"]])
+      param <- generate_random_params(param, verbose)
+
       ## Initialization Module
       if (!is.null(control[["initialize.FUN"]])) {
         current_mod <- "initialize.FUN"
@@ -199,7 +203,7 @@ netsim_loop <- function(x, param, init, control, s) {
           }
 
           ## Verbose module
-          if (!is.null(control[["verbose.FUN"]])) {
+          if (verbose) {
             current_mod <- "verbose.FUN"
             do.call(control[[current_mod]], list(dat, type = "progress", s, at))
           }
