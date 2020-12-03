@@ -103,6 +103,18 @@
 #' further examples, see the \href{https://statnet.org/nme/}{NME Course
 #' Tutorials}.
 #'
+#' @section Random Parameters:
+#' In addition to deterministic parameters in either fixed or time-varying
+#' varieties above, one may also include a generator for random parameters.
+#' These might include a vector of potential parameter values or a statistical
+#' distribution definition; in either case, one draw from the generator would
+#' be completed per individual simulation. This is possible by passing a list
+#' named \code{random.params} into \code{param.net}, with each element of
+#' \code{random.params} a named generator function. See the help page and
+#' examples in \code{\link{generate_random_params}}. A simple factory function
+#' for sampling is provided with \code{\link{param_random}} but any function
+#' will do.
+#'
 #' @section New Modules:
 #' To build original models outside of the base models, new process modules
 #' may be constructed to replace the existing modules or to supplement the
@@ -290,16 +302,25 @@ param_random <- function(values, prob = NULL) {
 #' @export
 #'
 #' @examples
-#' param <- param.net(
-#'   inf.prob = 0.3,
-#'   random.params = list(
-#'     act.rate = param_random(c(0.25, 0.5, 0.75), prob = c(0.1, 0.2, 0.7)),
-#'     tx.halt.part.prob = function() rbeta(1, 1, 2)
+#' # Define random parameter list
+#' my_randoms <- list(
+#'   act.rate = param_random(c(0.25, 0.5, 0.75)),
+#'   tx.prob = function() rbeta(1, 1, 2),
+#'   stratified.test.rate = function() c(
+#'     rnorm(1, 0.05, 0.01),
+#'     rnorm(1, 0.15, 0.03),
+#'     rnorm(1, 0.25, 0.05)
 #'   )
 #' )
 #'
-#' param <- generate_random_params(param, verbose = TRUE)
-#' param
+#' # Parameter model with deterministic and random parameters
+#' param <- param.net(inf.prob = 0.3, random.params = my_randoms)
+#'
+#' # Parameters are drawn automatically in netsim by calling the function
+#' # within netsim_loop. Demonstrating draws here but this is not used by
+#' # end user.
+#' paramDraw <- generate_random_params(param, verbose = TRUE)
+#' paramDraw
 #'
 generate_random_params <- function(param, verbose = FALSE) {
   if (is.null(param$random.params) || length(param$random.params) == 0) {

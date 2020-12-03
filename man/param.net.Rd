@@ -145,6 +145,20 @@ further examples, see the \href{https://statnet.org/nme/}{NME Course
 Tutorials}.
 }
 
+\section{Random Parameters}{
+
+In addition to deterministic parameters in either fixed or time-varying
+varieties above, one may also include a generator for random parameters.
+These might include a vector of potential parameter values or a statistical
+distribution definition; in either case, one draw from the generator would
+be completed per individual simulation. This is possible by passing a list
+named \code{random.params} into \code{param.net}, with each element of
+\code{random.params} a named generator function. See the help page and
+examples in \code{\link{generate_random_params}}. A simple factory function
+for sampling is provided with \code{\link{param_random}} but any function
+will do.
+}
+
 \section{New Modules}{
 
 To build original models outside of the base models, new process modules

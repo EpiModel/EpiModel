@@ -36,15 +36,24 @@ returning a valid value for the parameter with the same name.
 }
 
 \examples{
-param <- param.net(
-  inf.prob = 0.3,
-  random.params = list(
-    act.rate = param_random(c(0.25, 0.5, 0.75), prob = c(0.1, 0.2, 0.7)),
-    tx.halt.part.prob = function() rbeta(1, 1, 2)
+# Define random parameter list
+my_randoms <- list(
+  act.rate = param_random(c(0.25, 0.5, 0.75)),
+  tx.prob = function() rbeta(1, 1, 2),
+  stratified.test.rate = function() c(
+    rnorm(1, 0.05, 0.01),
+    rnorm(1, 0.15, 0.03),
+    rnorm(1, 0.25, 0.05)
   )
 )
 
-param <- generate_random_params(param, verbose = TRUE)
-param
+# Parameter model with deterministic and random parameters
+param <- param.net(inf.prob = 0.3, random.params = my_randoms)
+
+# Parameters are drawn automatically in netsim by calling the function
+# within netsim_loop. Demonstrating draws here but this is not used by
+# end user.
+paramDraw <- generate_random_params(param, verbose = TRUE)
+paramDraw
 
 }
