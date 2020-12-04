@@ -506,8 +506,8 @@ netest_refit_abc <- function(est, nsims, ncores, nsteps,
   if (n_targets == 1) {
     coef.adj <- sum(refit$param * refit$weights)
   } else {
-    coef.adj <- rep(NA, length(est$coef.form))
-    for (jj in seq_len(ncol(refit$param))) {
+    coef.adj <- rep(NA, n_targets)
+    for (jj in seq_len(n_targets)) {
       coef.adj[jj] <- sum(refit$param[, jj] * refit$weights)
     }
   }
