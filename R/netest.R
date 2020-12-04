@@ -383,6 +383,9 @@ update_dissolution <- function(old.netest, new.coef.diss) {
 #'              waves required for convergence).
 #' @param ncores Number of cores for each wave of simulations.
 #' @param nsteps Number of time steps to simulate the TERGM for each refitting.
+#' @param coefs.to.fit Integer vector of coefficient position to refit. Implicit
+#'                     default is the full coefficient vector, but use this to
+#'                     subset fitting to selected coefficients.
 #' @param prior.min Absolute lower bound of adjustment to be made across all
 #'                  model coefficients.
 #' @param prior.max Absolute upper bound of adjustment to be made across all
@@ -443,26 +446,44 @@ update_dissolution <- function(old.netest, new.coef.diss) {
 #'}
 #'
 netest_refit_abc <- function(est, nsims, ncores, nsteps,
+                             coefs.to.fit,
                              prior.min = 0, prior.max = 0,
                              p_acc_min = 0.1) {
 
   est_orig <- est
-  save(est_orig, nsteps, file = "temp-refit-abc.rda")
+  if (missing(nsims)) {
+    stop("Specify nsims for sequential ABC wave")
+  }
+  if (missing(nsteps)) {
+    stop("Specify nsteps for netdx resimulation", call. = FALSE)
+  }
+  if (missing(ncores)) {
+    ncores <- 1
+  }
+  if (ncores > parallel::detectCores()) {
+    ncores <- parallel::detectCores()
+  }
+  if (missing(coefs.to.fit)) {
+    coefs.to.fit <- seq_along(est_orig$coef.form)
+  }
+
+  save(est_orig, nsteps, coefs.to.fit, file = "temp-refit-abc.rda")
 
   myfunc <- function(x) {
     set.seed(x[1])
     require(EpiModel)
     load("temp-refit-abc.rda")
     est_temp <- est_orig
-    est_temp$coef.form <- est_temp$coef.form + x[2:length(x)]
+    est_temp$coef.form[coefs.to.fit] <- est_temp$coef.form[coefs.to.fit] +
+      x[2:(length(coefs.to.fit) + 1)]
     dx <- netdx(est_temp, nsims = 1, nsteps = nsteps, verbose = FALSE)
     out <- get_nwstats(dx)
     out <- out[, which(!names(out) %in% c("time", "sim")), drop = FALSE]
-    out <- colMeans(out)
+    out <- colMeans(out)[coefs.to.fit]
     return(out)
   }
 
-  targets <- est_orig$target.stats
+  targets <- est_orig$target.stats[coefs.to.fit]
   n_targets <- length(targets)
   priors <- list()
   for (ii in seq_len(n_targets)) {
@@ -491,8 +512,8 @@ netest_refit_abc <- function(est, nsims, ncores, nsteps,
     }
   }
 
-  est_new <- est
-  est_new$coef.form <- est_new$coef.form + coef.adj
+  est_new <- est_orig
+  est_new$coef.form[coefs.to.fit] <- est_new$coef.form[coefs.to.fit] + coef.adj
   est_new$refit <- refit
 
   unlink("temp-refit-abc.rda")

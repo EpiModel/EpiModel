@@ -9,6 +9,7 @@ netest_refit_abc(
   nsims,
   ncores,
   nsteps,
+  coefs.to.fit,
   prior.min = 0,
   prior.max = 0,
   p_acc_min = 0.1
@@ -24,6 +25,10 @@ waves required for convergence).}
 \item{ncores}{Number of cores for each wave of simulations.}
 
 \item{nsteps}{Number of time steps to simulate the TERGM for each refitting.}
+
+\item{coefs.to.fit}{Integer vector of coefficient position to refit. Implicit
+default is the full coefficient vector, but use this to
+subset fitting to selected coefficients.}
 
 \item{prior.min}{Absolute lower bound of adjustment to be made across all
 model coefficients.}
