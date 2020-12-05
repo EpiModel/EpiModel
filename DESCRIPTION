@@ -48,8 +48,7 @@ Imports:
     RColorBrewer,
     ape,
     lazyeval,
-    ggplot2,
-    EasyABC
+    ggplot2
 Suggests:
     knitr,
     ndtv,
