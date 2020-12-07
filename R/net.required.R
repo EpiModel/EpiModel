@@ -1,45 +1,24 @@
 create_required_attr <- function(dat, n.new) {
-  required_attr <- list_required_attr()
-  for (i in seq_along(required_attr)) {
-    dat <- add_attr(dat, names(required_attr)[i])
-  }
-
-  append_required_attr(dat, n.new)
+  dat <- add_attr(dat, "active")
+  dat <- add_attr(dat, "uid")
+  dat <- append_required_attr(dat, n.new)
 
   return(dat)
 }
 
 append_required_attr <- function(dat, n.new) {
-  required_attr <- list_required_attr()
-  for (i in seq_along(required_attr)) {
-    dat <- append_attr(
-      dat,
-      names(required_attr)[i], required_attr[i],
-      n.new
-    )
-  }
-
+  dat <- append_attr(dat, "active", 1, n.new)
   dat <- update_uids(dat, n)
+
+  return(dat)
 }
 
-update_uids <- function(dat) {
+update_uids <- function(dat, n.new) {
+  last_uid <- if (is.null(dat[["_last_uid"]])) 0 else last_uid
+  next_uids <- seq_len(n.new) + last_uid
+  dat[["_last_uid"]] <- last_uid + n.new
+  dat <- append_attr(dat, "uid", next_uids, n.new)
+
+  return(dat)
 }
 
-is_attr_required <- function(item) {
-  return(item %in% names(list_required_attr))
-}
-
-list_required_attr <- function(dat) {
-  required_attr <- list(
-    active = 1,
-    uid = NA
-  )
-}
-
-get_next_uids <- function(dat, n) {
-  last_uid <- dat[["_last_uid"]]
-  last_uid <- if (is.null(last_uid)) 0 else last_uid
-  next_uids <- seq_len(n) + last_uid
-
-  return(next_uids)
-}

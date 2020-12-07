@@ -120,8 +120,8 @@ arrivals.net <- function(dat, at) {
   if (nOld > 0) {
     nArrivals <- sum(rbinom(nOld, 1, a.rate))
     if (nArrivals > 0) {
+      dat <- append_required_attr(dat, nArrivals)
       dat <- append_attr(dat, "status", "s", nArrivals)
-      dat <- append_attr(dat, "active", 1, nArrivals)
       dat <- append_attr(dat, "infTime", NA, nArrivals)
       dat <- append_attr(dat, "entrTime", at, nArrivals)
       dat <- append_attr(dat, "exitTime", NA, nArrivals)
@@ -290,10 +290,10 @@ arrivals.2g.net <- function(dat, at) {
 
     if (totArr > 0) {
       newNodes <- (nCurr + 1):(nCurr + totArr)
+      dat <- append_required_attr(dat, totArr)
       dat <- append_attr(dat, "group", 1, nArrivals)
       dat <- append_attr(dat, "group", 2, nArrivalsG2)
       dat <- append_attr(dat, "status", "s", totArr)
-      dat <- append_attr(dat, "active", 1, totArr)
       dat <- append_attr(dat, "infTime", NA, totArr)
       dat <- append_attr(dat, "entrTime", at, totArr)
       dat <- append_attr(dat, "exitTime", NA, totArr)
