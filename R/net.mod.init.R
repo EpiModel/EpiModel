@@ -52,7 +52,7 @@ initialize.net <- function(x, param, init, control, s) {
 
     # Standard attributes
     num <- network.size(nw)
-    dat <- create_required_attr(dat, num)
+    dat <- append_required_attr(dat, num)
     dat <- set_attr(dat, "entrTime", rep(1, num))
     dat <- set_attr(dat, "exitTime", rep(NA, num))
 

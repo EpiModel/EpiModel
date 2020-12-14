@@ -22,7 +22,8 @@ test_that("Updating attributes in open populations", {
 
   init <- init.net(i.num = 10, i.num.g2 = 10)
   control <- control.net(type = "SI", nsteps = 20, nsims = 1,
-                         resimulate.network = TRUE, verbose = FALSE)
+                         resimulate.network = TRUE, verbose = FALSE,
+                         raw.output = TRUE)
 
   sim1 <- netsim(est1, param, init, control)
   expect_is(sim1, "netsim")
