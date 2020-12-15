@@ -159,13 +159,15 @@ set_attr <- function(dat, item, value, override.length.check = FALSE) {
     dat <- add_attr(dat, item)
   }
 
-  if (length(value) !=
-      length(dat[["attr"]][["active"]]) & !override.length.check) {
-    stop(paste0(
-      "When trying to edit the ", `item`, " nodal attribute: The size",
-       " of the `value` vector is not equal to the number of node in
-       the network. Expected: ", length(dat[["attr"]][["active"]]), ", given: ",
-       length(value)))
+  if (!override.length.check &&
+      length(value) != length(dat[["attr"]][["active"]])) {
+    stop(
+      "When trying to edit the ", `item`, " nodal attribute: ",
+      "The size of the `value` vector is not equal to the number of node in",
+      "the network. \n",
+      "Expected: ", length(dat[["attr"]][["active"]]), "\n" ,
+      "Given: ", length(value)
+    )
   }
 
   dat[["attr"]][[item]] <- value
@@ -177,11 +179,6 @@ set_attr <- function(dat, item, value, override.length.check = FALSE) {
 #' @rdname net-accessor
 #' @export
 append_attr <- function(dat, item, value, n.new) {
-  if (!item %in% names(dat[["attr"]])) {
-      stop(paste("There is no attribute called", item,
-                 "in the attributes list of the Master list object (dat)"))
-  }
-
   if (!is.numeric(n.new) || n.new < 0) {
     stop("`n_new` must be numeric and greater than or equal to zero.")
   }
@@ -194,7 +191,9 @@ append_attr <- function(dat, item, value, n.new) {
     stop("`value` must be of length one or `n.new`.")
   }
 
-  dat[["attr"]][[item]] <- c(dat[["attr"]][[item]], new_vals)
+  old_vals <- get_attr(dat, item, override.null.error = TRUE)
+  dat <- set_attr(dat, item, c(old_vals, new_vals),
+                  override.length.check = TRUE)
 
   return(dat)
 }

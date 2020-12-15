@@ -92,7 +92,7 @@ test_that("merge for netsim", {
   z <- merge(x, y, keep.other = TRUE)
   expect_is(z, "netsim")
   expect_true(length(z$attr) == 4)
-  expect_true(length(z$attr[[1]]) == 5)
+  expect_true(length(z$attr[[1]]) == 6)
   z <- merge(x, y, keep.other = FALSE)
   expect_true(any(names(z) == "attr") == FALSE)
 })
