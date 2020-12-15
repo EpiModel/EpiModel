@@ -8,7 +8,7 @@ append_core_attr <- function(dat, n.new) {
 
 #' @keywords internal
 update_uids <- function(dat, n.new) {
-  last_uid <- if (is.null(dat[["_last_uid"]])) 0 else dat[["_last_uid"]]
+  last_uid <- if (is.null(dat[["_last_uid"]])) 0L else dat[["_last_uid"]]
   next_uids <- seq_len(n.new) + last_uid
   dat[["_last_uid"]] <- last_uid + n.new
   dat <- append_attr(dat, "uid", next_uids, n.new)

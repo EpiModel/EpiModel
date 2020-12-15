@@ -93,9 +93,9 @@ get_attr_list <- function(dat, item = NULL) {
   } else {
     missing_item <- setdiff(item, names(dat[["attr"]]))
     if (length(missing_item) > 0) {
-      stop(paste("There is no attributes called",
-                 paste(missing_item, collapse = ", "),
-                 "in the attributes list of the Master list object (dat)"))
+      stop("There is no attributes called",
+           paste(missing_item, collapse = ", "),
+           "in the attributes list of the Master list object (dat)")
     }
 
     out <- dat[["attr"]][item]
@@ -111,8 +111,8 @@ get_attr <- function(dat, item, indexes = NULL, override.null.error = FALSE) {
     if (override.null.error) {
       out <- NULL
     } else {
-      stop(paste("There is no attribute called", item,
-                 "in the attributes list of the Master list object (dat)"))
+      stop("There is no attribute called", item,
+				"in the attributes list of the Master list object (dat)")
     }
   } else {
     if (is.null(indexes)) {
@@ -120,13 +120,13 @@ get_attr <- function(dat, item, indexes = NULL, override.null.error = FALSE) {
     } else {
       if (is.logical(indexes)) {
         if (length(indexes) != length(dat[["attr"]][[item]])) {
-          stop("(logical) `indexes` has to have a length equal to the number of
-              nodes in the network")
+          stop("(logical) `indexes` has to have a length equal to the number ",
+						   "of nodes in the network")
         }
       } else if (is.numeric(indexes)) {
         if (any(indexes > length(dat[["attr"]][[item]]))) {
-          stop("Some (numeric) `indexes` are larger than the number of nodes in
-              the network")
+          stop("Some (numeric) `indexes` are larger than the number of nodes ",
+						   " in the network")
         }
       } else {
         stop("`indexes` must be logical, numeric, or NULL")
@@ -143,8 +143,7 @@ get_attr <- function(dat, item, indexes = NULL, override.null.error = FALSE) {
 #' @export
 add_attr <- function(dat, item) {
   if (item %in% names(dat[["attr"]])) {
-    stop(paste0("Cannot create the attribute '", item,
-               "': exists already"))
+    stop("Cannot create the attribute '", item, "': exists already")
   }
 
   dat[["attr"]][[item]] <- rep(NA, length(dat[["attr"]][["active"]]))
@@ -207,9 +206,9 @@ get_epi_list <- function(dat, item = NULL) {
   } else {
     missing_item <- setdiff(item, names(dat[["epi"]]))
     if (length(missing_item) > 0) {
-      stop(paste("There is no epi output called",
-                 paste(missing_item, collapse = ", "),
-                 "in the epi output list of the Master list object (dat)"))
+      stop("There is no epi output called",
+           paste(missing_item, collapse = ", "),
+           "in the epi output list of the Master list object (dat)")
     }
 
     out <- dat[["epi"]][item]
@@ -225,8 +224,8 @@ get_epi <- function(dat, item, indexes = NULL, override.null.error = FALSE) {
     if (override.null.error) {
       out <- NULL
     } else {
-      stop(paste("There is no epi out called", item,
-                 "in the epi out list of the Master list object (dat)"))
+      stop("There is no epi out called", item,
+           "in the epi out list of the Master list object (dat)")
     }
   } else {
     if (is.null(indexes)) {
@@ -257,8 +256,7 @@ get_epi <- function(dat, item, indexes = NULL, override.null.error = FALSE) {
 #' @export
 add_epi <- function(dat, item) {
   if (item %in% names(dat[["epi"]])) {
-    stop(paste("Cannot create the epi output, ", item,
-               ": exists already"))
+    stop("Cannot create the epi output, ", item, ": exists already")
   }
 
   dat[["epi"]][[item]] <- rep(NA, dat[["control"]][["nsteps"]])
@@ -300,9 +298,9 @@ get_param_list <- function(dat, item = NULL) {
   } else {
     missing_item <- setdiff(item, names(dat[["param"]]))
     if (length(missing_item) > 0) {
-      stop(paste("There is no parameters called",
-                 paste(missing_item, collapse = ", "),
-                 "in the parameter list of the Master list object (dat)"))
+      stop("There is no parameters called",
+           paste(missing_item, collapse = ", "),
+           "in the parameter list of the Master list object (dat)")
     }
 
     out <- dat[["param"]][item]
@@ -318,8 +316,8 @@ get_param <- function(dat, item, override.null.error = FALSE) {
     if (override.null.error) {
       out <- NULL
     } else {
-      stop(paste("There is no parameter called", item,
-                 "in the parameter list of the Master list object (dat)"))
+      stop("There is no parameter called", item,
+           "in the parameter list of the Master list object (dat)")
     }
   } else {
     out <- dat[["param"]][[item]]
@@ -332,8 +330,7 @@ get_param <- function(dat, item, override.null.error = FALSE) {
 #' @export
 add_param <- function(dat, item) {
   if (item %in% names(dat[["param"]])) {
-    stop(paste("Cannot create the parameter, ", item,
-               ": exists already"))
+    stop("Cannot create the parameter, ", item, ": exists already")
   }
 
   dat[["param"]][[item]] <- NA
@@ -362,9 +359,9 @@ get_control_list <- function(dat, item = NULL) {
   } else {
     missing_item <- setdiff(item, names(dat[["control"]]))
     if (length(missing_item) > 0) {
-      stop(paste("There is no control value called",
-                 paste(missing_item, collapse = ", "),
-                 "in the control list of the Master list object (dat)"))
+      stop("There is no control value called",
+           paste(missing_item, collapse = ", "),
+           "in the control list of the Master list object (dat)")
     }
 
     out <- dat[["control"]][item]
@@ -380,8 +377,8 @@ get_control <- function(dat, item, override.null.error = FALSE) {
     if (override.null.error) {
       out <- NULL
     } else {
-      stop(paste("There is no control value called", item,
-                 "in the control list of the Master list object (dat)"))
+      stop("There is no control value called", item,
+           "in the control list of the Master list object (dat)")
     }
   } else {
     out <- dat[["control"]][[item]]
@@ -394,8 +391,8 @@ get_control <- function(dat, item, override.null.error = FALSE) {
 #' @export
 add_control <- function(dat, item) {
   if (item %in% names(dat[["control"]])) {
-    stop(paste("Cannot create the control value, ", item,
-               ": exists already"))
+    stop("Cannot create the control value, ", item,
+         ": exists already")
   }
 
   dat[["control"]][[item]] <- NA
@@ -424,9 +421,9 @@ get_init_list <- function(dat, item = NULL) {
   } else {
     missing_item <- setdiff(item, names(dat[["init"]]))
     if (length(missing_item) > 0) {
-      stop(paste("There is no init value called",
-                 paste(missing_item, collapse = ", "),
-                 "in the init list of the Master list object (dat)"))
+      stop("There is no init value called",
+           paste(missing_item, collapse = ", "),
+           "in the init list of the Master list object (dat)")
     }
 
     out <- dat[["init"]][item]
@@ -442,8 +439,8 @@ get_init <- function(dat, item, override.null.error = FALSE) {
     if (override.null.error) {
       out <- NULL
     } else {
-      stop(paste("There is no init value called", item,
-                 "in the init list of the Master list object (dat)"))
+      stop("There is no init value called", item,
+           "in the init list of the Master list object (dat)")
     }
   } else {
     out <- dat[["init"]][[item]]
@@ -456,8 +453,8 @@ get_init <- function(dat, item, override.null.error = FALSE) {
 #' @export
 add_init <- function(dat, item) {
   if (item %in% names(dat[["init"]])) {
-    stop(paste("Cannot create the init value, ", item,
-               ": exists already"))
+    stop("Cannot create the init value, ", item,
+         ": exists already")
   }
 
   dat[["init"]][[item]] <- NA
