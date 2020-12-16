@@ -1,4 +1,6 @@
-#' @keywords internal
+#' @param n.new the number of new nodes to initiate with core attributes
+#' @rdname net-accessor
+#' @export
 append_core_attr <- function(dat, n.new) {
   dat <- append_attr(dat, "active", 1, n.new)
   dat <- update_uids(dat, n.new)
@@ -6,6 +8,17 @@ append_core_attr <- function(dat, n.new) {
 	return(dat)
 }
 
+#' @title Create the uids for the new nodes
+#'
+#' @description This function is called by `append_core_attr` and append new
+#' uids to the created nodes. It also keeps track of the already used uids with
+#' the `dat[["_last_uid"]]` variable
+#'
+#' @param dat a Master list object of network models
+#' @param n.new the number of new nodes to give `uid` to
+#'
+#' @return the Master list object of network models (`dat`)
+#'
 #' @keywords internal
 update_uids <- function(dat, n.new) {
   last_uid <- if (is.null(dat[["_last_uid"]])) 0L else dat[["_last_uid"]]
@@ -16,7 +29,13 @@ update_uids <- function(dat, n.new) {
   return(dat)
 }
 
-#' @keywords internal
+#' @title Check that all `attr`ibutes in the master object are of equal length
+#'
+#' @param dat a Master list object of network models
+#'
+#' @return invisible(TRUE) if everythin is correct. It throws an error otherwise
+#'
+#' @keywords internal not_used
 check_attr_lengths <- function(dat) {
 	attr_lengths <- vapply(dat[["attr"]], length, numeric(1))
 	expected_length <- attr_lengths["active"]
@@ -36,6 +55,6 @@ check_attr_lengths <- function(dat) {
 		stop(msg)
 	}
 
-  invisible(return(TRUE))
+  return(invisible(TRUE))
 }
 

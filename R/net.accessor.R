@@ -1,4 +1,3 @@
-
 #' @title Functions to Access and Edit the Master List Object in Network Models
 #'
 #' @description These `get_`, `set_`, `append_` and `add` functions allow a safe
@@ -18,14 +17,22 @@
 #' @return a vector or a list of vector for `get_` functions. And the Master
 #'         list object for `set_` and `add_` functions
 #'
+#' @section Core Attribute:
+#' The `append_core_attr` function initialize the attributes necessary for
+#' EpiModel to work (Currently "active" and "uid"). It is used in the
+#' inilization phase of the simulation, to create the nodes (see
+#' `initialize.net`). It is also used when adding nodes during the simulation
+#' (see `arrival.net`)
+#'
 #' @section Mutability:
-#' The `set_`, `append_` and `add_` functions DO NOT mutate the dat object in
+#' The `set_`, `append_` and `add_` functions DO NOT modify the dat object in
 #' place. The result must be assigned back to `dat` in order to be registered
 #' `dat <- set_*(dat, item, value)`
 #'
-#' @section `set_` vs `add_`:
-#' The `set_` functions edit a pre-existing element or create a new one if it
-#' does not exist already by calling the `add_` functions internally.
+#' @section `set_` and `append_` vs `add_`:
+#' The `set_` and `append_` functions edit a pre-existing element or create a
+#' new one if it does not exist already by calling the `add_` functions
+#' internally.
 #'
 #' @examples
 #' dat <- list(
