@@ -1,38 +1,41 @@
 #' @title Functions to Access and Edit the Master List Object in Network Models
 #'
-#' @description These `get_`, `set_`, `append_` and `add` functions allow a safe
+#' @description These \code{get_}, \code{set_}, \code{append_} and \code{add} functions allow a safe
 #'              and efficient way to retrieve and mutate the Master list object
-#'              of network models (`dat`).
+#'              of network models (\code{dat}).
 #'
 #' @param dat a Master list object of network models
 #' @param item a character vector conaining the name of the element to access.
-#'        Can be of length > 1 for `get_*_list` functions
-#' @param indexes for `get_epi` and `get_attr`, a numeric vector of indexes or
-#'        a logical vector to subset the desired `item`
-#' @param value new value to be attributed in the `set_` and `append_` functions
-#' @param override.null.error if TRUE, `get_` return NULL if the `item` does not
-#'        exist instead of throwing an error. (default = FALSE)
-#' @param override.length.check if TRUE, `set_attr` allows the modification of
-#'        the `item` size. (default = FALSE)
-#' @return a vector or a list of vector for `get_` functions. And the Master
-#'         list object for `set_` and `add_` functions
+#'        Can be of length > 1 for \code{get_*_list} functions
+#' @param indexes for \code{get_epi} and \code{get_attr}, a numeric vector of
+#'        indexes or a logical vector to subset the desired \code{item}
+#' @param value new value to be attributed in the \code{set_} and \code{append_}
+#'        functions
+#' @param override.null.error if TRUE, \code{get_} return NULL if the
+#'         \code{item} does not exist instead of throwing an error.
+#'         (default = FALSE)
+#' @param override.length.check if TRUE, \code{set_attr} allows the modification
+#'        of the \code{item} size. (default = FALSE)
+#' @return a vector or a list of
+#' vector for \code{get_} functions. And the Master list object for \code{set_}
+#' and \code{add_} functions
 #'
 #' @section Core Attribute:
-#' The `append_core_attr` function initialize the attributes necessary for
+#' The \code{append_core_attr} function initialize the attributes necessary for
 #' EpiModel to work (Currently "active" and "uid"). It is used in the
 #' inilization phase of the simulation, to create the nodes (see
-#' `initialize.net`). It is also used when adding nodes during the simulation
-#' (see `arrival.net`)
+#' \code{initialize.net}). It is also used when adding nodes during the simulation
+#' (see \code{arrival.net})
 #'
 #' @section Mutability:
-#' The `set_`, `append_` and `add_` functions DO NOT modify the dat object in
-#' place. The result must be assigned back to `dat` in order to be registered
-#' `dat <- set_*(dat, item, value)`
+#' The \code{set_}, \code{append_} and \code{add_} functions DO NOT modify the
+#' dat object in place. The result must be assigned back to \code{dat} in order
+#' to be registered \code{dat <- set_*(dat, item, value)}
 #'
-#' @section `set_` and `append_` vs `add_`:
-#' The `set_` and `append_` functions edit a pre-existing element or create a
-#' new one if it does not exist already by calling the `add_` functions
-#' internally.
+#' @section \code{set_} and \code{append_} vs \code{add_}:
+#' The \code{set_} and \code{append_} functions edit a pre-existing element or
+#' create a new one if it does not exist already by calling the \code{add_}
+#' functions internally.
 #'
 #' @examples
 #' dat <- list(
@@ -181,7 +184,7 @@ set_attr <- function(dat, item, value, override.length.check = FALSE) {
   return(dat)
 }
 
-#' @param n.new the number of new elements to append at the end of `item`
+#' @param n.new the number of new elements to append at the end of \code{item}
 #' @rdname net-accessor
 #' @export
 append_attr <- function(dat, item, value, n.new) {
@@ -271,7 +274,7 @@ add_epi <- function(dat, item) {
   return(dat)
 }
 
-#' @param at timestep where to add the new value for the epi output `item`
+#' @param at timestep where to add the new value for the epi output \code{item}
 #' @rdname net-accessor
 #' @export
 set_epi <- function(dat, item, at,  value) {

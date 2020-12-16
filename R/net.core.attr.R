@@ -12,12 +12,12 @@ append_core_attr <- function(dat, n.new) {
 #'
 #' @description This function is called by `append_core_attr` and append new
 #' uids to the created nodes. It also keeps track of the already used uids with
-#' the `dat[["_last_uid"]]` variable
+#' the /code{dat[["_last_uid"]]} variable
 #'
 #' @param dat a Master list object of network models
-#' @param n.new the number of new nodes to give `uid` to
+#' @param n.new the number of new nodes to give \code{uid} to
 #'
-#' @return the Master list object of network models (`dat`)
+#' @return the Master list object of network models (\code{dat})
 #'
 #' @keywords internal
 update_uids <- function(dat, n.new) {
@@ -29,7 +29,7 @@ update_uids <- function(dat, n.new) {
   return(dat)
 }
 
-#' @title Check that all `attr`ibutes in the master object are of equal length
+#' @title Check that all \code{attr}ibutes in the master object are of equal length
 #'
 #' @param dat a Master list object of network models
 #'
