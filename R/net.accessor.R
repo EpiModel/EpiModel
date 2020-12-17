@@ -103,9 +103,9 @@ get_attr_list <- function(dat, item = NULL) {
   } else {
     missing_item <- setdiff(item, names(dat[["attr"]]))
     if (length(missing_item) > 0) {
-      stop("There is no attributes called",
+      stop("There is no attributes called `",
            paste(missing_item, collapse = ", "),
-           "in the attributes list of the Master list object (dat)")
+           "` in the attributes list of the Master list object (dat)")
     }
 
     out <- dat[["attr"]][item]
@@ -121,8 +121,8 @@ get_attr <- function(dat, item, indexes = NULL, override.null.error = FALSE) {
     if (override.null.error) {
       out <- NULL
     } else {
-      stop("There is no attribute called", item,
-				"in the attributes list of the Master list object (dat)")
+      stop("There is no attribute called `", item,
+				"` in the attributes list of the Master list object (dat)")
     }
   } else {
     if (is.null(indexes)) {
@@ -216,9 +216,9 @@ get_epi_list <- function(dat, item = NULL) {
   } else {
     missing_item <- setdiff(item, names(dat[["epi"]]))
     if (length(missing_item) > 0) {
-      stop("There is no epi output called",
+      stop("There is no epi output called `",
            paste(missing_item, collapse = ", "),
-           "in the epi output list of the Master list object (dat)")
+           "` in the epi output list of the Master list object (dat)")
     }
 
     out <- dat[["epi"]][item]
@@ -234,8 +234,8 @@ get_epi <- function(dat, item, indexes = NULL, override.null.error = FALSE) {
     if (override.null.error) {
       out <- NULL
     } else {
-      stop("There is no epi out called", item,
-           "in the epi out list of the Master list object (dat)")
+      stop("There is no epi out called `", item,
+           "` in the epi out list of the Master list object (dat)")
     }
   } else {
     if (is.null(indexes)) {
@@ -308,9 +308,9 @@ get_param_list <- function(dat, item = NULL) {
   } else {
     missing_item <- setdiff(item, names(dat[["param"]]))
     if (length(missing_item) > 0) {
-      stop("There is no parameters called",
+      stop("There is no parameters called `",
            paste(missing_item, collapse = ", "),
-           "in the parameter list of the Master list object (dat)")
+           "` in the parameter list of the Master list object (dat)")
     }
 
     out <- dat[["param"]][item]
@@ -326,8 +326,8 @@ get_param <- function(dat, item, override.null.error = FALSE) {
     if (override.null.error) {
       out <- NULL
     } else {
-      stop("There is no parameter called", item,
-           "in the parameter list of the Master list object (dat)")
+      stop("There is no parameter called `", item,
+           "` in the parameter list of the Master list object (dat)")
     }
   } else {
     out <- dat[["param"]][[item]]
@@ -369,9 +369,9 @@ get_control_list <- function(dat, item = NULL) {
   } else {
     missing_item <- setdiff(item, names(dat[["control"]]))
     if (length(missing_item) > 0) {
-      stop("There is no control value called",
+      stop("There is no control value called `",
            paste(missing_item, collapse = ", "),
-           "in the control list of the Master list object (dat)")
+           "` in the control list of the Master list object (dat)")
     }
 
     out <- dat[["control"]][item]
@@ -387,8 +387,8 @@ get_control <- function(dat, item, override.null.error = FALSE) {
     if (override.null.error) {
       out <- NULL
     } else {
-      stop("There is no control value called", item,
-           "in the control list of the Master list object (dat)")
+      stop("There is no control value called `", item,
+           "` in the control list of the Master list object (dat)")
     }
   } else {
     out <- dat[["control"]][[item]]
@@ -431,9 +431,9 @@ get_init_list <- function(dat, item = NULL) {
   } else {
     missing_item <- setdiff(item, names(dat[["init"]]))
     if (length(missing_item) > 0) {
-      stop("There is no init value called",
+      stop("There is no init value called `",
            paste(missing_item, collapse = ", "),
-           "in the init list of the Master list object (dat)")
+           "` in the init list of the Master list object (dat)")
     }
 
     out <- dat[["init"]][item]
@@ -449,8 +449,8 @@ get_init <- function(dat, item, override.null.error = FALSE) {
     if (override.null.error) {
       out <- NULL
     } else {
-      stop("There is no init value called", item,
-           "in the init list of the Master list object (dat)")
+      stop("There is no init value called `", item,
+           "` in the init list of the Master list object (dat)")
     }
   } else {
     out <- dat[["init"]][[item]]
