@@ -122,7 +122,7 @@ get_attr <- function(dat, item, indexes = NULL, override.null.error = FALSE) {
       out <- NULL
     } else {
       stop("There is no attribute called `", item,
-				"` in the attributes list of the Master list object (dat)")
+           "` in the attributes list of the Master list object (dat)")
     }
   } else {
     if (is.null(indexes)) {
@@ -131,12 +131,12 @@ get_attr <- function(dat, item, indexes = NULL, override.null.error = FALSE) {
       if (is.logical(indexes)) {
         if (length(indexes) != length(dat[["attr"]][[item]])) {
           stop("(logical) `indexes` has to have a length equal to the number ",
-						   "of nodes in the network")
+               "of nodes in the network")
         }
       } else if (is.numeric(indexes)) {
         if (any(indexes > length(dat[["attr"]][[item]]))) {
           stop("Some (numeric) `indexes` are larger than the number of nodes ",
-						   " in the network")
+               " in the network")
         }
       } else {
         stop("`indexes` must be logical, numeric, or NULL")
@@ -482,4 +482,71 @@ set_init <- function(dat, item, value) {
   dat[["init"]][[item]] <- value
 
   return(dat)
+}
+
+# Core Attributes --------------------------------------------------------------
+
+#' @param n.new the number of new nodes to initiate with core attributes
+#' @param at current time step
+#' @rdname net-accessor
+#' @export
+append_core_attr <- function(dat, at, n.new) {
+  dat <- append_attr(dat, "active", 1, n.new)
+  dat <- append_attr(dat, "entrTime", at, n.new)
+  dat <- append_attr(dat, "exitTime", NA, n.new)
+
+  dat <- update_uids(dat, n.new)
+
+  return(dat)
+}
+
+#' @title Create the uids for the new nodes
+#'
+#' @description This function is called by `append_core_attr` and append new
+#' uids to the created nodes. It also keeps track of the already used uids with
+#' the /code{dat[["_last_uid"]]} variable
+#'
+#' @param dat a Master list object of network models
+#' @param n.new the number of new nodes to give \code{uid} to
+#'
+#' @return the Master list object of network models (\code{dat})
+#'
+#' @keywords internal
+update_uids <- function(dat, n.new) {
+  last_uid <- if (is.null(dat[["_last_uid"]])) 0L else dat[["_last_uid"]]
+  next_uids <- seq_len(n.new) + last_uid
+  dat[["_last_uid"]] <- last_uid + as.integer(n.new)
+  dat <- append_attr(dat, "uid", next_uids, n.new)
+
+  return(dat)
+}
+
+#' @title Check that all \code{attr}ibutes in the master object are of equal
+#'        length
+#'
+#' @param dat a Master list object of network models
+#'
+#' @return invisible(TRUE) if everythin is correct. It throws an error otherwise
+#'
+#' @keywords internal not_used
+check_attr_lengths <- function(dat) {
+  attr_lengths <- vapply(dat[["attr"]], length, numeric(1))
+  expected_length <- attr_lengths["active"]
+  wrong_lengths <- which(attr_lengths != expected_length)
+
+  if (length(wrong_lengths > 0)) {
+    msg <- c(
+      "Some attribute are not of the correct length \n",
+      "Expected length: ", expected_length, "\n",
+      "Wrong length attributes: \n"
+    )
+
+    for (i in seq_along(wrong_lengths)) {
+      msg <- c(msg, "`", names(wrong_lengths)[i], "`: ", wrong_lengths[i], "\n")
+    }
+
+    stop(msg)
+  }
+
+  return(invisible(TRUE))
 }
