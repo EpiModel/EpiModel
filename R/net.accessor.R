@@ -1,31 +1,41 @@
-
 #' @title Functions to Access and Edit the Master List Object in Network Models
 #'
-#' @description These `get_`, `set_`, `append_` and `add` functions allow a safe
+#' @description These \code{get_}, \code{set_}, \code{append_} and \code{add} functions allow a safe
 #'              and efficient way to retrieve and mutate the Master list object
-#'              of network models (`dat`).
+#'              of network models (\code{dat}).
 #'
 #' @param dat a Master list object of network models
 #' @param item a character vector conaining the name of the element to access.
-#'        Can be of length > 1 for `get_*_list` functions
-#' @param indexes for `get_epi` and `get_attr`, a numeric vector of indexes or
-#'        a logical vector to subset the desired `item`
-#' @param value new value to be attributed in the `set_` and `append_` functions
-#' @param override.null.error if TRUE, `get_` return NULL if the `item` does not
-#'        exist instead of throwing an error. (default = FALSE)
-#' @param override.length.check if TRUE, `set_attr` allows the modification of
-#'        the `item` size. (default = FALSE)
-#' @return a vector or a list of vector for `get_` functions. And the Master
-#'         list object for `set_` and `add_` functions
+#'        Can be of length > 1 for \code{get_*_list} functions
+#' @param indexes for \code{get_epi} and \code{get_attr}, a numeric vector of
+#'        indexes or a logical vector to subset the desired \code{item}
+#' @param value new value to be attributed in the \code{set_} and \code{append_}
+#'        functions
+#' @param override.null.error if TRUE, \code{get_} return NULL if the
+#'         \code{item} does not exist instead of throwing an error.
+#'         (default = FALSE)
+#' @param override.length.check if TRUE, \code{set_attr} allows the modification
+#'        of the \code{item} size. (default = FALSE)
+#' @return a vector or a list of
+#' vector for \code{get_} functions. And the Master list object for \code{set_}
+#' and \code{add_} functions
+#'
+#' @section Core Attribute:
+#' The \code{append_core_attr} function initialize the attributes necessary for
+#' EpiModel to work (Currently "active" and "uid"). It is used in the
+#' inilization phase of the simulation, to create the nodes (see
+#' \code{initialize.net}). It is also used when adding nodes during the simulation
+#' (see \code{arrival.net})
 #'
 #' @section Mutability:
-#' The `set_`, `append_` and `add_` functions DO NOT mutate the dat object in
-#' place. The result must be assigned back to `dat` in order to be registered
-#' `dat <- set_*(dat, item, value)`
+#' The \code{set_}, \code{append_} and \code{add_} functions DO NOT modify the
+#' dat object in place. The result must be assigned back to \code{dat} in order
+#' to be registered \code{dat <- set_*(dat, item, value)}
 #'
-#' @section `set_` vs `add_`:
-#' The `set_` functions edit a pre-existing element or create a new one if it
-#' does not exist already by calling the `add_` functions internally.
+#' @section \code{set_} and \code{append_} vs \code{add_}:
+#' The \code{set_} and \code{append_} functions edit a pre-existing element or
+#' create a new one if it does not exist already by calling the \code{add_}
+#' functions internally.
 #'
 #' @examples
 #' dat <- list(
@@ -93,9 +103,9 @@ get_attr_list <- function(dat, item = NULL) {
   } else {
     missing_item <- setdiff(item, names(dat[["attr"]]))
     if (length(missing_item) > 0) {
-      stop(paste("There is no attributes called",
-                 paste(missing_item, collapse = ", "),
-                 "in the attributes list of the Master list object (dat)"))
+      stop("There is no attributes called `",
+           paste(missing_item, collapse = ", "),
+           "` in the attributes list of the Master list object (dat)")
     }
 
     out <- dat[["attr"]][item]
@@ -111,8 +121,8 @@ get_attr <- function(dat, item, indexes = NULL, override.null.error = FALSE) {
     if (override.null.error) {
       out <- NULL
     } else {
-      stop(paste("There is no attribute called", item,
-                 "in the attributes list of the Master list object (dat)"))
+      stop("There is no attribute called `", item,
+           "` in the attributes list of the Master list object (dat)")
     }
   } else {
     if (is.null(indexes)) {
@@ -120,13 +130,13 @@ get_attr <- function(dat, item, indexes = NULL, override.null.error = FALSE) {
     } else {
       if (is.logical(indexes)) {
         if (length(indexes) != length(dat[["attr"]][[item]])) {
-          stop("(logical) `indexes` has to have a length equal to the number of
-              nodes in the network")
+          stop("(logical) `indexes` has to have a length equal to the number ",
+               "of nodes in the network")
         }
       } else if (is.numeric(indexes)) {
         if (any(indexes > length(dat[["attr"]][[item]]))) {
-          stop("Some (numeric) `indexes` are larger than the number of nodes in
-              the network")
+          stop("Some (numeric) `indexes` are larger than the number of nodes ",
+               " in the network")
         }
       } else {
         stop("`indexes` must be logical, numeric, or NULL")
@@ -143,8 +153,7 @@ get_attr <- function(dat, item, indexes = NULL, override.null.error = FALSE) {
 #' @export
 add_attr <- function(dat, item) {
   if (item %in% names(dat[["attr"]])) {
-    stop(paste0("Cannot create the attribute '", item,
-               "': exists already"))
+    stop("Cannot create the attribute '", item, "': exists already")
   }
 
   dat[["attr"]][[item]] <- rep(NA, length(dat[["attr"]][["active"]]))
@@ -159,13 +168,15 @@ set_attr <- function(dat, item, value, override.length.check = FALSE) {
     dat <- add_attr(dat, item)
   }
 
-  if (length(value) !=
-      length(dat[["attr"]][["active"]]) & !override.length.check) {
-    stop(paste0(
-      "When trying to edit the ", `item`, " nodal attribute: The size",
-       " of the `value` vector is not equal to the number of node in
-       the network. Expected: ", length(dat[["attr"]][["active"]]), ", given: ",
-       length(value)))
+  if (!override.length.check &&
+      length(value) != length(dat[["attr"]][["active"]])) {
+    stop(
+      "When trying to edit the ", `item`, " nodal attribute: ",
+      "The size of the `value` vector is not equal to the number of node in",
+      "the network. \n",
+      "Expected: ", length(dat[["attr"]][["active"]]), "\n" ,
+      "Given: ", length(value)
+    )
   }
 
   dat[["attr"]][[item]] <- value
@@ -173,15 +184,10 @@ set_attr <- function(dat, item, value, override.length.check = FALSE) {
   return(dat)
 }
 
-#' @param n.new the number of new elements to append at the end of `item`
+#' @param n.new the number of new elements to append at the end of \code{item}
 #' @rdname net-accessor
 #' @export
 append_attr <- function(dat, item, value, n.new) {
-  if (!item %in% names(dat[["attr"]])) {
-      stop(paste("There is no attribute called", item,
-                 "in the attributes list of the Master list object (dat)"))
-  }
-
   if (!is.numeric(n.new) || n.new < 0) {
     stop("`n_new` must be numeric and greater than or equal to zero.")
   }
@@ -194,7 +200,9 @@ append_attr <- function(dat, item, value, n.new) {
     stop("`value` must be of length one or `n.new`.")
   }
 
-  dat[["attr"]][[item]] <- c(dat[["attr"]][[item]], new_vals)
+  old_vals <- get_attr(dat, item, override.null.error = TRUE)
+  dat <- set_attr(dat, item, c(old_vals, new_vals),
+                  override.length.check = TRUE)
 
   return(dat)
 }
@@ -208,9 +216,9 @@ get_epi_list <- function(dat, item = NULL) {
   } else {
     missing_item <- setdiff(item, names(dat[["epi"]]))
     if (length(missing_item) > 0) {
-      stop(paste("There is no epi output called",
-                 paste(missing_item, collapse = ", "),
-                 "in the epi output list of the Master list object (dat)"))
+      stop("There is no epi output called `",
+           paste(missing_item, collapse = ", "),
+           "` in the epi output list of the Master list object (dat)")
     }
 
     out <- dat[["epi"]][item]
@@ -226,8 +234,8 @@ get_epi <- function(dat, item, indexes = NULL, override.null.error = FALSE) {
     if (override.null.error) {
       out <- NULL
     } else {
-      stop(paste("There is no epi out called", item,
-                 "in the epi out list of the Master list object (dat)"))
+      stop("There is no epi out called `", item,
+           "` in the epi out list of the Master list object (dat)")
     }
   } else {
     if (is.null(indexes)) {
@@ -258,8 +266,7 @@ get_epi <- function(dat, item, indexes = NULL, override.null.error = FALSE) {
 #' @export
 add_epi <- function(dat, item) {
   if (item %in% names(dat[["epi"]])) {
-    stop(paste("Cannot create the epi output, ", item,
-               ": exists already"))
+    stop("Cannot create the epi output, ", item, ": exists already")
   }
 
   dat[["epi"]][[item]] <- rep(NA, dat[["control"]][["nsteps"]])
@@ -267,7 +274,7 @@ add_epi <- function(dat, item) {
   return(dat)
 }
 
-#' @param at timestep where to add the new value for the epi output `item`
+#' @param at timestep where to add the new value for the epi output \code{item}
 #' @rdname net-accessor
 #' @export
 set_epi <- function(dat, item, at,  value) {
@@ -301,9 +308,9 @@ get_param_list <- function(dat, item = NULL) {
   } else {
     missing_item <- setdiff(item, names(dat[["param"]]))
     if (length(missing_item) > 0) {
-      stop(paste("There is no parameters called",
-                 paste(missing_item, collapse = ", "),
-                 "in the parameter list of the Master list object (dat)"))
+      stop("There is no parameters called `",
+           paste(missing_item, collapse = ", "),
+           "` in the parameter list of the Master list object (dat)")
     }
 
     out <- dat[["param"]][item]
@@ -319,8 +326,8 @@ get_param <- function(dat, item, override.null.error = FALSE) {
     if (override.null.error) {
       out <- NULL
     } else {
-      stop(paste("There is no parameter called", item,
-                 "in the parameter list of the Master list object (dat)"))
+      stop("There is no parameter called `", item,
+           "` in the parameter list of the Master list object (dat)")
     }
   } else {
     out <- dat[["param"]][[item]]
@@ -333,8 +340,7 @@ get_param <- function(dat, item, override.null.error = FALSE) {
 #' @export
 add_param <- function(dat, item) {
   if (item %in% names(dat[["param"]])) {
-    stop(paste("Cannot create the parameter, ", item,
-               ": exists already"))
+    stop("Cannot create the parameter, ", item, ": exists already")
   }
 
   dat[["param"]][[item]] <- NA
@@ -363,9 +369,9 @@ get_control_list <- function(dat, item = NULL) {
   } else {
     missing_item <- setdiff(item, names(dat[["control"]]))
     if (length(missing_item) > 0) {
-      stop(paste("There is no control value called",
-                 paste(missing_item, collapse = ", "),
-                 "in the control list of the Master list object (dat)"))
+      stop("There is no control value called `",
+           paste(missing_item, collapse = ", "),
+           "` in the control list of the Master list object (dat)")
     }
 
     out <- dat[["control"]][item]
@@ -381,8 +387,8 @@ get_control <- function(dat, item, override.null.error = FALSE) {
     if (override.null.error) {
       out <- NULL
     } else {
-      stop(paste("There is no control value called", item,
-                 "in the control list of the Master list object (dat)"))
+      stop("There is no control value called `", item,
+           "` in the control list of the Master list object (dat)")
     }
   } else {
     out <- dat[["control"]][[item]]
@@ -395,8 +401,8 @@ get_control <- function(dat, item, override.null.error = FALSE) {
 #' @export
 add_control <- function(dat, item) {
   if (item %in% names(dat[["control"]])) {
-    stop(paste("Cannot create the control value, ", item,
-               ": exists already"))
+    stop("Cannot create the control value, ", item,
+         ": exists already")
   }
 
   dat[["control"]][[item]] <- NA
@@ -425,9 +431,9 @@ get_init_list <- function(dat, item = NULL) {
   } else {
     missing_item <- setdiff(item, names(dat[["init"]]))
     if (length(missing_item) > 0) {
-      stop(paste("There is no init value called",
-                 paste(missing_item, collapse = ", "),
-                 "in the init list of the Master list object (dat)"))
+      stop("There is no init value called `",
+           paste(missing_item, collapse = ", "),
+           "` in the init list of the Master list object (dat)")
     }
 
     out <- dat[["init"]][item]
@@ -443,8 +449,8 @@ get_init <- function(dat, item, override.null.error = FALSE) {
     if (override.null.error) {
       out <- NULL
     } else {
-      stop(paste("There is no init value called", item,
-                 "in the init list of the Master list object (dat)"))
+      stop("There is no init value called `", item,
+           "` in the init list of the Master list object (dat)")
     }
   } else {
     out <- dat[["init"]][[item]]
@@ -457,8 +463,8 @@ get_init <- function(dat, item, override.null.error = FALSE) {
 #' @export
 add_init <- function(dat, item) {
   if (item %in% names(dat[["init"]])) {
-    stop(paste("Cannot create the init value, ", item,
-               ": exists already"))
+    stop("Cannot create the init value, ", item,
+         ": exists already")
   }
 
   dat[["init"]][[item]] <- NA
@@ -476,4 +482,71 @@ set_init <- function(dat, item, value) {
   dat[["init"]][[item]] <- value
 
   return(dat)
+}
+
+# Core Attributes --------------------------------------------------------------
+
+#' @param n.new the number of new nodes to initiate with core attributes
+#' @param at current time step
+#' @rdname net-accessor
+#' @export
+append_core_attr <- function(dat, at, n.new) {
+  dat <- append_attr(dat, "active", 1, n.new)
+  dat <- append_attr(dat, "entrTime", at, n.new)
+  dat <- append_attr(dat, "exitTime", NA, n.new)
+
+  dat <- update_uids(dat, n.new)
+
+  return(dat)
+}
+
+#' @title Create the uids for the new nodes
+#'
+#' @description This function is called by `append_core_attr` and append new
+#' uids to the created nodes. It also keeps track of the already used uids with
+#' the /code{dat[["_last_uid"]]} variable
+#'
+#' @param dat a Master list object of network models
+#' @param n.new the number of new nodes to give \code{uid} to
+#'
+#' @return the Master list object of network models (\code{dat})
+#'
+#' @keywords internal
+update_uids <- function(dat, n.new) {
+  last_uid <- if (is.null(dat[["_last_uid"]])) 0L else dat[["_last_uid"]]
+  next_uids <- seq_len(n.new) + last_uid
+  dat[["_last_uid"]] <- last_uid + as.integer(n.new)
+  dat <- append_attr(dat, "uid", next_uids, n.new)
+
+  return(dat)
+}
+
+#' @title Check that all \code{attr}ibutes in the master object are of equal
+#'        length
+#'
+#' @param dat a Master list object of network models
+#'
+#' @return invisible(TRUE) if everythin is correct. It throws an error otherwise
+#'
+#' @keywords internal not_used
+check_attr_lengths <- function(dat) {
+  attr_lengths <- vapply(dat[["attr"]], length, numeric(1))
+  expected_length <- attr_lengths["active"]
+  wrong_lengths <- which(attr_lengths != expected_length)
+
+  if (length(wrong_lengths > 0)) {
+    msg <- c(
+      "Some attribute are not of the correct length \n",
+      "Expected length: ", expected_length, "\n",
+      "Wrong length attributes: \n"
+    )
+
+    for (i in seq_along(wrong_lengths)) {
+      msg <- c(msg, "`", names(wrong_lengths)[i], "`: ", wrong_lengths[i], "\n")
+    }
+
+    stop(msg)
+  }
+
+  return(invisible(TRUE))
 }

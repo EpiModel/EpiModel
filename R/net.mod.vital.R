@@ -118,13 +118,11 @@ arrivals.net <- function(dat, at) {
 
   # Add Nodes ---------------------------------------------------------------
   if (nOld > 0) {
-    nArrivals <- sum(rbinom(nOld, 1, a.rate))
+    nArrivals <- rbinom(1, nOld, a.rate)
     if (nArrivals > 0) {
+      dat <- append_core_attr(dat, at, nArrivals)
       dat <- append_attr(dat, "status", "s", nArrivals)
-      dat <- append_attr(dat, "active", 1, nArrivals)
       dat <- append_attr(dat, "infTime", NA, nArrivals)
-      dat <- append_attr(dat, "entrTime", at, nArrivals)
-      dat <- append_attr(dat, "exitTime", NA, nArrivals)
     }
   }
 
@@ -279,24 +277,22 @@ arrivals.2g.net <- function(dat, at) {
   if (nOld > 0) {
 
     if (is.na(a.rate.g2)) {
-      nArrivals <- sum(rbinom(nOld, 1, a.rate))
-      nArrivalsG2 <- sum(rbinom(nOld, 1, a.rate))
+      nArrivals <- rbinom(1, nOld, a.rate)
+      nArrivalsG2 <- rbinom(1, nOld, a.rate)
       totArr <- nArrivals + nArrivalsG2
     } else {
-      nArrivals <- sum(rbinom(nOld, 1, a.rate))
-      nArrivalsG2 <- sum(rbinom(nOldG2, 1, a.rate.g2))
+      nArrivals <- rbinom(1, nOld, a.rate)
+      nArrivalsG2 <- rbinom(1, nOldG2, a.rate.g2)
       totArr <- nArrivals + nArrivalsG2
     }
 
     if (totArr > 0) {
       newNodes <- (nCurr + 1):(nCurr + totArr)
+      dat <- append_core_attr(dat, at, totArr)
       dat <- append_attr(dat, "group", 1, nArrivals)
       dat <- append_attr(dat, "group", 2, nArrivalsG2)
       dat <- append_attr(dat, "status", "s", totArr)
-      dat <- append_attr(dat, "active", 1, totArr)
       dat <- append_attr(dat, "infTime", NA, totArr)
-      dat <- append_attr(dat, "entrTime", at, totArr)
-      dat <- append_attr(dat, "exitTime", NA, totArr)
     }
   }
 

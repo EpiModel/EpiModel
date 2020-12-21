@@ -52,9 +52,7 @@ initialize.net <- function(x, param, init, control, s) {
 
     # Standard attributes
     num <- network.size(nw)
-    dat <- set_attr(dat, "active", rep(1, num), override.length.check = TRUE)
-    dat <- set_attr(dat, "entrTime", rep(1, num))
-    dat <- set_attr(dat, "exitTime", rep(NA, num))
+    dat <- append_core_attr(dat, 1, num)
 
     ## Pull attr on nw to dat$attr
     dat <- copy_nwattr_to_datattr(dat)
