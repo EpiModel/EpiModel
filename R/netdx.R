@@ -315,6 +315,7 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
         cat("\n- Calculating duration statistics")
       }
 
+      # SMG: remove all of this, unless we want to keep it as an option
       ## Duration calculations
       sim.df <- list()
       for (i in 1:length(diag.sim)) {
@@ -333,7 +334,6 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
           durVec <- c(durVec, sim.df[[i]]$duration[ncens])
         }
       }
-
 
 
       # Calculate mean partnership age from edgelist
@@ -360,6 +360,9 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
         }
       }
 
+      # SMG add pages_trunc calculation here 
+      # pages_trunc <- (x$coef.diss$duration^2*dgeom(2:(nsteps+1), 1/x$coef.diss$duration)
+      
       ## Dissolution calculations
       if (verbose == TRUE) {
         cat("\n- Calculating dissolution statistics")
@@ -400,7 +403,10 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
 
 
       # Create dissolution tables
+      # SMG: substitute in the new duration mean
+      # duration.mean <- mean(pages+pages_trunc)
       duration.mean <- mean(durVec)
+      # SMG: how to define SD here?
       duration.sd <- sd(durVec)
       duration.expected <- exp(coef.diss$coef.crude[1]) + 1
       duration.pctdiff <-
