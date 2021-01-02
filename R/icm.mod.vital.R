@@ -19,7 +19,7 @@ departures.icm <- function(dat, at) {
     return(dat)
   }
 
-  # Susceptible departures ------------------------------------------------------
+  # Susceptible departures --------------------------------------------------
   nDepartures <- 0
   idsElig <- which(dat$attr$active == 1 & dat$attr$status == "s")
   nElig <- length(idsElig)
@@ -42,7 +42,7 @@ departures.icm <- function(dat, at) {
   }
 
 
-  # Infected Departures ---------------------------------------------------------
+  # Infected Departures -----------------------------------------------------
   nDepartures <- 0
   idsElig <- which(dat$attr$active == 1 & dat$attr$status == "i")
   nElig <- length(idsElig)
@@ -65,7 +65,7 @@ departures.icm <- function(dat, at) {
   }
 
 
-  # Recovered Departures --------------------------------------------------------
+  # Recovered Departures ----------------------------------------------------
   nDepartures <- 0
   idsElig <- which(dat$attr$active == 1 & dat$attr$status == "r")
   nElig <- length(idsElig)
@@ -164,7 +164,7 @@ departures.icm.bip <- function(dat, at) {
   group <- dat$attr$group
 
 
-  # Susceptible departures ------------------------------------------------------
+  # Susceptible departures --------------------------------------------------
   nDepartures <- nDeparturesG2 <- 0
   idsElig <- which(dat$attr$active == 1 & dat$attr$status == "s")
   nElig <- length(idsElig)
@@ -192,7 +192,7 @@ departures.icm.bip <- function(dat, at) {
   }
 
 
-  # Infected Departures ---------------------------------------------------------
+  # Infected Departures -----------------------------------------------------
   nDepartures <- nDeparturesG2 <- 0
   idsElig <- which(dat$attr$active == 1 & dat$attr$status == "i")
   nElig <- length(idsElig)
@@ -220,7 +220,7 @@ departures.icm.bip <- function(dat, at) {
   }
 
 
-  # Recovered Departures --------------------------------------------------------
+  # Recovered Departures ----------------------------------------------------
   nDepartures <- nDeparturesG2 <- 0
   idsElig <- which(dat$attr$active == 1 & dat$attr$status == "r")
   nElig <- length(idsElig)

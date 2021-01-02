@@ -15,7 +15,8 @@ Copies the vertex attributes stored on the network object to the
 }
 \seealso{
 \code{\link{get_formula_term_attr}}, \code{\link{get_attr_prop}},
-         \code{\link{auto_update_attr}}, and \code{\link{copy_datattr_to_nwattr}}.
+         \code{\link{auto_update_attr}}, and
+         \code{\link{copy_datattr_to_nwattr}}.
 }
 \keyword{internal}
 \keyword{netUtils}

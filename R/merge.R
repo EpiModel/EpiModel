@@ -97,7 +97,7 @@ merge.icm <- function(x, y, ...) {
 #'        with the identical model parameterization as \code{x}.
 #' @param keep.transmat If \code{TRUE}, keep the transmission matrices from the
 #'        original \code{x} and \code{y} elements. Note: transmission matrices
-#'        only saved when (\code{tergmLite == FALSE}).
+#'        only saved when (\code{save.transmat == TRUE}).
 #' @param keep.network If \code{TRUE}, keep the \code{networkDynamic} objects
 #'        from the original \code{x} and \code{y} elements. Note: network
 #'        only saved when (\code{tergmLite == FALSE}).
@@ -110,22 +110,23 @@ merge.icm <- function(x, y, ...) {
 #'        by the \code{save.other} parameter in \code{control.netsim}) from the
 #'        original \code{x} and \code{y} elements.
 #' @param param.error If \code{TRUE}, if \code{x} and \code{y} have different
-#'        params (in \code{param.net}) or controls (passed in \code{control.net})
-#'        an error will prevent the merge. Use \code{FALSE} to override that
-#'        check.
+#'        params (in \code{param.net}) or controls (passed in
+#'        \code{control.net}) an error will prevent the merge. Use \code{FALSE}
+#'        to override that check.
 #' @param ...  Additional merge arguments (not currently used).
 #'
 #' @details
 #' This merge function combines the results of two independent simulations of
-#' \code{\link{netsim}} class models, simulated under separate function calls. The
-#' model parameterization between the two calls must be exactly the same, except
-#' for the number of simulations in each call. This allows for manual
+#' \code{\link{netsim}} class models, simulated under separate function calls.
+#' The model parameterization between the two calls must be exactly the same,
+#' except for the number of simulations in each call. This allows for manual
 #' parallelization of model simulations.
 #'
 #' This merge function does not work the same as the default merge, which allows
 #' for a combined object where the structure differs between the input elements.
-#' Instead, the function checks that objects are identical in model parameterization
-#' in every respect (except number of simulations) and binds the results.
+#' Instead, the function checks that objects are identical in model
+#' parameterization in every respect (except number of simulations) and binds
+#' the results.
 #'
 #' @method merge netsim
 #' @keywords extract
@@ -165,7 +166,8 @@ merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
   x$control$nsims <- as.integer(x$control$nsims)
   y$control$nsims <- as.integer(y$control$nsims)
   if (x$control$nsims > 1 & y$control$nsims > 1 &
-      !all(sapply(x, function(i) class(i)[1]) == sapply(y, function(i) class(i)[1]))) {
+      !all(sapply(x, function(i) class(i)[1]) ==
+           sapply(y,function(i) class(i)[1]))) {
     stop("x and y have different structure")
   }
 
@@ -226,7 +228,8 @@ merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
 
 
   ## Network statistics
-  if (keep.nwstats == TRUE & !is.null(x$stats$nwstats) & !is.null(y$stats$nwstats)) {
+  if (keep.nwstats ==
+      TRUE & !is.null(x$stats$nwstats) & !is.null(y$stats$nwstats)) {
     for (i in new.range) {
       z$stats$nwstats[[i]] <- y$stats$nwstats[[i - x$control$nsims]]
       if (!is.null(z$stats$nwstats)) {

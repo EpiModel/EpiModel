@@ -6,48 +6,49 @@
 #' @param x An \code{EpiModel} object of class \code{netest}.
 #' @param nsims Number of simulations to run.
 #' @param dynamic If \code{TRUE}, runs dynamic diagnostics. If \code{FALSE} and
-#'        the \code{netest} object was fit with the Edges Dissolution approximation
-#'        method, simulates from the static ERGM fit.
+#'        the \code{netest} object was fit with the Edges Dissolution
+#'        approximation method, simulates from the static ERGM fit.
 #' @param nsteps Number of time steps per simulation (dynamic simulations only).
 #' @param nwstats.formula A right-hand sided ERGM formula with the network
 #'        statistics of interest. The default is the formation formula of the
 #'        network model contained in \code{x}.
 #' @param set.control.ergm Control arguments passed to \code{simulate.ergm} (see
 #'        details).
-#' @param set.control.stergm Control arguments passed to \code{simulate.stergm} (see
-#'        details).
-#' @param sequential For static diagnostics (\code{dynamic=FALSE}): if \code{FALSE},
-#'        each of the \code{nsims} simulated Markov chains begins at the initial
-#'        network; If \code{TRUE}, the end of one simulation is used as the start
-#'        of the next.
+#' @param set.control.stergm Control arguments passed to \code{simulate.stergm}
+#'        (see details).
+#' @param sequential For static diagnostics (\code{dynamic=FALSE}): if
+#'        \code{FALSE}, each of the \code{nsims} simulated Markov chains begins
+#'        at the initial network; If \code{TRUE}, the end of one simulation is
+#'        used as the start of the next.
 #' @param keep.tedgelist If \code{TRUE}, keep the timed edgelist generated from
-#'        the dynamic simulations. Returned in the form of a list of matrices, with
-#'        one entry per simulation. Accessible at \code{$edgelist}.
-#' @param keep.tnetwork If \code{TRUE}, keep the full networkDynamic objects from
-#'        the dynamic simulations. Returned in the form of a list of nD objects, with
-#'        one entry per simulation. Accessible at \code{$network}.
+#'        the dynamic simulations. Returned in the form of a list of matrices,
+#'        with one entry per simulation. Accessible at \code{$edgelist}.
+#' @param keep.tnetwork If \code{TRUE}, keep the full networkDynamic objects
+#'        from the dynamic simulations. Returned in the form of a list of nD
+#'        objects, with one entry per simulation. Accessible at \code{$network}.
 #' @param verbose Print progress to the console.
 #' @param ncores Number of processor cores to run multiple simulations
 #'        on, using the \code{foreach} and \code{doParallel} implementations.
-#' @param skip.dissolution If \code{TRUE}, skip over the calculations of duration
-#'        and dissolution stats in netdx.
+#' @param skip.dissolution If \code{TRUE}, skip over the calculations of
+#'        duration and dissolution stats in netdx.
 #'
 #' @details
 #' The \code{netdx} function handles dynamic network diagnostics for network
-#' models fit with the \code{netest} function. Given the fitted model, \code{netdx}
-#' simulates a specified number of dynamic networks for a specified number of
-#' time steps per simulation. The network statistics in \code{nwstats.formula}
-#' are saved for each time step. Summary statistics for the formation model terms,
-#' as well as dissolution model and relational duration statistics, are then
-#' calculated and can be accessed when printing or plotting the \code{netdx} object.
+#' models fit with the \code{netest} function. Given the fitted model,
+#' \code{netdx} simulates a specified number of dynamic networks for a specified
+#' number of time steps per simulation. The network statistics in
+#' \code{nwstats.formula} are saved for each time step. Summary statistics for
+#' the formation model terms, as well as dissolution model and relational
+#' duration statistics, are then calculated and can be accessed when printing or
+#' plotting the \code{netdx} object.
 #'
 #' @section Control Arguments:
-#' Models fit with the full STERGM method in \code{netest} (setting \code{edapprox}
-#' argument to \code{FALSE}) require only a call to \code{simulate.stergm}.
-#' Control parameters for those simulations may be set using
-#' \code{set.control.stergm} in \code{netdx}. The parameters should be input
-#' through the \code{control.simulate.stergm()} function, with the available
-#' parameters listed in the \code{\link{control.simulate.stergm}} help
+#' Models fit with the full STERGM method in \code{netest} (setting
+#' \code{edapprox} argument to \code{FALSE}) require only a call to
+#' \code{simulate.stergm}. Control parameters for those simulations may be set
+#' using \code{set.control.stergm} in \code{netdx}. The parameters should be
+#' input through the \code{control.simulate.stergm()} function, with the
+#' available parameters listed in the \code{\link{control.simulate.stergm}} help
 #' page in the \code{tergm} package.
 #'
 #' Models fit with the ERGM method with the edges dissolution approximation
@@ -95,10 +96,11 @@
 #' plot(dx2, type = "dissolution", method = "b", col = "bisque")
 #' }
 #'
-netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps, nwstats.formula = "formation",
-                  set.control.ergm, set.control.stergm, sequential = TRUE,
-                  keep.tedgelist = FALSE, keep.tnetwork = FALSE,
-                  verbose = TRUE, ncores = 1, skip.dissolution = FALSE) {
+netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
+                  nwstats.formula = "formation", set.control.ergm,
+                  set.control.stergm, sequential = TRUE, keep.tedgelist = FALSE,
+                  keep.tnetwork = FALSE, verbose = TRUE, ncores = 1,
+                  skip.dissolution = FALSE) {
 
   if (class(x) != "netest") {
     stop("x must be an object of class netest", call. = FALSE)
@@ -125,7 +127,8 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps, nwstats.formula = "forma
   }
 
   if (any(x$coef.diss$duration == 1) & dynamic == TRUE)  {
-    stop("Running dynamic diagnostics on a cross-sectional ERGM (duration = 1) is not possible. \nSet netdx parameter 'dynamic' to 'FALSE'",
+    stop("Running dynamic diagnostics on a cross-sectional ERGM (duration = 1)
+         is not possible. \nSet netdx parameter 'dynamic' to 'FALSE'",
          call. = FALSE)
   }
 
@@ -257,7 +260,8 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps, nwstats.formula = "forma
   if (dynamic == TRUE) {
     stats <- list()
     for (i in 1:length(diag.sim)) {
-      stats[[i]] <- as.matrix(attributes(diag.sim[[i]])$stats)[1:nsteps, , drop = FALSE]
+      stats[[i]] <- as.matrix(attributes(diag.sim[[i]])$stats)[1:nsteps, ,
+                                                               drop = FALSE]
     }
 
     ## Merged stats across all simulations
@@ -265,15 +269,15 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps, nwstats.formula = "forma
       merged.stats <- matrix(NA, nrow = nrow(stats[[1]]) * nsims,
                              ncol = ncol(stats[[1]]))
       for (i in 1:ncol(stats[[1]])) {
-        merged.stats[,i] <- as.numeric(sapply(stats, function(x) c(x[,i])))
+        merged.stats[, i] <- as.numeric(sapply(stats, function(x) c(x[, i])))
       }
       colnames(merged.stats) <- colnames(stats[[1]])
     } else {
       merged.stats <- stats[[1]]
     }
   } else {
-    stats <- list(diag.sim[,!duplicated(colnames(diag.sim)), drop = FALSE])
-    merged.stats <- diag.sim[,!duplicated(colnames(diag.sim)), drop = FALSE]
+    stats <- list(diag.sim[, !duplicated(colnames(diag.sim)), drop = FALSE])
+    merged.stats <- diag.sim[, !duplicated(colnames(diag.sim)), drop = FALSE]
   }
 
 
@@ -295,13 +299,15 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps, nwstats.formula = "forma
   ## Create stats.formation table for output
   stats.table <- merge(ts.out, stats.table, all = TRUE)
   stats.table <- stats.table[do.call("order",
-                                     stats.table[, "sorder", drop = FALSE]), , drop = FALSE]
+                                     stats.table[, "sorder", drop = FALSE]), ,
+                             drop = FALSE]
   rownames(stats.table) <- stats.table$names
 
   stats.table$reldiff <- 100 * (stats.table$stats.means - stats.table$targets) /
     stats.table$targets
   stats.table.formation <- stats.table[, c(2, 4, 6, 5)]
-  colnames(stats.table.formation) <- c("Target", "Sim Mean", "Pct Diff", "Sim SD")
+  colnames(stats.table.formation) <- c("Target", "Sim Mean",
+                                       "Pct Diff", "Sim SD")
 
 
   if (skip.dissolution == FALSE) {
@@ -367,7 +373,8 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps, nwstats.formula = "forma
         }
         prop.diss <- list()
         for (i in 1:length(diag.sim)) {
-          prop.diss[[i]] <- sapply(1:nsteps, function(x) sum(sim.df[[i]]$terminus == x) /
+          prop.diss[[i]] <-
+            sapply(1:nsteps, function(x) sum(sim.df[[i]]$terminus == x) /
                                      sum(sim.df[[i]]$onset < x &
                                            sim.df[[i]]$terminus >= x))
           if (verbose == TRUE & nsims > 1) {
@@ -397,7 +404,8 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps, nwstats.formula = "forma
       duration.mean <- mean(durVec)
       duration.sd <- sd(durVec)
       duration.expected <- exp(coef.diss$coef.crude[1]) + 1
-      duration.pctdiff <- 100 * (duration.mean - duration.expected) / duration.expected
+      duration.pctdiff <-
+        100 * (duration.mean - duration.expected) / duration.expected
 
 
       dissolution.mean <- mean(unlist(prop.diss))
@@ -414,7 +422,8 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps, nwstats.formula = "forma
                                                          dissolution.pctdiff),
                                             Sim_SD = c(duration.sd,
                                                        dissolution.sd))
-      colnames(stats.table.dissolution) <- c("Target", "Sim Mean", "Pct Diff", "Sim SD")
+      colnames(stats.table.dissolution) <- c("Target", "Sim Mean", "Pct Diff",
+                                             "Sim SD")
       rownames(stats.table.dissolution) <- c("Edge Duration", "Pct Edges Diss")
 
     }

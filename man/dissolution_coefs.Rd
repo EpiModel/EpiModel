@@ -8,13 +8,13 @@ dissolution_coefs(dissolution, duration, d.rate = 0)
 }
 \arguments{
 \item{dissolution}{Right-hand sided STERGM dissolution formula
-(see \code{\link{netest}}). See below for list of supported dissolution
-models.}
+(see \code{\link{netest}}). See below for list of supported
+dissolution models.}
 
 \item{duration}{A vector of mean edge durations in arbitrary time units.}
 
-\item{d.rate}{Departure or exit rate from the population, as a single homogenous
-rate that applies to the entire population.}
+\item{d.rate}{Departure or exit rate from the population, as a single
+homogenous rate that applies to the entire population.}
 }
 \value{
 A list of class \code{disscoef} with the following elements:
@@ -25,7 +25,8 @@ A list of class \code{disscoef} with the following elements:
  \item \strong{coef.crude:} mean durations transformed into logit
        coefficients.
  \item \strong{coef.adj:} crude coefficients adjusted for the risk of
-       departure on edge persistence, if the \code{d.rate} argument is supplied.
+       departure on edge persistence, if the \code{d.rate} argument is
+       supplied.
  \item \strong{d.rate:} the departure rate.
 }
 }
@@ -42,8 +43,9 @@ used in a network model estimated with \code{\link{netest}}:
        mathematically transformed to logit coefficients.
  \item \strong{Adjustment:} in a dynamic network simulation in an open
        population (in which there are departures), it is further necessary to
-       adjust these coefficients for dynamic simulations; this upward adjustment
-       accounts for departure as a competing risk to edge dissolution.
+       adjust these coefficients for dynamic simulations; this upward
+       adjustment accounts for departure as a competing risk to edge
+       dissolution.
 }
 
 The current dissolution models supported by this function and in network
@@ -54,13 +56,15 @@ model estimation in \code{\link{netest}} are as follows:
         specifying one duration value.
  \item \code{~offset(edges) + offset(nodematch("<attr>"))}: a heterogeneous
         model in which the edge duration varies by whether the nodes in the
-        dyad have similar values of a specified attribute. The duration vector
-        should now contain two values: the first is the mean edge duration of
-        non-matched dyads, and the second is the duration of the matched dyads.
- \item \code{~offset(edges) + offset(nodemix("<attr>"))}: a heterogeneous model
-        that extends the nodematch model to include non-binary attributes for
-        homophily. The duration vector should first contain the base value,
-        then the values for every other possible combination in the term.
+        dyad have similar values of a specified attribute. The duration
+        vector should now contain two values: the first is the mean edge
+        duration of non-matched dyads, and the second is the duration of the
+        matched dyads.
+ \item \code{~offset(edges) + offset(nodemix("<attr>"))}: a heterogeneous
+        model that extends the nodematch model to include non-binary
+        attributes for homophily. The duration vector should first contain
+        the base value, then the values for every other possible combination
+        in the term.
  \item \code{~offset(edges) + offset(nodefactor("<attr>"))}: a heterogeneous
         model in which the edge duration varies by a specified attribute. The
         duration vector should first contain the base value, then the values
@@ -99,8 +103,9 @@ nw <- set_vertex_attribute(nw, "age.grp", age.grp)
 form <- ~edges + nodematch("age.grp", diff = TRUE)
 target.stats <- c(450, 100, 125, 40, 80, 100)
 
-# Target stats for the dissolution model are duration of non-matched edges, then
-#    duration of edges matched within age.grp 1, age.grp 2, ..., age.grp 5
+# Target stats for the dissolution model are duration of non-matched edges,
+     then duration of edges matched within age.grp 1, age.grp 2, ...,
+     age.grp 5
 durs <- c(60, 30, 80, 100, 125, 160)
 diss <- dissolution_coefs(~offset(edges) +
                             offset(nodematch("age.grp", diff = TRUE)),

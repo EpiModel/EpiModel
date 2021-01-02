@@ -136,3 +136,27 @@ test_that("`dat` getters and setter", {
   expect_error(get_control_list(dat, "z"))
 
 })
+
+test_that("Net core attributes", {
+  dat <- list(
+    attr = list(),
+    epi = list(),
+    param = list(),
+    init = list(),
+    control = list(
+      nsteps = 150
+    )
+  )
+
+  # Append the first nodes (empty list before)
+  dat <- append_core_attr(dat, at = 1,  n.new = 100)
+  expect_equal(get_attr(dat, "active"), rep(1, 100))
+  expect_equal(get_attr(dat, "uid"), 1:100)
+
+  # Remove some nodes to check if uids are unique
+  dat <- delete_attr(dat, 21:30)
+  dat <- append_core_attr(dat, at = 2, n.new = 100)
+  expect_equal(get_attr(dat, "active"), rep(1, 190))
+  expect_equal(get_attr(dat, "uid"), c(1:20, 31:200))
+  expect_type(get_attr(dat, "uid"), "integer")
+})

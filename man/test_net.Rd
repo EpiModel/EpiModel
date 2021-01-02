@@ -10,8 +10,8 @@ test_net(x)
 \item{x}{An object of class \code{netsim}.}
 }
 \description{
-Tests whether the model output from a network model is consistent
-             with key balancing equations for compartment and flow sizes for
-             each simulation for each time step.
+Tests whether the model output from a network model is
+             consistent with key balancing equations for compartment and
+             flow sizes for each simulation for each time step.
 }
 \keyword{internal}

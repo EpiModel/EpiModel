@@ -7,23 +7,24 @@
 #'
 #' @param nw An object of class \code{network}.
 #' @param formation Right-hand sided STERGM formation formula in the form
-#'        \code{~edges + ...}, where \code{...} are additional network statistics.
+#'        \code{~edges + ...}, where \code{...} are additional network
+#'        statistics.
 #' @param target.stats Vector of target statistics for the formation model, with
 #'        one number for each network statistic in the model.
 #' @param coef.diss An object of class \code{disscoef} output from the
 #'        \code{\link{dissolution_coefs}} function.
 #' @param constraints Right-hand sided formula specifying constraints for the
-#'        modeled network, in the form \code{~...}, where \code{...} are constraint
-#'        terms. By default, no constraints are set.
+#'        modeled network, in the form \code{~...}, where \code{...} are
+#'        constraint terms. By default, no constraints are set.
 #' @param coef.form Vector of coefficients for the offset terms in the formation
 #'        formula.
-#' @param edapprox If \code{TRUE}, use the indirect edges dissolution approximation
-#'        method for the dynamic model fit, otherwise use the more time-intensive
-#'        full STERGM estimation (see details).
+#' @param edapprox If \code{TRUE}, use the indirect edges dissolution
+#'        approximation  method for the dynamic model fit, otherwise use the
+#'        more time-intensive full STERGM estimation (see details).
 #' @param set.control.ergm Control arguments passed to \code{simulate.ergm} (see
 #'        details).
-#' @param set.control.stergm Control arguments passed to \code{simulate.stergm} (see
-#'        details).
+#' @param set.control.stergm Control arguments passed to \code{simulate.stergm}
+#'        (see details).
 #' @param verbose Print model fitting progress to console.
 #'
 #' @details
@@ -34,9 +35,9 @@
 #' necessary input for running the epidemic simulations in \code{\link{netsim}}.
 #' With a fitted network model, one should always first proceed to model
 #' diagnostics, available through the \code{\link{netdx}} function, to check
-#' model fit. A detailed description of fitting these models, along with examples,
-#' may be found in the \href{http://epimodel.org/tut.html}{Basic Network Models}
-#' tutorials.
+#' model fit. A detailed description of fitting these models, along with
+#' examples, may be found in the
+#' \href{http://www.epimodel.org/tut.html}{Basic Network Models} tutorials.
 #'
 #' @section Edges Dissolution Approximation:
 #' The edges dissolution approximation method is described in Carnegie et al.
@@ -51,46 +52,46 @@
 #' estimating a STERGM) and subtracts the dissolution coefficients.
 #'
 #' The conditions under which this approximation best hold are when there are
-#' few relational changes from one time step to another; i.e. when either average
-#' relational durations are long, or density is low, or both.  Conveniently,
-#' these are the same conditions under which STERGM estimation is slowest.  Note
-#' that the same approximation is also used to obtain starting values for the
-#' STERGM estimate when the latter is being conducted.  The estimation does not
-#' allow for calculation of standard errors, p-values, or likelihood for the
-#' formation model; thus, this approach is of most use when the main goal of
-#' estimation is to drive dynamic network simulations rather than to conduct
-#' inference on the formation model. The user is strongly encouraged to examine
-#' the behavior of the resulting simulations to confirm that the approximation
-#' is adequate for their purposes. For an example, see the vignette for the
-#' package \code{tergm}.
+#' few relational changes from one time step to another; i.e. when either
+#' average relational durations are long, or density is low, or both.
+#' Conveniently, these are the same conditions under which STERGM estimation is
+#' slowest.  Note that the same approximation is also used to obtain starting
+#' values for the STERGM estimate when the latter is being conducted.  The
+#' estimation does not allow for calculation of standard errors, p-values, or
+#' likelihood for the formation model; thus, this approach is of most use when
+#' the main goal of estimation is to drive dynamic network simulations rather
+#' than to conduct inference on the formation model. The user is strongly
+#' encouraged to examine the behavior of the resulting simulations to confirm
+#' that the approximation is adequate for their purposes. For an example, see
+#' the vignette for the package \code{tergm}.
 #'
 #' @section Control Arguments:
 #' The \code{ergm} and \code{stergm} functions allow control settings for the
-#' model fitting process. When fitting a STERGM directly (setting \code{edapprox}
-#' to \code{FALSE}), control parameters may be passed to the \code{stergm}
-#' function with the \code{set.control.stergm} argument in \code{netest}. The
-#' controls should be input through the \code{control.stergm()} function, with
-#' the available parameters listed in the \code{\link{control.stergm}} help page
-#' in the \code{tergm} package.
+#' model fitting process. When fitting a STERGM directly (setting
+#' \code{edapprox} to \code{FALSE}), control parameters may be passed to the
+#' \code{stergm} function with the \code{set.control.stergm} argument in
+#' \code{netest}. The controls should be input through the
+#' \code{control.stergm()} function, with the available parameters listed in the
+#' \code{\link{control.stergm}} help page in the \code{tergm} package.
 #'
 #' When fitting a STERGM indirectly (setting \code{edapprox} to \code{TRUE}),
 #' control settings may be passed to the \code{ergm} function using
-#' \code{set.control.ergm} in \code{netest}. The controls should be input through
-#' the \code{control.ergm()} function, with the available parameters listed in the
-#' \code{\link[ergm:control.ergm]{control.ergm}} help page in the \code{ergm}
-#' package. An example is below.
+#' \code{set.control.ergm} in \code{netest}. The controls should be input
+#' through the \code{control.ergm()} function, with the available parameters
+#' listed in the \code{\link[ergm:control.ergm]{control.ergm}} help page in the
+#' \code{ergm} package. An example is below.
 #'
 #' @references
 #' Krivitsky PN, Handcock MS. "A separable model for dynamic networks." JRSS(B).
 #' 2014; 76.1:29-46.
 #'
-#' Carnegie NB, Krivitsky PN, Hunter DR, Goodreau SM. An approximation method for
-#' improving dynamic network model fitting. Journal of Computational and Graphical
-#' Statistics. 2014; 24(2): 502-519.
+#' Carnegie NB, Krivitsky PN, Hunter DR, Goodreau SM. An approximation method
+#' for improving dynamic network model fitting. Journal of Computational and
+#' Graphical Statistics. 2014; 24(2): 502-519.
 #'
 #' Jenness SM, Goodreau SM and Morris M. EpiModel: An R Package for Mathematical
-#' Modeling of Infectious Disease over Networks. Journal of Statistical Software.
-#' 2018; 84(8): 1-47.
+#' Modeling of Infectious Disease over Networks. Journal of Statistical
+#' Software. 2018; 84(8): 1-47.
 #'
 #' @keywords model
 #' @seealso Use \code{\link{netdx}} to diagnose the fitted network model, and
@@ -171,7 +172,8 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
     out$fit <- fit
     out$formation <- formation
     out$target.stats <- target.stats
-    out$target.stats.names <- names(fit$fit$coef[which_form])[!fit$fit$offset[which_form]]
+    out$target.stats.names <-
+      names(fit$fit$coef[which_form])[!fit$fit$offset[which_form]]
     out$coef.form <- coef.form$coef[which_form]
     out$dissolution <- dissolution
     out$coef.diss <- coef.diss
@@ -233,7 +235,7 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
 }
 
 
-diss_check <- function(formation, dissolution){
+diss_check <- function(formation, dissolution) {
 
   # Split formulas into separate terms
   form.terms <- strsplit(as.character(formation)[2], "[+]")[[1]]
@@ -281,9 +283,10 @@ diss_check <- function(formation, dissolution){
   if (any(is.na(matchpos))) {
     stop("Dissolution model is not a subset of formation model.", call. = FALSE)
   }
-  if (!all(diss.terms[1, ] %in% c("edges", "nodemix", "nodematch", "nodefactor"))) {
-    stop("The only allowed dissolution terms are edges, nodemix, nodematch and ",
-         "nodefactor", call. = FALSE)
+  if (!all(diss.terms[1, ] %in% c("edges", "nodemix",
+                                  "nodematch", "nodefactor"))) {
+    stop("The only allowed dissolution terms are edges, nodemix,
+         nodematch and ", "nodefactor", call. = FALSE)
   }
   if (any(matchpos != 1:ncol(diss.terms))) {
     stop("Order of terms in the dissolution model does not correspond to the ",
@@ -300,23 +303,24 @@ diss_check <- function(formation, dissolution){
 #' @title Adjust Dissolution Component of Network Model Fit
 #'
 #' @description Adjusts the dissolution component of an dynamic ERGM fit using
-#'              the \code{netest} function with the edges dissolution approximation
-#'              method.
+#'              the \code{netest} function with the edges dissolution
+#'              approximation method.
 #'
-#' @param old.netest An object of class \code{netest}, from the \code{\link{netest}}
-#'        function.
+#' @param old.netest An object of class \code{netest}, from the
+#'        \code{\link{netest}} function.
 #' @param new.coef.diss An object of class \code{disscoef}, from the
 #'        \code{\link{dissolution_coefs}} function.
 #'
 #' @details
-#' Fitting an ERGM is a computationally intensive process when the model includes
-#' dyadic dependent terms. With the edges dissolution approximation method of
-#' Carnegie et al, the coefficients for a temporal ERGM are approximated by fitting
-#' a static ERGM and adjusting the formation coefficients to account for edge
-#' dissolution. This function provides a very efficient method to adjust the
-#' coefficients of that model when one wants to use a different dissolution model;
-#' a typical use case may be to fit several different models with different
-#' average edge durations as targets. The example below exhibits that case.
+#' Fitting an ERGM is a computationally intensive process when the model
+#' includes dyadic dependent terms. With the edges dissolution approximation
+#' method of Carnegie et al, the coefficients for a temporal ERGM are
+#' approximated by fitting a static ERGM and adjusting the formation
+#' coefficients to account for edge dissolution. This function provides a very
+#' efficient method to adjust the coefficients of that model when one wants to
+#' use a different dissolution model; a typical use case may be to fit several
+#' different models with different average edge durations as targets. The
+#' example below exhibits that case.
 #'
 #' @export
 #'
@@ -354,7 +358,8 @@ update_dissolution <- function(old.netest, new.coef.diss) {
     stop("new.coef.diss must be an object of class disscoef", call. = FALSE)
   }
   if (old.netest$edapprox != TRUE) {
-    stop("Edges dissolution approximation must be used for this adjustment", call. = FALSE)
+    stop("Edges dissolution approximation must be used for this adjustment",
+         call. = FALSE)
   }
 
   out <- old.netest
@@ -367,3 +372,4 @@ update_dissolution <- function(old.netest, new.coef.diss) {
 
   return(out)
 }
+

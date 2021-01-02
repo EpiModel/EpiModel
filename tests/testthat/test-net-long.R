@@ -81,7 +81,8 @@ test_that("edges models", {
   expect_true(max(x$epi$i.num) >= 1)
   expect_true(max(x$epi$i.num) <= 100)
   expect_true(sum(get.vertex.attribute.active(x$network[[1]][[1]],
-                                              prefix = "testatus", at = 1) == "i") >= 0)
+                                              prefix = "testatus",
+                                              at = 1) == "i") >= 0)
   expect_output(summary(x, at = 25), "EpiModel Summary")
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
@@ -101,7 +102,7 @@ test_that("edges models", {
   expect_is(x, "netsim")
   expect_is(as.data.frame(x), "data.frame")
   # this tests that starting infected is same across sims
-  expect_true(all(x$epi$i.num[1,] == 10))
+  expect_true(all(x$epi$i.num[1, ] == 10))
   expect_true(max(x$epi$i.num) <= 100)
   expect_output(summary(x, at = 25), "EpiModel Summary")
   plot(x)
@@ -177,7 +178,7 @@ test_that("edges models", {
   expect_is(x, "netsim")
   expect_is(as.data.frame(x), "data.frame")
   # this tests that starting infected is same across sims
-  expect_true(all(x$epi$i.num[1,] == 50))
+  expect_true(all(x$epi$i.num[1, ] == 50))
   expect_true(max(x$epi$i.num) <= 100)
   expect_output(summary(x, at = 25), "EpiModel Summary")
   plot(x)
@@ -253,7 +254,8 @@ test_that("edges models", {
   expect_is(as.data.frame(x), "data.frame")
   expect_true(max(x$epi$i.num) <= 100)
   expect_true(sum(get.vertex.attribute.active(x$network[[1]][[1]],
-                                              prefix = "testatus", at = 1) == "i") >= 0)
+                                              prefix = "testatus",
+                                              at = 1) == "i") >= 0)
   expect_output(summary(x, at = 25), "EpiModel Summary")
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
@@ -272,7 +274,7 @@ test_that("edges models", {
   expect_is(x, "netsim")
   expect_is(as.data.frame(x), "data.frame")
   # this tests that starting infected is same across sims
-  expect_true(all(x$epi$i.num[1,] == 10))
+  expect_true(all(x$epi$i.num[1, ] == 10))
   expect_true(max(x$epi$i.num) <= 100)
   expect_output(summary(x, at = 25), "EpiModel Summary")
   plot(x)
@@ -636,7 +638,7 @@ test_that("Extinction open-population models", {
   skip_on_cran()
 
   nw <- network_initialize(n = 25)
-  nw <- set_vertex_attribute(nw, "group", rep(1:2, c(15,10)))
+  nw <- set_vertex_attribute(nw, "group", rep(1:2, c(15, 10)))
   est <- netest(nw, formation = ~edges + nodematch("group"),
                 target.stats = c(15, 0),
                 coef.diss = dissolution_coefs(~offset(edges), 10, 0.01),
@@ -752,5 +754,3 @@ test_that("status.vector and infTime.vector", {
   expect_is(mod2, "netsim")
 
 })
-
-

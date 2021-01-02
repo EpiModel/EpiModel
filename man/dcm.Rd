@@ -34,19 +34,19 @@ Solves deterministic compartmental epidemic models for
 \details{
 The \code{dcm} function uses the ordinary differential equation solver in
 the \code{deSolve} package to model disease as a deterministic compartmental
-system. The parameterization for these models follows the standard approach in
-\code{EpiModel}, with epidemic parameters, initial conditions, and control
+system. The parameterization for these models follows the standard approach
+in \code{EpiModel}, with epidemic parameters, initial conditions, and control
 settings. A description of solving DCMs with the \code{dcm} function may be
-found in the \href{http://epimodel.org/tut.html}{Basic DCMs} tutorial.
+found in the \href{http://www.epimodel.org/tut.html}{Basic DCMs} tutorial.
 
 The \code{dcm} function performs  modeling of both base model types and
 original models with new structures. Base model types include one-group
 and two-group models with disease types for Susceptible-Infected (SI),
-Susceptible-Infected-Recovered (SIR), and Susceptible-Infected-Susceptible (SIS).
-New model types may be written and input into \code{dcm} following the steps
-outlined in the \href{http://epimodel.org/tut.html}{New DCMs} tutorial. Both
-base and original models require the \code{param}, \code{init}, and
-\code{control} inputs.
+Susceptible-Infected-Recovered (SIR), and Susceptible-Infected-Susceptible
+(SIS). New model types may be written and input into \code{dcm} following the
+steps outlined in the \href{http://www.epimodel.org/tut.html}{New DCMs}
+tutorial. Both base and original models require the \code{param},
+\code{init}, and \code{control} inputs.
 }
 \examples{
 ## Example 1: SI Model (One-Group)
@@ -92,9 +92,9 @@ plot(mod4)
 
 }
 \references{
-Soetaert K, Petzoldt T, Setzer W. Solving Differential Equations in R: Package
-deSolve. Journal of Statistical Software. 2010; 33(9): 1-25.
-\url{http://www.jstatsoft.org/v33/i09/}.
+Soetaert K, Petzoldt T, Setzer W. Solving Differential Equations in
+R: Package deSolve. Journal of Statistical Software. 2010; 33(9): 1-25.
+\url{https://www.jstatsoft.org/v33/i09/}.
 }
 \seealso{
 Extract the model results with \code{\link{as.data.frame.dcm}}.

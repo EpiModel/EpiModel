@@ -85,8 +85,8 @@ verbose.icm <- function(x, type, s = 1, at = 2) {
 #'              simulated with \code{netsim} to the console.
 #'
 #' @param x If the \code{type} is "startup", then an object of class
-#'        \code{control.net}, otherwise the all master data object in \code{netsim}
-#'        simulations.
+#'        \code{control.net}, otherwise the all master data object in
+#'        \code{netsim} simulations.
 #' @param type Progress type, either of "startup" for starting messages before
 #'        all simulations, or "progress" for time step specific messages.
 #' @param s Current simulation number, if type is "progress"

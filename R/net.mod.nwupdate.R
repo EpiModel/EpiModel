@@ -44,8 +44,10 @@ nwupdate.net <- function(dat, at) {
       }
       if (tergmLite == FALSE) {
         dat$nw[[1]] <- add.vertices(dat$nw[[1]], nv = nArrivals)
-        dat$nw[[1]] <- activate.vertices(dat$nw[[1]], onset = at, terminus = Inf, v = arrivals)
-        dat$nw[[1]] <- activate.vertex.attribute(dat$nw[[1]], prefix = "testatus",
+        dat$nw[[1]] <- activate.vertices(dat$nw[[1]], onset = at,
+                                         terminus = Inf, v = arrivals)
+        dat$nw[[1]] <- activate.vertex.attribute(dat$nw[[1]],
+                                                 prefix = "testatus",
                                                  value = status[arrivals],
                                                  onset = at, terminus = Inf,
                                                  v = arrivals)
@@ -60,8 +62,9 @@ nwupdate.net <- function(dat, at) {
   ## Departures
   if (length(departures) > 0) {
     if (tergmLite == FALSE) {
-      dat$nw[[1]] <- deactivate.vertices(dat$nw[[1]], onset = at, terminus = Inf,
-                                         v = departures, deactivate.edges = TRUE)
+      dat$nw[[1]] <- deactivate.vertices(dat$nw[[1]], onset = at,
+                                         terminus = Inf, v = departures,
+                                         deactivate.edges = TRUE)
     }
     if (tergmLite == TRUE) {
       dat <- delete_attr(dat, departures)
@@ -88,10 +91,12 @@ nwupdate.net <- function(dat, at) {
     if (type %in% c("SIS", "SIR") && !is.null(type)) {
       recovState <- ifelse(type == "SIR", "r", "s")
       attr.status <- which(status == recovState)
-      nw.status <- which(get_vertex_attribute(dat$nw[[1]], "status") == recovState)
+      nw.status <- which(get_vertex_attribute(dat$nw[[1]],
+                                              "status") == recovState)
       idsRecov <- setdiff(attr.status, nw.status)
       if (length(idsRecov) > 0) {
-        dat$nw[[1]] <- activate.vertex.attribute(dat$nw[[1]], prefix = "testatus",
+        dat$nw[[1]] <- activate.vertex.attribute(dat$nw[[1]],
+                                                 prefix = "testatus",
                                                  value = recovState, onset = at,
                                                  terminus = Inf, v = idsRecov)
       }
@@ -112,7 +117,8 @@ nwupdate.net <- function(dat, at) {
   #   if (statOnNw == TRUE) {
   #     fstat <- get_vertex_attribute(dat$nw[[1]], "status")
   #     if (!identical(tst, fstat)) {
-  #       stop("Error in nwupdate.net: mismatch between status and testatus attribute.\n")
+  #       stop("Error in nwupdate.net: mismatch between status and testatus
+  #             attribute.\n")
   #     }
   #   }
   # }

@@ -34,7 +34,8 @@ coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
 est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 
 # Simulate the network with netdx
-dx <- netdx(est, nsims = 3, nsteps = 10, keep.tedgelist = TRUE, verbose = FALSE)
+dx <- netdx(est, nsims = 3, nsteps = 10, keep.tedgelist = TRUE,
+            verbose = FALSE)
 
 # Extract data from the first simulation
 as.data.frame(dx, sim = 1)

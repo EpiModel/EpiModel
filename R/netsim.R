@@ -5,34 +5,36 @@
 #'              disease.
 #'
 #' @param x Fitted network model object, as an object of class \code{netest}.
-#'        Alternatively, if restarting a previous simulation, may be an object of
-#'        class \code{netsim}.
+#'        Alternatively, if restarting a previous simulation, may be an object
+#'        ofclass \code{netsim}.
 #' @param param Model parameters, as an object of class \code{param.net}.
 #' @param init Initial conditions, as an object of class \code{init.net}.
 #' @param control Control settings, as an object of class
 #'        \code{control.net}.
 #'
 #' @details
-#' Stochastic network models explicitly represent phenomena within and across edges
-#' (pairs of nodes that remain connected) over time. This enables edges to have duration,
-#' allowing for repeated transmission-related acts within the same dyad, specification of
-#' edge formation and dissolution rates, control over the temporal sequencing of
-#' multiple edges, and specification of network-level features. A detailed
-#' description of these models, along with examples, is found in the
-#' \href{http://epimodel.org/tut.html}{Basic Network Models} tutorials.
+#' Stochastic network models explicitly represent phenomena within and across
+#' edges (pairs of nodes that remain connected) over time. This enables edges to
+#' have duration, allowing for repeated transmission-related acts within the
+#' same dyad, specification of edge formation and dissolution rates, control
+#' over the temporal sequencing of multiple edges, and specification of
+#' network-level features. A detailed description of these models, along with
+#' examples, is found in the \href{http://www.epimodel.org/tut.html}{Basic
+#' Network Models} tutorials.
 #'
 #' The \code{netsim} function performs modeling of both the base model types
 #' and original models. Base model types include one-mode and two-group models
-#' with disease types for Susceptible-Infected (SI), Susceptible-Infected-Recovered
-#' (SIR), and Susceptible-Infected-Susceptible (SIS).
+#' with disease types for Susceptible-Infected (SI),
+#' Susceptible-Infected-Recovered (SIR), and
+#' Susceptible-Infected-Susceptible (SIS).
 #'
 #' Original models may be parameterized by writing new process modules that
 #' either take the place of existing modules (for example, disease recovery), or
 #' supplement the set of existing processes with a new one contained in a new
 #' module. This functionality is documented in the
-#' \href{http://epimodel.org/tut.html}{Extension Network Models} tutorials. The
-#' list of modules within \code{netsim} available for modification is listed in
-#' \code{\link{modules.net}}.
+#' \href{http://www.epimodel.org/tut.html}{Extension Network Models} tutorials.
+#' The list of modules within \code{netsim} available for modification is listed
+#' in \code{\link{modules.net}}.
 #'
 #' @return
 #' A list of class \code{netsim} with the following elements:
@@ -52,17 +54,18 @@
 #'  \item \strong{network:} a list of \code{networkDynamic} objects,
 #'         one for each model simulation.
 #' }
-#' If \code{control$raw.output == TRUE}: A list of the raw (pre-processed) nestsim
-#' dat objects, for use in simulation continuation.
+#' If \code{control$raw.output == TRUE}: A list of the raw (pre-processed)
+#' nestsim dat objects, for use in simulation continuation.
 #'
 #' @references
 #' Jenness SM, Goodreau SM and Morris M. EpiModel: An R Package for Mathematical
-#' Modeling of Infectious Disease over Networks. Journal of Statistical Software.
-#' 2018; 84(8): 1-47.
+#' Modeling of Infectious Disease over Networks. Journal of Statistical
+#' Software. 2018; 84(8): 1-47.
 #'
 #' @seealso Extract the model results with \code{\link{as.data.frame.netsim}}.
-#'          Summarize the time-specific model results with \code{\link{summary.netsim}}.
-#'          Plot the model results with \code{\link{plot.netsim}}.
+#'          Summarize the time-specific model results with
+#'          \code{\link{summary.netsim}}. Plot the model results with
+#'          \code{\link{plot.netsim}}.
 #'
 #' @keywords model
 #' @export
@@ -162,39 +165,60 @@ netsim <- function(x, param, init, control) {
 #' @title Internal function running the network simulation loop
 #'
 #' @description This function run the initialization and simulation loop for one
-#'              simulation
+#'              simulation. Error, warning and messages are pretty printed using
+#'              the `netsim_cond_msg` (utils.R)
 #' @inheritParams initialize.net
 #' @keywords internal
 netsim_loop <- function(x, param, init, control, s) {
-  ## Initialization Module
-  if (!is.null(control[["initialize.FUN"]])) {
-    dat <- do.call(control[["initialize.FUN"]], list(x, param, init, control, s))
-  }
+  dat <- withCallingHandlers(
+    expr = {
+      ## Instantiate random parameters
+      verbose <- !is.null(control[["verbose.FUN"]])
+      param <- generate_random_params(param, verbose)
 
-  ### TIME LOOP
-  if (control$nsteps > 1) {
-    for (at in max(2, control$start):control$nsteps) {
-
-      ## Module order
-      morder <- control$module.order
-      if (is.null(morder)) {
-        lim.bi.mods <- control$bi.mods[-which(control$bi.mods %in%
-                                              c("initialize.FUN", "verbose.FUN"))]
-        morder <- c(control$user.mods, lim.bi.mods)
+      ## Initialization Module
+      if (!is.null(control[["initialize.FUN"]])) {
+        current_mod <- "initialize.FUN"
+        at <- paste0("`Initialization Step` (", control$start, ")")
+        dat <- do.call(control[[current_mod]], list(x, param, init, control, s))
       }
 
-      ## Evaluate modules
-      for (i in seq_along(morder)) {
-        dat <- do.call(control[[morder[i]]], list(dat, at))
+      ### TIME LOOP
+      if (control$nsteps > 1) {
+        for (at in max(2, control$start):control$nsteps) {
+
+          ## Module order
+          morder <- control$module.order
+          if (is.null(morder)) {
+            lim.bi.mods <- control$bi.mods[-which(
+              control$bi.mods %in% c("initialize.FUN", "verbose.FUN")
+            )]
+            morder <- c(control$user.mods, lim.bi.mods)
+          }
+
+          ## Evaluate modules
+          for (i in seq_along(morder)) {
+            current_mod <- morder[[i]]
+            dat <- do.call(control[[current_mod]], list(dat, at))
+          }
+
+          ## Verbose module
+          if (verbose) {
+            current_mod <- "verbose.FUN"
+            do.call(control[[current_mod]], list(dat, type = "progress", s, at))
+          }
+
+        }
       }
 
-      ## Verbose module
-      if (!is.null(control[["verbose.FUN"]])) {
-        do.call(control[["verbose.FUN"]], list(dat, type = "progress", s, at))
-      }
-
-    }
-  }
+      dat
+    },
+    message = function(e) message(netsim_cond_msg("MESSAGE",
+                                                  current_mod, at, e)),
+    warning = function(e) message(netsim_cond_msg("WARNING",
+                                                  current_mod, at, e)),
+    error = function(e) message(netsim_cond_msg("ERROR", current_mod, at, e))
+  )
 
   return(dat)
 }

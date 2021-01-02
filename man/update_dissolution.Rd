@@ -7,26 +7,27 @@
 update_dissolution(old.netest, new.coef.diss)
 }
 \arguments{
-\item{old.netest}{An object of class \code{netest}, from the \code{\link{netest}}
-function.}
+\item{old.netest}{An object of class \code{netest}, from the
+\code{\link{netest}} function.}
 
 \item{new.coef.diss}{An object of class \code{disscoef}, from the
 \code{\link{dissolution_coefs}} function.}
 }
 \description{
 Adjusts the dissolution component of an dynamic ERGM fit using
-             the \code{netest} function with the edges dissolution approximation
-             method.
+             the \code{netest} function with the edges dissolution
+             approximation method.
 }
 \details{
-Fitting an ERGM is a computationally intensive process when the model includes
-dyadic dependent terms. With the edges dissolution approximation method of
-Carnegie et al, the coefficients for a temporal ERGM are approximated by fitting
-a static ERGM and adjusting the formation coefficients to account for edge
-dissolution. This function provides a very efficient method to adjust the
-coefficients of that model when one wants to use a different dissolution model;
-a typical use case may be to fit several different models with different
-average edge durations as targets. The example below exhibits that case.
+Fitting an ERGM is a computationally intensive process when the model
+includes dyadic dependent terms. With the edges dissolution approximation
+method of Carnegie et al, the coefficients for a temporal ERGM are
+approximated by fitting a static ERGM and adjusting the formation
+coefficients to account for edge dissolution. This function provides a very
+efficient method to adjust the coefficients of that model when one wants to
+use a different dissolution model; a typical use case may be to fit several
+different models with different average edge durations as targets. The
+example below exhibits that case.
 }
 \examples{
 \dontrun{

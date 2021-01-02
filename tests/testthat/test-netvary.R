@@ -30,7 +30,7 @@ test_that("time varying parameters for one-mode", {
 
 test_that("time varying parameters for two-group models", {
   nw <- network_initialize(n = 100)
-  nw <- set_vertex_attribute(nw, "group", rep(c(1,2), each = 50))
+  nw <- set_vertex_attribute(nw, "group", rep(c(1, 2), each = 50))
   formation <- ~edges
   target.stats <- 50
   coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration  = 20)
@@ -40,7 +40,7 @@ test_that("time varying parameters for two-group models", {
   probs <- c(0.25, 0.01)
   durs <- c(10, 1)
   inf.probs <- rep(probs, durs)
-  inf.probs.g2 <- inf.probs*2
+  inf.probs.g2 <- inf.probs * 2
 
   acts <- c(1, 2)
   act.rates <- rep(acts, durs)

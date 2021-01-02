@@ -40,14 +40,14 @@ function of \code{\link{infection.icm}}.}
 \item{recovery.FUN}{Module to simulate disease recovery, with the default
 function of \code{\link{recovery.icm}}.}
 
-\item{departures.FUN}{Module to simulate departures or exits, with the default
-function of \code{\link{departures.icm}}.}
+\item{departures.FUN}{Module to simulate departures or exits, with the
+default function of \code{\link{departures.icm}}.}
 
 \item{arrivals.FUN}{Module to simulate arrivals or entries, with the default
 function of \code{\link{arrivals.icm}}.}
 
-\item{prevalence.FUN}{Module to calculate disease prevalence at each time step,
-with the default function of \code{\link{prevalence.icm}}.}
+\item{prevalence.FUN}{Module to calculate disease prevalence at each time
+step, with the default function of \code{\link{prevalence.icm}}.}
 
 \item{verbose}{If \code{TRUE}, print model progress to the console.}
 
@@ -59,8 +59,8 @@ steps.}
 \item{skip.check}{If \code{TRUE}, skips the default error checking for the
 structure and consistency of the parameter values, initial conditions,
 and control settings before running base epidemic models. Setting
-this to \code{FALSE} is recommended when running models with new modules
-specified.}
+this to \code{FALSE} is recommended when running models with new
+modules specified.}
 
 \item{...}{Additional control settings passed to model.}
 }
@@ -73,22 +73,22 @@ Sets the controls for stochastic individual contact models
 individual contact model solved with the \code{\link{icm}} function. Controls
 are required for both base model types and when passing original process
 modules. For an overview of control settings for base ICM class models,
-consult the \href{http://epimodel.org/tut.html}{Basic ICMs} tutorial. For all
-base models, the \code{type} argument is a necessary parameter and it has no
-default.
+consult the \href{http://www.epimodel.org/tut.html}{Basic ICMs} tutorial. For
+all base models, the \code{type} argument is a necessary parameter and it has
+no default.
 }
 \section{New Modules}{
 
 Base ICM models use a set of module functions that specify
-how the individual agents in the population are subjected to infection, recovery,
-demographics, and other processes. Core modules are those listed in the
-\code{.FUN} arguments. For each module, there is a default function used in
-the simulation. The default infection module, for example, is contained in
+how the individual agents in the population are subjected to infection,
+recovery, demographics, and other processes. Core modules are those listed in
+the \code{.FUN} arguments. For each module, there is a default function used
+in the simulation. The default infection module, for example, is contained in
 the \code{\link{infection.icm}} function.
 
-For original models, one may substitute replacement module functions for any of
-the default functions. New modules may be added to the workflow at each time
-step by passing a module function via the \code{...} argument.
+For original models, one may substitute replacement module functions for any
+of the default functions. New modules may be added to the workflow at each
+time step by passing a module function via the \code{...} argument.
 }
 
 \seealso{

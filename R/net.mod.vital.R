@@ -1,9 +1,10 @@
 #' @title Departures: netsim Module
 #'
-#' @description This function simulates departure for use in \link{netsim} simulations.
+#' @description This function simulates departure for use in \link{netsim}
+#'        simulations.
 #'
-#' @param dat Master list object containing a \code{networkDynamic} object and other
-#'        initialization information passed from \code{\link{netsim}}.
+#' @param dat Master list object containing a \code{networkDynamic} object and
+#'        other initialization information passed from \code{\link{netsim}}.
 #' @param at Current time step.
 #'
 #' @seealso \code{\link{netsim}}
@@ -15,7 +16,7 @@ departures.net <- function(dat, at) {
 
   # Conditions --------------------------------------------------------------
   vital <- get_param(dat, "vital")
-  if (vital == FALSE){
+  if (vital == FALSE) {
     return(dat)
   }
 
@@ -29,7 +30,7 @@ departures.net <- function(dat, at) {
     rates.rec <- get_param(dat, "dr.rate")
   }
 
-  # Susceptible departures ------------------------------------------------------
+  # Susceptible departures --------------------------------------------------
   nDepartures.sus <- 0
   idsElig.sus <- which(active == 1 & status == "s")
   nElig.sus <- length(idsElig.sus)
@@ -43,7 +44,7 @@ departures.net <- function(dat, at) {
     }
   }
 
-  # Infected departures ---------------------------------------------------------
+  # Infected departures -----------------------------------------------------
   nDepartures.inf <- 0
   idsElig.inf <- which(active == 1 & status == "i")
   nElig.inf <- length(idsElig.inf)
@@ -57,7 +58,7 @@ departures.net <- function(dat, at) {
     }
   }
 
-  # Recovered departures --------------------------------------------------------
+  # Recovered departures ----------------------------------------------------
   if (type == "SIR") {
     nDepartures.rec <- 0
     idsElig.rec <- which(active == 1 & status == "r")
@@ -92,8 +93,8 @@ departures.net <- function(dat, at) {
 #' @description This function simulates new arrivals into the network
 #'   for use in \code{\link{netsim}} simulations.
 #'
-#' @param dat Master list object containing a \code{networkDynamic} object and other
-#'   initialization information passed from \code{\link{netsim}}.
+#' @param dat Master list object containing a \code{networkDynamic} object and
+#'   other initialization information passed from \code{\link{netsim}}.
 #' @param at Current time step.
 #'
 #' @seealso \code{\link{netsim}}
@@ -117,13 +118,11 @@ arrivals.net <- function(dat, at) {
 
   # Add Nodes ---------------------------------------------------------------
   if (nOld > 0) {
-    nArrivals <- sum(rbinom(nOld, 1, a.rate))
+    nArrivals <- rbinom(1, nOld, a.rate)
     if (nArrivals > 0) {
+      dat <- append_core_attr(dat, at, nArrivals)
       dat <- append_attr(dat, "status", "s", nArrivals)
-      dat <- append_attr(dat, "active", 1, nArrivals)
       dat <- append_attr(dat, "infTime", NA, nArrivals)
-      dat <- append_attr(dat, "entrTime", at, nArrivals)
-      dat <- append_attr(dat, "exitTime", NA, nArrivals)
     }
   }
 
@@ -136,10 +135,11 @@ arrivals.net <- function(dat, at) {
 
 #' @title Departures: netsim Module
 #'
-#' @description This function simulates departure for use in \link{netsim} simulations.
+#' @description This function simulates departure for use in \link{netsim}
+#'        simulations.
 #'
-#' @param dat Master list object containing a \code{networkDynamic} object and other
-#'        initialization information passed from \code{\link{netsim}}.
+#' @param dat Master list object containing a \code{networkDynamic} object and
+#'        other initialization information passed from \code{\link{netsim}}.
 #' @param at Current time step.
 #'
 #' @seealso \code{\link{netsim}}
@@ -151,7 +151,7 @@ departures.2g.net <- function(dat, at) {
 
   # Conditions --------------------------------------------------------------
   vital <- get_param(dat, "vital")
-  if (vital == FALSE){
+  if (vital == FALSE) {
     return(dat)
   }
 
@@ -169,7 +169,7 @@ departures.2g.net <- function(dat, at) {
     rates.rec <- c(get_param(dat, "dr.rate"), get_param(dat, "dr.rate.g2"))
   }
 
-  # Susceptible departures ------------------------------------------------------
+  # Susceptible departures --------------------------------------------------
   nDepartures.sus <- nDeparturesG2.sus <- 0
   idsElig.sus <- which(active == 1 & status == "s")
   nElig.sus <- length(idsElig.sus)
@@ -186,7 +186,7 @@ departures.2g.net <- function(dat, at) {
     }
   }
 
-  # Infected departures ---------------------------------------------------------
+  # Infected departures -----------------------------------------------------
   nDepartures.inf <- nDeparturesG2.inf <- 0
   idsElig.inf <- which(active == 1 & status == "i")
   nElig.inf <- length(idsElig.inf)
@@ -203,7 +203,7 @@ departures.2g.net <- function(dat, at) {
     }
   }
 
-  # Recovered departures --------------------------------------------------------
+  # Recovered departures ----------------------------------------------------
   if (type == "SIR") {
     nDepartures.rec <- nDeparturesG2.rec <- 0
     idsElig.rec <- which(active == 1 & status == "r")
@@ -245,8 +245,8 @@ departures.2g.net <- function(dat, at) {
 #' @description This function simulates new arrivals into the network
 #'   for use in \code{\link{netsim}} simulations.
 #'
-#' @param dat Master list object containing a \code{networkDynamic} object and other
-#'   initialization information passed from \code{\link{netsim}}.
+#' @param dat Master list object containing a \code{networkDynamic} object and
+#'   other initialization information passed from \code{\link{netsim}}.
 #' @param at Current time step.
 #'
 #' @seealso \code{\link{netsim}}
@@ -258,14 +258,14 @@ arrivals.2g.net <- function(dat, at) {
 
   # Conditions --------------------------------------------------------------
   vital <- get_param(dat, "vital")
-  if (vital == FALSE){
+  if (vital == FALSE) {
     return(dat)
   }
 
   # Variables ---------------------------------------------------------------
   a.rate <- get_param(dat, "a.rate")
   a.rate.g2 <- get_param(dat, "a.rate.g2")
-  index <- at-1
+  index <- at - 1
   nCurr <- length(get_attr(dat, "active"))
   nOld <- get_epi(dat, "num", index)
   nOldG2 <- get_epi(dat, "num.g2", index)
@@ -277,30 +277,28 @@ arrivals.2g.net <- function(dat, at) {
   if (nOld > 0) {
 
     if (is.na(a.rate.g2)) {
-      nArrivals <- sum(rbinom(nOld, 1, a.rate))
-      nArrivalsG2 <- sum(rbinom(nOld, 1, a.rate))
+      nArrivals <- rbinom(1, nOld, a.rate)
+      nArrivalsG2 <- rbinom(1, nOld, a.rate)
       totArr <- nArrivals + nArrivalsG2
     } else {
-      nArrivals <- sum(rbinom(nOld, 1, a.rate))
-      nArrivalsG2 <- sum(rbinom(nOldG2, 1, a.rate.g2))
+      nArrivals <- rbinom(1, nOld, a.rate)
+      nArrivalsG2 <- rbinom(1, nOldG2, a.rate.g2)
       totArr <- nArrivals + nArrivalsG2
     }
 
     if (totArr > 0) {
       newNodes <- (nCurr + 1):(nCurr + totArr)
+      dat <- append_core_attr(dat, at, totArr)
       dat <- append_attr(dat, "group", 1, nArrivals)
       dat <- append_attr(dat, "group", 2, nArrivalsG2)
       dat <- append_attr(dat, "status", "s", totArr)
-      dat <- append_attr(dat, "active", 1, totArr)
       dat <- append_attr(dat, "infTime", NA, totArr)
-      dat <- append_attr(dat, "entrTime", at, totArr)
-      dat <- append_attr(dat, "exitTime", NA, totArr)
     }
   }
 
   # Output ------------------------------------------------------------------
   dat <- set_epi(dat, "a.flow", at, nArrivals)
-  dat <- set_epi(dat, "a.flow.g2",at, nArrivalsG2)
+  dat <- set_epi(dat, "a.flow.g2", at, nArrivalsG2)
 
   return(dat)
 }

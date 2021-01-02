@@ -42,14 +42,16 @@ mod_SIS_2g_op(t, t0, parms)
 }
 \arguments{
 \item{t}{Time vector, passed into model function internally through
-\code{\link{dcm}} via the control settings in \code{\link{control.dcm}}.}
+\code{\link{dcm}} via the control settings in
+\code{\link{control.dcm}}.}
 
 \item{t0}{Initial conditions for model, passed into model function internally
 through \code{\link{dcm}} via the initial conditions in
 \code{\link{init.dcm}}.}
 
 \item{parms}{Model parameters, passed into model function internally through
-\code{\link{dcm}} via the parameter settings in \code{\link{param.dcm}}.}
+\code{\link{dcm}} via the parameter settings in
+\code{\link{param.dcm}}.}
 }
 \description{
 These functions parameterize the base deterministic

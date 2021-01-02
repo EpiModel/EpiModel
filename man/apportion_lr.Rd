@@ -11,8 +11,8 @@ apportion_lr(vector.length, values, proportions, shuffled = FALSE)
 
 \item{values}{Values for the output vector.}
 
-\item{proportions}{Proportion distribution with one number for each value. This
-must sum to 1.}
+\item{proportions}{Proportion distribution with one number for each value.
+This must sum to 1.}
 
 \item{shuffled}{If \code{TRUE}, randomly shuffle the order of the vector.}
 }

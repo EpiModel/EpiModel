@@ -26,9 +26,10 @@ param.net(
 \arguments{
 \item{inf.prob}{Probability of infection per transmissible act between
 a susceptible and an infected person. In two-group models, this is the
-probability of infection to the group 1 nodes. This may also be a vector
-of probabilities, with each element corresponding to the probability
-in that time step of infection (see Time-Varying Parameters below).}
+probability of infection to the group 1 nodes. This may also be a
+vector of probabilities, with each element corresponding to the
+probability in that time step of infection (see Time-Varying
+Parameters below).}
 
 \item{inter.eff}{Efficacy of an intervention which affects the per-act
 probability of infection. Efficacy is defined as 1 - the relative
@@ -40,55 +41,57 @@ the number of time steps specified in the model. This will default to
 1 if the \code{inter.eff} is defined but this parameter is not.}
 
 \item{act.rate}{Average number of transmissible acts \emph{per partnership}
-per unit time (see \code{act.rate} Parameter below). This may also be a vector
-of rates, with each element corresponding to the rate in in that time
-step of infection (see Time-Varying Parameters below).}
+per unit time (see \code{act.rate} Parameter below). This may also be
+a vector of rates, with each element corresponding to the rate in in
+that time step of infection (see Time-Varying Parameters below).}
 
 \item{rec.rate}{Average rate of recovery with immunity (in \code{SIR} models)
 or re-susceptibility (in \code{SIS} models). The recovery rate is the
 reciprocal of the disease duration. For two-group models, this is the
 recovery rate for mode 1 persons only. This parameter is only used for
 \code{SIR} and \code{SIS} models. This may also be a vector
-of rates, with each element corresponding to the rate in that time step
-of infection (see Time-Varying Parameters below).}
+of rates, with each element corresponding to the rate in that time
+step of infection (see Time-Varying Parameters below).}
 
-\item{a.rate}{Arrival or entry rate. For one-mode models, the arrival rate is the
-rate of new arrivals per person per unit time. For two-group models, the
-arrival rate may be parameterized as a rate per mode 1 person time (with
-group 1 persons representing females), and with the \code{a.rate.g2}
-rate set as described below.}
+\item{a.rate}{Arrival or entry rate. For one-mode models, the arrival rate is
+the rate of new arrivals per person per unit time. For two-group
+models, the arrival rate may be parameterized as a rate per mode 1
+person time (with group 1 persons representing females), and with the
+\code{a.rate.g2} rate set as described below.}
 
-\item{ds.rate}{Departure or exit rate for susceptible. For two-group models, it
-is the rate for the group 1 susceptible only.}
+\item{ds.rate}{Departure or exit rate for susceptible. For two-group models,
+it is the rate for the group 1 susceptible only.}
 
-\item{di.rate}{Departure or exit rate for infected. For two-group models, it is
-the rate for the group 1 infected only.}
+\item{di.rate}{Departure or exit rate for infected. For two-group models, it
+is the rate for the group 1 infected only.}
 
-\item{dr.rate}{Departure or exit rate for recovered. For two-group models, it is
-the rate for the group 1 recovered only. This parameter is only used for
-\code{SIR} models.}
+\item{dr.rate}{Departure or exit rate for recovered. For two-group models, it
+is the rate for the group 1 recovered only. This parameter is only
+used for \code{SIR} models.}
 
 \item{inf.prob.g2}{Probability of transmission given a transmissible act
 between a susceptible group 2 person and an infected group 1 person.
 It is the probability of transmission to group 2 members.}
 
-\item{rec.rate.g2}{Average rate of recovery with immunity (in \code{SIR} models)
-or re-susceptibility (in \code{SIS} models) for group 2 persons. This
-parameter is only used for two-group \code{SIR} and \code{SIS} models.}
+\item{rec.rate.g2}{Average rate of recovery with immunity (in \code{SIR}
+models) or re-susceptibility (in \code{SIS} models) for group 2
+persons. This parameter is only used for two-group \code{SIR} and
+\code{SIS} models.}
 
-\item{a.rate.g2}{Arrival or entry rate for group 2. This may either be specified
-numerically as the rate of new arrivals per group 2 persons per unit time,
-or as \code{NA} in which case the mode 1 rate, \code{a.rate}, governs
-the group 2 rate. The latter is used when, for example, the first group
-is conceptualized as female, and the female population size determines
-the arrival rate. Such arrivalss are evenly allocated between the two groups.}
+\item{a.rate.g2}{Arrival or entry rate for group 2. This may either be
+specified numerically as the rate of new arrivals per group 2 persons
+per unit time, or as \code{NA} in which case the mode 1 rate,
+\code{a.rate}, governs the group 2 rate. The latter is used when, for
+example, the first group is conceptualized as female, and the female
+population size determines the arrival rate. Such arrivalss are evenly
+allocated between the two groups.}
 
 \item{ds.rate.g2}{Departure or exit rate for group 2 susceptible.}
 
 \item{di.rate.g2}{Departure or exit rate for group 2 infected.}
 
-\item{dr.rate.g2}{Departure or exit rate for group 2 recovered. This parameter is
-only used for \code{SIR} model types.}
+\item{dr.rate.g2}{Departure or exit rate for group 2 recovered. This
+parameter is only used for \code{SIR} model types.}
 
 \item{...}{Additional arguments passed to model.}
 }
@@ -102,27 +105,28 @@ models simulated with the \code{\link{netsim}} function. Models
 may use the base types, for which these parameters are used, or new process
 modules which may use these parameters (but not necessarily). A detailed
 description of network model parameterization for base models is found in
-the \href{http://epimodel.org/tut.html}{Basic Network Models} tutorial.
+the \href{http://www.epimodel.org/tut.html}{Basic Network Models} tutorial.
 
 For base models, the model specification will be chosen as a result of
 the model parameters entered here and the control settings in
-\code{\link{control.net}}. One-group and two-group models are available, where
-the latter assumes a heterogeneous mixing between two distinct partitions
-in the population (e.g., men and women). Specifying any two-group parameters
-(those with a \code{.g2}) implies the simulation of a two-group model. All the
-parameters for a desired model type must be specified, even if they are zero.
+\code{\link{control.net}}. One-group and two-group models are available,
+where the latter assumes a heterogeneous mixing between two distinct
+partitions in the population (e.g., men and women). Specifying any two-group
+parameters (those with a \code{.g2}) implies the simulation of a two-group
+model. All the parameters for a desired model type must be specified, even if
+they are zero.
 }
 \section{The \code{act.rate} Parameter}{
 
 A key difference between these network models and DCM/ICM classes is the
-treatment of transmission events. With DCM and ICM, contacts or partnerships are
-mathematically instantaneous events: they have no duration in time, and thus
-no changes may occur within them over time. In contrast, network models allow
-for partnership durations defined by the dynamic network model, summarized in
-the model dissolution coefficients calculated in \code{\link{dissolution_coefs}}.
-Therefore, the \code{act.rate} parameter has a different interpretation here,
-where it is the number of transmissible acts \emph{per partnership} per unit
-time.
+treatment of transmission events. With DCM and ICM, contacts or partnerships
+are mathematically instantaneous events: they have no duration in time, and
+thus no changes may occur within them over time. In contrast, network models
+allow for partnership durations defined by the dynamic network model,
+summarized in the model dissolution coefficients calculated in
+\code{\link{dissolution_coefs}}. Therefore, the \code{act.rate} parameter has
+a different interpretation here, where it is the number of transmissible acts
+\emph{per partnership} per unit time.
 }
 
 \section{Time-Varying Parameters}{
@@ -135,21 +139,37 @@ discrete time step for the infected partner. For example, an \code{inf.prob}
 of \code{c(0.5, 0.5, 0.1)} would simulate a 0.5 transmission probability for
 the first two time steps of a person's infection, followed by a 0.1 for the
 third time step. If the infected person has not recovered or exited the
-population by the fourth time step, the third element in the vector will carry
-forward until one of those events occurs or the simulation ends. For further examples,
-see the \href{https://statnet.org/nme/}{NME Course Tutorials}.
+population by the fourth time step, the third element in the vector will
+carry forward until one of those events occurs or the simulation ends. For
+further examples, see the \href{https://statnet.org/nme/}{NME Course
+Tutorials}.
+}
+
+\section{Random Parameters}{
+
+In addition to deterministic parameters in either fixed or time-varying
+varieties above, one may also include a generator for random parameters.
+These might include a vector of potential parameter values or a statistical
+distribution definition; in either case, one draw from the generator would
+be completed per individual simulation. This is possible by passing a list
+named \code{random.params} into \code{param.net}, with each element of
+\code{random.params} a named generator function. See the help page and
+examples in \code{\link{generate_random_params}}. A simple factory function
+for sampling is provided with \code{\link{param_random}} but any function
+will do.
 }
 
 \section{New Modules}{
 
 To build original models outside of the base models, new process modules
-may be constructed to replace the existing modules or to supplement the existing
-set. These are passed into the control settings in \code{\link{control.net}}.
-New modules may use either the existing model parameters named here, an
-original set of parameters, or a combination of both. The \code{...} allows
-the user to pass an arbitrary set of original model parameters into
-\code{param.net}. Whereas there are strict checks with default modules for
-parameter validity, these checks are the user's responsibility with new modules.
+may be constructed to replace the existing modules or to supplement the
+existing set. These are passed into the control settings in
+\code{\link{control.net}}. New modules may use either the existing model
+parameters named here, an original set of parameters, or a combination of
+both. The \code{...} allows the user to pass an arbitrary set of original
+model parameters into \code{param.net}. Whereas there are strict checks with
+default modules for parameter validity, these checks are the user's
+responsibility with new modules.
 }
 
 \seealso{
