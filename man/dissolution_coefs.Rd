@@ -99,13 +99,12 @@ nw <- set_vertex_attribute(nw, "age.grp", age.grp)
 # durations = non-matched, age.grp1 & age.grp1, age.grp2 & age.grp2, ...
 # TERGM will include differential homophily by age group with nodematch term
 # Target stats for the formation model are overall edges, and then the number
-#    matched within age.grp 1, age.grp 2, ..., age.grp 5
+# matched within age.grp 1, age.grp 2, ..., age.grp 5
 form <- ~edges + nodematch("age.grp", diff = TRUE)
 target.stats <- c(450, 100, 125, 40, 80, 100)
 
 # Target stats for the dissolution model are duration of non-matched edges,
-     then duration of edges matched within age.grp 1, age.grp 2, ...,
-     age.grp 5
+# then duration of edges matched within age.grp 1, age.grp 2, ..., age.grp 5
 durs <- c(60, 30, 80, 100, 125, 160)
 diss <- dissolution_coefs(~offset(edges) +
                             offset(nodematch("age.grp", diff = TRUE)),
