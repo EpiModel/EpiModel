@@ -315,7 +315,7 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
         cat("\n- Calculating duration statistics")
       }
 
-      # SMG: remove all of this, unless we want to keep it as an option
+      # TO DO: remove all of this, unless we want to keep it as an option
       ## Duration calculations
       sim.df <- list()
       for (i in 1:length(diag.sim)) {
@@ -360,8 +360,7 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
         }
       }
 
-      # SMG add pages_trunc calculation here 
-      # pages_trunc <- (x$coef.diss$duration^2*dgeom(2:(nsteps+1), 1/x$coef.diss$duration)
+      pages_trunc <- (x$coef.diss$duration^2*dgeom(2:(nsteps+1), 1/x$coef.diss$duration))
       
       ## Dissolution calculations
       if (verbose == TRUE) {
@@ -401,13 +400,14 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
         cat("\n ")
       }
 
-
       # Create dissolution tables
-      # SMG: substitute in the new duration mean
-      # duration.mean <- mean(pages+pages_trunc)
-      duration.mean <- mean(durVec)
-      # SMG: how to define SD here?
-      duration.sd <- sd(durVec)
+      temp <- pages[[1]]
+      if(nsims>1) for(i in 2:nsims) temp <- temp + pages[[i]]   # Add across sims
+      duration.mean.obs <-temp/nsims                            # Average across sims
+      duration.mean.imputed <- duration.mean.obs+pages_trunc
+      duration.mean <- mean(duration.mean.imputed)
+      #duration.mean <- mean(durVec)  # TO DO Decide whether to keep as option
+      duration.sd <- sd(durVec) # TO DO replace after discussion
       duration.expected <- exp(coef.diss$coef.crude[1]) + 1
       duration.pctdiff <-
         100 * (duration.mean - duration.expected) / duration.expected
