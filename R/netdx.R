@@ -264,6 +264,7 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
     }
 
     ## Merged stats across all simulations
+    browser()
     if (nsims > 1) {
       merged.stats <- matrix(NA, nrow = nrow(stats[[1]]) * nsims,
                              ncol = ncol(stats[[1]]))
@@ -282,7 +283,12 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
 
   ## Calculate mean/sd from merged stats
   stats.means <- colMeans(merged.stats)
-  stats.sd <- apply(merged.stats, 2, sd)
+  if(nsims>1) {
+    stats.sd <- apply(sapply(stats, function(x) colMeans(x)), 1, sd)
+  } else {
+    stats.sd <-  NA
+  }
+  
   stats.table <- data.frame(sorder = 1:length(names(stats.means)),
                             names = names(stats.means),
                             stats.means, stats.sd)
@@ -414,6 +420,7 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
 
 
       dissolution.mean <- mean(unlist(prop.diss))
+      # TO DO redo SD
       dissolution.sd <- sd(unlist(prop.diss))
       dissolution.expected <- 1 / (exp(coef.diss$coef.crude[1]) + 1)
       dissolution.pctdiff <- 100 * (dissolution.mean - dissolution.expected) /
