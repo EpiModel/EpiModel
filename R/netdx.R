@@ -322,6 +322,12 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
       }
 
       # Calculate mean partnership age from edgelist
+      
+      sim.df <- list()
+      for (i in 1:length(diag.sim)) {
+        sim.df[[i]] <- as.data.frame(diag.sim[[i]])
+      }
+      
       if (nsims == 1 || ncores == 1) {
         pages <- list()
         if (verbose == TRUE & nsims > 1) {
@@ -391,8 +397,7 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
       duration.mean.obs <-temp/nsims                            # Average across sims
       duration.mean.imputed <- duration.mean.obs+pages_trunc
       duration.mean <- mean(duration.mean.imputed)
-      #duration.mean <- mean(durVec)  # TO DO Decide whether to keep as option
-      duration.sd <- sd(durVec) # TO DO replace after discussion
+      duration.sd <- 0 #sd(durVec) # TO DO replace after discussion
       duration.expected <- exp(coef.diss$coef.crude[1]) + 1
       duration.pctdiff <-
         100 * (duration.mean - duration.expected) / duration.expected
