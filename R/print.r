@@ -102,7 +102,7 @@ print.netdx <- function(x, digits = 3, ...) {
   cat("\n\nFormation Diagnostics")
   cat("\n----------------------- \n")
   #print(round(x$stats.table.formation, digits = digits))
-  print(data.frame(lapply(my.netdx.dyn$stats.table.formation, round, 2)))
+  print(data.frame(lapply(x$stats.table.formation, round, 2)))
   
   if (x$dynamic == TRUE & !is.null(x$stats.table.dissolution)) {
     cat("\nDissolution Diagnostics")
