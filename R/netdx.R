@@ -321,27 +321,6 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
         cat("\n- Calculating duration statistics")
       }
 
-      # TO DO: remove all of this, unless we want to keep it as an option
-      ## Duration calculations
-      sim.df <- list()
-      for (i in 1:length(diag.sim)) {
-        sim.df[[i]] <- as.data.frame(diag.sim[[i]])
-      }
-
-
-      ## Create a merged vector of durations
-      ncens <- which(sim.df[[1]]$onset.censored == FALSE &
-                       sim.df[[1]]$terminus.censored == FALSE)
-      durVec <- sim.df[[1]]$duration[ncens]
-      if (nsims > 1) {
-        for (i in 2:length(diag.sim)) {
-          ncens <- which(sim.df[[i]]$onset.censored == FALSE &
-                           sim.df[[i]]$terminus.censored == FALSE)
-          durVec <- c(durVec, sim.df[[i]]$duration[ncens])
-        }
-      }
-
-
       # Calculate mean partnership age from edgelist
       if (nsims == 1 || ncores == 1) {
         pages <- list()
