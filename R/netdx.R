@@ -264,7 +264,6 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
     }
 
     ## Merged stats across all simulations
-    browser()
     if (nsims > 1) {
       merged.stats <- matrix(NA, nrow = nrow(stats[[1]]) * nsims,
                              ncol = ncol(stats[[1]]))
@@ -392,12 +391,15 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
       }
 
       # Create dissolution tables
-      temp <- pages[[1]]
-      if(nsims>1) for(i in 2:nsims) temp <- temp + pages[[i]]   # Add across sims
-      duration.mean.obs <-temp/nsims                            # Average across sims
-      duration.mean.imputed <- duration.mean.obs+pages_trunc
-      duration.mean <- mean(duration.mean.imputed)
-      duration.sd <- 0 #sd(durVec) # TO DO replace after discussion
+      duration.obs <- matrix(unlist(pages), nrow = nsteps)
+      duration.imputed <- duration.obs + pages_trunc
+      duration.mean.by.sim <- colMeans(duration.imputed) 
+      duration.mean <- mean(duration.mean.by.sim)
+      if(nsims>1) {
+        duration.sd <- sd(duration.mean.by.sim)
+      } else {
+        duration.sd <- NA
+      }  
       duration.expected <- exp(coef.diss$coef.crude[1]) + 1
       duration.pctdiff <-
         100 * (duration.mean - duration.expected) / duration.expected
