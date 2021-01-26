@@ -283,7 +283,9 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
   ## Calculate mean/sd from merged stats
   stats.means <- colMeans(merged.stats)
   if(nsims>1) {
-    stats.sd <- apply(sapply(stats, function(x) colMeans(x)), 1, sd)
+    temp2 <- sapply(stats, function(x) colMeans(x))
+    if (ncol(stats[[1]])==1) temp2 <- matrix(temp2, nrow=1)
+    stats.sd <- apply(temp2, 1, sd)
   } else {
     stats.sd <-  NA
   }
