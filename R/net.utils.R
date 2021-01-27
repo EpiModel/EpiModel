@@ -560,7 +560,7 @@ edgelist_meanage <- function(x, el) {
   }
   terminus <- el$terminus
   onset <- el$onset
-  minterm <- min(terminus)
+  minterm <- 1 # min(terminus)
   maxterm <- max(terminus)
   meanpage <- rep(NA, maxterm)
   for (at in minterm:maxterm) {
