@@ -312,8 +312,8 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
   stats.table$reldiff <- 100 * (stats.table$stats.means - stats.table$targets) /
     stats.table$targets
   stats.table.formation <- stats.table[, c(2, 4, 6, 5)]
-  colnames(stats.table.formation) <- c("Target", "Sim Mean",
-                                       "Pct Diff", "Sim SD")
+  colnames(stats.table.formation) <- c("Target", "Sim.Mean",
+                                       "Pct.Diff", "Sim.SD")
 
 
   if (skip.dissolution == FALSE) {
