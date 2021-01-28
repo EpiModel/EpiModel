@@ -406,10 +406,12 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
       duration.pctdiff <-
         100 * (duration.mean - duration.expected) / duration.expected
 
-
       dissolution.mean <- mean(unlist(prop.diss))
-      # TO DO redo SD
-      dissolution.sd <- sd(unlist(prop.diss))
+      if(nsims>1) {
+        dissolution.sd <- sd(sapply(prop.diss, mean))
+      } else {
+        dissolution.sd <- NA
+      }  
       dissolution.expected <- 1 / (exp(coef.diss$coef.crude[1]) + 1)
       dissolution.pctdiff <- 100 * (dissolution.mean - dissolution.expected) /
         dissolution.expected
