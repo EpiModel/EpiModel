@@ -101,13 +101,12 @@ print.netdx <- function(x, digits = 3, ...) {
 
   cat("\n\nFormation Diagnostics")
   cat("\n----------------------- \n")
-  #print(round(x$stats.table.formation, digits = digits))
   print(data.frame(lapply(x$stats.table.formation, round, 2)))
   
   if (x$dynamic == TRUE & !is.null(x$stats.table.dissolution)) {
     cat("\nDissolution Diagnostics")
     cat("\n----------------------- \n")
-    print(round(x$stats.table.dissolution, digits = digits))
+    print(data.frame(lapply(x$stats.table.dissolution, round, 2)))
     if (x$coef.diss$model.type == "hetero") {
       cat("----------------------- \n")
       cat("* Heterogeneous dissolution model results averaged over")
@@ -204,7 +203,14 @@ print.netsim <- function(x, formation.stats = FALSE, ...) {
 
     ## Calculate mean/sd from merged stats
     stats.means <- colMeans(merged.stats)
-    stats.sd <- apply(merged.stats, 2, sd)
+    #stats.sd <- apply(merged.stats, 2, sd)
+    if(nsims>1) {
+      temp2 <- sapply(stats, function(x) colMeans(x))
+      if (ncol(stats[[1]])==1) temp2 <- matrix(temp2, nrow=1)
+      stats.sd <- apply(temp2, 1, sd)
+    } else {
+      stats.sd <-  NA
+    }
     stats.table <- data.frame(sorder = 1:length(names(stats.means)),
                               names = names(stats.means),
                               stats.means, stats.sd)
@@ -233,7 +239,7 @@ print.netsim <- function(x, formation.stats = FALSE, ...) {
 
     cat("\n\nFormation Diagnostics")
     cat("\n----------------------- \n")
-    print(round(stats.table.formation, digits = 2))
+    print(data.frame(lapply(stats.table.formation, round, 2)))
     cat("")
   }
 
