@@ -64,7 +64,14 @@
 #' encouraged to examine the behavior of the resulting simulations to confirm
 #' that the approximation is adequate for their purposes. For an example, see
 #' the vignette for the package \code{tergm}.
-#'
+#' 
+#' It has recently been found that subtracting a modified version of the 
+#' dissolution coefficients from the formation coefficients provides a more 
+#' principled approximation, and this is now the form of the approximation 
+#' applied by \code{netest}.  (The modified values subtracted from the formation
+#' coefficients are equivalent to the (crude) dissolution coefficients with 
+#' their target durations increased by 1.)
+#' 
 #' @section Control Arguments:
 #' The \code{ergm} and \code{stergm} functions allow control settings for the
 #' model fitting process. When fitting a STERGM directly (setting
@@ -199,8 +206,8 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
     coef.form <- fit$coef
     coef.form.crude <- coef.form
     if (is.tergm == TRUE) {
-      l.cd <- length(coef.diss$coef.crude)
-      coef.form[1:l.cd] <- coef.form[1:l.cd] - coef.diss$coef.crude
+      l.cfc <- length(coef.diss$coef.form.corr)
+      coef.form[1:l.cfc] <- coef.form[1:l.cfc] - coef.diss$coef.form.corr
     }
 
     # Reduce size of output object
