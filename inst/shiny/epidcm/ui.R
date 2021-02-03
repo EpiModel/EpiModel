@@ -168,18 +168,21 @@ shinyUI(fluidPage(
         tabPanel("About",
          p("This application solves and plots a deterministic, compartmental
            epidemic models (DCMs). The model simulations are driven by the",
-           a("EpiModel", href = "http://cran.r-project.org/web/packages/EpiModel/index.html"),
+           a("EpiModel", href =
+               "http://cran.r-project.org/web/packages/EpiModel/index.html"),
            "package in R.", style = "margin-top: 25px"),
-         p("Models here are limited to basic one-group homogenous mixing models with
-           a limited set of parameters, initial conditions, and control settings. More
-           complex models are available in the command-line version of EpiModel. For
-           further details, including more background on the mathematics and theory behind
-           these DCMs, please consult the documentation, tutorials, and workshop materials
+         p("Models here are limited to basic one-group homogenous mixing models
+           with a limited set of parameters, initial conditions, and control
+           settings. More complex models are available in the command-line
+           version of EpiModel. For further details, including more background
+           on the mathematics and theory behind these DCMs, please consult the
+           documentation, tutorials, and workshop materials
            at the main", a("EpiModel website.", href = "http://epimodel.org/")),
          p("This web application, built with",
-           a("Shiny", href = "http://shiny.rstudio.com/"), "may be lauched via an R session with
-           EpiModel and Shiny installed (see the epiweb function), or directly on any web
-           browser (no R needed)", a("here.", href = "http://statnet.shinyapps.io/epidcm/")),
+           a("Shiny", href = "https://shiny.rstudio.com/"), "may be lauched via
+           an R session with EpiModel and Shiny installed (see the epiweb
+           function), or directly on any web browser (no R needed)",
+           a("here.", href = "http://statnet.shinyapps.io/epidcm/")),
          br(),
          strong("Authors"), p("Samuel M. Jenness, Department of Epidemiology,
                               Emory University"),

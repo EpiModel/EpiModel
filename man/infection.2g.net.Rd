@@ -13,8 +13,8 @@ initialization information passed from \code{\link{netsim}}.}
 \item{at}{Current time step.}
 }
 \value{
-The main \code{dat} object is returned with updated disease status and summary
-incidence measures.
+The main \code{dat} object is returned with updated disease status and
+summary incidence measures.
 }
 \description{
 This function simulates the main infection process given the
@@ -23,10 +23,10 @@ This function simulates the main infection process given the
 \details{
 The main steps in this infection module are as follows:
 \enumerate{
- \item Get IDs for current infected and susceptibles given the current disease
-       status.
- \item Call \code{\link{discord_edgelist}} to get the current discordant edgelist
-       given step 1.
+ \item Get IDs for current infected and susceptibles given the current
+       disease status.
+ \item Call \code{\link{discord_edgelist}} to get the current discordant
+       edgelist given step 1.
  \item Determine the transmission rates (e.g., as a function of group).
  \item Pull the number of acts per partnership in a time step from the
        \code{act.rate} parameter.

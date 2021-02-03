@@ -21,7 +21,8 @@ netest(
 \item{nw}{An object of class \code{network}.}
 
 \item{formation}{Right-hand sided STERGM formation formula in the form
-\code{~edges + ...}, where \code{...} are additional network statistics.}
+\code{~edges + ...}, where \code{...} are additional network
+statistics.}
 
 \item{target.stats}{Vector of target statistics for the formation model, with
 one number for each network statistic in the model.}
@@ -30,21 +31,21 @@ one number for each network statistic in the model.}
 \code{\link{dissolution_coefs}} function.}
 
 \item{constraints}{Right-hand sided formula specifying constraints for the
-modeled network, in the form \code{~...}, where \code{...} are constraint
-terms. By default, no constraints are set.}
+modeled network, in the form \code{~...}, where \code{...} are
+constraint terms. By default, no constraints are set.}
 
 \item{coef.form}{Vector of coefficients for the offset terms in the formation
 formula.}
 
-\item{edapprox}{If \code{TRUE}, use the indirect edges dissolution approximation
-method for the dynamic model fit, otherwise use the more time-intensive
-full STERGM estimation (see details).}
+\item{edapprox}{If \code{TRUE}, use the indirect edges dissolution
+approximation  method for the dynamic model fit, otherwise use the
+more time-intensive full STERGM estimation (see details).}
 
 \item{set.control.ergm}{Control arguments passed to \code{simulate.ergm} (see
 details).}
 
-\item{set.control.stergm}{Control arguments passed to \code{simulate.stergm} (see
-details).}
+\item{set.control.stergm}{Control arguments passed to \code{simulate.stergm}
+(see details).}
 
 \item{verbose}{Print model fitting progress to console.}
 }
@@ -61,9 +62,9 @@ epidemic model in \code{EpiModel}. The output from \code{netest} is a
 necessary input for running the epidemic simulations in \code{\link{netsim}}.
 With a fitted network model, one should always first proceed to model
 diagnostics, available through the \code{\link{netdx}} function, to check
-model fit. A detailed description of fitting these models, along with examples,
-may be found in the \href{http://epimodel.org/tut.html}{Basic Network Models}
-tutorials.
+model fit. A detailed description of fitting these models, along with
+examples, may be found in the
+\href{http://www.epimodel.org/tut.html}{Basic Network Models} tutorials.
 }
 \section{Edges Dissolution Approximation}{
 
@@ -79,36 +80,36 @@ approximation thus estimates this ERGM (which is typically much faster than
 estimating a STERGM) and subtracts the dissolution coefficients.
 
 The conditions under which this approximation best hold are when there are
-few relational changes from one time step to another; i.e. when either average
-relational durations are long, or density is low, or both.  Conveniently,
-these are the same conditions under which STERGM estimation is slowest.  Note
-that the same approximation is also used to obtain starting values for the
-STERGM estimate when the latter is being conducted.  The estimation does not
-allow for calculation of standard errors, p-values, or likelihood for the
-formation model; thus, this approach is of most use when the main goal of
-estimation is to drive dynamic network simulations rather than to conduct
-inference on the formation model. The user is strongly encouraged to examine
-the behavior of the resulting simulations to confirm that the approximation
-is adequate for their purposes. For an example, see the vignette for the
-package \code{tergm}.
+few relational changes from one time step to another; i.e. when either
+average relational durations are long, or density is low, or both.
+Conveniently, these are the same conditions under which STERGM estimation is
+slowest.  Note that the same approximation is also used to obtain starting
+values for the STERGM estimate when the latter is being conducted.  The
+estimation does not allow for calculation of standard errors, p-values, or
+likelihood for the formation model; thus, this approach is of most use when
+the main goal of estimation is to drive dynamic network simulations rather
+than to conduct inference on the formation model. The user is strongly
+encouraged to examine the behavior of the resulting simulations to confirm
+that the approximation is adequate for their purposes. For an example, see
+the vignette for the package \code{tergm}.
 }
 
 \section{Control Arguments}{
 
 The \code{ergm} and \code{stergm} functions allow control settings for the
-model fitting process. When fitting a STERGM directly (setting \code{edapprox}
-to \code{FALSE}), control parameters may be passed to the \code{stergm}
-function with the \code{set.control.stergm} argument in \code{netest}. The
-controls should be input through the \code{control.stergm()} function, with
-the available parameters listed in the \code{\link{control.stergm}} help page
-in the \code{tergm} package.
+model fitting process. When fitting a STERGM directly (setting
+\code{edapprox} to \code{FALSE}), control parameters may be passed to the
+\code{stergm} function with the \code{set.control.stergm} argument in
+\code{netest}. The controls should be input through the
+\code{control.stergm()} function, with the available parameters listed in the
+\code{\link{control.stergm}} help page in the \code{tergm} package.
 
 When fitting a STERGM indirectly (setting \code{edapprox} to \code{TRUE}),
 control settings may be passed to the \code{ergm} function using
-\code{set.control.ergm} in \code{netest}. The controls should be input through
-the \code{control.ergm()} function, with the available parameters listed in the
-\code{\link[ergm:control.ergm]{control.ergm}} help page in the \code{ergm}
-package. An example is below.
+\code{set.control.ergm} in \code{netest}. The controls should be input
+through the \code{control.ergm()} function, with the available parameters
+listed in the \code{\link[ergm:control.ergm]{control.ergm}} help page in the
+\code{ergm} package. An example is below.
 }
 
 \examples{
@@ -138,13 +139,13 @@ est
 Krivitsky PN, Handcock MS. "A separable model for dynamic networks." JRSS(B).
 2014; 76.1:29-46.
 
-Carnegie NB, Krivitsky PN, Hunter DR, Goodreau SM. An approximation method for
-improving dynamic network model fitting. Journal of Computational and Graphical
-Statistics. 2014; 24(2): 502-519.
+Carnegie NB, Krivitsky PN, Hunter DR, Goodreau SM. An approximation method
+for improving dynamic network model fitting. Journal of Computational and
+Graphical Statistics. 2014; 24(2): 502-519.
 
 Jenness SM, Goodreau SM and Morris M. EpiModel: An R Package for Mathematical
-Modeling of Infectious Disease over Networks. Journal of Statistical Software.
-2018; 84(8): 1-47.
+Modeling of Infectious Disease over Networks. Journal of Statistical
+Software. 2018; 84(8): 1-47.
 }
 \seealso{
 Use \code{\link{netdx}} to diagnose the fitted network model, and

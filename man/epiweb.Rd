@@ -40,7 +40,7 @@ epiweb(class = "net")
 }
 \references{
 RStudio. shiny: Web Application Framework for R. R package version 1.0.5.
-2015. \url{http://www.rstudio.com/shiny/}
+2015. \url{https://shiny.rstudio.com/}
 }
 \seealso{
 \code{\link{dcm}}, \code{\link{icm}}, \code{\link{netsim}}

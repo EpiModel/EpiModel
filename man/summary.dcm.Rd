@@ -22,10 +22,11 @@
 Extracts and prints model statistics solved with \code{dcm}.
 }
 \details{
-Summary statistics for the main epidemiological outcomes (state and transition
-size and prevalence) from an \code{dcm} model. Time-specific summary measures
-are provided, so it is necessary to input a time of interest. For multiple-run
-models (sensitivity analyses), input a model run number. See examples below.
+Summary statistics for the main epidemiological outcomes (state and
+transition size and prevalence) from an \code{dcm} model. Time-specific
+summary measures are provided, so it is necessary to input a time of
+interest. Formultiple-run models (sensitivity analyses), input a model run
+number. See examples below.
 }
 \examples{
 ## Deterministic SIR model with varying act.rate

@@ -15,9 +15,9 @@ step.}
 \item{curr.tab}{Current proportional distribution of all vertex attributes.}
 }
 \description{
-Updates the vertex attributes on a network for new nodes incoming
-             into that network, based on a set of rules for each attribute
-             that the user specifies in \code{control.net}.
+Updates the vertex attributes on a network for new nodes
+             incoming into that network, based on a set of rules for each
+             attribute that the user specifies in \code{control.net}.
 }
 \seealso{
 \code{\link{copy_nwattr_to_datattr}}, \code{\link{get_attr_prop}},

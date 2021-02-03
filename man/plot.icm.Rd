@@ -53,8 +53,8 @@ simulations at the specified time step.}
 
 \item{sim.lwd}{Line width for simulation lines.}
 
-\item{sim.alpha}{Transparency level for simulation lines, where 0 = transparent
-and 1 = opaque (see \code{adjustcolor} function).}
+\item{sim.alpha}{Transparency level for simulation lines, where
+0 = transparent and 1 = opaque (see \code{adjustcolor} function).}
 
 \item{mean.line}{If \code{TRUE}, plot mean of simulations across time.}
 
@@ -87,8 +87,8 @@ to \code{"r"}.}
 \item{grid}{If \code{TRUE}, a grid is added to the background of plot
 (see \code{\link{grid}} for details), with default of nx by ny.}
 
-\item{add}{If \code{TRUE}, new plot window is not called and lines are added to
-existing plot window.}
+\item{add}{If \code{TRUE}, new plot window is not called and lines are added
+to existing plot window.}
 
 \item{...}{additional arguments to pass.}
 }

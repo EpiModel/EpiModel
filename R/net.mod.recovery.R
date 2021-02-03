@@ -6,8 +6,8 @@
 #'              to a susceptible state (SIS model type), for use in
 #'              \code{\link{netsim}}.
 #'
-#' @param dat Master list object containing a \code{networkDynamic} object and other
-#'        initialization information passed from \code{\link{netsim}}.
+#' @param dat Master list object containing a \code{networkDynamic} object and
+#'        other initialization information passed from \code{\link{netsim}}.
 #' @param at Current time step.
 #'
 #' @export
@@ -42,7 +42,8 @@ recovery.net <- function(dat, at) {
   if (lrec.rate == 1) {
     ratesElig <- rec.rate
   } else {
-    ratesElig <- ifelse(infDur <= lrec.rate, rec.rate[infDur], rec.rate[lrec.rate])
+    ratesElig <- ifelse(infDur <= lrec.rate, rec.rate[infDur],
+                        rec.rate[lrec.rate])
   }
 
 
@@ -71,8 +72,8 @@ recovery.net <- function(dat, at) {
 #'              to a susceptible state (SIS model type), for use in
 #'              \code{\link{netsim}}.
 #'
-#' @param dat Master list object containing a \code{networkDynamic} object and other
-#'        initialization information passed from \code{\link{netsim}}.
+#' @param dat Master list object containing a \code{networkDynamic} object and
+#'        other initialization information passed from \code{\link{netsim}}.
 #' @param at Current time step.
 #'
 #' @export
@@ -114,13 +115,16 @@ recovery.2g.net <- function(dat, at) {
   } else {
     gElig <- group[idsElig]
     if (is.null(rec.rate.g2)) {
-      rates <- ifelse(infDur <= lrec.rate, rec.rate[infDur], rec.rate[lrec.rate])
+      rates <- ifelse(infDur <= lrec.rate, rec.rate[infDur],
+                      rec.rate[lrec.rate])
     } else {
       rates <- rep(NA, length(infDur))
       rates[gElig == 1] <- ifelse(infDur[gElig == 1] <= lrec.rate,
-                                  rec.rate[infDur[gElig == 1]], rec.rate[lrec.rate])
+                                  rec.rate[infDur[gElig == 1]],
+                                  rec.rate[lrec.rate])
       rates[gElig == 2] <- ifelse(infDur[gElig == 2] <= length(rec.rate.g2),
-                                  rec.rate.g2[infDur[gElig == 2]], rec.rate.g2[length(rec.rate.g2)])
+                                  rec.rate.g2[infDur[gElig == 2]],
+                                  rec.rate.g2[length(rec.rate.g2)])
     }
     ratesElig <- rates
   }

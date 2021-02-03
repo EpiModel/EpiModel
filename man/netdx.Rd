@@ -26,8 +26,8 @@ netdx(
 \item{nsims}{Number of simulations to run.}
 
 \item{dynamic}{If \code{TRUE}, runs dynamic diagnostics. If \code{FALSE} and
-the \code{netest} object was fit with the Edges Dissolution approximation
-method, simulates from the static ERGM fit.}
+the \code{netest} object was fit with the Edges Dissolution
+approximation method, simulates from the static ERGM fit.}
 
 \item{nsteps}{Number of time steps per simulation (dynamic simulations only).}
 
@@ -38,29 +38,29 @@ network model contained in \code{x}.}
 \item{set.control.ergm}{Control arguments passed to \code{simulate.ergm} (see
 details).}
 
-\item{set.control.stergm}{Control arguments passed to \code{simulate.stergm} (see
-details).}
+\item{set.control.stergm}{Control arguments passed to \code{simulate.stergm}
+(see details).}
 
-\item{sequential}{For static diagnostics (\code{dynamic=FALSE}): if \code{FALSE},
-each of the \code{nsims} simulated Markov chains begins at the initial
-network; If \code{TRUE}, the end of one simulation is used as the start
-of the next.}
+\item{sequential}{For static diagnostics (\code{dynamic=FALSE}): if
+\code{FALSE}, each of the \code{nsims} simulated Markov chains begins
+at the initial network; If \code{TRUE}, the end of one simulation is
+used as the start of the next.}
 
 \item{keep.tedgelist}{If \code{TRUE}, keep the timed edgelist generated from
-the dynamic simulations. Returned in the form of a list of matrices, with
-one entry per simulation. Accessible at \code{$edgelist}.}
+the dynamic simulations. Returned in the form of a list of matrices,
+with one entry per simulation. Accessible at \code{$edgelist}.}
 
-\item{keep.tnetwork}{If \code{TRUE}, keep the full networkDynamic objects from
-the dynamic simulations. Returned in the form of a list of nD objects, with
-one entry per simulation. Accessible at \code{$network}.}
+\item{keep.tnetwork}{If \code{TRUE}, keep the full networkDynamic objects
+from the dynamic simulations. Returned in the form of a list of nD
+objects, with one entry per simulation. Accessible at \code{$network}.}
 
 \item{verbose}{Print progress to the console.}
 
 \item{ncores}{Number of processor cores to run multiple simulations
 on, using the \code{foreach} and \code{doParallel} implementations.}
 
-\item{skip.dissolution}{If \code{TRUE}, skip over the calculations of duration
-and dissolution stats in netdx.}
+\item{skip.dissolution}{If \code{TRUE}, skip over the calculations of
+duration and dissolution stats in netdx.}
 }
 \description{
 Runs dynamic diagnostics on an ERGM/STERGM estimated through
@@ -68,21 +68,22 @@ Runs dynamic diagnostics on an ERGM/STERGM estimated through
 }
 \details{
 The \code{netdx} function handles dynamic network diagnostics for network
-models fit with the \code{netest} function. Given the fitted model, \code{netdx}
-simulates a specified number of dynamic networks for a specified number of
-time steps per simulation. The network statistics in \code{nwstats.formula}
-are saved for each time step. Summary statistics for the formation model terms,
-as well as dissolution model and relational duration statistics, are then
-calculated and can be accessed when printing or plotting the \code{netdx} object.
+models fit with the \code{netest} function. Given the fitted model,
+\code{netdx} simulates a specified number of dynamic networks for a specified
+number of time steps per simulation. The network statistics in
+\code{nwstats.formula} are saved for each time step. Summary statistics for
+the formation model terms, as well as dissolution model and relational
+duration statistics, are then calculated and can be accessed when printing or
+plotting the \code{netdx} object.
 }
 \section{Control Arguments}{
 
-Models fit with the full STERGM method in \code{netest} (setting \code{edapprox}
-argument to \code{FALSE}) require only a call to \code{simulate.stergm}.
-Control parameters for those simulations may be set using
-\code{set.control.stergm} in \code{netdx}. The parameters should be input
-through the \code{control.simulate.stergm()} function, with the available
-parameters listed in the \code{\link{control.simulate.stergm}} help
+Models fit with the full STERGM method in \code{netest} (setting
+\code{edapprox} argument to \code{FALSE}) require only a call to
+\code{simulate.stergm}. Control parameters for those simulations may be set
+using \code{set.control.stergm} in \code{netdx}. The parameters should be
+input through the \code{control.simulate.stergm()} function, with the
+available parameters listed in the \code{\link{control.simulate.stergm}} help
 page in the \code{tergm} package.
 
 Models fit with the ERGM method with the edges dissolution approximation

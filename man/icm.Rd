@@ -34,18 +34,20 @@ Simulates stochastic individual contact epidemic models for
 \details{
 Individual contact models are intended to be the stochastic microsimulation
 analogs to deterministic compartmental models. ICMs simulate disease spread
-on individual agents in discrete time as a function of processes with stochastic
-variation. The stochasticity is inherent in all transition processes:
-infection, recovery, and demographics. A detailed description of these models
-may be found in the \href{http://epimodel.org/tut.html}{Basic ICMs} tutorial.
+on individual agents in discrete time as a function of processes with
+stochastic variation. The stochasticity is inherent in all transition
+processes: infection, recovery, and demographics. A detailed description of
+these models  may be found in the
+\href{http://www.epimodel.org/tut.html}{Basic ICMs} tutorial.
 
 The \code{icm} function performs  modeling of both the base model types
 and original models. Base model types include one-group and two-group
 models with disease types for Susceptible-Infected (SI),
-Susceptible-Infected-Recovered (SIR), and Susceptible-Infected-Susceptible (SIS).
-Original models may be built by writing new process modules that either take
-the place of existing modules (for example, disease recovery), or supplement
-the set of existing processes with a new one contained in an original module.
+Susceptible-Infected-Recovered (SIR), and Susceptible-Infected-Susceptible
+(SIS). Original models may be built by writing new process modules that
+either take the place of existing modules (for example, disease recovery),
+or supplement the set of existing processes with a new one contained in an
+original module.
 }
 \examples{
 \dontrun{

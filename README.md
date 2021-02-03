@@ -1,10 +1,10 @@
 EpiModel
 ===============
 
-[![Version](http://img.shields.io/badge/Version-2.0.2-orange.svg?style=flat)](https://github.com/statnet/EpiModel/releases/tag/v2.0.2)
+[![Version](http://img.shields.io/badge/Version-2.0.3-orange.svg?style=flat)](https://github.com/statnet/EpiModel/releases/tag/v2.0.3)
 [![](http://cranlogs.r-pkg.org/badges/EpiModel?color=yellow)](http://cran.rstudio.com/web/packages/EpiModel/index.html)
 [![](http://cranlogs.r-pkg.org/badges/grand-total/EpiModel?color=blue)](http://cran.rstudio.com/web/packages/EpiModel/index.html)
-[![Build Status](https://travis-ci.org/statnet/EpiModel.svg?branch=master)](https://travis-ci.org/statnet/EpiModel)
+[![Build Status](https://github.com/statnet/EpiModel/workflows/R-CMD-check/badge.svg)](https://github.com/statnet/EpiModel/actions)
 [![Methods](https://img.shields.io/badge/docs-Methods-943ad8.svg)](http://doi.org/10.18637/jss.v084.i08)
 
 <br>
@@ -59,7 +59,7 @@ In July 2020, we relased EpiModel version 2.0. This major software package updat
 
 **Summer Course.** Network Modeling for Epidemics is our annual 5-day course at the University of Washington where we teach the statistical theory, software tools, and applied modeling methods using EpiModel. <a href="http://statnet.github.io/nme/" target="_blank">Our course materials</a> are open-source and updated annually around the time of the course.
 
-**Email listserv.** Users are encouraged to join the <a href="http://mailman11.u.washington.edu/mailman/listinfo/epimodel" target="_blank">email list for EpiModel</a> as a place to ask questions, report bugs, and tell us about your research using these tools.
+**Getting Help.** Users are encouraged to use Github issues on this repository as a place to ask questions (both technical coding quesitons and conceptual modeling questions), report bugs, and request new features & functionality. 
 
 
 ### The EpiModel Gallery

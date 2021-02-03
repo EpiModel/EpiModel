@@ -135,10 +135,11 @@ shinyUI(fluidPage(
                   plot below."),
          fluidRow(
            column(5,
-                  numericInput(inputId = "summTs",label = strong("Time Step"),
+                  numericInput(inputId = "summTs", label = strong("Time Step"),
                                value = 1, min = 1, max = 500)),
            column(5,
-                  numericInput(inputId = "summDig", label = strong("Significant Digits"),
+                  numericInput(inputId = "summDig",
+                               label = strong("Significant Digits"),
                                value = 3, min = 0, max = 8))),
          fluidRow(
            verbatimTextOutput(outputId = "outSummary")),
@@ -184,21 +185,25 @@ shinyUI(fluidPage(
 
 
         tabPanel("About",
-         p("This application solves and plots a stochastic individual contact epidemic models
-           (ICMs), which are intended to serve as microsimulation analogs to deterministic
-           compartmental models (DCMs). The model simulations are driven by the",
-           a("EpiModel", href = "http://cran.r-project.org/web/packages/EpiModel/index.html"),
+         p("This application solves and plots a stochastic individual contact
+           epidemic models (ICMs), which are intended to serve as
+           microsimulation analogs to deterministic compartmental models (DCMs).
+           The model simulations are driven by the",
+           a("EpiModel", href =
+               "http://cran.r-project.org/web/packages/EpiModel/index.html"),
            "package in R.", style = "margin-top: 25px"),
-         p("Models here are limited to basic one-group homogenous mixing models with
-           a limited set of parameters, initial conditions, and control settings. More
-           complex models are available in the command-line version of EpiModel. For
-           further details, including more background on the mathematics and theory behind
-           these ICMs, please consult the documentation, tutorials, and workshop materials
-           at the main", a("EpiModel website.", href = "http://epimodel.org/")),
+         p("Models here are limited to basic one-group homogenous mixing models
+           with a limited set of parameters, initial conditions, and control
+           settings. More complex models are available in the command-line
+           version of EpiModel. For further details, including more background
+           on the mathematics and theory behind these ICMs, please consult the
+           documentation, tutorials, and workshop materials at the main",
+           a("EpiModel website.", href = "http://epimodel.org/")),
          p("This web application, built with",
-           a("Shiny", href = "http://shiny.rstudio.com/"), "may be lauched via an R session with
-           EpiModel and Shiny installed (see the epiweb function), or directly on any web
-           browser (no R needed)", a("here.", href = "http://statnet.shinyapps.io/epiicm/")),
+           a("Shiny", href = "https://shiny.rstudio.com/"), "may be lauched via
+           an R session with EpiModel and Shiny installed (see the epiweb
+           function), or directly on any web browser (no R needed)",
+           a("here.", href = "http://statnet.shinyapps.io/epiicm/")),
          br(),
          strong("Authors"), p("Samuel M. Jenness, Department of Epidemiology,
                               Emory University"),

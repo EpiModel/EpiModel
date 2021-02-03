@@ -110,9 +110,9 @@ Plots dynamic network model diagnostics calculated in
              \code{netdx}.
 }
 \details{
-The plot function for \code{netdx} objects will generate plots of two types of
-model diagnostic statistics that run as part of the diagnostic tools within
-that function. The \code{formation} plot shows the summary statistics
+The plot function for \code{netdx} objects will generate plots of two types
+of model diagnostic statistics that run as part of the diagnostic tools
+within that function. The \code{formation} plot shows the summary statistics
 requested in \code{nwstats.formula}, where the default includes those
 statistics in the network model formation formula specified in the original
 call to \code{\link{netest}}.

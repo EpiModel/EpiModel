@@ -20,15 +20,15 @@ used for two-group models.}
 \item{r.num.g2}{Number of initial recovered in group 2. This parameter is
 only used for two-group \code{SIR} models.}
 
-\item{status.vector}{A vector of length equal to the size of the input network,
-containing the status of each node. Setting status here overrides any
-inputs passed in the \code{.num} arguments.}
+\item{status.vector}{A vector of length equal to the size of the input
+network, containing the status of each node. Setting status here
+overrides any inputs passed in the \code{.num} arguments.}
 
-\item{infTime.vector}{A vector of length equal to the size of the input network,
-containing the (historical) time of infection for each of those nodes
-with a current status of \code{"i"}. Can only be used if \code{status.vector}
-is used, and must contain \code{NA} values for any nodes whose status
-is not \code{"i"}.}
+\item{infTime.vector}{A vector of length equal to the size of the input
+network, containing the (historical) time of infection for each of
+those nodes with a current status of \code{"i"}. Can only be used if
+\code{status.vector} is used, and must contain \code{NA} values for
+any nodes whose status is not \code{"i"}.}
 
 \item{...}{Additional initial conditions passed to model.}
 }
@@ -41,7 +41,7 @@ The initial conditions for a model solved with \code{\link{netsim}} should be
 input into the \code{init.net} function. This function handles initial
 conditions for both base models and new modules. For an overview of
 specifying initial conditions across a variety of base network models,
-consult the \href{http://epimodel.org/tut.html}{Basic Network Models}
+consult the \href{http://www.epimodel.org/tut.html}{Basic Network Models}
 tutorials.
 }
 \examples{

@@ -111,9 +111,9 @@ as.data.frame.dcm <- function(x, row.names = NULL, optional = FALSE, run,
 #'
 #' @param x An \code{EpiModel} object of class \code{icm} or \code{netsim}.
 #' @param out Data output to data frame: \code{"mean"} for row means across
-#'        simulations, \code{"sd"} for row standard deviations across simulations,
-#'        \code{"qnt"} for row quantiles at the level specified in \code{qval},
-#'        or \code{"vals"} for values from individual simulations.
+#'        simulations, \code{"sd"} for row standard deviations across
+#'        simulations, \code{"qnt"} for row quantiles at the level specified in
+#'        \code{qval}, or \code{"vals"} for values from individual simulations.
 #' @param sim If \code{out="vals"}, the simulation number to output. If not
 #'        specified, then data from all simulations will be output.
 #' @param qval Quantile value required when \code{out="qnt"}.
@@ -123,11 +123,11 @@ as.data.frame.dcm <- function(x, row.names = NULL, optional = FALSE, run,
 #'
 #' @details
 #' These methods work for both \code{icm} and \code{netsim} class models. The
-#' available output includes time-specific means, standard deviations, quantiles,
-#' and simulation values (compartment and flow sizes) from these stochastic model
-#' classes. Means, standard deviations, and quantiles are calculated by taking the
-#' row summary (i.e., each row of data is corresponds to a time step) across all
-#' simulations in the model output.
+#' available output includes time-specific means, standard deviations,
+#' quantiles, and simulation values (compartment and flow sizes) from these
+#' stochastic model classes. Means, standard deviations, and quantiles are
+#' calculated by taking the row summary (i.e., each row of data is corresponds
+#' to a time step) across all simulations in the model output.
 #'
 #' @method as.data.frame icm
 #' @keywords extract
@@ -318,7 +318,8 @@ as.data.frame.netsim <- function(x, row.names = NULL, optional = FALSE,
 #' est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 #'
 #' # Simulate the network with netdx
-#' dx <- netdx(est, nsims = 3, nsteps = 10, keep.tedgelist = TRUE, verbose = FALSE)
+#' dx <- netdx(est, nsims = 3, nsteps = 10, keep.tedgelist = TRUE,
+#'             verbose = FALSE)
 #'
 #' # Extract data from the first simulation
 #' as.data.frame(dx, sim = 1)

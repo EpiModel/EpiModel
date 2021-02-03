@@ -262,6 +262,21 @@ Note also that it is now possible to have a continuum of mixing levels by specif
 
 **This update applies to both built-in and extension models.**
 
+## Update to Prevalence Function
+The function querying of current state or compartment sizes during simulation has been renamed from`get_prev.net` to `prevalance.net`. Control settings, passed through `control.net`, should be updated as such:
+
+```{r echo = TRUE, eval = FALSE}
+## EpiModel 1.x
+control <- control.net(get_prev.FUN = get_prev.net)
+```
+
+```{r echo = TRUE, eval = FALSE}
+## EpiModel 2.0
+control <- control.net(prevalence.FUN = prevalence.net)
+```
+
+**This update applies to both built-in and extension models.**
+
 ## Group-Specific Parameters
 Within the initial conditions and epidemic parameters, mode-specific parameters (ending with `.m2`) should be replaced with group-specific parameters (ending with `.g2`). For example, the following:
 
@@ -359,21 +374,21 @@ The new accessor functions provide utilities for getting, setting, and appending
 ```{r echo = TRUE, eval = FALSE}
 ## EpiModel 1.x
 newAge <- sample(15:65, 100, replace = TRUE)
-dat$attr$age <- age
+dat$attr$age <- newAge
 ```
 
 or 
 ```{r echo = TRUE, eval = FALSE}
 ## EpiModel 1.x
 newAge <- sample(15:65, 100, replace = TRUE)
-dat[["attr"]][["age"]] <- age
+dat[["attr"]][["age"]] <- newAge
 ```
 
 should be updated to:
 ```{r echo = TRUE, eval = FALSE}
 ## EpiModel 2.0
 newAge <- sample(15:65, 100, replace = TRUE)
-dat <- set_attr(dat, "age", age)
+dat <- set_attr(dat, "age", newAge)
 ```
 
 Similarly for retrieval and setting of list elements:
@@ -419,6 +434,39 @@ dat <- append_attr(dat, "age", newAge, 2)
 ```
 
 See `help("dat_get_set", "EpiModel")` for the complete list of accessor functions and their use.
+
+**This update only applies to extension models.**
+
+## Syntax in Extenstion Models with Population Dynamics
+With the update to EpiModel 2.0, and introduction of new helper modules (specifically `nwupdate.net`), we have implemented [ ]. In extension models with population dynamics (i.e. arrivals and departures from the population) it is necessary to include three individual level attributes within your workflow:
+* `active`: an attribute indicating whether an individual is active within the population.
+* `entrTime`: an attribute that indicates time of entry into the population.
+* `exitTime`: an attribute that indicates time of exit from the population.
+
+These two attributes should be created at initialization (see `initialize.net()` or below for a coding example) and updated in their associated modules: `arrivals.FUN` (for `active` and `entrTime`) and `departures.FUN` (for `active` and `exitTime`). These three attributes are used in the helper function `nwupdate.net` and are now required for the use of EpiModel when population dynamics are present.
+
+As an example (sample code for initialization and arrival modules):
+
+```{r echo = TRUE, eval = FALSE}
+my_initialize <- function() {
+  # Standard attributes
+  num <- network.size(nw)
+  dat <- set_attr(dat, "active", rep(1, num), override.length.check = TRUE)
+  dat <- set_attr(dat, "entrTime", rep(1, num))
+  dat <- set_attr(dat, "exitTime", rep(NA, num))
+  
+}
+```
+
+```{r echo = TRUE, eval = FALSE}
+# Given total new arrivals equal to nArrivals, update attributes
+my_arrivals <- function() {
+  dat <- append_attr(dat, "active", 1, nArrivals)
+  dat <- append_attr(dat, "entrTime", at, nArrivals)
+  dat <- append_attr(dat, "exitTime", NA, nArrivals)
+}
+```
+
 
 **This update only applies to extension models.**
 

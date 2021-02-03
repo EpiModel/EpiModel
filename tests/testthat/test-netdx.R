@@ -57,25 +57,27 @@ test_that("Edges only models", {
 })
 
 test_that("Formation plot color vector length", {
-  n = 100
-  mean.degree <- ((0*0.10) + (1*0.41) + (2*0.25) + (3*0.22))
-  expected.concurrent <- n*0.49
-  expected.edges <- (mean.degree)*(n/2)
+  n <-  100
+  mean.degree <- ((0 * 0.10) + (1 * 0.41) + (2 * 0.25) + (3 * 0.22))
+  expected.concurrent <- n * 0.49
+  expected.edges <- (mean.degree) * (n / 2)
   nw <- network_initialize(n = n)
   formation <- ~edges + concurrent + degrange(from = 4)
   target.stats <- c(expected.edges, expected.concurrent, 0)
-  coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 40, d.rate = 0.01)
+  coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 40,
+                                 d.rate = 0.01)
   est <- netest(nw, formation, target.stats, coef.diss)
   dx <- netdx(est, nsims = 2, nsteps = 500,
               nwstats.formula = ~edges + meandeg + degree(0:4) + concurrent)
 
-  expect_error(plot(dx, sim.col = c("green","orange")))
-  expect_error(plot(dx, mean.col = c("green","orange")))
-  expect_error(plot(dx, targ.col = c("green","orange")))
-  expect_error(plot(dx, qnts.col = c("green","orange")))
+  expect_error(plot(dx, sim.col = c("green", "orange")))
+  expect_error(plot(dx, mean.col = c("green", "orange")))
+  expect_error(plot(dx, targ.col = c("green", "orange")))
+  expect_error(plot(dx, qnts.col = c("green", "orange")))
 })
 
-test_that("Netdx duration and dissolution plots error when skip.dissolution = TRUE", {
+test_that("Netdx duration and dissolution plots error when
+          skip.dissolution = TRUE", {
   nw <- network_initialize(n = 100)
   formation <- ~edges
   target.stats <- 50
@@ -92,7 +94,7 @@ test_that("Netdx duration and dissolution plots error when skip.dissolution = TR
 test_that("Offset terms", {
   n <- 50
   nw <- network_initialize(n = n)
-  nw <- set_vertex_attribute(nw, "loc", rep(0:1, each = n/2))
+  nw <- set_vertex_attribute(nw, "loc", rep(0:1, each = n / 2))
   dissolution <- ~offset(edges)
   duration <- 40
   coef.diss <- dissolution_coefs(dissolution, duration)
@@ -114,7 +116,8 @@ test_that("Offset terms", {
 
   ## Offset term with expanded formula
   dx <- netdx(est2, nsims = 2, nsteps = 50, verbose = FALSE,
-              nwstats.formula = ~edges + meandeg + concurrent + nodematch("loc"))
+              nwstats.formula =
+                ~edges + meandeg + concurrent + nodematch("loc"))
   expect_is(dx, "netdx")
   print(dx)
   plot(dx)
@@ -130,7 +133,7 @@ test_that("Offset terms", {
 test_that("Faux offset term", {
   n <- 50
   nw <- network_initialize(n = n)
-  nw <- set_vertex_attribute(nw, "loc", rep(0:1, each = n/2))
+  nw <- set_vertex_attribute(nw, "loc", rep(0:1, each = n / 2))
   coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 40)
   formation <- ~edges + nodemix("loc", base = c(1, 3))
   target.stats <- c(15, 0)
@@ -153,13 +156,12 @@ test_that("More complicated faux offset term", {
   skip_on_cran()
   nw <- network_initialize(n = 1000)
   nw <- set_vertex_attribute(nw, "sexor",
-                             sample(c(rep(1,20), rep(2,460),
-                                      rep(3,20), rep(4,500))))
-  nw <- set_vertex_attribute(nw, "region", sample(rep(1:5,200)))
+                             sample(c(rep(1, 20), rep(2, 460),
+                                      rep(3, 20), rep(4, 500))))
+  nw <- set_vertex_attribute(nw, "region", sample(rep(1:5, 200)))
   fit <- netest(nw,
-                formation = ~edges +
-                             nodemix("sexor", base = 1) +
-                             nodematch("region"),
+                formation =
+                  ~edges + nodemix("sexor", base = 1) + nodematch("region"),
                 target.stats = c(463, 0, 0, 18, 0, 6, 0, 380, 25, 0, 400),
                 coef.diss = dissolution_coefs(~offset(edges), 60))
   dx <- netdx(fit, nsteps = 10, verbose = FALSE)

@@ -9,14 +9,14 @@ get_sims(x, sims, var)
 \arguments{
 \item{x}{An object of class \code{netsim}.}
 
-\item{sims}{A numeric vector of simulation numbers to retain in the output object,
-or \code{"mean"} which selects the one simulation with the value of the
-variable specified in \code{var} closest to the mean of \code{var}
-across all simulations.}
+\item{sims}{A numeric vector of simulation numbers to retain in the output
+object, or \code{"mean"} which selects the one simulation with the
+value of the variable specified in \code{var} closest to the mean of
+\code{var} across all simulations.}
 
-\item{var}{A character vector of variables to retain from \code{x} if \code{sims}
-is a numeric vector, or a single variable name for selecting the average
-simulation from the set if \code{sims = "mean"}.}
+\item{var}{A character vector of variables to retain from \code{x} if
+\code{sims} is a numeric vector, or a single variable name for
+selecting the average simulation from the set if \code{sims = "mean"}.}
 }
 \description{
 Subsets the entire \code{netsim} object to a subset of

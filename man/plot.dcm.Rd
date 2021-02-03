@@ -30,7 +30,8 @@
 \item{popfrac}{If \code{TRUE}, plot prevalence of values rather than numbers
 (see details).}
 
-\item{run}{Run number to plot, for models with multiple runs (default is run 1).}
+\item{run}{Run number to plot, for models with multiple runs
+(default is run 1).}
 
 \item{col}{Color for lines, either specified as a single color in a standard
 R color format, or alternatively as a color palette from
@@ -40,11 +41,11 @@ R color format, or alternatively as a color palette from
 
 \item{lty}{Line type for output lines.}
 
-\item{alpha}{Transparency level for lines, where 0 = transparent and 1 = opaque
-(see \code{adjustcolor} function).}
+\item{alpha}{Transparency level for lines, where 0 = transparent and
+1 = opaque (see \code{adjustcolor} function).}
 
-\item{legend}{Type of legend to plot. Values are "n" for no legend, "full" for
-full legend, and "lim" for limited legend (see details).}
+\item{legend}{Type of legend to plot. Values are "n" for no legend, "full"
+for full legend, and "lim" for limited legend (see details).}
 
 \item{leg.name}{Character string to use for legend, with the default
 determined automatically based on the \code{y} input.}
@@ -57,8 +58,8 @@ of "r".}
 \item{grid}{If \code{TRUE}, a grid is added to the background of plot
 (see \code{\link{grid}} for details), with default of nx by ny.}
 
-\item{add}{If \code{TRUE}, new plot window is not called and lines are added to
-existing plot window.}
+\item{add}{If \code{TRUE}, new plot window is not called and lines are added
+to existing plot window.}
 
 \item{...}{Additional arguments to pass to main plot window (see
 \code{\link{plot.default}}).}
@@ -72,29 +73,30 @@ This function plots epidemiological outcomes from a deterministic
 compartmental model solved with \code{\link{dcm}}. Depending on the number of
 model runs (sensitivity analyses) and number of groups, the default plot is
 the fractional proportion of each compartment in the model over time. The
-specific compartments or flows to plot may be set using the \code{y} parameter,
-and in multiple run models the specific run may also be specified.
+specific compartments or flows to plot may be set using the \code{y}
+parameter, and in multiple run models the specific run may also be specified.
 }
 \section{The \code{popfrac} Argument}{
 
 Compartment prevalence are the size of a compartment over some denominator.
 To plot the raw numbers from any compartment, use \code{popfrac=FALSE}; this
 is the default. The \code{popfrac} parameter calculates
-and plots the denominators of all specified compartments using these rules: 1)
-for one-group models, the prevalence of any compartment is the compartment size
-divided by the total population size; 2) for two-group models, the prevalence
-of any compartment is the compartment size divided by the group size.
+and plots the denominators of all specified compartments using these rules:
+1) for one-group models, the prevalence of any compartment is the compartment
+size divided by the total population size; 2) for two-group models, the
+prevalence of any compartment is the compartment size divided by the group
+size.
 }
 
 \section{Color Palettes}{
 
 Since \code{\link{dcm}} supports multiple run sensitivity models, plotting
-the results of such models uses a complex color scheme for distinguishing runs.
-This is accomplished using the \code{\link{RColorBrewer}} color palettes,
-which include a range of linked colors using named palettes. For
+the results of such models uses a complex color scheme for distinguishing
+runs. This is accomplished using the \code{\link{RColorBrewer}} color
+palettes, which include a range of linked colors using named palettes. For
 \code{plot.dcm}, one may either specify a brewer color palette listed in
-\code{\link{brewer.pal.info}}, or, alternatively, a vector of standard R colors
-(named, hexidecimal, or positive integers; see \code{\link{col2rgb}}).
+\code{\link{brewer.pal.info}}, or, alternatively, a vector of standard R
+colors (named, hexidecimal, or positive integers; see \code{\link{col2rgb}}).
 }
 
 \section{Plot Legends}{
@@ -103,10 +105,10 @@ There are three automatic legend types available, and the legend is
 added by default for plots. To turn off the legend, use \code{legend="n"}. To
 plot a legend with values for every line in a sensitivity analysis, use
 \code{legend="full"}. With models with many runs, this may be visually
-overwhelming. In those cases, use \code{legend="lim"} to plot a legend limited
-to the highest and lowest values of the varying parameter in the model. In cases
-where the default legend names are not helpful, one may override those names
-with the \code{leg.name} argument.
+overwhelming. In those cases, use \code{legend="lim"} to plot a legend
+limited to the highest and lowest values of the varying parameter in the
+model. In cases where the default legend names are not helpful, one may
+override those names with the \code{leg.name} argument.
 }
 
 \examples{

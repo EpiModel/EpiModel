@@ -8,13 +8,13 @@ edgelist_censor(el)
 }
 \arguments{
 \item{el}{Timed edgelist with start and end times extracted from a
-\code{networkDynamic} object using the \code{as.data.frame.networkDynamic}
-function.}
+\code{networkDynamic} object using the
+\code{as.data.frame.networkDynamic} function.}
 }
 \description{
 Outputs a table of the number and percent of edges that are
-             left-censored, right-censored, both-censored, or uncensored for a
-             \code{networkDynamic} object.
+             left-censored, right-censored, both-censored, or uncensored for
+             a \code{networkDynamic} object.
 }
 \details{
 Given a STERGM simulation over a specified number of time steps, the edges
@@ -34,7 +34,8 @@ coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
 est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 
 # Simulate the network and extract a timed edgelist
-dx <- netdx(est, nsims = 1, nsteps = 100, keep.tedgelist = TRUE, verbose = FALSE)
+dx <- netdx(est, nsims = 1, nsteps = 100, keep.tedgelist = TRUE,
+      verbose = FALSE)
 el <- as.data.frame(dx)
 
 # Calculate censoring

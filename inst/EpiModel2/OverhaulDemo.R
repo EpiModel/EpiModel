@@ -26,7 +26,7 @@ control <- control.net(type = "SIS", nsteps = 100, nsims = 5)
 # Epidemic simulation
 sim1 <- netsim(est1, param, init, control)
 summary(sim1, at = 50)
-par(mfrow = c(1, 1), mar = c(3,3,1,1), mgp = c(2,1,0))
+par(mfrow = c(1, 1), mar = c(3, 3, 1, 1), mgp = c(2, 1, 0))
 plot(sim1)
 
 
@@ -65,10 +65,10 @@ aging <- function(dat, at) {
   ## Attributes
   if (at == 2) {
     n <- sum(dat$attr$active == 1)
-    dat$attr$age <- sample(seq(from = 18, to = 69 + 11/12, by = 1/12),
+    dat$attr$age <- sample(seq(from = 18, to = 69 + 11 / 12, by = 1 / 12),
                            n, replace = TRUE)
   } else {
-    dat$attr$age <- dat$attr$age + 1/12
+    dat$attr$age <- dat$attr$age + 1 / 12
   }
 
   ## Summary statistics
@@ -123,7 +123,7 @@ dfunc <- function(dat, at) {
 bfunc <- function(dat, at) {
 
   growth.rate <- dat$param$growth.rate
-  exptPopSize <- dat$epi$num[1]*(1 + growth.rate*at)
+  exptPopSize <- dat$epi$num[1] * (1 + growth.rate * at)
   n <- network.size(dat$nw)
 
   numNeeded <- exptPopSize - sum(dat$attr$active == 1)
@@ -160,13 +160,15 @@ est3 <- netest(nw, formation = ~ edges, target.stats = 150,
                                              mean(death.rates)))
 
 ## Epidemic model parameterization
-param <- param.net(inf.prob = 0.15, growth.rate = 0.01/12, max.age = 70)
+param <- param.net(inf.prob = 0.15, growth.rate = 0.01 / 12, max.age = 70)
 init <- init.net(i.num = 50)
 #User must specify all base functions when "type" is NULL
 control <- control.net(type = NULL, nsims = 1, nsteps = 100,
                        departures.FUN = dfunc, arrivals.FUN = bfunc,
-                       prevalence.FUN = prevalence.net, infection.FUN = infection.net,
-                       recovery.FUN = recovery.net, aging.FUN = aging, depend = TRUE)
+                       prevalence.FUN = prevalence.net,
+                       infection.FUN = infection.net,
+                       recovery.FUN = recovery.net, aging.FUN = aging,
+                       depend = TRUE)
 
 ## Simulate the epidemic model
 sim3 <- netsim(est3, param, init, control)
