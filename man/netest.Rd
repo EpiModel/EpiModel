@@ -92,6 +92,13 @@ than to conduct inference on the formation model. The user is strongly
 encouraged to examine the behavior of the resulting simulations to confirm
 that the approximation is adequate for their purposes. For an example, see
 the vignette for the package \code{tergm}.
+
+It has recently been found that subtracting a modified version of the 
+dissolution coefficients from the formation coefficients provides a more 
+principled approximation, and this is now the form of the approximation 
+applied by \code{netest}.  (The modified values subtracted from the formation
+coefficients are equivalent to the (crude) dissolution coefficients with 
+their target durations increased by 1.)
 }
 
 \section{Control Arguments}{

@@ -27,6 +27,8 @@ A list of class \code{disscoef} with the following elements:
  \item \strong{coef.adj:} crude coefficients adjusted for the risk of
        departure on edge persistence, if the \code{d.rate} argument is
        supplied.
+ \item \strong{coef.form.corr:} corrections to be subtracted from formation
+       coefficients.
  \item \strong{d.rate:} the departure rate.
 }
 }
