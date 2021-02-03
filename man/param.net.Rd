@@ -181,17 +181,17 @@ target.stats <- 50
 coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
 est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 
-# Random parameter list
+# Random epidemic parameter list
 my_randoms <- list(
   act.rate = param_random(1:3),
-  inf.prob = function() rbeta(1, 1, 2),
+  inf.prob = function() rbeta(1, 1, 2)
 )
 
 # Parameters, initial conditions, and control settings
 param <- param.net(rec.rate = 0.02, random.params = my_randoms)
 init <- init.net(i.num = 10, r.num = 0)
-control <- control.net(type = "SIR", nsteps = 100, nsims = 1,
-                       resimulate.network = TRUE, tergmLite = TRUE)
+control <- control.net(type = "SIR", nsteps = 100, nsims = 5,
+                       resimulate.network = FALSE, tergmLite = FALSE)
 
 # Simulate the model
 sim <- netsim(est, param, init, control)
