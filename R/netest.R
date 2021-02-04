@@ -207,8 +207,6 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
     fit$constrained <- NULL
     environment(fit$sample.obs) <- NULL
     environment(fit$reference) <- NULL
-    environment(fit$constraints) <- environment()
-
 
     out <- list()
     out$fit <- fit
