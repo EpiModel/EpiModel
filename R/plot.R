@@ -1557,7 +1557,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
                                             y = qnt.prev[2, ]))$y))
       }
       yy_trunc <- yy + c(pages_trunc, rev(pages_trunc))
-      qnt.max <-  max(yy) ## TO DO 
+      qnt.max <-  max(yy, yy_trunc) 
     }
     }
 
@@ -1570,7 +1570,8 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev),
                                              y = mean.prev))$y
       }
-      mean.max <-  max(mean.prev) ## TO DO 
+      mean.prev.trunc <- mean.prev + pages_trunc
+      mean.max <-  max(mean.prev, mean.prev.trunc) 
     }
 
     if (missing(sim.lines)) {
@@ -1649,7 +1650,9 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
                   rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
                                               y = qnt.prev[2, ]))$y))
         }
+        yy_trunc <- yy + c(pages_trunc, rev(pages_trunc))
         polygon(xx, yy, col = qnts.col, border = NA)
+        polygon(xx, yy_trunc, col = qnts.col, border = NA)
       }
       }
 
@@ -1657,6 +1660,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
       if (sim.lines == TRUE) {
         for (i in sims) {
           lines(pages[[i]], lwd = sim.lwd, col = sim.col)
+          lines(pages[[i]]+pages_trunc, lwd = sim.lwd, col = sim.col)
         }
       }
 
@@ -1667,11 +1671,17 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         dataj <- as.data.frame(pages)
         dataj <- dataj[complete.cases(dataj), , drop = FALSE]
         mean.prev <- rowMeans(dataj)
+        mean.prev.trunc <- mean.prev + pages_trunc
         if (mean.smooth == TRUE) {
           mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev),
                                                y = mean.prev))$y
+          mean.prev.trunc <- suppressWarnings(supsmu(x = 1:length(mean.prev.trunc),
+                                                     y = mean.prev.trunc))$y
+          
         }
         lines(mean.prev, lwd = mean.lwd,
+              col = mean.col, lty = mean.lty)
+        lines(mean.prev.trunc, lwd = mean.lwd,
               col = mean.col, lty = mean.lty)
       }
 
