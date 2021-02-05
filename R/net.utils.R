@@ -269,6 +269,8 @@ copy_datattr_to_nwattr <- function(dat) {
 #'  \item \strong{coef.adj:} crude coefficients adjusted for the risk of
 #'        departure on edge persistence, if the \code{d.rate} argument is
 #'        supplied.
+#'  \item \strong{coef.form.corr:} corrections to be subtracted from formation
+#'        coefficients.
 #'  \item \strong{d.rate:} the departure rate.
 #' }
 #'
@@ -303,13 +305,12 @@ copy_datattr_to_nwattr <- function(dat) {
 #' # durations = non-matched, age.grp1 & age.grp1, age.grp2 & age.grp2, ...
 #' # TERGM will include differential homophily by age group with nodematch term
 #' # Target stats for the formation model are overall edges, and then the number
-#' #    matched within age.grp 1, age.grp 2, ..., age.grp 5
+#' # matched within age.grp 1, age.grp 2, ..., age.grp 5
 #' form <- ~edges + nodematch("age.grp", diff = TRUE)
 #' target.stats <- c(450, 100, 125, 40, 80, 100)
 #'
 #' # Target stats for the dissolution model are duration of non-matched edges,
-#'      then duration of edges matched within age.grp 1, age.grp 2, ...,
-#'      age.grp 5
+#' # then duration of edges matched within age.grp 1, age.grp 2, ..., age.grp 5
 #' durs <- c(60, 30, 80, 100, 125, 160)
 #' diss <- dissolution_coefs(~offset(edges) +
 #'                             offset(nodematch("age.grp", diff = TRUE)),
@@ -402,10 +403,11 @@ dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
 
     coef.crude <- log(pg / (1 - pg))
     coef.adj <- log(pg / (ps2 - pg))
+    coef.form.corr <- log(1 + pg / (1 - pg))
   }
   if (form.length == 2) {
     if (t2.term %in% c("nodematch", "nodefactor", "nodemix")) {
-      coef.crude <- coef.adj <- NA
+      coef.crude <- coef.adj <- coef.form.corr <- NA
       for (i in 1:length(duration)) {
         pg <- (duration[i] - 1) / duration[i]
         ps2 <- (1 - d.rate) ^ 2
@@ -419,9 +421,11 @@ dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
         if (i == 1) {
           coef.crude[i] <- log(pg / (1 - pg))
           coef.adj[i] <- log(pg / (ps2 - pg))
+          coef.form.corr[i] <- log(1 + pg / (1 - pg))
         } else {
           coef.crude[i] <- log(pg / (1 - pg)) - coef.crude[1]
           coef.adj[i] <- log(pg / (ps2 - pg)) - coef.adj[1]
+          coef.form.corr[i] <- log(1 + pg / (1 - pg)) - coef.form.corr[1]
         }
       }
     } else {
@@ -434,6 +438,7 @@ dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
   out$duration <- duration
   out$coef.crude <- coef.crude
   out$coef.adj <- coef.adj
+  out$coef.form.corr <- coef.form.corr
   out$d.rate <- d.rate
   out$model.type <- model.type
   class(out) <- "disscoef"

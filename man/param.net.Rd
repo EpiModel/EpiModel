@@ -172,6 +172,35 @@ default modules for parameter validity, these checks are the user's
 responsibility with new modules.
 }
 
+\examples{
+## Example SIR model parameterization with fixed and random parameters
+# Network model estimation
+nw <- network_initialize(n = 100)
+formation <- ~edges
+target.stats <- 50
+coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
+est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
+
+# Random epidemic parameter list
+my_randoms <- list(
+  act.rate = param_random(1:3),
+  inf.prob = function() rbeta(1, 1, 2)
+)
+
+# Parameters, initial conditions, and control settings
+param <- param.net(rec.rate = 0.02, random.params = my_randoms)
+init <- init.net(i.num = 10, r.num = 0)
+control <- control.net(type = "SIR", nsteps = 100, nsims = 5,
+                       resimulate.network = FALSE, tergmLite = FALSE)
+
+# Simulate the model
+sim <- netsim(est, param, init, control)
+
+# Print and plot
+sim
+plot(sim)
+
+}
 \seealso{
 Use \code{\link{init.net}} to specify the initial conditions and
          \code{\link{control.net}} to specify the control settings. Run the

@@ -21,6 +21,7 @@ test_that("netsim par, 1 sim, 1 core", {
 
 test_that("netsim par, 2 sims, 2 cores", {
   skip_on_cran()
+  skip_on_os("windows")
   nw <- network_initialize(n = 50)
   est <- netest(nw, formation = ~edges, target.stats = 24,
                 coef.diss = dissolution_coefs(~offset(edges), 10, 0),
