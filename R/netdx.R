@@ -451,6 +451,7 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
     if (skip.dissolution == FALSE) {
       out$stats.table.dissolution <- stats.table.dissolution
       out$pages <- pages
+      out$pages_trunc <- pages_trunc
       out$prop.diss <- prop.diss
     }
     if (keep.tedgelist == TRUE) {

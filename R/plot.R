@@ -1524,7 +1524,8 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
     }
 
     pages <- x$pages
-
+    pages_trunc <- x$pages_trunc
+    
     xlim <- c(1, nsteps)
     if (length(da) > 0 & !is.null(da$xlim)) {
      xlim <- da$xlim
@@ -1555,7 +1556,8 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
                 rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
                                             y = qnt.prev[2, ]))$y))
       }
-      qnt.max <-  max(yy)
+      yy_trunc <- yy + c(pages_trunc, rev(pages_trunc))
+      qnt.max <-  max(yy) ## TO DO 
     }
     }
 
@@ -1568,7 +1570,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev),
                                              y = mean.prev))$y
       }
-      mean.max <-  max(mean.prev)
+      mean.max <-  max(mean.prev) ## TO DO 
     }
 
     if (missing(sim.lines)) {
