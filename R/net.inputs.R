@@ -134,6 +134,34 @@
 #'
 #' @export
 #'
+#' @examples
+#' ## Example SIR model parameterization with fixed and random parameters
+#' # Network model estimation
+#' nw <- network_initialize(n = 100)
+#' formation <- ~edges
+#' target.stats <- 50
+#' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
+#' est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
+#'
+#' # Random epidemic parameter list
+#' my_randoms <- list(
+#'   act.rate = param_random(1:3),
+#'   inf.prob = function() rbeta(1, 1, 2)
+#' )
+#'
+#' # Parameters, initial conditions, and control settings
+#' param <- param.net(rec.rate = 0.02, random.params = my_randoms)
+#' init <- init.net(i.num = 10, r.num = 0)
+#' control <- control.net(type = "SIR", nsteps = 100, nsims = 5,
+#'                        resimulate.network = FALSE, tergmLite = FALSE)
+#'
+#' # Simulate the model
+#' sim <- netsim(est, param, init, control)
+#'
+#' # Print and plot
+#' sim
+#' plot(sim)
+#'
 param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
                       a.rate, ds.rate, di.rate, dr.rate, inf.prob.g2,
                       rec.rate.g2, a.rate.g2, ds.rate.g2, di.rate.g2,
@@ -261,7 +289,17 @@ update_params <- function(x, new.param.list) {
 
 #' @return one of the values from the \code{values} vector.
 #'
+#' @seealso \code{\link{param.net}} and \code{\link{generate_random_params}}
 #' @export
+#'
+#' @examples
+#' # Define function with equal sampling probability
+#' a <- param_random(1:5)
+#' a()
+#'
+#' # Define function with unequal sampling probability
+#' b <- param_random(1:5, prob = c(0.1, 0.1, 0.1, 0.1, 0.6))
+#' b()
 #'
 param_random <- function(values, prob = NULL) {
   if (!is.null(prob) && length(prob) != length(values)) {

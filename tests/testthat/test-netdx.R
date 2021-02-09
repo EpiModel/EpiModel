@@ -201,6 +201,7 @@ test_that("Static diagnostic simulations", {
 
 test_that("Parallel methods", {
   skip_on_cran()
+  skip_on_os(os = "windows")
   num <- 50
   nw <- network_initialize(n = num)
   formation <- ~edges
@@ -233,6 +234,7 @@ test_that("Cross sectional ergm dynamic error check", {
 
 test_that("Full STERGM", {
   skip_on_cran()
+  skip_on_os(os = "windows")
   nw <- network_initialize(n = 50)
   est <- netest(nw, formation = ~edges, target.stats = 25,
                 coef.diss = dissolution_coefs(~offset(edges), 10, 0),

@@ -21,3 +21,16 @@ This function returns a 0 argument function that can be used as
              a generator function in the \code{random_params} argument of the
              \code{\link{param.net}} function.
 }
+\examples{
+# Define function with equal sampling probability
+a <- param_random(1:5)
+a()
+
+# Define function with unequal sampling probability
+b <- param_random(1:5, prob = c(0.1, 0.1, 0.1, 0.1, 0.6))
+b()
+
+}
+\seealso{
+\code{\link{param.net}} and \code{\link{generate_random_params}}
+}

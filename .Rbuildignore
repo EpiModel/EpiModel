@@ -12,3 +12,4 @@ inst/EpiModel2/*.pptx
 inst/EpiModel2/*.xlsx
 inst/EpiModel2/*.png
 .github
+^\.github$
