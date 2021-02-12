@@ -961,7 +961,7 @@ draw_means <- function(x, y, mean.smooth, mean.lwd,
 #' }
 #'
 plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
-                       sim.lines, sim.col, sim.lwd, mean.line = TRUE,
+                       dur.type, sim.lines, sim.col, sim.lwd, mean.line = TRUE,
                        mean.smooth = TRUE, mean.col, mean.lwd = 2, mean.lty = 1,
                        qnts = 0.5, qnts.col, qnts.alpha, qnts.smooth = TRUE,
                        targ.line = TRUE, targ.col, targ.lwd = 2, targ.lty = 2,
@@ -1523,6 +1523,15 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
            currently available", call. = FALSE)
     }
 
+    if (missing(dur.type)) {
+      dur.type <- "imputed"
+    }
+    
+    if(!(dur.type %in% c("observed", "imputed"))) {
+      stop("For plots of type duration, dur.type must equal 
+           either observed or imputed", call. = FALSE)
+    }
+      
     pages <- x$pages
     pages_trunc <- x$pages_trunc
     
@@ -1651,16 +1660,16 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
                                               y = qnt.prev[2, ]))$y))
         }
         yy_trunc <- yy + c(pages_trunc, rev(pages_trunc))
-        polygon(xx, yy, col = qnts.col, border = NA)
-        polygon(xx, yy_trunc, col = qnts.col, border = NA)
+        if(dur.type=="observed") polygon(xx, yy, col = qnts.col, border = NA)
+        if(dur.type=="imputed") polygon(xx, yy_trunc, col = qnts.col, border = NA)
       }
       }
 
       ## Sim lines
       if (sim.lines == TRUE) {
         for (i in sims) {
-          lines(pages[[i]], lwd = sim.lwd, col = sim.col)
-          lines(pages[[i]]+pages_trunc, lwd = sim.lwd, col = sim.col)
+          if(dur.type=="observed") lines(pages[[i]], lwd = sim.lwd, col = sim.col)
+          if(dur.type=="imputed") lines(pages[[i]]+pages_trunc, lwd = sim.lwd, col = sim.col)
         }
       }
 
@@ -1679,9 +1688,9 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
                                                      y = mean.prev.trunc))$y
           
         }
-        lines(mean.prev, lwd = mean.lwd,
+        if(dur.type=="observed") lines(mean.prev, lwd = mean.lwd,
               col = mean.col, lty = mean.lty)
-        lines(mean.prev.trunc, lwd = mean.lwd,
+        if(dur.type=="imputed") lines(mean.prev.trunc, lwd = mean.lwd,
               col = mean.col, lty = mean.lty)
       }
 
@@ -1699,6 +1708,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 
     if (method == "b") {
       data <- do.call("c", x$pages)
+      if(dur.type=="imputed") data <- data + x$pages_trunc
       boxplot(data, ...)
       points(x = 1, y = as.numeric(x$coef.diss[2]),
              pch = 16, cex = 1.5, col = "blue")
