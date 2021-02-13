@@ -352,7 +352,7 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
         }
       }
 
-      pages_trunc <- (x$coef.diss$duration^2*dgeom(2:(nsteps+1), 1/x$coef.diss$duration))
+      pages_imptd <- (x$coef.diss$duration^2*dgeom(2:(nsteps+1), 1/x$coef.diss$duration))
       
       ## Dissolution calculations
       if (verbose == TRUE) {
@@ -394,7 +394,7 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
 
       # Create dissolution tables
       duration.obs <- matrix(unlist(pages), nrow = nsteps)
-      duration.imputed <- duration.obs + pages_trunc
+      duration.imputed <- duration.obs + pages_imptd
       duration.mean.by.sim <- colMeans(duration.imputed) 
       duration.mean <- mean(duration.mean.by.sim)
       if(nsims>1) {
@@ -451,7 +451,7 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
     if (skip.dissolution == FALSE) {
       out$stats.table.dissolution <- stats.table.dissolution
       out$pages <- pages
-      out$pages_trunc <- pages_trunc
+      out$pages_imptd <- pages_imptd
       out$prop.diss <- prop.diss
     }
     if (keep.tedgelist == TRUE) {

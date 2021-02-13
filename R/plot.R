@@ -1544,7 +1544,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
     }
       
     pages <- x$pages
-    pages_trunc <- x$pages_trunc
+    pages_imptd <- x$pages_imptd
     
     xlim <- c(1, nsteps)
     if (length(da) > 0 & !is.null(da$xlim)) {
@@ -1576,8 +1576,8 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
                 rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
                                             y = qnt.prev[2, ]))$y))
       }
-      yy_trunc <- yy + c(pages_trunc, rev(pages_trunc))
-      qnt.max <-  max(yy, yy_trunc) 
+      yy_imptd <- yy + c(pages_imptd, rev(pages_imptd))
+      qnt.max <-  max(yy, yy_imptd) 
     }
     }
 
@@ -1590,8 +1590,8 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev),
                                              y = mean.prev))$y
       }
-      mean.prev.trunc <- mean.prev + pages_trunc
-      mean.max <-  max(mean.prev, mean.prev.trunc) 
+      mean.prev.imptd <- mean.prev + pages_imptd
+      mean.max <-  max(mean.prev, mean.prev.imptd) 
     }
 
     if (missing(sim.lines)) {
@@ -1670,9 +1670,9 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
                   rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
                                               y = qnt.prev[2, ]))$y))
         }
-        yy_trunc <- yy + c(pages_trunc, rev(pages_trunc))
+        yy_imptd <- yy + c(pages_imptd, rev(pages_imptd))
         if(duration.imputed==FALSE) polygon(xx, yy, col = qnts.col, border = NA)
-        if(duration.imputed==TRUE) polygon(xx, yy_trunc, col = qnts.col, border = NA)
+        if(duration.imputed==TRUE) polygon(xx, yy_imptd, col = qnts.col, border = NA)
       }
       }
 
@@ -1680,7 +1680,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
       if (sim.lines == TRUE) {
         for (i in sims) {
           if(duration.imputed==FALSE) lines(pages[[i]], lwd = sim.lwd, col = sim.col)
-          if(duration.imputed==TRUE) lines(pages[[i]]+pages_trunc, lwd = sim.lwd, col = sim.col)
+          if(duration.imputed==TRUE) lines(pages[[i]]+pages_imptd, lwd = sim.lwd, col = sim.col)
         }
       }
 
@@ -1691,17 +1691,17 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         dataj <- as.data.frame(pages)
         dataj <- dataj[complete.cases(dataj), , drop = FALSE]
         mean.prev <- rowMeans(dataj)
-        mean.prev.trunc <- mean.prev + pages_trunc
+        mean.prev.imptd <- mean.prev + pages_imptd
         if (mean.smooth == TRUE) {
           mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev),
                                                y = mean.prev))$y
-          mean.prev.trunc <- suppressWarnings(supsmu(x = 1:length(mean.prev.trunc),
-                                                     y = mean.prev.trunc))$y
+          mean.prev.imptd <- suppressWarnings(supsmu(x = 1:length(mean.prev.imptd),
+                                                     y = mean.prev.imptd))$y
           
         }
         if(duration.imputed==FALSE) lines(mean.prev, lwd = mean.lwd,
               col = mean.col, lty = mean.lty)
-        if(duration.imputed==TRUE) lines(mean.prev.trunc, lwd = mean.lwd,
+        if(duration.imputed==TRUE) lines(mean.prev.imptd, lwd = mean.lwd,
               col = mean.col, lty = mean.lty)
       }
 
@@ -1719,7 +1719,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 
     if (method == "b") {
       data <- do.call("c", x$pages)
-      if(duration.imputed==TRUE) data <- data + x$pages_trunc
+      if(duration.imputed==TRUE) data <- data + x$pages_imptd
       boxplot(data, ...)
       points(x = 1, y = as.numeric(x$coef.diss[2]),
              pch = 16, cex = 1.5, col = "blue")
