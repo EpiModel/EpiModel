@@ -173,7 +173,7 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
                   verbose = verbose)
 
     coef.form <- fit # there is no longer a separate formation fit
-    which_form <- grep("^Form", names(fit$coef))
+    which_form <- grep("Form", names(fit$coef))
     
     out <- list()
     out$fit <- fit
