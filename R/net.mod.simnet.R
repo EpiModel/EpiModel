@@ -113,9 +113,6 @@ resim_nets <- function(dat, at) {
     
     if (dat$control$extract.summary.stats == TRUE) {
       dat$stats$summstats[[1]] <- rbind(dat$stats$summstats[[1]], c(summary(dat$p[[1]]$state), summary(dat$p[[1]]$state_mon)))
-
-      ## not strictly necessary to sort the edges, but useful for some tests
-      dat$p[[1]]$state$el <- dat$p[[1]]$state$el[order(dat$p[[1]]$state$el[,1], dat$p[[1]]$state$el[,2]),,drop=FALSE]
     }    
     
     if (isTERGM == TRUE) {
