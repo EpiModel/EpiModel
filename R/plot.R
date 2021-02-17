@@ -872,6 +872,9 @@ draw_means <- function(x, y, mean.smooth, mean.lwd,
 #' @param stats Network statistics to plot, among those specified in the call
 #'        to \code{\link{netdx}}, with the default to plot all statistics
 #'        contained in the object.
+#' @param duration.imputed If \code{type="duration"}, a logical indicating 
+#'        whether or not to impute starting times for relationships extant at
+#'        the start of the simulation. Defaults to TRUE when \code{type="duration"}.
 #' @inheritParams plot.netsim
 #'
 #' @details
@@ -885,7 +888,12 @@ draw_means <- function(x, y, mean.smooth, mean.lwd,
 #' The \code{duration} plot shows the average age of existing edges at each time
 #' step, up until the maximum time step requested. This is calculated with the
 #' \code{\link{edgelist_meanage}} function. The age is used as an estimator of
-#' the average duration of edges in the equilibrium state.
+#' the average duration of edges in the equilibrium state. When 
+#' \code{duration.imputed=FALSE}, edges that exist at the beginning of the simulation
+#' are assumed to have an age of 0, yielding a burn-in period before the observed
+#' mean approaches its target. When \code{duration.imputed=TRUE}, expected ages prior 
+#' to the start of the simulation are calculated from the dissolution model, typically 
+#' eliminating the need for a burn-in period.
 #'
 #' The \code{dissolution} plot shows the proportion of the extant ties that are
 #' dissolved at each time step, up until the maximum time step requested.
@@ -952,8 +960,12 @@ draw_means <- function(x, y, mean.smooth, mean.lwd,
 #'
 #' # Duration statistics plot
 #' plot(dx2, type = "duration", mean.col = "black", grid = TRUE)
+#' par(mfrow=c(1,2))
 #' plot(dx2, type = "duration", sims = 10, mean.line = FALSE, sim.line = TRUE,
 #'      sim.col = "steelblue", sim.lwd = 3, targ.lty = 1, targ.lwd = 0.5)
+#' plot(dx2, type = "duration", sims = 10, mean.line = TRUE, sim.line = TRUE,
+#'      sim.col = "steelblue", sim.lwd = 3, targ.lty = 1, targ.lwd = 0.5,
+#'      duration = FALSE)    
 #'
 #' # Dissolution statistics plot
 #' plot(dx2, type = "dissolution", mean.col = "black", grid = TRUE)
@@ -961,7 +973,7 @@ draw_means <- function(x, y, mean.smooth, mean.lwd,
 #' }
 #'
 plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
-                       sim.lines, sim.col, sim.lwd, mean.line = TRUE,
+                       duration.imputed=TRUE, sim.lines, sim.col, sim.lwd, mean.line = TRUE,
                        mean.smooth = TRUE, mean.col, mean.lwd = 2, mean.lty = 1,
                        qnts = 0.5, qnts.col, qnts.alpha, qnts.smooth = TRUE,
                        targ.line = TRUE, targ.col, targ.lwd = 2, targ.lty = 2,
@@ -1523,8 +1535,13 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
            currently available", call. = FALSE)
     }
 
+    if(!(is.logical(duration.imputed))) {
+      stop("For plots of type duration, duration.imputed must be a logical value (T/F)", call. = FALSE)
+    }
+      
     pages <- x$pages
-
+    pages_imptd <- x$pages_imptd
+    
     xlim <- c(1, nsteps)
     if (length(da) > 0 & !is.null(da$xlim)) {
      xlim <- da$xlim
@@ -1555,7 +1572,8 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
                 rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
                                             y = qnt.prev[2, ]))$y))
       }
-      qnt.max <-  max(yy)
+      yy_imptd <- yy + c(pages_imptd, rev(pages_imptd))
+      qnt.max <-  max(yy, yy_imptd) 
     }
     }
 
@@ -1568,7 +1586,8 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev),
                                              y = mean.prev))$y
       }
-      mean.max <-  max(mean.prev)
+      mean.prev.imptd <- mean.prev + pages_imptd
+      mean.max <-  max(mean.prev, mean.prev.imptd) 
     }
 
     if (missing(sim.lines)) {
@@ -1647,14 +1666,17 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
                   rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
                                               y = qnt.prev[2, ]))$y))
         }
-        polygon(xx, yy, col = qnts.col, border = NA)
+        yy_imptd <- yy + c(pages_imptd, rev(pages_imptd))
+        if(duration.imputed==FALSE) polygon(xx, yy, col = qnts.col, border = NA)
+        if(duration.imputed==TRUE) polygon(xx, yy_imptd, col = qnts.col, border = NA)
       }
       }
 
       ## Sim lines
       if (sim.lines == TRUE) {
         for (i in sims) {
-          lines(pages[[i]], lwd = sim.lwd, col = sim.col)
+          if(duration.imputed==FALSE) lines(pages[[i]], lwd = sim.lwd, col = sim.col)
+          if(duration.imputed==TRUE) lines(pages[[i]]+pages_imptd, lwd = sim.lwd, col = sim.col)
         }
       }
 
@@ -1665,11 +1687,17 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         dataj <- as.data.frame(pages)
         dataj <- dataj[complete.cases(dataj), , drop = FALSE]
         mean.prev <- rowMeans(dataj)
+        mean.prev.imptd <- mean.prev + pages_imptd
         if (mean.smooth == TRUE) {
           mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev),
                                                y = mean.prev))$y
+          mean.prev.imptd <- suppressWarnings(supsmu(x = 1:length(mean.prev.imptd),
+                                                     y = mean.prev.imptd))$y
+          
         }
-        lines(mean.prev, lwd = mean.lwd,
+        if(duration.imputed==FALSE) lines(mean.prev, lwd = mean.lwd,
+              col = mean.col, lty = mean.lty)
+        if(duration.imputed==TRUE) lines(mean.prev.imptd, lwd = mean.lwd,
               col = mean.col, lty = mean.lty)
       }
 
@@ -1687,6 +1715,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 
     if (method == "b") {
       data <- do.call("c", x$pages)
+      if(duration.imputed==TRUE) data <- data + x$pages_imptd
       boxplot(data, ...)
       points(x = 1, y = as.numeric(x$coef.diss[2]),
              pch = 16, cex = 1.5, col = "blue")
