@@ -973,7 +973,7 @@ draw_means <- function(x, y, mean.smooth, mean.lwd,
 #' }
 #'
 plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
-                       duration.imputed, sim.lines, sim.col, sim.lwd, mean.line = TRUE,
+                       duration.imputed=TRUE, sim.lines, sim.col, sim.lwd, mean.line = TRUE,
                        mean.smooth = TRUE, mean.col, mean.lwd = 2, mean.lty = 1,
                        qnts = 0.5, qnts.col, qnts.alpha, qnts.smooth = TRUE,
                        targ.line = TRUE, targ.col, targ.lwd = 2, targ.lty = 2,
@@ -1535,10 +1535,6 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
            currently available", call. = FALSE)
     }
 
-    if (missing(duration.imputed)) {
-      duration.imputed <- TRUE
-    }
-    
     if(!(is.logical(duration.imputed))) {
       stop("For plots of type duration, duration.imputed must be a logical value (T/F)", call. = FALSE)
     }
