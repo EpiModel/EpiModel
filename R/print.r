@@ -101,12 +101,12 @@ print.netdx <- function(x, digits = 3, ...) {
 
   cat("\n\nFormation Diagnostics")
   cat("\n----------------------- \n")
-  print(data.frame(lapply(x$stats.table.formation, round, 2)))
+  print(as.data.frame(round(as.matrix(x$stats.table.formation),2)))
   
   if (x$dynamic == TRUE & !is.null(x$stats.table.dissolution)) {
     cat("\nDissolution Diagnostics")
     cat("\n----------------------- \n")
-    print(data.frame(lapply(x$stats.table.dissolution, round, 2)))
+    print(as.data.frame(round(as.matrix(x$stats.table.dissolution),2)))
     if (x$coef.diss$model.type == "hetero") {
       cat("----------------------- \n")
       cat("* Heterogeneous dissolution model results averaged over")
@@ -239,7 +239,7 @@ print.netsim <- function(x, formation.stats = FALSE, ...) {
 
     cat("\n\nFormation Diagnostics")
     cat("\n----------------------- \n")
-    print(data.frame(lapply(stats.table.formation, round, 2)))
+    print(as.data.frame(round(as.matrix(x$stats.table.formation),2)))
     cat("")
   }
 
