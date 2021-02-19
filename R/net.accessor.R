@@ -164,69 +164,53 @@ add_attr <- function(dat, item) {
 #' @rdname net-accessor
 #' @export
 set_attr <- function(dat, item, value, indexes = NULL,
-                     override.length.check = FALSE) {
+  override.length.check = FALSE) {
   if (!item %in% names(dat[["attr"]])) {
     dat <- add_attr(dat, item)
   }
 
   if (is.null(indexes)) {
-    dat <- set_attr_full(dat, item, value, override.length.check)
-  } else {
-    dat <- set_attr_indexes(dat, item, value, indexes, override.length.check)
-  }
-
-  return(dat)
-}
-
-#' Version of \code{set_attr} without indexes
-#' keywords internal
-set_attr_full <- function(dat, item, value, override.length.check) {
-  if (!override.length.check &&
-    length(value) != length(dat[["attr"]][["active"]])) {
-    stop(
-      "When trying to edit the ", `item`, " nodal attribute: ",
-      "The size of the `value` vector is not equal to the number of node in",
-      " the network. \n",
-      "Expected: ", length(dat[["attr"]][["active"]]), "\n",
-      "Given: ", length(value)
-    )
-  }
-
-  dat[["attr"]][[item]] <- value
-
-  return(dat)
-}
-
-#' Version of \code{set_attr} with indexes
-#' keywords internal
-set_attr_indexes <- function(dat, item, value, indexes, override.length.check) {
-  if (is.logical(indexes)) {
-    if (length(indexes) != length(dat[["attr"]][[item]])) {
-      stop("(logical) `indexes` has to have a length equal to the number ",
-        "of nodes in the network")
+    if (!override.length.check &&
+      length(value) != length(dat[["attr"]][["active"]])) {
+      stop(
+        "When trying to edit the ", `item`, " nodal attribute: ",
+        "The size of the `value` vector is not equal to the number of node in",
+        " the network. \n",
+        "Expected: ", length(dat[["attr"]][["active"]]), "\n",
+        "Given: ", length(value)
+      )
     }
-  } else if (is.numeric(indexes)) {
-    if (any(indexes > length(dat[["attr"]][[item]]))) {
-      stop("Some (numeric) `indexes` are larger than the number of nodes ",
-        " in the network")
-    }
-  } else {
-    stop("`indexes` must be logical, numeric, or NULL")
-  }
 
-  if (!override.length.check &&
+    dat[["attr"]][[item]] <- value
+  } else {
+    if (is.logical(indexes)) {
+      if (length(indexes) != length(dat[["attr"]][[item]])) {
+        stop("(logical) `indexes` has to have a length equal to the number ",
+          "of nodes in the network")
+      }
+    } else if (is.numeric(indexes)) {
+      if (any(indexes > length(dat[["attr"]][[item]]))) {
+        stop("Some (numeric) `indexes` are larger than the number of nodes ",
+          " in the network")
+      }
+    } else {
+      stop("`indexes` must be logical, numeric, or NULL")
+    }
+
+    if (!override.length.check &&
       length(value) != 1 &&
       length(value) != length(dat[["attr"]][["active"]][indexes])) {
-    stop(
-      "When trying to edit the ", `item`, " nodal attribute: ",
-      "The size of the `value` vector is not equal to the number of node ",
-      "selected by the `indexes` vector nor of length 1. \n",
-      "Expected: ", length(dat[["attr"]][["active"]][indexes]), " or 1 \n",
-      "Given: ", length(value)
-    )
-  }
+      stop(
+        "When trying to edit the ", `item`, " nodal attribute: ",
+        "The size of the `value` vector is not equal to the number of node ",
+        "selected by the `indexes` vector nor of length 1. \n",
+        "Expected: ", length(dat[["attr"]][["active"]][indexes]), " or 1 \n",
+        "Given: ", length(value)
+      )
+    }
 
-  dat[["attr"]][[item]][indexes] <- value
+    dat[["attr"]][[item]][indexes] <- value
+  }
 
   return(dat)
 }
