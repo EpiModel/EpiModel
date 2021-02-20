@@ -255,6 +255,25 @@ print.disscoef <- function(x, ...) {
   invisible()
 }
 
+#' Format one parameter for printing with the `print.param.xxx` functions
+#'
+#' @param param_name The name of the parameter to print
+#' @param param_value The value of the parameter to print
+#'
+#' @keywords internal
+format_param <- function(param_name, param_value) {
+  if (is.numeric(param_value) && length(param_value) > 10) {
+    cat(param_name, "=", param_value[1:5], "...", fill = 80)
+  } else if (is.data.frame(param_value)) {
+    cat(param_name, "= <data.frame>\n")
+  } else if (is.list(param_value)) {
+    cat(param_name, "= <list>\n")
+  } else if (inherits(param_value, "lm")) {
+    cat(param_name, "= <lm/glm>\n")
+  } else {
+    cat(param_name, "=", param_value, fill = 80)
+  }
+}
 
 #' @export
 print.param.dcm <- function(x, ...) {
@@ -264,15 +283,7 @@ print.param.dcm <- function(x, ...) {
   cat("DCM Parameters")
   cat("\n===========================\n")
   for (i in pToPrint) {
-    if (class(x[[i]]) %in% c("integer", "numeric") && length(x[[i]]) > 10) {
-      cat(names(x)[i], "=", x[[i]][1:5], "...", fill = 80)
-    } else if (class(x[[i]]) == "data.frame") {
-      cat(names(x)[i], "= <data.frame>\n")
-    } else if (class(x[[i]]) == "list") {
-      cat(names(x)[i], "= <list>\n")
-    } else {
-      cat(names(x)[i], "=", x[[i]], fill = 80)
-    }
+    format_param(names(x)[i], x[[i]])
   }
 
   invisible()
@@ -286,15 +297,7 @@ print.param.icm <- function(x, ...) {
   cat("ICM Parameters")
   cat("\n===========================\n")
   for (i in pToPrint) {
-    if (class(x[[i]]) %in% c("integer", "numeric") && length(x[[i]]) > 10) {
-      cat(names(x)[i], "=", x[[i]][1:5], "...", fill = 80)
-    } else if (class(x[[i]]) == "data.frame") {
-      cat(names(x)[i], "= <data.frame>\n")
-    } else if (class(x[[i]]) == "list") {
-      cat(names(x)[i], "= <list>\n")
-    } else {
-      cat(names(x)[i], "=", x[[i]], fill = 80)
-    }
+    format_param(names(x)[i], x[[i]])
   }
 
   invisible()
@@ -303,21 +306,27 @@ print.param.icm <- function(x, ...) {
 #' @export
 print.param.net <- function(x, ...) {
 
-  pToPrint <- which(!(names(x) %in% c("vital")))
+  randoms <- c("random.params", "random.params.values")
+  pToPrint <- which(!(names(x) %in% c("vital", randoms)))
+  rng_values <- list()
+
+  if (all(randoms %in% names(x))) {
+    rng_values <- x$random.params.values
+    pToPrint <- which(! names(x)[pToPrint] %in% names(rng_values))
+  }
 
   cat("Network Model Parameters")
   cat("\n===========================\n")
   for (i in pToPrint) {
-    if (class(x[[i]]) %in% c("integer", "numeric") && length(x[[i]]) > 10) {
-      cat(names(x)[i], "=", x[[i]][1:5], "...", fill = 80)
-    } else if (inherits(x[[i]], "data.frame")) {
-      cat(names(x)[i], "= <data.frame>\n")
-    } else if (inherits(x[[i]], "list")) {
-      cat(names(x)[i], "= <list>\n")
-    } else if (inherits(x[[i]], "lm")) {
-      cat(names(x)[i], "= <lm/glm>\n")
-    } else {
-      cat(names(x)[i], "=", x[[i]], fill = 80)
+    format_param(names(x)[i], x[[i]])
+  }
+
+  if (length(rng_values) > 0) {
+    cat("\nRandomly Drawn Parameters")
+    cat("\n(Values from one simulation)")
+    cat("\n===========================\n")
+    for (i in seq_along(rng_values)) {
+      format_param(names(rng_values)[i], rng_values[[i]])
     }
   }
 

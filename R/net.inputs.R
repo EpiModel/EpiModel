@@ -378,11 +378,23 @@ generate_random_params <- function(param, verbose = FALSE) {
     stop("all elements of `random.params` must be functions")
   }
 
-  param[rng_names] <- lapply(param$random.params, do.call, args = list())
+  rng_values <- list()
+  rng_values[rng_names] <- lapply(param$random.params, do.call, args = list())
+  for (nm in rng_names) {
+    if (!is.null(param[[nm]])) {
+      message(
+        "The value of the parameter `", nm, "`: ", param[nm],
+        ", has been replaced by ", rng_values[nm]
+      )
+    }
+    param[nm] <- rng_values[nm]
+  }
+  param$random.params.values <- rng_values
+
   if (verbose == TRUE) {
     msg <-
      "The following values were randomly generated for the given parameters: \n"
-    msg <- c(msg, paste0("`", rng_names, "`: ", param[rng_names], "\n"))
+    msg <- c(msg, paste0("`", rng_names, "`: ", rng_values, "\n"))
     message(msg)
   }
 
