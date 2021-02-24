@@ -139,6 +139,7 @@
 #' @importFrom utils head tail packageVersion
 #' @importFrom ape as.phylo collapse.singles
 #' @importFrom lazyeval lazy_dots lazy_eval
+#' @importFrom statnet.common trim_env nonsimp_update.formula
 #'
 #' @useDynLib EpiModel, .registration = TRUE
 #'
