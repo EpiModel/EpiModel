@@ -135,7 +135,7 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
                    verbose = FALSE) {
 
   if (missing(constraints)) {
-    constraints	<- ~.
+    constraints	<- trim_env(~.)
   }
 
   if (class(coef.diss) != "disscoef") {
@@ -192,8 +192,7 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
       set.control.ergm <- control.ergm()
     }
 
-    formation.nw <- update(formation, nw ~ .)
-    environment(formation.nw) <- environment()
+    formation.nw <- nonsimp_update.formula(formation, nw ~ ., from.new="nw")
 
     fit <- ergm(formation.nw,
                 target.stats = target.stats,
@@ -215,8 +214,6 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
     fit$constrained <- NULL
     environment(fit$sample.obs) <- NULL
     environment(fit$reference) <- NULL
-    environment(fit$constraints) <- environment()
-
 
     out <- list()
     out$fit <- fit

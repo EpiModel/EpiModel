@@ -2,6 +2,7 @@
 % Please edit documentation in R/ErgmTerms.R
 \name{InitErgmTerm.absdiffnodemix}
 \alias{InitErgmTerm.absdiffnodemix}
+\alias{absdiffnodemix}
 \title{Definition for absdiffnodemix ERGM Term}
 \usage{
 InitErgmTerm.absdiffnodemix(nw, arglist, ...)
