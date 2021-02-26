@@ -340,6 +340,8 @@ param_random <- function(values, prob = NULL) {
 #' @export
 #'
 #' @examples
+#' \dontrun{
+#'
 #' # Define random parameter list
 #' my_randoms <- list(
 #'   act.rate = param_random(c(0.25, 0.5, 0.75)),
@@ -354,11 +356,15 @@ param_random <- function(values, prob = NULL) {
 #' # Parameter model with deterministic and random parameters
 #' param <- param.net(inf.prob = 0.3, random.params = my_randoms)
 #'
+#' # A warning is produced if a random parameter overwrite a deterministic one
+#'
 #' # Parameters are drawn automatically in netsim by calling the function
 #' # within netsim_loop. Demonstrating draws here but this is not used by
 #' # end user.
 #' paramDraw <- generate_random_params(param, verbose = TRUE)
 #' paramDraw
+#'
+#' }
 #'
 generate_random_params <- function(param, verbose = FALSE) {
   if (is.null(param$random.params) || length(param$random.params) == 0) {
@@ -382,7 +388,7 @@ generate_random_params <- function(param, verbose = FALSE) {
   rng_values[rng_names] <- lapply(param$random.params, do.call, args = list())
   for (nm in rng_names) {
     if (!is.null(param[[nm]])) {
-      message(
+      warning(
         "The value of the parameter `", nm, "`: ", param[nm],
         ", has been replaced by ", rng_values[nm]
       )

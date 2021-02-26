@@ -36,6 +36,8 @@ returning a valid value for the parameter with the same name.
 }
 
 \examples{
+\dontrun{
+
 # Define random parameter list
 my_randoms <- list(
   act.rate = param_random(c(0.25, 0.5, 0.75)),
@@ -50,10 +52,14 @@ my_randoms <- list(
 # Parameter model with deterministic and random parameters
 param <- param.net(inf.prob = 0.3, random.params = my_randoms)
 
+# A warning is produced if a random parameter overwrite a deterministic one
+
 # Parameters are drawn automatically in netsim by calling the function
 # within netsim_loop. Demonstrating draws here but this is not used by
 # end user.
 paramDraw <- generate_random_params(param, verbose = TRUE)
 paramDraw
+
+}
 
 }
