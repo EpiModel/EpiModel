@@ -203,14 +203,7 @@ print.netsim <- function(x, formation.stats = FALSE, ...) {
 
     ## Calculate mean/sd from merged stats
     stats.means <- colMeans(merged.stats)
-    #stats.sd <- apply(merged.stats, 2, sd)
-    if(nsims>1) {
-      temp2 <- sapply(stats, function(x) colMeans(x))
-      if (ncol(stats[[1]])==1) temp2 <- matrix(temp2, nrow=1)
-      stats.sd <- apply(temp2, 1, sd)
-    } else {
-      stats.sd <-  NA
-    }
+    stats.sd <- apply(merged.stats, 2, sd)
     stats.table <- data.frame(sorder = 1:length(names(stats.means)),
                               names = names(stats.means),
                               stats.means, stats.sd)

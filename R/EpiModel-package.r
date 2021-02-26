@@ -134,11 +134,12 @@
 #' @importFrom graphics abline arrows boxplot legend lines mtext par plot points
 #'             polygon text title
 #' @importFrom grDevices col2rgb colorRampPalette rgb adjustcolor
-#' @importFrom stats complete.cases dgeom quantile rbinom rgeom sd setNames simulate
+#' @importFrom stats complete.cases quantile rbinom rgeom sd setNames simulate
 #'             supsmu terms.formula update
 #' @importFrom utils head tail packageVersion
 #' @importFrom ape as.phylo collapse.singles
 #' @importFrom lazyeval lazy_dots lazy_eval
+#' @importFrom statnet.common trim_env nonsimp_update.formula
 #'
 #' @useDynLib EpiModel, .registration = TRUE
 #'

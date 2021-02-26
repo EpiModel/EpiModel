@@ -10,7 +10,6 @@
   method = "l",
   sims,
   stats,
-  duration.imputed = TRUE,
   sim.lines,
   sim.col,
   sim.lwd,
@@ -56,10 +55,6 @@ simulations at the specified time step.}
 \item{stats}{Network statistics to plot, among those specified in the call
 to \code{\link{netdx}}, with the default to plot all statistics
 contained in the object.}
-
-\item{duration.imputed}{If \code{type="duration"}, a logical indicating 
-whether or not to impute starting times for relationships extant at
-the start of the simulation. Defaults to TRUE when \code{type="duration"}.}
 
 \item{sim.lines}{If \code{TRUE}, plot individual simulation lines. Default is
 to plot lines for one-group models but not for two-group models.}
@@ -125,12 +120,7 @@ call to \code{\link{netest}}.
 The \code{duration} plot shows the average age of existing edges at each time
 step, up until the maximum time step requested. This is calculated with the
 \code{\link{edgelist_meanage}} function. The age is used as an estimator of
-the average duration of edges in the equilibrium state. When 
-\code{duration.imputed=FALSE}, edges that exist at the beginning of the simulation
-are assumed to have an age of 0, yielding a burn-in period before the observed
-mean approaches its target. When \code{duration.imputed=TRUE}, expected ages prior 
-to the start of the simulation are calculated from the dissolution model, typically 
-eliminating the need for a burn-in period.
+the average duration of edges in the equilibrium state.
 
 The \code{dissolution} plot shows the proportion of the extant ties that are
 dissolved at each time step, up until the maximum time step requested.
@@ -191,12 +181,8 @@ plot(dx2, method = "b", stats = "meandeg", col = "dodgerblue")
 
 # Duration statistics plot
 plot(dx2, type = "duration", mean.col = "black", grid = TRUE)
-par(mfrow=c(1,2))
 plot(dx2, type = "duration", sims = 10, mean.line = FALSE, sim.line = TRUE,
      sim.col = "steelblue", sim.lwd = 3, targ.lty = 1, targ.lwd = 0.5)
-plot(dx2, type = "duration", sims = 10, mean.line = TRUE, sim.line = TRUE,
-     sim.col = "steelblue", sim.lwd = 3, targ.lty = 1, targ.lwd = 0.5,
-     duration = FALSE)    
 
 # Dissolution statistics plot
 plot(dx2, type = "dissolution", mean.col = "black", grid = TRUE)
