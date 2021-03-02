@@ -15,3 +15,4 @@ inst/EpiModel2/*.xlsx
 vignettes/Intro.html
 vignettes/Intro.R
 *.html
+tests/*.pdf

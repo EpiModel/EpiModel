@@ -289,7 +289,7 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
   } else {
     stats.sd <-  NA
   }
-  
+
   stats.table <- data.frame(sorder = 1:length(names(stats.means)),
                             names = names(stats.means),
                             stats.means, stats.sd)
@@ -323,12 +323,12 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
       }
 
       # Calculate mean partnership age from edgelist
-      
+
       sim.df <- list()
       for (i in 1:length(diag.sim)) {
         sim.df[[i]] <- as.data.frame(diag.sim[[i]])
       }
-      
+
       if (nsims == 1 || ncores == 1) {
         pages <- list()
         if (verbose == TRUE & nsims > 1) {
@@ -352,8 +352,9 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
         }
       }
 
-      pages_imptd <- (x$coef.diss$duration^2*dgeom(2:(nsteps+1), 1/x$coef.diss$duration))
-      
+      pages_imptd <- (x$coef.diss$duration^2*dgeom(2:(nsteps + 1),
+                                                   1/x$coef.diss$duration))
+
       ## Dissolution calculations
       if (verbose == TRUE) {
         cat("\n- Calculating dissolution statistics")
@@ -395,23 +396,23 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
       # Create dissolution tables
       duration.obs <- matrix(unlist(pages), nrow = nsteps)
       duration.imputed <- duration.obs + pages_imptd
-      duration.mean.by.sim <- colMeans(duration.imputed) 
+      duration.mean.by.sim <- colMeans(duration.imputed)
       duration.mean <- mean(duration.mean.by.sim)
-      if(nsims>1) {
+      if (nsims > 1) {
         duration.sd <- sd(duration.mean.by.sim)
       } else {
         duration.sd <- NA
-      }  
+      }
       duration.expected <- exp(coef.diss$coef.crude[1]) + 1
       duration.pctdiff <-
         100 * (duration.mean - duration.expected) / duration.expected
 
       dissolution.mean <- mean(unlist(prop.diss))
-      if(nsims>1) {
+      if (nsims > 1) {
         dissolution.sd <- sd(sapply(prop.diss, mean))
       } else {
         dissolution.sd <- NA
-      }  
+      }
       dissolution.expected <- 1 / (exp(coef.diss$coef.crude[1]) + 1)
       dissolution.pctdiff <- 100 * (dissolution.mean - dissolution.expected) /
         dissolution.expected

@@ -1537,8 +1537,9 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
            currently available", call. = FALSE)
     }
 
-    if(!(is.logical(duration.imputed))) {
-      stop("For plots of type duration, duration.imputed must be a logical value (T/F)", call. = FALSE)
+    if (!(is.logical(duration.imputed))) {
+      stop("For plots of type duration, duration.imputed must
+           be a logical value (TRUE/FALSE)", call. = FALSE)
     }
 
     pages <- x$pages
@@ -1669,16 +1670,24 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
                                               y = qnt.prev[2, ]))$y))
         }
         yy_imptd <- yy + c(pages_imptd, rev(pages_imptd))
-        if(duration.imputed==FALSE) polygon(xx, yy, col = qnts.col, border = NA)
-        if(duration.imputed==TRUE) polygon(xx, yy_imptd, col = qnts.col, border = NA)
+        if (duration.imputed == FALSE) {
+          polygon(xx, yy, col = qnts.col, border = NA)
+        }
+        if (duration.imputed == TRUE) {
+          polygon(xx, yy_imptd, col = qnts.col, border = NA)
+        }
       }
       }
 
       ## Sim lines
       if (sim.lines == TRUE) {
         for (i in sims) {
-          if(duration.imputed==FALSE) lines(pages[[i]], lwd = sim.lwd, col = sim.col)
-          if(duration.imputed==TRUE) lines(pages[[i]]+pages_imptd, lwd = sim.lwd, col = sim.col)
+          if (duration.imputed == FALSE) {
+            lines(pages[[i]], lwd = sim.lwd, col = sim.col)
+          }
+          if (duration.imputed == TRUE) {
+            lines(pages[[i]] + pages_imptd, lwd = sim.lwd, col = sim.col)
+          }
         }
       }
 
@@ -1697,9 +1706,9 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
                                                      y = mean.prev.imptd))$y
 
         }
-        if(duration.imputed==FALSE) lines(mean.prev, lwd = mean.lwd,
+        if (duration.imputed == FALSE) lines(mean.prev, lwd = mean.lwd,
               col = mean.col, lty = mean.lty)
-        if(duration.imputed==TRUE) lines(mean.prev.imptd, lwd = mean.lwd,
+        if (duration.imputed == TRUE) lines(mean.prev.imptd, lwd = mean.lwd,
               col = mean.col, lty = mean.lty)
       }
 
@@ -1711,13 +1720,13 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 
       ## Grid
       if (grid == TRUE) {
-          grid()
+        grid()
       }
     }
 
     if (method == "b") {
       data <- do.call("c", x$pages)
-      if(duration.imputed==TRUE) data <- data + x$pages_imptd
+      if (duration.imputed == TRUE) data <- data + x$pages_imptd
       boxplot(data, ...)
       points(x = 1, y = as.numeric(x$coef.diss[2]),
              pch = 16, cex = 1.5, col = "blue")
