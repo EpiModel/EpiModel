@@ -10,7 +10,6 @@
   method = "l",
   sims,
   stats,
-  duration.imputed = TRUE,
   sim.lines,
   sim.col,
   sim.lwd,

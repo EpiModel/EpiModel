@@ -961,7 +961,7 @@ draw_means <- function(x, y, mean.smooth, mean.lwd,
 #'
 #' # Duration statistics plot
 #' plot(dx2, type = "duration", mean.col = "black", grid = TRUE)
-#' par(mfrow=c(1,2))
+#' par(mfrow = c(1, 2))
 #' plot(dx2, type = "duration", mean.line = FALSE, sim.line = TRUE,
 #'      sim.col = "steelblue", targ.lty = 1, targ.lwd = 0.5)
 #' plot(dx2, type = "duration", mean.line = TRUE, sim.line = TRUE,
@@ -1698,7 +1698,6 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         dataj <- as.data.frame(pages)
         dataj <- dataj[complete.cases(dataj), , drop = FALSE]
         mean.prev <- rowMeans(dataj)
-        mean.prev.imptd <- mean.prev + pages_imptd
         if (mean.smooth == TRUE) {
           mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev),
                                                y = mean.prev))$y
@@ -1755,8 +1754,6 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
     if (length(da) > 0 & !is.null(da$xlim)) {
       xlim <- da$xlim
     }
-
-
 
     ## Quantiles - ylim min max ##
     if (dynamic == TRUE) {

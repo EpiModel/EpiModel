@@ -19,7 +19,8 @@
 #'
 #' @author Steven M. Goodreau
 #'
-#' @export
+#' @aliases absdiffnodemix
+#'
 InitErgmTerm.absdiffnodemix <- function(nw, arglist, ...) {
 
   a <- check.ErgmTerm(nw,
@@ -82,7 +83,8 @@ InitErgmTerm.absdiffnodemix <- function(nw, arglist, ...) {
 #'
 #' @author Samuel M. Jenness
 #'
-#' @export
+#' @aliases absdiffby
+#'
 InitErgmTerm.absdiffby <- function(nw, arglist, ...) {
   a <- check.ErgmTerm(nw,
                       arglist,

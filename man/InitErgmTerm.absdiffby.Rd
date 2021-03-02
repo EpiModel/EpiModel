@@ -2,6 +2,7 @@
 % Please edit documentation in R/ErgmTerms.R
 \name{InitErgmTerm.absdiffby}
 \alias{InitErgmTerm.absdiffby}
+\alias{absdiffby}
 \title{Definition for absdiffby ERGM Term}
 \usage{
 InitErgmTerm.absdiffby(nw, arglist, ...)

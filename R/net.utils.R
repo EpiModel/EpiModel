@@ -529,7 +529,7 @@ edgelist_censor <- function(el) {
 #' the estimation.
 #'
 #' Currently, the calculations are limited to those dissolution formulas with a
-#' single homogeneous dissolution (\code{~offset(edges)}). This functionality
+#' single homogenous dissolution (\code{~offset(edges)}). This functionality
 #' will be expanded in future releases.
 #'
 #' @export
