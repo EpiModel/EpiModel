@@ -102,7 +102,7 @@ print.netdx <- function(x, digits = 3, ...) {
   cat("\n\nFormation Diagnostics")
   cat("\n----------------------- \n")
   print(as.data.frame(round(as.matrix(x$stats.table.formation),2)))
-  
+
   if (x$dynamic == TRUE & !is.null(x$stats.table.dissolution)) {
     cat("\nDissolution Diagnostics")
     cat("\n----------------------- \n")
@@ -204,9 +204,9 @@ print.netsim <- function(x, formation.stats = FALSE, ...) {
     ## Calculate mean/sd from merged stats
     stats.means <- colMeans(merged.stats)
     #stats.sd <- apply(merged.stats, 2, sd)
-    if(nsims>1) {
+    if (nsims > 1) {
       temp2 <- sapply(stats, function(x) colMeans(x))
-      if (ncol(stats[[1]])==1) temp2 <- matrix(temp2, nrow=1)
+      if (ncol(stats[[1]]) == 1) temp2 <- matrix(temp2, nrow = 1)
       stats.sd <- apply(temp2, 1, sd)
     } else {
       stats.sd <-  NA
