@@ -10,6 +10,7 @@
   method = "l",
   sims,
   stats,
+  duration.imputed = TRUE,
   sim.lines,
   sim.col,
   sim.lwd,
@@ -191,7 +192,7 @@ plot(dx2, method = "b", stats = "meandeg", col = "dodgerblue")
 
 # Duration statistics plot
 plot(dx2, type = "duration", mean.col = "black", grid = TRUE)
-par(mfrow=c(1,2))
+par(mfrow = c(1, 2))
 plot(dx2, type = "duration", mean.line = FALSE, sim.line = TRUE,
      sim.col = "steelblue", targ.lty = 1, targ.lwd = 0.5)
 plot(dx2, type = "duration", mean.line = TRUE, sim.line = TRUE,
