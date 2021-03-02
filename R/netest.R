@@ -366,9 +366,12 @@ update_dissolution <- function(old.netest, new.coef.diss) {
 
   out <- old.netest
 
-  l.cd <- length(new.coef.diss$coef.crude)
-  out$coef.form[1:l.cd] <- out$coef.form[1:l.cd] + out$coef.diss$coef.crude
-  out$coef.form[1:l.cd] <- out$coef.form[1:l.cd] - new.coef.diss$coef.crude
+  ## remove old correction
+  l.cd.o <- length(out$coef.diss$coef.form.corr)
+  out$coef.form[1:l.cd.o] <- out$coef.form[1:l.cd.o] + out$coef.diss$coef.form.corr
+  ## apply new correction (may differ in length from the old correction)
+  l.cd.n <- length(new.coef.diss$coef.form.corr)
+  out$coef.form[1:l.cd.n] <- out$coef.form[1:l.cd.n] - new.coef.diss$coef.form.corr
 
   out$coef.diss <- new.coef.diss
 
