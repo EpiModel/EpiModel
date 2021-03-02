@@ -98,8 +98,8 @@ test_that("update_dissolution tests", {
                   coef.diss = diss.200)
 
   est200.compare <- update_dissolution(est300, diss.200)
-  expect_true(round(as.numeric(est200$coef.form, 3)) ==
-                round(as.numeric(est200.compare$coef.form, 3)))
+  expect_true(round(as.numeric(est200$coef.form), 3) ==
+                round(as.numeric(est200.compare$coef.form), 3))
 
   expect_error(update_dissolution(1, diss.200),
                "old.netest must be an object of class netest")
@@ -108,6 +108,33 @@ test_that("update_dissolution tests", {
   est300$edapprox <- FALSE
   expect_error(update_dissolution(est300, diss.200),
                "Edges dissolution approximation must be used")
+})
+
+test_that("differing length update_dissolution tests", {
+  nw <- network_initialize(n = 1000)
+  nw %v% "race" <- rep(letters[1:5], length.out = 1000)
+  
+  diss_het <- dissolution_coefs(~offset(edges) + offset(nodematch("race", diff = TRUE)), c(300, 200, 100, 50, 150, 225), 0.001)
+  diss_hom <- dissolution_coefs(~offset(edges), 200, 0.001)
+
+  est_het <- netest(nw = nw,
+                    formation = ~edges + nodematch("race", diff = TRUE),
+                    target.stats = c(500, 50, 50, 90, 30, 10),
+                    coef.diss = diss_het)
+
+  est_hom <- netest(nw = nw,
+                    formation = ~edges + nodematch("race", diff = TRUE),
+                    target.stats = c(500, 50, 50, 90, 30, 10),
+                    coef.diss = diss_hom)
+
+  est_hom_compare <- update_dissolution(est_het, diss_hom)
+  est_het_compare <- update_dissolution(est_hom, diss_het)
+
+  expect_true(all(round(as.numeric(est_hom$coef.form), 3) ==
+                round(as.numeric(est_hom_compare$coef.form), 3)))
+
+  expect_true(all(round(as.numeric(est_het$coef.form), 3) ==
+                round(as.numeric(est_het_compare$coef.form), 3)))
 })
 
 # STERGM --------------------------------------------------------------------
