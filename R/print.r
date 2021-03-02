@@ -206,7 +206,9 @@ print.netsim <- function(x, formation.stats = FALSE, ...) {
     #stats.sd <- apply(merged.stats, 2, sd)
     if (nsims > 1) {
       temp2 <- sapply(stats, function(x) colMeans(x))
-      if (ncol(stats[[1]]) == 1) temp2 <- matrix(temp2, nrow = 1)
+      if (ncol(stats[[1]]) == 1) {
+        temp2 <- matrix(temp2, nrow = 1)
+      }
       stats.sd <- apply(temp2, 1, sd)
     } else {
       stats.sd <-  NA
