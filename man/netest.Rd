@@ -14,7 +14,9 @@ netest(
   edapprox = TRUE,
   set.control.ergm,
   set.control.stergm,
-  verbose = FALSE
+  verbose = FALSE,
+  nested_edapprox = TRUE,
+  ...
 )
 }
 \arguments{
@@ -48,6 +50,15 @@ details).}
 (see details).}
 
 \item{verbose}{Print model fitting progress to console.}
+
+\item{nested_edapprox}{Logical. If \code{edapprox} is \code{TRUE}, is the 
+dissolution model an initial segment of the formation model? This
+determines whether the edapprox is implemented by subtracting the
+relevant values from the initial formation model coefficients, or by 
+appending the dissolution terms to the formation model and appending
+the relevant values to the vector of formation model coefficients.}
+
+\item{...}{additional arguments passed to other functions}
 }
 \description{
 Estimates statistical network models using the exponential
