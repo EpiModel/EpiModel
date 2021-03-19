@@ -38,6 +38,7 @@ Depends:
     tergmLite (>= 2.2.0),
     statnet.common (>= 4.4.0)
 Imports:
+    statnet.common,
     graphics,
     grDevices,
     stats,

@@ -135,7 +135,7 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
                    verbose = FALSE) {
 
   if (missing(constraints)) {
-    constraints	<- ~.
+    constraints	<- trim_env(~.)
   }
 
   if (class(coef.diss) != "disscoef") {
@@ -193,9 +193,7 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
       set.control.ergm <- control.ergm()
     }
 
-    #' @importFrom statnet.common nonsimp_update.formula
-    formation.nw <- nonsimp_update.formula(formation, nw ~ ., from.new = "nw")
-#    environment(formation.nw) <- environment()
+    formation.nw <- nonsimp_update.formula(formation, nw ~ ., from.new="nw")
 
     fit <- ergm(formation.nw,
                 target.stats = target.stats,
@@ -217,8 +215,6 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
     fit$constrained <- NULL
     environment(fit$sample.obs) <- NULL
     environment(fit$reference) <- NULL
- #   environment(fit$constraints) <- environment()
-
 
     out <- list()
     out$fit <- fit
@@ -371,9 +367,12 @@ update_dissolution <- function(old.netest, new.coef.diss) {
 
   out <- old.netest
 
-  l.cd <- length(new.coef.diss$coef.crude)
-  out$coef.form[1:l.cd] <- out$coef.form[1:l.cd] + out$coef.diss$coef.crude
-  out$coef.form[1:l.cd] <- out$coef.form[1:l.cd] - new.coef.diss$coef.crude
+  ## remove old correction
+  l.cd.o <- length(out$coef.diss$coef.form.corr)
+  out$coef.form[1:l.cd.o] <- out$coef.form[1:l.cd.o] + out$coef.diss$coef.form.corr
+  ## apply new correction (may differ in length from the old correction)
+  l.cd.n <- length(new.coef.diss$coef.form.corr)
+  out$coef.form[1:l.cd.n] <- out$coef.form[1:l.cd.n] - new.coef.diss$coef.form.corr
 
   out$coef.diss <- new.coef.diss
 

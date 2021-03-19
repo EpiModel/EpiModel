@@ -40,8 +40,21 @@ test_that("`dat` getters and setter", {
   expect_error(get_attr(dat, "age", c(1, 1000)))
   expect_error(get_attr(dat, "age", c(TRUE, FALSE)))
 
-  expect_silent(dat <- set_attr(dat, "status",
-                          rbinom(length(dat$attr$active), 1, 0.4)))
+  expect_silent(
+    dat <- set_attr(dat, "status", rbinom(length(dat$attr$active), 1, 0.4))
+  )
+
+  expect_silent(dat <- set_attr(dat, "age", 2, indexes = 1:4))
+  expect_equal(get_attr(dat, "age", 1:4), rep(2, 4))
+  indexes <- c(rep(TRUE, 4), rep(FALSE, length(dat$attr$active) - 4))
+  expect_silent(dat <- set_attr(dat, "age", 6, indexes = indexes))
+  expect_equal(get_attr(dat, "age", 1:4), rep(6, 4))
+
+  expect_error(dat <- set_attr(dat, "age", c(1, 2), indexes = 1:4))
+  expect_error(dat <- set_attr(dat, "age", 1, indexes = c(1, 1000)))
+  expect_error(dat <- set_attr(dat, "age", 1, indexes = c("a", "b")))
+  expect_error(dat <- set_attr(dat, "age", c(1, 2), indexes = c(TRUE, FALSE)))
+
 
   expect_equal(get_attr_list(dat), dat$attr)
   expect_equal(get_attr_list(dat, c("age", "status")),
