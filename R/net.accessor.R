@@ -180,7 +180,6 @@ set_attr <- function(dat, item, value, indexes = NULL,
         "Given: ", length(value)
       )
     }
-
     dat[["attr"]][[item]] <- value
   } else {
     if (is.logical(indexes)) {
@@ -201,7 +200,7 @@ set_attr <- function(dat, item, value, indexes = NULL,
       length(value) != 1 &&
       length(value) != length(dat[["attr"]][["active"]][indexes])) {
       stop(
-        "When trying to edit the ", `item`, " nodal attribute: ",
+        "When trying to edit the `", item, "` nodal attribute: ",
         "The size of the `value` vector is not equal to the number of node ",
         "selected by the `indexes` vector nor of length 1. \n",
         "Expected: ", length(dat[["attr"]][["active"]][indexes]), " or 1 \n",
@@ -580,4 +579,35 @@ check_attr_lengths <- function(dat) {
   }
 
   return(invisible(TRUE))
+}
+
+# UID / Indexes converters -----------------------------------------------------
+
+#' @title Convert UIDs to Indexes and vice versa
+#'
+#' @description EpiModel refers to its nodes either by indexes, the position of
+#'              the node in the \code{attr} vectors or by UIDs, unique
+#'              identifiers allowing to refer to nodes even after they are
+#'              deactivated
+#'
+#' @param dat a Master list object of network models
+#' @param uids a vector of node UIDs
+#' @param indexes a vector of node indexes
+#' @return a vector of indexes or of UIDs
+#'
+#' @name uid-tools
+NULL
+
+#' @rdname uid-tools
+#' @export
+get_uids <- function(dat, indexes) {
+  uids <- get_attr(dat, "uid", indexes = indexes)
+  return(uids)
+}
+
+#' @rdname uid-tools
+#' @export
+get_indexes <- function(dat, uids) {
+  indexes <- match(uids, get_attr(dat, "uid"))
+  return(indexes)
 }
