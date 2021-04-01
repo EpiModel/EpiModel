@@ -172,4 +172,8 @@ test_that("Net core attributes", {
   expect_equal(get_attr(dat, "active"), rep(1, 190))
   expect_equal(get_attr(dat, "uid"), c(1:20, 31:200))
   expect_type(get_attr(dat, "uid"), "integer")
+
+  # Test UIDs indexes converters
+  expect_equal(get_attr(dat, "uid"), get_uids(dat, seq_along(get_attr(dat, "active"))))
+  expect_equal(seq_along(get_attr(dat, "active")), get_indexes(dat, get_attr(dat, "uid")))
 })
