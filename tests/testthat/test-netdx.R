@@ -253,11 +253,11 @@ test_that("Full STERGM", {
 
 test_that("print.netdx output", {
   nw <- network_initialize(n = 100)
-  formation <- ~edges+concurrent
-  target.stats <- c(50,10)
+  formation <- ~edges + concurrent
+  target.stats <- c(50, 25)
   coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 50)
   est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
-  dx <- netdx(est, nsims = 5, nsteps = 100, verbose = FALSE)
+  dx <- netdx(est, nsims = 1, nsteps = 10, verbose = FALSE)
   expect_output(print(dx), "edges")
   expect_output(print(dx), "concurrent")
   expect_output(print(dx), "Edge Duration")
@@ -271,3 +271,4 @@ test_that("print.netdx output", {
   expect_output(print(dx), "NA")
 
 })
+
