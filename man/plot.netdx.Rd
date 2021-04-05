@@ -191,11 +191,12 @@ plot(dx2, method = "b", col = "bisque", grid = TRUE)
 plot(dx2, method = "b", stats = "meandeg", col = "dodgerblue")
 
 # Duration statistics plot
-plot(dx2, type = "duration", mean.col = "black", grid = TRUE)
 par(mfrow = c(1, 2))
-plot(dx2, type = "duration", mean.line = FALSE, sim.line = TRUE,
+# With duration imputed
+plot(dx2, type = "duration", sim.line = TRUE, sim.lwd = 0.3,
      sim.col = "steelblue", targ.lty = 1, targ.lwd = 0.5)
-plot(dx2, type = "duration", mean.line = TRUE, sim.line = TRUE,
+# Without duration imputed
+plot(dx2, type = "duration", sim.line = TRUE, sim.lwd = 0.3,
      sim.col = "steelblue", targ.lty = 1, targ.lwd = 0.5,
      duration.imputed = FALSE)
 
