@@ -187,7 +187,6 @@ test_that("fractional dt returns, RK4 method", {
   control <- control.dcm(type = "SI", nsteps = 10, dt = 0.5)
   mod <- dcm(param, init, control)
   df <- as.data.frame(mod)
-  expect_equal(tail(df$i.num, 1), df$i.num[1] + sum(df$si.flow, na.rm = TRUE))
   expect_equal(df$time, seq(1, 10, 0.5))
 })
 
@@ -198,8 +197,53 @@ test_that("fractional dt returns, Euler method", {
                          odemethod = "euler")
   mod <- dcm(param, init, control)
   df <- as.data.frame(mod)
-  expect_equal(tail(df$i.num, 1), df$i.num[1] + sum(df$si.flow, na.rm = TRUE))
   expect_equal(df$time, seq(1, 10, 0.5))
+})
+
+test_that("test extension model, NA output", {
+  eMod2 <- function(t, t0, parms) {
+    with(as.list(c(t0, parms)), {
+
+      # Total population size
+      num <- s.num + i.num + r.num
+
+      # Define lambdas
+      lambda.direct <- beta.direct * i.num
+      lambda.envirn <- beta.envirn * e.num
+
+      # Differential equations
+      dS <- -lambda.direct*s.num - lambda.envirn*s.num + mu*num - mu*s.num
+      dI <- lambda.direct*s.num + lambda.envirn*s.num - mu*i.num - gamma*i.num
+      dR <- gamma*i.num - mu*r.num
+      dE <- xi*i.num - delta*e.num
+
+      # Outputs
+      list(c(dS, dI, dR, dE,
+             si.direct.flow = lambda.direct*s.num,
+             si.envirn.flow = lambda.envirn*s.num))
+    })
+  }
+
+  # Parameterize the model with the following parameters this time
+  param <- param.dcm(beta.direct = 0.0001,
+                     beta.envirn = 0.00001,
+                     mu = 0.01,
+                     gamma = 0.2,
+                     xi = 2,
+                     delta = 0.5)
+
+  # Use similar initial conditions and control settings as the first model, but
+  # make sure to update the new.mod function name!
+  init <- init.dcm(s.num = 10000, i.num = 1, r.num = 0, e.num = 0,
+                   si.direct.flow = 0, si.envirn.flow = 0)
+  control <- control.dcm(nsteps = 10, dt = 0.1, new.mod = eMod2)
+
+  # Run the simulation and examine the output as a data frame
+  sim <- dcm(param, init, control)
+  expect_s3_class(sim, "dcm")
+
+  df <- as.data.frame(sim)
+  expect_true(all(!is.na(df)))
 })
 
 
@@ -265,48 +309,4 @@ test_that("control checks", {
 
 # dcm extension check -----------------------------------------------------
 
-test_that("test extension model, NA output", {
-  eMod2 <- function(t, t0, parms) {
-    with(as.list(c(t0, parms)), {
 
-      # Total population size
-      num <- s.num + i.num + r.num
-
-      # Define lambdas
-      lambda.direct <- beta.direct * i.num
-      lambda.envirn <- beta.envirn * e.num
-
-      # Differential equations
-      dS <- -lambda.direct*s.num - lambda.envirn*s.num + mu*num - mu*s.num
-      dI <- lambda.direct*s.num + lambda.envirn*s.num - mu*i.num - gamma*i.num
-      dR <- gamma*i.num - mu*r.num
-      dE <- xi*i.num - delta*e.num
-
-      # Outputs
-      list(c(dS, dI, dR, dE,
-             si.direct.flow = lambda.direct*s.num,
-             si.envirn.flow = lambda.envirn*s.num))
-    })
-  }
-
-  # Parameterize the model with the following parameters this time
-  param <- param.dcm(beta.direct = 0.0001,
-                     beta.envirn = 0.00001,
-                     mu = 0.01,
-                     gamma = 0.2,
-                     xi = 2,
-                     delta = 0.5)
-
-  # Use similar initial conditions and control settings as the first model, but
-  # make sure to update the new.mod function name!
-  init <- init.dcm(s.num = 10000, i.num = 1, r.num = 0, e.num = 0,
-                   si.direct.flow = 0, si.envirn.flow = 0)
-  control <- control.dcm(nsteps = 10, dt = 0.1, new.mod = eMod2)
-
-  # Run the simulation and examine the output as a data frame
-  sim <- dcm(param, init, control)
-  expect_s3_class(sim, "dcm")
-
-  df <- as.data.frame(sim)
-  expect_true(all(!is.na(df)))
-})
