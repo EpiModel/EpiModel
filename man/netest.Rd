@@ -15,7 +15,7 @@ netest(
   set.control.ergm,
   set.control.stergm,
   verbose = FALSE,
-  nested_edapprox = TRUE,
+  nested.edapprox = TRUE,
   ...
 )
 }
@@ -51,10 +51,10 @@ details).}
 
 \item{verbose}{Print model fitting progress to console.}
 
-\item{nested_edapprox}{Logical. If \code{edapprox} is \code{TRUE}, is the 
+\item{nested.edapprox}{Logical. If \code{edapprox} is \code{TRUE}, is the
 dissolution model an initial segment of the formation model? This
-determines whether the edapprox is implemented by subtracting the
-relevant values from the initial formation model coefficients, or by 
+determines whether \code{edapprox} is implemented by subtracting the
+relevant values from the initial formation model coefficients, or by
 appending the dissolution terms to the formation model and appending
 the relevant values to the vector of formation model coefficients.}
 
@@ -94,8 +94,8 @@ The conditions under which this approximation best hold are when there are
 few relational changes from one time step to another; i.e. when either
 average relational durations are long, or density is low, or both.
 Conveniently, these are the same conditions under which STERGM estimation is
-slowest.  Note that the same approximation is also used to obtain starting
-values for the STERGM estimate when the latter is being conducted.  The
+slowest. Note that the same approximation is also used to obtain starting
+values for the STERGM estimate when the latter is being conducted. The
 estimation does not allow for calculation of standard errors, p-values, or
 likelihood for the formation model; thus, this approach is of most use when
 the main goal of estimation is to drive dynamic network simulations rather
@@ -104,11 +104,11 @@ encouraged to examine the behavior of the resulting simulations to confirm
 that the approximation is adequate for their purposes. For an example, see
 the vignette for the package \code{tergm}.
 
-It has recently been found that subtracting a modified version of the 
-dissolution coefficients from the formation coefficients provides a more 
-principled approximation, and this is now the form of the approximation 
+It has recently been found that subtracting a modified version of the
+dissolution coefficients from the formation coefficients provides a more
+principled approximation, and this is now the form of the approximation
 applied by \code{netest}.  (The modified values subtracted from the formation
-coefficients are equivalent to the (crude) dissolution coefficients with 
+coefficients are equivalent to the (crude) dissolution coefficients with
 their target durations increased by 1.)
 }
 
