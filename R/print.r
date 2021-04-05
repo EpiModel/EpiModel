@@ -118,7 +118,7 @@ print.netdx <- function(x, digits = 3, ...) {
 
 
 #' @export
-print.netsim <- function(x, formation.stats = FALSE, ...) {
+print.netsim <- function(x, formation.stats = FALSE, digits = 3, ...) {
 
   nsims <- x$control$nsims
   if (nsims == 1) {
