@@ -161,10 +161,11 @@ test_that("More complicated faux offset term", {
   nw <- set_vertex_attribute(nw, "region", sample(rep(1:5, 200)))
   fit <- netest(nw,
                 formation =
-                  ~edges + nodemix("sexor", base = 1) + nodematch("region"),
-                target.stats = c(463, 0, 0, 18, 0, 6, 0, 380, 25, 0, 400),
+                  ~edges + nodemix("sexor", levels2 = -1) + nodematch("region"),
+                target.stats = c(463, 0, 90, 0, 10, 0, 10, 210, 10, 110, 90),
                 coef.diss = dissolution_coefs(~offset(edges), 60))
   dx <- netdx(fit, nsteps = 10, verbose = FALSE)
+  dx
   expect_is(dx, "netdx")
 })
 
@@ -256,7 +257,7 @@ test_that("print.netdx output", {
   target.stats <- c(50,10)
   coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 50)
   est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
-  dx <- netdx(est, nsims = 5, nsteps = 100, verbose = FALSE)  
+  dx <- netdx(est, nsims = 5, nsteps = 100, verbose = FALSE)
   expect_output(print(dx), "edges")
   expect_output(print(dx), "concurrent")
   expect_output(print(dx), "Edge Duration")
@@ -265,8 +266,8 @@ test_that("print.netdx output", {
   expect_output(print(dx), "Sim Mean")
   expect_output(print(dx), "Pct Diff")
   expect_output(print(dx), "Sim SD")
-  
-  dx <- netdx(est, nsims = 1, nsteps = 100, verbose = FALSE)  
+
+  dx <- netdx(est, nsims = 1, nsteps = 100, verbose = FALSE)
   expect_output(print(dx), "NA")
-  
+
 })
