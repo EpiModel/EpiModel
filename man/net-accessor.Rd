@@ -32,7 +32,7 @@ get_attr(dat, item, indexes = NULL, override.null.error = FALSE)
 
 add_attr(dat, item)
 
-set_attr(dat, item, value, override.length.check = FALSE)
+set_attr(dat, item, value, indexes = NULL, override.length.check = FALSE)
 
 append_attr(dat, item, value, n.new)
 
