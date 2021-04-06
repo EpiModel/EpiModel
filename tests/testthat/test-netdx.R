@@ -161,8 +161,8 @@ test_that("More complicated faux offset term", {
   nw <- set_vertex_attribute(nw, "region", sample(rep(1:5, 200)))
   fit <- netest(nw,
                 formation =
-                  ~edges + nodemix("sexor", levels2 = -1) + nodematch("region"),
-                target.stats = c(463, 0, 90, 0, 10, 0, 10, 210, 10, 110, 90),
+                  ~edges + nodemix("sexor", levels2 = c(-1, -3, -5)) + nodematch("region"),
+                target.stats = c(463, 0, 0, 0, 10, 210, 10, 110, 90),
                 coef.diss = dissolution_coefs(~offset(edges), 60))
   dx <- netdx(fit, nsteps = 10, verbose = FALSE)
   dx
