@@ -716,14 +716,6 @@ control.net <- function(type,
          call. = FALSE)
   }
 
-  if ("save.network" %in% names(dot.args)) {
-    p$tergmLite <- FALSE
-    stop("EpiModel 2.0+ has integrated options for saving of the network
-          object in control.net parameter tergmLite: if FALSE, this are
-          saved; if TRUE, they are not saved.",
-         call. = FALSE)
-  }
-
   ## Module classification
   bi.mods <- grep(".FUN", names(formal.args), value = TRUE)
   p$bi.mods <- character()
