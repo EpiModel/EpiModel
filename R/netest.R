@@ -26,6 +26,13 @@
 #' @param set.control.stergm Control arguments passed to \code{simulate.stergm}
 #'        (see details).
 #' @param verbose Print model fitting progress to console.
+#' @param nested.edapprox Logical. If \code{edapprox} is \code{TRUE}, is the
+#'        dissolution model an initial segment of the formation model? This
+#'        determines whether \code{edapprox} is implemented by subtracting the
+#'        relevant values from the initial formation model coefficients, or by
+#'        appending the dissolution terms to the formation model and appending
+#'        the relevant values to the vector of formation model coefficients.
+#' @param ... additional arguments passed to other functions
 #'
 #' @details
 #' \code{netest} is a wrapper function for the \code{ergm} and \code{stergm}
@@ -55,8 +62,8 @@
 #' few relational changes from one time step to another; i.e. when either
 #' average relational durations are long, or density is low, or both.
 #' Conveniently, these are the same conditions under which STERGM estimation is
-#' slowest.  Note that the same approximation is also used to obtain starting
-#' values for the STERGM estimate when the latter is being conducted.  The
+#' slowest. Note that the same approximation is also used to obtain starting
+#' values for the STERGM estimate when the latter is being conducted. The
 #' estimation does not allow for calculation of standard errors, p-values, or
 #' likelihood for the formation model; thus, this approach is of most use when
 #' the main goal of estimation is to drive dynamic network simulations rather
@@ -64,14 +71,14 @@
 #' encouraged to examine the behavior of the resulting simulations to confirm
 #' that the approximation is adequate for their purposes. For an example, see
 #' the vignette for the package \code{tergm}.
-#' 
-#' It has recently been found that subtracting a modified version of the 
-#' dissolution coefficients from the formation coefficients provides a more 
-#' principled approximation, and this is now the form of the approximation 
+#'
+#' It has recently been found that subtracting a modified version of the
+#' dissolution coefficients from the formation coefficients provides a more
+#' principled approximation, and this is now the form of the approximation
 #' applied by \code{netest}.  (The modified values subtracted from the formation
-#' coefficients are equivalent to the (crude) dissolution coefficients with 
+#' coefficients are equivalent to the (crude) dissolution coefficients with
 #' their target durations increased by 1.)
-#' 
+#'
 #' @section Control Arguments:
 #' The \code{ergm} and \code{stergm} functions allow control settings for the
 #' model fitting process. When fitting a STERGM directly (setting
@@ -132,7 +139,7 @@
 netest <- function(nw, formation, target.stats, coef.diss, constraints,
                    coef.form = NULL, edapprox = TRUE,
                    set.control.ergm, set.control.stergm,
-                   verbose = FALSE) {
+                   verbose = FALSE, nested.edapprox = TRUE, ...) {
 
   if (missing(constraints)) {
     constraints	<- trim_env(~.)
@@ -149,7 +156,7 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
     is.tergm <- TRUE
   }
 
-  if (is.tergm == TRUE) {
+  if (is.tergm == TRUE && nested.edapprox == TRUE) {
     diss_check(formation, dissolution)
   }
 
@@ -193,7 +200,7 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
       set.control.ergm <- control.ergm()
     }
 
-    formation.nw <- nonsimp_update.formula(formation, nw ~ ., from.new="nw")
+    formation.nw <- nonsimp_update.formula(formation, nw ~ ., from.new = "nw")
 
     fit <- ergm(formation.nw,
                 target.stats = target.stats,
@@ -206,8 +213,19 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
     coef.form <- fit$coef
     coef.form.crude <- coef.form
     if (is.tergm == TRUE) {
-      l.cfc <- length(coef.diss$coef.form.corr)
-      coef.form[1:l.cfc] <- coef.form[1:l.cfc] - coef.diss$coef.form.corr
+      if (nested.edapprox == TRUE) {
+        l.cfc <- length(coef.diss$coef.form.corr)
+        coef.form[1:l.cfc] <- coef.form[1:l.cfc] - coef.diss$coef.form.corr
+      } else {
+        ## implement the edapprox by appending the dissolution model to the formation model and
+        ## appending the relevant values to the vector of formation model coefficients
+        formula_addition <- append_rhs.formula(~., coef.diss$dissolution, keep.onesided = TRUE)
+        environment(formula_addition) <- environment(coef.diss$dissolution)
+
+        # the ... allows for copying via from.new
+        formation <- nonsimp_update.formula(formation, formula_addition, ...)
+        coef.form <- c(coef.form, -coef.diss$coef.form.corr)
+      }
     }
 
     # Reduce size of output object
@@ -230,7 +248,7 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
     out$coef.diss <- coef.diss
     out$constraints <- constraints
     out$edapprox <- edapprox
-
+    out$nested.edapprox <- nested.edapprox
   }
 
   class(out) <- "netest"
@@ -313,6 +331,15 @@ diss_check <- function(formation, dissolution) {
 #'        \code{\link{netest}} function.
 #' @param new.coef.diss An object of class \code{disscoef}, from the
 #'        \code{\link{dissolution_coefs}} function.
+#' @param nested.edapprox Is the new dissolution model an initial segment of
+#'        the formation model in \code{old.netest} (not including the appended
+#'        old dissolution model if \code{old.netest} was fit with
+#'        \code{nested.edapprox = TRUE})? This determines whether the new
+#'        edapprox is implemented by subtracting the relevant values from the
+#'        initial formation model coefficients, or by appending the new
+#'        dissolution terms to the formation model and appending the relevant
+#'        values to the vector of formation model coefficients.
+#' @param ... additional arguments passed to other functions
 #'
 #' @details
 #' Fitting an ERGM is a computationally intensive process when the model
@@ -352,7 +379,7 @@ diss_check <- function(formation, dissolution) {
 #' identical(est200$coef.form, est200.compare$coef.form)
 #'}
 #'
-update_dissolution <- function(old.netest, new.coef.diss) {
+update_dissolution <- function(old.netest, new.coef.diss, nested.edapprox = TRUE, ...) {
 
   if (class(old.netest) != "netest") {
     stop("old.netest must be an object of class netest", call. = FALSE)
@@ -367,14 +394,47 @@ update_dissolution <- function(old.netest, new.coef.diss) {
 
   out <- old.netest
 
-  ## remove old correction
-  l.cd.o <- length(out$coef.diss$coef.form.corr)
-  out$coef.form[1:l.cd.o] <- out$coef.form[1:l.cd.o] + out$coef.diss$coef.form.corr
-  ## apply new correction (may differ in length from the old correction)
-  l.cd.n <- length(new.coef.diss$coef.form.corr)
-  out$coef.form[1:l.cd.n] <- out$coef.form[1:l.cd.n] - new.coef.diss$coef.form.corr
+  ## remove the old correction
+  if (out$nested.edapprox == TRUE) {
+    ## adjust the formation model coefficients to remove the old edapprox
+    l.cd.o <- length(out$coef.diss$coef.form.corr)
+    out$coef.form[1:l.cd.o] <- out$coef.form[1:l.cd.o] + out$coef.diss$coef.form.corr
+  } else {
+    ## remove the part of the formation model and coefficient vector corresponding to the old edapprox
+    old_diss_list <- list_rhs.formula(out$coef.diss$dissolution)
+
+    formation_list <- list_rhs.formula(out$formation)
+    formation_list <- formation_list[seq_len(length(formation_list) - length(old_diss_list))]
+
+    formation <- append_rhs.formula(~., formation_list)
+    environment(formation) <- environment(out$formation)
+    formation[[2]] <- NULL # remove the . on the LHS
+
+    out$formation <- formation
+    out$coef.form <- out$coef.form[seq_len(length(out$coef.form) - length(out$coef.diss$coef.form.corr))]
+  }
+
+  ## apply the new correction
+  if (nested.edapprox == TRUE) {
+    ## check that the new dissolution model is an initial segment of the formation model
+    diss_check(out$formation, new.coef.diss$dissolution)
+
+    ## implement the new edapprox by adjusting the formation model coefficients
+    l.cd.n <- length(new.coef.diss$coef.form.corr)
+    out$coef.form[1:l.cd.n] <- out$coef.form[1:l.cd.n] - new.coef.diss$coef.form.corr
+  } else {
+    ## implement the new edapprox by appending the new dissolution model to the formation model and
+    ## appending the relevant values to the vector of formation model coefficients
+    formula_addition <- append_rhs.formula(~., new.coef.diss$dissolution, keep.onesided = TRUE)
+    environment(formula_addition) <- environment(new.coef.diss$dissolution)
+
+    out$formation <- nonsimp_update.formula(out$formation, formula_addition, ...) # the ... allows for copying via from.new
+    out$coef.form <- c(out$coef.form, -new.coef.diss$coef.form.corr)
+  }
+
 
   out$coef.diss <- new.coef.diss
+  out$nested.edapprox <- nested.edapprox
 
   return(out)
 }

@@ -4,7 +4,7 @@
 \alias{update_dissolution}
 \title{Adjust Dissolution Component of Network Model Fit}
 \usage{
-update_dissolution(old.netest, new.coef.diss)
+update_dissolution(old.netest, new.coef.diss, nested.edapprox = TRUE, ...)
 }
 \arguments{
 \item{old.netest}{An object of class \code{netest}, from the
@@ -12,6 +12,17 @@ update_dissolution(old.netest, new.coef.diss)
 
 \item{new.coef.diss}{An object of class \code{disscoef}, from the
 \code{\link{dissolution_coefs}} function.}
+
+\item{nested.edapprox}{Is the new dissolution model an initial segment of
+the formation model in \code{old.netest} (not including the appended
+old dissolution model if \code{old.netest} was fit with
+\code{nested.edapprox = TRUE})? This determines whether the new
+edapprox is implemented by subtracting the relevant values from the
+initial formation model coefficients, or by appending the new
+dissolution terms to the formation model and appending the relevant
+values to the vector of formation model coefficients.}
+
+\item{...}{additional arguments passed to other functions}
 }
 \description{
 Adjusts the dissolution component of an dynamic ERGM fit using

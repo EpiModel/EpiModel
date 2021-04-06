@@ -161,14 +161,15 @@ test_that("More complicated faux offset term", {
   nw <- set_vertex_attribute(nw, "region", sample(rep(1:5, 200)))
   fit <- netest(nw,
                 formation =
-                  ~edges + nodemix("sexor", base = 1) + nodematch("region"),
-                target.stats = c(463, 0, 0, 18, 0, 6, 0, 380, 25, 0, 400),
+                  ~edges + nodemix("sexor", levels2 = c(-1, -3, -5)) + nodematch("region"),
+                target.stats = c(463, 0, 0, 0, 10, 210, 10, 110, 90),
                 coef.diss = dissolution_coefs(~offset(edges), 60),
                 set.control.ergm = control.ergm(MCMLE.termination="Hummel",
                                                 MCMLE.samplesize=1024,
                                                 MCMLE.interval=1024,
                                                 MCMLE.effectiveSize=NULL))
   dx <- netdx(fit, nsteps = 10, verbose = FALSE)
+  dx
   expect_is(dx, "netdx")
 })
 
@@ -253,3 +254,25 @@ test_that("Full STERGM", {
   expect_is(dx$nw, "network")
 
 })
+
+test_that("print.netdx output", {
+  nw <- network_initialize(n = 100)
+  formation <- ~edges + concurrent
+  target.stats <- c(50, 25)
+  coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 50)
+  est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
+  dx <- netdx(est, nsims = 1, nsteps = 10, verbose = FALSE)
+  expect_output(print(dx), "edges")
+  expect_output(print(dx), "concurrent")
+  expect_output(print(dx), "Edge Duration")
+  expect_output(print(dx), "Pct Edges Diss")
+  expect_output(print(dx), "Target")
+  expect_output(print(dx), "Sim Mean")
+  expect_output(print(dx), "Pct Diff")
+  expect_output(print(dx), "Sim SD")
+
+  dx <- netdx(est, nsims = 1, nsteps = 100, verbose = FALSE)
+  expect_output(print(dx), "NA")
+
+})
+
