@@ -2,27 +2,33 @@
 % Please edit documentation in R/net.accessor.R
 \name{uid-tools}
 \alias{uid-tools}
-\alias{get_uids}
-\alias{get_indexes}
-\title{Convert UIDs to Indexes and vice versa}
+\alias{get_unique_ids}
+\alias{get_posit_ids}
+\title{Convert Unique identifiers from/to Positional identifiers}
 \usage{
-get_uids(dat, indexes)
+get_unique_ids(dat, posit_ids)
 
-get_indexes(dat, uids)
+get_posit_ids(dat, unique_ids)
 }
 \arguments{
 \item{dat}{a Master list object of network models}
 
-\item{indexes}{a vector of node indexes}
+\item{posit_ids}{a vector of node positional identifiers}
 
-\item{uids}{a vector of node UIDs}
+\item{unique_ids}{a vector of node unique identifiers}
 }
 \value{
-a vector of indexes or of UIDs
+a vector of unique or positional identifiers
 }
 \description{
-EpiModel refers to its nodes either by indexes, the position of
-             the node in the \code{attr} vectors or by UIDs, unique
-             identifiers allowing to refer to nodes even after they are
-             deactivated
+EpiModel refers to its nodes either by positional identifiers
+             (\code{posit_ids}), the position of the node in the \code{attr}
+             vectors or by unique identifiers (\code{unique_ids}), allowing
+             to refer to nodes even after they are deactivated
 }
+\section{Deactivated nodes}{
+
+  When providing \code{unique_ids} of deactivated nodes to \code{get_posit_ids},
+  \code{NA}s are returned instead and a warning is produced.
+}
+
