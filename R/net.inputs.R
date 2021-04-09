@@ -184,6 +184,19 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
     }
   }
 
+  ## random_params checks
+   if ("random.params" %in% names.dot.args) {
+     for (nm in names(p[["random.params"]])) {
+       if (nm %in% names(p)) {
+        warning(
+          "The parameter `", nm, "` is defined twice, once as fixed",
+          " and once as a random parameter.\n Only the random parameter",
+          " definition will be used."
+        )
+       }
+     }
+   }
+
   ## Defaults and Checks
   if ("b.rate" %in% names.dot.args) {
     p$a.rate <- dot.args$b.rate
@@ -361,8 +374,6 @@ param_random <- function(values, prob = NULL) {
 #' # therefore produced.
 #' param <- param.net(tx.prob = 0.3, random.params = my_randoms)
 #'
-#'
-#'
 
 #'
 #' # Parameters are drawn automatically in netsim by calling the function
@@ -394,12 +405,6 @@ generate_random_params <- function(param, verbose = FALSE) {
   rng_values <- list()
   rng_values[rng_names] <- lapply(param$random.params, do.call, args = list())
   for (nm in rng_names) {
-    if (!is.null(param[[nm]])) {
-      warning(
-        "The value of the parameter `", nm, "`: ", param[nm],
-        ", has been replaced by ", rng_values[nm]
-      )
-    }
     param[nm] <- rng_values[nm]
   }
   param$random.params.values <- rng_values

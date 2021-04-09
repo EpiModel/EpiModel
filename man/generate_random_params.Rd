@@ -58,8 +58,6 @@ param <- param.net(inf.prob = 0.3, random.params = my_randoms)
 param <- param.net(tx.prob = 0.3, random.params = my_randoms)
 
 
-
-
 # Parameters are drawn automatically in netsim by calling the function
 # within netsim_loop. Demonstrating draws here but this is not used by
 # end user.

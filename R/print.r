@@ -142,20 +142,11 @@ print.netsim <- function(x, formation.stats = FALSE, digits = 3, ...) {
   cat("\nNo. time steps:", x$control$nsteps)
   cat("\nNo. NW groups:", x$param$groups)
 
-  cat("\n\nModel Parameters")
-  cat("\n-----------------------\n")
-  pToPrint <- which(!(names(x$param) %in% c("groups", "vital")))
-  for (i in pToPrint) {
-    if (class(x$param[[i]]) == "numeric" && length(x$param[[i]]) > 5) {
-      cat(names(x$param)[i], "=", x$param[[i]][1:3], "...", fill = 80)
-    } else if (class(x$param[[i]]) == "data.frame") {
-      cat(names(x$param)[i], "= <data.frame>\n")
-    } else if (class(x$param[[i]]) == "list") {
-      cat(names(x$param)[i], "= <list>\n")
-    } else {
-      cat(names(x$param)[i], "=", x$param[[i]], fill = 80)
-    }
-  }
+  # Parameters
+  cat("\n\n")
+  cat("+++++++++++++++++++++++\n\n")
+  print(x$param)
+  cat("+++++++++++++++++++++++\n")
 
   if (is.null(x$control$type)) {
     cat("\nModel Functions")
@@ -243,9 +234,10 @@ print.netsim <- function(x, formation.stats = FALSE, digits = 3, ...) {
     cat("\n----------------------- \n")
     print(as.data.frame(round(as.matrix(x$stats.table.formation),
                               digits = digits)))
-    cat("")
+    cat("\n")
   }
 
+  cat("\n")
   invisible()
 }
 
@@ -319,10 +311,13 @@ print.param.net <- function(x, ...) {
   randoms <- c("random.params", "random.params.values")
   pToPrint <- which(!(names(x) %in% c("vital", randoms)))
   rng_values <- list()
+  rng_defs <- NULL
 
   if (all(randoms %in% names(x))) {
     rng_values <- x$random.params.values
     pToPrint <- which(! names(x)[pToPrint] %in% names(rng_values))
+  } else if (randoms[1] %in% names(x)) {
+    rng_defs <- names(x[[randoms[1]]])
   }
 
   cat("Network Model Parameters")
@@ -331,14 +326,25 @@ print.param.net <- function(x, ...) {
     format_param(names(x)[i], x[[i]])
   }
 
+  if (!is.null(rng_defs)) {
+    cat("\nRandom Parameters")
+    cat("\n(Not drawn yet)")
+    cat("\n---------------------------\n")
+    for (prm in rng_defs) {
+      cat(prm, " = <function>\n")
+    }
+  }
+
   if (length(rng_values) > 0) {
     cat("\nRandomly Drawn Parameters")
     cat("\n(Values from one simulation)")
-    cat("\n===========================\n")
+    cat("\n---------------------------\n")
     for (i in seq_along(rng_values)) {
       format_param(names(rng_values)[i], rng_values[[i]])
     }
   }
+
+  cat("\n")
 
   invisible()
 }
