@@ -49,10 +49,16 @@ my_randoms <- list(
   )
 )
 
-# Parameter model with deterministic and random parameters
+# Parameter model with fixed and random parameters
 param <- param.net(inf.prob = 0.3, random.params = my_randoms)
 
-# A warning is produced if a random parameter overwrites a fixed parameter.
+# Below, `tx.prob` is set first to 0.3 then assigned a random value using
+# the function from `my_randoms`. A warning notifying of this overwrite is
+# therefore produced.
+param <- param.net(tx.prob = 0.3, random.params = my_randoms)
+
+
+
 
 # Parameters are drawn automatically in netsim by calling the function
 # within netsim_loop. Demonstrating draws here but this is not used by
