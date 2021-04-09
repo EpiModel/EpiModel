@@ -22,7 +22,7 @@
 #'
 #' @section Core Attribute:
 #' The \code{append_core_attr} function initialize the attributes necessary for
-#' EpiModel to work (Currently "active" and "uid"). It is used in the
+#' EpiModel to work (Currently "active" and "unique_id"). It is used in the
 #' inilization phase of the simulation, to create the nodes (see
 #' \code{initialize.net}). It is also used when adding nodes during the
 #' simulation (see \code{arrival.net})
@@ -525,28 +525,29 @@ append_core_attr <- function(dat, at, n.new) {
   dat <- append_attr(dat, "entrTime", at, n.new)
   dat <- append_attr(dat, "exitTime", NA, n.new)
 
-  dat <- update_uids(dat, n.new)
+  dat <- update_unique_ids(dat, n.new)
 
   return(dat)
 }
 
-#' @title Create the uids for the new nodes
+#' @title Create the unique_ids for the new nodes
 #'
 #' @description This function is called by `append_core_attr` and append new
-#' uids to the created nodes. It also keeps track of the already used uids with
-#' the /code{dat[["_last_uid"]]} variable
+#' unique_ids to the created nodes. It also keeps track of the already used
+#' unique_ids with the /code{dat[["_last_unique_id"]]} variable
 #'
 #' @param dat a Master list object of network models
-#' @param n.new the number of new nodes to give \code{uid} to
+#' @param n.new the number of new nodes to give \code{unique_id} to
 #'
 #' @return the Master list object of network models (\code{dat})
 #'
 #' @keywords internal
-update_uids <- function(dat, n.new) {
-  last_uid <- if (is.null(dat[["_last_uid"]])) 0L else dat[["_last_uid"]]
-  next_uids <- seq_len(n.new) + last_uid
-  dat[["_last_uid"]] <- last_uid + as.integer(n.new)
-  dat <- append_attr(dat, "uid", next_uids, n.new)
+update_unique_ids <- function(dat, n.new) {
+  last_unique_id <- if (is.null(dat[["_last_unique_id"]])) 0L
+                    else dat[["_last_unique_id"]]
+  next_unique_ids <- seq_len(n.new) + last_unique_id
+  dat[["_last_unique_id"]] <- last_unique_id + as.integer(n.new)
+  dat <- append_attr(dat, "unique_id", next_unique_ids, n.new)
 
   return(dat)
 }
@@ -591,28 +592,29 @@ check_attr_lengths <- function(dat) {
 #'              to refer to nodes even after they are deactivated
 #'
 #' @section Deactivated nodes:
-#'   When providing \code{unique_ids} of deactivated nodes to \code{get_posit_ids},
-#'   \code{NA}s are returned instead and a warning is produced.
+#'   When providing \code{unique_ids} of deactivated nodes to
+#'   \code{get_posit_ids}, \code{NA}s are returned instead and a warning is
+#'   produced.
 #'
 #' @param dat a Master list object of network models
 #' @param unique_ids a vector of node unique identifiers
 #' @param posit_ids a vector of node positional identifiers
 #' @return a vector of unique or positional identifiers
 #'
-#' @name uid-tools
+#' @name unique_id-tools
 NULL
 
-#' @rdname uid-tools
+#' @rdname unique_id-tools
 #' @export
 get_unique_ids <- function(dat, posit_ids) {
-  unique_ids <- get_attr(dat, "uid", posit_ids = posit_ids)
+  unique_ids <- get_attr(dat, "unique_id", posit_ids = posit_ids)
   return(unique_ids)
 }
 
-#' @rdname uid-tools
+#' @rdname unique_id-tools
 #' @export
 get_posit_ids <- function(dat, unique_ids) {
-  posit_ids <- base::match(unique_ids, get_attr(dat, "uid"))
+  posit_ids <- base::match(unique_ids, get_attr(dat, "unique_id"))
 
   if (any(is.na(posit_ids))) {
     warning(

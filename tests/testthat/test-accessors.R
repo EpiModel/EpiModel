@@ -164,23 +164,23 @@ test_that("Net core attributes", {
   # Append the first nodes (empty list before)
   dat <- append_core_attr(dat, at = 1,  n.new = 100)
   expect_equal(get_attr(dat, "active"), rep(1, 100))
-  expect_equal(get_attr(dat, "uid"), 1:100)
+  expect_equal(get_attr(dat, "unique_id"), 1:100)
 
-  # Remove some nodes to check if uids are unique
+  # Remove some nodes to check if unique_ids are unique
   dat <- delete_attr(dat, 21:30)
   dat <- append_core_attr(dat, at = 2, n.new = 100)
   expect_equal(get_attr(dat, "active"), rep(1, 190))
-  expect_equal(get_attr(dat, "uid"), c(1:20, 31:200))
-  expect_type(get_attr(dat, "uid"), "integer")
+  expect_equal(get_attr(dat, "unique_id"), c(1:20, 31:200))
+  expect_type(get_attr(dat, "unique_id"), "integer")
 
-  # Test UIDs posit_ids converters
+  # Test unique_ids posit_ids converters
   expect_equal(
-    get_attr(dat, "uid"),
+    get_attr(dat, "unique_id"),
     get_unique_ids(dat, seq_along(get_attr(dat, "active")))
   )
   expect_equal(
     seq_along(get_attr(dat, "active")),
-    get_posit_ids(dat, get_attr(dat, "uid"))
+    get_posit_ids(dat, get_attr(dat, "unique_id"))
   )
   expect_warning(get_posit_ids(dat, 25:35))
 })
