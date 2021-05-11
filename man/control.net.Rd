@@ -10,6 +10,7 @@ control.net(
   start = 1,
   nsims = 1,
   ncores = 1,
+  cluster_type = "PSOCK",
   resimulate.network = FALSE,
   tergmLite = FALSE,
   attr.rules,
@@ -56,7 +57,11 @@ value in \code{nsteps}.}
 \item{nsims}{The total number of disease simulations.}
 
 \item{ncores}{Number of processor cores to run multiple simulations
-on, using the \code{foreach} and \code{doParallel} implementations.}
+on, using \code{parallel::parLapply}.}
+
+\item{cluster_type}{Type of cluster to run multiple simulations on. This
+value is passed to \code{parallel::makeCluster} \code{type} argument
+(default = "PSOCK")}
 
 \item{resimulate.network}{If \code{TRUE}, resimulate the network at each time
 step. This is required when the epidemic or demographic processes
