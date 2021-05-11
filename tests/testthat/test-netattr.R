@@ -207,3 +207,45 @@ test_that("Save attributes to output", {
   expect_is(sim1$attr[[1]], "list")
   expect_true(all(c("entrTime", "exitTime") %in% names(sim1$attr[[1]])))
 })
+
+
+test_that("Check TE Status Variable Against Epi Stats", {
+
+  skip_on_cran()
+
+  nw <- network_initialize(n = 100)
+  formation <- ~edges
+  target.stats <- 50
+  coef.diss <- dissolution_coefs(dissolution = ~offset(edges), 38)
+  est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
+
+  # SIR
+  param <- param.net(inf.prob = 0.4, act.rate = 2, rec.rate = 0.01)
+  init <- init.net(i.num = 10, r.num = 0)
+  control <- control.net(type = "SIR", nsims = 1, nsteps = 100, verbose = FALSE)
+  sim <- netsim(est, param, init, control)
+  times <- sample(1:100, 10)
+  for (at in times) {
+    df <- as.data.frame(sim)[at, ]
+    nwd <- get_network(sim, collapse = TRUE, at = at)
+    attr <- get_vertex_attribute(nwd, "testatus")
+    expect_true(sum(attr == "s") == df$s.num)
+    expect_true(sum(attr == "i") == df$i.num)
+    expect_true(sum(attr == "r") == df$r.num)
+  }
+
+  # SIS
+  param <- param.net(inf.prob = 0.4, act.rate = 2, rec.rate = 0.01)
+  init <- init.net(i.num = 10)
+  control <- control.net(type = "SIS", nsims = 1, nsteps = 100, verbose = FALSE)
+  sim <- netsim(est, param, init, control)
+  times <- sample(1:100, 10)
+  for (at in times) {
+    df <- as.data.frame(sim)[at, ]
+    nwd <- get_network(sim, collapse = TRUE, at = at)
+    attr <- get_vertex_attribute(nwd, "testatus")
+    expect_true(sum(attr == "s") == df$s.num)
+    expect_true(sum(attr == "i") == df$i.num)
+  }
+
+})

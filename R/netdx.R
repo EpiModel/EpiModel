@@ -287,7 +287,15 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
 
   ## Calculate mean/sd from merged stats
   stats.means <- colMeans(merged.stats)
-  stats.sd <- apply(merged.stats, 2, sd)
+
+  if(nsims>1) {
+    temp2 <- sapply(stats, function(x) colMeans(x))
+    if (ncol(stats[[1]])==1) temp2 <- matrix(temp2, nrow=1)
+    stats.sd <- apply(temp2, 1, sd)
+  } else {
+    stats.sd <-  NA
+  }
+
   stats.table <- data.frame(sorder = 1:length(names(stats.means)),
                             names = names(stats.means),
                             stats.means, stats.sd)
@@ -320,28 +328,13 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
         cat("\n- Calculating duration statistics")
       }
 
-      ## Duration calculations
+
+      # Calculate mean partnership age from edgelist
       sim.df <- list()
       for (i in 1:length(diag.sim)) {
         sim.df[[i]] <- as.data.frame(diag.sim[[i]])
       }
 
-
-      ## Create a merged vector of durations
-      ncens <- which(sim.df[[1]]$onset.censored == FALSE &
-                       sim.df[[1]]$terminus.censored == FALSE)
-      durVec <- sim.df[[1]]$duration[ncens]
-      if (nsims > 1) {
-        for (i in 2:length(diag.sim)) {
-          ncens <- which(sim.df[[i]]$onset.censored == FALSE &
-                           sim.df[[i]]$terminus.censored == FALSE)
-          durVec <- c(durVec, sim.df[[i]]$duration[ncens])
-        }
-      }
-
-
-
-      # Calculate mean partnership age from edgelist
       if (nsims == 1 || ncores == 1) {
         pages <- list()
         if (verbose == TRUE & nsims > 1) {
@@ -361,6 +354,9 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
           edgelist_meanage(el = sim.df[[i]])
         })
       }
+
+      pages_imptd <- (x$coef.diss$duration^2*dgeom(2:(nsteps + 1),
+                                                   1/x$coef.diss$duration))
 
       ## Dissolution calculations
       if (verbose == TRUE) {
@@ -405,15 +401,28 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
 
 
       # Create dissolution tables
-      duration.mean <- mean(durVec)
-      duration.sd <- sd(durVec)
+      duration.obs <- matrix(unlist(pages), nrow = nsteps)
+      duration.imputed <- duration.obs + pages_imptd
+      duration.mean.by.sim <- colMeans(duration.imputed)
+      duration.mean <- mean(duration.mean.by.sim)
+      if (nsims > 1) {
+        duration.sd <- sd(duration.mean.by.sim)
+      } else {
+        duration.sd <- NA
+      }
+
       duration.expected <- exp(coef.diss$coef.crude[1]) + 1
       duration.pctdiff <-
         100 * (duration.mean - duration.expected) / duration.expected
 
-
       dissolution.mean <- mean(unlist(prop.diss))
-      dissolution.sd <- sd(unlist(prop.diss))
+
+      if (nsims > 1) {
+        dissolution.sd <- sd(sapply(prop.diss, mean))
+      } else {
+        dissolution.sd <- NA
+      }
+
       dissolution.expected <- 1 / (exp(coef.diss$coef.crude[1]) + 1)
       dissolution.pctdiff <- 100 * (dissolution.mean - dissolution.expected) /
         dissolution.expected
@@ -453,6 +462,7 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
     if (skip.dissolution == FALSE) {
       out$stats.table.dissolution <- stats.table.dissolution
       out$pages <- pages
+      out$pages_imptd <- pages_imptd
       out$prop.diss <- prop.diss
     }
     if (keep.tedgelist == TRUE) {

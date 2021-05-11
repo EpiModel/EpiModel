@@ -37,7 +37,7 @@ saveout.dcm <- function(df, s, param, control, out = NULL) {
   }
 
   # Remove NA's from flows by setting last value to penultimate value
-  ns <- control$nsteps
+  ns <- nrow(out$epi[[1]])
   lr.na <- sapply(out$epi, function(x) is.na(x[ns, s]) & !is.na(x[ns - 1, s]))
   wh.lr.na <- as.numeric(which(lr.na == TRUE))
   if (length(wh.lr.na) > 0) {
@@ -151,8 +151,15 @@ saveout.net <- function(dat, s, out = NULL) {
         out$stats$transmat <- list(data.frame())
       }
       class(out$stats$transmat) <- c("transmat", class(out$stats$transmat))
-      out$network <- list(dat$nw)
+    }
 
+    if (dat$control$tergmLite == FALSE) {
+      if (is.null(dat$control$save.network)) {
+        out$network <- list(dat$nw)
+      }
+      if (!is.null(dat$control$save.network) && dat$control$save.network == TRUE) {
+        out$network <- list(dat$nw)
+      }
     }
 
     if (!is.null(dat$control$save.other)) {
@@ -179,8 +186,15 @@ saveout.net <- function(dat, s, out = NULL) {
       } else {
         out$stats$transmat[[s]] <- data.frame()
       }
-      out$network[[s]] <- dat$nw
+    }
 
+    if (dat$control$tergmLite == FALSE) {
+      if (is.null(dat$control$save.network)) {
+        out$network[[s]] <- dat$nw
+      }
+      if (!is.null(dat$control$save.network) && dat$control$save.network == TRUE) {
+        out$network[[s]] <- dat$nw
+      }
     }
 
     if (!is.null(dat$control$save.other)) {
@@ -205,7 +219,15 @@ saveout.net <- function(dat, s, out = NULL) {
 
     if (dat$control$save.transmat == TRUE) {
       names(out$stats$transmat) <- simnames[1:length(out$stats$transmat)]
-      names(out$network) <- simnames
+    }
+
+    if (dat$control$tergmLite == FALSE) {
+      if (is.null(dat$control$save.network)) {
+        names(out$network) <- simnames
+      }
+      if (!is.null(dat$control$save.network) && dat$control$save.network == TRUE) {
+        names(out$network) <- simnames
+      }
     }
 
     # Remove functions from control list

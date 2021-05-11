@@ -76,3 +76,23 @@ test_that("netsim for edges only, SIR, one-mode, closed, 2 sim", {
   plot(mod, type = "network")
   test_net(mod)
 })
+
+test_that("netsim implicit save.network option", {
+  nw <- network_initialize(n = 100)
+  formation <- ~edges
+  target.stats <- 50
+  coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
+  est1 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
+
+  # Epidemic model
+  param <- param.net(inf.prob = 0.3)
+  init <- init.net(i.num = 10)
+  control <- control.net(type = "SI", nsteps = 5, nsims = 2, verbose = FALSE)
+  mod1 <- netsim(est1, param, init, control)
+  expect_s3_class(get_network(mod1), "networkDynamic")
+
+  control <- control.net(type = "SI", nsteps = 5, nsims = 2, verbose = FALSE,
+                         save.network = FALSE)
+  mod2 <- netsim(est1, param, init, control)
+  expect_error(get_network(mod2))
+})
