@@ -257,9 +257,10 @@ get_epi_list <- function(dat, item = NULL) {
   return(out)
 }
 
+#' @param at timestep where to add the new value for the epi output \code{item}
 #' @rdname net-accessor
 #' @export
-get_epi <- function(dat, item, posit_ids = NULL, override.null.error = FALSE) {
+get_epi <- function(dat, item, at = NULL, override.null.error = FALSE) {
   if (!item %in% names(dat[["epi"]])) {
     if (override.null.error) {
       out <- NULL
@@ -268,24 +269,24 @@ get_epi <- function(dat, item, posit_ids = NULL, override.null.error = FALSE) {
            "` in the epi out list of the Master list object (dat)")
     }
   } else {
-    if (is.null(posit_ids)) {
+    if (is.null(at)) {
       out <- dat[["epi"]][[item]]
     } else {
-      if (is.logical(posit_ids)) {
-        if (length(posit_ids) != dat[["control"]][["nsteps"]]) {
-          stop("(logical) `posit_ids` has to have a length equal to the number of
+      if (is.logical(at)) {
+        if (length(at) != dat[["control"]][["nsteps"]]) {
+          stop("(logical) `at` has to have a length equal to the number of
               steps planned for for the simulation (control[['nsteps']])")
         }
-      } else if (is.numeric(posit_ids)) {
-        if (any(posit_ids > dat[["control"]][["nsteps"]])) {
-          stop("Some (numeric) `posit_ids` are larger than the number of
+      } else if (is.numeric(at)) {
+        if (any(at > dat[["control"]][["nsteps"]])) {
+          stop("Some (numeric) `at` are larger than the number of
               steps planned for for the simulation (control[['nsteps']])")
         }
       } else {
-        stop("`posit_ids` must be logical, numeric, or NULL")
+        stop("`at` must be logical, numeric, or NULL")
       }
 
-      out <- dat[["epi"]][[item]][posit_ids]
+      out <- dat[["epi"]][[item]][at]
     }
   }
 

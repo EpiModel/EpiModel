@@ -38,7 +38,7 @@ append_attr(dat, item, value, n.new)
 
 get_epi_list(dat, item = NULL)
 
-get_epi(dat, item, posit_ids = NULL, override.null.error = FALSE)
+get_epi(dat, item, at = NULL, override.null.error = FALSE)
 
 add_epi(dat, item)
 
