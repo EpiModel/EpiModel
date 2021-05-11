@@ -27,8 +27,10 @@
 #'        from the dynamic simulations. Returned in the form of a list of nD
 #'        objects, with one entry per simulation. Accessible at \code{$network}.
 #' @param verbose Print progress to the console.
-#' @param ncores Number of processor cores to run multiple simulations
-#'        on, using "PSOCK" clusters
+#' @param ncores Number of processor cores to run multiple simulations on
+#' @param cluster.type Type of cluster to run multiple simulations on. This
+#'        value is passed to \code{parallel::makeCluster} \code{type} argument
+#'        (default = "PSOCK")
 #' @param skip.dissolution If \code{TRUE}, skip over the calculations of
 #'        duration and dissolution stats in netdx.
 #'
@@ -100,7 +102,7 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
                   nwstats.formula = "formation", set.control.ergm,
                   set.control.stergm, sequential = TRUE, keep.tedgelist = FALSE,
                   keep.tnetwork = FALSE, verbose = TRUE, ncores = 1,
-                  skip.dissolution = FALSE) {
+                  cluster.type = "PSOCK", skip.dissolution = FALSE) {
 
   if (class(x) != "netest") {
     stop("x must be an object of class netest", call. = FALSE)
@@ -109,7 +111,7 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
   ncores <- ifelse(nsims == 1, 1, min(parallel::detectCores(), ncores))
   if (nsims > 1 && ncores > 1) {
     cluster.size <- min(nsims, ncores)
-    cl <- parallel::makeCluster(cluster.size, type = "PSOCK")
+    cl <- parallel::makeCluster(cluster.size, type = cluster.type)
   }
 
   fit <- x$fit

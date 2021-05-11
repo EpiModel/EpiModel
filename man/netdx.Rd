@@ -17,6 +17,7 @@ netdx(
   keep.tnetwork = FALSE,
   verbose = TRUE,
   ncores = 1,
+  cluster.type = "PSOCK",
   skip.dissolution = FALSE
 )
 }
@@ -56,8 +57,11 @@ objects, with one entry per simulation. Accessible at \code{$network}.}
 
 \item{verbose}{Print progress to the console.}
 
-\item{ncores}{Number of processor cores to run multiple simulations
-on, using "PSOCK" clusters}
+\item{ncores}{Number of processor cores to run multiple simulations on}
+
+\item{cluster.type}{Type of cluster to run multiple simulations on. This
+value is passed to \code{parallel::makeCluster} \code{type} argument
+(default = "PSOCK")}
 
 \item{skip.dissolution}{If \code{TRUE}, skip over the calculations of
 duration and dissolution stats in netdx.}
