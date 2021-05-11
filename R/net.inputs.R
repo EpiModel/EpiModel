@@ -502,7 +502,7 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #' @param nsims The total number of disease simulations.
 #' @param ncores Number of processor cores to run multiple simulations
 #'        on, using \code{parallel::parLapply}.
-#' @param cluster_type Type of cluster to run multiple simulations on. This
+#' @param cluster.type Type of cluster to run multiple simulations on. This
 #'        value is passed to \code{parallel::makeCluster} \code{type} argument
 #'        (default = "PSOCK")
 #' @param start For models with network resimulation , time point to start up
@@ -637,7 +637,7 @@ control.net <- function(type,
                         start = 1,
                         nsims = 1,
                         ncores = 1,
-                        cluster_type = "PSOCK",
+                        cluster.type = "PSOCK",
                         resimulate.network = FALSE,
                         tergmLite = FALSE,
                         attr.rules,
