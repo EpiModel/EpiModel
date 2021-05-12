@@ -44,16 +44,16 @@ test_that("`dat` getters and setter", {
     dat <- set_attr(dat, "status", rbinom(length(dat$attr$active), 1, 0.4))
   )
 
-  expect_silent(dat <- set_attr(dat, "age", 2, indexes = 1:4))
+  expect_silent(dat <- set_attr(dat, "age", 2, posit_ids = 1:4))
   expect_equal(get_attr(dat, "age", 1:4), rep(2, 4))
-  indexes <- c(rep(TRUE, 4), rep(FALSE, length(dat$attr$active) - 4))
-  expect_silent(dat <- set_attr(dat, "age", 6, indexes = indexes))
+  posit_ids <- c(rep(TRUE, 4), rep(FALSE, length(dat$attr$active) - 4))
+  expect_silent(dat <- set_attr(dat, "age", 6, posit_ids = posit_ids))
   expect_equal(get_attr(dat, "age", 1:4), rep(6, 4))
 
-  expect_error(dat <- set_attr(dat, "age", c(1, 2), indexes = 1:4))
-  expect_error(dat <- set_attr(dat, "age", 1, indexes = c(1, 1000)))
-  expect_error(dat <- set_attr(dat, "age", 1, indexes = c("a", "b")))
-  expect_error(dat <- set_attr(dat, "age", c(1, 2), indexes = c(TRUE, FALSE)))
+  expect_error(dat <- set_attr(dat, "age", c(1, 2), posit_ids = 1:4))
+  expect_error(dat <- set_attr(dat, "age", 1, posit_ids = c(1, 1000)))
+  expect_error(dat <- set_attr(dat, "age", 1, posit_ids = c("a", "b")))
+  expect_error(dat <- set_attr(dat, "age", c(1, 2), posit_ids = c(TRUE, FALSE)))
 
 
   expect_equal(get_attr_list(dat), dat$attr)
@@ -164,12 +164,23 @@ test_that("Net core attributes", {
   # Append the first nodes (empty list before)
   dat <- append_core_attr(dat, at = 1,  n.new = 100)
   expect_equal(get_attr(dat, "active"), rep(1, 100))
-  expect_equal(get_attr(dat, "uid"), 1:100)
+  expect_equal(get_attr(dat, "unique_id"), 1:100)
 
-  # Remove some nodes to check if uids are unique
+  # Remove some nodes to check if unique_ids are unique
   dat <- delete_attr(dat, 21:30)
   dat <- append_core_attr(dat, at = 2, n.new = 100)
   expect_equal(get_attr(dat, "active"), rep(1, 190))
-  expect_equal(get_attr(dat, "uid"), c(1:20, 31:200))
-  expect_type(get_attr(dat, "uid"), "integer")
+  expect_equal(get_attr(dat, "unique_id"), c(1:20, 31:200))
+  expect_type(get_attr(dat, "unique_id"), "integer")
+
+  # Test unique_ids posit_ids converters
+  expect_equal(
+    get_attr(dat, "unique_id"),
+    get_unique_ids(dat, seq_along(get_attr(dat, "active")))
+  )
+  expect_equal(
+    seq_along(get_attr(dat, "active")),
+    get_posit_ids(dat, get_attr(dat, "unique_id"))
+  )
+  expect_warning(get_posit_ids(dat, 25:35))
 })
