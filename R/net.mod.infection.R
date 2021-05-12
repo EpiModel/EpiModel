@@ -360,9 +360,9 @@ discord_edgelist <- function(dat, at, network = 1, infstat = "i") {
 #'
 set_transmat <- function(dat, del, at) {
   del <- del[!duplicated(del$sus), ]
-  # Convert the Discordant Edglist indexes to the corresponding UIDs
-  del[["sus"]] <- get_attr(dat, "uid", del[["sus"]])
-  del[["inf"]] <- get_attr(dat, "uid", del[["inf"]])
+  # Convert the Discordant Edglist indexes to the corresponding unique_ids
+  del[["sus"]] <- get_unique_ids(dat, del[["sus"]])
+  del[["inf"]] <- get_unique_ids(dat, del[["inf"]])
 
   if (at != 2) {
     del <- rbind(dat$stats$transmat, del)

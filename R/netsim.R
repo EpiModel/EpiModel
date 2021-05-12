@@ -170,11 +170,11 @@ netsim <- function(x, param, init, control) {
 #' @inheritParams initialize.net
 #' @keywords internal
 netsim_loop <- function(x, param, init, control, s) {
+  ## Instantiate random parameters
+  param <- generate_random_params(param, verbose = FALSE)
+
   dat <- withCallingHandlers(
     expr = {
-
-      ## Instantiate random parameters
-      param <- generate_random_params(param, verbose = FALSE)
 
       ## Initialization Module
       if (!is.null(control[["initialize.FUN"]])) {
