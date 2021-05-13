@@ -106,9 +106,10 @@ These \code{get_}, \code{set_}, \code{append_} and \code{add}
 \section{Core Attribute}{
 
 The \code{append_core_attr} function initialize the attributes necessary for
-EpiModel to work (Currently "active" and "unique_id"). It is used in the
-inilization phase of the simulation, to create the nodes (see
-\code{initialize.net}). It is also used when adding nodes during the
+EpiModel to work (the four core attributes are: "active", "unique_id",
+"entrTime", and "exitTime"). These attributes are used in the initialization
+phase of the simulation, to create the nodes (see
+\code{initialize.net}); and also used when adding nodes during the
 simulation (see \code{arrival.net})
 }
 
