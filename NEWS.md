@@ -2,15 +2,22 @@
 
 ### NEW FEATURES
 
--   Text
+-   Added new `update_params` function to add new parameters to an existing list of network parameters specified in `param.net`. This aids in workflows that distinguish fixed parameters versus varying parameters that may change across scenarios or simulations.
+-   Added new general interface for random parameters in network models that allows randomly drawing a parameter value from a specified statistical distribution, where the distribution may either be a sampling of discrete values or a factory function for any of R's random statistical distribution functions. See help file for `generate_random_params` for examples.
+-   Implemented a standardized approach with helper functions for setting core attributes (those nodal attributes which should be present in any workflows) in network models. This functionality is specified with `append_core_attr` function in the initialization and arrival modules in any extension models. This includes a standardized implementation of persistent, unique IDs as an attribute that remains constant for nodes even with open population models.
 
 ### BUG FIXES
 
--   Text
+-   With the use of a standardized core attribute framework that now correctly handles unique IDs in all models, now the transmission matrix objects output from any network model work consistently and correctly for both closed population and open population models.
+-   For DCM models with `dt < 1`, fix `NA` output for any `.flow` variables.
+-   Reduce complexity of some unit tests that were stochastically generating errors due to ERGM MCMC estimation problems.
+-   Fix problem with temporally extended status variables in network models (i.e., tracking of disease status history across time steps) by simplifying the general approach that works across built-in and extension model types.
 
 ### OTHER
 
--   Text
+-   Reimplemented the handling of relational age diagnostics in `netdx`, with updated numerical summaries in `print.netdx` and visuals in `plot.netdx`. Because relational ages are left-censored for any edges that existed at time zero, this led to a misleading diagnostic that ages were lower than the targeted durations. Imputation of a start time for those edges was added, with the option in `plot.netdx` to visualize with imputed start times (default = TRUE) or not.
+-   More consistent approach to trimming unneeded environmental data from ERGM objects implemented with `statnet.common::trim_env()`, used in `netest`.
+-   Reimplemented the `netest` "edges dissolution approximation" for efficient estimation of a temporal ERGM via a cross-sectional ERGM estimation with adjustment of formation model coefficients (see `netest` help page). This new approach further reduces bias in the approximation method, plus now allows for non-nested dissolution models (i.e., dissolution formula does not need to be a subset of the formation formula).
 
 ## EpiModel 2.0.3
 
