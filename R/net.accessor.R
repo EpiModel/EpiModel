@@ -592,14 +592,18 @@ check_attr_lengths <- function(dat) {
 #'              vectors or by unique identifiers (\code{unique_ids}), allowing
 #'              to refer to nodes even after they are deactivated
 #'
+#' @section All elements:
+#'   When  \code{unique_ids} or \code{get_posit_ids} is NULL (default)
+#'   the full list of positional IDs or unique IDs is returned
+#'
 #' @section Deactivated nodes:
 #'   When providing \code{unique_ids} of deactivated nodes to
 #'   \code{get_posit_ids}, \code{NA}s are returned instead and a warning is
 #'   produced.
 #'
 #' @param dat a Master list object of network models
-#' @param unique_ids a vector of node unique identifiers
-#' @param posit_ids a vector of node positional identifiers
+#' @param unique_ids a vector of node unique identifiers (default = NULL)
+#' @param posit_ids a vector of node positional identifiers (default = NULL)
 #' @return a vector of unique or positional identifiers
 #'
 #' @name unique_id-tools
@@ -607,14 +611,21 @@ NULL
 
 #' @rdname unique_id-tools
 #' @export
-get_unique_ids <- function(dat, posit_ids) {
+get_unique_ids <- function(dat, posit_ids = NULL) {
+  if (is.null(posit_ids)) {
+    return(get_attr(dat, "unique_id"))
+  }
+
   unique_ids <- get_attr(dat, "unique_id", posit_ids = posit_ids)
   return(unique_ids)
 }
 
 #' @rdname unique_id-tools
 #' @export
-get_posit_ids <- function(dat, unique_ids) {
+get_posit_ids <- function(dat, unique_ids = NULL) {
+  if (is.null(unique_ids)) {
+    return(seq_along(get_attr(dat, "active")))
+  }
   posit_ids <- base::match(unique_ids, get_attr(dat, "unique_id"))
 
   if (any(is.na(posit_ids))) {
