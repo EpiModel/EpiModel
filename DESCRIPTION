@@ -23,8 +23,8 @@ Authors@R: c(person("Samuel", "Jenness",
     role=c("ctb"), email="skyebend@uw.edu"),
     person("Kevin", "Weiss",
     role=c("ctb"), email="kevin.weiss@emory.edu"),
-    person("Shawnee", "Anderson",
-    role=c("ctb"), email="shawnee.marcell.anderson@emory.edu"),
+    person("Chad", "Klumb",
+    role=c("ctb"), email="cklumb@gmail.com"),
     person("Adrien", "Le Guillou",
     role=c("ctb"), email="adrien.leguillou@protonmail.com"))
 License: GPL-3
