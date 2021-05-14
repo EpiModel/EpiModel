@@ -1,7 +1,7 @@
 EpiModel
 ===============
 
-[![Version](http://img.shields.io/badge/Version-2.0.3-orange.svg?style=flat)](https://github.com/statnet/EpiModel/releases/tag/v2.0.3)
+[![Version](http://img.shields.io/badge/Version-2.0.4-orange.svg?style=flat)](https://github.com/statnet/EpiModel/releases/tag/v2.0.4)
 [![](http://cranlogs.r-pkg.org/badges/EpiModel?color=yellow)](http://cran.rstudio.com/web/packages/EpiModel/index.html)
 [![](http://cranlogs.r-pkg.org/badges/grand-total/EpiModel?color=blue)](http://cran.rstudio.com/web/packages/EpiModel/index.html)
 [![Build Status](https://github.com/statnet/EpiModel/workflows/R-CMD-check/badge.svg)](https://github.com/statnet/EpiModel/actions)
