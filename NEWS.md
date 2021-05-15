@@ -36,7 +36,7 @@
 
 ### OTHER
 
--   Further minor edits/updates to EpiModel 2.0 migration documentation (posted on <http://www.epimodel.org/>).
+-   Further minor edits/updates to EpiModel 2.0 migration documentation (posted on <https://www.epimodel.org/>).
 
 ## EpiModel 2.0.2
 
@@ -48,7 +48,7 @@
 
 ## EpiModel 2.0.0
 
--   This release introduces a major update to the EpiModel package infrastructure and application programming interface for both built-in models (primarily used for teaching purposes) and extension models (primarily used for research purposes). The major substantive changes are summarized in a EpiModel 1.x to EpiModel 2.0 migration guide on our primary website: <http://www.epimodel.org/>.
+-   This release introduces a major update to the EpiModel package infrastructure and application programming interface for both built-in models (primarily used for teaching purposes) and extension models (primarily used for research purposes). The major substantive changes are summarized in a EpiModel 1.x to EpiModel 2.0 migration guide on our primary website: <https://www.epimodel.org/>.
 
 ## EpiModel 1.8.0
 
@@ -463,7 +463,7 @@
 
 ### OTHER
 
--   The new website for the EpiModel project is <http://www.epimodel.org/>
+-   The new website for the EpiModel project is <https://www.epimodel.org/>
 -   Added a new example of a SEIR Ebola DCM in the "Solving New DCMs with EpiModel" tutorial.
 -   The shiny apps now use the single file method (\#155).
 -   Exported and added documentation for the `verbose.icm` function (\#71).
@@ -509,7 +509,7 @@
 
 ### OTHER
 
--   Added new test cases for running new DCMs, ICMs, and network models, following the vignette examples (see <http://www.epimodel.org/>).
+-   Added new test cases for running new DCMs, ICMs, and network models, following the vignette examples (see <https://www.epimodel.org/>).
 
 <br>
 
@@ -557,7 +557,7 @@
 
 -   Added internal test structure for build checking.
 -   Added a help file document for building ICM modules at ?modules.icm.
--   Expanded and clarified tutorial documentation, available at: <http://www.epimodel.org/>
+-   Expanded and clarified tutorial documentation, available at: <https://www.epimodel.org/>
 
 <br>
 
