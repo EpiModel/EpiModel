@@ -36,7 +36,7 @@
 
 ### OTHER
 
--   Further minor edits/updates to EpiModel 2.0 migration documentation (posted on <http://epimodel.org/>).
+-   Further minor edits/updates to EpiModel 2.0 migration documentation (posted on <http://www.epimodel.org/>).
 
 ## EpiModel 2.0.2
 
@@ -48,7 +48,7 @@
 
 ## EpiModel 2.0.0
 
--   This release introduces a major update to the EpiModel package infrastructure and application programming interface for both built-in models (primarily used for teaching purposes) and extension models (primarily used for research purposes). The major substantive changes are summarized in a EpiModel 1.x to EpiModel 2.0 migration guide on our primary website: <https://epimodel.org/>.
+-   This release introduces a major update to the EpiModel package infrastructure and application programming interface for both built-in models (primarily used for teaching purposes) and extension models (primarily used for research purposes). The major substantive changes are summarized in a EpiModel 1.x to EpiModel 2.0 migration guide on our primary website: <http://www.epimodel.org/>.
 
 ## EpiModel 1.8.0
 
@@ -307,7 +307,7 @@
 ### NEW FEATURES
 
 -   New translation and plotting functions for temporal transmission chains measured in stochastic network models. These include a dendogram using methods from the `ape` package and a transmission timeline from the `ndtv` package. See the help files for the `as.phylo.transmat` and `plot.transmat` functions.
--   Added a Shiny application for stochastic network models. This may be accessed from within the package with `epiweb(class = "net")`. It is also hosted online at <http://statnet.shinyapps.io/epinet/>
+-   Added a Shiny application for stochastic network models. This may be accessed from within the package with `epiweb(class = "net")`. It is also hosted online at shinyapps.
 -   `get_sims` function is used to extract individual simulations from larger `netsim` objects. This function has been updated to include a `var` argument that allows for automatic calculation of which simulation is closest to the mean across all simulations for extraction.
 -   Added a quantile extraction method for `as.data.frame` method for `icm` and `netsim` classes. This will provide a data frame of output corresponding to defined quantiles across all simulations contained within a model object.
 
@@ -320,7 +320,7 @@
 ### OTHER
 
 -   Changed the default of `status.rand`, which controls whether the number initially infected in stochastic epidemic models, to `FALSE`. This will ensure that exactly the number specified in `init.icm` and `init.net` are matched in each simulation.
--   Fully removed the `netsim_parallel` function from the package. See the EpiModelHPC extension package at <http://github.com/statnet/EpiModelHPC> for running network simulations in parallel.
+-   Fully removed the `netsim_parallel` function from the package. See the EpiModelHPC extension package at <https://github.com/statnet/EpiModelHPC> for running network simulations in parallel.
 
 <br>
 
@@ -463,7 +463,7 @@
 
 ### OTHER
 
--   The new website for the EpiModel project is <http://epimodel.org/>
+-   The new website for the EpiModel project is <http://www.epimodel.org/>
 -   Added a new example of a SEIR Ebola DCM in the "Solving New DCMs with EpiModel" tutorial.
 -   The shiny apps now use the single file method (\#155).
 -   Exported and added documentation for the `verbose.icm` function (\#71).
@@ -509,7 +509,7 @@
 
 ### OTHER
 
--   Added new test cases for running new DCMs, ICMs, and network models, following the vignette examples (see <http://epimodel.org/>).
+-   Added new test cases for running new DCMs, ICMs, and network models, following the vignette examples (see <http://www.epimodel.org/>).
 
 <br>
 
@@ -557,7 +557,7 @@
 
 -   Added internal test structure for build checking.
 -   Added a help file document for building ICM modules at ?modules.icm.
--   Expanded and clarified tutorial documentation, available at: <http://statnet.github.io/EpiModel>
+-   Expanded and clarified tutorial documentation, available at: <http://www.epimodel.org/>
 
 <br>
 
@@ -578,9 +578,9 @@
 
 -   Internal model functions have been significantly revised to improve efficiency.
 
--   The dcm function can handle model functions, parameter sets, and initial conditions of arbitrary complexity. See the HTML vignette on this topic at: <http://statnet.org/EpiModel/vignette/NewDCMs.html>
+-   The dcm function can handle model functions, parameter sets, and initial conditions of arbitrary complexity. See the HTML vignette on this topic at: <http://www.epimodel.org/>
 
--   Moved the package vignettes external to the package to reduce package size and build time. They are now available at the EpiModel homepage at: <http://statnet.org/trac/wiki/EpiModel>
+-   Moved the package vignettes external to the package to reduce package size and build time.
 
 <br>
 
@@ -590,4 +590,4 @@
 
 -   The EpiModel package provides functions for building, solving, and plotting mathematical models of infectious disease.
 
--   See the main package help function ?EpiModel-package, and the EpiModel tutorials online at <http://statnet.org/trac/wiki/EpiModel> to get started.
+-   See the main package help function ?EpiModel-package, and the EpiModel tutorials online.
