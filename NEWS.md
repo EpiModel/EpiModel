@@ -1,3 +1,7 @@
+## EpiModel 2.0.5
+
+-   Minor updates for CRAN submission.
+
 ## EpiModel 2.0.4
 
 ### NEW FEATURES
