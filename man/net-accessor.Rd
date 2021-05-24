@@ -28,17 +28,17 @@
 \usage{
 get_attr_list(dat, item = NULL)
 
-get_attr(dat, item, indexes = NULL, override.null.error = FALSE)
+get_attr(dat, item, posit_ids = NULL, override.null.error = FALSE)
 
 add_attr(dat, item)
 
-set_attr(dat, item, value, indexes = NULL, override.length.check = FALSE)
+set_attr(dat, item, value, posit_ids = NULL, override.length.check = FALSE)
 
 append_attr(dat, item, value, n.new)
 
 get_epi_list(dat, item = NULL)
 
-get_epi(dat, item, indexes = NULL, override.null.error = FALSE)
+get_epi(dat, item, at = NULL, override.null.error = FALSE)
 
 add_epi(dat, item)
 
@@ -76,8 +76,8 @@ append_core_attr(dat, at, n.new)
 \item{item}{a character vector conaining the name of the element to access.
 Can be of length > 1 for \code{get_*_list} functions}
 
-\item{indexes}{for \code{get_epi} and \code{get_attr}, a numeric vector of
-indexes or a logical vector to subset the desired \code{item}}
+\item{posit_ids}{for \code{get_epi} and \code{get_attr}, a numeric vector of
+posit_ids or a logical vector to subset the desired \code{item}}
 
 \item{override.null.error}{if TRUE, \code{get_} return NULL if the
 \code{item} does not exist instead of throwing an error.
@@ -99,17 +99,18 @@ vector for \code{get_} functions. And the Master list object for \code{set_}
 and \code{add_} functions
 }
 \description{
-These \code{get_}, \code{set_}, \code{append_} and \code{add} functions allow a safe
-             and efficient way to retrieve and mutate the Master list object
-             of network models (\code{dat}).
+These \code{get_}, \code{set_}, \code{append_} and \code{add}
+             functions allow a safe and efficient way to retrieve and mutate
+             the Master list object of network models (\code{dat}).
 }
 \section{Core Attribute}{
 
 The \code{append_core_attr} function initialize the attributes necessary for
-EpiModel to work (Currently "active" and "uid"). It is used in the
-inilization phase of the simulation, to create the nodes (see
-\code{initialize.net}). It is also used when adding nodes during the simulation
-(see \code{arrival.net})
+EpiModel to work (the four core attributes are: "active", "unique_id",
+"entrTime", and "exitTime"). These attributes are used in the initialization
+phase of the simulation, to create the nodes (see
+\code{initialize.net}); and also used when adding nodes during the
+simulation (see \code{arrival.net})
 }
 
 \section{Mutability}{
