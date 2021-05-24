@@ -125,7 +125,7 @@ print.netsim <- function(x, formation.stats = FALSE, digits = 3, ...) {
     simnames <- "sim1"
   }
   if (nsims == 2) {
-    simnames <- "sim1 s.g2"
+    simnames <- "sim1 sim2"
   }
   if (nsims > 2) {
     simnames <- paste0("sim1 ... sim", nsims)
@@ -265,7 +265,7 @@ print.disscoef <- function(x, ...) {
 #' @keywords internal
 format_param <- function(param_name, param_value) {
   if (is.numeric(param_value) && length(param_value) > 10) {
-    cat(param_name, "=", param_value[1:5], "...", fill = 80)
+    cat(param_name, "=", param_value[1:10], "...", fill = 80)
   } else if (is.data.frame(param_value)) {
     cat(param_name, "= <data.frame>\n")
   } else if (is.list(param_value)) {
@@ -337,7 +337,7 @@ print.param.net <- function(x, ...) {
 
   if (length(rng_values) > 0) {
     cat("\nRandomly Drawn Parameters")
-    cat("\n(Values from one simulation)")
+    cat("\n(One value per simulation)")
     cat("\n---------------------------\n")
     for (i in seq_along(rng_values)) {
       format_param(names(rng_values)[i], rng_values[[i]])
