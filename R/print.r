@@ -315,7 +315,7 @@ print.param.net <- function(x, ...) {
 
   if (all(randoms %in% names(x))) {
     rng_values <- x$random.params.values
-    pToPrint <- which(! names(x)[pToPrint] %in% names(rng_values))
+    pToPrint <- pToPrint[! names(x)[pToPrint] %in% names(rng_values)]
   } else if (randoms[1] %in% names(x)) {
     rng_defs <- names(x[[randoms[1]]])
   }
