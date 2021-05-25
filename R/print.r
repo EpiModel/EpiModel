@@ -144,9 +144,7 @@ print.netsim <- function(x, formation.stats = FALSE, digits = 3, ...) {
 
   # Parameters
   cat("\n\n")
-  cat("+++++++++++++++++++++++\n\n")
   print(x$param)
-  cat("+++++++++++++++++++++++\n")
 
   if (is.null(x$control$type)) {
     cat("\nModel Functions")
@@ -320,8 +318,8 @@ print.param.net <- function(x, ...) {
     rng_defs <- names(x[[randoms[1]]])
   }
 
-  cat("Network Model Parameters")
-  cat("\n===========================\n")
+  cat("Fixed Parameters")
+    cat("\n---------------------------\n")
   for (i in pToPrint) {
     format_param(names(x)[i], x[[i]])
   }
@@ -336,8 +334,7 @@ print.param.net <- function(x, ...) {
   }
 
   if (length(rng_values) > 0) {
-    cat("\nRandomly Drawn Parameters")
-    cat("\n(One value per simulation)")
+    cat("\nRandom Parameters")
     cat("\n---------------------------\n")
     for (i in seq_along(rng_values)) {
       format_param(names(rng_values)[i], rng_values[[i]])
