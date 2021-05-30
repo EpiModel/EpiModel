@@ -12,7 +12,11 @@ test_that("Random parameters generators", {
     )
   )
 
-  param <- param.net(inf.prob = 0.3, random.params = my_randoms)
+  expect_warning(param <- param.net(
+      inf.prob = 0.3,
+      act.rate = 0.3,
+      random.params = my_randoms)
+  )
   expect_message(generate_random_params(param, verbose = TRUE))
   expect_silent(generate_random_params(param, verbose = FALSE))
 
@@ -28,3 +32,4 @@ test_that("Random parameters generators", {
   param <- param.net(inf.prob = 0.3, random.params = list(1))
   expect_error(generate_random_params(param))
 })
+

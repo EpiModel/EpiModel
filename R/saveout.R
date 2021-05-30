@@ -175,7 +175,30 @@ saveout.net <- function(dat, s, out = NULL) {
   }
 
   if (s > 1) {
-    for (j in 1:length(dat$epi)) {
+    if (!is.null(dat$param$random.params.values)) {
+      for (nms in names(dat$param$random.params.values)) {
+        if (length(dat$param$random.params.values[[nms]]) > 1) {
+          if (!is.list(out$param$random.params.values[[nms]])) {
+            out$param$random.params.values[[nms]] <- list(
+              out$param$random.params.values[[nms]]
+            )
+          }
+
+          out$param$random.params.values[[nms]] <- c(
+            out$param$random.params.values[[nms]],
+            list(dat$param$random.params.values[[nms]])
+          )
+
+        } else {
+          out$param$random.params.values[[nms]] <- c(
+            out$param$random.params.values[[nms]],
+            dat$param$random.params.values[[nms]]
+          )
+        }
+      }
+    }
+
+    for (j in seq_along(dat$epi)) {
       out$epi[[names(dat$epi)[j]]][, s] <- data.frame(dat$epi[j])
     }
 

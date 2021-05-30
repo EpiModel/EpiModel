@@ -4,8 +4,8 @@
 #' \tabular{ll}{
 #'    Package: \tab EpiModel\cr
 #'    Type: \tab Package\cr
-#'    Version: \tab 2.0.4\cr
-#'    Date: \tab 2020-11-10\cr
+#'    Version: \tab 2.0.6\cr
+#'    Date: \tab 2021-05-15\cr
 #'    License: \tab GPL-3\cr
 #'    LazyLoad: \tab yes\cr
 #' }
@@ -117,8 +117,7 @@
 #'
 #' Jenness SM, Goodreau SM and Morris M. EpiModel: An R Package for Mathematical
 #' Modeling of Infectious Disease over Networks. Journal of Statistical
-#' Software.2018; 84(8): 1-47. doi: 10.18637/jss.v084.i08
-#' (\url{https://doi.org/10.18637/jss.v084.i08}).
+#' Software.2018; 84(8): 1-47. \doi{10.18637/jss.v084.i08}.
 #'
 #' We have also developed an extension package specifically for modeling HIV and
 #' related sexually transmitted infections, called \code{EpiModelHIV} and
