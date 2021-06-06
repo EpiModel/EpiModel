@@ -24,8 +24,10 @@ control.net(
   prevalence.FUN = prevalence.net,
   verbose.FUN = verbose.net,
   module.order = NULL,
-  set.control.ergm,
-  set.control.stergm,
+  set.control.ergm = control.simulate.ergm(MCMC.burnin = 2e+05),
+  set.control.stergm = control.simulate.network(MCMC.burnin.min = 1000),
+  mcmc.control.ergm = control.simulate.formula(MCMC.burnin = 2e+05),
+  mcmc.control.tergm = control.simulate.network.tergm(),
   save.nwstats = TRUE,
   save.transmat = TRUE,
   nwstats.formula = "formation",
@@ -34,7 +36,6 @@ control.net(
   verbose.int = 1,
   skip.check = FALSE,
   raw.output = FALSE,
-  MCMC_control = NULL,
   extract.summary.stats = FALSE,
   monitors = NULL,
   track_duration = FALSE,
@@ -123,6 +124,9 @@ specifying this parameter.}
 the help file for \code{\link{netdx}} for details and examples on
 specifying this parameter.}
 
+\item{mcmc.control.tergm, mcmc.control.ergm}{Control arguments for network
+simulation in \code{tergmLite}.}
+
 \item{save.nwstats}{If \code{TRUE}, save network statistics in a data frame.
 The statistics to be saved are specified in the \code{nwstats.formula}
 argument.}
@@ -153,12 +157,6 @@ modules specified.}
 
 \item{raw.output}{If \code{TRUE}, \code{netsim} will output a list of nestsim
 data (one per simulation) instead of a formatted \code{netsim} object.}
-
-\item{MCMC_control}{An ordered list of control lists for fine-tuning MCMC
-behavior in \code{tergmLite} simulation.  The order must correspond 
-to that of models in the overall simulation.  Control lists should be 
-of class \code{control.simulate.formula} for \code{ergm} simulation 
-and \code{control.simulate.network.tergm} for \code{tergm} simulation.}
 
 \item{extract.summary.stats}{Calculate and save generative model summary 
 statistics during \code{tergmLite} simulation.}

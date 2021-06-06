@@ -138,7 +138,7 @@
 #' @importFrom utils head tail packageVersion
 #' @importFrom ape as.phylo collapse.singles
 #' @importFrom lazyeval lazy_dots lazy_eval
-#' @importFrom statnet.common trim_env nonsimp_update.formula append_rhs.formula list_rhs.formula
+#' @importFrom statnet.common trim_env nonsimp_update.formula append_rhs.formula list_rhs.formula set.control.class check.control.class COLLATE_ALL_MY_CONTROLS_EXPR UPDATE_MY_SCTRL_EXPR
 #'
 #' @useDynLib EpiModel, .registration = TRUE
 #'

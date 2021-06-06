@@ -290,7 +290,7 @@ control.icm <- function(type, nsteps, nsims = 1,
 
 
   ## Output
-  class(p) <- c("control.icm", "list")
+  p <- set.control.class("control.icm", p)
   return(p)
 }
 
@@ -312,7 +312,8 @@ control.icm <- function(type, nsteps, nsims = 1,
 #' @keywords internal
 #'
 crosscheck.icm <- function(param, init, control) {
-
+  check.control.class("icm", "EpiModel crosscheck.icm")
+  
   ## Main class check
   if (!inherits(param, "param.icm")) {
     stop("param must an object of class param.icm", call. = FALSE)

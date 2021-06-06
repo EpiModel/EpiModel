@@ -604,11 +604,8 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #'        modules specified.
 #' @param raw.output If \code{TRUE}, \code{netsim} will output a list of nestsim
 #'        data (one per simulation) instead of a formatted \code{netsim} object.
-#' @param MCMC_control An ordered list of control lists for fine-tuning MCMC
-#'        behavior in \code{tergmLite} simulation.  The order must correspond 
-#'        to that of models in the overall simulation.  Control lists should be 
-#'        of class \code{control.simulate.formula} for \code{ergm} simulation 
-#'        and \code{control.simulate.network.tergm} for \code{tergm} simulation.
+#' @param mcmc.control.tergm,mcmc.control.ergm Control arguments for network
+#'        simulation in \code{tergmLite}.
 #' @param extract.summary.stats Calculate and save generative model summary 
 #'        statistics during \code{tergmLite} simulation.
 #' @param monitors An ordered list of monitoring formulas for additional
@@ -698,8 +695,10 @@ control.net <- function(type,
                         prevalence.FUN = prevalence.net,
                         verbose.FUN = verbose.net,
                         module.order = NULL,
-                        set.control.ergm,
-                        set.control.stergm,
+                        set.control.ergm = control.simulate.ergm(MCMC.burnin = 2e5),
+                        set.control.stergm = control.simulate.network(MCMC.burnin.min = 1000),
+                        mcmc.control.ergm = control.simulate.formula(MCMC.burnin = 2e5),
+                        mcmc.control.tergm = control.simulate.network.tergm(),
                         save.nwstats = TRUE,
                         save.transmat = TRUE,
                         nwstats.formula = "formation",
@@ -708,7 +707,6 @@ control.net <- function(type,
                         verbose.int = 1,
                         skip.check = FALSE,
                         raw.output = FALSE,
-                        MCMC_control = NULL,
                         extract.summary.stats = FALSE,
                         monitors = NULL,
                         track_duration = FALSE,
@@ -819,15 +817,8 @@ control.net <- function(type,
     }
   }
 
-  if (is.null(p$set.control.stergm)) {
-    p$set.control.stergm <- control.simulate.network(MCMC.burnin.min = 1000)
-  }
-  if (is.null(p$set.control.ergm)) {
-    p$set.control.ergm <- control.simulate.ergm(MCMC.burnin = 2e5)
-  }
-
   ## Output
-  class(p) <- c("control.net", "list")
+  p <- set.control.class("control.net", p)
   return(p)
 }
 
@@ -851,7 +842,8 @@ control.net <- function(type,
 #' @keywords internal
 #'
 crosscheck.net <- function(x, param, init, control) {
-
+  check.control.class("net", "EpiModel crosscheck.net")
+  
   if (!is.null(control$type) && length(control$user.mods) == 0) {
 
     if (control$start == 1 && control$skip.check == FALSE) {

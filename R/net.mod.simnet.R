@@ -118,7 +118,7 @@ resim_nets <- function(dat, at) {
     if (isTERGM == TRUE) {
       rv <- tergmLite::simulate_network(state = dat$p[[1]]$state,
                                         coef = c(nwparam$coef.form, nwparam$coef.diss$coef.adj),
-                                        control = dat$control$MCMC_control[[1]],
+                                        control = dat$control$mcmc.control[[1]],
                                         save.changes = TRUE)
 
       dat$el[[1]] <- rv$el
@@ -130,7 +130,7 @@ resim_nets <- function(dat, at) {
     } else {
       rv <- tergmLite::simulate_ergm(state = dat$p[[1]]$state,
                                      coef = nwparam$coef.form,
-                                     control = dat$control$MCMC_control[[1]])
+                                     control = dat$control$mcmc.control[[1]])
 
       dat$el[[1]] <- rv$el    
     }
