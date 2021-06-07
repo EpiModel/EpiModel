@@ -575,12 +575,6 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #'        listed, then the built-in modules in their order of the function
 #'        listing. The \code{initialize.FUN} will always be run first and the
 #'        \code{verbose.FUN} always last.
-#' @param set.control.ergm Control arguments passed to simulate.ergm. See the
-#'        help file for \code{\link{netdx}} for details and examples on
-#'        specifying this parameter.
-#' @param set.control.stergm Control arguments passed to simulate.stergm. See
-#'        the help file for \code{\link{netdx}} for details and examples on
-#'        specifying this parameter.
 #' @param save.nwstats If \code{TRUE}, save network statistics in a data frame.
 #'        The statistics to be saved are specified in the \code{nwstats.formula}
 #'        argument.
@@ -604,9 +598,8 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #'        modules specified.
 #' @param raw.output If \code{TRUE}, \code{netsim} will output a list of nestsim
 #'        data (one per simulation) instead of a formatted \code{netsim} object.
-#' @param mcmc.control.tergm,mcmc.control.ergm Control arguments for network
-#'        simulation in \code{tergmLite}.
-#' @param extract.summary.stats Calculate and save generative model summary 
+
+#' @param extract.summary.stats Calculate and save generative model summary
 #'        statistics during \code{tergmLite} simulation.
 #' @param monitors An ordered list of monitoring formulas for additional
 #'        statistics to be computed and included in the summary statistics
@@ -614,13 +607,21 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #'        formulas must correspond to that of models in the overall simulation.
 #'        Monitoring statistics are included as additional columns at the end
 #'        of the summary statistics matrices.
-#' @param track_duration logical; should we track durational information
-#'        (\code{time} and \code{lasttoggle}) for \code{tergm} models in 
-#'        \code{tergmLite} simulation?  If \code{TRUE}, the \code{time} and
+#' @param track_duration logical; to track duration information
+#'        (\code{time} and \code{lasttoggle}) for \code{tergm} models in
+#'        \code{tergmLite} simulations. If \code{TRUE}, the \code{time} and
 #'        \code{lasttoggle} values are initialized from the network attributes
 #'        of the networks passed to \code{init_tergmLite}, with \code{time}
-#'        defaulting to \code{0} and \code{lasttoggle} defaulting to all 
+#'        defaulting to \code{0} and \code{lasttoggle} defaulting to all
 #'        \code{lasttoggle} times unspecified (effectively \code{-INT_MAX/2}).
+#' @param set.control.ergm Control arguments passed to \code{simulate.ergm}. See
+#'        the help file for \code{\link{netdx}} for details and examples on
+#'        specifying this parameter.
+#' @param set.control.stergm Control arguments passed to \code{simulate.stergm}.
+#'        See the help file for \code{\link{netdx}} for details and examples on
+#'        specifying this parameter.
+#' @param mcmc.control.tergm,mcmc.control.ergm Control arguments for network
+#'        simulation in \code{tergmLite}.
 #' @param ... Additional control settings passed to model.
 #'
 #' @details
@@ -695,10 +696,6 @@ control.net <- function(type,
                         prevalence.FUN = prevalence.net,
                         verbose.FUN = verbose.net,
                         module.order = NULL,
-                        set.control.ergm = control.simulate.ergm(MCMC.burnin = 2e5),
-                        set.control.stergm = control.simulate.network(MCMC.burnin.min = 1000),
-                        mcmc.control.ergm = control.simulate.formula(MCMC.burnin = 2e5),
-                        mcmc.control.tergm = control.simulate.network.tergm(),
                         save.nwstats = TRUE,
                         save.transmat = TRUE,
                         nwstats.formula = "formation",
@@ -710,6 +707,10 @@ control.net <- function(type,
                         extract.summary.stats = FALSE,
                         monitors = NULL,
                         track_duration = FALSE,
+                        set.control.ergm = control.simulate.ergm(MCMC.burnin = 2e5),
+                        set.control.stergm = control.simulate.network(MCMC.burnin.min = 1000),
+                        mcmc.control.ergm = control.simulate.formula(MCMC.burnin = 2e5),
+                        mcmc.control.tergm = control.simulate.network.tergm(),
                         ...) {
 
   # Get arguments
@@ -843,7 +844,7 @@ control.net <- function(type,
 #'
 crosscheck.net <- function(x, param, init, control) {
   check.control.class("net", "EpiModel crosscheck.net")
-  
+
   if (!is.null(control$type) && length(control$user.mods) == 0) {
 
     if (control$start == 1 && control$skip.check == FALSE) {
