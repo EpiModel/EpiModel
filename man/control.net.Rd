@@ -32,7 +32,6 @@ control.net(
   verbose.int = 1,
   skip.check = FALSE,
   raw.output = FALSE,
-  extract.summary.stats = FALSE,
   monitors = NULL,
   tergmLite.track.duration = FALSE,
   set.control.ergm = control.simulate.ergm(MCMC.burnin = 2e+05),
@@ -147,12 +146,9 @@ modules specified.}
 \item{raw.output}{If \code{TRUE}, \code{netsim} will output a list of nestsim
 data (one per simulation) instead of a formatted \code{netsim} object.}
 
-\item{extract.summary.stats}{Calculate and save generative model summary
-statistics during \code{tergmLite} simulation.}
-
 \item{monitors}{An ordered list of monitoring formulas for additional
 statistics to be computed and included in the summary statistics
-when \code{extract.summary.stats} is \code{TRUE}. The order of the
+when \code{save.nwstats} is \code{TRUE}. The order of the
 formulas must correspond to that of models in the overall simulation.
 Monitoring statistics are included as additional columns at the end
 of the summary statistics matrices.}
