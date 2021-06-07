@@ -110,21 +110,26 @@ resim_nets <- function(dat, at) {
   if (tergmLite == TRUE & resimulate.network == TRUE) {
     isTERGM <- ifelse(nwparam$coef.diss$duration > 1, TRUE, FALSE)
     dat <- tergmLite::updateModelTermInputs(dat)
-    
+
     if (dat$control$extract.summary.stats == TRUE) {
-      dat$stats$summstats[[1]] <- rbind(dat$stats$summstats[[1]], c(summary(dat$p[[1]]$state), if(nparam(dat$p[[1]]$state_mon, canonical = TRUE) > 0) summary(dat$p[[1]]$state_mon)))
-    }    
-    
+      dat$stats$summstats[[1]] <- rbind(dat$stats$summstats[[1]],
+                                        c(summary(dat$p[[1]]$state),
+                                          if (nparam(dat$p[[1]]$state_mon,
+                                                     canonical = TRUE) > 0)
+                                            summary(dat$p[[1]]$state_mon)))
+    }
+
     if (isTERGM == TRUE) {
       rv <- tergmLite::simulate_network(state = dat$p[[1]]$state,
-                                        coef = c(nwparam$coef.form, nwparam$coef.diss$coef.adj),
+                                        coef = c(nwparam$coef.form,
+                                                 nwparam$coef.diss$coef.adj),
                                         control = dat$control$mcmc.control[[1]],
                                         save.changes = TRUE)
 
       dat$el[[1]] <- rv$el
 
-      if(dat$control$track_duration) {
-        dat$p[[1]]$state$nw0 %n% "time" <- rv$state$nw0 %n% "time"  
+      if (dat$control$track_duration) {
+        dat$p[[1]]$state$nw0 %n% "time" <- rv$state$nw0 %n% "time"
         dat$p[[1]]$state$nw0 %n% "lasttoggle" <- rv$state$nw0 %n% "lasttoggle"
       }
     } else {
@@ -132,7 +137,7 @@ resim_nets <- function(dat, at) {
                                      coef = nwparam$coef.form,
                                      control = dat$control$mcmc.control[[1]])
 
-      dat$el[[1]] <- rv$el    
+      dat$el[[1]] <- rv$el
     }
   }
 

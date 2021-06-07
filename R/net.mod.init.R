@@ -79,10 +79,14 @@ initialize.net <- function(x, param, init, control, s) {
     dat$stats$summstats <- list()
     if (dat$control$extract.summary.stats == TRUE) {
       summstats <- c(summary(dat$p[[1]]$state), summary(dat$p[[1]]$state_mon))
-      dat$stats$summstats[[1]] <- matrix(summstats, nrow=1, ncol = length(summstats), dimnames=list(NULL,names(summstats)))
-      
+      dat$stats$summstats[[1]] <- matrix(summstats, nrow = 1,
+                                         ncol = length(summstats),
+                                         dimnames = list(NULL,names(summstats)))
+
       ## not strictly necessary to sort the edges, but useful for some tests
-      dat$p[[1]]$state$el <- dat$p[[1]]$state$el[order(dat$p[[1]]$state$el[,1], dat$p[[1]]$state$el[,2]),,drop=FALSE]
+      dat$p[[1]]$state$el <- dat$p[[1]]$state$el[order(dat$p[[1]]$state$el[,1],
+                                                       dat$p[[1]]$state$el[,2]), ,
+                                                 drop = FALSE]
     }
 
     # Restart/Reinit Simulations ----------------------------------------------
