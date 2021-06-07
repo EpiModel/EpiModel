@@ -76,18 +76,21 @@ initialize.net <- function(x, param, init, control, s) {
     # Summary Stats -----------------------------------------------------------
     dat <- do.call(control[["prevalence.FUN"]], list(dat, at = 1))
 
-    dat$stats$summstats <- list()
-    if (dat$control$extract.summary.stats == TRUE) {
-      summstats <- c(summary(dat$p[[1]]$state), summary(dat$p[[1]]$state_mon))
-      dat$stats$summstats[[1]] <- matrix(summstats, nrow = 1,
-                                         ncol = length(summstats),
-                                         dimnames = list(NULL,names(summstats)))
+    if (dat$control$save.nwstats == TRUE) {
+      dat$stats$nwstats <- list()
+      if (dat$control$tergmLite == TRUE) {
+        nwstats <- c(summary(dat$p[[1]]$state), summary(dat$p[[1]]$state_mon))
+        dat$stats$nwstats[[1]] <- matrix(nwstats, nrow = 1,
+                                           ncol = length(nwstats),
+                                           dimnames = list(NULL, names(nwstats)))
 
-      ## not strictly necessary to sort the edges, but useful for some tests
-      dat$p[[1]]$state$el <- dat$p[[1]]$state$el[order(dat$p[[1]]$state$el[,1],
-                                                       dat$p[[1]]$state$el[,2]), ,
-                                                 drop = FALSE]
+        ## not strictly necessary to sort the edges, but useful for some tests
+        dat$p[[1]]$state$el <- dat$p[[1]]$state$el[order(dat$p[[1]]$state$el[,1],
+                                                         dat$p[[1]]$state$el[,2]), ,
+                                                   drop = FALSE]
+      }
     }
+
 
     # Restart/Reinit Simulations ----------------------------------------------
   } else if (control$start > 1) {

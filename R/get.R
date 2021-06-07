@@ -270,12 +270,8 @@ get_nwstats <- function(x, sim, network = 1) {
 
   ## Extraction
   if (class(x) == "netsim") {
-    if (x$control$num.nw == 1) {
-      out <- x$stats$nwstats[sim]
-    } else {
-      out <- lapply(x$stats$nwstats, function(n) n[[network]])
-      out <- out[sim]
-    }
+    out <- lapply(x$stats$nwstats, function(n) n[[network]])
+    out <- out[sim]
   } else if (class(x) == "netdx") {
     out <- x$stats[sim]
   }

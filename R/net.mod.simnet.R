@@ -79,7 +79,7 @@ resim_nets <- function(dat, at) {
     if (save.nwstats == TRUE) {
       if (at == 2) {
         nwstats <- attributes(dat$nw[[1]])$stats
-        dat$stats$nwstats <- as.data.frame(nwstats)
+        dat$stats$nwstats[[1]] <- as.data.frame(nwstats)
       }
     }
 
@@ -100,7 +100,7 @@ resim_nets <- function(dat, at) {
 
       # Update nwstats df
       if (save.nwstats == TRUE) {
-        dat$stats$nwstats <- rbind(dat$stats$nwstats,
+        dat$stats$nwstats[[1]] <- rbind(dat$stats$nwstats[[1]],
                                    tail(attributes(dat$nw[[1]])$stats, 1)[, ])
       }
     }
