@@ -34,7 +34,7 @@ control.net(
   raw.output = FALSE,
   extract.summary.stats = FALSE,
   monitors = NULL,
-  track_duration = FALSE,
+  tergmLite.track.duration = FALSE,
   set.control.ergm = control.simulate.ergm(MCMC.burnin = 2e+05),
   set.control.stergm = control.simulate.network(MCMC.burnin.min = 1000),
   mcmc.control.ergm = control.simulate.formula(MCMC.burnin = 2e+05),
@@ -152,12 +152,12 @@ statistics during \code{tergmLite} simulation.}
 
 \item{monitors}{An ordered list of monitoring formulas for additional
 statistics to be computed and included in the summary statistics
-when \code{extract.summary.stats} is \code{TRUE}.  The order of the
+when \code{extract.summary.stats} is \code{TRUE}. The order of the
 formulas must correspond to that of models in the overall simulation.
 Monitoring statistics are included as additional columns at the end
 of the summary statistics matrices.}
 
-\item{track_duration}{logical; to track duration information
+\item{tergmLite.track.duration}{logical; to track duration information
 (\code{time} and \code{lasttoggle}) for \code{tergm} models in
 \code{tergmLite} simulations. If \code{TRUE}, the \code{time} and
 \code{lasttoggle} values are initialized from the network attributes

@@ -598,16 +598,15 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #'        modules specified.
 #' @param raw.output If \code{TRUE}, \code{netsim} will output a list of nestsim
 #'        data (one per simulation) instead of a formatted \code{netsim} object.
-
 #' @param extract.summary.stats Calculate and save generative model summary
 #'        statistics during \code{tergmLite} simulation.
 #' @param monitors An ordered list of monitoring formulas for additional
 #'        statistics to be computed and included in the summary statistics
-#'        when \code{extract.summary.stats} is \code{TRUE}.  The order of the
+#'        when \code{extract.summary.stats} is \code{TRUE}. The order of the
 #'        formulas must correspond to that of models in the overall simulation.
 #'        Monitoring statistics are included as additional columns at the end
 #'        of the summary statistics matrices.
-#' @param track_duration logical; to track duration information
+#' @param tergmLite.track.duration logical; to track duration information
 #'        (\code{time} and \code{lasttoggle}) for \code{tergm} models in
 #'        \code{tergmLite} simulations. If \code{TRUE}, the \code{time} and
 #'        \code{lasttoggle} values are initialized from the network attributes
@@ -706,7 +705,7 @@ control.net <- function(type,
                         raw.output = FALSE,
                         extract.summary.stats = FALSE,
                         monitors = NULL,
-                        track_duration = FALSE,
+                        tergmLite.track.duration = FALSE,
                         set.control.ergm = control.simulate.ergm(MCMC.burnin = 2e5),
                         set.control.stergm = control.simulate.network(MCMC.burnin.min = 1000),
                         mcmc.control.ergm = control.simulate.formula(MCMC.burnin = 2e5),

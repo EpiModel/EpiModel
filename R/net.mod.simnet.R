@@ -128,7 +128,7 @@ resim_nets <- function(dat, at) {
 
       dat$el[[1]] <- rv$el
 
-      if (dat$control$track_duration) {
+      if (dat$control$tergmLite.track.duration) {
         dat$p[[1]]$state$nw0 %n% "time" <- rv$state$nw0 %n% "time"
         dat$p[[1]]$state$nw0 %n% "lasttoggle" <- rv$state$nw0 %n% "lasttoggle"
       }
