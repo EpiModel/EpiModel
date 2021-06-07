@@ -764,11 +764,6 @@ control.net <- function(type,
   p$user.mods <- grep(".FUN", names(dot.args), value = TRUE)
   p$f.names <- c(p$bi.mods, p$user.mods)
 
-  # Temporary until we develop a nwstats fix for tergmLite
-  if (tergmLite == TRUE) {
-    p$save.nwstats <- FALSE
-  }
-
   ## Defaults and checks
 
   #Check whether any base modules have been redefined by user (note: must come
