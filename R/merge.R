@@ -228,8 +228,7 @@ merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
 
 
   ## Network statistics
-  if (keep.nwstats ==
-      TRUE & !is.null(x$stats$nwstats) & !is.null(y$stats$nwstats)) {
+  if (keep.nwstats == TRUE & !is.null(x$stats$nwstats) & !is.null(y$stats$nwstats)) {
     for (i in new.range) {
       z$stats$nwstats[[i]] <- y$stats$nwstats[[i - x$control$nsims]]
       if (!is.null(z$stats$nwstats)) {
@@ -239,20 +238,6 @@ merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
   } else {
     z$stats$nwstats <- NULL
   }
-
-
-  ## Summary statistics
-  if (keep.summary.stats == TRUE & !is.null(x$stats$summstats) & !is.null(y$stats$summstats)) {
-    for (i in new.range) {
-      z$stats$summstats[[i]] <- y$stats$summstats[[i - x$control$nsims]]
-      if (!is.null(z$stats$summstats)) {
-        names(z$stats$summstats)[i] <- paste0("sim", i)
-      }
-    }
-  } else {
-    z$stats$summstats <- NULL
-  }
-
 
   ## Other
   if (!is.null(x$control$save.other) & !is.null(y$control$save.other)) {

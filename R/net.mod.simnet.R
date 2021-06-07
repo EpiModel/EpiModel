@@ -111,8 +111,8 @@ resim_nets <- function(dat, at) {
     isTERGM <- ifelse(nwparam$coef.diss$duration > 1, TRUE, FALSE)
     dat <- tergmLite::updateModelTermInputs(dat)
 
-    if (dat$control$extract.summary.stats == TRUE) {
-      dat$stats$summstats[[1]] <- rbind(dat$stats$summstats[[1]],
+    if (dat$control$save.nwstats == TRUE) {
+      dat$stats$nwstats[[1]] <- rbind(dat$stats$nwstats[[1]],
                                         c(summary(dat$p[[1]]$state),
                                           if (nparam(dat$p[[1]]$state_mon,
                                                      canonical = TRUE) > 0)
