@@ -32,11 +32,10 @@ control.net(
   verbose.int = 1,
   skip.check = FALSE,
   raw.output = FALSE,
-  monitors = NULL,
   tergmLite.track.duration = FALSE,
   set.control.ergm = control.simulate.ergm(MCMC.burnin = 2e+05),
   set.control.stergm = control.simulate.network(MCMC.burnin.min = 1000),
-  mcmc.control.ergm = control.simulate.formula(MCMC.burnin = 2e+05),
+  mcmc.control.ergm = control.simulate.formula(),
   mcmc.control.tergm = control.simulate.network.tergm(),
   ...
 )
@@ -145,13 +144,6 @@ modules specified.}
 
 \item{raw.output}{If \code{TRUE}, \code{netsim} will output a list of nestsim
 data (one per simulation) instead of a formatted \code{netsim} object.}
-
-\item{monitors}{An ordered list of monitoring formulas for additional
-statistics to be computed and included in the summary statistics
-when \code{save.nwstats} is \code{TRUE}. The order of the
-formulas must correspond to that of models in the overall simulation.
-Monitoring statistics are included as additional columns at the end
-of the summary statistics matrices.}
 
 \item{tergmLite.track.duration}{logical; to track duration information
 (\code{time} and \code{lasttoggle}) for \code{tergm} models in

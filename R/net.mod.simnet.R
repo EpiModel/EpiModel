@@ -112,11 +112,15 @@ resim_nets <- function(dat, at) {
     dat <- tergmLite::updateModelTermInputs(dat)
 
     if (dat$control$save.nwstats == TRUE) {
+      nwL <- networkLite(dat$el[[1]], dat$attr)
+      if (dat$control$tergmLite.track.duration) {
+        nwL %n% "time" <- dat$p[[1]]$state$nw0 %n% "time"
+        nwL %n% "lasttoggle" <- dat$p[[1]]$state$nw0 %n% "lasttoggle"
+      }
       dat$stats$nwstats[[1]] <- rbind(dat$stats$nwstats[[1]],
-                                        c(summary(dat$p[[1]]$state),
-                                          if (nparam(dat$p[[1]]$state_mon,
-                                                     canonical = TRUE) > 0)
-                                            summary(dat$p[[1]]$state_mon)))
+                                        summary(dat$control$nwstats.formulas[[1]], 
+                                                basis = nwL, 
+                                                term.options = dat$control$mcmc.control[[1]]$term.options))
     }
 
     if (isTERGM == TRUE) {
