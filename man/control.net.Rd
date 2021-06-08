@@ -36,7 +36,7 @@ control.net(
   set.control.ergm = control.simulate.ergm(MCMC.burnin = 2e+05),
   set.control.stergm = control.simulate.network(MCMC.burnin.min = 1000),
   mcmc.control.ergm = control.simulate.formula(),
-  mcmc.control.tergm = control.simulate.network.tergm(),
+  mcmc.control.tergm = control.simulate.formula.tergm(),
   ...
 )
 }

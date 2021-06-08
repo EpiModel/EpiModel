@@ -699,7 +699,7 @@ control.net <- function(type,
                         set.control.ergm = control.simulate.ergm(MCMC.burnin = 2e5),
                         set.control.stergm = control.simulate.network(MCMC.burnin.min = 1000),
                         mcmc.control.ergm = control.simulate.formula(),
-                        mcmc.control.tergm = control.simulate.network.tergm(),
+                        mcmc.control.tergm = control.simulate.formula.tergm(),
                         ...) {
 
   # Get arguments
