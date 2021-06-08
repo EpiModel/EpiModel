@@ -77,7 +77,7 @@
 #'        simulations. Controls are also used to input new model functions (for
 #'        DCMs) and new model modules (for ICMs and network models) to allow the
 #'        user to simulate fully original epidemic models in EpiModel. See the
-#'        documention for the specific control functions help pages.
+#'        documentation for the specific control functions help pages.
 #' }
 #'
 #' With the models parameterized, the functions for simulating epidemic models
@@ -109,19 +109,22 @@
 #' @references
 #' The EpiModel website is at \url{http://www.epimodel.org/}, and the source
 #' code is at \url{https://github.com/statnet/EpiModel}. Bug reports and feature
-#' requests are welcome there.
+#' requests are welcome.
 #'
 #' Our primary methods paper on EpiModel is published in the \strong{Journal of
 #' Statistical Software}. If you use EpiModel for any research or teaching
 #' purposes, please cite this reference:
 #'
-#' Jenness SM, Goodreau SM and Morris M. EpiModel: An R Package for Mathematical
+#' Jenness SM, Goodreau SM, and Morris M. EpiModel: An R Package for Mathematical
 #' Modeling of Infectious Disease over Networks. Journal of Statistical
 #' Software.2018; 84(8): 1-47. \doi{10.18637/jss.v084.i08}.
 #'
-#' We have also developed an extension package specifically for modeling HIV and
-#' related sexually transmitted infections, called \code{EpiModelHIV} and
-#' available on Github at \url{https://github.com/statnet/EpiModelHIV}.
+#' We have also developed two extension packages for modeling specific disease
+#' dynamics. For HIV and bacterial sexually transmitted infections, we have
+#' developed \code{EpiModelHIV}, which is available on Github at
+#' \url{https://github.com/statnet/EpiModelHIV}. For COVID-19, we have developed
+#' \code{EpiModelCOVID}, which is available at
+#' \url{https://github.com/statnet/EpiModelCOVID}.
 #'
 #' @name EpiModel-package
 #' @aliases EpiModel
