@@ -79,15 +79,18 @@ initialize.net <- function(x, param, init, control, s) {
     if (dat$control$save.nwstats == TRUE) {
       dat$stats$nwstats <- list()
       if (dat$control$tergmLite == TRUE) {
-        nwstats <- c(summary(dat$p[[1]]$state), summary(dat$p[[1]]$state_mon))
+        nwL <- networkLite(dat$el[[1]], dat$attr)
+        if (dat$control$tergmLite.track.duration) {
+          nwL %n% "time" <- dat$p[[1]]$state$nw0 %n% "time"
+          nwL %n% "lasttoggle" <- dat$p[[1]]$state$nw0 %n% "lasttoggle"
+        }
+        nwstats <- summary(dat$control$nwstats.formulas[[1]], 
+                           basis = nwL, 
+                           term.options = dat$control$mcmc.control[[1]]$term.options)
+      
         dat$stats$nwstats[[1]] <- matrix(nwstats, nrow = 1,
                                            ncol = length(nwstats),
                                            dimnames = list(NULL, names(nwstats)))
-
-        ## not strictly necessary to sort the edges, but useful for some tests
-        dat$p[[1]]$state$el <- dat$p[[1]]$state$el[order(dat$p[[1]]$state$el[,1],
-                                                         dat$p[[1]]$state$el[,2]), ,
-                                                   drop = FALSE]
       }
     }
 
