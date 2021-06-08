@@ -110,19 +110,7 @@ resim_nets <- function(dat, at) {
   if (tergmLite == TRUE & resimulate.network == TRUE) {
     isTERGM <- ifelse(nwparam$coef.diss$duration > 1, TRUE, FALSE)
     dat <- tergmLite::updateModelTermInputs(dat)
-
-    if (dat$control$save.nwstats == TRUE) {
-      nwL <- networkLite(dat$el[[1]], dat$attr)
-      if (dat$control$tergmLite.track.duration) {
-        nwL %n% "time" <- dat$p[[1]]$state$nw0 %n% "time"
-        nwL %n% "lasttoggle" <- dat$p[[1]]$state$nw0 %n% "lasttoggle"
-      }
-      dat$stats$nwstats[[1]] <- rbind(dat$stats$nwstats[[1]],
-                                        summary(dat$control$nwstats.formulas[[1]], 
-                                                basis = nwL, 
-                                                term.options = dat$control$mcmc.control[[1]]$term.options))
-    }
-
+    
     if (isTERGM == TRUE) {
       rv <- tergmLite::simulate_network(state = dat$p[[1]]$state,
                                         coef = c(nwparam$coef.form,
@@ -143,6 +131,18 @@ resim_nets <- function(dat, at) {
 
       dat$el[[1]] <- rv$el
     }
+    
+    if (dat$control$save.nwstats == TRUE) {
+      nwL <- networkLite(dat$el[[1]], dat$attr)
+      if (dat$control$tergmLite.track.duration) {
+        nwL %n% "time" <- dat$p[[1]]$state$nw0 %n% "time"
+        nwL %n% "lasttoggle" <- dat$p[[1]]$state$nw0 %n% "lasttoggle"
+      }
+      dat$stats$nwstats[[1]] <- rbind(dat$stats$nwstats[[1]],
+                                        summary(dat$control$nwstats.formulas[[1]], 
+                                                basis = nwL, 
+                                                term.options = dat$control$mcmc.control[[1]]$term.options))
+    }    
   }
 
   return(dat)
