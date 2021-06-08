@@ -79,7 +79,7 @@ resim_nets <- function(dat, at) {
     if (save.nwstats == TRUE) {
       if (at == 2) {
         nwstats <- attributes(dat$nw[[1]])$stats
-        dat$stats$nwstats <- as.data.frame(nwstats)
+        dat$stats$nwstats[[1]] <- as.data.frame(nwstats)
       }
     }
 
@@ -100,7 +100,7 @@ resim_nets <- function(dat, at) {
 
       # Update nwstats df
       if (save.nwstats == TRUE) {
-        dat$stats$nwstats <- rbind(dat$stats$nwstats,
+        dat$stats$nwstats[[1]] <- rbind(dat$stats$nwstats[[1]],
                                    tail(attributes(dat$nw[[1]])$stats, 1)[, ])
       }
     }
@@ -110,19 +110,39 @@ resim_nets <- function(dat, at) {
   if (tergmLite == TRUE & resimulate.network == TRUE) {
     isTERGM <- ifelse(nwparam$coef.diss$duration > 1, TRUE, FALSE)
     dat <- tergmLite::updateModelTermInputs(dat)
+    
+    if (isTERGM == TRUE) {
+      rv <- tergmLite::simulate_network(state = dat$p[[1]]$state,
+                                        coef = c(nwparam$coef.form,
+                                                 nwparam$coef.diss$coef.adj),
+                                        control = dat$control$mcmc.control[[1]],
+                                        save.changes = TRUE)
 
-   if (isTERGM == TRUE) {
-     dat$el[[1]] <- tergmLite::simulate_network(p = dat$p[[1]],
-                                                el = dat$el[[1]],
-                                                coef.form = nwparam$coef.form,
-                                                coef.diss =
-                                                   nwparam$coef.diss$coef.adj,
-                                                save.changes = TRUE)
+      dat$el[[1]] <- rv$el
+
+      if (dat$control$tergmLite.track.duration) {
+        dat$p[[1]]$state$nw0 %n% "time" <- rv$state$nw0 %n% "time"
+        dat$p[[1]]$state$nw0 %n% "lasttoggle" <- rv$state$nw0 %n% "lasttoggle"
+      }
     } else {
-      dat$el[[1]] <- tergmLite::simulate_ergm(p = dat$p[[1]],
-                                              el = dat$el[[1]],
-                                              coef = nwparam$coef.form)
+      rv <- tergmLite::simulate_ergm(state = dat$p[[1]]$state,
+                                     coef = nwparam$coef.form,
+                                     control = dat$control$mcmc.control[[1]])
+
+      dat$el[[1]] <- rv$el
     }
+    
+    if (dat$control$save.nwstats == TRUE) {
+      nwL <- networkLite(dat$el[[1]], dat$attr)
+      if (dat$control$tergmLite.track.duration) {
+        nwL %n% "time" <- dat$p[[1]]$state$nw0 %n% "time"
+        nwL %n% "lasttoggle" <- dat$p[[1]]$state$nw0 %n% "lasttoggle"
+      }
+      dat$stats$nwstats[[1]] <- rbind(dat$stats$nwstats[[1]],
+                                        summary(dat$control$nwstats.formulas[[1]], 
+                                                basis = nwL, 
+                                                term.options = dat$control$mcmc.control[[1]]$term.options))
+    }    
   }
 
   return(dat)

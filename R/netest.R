@@ -179,15 +179,16 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
                   control = set.control.stergm,
                   verbose = verbose)
 
-    coef.form <- fit$formation.fit
-
+    coef.form <- fit # there is no longer a separate formation fit
+    which_form <- grep("Form", names(coef(fit)))
+    
     out <- list()
     out$fit <- fit
     out$formation <- formation
     out$target.stats <- target.stats
     out$target.stats.names <-
-      names(fit$formation.fit$coef)[!fit$formation.fit$offset]
-    out$coef.form <- coef.form$coef
+      names(coef(fit)[which_form])[!fit$offset[which_form]]
+    out$coef.form <- coef(coef.form)[which_form]
     out$dissolution <- dissolution
     out$coef.diss <- coef.diss
     out$constraints <- constraints
@@ -209,7 +210,7 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
                 control = set.control.ergm,
                 verbose = verbose)
 
-    coef.form <- fit$coef
+    coef.form <- coef(fit)
     coef.form.crude <- coef.form
     if (is.tergm == TRUE) {
       if (nested.edapprox == TRUE) {
@@ -237,10 +238,10 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
     out$fit <- fit
     out$formation <- formation
     out$target.stats <- target.stats
-    if (length(names(fit$coef)) == length(target.stats)) {
-      out$target.stats.names <- names(fit$coef)
+    if (length(names(coef(fit))) == length(target.stats)) {
+      out$target.stats.names <- names(coef(fit))
     } else {
-      out$target.stats.names <- names(fit$coef)[!fit$offset]
+      out$target.stats.names <- names(coef(fit))[!fit$offset]
     }
     out$coef.form <- coef.form
     out$coef.form.crude <- coef.form.crude

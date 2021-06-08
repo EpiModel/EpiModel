@@ -49,7 +49,7 @@ requiring 'collapse.singles' to prune it to an appropriate branching
 structure.
 }
 \examples{
-set.seed(10)
+set.seed(13)
 nw <- network_initialize(n = 100)
 formation <- ~edges
 target.stats <- 50

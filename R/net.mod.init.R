@@ -31,7 +31,7 @@ initialize.net <- function(x, param, init, control, s) {
     # Initial Network Simulation ----------------------------------------------
     if (x$edapprox == TRUE) {
       nw <- simulate(x$fit, basis = x$fit$newnetwork,
-                     control = control$set.control.ergm)
+                     control = control$set.control.ergm, dynamic = FALSE)
     } else {
       nw <- x$fit$network
     }
@@ -75,6 +75,26 @@ initialize.net <- function(x, param, init, control, s) {
 
     # Summary Stats -----------------------------------------------------------
     dat <- do.call(control[["prevalence.FUN"]], list(dat, at = 1))
+
+    if (dat$control$save.nwstats == TRUE) {
+      dat$stats$nwstats <- list()
+      if (dat$control$tergmLite == TRUE) {
+        nwL <- networkLite(dat$el[[1]], dat$attr)
+        if (dat$control$tergmLite.track.duration) {
+          nwL %n% "time" <- dat$p[[1]]$state$nw0 %n% "time"
+          nwL %n% "lasttoggle" <- dat$p[[1]]$state$nw0 %n% "lasttoggle"
+        }
+        nwstats <- summary(dat$control$nwstats.formulas[[1]], 
+                           basis = nwL, 
+                           term.options = dat$control$mcmc.control[[1]]$term.options)
+      
+        dat$stats$nwstats[[1]] <- matrix(nwstats, nrow = 1,
+                                           ncol = length(nwstats),
+                                           dimnames = list(NULL, names(nwstats)))
+                                           
+        dat$stats$nwstats[[1]] <- as.data.frame(dat$stats$nwstats[[1]])
+      }
+    }
 
 
     # Restart/Reinit Simulations ----------------------------------------------
