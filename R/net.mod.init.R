@@ -91,6 +91,8 @@ initialize.net <- function(x, param, init, control, s) {
         dat$stats$nwstats[[1]] <- matrix(nwstats, nrow = 1,
                                            ncol = length(nwstats),
                                            dimnames = list(NULL, names(nwstats)))
+                                           
+        dat$stats$nwstats[[1]] <- as.data.frame(dat$stats$nwstats[[1]])
       }
     }
 
