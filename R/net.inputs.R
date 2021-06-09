@@ -184,6 +184,19 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
     }
   }
 
+  ## random_params checks
+   if ("random.params" %in% names.dot.args) {
+     for (nm in names(p[["random.params"]])) {
+       if (nm %in% names(p)) {
+        warning(
+          "The parameter `", nm, "` is defined twice, once as fixed",
+          " and once as a random parameter.\n Only the random parameter",
+          " definition will be used."
+        )
+       }
+     }
+   }
+
   ## Defaults and Checks
   if ("b.rate" %in% names.dot.args) {
     p$a.rate <- dot.args$b.rate
@@ -340,6 +353,8 @@ param_random <- function(values, prob = NULL) {
 #' @export
 #'
 #' @examples
+#' \dontrun{
+#'
 #' # Define random parameter list
 #' my_randoms <- list(
 #'   act.rate = param_random(c(0.25, 0.5, 0.75)),
@@ -351,14 +366,23 @@ param_random <- function(values, prob = NULL) {
 #'   )
 #' )
 #'
-#' # Parameter model with deterministic and random parameters
+#' # Parameter model with fixed and random parameters
 #' param <- param.net(inf.prob = 0.3, random.params = my_randoms)
+#'
+#' # Below, `tx.prob` is set first to 0.3 then assigned a random value using
+#' # the function from `my_randoms`. A warning notifying of this overwrite is
+#' # therefore produced.
+#' param <- param.net(tx.prob = 0.3, random.params = my_randoms)
+#'
+
 #'
 #' # Parameters are drawn automatically in netsim by calling the function
 #' # within netsim_loop. Demonstrating draws here but this is not used by
 #' # end user.
 #' paramDraw <- generate_random_params(param, verbose = TRUE)
 #' paramDraw
+#'
+#' }
 #'
 generate_random_params <- function(param, verbose = FALSE) {
   if (is.null(param$random.params) || length(param$random.params) == 0) {
@@ -378,11 +402,17 @@ generate_random_params <- function(param, verbose = FALSE) {
     stop("all elements of `random.params` must be functions")
   }
 
-  param[rng_names] <- lapply(param$random.params, do.call, args = list())
+  rng_values <- list()
+  rng_values[rng_names] <- lapply(param$random.params, do.call, args = list())
+  for (nm in rng_names) {
+    param[nm] <- rng_values[nm]
+  }
+  param$random.params.values <- rng_values
+
   if (verbose == TRUE) {
     msg <-
      "The following values were randomly generated for the given parameters: \n"
-    msg <- c(msg, paste0("`", rng_names, "`: ", param[rng_names], "\n"))
+    msg <- c(msg, paste0("`", rng_names, "`: ", rng_values, "\n"))
     message(msg)
   }
 
@@ -545,12 +575,6 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #'        listed, then the built-in modules in their order of the function
 #'        listing. The \code{initialize.FUN} will always be run first and the
 #'        \code{verbose.FUN} always last.
-#' @param set.control.ergm Control arguments passed to simulate.ergm. See the
-#'        help file for \code{\link{netdx}} for details and examples on
-#'        specifying this parameter.
-#' @param set.control.stergm Control arguments passed to simulate.stergm. See
-#'        the help file for \code{\link{netdx}} for details and examples on
-#'        specifying this parameter.
 #' @param save.nwstats If \code{TRUE}, save network statistics in a data frame.
 #'        The statistics to be saved are specified in the \code{nwstats.formula}
 #'        argument.
@@ -574,6 +598,21 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #'        modules specified.
 #' @param raw.output If \code{TRUE}, \code{netsim} will output a list of nestsim
 #'        data (one per simulation) instead of a formatted \code{netsim} object.
+#' @param tergmLite.track.duration logical; to track duration information
+#'        (\code{time} and \code{lasttoggle}) for \code{tergm} models in
+#'        \code{tergmLite} simulations. If \code{TRUE}, the \code{time} and
+#'        \code{lasttoggle} values are initialized from the network attributes
+#'        of the networks passed to \code{init_tergmLite}, with \code{time}
+#'        defaulting to \code{0} and \code{lasttoggle} defaulting to all
+#'        \code{lasttoggle} times unspecified (effectively \code{-INT_MAX/2}).
+#' @param set.control.ergm Control arguments passed to \code{simulate.ergm}. See
+#'        the help file for \code{\link{netdx}} for details and examples on
+#'        specifying this parameter.
+#' @param set.control.stergm Control arguments passed to \code{simulate.stergm}.
+#'        See the help file for \code{\link{netdx}} for details and examples on
+#'        specifying this parameter.
+#' @param mcmc.control.tergm,mcmc.control.ergm Control arguments for network
+#'        simulation in \code{tergmLite}.
 #' @param ... Additional control settings passed to model.
 #'
 #' @details
@@ -648,8 +687,6 @@ control.net <- function(type,
                         prevalence.FUN = prevalence.net,
                         verbose.FUN = verbose.net,
                         module.order = NULL,
-                        set.control.ergm,
-                        set.control.stergm,
                         save.nwstats = TRUE,
                         save.transmat = TRUE,
                         nwstats.formula = "formation",
@@ -658,6 +695,11 @@ control.net <- function(type,
                         verbose.int = 1,
                         skip.check = FALSE,
                         raw.output = FALSE,
+                        tergmLite.track.duration = FALSE,
+                        set.control.ergm = control.simulate.ergm(MCMC.burnin = 2e5),
+                        set.control.stergm = control.simulate.network(MCMC.burnin.min = 1000),
+                        mcmc.control.ergm = control.simulate.formula(),
+                        mcmc.control.tergm = control.simulate.formula.tergm(),
                         ...) {
 
   # Get arguments
@@ -715,11 +757,6 @@ control.net <- function(type,
   p$user.mods <- grep(".FUN", names(dot.args), value = TRUE)
   p$f.names <- c(p$bi.mods, p$user.mods)
 
-  # Temporary until we develop a nwstats fix for tergmLite
-  if (tergmLite == TRUE) {
-    p$save.nwstats <- FALSE
-  }
-
   ## Defaults and checks
 
   #Check whether any base modules have been redefined by user (note: must come
@@ -765,15 +802,8 @@ control.net <- function(type,
     }
   }
 
-  if (is.null(p$set.control.stergm)) {
-    p$set.control.stergm <- control.simulate.network(MCMC.burnin.min = 1000)
-  }
-  if (is.null(p$set.control.ergm)) {
-    p$set.control.ergm <- control.simulate.ergm(MCMC.burnin = 2e5)
-  }
-
   ## Output
-  class(p) <- c("control.net", "list")
+  p <- set.control.class("control.net", p)
   return(p)
 }
 
@@ -797,6 +827,7 @@ control.net <- function(type,
 #' @keywords internal
 #'
 crosscheck.net <- function(x, param, init, control) {
+  check.control.class("net", "EpiModel crosscheck.net")
 
   if (!is.null(control$type) && length(control$user.mods) == 0) {
 

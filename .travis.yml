@@ -1,0 +1,32 @@
+language: r
+sudo: false
+cache: packages
+latex: false
+
+r:
+  - release
+  - devel
+
+r_packages:
+  - nlme
+
+r_github_packages:
+- statnet/rle
+- statnet/statnet.common
+- statnet/network
+- statnet/networkDynamic
+- statnet/ergm-private@dev
+- statnet/ergm.multi-private@dev
+- statnet/tergm-private@dev
+- statnet/tergmLite-private@dev
+
+addons:
+  apt:
+    packages:
+      - libmagick++-dev
+
+warnings_are_errors: true
+
+notifications:
+  email: false
+  slack: epimodel:iY6F3MeHlZ2LCM4MwuVRJj7D
