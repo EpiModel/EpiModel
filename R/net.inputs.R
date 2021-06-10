@@ -578,11 +578,14 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #' @param save.nwstats If \code{TRUE}, save network statistics in a data frame.
 #'        The statistics to be saved are specified in the \code{nwstats.formula}
 #'        argument.
-#' @param save.transmat If \code{TRUE}, complete transmission matrix is saved at
-#'        simulation end. Default of \code{TRUE}.
 #' @param nwstats.formula A right-hand sided ERGM formula that includes network
 #'        statistics of interest, with the default to the formation formula
 #'        terms.
+#' @param save.network If \code{TRUE}, networkDynamic/network object is
+#'        saved at simulation end. Implicit reset to \code{FALSE} if
+#'        \code{tergmLite = TRUE} (because network history not saved with tL).
+#' @param save.transmat If \code{TRUE}, complete transmission matrix is saved at
+#'        simulation end. Default of \code{TRUE}.
 #' @param save.other A vector of elements on the \code{dat} master data list
 #'        to save out after each simulation. One example for base models is
 #'        the attribute list, "attr", at the final time step.
@@ -688,8 +691,9 @@ control.net <- function(type,
                         verbose.FUN = verbose.net,
                         module.order = NULL,
                         save.nwstats = TRUE,
-                        save.transmat = TRUE,
                         nwstats.formula = "formation",
+                        save.transmat = TRUE,
+                        save.network,
                         save.other,
                         verbose = TRUE,
                         verbose.int = 1,
@@ -800,6 +804,18 @@ control.net <- function(type,
     } else {
       p$epi.by <- epi.by
     }
+  }
+
+  if (is.null(p$save.network)) {
+    p$save.network <- TRUE
+  }
+  if (p$tergmLite == TRUE) {
+    p$save.network <- FALSE
+  }
+  if (p$tergmLite == TRUE & p$resimulate.network == FALSE) {
+    warning("Because tergmLite = TRUE, resetting resimulate.network = TRUE",
+            call. = FALSE)
+    p$resimulate.network <- TRUE
   }
 
   ## Output

@@ -305,11 +305,20 @@ discord_edgelist <- function(dat, at, network = 1, infstat = "i") {
   status <- get_attr(dat, "status")
   active <- get_attr(dat, "active")
   tergmLite <- get_control(dat, "tergmLite")
+  resimulate.network <- get_control(dat, "resimulate.network")
 
   if (tergmLite == TRUE) {
     el <- dat$el[[network]]
   } else {
-    el <- get.dyads.active(dat$nw[[network]], at = at)
+    if (!is.null(dat$temp$nw_list)) {
+      if (resimulate.network == FALSE) {
+        el <- network::as.edgelist(dat$temp$nw_list[[at]])
+      } else {
+        el <- network::as.edgelist(dat$nw[[1]])
+      }
+    } else {
+      el <- networkDynamic::get.dyads.active(dat$nw[[network]], at = at)
+    }
   }
 
   del <- NULL

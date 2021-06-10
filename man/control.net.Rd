@@ -25,8 +25,9 @@ control.net(
   verbose.FUN = verbose.net,
   module.order = NULL,
   save.nwstats = TRUE,
-  save.transmat = TRUE,
   nwstats.formula = "formation",
+  save.transmat = TRUE,
+  save.network,
   save.other,
   verbose = TRUE,
   verbose.int = 1,
@@ -118,12 +119,16 @@ listing. The \code{initialize.FUN} will always be run first and the
 The statistics to be saved are specified in the \code{nwstats.formula}
 argument.}
 
-\item{save.transmat}{If \code{TRUE}, complete transmission matrix is saved at
-simulation end. Default of \code{TRUE}.}
-
 \item{nwstats.formula}{A right-hand sided ERGM formula that includes network
 statistics of interest, with the default to the formation formula
 terms.}
+
+\item{save.transmat}{If \code{TRUE}, complete transmission matrix is saved at
+simulation end. Default of \code{TRUE}.}
+
+\item{save.network}{If \code{TRUE}, networkDynamic/network object is
+saved at simulation end. Implicit reset to \code{FALSE} if
+\code{tergmLite = TRUE} (because network history not saved with tL).}
 
 \item{save.other}{A vector of elements on the \code{dat} master data list
 to save out after each simulation. One example for base models is
