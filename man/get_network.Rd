@@ -4,7 +4,14 @@
 \alias{get_network}
 \title{Extract networkDynamic and network Objects from Network Simulations}
 \usage{
-get_network(x, sim = 1, network = 1, collapse = FALSE, at)
+get_network(
+  x,
+  sim = 1,
+  network = 1,
+  collapse = FALSE,
+  at,
+  ergm.create.nd = TRUE
+)
 }
 \arguments{
 \item{x}{An \code{EpiModel} object of class \code{\link{netsim}} or
@@ -21,6 +28,12 @@ a static \code{network} object at a specified time step.}
 
 \item{at}{If \code{collapse} is \code{TRUE}, the time step at which the
 extracted network should be collapsed.}
+
+\item{ergm.create.nd}{If \code{TRUE} and \code{x} contains a static ERGM
+(i.e., a netest model with duration = 1), then create a
+\code{networkDynamic} object from the stored list of static
+\code{network} objects; if \code{FALSE}, output the network list
+directly.}
 }
 \description{
 Extracts the \code{networkDynamic} object from a either a
