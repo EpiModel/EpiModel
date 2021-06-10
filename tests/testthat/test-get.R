@@ -41,7 +41,7 @@ test_that("get_network yields warning for incorrect sim", {
 
 test_that("get_network error flags", {
   expect_error(get_network(list(a = 1), 1), "must be of class netsim")
-  expect_error(get_network(mod, 4), "Specify sim between 1 and 3")
+  expect_error(get_network(mod, 4), "Specify a single sim between 1 and 3")
   expect_error(get_network(mod, 1, collapse = TRUE), "Specify collapse time")
   expect_error(get_network(mod, 1, collapse = TRUE, at = 200),
                "Specify collapse time")
