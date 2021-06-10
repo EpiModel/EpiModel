@@ -27,38 +27,34 @@ initialize.net <- function(x, param, init, control, s) {
     dat$attr <- list()
     dat$stats <- list()
     dat$temp <- list()
+    dat$nwparam <- list()
+    dat$nwparam[[1]] <- x[-which(names(x) == "fit")]
+
 
     # Initial Network Simulation ----------------------------------------------
-    if (x$edapprox == TRUE) {
-      nw <- simulate(x$fit, basis = x$fit$newnetwork,
-                     control = control$set.control.ergm, dynamic = FALSE)
-    } else {
-      nw <- x$fit$network
-    }
-    if (control$resimulate.network == TRUE) {
-      nw <- sim_nets(x, nw, nsteps = 1, control)
-    } else {
-      nw <- sim_nets(x, nw, nsteps = control$nsteps, control)
-    }
-    nw <- activate.vertices(nw, onset = 1, terminus = Inf)
-    dat$nw[[1]] <- nw
 
-    # Network Parameters ------------------------------------------------------
-    dat$nwparam <- list(x[-which(names(x) == "fit")])
-    groups <- length(unique(get_vertex_attribute(nw, "group")))
-    dat <- set_param(dat, "groups", groups)
+    if (get_control(dat, "resimulate.network") == TRUE) {
+      nsteps <- 1
+    } else {
+      nsteps <- get_control(dat, "nsteps")
+    }
+    dat <- sim_nets_t1(x, dat, nsteps)
+
 
     # Nodal Attributes --------------------------------------------------------
 
     # Standard attributes
-    num <- network.size(nw)
+    num <- network.size(dat$nw[[1]])
     dat <- append_core_attr(dat, 1, num)
+
+    groups <- length(unique(get_vertex_attribute(dat$nw[[1]], "group")))
+    dat <- set_param(dat, "groups", groups)
 
     ## Pull attr on nw to dat$attr
     dat <- copy_nwattr_to_datattr(dat)
 
     ## Store current proportions of attr
-    nwterms <- get_network_term_attr(nw)
+    nwterms <- get_network_term_attr(dat$nw[[1]])
     if (!is.null(nwterms)) {
       dat$temp$nwterms <- nwterms
       dat$temp$t1.tab <- get_attr_prop(dat, nwterms)
@@ -68,7 +64,8 @@ initialize.net <- function(x, param, init, control, s) {
     dat <- init_status.net(dat)
 
     # Conversions for tergmLite
-    if (control$tergmLite == TRUE) {
+    tergmLite <- get_control(dat, "tergmLite")
+    if (tergmLite == TRUE) {
       dat <- tergmLite::init_tergmLite(dat)
     }
 
@@ -76,22 +73,21 @@ initialize.net <- function(x, param, init, control, s) {
     # Summary Stats -----------------------------------------------------------
     dat <- do.call(control[["prevalence.FUN"]], list(dat, at = 1))
 
-    if (dat$control$save.nwstats == TRUE) {
-      dat$stats$nwstats <- list()
-      if (dat$control$tergmLite == TRUE) {
+    if (get_control(dat, "save.nwstats") == TRUE) {
+      if (tergmLite == TRUE) {
         nwL <- networkLite(dat$el[[1]], dat$attr)
-        if (dat$control$tergmLite.track.duration) {
+        if (get_control(dat, "tergmLite.track.duration")) {
           nwL %n% "time" <- dat$p[[1]]$state$nw0 %n% "time"
           nwL %n% "lasttoggle" <- dat$p[[1]]$state$nw0 %n% "lasttoggle"
         }
-        nwstats <- summary(dat$control$nwstats.formulas[[1]], 
-                           basis = nwL, 
+        nwstats <- summary(dat$control$nwstats.formulas[[1]],
+                           basis = nwL,
                            term.options = dat$control$mcmc.control[[1]]$term.options)
-      
+
         dat$stats$nwstats[[1]] <- matrix(nwstats, nrow = 1,
                                            ncol = length(nwstats),
                                            dimnames = list(NULL, names(nwstats)))
-                                           
+
         dat$stats$nwstats[[1]] <- as.data.frame(dat$stats$nwstats[[1]])
       }
     }
