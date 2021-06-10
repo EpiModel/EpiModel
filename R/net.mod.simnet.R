@@ -1,36 +1,107 @@
 
-#' @title Simulate Dynamic Network at Time 1
+#' @title Simulate Initial Network at Time 1 for Model Initialization
 #'
 #' @description This function simulates a dynamic network over one or multiple
-#'              time steps, to be used in \code{\link{netsim}} models.
+#'              time steps for TERGMs or one or multiple cross-sectional network
+#'              panels for ERGMs, for use in \code{\link{netsim}} modeling.
 #'
 #' @param x An \code{EpiModel} object of class \code{\link{netest}}.
-#' @param nw A \code{networkDynamic} object.
-#' @param nsteps Number of time steps to simulate the network over.
-#' @param nsims Number of independent network simulations.
-#' @param control An \code{EpiModel} object of class \code{\link{control.net}}.
+#' @param dat A master object passed through \code{\link{netsim}}.
+#' @param nsteps For TERGMs, the number of time steps to simulate the network
+#'        over; for ERGMs, the number of independent network panels to simulate.
 #'
 #' @export
 #' @keywords netUtils internal
 #'
-sim_nets <- function(x, nw, nsteps, control) {
+sim_nets_t1 <- function(x, dat, nsteps) {
 
-  suppressWarnings({
-    sim <- simulate(nw,
-                    formation = x$formation,
-                    dissolution = x$coef.diss$dissolution,
-                    coef.form = x$coef.form,
-                    coef.diss = x$coef.diss$coef.crude,
-                    time.slices = nsteps,
-                    time.start = 1,
-                    time.offset = 0,
-                    constraints = x$constraints,
-                    monitor = control$nwstats.formula,
-                    nsim = 1,
-                    control = control$set.control.stergm)
-  })
+  # control settings
+  nwparam <- get_nwparam(dat)
+  isTERGM <- all(nwparam$coef.diss$duration > 1)
+  dat <- set_control(dat, "isTERGM", isTERGM)
 
-  return(sim)
+  # Reset default formula for nwstats.formula
+  if (get_control(dat, "nwstats.formula") == "formation") {
+    dat <- set_control(dat, "nwstats.formula", x$formation)
+  }
+  nwstats.formula <- get_control(dat, "nwstats.formula")
+
+  save.nwstats <- get_control(dat, "save.nwstats")
+
+  # if TERGM, then use tergm package simulation for dynamic network
+  if (isTERGM == TRUE) {
+
+    set.control.ergm <- get_control(dat, "set.control.ergm")
+
+    # Simulate t0 basis network
+    if (x$edapprox == TRUE) {
+      nw <- simulate(x$fit, basis = x$fit$newnetwork,
+                     control = set.control.ergm, dynamic = FALSE)
+    } else {
+      nw <- x$fit$network
+    }
+
+    set.control.stergm <- get_control(dat, "set.control.stergm")
+
+    # Simulate dynamic network
+    suppressWarnings({
+      sim <- simulate(nw,
+                      formation = x$formation,
+                      dissolution = x$coef.diss$dissolution,
+                      coef.form = x$coef.form,
+                      coef.diss = x$coef.diss$coef.crude,
+                      time.slices = nsteps,
+                      time.start = 1,
+                      time.offset = 0,
+                      constraints = x$constraints,
+                      monitor = nwstats.formula,
+                      nsim = 1,
+                      control = set.control.stergm)
+      sim <- networkDynamic::activate.vertices(sim, onset = 1, terminus = Inf)
+    })
+    dat$nw[[1]] <- sim
+
+  # If ERGM, then use ergm package simulation for x-sectional network panels
+  } else {
+
+    set.control.ergm <- get_control(dat, "set.control.ergm")
+
+    sim <- simulate(x$fit,
+                    basis = x$fit$newnetwork,
+                    control = set.control.ergm,
+                    dynamic = FALSE,
+                    monitor = nwstats.formula,
+                    nsim = nsteps)
+
+    # save working network and temp network list
+    if (nsteps == 1) {
+      dat$nw[[1]] <- sim
+      dat$temp$nw_list <- list(sim)
+    } else {
+      dat$nw[[1]] <- sim[[1]]
+      dat$temp$nw_list <- sim
+    }
+  }
+
+  # Set up nwstats df
+  if (save.nwstats == TRUE) {
+    if (isTERGM == FALSE & nsteps > 1) {
+      nwstats <- as.data.frame(
+        simulate(x$fit,
+                 basis = x$fit$newnetwork,
+                 control = set.control.ergm,
+                 dynamic = FALSE,
+                 monitor = nwstats.formula,
+                 nsim = nsteps, output = "stats"))
+    } else {
+      nwstats <- attributes(dat$nw[[1]])$stats
+    }
+    keep.cols <- which(!duplicated(colnames(nwstats)))
+    nwstats <- nwstats[, keep.cols, drop = FALSE]
+    dat$stats$nwstats[[1]] <- nwstats
+  }
+
+  return(dat)
 }
 
 
