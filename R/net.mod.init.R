@@ -101,6 +101,11 @@ initialize.net <- function(x, param, init, control, s) {
     dat$param <- x$param
     dat$control <- control
     dat$nwparam <- x$nwparam
+    if (is.null(dat$control$isTERGM)) {
+      nwparam <- get_nwparam(dat)
+      isTERGM <- all(nwparam$coef.diss$duration > 1)
+      dat <- set_control(dat, "isTERGM", isTERGM)
+    }
     dat$epi <- sapply(x$epi, function(var) var[s])
     names(dat$epi) <- names(x$epi)
     dat$attr <- x$attr[[s]]
