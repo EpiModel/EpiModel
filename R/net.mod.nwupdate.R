@@ -102,6 +102,10 @@ nwupdate.net <- function(dat, at) {
   if (tergmLite == FALSE & isTERGM == FALSE & resimulate.network == TRUE) {
     dat$temp$nw_list[[at]] <- dat$nw[[1]]
   }
+  if (tergmLite == FALSE & isTERGM == FALSE & resimulate.network == FALSE) {
+    dat$temp$nw_list[[at]] <- set_vertex_attribute(dat$temp$nw_list[[at]],
+                                                   "status", status)
+  }
 
   ## Output
   return(dat)

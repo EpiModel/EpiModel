@@ -44,9 +44,16 @@ control <- control.net(type = "SIR", nsteps = 10, nsims = 2, ncores = 1,
                        tergmLite = FALSE,  resimulate.network = TRUE, verbose = FALSE)
 simz <- netsim(ft, param, init, control)
 net <- get_network(simz, sim = 2)
-nwd <- as.data.frame(net)
-head(nwd, 10)
-get_nwstats(simz)
+net
+
+get.vertex.attribute.active(net, prefix = "status", at = 10)
+
+net <- get_network(simz, sim = 2, ergm.create.nd = FALSE)
+net
+
+table(get_vertex_attribute(net[[1]], "status"))
+table(get_vertex_attribute(net[[2]], "status"))
+table(get_vertex_attribute(net[[10]], "status"))
 
 # ERGM resimulate.network = FALSE tergmLite = FALSE
 ft <- netest(toy,  formation = ~edges ,
