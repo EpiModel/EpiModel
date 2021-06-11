@@ -82,7 +82,8 @@ initialize.net <- function(x, param, init, control, s) {
         }
         nwstats <- summary(dat$control$nwstats.formulas[[1]],
                            basis = nwL,
-                           term.options = dat$control$mcmc.control[[1]]$term.options)
+                           term.options = dat$control$mcmc.control[[1]]$term.options,
+                           dynamic = TRUE)
 
         dat$stats$nwstats[[1]] <- matrix(nwstats, nrow = 1,
                                            ncol = length(nwstats),

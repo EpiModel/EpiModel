@@ -224,7 +224,8 @@ resim_nets <- function(dat, at) {
         dat$stats$nwstats[[1]] <- rbind(dat$stats$nwstats[[1]],
                                           summary(dat$control$nwstats.formulas[[1]],
                                                   basis = nwL,
-                                                  term.options = dat$control$mcmc.control[[1]]$term.options))
+                                                  term.options = dat$control$mcmc.control[[1]]$term.options,
+                                                  dynamic = TRUE))
       }
     }
   }
