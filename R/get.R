@@ -116,7 +116,7 @@ get_network <- function(x, sim = 1, network = 1, collapse = FALSE, at,
       if (ergm.create.nd == TRUE) {
         out <- suppressMessages(
             networkDynamic(network.list = x$network[[sim]], start = 1,
-                           base.net = x$network[[sim]][[1]]))
+                           base.net = x$network[[sim]][[1]], create.TEAs = TRUE))
       } else {
         out <- x$network[[sim]]
       }
