@@ -225,7 +225,7 @@ resim_nets <- function(dat, at) {
                                           summary(dat$control$nwstats.formulas[[1]],
                                                   basis = nwL,
                                                   term.options = dat$control$mcmc.control[[1]]$term.options,
-                                                  dynamic = TRUE))
+                                                  dynamic = isTERGM))
       }
     }
   }
