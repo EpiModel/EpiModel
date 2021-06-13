@@ -68,6 +68,7 @@ sim_nets_t1 <- function(x, dat, nsteps) {
 
     sim <- simulate(x$fit,
                     basis = x$fit$newnetwork,
+                    constraints = x$constraints,
                     control = set.control.ergm,
                     dynamic = FALSE,
                     monitor = nwstats.formula,
@@ -89,6 +90,7 @@ sim_nets_t1 <- function(x, dat, nsteps) {
       nwstats <- as.data.frame(
         simulate(x$fit,
                  basis = x$fit$newnetwork,
+                 constraints = x$constraints,
                  control = set.control.ergm,
                  dynamic = FALSE,
                  monitor = nwstats.formula,
@@ -175,6 +177,7 @@ resim_nets <- function(dat, at) {
         dat$nw[[1]] <- simulate(object = nwparam$formation,
                                 basis = dat$nw[[1]],
                                 coef = nwparam$coef.form,
+                                constraints = nwparam$constraints,
                                 # control = mcmc.control.ergm,
                                 dynamic = FALSE,
                                 monitor = nwstats.formula,
