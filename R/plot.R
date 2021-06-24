@@ -1557,28 +1557,35 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 
     ## Quantiles - ylim max ##
     if (dynamic == TRUE) {
-    if (is.numeric(qnts) & nsims > 1) {
-      if (qnts < 0 | qnts > 1) {
-        stop("qnts must be between 0 and 1", call. = FALSE)
+      if (is.numeric(qnts) & nsims > 1) {
+        if (qnts < 0 | qnts > 1) {
+          stop("qnts must be between 0 and 1", call. = FALSE)
+        }
+        quants <- c((1 - qnts) / 2, 1 - ((1 - qnts) / 2))
+        dataj <- as.data.frame(pages)
+        dataj <- dataj[complete.cases(dataj), , drop = FALSE]
+        qnt.prev <- apply(dataj, 1, function(x)
+          quantile(x, c(quants[1], quants[2]),
+                   na.rm = TRUE))
+        xx <- c(1:(ncol(qnt.prev)), (ncol(qnt.prev)):1)
+        if (qnts.smooth == FALSE) {
+          yy <- c(qnt.prev[1, ], rev(qnt.prev[2, ]))
+        } else {
+          yy <- c(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
+                                          y = qnt.prev[1, ]))$y,
+                  rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
+                                              y = qnt.prev[2, ]))$y))
+        }
+        yy_imptd <- yy + c(pages_imptd, rev(pages_imptd))
+        if (duration.imputed == TRUE) {
+          qnt.min <- min(yy_imptd)
+          qnt.max <-  max(yy_imptd)
+        } else {
+          qnt.min <- min(yy)
+          qnt.max <-  max(yy)
+        }
+
       }
-      quants <- c((1 - qnts) / 2, 1 - ((1 - qnts) / 2))
-      dataj <- as.data.frame(pages)
-      dataj <- dataj[complete.cases(dataj), , drop = FALSE]
-      qnt.prev <- apply(dataj, 1, function(x)
-        quantile(x, c(quants[1], quants[2]),
-                 na.rm = TRUE))
-      xx <- c(1:(ncol(qnt.prev)), (ncol(qnt.prev)):1)
-      if (qnts.smooth == FALSE) {
-        yy <- c(qnt.prev[1, ], rev(qnt.prev[2, ]))
-      } else {
-        yy <- c(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
-                                        y = qnt.prev[1, ]))$y,
-                rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
-                                            y = qnt.prev[2, ]))$y))
-      }
-      yy_imptd <- yy + c(pages_imptd, rev(pages_imptd))
-      qnt.max <-  max(yy, yy_imptd)
-    }
     }
 
     ## Mean lines - ylim max ##
@@ -1603,9 +1610,14 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
       ylim <- da$ylim
     } else if (is.null(da$ylim) & sim.lines == FALSE &
                (mean.line == TRUE || qnts == TRUE)) {
-      ylim <- c(0, max(qnt.max * 1.1, mean.max * 1.1))
+      ylim <- c(max(0, qnt.min * 0.9), max(qnt.max * 1.1, mean.max * 1.1))
     } else {
-      ylim <- c(0, max(sapply(pages, max, na.rm = TRUE)) * 1.1)
+      if (duration.imputed == TRUE) {
+        ylim <- c(max(0, min(sapply(pages, function(x) x + pages_imptd)) * 0.9),
+                  max(sapply(pages, function(x) x + pages_imptd)) * 1.1)
+      } else {
+        ylim <- c(0, max(sapply(pages, max, na.rm = TRUE)) * 1.1)
+      }
     }
 
     if (missing(sim.lwd)) {
