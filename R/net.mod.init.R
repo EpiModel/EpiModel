@@ -73,27 +73,6 @@ initialize.net <- function(x, param, init, control, s) {
     # Summary Stats -----------------------------------------------------------
     dat <- do.call(control[["prevalence.FUN"]], list(dat, at = 1))
 
-    if (get_control(dat, "save.nwstats") == TRUE) {
-      if (tergmLite == TRUE) {
-        nwL <- networkLite(dat$el[[1]], dat$attr)
-        if (get_control(dat, "tergmLite.track.duration")) {
-          nwL %n% "time" <- dat$p[[1]]$state$nw0 %n% "time"
-          nwL %n% "lasttoggle" <- dat$p[[1]]$state$nw0 %n% "lasttoggle"
-        }
-        nwstats <- summary(dat$control$nwstats.formulas[[1]],
-                           basis = nwL,
-                           term.options = dat$control$mcmc.control[[1]]$term.options,
-                           dynamic = get_control(dat, "isTERGM"))
-
-        dat$stats$nwstats[[1]] <- matrix(nwstats, nrow = 1,
-                                           ncol = length(nwstats),
-                                           dimnames = list(NULL, names(nwstats)))
-
-        dat$stats$nwstats[[1]] <- as.data.frame(dat$stats$nwstats[[1]])
-      }
-    }
-
-
     # Restart/Reinit Simulations ----------------------------------------------
   } else if (control$start > 1) {
     dat <- list()
