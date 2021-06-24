@@ -224,11 +224,12 @@ resim_nets <- function(dat, at) {
           nwL %n% "time" <- dat$p[[1]]$state$nw0 %n% "time"
           nwL %n% "lasttoggle" <- dat$p[[1]]$state$nw0 %n% "lasttoggle"
         }
-        dat$stats$nwstats[[1]] <- rbind(dat$stats$nwstats[[1]],
-                                          summary(dat$control$nwstats.formulas[[1]],
-                                                  basis = nwL,
-                                                  term.options = dat$control$mcmc.control[[1]]$term.options,
-                                                  dynamic = isTERGM))
+        nwstats <- summary(dat$control$nwstats.formulas[[1]],
+                           basis = nwL,
+                           term.options = dat$control$mcmc.control[[1]]$term.options,
+                           dynamic = isTERGM)
+        keep.cols <- which(!duplicated(names(nwstats)))
+        dat$stats$nwstats[[1]] <- rbind(dat$stats$nwstats[[1]], nwstats[keep.cols])
       }
     }
   }
