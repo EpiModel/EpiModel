@@ -16,16 +16,13 @@
 #'
 #' @title Statnet Control
 #'
-#' @description A utility to facilitate argument completion of control lists, reexported from `statnet.common`.
-#'
-#' @section Currently recognised control parameters:
-#' This list is updated as packages are loaded and unloaded.
-#'
-#' \Sexpr[results=rd,stage=render]{statnet.common::snctrl_names()}
+#' @description A utility to facilitate argument completion of control lists,
+#' reexported from `statnet.common`.
 #'
 #' @seealso [statnet.common::snctrl()]
 #' @docType import
 NULL
+
 #' @export
 snctrl <- statnet.common::snctrl
 ## BEGIN boilerplate: should be kept in sync with statnet.common.
