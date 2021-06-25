@@ -152,7 +152,7 @@ print.netsim <- function(x, formation.stats = FALSE, digits = 3, ...) {
     for (i in 1:length(x$control$f.names)) {
       cat(x$control$f.names[i], "\n")
     }
-    cat("\n")
+    # cat("\n")
   }
 
   cat("\nModel Output")
@@ -341,7 +341,7 @@ print.param.net <- function(x, ...) {
     }
   }
 
-  cat("\n")
+  # cat("\n")
 
   invisible()
 }
