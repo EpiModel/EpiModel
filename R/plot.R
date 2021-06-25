@@ -1551,9 +1551,14 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
      xlim <- da$xlim
     }
 
-    #Initialize ylim max values
+    #Initialize ylim min/max values
     qnt.max <- -1E10
     mean.max <- -1E10
+    if (duration.imputed == TRUE) {
+      qnt.min <- max(0, min(sapply(pages, function(x) x + pages_imptd)))
+    } else {
+      qnt.min <- 0
+    }
 
     ## Quantiles - ylim max ##
     if (dynamic == TRUE) {
