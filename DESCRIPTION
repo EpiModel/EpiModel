@@ -60,5 +60,4 @@ VignetteBuilder: knitr
 LinkingTo: ergm
 RoxygenNote: 7.1.1
 Encoding: UTF-8
-Remotes: github::statnet/tergmLite@master
     
