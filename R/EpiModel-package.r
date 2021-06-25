@@ -124,7 +124,7 @@
 #' developed \code{EpiModelHIV}, which is available on Github at
 #' \url{https://github.com/statnet/EpiModelHIV}. For COVID-19, we have developed
 #' \code{EpiModelCOVID}, which is available at
-#' \url{https://github.com/statnet/EpiModelCOVID}.
+#' \url{https://github.com/EpiModel/EpiModelCOVID}.
 #'
 #' @name EpiModel-package
 #' @aliases EpiModel
