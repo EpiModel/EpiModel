@@ -22,6 +22,7 @@ test_that("New network models vignette example", {
   ## Replacement Departure Module
   dfunc <- function(dat, at) {
     active <- get_attr(dat, "active")
+    exitTime <- get_attr(dat, "exitTime")
     idsElig <- which(active == 1)
     nElig <- length(idsElig)
 
@@ -36,11 +37,13 @@ test_that("New network models vignette example", {
       nDepartures <- length(idsDepartures)
       if (nDepartures > 0) {
         active[idsDepartures] <- 0
+        exitTime[idsDepartures] <- at
         dat <- set_attr(dat, "active", active)
+        dat <- set_attr(dat, "exitTime", exitTime)
       }
     }
 
-    # Output ----------------------------------
+    # Output
     dat <- set_epi(dat, "d.flow", at, nDepartures)
     return(dat)
   }
@@ -49,11 +52,10 @@ test_that("New network models vignette example", {
   ## Replacement Arrival Module
   afunc <- function(dat, at) {
 
-    # Variables ---------------------------------------------------------------
+    # Variables
     growth.rate <- get_param(dat, "growth.rate")
     exptPopSize <- get_epi(dat, "num", 1) * (1 + growth.rate * at)
-    n <- sum(get_attr(dat, "active") == 1)
-        active <- get_attr(dat, "active")
+    active <- get_attr(dat, "active")
     numNeeded <- exptPopSize - sum(active == 1)
 
     if (numNeeded > 0) {
@@ -62,7 +64,12 @@ test_that("New network models vignette example", {
       nArrivals <- 0
     }
 
-    # Output ------------------------------------------------------------------
+    dat <- append_core_attr(dat, at, nArrivals)
+    dat <- append_attr(dat, "status", "s", nArrivals)
+    dat <- append_attr(dat, "infTime", NA, nArrivals)
+    dat <- append_attr(dat, "age", 0, nArrivals)
+
+    # Output
     dat <- set_epi(dat, "a.flow", at, nArrivals)
 
     return(dat)
