@@ -821,7 +821,7 @@ control.net <- function(type,
     p$save.network <- FALSE
   }
   if (p$tergmLite == TRUE & p$resimulate.network == FALSE) {
-    warning("Because tergmLite = TRUE, resetting resimulate.network = TRUE",
+    message("Because tergmLite = TRUE, resetting resimulate.network = TRUE",
             call. = FALSE)
     p$resimulate.network <- TRUE
   }
