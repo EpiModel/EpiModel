@@ -181,7 +181,9 @@ target.stats <- 50
 coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
 est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 
-# Random epidemic parameter list
+# Random epidemic parameter list (here act.rate values are sampled uniformly
+# with helper function param_random, and inf.prob follows a general Beta
+# distribution with the parameters shown below)
 my_randoms <- list(
   act.rate = param_random(1:3),
   inf.prob = function() rbeta(1, 1, 2)
@@ -189,16 +191,22 @@ my_randoms <- list(
 
 # Parameters, initial conditions, and control settings
 param <- param.net(rec.rate = 0.02, random.params = my_randoms)
+
+# Printing parameters shows both fixed and and random parameter functions
+param
+
+# Set initial conditions and controls
 init <- init.net(i.num = 10, r.num = 0)
-control <- control.net(type = "SIR", nsteps = 100, nsims = 5,
-                       resimulate.network = FALSE, tergmLite = FALSE)
+control <- control.net(type = "SIR", nsteps = 10, nsims = 3, verbose = FALSE)
 
 # Simulate the model
 sim <- netsim(est, param, init, control)
 
-# Print and plot
+# Printing the sim object shows the randomly drawn values for each simulation
 sim
-plot(sim)
+
+# These are available to access here
+sim$param$random.params.values
 
 }
 \seealso{
