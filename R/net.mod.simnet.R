@@ -205,9 +205,9 @@ resim_nets <- function(dat, at) {
         dat$nw[[1]] <- simulate(nwL ~ Form(nwparam$formation) + Persist(nwparam$coef.diss$dissolution),
                                 coef = c(nwparam$coef.form, nwparam$coef.diss$coef.adj),
                                 constraints = nwparam$constraints,
-                                time.start = at,
+                                time.start = at - 1, # should be the time stamp on the nwL if we are tracking duration
                                 time.slices = 1,
-                                time.offset = 0,
+                                time.offset = 1, # default value
                                 control = dat$control$mcmc.control[[1]],
                                 output = "final",
                                 dynamic = TRUE)
