@@ -48,7 +48,9 @@ Imports:
     RColorBrewer,
     ape,
     lazyeval,
-    ggplot2
+    ggplot2,
+    tibble,
+    methods
 Suggests:
     knitr,
     ndtv,
@@ -56,6 +58,6 @@ Suggests:
     shiny,
     testthat
 VignetteBuilder: knitr
-LinkingTo: ergm
+LinkingTo: Rcpp, ergm
 RoxygenNote: 7.1.1
 Encoding: UTF-8
