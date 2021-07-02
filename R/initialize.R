@@ -47,7 +47,6 @@ init_tergmLite <- function(dat) {
   num_nw <- ifelse(inherits(dat$nw, "network"), 1, length(dat$nw))
 
   dat$el <- list()
-  dat$control$mcmc.control <- list()
   dat$control$nwstats.formulas <- list()
   
   for (i in 1:num_nw) {
@@ -68,17 +67,9 @@ init_tergmLite <- function(dat) {
     if (identical(nwstats_formula, "formation")) nwstats_formula <- nwp$formation
     dat$control$nwstats.formulas[[i]] <- nwstats_formula
 
-    if (is_tergm) {
-      mcmc_control_name <- paste(c("mcmc.control.tergm", if (num_nw > 1) i), collapse = ".")
-      dat$control$mcmc.control[[i]] <- check.control.class("simulate.formula.tergm", "init_tergmLite", NVL(dat$control[[mcmc_control_name]], control.simulate.formula.tergm()))
-
-      if (dat$control$tergmLite.track.duration == TRUE) {
-        nw %n% "time" <- 1
-        nw %n% "lasttoggle" <- cbind(as.edgelist(nw), 1)
-      }
-    } else {
-      mcmc_control_name <- paste(c("mcmc.control.ergm", if (num_nw > 1) i), collapse = ".")
-      dat$control$mcmc.control[[i]] <- check.control.class("simulate.formula", "init_tergmLite", NVL(dat$control[[mcmc_control_name]], control.simulate.formula()))
+    if (is_tergm && dat$control$tergmLite.track.duration) {
+      nw %n% "time" <- 1
+      nw %n% "lasttoggle" <- cbind(as.edgelist(nw), 1)
     }
 
     dat$nw[[i]] <- nw
