@@ -1,3 +1,15 @@
+## EpiModel 2.1.0
+
+### NEW FEATURES
+
+-   Summary network statistics for `netsim` class objects (epidemic simulations) are now available when `tergmLite` is used. Previously these network statistics were only available when `tergmLite = FALSE` but updates to the `networkLite` class in `tergmLite` made this possible. These network stats are output with `save.nwstats` and `nwstats.formula` arguments in `control.net`.
+-   Developed a general storage and printing mechanism for the recently developed random parameterization interface. See the help page `help("param.net")`.
+-   Cleaned up the handling of the initial network simulation in `initialize.net`, so that the user-facing code in that function is more readable, and the more complex code is put in `sim_nets_t1`.
+
+### BUG FIXES
+
+-   Addressed errors in handling cross-sectional network simulations embedded within a dynamic epidemic model (e.g., contacts that last the length of one time step, specified by `duration = 1` in `dissolution_coefs`).
+
 ## EpiModel 2.0.5
 
 -   Minor updates for CRAN submission.

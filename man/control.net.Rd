@@ -24,16 +24,20 @@ control.net(
   prevalence.FUN = prevalence.net,
   verbose.FUN = verbose.net,
   module.order = NULL,
-  set.control.ergm,
-  set.control.stergm,
   save.nwstats = TRUE,
-  save.transmat = TRUE,
   nwstats.formula = "formation",
+  save.transmat = TRUE,
+  save.network,
   save.other,
   verbose = TRUE,
   verbose.int = 1,
   skip.check = FALSE,
   raw.output = FALSE,
+  tergmLite.track.duration = FALSE,
+  set.control.ergm = control.simulate.ergm(MCMC.burnin = 2e+05),
+  set.control.stergm = control.simulate.network(MCMC.burnin.min = 1000),
+  mcmc.control.ergm = control.simulate.formula(),
+  mcmc.control.tergm = control.simulate.formula.tergm(),
   ...
 )
 }
@@ -111,24 +115,20 @@ listed, then the built-in modules in their order of the function
 listing. The \code{initialize.FUN} will always be run first and the
 \code{verbose.FUN} always last.}
 
-\item{set.control.ergm}{Control arguments passed to simulate.ergm. See the
-help file for \code{\link{netdx}} for details and examples on
-specifying this parameter.}
-
-\item{set.control.stergm}{Control arguments passed to simulate.stergm. See
-the help file for \code{\link{netdx}} for details and examples on
-specifying this parameter.}
-
 \item{save.nwstats}{If \code{TRUE}, save network statistics in a data frame.
 The statistics to be saved are specified in the \code{nwstats.formula}
 argument.}
 
-\item{save.transmat}{If \code{TRUE}, complete transmission matrix is saved at
-simulation end. Default of \code{TRUE}.}
-
 \item{nwstats.formula}{A right-hand sided ERGM formula that includes network
 statistics of interest, with the default to the formation formula
 terms.}
+
+\item{save.transmat}{If \code{TRUE}, complete transmission matrix is saved at
+simulation end. Default of \code{TRUE}.}
+
+\item{save.network}{If \code{TRUE}, networkDynamic/network object is
+saved at simulation end. Implicit reset to \code{FALSE} if
+\code{tergmLite = TRUE} (because network history not saved with tL).}
 
 \item{save.other}{A vector of elements on the \code{dat} master data list
 to save out after each simulation. One example for base models is
@@ -149,6 +149,25 @@ modules specified.}
 
 \item{raw.output}{If \code{TRUE}, \code{netsim} will output a list of nestsim
 data (one per simulation) instead of a formatted \code{netsim} object.}
+
+\item{tergmLite.track.duration}{logical; to track duration information
+(\code{time} and \code{lasttoggle}) for \code{tergm} models in
+\code{tergmLite} simulations. If \code{TRUE}, the \code{time} and
+\code{lasttoggle} values are initialized from the network attributes
+of the networks passed to \code{init_tergmLite}, with \code{time}
+defaulting to \code{0} and \code{lasttoggle} defaulting to all
+\code{lasttoggle} times unspecified (effectively \code{-INT_MAX/2}).}
+
+\item{set.control.ergm}{Control arguments passed to \code{simulate.ergm}. See
+the help file for \code{\link{netdx}} for details and examples on
+specifying this parameter.}
+
+\item{set.control.stergm}{Control arguments passed to \code{simulate.stergm}.
+See the help file for \code{\link{netdx}} for details and examples on
+specifying this parameter.}
+
+\item{mcmc.control.tergm, mcmc.control.ergm}{Control arguments for network
+simulation in \code{tergmLite}.}
 
 \item{...}{Additional control settings passed to model.}
 }

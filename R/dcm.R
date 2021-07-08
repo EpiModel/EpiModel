@@ -96,7 +96,8 @@
 #' plot(mod4)
 #'
 dcm <- function(param, init, control) {
-
+  check.control.class("dcm", "EpiModel dcm")
+  
   crosscheck.dcm(param, init, control)
 
   # Model selection ---------------------------------------------------------

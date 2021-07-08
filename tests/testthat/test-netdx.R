@@ -163,7 +163,11 @@ test_that("More complicated faux offset term", {
                 formation =
                   ~edges + nodemix("sexor", levels2 = c(-1, -3, -5)) + nodematch("region"),
                 target.stats = c(463, 0, 0, 0, 10, 210, 10, 110, 90),
-                coef.diss = dissolution_coefs(~offset(edges), 60))
+                coef.diss = dissolution_coefs(~offset(edges), 60),
+                set.control.ergm = control.ergm(MCMLE.termination="Hummel",
+                                                MCMLE.samplesize=1024,
+                                                MCMLE.interval=1024,
+                                                MCMLE.effectiveSize=NULL))
   dx <- netdx(fit, nsteps = 10, verbose = FALSE)
   dx
   expect_is(dx, "netdx")
