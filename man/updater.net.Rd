@@ -19,7 +19,7 @@ the updated dat Master list object.
 Module to modify the parameters during the simulation
 }
 \details{
-if a list code{updaters} is present in the parameters, this module will
+if a list code{param.updater.list} is present in the parameters, this module will
 update the code{param} list with new values at given timesteps.
 An updater is a list containing an code{at} element governing when the
 changes will happen, an optional code{verbose} boolean controlling whether to
@@ -32,7 +32,9 @@ function will be applied to the current element (see example) .
 \examples{
 \dontrun{
 
-updaters = list(
+# Create the parame.updater.list
+param.updater.list <- list(
+  # this is one updater
   list(
     at = 10,
     param = list(
@@ -40,6 +42,7 @@ updaters = list(
       trans.scale = c(1.61, 0.836, 0.622)
     )
   ),
+  # this is another updater
   list(
     at = 12,
     verbose = TRUE,
@@ -56,7 +59,7 @@ updaters = list(
    act.rate = 0.5,
    hiv.test.rate = rep(0.256, 3),
    trans.scale = c(1, 2, 3),
-   updaters = updaters
+   param.updater.list = param.updater.list
  )
 
 # Enable the module in `control`
