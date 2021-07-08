@@ -11,13 +11,13 @@
 #' @section Optional Module:
 #' This module is not included by default
 #'
-#' @section The \code{epi_trackers} list:
-#' \code{epi_trackers} is a list of NAMED functions stored in the \code{param}
+#' @section The \code{tracker.list} list:
+#' \code{tracker.list} is a list of NAMED functions stored in the \code{param}
 #' list of the \code{dat} master list object.
 #'
 #' @section Tracker Functions:
 #' This module will apply the tracker functions present in the parameter list
-#' \code{epi_trackers}. Each tracker must be a function with EXACTLY two
+#' \code{tracker.list}. Each tracker must be a function with EXACTLY two
 #' arguments: the \code{dat} Master list object and \code{at} the current time
 #' step. They must return a VALUE of length one (numeric, logical or character).
 #'
@@ -46,8 +46,8 @@
 #'   })
 #' }
 #'
-#' # Create the `epi_trackers` list
-#' epi_trackers <- list(
+#' # Create the `tracker.list` list
+#' tracker.list <- list(
 #'   prop_infected = epi_prop_infected,
 #'   s_num         = epi_s_num
 #' )
@@ -56,7 +56,7 @@
 #'  param <- param.net(
 #'    inf.prob = 0.3,
 #'    act.rate = 0.5,
-#'    epi_trackers = epi_trackers
+#'    tracker.list = tracker.list
 #'  )
 #'
 #' # Enable the module in `control`
@@ -67,7 +67,6 @@
 #'    verbose = FALSE,
 #'    trackers.FUN = trackers.net
 #'  )
-#'
 #'
 #' nw <- network_initialize(n = 50)
 #' nw <- set_vertex_attribute(nw, "race", rbinom(50, 1, 0.5))
@@ -94,21 +93,21 @@
 #' @keywords netMod internal
 #'
 trackers.net <- function(dat, at) {
-  epi_trackers <- get_param(dat, "epi_trackers", override.null.error = TRUE)
+  tracker.list <- get_param(dat, "tracker.list", override.null.error = TRUE)
 
-  if (is.null(epi_trackers)) {
+  if (is.null(tracker.list)) {
     return(dat)
   }
 
   tryCatch(
     expr = {
-      for (nm in names(epi_trackers)) {
-        dat <- set_epi(dat, nm, at, epi_trackers[[nm]](dat, at))
+      for (nm in names(tracker.list)) {
+        dat <- set_epi(dat, nm, at, tracker.list[[nm]](dat, at))
       }
     },
     message = function(e) message("\nIn tracker '", nm, "':\n", e),
     warning = function(e) warning("\nIn tracker '", nm, "':\n", e),
-    error = function(e) stop("\nIn tracker '", nm, "':\n", e)
+    error   = function(e) stop("\nIn tracker '", nm, "':\n", e)
   )
 
   return(dat)
