@@ -122,7 +122,8 @@
 #' }
 #'
 netsim <- function(x, param, init, control) {
-
+  check.control.class("net", "EpiModel netsim")
+  
   crosscheck.net(x, param, init, control)
   if (!is.null(control[["verbose.FUN"]])) {
     do.call(control[["verbose.FUN"]], list(control, type = "startup"))

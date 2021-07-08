@@ -1,36 +1,109 @@
 
-#' @title Simulate Dynamic Network at Time 1
+#' @title Simulate Initial Network at Time 1 for Model Initialization
 #'
 #' @description This function simulates a dynamic network over one or multiple
-#'              time steps, to be used in \code{\link{netsim}} models.
+#'              time steps for TERGMs or one or multiple cross-sectional network
+#'              panels for ERGMs, for use in \code{\link{netsim}} modeling.
 #'
 #' @param x An \code{EpiModel} object of class \code{\link{netest}}.
-#' @param nw A \code{networkDynamic} object.
-#' @param nsteps Number of time steps to simulate the network over.
-#' @param nsims Number of independent network simulations.
-#' @param control An \code{EpiModel} object of class \code{\link{control.net}}.
+#' @param dat A master object passed through \code{\link{netsim}}.
+#' @param nsteps For TERGMs, the number of time steps to simulate the network
+#'        over; for ERGMs, the number of independent network panels to simulate.
 #'
 #' @export
 #' @keywords netUtils internal
 #'
-sim_nets <- function(x, nw, nsteps, control) {
+sim_nets_t1 <- function(x, dat, nsteps) {
 
-  suppressWarnings({
-    sim <- simulate(nw,
-                    formation = x$formation,
-                    dissolution = x$coef.diss$dissolution,
-                    coef.form = x$coef.form,
-                    coef.diss = x$coef.diss$coef.crude,
-                    time.slices = nsteps,
-                    time.start = 1,
-                    time.offset = 0,
+  # control settings
+  nwparam <- get_nwparam(dat)
+  isTERGM <- all(nwparam$coef.diss$duration > 1)
+  dat <- set_control(dat, "isTERGM", isTERGM)
+
+  # Reset default formula for nwstats.formula
+  if (get_control(dat, "nwstats.formula") == "formation") {
+    dat <- set_control(dat, "nwstats.formula", x$formation)
+  }
+  nwstats.formula <- get_control(dat, "nwstats.formula")
+
+  save.nwstats <- get_control(dat, "save.nwstats")
+
+  # if TERGM, then use tergm package simulation for dynamic network
+  if (isTERGM == TRUE) {
+
+    set.control.ergm <- get_control(dat, "set.control.ergm")
+
+    # Simulate t0 basis network
+    if (x$edapprox == TRUE) {
+      nw <- simulate(x$fit, basis = x$fit$newnetwork,
+                     control = set.control.ergm, dynamic = FALSE)
+    } else {
+      nw <- x$fit$network
+    }
+
+    set.control.stergm <- get_control(dat, "set.control.stergm")
+
+    # Simulate dynamic network
+    suppressWarnings({
+      sim <- simulate(nw,
+                      formation = x$formation,
+                      dissolution = x$coef.diss$dissolution,
+                      coef.form = x$coef.form,
+                      coef.diss = x$coef.diss$coef.crude,
+                      time.slices = nsteps,
+                      time.start = 1,
+                      time.offset = 0,
+                      constraints = x$constraints,
+                      monitor = nwstats.formula,
+                      nsim = 1,
+                      control = set.control.stergm)
+      sim <- networkDynamic::activate.vertices(sim, onset = 1, terminus = Inf)
+    })
+    dat$nw[[1]] <- sim
+
+  # If ERGM, then use ergm package simulation for x-sectional network panels
+  } else {
+
+    set.control.ergm <- get_control(dat, "set.control.ergm")
+
+    sim <- simulate(x$fit,
+                    basis = x$fit$newnetwork,
                     constraints = x$constraints,
-                    monitor = control$nwstats.formula,
-                    nsim = 1,
-                    control = control$set.control.stergm)
-  })
+                    control = set.control.ergm,
+                    dynamic = FALSE,
+                    monitor = nwstats.formula,
+                    nsim = nsteps)
 
-  return(sim)
+    # save working network and temp network list
+    if (nsteps == 1) {
+      dat$nw[[1]] <- sim
+      dat$temp$nw_list <- list(sim)
+    } else {
+      dat$nw[[1]] <- sim[[1]]
+      dat$temp$nw_list <- sim
+    }
+  }
+
+  # Set up nwstats df
+  if (save.nwstats == TRUE) {
+    if (isTERGM == FALSE & nsteps > 1) {
+      nwstats <- as.data.frame(
+        simulate(x$fit,
+                 basis = x$fit$newnetwork,
+                 constraints = x$constraints,
+                 control = set.control.ergm,
+                 dynamic = FALSE,
+                 monitor = nwstats.formula,
+                 nsim = nsteps, output = "stats"))
+    } else {
+      nwstats <- attributes(dat$nw[[1]])$stats
+    }
+    keep.cols <- which(!duplicated(colnames(nwstats)))
+    nwstats <- nwstats[, keep.cols, drop = FALSE]
+    dat$stats$nwstats[[1]] <- nwstats
+  }
+
+  return(dat)
 }
 
 
@@ -49,17 +122,25 @@ sim_nets <- function(x, nw, nsteps, control) {
 #'
 resim_nets <- function(dat, at) {
 
-  # Variables
+  # Control settings for resimulation
   tergmLite <- get_control(dat, "tergmLite")
+  isTERGM <- get_control(dat, "isTERGM")
   save.nwstats <- get_control(dat, "save.nwstats")
   resimulate.network <- get_control(dat, "resimulate.network")
+  nwstats.formula <- get_control(dat, "nwstats.formula")
+  set.control.stergm <- get_control(dat, "set.control.stergm")
+  # mcmc.control.ergm <- get_control(dat, "mcmc.control.ergm")
+  tergmLite.track.duration <- get_control(dat, "tergmLite.track.duration")
 
   # Edges Correction
   dat <- edges_correct(dat, at)
 
+  # active attribute (all models)
   active <- get_attr(dat, "active")
   idsActive <- which(active == 1)
   anyActive <- ifelse(length(idsActive) > 0, TRUE, FALSE)
+
+  # group attribute (built-in models)
   if (dat$param$groups == 2) {
     group <- get_attr(dat, "group")
     groupids.1 <- which(group == 1)
@@ -72,56 +153,84 @@ resim_nets <- function(dat, at) {
   # Pull network model parameters
   nwparam <- get_nwparam(dat)
 
-  # Full tergm/network Method
-  if (tergmLite == FALSE) {
+  # Network resimulation
+  if (anyActive == TRUE & resimulate.network == TRUE) {
 
-    # Set up nwstats df
-    if (save.nwstats == TRUE) {
-      if (at == 2) {
-        nwstats <- attributes(dat$nw[[1]])$stats
-        dat$stats$nwstats <- as.data.frame(nwstats)
+    # Full tergm/network Method
+    if (tergmLite == FALSE) {
+
+      # TERGM simulation
+      if (isTERGM == TRUE) {
+        suppressWarnings(
+          dat$nw[[1]] <- simulate(dat$nw[[1]],
+                                  formation = nwparam$formation,
+                                  dissolution = nwparam$coef.diss$dissolution,
+                                  coef.form = nwparam$coef.form,
+                                  coef.diss = nwparam$coef.diss$coef.adj,
+                                  constraints = nwparam$constraints,
+                                  time.start = at,
+                                  time.slices = 1,
+                                  time.offset = 0,
+                                  monitor = nwstats.formula,
+                                  control = set.control.stergm))
+      } else {
+        dat$nw[[1]] <- simulate(object = nwparam$formation,
+                                basis = dat$nw[[1]],
+                                coef = nwparam$coef.form,
+                                constraints = nwparam$constraints,
+                                # control = mcmc.control.ergm,
+                                dynamic = FALSE,
+                                monitor = nwstats.formula,
+                                nsim = 1)
       }
-    }
 
-    # Network simulation
-    if (anyActive > 0 & resimulate.network == TRUE) {
-      suppressWarnings(
-        dat$nw[[1]] <- simulate(dat$nw[[1]],
-                           formation = nwparam$formation,
-                           dissolution = nwparam$coef.diss$dissolution,
-                           coef.form = nwparam$coef.form,
-                           coef.diss = nwparam$coef.diss$coef.adj,
-                           constraints = nwparam$constraints,
-                           time.start = at,
-                           time.slices = 1,
-                           time.offset = 0,
-                           monitor = dat$control$nwstats.formula,
-                           control = dat$control$set.control.stergm))
-
-      # Update nwstats df
+      # Update nwstats data frame
       if (save.nwstats == TRUE) {
-        dat$stats$nwstats <- rbind(dat$stats$nwstats,
-                                   tail(attributes(dat$nw[[1]])$stats, 1)[, ])
+        new.nwstats <- tail(attributes(dat$nw[[1]])$stats, 1)
+        keep.cols <- which(!duplicated(colnames(new.nwstats)))
+        new.nwstats <- new.nwstats[, keep.cols, drop = FALSE]
+        dat$stats$nwstats[[1]] <- rbind(dat$stats$nwstats[[1]], new.nwstats)
       }
     }
-  }
 
-  # networkLite/tergmLite Method
-  if (tergmLite == TRUE & resimulate.network == TRUE) {
-    isTERGM <- ifelse(nwparam$coef.diss$duration > 1, TRUE, FALSE)
-    dat <- tergmLite::updateModelTermInputs(dat)
+    # networkLite/tergmLite Method
+    if (tergmLite == TRUE) {
 
-   if (isTERGM == TRUE) {
-     dat$el[[1]] <- tergmLite::simulate_network(p = dat$p[[1]],
-                                                el = dat$el[[1]],
-                                                coef.form = nwparam$coef.form,
-                                                coef.diss =
-                                                   nwparam$coef.diss$coef.adj,
-                                                save.changes = TRUE)
-    } else {
-      dat$el[[1]] <- tergmLite::simulate_ergm(p = dat$p[[1]],
-                                              el = dat$el[[1]],
-                                              coef = nwparam$coef.form)
+      dat <- tergmLite::updateModelTermInputs(dat)
+
+      if (isTERGM == TRUE) {
+        rv <- tergmLite::simulate_network(state = dat$p[[1]]$state,
+                                          coef = c(nwparam$coef.form,
+                                                   nwparam$coef.diss$coef.adj),
+                                          control = dat$control$mcmc.control[[1]],
+                                          save.changes = TRUE)
+        dat$el[[1]] <- rv$el
+
+        if (tergmLite.track.duration == TRUE) {
+          dat$p[[1]]$state$nw0 %n% "time" <- rv$state$nw0 %n% "time"
+          dat$p[[1]]$state$nw0 %n% "lasttoggle" <- rv$state$nw0 %n% "lasttoggle"
+        }
+      } else {
+        rv <- tergmLite::simulate_ergm(state = dat$p[[1]]$state,
+                                       coef = nwparam$coef.form,
+                                       control = dat$control$mcmc.control[[1]])
+
+        dat$el[[1]] <- rv$el
+      }
+
+      if (save.nwstats == TRUE) {
+        nwL <- tergmLite::networkLite(dat$el[[1]], dat$attr)
+        if (tergmLite.track.duration == TRUE) {
+          nwL %n% "time" <- dat$p[[1]]$state$nw0 %n% "time"
+          nwL %n% "lasttoggle" <- dat$p[[1]]$state$nw0 %n% "lasttoggle"
+        }
+        nwstats <- summary(dat$control$nwstats.formulas[[1]],
+                           basis = nwL,
+                           term.options = dat$control$mcmc.control[[1]]$term.options,
+                           dynamic = isTERGM)
+        keep.cols <- which(!duplicated(names(nwstats)))
+        dat$stats$nwstats[[1]] <- rbind(dat$stats$nwstats[[1]], nwstats[keep.cols])
+      }
     }
   }
 

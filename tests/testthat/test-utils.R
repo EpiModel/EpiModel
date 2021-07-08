@@ -114,7 +114,7 @@ test_that("get_degree", {
 
   set.seed(1)
   fit <- ergm(nw ~ edges, target.stats = 250, eval.loglik = FALSE)
-  sim <- simulate(fit)
+  sim <- simulate(fit, dynamic = FALSE)
 
   # Slow ERGM-based method
   ergm.method <- unname(summary(sim ~ sociality(base = 0)))

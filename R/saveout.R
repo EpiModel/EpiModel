@@ -124,7 +124,11 @@ saveout.icm <- function(dat, s, out = NULL) {
 saveout.net <- function(dat, s, out = NULL) {
 
   # Counts number of simulated networks
-  num.nw <- length(dat$nw)
+  if (get_control(dat, "tergmLite") == TRUE) {
+    num.nw <- length(dat$el)
+  } else {
+    num.nw <- length(dat$nw)
+  }
 
   if (s == 1) {
     out <- list()
@@ -154,11 +158,12 @@ saveout.net <- function(dat, s, out = NULL) {
     }
 
     if (dat$control$tergmLite == FALSE) {
-      if (is.null(dat$control$save.network)) {
-        out$network <- list(dat$nw)
-      }
-      if (!is.null(dat$control$save.network) && dat$control$save.network == TRUE) {
-        out$network <- list(dat$nw)
+      if (dat$control$save.network == TRUE) {
+        if (!is.null(dat$temp$nw_list)) {
+          out$network <- list(dat$temp$nw_list)
+        } else {
+          out$network <- list(dat$nw)
+        }
       }
     }
 
@@ -171,7 +176,30 @@ saveout.net <- function(dat, s, out = NULL) {
   }
 
   if (s > 1) {
-    for (j in 1:length(dat$epi)) {
+    if (!is.null(dat$param$random.params.values)) {
+      for (nms in names(dat$param$random.params.values)) {
+        if (length(dat$param$random.params.values[[nms]]) > 1) {
+          if (!is.list(out$param$random.params.values[[nms]])) {
+            out$param$random.params.values[[nms]] <- list(
+              out$param$random.params.values[[nms]]
+            )
+          }
+
+          out$param$random.params.values[[nms]] <- c(
+            out$param$random.params.values[[nms]],
+            list(dat$param$random.params.values[[nms]])
+          )
+
+        } else {
+          out$param$random.params.values[[nms]] <- c(
+            out$param$random.params.values[[nms]],
+            dat$param$random.params.values[[nms]]
+          )
+        }
+      }
+    }
+
+    for (j in seq_along(dat$epi)) {
       out$epi[[names(dat$epi)[j]]][, s] <- data.frame(dat$epi[j])
     }
 
@@ -189,11 +217,12 @@ saveout.net <- function(dat, s, out = NULL) {
     }
 
     if (dat$control$tergmLite == FALSE) {
-      if (is.null(dat$control$save.network)) {
-        out$network[[s]] <- dat$nw
-      }
-      if (!is.null(dat$control$save.network) && dat$control$save.network == TRUE) {
-        out$network[[s]] <- dat$nw
+      if (dat$control$save.network == TRUE) {
+        if (!is.null(dat$temp$nw_list)) {
+          out$network[[s]] <- dat$temp$nw_list
+        } else {
+          out$network[[s]] <- dat$nw
+        }
       }
     }
 
@@ -222,10 +251,7 @@ saveout.net <- function(dat, s, out = NULL) {
     }
 
     if (dat$control$tergmLite == FALSE) {
-      if (is.null(dat$control$save.network)) {
-        names(out$network) <- simnames
-      }
-      if (!is.null(dat$control$save.network) && dat$control$save.network == TRUE) {
+      if (dat$control$save.network == TRUE) {
         names(out$network) <- simnames
       }
     }

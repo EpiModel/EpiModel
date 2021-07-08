@@ -329,7 +329,7 @@ control.dcm <- function(type, nsteps, dt = 1, odemethod = "rk4",
   }
 
   ## Output
-  class(p) <- c("control.dcm", "list")
+  p <- set.control.class("control.dcm", p)
   return(p)
 }
 
@@ -351,7 +351,8 @@ control.dcm <- function(type, nsteps, dt = 1, odemethod = "rk4",
 #' @keywords internal
 #'
 crosscheck.dcm <- function(param, init, control) {
-
+  check.control.class("dcm", "EpiModel crosscheck.dcm")
+  
   # Main class check --------------------------------------------------------
   if (!inherits(param, "param.dcm")) {
     stop("param must an object of class param.dcm", call. = FALSE)
