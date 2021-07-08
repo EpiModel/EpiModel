@@ -1,25 +1,25 @@
-#' Update list code{x} using the elements of list code{new_x}
+#' Update list code{x} using the elements of list code{new.x}
 #'
 #' @param x a list
-#' @param new_x a list
+#' @param new.x a list
 #'
-#' @return the full code{x} list with the modifications added by code{new_x}
+#' @return the full code{x} list with the modifications added by code{new.x}
 #'
 #' @details
-#' This function updates list code{x} by name. If code{x} and code{new_x} elements are not
+#' This function updates list code{x} by name. If code{x} and code{new.x} elements are not
 #' named, the function will not work properly.
 #' If a function is provided to replace an element that was originaly not a
 #' function, this function will be applied to the original value.
 #'
 #' @keywords internal
-update_list <- function(x, new_x) {
-  for (nm in names(new_x)) {
-    if (is.list(new_x[[nm]])) {
-      x[[nm]] <- update_list(x[[nm]], new_x[[nm]])
-    } else if (is.function(new_x[[nm]]) && ! is.function(x[[nm]])) {
-      x[[nm]] <- new_x[[nm]](x[[nm]])
+update_list <- function(x, new.x) {
+  for (nm in names(new.x)) {
+    if (is.list(new.x[[nm]])) {
+      x[[nm]] <- update_list(x[[nm]], new.x[[nm]])
+    } else if (is.function(new.x[[nm]]) && ! is.function(x[[nm]])) {
+      x[[nm]] <- new.x[[nm]](x[[nm]])
     } else {
-      x[[nm]] <- new_x[[nm]]
+      x[[nm]] <- new.x[[nm]]
     }
   }
 
@@ -35,7 +35,7 @@ update_list <- function(x, new_x) {
 #' @return the updated dat Master list object.
 #'
 #' @details
-#' if a list code{updaters} is present in the parameters, this module will
+#' if a list code{param.updater.list} is present in the parameters, this module will
 #' update the code{param} list with new values at given timesteps.
 #' An updater is a list containing an code{at} element governing when the
 #' changes will happen, an optional code{verbose} boolean controlling whether to
@@ -48,7 +48,9 @@ update_list <- function(x, new_x) {
 #' @examples
 #' \dontrun{
 #'
-#' updaters = list(
+#' # Create the parame.updater.list
+#' param.updater.list <- list(
+#'   # this is one updater
 #'   list(
 #'     at = 10,
 #'     param = list(
@@ -56,6 +58,7 @@ update_list <- function(x, new_x) {
 #'       trans.scale = c(1.61, 0.836, 0.622)
 #'     )
 #'   ),
+#'   # this is another updater
 #'   list(
 #'     at = 12,
 #'     verbose = TRUE,
@@ -72,7 +75,7 @@ update_list <- function(x, new_x) {
 #'    act.rate = 0.5,
 #'    hiv.test.rate = rep(0.256, 3),
 #'    trans.scale = c(1, 2, 3),
-#'    updaters = updaters
+#'    param.updater.list = param.updater.list
 #'  )
 #'
 #' # Enable the module in `control`
@@ -100,32 +103,43 @@ update_list <- function(x, new_x) {
 #' }
 #'
 updater.net <- function(dat, at) {
-  updaters <- get_param(dat, "updaters", override.null.error = TRUE)
-  if (is.null(updaters))
-    return(dat)
+  param.updater.list <- get_param(dat, "param.updater.list",
+                                  override.null.error = TRUE)
 
-  for (i in seq_along(updaters)) {
-    if (updaters[[i]][["at"]] == at) {
-      verbose <- updaters[[i]][["verbose"]]
+  if (is.null(param.updater.list) || length(param.updater.list) == 0) {
+    return(dat)
+  }
+
+  used.updaters <- numeric(0)
+
+  for (i in seq_along(param.updater.list)) {
+    if (param.updater.list[[i]][["at"]] == at) {
+      verbose <- param.updater.list[[i]][["verbose"]]
       verbose <- if (is.null(verbose)) TRUE else verbose
 
-      new_params <- updaters[[i]][["param"]]
+      new.params <- param.updater.list[[i]][["param"]]
 
       if (verbose) {
         message(
-          "\n\nAt time step = ", at, " the following parameters where modified:",
-          "\n'", paste0(names(new_params), collapse = "', '"), "'"
+          "\n\nAt timestep = ", at, " the following parameters where modified:",
+          "\n'", paste0(names(new.params), collapse = "', '"), "'"
         )
       }
 
-      old_params <- get_param_list(dat, names(new_params))
-      updated_params <- update_list(old_params, new_params)
+      old.params <- get_param_list(dat, names(new.params))
+      updated.params <- update_list(old.params, new.params)
 
-      for(nm in names(updated_params)) {
-        dat <- set_param(dat, nm, updated_params[[nm]])
+      for (nm in names(updated.params)) {
+        dat <- set_param(dat, nm, updated.params[[nm]])
       }
+
+      used.updaters <- c(used.updaters, i)
     }
   }
+
+  # Remove the used updaters from the list
+  dat <- set_param(dat, "param.updater.list",
+                   param.updater.list[-used.updaters])
 
   return(dat)
 }
