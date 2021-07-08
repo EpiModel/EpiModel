@@ -203,9 +203,12 @@ copy_datattr_to_nwattr <- function(dat) {
   attr.to.copy <- union(nwterms, special.attr)
   attr <- dat$attr[attr.to.copy]
   if (length(attr.to.copy) > 0) {
-    dat$nw[[1]] <- set_vertex_attribute(dat$nw[[1]], names(attr), attr)
+    if (length(attr.to.copy) == 1) {
+      dat$nw[[1]] <- set_vertex_attribute(dat$nw[[1]], names(attr), attr[[1]])
+    } else {
+      dat$nw[[1]] <- set_vertex_attribute(dat$nw[[1]], names(attr), attr)
+    }
   }
-
   return(dat)
 }
 

@@ -204,7 +204,7 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
         }
         for (i in 1:nsims) {
           fit.sim <- simulate(fit, basis = fit$newnetwork,
-                              control = set.control.ergm)
+                              control = set.control.ergm, dynamic = FALSE)
           diag.sim[[i]] <- simulate(fit.sim,
                                     formation = formation,
                                     dissolution = dissolution,
@@ -228,7 +228,7 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
 
         diag.sim <- foreach(i = 1:nsims) %dopar% {
           fit.sim <- simulate(fit, basis = fit$newnetwork,
-                              control = set.control.ergm)
+                              control = set.control.ergm, dynamic = FALSE)
           simulate(fit.sim,
                    formation = formation,
                    dissolution = dissolution,
@@ -247,7 +247,8 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
                            output = "stats",
                            control = set.control.ergm,
                            sequential = sequential,
-                           monitor = nwstats.formula)
+                           monitor = nwstats.formula,
+                           dynamic = FALSE)
     }
   } # end edapprox = TRUE condition
 
@@ -283,9 +284,9 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
   ## Calculate mean/sd from merged stats
   stats.means <- colMeans(merged.stats)
 
-  if(nsims>1) {
+  if (nsims > 1) {
     temp2 <- sapply(stats, function(x) colMeans(x))
-    if (ncol(stats[[1]])==1) temp2 <- matrix(temp2, nrow=1)
+    if (ncol(stats[[1]]) == 1) temp2 <- matrix(temp2, nrow = 1)
     stats.sd <- apply(temp2, 1, sd)
   } else {
     stats.sd <-  NA
@@ -315,7 +316,6 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
   stats.table.formation <- stats.table[, c(2, 4, 6, 5)]
   colnames(stats.table.formation) <- c("Target", "Sim Mean",
                                        "Pct Diff", "Sim SD")
-
 
   if (skip.dissolution == FALSE) {
     if (dynamic == TRUE) {
@@ -353,8 +353,15 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
         }
       }
 
-      pages_imptd <- (x$coef.diss$duration^2*dgeom(2:(nsteps + 1),
-                                                   1/x$coef.diss$duration))
+      # TODO: imputation currently averaged for heterogeneous models
+      if (x$coef.diss$model.type == "hetero") {
+        pages_imptd <- (mean(x$coef.diss$duration)^2*dgeom(2:(nsteps + 1),
+                                      1/mean(x$coef.diss$duration)))
+      } else {
+        pages_imptd <- (x$coef.diss$duration^2*dgeom(2:(nsteps + 1),
+                                                     1/x$coef.diss$duration))
+      }
+
 
       ## Dissolution calculations
       if (verbose == TRUE) {

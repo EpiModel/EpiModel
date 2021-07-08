@@ -4,8 +4,8 @@
 #' \tabular{ll}{
 #'    Package: \tab EpiModel\cr
 #'    Type: \tab Package\cr
-#'    Version: \tab 2.0.6\cr
-#'    Date: \tab 2021-05-15\cr
+#'    Version: \tab 2.1.0\cr
+#'    Date: \tab 2021-06-24\cr
 #'    License: \tab GPL-3\cr
 #'    LazyLoad: \tab yes\cr
 #' }
@@ -77,7 +77,7 @@
 #'        simulations. Controls are also used to input new model functions (for
 #'        DCMs) and new model modules (for ICMs and network models) to allow the
 #'        user to simulate fully original epidemic models in EpiModel. See the
-#'        documention for the specific control functions help pages.
+#'        documentation for the specific control functions help pages.
 #' }
 #'
 #' With the models parameterized, the functions for simulating epidemic models
@@ -109,19 +109,22 @@
 #' @references
 #' The EpiModel website is at \url{http://www.epimodel.org/}, and the source
 #' code is at \url{https://github.com/statnet/EpiModel}. Bug reports and feature
-#' requests are welcome there.
+#' requests are welcome.
 #'
 #' Our primary methods paper on EpiModel is published in the \strong{Journal of
 #' Statistical Software}. If you use EpiModel for any research or teaching
 #' purposes, please cite this reference:
 #'
-#' Jenness SM, Goodreau SM and Morris M. EpiModel: An R Package for Mathematical
+#' Jenness SM, Goodreau SM, and Morris M. EpiModel: An R Package for Mathematical
 #' Modeling of Infectious Disease over Networks. Journal of Statistical
 #' Software.2018; 84(8): 1-47. \doi{10.18637/jss.v084.i08}.
 #'
-#' We have also developed an extension package specifically for modeling HIV and
-#' related sexually transmitted infections, called \code{EpiModelHIV} and
-#' available on Github at \url{https://github.com/statnet/EpiModelHIV}.
+#' We have also developed two extension packages for modeling specific disease
+#' dynamics. For HIV and bacterial sexually transmitted infections, we have
+#' developed \code{EpiModelHIV}, which is available on Github at
+#' \url{https://github.com/statnet/EpiModelHIV}. For COVID-19, we have developed
+#' \code{EpiModelCOVID}, which is available at
+#' \url{https://github.com/EpiModel/EpiModelCOVID}.
 #'
 #' @name EpiModel-package
 #' @aliases EpiModel
@@ -134,11 +137,13 @@
 #'             polygon text title
 #' @importFrom grDevices col2rgb colorRampPalette rgb adjustcolor
 #' @importFrom stats complete.cases quantile rbinom rgeom sd setNames simulate
-#'             supsmu terms.formula update dgeom
+#'             supsmu terms.formula update dgeom coef
 #' @importFrom utils head tail packageVersion
 #' @importFrom ape as.phylo collapse.singles
 #' @importFrom lazyeval lazy_dots lazy_eval
-#' @importFrom statnet.common trim_env nonsimp_update.formula append_rhs.formula list_rhs.formula
+#' @importFrom statnet.common trim_env nonsimp_update.formula append_rhs.formula
+#'             list_rhs.formula set.control.class check.control.class
+#'             COLLATE_ALL_MY_CONTROLS_EXPR UPDATE_MY_SCTRL_EXPR
 #'
 #' @useDynLib EpiModel, .registration = TRUE
 #'

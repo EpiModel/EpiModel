@@ -114,7 +114,8 @@ test_that("merge works for open sims saving nw stats", {
   y <- netsim(est, param, init, control)
   z <- merge(x, y)
 
-  expect_equal(length(z$stats), 2)
-  expect_true(all(sapply(z$stats$nwstats, dim)[1, ] == 5) &
-              all(sapply(z$stats$nwstats, dim)[2, ] == 4))
+  nws <- get_nwstats(z)
+  expect_true(nrow(nws) == 10)
+  expect_true(length(unique(nws$sim)) == 2)
+
 })
