@@ -23,16 +23,16 @@ This function apply the user provided epi trackers
 This module is not included by default
 }
 
-\section{The \code{epi_trackers} list}{
+\section{The \code{tracker.list} list}{
 
-\code{epi_trackers} is a list of NAMED functions stored in the \code{param}
+\code{tracker.list} is a list of NAMED functions stored in the \code{param}
 list of the \code{dat} master list object.
 }
 
 \section{Tracker Functions}{
 
 This module will apply the tracker functions present in the parameter list
-\code{epi_trackers}. Each tracker must be a function with EXACTLY two
+\code{tracker.list}. Each tracker must be a function with EXACTLY two
 arguments: the \code{dat} Master list object and \code{at} the current time
 step. They must return a VALUE of length one (numeric, logical or character).
 }
@@ -62,8 +62,8 @@ epi_s_num <- function(dat, at) {
   })
 }
 
-# Create the `epi_trackers` list
-epi_trackers <- list(
+# Create the `tracker.list` list
+tracker.list <- list(
   prop_infected = epi_prop_infected,
   s_num         = epi_s_num
 )
@@ -72,7 +72,7 @@ epi_trackers <- list(
  param <- param.net(
    inf.prob = 0.3,
    act.rate = 0.5,
-   epi_trackers = epi_trackers
+   tracker.list = tracker.list
  )
 
 # Enable the module in `control`
@@ -83,7 +83,6 @@ epi_trackers <- list(
    verbose = FALSE,
    trackers.FUN = trackers.net
  )
-
 
 nw <- network_initialize(n = 50)
 nw <- set_vertex_attribute(nw, "race", rbinom(50, 1, 0.5))
