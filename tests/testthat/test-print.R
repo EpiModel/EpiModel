@@ -96,6 +96,44 @@ test_that("print.param", {
   expect_output(print(p), "act.rate = 1")
 })
 
+test_that("print random Parameters", {
+  nw <- network_initialize(n = 100)
+  nw <- set_vertex_attribute(nw, "group", rep(c(1, 2), each = 50))
+  formation <- ~edges
+  target.stats <- 50
+  coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
+  est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
+
+  random_params <- list(
+    act.rate = param_random(c(0.25, 0.5, 0.75)),
+    tx.prob = function() rbeta(1, 1, 2),
+    stratified.test.rate = function() c(
+      rnorm(1, 0.05, 0.01),
+      rnorm(1, 0.15, 0.03),
+      rnorm(1, 0.25, 0.05)
+  ))
+
+  param <- param.net(
+    inf.prob = 0.3,
+    inf.prob.g2 = 0.15,
+    random.params = random_params
+  )
+
+  expect_output(print(param), "Random Parameters.*(Not drawn yet)")
+  expect_output(print(param), "act.rate = <function>")
+  expect_output(print(param), "tx.prob = <function>")
+  expect_output(print(param), "stratified.test.rate = <function>")
+
+  init <- init.net(i.num = 10, i.num.g2 = 10)
+  control <- control.net(type = "SI", nsteps = 10, nsims = 2, verbose = FALSE)
+  mod <- netsim(est, param, init, control)
+
+  expect_output(print(mod), "Random Parameters")
+  expect_output(print(mod), "act.rate = [0-9.]* [0-9.]*")
+  expect_output(print(mod), "tx.prob = [0-9.]* [0-9.]*")
+  expect_output(print(mod), "stratified.test.rate = <list>")
+})
+
 test_that("print.init", {
   i <- init.dcm(s.num = 10, i.num = 10)
   expect_output(print(i), "DCM Initial Conditions")

@@ -330,7 +330,7 @@ print.param.net <- function(x, ...) {
     cat("\n(Not drawn yet)")
     cat("\n---------------------------\n")
     for (prm in rng_defs) {
-      cat(prm, " = <function>\n")
+      cat(prm, "= <function>\n")
     }
   }
 

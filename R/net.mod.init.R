@@ -35,6 +35,8 @@ initialize.net <- function(x, param, init, control, s) {
 
     if (get_control(dat, "resimulate.network") == TRUE) {
       nsteps <- 1
+      dat <- set_control(dat, "isTERGM", FALSE)
+      dat <- set_control(dat, "save.nwstats", FALSE)
     } else {
       nsteps <- get_control(dat, "nsteps")
     }
