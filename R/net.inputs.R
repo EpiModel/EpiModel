@@ -395,32 +395,95 @@ param_random <- function(values, prob = NULL) {
 generate_random_params <- function(param, verbose = FALSE) {
   if (is.null(param$random.params) || length(param$random.params) == 0) {
     return(param)
+  } else {
+    random.params <- param$random.params
   }
 
-  if (!is.list(param$random.params)) {
+  if (!is.list(random.params)) {
     stop("`random.params` must be named list of functions")
   }
 
-  rng_names <- names(param$random.params)
+  rng_names <- names(random.params)
   if (any(rng_names == "")) {
     stop("all elements of `random.params` must be named")
   }
 
-  if (!all(vapply(param$random.params, is.function, TRUE))) {
-    stop("all elements of `random.params` must be functions")
+  rng_values <- list()
+
+  if ("param_random_set" %in% rng_names) {
+    # Take `param_random_set` out of the `random.params` list
+    param_random_set <- random.params[["param_random_set"]]
+    random.params[["param_random_set"]] <- NULL
+    rng_names <- names(random.params)
+
+    if (!is.data.frame(param_random_set)) {
+      stop("`param_random_set` must be a data.frame")
+    }
+
+    # Check the format of the names
+    set.elements <- names(param_random_set)
+    correct_format <- grepl("^[a-zA-Z0-9.]*(_[0-9]+)?$", set.elements)
+    if (!all(correct_format)) {
+      stop("The following column names in `param_random_set` are malformed: \n",
+        paste0(set.elements[!correct_format], collapse = ", "), "\n\n",
+        "you can check the names with ",
+        '`grepl("^[a-zA-Z0-9.]*(_[0-9]+)?$", your.names)` \n',
+        "Example: 'unique.param', 'param.set_1', 'param.set_2'"
+      )
+    }
+
+    # Construct a `data.frame` matching the names with the parameters
+    set.elements <- names(param_random_set)
+    set.elements.split <- data.frame(do.call(
+      rbind,
+      strsplit(set.elements, "_")
+    ))
+
+    nums <- grepl("^[0-9]+$", set.elements.split[, 2])
+    set.elements.split[, 2] <- as.numeric(
+      ifelse(nums, set.elements.split[, 2], "1")
+    )
+
+    set.elements <- cbind(set.elements, set.elements.split)
+    colnames(set.elements) <- c("name", "param", "position")
+
+    # Pick one row of the `data.frame`
+    sampled.row <- sample.int(nrow(param_random_set), 1)
+    param_random_set <- param_random_set[sampled.row, ]
+
+    # Set the new values in `rng_values`
+    for (i in seq_len(nrow(set.elements))) {
+      value <- param_random_set[1, set.elements[i, "name"][[1]]]
+      parameter <- set.elements[i, "param"][[1]]
+      position <- set.elements[i, "position"][[1]]
+
+      rng_values[[parameter]][position] <- value
+    }
   }
 
-  rng_values <- list()
-  rng_values[rng_names] <- lapply(param$random.params, do.call, args = list())
+  if (!all(vapply(random.params, is.function, TRUE))) {
+    stop("all elements of `random.params` must be functions \n",
+         "(Except 'param_random_set')")
+  }
+
+  duplicated.rng <- names(rng_values) %in% rng_names
+  if (any(duplicated.rng)) {
+    warning("Some parameters are set to be randomly assigned twice: \n",
+            paste0(rng_names[duplicated.rng], collapse = ", "), "\n\n",
+            "The version from a generator function will be used")
+  }
+
+  rng_values[rng_names] <- lapply(random.params, do.call, args = list())
   for (nm in rng_names) {
     param[nm] <- rng_values[nm]
   }
-  param$random.params.values <- rng_values
+
+  param[["random.params.values"]] <- rng_values
 
   if (verbose == TRUE) {
     msg <-
      "The following values were randomly generated for the given parameters: \n"
-    msg <- c(msg, paste0("`", rng_names, "`: ", rng_values, "\n"))
+    msg <- c(msg, paste0("`", names(rng_values), "`: ", rng_values, "\n"))
     message(msg)
   }
 
