@@ -31,5 +31,52 @@ test_that("Random parameters generators", {
 
   param <- param.net(inf.prob = 0.3, random.params = list(1))
   expect_error(generate_random_params(param))
+
+
+  generate_correlated_params <- function() {
+    param.unique <- runif(1)
+    param.set.1 <- param.unique + runif(2)
+    param.set.2 <- param.unique * rnorm(3)
+
+    return(list(param.unique, param.set.1, param.set.2))
+  }
+
+  # Data.frame set of random parameters :
+  correlated_params <- t(replicate(10, unlist(generate_correlated_params())))
+  correlated_params <- as.data.frame(correlated_params)
+  colnames(correlated_params) <- c(
+    "param.unique",
+    "param.set.1_1", "param.set.1_2",
+    "param.set.2_1", "param.set.2_2", "param.set.2_3"
+  )
+
+  randoms <- c(my_randoms, list(param_random_set = correlated_params))
+  param <- param.net(inf.prob = 0.3, acte.rate = 0.1, random.params = randoms)
+  expect_silent(generate_random_params(param))
+
+  # duplicated `act.rate` random definition
+  colnames(correlated_params) <- c(
+    "act.rate",
+    "param.set.1_1", "param.set.1_2",
+    "param.set.2_1", "param.set.2_2", "param.set.2_3"
+  )
+  randoms <- c(my_randoms, list(param_random_set = correlated_params))
+  param <- param.net(inf.prob = 0.3, acte.rate = 0.1, random.params = randoms)
+  expect_warning(generate_random_params(param))
+
+  # malformed name "param_set.1_1"
+  colnames(correlated_params) <- c(
+    "act.rate",
+    "param_set.1_1", "param.set.1_2",
+    "param.set.2_1", "param.set.2_2", "param.set.2_3"
+  )
+  randoms <- c(my_randoms, list(param_random_set = correlated_params))
+  param <- param.net(inf.prob = 0.3, acte.rate = 0.1, random.params = randoms)
+  expect_error(generate_random_params(param))
+
+  # param_random_set not a data.frame
+  randoms <- c(my_randoms, list(param_random_set = list()))
+  param <- param.net(inf.prob = 0.3, acte.rate = 0.1, random.params = randoms)
+  expect_error(generate_random_params(param))
 })
 
