@@ -58,7 +58,8 @@ record_model_value <- function(dat, at, measure, value) {
 }
 
 # make one for model and one for node
-records2data.frame <- function(dat) {
+# ref to the tidy data paper https://www.jstatsoft.org/article/view/v059i10
+records2data.frame <- function(dat, long = FALSE) {
   measures <- lapply(dat[["records"]], function(x) x[["measure"]])
   measure.names <- unique(measures)
 
@@ -70,6 +71,16 @@ records2data.frame <- function(dat) {
     parts <- Filter(function(x) x[["measure"]] == m, dat[["records"]])
     parts <- lapply(parts, as.data.frame)
     dfs[[m]] <- do.call("rbind", parts)
+
+    if (!long) {
+      dfs[[m]] <- tidyr::pivot_wider(
+        dfs[[m]],
+        names_from = step,
+        values_from = values,
+        values_fill = NA
+      )
+    }
+
   }
 
   return(dfs)
