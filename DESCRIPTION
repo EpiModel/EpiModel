@@ -52,7 +52,6 @@ Imports:
     ggplot2
 Suggests:
     knitr,
-    ndtv,
     rmarkdown,
     shiny,
     testthat
