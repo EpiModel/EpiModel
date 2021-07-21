@@ -17,7 +17,7 @@ functions (plot.network, plot.phylo, etc)}
 \description{
 Plots the infection tree described in a \code{\link{transmat}}
              object in one of several styles: phylogenetic tree, an un-rooted
-             network, a hierarchical tree, or a transmissionTimeline.
+             network or a hierarchical tree.
 }
 \details{
 The phylo plot requires the \code{ape} package. The options are

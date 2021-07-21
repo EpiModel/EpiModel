@@ -251,7 +251,7 @@ as.network.transmat <- function(x, ...) {
 #'
 #' @description Plots the infection tree described in a \code{\link{transmat}}
 #'              object in one of several styles: phylogenetic tree, an un-rooted
-#'              network, a hierarchical tree, or a transmissionTimeline.
+#'              network or a hierarchical tree.
 #'
 #' @param x A \code{\link{transmat}} object to be plotted
 #' @param style Character name of plot style. One of "phylo" or "network".
