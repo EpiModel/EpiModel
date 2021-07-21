@@ -97,4 +97,39 @@ test_that("get_sims extracts simulations", {
 test_that("get_sims error flags", {
   expect_error(get_sims(list(a = 1)), "x must be of class netsim")
   expect_error(get_sims(mod), "Specify sims as a vector")
+
+# get parameter set ------------------------------------------------------------
+  nw <- network_initialize(n = 50)
+
+  est <- netest(
+    nw, formation = ~edges,
+    target.stats = c(25),
+    coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+    verbose = FALSE
+  )
+
+  init <- init.net(i.num = 10)
+
+  my.randoms <- list(
+    act.rate = param_random(c(0.25, 0.5, 0.75)),
+    dummy.param = function() rbeta(1, 1, 2),
+    dummy.strat.param = function() c(
+      rnorm(1, 0, 10),
+      rnorm(1, 10, 1)
+    )
+  )
+
+  param <- param.net(
+    inf.prob = 0.3,
+    dummy = c(0, 1, 2),
+    random.params = my.randoms
+  )
+
+  control <- control.net(type = "SI", nsims = 3, nsteps = 5, verbose = FALSE)
+  mod <- netsim(est, param, init, control)
+
+  expect_is(get_param_set(mod), "data.frame")
+  expect_error(get_param_set(control), "`sims` must be of class netsim")
+
+  expect_equal(dim(get_param_set(mod)), c(3, 13))
 })
