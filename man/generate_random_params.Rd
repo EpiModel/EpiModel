@@ -35,8 +35,27 @@ The function used inside \code{random_params} must be 0 argument functions
 returning a valid value for the parameter with the same name.
 }
 
+\section{\code{param_random_set}}{
+
+The \code{random_params} list can optionnally contain a
+\code{param_random_set} element. It must be a \code{data.frame} of possible
+values to be used as parameters.
+
+The column names must correspond either to:
+the name of one parameter if this parameter is of size 1 or the name of the
+parameter with "_1", "_2", "_N" with the second part being the position of
+the value for a parameter of size > 1. This means that the parameter names
+cannot contain any underscore "_" if you indend to use \code{param_random_set}
+
+The point of the \code{param_random_set} \code{data.frame} is to allow the
+random parameters to be correlated. To achieve this, a whole row of the
+\code{data.frame} is selected for each simulation.
+}
+
 \examples{
 \dontrun{
+
+## Example with only the generator function
 
 # Define random parameter list
 my_randoms <- list(
@@ -64,6 +83,41 @@ param <- param.net(tx.prob = 0.3, random.params = my_randoms)
 paramDraw <- generate_random_params(param, verbose = TRUE)
 paramDraw
 
-}
 
+## Addition of the `param_random_set` `data.frame`
+
+# This function will generate sets of correlated parameters
+ generate_correlated_params <- function() {
+   param.unique <- runif(1)
+   param.set.1 <- param.unique + runif(2)
+   param.set.2 <- param.unique * rnorm(3)
+
+   return(list(param.unique, param.set.1, param.set.2))
+ }
+
+ # Data.frame set of random parameters :
+ correlated_params <- t(replicate(10, unlist(generate_correlated_params())))
+ correlated_params <- as.data.frame(correlated_params)
+ colnames(correlated_params) <- c(
+   "param.unique",
+   "param.set.1_1", "param.set.1_2",
+   "param.set.2_1", "param.set.2_2", "param.set.2_3"
+ )
+
+# Define random parameter list with the `param_random_set` element
+my_randoms <- list(
+  act.rate = param_random(c(0.25, 0.5, 0.75)),
+  param_random_set = correlated_params
+)
+
+# Parameter model with fixed and random parameters
+param <- param.net(inf.prob = 0.3, random.params = my_randoms)
+
+# Parameters are drawn automatically in netsim by calling the function
+# within netsim_loop. Demonstrating draws here but this is not used by
+# end user.
+paramDraw <- generate_random_params(param, verbose = TRUE)
+paramDraw
+
+}
 }
