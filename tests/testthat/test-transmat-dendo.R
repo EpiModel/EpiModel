@@ -270,6 +270,4 @@ test_that("plot.transmat", {
   skip_on_cran()
   plot(tm) #phylogram default
   plot(tm, style = "network")
-  # plot(tm, style = "gv_tree")
-  plot(tm, style = "transmissionTimeline")
 })
