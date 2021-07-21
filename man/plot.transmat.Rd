@@ -4,13 +4,12 @@
 \alias{plot.transmat}
 \title{Plot transmat infection tree in one of several styles}
 \usage{
-\method{plot}{transmat}(x, style = c("phylo", "network", "transmissionTimeline"), ...)
+\method{plot}{transmat}(x, style = c("phylo", "network"), ...)
 }
 \arguments{
 \item{x}{A \code{\link{transmat}} object to be plotted}
 
-\item{style}{Character name of plot style. One of "phylo", "network",
-or "transmissionTimeline"}
+\item{style}{Character name of plot style. One of "phylo" or "network".}
 
 \item{...}{Additional plot arguments to be passed to lower-level plot
 functions (plot.network, plot.phylo, etc)}
@@ -18,12 +17,10 @@ functions (plot.network, plot.phylo, etc)}
 \description{
 Plots the infection tree described in a \code{\link{transmat}}
              object in one of several styles: phylogenetic tree, an un-rooted
-             network, a hierarchical tree, or a transmissionTimeline.
+             network or a hierarchical tree.
 }
 \details{
-The phylo plot requires the \code{ape} package. The
-\code{ndtv::transmissionTimeline} requires that the \code{ndtv} package
-is installed. All of the options are essentially
+The phylo plot requires the \code{ape} package. The options are
 wrappers to other plot calls with some appropriate preset arguments.
 }
 \seealso{
