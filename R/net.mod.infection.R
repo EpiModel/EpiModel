@@ -373,11 +373,8 @@ set_transmat <- function(dat, del, at) {
   del[["sus"]] <- get_unique_ids(dat, del[["sus"]])
   del[["inf"]] <- get_unique_ids(dat, del[["inf"]])
 
-  if (at != 2) {
-    del <- rbind(dat$stats$transmat, del)
-  }
-
-  dat$stats$transmat <- del
+  # when `dat$stats$transmat` is `NULL` the right hand side evaluate to `del`
+  dat$stats$transmat <- rbind(dat$stats$transmat, del)
 
   return(dat)
 }
