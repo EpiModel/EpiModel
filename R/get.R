@@ -508,7 +508,7 @@ get_args <- function(formal.args, dot.args) {
 #' get_param_set(mod)
 #' @export
 get_param_set <- function(sims) {
-  if (class(sims) != "netsim") {
+  if (!any(class(sims) %in% "netsim")) {
     stop("`sims` must be of class netsim")
   }
 

@@ -127,9 +127,27 @@ test_that("get_sims error flags", {
 
   control <- control.net(type = "SI", nsims = 3, nsteps = 5, verbose = FALSE)
   mod <- netsim(est, param, init, control)
+  d.set <- get_param_set(mod)
 
-  expect_is(get_param_set(mod), "data.frame")
+  set.colnames <- c(
+    "sim",
+    "inf.prob",
+    "dummy_1",
+    "dummy_2",
+    "dummy_3",
+    "act.rate",
+    "vital",
+    "dummy.param",
+    "dummy.strat.param_1",
+    "dummy.strat.param_2",
+    "groups",
+    "dummy.strat.param_1",
+    "dummy.strat.param_2"
+  )
+
+  expect_is(d.set, "data.frame")
+  expect_equal(names(d.set), set.colnames)
   expect_error(get_param_set(control), "`sims` must be of class netsim")
-
   expect_equal(dim(get_param_set(mod)), c(3, 13))
 })
+
