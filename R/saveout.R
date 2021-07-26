@@ -138,9 +138,15 @@ saveout.net <- function(dat, s, out = NULL) {
     out$control$num.nw <- num.nw
 
     out$epi <- list()
-    for (j in 1:length(dat$epi)) {
+    for (j in seq_along(dat$epi)) {
       out$epi[[names(dat$epi)[j]]] <- data.frame(dat$epi[j])
     }
+
+    out$node.records <- list()
+    out$node.records[[s]] <- dat$node.records
+
+    out$raw.records <- list()
+    out$raw.records[[s]] <- dat$raw.records
 
     out$stats <- list()
     if (dat$control$save.nwstats == TRUE) {
@@ -203,6 +209,9 @@ saveout.net <- function(dat, s, out = NULL) {
       out$epi[[names(dat$epi)[j]]][, s] <- data.frame(dat$epi[j])
     }
 
+    out$node.records[[s]] <- dat$node.records
+    out$raw.records[[s]] <- dat$raw.records
+
     if (dat$control$save.nwstats == TRUE) {
       out$stats$nwstats[[s]] <- dat$stats$nwstats
     }
@@ -238,10 +247,13 @@ saveout.net <- function(dat, s, out = NULL) {
   if (s == dat$control$nsims) {
 
     # Set names for out
-    simnames <- paste0("sim", 1:dat$control$nsims)
+    simnames <- paste0("sim", seq_len(dat$control$nsims))
     for (i in as.vector(which(lapply(out$epi, class) == "data.frame"))) {
       colnames(out$epi[[i]]) <- simnames
     }
+
+    names(out$node.records) <- simnames
+
     if (dat$control$save.nwstats == TRUE) {
       names(out$stats$nwstats) <- simnames
     }
