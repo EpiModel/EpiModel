@@ -236,7 +236,7 @@ saveout.net <- function(dat, s, out = NULL) {
     }
 
     if (!is.null(dat$control$save.other)) {
-      for (i in 1:length(dat$control$save.other)) {
+      for (i in seq_along(dat$control$save.other)) {
         el.name <- dat$control$save.other[i]
         out[[el.name]][[s]] <- dat[[el.name]]
       }
@@ -252,14 +252,18 @@ saveout.net <- function(dat, s, out = NULL) {
       colnames(out$epi[[i]]) <- simnames
     }
 
-    names(out$node.records) <- simnames
+    if (length(out$node.records) > 0)
+      names(out$node.records) <- simnames
+
+    if (length(out$.records) > 0)
+    names(out$raw.records) <- simnames
 
     if (dat$control$save.nwstats == TRUE) {
       names(out$stats$nwstats) <- simnames
     }
 
     if (dat$control$save.transmat == TRUE) {
-      names(out$stats$transmat) <- simnames[1:length(out$stats$transmat)]
+      names(out$stats$transmat) <- simnames[seq_along(out$stats$transmat)]
     }
 
     if (dat$control$tergmLite == FALSE) {

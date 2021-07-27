@@ -8,6 +8,7 @@
 #' accessed from the \code{netsim} object with \code{get_node_records}
 #'
 #' @param dat a Master list object of network models
+#' @param at the time step where the recording happens
 #' @param measure the name of the value to record
 #' @param posit_ids a numeric vector of posit_ids to which the measure applies
 #' @param values the values to be recorded
@@ -15,7 +16,7 @@
 #' @return The Master list object
 #'
 #'
-#' @details
+#a Master list object of network models' @details
 #' See the "Time Varying Attributes" vignette
 #'
 #' @examples
@@ -69,6 +70,7 @@ record_node_value <- function(dat, at, measure, posit_ids, values) {
 #' sublists.
 #'
 #' @param dat a Master list object of network models
+#' @param at the time step where the recording happens
 #' @param label the name to give to the recorded object
 #' @param object the object to be recorded
 #'
