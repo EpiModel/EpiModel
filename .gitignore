@@ -17,3 +17,6 @@ vignettes/Intro.R
 *.html
 tests/*.pdf
 tests/testthat/Rplots.pdf
+inst/doc
+/doc/
+/Meta/
