@@ -1,0 +1,164 @@
+---
+title: "Updating-the-model-parameters-during-runtime"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Updating-the-model-parameters-during-runtime}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup, echo = FALSE}
+library(EpiModel)
+```
+
+# Introduction
+
+When doing modeling work, the researcher may want to simulate interventions or
+events that vary over time. In (their 2021
+paper)[https://academic.oup.com/jid/article/223/6/1019/6122459] Jenness & al
+simulate the effects of COVID-19–Related Sexual Distancing and Clinical Service
+Interruption on HIV and STI incidence. These are events with a beginning and an
+end. To work with these situations, EpiModel offers an optional module to
+programmatically handle the changes in the model over time.
+
+This vignette assumes a basic understanding of EpiModel custom models. If the
+code does not make sense, please check the
+[EpiModel tutorials](http://www.epimodel.org/tut.html).
+
+# Parameter updaters
+
+To define what parameters should change and when during the simulation, we need
+to define **updaters**. An updater is a `list` with to named elements: `at`,
+the time step when the change will take place, and `param` a named list of
+parameters to update.
+
+```{r updater-example, echo = FALSE}
+list(
+  at = 10,
+  param = list(
+    inf.prob = 0.3,
+    act.rate = 0.5
+  )
+)
+```
+
+This example defines an updater that will change the value of the `inf.prob`
+parameter to `0.3` and the value to the `act.rate` parameter to `0.5`. This
+change will happen during the 10th time step.
+
+As mentioned above, we usually want to define several changes at once. EpiModel
+accept a `list` of **updaters**.
+
+
+```{r updater-list, echo = FALSE}
+# Create a `list.of.updaters`
+list.of.updaters <- list(
+  # this is one updater
+  list(
+    at = 10,
+    param = list(
+      inf.prob = 0.5,
+      act.rate = 0.5
+    )
+  ),
+  # this is another updater
+  list(
+    at = 20,
+    param = list(
+      inf.prob = 0.1,
+      act.rate = 0.1
+    )
+  )
+)
+
+ # The `list.of.updaters` goes into `param.net` under `param.updater.list`
+ param <- param.net(
+   inf.prob = 0.1,
+   act.rate = 0.1,
+   param.updater.list = list.of.updaters
+ )
+```
+
+In this example, we define 2 **updaters**, one that occurs at time step 10 and
+the other one at time step 20. In practice, `inf.prob` and `act.rate` are set to
+`0.1` at the beginning by `param.net`, at time step 10 they are both updated to
+`0.5` and at time step 20 their values go back to the original `0.1`.
+
+# Enabling the `updater` module
+
+This functionality is part of an optional module provided by `EpiModel`,
+`updater.net`. This module has to be enabled in `control.net`.
+
+```{r updater-module, echo = FALSE}
+ control <- control.net(
+   type = NULL, # must be NULL as we use a custom module
+   nsims = 1,
+   nsteps = 20,
+   verbose = FALSE,
+   updater.FUN = updater.net
+)
+```
+
+This is the minimal `control.net` to enable the module. Usually, a researcher
+will want to add it to a more complex model with several bespoke modules. See the
+"Advanced Extension Models" section in the
+[EpiModel tutorials](http://www.epimodel.org/tut.html).
+
+**Important**: when enabling the `updater.net` module, the researcher must pay
+particular attention to the order the modules are run. It is recommended to have
+the `updater.net` module run first so the changes happen at the beginning of
+the time step.
+
+# Advanced functionalities
+
+Some functionalities of `updater.net` were not described above and are explained
+in `?EpiModel::updater.net`.
+
+## Verbosity
+
+When creating an **updater**, one can add an optional `verbose` element to the
+`list`. If `TRUE`, `updater.net` will output a `message` describing what changes
+where performed when it occurs during the simulation.
+
+```{r updater-verbose, echo = FALSE}
+list(
+  at = 10,
+  param = list(
+    inf.prob = 0.3,
+    act.rate = 0.5
+  ),
+  verbose = TRUE
+)
+```
+
+## Relative parameter change
+
+It is sometime useful to configure the changes with respect to the current value
+instead of a fixed new value.
+
+```{r updater-function, echo = FALSE}
+list(
+  at = 10,
+  param = list(
+    inf.prob = function(x) plogis(qlogis(x) + log(2)),
+    act.rate = 0.5
+  )
+)
+```
+
+This updater will set the value of `act.rate` to `0.5` as we saw earlier. But,
+for `inf.prob` we put a `function` (not a function call). In this case,
+`updater.net` will apply the `function` to the current value of `act.rate`. If
+we consider as in the previous example that `act.rate` is set to `0.1` by
+`param.net`, then its new value will be obtained by adding an Odds Ratio of 2
+to the original value `plogis(qlogis(0.1) + log(2))`: `0.1818182`.
+
+
+

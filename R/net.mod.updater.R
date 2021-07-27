@@ -102,6 +102,7 @@ update_list <- function(x, new.x) {
 #'
 #' }
 #'
+#' @export
 updater.net <- function(dat, at) {
   param.updater.list <- get_param(dat, "param.updater.list",
                                   override.null.error = TRUE)
