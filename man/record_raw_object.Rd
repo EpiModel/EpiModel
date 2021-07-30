@@ -2,14 +2,14 @@
 % Please edit documentation in R/net.record.R
 \name{record_raw_object}
 \alias{record_raw_object}
-\title{Record an arbitrary object during a simulation}
+\title{Record an Arbitrary Object During a Simulation}
 \usage{
 record_raw_object(dat, at, label, object)
 }
 \arguments{
 \item{dat}{a Master list object of network models}
 
-\item{at}{the time step where the recording happens}
+\item{at}{the time where the recording happens}
 
 \item{label}{the name to give to the recorded object}
 
