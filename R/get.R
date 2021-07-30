@@ -450,7 +450,7 @@ get_args <- function(formal.args, dot.args) {
   return(p)
 }
 
-#' @title Extract the parameter set from Network Simulations
+#' @title Extract the Parameter Set from Network Simulations
 #'
 #' @param sims An \code{EpiModel} object of class \code{netsim}.
 #'

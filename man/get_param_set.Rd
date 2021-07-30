@@ -2,7 +2,7 @@
 % Please edit documentation in R/get.R
 \name{get_param_set}
 \alias{get_param_set}
-\title{Extract the parameter set from Network Simulations}
+\title{Extract the Parameter Set from Network Simulations}
 \usage{
 get_param_set(sims)
 }
@@ -14,7 +14,7 @@ A \code{data.frame} with one row per simulation and one column per
   parameter or parameter element where the parameters are of size > 1.
 }
 \description{
-Extract the parameter set from Network Simulations
+Extract the Parameter Set from Network Simulations
 }
 \section{Output Format}{
 
