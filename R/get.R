@@ -450,40 +450,44 @@ get_args <- function(formal.args, dot.args) {
   return(p)
 }
 
-#' @title Extract the node records from Network Simulations
+#' @title Extract the Attributes History from Network Simulations
 #'
 #' @param sims An \code{EpiModel} object of class \code{netsim}.
 #'
 #' @return A list of \code{data.frame}s, one for each "measure" recorded in the
-#' simulation by the `record_node_value` function.
+#' simulation by the `record_attr_history` function.
 #'
-#' @details
-#' See the "Time Varying Attributes" vignette
+#' @examples
+#' \dontrun{
+#'
+#' get_attr_history(sims)
+#'
+#' }
 #'
 #' @export
 #'
-get_node_records <- function(sims) {
-  if (!any(class(sims) %in% "netsim")) {
+get_attr_history <- function(sims) {
+  if (!inherits(sims, "netsim")) {
     stop("`sims` must be of class netsim")
   }
 
-  simnames <- names(sims[["node.records"]])
+  simnames <- names(sims[["attr.history"]])
 
   dfs <- list()
 
   for (name in simnames) {
-    records <- sims[["node.records"]][[name]]
-    measures <- lapply(records, function(x) x[["measure"]])
-    measure.names <- unique(measures)
+    records <- sims[["attr.history"]][[name]]
+    measures <- lapply(records, function(x) x[["attributes"]])
+    measure.names <- unique(attributes)
 
     simnum <- as.numeric(sub("[^0-9]*", "", name))
 
     for (m in measure.names) {
-      parts <- Filter(function(x) x[["measure"]] == m, records)
+      parts <- Filter(function(x) x[["attributes"]] == m, records)
       parts <- lapply(parts, as.data.frame)
       d <- do.call("rbind", parts)
       d[["sim"]] <- simnum
-      d <- d[, c("sim", "step", "measure", "uids", "values")]
+      d <- d[, c("sim", "time", "attribute", "uids", "values")]
 
       if (is.null(dfs[[m]])) {
         dfs[[m]] <- d

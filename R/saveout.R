@@ -142,8 +142,8 @@ saveout.net <- function(dat, s, out = NULL) {
       out$epi[[names(dat$epi)[j]]] <- data.frame(dat$epi[j])
     }
 
-    out$node.records <- list()
-    out$node.records[[s]] <- dat$node.records
+    out$attr.history <- list()
+    out$attr.history[[s]] <- dat$attr.history
 
     out$raw.records <- list()
     out$raw.records[[s]] <- dat$raw.records
@@ -209,7 +209,7 @@ saveout.net <- function(dat, s, out = NULL) {
       out$epi[[names(dat$epi)[j]]][, s] <- data.frame(dat$epi[j])
     }
 
-    out$node.records[[s]] <- dat$node.records
+    out$attr.history[[s]] <- dat$attr.history
     out$raw.records[[s]] <- dat$raw.records
 
     if (dat$control$save.nwstats == TRUE) {
@@ -252,8 +252,8 @@ saveout.net <- function(dat, s, out = NULL) {
       colnames(out$epi[[i]]) <- simnames
     }
 
-    if (length(out$node.records) > 0)
-      names(out$node.records) <- simnames
+    if (length(out$attr.history) > 0)
+      names(out$attr.history) <- simnames
 
     if (length(out$.records) > 0)
     names(out$raw.records) <- simnames
