@@ -460,6 +460,7 @@ get_args <- function(formal.args, dot.args) {
 #' @examples
 #' \dontrun{
 #'
+#' # With `sims` the result of a `netsim` call
 #' get_attr_history(sims)
 #'
 #' }
