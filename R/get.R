@@ -478,7 +478,6 @@ get_attr_history <- function(sims) {
 
   for (name in simnames) {
     records <- sims[["attr.history"]][[name]]
-    measures <- lapply(records, function(x) x[["attributes"]])
     measure.names <- unique(attributes)
 
     simnum <- as.numeric(sub("[^0-9]*", "", name))
