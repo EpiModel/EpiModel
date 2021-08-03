@@ -43,23 +43,27 @@ step. They must return a VALUE of length one (numeric, logical or character).
 # Create some trackers
 epi_prop_infected <- function(dat, at) {
   needed_attributes <- c("status", "active")
-  with(get_attr_list(dat, needed_attributes), {
+  output <- with(get_attr_list(dat, needed_attributes), {
     pop <- active == 1
     cond <- status == "i"
 
     out <- sum(cond & pop, na.rm = TRUE) / sum(pop, na.rm = TRUE)
 
-    return(out)
+    out
   })
+
+  return(output)
 }
 
 epi_s_num <- function(dat, at) {
   needed_attributes <- c("status")
-  with(get_attr_list(dat, needed_attributes), {
+  output <- with(get_attr_list(dat, needed_attributes), {
     out <- sum(status == "s", na.rm = TRUE)
 
-    return(out)
+    out
   })
+
+  return(output)
 }
 
 # Create the `tracker.list` list

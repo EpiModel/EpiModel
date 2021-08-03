@@ -49,11 +49,13 @@ What we call a **tracker** in this vignette is a `function` that takes `dat` and
 ```{r tracker-example}
 epi_s_num <- function(dat, at) {
   needed_attributes <- c("status")
-  with(get_attr_list(dat, needed_attributes), {
+  output <- with(get_attr_list(dat, needed_attributes), {
     out <- sum(status == "s", na.rm = TRUE)
 
-    return(out)
+    out
   })
+
+  return(output)
 }
 ```
 
@@ -69,15 +71,17 @@ epi_prop_infected <- function(dat, at) {
   needed_attributes <- c("status", "active")
 
   # we use `with` to simplify code
-  with(get_attr_list(dat, needed_attributes), {
+  output <- with(get_attr_list(dat, needed_attributes), {
     pop <- active == 1      # we only look at active nodes
     cond <- status == "i"   # we want to know which are infected (status == "i")
 
     # how many are `infected` among the `active`
     out <- sum(cond & pop, na.rm = TRUE) / sum(pop, na.rm = TRUE)
 
-    return(out)
+    out
   })
+
+  return(output)
 }
 ```
 
@@ -87,9 +91,11 @@ We recommend that you always make your **trackers** as follows:
    names. (in this example: "status" and "active").
 2. use `with` and `get_attr_list(dat, needed_attributes)` to work in an
    environment with only the objects you need. This helps to understand what
-   the tracker does and simplify the debugging process.
-3. define `out` as the calculated outcome, it MUST be a scalar.
-4. `return(out)`
+   the tracker does and simplify the debugging process. We save the result of
+   this call into `output`
+3. define `out` as the calculated outcome inside with, it MUST be a scalar. This
+   is the last element evaluated by the `with` expression.
+4. `return(output)`, what was calculated inside the `with` construct.
 
 # The `tracker.list` parameter
 
@@ -155,15 +161,17 @@ multiple **trackers**.
 epi_s <- function(r_ind) {
   function(dat, at) {
     needed_attributes <- c("race", "status")
-    with(get_attr_list(dat, needed_attributes), {
+    output <- with(get_attr_list(dat, needed_attributes), {
       out <- sum(
         race %in% r_ind &
         status == "s",
         na.rm = TRUE
       )
 
-      return(out)
+      out
     })
+
+    return(output)
   }
 }
 
@@ -184,11 +192,13 @@ of interest. In `some.trackers` we defined 4 **trackers**, one for each "race"
 epi_linked_time <- function(weeks) {
   function(dat, at) {
     needed_attributes <- c("tx.init.time", "diag.time")
-    with(get_attr_list(dat, needed_attributes), {
+    output <- with(get_attr_list(dat, needed_attributes), {
       out <- sum(tx.init.time - diag.time <= weeks, na.rm = TRUE)
 
-      return(out)
+      out
     })
+
+    return(output)
   }
 }
 
