@@ -97,9 +97,11 @@ The module will record the viral load of all infected every 10 time steps.
 ```{r module-ex, eval = FALSE}
 viral_load_logger <- function(dat, at) {
   if (at %% 10 == 0) {
-    with(get_attr_list(dat, c("status", "vl")), {
+    dat <- with(get_attr_list(dat, c("status", "vl")), {
       infected <- which(status == "i")
       dat <- record_attr_history(dat, at, "vl", infected, vl[infected])
+
+      dat
     })
   }
 
@@ -110,8 +112,10 @@ viral_load_logger <- function(dat, at) {
 If we break down the code:
 
 1. `if (at %% 10 == 0) {` checks that the timestep is divisible by 10
-2. `with(get_attr_list(dat, c("status", "vl")), {` allows to access
-   `status` and `vl` directly as variables
+2. `dat <- with(get_attr_list(dat, c("status", "vl")), {` allows to access
+   `status` and `vl` directly as variables. In order for `dat` to actually be
+   modified, it must be assigned back and also `dat` must be the last call
+   inside the `with` expression.
 3. `infected <- which(status == "i")` find the `posit_ids` of each infected node
 4. `dat <- record_attr_history(dat, at, "vl", infected, vl[infected])` stores
    the `vl` value for each of the infected nodes
