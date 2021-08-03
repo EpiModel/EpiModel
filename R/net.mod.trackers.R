@@ -69,6 +69,7 @@
 #'    nsims = 2,
 #'    nsteps = 5,
 #'    verbose = FALSE,
+#'    infection.FUN = infection.net,
 #'    trackers.FUN = trackers.net
 #'  )
 #'
