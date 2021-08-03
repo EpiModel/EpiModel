@@ -84,7 +84,8 @@ update_list <- function(x, new.x) {
 #'    nsims = 1,
 #'    nsteps = 20,
 #'    verbose = FALSE,
-#'    updater.FUN = updater.net
+#'    updater.FUN = updater.net,
+#'    infection.FUN = infection.net
 #'  )
 #'
 #' nw <- network_initialize(n = 50)
@@ -139,8 +140,12 @@ updater.net <- function(dat, at) {
   }
 
   # Remove the used updaters from the list
-  dat <- set_param(dat, "param.updater.list",
-                   param.updater.list[-used.updaters])
+  if (length(used.updaters) > 0) {
+    dat <- set_param(
+      dat, "param.updater.list",
+      param.updater.list[-used.updaters]
+    )
+  }
 
   return(dat)
 }

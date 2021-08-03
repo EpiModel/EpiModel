@@ -62,18 +62,17 @@ accept a `list` of **updaters**.
 list.of.updaters <- list(
   # this is one updater
   list(
-    at = 10,
+    at = 100,
     param = list(
-      inf.prob = 0.5,
-      act.rate = 0.5
+      inf.prob = 0.3,
+      act.rate = 0.3
     )
   ),
   # this is another updater
   list(
-    at = 20,
+    at = 125,
     param = list(
-      inf.prob = 0.1,
-      act.rate = 0.1
+      inf.prob = 0.01
     )
   )
 )
@@ -86,30 +85,50 @@ list.of.updaters <- list(
  )
 ```
 
-In this example, we define 2 **updaters**, one that occurs at time step 10 and
+In this example, we define 2 **updaters**, one that occurs at time step 100 and
 the other one at time step 20. In practice, `inf.prob` and `act.rate` are set to
-`0.1` at the beginning by `param.net`, at time step 10 they are both updated to
-`0.5` and at time step 20 their values go back to the original `0.1`.
+`0.1` at the beginning by `param.net`, at time step 100 they are both updated to
+`0.3` and at time step 125 `act.rate` is turn down to `0.01`.
 
 # Enabling the `updater` module
 
 This functionality is part of an optional module provided by `EpiModel`,
 `updater.net`. This module has to be enabled in `control.net`.
 
-```{r updater-module, echo = FALSE}
+Below we set up a complete example with a closed population SI model using the
+parameters and **updaters** defined above. We then plot the size of the
+infected and susceptible population over time to see the effects of the
+**updaters**.
+
+```{r updater-module, fig.align = "center", fig.height = 4, fig.width = 6}
  control <- control.net(
    type = NULL, # must be NULL as we use a custom module
    nsims = 1,
-   nsteps = 20,
+   nsteps = 200,
    verbose = FALSE,
-   updater.FUN = updater.net
+   updater.FUN = updater.net,
+   infection.FUN = infection.net
+ )
+
+nw <- network_initialize(n = 50)
+nw <- set_vertex_attribute(nw, "race", rbinom(50, 1, 0.5))
+est <- netest(
+  nw,
+  formation = ~edges,
+  target.stats = 25,
+  coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+  verbose = FALSE
 )
+
+init <- init.net(i.num = 10)
+mod <- netsim(est, param, init, control)
+
+plot(mod)
 ```
 
-This is the minimal `control.net` to enable the module. Usually, a researcher
-will want to add it to a more complex model with several bespoke modules. See the
-"Advanced Extension Models" section in the
-[EpiModel tutorials](http://www.epimodel.org/tut.html).
+This is the minimal example. Usually, a researcher will want to add it to a
+more complex model with several bespoke modules. See the "Advanced Extension
+Models" section in the [EpiModel tutorials](http://www.epimodel.org/tut.html).
 
 **Important**: when enabling the `updater.net` module, the researcher must pay
 particular attention to the order the modules are run. It is recommended to have

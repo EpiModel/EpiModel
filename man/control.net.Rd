@@ -34,7 +34,7 @@ control.net(
   skip.check = FALSE,
   raw.output = FALSE,
   tergmLite.track.duration = FALSE,
-  set.control.ergm = control.simulate.ergm(MCMC.burnin = 200000),
+  set.control.ergm = control.simulate.ergm(MCMC.burnin = 2e+05),
   set.control.stergm = control.simulate.network(MCMC.burnin.min = 1000),
   mcmc.control.ergm = control.simulate.formula(),
   mcmc.control.tergm = control.simulate.formula.tergm(),

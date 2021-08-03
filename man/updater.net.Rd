@@ -68,7 +68,8 @@ param.updater.list <- list(
    nsims = 1,
    nsteps = 20,
    verbose = FALSE,
-   updater.FUN = updater.net
+   updater.FUN = updater.net,
+   infection.FUN = infection.net
  )
 
 nw <- network_initialize(n = 50)
