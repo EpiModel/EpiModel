@@ -7,14 +7,14 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
+```{r, echo = FALSE, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
 ```
 
-```{r setup, echo = FALSE}
+```{r setup, echo = FALSE, include = FALSE}
 library(EpiModel)
 ```
 
@@ -102,7 +102,7 @@ We recommend that you always make your **trackers** as follows:
 This functionality is part of an optional module provided by `EpiModel`,
 `trackers.net`. This module has to be enabled in `control.net`. And the
 **trackers** themselves must be declared as a named list in `control.net`:
-`tracker.list`.
+`tracker.list`. Let's make a simple SI module with some added trackers:
 
 ```{r tracker-list}
 # Create the `tracker.list` list
@@ -113,13 +113,35 @@ some.trackers <- list(
 
 control <- control.net(
   type = NULL, # must be NULL as we use a custom module
-  nsims = 2,
-  nsteps = 5,
+  nsims = 1,
+  nsteps = 50,
   verbose = FALSE,
   infection.FUN = infection.net,
   trackers.FUN = trackers.net,
   tracker.list = some.trackers
 )
+
+param <- param.net(
+  inf.prob = 0.3,
+  act.rate = 0.1
+)
+
+nw <- network_initialize(n = 50)
+nw <- set_vertex_attribute(nw, "race", rbinom(50, 1, 0.5))
+est <- netest(
+  nw,
+  formation = ~edges,
+  target.stats = 25,
+  coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+  verbose = FALSE
+)
+
+init <- init.net(i.num = 10)
+mod <- netsim(est, param, init, control)
+
+d <- as.data.frame(mod)
+
+knitr::kable(tail(d, n = 15))
 ```
 
 Each function has to be named in the `tracker.list` list. The name given there
