@@ -449,3 +449,104 @@ get_args <- function(formal.args, dot.args) {
   }
   return(p)
 }
+
+#' @title Extract the Parameter Set from Network Simulations
+#'
+#' @param sims An \code{EpiModel} object of class \code{netsim}.
+#'
+#' @return A \code{data.frame} with one row per simulation and one column per
+#'   parameter or parameter element where the parameters are of size > 1.
+#'
+#' @section Output Format:
+#' The outputed \code{data.frame} has one row per simulation and the columns
+#' correspond to the parameters used in this simulation.
+#'
+#' The column name will match the parameter name if it is a size 1 parameter or
+#' if the parameter is of size > 1, there will be N columns (with N being the
+#' size of the parameter) named \code{parameter.name_1},
+#' \code{parameter.name_2}, ..., \code{parameter.name_N}.
+#'
+#'
+#' @examples
+#'
+#' # Setup network
+#' nw <- network_initialize(n = 50)
+#'
+#' est <- netest(
+#'   nw, formation = ~edges,
+#'   target.stats = c(25),
+#'   coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+#'   verbose = FALSE
+#' )
+#'
+#' init <- init.net(i.num = 10)
+#'
+#' n <- 5
+#'
+#' related.param <- data.frame(
+#'   dummy.param = rbeta(n, 1, 2)
+#' )
+#'
+#'  my.randoms <- list(
+#'    act.rate = param_random(c(0.25, 0.5, 0.75)),
+#'    dummy.param = function() rbeta(1, 1, 2),
+#'    dummy.strat.param = function() c(
+#'      rnorm(1, 0, 10),
+#'      rnorm(1, 10, 1)
+#'    )
+#'  )
+#'
+#' param <- param.net(
+#'   inf.prob = 0.3,
+#'   dummy = c(0, 1, 2),
+#'   random.params = my.randoms
+#' )
+#'
+#' control <- control.net(type = "SI", nsims = 3, nsteps = 5, verbose = FALSE)
+#' mod <- netsim(est, param, init, control)
+#'
+#' get_param_set(mod)
+#' @export
+get_param_set <- function(sims) {
+  if (!inherits(sims, "netsim")) {
+    stop("`sims` must be of class netsim")
+  }
+
+  random.names <- c("random.params", "random.params.values")
+
+  p.random <- sims$param[[random.names[2]]]
+  p.fixed <- sims$param[!names(sims$param) %in% random.names]
+
+  d.param <- data.frame(sim = seq_len(sims$control$nsims))
+
+  # Fixed parameters
+  for (i in seq_along(p.fixed)) {
+    val <- p.fixed[[i]]
+    name <- names(p.fixed)[i]
+    l <- length(val)
+
+    if (l > 1)
+      name <- paste0(name, "_", seq_len(l))
+
+    names(val) <- name
+    d.param <- cbind(d.param, t(val))
+  }
+
+  # Random parameters
+  for (i in seq_along(p.random)) {
+    val <- p.random[[i]]
+    name <- names(p.random)[i]
+    l <- length(val)
+
+    if (is.list(val)) {
+      l <- length(val[[1]])
+      val <- matrix(Reduce(c, val), ncol = l, byrow = TRUE)
+      colnames(val) <- paste0(name, "_", seq_len(l))
+      d.param <- cbind(d.param, val)
+    } else {
+      d.param[name] <- val
+    }
+  }
+
+  return(d.param)
+}
