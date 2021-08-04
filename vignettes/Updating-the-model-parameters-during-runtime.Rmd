@@ -39,7 +39,7 @@ to define **updaters**. An updater is a `list` with to named elements: `at`,
 the time step when the change will take place, and `param` a named list of
 parameters to update.
 
-```{r updater-example, echo = FALSE}
+```{r updater-example, eval = FALSE}
 list(
   at = 10,
   param = list(
@@ -57,7 +57,7 @@ As mentioned above, we usually want to define several changes at once. EpiModel
 accept a `list` of **updaters**.
 
 
-```{r updater-list, echo = FALSE}
+```{r updater-list}
 # Create a `list.of.updaters`
 list.of.updaters <- list(
   # this is one updater
