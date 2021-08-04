@@ -478,21 +478,22 @@ get_attr_history <- function(sims) {
 
   for (name in simnames) {
     records <- sims[["attr.history"]][[name]]
-    measure.names <- unique(attributes)
+    attributes <- vapply(records, function(x) x[["attribute"]], "")
+    attributes.names <- unique(attributes)
 
     simnum <- as.numeric(sub("[^0-9]*", "", name))
 
-    for (m in measure.names) {
-      parts <- Filter(function(x) x[["attributes"]] == m, records)
+    for (a in attributes.names) {
+      parts <- Filter(function(x) x[["attribute"]] == a, records)
       parts <- lapply(parts, as.data.frame)
       d <- do.call("rbind", parts)
       d[["sim"]] <- simnum
       d <- d[, c("sim", "time", "attribute", "uids", "values")]
 
-      if (is.null(dfs[[m]])) {
-        dfs[[m]] <- d
+      if (is.null(dfs[[a]])) {
+        dfs[[a]] <- d
       } else {
-        dfs[[m]] <- rbind(dfs[[m]], d)
+        dfs[[a]] <- rbind(dfs[[a]], d)
       }
     }
   }

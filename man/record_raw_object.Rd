@@ -20,9 +20,9 @@ The Master list object
 }
 \description{
 This function records any object during a simulation to allow it's
-inspection afterward. The records are stored in \code{dat$raw.records} during
-the simulation and in the \code{netsim} object under the \code{raw.records}
-sublists.
+inspection afterward. The records are stored in \code{dat[["raw.records"]]}
+during the simulation and in the \code{netsim} object under the
+\code{raw.records} sublists.
 }
 \details{
 See the "Time Varying Attributes" vignette

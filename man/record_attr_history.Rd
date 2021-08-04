@@ -28,7 +28,7 @@ See the "Time Varying Attributes" vignette
 This function records values specific to a time-step and a group of nodes.
 The nodes are identified by their \code{unique_ids} which allows the
 recording of data for nodes that are no longer in the network by the end of
-the run. The records are stored in \code{dat$attr.history} and can be
+the run. The records are stored in \code{dat[["attr.history"]]} and can be
 accessed from the \code{netsim} object with \code{get_attr_history}
 }
 \examples{

@@ -19,6 +19,7 @@ Extract the Attributes History from Network Simulations
 \examples{
 \dontrun{
 
+# With `sims` the result of a `netsim` call
 get_attr_history(sims)
 
 }

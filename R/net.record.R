@@ -4,7 +4,7 @@
 #' This function records values specific to a time-step and a group of nodes.
 #' The nodes are identified by their \code{unique_ids} which allows the
 #' recording of data for nodes that are no longer in the network by the end of
-#' the run. The records are stored in \code{dat$attr.history} and can be
+#' the run. The records are stored in \code{dat[["attr.history"]]} and can be
 #' accessed from the \code{netsim} object with \code{get_attr_history}
 #'
 #' @param dat a Master list object of network models
@@ -66,9 +66,9 @@ record_attr_history <- function(dat, at, attribute, posit_ids, values) {
 #'
 #' @description
 #' This function records any object during a simulation to allow it's
-#' inspection afterward. The records are stored in \code{dat$raw.records} during
-#' the simulation and in the \code{netsim} object under the \code{raw.records}
-#' sublists.
+#' inspection afterward. The records are stored in \code{dat[["raw.records"]]}
+#' during the simulation and in the \code{netsim} object under the
+#' \code{raw.records} sublists.
 #'
 #' @param dat a Master list object of network models
 #' @param at the time where the recording happens
