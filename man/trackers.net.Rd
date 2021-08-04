@@ -25,13 +25,13 @@ This module is not included by default
 
 \section{The \code{tracker.list} list}{
 
-\code{tracker.list} is a list of NAMED functions stored in the \code{param}
+\code{tracker.list} is a list of NAMED functions stored in the \code{control}
 list of the \code{dat} master list object.
 }
 
 \section{Tracker Functions}{
 
-This module will apply the tracker functions present in the parameter list
+This module will apply the tracker functions present in the control list
 \code{tracker.list}. Each tracker must be a function with EXACTLY two
 arguments: the \code{dat} Master list object and \code{at} the current time
 step. They must return a VALUE of length one (numeric, logical or character).
@@ -72,20 +72,20 @@ tracker.list <- list(
   s_num         = epi_s_num
 )
 
- # Do not forget to add it to `param`
  param <- param.net(
    inf.prob = 0.3,
-   act.rate = 0.5,
-   tracker.list = tracker.list
+   act.rate = 0.5
  )
 
-# Enable the module in `control`
+# Enable the module in `control` and add the `tracker.list` element
  control <- control.net(
    type = NULL, # must be NULL as we use a custom module
    nsims = 2,
    nsteps = 5,
    verbose = FALSE,
-   trackers.FUN = trackers.net
+   infection.FUN = infection.net,
+   trackers.FUN = trackers.net,
+   tracker.list = tracker.list
  )
 
 nw <- network_initialize(n = 50)

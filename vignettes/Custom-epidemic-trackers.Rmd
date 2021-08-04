@@ -37,7 +37,7 @@ project becomes big enough like
 add new trackers can become a tedious and error-prone process.
 
 In this vignette, we will explore the `trackers.net` optional module that allows
-the user to pass trackers to the model just before runtime through the `param`
+the user to pass trackers to the model just before runtime through the `control`
 object.
 
 # Trackers
@@ -97,11 +97,12 @@ We recommend that you always make your **trackers** as follows:
    is the last element evaluated by the `with` expression.
 4. `return(output)`, what was calculated inside the `with` construct.
 
-# The `tracker.list` parameter
+# Using the `trackers.net` module
 
-Now that we saw what **trackers** are, we need to tell `EpiModel` to use them.
-
-To do so, we need to declare them as a named list in `param.net`
+This functionality is part of an optional module provided by `EpiModel`,
+`trackers.net`. This module has to be enabled in `control.net`. And the
+**trackers** themselves must be declared as a named list in `control.net`:
+`tracker.list`.
 
 ```{r tracker-list}
 # Create the `tracker.list` list
@@ -110,9 +111,13 @@ some.trackers <- list(
   s_num         = epi_s_num
 )
 
- param <- param.net(
-  inf.prob = 0.3,
-  act.rate = 0.5,
+control <- control.net(
+  type = NULL, # must be NULL as we use a custom module
+  nsims = 2,
+  nsteps = 5,
+  verbose = FALSE,
+  infection.FUN = infection.net,
+  trackers.FUN = trackers.net,
   tracker.list = some.trackers
 )
 ```
@@ -125,22 +130,6 @@ where `mod` is a `netsim` object.
 *Note*: in the `some.trackers` list, we put `epi_prop_infected` and `epi_s_num`
 without parentheses at the end. This is because we store the `function` and not
 the result of calling the function.
-
-# Using the `trackers.net` module
-
-This functionality is part of an optional module provided by `EpiModel`,
-`trackers.net`. This module has to be enabled in `control.net`.
-
-```{r tracker-control}
-control <- control.net(
-  type = NULL, # must be NULL as we use a custom module
-  nsims = 2,
-  nsteps = 5,
-  verbose = FALSE,
-  infection.FUN = infection.net,
-  trackers.FUN = trackers.net
-)
-```
 
 This is the minimal `control.net` to enable the module. Usually, a researcher
 will want to add it to a more complex model with several bespoke modules. See the
