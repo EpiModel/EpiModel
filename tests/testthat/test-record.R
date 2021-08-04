@@ -4,7 +4,7 @@ test_that("Time varying elements", {
   test_logger <- function(dat, at) {
     nodes <- get_posit_ids(dat)
 
-    some_nodes <- nodes[runif(length(nodes)) < 0.1]
+    some_nodes <- sample(nodes, 5)
     dat <- record_attr_history(
       dat, at,
       "attr_norm",
@@ -12,7 +12,7 @@ test_that("Time varying elements", {
       rnorm(length(some_nodes))
     )
 
-    some_nodes <- nodes[runif(length(nodes)) < 0.1]
+    some_nodes <- sample(nodes, 5)
     dat <- record_attr_history(
       dat, at,
       "attr_unif",
@@ -20,7 +20,7 @@ test_that("Time varying elements", {
       runif(length(some_nodes))
     )
 
-    some_nodes <- nodes[runif(length(nodes)) < 0.1]
+    some_nodes <- sample(nodes, 5)
     dat <- record_attr_history(
       dat, at,
       "attr_fix",
