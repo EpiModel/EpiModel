@@ -134,12 +134,14 @@ initialize.net <- function(x, param, init, control, s) {
 init_status.net <- function(dat) {
 
   type <- get_control(dat, "type", override.null.error = TRUE)
+  type <- if (is.null(type)) "None" else type
+
   nsteps <- get_control(dat, "nsteps")
   tergmLite <- get_control(dat, "tergmLite")
   vital <- get_param(dat, "vital")
   groups <- get_param(dat, "groups")
   status.vector <- get_init(dat, "status.vector", override.null.error = TRUE)
-  if (type %in% c("SIS", "SIR") && !is.null(type)) {
+  if (type %in% c("SIS", "SIR")) {
     rec.rate <- get_param(dat, "rec.rate")
   }
   if (vital == TRUE) {
@@ -149,7 +151,7 @@ init_status.net <- function(dat) {
 
   # Variables ---------------------------------------------------------------
   i.num <- get_init(dat, "i.num", override.null.error = TRUE)
-  if (type  == "SIR" && is.null(status.vector) && !is.null(type)) {
+  if (type  == "SIR" && is.null(status.vector)) {
     r.num <- get_init(dat, "r.num")
   }
 
@@ -158,7 +160,7 @@ init_status.net <- function(dat) {
   if (groups == 2) {
     group <- get_attr(dat, "group")
     i.num.g2 <- get_init(dat, "i.num.g2")
-    if (type  == "SIR" && is.null(status.vector) && !is.null(type)) {
+    if (type  == "SIR" && is.null(status.vector)) {
       r.num.g2 <- get_init(dat, "r.num.g2", override.null.error = TRUE)
     }
   } else {
@@ -179,7 +181,7 @@ init_status.net <- function(dat) {
       if (groups == 2) {
         status[sample(which(group == 2), size = i.num.g2)] <- "i"
       }
-      if (type == "SIR"  && !is.null(type)) {
+      if (type == "SIR") {
         status[sample(which(group == 1 & status == "s"), size = r.num)] <- "r"
         if (groups == 2) {
           status[sample(which(group == 2 & status == "s"),
@@ -214,7 +216,12 @@ init_status.net <- function(dat) {
 
   # Infection Time ----------------------------------------------------------
   ## Set up inf.time vector
-  if (!is.null(type)) {
+  if (type == "None") {
+    infTime <- rep(NA, num)
+    idsInf <- idsInf <- which(status == "i")
+    infTime[idsInf] <- 1
+    dat <- set_attr(dat, "infTime", infTime)
+  } else {
     idsInf <- which(status == "i")
     infTime <- rep(NA, length(status))
     infTime.vector <- get_init(dat, "infTime.vector",
@@ -246,11 +253,6 @@ init_status.net <- function(dat) {
       }
     }
 
-    dat <- set_attr(dat, "infTime", infTime)
-  } else {
-    infTime <- rep(NA, num)
-    idsInf <- idsInf <- which(status == "i")
-    infTime[idsInf] <- 1
     dat <- set_attr(dat, "infTime", infTime)
   }
 
