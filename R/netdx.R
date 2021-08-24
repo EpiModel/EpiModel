@@ -258,64 +258,15 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
 
   ## List for stats for each simulation
   if (dynamic == TRUE) {
-    stats <- list()
-    for (i in 1:length(diag.sim)) {
-      stats[[i]] <- as.matrix(attributes(diag.sim[[i]])$stats)[1:nsteps, ,
-                                                               drop = FALSE]
-    }
-
-    ## Merged stats across all simulations
-    if (nsims > 1) {
-      merged.stats <- matrix(NA, nrow = nrow(stats[[1]]) * nsims,
-                             ncol = ncol(stats[[1]]))
-      for (i in 1:ncol(stats[[1]])) {
-        merged.stats[, i] <- as.numeric(sapply(stats, function(x) c(x[, i])))
-      }
-      colnames(merged.stats) <- colnames(stats[[1]])
-    } else {
-      merged.stats <- stats[[1]]
-    }
+    stats <- lapply(diag.sim, function(x) attributes(x)$stats)
+    merged.stats <- Reduce(function(a, x) rbind(a, x), stats, init = c())
   } else {
     stats <- list(diag.sim[, !duplicated(colnames(diag.sim)), drop = FALSE])
     merged.stats <- diag.sim[, !duplicated(colnames(diag.sim)), drop = FALSE]
   }
 
-
   ## Calculate mean/sd from merged stats
-  stats.means <- colMeans(merged.stats)
-
-  if (nsims > 1) {
-    temp2 <- sapply(stats, function(x) colMeans(x))
-    if (ncol(stats[[1]]) == 1) temp2 <- matrix(temp2, nrow = 1)
-    stats.sd <- apply(temp2, 1, sd)
-  } else {
-    stats.sd <-  NA
-  }
-
-  stats.table <- data.frame(sorder = 1:length(names(stats.means)),
-                            names = names(stats.means),
-                            stats.means, stats.sd)
-
-  ## Get stats from for target statistics
-  ts.attr.names <- x$target.stats.names
-  if (length(ts.attr.names) != length(target.stats)) {
-    target.stats <- target.stats[which(target.stats > 0)]
-  }
-  ts.out <- data.frame(names = ts.attr.names,
-                       targets = target.stats)
-
-  ## Create stats.formation table for output
-  stats.table <- merge(ts.out, stats.table, all = TRUE)
-  stats.table <- stats.table[do.call("order",
-                                     stats.table[, "sorder", drop = FALSE]), ,
-                             drop = FALSE]
-  rownames(stats.table) <- stats.table$names
-
-  stats.table$reldiff <- 100 * (stats.table$stats.means - stats.table$targets) /
-    stats.table$targets
-  stats.table.formation <- stats.table[, c(2, 4, 6, 5)]
-  colnames(stats.table.formation) <- c("Target", "Sim Mean",
-                                       "Pct Diff", "Sim SD")
+  stats.table.formation <- make_formation_table(merged.stats)
 
   if (skip.dissolution == FALSE) {
     if (dynamic == TRUE) {
@@ -445,6 +396,12 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
   }
 
   ## Save output
+  ts.out <- stats.table.formation[, "Target", drop = FALSE]
+  ts.out[["names"]] <- rownames(ts.out)
+  rownames(ts.out) <- NULL
+  ts.out <- ts.out[, c("names", "Target")]
+  colnames(ts.out) <- c("names", "targets")
+
   out <- list()
   out$nw <- nw
   out$formation <- formation
@@ -477,4 +434,48 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
 
   class(out) <- "netdx"
   return(out)
+}
+
+# Need doc
+make_formation_table <- function(merged.stats) {
+
+  ## Calculate mean/sd from merged stats
+  stats.means <- colMeans(merged.stats)
+  stats.sd <- apply(merged.stats, 2, sd)
+
+  stats.table <- data.frame(
+    sorder = seq_along(names(stats.means)),
+    names = names(stats.means),
+    stats.means,
+    stats.sd
+  )
+
+  ## Get stats from for target statistics
+  ts.attr.names <- x$nwparam[[1]]$target.stats.names
+  target.stats <- x$nwparam[[1]]$target.stats
+  if (length(ts.attr.names) != length(target.stats)) {
+    target.stats <- target.stats[which(target.stats > 0)]
+  }
+  ts.out <- data.frame(
+    names = ts.attr.names,
+    targets = target.stats
+  )
+
+  ## Create stats.formation table for output
+  stats.table <- merge(ts.out, stats.table, all = TRUE)
+  stats.table <- stats.table[order(stats.table[["sorder"]]), , drop = FALSE]
+  # stats.table <- stats.table[ do.call("order", stats.table[, "sorder", drop = FALSE]), , drop = FALSE]
+  rownames(stats.table) <- stats.table$names
+
+  stats.table$reldiff <- (stats.table$stats.means - stats.table$targets) /
+    stats.table$targets * 100
+  stats.table.formation <- stats.table[, c(2, 4, 6, 5)]
+  colnames(stats.table.formation) <- c(
+    "Target",
+    "Sim Mean",
+    "Pct Diff",
+    "Sim SD"
+  )
+
+  return(stats.table.formation)
 }
