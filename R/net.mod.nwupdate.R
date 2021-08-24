@@ -14,7 +14,6 @@
 nwupdate.net <- function(dat, at) {
 
   ## Attributes
-  type <- get_control(dat, "type", override.null.error = TRUE)
   tergmLite <- get_control(dat, "tergmLite")
   status <- get_attr(dat, "status")
   infTime <- get_attr(dat, "infTime")
