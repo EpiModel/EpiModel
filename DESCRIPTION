@@ -50,7 +50,6 @@ Imports:
     ape,
     lazyeval,
     ggplot2,
-    tidyr
 Suggests:
     knitr,
     rmarkdown,
