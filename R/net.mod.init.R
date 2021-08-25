@@ -19,14 +19,8 @@ initialize.net <- function(x, param, init, control, s) {
   if (control$start == 1) {
 
     # Master Data List --------------------------------------------------------
-    dat <- list()
-    dat$param <- param
-    dat$init <- init
-    dat$control <- control
+    dat <- create_dat_object(param, init, control)
 
-    dat$attr <- list()
-    dat$stats <- list()
-    dat$temp <- list()
     dat$nwparam <- list()
     dat$nwparam[[1]] <- x[-which(names(x) == "fit")]
 
