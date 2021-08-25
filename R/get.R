@@ -550,3 +550,54 @@ get_param_set <- function(sims) {
 
   return(d.param)
 }
+
+#' @title Extract the Attributes History from Network Simulations
+#'
+#' @param sims An \code{EpiModel} object of class \code{netsim}.
+#'
+#' @return A list of \code{data.frame}s, one for each "measure" recorded in the
+#' simulation by the `record_attr_history` function.
+#'
+#' @examples
+#' \dontrun{
+#'
+#' # With `sims` the result of a `netsim` call
+#' get_attr_history(sims)
+#'
+#' }
+#'
+#' @export
+#'
+get_attr_history <- function(sims) {
+  if (!inherits(sims, "netsim")) {
+    stop("`sims` must be of class netsim")
+  }
+
+  simnames <- names(sims[["attr.history"]])
+
+  dfs <- list()
+
+  for (name in simnames) {
+    records <- sims[["attr.history"]][[name]]
+    attributes <- vapply(records, function(x) x[["attribute"]], "")
+    attributes.names <- unique(attributes)
+
+    simnum <- as.numeric(sub("[^0-9]*", "", name))
+
+    for (a in attributes.names) {
+      parts <- Filter(function(x) x[["attribute"]] == a, records)
+      parts <- lapply(parts, as.data.frame)
+      d <- do.call("rbind", parts)
+      d[["sim"]] <- simnum
+      d <- d[, c("sim", "time", "attribute", "uids", "values")]
+
+      if (is.null(dfs[[a]])) {
+        dfs[[a]] <- d
+      } else {
+        dfs[[a]] <- rbind(dfs[[a]], d)
+      }
+    }
+  }
+
+  return(dfs)
+}
