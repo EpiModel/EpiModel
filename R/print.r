@@ -118,7 +118,7 @@ print.netdx <- function(x, digits = 3, ...) {
 
 
 #' @export
-print.netsim <- function(x, formation.stats = FALSE, digits = 3, ...) {
+print.netsim <- function(x, nwstats = TRUE, digits = 3, ...) {
 
   nsims <- x$control$nsims
   if (nsims == 1) {
@@ -173,64 +173,25 @@ print.netsim <- function(x, formation.stats = FALSE, digits = 3, ...) {
   }
   cat("")
 
-  if (formation.stats == TRUE) {
-
+  if (nwstats) {
     stats <- x$stats$nwstats
     nsims <- x$control$nsims
 
-    ## Merged stats across all simulations
-    if (nsims > 1) {
-      merged.stats <- matrix(NA, nrow = nrow(stats[[1]]) * nsims,
-                             ncol = ncol(stats[[1]]))
-      for (i in 1:ncol(stats[[1]])) {
-        merged.stats[, i] <- as.numeric(sapply(stats, function(x) c(x[, i])))
-      }
-      colnames(merged.stats) <- colnames(stats[[1]])
-    } else {
-      merged.stats <- stats[[1]]
-    }
-
-    ## Calculate mean/sd from merged stats
-    stats.means <- colMeans(merged.stats)
-    #stats.sd <- apply(merged.stats, 2, sd)
-    if (nsims > 1) {
-      temp2 <- sapply(stats, function(x) colMeans(x))
-      if (ncol(stats[[1]]) == 1) {
-        temp2 <- matrix(temp2, nrow = 1)
-      }
-      stats.sd <- apply(temp2, 1, sd)
-    } else {
-      stats.sd <-  NA
-    }
-    stats.table <- data.frame(sorder = 1:length(names(stats.means)),
-                              names = names(stats.means),
-                              stats.means, stats.sd)
-
-    ## Get stats from for target statistics
-    ts.attr.names <- x$nwparam[[1]]$target.stats.names
     target.stats <- x$nwparam[[1]]$target.stats
+    ts.attr.names <- x$nwparam[[1]]$target.stats.names
     if (length(ts.attr.names) != length(target.stats)) {
       target.stats <- target.stats[which(target.stats > 0)]
     }
     ts.out <- data.frame(names = ts.attr.names,
-                         targets = target.stats)
+      targets = target.stats)
 
-    ## Create stats.formation table for output
-    stats.table <- merge(ts.out, stats.table, all = TRUE)
-    stats.table <- stats.table[do.call("order",
-                                       stats.table[, "sorder", drop = FALSE]), ,
-                               drop = FALSE]
-    rownames(stats.table) <- stats.table$names
+    merged.stats <- Reduce(function(a, x) rbind(a, x[[1]]), stats, init = c())
 
-    stats.table$reldiff <- 100 * (stats.table$stats.means -
-                                    stats.table$targets) / stats.table$targets
-    stats.table.formation <- stats.table[, c(2, 4, 6, 5)]
-    colnames(stats.table.formation) <- c("Target", "Sim Mean",
-                                         "Pct Diff", "Sim SD")
+    stats.table.formation <- make_formation_table(merged.stats, ts.out)
 
     cat("\n\nFormation Diagnostics")
     cat("\n----------------------- \n")
-    print(as.data.frame(round(as.matrix(x$stats.table.formation),
+    print(as.data.frame(round(as.matrix(stats.table.formation),
                               digits = digits)))
     cat("\n")
   }
