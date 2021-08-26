@@ -101,12 +101,12 @@ print.netdx <- function(x, digits = 3, ...) {
 
   cat("\n\nFormation Diagnostics")
   cat("\n----------------------- \n")
-  print(as.data.frame(round(as.matrix(x$stats.table.formation), digits = digits)))
+  print_nwstats_table(x$stats.table.formation, digits)
 
   if (x$dynamic == TRUE & !is.null(x$stats.table.dissolution)) {
     cat("\nDissolution Diagnostics")
     cat("\n----------------------- \n")
-    print(as.data.frame(round(as.matrix(x$stats.table.dissolution), digits = digits)))
+    print_nwstats_table(x$stats.table.dissolution, digits)
     if (x$coef.diss$model.type == "hetero") {
       cat("----------------------- \n")
       cat("* Heterogeneous dissolution model results averaged over")
@@ -191,9 +191,34 @@ print.netsim <- function(x, nwstats = TRUE, digits = 3, ...) {
 
     cat("\n\nFormation Diagnostics")
     cat("\n----------------------- \n")
-    print(as.data.frame(round(as.matrix(stats.table.formation),
-                              digits = digits)))
+    print_nwstats_table(stats.table.formation, digits = digits)
     cat("\n")
+
+    cat("\nDissolution Diagnostics")
+    cat("\n----------------------- \n")
+
+    if (x$control$save.network && ! x$control$tergmLite) {
+      diag.sim <- lapply(seq_len(x$control$nsims), get_network, x = x)
+      sim.df <- lapply(diag.sim, as.data.frame)
+
+      dissolution.stats <- make_dissolution_stats(
+        sim.df,
+        x$nwparam[[1]]$coef.diss,
+        x$control$nsteps,
+        verbose = FALSE
+      )
+
+      print_nwstats_table(dissolution.stats$stats.table.dissolution, digits)
+
+      if (x$nwparam[[1]]$coef.diss$model.type == "hetero") {
+        cat("----------------------- \n")
+        cat("* Heterogeneous dissolution model results averaged over")
+      }
+    } else {
+      cat("Not available when:")
+      cat("\n- `control$tergmLite == TRUE`")
+      cat("\n- `control$save.network == FALSE` \n")
+    }
   }
 
   cat("\n")
@@ -418,13 +443,15 @@ print.control.icm <- function(x, ...) {
 #' @export
 print.control.net <- function(x, ...) {
 
-  pToPrint <- which(!grepl(".FUN", names(x)) &
-                      names(x) != "f.args" &
-                      names(x) != "f.names" &
-                      names(x) != "set.control.stergm" &
-                      names(x) != "set.control.ergm" &
-                      !grepl("^mcmc\\.control", names(x)) &
-                      !(names(x) %in% c("bi.mods", "user.mods")))
+  pToPrint <- which(
+    !grepl(".FUN", names(x)) &
+    names(x) != "f.args" &
+    names(x) != "f.names" &
+    names(x) != "set.control.stergm" &
+    names(x) != "set.control.ergm" &
+    !grepl("^mcmc\\.control", names(x)) &
+    !(names(x) %in% c("bi.mods", "user.mods"))
+  )
 
 
 
@@ -457,3 +484,14 @@ print.control.net <- function(x, ...) {
 
   invisible()
 }
+
+#' @title Print Helper For Network Stats Tables
+#'
+#' @param nwtable a formation or dissolution statistics \code{data.frame}
+#' @param digits argument to be passed to \code{round}
+#'
+#' @internal
+print_nwstats_table <- function(nwtable, digits) {
+  print(as.data.frame(round(as.matrix(nwtable), digits = digits)))
+}
+

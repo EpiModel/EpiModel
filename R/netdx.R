@@ -336,7 +336,15 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
   return(out)
 }
 
-# Need doc
+#' @title Calculate the Formation Statistics of a Network
+#'
+#' @param merged.stats a matrix of \code{nsims * nsteps} rows, with a column for
+#'   each of the formation target
+#' @param targets a \code{data.frame} of the formation targets with two columns:
+#'   "names" and "targets"
+#'
+#' @return a \code{data.frame} of the formation statistics
+#' @internal
 make_formation_table <- function(merged.stats, targets) {
 
   # browser()
@@ -370,6 +378,15 @@ make_formation_table <- function(merged.stats, targets) {
   return(stats.table.formation)
 }
 
+#' @title Calculate the Dissolution Statistics of a Network
+#'
+#' @param sim.df a list of network objects (one per simulation)
+#' @param coef.diss the \code{coef.diss} element of \code{nwparam}
+#' @param nsteps the number of simualted steps
+#' @param verbose a verbosity toggle (default = TRUE)
+#'
+#' @return a \code{list} of dissolution statistics
+#' @internal
 make_dissolution_stats <- function(sim.df, coef.diss, nsteps, verbose = TRUE) {
   if (verbose == TRUE) {
     cat("\n- Calculating duration statistics")
@@ -409,9 +426,9 @@ make_dissolution_stats <- function(sim.df, coef.diss, nsteps, verbose = TRUE) {
   duration.obs <- matrix(unlist(pages), nrow = nsteps)
   duration.imputed <- duration.obs + pages_imptd
   duration.mean.by.sim <- colMeans(duration.imputed)
-  duration.mean <- mean(duration.mean.by.sim)
+  duration.mean <- mean(duration.mean.by.sim, na.rm = TRUE)
   if (nsims > 1) {
-    duration.sd <- sd(duration.mean.by.sim)
+    duration.sd <- sd(duration.mean.by.sim, na.rm = TRUE)
   } else {
     duration.sd <- NA
   }
@@ -420,10 +437,10 @@ make_dissolution_stats <- function(sim.df, coef.diss, nsteps, verbose = TRUE) {
   duration.pctdiff <- (duration.mean - duration.expected) /
     duration.expected * 100
 
-  dissolution.mean <- mean(unlist(prop.diss))
+  dissolution.mean <- mean(unlist(prop.diss), na.rm = TRUE)
 
   if (nsims > 1) {
-    dissolution.sd <- sd(sapply(prop.diss, mean))
+    dissolution.sd <- sd(sapply(prop.diss, mean, na.rm = TRUE))
   } else {
     dissolution.sd <- NA
   }
