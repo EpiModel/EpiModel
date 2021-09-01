@@ -106,10 +106,16 @@ print.netdx <- function(x, digits = 3, ...) {
   if (x$dynamic == TRUE & !is.null(x$stats.table.dissolution)) {
     cat("\nDissolution Diagnostics")
     cat("\n----------------------- \n")
-    print_nwstats_table(x$stats.table.dissolution, digits)
-    if (x$coef.diss$model.type == "hetero") {
-      cat("----------------------- \n")
-      cat("* Heterogeneous dissolution model results averaged over")
+    if (x$coef.diss$dissolution == ~ offset(edges)) {
+      print_nwstats_table(x$stats.table.dissolution, digits)
+      if (x$coef.diss$model.type == "hetero") {
+        cat("----------------------- \n")
+        cat("* Heterogeneous dissolution model results averaged over")
+      }
+    } else {
+      cat("Not available when:")
+      cat("\n- dissolution formula is not `~ offset(edges)`")
+      cat("\n")
     }
   }
 
@@ -118,7 +124,7 @@ print.netdx <- function(x, digits = 3, ...) {
 
 
 #' @export
-print.netsim <- function(x, nwstats = TRUE, digits = 3, ...) {
+print.netsim <- function(x, nwstats = TRUE, digits = 3, network = 1, ...) {
 
   nsims <- x$control$nsims
   if (nsims == 1) {
@@ -149,7 +155,7 @@ print.netsim <- function(x, nwstats = TRUE, digits = 3, ...) {
   if (is.null(x$control$type)) {
     cat("\nModel Functions")
     cat("\n-----------------------\n")
-    for (i in 1:length(x$control$f.names)) {
+    for (i in seq_along(x$control$f.names)) {
       cat(x$control$f.names[i], "\n")
     }
     # cat("\n")
@@ -177,15 +183,18 @@ print.netsim <- function(x, nwstats = TRUE, digits = 3, ...) {
     stats <- x$stats$nwstats
     nsims <- x$control$nsims
 
-    target.stats <- x$nwparam[[1]]$target.stats
-    ts.attr.names <- x$nwparam[[1]]$target.stats.names
+    target.stats <- x$nwparam[[network]]$target.stats
+    ts.attr.names <- x$nwparam[[network]]$target.stats.names
     if (length(ts.attr.names) != length(target.stats)) {
       target.stats <- target.stats[which(target.stats > 0)]
     }
     ts.out <- data.frame(names = ts.attr.names,
       targets = target.stats)
 
-    merged.stats <- Reduce(function(a, x) rbind(a, x[[1]]), stats, init = c())
+    merged.stats <- Reduce(
+      function(a, x) rbind(a, x[[network]]),
+      stats, init = c()
+    )
 
     stats.table.formation <- make_formation_table(merged.stats, ts.out)
 
@@ -197,27 +206,34 @@ print.netsim <- function(x, nwstats = TRUE, digits = 3, ...) {
     cat("\nDissolution Diagnostics")
     cat("\n----------------------- \n")
 
-    if (x$control$save.network && ! x$control$tergmLite) {
-      diag.sim <- lapply(seq_len(x$control$nsims), get_network, x = x)
+    if (x$control$save.network &&
+        ! x$control$tergmLite &&
+        x$nwparam[[network]]$coef.diss$dissolution == ~ offset(edges)) {
+      diag.sim <- lapply(
+        seq_len(x$control$nsims),
+        get_network, network = network, x = x
+      )
       sim.df <- lapply(diag.sim, as.data.frame)
 
       dissolution.stats <- make_dissolution_stats(
         sim.df,
-        x$nwparam[[1]]$coef.diss,
+        x$nwparam[[network]]$coef.diss,
         x$control$nsteps,
         verbose = FALSE
       )
 
       print_nwstats_table(dissolution.stats$stats.table.dissolution, digits)
 
-      if (x$nwparam[[1]]$coef.diss$model.type == "hetero") {
+      if (x$nwparam[[network]]$coef.diss$model.type == "hetero") {
         cat("----------------------- \n")
         cat("* Heterogeneous dissolution model results averaged over")
       }
     } else {
       cat("Not available when:")
       cat("\n- `control$tergmLite == TRUE`")
-      cat("\n- `control$save.network == FALSE` \n")
+      cat("\n- `control$save.network == FALSE`")
+      cat("\n- dissolution formula is not `~ offset(edges)`")
+      cat("\n")
     }
   }
 
@@ -490,7 +506,7 @@ print.control.net <- function(x, ...) {
 #' @param nwtable a formation or dissolution statistics \code{data.frame}
 #' @param digits argument to be passed to \code{round}
 #'
-#' @internal
+#' @keywords internal
 print_nwstats_table <- function(nwtable, digits) {
   print(as.data.frame(round(as.matrix(nwtable), digits = digits)))
 }

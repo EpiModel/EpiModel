@@ -344,7 +344,7 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
 #'   "names" and "targets"
 #'
 #' @return a \code{data.frame} of the formation statistics
-#' @internal
+#' @keywords internal
 make_formation_table <- function(merged.stats, targets) {
 
   # browser()
@@ -386,7 +386,7 @@ make_formation_table <- function(merged.stats, targets) {
 #' @param verbose a verbosity toggle (default = TRUE)
 #'
 #' @return a \code{list} of dissolution statistics
-#' @internal
+#' @keywords internal
 make_dissolution_stats <- function(sim.df, coef.diss, nsteps, verbose = TRUE) {
   if (verbose == TRUE) {
     cat("\n- Calculating duration statistics")
