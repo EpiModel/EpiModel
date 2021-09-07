@@ -347,7 +347,6 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
 #' @keywords internal
 make_formation_table <- function(merged.stats, targets) {
 
-  # browser()
   ## Calculate mean/sd from merged stats
   stats.means <- colMeans(merged.stats)
   stats.sd <- apply(merged.stats, 2, sd)
