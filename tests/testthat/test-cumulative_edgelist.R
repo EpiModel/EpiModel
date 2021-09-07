@@ -48,5 +48,5 @@ test_that("netsim, SI, Cumulative Edgelist", {
 
   mod <- netsim(est, param, init, control)
   d <- get_cumulative_edgelists_df(mod[[1]])
-  expect_lte(min(d$stop, na.rm = TRUE), 40)
+  expect_gte(min(d$stop, na.rm = TRUE), 40)
 })
