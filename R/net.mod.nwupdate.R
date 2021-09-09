@@ -14,12 +14,16 @@
 nwupdate.net <- function(dat, at) {
 
   ## Attributes
-  tergmLite <- get_control(dat, "tergmLite")
   status <- get_attr(dat, "status")
   infTime <- get_attr(dat, "infTime")
   active <- get_attr(dat, "active")
   entrTime <- get_attr(dat, "entrTime")
   exitTime <- get_attr(dat, "exitTime")
+
+  ## Controls
+  tergmLite <- get_control(dat, "tergmLite")
+  cumulative.edgelist <- get_control(
+    dat, "cumulative.edgelist", override.null.error = TRUE)
 
   # statOnNw <- "status" %in% dat$temp$nwterms
   resimulate.network <- get_control(dat, "resimulate.network")
@@ -104,6 +108,18 @@ nwupdate.net <- function(dat, at) {
   if (tergmLite == FALSE & isTERGM == FALSE & resimulate.network == FALSE) {
     dat$temp$nw_list[[at]] <- set_vertex_attribute(dat$temp$nw_list[[at]],
                                                    "status", status)
+  }
+
+  # Cummulative edgelist
+  if (!is.null(cumulative.edgelist) && cumulative.edgelist) {
+
+    truncate.el.cuml <- get_control(
+      dat, "truncate.el.cuml", override.null.error = TRUE)
+    truncate.el.cuml <- if (is.null(truncate.el.cuml)) Inf else truncate.el.cuml
+
+    for (network in seq_along(dat[["nwparam"]])) {
+      dat <- update_cumulative_edgelist(dat, at, network, truncate.el.cuml)
+    }
   }
 
   ## Output
