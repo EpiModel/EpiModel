@@ -123,7 +123,7 @@
 #'
 netsim <- function(x, param, init, control) {
   check.control.class("net", "EpiModel netsim")
-  
+
   crosscheck.net(x, param, init, control)
   if (!is.null(control[["verbose.FUN"]])) {
     do.call(control[["verbose.FUN"]], list(control, type = "startup"))
@@ -187,6 +187,7 @@ netsim_loop <- function(x, param, init, control, s) {
       ### TIME LOOP
       if (control$nsteps > 1) {
         for (at in max(2, control$start):control$nsteps) {
+          dat <- set_current_timestep(dat, at)
 
           ## Module order
           morder <- control$module.order

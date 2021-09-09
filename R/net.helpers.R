@@ -13,15 +13,69 @@
 #' @export
 create_dat_object <- function(param = list(), init = list(), control = list()) {
   dat <- list(
-    "param"    = param,
-    "init"     = init,
-    "control"  = control,
+    "param"     = param,
+    "init"      = init,
+    "control"   = control,
 
-    "attr"     = list(),
-    "epi"      = list(),
-    "stats"    = list(),
-    "temp"     = list()
+    "attr"      = list(),
+    "epi"       = list(),
+    "stats"     = list(),
+    "temp"      = list(),
+    "_timestep" = 1
   )
 
+  return(dat)
+}
+
+#' @title Returns the Current Timestep
+#'
+#' @param dat a Master list object of network models
+#'
+#' @return the current timestep
+#' @export
+get_current_timestep <- function(dat) {
+  return(dat[["_timestep"]])
+}
+
+#' @title Sets the Current Timestep
+#'
+#' @description Changes the current timestep in the \code{dat} object. Use with
+#'              caution. This function exists to workaround unforseen corner
+#'              cases. In most situation, \code{increment_timestep} should be
+#'              prefered
+#'
+#' @param dat a Master list object of network models
+#' @param timestep the new value for the timestep
+#'
+#' @return A \code{dat} Master list object
+#'
+#' @section Mutability:
+#' This DOES NOT modify the dat object in place. The result must be assigned
+#' back to \code{dat} in order to be registered
+#' \code{dat <- increment_timestep(dat)}
+#'
+#' @export
+set_current_timestep <- function(dat, timestep) {
+  dat[["_timestep"]] <- timestep
+  return(dat)
+}
+
+#' @title Increment the Current Timestep
+#'
+#' @description This function adds 1 to the timestep counter stored in the
+#'              \code{dat} Master list object.
+#'
+#' @param dat a Master list object of network models
+#'
+#' @return A \code{dat} Master list object
+#'
+#' @section Mutability:
+#' This DOES NOT modify the dat object in place. The result must be assigned
+#' back to \code{dat} in order to be registered
+#' \code{dat <- increment_timestep(dat)}
+#'
+#' @export
+increment_timestep <- function(dat) {
+  dat[["_timestep"]] <- dat[["_timestep"]] + 1
   return(dat)
 }
