@@ -69,12 +69,9 @@ initialize.net <- function(x, param, init, control, s) {
 
     # Restart/Reinit Simulations ----------------------------------------------
   } else if (control$start > 1) {
-    dat <- list()
+    dat <- create_dat_object(param = x[["param"]], control = control)
 
     dat$nw <- x$network[[s]]
-    dat$param <- x$param
-    dat$control <- control
-    dat$nwparam <- x$nwparam
     if (is.null(dat$control$isTERGM)) {
       nwparam <- get_nwparam(dat)
       isTERGM <- all(nwparam$coef.diss$duration > 1)
@@ -84,7 +81,6 @@ initialize.net <- function(x, param, init, control, s) {
     names(dat$epi) <- names(x$epi)
     dat$attr <- x$attr[[s]]
     dat$stats <- sapply(x$stats, function(var) var[[s]])
-    dat$temp <- list()
   }
 
   return(dat)

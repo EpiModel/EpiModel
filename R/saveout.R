@@ -136,6 +136,7 @@ saveout.net <- function(dat, s, out = NULL) {
     out$control <- dat$control
     out$nwparam <- dat$nwparam
     out$control$num.nw <- num.nw
+    out[["last_timestep"]] <- get_current_timestep(dat)
 
     out$epi <- list()
     for (j in seq_along(dat$epi)) {
