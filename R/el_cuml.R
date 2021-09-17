@@ -44,7 +44,11 @@ get_edgelist <- function(dat, at, network) {
 #'
 #' @export
 get_cumulative_edgelist <- function(dat, network) {
-  el_cuml <- dat[["el_cuml"]][[network]]
+  if (length(dat[["el_cuml"]]) < network) {
+    el_cuml <- NULL
+  } else {
+    el_cuml <- dat[["el_cuml"]][[network]]
+  }
 
   if(is.null(el_cuml)) {
     el_cuml <- data.frame(
