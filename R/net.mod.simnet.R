@@ -235,7 +235,7 @@ resim_nets <- function(dat, at) {
       if (save.nwstats == TRUE) {
         nwstats <- summary(dat$control$nwstats.formulas[[1]],
                            basis = dat$nw[[1]],
-                           term.options = dat$control$mcmc.control[[1]]$term.options,
+                           term.options = if(isTERGM) set.control.stergm$term.options else set.control.ergm$term.options,
                            dynamic = isTERGM)
         keep.cols <- which(!duplicated(names(nwstats)))
         dat$stats$nwstats[[1]] <- rbind(dat$stats$nwstats[[1]], nwstats[keep.cols])
