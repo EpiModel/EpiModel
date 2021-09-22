@@ -170,17 +170,18 @@ get_partners <- function(dat, at, index_posit_ids, networks = NULL,
 
   partner_head_df <- el_cuml_df[el_cuml_df[["head"]] %in% index_unique_ids, ]
   partner_tail_df <- el_cuml_df[
-    el_cuml_df[["tail"]] %in% index_unique_ids, c(2, 1, 3:5)
+    el_cuml_df[["tail"]] %in% index_unique_ids,
+    c(2, 1, 3:5) # switch the head and tail columns
   ]
 
+  colnames(partner_head_df) <- c("index", "partner", "start", "stop", "network")
   colnames(partner_tail_df) <- colnames(partner_head_df)
 
   partner_df <- rbind(partner_head_df, partner_tail_df)
-  colnames(partner_df) <- c("index", "partner", "start", "stop", "network")
 
   if (only.active) {
-    partner_df <- partner_df[
-      is_active_unique_ids(dat, partner_df[["partner"]]), ]
+    active_partners <- is_active_unique_ids(dat, partner_df[["partner"]])
+    partner_df <- partner_df[active_partners, ]
   }
 
   if (max.age != Inf) {
