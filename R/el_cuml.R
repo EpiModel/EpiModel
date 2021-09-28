@@ -44,10 +44,10 @@ get_edgelist <- function(dat, at, network) {
 #'
 #' @export
 get_cumulative_edgelist <- function(dat, network) {
-  if (length(dat[["el_cuml"]]) < network) {
+  if (length(dat[["el.cuml"]]) < network) {
     el_cuml <- NULL
   } else {
-    el_cuml <- dat[["el_cuml"]][[network]]
+    el_cuml <- dat[["el.cuml"]][[network]]
   }
 
   if(is.null(el_cuml)) {
@@ -110,7 +110,7 @@ update_cumulative_edgelist <- function(dat, at, network, truncate = Inf) {
     el_cuml <- el_cuml[rel.age <= truncate, ]
   }
 
-  dat[["el_cuml"]][[network]] <- el_cuml[, c("head", "tail", "start", "stop")]
+  dat[["el.cuml"]][[network]] <- el_cuml[, c("head", "tail", "start", "stop")]
 
   return(dat)
 }
@@ -134,7 +134,7 @@ get_cumulative_edgelists_df <- function(dat, networks = NULL) {
   el_cuml_df <- Reduce(
     function(a, x) {
       el_cuml_tmp <- get_cumulative_edgelist(dat, network = x)
-      el_cuml_tmp[["network"]] <- x
+      el_cuml_tmp[["network"]] <- rep(x, nrow(el_cuml_tmp))
       rbind(a, el_cuml_tmp)
     },
     networks,
