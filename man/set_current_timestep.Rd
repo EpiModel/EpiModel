@@ -8,6 +8,7 @@ set_current_timestep(dat, timestep)
 }
 \arguments{
 \item{dat}{a Master list object of network models}
+
 \item{timestep}{the new value for the timestep}
 }
 \value{

@@ -106,25 +106,21 @@ the \code{tergm} package. An example is shown below.
 nw <- network_initialize(n = 100)
 formation <- ~edges
 target.stats <- 50
-coef.diss <- dissolution_coefs(dissolution = ~ offset(edges), duration = 25)
+coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 25)
 
 # Estimate the model
 est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 
 # Static diagnostics on the ERGM fit
-dx1 <- netdx(est,
-  nsims = 1e4, dynamic = FALSE,
-  nwstats.formula = ~ edges + meandeg + concurrent
-)
+dx1 <- netdx(est, nsims = 1e4, dynamic = FALSE,
+             nwstats.formula = ~edges + meandeg + concurrent)
 dx1
 plot(dx1, method = "b", stats = c("edges", "concurrent"))
 
 # Dynamic diagnostics on the STERGM approximation
-dx2 <- netdx(est,
-  nsims = 5, nsteps = 500,
-  nwstats.formula = ~ edges + meandeg + concurrent,
-  set.control.ergm = control.simulate.ergm(MCMC.burnin = 1e6)
-)
+dx2 <- netdx(est, nsims = 5, nsteps = 500,
+             nwstats.formula = ~edges + meandeg + concurrent,
+             set.control.ergm = control.simulate.ergm(MCMC.burnin = 1e6))
 dx2
 plot(dx2, stats = c("edges", "meandeg"), plots.joined = FALSE)
 plot(dx2, type = "duration")
