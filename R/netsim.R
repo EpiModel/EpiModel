@@ -218,12 +218,9 @@ netsim_loop <- function(x, param, init, control, s) {
 
       dat
     },
-    message = function(e) message(netsim_cond_msg("MESSAGE",
-                                                  current_mod, at, e)),
-    warning = function(e) message(netsim_cond_msg("WARNING",
-                                                  current_mod, at, e)),
-    error = function(e) message(netsim_cond_msg("ERROR", current_mod, at, e))
-  )
+    message = function(e) message(netsim_cond_msg("MESSAGE", current_mod, at)),
+    warning = function(e) message(netsim_cond_msg("WARNING", current_mod, at)),
+    error = function(e) message(netsim_cond_msg("ERROR", current_mod, at)))
 
   return(dat)
 }
