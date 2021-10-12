@@ -143,6 +143,9 @@ saveout.net <- function(dat, s, out = NULL) {
       out$epi[[names(dat$epi)[j]]] <- data.frame(dat$epi[j])
     }
 
+    out$el.cuml <- list()
+    out$el.cuml[[s]] <- dat$el.cuml
+    
     out[["_last_unique_id"]] <- list()
     out[["_last_unique_id"]][[s]] <- dat[["_last_unique_id"]]
 
@@ -213,6 +216,8 @@ saveout.net <- function(dat, s, out = NULL) {
       out$epi[[names(dat$epi)[j]]][, s] <- data.frame(dat$epi[j])
     }
 
+    out$el.cuml[[s]] <- dat$el.cuml
+
     out[["_last_unique_id"]][[s]] <- dat[["_last_unique_id"]]
 
     out$attr.history[[s]] <- dat$attr.history
@@ -257,6 +262,9 @@ saveout.net <- function(dat, s, out = NULL) {
     for (i in as.vector(which(lapply(out$epi, class) == "data.frame"))) {
       colnames(out$epi[[i]]) <- simnames
     }
+
+    if (length(out$el.cuml) > 0)
+      names(out$el.cuml) <- simnames
 
     if (length(out[["_last_unique_id"]]) > 0)
       names(out[["_last_unique_id"]]) <- simnames
