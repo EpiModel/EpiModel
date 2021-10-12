@@ -123,7 +123,7 @@
 #'
 netsim <- function(x, param, init, control) {
   check.control.class("net", "EpiModel netsim")
-  
+
   crosscheck.net(x, param, init, control)
   if (!is.null(control[["verbose.FUN"]])) {
     do.call(control[["verbose.FUN"]], list(control, type = "startup"))
@@ -215,12 +215,9 @@ netsim_loop <- function(x, param, init, control, s) {
 
       dat
     },
-    message = function(e) message(netsim_cond_msg("MESSAGE",
-                                                  current_mod, at, e)),
-    warning = function(e) message(netsim_cond_msg("WARNING",
-                                                  current_mod, at, e)),
-    error = function(e) message(netsim_cond_msg("ERROR", current_mod, at, e))
-  )
+    message = function(e) message(netsim_cond_msg("MESSAGE", current_mod, at)),
+    warning = function(e) message(netsim_cond_msg("WARNING", current_mod, at)),
+    error = function(e) message(netsim_cond_msg("ERROR", current_mod, at)))
 
   return(dat)
 }
