@@ -19,14 +19,8 @@ initialize.net <- function(x, param, init, control, s) {
   if (control$start == 1) {
 
     # Master Data List --------------------------------------------------------
-    dat <- list()
-    dat$param <- param
-    dat$init <- init
-    dat$control <- control
+    dat <- create_dat_object(param, init, control)
 
-    dat$attr <- list()
-    dat$stats <- list()
-    dat$temp <- list()
     dat$nwparam <- list()
     dat$nwparam[[1]] <- x[-which(names(x) == "fit")]
 
@@ -75,11 +69,9 @@ initialize.net <- function(x, param, init, control, s) {
 
     # Restart/Reinit Simulations ----------------------------------------------
   } else if (control$start > 1) {
-    dat <- list()
+    dat <- create_dat_object(param = x$param, control = control)
 
     dat$nw <- x$network[[s]]
-    dat$param <- x$param
-    dat$control <- control
     dat$nwparam <- x$nwparam
     if (is.null(dat$control$isTERGM)) {
       nwparam <- get_nwparam(dat)
@@ -90,7 +82,6 @@ initialize.net <- function(x, param, init, control, s) {
     names(dat$epi) <- names(x$epi)
     dat$attr <- x$attr[[s]]
     dat$stats <- sapply(x$stats, function(var) var[[s]])
-    dat$temp <- list()
   }
 
   return(dat)
