@@ -94,7 +94,7 @@ plot(mod4)
 \references{
 Soetaert K, Petzoldt T, Setzer W. Solving Differential Equations in
 R: Package deSolve. Journal of Statistical Software. 2010; 33(9): 1-25.
-\url{https://www.jstatsoft.org/v33/i09/}.
+\doi{10.18637/jss.v033.i09}.
 }
 \seealso{
 Extract the model results with \code{\link{as.data.frame.dcm}}.
