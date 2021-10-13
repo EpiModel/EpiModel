@@ -191,7 +191,7 @@ netsim_loop <- function(x, param, init, control, s) {
           dat <- set_current_timestep(dat, at)
 
           ## Module order
-          morder <- get_control(dat, "module.order")
+          morder <- get_control(dat, "module.order", override.null.error = TRUE)
           if (is.null(morder)) {
             bi.mods <- get_control(dat, "bi.mods")
             user.mods <- get_control(dat, "user.mods")
