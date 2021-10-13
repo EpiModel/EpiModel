@@ -123,7 +123,7 @@
 #'
 netsim <- function(x, param, init, control) {
   check.control.class("net", "EpiModel netsim")
-  
+
   crosscheck.net(x, param, init, control)
   if (!is.null(control[["verbose.FUN"]])) {
     do.call(control[["verbose.FUN"]], list(control, type = "startup"))
@@ -182,25 +182,29 @@ netsim_loop <- function(x, param, init, control, s) {
         current_mod <- "initialize.FUN"
         at <- paste0("`Initialization Step` (", control$start, ")")
         dat <- do.call(control[[current_mod]], list(x, param, init, control, s))
+        dat <- increment_timestep(dat)
       }
 
       ### TIME LOOP
       if (control$nsteps > 1) {
         for (at in max(2, control$start):control$nsteps) {
+          dat <- set_current_timestep(dat, at)
 
           ## Module order
-          morder <- control$module.order
+          morder <- get_control(dat, "module.order", override.null.error = TRUE)
           if (is.null(morder)) {
-            lim.bi.mods <- control$bi.mods[-which(
-              control$bi.mods %in% c("initialize.FUN", "verbose.FUN")
-            )]
-            morder <- c(control$user.mods, lim.bi.mods)
+            bi.mods <- get_control(dat, "bi.mods")
+            user.mods <- get_control(dat, "user.mods")
+            lim.bi.mods <- bi.mods[
+              -which(bi.mods %in% c("initialize.FUN", "verbose.FUN"))]
+            morder <- c(user.mods, lim.bi.mods)
           }
 
           ## Evaluate modules
           for (i in seq_along(morder)) {
             current_mod <- morder[[i]]
-            dat <- do.call(control[[current_mod]], list(dat, at))
+            mod.FUN <- get_control(dat, current_mod)
+            dat <- do.call(mod.FUN, list(dat, at))
           }
 
           ## Verbose module
@@ -209,18 +213,14 @@ netsim_loop <- function(x, param, init, control, s) {
             current_mod <- "verbose.FUN"
             do.call(control[[current_mod]], list(dat, type = "progress", s, at))
           }
-
         }
       }
 
       dat
     },
-    message = function(e) message(netsim_cond_msg("MESSAGE",
-                                                  current_mod, at, e)),
-    warning = function(e) message(netsim_cond_msg("WARNING",
-                                                  current_mod, at, e)),
-    error = function(e) message(netsim_cond_msg("ERROR", current_mod, at, e))
-  )
+    message = function(e) message(netsim_cond_msg("MESSAGE", current_mod, at)),
+    warning = function(e) message(netsim_cond_msg("WARNING", current_mod, at)),
+    error = function(e) message(netsim_cond_msg("ERROR", current_mod, at)))
 
   return(dat)
 }
