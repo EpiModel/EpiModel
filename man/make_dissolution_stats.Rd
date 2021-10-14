@@ -21,3 +21,4 @@ a \code{list} of dissolution statistics
 \description{
 Calculate the Dissolution Statistics of a Network
 }
+\keyword{internal}

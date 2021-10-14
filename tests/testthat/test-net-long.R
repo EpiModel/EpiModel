@@ -329,6 +329,21 @@ test_that("High departure rate models", {
 
 })
 
+################################################################################
+
+test_that("erroneous two-group models", {
+
+  nw <- network_initialize(n = 100)
+  nw <- set_vertex_attribute(nw, "group", rep(0:1, each = 50))
+  est <- netest(nw, formation = ~edges, target.stats = 25,
+                 coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                 edapprox = TRUE, verbose = FALSE)
+
+  param <- param.net(inf.prob = 0.5, inf.prob.g2 = 0.1)
+  init <- init.net(i.num = 10, i.num.g2 = 0)
+  control <- control.net(type = "SI", nsims = 2, nsteps = 25, verbose = FALSE)
+  expect_error(netsim(est, param, init, control))
+})
 
 
 ################################################################################

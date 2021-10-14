@@ -14,3 +14,4 @@ print_nwstats_table(nwtable, digits)
 \description{
 Print Helper For Network Stats Tables
 }
+\keyword{internal}

@@ -19,3 +19,4 @@ a \code{data.frame} of the formation statistics
 \description{
 Calculate the Formation Statistics of a Network
 }
+\keyword{internal}
