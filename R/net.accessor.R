@@ -638,3 +638,34 @@ get_posit_ids <- function(dat, unique_ids = NULL) {
 
   return(posit_ids)
 }
+
+#' @title Are These Nodes Active (Unique IDs)
+#'
+#' @param dat a Master list object of network models
+#' @param unique_ids a vector of node unique identifiers
+#'
+#' @return a logical vector with TRUE if the node is still active and FALSE
+#' otherwise
+#'
+#' @export
+is_active_unique_ids <- function(dat, unique_ids) {
+  suppressWarnings({
+    posit_ids <- get_posit_ids(dat, unique_ids)
+  })
+
+  return(is_active_posit_ids(dat, posit_ids))
+}
+
+#' @title Are These Nodes Active (Positional IDs)
+#'
+#' @param dat a Master list object of network models
+#' @param posit_ids a vector of node positional identifiers
+#'
+#' @return a logical vector with TRUE if the node is still active and FALSE
+#' otherwise
+#'
+#' @export
+is_active_posit_ids <- function(dat, posit_ids) {
+  active <- get_attr(dat, "active")
+  return(active[posit_ids] %in% 1)
+}

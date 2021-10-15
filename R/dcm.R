@@ -42,7 +42,7 @@
 #' @references
 #' Soetaert K, Petzoldt T, Setzer W. Solving Differential Equations in
 #' R: Package deSolve. Journal of Statistical Software. 2010; 33(9): 1-25.
-#' \url{https://www.jstatsoft.org/v33/i09/}.
+#' \doi{10.18637/jss.v033.i09}.
 #'
 #' @keywords model
 #'
@@ -97,7 +97,7 @@
 #'
 dcm <- function(param, init, control) {
   check.control.class("dcm", "EpiModel dcm")
-  
+
   crosscheck.dcm(param, init, control)
 
   # Model selection ---------------------------------------------------------

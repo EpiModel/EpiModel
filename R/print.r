@@ -101,15 +101,21 @@ print.netdx <- function(x, digits = 3, ...) {
 
   cat("\n\nFormation Diagnostics")
   cat("\n----------------------- \n")
-  print(as.data.frame(round(as.matrix(x$stats.table.formation), digits = digits)))
+  print_nwstats_table(x$stats.table.formation, digits)
 
   if (x$dynamic == TRUE & !is.null(x$stats.table.dissolution)) {
     cat("\nDissolution Diagnostics")
     cat("\n----------------------- \n")
-    print(as.data.frame(round(as.matrix(x$stats.table.dissolution), digits = digits)))
-    if (x$coef.diss$model.type == "hetero") {
-      cat("----------------------- \n")
-      cat("* Heterogeneous dissolution model results averaged over")
+    if (x$coef.diss$dissolution == ~ offset(edges)) {
+      print_nwstats_table(x$stats.table.dissolution, digits)
+      if (x$coef.diss$model.type == "hetero") {
+        cat("----------------------- \n")
+        cat("* Heterogeneous dissolution model results averaged over")
+      }
+    } else {
+      cat("Not available when:")
+      cat("\n- dissolution formula is not `~ offset(edges)`")
+      cat("\n")
     }
   }
 
@@ -118,7 +124,7 @@ print.netdx <- function(x, digits = 3, ...) {
 
 
 #' @export
-print.netsim <- function(x, formation.stats = FALSE, digits = 3, ...) {
+print.netsim <- function(x, nwstats = TRUE, digits = 3, network = 1, ...) {
 
   nsims <- x$control$nsims
   if (nsims == 1) {
@@ -149,7 +155,7 @@ print.netsim <- function(x, formation.stats = FALSE, digits = 3, ...) {
   if (is.null(x$control$type)) {
     cat("\nModel Functions")
     cat("\n-----------------------\n")
-    for (i in 1:length(x$control$f.names)) {
+    for (i in seq_along(x$control$f.names)) {
       cat(x$control$f.names[i], "\n")
     }
     # cat("\n")
@@ -173,66 +179,62 @@ print.netsim <- function(x, formation.stats = FALSE, digits = 3, ...) {
   }
   cat("")
 
-  if (formation.stats == TRUE) {
-
+  if (nwstats) {
     stats <- x$stats$nwstats
     nsims <- x$control$nsims
 
-    ## Merged stats across all simulations
-    if (nsims > 1) {
-      merged.stats <- matrix(NA, nrow = nrow(stats[[1]]) * nsims,
-                             ncol = ncol(stats[[1]]))
-      for (i in 1:ncol(stats[[1]])) {
-        merged.stats[, i] <- as.numeric(sapply(stats, function(x) c(x[, i])))
-      }
-      colnames(merged.stats) <- colnames(stats[[1]])
-    } else {
-      merged.stats <- stats[[1]]
-    }
-
-    ## Calculate mean/sd from merged stats
-    stats.means <- colMeans(merged.stats)
-    #stats.sd <- apply(merged.stats, 2, sd)
-    if (nsims > 1) {
-      temp2 <- sapply(stats, function(x) colMeans(x))
-      if (ncol(stats[[1]]) == 1) {
-        temp2 <- matrix(temp2, nrow = 1)
-      }
-      stats.sd <- apply(temp2, 1, sd)
-    } else {
-      stats.sd <-  NA
-    }
-    stats.table <- data.frame(sorder = 1:length(names(stats.means)),
-                              names = names(stats.means),
-                              stats.means, stats.sd)
-
-    ## Get stats from for target statistics
-    ts.attr.names <- x$nwparam[[1]]$target.stats.names
-    target.stats <- x$nwparam[[1]]$target.stats
+    target.stats <- x$nwparam[[network]]$target.stats
+    ts.attr.names <- x$nwparam[[network]]$target.stats.names
     if (length(ts.attr.names) != length(target.stats)) {
       target.stats <- target.stats[which(target.stats > 0)]
     }
     ts.out <- data.frame(names = ts.attr.names,
-                         targets = target.stats)
+      targets = target.stats)
 
-    ## Create stats.formation table for output
-    stats.table <- merge(ts.out, stats.table, all = TRUE)
-    stats.table <- stats.table[do.call("order",
-                                       stats.table[, "sorder", drop = FALSE]), ,
-                               drop = FALSE]
-    rownames(stats.table) <- stats.table$names
+    merged.stats <- Reduce(
+      function(a, x) rbind(a, x[[network]]),
+      stats, init = c()
+    )
 
-    stats.table$reldiff <- 100 * (stats.table$stats.means -
-                                    stats.table$targets) / stats.table$targets
-    stats.table.formation <- stats.table[, c(2, 4, 6, 5)]
-    colnames(stats.table.formation) <- c("Target", "Sim Mean",
-                                         "Pct Diff", "Sim SD")
+    stats.table.formation <- make_formation_table(merged.stats, ts.out)
 
     cat("\n\nFormation Diagnostics")
     cat("\n----------------------- \n")
-    print(as.data.frame(round(as.matrix(x$stats.table.formation),
-                              digits = digits)))
+    print_nwstats_table(stats.table.formation, digits = digits)
     cat("\n")
+
+    cat("\nDissolution Diagnostics")
+    cat("\n----------------------- \n")
+
+    if (x$control$save.network &&
+        ! x$control$tergmLite &&
+        x$nwparam[[network]]$coef.diss$dissolution == ~ offset(edges)) {
+      diag.sim <- lapply(
+        seq_len(x$control$nsims),
+        get_network, network = network, x = x
+      )
+      sim.df <- lapply(diag.sim, as.data.frame)
+
+      dissolution.stats <- make_dissolution_stats(
+        sim.df,
+        x$nwparam[[network]]$coef.diss,
+        x$control$nsteps,
+        verbose = FALSE
+      )
+
+      print_nwstats_table(dissolution.stats$stats.table.dissolution, digits)
+
+      if (x$nwparam[[network]]$coef.diss$model.type == "hetero") {
+        cat("----------------------- \n")
+        cat("* Heterogeneous dissolution model results averaged over")
+      }
+    } else {
+      cat("Not available when:")
+      cat("\n- `control$tergmLite == TRUE`")
+      cat("\n- `control$save.network == FALSE`")
+      cat("\n- dissolution formula is not `~ offset(edges)`")
+      cat("\n")
+    }
   }
 
   cat("\n")
@@ -457,13 +459,15 @@ print.control.icm <- function(x, ...) {
 #' @export
 print.control.net <- function(x, ...) {
 
-  pToPrint <- which(!grepl(".FUN", names(x)) &
-                      names(x) != "f.args" &
-                      names(x) != "f.names" &
-                      names(x) != "set.control.stergm" &
-                      names(x) != "set.control.ergm" &
-                      !grepl("^mcmc\\.control", names(x)) &
-                      !(names(x) %in% c("bi.mods", "user.mods")))
+  pToPrint <- which(
+    !grepl(".FUN", names(x)) &
+    names(x) != "f.args" &
+    names(x) != "f.names" &
+    names(x) != "set.control.stergm" &
+    names(x) != "set.control.ergm" &
+    !grepl("^mcmc\\.control", names(x)) &
+    !(names(x) %in% c("bi.mods", "user.mods"))
+  )
 
 
 
@@ -496,3 +500,14 @@ print.control.net <- function(x, ...) {
 
   invisible()
 }
+
+#' @title Print Helper For Network Stats Tables
+#'
+#' @param nwtable a formation or dissolution statistics \code{data.frame}
+#' @param digits argument to be passed to \code{round}
+#'
+#' @keywords internal
+print_nwstats_table <- function(nwtable, digits) {
+  print(as.data.frame(round(as.matrix(nwtable), digits = digits)))
+}
+
