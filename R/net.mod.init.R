@@ -150,6 +150,14 @@ init_status.net <- function(dat) {
 
   if (groups == 2) {
     group <- get_attr(dat, "group")
+    if (!all(group %in% c(1, 2))) {
+      stop(
+        "When using the `group` attribute, the only authorized values",
+        " are 1 and 2.\n",
+        "The values found were: ", paste0(unique(group), collapse = ", ")
+      )
+    }
+
     i.num.g2 <- get_init(dat, "i.num.g2")
     if (type  == "SIR" && is.null(status.vector)) {
       r.num.g2 <- get_init(dat, "r.num.g2", override.null.error = TRUE)
