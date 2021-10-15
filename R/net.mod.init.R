@@ -154,7 +154,7 @@ init_status.net <- function(dat) {
       stop(
         "When using the `group` attribute, the only authorized values",
         " are 1 and 2.\n",
-        "The values found where: ", paste0(unique(group), collapse = ", ")
+        "The values found were: ", paste0(unique(group), collapse = ", ")
       )
     }
 
