@@ -6,7 +6,6 @@
 \usage{
 get_partners(
   dat,
-  at,
   index_posit_ids,
   networks = NULL,
   max.age = Inf,
@@ -15,8 +14,6 @@ get_partners(
 }
 \arguments{
 \item{dat}{a Master list object of network models}
-
-\item{at}{the current timestep}
 
 \item{index_posit_ids}{the positional IDs of the indexes of interest}
 

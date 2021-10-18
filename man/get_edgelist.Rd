@@ -4,12 +4,10 @@
 \alias{get_edgelist}
 \title{Get an Edgelist From the Specified Network}
 \usage{
-get_edgelist(dat, at, network)
+get_edgelist(dat, network)
 }
 \arguments{
 \item{dat}{a Master list object of network models}
-
-\item{at}{the current timestep}
 
 \item{network}{the index of the network to extract the edgelist from}
 }

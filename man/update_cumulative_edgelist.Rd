@@ -4,12 +4,10 @@
 \alias{update_cumulative_edgelist}
 \title{Update a Cumulative Edgelist of the Specified Network}
 \usage{
-update_cumulative_edgelist(dat, at, network, truncate = Inf)
+update_cumulative_edgelist(dat, network, truncate = Inf)
 }
 \arguments{
 \item{dat}{a Master list object of network models}
-
-\item{at}{the current timestep}
 
 \item{network}{the index of the network whose cumulative edgelist will be
 updated}

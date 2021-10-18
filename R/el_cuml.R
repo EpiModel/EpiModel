@@ -5,7 +5,6 @@
 #'              the output is standardly formatted.
 #'
 #' @param dat a Master list object of network models
-#' @param at the current timestep
 #' @param network the index of the network to extract the edgelist from
 #'
 #' @return an edgelist in matrix form with the two columns. Each column
@@ -13,10 +12,11 @@
 #'          each edge
 #'
 #' @export
-get_edgelist <- function(dat, at, network) {
+get_edgelist <- function(dat, network) {
   if (get_control(dat, "tergmLite")) {
     el <- dat[["el"]][[network]]
   } else {
+    at <- get_current_timestep(dat)
     if (!is.null(dat[["temp"]][["nw_list"]])) {
       if (!get_control(dat, "resimulate.network")) {
         el <- network::as.edgelist(dat[["temp"]][["nw_list"]][[at]])
@@ -50,8 +50,8 @@ get_cumulative_edgelist <- function(dat, network) {
     el_cuml <- dat[["el.cuml"]][[network]]
   }
 
-  if(is.null(el_cuml)) {
-    el_cuml <- data.frame(
+  if (is.null(el_cuml)) {
+    el_cuml <- tibble::tibble(
       head  = numeric(0),
       tail  = numeric(0),
       start = numeric(0),
@@ -65,7 +65,6 @@ get_cumulative_edgelist <- function(dat, network) {
 #' @title Update a Cumulative Edgelist of the Specified Network
 #'
 #' @param dat a Master list object of network models
-#' @param at the current timestep
 #' @param network the index of the network whose cumulative edgelist will be
 #'                updated
 #' @param truncate after how many steps an edge that is no longer active should
@@ -82,17 +81,19 @@ get_cumulative_edgelist <- function(dat, network) {
 #' @return an updated Master list object of network models
 #'
 #' @export
-update_cumulative_edgelist <- function(dat, at, network, truncate = Inf) {
-  el <- get_edgelist(dat, at, network)
+update_cumulative_edgelist <- function(dat, network, truncate = Inf) {
+  el <- get_edgelist(dat, network)
   el_cuml <- get_cumulative_edgelist(dat, network)
 
-  el <- data.frame(
+  el <- tibble::tibble(
     head = get_unique_ids(dat, el[, 1]),
     tail = get_unique_ids(dat, el[, 2]),
     current = TRUE
   )
 
-  el_cuml <- merge(el_cuml, el, by = c("head", "tail"), all = TRUE)
+  el_cuml <- dplyr::full_join(el_cuml, el, by = c("head", "tail"))
+
+  at <- get_current_timestep(dat)
 
   new_edges <- is.na(el_cuml[["start"]])
   if (any(new_edges)) {
@@ -131,15 +132,11 @@ update_cumulative_edgelist <- function(dat, at, network, truncate = Inf) {
 get_cumulative_edgelists_df <- function(dat, networks = NULL) {
   networks <- if (is.null(networks)) seq_along(dat[["nwparam"]]) else networks
 
-  el_cuml_df <- Reduce(
-    function(a, x) {
-      el_cuml_tmp <- get_cumulative_edgelist(dat, network = x)
-      el_cuml_tmp[["network"]] <- rep(x, nrow(el_cuml_tmp))
-      rbind(a, el_cuml_tmp)
-    },
-    networks,
-    init = data.frame()
-  )
+  el_cuml_list <- lapply(networks, get_cumulative_edgelist, dat = dat)
+  el_cuml_df <- dplyr::bind_rows(el_cuml_list)
+
+  el_sizes <- vapply(el_cuml_list, nrow, numeric(1))
+  el_cuml_df[["network"]] <- rep(networks, el_sizes)
 
   return(el_cuml_df)
 }
@@ -147,7 +144,6 @@ get_cumulative_edgelists_df <- function(dat, networks = NULL) {
 #' @title Get the Previous Partners of a Set of Indexes
 #'
 #' @param dat a Master list object of network models
-#' @param at the current timestep
 #' @param index_posit_ids the positional IDs of the indexes of interest
 #' @param networks the indexes of the networks to extract the partnerships from.
 #'                 If NULL (default) extract from all networks.
@@ -163,7 +159,7 @@ get_cumulative_edgelists_df <- function(dat, networks = NULL) {
 #'          the partnership is.
 #'
 #' @export
-get_partners <- function(dat, at, index_posit_ids, networks = NULL,
+get_partners <- function(dat, index_posit_ids, networks = NULL,
                          max.age = Inf, only.active = FALSE) {
   el_cuml_df <- get_cumulative_edgelists_df(dat, networks)
   index_unique_ids <- get_unique_ids(dat, index_posit_ids)
@@ -177,7 +173,7 @@ get_partners <- function(dat, at, index_posit_ids, networks = NULL,
   colnames(partner_head_df) <- c("index", "partner", "start", "stop", "network")
   colnames(partner_tail_df) <- colnames(partner_head_df)
 
-  partner_df <- rbind(partner_head_df, partner_tail_df)
+  partner_df <- dplyr::bind_rows(partner_head_df, partner_tail_df)
 
   if (only.active) {
     active_partners <- is_active_unique_ids(dat, partner_df[["partner"]])
@@ -185,6 +181,7 @@ get_partners <- function(dat, at, index_posit_ids, networks = NULL,
   }
 
   if (max.age != Inf) {
+    at <- get_current_timestep(dat)
     rel.age <- at - partner_df[["stop"]]
     rel.age <- ifelse(is.na(rel.age), 0, rel.age)
     partner_df <- partner_df[rel.age <= max.age, ]
