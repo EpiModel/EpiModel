@@ -46,6 +46,8 @@ Imports:
     ape,
     lazyeval,
     ggplot2,
+    dplyr,
+    tibble
 Suggests:
     knitr,
     rmarkdown,
