@@ -1,3 +1,29 @@
+## EpiModel 2.2
+
+### NEW FEATURES
+
+-   Developed a general cumulative edgelist to keep track of the partnerships even after they are over. See the vignette `vignette("el_cuml")`.
+-   A `create_dat_object` helper function was added to initialize a basic `dat` object.
+-   The current timestep is now stored in the `dat` object and accessible with `get_current_timestep`
+-   Addition of the `get_param_set` function that extract from a `netsim` object the set of parameters used by each simulation. See the help page `help("get_param_set")`
+-   Developed a mechanism to store nodes attribute history over the course of a simulation. See the vignette `vignette("Attributes-History")`.
+-   Developed an optional module to define prevalence trackers as functions to be passed to the model before each runs. See the vignette `vignette("Custom-epidemic-trackers")`.
+-   Developed an optional module allowing the update of the model parameters at runtime . See the vignette `vignette("Updating-the-model-parameters-during-runtime")`.
+-   Improved the random parameterization interface to allow correlation between parameters. See the vignette `vignette("Random-parameterization-interface")`.
+
+### BUG FIXES
+
+-   When calling `plot` on a `netsim` object, the arguments in the ellipsis (`...`) are now correctly passed to the `base::plot` call.
+-   When trying to use the built-in `group` attribute, `netsim` will now output a more explicit error if the values used are not only ones and twos.
+-   Fix the names of the target formation statistics in `netdx` when `edapprox == FALSE` that were causing the plotting functions to misbehave.
+-   Simplification of the `set_transmat` function removing the assumption that `dat$stats$transmat` was to exist only if `at != 2` (thanks to @thednainus)
+-   More consistent formation and dissolution statistics print between `netdx` and `netsim`.
+-   Remove duplication in the printing of the parameters when a parameter with defined both as fixed and as random.
+-   When using custom modules with `type == NULL`, some built-in module would stop as they required `type` to be a string.
+-   Upon an `Error`, `Warning` or `Message`, `netsim` would print the error message with the module were the error was happening twice.
+-   The unique id counter was not saved by `saveout.net` resulting in the unique ids to start a 1 again when restarting a model from a previous simulation.
+-   Harmonize the code by using the new accessors. (WIP)
+
 ## EpiModel 2.1.0
 
 ### NEW FEATURES
