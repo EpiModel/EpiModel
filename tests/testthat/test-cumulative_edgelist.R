@@ -54,3 +54,47 @@ test_that("netsim, SI, Cumulative Edgelist", {
   d <- get_partners(mod[[1]], 100, 1:4)
   expect_equal(colnames(d), c("index", "partner", "start", "stop", "network"))
 })
+
+test_that("netsim, SI, Cumulative Edgelist with arrivals and departures", {
+  nw <- network_initialize(n = 100)
+
+  formation <- ~edges
+  target.stats <- 70
+  coef.diss <- dissolution_coefs(dissolution = ~offset(edges), 38, d.rate = 0.01)
+  est1 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
+
+  param <- param.net(inf.prob = 0.1, act.rate = 1,
+                     a.rate = 0.01, ds.rate = 0.01, di.rate = 0.01)
+
+  init <- init.net(i.num = 10)
+  control <- control.net(
+    type = "SI", nsteps = 100, nsims = 1,
+    tergmLite = TRUE, # required as we want the removal of inactive nodes
+    resimulate.network = TRUE, verbose = FALSE,
+    truncate.el.cuml = Inf,
+    cumulative.edgelist = TRUE,
+    raw.output = TRUE
+  )
+
+  sim1 <- netsim(est1, param, init, control)
+
+  dat <- sim1[[1]]
+  uid <- get_unique_ids(dat)
+  pid <- get_posit_ids(dat)
+  is_active_posit_ids(dat, pid)
+
+  el_cuml <- get_cumulative_edgelists_df(dat)
+  spids <- sample(pid, 20)
+  partners <- get_partners(dat, spids)
+
+  # checks the unicity of UIDs
+  expect_true(all(table(uid) == 1))
+  # checks that all attributed UID are not in the currently attributed UIDs
+  expect_false(setequal(seq_len(dat[["_last_unique_id"]]), get_unique_ids(dat)))
+  # checks that all attributed UID are not in the currently attributed PIDs
+  expect_false(setequal(seq_len(dat[["_last_unique_id"]]), get_posit_ids(dat)))
+
+  # checks the translation between UID and PID in get_partners
+  expect_true(all(get_posit_ids(dat, unique(partners$index)) %in% spids))
+
+})

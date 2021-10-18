@@ -306,7 +306,7 @@ discord_edgelist <- function(dat, at, network = 1, infstat = "i") {
   active <- get_attr(dat, "active")
   resimulate.network <- get_control(dat, "resimulate.network")
 
-  el <- get_edgelist(dat, at, network)
+  el <- get_edgelist(dat, network)
 
   del <- NULL
   if (nrow(el) > 0) {

@@ -118,7 +118,7 @@ nwupdate.net <- function(dat, at) {
     truncate.el.cuml <- if (is.null(truncate.el.cuml)) Inf else truncate.el.cuml
 
     for (network in seq_along(dat[["nwparam"]])) {
-      dat <- update_cumulative_edgelist(dat, at, network, truncate.el.cuml)
+      dat <- update_cumulative_edgelist(dat, network, truncate.el.cuml)
     }
   }
 
