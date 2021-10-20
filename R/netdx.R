@@ -397,12 +397,15 @@ make_dissolution_stats <- function(sim.df, coef.diss, nsteps, verbose = TRUE) {
   pages <- lapply(sim.df, function(x) edgelist_meanage(el = x))
 
   # TODO: imputation currently averaged for heterogeneous models
-  if (coef.diss$model.type == "hetero") {
-    coef_dur <- mean(coef.diss$duration)
-  } else {
-    coef_dur <- coef.diss$duration
+  if (coef.diss$model.type == "homo") {
+        coef_dur <- coef.diss$duration
+        pages_imptd <- coef_dur^2 * dgeom(2:(nsteps + 1), 1 / coef_dur)
   }
-  pages_imptd <- coef_dur^2 * dgeom(2:(nsteps + 1), 1 / coef_dur)
+
+  if (coef.diss$model.type == "hetero") {
+        coef_dur <- mean(coef.diss$duration)
+        pages_imptd <- coef_dur^2 * dgeom(2:(nsteps + 1), 1 / coef_dur)
+  }
 
   ## Dissolution calculations
   if (verbose == TRUE) {
