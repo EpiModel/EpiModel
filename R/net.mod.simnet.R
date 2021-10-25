@@ -195,37 +195,38 @@ resim_nets <- function(dat, at) {
 
     # networkLite/tergmLite Method
     if (tergmLite == TRUE) {
-
-      dat <- tergmLite::updateModelTermInputs(dat)
-
-      if (isTERGM == TRUE) {
-        rv <- tergmLite::simulate_network(state = dat$p[[1]]$state,
-                                          coef = c(nwparam$coef.form,
-                                                   nwparam$coef.diss$coef.adj),
-                                          control = dat$control$mcmc.control[[1]],
-                                          save.changes = TRUE)
-        dat$el[[1]] <- rv$el
-
-        if (tergmLite.track.duration == TRUE) {
-          dat$p[[1]]$state$nw0 %n% "time" <- rv$state$nw0 %n% "time"
-          dat$p[[1]]$state$nw0 %n% "lasttoggle" <- rv$state$nw0 %n% "lasttoggle"
-        }
-      } else {
-        rv <- tergmLite::simulate_ergm(state = dat$p[[1]]$state,
-                                       coef = nwparam$coef.form,
-                                       control = dat$control$mcmc.control[[1]])
-
-        dat$el[[1]] <- rv$el
+      nwL <- networkLite(dat$el[[1]], dat$attr)
+      if (tergmLite.track.duration == TRUE) {
+        nwL %n% "time" <- dat$nw[[1]] %n% "time"
+        nwL %n% "lasttoggle" <- dat$nw[[1]] %n% "lasttoggle"
       }
 
+      if (isTERGM == TRUE) {
+        dat$nw[[1]] <- simulate(nwL ~ Form(nwparam$formation) + Persist(nwparam$coef.diss$dissolution),
+                                coef = c(nwparam$coef.form, nwparam$coef.diss$coef.adj),
+                                constraints = nwparam$constraints,
+                                time.start = at - 1, # should be the time stamp on the nwL if we are tracking duration
+                                time.slices = 1,
+                                time.offset = 1, # default value
+                                control = dat$control$mcmc.control[[1]],
+                                output = "final",
+                                dynamic = TRUE)
+      } else {
+        dat$nw[[1]] <- simulate(object = nwparam$formation,
+                                basis = nwL,
+                                coef = nwparam$coef.form,
+                                constraints = nwparam$constraints,
+                                control = dat$control$mcmc.control[[1]],
+                                dynamic = FALSE,
+                                nsim = 1,
+                                output = "network")
+      }
+
+      dat$el[[1]] <- as.edgelist(dat$nw[[1]])
+
       if (save.nwstats == TRUE) {
-        nwL <- tergmLite::networkLite(dat$el[[1]], dat$attr)
-        if (tergmLite.track.duration == TRUE) {
-          nwL %n% "time" <- dat$p[[1]]$state$nw0 %n% "time"
-          nwL %n% "lasttoggle" <- dat$p[[1]]$state$nw0 %n% "lasttoggle"
-        }
         nwstats <- summary(dat$control$nwstats.formulas[[1]],
-                           basis = nwL,
+                           basis = dat$nw[[1]],
                            term.options = dat$control$mcmc.control[[1]]$term.options,
                            dynamic = isTERGM)
         keep.cols <- which(!duplicated(names(nwstats)))
