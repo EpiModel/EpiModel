@@ -20,7 +20,9 @@ departures.net <- function(dat, at) {
     return(dat)
   }
 
-  type <- get_control(dat, "type")
+  type <- get_control(dat, "type", override.null.error = TRUE)
+  type <- if (is.null(type)) "None" else type
+
   active <- get_attr(dat, "active")
   status <- get_attr(dat, "status")
   exitTime <- get_attr(dat, "exitTime")
@@ -157,7 +159,9 @@ departures.2g.net <- function(dat, at) {
 
   # Variables ---------------------------------------------------------------
 
-  type <- get_control(dat, "type")
+  type <- get_control(dat, "type", override.null.error = TRUE)
+  type <- if (is.null(type)) "None" else type
+
 
   active <- get_attr(dat, "active")
   status <- get_attr(dat, "status")

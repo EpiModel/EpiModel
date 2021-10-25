@@ -297,6 +297,5 @@ apportion_lr <- function(vector.length, values,
 #'
 #' @keywords internal
 netsim_cond_msg <- function(cond, module, at, msg) {
-  paste0("A ", cond, " occured in module '", module,
-         "' at step ", at, ": \n\t", msg)
+  paste0("\n\tA ", cond, " occured in module '", module, "' at step ", at)
 }
