@@ -46,7 +46,7 @@ Imports:
     lazyeval,
     ggplot2,
     tibble,
-    methods
+    methods,
     dplyr
 Suggests:
     knitr,
