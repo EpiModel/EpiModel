@@ -16,8 +16,10 @@
 recovery.net <- function(dat, at) {
 
   ## Only run with SIR/SIS
-  type <- get_control(dat, "type")
-  if (!(type %in% c("SIR", "SIS")) && !is.null(type)) {
+  type <- get_control(dat, "type", override.null.error = TRUE)
+  type <- if (is.null(type)) "None" else type
+
+  if (!(type %in% c("SIR", "SIS"))) {
     return(dat)
   }
 
@@ -81,8 +83,10 @@ recovery.net <- function(dat, at) {
 recovery.2g.net <- function(dat, at) {
 
   ## Only run with SIR/SIS
-  type <- get_control(dat, "type")
-  if (!(type %in% c("SIR", "SIS")) && !is.null(type)) {
+  type <- get_control(dat, "type", override.null.error = TRUE)
+  type <- if (is.null(type)) "None" else type
+
+  if (!(type %in% c("SIR", "SIS"))) {
     return(dat)
   }
 

@@ -13,6 +13,7 @@ Tools for simulating mathematical models of infectious disease dynamics. Epidemi
 | [Samuel M. Jenness](http://samueljenness.org/)                | Department of Epidemiology              | Emory University         |
 | [Steven M. Goodreau](http://faculty.washington.edu/goodreau/) | Department of Anthropology              | University of Washington |
 | [Martina Morris](http://faculty.washington.edu/morrism/)      | Departments of Statistics and Sociology | University of Washington |
+| [Adrien Le Guillou](http://samueljenness.org/team.html)       | Department of Epidemiology              | Emory University         |
 
 Additional contributors to EpiModel are listed on the [contributors](https://github.com/statnet/EpiModel/graphs/contributors) page.
 
@@ -33,7 +34,7 @@ remotes::install_github("statnet/EpiModel")
 
 ### EpiModel 2.0
 
-In July 2020, we relased EpiModel version 2.0. This major software package update incorporates a substantial redesign of many elements of the EpiModel infrastructure and application programming interface (API). We anticipate that there will be some minor backwards incompatibilities with any EpiModel code developed with versions 1.x. There is a EpiModel 2.0 migration document available in the <a href="http://www.epimodel.org/tut.html" target="_blank"> Tutorials</a> page.
+In July 2020, we released EpiModel version 2.0. This major software package update incorporates a substantial redesign of many elements of the EpiModel infrastructure and application programming interface (API). We anticipate that there will be some minor backwards incompatibilities with any EpiModel code developed with versions 1.x. There is a EpiModel 2.0 migration document available in the <a href="http://www.epimodel.org/tut.html" target="_blank"> Tutorials</a> page.
 
 ### Documentation and Support
 

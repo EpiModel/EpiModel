@@ -1,14 +1,14 @@
 Package: EpiModel
-Version: 2.1.0
-Date: 2021-06-24
+Version: 2.1.1
+Date: 2021-10-28
 Title: Mathematical Modeling of Infectious Disease Dynamics
-Description: Tools for simulating mathematical models of infectious disease dynamics. 
-    Epidemic model classes include deterministic compartmental models, stochastic 
+Description: Tools for simulating mathematical models of infectious disease dynamics.
+    Epidemic model classes include deterministic compartmental models, stochastic
     individual-contact models, and stochastic network models. Network models use the
-    robust statistical methods of exponential-family random graph models (ERGMs) 
-    from the Statnet suite of software packages in R. Standard templates for epidemic 
-    modeling include SI, SIR, and SIS disease types. EpiModel features an API for 
-    extending these templates to address novel scientific research aims. Full 
+    robust statistical methods of exponential-family random graph models (ERGMs)
+    from the Statnet suite of software packages in R. Standard templates for epidemic
+    modeling include SI, SIR, and SIS disease types. EpiModel features an API for
+    extending these templates to address novel scientific research aims. Full
     methods for EpiModel are detailed in Jenness et al. (2018, <doi:10.18637/jss.v084.i08>).
 Maintainer: Samuel Jenness <samuel.m.jenness@emory.edu>
 Authors@R: c(person("Samuel", "Jenness",
@@ -17,16 +17,12 @@ Authors@R: c(person("Samuel", "Jenness",
     role=c("aut"), email="goodreau@uw.edu"),
     person("Martina", "Morris",
     role=c("aut"), email="morrism@uw.edu"),
-    person("Emily", "Beylerian",
-    role=c("ctb"), email="emily.beylerian@gmail.com"),
+    person("Adrien", "Le Guillou",
+    role=c("ctb"), email="contact@aleguillou.org"),
     person("Skye", "Bender-deMoll",
     role=c("ctb"), email="skyebend@uw.edu"),
-    person("Kevin", "Weiss",
-    role=c("ctb"), email="kevin.weiss@emory.edu"),
     person("Chad", "Klumb",
-    role=c("ctb"), email="cklumb@gmail.com"),
-    person("Adrien", "Le Guillou",
-    role=c("ctb"), email="adrien.leguillou@protonmail.com"))
+    role=c("ctb"), email="cklumb@gmail.com"))
 License: GPL-3
 URL: http://www.epimodel.org/
 BugReports: https://github.com/statnet/EpiModel/issues
@@ -51,9 +47,9 @@ Imports:
     ggplot2,
     tibble,
     methods
+    dplyr
 Suggests:
     knitr,
-    ndtv,
     rmarkdown,
     shiny,
     testthat

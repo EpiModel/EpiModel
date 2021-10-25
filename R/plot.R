@@ -2430,46 +2430,40 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
 
     ## Missing args ##
     if (is.null(da$xlim)) {
-      xlim <- c(0, nsteps)
-    } else {
-      xlim <- da$xlim
+      da$xlim <- c(0, nsteps)
     }
     if (is.null(da$ylim) & (popfrac == TRUE || sim.lines == TRUE)) {
-      ylim <- c(min.prev, max.prev)
+      da$ylim <- c(min.prev, max.prev)
     } else if (is.null(da$ylim) & popfrac == FALSE & sim.lines == FALSE &
                (mean.line == TRUE || qnts == TRUE)) {
-      ylim <- c(min(qnt.min * 0.9, mean.min * 0.9), max(qnt.max * 1.1,
+      da$ylim <- c(min(qnt.min * 0.9, mean.min * 0.9), max(qnt.max * 1.1,
                                                         mean.max * 1.1))
-    } else {
-      ylim <- da$ylim
     }
+
     if (is.null(da$main)) {
-      main <- ""
-    } else {
-      main <- da$main
+      da$main <- ""
     }
 
     if (is.null(da$xlab)) {
-      xlab <- "Time"
-    } else {
-      xlab <- da$xlab
+      da$xlab <- "Time"
     }
 
     if (is.null(da$ylab)) {
       if (popfrac == FALSE) {
-        ylab <- "Number"
+        da$ylab <- "Number"
       } else {
-        ylab <- "Prevalence"
+        da$ylab <- "Prevalence"
       }
-    } else {
-      ylab <- da$ylab
     }
 
     ## Main plot window ##
     if (add == FALSE) {
-      plot(1, 1, type = "n", bty = "n",
-           xaxs = axs, yaxs = axs, xlim = xlim, ylim = ylim,
-           xlab = xlab, ylab = ylab, main = main)
+      da$x <- 1
+      da$y <- 1
+      da$type <- "n"
+      da$bty <- "n"
+
+      do.call(plot, da)
     }
 
 
@@ -2603,8 +2597,8 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
       sim.col <- "dodgerblue3"
     }
     xlim <- c(1, nsteps)
-    if (!is.null(da$xlim)) {
-      xlim <- da$xlim
+    if (is.null(da$xlim)) {
+      da$xlim <- xlim
     }
     if (missing(sim.lwd)) {
       if (nsims == 1) {
@@ -2686,7 +2680,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
       mean.min <- vector()
       mean.max <- vector()
 
-      for (j in 1:nstats) {
+      for (j in seq_len(nstats)) {
         dataj <- data[, union("time", name_stats[j]), drop = FALSE]
 
         ## Quantiles - ylim min and max ##
@@ -2725,34 +2719,36 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
       }
 
       # Dynamic scaling based on sim.lines and mean lines and quantile bands
-      if (!is.null(da$ylim)) {
-        ylim <- da$ylim
-      } else if (is.null(da$ylim) & sim.lines == FALSE &
-                 (mean.line == TRUE || qnts == TRUE)) {
-        ylim <- c(min(min(qnt.min, na.rm = TRUE) * 0.9,
-                      min(mean.min, na.rm = TRUE) * 0.9),
-                  max(max(qnt.max, na.rm = TRUE) * 1.1,
-                      max(mean.max, na.rm = TRUE) * 1.1))
+      if (is.null(da$ylim) &
+          sim.lines == FALSE &
+          (mean.line == TRUE || qnts == TRUE)) {
+
+        da$ylim <- c(
+          min(
+            min(qnt.min, na.rm = TRUE) * 0.9,
+            min(mean.min, na.rm = TRUE) * 0.9
+          ),
+          max(
+            max(qnt.max, na.rm = TRUE) * 1.1,
+            max(mean.max, na.rm = TRUE) * 1.1
+          )
+        )
       } else {
-        ylim <- c(ymin * 0.9, ymax * 1.1)
+        da$ylim <- c(ymin * 0.9, ymax * 1.1)
       }
 
       ## Default ylab
-      if (!is.null(da$ylab)) {
-        ylab <- da$ylab
-      } else {
+      if (is.null(da$ylab)) {
         if (nstats == 1) {
-          ylab <- name_stats
+          da$ylab <- name_stats
         } else {
-          ylab <- "Statistic"
+          da$ylab <- "Statistic"
         }
       }
 
       ## Default xlab
-      if (!is.null(da$xlab)) {
-        xlab <- da$xlab
-      } else {
-        xlab <- "Time"
+      if (is.null(da$xlab)) {
+        da$xlab <- "Time"
       }
 
       ## Default target line color
@@ -2765,8 +2761,11 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
       }
 
       ## Main plot window
-      plot(1, 1, xlim = xlim, ylim = ylim,
-           type = "n", xlab = xlab, ylab = ylab)
+      da$x <- 1
+      da$y <- 1
+      da$type <- "n"
+
+      do.call(plot, da)
 
       # Default qnts.col
       if (missing(qnts.col)) {
@@ -2838,7 +2837,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
 
       if (legend == TRUE) {
         legend("topleft", legend = name_stats, lwd = 2,
-               col = sim.col[1:nstats], cex = 0.75, bg = "white")
+               col = sim.col[seq_len(nstats)], cex = 0.75, bg = "white")
       }
     }
 
@@ -2873,7 +2872,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
       qnts.col <- adjustcolor(qnts.col, qnts.alpha)
 
 
-      for (j in 1:nstats) {
+      for (j in seq_len(nstats)) {
 
         dataj <- data[, union("time", name_stats[j]), drop = FALSE]
 
@@ -2924,21 +2923,22 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
           }
 
           ## Default ylim
-          if (!is.null(da$ylim)) {
-            ylim <- da$ylim
-          } else if (is.null(da$ylim) & sim.lines == FALSE &
+           if (is.null(da$ylim) & sim.lines == FALSE &
                      (mean.line == TRUE || qnts == TRUE)) {
-            ylim <- c(min(qnt.min * 0.9, mean.min * 0.9),
+            da$ylim <- c(min(qnt.min * 0.9, mean.min * 0.9),
                       max(qnt.max * 1.1, mean.max * 1.1))
           } else {
-            ylim <- c(min * 0.9, max * 1.1)
+            da$ylim <- c(min * 0.9, max * 1.1)
           }
 
-        plot(x = 1, y = 1,
-             xlim = xlim,
-             ylim = ylim,
-             type = "n", main = name_stats[j],
-             xlab = "", ylab = "")
+          da$x <- 1
+          da$y <- 1
+          da$type <- "n"
+          da$main <- name_stats[j]
+          da$xlab <- ""
+          da$ylab <-  ""
+
+          do.call(plot, da)
 
         if (is.numeric(qnts)) {
           if (qnts < 0 | qnts > 1) {
