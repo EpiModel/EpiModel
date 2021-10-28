@@ -1,5 +1,5 @@
 Package: EpiModel
-Version: 2.1.1
+Version: 2.2.0
 Date: 2021-10-28
 Title: Mathematical Modeling of Infectious Disease Dynamics
 Description: Tools for simulating mathematical models of infectious disease dynamics.
@@ -18,7 +18,7 @@ Authors@R: c(person("Samuel", "Jenness",
     person("Martina", "Morris",
     role=c("aut"), email="morrism@uw.edu"),
     person("Adrien", "Le Guillou",
-    role=c("ctb"), email="adrien.leguillou@protonmail.com"),
+    role=c("ctb"), email="contact@aleguillou.org"),
     person("Skye", "Bender-deMoll",
     role=c("ctb"), email="skyebend@uw.edu"),
     person("Chad", "Klumb",
@@ -31,7 +31,6 @@ Depends:
     deSolve (>= 1.21),
     networkDynamic (>= 0.10),
     tergm (>= 4.0),
-    tergmLite (>= 2.5.0),
     statnet.common (>= 4.4.0)
 Imports:
     graphics,
@@ -46,15 +45,15 @@ Imports:
     ape,
     lazyeval,
     ggplot2,
-    dplyr,
-    tibble
+    tibble,
+    methods,
+    dplyr
 Suggests:
     knitr,
     rmarkdown,
     shiny,
     testthat
 VignetteBuilder: knitr
-LinkingTo: ergm
+LinkingTo: Rcpp, ergm
 RoxygenNote: 7.1.1
 Encoding: UTF-8
-

@@ -34,10 +34,8 @@ control.net(
   skip.check = FALSE,
   raw.output = FALSE,
   tergmLite.track.duration = FALSE,
-  set.control.ergm = control.simulate.ergm(MCMC.burnin = 2e+05),
-  set.control.stergm = control.simulate.network(MCMC.burnin.min = 1000),
-  mcmc.control.ergm = control.simulate.formula(),
-  mcmc.control.tergm = control.simulate.formula.tergm(),
+  set.control.ergm = control.simulate.formula(MCMC.burnin = 2e+05),
+  set.control.stergm = control.simulate.network(),
   ...
 )
 }
@@ -158,16 +156,12 @@ of the networks passed to \code{init_tergmLite}, with \code{time}
 defaulting to \code{0} and \code{lasttoggle} defaulting to all
 \code{lasttoggle} times unspecified (effectively \code{-INT_MAX/2}).}
 
-\item{set.control.ergm}{Control arguments passed to \code{simulate.ergm}. See
-the help file for \code{\link{netdx}} for details and examples on
-specifying this parameter.}
+\item{set.control.ergm}{Control arguments passed to \code{ergm}'s 
+\code{.simulate_formula.network}.}
 
-\item{set.control.stergm}{Control arguments passed to \code{simulate.stergm}.
-See the help file for \code{\link{netdx}} for details and examples on
-specifying this parameter.}
-
-\item{mcmc.control.tergm, mcmc.control.ergm}{Control arguments for network
-simulation in \code{tergmLite}.}
+\item{set.control.stergm}{Control arguments passed to \code{tergm}'s
+\code{simulate.network}. See the help file for \code{\link{netdx}} 
+for details and examples on specifying this parameter.}
 
 \item{...}{Additional control settings passed to model.}
 }

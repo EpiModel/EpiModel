@@ -81,8 +81,8 @@ nwupdate.net <- function(dat, at) {
       dat$el[[1]] <- delete_vertices(dat$el[[1]], departures)
 
       if (dat$control$tergmLite.track.duration) {
-        dat$p[[1]]$state$nw0 %n% "lasttoggle" <-
-          delete_vertices(dat$p[[1]]$state$nw0 %n% "lasttoggle", departures)
+        dat$nw[[1]] %n% "lasttoggle" <-
+          delete_vertices(dat$nw[[1]] %n% "lasttoggle", departures)
       }
     }
   }

@@ -4,8 +4,8 @@
 #' \tabular{ll}{
 #'    Package: \tab EpiModel\cr
 #'    Type: \tab Package\cr
-#'    Version: \tab 2.1.1\cr
-#'    Date: \tab 2021-07-21\cr
+#'    Version: \tab 2.2.0\cr
+#'    Date: \tab 2021-10-28\cr
 #'    License: \tab GPL-3\cr
 #'    LazyLoad: \tab yes\cr
 #' }
@@ -128,7 +128,7 @@
 #'
 #' @name EpiModel-package
 #' @aliases EpiModel
-#' @import ergm network networkDynamic tergm ggplot2 tergmLite
+#' @import ergm network networkDynamic tergm ggplot2
 #' @importFrom deSolve dede ode
 #' @importFrom doParallel registerDoParallel
 #' @importFrom foreach foreach "%dopar%"
@@ -142,8 +142,9 @@
 #' @importFrom ape as.phylo collapse.singles
 #' @importFrom lazyeval lazy_dots lazy_eval
 #' @importFrom statnet.common trim_env nonsimp_update.formula append_rhs.formula
-#'             list_rhs.formula set.control.class check.control.class
+#'             list_rhs.formula set.control.class check.control.class NVL
 #'             COLLATE_ALL_MY_CONTROLS_EXPR UPDATE_MY_SCTRL_EXPR
+#' @importFrom methods is
 #'
 #' @useDynLib EpiModel, .registration = TRUE
 #'

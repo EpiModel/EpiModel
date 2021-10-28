@@ -35,8 +35,12 @@ sim_nets_t1 <- function(x, dat, nsteps) {
 
     # Simulate t0 basis network
     if (x$edapprox == TRUE) {
-      nw <- simulate(x$fit, basis = x$fit$newnetwork,
-                     control = set.control.ergm, dynamic = FALSE)
+      nw <- simulate(x$formation,
+                     coef = coef(x$fit),
+                     basis = x$fit$newnetwork,
+                     constraints = x$constraints,
+                     control = set.control.ergm, 
+                     dynamic = FALSE)
     } else {
       nw <- x$fit$network
     }
@@ -66,7 +70,8 @@ sim_nets_t1 <- function(x, dat, nsteps) {
 
     set.control.ergm <- get_control(dat, "set.control.ergm")
 
-    sim <- simulate(x$fit,
+    sim <- simulate(x$formation,
+                    coef = coef(x$fit),
                     basis = x$fit$newnetwork,
                     constraints = x$constraints,
                     control = set.control.ergm,
@@ -88,7 +93,8 @@ sim_nets_t1 <- function(x, dat, nsteps) {
   if (save.nwstats == TRUE) {
     if (isTERGM == FALSE & nsteps > 1) {
       nwstats <- as.data.frame(
-        simulate(x$fit,
+        simulate(x$formation,
+                 coef = coef(x$fit),
                  basis = x$fit$newnetwork,
                  constraints = x$constraints,
                  control = set.control.ergm,
@@ -129,7 +135,7 @@ resim_nets <- function(dat, at) {
   resimulate.network <- get_control(dat, "resimulate.network")
   nwstats.formula <- get_control(dat, "nwstats.formula")
   set.control.stergm <- get_control(dat, "set.control.stergm")
-  # mcmc.control.ergm <- get_control(dat, "mcmc.control.ergm")
+  set.control.ergm <- get_control(dat, "set.control.ergm")
   tergmLite.track.duration <- get_control(dat, "tergmLite.track.duration")
 
   # Edges Correction
@@ -178,7 +184,7 @@ resim_nets <- function(dat, at) {
                                 basis = dat$nw[[1]],
                                 coef = nwparam$coef.form,
                                 constraints = nwparam$constraints,
-                                # control = mcmc.control.ergm,
+                                control = set.control.ergm,
                                 dynamic = FALSE,
                                 monitor = nwstats.formula,
                                 nsim = 1)
@@ -195,38 +201,41 @@ resim_nets <- function(dat, at) {
 
     # networkLite/tergmLite Method
     if (tergmLite == TRUE) {
-
-      dat <- tergmLite::updateModelTermInputs(dat)
-
-      if (isTERGM == TRUE) {
-        rv <- tergmLite::simulate_network(state = dat$p[[1]]$state,
-                                          coef = c(nwparam$coef.form,
-                                                   nwparam$coef.diss$coef.adj),
-                                          control = dat$control$mcmc.control[[1]],
-                                          save.changes = TRUE)
-        dat$el[[1]] <- rv$el
-
-        if (tergmLite.track.duration == TRUE) {
-          dat$p[[1]]$state$nw0 %n% "time" <- rv$state$nw0 %n% "time"
-          dat$p[[1]]$state$nw0 %n% "lasttoggle" <- rv$state$nw0 %n% "lasttoggle"
-        }
-      } else {
-        rv <- tergmLite::simulate_ergm(state = dat$p[[1]]$state,
-                                       coef = nwparam$coef.form,
-                                       control = dat$control$mcmc.control[[1]])
-
-        dat$el[[1]] <- rv$el
+      nwL <- networkLite(dat$el[[1]], dat$attr)
+      if (tergmLite.track.duration == TRUE) {
+        nwL %n% "time" <- dat$nw[[1]] %n% "time"
+        nwL %n% "lasttoggle" <- dat$nw[[1]] %n% "lasttoggle"
       }
 
+      if (isTERGM == TRUE) {
+        dat$nw[[1]] <- simulate(nwL,
+                                formation = nwparam$formation,
+                                dissolution = nwparam$coef.diss$dissolution,
+                                coef.form = nwparam$coef.form,
+                                coef.diss = nwparam$coef.diss$coef.adj,
+                                constraints = nwparam$constraints,
+                                time.start = at - 1, # should be the time stamp on the nwL if we are tracking duration
+                                time.slices = 1,
+                                time.offset = 1, # default value
+                                control = set.control.stergm,
+                                output = "final")
+      } else {
+        dat$nw[[1]] <- simulate(object = nwparam$formation,
+                                basis = nwL,
+                                coef = nwparam$coef.form,
+                                constraints = nwparam$constraints,
+                                control = set.control.ergm,
+                                dynamic = FALSE,
+                                nsim = 1,
+                                output = "network")
+      }
+
+      dat$el[[1]] <- as.edgelist(dat$nw[[1]])
+
       if (save.nwstats == TRUE) {
-        nwL <- tergmLite::networkLite(dat$el[[1]], dat$attr)
-        if (tergmLite.track.duration == TRUE) {
-          nwL %n% "time" <- dat$p[[1]]$state$nw0 %n% "time"
-          nwL %n% "lasttoggle" <- dat$p[[1]]$state$nw0 %n% "lasttoggle"
-        }
         nwstats <- summary(dat$control$nwstats.formulas[[1]],
-                           basis = nwL,
-                           term.options = dat$control$mcmc.control[[1]]$term.options,
+                           basis = dat$nw[[1]],
+                           term.options = if(isTERGM) set.control.stergm$term.options else set.control.ergm$term.options,
                            dynamic = isTERGM)
         keep.cols <- which(!duplicated(names(nwstats)))
         dat$stats$nwstats[[1]] <- rbind(dat$stats$nwstats[[1]], nwstats[keep.cols])
