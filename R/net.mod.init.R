@@ -60,7 +60,7 @@ initialize.net <- function(x, param, init, control, s) {
     # Conversions for tergmLite
     tergmLite <- get_control(dat, "tergmLite")
     if (tergmLite == TRUE) {
-      dat <- tergmLite::init_tergmLite(dat)
+      dat <- init_tergmLite(dat)
     }
 
 

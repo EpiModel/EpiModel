@@ -89,3 +89,30 @@ test_that("nw stats in tergmLite", {
                              "nodefactor.status.s", "nodematch.status"))
   expect_equal(dim(nws), c(5, 5))
 })
+
+test_that("tergm and tergmLite produce equal non-durational statistics", {
+  set.seed(0)
+  control <- control.net(type = NULL, 
+                         nsims = 1, 
+                         nsteps = 10, 
+                         ncores = 1, 
+                         verbose = FALSE, 
+                         resimulate.network = TRUE, 
+                         nwstats.formula = ~edges + concurrent + isolates + nodemix("status"))  
+  mod1 <- netsim(est, param, init, control)
+  a <- mod1$stats$nwstats[[1]][[1]]
+  
+  set.seed(0)
+  control <- control.net(type = NULL, 
+                         nsims = 1, 
+                         nsteps = 10, 
+                         ncores = 1, 
+                         verbose = FALSE, 
+                         resimulate.network = TRUE, 
+                         nwstats.formula = ~edges + concurrent + isolates + nodemix("status"), 
+                         tergmLite = TRUE)  
+  mod2 <- netsim(est, param, init, control)
+  b <- mod2$stats$nwstats[[1]][[1]]
+    
+  expect_equal(a,b)
+})
