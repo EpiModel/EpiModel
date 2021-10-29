@@ -293,7 +293,6 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
     if (dynamic == TRUE) {
       sim.df <- lapply(diag.sim, as.data.frame)
       dissolution.stats <- make_dissolution_stats(
-        nw,
         sim.df,
         x$coef.diss,
         nsteps,
@@ -382,47 +381,17 @@ make_formation_table <- function(merged.stats, targets) {
 #'
 #' @param sim.df a list of network objects (one per simulation)
 #' @param coef.diss the \code{coef.diss} element of \code{nwparam}
-#' @param nsteps the number of simulated steps
+#' @param nsteps the number of simualted steps
 #' @param verbose a verbosity toggle (default = TRUE)
 #'
 #' @return a \code{list} of dissolution statistics
 #' @keywords internal
-make_dissolution_stats <- function(nw, sim.df, coef.diss, nsteps, verbose = TRUE) {
+make_dissolution_stats <- function(sim.df, coef.diss, nsteps, verbose = TRUE) {
   if (verbose == TRUE) {
     cat("\n- Calculating duration statistics")
   }
 
   nsims <- length(sim.df)
-  dissolution <- coef.diss$dissolution
-
-  # TO DO: (with Sam and Adrian) decide whether to eliminate this bit of code 
-  #         by having dissolution_coefs output include t1.edges and t2.term
-  
-  # Check form of dissolution formula
-  # Code chunk copied from dissolution_coefs
-  form.length <- length(strsplit(as.character(dissolution)[2], "[+]")[[1]])
-  t1.edges <- grepl("offset[(]edges",
-                      strsplit(as.character(dissolution)[2], "[+]")[[1]][1])
-  if (form.length == 2) {
-    t2 <- strsplit(as.character(dissolution)[2], "[+]")[[1]][2]
-    t2.term <- NULL
-    if (grepl("offset[(]nodematch", t2)) {
-      t2.term <- "nodematch"
-    } else if (grepl("offset[(]nodefactor", t2)) {
-      t2.term <- "nodefactor"
-    } else if (grepl("offset[(]nodemix", t2)) {
-      t2.term <- "nodemix"
-    }
-  }
-  model.type <- NA
-  if (form.length == 1 && t1.edges == TRUE) {
-    model.type <- "homog"
-  } else if (form.length == 2 && t1.edges == TRUE &&
-             t2.term %in% c("nodematch", "nodefactor", "nodemix")) {
-    model.type <- "hetero"
-  } else {
-    model.type <- "invalid"
-  }
 
   # Calculate mean partnership age from edgelist
   pages <- lapply(sim.df, function(x) edgelist_meanage(el = x))
