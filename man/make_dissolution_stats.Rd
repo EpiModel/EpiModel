@@ -4,14 +4,14 @@
 \alias{make_dissolution_stats}
 \title{Calculate the Dissolution Statistics of a Network}
 \usage{
-make_dissolution_stats(sim.df, coef.diss, nsteps, verbose = TRUE)
+make_dissolution_stats(diag.sim, coef.diss, nsteps, verbose = TRUE)
 }
 \arguments{
-\item{sim.df}{a list of network objects (one per simulation)}
+\item{diag.sim}{a list of network objects (one per simulation)}
 
 \item{coef.diss}{the \code{coef.diss} element of \code{nwparam}}
 
-\item{nsteps}{the number of simualted steps}
+\item{nsteps}{the number of simulated steps}
 
 \item{verbose}{a verbosity toggle (default = TRUE)}
 }
