@@ -324,7 +324,7 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
       out$prop.diss <- dissolution.stats$prop.diss
     }
     if (keep.tedgelist == TRUE) {
-      out$tedgelist <- sim.df
+      out$tedgelist <- lapply(diag.sim, as.data.frame)
     }
     if (keep.tnetwork == TRUE) {
       out$network <- diag.sim
@@ -378,9 +378,9 @@ make_formation_table <- function(merged.stats, targets) {
 
 #' @title Calculate the Dissolution Statistics of a Network
 #'
-#' @param sim.df a list of network objects (one per simulation)
+#' @param diag.sim a list of network objects (one per simulation)
 #' @param coef.diss the \code{coef.diss} element of \code{nwparam}
-#' @param nsteps the number of simualted steps
+#' @param nsteps the number of simulated steps
 #' @param verbose a verbosity toggle (default = TRUE)
 #'
 #' @return a \code{list} of dissolution statistics
