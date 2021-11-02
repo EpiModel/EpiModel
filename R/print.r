@@ -213,10 +213,9 @@ print.netsim <- function(x, nwstats = TRUE, digits = 3, network = 1, ...) {
         seq_len(x$control$nsims),
         get_network, network = network, x = x
       )
-      sim.df <- lapply(diag.sim, as.data.frame)
-
-      dissolution.stats <- make_dissolution_stats(
-        sim.df,
+      
+      dissolution.stats <- make_dissolution_stats( 
+        diag.sim,
         x$nwparam[[network]]$coef.diss,
         x$control$nsteps,
         verbose = FALSE

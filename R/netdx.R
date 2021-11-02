@@ -291,10 +291,8 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
 
   if (skip.dissolution == FALSE) {
     if (dynamic == TRUE) {
-      sim.df <- lapply(diag.sim, as.data.frame)
       dissolution.stats <- make_dissolution_stats(
-        nw, 
-        sim.df,
+        diag.sim,
         x$coef.diss,
         nsteps,
         verbose
@@ -387,16 +385,19 @@ make_formation_table <- function(merged.stats, targets) {
 #'
 #' @return a \code{list} of dissolution statistics
 #' @keywords internal
-make_dissolution_stats <- function(nw, sim.df, coef.diss, nsteps, verbose = TRUE) {
+make_dissolution_stats <- function(diag.sim, coef.diss, nsteps, verbose = TRUE) {
   if (verbose == TRUE) {
     cat("\n- Calculating duration statistics")
   }
 
+  sim.df <- lapply(diag.sim, as.data.frame)
   nsims <- length(sim.df)
+  dissolution <- coef.diss$dissolution
 
   # Calculate mean partnership age from edgelist
   pages <- lapply(sim.df, function(x) edgelist_meanage(el = x))
-
+  # TO DO: edgelist
+  
   # TODO: imputation currently averaged for heterogeneous models
   if (coef.diss$model.type == "homog") {
         coef_dur <- coef.diss$duration
