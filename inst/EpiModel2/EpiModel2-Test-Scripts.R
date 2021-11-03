@@ -4,7 +4,6 @@
 ### Worked Examples
 ###
 
-# remotes::install_github("statnet/EpiModel", ref = "EpiModel_Overhaul_s4")
 suppressMessages(library("EpiModel"))
 par(mar = c(3, 3, 2, 1), mgp = c(2, 1, 0))
 

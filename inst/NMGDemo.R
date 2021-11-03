@@ -366,8 +366,6 @@ x <- netsim(est, param, init, control)
 
 # 8. TODO: Time-varying attribute storage ---------------------------------
 
-# https://github.com/statnet/EpiModel/issues/386
-# https://github.com/statnet/EpiModel/issues/478
 
 
 # 9. TODO: Flexible Prevalence Module with Factory Functions --------------
@@ -405,7 +403,6 @@ prevalence.net <- function(dat, at) {
 
 # 10. TODO: Move Initialization Function Outside netsim -------------------
 
-# https://github.com/statnet/EpiModel/issues/385
 
 # Example for EpiModelHIV
 

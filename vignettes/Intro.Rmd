@@ -33,6 +33,10 @@ help(package = "EpiModel")
 
 To see the latest updates to **EpiModel**, consult the software `NEWS` file on Github (https://github.com/statnet/EpiModel/releases).
 
+Advanced topics are covered in two vignettes:
+- Working With Model Parameters `r vignette("model-parameters")`
+- Working With Custom Attributes and Summary Statistics `r vignette("attributes-and-summary-statistics")`
+
 ### Getting Help
 
 We have historically used both an email-based listserv and Github issues to address questions, bug reports, and feature requests for our users. With the release of EpiModel v2.0.3, we have decided to close the email listserv, and provide this user support entirely with Github issues. Any technical coding and non-technical conceptual EpiModel questions or requests may be posted as a Github issue at our main Github repository (https://github.com/statnet/EpiModel/issues).

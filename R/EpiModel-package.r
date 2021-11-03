@@ -108,7 +108,7 @@
 #'
 #' @references
 #' The EpiModel website is at \url{http://www.epimodel.org/}, and the source
-#' code is at \url{https://github.com/statnet/EpiModel}. Bug reports and feature
+#' code is at \url{https://github.com/EpiModel/EpiModel}. Bug reports and feature
 #' requests are welcome.
 #'
 #' Our primary methods paper on EpiModel is published in the \strong{Journal of
@@ -122,7 +122,7 @@
 #' We have also developed two extension packages for modeling specific disease
 #' dynamics. For HIV and bacterial sexually transmitted infections, we have
 #' developed \code{EpiModelHIV}, which is available on Github at
-#' \url{https://github.com/statnet/EpiModelHIV}. For COVID-19, we have developed
+#' \url{https://github.com/EpiModel/EpiModelHIV}. For COVID-19, we have developed
 #' \code{EpiModelCOVID}, which is available at
 #' \url{https://github.com/EpiModel/EpiModelCOVID}.
 #'
