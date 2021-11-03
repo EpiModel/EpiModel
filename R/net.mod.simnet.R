@@ -39,7 +39,7 @@ sim_nets_t1 <- function(x, dat, nsteps) {
                      coef = coef(x$fit),
                      basis = x$fit$newnetwork,
                      constraints = x$constraints,
-                     control = set.control.ergm, 
+                     control = set.control.ergm,
                      dynamic = FALSE)
     } else {
       nw <- x$fit$network
@@ -214,7 +214,7 @@ resim_nets <- function(dat, at) {
                                 coef.form = nwparam$coef.form,
                                 coef.diss = nwparam$coef.diss$coef.adj,
                                 constraints = nwparam$constraints,
-                                time.start = at - 1, # should be the time stamp on the nwL if we are tracking duration
+                                time.start = at - 1,
                                 time.slices = 1,
                                 time.offset = 1, # default value
                                 control = set.control.stergm,
@@ -233,9 +233,14 @@ resim_nets <- function(dat, at) {
       dat$el[[1]] <- as.edgelist(dat$nw[[1]])
 
       if (save.nwstats == TRUE) {
+        term.options <- if (isTERGM == TRUE) {
+          set.control.stergm$term.options
+        } else {
+          set.control.ergm$term.options
+        }
         nwstats <- summary(dat$control$nwstats.formulas[[1]],
                            basis = dat$nw[[1]],
-                           term.options = if(isTERGM) set.control.stergm$term.options else set.control.ergm$term.options,
+                           term.options = term.options,
                            dynamic = isTERGM)
         keep.cols <- which(!duplicated(names(nwstats)))
         dat$stats$nwstats[[1]] <- rbind(dat$stats$nwstats[[1]], nwstats[keep.cols])
@@ -262,7 +267,6 @@ resim_nets <- function(dat, at) {
 edges_correct <- function(dat, at) {
 
   resimulate.network <- get_control(dat, "resimulate.network")
-  tergmLite <- get_control(dat, "tergmLite")
   groups <- get_param(dat, "groups")
   active <- get_attr(dat, "active")
 

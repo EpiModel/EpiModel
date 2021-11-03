@@ -33,7 +33,7 @@
 #'
 #'          Within \code{tergmLite}, the \code{networkLite} data structure is used in the
 #'          calls to \code{ergm} and \code{tergm} \code{simulate} functions.
-#' 
+#'
 #' @return  A networkLite object with edge list \code{el}, vertex attributes \code{attr}, and
 #'          network attributes \code{gal}.
 #'
@@ -68,12 +68,19 @@ networkLite <- function(x, ...) {
 
 #' @rdname networkLite
 #' @export
-networkLite.numeric <- function(x, directed = FALSE, bipartite = FALSE, loops = FALSE, hyper = FALSE, multiple = FALSE, ...) {
+networkLite.numeric <- function(x,
+                                directed = FALSE,
+                                bipartite = FALSE,
+                                loops = FALSE,
+                                hyper = FALSE,
+                                multiple = FALSE,
+                                ...) {
   x <- as.numeric(x) # so it's not of class integer
 
   el <- matrix(0L, nrow = 0L, ncol = 2L)
   attr <- list()
-  gal <- list(n = x, directed = directed, bipartite = bipartite, loops = loops, hyper = hyper, multiple = multiple)
+  gal <- list(n = x, directed = directed, bipartite = bipartite,
+              loops = loops, hyper = hyper, multiple = multiple)
 
   nw <- list(el = el, attr = attr, gal = gal)
 
@@ -86,11 +93,12 @@ networkLite.numeric <- function(x, directed = FALSE, bipartite = FALSE, loops = 
 networkLite.edgelist <- function(x, attr = list(), ...) {
   nw <- list(el = x,
              attr = attr,
-             gal = attributes(x)[setdiff(names(attributes(x)), c("class", "dim", "vnames"))])
+             gal = attributes(x)[setdiff(names(attributes(x)),
+                                         c("class", "dim", "vnames"))])
 
   # network size attribute is required
   if (is.null(nw$gal[["n"]])) {
-    stop("edgelist passed to networkLite constructor must have the `n` attribute.")
+    stop("edgelist passed to networkLite must have the `n` attribute.")
   }
   # other common attributes default to FALSE
   if (is.null(nw$gal[["directed"]])) {
@@ -149,7 +157,11 @@ get.vertex.attribute.networkLite <- function(x, attrname, ...) {
 #' @param v indices at which to set vertex attribute values.
 #' @export
 #'
-set.vertex.attribute.networkLite <- function(x, attrname, value, v = seq_len(network.size(x)), ...) {
+set.vertex.attribute.networkLite <- function(x,
+                                             attrname,
+                                             value,
+                                             v = seq_len(network.size(x)),
+                                             ...) {
   xn <- substitute(x)
 
   if(!(attrname %in% list.vertex.attributes(x))) {
@@ -237,9 +249,11 @@ mixingmatrix.networkLite <- function(object, attr, ...) {
 
   all_attr <- ergm_get_vattr(attr, nw, multiple = "paste")
 
-  if(is.bipartite(nw)) {
-    row_levels <- sort(unique(ergm_get_vattr(attr, nw, bip = "b1", multiple = "paste")))
-    col_levels <- sort(unique(ergm_get_vattr(attr, nw, bip = "b2", multiple = "paste")))
+  if (is.bipartite(nw)) {
+    row_levels <- sort(unique(ergm_get_vattr(attr, nw, bip = "b1",
+                                             multiple = "paste")))
+    col_levels <- sort(unique(ergm_get_vattr(attr, nw, bip = "b2",
+                                             multiple = "paste")))
   } else {
     row_levels <- sort(unique(all_attr))
     col_levels <- row_levels

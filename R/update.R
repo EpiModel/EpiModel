@@ -123,12 +123,13 @@ delete_vertices <- function(el, vid) {
       new.el <- el[-el.rows.to.del, , drop = FALSE]
     }
     if (NROW(new.el) > 0) {
-      o1 <- order(new.el[,1])
-      new.el[,1] <- shiftVec(new.el[o1,1], vid)[order(o1)]
-      o2 <- order(new.el[,2])
-      new.el[,2] <- shiftVec(new.el[o2,2], vid)[order(o2)]
+      o1 <- order(new.el[, 1])
+      new.el[, 1] <- shiftVec(new.el[o1, 1], vid)[order(o1)]
+      o2 <- order(new.el[, 2])
+      new.el[, 2] <- shiftVec(new.el[o2, 2], vid)[order(o2)]
     }
-    if(!is.null(attr(el,"n"))) attr(new.el,"n") <- attr(el,"n") - length(vid)
+    if (!is.null(attr(el, "n"))) attr(new.el, "n") <- attr(el, "n") -
+                                                      length(vid)
   }
 
   return(new.el)

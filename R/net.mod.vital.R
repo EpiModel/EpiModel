@@ -273,9 +273,7 @@ arrivals.2g.net <- function(dat, at) {
   nCurr <- length(get_attr(dat, "active"))
   nOld <- get_epi(dat, "num", index)
   nOldG2 <- get_epi(dat, "num.g2", index)
-  tergmLite <- get_control(dat, "tergmLite")
   totArr <- nArrivals <- nArrivalsG2 <- 0
-  newNodes <- newNodesG2 <- NULL
 
   # Add Nodes ---------------------------------------------------------------
   if (nOld > 0) {

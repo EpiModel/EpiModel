@@ -131,13 +131,13 @@ get_attr <- function(dat, item, posit_ids = NULL, override.null.error = FALSE) {
     } else {
       if (is.logical(posit_ids)) {
         if (length(posit_ids) != length(dat[["attr"]][[item]])) {
-          stop("(logical) `posit_ids` has to have a length equal to the number ",
-               "of nodes in the network")
+          stop("(logical) `posit_ids` has to have a length equal to the ",
+               "number of nodes in the network")
         }
       } else if (is.numeric(posit_ids)) {
         if (any(posit_ids > length(dat[["attr"]][[item]]))) {
-          stop("Some (numeric) `posit_ids` are larger than the number of nodes ",
-               " in the network")
+          stop("Some (numeric) `posit_ids` are larger than the number of ",
+               "nodes in the network")
         }
       } else {
         stop("`posit_ids` must be logical, numeric, or NULL")

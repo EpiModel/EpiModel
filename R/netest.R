@@ -182,7 +182,7 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
     coef.form <- fit # there is no longer a separate formation fit
     which_form <- which(grepl("^Form~", names(coef(fit))) | grepl("^offset\\(Form~", names(coef(fit))))
     form_names <- names(coef(fit)[which_form])[!fit$offset[which_form]]
-    
+
     out <- list()
     out$fit <- fit
     out$formation <- formation

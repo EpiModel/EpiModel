@@ -15,7 +15,6 @@ nwupdate.net <- function(dat, at) {
 
   ## Attributes
   status <- get_attr(dat, "status")
-  infTime <- get_attr(dat, "infTime")
   active <- get_attr(dat, "active")
   entrTime <- get_attr(dat, "entrTime")
   exitTime <- get_attr(dat, "exitTime")
