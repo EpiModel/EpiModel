@@ -234,7 +234,8 @@ merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
 
 
   ## Network statistics
-  if (keep.nwstats == TRUE & !is.null(x$stats$nwstats) & !is.null(y$stats$nwstats)) {
+  if (keep.nwstats == TRUE & !is.null(x$stats$nwstats) &
+      !is.null(y$stats$nwstats)) {
     for (i in new.range) {
       z$stats$nwstats[[i]] <- y$stats$nwstats[[i - x$control$nsims]]
       if (!is.null(z$stats$nwstats)) {

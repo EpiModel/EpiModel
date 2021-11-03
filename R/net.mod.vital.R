@@ -289,7 +289,6 @@ arrivals.2g.net <- function(dat, at) {
     }
 
     if (totArr > 0) {
-      newNodes <- (nCurr + 1):(nCurr + totArr)
       dat <- append_core_attr(dat, at, totArr)
       dat <- append_attr(dat, "group", 1, nArrivals)
       dat <- append_attr(dat, "group", 2, nArrivalsG2)

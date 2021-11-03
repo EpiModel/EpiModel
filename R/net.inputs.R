@@ -366,7 +366,8 @@ param_random <- function(values, prob = NULL) {
 #' the name of one parameter if this parameter is of size 1 or the name of the
 #' parameter with "_1", "_2", "_N" with the second part being the position of
 #' the value for a parameter of size > 1. This means that the parameter names
-#' cannot contain any underscore "_" if you indend to use \code{param_random_set}
+#' cannot contain any underscore "_" if you intend to use
+#' \code{param_random_set}.
 #'
 #' The point of the \code{param_random_set} \code{data.frame} is to allow the
 #' random parameters to be correlated. To achieve this, a whole row of the
@@ -443,7 +444,8 @@ param_random <- function(values, prob = NULL) {
 #'
 #' }
 generate_random_params <- function(param, verbose = FALSE) {
-  if (is.null(param[["random.params"]]) || length(param[["random.params"]]) == 0) {
+  if (is.null(param[["random.params"]]) ||
+      length(param[["random.params"]]) == 0) {
     return(param)
   } else {
     random.params <- param[["random.params"]]

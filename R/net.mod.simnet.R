@@ -243,7 +243,8 @@ resim_nets <- function(dat, at) {
                            term.options = term.options,
                            dynamic = isTERGM)
         keep.cols <- which(!duplicated(names(nwstats)))
-        dat$stats$nwstats[[1]] <- rbind(dat$stats$nwstats[[1]], nwstats[keep.cols])
+        dat$stats$nwstats[[1]] <- rbind(dat$stats$nwstats[[1]],
+                                        nwstats[keep.cols])
       }
     }
   }

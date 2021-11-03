@@ -439,4 +439,3 @@ update_dissolution <- function(old.netest, new.coef.diss, nested.edapprox = TRUE
 
   return(out)
 }
-

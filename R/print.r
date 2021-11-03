@@ -332,7 +332,8 @@ print.param.net <- function(x, ...) {
     cat("\n---------------------------\n")
     for (prm in rng_defs) {
       if (prm == "param_random_set") {
-        cat(prm, "= <data.frame> ( dimensions:", dim(x$random.param$param_random_set), ")\n")
+        cat(prm, "= <data.frame> ( dimensions:",
+            dim(x$random.param$param_random_set), ")\n")
       } else {
         cat(prm, "= <function>\n")
       }

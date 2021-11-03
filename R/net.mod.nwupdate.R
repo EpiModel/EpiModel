@@ -24,7 +24,6 @@ nwupdate.net <- function(dat, at) {
   cumulative.edgelist <- get_control(
     dat, "cumulative.edgelist", override.null.error = TRUE)
 
-  # statOnNw <- "status" %in% dat$temp$nwterms
   resimulate.network <- get_control(dat, "resimulate.network")
   isTERGM <- get_control(dat, "isTERGM")
 
