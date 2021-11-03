@@ -30,372 +30,277 @@ rate**, the **infection probability** and the **recovery rate**.
 
 In this vignette we will look at:
 
-- How to set up the parameters for a model.
 - How to use random parameters.
 - How to modify parameters at a given time during the simulation. 
-- How to access the parameters in module.
 
-# Setting Up The Parameters
+# Random Parameters
 
-*Attributes* are values that refer to the nodes in the model at the current
-time-step. By default, every node has a `unique_id` and an `active` *attribute*.
-Other attributes can be added, like `status`, `age`, or anything that can be
-stored as a scalar value.
+## The model
 
-We work with *attribute vectors* that are all of the same size of the number of
-nodes in the model. In the *attribute vectors*, a node is identified  by its
-*Positional ID* or `posit_id` (i.e. the position in vector). The default
-*attribute* `unique_id` created for each node gives a unique identification
-number allowing us to refer to nodes no longer in the model.
+First, we define a minimal dummy model. If this code does not make sense, please
+check the [EpiModel tutorials](http://www.epimodel.org/tut.html).
 
-## Working With Attributes
+```{r model}
+nw <- network_initialize(n = 50)
 
-### Accessing
+est <- netest(
+  nw, formation = ~edges,
+  target.stats = c(25),
+  coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+  verbose = FALSE
+)
 
-The `EpiModel::get_attr` function will get the vector of a given *attribute*. In
-it's simplest form we can pull a complete *attribute vector* from `dat`:
 
-```{r accessing-attr, eval = FALSE}
-active <- EpiModel::get_attr(dat, "active")
+param <- param.net(
+  inf.prob = 0.3,
+  act.rate = 0.5,
+  dummy.param = 4,
+  dummy.strat.param = c(0, 1)
+)
+
+init <- init.net(i.num = 10)
+control <- control.net(type = "SI", nsims = 1, nsteps = 5, verbose = FALSE)
+mod <- netsim(est, param, init, control)
+mod
 ```
 
-The above call will pull from `dat` the `active` *attribute* for all nodes.
-`active` is a vector of size *number of nodes*. With values being either 0 or 1
-depending on whether said node is active or not.
+In the parameter we set the value for `inf.prob` and `act.rate` as usual but
+also define `dummy.param` and `dummy.strat.param`. These last 2 parameters are
+not used by the model but will serve to illustrate random parameters and how to
+handle stratified parameters. `dummy.strat.param` has two elements, this is
+usually used to stratify a parameter by subpopulation.
 
-Trying to access an *attribute* that does not exist will cause
-`EpiModel::get_attr` to throw an error.
+The last line print a summary of the model and in it we can see the value of the
+parameters under the "Fixed Parameters" section. Note the additional `groups`
+parameter defined automatically by `EpiModel` as part of the "SI" model definition.
 
-### Modifying
+## Random parameters
 
-In a custom module we usually want to modify some of the *attributes*. Below we
-look at a minimal module that increment the age of all the nodes by 1.
+Now we will want our parameters to take random values. For this, we use the
+`random.params` argument to `param.net`. There are two ways of defining which
+parameter to draw randomly and how to draw them.
 
-```{r modyfing-attr, eval = FALSE}
-aging_module <- function(dat, at) {
-  # Attributes
-  age <- EpiModel::get_attr(dat, "age")
+### Generator functions
 
-  # Logic
-  new_age <- age + 1
+The first option is to define a generator function for each parameter we want to
+randomize.
 
-  # Output
-    # Attributes
-  dat <- EpiModel::set_attr(dat, "age", new_age)
+```{r generators}
+my.randoms <- list(
+  act.rate = param_random(c(0.25, 0.5, 0.75)),
+  dummy.param = function() rbeta(1, 1, 2),
+  dummy.strat.param = function() c(
+    rnorm(1, 0.05, 0.01),
+    rnorm(1, 0.15, 0.03)
+  )
+)
 
-  return(dat)
-}
+param <- param.net(
+  inf.prob = 0.3,
+  random.params = my.randoms
+)
+
+param
 ```
 
-Let's break down this very simple yet perfectly valid module.
+Here we kept the `inf.prob` parameter fixed at `0.3` and defined a list
+`my.randoms` containing 3 elements:
 
-1. Pull the `age` *attribute vector* as we did in the previous section.
-2. Create a vector `new_age` incrementing all ages by one.
-3. Update the `dat` object with the `EpiModel::set_attr` function.
-4. Return the Updated `dat` object.
+- `act.rate` uses the `param_random` [function
+  factory](https://adv-r.hadley.nz/function-factories.html) defined by EpiModel
+  (see `?EpiModel::param_random`).
+- `dummy.param` is a function with no argument that returns a random value from
+  a beta distribution.
+- `dummy.strat.param` is a function with no argument that returns 2 values
+  sampled from normal distributions.
 
-We can see that `EpiModel::set_attr` takes as arguments:
+Each element is named after the parameter it will fill and MUST BE a function
+taking no argument and outputting a vector of the right size for the parameter:
+size 1 for `act.rate` and `dummy.param`; size 2 for `dummy.strat.param`.
 
-- the `dat` object to update
-- the name of the attribute vector of interest (here "age")
-- the new values for this vector (here `new_age`)
+```{r generators_run}
+control <- control.net(type = "SI", nsims = 3, nsteps = 5, verbose = FALSE)
+mod <- netsim(est, param, init, control)
 
-When using `EpiModel::set_attr` several things are to be noted:
+mod
+```
 
-- the function does not modify the `dat` object, it merely returns a modified
-   version of it to be assigned back to `dat`. (It does not cause performance
-   issues due to the way R handles shallow copies since version 3.1)
-- if `new_age` size is not equal to the number of nodes in the network the
-   function will throw an error.
+After running 3 simulations we can see that 2 parameters are still displayed under the
+"Fixed Parameters" section: `inf.prob` and `groups`. The other ones are displayed
+under the "Random Parameters". `act.rate` and `dummy.param` now have 3 values associated
+with them, one per simulation. `dummy.strat.param` have `<list>` as value because
+each simulation has a vector of size 2.
 
-### Advanced Options
+We can inspect the values with:
 
-The above example describes the main (and recommended way) to work with
-attribute:
+``` {r generators_inspect}
+str(mod$param$random.params.values)
+```
 
-1. Pulling the *attributes* into local vectors
-2. Modifying the local vectors
-3. Updating the `dat` object with the local vectors
-4. return the `dat` object
+### Parameter set
 
-However, these functions have other arguments that are described in the
-documentation. See `help("net-accessor", package = "EpiModel")`.
+The drawback of generator functions is that they cannot produce correlated
+parameters. For instance, we will want `dummy.param` and `dummy.strat.param` to
+be related to one another while allowing `act.rate` to take randomly one of the
+3 values defined above.
 
-# Attribute History
+We need to define a `data.frame` of the possible values:
 
-We have seen how *Attributes* refers to the state of **every nodes** in the
-network **at the current time-step**. However, we sometimes want to keep track
-of what happened to some nodes at different time-steps. Because saving the full
-history of the *attributes* would consume too much RAM and is rarely necessary,
-EpiModel offers a way to record specific *attribute* for specific nodes at
-different time-steps.
+```{r set_df}
+n <- 5
 
-The *Attribute History* is an efficient collection of recorded attributes at
-different time-steps. EpiModel comes with function to record these elements and
-to access them in a convenient manner once the simulation is over.
+related.param <- data.frame(
+  dummy.param = rbeta(n, 1, 2)
+)
 
-## Working with Attribute History
+related.param$dummy.strat.param_1 <- related.param$dummy.param + rnorm(n)
+related.param$dummy.strat.param_2 <- related.param$dummy.param * 2 + rnorm(n)
 
-### Recording Attribute History
+related.param
+```
 
-Here is  a module that would record the viral load of infected nodes every 10
-time-steps. We assume that this module is part of a model that defines 2
-*attributes*:
+We now have a `data.frame` with 25 rows and 3 columns. Each row contains a set
+of parameters values that will be used together in a model. This way we keep the
+relationship between each value.
 
-- `status` with possible values being "infected" or "susceptible"
-- `viral_load` as a number for the "infected" nodes and `NA` otherwise
+The first column of the `data.frame` is named `dummy.param`, similar to the name
+of the parameter. For `dummy.start.param` we need two columns as the parameter
+contains two values. To achieve this, we name the 2 columns `dummy.start.param_1` and
+`dummy.strat.param_2`. The value after the underscore informs `EpiModel` how it
+should combine the values. This in turn means that the underscore symbol is not
+allowed in the parameter names.
 
-```{r recordin_attr_hist, eval = FALSE}
-viral_load_logger_module <- function(dat, at) {
-  if (at %% 10 == 0) {
-    # Attributes
-    status <- EpiModel::get_attr(dat, "status")
-    viral_load <- EpiModel::get_attr(dat, "viral_load")
+Then we set up the rest of the parameters. `related.param` is saved in the
+`my.randoms` list under the special name `param_random_set`.
 
-    infected <- which(status == "infected")
+```{r set_param}
+my.randoms <- list(
+  act.rate = param_random(c(0.25, 0.5, 0.75)),
+  param_random_set = related.param
 
-    dat <- EpiModel::record_attr_history(
-      dat, at,
-      "viral_load",
-      infected,
-      viral_load[infected]
+)
+
+param <- param.net(
+  inf.prob = 0.3,
+  random.params = my.randoms
+)
+
+param
+```
+
+Notice here that we combined a generator function for `act.rate` and a set of
+correlated parameters with `param_random_set`.
+
+```{r set_run}
+control <- control.net(type = "SI", nsims = 3, nsteps = 5, verbose = FALSE)
+mod <- netsim(est, param, init, control)
+
+mod
+```
+
+The output is similar to what we saw with the generator functions.
+
+**Where to get a Parameter set?**
+
+In this example, we generated the parameter set ourselves. In real research, you
+might want to use values coming from elsewhere. As long as you format them as
+described above `EpiModel` will be able to use them.
+
+# Updating Model Parameters During Runtime
+
+When doing modeling work, the researcher may want to simulate interventions or
+events that vary over time. In (their 2021
+paper)[https://academic.oup.com/jid/article/223/6/1019/6122459] Jenness & al
+simulate the effects of COVID-19–Related Sexual Distancing and Clinical Service
+Interruption on HIV and STI incidence. These are events with a beginning and an
+end. To work with these situations, EpiModel offers an optional module to
+programmatically handle the changes in the model over time.
+
+This vignette assumes a basic understanding of EpiModel custom models. If the
+code does not make sense, please check the
+[EpiModel tutorials](http://www.epimodel.org/tut.html).
+
+## Parameter updaters
+
+To define what parameters should change and when during the simulation, we need
+to define **updaters**. An updater is a `list` with to named elements: `at`,
+the time step when the change will take place, and `param` a named list of
+parameters to update.
+
+```{r updater-example, eval = FALSE}
+list(
+  at = 10,
+  param = list(
+    inf.prob = 0.3,
+    act.rate = 0.5
+  )
+)
+```
+
+This example defines an updater that will change the value of the `inf.prob`
+parameter to `0.3` and the value to the `act.rate` parameter to `0.5`. This
+change will happen during the 10th time step.
+
+As mentioned above, we usually want to define several changes at once. EpiModel
+accept a `list` of **updaters**.
+
+
+```{r updater-list}
+# Create a `list.of.updaters`
+list.of.updaters <- list(
+  # this is one updater
+  list(
+    at = 100,
+    param = list(
+      inf.prob = 0.3,
+      act.rate = 0.3
     )
-  }
+  ),
+  # this is another updater
+  list(
+    at = 125,
+    param = list(
+      inf.prob = 0.01
+    )
+  )
+)
 
-  # Output
-  return(dat)
-}
+ # The `list.of.updaters` goes into `param.net` under `param.updater.list`
+ param <- param.net(
+   inf.prob = 0.1,
+   act.rate = 0.1,
+   param.updater.list = list.of.updaters
+ )
 ```
 
-Let's break the code down:
+In this example, we define 2 **updaters**, one that occurs at time step 100 and
+the other one at time step 20. In practice, `inf.prob` and `act.rate` are set to
+`0.1` at the beginning by `param.net`, at time step 100 they are both updated to
+`0.3` and at time step 125 `act.rate` is turn down to `0.01`.
 
-1. Check that the current time-step is a multiple of ten. If not got to 2.
-  1. Pull the 2 *attribute vectors* of interest ("status" and "viral_load")
-  2. Store in `infected` the `posit_id`s of the infected nodes
-  3. Record the `viral_load` of `infected` nodes at time `at` under the label
-       "viral_load"
-2. Return the `dat` object.
-
-`EpiModel::record_attr_history` takes five arguments:
-
-1. the `dat` object
-2. the time-step to be associated with the record (here `at`, the current time-step)
-3. the label to be used for the attribute (here "viral_load")
-4. a vector of `posit_id`s referring to the nodes of interest (here `infected`)
-5. the values to be recorded (here `viral_load[infected]`)
-
-We notice that `EpiModel::record_attr_history` requires a set of `posit_id`s.
-Internally the function will convert them to `unique_id`s so the *Attribute
-History* will not be affected by nodes entering or leaving the model over time.
-
-When recording some *Attribute History*, we must make sure that we record as
-many values as there are `posit_id`s. Otherwise the function will throw an
-error. It however possible to use only one value even though we record a value
-for multiple nodes. This last situation actually uses less RAM as only one
-value is stored in the history for multiple nodes.
-
-### Accessing the Attribute History
-
-The *Attribute History* is meant to be accessed once the simulation is over. At
-that point we can use the `EpiModel::get_attr_history` function to pull it.
-
-```{r access_attr_hist, eval = FALSE}
-sim <- netsim(est, param, init, control)
-attr_history <- EpiModel::get_attr_history(sim)
-```
-
-The `attr_history` object is a list of `data.frame`s. One for each measure that
-was recorded. Let's assume we were running two simulations, using the module
-defined above and another one recording when a node switched from infected to
-recovered and vice-versa.
-
-```{r get_attr_ex, eval = FALSE}
-get_attr_history(sim)
-
-# $viral_load
-#    sim step attribute    uids values
-# 1  1   10   viral_load   1001   2000
-# 2  1   10   viral_load   1002   1878
-# 3  1   20   viral_load   1001   1500
-# 4  1   20   viral_load   1002    300
-# 5  2   10   viral_load    401   2500
-# 6  2   10   viral_load    402   1378
-# 7  2   20   viral_load    401   1200
-# 8  2   20   viral_load    402    100
-# ...
-#
-# $switch_status
-#    sim step attribute      uids     values
-# 1  1   22   switch_status  1001   infected
-# 2  1   64   switch_status  1002   infected
-# 3  1  110   switch_status  1001  recovered
-# 4  1  220   switch_status  1002  recovered
-# 5  2    7   switch_status   401   infected
-# 6  2   15   switch_status   402   infected
-# 7  2   20   switch_status   401  recovered
-# 8  2  120   switch_status   402  recovered
-# ...
-```
-
-We would get a named list of 2 `data.frame`:
-
-- "viral_load" with the `value` column being the viral loads
-- "switch_status" with the `value` column being whether the node became
-  "infected" or "recovered" at the given time-step.
-
-# Epidemic Trackers
-
-The next type of data stored in `dat` is called *Epidemic Tracers*. It refers to
-information about the *population*, not the individual nodes. This information
-is created and stored for **each time step**.
-
-Examples of such *Epidemic Trackers* is the `num` vector, storing the size of
-the population at each time-step.
-
-## Working With Epidemic Trackers in Modules
-
-Inside a module, *Epidemic Trackers* are accessed and modified with the
-functions `EpiModel::get_epi` and `EpiModel::set_epi`. Below is a new version
-of the `aging_module` defined above with the addition of trackers.
-
-
-```{r epi-in-modules, eval = FALSE}
-aging_track_module <- function(dat, at) {
-  # Attributes
-  age <- EpiModel::get_attr(dat, "age")
-
-  # Logic
-  new_age <- age + 1
-  mean_age <- mean(new_age)
-  prev_mean_age <- EpiModel::get_epi(dat, at - 1, "mean_age")
-  age_change <- mean_age - prev_mean_age
-
-  # Output
-  dat <- EpiModel::set_attr(dat, "age", new_age)
-
-  dat <- set_epi(dat, "mean_age", at, mean_age)
-  dat <- set_epi(dat, "age_change", at, age_change)
-
-  return(dat)
-}
-```
-
-In this new module, in addition to incrementing the age by 1, we also record 2 
-values as *Epidemic Tracers*: the mean age of the population and the change in 
-mean age compared to the previous step. 
-
-We get the mean age at the previous step using `EpiModel::get_epi` and set the 
-second argument as `at - 1`. After all the calculations are done, we store 
-`mean_age` and `age_change` in `dat` using `EpiModel::set_epi`. 
-
-- Similarly to `EpiModel::set_attr`, `dat` is not modified directly and need
-  to be assigned back to himself. Also, the value we store must be a scalar.
-- Trying to access an *Epidemic Trackers* that does not exist is an error, as is
-  trying to access an invalid time-step.
-
-## Accessing Epidemic Trackers After a Simulation
-
-*Epidemic Trackers* are usually the main quantity of interest in a simulation. 
-We access them simply by calling `as.data.frame` on a `netsim` object or by 
-using the plot functions offered by EpiModel.
-
-## Custom Epidemic Trackers
-
-It can be useful to create small *Epidemic Trackers* outside of the modules and
-use them only when we need them. EpiModel contains an optional module called `EpiModel::trackers.net` allowing 
-such functionality.
-
-### Tracker functions
-
-We call a *tracker function* a `function` that takes `dat` and `at` as
-arguments and outputs a scalar value. Every *tracker function* is run by the
-`trackers.net` module at each time step.
-
-```{r tracker-example}
-epi_s_num <- function(dat, at) {
-  needed_attributes <- c("status")
-  output <- with(get_attr_list(dat, needed_attributes), {
-    out <- sum(status == "susceptible", na.rm = TRUE)
-
-    out
-  })
-
-  return(output)
-}
-```
-
-The `epi_s_num` function defined above is a *tracker function*. It calculates at
-each time-step the number of *susceptible* in the network.
-
-The next example is a *tracker function* that calculates the proportion of
-the population that is infected at each time step. Let's look what each element
-does:
-
-```{r tracker-commented}
-epi_prop_infected <- function(dat, at) {
-  # we need two attributes for our calculation: `status` and `active`
-  needed_attributes <- c("status", "active")
-
-  # we use `with` to simplify code
-  output <- with(EpiModel::get_attr_list(dat, needed_attributes), {
-    pop <- active == 1             # we only look at active nodes
-    cond <- status == "infected"   # which are infected 
-
-    # how many are `infected` among the `active`
-    out <- sum(cond & pop, na.rm = TRUE) / sum(pop, na.rm = TRUE)
-
-    out
-  })
-
-  return(output)
-}
-```
-
-We recommend that you always make your *tracker functions* as follows:
-
-1. define a `needed_attributes` variable containing a vector of attribute
-   names. (in this example: "status" and "active").
-2. use `with` and `EpiModel::get_attr_list(dat, needed_attributes)` to work in
-   an environment with only the objects you need. This helps to understand what
-   the tracker does and simplify the debugging process. We save the result of
-   this call into `output`
-3. define `out` as the calculated outcome inside with, it MUST be a scalar. This
-   is the last element evaluated by the `with` expression.
-4. `return(output)`, what was calculated inside the `with` construct.
-
-### Using the `trackers.net` module
+## Enabling the `updater` module
 
 This functionality is part of an optional module provided by `EpiModel`,
-`trackers.net`. This module has to be enabled in `control.net`. And the
-*tracker functions* themselves must be declared as a named list in 
-`control.net`: `tracker.list`. Let's make a simple SI module with some added 
-trackers:
+`updater.net`. This module has to be enabled in `control.net`.
 
-```{r tracker-list}
-# Create the `tracker.list` list
-some.trackers <- list(
-  prop_infected = epi_prop_infected,
-  s_num         = epi_s_num
-)
+Below we set up a complete example with a closed population SI model using the
+parameters and **updaters** defined above. We then plot the size of the
+infected and susceptible population over time to see the effects of the
+**updaters**.
 
-control <- EpiModel::control.net(
-  type = NULL, # must be NULL as we use a custom module
-  nsims = 1,
-  nsteps = 50,
-  verbose = FALSE,
-  infection.FUN = EpiModel::infection.net,
-  trackers.FUN = EpiModel::trackers.net,
-  tracker.list = some.trackers
-)
-
-param <- EpiModel::param.net(
-  inf.prob = 0.3,
-  act.rate = 0.1
-)
+```{r updater-module, fig.align = "center", fig.height = 4, fig.width = 6}
+ control <- control.net(
+   type = NULL, # must be NULL as we use a custom module
+   nsims = 1,
+   nsteps = 200,
+   verbose = FALSE,
+   updater.FUN = updater.net,
+   infection.FUN = infection.net
+ )
 
 nw <- network_initialize(n = 50)
 nw <- set_vertex_attribute(nw, "race", rbinom(50, 1, 0.5))
-est <- EpiModel::netest(
+est <- netest(
   nw,
   formation = ~edges,
   target.stats = 25,
@@ -403,66 +308,64 @@ est <- EpiModel::netest(
   verbose = FALSE
 )
 
-init <- EpiModel::init.net(i.num = 10)
-sim <- EpiModel::netsim(est, param, init, control)
+init <- init.net(i.num = 10)
+mod <- netsim(est, param, init, control)
 
-d <- as.data.frame(sim)
-
-knitr::kable(tail(d, n = 15))
+plot(mod)
 ```
 
-Each function must be named in the `tracker.list` list. The name given there
-will be used to identify the *tracker function* in the `epi` list and will be
-the name of the corresponding column of the `data.frame` produced by
-`as.data.frame(sim)` where `sim` is a `netsim` object.
+This is the minimal example. Usually, a researcher will want to add it to a
+more complex model with several bespoke modules. See the "Advanced Extension
+Models" section in the [EpiModel tutorials](http://www.epimodel.org/tut.html).
 
-*Note*: in the `some.trackers` list, we put `epi_prop_infected` and `epi_s_num`
-without parentheses at the end. This is because we store the `function` and not
-the result of calling the function.
-
-This is the minimal `control.net` to enable the module. Usually, a researcher
-will want to add it to a more complex model with several bespoke modules. See
-the "Advanced Extension Models" section in the [EpiModel
-tutorials](http://www.epimodel.org/tut.html).
-
-**Important**: when enabling the `trackers.net` module, the researcher must pay
+**Important**: when enabling the `updater.net` module, the researcher must pay
 particular attention to the order the modules are run. It is recommended to have
-the `trackers.net` module run last so the tracked values will reflect the state
-of the model at the end of the time step.
+the `updater.net` module run first so the changes happen at the beginning of
+the time step.
 
-# Record Any Object (advanced / debugging)
+## Advanced functionalities
 
-When working with complex projects, we sometimes want to inspect the state of an
-object without stopping the simulation. The function 
-`EpiModel::record_raw_object` allows the user to save any object during the 
-simulation. 
+Some functionalities of `updater.net` were not described above and are explained
+in `?EpiModel::updater.net`.
 
-```{r record-raw, eval = FALSE}
-introspect_module <- function(dat, at) {
-  # Attributes
-  age <- get_attr(dat, "age")
-  
-  if (mean(age, na.rm = TRUE) > 50) {
-    obj <- data.frame(
-        age = age,
-        status = EpiModel::get_attr(dat, "status")
-    )
-    dat <- EpiModel::record_raw_object(dat, at, "old pop", obj)
-  }
+### Verbosity
 
-  return(dat)
-}
+When creating an **updater**, one can add an optional `verbose` element to the
+`list`. If `TRUE`, `updater.net` will output a `message` describing what changes
+where performed when it occurs during the simulation.
+
+```{r updater-verbose, echo = FALSE}
+list(
+  at = 10,
+  param = list(
+    inf.prob = 0.3,
+    act.rate = 0.5
+  ),
+  verbose = TRUE
+)
 ```
 
-In this module, we look at the age of the population and if the mean age is more
-than 50, we create a `data.frame` called `obj` containing the `age` and `status`
-*attribute vectors* and store it in a *Raw Record*.
+### Relative parameter change
 
-This *Raw Record* can be accessed in the final `netsim` object for debugging 
-purposes.
+It is sometime useful to configure the changes with respect to the current value
+instead of a fixed new value.
 
-
-```{r record-raw-access, eval = FALSE}
-sim <- netsim(est, param, init, control)
-sim[["raw.records"]][[1]]
+```{r updater-function, echo = FALSE}
+list(
+  at = 10,
+  param = list(
+    inf.prob = function(x) plogis(qlogis(x) + log(2)),
+    act.rate = 0.5
+  )
+)
 ```
+
+This updater will set the value of `act.rate` to `0.5` as we saw earlier. But,
+for `inf.prob` we put a `function` (not a function call). In this case,
+`updater.net` will apply the `function` to the current value of `act.rate`. If
+we consider as in the previous example that `act.rate` is set to `0.1` by
+`param.net`, then its new value will be obtained by adding an Odds Ratio of 2
+to the original value `plogis(qlogis(0.1) + log(2))`: `0.1818182`.
+
+
+
