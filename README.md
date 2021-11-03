@@ -1,6 +1,6 @@
 # EpiModel
 
-[![Version](http://img.shields.io/badge/Version-2.1.0-orange.svg?style=flat)](https://github.com/statnet/EpiModel/releases/tag/v2.1.0) [![](http://cranlogs.r-pkg.org/badges/EpiModel?color=blue)](http://cran.rstudio.com/web/packages/EpiModel/index.html) [![](http://cranlogs.r-pkg.org/badges/grand-total/EpiModel?color=blue)](http://cran.rstudio.com/web/packages/EpiModel/index.html) [![Build Status](https://github.com/statnet/EpiModel/workflows/R-CMD-check/badge.svg)](https://github.com/statnet/EpiModel/actions) [![Methods](https://img.shields.io/badge/docs-Methods-943ad8.svg)](http://doi.org/10.18637/jss.v084.i08)
+[![Version](http://img.shields.io/badge/Version-2.1.0-orange.svg?style=flat)](https://github.com/EpiModel/EpiModel/releases/tag/v2.1.0) [![](http://cranlogs.r-pkg.org/badges/EpiModel?color=blue)](http://cran.rstudio.com/web/packages/EpiModel/index.html) [![](http://cranlogs.r-pkg.org/badges/grand-total/EpiModel?color=blue)](http://cran.rstudio.com/web/packages/EpiModel/index.html) [![Build Status](https://github.com/EpiModel/EpiModel/workflows/R-CMD-check/badge.svg)](https://github.com/EpiModel/EpiModel/actions) [![Methods](https://img.shields.io/badge/docs-Methods-943ad8.svg)](http://doi.org/10.18637/jss.v084.i08)
 
 <br> <img src="http://www.epimodel.org/movie.gif" align="right"/>
 
@@ -15,7 +15,7 @@ Tools for simulating mathematical models of infectious disease dynamics. Epidemi
 | [Martina Morris](http://faculty.washington.edu/morrism/)      | Departments of Statistics and Sociology | University of Washington |
 | [Adrien Le Guillou](http://samueljenness.org/team.html)       | Department of Epidemiology              | Emory University         |
 
-Additional contributors to EpiModel are listed on the [contributors](https://github.com/statnet/EpiModel/graphs/contributors) page.
+Additional contributors to EpiModel are listed on the [contributors](https://github.com/EpiModel/EpiModel/graphs/contributors) page.
 
 ### Installation
 
@@ -29,7 +29,7 @@ To install this development version, use the <a href="https://github.com/r-lib/r
 
 ``` r
 if (!require("remotes")) install.packages("remotes")
-remotes::install_github("statnet/EpiModel")
+remotes::install_github("EpiModel/EpiModel")
 ```
 
 ### EpiModel 2.0
@@ -48,7 +48,7 @@ In July 2020, we released EpiModel version 2.0. This major software package upda
 
 ### The EpiModel Gallery
 
-We recently started a new <a href="https://github.com/statnet/EpiModel-Gallery" target="_blank">EpiModel Gallery</a> that contains templates of extensions to EpiModel, for now focused on network-based mathematical models. We will be continuing to add new examples the gallery, and encourage users to either file requests for new examples or contribute them following our guidelines.
+We recently started a new <a href="https://github.com/EpiModel/EpiModel-Gallery" target="_blank">EpiModel Gallery</a> that contains templates of extensions to EpiModel, for now focused on network-based mathematical models. We will be continuing to add new examples the gallery, and encourage users to either file requests for new examples or contribute them following our guidelines.
 
 ### Citation
 
@@ -60,12 +60,12 @@ Please also <a href="mailto:samuel.m.jenness@emory.edu?Subject=We Used EpiModel 
 
 ### Funding
 
-The primary support for the development of these software tools and statistical methods has been by two National Institutes of Health (NIH) grants. Our applied research projects using EpiModel have received funding from the NIH and Centers for Disease Control and Prevention (CDC). Our team also receives institutional support through center-level NIH grants. A full list of our funding support can be found [here](https://github.com/statnet/EpiModel/wiki/EpiModel-Funding).
+The primary support for the development of these software tools and statistical methods has been by two National Institutes of Health (NIH) grants. Our applied research projects using EpiModel have received funding from the NIH and Centers for Disease Control and Prevention (CDC). Our team also receives institutional support through center-level NIH grants. A full list of our funding support can be found [here](https://github.com/EpiModel/EpiModel/wiki/EpiModel-Funding).
 
 ### EpiModel in the Scientific Literature
 
-EpiModel and its [extension packages](https://github.com/statnet/EpiModelHIV) have been used in the following scientific journal articles. A list of these articles can be accessed in a [wiki page](https://github.com/statnet/EpiModel/wiki/EpiModel-in-the-Scientific-Literature) or on [Zotero](https://www.zotero.org/groups/2486200/epimodel_literature/library). (If you are aware of others, send us an email at [samuel.m.jenness\@emory.edu](mailto:samuel.m.jenness@emory.edu) to be included in this list.)
+EpiModel and its [extension packages](https://github.com/EpiModel/EpiModelHIV) have been used in the following scientific journal articles. A list of these articles can be accessed in a [wiki page](https://github.com/EpiModel/EpiModel/wiki/EpiModel-in-the-Scientific-Literature) or on [Zotero](https://www.zotero.org/groups/2486200/epimodel_literature/library). (If you are aware of others, send us an email at [samuel.m.jenness\@emory.edu](mailto:samuel.m.jenness@emory.edu) to be included in this list.)
 
 ### Copyright
 
-These materials are distributed under the GPL-3 license, with the following copyright and attribution requirements listed in the [LICENSE](https://github.com/statnet/EpiModel/blob/main/LICENSE.md) document above.
+These materials are distributed under the GPL-3 license, with the following copyright and attribution requirements listed in the [LICENSE](https://github.com/EpiModel/EpiModel/blob/main/LICENSE.md) document above.

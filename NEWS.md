@@ -365,7 +365,7 @@
 ### OTHER
 
 -   Changed the default of `status.rand`, which controls whether the number initially infected in stochastic epidemic models, to `FALSE`. This will ensure that exactly the number specified in `init.icm` and `init.net` are matched in each simulation.
--   Fully removed the `netsim_parallel` function from the package. See the EpiModelHPC extension package at <https://github.com/statnet/EpiModelHPC> for running network simulations in parallel.
+-   Fully removed the `netsim_parallel` function from the package. See the EpiModelHPC extension package at <https://github.com/EpiModel/EpiModelHPC> for running network simulations in parallel.
 
 <br>
 
@@ -409,7 +409,7 @@
 
 ### NEW FEATURES
 
--   Built-in parallelization of stochastic network model simulations directly within the package with the `netsim_parallel` function has been deprecated. This functionality has been replaced with model simulation functions within the `EpiModelHPC` extension package: <https://github.com/statnet/EpiModelHPC>
+-   Built-in parallelization of stochastic network model simulations directly within the package with the `netsim_parallel` function has been deprecated. This functionality has been replaced with model simulation functions within the `EpiModelHPC` extension package: <https://github.com/EpiModel/EpiModelHPC>
 -   Cosmetic and functional updates to built-in Shiny applications accessible within the package via `epiweb`.
 -   New function, `calc_eql`, calculates whether a model of any class in EpiModel has reached an equilibrium state over a defined time series. Equilibrium is defined as the absolute value of the difference of the maximum prevalence and minimum prevalence over a specified time series falling below a specified threshold. For stochastic models, these values are calcualted based on the mean of the individual time series simulations.
 -   `netest` now includes a new argument, `nonconv.error`, that will send the function to an error state if the ERGM did not coverge after the specified number of interations. The default is to allow for a nonconverged model fit to be returned. Requiring an error may be helpful when running a number of models in batch mode.
