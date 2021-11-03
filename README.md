@@ -68,4 +68,4 @@ EpiModel and its [extension packages](https://github.com/statnet/EpiModelHIV) ha
 
 ### Copyright
 
-These materials are distributed under the GPL-3 license, with the following copyright and attribution requirements listed in the [LICENSE](https://github.com/statnet/EpiModel/blob/master/LICENSE.md) document above.
+These materials are distributed under the GPL-3 license, with the following copyright and attribution requirements listed in the [LICENSE](https://github.com/statnet/EpiModel/blob/main/LICENSE.md) document above.
