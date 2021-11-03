@@ -158,7 +158,6 @@ print.netsim <- function(x, nwstats = TRUE, digits = 3, network = 1, ...) {
     for (i in seq_along(x$control$f.names)) {
       cat(x$control$f.names[i], "\n")
     }
-    # cat("\n")
   }
 
   cat("\nModel Output")
@@ -348,8 +347,6 @@ print.param.net <- function(x, ...) {
     }
   }
 
-  # cat("\n")
-
   invisible()
 }
 
@@ -510,4 +507,3 @@ print.control.net <- function(x, ...) {
 print_nwstats_table <- function(nwtable, digits) {
   print(as.data.frame(round(as.matrix(nwtable), digits = digits)))
 }
-
