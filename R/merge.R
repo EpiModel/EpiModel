@@ -167,17 +167,23 @@ merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
   y$control$nsims <- as.integer(y$control$nsims)
   if (x$control$nsims > 1 & y$control$nsims > 1 &
       !all(sapply(x, function(i) class(i)[1]) ==
-           sapply(y,function(i) class(i)[1]))) {
+           sapply(y, function(i) class(i)[1]))) {
     stop("x and y have different structure")
   }
 
   ## Check params
   check1 <- identical(x$param, y$param)
-  check2 <- identical(x$control[-which(names(x$control) %in% c("nsims","monitors","nwstats.formula"))],
-                      y$control[-which(names(y$control) %in% c("nsims","monitors","nwstats.formula"))])
+  check2 <- identical(x$control[-which(names(x$control) %in%
+                                         c("nsims", "monitors",
+                                           "nwstats.formula"))],
+                      y$control[-which(names(y$control) %in%
+                                         c("nsims", "monitors",
+                                           "nwstats.formula"))])
 
   ## handle formulas separately due to environments
-  check2 <- check2 && isTRUE(all.equal(x$control$monitors, y$control$monitors)) && isTRUE(all.equal(x$control$nwstats.formula, y$control$nwstats.formula))
+  check2 <- check2 &&
+    isTRUE(all.equal(x$control$monitors, y$control$monitors)) &&
+    isTRUE(all.equal(x$control$nwstats.formula, y$control$nwstats.formula))
 
   if (check1 == FALSE && param.error == TRUE) {
     stop("x and y have different parameters")
@@ -228,7 +234,8 @@ merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
 
 
   ## Network statistics
-  if (keep.nwstats == TRUE & !is.null(x$stats$nwstats) & !is.null(y$stats$nwstats)) {
+  if (keep.nwstats == TRUE & !is.null(x$stats$nwstats) &
+      !is.null(y$stats$nwstats)) {
     for (i in new.range) {
       z$stats$nwstats[[i]] <- y$stats$nwstats[[i - x$control$nsims]]
       if (!is.null(z$stats$nwstats)) {

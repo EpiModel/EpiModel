@@ -132,7 +132,7 @@ param.dcm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
   dot.args <- list(...)
   names.dot.args <- names(dot.args)
   if (length(dot.args) > 0) {
-    for (i in 1:length(dot.args)) {
+    for (i in seq_along(dot.args)) {
       p[[names.dot.args[i]]] <- dot.args[[i]]
     }
   }
@@ -213,7 +213,7 @@ init.dcm <- function(s.num, i.num, r.num, s.num.g2, i.num.g2, r.num.g2,
   dot.args <- list(...)
   names.dot.args <- names(dot.args)
   if (length(dot.args) > 0) {
-    for (i in 1:length(dot.args)) {
+    for (i in seq_along(dot.args)) {
       p[[names.dot.args[i]]] <- dot.args[[i]]
     }
   }
@@ -307,7 +307,7 @@ control.dcm <- function(type, nsteps, dt = 1, odemethod = "rk4",
   dot.args <- list(...)
   names.dot.args <- names(dot.args)
   if (length(dot.args) > 0) {
-    for (i in 1:length(dot.args)) {
+    for (i in seq_along(dot.args)) {
       p[[names.dot.args[i]]] <- dot.args[[i]]
     }
   }
@@ -352,7 +352,7 @@ control.dcm <- function(type, nsteps, dt = 1, odemethod = "rk4",
 #'
 crosscheck.dcm <- function(param, init, control) {
   check.control.class("dcm", "EpiModel crosscheck.dcm")
-  
+
   # Main class check --------------------------------------------------------
   if (!inherits(param, "param.dcm")) {
     stop("param must an object of class param.dcm", call. = FALSE)

@@ -41,7 +41,8 @@ x <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 
 param <- param.net(inf.prob = 0.3)
 init <- init.net(i.num = 10)
-control <- control.net(type = "SI", nsteps = 100, nsims = 5, tergmLite = TRUE)
+control <- control.net(type = "SI", nsteps = 100, nsims = 5,
+                       tergmLite = TRUE)
 
 # Set seed for reproducibility
 set.seed(123456)

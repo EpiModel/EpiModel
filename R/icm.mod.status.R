@@ -57,7 +57,7 @@ infection.icm <- function(dat, at) {
         nInf <- 0
       }
     } else {
-      nInf <- nInfg2 <- 0
+      nInf <- 0
     }
   } else {
     nInf <- 0
@@ -111,13 +111,12 @@ recovery.icm <- function(dat, at) {
   nElig <- length(idsElig)
 
   if (nElig > 0) {
-    #ratesElig <- rec.rate[idsElig]
-      vecRecov <- which(rbinom(nElig, 1, rec.rate) == 1)
-      if (length(vecRecov) > 0) {
-        idsRecov <- idsElig[vecRecov]
-        nRecov <- length(idsRecov)
-        status[idsRecov] <- recovState
-      }
+    vecRecov <- which(rbinom(nElig, 1, rec.rate) == 1)
+    if (length(vecRecov) > 0) {
+      idsRecov <- idsElig[vecRecov]
+      nRecov <- length(idsRecov)
+      status[idsRecov] <- recovState
+    }
   }
   dat$attr$status <- status
 

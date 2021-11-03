@@ -6,8 +6,8 @@
 #'
 #' @details
 #' This function is typically used within the initialization modules of
-#' \code{EpiModel} to establish the necessary infrastructure needed for 
-#' \code{tergmLite} network resimulation.  The example below demonstrates 
+#' \code{EpiModel} to establish the necessary infrastructure needed for
+#' \code{tergmLite} network resimulation.  The example below demonstrates
 #' the specific information returned.
 #'
 #' @export
@@ -16,7 +16,7 @@
 #' Returns the list object \code{dat} and adds the element \code{el} which is
 #' an edgelist representation of the network.  Also converts the \code{nw}
 #' element to a \code{networkLite} representation.
-#' 
+#'
 #' @examples
 #' \dontrun{
 #' library("EpiModel")
@@ -28,7 +28,8 @@
 #'
 #' param <- param.net(inf.prob = 0.3)
 #' init <- init.net(i.num = 10)
-#' control <- control.net(type = "SI", nsteps = 100, nsims = 5, tergmLite = TRUE)
+#' control <- control.net(type = "SI", nsteps = 100, nsims = 5,
+#'                        tergmLite = TRUE)
 #'
 #' # networkLite representation after initialization
 #' dat <- crosscheck.net(x, param, init, control)
@@ -48,23 +49,26 @@ init_tergmLite <- function(dat) {
 
   dat$el <- list()
   dat$control$nwstats.formulas <- list()
-  
+
   for (i in 1:num_nw) {
     nwp <- dat$nwparam[[i]]
     is_tergm <- all(nwp$coef.diss$duration > 1)
 
-    if(is(dat$nw[[i]], "networkDynamic")) {
+    if (is(dat$nw[[i]], "networkDynamic")) {
       nw <- as.networkLite(network.collapse(dat$nw[[i]], at = 1))
     } else {
-      nw <- as.networkLite(dat$nw[[i]])    
+      nw <- as.networkLite(dat$nw[[i]])
     }
 
     dat$el[[i]] <- as.edgelist(nw)
     attributes(dat$el[[i]])$vnames <- NULL
 
-    nwstats_formula_name <- paste(c("nwstats.formula", if (num_nw > 1) i), collapse = ".")
+    nwstats_formula_name <- paste(c("nwstats.formula", if (num_nw > 1) i),
+                                  collapse = ".")
     nwstats_formula <- NVL(dat$control[[nwstats_formula_name]], trim_env(~.))
-    if (identical(nwstats_formula, "formation")) nwstats_formula <- nwp$formation
+    if (identical(nwstats_formula, "formation")) {
+      nwstats_formula <- nwp$formation
+    }
     dat$control$nwstats.formulas[[i]] <- nwstats_formula
 
     if (is_tergm && dat$control$tergmLite.track.duration) {
@@ -74,6 +78,6 @@ init_tergmLite <- function(dat) {
 
     dat$nw[[i]] <- nw
   }
-  
+
   return(dat)
 }

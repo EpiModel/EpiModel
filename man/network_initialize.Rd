@@ -25,11 +25,12 @@ network_initialize(
 \item{multiple}{logical; are multiplex edges allowed?}
 
 \item{bipartite}{count; should the network be interpreted as bipartite? If
-present (i.e., non-NULL) it is the count of the number of actors in the
-first mode of the bipartite network. In this case, the overall number
-of vertices is equal to the number of 'actors' (first mode) plus the
-number of ‘events’ (second mode), with the vertex.ids of all actors
-preceeding all events. The edges are then interpreted as nondirected.}
+present (i.e., non-NULL) it is the count of the number of actors in
+the first mode of the bipartite network. In this case, the overall
+number of vertices is equal to the number of 'actors' (first mode)
+plus the number of ‘events’ (second mode), with the vertex.ids of all
+actors preceeding all events. The edges are then interpreted as
+nondirected.}
 }
 \value{
 Returns an object of class \code{network}.

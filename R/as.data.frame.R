@@ -183,15 +183,6 @@ as.data.frame.icm <- function(x, row.names = NULL, optional = FALSE,
   df <- data.frame(time = 1:x$control$nsteps)
   nsims <- x$control$nsims
 
-  # Will handle both icm and netsim here
-  if (class(x) == "icm") {
-    groups <- x$param$groups
-  }
-  if (class(x) == "netsim") {
-    groups <- x$param$modes
-  }
-
-
   if (out == "vals") {
 
     if (missing(sim)) {

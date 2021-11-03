@@ -273,9 +273,7 @@ arrivals.2g.net <- function(dat, at) {
   nCurr <- length(get_attr(dat, "active"))
   nOld <- get_epi(dat, "num", index)
   nOldG2 <- get_epi(dat, "num.g2", index)
-  tergmLite <- get_control(dat, "tergmLite")
   totArr <- nArrivals <- nArrivalsG2 <- 0
-  newNodes <- newNodesG2 <- NULL
 
   # Add Nodes ---------------------------------------------------------------
   if (nOld > 0) {
@@ -291,7 +289,6 @@ arrivals.2g.net <- function(dat, at) {
     }
 
     if (totArr > 0) {
-      newNodes <- (nCurr + 1):(nCurr + totArr)
       dat <- append_core_attr(dat, at, totArr)
       dat <- append_attr(dat, "group", 1, nArrivals)
       dat <- append_attr(dat, "group", 2, nArrivalsG2)

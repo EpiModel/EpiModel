@@ -108,22 +108,22 @@
 #'
 #' @references
 #' The EpiModel website is at \url{http://www.epimodel.org/}, and the source
-#' code is at \url{https://github.com/EpiModel/EpiModel}. Bug reports and feature
-#' requests are welcome.
+#' code is at \url{https://github.com/EpiModel/EpiModel}. Bug reports and
+#' feature requests are welcome.
 #'
 #' Our primary methods paper on EpiModel is published in the \strong{Journal of
 #' Statistical Software}. If you use EpiModel for any research or teaching
 #' purposes, please cite this reference:
 #'
-#' Jenness SM, Goodreau SM, and Morris M. EpiModel: An R Package for Mathematical
-#' Modeling of Infectious Disease over Networks. Journal of Statistical
-#' Software.2018; 84(8): 1-47. \doi{10.18637/jss.v084.i08}.
+#' Jenness SM, Goodreau SM, and Morris M. EpiModel: An R Package for
+#' Mathematical Modeling of Infectious Disease over Networks. Journal of
+#' Statistical Software. 2018; 84(8): 1-47. \doi{10.18637/jss.v084.i08}.
 #'
 #' We have also developed two extension packages for modeling specific disease
 #' dynamics. For HIV and bacterial sexually transmitted infections, we have
 #' developed \code{EpiModelHIV}, which is available on Github at
-#' \url{https://github.com/EpiModel/EpiModelHIV}. For COVID-19, we have developed
-#' \code{EpiModelCOVID}, which is available at
+#' \url{https://github.com/EpiModel/EpiModelHIV}. For COVID-19, we have
+#' developed \code{EpiModelCOVID}, which is available at
 #' \url{https://github.com/EpiModel/EpiModelCOVID}.
 #'
 #' @name EpiModel-package

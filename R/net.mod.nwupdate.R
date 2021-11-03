@@ -15,7 +15,6 @@ nwupdate.net <- function(dat, at) {
 
   ## Attributes
   status <- get_attr(dat, "status")
-  infTime <- get_attr(dat, "infTime")
   active <- get_attr(dat, "active")
   entrTime <- get_attr(dat, "entrTime")
   exitTime <- get_attr(dat, "exitTime")
@@ -25,7 +24,6 @@ nwupdate.net <- function(dat, at) {
   cumulative.edgelist <- get_control(
     dat, "cumulative.edgelist", override.null.error = TRUE)
 
-  # statOnNw <- "status" %in% dat$temp$nwterms
   resimulate.network <- get_control(dat, "resimulate.network")
   isTERGM <- get_control(dat, "isTERGM")
 

@@ -23,8 +23,8 @@ Set a vertex attribute on an object of class \code{network},
              wrapping the related function in the \code{network} package.
 }
 \details{
-This function is used in \code{EpiModel} workflows to set vertex attributes on
-an initialized empty network object (with \code{\link{network_initialize}}.
+This function is used in \code{EpiModel} workflows to set vertex attributes
+on an initialized empty network object (see \code{\link{network_initialize}}.
 }
 \examples{
 nw <- network_initialize(100)

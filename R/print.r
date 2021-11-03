@@ -158,7 +158,6 @@ print.netsim <- function(x, nwstats = TRUE, digits = 3, network = 1, ...) {
     for (i in seq_along(x$control$f.names)) {
       cat(x$control$f.names[i], "\n")
     }
-    # cat("\n")
   }
 
   cat("\nModel Output")
@@ -333,7 +332,8 @@ print.param.net <- function(x, ...) {
     cat("\n---------------------------\n")
     for (prm in rng_defs) {
       if (prm == "param_random_set") {
-        cat(prm, "= <data.frame> ( dimensions:", dim(x$random.param$param_random_set), ")\n")
+        cat(prm, "= <data.frame> ( dimensions:",
+            dim(x$random.param$param_random_set), ")\n")
       } else {
         cat(prm, "= <function>\n")
       }
@@ -347,8 +347,6 @@ print.param.net <- function(x, ...) {
       format_param(names(rng_values)[i], rng_values[[i]])
     }
   }
-
-  # cat("\n")
 
   invisible()
 }
@@ -510,4 +508,3 @@ print.control.net <- function(x, ...) {
 print_nwstats_table <- function(nwtable, digits) {
   print(as.data.frame(round(as.matrix(nwtable), digits = digits)))
 }
-
