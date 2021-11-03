@@ -19,7 +19,7 @@ jobs:
       - uses: r-lib/actions/setup-r-dependencies@v1
         with:
           extra-packages: lintr
-          
+
       - name: Lint
-        run: lintr::lint_package(exclusions = list.files("inst", recursive=TRUE, full.names=TRUE))
+        run: lintr::lint_package(exclusions = c(list.files("inst", recursive=TRUE, full.names=TRUE), "R/dcm.mods.R"))
         shell: Rscript {0}
