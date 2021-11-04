@@ -45,7 +45,8 @@ The column names must correspond either to:
 the name of one parameter if this parameter is of size 1 or the name of the
 parameter with "_1", "_2", "_N" with the second part being the position of
 the value for a parameter of size > 1. This means that the parameter names
-cannot contain any underscore "_" if you indend to use \code{param_random_set}
+cannot contain any underscore "_" if you intend to use
+\code{param_random_set}.
 
 The point of the \code{param_random_set} \code{data.frame} is to allow the
 random parameters to be correlated. To achieve this, a whole row of the

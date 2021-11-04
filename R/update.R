@@ -12,9 +12,9 @@
 #'           size at the given time step.
 #'
 #' @details
-#' This function is used in \code{EpiModel} modules to add vertices (nodes) to the
-#' edgelist object to account for entries into the population (e.g., births and
-#' in-migration).
+#' This function is used in \code{EpiModel} modules to add vertices (nodes) to
+#' the edgelist object to account for entries into the population (e.g., births
+#' and in-migration).
 #'
 #' @return
 #' Returns the updated the attribute containing the population size on the
@@ -34,7 +34,8 @@
 #'
 #' param <- param.net(inf.prob = 0.3)
 #' init <- init.net(i.num = 10)
-#' control <- control.net(type = "SI", nsteps = 100, nsims = 5, tergmLite = TRUE)
+#' control <- control.net(type = "SI", nsteps = 100, nsims = 5,
+#'                        tergmLite = TRUE)
 #'
 #' # networkLite representation after initialization
 #' dat <- crosscheck.net(x, param, init, control)
@@ -92,7 +93,8 @@ add_vertices <- function(el, nv) {
 #'
 #' param <- param.net(inf.prob = 0.3)
 #' init <- init.net(i.num = 10)
-#' control <- control.net(type = "SI", nsteps = 100, nsims = 5, tergmLite = TRUE)
+#' control <- control.net(type = "SI", nsteps = 100, nsims = 5,
+#'                        tergmLite = TRUE)
 #'
 #' # Set seed for reproducibility
 #' set.seed(123456)
@@ -123,12 +125,13 @@ delete_vertices <- function(el, vid) {
       new.el <- el[-el.rows.to.del, , drop = FALSE]
     }
     if (NROW(new.el) > 0) {
-      o1 <- order(new.el[,1])
-      new.el[,1] <- shiftVec(new.el[o1,1], vid)[order(o1)]
-      o2 <- order(new.el[,2])
-      new.el[,2] <- shiftVec(new.el[o2,2], vid)[order(o2)]
+      o1 <- order(new.el[, 1])
+      new.el[, 1] <- shiftVec(new.el[o1, 1], vid)[order(o1)]
+      o2 <- order(new.el[, 2])
+      new.el[, 2] <- shiftVec(new.el[o2, 2], vid)[order(o2)]
     }
-    if(!is.null(attr(el,"n"))) attr(new.el,"n") <- attr(el,"n") - length(vid)
+    if (!is.null(attr(el, "n"))) attr(new.el, "n") <- attr(el, "n") -
+                                                      length(vid)
   }
 
   return(new.el)

@@ -366,7 +366,8 @@ param_random <- function(values, prob = NULL) {
 #' the name of one parameter if this parameter is of size 1 or the name of the
 #' parameter with "_1", "_2", "_N" with the second part being the position of
 #' the value for a parameter of size > 1. This means that the parameter names
-#' cannot contain any underscore "_" if you indend to use \code{param_random_set}
+#' cannot contain any underscore "_" if you intend to use
+#' \code{param_random_set}.
 #'
 #' The point of the \code{param_random_set} \code{data.frame} is to allow the
 #' random parameters to be correlated. To achieve this, a whole row of the
@@ -443,7 +444,8 @@ param_random <- function(values, prob = NULL) {
 #'
 #' }
 generate_random_params <- function(param, verbose = FALSE) {
-  if (is.null(param[["random.params"]]) || length(param[["random.params"]]) == 0) {
+  if (is.null(param[["random.params"]]) ||
+      length(param[["random.params"]]) == 0) {
     return(param)
   } else {
     random.params <- param[["random.params"]]
@@ -729,10 +731,10 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #'        of the networks passed to \code{init_tergmLite}, with \code{time}
 #'        defaulting to \code{0} and \code{lasttoggle} defaulting to all
 #'        \code{lasttoggle} times unspecified (effectively \code{-INT_MAX/2}).
-#' @param set.control.ergm Control arguments passed to \code{ergm}'s 
+#' @param set.control.ergm Control arguments passed to \code{ergm}'s
 #'        \code{.simulate_formula.network}.
 #' @param set.control.stergm Control arguments passed to \code{tergm}'s
-#'        \code{simulate.network}. See the help file for \code{\link{netdx}} 
+#'        \code{simulate.network}. See the help file for \code{\link{netdx}}
 #'        for details and examples on specifying this parameter.
 #' @param ... Additional control settings passed to model.
 #'
@@ -818,7 +820,8 @@ control.net <- function(type,
                         skip.check = FALSE,
                         raw.output = FALSE,
                         tergmLite.track.duration = FALSE,
-                        set.control.ergm = control.simulate.formula(MCMC.burnin = 2e5),
+                        set.control.ergm = control.simulate.formula(
+                          MCMC.burnin = 2e5),
                         set.control.stergm = control.simulate.network(),
                         ...) {
 

@@ -156,11 +156,11 @@ of the networks passed to \code{init_tergmLite}, with \code{time}
 defaulting to \code{0} and \code{lasttoggle} defaulting to all
 \code{lasttoggle} times unspecified (effectively \code{-INT_MAX/2}).}
 
-\item{set.control.ergm}{Control arguments passed to \code{ergm}'s 
+\item{set.control.ergm}{Control arguments passed to \code{ergm}'s
 \code{.simulate_formula.network}.}
 
 \item{set.control.stergm}{Control arguments passed to \code{tergm}'s
-\code{simulate.network}. See the help file for \code{\link{netdx}} 
+\code{simulate.network}. See the help file for \code{\link{netdx}}
 for details and examples on specifying this parameter.}
 
 \item{...}{Additional control settings passed to model.}

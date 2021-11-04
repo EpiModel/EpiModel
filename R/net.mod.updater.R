@@ -6,17 +6,17 @@
 #' @return the full code{x} list with the modifications added by code{new.x}
 #'
 #' @details
-#' This function updates list code{x} by name. If code{x} and code{new.x} elements are not
-#' named, the function will not work properly.
-#' If a function is provided to replace an element that was originaly not a
-#' function, this function will be applied to the original value.
+#' This function updates list code{x} by name. If code{x} and code{new.x}
+#' elements are not named, the function will not work properly. If a function is
+#' provided to replace an element that was originally not a function, this
+#' function will be applied to the original value.
 #'
 #' @keywords internal
 update_list <- function(x, new.x) {
   for (nm in names(new.x)) {
     if (is.list(new.x[[nm]])) {
       x[[nm]] <- update_list(x[[nm]], new.x[[nm]])
-    } else if (is.function(new.x[[nm]]) && ! is.function(x[[nm]])) {
+    } else if (is.function(new.x[[nm]]) && !is.function(x[[nm]])) {
       x[[nm]] <- new.x[[nm]](x[[nm]])
     } else {
       x[[nm]] <- new.x[[nm]]

@@ -115,8 +115,10 @@ get_network <- function(x, sim = 1, network = 1, collapse = FALSE, at,
     } else if (x$control$isTERGM == FALSE) {
       if (ergm.create.nd == TRUE) {
         out <- suppressMessages(
-            networkDynamic(network.list = x$network[[sim]], start = 1,
-                           base.net = x$network[[sim]][[1]], create.TEAs = TRUE))
+            networkDynamic(network.list = x$network[[sim]],
+                           start = 1,
+                           base.net = x$network[[sim]][[1]],
+                           create.TEAs = TRUE))
       } else {
         out <- x$network[[sim]]
       }
@@ -294,7 +296,7 @@ get_nwstats <- function(x, sim, network = 1) {
   out <- as.data.frame(do.call("rbind", out))
   out$time <- rep(1:min(nsteps, nrow(out)), length(sim))
   out$sim <- rep(sim, each = min(nsteps, nrow(out)))
-  row.names(out) <- 1:nrow(out)
+  row.names(out) <- seq_len(nrow((out)))
   out <- out[, c((ncol(out) - 1):ncol(out), 1:(ncol(out) - 2))]
 
   if (class(x) == "netdx" && x$dynamic == FALSE) {
@@ -443,7 +445,7 @@ get_args <- function(formal.args, dot.args) {
 
   names.dot.args <- names(dot.args)
   if (length(dot.args) > 0) {
-    for (i in 1:length(dot.args)) {
+    for (i in seq_along(dot.args)) {
       p[[names.dot.args[i]]] <- dot.args[[i]]
     }
   }

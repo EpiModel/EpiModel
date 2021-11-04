@@ -360,7 +360,6 @@ make_formation_table <- function(merged.stats, targets) {
   ## Create stats.formation table for output
   stats.table <- merge(targets, stats.table, all = TRUE)
   stats.table <- stats.table[order(stats.table[["sorder"]]), , drop = FALSE]
-  # stats.table <- stats.table[ do.call("order", stats.table[, "sorder", drop = FALSE]), , drop = FALSE]
   rownames(stats.table) <- stats.table$names
 
   stats.table$reldiff <- (stats.table$stats.means - stats.table$targets) /
@@ -473,4 +472,3 @@ make_dissolution_stats <- function(diag.sim, coef.diss, nsteps, verbose = TRUE) 
     )
   )
 }
-
