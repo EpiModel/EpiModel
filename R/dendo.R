@@ -132,10 +132,6 @@ as.phylo.transmat <- function(x,
   Nnode <- length(phyloNodes)
   # create labels for each phylo node based on infector id
   phylo.label <- tm$inf
-  # this is an alternate label form like i_j
-  #phylo.label <- sapply(1:length(phyloNodes),function(r) {
-  #  paste(tm[r,"inf"],tm[r,"sus"],sep="_")
-  #})
 
   # set default durations
   # since we don't know how long the graph vertices live, assume entire duration
@@ -234,7 +230,6 @@ as.network.transmat <- function(x, ...) {
   network.vertex.names(net) <- ids
 
   # add the other attributes to edges and vertices
-  #net%e%"at"<-tm$at
   set.edge.attribute(net, "at", tm$at)
   set.edge.attribute(net, "infDur", tm$infDur)
   set.edge.attribute(net, "transProb", tm$transProb)

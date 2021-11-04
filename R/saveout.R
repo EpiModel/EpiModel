@@ -145,7 +145,7 @@ saveout.net <- function(dat, s, out = NULL) {
 
     out$el.cuml <- list()
     out$el.cuml[[s]] <- dat$el.cuml
-    
+
     out[["_last_unique_id"]] <- list()
     out[["_last_unique_id"]][[s]] <- dat[["_last_unique_id"]]
 

@@ -1,3 +1,32 @@
+## EpiModel 2.2.0
+
+### NEW FEATURES
+
+-   Developed a general approach to tracking and querying historical and contacts, called a cumulative edgelist. This may be used, for example, to query the recent but non-current contacts of newly infected nodes. See the vignette: `vignette("TODO")`.
+-   A `create_dat_object` helper function was added to standardize the creation of the core `dat` object within `initialize.net`.
+-   The current timestep within `netsim` simulations is now stored in the `dat` object and accessible with `get_current_timestep`. This eliminates the need to explicitly pass `at` as a function argument, although that is still allowed.
+-   Addition of the `get_param_set` function that extracts from a `netsim` object the set of parameters used by each simulation. See the help page: `help("get_param_set")`.
+-   Developed a mechanism to store nodal attribute history over the course of a `netsim` simulation. See the vignette: `vignette("TODO")`.
+-   Developed an optional module to define prevalence statistics (also called "epi stats") as functions to be passed to the model as control settings before each `netsim` simulation. This allows users to avoid updating the `prevalence.net` module. See the vignette: `vignette("TODO")`.
+-   Developed an optional module allowing the update of the model parameters over timesteps within `netsim` simulations (i.e., time-varying parameters). See the vignette: `vignette("TODO")`.
+-   Improved the random parameterization programming interface to allow correlation between parameters in each simulation (e.g., the ability to pass in a multivariate parameter set for each simulation). See the vignette: `vignette("TODO")`.
+
+### BUG FIXES
+
+-   When calling `plot` on a `netsim` object, the arguments in the ellipsis (`...`) are now correctly passed to the `base::plot` call.
+-   When trying to use the built-in `group` attribute, `netsim` will now output a more explicit error if the values used are not only `1` and `2`.
+-   Fixed the names of the target formation statistics in `netdx` when `edapprox == FALSE` that were causing the plotting functions to misbehave.
+-   Simplification of the `set_transmat` function removing the assumption that `dat$stats$transmat` was to exist only if `at != 2` (thanks to @thednainus).
+-   More consistent formation and dissolution statistics print between `netdx` and `netsim`.
+-   Removed duplication in the printing of the parameters when a parameter was defined both as fixed and as random.
+-   When using custom `netsim` modules with `type == NULL`, some built-in modules no longer stop because they required `type` to be a string.
+-   Fixed issue with `Error`, `Warning` or `Message` in `netsim` printing twice.
+-   Fixed problem with unique ID counter not saved by `saveout.net`, resulting in the unique ids to start a 1 again when restarting a model from a previous simulation.
+
+### Other
+
+-   The new home for EpiModel on Github is: <https://github.com/EpiModel/EpiModel>. It was previously located on the `statnet` organization on Github.
+
 ## EpiModel 2.1.0
 
 ### NEW FEATURES
@@ -103,7 +132,7 @@
 -   Fixes output formatting of network stats saved during `netsim` runs.
 -   Correctly errors when running dynamic network diagnostics with `netdx` on a cross-sectional ergm.
 -   Remove old unused utility functions.
--   Enforce depend on ergm \>= 3.10 package.
+-   Enforce depend on ergm >= 3.10 package.
 
 ## EpiModel 1.7.2
 
@@ -336,7 +365,7 @@
 ### OTHER
 
 -   Changed the default of `status.rand`, which controls whether the number initially infected in stochastic epidemic models, to `FALSE`. This will ensure that exactly the number specified in `init.icm` and `init.net` are matched in each simulation.
--   Fully removed the `netsim_parallel` function from the package. See the EpiModelHPC extension package at <https://github.com/statnet/EpiModelHPC> for running network simulations in parallel.
+-   Fully removed the `netsim_parallel` function from the package. See the EpiModelHPC extension package at <https://github.com/EpiModel/EpiModelHPC> for running network simulations in parallel.
 
 <br>
 
@@ -380,7 +409,7 @@
 
 ### NEW FEATURES
 
--   Built-in parallelization of stochastic network model simulations directly within the package with the `netsim_parallel` function has been deprecated. This functionality has been replaced with model simulation functions within the `EpiModelHPC` extension package: <https://github.com/statnet/EpiModelHPC>
+-   Built-in parallelization of stochastic network model simulations directly within the package with the `netsim_parallel` function has been deprecated. This functionality has been replaced with model simulation functions within the `EpiModelHPC` extension package: <https://github.com/EpiModel/EpiModelHPC>
 -   Cosmetic and functional updates to built-in Shiny applications accessible within the package via `epiweb`.
 -   New function, `calc_eql`, calculates whether a model of any class in EpiModel has reached an equilibrium state over a defined time series. Equilibrium is defined as the absolute value of the difference of the maximum prevalence and minimum prevalence over a specified time series falling below a specified threshold. For stochastic models, these values are calcualted based on the mean of the individual time series simulations.
 -   `netest` now includes a new argument, `nonconv.error`, that will send the function to an error state if the ERGM did not coverge after the specified number of interations. The default is to allow for a nonconverged model fit to be returned. Requiring an error may be helpful when running a number of models in batch mode.
@@ -400,14 +429,14 @@
 
 ### NEW FEATURES
 
--   A limited set of heterogeneous dissolution models now allowed for network models (\#184): edges + nodematch, nodemix, or nodefactor formulas now supported. See help file for `dissolution_coefs` for examples.
--   Network models now feature more consistent and flexible use of persistent IDs for networkDynamic objects (\#199). This involved adding a new control setting, `use.pids` in `control.net`. See help("persistent.ids") in the `networkDynamic` package for more background.
--   Interventions are added to all model classes (\#20). For DCMs, ICMs, and network models, there are new parameters, inter.eff and inter.start, for the efficacy and starting time of the intervention. This generic intervention has the effect of reducing the probability of transmission given a contact between a susceptible and infected person by the efficacy parameter.
+-   A limited set of heterogeneous dissolution models now allowed for network models (#184): edges + nodematch, nodemix, or nodefactor formulas now supported. See help file for `dissolution_coefs` for examples.
+-   Network models now feature more consistent and flexible use of persistent IDs for networkDynamic objects (#199). This involved adding a new control setting, `use.pids` in `control.net`. See help("persistent.ids") in the `networkDynamic` package for more background.
+-   Interventions are added to all model classes (#20). For DCMs, ICMs, and network models, there are new parameters, inter.eff and inter.start, for the efficacy and starting time of the intervention. This generic intervention has the effect of reducing the probability of transmission given a contact between a susceptible and infected person by the efficacy parameter.
 
 ### BUG FIXES
 
--   Fixed error in `births.net` module that set the default `entrTime` and `exitTime` attributes twice for bipartite models (\#205).
--   Plotting for all model classes now allow setting `xlab` and `ylab` (\#206).
+-   Fixed error in `births.net` module that set the default `entrTime` and `exitTime` attributes twice for bipartite models (#205).
+-   Plotting for all model classes now allow setting `xlab` and `ylab` (#206).
 -   `get_sims` extraction now outputs correct data when object contains single simulation.
 
 ### OTHER
@@ -442,21 +471,21 @@
 ### NEW FEATURES
 
 -   Implement `control.dcm` option `dede`, which if true allows for delayed differential equations to be passed into a new model solved with `dcm`.
--   New option for `netdx` to simulate static diagnostics from an ERGM, rather than the temporal diagnostics (still the default). This will help better diagnose poor dynamic model fit when using the edges dissolution approximation (\#175).
--   Plot option added for `netdx`, with the `method` parameter, to plot boxplots of the simulations against the target statistics. The default is still the line plots (\#191).
+-   New option for `netdx` to simulate static diagnostics from an ERGM, rather than the temporal diagnostics (still the default). This will help better diagnose poor dynamic model fit when using the edges dissolution approximation (#175).
+-   Plot option added for `netdx`, with the `method` parameter, to plot boxplots of the simulations against the target statistics. The default is still the line plots (#191).
 -   Additional summary elements may now be plotted with `netdx` objects, similar to epidemic data plots: mean lines and quantile bands. Additional arguments added to allow toggling of these along with individual simulation lines and target lines.
--   Print method for `netdx` is updated, along with a new statistic for the percent deviation between the simulation means and target statistics (\#192).
--   Added other epidemiological outcomes saved in user-defined modules to print output with `print.netsim` (\#183).
+-   Print method for `netdx` is updated, along with a new statistic for the percent deviation between the simulation means and target statistics (#192).
+-   Added other epidemiological outcomes saved in user-defined modules to print output with `print.netsim` (#183).
 -   New function `get_sims` will subset and extract entire simulations from `netsim` objects with multiple simulations. A vector of simulation numbers may be specified, or if set as "mean", the simulation with the infected prevalence closest to the means across all simulations will be chosen.
 
 ### BUG FIXES
 
--   Object elements saved in stochastic network models with the `save.other` parameter in `control.net` may now be merged with `merge.netsim` (\#185).
--   Quantile band is displayed in `plot` for ICMs and network models when the `y` argument is specified (\#188).
+-   Object elements saved in stochastic network models with the `save.other` parameter in `control.net` may now be merged with `merge.netsim` (#185).
+-   Quantile band is displayed in `plot` for ICMs and network models when the `y` argument is specified (#188).
 
 ### OTHER
 
--   Package `deSolve` moved from import to depend (\#194).
+-   Package `deSolve` moved from import to depend (#194).
 
 <br>
 
@@ -464,26 +493,26 @@
 
 ### NEW FEATURES
 
--   Added dissolution diagnostics in `netdx`, for the proportion of edges that dissolve per time step, as another diagnostic for the dissolution model (\#53).
--   Network plots with `plot.netsim` now allow specifying `"mean"`, `"min"`, or `"max"` to plot the network at with the most average, maximum, and minumum disease prevalence at the specified time step (\#73).
--   Network models may now use time-varying recovery rates, similar to the previous time-varying infection probabilities and act rates. The documentation for the `param.net` function has been updated with details (\#65).
+-   Added dissolution diagnostics in `netdx`, for the proportion of edges that dissolve per time step, as another diagnostic for the dissolution model (#53).
+-   Network plots with `plot.netsim` now allow specifying `"mean"`, `"min"`, or `"max"` to plot the network at with the most average, maximum, and minumum disease prevalence at the specified time step (#73).
+-   Network models may now use time-varying recovery rates, similar to the previous time-varying infection probabilities and act rates. The documentation for the `param.net` function has been updated with details (#65).
 -   New control setting for DCMs, `param.sens`, that allows bypassing the default behavior of evaluating parameters with length greater than 1 as sensitivity analyses. This should be used for single-run models if passing in parameters with arbitrary form.
 
 ### BUG FIXES
 
--   Print functions for initial condition processing functions now handle list and data frame structures (\#135).
--   Fix bug for new DCMs in which the initial condition names include standard integrated initial condition names (\#160).
--   Several bugs fixes related to network diagnostics for models with offset terms in the formation model. Also related formation diagnostics plots in `plot.netsim` fixed (\#164).
--   Initialization of infection time for stochastic SIS/SIR models with two groups or modes now fixed (\#102).
--   Edges population size correction module, `edges_correct`, now runs for any dependent network simulations, not just if built-in vital dynamics modules are called (\#141).
+-   Print functions for initial condition processing functions now handle list and data frame structures (#135).
+-   Fix bug for new DCMs in which the initial condition names include standard integrated initial condition names (#160).
+-   Several bugs fixes related to network diagnostics for models with offset terms in the formation model. Also related formation diagnostics plots in `plot.netsim` fixed (#164).
+-   Initialization of infection time for stochastic SIS/SIR models with two groups or modes now fixed (#102).
+-   Edges population size correction module, `edges_correct`, now runs for any dependent network simulations, not just if built-in vital dynamics modules are called (#141).
 
 ### OTHER
 
 -   The new website for the EpiModel project is <https://www.epimodel.org/>
 -   Added a new example of a SEIR Ebola DCM in the "Solving New DCMs with EpiModel" tutorial.
--   The shiny apps now use the single file method (\#155).
--   Exported and added documentation for the `verbose.icm` function (\#71).
--   Other elements saved in network simulations with the `save.other` control setting in `control.net` are now printed as output in `print.netsim` (\#174).
+-   The shiny apps now use the single file method (#155).
+-   Exported and added documentation for the `verbose.icm` function (#71).
+-   Other elements saved in network simulations with the `save.other` control setting in `control.net` are now printed as output in `print.netsim` (#174).
 
 <br>
 

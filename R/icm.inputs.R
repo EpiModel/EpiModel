@@ -70,7 +70,7 @@ param.icm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
   dot.args <- list(...)
   names.dot.args <- names(dot.args)
   if (length(dot.args) > 0) {
-    for (i in 1:length(dot.args)) {
+    for (i in seq_along(dot.args)) {
       p[[names.dot.args[i]]] <- dot.args[[i]]
     }
   }
@@ -160,7 +160,7 @@ init.icm <- function(s.num, i.num, r.num,
   dot.args <- list(...)
   names.dot.args <- names(dot.args)
   if (length(dot.args) > 0) {
-    for (i in 1:length(dot.args)) {
+    for (i in seq_along(dot.args)) {
       p[[names.dot.args[i]]] <- dot.args[[i]]
     }
   }
@@ -256,7 +256,7 @@ control.icm <- function(type, nsteps, nsims = 1,
   dot.args <- list(...)
   names.dot.args <- names(dot.args)
   if (length(dot.args) > 0) {
-    for (i in 1:length(dot.args)) {
+    for (i in seq_along(dot.args)) {
       p[[names.dot.args[i]]] <- dot.args[[i]]
     }
   }
@@ -313,7 +313,7 @@ control.icm <- function(type, nsteps, nsims = 1,
 #'
 crosscheck.icm <- function(param, init, control) {
   check.control.class("icm", "EpiModel crosscheck.icm")
-  
+
   ## Main class check
   if (!inherits(param, "param.icm")) {
     stop("param must an object of class param.icm", call. = FALSE)
