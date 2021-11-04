@@ -100,7 +100,7 @@ deleteAttr <- function(attrList, ids) {
     stop(
       "The following attributes do not have the correct number of elements: \n",
       paste0(wrong_length_attr, collapse = ", "),
-      "\n\n", "Check if they are initiated when new nodes are created."
+      "\n\n", "Check if they are initialized when new nodes are created."
     )
   }
 
