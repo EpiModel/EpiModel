@@ -15,3 +15,4 @@ inst/EpiModel2/*.png
 ^\.github$
 ^doc$
 ^Meta$
+.lintr

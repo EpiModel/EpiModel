@@ -41,10 +41,10 @@ record_attr_history <- function(dat, at, attribute, posit_ids, values) {
     dat[["attr.history"]] <- list()
   }
 
-  if ( length(values) != 1 && length(values) != length(posit_ids) ) {
+  if (length(values) != 1 && length(values) != length(posit_ids)) {
     stop(
       "When trying to record a value for `", attribute, "` at time ", at,
-      "The size of the `values` vector is not equal to the number of node ",
+      "The size of the `values` vector is not equal to the number of nodes ",
       "selected by the `posit_ids` vector nor of length 1. \n",
       "Expected: ", length(posit_ids), " or 1 \n",
       "Given: ", length(posit_ids)

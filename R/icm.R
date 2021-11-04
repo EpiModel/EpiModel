@@ -91,7 +91,7 @@
 #'
 icm <- function(param, init, control) {
   check.control.class("icm", "EpiModel icm")
-  
+
   crosscheck.icm(param, init, control)
   verbose.icm(control, type = "startup")
 

@@ -10,7 +10,6 @@ editor_options:
   chunk_output_type: console
 ---
 
-
 ```{r, echo=FALSE}
 vers <- packageVersion("EpiModel")
 year <- format(Sys.time(), "%Y")
@@ -22,23 +21,26 @@ The **EpiModel** package provides tools for simulating mathematical models of in
 
 ### Documentation
 
-This vignette is a placeholder for the **EpiModel** tutorials and documentation hosted online and external to the package to minimize testing and building timing. Tutorials may be found at the **EpiModel** website (http://www.epimodel.org).
+This vignette is a placeholder for the **EpiModel** tutorials and documentation hosted online and external to the package to minimize testing and building timing. Tutorials may be found at the **EpiModel** website (<http://www.epimodel.org>).
 
 A good place to start learning about **EpiModel** is the main methods paper. It is published *Journal of Statistical Software* at the reference below.
 
 Within the package, please consult the extensive help documentation:
+
 ```{r, eval=FALSE}
 help(package = "EpiModel")
 ```
 
-To see the latest updates to **EpiModel**, consult the software `NEWS` file on Github (https://github.com/statnet/EpiModel/releases).
+To see the latest updates to **EpiModel**, consult the software `NEWS` file on Github (<https://github.com/EpiModel/EpiModel/releases>).
+
+Advanced topics are covered in two vignettes: - Working With Model Parameters `r vignette("model-parameters")` - Working With Custom Attributes and Summary Statistics `r vignette("attributes-and-summary-statistics")`
 
 ### Getting Help
 
-We have historically used both an email-based listserv and Github issues to address questions, bug reports, and feature requests for our users. With the release of EpiModel v2.0.3, we have decided to close the email listserv, and provide this user support entirely with Github issues. Any technical coding and non-technical conceptual EpiModel questions or requests may be posted as a Github issue at our main Github repository (https://github.com/statnet/EpiModel/issues).
+We have historically used both an email-based listserv and Github issues to address questions, bug reports, and feature requests for our users. With the release of EpiModel v2.0.3, we have decided to close the email listserv, and provide this user support entirely with Github issues. Any technical coding and non-technical conceptual EpiModel questions or requests may be posted as a Github issue at our main Github repository (<https://github.com/EpiModel/EpiModel/issues>).
 
 ### Citation
 
 If using EpiModel for teaching or research, please include a citation:
 
-> Jenness SM, Goodreau SM and Morris M. EpiModel: An R Package for Mathematical Modeling of Infectious Disease over Networks. _Journal of Statistical Software._ 2018; 84(8): 1-47. doi: 10.18637/jss.v084.i08 (https://doi.org/10.18637/jss.v084.i08).
+> Jenness SM, Goodreau SM and Morris M. EpiModel: An R Package for Mathematical Modeling of Infectious Disease over Networks. *Journal of Statistical Software.* 2018; 84(8): 1-47. doi: 10.18637/jss.v084.i08 (<https://doi.org/10.18637/jss.v084.i08>).

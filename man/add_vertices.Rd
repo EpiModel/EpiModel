@@ -24,9 +24,9 @@ This function performs a simple operation of updating the
              size implicit in an edgelist representation of the network.
 }
 \details{
-This function is used in \code{EpiModel} modules to add vertices (nodes) to the
-edgelist object to account for entries into the population (e.g., births and
-in-migration).
+This function is used in \code{EpiModel} modules to add vertices (nodes) to
+the edgelist object to account for entries into the population (e.g., births
+and in-migration).
 }
 \examples{
 \dontrun{
@@ -39,7 +39,8 @@ x <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 
 param <- param.net(inf.prob = 0.3)
 init <- init.net(i.num = 10)
-control <- control.net(type = "SI", nsteps = 100, nsims = 5, tergmLite = TRUE)
+control <- control.net(type = "SI", nsteps = 100, nsims = 5,
+                       tergmLite = TRUE)
 
 # networkLite representation after initialization
 dat <- crosscheck.net(x, param, init, control)

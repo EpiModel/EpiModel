@@ -32,3 +32,4 @@ print(sim)
 
 ## Plot the results
 plot(sim)
+

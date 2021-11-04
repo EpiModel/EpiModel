@@ -24,47 +24,51 @@ networkLite(x, ...)
 \method{networkLite}{matrix}(x, attr = list(), ...)
 }
 \arguments{
-\item{x}{either an \code{edgelist} class network representation (including network
-attributes in its \code{attributes} list), or a number specifying the network
-size.}
+\item{x}{either an \code{edgelist} class network representation (including
+network attributes in its \code{attributes} list), or a number
+specifying the network size.}
 
 \item{...}{additional arguments used by other methods.}
 
 \item{directed, bipartite, loops, hyper, multiple}{common network attributes that
 may be set via arguments to the \code{networkLite.numeric} method.}
 
-\item{attr}{a named list of vertex attributes for the network represented by \code{x}.}
+\item{attr}{a named list of vertex attributes for the network represented by
+\code{x}.}
 }
 \value{
-A networkLite object with edge list \code{el}, vertex attributes \code{attr}, and
-         network attributes \code{gal}.
+A networkLite object with edge list \code{el}, vertex attributes \code{attr},
+and network attributes \code{gal}.
 }
 \description{
 Constructor methods for \code{networkLite} objects.
 }
 \details{
-Currently there are two distinct \code{networkLite} constructor methods available.
+Currently there are two distinct \code{networkLite} constructor
+methods available.
 
-         The \code{edgelist} method takes an \code{edgelist} class object \code{x} with network
-         attributes attached in its \code{attributes} list, and a named list of vertex
-         attributes \code{attr}, and returns a \code{networkLite} object, which is a named
-         list with fields \code{el}, \code{attr}, and \code{gal}; the fields \code{el} and \code{attr} match
-         the arguments \code{x} and \code{attr} respectively, and the field \code{gal} is the list
-         of network attributes (copied from \code{attributes(x)}). Missing attributes
-         \code{directed}, \code{bipartite}, \code{loops}, \code{hyper}, and \code{multiple} are defaulted to
-         \code{FALSE}; the network size attribute \code{n} must not be missing.  Attributes
-         \code{class}, \code{dim}, and \code{vnames} (if present) are not copied from \code{x} to the
-         \code{networkLite}.  (For convenience, a \code{matrix} method, identical to the
-         \code{edgelist} method, is also defined, to handle cases where the edgelist is,
-         for whatever reason, not classed as an \code{edgelist}.)
+The \code{edgelist} method takes an \code{edgelist} class object \code{x}
+with network attributes attached in its \code{attributes} list, and a named
+list of vertex attributes \code{attr}, and returns a \code{networkLite}
+object, which is a named list with fields \code{el}, \code{attr}, and
+\code{gal}; the fields \code{el} and \code{attr} match the arguments \code{x}
+and \code{attr} respectively, and the field \code{gal} is the list of network
+attributes (copied from \code{attributes(x)}). Missing attributes
+\code{directed}, \code{bipartite}, \code{loops}, \code{hyper}, and
+\code{multiple} are defaulted to \code{FALSE}; the network size attribute
+\code{n} must not be missing. Attributes \code{class}, \code{dim}, and
+\code{vnames} (if present) are not copied from \code{x} to the
+\code{networkLite}.  (For convenience, a \code{matrix} method, identical to
+the \code{edgelist} method, is also defined, to handle cases where the
+edgelist is, for whatever reason, not classed as an \code{edgelist}.)
 
-         The \code{numeric} method takes a number \code{x} as well as the network attributes
-         \code{directed}, \code{bipartite}, \code{loops}, \code{hyper}, and \code{multiple} (defaulting to
-         \code{FALSE}), and returns an empty \code{networkLite} with these network attributes
-         and number of nodes \code{x}.
+The \code{numeric} method takes a number \code{x} as well as the network
+attributes \code{directed}, \code{bipartite}, \code{loops}, \code{hyper}, and
+\code{multiple} (defaulting to \code{FALSE}), and returns an empty
+\code{networkLite} with these network attributes and number of nodes \code{x}.
 
-         Within \code{tergmLite}, the \code{networkLite} data structure is used in the
-         calls to \code{ergm} and \code{tergm} \code{simulate} functions.
+Within \code{tergmLite}, the \code{networkLite} data structure is used in the
+calls to \code{ergm} and \code{tergm} \code{simulate} functions.
 }
 \examples{
 \dontrun{
@@ -77,7 +81,8 @@ x <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 
 param <- param.net(inf.prob = 0.3)
 init <- init.net(i.num = 10)
-control <- control.net(type = "SI", nsteps = 100, nsims = 5, tergmLite = TRUE)
+control <- control.net(type = "SI", nsteps = 100, nsims = 5,
+                       tergmLite = TRUE)
 
 # networkLite representation after initialization
 dat <- crosscheck.net(x, param, init, control)

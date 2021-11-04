@@ -80,13 +80,13 @@ described in \code{\link[ergm]{nodal_attributes}}}
 
 \item{i, j}{Nodal indices (must be missing for networkLite method)}
 
-\item{tail}{vector of tails of edges to add to the networkLite}
+\item{tail}{vector of tails of edges to add to the networkLite.}
 
-\item{head}{vector of heads of edges to add to the networkLite}
+\item{head}{vector of heads of edges to add to the networkLite.}
 
-\item{names.eval}{currently unsupported by add.edges.networkLite}
+\item{names.eval}{currently unsupported by add.edges.networkLite.}
 
-\item{vals.eval}{currently unsupported by add.edges.networkLite}
+\item{vals.eval}{currently unsupported by add.edges.networkLite.}
 
 \item{check.unique}{should a check to ensure uniqueness of edges
 in the final edgelist be performed?}

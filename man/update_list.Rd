@@ -18,9 +18,9 @@ the full code{x} list with the modifications added by code{new.x}
 Update list code{x} using the elements of list code{new.x}
 }
 \details{
-This function updates list code{x} by name. If code{x} and code{new.x} elements are not
-named, the function will not work properly.
-If a function is provided to replace an element that was originaly not a
-function, this function will be applied to the original value.
+This function updates list code{x} by name. If code{x} and code{new.x}
+elements are not named, the function will not work properly. If a function is
+provided to replace an element that was originally not a function, this
+function will be applied to the original value.
 }
 \keyword{internal}
