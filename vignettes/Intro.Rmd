@@ -33,7 +33,11 @@ help(package = "EpiModel")
 
 To see the latest updates to **EpiModel**, consult the software `NEWS` file on Github (<https://github.com/EpiModel/EpiModel/releases>).
 
-Advanced topics are covered in two vignettes: - Working With Model Parameters `r vignette("model-parameters")` - Working With Custom Attributes and Summary Statistics `r vignette("attributes-and-summary-statistics")`
+Advanced topics are covered in three vignettes: 
+
+- Working With Model Parameters `r vignette("model-parameters")` 
+- Working With Custom Attributes and Summary Statistics `r vignette("attributes-and-summary-statistics")`
+- Working With Network Objects `r vignette("network-objects")` 
 
 ### Getting Help
 
