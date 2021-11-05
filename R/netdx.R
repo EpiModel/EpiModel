@@ -393,10 +393,38 @@ make_dissolution_stats <- function(diag.sim, coef.diss, nsteps, verbose = TRUE) 
   nsims <- length(sim.df)
   dissolution <- coef.diss$dissolution
 
-  # Calculate mean partnership age from edgelist
-  pages <- lapply(sim.df, function(x) edgelist_meanage(el = x))
-  # TO DO: edgelist
+  # Check form of dissolution formula and extract attribute name, if any
+  # Code chunk adapted from dissolution_coefs and diss_check
+  # TODO: Consider if possible to streamline this code with helper function 
+  #       shared with either dissolution_coefs and diss_check
+  diss.terms <- strsplit(as.character(dissolution)[2], "[+]")[[1]]
+  form.length <- length(diss.terms)
+  t1.edges <- grepl("offset[(]edges", diss.terms[1])
+  diss.terms <- gsub("\\s", "", diss.terms)
+  offpos.d <- grep("offset(", diss.terms, fixed = TRUE)
+  diss.terms[offpos.d] <- substr(diss.terms[offpos.d], nchar("offset(") + 1,
+                                 nchar(diss.terms[offpos.d]) - 1)
+  argpos.d <- regexpr("\\(", diss.terms)
+  diss.terms <- vapply(regmatches(diss.terms, argpos.d, invert = TRUE),
+                       function(x) {
+                         if (length(x) < 2) {
+                           x <- c(x, "")
+                         } else {
+                           x[2] <- substr(x[2], 1, nchar(x[2]) - 1)
+                         }
+                         x
+                       },
+                       c(term = "", args = ""))
+
+  diss.terms <- gsub("\"", "", diss.terms)
   
+  # Calculate mean partnership age from edgelist
+  pages <- sapply(seq_len(length(sim.df)), function(x) edgelist_meanage(
+                                        el=sim.df[[x]], diss_terms=diss.terms,
+                                        attribute=get_vertex_attribute(
+                                            diag.sim[[x]], diss.terms[2,2])
+                                        ))
+
   # TODO: imputation currently averaged for heterogeneous models
   if (coef.diss$model.type == "homog") {
         coef_dur <- coef.diss$duration
