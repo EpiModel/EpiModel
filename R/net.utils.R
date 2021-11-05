@@ -535,7 +535,6 @@ edgelist_censor <- function(el) {
 #' single homogenous dissolution (\code{~offset(edges)}). This functionality
 #' will be expanded in future releases.
 #'
-#' @export
 #' @keywords netUtils internal
 #'
 #' @examples
@@ -561,23 +560,52 @@ edgelist_censor <- function(el) {
 #' dx$pages
 #' identical(dx$pages[[1]], mean_ages)
 #'
-edgelist_meanage <- function(x, el) {
-  # If passing a netest object directly
-  if (!(missing(x))) {
-    el <- x$edgelist
-  }
+edgelist_meanage <- function(el, diss_terms, attribute=NULL) {
+  # Internal function, designed to be called from make_dissolution_stats. The
+  # argument diss_terms must be in the form of a matrix in which
+  # the first row includes the names of the dissolution model terms and the
+  # 2nd includes the names of any attributes for those terms. Set of terms must 
+  # be one of those allowable by dissolution models in EpiModel. These conditions
+  # should be met when the function is called from make_dissolution_stats, which
+  # in turn has been called by dissolution_coefs.
+  
+  # TO DO trim down matrix to one term?
+  # TO DO ask Sam whether matrix OK rather than formula
+  # TO DO update documentation and examples - or remove?
+  # To DO error check on TEAs?
+  
   terminus <- el$terminus
   onset <- el$onset
   minterm <- 1
   maxterm <- max(terminus)
-  meanpage <- rep(NA, maxterm)
+
+  if (ncol(diss_terms)==1) {
+    meanpage <- matrix(NA, maxterm, 1)
+  } else {
+    attr1 <- attribute[el$head]
+    attr2 <- attribute[el$tail]
+    if(diss_terms[1,2]=="nodematch") meanpage <- matrix(NA, maxterm, 2)
+    #if(diss_terms[1,2]=="nodemix") meanpage <- matrix(NA, maxterm, 10)
+    #if(diss_terms[1,2]=="nodefactor") meanpage <- matrix(NA, maxterm, 10)
+  }
+    
   for (at in minterm:maxterm) {
     actp <- (onset <= at & terminus > at) |
       (onset == at & terminus == at);
     page <- at - onset[actp] + 1
-    meanpage[at] <- mean(page)
+  
+    if (ncol(diss_terms)==1) {
+      meanpage[at,1] <- mean(page)
+    } else {
+        attr1a <- attr1[actp]
+        attr2a <- attr2[actp]
+        if(diss_terms[1,2]=="nodematch") {
+          meanpage[at,1] <- mean(page[attr1a!=attr2a])
+          meanpage[at,2] <- mean(page[attr1a==attr2a])
+        }
+    }
   }
-  meanpage <- meanpage[1:(length(meanpage) - 1)]
+  meanpage <- head(meanpage, -1)  # remove last row
   return(meanpage)
 }
 
