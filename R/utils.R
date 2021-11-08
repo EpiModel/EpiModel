@@ -91,8 +91,17 @@ deleteAttr <- function(attrList, ids) {
   if (class(attrList) != "list") {
     stop("attrList must be a list", call. = FALSE)
   }
-  if (length(unique(sapply(attrList, length))) != 1) {
-    stop("attrList must be rectangular (same number of obs per element)")
+
+  attr_length <- vapply(attrList, length, numeric(1))
+  expected_length <- length(attrList[["active"]])
+  wrong_length_attr <- names(attr_length)[attr_length != expected_length]
+
+  if (length(wrong_length_attr > 0)) {
+    stop(
+      "The following attributes do not have the correct number of elements: \n",
+      paste0(wrong_length_attr, collapse = ", "),
+      "\n\n", "Check if they are initialized when new nodes are created."
+    )
   }
 
   if (length(ids) > 0) {
