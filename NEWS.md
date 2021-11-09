@@ -2,14 +2,14 @@
 
 ### NEW FEATURES
 
--   Developed a general approach to tracking and querying historical and contacts, called a cumulative edgelist. This may be used, for example, to query the recent but non-current contacts of newly infected nodes. See the vignette: `vignette("TODO")`.
+-   Developed a general approach to tracking and querying historical and contacts, called a cumulative edgelist. This may be used, for example, to query the recent but non-current contacts of newly infected nodes. See the vignette, "Working with network objects".
 -   A `create_dat_object` helper function was added to standardize the creation of the core `dat` object within `initialize.net`.
 -   The current timestep within `netsim` simulations is now stored in the `dat` object and accessible with `get_current_timestep`. This eliminates the need to explicitly pass `at` as a function argument, although that is still allowed.
 -   Addition of the `get_param_set` function that extracts from a `netsim` object the set of parameters used by each simulation. See the help page: `help("get_param_set")`.
--   Developed a mechanism to store nodal attribute history over the course of a `netsim` simulation. See the vignette: `vignette("TODO")`.
--   Developed an optional module to define prevalence statistics (also called "epi stats") as functions to be passed to the model as control settings before each `netsim` simulation. This allows users to avoid updating the `prevalence.net` module. See the vignette: `vignette("TODO")`.
--   Developed an optional module allowing the update of the model parameters over timesteps within `netsim` simulations (i.e., time-varying parameters). See the vignette: `vignette("TODO")`.
--   Improved the random parameterization programming interface to allow correlation between parameters in each simulation (e.g., the ability to pass in a multivariate parameter set for each simulation). See the vignette: `vignette("TODO")`.
+-   Developed a mechanism to store nodal attribute history over the course of a `netsim` simulation. See the vignette, "Working with attributes and summary statistics."
+-   Developed an optional module to define prevalence statistics (also called "epi stats") as functions to be passed to the model as control settings before each `netsim` simulation. This allows users to avoid updating the `prevalence.net` module. See the vignette, "Working with attributes and summary statistics."
+-   Developed an optional module allowing the update of the model parameters over timesteps within `netsim` simulations (i.e., time-varying parameters). See the vignette, "Working with model parameters."
+-   Improved the random parameterization programming interface to allow correlation between parameters in each simulation (e.g., the ability to pass in a multivariate parameter set for each simulation). See the vignette, "Working with model parameters."
 
 ### BUG FIXES
 
