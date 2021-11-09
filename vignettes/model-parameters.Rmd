@@ -3,8 +3,10 @@ title: "Working With Model Parameters"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{model-parameters}
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r, echo = FALSE, include = FALSE}
@@ -18,38 +20,32 @@ knitr::opts_chunk$set(
 library(EpiModel)
 ```
 
-# Introduction
+## Introduction
 
-This vignette discusses mechanisms usable inside `EpiModel` network models with
-custom modules. More information about these in the "New Network Models with
-EpiModel" section of [the EpiModel tutorials](http://www.epimodel.org/tut.html).
+This vignette discusses mechanisms usable inside `EpiModel` network models with custom extension modules. More information about these may be found in the "New Network Models with EpiModel" section of the [EpiModel Tutorials](http://www.epimodel.org/tut.html).
 
-In a network simulation, we call *parameters* the variable a model will use to
-define its behavior. In an SIS model, these parameters could be the **act
-rate**, the **infection probability** and the **recovery rate**. 
+In a model, *parameters* are the input variables used to define aspects of the system behavior. In the basic built-in SIS (Susceptible-Infected-Susceptible) model, these parameters could be the **act rate**, the **infection probability** and the **recovery rate**. In simple models, each of these parameters are single fixed values that do not change over the course of a simulation. In more complex models, we may want more flexibility in model parameterization.
 
-In this vignette we will look at:
+Therefore, in this vignette, we demonstrate how to implement:
 
-- How to use random parameters.
-- How to modify parameters at a given time during the simulation. 
+- Random parameters, which have a distribution of possible values rather than a single fixed value.
+- Time-varying parameters, which may change at specific time steps during the simulation. 
 
-# Random Parameters
+## Random Parameters
 
-## The model
+### The Model
 
-First, we define a minimal dummy model. If this code does not make sense, please
-check the [EpiModel tutorials](http://www.epimodel.org/tut.html).
+First, we define a simple SI model.
 
 ```{r model}
 nw <- network_initialize(n = 50)
 
 est <- netest(
   nw, formation = ~edges,
-  target.stats = c(25),
+  target.stats = 25,
   coef.diss = dissolution_coefs(~offset(edges), 10, 0),
   verbose = FALSE
 )
-
 
 param <- param.net(
   inf.prob = 0.3,
@@ -64,26 +60,17 @@ mod <- netsim(est, param, init, control)
 mod
 ```
 
-In the parameter we set the value for `inf.prob` and `act.rate` as usual but
-also define `dummy.param` and `dummy.strat.param`. These last 2 parameters are
-not used by the model but will serve to illustrate random parameters and how to
-handle stratified parameters. `dummy.strat.param` has two elements, this is
-usually used to stratify a parameter by subpopulation.
+In the parameters, we set the value for `inf.prob` and `act.rate` as fixed, but we also define `dummy.param` and `dummy.strat.param`. These latter two parameters will serve to illustrate random parameters. `dummy.strat.param` has two elements; this may be used, for example, to stratify a parameter by subpopulation.
 
-The last line print a summary of the model and in it we can see the value of the
-parameters under the "Fixed Parameters" section. Note the additional `groups`
-parameter defined automatically by `EpiModel` as part of the "SI" model definition.
+The last line prints a summary of the model. In it we can see the value of the parameters under the "Fixed Parameters" section. Note the additional `groups` parameter defined automatically by `EpiModel` as part of the "SI" model definition.
 
-## Random parameters
+### Adding Random Parameters
 
-Now we will want our parameters to take random values. For this, we use the
-`random.params` argument to `param.net`. There are two ways of defining which
-parameter to draw randomly and how to draw them.
+To allow our parameters to be drawn from a distribution of random values, we use the `random.params` argument to `param.net`. There are two ways of defining which parameters are random, and the distribution of values for those random parameters to draw randomly and how to draw them.
 
-### Generator functions
+#### Generator Functions
 
-The first option is to define a generator function for each parameter we want to
-randomize.
+The first option is to define a generator function for each parameter we want to treat as random.
 
 ```{r generators}
 my.randoms <- list(
@@ -103,21 +90,16 @@ param <- param.net(
 param
 ```
 
-Here we kept the `inf.prob` parameter fixed at `0.3` and defined a list
-`my.randoms` containing 3 elements:
+Here we kept the `inf.prob` parameter fixed at `0.3` and defined a `list` object called `my.randoms` containing 3 elements:
 
-- `act.rate` uses the `param_random` [function
-  factory](https://adv-r.hadley.nz/function-factories.html) defined by EpiModel
+- `act.rate` uses the `param_random` [function factory](https://adv-r.hadley.nz/function-factories.html) defined by EpiModel
   (see `?EpiModel::param_random`).
-- `dummy.param` is a function with no argument that returns a random value from
-  a beta distribution.
-- `dummy.strat.param` is a function with no argument that returns 2 values
-  sampled from normal distributions.
+- `dummy.param` is a function with no argument that returns a random value from a beta distribution.
+- `dummy.strat.param` is a function with no argument that returns 2 values sampled from normal distributions, each with different means and standard deviations.
 
-Each element is named after the parameter it will fill and MUST BE a function
-taking no argument and outputting a vector of the right size for the parameter:
-size 1 for `act.rate` and `dummy.param`; size 2 for `dummy.strat.param`.
+Each element is named after the parameter it will fill and MUST BE a function taking no argument and outputting a vector of the right size for the parameter: size 1 for `act.rate` and `dummy.param`; size 2 for `dummy.strat.param`.
 
+The rest of the model is run as before, although we increase the simulation count to three to demonstrate the parameter stochasticity.
 ```{r generators_run}
 control <- control.net(type = "SI", nsims = 3, nsteps = 5, verbose = FALSE)
 mod <- netsim(est, param, init, control)
@@ -125,26 +107,19 @@ mod <- netsim(est, param, init, control)
 mod
 ```
 
-After running 3 simulations we can see that 2 parameters are still displayed under the
-"Fixed Parameters" section: `inf.prob` and `groups`. The other ones are displayed
-under the "Random Parameters". `act.rate` and `dummy.param` now have 3 values associated
-with them, one per simulation. `dummy.strat.param` have `<list>` as value because
-each simulation has a vector of size 2.
+After running 3 simulations we can see that 2 parameters are still displayed under the "Fixed Parameters" section: `inf.prob` and `groups`. The other ones are displayed under the "Random Parameters". `act.rate` and `dummy.param` now have 3 values associated with them, one per simulation. `dummy.strat.param` have `<list>` as value because each simulation has a vector of size 2.
 
-We can inspect the values with:
+We can inspect the values with the `get_param_set` function:
 
 ``` {r generators_inspect}
 str(mod$param$random.params.values)
 ```
 
-### Parameter set
+#### Parameter set
 
-The drawback of generator functions is that they cannot produce correlated
-parameters. For instance, we will want `dummy.param` and `dummy.strat.param` to
-be related to one another while allowing `act.rate` to take randomly one of the
-3 values defined above.
+The drawback of generator function approach above is that it cannot produce correlated parameters. For instance, we may want `dummy.param` and `dummy.strat.param` to be related to one another within a single simulation. We might also use another, external approach for generating parameter sets (e.g., Latin hypercube sampling of multiple parameters).
 
-We need to define a `data.frame` of the possible values:
+For this, we need to pre-define a `data.frame` of the possible values:
 
 ```{r set_df}
 n <- 5
@@ -159,19 +134,12 @@ related.param$dummy.strat.param_2 <- related.param$dummy.param * 2 + rnorm(n)
 related.param
 ```
 
-We now have a `data.frame` with 25 rows and 3 columns. Each row contains a set
-of parameters values that will be used together in a model. This way we keep the
-relationship between each value.
+We now have a `data.frame` with 5 rows and 3 columns. Each row contains a set of parameters values that will be used together in a model. This way we keep the relationship between each value.
 
-The first column of the `data.frame` is named `dummy.param`, similar to the name
-of the parameter. For `dummy.start.param` we need two columns as the parameter
-contains two values. To achieve this, we name the 2 columns `dummy.start.param_1` and
-`dummy.strat.param_2`. The value after the underscore informs `EpiModel` how it
-should combine the values. This in turn means that the underscore symbol is not
-allowed in the parameter names.
+The first column of the `data.frame` is named `dummy.param`, similar to the name of the parameter. For `dummy.start.param` we need two columns as the parameter contains two values. To achieve this, we name the 2 columns `dummy.start.param_1` and
+`dummy.strat.param_2`. The value after the underscore informs `EpiModel` how it should combine these values. This in turn means that the underscore symbol is not allowed in proper parameter names.
 
-Then we set up the rest of the parameters. `related.param` is saved in the
-`my.randoms` list under the special name `param_random_set`.
+Then we set up the rest of the parameters. `related.param` is saved in the `my.randoms` list under the special reserved name `param_random_set`.
 
 ```{r set_param}
 my.randoms <- list(
@@ -200,32 +168,18 @@ mod
 
 The output is similar to what we saw with the generator functions.
 
-**Where to get a Parameter set?**
 
-In this example, we generated the parameter set ourselves. In real research, you
-might want to use values coming from elsewhere. As long as you format them as
-described above `EpiModel` will be able to use them.
+## Time-Varying Parameters
 
-# Updating Model Parameters During Runtime
+When doing modeling work, the researcher may want to simulate interventions or events that vary over time. In (our 2021  paper)[https://academic.oup.com/jid/article/223/6/1019/6122459], we simulated the effects of COVID-19–Related behavior change and clinical service
+interruption on HIV and STI incidence. These included simulations with systemic events with a beginning and an end. To work with these situations, EpiModel offers an optional module to programmatically handle parameter changes across time steps.
 
-When doing modeling work, the researcher may want to simulate interventions or
-events that vary over time. In (their 2021
-paper)[https://academic.oup.com/jid/article/223/6/1019/6122459] Jenness & al
-simulate the effects of COVID-19–Related Sexual Distancing and Clinical Service
-Interruption on HIV and STI incidence. These are events with a beginning and an
-end. To work with these situations, EpiModel offers an optional module to
-programmatically handle the changes in the model over time.
+This vignette assumes a basic understanding of EpiModel custom models. If the code does not make sense, please check the [EpiModel Tutorials](http://www.epimodel.org/tut.html).
 
-This vignette assumes a basic understanding of EpiModel custom models. If the
-code does not make sense, please check the
-[EpiModel tutorials](http://www.epimodel.org/tut.html).
+### Parameter Updaters
 
-## Parameter updaters
-
-To define what parameters should change and when during the simulation, we need
-to define **updaters**. An updater is a `list` with to named elements: `at`,
-the time step when the change will take place, and `param` a named list of
-parameters to update.
+To define what parameters should change and when during the simulation, we need to define **updaters**. An updater is a `list` with to named elements: `at`,
+the time step when the change will take place, and `param` a named list of parameters to update.
 
 ```{r updater-example, eval = FALSE}
 list(
@@ -237,12 +191,10 @@ list(
 )
 ```
 
-This example defines an updater that will change the value of the `inf.prob`
-parameter to `0.3` and the value to the `act.rate` parameter to `0.5`. This
+This example defines an updater that will change the value of the `inf.prob` parameter to `0.3` and the value to the `act.rate` parameter to `0.5`. This
 change will happen during the 10th time step.
 
-As mentioned above, we usually want to define several changes at once. EpiModel
-accept a `list` of **updaters**.
+As mentioned above, we usually want to define several changes at once. EpiModel accept a `list` of **updaters**.
 
 
 ```{r updater-list}
@@ -273,20 +225,14 @@ list.of.updaters <- list(
  )
 ```
 
-In this example, we define 2 **updaters**, one that occurs at time step 100 and
-the other one at time step 20. In practice, `inf.prob` and `act.rate` are set to
-`0.1` at the beginning by `param.net`, at time step 100 they are both updated to
-`0.3` and at time step 125 `act.rate` is turn down to `0.01`.
+In this example, we define 2 **updaters**, one that occurs at time step 100 and the other one at time step 20. In practice, `inf.prob` and `act.rate` are set to `0.1` at the beginning by `param.net`, at time step 100 they are both updated to `0.3` and at time step 125 `act.rate` is reduced to `0.01`.
 
-## Enabling the `updater` module
+### Enabling the `updater` Module
 
-This functionality is part of an optional module provided by `EpiModel`,
-`updater.net`. This module has to be enabled in `control.net`.
+This functionality is part of an optional module provided by `EpiModel`, `updater.net`. This module must then be enabled in `control.net`.
 
-Below we set up a complete example with a closed population SI model using the
-parameters and **updaters** defined above. We then plot the size of the
-infected and susceptible population over time to see the effects of the
-**updaters**.
+Below we set up a complete example with a closed population SI model using the parameters and **updaters** defined above. We then plot the size of the
+infected and susceptible population over time to see the effects of the **updaters**.
 
 ```{r updater-module, fig.align = "center", fig.height = 4, fig.width = 6}
  control <- control.net(
@@ -314,24 +260,16 @@ mod <- netsim(est, param, init, control)
 plot(mod)
 ```
 
-This is the minimal example. Usually, a researcher will want to add it to a
-more complex model with several bespoke modules. See the "Advanced Extension
-Models" section in the [EpiModel tutorials](http://www.epimodel.org/tut.html).
+This is the minimal example to simplify the demonstration of these time-varying parameters.
 
-**Important**: when enabling the `updater.net` module, the researcher must pay
-particular attention to the order the modules are run. It is recommended to have
-the `updater.net` module run first so the changes happen at the beginning of
-the time step.
+**Important**: when enabling the `updater.net` module, the researcher must pay particular attention to the order the modules are run. It is recommended to have
+the `updater.net` module run first so the changes happen at the beginning of the time step.
 
-## Advanced functionalities
+Some functionality of `updater.net` were not described above and are explained in `?EpiModel::updater.net`.
 
-Some functionalities of `updater.net` were not described above and are explained
-in `?EpiModel::updater.net`.
+#### Verbosity
 
-### Verbosity
-
-When creating an **updater**, one can add an optional `verbose` element to the
-`list`. If `TRUE`, `updater.net` will output a `message` describing what changes
+When creating an **updater**, one can add an optional `verbose` element to the `list`. If `TRUE`, `updater.net` will output a `message` describing what changes
 where performed when it occurs during the simulation.
 
 ```{r updater-verbose, echo = FALSE}
@@ -345,10 +283,9 @@ list(
 )
 ```
 
-### Relative parameter change
+#### Relative Parameter Changes
 
-It is sometime useful to configure the changes with respect to the current value
-instead of a fixed new value.
+It is sometime useful to configure the changes with respect to the current value instead of a fixed new value. This is possible, as demonstrated below.
 
 ```{r updater-function, echo = FALSE}
 list(
@@ -360,12 +297,6 @@ list(
 )
 ```
 
-This updater will set the value of `act.rate` to `0.5` as we saw earlier. But,
-for `inf.prob` we put a `function` (not a function call). In this case,
-`updater.net` will apply the `function` to the current value of `act.rate`. If
-we consider as in the previous example that `act.rate` is set to `0.1` by
-`param.net`, then its new value will be obtained by adding an Odds Ratio of 2
-to the original value `plogis(qlogis(0.1) + log(2))`: `0.1818182`.
-
-
-
+This updater will set the value of `act.rate` to `0.5` as we saw earlier. But, for `inf.prob` we put a `function` (not a function call). In this case,
+`updater.net` will apply the `function` to the current value of `act.rate`. If we consider as in the previous example that `act.rate` is set to `0.1` by
+`param.net`, then its new value will be obtained by adding an Odds Ratio of 2 to the original value `plogis(qlogis(0.1) + log(2))`: `0.1818182`.
