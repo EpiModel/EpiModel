@@ -2,23 +2,23 @@
 % Please edit documentation in R/net.mod.updater.R
 \name{update_list}
 \alias{update_list}
-\title{Update list code{x} using the elements of list code{new.x}}
+\title{Update list \code{x} using the elements of list \code{new.x}.}
 \usage{
 update_list(x, new.x)
 }
 \arguments{
-\item{x}{a list}
+\item{x}{a list.}
 
-\item{new.x}{a list}
+\item{new.x}{a list.}
 }
 \value{
-the full code{x} list with the modifications added by code{new.x}
+The full \code{x} list with the modifications added by \code{new.x}
 }
 \description{
-Update list code{x} using the elements of list code{new.x}
+Update list \code{x} using the elements of list \code{new.x}.
 }
 \details{
-This function updates list code{x} by name. If code{x} and code{new.x}
+This function updates list \code{x} by name. If \code{x} and \code{new.x}
 elements are not named, the function will not work properly. If a function is
 provided to replace an element that was originally not a function, this
 function will be applied to the original value.

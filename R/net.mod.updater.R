@@ -1,12 +1,12 @@
-#' Update list code{x} using the elements of list code{new.x}
+#' Update list \code{x} using the elements of list \code{new.x}.
 #'
-#' @param x a list
-#' @param new.x a list
+#' @param x a list.
+#' @param new.x a list.
 #'
-#' @return the full code{x} list with the modifications added by code{new.x}
+#' @return The full \code{x} list with the modifications added by \code{new.x}
 #'
 #' @details
-#' This function updates list code{x} by name. If code{x} and code{new.x}
+#' This function updates list \code{x} by name. If \code{x} and \code{new.x}
 #' elements are not named, the function will not work properly. If a function is
 #' provided to replace an element that was originally not a function, this
 #' function will be applied to the original value.
@@ -32,23 +32,22 @@ update_list <- function(x, new.x) {
 #'        other initialization information passed from \code{\link{netsim}}.
 #' @param at Current time step.
 #'
-#' @return the updated dat Master list object.
+#' @return The updated \code{dat} Master list object.
 #'
 #' @details
-#' if a list code{param.updater.list} is present in the parameters, this module will
-#' update the code{param} list with new values at given timesteps.
-#' An updater is a list containing an code{at} element governing when the
-#' changes will happen, an optional code{verbose} boolean controlling whether to
-#' output a message when a change is made (default = TRUE) and a code{param}
-#' named list with the names being the same as the paramter names and the new
-#' value to update with.
-#' If the new value is a function but the old one is not, the
-#' function will be applied to the current element (see example) .
+#' If a list \code{param.updater.list} is present in the parameters, this module
+#' will update the \code{param} list with new values at given timesteps.
+#' An updater is a list containing an \code{at} element governing when the
+#' changes will happen, an optional \code{verbose} Boolean controlling whether
+#' to output a message when a change is made (default = TRUE) and a \code{param}
+#' named list with the names being the same as the parameter names and the new
+#' value to update with. If the new value is a function but the old one is not,
+#' the function will be applied to the current element (see example).
 #'
 #' @examples
 #' \dontrun{
 #'
-#' # Create the parame.updater.list
+#' # Create the param.updater.list
 #' param.updater.list <- list(
 #'   # this is one updater
 #'   list(
@@ -69,7 +68,7 @@ update_list <- function(x, new.x) {
 #'   )
 #' )
 #'
-#'  # Do not forget to add it to `param`
+#'  # Add it to params
 #'  param <- param.net(
 #'    inf.prob = 0.3,
 #'    act.rate = 0.5,
@@ -78,7 +77,7 @@ update_list <- function(x, new.x) {
 #'    param.updater.list = param.updater.list
 #'  )
 #'
-#' # Enable the module in `control`
+#' # Enable the module in control
 #'  control <- control.net(
 #'    type = NULL, # must be NULL as we use a custom module
 #'    nsims = 1,

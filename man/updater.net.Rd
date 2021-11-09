@@ -13,26 +13,25 @@ other initialization information passed from \code{\link{netsim}}.}
 \item{at}{Current time step.}
 }
 \value{
-the updated dat Master list object.
+The updated \code{dat} Master list object.
 }
 \description{
 Module to modify the parameters during the simulation
 }
 \details{
-if a list code{param.updater.list} is present in the parameters, this module will
-update the code{param} list with new values at given timesteps.
-An updater is a list containing an code{at} element governing when the
-changes will happen, an optional code{verbose} boolean controlling whether to
-output a message when a change is made (default = TRUE) and a code{param}
-named list with the names being the same as the paramter names and the new
-value to update with.
-If the new value is a function but the old one is not, the
-function will be applied to the current element (see example) .
+If a list \code{param.updater.list} is present in the parameters, this module
+will update the \code{param} list with new values at given timesteps.
+An updater is a list containing an \code{at} element governing when the
+changes will happen, an optional \code{verbose} Boolean controlling whether
+to output a message when a change is made (default = TRUE) and a \code{param}
+named list with the names being the same as the parameter names and the new
+value to update with. If the new value is a function but the old one is not,
+the function will be applied to the current element (see example).
 }
 \examples{
 \dontrun{
 
-# Create the parame.updater.list
+# Create the param.updater.list
 param.updater.list <- list(
   # this is one updater
   list(
@@ -53,7 +52,7 @@ param.updater.list <- list(
   )
 )
 
- # Do not forget to add it to `param`
+ # Add it to params
  param <- param.net(
    inf.prob = 0.3,
    act.rate = 0.5,
@@ -62,7 +61,7 @@ param.updater.list <- list(
    param.updater.list = param.updater.list
  )
 
-# Enable the module in `control`
+# Enable the module in control
  control <- control.net(
    type = NULL, # must be NULL as we use a custom module
    nsims = 1,
