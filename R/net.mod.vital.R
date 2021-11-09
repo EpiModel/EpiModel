@@ -270,7 +270,6 @@ arrivals.2g.net <- function(dat, at) {
   a.rate <- get_param(dat, "a.rate")
   a.rate.g2 <- get_param(dat, "a.rate.g2")
   index <- at - 1
-  nCurr <- length(get_attr(dat, "active"))
   nOld <- get_epi(dat, "num", index)
   nOldG2 <- get_epi(dat, "num.g2", index)
   totArr <- nArrivals <- nArrivalsG2 <- 0

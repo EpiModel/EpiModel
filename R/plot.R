@@ -1719,8 +1719,8 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         if (mean.smooth == TRUE) {
           mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev),
                                                y = mean.prev))$y
-          mean.prev.imptd <- suppressWarnings(supsmu(x = 1:length(mean.prev.imptd),
-                                                     y = mean.prev.imptd))$y
+          mean.prev.imptd <- suppressWarnings(
+            supsmu(x = 1:length(mean.prev.imptd), y = mean.prev.imptd))$y
 
         }
         if (duration.imputed == FALSE) lines(mean.prev, lwd = mean.lwd,
