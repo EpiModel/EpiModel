@@ -419,28 +419,23 @@ make_dissolution_stats <- function(diag.sim, coef.diss, nsteps, verbose = TRUE) 
   diss.terms <- gsub("\"", "", diss.terms)
   
   # Calculate mean partnership age from edgelist
-  pages <- sapply(seq_len(length(sim.df)), function(x) edgelist_meanage(
+    pages <- sapply(seq_len(length(sim.df)), function(x) edgelist_meanage(
                                         el=sim.df[[x]], diss_terms=diss.terms,
                                         attribute=get_vertex_attribute(
                                             diag.sim[[x]], diss.terms[2,2])
-                                        ))
+                                        ), simplify="array")
 
-  # TODO: imputation currently averaged for heterogeneous models
-  if (coef.diss$model.type == "homog") {
-        coef_dur <- coef.diss$duration
-        pages_imptd <- coef_dur^2 * dgeom(2:(nsteps + 1), 1 / coef_dur)
-  }
-
-  if (coef.diss$model.type == "hetero") {
-        coef_dur <- mean(coef.diss$duration)
-        pages_imptd <- coef_dur^2 * dgeom(2:(nsteps + 1), 1 / coef_dur)
-  }
+  # calculate expected time prior to simulation
+    coef_dur <- coef.diss$duration
+    pages_imptd <- sapply(seq_along(coef_dur), function(x) 
+          coef_dur[x]^2 * dgeom(2:(nsteps + 1), 1 / coef_dur[x]))
 
   ## Dissolution calculations
   if (verbose == TRUE) {
     cat("\n- Calculating dissolution statistics")
   }
 
+  # TO DO
   ## Create a list of dissolution proportions (i.e. dissolutions/edges)
   prop.diss <- lapply(sim.df, function(d) {
     vapply(seq_len(nsteps), function(x) {
@@ -448,23 +443,22 @@ make_dissolution_stats <- function(diag.sim, coef.diss, nsteps, verbose = TRUE) 
     }, 0)
   })
 
-
   if (verbose == TRUE) {
     cat("\n ")
   }
 
   # Create dissolution tables
-  duration.obs <- matrix(unlist(pages), nrow = nsteps)
-  duration.imputed <- duration.obs + pages_imptd
-  duration.mean.by.sim <- colMeans(duration.imputed)
-  duration.mean <- mean(duration.mean.by.sim, na.rm = TRUE)
+  duration.imputed <- simplify2array(lapply(1:3,
+                              function(x)pages[,,x]+pages_imptd))
+  duration.mean.by.sim <- apply(duration.imputed, 2:3, mean)
+  duration.mean <- rowMeans(duration.mean.by.sim, na.rm = TRUE)
+
   if (nsims > 1) {
-    duration.sd <- sd(duration.mean.by.sim, na.rm = TRUE)
+    duration.sd <- apply(duration.mean.by.sim, 1, sd, na.rm = TRUE)
   } else {
     duration.sd <- NA
   }
-
-  duration.expected <- exp(coef.diss$coef.crude[1]) + 1
+  duration.expected <- coef_dur
   duration.pctdiff <- (duration.mean - duration.expected) /
     duration.expected * 100
 
@@ -476,7 +470,7 @@ make_dissolution_stats <- function(diag.sim, coef.diss, nsteps, verbose = TRUE) 
     dissolution.sd <- NA
   }
 
-  dissolution.expected <- 1 / (exp(coef.diss$coef.crude[1]) + 1)
+  dissolution.expected <- 1/coef_dur
   dissolution.pctdiff <- (dissolution.mean - dissolution.expected) /
     dissolution.expected * 100
 
