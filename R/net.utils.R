@@ -560,33 +560,29 @@ edgelist_censor <- function(el) {
 #' dx$pages
 #' identical(dx$pages[[1]], mean_ages)
 #'
-edgelist_meanage <- function(el, diss_terms, attribute=NULL) {
+edgelist_meanage <- function(el, diss_term=NULL, attribute=NULL) {
   # Internal function, designed to be called from make_dissolution_stats. The
-  # argument diss_terms must be in the form of a matrix in which
-  # the first row includes the names of the dissolution model terms and the
-  # 2nd includes the names of any attributes for those terms. Set of terms must 
-  # be one of those allowable by dissolution models in EpiModel. These conditions
-  # should be met when the function is called from make_dissolution_stats, which
-  # in turn has been called by dissolution_coefs.
-  
-  # TO DO trim down matrix to one term?
-  # TO DO ask Sam whether matrix OK rather than formula
-  # TO DO update documentation and examples - or remove?
-  # To DO error check on TEAs?
+  # argument diss_term must be in c("", "nodematch", "nodemix", or "nodefactor").
+  # If any of the final 3, attribute must be a vector of attribute values. 
+  # These conditions should in theory always be met when the function is called 
+  # from make_dissolution_stats, which in turn has been called by dissolution_coefs.
+  # TO DO update documentation
+  # TO DO remove is.null
+  # TO DO error check on value and on attribute presence
   
   terminus <- el$terminus
   onset <- el$onset
   minterm <- 1
   maxterm <- max(terminus)
 
-  if (ncol(diss_terms)==1) {
+  if (is.null(diss_term)) {
     meanpage <- matrix(NA, maxterm, 1)
   } else {
     attr1 <- attribute[el$head]
     attr2 <- attribute[el$tail]
-    if(diss_terms[1,2]=="nodematch") meanpage <- matrix(NA, maxterm, 2)
-    #if(diss_terms[1,2]=="nodemix") meanpage <- matrix(NA, maxterm, 10)
-    #if(diss_terms[1,2]=="nodefactor") meanpage <- matrix(NA, maxterm, 10)
+    if(diss_term=="nodematch") meanpage <- matrix(NA, maxterm, 2)
+    #if(diss_term=="nodemix") meanpage <- matrix(NA, maxterm, 10)
+    #if(diss_term=="nodefactor") meanpage <- matrix(NA, maxterm, 10)
   }
     
   for (at in minterm:maxterm) {
@@ -594,12 +590,12 @@ edgelist_meanage <- function(el, diss_terms, attribute=NULL) {
       (onset == at & terminus == at);
     page <- at - onset[actp] + 1
   
-    if (ncol(diss_terms)==1) {
+    if (is.null(diss_term)) {
       meanpage[at,1] <- mean(page)
     } else {
         attr1a <- attr1[actp]
         attr2a <- attr2[actp]
-        if(diss_terms[1,2]=="nodematch") {
+        if(diss_term=="nodematch") {
           meanpage[at,1] <- mean(page[attr1a!=attr2a])
           meanpage[at,2] <- mean(page[attr1a==attr2a])
         }

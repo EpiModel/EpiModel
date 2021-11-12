@@ -418,12 +418,19 @@ make_dissolution_stats <- function(diag.sim, coef.diss, nsteps, verbose = TRUE) 
 
   diss.terms <- gsub("\"", "", diss.terms)
   
+  if(ncol(diss.terms)==2) {
+    diss_term <- diss.terms[1,2]
+    #attribute <- get_vertex_attribute(diag.sim[[x]], diss.terms[2,2])
+  } else {
+    diss_term <- NULL
+    attribute <- NULL
+  }
+  
   # Calculate mean partnership age from edgelist
     pages <- sapply(seq_len(length(sim.df)), function(x) edgelist_meanage(
-                                        el=sim.df[[x]], diss_terms=diss.terms,
-                                        attribute=get_vertex_attribute(
-                                            diag.sim[[x]], diss.terms[2,2])
-                                        ), simplify="array")
+                                        el=sim.df[[x]], diss_term=diss_term,
+                                        attribute=get_vertex_attribute(diag.sim[[x]], diss.terms[2,2]) 
+                                        ),simplify="array")
 
   # calculate expected time prior to simulation
     coef_dur <- coef.diss$duration
