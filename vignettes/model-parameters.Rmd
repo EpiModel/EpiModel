@@ -5,7 +5,7 @@ vignette: >
   %\VignetteIndexEntry{model-parameters}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
-editor_options: 
+editor_options:
   chunk_output_type: console
 ---
 
@@ -29,7 +29,7 @@ In a model, *parameters* are the input variables used to define aspects of the s
 Therefore, in this vignette, we demonstrate how to implement:
 
 - Random parameters, which have a distribution of possible values rather than a single fixed value.
-- Time-varying parameters, which may change at specific time steps during the simulation. 
+- Time-varying parameters, which may change at specific time steps during the simulation.
 
 ## Random Parameters
 
@@ -112,7 +112,7 @@ After running 3 simulations we can see that 2 parameters are still displayed und
 We can inspect the values with the `get_param_set` function:
 
 ``` {r generators_inspect}
-str(mod$param$random.params.values)
+get_param_set(mod)
 ```
 
 #### Parameter set
