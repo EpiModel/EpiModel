@@ -54,7 +54,7 @@ In custom extension modules, we usually want to modify some of the *attributes*.
 
 ```{r modyfing-attr, eval = FALSE}
 aging_module <- function(dat, at) {
-  
+
   # Extract current attribute
   age <- EpiModel::get_attr(dat, "age")
 
@@ -99,7 +99,7 @@ These functions have other arguments that are described in the documentation: se
 
 ## Historical Nodal Attributes
 
-The *Attributes* described above refer to the state of **each node** in the network **at the current time-step**. However, it is sometimes useful to track of what happened to nodes over time. Because saving the full history of the *attributes* would consume too much memory and is rarely necessary for full-scale research models, EpiModel offers a way to record specific *attribute* for specific nodes at different time-steps. These may be useful for diagnostic purposes (e.g., to see that a dynamic process is coded correctly) or for tracking a limited set of individual-level outcomes for further analysis. 
+The *Attributes* described above refer to the state of **each node** in the network **at the current time-step**. However, it is sometimes useful to track of what happened to nodes over time. Because saving the full history of the *attributes* would consume too much memory and is rarely necessary for full-scale research models, EpiModel offers a way to record specific *attribute* for specific nodes at different time-steps. These may be useful for diagnostic purposes (e.g., to see that a dynamic process is coded correctly) or for tracking a limited set of individual-level outcomes for further analysis.
 
 The *Attribute History* is an efficient collection of recorded attributes at different time-steps. EpiModel has functions to record these elements and to access them in a convenient manner once the `netsim` simulation is complete.
 
@@ -114,10 +114,10 @@ The following is a module that records the viral load of infected nodes every 10
 
 ```{r recordin_attr_hist, eval = FALSE}
 viral_load_logger_module <- function(dat, at) {
-  
+
   # Run every 10 time steps
   if (at %% 10 == 0) {
-    
+
     # Attributes
     status <- EpiModel::get_attr(dat, "status")
     viral_load <- EpiModel::get_attr(dat, "viral_load")
@@ -183,23 +183,23 @@ get_attr_history(sim)
 # 8  2   20   viral_load    402    100
 # ...
 #
-# $switch_status
+# $status
 #    sim step attribute      uids     values
-# 1  1   22   switch_status  1001   infected
-# 2  1   64   switch_status  1002   infected
-# 3  1  110   switch_status  1001  recovered
-# 4  1  220   switch_status  1002  recovered
-# 5  2    7   switch_status   401   infected
-# 6  2   15   switch_status   402   infected
-# 7  2   20   switch_status   401  recovered
-# 8  2  120   switch_status   402  recovered
+# 1  1   22   status  1001   infected
+# 2  1   64   status  1002   infected
+# 3  1  110   status  1001  recovered
+# 4  1  220   status  1002  recovered
+# 5  2    7   status   401   infected
+# 6  2   15   status   402   infected
+# 7  2   20   status   401  recovered
+# 8  2  120   status   402  recovered
 # ...
 ```
 
 We would get a named list of two `data.frame`'s:
 
--   "viral_load" with the `value` column being the viral loads. 
--   "switch_status" with the `value` column being whether the node became "infected" or "recovered" at the given time-step.
+-   "viral_load" with the `value` column being the viral loads.
+-   "status" with the `value` column being whether the node became "infected" or "recovered" at the given time-step.
 
 ## Epidemic Trackers
 
@@ -213,13 +213,13 @@ Inside a module, *Epidemic Trackers* are accessed and modified with the function
 
 ```{r epi-in-modules, eval = FALSE}
 aging_track_module <- function(dat, at) {
-  
+
   # Attributes
   age <- EpiModel::get_attr(dat, "age")
 
-  # Aging process 
+  # Aging process
   new_age <- age + 1
-  
+
   # Calculate summary statistics
   mean_age <- mean(new_age)
   prev_mean_age <- EpiModel::get_epi(dat, at - 1, "mean_age")
@@ -245,7 +245,7 @@ We extract the mean age at the previous time step using `EpiModel::get_epi` and 
 
 ### Accessing Epidemic Trackers After a Simulation
 
-*Epidemic Trackers* are usually the main quantities of interest after a simulation has completed. We access them simply by calling `as.data.frame` on a `netsim` object or by using the plot or summary functions within by EpiModel. Note also that you can perform derived summary statistic calculations after a `netsim` call is complete with `EpiModel::mutate_epi`. 
+*Epidemic Trackers* are usually the main quantities of interest after a simulation has completed. We access them simply by calling `as.data.frame` on a `netsim` object or by using the plot or summary functions within by EpiModel. Note also that you can perform derived summary statistic calculations after a `netsim` call is complete with `EpiModel::mutate_epi`.
 
 ### Custom Epidemic Trackers
 
@@ -278,7 +278,7 @@ epi_prop_infected <- function(dat, at) {
   # we use `with` to simplify code
   output <- with(EpiModel::get_attr_list(dat, needed_attributes), {
     pop <- active == 1             # we only look at active nodes
-    cond <- status == "infected"   # which are infected 
+    cond <- status == "infected"   # which are infected
 
     # how many are `infected` among the `active`
     out <- sum(cond & pop, na.rm = TRUE) / sum(pop, na.rm = TRUE)
@@ -346,7 +346,7 @@ Each function must be named in the `tracker.list` list. The name given there wil
 
 This is the minimal `control.net` to enable the module. Usually, in research-level models, we will want to add other extension modules. See the "Advanced Extension Models" section in the [EpiModel Tutorials](http://www.epimodel.org/tut.html) site for further examples.
 
-**Important**: when enabling the `trackers.net` module, one must pay particular attention to the order the modules are run. It is recommended to have the `trackers.net` module run last so the tracked values will reflect the state of the model at the end of the time step. 
+**Important**: when enabling the `trackers.net` module, one must pay particular attention to the order the modules are run. It is recommended to have the `trackers.net` module run last so the tracked values will reflect the state of the model at the end of the time step.
 
 ## Record Any Object (Advanced Debugging)
 
@@ -356,7 +356,7 @@ When working with complex research-level models, we sometimes want to inspect th
 introspect_module <- function(dat, at) {
   # Attributes
   age <- get_attr(dat, "age")
-  
+
   if (mean(age, na.rm = TRUE) > 50) {
     obj <- data.frame(
         age = age,
