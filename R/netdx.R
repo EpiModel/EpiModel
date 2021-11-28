@@ -392,8 +392,16 @@ make_dissolution_stats <- function(sim.df, coef.diss, nsteps, verbose = TRUE) {
 
   nsims <- length(sim.df)
 
-  # Calculate mean partnership age from edgelist
-  pages <- lapply(sim.df, function(x) edgelist_meanage(el = x))
+  # Calculate mean partnership age from edgelist and ensure that a value is
+  # provided for each timestep
+  pages <- lapply(sim.df, function(x) {
+    meanage <- edgelist_meanage(el = x)
+    l <- nsteps - length(meanage)
+    if (l > 0) {
+      meanage <- c(meanage, rep(NA, l))
+    }
+    return(meanage)
+  })
 
   # TODO: imputation currently averaged for heterogeneous models
   if (coef.diss$model.type == "hetero") {
