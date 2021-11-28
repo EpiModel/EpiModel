@@ -140,14 +140,12 @@ test_that("get_sims error flags", {
     "dummy.param",
     "dummy.strat.param_1",
     "dummy.strat.param_2",
-    "groups",
-    "dummy.strat.param_1",
-    "dummy.strat.param_2"
+    "groups"
   )
 
   expect_is(d.set, "data.frame")
-  expect_equal(names(d.set), set.colnames)
+  expect_true(setequal(names(d.set), set.colnames))
   expect_error(get_param_set(control), "`sims` must be of class netsim")
-  expect_equal(dim(get_param_set(mod)), c(3, 13))
+  expect_equal(dim(get_param_set(mod)), c(3, length(set.colnames)))
 })
 

@@ -514,12 +514,15 @@ get_param_set <- function(sims) {
     stop("`sims` must be of class netsim")
   }
 
-  random.names <- c("random.params", "random.params.values")
+  p.random <- sims[["param"]][["random.params.values"]]
+  fixed.names <- setdiff(
+    names(sims[["param"]]),
+    c(names(p.random), "random.params", "random.params.values")
+  )
 
-  p.random <- sims$param[[random.names[2]]]
-  p.fixed <- sims$param[!names(sims$param) %in% random.names]
+  p.fixed <- sims[["param"]][fixed.names]
 
-  d.param <- data.frame(sim = seq_len(sims$control$nsims))
+  d.param <- data.frame(sim = seq_len(sims[["control"]][["nsims"]]))
 
   # Fixed parameters
   for (i in seq_along(p.fixed)) {
@@ -527,8 +530,9 @@ get_param_set <- function(sims) {
     name <- names(p.fixed)[i]
     l <- length(val)
 
-    if (l > 1)
+    if (l > 1) {
       name <- paste0(name, "_", seq_len(l))
+    }
 
     names(val) <- name
     d.param <- cbind(d.param, t(val))
@@ -538,7 +542,6 @@ get_param_set <- function(sims) {
   for (i in seq_along(p.random)) {
     val <- p.random[[i]]
     name <- names(p.random)[i]
-    l <- length(val)
 
     if (is.list(val)) {
       l <- length(val[[1]])
