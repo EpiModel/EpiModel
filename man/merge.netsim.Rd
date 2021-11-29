@@ -84,9 +84,11 @@ y <- netsim(est, param, init, control)
 
 # Merging
 z <- merge(x, y)
-x$epi
-y$epi
-z$epi
+
+# Examine separate and merged data
+as.data.frame(x)
+as.data.frame(y)
+as.data.frame(z)
 
 }
 \keyword{extract}

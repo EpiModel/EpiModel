@@ -43,9 +43,11 @@ control <- control.icm(type = "SI", nsteps = 10,
 y <- icm(param, init, control)
 
 z <- merge(x, y)
-x$epi
-y$epi
-z$epi
+
+# Examine separate and merged data
+as.data.frame(x)
+as.data.frame(y)
+as.data.frame(z)
 
 }
 \keyword{extract}
