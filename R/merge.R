@@ -38,9 +38,11 @@
 #' y <- icm(param, init, control)
 #'
 #' z <- merge(x, y)
-#' x$epi
-#' y$epi
-#' z$epi
+#'
+#' # Examine separate and merged data
+#' as.data.frame(x)
+#' as.data.frame(y)
+#' as.data.frame(z)
 #'
 merge.icm <- function(x, y, ...) {
 
@@ -70,7 +72,7 @@ merge.icm <- function(x, y, ...) {
   new.range <- (x$control$nsims + 1):(x$control$nsims + y$control$nsims)
 
   # Merge data
-  for (i in 1:length(x$epi)) {
+  for (i in seq_along(x$epi)) {
     if (x$control$nsims == 1) {
       x$epi[[i]] <- data.frame(x$epi[[i]])
     }
@@ -151,9 +153,11 @@ merge.icm <- function(x, y, ...) {
 #'
 #' # Merging
 #' z <- merge(x, y)
-#' x$epi
-#' y$epi
-#' z$epi
+#'
+#' # Examine separate and merged data
+#' as.data.frame(x)
+#' as.data.frame(y)
+#' as.data.frame(z)
 #'
 merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
                          keep.nwstats = TRUE, keep.summary.stats = TRUE,
