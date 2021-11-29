@@ -1,7 +1,7 @@
 context("Network model with param updater")
 
 test_that("netsim with param updater", {
-  # Create the parame.updater.list
+  # Create the param.updater.list
   param.updater.list <- list(
     # this is one updater
     list(
@@ -24,6 +24,26 @@ test_that("netsim with param updater", {
     )
   )
 
+  # Create the control.updater.list
+  control.updater.list <- list(
+    # this is one updater
+    list(
+      at = 50,
+      verbose = TRUE,
+      control = list(
+        verbose = TRUE
+      )
+    ),
+    # this is another updater
+    list(
+      at = 75,
+      verbose = TRUE,
+      control = list(
+        verbose = FALSE
+      )
+    )
+  )
+
   # Do not forget to add it to `param`
   param <- param.net(
     inf.prob = 0.1,
@@ -38,7 +58,8 @@ test_that("netsim with param updater", {
     nsteps = 200,
     verbose = FALSE,
     updater.FUN = updater.net,
-    infection.FUN = infection.net
+    infection.FUN = infection.net,
+    control.updater.list = control.updater.list
   )
 
   nw <- network_initialize(n = 50)
