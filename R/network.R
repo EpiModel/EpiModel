@@ -30,7 +30,8 @@
 #' nw <- network_initialize(100)
 #' nw
 #'
-network_initialize <- function(n, directed = FALSE, hyper = FALSE, loops = FALSE,
+network_initialize <- function(n, directed = FALSE,
+                               hyper = FALSE, loops = FALSE,
                                multiple = FALSE, bipartite = FALSE) {
   nw <- network.initialize(n, directed = directed, hyper = hyper, loops = loops,
                            multiple = multiple, bipartite = bipartite)
