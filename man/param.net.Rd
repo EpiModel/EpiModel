@@ -205,8 +205,8 @@ sim <- netsim(est, param, init, control)
 # Printing the sim object shows the randomly drawn values for each simulation
 sim
 
-# These are available to access here
-sim$param$random.params.values
+# Parameter sets can be extracted with:
+get_param_set(sim)
 
 }
 \seealso{

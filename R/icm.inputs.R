@@ -392,8 +392,6 @@ crosscheck.icm <- function(param, init, control) {
           control[[args[i]]] <- temp
         }
       }
-      message("Default modules set to appropriate two-group functions.
-              See documentation ", "for details.")
     }
     else {
       for (i in 1:length(args)) {
@@ -402,8 +400,6 @@ crosscheck.icm <- function(param, init, control) {
           control[[args[i]]] <- temp
         }
       }
-      message("Default modules set to appropriate two-group functions.
-              See documentation ", "for details.")
     }
   }
 

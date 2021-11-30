@@ -37,8 +37,8 @@ check_degdist_bal <- function(num.g1, num.g2,
                               deg.dist.g1, deg.dist.g2) {
   deg.counts.g1 <- deg.dist.g1 * num.g1
   deg.counts.g2 <- deg.dist.g2 * num.g2
-  tot.deg.g1 <- sum(deg.counts.g1 * (1:length(deg.dist.g1) - 1))
-  tot.deg.g2 <- sum(deg.counts.g2 * (1:length(deg.dist.g2) - 1))
+  tot.deg.g1 <- sum(deg.counts.g1 * (seq_along(deg.dist.g1) - 1))
+  tot.deg.g2 <- sum(deg.counts.g2 * (seq_along(deg.dist.g2) - 1))
   mat <- matrix(c(deg.dist.g1, deg.counts.g1,
                   deg.dist.g2, deg.counts.g2), ncol = 4)
   mat <- rbind(mat, c(sum(deg.dist.g1), tot.deg.g1, sum(deg.dist.g2),
