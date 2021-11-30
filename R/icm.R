@@ -110,7 +110,7 @@ icm <- function(param, init, control) {
       ## User Modules
       um <- control$user.mods
       if (length(um) > 0) {
-        for (i in 1:length(um)) {
+        for (i in seq_along(um)) {
           dat <- do.call(control[[um[i]]], list(dat, at))
         }
       }

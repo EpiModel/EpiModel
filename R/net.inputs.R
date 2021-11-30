@@ -166,8 +166,8 @@
 #' # Printing the sim object shows the randomly drawn values for each simulation
 #' sim
 #'
-#' # These are available to access here
-#' sim$param$random.params.values
+#' # Parameter sets can be extracted with:
+#' get_param_set(sim)
 #'
 param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
                       a.rate, ds.rate, di.rate, dr.rate, inf.prob.g2,
@@ -186,7 +186,7 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
   dot.args <- list(...)
   names.dot.args <- names(dot.args)
   if (length(dot.args) > 0) {
-    for (i in 1:length(dot.args)) {
+    for (i in seq_along(dot.args)) {
       p[[names.dot.args[i]]] <- dot.args[[i]]
     }
   }
@@ -607,7 +607,7 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
   dot.args <- list(...)
   names.dot.args <- names(dot.args)
   if (length(dot.args) > 0) {
-    for (i in 1:length(dot.args)) {
+    for (i in seq_along(dot.args)) {
       p[[names.dot.args[i]]] <- dot.args[[i]]
     }
   }
@@ -837,7 +837,7 @@ control.net <- function(type,
   dot.args <- list(...)
   names.dot.args <- names(dot.args)
   if (length(dot.args) > 0) {
-    for (i in 1:length(dot.args)) {
+    for (i in seq_along(dot.args)) {
       p[[names.dot.args[i]]] <- dot.args[[i]]
     }
   }
@@ -868,7 +868,7 @@ control.net <- function(type,
   bi.nms <- bi.mods
   index <- 1
   if (is.null(p[["type"]])) {
-    for (i in 1:length(bi.mods)) {
+    for (i in seq_along(bi.mods)) {
       if (!is.null(p[[bi.mods[i]]])) {
         p[["bi.mods"]][index] <- bi.mods[i]
         index <- index + 1
@@ -889,7 +889,7 @@ control.net <- function(type,
                                         "prevalence.FUN"))]
   if (length(bi.nms) > 0) {
     flag1 <- logical()
-    for (args in 1:length(bi.nms)) {
+    for (args in seq_along(bi.nms)) {
       if (!(is.null(p[[bi.nms[args]]]))) {
         temp1 <- get(gsub(".FUN", ".net", bi.nms[args]))
         temp2 <- p[[bi.nms[args]]]
@@ -909,8 +909,7 @@ control.net <- function(type,
   }
 
   if (is.null(p[["nsteps"]])) {
-    stop("Specify nsteps",
-         call. = FALSE)
+    stop("Specify nsteps", call. = FALSE)
   }
 
   if (missing(attr.rules)) {
