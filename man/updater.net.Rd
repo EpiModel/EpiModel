@@ -2,7 +2,7 @@
 % Please edit documentation in R/net.mod.updater.R
 \name{updater.net}
 \alias{updater.net}
-\title{Module to modify the parameters during the simulation}
+\title{Module to modify the controls or parameters during the simulation}
 \usage{
 updater.net(dat, at)
 }
@@ -16,17 +16,21 @@ other initialization information passed from \code{\link{netsim}}.}
 The updated \code{dat} Master list object.
 }
 \description{
-Module to modify the parameters during the simulation
+Module to modify the controls or parameters during the simulation
 }
 \details{
 If a list \code{param.updater.list} is present in the parameters, this module
 will update the \code{param} list with new values at given timesteps.
+Similarily, if a list \code{control.updater.list} is present in the controls,
+this module will update the \code{param} list with new values at given
+timesteps.
 An updater is a list containing an \code{at} element governing when the
 changes will happen, an optional \code{verbose} Boolean controlling whether
 to output a message when a change is made (default = TRUE) and a \code{param}
-named list with the names being the same as the parameter names and the new
-value to update with. If the new value is a function but the old one is not,
-the function will be applied to the current element (see example).
+or \code{control} named list with the names being the same as the parameter /
+control names and the new value to update with. If the new value is a
+function but the old one is not, the function will be applied to the current
+element (see example).
 }
 \examples{
 \dontrun{
@@ -61,14 +65,35 @@ param.updater.list <- list(
    param.updater.list = param.updater.list
  )
 
-# Enable the module in control
+# Create the control.updater.list
+# these updaters will toggle on and off the verbosity of the model
+control.updater.list <- list(
+  list(
+    at = 50,
+    verbose = TRUE,
+    control = list(
+      verbose = TRUE
+    )
+  ),
+  # this is another updater
+  list(
+    at = 75,
+    verbose = TRUE,
+    control = list(
+      verbose = FALSE
+    )
+  )
+)
+
+# Enable the module in control, and add `control.updater.list` to it
  control <- control.net(
    type = NULL, # must be NULL as we use a custom module
    nsims = 1,
    nsteps = 20,
    verbose = FALSE,
    updater.FUN = updater.net,
-   infection.FUN = infection.net
+   infection.FUN = infection.net,
+   control.updater.list = control.updater.list
  )
 
 nw <- network_initialize(n = 50)

@@ -1,11 +1,11 @@
 context("Network model with param updater")
 
 test_that("netsim with param updater", {
-  # Create the parame.updater.list
+  # Create the param.updater.list
   param.updater.list <- list(
     # this is one updater
     list(
-      at = 100,
+      at = 10,
       verbose = TRUE,
       param = list(
         inf.prob = 0.3,
@@ -14,12 +14,39 @@ test_that("netsim with param updater", {
     ),
     # this is another updater
     list(
-      at = 125,
+      at = 20,
       verbose = TRUE,
       param = list(
         # inf.prob = function(x) plogis(qlogis(x) - log(10)),
         # act.rate = function(x) plogis(qlogis(x) - log(10))
         inf.prob = 0.01
+      )
+    )
+  )
+
+  # Create the control.updater.list
+  control.updater.list <- list(
+    # this is one updater
+    list(
+      at = 15,
+      verbose = TRUE,
+      control = list(
+        verbose = TRUE
+      )
+    ),
+    # this is another updater
+    list(
+      at = 25,
+      verbose = TRUE,
+      control = list(
+        verbose = FALSE
+      )
+    ),
+    list(
+      at = 30,
+      verbose = TRUE,
+      control = list(
+        resimulate.network = FALSE
       )
     )
   )
@@ -35,10 +62,12 @@ test_that("netsim with param updater", {
   control <- control.net(
     type = NULL, # must be NULL as we use a custom module
     nsims = 1,
-    nsteps = 200,
+    nsteps = 50,
     verbose = FALSE,
     updater.FUN = updater.net,
-    infection.FUN = infection.net
+    infection.FUN = infection.net,
+    control.updater.list = control.updater.list,
+    resimulate.network = TRUE
   )
 
   nw <- network_initialize(n = 50)
@@ -54,4 +83,12 @@ test_that("netsim with param updater", {
   init <- init.net(i.num = 10)
 
   expect_message(mod <- netsim(est, param, init, control))
+
+  # `resimulate.network` is turned of at step 30. We check that the number of
+  # observations in the "networkDynamic" object is < than 30 and not 50 (the
+  # number of timestep in the simulation)
+  n_obs <- length(
+    get.network.attribute(mod$network[[1]][[1]], 'net.obs.period')$observations
+  )
+  expect_lt(n_obs, 30)
 })
