@@ -308,7 +308,7 @@ Similarly to time-varying parameters we can use time-varying controls. They work
 1. each **updater** will have a `control` sub-list instead of a `param` sub-list
 2. the list of **updaters** goes into `control$control.updater.list`
 
-```{r control-updater-example}
+```{r control-updater-example, echo = FALSE}
 # Create a `list.of.updaters`
 list.of.updaters <- list(
   # this is one updater
