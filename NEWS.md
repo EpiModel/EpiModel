@@ -1,3 +1,9 @@
+## EpiModel 2.2.1
+
+### NEW FEATURES
+
+-   Improved optional module `updater.net` allowing it to update the model controls as well as the parameters. See the vignette, "Working with model parameters."
+
 ## EpiModel 2.2.0
 
 ### NEW FEATURES
