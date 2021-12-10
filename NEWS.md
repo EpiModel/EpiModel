@@ -1,3 +1,9 @@
+## EpiModel 2.2.1
+
+### NEW FEATURES
+
+-   Improved optional module `updater.net` allowing it to update the model controls as well as the parameters. See the vignette, "Working with model parameters."
+
 ## EpiModel 2.2.0
 
 ### NEW FEATURES
@@ -8,7 +14,7 @@
 -   Addition of the `get_param_set` function that extracts from a `netsim` object the set of parameters used by each simulation. See the help page: `help("get_param_set")`.
 -   Developed a mechanism to store nodal attribute history over the course of a `netsim` simulation. See the vignette, "Working with attributes and summary statistics."
 -   Developed an optional module to define prevalence statistics (also called "epi stats") as functions to be passed to the model as control settings before each `netsim` simulation. This allows users to avoid updating the `prevalence.net` module. See the vignette, "Working with attributes and summary statistics."
--   Developed an optional module allowing the update of the model parameters over timesteps within `netsim` simulations (i.e., time-varying parameters). See the vignette, "Working with model parameters."
+-   Developed an optional module allowing the update of the model controls and parameters over timesteps within `netsim` simulations (i.e., time-varying parameters). See the vignette, "Working with model parameters."
 -   Improved the random parameterization programming interface to allow correlation between parameters in each simulation (e.g., the ability to pass in a multivariate parameter set for each simulation). See the vignette, "Working with model parameters."
 
 ### BUG FIXES
