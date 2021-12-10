@@ -300,3 +300,44 @@ list(
 This updater will set the value of `act.rate` to `0.5` as we saw earlier. But, for `inf.prob` we put a `function` (not a function call). In this case,
 `updater.net` will apply the `function` to the current value of `act.rate`. If we consider as in the previous example that `act.rate` is set to `0.1` by
 `param.net`, then its new value will be obtained by adding an Odds Ratio of 2 to the original value `plogis(qlogis(0.1) + log(2))`: `0.1818182`.
+
+## (Advanced) Time-Varying Control
+
+Similarly to time-varying parameters we can use time-varying controls. They work in the same way and use the same `updater` module. The two differences are:
+
+1. each **updater** will have a `control` sub-list instead of a `param` sub-list
+2. the list of **updaters** goes into `control$control.updater.list`
+
+```{r control-updater-example}
+# Create a `list.of.updaters`
+list.of.updaters <- list(
+  # this is one updater
+  list(
+    at = 100,
+    control = list(
+      resimulate.network = FALSE
+    )
+  ),
+  # this is another updater
+  list(
+    at = 125,
+    control = list(
+      verbose = FALSE
+    )
+  )
+)
+
+ # The `list.of.updaters` goes into `control.net` under `control.updater.list`
+ control <- control.net(
+   type = NULL, # must be NULL as we use a custom module
+   nsims = 1,
+   nsteps = 200,
+   verbose = TRUE,
+   resimulate.network = TRUE,
+   updater.FUN = updater.net,
+   infection.FUN = infection.net,
+   control.updater.list = list.of.updaters
+ )
+```
+
+This example set 2 **updaters**, one that will turn off network resimulation at timestep 100 and another toggling of the verbosity at step 125.
