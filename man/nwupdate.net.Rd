@@ -15,5 +15,5 @@ information passed from \code{\link{netsim}}.}
 }
 \description{
 This function handles all calls to the network object contained
-             on the master dat object handled in \code{netsim}..
+             on the master dat object handled in \code{netsim}.
 }

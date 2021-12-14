@@ -665,6 +665,12 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #' @param tergmLite Logical indicating usage of either \code{tergm}
 #'        (\code{tergmLite = FALSE}), or \code{tergmLite}
 #'        (\code{tergmLite = TRUE}). Default of \code{FALSE}.
+#' @param cumulative.edgelist If \code{TRUE}, calculates a cumulative edgelist
+#'        within the network simulation module. This is used when tergmLite is
+#'        used and the entire networkDynamic object is not used.
+#' @param truncate.el.cuml Number of time steps of the cumulative edgelist to
+#'        retain. See help file for \code{\link{update_cumulative_edgelist}} for
+#'        options.
 #' @param attr.rules A list containing the  rules for setting the attributes of
 #'        incoming nodes, with one list element per attribute to be set (see
 #'        details below).
@@ -798,6 +804,8 @@ control.net <- function(type,
                         ncores = 1,
                         resimulate.network = FALSE,
                         tergmLite = FALSE,
+                        cumulative.edgelist = FALSE,
+                        truncate.el.cuml = 0,
                         attr.rules,
                         epi.by,
                         initialize.FUN = initialize.net,
