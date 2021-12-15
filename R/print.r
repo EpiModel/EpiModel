@@ -178,7 +178,7 @@ print.netsim <- function(x, nwstats = TRUE, digits = 3, network = 1, ...) {
   }
   cat("")
 
-  if (nwstats) {
+  if (nwstats && !is.null(x$stats$nwstats)) {
     stats <- x$stats$nwstats
     nsims <- x$control$nsims
 
