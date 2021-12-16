@@ -71,17 +71,17 @@ get_cumulative_edgelist <- function(dat, network) {
 #'                 be removed from the cumulative edgelist (default = Inf)
 #'
 #' @section Truncation:
-#' To avoid storing a cumulative edgelist to long, the `truncate`
-#' parameter defines a number of steps after which an edge that is no longer
-#' active is truncated out of the cummulative edgelist. When `truncate == Inf`
-#' (default), no edge is ever removed. When `truncate == 0`, only the active
-#' edges are kept. You may want this behavior to keep track of the active edges
-#' start step.
+#' To avoid storing a cumulative edgelist too long, the `truncate` parameter
+#' defines a number of steps after which an edge that is no longer active is
+#' truncated out of the cumulative edgelist. When `truncate == Inf` (default),
+#' no edges are ever removed. When `truncate == 0`, only the active edges are
+#' kept. You may want this behavior to keep track of the active edges start
+#' step.
 #'
 #' @return an updated Master list object of network models
 #'
 #' @export
-update_cumulative_edgelist <- function(dat, network, truncate = Inf) {
+update_cumulative_edgelist <- function(dat, network, truncate = 0) {
   el <- get_edgelist(dat, network)
   el_cuml <- get_cumulative_edgelist(dat, network)
 
@@ -141,16 +141,16 @@ get_cumulative_edgelists_df <- function(dat, networks = NULL) {
   return(el_cuml_df)
 }
 
-#' @title Get the Previous Partners of a Set of Indexes
+#' @title Get the Previous Partners of a Set of Index Patients
 #'
-#' @param dat a Master list object of network models
-#' @param index_posit_ids the positional IDs of the indexes of interest
+#' @param dat a Master list object for \code{netsim}.
+#' @param index_posit_ids The positional IDs of the indexes of interest.
 #' @param networks the indexes of the networks to extract the partnerships from.
 #'                 If NULL (default) extract from all networks.
-#' @param max.age after how many steps a partnershipl that is no longer active
-#'                should be removed from the results (default = Inf)
-#' @param only.active should the inactive partners be removed from the results
-#'                    (default = FALSE)
+#' @param max.age after how many steps a partnership that is no longer active
+#'                should be removed from the results (default = Inf).
+#' @param only.active should inactive partners be removed from the results
+#'                    (default = FALSE).
 #'
 #' @return a \code{data.frame} with 5 columns:
 #'          index and partner, the unique_ids (see \code{get_unique_ids}) of the
@@ -161,6 +161,7 @@ get_cumulative_edgelists_df <- function(dat, networks = NULL) {
 #' @export
 get_partners <- function(dat, index_posit_ids, networks = NULL,
                          max.age = Inf, only.active = FALSE) {
+
   el_cuml_df <- get_cumulative_edgelists_df(dat, networks)
   index_unique_ids <- get_unique_ids(dat, index_posit_ids)
 

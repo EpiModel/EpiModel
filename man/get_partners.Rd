@@ -2,7 +2,7 @@
 % Please edit documentation in R/el_cuml.R
 \name{get_partners}
 \alias{get_partners}
-\title{Get the Previous Partners of a Set of Indexes}
+\title{Get the Previous Partners of a Set of Index Patients}
 \usage{
 get_partners(
   dat,
@@ -13,18 +13,18 @@ get_partners(
 )
 }
 \arguments{
-\item{dat}{a Master list object of network models}
+\item{dat}{a Master list object for \code{netsim}.}
 
-\item{index_posit_ids}{the positional IDs of the indexes of interest}
+\item{index_posit_ids}{The positional IDs of the indexes of interest.}
 
 \item{networks}{the indexes of the networks to extract the partnerships from.
 If NULL (default) extract from all networks.}
 
-\item{max.age}{after how many steps a partnershipl that is no longer active
-should be removed from the results (default = Inf)}
+\item{max.age}{after how many steps a partnership that is no longer active
+should be removed from the results (default = Inf).}
 
-\item{only.active}{should the inactive partners be removed from the results
-(default = FALSE)}
+\item{only.active}{should inactive partners be removed from the results
+(default = FALSE).}
 }
 \value{
 a \code{data.frame} with 5 columns:
@@ -34,5 +34,5 @@ a \code{data.frame} with 5 columns:
          the partnership is.
 }
 \description{
-Get the Previous Partners of a Set of Indexes
+Get the Previous Partners of a Set of Index Patients
 }
