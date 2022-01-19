@@ -118,6 +118,12 @@ make_scenarios_updaters <- function(scenarios.df, at) {
   names(updaters.list) <- names(scenarios.list)
   return(updaters.list)
 }
+
+make_scenarios_df <- function(scenarios.list) {
+  lapply(scenarios.list, flatten_params) %>%
+    bind_rows() %>%
+    mutate(.scenario.id = names(scenarios.list))
+}
 # update params to create scenarios
 #
 # params_orig <- function() {
