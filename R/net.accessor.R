@@ -189,7 +189,9 @@ set_attr <- function(dat, item, value, posit_ids = NULL,
           "of nodes in the network")
       }
     } else if (is.numeric(posit_ids)) {
-      if (any(posit_ids > length(dat[["attr"]][[item]]))) {
+      if (length(posit_ids) == 0) {
+        return(dat)
+      } else if (any(posit_ids > length(dat[["attr"]][[item]]))) {
         stop("Some (numeric) `posit_ids` are larger than the number of nodes ",
           " in the network")
       }
