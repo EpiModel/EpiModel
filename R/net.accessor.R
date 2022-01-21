@@ -135,7 +135,8 @@ get_attr <- function(dat, item, posit_ids = NULL, override.null.error = FALSE) {
                "number of nodes in the network")
         }
       } else if (is.numeric(posit_ids)) {
-        if (any(posit_ids > length(dat[["attr"]][[item]]))) {
+        if (length(posit_ids > 0) &&
+            any(posit_ids > length(dat[["attr"]][[item]]))) {
           stop("Some (numeric) `posit_ids` are larger than the number of ",
                "nodes in the network")
         }
