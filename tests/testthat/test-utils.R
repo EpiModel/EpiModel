@@ -129,7 +129,8 @@ test_that("get_degree", {
   deg.el <- get_degree(el)
   deg.el
 
-  all.equal(ergm.method, deg.net, deg.el)
+  expect_equal(ergm.method, deg.net)
+  expect_equal(ergm.method, deg.el)
 })
 
 test_that("dissolution_coefs returns error for incompatible departure rate", {
