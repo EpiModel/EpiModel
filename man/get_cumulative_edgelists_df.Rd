@@ -16,7 +16,7 @@ edgelists.}
 \value{
 a \code{data.frame} with 5 columns:
          head and tail, the unique_ids (see \code{get_unique_ids}) of the
-         nodes on the edge. Start and stop, the timestep where the edges
+         nodes on the edge. Start and stop, the time step where the edges
          started and stopped. network, the network on which the edge is.
 }
 \description{

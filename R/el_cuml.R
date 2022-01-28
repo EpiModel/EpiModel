@@ -125,7 +125,7 @@ update_cumulative_edgelist <- function(dat, network, truncate = 0) {
 #'
 #' @return a \code{data.frame} with 5 columns:
 #'          head and tail, the unique_ids (see \code{get_unique_ids}) of the
-#'          nodes on the edge. Start and stop, the timestep where the edges
+#'          nodes on the edge. Start and stop, the time step where the edges
 #'          started and stopped. network, the network on which the edge is.
 #'
 #' @export
@@ -141,22 +141,32 @@ get_cumulative_edgelists_df <- function(dat, networks = NULL) {
   return(el_cuml_df)
 }
 
-#' @title Get the Previous Partners of a Set of Index Patients
+#' @title Return the Historical Partners (Contacts) of a Set of Index Patients
 #'
 #' @param dat a Master list object for \code{netsim}.
 #' @param index_posit_ids The positional IDs of the indexes of interest.
-#' @param networks the indexes of the networks to extract the partnerships from.
-#'                 If NULL (default) extract from all networks.
-#' @param max.age after how many steps a partnership that is no longer active
-#'                should be removed from the results (default = Inf).
-#' @param only.active should inactive partners be removed from the results
-#'                    (default = FALSE).
+#' @param networks The indexes of the networks to extract the partnerships from.
+#'                 If \code{NULL}, extract from all networks.
+#' @param max.age After how many time steps a partnership that is no longer
+#'                active should be removed from the output (default = Inf means
+#'                no subsetting of output).
+#' @param only.active If \code{TRUE}, then inactive (e.g., deceased) partners
+#'                    will be removed from the output.
 #'
-#' @return a \code{data.frame} with 5 columns:
-#'          index and partner, the unique_ids (see \code{get_unique_ids}) of the
-#'          indexes and partners respectively. Start and stop, the timestep
-#'          where the edges started and stopped. network, the network on which
-#'          the partnership is.
+#' @return
+#' A \code{data.frame} with 5 columns:
+#'
+#' \itemize{
+#'   \item \code{index}: the unique ID see \code{get_unique_ids}) of the
+#'         indexes.
+#'   \item \code{partner}: the unique ID see \code{get_unique_ids}) of the
+#'         partners/contacts.
+#'   \item \code{start}: the time step in which the edge started.
+#'   \item \code{stop}: the time step in which the edge stopped; if ongoing,
+#'         then \code{NA} is returned.
+#'   \item \code{network}: the numerical index for the network on which the
+#'         partnership/contact is located.
+#'  }
 #'
 #' @export
 get_partners <- function(dat, index_posit_ids, networks = NULL,
