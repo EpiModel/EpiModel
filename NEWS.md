@@ -3,6 +3,15 @@
 ### NEW FEATURES
 
 -   Improved optional module `updater.net` allowing it to update the model controls as well as the parameters. See the vignette, "Working with model parameters."
+- General updates to the names and content of the included vignettes.
+
+### BUG FIXES
+
+-   Fix dissolution model statistics calculations for `netsim` in the case with a model with an "end horizon" (when the network is not resimulated at the end of the time series).
+- Fix duplicate printing issues across `print.netsim`, `print.param.net`, and `print.control.net`.
+- Fix use of `all.equal` in unit tests as requested by CRAN.
+- Change defaults of newly introduced cumulative edgelist functionality to not store it (improves speed).
+- Allow `set_attr` for `posit_ids` to return unchanged `dat` object.
 
 ## EpiModel 2.2.0
 
