@@ -1,15 +1,16 @@
+
 #' @title Get an Edgelist From the Specified Network
 #'
-#' @description This function outputs an edgelist from the specified network.
-#'              it chooses the right method depending on the type of network and
-#'              the output is standardly formatted.
+#' @description This function outputs an edgelist from the specified network,
+#'              selecting the method depending on the stored network type.
+
+#' @param dat Master list object of network models.
+#' @param network Numerical index of the network from which the edgelist should
+#'                be extracted.
 #'
-#' @param dat a Master list object of network models
-#' @param network the index of the network to extract the edgelist from
-#'
-#' @return an edgelist in matrix form with the two columns. Each column
-#'          contains the posit_ids (see \code{get_posit_ids})of the nodes in
-#'          each edge
+#' @return
+#' An edgelist in matrix form with the two columns. Each column contains the
+#' posit_ids (see \code{get_posit_ids})of the nodes in each edge.
 #'
 #' @export
 get_edgelist <- function(dat, network) {
@@ -31,16 +32,23 @@ get_edgelist <- function(dat, network) {
   return(el)
 }
 
-#' @title Get a Cumulative Edgelist From the Specified Network
+#' @title Get a Cumulative Edgelist From a Specified Network
 #'
-#' @param dat a Master list object of network models
-#' @param network the index of the network to extract the cumulative edgelist
-#'                from
+#' @param dat a Master list object for \code{netsim}.
+#' @param network Numerical index of the network from which the cumulative
+#'                edgelist should be extracted.
 #'
-#' @return a cumulative edgelist in \code{data.frame} form with 4 columns:
-#'          head and tail, the unique_ids (see \code{get_unique_ids}) of the
-#'          nodes on the edge. Start and stop, the timestep where the edges
-#'          started and stopped.
+#' @return
+#' A cumulative edgelist in \code{data.frame} form with 4 columns:
+#' \itemize{
+#'   \item \code{head}: the unique ID see \code{get_unique_ids}) of the
+#'         head node on the edge.
+#'   \item \code{tail}: the unique ID see \code{get_unique_ids}) of the
+#'         tail node on the edge.
+#'   \item \code{start}: the time step in which the edge started.
+#'   \item \code{stop}: the time step in which the edge stopped; if ongoing,
+#'         then \code{NA} is returned.
+#' }
 #'
 #' @export
 get_cumulative_edgelist <- function(dat, network) {
@@ -64,11 +72,12 @@ get_cumulative_edgelist <- function(dat, network) {
 
 #' @title Update a Cumulative Edgelist of the Specified Network
 #'
-#' @param dat a Master list object of network models
-#' @param network the index of the network whose cumulative edgelist will be
-#'                updated
-#' @param truncate after how many steps an edge that is no longer active should
-#'                 be removed from the cumulative edgelist (default = Inf)
+#' @param dat Master list object of network models.
+#' @param network Numerical index of the network for which the cumulative
+#'                edgelist will be updated.
+#' @param truncate After how many time steps a partnership that is no longer
+#'                 active should be removed from the output (default = Inf means
+#'                 no subsetting of output).
 #'
 #' @section Truncation:
 #' To avoid storing a cumulative edgelist too long, the `truncate` parameter
@@ -78,7 +87,8 @@ get_cumulative_edgelist <- function(dat, network) {
 #' kept. You may want this behavior to keep track of the active edges start
 #' step.
 #'
-#' @return an updated Master list object of network models
+#' @return
+#' An updated Master list object of network models
 #'
 #' @export
 update_cumulative_edgelist <- function(dat, network, truncate = 0) {
@@ -116,17 +126,25 @@ update_cumulative_edgelist <- function(dat, network, truncate = 0) {
   return(dat)
 }
 
-#' @title Get the Cumulative Edgelists of a Model in \code{data.frame} Format
+#' @title Get the Cumulative Edgelists of a Model
 #'
-#' @param dat a Master list object of network models
-#' @param networks the indexes of the networks to extract the cumulative
-#'                 edgelists from. If NULL (default) extract all the cumulative
-#'                 edgelists.
+#' @param dat Master list object for \code{netsim}.
+#' @param networks Numerical indexes of the networks to extract the partnerships
+#'                 from. If \code{NULL}, extract from all networks.
 #'
-#' @return a \code{data.frame} with 5 columns:
-#'          head and tail, the unique_ids (see \code{get_unique_ids}) of the
-#'          nodes on the edge. Start and stop, the time step where the edges
-#'          started and stopped. network, the network on which the edge is.
+#' @return
+#' A \code{data.frame} with 5 columns:
+#' \itemize{
+#'   \item \code{index}: the unique ID see \code{get_unique_ids}) of the
+#'         indexes.
+#'   \item \code{partner}: the unique ID see \code{get_unique_ids}) of the
+#'         partners/contacts.
+#'   \item \code{start}: the time step in which the edge started.
+#'   \item \code{stop}: the time step in which the edge stopped; if ongoing,
+#'         then \code{NA} is returned.
+#'   \item \code{network}: the numerical index for the network on which the
+#'         partnership/contact is located.
+#'  }
 #'
 #' @export
 get_cumulative_edgelists_df <- function(dat, networks = NULL) {
@@ -145,8 +163,8 @@ get_cumulative_edgelists_df <- function(dat, networks = NULL) {
 #'
 #' @param dat a Master list object for \code{netsim}.
 #' @param index_posit_ids The positional IDs of the indexes of interest.
-#' @param networks The indexes of the networks to extract the partnerships from.
-#'                 If \code{NULL}, extract from all networks.
+#' @param networks Numerical indexes of the networks to extract the partnerships
+#'                 from. If \code{NULL}, extract from all networks.
 #' @param max.age After how many time steps a partnership that is no longer
 #'                active should be removed from the output (default = Inf means
 #'                no subsetting of output).
@@ -155,7 +173,6 @@ get_cumulative_edgelists_df <- function(dat, networks = NULL) {
 #'
 #' @return
 #' A \code{data.frame} with 5 columns:
-#'
 #' \itemize{
 #'   \item \code{index}: the unique ID see \code{get_unique_ids}) of the
 #'         indexes.

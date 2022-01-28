@@ -17,8 +17,8 @@ get_partners(
 
 \item{index_posit_ids}{The positional IDs of the indexes of interest.}
 
-\item{networks}{The indexes of the networks to extract the partnerships from.
-If \code{NULL}, extract from all networks.}
+\item{networks}{Numerical indexes of the networks to extract the partnerships
+from. If \code{NULL}, extract from all networks.}
 
 \item{max.age}{After how many time steps a partnership that is no longer
 active should be removed from the output (default = Inf means
@@ -29,7 +29,6 @@ will be removed from the output.}
 }
 \value{
 A \code{data.frame} with 5 columns:
-
 \itemize{
   \item \code{index}: the unique ID see \code{get_unique_ids}) of the
         indexes.

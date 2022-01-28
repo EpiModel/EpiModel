@@ -7,16 +7,17 @@
 update_cumulative_edgelist(dat, network, truncate = 0)
 }
 \arguments{
-\item{dat}{a Master list object of network models}
+\item{dat}{Master list object of network models.}
 
-\item{network}{the index of the network whose cumulative edgelist will be
-updated}
+\item{network}{Numerical index of the network for which the cumulative
+edgelist will be updated.}
 
-\item{truncate}{after how many steps an edge that is no longer active should
-be removed from the cumulative edgelist (default = Inf)}
+\item{truncate}{After how many time steps a partnership that is no longer
+active should be removed from the output (default = Inf means
+no subsetting of output).}
 }
 \value{
-an updated Master list object of network models
+An updated Master list object of network models
 }
 \description{
 Update a Cumulative Edgelist of the Specified Network

@@ -7,17 +7,16 @@
 get_edgelist(dat, network)
 }
 \arguments{
-\item{dat}{a Master list object of network models}
+\item{dat}{Master list object of network models.}
 
-\item{network}{the index of the network to extract the edgelist from}
+\item{network}{Numerical index of the network from which the edgelist should
+be extracted.}
 }
 \value{
-an edgelist in matrix form with the two columns. Each column
-         contains the posit_ids (see \code{get_posit_ids})of the nodes in
-         each edge
+An edgelist in matrix form with the two columns. Each column contains the
+posit_ids (see \code{get_posit_ids})of the nodes in each edge.
 }
 \description{
-This function outputs an edgelist from the specified network.
-             it chooses the right method depending on the type of network and
-             the output is standardly formatted.
+This function outputs an edgelist from the specified network,
+             selecting the method depending on the stored network type.
 }
