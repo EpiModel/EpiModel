@@ -2,7 +2,7 @@
 title: "Working With Network Objects"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{network-objects}
+  %\VignetteIndexEntry{Working with Network Objects}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
