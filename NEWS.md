@@ -13,6 +13,10 @@
 - Change defaults of newly introduced cumulative edgelist functionality to not store it (improves speed).
 - Allow `set_attr` for `posit_ids` to return unchanged `dat` object.
 
+### OTHER
+
+-   We have changed the names of arguments from the function `get_partners` newly introduced in EpiModel v2.2.0: `max.age` is renamed to `truncate` for consistency with the other cumulative edgelist functions; `only.active` is renamed `only.active.nodes` to clarify that this argument subsets by *nodes* and not by *partnerships*.
+
 ## EpiModel 2.2.0
 
 ### NEW FEATURES
@@ -38,7 +42,7 @@
 -   Fixed issue with `Error`, `Warning` or `Message` in `netsim` printing twice.
 -   Fixed problem with unique ID counter not saved by `saveout.net`, resulting in the unique ids to start a 1 again when restarting a model from a previous simulation.
 
-### Other
+### OTHER
 
 -   The new home for EpiModel on Github is: <https://github.com/EpiModel/EpiModel>. It was previously located on the `statnet` organization on Github.
 

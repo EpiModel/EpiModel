@@ -8,24 +8,24 @@ get_partners(
   dat,
   index_posit_ids,
   networks = NULL,
-  max.age = Inf,
-  only.active = FALSE
+  truncate = Inf,
+  only.active.nodes = FALSE
 )
 }
 \arguments{
-\item{dat}{a Master list object for \code{netsim}.}
+\item{dat}{Master list object of network models.}
 
 \item{index_posit_ids}{The positional IDs of the indexes of interest.}
 
 \item{networks}{Numerical indexes of the networks to extract the partnerships
 from. If \code{NULL}, extract from all networks.}
 
-\item{max.age}{After how many time steps a partnership that is no longer
+\item{truncate}{After how many time steps a partnership that is no longer
 active should be removed from the output (default = Inf means
 no subsetting of output).}
 
-\item{only.active}{If \code{TRUE}, then inactive (e.g., deceased) partners
-will be removed from the output.}
+\item{only.active.nodes}{If \code{TRUE}, then inactive (e.g., deceased)
+partners will be removed from the output.}
 }
 \value{
 A \code{data.frame} with 5 columns:

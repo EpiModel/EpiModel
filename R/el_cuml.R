@@ -161,15 +161,13 @@ get_cumulative_edgelists_df <- function(dat, networks = NULL) {
 
 #' @title Return the Historical Partners (Contacts) of a Set of Index Patients
 #'
-#' @param dat a Master list object for \code{netsim}.
 #' @param index_posit_ids The positional IDs of the indexes of interest.
 #' @param networks Numerical indexes of the networks to extract the partnerships
 #'                 from. If \code{NULL}, extract from all networks.
-#' @param max.age After how many time steps a partnership that is no longer
-#'                active should be removed from the output (default = Inf means
-#'                no subsetting of output).
-#' @param only.active If \code{TRUE}, then inactive (e.g., deceased) partners
-#'                    will be removed from the output.
+#' @param only.active.nodes If \code{TRUE}, then inactive (e.g., deceased)
+#'                          partners will be removed from the output.
+#'
+#' @inheritParams update_cumulative_edgelist
 #'
 #' @return
 #' A \code{data.frame} with 5 columns:
@@ -187,7 +185,7 @@ get_cumulative_edgelists_df <- function(dat, networks = NULL) {
 #'
 #' @export
 get_partners <- function(dat, index_posit_ids, networks = NULL,
-                         max.age = Inf, only.active = FALSE) {
+                         truncate = Inf, only.active.nodes = FALSE) {
 
   el_cuml_df <- get_cumulative_edgelists_df(dat, networks)
   index_unique_ids <- get_unique_ids(dat, index_posit_ids)
@@ -203,16 +201,16 @@ get_partners <- function(dat, index_posit_ids, networks = NULL,
 
   partner_df <- dplyr::bind_rows(partner_head_df, partner_tail_df)
 
-  if (only.active) {
+  if (only.active.nodes) {
     active_partners <- is_active_unique_ids(dat, partner_df[["partner"]])
     partner_df <- partner_df[active_partners, ]
   }
 
-  if (max.age != Inf) {
+  if (truncate != Inf) {
     at <- get_current_timestep(dat)
     rel.age <- at - partner_df[["stop"]]
     rel.age <- ifelse(is.na(rel.age), 0, rel.age)
-    partner_df <- partner_df[rel.age <= max.age, ]
+    partner_df <- partner_df[rel.age <= truncate, ]
   }
 
   return(partner_df)
