@@ -5,6 +5,12 @@
 -   Improved optional module `updater.net` allowing it to update the model controls as well as the parameters. See the vignette, "Working with model parameters."
 - General updates to the names and content of the included vignettes.
 
+### BREAKING CHANGES
+
+-   `get_partners` argument changes:
+    -   `max.age` is renamed to `truncate` for consistency with the other cumulative edgelist functions.
+    -   `only.active` is renamed `only.active.nodes` to empathize that we want active *nodes* and not active *partnerships*
+
 ### BUG FIXES
 
 -   Fix dissolution model statistics calculations for `netsim` in the case with a model with an "end horizon" (when the network is not resimulated at the end of the time series).
