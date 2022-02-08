@@ -30,7 +30,6 @@ update_list <- function(x, new.x) {
 #'
 #' @param dat Master list object containing a \code{networkDynamic} object and
 #'        other initialization information passed from \code{\link{netsim}}.
-#' @param at Current time step.
 #'
 #' @return The updated \code{dat} Master list object.
 #'
@@ -128,7 +127,7 @@ update_list <- function(x, new.x) {
 #' }
 #'
 #' @export
-updater.net <- function(dat, at) {
+updater.net <- function(dat) {
   for (type in c("param", "control")) {
     dat <- common_updater(dat, type)
   }
