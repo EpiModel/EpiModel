@@ -102,14 +102,14 @@ use_scenario <- function(param, scenario) {
 #' @noRd
 check_scenarios_df <- function(scenarios.df) {
   checks <- c(
-    ! all(c(".scenario.name", ".at") %in% names(scenarios.df)),
-    ! all(as.integer(scenarios.df[[".at"]]) == scenarios.df[[".at"]])
+    all(c(".scenario.id", ".at") %in% names(scenarios.df)),
+    all(as.integer(scenarios.df[[".at"]]) == scenarios.df[[".at"]])
   )
 
   if (! all(checks)) {
     stop(
-      "A `data.frame` of scenarios must have a '.scenario.id' column",
-      "and an '.at' column containing integers."
+      "A `data.frame` of scenarios must have a '.scenario.id' column \n",
+      "and a '.at' column containing integers."
     )
   }
 }
