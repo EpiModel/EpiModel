@@ -13,8 +13,7 @@ update_cumulative_edgelist(dat, network, truncate = 0)
 edgelist will be updated.}
 
 \item{truncate}{After how many time steps a partnership that is no longer
-active should be removed from the output (default = Inf means
-no subsetting of output).}
+active should be removed from the output.}
 }
 \value{
 An updated Master list object of network models
@@ -24,11 +23,11 @@ Update a Cumulative Edgelist of the Specified Network
 }
 \section{Truncation}{
 
-To avoid storing a cumulative edgelist too long, the `truncate` parameter
-defines a number of steps after which an edge that is no longer active is
-truncated out of the cumulative edgelist. When `truncate == Inf` (default),
-no edges are ever removed. When `truncate == 0`, only the active edges are
-kept. You may want this behavior to keep track of the active edges start
-step.
+To avoid storing a cumulative edgelist too long, the \code{truncate}
+parameter defines a number of steps after which an edge that is no longer
+active is truncated out of the cumulative edgelist.
+When \code{truncate = Inf}, no edges are ever removed. When
+\code{truncate = 0}, only the active edges are kept. You may want this
+behavior to keep track of the active edges start step.
 }
 
