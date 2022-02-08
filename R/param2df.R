@@ -102,8 +102,8 @@ use_scenario <- function(param, scenario) {
 #' @noRd
 check_scenarios_df <- function(scenarios.df) {
   checks <- c(
-    all(c(".scenario.name", ".at") %in% names(scenarios.df)),
-    all(as.integer(scenarios.df[[".at"]]) == scenarios.df[[".at"]])
+    ! all(c(".scenario.name", ".at") %in% names(scenarios.df)),
+    ! all(as.integer(scenarios.df[[".at"]]) == scenarios.df[[".at"]])
   )
 
   if (! all(checks)) {
