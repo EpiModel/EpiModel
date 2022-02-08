@@ -71,6 +71,8 @@ make_scenario <- function(scenario.rows) {
 #'
 #' @section scenario:
 #' Can be made by make_scenarios_list from a scenarios.df
+#'
+#' @export
 use_scenario <- function(param, scenario) {
   elements.at <- vapply(
     scenario[["param.updater.list"]],
@@ -110,90 +112,6 @@ check_scenarios_df <- function(scenarios.df) {
       "and an '.at' column containing integers."
     )
   }
-}
-
-#' Make a list of scenarios from a data.frame of scenarios
-#'
-#' An EpiModel scenario is a list of parameters to be used by a model. They are
-#' usually used by a researcher who wants to model counterfactuals using a pre
-#' calibrated model.
-#'
-#' @param scenarios.df a \code{data.frame}
-#'
-#' @return a list of parameter list
-#'
-#' @section scenarios.df:
-#' The \code{scenarios.df} is a \code{data.frame} of values to be used as
-#' parameters.
-#'
-#' The column names must correspond either to:
-#' the name of one parameter if this parameter is of size 1 or the name of the
-#' parameter with "_1", "_2", "_N" with the second part being the position of
-#' the value for a parameter of size > 1. This means that the parameter names
-#' cannot contain any underscore "_". (e.g "a.rate", "d.rate_1", "d.rate_2")
-#'
-#' @section Scenario Names:
-#' If \code{scenarios.df} contains a column ".scenario.id", it will be used to
-#' set the names of the scenarios. Otherwise, they will be named sequentially.
-#'
-#' @section When Should a Scenario Apply:
-#' If \code{scenarios.df} contains a column ".at", it will be used to define
-#' when the parameters defined in the scenario should be used. If the column is
-#' not present or if ".at" is less than 2, the parameters will be changed before
-#' the initialization of the model. Otherwise they will occurs at the beginning
-#' of the specified timestep.
-#'
-#' @export
-make_scenarios_list <- function(scenarios.df) {
-  if (!is.null(scenarios.df[[".scenario.id"]])) {
-    scenarios.names <- scenarios.df[[".scenario.id"]]
-    scenarios.df[[".scenario.id"]] <- NULL
-  } else {
-    scenarios.names <- seq_len(nrow(scenarios.df))
-  }
-
-  scenarios.list <- lapply(
-    seq_len(nrow(scenarios.df)),
-    function(row) unflatten_params(scenarios.df[row, ])
-  )
-  names(scenarios.list) <- scenarios.names
-
-  return(scenarios.list)
-}
-
-#' Make a list of scenarios updaters from a data.frame of scenarios
-#'
-#' An EpiModel scenario updater is a list of parameters to be used by a model.
-#' They are usually used by a researcher who wants to model counterfactuals
-#' using a pre calibrated model.
-#'
-#' @param scenarios.df a \code{data.frame}
-#'
-#' @return a list of parameter list
-#'
-#' @section scenarios.df:
-#' The \code{scenarios.df} is a \code{data.frame} of values to be used as
-#' parameters.
-#'
-#' The column names must correspond either to:
-#' the name of one parameter if this parameter is of size 1 or the name of the
-#' parameter with "_1", "_2", "_N" with the second part being the position of
-#' the value for a parameter of size > 1. This means that the parameter names
-#' cannot contain any underscore "_". (e.g "a.rate", "d.rate_1", "d.rate_2")
-#'
-#' @section :
-#' If \code{scenarios.df} contains a column ".scenario.id", it will be used to
-#' set the names of the scenarios. Otherwise, they will be named sequentially.
-#'
-#' @export
-make_scenarios_updaters <- function(scenarios.df, at) {
-  scenarios.list <- make_scenarios_list(scenarios.df)
-  updaters.list <- lapply(
-    scenarios.list,
-    function(scenario) list(list(at = at, param = scenario))
-  )
-  names(updaters.list) <- names(scenarios.list)
-  return(updaters.list)
 }
 
 make_scenarios_df <- function(scenarios.list) {
