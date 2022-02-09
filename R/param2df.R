@@ -33,7 +33,7 @@ make_scenarios_list <- function(scenarios.df) {
 
   scenarios <- lapply(
     unique(scenarios.df[[".scenario.id"]]),
-    function(id) make_scenario(dplyr::filter(scenarios.df, .scenario.id == id)),
+    function(id) make_scenario(dplyr::filter(scenarios.df, .scenario.id == id))
   )
 
   return(scenarios)
