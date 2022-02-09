@@ -60,7 +60,7 @@ make_scenario <- function(scenario.rows) {
   for (i in seq_along(elements.at)) {
     scenario[["param.updater.list"]][[i]] <- list(
       at = elements.at[[i]],
-      params = unflatten_params(scenario.rows[i, ])
+      param = unflatten_params(scenario.rows[i, ])
     )
   }
 
@@ -83,7 +83,7 @@ use_scenario <- function(param, scenario) {
   for (i in which(elements.at < 2)) {
     param <- update_params(
       param,
-      scenario[["param.updater.list"]][[i]][["params"]])
+      scenario[["param.updater.list"]][[i]][["param"]])
   }
 
   param[["param.updater.list"]] <- c(
