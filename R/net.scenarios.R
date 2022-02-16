@@ -30,11 +30,14 @@
 #' @export
 make_scenarios_list <- function(scenarios.df) {
   check_scenarios_df(scenarios.df)
+  scenarios.names <- unique(scenarios.df[[".scenario.id"]])
 
   scenarios <- lapply(
-    unique(scenarios.df[[".scenario.id"]]),
+    scenarios.names,
     function(id) make_scenario(dplyr::filter(scenarios.df, .scenario.id == id))
   )
+
+  names(scenarios) <- scenarios.names
 
   return(scenarios)
 }
@@ -49,7 +52,7 @@ make_scenarios_list <- function(scenarios.df) {
 #' @noRd
 make_scenario <- function(scenario.rows) {
   scenario <- list(
-    id = scenario.rows[1, ".scenario.id"],
+    id = scenario.rows[[".scenario.id"]][1],
     param.updater.list = vector(mode = "list", length = nrow(scenario.rows))
   )
 
@@ -69,8 +72,18 @@ make_scenario <- function(scenario.rows) {
 
 #' Apply a scenario object to a param.net object
 #'
+#' @param scenario a scenario object usually created from a \code{data.frame} of
+#' scenarios using the \code{make_scenarios_list} function. See the vignette
+#' "network-model-scenarios".
+#'
 #' @section scenario:
-#' Can be made by make_scenarios_list from a scenarios.df
+#' A scenario is a list containing an "id" field, the name of the scenario and
+#' a "param.updater.list" containing a list of updaters that modifies the
+#' parameters of the model at given time steps. See the vignette
+#' "model-parameters" for the technical detail of their implementation.
+#'
+#' @inheritParams update_params
+#' @inherit update_params return
 #'
 #' @export
 use_scenario <- function(param, scenario) {
@@ -119,7 +132,7 @@ make_scenarios_df <- function(scenarios.list) {
   scenarios.df <- dplyr::bind_rows(scenarios.rows)
   scenarios.df <- dplyr::mutate(
     scenarios.df,
-    .scenario.id = names(scenarios.list)
+    ".scenario.id" = names(scenarios.list)
   )
   dplyr::select(scenarios.df, .scenario.id, dplyr::everything())
 }
@@ -231,28 +244,3 @@ check_params_names <- function(params.names) {
 
   invisible(return(TRUE))
 }
-
-# update params to create scenarios
-#
-# params_orig <- function() {
-#   list(
-#     aasd.ad = sample(seq_len(9), 1),
-#     d.adk = sample(seq_len(9), 3, replace = TRUE),
-#     eas.d = sample(letters, 1, replace = TRUE),
-#     fd.dd = sample(LETTERS, 4, replace = TRUE)
-#   )
-# }
-#
-# scenarios.df <- dplyr::bind_rows(
-#   lapply(1:5, function(x) tibble::as_tibble(flatten_params(params_orig())))
-# )
-# scenarios.df[[".scenario.id"]] <- replicate(
-#   5,
-#   paste0(sample(LETTERS, 10, replace = TRUE), collapse = "")
-# )
-#
-# scenarios.list <- make_scenarios_list(scenarios.df)
-# scenarios.updaters <- make_scenarios_updaters(scenarios.df, 100)
-#
-# param_df <- read.csv("/home/adrien/Documents/Projects/BigNets/data/input/calibration.csv")
-# make_scenarios_list(param_df)

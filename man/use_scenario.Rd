@@ -6,11 +6,25 @@
 \usage{
 use_scenario(param, scenario)
 }
+\arguments{
+\item{param}{Object of class \code{param.net}, output from function of same name.}
+
+\item{scenario}{a scenario object usually created from a \code{data.frame} of
+scenarios using the \code{make_scenarios_list} function. See the vignette
+"network-model-scenarios".}
+}
+\value{
+An updated list object of class \code{param.net}, which can be passed to
+EpiModel function \code{\link{netsim}}.
+}
 \description{
 Apply a scenario object to a param.net object
 }
 \section{scenario}{
 
-Can be made by make_scenarios_list from a scenarios.df
+A scenario is a list containing an "id" field, the name of the scenario and
+a "param.updater.list" containing a list of updaters that modifies the
+parameters of the model at given time steps. See the vignette
+"model-parameters" for the technical detail of their implementation.
 }
 

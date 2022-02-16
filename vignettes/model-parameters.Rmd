@@ -16,22 +16,181 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup, echo = FALSE, include = FALSE}
-library(EpiModel)
-```
-
 ## Introduction
-
-This vignette discusses mechanisms usable inside `EpiModel` network models with custom extension modules. More information about these may be found in the "New Network Models with EpiModel" section of the [EpiModel Tutorials](http://www.epimodel.org/tut.html).
 
 In a model, *parameters* are the input variables used to define aspects of the system behavior. In the basic built-in SIS (Susceptible-Infected-Susceptible) model, these parameters could be the **act rate**, the **infection probability** and the **recovery rate**. In simple models, each of these parameters are single fixed values that do not change over the course of a simulation. In more complex models, we may want more flexibility in model parameterization.
 
 Therefore, in this vignette, we demonstrate how to implement:
 
-- Random parameters, which have a distribution of possible values rather than a single fixed value.
-- Time-varying parameters, which may change at specific time steps during the simulation.
+- Scenarios: sets of parameters to be changed for a simulation, either at the start or at a specific timestep.
+- Random parameters: distributions of possible values rather than a single fixed value.
+- (Advanced) Time-varying parameters: parameters that may change at specific time steps during the simulation. This accesses the mechanisms underlying scenarios.
 
-## Random Parameters
+## Scenarios
+
+For this example we will use a simple SIS model to showcase how scenarios work.
+First we setup the model as we would normally.
+
+```{r setup, results = "hide"}
+library(EpiModel)
+set.seed(10)
+
+nw <- network_initialize(n = 200)
+est <- netest(nw,
+  formation = ~edges, target.stats = 60,
+  coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+  verbose = FALSE
+)
+
+param <- param.net(inf.prob = 0.9, rec.rate = 0.01, act.rate = 2)
+control <- control.net(type = "SIS", nsims = 1, nsteps = 250, verbose = FALSE)
+init <- init.net(i.num = 10)
+```
+
+### Definition of the Scenarios
+
+To define the scenarios, we will make use of the `EpiModel::make_scenarios_list`
+function. It takes a specially formatted `data.frame` as input and outputs a
+list of scenarios usable by EpiModel.
+
+We will use the `tibble::tribble` function to create the `data.frame` here. But
+any methods will work as long as the resulting `data.frame` is properly formatted.
+
+```{r scenarios_setup}
+suppressMessages(library(dplyr))
+
+scenarios.df <- tribble(
+  ~.scenario.id, ~.at, ~inf.prob, ~rec.rate,
+  "base", 0, 0.9, 0.01,
+  "initial_change", 0, 0.2, 0.01,
+  "multiple_changes", 0, 0.1, 0.04,
+  "multiple_changes", 100, 0.9, 0.01,
+  "multiple_changes", 200, 0.1, 0.1
+)
+
+knitr::kable(scenarios.df)
+```
+
+A `data.frame` of scenarios must be formatted as follows:
+
+Two mandatory columns
+  - `.scenario.id`: an identifier for the scenario
+  - `.at`:          when should the changes apply during the simulation
+
+Any number of parameters columns. They must start with a letter and contain only
+letters, numbers or `.`. Underscores `_` are not accepted. If a cell is left
+empty (`NA`), EpiModel will assume that you want to set the parameter to `NA`.
+It does not mean that the value should be left untouched.
+
+In the `data.frame` above, three rows share the same `.scenario.id`. This means
+that EpiModel will consider it a single scenario were multiple events occur
+during the simulation.
+
+To go from the `scenarios.df` to a list of usable scenarios we simply run
+
+```{r scenarios_list}
+scenarios.list <- make_scenarios_list(scenarios.df)
+str(scenarios.list, max.level = 2)
+```
+
+We now have a named list of scenarios.
+
+We will run all the scenarios, combine there results and plot the number of
+susceptible and infected over time to show what happened.
+
+To do so, we loop over all 3 scenarios and use `EpiModel::use_scenario` function
+to create a new `sc.param` object to be used for the simulation parameters.
+
+```{r simulations}
+# creation of a list that will hold the result of the simulations
+d_list <- vector(mode = "list", length = length(scenarios.list))
+names(d_list) <- names(scenarios.list)
+
+for (scenario in scenarios.list) {
+  # the id of the scenario is stored into `scenario$id`
+  print(scenario$id)
+
+  sc.param <- use_scenario(param, scenario)
+  sim <- netsim(est, sc.param, init, control)
+  # conversion to `data.frame` and storage of the scenario name in it
+  d_sim <- as.data.frame(sim)
+  d_sim[["scenario"]] <- scenario$id
+  d_list[[scenario$id]] <- d_sim
+}
+```
+
+We see that for the "multiple_changes" scenarios, we received two messages, at
+timestep 100 and 200, telling us that some parameters were changed during the
+simulation.
+
+The other scenarios were silent as the changes occurred before the simulation
+began.
+
+Now we merge and plot the results:
+
+```{r plotting, fig.width = 8}
+library(tidyr)
+library(ggplot2)
+theme_set(theme_light())
+
+d <- bind_rows(d_list)
+d <- d %>%
+  select(scenario, time, s.num, i.num) %>%
+  pivot_longer(c(s.num, i.num))
+
+ggplot(d, aes(x = time, y = value, col = name)) +
+  geom_line() +
+  geom_vline(xintercept = c(100, 200), col = "grey") +
+  facet_grid(rows = vars(scenario))
+```
+
+We can see that in the "initial_change" scenario, the epidemic is slower than
+in the base "scenario" as we have reduced the infection probability in the former.
+
+The "multiple_changes" scenario shows very strange but expected results:
+- at first the epidemic is very slow as the infection probability is very low
+  and the recovery rate is quite high.
+- then at step 100 we apply the same values as in the "base" scenario. Thus the
+  epidemic kicks off quickly
+- finally at step 200 we drastically reduce the infection probability and give
+  a 10 folds increase to the recovery rate, killing the epidemic.
+
+  These scenarios are very crude and only serve to demonstrate the scenario
+  system. A research paper using the idea of multiple changes was published in
+  the *Journal of Infectious Disease*. The code
+  [can be found here](https://github.com/EpiModel/SexualDistancing)
+
+### Working with vectors of parameters
+
+In real research project like the one above, we often have vectors of parameters
+like `hiv.test.rate` which is a length 3 vector of the weekly probabilities of
+being tested for HIV for Black, Hispanic or White MSM.
+
+For such parameters we can still use the `scenarios.df` approach. We just have
+to define a column for each element of the parameter in question and prepend it
+with "\_1", "\_2" and "\_3" as follows.
+
+```{r multi_param}
+scenarios.df <- tribble(
+  ~.scenario.id, ~.at, ~hiv.test.rate_1, ~hiv.test.rate_2, ~hiv.test.rate_3,
+  "base", 0, 0.001, 0.001, 0.001,
+  "initial_change", 0, 0.002, 0.002, 0.002,
+  "multiple_changes", 0, 0.002, 0.002, 0.002,
+  "multiple_changes", 100, 0.004, 0.004, 0.004,
+  "multiple_changes", 200, 0.008, 0.008, 0.008
+)
+knitr::kable(scenarios.df)
+```
+
+However, be aware that you have to setup the full parameter in the
+`scenarios.df`. You cannot pass only part of it like "hiv.test.rate_2" without
+the 1 and 3.
+
+When working with a lot of parameters, it is recommended to store the
+`scenarios.df` as CSV or excel file so they can be shared and reviewed by less
+R savvy researcher.
+
+## Random Parameter
 
 ### The Model
 
@@ -100,6 +259,7 @@ Here we kept the `inf.prob` parameter fixed at `0.3` and defined a `list` object
 Each element is named after the parameter it will fill and MUST BE a function taking no argument and outputting a vector of the right size for the parameter: size 1 for `act.rate` and `dummy.param`; size 2 for `dummy.strat.param`.
 
 The rest of the model is run as before, although we increase the simulation count to three to demonstrate the parameter stochasticity.
+
 ```{r generators_run}
 control <- control.net(type = "SI", nsims = 3, nsteps = 5, verbose = FALSE)
 mod <- netsim(est, param, init, control)
@@ -169,12 +329,12 @@ mod
 The output is similar to what we saw with the generator functions.
 
 
-## Time-Varying Parameters
+## (advanced) Time-Varying Parameters
 
-When doing modeling work, the researcher may want to simulate interventions or events that vary over time. In (our 2021  paper)[https://academic.oup.com/jid/article/223/6/1019/6122459], we simulated the effects of COVID-19–Related behavior change and clinical service
-interruption on HIV and STI incidence. These included simulations with systemic events with a beginning and an end. To work with these situations, EpiModel offers an optional module to programmatically handle parameter changes across time steps.
-
-This vignette assumes a basic understanding of EpiModel custom models. If the code does not make sense, please check the [EpiModel Tutorials](http://www.epimodel.org/tut.html).
+Under the hood, the *scenarios* described above uses the updater mechanism to
+make the parameters change at a given timestep. This section describes how these
+mechanisms function and how to use them directly if the scenarios are not flexible
+enough for your use cases.
 
 ### Parameter Updaters
 
@@ -197,7 +357,7 @@ change will happen during the 10th time step.
 As mentioned above, we usually want to define several changes at once. EpiModel accept a `list` of **updaters**.
 
 
-```{r updater-list}
+```{r updater-list, eval = FALSE}
 # Create a `list.of.updaters`
 list.of.updaters <- list(
   # this is one updater
@@ -227,21 +387,17 @@ list.of.updaters <- list(
 
 In this example, we define 2 **updaters**, one that occurs at time step 100 and the other one at time step 20. In practice, `inf.prob` and `act.rate` are set to `0.1` at the beginning by `param.net`, at time step 100 they are both updated to `0.3` and at time step 125 `act.rate` is reduced to `0.01`.
 
-### Enabling the `updater` Module
-
-This functionality is part of an optional module provided by `EpiModel`, `updater.net`. This module must then be enabled in `control.net`.
+### Enabling the updaters
 
 Below we set up a complete example with a closed population SI model using the parameters and **updaters** defined above. We then plot the size of the
 infected and susceptible population over time to see the effects of the **updaters**.
 
-```{r updater-module, fig.align = "center", fig.height = 4, fig.width = 6}
+```{r updater-module, fig.align = "center", fig.height = 4, fig.width = 6, eval = FALSE}
  control <- control.net(
-   type = NULL, # must be NULL as we use a custom module
+   type = "SI",
    nsims = 1,
    nsteps = 200,
-   verbose = FALSE,
-   updater.FUN = updater.net,
-   infection.FUN = infection.net
+   verbose = FALSE
  )
 
 nw <- network_initialize(n = 50)
@@ -262,17 +418,12 @@ plot(mod)
 
 This is the minimal example to simplify the demonstration of these time-varying parameters.
 
-**Important**: when enabling the `updater.net` module, the researcher must pay particular attention to the order the modules are run. It is recommended to have
-the `updater.net` module run first so the changes happen at the beginning of the time step.
-
-Some functionality of `updater.net` were not described above and are explained in `?EpiModel::updater.net`.
-
 #### Verbosity
 
 When creating an **updater**, one can add an optional `verbose` element to the `list`. If `TRUE`, `updater.net` will output a `message` describing what changes
 where performed when it occurs during the simulation.
 
-```{r updater-verbose, echo = FALSE}
+```{r updater-verbose, echo = FALSE, eval = FALSE}
 list(
   at = 10,
   param = list(
@@ -287,7 +438,7 @@ list(
 
 It is sometime useful to configure the changes with respect to the current value instead of a fixed new value. This is possible, as demonstrated below.
 
-```{r updater-function, echo = FALSE}
+```{r updater-function, echo = FALSE, eval = FALSE}
 list(
   at = 10,
   param = list(
@@ -303,12 +454,12 @@ This updater will set the value of `act.rate` to `0.5` as we saw earlier. But, f
 
 ## (Advanced) Time-Varying Control
 
-Similarly to time-varying parameters we can use time-varying controls. They work in the same way and use the same `updater` module. The two differences are:
+Similarly to time-varying parameters we can use time-varying controls. They work in the same way and only have two differences:
 
 1. each **updater** will have a `control` sub-list instead of a `param` sub-list
 2. the list of **updaters** goes into `control$control.updater.list`
 
-```{r control-updater-example, echo = FALSE}
+```{r control-updater-example, echo = FALSE, eval = FALSE}
 # Create a `list.of.updaters`
 list.of.updaters <- list(
   # this is one updater
@@ -329,13 +480,10 @@ list.of.updaters <- list(
 
  # The `list.of.updaters` goes into `control.net` under `control.updater.list`
  control <- control.net(
-   type = NULL, # must be NULL as we use a custom module
+   type = "SI",
    nsims = 1,
    nsteps = 200,
    verbose = TRUE,
-   resimulate.network = TRUE,
-   updater.FUN = updater.net,
-   infection.FUN = infection.net,
    control.updater.list = list.of.updaters
  )
 ```

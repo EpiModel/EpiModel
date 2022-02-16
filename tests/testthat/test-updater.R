@@ -64,7 +64,6 @@ test_that("netsim with param updater", {
     nsims = 1,
     nsteps = 50,
     verbose = FALSE,
-    updater.FUN = updater.net,
     infection.FUN = infection.net,
     control.updater.list = control.updater.list,
     resimulate.network = TRUE

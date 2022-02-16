@@ -26,7 +26,7 @@ update_list <- function(x, new.x) {
   return(x)
 }
 
-#' Module to modify the controls or parameters during the simulation
+#' Function to modify the controls or parameters during a simulation
 #'
 #' @param dat Master list object containing a \code{networkDynamic} object and
 #'        other initialization information passed from \code{\link{netsim}}.
@@ -34,10 +34,11 @@ update_list <- function(x, new.x) {
 #' @return The updated \code{dat} Master list object.
 #'
 #' @details
-#' If a list \code{param.updater.list} is present in the parameters, this module
+#' If a list \code{param.updater.list} is present in the parameters, this
+#' function
 #' will update the \code{param} list with new values at given timesteps.
 #' Similarily, if a list \code{control.updater.list} is present in the controls,
-#' this module will update the \code{param} list with new values at given
+#' this function will update the \code{param} list with new values at given
 #' timesteps.
 #' An updater is a list containing an \code{at} element governing when the
 #' changes will happen, an optional \code{verbose} Boolean controlling whether
@@ -100,14 +101,11 @@ update_list <- function(x, new.x) {
 #'   )
 #' )
 #'
-#' # Enable the module in control, and add `control.updater.list` to it
+#' Add the control updaters to the `control` object
 #'  control <- control.net(
-#'    type = NULL, # must be NULL as we use a custom module
 #'    nsims = 1,
 #'    nsteps = 20,
 #'    verbose = FALSE,
-#'    updater.FUN = updater.net,
-#'    infection.FUN = infection.net,
 #'    control.updater.list = control.updater.list
 #'  )
 #'
@@ -126,8 +124,9 @@ update_list <- function(x, new.x) {
 #'
 #' }
 #'
-#' @export
-updater.net <- function(dat) {
+#' @keywords internal
+#' @noRd
+input_updater <- function(dat) {
   for (type in c("param", "control")) {
     dat <- common_updater(dat, type)
   }

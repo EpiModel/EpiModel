@@ -250,7 +250,7 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
 #' @description Updates epidemic model parameters originally set with
 #'              \code{\link{param.net}} and adds new parameters.
 #'
-#' @param x Object of class \code{param.net}, output from function of same name.
+#' @param param Object of class \code{param.net}, output from function of same name.
 #' @param new.param.list Named list of new parameters to add to original
 #'        parameters.
 #'
@@ -263,9 +263,9 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
 #' but leaving all other parameters fixed).
 #'
 #' The \code{new.param.list} object should be a named list object that may
-#' named parameters matching those already in \code{x} (in which case those
+#' named parameters matching those already in \code{param} (in which case those
 #' original parameter values will be replaced) or not matching (in which case
-#' new parameters will be added to \code{x}).
+#' new parameters will be added to \code{param}).
 #'
 #' @return
 #' An updated list object of class \code{param.net}, which can be passed to
@@ -279,9 +279,9 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
 #'
 #' @export
 #'
-update_params <- function(x, new.param.list) {
+update_params <- function(param, new.param.list) {
 
-  if (!inherits(x, "param.net")) {
+  if (!inherits(param, "param.net")) {
     stop("x should be object of class param.net")
   }
   if (class(new.param.list) != "list") {
@@ -289,10 +289,10 @@ update_params <- function(x, new.param.list) {
   }
 
   for (ii in seq_along(new.param.list)) {
-    x[[names(new.param.list)[ii]]] <- new.param.list[[ii]]
+    param[[names(new.param.list)[ii]]] <- new.param.list[[ii]]
   }
 
-  return(x)
+  return(param)
 }
 
 
@@ -474,15 +474,7 @@ generate_random_params <- function(param, verbose = FALSE) {
 
     # Check the format of the names
     set.elements <- names(param_random_set)
-    correct_format <- grepl("^[a-zA-Z0-9.]*(_[0-9]+)?$", set.elements)
-    if (!all(correct_format)) {
-      stop("The following column names in `param_random_set` are malformed: \n",
-        paste0(set.elements[!correct_format], collapse = ", "), "\n\n",
-        "you can check the names with ",
-        '`grepl("^[a-zA-Z0-9.]*(_[0-9]+)?$", your.names)` \n',
-        "Example: 'unique.param', 'param.set_1', 'param.set_2'"
-      )
-    }
+    check_params_names(set.elements)
 
     # Construct a `data.frame` matching the names with the parameters
     set.elements <- names(param_random_set)
