@@ -21,8 +21,7 @@ get_partners(
 from. If \code{NULL}, extract from all networks.}
 
 \item{truncate}{After how many time steps a partnership that is no longer
-active should be removed from the output (default = Inf means
-no subsetting of output).}
+active should be removed from the output.}
 
 \item{only.active.nodes}{If \code{TRUE}, then inactive (e.g., deceased)
 partners will be removed from the output.}
