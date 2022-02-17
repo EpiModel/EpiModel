@@ -3,7 +3,7 @@
 #' @description This function simulates departure for use in \link{netsim}
 #'        simulations.
 #'
-#' @param dat Master list object containing a \code{networkDynamic} object and
+#' @param dat Main list object containing a \code{networkDynamic} object and
 #'        other initialization information passed from \code{\link{netsim}}.
 #' @param at Current time step.
 #'
@@ -95,7 +95,7 @@ departures.net <- function(dat, at) {
 #' @description This function simulates new arrivals into the network
 #'   for use in \code{\link{netsim}} simulations.
 #'
-#' @param dat Master list object containing a \code{networkDynamic} object and
+#' @param dat Main list object containing a \code{networkDynamic} object and
 #'   other initialization information passed from \code{\link{netsim}}.
 #' @param at Current time step.
 #'
@@ -140,7 +140,7 @@ arrivals.net <- function(dat, at) {
 #' @description This function simulates departure for use in \link{netsim}
 #'        simulations.
 #'
-#' @param dat Master list object containing a \code{networkDynamic} object and
+#' @param dat Main list object containing a \code{networkDynamic} object and
 #'        other initialization information passed from \code{\link{netsim}}.
 #' @param at Current time step.
 #'
@@ -249,7 +249,7 @@ departures.2g.net <- function(dat, at) {
 #' @description This function simulates new arrivals into the network
 #'   for use in \code{\link{netsim}} simulations.
 #'
-#' @param dat Master list object containing a \code{networkDynamic} object and
+#' @param dat Main list object containing a \code{networkDynamic} object and
 #'   other initialization information passed from \code{\link{netsim}}.
 #' @param at Current time step.
 #'
