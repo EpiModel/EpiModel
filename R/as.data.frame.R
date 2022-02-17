@@ -281,7 +281,7 @@ as.data.frame.netsim <- function(x, row.names = NULL, optional = FALSE,
 
 }
 
-#' @title Extract Timed Edgelists netdx Objects
+#' @title Extract Timed Edgelists for netdx Objects
 #'
 #' @description This function extracts timed edgelists for objects of class
 #'              \code{netdx} into a data frame using the generic
