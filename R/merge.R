@@ -89,7 +89,7 @@ merge.icm <- function(x, y, ...) {
 }
 
 
-#' @title Merge Model Simulations Across netsim Objects
+#' @title Merge Model Simulations across netsim Objects
 #'
 #' @description Merges epidemiological data from two independent simulations of
 #'              stochastic network models from \code{netsim}.
@@ -201,7 +201,7 @@ merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
   new.range <- (x$control$nsims + 1):(x$control$nsims + y$control$nsims)
 
   # Merge epi data
-  for (i in 1:length(x$epi)) {
+  for (i in seq_along(x$epi)) {
     z$epi[[i]] <- cbind(x$epi[[i]], y$epi[[i]])
     names(z$epi[[i]])[new.range] <- paste0("sim", new.range)
   }
@@ -258,13 +258,13 @@ merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
       if (!identical(other.x, other.y)) {
         stop("Elements in save.other differ between x and y", call. = FALSE)
       }
-      for (j in 1:length(other.x)) {
+      for (j in seq_along(other.x)) {
         for (i in new.range) {
           z[[other.x[j]]][[i]] <- y[[other.x[j]]][[i - x$control$nsims]]
         }
       }
     } else {
-      for (j in 1:length(other.x)) {
+      for (j in seq_along(other.x)) {
         z[[other.x[j]]] <- NULL
       }
     }
