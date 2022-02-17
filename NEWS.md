@@ -1,3 +1,23 @@
+## EpiModel 2.3.0
+
+### NEW FEATURES
+
+-   Network models can now use predefined scenarios with the `use_scenario`
+ function. See the vignette, "Working with model parameters."
+
+### BUG FIXES
+
+
+### OTHER
+
+-   The `updater.net` module was removed as an optional module but it's
+functionalities are now the default behavior for all network models (built-in
+and custom).
+- the parameters `param.updater.list` and `control.updater.list` in `param.net`
+and `control.net` respectively were renamed `.param.updater.list` and
+`.control.updater.list`. The leading dot indicate that these are built-in
+EpiModel elements not to be confused with the user-defined ones.
+
 ## EpiModel 2.2.1
 
 ### NEW FEATURES
