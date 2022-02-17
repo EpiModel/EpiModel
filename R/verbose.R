@@ -5,7 +5,7 @@
 #'              models simulated with \code{dcm} to the console.
 #'
 #' @param x If the \code{type} is "startup", then an object of class
-#'        \code{control.icm}, otherwise the all master data object in \code{icm}
+#'        \code{control.icm}, otherwise the all main data object in \code{icm}
 #'        simulations.
 #' @param type Progress type, either of "startup" for starting messages before
 #'        all simulations, or "progress" for time step specific messages.
@@ -36,8 +36,8 @@ verbose.dcm <- function(x, type, s = 1) {
 #'              models simulated with \code{icm} to the console.
 #'
 #' @param x If the \code{type} is "startup", then an object of class
-#'        \code{control.icm}, otherwise the all master data object in \code{icm}
-#'        simulations.
+#'        \code{control.icm}; otherwise \code{dat}, the main data object in
+#'        \code{icm} simulations.
 #' @param type Progress type, either of "startup" for starting messages before
 #'        all simulations, or "progress" for time step specific messages.
 #' @param s Current simulation number, if type is "progress".
@@ -85,12 +85,12 @@ verbose.icm <- function(x, type, s = 1, at = 2) {
 #'              simulated with \code{netsim} to the console.
 #'
 #' @param x If the \code{type} is "startup", then an object of class
-#'        \code{control.net}, otherwise the all master data object in
+#'        \code{control.net}; otherwise \code{dat}, the main data object in
 #'        \code{netsim} simulations.
 #' @param type Progress type, either of "startup" for starting messages before
 #'        all simulations, or "progress" for time step specific messages.
-#' @param s Current simulation number, if type is "progress"
-#' @param at Current time step, if type is "progress"
+#' @param s Current simulation number, if type is "progress".
+#' @param at Current time step, if type is "progress".
 #'
 #' @export
 #' @keywords internal
