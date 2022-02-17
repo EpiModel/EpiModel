@@ -34,10 +34,10 @@ update_list <- function(x, new.x) {
 #' @return The updated \code{dat} Master list object.
 #'
 #' @details
-#' If a list \code{param.updater.list} is present in the parameters, this
+#' If a list \code{.param.updater.list} is present in the parameters, this
 #' function
 #' will update the \code{param} list with new values at given timesteps.
-#' Similarily, if a list \code{control.updater.list} is present in the controls,
+#' Similarily, if a list \code{.control.updater.list} is present in the controls,
 #' this function will update the \code{param} list with new values at given
 #' timesteps.
 #' An updater is a list containing an \code{at} element governing when the
@@ -51,8 +51,8 @@ update_list <- function(x, new.x) {
 #' @examples
 #' \dontrun{
 #'
-#' # Create the param.updater.list
-#' param.updater.list <- list(
+#' # Create the .param.updater.list
+#' .param.updater.list <- list(
 #'   # this is one updater
 #'   list(
 #'     at = 10,
@@ -78,10 +78,10 @@ update_list <- function(x, new.x) {
 #'    act.rate = 0.5,
 #'    hiv.test.rate = rep(0.256, 3),
 #'    trans.scale = c(1, 2, 3),
-#'    param.updater.list = param.updater.list
+#'    .param.updater.list = param.updater.list
 #'  )
 #'
-#' # Create the control.updater.list
+#' # Create the .control.updater.list
 #' # these updaters will toggle on and off the verbosity of the model
 #' control.updater.list <- list(
 #'   list(
@@ -106,7 +106,7 @@ update_list <- function(x, new.x) {
 #'    nsims = 1,
 #'    nsteps = 20,
 #'    verbose = FALSE,
-#'    control.updater.list = control.updater.list
+#'    .control.updater.list = control.updater.list
 #'  )
 #'
 #' nw <- network_initialize(n = 50)
@@ -149,13 +149,13 @@ common_updater <- function(dat, type) {
     type.label <- "parameters"
     type.set <- set_param
     type.get_list <- get_param_list
-    updaters.label <- "param.updater.list"
+    updaters.label <- ".param.updater.list"
     updaters <- get_param(dat, updaters.label, override.null.error = TRUE)
   } else if (type == "control") {
     type.label <- "controls"
     type.set <- set_control
     type.get_list <- get_control_list
-    updaters.label <- "control.updater.list"
+    updaters.label <- ".control.updater.list"
     updaters <- get_control(dat, updaters.label, override.null.error = TRUE)
   } else {
     stop("`type` must be either 'param' or 'control'")

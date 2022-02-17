@@ -44,7 +44,7 @@ make_scenarios_list <- function(scenarios.df) {
 
 #' a scenario is a list with the following elements:
 #'   - `id`: the identifier of the scenario
-#'   - `param.updater.list`: as in the updater module
+#'   - `.param.updater.list`: as in the updater module
 #'
 #' when running "use_scenario", if any updater has an `at` value < 2, it is
 #' applied immediatly (so before netsim)
@@ -53,7 +53,7 @@ make_scenarios_list <- function(scenarios.df) {
 make_scenario <- function(scenario.rows) {
   scenario <- list(
     id = scenario.rows[[".scenario.id"]][1],
-    param.updater.list = vector(mode = "list", length = nrow(scenario.rows))
+    .param.updater.list = vector(mode = "list", length = nrow(scenario.rows))
   )
 
   elements.at <- scenario.rows[[".at"]]
@@ -61,7 +61,7 @@ make_scenario <- function(scenario.rows) {
   scenario.rows <- dplyr::select(scenario.rows, - c(".at", ".scenario.id"))
 
   for (i in seq_along(elements.at)) {
-    scenario[["param.updater.list"]][[i]] <- list(
+    scenario[[".param.updater.list"]][[i]] <- list(
       at = elements.at[[i]],
       param = unflatten_params(scenario.rows[i, ])
     )
@@ -78,7 +78,7 @@ make_scenario <- function(scenario.rows) {
 #'
 #' @section scenario:
 #' A scenario is a list containing an "id" field, the name of the scenario and
-#' a "param.updater.list" containing a list of updaters that modifies the
+#' a ".param.updater.list" containing a list of updaters that modifies the
 #' parameters of the model at given time steps. See the vignette
 #' "model-parameters" for the technical detail of their implementation.
 #'
@@ -88,7 +88,7 @@ make_scenario <- function(scenario.rows) {
 #' @export
 use_scenario <- function(param, scenario) {
   elements.at <- vapply(
-    scenario[["param.updater.list"]],
+    scenario[[".param.updater.list"]],
     function(element) element[["at"]],
     numeric(1)
   )
@@ -96,12 +96,12 @@ use_scenario <- function(param, scenario) {
   for (i in which(elements.at < 2)) {
     param <- update_params(
       param,
-      scenario[["param.updater.list"]][[i]][["param"]])
+      scenario[[".param.updater.list"]][[i]][["param"]])
   }
 
-  param[["param.updater.list"]] <- c(
-    param[["param.updater.list"]],
-    scenario[["param.updater.list"]][elements.at >= 2]
+  param[[".param.updater.list"]] <- c(
+    param[[".param.updater.list"]],
+    scenario[[".param.updater.list"]][elements.at >= 2]
   )
 
   param[[".scenario.id"]] <- scenario[["id"]]
@@ -125,16 +125,6 @@ check_scenarios_df <- function(scenarios.df) {
       "and a '.at' column containing integers."
     )
   }
-}
-
-make_scenarios_df <- function(scenarios.list) {
-  scenarios.rows <- lapply(scenarios.list, flatten_params)
-  scenarios.df <- dplyr::bind_rows(scenarios.rows)
-  scenarios.df <- dplyr::mutate(
-    scenarios.df,
-    ".scenario.id" = names(scenarios.list)
-  )
-  dplyr::select(scenarios.df, .scenario.id, dplyr::everything())
 }
 
 #' helper function to make a ragged param list into a flat one
@@ -165,9 +155,7 @@ flatten_params <- function(params) {
 #' list the "special parameters" from a param list. They include some EpiModel
 #' internals as well as all parameters starting with "."
 #' @noRd
-list_special_params <- function(params) {
-  builtin.special.params <- c(
-    "param.updater.list",
+list_special_params <- function(params) { builtin.special.params <- c(
     "random.params",
     "random.params.values"
   )

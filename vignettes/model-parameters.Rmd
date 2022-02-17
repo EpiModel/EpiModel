@@ -377,11 +377,11 @@ list.of.updaters <- list(
   )
 )
 
- # The `list.of.updaters` goes into `param.net` under `param.updater.list`
+ # The `list.of.updaters` goes into `param.net` under `.param.updater.list`
  param <- param.net(
    inf.prob = 0.1,
    act.rate = 0.1,
-   param.updater.list = list.of.updaters
+   .param.updater.list = list.of.updaters
  )
 ```
 
@@ -457,7 +457,7 @@ This updater will set the value of `act.rate` to `0.5` as we saw earlier. But, f
 Similarly to time-varying parameters we can use time-varying controls. They work in the same way and only have two differences:
 
 1. each **updater** will have a `control` sub-list instead of a `param` sub-list
-2. the list of **updaters** goes into `control$control.updater.list`
+2. the list of **updaters** goes into `control$.control.updater.list`
 
 ```{r control-updater-example, echo = FALSE, eval = FALSE}
 # Create a `list.of.updaters`
@@ -478,13 +478,13 @@ list.of.updaters <- list(
   )
 )
 
- # The `list.of.updaters` goes into `control.net` under `control.updater.list`
+ # The `list.of.updaters` goes into `control.net` under `.control.updater.list`
  control <- control.net(
    type = "SI",
    nsims = 1,
    nsteps = 200,
    verbose = TRUE,
-   control.updater.list = list.of.updaters
+   .control.updater.list = list.of.updaters
  )
 ```
 
