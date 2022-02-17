@@ -2,7 +2,7 @@
 title: "Working With Custom Attributes and Summary Statistics"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{attributes-and-summary-statistics}
+  %\VignetteIndexEntry{Working With Custom Attributes and Summary Statistics}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

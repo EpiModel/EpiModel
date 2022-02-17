@@ -2,7 +2,7 @@
 title: "Working With Network Objects"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{network-objects}
+  %\VignetteIndexEntry{Working with Network Objects}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -103,8 +103,8 @@ partner_list <- get_partners(
     dat,
     index_posit_ids,
     networks = NULL,
-    max.age = Inf,
-    only.active = FALSE
+    truncate = Inf,
+    only.active.nodes = FALSE
 )
 ```
 
@@ -113,8 +113,8 @@ Here we call "indexes" the nodes whose partners (contacts) we want to extract. T
 1. `dat`: as in `get_cumulative_edgelists_df`.
 2. `index_posit_ids`: a list of positional Ids for the indexes of interest.
 3. `networks`: as in `get_cumulative_edgelists_df`.
-4. `max.age`: similar to the `truncate` argument to `update_cumulative_edgelist` this argument filter out partnerships over this age.
-5. `only.active`: if set to `TRUE`, partnership with inactive nodes are removed.
+4. `truncate`: similar to the `truncate` argument to `update_cumulative_edgelist` this argument filter out partnerships over this age.
+5. `only.active.nodes`: if set to `TRUE`, partnership with inactive nodes are removed.
 
 The output is similar to `get_cumulative_edgelists_df` but the first two columns are called `index` and `partner` and contains the Unique Ids of the indexes given in argument in the first column and there partners in the second one.
 

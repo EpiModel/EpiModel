@@ -488,7 +488,8 @@ print.control.net <- function(x, ...) {
     funToPrint <- x$module.order
   } else {
     funToPrint <- names(x)[grep(".FUN", names(x))]
-    funToPrint <- funToPrint[!funToPrint %in% c("initialize.FUN", "verbose.FUN")]
+    funToPrint <- funToPrint[!funToPrint %in% c("initialize.FUN",
+                                                "verbose.FUN")]
   }
 
   cat("Dynamic Modules:", funToPrint)
