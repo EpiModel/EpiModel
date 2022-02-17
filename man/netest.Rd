@@ -49,7 +49,7 @@ details).}
 \item{set.control.stergm}{Control arguments passed to \code{simulate.stergm}
 (see details).}
 
-\item{verbose}{Print model fitting progress to console.}
+\item{verbose}{If \code{TRUE}, print model fitting progress to console.}
 
 \item{nested.edapprox}{Logical. If \code{edapprox} is \code{TRUE}, is the
 dissolution model an initial segment of the formation model? This
@@ -58,7 +58,7 @@ relevant values from the initial formation model coefficients, or by
 appending the dissolution terms to the formation model and appending
 the relevant values to the vector of formation model coefficients.}
 
-\item{...}{additional arguments passed to other functions}
+\item{...}{Additional arguments passed to other functions.}
 }
 \description{
 Estimates statistical network models using the exponential

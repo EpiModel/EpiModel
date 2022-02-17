@@ -2,12 +2,12 @@
 % Please edit documentation in R/net.utils.R
 \name{auto_update_attr}
 \alias{auto_update_attr}
-\title{Updates Vertex Attributes for Incoming Vertices}
+\title{Update Vertex Attributes for Incoming Vertices}
 \usage{
 auto_update_attr(dat, newNodes, curr.tab)
 }
 \arguments{
-\item{dat}{Master object in \code{netsim} simulations.}
+\item{dat}{Main data object passed through \code{netsim} simulations.}
 
 \item{newNodes}{Vector of nodal IDs for incoming nodes at the current time
 step.}

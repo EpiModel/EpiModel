@@ -9,7 +9,7 @@ sim_nets_t1(x, dat, nsteps)
 \arguments{
 \item{x}{An \code{EpiModel} object of class \code{\link{netest}}.}
 
-\item{dat}{A master object passed through \code{\link{netsim}}.}
+\item{dat}{Main data object passed through \code{netsim} simulations.}
 
 \item{nsteps}{For TERGMs, the number of time steps to simulate the network
 over; for ERGMs, the number of independent network panels to simulate.}

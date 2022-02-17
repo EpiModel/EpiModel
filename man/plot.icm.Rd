@@ -43,11 +43,11 @@ to plot lines for one-group models but not for two-group models.}
 
 \item{sims}{If \code{type="epi"} or \code{"formation"}, a vector of
 simulation numbers to plot. If \code{type="network"}, a single
-simulation number for network plot, or else \code{"min"} to plot the
-simulation number with the lowest disease prevalence, \code{"max"} for
-the simulation with the highest disease prevalence, or \code{"mean"}
-for the simulation with the prevalence closest to the mean across
-simulations at the specified time step.}
+simulation number for which to plot the network, or else \code{"min"}
+to plot the simulation number with the lowest disease prevalence,
+\code{"max"} for the simulation with the highest disease prevalence,
+or \code{"mean"} for the simulation with the prevalence closest to the
+mean across simulations at the specified time step.}
 
 \item{sim.col}{Vector of any standard R color format for simulation lines.}
 
@@ -82,7 +82,7 @@ transparent and 1 = opaque (see \code{adjustcolor} function).}
 \item{leg.cex}{Legend scale size.}
 
 \item{axs}{Plot axis type (see \code{\link{par}} for details), with default
-to \code{"r"}.}
+of \code{"r"}.}
 
 \item{grid}{If \code{TRUE}, a grid is added to the background of plot
 (see \code{\link{grid}} for details), with default of nx by ny.}
@@ -90,7 +90,7 @@ to \code{"r"}.}
 \item{add}{If \code{TRUE}, new plot window is not called and lines are added
 to existing plot window.}
 
-\item{...}{additional arguments to pass.}
+\item{...}{Additional arguments to pass.}
 }
 \description{
 Plots epidemiological data from a stochastic individual contact

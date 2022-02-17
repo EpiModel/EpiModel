@@ -2,12 +2,12 @@
 % Please edit documentation in R/plot.R
 \name{geom_bands}
 \alias{geom_bands}
-\title{ggplot2 geom for Quantile Bands}
+\title{ggplot2 Geom for Quantile Bands}
 \usage{
 geom_bands(mapping, lower = 0.25, upper = 0.75, alpha = 0.25, ...)
 }
 \arguments{
-\item{mapping}{standard aesthetic mapping \code{aes()} input for ggplot2.}
+\item{mapping}{Standard aesthetic mapping \code{aes()} input for ggplot2.}
 
 \item{lower}{Lower quantile for the time series.}
 

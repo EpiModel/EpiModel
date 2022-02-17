@@ -19,8 +19,9 @@ set_vertex_attribute(x, attrname, value, v)
 Returns an object of class \code{network}.
 }
 \description{
-Set a vertex attribute on an object of class \code{network},
-             wrapping the related function in the \code{network} package.
+Sets a vertex attribute on an object of class \code{network}.
+             This function simplifies the related function in the
+             \code{network} package.
 }
 \details{
 This function is used in \code{EpiModel} workflows to set vertex attributes

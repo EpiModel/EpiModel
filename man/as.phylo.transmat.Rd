@@ -2,7 +2,7 @@
 % Please edit documentation in R/dendo.R
 \name{as.phylo.transmat}
 \alias{as.phylo.transmat}
-\title{Convert transmat infection tree into a phylo object}
+\title{Convert transmat Infection Tree into a phylo Object}
 \usage{
 \method{as.phylo}{transmat}(x, collapse.singles, vertex.exit.times, ...)
 }
@@ -10,15 +10,15 @@
 \item{x}{An object of class \code{"transmat"}, the output from
 \code{\link{get_transmat}}.}
 
-\item{collapse.singles}{logical, DEPRECATED}
+\item{collapse.singles}{Logical, DEPRECATED.}
 
-\item{vertex.exit.times}{optional numeric vector providing the time of
+\item{vertex.exit.times}{Optional numeric vector providing the time of
 departure of vertices, to be used to scale the lengths of branches
 reaching to the tips. Index position on vector corresponds to network
 id. NA indicates no departure, so branch will extend to the end of the
 tree.}
 
-\item{...}{further arguments (unused)}
+\item{...}{Further arguments (unused).}
 }
 \description{
 Converts the edgelist matrix in the \code{transmat} object into

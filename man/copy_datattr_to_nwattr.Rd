@@ -2,16 +2,16 @@
 % Please edit documentation in R/net.utils.R
 \name{copy_datattr_to_nwattr}
 \alias{copy_datattr_to_nwattr}
-\title{Copies Vertex Attributes from the dat List to the Network Object}
+\title{Copy Vertex Attributes from the \code{dat} List to the Network Object}
 \usage{
 copy_datattr_to_nwattr(dat)
 }
 \arguments{
-\item{dat}{Master data object passed through \code{netsim} simulations.}
+\item{dat}{Main data object passed through \code{netsim} simulations.}
 }
 \description{
-Copies the vertex attributes stored on the master attr list on
-             dat to the network object on dat.
+Copies the vertex attributes stored on the main \code{attr} list
+             on \code{dat} to the network object on \code{dat}.
 }
 \seealso{
 \code{\link{get_formula_term_attr}}, \code{\link{get_attr_prop}},

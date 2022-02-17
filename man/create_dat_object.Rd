@@ -2,7 +2,7 @@
 % Please edit documentation in R/net.helpers.R
 \name{create_dat_object}
 \alias{create_dat_object}
-\title{Create a Minimal Master List Object of Network Model}
+\title{Create a Minimal Main List Object for a Network Model}
 \usage{
 create_dat_object(param = list(), init = list(), control = list())
 }
@@ -14,11 +14,11 @@ create_dat_object(param = list(), init = list(), control = list())
 \item{control}{An \code{EpiModel} object of class \code{\link{control.net}}.}
 }
 \value{
-A \code{dat} Master list object
+A \code{dat} main list object.
 }
 \description{
-This helper function populate a \code{dat} Master List object
+This helper function populates a \code{dat} main list object
              with the minimal required elements. All parameters are optional.
-             When none is given the resulting object is only a shell list
+             When none are given the resulting object is only a shell list
              with the different named elements defined as empty lists.
 }

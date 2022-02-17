@@ -2,14 +2,14 @@
 % Please edit documentation in R/net.utils.R
 \name{get_formula_term_attr}
 \alias{get_formula_term_attr}
-\title{Outputs ERGM Formula Attributes into a Character Vector}
+\title{Output ERGM Formula Attributes into a Character Vector}
 \usage{
 get_formula_term_attr(form, nw)
 }
 \arguments{
-\item{form}{an ergm model formula}
+\item{form}{An ERGM model formula.}
 
-\item{nw}{a network object}
+\item{nw}{A network object.}
 }
 \description{
 Given a formation formula for a network model, outputs it into

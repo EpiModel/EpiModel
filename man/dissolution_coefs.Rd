@@ -14,7 +14,7 @@ dissolution models.}
 \item{duration}{A vector of mean edge durations in arbitrary time units.}
 
 \item{d.rate}{Departure or exit rate from the population, as a single
-homogenous rate that applies to the entire population.}
+homogeneous rate that applies to the entire population.}
 }
 \value{
 A list of class \code{disscoef} with the following elements:
@@ -41,13 +41,12 @@ Calculates dissolution coefficients, given a dissolution model
 This function performs two calculations for dissolution coefficients
 used in a network model estimated with \code{\link{netest}}:
 \enumerate{
- \item \strong{Transformation:} the mean duration of edges in a network are
+ \item \strong{Transformation:} the mean durations of edges in a network are
        mathematically transformed to logit coefficients.
  \item \strong{Adjustment:} in a dynamic network simulation in an open
        population (in which there are departures), it is further necessary to
-       adjust these coefficients for dynamic simulations; this upward
-       adjustment accounts for departure as a competing risk to edge
-       dissolution.
+       adjust these coefficients; this upward adjustment accounts for
+       departure as a competing risk to edge dissolution.
 }
 
 The current dissolution models supported by this function and in network

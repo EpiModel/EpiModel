@@ -24,7 +24,7 @@
 \alias{add_init}
 \alias{set_init}
 \alias{append_core_attr}
-\title{Functions to Access and Edit the Master List Object in Network Models}
+\title{Functions to Access and Edit the Main List Object in Network Models}
 \usage{
 get_attr_list(dat, item = NULL)
 
@@ -71,53 +71,60 @@ set_init(dat, item, value)
 append_core_attr(dat, at, n.new)
 }
 \arguments{
-\item{dat}{a Master list object of network models}
+\item{dat}{Main data object passed through \code{netsim} simulations.}
 
-\item{item}{a character vector conaining the name of the element to access.
-Can be of length > 1 for \code{get_*_list} functions}
+\item{item}{A character vector containing the name of the element to access
+(for \code{get_} functions), create (for \code{add_} functions), or
+edit (for \code{set_} and \code{append_} functions). Can be of length
+> 1 for \code{get_*_list} functions.}
 
-\item{posit_ids}{for \code{get_epi} and \code{get_attr}, a numeric vector of
-posit_ids or a logical vector to subset the desired \code{item}}
+\item{posit_ids}{For \code{set_attr} and \code{get_attr}, a numeric vector of
+posit_ids or a logical vector to subset the desired \code{item}.}
 
-\item{override.null.error}{if TRUE, \code{get_} return NULL if the
+\item{override.null.error}{If TRUE, \code{get_} will return NULL if the
 \code{item} does not exist instead of throwing an error.
-(default = FALSE)}
+(default = FALSE).}
 
-\item{value}{new value to be attributed in the \code{set_} and \code{append_}
-functions}
+\item{value}{New value to be attributed in the \code{set_} and \code{append_}
+functions.}
 
-\item{override.length.check}{if TRUE, \code{set_attr} allows the modification
-of the \code{item} size. (default = FALSE)}
+\item{override.length.check}{If TRUE, \code{set_attr} allows the modification
+of the \code{item} size. (default = FALSE).}
 
-\item{n.new}{the number of new nodes to initiate with core attributes}
+\item{n.new}{For \code{append_core_attr}, the number of new nodes to initiate
+with core attributes; for \code{append_attr}, the number of new
+elements to append at the end of \code{item}.}
 
-\item{at}{current time step}
+\item{at}{For \code{get_epi}, the timestep at which to access the specified
+\code{item}; for \code{set_epi}, the timestep at which to add the new
+value for the epi output \code{item}; for \code{append_core_attr}, the
+current time step.}
 }
 \value{
-a vector or a list of
-vector for \code{get_} functions. And the Master list object for \code{set_}
-and \code{add_} functions
+A vector or a list of vectors for \code{get_} functions; the main
+        list object for \code{set_}, \code{append_}, and \code{add_}
+        functions.
 }
 \description{
-These \code{get_}, \code{set_}, \code{append_} and \code{add}
+These \code{get_}, \code{set_}, \code{append_}, and \code{add_}
              functions allow a safe and efficient way to retrieve and mutate
-             the Master list object of network models (\code{dat}).
+             the main list object of network models, (\code{dat}).
 }
 \section{Core Attribute}{
 
-The \code{append_core_attr} function initialize the attributes necessary for
+The \code{append_core_attr} function initializes the attributes necessary for
 EpiModel to work (the four core attributes are: "active", "unique_id",
 "entrTime", and "exitTime"). These attributes are used in the initialization
 phase of the simulation, to create the nodes (see
 \code{initialize.net}); and also used when adding nodes during the
-simulation (see \code{arrival.net})
+simulation (see \code{arrival.net}).
 }
 
 \section{Mutability}{
 
-The \code{set_}, \code{append_} and \code{add_} functions DO NOT modify the
-dat object in place. The result must be assigned back to \code{dat} in order
-to be registered \code{dat <- set_*(dat, item, value)}
+The \code{set_}, \code{append_}, and \code{add_} functions DO NOT modify the
+\code{dat} object in place. The result must be assigned back to \code{dat} in
+order to be registered: \code{dat <- set_*(dat, item, value)}.
 }
 
 \section{\code{set_} and \code{append_} vs \code{add_}}{

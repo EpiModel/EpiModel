@@ -53,7 +53,7 @@ step, with the default function of \code{\link{prevalence.icm}}.}
 
 \item{verbose.int}{Time step interval for printing progress to console, where
 0 (the default) prints completion status of entire simulation and
-positive integer \code{x} prints progress after each \code{x} time
+positive integer \code{x} prints progress after every \code{x} time
 steps.}
 
 \item{skip.check}{If \code{TRUE}, skips the default error checking for the

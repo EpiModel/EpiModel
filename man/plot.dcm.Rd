@@ -78,7 +78,7 @@ parameter, and in multiple run models the specific run may also be specified.
 }
 \section{The \code{popfrac} Argument}{
 
-Compartment prevalence are the size of a compartment over some denominator.
+Compartment prevalence is the size of a compartment over some denominator.
 To plot the raw numbers from any compartment, use \code{popfrac=FALSE}; this
 is the default. The \code{popfrac} parameter calculates
 and plots the denominators of all specified compartments using these rules:

@@ -2,27 +2,27 @@
 % Please edit documentation in R/dendo.R
 \name{plot.transmat}
 \alias{plot.transmat}
-\title{Plot transmat infection tree in one of several styles}
+\title{Plot transmat Infection Tree in One of Several Styles}
 \usage{
 \method{plot}{transmat}(x, style = c("phylo", "network"), ...)
 }
 \arguments{
-\item{x}{A \code{\link{transmat}} object to be plotted}
+\item{x}{A \code{\link{transmat}} object to be plotted.}
 
 \item{style}{Character name of plot style. One of "phylo" or "network".}
 
 \item{...}{Additional plot arguments to be passed to lower-level plot
-functions (plot.network, plot.phylo, etc)}
+functions (plot.network, plot.phylo, etc).}
 }
 \description{
 Plots the infection tree described in a \code{\link{transmat}}
-             object in one of several styles: phylogenetic tree, an un-rooted
-             network or a hierarchical tree.
+             object in one of two styles: a phylogenetic tree or an
+             un-rooted network.
 }
 \details{
 The phylo plot requires the \code{ape} package. The options are
 wrappers to other plot calls with some appropriate preset arguments.
 }
 \seealso{
-\code{\link{plot.network}},\code{\link[ape]{plot.phylo}}
+\code{\link{plot.network}}, \code{\link[ape]{plot.phylo}}
 }

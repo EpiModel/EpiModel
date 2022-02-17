@@ -7,7 +7,7 @@
 edges_correct(dat, at)
 }
 \arguments{
-\item{dat}{Master object in \code{netsim} simulations.}
+\item{dat}{Main data object passed through \code{netsim} simulations.}
 
 \item{at}{Current time step.}
 }

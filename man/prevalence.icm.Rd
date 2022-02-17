@@ -7,7 +7,7 @@
 prevalence.icm(dat, at)
 }
 \arguments{
-\item{dat}{Master data list object.}
+\item{dat}{Main data object passed through \code{icm} simulations.}
 
 \item{at}{Current time step.}
 }

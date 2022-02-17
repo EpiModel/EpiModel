@@ -2,7 +2,7 @@
 % Please edit documentation in R/merge.R
 \name{merge.netsim}
 \alias{merge.netsim}
-\title{Merge Model Simulations Across netsim Objects}
+\title{Merge Model Simulations across netsim Objects}
 \usage{
 \method{merge}{netsim}(
   x,

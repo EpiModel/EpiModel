@@ -38,7 +38,7 @@ for other options).}
 \item{dede}{If \code{TRUE}, use the delayed differential equation solver,
 which allows for time-lagged variables.}
 
-\item{new.mod}{If not running an base model type, a function with a new
+\item{new.mod}{If not running a base model type, a function with a new
 model to be simulated (see details).}
 
 \item{sens.param}{If \code{TRUE}, evaluate arguments in parameters with

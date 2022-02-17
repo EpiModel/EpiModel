@@ -47,11 +47,11 @@ step.}
 
 \item{sims}{If \code{type="epi"} or \code{"formation"}, a vector of
 simulation numbers to plot. If \code{type="network"}, a single
-simulation number for network plot, or else \code{"min"} to plot the
-simulation number with the lowest disease prevalence, \code{"max"} for
-the simulation with the highest disease prevalence, or \code{"mean"}
-for the simulation with the prevalence closest to the mean across
-simulations at the specified time step.}
+simulation number for which to plot the network, or else \code{"min"}
+to plot the simulation number with the lowest disease prevalence,
+\code{"max"} for the simulation with the highest disease prevalence,
+or \code{"mean"} for the simulation with the prevalence closest to the
+mean across simulations at the specified time step.}
 
 \item{stats}{Network statistics to plot, among those specified in the call
 to \code{\link{netdx}}, with the default to plot all statistics
@@ -109,7 +109,7 @@ target statistics in one plot, versus one plot per target statistic if
 \item{grid}{If \code{TRUE}, a grid is added to the background of plot
 (see \code{\link{grid}} for details), with default of nx by ny.}
 
-\item{...}{additional arguments to pass.}
+\item{...}{Additional arguments to pass.}
 }
 \description{
 Plots dynamic network model diagnostics calculated in

@@ -18,7 +18,7 @@ initialize.net(x, param, init, control, s)
 \item{s}{Simulation number, used for restarting dependent simulations.}
 }
 \description{
-This function initializes the master \code{dat} object on which
+This function initializes the main \code{dat} object on which
              data are stored, simulates the initial state of the network, and
              simulates disease status and other attributes.
 }

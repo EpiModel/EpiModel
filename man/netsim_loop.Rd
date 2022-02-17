@@ -2,7 +2,7 @@
 % Please edit documentation in R/netsim.R
 \name{netsim_loop}
 \alias{netsim_loop}
-\title{Internal function running the network simulation loop}
+\title{Internal Function Running the Network Simulation Loop}
 \usage{
 netsim_loop(x, param, init, control, s)
 }
@@ -18,8 +18,8 @@ netsim_loop(x, param, init, control, s)
 \item{s}{Simulation number, used for restarting dependent simulations.}
 }
 \description{
-This function run the initialization and simulation loop for one
-             simulation. Error, warning and messages are pretty printed using
-             the `netsim_cond_msg` (utils.R)
+This function runs the initialization and simulation loop for
+             one simulation. Errors, warnings, and messages are pretty
+             printed using the \code{netsim_cond_msg} function (utils.R)
 }
 \keyword{internal}

@@ -7,13 +7,13 @@
 is_active_posit_ids(dat, posit_ids)
 }
 \arguments{
-\item{dat}{a Master list object of network models}
+\item{dat}{Main data object passed through \code{netsim} simulations.}
 
-\item{posit_ids}{a vector of node positional identifiers}
+\item{posit_ids}{A vector of node positional identifiers.}
 }
 \value{
-a logical vector with TRUE if the node is still active and FALSE
-otherwise
+A logical vector with TRUE if the node is still active and FALSE
+otherwise.
 }
 \description{
 Are These Nodes Active (Positional IDs)

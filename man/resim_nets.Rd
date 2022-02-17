@@ -7,9 +7,9 @@
 resim_nets(dat, at)
 }
 \arguments{
-\item{at}{Current time step.}
+\item{dat}{Main data object passed through \code{netsim} simulations.}
 
-\item{x}{A master object passed through \code{\link{netsim}}.}
+\item{at}{Current time step.}
 }
 \description{
 This function resimulates the dynamic network in stochastic

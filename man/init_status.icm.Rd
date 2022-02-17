@@ -7,7 +7,7 @@
 init_status.icm(dat)
 }
 \arguments{
-\item{dat}{Master data list object.}
+\item{dat}{Main data object passed through \code{icm} simulations.}
 }
 \description{
 This function sets the initial disease status on the

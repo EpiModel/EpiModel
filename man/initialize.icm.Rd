@@ -14,7 +14,7 @@ initialize.icm(param, init, control)
 \item{control}{An \code{EpiModel} object of class \code{\link{control.icm}}.}
 }
 \description{
-This function initializes the master \code{dat} object on which
+This function initializes the main \code{dat} object on which
              data are stored, and simulates disease status and other
              attributes.
 }

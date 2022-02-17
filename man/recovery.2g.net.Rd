@@ -7,14 +7,14 @@
 recovery.2g.net(dat, at)
 }
 \arguments{
-\item{dat}{Master list object containing a \code{networkDynamic} object and
+\item{dat}{Main list object containing a \code{networkDynamic} object and
 other initialization information passed from \code{\link{netsim}}.}
 
 \item{at}{Current time step.}
 }
 \description{
 This function simulates recovery from the infected state
-             either to an distinct recovered state (SIR model type) or back
+             either to a distinct recovered state (SIR model type) or back
              to a susceptible state (SIS model type), for use in
              \code{\link{netsim}}.
 }

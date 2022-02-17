@@ -15,7 +15,7 @@ simulation.}
 }
 \description{
 Calculates the proportional distribution of each vertex
-             attribute contained on the network
+             attribute contained in the network.
 }
 \seealso{
 \code{\link{get_formula_term_attr}},

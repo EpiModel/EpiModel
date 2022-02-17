@@ -12,12 +12,12 @@ truncate_sim(x, at)
 \item{at}{Time step at which to left-truncate the time series.}
 }
 \description{
-Left-truncates a simulation epidemiological summary statistics
+Left-truncates simulation epidemiological summary statistics
              and network statistics at a specified time step.
 }
 \details{
 This function would be used when running a follow-up simulation from time
-steps \code{b} to \code{c} after a burnin period from time \code{a} to
+steps \code{b} to \code{c} after a burn-in period from time \code{a} to
 \code{b}, where the final time window of interest for data analysis is
 \code{b} to \code{c} only.
 }

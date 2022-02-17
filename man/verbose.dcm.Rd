@@ -8,7 +8,7 @@ verbose.dcm(x, type, s = 1)
 }
 \arguments{
 \item{x}{If the \code{type} is "startup", then an object of class
-\code{control.icm}, otherwise the all master data object in \code{icm}
+\code{control.icm}, otherwise the all main data object in \code{icm}
 simulations.}
 
 \item{type}{Progress type, either of "startup" for starting messages before

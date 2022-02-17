@@ -54,7 +54,7 @@ with one entry per simulation. Accessible at \code{$edgelist}.}
 from the dynamic simulations. Returned in the form of a list of nD
 objects, with one entry per simulation. Accessible at \code{$network}.}
 
-\item{verbose}{Print progress to the console.}
+\item{verbose}{If \code{TRUE}, print progress to the console.}
 
 \item{ncores}{Number of processor cores to run multiple simulations
 on, using the \code{foreach} and \code{doParallel} implementations.}
@@ -78,7 +78,7 @@ plotting the \code{netdx} object.
 }
 \section{Control Arguments}{
 
-Models fit with the full STERGM method in \code{netest} (setting
+Models fit with the full STERGM method in \code{netest} (setting the
 \code{edapprox} argument to \code{FALSE}) require only a call to
 \code{simulate.stergm}. Control parameters for those simulations may be set
 using \code{set.control.stergm} in \code{netdx}. The parameters should be

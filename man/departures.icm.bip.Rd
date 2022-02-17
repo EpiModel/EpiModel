@@ -2,12 +2,12 @@
 % Please edit documentation in R/icm.mod.vital.R
 \name{departures.icm.bip}
 \alias{departures.icm.bip}
-\title{Departure: bipartite icm Module}
+\title{Departure: Bipartite icm Module}
 \usage{
 departures.icm.bip(dat, at)
 }
 \arguments{
-\item{dat}{Master data list object.}
+\item{dat}{Main data object passed through \code{icm} simulations.}
 
 \item{at}{Current time step.}
 }
