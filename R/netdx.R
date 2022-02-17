@@ -26,7 +26,7 @@
 #' @param keep.tnetwork If \code{TRUE}, keep the full networkDynamic objects
 #'        from the dynamic simulations. Returned in the form of a list of nD
 #'        objects, with one entry per simulation. Accessible at \code{$network}.
-#' @param verbose Print progress to the console.
+#' @param verbose If \code{TRUE}, print progress to the console.
 #' @param ncores Number of processor cores to run multiple simulations
 #'        on, using the \code{foreach} and \code{doParallel} implementations.
 #' @param skip.dissolution If \code{TRUE}, skip over the calculations of
@@ -43,7 +43,7 @@
 #' plotting the \code{netdx} object.
 #'
 #' @section Control Arguments:
-#' Models fit with the full STERGM method in \code{netest} (setting
+#' Models fit with the full STERGM method in \code{netest} (setting the
 #' \code{edapprox} argument to \code{FALSE}) require only a call to
 #' \code{simulate.stergm}. Control parameters for those simulations may be set
 #' using \code{set.control.stergm} in \code{netdx}. The parameters should be
@@ -338,12 +338,12 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
 
 #' @title Calculate the Formation Statistics of a Network
 #'
-#' @param merged.stats a matrix of \code{nsims * nsteps} rows, with a column for
-#'   each of the formation target
-#' @param targets a \code{data.frame} of the formation targets with two columns:
-#'   "names" and "targets"
+#' @param merged.stats A matrix of \code{nsims * nsteps} rows, with a column for
+#'   each of the formation targets.
+#' @param targets A \code{data.frame} of the formation targets with two columns:
+#'   "names" and "targets".
 #'
-#' @return a \code{data.frame} of the formation statistics
+#' @return A \code{data.frame} of the formation statistics.
 #' @keywords internal
 make_formation_table <- function(merged.stats, targets) {
 
@@ -378,12 +378,12 @@ make_formation_table <- function(merged.stats, targets) {
 
 #' @title Calculate the Dissolution Statistics of a Network
 #'
-#' @param sim.df a list of network objects (one per simulation)
-#' @param coef.diss the \code{coef.diss} element of \code{nwparam}
-#' @param nsteps the number of simualted steps
-#' @param verbose a verbosity toggle (default = TRUE)
+#' @param sim.df A list of network objects (one per simulation).
+#' @param coef.diss The \code{coef.diss} element of \code{nwparam}.
+#' @param nsteps The number of simulated steps.
+#' @param verbose A verbosity toggle (default = TRUE).
 #'
-#' @return a \code{list} of dissolution statistics
+#' @return A \code{list} of dissolution statistics.
 #' @keywords internal
 make_dissolution_stats <- function(sim.df, coef.diss, nsteps, verbose = TRUE) {
   if (verbose == TRUE) {
