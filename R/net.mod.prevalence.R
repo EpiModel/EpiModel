@@ -4,7 +4,7 @@
 #' @description Provides all active model state sizes from the network at the
 #'              specified time step, output to a list of vectors.
 #'
-#' @param dat Master list object containing a \code{networkDynamic} object and
+#' @param dat Main list object containing a \code{networkDynamic} object and
 #'        other initialization information passed from \code{\link{netsim}}.
 #' @param at Current time step.
 #'
