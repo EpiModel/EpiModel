@@ -1,14 +1,15 @@
 
-#' @title Initializes EpiModel netsim Object for tergmLite Simulation
+#' @title Initialize EpiModel netsim Object for tergmLite Simulation
 #'
-#' @param dat A list object containing a \code{networkDynamic} object and other
-#'        initialization information passed from \code{netsim}.
+#' @param dat Main list object containing a \code{networkDynamic} object and
+#'        other initialization information passed from \code{\link{netsim}}.
 #'
 #' @details
 #' This function is typically used within the initialization modules of
 #' \code{EpiModel} to establish the necessary infrastructure needed for
-#' \code{tergmLite} network resimulation.  The example below demonstrates
-#' the specific information returned.
+#' \href{https://statnet.org/tut/EpiModel2.html#tergmLite}{\code{tergmLite}}
+#' network resimulation. The example below demonstrates the specific information
+#' returned.
 #'
 #' @export
 #'
