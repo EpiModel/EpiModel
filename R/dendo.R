@@ -1,5 +1,5 @@
 
-#' @title Convert transmat infection tree into a phylo object
+#' @title Convert transmat Infection Tree into a phylo Object
 #'
 #' @description Converts the edgelist matrix in the \code{transmat} object into
 #'              a \code{phylo} object by doing the required reordering and
@@ -7,13 +7,13 @@
 #'
 #' @param x An object of class \code{"transmat"}, the output from
 #'        \code{\link{get_transmat}}.
-#' @param collapse.singles logical, DEPRECATED
-#' @param vertex.exit.times  optional numeric vector providing the time of
+#' @param collapse.singles Logical, DEPRECATED.
+#' @param vertex.exit.times  Optional numeric vector providing the time of
 #'        departure of vertices, to be used to scale the lengths of branches
 #'        reaching to the tips. Index position on vector corresponds to network
 #'        id. NA indicates no departure, so branch will extend to the end of the
 #'        tree.
-#' @param ...  further arguments (unused)
+#' @param ...  Further arguments (unused).
 #'
 #' @details
 #' Converts a \code{\link{transmat}} object containing information about the
@@ -204,7 +204,7 @@ as.phylo.transmat <- function(x,
   return(out)
 }
 
-#' @title Converts transmat infection tree into a network object
+#' @title Convert transmat Infection Tree into a network Object
 #'
 #' @description Converts the edges of the infection tree described in the
 #'              \code{\link{transmat}} object into a \code{\link{network}}
@@ -212,9 +212,9 @@ as.phylo.transmat <- function(x,
 #'              'infDur', 'transProb', 'actRate', and 'finalProb' and
 #'              constructing a vertex attribute for 'at'.
 #'
-#' @param x an object of class \code{transmat} to be converted into a network
-#'        object
-#' @param ... unused
+#' @param x An object of class \code{transmat} to be converted into a network
+#'        object.
+#' @param ... Unused.
 #'
 #' @method as.network transmat
 #' @export
@@ -242,16 +242,16 @@ as.network.transmat <- function(x, ...) {
   return(net)
 }
 
-#' @title Plot transmat infection tree in one of several styles
+#' @title Plot transmat Infection Tree in One of Several Styles
 #'
 #' @description Plots the infection tree described in a \code{\link{transmat}}
-#'              object in one of several styles: phylogenetic tree, an un-rooted
-#'              network or a hierarchical tree.
+#'              object in one of two styles: a phylogenetic tree or an
+#'              un-rooted network.
 #'
-#' @param x A \code{\link{transmat}} object to be plotted
+#' @param x A \code{\link{transmat}} object to be plotted.
 #' @param style Character name of plot style. One of "phylo" or "network".
 #' @param ...  Additional plot arguments to be passed to lower-level plot
-#'        functions (plot.network, plot.phylo, etc)
+#'        functions (plot.network, plot.phylo, etc).
 #'
 #' @details The phylo plot requires the \code{ape} package. The options are
 #' wrappers to other plot calls with some appropriate preset arguments.
@@ -259,7 +259,7 @@ as.network.transmat <- function(x, ...) {
 #' @export
 #' @method plot transmat
 #'
-#' @seealso \code{\link{plot.network}},\code{\link[ape]{plot.phylo}}
+#' @seealso \code{\link{plot.network}}, \code{\link[ape]{plot.phylo}}
 #'
 plot.transmat <- function(x,
                           style = c("phylo", "network"),
