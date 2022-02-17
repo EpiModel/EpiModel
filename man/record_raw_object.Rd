@@ -25,7 +25,8 @@ during the simulation and in the \code{netsim} object under the
 \code{raw.records} sublists.
 }
 \details{
-See the "Time Varying Attributes" vignette.
+See the "Time-Varying Parameters" section of the "Working With Model
+Parameters" vignette.
 }
 \examples{
 \dontrun{

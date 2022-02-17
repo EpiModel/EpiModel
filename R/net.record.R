@@ -18,7 +18,8 @@
 #'
 #'
 #' @details
-#' See the "Time Varying Attributes" vignette.
+#' See the "Time-Varying Parameters" section of the "Working With Model
+#' Parameters" vignette.
 #'
 #' @examples
 #' \dontrun{
@@ -78,7 +79,8 @@ record_attr_history <- function(dat, at, attribute, posit_ids, values) {
 #' @return The main list object.
 #'
 #' @details
-#' See the "Time Varying Attributes" vignette.
+#' See the "Time-Varying Parameters" section of the "Working With Model
+#' Parameters" vignette.
 #'
 #' @examples
 #' \dontrun{

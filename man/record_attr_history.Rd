@@ -29,7 +29,8 @@ the run. The records are stored in \code{dat[["attr.history"]]} and can be
 accessed from the \code{netsim} object with \code{get_attr_history}.
 }
 \details{
-See the "Time Varying Attributes" vignette.
+See the "Time-Varying Parameters" section of the "Working With Model
+Parameters" vignette.
 }
 \examples{
 \dontrun{
