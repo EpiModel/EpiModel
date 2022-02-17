@@ -42,7 +42,7 @@
 #' parameter, and in multiple run models the specific run may also be specified.
 #'
 #' @section The \code{popfrac} Argument:
-#' Compartment prevalence are the size of a compartment over some denominator.
+#' Compartment prevalence is the size of a compartment over some denominator.
 #' To plot the raw numbers from any compartment, use \code{popfrac=FALSE}; this
 #' is the default. The \code{popfrac} parameter calculates
 #' and plots the denominators of all specified compartments using these rules:
@@ -326,7 +326,7 @@ plot.dcm <- function(x, y, popfrac = FALSE, run, col, lwd, lty, alpha = 0.9,
                 lwd = lwd[1], lty = lty[1], col = pal[1])
         }
         if (length(run) > 1) {
-          for (i in 1:length(run)) {
+          for (i in seq_along(run)) {
             lines(x$control$timesteps, x$epi[[y]][, run[i]],
                   lwd = lwd[i], lty = lty[i], col = pal[i])
           }
@@ -443,9 +443,9 @@ plot.dcm <- function(x, y, popfrac = FALSE, run, col, lwd, lty, alpha = 0.9,
   if (norun == FALSE & legend != "n") {
     if (lcomp == 1) {
       legend("topright", legend = leg.names,
-             bg = "white", lty = lty[1:length(run)],
-             lwd = lwd[1:length(run)],
-             col = pal[1:length(run)], cex = leg.cex)
+             bg = "white", lty = lty[seq_along(run)],
+             lwd = lwd[seq_along(run)],
+             col = pal[seq_along(run)], cex = leg.cex)
     }
     if (lcomp > 1) {
       legend("topright", legend = leg.names,
@@ -509,9 +509,8 @@ plot.icm <- function(x, y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col,
   if (max(sims) > nsims) {
     stop("Set sim to between 1 and ", nsims, call. = FALSE)
   }
-  dis.type <- x$control$type
   if (is.null(x$param$groups) | !is.numeric(x$param$groups)) {
-    group <- 1
+    groups <- 1
     x$param$groups <- 1
   } else {
     groups <- x$param$groups
@@ -837,7 +836,7 @@ draw_means <- function(x, y, mean.smooth, mean.lwd,
       mean.prev <- rowMeans(x[[loc]][[y[j]]], na.rm = TRUE)
     }
     if (mean.smooth == TRUE) {
-      mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev),
+      mean.prev <- suppressWarnings(supsmu(x = seq_along(mean.prev),
                                            y = mean.prev))$y
     }
     if (plot.means == 1) {
@@ -1196,7 +1195,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
           if (mean.line == TRUE) {
             mean.prev <- rowMeans(dataj)
             if (mean.smooth == TRUE) {
-              mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev),
+              mean.prev <- suppressWarnings(supsmu(x = seq_along(mean.prev),
                                                    y = mean.prev))$y
             }
             mean.min[j] <-  min(mean.prev)
@@ -1310,7 +1309,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
             }
             mean.prev <- rowMeans(dataj)
             if (mean.smooth == TRUE) {
-              mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev),
+              mean.prev <- suppressWarnings(supsmu(x = seq_along(mean.prev),
                                                    y = mean.prev))$y
             }
             lines(mean.prev, lwd = mean.lwd,
@@ -1415,7 +1414,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
             }
             mean.prev <- rowMeans(dataj)
             if (mean.smooth == TRUE) {
-              mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev),
+              mean.prev <- suppressWarnings(supsmu(x = seq_along(mean.prev),
                                                    y = mean.prev))$y
             }
             mean.min <-  min(mean.prev)
@@ -1478,7 +1477,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
             }
             mean.prev <- rowMeans(dataj)
             if (mean.smooth == TRUE) {
-              mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev),
+              mean.prev <- suppressWarnings(supsmu(x = seq_along(mean.prev),
                                                    y = mean.prev))$y
             }
             lines(mean.prev, lwd = mean.lwd,
@@ -1599,7 +1598,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
       dataj <- dataj[complete.cases(dataj), , drop = FALSE]
       mean.prev <- rowMeans(dataj)
       if (mean.smooth == TRUE) {
-        mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev),
+        mean.prev <- suppressWarnings(supsmu(x = seq_along(mean.prev),
                                              y = mean.prev))$y
       }
       mean.prev.imptd <- mean.prev + pages_imptd
@@ -1717,10 +1716,10 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         dataj <- dataj[complete.cases(dataj), , drop = FALSE]
         mean.prev <- rowMeans(dataj)
         if (mean.smooth == TRUE) {
-          mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev),
+          mean.prev <- suppressWarnings(supsmu(x = seq_along(mean.prev),
                                                y = mean.prev))$y
           mean.prev.imptd <- suppressWarnings(
-            supsmu(x = 1:length(mean.prev.imptd), y = mean.prev.imptd))$y
+            supsmu(x = seq_along(mean.prev.imptd), y = mean.prev.imptd))$y
 
         }
         if (duration.imputed == FALSE) lines(mean.prev, lwd = mean.lwd,
@@ -1808,7 +1807,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
       dataj <- as.data.frame(prop.diss)
       mean.prev <- rowMeans(dataj)
       if (mean.smooth == TRUE) {
-        mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev),
+        mean.prev <- suppressWarnings(supsmu(x = seq_along(mean.prev),
                                              y = mean.prev))$y
       }
       mean.min <- min(mean.prev)
@@ -1906,7 +1905,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         dataj <- as.data.frame(prop.diss)
         mean.prev <- rowMeans(dataj)
         if (mean.smooth == TRUE) {
-          mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev),
+          mean.prev <- suppressWarnings(supsmu(x = seq_along(mean.prev),
                                                y = mean.prev))$y
         }
         lines(mean.prev, lwd = mean.lwd,
@@ -1955,11 +1954,11 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #'        to plot lines for one-group models but not for two-group models.
 #' @param sims If \code{type="epi"} or \code{"formation"}, a vector of
 #'        simulation numbers to plot. If \code{type="network"}, a single
-#'        simulation number for network plot, or else \code{"min"} to plot the
-#'        simulation number with the lowest disease prevalence, \code{"max"} for
-#'        the simulation with the highest disease prevalence, or \code{"mean"}
-#'        for the simulation with the prevalence closest to the mean across
-#'        simulations at the specified time step.
+#'        simulation number for which to plot the network, or else \code{"min"}
+#'        to plot the simulation number with the lowest disease prevalence,
+#'        \code{"max"} for the simulation with the highest disease prevalence,
+#'        or \code{"mean"} for the simulation with the prevalence closest to the
+#'        mean across simulations at the specified time step.
 #' @param sim.col Vector of any standard R color format for simulation lines.
 #' @param sim.lwd Line width for simulation lines.
 #' @param sim.alpha Transparency level for simulation lines, where
@@ -1979,7 +1978,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #' @param legend If \code{TRUE}, plot default legend.
 #' @param leg.cex Legend scale size.
 #' @param axs Plot axis type (see \code{\link{par}} for details), with default
-#'        to \code{"r"}.
+#'        of \code{"r"}.
 #' @param grid If \code{TRUE}, a grid is added to the background of plot
 #'        (see \code{\link{grid}} for details), with default of nx by ny.
 #' @param add If \code{TRUE}, new plot window is not called and lines are added
@@ -1989,9 +1988,9 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #' @param at If \code{type="network"}, time step for network graph.
 #' @param col.status If \code{TRUE} and \code{type="network"}, automatic disease
 #'        status colors (blue = susceptible, red = infected, green = recovered).
-#' @param shp.g2 If \code{type="network"} and a two-group simulation, shapes
-#'        for the Group 2 vertices, with acceptable inputs of "triangle" and
-#'        "square". Group 1 vertices will remain circles.
+#' @param shp.g2 If \code{type="network"} and \code{x} is for a two-group model,
+#'        shapes for the Group 2 vertices, with acceptable inputs of "triangle"
+#'        and "square". Group 1 vertices will remain circles.
 #' @param vertex.cex Relative size of plotted vertices if \code{type="network"},
 #'        with implicit default of 1.
 #' @param stats If \code{type="formation"}, network statistics to plot, among
@@ -2006,7 +2005,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #' @param plots.joined If \code{TRUE} and \code{type="formation"}, combine all
 #'        target statistics in one plot, versus one plot per target statistic if
 #'        \code{FALSE}.
-#' @param ... additional arguments to pass.
+#' @param ... Additional arguments to pass.
 #'
 #' @details
 #' This plot function can produce three types of plots with a stochastic network
@@ -2039,7 +2038,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #' statistics that the function calculates and plots are individual simulation
 #' lines, means of the individual simulation lines, and quantiles of those
 #' individual simulation lines. The mean line, toggled on with
-#' \code{mean.line=TRUE} is calculated as the row mean across simulations at
+#' \code{mean.line=TRUE}, is calculated as the row mean across simulations at
 #' each time step.
 #'
 #' Compartment prevalences are the size of a compartment over some denominator.
@@ -2050,8 +2049,8 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #' the compartment size divided by the total population size; 2) for two-group
 #' models, the prevalence of any compartment is the compartment size divided by
 #' the group population size. For any prevalences that are not automatically
-#' calculated, the \code{\link{mutate_epi}} may be used to add new variables to
-#' the \code{netsim} object to plot or analyze.
+#' calculated, the \code{\link{mutate_epi}} function may be used to add new
+#' variables to the \code{netsim} object to plot or analyze.
 #'
 #' The quantiles show the range of outcome values within a certain specified
 #' quantile range. By default, the interquartile range is shown: that is the
@@ -2062,7 +2061,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #' When \code{type="network"}, this function will plot cross sections of the
 #' simulated networks at specified time steps. Because it is only possible to
 #' plot one time step from one simulation at a time, it is necessary to enter
-#' these in the \code{at} and \code{sims} parameters. To aide in visualizing
+#' these in the \code{at} and \code{sims} parameters. To aid in visualizing
 #' representative and extreme simulations at specific time steps, the
 #' \code{sims} parameter may be set to \code{"mean"} to plot the simulation in
 #' which the disease prevalence is closest to the average across all
@@ -2575,7 +2574,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
     formation.terms <- nwparam$target.stats.names
     target.stats <- nwparam$target.stats
 
-    st <- data.frame(sorder = 1:length(name_stats), names = name_stats)
+    st <- data.frame(sorder = seq_along(name_stats), names = name_stats)
     if (length(formation.terms) != length(target.stats)) {
       target.stats <- target.stats[which(target.stats > 0)]
     }
@@ -2710,7 +2709,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
         if (mean.line == TRUE) {
           mean.prev <- as.numeric(tapply(dataj[, -1], dataj[, 1], mean))
           if (mean.smooth == TRUE) {
-            mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev),
+            mean.prev <- suppressWarnings(supsmu(x = seq_along(mean.prev),
                                                  y = mean.prev))$y
           }
           mean.min[j] <-  min(mean.prev)
@@ -2814,7 +2813,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
           }
           mean.prev <- as.numeric(tapply(dataj[, -1], dataj[, 1], mean))
           if (mean.smooth == TRUE) {
-            mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev),
+            mean.prev <- suppressWarnings(supsmu(x = seq_along(mean.prev),
                                                  y = mean.prev))$y
           }
           lines(mean.prev, lwd = mean.lwd,
@@ -2915,7 +2914,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
             }
             mean.prev <- as.numeric(tapply(dataj[, -1], dataj[, 1], mean))
             if (mean.smooth == TRUE) {
-              mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev),
+              mean.prev <- suppressWarnings(supsmu(x = seq_along(mean.prev),
                                                    y = mean.prev))$y
             }
             mean.min <-  min(mean.prev)
@@ -2975,7 +2974,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
           }
           mean.prev <- as.numeric(tapply(dataj[, -1], dataj[, 1], mean))
           if (mean.smooth == TRUE) {
-            mean.prev <- suppressWarnings(supsmu(x = 1:length(mean.prev),
+            mean.prev <- suppressWarnings(supsmu(x = seq_along(mean.prev),
                                                  y = mean.prev))$y
           }
           lines(mean.prev, lwd = mean.lwd,
@@ -3028,9 +3027,9 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
 #' show the means and standard deviations across simulations at the specified
 #' time step.
 #'
-#' These plots are currently limited to one-group and one-mode models for each
-#' of the three model classes. That functionality may be expanded in future
-#' software releases.
+#' These plots are currently limited to one-group models for each of the three
+#' model classes. That functionality may be expanded in future software
+#' releases.
 #'
 #' @export
 #' @keywords plot
@@ -3165,7 +3164,7 @@ comp_plot.icm <- function(x, at = 1, digits = 3, ...) {
     groups <- x$param$groups
   }
   if (groups != 1) {
-    stop("Only 1-mode models currently supported",
+    stop("Only 1-group models currently supported",
          call. = FALSE)
   }
 
@@ -3250,12 +3249,12 @@ comp_plot.netsim <- function(x, at = 1, digits = 3, ...) {
 
 # ggplot ------------------------------------------------------------------
 
-#' @title ggplot2 geom for Quantile Bands
+#' @title ggplot2 Geom for Quantile Bands
 #'
 #' @description Plots quantile bands given a data.frame with stochastic model
 #'              results from \code{icm} or \code{netsim}.
 #'
-#' @param mapping standard aesthetic mapping \code{aes()} input for ggplot2.
+#' @param mapping Standard aesthetic mapping \code{aes()} input for ggplot2.
 #' @param lower Lower quantile for the time series.
 #' @param upper Upper quantile for the time series.
 #' @param alpha Transparency of the ribbon fill.
@@ -3302,13 +3301,13 @@ denom <- function(x, y, popfrac) {
 
   cont.val <- ifelse(class(x) == "dcm", "nruns", "nsims")
   if (popfrac == TRUE) {
-    for (i in 1:length(y)) {
+    for (i in seq_along(y)) {
       dname <- paste(strsplit(y[i], "[.]")[[1]][-1], collapse = ".")
       x$epi[[y[i]]] <- x$epi[[y[i]]] / x$epi[[dname]]
     }
   }
   if (popfrac == FALSE && x$control[[cont.val]] == 1) {
-    for (j in 1:length(y)) {
+    for (j in seq_along(y)) {
       x$epi[[y[j]]] <- data.frame(x$epi[[y[j]]])
     }
   }
