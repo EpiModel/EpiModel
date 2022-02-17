@@ -45,13 +45,7 @@ step.}
 \item{method}{Plot method, with options of \code{"l"} for line plots and
 \code{"b"} for boxplots.}
 
-\item{sims}{If \code{type="epi"} or \code{"formation"}, a vector of
-simulation numbers to plot. If \code{type="network"}, a single
-simulation number for which to plot the network, or else \code{"min"}
-to plot the simulation number with the lowest disease prevalence,
-\code{"max"} for the simulation with the highest disease prevalence,
-or \code{"mean"} for the simulation with the prevalence closest to the
-mean across simulations at the specified time step.}
+\item{sims}{A vector of simulation numbers to plot.}
 
 \item{stats}{Network statistics to plot, among those specified in the call
 to \code{\link{netdx}}, with the default to plot all statistics
