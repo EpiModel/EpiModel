@@ -1,6 +1,7 @@
 ---
-title: "Working With Model Parameters"
-output: rmarkdown::html_vignette
+title: "Working With Model Parameters in EpiModel"
+author: "EpiModel v`r packageVersion('EpiModel')`"
+date: "`r Sys.Date()`"
 vignette: >
   %\VignetteIndexEntry{Working with Model Parameters}
   %\VignetteEncoding{UTF-8}

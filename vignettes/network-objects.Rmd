@@ -1,10 +1,13 @@
 ---
-title: "Working With Network Objects"
-output: rmarkdown::html_vignette
+title: "Working With Network Objects in EpiModel"
+author: "EpiModel v`r packageVersion('EpiModel')`"
+date: "`r Sys.Date()`"
 vignette: >
   %\VignetteIndexEntry{Working with Network Objects}
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options:
+  chunk_output_type: console
 ---
 
 ```{r, echo = FALSE, include = FALSE}
