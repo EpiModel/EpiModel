@@ -117,7 +117,7 @@ EpiModel to work (the four core attributes are: "active", "unique_id",
 "entrTime", and "exitTime"). These attributes are used in the initialization
 phase of the simulation, to create the nodes (see
 \code{\link{initialize.net}}); and also used when adding nodes during the
-simulation (see \code{\link{arrival.net}}).
+simulation (see \code{\link{arrivals.net}}).
 }
 
 \section{Mutability}{

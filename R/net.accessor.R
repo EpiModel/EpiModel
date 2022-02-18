@@ -35,7 +35,7 @@
 #' "entrTime", and "exitTime"). These attributes are used in the initialization
 #' phase of the simulation, to create the nodes (see
 #' \code{\link{initialize.net}}); and also used when adding nodes during the
-#' simulation (see \code{\link{arrival.net}}).
+#' simulation (see \code{\link{arrivals.net}}).
 #'
 #' @section Mutability:
 #' The \code{set_}, \code{append_}, and \code{add_} functions DO NOT modify the
