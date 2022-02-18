@@ -67,7 +67,10 @@ as.networkLite(x, ...)
 
 \item{...}{Any additional arguments.}
 
-\item{value}{Value to set edges to (must be FALSE for networkLite method).}
+\item{value}{The attribute value to set for
+\code{set.vertex.attribute.networkLite}; the value to set edges
+to (must be FALSE) for the \code{networkLite} replacement
+method.}
 
 \item{v}{Indices at which to set vertex attribute values.}
 

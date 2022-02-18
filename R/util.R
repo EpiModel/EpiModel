@@ -147,6 +147,10 @@ networkLite.matrix <- networkLite.edgelist
 #'
 #' @param x A \code{networkLite} object.
 #' @param attrname The name of an attribute in \code{x}.
+#' @param value The attribute value to set for
+#'              \code{set.vertex.attribute.networkLite}; the value to set edges
+#'              to (must be FALSE) for the \code{networkLite} replacement
+#'              method.
 #' @param ... Any additional arguments.
 #'
 #' @details Allows use of networkLite objects in \code{ergm_model}.
@@ -159,7 +163,6 @@ get.vertex.attribute.networkLite <- function(x, attrname, ...) {
 }
 
 #' @rdname networkLitemethods
-#' @param value Attribute value.
 #' @param v Indices at which to set vertex attribute values.
 #' @export
 #'
@@ -279,7 +282,6 @@ mixingmatrix.networkLite <- function(object, attr, ...) {
 
 #' @rdname networkLitemethods
 #' @param i,j Nodal indices (must be missing for networkLite method).
-#' @param value Value to set edges to (must be FALSE for networkLite method).
 #' @export
 "[<-.networkLite" <- function(x, i, j, value) {
   if (missing(i) && missing(j) && isTRUE(all(value == FALSE))) {
