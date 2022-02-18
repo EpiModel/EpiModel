@@ -14,6 +14,8 @@
 #' in the model at any given timestep. For a two-group network, the current
 #' state size for each group and overall is provided.
 #'
+#' @return The updated \code{dat} main data object.
+#'
 #' @export
 #' @keywords netUtils internal
 #'

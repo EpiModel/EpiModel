@@ -1,7 +1,7 @@
 #' @title Dynamic Network Model Diagnostics
 #'
 #' @description Runs dynamic diagnostics on an ERGM/STERGM estimated through
-#'              \code{netest}.
+#'              \code{\link{netest}}.
 #'
 #' @param x An \code{EpiModel} object of class \code{netest}.
 #' @param nsims Number of simulations to run.
@@ -18,7 +18,7 @@
 #'        (see details).
 #' @param sequential For static diagnostics (\code{dynamic=FALSE}): if
 #'        \code{FALSE}, each of the \code{nsims} simulated Markov chains begins
-#'        at the initial network; If \code{TRUE}, the end of one simulation is
+#'        at the initial network; if \code{TRUE}, the end of one simulation is
 #'        used as the start of the next.
 #' @param keep.tedgelist If \code{TRUE}, keep the timed edgelist generated from
 #'        the dynamic simulations. Returned in the form of a list of matrices,
@@ -30,11 +30,11 @@
 #' @param ncores Number of processor cores to run multiple simulations
 #'        on, using the \code{foreach} and \code{doParallel} implementations.
 #' @param skip.dissolution If \code{TRUE}, skip over the calculations of
-#'        duration and dissolution stats in netdx.
+#'        duration and dissolution stats in \code{netdx}.
 #'
 #' @details
 #' The \code{netdx} function handles dynamic network diagnostics for network
-#' models fit with the \code{netest} function. Given the fitted model,
+#' models fit with the \code{\link{netest}} function. Given the fitted model,
 #' \code{netdx} simulates a specified number of dynamic networks for a specified
 #' number of time steps per simulation. The network statistics in
 #' \code{nwstats.formula} are saved for each time step. Summary statistics for
@@ -63,6 +63,8 @@
 #' through the \code{control.simulate.network()} function, with the available
 #' parameters listed in the \code{\link{control.simulate.network}} help page in
 #' the \code{tergm} package. An example is shown below.
+#'
+#' @return A list of class \code{netdx}.
 #'
 #' @seealso Plot these model diagnostics with \code{\link{plot.netdx}}.
 #'

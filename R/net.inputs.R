@@ -125,6 +125,8 @@
 #' default modules for parameter validity, these checks are the user's
 #' responsibility with new modules.
 #'
+#' @return An \code{EpiModel} object of class \code{param.net}.
+#'
 #' @seealso Use \code{\link{init.net}} to specify the initial conditions and
 #'          \code{\link{control.net}} to specify the control settings. Run the
 #'          parameterized model with \code{\link{netsim}}.
@@ -348,10 +350,10 @@ param_random <- function(values, prob = NULL) {
 #' @return A fully instantiated \code{param} list.
 #'
 #' @section \code{random_params}:
-#' The \code{random_params} argument to the \code{param.net} function must be a
-#' named list of functions that each return a value that can be used as the
-#' argument with the same name. In the example below, \code{param_random} is a
-#' function factory provided by EpiModel for \code{act.rate} and
+#' The \code{random_params} argument to the \code{\link{param.net}} function
+#' must be a named list of functions that each return a value that can be used
+#' as the argument with the same name. In the example below, \code{param_random}
+#' is a function factory provided by EpiModel for \code{act.rate} and
 #' \code{tx.halt.part.prob} we provide bespoke functions.
 #'
 #' @section Generator Functions:
@@ -576,6 +578,8 @@ generate_random_params <- function(param, verbose = FALSE) {
 #' consult the \href{http://www.epimodel.org/tut.html}{Basic Network Models}
 #' tutorials.
 #'
+#' @return An \code{EpiModel} object of class \code{init.net}.
+#'
 #' @seealso Use \code{\link{param.net}} to specify model parameters and
 #'          \code{\link{control.net}} to specify the control settings. Run the
 #'          parameterized model with \code{\link{netsim}}.
@@ -792,6 +796,8 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #' the \href{http://www.epimodel.org/tut.html}{New Network Models} tutorials.
 #' One may remove existing modules, such as \code{arrivals.FUN}, from the
 #' workflow by setting the parameter value for that argument to \code{NULL}.
+#'
+#' @return An \code{EpiModel} object of class \code{control.net}.
 #'
 #' @seealso Use \code{\link{param.net}} to specify model parameters and
 #'          \code{\link{init.net}} to specify the initial conditions. Run the

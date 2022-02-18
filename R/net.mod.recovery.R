@@ -10,6 +10,8 @@
 #'        other initialization information passed from \code{\link{netsim}}.
 #' @param at Current time step.
 #'
+#' @return The updated \code{dat} main list object.
+#'
 #' @export
 #' @keywords internal
 #'
@@ -76,6 +78,8 @@ recovery.net <- function(dat, at) {
 #' @param dat Main list object containing a \code{networkDynamic} object and
 #'        other initialization information passed from \code{\link{netsim}}.
 #' @param at Current time step.
+#'
+#' @return The updated \code{dat} main list object.
 #'
 #' @export
 #' @keywords internal

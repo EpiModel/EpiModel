@@ -155,6 +155,10 @@ networkLite.matrix <- networkLite.edgelist
 #'
 #' @details Allows use of networkLite objects in \code{ergm_model}.
 #'
+#' @return An edgelist for \code{as.edgelist.networkLite}; an updated
+#'         \code{networkLite} object for the replacement method. The other
+#'         methods return no objects.
+#'
 #' @rdname networkLitemethods
 #' @export
 #'

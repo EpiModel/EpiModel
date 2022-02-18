@@ -114,6 +114,8 @@ check_degdist_bal <- function(num.g1, num.g2,
 #' saved in the output: \code{tergmListe} must be  set to \code{FALSE} in
 #' \code{\link{control.net}}.
 #'
+#' @return The updated object of class \code{networkDynamic}.
+#'
 #' @seealso \code{\link{netsim}} and the \code{ndtv} package documentation.
 #' @keywords colorUtils
 #' @export
@@ -157,6 +159,8 @@ color_tea <- function(nd, old.var = "testatus", old.sus = "s", old.inf = "i",
 #'
 #' @param dat Main data object passed through \code{netsim} simulations.
 #'
+#' @return The updated main \code{dat} object.
+#'
 #' @seealso \code{\link{get_formula_term_attr}}, \code{\link{get_attr_prop}},
 #'          \code{\link{auto_update_attr}}, and
 #'          \code{\link{copy_datattr_to_nwattr}}.
@@ -186,6 +190,8 @@ copy_nwattr_to_datattr <- function(dat) {
 #'              on \code{dat} to the network object on \code{dat}.
 #'
 #' @param dat Main data object passed through \code{netsim} simulations.
+#'
+#' @return The updated main \code{dat} object.
 #'
 #' @seealso \code{\link{get_formula_term_attr}}, \code{\link{get_attr_prop}},
 #'          \code{\link{auto_update_attr}}, and
@@ -458,6 +464,9 @@ dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
 #'        \code{networkDynamic} object using the
 #'        \code{as.data.frame.networkDynamic} function.
 #'
+#' @return A 4 x 2 table containing the number and percent of edges in \code{el}
+#'         that are left-censored, right-censored, both-censored, or uncensored.
+#'
 #' @export
 #' @keywords netUtils
 #'
@@ -534,6 +543,8 @@ edgelist_censor <- function(el) {
 #' single homogenous dissolution (\code{~offset(edges)}). This functionality
 #' will be expanded in future releases.
 #'
+#' @return A vector containing the mean edge age at each timestep.
+#'
 #' @export
 #' @keywords netUtils internal
 #'
@@ -584,12 +595,15 @@ edgelist_meanage <- function(x, el) {
 #' @title Proportional Table of Vertex Attributes
 #'
 #' @description Calculates the proportional distribution of each vertex
-#'              attribute contained in the network.
+#'              attribute contained in a network.
 #'
-#' @param nw The \code{networkDynamic} object contained in the \code{netsim}
-#'        simulation.
-#' @param nwterms Vector of attributes on network object, usually as
+#' @param dat Main list object containing a \code{networkDynamic} object and
+#'        other initialization information passed from \code{\link{netsim}}.
+#' @param nwterms Vector of attributes on the network object, usually as
 #'        output of \code{\link{get_formula_term_attr}}.
+#'
+#' @return A table containing the proportional distribution of each attribute in
+#'         \code{nwterms}.
 #'
 #' @seealso \code{\link{get_formula_term_attr}},
 #'          \code{\link{copy_nwattr_to_datattr}},
@@ -623,10 +637,12 @@ get_attr_prop <- function(dat, nwterms) {
 #'
 #' @description Given a formation formula for a network model, outputs it into
 #'              a character vector of vertex attributes to be used in
-#'              \code{netsim} simulations.
+#'              \code{\link{netsim}} simulations.
 #'
 #' @param form An ERGM model formula.
 #' @param nw A network object.
+#'
+#' @return A character vector of vertex attributes.
 #'
 #' @export
 #'
@@ -654,9 +670,11 @@ get_formula_term_attr <- function(form, nw) {
 #'
 #' @description Given a simulated network, outputs it into
 #'              a character vector of vertex attributes to be used in
-#'              \code{netsim} simulations.
+#'              \code{\link{netsim}} simulations.
 #'
 #' @param nw A network object.
+#'
+#' @return A character vector of vertex attributes.
 #'
 #' @export
 #'
@@ -686,6 +704,8 @@ get_network_term_attr <- function(nw) {
 #' @param nw Object of class \code{network} or \code{networkDynamic}.
 #' @param ids Vector of ID numbers for which the group number
 #'        should be returned.
+#'
+#' @return A vector containing the group number for each of the specified nodes.
 #'
 #' @export
 #' @keywords netUtils internal
@@ -720,12 +740,14 @@ idgroup <- function(nw, ids) {
 #'
 #' @description Updates the vertex attributes on a network for new nodes
 #'              incoming into that network, based on a set of rules for each
-#'              attribute that the user specifies in \code{control.net}.
+#'              attribute that the user specifies in \code{\link{control.net}}.
 #'
 #' @param dat Main data object passed through \code{netsim} simulations.
 #' @param newNodes Vector of nodal IDs for incoming nodes at the current time
 #'        step.
 #' @param curr.tab Current proportional distribution of all vertex attributes.
+#'
+#' @return The updated main \code{dat} object.
 #'
 #' @seealso \code{\link{copy_nwattr_to_datattr}}, \code{\link{get_attr_prop}},
 #'          \code{\link{auto_update_attr}}.
@@ -804,6 +826,9 @@ auto_update_attr <- function(dat, newNodes, curr.tab) {
 #' generating the vector of degrees using a query of the edgelist. It is even
 #' faster if the parameter \code{x} is already transformed into an edgelist.
 #'
+#' @return A vector of length equal to the total network size, containing the
+#'         current degree of each node in the network.
+#'
 #' @export
 #'
 #' @examples
@@ -854,6 +879,8 @@ get_degree <- function(x) {
 #' steps \code{b} to \code{c} after a burn-in period from time \code{a} to
 #' \code{b}, where the final time window of interest for data analysis is
 #' \code{b} to \code{c} only.
+#'
+#' @return The updated object of class \code{netsim} or \code{icm}.
 #'
 #' @export
 #'

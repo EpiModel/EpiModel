@@ -9,6 +9,8 @@
 #' @param init An \code{EpiModel} object of class \code{\link{init.icm}}.
 #' @param control An \code{EpiModel} object of class \code{\link{control.icm}}.
 #'
+#' @return The updated \code{dat} main list object.
+#'
 #' @export
 #' @keywords internal
 #'
@@ -53,6 +55,8 @@ initialize.icm <- function(param, init, control) {
 #'              network given the specified initial conditions.
 #'
 #' @param dat Main data object passed through \code{icm} simulations.
+#'
+#' @return The updated \code{dat} main list object.
 #'
 #' @seealso This is an initialization module for \code{\link{icm}}.
 #'

@@ -11,6 +11,8 @@
 #' @param control An \code{EpiModel} object of class \code{\link{control.net}}.
 #' @param s Simulation number, used for restarting dependent simulations.
 #'
+#' @return A \code{dat} main list object.
+#'
 #' @export
 #' @keywords internal
 #'
@@ -116,6 +118,8 @@ initialize.net <- function(x, param, init, control, s) {
 #' to set the infection times to be in the past, these times are multiplied by
 #' -1, and 2 is added to allow for possible infection times up until step 2,
 #' when the disease simulation time loop starts.
+#'
+#' @return The updated \code{dat} main list object.
 #'
 #' @seealso This is an initialization module for \code{\link{netsim}}.
 #'

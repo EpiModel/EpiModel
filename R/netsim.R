@@ -171,7 +171,11 @@ netsim <- function(x, param, init, control) {
 #'              one simulation. Errors, warnings, and messages are pretty
 #'              printed using the \code{netsim_cond_msg} function (utils.R)
 #' @inheritParams initialize.net
+#'
+#' @return The updated \code{dat} main list object.
+#'
 #' @keywords internal
+#'
 netsim_loop <- function(x, param, init, control, s) {
   ## Instantiate random parameters
   param <- generate_random_params(param, verbose = FALSE)

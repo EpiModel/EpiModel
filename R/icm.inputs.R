@@ -45,6 +45,8 @@
 #' default modules for parameter validity, these checks are the user's
 #' responsibility with new modules.
 #'
+#' @return An \code{EpiModel} object of class \code{param.icm}.
+#'
 #' @seealso Use \code{\link{init.icm}} to specify the initial conditions and
 #'          \code{\link{control.icm}} to specify the control settings. Run the
 #'          parameterized model with \code{\link{icm}}.
@@ -137,6 +139,8 @@ param.icm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
 #' an overview of initial conditions for base ICM class models, consult the
 #' \href{http://www.epimodel.org/tut.html}{Basic ICMs} tutorial.
 #'
+#' @return An \code{EpiModel} object of class \code{init.icm}.
+#'
 #' @seealso Use \code{\link{param.icm}} to specify model parameters and
 #'          \code{\link{control.icm}} to specify the control settings. Run the
 #'          parameterized model with \code{\link{icm}}.
@@ -228,6 +232,8 @@ init.icm <- function(s.num, i.num, r.num,
 #' For original models, one may substitute replacement module functions for any
 #' of the default functions. New modules may be added to the workflow at each
 #' time step by passing a module function via the \code{...} argument.
+#'
+#' @return An \code{EpiModel} object of class \code{control.icm}.
 #'
 #' @seealso Use \code{\link{param.icm}} to specify model parameters and
 #'          \code{\link{init.icm}} to specify the initial conditions. Run the

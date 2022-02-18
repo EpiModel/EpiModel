@@ -7,6 +7,8 @@
 #' @param dat Main data object passed through \code{icm} simulations.
 #' @param at Current time step.
 #'
+#' @return The updated \code{dat} main list object.
+#'
 #' @export
 #' @keywords internal
 #'
@@ -86,6 +88,8 @@ infection.icm <- function(dat, at) {
 #' @param dat Main data object passed through \code{icm} simulations.
 #' @param at Current time step.
 #'
+#' @return The updated \code{dat} main list object.
+#'
 #' @export
 #' @keywords internal
 #'
@@ -142,6 +146,8 @@ recovery.icm <- function(dat, at) {
 #'
 #' @param dat Main data object passed through \code{icm} simulations.
 #' @param at Current time step.
+#'
+#' @return The updated \code{dat} main list object.
 #'
 #' @export
 #' @keywords internal
@@ -228,6 +234,8 @@ infection.icm.bip <- function(dat, at) {
 #'
 #' @param dat Main data object passed through \code{icm} simulations.
 #' @param at Current time step.
+#'
+#' @return The updated \code{dat} main list object.
 #'
 #' @export
 #' @keywords internal

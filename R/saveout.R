@@ -3,13 +3,25 @@
 #'
 #' @description This function transfers the data from the main \code{df}
 #'              object to the output \code{out} object at the end of each
-#'              simulation in \code{\link{dcm}}.
+#'              run in \code{\link{dcm}}.
 #'
 #' @param df Main object in \code{\link{dcm}} simulations.
 #' @param s Current run number.
 #' @param param Param list set in \code{\link{param.dcm}}.
 #' @param control Control list set in \code{\link{control.dcm}}.
 #' @param out Out list passed back in for updating at runs 2+.
+#'
+#' @return A list with the following elements:
+#' \itemize{
+#'  \item \strong{param:} the epidemic parameters passed into the model through
+#'        \code{\link{param.dcm}}, with additional parameters added as
+#'        necessary.
+#'  \item \strong{control:} the control settings passed into the model through
+#'        \code{\link{control.dcm}}, with additional controls added as
+#'        necessary.
+#'  \item \strong{epi:} a list of data frames, one for each epidemiological
+#'        output from the model.
+#' }
 #'
 #' @keywords internal
 #' @export
@@ -71,6 +83,19 @@ saveout.dcm <- function(df, s, param, control, out = NULL) {
 #' @param s Current simulation number.
 #' @param out Out list passed back in for updating at simulations 2+.
 #'
+#' @return
+#' A list with the following elements:
+#' \itemize{
+#'  \item \strong{param:} the epidemic parameters passed into the model through
+#'        \code{\link{param.icm}}, with additional parameters added as
+#'        necessary.
+#'  \item \strong{control:} the control settings passed into the model through
+#'        \code{\link{control.icm}}, with additional controls added as
+#'        necessary.
+#'  \item \strong{epi:} a list of data frames, one for each epidemiological
+#'        output from the model.
+#' }
+#'
 #' @keywords internal
 #' @export
 #'
@@ -117,6 +142,24 @@ saveout.icm <- function(dat, s, out = NULL) {
 #' @param dat Main data object passed through \code{netsim} simulations.
 #' @param s Current simulation number.
 #' @param out Out list passed back in for updating at simulations 2+.
+#'
+#' @return
+#' A list with the following elements:
+#' \itemize{
+#'  \item \strong{param:} the epidemic parameters passed into the model through
+#'        \code{\link{param.net}}, with additional parameters added as
+#'        necessary.
+#'  \item \strong{control:} the control settings passed into the model through
+#'        \code{\link{control.net}}, with additional controls added as
+#'        necessary.
+#'  \item \strong{epi:} a list of data frames, one for each epidemiological
+#'        output from the model.
+#'  \item \strong{stats:} a list containing two sublists, \code{nwstats} for any
+#'        network statistics saved in the simulation, and \code{transmat} for
+#'        the transmission matrix saved in the simulation.
+#'  \item \strong{network:} a list of \code{networkDynamic} objects,
+#'         one for each model simulation.
+#' }
 #'
 #' @keywords internal
 #' @export

@@ -106,6 +106,8 @@
 #' for base models that the model parameters are valid, parameter validity is
 #' the user's responsibility with these original models.
 #'
+#' @return An \code{EpiModel} object of class \code{param.dcm}.
+#'
 #' @seealso Use \code{\link{init.dcm}} to specify the initial conditions and
 #'          \code{\link{control.dcm}} to specify the control settings. Run the
 #'          parameterized model with \code{\link{dcm}}.
@@ -188,6 +190,8 @@ param.dcm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
 #' must be input in the same order that the solved derivatives from the model
 #' are output. More details on this requirement are outlined in the
 #' \href{http://www.epimodel.org/tut.html}{Solving New DCMs} tutorial.
+#'
+#' @return An \code{EpiModel} object of class \code{init.dcm}.
 #'
 #' @seealso Use \code{\link{param.dcm}} to specify model parameters and
 #'          \code{\link{control.dcm}} to specify the control settings. Run the
@@ -279,6 +283,8 @@ init.dcm <- function(s.num, i.num, r.num, s.num.g2, i.num.g2, r.num.g2,
 #' \code{new.mod} argument, which requires as input a model function. Details
 #' and examples are found in the
 #' \href{http://www.epimodel.org/tut.html}{New DCMs} tutorial.
+#'
+#' @return An \code{EpiModel} object of class \code{control.dcm}.
 #'
 #' @seealso Use \code{\link{param.dcm}} to specify model parameters and
 #'          \code{\link{init.dcm}} to specify the initial conditions. Run the

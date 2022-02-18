@@ -9,6 +9,8 @@
 #'        information passed from \code{\link{netsim}}.
 #' @param at Current time step.
 #'
+#' @return The updated \code{dat} main list object.
+#'
 #' @export
 #'
 nwupdate.net <- function(dat, at) {

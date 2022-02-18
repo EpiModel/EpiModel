@@ -84,6 +84,8 @@ brewer_ramp <- function(n, plt, delete.lights = TRUE) {
 #' @param attrList Attribute list.
 #' @param ids ID numbers to delete from the list.
 #'
+#' @return The updated attribute list.
+#'
 #' @export
 #' @keywords internal
 deleteAttr <- function(attrList, ids) {
@@ -117,6 +119,8 @@ deleteAttr <- function(attrList, ids) {
 #' @param dat Main data object passed through \code{netsim} or \code{icm}
 #'            simulations.
 #' @param ids ID numbers to delete from the list.
+#'
+#' @return The updated \code{dat} main list object.
 #'
 #' @export
 #' @keywords internal
@@ -152,6 +156,8 @@ delete_attr <- function(dat, ids) {
 #' @param prob Vector of probability weights for obtaining the elements of the
 #'        vector being sampled.
 #'
+#' @return A vector containing the sampled value(s).
+#'
 #' @export
 #' @keywords internal
 ssample <- function(x, size, replace = FALSE, prob = NULL) {
@@ -180,6 +186,9 @@ ssample <- function(x, size, replace = FALSE, prob = NULL) {
 #' @param x An \code{EpiModel} object of class \code{dcm}, \code{icm}, or
 #'        \code{netsim}.
 #' @param ... Name-value pairs of expressions (see examples below).
+#'
+#' @return The updated \code{EpiModel} object of class \code{dcm}, \code{icm},
+#'         or \code{netsim}.
 #'
 #' @export
 #'
@@ -248,6 +257,9 @@ mutate_epi <- function(x, ...) {
 #' @param proportions Proportion distribution with one number for each value.
 #'        This must sum to 1.
 #' @param shuffled If \code{TRUE}, randomly shuffle the order of the vector.
+#'
+#' @return A vector of length \code{vector.length} containing the apportioned
+#'         values from \code{values}.
 #'
 #' @export
 #'

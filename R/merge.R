@@ -2,7 +2,7 @@
 #' @title Merge Data across Stochastic Individual Contact Model Simulations
 #'
 #' @description Merges epidemiological data from two independent simulations of
-#'              stochastic individual contact models from \code{icm}.
+#'              stochastic individual contact models from \code{\link{icm}}.
 #'
 #' @param x An \code{EpiModel} object of class \code{\link{icm}}.
 #' @param y Another \code{EpiModel} object of class \code{\link{icm}}, with the
@@ -21,6 +21,9 @@
 #' Instead, the function checks that objects are identical in model
 #' parameterization in every respect (except number of simulations) and binds
 #' the results.
+#'
+#' @return An \code{EpiModel} object of class \code{\link{icm}} containing the
+#'         data from both \code{x} and \code{y}.
 #'
 #' @method merge icm
 #' @keywords extract
@@ -112,9 +115,9 @@ merge.icm <- function(x, y, ...) {
 #'        by the \code{save.other} parameter in \code{control.netsim}) from the
 #'        original \code{x} and \code{y} elements.
 #' @param param.error If \code{TRUE}, if \code{x} and \code{y} have different
-#'        params (in \code{param.net}) or controls (passed in
-#'        \code{control.net}) an error will prevent the merge. Use \code{FALSE}
-#'        to override that check.
+#'        params (in \code{\link{param.net}}) or controls (passed in
+#'        \code{\link{control.net}}) an error will prevent the merge. Use
+#'        \code{FALSE} to override that check.
 #' @param ...  Additional merge arguments (not currently used).
 #'
 #' @details
@@ -129,6 +132,9 @@ merge.icm <- function(x, y, ...) {
 #' Instead, the function checks that objects are identical in model
 #' parameterization in every respect (except number of simulations) and binds
 #' the results.
+#'
+#' @return An \code{EpiModel} object of class \code{\link{netsim}} containing
+#'         the data from both \code{x} and \code{y}.
 #'
 #' @method merge netsim
 #' @keywords extract

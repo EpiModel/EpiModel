@@ -31,6 +31,9 @@
 #' For the latter, that is specified with the \code{keep.tedgelist} parameter
 #' directly in \code{\link{netdx}}.
 #'
+#' @return A \code{networkDynamic} object (if \code{collapse = FALSE}) or a
+#'         static \code{network} object (if \code{collapse = TRUE}).
+#'
 #' @keywords extract
 #' @export
 #'
@@ -214,6 +217,8 @@ get_transmat <- function(x, sim = 1) {
 #'        overlapping networks (advanced use, and not applicable to \code{netdx}
 #'        objects).
 #'
+#' @return A data frame of network statistics.
+#'
 #' @keywords extract
 #' @export
 #'
@@ -340,6 +345,10 @@ get_nwparam <- function(x, network = 1) {
 #'        \code{sims} is a numeric vector, or a single variable name for
 #'        selecting the average simulation from the set if \code{sims = "mean"}.
 #'
+#' @return An updated object of class \code{netsim} containing only the
+#'         simulations specified in \code{sims} and the variables specified in
+#'         \code{var}.
+#'
 #' @keywords extract
 #' @export
 #'
@@ -433,6 +442,8 @@ get_sims <- function(x, sims, var) {
 #'
 #' @param formal.args The output of \code{formals(sys.function())}.
 #' @param dot.args The output of \code{list(...)}.
+#'
+#' @return A list of argument names and values.
 #'
 #' @export
 #' @keywords internal

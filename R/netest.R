@@ -95,6 +95,8 @@
 #' listed in the \code{\link[ergm:control.ergm]{control.ergm}} help page in the
 #' \code{ergm} package. An example is below.
 #'
+#' @return A fitted network model object of class \code{netest}.
+#'
 #' @references
 #' Krivitsky PN, Handcock MS. "A separable model for dynamic networks." JRSS(B).
 #' 2014; 76.1:29-46.
@@ -328,7 +330,7 @@ diss_check <- function(formation, dissolution) {
 #' @title Adjust Dissolution Component of Network Model Fit
 #'
 #' @description Adjusts the dissolution component of a dynamic ERGM fit using
-#'              the \code{netest} function with the edges dissolution
+#'              the \code{\link{netest}} function with the edges dissolution
 #'              approximation method.
 #'
 #' @param old.netest An object of class \code{netest}, from the
@@ -355,6 +357,8 @@ diss_check <- function(formation, dissolution) {
 #' use a different dissolution model; a typical use case may be to fit several
 #' different models with different average edge durations as targets. The
 #' example below exhibits that case.
+#'
+#' @return An updated network model object of class \code{netest}.
 #'
 #' @export
 #'

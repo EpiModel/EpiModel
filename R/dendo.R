@@ -38,6 +38,8 @@
 #' requiring 'collapse.singles' to prune it to an appropriate branching
 #' structure.
 #'
+#' @return A \code{phylo} object.
+#'
 #' @importFrom ape as.phylo
 #' @export as.phylo.transmat
 #'
@@ -215,6 +217,8 @@ as.phylo.transmat <- function(x,
 #' @param x An object of class \code{transmat} to be converted into a network
 #'        object.
 #' @param ... Unused.
+#'
+#' @return A \code{\link{network}} object.
 #'
 #' @method as.network transmat
 #' @export

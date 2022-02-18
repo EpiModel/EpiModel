@@ -343,14 +343,15 @@ discord_edgelist <- function(dat, at, network = 1, infstat = "i") {
 #'        edgelist (if tergmLite is used) and other initialization information
 #'        passed from \code{\link{netsim}}.
 #' @param at Current time step.
-#' @param del Discordant edgelist created within \code{infection.net} and
-#'        \code{infection.2g.net}.
+#' @param del Discordant edgelist created within \code{\link{infection.net}} and
+#'        \code{\link{infection.2g.net}}.
 #'
 #' @details
 #' This internal function works within the parent \code{\link{infection.net}}
 #' functions to save the transmission matrix created at time step \code{at} to
 #' the main list object \code{dat}.
 #'
+#' @return The updated \code{dat} main list object.
 #' @export
 #'
 set_transmat <- function(dat, del, at) {

@@ -8,6 +8,8 @@
 #' @param dat Main data object passed through \code{icm} simulations.
 #' @param at Current time step.
 #'
+#' @return The updated \code{dat} main list object.
+#'
 #' @export
 #' @keywords internal
 #'
@@ -60,6 +62,8 @@ prevalence.icm <- function(dat, at) {
 #'
 #' @param dat Main data object passed through \code{icm} simulations.
 #' @param at Current time step.
+#'
+#' @return The updated \code{dat} main list object.
 #'
 #' @export
 #' @keywords internal

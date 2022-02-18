@@ -10,6 +10,8 @@
 #' @param nsteps For TERGMs, the number of time steps to simulate the network
 #'        over; for ERGMs, the number of independent network panels to simulate.
 #'
+#' @return The updated \code{dat} main data object.
+#'
 #' @export
 #' @keywords netUtils internal
 #'
@@ -122,6 +124,8 @@ sim_nets_t1 <- function(x, dat, nsteps) {
 #'
 #' @param dat Main data object passed through \code{netsim} simulations.
 #' @param at Current time step.
+#'
+#' @return The updated \code{dat} main data object.
 #'
 #' @export
 #' @keywords netUtils internal
@@ -261,6 +265,8 @@ resim_nets <- function(dat, at) {
 #'
 #' @param dat Main data object passed through \code{netsim} simulations.
 #' @param at Current time step.
+#'
+#' @return The updated \code{dat} main data object.
 #'
 #' @keywords internal
 #' @export

@@ -7,6 +7,8 @@
 #' @param dat Main data object passed through \code{icm} simulations.
 #' @param at Current time step.
 #'
+#' @return The updated \code{dat} main list object.
+#'
 #' @seealso \code{\link{icm}}
 #'
 #' @export
@@ -99,6 +101,8 @@ departures.icm <- function(dat, at) {
 #' @param dat Main data object passed through \code{icm} simulations.
 #' @param at Current time step.
 #'
+#' @return The updated \code{dat} main list object.
+#'
 #' @seealso \code{\link{icm}}
 #'
 #' @export
@@ -146,6 +150,8 @@ arrivals.icm <- function(dat, at) {
 #'
 #' @param dat Main data object passed through \code{icm} simulations.
 #' @param at Current time step.
+#'
+#' @return The updated \code{dat} main list object.
 #'
 #' @seealso \code{\link{icm}}
 #'
@@ -257,6 +263,8 @@ departures.icm.bip <- function(dat, at) {
 #'
 #' @param dat Main data object passed through \code{icm} simulations.
 #' @param at Current time step.
+#'
+#' @return The updated \code{dat} main list object.
 #'
 #' @seealso \code{\link{icm}}
 #'
