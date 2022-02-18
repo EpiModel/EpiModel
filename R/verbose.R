@@ -2,7 +2,7 @@
 #' @title Progress Print Module for Deterministic Compartmental Models
 #'
 #' @description This function prints progress from deterministic compartmental
-#'              models simulated with \code{dcm} to the console.
+#'              models simulated with \code{\link{dcm}} to the console.
 #'
 #' @param x If the \code{type} is "startup", then an object of class
 #'        \code{control.dcm}, otherwise the main \code{df} object in \code{dcm}
@@ -33,7 +33,7 @@ verbose.dcm <- function(x, type, s = 1) {
 #' @title Progress Print Module for Stochastic Individual Contact Models
 #'
 #' @description This function prints progress from stochastic individual contact
-#'              models simulated with \code{icm} to the console.
+#'              models simulated with \code{\link{icm}} to the console.
 #'
 #' @param x If the \code{type} is "startup", then an object of class
 #'        \code{control.icm}; otherwise \code{dat}, the main data object in
@@ -82,11 +82,11 @@ verbose.icm <- function(x, type, s = 1, at = 2) {
 #' @title Progress Print Module for Stochastic Network Models
 #'
 #' @description This function prints progress from stochastic network models
-#'              simulated with \code{netsim} to the console.
+#'              simulated with \code{\link{netsim}} to the console.
 #'
 #' @param x If the \code{type} is "startup", then an object of class
 #'        \code{control.net}; otherwise \code{dat}, the main data object in
-#'        \code{netsim} simulations.
+#'        \code{\link{netsim}} simulations.
 #' @param type Progress type, either of "startup" for starting messages before
 #'        all simulations, or "progress" for time step specific messages.
 #' @param s Current simulation number, if type is "progress".

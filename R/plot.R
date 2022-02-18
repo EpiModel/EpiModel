@@ -4,7 +4,7 @@
 #' @title Plot Data from a Deterministic Compartmental Epidemic Model
 #'
 #' @description Plots epidemiological data from a deterministic compartment
-#'              epidemic model solved with \code{dcm}.
+#'              epidemic model solved with \code{\link{dcm}}.
 #'
 #' @param x An \code{EpiModel} object of class \code{dcm}.
 #' @param y Output compartments or flows from \code{dcm} object to plot.
@@ -19,8 +19,9 @@
 #' @param lty Line type for output lines.
 #' @param alpha Transparency level for lines, where 0 = transparent and
 #'        1 = opaque (see \code{adjustcolor} function).
-#' @param legend Type of legend to plot. Values are "n" for no legend, "full"
-#'        for full legend, and "lim" for limited legend (see details).
+#' @param legend Type of legend to plot. Values are \code{"n"} for no legend,
+#'        \code{"full"} for full legend, and \code{"lim"} for limited legend
+#'        (see details).
 #' @param leg.name Character string to use for legend, with the default
 #'        determined automatically based on the \code{y} input.
 #' @param leg.cex Legend scale size.
@@ -460,7 +461,7 @@ plot.dcm <- function(x, y, popfrac = FALSE, run, col, lwd, lty, alpha = 0.9,
 #' @title Plot Data from a Stochastic Individual Contact Epidemic Model
 #'
 #' @description Plots epidemiological data from a stochastic individual contact
-#'              model simulated with \code{icm}.
+#'              model simulated with \code{\link{icm}}.
 #'
 #' @param x An \code{EpiModel} model object of class \code{icm}.
 #' @param y Output compartments or flows from \code{icm} object to plot.
@@ -887,7 +888,7 @@ draw_means <- function(x, y, mean.smooth, mean.lwd,
 #' @title Plot Dynamic Network Model Diagnostics
 #'
 #' @description Plots dynamic network model diagnostics calculated in
-#'              \code{netdx}.
+#'              \code{\link{netdx}}.
 #'
 #' @param x An \code{EpiModel} object of class \code{netdx}.
 #' @param type Plot type, with options of \code{"formation"} for network
@@ -1971,7 +1972,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #' @title Plot Data from a Stochastic Network Epidemic Model
 #'
 #' @description Plots epidemiological and network data from a stochastic network
-#'              model simulated with \code{netsim}.
+#'              model simulated with \code{\link{netsim}}.
 #'
 #' @param x An \code{EpiModel} model object of class \code{netsim}.
 #' @param type Type of plot: \code{"epi"} for epidemic model results,
@@ -3282,7 +3283,7 @@ comp_plot.netsim <- function(x, at = 1, digits = 3, ...) {
 #' @title ggplot2 Geom for Quantile Bands
 #'
 #' @description Plots quantile bands given a data.frame with stochastic model
-#'              results from \code{icm} or \code{netsim}.
+#'              results from \code{\link{icm}} or \code{\link{netsim}}.
 #'
 #' @param mapping Standard aesthetic mapping \code{aes()} input for ggplot2.
 #' @param lower Lower quantile for the time series.

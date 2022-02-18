@@ -2,7 +2,7 @@
 #'
 #' @description These \code{get_}, \code{set_}, \code{append_}, and \code{add_}
 #'              functions allow a safe and efficient way to retrieve and mutate
-#'              the main list object of network models, (\code{dat}).
+#'              the main list object of network models (\code{dat}).
 #'
 #' @param dat Main data object passed through \code{netsim} simulations.
 #' @param item A character vector containing the name of the element to access
@@ -34,8 +34,8 @@
 #' EpiModel to work (the four core attributes are: "active", "unique_id",
 #' "entrTime", and "exitTime"). These attributes are used in the initialization
 #' phase of the simulation, to create the nodes (see
-#' \code{initialize.net}); and also used when adding nodes during the
-#' simulation (see \code{arrival.net}).
+#' \code{\link{initialize.net}}); and also used when adding nodes during the
+#' simulation (see \code{\link{arrival.net}}).
 #'
 #' @section Mutability:
 #' The \code{set_}, \code{append_}, and \code{add_} functions DO NOT modify the
@@ -541,12 +541,13 @@ append_core_attr <- function(dat, at, n.new) {
 
 #' @title Create the Unique Identifiers for New Nodes
 #'
-#' @description This function is called by \code{append_core_attr} and appends
-#' new unique_ids to the created nodes. It also keeps track of the already used
-#' unique_ids with the \code{dat[["_last_unique_id"]]} variable.
+#' @description This function is called by \code{\link{append_core_attr}} and
+#' appends new \code{unique_ids} to the created nodes. It also keeps track of
+#' the already used \code{unique_ids} with the \code{dat[["_last_unique_id"]]}
+#' variable.
 #'
 #' @param dat Main data object passed through \code{netsim} simulations.
-#' @param n.new The number of new nodes to give unique_ids to.
+#' @param n.new The number of new nodes to give \code{unique_ids} to.
 #'
 #' @return The main list object of network models (\code{dat}).
 #'
@@ -602,7 +603,7 @@ check_attr_lengths <- function(dat) {
 #'              they are deactivated.
 #'
 #' @section All elements:
-#'   When  \code{unique_ids} or \code{posit_ids} is NULL (default)
+#'   When \code{unique_ids} or \code{posit_ids} is NULL (default)
 #'   the full list of positional IDs or unique IDs is returned.
 #'
 #' @section Deactivated nodes:
