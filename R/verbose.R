@@ -5,11 +5,11 @@
 #'              models simulated with \code{dcm} to the console.
 #'
 #' @param x If the \code{type} is "startup", then an object of class
-#'        \code{control.icm}, otherwise the all main data object in \code{icm}
-#'        simulations.
+#'        \code{control.dcm}, otherwise the main \code{df} object in \code{dcm}
+#'        runs.
 #' @param type Progress type, either of "startup" for starting messages before
-#'        all simulations, or "progress" for time step specific messages.
-#' @param s Current simulation number, if type is "progress".
+#'        all runs, or "progress" for time step specific messages.
+#' @param s Current run number, if type is "progress".
 #'
 #' @export
 #' @keywords internal
