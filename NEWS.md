@@ -1,3 +1,12 @@
+## EpiModel 2.2.2
+
+### NEW FEATURES
+
+### BUG FIXES
+
+### OTHER
+
+
 ## EpiModel 2.2.1
 
 ### NEW FEATURES
