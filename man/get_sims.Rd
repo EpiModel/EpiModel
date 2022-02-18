@@ -7,7 +7,7 @@
 get_sims(x, sims, var)
 }
 \arguments{
-\item{x}{.}
+\item{x}{An object of class \code{netsim}.}
 
 \item{sims}{Either a numeric vector of simulation numbers to retain in the
 output object, or \code{"mean"}, which selects the one simulation with
