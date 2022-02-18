@@ -52,6 +52,9 @@ parameters of arbitrary length.}
 
 \item{...}{additional control settings passed to model.}
 }
+\value{
+An \code{EpiModel} object of class \code{control.dcm}.
+}
 \description{
 Sets the controls for deterministic compartmental models
              simulated with \code{\link{dcm}}.

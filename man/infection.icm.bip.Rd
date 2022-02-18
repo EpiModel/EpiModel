@@ -11,6 +11,9 @@ infection.icm.bip(dat, at)
 
 \item{at}{Current time step.}
 }
+\value{
+The updated \code{dat} main list object.
+}
 \description{
 This function simulates the main infection process given the
              current state of the actors in the system.

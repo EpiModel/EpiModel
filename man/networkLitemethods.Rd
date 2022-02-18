@@ -94,6 +94,11 @@ described in \code{\link[ergm]{nodal_attributes}}.}
 \item{check.unique}{Should a check to ensure uniqueness of edges
 in the final edgelist be performed?}
 }
+\value{
+An edgelist for \code{as.edgelist.networkLite}; an updated
+        \code{networkLite} object for the replacement method. The other
+        methods return no objects.
+}
 \description{
 S3 methods for networkLite class, for generics defined in
              network package.

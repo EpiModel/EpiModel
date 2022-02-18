@@ -11,6 +11,9 @@ truncate_sim(x, at)
 
 \item{at}{Time step at which to left-truncate the time series.}
 }
+\value{
+The updated object of class \code{netsim} or \code{icm}.
+}
 \description{
 Left-truncates simulation epidemiological summary statistics
              and network statistics at a specified time step.

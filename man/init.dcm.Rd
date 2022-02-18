@@ -28,6 +28,9 @@ parameter is only used for two-group \code{SIR} models.}
 
 \item{...}{Additional initial conditions passed to model.}
 }
+\value{
+An \code{EpiModel} object of class \code{init.dcm}.
+}
 \description{
 Sets the initial conditions for deterministic compartmental
              models simulated with \code{dcm}.

@@ -12,6 +12,9 @@ object.}
 
 \item{...}{Unused.}
 }
+\value{
+A \code{\link{network}} object.
+}
 \description{
 Converts the edges of the infection tree described in the
              \code{\link{transmat}} object into a \code{\link{network}}

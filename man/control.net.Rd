@@ -178,6 +178,9 @@ for details and examples on specifying this parameter.}
 
 \item{...}{Additional control settings passed to model.}
 }
+\value{
+An \code{EpiModel} object of class \code{control.net}.
+}
 \description{
 Sets the controls for stochastic network models simulated with
              \code{\link{netsim}}.

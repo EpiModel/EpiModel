@@ -32,6 +32,9 @@ any nodes whose status is not \code{"i"}.}
 
 \item{...}{Additional initial conditions passed to model.}
 }
+\value{
+An \code{EpiModel} object of class \code{init.net}.
+}
 \description{
 Sets the initial conditions for stochastic network models
              simulated with \code{netsim}.

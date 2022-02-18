@@ -7,7 +7,7 @@
 get_sims(x, sims, var)
 }
 \arguments{
-\item{x}{An object of class \code{netsim}.}
+\item{x}{.}
 
 \item{sims}{Either a numeric vector of simulation numbers to retain in the
 output object, or \code{"mean"}, which selects the one simulation with
@@ -17,6 +17,11 @@ of \code{var} across all simulations.}
 \item{var}{A character vector of variables to retain from \code{x} if
 \code{sims} is a numeric vector, or a single variable name for
 selecting the average simulation from the set if \code{sims = "mean"}.}
+}
+\value{
+An updated object of class \code{netsim} containing only the
+        simulations specified in \code{sims} and the variables specified in
+        \code{var}.
 }
 \description{
 Subsets the entire \code{netsim} object to a subset of

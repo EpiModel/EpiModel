@@ -11,6 +11,9 @@ departures.icm.bip(dat, at)
 
 \item{at}{Current time step.}
 }
+\value{
+The updated \code{dat} main list object.
+}
 \description{
 This function simulates departure for use in \code{\link{icm}}
              simulations.

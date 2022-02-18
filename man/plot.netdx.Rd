@@ -107,7 +107,7 @@ target statistics in one plot, versus one plot per target statistic if
 }
 \description{
 Plots dynamic network model diagnostics calculated in
-             \code{netdx}.
+             \code{\link{netdx}}.
 }
 \details{
 The plot function for \code{netdx} objects will generate plots of two types

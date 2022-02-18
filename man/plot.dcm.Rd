@@ -44,8 +44,9 @@ R color format, or alternatively as a color palette from
 \item{alpha}{Transparency level for lines, where 0 = transparent and
 1 = opaque (see \code{adjustcolor} function).}
 
-\item{legend}{Type of legend to plot. Values are "n" for no legend, "full"
-for full legend, and "lim" for limited legend (see details).}
+\item{legend}{Type of legend to plot. Values are \code{"n"} for no legend,
+\code{"full"} for full legend, and \code{"lim"} for limited legend
+(see details).}
 
 \item{leg.name}{Character string to use for legend, with the default
 determined automatically based on the \code{y} input.}
@@ -66,7 +67,7 @@ to existing plot window.}
 }
 \description{
 Plots epidemiological data from a deterministic compartment
-             epidemic model solved with \code{dcm}.
+             epidemic model solved with \code{\link{dcm}}.
 }
 \details{
 This function plots epidemiological outcomes from a deterministic

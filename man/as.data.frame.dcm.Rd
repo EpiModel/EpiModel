@@ -18,13 +18,16 @@ not specified, will output data from all runs in a stacked data frame.}
 
 \item{...}{See \code{\link{as.data.frame.default}}.}
 }
+\value{
+A data frame containing the data from \code{x}.
+}
 \description{
 This function extracts a model run from an object of class
              \code{dcm} into a data frame using the generic
              \code{as.data.frame} function.
 }
 \details{
-Model output from \code{dcm} simulations are available as a data
+Model output from \code{\link{dcm}} simulations are available as a data
 frame with this helper function. The output data frame will include
 columns for time, the size of each compartment, the overall population
 size (the sum of compartment sizes), and the size of each flow.

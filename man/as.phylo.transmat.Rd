@@ -20,6 +20,9 @@ tree.}
 
 \item{...}{Further arguments (unused).}
 }
+\value{
+A \code{phylo} object.
+}
 \description{
 Converts the edgelist matrix in the \code{transmat} object into
              a \code{phylo} object by doing the required reordering and

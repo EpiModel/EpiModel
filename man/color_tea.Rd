@@ -39,6 +39,9 @@ object.}
 
 \item{verbose}{If \code{TRUE}, print progress to console.}
 }
+\value{
+The updated object of class \code{networkDynamic}.
+}
 \description{
 Creates a new color-named temporally-extended attribute (TEA)
              variable in a \code{networkDynamic} object containing a disease

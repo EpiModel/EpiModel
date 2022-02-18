@@ -11,6 +11,9 @@ arrivals.icm(dat, at)
 
 \item{at}{Current time step.}
 }
+\value{
+The updated \code{dat} main list object.
+}
 \description{
 This function simulates arrival for use in \code{\link{icm}}
              simulations.

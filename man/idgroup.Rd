@@ -12,6 +12,9 @@ idgroup(nw, ids)
 \item{ids}{Vector of ID numbers for which the group number
 should be returned.}
 }
+\value{
+A vector containing the group number for each of the specified nodes.
+}
 \description{
 Outputs group numbers given ID numbers for a two-group network.
 }

@@ -13,6 +13,9 @@ edgelist_meanage(x, el)
 \code{networkDynamic} object extracted with the
 \code{as.data.frame.networkDynamic} function.}
 }
+\value{
+A vector containing the mean edge age at each timestep.
+}
 \description{
 Outputs a vector of mean ages of edges at a series of timesteps.
 }

@@ -11,8 +11,8 @@ set_transmat(dat, del, at)
 edgelist (if tergmLite is used) and other initialization information
 passed from \code{\link{netsim}}.}
 
-\item{del}{Discordant edgelist created within \code{infection.net} and
-\code{infection.2g.net}.}
+\item{del}{Discordant edgelist created within \code{\link{infection.net}} and
+\code{\link{infection.2g.net}}.}
 
 \item{at}{Current time step.}
 }
@@ -24,4 +24,6 @@ This function appends the transmission matrix created during
 This internal function works within the parent \code{\link{infection.net}}
 functions to save the transmission matrix created at time step \code{at} to
 the main list object \code{dat}.
+
+The updated \code{dat} main list object.
 }

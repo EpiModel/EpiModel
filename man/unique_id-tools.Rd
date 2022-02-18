@@ -29,7 +29,7 @@ EpiModel refers to its nodes either by positional identifiers
 }
 \section{All elements}{
 
-  When  \code{unique_ids} or \code{posit_ids} is NULL (default)
+  When \code{unique_ids} or \code{posit_ids} is NULL (default)
   the full list of positional IDs or unique IDs is returned.
 }
 

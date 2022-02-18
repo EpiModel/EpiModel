@@ -60,6 +60,9 @@ the relevant values to the vector of formation model coefficients.}
 
 \item{...}{Additional arguments passed to other functions.}
 }
+\value{
+A fitted network model object of class \code{netest}.
+}
 \description{
 Estimates statistical network models using the exponential
              random graph modeling (ERGM) framework with extensions for

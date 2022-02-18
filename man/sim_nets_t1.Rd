@@ -14,6 +14,9 @@ sim_nets_t1(x, dat, nsteps)
 \item{nsteps}{For TERGMs, the number of time steps to simulate the network
 over; for ERGMs, the number of independent network panels to simulate.}
 }
+\value{
+The updated \code{dat} main data object.
+}
 \description{
 This function simulates a dynamic network over one or multiple
              time steps for TERGMs or one or multiple cross-sectional network

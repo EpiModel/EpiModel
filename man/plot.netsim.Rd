@@ -143,7 +143,7 @@ target statistics in one plot, versus one plot per target statistic if
 }
 \description{
 Plots epidemiological and network data from a stochastic network
-             model simulated with \code{netsim}.
+             model simulated with \code{\link{netsim}}.
 }
 \details{
 This plot function can produce three types of plots with a stochastic network

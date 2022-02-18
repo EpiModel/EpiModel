@@ -11,6 +11,9 @@ edges_correct(dat, at)
 
 \item{at}{Current time step.}
 }
+\value{
+The updated \code{dat} main data object.
+}
 \description{
 Adjusts the edges coefficient in a dynamic network model
              simulated in \code{\link{netsim}} to preserve the mean

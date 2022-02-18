@@ -12,6 +12,9 @@ simulations.}
 
 \item{ids}{ID numbers to delete from the list.}
 }
+\value{
+The updated \code{dat} main list object.
+}
 \description{
 Deletes elements from the main attribute list.
 }

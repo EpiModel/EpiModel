@@ -35,6 +35,10 @@ extracted network should be collapsed.}
 \code{network} objects; if \code{FALSE}, output the network list
 directly.}
 }
+\value{
+A \code{networkDynamic} object (if \code{collapse = FALSE}) or a
+        static \code{network} object (if \code{collapse = TRUE}).
+}
 \description{
 Extracts the \code{networkDynamic} object from either a
              network epidemic model object generated with \code{netsim} or a

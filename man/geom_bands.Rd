@@ -19,7 +19,7 @@ geom_bands(mapping, lower = 0.25, upper = 0.75, alpha = 0.25, ...)
 }
 \description{
 Plots quantile bands given a data.frame with stochastic model
-             results from \code{icm} or \code{netsim}.
+             results from \code{\link{icm}} or \code{\link{netsim}}.
 }
 \details{
 This is a wrapper around \code{ggplot::stat_summary} with a ribbon geom as

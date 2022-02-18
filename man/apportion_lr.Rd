@@ -16,6 +16,10 @@ This must sum to 1.}
 
 \item{shuffled}{If \code{TRUE}, randomly shuffle the order of the vector.}
 }
+\value{
+A vector of length \code{vector.length} containing the apportioned
+        values from \code{values}.
+}
 \description{
 Apportions a vector of values given a specified frequency
              distribution of those values such that the length of the output

@@ -95,6 +95,9 @@ parameter is only used for \code{SIR} model types.}
 
 \item{...}{Additional arguments passed to model.}
 }
+\value{
+An \code{EpiModel} object of class \code{param.net}.
+}
 \description{
 Sets the epidemic parameters for stochastic network models
              simulated with \code{\link{netsim}}.

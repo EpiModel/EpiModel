@@ -11,6 +11,9 @@ recovery.icm.bip(dat, at)
 
 \item{at}{Current time step.}
 }
+\value{
+The updated \code{dat} main list object.
+}
 \description{
 This function simulates recovery from the infected state
              either to a distinct recovered state (SIR model type) or back

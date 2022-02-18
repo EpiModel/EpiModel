@@ -9,6 +9,9 @@ init_status.icm(dat)
 \arguments{
 \item{dat}{Main data object passed through \code{icm} simulations.}
 }
+\value{
+The updated \code{dat} main list object.
+}
 \description{
 This function sets the initial disease status on the
              network given the specified initial conditions.

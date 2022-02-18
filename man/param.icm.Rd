@@ -100,6 +100,9 @@ set for group 1 (with \code{balance="g1"}) or group 2 (with
 
 \item{...}{Additional arguments passed to model.}
 }
+\value{
+An \code{EpiModel} object of class \code{param.icm}.
+}
 \description{
 Sets the epidemic parameters for stochastic individual contact
              models simulated with \code{icm}.

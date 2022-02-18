@@ -17,6 +17,9 @@ netsim_loop(x, param, init, control, s)
 
 \item{s}{Simulation number, used for restarting dependent simulations.}
 }
+\value{
+The updated \code{dat} main list object.
+}
 \description{
 This function runs the initialization and simulation loop for
              one simulation. Errors, warnings, and messages are pretty

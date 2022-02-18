@@ -12,6 +12,9 @@ other initialization information passed from \code{\link{netsim}}.}
 
 \item{at}{Current time step.}
 }
+\value{
+The updated \code{dat} main data object.
+}
 \description{
 Provides all active model state sizes from the network at the
              specified time step, output to a list of vectors.

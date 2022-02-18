@@ -28,6 +28,9 @@ parameter is only used for two-group \code{SIR} models.}
 
 \item{...}{Additional initial conditions passed to model.}
 }
+\value{
+An \code{EpiModel} object of class \code{init.icm}.
+}
 \description{
 Sets the initial conditions for stochastic individual contact
              models simulated with \code{icm}.

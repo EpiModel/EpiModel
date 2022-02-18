@@ -42,11 +42,15 @@ by the \code{save.other} parameter in \code{control.netsim}) from the
 original \code{x} and \code{y} elements.}
 
 \item{param.error}{If \code{TRUE}, if \code{x} and \code{y} have different
-params (in \code{param.net}) or controls (passed in
-\code{control.net}) an error will prevent the merge. Use \code{FALSE}
-to override that check.}
+params (in \code{\link{param.net}}) or controls (passed in
+\code{\link{control.net}}) an error will prevent the merge. Use
+\code{FALSE} to override that check.}
 
 \item{...}{Additional merge arguments (not currently used).}
+}
+\value{
+An \code{EpiModel} object of class \code{\link{netsim}} containing
+        the data from both \code{x} and \code{y}.
 }
 \description{
 Merges epidemiological data from two independent simulations of

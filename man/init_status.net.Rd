@@ -10,6 +10,9 @@ init_status.net(dat)
 \item{dat}{Main list object containing a \code{networkDynamic} object and
 other initialization information passed from \code{\link{netsim}}.}
 }
+\value{
+The updated \code{dat} main list object.
+}
 \description{
 This function sets the initial disease status on the
              network given the specified initial conditions.

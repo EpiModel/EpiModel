@@ -11,8 +11,11 @@ get_formula_term_attr(form, nw)
 
 \item{nw}{A network object.}
 }
+\value{
+A character vector of vertex attributes.
+}
 \description{
 Given a formation formula for a network model, outputs it into
              a character vector of vertex attributes to be used in
-             \code{netsim} simulations.
+             \code{\link{netsim}} simulations.
 }

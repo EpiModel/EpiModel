@@ -18,6 +18,9 @@ all simulations will be output.}
 
 \item{...}{See \code{\link{as.data.frame.default}}.}
 }
+\value{
+A data frame containing the data from \code{x}.
+}
 \description{
 This function extracts timed edgelists for objects of class
              \code{netdx} into a data frame using the generic

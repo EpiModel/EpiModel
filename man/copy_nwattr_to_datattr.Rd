@@ -9,6 +9,9 @@ copy_nwattr_to_datattr(dat)
 \arguments{
 \item{dat}{Main data object passed through \code{netsim} simulations.}
 }
+\value{
+The updated main \code{dat} object.
+}
 \description{
 Copies the vertex attributes stored on the network object to the
              main \code{attr} list in the \code{dat} data object.

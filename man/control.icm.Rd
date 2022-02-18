@@ -64,6 +64,9 @@ modules specified.}
 
 \item{...}{Additional control settings passed to model.}
 }
+\value{
+An \code{EpiModel} object of class \code{control.icm}.
+}
 \description{
 Sets the controls for stochastic individual contact models
              simulated with \code{\link{icm}}.

@@ -11,6 +11,9 @@ deleteAttr(attrList, ids)
 
 \item{ids}{ID numbers to delete from the list.}
 }
+\value{
+The updated attribute list.
+}
 \description{
 Deletes elements from the main attribute list.
 }

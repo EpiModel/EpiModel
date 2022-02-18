@@ -24,9 +24,12 @@ values to the vector of formation model coefficients.}
 
 \item{...}{Additional arguments passed to other functions.}
 }
+\value{
+An updated network model object of class \code{netest}.
+}
 \description{
 Adjusts the dissolution component of a dynamic ERGM fit using
-             the \code{netest} function with the edges dissolution
+             the \code{\link{netest}} function with the edges dissolution
              approximation method.
 }
 \details{

@@ -13,6 +13,9 @@ information passed from \code{\link{netsim}}.}
 
 \item{at}{Current time step.}
 }
+\value{
+The updated \code{dat} main list object.
+}
 \description{
 This function handles all calls to the network object contained
              on the main \code{dat} object handled in \code{netsim}.

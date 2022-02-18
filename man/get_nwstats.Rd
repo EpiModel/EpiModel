@@ -16,6 +16,9 @@ get_nwstats(x, sim, network = 1)
 overlapping networks (advanced use, and not applicable to \code{netdx}
 objects).}
 }
+\value{
+A data frame of network statistics.
+}
 \description{
 Extracts a data frame of network statistics from a network
              epidemic model simulated with \code{netsim} or a network

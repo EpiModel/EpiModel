@@ -11,6 +11,9 @@ resim_nets(dat, at)
 
 \item{at}{Current time step.}
 }
+\value{
+The updated \code{dat} main data object.
+}
 \description{
 This function resimulates the dynamic network in stochastic
              network models simulated in \code{\link{netsim}} with dependence

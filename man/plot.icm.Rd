@@ -88,7 +88,7 @@ to existing plot window.}
 }
 \description{
 Plots epidemiological data from a stochastic individual contact
-             model simulated with \code{icm}.
+             model simulated with \code{\link{icm}}.
 }
 \details{
 This plotting function will extract the epidemiological output from a model

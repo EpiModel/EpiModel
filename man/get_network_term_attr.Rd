@@ -9,8 +9,11 @@ get_network_term_attr(nw)
 \arguments{
 \item{nw}{A network object.}
 }
+\value{
+A character vector of vertex attributes.
+}
 \description{
 Given a simulated network, outputs it into
              a character vector of vertex attributes to be used in
-             \code{netsim} simulations.
+             \code{\link{netsim}} simulations.
 }

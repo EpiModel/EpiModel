@@ -108,7 +108,7 @@ A vector or a list of vectors for \code{get_} functions; the main
 \description{
 These \code{get_}, \code{set_}, \code{append_}, and \code{add_}
              functions allow a safe and efficient way to retrieve and mutate
-             the main list object of network models, (\code{dat}).
+             the main list object of network models (\code{dat}).
 }
 \section{Core Attribute}{
 
@@ -116,8 +116,8 @@ The \code{append_core_attr} function initializes the attributes necessary for
 EpiModel to work (the four core attributes are: "active", "unique_id",
 "entrTime", and "exitTime"). These attributes are used in the initialization
 phase of the simulation, to create the nodes (see
-\code{initialize.net}); and also used when adding nodes during the
-simulation (see \code{arrival.net}).
+\code{\link{initialize.net}}); and also used when adding nodes during the
+simulation (see \code{\link{arrival.net}}).
 }
 
 \section{Mutability}{

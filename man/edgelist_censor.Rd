@@ -11,6 +11,10 @@ edgelist_censor(el)
 \code{networkDynamic} object using the
 \code{as.data.frame.networkDynamic} function.}
 }
+\value{
+A 4 x 2 table containing the number and percent of edges in \code{el}
+        that are left-censored, right-censored, both-censored, or uncensored.
+}
 \description{
 Outputs a table of the number and percent of edges that are
              left-censored, right-censored, both-censored, or uncensored for
