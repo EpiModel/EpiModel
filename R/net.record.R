@@ -1,11 +1,12 @@
 #' @title Record Attributes History
 #'
 #' @description
-#' This function records values specific to a time-step and a group of nodes.
-#' The nodes are identified by their \code{unique_ids} which allows the
-#' recording of data for nodes that are no longer in the network by the end of
-#' the run. The records are stored in \code{dat[["attr.history"]]} and can be
-#' accessed from the \code{netsim} object with \code{get_attr_history}
+#' This function records values specific to a time-step and a group of nodes .
+#' In the records, the \code{posit_ids} are converted to \code{unique_ids} which
+#' allows the recording of data for nodes that are no longer in the network by
+#' the end of the run. The records are stored in \code{dat[["attr.history"]]}
+#' and can be accessed from the \code{netsim} object with
+#' \code{get_attr_history}
 #'
 #' @param dat a Master list object of network models
 #' @param at the time where the recording happens
@@ -23,6 +24,7 @@
 #' @examples
 #' \dontrun{
 #'
+#' # This function has to be used inside a custom module
 #' dat <- record_attr_history(dat, at, "attr_1", get_posit_ids(dat), 5)
 #' some_nodes <- get_posit_ids(dat)
 #' some_nodes <- some_nodes[runif(length(some_nodes)) < 0.2]

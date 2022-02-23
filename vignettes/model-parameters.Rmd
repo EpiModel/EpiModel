@@ -140,12 +140,12 @@ We now have a `data.frame` with 5 rows and 3 columns. Each row contains a set of
 The first column of the `data.frame` is named `dummy.param`, similar to the name of the parameter. For `dummy.start.param` we need two columns as the parameter contains two values. To achieve this, we name the 2 columns `dummy.start.param_1` and
 `dummy.strat.param_2`. The value after the underscore informs `EpiModel` how it should combine these values. This in turn means that the underscore symbol is not allowed in proper parameter names.
 
-Then we set up the rest of the parameters. `related.param` is saved in the `my.randoms` list under the special reserved name `param_random_set`.
+Then we set up the rest of the parameters. `related.param` is saved in the `my.randoms` list under the special reserved name `param.random.set`.
 
 ```{r set_param}
 my.randoms <- list(
   act.rate = param_random(c(0.25, 0.5, 0.75)),
-  param_random_set = related.param
+  param.random.set = related.param
 
 )
 
@@ -158,7 +158,7 @@ param
 ```
 
 Notice here that we combined a generator function for `act.rate` and a set of
-correlated parameters with `param_random_set`.
+correlated parameters with `param.random.set`.
 
 ```{r set_run}
 control <- control.net(type = "SI", nsims = 3, nsteps = 5, verbose = FALSE)

@@ -35,10 +35,10 @@ The function used inside \code{random_params} must be 0 argument functions
 returning a valid value for the parameter with the same name.
 }
 
-\section{\code{param_random_set}}{
+\section{\code{param.random.set}}{
 
 The \code{random_params} list can optionnally contain a
-\code{param_random_set} element. It must be a \code{data.frame} of possible
+\code{param.random.set} element. It must be a \code{data.frame} of possible
 values to be used as parameters.
 
 The column names must correspond either to:
@@ -46,9 +46,9 @@ the name of one parameter if this parameter is of size 1 or the name of the
 parameter with "_1", "_2", "_N" with the second part being the position of
 the value for a parameter of size > 1. This means that the parameter names
 cannot contain any underscore "_" if you intend to use
-\code{param_random_set}.
+\code{param.random.set}.
 
-The point of the \code{param_random_set} \code{data.frame} is to allow the
+The point of the \code{param.random.set} \code{data.frame} is to allow the
 random parameters to be correlated. To achieve this, a whole row of the
 \code{data.frame} is selected for each simulation.
 }
@@ -85,7 +85,7 @@ paramDraw <- generate_random_params(param, verbose = TRUE)
 paramDraw
 
 
-## Addition of the `param_random_set` `data.frame`
+## Addition of the `param.random.set` `data.frame`
 
 # This function will generate sets of correlated parameters
  generate_correlated_params <- function() {
@@ -105,10 +105,10 @@ paramDraw
    "param.set.2_1", "param.set.2_2", "param.set.2_3"
  )
 
-# Define random parameter list with the `param_random_set` element
+# Define random parameter list with the `param.random.set` element
 my_randoms <- list(
   act.rate = param_random(c(0.25, 0.5, 0.75)),
-  param_random_set = correlated_params
+  param.random.set = correlated_params
 )
 
 # Parameter model with fixed and random parameters

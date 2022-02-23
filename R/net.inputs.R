@@ -191,7 +191,7 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
     }
   }
 
-  ## random_params checks
+  ## random.params checks
    if ("random.params" %in% names.dot.args) {
      for (nm in names(p[["random.params"]])) {
        if (nm %in% names(p)) {
@@ -299,15 +299,16 @@ update_params <- function(x, new.param.list) {
 #' @title Create a Value Sampler for Random Parameters
 #'
 #' @description This function returns a 0 argument function that can be used as
-#'              a generator function in the \code{random_params} argument of the
-#'              \code{\link{param.net}} function.
+#'   a generator function in the \code{random.params} argument of the
+#'   \code{\link{param.net}} function.
 #'
 #' @param values a vector of values to sample from.
 #' @param prob a vector of weights to use during sampling, if \code{NULL},
-#'        all values have the same probability of being picked
-#'        (default = \code{NULL}).
+#'   all values have the same probability of being picked (default = \code{NULL}
+#'   ).
 
-#' @return one of the values from the \code{values} vector.
+#' @return a 0 argument generaor function to sample one of the values from the
+#'   \code{values} vector.
 #'
 #' @seealso \code{\link{param.net}} and \code{\link{generate_random_params}}
 #' @export
@@ -346,20 +347,21 @@ param_random <- function(values, prob = NULL) {
 #'
 #' @return A fully instantiated \code{param} list.
 #'
-#' @section \code{random_params}:
-#' The \code{random_params} argument to the \code{param.net} function must be a
+#' @section \code{random.params}:
+#' The \code{random.params} argument to the \code{param.net} function must be a
 #' named list of functions that return a values that can be used as the argument
 #' with the same name. In the example below, \code{param_random} is a function
 #' factory provided by EpiModel for \code{act.rate} and \code{tx.halt.part.prob}
-#' we provide bespoke functions.
+#' we provide bespoke functions. A function factory is a function that returns
+#' a new function (see https://adv-r.hadley.nz/function-factories.html).
 #'
 #' @section Generator Functions:
-#' The function used inside \code{random_params} must be 0 argument functions
+#' The function used inside \code{random.params} must be 0 argument functions
 #' returning a valid value for the parameter with the same name.
 #'
-#' @section \code{param_random_set}:
-#' The \code{random_params} list can optionnally contain a
-#' \code{param_random_set} element. It must be a \code{data.frame} of possible
+#' @section \code{param.random.set}:
+#' The \code{random.params} list can optionnally contain a
+#' \code{param.random.set} element. It must be a \code{data.frame} of possible
 #' values to be used as parameters.
 #'
 #' The column names must correspond either to:
@@ -367,9 +369,9 @@ param_random <- function(values, prob = NULL) {
 #' parameter with "_1", "_2", "_N" with the second part being the position of
 #' the value for a parameter of size > 1. This means that the parameter names
 #' cannot contain any underscore "_" if you intend to use
-#' \code{param_random_set}.
+#' \code{param.random.set}.
 #'
-#' The point of the \code{param_random_set} \code{data.frame} is to allow the
+#' The point of the \code{param.random.set} \code{data.frame} is to allow the
 #' random parameters to be correlated. To achieve this, a whole row of the
 #' \code{data.frame} is selected for each simulation.
 #'
@@ -407,7 +409,7 @@ param_random <- function(values, prob = NULL) {
 #' paramDraw
 #'
 #'
-#' ## Addition of the `param_random_set` `data.frame`
+#' ## Addition of the `param.random.set` `data.frame`
 #'
 #' # This function will generate sets of correlated parameters
 #'  generate_correlated_params <- function() {
@@ -427,10 +429,10 @@ param_random <- function(values, prob = NULL) {
 #'    "param.set.2_1", "param.set.2_2", "param.set.2_3"
 #'  )
 #'
-#' # Define random parameter list with the `param_random_set` element
+#' # Define random parameter list with the `param.random.set` element
 #' my_randoms <- list(
 #'   act.rate = param_random(c(0.25, 0.5, 0.75)),
-#'   param_random_set = correlated_params
+#'   param.random.set = correlated_params
 #' )
 #'
 #' # Parameter model with fixed and random parameters
@@ -462,21 +464,21 @@ generate_random_params <- function(param, verbose = FALSE) {
 
   rng_values <- list()
 
-  if ("param_random_set" %in% rng_names) {
-    # Take `param_random_set` out of the `random.params` list
-    param_random_set <- random.params[["param_random_set"]]
-    random.params[["param_random_set"]] <- NULL
+  if ("param.random.set" %in% rng_names) {
+    # Take `param.random.set` out of the `random.params` list
+    param.random.set <- random.params[["param.random.set"]]
+    random.params[["param.random.set"]] <- NULL
     rng_names <- names(random.params)
 
-    if (!is.data.frame(param_random_set)) {
-      stop("`param_random_set` must be a data.frame")
+    if (!is.data.frame(param.random.set)) {
+      stop("`param.random.set` must be a data.frame")
     }
 
     # Check the format of the names
-    set.elements <- names(param_random_set)
+    set.elements <- names(param.random.set)
     correct_format <- grepl("^[a-zA-Z0-9.]*(_[0-9]+)?$", set.elements)
     if (!all(correct_format)) {
-      stop("The following column names in `param_random_set` are malformed: \n",
+      stop("The following column names in `param.random.set` are malformed: \n",
         paste0(set.elements[!correct_format], collapse = ", "), "\n\n",
         "you can check the names with ",
         '`grepl("^[a-zA-Z0-9.]*(_[0-9]+)?$", your.names)` \n',
@@ -485,7 +487,7 @@ generate_random_params <- function(param, verbose = FALSE) {
     }
 
     # Construct a `data.frame` matching the names with the parameters
-    set.elements <- names(param_random_set)
+    set.elements <- names(param.random.set)
     set.elements.split <- data.frame(do.call(
       rbind,
       strsplit(set.elements, "_")
@@ -500,12 +502,12 @@ generate_random_params <- function(param, verbose = FALSE) {
     colnames(set.elements) <- c("name", "param", "position")
 
     # Pick one row of the `data.frame`
-    sampled.row <- sample.int(nrow(param_random_set), 1)
-    param_random_set <- param_random_set[sampled.row, ]
+    sampled.row <- sample.int(nrow(param.random.set), 1)
+    param.random.set <- param.random.set[sampled.row, ]
 
     # Set the new values in `rng_values`
     for (i in seq_len(nrow(set.elements))) {
-      value <- param_random_set[1, set.elements[i, "name"][[1]]]
+      value <- param.random.set[1, set.elements[i, "name"][[1]]]
       parameter <- set.elements[i, "param"][[1]]
       position <- set.elements[i, "position"][[1]]
 
@@ -515,7 +517,7 @@ generate_random_params <- function(param, verbose = FALSE) {
 
   if (!all(vapply(random.params, is.function, TRUE))) {
     stop("all elements of `random.params` must be functions \n",
-         "(Except 'param_random_set')")
+         "(Except 'param.random.set')")
   }
 
   duplicated.rng <- names(rng_values) %in% rng_names
