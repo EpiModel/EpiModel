@@ -23,7 +23,7 @@ The **EpiModel** package provides tools for simulating mathematical models of in
 
 This vignette provides a general orientation to the **EpiModel** tutorials and documentation within the package and hosted elsewhere online. Most full-length tutorials may be found at the **EpiModel** website (<http://www.epimodel.org>), which also points to our **Network Modeling for Epidemics (NME)** short-course (<https://statnet.org/nme/>). 
 
-Within the package, you can consult the extensive help documentation for each exported function:
+The current version of EpiModel is v`r vers`. Within the package, you can consult the extensive help documentation and vignettes for each exported function:
 
 ```{r, eval=FALSE}
 help(package = "EpiModel")
@@ -38,9 +38,9 @@ If you are interested in the stochastic network model class, we suggest learning
 3. Those interested in extending EpiModel for novel research aims should then consult the model extension materials of NME (Days 4-5), and look at the variety of extension model templates in our **EpiModel Gallery** (<https://github.com/EpiModel/EpiModel-Gallery>).
 4. Some of the latest developments in EpiModel are related to working with network model inputs and outputs, which are covered in these advanced topics vignettes within the package:
 
-- Working With Model Parameters
-- Working With Custom Attributes and Summary Statistics
-- Working With Network Objects
+- Working With Model Parameters in EpiModel
+- Working With Custom Attributes and Summary Statistics in EpiModel
+- Working With Network Objects in EpiModel
 
 ### Getting Help
 
