@@ -24,7 +24,9 @@ Apply a scenario object to a param.net object
 
 A scenario is a list containing an "id" field, the name of the scenario and
 a ".param.updater.list" containing a list of updaters that modifies the
-parameters of the model at given time steps. See the vignette
-"model-parameters" for the technical detail of their implementation.
+parameters of the model at given time steps. If a scenario contains a
+parameter not defined in the \code{param} object, an error will be produced.
+See the vignette "model-parameters" for the technical detail of their
+implementation.
 }
 

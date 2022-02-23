@@ -46,7 +46,7 @@ test_that("SIS with scenarios", {
 
   # rec.rate2 not in param
   scenarios.df <- dplyr::tribble(
-    ~.scenario.id, ~.at, ~inf_prob, ~rec.rate2,
+    ~.scenario.id, ~.at, ~inf.prob, ~rec.rate2,
     "multiple_changes", 0, 0.1, 0.1
   )
   scenarios.list <- make_scenarios_list(scenarios.df)
