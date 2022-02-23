@@ -79,14 +79,27 @@ make_scenario <- function(scenario.rows) {
 #' @section scenario:
 #' A scenario is a list containing an "id" field, the name of the scenario and
 #' a ".param.updater.list" containing a list of updaters that modifies the
-#' parameters of the model at given time steps. See the vignette
-#' "model-parameters" for the technical detail of their implementation.
+#' parameters of the model at given time steps. If a scenario contains a
+#' parameter not defined in the \code{param} object, an error will be produced.
+#' See the vignette "model-parameters" for the technical detail of their
+#' implementation.
 #'
 #' @inheritParams update_params
 #' @inherit update_params return
 #'
 #' @export
 use_scenario <- function(param, scenario) {
+  scenario.params <- unique(unlist(lapply(
+    scenario[[".param.updater.list"]],
+    function(element) names(element[["param"]]
+  ))))
+
+  undef.params <- setdiff(scenario.params, names(param))
+  if (length(undef.params) > 0) {
+    stop("Some of the scenario parameters are not defined in `param`: \n'",
+         paste0(undef.params, collapse = "', '"), "'")
+  }
+
   elements.at <- vapply(
     scenario[[".param.updater.list"]],
     function(element) element[["at"]],
@@ -105,8 +118,6 @@ use_scenario <- function(param, scenario) {
   )
 
   param[[".scenario.id"]] <- scenario[["id"]]
-
-  # print a message describing the scenario
 
   return(param)
 }

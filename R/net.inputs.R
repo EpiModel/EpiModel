@@ -1150,3 +1150,55 @@ crosscheck.net <- function(x, param, init, control) {
   assign("param", param, pos = parent.frame())
   assign("control", control, pos = parent.frame())
 }
+
+#' Parameters List for Stochastic Network Models from a Formatted Data Frame
+#'
+#' Sets the epidemic parameters for stochastic network models with
+#' \code{\link{netsim}} using a specially formatted data frame of parameters.
+#'
+#' @param long.param.df A \code{data.frame} of parameters. See details for the
+#'   expected format.
+#'
+#' @return A list object of class \code{param.net}, which can be passed to
+#'   EpiModel function \code{\link{netsim}}.
+#'
+#' @details
+#' The \code{long.param.df} first 3 columns must be:
+#' 1. 'param': the name of the parameter. If it is a multi dimension parameter,
+#'    prepend the name, with "_1", "_2", etc for the position in the vector.
+#' 2. 'value': the value for the parameter (or the Nth position if
+#' multidimensional)
+#' 3. 'type': a character string containing either "numeric", "logical" or
+#'    "character". The type the value will be cast to.
+#'
+#' Appart from these 3 columns, the \code{data.frame} can contain any number
+#' of other columns. A typical use case would be to have a "details" and
+#' "source" columns to document where these parameters come from.
+#'
+#' @export
+make_param_from_df <- function(long.param.df) {
+  # Checks
+  if (!all(names(long.param.df)[1:3] == c("param", "value", "type"))) {
+    stop("The first three columns of the `data.frame` must be 'param', 'value'",
+         " and 'type")
+  }
+  if (!all(long.param.df[["type"]] %in% c("numeric", "logical", "character"))) {
+    stop("The `type` column must contain only 'numeric', 'logical' or",
+         " 'character'")
+  }
+  check_params_names(long.param.df[["param"]])
+
+  # To flat params
+  flat.params <- Map(
+    function(g, x) g(x),
+    g = lapply(paste0("as.", long.param.df[["type"]]), get),
+    x = long.param.df[["value"]]
+  )
+  names(flat.params) <- long.param.df[["param"]]
+
+  # To param.list
+  param <- unflatten_params(flat.params)
+  class(param) <- c("param.net", "list")
+
+  return(param)
+}

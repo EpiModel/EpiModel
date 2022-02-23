@@ -43,6 +43,14 @@ test_that("SIS with scenarios", {
     "multiple_changes", 0, 0.1, 0.1
   )
   expect_error(scenarios.list <- make_scenarios_list(scenarios.df))
+
+  # rec.rate2 not in param
+  scenarios.df <- dplyr::tribble(
+    ~.scenario.id, ~.at, ~inf_prob, ~rec.rate2,
+    "multiple_changes", 0, 0.1, 0.1
+  )
+  scenarios.list <- make_scenarios_list(scenarios.df)
+  expect_error(sc.param <- use_scenario(param, scenarios.list[[1]]))
 })
 
 

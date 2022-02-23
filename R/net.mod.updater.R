@@ -179,7 +179,7 @@ common_updater <- function(dat, type) {
       if (verbose) {
         message(
           "\n\nAt timestep = ", at, " the following ", type.label,
-          " where modified:",
+          " were modified:",
           "\n'", paste0(names(new.list), collapse = "', '"), "'"
         )
       }
