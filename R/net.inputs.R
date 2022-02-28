@@ -1176,11 +1176,13 @@ crosscheck.net <- function(x, param, init, control) {
 #' "source" columns to document where these parameters come from.
 #'
 #' @export
-make_param_from_df <- function(long.param.df) {
+param.net_from_table <- function(long.param.df) {
   # Checks
-  if (!all(names(long.param.df)[1:3] == c("param", "value", "type"))) {
-    stop("The first three columns of the `data.frame` must be 'param', 'value'",
-         " and 'type")
+  if (!all(c("param", "value", "type") %in% names(long.param.df))) {
+    stop(
+      "The `data.frame` must contain the following 3 columns:\n",
+      "'param', 'value'", " and 'type"
+    )
   }
   if (!all(long.param.df[["type"]] %in% c("numeric", "logical", "character"))) {
     stop("The `type` column must contain only 'numeric', 'logical' or",
