@@ -1,15 +1,15 @@
-#' @title Create a Minimal Master List Object of Network Model
+#' @title Create a Minimal Main List Object for a Network Model
 #'
-#' @description This helper function populate a \code{dat} Master List object
+#' @description This helper function populates a \code{dat} main list object
 #'              with the minimal required elements. All parameters are optional.
-#'              When none is given the resulting object is only a shell list
+#'              When none are given the resulting object is only a shell list
 #'              with the different named elements defined as empty lists.
 #'
 #' @param param An \code{EpiModel} object of class \code{\link{param.net}}.
 #' @param init An \code{EpiModel} object of class \code{\link{init.net}}.
 #' @param control An \code{EpiModel} object of class \code{\link{control.net}}.
 #'
-#' @return A \code{dat} Master list object
+#' @return A \code{dat} main list object.
 #' @export
 create_dat_object <- function(param = list(), init = list(), control = list()) {
   dat <- list(
@@ -27,32 +27,32 @@ create_dat_object <- function(param = list(), init = list(), control = list()) {
   return(dat)
 }
 
-#' @title Returns the Current Timestep
+#' @title Return the Current Timestep
 #'
-#' @param dat a Master list object of network models
+#' @param dat Main data object passed through \code{netsim} simulations.
 #'
-#' @return the current timestep
+#' @return The current timestep.
 #' @export
 get_current_timestep <- function(dat) {
   return(dat[["_timestep"]])
 }
 
-#' @title Sets the Current Timestep
+#' @title Set the Current Timestep
 #'
 #' @description Changes the current timestep in the \code{dat} object. Use with
-#'              caution. This function exists to workaround unforseen corner
-#'              cases. In most situation, \code{increment_timestep} should be
-#'              prefered
+#'              caution. This function exists to work around unforeseen corner
+#'              cases. In most situation, \code{increment_timestep} is
+#'              preferred.
 #'
-#' @param dat a Master list object of network models
-#' @param timestep the new value for the timestep
+#' @param dat Main data object passed through \code{netsim} simulations.
+#' @param timestep The new value for the timestep.
 #'
-#' @return A \code{dat} Master list object
+#' @return A \code{dat} main list object.
 #'
 #' @section Mutability:
-#' This DOES NOT modify the dat object in place. The result must be assigned
-#' back to \code{dat} in order to be registered
-#' \code{dat <- increment_timestep(dat)}
+#' This DOES NOT modify the \code{dat} object in place. The result must be
+#' assigned back to \code{dat} in order to be registered:
+#' \code{dat <- increment_timestep(dat)}.
 #'
 #' @export
 set_current_timestep <- function(dat, timestep) {
@@ -63,16 +63,16 @@ set_current_timestep <- function(dat, timestep) {
 #' @title Increment the Current Timestep
 #'
 #' @description This function adds 1 to the timestep counter stored in the
-#'              \code{dat} Master list object.
+#'              \code{dat} main list object.
 #'
-#' @param dat a Master list object of network models
+#' @param dat Main data object passed through \code{netsim} simulations.
 #'
-#' @return A \code{dat} Master list object
+#' @return A \code{dat} main list object.
 #'
 #' @section Mutability:
-#' This DOES NOT modify the dat object in place. The result must be assigned
-#' back to \code{dat} in order to be registered
-#' \code{dat <- increment_timestep(dat)}
+#' This DOES NOT modify the \code{dat} object in place. The result must be
+#' assigned back to \code{dat} in order to be registered:
+#' \code{dat <- increment_timestep(dat)}.
 #'
 #' @export
 increment_timestep <- function(dat) {

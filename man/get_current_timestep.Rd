@@ -2,16 +2,16 @@
 % Please edit documentation in R/net.helpers.R
 \name{get_current_timestep}
 \alias{get_current_timestep}
-\title{Returns the Current Timestep}
+\title{Return the Current Timestep}
 \usage{
 get_current_timestep(dat)
 }
 \arguments{
-\item{dat}{a Master list object of network models}
+\item{dat}{Main data object passed through \code{netsim} simulations.}
 }
 \value{
-the current timestep
+The current timestep.
 }
 \description{
-Returns the Current Timestep
+Return the Current Timestep
 }

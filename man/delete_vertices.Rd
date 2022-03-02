@@ -2,7 +2,8 @@
 % Please edit documentation in R/update.R
 \name{delete_vertices}
 \alias{delete_vertices}
-\title{Fast Version of network::delete.vertices for Edgelist-formated Network}
+\title{Fast Version of network::delete.vertices for Edgelist-formatted
+       Network}
 \usage{
 delete_vertices(el, vid)
 }
@@ -13,7 +14,7 @@ variable \code{n} containing the total current network size.}
 \item{vid}{A vector of IDs to delete from the edgelist.}
 }
 \value{
-Returns a updated edgelist object, \code{el}, with the edges of deleted
+Returns an updated edgelist object, \code{el}, with the edges of deleted
 vertices removed from the edgelist and the ID numbers of the remaining edges
 permuted downward.
 }
@@ -27,7 +28,7 @@ Given a current two-column matrix of edges and a vector of IDs
 \details{
 This function is used in \code{EpiModel} modules to remove vertices (nodes)
 from the edgelist object to account for exits from the population (e.g.,
-deaths and out-migration)
+deaths and out-migration).
 }
 \examples{
 \dontrun{

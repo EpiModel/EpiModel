@@ -13,15 +13,18 @@ edgelist_meanage(x, el)
 \code{networkDynamic} object extracted with the
 \code{as.data.frame.networkDynamic} function.}
 }
+\value{
+A vector containing the mean edge age at each timestep.
+}
 \description{
-Outputs a vector of mean ages of edges at a series of timesteps
+Outputs a vector of mean ages of edges at a series of timesteps.
 }
 \details{
 This function calculates the mean partnership age at each time step over
 a dynamic network simulation from \code{\link{netest}}. These objects
 contain the network, edgelist, and dissolution objects needed for the
 calculation. Alternatively, one may pass in these objects separately if
-\code{netest} was not used, or statistics were not run requested after
+\code{netest} was not used, or statistics were not requested after
 the estimation.
 
 Currently, the calculations are limited to those dissolution formulas with a

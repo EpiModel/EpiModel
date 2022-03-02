@@ -7,8 +7,8 @@
 infection.net(dat, at)
 }
 \arguments{
-\item{dat}{A list object containing a \code{networkDynamic} object and other
-initialization information passed from \code{\link{netsim}}.}
+\item{dat}{Main list object containing a \code{networkDynamic} object and
+other initialization information passed from \code{\link{netsim}}.}
 
 \item{at}{Current time step.}
 }
@@ -23,7 +23,7 @@ This function simulates the main infection process given the
 \details{
 The main steps in this infection module are as follows:
 \enumerate{
- \item Get IDs for current infected and susceptibles given the current
+ \item Get IDs for current infected and susceptible nodes given the current
        disease status.
  \item Call \code{\link{discord_edgelist}} to get the current discordant
        edgelist given step 1.

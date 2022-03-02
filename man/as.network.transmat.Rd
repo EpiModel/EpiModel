@@ -2,15 +2,18 @@
 % Please edit documentation in R/dendo.R
 \name{as.network.transmat}
 \alias{as.network.transmat}
-\title{Converts transmat infection tree into a network object}
+\title{Convert transmat Infection Tree into a network Object}
 \usage{
 \method{as.network}{transmat}(x, ...)
 }
 \arguments{
-\item{x}{an object of class \code{transmat} to be converted into a network
-object}
+\item{x}{An object of class \code{transmat} to be converted into a network
+object.}
 
-\item{...}{unused}
+\item{...}{Unused.}
+}
+\value{
+A \code{\link{network}} object.
 }
 \description{
 Converts the edges of the infection tree described in the

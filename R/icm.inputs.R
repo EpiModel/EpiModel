@@ -18,21 +18,21 @@
 #' the model parameters entered here and the control settings in
 #' \code{\link{control.icm}}. One-group and two-group models are available,
 #' where the former assumes a homogeneous mixing in the population and the
-#' latter assumes a purely heterogeneous mixing between two distinct partitions
-#' in the population (e.g., men and women). Specifying any group two parameters
-#' (those with a \code{.g2}) implies the simulation of a two-group model. All
-#' the parameters for a desired model type must be specified, even if they are
-#' zero.
+#' latter assumes some form of heterogeneous mixing between two distinct
+#' partitions in the population (e.g., men and women). Specifying any group two
+#' parameters (those with a \code{.g2}) implies the simulation of a two-group
+#' model. All the parameters for a desired model type must be specified, even if
+#' they are zero.
 #'
 #' @section Act Balancing:
 #' In two-group models, a balance between the number of acts for group 1 members
 #' and those for group 2 members must be maintained. With purely heterogeneous
 #' mixing, the product of one group size and act rate must equal the product of
 #' the other group size and act rate: \eqn{N_1 \alpha_1 = N_2 \alpha_2}, where
-#' \eqn{N_i} is the group size and \eqn{\alpha_i} the group-specific act rates
+#' \eqn{N_i} is the group size and \eqn{\alpha_i} the group-specific act rate
 #' at time \eqn{t}. The \code{balance} parameter here specifies which group's
 #' act rate should control the others with respect to balancing. See the
-#' \href{http://www.epimodel.org/tut.html}{Basic DCMs} tutorial.
+#' \href{http://www.epimodel.org/tut.html}{Basic ICMs} tutorial.
 #'
 #' @section New Modules:
 #' To build original models outside of the base models, new process modules
@@ -44,6 +44,8 @@
 #' model parameters into \code{param.icm}. Whereas there are strict checks with
 #' default modules for parameter validity, these checks are the user's
 #' responsibility with new modules.
+#'
+#' @return An \code{EpiModel} object of class \code{param.icm}.
 #'
 #' @seealso Use \code{\link{init.icm}} to specify the initial conditions and
 #'          \code{\link{control.icm}} to specify the control settings. Run the
@@ -115,19 +117,19 @@ param.icm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
 #' @description Sets the initial conditions for stochastic individual contact
 #'              models simulated with \code{icm}.
 #'
-#' @param s.num Number of initial susceptible. For two-group models, this is
-#'        the number of initial group 1 susceptible.
-#' @param i.num Number of initial infected. For two-group models, this is the
-#'        number of initial group 1 infected.
-#' @param r.num Number of initial recovered. For two-group models, this is the
-#'        number of initial group 1 recovered. This parameter is only used for
-#'        the \code{SIR} model type.
-#' @param s.num.g2 Number of initial susceptible in group 2. This parameter is
-#'        only used for two-group models.
-#' @param i.num.g2 Number of initial infected in group 2. This parameter is only
-#'        used for two-group models.
-#' @param r.num.g2 Number of initial recovered in group 2. This parameter is
-#'        only used for two-group \code{SIR} models.
+#' @param s.num Number of initial susceptible persons. For two-group models,
+#'        this is the number of initial group 1 susceptible persons.
+#' @param i.num Number of initial infected persons. For two-group models, this
+#'        is the number of initial group 1 infected persons.
+#' @param r.num Number of initial recovered persons. For two-group models, this
+#'        is the number of initial group 1 recovered persons. This parameter is
+#'        only used for the \code{SIR} model type.
+#' @param s.num.g2 Number of initial susceptible persons in group 2. This
+#'        parameter is only used for two-group models.
+#' @param i.num.g2 Number of initial infected persons in group 2. This parameter
+#'        is only used for two-group models.
+#' @param r.num.g2 Number of initial recovered persons in group 2. This
+#'        parameter is only used for two-group \code{SIR} models.
 #' @param ... Additional initial conditions passed to model.
 #'
 #' @details
@@ -136,6 +138,8 @@ param.icm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
 #' conditions for both base models and original models using new modules. For
 #' an overview of initial conditions for base ICM class models, consult the
 #' \href{http://www.epimodel.org/tut.html}{Basic ICMs} tutorial.
+#'
+#' @return An \code{EpiModel} object of class \code{init.icm}.
 #'
 #' @seealso Use \code{\link{param.icm}} to specify model parameters and
 #'          \code{\link{control.icm}} to specify the control settings. Run the
@@ -199,7 +203,7 @@ init.icm <- function(s.num, i.num, r.num,
 #' @param verbose If \code{TRUE}, print model progress to the console.
 #' @param verbose.int Time step interval for printing progress to console, where
 #'        0 (the default) prints completion status of entire simulation and
-#'        positive integer \code{x} prints progress after each \code{x} time
+#'        positive integer \code{x} prints progress after every \code{x} time
 #'        steps.
 #' @param skip.check If \code{TRUE}, skips the default error checking for the
 #'        structure and consistency of the parameter values, initial conditions,
@@ -228,6 +232,8 @@ init.icm <- function(s.num, i.num, r.num,
 #' For original models, one may substitute replacement module functions for any
 #' of the default functions. New modules may be added to the workflow at each
 #' time step by passing a module function via the \code{...} argument.
+#'
+#' @return An \code{EpiModel} object of class \code{control.icm}.
 #'
 #' @seealso Use \code{\link{param.icm}} to specify model parameters and
 #'          \code{\link{init.icm}} to specify the initial conditions. Run the
@@ -386,7 +392,7 @@ crosscheck.icm <- function(param, init, control) {
     args <- names(control)[def]
 
     if (param$groups == 1) {
-      for (i in 1:length(args)) {
+      for (i in seq_along(args)) {
         if (is.null(control[[args[i]]])) {
           temp <- get(gsub(".FUN", ".icm", args[i]))
           control[[args[i]]] <- temp
@@ -394,7 +400,7 @@ crosscheck.icm <- function(param, init, control) {
       }
     }
     else {
-      for (i in 1:length(args)) {
+      for (i in seq_along(args)) {
         if (is.null(control[[args[i]]])) {
           temp <- get(gsub(".FUN", ".icm.bip", args[i]))
           control[[args[i]]] <- temp

@@ -2,35 +2,35 @@
 % Please edit documentation in R/net.mod.updater.R
 \name{updater.net}
 \alias{updater.net}
-\title{Module to modify the controls or parameters during the simulation}
+\title{Module to Modify the Controls or Parameters during the Simulation}
 \usage{
 updater.net(dat, at)
 }
 \arguments{
-\item{dat}{Master list object containing a \code{networkDynamic} object and
+\item{dat}{Main list object containing a \code{networkDynamic} object and
 other initialization information passed from \code{\link{netsim}}.}
 
 \item{at}{Current time step.}
 }
 \value{
-The updated \code{dat} Master list object.
+The updated \code{dat} main list object.
 }
 \description{
-Module to modify the controls or parameters during the simulation
+Module to Modify the Controls or Parameters during the Simulation
 }
 \details{
 If a list \code{param.updater.list} is present in the parameters, this module
 will update the \code{param} list with new values at given timesteps.
-Similarily, if a list \code{control.updater.list} is present in the controls,
-this module will update the \code{param} list with new values at given
+Similarly, if a list \code{control.updater.list} is present in the controls,
+this module will update the \code{control} list with new values at given
 timesteps.
 An updater is a list containing an \code{at} element governing when the
 changes will happen, an optional \code{verbose} Boolean controlling whether
-to output a message when a change is made (default = TRUE) and a \code{param}
-or \code{control} named list with the names being the same as the parameter /
-control names and the new value to update with. If the new value is a
-function but the old one is not, the function will be applied to the current
-element (see example).
+to output a message when a change is made (default = TRUE), and a
+\code{param} or \code{control} named list containing the new values(s) with
+which to update, with the names being the same as the parameter / control
+names. If the new value is a function but the old one is not, the function
+will be applied to the current element (see example).
 }
 \examples{
 \dontrun{

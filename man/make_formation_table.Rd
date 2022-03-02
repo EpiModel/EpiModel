@@ -7,14 +7,14 @@
 make_formation_table(merged.stats, targets)
 }
 \arguments{
-\item{merged.stats}{a matrix of \code{nsims * nsteps} rows, with a column for
-each of the formation target}
+\item{merged.stats}{A matrix of \code{nsims * nsteps} rows, with a column for
+each of the formation targets.}
 
-\item{targets}{a \code{data.frame} of the formation targets with two columns:
-"names" and "targets"}
+\item{targets}{A \code{data.frame} of the formation targets with two columns:
+"names" and "targets".}
 }
 \value{
-a \code{data.frame} of the formation statistics
+A \code{data.frame} of the formation statistics.
 }
 \description{
 Calculate the Formation Statistics of a Network

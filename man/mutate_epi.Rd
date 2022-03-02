@@ -12,6 +12,10 @@ mutate_epi(x, ...)
 
 \item{...}{Name-value pairs of expressions (see examples below).}
 }
+\value{
+The updated \code{EpiModel} object of class \code{dcm}, \code{icm},
+        or \code{netsim}.
+}
 \description{
 Inspired by \code{dplyr::mutate}, \code{mutate_epi} adds new
              variables to the epidemiological and related variables within

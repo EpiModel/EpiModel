@@ -2,21 +2,22 @@
 % Please edit documentation in R/net.accessor.R
 \name{update_unique_ids}
 \alias{update_unique_ids}
-\title{Create the unique_ids for the new nodes}
+\title{Create the Unique Identifiers for New Nodes}
 \usage{
 update_unique_ids(dat, n.new)
 }
 \arguments{
-\item{dat}{a Master list object of network models}
+\item{dat}{Main data object passed through \code{netsim} simulations.}
 
-\item{n.new}{the number of new nodes to give \code{unique_id} to}
+\item{n.new}{The number of new nodes to give \code{unique_ids} to.}
 }
 \value{
-the Master list object of network models (\code{dat})
+The main list object of network models (\code{dat}).
 }
 \description{
-This function is called by `append_core_attr` and append new
-unique_ids to the created nodes. It also keeps track of the already used
-unique_ids with the /code{dat[["_last_unique_id"]]} variable
+This function is called by \code{\link{append_core_attr}} and
+appends new \code{unique_ids} to the created nodes. It also keeps track of
+the already used \code{unique_ids} with the \code{dat[["_last_unique_id"]]}
+variable.
 }
 \keyword{internal}

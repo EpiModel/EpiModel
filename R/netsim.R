@@ -6,7 +6,7 @@
 #'
 #' @param x Fitted network model object, as an object of class \code{netest}.
 #'        Alternatively, if restarting a previous simulation, may be an object
-#'        ofclass \code{netsim}.
+#'        of class \code{netsim}.
 #' @param param Model parameters, as an object of class \code{param.net}.
 #' @param init Initial conditions, as an object of class \code{init.net}.
 #' @param control Control settings, as an object of class
@@ -23,7 +23,7 @@
 #' Network Models} tutorials.
 #'
 #' The \code{netsim} function performs modeling of both the base model types
-#' and original models. Base model types include one-mode and two-group models
+#' and original models. Base model types include one-group and two-group models
 #' with disease types for Susceptible-Infected (SI),
 #' Susceptible-Infected-Recovered (SIR), and
 #' Susceptible-Infected-Susceptible (SIS).
@@ -50,12 +50,14 @@
 #'  \item \strong{stats:} a list containing two sublists, \code{nwstats} for any
 #'        network statistics saved in the simulation, and \code{transmat} for
 #'        the transmission matrix saved in the simulation. See
-#'        \code{\link{control.net}} and the Tutorial for further details.
+#'        \code{\link{control.net}} and the
+#'        \href{http://www.epimodel.org/tut.html}{tutorials} for further
+#'        details.
 #'  \item \strong{network:} a list of \code{networkDynamic} objects,
 #'         one for each model simulation.
 #' }
 #' If \code{control$raw.output == TRUE}: A list of the raw (pre-processed)
-#' nestsim dat objects, for use in simulation continuation.
+#' \code{netsim} \code{dat} objects, for use in simulation continuation.
 #'
 #' @references
 #' Jenness SM, Goodreau SM and Morris M. EpiModel: An R Package for Mathematical
@@ -163,13 +165,17 @@ netsim <- function(x, param, init, control) {
   return(out)
 }
 
-#' @title Internal function running the network simulation loop
+#' @title Internal Function Running the Network Simulation Loop
 #'
-#' @description This function run the initialization and simulation loop for one
-#'              simulation. Error, warning and messages are pretty printed using
-#'              the `netsim_cond_msg` (utils.R)
+#' @description This function runs the initialization and simulation loop for
+#'              one simulation. Errors, warnings, and messages are pretty
+#'              printed using the \code{netsim_cond_msg} function (utils.R)
 #' @inheritParams initialize.net
+#'
+#' @return The updated \code{dat} main list object.
+#'
 #' @keywords internal
+#'
 netsim_loop <- function(x, param, init, control, s) {
   ## Instantiate random parameters
   param <- generate_random_params(param, verbose = FALSE)

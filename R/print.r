@@ -256,10 +256,11 @@ print.disscoef <- function(x, ...) {
   invisible()
 }
 
-#' Format one parameter for printing with the `print.param.xxx` functions
+#' @title Format One Parameter for Printing with the \code{print.param.xxx}
+#'        Functions
 #'
-#' @param param_name The name of the parameter to print
-#' @param param_value The value of the parameter to print
+#' @param param_name The name of the parameter to print.
+#' @param param_value The value of the parameter to print.
 #'
 #' @keywords internal
 format_param <- function(param_name, param_value) {
@@ -500,8 +501,8 @@ print.control.net <- function(x, ...) {
 
 #' @title Print Helper For Network Stats Tables
 #'
-#' @param nwtable a formation or dissolution statistics \code{data.frame}
-#' @param digits argument to be passed to \code{round}
+#' @param nwtable A formation or dissolution statistics \code{data.frame}.
+#' @param digits Argument to be passed to \code{round}.
 #'
 #' @keywords internal
 print_nwstats_table <- function(nwtable, digits) {

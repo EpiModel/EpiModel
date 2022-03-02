@@ -7,17 +7,18 @@
 get_cumulative_edgelist(dat, network)
 }
 \arguments{
-\item{dat}{a Master list object for \code{netsim}.}
+\item{dat}{Main data object passed through \code{netsim} simulations.}
 
 \item{network}{Numerical index of the network from which the cumulative
-edgelist should be extracted.}
+edgelist should be extracted. (May be > 1 for models with
+multiple overlapping networks.)}
 }
 \value{
 A cumulative edgelist in \code{data.frame} form with 4 columns:
 \itemize{
-  \item \code{head}: the unique ID see \code{get_unique_ids}) of the
+  \item \code{head}: the unique ID (see \code{get_unique_ids}) of the
         head node on the edge.
-  \item \code{tail}: the unique ID see \code{get_unique_ids}) of the
+  \item \code{tail}: the unique ID (see \code{get_unique_ids}) of the
         tail node on the edge.
   \item \code{start}: the time step in which the edge started.
   \item \code{stop}: the time step in which the edge stopped; if ongoing,

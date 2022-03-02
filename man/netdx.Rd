@@ -43,7 +43,7 @@ details).}
 
 \item{sequential}{For static diagnostics (\code{dynamic=FALSE}): if
 \code{FALSE}, each of the \code{nsims} simulated Markov chains begins
-at the initial network; If \code{TRUE}, the end of one simulation is
+at the initial network; if \code{TRUE}, the end of one simulation is
 used as the start of the next.}
 
 \item{keep.tedgelist}{If \code{TRUE}, keep the timed edgelist generated from
@@ -54,21 +54,24 @@ with one entry per simulation. Accessible at \code{$edgelist}.}
 from the dynamic simulations. Returned in the form of a list of nD
 objects, with one entry per simulation. Accessible at \code{$network}.}
 
-\item{verbose}{Print progress to the console.}
+\item{verbose}{If \code{TRUE}, print progress to the console.}
 
 \item{ncores}{Number of processor cores to run multiple simulations
 on, using the \code{foreach} and \code{doParallel} implementations.}
 
 \item{skip.dissolution}{If \code{TRUE}, skip over the calculations of
-duration and dissolution stats in netdx.}
+duration and dissolution stats in \code{netdx}.}
+}
+\value{
+A list of class \code{netdx}.
 }
 \description{
 Runs dynamic diagnostics on an ERGM/STERGM estimated through
-             \code{netest}.
+             \code{\link{netest}}.
 }
 \details{
 The \code{netdx} function handles dynamic network diagnostics for network
-models fit with the \code{netest} function. Given the fitted model,
+models fit with the \code{\link{netest}} function. Given the fitted model,
 \code{netdx} simulates a specified number of dynamic networks for a specified
 number of time steps per simulation. The network statistics in
 \code{nwstats.formula} are saved for each time step. Summary statistics for
@@ -78,7 +81,7 @@ plotting the \code{netdx} object.
 }
 \section{Control Arguments}{
 
-Models fit with the full STERGM method in \code{netest} (setting
+Models fit with the full STERGM method in \code{netest} (setting the
 \code{edapprox} argument to \code{FALSE}) require only a call to
 \code{simulate.stergm}. Control parameters for those simulations may be set
 using \code{set.control.stergm} in \code{netdx}. The parameters should be
