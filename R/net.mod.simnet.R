@@ -6,9 +6,11 @@
 #'              panels for ERGMs, for use in \code{\link{netsim}} modeling.
 #'
 #' @param x An \code{EpiModel} object of class \code{\link{netest}}.
-#' @param dat A master object passed through \code{\link{netsim}}.
+#' @param dat Main data object passed through \code{netsim} simulations.
 #' @param nsteps For TERGMs, the number of time steps to simulate the network
 #'        over; for ERGMs, the number of independent network panels to simulate.
+#'
+#' @return The updated \code{dat} main data object.
 #'
 #' @export
 #' @keywords netUtils internal
@@ -120,8 +122,10 @@ sim_nets_t1 <- function(x, dat, nsteps) {
 #'              between the epidemic and demographic processes and the network
 #'              structure.
 #'
-#' @param x A master object passed through \code{\link{netsim}}.
+#' @param dat Main data object passed through \code{netsim} simulations.
 #' @param at Current time step.
+#'
+#' @return The updated \code{dat} main data object.
 #'
 #' @export
 #' @keywords netUtils internal
@@ -259,8 +263,10 @@ resim_nets <- function(dat, at) {
 #'              simulated in \code{\link{netsim}} to preserve the mean
 #'              degree of nodes in the network.
 #'
-#' @param dat Master object in \code{netsim} simulations.
+#' @param dat Main data object passed through \code{netsim} simulations.
 #' @param at Current time step.
+#'
+#' @return The updated \code{dat} main data object.
 #'
 #' @keywords internal
 #' @export

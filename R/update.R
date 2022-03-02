@@ -1,6 +1,6 @@
 
 
-#' @title Fast Version of network::add.vertices for Edgelist-formated Network
+#' @title Fast Version of network::add.vertices for Edgelist-formatted Network
 #'
 #' @description This function performs a simple operation of updating the
 #'              edgelist attribute \code{n} that tracks the total network
@@ -17,9 +17,8 @@
 #' and in-migration).
 #'
 #' @return
-#' Returns the updated the attribute containing the population size on the
-#' edgelist, \code{el}, based on the number of new vertices specified to be
-#' added in \code{nv}.
+#' Returns the matrix of current edges, \code{el}, with the population size
+#' attribute updated based on the number of new vertices specified in \code{nv}.
 #'
 #' @export
 #'
@@ -57,7 +56,8 @@ add_vertices <- function(el, nv) {
 }
 
 
-#' @title Fast Version of network::delete.vertices for Edgelist-formated Network
+#' @title Fast Version of network::delete.vertices for Edgelist-formatted
+#'        Network
 #'
 #' @description Given a current two-column matrix of edges and a vector of IDs
 #'              to delete from the matrix, this function first removes any rows
@@ -72,10 +72,10 @@ add_vertices <- function(el, nv) {
 #' @details
 #' This function is used in \code{EpiModel} modules to remove vertices (nodes)
 #' from the edgelist object to account for exits from the population (e.g.,
-#' deaths and out-migration)
+#' deaths and out-migration).
 #'
 #' @return
-#' Returns a updated edgelist object, \code{el}, with the edges of deleted
+#' Returns an updated edgelist object, \code{el}, with the edges of deleted
 #' vertices removed from the edgelist and the ID numbers of the remaining edges
 #' permuted downward.
 #'

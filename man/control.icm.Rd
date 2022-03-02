@@ -53,7 +53,7 @@ step, with the default function of \code{\link{prevalence.icm}}.}
 
 \item{verbose.int}{Time step interval for printing progress to console, where
 0 (the default) prints completion status of entire simulation and
-positive integer \code{x} prints progress after each \code{x} time
+positive integer \code{x} prints progress after every \code{x} time
 steps.}
 
 \item{skip.check}{If \code{TRUE}, skips the default error checking for the
@@ -63,6 +63,9 @@ this to \code{FALSE} is recommended when running models with new
 modules specified.}
 
 \item{...}{Additional control settings passed to model.}
+}
+\value{
+An \code{EpiModel} object of class \code{control.icm}.
 }
 \description{
 Sets the controls for stochastic individual contact models

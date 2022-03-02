@@ -7,16 +7,16 @@
 make_dissolution_stats(sim.df, coef.diss, nsteps, verbose = TRUE)
 }
 \arguments{
-\item{sim.df}{a list of network objects (one per simulation)}
+\item{sim.df}{A list of network objects (one per simulation).}
 
-\item{coef.diss}{the \code{coef.diss} element of \code{nwparam}}
+\item{coef.diss}{The \code{coef.diss} element of \code{nwparam}.}
 
-\item{nsteps}{the number of simualted steps}
+\item{nsteps}{The number of simulated steps.}
 
-\item{verbose}{a verbosity toggle (default = TRUE)}
+\item{verbose}{A verbosity toggle (default = TRUE).}
 }
 \value{
-a \code{list} of dissolution statistics
+A \code{list} of dissolution statistics.
 }
 \description{
 Calculate the Dissolution Statistics of a Network

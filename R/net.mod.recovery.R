@@ -2,13 +2,15 @@
 #' @title Recovery: netsim Module
 #'
 #' @description This function simulates recovery from the infected state
-#'              either to an distinct recovered state (SIR model type) or back
+#'              either to a distinct recovered state (SIR model type) or back
 #'              to a susceptible state (SIS model type), for use in
 #'              \code{\link{netsim}}.
 #'
-#' @param dat Master list object containing a \code{networkDynamic} object and
+#' @param dat Main list object containing a \code{networkDynamic} object and
 #'        other initialization information passed from \code{\link{netsim}}.
 #' @param at Current time step.
+#'
+#' @return The updated \code{dat} main list object.
 #'
 #' @export
 #' @keywords internal
@@ -69,13 +71,15 @@ recovery.net <- function(dat, at) {
 #' @title Recovery: netsim Module
 #'
 #' @description This function simulates recovery from the infected state
-#'              either to an distinct recovered state (SIR model type) or back
+#'              either to a distinct recovered state (SIR model type) or back
 #'              to a susceptible state (SIS model type), for use in
 #'              \code{\link{netsim}}.
 #'
-#' @param dat Master list object containing a \code{networkDynamic} object and
+#' @param dat Main list object containing a \code{networkDynamic} object and
 #'        other initialization information passed from \code{\link{netsim}}.
 #' @param at Current time step.
+#'
+#' @return The updated \code{dat} main list object.
 #'
 #' @export
 #' @keywords internal

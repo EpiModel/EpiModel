@@ -7,25 +7,26 @@
 record_raw_object(dat, at, label, object)
 }
 \arguments{
-\item{dat}{a Master list object of network models}
+\item{dat}{Main data object passed through \code{netsim} simulations.}
 
-\item{at}{the time where the recording happens}
+\item{at}{The time where the recording happens.}
 
-\item{label}{the name to give to the recorded object}
+\item{label}{The name to give to the recorded object.}
 
-\item{object}{the object to be recorded}
+\item{object}{The object to be recorded.}
 }
 \value{
-The Master list object
+The main list object.
 }
 \description{
-This function records any object during a simulation to allow it's
+This function records any object during a simulation to allow its
 inspection afterward. The records are stored in \code{dat[["raw.records"]]}
 during the simulation and in the \code{netsim} object under the
 \code{raw.records} sublists.
 }
 \details{
-See the "Time Varying Attributes" vignette
+See the "Time-Varying Parameters" section of the "Working With Model
+Parameters" vignette.
 }
 \examples{
 \dontrun{

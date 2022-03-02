@@ -2,25 +2,25 @@
 % Please edit documentation in R/utils.R
 \name{netsim_cond_msg}
 \alias{netsim_cond_msg}
-\title{Message to find in which module a `condition` occured}
+\title{Message to Find in Which Module a \code{Condition} Occurred}
 \usage{
 netsim_cond_msg(cond, module, at, msg)
 }
 \arguments{
-\item{cond}{The type of `condition` handled (message, warning, error)}
+\item{cond}{The type of \code{condition} handled (message, warning, error).}
 
-\item{module}{The name of the module where the `condition` occured}
+\item{module}{The name of the module where the \code{condition} occurred.}
 
-\item{at}{The time step the `condition` occured}
+\item{at}{The time step the \code{condition} occurred.}
 
-\item{msg}{The `condition`'s message}
+\item{msg}{The \code{condition}'s message.}
 }
 \value{
-A formatted string describing where and whe the `condition` occured
-        as well as the `condition`'s message.
+A formatted string describing where and when the \code{condition}
+        occurred as well as the \code{condition}'s message.
 }
 \description{
-Returns vector of colors consistent with a high-brightness set
-             of colors from an \code{RColorBrewer} palette.
+This function returns a formatted string describing when, where,
+             and why an error, message, or warning occurred.
 }
 \keyword{internal}

@@ -1,8 +1,10 @@
 
 #' @title Definition for absdiffnodemix ERGM Term
 #'
-#' @description This function defines and initialize the absdiffnodemix ERGM
-#'              term that allows for targeting age homophily by race.
+#' @description This function defines and initializes the absdiffnodemix ERGM
+#'              term that allows for targeting homophily based on a non-binary
+#'              attribute (e.g., age) by combinations of a binary attribute
+#'              (e.g., race).
 #'
 #' @param nw An object of class \code{network}.
 #' @param arglist A list of arguments as specified in the \code{ergm.userterms}
@@ -13,7 +15,7 @@
 #' @details
 #' This ERGM user term was written to allow for age-based homophily in
 #' partnership formation that is heterogeneous by race. The \code{absdiff}
-#' component allows targets the distribution of age mixing on that continuous
+#' component targets the distribution of age mixing on that continuous
 #' variable, and the \code{nodemix} component differentiates this for
 #' black-black, black-white, and white-white couples.
 #'
@@ -65,8 +67,9 @@ InitErgmTerm.absdiffnodemix <- function(nw, arglist, ...) {
 
 #' @title Definition for absdiffby ERGM Term
 #'
-#' @description This function defines and initialize the absdiffby ERGM term
-#'              that allows for targeting age homophily by sex.
+#' @description This function defines and initializes the absdiffby ERGM term
+#'              that allows for targeting homophily based on a non-binary
+#'              attribute (e.g., age) by a binary attribute (e.g., sex).
 #'
 #' @param nw An object of class \code{network}.
 #' @param arglist A list of arguments as specified in the \code{ergm.userterms}
@@ -76,10 +79,10 @@ InitErgmTerm.absdiffnodemix <- function(nw, arglist, ...) {
 #'
 #' @details
 #' This ERGM user term was written to allow for age-based homophily in
-#' partnership formation that is asymetric by sex. The absdiff component targets
-#' age homophily while the by component allows that to be structed by a binary
-#' attribute such as "male", in order to enforce an offset in the average
-#' difference.
+#' partnership formation that is asymmetric by sex. The absdiff component
+#' targets age-based homophily while the by component allows that to be structed
+#' by a binary attribute such as "male", in order to enforce an offset in the
+#' average difference.
 #'
 #' @author Samuel M. Jenness
 #'

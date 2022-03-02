@@ -7,19 +7,19 @@
 brewer_ramp(n, plt, delete.lights = TRUE)
 }
 \arguments{
-\item{n}{Number of colors to return}
+\item{n}{Number of colors to return.}
 
-\item{plt}{\code{RColorBrewer} palette from \code{\link{brewer.pal}}}
+\item{plt}{\code{RColorBrewer} palette from \code{\link{brewer.pal}}.}
 
-\item{delete.lights}{Delete the lightest colors from the color palette,
-helps with plotting in many high-contrast palettes}
+\item{delete.lights}{If TRUE, delete the lightest colors from the color
+palette; this helps with plotting in many high-contrast palettes.}
 }
 \value{
 A vector of length equal to \code{n} with a range of color values consistent
 with an RColorBrewer color palette.
 }
 \description{
-Returns vector of colors consistent with a high-brightness set
+Returns a vector of colors consistent with a high-brightness set
              of colors from an \code{RColorBrewer} palette.
 }
 \details{

@@ -2,16 +2,18 @@
 % Please edit documentation in R/print.r
 \name{format_param}
 \alias{format_param}
-\title{Format one parameter for printing with the `print.param.xxx` functions}
+\title{Format One Parameter for Printing with the \code{print.param.xxx}
+       Functions}
 \usage{
 format_param(param_name, param_value)
 }
 \arguments{
-\item{param_name}{The name of the parameter to print}
+\item{param_name}{The name of the parameter to print.}
 
-\item{param_value}{The value of the parameter to print}
+\item{param_value}{The value of the parameter to print.}
 }
 \description{
-Format one parameter for printing with the `print.param.xxx` functions
+Format One Parameter for Printing with the \code{print.param.xxx}
+       Functions
 }
 \keyword{internal}

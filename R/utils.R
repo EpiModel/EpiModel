@@ -1,13 +1,13 @@
 
 #' @title RColorBrewer Color Ramp for EpiModel Plots
 #'
-#' @description Returns vector of colors consistent with a high-brightness set
+#' @description Returns a vector of colors consistent with a high-brightness set
 #'              of colors from an \code{RColorBrewer} palette.
 #'
-#' @param plt \code{RColorBrewer} palette from \code{\link{brewer.pal}}
-#' @param n Number of colors to return
-#' @param delete.lights Delete the lightest colors from the color palette,
-#'        helps with plotting in many high-contrast palettes
+#' @param plt \code{RColorBrewer} palette from \code{\link{brewer.pal}}.
+#' @param n Number of colors to return.
+#' @param delete.lights If TRUE, delete the lightest colors from the color
+#'        palette; this helps with plotting in many high-contrast palettes.
 #'
 #' @details
 #' \code{RColorBrewer} provides easy access to helpful color palettes, but the
@@ -79,10 +79,12 @@ brewer_ramp <- function(n, plt, delete.lights = TRUE) {
 
 #' @title Delete Elements from Attribute List
 #'
-#' @description Deletes elements from the master attribute list.
+#' @description Deletes elements from the main attribute list.
 #'
 #' @param attrList Attribute list.
 #' @param ids ID numbers to delete from the list.
+#'
+#' @return The updated attribute list.
 #'
 #' @export
 #' @keywords internal
@@ -112,10 +114,13 @@ deleteAttr <- function(attrList, ids) {
 
 #' @title Delete Elements from Attribute List
 #'
-#' @description Deletes elements from the master attribute list.
+#' @description Deletes elements from the main attribute list.
 #'
-#' @param dat Master list object containing a sublist of attributes.
+#' @param dat Main data object passed through \code{netsim} or \code{icm}
+#'            simulations.
 #' @param ids ID numbers to delete from the list.
+#'
+#' @return The updated \code{dat} main list object.
 #'
 #' @export
 #' @keywords internal
@@ -151,6 +156,8 @@ delete_attr <- function(dat, ids) {
 #' @param prob Vector of probability weights for obtaining the elements of the
 #'        vector being sampled.
 #'
+#' @return A vector containing the sampled value(s).
+#'
 #' @export
 #' @keywords internal
 ssample <- function(x, size, replace = FALSE, prob = NULL) {
@@ -179,6 +186,9 @@ ssample <- function(x, size, replace = FALSE, prob = NULL) {
 #' @param x An \code{EpiModel} object of class \code{dcm}, \code{icm}, or
 #'        \code{netsim}.
 #' @param ... Name-value pairs of expressions (see examples below).
+#'
+#' @return The updated \code{EpiModel} object of class \code{dcm}, \code{icm},
+#'         or \code{netsim}.
 #'
 #' @export
 #'
@@ -236,7 +246,7 @@ mutate_epi <- function(x, ...) {
 
 }
 
-#' @title Apportion Least-Remainder Method
+#' @title Apportion Using the Largest Remainder Method
 #'
 #' @description Apportions a vector of values given a specified frequency
 #'              distribution of those values such that the length of the output
@@ -248,7 +258,21 @@ mutate_epi <- function(x, ...) {
 #'        This must sum to 1.
 #' @param shuffled If \code{TRUE}, randomly shuffle the order of the vector.
 #'
+#' @return A vector of length \code{vector.length} containing the apportioned
+#'         values from \code{values}.
+#'
 #' @export
+#'
+#' @examples
+#' \dontrun{
+#' ## Example 1: Without rounding
+#' apportioned_vec_1 <- apportion_lr(4, c(1, 2, 3, 4, 5), c(0.25, 0, 0.25, 0.25,
+#'      0.25))
+#'
+#' ## Example 2: With rounding
+#' apportioned_vec_2 <- apportion_lr(5, c(1, 2, 3, 4, 5), c(0.21, 0, 0.29, 0.25,
+#'      0.25))
+#' }
 #'
 apportion_lr <- function(vector.length, values,
                          proportions, shuffled = FALSE) {
@@ -291,18 +315,18 @@ apportion_lr <- function(vector.length, values,
 }
 
 
-#' @title Message to find in which module a `condition` occured
+#' @title Message to Find in Which Module a \code{Condition} Occurred
 #'
-#' @description Returns vector of colors consistent with a high-brightness set
-#'              of colors from an \code{RColorBrewer} palette.
+#' @description This function returns a formatted string describing when, where,
+#'              and why an error, message, or warning occurred.
 #'
-#' @param cond The type of `condition` handled (message, warning, error)
-#' @param module The name of the module where the `condition` occured
-#' @param at The time step the `condition` occured
-#' @param msg The `condition`'s message
+#' @param cond The type of \code{condition} handled (message, warning, error).
+#' @param module The name of the module where the \code{condition} occurred.
+#' @param at The time step the \code{condition} occurred.
+#' @param msg The \code{condition}'s message.
 #'
-#' @return A formatted string describing where and whe the `condition` occured
-#'         as well as the `condition`'s message.
+#' @return A formatted string describing where and when the \code{condition}
+#'         occurred as well as the \code{condition}'s message.
 #'
 #' @keywords internal
 netsim_cond_msg <- function(cond, module, at, msg) {

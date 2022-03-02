@@ -11,7 +11,7 @@ get_attr_history(sims)
 }
 \value{
 A list of \code{data.frame}s, one for each "measure" recorded in the
-simulation by the `record_attr_history` function.
+simulation by the \code{record_attr_history} function.
 }
 \description{
 Extract the Attributes History from Network Simulations

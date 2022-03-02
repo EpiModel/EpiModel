@@ -22,16 +22,19 @@ initial formation model coefficients, or by appending the new
 dissolution terms to the formation model and appending the relevant
 values to the vector of formation model coefficients.}
 
-\item{...}{additional arguments passed to other functions}
+\item{...}{Additional arguments passed to other functions.}
+}
+\value{
+An updated network model object of class \code{netest}.
 }
 \description{
-Adjusts the dissolution component of an dynamic ERGM fit using
-             the \code{netest} function with the edges dissolution
+Adjusts the dissolution component of a dynamic ERGM fit using
+             the \code{\link{netest}} function with the edges dissolution
              approximation method.
 }
 \details{
 Fitting an ERGM is a computationally intensive process when the model
-includes dyadic dependent terms. With the edges dissolution approximation
+includes dyad dependent terms. With the edges dissolution approximation
 method of Carnegie et al, the coefficients for a temporal ERGM are
 approximated by fitting a static ERGM and adjusting the formation
 coefficients to account for edge dissolution. This function provides a very

@@ -7,16 +7,17 @@
 update_cumulative_edgelist(dat, network, truncate = 0)
 }
 \arguments{
-\item{dat}{Master list object of network models.}
+\item{dat}{Main data object passed through \code{netsim} simulations.}
 
 \item{network}{Numerical index of the network for which the cumulative
-edgelist will be updated.}
+edgelist will be updated. (May be > 1 for models with
+multiple overlapping networks.)}
 
 \item{truncate}{After how many time steps a partnership that is no longer
 active should be removed from the output.}
 }
 \value{
-An updated Master list object of network models
+An updated main list object of network models.
 }
 \description{
 Update a Cumulative Edgelist of the Specified Network
@@ -28,6 +29,6 @@ parameter defines a number of steps after which an edge that is no longer
 active is truncated out of the cumulative edgelist.
 When \code{truncate = Inf}, no edges are ever removed. When
 \code{truncate = 0}, only the active edges are kept. You may want this
-behavior to keep track of the active edges start step.
+behavior to keep track of the active edges' start step.
 }
 

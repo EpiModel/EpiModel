@@ -10,11 +10,14 @@ get_nwstats(x, sim, network = 1)
 \item{x}{An \code{EpiModel} object of class \code{\link{netsim}} or
 \code{\link{netdx}}.}
 
-\item{sim}{A vector of simulation numbers from the extracted object}
+\item{sim}{A vector of simulation numbers from the extracted object.}
 
 \item{network}{Network number, for \code{netsim} objects with multiple
 overlapping networks (advanced use, and not applicable to \code{netdx}
 objects).}
+}
+\value{
+A data frame of network statistics.
 }
 \description{
 Extracts a data frame of network statistics from a network

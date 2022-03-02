@@ -10,8 +10,8 @@
 
 #' @title Write Out Test Progress to Console
 #'
-#' @description Writes the name of a test and \code{...} to console for
-#'              showing testing progress.
+#' @description Writes the name of a test and \code{...} to console to show test
+#'              progress.
 #'
 #' @param test Character string with the name of a test.
 #'

@@ -7,14 +7,14 @@
 param_random(values, prob = NULL)
 }
 \arguments{
-\item{values}{a vector of values to sample from.}
+\item{values}{A vector of values to sample from.}
 
-\item{prob}{a vector of weights to use during sampling, if \code{NULL},
+\item{prob}{A vector of weights to use during sampling. If \code{NULL},
 all values have the same probability of being picked
 (default = \code{NULL}).}
 }
 \value{
-one of the values from the \code{values} vector.
+One of the values from the \code{values} vector.
 }
 \description{
 This function returns a 0 argument function that can be used as

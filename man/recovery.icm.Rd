@@ -7,13 +7,16 @@
 recovery.icm(dat, at)
 }
 \arguments{
-\item{dat}{Master data list object.}
+\item{dat}{Main data object passed through \code{icm} simulations.}
 
 \item{at}{Current time step.}
 }
+\value{
+The updated \code{dat} main list object.
+}
 \description{
 This function simulates recovery from the infected state
-             either to an distinct recovered state (SIR model type) or back
+             either to a distinct recovered state (SIR model type) or back
              to a susceptible state (SIS model type), for use in
              \code{\link{icm}}.
 }

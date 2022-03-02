@@ -2,7 +2,8 @@
 #' @title Deterministic Compartmental Model Functions
 #'
 #' @description These functions parameterize the base deterministic
-#'              compartmental models solved using the \code{dcm} function.
+#'              compartmental models solved using the \code{\link{dcm}}
+#'              function.
 #'
 #' @param t Time vector, passed into model function internally through
 #'        \code{\link{dcm}} via the control settings in

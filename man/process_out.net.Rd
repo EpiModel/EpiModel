@@ -2,12 +2,12 @@
 % Please edit documentation in R/saveout.R
 \name{process_out.net}
 \alias{process_out.net}
-\title{Save a list of netsim Data to Output List Format}
+\title{Save a List of netsim Data to Output List Format}
 \usage{
 process_out.net(dat_list)
 }
 \arguments{
-\item{dat_list}{A list of Master objects in \code{netsim} simulations.}
+\item{dat_list}{A list of main objects in \code{netsim} simulations.}
 }
 \value{
 A list of class \code{netsim} with the following elements:
@@ -23,13 +23,15 @@ A list of class \code{netsim} with the following elements:
  \item \strong{stats:} a list containing two sublists, \code{nwstats} for any
        network statistics saved in the simulation, and \code{transmat} for
        the transmission matrix saved in the simulation. See
-       \code{\link{control.net}} and the Tutorial for further details.
+       \code{\link{control.net}} and the
+       \href{http://www.epimodel.org/tut.html}{tutorials} for further
+       details.
  \item \strong{network:} a list of \code{networkDynamic} objects,
         one for each model simulation.
 }
 }
 \description{
-This function transfers the data from a list of the master
+This function transfers the data from a list of the main
              \code{dat} objects to the output \code{out} object at the end of
              all simulations in \code{\link{netsim}}.
 }

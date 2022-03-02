@@ -24,16 +24,16 @@ networkLite(x, ...)
 \method{networkLite}{matrix}(x, attr = list(), ...)
 }
 \arguments{
-\item{x}{either an \code{edgelist} class network representation (including
+\item{x}{Either an \code{edgelist} class network representation (including
 network attributes in its \code{attributes} list), or a number
 specifying the network size.}
 
-\item{...}{additional arguments used by other methods.}
+\item{...}{Additional arguments used by other methods.}
 
-\item{directed, bipartite, loops, hyper, multiple}{common network attributes that
+\item{directed, bipartite, loops, hyper, multiple}{Common network attributes that
 may be set via arguments to the \code{networkLite.numeric} method.}
 
-\item{attr}{a named list of vertex attributes for the network represented by
+\item{attr}{A named list of vertex attributes for the network represented by
 \code{x}.}
 }
 \value{

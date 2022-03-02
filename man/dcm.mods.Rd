@@ -55,7 +55,8 @@ through \code{\link{dcm}} via the initial conditions in
 }
 \description{
 These functions parameterize the base deterministic
-             compartmental models solved using the \code{dcm} function.
+             compartmental models solved using the \code{\link{dcm}}
+             function.
 }
 \details{
 This help page shows the names of all the base deterministic compartmental

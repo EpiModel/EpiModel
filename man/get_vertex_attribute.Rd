@@ -15,12 +15,14 @@ get_vertex_attribute(x, attrname)
 Returns an object of class \code{network}.
 }
 \description{
-Gets a vertex attribute from an object of class \code{network},
-             wrapping the related function in the \code{network} package.
+Gets a vertex attribute from an object of class \code{network}.
+             This functions simplifies the related function in the
+             \code{network} package.
 }
 \details{
-This function is used in \code{EpiModel} workflow to query vertex attributes
-on an initialized empty network object (see \code{\link{network_initialize}}.
+This function is used in \code{EpiModel} workflows to query vertex
+attributes on an initialized empty network object (see
+\code{\link{network_initialize}}).
 }
 \examples{
 nw <- network_initialize(100)
