@@ -50,7 +50,7 @@ init <- init.net(i.num = 10)
 
 ### Definition of the Scenarios
 
-To define the scenarios, we will make use of the `EpiModel::make_scenarios_list`
+To define the scenarios, we will make use of the `EpiModel::create_scenario_list`
 function. It takes a specially formatted `data.frame` as input and outputs a
 list of scenarios usable by EpiModel.
 
@@ -90,7 +90,7 @@ during the simulation.
 To go from the `scenarios.df` to a list of usable scenarios we simply run
 
 ```{r scenarios_list}
-scenarios.list <- make_scenarios_list(scenarios.df)
+scenarios.list <- create_scenario_list(scenarios.df)
 str(scenarios.list, max.level = 2)
 ```
 

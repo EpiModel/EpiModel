@@ -28,7 +28,7 @@
 #' cannot contain any underscore "_". (e.g "a.rate", "d.rate_1", "d.rate_2")
 #'
 #' @export
-make_scenarios_list <- function(scenarios.df) {
+create_scenario_list <- function(scenarios.df) {
   check_scenarios_df(scenarios.df)
   scenarios.names <- unique(scenarios.df[[".scenario.id"]])
 
@@ -74,7 +74,7 @@ make_scenario <- function(scenario.rows) {
 #' Apply a scenario object to a param.net object
 #'
 #' @param scenario a scenario object usually created from a \code{data.frame} of
-#' scenarios using the \code{make_scenarios_list} function. See the vignette
+#' scenarios using the \code{create_scenario_list} function. See the vignette
 #' "network-model-scenarios".
 #'
 #' @section scenario:

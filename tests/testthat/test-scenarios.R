@@ -22,7 +22,7 @@ test_that("SIS with scenarios", {
     "multiple_changes", 40, 0.1, 0.1
   )
 
-  scenarios.list <- make_scenarios_list(scenarios.df)
+  scenarios.list <- create_scenario_list(scenarios.df)
   expect_length(scenarios.list, 2)
 
   sc.param <- use_scenario(param, scenarios.list[[1]])
@@ -35,21 +35,21 @@ test_that("SIS with scenarios", {
     ~.scenario.id, ~.at, ~inf.prob, ~rec.rate,
     "multiple_changes", "text", 0.1, 0.1
   )
-  expect_error(scenarios.list <- make_scenarios_list(scenarios.df))
+  expect_error(scenarios.list <- create_scenario_list(scenarios.df))
 
   # inf_prob with an underscore
   scenarios.df <- dplyr::tribble(
     ~.scenario.id, ~.at, ~inf_prob, ~rec.rate,
     "multiple_changes", 0, 0.1, 0.1
   )
-  expect_error(scenarios.list <- make_scenarios_list(scenarios.df))
+  expect_error(scenarios.list <- create_scenario_list(scenarios.df))
 
   # rec.rate2 not in param
   scenarios.df <- dplyr::tribble(
     ~.scenario.id, ~.at, ~inf.prob, ~rec.rate2,
     "multiple_changes", 0, 0.1, 0.1
   )
-  scenarios.list <- make_scenarios_list(scenarios.df)
+  scenarios.list <- create_scenario_list(scenarios.df)
   expect_error(sc.param <- use_scenario(param, scenarios.list[[1]]))
 })
 

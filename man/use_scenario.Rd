@@ -10,7 +10,7 @@ use_scenario(param, scenario)
 \item{param}{Object of class \code{param.net}, output from function of same name.}
 
 \item{scenario}{a scenario object usually created from a \code{data.frame} of
-scenarios using the \code{make_scenarios_list} function. See the vignette
+scenarios using the \code{create_scenario_list} function. See the vignette
 "network-model-scenarios".}
 }
 \value{
