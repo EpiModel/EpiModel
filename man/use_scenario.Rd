@@ -7,14 +7,15 @@
 use_scenario(param, scenario)
 }
 \arguments{
-\item{param}{Object of class \code{param.net}, output from function of same name.}
+\item{param}{Object of class \code{param.net}, output from function of same
+name.}
 
 \item{scenario}{a scenario object usually created from a \code{data.frame} of
 scenarios using the \code{create_scenario_list} function. See the vignette
 "network-model-scenarios".}
 }
 \value{
-An updated list object of class \code{param.net}, which can be passed to
+An updated list object of class \code{param.net}, which can be passed to the
 EpiModel function \code{\link{netsim}}.
 }
 \description{

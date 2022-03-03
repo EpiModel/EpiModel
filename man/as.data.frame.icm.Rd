@@ -36,6 +36,9 @@ specified, then data from all simulations will be output.}
 
 \item{...}{See \code{\link{as.data.frame.default}}.}
 }
+\value{
+A data frame containing the data from \code{x}.
+}
 \description{
 This function extracts model simulations for objects of classes
              \code{icm} and \code{netsim} into a data frame using

@@ -2,20 +2,20 @@
 % Please edit documentation in R/net.mod.updater.R
 \name{update_list}
 \alias{update_list}
-\title{Update list \code{x} using the elements of list \code{new.x}.}
+\title{Update List \code{x} Using the Elements of List \code{new.x}.}
 \usage{
 update_list(x, new.x)
 }
 \arguments{
-\item{x}{a list.}
+\item{x}{A list.}
 
-\item{new.x}{a list.}
+\item{new.x}{A list.}
 }
 \value{
-The full \code{x} list with the modifications added by \code{new.x}
+The full \code{x} list with the modifications added by \code{new.x}.
 }
 \description{
-Update list \code{x} using the elements of list \code{new.x}.
+Update List \code{x} Using the Elements of List \code{new.x}.
 }
 \details{
 This function updates list \code{x} by name. If \code{x} and \code{new.x}

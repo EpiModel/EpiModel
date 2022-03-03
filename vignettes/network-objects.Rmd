@@ -43,7 +43,7 @@ dat <- update_cumulative_edgelist(dat, network, truncate = Inf)
 
 This function takes 3 arguments:
 
-1. `dat`: the *Master List Object*.
+1. `dat`: the *Main List Object*.
 2. `network`: the number of the network for which to create the cumulative edgelist (for multi-layer network simulations).
 3. `truncate`: a number of time steps after which an inactive edge should be removed from the cumulative edgelist (this saves computer memory for large-scale simulations).
 

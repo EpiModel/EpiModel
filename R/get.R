@@ -1,7 +1,7 @@
 
 #' @title Extract networkDynamic and network Objects from Network Simulations
 #'
-#' @description Extracts the \code{networkDynamic} object from a either a
+#' @description Extracts the \code{networkDynamic} object from either a
 #'              network epidemic model object generated with \code{netsim} or a
 #'              network diagnostic simulation generated with \code{netdx}, with
 #'              the option to collapse the extracted \code{networkDynamic}
@@ -24,18 +24,21 @@
 #'        directly.
 #'
 #' @details
-#' This function requires that the \code{networkDynamic} is saved during the
-#' network simulation while running either \code{\link{netsim}} or
-#' \code{\link{netdx}}. For the former, that is specified with the
-#' \code{tergmLite} parameter in \code{\link{control.net}} set to \code{FALSE}.
+#' This function requires that the \code{networkDynamic} object is saved during
+#' the network simulation while running either \code{\link{netsim}} or
+#' \code{\link{netdx}}. For the former, that is specified by setting the
+#' \code{tergmLite} parameter in \code{\link{control.net}} to \code{FALSE}.
 #' For the latter, that is specified with the \code{keep.tedgelist} parameter
 #' directly in \code{\link{netdx}}.
+#'
+#' @return A \code{networkDynamic} object (if \code{collapse = FALSE}) or a
+#'         static \code{network} object (if \code{collapse = TRUE}).
 #'
 #' @keywords extract
 #' @export
 #'
 #' @examples
-#' # Set up network and TERGM formiula
+#' # Set up network and TERGM formula
 #' nw <- network_initialize(n = 100)
 #' nw <- set_vertex_attribute(nw, "group", rep(1:2, each = 50))
 #' formation <- ~edges
@@ -209,10 +212,12 @@ get_transmat <- function(x, sim = 1) {
 #'
 #' @param x An \code{EpiModel} object of class \code{\link{netsim}} or
 #'        \code{\link{netdx}}.
-#' @param sim A vector of simulation numbers from the extracted object
+#' @param sim A vector of simulation numbers from the extracted object.
 #' @param network Network number, for \code{netsim} objects with multiple
 #'        overlapping networks (advanced use, and not applicable to \code{netdx}
 #'        objects).
+#'
+#' @return A data frame of network statistics.
 #'
 #' @keywords extract
 #' @export
@@ -313,7 +318,7 @@ get_nwstats <- function(x, sim, network = 1) {
 #' @description Extracts a list of network model parameters saved in the
 #'              initialization module.
 #'
-#' @param x Master data object used in \code{netsim} simulations.
+#' @param x Main data object used in \code{netsim} simulations.
 #' @param network Network number, for simulations with multiple networks
 #'        representing the population.
 #'
@@ -332,13 +337,17 @@ get_nwparam <- function(x, network = 1) {
 #'              \code{merge}.
 #'
 #' @param x An object of class \code{netsim}.
-#' @param sims A numeric vector of simulation numbers to retain in the output
-#'        object, or \code{"mean"} which selects the one simulation with the
-#'        value of the variable specified in \code{var} closest to the mean of
-#'        \code{var} across all simulations.
+#' @param sims Either a numeric vector of simulation numbers to retain in the
+#'        output object, or \code{"mean"}, which selects the one simulation with
+#'        the value of the variable specified in \code{var} closest to the mean
+#'        of \code{var} across all simulations.
 #' @param var A character vector of variables to retain from \code{x} if
 #'        \code{sims} is a numeric vector, or a single variable name for
 #'        selecting the average simulation from the set if \code{sims = "mean"}.
+#'
+#' @return An updated object of class \code{netsim} containing only the
+#'         simulations specified in \code{sims} and the variables specified in
+#'         \code{var}.
 #'
 #' @keywords extract
 #' @export
@@ -434,7 +443,10 @@ get_sims <- function(x, sims, var) {
 #' @param formal.args The output of \code{formals(sys.function())}.
 #' @param dot.args The output of \code{list(...)}.
 #'
+#' @return A list of argument names and values.
+#'
 #' @export
+#' @keywords internal
 #'
 get_args <- function(formal.args, dot.args) {
   p <- list()
@@ -460,7 +472,7 @@ get_args <- function(formal.args, dot.args) {
 #'   parameter or parameter element where the parameters are of size > 1.
 #'
 #' @section Output Format:
-#' The outputed \code{data.frame} has one row per simulation and the columns
+#' The outputted \code{data.frame} has one row per simulation and the columns
 #' correspond to the parameters used in this simulation.
 #'
 #' The column name will match the parameter name if it is a size 1 parameter or
@@ -561,7 +573,7 @@ get_param_set <- function(sims) {
 #' @param sims An \code{EpiModel} object of class \code{netsim}.
 #'
 #' @return A list of \code{data.frame}s, one for each "measure" recorded in the
-#' simulation by the `record_attr_history` function.
+#' simulation by the \code{record_attr_history} function.
 #'
 #' @examples
 #' \dontrun{

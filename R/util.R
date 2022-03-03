@@ -3,14 +3,14 @@
 #'
 #' @description Constructor methods for \code{networkLite} objects.
 #'
-#' @param x either an \code{edgelist} class network representation (including
+#' @param x Either an \code{edgelist} class network representation (including
 #'        network attributes in its \code{attributes} list), or a number
 #'        specifying the network size.
-#' @param attr a named list of vertex attributes for the network represented by
+#' @param attr A named list of vertex attributes for the network represented by
 #'        \code{x}.
-#' @param directed,bipartite,loops,hyper,multiple common network attributes that
+#' @param directed,bipartite,loops,hyper,multiple Common network attributes that
 #'        may be set via arguments to the \code{networkLite.numeric} method.
-#' @param ... additional arguments used by other methods.
+#' @param ... Additional arguments used by other methods.
 #'
 #' @details Currently there are two distinct \code{networkLite} constructor
 #' methods available.
@@ -145,11 +145,19 @@ networkLite.matrix <- networkLite.edgelist
 #' @description S3 methods for networkLite class, for generics defined in
 #'              network package.
 #'
-#' @param x a \code{networkLite} object.
-#' @param attrname the name of an attribute in \code{x}.
-#' @param ... any additional arguments.
+#' @param x A \code{networkLite} object.
+#' @param attrname The name of an attribute in \code{x}.
+#' @param value The attribute value to set for
+#'              \code{set.vertex.attribute.networkLite}; the value to set edges
+#'              to (must be FALSE) for the \code{networkLite} replacement
+#'              method.
+#' @param ... Any additional arguments.
 #'
 #' @details Allows use of networkLite objects in \code{ergm_model}.
+#'
+#' @return An edgelist for \code{as.edgelist.networkLite}; an updated
+#'         \code{networkLite} object for the replacement method. The other
+#'         methods return no objects.
 #'
 #' @rdname networkLitemethods
 #' @export
@@ -159,8 +167,7 @@ get.vertex.attribute.networkLite <- function(x, attrname, ...) {
 }
 
 #' @rdname networkLitemethods
-#' @param value attribute value.
-#' @param v indices at which to set vertex attribute values.
+#' @param v Indices at which to set vertex attribute values.
 #' @export
 #'
 set.vertex.attribute.networkLite <- function(x,
@@ -246,9 +253,9 @@ as.edgelist.networkLite <- function(x, output = c("matrix", "tibble"), ...) {
 }
 
 #' @rdname networkLitemethods
-#' @param object a \code{networkLite} object
-#' @param attr specification of a vertex attribute in \code{object} as
-#'             described in \code{\link[ergm]{nodal_attributes}}
+#' @param object A \code{networkLite} object.
+#' @param attr Specification of a vertex attribute in \code{object} as
+#'             described in \code{\link[ergm]{nodal_attributes}}.
 #' @export
 mixingmatrix.networkLite <- function(object, attr, ...) {
   nw <- object
@@ -278,8 +285,7 @@ mixingmatrix.networkLite <- function(object, attr, ...) {
 }
 
 #' @rdname networkLitemethods
-#' @param i,j Nodal indices (must be missing for networkLite method)
-#' @param value Value to set edges to (must be FALSE for networkLite method)
+#' @param i,j Nodal indices (must be missing for networkLite method).
 #' @export
 "[<-.networkLite" <- function(x, i, j, value) {
   if (missing(i) && missing(j) && isTRUE(all(value == FALSE))) {
@@ -309,11 +315,11 @@ network.naedgecount.networkLite <- function(x, ...) {
 }
 
 #' @rdname networkLitemethods
-#' @param tail vector of tails of edges to add to the networkLite.
-#' @param head vector of heads of edges to add to the networkLite.
-#' @param names.eval currently unsupported by add.edges.networkLite.
-#' @param vals.eval currently unsupported by add.edges.networkLite.
-#' @param check.unique should a check to ensure uniqueness of edges
+#' @param tail Vector of tails of edges to add to the networkLite.
+#' @param head Vector of heads of edges to add to the networkLite.
+#' @param names.eval Currently unsupported by add.edges.networkLite.
+#' @param vals.eval Currently unsupported by add.edges.networkLite.
+#' @param check.unique Should a check to ensure uniqueness of edges
 #'                     in the final edgelist be performed?
 #' @export
 add.edges.networkLite <- function(x, tail, head, names.eval = NULL,

@@ -2,13 +2,13 @@
 % Please edit documentation in R/initialize.R
 \name{init_tergmLite}
 \alias{init_tergmLite}
-\title{Initializes EpiModel netsim Object for tergmLite Simulation}
+\title{Initialize EpiModel netsim Object for tergmLite Simulation}
 \usage{
 init_tergmLite(dat)
 }
 \arguments{
-\item{dat}{A list object containing a \code{networkDynamic} object and other
-initialization information passed from \code{netsim}.}
+\item{dat}{Main list object containing a \code{networkDynamic} object and
+other initialization information passed from \code{\link{netsim}}.}
 }
 \value{
 Returns the list object \code{dat} and adds the element \code{el} which is
@@ -16,13 +16,14 @@ an edgelist representation of the network.  Also converts the \code{nw}
 element to a \code{networkLite} representation.
 }
 \description{
-Initializes EpiModel netsim Object for tergmLite Simulation
+Initialize EpiModel netsim Object for tergmLite Simulation
 }
 \details{
 This function is typically used within the initialization modules of
 \code{EpiModel} to establish the necessary infrastructure needed for
-\code{tergmLite} network resimulation.  The example below demonstrates
-the specific information returned.
+\href{https://statnet.org/tut/EpiModel2.html#tergmLite}{\code{tergmLite}}
+network resimulation. The example below demonstrates the specific information
+returned.
 }
 \examples{
 \dontrun{

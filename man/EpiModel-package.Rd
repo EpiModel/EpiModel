@@ -9,8 +9,8 @@
 \tabular{ll}{
    Package: \tab EpiModel\cr
    Type: \tab Package\cr
-   Version: \tab 2.2.2\cr
-   Date: \tab 2022-02-18\cr
+   Version: \tab 2.2.1\cr
+   Date: \tab 2022-01-28\cr
    License: \tab GPL-3\cr
    LazyLoad: \tab yes\cr
 }
@@ -29,7 +29,7 @@ EpiModel provides functionality for three classes of epidemic models:
  \item \strong{Deterministic Compartmental Models:} these continuous-time
        models are solved using ordinary differential equations. EpiModel
        allows for easy specification of sensitivity analyses to compare
-       multiple scenarios of the same model across different parameter
+       multiple scenarios of the same model across different parameter 
        values.
  \item \strong{Stochastic Individual Contact Models:} a novel class of
        individual-based, microsimulation models that were developed to add

@@ -45,9 +45,9 @@ contains multiple runs, as in a sensitivity analysis. For \code{icm} and
 show the means and standard deviations across simulations at the specified
 time step.
 
-These plots are currently limited to one-group and one-mode models for each
-of the three model classes. That functionality may be expanded in future
-software releases.
+These plots are currently limited to one-group models for each of the three
+model classes. That functionality may be expanded in future software
+releases.
 }
 \examples{
 ## Example 1: DCM SIR model with varying act.rate

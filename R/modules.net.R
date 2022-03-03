@@ -29,7 +29,7 @@
 #' multiple-simulation function calls, these are reset at the beginning of each
 #' individual simulation.
 #' \itemize{
-#'  \item \code{\link{initialize.net}}: sets up the master data structure used
+#'  \item \code{\link{initialize.net}}: sets up the main data structure used
 #'        in the simulation, initializes which nodes are infected (via the
 #'        initial conditions passed in \code{\link{init.net}}), and simulates a
 #'        first time step of the networks given the network model fit from
@@ -61,7 +61,7 @@
 #' \itemize{
 #'  \item \code{\link{departures.net}}: randomly simulates departure for nodes
 #'        given their disease status (susceptible, infected, recovered), and
-#'        their mode-specific departure rates specified in
+#'        their group-specific departure rates specified in
 #'        \code{\link{param.net}}. Departures involve deactivating nodes.
 #'  \item \code{\link{arrivals.net}}: randomly simulates new arrivals into the
 #'        network given the current population size and the arrival rate
@@ -96,9 +96,9 @@
 #' EpiModel defaults each of the base epidemic and demographic modules described
 #' above (arrivals.FUN, departures.FUN, infection.FUN, recovery.FUN) to the
 #' correct .net function based on variables passed to \code{\link{param.net}}
-#' (e.g. num.g2, denoting population size of mode two, would select the two-mode
-#' variants of the aforementioned modules). Two-mode modules are denoted by a
-#' .2g affix (e.g., recovery.2g.net)
+#' (e.g. num.g2, denoting population size of group two, would select the
+#' two-group variants of the aforementioned modules). Two-group modules are
+#' denoted by a .2g affix (e.g., recovery.2g.net)
 #'
 #'
 #' @name modules.net

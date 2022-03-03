@@ -1,9 +1,9 @@
-#' Update list \code{x} using the elements of list \code{new.x}.
+#' @title Update List \code{x} Using the Elements of List \code{new.x}.
 #'
-#' @param x a list.
-#' @param new.x a list.
+#' @param x A list.
+#' @param new.x A list.
 #'
-#' @return The full \code{x} list with the modifications added by \code{new.x}
+#' @return The full \code{x} list with the modifications added by \code{new.x}.
 #'
 #' @details
 #' This function updates list \code{x} by name. If \code{x} and \code{new.x}
@@ -26,12 +26,12 @@ update_list <- function(x, new.x) {
   return(x)
 }
 
-#' Function to modify the controls or parameters during a simulation
+#' @title Function to Modify the Controls or Parameters During the Simulation
 #'
-#' @param dat Master list object containing a \code{networkDynamic} object and
+#' @param dat Main list object containing a \code{networkDynamic} object and
 #'        other initialization information passed from \code{\link{netsim}}.
 #'
-#' @return The updated \code{dat} Master list object.
+#' @return The updated \code{dat} main list object.
 #'
 #' @details
 #' If a list \code{.param.updater.list} is present in the parameters, this
@@ -42,11 +42,11 @@ update_list <- function(x, new.x) {
 #' timesteps.
 #' An updater is a list containing an \code{at} element governing when the
 #' changes will happen, an optional \code{verbose} Boolean controlling whether
-#' to output a message when a change is made (default = TRUE) and a \code{param}
-#' or \code{control} named list with the names being the same as the parameter /
-#' control names and the new value to update with. If the new value is a
-#' function but the old one is not, the function will be applied to the current
-#' element (see example).
+#' to output a message when a change is made (default = TRUE), and a
+#' \code{param} or \code{control} named list containing the new values(s) with
+#' which to update, with the names being the same as the parameter / control
+#' names. If the new value is a function but the old one is not, the function
+#' will be applied to the current element (see example).
 #'
 #' @examples
 #' \dontrun{
@@ -134,13 +134,13 @@ input_updater <- function(dat) {
   return(dat)
 }
 
-#' Update either the "param" or "control" list
+#' @title Update Either the "param" or "control" List
 #'
-#' @param dat Master list object containing a \code{networkDynamic} object and
+#' @param dat Main list object containing a \code{networkDynamic} object and
 #'        other initialization information passed from \code{\link{netsim}}.
-#' @param type either "param" or "control"
+#' @param type Either \code{"param"} or \code{"control"}.
 #'
-#' @return The updated \code{dat} Master list object.
+#' @return The updated \code{dat} main list object.
 #'
 #' @keywords internal
 common_updater <- function(dat, type) {

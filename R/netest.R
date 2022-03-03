@@ -25,14 +25,14 @@
 #'        details).
 #' @param set.control.stergm Control arguments passed to \code{simulate.stergm}
 #'        (see details).
-#' @param verbose Print model fitting progress to console.
+#' @param verbose If \code{TRUE}, print model fitting progress to console.
 #' @param nested.edapprox Logical. If \code{edapprox} is \code{TRUE}, is the
 #'        dissolution model an initial segment of the formation model? This
 #'        determines whether \code{edapprox} is implemented by subtracting the
 #'        relevant values from the initial formation model coefficients, or by
 #'        appending the dissolution terms to the formation model and appending
 #'        the relevant values to the vector of formation model coefficients.
-#' @param ... additional arguments passed to other functions
+#' @param ... Additional arguments passed to other functions.
 #'
 #' @details
 #' \code{netest} is a wrapper function for the \code{ergm} and \code{stergm}
@@ -94,6 +94,8 @@
 #' through the \code{control.ergm()} function, with the available parameters
 #' listed in the \code{\link[ergm:control.ergm]{control.ergm}} help page in the
 #' \code{ergm} package. An example is below.
+#'
+#' @return A fitted network model object of class \code{netest}.
 #'
 #' @references
 #' Krivitsky PN, Handcock MS. "A separable model for dynamic networks." JRSS(B).
@@ -313,11 +315,11 @@ diss_check <- function(formation, dissolution) {
     stop("The only allowed dissolution terms are edges, nodemix,
          nodematch and ", "nodefactor", call. = FALSE)
   }
-  if (any(matchpos != 1:ncol(diss.terms))) {
+  if (any(matchpos != seq_len(ncol(diss.terms)))) {
     stop("Order of terms in the dissolution model does not correspond to the ",
          "formation model.", call. = FALSE)
   }
-  if (any(diss.terms[2, ] != form.terms[2, 1:ncol(diss.terms)])) {
+  if (any(diss.terms[2, ] != form.terms[2, seq_len(ncol(diss.terms))])) {
     stop("Term options for one or more terms in dissolution model do not ",
          "match the options in the formation model.", call. = FALSE)
   }
@@ -327,8 +329,8 @@ diss_check <- function(formation, dissolution) {
 
 #' @title Adjust Dissolution Component of Network Model Fit
 #'
-#' @description Adjusts the dissolution component of an dynamic ERGM fit using
-#'              the \code{netest} function with the edges dissolution
+#' @description Adjusts the dissolution component of a dynamic ERGM fit using
+#'              the \code{\link{netest}} function with the edges dissolution
 #'              approximation method.
 #'
 #' @param old.netest An object of class \code{netest}, from the
@@ -343,11 +345,11 @@ diss_check <- function(formation, dissolution) {
 #'        initial formation model coefficients, or by appending the new
 #'        dissolution terms to the formation model and appending the relevant
 #'        values to the vector of formation model coefficients.
-#' @param ... additional arguments passed to other functions
+#' @param ... Additional arguments passed to other functions.
 #'
 #' @details
 #' Fitting an ERGM is a computationally intensive process when the model
-#' includes dyadic dependent terms. With the edges dissolution approximation
+#' includes dyad dependent terms. With the edges dissolution approximation
 #' method of Carnegie et al, the coefficients for a temporal ERGM are
 #' approximated by fitting a static ERGM and adjusting the formation
 #' coefficients to account for edge dissolution. This function provides a very
@@ -355,6 +357,8 @@ diss_check <- function(formation, dissolution) {
 #' use a different dissolution model; a typical use case may be to fit several
 #' different models with different average edge durations as targets. The
 #' example below exhibits that case.
+#'
+#' @return An updated network model object of class \code{netest}.
 #'
 #' @export
 #'

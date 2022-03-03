@@ -7,8 +7,8 @@
 infection.2g.net(dat, at)
 }
 \arguments{
-\item{dat}{A list object containing a \code{networkDynamic} object and other
-initialization information passed from \code{\link{netsim}}.}
+\item{dat}{Main list object containing a \code{networkDynamic} object and
+other initialization information passed from \code{\link{netsim}}.}
 
 \item{at}{Current time step.}
 }

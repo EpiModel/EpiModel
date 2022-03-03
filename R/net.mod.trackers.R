@@ -1,24 +1,24 @@
 #' @title Trackers: netsim Module
 #'
-#' @description This function apply the user provided epi trackers
+#' @description This function applies the user-provided epi trackers.
 #'
-#' @param dat Master list object containing a \code{networkDynamic} object and
+#' @param dat Main list object containing a \code{networkDynamic} object and
 #'        other initialization information passed from \code{\link{netsim}}.
 #' @param at Current time step.
 #'
-#' @return the updated dat Master list object.
+#' @return The updated \code{dat} main list object.
 #'
 #' @section Optional Module:
-#' This module is not included by default
+#' This module is not included by default.
 #'
 #' @section The \code{tracker.list} list:
 #' \code{tracker.list} is a list of NAMED functions stored in the \code{control}
-#' list of the \code{dat} master list object.
+#' list of the \code{dat} main list object.
 #'
 #' @section Tracker Functions:
 #' This module will apply the tracker functions present in the control list
 #' \code{tracker.list}. Each tracker must be a function with EXACTLY two
-#' arguments: the \code{dat} Master list object and \code{at} the current time
+#' arguments: the \code{dat} main list object and \code{at} the current time
 #' step. They must return a VALUE of length one (numeric, logical or character).
 #'
 #' @examples

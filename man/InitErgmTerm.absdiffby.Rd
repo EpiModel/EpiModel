@@ -17,15 +17,16 @@ package framework.}
 \code{ergm.userterms} package framework.}
 }
 \description{
-This function defines and initialize the absdiffby ERGM term
-             that allows for targeting age homophily by sex.
+This function defines and initializes the absdiffby ERGM term
+             that allows for targeting homophily based on a non-binary
+             attribute (e.g., age) by a binary attribute (e.g., sex).
 }
 \details{
 This ERGM user term was written to allow for age-based homophily in
-partnership formation that is asymetric by sex. The absdiff component targets
-age homophily while the by component allows that to be structed by a binary
-attribute such as "male", in order to enforce an offset in the average
-difference.
+partnership formation that is asymmetric by sex. The absdiff component
+targets age-based homophily while the by component allows that to be structed
+by a binary attribute such as "male", in order to enforce an offset in the
+average difference.
 }
 \author{
 Samuel M. Jenness

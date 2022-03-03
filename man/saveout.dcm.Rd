@@ -7,19 +7,32 @@
 saveout.dcm(df, s, param, control, out = NULL)
 }
 \arguments{
-\item{df}{Master object in \code{\link{dcm}} simulations.}
+\item{df}{Main object in \code{\link{dcm}} simulations.}
 
 \item{s}{Current run number.}
 
-\item{param}{Param list set in \code{\link{param.dcm}}}
+\item{param}{Param list set in \code{\link{param.dcm}}.}
 
 \item{control}{Control list set in \code{\link{control.dcm}}.}
 
 \item{out}{Out list passed back in for updating at runs 2+.}
 }
+\value{
+A list with the following elements:
+\itemize{
+ \item \strong{param:} the epidemic parameters passed into the model through
+       \code{\link{param.dcm}}, with additional parameters added as
+       necessary.
+ \item \strong{control:} the control settings passed into the model through
+       \code{\link{control.dcm}}, with additional controls added as
+       necessary.
+ \item \strong{epi:} a list of data frames, one for each epidemiological
+       output from the model.
+}
+}
 \description{
-This function transfers the data from the master \code{df}
+This function transfers the data from the main \code{df}
              object to the output \code{out} object at the end of each
-             simulation in \code{\link{dcm}}.
+             run in \code{\link{dcm}}.
 }
 \keyword{internal}

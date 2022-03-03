@@ -18,7 +18,7 @@ Extract the Parameter Set from Network Simulations
 }
 \section{Output Format}{
 
-The outputed \code{data.frame} has one row per simulation and the columns
+The outputted \code{data.frame} has one row per simulation and the columns
 correspond to the parameters used in this simulation.
 
 The column name will match the parameter name if it is a size 1 parameter or

@@ -7,9 +7,9 @@
 print_nwstats_table(nwtable, digits)
 }
 \arguments{
-\item{nwtable}{a formation or dissolution statistics \code{data.frame}}
+\item{nwtable}{A formation or dissolution statistics \code{data.frame}.}
 
-\item{digits}{argument to be passed to \code{round}}
+\item{digits}{Argument to be passed to \code{round}.}
 }
 \description{
 Print Helper For Network Stats Tables

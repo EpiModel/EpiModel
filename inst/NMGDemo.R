@@ -408,7 +408,7 @@ prevalence.net <- function(dat, at) {
 
 initialize_msm <- function(x, param, init, control, s) {
 
-  ## Master Data List Setup ##
+  ## Main Data List Setup ##
   dat <- list()
   dat$param <- param
   dat$init <- init

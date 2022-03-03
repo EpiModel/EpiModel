@@ -2,28 +2,28 @@
 % Please edit documentation in R/net.helpers.R
 \name{set_current_timestep}
 \alias{set_current_timestep}
-\title{Sets the Current Timestep}
+\title{Set the Current Timestep}
 \usage{
 set_current_timestep(dat, timestep)
 }
 \arguments{
-\item{dat}{a Master list object of network models}
+\item{dat}{Main data object passed through \code{netsim} simulations.}
 
-\item{timestep}{the new value for the timestep}
+\item{timestep}{The new value for the timestep.}
 }
 \value{
-A \code{dat} Master list object
+A \code{dat} main list object.
 }
 \description{
 Changes the current timestep in the \code{dat} object. Use with
-             caution. This function exists to workaround unforseen corner
-             cases. In most situation, \code{increment_timestep} should be
-             prefered
+             caution. This function exists to work around unforeseen corner
+             cases. In most situation, \code{increment_timestep} is
+             preferred.
 }
 \section{Mutability}{
 
-This DOES NOT modify the dat object in place. The result must be assigned
-back to \code{dat} in order to be registered
-\code{dat <- increment_timestep(dat)}
+This DOES NOT modify the \code{dat} object in place. The result must be
+assigned back to \code{dat} in order to be registered:
+\code{dat <- increment_timestep(dat)}.
 }
 

@@ -7,17 +7,18 @@
 get_cumulative_edgelists_df(dat, networks = NULL)
 }
 \arguments{
-\item{dat}{Master list object for \code{netsim}.}
+\item{dat}{Main data object passed through \code{netsim} simulations.}
 
 \item{networks}{Numerical indexes of the networks to extract the partnerships
-from. If \code{NULL}, extract from all networks.}
+from. (May be > 1 for models with multiple overlapping
+networks.) If \code{NULL}, extract from all networks.}
 }
 \value{
 A \code{data.frame} with 5 columns:
 \itemize{
-  \item \code{index}: the unique ID see \code{get_unique_ids}) of the
+  \item \code{index}: the unique ID (see \code{get_unique_ids}) of the
         indexes.
-  \item \code{partner}: the unique ID see \code{get_unique_ids}) of the
+  \item \code{partner}: the unique ID (see \code{get_unique_ids}) of the
         partners/contacts.
   \item \code{start}: the time step in which the edge started.
   \item \code{stop}: the time step in which the edge stopped; if ongoing,

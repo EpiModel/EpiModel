@@ -22,30 +22,30 @@ This function uses the generative functions in the
 }
 \section{\code{random_params}}{
 
-The \code{random_params} argument to the \code{param.net} function must be a
-named list of functions that return a values that can be used as the argument
-with the same name. In the example below, \code{param_random} is a function
-factory provided by EpiModel for \code{act.rate} and \code{tx.halt.part.prob}
-we provide bespoke functions.
+The \code{random_params} argument to the \code{\link{param.net}} function
+must be a named list of functions that each return a value that can be used
+as the argument with the same name. In the example below, \code{param_random}
+is a function factory provided by EpiModel for \code{act.rate} and
+\code{tx.halt.part.prob} we provide bespoke functions.
 }
 
 \section{Generator Functions}{
 
-The function used inside \code{random_params} must be 0 argument functions
+The functions used inside \code{random_params} must be 0 argument functions
 returning a valid value for the parameter with the same name.
 }
 
 \section{\code{param_random_set}}{
 
-The \code{random_params} list can optionnally contain a
+The \code{random_params} list can optionally contain a
 \code{param_random_set} element. It must be a \code{data.frame} of possible
 values to be used as parameters.
 
 The column names must correspond either to:
-the name of one parameter if this parameter is of size 1 or the name of the
-parameter with "_1", "_2", "_N" with the second part being the position of
-the value for a parameter of size > 1. This means that the parameter names
-cannot contain any underscore "_" if you intend to use
+the name of one parameter, if this parameter is of size 1; or the name of one
+parameter with "_1", "_2", etc. appended, with the number representing the
+position of the value, if this parameter if of size > 1. This means that the
+parameter names cannot contain any underscores "_" if you intend to use
 \code{param_random_set}.
 
 The point of the \code{param_random_set} \code{data.frame} is to allow the

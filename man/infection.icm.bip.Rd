@@ -7,9 +7,12 @@
 infection.icm.bip(dat, at)
 }
 \arguments{
-\item{dat}{Master data list object.}
+\item{dat}{Main data object passed through \code{icm} simulations.}
 
 \item{at}{Current time step.}
+}
+\value{
+The updated \code{dat} main list object.
 }
 \description{
 This function simulates the main infection process given the

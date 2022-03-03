@@ -2,20 +2,20 @@
 % Please edit documentation in R/net.mod.updater.R
 \name{common_updater}
 \alias{common_updater}
-\title{Update either the "param" or "control" list}
+\title{Update Either the "param" or "control" List}
 \usage{
 common_updater(dat, type)
 }
 \arguments{
-\item{dat}{Master list object containing a \code{networkDynamic} object and
+\item{dat}{Main list object containing a \code{networkDynamic} object and
 other initialization information passed from \code{\link{netsim}}.}
 
-\item{type}{either "param" or "control"}
+\item{type}{Either \code{"param"} or \code{"control"}.}
 }
 \value{
-The updated \code{dat} Master list object.
+The updated \code{dat} main list object.
 }
 \description{
-Update either the "param" or "control" list
+Update Either the "param" or "control" List
 }
 \keyword{internal}

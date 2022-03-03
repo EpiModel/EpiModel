@@ -19,10 +19,10 @@
 Extracts and prints model statistics simulated with \code{icm}.
 }
 \details{
-Summary statistics for the main epidemiological outcomes (state and
-transition size and prevalence) from an \code{icm} model. Time-specific
-summary measures are provided, so it is necessary to input a time of
-interest.
+This function provides summary statistics for the main epidemiological
+outcomes (state and transition size and prevalence) from an \code{icm} model.
+Time-specific summary measures are provided, so it is necessary to input a
+time of interest.
 }
 \examples{
 ## Stochastic ICM SI model with 3 simulations

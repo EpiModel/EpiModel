@@ -1,7 +1,7 @@
 
 #' @title Initialization: icm Module
 #'
-#' @description This function initializes the master \code{dat} object on which
+#' @description This function initializes the main \code{dat} object on which
 #'              data are stored, and simulates disease status and other
 #'              attributes.
 #'
@@ -9,12 +9,14 @@
 #' @param init An \code{EpiModel} object of class \code{\link{init.icm}}.
 #' @param control An \code{EpiModel} object of class \code{\link{control.icm}}.
 #'
+#' @return The updated \code{dat} main list object.
+#'
 #' @export
 #' @keywords internal
 #'
 initialize.icm <- function(param, init, control) {
 
-  ## Master List for Data ##
+  ## Main List for Data ##
   dat <- list()
   dat$param <- param
   dat$init <- init
@@ -30,7 +32,7 @@ initialize.icm <- function(param, init, control) {
     dat$attr$group <- rep(1, n)
   } else {
     g2inits <- grep(".g2", names(numeric.init))
-    g1inits <- setdiff(1:length(numeric.init), g2inits)
+    g1inits <- setdiff(seq_along(numeric.init), g2inits)
     nG1 <- sum(sapply(g1inits, function(x) init[[x]]))
     nG2 <- sum(sapply(g2inits, function(x) init[[x]]))
     dat$attr$group <- c(rep(1, nG1), rep(2, max(0, nG2)))
@@ -52,7 +54,9 @@ initialize.icm <- function(param, init, control) {
 #' @description This function sets the initial disease status on the
 #'              network given the specified initial conditions.
 #'
-#' @param dat Master data list object.
+#' @param dat Main data object passed through \code{icm} simulations.
+#'
+#' @return The updated \code{dat} main list object.
 #'
 #' @seealso This is an initialization module for \code{\link{icm}}.
 #'
