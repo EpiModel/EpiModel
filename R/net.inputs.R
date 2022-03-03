@@ -305,6 +305,11 @@ update_params <- function(x, new.param.list) {
 #'   a generator function in the \code{random.params} argument of the
 #'   \code{\link{param.net}} function.
 #'
+#' @param values A vector of values to sample from.
+#' @param prob A vector of weights to use during sampling. If \code{NULL},
+#'        all values have the same probability of being picked
+#'        (default = \code{NULL}).
+#'
 #' @return A 0 argument generator function to sample one of the values from the
 #'   \code{values} vector.
 #'
@@ -351,8 +356,8 @@ param_random <- function(values, prob = NULL) {
 #' must be a named list of functions that each return a value that can be usedj
 #' as the argument with the same name. In the example below, \code{param_random}
 #' is a function factory provided by EpiModel for \code{act.rate} and
-#' for \code{tx.halt.part.prob} we provide bespoke functions. A function factory 
-#' is a function that returns a new function 
+#' for \code{tx.halt.part.prob} we provide bespoke functions. A function factory
+#' is a function that returns a new function
 #' (see https://adv-r.hadley.nz/function-factories.html).
 #'
 #' @section Generator Functions:

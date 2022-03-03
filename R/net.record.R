@@ -7,11 +7,6 @@
 #' the end of the run. The records are stored in \code{dat[["attr.history"]]}
 #' and can be accessed from the \code{netsim} object with
 #' \code{get_attr_history}
-#' This function records values specific to a time-step and a group of nodes.
-#' In the records, the \code{posit_ids} are converted to \code{unique_ids}, which 
-#' allows the recording of data for nodes that are no longer in the network by the end of
-#' the run. The records are stored in \code{dat[["attr.history"]]} and can be
-#' accessed from the \code{netsim} object with \code{get_attr_history}.
 #'
 #' @param dat Main data object passed through \code{netsim} simulations.
 #' @param at The time where the recording happens.

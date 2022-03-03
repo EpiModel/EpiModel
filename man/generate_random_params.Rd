@@ -20,13 +20,15 @@ A fully instantiated \code{param} list.
 This function uses the generative functions in the
              \code{random.params} list to create values for the parameters.
 }
-\section{\code{random_params}}{
+\section{\code{random.params}}{
 
-The \code{random_params} argument to the \code{\link{param.net}} function
-must be a named list of functions that each return a value that can be used
+The \code{random.params} argument to the \code{\link{param.net}} function
+must be a named list of functions that each return a value that can be usedj
 as the argument with the same name. In the example below, \code{param_random}
 is a function factory provided by EpiModel for \code{act.rate} and
-\code{tx.halt.part.prob} we provide bespoke functions.
+for \code{tx.halt.part.prob} we provide bespoke functions. A function factory
+is a function that returns a new function
+(see https://adv-r.hadley.nz/function-factories.html).
 }
 
 \section{Generator Functions}{
@@ -35,19 +37,18 @@ The functions used inside \code{random_params} must be 0 argument functions
 returning a valid value for the parameter with the same name.
 }
 
-\section{\code{param.random.set}}{
+\section{\code{param_random_set}}{
 
-The \code{random.params} list can optionnally contain a
-\code{param.random.set} element. It must be a \code{data.frame} of possible
+The \code{random_params} list can optionally contain a
+\code{param_random_set} element. It must be a \code{data.frame} of possible
 values to be used as parameters.
 
 The column names must correspond either to:
-the name of one parameter if this parameter is of size 1 or the name of the
-parameter with "_1", "_2", "_N" with the second part being the position of
-the value for a parameter of size > 1. This means that the parameter names
-cannot contain any underscore "_" if you intend to use
-\code{param.random.set}.
-
+the name of one parameter, if this parameter is of size 1; or the name of one
+parameter with "_1", "_2", etc. appended, with the number representing the
+position of the value, if this parameter if of size > 1. This means that the
+parameter names cannot contain any underscores "_" if you intend to use
+\code{param_random_set}.
 
 The point of the \code{param.random.set} \code{data.frame} is to allow the
 random parameters to be correlated. To achieve this, a whole row of the
