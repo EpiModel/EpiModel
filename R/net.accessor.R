@@ -4,7 +4,7 @@
 #'              functions allow a safe and efficient way to retrieve and mutate
 #'              the main list object of network models (\code{dat}).
 #'
-#' @param dat Main data object passed through \code{netsim} simulations.
+#' @inheritParams recovery.net
 #' @param item A character vector containing the name of the element to access
 #'        (for \code{get_} functions), create (for \code{add_} functions), or
 #'        edit (for \code{set_} and \code{append_} functions). Can be of length
@@ -546,10 +546,10 @@ append_core_attr <- function(dat, at, n.new) {
 #' the already used \code{unique_ids} with the \code{dat[["_last_unique_id"]]}
 #' variable.
 #'
-#' @param dat Main data object passed through \code{netsim} simulations.
+#' @inheritParams recovery.net
 #' @param n.new The number of new nodes to give \code{unique_ids} to.
 #'
-#' @return The main list object of network models (\code{dat}).
+#' @inherit recovery.net return
 #'
 #' @keywords internal
 update_unique_ids <- function(dat, n.new) {
@@ -565,7 +565,7 @@ update_unique_ids <- function(dat, n.new) {
 #' @title Check that All Attributes in the Main Object are of Equal
 #'        Length
 #'
-#' @param dat Main data object passed through \code{netsim} simulations.
+#' @inheritParams recovery.net
 #'
 #' @return invisible(TRUE) if everything is correct; an error if not.
 #'
@@ -611,7 +611,7 @@ check_attr_lengths <- function(dat) {
 #'   \code{get_posit_ids}, \code{NA}s are returned instead and a warning is
 #'   produced.
 #'
-#' @param dat Main data object passed through \code{netsim} simulations.
+#' @inheritParams recovery.net
 #' @param unique_ids A vector of node unique identifiers (default = NULL).
 #' @param posit_ids A vector of node positional identifiers (default = NULL).
 #' @return A vector of unique or positional identifiers.
@@ -650,7 +650,7 @@ get_posit_ids <- function(dat, unique_ids = NULL) {
 
 #' @title Are These Nodes Active (Unique IDs)
 #'
-#' @param dat Main data object passed through \code{netsim} simulations.
+#' @inheritParams recovery.net
 #' @param unique_ids A vector of node unique identifiers.
 #'
 #' @return A logical vector with TRUE if the node is still active and FALSE
@@ -667,7 +667,7 @@ is_active_unique_ids <- function(dat, unique_ids) {
 
 #' @title Are These Nodes Active (Positional IDs)
 #'
-#' @param dat Main data object passed through \code{netsim} simulations.
+#' @inheritParams recovery.net
 #' @param posit_ids A vector of node positional identifiers.
 #'
 #' @return A logical vector with TRUE if the node is still active and FALSE

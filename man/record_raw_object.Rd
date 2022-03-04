@@ -7,7 +7,8 @@
 record_raw_object(dat, at, label, object)
 }
 \arguments{
-\item{dat}{Main data object passed through \code{netsim} simulations.}
+\item{dat}{Main list object containing a \code{networkDynamic} object and
+other initialization information passed from \code{\link{netsim}}.}
 
 \item{at}{The time where the recording happens.}
 
@@ -16,7 +17,7 @@ record_raw_object(dat, at, label, object)
 \item{object}{The object to be recorded.}
 }
 \value{
-The main list object.
+The updated \code{dat} main list object.
 }
 \description{
 This function records any object during a simulation to allow its

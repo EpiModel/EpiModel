@@ -157,9 +157,9 @@ color_tea <- function(nd, old.var = "testatus", old.sus = "s", old.inf = "i",
 #' @description Copies the vertex attributes stored on the network object to the
 #'              main \code{attr} list in the \code{dat} data object.
 #'
-#' @param dat Main data object passed through \code{netsim} simulations.
+#' @inheritParams recovery.net
 #'
-#' @return The updated main \code{dat} object.
+#' @inherit recovery.net return
 #'
 #' @seealso \code{\link{get_formula_term_attr}}, \code{\link{get_attr_prop}},
 #'          \code{\link{auto_update_attr}}, and
@@ -189,9 +189,9 @@ copy_nwattr_to_datattr <- function(dat) {
 #' @description Copies the vertex attributes stored on the main \code{attr} list
 #'              on \code{dat} to the network object on \code{dat}.
 #'
-#' @param dat Main data object passed through \code{netsim} simulations.
+#' @inheritParams recovery.net
 #'
-#' @return The updated main \code{dat} object.
+#' @inherit recovery.net return
 #'
 #' @seealso \code{\link{get_formula_term_attr}}, \code{\link{get_attr_prop}},
 #'          \code{\link{auto_update_attr}}, and
@@ -597,8 +597,7 @@ edgelist_meanage <- function(x, el) {
 #' @description Calculates the proportional distribution of each vertex
 #'              attribute contained in a network.
 #'
-#' @param dat Main list object containing a \code{networkDynamic} object and
-#'        other initialization information passed from \code{\link{netsim}}.
+#' @inheritParams recovery.net
 #' @param nwterms Vector of attributes on the network object, usually as
 #'        output of \code{\link{get_formula_term_attr}}.
 #'
@@ -742,12 +741,12 @@ idgroup <- function(nw, ids) {
 #'              incoming into that network, based on a set of rules for each
 #'              attribute that the user specifies in \code{\link{control.net}}.
 #'
-#' @param dat Main data object passed through \code{netsim} simulations.
+#' @inheritParams recovery.net
 #' @param newNodes Vector of nodal IDs for incoming nodes at the current time
 #'        step.
 #' @param curr.tab Current proportional distribution of all vertex attributes.
 #'
-#' @return The updated main \code{dat} object.
+#' @inherit recovery.net return
 #'
 #' @seealso \code{\link{copy_nwattr_to_datattr}}, \code{\link{get_attr_prop}},
 #'          \code{\link{auto_update_attr}}.
@@ -822,7 +821,7 @@ auto_update_attr <- function(dat, newNodes, curr.tab) {
 #' \code{net}, one way to look up the current degree is to get a summary of the
 #' ERGM term, \code{sociality}, as in:
 #' \code{summary(net ~ sociality(nodes = NULL))}. But that is computationally
-#' inefficient for a number of reasons. This function provide a fast method for
+#' inefficient for a number of reasons. This function provides a fast method for
 #' generating the vector of degrees using a query of the edgelist. It is even
 #' faster if the parameter \code{x} is already transformed into an edgelist.
 #'

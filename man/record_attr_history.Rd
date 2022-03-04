@@ -7,7 +7,8 @@
 record_attr_history(dat, at, attribute, posit_ids, values)
 }
 \arguments{
-\item{dat}{Main data object passed through \code{netsim} simulations.}
+\item{dat}{Main list object containing a \code{networkDynamic} object and
+other initialization information passed from \code{\link{netsim}}.}
 
 \item{at}{The time where the recording happens.}
 
@@ -19,7 +20,7 @@ record_attr_history(dat, at, attribute, posit_ids, values)
 \item{values}{The values to be recorded.}
 }
 \value{
-The main list object.
+The updated \code{dat} main list object.
 }
 \description{
 This function records values specific to a time-step and a group of nodes.

@@ -7,7 +7,8 @@
 update_cumulative_edgelist(dat, network, truncate = 0)
 }
 \arguments{
-\item{dat}{Main data object passed through \code{netsim} simulations.}
+\item{dat}{Main list object containing a \code{networkDynamic} object and
+other initialization information passed from \code{\link{netsim}}.}
 
 \item{network}{Numerical index of the network for which the cumulative
 edgelist will be updated. (May be > 1 for models with
@@ -17,7 +18,7 @@ multiple overlapping networks.)}
 active should be removed from the output.}
 }
 \value{
-An updated main list object of network models.
+The updated \code{dat} main list object.
 }
 \description{
 Update a Cumulative Edgelist of the Specified Network

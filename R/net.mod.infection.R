@@ -4,9 +4,7 @@
 #' @description This function simulates the main infection process given the
 #'              current state of the partnerships and disease in the system.
 #'
-#' @param dat Main list object containing a \code{networkDynamic} object and
-#'        other initialization information passed from \code{\link{netsim}}.
-#' @param at Current time step.
+#' @inheritParams recovery.net
 #'
 #' @details
 #' The main steps in this infection module are as follows:
@@ -25,9 +23,7 @@
 #'        and calculate disease incidence.
 #' }
 #'
-#' @return
-#' The main \code{dat} object is returned with updated disease status and
-#' summary incidence measures.
+#' @inherit recovery.net return
 #'
 #' @export
 #' @keywords netMod internal
@@ -125,9 +121,7 @@ infection.net <- function(dat, at) {
 #' @description This function simulates the main infection process given the
 #'              current state of the partnerships and disease in the system.
 #'
-#' @param dat Main list object containing a \code{networkDynamic} object and
-#'        other initialization information passed from \code{\link{netsim}}.
-#' @param at Current time step.
+#' @inheritParams recovery.net
 #'
 #' @details
 #' The main steps in this infection module are as follows:
@@ -146,9 +140,7 @@ infection.net <- function(dat, at) {
 #'        and calculate disease incidence.
 #' }
 #'
-#' @return
-#' The main \code{dat} object is returned with updated disease status and
-#' summary incidence measures.
+#' @inherit recovery.net return
 #'
 #' @export
 #' @keywords netMod internal
@@ -264,10 +256,7 @@ infection.2g.net <- function(dat, at) {
 #'              edgelist, defined as the set of edges in which the status of the
 #'              two partners is one susceptible and one infected.
 #'
-#' @param dat Main list object containing a \code{networkDynamic} object or
-#'        edgelist (if tergmLite is used) and other initialization information
-#'        passed from \code{\link{netsim}}.
-#' @param at Current time step.
+#' @inheritParams recovery.net
 #' @param network In case of models with multiple networks, the network to pull
 #'        the current edgelist from. Default of \code{network = 1}.
 #' @param infstat Character vector of disease status values that are considered
@@ -339,10 +328,7 @@ discord_edgelist <- function(dat, at, network = 1, infstat = "i") {
 #' @description This function appends the transmission matrix created during
 #'              \code{infection.net} and \code{infection.2g.net}.
 #'
-#' @param dat Main list object containing a \code{networkDynamic} object or
-#'        edgelist (if tergmLite is used) and other initialization information
-#'        passed from \code{\link{netsim}}.
-#' @param at Current time step.
+#' @inheritParams recovery.net
 #' @param del Discordant edgelist created within \code{\link{infection.net}} and
 #'        \code{\link{infection.2g.net}}.
 #'
@@ -351,7 +337,8 @@ discord_edgelist <- function(dat, at, network = 1, infstat = "i") {
 #' functions to save the transmission matrix created at time step \code{at} to
 #' the main list object \code{dat}.
 #'
-#' @return The updated \code{dat} main list object.
+#' @inherit recovery.net return
+#'
 #' @export
 #'
 set_transmat <- function(dat, del, at) {

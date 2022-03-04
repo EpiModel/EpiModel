@@ -4,7 +4,7 @@
 #' @description This function outputs an edgelist from the specified network,
 #'              selecting the method depending on the stored network type.
 
-#' @param dat Main data object passed through \code{netsim} simulations.
+#' @inheritParams recovery.net
 #' @param network Numerical index of the network from which the edgelist should
 #'                be extracted. (May be > 1 for models with multiple overlapping
 #'                networks.)
@@ -35,7 +35,7 @@ get_edgelist <- function(dat, network) {
 
 #' @title Get a Cumulative Edgelist From a Specified Network
 #'
-#' @param dat Main data object passed through \code{netsim} simulations.
+#' @inheritParams recovery.net
 #' @param network Numerical index of the network from which the cumulative
 #'                edgelist should be extracted. (May be > 1 for models with
 #'                multiple overlapping networks.)
@@ -74,7 +74,7 @@ get_cumulative_edgelist <- function(dat, network) {
 
 #' @title Update a Cumulative Edgelist of the Specified Network
 #'
-#' @param dat Main data object passed through \code{netsim} simulations.
+#' @inheritParams recovery.net
 #' @param network Numerical index of the network for which the cumulative
 #'                edgelist will be updated. (May be > 1 for models with
 #'                multiple overlapping networks.)
@@ -89,8 +89,7 @@ get_cumulative_edgelist <- function(dat, network) {
 #' \code{truncate = 0}, only the active edges are kept. You may want this
 #' behavior to keep track of the active edges' start step.
 #'
-#' @return
-#' An updated main list object of network models.
+#' @inherit recovery.net return
 #'
 #' @export
 update_cumulative_edgelist <- function(dat, network, truncate = 0) {
@@ -130,7 +129,7 @@ update_cumulative_edgelist <- function(dat, network, truncate = 0) {
 
 #' @title Get the Cumulative Edgelists of a Model
 #'
-#' @param dat Main data object passed through \code{netsim} simulations.
+#' @inheritParams recovery.net
 #' @param networks Numerical indexes of the networks to extract the partnerships
 #'                 from. (May be > 1 for models with multiple overlapping
 #'                 networks.) If \code{NULL}, extract from all networks.

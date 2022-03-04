@@ -1,8 +1,7 @@
 
 #' @title Initialize EpiModel netsim Object for tergmLite Simulation
 #'
-#' @param dat Main list object containing a \code{networkDynamic} object and
-#'        other initialization information passed from \code{\link{netsim}}.
+#' @inheritParams recovery.net
 #'
 #' @details
 #' This function is typically used within the initialization modules of
