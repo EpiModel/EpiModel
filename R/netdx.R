@@ -126,7 +126,7 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
   } else {
     nw <- x$fit$network
   }
-
+  
   if (dynamic == TRUE && missing(nsteps)) {
     stop("Specify number of time steps with nsteps", call. = FALSE)
   }
@@ -210,6 +210,7 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
         }
         for (i in seq_len(nsims)) {
           fit.sim <- simulate(fit,
+            response = NULL,
             basis = fit$newnetwork,
             control = set.control.ergm, dynamic = FALSE
           )
@@ -237,6 +238,7 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
 
         diag.sim <- foreach(i = seq_len(nsims)) %dopar% {
           fit.sim <- simulate(fit,
+            response = NULL,
             basis = fit$newnetwork,
             control = set.control.ergm, dynamic = FALSE
           )
@@ -256,6 +258,8 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
     }
     if (dynamic == FALSE) {
       diag.sim <- simulate(fit,
+        basis = fit$newnetwork,
+        response = NULL,
         nsim = nsims,
         output = "stats",
         control = set.control.ergm,

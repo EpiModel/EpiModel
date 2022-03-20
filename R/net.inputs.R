@@ -1001,8 +1001,12 @@ crosscheck.net <- function(x, param, init, control) {
       }
 
       # Pull network object from netest object
-      nw <- x[["fit"]][["network"]]
-
+      if (x[["edapprox"]] == TRUE) {
+        nw <- x[["fit"]][["newnetwork"]]
+      } else {
+        nw <- x[["fit"]][["network"]]      
+      }
+      
       # Defaults ------------------------------------------------------------
 
       # Is status in network formation formula?

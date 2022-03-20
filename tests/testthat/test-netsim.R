@@ -7,75 +7,83 @@ est <- netest(nw, formation = ~edges + nodematch("race"),
               coef.diss = dissolution_coefs(~offset(edges), 10, 0),
               verbose = FALSE)
 
-# Edges + nodematch, one-mode, closed
-
-test_that("netsim for edges only, SI, one-mode, closed, 1 sim", {
-  param <- param.net(inf.prob = 0.3, act.rate = 0.5)
-  init <- init.net(i.num = 10)
-  control <- control.net(type = "SI", nsims = 1, nsteps = 5, verbose = FALSE)
-  mod <- netsim(est, param, init, control)
-  expect_is(mod, "netsim")
-  plot(mod)
-  plot(mod, type = "formation")
-  plot(mod, type = "network")
-  test_net(mod)
-})
-
-test_that("netsim for edges only, SI, one-mode, closed, 2 sim", {
-  param <- param.net(inf.prob = 0.3, act.rate = 0.5)
-  init <- init.net(i.num = 10)
-  control <- control.net(type = "SI", nsims = 2, nsteps = 5, verbose = FALSE)
-  mod <- netsim(est, param, init, control)
-  expect_is(mod, "netsim")
-  plot(mod)
-  plot(mod, type = "formation")
-  plot(mod, type = "network")
-  test_net(mod)
-})
-
-test_that("netsim for edges only, SIS, one-mode, closed, 1 sim", {
-  param <- param.net(inf.prob = 0.3, act.rate = 0.5, rec.rate = 0.05)
-  init <- init.net(i.num = 10)
-  control <- control.net(type = "SIS", nsims = 1, nsteps = 5, verbose = FALSE)
-  mod <- netsim(est, param, init, control)
-  expect_is(mod, "netsim")
-  plot(mod)
-  plot(mod, type = "formation")
-  plot(mod, type = "network")
-  test_net(mod)
-})
-
-test_that("netsim for edges only, SIS, one-mode, closed, 2 sim", {
-  param <- param.net(inf.prob = 0.3, act.rate = 0.5, rec.rate = 0.05)
-  init <- init.net(i.num = 10)
-  control <- control.net(type = "SIS", nsims = 2, nsteps = 5, verbose = FALSE)
-  mod <- netsim(est, param, init, control)
-  expect_is(mod, "netsim")
-})
-
-test_that("netsim for edges only, SIR, one-mode, closed, 1 sim", {
-  param <- param.net(inf.prob = 0.3, act.rate = 0.5, rec.rate = 0.05)
-  init <- init.net(i.num = 10, r.num = 0)
-  control <- control.net(type = "SIR", nsims = 1, nsteps = 5, verbose = FALSE)
-  mod <- netsim(est, param, init, control)
-  expect_is(mod, "netsim")
-  plot(mod)
-  plot(mod, type = "formation")
-  plot(mod, type = "network")
-  test_net(mod)
-})
-
-test_that("netsim for edges only, SIR, one-mode, closed, 2 sim", {
-  param <- param.net(inf.prob = 0.3, act.rate = 0.5, rec.rate = 0.05)
-  init <- init.net(i.num = 10, r.num = 0)
-  control <- control.net(type = "SIR", nsims = 2, nsteps = 5, verbose = FALSE)
-  mod <- netsim(est, param, init, control)
-  expect_is(mod, "netsim")
-  plot(mod)
-  plot(mod, type = "formation")
-  plot(mod, type = "network")
-  test_net(mod)
-})
+for (trim in c(FALSE, TRUE)) {
+  if (trim == TRUE) {
+    est2 <- trim_netest(est)
+  } else {
+    est2 <- est
+  }  
+  
+  # Edges + nodematch, one-mode, closed
+  
+  test_that("netsim for edges only, SI, one-mode, closed, 1 sim", {
+    param <- param.net(inf.prob = 0.3, act.rate = 0.5)
+    init <- init.net(i.num = 10)
+    control <- control.net(type = "SI", nsims = 1, nsteps = 5, verbose = FALSE)
+    mod <- netsim(est2, param, init, control)
+    expect_is(mod, "netsim")
+    plot(mod)
+    plot(mod, type = "formation")
+    plot(mod, type = "network")
+    test_net(mod)
+  })
+  
+  test_that("netsim for edges only, SI, one-mode, closed, 2 sim", {
+    param <- param.net(inf.prob = 0.3, act.rate = 0.5)
+    init <- init.net(i.num = 10)
+    control <- control.net(type = "SI", nsims = 2, nsteps = 5, verbose = FALSE)
+    mod <- netsim(est2, param, init, control)
+    expect_is(mod, "netsim")
+    plot(mod)
+    plot(mod, type = "formation")
+    plot(mod, type = "network")
+    test_net(mod)
+  })
+  
+  test_that("netsim for edges only, SIS, one-mode, closed, 1 sim", {
+    param <- param.net(inf.prob = 0.3, act.rate = 0.5, rec.rate = 0.05)
+    init <- init.net(i.num = 10)
+    control <- control.net(type = "SIS", nsims = 1, nsteps = 5, verbose = FALSE)
+    mod <- netsim(est2, param, init, control)
+    expect_is(mod, "netsim")
+    plot(mod)
+    plot(mod, type = "formation")
+    plot(mod, type = "network")
+    test_net(mod)
+  })
+  
+  test_that("netsim for edges only, SIS, one-mode, closed, 2 sim", {
+    param <- param.net(inf.prob = 0.3, act.rate = 0.5, rec.rate = 0.05)
+    init <- init.net(i.num = 10)
+    control <- control.net(type = "SIS", nsims = 2, nsteps = 5, verbose = FALSE)
+    mod <- netsim(est2, param, init, control)
+    expect_is(mod, "netsim")
+  })
+  
+  test_that("netsim for edges only, SIR, one-mode, closed, 1 sim", {
+    param <- param.net(inf.prob = 0.3, act.rate = 0.5, rec.rate = 0.05)
+    init <- init.net(i.num = 10, r.num = 0)
+    control <- control.net(type = "SIR", nsims = 1, nsteps = 5, verbose = FALSE)
+    mod <- netsim(est2, param, init, control)
+    expect_is(mod, "netsim")
+    plot(mod)
+    plot(mod, type = "formation")
+    plot(mod, type = "network")
+    test_net(mod)
+  })
+  
+  test_that("netsim for edges only, SIR, one-mode, closed, 2 sim", {
+    param <- param.net(inf.prob = 0.3, act.rate = 0.5, rec.rate = 0.05)
+    init <- init.net(i.num = 10, r.num = 0)
+    control <- control.net(type = "SIR", nsims = 2, nsteps = 5, verbose = FALSE)
+    mod <- netsim(est2, param, init, control)
+    expect_is(mod, "netsim")
+    plot(mod)
+    plot(mod, type = "formation")
+    plot(mod, type = "network")
+    test_net(mod)
+  })
+}
 
 test_that("netsim implicit save.network option", {
   nw <- network_initialize(n = 100)

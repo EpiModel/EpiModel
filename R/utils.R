@@ -332,3 +332,45 @@ apportion_lr <- function(vector.length, values,
 netsim_cond_msg <- function(cond, module, at, msg) {
   paste0("\n\tA ", cond, " occured in module '", module, "' at step ", at)
 }
+
+#' @title Function to Reduce the Size of the \code{netest} Object
+#' @description Trims formula environments and some networks from the 
+#'              \code{netest} object.
+#' @param object A \code{netest} object.
+#' @details Removes \code{environment(object$constraints)},
+#'          \code{environment(object$coef.diss$dissolution)},  
+#'          \code{environment(object$formation)}, and
+#'          \code{object$fit$newnetworks}.  When \code{edapprox = TRUE},
+#'          also removes \code{object$fit$network} and
+#'          \code{environment(object$fit$formula)}; when 
+#'          \code{edapprox = FALSE}, also removes \code{object$fit$newnetwork} and
+#'          all but \code{formation} and \code{dissolution} from 
+#'          \code{environment(object$fit$formula)}.
+#'          
+#'          For the output to be usable in simulation, there should not be 
+#'          substitutions in the formulas, other than \code{formation} and
+#'          \code{dissolution} in \code{object$fit$formula} when 
+#'          \code{edapprox = FALSE}.
+#' @return A \code{netest} object with formula environments and some networks
+#'         removed.
+#' @export
+trim_netest <- function(object) {
+  if (object$edapprox == TRUE) {
+    object$fit$network <- NULL
+
+    object$fit$formula <- trim_env(object$fit$formula)
+  } else {
+    object$fit$newnetwork <- NULL
+
+    # keep formation and dissolution in environment so formula can be evaluated
+    object$fit$formula <- trim_env(object$fit$formula, keep = c("formation", "dissolution"))
+  }
+
+  object$fit$newnetworks <- NULL
+  
+  object$coef.diss$dissolution <- trim_env(object$coef.diss$dissolution)
+  object$formation <- trim_env(object$formation)
+  object$constraints <- trim_env(object$constraints)
+  
+  object
+}
