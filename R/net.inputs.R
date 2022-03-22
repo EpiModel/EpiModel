@@ -747,9 +747,11 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #'        \code{lasttoggle} times unspecified (effectively \code{-INT_MAX/2}).
 #' @param set.control.ergm Control arguments passed to \code{ergm}'s
 #'        \code{simulate_formula.network}.
-#' @param set.control.stergm Control arguments passed to \code{tergm}'s
-#'        \code{simulate.network}. See the help file for \code{\link{netdx}}
-#'        for details and examples on specifying this parameter.
+#' @param set.control.tergm Control arguments passed to \code{tergm}'s
+#'        \code{simulate_formula.network}. See the help file for 
+#'        \code{\link{netdx}} for details and examples on specifying this 
+#'        parameter.
+#' @param set.control.stergm Deprecated; use \code{set.control.tergm} instead.
 #' @param ... Additional control settings passed to model.
 #'
 #' @details
@@ -840,8 +842,13 @@ control.net <- function(type,
                         tergmLite.track.duration = FALSE,
                         set.control.ergm = control.simulate.formula(
                           MCMC.burnin = 2e5),
-                        set.control.stergm = control.simulate.network(),
+                        set.control.stergm = NULL,
+                        set.control.tergm = control.simulate.formula.tergm(),
                         ...) {
+  if (!missing(set.control.stergm)) {
+    warning("set.control.stergm is deprecated and will be removed in a future 
+             version; use set.control.tergm instead.")
+  }
 
   # Get arguments
   p <- list()

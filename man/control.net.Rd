@@ -37,7 +37,8 @@ control.net(
   raw.output = FALSE,
   tergmLite.track.duration = FALSE,
   set.control.ergm = control.simulate.formula(MCMC.burnin = 2e+05),
-  set.control.stergm = control.simulate.network(),
+  set.control.stergm = NULL,
+  set.control.tergm = control.simulate.formula.tergm(),
   ...
 )
 }
@@ -172,9 +173,12 @@ defaulting to \code{0} and \code{lasttoggle} defaulting to all
 \item{set.control.ergm}{Control arguments passed to \code{ergm}'s
 \code{simulate_formula.network}.}
 
-\item{set.control.stergm}{Control arguments passed to \code{tergm}'s
-\code{simulate.network}. See the help file for \code{\link{netdx}}
-for details and examples on specifying this parameter.}
+\item{set.control.stergm}{Deprecated; use \code{set.control.tergm} instead.}
+
+\item{set.control.tergm}{Control arguments passed to \code{tergm}'s
+\code{simulate_formula.network}. See the help file for 
+\code{\link{netdx}} for details and examples on specifying this 
+parameter.}
 
 \item{...}{Additional control settings passed to model.}
 }
