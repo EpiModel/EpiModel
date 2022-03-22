@@ -33,3 +33,13 @@ Removes \code{environment(object$constraints)},
          \code{dissolution} in \code{object$fit$formula} when 
          \code{edapprox = FALSE}.
 }
+\examples{
+nw <- network_initialize(n = 100)
+formation <- ~edges + concurrent
+target.stats <- c(50, 25)
+coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 10)
+est <- netest(nw, formation, target.stats, coef.diss,
+              set.control.ergm = control.ergm(MCMC.burnin = 1e5,
+                                              MCMC.interval = 1000))
+est <- trim_netest(est)
+}

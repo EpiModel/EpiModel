@@ -334,9 +334,12 @@ netsim_cond_msg <- function(cond, module, at, msg) {
 }
 
 #' @title Function to Reduce the Size of the \code{netest} Object
+#'
 #' @description Trims formula environments and some networks from the 
 #'              \code{netest} object.
+#'
 #' @param object A \code{netest} object.
+#'
 #' @details Removes \code{environment(object$constraints)},
 #'          \code{environment(object$coef.diss$dissolution)},  
 #'          \code{environment(object$formation)}, and
@@ -351,9 +354,21 @@ netsim_cond_msg <- function(cond, module, at, msg) {
 #'          substitutions in the formulas, other than \code{formation} and
 #'          \code{dissolution} in \code{object$fit$formula} when 
 #'          \code{edapprox = FALSE}.
+#'
 #' @return A \code{netest} object with formula environments and some networks
 #'         removed.
+#'
 #' @export
+#'
+#' @examples
+#' nw <- network_initialize(n = 100)
+#' formation <- ~edges + concurrent
+#' target.stats <- c(50, 25)
+#' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 10)
+#' est <- netest(nw, formation, target.stats, coef.diss,
+#'               set.control.ergm = control.ergm(MCMC.burnin = 1e5,
+#'                                               MCMC.interval = 1000))
+#' est <- trim_netest(est)
 trim_netest <- function(object) {
   if (object$edapprox == TRUE) {
     object$fit$network <- NULL
