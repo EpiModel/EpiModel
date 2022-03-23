@@ -19,7 +19,7 @@ record_attr_history(dat, at, attribute, posit_ids, values)
 \item{values}{The values to be recorded.}
 }
 \value{
-The main list object.
+The main data list object.
 }
 \description{
 This function records values specific to a time-step and a group of nodes.
@@ -27,7 +27,7 @@ In the records, the \code{posit_ids} are converted to \code{unique_ids} which
 allows the recording of data for nodes that are no longer in the network by
 the end of the run. The records are stored in \code{dat[["attr.history"]]}
 and can be accessed from the \code{netsim} object with
-\code{get_attr_history}
+\code{get_attr_history}.
 }
 \details{
 See the "Time-Varying Parameters" section of the "Working With Model
@@ -35,8 +35,7 @@ Parameters" vignette.
 }
 \examples{
 \dontrun{
-
-# This function has to be used inside a custom module
+# This function must be used inside a custom module
 dat <- record_attr_history(dat, at, "attr_1", get_posit_ids(dat), 5)
 some_nodes <- get_posit_ids(dat)
 some_nodes <- some_nodes[runif(length(some_nodes)) < 0.2]
@@ -46,7 +45,6 @@ dat <- record_attr_history(
   some_nodes,
   rnorm(length(some_nodes))
 )
-
 }
 
 }

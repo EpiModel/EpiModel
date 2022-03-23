@@ -15,7 +15,7 @@ all values have the same probability of being picked
 }
 \value{
 A 0 argument generator function to sample one of the values from the
-  \code{values} vector.
+\code{values} vector.
 }
 \description{
 This function returns a 0 argument function that can be used as

@@ -6,7 +6,7 @@
 #' allows the recording of data for nodes that are no longer in the network by
 #' the end of the run. The records are stored in \code{dat[["attr.history"]]}
 #' and can be accessed from the \code{netsim} object with
-#' \code{get_attr_history}
+#' \code{get_attr_history}.
 #'
 #' @param dat Main data object passed through \code{netsim} simulations.
 #' @param at The time where the recording happens.
@@ -15,8 +15,7 @@
 #'   (see \code{get_posit_ids}).
 #' @param values The values to be recorded.
 #'
-#' @return The main list object.
-#'
+#' @return The main data list object.
 #'
 #' @details
 #' See the "Time-Varying Parameters" section of the "Working With Model
@@ -24,8 +23,7 @@
 #'
 #' @examples
 #' \dontrun{
-#'
-#' # This function has to be used inside a custom module
+#' # This function must be used inside a custom module
 #' dat <- record_attr_history(dat, at, "attr_1", get_posit_ids(dat), 5)
 #' some_nodes <- get_posit_ids(dat)
 #' some_nodes <- some_nodes[runif(length(some_nodes)) < 0.2]
@@ -35,7 +33,6 @@
 #'   some_nodes,
 #'   rnorm(length(some_nodes))
 #' )
-#'
 #' }
 #'
 #' @export
