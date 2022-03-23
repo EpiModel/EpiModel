@@ -19,8 +19,6 @@
 #' variable, and the \code{nodemix} component differentiates this for
 #' black-black, black-white, and white-white couples.
 #'
-#' @author Steven M. Goodreau
-#'
 #' @aliases absdiffnodemix
 #'
 InitErgmTerm.absdiffnodemix <- function(nw, arglist, ...) {
@@ -68,8 +66,9 @@ InitErgmTerm.absdiffnodemix <- function(nw, arglist, ...) {
 #' @title Definition for absdiffby ERGM Term
 #'
 #' @description This function defines and initializes the absdiffby ERGM term
-#'              that allows for targeting homophily based on a non-binary
-#'              attribute (e.g., age) by a binary attribute (e.g., sex).
+#'              that allows for representing homophily with respect to a
+#'              non-binary attribute (e.g., age) differentially by a binary
+#'              attribute (e.g., sex).
 #'
 #' @param nw An object of class \code{network}.
 #' @param arglist A list of arguments as specified in the \code{ergm.userterms}
@@ -79,12 +78,11 @@ InitErgmTerm.absdiffnodemix <- function(nw, arglist, ...) {
 #'
 #' @details
 #' This ERGM user term was written to allow for age-based homophily in
-#' partnership formation that is asymmetric by sex. The absdiff component
-#' targets age-based homophily while the by component allows that to be structed
-#' by a binary attribute such as "male", in order to enforce an offset in the
-#' average difference.
-#'
-#' @author Samuel M. Jenness
+#' partnership formation that is asymmetric by sex. The \code{absdiff} component
+#' targets age-based homophily while the \code{by} component allows that to be
+#' structured by a binary attribute such as "male", in order to enforce an
+#' offset in the average difference. This allows, for example, a average age
+#' difference in partnerships, but with males (on average) older than females.
 #'
 #' @aliases absdiffby
 #'

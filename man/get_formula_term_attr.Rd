@@ -15,7 +15,7 @@ get_formula_term_attr(form, nw)
 A character vector of vertex attributes.
 }
 \description{
-Given a formation formula for a network model, outputs it into
-             a character vector of vertex attributes to be used in
+Given a formation formula for a network model, outputs a
+             character vector of vertex attributes to be used in
              \code{\link{netsim}} simulations.
 }
