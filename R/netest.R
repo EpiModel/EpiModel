@@ -26,12 +26,8 @@
 #' @param set.control.stergm Control arguments passed to \code{simulate.stergm}
 #'        (see details).
 #' @param verbose If \code{TRUE}, print model fitting progress to console.
-#' @param nested.edapprox Logical. If \code{edapprox} is \code{TRUE}, is the
-#'        dissolution model an initial segment of the formation model? This
-#'        determines whether \code{edapprox} is implemented by subtracting the
-#'        relevant values from the initial formation model coefficients, or by
-#'        appending the dissolution terms to the formation model and appending
-#'        the relevant values to the vector of formation model coefficients.
+#' @param nested.edapprox Logical. If \code{edapprox = TRUE} the dissolution
+#'        model is an initial segment of the formation model (see details).
 #' @param ... Additional arguments passed to other functions.
 #'
 #' @details
@@ -75,9 +71,14 @@
 #' It has recently been found that subtracting a modified version of the
 #' dissolution coefficients from the formation coefficients provides a more
 #' principled approximation, and this is now the form of the approximation
-#' applied by \code{netest}.  (The modified values subtracted from the formation
+#' applied by \code{netest}. The modified values subtracted from the formation
 #' coefficients are equivalent to the (crude) dissolution coefficients with
-#' their target durations increased by 1.)
+#' their target durations increased by 1. The \code{nested.edapprox} argument
+#' toggles whether to implement this modified version by appending the
+#' dissolution terms to the formation model and appending the relevant values to
+#' the vector of formation model coefficients (value = \code{FALSE}), whereas
+#' the standard version subtracts the relevant values from the initial formation
+#' model coefficients (value = \code{TRUE}).
 #'
 #' @section Control Arguments:
 #' The \code{ergm} and \code{stergm} functions allow control settings for the
@@ -337,14 +338,9 @@ diss_check <- function(formation, dissolution) {
 #'        \code{\link{netest}} function.
 #' @param new.coef.diss An object of class \code{disscoef}, from the
 #'        \code{\link{dissolution_coefs}} function.
-#' @param nested.edapprox Is the new dissolution model an initial segment of
-#'        the formation model in \code{old.netest} (not including the appended
-#'        old dissolution model if \code{old.netest} was fit with
-#'        \code{nested.edapprox = TRUE})? This determines whether the new
-#'        edapprox is implemented by subtracting the relevant values from the
-#'        initial formation model coefficients, or by appending the new
-#'        dissolution terms to the formation model and appending the relevant
-#'        values to the vector of formation model coefficients.
+#' @param nested.edapprox Logical. If \code{edapprox = TRUE} the dissolution
+#'        model is an initial segment of the formation model (see details in
+#'        \code{\link{netest}}).
 #' @param ... Additional arguments passed to other functions.
 #'
 #' @details
