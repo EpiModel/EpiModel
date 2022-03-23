@@ -742,13 +742,8 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #'        modules specified.
 #' @param raw.output If \code{TRUE}, \code{netsim} will output a list of netsim
 #'        data (one per simulation) instead of a formatted \code{netsim} object.
-#' @param tergmLite.track.duration Logical; to track duration information
-#'        (\code{time} and \code{lasttoggle}) for \code{tergm} models in
-#'        \code{tergmLite} simulations. If \code{TRUE}, the \code{time} and
-#'        \code{lasttoggle} values are initialized from the network attributes
-#'        of the networks passed to \code{init_tergmLite}, with \code{time}
-#'        defaulting to \code{0} and \code{lasttoggle} defaulting to all
-#'        \code{lasttoggle} times unspecified (effectively \code{-INT_MAX/2}).
+#' @param tergmLite.track.duration If \code{TRUE}, track duration information
+#'        for models in \code{tergmLite} simulations.
 #' @param set.control.ergm Control arguments passed to \code{ergm}'s
 #'        \code{simulate_formula.network}.
 #' @param set.control.stergm Control arguments passed to \code{tergm}'s
