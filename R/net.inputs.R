@@ -252,8 +252,8 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
 #' @description Updates epidemic model parameters originally set with
 #'              \code{\link{param.net}} and adds new parameters.
 #'
-#' @param x Object of class \code{param.net}, output from the function of the
-#'        same name.
+#' @param param Object of class \code{param.net}, output from function of same
+#'              name.
 #' @param new.param.list Named list of new parameters to add to original
 #'        parameters.
 #'
@@ -268,7 +268,7 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
 #' The \code{new.param.list} object should be a named list object containing
 #' named parameters matching those already in \code{x} (in which case those
 #' original parameter values will be replaced) or not matching (in which case
-#' new parameters will be added to \code{x}).
+#' new parameters will be added to \code{param}).
 #'
 #' @return
 #' An updated list object of class \code{param.net}, which can be passed to the
@@ -282,9 +282,9 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
 #'
 #' @export
 #'
-update_params <- function(x, new.param.list) {
+update_params <- function(param, new.param.list) {
 
-  if (!inherits(x, "param.net")) {
+  if (!inherits(param, "param.net")) {
     stop("x should be object of class param.net")
   }
   if (class(new.param.list) != "list") {
@@ -292,10 +292,10 @@ update_params <- function(x, new.param.list) {
   }
 
   for (ii in seq_along(new.param.list)) {
-    x[[names(new.param.list)[ii]]] <- new.param.list[[ii]]
+    param[[names(new.param.list)[ii]]] <- new.param.list[[ii]]
   }
 
-  return(x)
+  return(param)
 }
 
 
