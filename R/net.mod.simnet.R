@@ -30,26 +30,24 @@ sim_nets_t1 <- function(x, dat, nsteps) {
 
   save.nwstats <- get_control(dat, "save.nwstats")
 
+  set.control.ergm <- get_control(dat, "set.control.ergm")
+  set.control.tergm <- get_control(dat, "set.control.tergm")
+  set.control.stergm <- get_control(dat, "set.control.stergm")
+
+  # Simulate t0 basis network
+  if (x$edapprox == TRUE) {
+    nw <- simulate(x$formation,
+                   coef = coef(x$fit),
+                   basis = x$fit$newnetwork,
+                   constraints = x$constraints,
+                   control = set.control.ergm,
+                   dynamic = FALSE)
+  } else {
+    nw <- x$fit$network
+  }
+
   # if TERGM, then use tergm package simulation for dynamic network
   if (isTERGM == TRUE) {
-
-    set.control.ergm <- get_control(dat, "set.control.ergm")
-
-    # Simulate t0 basis network
-    if (x$edapprox == TRUE) {
-      nw <- simulate(x$formation,
-                     coef = coef(x$fit),
-                     basis = x$fit$newnetwork,
-                     constraints = x$constraints,
-                     control = set.control.ergm,
-                     dynamic = FALSE)
-    } else {
-      nw <- x$fit$network
-    }
-
-    set.control.stergm <- get_control(dat, "set.control.stergm")
-    set.control.tergm <- get_control(dat, "set.control.tergm")
-
     if (!is.null(set.control.stergm)) {
       # Simulate dynamic network
       suppressWarnings({
@@ -84,47 +82,28 @@ sim_nets_t1 <- function(x, dat, nsteps) {
         sim <- networkDynamic::activate.vertices(sim, onset = 1, terminus = Inf)
       })
     }
-    dat$nw[[1]] <- sim
-
-  # If ERGM, then use ergm package simulation for x-sectional network panels
   } else {
-
-    set.control.ergm <- get_control(dat, "set.control.ergm")
-
-    sim <- simulate(x$formation,
-                    coef = coef(x$fit),
-                    basis = x$fit$newnetwork,
-                    constraints = x$constraints,
-                    control = set.control.ergm,
-                    dynamic = FALSE,
-                    monitor = nwstats.formula,
-                    nsim = nsteps)
-
-    # save working network and temp network list
-    if (nsteps == 1) {
-      dat$nw[[1]] <- sim
-      dat$temp$nw_list <- list(sim)
-    } else {
-      dat$nw[[1]] <- sim[[1]]
-      dat$temp$nw_list <- sim
-    }
+    suppressWarnings({
+      sim <- simulate(x$formation,
+                      basis = nw,
+                      coef = coef(x$fit),
+                      time.slices = nsteps,
+                      time.start = 1,
+                      time.offset = 0,
+                      constraints = x$constraints,
+                      monitor = nwstats.formula,
+                      nsim = 1,
+                      control = set.control.tergm,
+                      dynamic = TRUE)
+      sim <- networkDynamic::activate.vertices(sim, onset = 1, terminus = Inf)
+    })
   }
+  dat$nw[[1]] <- sim
 
   # Set up nwstats df
   if (save.nwstats == TRUE) {
-    if (isTERGM == FALSE & nsteps > 1) {
-      nwstats <- as.data.frame(
-        simulate(x$formation,
-                 coef = coef(x$fit),
-                 basis = x$fit$newnetwork,
-                 constraints = x$constraints,
-                 control = set.control.ergm,
-                 dynamic = FALSE,
-                 monitor = nwstats.formula,
-                 nsim = nsteps, output = "stats"))
-    } else {
-      nwstats <- attributes(dat$nw[[1]])$stats
-    }
+    nwstats <- attributes(dat$nw[[1]])$stats
+
     keep.cols <- which(!duplicated(colnames(nwstats)))
     nwstats <- nwstats[, keep.cols, drop = FALSE]
     dat$stats$nwstats[[1]] <- nwstats
@@ -218,14 +197,17 @@ resim_nets <- function(dat, at) {
                                     dynamic = TRUE))
         }
       } else {
-        dat$nw[[1]] <- simulate(object = nwparam$formation,
-                                basis = dat$nw[[1]],
-                                coef = nwparam$coef.form,
-                                constraints = nwparam$constraints,
-                                control = set.control.ergm,
-                                dynamic = FALSE,
-                                monitor = nwstats.formula,
-                                nsim = 1)
+        suppressWarnings(
+          dat$nw[[1]] <- simulate(nwparam$formation,
+                                  basis = dat$nw[[1]],
+                                  coef = c(nwparam$coef.form),
+                                  constraints = nwparam$constraints,
+                                  time.start = at,
+                                  time.slices = 1,
+                                  time.offset = 0,
+                                  monitor = nwstats.formula,
+                                  control = set.control.tergm,
+                                  dynamic = TRUE))
       }
 
       # Update nwstats data frame

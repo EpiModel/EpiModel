@@ -110,3 +110,40 @@ test_that("netsim for edges only, SIR, one-mode, closed, 2 sim, set.control.ster
   plot(mod, type = "network")
   test_net(mod)
 })
+
+test_that("netsim duration 1", {
+  estd1 <- netest(nw, formation = ~edges + nodematch("race"),
+                  target.stats = c(25, 10),
+                  coef.diss = dissolution_coefs(~offset(edges), 1, 0),
+                  verbose = FALSE)
+  param <- param.net(inf.prob = 0.3, act.rate = 0.5, rec.rate = 0.05)
+  init <- init.net(r.num = 0, status.vector = rep("s", 50))
+  control <- control.net(type = "SIR", nsims = 1, nsteps = 5, 
+                         resimulate.network = TRUE, verbose = FALSE,
+                         nwupdate.FUN = NULL)
+  set.seed(0)
+  mod <- netsim(estd1, param, init, control)
+  expect_is(mod, "netsim")
+  plot(mod)
+  plot(mod, type = "formation")
+  plot(mod, type = "network")
+  test_net(mod)
+  
+  # compare to manually produced networkDynamic
+  set.seed(0)
+  sim <- simulate(estd1$formation,
+                  coef = coef(estd1$fit),
+                  basis = estd1$fit$newnetwork,
+                  control = control.simulate.formula(MCMC.burnin = 2e5),
+                  dynamic = FALSE)
+  for(i in 1:5) {
+    suppressWarnings(sim <- simulate(estd1$formation,
+                                     basis = sim,
+                                     time.slices = 1,
+                                     time.start = i,
+                                     time.offset = 0,
+                                     coef = c(estd1$coef.form),
+                                     dynamic = TRUE))
+  }
+  expect_identical(sim$mel, mod$network$sim1[[1]]$mel)  
+})
