@@ -4,14 +4,14 @@
 \alias{edgelist_meanage}
 \title{Mean Age of Partnerships over Time}
 \usage{
-edgelist_meanage(x, el)
+edgelist_meanage(el, diss_term = NULL, attribute = NULL)
 }
 \arguments{
-\item{x}{An \code{EpiModel} object of class \code{\link{netest}}.}
-
 \item{el}{If not passing \code{x}, a timed edgelist from a
 \code{networkDynamic} object extracted with the
 \code{as.data.frame.networkDynamic} function.}
+
+\item{x}{An \code{EpiModel} object of class \code{\link{netest}}.}
 }
 \description{
 Outputs a vector of mean ages of edges at a series of timesteps

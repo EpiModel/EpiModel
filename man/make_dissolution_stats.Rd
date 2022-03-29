@@ -7,13 +7,13 @@
 make_dissolution_stats(diag.sim, coef.diss, nsteps, verbose = TRUE)
 }
 \arguments{
-\item{diag.sim}{a list of network objects (one per simulation)}
+\item{diag.sim}{A list of network objects (one per simulation).}
 
-\item{coef.diss}{the \code{coef.diss} element of \code{nwparam}}
+\item{coef.diss}{The \code{coef.diss} element of \code{nwparam}.}
 
-\item{nsteps}{the number of simulated steps}
+\item{nsteps}{The number of simulated steps.}
 
-\item{verbose}{a verbosity toggle (default = TRUE)}
+\item{verbose}{A verbosity toggle (default = TRUE).}
 }
 \value{
 a \code{list} of dissolution statistics
