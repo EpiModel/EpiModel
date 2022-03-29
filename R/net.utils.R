@@ -566,7 +566,7 @@ edgelist_meanage <- function(el, diss_term=NULL, attribute=NULL) {
   # If any of the final 3, attribute must be a vector of attribute values. 
   # These conditions should in theory always be met when the function is called 
   # from make_dissolution_stats, which in turn has been called by dissolution_coefs.
-  # TO DO update documentation
+  # TO DO remove documentation
   # TO DO remove is.null
   # TO DO error check on value and on attribute presence
   
