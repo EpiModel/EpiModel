@@ -377,10 +377,10 @@ make_formation_table <- function(merged.stats, targets) {
 
 #' @title Calculate the Dissolution Statistics of a Network
 #'
-#' @param diag.sim a list of network objects (one per simulation)
-#' @param coef.diss the \code{coef.diss} element of \code{nwparam}
-#' @param nsteps the number of simulated steps
-#' @param verbose a verbosity toggle (default = TRUE)
+#' @param diag.sim A list of network objects (one per simulation).
+#' @param coef.diss The \code{coef.diss} element of \code{nwparam}.
+#' @param nsteps The number of simulated steps.
+#' @param verbose A verbosity toggle (default = TRUE).
 #'
 #' @return a \code{list} of dissolution statistics
 #' @keywords internal
