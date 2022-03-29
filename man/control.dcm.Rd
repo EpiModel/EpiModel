@@ -44,7 +44,8 @@ model to be simulated (see details).}
 \item{sens.param}{If \code{TRUE}, evaluate arguments in parameters with
 length greater than 1 as sensitivity analyses, with one model run per
 value of the parameter. If \code{FALSE}, one model will be run with
-parameters of arbitrary length.}
+parameters of arbitrary length (the model may error unless the model
+function is designed to accomodate parameter vectors).}
 
 \item{print.mod}{If \code{TRUE}, print the model form to the console.}
 

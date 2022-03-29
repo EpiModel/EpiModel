@@ -52,7 +52,8 @@ Suggests:
     knitr,
     rmarkdown,
     shiny,
-    testthat
+    testthat,
+    tidyr
 VignetteBuilder: knitr
 LinkingTo: Rcpp, ergm
 RoxygenNote: 7.1.2

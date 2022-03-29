@@ -259,7 +259,8 @@ init.dcm <- function(s.num, i.num, r.num, s.num.g2, i.num.g2, r.num.g2,
 #' @param sens.param If \code{TRUE}, evaluate arguments in parameters with
 #'        length greater than 1 as sensitivity analyses, with one model run per
 #'        value of the parameter. If \code{FALSE}, one model will be run with
-#'        parameters of arbitrary length.
+#'        parameters of arbitrary length (the model may error unless the model
+#'        function is designed to accomodate parameter vectors).
 #' @param print.mod If \code{TRUE}, print the model form to the console.
 #' @param verbose If \code{TRUE}, print model progress to the console.
 #' @param ... additional control settings passed to model.
