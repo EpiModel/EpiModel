@@ -4,11 +4,11 @@
 \alias{update_params}
 \title{Update Model Parameters for Stochastic Network Models}
 \usage{
-update_params(x, new.param.list)
+update_params(param, new.param.list)
 }
 \arguments{
-\item{x}{Object of class \code{param.net}, output from the function of the
-same name.}
+\item{param}{Object of class \code{param.net}, output from function of same
+name.}
 
 \item{new.param.list}{Named list of new parameters to add to original
 parameters.}
@@ -32,7 +32,7 @@ other parameters fixed).
 The \code{new.param.list} object should be a named list object containing
 named parameters matching those already in \code{x} (in which case those
 original parameter values will be replaced) or not matching (in which case
-new parameters will be added to \code{x}).
+new parameters will be added to \code{param}).
 }
 \examples{
 x <- param.net(inf.prob = 0.5, act.rate = 2)

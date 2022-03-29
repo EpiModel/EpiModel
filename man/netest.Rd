@@ -54,12 +54,8 @@ details).}
 
 \item{verbose}{If \code{TRUE}, print model fitting progress to console.}
 
-\item{nested.edapprox}{Logical. If \code{edapprox} is \code{TRUE}, is the
-dissolution model an initial segment of the formation model? This
-determines whether \code{edapprox} is implemented by subtracting the
-relevant values from the initial formation model coefficients, or by
-appending the dissolution terms to the formation model and appending
-the relevant values to the vector of formation model coefficients.}
+\item{nested.edapprox}{Logical. If \code{edapprox = TRUE} the dissolution
+model is an initial segment of the formation model (see details).}
 
 \item{...}{Additional arguments passed to other functions.}
 }
@@ -113,9 +109,14 @@ the vignette for the package \code{tergm}.
 It has recently been found that subtracting a modified version of the
 dissolution coefficients from the formation coefficients provides a more
 principled approximation, and this is now the form of the approximation
-applied by \code{netest}.  (The modified values subtracted from the formation
+applied by \code{netest}. The modified values subtracted from the formation
 coefficients are equivalent to the (crude) dissolution coefficients with
-their target durations increased by 1.)
+their target durations increased by 1. The \code{nested.edapprox} argument
+toggles whether to implement this modified version by appending the
+dissolution terms to the formation model and appending the relevant values to
+the vector of formation model coefficients (value = \code{FALSE}), whereas
+the standard version subtracts the relevant values from the initial formation
+model coefficients (value = \code{TRUE}).
 }
 
 \section{Control Arguments}{
