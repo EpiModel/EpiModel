@@ -4,29 +4,38 @@
 \alias{trim_netest}
 \title{Function to Reduce the Size of the \code{netest} Object}
 \usage{
-trim_netest(object)
+trim_netest(object, as.networkLite = TRUE)
 }
 \arguments{
 \item{object}{A \code{netest} object.}
+
+\item{as.networkLite}{logical; should we convert the retained network object
+to a \code{networkLite}?}
 }
 \value{
-A \code{netest} object with formula environments and some networks
-        removed.
+A \code{netest} object with formula environments, some networks,
+        and sample removed, optionally with the retained network object 
+        converted to a \code{networkLite}.
 }
 \description{
-Trims formula environments and some networks from the 
-             \code{netest} object.
+Trims formula environments, some networks, and 
+             \code{fit$sample} from the \code{netest} object.  Optionally 
+             converts the retained network object to a \code{networkLite}.
 }
 \details{
 Removes \code{environment(object$constraints)},
          \code{environment(object$coef.diss$dissolution)},  
-         \code{environment(object$formation)}, and
-         \code{object$fit$newnetworks}.  When \code{edapprox = TRUE},
-         also removes \code{object$fit$network} and
+         \code{environment(object$formation)}, 
+         \code{object$fit$sample}, and \code{object$fit$newnetworks}.  When 
+         \code{edapprox = TRUE}, also removes \code{object$fit$network} and
          \code{environment(object$fit$formula)}; when 
-         \code{edapprox = FALSE}, also removes \code{object$fit$newnetwork} and
-         all but \code{formation} and \code{dissolution} from 
-         \code{environment(object$fit$formula)}.
+         \code{edapprox = FALSE}, also removes \code{object$fit$newnetwork} 
+         and all but \code{formation} and \code{dissolution} from 
+         \code{environment(object$fit$formula)}, as well as removing
+         \code{environment(environment(object$fit$formula)$formation)} and
+         \code{environment(environment(object$fit$formula)$dissolution)}.
+         Optionally converts the retained network object to a 
+         \code{networkLite} (if \code{as.networkLite = TRUE}).
          
          For the output to be usable in simulation, there should not be 
          substitutions in the formulas, other than \code{formation} and
