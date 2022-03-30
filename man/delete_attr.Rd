@@ -7,11 +7,15 @@
 delete_attr(dat, ids)
 }
 \arguments{
-\item{dat}{Master list object containing a sublist of attributes.}
+\item{dat}{Main data object passed through \code{netsim} or \code{icm}
+simulations.}
 
 \item{ids}{ID numbers to delete from the list.}
 }
+\value{
+The updated \code{dat} main list object.
+}
 \description{
-Deletes elements from the master attribute list.
+Deletes elements from the main attribute list.
 }
 \keyword{internal}

@@ -7,26 +7,29 @@
 init.dcm(s.num, i.num, r.num, s.num.g2, i.num.g2, r.num.g2, ...)
 }
 \arguments{
-\item{s.num}{Number of initial susceptible. For two-group models, this is
-the number of initial group 1 susceptible.}
+\item{s.num}{Number of initial susceptible persons. For two-group models,
+this is the number of initial group 1 susceptible persons.}
 
-\item{i.num}{Number of initial infected. For two-group models, this is the
-number of initial group 1 infected.}
+\item{i.num}{Number of initial infected persons. For two-group models, this
+is the number of initial group 1 infected persons.}
 
-\item{r.num}{Number of initial recovered. For two-group models, this is the
-number of initial group 1 recovered. This parameter is only used for
-the \code{SIR} model type.}
+\item{r.num}{Number of initial recovered persons. For two-group models, this
+is the number of initial group 1 recovered persons. This parameter is
+only used for the \code{SIR} model type.}
 
-\item{s.num.g2}{Number of initial susceptible in group 2. This parameter is
-only used for two-group models.}
+\item{s.num.g2}{Number of initial susceptible persons in group 2. This
+parameter is only used for two-group models.}
 
-\item{i.num.g2}{Number of initial infected in group 2. This parameter is only
-used for two-group models.}
+\item{i.num.g2}{Number of initial infected persons in group 2. This parameter
+is only used for two-group models.}
 
-\item{r.num.g2}{Number of initial recovered in group 2. This parameter is
-only used for two-group \code{SIR} models.}
+\item{r.num.g2}{Number of initial recovered persons in group 2. This
+parameter is only used for two-group \code{SIR} models.}
 
 \item{...}{Additional initial conditions passed to model.}
+}
+\value{
+An \code{EpiModel} object of class \code{init.dcm}.
 }
 \description{
 Sets the initial conditions for deterministic compartmental

@@ -2,7 +2,7 @@
 % Please edit documentation in R/net.utils.R
 \name{idgroup}
 \alias{idgroup}
-\title{Mode Numbers for Two-Group Network}
+\title{Group Numbers for Two-Group Network}
 \usage{
 idgroup(nw, ids)
 }
@@ -12,8 +12,11 @@ idgroup(nw, ids)
 \item{ids}{Vector of ID numbers for which the group number
 should be returned.}
 }
+\value{
+A vector containing the group number for each of the specified nodes.
+}
 \description{
-Outputs group numbers give ID numbers for a two-group network.
+Outputs group numbers given ID numbers for a two-group network.
 }
 \examples{
 nw <- network_initialize(n = 10)

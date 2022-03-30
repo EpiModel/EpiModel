@@ -12,6 +12,8 @@ control.net(
   ncores = 1,
   resimulate.network = FALSE,
   tergmLite = FALSE,
+  cumulative.edgelist = FALSE,
+  truncate.el.cuml = 0,
   attr.rules,
   epi.by,
   initialize.FUN = initialize.net,
@@ -50,7 +52,7 @@ positive integer that is equal to the final step of a simulation. If
 simulation is restarted with \code{start} argument, this number must
 be at least one greater than that argument's value.}
 
-\item{start}{For models with network resimulation , time point to start up
+\item{start}{For models with network resimulation, time point to start up
 simulation. For restarted simulations, this must be one greater than
 the final time step in the prior simulation and must be less than the
 value in \code{nsteps}.}
@@ -66,7 +68,17 @@ impact the network structure (e.g., vital dynamics).}
 
 \item{tergmLite}{Logical indicating usage of either \code{tergm}
 (\code{tergmLite = FALSE}), or \code{tergmLite}
-(\code{tergmLite = TRUE}). Default of \code{FALSE}.}
+(\code{tergmLite = TRUE}). Default of \code{FALSE}. (See the
+\href{https://statnet.org/tut/EpiModel2.html#tergmLite}{EpiModel 2.0
+migration document} for details on \code{tergmLite}.)}
+
+\item{cumulative.edgelist}{If \code{TRUE}, calculates a cumulative edgelist
+within the network simulation module. This is used when tergmLite is
+used and the entire networkDynamic object is not used.}
+
+\item{truncate.el.cuml}{Number of time steps of the cumulative edgelist to
+retain. See help file for \code{\link{update_cumulative_edgelist}} for
+options.}
 
 \item{attr.rules}{A list containing the  rules for setting the attributes of
 incoming nodes, with one list element per attribute to be set (see
@@ -105,13 +117,13 @@ step, with the default function of \code{\link{prevalence.net}}.}
 \item{verbose.FUN}{Module to print simulation progress to screen, with the
 default function of \code{\link{verbose.net}}.}
 
-\item{module.order}{A character vector of module names that lists modules the
-order in which they should be evaluated within each time step. If
+\item{module.order}{A character vector of module names that lists modules in
+the order in which they should be evaluated within each time step. If
 \code{NULL}, the modules will be evaluated as follows: first any
 new modules supplied through \code{...} in the order in which they are
-listed, then the built-in modules in their order of the function
-listing. The \code{initialize.FUN} will always be run first and the
-\code{verbose.FUN} always last.}
+listed, then the built-in modules in the order in which they are
+listed as arguments above. \code{initialize.FUN} will
+always be run first and \code{verbose.FUN} will always be run last.}
 
 \item{save.nwstats}{If \code{TRUE}, save network statistics in a data frame.
 The statistics to be saved are specified in the \code{nwstats.formula}
@@ -126,17 +138,18 @@ simulation end. Default of \code{TRUE}.}
 
 \item{save.network}{If \code{TRUE}, networkDynamic/network object is
 saved at simulation end. Implicit reset to \code{FALSE} if
-\code{tergmLite = TRUE} (because network history not saved with tL).}
+\code{tergmLite = TRUE} (because network history is not saved with
+tergmLite).}
 
-\item{save.other}{A vector of elements on the \code{dat} master data list
-to save out after each simulation. One example for base models is
-the attribute list, "attr", at the final time step.}
+\item{save.other}{A character vector of elements on the \code{dat} main data
+list to save out after each simulation. One example for base models is
+the attribute list, \code{"attr"}, at the final time step.}
 
 \item{verbose}{If \code{TRUE}, print model progress to the console.}
 
 \item{verbose.int}{Time step interval for printing progress to console, where
 0 prints completion status of entire simulation and positive integer
-\code{x} prints progress after each \code{x} time steps. The default
+\code{x} prints progress after every \code{x} time steps. The default
 is to print progress after each time step.}
 
 \item{skip.check}{If \code{TRUE}, skips the default error checking for the
@@ -145,25 +158,23 @@ and control settings before running base epidemic models. Setting
 this to \code{FALSE} is recommended when running models with new
 modules specified.}
 
-\item{raw.output}{If \code{TRUE}, \code{netsim} will output a list of nestsim
+\item{raw.output}{If \code{TRUE}, \code{netsim} will output a list of netsim
 data (one per simulation) instead of a formatted \code{netsim} object.}
 
-\item{tergmLite.track.duration}{logical; to track duration information
-(\code{time} and \code{lasttoggle}) for \code{tergm} models in
-\code{tergmLite} simulations. If \code{TRUE}, the \code{time} and
-\code{lasttoggle} values are initialized from the network attributes
-of the networks passed to \code{init_tergmLite}, with \code{time}
-defaulting to \code{0} and \code{lasttoggle} defaulting to all
-\code{lasttoggle} times unspecified (effectively \code{-INT_MAX/2}).}
+\item{tergmLite.track.duration}{If \code{TRUE}, track duration information
+for models in \code{tergmLite} simulations.}
 
 \item{set.control.ergm}{Control arguments passed to \code{ergm}'s
-\code{.simulate_formula.network}.}
+\code{simulate_formula.network}.}
 
 \item{set.control.stergm}{Control arguments passed to \code{tergm}'s
 \code{simulate.network}. See the help file for \code{\link{netdx}}
 for details and examples on specifying this parameter.}
 
 \item{...}{Additional control settings passed to model.}
+}
+\value{
+An \code{EpiModel} object of class \code{control.net}.
 }
 \description{
 Sets the controls for stochastic network models simulated with
@@ -178,12 +189,12 @@ of control settings for base models, consult the
 For all base models, the \code{type} argument is a necessary parameter
 and it has no default.
 }
-\section{The attr.rules Argument}{
+\section{The \code{attr.rules} Argument}{
 
 The \code{attr.rules} parameter is used to specify the rules for how nodal
 attribute values for incoming nodes should be set. These rules are only
-necessary for models in which there are incoming nodes (i.e., arrivals) There
-are three rules available for each attribute value:
+necessary for models in which there are incoming nodes (i.e., arrivals).
+There are three rules available for each attribute value:
 \itemize{
  \item \strong{"current":} new nodes will be assigned this attribute in
        proportion to the distribution of that attribute among existing nodes

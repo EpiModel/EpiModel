@@ -2,12 +2,14 @@
 #' @title Dynamic Network Updates
 #'
 #' @description This function handles all calls to the network object contained
-#'              on the master dat object handled in \code{netsim}..
+#'              on the main \code{dat} object handled in \code{netsim}.
 #'
-#' @param dat Master list object containing a full \code{networkDynamic} object
+#' @param dat Main list object containing a full \code{networkDynamic} object
 #'        or networkLite edgelist (if using tergmLite), and other initialization
 #'        information passed from \code{\link{netsim}}.
 #' @param at Current time step.
+#'
+#' @return The updated \code{dat} main list object.
 #'
 #' @export
 #'
@@ -109,11 +111,11 @@ nwupdate.net <- function(dat, at) {
   }
 
   # Cummulative edgelist
-  if (!is.null(cumulative.edgelist) && cumulative.edgelist) {
+  if (!is.null(cumulative.edgelist) && cumulative.edgelist == TRUE) {
 
     truncate.el.cuml <- get_control(
       dat, "truncate.el.cuml", override.null.error = TRUE)
-    truncate.el.cuml <- if (is.null(truncate.el.cuml)) Inf else truncate.el.cuml
+    truncate.el.cuml <- if (is.null(truncate.el.cuml)) 1 else truncate.el.cuml
 
     for (network in seq_along(dat[["nwparam"]])) {
       dat <- update_cumulative_edgelist(dat, network, truncate.el.cuml)

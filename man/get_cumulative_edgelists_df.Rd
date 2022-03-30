@@ -2,23 +2,31 @@
 % Please edit documentation in R/el_cuml.R
 \name{get_cumulative_edgelists_df}
 \alias{get_cumulative_edgelists_df}
-\title{Get the Cumulative Edgelists of a Model in \code{data.frame} Format}
+\title{Get the Cumulative Edgelists of a Model}
 \usage{
 get_cumulative_edgelists_df(dat, networks = NULL)
 }
 \arguments{
-\item{dat}{a Master list object of network models}
+\item{dat}{Main data object passed through \code{netsim} simulations.}
 
-\item{networks}{the indexes of the networks to extract the cumulative
-edgelists from. If NULL (default) extract all the cumulative
-edgelists.}
+\item{networks}{Numerical indexes of the networks to extract the partnerships
+from. (May be > 1 for models with multiple overlapping
+networks.) If \code{NULL}, extract from all networks.}
 }
 \value{
-a \code{data.frame} with 5 columns:
-         head and tail, the unique_ids (see \code{get_unique_ids}) of the
-         nodes on the edge. Start and stop, the timestep where the edges
-         started and stopped. network, the network on which the edge is.
+A \code{data.frame} with 5 columns:
+\itemize{
+  \item \code{index}: the unique ID (see \code{get_unique_ids}) of the
+        indexes.
+  \item \code{partner}: the unique ID (see \code{get_unique_ids}) of the
+        partners/contacts.
+  \item \code{start}: the time step in which the edge started.
+  \item \code{stop}: the time step in which the edge stopped; if ongoing,
+        then \code{NA} is returned.
+  \item \code{network}: the numerical index for the network on which the
+        partnership/contact is located.
+ }
 }
 \description{
-Get the Cumulative Edgelists of a Model in \code{data.frame} Format
+Get the Cumulative Edgelists of a Model
 }

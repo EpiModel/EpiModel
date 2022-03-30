@@ -17,16 +17,15 @@ package framework.}
 \code{ergm.userterms} package framework.}
 }
 \description{
-This function defines and initialize the absdiffnodemix ERGM
-             term that allows for targeting age homophily by race.
+This function defines and initializes the absdiffnodemix ERGM
+             term that allows for targeting homophily based on a non-binary
+             attribute (e.g., age) by combinations of a binary attribute
+             (e.g., race).
 }
 \details{
 This ERGM user term was written to allow for age-based homophily in
 partnership formation that is heterogeneous by race. The \code{absdiff}
-component allows targets the distribution of age mixing on that continuous
+component targets the distribution of age mixing on that continuous
 variable, and the \code{nodemix} component differentiates this for
 black-black, black-white, and white-white couples.
-}
-\author{
-Steven M. Goodreau
 }

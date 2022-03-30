@@ -1,15 +1,54 @@
+## EpiModel 2.2.2
+
+### NEW FEATURES
+
+-   Network models can now use predefined scenarios with the `use_scenario`
+ function. See the vignette, "Working with model parameters."
+
+### BUG FIXES
+
+
+### OTHER
+
+-   The `updater.net` module was removed as an optional module but it's
+functionalities are now the default behavior for all network models (built-in
+and custom).
+- the parameters `param.updater.list` and `control.updater.list` in `param.net`
+and `control.net` respectively were renamed `.param.updater.list` and
+`.control.updater.list`. The leading dot indicate that these are built-in
+EpiModel elements not to be confused with the user-defined ones.
+
+## EpiModel 2.2.1
+
+### NEW FEATURES
+
+-   Improved optional module `updater.net` allowing it to update the model controls as well as the parameters. See the vignette, "Working with model parameters."
+- General updates to the names and content of the included vignettes.
+
+### BUG FIXES
+
+-   Fix dissolution model statistics calculations for `netsim` in the case with a model with an "end horizon" (when the network is not resimulated at the end of the time series).
+- Fix duplicate printing issues across `print.netsim`, `print.param.net`, and `print.control.net`.
+- Fix use of `all.equal` in unit tests as requested by CRAN.
+- Change defaults of newly introduced cumulative edgelist functionality to not store it (improves speed).
+- Allow `set_attr` for `posit_ids` to return unchanged `dat` object.
+
+### OTHER
+
+-   We have changed the names of arguments from the function `get_partners` newly introduced in EpiModel v2.2.0: `max.age` is renamed to `truncate` for consistency with the other cumulative edgelist functions; `only.active` is renamed `only.active.nodes` to clarify that this argument subsets by *nodes* and not by *partnerships*.
+
 ## EpiModel 2.2.0
 
 ### NEW FEATURES
 
--   Developed a general approach to tracking and querying historical and contacts, called a cumulative edgelist. This may be used, for example, to query the recent but non-current contacts of newly infected nodes. See the vignette: `vignette("TODO")`.
+-   Developed a general approach to tracking and querying historical and contacts, called a cumulative edgelist. This may be used, for example, to query the recent but non-current contacts of newly infected nodes. See the vignette, "Working with network objects".
 -   A `create_dat_object` helper function was added to standardize the creation of the core `dat` object within `initialize.net`.
 -   The current timestep within `netsim` simulations is now stored in the `dat` object and accessible with `get_current_timestep`. This eliminates the need to explicitly pass `at` as a function argument, although that is still allowed.
 -   Addition of the `get_param_set` function that extracts from a `netsim` object the set of parameters used by each simulation. See the help page: `help("get_param_set")`.
--   Developed a mechanism to store nodal attribute history over the course of a `netsim` simulation. See the vignette: `vignette("TODO")`.
--   Developed an optional module to define prevalence statistics (also called "epi stats") as functions to be passed to the model as control settings before each `netsim` simulation. This allows users to avoid updating the `prevalence.net` module. See the vignette: `vignette("TODO")`.
--   Developed an optional module allowing the update of the model parameters over timesteps within `netsim` simulations (i.e., time-varying parameters). See the vignette: `vignette("TODO")`.
--   Improved the random parameterization programming interface to allow correlation between parameters in each simulation (e.g., the ability to pass in a multivariate parameter set for each simulation). See the vignette: `vignette("TODO")`.
+-   Developed a mechanism to store nodal attribute history over the course of a `netsim` simulation. See the vignette, "Working with attributes and summary statistics."
+-   Developed an optional module to define prevalence statistics (also called "epi stats") as functions to be passed to the model as control settings before each `netsim` simulation. This allows users to avoid updating the `prevalence.net` module. See the vignette, "Working with attributes and summary statistics."
+-   Developed an optional module allowing the update of the model controls and parameters over timesteps within `netsim` simulations (i.e., time-varying parameters). See the vignette, "Working with model parameters."
+-   Improved the random parameterization programming interface to allow correlation between parameters in each simulation (e.g., the ability to pass in a multivariate parameter set for each simulation). See the vignette, "Working with model parameters."
 
 ### BUG FIXES
 
@@ -23,7 +62,7 @@
 -   Fixed issue with `Error`, `Warning` or `Message` in `netsim` printing twice.
 -   Fixed problem with unique ID counter not saved by `saveout.net`, resulting in the unique ids to start a 1 again when restarting a model from a previous simulation.
 
-### Other
+### OTHER
 
 -   The new home for EpiModel on Github is: <https://github.com/EpiModel/EpiModel>. It was previously located on the `statnet` organization on Github.
 
@@ -526,7 +565,7 @@
 -   Automatic parallelization of network models is now possible with the `netsim_parallel` function. Note that this is experimental and has not been tested extensively across platforms, so bug reports are welcome. Two parallel methods are supported: `doParallel` for multiple cores on a single node, and `doMPI` for multiple cores across multiple nodes. The latter requires an MPI installation on a linux-based cluster.
 -   Network diagnostics in `netdx` also accepts a new `ncores` argument, which will run the diagnostic simulations and calculations on those simulations in parallel on a specified number of cores (single node only).
 -   Added an argument, `skip.check`, for the control settings in both ICM and network model classes, which overrides the default error checking of parameters, initial conditions, and control settings. This should only be used for original models with new modules that may unnecessarily trigger a check error.
--   Added an argument, `save.other`, for the control settings in network models, which is a character vector of other elements from the master data list, `dat`, to save out in the simulation.
+-   Added an argument, `save.other`, for the control settings in network models, which is a character vector of other elements from the main data list, `dat`, to save out in the simulation.
 -   Added an argument, `start`, for the control settings in network models, which is a starting time step to resume simulations. In this case, the `x` argument in `netsim` is a previously saved `netsim` object rather than a `netest` object. The `start` argument should be one integer higher than the `nsteps` in that earlier `netsim` object. The `nsteps` argument should now be the final steps for the simulation. Note that this requires specifying `save.other = "attr"` in the control settings, as well as saving the networks.
 -   Added progress bars for `netdx` diagnostic simulations for computationally intensive parts of the simulations.
 -   Network model estimation with `netest` now provides an output argument. When using the edges dissolution approximation (`edapprox = TRUE`), one may set output to `"sim"` to save a static simulation network instead of the `ergm` object as an element of the `netest` output. This is mainly for file size efficiency.
@@ -538,7 +577,7 @@
 
 ### API CHANGES
 
--   For ICMs and network models, the internal master data object has been renamed from `all` to `dat` to prevent function name conflicts. Additionally, all summary output is now stored within `dat$epi`, whereas the previous location was `all$out`.
+-   For ICMs and network models, the internal main data object has been renamed from `all` to `dat` to prevent function name conflicts. Additionally, all summary output is now stored within `dat$epi`, whereas the previous location was `all$out`.
 -   The ordering of built-in modules within a time step for network simulations has been changed such that the network resimulation module is run before the infection module. There should be no substantive differences in model results, but this provides a more logical consistency between edges toggled on at a time step and the infections that may occur over those edges.
 -   In network models, two preset functions have been changed to replaceable modules: `edges_correct` and `verbose.net`. The former performs the adjustment to the edges coefficient for network models with population size changes, in order to preserve the mean degree; for mass action epidemic models, for example, one would not want this adjustment, so the module should be set to NULL in `control.net`. The latter performs the printing of simulation results to the console. Both functions are now listed in the modules help file accessed by: `help(modules.net)`.
 -   Evaluation of parameters, initial conditions, and control settings in the core parameterization functions is now more stable, and also more flexible. Defaults for the fixed arguments are now included in the documentation.

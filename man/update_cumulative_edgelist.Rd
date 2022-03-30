@@ -4,30 +4,31 @@
 \alias{update_cumulative_edgelist}
 \title{Update a Cumulative Edgelist of the Specified Network}
 \usage{
-update_cumulative_edgelist(dat, network, truncate = Inf)
+update_cumulative_edgelist(dat, network, truncate = 0)
 }
 \arguments{
-\item{dat}{a Master list object of network models}
+\item{dat}{Main data object passed through \code{netsim} simulations.}
 
-\item{network}{the index of the network whose cumulative edgelist will be
-updated}
+\item{network}{Numerical index of the network for which the cumulative
+edgelist will be updated. (May be > 1 for models with
+multiple overlapping networks.)}
 
-\item{truncate}{after how many steps an edge that is no longer active should
-be removed from the cumulative edgelist (default = Inf)}
+\item{truncate}{After how many time steps a partnership that is no longer
+active should be removed from the output.}
 }
 \value{
-an updated Master list object of network models
+An updated main list object of network models.
 }
 \description{
 Update a Cumulative Edgelist of the Specified Network
 }
 \section{Truncation}{
 
-To avoid storing a cumulative edgelist to long, the `truncate`
+To avoid storing a cumulative edgelist too long, the \code{truncate}
 parameter defines a number of steps after which an edge that is no longer
-active is truncated out of the cummulative edgelist. When `truncate == Inf`
-(default), no edge is ever removed. When `truncate == 0`, only the active
-edges are kept. You may want this behavior to keep track of the active edges
-start step.
+active is truncated out of the cumulative edgelist.
+When \code{truncate = Inf}, no edges are ever removed. When
+\code{truncate = 0}, only the active edges are kept. You may want this
+behavior to keep track of the active edges' start step.
 }
 

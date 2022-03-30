@@ -4,8 +4,8 @@
 #' \tabular{ll}{
 #'    Package: \tab EpiModel\cr
 #'    Type: \tab Package\cr
-#'    Version: \tab 2.2.0\cr
-#'    Date: \tab 2021-10-28\cr
+#'    Version: \tab 2.2.1\cr
+#'    Date: \tab 2022-01-28\cr
 #'    License: \tab GPL-3\cr
 #'    LazyLoad: \tab yes\cr
 #' }
@@ -23,7 +23,8 @@
 #'  \item \strong{Deterministic Compartmental Models:} these continuous-time
 #'        models are solved using ordinary differential equations. EpiModel
 #'        allows for easy specification of sensitivity analyses to compare
-#'        multiple scenarios f the same model across different parameter values.
+#'        multiple scenarios of the same model across different parameter 
+#'        values.
 #'  \item \strong{Stochastic Individual Contact Models:} a novel class of
 #'        individual-based, microsimulation models that were developed to add
 #'        random variation in all components of the transmission system, from
@@ -143,7 +144,6 @@
 #' @importFrom lazyeval lazy_dots lazy_eval
 #' @importFrom statnet.common trim_env nonsimp_update.formula append_rhs.formula
 #'             list_rhs.formula set.control.class check.control.class NVL
-#'             COLLATE_ALL_MY_CONTROLS_EXPR UPDATE_MY_SCTRL_EXPR
 #' @importFrom methods is
 #'
 #' @useDynLib EpiModel, .registration = TRUE

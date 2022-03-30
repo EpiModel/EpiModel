@@ -1,3 +1,9 @@
+library/
+local/
+cellar/
+lock/
+python/
+staging/
 .Rproj.user
 .Rhistory
 .RData
@@ -20,3 +26,4 @@ tests/testthat/Rplots.pdf
 inst/doc
 /doc/
 /Meta/
+.Rprofile

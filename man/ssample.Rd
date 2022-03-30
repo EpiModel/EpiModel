@@ -17,6 +17,9 @@ positive integer.}
 \item{prob}{Vector of probability weights for obtaining the elements of the
 vector being sampled.}
 }
+\value{
+A vector containing the sampled value(s).
+}
 \description{
 Provides a sampling function useful for dynamic simulations, in
              which the length of the input vector may be multiple lengths and

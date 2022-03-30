@@ -1,28 +1,29 @@
-#' @title Record Attributes History
+#' @title Record Attribute History
 #'
 #' @description
 #' This function records values specific to a time-step and a group of nodes.
-#' The nodes are identified by their \code{unique_ids} which allows the
-#' recording of data for nodes that are no longer in the network by the end of
-#' the run. The records are stored in \code{dat[["attr.history"]]} and can be
-#' accessed from the \code{netsim} object with \code{get_attr_history}
+#' In the records, the \code{posit_ids} are converted to \code{unique_ids} which
+#' allows the recording of data for nodes that are no longer in the network by
+#' the end of the run. The records are stored in \code{dat[["attr.history"]]}
+#' and can be accessed from the \code{netsim} object with
+#' \code{get_attr_history}.
 #'
-#' @param dat a Master list object of network models
-#' @param at the time where the recording happens
-#' @param attribute the name of the value to record
-#' @param posit_ids a numeric vector of posit_ids to which the measure applies.
-#'   (see \code{get_posit_ids})
-#' @param values the values to be recorded
+#' @param dat Main data object passed through \code{netsim} simulations.
+#' @param at The time where the recording happens.
+#' @param attribute The name of the value to record.
+#' @param posit_ids A numeric vector of posit_ids to which the measure applies.
+#'   (see \code{get_posit_ids}).
+#' @param values The values to be recorded.
 #'
-#' @return The Master list object
+#' @return The main data list object.
 #'
-#'
-#  @details
-#' See the "Time Varying Attributes" vignette
+#' @details
+#' See the "Time-Varying Parameters" section of the "Working With Model
+#' Parameters" vignette.
 #'
 #' @examples
 #' \dontrun{
-#'
+#' # This function must be used inside a custom module
 #' dat <- record_attr_history(dat, at, "attr_1", get_posit_ids(dat), 5)
 #' some_nodes <- get_posit_ids(dat)
 #' some_nodes <- some_nodes[runif(length(some_nodes)) < 0.2]
@@ -32,7 +33,6 @@
 #'   some_nodes,
 #'   rnorm(length(some_nodes))
 #' )
-#'
 #' }
 #'
 #' @export
@@ -65,20 +65,21 @@ record_attr_history <- function(dat, at, attribute, posit_ids, values) {
 #' @title Record an Arbitrary Object During a Simulation
 #'
 #' @description
-#' This function records any object during a simulation to allow it's
+#' This function records any object during a simulation to allow its
 #' inspection afterward. The records are stored in \code{dat[["raw.records"]]}
 #' during the simulation and in the \code{netsim} object under the
 #' \code{raw.records} sublists.
 #'
-#' @param dat a Master list object of network models
-#' @param at the time where the recording happens
-#' @param label the name to give to the recorded object
-#' @param object the object to be recorded
+#' @param dat Main data object passed through \code{netsim} simulations.
+#' @param at The time where the recording happens.
+#' @param label The name to give to the recorded object.
+#' @param object The object to be recorded.
 #'
-#' @return The Master list object
+#' @return The main list object.
 #'
 #' @details
-#' See the "Time Varying Attributes" vignette
+#' See the "Time-Varying Parameters" section of the "Working With Model
+#' Parameters" vignette.
 #'
 #' @examples
 #' \dontrun{

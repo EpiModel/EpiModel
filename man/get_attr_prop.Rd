@@ -7,15 +7,19 @@
 get_attr_prop(dat, nwterms)
 }
 \arguments{
-\item{nwterms}{Vector of attributes on network object, usually as
-output of \code{\link{get_formula_term_attr}}.}
+\item{dat}{Main list object containing a \code{networkDynamic} object and
+other initialization information passed from \code{\link{netsim}}.}
 
-\item{nw}{The \code{networkDynamic} object contained in the \code{netsim}
-simulation.}
+\item{nwterms}{Vector of attributes on the network object, usually as
+output of \code{\link{get_formula_term_attr}}.}
+}
+\value{
+A table containing the proportional distribution of each attribute in
+        \code{nwterms}.
 }
 \description{
 Calculates the proportional distribution of each vertex
-             attribute contained on the network
+             attribute contained in a network.
 }
 \seealso{
 \code{\link{get_formula_term_attr}},

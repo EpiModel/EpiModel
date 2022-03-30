@@ -1,12 +1,12 @@
-#' Update list code{x} using the elements of list code{new.x}
+#' @title Update List \code{x} Using the Elements of List \code{new.x}.
 #'
-#' @param x a list
-#' @param new.x a list
+#' @param x A list.
+#' @param new.x A list.
 #'
-#' @return the full code{x} list with the modifications added by code{new.x}
+#' @return The full \code{x} list with the modifications added by \code{new.x}.
 #'
 #' @details
-#' This function updates list code{x} by name. If code{x} and code{new.x}
+#' This function updates list \code{x} by name. If \code{x} and \code{new.x}
 #' elements are not named, the function will not work properly. If a function is
 #' provided to replace an element that was originally not a function, this
 #' function will be applied to the original value.
@@ -26,30 +26,33 @@ update_list <- function(x, new.x) {
   return(x)
 }
 
-#' Module to modify the parameters during the simulation
+#' @title Function to Modify the Controls or Parameters During the Simulation
 #'
-#' @param dat Master list object containing a \code{networkDynamic} object and
+#' @param dat Main list object containing a \code{networkDynamic} object and
 #'        other initialization information passed from \code{\link{netsim}}.
-#' @param at Current time step.
 #'
-#' @return the updated dat Master list object.
+#' @return The updated \code{dat} main list object.
 #'
 #' @details
-#' if a list code{param.updater.list} is present in the parameters, this module will
-#' update the code{param} list with new values at given timesteps.
-#' An updater is a list containing an code{at} element governing when the
-#' changes will happen, an optional code{verbose} boolean controlling whether to
-#' output a message when a change is made (default = TRUE) and a code{param}
-#' named list with the names being the same as the paramter names and the new
-#' value to update with.
-#' If the new value is a function but the old one is not, the
-#' function will be applied to the current element (see example) .
+#' If a list \code{.param.updater.list} is present in the parameters, this
+#' function
+#' will update the \code{param} list with new values at given timesteps.
+#' Similarily, if a list \code{.control.updater.list} is present in the controls,
+#' this function will update the \code{param} list with new values at given
+#' timesteps.
+#' An updater is a list containing an \code{at} element governing when the
+#' changes will happen, an optional \code{verbose} Boolean controlling whether
+#' to output a message when a change is made (default = TRUE), and a
+#' \code{param} or \code{control} named list containing the new values(s) with
+#' which to update, with the names being the same as the parameter / control
+#' names. If the new value is a function but the old one is not, the function
+#' will be applied to the current element (see example).
 #'
 #' @examples
 #' \dontrun{
 #'
-#' # Create the parame.updater.list
-#' param.updater.list <- list(
+#' # Create the .param.updater.list
+#' .param.updater.list <- list(
 #'   # this is one updater
 #'   list(
 #'     at = 10,
@@ -69,23 +72,41 @@ update_list <- function(x, new.x) {
 #'   )
 #' )
 #'
-#'  # Do not forget to add it to `param`
+#'  # Add it to params
 #'  param <- param.net(
 #'    inf.prob = 0.3,
 #'    act.rate = 0.5,
 #'    hiv.test.rate = rep(0.256, 3),
 #'    trans.scale = c(1, 2, 3),
-#'    param.updater.list = param.updater.list
+#'    .param.updater.list = param.updater.list
 #'  )
 #'
-#' # Enable the module in `control`
+#' # Create the .control.updater.list
+#' # these updaters will toggle on and off the verbosity of the model
+#' control.updater.list <- list(
+#'   list(
+#'     at = 50,
+#'     verbose = TRUE,
+#'     control = list(
+#'       verbose = TRUE
+#'     )
+#'   ),
+#'   # this is another updater
+#'   list(
+#'     at = 75,
+#'     verbose = TRUE,
+#'     control = list(
+#'       verbose = FALSE
+#'     )
+#'   )
+#' )
+#'
+#' Add the control updaters to the `control` object
 #'  control <- control.net(
-#'    type = NULL, # must be NULL as we use a custom module
 #'    nsims = 1,
 #'    nsteps = 20,
 #'    verbose = FALSE,
-#'    updater.FUN = updater.net,
-#'    infection.FUN = infection.net
+#'    .control.updater.list = control.updater.list
 #'  )
 #'
 #' nw <- network_initialize(n = 50)
@@ -103,36 +124,71 @@ update_list <- function(x, new.x) {
 #'
 #' }
 #'
-#' @export
-updater.net <- function(dat, at) {
-  param.updater.list <- get_param(dat, "param.updater.list",
-                                  override.null.error = TRUE)
+#' @keywords internal
+#' @noRd
+input_updater <- function(dat) {
+  for (type in c("param", "control")) {
+    dat <- common_updater(dat, type)
+  }
 
-  if (is.null(param.updater.list) || length(param.updater.list) == 0) {
+  return(dat)
+}
+
+#' @title Update Either the "param" or "control" List
+#'
+#' @param dat Main list object containing a \code{networkDynamic} object and
+#'        other initialization information passed from \code{\link{netsim}}.
+#' @param type Either \code{"param"} or \code{"control"}.
+#'
+#' @return The updated \code{dat} main list object.
+#'
+#' @keywords internal
+common_updater <- function(dat, type) {
+  # Set the variables and functions for either `param` or `control`
+  if (type == "param") {
+    type.label <- "parameters"
+    type.set <- set_param
+    type.get_list <- get_param_list
+    updaters.label <- ".param.updater.list"
+    updaters <- get_param(dat, updaters.label, override.null.error = TRUE)
+  } else if (type == "control") {
+    type.label <- "controls"
+    type.set <- set_control
+    type.get_list <- get_control_list
+    updaters.label <- ".control.updater.list"
+    updaters <- get_control(dat, updaters.label, override.null.error = TRUE)
+  } else {
+    stop("`type` must be either 'param' or 'control'")
+  }
+
+  # Common update mechanism
+  if (is.null(updaters) || length(updaters) == 0) {
     return(dat)
   }
 
   used.updaters <- numeric(0)
+  at <- get_current_timestep(dat)
 
-  for (i in seq_along(param.updater.list)) {
-    if (param.updater.list[[i]][["at"]] == at) {
-      verbose <- param.updater.list[[i]][["verbose"]]
+  for (i in seq_along(updaters)) {
+    if (updaters[[i]][["at"]] == at) {
+      verbose <- updaters[[i]][["verbose"]]
       verbose <- if (is.null(verbose)) TRUE else verbose
 
-      new.params <- param.updater.list[[i]][["param"]]
+      new.list <- updaters[[i]][[type]]
 
       if (verbose) {
         message(
-          "\n\nAt timestep = ", at, " the following parameters where modified:",
-          "\n'", paste0(names(new.params), collapse = "', '"), "'"
+          "\n\nAt timestep = ", at, " the following ", type.label,
+          " were modified:",
+          "\n'", paste0(names(new.list), collapse = "', '"), "'"
         )
       }
 
-      old.params <- get_param_list(dat, names(new.params))
-      updated.params <- update_list(old.params, new.params)
+      old.list <- type.get_list(dat, names(new.list))
+      updated.list <- update_list(old.list, new.list)
 
-      for (nm in names(updated.params)) {
-        dat <- set_param(dat, nm, updated.params[[nm]])
+      for (nm in names(updated.list)) {
+        dat <- type.set(dat, nm, updated.list[[nm]])
       }
 
       used.updaters <- c(used.updaters, i)
@@ -141,9 +197,9 @@ updater.net <- function(dat, at) {
 
   # Remove the used updaters from the list
   if (length(used.updaters) > 0) {
-    dat <- set_param(
-      dat, "param.updater.list",
-      param.updater.list[-used.updaters]
+    dat <- type.set(
+      dat, updaters.label,
+      updaters[-used.updaters]
     )
   }
 

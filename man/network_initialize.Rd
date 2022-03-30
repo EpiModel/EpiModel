@@ -16,20 +16,20 @@ network_initialize(
 \arguments{
 \item{n}{Network size.}
 
-\item{directed}{logical; should edges be interpreted as directed?}
+\item{directed}{Logical; should edges be interpreted as directed?}
 
-\item{hyper}{logical; are hyperedges allowed?}
+\item{hyper}{Logical; are hyperedges allowed?}
 
-\item{loops}{logical; should loops be allowed?}
+\item{loops}{Logical; should loops be allowed?}
 
-\item{multiple}{logical; are multiplex edges allowed?}
+\item{multiple}{Logical; are multiplex edges allowed?}
 
-\item{bipartite}{count; should the network be interpreted as bipartite? If
+\item{bipartite}{Count; should the network be interpreted as bipartite? If
 present (i.e., non-NULL) it is the count of the number of actors in
 the first mode of the bipartite network. In this case, the overall
 number of vertices is equal to the number of 'actors' (first mode)
 plus the number of ‘events’ (second mode), with the vertex.ids of all
-actors preceeding all events. The edges are then interpreted as
+actors preceding all events. The edges are then interpreted as
 nondirected.}
 }
 \value{

@@ -14,9 +14,13 @@ identical model parameterization as \code{x}.}
 
 \item{...}{Additional merge arguments (not used).}
 }
+\value{
+An \code{EpiModel} object of class \code{\link{icm}} containing the
+        data from both \code{x} and \code{y}.
+}
 \description{
 Merges epidemiological data from two independent simulations of
-             stochastic individual contact models from \code{icm}.
+             stochastic individual contact models from \code{\link{icm}}.
 }
 \details{
 This merge function combines the results of two independent simulations of
@@ -43,9 +47,11 @@ control <- control.icm(type = "SI", nsteps = 10,
 y <- icm(param, init, control)
 
 z <- merge(x, y)
-x$epi
-y$epi
-z$epi
+
+# Examine separate and merged data
+as.data.frame(x)
+as.data.frame(y)
+as.data.frame(z)
 
 }
 \keyword{extract}

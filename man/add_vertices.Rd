@@ -2,7 +2,7 @@
 % Please edit documentation in R/update.R
 \name{add_vertices}
 \alias{add_vertices}
-\title{Fast Version of network::add.vertices for Edgelist-formated Network}
+\title{Fast Version of network::add.vertices for Edgelist-formatted Network}
 \usage{
 add_vertices(el, nv)
 }
@@ -14,9 +14,8 @@ variable \code{n} containing the total current network size.}
 size at the given time step.}
 }
 \value{
-Returns the updated the attribute containing the population size on the
-edgelist, \code{el}, based on the number of new vertices specified to be
-added in \code{nv}.
+Returns the matrix of current edges, \code{el}, with the population size
+attribute updated based on the number of new vertices specified in \code{nv}.
 }
 \description{
 This function performs a simple operation of updating the

@@ -11,7 +11,11 @@ get_args(formal.args, dot.args)
 
 \item{dot.args}{The output of \code{list(...)}.}
 }
+\value{
+A list of argument names and values.
+}
 \description{
 Returns a list of argument names and values for use for
              parameter processing functions.
 }
+\keyword{internal}

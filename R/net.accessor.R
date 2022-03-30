@@ -1,37 +1,46 @@
-#' @title Functions to Access and Edit the Master List Object in Network Models
+#' @title Functions to Access and Edit the Main List Object in Network Models
 #'
-#' @description These \code{get_}, \code{set_}, \code{append_} and \code{add}
+#' @description These \code{get_}, \code{set_}, \code{append_}, and \code{add_}
 #'              functions allow a safe and efficient way to retrieve and mutate
-#'              the Master list object of network models (\code{dat}).
+#'              the main list object of network models (\code{dat}).
 #'
-#' @param dat a Master list object of network models
-#' @param item a character vector conaining the name of the element to access.
-#'        Can be of length > 1 for \code{get_*_list} functions
-#' @param posit_ids for \code{get_epi} and \code{get_attr}, a numeric vector of
-#'        posit_ids or a logical vector to subset the desired \code{item}
-#' @param value new value to be attributed in the \code{set_} and \code{append_}
-#'        functions
-#' @param override.null.error if TRUE, \code{get_} return NULL if the
+#' @param dat Main data object passed through \code{netsim} simulations.
+#' @param item A character vector containing the name of the element to access
+#'        (for \code{get_} functions), create (for \code{add_} functions), or
+#'        edit (for \code{set_} and \code{append_} functions). Can be of length
+#'        > 1 for \code{get_*_list} functions.
+#' @param posit_ids For \code{set_attr} and \code{get_attr}, a numeric vector of
+#'        posit_ids or a logical vector to subset the desired \code{item}.
+#' @param value New value to be attributed in the \code{set_} and \code{append_}
+#'        functions.
+#' @param override.null.error If TRUE, \code{get_} will return NULL if the
 #'         \code{item} does not exist instead of throwing an error.
-#'         (default = FALSE)
-#' @param override.length.check if TRUE, \code{set_attr} allows the modification
-#'        of the \code{item} size. (default = FALSE)
-#' @return a vector or a list of
-#' vector for \code{get_} functions. And the Master list object for \code{set_}
-#' and \code{add_} functions
+#'         (default = FALSE).
+#' @param override.length.check If TRUE, \code{set_attr} allows the modification
+#'        of the \code{item} size. (default = FALSE).
+#' @param n.new For \code{append_core_attr}, the number of new nodes to initiate
+#'        with core attributes; for \code{append_attr}, the number of new
+#'        elements to append at the end of \code{item}.
+#' @param at For \code{get_epi}, the timestep at which to access the specified
+#'        \code{item}; for \code{set_epi}, the timestep at which to add the new
+#'        value for the epi output \code{item}; for \code{append_core_attr}, the
+#'        current time step.
+#' @return A vector or a list of vectors for \code{get_} functions; the main
+#'         list object for \code{set_}, \code{append_}, and \code{add_}
+#'         functions.
 #'
 #' @section Core Attribute:
-#' The \code{append_core_attr} function initialize the attributes necessary for
+#' The \code{append_core_attr} function initializes the attributes necessary for
 #' EpiModel to work (the four core attributes are: "active", "unique_id",
 #' "entrTime", and "exitTime"). These attributes are used in the initialization
 #' phase of the simulation, to create the nodes (see
-#' \code{initialize.net}); and also used when adding nodes during the
-#' simulation (see \code{arrival.net})
+#' \code{\link{initialize.net}}); and also used when adding nodes during the
+#' simulation (see \code{\link{arrivals.net}}).
 #'
 #' @section Mutability:
-#' The \code{set_}, \code{append_} and \code{add_} functions DO NOT modify the
-#' dat object in place. The result must be assigned back to \code{dat} in order
-#' to be registered \code{dat <- set_*(dat, item, value)}
+#' The \code{set_}, \code{append_}, and \code{add_} functions DO NOT modify the
+#' \code{dat} object in place. The result must be assigned back to \code{dat} in
+#' order to be registered: \code{dat <- set_*(dat, item, value)}.
 #'
 #' @section \code{set_} and \code{append_} vs \code{add_}:
 #' The \code{set_} and \code{append_} functions edit a pre-existing element or
@@ -106,7 +115,7 @@ get_attr_list <- function(dat, item = NULL) {
     if (length(missing_item) > 0) {
       stop("There is no attributes called `",
            paste(missing_item, collapse = ", "),
-           "` in the attributes list of the Master list object (dat)")
+           "` in the attributes list of the main list object (dat)")
     }
 
     out <- dat[["attr"]][item]
@@ -123,7 +132,7 @@ get_attr <- function(dat, item, posit_ids = NULL, override.null.error = FALSE) {
       out <- NULL
     } else {
       stop("There is no attribute called `", item,
-           "` in the attributes list of the Master list object (dat)")
+           "` in the attributes list of the main list object (dat)")
     }
   } else {
     if (is.null(posit_ids)) {
@@ -135,7 +144,8 @@ get_attr <- function(dat, item, posit_ids = NULL, override.null.error = FALSE) {
                "number of nodes in the network")
         }
       } else if (is.numeric(posit_ids)) {
-        if (any(posit_ids > length(dat[["attr"]][[item]]))) {
+        if (length(posit_ids > 0) &&
+            any(posit_ids > length(dat[["attr"]][[item]]))) {
           stop("Some (numeric) `posit_ids` are larger than the number of ",
                "nodes in the network")
         }
@@ -189,7 +199,9 @@ set_attr <- function(dat, item, value, posit_ids = NULL,
           "of nodes in the network")
       }
     } else if (is.numeric(posit_ids)) {
-      if (any(posit_ids > length(dat[["attr"]][[item]]))) {
+      if (length(posit_ids) == 0) {
+        return(dat)
+      } else if (any(posit_ids > length(dat[["attr"]][[item]]))) {
         stop("Some (numeric) `posit_ids` are larger than the number of nodes ",
           " in the network")
       }
@@ -215,7 +227,6 @@ set_attr <- function(dat, item, value, posit_ids = NULL,
   return(dat)
 }
 
-#' @param n.new the number of new elements to append at the end of \code{item}
 #' @rdname net-accessor
 #' @export
 append_attr <- function(dat, item, value, n.new) {
@@ -249,7 +260,7 @@ get_epi_list <- function(dat, item = NULL) {
     if (length(missing_item) > 0) {
       stop("There is no epi output called `",
            paste(missing_item, collapse = ", "),
-           "` in the epi output list of the Master list object (dat)")
+           "` in the epi output list of the main list object (dat)")
     }
 
     out <- dat[["epi"]][item]
@@ -258,7 +269,6 @@ get_epi_list <- function(dat, item = NULL) {
   return(out)
 }
 
-#' @param at timestep where to add the new value for the epi output \code{item}
 #' @rdname net-accessor
 #' @export
 get_epi <- function(dat, item, at = NULL, override.null.error = FALSE) {
@@ -267,7 +277,7 @@ get_epi <- function(dat, item, at = NULL, override.null.error = FALSE) {
       out <- NULL
     } else {
       stop("There is no epi out called `", item,
-           "` in the epi out list of the Master list object (dat)")
+           "` in the epi out list of the main list object (dat)")
     }
   } else {
     if (is.null(at)) {
@@ -306,7 +316,6 @@ add_epi <- function(dat, item) {
   return(dat)
 }
 
-#' @param at timestep where to add the new value for the epi output \code{item}
 #' @rdname net-accessor
 #' @export
 set_epi <- function(dat, item, at,  value) {
@@ -342,7 +351,7 @@ get_param_list <- function(dat, item = NULL) {
     if (length(missing_item) > 0) {
       stop("There is no parameters called `",
            paste(missing_item, collapse = ", "),
-           "` in the parameter list of the Master list object (dat)")
+           "` in the parameter list of the main list object (dat)")
     }
 
     out <- dat[["param"]][item]
@@ -359,7 +368,7 @@ get_param <- function(dat, item, override.null.error = FALSE) {
       out <- NULL
     } else {
       stop("There is no parameter called `", item,
-           "` in the parameter list of the Master list object (dat)")
+           "` in the parameter list of the main list object (dat)")
     }
   } else {
     out <- dat[["param"]][[item]]
@@ -403,7 +412,7 @@ get_control_list <- function(dat, item = NULL) {
     if (length(missing_item) > 0) {
       stop("There is no control value called `",
            paste(missing_item, collapse = ", "),
-           "` in the control list of the Master list object (dat)")
+           "` in the control list of the main list object (dat)")
     }
 
     out <- dat[["control"]][item]
@@ -420,7 +429,7 @@ get_control <- function(dat, item, override.null.error = FALSE) {
       out <- NULL
     } else {
       stop("There is no control value called `", item,
-           "` in the control list of the Master list object (dat)")
+           "` in the control list of the main list object (dat)")
     }
   } else {
     out <- dat[["control"]][[item]]
@@ -465,7 +474,7 @@ get_init_list <- function(dat, item = NULL) {
     if (length(missing_item) > 0) {
       stop("There is no init value called `",
            paste(missing_item, collapse = ", "),
-           "` in the init list of the Master list object (dat)")
+           "` in the init list of the main list object (dat)")
     }
 
     out <- dat[["init"]][item]
@@ -482,7 +491,7 @@ get_init <- function(dat, item, override.null.error = FALSE) {
       out <- NULL
     } else {
       stop("There is no init value called `", item,
-           "` in the init list of the Master list object (dat)")
+           "` in the init list of the main list object (dat)")
     }
   } else {
     out <- dat[["init"]][[item]]
@@ -518,8 +527,6 @@ set_init <- function(dat, item, value) {
 
 # Core Attributes --------------------------------------------------------------
 
-#' @param n.new the number of new nodes to initiate with core attributes
-#' @param at current time step
 #' @rdname net-accessor
 #' @export
 append_core_attr <- function(dat, at, n.new) {
@@ -532,16 +539,17 @@ append_core_attr <- function(dat, at, n.new) {
   return(dat)
 }
 
-#' @title Create the unique_ids for the new nodes
+#' @title Create the Unique Identifiers for New Nodes
 #'
-#' @description This function is called by `append_core_attr` and append new
-#' unique_ids to the created nodes. It also keeps track of the already used
-#' unique_ids with the /code{dat[["_last_unique_id"]]} variable
+#' @description This function is called by \code{\link{append_core_attr}} and
+#' appends new \code{unique_ids} to the created nodes. It also keeps track of
+#' the already used \code{unique_ids} with the \code{dat[["_last_unique_id"]]}
+#' variable.
 #'
-#' @param dat a Master list object of network models
-#' @param n.new the number of new nodes to give \code{unique_id} to
+#' @param dat Main data object passed through \code{netsim} simulations.
+#' @param n.new The number of new nodes to give \code{unique_ids} to.
 #'
-#' @return the Master list object of network models (\code{dat})
+#' @return The main list object of network models (\code{dat}).
 #'
 #' @keywords internal
 update_unique_ids <- function(dat, n.new) {
@@ -554,12 +562,12 @@ update_unique_ids <- function(dat, n.new) {
   return(dat)
 }
 
-#' @title Check that all \code{attr}ibutes in the master object are of equal
-#'        length
+#' @title Check that All Attributes in the Main Object are of Equal
+#'        Length
 #'
-#' @param dat a Master list object of network models
+#' @param dat Main data object passed through \code{netsim} simulations.
 #'
-#' @return invisible(TRUE) if everythin is correct. It throws an error otherwise
+#' @return invisible(TRUE) if everything is correct; an error if not.
 #'
 #' @keywords internal not_used
 check_attr_lengths <- function(dat) {
@@ -586,26 +594,27 @@ check_attr_lengths <- function(dat) {
 
 # Unique / Positional identifier converters ------------------------------------
 
-#' @title Convert Unique identifiers from/to Positional identifiers
+#' @title Convert Unique Identifiers to/from Positional Identifiers
 #'
 #' @description EpiModel refers to its nodes either by positional identifiers
-#'              (\code{posit_ids}), the position of the node in the \code{attr}
-#'              vectors or by unique identifiers (\code{unique_ids}), allowing
-#'              to refer to nodes even after they are deactivated
+#'              (\code{posit_ids}), which describe the position of a node in the
+#'              \code{attr} vector, or by unique identifiers
+#'              (\code{unique_ids}), which allow references to nodes even after
+#'              they are deactivated.
 #'
 #' @section All elements:
-#'   When  \code{unique_ids} or \code{get_posit_ids} is NULL (default)
-#'   the full list of positional IDs or unique IDs is returned
+#'   When \code{unique_ids} or \code{posit_ids} is NULL (default)
+#'   the full list of positional IDs or unique IDs is returned.
 #'
 #' @section Deactivated nodes:
 #'   When providing \code{unique_ids} of deactivated nodes to
 #'   \code{get_posit_ids}, \code{NA}s are returned instead and a warning is
 #'   produced.
 #'
-#' @param dat a Master list object of network models
-#' @param unique_ids a vector of node unique identifiers (default = NULL)
-#' @param posit_ids a vector of node positional identifiers (default = NULL)
-#' @return a vector of unique or positional identifiers
+#' @param dat Main data object passed through \code{netsim} simulations.
+#' @param unique_ids A vector of node unique identifiers (default = NULL).
+#' @param posit_ids A vector of node positional identifiers (default = NULL).
+#' @return A vector of unique or positional identifiers.
 #'
 #' @name unique_id-tools
 NULL
@@ -632,7 +641,7 @@ get_posit_ids <- function(dat, unique_ids = NULL) {
   if (any(is.na(posit_ids))) {
     warning(
       "While converting `unique_ids` to `posit_ids`, some `unique_ids`",
-      " correspond to deactivated nodes and NA's where produced"
+      " correspond to deactivated nodes and NAs were produced"
     )
   }
 
@@ -641,11 +650,11 @@ get_posit_ids <- function(dat, unique_ids = NULL) {
 
 #' @title Are These Nodes Active (Unique IDs)
 #'
-#' @param dat a Master list object of network models
-#' @param unique_ids a vector of node unique identifiers
+#' @param dat Main data object passed through \code{netsim} simulations.
+#' @param unique_ids A vector of node unique identifiers.
 #'
-#' @return a logical vector with TRUE if the node is still active and FALSE
-#' otherwise
+#' @return A logical vector with TRUE if the node is still active and FALSE
+#' otherwise.
 #'
 #' @export
 is_active_unique_ids <- function(dat, unique_ids) {
@@ -658,11 +667,11 @@ is_active_unique_ids <- function(dat, unique_ids) {
 
 #' @title Are These Nodes Active (Positional IDs)
 #'
-#' @param dat a Master list object of network models
-#' @param posit_ids a vector of node positional identifiers
+#' @param dat Main data object passed through \code{netsim} simulations.
+#' @param posit_ids A vector of node positional identifiers.
 #'
-#' @return a logical vector with TRUE if the node is still active and FALSE
-#' otherwise
+#' @return A logical vector with TRUE if the node is still active and FALSE
+#' otherwise.
 #'
 #' @export
 is_active_posit_ids <- function(dat, posit_ids) {

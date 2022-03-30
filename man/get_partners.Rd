@@ -2,37 +2,45 @@
 % Please edit documentation in R/el_cuml.R
 \name{get_partners}
 \alias{get_partners}
-\title{Get the Previous Partners of a Set of Indexes}
+\title{Return the Historical Partners (Contacts) of a Set of Index Patients}
 \usage{
 get_partners(
   dat,
   index_posit_ids,
   networks = NULL,
-  max.age = Inf,
-  only.active = FALSE
+  truncate = Inf,
+  only.active.nodes = FALSE
 )
 }
 \arguments{
-\item{dat}{a Master list object of network models}
+\item{dat}{Main data object passed through \code{netsim} simulations.}
 
-\item{index_posit_ids}{the positional IDs of the indexes of interest}
+\item{index_posit_ids}{The positional IDs of the indexes of interest.}
 
-\item{networks}{the indexes of the networks to extract the partnerships from.
-If NULL (default) extract from all networks.}
+\item{networks}{Numerical indexes of the networks to extract the partnerships
+from. (May be > 1 for models with multiple overlapping
+networks.) If \code{NULL}, extract from all networks.}
 
-\item{max.age}{after how many steps a partnershipl that is no longer active
-should be removed from the results (default = Inf)}
+\item{truncate}{After how many time steps a partnership that is no longer
+active should be removed from the output.}
 
-\item{only.active}{should the inactive partners be removed from the results
-(default = FALSE)}
+\item{only.active.nodes}{If \code{TRUE}, then inactive (e.g., deceased)
+partners will be removed from the output.}
 }
 \value{
-a \code{data.frame} with 5 columns:
-         index and partner, the unique_ids (see \code{get_unique_ids}) of the
-         indexes and partners respectively. Start and stop, the timestep
-         where the edges started and stopped. network, the network on which
-         the partnership is.
+A \code{data.frame} with 5 columns:
+\itemize{
+  \item \code{index}: the unique ID (see \code{get_unique_ids}) of the
+        indexes.
+  \item \code{partner}: the unique ID (see \code{get_unique_ids}) of the
+        partners/contacts.
+  \item \code{start}: the time step in which the edge started.
+  \item \code{stop}: the time step in which the edge stopped; if ongoing,
+        then \code{NA} is returned.
+  \item \code{network}: the numerical index for the network on which the
+        partnership/contact is located.
+ }
 }
 \description{
-Get the Previous Partners of a Set of Indexes
+Return the Historical Partners (Contacts) of a Set of Index Patients
 }

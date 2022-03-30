@@ -4,16 +4,17 @@
 \alias{update_params}
 \title{Update Model Parameters for Stochastic Network Models}
 \usage{
-update_params(x, new.param.list)
+update_params(param, new.param.list)
 }
 \arguments{
-\item{x}{Object of class \code{param.net}, output from function of same name.}
+\item{param}{Object of class \code{param.net}, output from function of same
+name.}
 
 \item{new.param.list}{Named list of new parameters to add to original
 parameters.}
 }
 \value{
-An updated list object of class \code{param.net}, which can be passed to
+An updated list object of class \code{param.net}, which can be passed to the
 EpiModel function \code{\link{netsim}}.
 }
 \description{
@@ -21,17 +22,17 @@ Updates epidemic model parameters originally set with
              \code{\link{param.net}} and adds new parameters.
 }
 \details{
-This function allows for updating any original parameters specified with
-\code{\link{param.net}} and adding new parameters. This function would be
-used when the inputs to \code{\link{param.net}} may be a long list of
-fixed model parameters that may need supplemental replacements or additions
-for particular model runs (e.g., changing an intervention efficacy parameter
-but leaving all other parameters fixed).
+This function can update any original parameters specified with
+\code{\link{param.net}} and add new parameters. This function would be used
+if the inputs to \code{\link{param.net}} were a long list of fixed model
+parameters that needed supplemental replacements or additions for particular
+model runs (e.g., changing an intervention efficacy parameter but leaving all
+other parameters fixed).
 
-The \code{new.param.list} object should be a named list object that may
+The \code{new.param.list} object should be a named list object containing
 named parameters matching those already in \code{x} (in which case those
 original parameter values will be replaced) or not matching (in which case
-new parameters will be added to \code{x}).
+new parameters will be added to \code{param}).
 }
 \examples{
 x <- param.net(inf.prob = 0.5, act.rate = 2)

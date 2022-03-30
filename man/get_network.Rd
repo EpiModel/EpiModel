@@ -35,23 +35,27 @@ extracted network should be collapsed.}
 \code{network} objects; if \code{FALSE}, output the network list
 directly.}
 }
+\value{
+A \code{networkDynamic} object (if \code{collapse = FALSE}) or a
+        static \code{network} object (if \code{collapse = TRUE}).
+}
 \description{
-Extracts the \code{networkDynamic} object from a either a
+Extracts the \code{networkDynamic} object from either a
              network epidemic model object generated with \code{netsim} or a
              network diagnostic simulation generated with \code{netdx}, with
              the option to collapse the extracted \code{networkDynamic}
              object down to a static \code{network} object.
 }
 \details{
-This function requires that the \code{networkDynamic} is saved during the
-network simulation while running either \code{\link{netsim}} or
-\code{\link{netdx}}. For the former, that is specified with the
-\code{tergmLite} parameter in \code{\link{control.net}} set to \code{FALSE}.
+This function requires that the \code{networkDynamic} object is saved during
+the network simulation while running either \code{\link{netsim}} or
+\code{\link{netdx}}. For the former, that is specified by setting the
+\code{tergmLite} parameter in \code{\link{control.net}} to \code{FALSE}.
 For the latter, that is specified with the \code{keep.tedgelist} parameter
 directly in \code{\link{netdx}}.
 }
 \examples{
-# Set up network and TERGM formiula
+# Set up network and TERGM formula
 nw <- network_initialize(n = 100)
 nw <- set_vertex_attribute(nw, "group", rep(1:2, each = 50))
 formation <- ~edges

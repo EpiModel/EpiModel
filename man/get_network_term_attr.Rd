@@ -2,15 +2,17 @@
 % Please edit documentation in R/net.utils.R
 \name{get_network_term_attr}
 \alias{get_network_term_attr}
-\title{Outputs ERGM Formula Attributes into a Character Vector}
+\title{Output Network Attributes into a Character Vector}
 \usage{
 get_network_term_attr(nw)
 }
 \arguments{
-\item{nw}{a network object}
+\item{nw}{A network object.}
+}
+\value{
+A character vector of vertex attributes.
 }
 \description{
-Given a simulated network, outputs into
-             a character vector of vertex attributes to be used in
-             \code{netsim} simulations.
+Given a simulated network, outputs a character vector of vertex
+             attributes to be used in \code{\link{netsim}} simulations.
 }

@@ -178,7 +178,7 @@ print.netsim <- function(x, nwstats = TRUE, digits = 3, network = 1, ...) {
   }
   cat("")
 
-  if (nwstats) {
+  if (nwstats && !is.null(x$stats$nwstats)) {
     stats <- x$stats$nwstats
     nsims <- x$control$nsims
 
@@ -255,10 +255,11 @@ print.disscoef <- function(x, ...) {
   invisible()
 }
 
-#' Format one parameter for printing with the `print.param.xxx` functions
+#' @title Format One Parameter for Printing with the \code{print.param.xxx}
+#'        Functions
 #'
-#' @param param_name The name of the parameter to print
-#' @param param_value The value of the parameter to print
+#' @param param_name The name of the parameter to print.
+#' @param param_value The value of the parameter to print.
 #'
 #' @keywords internal
 format_param <- function(param_name, param_value) {
@@ -330,9 +331,9 @@ print.param.net <- function(x, ...) {
     cat("\n(Not drawn yet)")
     cat("\n---------------------------\n")
     for (prm in rng_defs) {
-      if (prm == "param_random_set") {
+      if (prm == "param.random.set") {
         cat(prm, "= <data.frame> ( dimensions:",
-            dim(x$random.param$param_random_set), ")\n")
+            dim(x$random.param$param.random.set), ")\n")
       } else {
         cat(prm, "= <function>\n")
       }
@@ -483,25 +484,24 @@ print.control.net <- function(x, ...) {
     }
   }
 
-  funToPrint <- names(x)[grep(".FUN", names(x))]
-  funToPrint <- funToPrint[-which(funToPrint %in% c("initialize.FUN",
-                                                    "verbose.FUN"))]
-  if (is.null(x$module.order)) {
-    cat("Dynamic Modules:", funToPrint)
+  if (!is.null(x$module.order)) {
+    funToPrint <- x$module.order
   } else {
-    order <- unlist(lapply(funToPrint, function(y) which(y == x$module.order)))
-    funToPrint.mo <- funToPrint[order]
-    funtoPrint.nmo <- funToPrint[-which(funToPrint %in% x$module.order)]
-    cat("Dynamic Modules:", funToPrint)
+    funToPrint <- names(x)[grep(".FUN", names(x))]
+    funToPrint <- funToPrint[!funToPrint %in% c("initialize.FUN",
+                                                "verbose.FUN")]
   }
+
+  cat("Dynamic Modules:", funToPrint)
+  cat("\n")
 
   invisible()
 }
 
 #' @title Print Helper For Network Stats Tables
 #'
-#' @param nwtable a formation or dissolution statistics \code{data.frame}
-#' @param digits argument to be passed to \code{round}
+#' @param nwtable A formation or dissolution statistics \code{data.frame}.
+#' @param digits Argument to be passed to \code{round}.
 #'
 #' @keywords internal
 print_nwstats_table <- function(nwtable, digits) {

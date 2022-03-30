@@ -2,7 +2,7 @@
 % Please edit documentation in R/net.utils.R
 \name{color_tea}
 \alias{color_tea}
-\title{Creates a TEA Variable for Infection Status for \code{ndtv} Animations}
+\title{Create a TEA Variable for Infection Status for \code{ndtv} Animations}
 \usage{
 color_tea(
   nd,
@@ -37,7 +37,10 @@ object.}
 
 \item{new.rec}{Status value for recovered in new TEA variable.}
 
-\item{verbose}{Print progress to console.}
+\item{verbose}{If \code{TRUE}, print progress to console.}
+}
+\value{
+The updated object of class \code{networkDynamic}.
 }
 \description{
 Creates a new color-named temporally-extended attribute (TEA)
@@ -51,7 +54,7 @@ and nodal attributes. Nodal attribute dynamics in \code{ndtv} movies require
 a temporally extended attribute (TEA) containing a standard R color for each
 node at each time step. By default, the \code{EpiModel} package uses TEAs to
 store disease status history in network model simulations run in
-\code{\link{netsim}}. But, that status TEA is in numeric format (0, 1, 2).
+\code{\link{netsim}}. But that status TEA is in numeric format (0, 1, 2).
 The \code{color_tea} function transforms those numeric values of that disease
 status TEA into a TEA with color values in order to visualize status changes
 in \code{ndtv}.

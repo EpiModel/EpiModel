@@ -9,7 +9,7 @@ netsim(x, param, init, control)
 \arguments{
 \item{x}{Fitted network model object, as an object of class \code{netest}.
 Alternatively, if restarting a previous simulation, may be an object
-ofclass \code{netsim}.}
+of class \code{netsim}.}
 
 \item{param}{Model parameters, as an object of class \code{param.net}.}
 
@@ -32,12 +32,14 @@ A list of class \code{netsim} with the following elements:
  \item \strong{stats:} a list containing two sublists, \code{nwstats} for any
        network statistics saved in the simulation, and \code{transmat} for
        the transmission matrix saved in the simulation. See
-       \code{\link{control.net}} and the Tutorial for further details.
+       \code{\link{control.net}} and the
+       \href{http://www.epimodel.org/tut.html}{tutorials} for further
+       details.
  \item \strong{network:} a list of \code{networkDynamic} objects,
         one for each model simulation.
 }
 If \code{control$raw.output == TRUE}: A list of the raw (pre-processed)
-nestsim dat objects, for use in simulation continuation.
+\code{netsim} \code{dat} objects, for use in simulation continuation.
 }
 \description{
 Simulates stochastic network epidemic models for infectious
@@ -54,7 +56,7 @@ examples, is found in the \href{http://www.epimodel.org/tut.html}{Basic
 Network Models} tutorials.
 
 The \code{netsim} function performs modeling of both the base model types
-and original models. Base model types include one-mode and two-group models
+and original models. Base model types include one-group and two-group models
 with disease types for Susceptible-Infected (SI),
 Susceptible-Infected-Recovered (SIR), and
 Susceptible-Infected-Susceptible (SIS).

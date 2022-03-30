@@ -20,10 +20,10 @@ Extracts and prints model statistics simulated with
 \code{netsim}.
 }
 \details{
-Summary statistics for the main epidemiological outcomes (state and
-transition size and prevalence) from an \code{netsim} model. Time-specific
-summary measures are provided, so it is necessary to input a time of
-interest.
+This function provides summary statistics for the main epidemiological
+outcomes (state and transition size and prevalence) from a \code{netsim}
+model. Time-specific summary measures are provided, so it is necessary to
+input a time of interest.
 }
 \examples{
 \dontrun{

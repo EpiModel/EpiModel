@@ -61,35 +61,43 @@ as.networkLite(x, ...)
 \method{as.networkLite}{networkLite}(x, ...)
 }
 \arguments{
-\item{x}{a \code{networkLite} object.}
+\item{x}{A \code{networkLite} object.}
 
-\item{attrname}{the name of an attribute in \code{x}.}
+\item{attrname}{The name of an attribute in \code{x}.}
 
-\item{...}{any additional arguments.}
+\item{...}{Any additional arguments.}
 
-\item{value}{Value to set edges to (must be FALSE for networkLite method)}
+\item{value}{The attribute value to set for
+\code{set.vertex.attribute.networkLite}; the value to set edges
+to (must be FALSE) for the \code{networkLite} replacement
+method.}
 
-\item{v}{indices at which to set vertex attribute values.}
+\item{v}{Indices at which to set vertex attribute values.}
 
 \item{output}{Type of edgelist to output.}
 
-\item{object}{a \code{networkLite} object}
+\item{object}{A \code{networkLite} object.}
 
-\item{attr}{specification of a vertex attribute in \code{object} as
-described in \code{\link[ergm]{nodal_attributes}}}
+\item{attr}{Specification of a vertex attribute in \code{object} as
+described in \code{\link[ergm]{nodal_attributes}}.}
 
-\item{i, j}{Nodal indices (must be missing for networkLite method)}
+\item{i, j}{Nodal indices (must be missing for networkLite method).}
 
-\item{tail}{vector of tails of edges to add to the networkLite.}
+\item{tail}{Vector of tails of edges to add to the networkLite.}
 
-\item{head}{vector of heads of edges to add to the networkLite.}
+\item{head}{Vector of heads of edges to add to the networkLite.}
 
-\item{names.eval}{currently unsupported by add.edges.networkLite.}
+\item{names.eval}{Currently unsupported by add.edges.networkLite.}
 
-\item{vals.eval}{currently unsupported by add.edges.networkLite.}
+\item{vals.eval}{Currently unsupported by add.edges.networkLite.}
 
-\item{check.unique}{should a check to ensure uniqueness of edges
+\item{check.unique}{Should a check to ensure uniqueness of edges
 in the final edgelist be performed?}
+}
+\value{
+An edgelist for \code{as.edgelist.networkLite}; an updated
+        \code{networkLite} object for the replacement method. The other
+        methods return no objects.
 }
 \description{
 S3 methods for networkLite class, for generics defined in

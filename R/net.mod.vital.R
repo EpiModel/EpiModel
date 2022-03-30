@@ -3,9 +3,11 @@
 #' @description This function simulates departure for use in \link{netsim}
 #'        simulations.
 #'
-#' @param dat Master list object containing a \code{networkDynamic} object and
+#' @param dat Main list object containing a \code{networkDynamic} object and
 #'        other initialization information passed from \code{\link{netsim}}.
 #' @param at Current time step.
+#'
+#' @return The updated \code{dat} main list object.
 #'
 #' @seealso \code{\link{netsim}}
 #'
@@ -95,9 +97,11 @@ departures.net <- function(dat, at) {
 #' @description This function simulates new arrivals into the network
 #'   for use in \code{\link{netsim}} simulations.
 #'
-#' @param dat Master list object containing a \code{networkDynamic} object and
+#' @param dat Main list object containing a \code{networkDynamic} object and
 #'   other initialization information passed from \code{\link{netsim}}.
 #' @param at Current time step.
+#'
+#' @return The updated \code{dat} main list object.
 #'
 #' @seealso \code{\link{netsim}}
 #'
@@ -140,9 +144,11 @@ arrivals.net <- function(dat, at) {
 #' @description This function simulates departure for use in \link{netsim}
 #'        simulations.
 #'
-#' @param dat Master list object containing a \code{networkDynamic} object and
+#' @param dat Main list object containing a \code{networkDynamic} object and
 #'        other initialization information passed from \code{\link{netsim}}.
 #' @param at Current time step.
+#'
+#' @return The updated \code{dat} main list object.
 #'
 #' @seealso \code{\link{netsim}}
 #'
@@ -249,9 +255,11 @@ departures.2g.net <- function(dat, at) {
 #' @description This function simulates new arrivals into the network
 #'   for use in \code{\link{netsim}} simulations.
 #'
-#' @param dat Master list object containing a \code{networkDynamic} object and
+#' @param dat Main list object containing a \code{networkDynamic} object and
 #'   other initialization information passed from \code{\link{netsim}}.
 #' @param at Current time step.
+#'
+#' @return The updated \code{dat} main list object.
 #'
 #' @seealso \code{\link{netsim}}
 #'
@@ -270,7 +278,6 @@ arrivals.2g.net <- function(dat, at) {
   a.rate <- get_param(dat, "a.rate")
   a.rate.g2 <- get_param(dat, "a.rate.g2")
   index <- at - 1
-  nCurr <- length(get_attr(dat, "active"))
   nOld <- get_epi(dat, "num", index)
   nOldG2 <- get_epi(dat, "num.g2", index)
   totArr <- nArrivals <- nArrivalsG2 <- 0

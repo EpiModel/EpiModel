@@ -2,22 +2,29 @@
 % Please edit documentation in R/el_cuml.R
 \name{get_cumulative_edgelist}
 \alias{get_cumulative_edgelist}
-\title{Get a Cumulative Edgelist From the Specified Network}
+\title{Get a Cumulative Edgelist From a Specified Network}
 \usage{
 get_cumulative_edgelist(dat, network)
 }
 \arguments{
-\item{dat}{a Master list object of network models}
+\item{dat}{Main data object passed through \code{netsim} simulations.}
 
-\item{network}{the index of the network to extract the cumulative edgelist
-from}
+\item{network}{Numerical index of the network from which the cumulative
+edgelist should be extracted. (May be > 1 for models with
+multiple overlapping networks.)}
 }
 \value{
-a cumulative edgelist in \code{data.frame} form with 4 columns:
-         head and tail, the unique_ids (see \code{get_unique_ids}) of the
-         nodes on the edge. Start and stop, the timestep where the edges
-         started and stopped.
+A cumulative edgelist in \code{data.frame} form with 4 columns:
+\itemize{
+  \item \code{head}: the unique ID (see \code{get_unique_ids}) of the
+        head node on the edge.
+  \item \code{tail}: the unique ID (see \code{get_unique_ids}) of the
+        tail node on the edge.
+  \item \code{start}: the time step in which the edge started.
+  \item \code{stop}: the time step in which the edge stopped; if ongoing,
+        then \code{NA} is returned.
+}
 }
 \description{
-Get a Cumulative Edgelist From the Specified Network
+Get a Cumulative Edgelist From a Specified Network
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/as.data.frame.R
 \name{as.data.frame.netdx}
 \alias{as.data.frame.netdx}
-\title{Extract Timed Edgelists netdx Objects}
+\title{Extract Timed Edgelists for netdx Objects}
 \usage{
 \method{as.data.frame}{netdx}(x, row.names = NULL, optional = FALSE, sim, ...)
 }
@@ -17,6 +17,9 @@
 all simulations will be output.}
 
 \item{...}{See \code{\link{as.data.frame.default}}.}
+}
+\value{
+A data frame containing the data from \code{x}.
 }
 \description{
 This function extracts timed edgelists for objects of class

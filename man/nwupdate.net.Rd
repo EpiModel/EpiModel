@@ -7,13 +7,16 @@
 nwupdate.net(dat, at)
 }
 \arguments{
-\item{dat}{Master list object containing a full \code{networkDynamic} object
+\item{dat}{Main list object containing a full \code{networkDynamic} object
 or networkLite edgelist (if using tergmLite), and other initialization
 information passed from \code{\link{netsim}}.}
 
 \item{at}{Current time step.}
 }
+\value{
+The updated \code{dat} main list object.
+}
 \description{
 This function handles all calls to the network object contained
-             on the master dat object handled in \code{netsim}..
+             on the main \code{dat} object handled in \code{netsim}.
 }

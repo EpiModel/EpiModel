@@ -11,20 +11,23 @@ get_degree(x)
 generated from a network. If \code{x} is an edgelist, then it must
 contain an attribute for the total network size, \code{n}.}
 }
+\value{
+A vector of length equal to the total network size, containing the
+        current degree of each node in the network.
+}
 \description{
 A fast method for querying the current degree of all individuals
              within a network.
 }
 \details{
 Individual-level data on the current degree of nodes within a network is
-often useful for summary statistics and modeling complex interactions between
-degree. Given a \code{network} class object, \code{net}, one way to look
-up the current degree is to get a summary of the ERGM term, \code{sociality},
-as in: \code{summary(net ~ sociality(nodes = NULL))}. But that is
-computationally inefficient for a number of reasons. This function provide a
-fast method for generating the vector of degree using a query of the
-edgelist. t is even faster if the parameter \code{x} is already transformed
-as an edgelist.
+often useful for summary statistics. Given a \code{network} class object,
+\code{net}, one way to look up the current degree is to get a summary of the
+ERGM term, \code{sociality}, as in:
+\code{summary(net ~ sociality(nodes = NULL))}. But that is computationally
+inefficient for a number of reasons. This function provide a fast method for
+generating the vector of degrees using a query of the edgelist. It is even
+faster if the parameter \code{x} is already transformed into an edgelist.
 }
 \examples{
 nw <- network_initialize(n = 500)

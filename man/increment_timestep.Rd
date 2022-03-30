@@ -7,19 +7,19 @@
 increment_timestep(dat)
 }
 \arguments{
-\item{dat}{a Master list object of network models}
+\item{dat}{Main data object passed through \code{netsim} simulations.}
 }
 \value{
-A \code{dat} Master list object
+A \code{dat} main list object.
 }
 \description{
 This function adds 1 to the timestep counter stored in the
-             \code{dat} Master list object.
+             \code{dat} main list object.
 }
 \section{Mutability}{
 
-This DOES NOT modify the dat object in place. The result must be assigned
-back to \code{dat} in order to be registered
-\code{dat <- increment_timestep(dat)}
+This DOES NOT modify the \code{dat} object in place. The result must be
+assigned back to \code{dat} in order to be registered:
+\code{dat <- increment_timestep(dat)}.
 }
 
