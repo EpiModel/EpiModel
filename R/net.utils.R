@@ -634,8 +634,8 @@ get_attr_prop <- function(dat, nwterms) {
 
 #' @title Output ERGM Formula Attributes into a Character Vector
 #'
-#' @description Given a formation formula for a network model, outputs it into
-#'              a character vector of vertex attributes to be used in
+#' @description Given a formation formula for a network model, outputs a
+#'              character vector of vertex attributes to be used in
 #'              \code{\link{netsim}} simulations.
 #'
 #' @param form An ERGM model formula.
@@ -665,11 +665,10 @@ get_formula_term_attr <- function(form, nw) {
 
 }
 
-#' @title Output ERGM Formula Attributes into a Character Vector
+#' @title Output Network Attributes into a Character Vector
 #'
-#' @description Given a simulated network, outputs it into
-#'              a character vector of vertex attributes to be used in
-#'              \code{\link{netsim}} simulations.
+#' @description Given a simulated network, outputs a character vector of vertex
+#'              attributes to be used in \code{\link{netsim}} simulations.
 #'
 #' @param nw A network object.
 #'
