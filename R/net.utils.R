@@ -532,9 +532,11 @@ edgelist_censor <- function(el) {
 #' the estimation.
 #'
 #' Currently, the calculations are limited to those dissolution formulas with a
-#' single homogenous dissolution (\code{~offset(edges)}). This functionality
-#' will be expanded in future releases.
+#' single homogeneous dissolution (\code{~offset(edges)}). This functionality
+#' will be expanded in future releases. TODO update
 #'
+#' @return A vector or matrix containing the mean edge age at each timestep. TODO update
+#' 
 #' @keywords netUtils internal
 #'
 #' @examples
