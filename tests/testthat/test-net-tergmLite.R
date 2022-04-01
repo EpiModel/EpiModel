@@ -221,3 +221,39 @@ test_that("Models with duration = 1", {
   sim <- netsim(est, param, init, control)
 
 })
+
+test_that("edgecov works with tergmLite", {
+  nw <- network_initialize(n = 20, directed = FALSE)
+  nw %v% "race" <- rep(c("a", "b"), length.out = 20)
+
+  # create matrix for edgecov term
+  ec <- matrix(runif(400), 20, 20)
+  ec <- (ec + t(ec))/3
+  nw %n% "ec" <- ec
+
+  fit <- netest(nw, 
+                formation = ~edges + nodefactor("race") + edgecov("ec") , 
+                target.stats = c(30, 15, 10), 
+                coef.diss = dissolution_coefs(dissolution = ~offset(edges), duration = 1), edapprox = TRUE)
+
+  coefsign <- sign(coef(fit$fit)[3])
+
+  resim_fun <- function(dat, at) {
+    n <- attr(dat$el[[1]], "n")
+    m <- matrix(if(at == 3) +Inf else -Inf, n, n)*coefsign
+    attr(dat$el[[1]], "ec") <- m
+    resim_nets(dat, at)
+  }
+
+  param <- param.net(inf.prob = 0.3, act.rate = 1)
+  init <- init.net(i.num = 5, r.num = 0)
+  control <- control.net(type = NULL, nsteps = 4, nsims = 1, ncores = 1,
+                         resim_nets.FUN = resim_fun, tergmLite = TRUE,
+                         resimulate.network = TRUE, nwstats.formula = ~edges,
+                         set.control.ergm = control.simulate.formula(MCMC.burnin = 1e5))
+  sim <- netsim(fit, param, init, control)
+
+  expect_equal(unname(sim$stats$nwstats$sim1[[1]][2,1]), 0)
+  expect_equal(unname(sim$stats$nwstats$sim1[[1]][3,1]), network.dyadcount(nw))
+  expect_equal(unname(sim$stats$nwstats$sim1[[1]][4,1]), 0)
+})
