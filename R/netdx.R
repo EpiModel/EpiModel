@@ -318,6 +318,7 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
   if (dynamic == TRUE) {
     out$nsteps <- nsteps
     if (skip.dissolution == FALSE) {
+      out$stats.table.duration <- dissolution.stats$stats.table.duration
       out$stats.table.dissolution <- dissolution.stats$stats.table.dissolution
       out$pages <- dissolution.stats$pages
       out$pages_imptd <- dissolution.stats$pages_imptd
@@ -432,6 +433,16 @@ make_dissolution_stats <- function(diag.sim, coef.diss, nsteps, verbose = TRUE) 
                                         attribute=get_vertex_attribute(diag.sim[[x]], diss.terms[2,2]) 
                                         ),simplify="array")
 
+    #TODO: re-integrate 
+    #pages <- lapply(sim.df, function(x) {
+    #  meanage <- edgelist_meanage(el = x)
+    #  l <- nsteps - length(meanage)
+    #  if (l > 0) {
+    #    meanage <- c(meanage, rep(NA, l))
+    #  }
+    #  return(meanage)
+    #})
+    
   # calculate expected time prior to simulation
     coef_dur <- coef.diss$duration
     pages_imptd <- sapply(seq_along(coef_dur), function(x) 
@@ -442,8 +453,7 @@ make_dissolution_stats <- function(diag.sim, coef.diss, nsteps, verbose = TRUE) 
     cat("\n- Calculating dissolution statistics")
   }
 
-  # TO DO
-  ## Create a list of dissolution proportions (i.e. dissolutions/edges)
+  # TODO Create a list of dissolution proportions (i.e. dissolutions/edges)
   prop.diss <- lapply(sim.df, function(d) {
     vapply(seq_len(nsteps), function(x) {
       sum(d$terminus == x) / sum(d$onset < x & d$terminus >= x)
@@ -481,19 +491,31 @@ make_dissolution_stats <- function(diag.sim, coef.diss, nsteps, verbose = TRUE) 
   dissolution.pctdiff <- (dissolution.mean - dissolution.expected) /
     dissolution.expected * 100
 
+  stats.table.duration <- data.frame(
+    Targets = c(duration.expected),
+    Sim_Means = c(duration.mean),
+    Pct_Diff = c(duration.pctdiff),
+    Sim_SD = c(duration.sd)
+  )
+  colnames(stats.table.duration) <- c(
+    "Target", "Sim Mean", "Pct Diff", "Sim SD"
+  )
+  rownames(stats.table.duration) <- c("edges")
+
   stats.table.dissolution <- data.frame(
-    Targets = c(duration.expected, dissolution.expected),
-    Sim_Means = c(duration.mean, dissolution.mean),
-    Pct_Diff = c(duration.pctdiff, dissolution.pctdiff),
-    Sim_SD = c(duration.sd, dissolution.sd)
+    Targets = c(dissolution.expected),
+    Sim_Means = c(dissolution.mean),
+    Pct_Diff = c(dissolution.pctdiff),
+    Sim_SD = c(dissolution.sd)
   )
   colnames(stats.table.dissolution) <- c(
     "Target", "Sim Mean", "Pct Diff", "Sim SD"
   )
-  rownames(stats.table.dissolution) <- c("Edge Duration", "Pct Edges Diss")
+  rownames(stats.table.dissolution) <- c("edges")
 
   return(
     list(
+      "stats.table.duration" = stats.table.duration,
       "stats.table.dissolution" = stats.table.dissolution,
       "pages" = pages,
       "pages_imptd" = pages_imptd,

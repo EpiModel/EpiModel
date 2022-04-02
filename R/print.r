@@ -103,6 +103,22 @@ print.netdx <- function(x, digits = 3, ...) {
   cat("\n----------------------- \n")
   print_nwstats_table(x$stats.table.formation, digits)
 
+  if (x$dynamic == TRUE & !is.null(x$stats.table.duration)) {
+    cat("\nDuration Diagnostics")
+    cat("\n----------------------- \n")
+    if (x$coef.diss$dissolution == ~ offset(edges)) {
+      print_nwstats_table(x$stats.table.duration, digits)
+      if (x$coef.diss$model.type == "hetero") {
+        cat("----------------------- \n")
+        cat("* Heterogeneous dissolution model results averaged over")
+      }
+    } else {
+      cat("Not available when:")
+      cat("\n- dissolution formula is not `~ offset(edges)`")
+      cat("\n")
+    }
+  }
+
   if (x$dynamic == TRUE & !is.null(x$stats.table.dissolution)) {
     cat("\nDissolution Diagnostics")
     cat("\n----------------------- \n")
@@ -118,7 +134,7 @@ print.netdx <- function(x, digits = 3, ...) {
       cat("\n")
     }
   }
-
+  
   invisible()
 }
 
