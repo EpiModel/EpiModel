@@ -428,10 +428,16 @@ make_dissolution_stats <- function(diag.sim, coef.diss, nsteps, verbose = TRUE) 
   }
   
   # Calculate mean partnership age from edgelist
-    pages <- sapply(seq_len(length(sim.df)), function(x) edgelist_meanage(
-                                        el=sim.df[[x]], diss_term=diss_term,
-                                        attribute=get_vertex_attribute(diag.sim[[x]], diss.terms[2,2]) 
-                                        ),simplify="array")
+    pages <- sapply(seq_len(length(sim.df)), function(x) {
+                      meanage <- edgelist_meanage(el=sim.df[[x]], diss_term=diss_term,
+                                   attribute=get_vertex_attribute(diag.sim[[x]], diss.terms[2,2]) 
+                      )
+                      l <- nsteps - nrow(meanage)
+                      if (l > 0) {
+                        meanage <- rbind(meanage, matrix(rep(NA, l*ncol(meanage)),nrow=l))
+                      }
+                      return(meanage)               
+              },simplify="array")
 
     #TODO: re-integrate 
     #pages <- lapply(sim.df, function(x) {
@@ -497,10 +503,6 @@ make_dissolution_stats <- function(diag.sim, coef.diss, nsteps, verbose = TRUE) 
     Pct_Diff = c(duration.pctdiff),
     Sim_SD = c(duration.sd)
   )
-  colnames(stats.table.duration) <- c(
-    "Target", "Sim Mean", "Pct Diff", "Sim SD"
-  )
-  rownames(stats.table.duration) <- c("edges")
 
   stats.table.dissolution <- data.frame(
     Targets = c(dissolution.expected),
@@ -508,10 +510,20 @@ make_dissolution_stats <- function(diag.sim, coef.diss, nsteps, verbose = TRUE) 
     Pct_Diff = c(dissolution.pctdiff),
     Sim_SD = c(dissolution.sd)
   )
-  colnames(stats.table.dissolution) <- c(
+  
+  colnames(stats.table.duration) <- colnames(stats.table.dissolution) <- c(
     "Target", "Sim Mean", "Pct Diff", "Sim SD"
   )
-  rownames(stats.table.dissolution) <- c("edges")
+
+  if (is.null(diss_term)) {
+    rownames(stats.table.duration) <- rownames(stats.table.dissolution) <- 
+        c("edges") 
+  } else {
+    if (diss_term=="nodematch") rownames(stats.table.duration) <- 
+        rownames(stats.table.dissolution) <- 
+        c(paste("nodematch",diss.terms[2,2], "FALSE"),
+        paste("nodematch",diss.terms[2,2], "TRUE "))
+  }
 
   return(
     list(
