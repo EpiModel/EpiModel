@@ -56,10 +56,10 @@ and \code{attr} respectively, and the field \code{gal} is the list of network
 attributes (copied from \code{attributes(x)}). Missing attributes
 \code{directed}, \code{bipartite}, \code{loops}, \code{hyper}, and
 \code{multiple} are defaulted to \code{FALSE}; the network size attribute
-\code{n} must not be missing. Attributes \code{class}, \code{dim}, and
-\code{vnames} (if present) are not copied from \code{x} to the
-\code{networkLite}.  (For convenience, a \code{matrix} method, identical to
-the \code{edgelist} method, is also defined, to handle cases where the
+\code{n} must not be missing. Attributes \code{class}, \code{dim}, 
+\code{vnames}, and \code{mnext} (if present) are not copied from \code{x} to
+the \code{networkLite}.  (For convenience, a \code{matrix} method, identical
+to the \code{edgelist} method, is also defined, to handle cases where the
 edgelist is, for whatever reason, not classed as an \code{edgelist}.)
 
 The \code{numeric} method takes a number \code{x} as well as the network
