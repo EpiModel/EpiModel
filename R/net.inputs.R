@@ -372,7 +372,7 @@ param_random <- function(values, prob = NULL) {
 #' The column names must correspond either to:
 #' the name of one parameter, if this parameter is of size 1; or the name of one
 #' parameter with "_1", "_2", etc. appended, with the number representing the
-#' position of the value, if this parameter if of size > 1. This means that the
+#' position of the value, if this parameter is of size > 1. This means that the
 #' parameter names cannot contain any underscores "_" if you intend to use
 #' \code{param_random_set}.
 #'

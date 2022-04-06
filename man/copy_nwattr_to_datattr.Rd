@@ -7,10 +7,11 @@
 copy_nwattr_to_datattr(dat)
 }
 \arguments{
-\item{dat}{Main data object passed through \code{netsim} simulations.}
+\item{dat}{Main list object containing a \code{networkDynamic} object and
+other initialization information passed from \code{\link{netsim}}.}
 }
 \value{
-The updated main \code{dat} object.
+The updated \code{dat} main list object.
 }
 \description{
 Copies the vertex attributes stored on the network object to the

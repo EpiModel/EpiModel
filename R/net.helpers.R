@@ -29,7 +29,7 @@ create_dat_object <- function(param = list(), init = list(), control = list()) {
 
 #' @title Return the Current Timestep
 #'
-#' @param dat Main data object passed through \code{netsim} simulations.
+#' @inheritParams recovery.net
 #'
 #' @return The current timestep.
 #' @export
@@ -44,10 +44,10 @@ get_current_timestep <- function(dat) {
 #'              cases. In most situation, \code{increment_timestep} is
 #'              preferred.
 #'
-#' @param dat Main data object passed through \code{netsim} simulations.
+#' @inheritParams recovery.net
 #' @param timestep The new value for the timestep.
 #'
-#' @return A \code{dat} main list object.
+#' @inherit recovery.net return
 #'
 #' @section Mutability:
 #' This DOES NOT modify the \code{dat} object in place. The result must be
@@ -65,9 +65,9 @@ set_current_timestep <- function(dat, timestep) {
 #' @description This function adds 1 to the timestep counter stored in the
 #'              \code{dat} main list object.
 #'
-#' @param dat Main data object passed through \code{netsim} simulations.
+#' @inheritParams recovery.net
 #'
-#' @return A \code{dat} main list object.
+#' @inherit recovery.net return
 #'
 #' @section Mutability:
 #' This DOES NOT modify the \code{dat} object in place. The result must be

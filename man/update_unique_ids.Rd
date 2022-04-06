@@ -7,12 +7,13 @@
 update_unique_ids(dat, n.new)
 }
 \arguments{
-\item{dat}{Main data object passed through \code{netsim} simulations.}
+\item{dat}{Main list object containing a \code{networkDynamic} object and
+other initialization information passed from \code{\link{netsim}}.}
 
 \item{n.new}{The number of new nodes to give \code{unique_ids} to.}
 }
 \value{
-The main list object of network models (\code{dat}).
+The updated \code{dat} main list object.
 }
 \description{
 This function is called by \code{\link{append_core_attr}} and

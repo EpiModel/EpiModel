@@ -13,8 +13,7 @@ other initialization information passed from \code{\link{netsim}}.}
 \item{at}{Current time step.}
 }
 \value{
-The main \code{dat} object is returned with updated disease status and
-summary incidence measures.
+The updated \code{dat} main list object.
 }
 \description{
 This function simulates the main infection process given the

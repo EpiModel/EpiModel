@@ -7,9 +7,8 @@
 set_transmat(dat, del, at)
 }
 \arguments{
-\item{dat}{Main list object containing a \code{networkDynamic} object or
-edgelist (if tergmLite is used) and other initialization information
-passed from \code{\link{netsim}}.}
+\item{dat}{Main list object containing a \code{networkDynamic} object and
+other initialization information passed from \code{\link{netsim}}.}
 
 \item{del}{Discordant edgelist created within \code{\link{infection.net}} and
 \code{\link{infection.2g.net}}.}

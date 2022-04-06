@@ -7,9 +7,8 @@
 nwupdate.net(dat, at)
 }
 \arguments{
-\item{dat}{Main list object containing a full \code{networkDynamic} object
-or networkLite edgelist (if using tergmLite), and other initialization
-information passed from \code{\link{netsim}}.}
+\item{dat}{Main list object containing a \code{networkDynamic} object and
+other initialization information passed from \code{\link{netsim}}.}
 
 \item{at}{Current time step.}
 }
