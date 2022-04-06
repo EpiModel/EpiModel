@@ -7,7 +7,8 @@
 is_active_posit_ids(dat, posit_ids)
 }
 \arguments{
-\item{dat}{Main data object passed through \code{netsim} simulations.}
+\item{dat}{Main list object containing a \code{networkDynamic} object and
+other initialization information passed from \code{\link{netsim}}.}
 
 \item{posit_ids}{A vector of node positional identifiers.}
 }

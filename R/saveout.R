@@ -79,7 +79,7 @@ saveout.dcm <- function(df, s, param, control, out = NULL) {
 #'              object to the output \code{out} object at the end of each
 #'              simulation in \code{\link{icm}}.
 #'
-#' @param dat Main data object passed through \code{icm} simulations.
+#' @inheritParams prevalence.icm
 #' @param s Current simulation number.
 #' @param out Out list passed back in for updating at simulations 2+.
 #'
@@ -139,7 +139,7 @@ saveout.icm <- function(dat, s, out = NULL) {
 #'              object to the output \code{out} object at the end of each
 #'              simulation in \code{\link{netsim}}.
 #'
-#' @param dat Main data object passed through \code{netsim} simulations.
+#' @inheritParams recovery.net
 #' @param s Current simulation number.
 #' @param out Out list passed back in for updating at simulations 2+.
 #'
