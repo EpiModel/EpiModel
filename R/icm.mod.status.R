@@ -4,10 +4,9 @@
 #' @description This function simulates the main infection process given the
 #'              current state of the actors in the system.
 #'
-#' @param dat Main data object passed through \code{icm} simulations.
-#' @param at Current time step.
+#' @inheritParams prevalence.icm
 #'
-#' @return The updated \code{dat} main list object.
+#' @inherit recovery.net return
 #'
 #' @export
 #' @keywords internal
@@ -85,10 +84,9 @@ infection.icm <- function(dat, at) {
 #'              to a susceptible state (SIS model type), for use in
 #'              \code{\link{icm}}.
 #'
-#' @param dat Main data object passed through \code{icm} simulations.
-#' @param at Current time step.
+#' @inheritParams prevalence.icm
 #'
-#' @return The updated \code{dat} main list object.
+#' @inherit recovery.net return
 #'
 #' @export
 #' @keywords internal
@@ -144,10 +142,9 @@ recovery.icm <- function(dat, at) {
 #' @description This function simulates the main infection process given the
 #'              current state of the actors in the system.
 #'
-#' @param dat Main data object passed through \code{icm} simulations.
-#' @param at Current time step.
+#' @inheritParams prevalence.icm
 #'
-#' @return The updated \code{dat} main list object.
+#' @inherit recovery.net return
 #'
 #' @export
 #' @keywords internal
@@ -232,10 +229,9 @@ infection.icm.bip <- function(dat, at) {
 #'              to a susceptible state (SIS model type), for use in
 #'              \code{\link{icm}}.
 #'
-#' @param dat Main data object passed through \code{icm} simulations.
-#' @param at Current time step.
+#' @inheritParams prevalence.icm
 #'
-#' @return The updated \code{dat} main list object.
+#' @inherit recovery.net return
 #'
 #' @export
 #' @keywords internal

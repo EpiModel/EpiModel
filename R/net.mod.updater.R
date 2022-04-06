@@ -28,10 +28,9 @@ update_list <- function(x, new.x) {
 
 #' @title Function to Modify the Controls or Parameters During the Simulation
 #'
-#' @param dat Main list object containing a \code{networkDynamic} object and
-#'        other initialization information passed from \code{\link{netsim}}.
+#' @inheritParams recovery.net
 #'
-#' @return The updated \code{dat} main list object.
+#' @inherit recovery.net return
 #'
 #' @details
 #' If a list \code{.param.updater.list} is present in the parameters, this
@@ -136,11 +135,10 @@ input_updater <- function(dat) {
 
 #' @title Update Either the "param" or "control" List
 #'
-#' @param dat Main list object containing a \code{networkDynamic} object and
-#'        other initialization information passed from \code{\link{netsim}}.
+#' @inheritParams recovery.net
 #' @param type Either \code{"param"} or \code{"control"}.
 #'
-#' @return The updated \code{dat} main list object.
+#' @inherit recovery.net return
 #'
 #' @keywords internal
 common_updater <- function(dat, type) {

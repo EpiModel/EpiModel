@@ -172,7 +172,7 @@ netsim <- function(x, param, init, control) {
 #'              printed using the \code{netsim_cond_msg} function (utils.R)
 #' @inheritParams initialize.net
 #'
-#' @return The updated \code{dat} main list object.
+#' @inherit recovery.net return
 #'
 #' @keywords internal
 #'

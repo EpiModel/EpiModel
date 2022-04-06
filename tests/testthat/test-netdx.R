@@ -313,3 +313,67 @@ for (trim in c(FALSE, TRUE)) {
   
   })
 }  
+
+test_that("Edges only models with set.control.stergm", {
+  num <- 50
+  nw <- network_initialize(n = num)
+  formation <- ~edges
+  target.stats <- 15
+  coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
+  est1 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
+
+  ## Single simulation
+  expect_warning(dx1 <- netdx(est1, nsims = 1, nsteps = 10, verbose = FALSE,
+                              set.control.stergm = control.simulate.network()),
+                 "set.control.stergm is deprecated")
+  expect_is(dx1, "netdx")
+  print(dx1)
+  plot(dx1)
+  plot(dx1, method = "b")
+  plot(dx1, type = "duration", mean.smooth = FALSE)
+  plot(dx1, method = "b", type = "duration")
+  plot(dx1, type = "dissolution")
+  plot(dx1, method = "b", type = "dissolution")
+
+  ## Multiple simulations
+  expect_warning(dx2 <- netdx(est1, nsims = 2, nsteps = 10, verbose = FALSE,
+                              set.control.stergm = control.simulate.network()),
+                 "set.control.stergm is deprecated")
+  expect_is(dx2, "netdx")
+  print(dx2)
+  plot(dx2)
+  plot(dx2, method = "b")
+  plot(dx2, type = "duration")
+  plot(dx2, method = "b", type = "duration")
+  plot(dx2, type = "dissolution")
+  plot(dx2, method = "b", type = "dissolution")
+
+  ## Expanded monitoring formula
+  expect_warning(dx3 <- netdx(est1, nsims = 2, nsteps = 10, verbose = FALSE,
+                              nwstats.formula = ~edges + concurrent,
+                              set.control.stergm = control.simulate.network()),
+                 "set.control.stergm is deprecated")
+  expect_is(dx3, "netdx")
+  print(dx3)
+  plot(dx3)
+  plot(dx3, plots.joined = FALSE)
+  plot(dx3, method = "b")
+  plot(dx3, type = "duration")
+  plot(dx3, method = "b", type = "duration")
+  plot(dx3, type = "dissolution")
+  plot(dx3, method = "b", type = "dissolution")
+
+  ## Reduced monitoring formula
+  expect_warning(dx4 <- netdx(est1, nsims = 2, nsteps = 10, verbose = FALSE,
+                              nwstats.formula = ~meandeg,
+                              set.control.stergm = control.simulate.network()),
+                 "set.control.stergm is deprecated")
+  expect_is(dx4, "netdx")
+  print(dx4)
+  plot(dx4)
+  plot(dx4, method = "b")
+  plot(dx4, type = "duration")
+  plot(dx4, method = "b", type = "duration")
+  plot(dx4, type = "dissolution")
+  plot(dx4, method = "b", type = "dissolution")
+})

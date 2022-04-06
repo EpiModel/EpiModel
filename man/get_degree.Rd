@@ -25,7 +25,7 @@ often useful for summary statistics. Given a \code{network} class object,
 \code{net}, one way to look up the current degree is to get a summary of the
 ERGM term, \code{sociality}, as in:
 \code{summary(net ~ sociality(nodes = NULL))}. But that is computationally
-inefficient for a number of reasons. This function provide a fast method for
+inefficient for a number of reasons. This function provides a fast method for
 generating the vector of degrees using a query of the edgelist. It is even
 faster if the parameter \code{x} is already transformed into an edgelist.
 }
