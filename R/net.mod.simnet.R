@@ -48,23 +48,42 @@ sim_nets_t1 <- function(x, dat, nsteps) {
     }
 
     set.control.stergm <- get_control(dat, "set.control.stergm")
+    set.control.tergm <- get_control(dat, "set.control.tergm")
 
-    # Simulate dynamic network
-    suppressWarnings({
-      sim <- simulate(nw,
-                      formation = x$formation,
-                      dissolution = x$coef.diss$dissolution,
-                      coef.form = x$coef.form,
-                      coef.diss = x$coef.diss$coef.crude,
-                      time.slices = nsteps,
-                      time.start = 1,
-                      time.offset = 0,
-                      constraints = x$constraints,
-                      monitor = nwstats.formula,
-                      nsim = 1,
-                      control = set.control.stergm)
-      sim <- networkDynamic::activate.vertices(sim, onset = 1, terminus = Inf)
-    })
+    if (!is.null(set.control.stergm)) {
+      # Simulate dynamic network
+      suppressWarnings({
+        sim <- simulate(nw,
+                        formation = x$formation,
+                        dissolution = x$coef.diss$dissolution,
+                        coef.form = x$coef.form,
+                        coef.diss = x$coef.diss$coef.crude,
+                        time.slices = nsteps,
+                        time.start = 1,
+                        time.offset = 0,
+                        constraints = x$constraints,
+                        monitor = nwstats.formula,
+                        nsim = 1,
+                        control = set.control.stergm)
+        sim <- networkDynamic::activate.vertices(sim, onset = 1, terminus = Inf)
+      })
+    } else {
+      # Simulate dynamic network
+      suppressWarnings({
+        sim <- simulate(nw ~ Form(x$formation) + 
+                             Persist(x$coef.diss$dissolution),
+                        coef = c(x$coef.form, x$coef.diss$coef.crude),
+                        time.slices = nsteps,
+                        time.start = 1,
+                        time.offset = 0,
+                        constraints = x$constraints,
+                        monitor = nwstats.formula,
+                        nsim = 1,
+                        control = set.control.tergm,
+                        dynamic = TRUE)
+        sim <- networkDynamic::activate.vertices(sim, onset = 1, terminus = Inf)
+      })
+    }
     dat$nw[[1]] <- sim
 
   # If ERGM, then use ergm package simulation for x-sectional network panels
@@ -138,6 +157,7 @@ resim_nets <- function(dat, at) {
   resimulate.network <- get_control(dat, "resimulate.network")
   nwstats.formula <- get_control(dat, "nwstats.formula")
   set.control.stergm <- get_control(dat, "set.control.stergm")
+  set.control.tergm <- get_control(dat, "set.control.tergm")
   set.control.ergm <- get_control(dat, "set.control.ergm")
   tergmLite.track.duration <- get_control(dat, "tergmLite.track.duration")
 
@@ -170,18 +190,32 @@ resim_nets <- function(dat, at) {
 
       # TERGM simulation
       if (isTERGM == TRUE) {
-        suppressWarnings(
-          dat$nw[[1]] <- simulate(dat$nw[[1]],
-                                  formation = nwparam$formation,
-                                  dissolution = nwparam$coef.diss$dissolution,
-                                  coef.form = nwparam$coef.form,
-                                  coef.diss = nwparam$coef.diss$coef.adj,
-                                  constraints = nwparam$constraints,
-                                  time.start = at,
-                                  time.slices = 1,
-                                  time.offset = 0,
-                                  monitor = nwstats.formula,
-                                  control = set.control.stergm))
+        if (!is.null(set.control.stergm)) {
+          suppressWarnings(
+            dat$nw[[1]] <- simulate(dat$nw[[1]],
+                                    formation = nwparam$formation,
+                                    dissolution = nwparam$coef.diss$dissolution,
+                                    coef.form = nwparam$coef.form,
+                                    coef.diss = nwparam$coef.diss$coef.adj,
+                                    constraints = nwparam$constraints,
+                                    time.start = at,
+                                    time.slices = 1,
+                                    time.offset = 0,
+                                    monitor = nwstats.formula,
+                                    control = set.control.stergm))
+        } else {
+          suppressWarnings(
+            dat$nw[[1]] <- simulate(dat$nw[[1]] ~ Form(nwparam$formation) + 
+                                                  Persist(nwparam$coef.diss$dissolution),
+                                    coef = c(nwparam$coef.form, nwparam$coef.diss$coef.adj),
+                                    constraints = nwparam$constraints,
+                                    time.start = at,
+                                    time.slices = 1,
+                                    time.offset = 0,
+                                    monitor = nwstats.formula,
+                                    control = set.control.tergm,
+                                    dynamic = TRUE))
+        }
       } else {
         dat$nw[[1]] <- simulate(object = nwparam$formation,
                                 basis = dat$nw[[1]],
@@ -211,17 +245,30 @@ resim_nets <- function(dat, at) {
       }
 
       if (isTERGM == TRUE) {
-        dat$nw[[1]] <- simulate(nwL,
-                                formation = nwparam$formation,
-                                dissolution = nwparam$coef.diss$dissolution,
-                                coef.form = nwparam$coef.form,
-                                coef.diss = nwparam$coef.diss$coef.adj,
-                                constraints = nwparam$constraints,
-                                time.start = at - 1,
-                                time.slices = 1,
-                                time.offset = 1, # default value
-                                control = set.control.stergm,
-                                output = "final")
+        if (!is.null(set.control.stergm)) {
+          dat$nw[[1]] <- simulate(nwL,
+                                  formation = nwparam$formation,
+                                  dissolution = nwparam$coef.diss$dissolution,
+                                  coef.form = nwparam$coef.form,
+                                  coef.diss = nwparam$coef.diss$coef.adj,
+                                  constraints = nwparam$constraints,
+                                  time.start = at - 1,
+                                  time.slices = 1,
+                                  time.offset = 1, # default value
+                                  control = set.control.stergm,
+                                  output = "final")
+        } else {
+          dat$nw[[1]] <- simulate(nwL ~ Form(nwparam$formation) + 
+                                        Persist(nwparam$coef.diss$dissolution),
+                                  coef = c(nwparam$coef.form, nwparam$coef.diss$coef.adj),
+                                  constraints = nwparam$constraints,
+                                  time.start = at - 1,
+                                  time.slices = 1,
+                                  time.offset = 1, # default value
+                                  control = set.control.tergm,
+                                  output = "final",
+                                  dynamic = TRUE)
+        }
       } else {
         dat$nw[[1]] <- simulate(object = nwparam$formation,
                                 basis = nwL,
@@ -237,7 +284,11 @@ resim_nets <- function(dat, at) {
 
       if (save.nwstats == TRUE) {
         term.options <- if (isTERGM == TRUE) {
-          set.control.stergm$term.options
+          if (!is.null(set.control.stergm)) {
+            set.control.stergm$term.options
+          } else {
+            set.control.tergm$term.options          
+          }
         } else {
           set.control.ergm$term.options
         }

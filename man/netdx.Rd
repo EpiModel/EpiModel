@@ -12,6 +12,7 @@ netdx(
   nwstats.formula = "formation",
   set.control.ergm,
   set.control.stergm,
+  set.control.tergm,
   sequential = TRUE,
   keep.tedgelist = FALSE,
   keep.tnetwork = FALSE,
@@ -38,7 +39,9 @@ network model contained in \code{x}.}
 \item{set.control.ergm}{Control arguments passed to \code{simulate.ergm} (see
 details).}
 
-\item{set.control.stergm}{Control arguments passed to \code{simulate.stergm}
+\item{set.control.stergm}{Deprecated; use \code{set.control.tergm} instead.}
+
+\item{set.control.tergm}{Control arguments passed to \code{simulate.tergm}
 (see details).}
 
 \item{sequential}{For static diagnostics (\code{dynamic=FALSE}): if
@@ -83,23 +86,23 @@ plotting the \code{netdx} object.
 
 Models fit with the full STERGM method in \code{netest} (setting the
 \code{edapprox} argument to \code{FALSE}) require only a call to
-\code{simulate.stergm}. Control parameters for those simulations may be set
-using \code{set.control.stergm} in \code{netdx}. The parameters should be
-input through the \code{control.simulate.stergm()} function, with the
-available parameters listed in the \code{\link{control.simulate.stergm}} help
+\code{simulate.tergm}. Control parameters for those simulations may be set
+using \code{set.control.tergm} in \code{netdx}. The parameters should be
+input through the \code{control.simulate.tergm} function, with the
+available parameters listed in the \code{\link{control.simulate.tergm}} help
 page in the \code{tergm} package.
 
 Models fit with the ERGM method with the edges dissolution approximation
 (setting \code{edapprox} to \code{TRUE}) require a call first to
 \code{simulate.ergm} for simulating an initial network, and second to
-\code{simulate.network} for simulating that static network forward through
+\code{simulate_formula.network} for simulating that static network forward through
 time. Control parameters may be set for both processes in \code{netdx}.
 For the first, the parameters should be input through the
 \code{control.simulate.ergm()} function, with the available parameters listed
 in the \code{\link[ergm:control.simulate.ergm]{control.simulate.ergm}} help
 page in the \code{ergm} package. For the second, parameters should be input
-through the \code{control.simulate.network()} function, with the available
-parameters listed in the \code{\link{control.simulate.network}} help page in
+through the \code{control.simulate.formula.tergm()} function, with the available
+parameters listed in the \code{\link{control.simulate.formula.tergm}} help page in
 the \code{tergm} package. An example is shown below.
 }
 
