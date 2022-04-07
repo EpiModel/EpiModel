@@ -428,7 +428,7 @@ make_dissolution_stats <- function(diag.sim, coef.diss, nsteps, verbose = TRUE) 
   }
   
   # Calculate mean partnership age from edgelist
-    pages <- sapply(seq_len(length(sim.df)), function(x) {
+    pages <- sapply(seq_along(sim.df), function(x) {
                       meanage <- edgelist_meanage(el=sim.df[[x]], diss_term=diss_term,
                                    attribute=get_vertex_attribute(diag.sim[[x]], diss.terms[2,2]) 
                       )
@@ -439,16 +439,6 @@ make_dissolution_stats <- function(diag.sim, coef.diss, nsteps, verbose = TRUE) 
                       return(meanage)               
               },simplify="array")
 
-    #TODO: re-integrate 
-    #pages <- lapply(sim.df, function(x) {
-    #  meanage <- edgelist_meanage(el = x)
-    #  l <- nsteps - length(meanage)
-    #  if (l > 0) {
-    #    meanage <- c(meanage, rep(NA, l))
-    #  }
-    #  return(meanage)
-    #})
-    
   # calculate expected time prior to simulation
     coef_dur <- coef.diss$duration
     pages_imptd <- sapply(seq_along(coef_dur), function(x) 
@@ -459,17 +449,29 @@ make_dissolution_stats <- function(diag.sim, coef.diss, nsteps, verbose = TRUE) 
     cat("\n- Calculating dissolution statistics")
   }
 
-  # TODO Create a list of dissolution proportions (i.e. dissolutions/edges)
-  prop.diss <- lapply(sim.df, function(d) {
-    vapply(seq_len(nsteps), function(x) {
-      sum(d$terminus == x) / sum(d$onset < x & d$terminus >= x)
-    }, 0)
-  })
-
+  if(is.null(diss_term)) {
+    prop.diss <- lapply(sim.df, function(d) {
+      matrix(sapply(seq_len(nsteps), function(x) {
+        sum(d$terminus == x) / sum(d$onset < x & d$terminus >= x)
+      }),ncol=1)
+    })
+  } else {
+    if(diss_term=="nodematch") {
+      prop.diss <- sapply(seq_along(sim.df), function(d) {
+        attribute <- get_vertex_attribute(diag.sim[[d]], diss.terms[2,2])
+        t(sapply(seq_len(nsteps), function(x) {
+          c(sum(sim.df[[d]]$terminus==x & attribute[sim.df[[d]]$head]!=attribute[sim.df[[d]]$tail]) / 
+              sum(sim.df[[d]]$onset<x & sim.df[[d]]$terminus>=x & attribute[sim.df[[d]]$head]!=attribute[sim.df[[d]]$tail]),
+            sum(sim.df[[d]]$terminus==x & attribute[sim.df[[d]]$head]==attribute[sim.df[[d]]$tail]) / 
+              sum(sim.df[[d]]$onset<x & sim.df[[d]]$terminus>=x & attribute[sim.df[[d]]$head]==attribute[sim.df[[d]]$tail]))
+        }))
+      })
+    }    
+  }  
   if (verbose == TRUE) {
     cat("\n ")
   }
-
+  
   # Create dissolution tables
   duration.imputed <- simplify2array(lapply(1:3,
                               function(x)pages[,,x]+pages_imptd))
