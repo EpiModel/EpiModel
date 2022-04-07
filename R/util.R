@@ -100,7 +100,7 @@ networkLite.edgelist <- function(x, attr = list(), ...) {
   nw <- list(el = x,
              attr = attr,
              gal = attributes(x)[setdiff(names(attributes(x)),
-                                         c("class", "dim", "vnames"))])
+                                         c("class", "dim", "vnames", "mnext"))])
 
   # network size attribute is required
   if (is.null(nw$gal[["n"]])) {
@@ -363,7 +363,7 @@ as.networkLite.network <- function(x, ...) {
     vertex_attributes[[name]] <- x %v% name
   }
   rv <- networkLite(edgelist, vertex_attributes)
-  for (name in list.network.attributes(x)) {
+  for (name in setdiff(list.network.attributes(x), c("mnext"))) {
     rv$gal[[name]] <- x %n% name
   }
   rv
@@ -373,4 +373,31 @@ as.networkLite.network <- function(x, ...) {
 #' @export
 as.networkLite.networkLite <- function(x, ...) {
   x
+}
+
+# internal convenience function for converting from networkLite to network
+to_network_networkLite <- function(x, ...) {
+  nw <- network.initialize(network.size(x), 
+                           directed = x %n% "directed",
+                           bipartite = x %n% "bipartite")
+  
+  el <- as.edgelist(x)
+  
+  nw <- add.edges(nw, el[,1], el[,2])
+  
+  for(name in list.vertex.attributes(x)) {
+    nw %v% name <- x %v% name
+  }
+  
+  for(name in list.network.attributes(x)) {
+    nw %n% name <- x %n% name
+  }
+  
+  nw
+}
+
+#' @rdname networkLitemethods
+#' @export
+as.networkDynamic.networkLite <- function(object, ...) {  
+  as.networkDynamic(to_network_networkLite(object))
 }

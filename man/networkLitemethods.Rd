@@ -18,6 +18,7 @@
 \alias{as.networkLite}
 \alias{as.networkLite.network}
 \alias{as.networkLite.networkLite}
+\alias{as.networkDynamic.networkLite}
 \title{networkLite Methods}
 \usage{
 \method{get.vertex.attribute}{networkLite}(x, attrname, ...)
@@ -59,6 +60,8 @@ as.networkLite(x, ...)
 \method{as.networkLite}{network}(x, ...)
 
 \method{as.networkLite}{networkLite}(x, ...)
+
+\method{as.networkDynamic}{networkLite}(object, ...)
 }
 \arguments{
 \item{x}{A \code{networkLite} object.}

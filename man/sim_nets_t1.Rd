@@ -9,13 +9,14 @@ sim_nets_t1(x, dat, nsteps)
 \arguments{
 \item{x}{An \code{EpiModel} object of class \code{\link{netest}}.}
 
-\item{dat}{Main data object passed through \code{netsim} simulations.}
+\item{dat}{Main list object containing a \code{networkDynamic} object and
+other initialization information passed from \code{\link{netsim}}.}
 
 \item{nsteps}{For TERGMs, the number of time steps to simulate the network
 over; for ERGMs, the number of independent network panels to simulate.}
 }
 \value{
-The updated \code{dat} main data object.
+The updated \code{dat} main list object.
 }
 \description{
 This function simulates a dynamic network over one or multiple

@@ -29,6 +29,3 @@ component targets the distribution of age mixing on that continuous
 variable, and the \code{nodemix} component differentiates this for
 black-black, black-white, and white-white couples.
 }
-\author{
-Steven M. Goodreau
-}

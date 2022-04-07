@@ -26,19 +26,18 @@ update_list <- function(x, new.x) {
   return(x)
 }
 
-#' @title Module to Modify the Controls or Parameters during the Simulation
+#' @title Function to Modify the Controls or Parameters During the Simulation
 #'
-#' @param dat Main list object containing a \code{networkDynamic} object and
-#'        other initialization information passed from \code{\link{netsim}}.
-#' @param at Current time step.
+#' @inheritParams recovery.net
 #'
-#' @return The updated \code{dat} main list object.
+#' @inherit recovery.net return
 #'
 #' @details
-#' If a list \code{param.updater.list} is present in the parameters, this module
+#' If a list \code{.param.updater.list} is present in the parameters, this
+#' function
 #' will update the \code{param} list with new values at given timesteps.
-#' Similarly, if a list \code{control.updater.list} is present in the controls,
-#' this module will update the \code{control} list with new values at given
+#' Similarily, if a list \code{.control.updater.list} is present in the controls,
+#' this function will update the \code{param} list with new values at given
 #' timesteps.
 #' An updater is a list containing an \code{at} element governing when the
 #' changes will happen, an optional \code{verbose} Boolean controlling whether
@@ -51,8 +50,8 @@ update_list <- function(x, new.x) {
 #' @examples
 #' \dontrun{
 #'
-#' # Create the param.updater.list
-#' param.updater.list <- list(
+#' # Create the .param.updater.list
+#' .param.updater.list <- list(
 #'   # this is one updater
 #'   list(
 #'     at = 10,
@@ -78,10 +77,10 @@ update_list <- function(x, new.x) {
 #'    act.rate = 0.5,
 #'    hiv.test.rate = rep(0.256, 3),
 #'    trans.scale = c(1, 2, 3),
-#'    param.updater.list = param.updater.list
+#'    .param.updater.list = param.updater.list
 #'  )
 #'
-#' # Create the control.updater.list
+#' # Create the .control.updater.list
 #' # these updaters will toggle on and off the verbosity of the model
 #' control.updater.list <- list(
 #'   list(
@@ -101,15 +100,12 @@ update_list <- function(x, new.x) {
 #'   )
 #' )
 #'
-#' # Enable the module in control, and add `control.updater.list` to it
+#' Add the control updaters to the `control` object
 #'  control <- control.net(
-#'    type = NULL, # must be NULL as we use a custom module
 #'    nsims = 1,
 #'    nsteps = 20,
 #'    verbose = FALSE,
-#'    updater.FUN = updater.net,
-#'    infection.FUN = infection.net,
-#'    control.updater.list = control.updater.list
+#'    .control.updater.list = control.updater.list
 #'  )
 #'
 #' nw <- network_initialize(n = 50)
@@ -127,8 +123,9 @@ update_list <- function(x, new.x) {
 #'
 #' }
 #'
-#' @export
-updater.net <- function(dat, at) {
+#' @keywords internal
+#' @noRd
+input_updater <- function(dat) {
   for (type in c("param", "control")) {
     dat <- common_updater(dat, type)
   }
@@ -138,11 +135,10 @@ updater.net <- function(dat, at) {
 
 #' @title Update Either the "param" or "control" List
 #'
-#' @param dat Main list object containing a \code{networkDynamic} object and
-#'        other initialization information passed from \code{\link{netsim}}.
+#' @inheritParams recovery.net
 #' @param type Either \code{"param"} or \code{"control"}.
 #'
-#' @return The updated \code{dat} main list object.
+#' @inherit recovery.net return
 #'
 #' @keywords internal
 common_updater <- function(dat, type) {
@@ -151,13 +147,13 @@ common_updater <- function(dat, type) {
     type.label <- "parameters"
     type.set <- set_param
     type.get_list <- get_param_list
-    updaters.label <- "param.updater.list"
+    updaters.label <- ".param.updater.list"
     updaters <- get_param(dat, updaters.label, override.null.error = TRUE)
   } else if (type == "control") {
     type.label <- "controls"
     type.set <- set_control
     type.get_list <- get_control_list
-    updaters.label <- "control.updater.list"
+    updaters.label <- ".control.updater.list"
     updaters <- get_control(dat, updaters.label, override.null.error = TRUE)
   } else {
     stop("`type` must be either 'param' or 'control'")
@@ -181,7 +177,7 @@ common_updater <- function(dat, type) {
       if (verbose) {
         message(
           "\n\nAt timestep = ", at, " the following ", type.label,
-          " where modified:",
+          " were modified:",
           "\n'", paste0(names(new.list), collapse = "', '"), "'"
         )
       }

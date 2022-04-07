@@ -172,7 +172,7 @@ netsim <- function(x, param, init, control) {
 #'              printed using the \code{netsim_cond_msg} function (utils.R)
 #' @inheritParams initialize.net
 #'
-#' @return The updated \code{dat} main list object.
+#' @inherit recovery.net return
 #'
 #' @keywords internal
 #'
@@ -182,7 +182,6 @@ netsim_loop <- function(x, param, init, control, s) {
 
   dat <- withCallingHandlers(
     expr = {
-
       ## Initialization Module
       if (!is.null(control[["initialize.FUN"]])) {
         current_mod <- "initialize.FUN"
@@ -193,7 +192,10 @@ netsim_loop <- function(x, param, init, control, s) {
       ### TIME LOOP
       if (control$nsteps > 1) {
         for (at in max(2, control$start):control$nsteps) {
+          current_mod <- "epimodel.internal"
           dat <- set_current_timestep(dat, at)
+          # Applies updaters, if any
+          dat <- input_updater(dat)
 
           ## Module order
           morder <- get_control(dat, "module.order", override.null.error = TRUE)

@@ -7,9 +7,8 @@
 discord_edgelist(dat, at, network = 1, infstat = "i")
 }
 \arguments{
-\item{dat}{Main list object containing a \code{networkDynamic} object or
-edgelist (if tergmLite is used) and other initialization information
-passed from \code{\link{netsim}}.}
+\item{dat}{Main list object containing a \code{networkDynamic} object and
+other initialization information passed from \code{\link{netsim}}.}
 
 \item{at}{Current time step.}
 

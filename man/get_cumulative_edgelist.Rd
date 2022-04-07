@@ -7,7 +7,8 @@
 get_cumulative_edgelist(dat, network)
 }
 \arguments{
-\item{dat}{Main data object passed through \code{netsim} simulations.}
+\item{dat}{Main list object containing a \code{networkDynamic} object and
+other initialization information passed from \code{\link{netsim}}.}
 
 \item{network}{Numerical index of the network from which the cumulative
 edgelist should be extracted. (May be > 1 for models with

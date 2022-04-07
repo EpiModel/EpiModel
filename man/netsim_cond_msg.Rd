@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{netsim_cond_msg}
 \alias{netsim_cond_msg}
-\title{Message to Find in Which Module a \code{Condition} Occurred}
+\title{Message to Find in Which Module a \code{condition} Occurred}
 \usage{
 netsim_cond_msg(cond, module, at, msg)
 }

@@ -95,8 +95,7 @@ initialize.net <- function(x, param, init, control, s) {
 #' @description This function sets the initial disease status on the
 #'              network given the specified initial conditions.
 #'
-#' @param dat Main list object containing a \code{networkDynamic} object and
-#'        other initialization information passed from \code{\link{netsim}}.
+#' @inheritParams recovery.net
 #'
 #' @details
 #' This internal function sets, either randomly or deterministically, the nodes
@@ -119,7 +118,7 @@ initialize.net <- function(x, param, init, control, s) {
 #' -1, and 2 is added to allow for possible infection times up until step 2,
 #' when the disease simulation time loop starts.
 #'
-#' @return The updated \code{dat} main list object.
+#' @inherit recovery.net return
 #'
 #' @seealso This is an initialization module for \code{\link{netsim}}.
 #'
