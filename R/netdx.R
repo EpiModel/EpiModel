@@ -450,11 +450,10 @@ make_dissolution_stats <- function(diag.sim, coef.diss, nsteps, verbose = TRUE) 
   }
 
   if(is.null(diss_term)) {
-    prop.diss <- lapply(sim.df, function(d) {
+    prop.diss <- sapply(seq_along(sim.df), function(d) {
       matrix(sapply(seq_len(nsteps), function(x) {
-        sum(d$terminus == x) / sum(d$onset < x & d$terminus >= x)
-      }),ncol=1)
-    })
+        sum(sim.df[[d]]$terminus == x) / sum(sim.df[[d]]$onset < x & sim.df[[d]]$terminus >= x)
+      }),ncol=1)},simplify="array")
   } else {
     if(diss_term=="nodematch") {
       prop.diss <- sapply(seq_along(sim.df), function(d) {
@@ -465,7 +464,7 @@ make_dissolution_stats <- function(diag.sim, coef.diss, nsteps, verbose = TRUE) 
             sum(sim.df[[d]]$terminus==x & attribute[sim.df[[d]]$head]==attribute[sim.df[[d]]$tail]) / 
               sum(sim.df[[d]]$onset<x & sim.df[[d]]$terminus>=x & attribute[sim.df[[d]]$head]==attribute[sim.df[[d]]$tail]))
         }))
-      })
+      }, simplify="array")
     }    
   }  
   if (verbose == TRUE) {
@@ -487,8 +486,9 @@ make_dissolution_stats <- function(diag.sim, coef.diss, nsteps, verbose = TRUE) 
   duration.pctdiff <- (duration.mean - duration.expected) /
     duration.expected * 100
 
-  dissolution.mean <- mean(unlist(prop.diss), na.rm = TRUE)
-
+  dissolution.mean.by.sim <- apply(prop.diss, 2:3, mean)
+  dissolution.mean <- rowMeans(dissolution.mean.by.sim, na.rm = TRUE)
+  
   if (nsims > 1) {
     dissolution.sd <- sd(sapply(prop.diss, mean, na.rm = TRUE))
   } else {
