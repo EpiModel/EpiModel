@@ -490,7 +490,7 @@ make_dissolution_stats <- function(diag.sim, coef.diss, nsteps, verbose = TRUE) 
   dissolution.mean <- rowMeans(dissolution.mean.by.sim, na.rm = TRUE)
   
   if (nsims > 1) {
-    dissolution.sd <- sd(sapply(prop.diss, mean, na.rm = TRUE))
+    dissolution.sd <- apply(dissolution.mean.by.sim, 1, sd, na.rm = TRUE)
   } else {
     dissolution.sd <- NA
   }
