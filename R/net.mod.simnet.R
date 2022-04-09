@@ -137,7 +137,6 @@ resim_nets <- function(dat, at) {
   nwstats.formula <- get_control(dat, "nwstats.formula")
   set.control.stergm <- get_control(dat, "set.control.stergm")
   set.control.tergm <- get_control(dat, "set.control.tergm")
-  set.control.ergm <- get_control(dat, "set.control.ergm")
   tergmLite.track.duration <- get_control(dat, "tergmLite.track.duration")
 
   # Edges Correction
@@ -256,10 +255,12 @@ resim_nets <- function(dat, at) {
                                 basis = nwL,
                                 coef = nwparam$coef.form,
                                 constraints = nwparam$constraints,
-                                control = set.control.ergm,
-                                dynamic = FALSE,
-                                nsim = 1,
-                                output = "network")
+                                time.start = at - 1,
+                                time.slices = 1,
+                                time.offset = 1, # default value
+                                control = set.control.tergm,
+                                output = "final",
+                                dynamic = TRUE)
       }
 
       dat$el[[1]] <- as.edgelist(dat$nw[[1]])
@@ -272,7 +273,7 @@ resim_nets <- function(dat, at) {
             set.control.tergm$term.options          
           }
         } else {
-          set.control.ergm$term.options
+          set.control.tergm$term.options
         }
         nwstats <- summary(dat$control$nwstats.formulas[[1]],
                            basis = dat$nw[[1]],

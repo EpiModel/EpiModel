@@ -166,7 +166,9 @@ data (one per simulation) instead of a formatted \code{netsim} object.}
 for models in \code{tergmLite} simulations.}
 
 \item{set.control.ergm}{Control arguments passed to \code{ergm}'s
-\code{simulate_formula.network}.}
+\code{simulate_formula.network}.  In \code{netsim}, this is only used
+when initializing the network with \code{edapprox = TRUE}; all other
+simulations in \code{netsim} use \code{tergm}.}
 
 \item{set.control.stergm}{Deprecated; use \code{set.control.tergm} instead.}
 
