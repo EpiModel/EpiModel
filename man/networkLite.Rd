@@ -19,9 +19,17 @@ networkLite(x, ...)
   ...
 )
 
-\method{networkLite}{edgelist}(x, attr = list(), ...)
+\method{networkLite}{edgelist}(
+  x,
+  attr = list(vertex.names = seq_len(NROW(x)), na = logical(NROW(x))),
+  ...
+)
 
-\method{networkLite}{matrix}(x, attr = list(), ...)
+\method{networkLite}{matrix}(
+  x,
+  attr = list(vertex.names = seq_len(NROW(x)), na = logical(NROW(x))),
+  ...
+)
 }
 \arguments{
 \item{x}{Either an \code{edgelist} class network representation (including

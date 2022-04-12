@@ -27,6 +27,10 @@
 \alias{valid.eids.networkLite}
 \alias{as_tibble.networkLite}
 \alias{as.matrix.networkLite}
+\alias{is.na.networkLite}
+\alias{delete.vertex.attribute.networkLite}
+\alias{delete.edge.attribute.networkLite}
+\alias{delete.network.attribute.networkLite}
 \title{networkLite Methods}
 \usage{
 \method{get.vertex.attribute}{networkLite}(x, attrname, ...)
@@ -53,7 +57,13 @@
 
 \method{network.edgecount}{networkLite}(x, ...)
 
-\method{as.edgelist}{networkLite}(x, attrname = NULL, output = c("matrix", "tibble"), ...)
+\method{as.edgelist}{networkLite}(
+  x,
+  attrname = NULL,
+  output = c("matrix", "tibble"),
+  na.rm = TRUE,
+  ...
+)
 
 \method{mixingmatrix}{networkLite}(object, attr, ...)
 
@@ -75,7 +85,7 @@ as.networkLite(x, ...)
 
 \method{valid.eids}{networkLite}(x, ...)
 
-\method{as_tibble}{networkLite}(x, attrnames = NULL, ...)
+\method{as_tibble}{networkLite}(x, attrnames = NULL, na.rm = TRUE, ...)
 
 \method{as.matrix}{networkLite}(
   x,
@@ -83,6 +93,14 @@ as.networkLite(x, ...)
   attrname = NULL,
   ...
 )
+
+\method{is.na}{networkLite}(x)
+
+\method{delete.vertex.attribute}{networkLite}(x, attrname, ...)
+
+\method{delete.edge.attribute}{networkLite}(x, attrname, ...)
+
+\method{delete.network.attribute}{networkLite}(x, attrname, ...)
 }
 \arguments{
 \item{x}{A \code{networkLite} object.}
@@ -100,6 +118,8 @@ for the \code{networkLite} replacement method.}
 \item{e}{edge indices to assign value}
 
 \item{output}{Type of edgelist to output.}
+
+\item{na.rm}{should missing edges be dropped from edgelist?}
 
 \item{object}{A \code{networkLite} object.}
 
