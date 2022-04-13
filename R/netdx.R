@@ -472,7 +472,7 @@ make_dissolution_stats <- function(diag.sim, coef.diss, nsteps, verbose = TRUE) 
   }
   
   # Create dissolution tables
-  duration.imputed <- simplify2array(lapply(1:3,
+  duration.imputed <- simplify2array(lapply(1:nsims,
                               function(x)pages[,,x]+pages_imptd))
   duration.mean.by.sim <- apply(duration.imputed, 2:3, mean)
   duration.mean <- rowMeans(duration.mean.by.sim, na.rm = TRUE)
