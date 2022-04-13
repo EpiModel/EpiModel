@@ -583,10 +583,19 @@ edgelist_meanage <- function(el, diss_term=NULL, attribute=NULL) {
     attr1 <- attribute[el$head]
     attr2 <- attribute[el$tail]
     if(diss_term=="nodematch") meanpage <- matrix(NA, maxterm, 2)
-    #if(diss_term=="nodemix") meanpage <- matrix(NA, maxterm, 10)
-    #if(diss_term=="nodefactor") meanpage <- matrix(NA, maxterm, 10)
-  }
-    
+    if(diss_term=="nodemix") {
+      attrvalues <- sort(unique(attribute))
+      n.attrvalues <- length(attrvalues)
+      n.attrcombos <- n.attrvalues*(n.attrvalues+1)/2
+      meanpage <- matrix(NA, maxterm, n.attrcombos)
+      indices2.grid <- expand.grid(row = 1:n.attrvalues, col = 1:n.attrvalues)
+      uun <- as.vector(outer(attrvalues, attrvalues, paste, sep = "."))
+      rowleqcol <- indices2.grid$row <= indices2.grid$col #assumes undirected
+      indices2.grid <- indices2.grid[rowleqcol, ]
+      uun <- uun[rowleqcol]
+      #cn <- paste("mix", paste(attrname,collapse="."), uun, sep=" ")
+  }}
+  
   for (at in minterm:maxterm) {
     actp <- (onset <= at & terminus > at) |
       (onset == at & terminus == at);
@@ -600,6 +609,23 @@ edgelist_meanage <- function(el, diss_term=NULL, attribute=NULL) {
         if(diss_term=="nodematch") {
           meanpage[at,1] <- mean(page[attr1a!=attr2a])
           meanpage[at,2] <- mean(page[attr1a==attr2a])
+        }
+        if(diss_term=="nodemix") {
+          for(i in 1:nrow(indices2.grid)) {
+            if(indices2.grid$row[i]==indices2.grid$col[i]) {
+              meanpage[at,i] <- mean(
+                page[attr1a==attrvalues[indices2.grid$row[i]] & 
+                         attr2a==attrvalues[indices2.grid$col[i]]]
+              )  
+            } else {
+            meanpage[at,i] <- mean(
+              c(page[attr1a==attrvalues[indices2.grid$row[i]] & 
+                     attr2a==attrvalues[indices2.grid$col[i]]],
+                page[attr1a==attrvalues[indices2.grid$col[i]] & 
+                     attr2a==attrvalues[indices2.grid$row[i]]]
+                ))
+            }
+          }
         }
     }
   }
