@@ -146,3 +146,24 @@ test_that("network and networkLite simulate identically in tergm", {
   expect_identical(summary(nw_3 ~ nodemix(~a) + absdiff(~b) + concurrent + gwesp + mean.age + edge.ages + nodemix.mean.age(~a) + gwnsp(0.3, fixed=TRUE)),
                    summary(nwL_3 ~ nodemix(~a) + absdiff(~b) + concurrent + gwesp + mean.age + edge.ages + nodemix.mean.age(~a) + gwnsp(0.3, fixed=TRUE)))
 })
+
+test_that("networkLites work in netest, netdx, and netsim", {
+  nw <- network_initialize(n = 100)
+  nw <- set_vertex_attribute(nw, "race", rbinom(50, 1, 0.5))
+  nw <- as.networkLite(nw)
+  est <- netest(nw, formation = ~edges + nodematch("race"),
+                target.stats = c(50, 20),
+                coef.diss = dissolution_coefs(~offset(edges), c(10)),
+                verbose = FALSE
+  )
+  dxs <- netdx(est, nsims = 20, verbose = FALSE,
+                 dynamic = FALSE, nwstats.formula = ~degree(1))
+                 
+  dxd <- netdx(est, nsims = 2, nsteps = 10, verbose = FALSE,
+                 dynamic = TRUE)
+                 
+  param <- param.net(inf.prob = 0.3, act.rate = 0.5)
+  init <- init.net(i.num = 10)
+  control <- control.net(type = "SI", nsims = 2, nsteps = 5, verbose = FALSE)
+  sim <- netsim(est, param, init, control)
+})

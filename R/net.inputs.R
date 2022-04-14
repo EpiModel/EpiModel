@@ -372,7 +372,7 @@ param_random <- function(values, prob = NULL) {
 #' The column names must correspond either to:
 #' the name of one parameter, if this parameter is of size 1; or the name of one
 #' parameter with "_1", "_2", etc. appended, with the number representing the
-#' position of the value, if this parameter if of size > 1. This means that the
+#' position of the value, if this parameter is of size > 1. This means that the
 #' parameter names cannot contain any underscores "_" if you intend to use
 #' \code{param_random_set}.
 #'
@@ -746,9 +746,11 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #'        for models in \code{tergmLite} simulations.
 #' @param set.control.ergm Control arguments passed to \code{ergm}'s
 #'        \code{simulate_formula.network}.
-#' @param set.control.stergm Control arguments passed to \code{tergm}'s
-#'        \code{simulate.network}. See the help file for \code{\link{netdx}}
-#'        for details and examples on specifying this parameter.
+#' @param set.control.tergm Control arguments passed to \code{tergm}'s
+#'        \code{simulate_formula.network}. See the help file for 
+#'        \code{\link{netdx}} for details and examples on specifying this 
+#'        parameter.
+#' @param set.control.stergm Deprecated; use \code{set.control.tergm} instead.
 #' @param ... Additional control settings passed to model.
 #'
 #' @details
@@ -839,8 +841,13 @@ control.net <- function(type,
                         tergmLite.track.duration = FALSE,
                         set.control.ergm = control.simulate.formula(
                           MCMC.burnin = 2e5),
-                        set.control.stergm = control.simulate.network(),
+                        set.control.stergm = NULL,
+                        set.control.tergm = control.simulate.formula.tergm(),
                         ...) {
+  if (!missing(set.control.stergm)) {
+    warning("set.control.stergm is deprecated and will be removed in a future 
+             version; use set.control.tergm instead.")
+  }
 
   # Get arguments
   p <- list()
@@ -1000,8 +1007,12 @@ crosscheck.net <- function(x, param, init, control) {
       }
 
       # Pull network object from netest object
-      nw <- x[["fit"]][["network"]]
-
+      if (x[["edapprox"]] == TRUE) {
+        nw <- x[["fit"]][["newnetwork"]]
+      } else {
+        nw <- x[["fit"]][["network"]]      
+      }
+      
       # Defaults ------------------------------------------------------------
 
       # Is status in network formation formula?

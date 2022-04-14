@@ -8,14 +8,14 @@
 #' and can be accessed from the \code{netsim} object with
 #' \code{get_attr_history}.
 #'
-#' @param dat Main data object passed through \code{netsim} simulations.
+#' @inheritParams recovery.net
 #' @param at The time where the recording happens.
 #' @param attribute The name of the value to record.
 #' @param posit_ids A numeric vector of posit_ids to which the measure applies.
 #'   (see \code{get_posit_ids}).
 #' @param values The values to be recorded.
 #'
-#' @return The main data list object.
+#' @inherit recovery.net return
 #'
 #' @details
 #' See the "Time-Varying Parameters" section of the "Working With Model
@@ -70,12 +70,12 @@ record_attr_history <- function(dat, at, attribute, posit_ids, values) {
 #' during the simulation and in the \code{netsim} object under the
 #' \code{raw.records} sublists.
 #'
-#' @param dat Main data object passed through \code{netsim} simulations.
+#' @inheritParams recovery.net
 #' @param at The time where the recording happens.
 #' @param label The name to give to the recorded object.
 #' @param object The object to be recorded.
 #'
-#' @return The main list object.
+#' @inherit recovery.net return
 #'
 #' @details
 #' See the "Time-Varying Parameters" section of the "Working With Model

@@ -14,7 +14,8 @@
 #'        network model contained in \code{x}.
 #' @param set.control.ergm Control arguments passed to \code{simulate.ergm} (see
 #'        details).
-#' @param set.control.stergm Control arguments passed to \code{simulate.stergm}
+#' @param set.control.stergm Deprecated; use \code{set.control.tergm} instead.
+#' @param set.control.tergm Control arguments passed to \code{simulate.tergm}
 #'        (see details).
 #' @param sequential For static diagnostics (\code{dynamic=FALSE}): if
 #'        \code{FALSE}, each of the \code{nsims} simulated Markov chains begins
@@ -45,23 +46,23 @@
 #' @section Control Arguments:
 #' Models fit with the full STERGM method in \code{netest} (setting
 #' \code{edapprox} argument to \code{FALSE}) require only a call to
-#' \code{simulate.stergm}. Control parameters for those simulations may be set
-#' using \code{set.control.stergm} in \code{netdx}. The parameters should be
-#' input through the \code{control.simulate.stergm()} function, with the
-#' available parameters listed in the \code{\link{control.simulate.stergm}} help
+#' \code{simulate.tergm}. Control parameters for those simulations may be set
+#' using \code{set.control.tergm} in \code{netdx}. The parameters should be
+#' input through the \code{control.simulate.tergm} function, with the
+#' available parameters listed in the \code{\link{control.simulate.tergm}} help
 #' page in the \code{tergm} package.
 #'
 #' Models fit with the ERGM method with the edges dissolution approximation
 #' (setting \code{edapprox} to \code{TRUE}) require a call first to
 #' \code{simulate.ergm} for simulating an initial network, and second to
-#' \code{simulate.network} for simulating that static network forward through
+#' \code{simulate_formula.network} for simulating that static network forward through
 #' time. Control parameters may be set for both processes in \code{netdx}.
 #' For the first, the parameters should be input through the
 #' \code{control.simulate.ergm()} function, with the available parameters listed
 #' in the \code{\link[ergm:control.simulate.ergm]{control.simulate.ergm}} help
 #' page in the \code{ergm} package. For the second, parameters should be input
-#' through the \code{control.simulate.network()} function, with the available
-#' parameters listed in the \code{\link{control.simulate.network}} help page in
+#' through the \code{control.simulate.formula.tergm()} function, with the available
+#' parameters listed in the \code{\link{control.simulate.formula.tergm}} help page in
 #' the \code{tergm} package. An example is shown below.
 #'
 #' @seealso Plot these model diagnostics with \code{\link{plot.netdx}}.
@@ -102,11 +103,17 @@
 #'
 netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
                   nwstats.formula = "formation", set.control.ergm,
-                  set.control.stergm, sequential = TRUE, keep.tedgelist = FALSE,
+                  set.control.stergm, set.control.tergm,
+                  sequential = TRUE, keep.tedgelist = FALSE,
                   keep.tnetwork = FALSE, verbose = TRUE, ncores = 1,
                   skip.dissolution = FALSE) {
   if (class(x) != "netest") {
     stop("x must be an object of class netest", call. = FALSE)
+  }
+
+  if (!missing(set.control.stergm)) {
+    warning("set.control.stergm is deprecated and will be removed in a future 
+             version; use set.control.tergm instead.")
   }
 
   ncores <- ifelse(nsims == 1, 1, min(parallel::detectCores(), ncores))
@@ -124,7 +131,7 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
   } else {
     nw <- x$fit$network
   }
-
+  
   if (dynamic == TRUE && missing(nsteps)) {
     stop("Specify number of time steps with nsteps", call. = FALSE)
   }
@@ -154,8 +161,8 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
   }
 
   if (edapprox == FALSE) {
-    if (missing(set.control.stergm)) {
-      set.control.stergm <- control.simulate.stergm()
+    if (missing(set.control.stergm) && missing(set.control.tergm)) {
+      set.control.tergm <- control.simulate.tergm()
     }
 
     if (nsims == 1 || ncores == 1) {
@@ -164,12 +171,21 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
         cat("\n |")
       }
       for (i in seq_len(nsims)) {
-        diag.sim[[i]] <- simulate(fit,
-          time.slices = nsteps,
-          monitor = nwstats.formula,
-          nsim = 1,
-          control = set.control.stergm
-        )
+        if (!missing(set.control.stergm)) {
+          diag.sim[[i]] <- simulate(fit,
+            time.slices = nsteps,
+            monitor = nwstats.formula,
+            nsim = 1,
+            control = set.control.stergm
+          )
+        } else {
+          diag.sim[[i]] <- simulate(fit,
+            time.slices = nsteps,
+            monitor = nwstats.formula,
+            nsim = 1,
+            control = set.control.tergm
+          )
+        }
         if (verbose == TRUE & nsims > 1) {
           cat("*")
         }
@@ -181,13 +197,24 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
       cluster.size <- min(nsims, ncores)
       registerDoParallel(cluster.size)
 
-      diag.sim <- foreach(i = seq_len(nsims)) %dopar% {
-        simulate(fit,
-          time.slices = nsteps,
-          monitor = nwstats.formula,
-          nsim = 1,
-          control = set.control.stergm
-        )
+      if (!missing(set.control.stergm)) {
+        diag.sim <- foreach(i = seq_len(nsims)) %dopar% {
+          simulate(fit,
+            time.slices = nsteps,
+            monitor = nwstats.formula,
+            nsim = 1,
+            control = set.control.stergm
+          )
+        }
+      } else {
+        diag.sim <- foreach(i = seq_len(nsims)) %dopar% {
+          simulate(fit,
+            time.slices = nsteps,
+            monitor = nwstats.formula,
+            nsim = 1,
+            control = set.control.tergm
+          )
+        }      
       }
     }
   }
@@ -196,8 +223,8 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
     if (missing(set.control.ergm)) {
       set.control.ergm <- control.simulate.ergm()
     }
-    if (missing(set.control.stergm)) {
-      set.control.stergm <- control.simulate.network()
+    if (missing(set.control.stergm) && missing(set.control.tergm)) {
+      set.control.tergm <- control.simulate.formula.tergm()
     }
 
     if (dynamic == TRUE) {
@@ -208,20 +235,34 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
         }
         for (i in seq_len(nsims)) {
           fit.sim <- simulate(fit,
+            response = NULL,
             basis = fit$newnetwork,
             control = set.control.ergm, dynamic = FALSE
           )
-          diag.sim[[i]] <- simulate(fit.sim,
-            formation = formation,
-            dissolution = dissolution,
-            coef.form = coef.form,
-            coef.diss = coef.diss$coef.crude,
-            time.slices = nsteps,
-            constraints = constraints,
-            monitor = nwstats.formula,
-            nsim = 1,
-            control = set.control.stergm
-          )
+          if (!missing(set.control.stergm)) {
+            diag.sim[[i]] <- simulate(fit.sim,
+              formation = formation,
+              dissolution = dissolution,
+              coef.form = coef.form,
+              coef.diss = coef.diss$coef.crude,
+              time.slices = nsteps,
+              constraints = constraints,
+              monitor = nwstats.formula,
+              nsim = 1,
+              control = set.control.stergm
+            )
+          } else {
+            diag.sim[[i]] <- simulate(fit.sim ~ Form(formation) + 
+                                                Persist(dissolution),
+              coef = c(coef.form, coef.diss$coef.crude),
+              time.slices = nsteps,
+              constraints = constraints,
+              monitor = nwstats.formula,
+              nsim = 1,
+              control = set.control.tergm,
+              dynamic = TRUE
+            )          
+          }
           if (verbose == TRUE & nsims > 1) {
             cat("*")
           }
@@ -233,27 +274,52 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
         cluster.size <- min(nsims, ncores)
         registerDoParallel(cluster.size)
 
-        diag.sim <- foreach(i = seq_len(nsims)) %dopar% {
-          fit.sim <- simulate(fit,
-            basis = fit$newnetwork,
-            control = set.control.ergm, dynamic = FALSE
-          )
-          simulate(fit.sim,
-            formation = formation,
-            dissolution = dissolution,
-            coef.form = coef.form,
-            coef.diss = coef.diss$coef.crude,
-            time.slices = nsteps,
-            constraints = constraints,
-            monitor = nwstats.formula,
-            nsim = 1,
-            control = set.control.stergm
-          )
+        if (!missing(set.control.stergm)) {
+          diag.sim <- foreach(i = seq_len(nsims)) %dopar% {
+            fit.sim <- simulate(fit,
+              response = NULL,
+              basis = fit$newnetwork,
+              control = set.control.ergm, dynamic = FALSE
+            )
+            
+            simulate(fit.sim,
+              formation = formation,
+              dissolution = dissolution,
+              coef.form = coef.form,
+              coef.diss = coef.diss$coef.crude,
+              time.slices = nsteps,
+              constraints = constraints,
+              monitor = nwstats.formula,
+              nsim = 1,
+              control = set.control.stergm
+            )
+          }
+        } else {
+          diag.sim <- foreach(i = seq_len(nsims)) %dopar% {
+            fit.sim <- simulate(fit,
+              response = NULL,
+              basis = fit$newnetwork,
+              control = set.control.ergm, dynamic = FALSE
+            )
+
+            simulate(fit.sim ~ Form(formation) + 
+                               Persist(dissolution),
+              coef = c(coef.form, coef.diss$coef.crude),
+              time.slices = nsteps,
+              constraints = constraints,
+              monitor = nwstats.formula,
+              nsim = 1,
+              control = set.control.tergm,
+              dynamic = TRUE
+            )          
+          }
         }
       }
     }
     if (dynamic == FALSE) {
       diag.sim <- simulate(fit,
+        basis = fit$newnetwork,
+        response = NULL,
         nsim = nsims,
         output = "stats",
         control = set.control.ergm,
