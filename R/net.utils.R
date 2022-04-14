@@ -571,23 +571,68 @@ edgelist_censor <- function(el) {
 #' dx$pages
 #' identical(dx$pages[[1]], mean_ages)
 #'
-edgelist_meanage <- function(x, el) {
-  # If passing a netest object directly
-  if (!(missing(x))) {
-    el <- x$edgelist
-  }
+edgelist_meanage <- function(el, diss_term=NULL, attribute=NULL) {
+  # Internal function, designed to be called from make_dissolution_stats. The
+  # argument diss_term must be in c("", "nodematch", "nodemix", or "nodefactor").
+  # If any of the final 3, attribute must be a vector of attribute values. 
+  # These conditions should in theory always be met when the function is called 
+  # from make_dissolution_stats, which in turn has been called by dissolution_coefs.
+  
   terminus <- el$terminus
   onset <- el$onset
   minterm <- 1
   maxterm <- max(terminus)
-  meanpage <- rep(NA, maxterm)
+
+  if (is.null(diss_term)) {
+    meanpage <- matrix(NA, maxterm, 1)
+  } else {
+    attr1 <- attribute[el$head]
+    attr2 <- attribute[el$tail]
+    if(diss_term=="nodematch") meanpage <- matrix(NA, maxterm, 2)
+    if(diss_term=="nodemix") {
+      attrvalues <- sort(unique(attribute))
+      n.attrvalues <- length(attrvalues)
+      n.attrcombos <- n.attrvalues*(n.attrvalues+1)/2
+      meanpage <- matrix(NA, maxterm, n.attrcombos)
+      indices2.grid <- expand.grid(row = 1:n.attrvalues, col = 1:n.attrvalues)
+      rowleqcol <- indices2.grid$row <= indices2.grid$col #assumes undirected
+      indices2.grid <- indices2.grid[rowleqcol, ]
+  }}
+  
   for (at in minterm:maxterm) {
     actp <- (onset <= at & terminus > at) |
       (onset == at & terminus == at);
     page <- at - onset[actp] + 1
-    meanpage[at] <- mean(page)
+  
+    if (is.null(diss_term)) {
+      meanpage[at,1] <- mean(page)
+    } else {
+        attr1a <- attr1[actp]
+        attr2a <- attr2[actp]
+        if(diss_term=="nodematch") {
+          meanpage[at,1] <- mean(page[attr1a!=attr2a])
+          meanpage[at,2] <- mean(page[attr1a==attr2a])
+        }
+        if(diss_term=="nodemix") {
+          for(i in 1:nrow(indices2.grid)) {
+            if(indices2.grid$row[i]==indices2.grid$col[i]) {
+              meanpage[at,i] <- mean(
+                page[attr1a==attrvalues[indices2.grid$row[i]] & 
+                         attr2a==attrvalues[indices2.grid$col[i]]]
+              )  
+            } else {
+            meanpage[at,i] <- mean(
+              c(page[attr1a==attrvalues[indices2.grid$row[i]] & 
+                     attr2a==attrvalues[indices2.grid$col[i]]],
+                page[attr1a==attrvalues[indices2.grid$col[i]] & 
+                     attr2a==attrvalues[indices2.grid$row[i]]]
+                ))
+            }
+          }
+        }
+    }
   }
-  meanpage <- meanpage[1:(length(meanpage) - 1)]
+  meanpage <- head(meanpage, -1)  # remove last row
   return(meanpage)
 }
 
