@@ -460,7 +460,7 @@ dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
 #'              left-censored, right-censored, both-censored, or uncensored for
 #'              a \code{networkDynamic} object.
 #'
-#' @param el Timed edgelist with start and end times extracted from a
+#' @param el A timed edgelist with start and end times extracted from a
 #'        \code{networkDynamic} object using the
 #'        \code{as.data.frame.networkDynamic} function.
 #'
@@ -524,59 +524,33 @@ edgelist_censor <- function(el) {
 
 #' @title Mean Age of Partnerships over Time
 #'
-#' @description Outputs a vector of mean ages of edges at a series of timesteps.
+#' @description Outputs a matrix of mean ages of edges at a series of timesteps.
 #'
-#' @param x An \code{EpiModel} object of class \code{\link{netest}}.
-#' @param el If not passing \code{x}, a timed edgelist from a
-#'        \code{networkDynamic} object extracted with the
+#' @param el A timed edgelist with start and end times extracted from a
+#'        \code{networkDynamic} object using the
 #'        \code{as.data.frame.networkDynamic} function.
+#' @param diss_term A string indicating the form of heterogeneity present 
+#'        in the dissolution model (options \code{nodematch} and \code{nodemix}),
+#'        or \code{NULL} for homogeneous (edges-only) dissolution model 
+#' @param attribute A vector containing values of the nodal attribute
+#'        associated with the heterogeneity in the dissolution model,
+#'        or \code{NULL} for homogeneous (edges-only) dissolution model 
 #'
 #' @details
 #' This function calculates the mean partnership age at each time step over
-#' a dynamic network simulation from \code{\link{netest}}. These objects
-#' contain the network, edgelist, and dissolution objects needed for the
-#' calculation. Alternatively, one may pass in these objects separately if
-#' \code{netest} was not used, or statistics were not requested after
-#' the estimation.
-#'
-#' Currently, the calculations are limited to those dissolution formulas with a
-#' single homogeneous dissolution (\code{~offset(edges)}). This functionality
-#' will be expanded in future releases.
-#'
-#' @return A vector containing the mean edge age at each timestep.
+#' a dynamic network simulation expressed in the form of a timed edgelist. 
+#' Means may be calculated for all edges, or disaggregated by nodal attribute  
+#' combinations.
+#' 
+#' @return A matrix containing the mean edge age at each timestep (rows),
+#' with either one column (for homogeneous models, i.e. when 
+#' \code{diss_term=NULL}) or one column per attribute value combination 
+#' (for heterogeneous models).
 #'
 #' @keywords netUtils internal
 #'
-#' @examples
-#' # Initialize and parameterize the network model
-#' nw <- network_initialize(n = 100)
-#' formation <- ~edges
-#' target.stats <- 50
-#' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
-#'
-#' # Model estimation
-#' est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
-#'
-#' # Simulate the network and extract a timed edgelist
-#' dx <- netdx(est, nsims = 1, nsteps = 100, keep.tedgelist = TRUE,
-#'       verbose = FALSE)
-#' el <- as.data.frame(dx)
-#'
-#' # Calculate ages directly from edgelist
-#' mean_ages <- edgelist_meanage(el = el)
-#' mean_ages
-#'
-#' # Alternatively, netdx calculates these
-#' dx$pages
-#' identical(dx$pages[[1]], mean_ages)
-#'
 edgelist_meanage <- function(el, diss_term=NULL, attribute=NULL) {
-  # Internal function, designed to be called from make_dissolution_stats. The
-  # argument diss_term must be in c("", "nodematch", "nodemix", or "nodefactor").
-  # If any of the final 3, attribute must be a vector of attribute values. 
-  # These conditions should in theory always be met when the function is called 
-  # from make_dissolution_stats, which in turn has been called by dissolution_coefs.
-  
+
   terminus <- el$terminus
   onset <- el$onset
   minterm <- 1
