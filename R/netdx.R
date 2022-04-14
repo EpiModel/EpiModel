@@ -428,7 +428,7 @@ make_dissolution_stats <- function(diag.sim, coef.diss, nsteps, verbose = TRUE) 
   }
   
   # Calculate mean partnership age from edgelist
-    pages <- sapply(seq_along(sim.df), function(x) {
+  pages <- sapply(seq_along(sim.df), function(x) {
                       meanage <- edgelist_meanage(el=sim.df[[x]], diss_term=diss_term,
                                    attribute=get_vertex_attribute(diag.sim[[x]], diss.terms[2,2]) 
                       )
@@ -440,9 +440,9 @@ make_dissolution_stats <- function(diag.sim, coef.diss, nsteps, verbose = TRUE) 
               },simplify="array")
 
   # calculate expected time prior to simulation
-    coef_dur <- coef.diss$duration
-    pages_imptd <- sapply(seq_along(coef_dur), function(x) 
-          coef_dur[x]^2 * dgeom(2:(nsteps + 1), 1 / coef_dur[x]))
+  coef_dur <- coef.diss$duration
+  pages_imptd <- sapply(seq_along(coef_dur), function(x) 
+    coef_dur[x]^2 * dgeom(2:(nsteps + 1), 1 / coef_dur[x]))
 
   ## Dissolution calculations
   if (verbose == TRUE) {
@@ -465,8 +465,32 @@ make_dissolution_stats <- function(diag.sim, coef.diss, nsteps, verbose = TRUE) 
               sum(sim.df[[d]]$onset<x & sim.df[[d]]$terminus>=x & attribute[sim.df[[d]]$head]==attribute[sim.df[[d]]$tail]))
         }))
       }, simplify="array")
-    }    
-  }  
+    } else {
+      if(diss_term=="nodemix") {
+        prop.diss <- sapply(seq_along(sim.df), function(d) {
+          attribute <- get_vertex_attribute(diag.sim[[d]], diss.terms[2,2])
+          attrvalues <- sort(unique(attribute))
+          n.attrvalues <- length(attrvalues)
+          n.attrcombos <- n.attrvalues*(n.attrvalues+1)/2
+          indices2.grid <- expand.grid(row = 1:n.attrvalues, col = 1:n.attrvalues)
+          uun <- as.vector(outer(attrvalues, attrvalues, paste, sep = "."))
+          rowleqcol <- indices2.grid$row <= indices2.grid$col #assumes undirected
+          indices2.grid <- indices2.grid[rowleqcol, ]
+          uun <- uun[rowleqcol]
+          t(sapply(seq_len(nsteps), function(x) {
+            sapply(seq_len(nrow(indices2.grid)), function(y) {
+                ingroup <- (attribute[sim.df[[d]]$head]==attribute[indices2.grid$row[y]] & 
+                            attribute[sim.df[[d]]$tail]==attribute[indices2.grid$col[y]]) |
+                           (attribute[sim.df[[d]]$head]==attribute[indices2.grid$col[y]] & 
+                            attribute[sim.df[[d]]$tail]==attribute[indices2.grid$row[y]])
+                sum(sim.df[[d]]$terminus==x & ingroup) / 
+                  sum(sim.df[[d]]$onset<x & sim.df[[d]]$terminus>=x & ingroup)
+              })
+          }))
+        }, simplify="array")
+      } else {prop.diss<-NULL}
+    }
+  }
   if (verbose == TRUE) {
     cat("\n ")
   }
