@@ -456,8 +456,9 @@ make_dissolution_stats <- function(diag.sim, coef.diss, nsteps, verbose = TRUE) 
       }),ncol=1)},simplify="array")
   } else {
     if(diss_term=="nodematch") {
+      # assumes same attribute values across sims -- appropriate for netdx (but not beyond)
+      attribute <- get_vertex_attribute(diag.sim[[1]], diss.terms[2,2]) 
       prop.diss <- sapply(seq_along(sim.df), function(d) {
-        attribute <- get_vertex_attribute(diag.sim[[d]], diss.terms[2,2])
         t(sapply(seq_len(nsteps), function(x) {
           c(sum(sim.df[[d]]$terminus==x & attribute[sim.df[[d]]$head]!=attribute[sim.df[[d]]$tail]) / 
               sum(sim.df[[d]]$onset<x & sim.df[[d]]$terminus>=x & attribute[sim.df[[d]]$head]!=attribute[sim.df[[d]]$tail]),
@@ -467,16 +468,15 @@ make_dissolution_stats <- function(diag.sim, coef.diss, nsteps, verbose = TRUE) 
       }, simplify="array")
     } else {
       if(diss_term=="nodemix") {
+        # assumes same attribute values across sims -- appropriate for netdx (but not beyond)
+        attribute <- get_vertex_attribute(diag.sim[[1]], diss.terms[2,2])
+        attrvalues <- sort(unique(attribute))
+        n.attrvalues <- length(attrvalues)
+        n.attrcombos <- n.attrvalues*(n.attrvalues+1)/2
+        indices2.grid <- expand.grid(row = 1:n.attrvalues, col = 1:n.attrvalues)
+        rowleqcol <- indices2.grid$row <= indices2.grid$col #assumes undirected
+        indices2.grid <- indices2.grid[rowleqcol, ]
         prop.diss <- sapply(seq_along(sim.df), function(d) {
-          attribute <- get_vertex_attribute(diag.sim[[d]], diss.terms[2,2])
-          attrvalues <- sort(unique(attribute))
-          n.attrvalues <- length(attrvalues)
-          n.attrcombos <- n.attrvalues*(n.attrvalues+1)/2
-          indices2.grid <- expand.grid(row = 1:n.attrvalues, col = 1:n.attrvalues)
-          uun <- as.vector(outer(attrvalues, attrvalues, paste, sep = "."))
-          rowleqcol <- indices2.grid$row <= indices2.grid$col #assumes undirected
-          indices2.grid <- indices2.grid[rowleqcol, ]
-          uun <- uun[rowleqcol]
           t(sapply(seq_len(nsteps), function(x) {
             sapply(seq_len(nrow(indices2.grid)), function(y) {
                 ingroup <- (attribute[sim.df[[d]]$head]==attribute[indices2.grid$row[y]] & 
@@ -545,10 +545,27 @@ make_dissolution_stats <- function(diag.sim, coef.diss, nsteps, verbose = TRUE) 
     rownames(stats.table.duration) <- rownames(stats.table.dissolution) <- 
         c("edges") 
   } else {
-    if (diss_term=="nodematch") rownames(stats.table.duration) <- 
+    if (diss_term=="nodematch") {
+      rownames(stats.table.duration) <- 
         rownames(stats.table.dissolution) <- 
-        c(paste("nodematch",diss.terms[2,2], "FALSE"),
-        paste("nodematch",diss.terms[2,2], "TRUE "))
+        c(paste("match",diss.terms[2,2], "FALSE", sep="."),
+        paste("match",diss.terms[2,2], "TRUE ", sep="."))
+    } else {
+      if (diss_term=="nodemix") {
+        # assumes same attribute values across sims -- appropriate for netdx (but not beyond)
+        attribute <- get_vertex_attribute(diag.sim[[1]], diss.terms[2,2]) 
+        attrvalues <- sort(unique(attribute))
+        n.attrvalues <- length(attrvalues)
+        n.attrcombos <- n.attrvalues*(n.attrvalues+1)/2
+        indices2.grid <- expand.grid(row = 1:n.attrvalues, col = 1:n.attrvalues)
+        rowleqcol <- indices2.grid$row <= indices2.grid$col #assumes undirected
+        uun <- as.vector(outer(attrvalues, attrvalues, paste, sep = "."))
+        uun <- uun[rowleqcol]
+        rownames(stats.table.duration) <- 
+          rownames(stats.table.dissolution) <- 
+            paste("mix",diss.terms[2,2], uun, sep=".")
+      }
+    }
   }
 
   return(
