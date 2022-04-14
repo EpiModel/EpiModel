@@ -355,6 +355,7 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
   ## Calculate mean/sd from merged stats
   stats.table.formation <- make_formation_table(merged.stats, ts.out)
 
+  # Calculate dissolution / duration stats
   if (skip.dissolution == FALSE) {
     if (dynamic == TRUE) {
       dissolution.stats <- make_dissolution_stats(
