@@ -464,9 +464,7 @@ make_dissolution_stats <- function(diag.sim, coef.diss, nsteps, verbose = TRUE) 
   dissolution <- coef.diss$dissolution
 
   # Check form of dissolution formula and extract attribute name, if any
-  # Code chunk adapted from dissolution_coefs and diss_check
-  # TODO: Consider if possible to streamline this code with helper function 
-  #       shared with either dissolution_coefs and diss_check
+  # Code adapted from dissolution_coefs and diss_check
   diss.terms <- strsplit(as.character(dissolution)[2], "[+]")[[1]]
   form.length <- length(diss.terms)
   t1.edges <- grepl("offset[(]edges", diss.terms[1])
@@ -564,7 +562,7 @@ make_dissolution_stats <- function(diag.sim, coef.diss, nsteps, verbose = TRUE) 
     cat("\n ")
   }
   
-  # Create dissolution tables
+  # Create duration table
   duration.imputed <- simplify2array(lapply(1:nsims,
                               function(x)pages[,,x]+pages_imptd))
   duration.mean.by.sim <- apply(duration.imputed, 2:3, mean)
@@ -579,6 +577,14 @@ make_dissolution_stats <- function(diag.sim, coef.diss, nsteps, verbose = TRUE) 
   duration.pctdiff <- (duration.mean - duration.expected) /
     duration.expected * 100
 
+  stats.table.duration <- data.frame(
+    Targets = c(duration.expected),
+    Sim_Means = c(duration.mean),
+    Pct_Diff = c(duration.pctdiff),
+    Sim_SD = c(duration.sd)
+  )
+  
+  # Create dissolution table
   dissolution.mean.by.sim <- apply(prop.diss, 2:3, mean)
   dissolution.mean <- rowMeans(dissolution.mean.by.sim, na.rm = TRUE)
   
@@ -592,13 +598,6 @@ make_dissolution_stats <- function(diag.sim, coef.diss, nsteps, verbose = TRUE) 
   dissolution.pctdiff <- (dissolution.mean - dissolution.expected) /
     dissolution.expected * 100
 
-  stats.table.duration <- data.frame(
-    Targets = c(duration.expected),
-    Sim_Means = c(duration.mean),
-    Pct_Diff = c(duration.pctdiff),
-    Sim_SD = c(duration.sd)
-  )
-
   stats.table.dissolution <- data.frame(
     Targets = c(dissolution.expected),
     Sim_Means = c(dissolution.mean),
@@ -606,10 +605,12 @@ make_dissolution_stats <- function(diag.sim, coef.diss, nsteps, verbose = TRUE) 
     Sim_SD = c(dissolution.sd)
   )
   
+  # Set column names for both duration and dissolution tables
   colnames(stats.table.duration) <- colnames(stats.table.dissolution) <- c(
     "Target", "Sim Mean", "Pct Diff", "Sim SD"
   )
 
+  # Set row names for both duration and dissolution tables
   if (is.null(diss_term)) {
     rownames(stats.table.duration) <- rownames(stats.table.dissolution) <- 
         c("edges") 
@@ -637,6 +638,7 @@ make_dissolution_stats <- function(diag.sim, coef.diss, nsteps, verbose = TRUE) 
     }
   }
 
+  # Construct return list
   return(
     list(
       "stats.table.duration" = stats.table.duration,
