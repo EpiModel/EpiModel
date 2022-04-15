@@ -1,11 +1,11 @@
 context("fuzzynodematch")
 
 test_that("fuzzynodematch works as intended", {
-  n <- 10000L
-  bip <- 4000L
+  n <- 1000L
+  bip <- 400L
   nv <- 10L
-  nvm <- 1000L
-  prob <- 0.05
+  nvm <- 2000L
+  prob <- 0.1
   
   for(directed in list(FALSE, TRUE)) {
     for(bipartite in list(FALSE, bip)) {
