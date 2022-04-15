@@ -376,7 +376,7 @@ dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
       t2.term <- "nodefactor"
     } else if (grepl("offset[(]nodemix", t2)) {
       t2.term <- "nodemix"
-    }
+    } else stop("The form of the dissolution argument is invalid. Type help(\'dissolution_coefs\') to see the set of options allowed.")
   }
   model.type <- NA
   if (form.length == 1 && t1.edges == TRUE) {
