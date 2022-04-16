@@ -143,7 +143,7 @@
 #' @importFrom ape as.phylo collapse.singles
 #' @importFrom lazyeval lazy_dots lazy_eval
 #' @importFrom statnet.common trim_env nonsimp_update.formula append_rhs.formula
-#'             list_rhs.formula set.control.class check.control.class NVL
+#'             list_rhs.formula set.control.class check.control.class NVL NVL2
 #' @importFrom methods is
 #' @importFrom tibble as_tibble is_tibble
 #'

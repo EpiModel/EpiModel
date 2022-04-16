@@ -1,8 +1,4 @@
 
-## extend ergm fitting, simulation and tergm simulation tests to directed and bipartite
-## and/or add dyad-dependent terms to ergm fits
-## and/or use constraints in valued case
-
 test_that("network and networkLite behave identically in ergm and gof", {
   options(ergm.loglik.warn_dyads=FALSE)
 
@@ -186,7 +182,6 @@ test_that("network and networkLite simulate equally in san", {
 })
 
 test_that("direct conversion between network and networkLite functions as expected", {
-  ## issue with mnext network attribute
   net_size <- 100
   bip_size <- 40
 
@@ -210,11 +205,6 @@ test_that("direct conversion between network and networkLite functions as expect
       nwL %e% "eattr" <- runif(network.edgecount(nwL))
       nwL %n% "nattr" <- "attr"
             
-      ## needed for now since san attaches stats as an attr-style
-      ## attribute which isn't copied by conversion functions
-      attr(nw, "stats") <- NULL
-      attr(nwL, "stats") <- NULL
-      
       expect_identical(as.networkLite(nw), nwL)
       expect_identical(nw, to_network_networkLite(nwL))
     }
@@ -340,9 +330,6 @@ test_that("network and networkLite simulate equally in tergm", {
   }
 })
 
-##
-## check equivalent to network results for same inputs
-##
 test_that("network and networkLite work equally in netest, netdx, and netsim", {
   net_size <- 100
   bip_size <- 40
@@ -438,7 +425,7 @@ test_that("network and networkLite produce identical matrices", {
         }
       }
     }
-  }  
+  }
 })
 
 test_that("network and networkLite fit and simulate equal missing-data ergms", {
@@ -606,4 +593,30 @@ test_that("network and networkLite `[<-` and add.edges produce consistent edgeli
       expect_equal(as.edgelist(nwa, attrname = "w"), as.edgelist(nwLa, attrname = "w"))      
     }
   }  
+})
+
+
+test_that("network and networkLite `+` and `-` produce consistent results", {
+  net_size <- 100
+  bip_size <- 40
+  edges_target <- 10*net_size
+  
+  for(directed in list(FALSE, TRUE)) {
+    for(bipartite in list(FALSE, bip_size)) {
+      if(directed && bipartite) {
+        next
+      }
+      
+      nw <- network.initialize(net_size, directed = directed, bipartite = bipartite)
+      
+      nw1 <- san(nw ~ edges, target.stats = c(edges_target))
+      nw2 <- san(nw ~ edges, target.stats = c(edges_target))
+
+      nwL1 <- as.networkLite(nw1)
+      nwL2 <- as.networkLite(nw2)
+      
+      expect_identical(as.edgelist(nw1 + nw2), as.edgelist(nwL1 + nwL2))
+      expect_identical(as.edgelist(nw1 - nw2), as.edgelist(nwL1 - nwL2))
+    }
+  }
 })

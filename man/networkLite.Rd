@@ -2,34 +2,34 @@
 % Please edit documentation in R/util.R
 \name{networkLite}
 \alias{networkLite}
-\alias{networkLite.numeric}
 \alias{networkLite.edgelist}
 \alias{networkLite.matrix}
+\alias{networkLite.numeric}
+\alias{networkLite_initialize}
+\alias{networkLite.initialize}
 \title{networkLite Constructor Utilities}
 \usage{
 networkLite(x, ...)
 
-\method{networkLite}{numeric}(
-  x,
-  directed = FALSE,
-  bipartite = FALSE,
-  loops = FALSE,
-  hyper = FALSE,
-  multiple = FALSE,
-  ...
-)
-
 \method{networkLite}{edgelist}(
   x,
-  attr = list(vertex.names = seq_len(NROW(x)), na = logical(NROW(x))),
+  attr = list(vertex.names = seq_len(attributes(x)[["n"]]), na =
+    logical(attributes(x)[["n"]])),
   ...
 )
 
 \method{networkLite}{matrix}(
   x,
-  attr = list(vertex.names = seq_len(NROW(x)), na = logical(NROW(x))),
+  attr = list(vertex.names = seq_len(attributes(x)[["n"]]), na =
+    logical(attributes(x)[["n"]])),
   ...
 )
+
+\method{networkLite}{numeric}(x, directed = FALSE, bipartite = FALSE, ...)
+
+networkLite_initialize(x, directed = FALSE, bipartite = FALSE, ...)
+
+\method{networkLite}{initialize}(x, directed = TRUE, bipartite = FALSE, ...)
 }
 \arguments{
 \item{x}{Either an \code{edgelist} class network representation (including
@@ -38,11 +38,11 @@ specifying the network size.}
 
 \item{...}{Additional arguments used by other methods.}
 
-\item{directed, bipartite, loops, hyper, multiple}{Common network attributes that
-may be set via arguments to the \code{networkLite.numeric} method.}
-
 \item{attr}{A named list of vertex attributes for the network represented by
 \code{x}.}
+
+\item{directed, bipartite}{Common network attributes that may be set via 
+arguments to the \code{networkLite.numeric} method.}
 }
 \value{
 A networkLite object with edge list \code{el}, vertex attributes \code{attr},
@@ -52,7 +52,7 @@ and network attributes \code{gal}.
 Constructor methods for \code{networkLite} objects.
 }
 \details{
-Currently there are two distinct \code{networkLite} constructor
+Currently there are several distinct \code{networkLite} constructor
 methods available.
 
 The \code{edgelist} method takes an \code{edgelist} class object \code{x}
@@ -61,19 +61,24 @@ list of vertex attributes \code{attr}, and returns a \code{networkLite}
 object, which is a named list with fields \code{el}, \code{attr}, and
 \code{gal}; the fields \code{el} and \code{attr} match the arguments \code{x}
 and \code{attr} respectively, and the field \code{gal} is the list of network
-attributes (copied from \code{attributes(x)}). Missing attributes
-\code{directed}, \code{bipartite}, \code{loops}, \code{hyper}, and
-\code{multiple} are defaulted to \code{FALSE}; the network size attribute
-\code{n} must not be missing. Attributes \code{class}, \code{dim}, 
-\code{vnames}, and \code{mnext} (if present) are not copied from \code{x} to
-the \code{networkLite}.  (For convenience, a \code{matrix} method, identical
-to the \code{edgelist} method, is also defined, to handle cases where the
-edgelist is, for whatever reason, not classed as an \code{edgelist}.)
+attributes (copied from \code{attributes(x)}). Missing network attributes
+\code{directed} and \code{bipartite} are defaulted to \code{FALSE}; the 
+network size attribute \code{n} must not be missing. Attributes \code{class}, 
+\code{dim}, \code{dimnames}, \code{vnames}, and \code{mnext} (if present) 
+are not copied from \code{x} to the \code{networkLite}.  (For convenience, a
+\code{matrix} method, identical to the \code{edgelist} method, is also 
+defined, to handle cases where the edgelist is, for whatever reason, not 
+classed as an \code{edgelist}.)
 
 The \code{numeric} method takes a number \code{x} as well as the network
-attributes \code{directed}, \code{bipartite}, \code{loops}, \code{hyper}, and
-\code{multiple} (defaulting to \code{FALSE}), and returns an empty
-\code{networkLite} with these network attributes and number of nodes \code{x}.
+attributes \code{directed} and \code{bipartite} (defaulting to \code{FALSE}), 
+and returns an empty \code{networkLite} with these network attributes and 
+number of nodes \code{x}.
+
+The constructors \code{networkLite_initialize} and 
+\code{networkLite.initialize} are also available for creating empty 
+\code{networkLite}s, and their \code{x} argument should be a number
+indicating the size of the \code{networkLite} to create.
 
 Within \code{tergmLite}, the \code{networkLite} data structure is used in the
 calls to \code{ergm} and \code{tergm} \code{simulate} functions.

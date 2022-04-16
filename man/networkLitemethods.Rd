@@ -31,6 +31,8 @@
 \alias{delete.vertex.attribute.networkLite}
 \alias{delete.edge.attribute.networkLite}
 \alias{delete.network.attribute.networkLite}
+\alias{+.networkLite}
+\alias{-.networkLite}
 \title{networkLite Methods}
 \usage{
 \method{get.vertex.attribute}{networkLite}(x, attrname, ...)
@@ -55,7 +57,7 @@
 
 \method{list.edge.attributes}{networkLite}(x, ...)
 
-\method{network.edgecount}{networkLite}(x, ...)
+\method{network.edgecount}{networkLite}(x, na.omit = TRUE, ...)
 
 \method{as.edgelist}{networkLite}(
   x,
@@ -101,6 +103,10 @@ as.networkLite(x, ...)
 \method{delete.edge.attribute}{networkLite}(x, attrname, ...)
 
 \method{delete.network.attribute}{networkLite}(x, attrname, ...)
+
+\method{+}{networkLite}(e1, e2)
+
+\method{-}{networkLite}(e1, e2)
 }
 \arguments{
 \item{x}{A \code{networkLite} object.}
@@ -116,6 +122,8 @@ for the \code{networkLite} replacement method.}
 \item{v}{Indices at which to set vertex attribute values.}
 
 \item{e}{edge indices to assign value}
+
+\item{na.omit}{logical; omit missing edges from edge count?}
 
 \item{output}{Type of edgelist to output.}
 
@@ -146,6 +154,8 @@ and the latter being used as the attribute names themselves}
 
 \item{matrix.type}{type of matrix to return from 
 \code{as.matrix.networkLite}}
+
+\item{e1, e2}{networkLite objects}
 }
 \value{
 An edgelist for \code{as.edgelist.networkLite}; an updated
