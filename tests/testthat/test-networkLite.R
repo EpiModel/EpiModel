@@ -620,3 +620,90 @@ test_that("network and networkLite `+` and `-` produce consistent results", {
     }
   }
 })
+
+test_that("network to networkLite conversion handles deleted edges with attributes appropriately", {
+  net_size <- 10
+  bip_size <- 4
+  
+  for(directed in list(FALSE, TRUE)) {
+    for(bipartite in list(FALSE, bip_size)) {
+      if(directed && bipartite) {
+        next
+      }
+      
+      nw <- network.initialize(net_size, directed = directed, bipartite = bipartite)
+      nw[1,5] <- 1
+      nw[4,7] <- 1
+      nw[3,9] <- 1
+      nw[2,6] <- 1
+      nw[1,10] <- 1
+      eattr <- runif(5)
+      nw %e% "eattr" <- eattr
+      delete.edges(nw, c(2,4))
+      
+      nwL <- as.networkLite(nw)
+      expect_identical(nw %e% "eattr", eattr[c(1,3,5)])
+      expect_identical(nwL %e% "eattr", eattr[c(1,5,3)])
+      expect_identical(as.edgelist(nw), as.edgelist(nwL))
+    }
+  }
+})
+
+test_that("network and networkLite behave equivalently for basic access and mutation", {
+  net_size <- 10
+  bip_size <- 4
+  
+  for(directed in list(FALSE, TRUE)) {
+    for(bipartite in list(FALSE, bip_size)) {
+      if(directed && bipartite) {
+        next
+      }
+      
+      nw <- network.initialize(net_size, directed = directed, bipartite = bipartite)
+      nw[1,5] <- 1
+      nw[4,7] <- 1
+      nw[3,9] <- 1
+      nw[2,6] <- 1
+      nw[1,10] <- 1
+      eattr1 <- runif(3)
+      e1 <- c(2,1,4)
+      eattr2 <- "a"
+      e2 <- c(2,4)
+      eattr3 <- runif(5)
+      
+      set.edge.attribute(nw, "eattr1", eattr1, e1)
+      set.edge.attribute(nw, "eattr2", eattr2, e2)
+      nw %e% "eattr3" <- eattr3
+
+      vattr1 <- sample(c("a","b"), 7, TRUE)
+      v1 <- c(5,9,4,6,8,1,2)
+      vattr2 <- FALSE
+      v2 <- c(8)
+      vattr3 <- runif(10)
+            
+      set.vertex.attribute(nw, "vattr1", vattr1, v1)
+      set.vertex.attribute(nw, "vattr2", vattr2, v2)
+      nw %v% "vattr3" <- vattr3
+      
+      nwL <- networkLite(as.edgelist(nw))
+      
+      eo <- c(1,5,4,3,2)
+      
+      set.edge.attribute(nwL, "eattr1", eattr1, eo[e1])
+      set.edge.attribute(nwL, "eattr2", eattr2, eo[e2])
+      nwL %e% "eattr3" <- eattr3[eo]
+
+      set.vertex.attribute(nwL, "vattr1", vattr1, v1)
+      set.vertex.attribute(nwL, "vattr2", vattr2, v2)
+      nwL %v% "vattr3" <- vattr3
+      
+      expect_identical(as.edgelist(nw, attrname = "eattr1"), as.edgelist(nwL, attrname = "eattr1"))
+#      expect_identical(as.edgelist(nw, attrname = "eattr2"), as.edgelist(nwL, attrname = "eattr2"))
+      expect_identical(as.edgelist(nw, attrname = "eattr3"), as.edgelist(nwL, attrname = "eattr3"))
+      
+      expect_identical(nw %v% "vattr1", nwL %v% "vattr1")
+      expect_identical(nw %v% "vattr2", nwL %v% "vattr2")
+      expect_identical(nw %v% "vattr3", nwL %v% "vattr3")
+    }
+  }
+})

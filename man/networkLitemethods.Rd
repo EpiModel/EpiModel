@@ -51,9 +51,21 @@
 
 \method{get.edge.value}{networkLite}(x, attrname, ...)
 
-\method{set.edge.attribute}{networkLite}(x, attrname, value, e = seq_len(network.edgecount(x)), ...)
+\method{set.edge.attribute}{networkLite}(
+  x,
+  attrname,
+  value,
+  e = seq_len(network.edgecount(x, na.omit = FALSE)),
+  ...
+)
 
-\method{set.edge.value}{networkLite}(x, attrname, value, e = seq_len(network.edgecount(x)), ...)
+\method{set.edge.value}{networkLite}(
+  x,
+  attrname,
+  value,
+  e = seq_len(network.edgecount(x, na.omit = FALSE)),
+  ...
+)
 
 \method{list.edge.attributes}{networkLite}(x, ...)
 
