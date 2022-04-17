@@ -149,8 +149,6 @@ InitErgmTerm.fuzzynodematch <- function(nw, arglist, ...) {
                       defaultvalues = list(NULL, FALSE),
                       required = c(TRUE, FALSE))
 
-  nodecov <- ergm_get_vattr(a$attr, nw, accept = "character")
-
   parse_venues <- function(x) {
     if(substr(x, 1, 1) == "v") {
       out <- integer((nchar(x) + 1)/6)
@@ -163,10 +161,11 @@ InitErgmTerm.fuzzynodematch <- function(nw, arglist, ...) {
     }
   }
 
+  nodecov <- ergm_get_vattr(a$attr, nw, accept = "character")
   venues <- lapply(nodecov, parse_venues)
-  lengths <- do.call(c, lapply(venues, length))
+  lengths <- unlist(lapply(venues, length))
   positions <- cumsum(lengths) - lengths
-  venues <- do.call(c, venues)
+  venues <- unlist(venues)
   binary <- a$binary
   
   list(name = "fuzzynodematch",
