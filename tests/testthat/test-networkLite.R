@@ -191,22 +191,46 @@ test_that("direct conversion between network and networkLite functions as expect
         next
       }
 
-      set.seed(0)
-      nw <- network.initialize(net_size, directed = directed, bipartite = bipartite)
-      nw %v% "b" <- runif(net_size)
-      nw <- san(nw ~ edges, target.stats = c(100))
-      nw %e% "eattr" <- runif(network.edgecount(nw))
-      nw %n% "nattr" <- "attr"
-      
-      set.seed(0)
-      nwL <- networkLite(net_size, directed = directed, bipartite = bipartite)
-      nwL %v% "b" <- runif(net_size)
-      nwL <- san(nwL ~ edges, target.stats = c(100))
-      nwL %e% "eattr" <- runif(network.edgecount(nwL))
-      nwL %n% "nattr" <- "attr"
-            
-      expect_identical(as.networkLite(nw), nwL)
-      expect_identical(nw, to_network_networkLite(nwL))
+      for(delete in list(FALSE, TRUE)) {
+        set.seed(0)
+        nw <- network.initialize(net_size, directed = directed, bipartite = bipartite)
+        nw %v% "b" <- runif(net_size)
+        nw <- san(nw ~ edges, target.stats = c(100))
+        nw %e% "eattr" <- runif(network.edgecount(nw))
+        nw %n% "nattr" <- "attr"
+        nainds <- sample(valid.eids(nw), as.integer(network.size(nw)/2), FALSE)
+        set.edge.attribute(nw, "na", TRUE, nainds)
+        if(delete) {
+          el <- as.edgelist(nw, attrname = "na", na.rm = FALSE)
+          w1 <- sample(which(as.logical(el[,3])))[1:5]
+          w2 <- sample(which(!as.logical(el[,3])))[1:7]
+          delete.edges(nw, unlist(get.dyads.eids(nw, el[w1,1], el[w1,2], na.omit = FALSE)))
+          delete.edges(nw, unlist(get.dyads.eids(nw, el[w2,1], el[w2,2], na.omit = FALSE)))
+        }
+        
+        set.seed(0)
+        nwL <- networkLite(net_size, directed = directed, bipartite = bipartite)
+        nwL %v% "b" <- runif(net_size)
+        nwL <- san(nwL ~ edges, target.stats = c(100))
+        nwL %e% "eattr" <- runif(network.edgecount(nwL))
+        nwL %n% "nattr" <- "attr"
+        nainds <- sample(valid.eids(nwL), as.integer(network.size(nwL)/2), FALSE)
+        set.edge.attribute(nwL, "na", TRUE, nainds)
+        if(delete) {
+          el <- as.edgelist(nwL, attrname = "na", na.rm = FALSE)
+          w1 <- sample(which(as.logical(el[,3])))[1:5]
+          w2 <- sample(which(!as.logical(el[,3])))[1:7]
+          nwL$el <- nwL$el[-c(w1,w2),] # would be better to have delete.edges.networkLite
+        }
+        
+        expect_identical(as.networkLite(nw), nwL)
+        
+        if(delete) {
+          expect_identical(as.networkLite(nw), as.networkLite(to_network_networkLite(nwL)))
+        } else {
+          expect_identical(nw, to_network_networkLite(nwL))
+        }
+      }
     }
   }
 })
@@ -412,16 +436,22 @@ test_that("network and networkLite produce identical matrices", {
       nw <- network.initialize(net_size, directed = directed, bipartite = bipartite)
       nw <- san(nw ~ edges, target.stats = c(edges_target))
       nw %e% "eattr" <- runif(network.edgecount(nw))
+      nainds <- sample(valid.eids(nw), as.integer(length(valid.eids(nw))/2), FALSE)
+      set.edge.attribute(nw, "na", TRUE, nainds)
 
       set.seed(0)
       nwL <- networkLite(net_size, directed = directed, bipartite = bipartite)
       nwL <- san(nwL ~ edges, target.stats = c(edges_target))
       nwL %e% "eattr" <- runif(network.edgecount(nwL))
+      nainds <- sample(valid.eids(nwL), as.integer(length(valid.eids(nwL))/2), FALSE)
+      set.edge.attribute(nwL, "na", TRUE, nainds)
       
-      for(attrname in list(NULL, "eattr")) {
+      for(attrname in list(NULL, "eattr", "na")) {
         for(matrix.type in c("adjacency", "incidence", "edgelist")) {
-          expect_identical(as.matrix(nw, matrix.type = matrix.type, attrname = attrname),
-                           as.matrix(nwL, matrix.type = matrix.type, attrname = attrname))
+          for(na.rm in list(FALSE, TRUE)) {
+            expect_identical(as.matrix(nw, matrix.type = matrix.type, attrname = attrname, na.rm = na.rm),
+                             as.matrix(nwL, matrix.type = matrix.type, attrname = attrname, na.rm = na.rm))
+          }
         }
       }
     }
