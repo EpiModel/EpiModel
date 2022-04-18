@@ -60,15 +60,16 @@ with network attributes attached in its \code{attributes} list, and a named
 list of vertex attributes \code{attr}, and returns a \code{networkLite}
 object, which is a named list with fields \code{el}, \code{attr}, and
 \code{gal}; the fields \code{el} and \code{attr} match the arguments \code{x}
-and \code{attr} respectively, and the field \code{gal} is the list of network
-attributes (copied from \code{attributes(x)}). Missing network attributes
-\code{directed} and \code{bipartite} are defaulted to \code{FALSE}; the 
-network size attribute \code{n} must not be missing. Attributes \code{class}, 
-\code{dim}, \code{dimnames}, \code{vnames}, and \code{mnext} (if present) 
-are not copied from \code{x} to the \code{networkLite}.  (For convenience, a
-\code{matrix} method, identical to the \code{edgelist} method, is also 
-defined, to handle cases where the edgelist is, for whatever reason, not 
-classed as an \code{edgelist}.)
+and \code{attr} (the latter coerced to \code{tibble}) respectively, and the 
+field \code{gal} is the list of network attributes (copied from 
+\code{attributes(x)}). Missing network attributes \code{directed} and 
+\code{bipartite} are defaulted to \code{FALSE}; the network size attribute 
+\code{n} must not be missing. Attributes \code{class}, \code{dim}, 
+\code{dimnames}, \code{vnames}, and \code{mnext} (if present) are not copied 
+from \code{x} to the \code{networkLite}.  (For convenience, a \code{matrix} 
+method, identical to the \code{edgelist} method, is also defined, to handle 
+cases where the edgelist is, for whatever reason, not classed as an 
+\code{edgelist}.)
 
 The \code{numeric} method takes a number \code{x} as well as the network
 attributes \code{directed} and \code{bipartite} (defaulting to \code{FALSE}), 
