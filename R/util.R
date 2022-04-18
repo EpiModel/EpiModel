@@ -544,7 +544,7 @@ as.networkLite.network <- function(x, ...) {
     rv %n% name <- x %n% name
   }
 
-  eids <- unlist(get.dyads.eids(x, el[,1], el[,2]))
+  eids <- unlist(get.dyads.eids(x, el[,1], el[,2], na.omit = FALSE))
   for (name in list.edge.attributes(x)) {
     rv %e% name <- unlist(get.edge.attribute(x, name, null.na = TRUE, deleted.edges.omit = FALSE, unlist = FALSE)[eids])
   }
@@ -580,7 +580,7 @@ to_network_networkLite <- function(x, ...) {
     nw %n% name <- x %n% name
   }
 
-  eids <- unlist(get.dyads.eids(nw, el[,1], el[,2]))
+  eids <- unlist(get.dyads.eids(nw, el[,1], el[,2], na.omit = FALSE))
   for(name in list.edge.attributes(x)) {
     set.edge.attribute(nw, name, x %e% name, eids)
   }
