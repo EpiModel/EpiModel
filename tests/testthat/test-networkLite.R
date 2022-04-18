@@ -181,6 +181,8 @@ test_that("network and networkLite simulate equally in san", {
   }
 })
 
+# add deletion of vertices, too?
+# does that need indirect test at end or can it support direct test?
 test_that("direct conversion between network and networkLite functions as expected", {
   net_size <- 100
   bip_size <- 40
@@ -220,7 +222,7 @@ test_that("direct conversion between network and networkLite functions as expect
           el <- as.edgelist(nwL, attrname = "na", na.rm = FALSE)
           w1 <- sample(which(as.logical(el[,3])))[1:5]
           w2 <- sample(which(!as.logical(el[,3])))[1:7]
-          nwL$el <- nwL$el[-c(w1,w2),] # would be better to have delete.edges.networkLite
+          delete.edges(nwL, c(w1,w2))
         }
         
         expect_identical(as.networkLite(nw), nwL)

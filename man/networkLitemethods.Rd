@@ -31,6 +31,8 @@
 \alias{delete.vertex.attribute.networkLite}
 \alias{delete.edge.attribute.networkLite}
 \alias{delete.network.attribute.networkLite}
+\alias{delete.edges.networkLite}
+\alias{delete.vertices.networkLite}
 \alias{+.networkLite}
 \alias{-.networkLite}
 \title{networkLite Methods}
@@ -116,6 +118,10 @@ as.networkLite(x, ...)
 
 \method{delete.network.attribute}{networkLite}(x, attrname, ...)
 
+\method{delete.edges}{networkLite}(x, eid, ...)
+
+\method{delete.vertices}{networkLite}(x, vid, ...)
+
 \method{+}{networkLite}(e1, e2)
 
 \method{-}{networkLite}(e1, e2)
@@ -166,6 +172,11 @@ and the latter being used as the attribute names themselves}
 
 \item{matrix.type}{type of matrix to return from 
 \code{as.matrix.networkLite}}
+
+\item{eid}{edge indices to delete (between 1 and 
+\code{network.edgecount(x, na.omit = FALSE)})}
+
+\item{vid}{vertex indices to delete (between 1 and \code{network.size(x)})}
 
 \item{e1, e2}{networkLite objects}
 }
