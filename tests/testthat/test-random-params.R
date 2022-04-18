@@ -50,7 +50,7 @@ test_that("Random parameters generators", {
     "param.set.2_1", "param.set.2_2", "param.set.2_3"
   )
 
-  randoms <- c(my_randoms, list(param_random_set = correlated_params))
+  randoms <- c(my_randoms, list(param.random.set = correlated_params))
   param <- param.net(inf.prob = 0.3, act.rate = 0.1, random.params = randoms)
   expect_silent(generate_random_params(param))
 
@@ -60,7 +60,7 @@ test_that("Random parameters generators", {
     "param.set.1_1", "param.set.1_2",
     "param.set.2_1", "param.set.2_2", "param.set.2_3"
   )
-  randoms <- c(my_randoms, list(param_random_set = correlated_params))
+  randoms <- c(my_randoms, list(param.random.set = correlated_params))
   param <- param.net(inf.prob = 0.3, act.rate = 0.1, random.params = randoms)
   expect_warning(generate_random_params(param))
 
@@ -70,12 +70,12 @@ test_that("Random parameters generators", {
     "param_set.1_1", "param.set.1_2",
     "param.set.2_1", "param.set.2_2", "param.set.2_3"
   )
-  randoms <- c(my_randoms, list(param_random_set = correlated_params))
+  randoms <- c(my_randoms, list(param.random.set = correlated_params))
   param <- param.net(inf.prob = 0.3, act.rate = 0.1, random.params = randoms)
   expect_error(generate_random_params(param))
 
-  # param_random_set not a data.frame
-  randoms <- c(my_randoms, list(param_random_set = list()))
+  # param.random.set not a data.frame
+  randoms <- c(my_randoms, list(param.random.set = list()))
   param <- param.net(inf.prob = 0.3, act.rate = 0.1, random.params = randoms)
   expect_error(generate_random_params(param))
 })

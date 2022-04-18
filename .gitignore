@@ -26,3 +26,4 @@ tests/testthat/Rplots.pdf
 inst/doc
 /doc/
 /Meta/
+.Rprofile

@@ -37,7 +37,8 @@ control.net(
   raw.output = FALSE,
   tergmLite.track.duration = FALSE,
   set.control.ergm = control.simulate.formula(MCMC.burnin = 2e+05),
-  set.control.stergm = control.simulate.network(),
+  set.control.stergm = NULL,
+  set.control.tergm = control.simulate.formula.tergm(),
   ...
 )
 }
@@ -161,20 +162,18 @@ modules specified.}
 \item{raw.output}{If \code{TRUE}, \code{netsim} will output a list of netsim
 data (one per simulation) instead of a formatted \code{netsim} object.}
 
-\item{tergmLite.track.duration}{Logical; to track duration information
-(\code{time} and \code{lasttoggle}) for \code{tergm} models in
-\code{tergmLite} simulations. If \code{TRUE}, the \code{time} and
-\code{lasttoggle} values are initialized from the network attributes
-of the networks passed to \code{init_tergmLite}, with \code{time}
-defaulting to \code{0} and \code{lasttoggle} defaulting to all
-\code{lasttoggle} times unspecified (effectively \code{-INT_MAX/2}).}
+\item{tergmLite.track.duration}{If \code{TRUE}, track duration information
+for models in \code{tergmLite} simulations.}
 
 \item{set.control.ergm}{Control arguments passed to \code{ergm}'s
 \code{simulate_formula.network}.}
 
-\item{set.control.stergm}{Control arguments passed to \code{tergm}'s
-\code{simulate.network}. See the help file for \code{\link{netdx}}
-for details and examples on specifying this parameter.}
+\item{set.control.stergm}{Deprecated; use \code{set.control.tergm} instead.}
+
+\item{set.control.tergm}{Control arguments passed to \code{tergm}'s
+\code{simulate_formula.network}. See the help file for 
+\code{\link{netdx}} for details and examples on specifying this 
+parameter.}
 
 \item{...}{Additional control settings passed to model.}
 }

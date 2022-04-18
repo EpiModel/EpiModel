@@ -13,7 +13,8 @@ get_partners(
 )
 }
 \arguments{
-\item{dat}{Main data object passed through \code{netsim} simulations.}
+\item{dat}{Main list object containing a \code{networkDynamic} object and
+other initialization information passed from \code{\link{netsim}}.}
 
 \item{index_posit_ids}{The positional IDs of the indexes of interest.}
 

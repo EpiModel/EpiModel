@@ -71,7 +71,8 @@ set_init(dat, item, value)
 append_core_attr(dat, at, n.new)
 }
 \arguments{
-\item{dat}{Main data object passed through \code{netsim} simulations.}
+\item{dat}{Main list object containing a \code{networkDynamic} object and
+other initialization information passed from \code{\link{netsim}}.}
 
 \item{item}{A character vector containing the name of the element to access
 (for \code{get_} functions), create (for \code{add_} functions), or
