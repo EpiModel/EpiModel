@@ -135,8 +135,8 @@ InitErgmTerm.absdiffby <- function(nw, arglist, ...) {
 #' indicates the two venues indexed by \code{23} and \code{1253}.
 #' 
 #' If the \code{binary} term argument is \code{FALSE} (the default), the change
-#' statistic for an on-toggle is the number of venues on which the two nodes 
-#' match; if \code{binary} is \code{TRUE}, the change statistic for an 
+#' statistic for an on-toggle is the number of unique venues on which the two 
+#' nodes match; if \code{binary} is \code{TRUE}, the change statistic for an 
 #' on-toggle is \code{1} if the two nodes match on any venues, and \code{0} 
 #' otherwise.
 #'
@@ -155,7 +155,7 @@ InitErgmTerm.fuzzynodematch <- function(nw, arglist, ...) {
       for(i in seq_along(out)) {
         out[i] <- as.integer(substr(x, 6*(i - 1) + 2, 6*i - 1))
       }
-      sort(out)
+      sort(unique(out))
     } else {
       integer(0)
     }

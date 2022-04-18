@@ -33,8 +33,8 @@ by \code{"|"}.  A node with no venues may have any string not starting in
 indicates the two venues indexed by \code{23} and \code{1253}.
 
 If the \code{binary} term argument is \code{FALSE} (the default), the change
-statistic for an on-toggle is the number of venues on which the two nodes 
-match; if \code{binary} is \code{TRUE}, the change statistic for an 
+statistic for an on-toggle is the number of unique venues on which the two 
+nodes match; if \code{binary} is \code{TRUE}, the change statistic for an 
 on-toggle is \code{1} if the two nodes match on any venues, and \code{0} 
 otherwise.
 }
