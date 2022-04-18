@@ -149,7 +149,7 @@ InitErgmTerm.fuzzynodematch <- function(nw, arglist, ...) {
                       defaultvalues = list(NULL, FALSE),
                       required = c(TRUE, FALSE))
 
-  parse_venues <- function(x) {
+  parse_sorted_unique_venues <- function(x) {
     if(substr(x, 1, 1) == "v") {
       out <- integer((nchar(x) + 1)/6)
       for(i in seq_along(out)) {
@@ -162,7 +162,7 @@ InitErgmTerm.fuzzynodematch <- function(nw, arglist, ...) {
   }
 
   nodecov <- ergm_get_vattr(a$attr, nw, accept = "character")
-  venues <- lapply(nodecov, parse_venues)
+  venues <- lapply(nodecov, parse_sorted_unique_venues)
   lengths <- unlist(lapply(venues, length))
   positions <- cumsum(lengths) - lengths
   venues <- unlist(venues)
