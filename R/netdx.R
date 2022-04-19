@@ -508,6 +508,7 @@ make_dissolution_stats <- function(diag.sim, coef.diss, nsteps, verbose = TRUE) 
                       }
                       return(meanage)               
               },simplify="array")
+  if(is.vector(pages)) pages <- array(pages, dim=c(1,1,nsims))  # when 1 time step and 1 stat (edgesonly or nodefactor)
 
   # calculate expected time prior to simulation
   # TODO: remove nodefactor in future release
@@ -528,11 +529,12 @@ make_dissolution_stats <- function(diag.sim, coef.diss, nsteps, verbose = TRUE) 
 
   if(is.null(diss_term) || diss_term=="nodefactor") {
     # TODO: remove nodefactor in future release
-    warning("Support for dissolution models containing a nodefactor term is deprecated, and will be removed in a future release.", call.=FALSE)
+    if(!is.null(diss_term) && diss_term=="nodefactor") warning("Support for dissolution models containing a nodefactor term is deprecated, and will be removed in a future release.", call.=FALSE)
     prop.diss <- sapply(seq_along(sim.df), function(d) {
       matrix(sapply(seq_len(nsteps), function(x) {
         sum(sim.df[[d]]$terminus == x) / sum(sim.df[[d]]$onset < x & sim.df[[d]]$terminus >= x)
       }),ncol=1)},simplify="array")
+    if(nsteps==1) prop.diss <- array(prop.diss, dim=c(1,1,nsims))
   } else {
     if(diss_term=="nodematch") {
       # assumes same attribute values across sims -- appropriate for netdx (but not beyond)
@@ -577,6 +579,7 @@ make_dissolution_stats <- function(diag.sim, coef.diss, nsteps, verbose = TRUE) 
   # Create duration table
   duration.imputed <- simplify2array(lapply(1:nsims,
                               function(x)pages[,,x]+pages_imptd))
+  if(is.vector(duration.imputed) & nsteps==1) duration.imputed <- array(duration.imputed, dim=c(1,1,nsims)) # when 1 time step and 1 stat (edgesonly or nodefactor)
   duration.mean.by.sim <- apply(duration.imputed, 2:3, mean)
   duration.mean <- rowMeans(duration.mean.by.sim, na.rm = TRUE)
 
