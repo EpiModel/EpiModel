@@ -282,6 +282,8 @@ copy_datattr_to_nwattr <- function(dat) {
 #'  \item \strong{coef.form.corr:} corrections to be subtracted from formation
 #'        coefficients.
 #'  \item \strong{d.rate:} the departure rate.
+#'  \item \strong{diss.model.type:} the form of the dissolution model; options 
+#'        include \code{edgesonly}, \code{nodematch}, \code{nodemix}, and \code{nodefactor}.
 #' }
 #'
 #' @export
@@ -366,26 +368,26 @@ dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
     stop("All values in duration must be >= 1", call. = FALSE)
   }
   # Check form of dissolution formula
-  model.type <- NA
+  diss.model.type <- NA
   form.length <- length(strsplit(as.character(dissolution)[2], "[+]")[[1]])
   t1.edges <- grepl("offset[(]edges",
                     strsplit(as.character(dissolution)[2], "[+]")[[1]][1])
   if (form.length == 1 && t1.edges == TRUE) {
-    model.type <- 'edgesonly'
+    diss.model.type <- 'edgesonly'
   } else {
     if (form.length == 2 && t1.edges == TRUE) {
       t2 <- strsplit(as.character(dissolution)[2], "[+]")[[1]][2]
       t2.term <- NULL
       if (grepl("offset[(]nodematch", t2)) {
-        t2.term <- model.type <- "nodematch"
+        t2.term <- diss.model.type <- "nodematch"
       } else {
         if (grepl("offset[(]nodefactor", t2)) {
-          t2.term <- model.type <- "nodefactor"
+          t2.term <- diss.model.type <- "nodefactor"
           warning("Support for dissolution models containing a nodefactor term is deprecated, and will be removed in a future release.")
           # TODO: remove functionality and deprecation message in future release
         } else {
           if (grepl("offset[(]nodemix", t2)) {
-          t2.term <- model.type <- "nodemix"
+          t2.term <- diss.model.type <- "nodemix"
           } else stop("The form of the dissolution argument is invalid. Type help(\'dissolution_coefs\') to see the set of options allowed.")
         }
       }
@@ -453,7 +455,7 @@ dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
   out$coef.adj <- coef.adj
   out$coef.form.corr <- coef.form.corr
   out$d.rate <- d.rate
-  out$model.type <- model.type
+  out$diss.model.type <- diss.model.type
   class(out) <- "disscoef"
   return(out)
 }

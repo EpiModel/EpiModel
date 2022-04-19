@@ -462,13 +462,13 @@ make_dissolution_stats <- function(diag.sim, coef.diss, nsteps, verbose = TRUE) 
   sim.df <- lapply(diag.sim, as.data.frame)
   nsims <- length(sim.df)
   dissolution <- coef.diss$dissolution
-  diss_term <- if (coef.diss$model.type=="edgesonly") NULL else coef.diss$model.type
+  diss_term <- if (coef.diss$diss.model.type=="edgesonly") NULL else coef.diss$diss.model.type
     
   # Check form of dissolution formula and extract attribute name, if any
   # Code adapted from dissolution_coefs and diss_check
   # TODO: consider moving this into dissolution_coefs, and saving the attribute 
   # name there as an additional element in coef.diss.  (It now saves the term 
-  # as "model.type") That would allow us to need to replicate some of this code
+  # as "diss.model.type") That would allow us to need to replicate some of this code
   # here. Alternative plan: consider having diss_check return values for both 
   # the dissolution model term and model attribute, which then get saved in the
   # netest object, allowing *both* this code and the similar piece in 
@@ -512,7 +512,7 @@ make_dissolution_stats <- function(diag.sim, coef.diss, nsteps, verbose = TRUE) 
 
   # calculate expected time prior to simulation
   # TODO: remove nodefactor in future release
-  if(coef.diss$model.type=="nodefactor") {
+  if(coef.diss$diss.model.type=="nodefactor") {
     coef_dur <- mean(coef.diss$duration)
   } else {
     coef_dur <- coef.diss$duration

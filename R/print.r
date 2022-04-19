@@ -114,7 +114,7 @@ print.netdx <- function(x, digits = 3, ...) {
     print_nwstats_table(x$stats.table.dissolution, digits)
   }
   # TODO Remove nodefactor in future release.
-  if (x$coef.diss$model.type == "nodefactor") {
+  if (x$coef.diss$diss.model.type == "nodefactor") {
     cat("----------------------- \n")
     cat("* Duration and dissolution results are averaged over for dissolution models containing a nodefactor term.")
   }
@@ -221,7 +221,7 @@ print.netsim <- function(x, nwstats = TRUE, digits = 3, network = 1, ...) {
 
       print_nwstats_table(dissolution.stats$stats.table.dissolution, digits)
 
-      if (x$nwparam[[network]]$coef.diss$model.type == "hetero") {
+      if (x$nwparam[[network]]$coef.diss$diss.model.type == "hetero") {
         cat("----------------------- \n")
         cat("* Heterogeneous dissolution model results averaged over")
       }

@@ -30,6 +30,8 @@ A list of class \code{disscoef} with the following elements:
  \item \strong{coef.form.corr:} corrections to be subtracted from formation
        coefficients.
  \item \strong{d.rate:} the departure rate.
+ \item \strong{diss.model.type:} the form of the dissolution model; options 
+       include \code{edgesonly}, \code{nodematch}, \code{nodemix}, and \code{nodefactor}.
 }
 }
 \description{
