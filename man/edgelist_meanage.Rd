@@ -12,10 +12,11 @@ edgelist_meanage(el, diss_term = NULL, diss_attr = NULL)
 \code{as.data.frame.networkDynamic} function.}
 
 \item{diss_term}{A string indicating the form of heterogeneity present 
-in the dissolution model (options \code{nodematch} and \code{nodemix}),
+in the dissolution model (options \code{nodematch}, \code{nodemix}, 
+and \code{nodefactor})
 or \code{NULL} for homogeneous (edges-only) dissolution model}
 
-\item{attribute}{A vector containing values of the nodal attribute
+\item{diss_attr}{A vector containing values of the nodal attribute
 associated with the heterogeneity in the dissolution model,
 or \code{NULL} for homogeneous (edges-only) dissolution model}
 }

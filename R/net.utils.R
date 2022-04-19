@@ -537,9 +537,10 @@ edgelist_censor <- function(el) {
 #'        \code{networkDynamic} object using the
 #'        \code{as.data.frame.networkDynamic} function.
 #' @param diss_term A string indicating the form of heterogeneity present 
-#'        in the dissolution model (options \code{nodematch} and \code{nodemix}),
+#'        in the dissolution model (options \code{nodematch}, \code{nodemix}, 
+#'        and \code{nodefactor})
 #'        or \code{NULL} for homogeneous (edges-only) dissolution model 
-#' @param attribute A vector containing values of the nodal attribute
+#' @param diss_attr A vector containing values of the nodal attribute
 #'        associated with the heterogeneity in the dissolution model,
 #'        or \code{NULL} for homogeneous (edges-only) dissolution model 
 #'
@@ -557,7 +558,7 @@ edgelist_censor <- function(el) {
 #' @keywords netUtils internal
 #'
 edgelist_meanage <- function(el, diss_term=NULL, diss_attr=NULL) {
-
+# TODO: remove nodefactor from documentation in later version
   terminus <- el$terminus
   onset <- el$onset
   minterm <- 1
