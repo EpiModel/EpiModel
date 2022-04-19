@@ -510,7 +510,7 @@ make_dissolution_stats <- function(diag.sim, coef.diss, nsteps, verbose = TRUE) 
               },simplify="array")
 
   # calculate expected time prior to simulation
-  # TODO: remove nodefactor in future release)
+  # TODO: remove nodefactor in future release
   if(coef.diss$model.type=="nodefactor") {
     coef_dur <- mean(coef.diss$duration)
   } else {
@@ -526,7 +526,7 @@ make_dissolution_stats <- function(diag.sim, coef.diss, nsteps, verbose = TRUE) 
   }
 
   if(is.null(diss_term) || diss_term=="nodefactor") {
-    # TODO: remove nodefactor in future release)
+    # TODO: remove nodefactor in future release
     warning("Support for dissolution models containing a nodefactor term is deprecated, and will be removed in a future release.", call.=FALSE)
     prop.diss <- sapply(seq_along(sim.df), function(d) {
       matrix(sapply(seq_len(nsteps), function(x) {
