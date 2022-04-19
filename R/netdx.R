@@ -519,7 +519,8 @@ make_dissolution_stats <- function(diag.sim, coef.diss, nsteps, verbose = TRUE) 
     
   pages_imptd <- sapply(seq_along(coef_dur), function(x) 
     coef_dur[x]^2 * dgeom(2:(nsteps + 1), 1 / coef_dur[x]))
-
+  if(nsteps==1) pages_imptd <- matrix(pages_imptd, nrow=1)
+  
   ## Dissolution calculations
   if (verbose == TRUE) {
     cat("\n- Calculating dissolution statistics")
