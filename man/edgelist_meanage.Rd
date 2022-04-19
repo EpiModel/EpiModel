@@ -4,7 +4,7 @@
 \alias{edgelist_meanage}
 \title{Mean Age of Partnerships over Time}
 \usage{
-edgelist_meanage(el, diss_term = NULL, attribute = NULL)
+edgelist_meanage(el, diss_term = NULL, diss_attr = NULL)
 }
 \arguments{
 \item{el}{A timed edgelist with start and end times extracted from a

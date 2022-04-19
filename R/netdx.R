@@ -462,12 +462,18 @@ make_dissolution_stats <- function(diag.sim, coef.diss, nsteps, verbose = TRUE) 
   sim.df <- lapply(diag.sim, as.data.frame)
   nsims <- length(sim.df)
   dissolution <- coef.diss$dissolution
-
+  diss_term <- if (coef.diss$model.type=="edgesonly") NULL else coef.diss$model.type
+    
   # Check form of dissolution formula and extract attribute name, if any
   # Code adapted from dissolution_coefs and diss_check
+  # TODO: consider moving this into dissolution_coefs, and saving the attribute 
+  # name there as an additional element in coef.diss.  (It now saves the term 
+  # as "model.type") That would allow us to need to replicate some of this code
+  # here. Alternative plan: consider having diss_check return values for both 
+  # the dissolution model term and model attribute, which then get saved in the
+  # netest object, allowing *both* this code and the similar piece in 
+  # dissolution_coefs to both be removed.
   diss.terms <- strsplit(as.character(dissolution)[2], "[+]")[[1]]
-  form.length <- length(diss.terms)
-  t1.edges <- grepl("offset[(]edges", diss.terms[1])
   diss.terms <- gsub("\\s", "", diss.terms)
   offpos.d <- grep("offset(", diss.terms, fixed = TRUE)
   diss.terms[offpos.d] <- substr(diss.terms[offpos.d], nchar("offset(") + 1,
@@ -483,21 +489,18 @@ make_dissolution_stats <- function(diag.sim, coef.diss, nsteps, verbose = TRUE) 
                          x
                        },
                        c(term = "", args = ""))
-
   diss.terms <- gsub("\"", "", diss.terms)
-  
   if(ncol(diss.terms)==2) {
-    diss_term <- diss.terms[1,2]
-    #attribute <- get_vertex_attribute(diag.sim[[x]], diss.terms[2,2])
+    diss_attr_name <- diss.terms[2,2]
   } else {
-    diss_term <- NULL
-    attribute <- NULL
+    diss_attr_name <- NULL
   }
   
   # Calculate mean partnership age from edgelist
   pages <- sapply(seq_along(sim.df), function(x) {
                       meanage <- edgelist_meanage(el=sim.df[[x]], diss_term=diss_term,
-                                   attribute=get_vertex_attribute(diag.sim[[x]], diss.terms[2,2]) 
+                                   diss_attr=if(is.null(diss_term)) NULL else  
+                                     get_vertex_attribute(diag.sim[[x]], diss_attr_name)
                       )
                       l <- nsteps - nrow(meanage)
                       if (l > 0) {
@@ -507,7 +510,13 @@ make_dissolution_stats <- function(diag.sim, coef.diss, nsteps, verbose = TRUE) 
               },simplify="array")
 
   # calculate expected time prior to simulation
-  coef_dur <- coef.diss$duration
+  # TODO: remove nodefactor in future release)
+  if(coef.diss$model.type=="nodefactor") {
+    coef_dur <- mean(coef.diss$duration)
+  } else {
+    coef_dur <- coef.diss$duration
+    }
+    
   pages_imptd <- sapply(seq_along(coef_dur), function(x) 
     coef_dur[x]^2 * dgeom(2:(nsteps + 1), 1 / coef_dur[x]))
 
@@ -516,7 +525,9 @@ make_dissolution_stats <- function(diag.sim, coef.diss, nsteps, verbose = TRUE) 
     cat("\n- Calculating dissolution statistics")
   }
 
-  if(is.null(diss_term)) {
+  if(is.null(diss_term) || diss_term=="nodefactor") {
+    # TODO: remove nodefactor in future release)
+    warning("Support for dissolution models containing a nodefactor term is deprecated, and will be removed in a future release.", call.=FALSE)
     prop.diss <- sapply(seq_along(sim.df), function(d) {
       matrix(sapply(seq_len(nsteps), function(x) {
         sum(sim.df[[d]]$terminus == x) / sum(sim.df[[d]]$onset < x & sim.df[[d]]$terminus >= x)
@@ -524,7 +535,7 @@ make_dissolution_stats <- function(diag.sim, coef.diss, nsteps, verbose = TRUE) 
   } else {
     if(diss_term=="nodematch") {
       # assumes same attribute values across sims -- appropriate for netdx (but not beyond)
-      attribute <- get_vertex_attribute(diag.sim[[1]], diss.terms[2,2]) 
+      attribute <- get_vertex_attribute(diag.sim[[1]], diss_attr_name) 
       prop.diss <- sapply(seq_along(sim.df), function(d) {
         t(sapply(seq_len(nsteps), function(x) {
           c(sum(sim.df[[d]]$terminus==x & attribute[sim.df[[d]]$head]!=attribute[sim.df[[d]]$tail]) / 
@@ -536,7 +547,7 @@ make_dissolution_stats <- function(diag.sim, coef.diss, nsteps, verbose = TRUE) 
     } else {
       if(diss_term=="nodemix") {
         # assumes same attribute values across sims -- appropriate for netdx (but not beyond)
-        attribute <- get_vertex_attribute(diag.sim[[1]], diss.terms[2,2])
+        attribute <- get_vertex_attribute(diag.sim[[1]], diss_attr_name)
         attrvalues <- sort(unique(attribute))
         n.attrvalues <- length(attrvalues)
         n.attrcombos <- n.attrvalues*(n.attrvalues+1)/2
@@ -611,19 +622,20 @@ make_dissolution_stats <- function(diag.sim, coef.diss, nsteps, verbose = TRUE) 
   )
 
   # Set row names for both duration and dissolution tables
-  if (is.null(diss_term)) {
+  if (is.null(diss_term) || diss_term=="nodefactor") {
+  # TODO: remove nodefactor in future release
     rownames(stats.table.duration) <- rownames(stats.table.dissolution) <- 
         c("edges") 
   } else {
     if (diss_term=="nodematch") {
       rownames(stats.table.duration) <- 
         rownames(stats.table.dissolution) <- 
-        c(paste("match",diss.terms[2,2], "FALSE", sep="."),
-        paste("match",diss.terms[2,2], "TRUE ", sep="."))
+        c(paste("match",diss_attr_name, "FALSE", sep="."),
+        paste("match",diss_attr_name, "TRUE ", sep="."))
     } else {
       if (diss_term=="nodemix") {
         # assumes same attribute values across sims -- appropriate for netdx (but not beyond)
-        attribute <- get_vertex_attribute(diag.sim[[1]], diss.terms[2,2]) 
+        attribute <- get_vertex_attribute(diag.sim[[1]], diss_attr_name) 
         attrvalues <- sort(unique(attribute))
         n.attrvalues <- length(attrvalues)
         n.attrcombos <- n.attrvalues*(n.attrvalues+1)/2
@@ -633,7 +645,7 @@ make_dissolution_stats <- function(diag.sim, coef.diss, nsteps, verbose = TRUE) 
         uun <- uun[rowleqcol]
         rownames(stats.table.duration) <- 
           rownames(stats.table.dissolution) <- 
-            paste("mix",diss.terms[2,2], uun, sep=".")
+            paste("mix",diss_attr_name, uun, sep=".")
       }
     }
   }

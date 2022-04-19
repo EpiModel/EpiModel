@@ -263,7 +263,9 @@ copy_datattr_to_nwattr <- function(dat) {
 #'  \item \code{~offset(edges) + offset(nodefactor("<attr>"))}: a heterogeneous
 #'         model in which the edge duration varies by a specified attribute. The
 #'         duration vector should first contain the base value, then the values
-#'         for every other value of that attribute in the term.
+#'         for every other value of that attribute in the term. This option is 
+#'         deprecated. 
+#'         # TODO: remove deprecation message in future release
 #' }
 #'
 #' @return
@@ -364,29 +366,32 @@ dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
     stop("All values in duration must be >= 1", call. = FALSE)
   }
   # Check form of dissolution formula
+  model.type <- NA
   form.length <- length(strsplit(as.character(dissolution)[2], "[+]")[[1]])
   t1.edges <- grepl("offset[(]edges",
                     strsplit(as.character(dissolution)[2], "[+]")[[1]][1])
-  if (form.length == 2) {
-    t2 <- strsplit(as.character(dissolution)[2], "[+]")[[1]][2]
-    t2.term <- NULL
-    if (grepl("offset[(]nodematch", t2)) {
-      t2.term <- "nodematch"
-    } else if (grepl("offset[(]nodefactor", t2)) {
-      t2.term <- "nodefactor"
-    } else if (grepl("offset[(]nodemix", t2)) {
-      t2.term <- "nodemix"
-    } else stop("The form of the dissolution argument is invalid. Type help(\'dissolution_coefs\') to see the set of options allowed.")
-  }
-  model.type <- NA
   if (form.length == 1 && t1.edges == TRUE) {
-    model.type <- "homog"
-  } else if (form.length == 2 && t1.edges == TRUE &&
-             t2.term %in% c("nodematch", "nodefactor", "nodemix")) {
-    model.type <- "hetero"
+    model.type <- 'edgesonly'
   } else {
-    model.type <- "invalid"
+    if (form.length == 2 && t1.edges == TRUE) {
+      t2 <- strsplit(as.character(dissolution)[2], "[+]")[[1]][2]
+      t2.term <- NULL
+      if (grepl("offset[(]nodematch", t2)) {
+        t2.term <- model.type <- "nodematch"
+      } else {
+        if (grepl("offset[(]nodefactor", t2)) {
+          t2.term <- model.type <- "nodefactor"
+          warning("Support for dissolution models containing a nodefactor term is deprecated, and will be removed in a future release.")
+          # TODO: remove functionality and deprecation message in future release
+        } else {
+          if (grepl("offset[(]nodemix", t2)) {
+          t2.term <- model.type <- "nodemix"
+          } else stop("The form of the dissolution argument is invalid. Type help(\'dissolution_coefs\') to see the set of options allowed.")
+        }
+      }
+    }
   }
+
   if (length(d.rate) > 1) {
     stop("Length of d.rate must be 1", call. = FALSE)
   }
@@ -549,21 +554,22 @@ edgelist_censor <- function(el) {
 #'
 #' @keywords netUtils internal
 #'
-edgelist_meanage <- function(el, diss_term=NULL, attribute=NULL) {
+edgelist_meanage <- function(el, diss_term=NULL, diss_attr=NULL) {
 
   terminus <- el$terminus
   onset <- el$onset
   minterm <- 1
   maxterm <- max(terminus)
 
-  if (is.null(diss_term)) {
+  if (is.null(diss_term) || diss_term=="nodefactor") {
+    # TODO: remove nodefactor in future release
     meanpage <- matrix(NA, maxterm, 1)
   } else {
-    attr1 <- attribute[el$head]
-    attr2 <- attribute[el$tail]
+    attr1 <- diss_attr[el$head]
+    attr2 <- diss_attr[el$tail]
     if(diss_term=="nodematch") meanpage <- matrix(NA, maxterm, 2)
     if(diss_term=="nodemix") {
-      attrvalues <- sort(unique(attribute))
+      attrvalues <- sort(unique(diss_attr))
       n.attrvalues <- length(attrvalues)
       n.attrcombos <- n.attrvalues*(n.attrvalues+1)/2
       meanpage <- matrix(NA, maxterm, n.attrcombos)
@@ -577,7 +583,8 @@ edgelist_meanage <- function(el, diss_term=NULL, attribute=NULL) {
       (onset == at & terminus == at);
     page <- at - onset[actp] + 1
   
-    if (is.null(diss_term)) {
+    if (is.null(diss_term) || diss_term=="nodefactor") {
+      # TODO: remove nodefactor in future release
       meanpage[at,1] <- mean(page)
     } else {
         attr1a <- attr1[actp]

@@ -69,7 +69,9 @@ model estimation in \code{\link{netest}} are as follows:
  \item \code{~offset(edges) + offset(nodefactor("<attr>"))}: a heterogeneous
         model in which the edge duration varies by a specified attribute. The
         duration vector should first contain the base value, then the values
-        for every other value of that attribute in the term.
+        for every other value of that attribute in the term. This option is 
+        deprecated. 
+        # TODO: remove deprecation message in future release
 }
 }
 \examples{
