@@ -730,7 +730,7 @@ test_that("network and networkLite behave equivalently for basic access and muta
       nwL %v% "vattr3" <- vattr3
       
       expect_identical(as.edgelist(nw, attrname = "eattr1"), as.edgelist(nwL, attrname = "eattr1"))
-#      expect_identical(as.edgelist(nw, attrname = "eattr2"), as.edgelist(nwL, attrname = "eattr2"))
+      expect_identical(as.edgelist(nw, attrname = "eattr2"), as.edgelist(nwL, attrname = "eattr2"))
       expect_identical(as.edgelist(nw, attrname = "eattr3"), as.edgelist(nwL, attrname = "eattr3"))
       
       expect_identical(nw %v% "vattr1", nwL %v% "vattr1")
