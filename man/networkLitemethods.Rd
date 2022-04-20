@@ -33,6 +33,7 @@
 \alias{delete.network.attribute.networkLite}
 \alias{delete.edges.networkLite}
 \alias{delete.vertices.networkLite}
+\alias{add.vertices.networkLite}
 \alias{+.networkLite}
 \alias{-.networkLite}
 \title{networkLite Methods}
@@ -122,6 +123,8 @@ as.networkLite(x, ...)
 
 \method{delete.vertices}{networkLite}(x, vid, ...)
 
+\method{add.vertices}{networkLite}(x, nv, vattr = NULL, last.mode = TRUE, ...)
+
 \method{+}{networkLite}(e1, e2)
 
 \method{-}{networkLite}(e1, e2)
@@ -177,6 +180,15 @@ and the latter being used as the attribute names themselves}
 \code{network.edgecount(x, na.omit = FALSE)})}
 
 \item{vid}{vertex indices to delete (between 1 and \code{network.size(x)})}
+
+\item{nv}{number of vertices to add to the \code{networkLite}}
+
+\item{vattr}{list (of length \code{nv}) of named lists of vertex attributes 
+for added vertices, or \code{NULL} to indicate vertex attributes are
+not being passed}
+
+\item{last.mode}{logical; if \code{x} is bipartite, should the new vertices
+be added to the second mode?}
 
 \item{e1, e2}{networkLite objects}
 }
