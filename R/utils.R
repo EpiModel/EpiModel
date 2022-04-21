@@ -120,7 +120,7 @@ deleteAttr <- function(attrList, ids) {
 #'            simulations.
 #' @param ids ID numbers to delete from the list.
 #'
-#' @return The updated \code{dat} main list object.
+#' @inherit recovery.net return
 #'
 #' @export
 #' @keywords internal
@@ -315,7 +315,7 @@ apportion_lr <- function(vector.length, values,
 }
 
 
-#' @title Message to Find in Which Module a \code{Condition} Occurred
+#' @title Message to Find in Which Module a \code{condition} Occurred
 #'
 #' @description This function returns a formatted string describing when, where,
 #'              and why an error, message, or warning occurred.

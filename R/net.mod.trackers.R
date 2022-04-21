@@ -2,11 +2,9 @@
 #'
 #' @description This function applies the user-provided epi trackers.
 #'
-#' @param dat Main list object containing a \code{networkDynamic} object and
-#'        other initialization information passed from \code{\link{netsim}}.
-#' @param at Current time step.
+#' @inheritParams recovery.net
 #'
-#' @return The updated \code{dat} main list object.
+#' @inherit recovery.net return
 #'
 #' @section Optional Module:
 #' This module is not included by default.

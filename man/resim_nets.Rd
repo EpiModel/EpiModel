@@ -7,12 +7,13 @@
 resim_nets(dat, at)
 }
 \arguments{
-\item{dat}{Main data object passed through \code{netsim} simulations.}
+\item{dat}{Main list object containing a \code{networkDynamic} object and
+other initialization information passed from \code{\link{netsim}}.}
 
 \item{at}{Current time step.}
 }
 \value{
-The updated \code{dat} main data object.
+The updated \code{dat} main list object.
 }
 \description{
 This function resimulates the dynamic network in stochastic

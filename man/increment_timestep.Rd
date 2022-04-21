@@ -7,10 +7,11 @@
 increment_timestep(dat)
 }
 \arguments{
-\item{dat}{Main data object passed through \code{netsim} simulations.}
+\item{dat}{Main list object containing a \code{networkDynamic} object and
+other initialization information passed from \code{\link{netsim}}.}
 }
 \value{
-A \code{dat} main list object.
+The updated \code{dat} main list object.
 }
 \description{
 This function adds 1 to the timestep counter stored in the

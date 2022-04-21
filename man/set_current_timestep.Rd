@@ -7,12 +7,13 @@
 set_current_timestep(dat, timestep)
 }
 \arguments{
-\item{dat}{Main data object passed through \code{netsim} simulations.}
+\item{dat}{Main list object containing a \code{networkDynamic} object and
+other initialization information passed from \code{\link{netsim}}.}
 
 \item{timestep}{The new value for the timestep.}
 }
 \value{
-A \code{dat} main list object.
+The updated \code{dat} main list object.
 }
 \description{
 Changes the current timestep in the \code{dat} object. Use with
