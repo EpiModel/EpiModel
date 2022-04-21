@@ -506,7 +506,7 @@ add.edges.networkLite <- function(x, tail, head, names.eval = NULL,
     }
     
     update_tibble <- dplyr::bind_cols(as_tibble(list(.tail = tail, .head = head)),
-                                      dplyr::bind_rows(lapply(vals.eval, as_tibble)))
+                                      dplyr::bind_rows(lapply(vals.eval, function(x) if(length(x) > 0) as_tibble(x) else tibble(NULL, .rows = 1))))
   }
 
   update_tibble[["na"]] <- NVL(update_tibble[["na"]], logical(NROW(update_tibble)))
@@ -681,7 +681,7 @@ as.matrix.networkLite.edgelist <- function(x, attrname = NULL, na.rm = TRUE, ...
     m <- cbind(m, x$el[[attrname]])
   }
   if (na.rm == TRUE) {
-    m <- m[NVL(!(x %e% "na"), TRUE),,drop=FALSE]
+    m <- m[!NVL(x %e% "na", FALSE),,drop=FALSE]
   }
   attr(m, "n") <- network.size(x)
   attr(m, "vnames") <- network.vertex.names(x)
@@ -692,9 +692,13 @@ as.matrix.networkLite.edgelist <- function(x, attrname = NULL, na.rm = TRUE, ...
 #' @rdname networkLitemethods
 #' @export
 is.na.networkLite <- function(x) {
-  x$el <- x$el[NVL(x %e% "na",FALSE),]
-  x$el[,"na"] <- FALSE
-  x
+  y <- networkLite(network.size(x),
+                   directed = x %n% "directed",
+                   bipartite = x %n% "bipartite")
+  el <- as.edgelist(x, na.rm = FALSE)
+  elna <- el[NVL(x %e% "na", FALSE),,drop=FALSE]
+  add.edges(y, elna[,1], elna[,2])
+  y
 }
 
 #' @rdname networkLitemethods
@@ -806,7 +810,12 @@ add.vertices.networkLite <- function(x, nv, vattr = NULL, last.mode = TRUE, ...)
       offset <- oldsize
     }
 
-    update_tibble <- dplyr::bind_rows(lapply(vattr, as_tibble))
+    if(!is.null(vattr)) {
+      update_tibble <- dplyr::bind_rows(lapply(vattr, function(x) if(length(x) > 0) as_tibble(x) else tibble(NULL, .rows=1)))
+    } else {
+      update_tibble <- as_tibble(list(na = logical(nv)))
+    }
+    update_tibble[["na"]] <- NVL(update_tibble[["na"]], logical(NROW(update_tibble)))
     update_tibble[["na"]][is.na(update_tibble[["na"]])] <- FALSE
     
     x$attr <- dplyr::bind_rows(x$attr[seq_len(offset),],

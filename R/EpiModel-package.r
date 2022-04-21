@@ -145,7 +145,7 @@
 #' @importFrom statnet.common trim_env nonsimp_update.formula append_rhs.formula
 #'             list_rhs.formula set.control.class check.control.class NVL NVL2
 #' @importFrom methods is
-#' @importFrom tibble as_tibble is_tibble
+#' @importFrom tibble as_tibble is_tibble tibble
 #'
 #' @useDynLib EpiModel, .registration = TRUE
 #'
