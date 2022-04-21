@@ -194,7 +194,7 @@ set.vertex.attribute.networkLite <- function(x,
   xn <- substitute(x)
 
   if (!(attrname %in% list.vertex.attributes(x))) {
-    x$attr[[attrname]] <- rep(NA, length = network.size(x))
+    x$attr[[attrname]] <- rep(NA, length.out = network.size(x))
   }
 
   x$attr[[attrname]][v] <- value
@@ -256,7 +256,7 @@ set.edge.attribute.networkLite <- function(x, attrname, value, e = seq_len(netwo
   xn <- substitute(x)
 
   if (!(attrname %in% list.edge.attributes(x))) {
-    x$el[[attrname]] <- rep(NA, length = network.edgecount(x, na.omit = FALSE))
+    x$el[[attrname]] <- rep(NA, length.out = network.edgecount(x, na.omit = FALSE))
   }
 
   x$el[[attrname]][e] <- value
@@ -272,7 +272,7 @@ set.edge.value.networkLite <- function(x, attrname, value, e = seq_len(network.e
   xn <- substitute(x)
 
   if (!(attrname %in% list.edge.attributes(x))) {
-    x$el[[attrname]] <- rep(NA, length = network.edgecount(x, na.omit = FALSE))
+    x$el[[attrname]] <- rep(NA, length.out = network.edgecount(x, na.omit = FALSE))
   }
 
   x$el[[attrname]][e] <- value[as.matrix(x$el[e,c(".tail", ".head")])]
