@@ -37,7 +37,7 @@
 #' number of nodes \code{x}.
 #'
 #' The constructor \code{networkLite_initialize} is also available for creating
-#' empty \code{networkLite}s, and their \code{x} argument should be a number
+#' an empty \code{networkLite}, and its \code{x} argument should be a number
 #' indicating the size of the \code{networkLite} to create.
 #'
 #' Within \code{tergmLite}, the \code{networkLite} data structure is used in the
