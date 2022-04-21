@@ -480,15 +480,11 @@ add.edges.networkLite <- function(x, tail, head, names.eval = NULL,
                                   vals.eval = NULL, ...) {
   tail <- NVL(unlist(tail), integer(0))
   head <- NVL(unlist(head), integer(0))
-  if(length(names.eval) == 0) {
+  if(length(names.eval) == 0 || length(vals.eval) == 0) {
     update_tibble <- as_tibble(list(.tail = tail, .head = head, na = logical(length(tail))))
-  } else if(is.character(names.eval) && length(names.eval) == 1) {
-    tbl_list <- list(tail, head, unlist(vals.eval))
-    names(tbl_list) <- c(".tail", ".head", names.eval)
-    update_tibble <- as_tibble(tbl_list)
   } else {
-    if(!is.list(names.eval)) names.eval <- as.list(rep(names.eval, length = length(tail)))
-    if(!is.list(vals.eval)) vals.eval <- as.list(rep(vals.eval, length = length(names.eval)))
+    if(!is.list(names.eval)) names.eval <- as.list(rep(names.eval, length.out = length(tail)))
+    if(!is.list(vals.eval)) vals.eval <- as.list(rep(vals.eval, length.out = length(names.eval)))
     
     for(i in seq_along(vals.eval)) {
       vals.eval[[i]] <- as.list(vals.eval[[i]])
