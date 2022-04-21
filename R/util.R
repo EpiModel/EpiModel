@@ -36,9 +36,8 @@
 #' and returns an empty \code{networkLite} with these network attributes and 
 #' number of nodes \code{x}.
 #'
-#' The constructors \code{networkLite_initialize} and 
-#' \code{networkLite.initialize} are also available for creating empty 
-#' \code{networkLite}s, and their \code{x} argument should be a number
+#' The constructor \code{networkLite_initialize} is also available for creating
+#' empty \code{networkLite}s, and their \code{x} argument should be a number
 #' indicating the size of the \code{networkLite} to create.
 #'
 #' Within \code{tergmLite}, the \code{networkLite} data structure is used in the
@@ -156,15 +155,6 @@ networkLite.numeric <- function(x,
 #' @rdname networkLite
 #' @export
 networkLite_initialize <- networkLite.numeric
-
-#' @rdname networkLite
-#' @export networkLite.initialize
-networkLite.initialize <- function(x,
-                                   directed = TRUE,
-                                   bipartite = FALSE,
-                                   ...) {
-  networkLite(x, directed, bipartite, ...)
-}
 
 #' @name networkLitemethods
 #' @title networkLite Methods

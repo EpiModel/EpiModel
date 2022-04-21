@@ -6,7 +6,6 @@
 \alias{networkLite.matrix}
 \alias{networkLite.numeric}
 \alias{networkLite_initialize}
-\alias{networkLite.initialize}
 \title{networkLite Constructor Utilities}
 \usage{
 networkLite(x, ...)
@@ -28,8 +27,6 @@ networkLite(x, ...)
 \method{networkLite}{numeric}(x, directed = FALSE, bipartite = FALSE, ...)
 
 networkLite_initialize(x, directed = FALSE, bipartite = FALSE, ...)
-
-\method{networkLite}{initialize}(x, directed = TRUE, bipartite = FALSE, ...)
 }
 \arguments{
 \item{x}{Either an \code{edgelist} class network representation (including
@@ -76,9 +73,8 @@ attributes \code{directed} and \code{bipartite} (defaulting to \code{FALSE}),
 and returns an empty \code{networkLite} with these network attributes and 
 number of nodes \code{x}.
 
-The constructors \code{networkLite_initialize} and 
-\code{networkLite.initialize} are also available for creating empty 
-\code{networkLite}s, and their \code{x} argument should be a number
+The constructor \code{networkLite_initialize} is also available for creating
+empty \code{networkLite}s, and their \code{x} argument should be a number
 indicating the size of the \code{networkLite} to create.
 
 Within \code{tergmLite}, the \code{networkLite} data structure is used in the
