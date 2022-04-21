@@ -801,6 +801,12 @@ add.vertices.networkLite <- function(x, nv, vattr = NULL, last.mode = TRUE, ...)
     }
 
     if(!is.null(vattr)) {
+      if(is.list(vattr)) {
+        vattr <- rep(vattr, length.out = nv)
+      } else {
+        vattr <- as.list(rep(vattr, length.out = nv))
+      }
+
       update_tibble <- dplyr::bind_rows(lapply(vattr, function(x) if(length(x) > 0) as_tibble(x) else tibble(NULL, .rows=1)))
     } else {
       update_tibble <- as_tibble(list(na = logical(nv)))
