@@ -9,7 +9,7 @@
 #' @param init An \code{EpiModel} object of class \code{\link{init.icm}}.
 #' @param control An \code{EpiModel} object of class \code{\link{control.icm}}.
 #'
-#' @return The updated \code{dat} main list object.
+#' @inherit recovery.net return
 #'
 #' @export
 #' @keywords internal
@@ -54,9 +54,9 @@ initialize.icm <- function(param, init, control) {
 #' @description This function sets the initial disease status on the
 #'              network given the specified initial conditions.
 #'
-#' @param dat Main data object passed through \code{icm} simulations.
+#' @inheritParams prevalence.icm
 #'
-#' @return The updated \code{dat} main list object.
+#' @inherit recovery.net return
 #'
 #' @seealso This is an initialization module for \code{\link{icm}}.
 #'

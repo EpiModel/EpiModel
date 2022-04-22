@@ -28,7 +28,9 @@ static const R_CallMethodDef CallEntries[] = {
     {NULL, NULL, 0}
 };
 
+void EpiModel_init(DllInfo* info);
 RcppExport void R_init_EpiModel(DllInfo *dll) {
     R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
     R_useDynamicSymbols(dll, FALSE);
+    EpiModel_init(dll);
 }

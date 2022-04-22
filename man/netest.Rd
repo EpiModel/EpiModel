@@ -14,6 +14,7 @@ netest(
   edapprox = TRUE,
   set.control.ergm,
   set.control.stergm,
+  set.control.tergm,
   verbose = FALSE,
   nested.edapprox = TRUE,
   ...
@@ -46,17 +47,15 @@ more time-intensive full STERGM estimation (see details).}
 \item{set.control.ergm}{Control arguments passed to \code{simulate.ergm} (see
 details).}
 
-\item{set.control.stergm}{Control arguments passed to \code{simulate.stergm}
+\item{set.control.stergm}{Deprecated; use \code{set.control.tergm} instead.}
+
+\item{set.control.tergm}{Control arguments passed to \code{tergm}
 (see details).}
 
 \item{verbose}{If \code{TRUE}, print model fitting progress to console.}
 
-\item{nested.edapprox}{Logical. If \code{edapprox} is \code{TRUE}, is the
-dissolution model an initial segment of the formation model? This
-determines whether \code{edapprox} is implemented by subtracting the
-relevant values from the initial formation model coefficients, or by
-appending the dissolution terms to the formation model and appending
-the relevant values to the vector of formation model coefficients.}
+\item{nested.edapprox}{Logical. If \code{edapprox = TRUE} the dissolution
+model is an initial segment of the formation model (see details).}
 
 \item{...}{Additional arguments passed to other functions.}
 }
@@ -110,20 +109,25 @@ the vignette for the package \code{tergm}.
 It has recently been found that subtracting a modified version of the
 dissolution coefficients from the formation coefficients provides a more
 principled approximation, and this is now the form of the approximation
-applied by \code{netest}.  (The modified values subtracted from the formation
+applied by \code{netest}. The modified values subtracted from the formation
 coefficients are equivalent to the (crude) dissolution coefficients with
-their target durations increased by 1.)
+their target durations increased by 1. The \code{nested.edapprox} argument
+toggles whether to implement this modified version by appending the
+dissolution terms to the formation model and appending the relevant values to
+the vector of formation model coefficients (value = \code{FALSE}), whereas
+the standard version subtracts the relevant values from the initial formation
+model coefficients (value = \code{TRUE}).
 }
 
 \section{Control Arguments}{
 
-The \code{ergm} and \code{stergm} functions allow control settings for the
+The \code{ergm} and \code{tergm} functions allow control settings for the
 model fitting process. When fitting a STERGM directly (setting
 \code{edapprox} to \code{FALSE}), control parameters may be passed to the
-\code{stergm} function with the \code{set.control.stergm} argument in
+\code{tergm} function with the \code{set.control.tergm} argument in
 \code{netest}. The controls should be input through the
-\code{control.stergm()} function, with the available parameters listed in the
-\code{\link{control.stergm}} help page in the \code{tergm} package.
+\code{control.tergm()} function, with the available parameters listed in the
+\code{\link{control.tergm}} help page in the \code{tergm} package.
 
 When fitting a STERGM indirectly (setting \code{edapprox} to \code{TRUE}),
 control settings may be passed to the \code{ergm} function using

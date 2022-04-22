@@ -75,11 +75,9 @@ recovery.net <- function(dat, at) {
 #'              to a susceptible state (SIS model type), for use in
 #'              \code{\link{netsim}}.
 #'
-#' @param dat Main list object containing a \code{networkDynamic} object and
-#'        other initialization information passed from \code{\link{netsim}}.
-#' @param at Current time step.
+#' @inheritParams recovery.net
 #'
-#' @return The updated \code{dat} main list object.
+#' @inherit recovery.net return
 #'
 #' @export
 #' @keywords internal
