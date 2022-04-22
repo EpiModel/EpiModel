@@ -215,11 +215,7 @@ saveout.net <- function(dat, s, out = NULL) {
 
     if (dat$control$tergmLite == FALSE) {
       if (dat$control$save.network == TRUE) {
-        if (!is.null(dat$temp$nw_list)) {
-          out$network <- list(dat$temp$nw_list)
-        } else {
-          out$network <- list(dat$nw)
-        }
+        out$network <- list(dat$nw)
       }
     }
 
@@ -281,11 +277,7 @@ saveout.net <- function(dat, s, out = NULL) {
 
     if (dat$control$tergmLite == FALSE) {
       if (dat$control$save.network == TRUE) {
-        if (!is.null(dat$temp$nw_list)) {
-          out$network[[s]] <- dat$temp$nw_list
-        } else {
-          out$network[[s]] <- dat$nw
-        }
+        out$network[[s]] <- dat$nw
       }
     }
 

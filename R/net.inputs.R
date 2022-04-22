@@ -745,7 +745,9 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #' @param tergmLite.track.duration If \code{TRUE}, track duration information
 #'        for models in \code{tergmLite} simulations.
 #' @param set.control.ergm Control arguments passed to \code{ergm}'s
-#'        \code{simulate_formula.network}.
+#'        \code{simulate_formula.network}.  In \code{netsim}, this is only used
+#'        when initializing the network with \code{edapprox = TRUE}; all other
+#'        simulations in \code{netsim} use \code{tergm}.
 #' @param set.control.tergm Control arguments passed to \code{tergm}'s
 #'        \code{simulate_formula.network}. See the help file for 
 #'        \code{\link{netdx}} for details and examples on specifying this 
