@@ -1,107 +1,107 @@
 
-test_that("network and networkLite behave identically in ergm and gof", {
-  skip_on_cran()
-  options(ergm.loglik.warn_dyads=FALSE)
-
-  net_size <- 100
-  bip_size <- 40
-
-  for(directed in list(FALSE, TRUE)) {
-    for(bipartite in list(FALSE, bip_size)) {
-      if(directed && bipartite) {
-        next
-      }
-
-      set.seed(0)
-      nw <- network.initialize(net_size, directed = directed, bipartite = bipartite)
-      nw %v% "a" <- rep(letters[1:5], length.out = net_size)
-      nw %v% "b" <- runif(net_size)
-      nw %v% "sex" <- rep(c("M","F"), length.out=net_size)
-      
-      nwL <- as.networkLite(nw)
-      
-      di_constraints <- ~blocks(~sex, levels2=diag(TRUE,2))
-      dd_constraints <- ~bd(maxout=2) + blocks(~sex, levels2=diag(TRUE,2))
-      dm_constraints <- ~bd(maxout=2, minout = 0) + blocks(~sex, levels2=diag(TRUE,2))
-      
-      target_stats <- c(750, 300, 315, 285, 295, 1250)/10
-      
-      set.seed(0)
-      nw_di_ergm <- ergm(nw ~ edges + nodefactor("a") + nodecov(~b^2 + b), target.stats = target_stats, constraints = di_constraints, eval.loglik = FALSE)
-      set.seed(0)
-      nwL_di_ergm <- ergm(nwL ~ edges + nodefactor("a") + nodecov(~b^2 + b), target.stats = target_stats, constraints = di_constraints, eval.loglik = FALSE)
-      expect_equal(coef(nw_di_ergm), coef(nwL_di_ergm))
-      
-      set.seed(0)
-      nw_di_gof <- gof(nw_di_ergm)
-      set.seed(0)
-      nwL_di_gof <- gof(nwL_di_ergm)
-      expect_equal(nw_di_gof, nwL_di_gof)
-      
-      set.seed(0)
-      nw_di_predict <- predict(nw_di_ergm)
-      set.seed(0)
-      nwL_di_predict <- predict(nwL_di_ergm)
-      expect_identical(nw_di_predict, nwL_di_predict)
-
-      set.seed(0)
-      nw_dd_ergm <- ergm(nw ~ edges + nodefactor("a") + nodecov(~b^2 + b), target.stats = target_stats, constraints = dd_constraints, control = list(init.method="MPLE"), eval.loglik = FALSE)
-      set.seed(0)
-      nwL_dd_ergm <- ergm(nwL ~ edges + nodefactor("a") + nodecov(~b^2 + b), target.stats = target_stats, constraints = dd_constraints, control = list(init.method="MPLE"), eval.loglik = FALSE)
-      expect_equal(coef(nw_dd_ergm), coef(nwL_dd_ergm))
-
-      set.seed(0)
-      nw_dd_gof <- gof(nw_dd_ergm)
-      set.seed(0)
-      nwL_dd_gof <- gof(nwL_dd_ergm)
-      expect_equal(nw_dd_gof, nwL_dd_gof)
-      
-      set.seed(0)
-      nw_dd_predict <- predict(nw_dd_ergm)
-      set.seed(0)
-      nwL_dd_predict <- predict(nwL_dd_ergm)
-      expect_identical(nw_dd_predict, nwL_dd_predict)
-
-      set.seed(0)
-      nw_dm_ergm <- ergm(nw ~ edges + nodefactor("a") + nodecov(~b^2 + b), target.stats = target_stats, constraints = dm_constraints, eval.loglik = FALSE)
-      set.seed(0)
-      nwL_dm_ergm <- ergm(nwL ~ edges + nodefactor("a") + nodecov(~b^2 + b), target.stats = target_stats, constraints = dm_constraints, eval.loglik = FALSE)
-      expect_equal(coef(nw_dm_ergm), coef(nwL_dm_ergm))
-
-      set.seed(0)
-      nw_dm_gof <- gof(nw_dm_ergm)
-      set.seed(0)
-      nwL_dm_gof <- gof(nwL_dm_ergm)
-      expect_equal(nw_dm_gof, nwL_dm_gof)
-      
-      set.seed(0)
-      nw_dm_predict <- predict(nw_dm_ergm)
-      set.seed(0)
-      nwL_dm_predict <- predict(nwL_dm_ergm)
-      expect_identical(nw_dm_predict, nwL_dm_predict)
-
-      ## simpler dyad-independent case where we can hit targets exactly
-      set.seed(0)
-      nw_mple_ergm <- ergm(nw ~ edges + nodefactor("a"), target.stats = as.integer(target_stats[-length(target_stats)]), constraints = di_constraints)
-      set.seed(0)
-      nwL_mple_ergm <- ergm(nwL ~ edges + nodefactor("a"), target.stats = as.integer(target_stats[-length(target_stats)]), constraints = di_constraints)
-      expect_equal(coef(nw_mple_ergm), coef(nwL_mple_ergm))
-
-      set.seed(0)
-      nw_mple_gof <- gof(nw_mple_ergm)
-      set.seed(0)
-      nwL_mple_gof <- gof(nwL_mple_ergm)
-      expect_equal(nw_mple_gof, nwL_mple_gof)
-      
-      set.seed(0)
-      nw_mple_predict <- predict(nw_mple_ergm)
-      set.seed(0)
-      nwL_mple_predict <- predict(nwL_mple_ergm)
-      expect_identical(nw_mple_predict, nwL_mple_predict)
-      
-    }
-  }
-})
+## test_that("network and networkLite behave identically in ergm and gof", {
+##   skip_on_cran()
+##   options(ergm.loglik.warn_dyads=FALSE)
+## 
+##   net_size <- 100
+##   bip_size <- 40
+## 
+##   for(directed in list(FALSE, TRUE)) {
+##     for(bipartite in list(FALSE, bip_size)) {
+##       if(directed && bipartite) {
+##         next
+##       }
+## 
+##       set.seed(0)
+##       nw <- network.initialize(net_size, directed = directed, bipartite = bipartite)
+##       nw %v% "a" <- rep(letters[1:5], length.out = net_size)
+##       nw %v% "b" <- runif(net_size)
+##       nw %v% "sex" <- rep(c("M","F"), length.out=net_size)
+##       
+##       nwL <- as.networkLite(nw)
+##       
+##       di_constraints <- ~blocks(~sex, levels2=diag(TRUE,2))
+##       dd_constraints <- ~bd(maxout=2) + blocks(~sex, levels2=diag(TRUE,2))
+##       dm_constraints <- ~bd(maxout=2, minout = 0) + blocks(~sex, levels2=diag(TRUE,2))
+##       
+##       target_stats <- c(750, 300, 315, 285, 295, 1250)/10
+##       
+##       set.seed(0)
+##       nw_di_ergm <- ergm(nw ~ edges + nodefactor("a") + nodecov(~b^2 + b), target.stats = target_stats, constraints = di_constraints, eval.loglik = FALSE)
+##       set.seed(0)
+##       nwL_di_ergm <- ergm(nwL ~ edges + nodefactor("a") + nodecov(~b^2 + b), target.stats = target_stats, constraints = di_constraints, eval.loglik = FALSE)
+##       expect_equal(coef(nw_di_ergm), coef(nwL_di_ergm))
+##       
+##       set.seed(0)
+##       nw_di_gof <- gof(nw_di_ergm)
+##       set.seed(0)
+##       nwL_di_gof <- gof(nwL_di_ergm)
+##       expect_equal(nw_di_gof, nwL_di_gof)
+##       
+##       set.seed(0)
+##       nw_di_predict <- predict(nw_di_ergm)
+##       set.seed(0)
+##       nwL_di_predict <- predict(nwL_di_ergm)
+##       expect_identical(nw_di_predict, nwL_di_predict)
+## 
+##       set.seed(0)
+##       nw_dd_ergm <- ergm(nw ~ edges + nodefactor("a") + nodecov(~b^2 + b), target.stats = target_stats, constraints = dd_constraints, control = list(init.method="MPLE"), eval.loglik = FALSE)
+##       set.seed(0)
+##       nwL_dd_ergm <- ergm(nwL ~ edges + nodefactor("a") + nodecov(~b^2 + b), target.stats = target_stats, constraints = dd_constraints, control = list(init.method="MPLE"), eval.loglik = FALSE)
+##       expect_equal(coef(nw_dd_ergm), coef(nwL_dd_ergm))
+## 
+##       set.seed(0)
+##       nw_dd_gof <- gof(nw_dd_ergm)
+##       set.seed(0)
+##       nwL_dd_gof <- gof(nwL_dd_ergm)
+##       expect_equal(nw_dd_gof, nwL_dd_gof)
+##       
+##       set.seed(0)
+##       nw_dd_predict <- predict(nw_dd_ergm)
+##       set.seed(0)
+##       nwL_dd_predict <- predict(nwL_dd_ergm)
+##       expect_identical(nw_dd_predict, nwL_dd_predict)
+## 
+##       set.seed(0)
+##       nw_dm_ergm <- ergm(nw ~ edges + nodefactor("a") + nodecov(~b^2 + b), target.stats = target_stats, constraints = dm_constraints, eval.loglik = FALSE)
+##       set.seed(0)
+##       nwL_dm_ergm <- ergm(nwL ~ edges + nodefactor("a") + nodecov(~b^2 + b), target.stats = target_stats, constraints = dm_constraints, eval.loglik = FALSE)
+##       expect_equal(coef(nw_dm_ergm), coef(nwL_dm_ergm))
+## 
+##       set.seed(0)
+##       nw_dm_gof <- gof(nw_dm_ergm)
+##       set.seed(0)
+##       nwL_dm_gof <- gof(nwL_dm_ergm)
+##       expect_equal(nw_dm_gof, nwL_dm_gof)
+##       
+##       set.seed(0)
+##       nw_dm_predict <- predict(nw_dm_ergm)
+##       set.seed(0)
+##       nwL_dm_predict <- predict(nwL_dm_ergm)
+##       expect_identical(nw_dm_predict, nwL_dm_predict)
+## 
+##       ## simpler dyad-independent case where we can hit targets exactly
+##       set.seed(0)
+##       nw_mple_ergm <- ergm(nw ~ edges + nodefactor("a"), target.stats = as.integer(target_stats[-length(target_stats)]), constraints = di_constraints)
+##       set.seed(0)
+##       nwL_mple_ergm <- ergm(nwL ~ edges + nodefactor("a"), target.stats = as.integer(target_stats[-length(target_stats)]), constraints = di_constraints)
+##       expect_equal(coef(nw_mple_ergm), coef(nwL_mple_ergm))
+## 
+##       set.seed(0)
+##       nw_mple_gof <- gof(nw_mple_ergm)
+##       set.seed(0)
+##       nwL_mple_gof <- gof(nwL_mple_ergm)
+##       expect_equal(nw_mple_gof, nwL_mple_gof)
+##       
+##       set.seed(0)
+##       nw_mple_predict <- predict(nw_mple_ergm)
+##       set.seed(0)
+##       nwL_mple_predict <- predict(nwL_mple_ergm)
+##       expect_identical(nw_mple_predict, nwL_mple_predict)
+##       
+##     }
+##   }
+## })
 
 test_that("network and networkLite simulate equally in ergm", {
   net_size <- 100
@@ -275,32 +275,32 @@ test_that("direct conversion between network and networkLite functions as expect
   }
 })
 
-test_that("network and networkLite estimate equally in (EGMME) tergm", {
-  skip_on_cran()
-  net_size <- 50
-  bip_size <- 20
-
-  for(directed in list(FALSE, TRUE)) {
-    for(bipartite in list(FALSE, bip_size)) {
-      if(directed && bipartite) {
-        next
-      }
-
-      set.seed(0)
-      nw <- network.initialize(net_size, directed = directed, bipartite = bipartite)
-      nw %v% "a" <- rep(letters[1:5], length.out = net_size)
-      nw %v% "b" <- runif(net_size)
-      
-      nwL <- as.networkLite(nw)
-      
-      set.seed(0)
-      tergm_nw <- tergm(nw ~ Form(~edges) + Diss(~edges), targets = ~edges + mean.age, target.stats = c(30, 5), estimate = "EGMME")
-      set.seed(0)
-      tergm_nwL <- tergm(nwL ~ Form(~edges) + Diss(~edges), targets = ~edges + mean.age, target.stats = c(30, 5), estimate = "EGMME")
-      expect_equal(coef(tergm_nw), coef(tergm_nwL))
-    }
-  }
-})
+## test_that("network and networkLite estimate equally in (EGMME) tergm", {
+##   skip_on_cran()
+##   net_size <- 50
+##   bip_size <- 20
+## 
+##   for(directed in list(FALSE, TRUE)) {
+##     for(bipartite in list(FALSE, bip_size)) {
+##       if(directed && bipartite) {
+##         next
+##       }
+## 
+##       set.seed(0)
+##       nw <- network.initialize(net_size, directed = directed, bipartite = bipartite)
+##       nw %v% "a" <- rep(letters[1:5], length.out = net_size)
+##       nw %v% "b" <- runif(net_size)
+##       
+##       nwL <- as.networkLite(nw)
+##       
+##       set.seed(0)
+##       tergm_nw <- tergm(nw ~ Form(~edges) + Diss(~edges), targets = ~edges + mean.age, target.stats = c(30, 5), estimate = "EGMME")
+##       set.seed(0)
+##       tergm_nwL <- tergm(nwL ~ Form(~edges) + Diss(~edges), targets = ~edges + mean.age, target.stats = c(30, 5), estimate = "EGMME")
+##       expect_equal(coef(tergm_nw), coef(tergm_nwL))
+##     }
+##   }
+## })
 
 test_that("network and networkLite simulate equally in tergm", {
   net_size <- 100
@@ -525,81 +525,81 @@ test_that("network and networkLite produce identical matrices, edgelists, and ti
   }
 })
 
-test_that("network and networkLite fit and simulate equal missing-data ergms", {
-  net_size <- 50
-  bip_size <- 20
-  
-  for(directed in list(FALSE, TRUE)) {
-    for(bipartite in list(FALSE, bip_size)) {
-      if(directed && bipartite) {
-        next
-      }
-      
-      set.seed(0)
-      nwL <- networkLite(net_size, directed = directed, bipartite = bipartite)
-      nwL <- san(nwL ~ edges, target.stats = network.dyadcount(nwL)/10)
-      nwL %v% "age" <- runif(net_size)
-      na <- sample(c(FALSE,TRUE),network.edgecount(nwL),TRUE)
-      
-      set.seed(0)
-      eL <- ergm(nwL ~ absdiff("age"), control = list(MCMLE.effectiveSize = NULL))
-      nwL %e% "na" <- na
-      set.seed(0)
-      eLna <- ergm(nwL ~ absdiff("age"), control = list(MCMLE.effectiveSize = NULL))
-      eL2 <- simulate(eLna)
-      
-      set.seed(0)
-      nw <- network.initialize(net_size, directed = directed, bipartite = bipartite)
-      nw <- san(nw ~ edges, target.stats = network.dyadcount(nw)/10)
-      nw %v% "age" <- runif(net_size)
-      na <- sample(c(FALSE,TRUE),network.edgecount(nw),TRUE)
+## test_that("network and networkLite fit and simulate equal missing-data ergms", {
+##   net_size <- 50
+##   bip_size <- 20
+##   
+##   for(directed in list(FALSE, TRUE)) {
+##     for(bipartite in list(FALSE, bip_size)) {
+##       if(directed && bipartite) {
+##         next
+##       }
+##       
+##       set.seed(0)
+##       nwL <- networkLite(net_size, directed = directed, bipartite = bipartite)
+##       nwL <- san(nwL ~ edges, target.stats = network.dyadcount(nwL)/10)
+##       nwL %v% "age" <- runif(net_size)
+##       na <- sample(c(FALSE,TRUE),network.edgecount(nwL),TRUE)
+##       
+##       set.seed(0)
+##       eL <- ergm(nwL ~ absdiff("age"), control = list(MCMLE.effectiveSize = NULL))
+##       nwL %e% "na" <- na
+##       set.seed(0)
+##       eLna <- ergm(nwL ~ absdiff("age"), control = list(MCMLE.effectiveSize = NULL))
+##       eL2 <- simulate(eLna)
+##       
+##       set.seed(0)
+##       nw <- network.initialize(net_size, directed = directed, bipartite = bipartite)
+##       nw <- san(nw ~ edges, target.stats = network.dyadcount(nw)/10)
+##       nw %v% "age" <- runif(net_size)
+##       na <- sample(c(FALSE,TRUE),network.edgecount(nw),TRUE)
+## 
+##       set.seed(0)
+##       e <- ergm(nw ~ absdiff("age"), control = list(MCMLE.effectiveSize = NULL))
+##       nw %e% "na" <- na
+##       set.seed(0)
+##       ena <- ergm(nw ~ absdiff("age"), control = list(MCMLE.effectiveSize = NULL))
+##       e2 <- simulate(ena)
+##       
+##       expect_equal(coef(e), coef(eL))
+##       expect_equal(coef(ena), coef(eLna))
+##       expect_equal(as.edgelist(e2), as.edgelist(eL2))
+##       expect_equal(as.edgelist(e2, attrname = "na"), as.edgelist(eL2, attrname = "na"))
+##     }
+##   }
+## })
 
-      set.seed(0)
-      e <- ergm(nw ~ absdiff("age"), control = list(MCMLE.effectiveSize = NULL))
-      nw %e% "na" <- na
-      set.seed(0)
-      ena <- ergm(nw ~ absdiff("age"), control = list(MCMLE.effectiveSize = NULL))
-      e2 <- simulate(ena)
-      
-      expect_equal(coef(e), coef(eL))
-      expect_equal(coef(ena), coef(eLna))
-      expect_equal(as.edgelist(e2), as.edgelist(eL2))
-      expect_equal(as.edgelist(e2, attrname = "na"), as.edgelist(eL2, attrname = "na"))
-    }
-  }
-})
-
-test_that("network and networkLite fit and simulate equal valued ergms", {
-  net_size <- 50
-  bip_size <- 20
-  
-  for(directed in list(FALSE, TRUE)) {
-    for(bipartite in list(FALSE, bip_size)) {
-      if(directed && bipartite) {
-        next
-      }
-      
-      set.seed(0)
-      nwL <- networkLite(net_size, directed = directed, bipartite = bipartite)
-      nwL <- san(nwL ~ edges, target.stats = network.dyadcount(nwL))
-      nwL %v% "age" <- runif(net_size)
-      nwL %e% "w" <- runif(network.edgecount(nwL))
-      eL <- ergm(nwL ~ absdiff("age"), response = "w", reference = ~Unif(0,1), control = list(MCMLE.effectiveSize = NULL))
-      eL2 <- simulate(eL)
-      
-      set.seed(0)
-      nw <- network.initialize(net_size, directed = directed, bipartite = bipartite)
-      nw <- san(nw ~ edges, target.stats = network.dyadcount(nw))
-      nw %v% "age" <- runif(net_size)
-      nw %e% "w" <- runif(network.edgecount(nw))
-      e <- ergm(nw ~ absdiff("age"), response = "w", reference = ~Unif(0,1), control = list(MCMLE.effectiveSize = NULL))
-      e2 <- simulate(e)
-      
-      expect_equal(coef(e), coef(eL))
-      expect_equal(as.edgelist(e2, attrname = "w"), as.edgelist(eL2, attrname = "w"))
-    }
-  }
-})
+## test_that("network and networkLite fit and simulate equal valued ergms", {
+##   net_size <- 50
+##   bip_size <- 20
+##   
+##   for(directed in list(FALSE, TRUE)) {
+##     for(bipartite in list(FALSE, bip_size)) {
+##       if(directed && bipartite) {
+##         next
+##       }
+##       
+##       set.seed(0)
+##       nwL <- networkLite(net_size, directed = directed, bipartite = bipartite)
+##       nwL <- san(nwL ~ edges, target.stats = network.dyadcount(nwL))
+##       nwL %v% "age" <- runif(net_size)
+##       nwL %e% "w" <- runif(network.edgecount(nwL))
+##       eL <- ergm(nwL ~ absdiff("age"), response = "w", reference = ~Unif(0,1), control = list(MCMLE.effectiveSize = NULL))
+##       eL2 <- simulate(eL)
+##       
+##       set.seed(0)
+##       nw <- network.initialize(net_size, directed = directed, bipartite = bipartite)
+##       nw <- san(nw ~ edges, target.stats = network.dyadcount(nw))
+##       nw %v% "age" <- runif(net_size)
+##       nw %e% "w" <- runif(network.edgecount(nw))
+##       e <- ergm(nw ~ absdiff("age"), response = "w", reference = ~Unif(0,1), control = list(MCMLE.effectiveSize = NULL))
+##       e2 <- simulate(e)
+##       
+##       expect_equal(coef(e), coef(eL))
+##       expect_equal(as.edgelist(e2, attrname = "w"), as.edgelist(eL2, attrname = "w"))
+##     }
+##   }
+## })
 
 test_that("network and networkLite `[<-` and add.edges produce consistent edgelists", {
   net_size <- 100
