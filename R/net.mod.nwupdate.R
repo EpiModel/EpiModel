@@ -24,7 +24,6 @@ nwupdate.net <- function(dat, at) {
     dat, "cumulative.edgelist", override.null.error = TRUE)
 
   resimulate.network <- get_control(dat, "resimulate.network")
-  isTERGM <- get_control(dat, "isTERGM")
 
   ## Vital Dynamics
   arrivals <- which(active == 1 & entrTime == at)
@@ -45,15 +44,15 @@ nwupdate.net <- function(dat, at) {
     }
     if (tergmLite == FALSE) {
       dat$nw[[1]] <- add.vertices(dat$nw[[1]], nv = nArrivals)
-      if (isTERGM == TRUE) {
-        dat$nw[[1]] <- activate.vertices(dat$nw[[1]], onset = at,
-                                         terminus = Inf, v = arrivals)
-        dat$nw[[1]] <- activate.vertex.attribute(dat$nw[[1]],
-                                                 prefix = "testatus",
-                                                 value = status[arrivals],
-                                                 onset = at, terminus = Inf,
-                                                 v = arrivals)
-      }
+
+      dat$nw[[1]] <- activate.vertices(dat$nw[[1]], onset = at,
+                                       terminus = Inf, v = arrivals)
+
+      dat$nw[[1]] <- activate.vertex.attribute(dat$nw[[1]],
+                                               prefix = "testatus",
+                                               value = status[arrivals],
+                                               onset = at, terminus = Inf,
+                                               v = arrivals)
     }
     if (tergmLite == TRUE) {
       dat$el[[1]] <- add_vertices(dat$el[[1]], nv = nArrivals)
@@ -64,14 +63,9 @@ nwupdate.net <- function(dat, at) {
   ## Departures
   if (length(departures) > 0) {
     if (tergmLite == FALSE) {
-      if (isTERGM == TRUE) {
-        dat$nw[[1]] <- deactivate.vertices(dat$nw[[1]], onset = at,
-                                           terminus = Inf, v = departures,
-                                           deactivate.edges = TRUE)
-      } else {
-        dat$nw[[1]] <- delete.vertices(dat$nw[[1]], vid = departures)
-        dat <- delete_attr(dat, departures)
-      }
+      dat$nw[[1]] <- deactivate.vertices(dat$nw[[1]], onset = at,
+                                         terminus = Inf, v = departures,
+                                         deactivate.edges = TRUE)
     }
     if (tergmLite == TRUE) {
       dat <- delete_attr(dat, departures)
@@ -90,21 +84,12 @@ nwupdate.net <- function(dat, at) {
   }
 
   ## Update temporally extended disease status
-  if (tergmLite == FALSE & isTERGM == TRUE) {
+  if (tergmLite == FALSE) {
     dat$nw[[1]] <- activate.vertex.attribute(dat$nw[[1]],
                                              prefix = "testatus",
                                              value = status,
                                              onset = at,
                                              terminus = Inf)
-  }
-
-  # Record network in nw_list for x-sect ERGM simulations
-  if (tergmLite == FALSE & isTERGM == FALSE & resimulate.network == TRUE) {
-    dat$temp$nw_list[[at]] <- dat$nw[[1]]
-  }
-  if (tergmLite == FALSE & isTERGM == FALSE & resimulate.network == FALSE) {
-    dat$temp$nw_list[[at]] <- set_vertex_attribute(dat$temp$nw_list[[at]],
-                                                   "status", status)
   }
 
   # Cummulative edgelist
