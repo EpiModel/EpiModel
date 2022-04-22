@@ -8,6 +8,11 @@
 \alias{get.network.attribute.networkLite}
 \alias{set.network.attribute.networkLite}
 \alias{list.network.attributes.networkLite}
+\alias{get.edge.attribute.networkLite}
+\alias{get.edge.value.networkLite}
+\alias{set.edge.attribute.networkLite}
+\alias{set.edge.value.networkLite}
+\alias{list.edge.attributes.networkLite}
 \alias{network.edgecount.networkLite}
 \alias{as.edgelist.networkLite}
 \alias{mixingmatrix.networkLite}
@@ -19,6 +24,18 @@
 \alias{as.networkLite.network}
 \alias{as.networkLite.networkLite}
 \alias{as.networkDynamic.networkLite}
+\alias{valid.eids.networkLite}
+\alias{as_tibble.networkLite}
+\alias{as.matrix.networkLite}
+\alias{is.na.networkLite}
+\alias{delete.vertex.attribute.networkLite}
+\alias{delete.edge.attribute.networkLite}
+\alias{delete.network.attribute.networkLite}
+\alias{delete.edges.networkLite}
+\alias{delete.vertices.networkLite}
+\alias{add.vertices.networkLite}
+\alias{+.networkLite}
+\alias{-.networkLite}
 \title{networkLite Methods}
 \usage{
 \method{get.vertex.attribute}{networkLite}(x, attrname, ...)
@@ -33,27 +50,47 @@
 
 \method{list.network.attributes}{networkLite}(x, ...)
 
-\method{network.edgecount}{networkLite}(x, ...)
+\method{get.edge.attribute}{networkLite}(x, attrname, ...)
 
-\method{as.edgelist}{networkLite}(x, output = c("matrix", "tibble"), ...)
+\method{get.edge.value}{networkLite}(x, attrname, ...)
+
+\method{set.edge.attribute}{networkLite}(
+  x,
+  attrname,
+  value,
+  e = seq_len(network.edgecount(x, na.omit = FALSE)),
+  ...
+)
+
+\method{set.edge.value}{networkLite}(
+  x,
+  attrname,
+  value,
+  e = seq_len(network.edgecount(x, na.omit = FALSE)),
+  ...
+)
+
+\method{list.edge.attributes}{networkLite}(x, ...)
+
+\method{network.edgecount}{networkLite}(x, na.omit = TRUE, ...)
+
+\method{as.edgelist}{networkLite}(
+  x,
+  attrname = NULL,
+  output = c("matrix", "tibble"),
+  na.rm = TRUE,
+  ...
+)
 
 \method{mixingmatrix}{networkLite}(object, attr, ...)
 
-\method{[}{networkLite}(x, i, j) <- value
+\method{[}{networkLite}(x, i, j, names.eval = NULL, add.edges = FALSE) <- value
 
 \method{print}{networkLite}(x, ...)
 
 \method{network.naedgecount}{networkLite}(x, ...)
 
-\method{add.edges}{networkLite}(
-  x,
-  tail,
-  head,
-  names.eval = NULL,
-  vals.eval = NULL,
-  ...,
-  check.unique = FALSE
-)
+\method{add.edges}{networkLite}(x, tail, head, names.eval = NULL, vals.eval = NULL, ...)
 
 as.networkLite(x, ...)
 
@@ -62,6 +99,35 @@ as.networkLite(x, ...)
 \method{as.networkLite}{networkLite}(x, ...)
 
 \method{as.networkDynamic}{networkLite}(object, ...)
+
+\method{valid.eids}{networkLite}(x, ...)
+
+\method{as_tibble}{networkLite}(x, attrnames = NULL, na.rm = TRUE, ...)
+
+\method{as.matrix}{networkLite}(
+  x,
+  matrix.type = c("adjacency", "incidence", "edgelist"),
+  attrname = NULL,
+  ...
+)
+
+\method{is.na}{networkLite}(x)
+
+\method{delete.vertex.attribute}{networkLite}(x, attrname, ...)
+
+\method{delete.edge.attribute}{networkLite}(x, attrname, ...)
+
+\method{delete.network.attribute}{networkLite}(x, attrname, ...)
+
+\method{delete.edges}{networkLite}(x, eid, ...)
+
+\method{delete.vertices}{networkLite}(x, vid, ...)
+
+\method{add.vertices}{networkLite}(x, nv, vattr = NULL, last.mode = TRUE, ...)
+
+\method{+}{networkLite}(e1, e2)
+
+\method{-}{networkLite}(e1, e2)
 }
 \arguments{
 \item{x}{A \code{networkLite} object.}
@@ -70,14 +136,19 @@ as.networkLite(x, ...)
 
 \item{...}{Any additional arguments.}
 
-\item{value}{The attribute value to set for
-\code{set.vertex.attribute.networkLite}; the value to set edges
-to (must be FALSE) for the \code{networkLite} replacement
-method.}
+\item{value}{The attribute value to set in vertex, edge, and network 
+attribute setters; the value to set edges to (must be FALSE)
+for the \code{networkLite} replacement method.}
 
 \item{v}{Indices at which to set vertex attribute values.}
 
+\item{e}{edge indices to assign value}
+
+\item{na.omit}{logical; omit missing edges from edge count?}
+
 \item{output}{Type of edgelist to output.}
+
+\item{na.rm}{should missing edges be dropped from edgelist?}
 
 \item{object}{A \code{networkLite} object.}
 
@@ -86,16 +157,40 @@ described in \code{\link[ergm]{nodal_attributes}}.}
 
 \item{i, j}{Nodal indices (must be missing for networkLite method).}
 
+\item{names.eval}{name(s) of edge attributes}
+
+\item{add.edges}{should edges being assigned to be added if not already 
+present?}
+
 \item{tail}{Vector of tails of edges to add to the networkLite.}
 
 \item{head}{Vector of heads of edges to add to the networkLite.}
 
-\item{names.eval}{Currently unsupported by add.edges.networkLite.}
+\item{vals.eval}{value(s) of edge attributes}
 
-\item{vals.eval}{Currently unsupported by add.edges.networkLite.}
+\item{attrnames}{vector specifying edge attributes to include in the tibble;
+may be logical, integer, or character vector, the former two being 
+used to select attribute names from \code{list.edge.attributes(x)}, 
+and the latter being used as the attribute names themselves}
 
-\item{check.unique}{Should a check to ensure uniqueness of edges
-in the final edgelist be performed?}
+\item{matrix.type}{type of matrix to return from 
+\code{as.matrix.networkLite}}
+
+\item{eid}{edge indices to delete (between 1 and 
+\code{network.edgecount(x, na.omit = FALSE)})}
+
+\item{vid}{vertex indices to delete (between 1 and \code{network.size(x)})}
+
+\item{nv}{number of vertices to add to the \code{networkLite}}
+
+\item{vattr}{list (of length \code{nv}) of named lists of vertex attributes 
+for added vertices, or \code{NULL} to indicate vertex attributes are
+not being passed}
+
+\item{last.mode}{logical; if \code{x} is bipartite, should the new vertices
+be added to the second mode?}
+
+\item{e1, e2}{networkLite objects}
 }
 \value{
 An edgelist for \code{as.edgelist.networkLite}; an updated
