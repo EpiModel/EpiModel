@@ -426,7 +426,7 @@ initialize_msm <- function(x, param, init, control, s) {
   # Pull Network parameters
   dat$nwparam <- list()
   for (i in 1:3) {
-    dat$nwparam[i] <- list(x[[i]][-which(names(x[[i]]) == "fit")])
+    dat$nwparam[i] <- list(x[[i]][!(names(x[[i]]) %in% c("fit", "newnetwork"))])
   }
 
   # Convert to tergmLite method
