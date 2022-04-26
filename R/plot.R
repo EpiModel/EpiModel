@@ -1173,11 +1173,6 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         sim.lines <- sim.lines
       }
 
-      ## Grid
-      if (grid == TRUE) {
-         grid()
-      }
-
       if (plots.joined == TRUE) {
 
         ## Default legend
@@ -1562,239 +1557,484 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
   # Duration plot -----------------------------------------------------------
 
   if (type == "duration") {
-
-    if (x$coef.diss$model.type == "hetero") {
-      stop("Duration plots for heterogeneous dissolution models not
-           currently available", call. = FALSE)
-    }
-
+    
     if (!(is.logical(duration.imputed))) {
       stop("For plots of type duration, duration.imputed must
            be a logical value (TRUE/FALSE)", call. = FALSE)
     }
-
+    
+    if (any(grepl("nodefactor", mydx$dissolution) == TRUE)) {
+      warning("Support for dissolution models containing a nodefactor term is deprecated, and will be removed in a future release.", call.=FALSE)
+    }
+    
     pages <- x$pages
     pages_imptd <- x$pages_imptd
-
+    if(duration.imputed==TRUE) {
+      data <- simplify2array(lapply(1:nsims,
+                                    function(x)pages[,,x]+pages_imptd))
+    } else {
+      data <- pages
+    }
+    
+    
+    stats.dur.table <- x$stats.table.duration
+    
     xlim <- c(1, nsteps)
     if (length(da) > 0 & !is.null(da$xlim)) {
-     xlim <- da$xlim
+      xlim <- da$xlim
     }
 
-    #Initialize ylim min/max values
-    qnt.max <- -1E10
-    mean.max <- -1E10
-    if (duration.imputed == TRUE) {
-      qnt.min <- max(0, min(sapply(pages, function(x) x + pages_imptd)))
-    } else {
-      qnt.min <- 0
+    nmstats <- rownames(stats.dur.table)
+    nstats <- length(nmstats)
+    nsims <- x$nsims
+    
+    ## Pull target stats
+    targs <- which(!is.na(stats.dur.table$Target))
+    
+  
+    ## Plotting
+    if (missing(plots.joined)) {
+      plots.joined <- ifelse(nstats > 3, FALSE, TRUE)
     }
-
-    ## Quantiles - ylim max ##
-    if (dynamic == TRUE) {
-      if (is.numeric(qnts) & nsims > 1) {
-        if (qnts < 0 | qnts > 1) {
-          stop("qnts must be between 0 and 1", call. = FALSE)
-        }
-        quants <- c((1 - qnts) / 2, 1 - ((1 - qnts) / 2))
-        dataj <- as.data.frame(pages)
-        dataj <- dataj[complete.cases(dataj), , drop = FALSE]
-        qnt.prev <- apply(dataj, 1, function(x)
-          quantile(x, c(quants[1], quants[2]),
-                   na.rm = TRUE))
-        xx <- c(1:(ncol(qnt.prev)), (ncol(qnt.prev)):1)
-        if (qnts.smooth == FALSE) {
-          yy <- c(qnt.prev[1, ], rev(qnt.prev[2, ]))
-        } else {
-          yy <- c(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
-                                          y = qnt.prev[1, ]))$y,
-                  rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
-                                              y = qnt.prev[2, ]))$y))
-        }
-        yy_imptd <- yy + c(pages_imptd, rev(pages_imptd))
-        if (duration.imputed == TRUE) {
-          qnt.min <- min(yy_imptd)
-          qnt.max <-  max(yy_imptd)
-        } else {
-          qnt.min <- min(yy)
-          qnt.max <-  max(yy)
-        }
-
-      }
+    
+    if (nstats == 1) {
+      plots.joined <- TRUE
+      sim.col <- "dodgerblue3"
     }
-
-    ## Mean lines - ylim max ##
-    if (mean.line == TRUE) {
-      dataj <- as.data.frame(pages)
-      dataj <- dataj[complete.cases(dataj), , drop = FALSE]
-      mean.prev <- rowMeans(dataj)
-      if (mean.smooth == TRUE) {
-        mean.prev <- suppressWarnings(supsmu(x = seq_along(mean.prev),
-                                             y = mean.prev))$y
-      }
-      mean.prev.imptd <- mean.prev + pages_imptd
-      mean.max <-  max(mean.prev, mean.prev.imptd)
-    }
-
-    if (missing(sim.lines)) {
-      sim.lines <- FALSE
-    }
-
-    #Dynamic scaling based on sim.lines and mean lines and quantile bands
-    if (length(da) > 0 && !is.null(da$ylim) && dynamic == TRUE) {
-      ylim <- da$ylim
-    } else if (is.null(da$ylim) & sim.lines == FALSE &
-               (mean.line == TRUE || qnts == TRUE)) {
-      ylim <- c(max(0, qnt.min * 0.9), max(qnt.max * 1.1, mean.max * 1.1))
-    } else {
-      if (duration.imputed == TRUE) {
-        ylim <- c(max(0, min(sapply(pages, function(x) x + pages_imptd)) * 0.9),
-                  max(sapply(pages, function(x) x + pages_imptd)) * 1.1)
-      } else {
-        ylim <- c(0, max(sapply(pages, max, na.rm = TRUE)) * 1.1)
-      }
-    }
-
+    
     if (missing(sim.lwd)) {
-      sim.lwd <- max(c(1 - (nsims * 0.05), 0.5))
+      if (nsims == 1) {
+        sim.lwd <- 1
+      } else {
+        sim.lwd <- max(c(1 - (nsims * 0.05), 0.5))
+      }
     }
-
+    
+    ## Color Vector Validation
+    # 1. Sim.col, mean.col, qnts.col, targ.col must be missing or a vector of
+    #    length 1 or nstats
+    # 2. If sim.col, mean.col, qnts.col, or targ.col is not missing
+    #    but is a vector of length 1 and nstats is greater than 1,
+    #    then replicate the color vector nstats times to achieve a vector of
+    #    size nstats.
+    
+    # Sim.col
+    if (!missing(sim.col)) {
+      if (!(length(sim.col) %in% c(1, nstats))) {
+        stop("sim.col must be either missing or a vector of length 1  or
+             nstats (", nstats, ")", call. = FALSE)
+      } else if (length(sim.col) == 1 & nstats > 1) {
+        sim.col <- rep(sim.col, nstats)
+      }
+    }
+    
+    
+    # Mean.col
+    if (!missing(mean.col)) {
+      if (!(length(mean.col) %in% c(1, nstats))) {
+        stop("mean.col must be either missing or a vector of length 1 or
+             nstats (", nstats, ")", call. = FALSE)
+      }
+      else if (length(mean.col) == 1 & nstats > 1) {
+        mean.col <- rep(mean.col, nstats)
+      }
+    }
+    
+    # Qnts.col
+    if (!missing(qnts.col)) {
+      if (!(length(qnts.col) %in% c(1, nstats))) {
+        stop("qnts.col must be either missing or a vector of length 1 or
+             nstats (", nstats, ")", call. = FALSE)
+      } else if (length(qnts.col) == 1 & nstats > 1) {
+        qnts.col <- rep(qnts.col, nstats)
+      }
+    }
+    
+    # Targ.col
+    if (!missing(targ.col)) {
+      if (!(length(targ.col) %in% c(1, nstats))) {
+        stop("targ.col must be either missing or a vector of length 1 or
+             nstats (", nstats, ")", call. = FALSE)
+      } else if (length(targ.col) == 1 & nstats > 1) {
+        targ.col <- rep(targ.col, nstats)
+      }
+    }
+    
+    # Default colors
     if (missing(sim.col)) {
-      sim.col <- rep("grey20", nsims)
+      if (plots.joined == TRUE) {
+        sim.col <- 2:100
+      }
+      if (missing(plots.joined) | plots.joined == FALSE) {
+        sim.col <- rep("dodgerblue3", nstats)
+      }
     }
-    if (missing(targ.col)) {
-      targ.col <- "black"
-    }
-
-    # Default ylab
-    if (length(da) > 0 && !is.null(da$ylab)) {
-      ylab <- da$ylab
-    } else {
-      ylab <- "Edge Age"
-    }
-
-    # Default xlab
-    if (length(da) > 0 && !is.null(da$xlab)) {
-      xlab <- da$xlab
-    } else {
-      xlab <- "time"
-    }
-
+    
+    ## Joined Plots
     if (method == "l") {
-
       if (missing(sim.lines)) {
         sim.lines <- FALSE
+      } else {
+        sim.lines <- sim.lines
       }
+      
+      if (plots.joined == TRUE) {
+        
+        ## Default legend
+        if (missing(legend)) {
+          if (nstats == 1) {
+            legend <- FALSE
+          } else {
+            legend <- TRUE
+          }
+        }
+        
+        #Initialize ylim min and max values
+        qnt.min <- vector()
+        qnt.max <- vector()
+        mean.min <- vector()
+        mean.max <- vector()
+        
+        for (j in seq_len(nstats)) {
 
-      plot(x = 1, y = 1, type = "n",
-           xlim = xlim, ylim = ylim,
-           xlab = xlab, ylab = ylab)
+          dataj <- data[,j,]
 
-      if (dynamic == TRUE) {
-      if (is.numeric(qnts) & nsims > 1) {
-        if (qnts < 0 | qnts > 1) {
-          stop("qnts must be between 0 and 1", call. = FALSE)
+          ## Quantiles - ylim min and max ##
+          if (dynamic == TRUE) {
+            if (is.numeric(qnts)) {
+              if (qnts < 0 | qnts > 1) {
+                stop("qnts must be between 0 and 1", call. = FALSE)
+              }
+              quants <- c((1 - qnts) / 2, 1 - ((1 - qnts) / 2))
+              qnt.prev <- apply(dataj, 1, function(x) {
+                quantile(x, c(quants[1], quants[2]))
+              })
+              xx <- c(1:(ncol(qnt.prev)), (ncol(qnt.prev)):1)
+              if (qnts.smooth == FALSE) {
+                yy <- c(qnt.prev[1, ], rev(qnt.prev[2, ]))
+              } else {
+                yy <- c(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
+                                                y = qnt.prev[1, ]))$y,
+                        rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
+                                                    y = qnt.prev[2, ]))$y))
+              }
+              qnt.min[j] <-  min(yy)
+              qnt.max[j] <-  max(yy)
+            }
+          }
+          
+          ## Mean lines - ylim min and max ##
+          if (mean.line == TRUE) {
+            mean.prev <- rowMeans(dataj)
+            if (mean.smooth == TRUE) {
+              mean.prev <- suppressWarnings(supsmu(x = seq_along(mean.prev),
+                                                   y = mean.prev))$y
+            }
+            mean.min[j] <-  min(mean.prev)
+            mean.max[j] <-  max(mean.prev)
+          }
+          
         }
-        if (missing(qnts.col)) {
-          qnts.col <- sim.col
-        }
-        if (missing(qnts.alpha)) {
-          qnts.alpha <- 0.5
-        }
-        qnts.col <- adjustcolor(qnts.col, qnts.alpha)
-        quants <- c((1 - qnts) / 2, 1 - ((1 - qnts) / 2))
-        dataj <- as.data.frame(pages)
-        dataj <- dataj[complete.cases(dataj), , drop = FALSE]
-        qnt.prev <- apply(dataj, 1, function(x)
-                          quantile(x, c(quants[1], quants[2]),
-                                   na.rm = TRUE))
-        xx <- c(1:(ncol(qnt.prev)), (ncol(qnt.prev)):1)
-        if (qnts.smooth == FALSE) {
-          yy <- c(qnt.prev[1, ], rev(qnt.prev[2, ]))
+        
+        ## Default ylim
+        if (length(da) > 0 && !is.null(da$ylim) && dynamic == TRUE) {
+          ylim <- da$ylim
+        } else if (is.null(da$ylim) & sim.lines == FALSE & dynamic == TRUE &
+                   (mean.line == TRUE || qnts == TRUE)) {
+          ylim <- c(min(min(qnt.min, na.rm = TRUE) * 0.9,
+                        min(mean.min, na.rm = TRUE) * 0.9),
+                    max(max(qnt.max, na.rm = TRUE) * 1.1,
+                        max(mean.max, na.rm = TRUE) * 1.1))
         } else {
-          yy <- c(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
-                                          y = qnt.prev[1, ]))$y,
-                  rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
-                                              y = qnt.prev[2, ]))$y))
+          ylim <- c(min(data) * 0.9, max(data) * 1.1)
         }
-        yy_imptd <- yy + c(pages_imptd, rev(pages_imptd))
-        if (duration.imputed == FALSE) {
-          polygon(xx, yy, col = qnts.col, border = NA)
+        
+        ## Default ylab
+        if (length(da) > 0 && !is.null(da$ylab)) {
+          ylab <- da$ylab
+        } else {
+            ylab <- "duration"
         }
-        if (duration.imputed == TRUE) {
-          polygon(xx, yy_imptd, col = qnts.col, border = NA)
+        
+        ## Default xlab
+        if (length(da) > 0 && !is.null(da$xlab)) {
+          xlab <- da$xlab
+        } else {
+          xlab <- "time"
         }
-      }
-      }
 
-      ## Sim lines
-      if (sim.lines == TRUE) {
-        for (i in sims) {
-          if (duration.imputed == FALSE) {
-            lines(pages[[i]], lwd = sim.lwd, col = sim.col)
+        
+        ## Default target line color
+        if (missing(targ.col)) {
+          if (nstats == 1) {
+            targ.col <- "black"
+          } else {
+            targ.col <- sim.col
           }
-          if (duration.imputed == TRUE) {
-            lines(pages[[i]] + pages_imptd, lwd = sim.lwd, col = sim.col)
+        }
+        
+        ## Quantile band transparency and color
+        if (dynamic == TRUE) {
+          if (missing(qnts.alpha)) {
+            qnts.alpha <- 0.5
+          }
+          if (missing(qnts.col)) {
+            qnts.col <- adjustcolor(sim.col, qnts.alpha)
+          } else {
+            qnts.col <- adjustcolor(qnts.col, qnts.alpha)
           }
         }
-      }
-
-      if (mean.line == TRUE) {
-        if (missing(mean.col)) {
-          mean.col <- sim.col
+        
+        ## Main plot window
+        plot(1, 1, xlim = xlim, ylim = ylim,
+             type = "n", xlab = xlab, ylab = ylab)
+        for (j in seq_len(nstats)) {
+            dataj <- data[,j,]          
+          if (dynamic == TRUE) {
+            if (is.numeric(qnts)) {
+              if (qnts < 0 | qnts > 1) {
+                stop("qnts must be between 0 and 1", call. = FALSE)
+              }
+              quants <- c((1 - qnts) / 2, 1 - ((1 - qnts) / 2))
+              qnt.prev <- apply(dataj, 1, function(x) {
+                quantile(x, c(quants[1], quants[2]))
+              })
+              xx <- c(1:(ncol(qnt.prev)), (ncol(qnt.prev)):1)
+              if (qnts.smooth == FALSE) {
+                yy <- c(qnt.prev[1, ], rev(qnt.prev[2, ]))
+              } else {
+                yy <- c(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
+                                                y = qnt.prev[1, ]))$y,
+                        rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
+                                                    y = qnt.prev[2, ]))$y))
+              }
+              polygon(xx, yy, col = qnts.col[j], border = NA)
+            }
+          }
+          
+          if (sim.lines == TRUE) {
+            for (i in sims) {
+              lines(dataj[, i], lwd = sim.lwd, col = sim.col[j])
+            }
+          }
+          if (mean.line == TRUE) {
+            if (missing(mean.col)) {
+              mean.col <- sim.col
+            }
+            mean.prev <- rowMeans(dataj)
+            if (mean.smooth == TRUE) {
+              mean.prev <- suppressWarnings(supsmu(x = seq_along(mean.prev),
+                                                   y = mean.prev))$y
+            }
+            lines(mean.prev, lwd = mean.lwd,
+                  col = mean.col[j], lty = mean.lty)
+          }
+          
+          if (targ.line == TRUE) {
+            if (j %in% targs) {
+              abline(h = stats.dur.table$Target[j],
+                     lty = targ.lty, lwd = targ.lwd,
+                     col = targ.col[j])
+            }
+          }
+          
         }
-        dataj <- as.data.frame(pages)
-        dataj <- dataj[complete.cases(dataj), , drop = FALSE]
-        mean.prev <- rowMeans(dataj)
-        if (mean.smooth == TRUE) {
-          mean.prev <- suppressWarnings(supsmu(x = seq_along(mean.prev),
-                                               y = mean.prev))$y
-          mean.prev.imptd <- suppressWarnings(
-            supsmu(x = seq_along(mean.prev.imptd), y = mean.prev.imptd))$y
-
-        }
-        if (duration.imputed == FALSE) lines(mean.prev, lwd = mean.lwd,
-              col = mean.col, lty = mean.lty)
-        if (duration.imputed == TRUE) lines(mean.prev.imptd, lwd = mean.lwd,
-              col = mean.col, lty = mean.lty)
-      }
-
-      if (targ.line == TRUE) {
-        abline(h = as.numeric(x$coef.diss[2]),
-               lty = targ.lty, lwd = targ.lwd,
-               col = targ.col)
-      }
-
-      ## Grid
-      if (grid == TRUE) {
-        grid()
-      }
-    }
-
-    if (method == "b") {
-      data <- do.call("c", x$pages)
-      if (duration.imputed == TRUE) data <- data + x$pages_imptd
-      boxplot(data, ...)
-      points(x = 1, y = as.numeric(x$coef.diss[2]),
-             pch = 16, cex = 1.5, col = "blue")
-
-      ## Grid
-      if (grid == TRUE) {
+        
+        ## Grid
+        if (grid == TRUE) {
           grid()
+        }
+        
+        
+        if (legend == TRUE) {
+          legend("topleft", legend = nmstats, lwd = 2,
+                 col = sim.col[1:nstats], cex = 0.75, bg = "white")
+        }
+        
       }
-
+      
+      ## Split plots
+      if (plots.joined == FALSE) {
+        
+        if (nstats == 1) dimens <- c(1, 1)
+        if (nstats == 2) dimens <- c(1, 2)
+        if (nstats == 3) dimens <- c(1, 3)
+        if (nstats == 4) dimens <- c(2, 2)
+        if (nstats == 5) dimens <- c(2, 3)
+        if (nstats == 6) dimens <- c(2, 3)
+        if (nstats %in% 7:9) dimens <- c(3, 3)
+        if (nstats %in% 10:12) dimens <- c(4, 3)
+        if (nstats %in% 13:16) dimens <- c(4, 4)
+        if (nstats > 16) dimens <- rep(ceiling(sqrt(nstats)), 2)
+        
+        # Pull graphical parameters
+        ops <- list(mar = par()$mar, mfrow = par()$mfrow, mgp = par()$mgp)
+        par(mar = c(2.5, 2.5, 2, 1), mgp = c(2, 1, 0), mfrow = dimens)
+        
+        if (missing(targ.col)) {
+          targ.col <- rep("black", nstats)
+        }
+        
+        ## Quantile band transparency and color
+        if (dynamic == TRUE) {
+          if (missing(qnts.alpha)) {
+            qnts.alpha <- 0.5
+          }
+          if (missing(qnts.col)) {
+            qnts.col <- adjustcolor(sim.col, qnts.alpha)
+          } else {
+            qnts.col <- adjustcolor(qnts.col, qnts.alpha)
+          }
+        }
+        
+        for (j in seq_len(nstats)) {
+          dataj <- data[,j,]
+          
+          ## Quantiles - ylim min max ##
+          if (dynamic == TRUE) {
+            
+            #Initialize ylim min max values
+            qnt.min <- 1E10
+            qnt.max <- -1E10
+            mean.min <- 1E10
+            mean.max <- -1E10
+            
+            if (is.numeric(qnts)) {
+              if (qnts < 0 | qnts > 1) {
+                stop("qnts must be between 0 and 1", call. = FALSE)
+              }
+              quants <- c((1 - qnts) / 2, 1 - ((1 - qnts) / 2))
+              qnt.prev <- apply(dataj, 1, function(x) {
+                quantile(x, c(quants[1], quants[2]))
+              })
+              xx <- c(1:(ncol(qnt.prev)), (ncol(qnt.prev)):1)
+              if (qnts.smooth == FALSE) {
+                yy <- c(qnt.prev[1, ], rev(qnt.prev[2, ]))
+              } else {
+                yy <- c(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
+                                                y = qnt.prev[1, ]))$y,
+                        rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
+                                                    y = qnt.prev[2, ]))$y))
+              }
+              qnt.min <-  min(yy)
+              qnt.max <-  max(yy)
+            }
+          }
+          
+          ## Mean lines - ylim min max ##
+          if (mean.line == TRUE) {
+            if (missing(mean.col)) {
+              mean.col <- sim.col
+            }
+            mean.prev <- rowMeans(dataj)
+            if (mean.smooth == TRUE) {
+              mean.prev <- suppressWarnings(supsmu(x = seq_along(mean.prev),
+                                                   y = mean.prev))$y
+            }
+            mean.min <-  min(mean.prev)
+            mean.max <-  max(mean.prev)
+          }
+          
+          ## Default ylim
+          if (length(da) > 0 && !is.null(da$ylim) && dynamic == TRUE) {
+            ylim <- da$ylim
+          } else if (is.null(da$ylim) & sim.lines == FALSE & dynamic == TRUE &
+                     (mean.line == TRUE || qnts == TRUE)) {
+            ylim <- c(min(qnt.min * 0.9, mean.min * 0.9),
+                      max(qnt.max * 1.1, mean.max * 1.1))
+          } else {
+            ylim <- c(min(dataj) * 0.9, max(dataj) * 1.1)
+          }
+          
+          plot(x = 1, y = 1,
+               xlim = xlim,
+               ylim = ylim,
+               type = "n", main = nmstats[j],
+               xlab = "", ylab = "")
+          
+          if (dynamic == TRUE) {
+            if (is.numeric(qnts)) {
+              if (qnts < 0 | qnts > 1) {
+                stop("qnts must be between 0 and 1", call. = FALSE)
+              }
+              quants <- c((1 - qnts) / 2, 1 - ((1 - qnts) / 2))
+              qnt.prev <- apply(dataj, 1, function(x) {
+                quantile(x, c(quants[1], quants[2]))
+              })
+              xx <- c(1:(ncol(qnt.prev)), (ncol(qnt.prev)):1)
+              if (qnts.smooth == FALSE) {
+                yy <- c(qnt.prev[1, ], rev(qnt.prev[2, ]))
+              } else {
+                yy <- c(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
+                                                y = qnt.prev[1, ]))$y,
+                        rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
+                                                    y = qnt.prev[2, ]))$y))
+              }
+              polygon(xx, yy, col = qnts.col[j], border = NA)
+            }
+          }
+          
+          if (sim.lines == TRUE) {
+            for (i in sims) {
+              lines(dataj[, i], lwd = sim.lwd,
+                    col = sim.col[j])
+            }
+          }
+          
+          if (mean.line == TRUE) {
+            if (missing(mean.col)) {
+              mean.col <- rep("black", nstats)
+            }
+            mean.prev <- rowMeans(dataj)
+            if (mean.smooth == TRUE) {
+              mean.prev <- suppressWarnings(supsmu(x = seq_along(mean.prev),
+                                                   y = mean.prev))$y
+            }
+            lines(mean.prev, lwd = mean.lwd,
+                  col = mean.col[j], lty = mean.lty)
+          }
+          
+          if (targ.line == TRUE) {
+            if (j %in% targs) {
+              abline(h = stats.dur.table$Target[j],
+                     lty = targ.lty, lwd = targ.lwd,
+                     col = targ.col[j])
+            }
+          }
+          
+          ## Grid
+          if (grid == TRUE) {
+            grid()
+          }
+        }
+        
+        # Reset graphical parameters
+        on.exit(par(ops))
+      }
     }
-
+    if (method == "b") {
+      
+      data <- matrix(aperm(data, c(1,3,2)), nrow=nsims*nsteps)
+      colnames(data) <- nmstats
+      
+      boxplot(data, ...)
+      
+      for (j in seq_len(nstats)) {
+          points(x = j, y = stats.dur.table$Target[j],
+                 pch = 16, cex = 1.5, col = "blue")
+        ## Grid
+        if (grid == TRUE) {
+          grid()
+        }
+      }
+      
+    }
+    
   }
-
-  # Dissolution plot -----------------------------------------------------------
+  
+# Dissolution plot -----------------------------------------------------------
 
   if (type == "dissolution") {
-
-    if (x$coef.diss$model.type == "hetero") {
-      stop("Dissolution plots for heterogeneous dissolution models not
-           currently available", call. = FALSE)
-    }
 
     prop.diss <- x$prop.diss
 
