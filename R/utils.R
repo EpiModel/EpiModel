@@ -337,11 +337,14 @@ netsim_cond_msg <- function(cond, module, at, msg) {
 #'
 #' @description Trims formula environments from the \code{netest} object.  
 #'              Optionally converts the \code{newnetwork} element of the
-#'              \code{netest} object to a \code{networkLite}.
+#'              \code{netest} object to a \code{networkLite}, and removes the
+#'              \code{fit} element (if present) from the \code{netest} object.
 #'
 #' @param object A \code{netest} object.
 #' @param as.networkLite logical; should we convert \code{object$newnetwork}
 #'        to a \code{networkLite}?
+#' @param keep.fit logical; should we keep \code{fit} (if present) on the 
+#'        \code{netest} object?
 #'
 #' @details Removes \code{environment(object$constraints)},
 #'          \code{environment(object$coef.diss$dissolution)}, and
@@ -353,7 +356,9 @@ netsim_cond_msg <- function(cond, module, at, msg) {
 #'          \code{environment(environment(object$formula)$formation)} and
 #'          \code{environment(environment(object$formula)$dissolution)}.
 #'          Optionally converts \code{object$newnetwork} to a 
-#'          \code{networkLite} (if \code{as.networkLite = TRUE}).
+#'          \code{networkLite} (if \code{as.networkLite = TRUE}), and removes
+#'          \code{fit} (if present) from \code{object} 
+#'          (if \code{keep.fit = FALSE}).
 #'          
 #'          For the output to be usable in simulation, there should not be 
 #'          substitutions in the formulas, other than \code{formation} and
@@ -361,7 +366,8 @@ netsim_cond_msg <- function(cond, module, at, msg) {
 #'          \code{edapprox = FALSE}.
 #'
 #' @return A \code{netest} object with formula environments removed, optionally
-#'         with the \code{newnetwork} element converted to a \code{networkLite}.
+#'         with the \code{newnetwork} element converted to a \code{networkLite}
+#'         and the \code{fit} element removed.
 #'
 #' @export
 #'
@@ -374,7 +380,7 @@ netsim_cond_msg <- function(cond, module, at, msg) {
 #'               set.control.ergm = control.ergm(MCMC.burnin = 1e5,
 #'                                               MCMC.interval = 1000))
 #' est <- trim_netest(est)
-trim_netest <- function(object, as.networkLite = TRUE) {
+trim_netest <- function(object, as.networkLite = TRUE, keep.fit = FALSE) {
   if (object$edapprox == TRUE) {
     object$formula <- trim_env(object$formula)
   } else {
@@ -389,6 +395,10 @@ trim_netest <- function(object, as.networkLite = TRUE) {
   object$formation <- trim_env(object$formation)
   object$constraints <- trim_env(object$constraints)
 
+  if (keep.fit == FALSE) {
+    object$fit <- NULL
+  }
+  
   if (as.networkLite == TRUE) {
     object$newnetwork <- as.networkLite(object$newnetwork)
   }

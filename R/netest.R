@@ -218,9 +218,14 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
     out$coef.diss <- coef.diss
     out$constraints <- constraints
     out$edapprox <- edapprox
+    # convert ergm_state to network
     out$newnetwork <- as.network(fit$newnetwork)
     delete.network.attribute(out$newnetwork, "time")
     delete.network.attribute(out$newnetwork, "lasttoggle")
+    # if input was networkLite, convert network to networkLite
+    if (is(nw, "networkLite")) {
+      out$newnetwork <- as.networkLite(out$newnetwork)
+    }
     out$formula <- fit$formula
 
   } else {

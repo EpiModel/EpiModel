@@ -4,22 +4,27 @@
 \alias{trim_netest}
 \title{Function to Reduce the Size of the \code{netest} Object}
 \usage{
-trim_netest(object, as.networkLite = TRUE)
+trim_netest(object, as.networkLite = TRUE, keep.fit = FALSE)
 }
 \arguments{
 \item{object}{A \code{netest} object.}
 
 \item{as.networkLite}{logical; should we convert \code{object$newnetwork}
 to a \code{networkLite}?}
+
+\item{keep.fit}{logical; should we keep \code{fit} (if present) on the 
+\code{netest} object?}
 }
 \value{
 A \code{netest} object with formula environments removed, optionally
-        with the \code{newnetwork} element converted to a \code{networkLite}.
+        with the \code{newnetwork} element converted to a \code{networkLite}
+        and the \code{fit} element removed.
 }
 \description{
 Trims formula environments from the \code{netest} object.  
              Optionally converts the \code{newnetwork} element of the
-             \code{netest} object to a \code{networkLite}.
+             \code{netest} object to a \code{networkLite}, and removes the
+             \code{fit} element (if present) from the \code{netest} object.
 }
 \details{
 Removes \code{environment(object$constraints)},
@@ -32,7 +37,9 @@ Removes \code{environment(object$constraints)},
          \code{environment(environment(object$formula)$formation)} and
          \code{environment(environment(object$formula)$dissolution)}.
          Optionally converts \code{object$newnetwork} to a 
-         \code{networkLite} (if \code{as.networkLite = TRUE}).
+         \code{networkLite} (if \code{as.networkLite = TRUE}), and removes
+         \code{fit} (if present) from \code{object} 
+         (if \code{keep.fit = FALSE}).
          
          For the output to be usable in simulation, there should not be 
          substitutions in the formulas, other than \code{formation} and
