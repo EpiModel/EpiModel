@@ -132,6 +132,23 @@ a different interpretation here, where it is the number of transmissible acts
 \emph{per partnership} per unit time.
 }
 
+\section{Data.Frame of Parameters}{
+
+It is possible to set many parameters as once using a specially formatted
+\code{data.frame} passed in the \code{data.frame.parameters} argument. This
+\code{data.frame} first 3 columns must be:
+1. "param": the name of the parameter. If it is a multi dimension parameter,
+   prepend the name, with "_1", "_2", etc for the position in the vector.
+2. "value": the value for the parameter (or the Nth position if
+multidimensional)
+3. "type": a character string containing either "numeric", "logical" or
+   "character". The type to cast the value to.
+
+Appart from these 3 columns, the \code{data.frame} can contain any number
+of other columns. A typical use case would be to have a "details" and
+"source" columns to document where these parameters come from.
+}
+
 \section{Time-Varying Parameters}{
 
 The \code{inf.prob}, \code{act.rate}, \code{rec.rate} arguments (and their

@@ -88,6 +88,21 @@
 #' a different interpretation here, where it is the number of transmissible acts
 #' \emph{per partnership} per unit time.
 #'
+#' @section Data.Frame of Parameters:
+#' It is possible to set many parameters as once using a specially formatted
+#' \code{data.frame} passed in the \code{data.frame.parameters} argument. This
+#' \code{data.frame} first 3 columns must be:
+#' 1. "param": the name of the parameter. If it is a multi dimension parameter,
+#'    prepend the name, with "_1", "_2", etc for the position in the vector.
+#' 2. "value": the value for the parameter (or the Nth position if
+#' multidimensional)
+#' 3. "type": a character string containing either "numeric", "logical" or
+#'    "character". The type to cast the value to.
+#'
+#' Appart from these 3 columns, the \code{data.frame} can contain any number
+#' of other columns. A typical use case would be to have a "details" and
+#' "source" columns to document where these parameters come from.
+#'
 #' @section Time-Varying Parameters:
 #' The \code{inf.prob}, \code{act.rate}, \code{rec.rate} arguments (and their
 #' \code{.g2} companions) may be specified as time-varying parameters by passing
@@ -176,8 +191,20 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
                       rec.rate.g2, a.rate.g2, ds.rate.g2, di.rate.g2,
                       dr.rate.g2, ...) {
 
+
   # Get arguments
-  p <- list()
+  dot.args <- list(...)
+  names.dot.args <- names(dot.args)
+
+  # Use "data.frame.params" as default if available
+  if ("data.frame.params" %in% names.dot.args) {
+    p <- param.net_from_table(dot.args[["data.frame.params"]])
+    dot.args[["data.frame.params"]] <- NULL
+    names.dot.args <- names(dot.args)
+  } else {
+    p <- list()
+  }
+
   formal.args <- formals(sys.function())
   formal.args[["..."]] <- NULL
   for (arg in names(formal.args)) {
@@ -185,8 +212,6 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
       p[arg] <- list(get(arg))
     }
   }
-  dot.args <- list(...)
-  names.dot.args <- names(dot.args)
   if (length(dot.args) > 0) {
     for (i in seq_along(dot.args)) {
       p[[names.dot.args[i]]] <- dot.args[[i]]
@@ -749,8 +774,8 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #'        when initializing the network with \code{edapprox = TRUE}; all other
 #'        simulations in \code{netsim} use \code{tergm}.
 #' @param set.control.tergm Control arguments passed to \code{tergm}'s
-#'        \code{simulate_formula.network}. See the help file for 
-#'        \code{\link{netdx}} for details and examples on specifying this 
+#'        \code{simulate_formula.network}. See the help file for
+#'        \code{\link{netdx}} for details and examples on specifying this
 #'        parameter.
 #' @param set.control.stergm Deprecated; use \code{set.control.tergm} instead.
 #' @param ... Additional control settings passed to model.
@@ -847,7 +872,7 @@ control.net <- function(type,
                         set.control.tergm = control.simulate.formula.tergm(),
                         ...) {
   if (!missing(set.control.stergm)) {
-    warning("set.control.stergm is deprecated and will be removed in a future 
+    warning("set.control.stergm is deprecated and will be removed in a future
              version; use set.control.tergm instead.")
   }
 
@@ -1012,9 +1037,9 @@ crosscheck.net <- function(x, param, init, control) {
       if (x[["edapprox"]] == TRUE) {
         nw <- x[["fit"]][["newnetwork"]]
       } else {
-        nw <- x[["fit"]][["network"]]      
+        nw <- x[["fit"]][["network"]]
       }
-      
+
       # Defaults ------------------------------------------------------------
 
       # Is status in network formation formula?
@@ -1204,8 +1229,6 @@ crosscheck.net <- function(x, param, init, control) {
 #' Appart from these 3 columns, the \code{data.frame} can contain any number
 #' of other columns. A typical use case would be to have a "details" and
 #' "source" columns to document where these parameters come from.
-#'
-#' @export
 param.net_from_table <- function(long.param.df) {
   # Checks
   if (!all(c("param", "value", "type") %in% names(long.param.df))) {
