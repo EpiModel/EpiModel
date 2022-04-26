@@ -419,7 +419,12 @@ initialize_msm <- function(x, param, init, control, s) {
   # Initial network simulations
   dat$nw <- list()
   for (i in 1:3) {
-    dat$nw[[i]] <- simulate(x[[i]]$fit, response = NULL, basis = x[[i]]$fit$newnetwork)
+    dat[["nw"]][[i]] <- simulate(x[[i]][["formula"]],
+      coef = x[[i]][["coef.form.crude"]],
+      basis = x[[i]][["newnetwork"]],
+      constraints = x[[i]][["constraints"]],
+      dynamic = FALSE
+    )
   }
   nw <- dat$nw
 
