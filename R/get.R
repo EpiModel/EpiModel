@@ -113,19 +113,7 @@ get_network <- function(x, sim = 1, network = 1, collapse = FALSE, at,
   }
   ## Extraction ##
   if (class(x) == "netsim") {
-    if (x$control$isTERGM == TRUE) {
-      out <- x$network[[sim]][[network]]
-    } else if (x$control$isTERGM == FALSE) {
-      if (ergm.create.nd == TRUE) {
-        out <- suppressMessages(
-            networkDynamic(network.list = x$network[[sim]],
-                           start = 1,
-                           base.net = x$network[[sim]][[1]],
-                           create.TEAs = TRUE))
-      } else {
-        out <- x$network[[sim]]
-      }
-    }
+    out <- x$network[[sim]][[network]]
   } else if (class(x) == "netdx") {
     out <- x$network[[sim]]
   }

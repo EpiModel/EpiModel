@@ -19,15 +19,7 @@ get_edgelist <- function(dat, network) {
     el <- dat[["el"]][[network]]
   } else {
     at <- get_current_timestep(dat)
-    if (!is.null(dat[["temp"]][["nw_list"]])) {
-      if (!get_control(dat, "resimulate.network")) {
-        el <- network::as.edgelist(dat[["temp"]][["nw_list"]][[at]])
-      } else {
-        el <- network::as.edgelist(dat[["nw"]][[network]])
-      }
-    } else {
-      el <- networkDynamic::get.dyads.active(dat[["nw"]][[network]], at = at)
-    }
+    el <- networkDynamic::get.dyads.active(dat[["nw"]][[network]], at = at)
   }
 
   return(el)

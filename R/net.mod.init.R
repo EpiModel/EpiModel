@@ -141,7 +141,6 @@ init_status.net <- function(dat) {
   if (vital == TRUE) {
     di.rate <- get_param(dat, "di.rate")
   }
-  isTERGM <- get_control(dat, "isTERGM")
 
   # Variables ---------------------------------------------------------------
   i.num <- get_init(dat, "i.num", override.null.error = TRUE)
@@ -203,16 +202,11 @@ init_status.net <- function(dat) {
     if (statOnNw == FALSE) {
       dat$nw[[1]] <- set_vertex_attribute(dat$nw[[1]], "status", status)
     }
-    if (isTERGM == TRUE) {
-      dat$nw[[1]] <- activate.vertex.attribute(dat$nw[[1]],
-                                               prefix = "testatus",
-                                               value = status,
-                                               onset = 1,
-                                               terminus = Inf)
-    } else {
-      dat$temp$nw_list[[1]] <- set_vertex_attribute(dat$temp$nw_list[[1]],
-                                                    "status", status)
-    }
+    dat$nw[[1]] <- activate.vertex.attribute(dat$nw[[1]],
+                                             prefix = "testatus",
+                                             value = status,
+                                             onset = 1,
+                                             terminus = Inf)
   }
 
 
