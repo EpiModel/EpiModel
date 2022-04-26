@@ -1697,7 +1697,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         
         for (j in seq_len(nstats)) {
 
-          dataj <- data[,j,]
+          dataj <- matrix(data[,j,], nrow=nsteps)
 
           ## Quantiles - ylim min and max ##
           if (dynamic == TRUE) {
@@ -1789,7 +1789,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         plot(1, 1, xlim = xlim, ylim = ylim,
              type = "n", xlab = xlab, ylab = ylab)
         for (j in seq_len(nstats)) {
-            dataj <- data[,j,]          
+            dataj <- matrix(data[,j,], nrow=nsteps)          
           if (dynamic == TRUE) {
             if (is.numeric(qnts)) {
               if (qnts < 0 | qnts > 1) {
@@ -1888,7 +1888,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         }
         
         for (j in seq_len(nstats)) {
-          dataj <- data[,j,]
+          dataj <- matrix(data[,j,], nrow=nsteps)
           
           ## Quantiles - ylim min max ##
           if (dynamic == TRUE) {
@@ -2161,7 +2161,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         
         for (j in seq_len(nstats)) {
           
-          dataj <- data[,j,]
+          dataj <- matrix(data[,j,], nrow=nsteps)
           
           ## Quantiles - ylim min and max ##
           if (dynamic == TRUE) {
@@ -2253,7 +2253,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         plot(1, 1, xlim = xlim, ylim = ylim,
              type = "n", xlab = xlab, ylab = ylab)
         for (j in seq_len(nstats)) {
-          dataj <- data[,j,]          
+          dataj <- matrix(data[,j,], nrow=nsteps)          
           if (dynamic == TRUE) {
             if (is.numeric(qnts)) {
               if (qnts < 0 | qnts > 1) {
@@ -2352,7 +2352,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         }
         
         for (j in seq_len(nstats)) {
-          dataj <- data[,j,]
+          dataj <- matrix(data[,j,], nrow=nsteps)
           
           ## Quantiles - ylim min max ##
           if (dynamic == TRUE) {
