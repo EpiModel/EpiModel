@@ -53,7 +53,7 @@ contained in the object.}
 
 \item{duration.imputed}{If \code{type="duration"}, a logical indicating
 whether or not to impute starting times for relationships extant at
-the start of the simulation. Defaults to TRUE when
+the start of the simulation. Defaults to \code{TRUE} when
 \code{type="duration"}.}
 
 \item{sim.lines}{If \code{TRUE}, plot individual simulation lines. Default is
@@ -94,9 +94,8 @@ default colors based on \code{RColorBrewer} color palettes.}
 
 \item{targ.lty}{Line type for the line showing the target statistic values.}
 
-\item{plots.joined}{If \code{TRUE} and \code{type="formation"}, combine all
-target statistics in one plot, versus one plot per target statistic if
-\code{FALSE}.}
+\item{plots.joined}{If \code{TRUE}, combine all target statistics in one 
+plot, versus one plot per target statistic if \code{FALSE}.}
 
 \item{legend}{If \code{TRUE}, plot default legend.}
 
@@ -135,7 +134,7 @@ in the duration plot, but should reach its expected value more quickly, since
 it is not subject to censoring.
 
 The \code{plots.joined} argument will control whether the statistics
-in the \code{formation} plot are joined in one plot or plotted separately.
+are joined in one plot or plotted separately, assuming there are multiple statistics in the model.
 The default is based on the number of network statistics requested. The
 layout of the separate plots within the larger plot window is also based on
 the number of statistics.
@@ -143,11 +142,11 @@ the number of statistics.
 \examples{
 \dontrun{
 # Network initialization and model parameterization
-nw <- network_initialize(n = 100)
-nw <- set_vertex_attribute(nw, "sex", rbinom(100, 1, 0.5))
+nw <- network_initialize(n = 500)
+nw <- set_vertex_attribute(nw, "sex", rbinom(500, 1, 0.5))
 formation <- ~edges + nodematch("sex")
-target.stats <- c(50, 40)
-coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 50)
+target.stats <- c(500, 300)
+coef.diss <- dissolution_coefs(dissolution = ~offset(edges)+offset(nodematch("sex")), duration = c(50, 40))
 
 # Estimate the model
 est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
@@ -188,14 +187,13 @@ plot(dx2, method = "b", stats = "meandeg", col = "dodgerblue")
 par(mfrow = c(1, 2))
 # With duration imputed
 plot(dx2, type = "duration", sim.line = TRUE, sim.lwd = 0.3,
-     sim.col = "steelblue", targ.lty = 1, targ.lwd = 0.5)
+     targ.lty = 1, targ.lwd = 0.5)
 # Without duration imputed
 plot(dx2, type = "duration", sim.line = TRUE, sim.lwd = 0.3,
-     sim.col = "steelblue", targ.lty = 1, targ.lwd = 0.5,
-     duration.imputed = FALSE)
+     targ.lty = 1, targ.lwd = 0.5, duration.imputed = FALSE)
 
 # Dissolution statistics plot
-plot(dx2, type = "dissolution", mean.col = "black", grid = TRUE)
+plot(dx2, type = "dissolution", qnts = 0.25, grid = TRUE)
 plot(dx2, type = "dissolution", method = "b", col = "pink1")
 }
 
