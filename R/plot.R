@@ -2037,7 +2037,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 
   if (type == "dissolution") {
     
-    if (any(grepl("nodefactor", mydx$dissolution) == TRUE)) {
+    if (any(grepl("nodefactor", x$dissolution) == TRUE)) {
       warning("Support for dissolution models containing a nodefactor term is deprecated, and will be removed in a future release.", call.=FALSE)
     }
     
