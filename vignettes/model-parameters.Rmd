@@ -30,7 +30,7 @@ Therefore, in this vignette, we demonstrate how to implement:
 
 - Scenarios: sets of parameters to be changed for a simulation, either at the start or at a specific timestep.
 - Random parameters: distributions of possible values rather than a single fixed value.
-- Time-varying parameters and control settings: The scenarios functionality provides the most straightforward way to implement time-varying parameters, but more direct functionality is demonstrated here for advanced users seeking to implement time-varying parameters or control settings. 
+- Time-varying parameters and control settings: The scenarios functionality provides the most straightforward way to implement time-varying parameters, but more direct functionality is demonstrated here for advanced users seeking to implement time-varying parameters or control settings.
 
 ## Scenarios
 
@@ -159,6 +159,32 @@ One thing to note is that you must pass in the values for each sub-parameter in 
 
 When working with a lot of parameters, it is recommended to store the `scenarios.df` as CSV or Excel file so your parameters can be easily shared and edited.
 
+## Parameters Table
+
+Similarly to the scenarios, the `param.net` function that creates the `param` object for the `netsim` function comes with a `data.frame.params` argument to pass in many parameters at once.
+
+The `data.frame` of parameters to be given as input first 3 columns must be:
+1. 'param': the name of the parameter. If it is a multi dimension parameter, prepend the name, with `_1`, `_2`, etc for the position in the vector.
+2. 'value': the value for the parameter (or the Nth position if multidimensional)
+3. 'type': a character string containing either "numeric", "logical" or "character". The type the value will be cast to.
+
+```{r param_table}
+df_params <- tribble(
+  ~param, ~value, ~type,
+  "hiv.test.rate_1",  "0",            "numeric",
+  "hiv.test.rate_2",  "0",            "numeric",
+  "hiv.test.rate_3",  "0",            "numeric",
+  "prep.require.lnt", "TRUE",         "logical",
+  "group_1",          "first group",  "character",
+  "group_2",          "second group", "character"
+)
+param <- param.net(data.frame.params = df_params)
+knitr::kable(df_params)
+```
+
+Apart from these 3 columns, the `data.frame` can contain any number of other columns. A typical use case would be to have a "details" and "source" columns to document where these parameters come from. As with the scenarios, it is recommended to store these parameters in a CSV or Excel file so they can be easily shared and edited.
+
+
 ## Random Parameters
 
 We have demonstrated how to work with fixed and time-varying parameters above. One may also be interested in working with  distributions of parameters that may follow some parametric or non-parametric form. For example, we may want to sample a range of values for the probability of infection given contact for each simulation of a model, instead of using a single value across all simulations.
@@ -221,7 +247,7 @@ param
 We kept the `inf.prob` parameter fixed at `0.3`, and then defined a `list` object called `my.randoms` containing 3 elements:
 
 - `act.rate` uses the `param_random` [function factory](https://adv-r.hadley.nz/function-factories.html) defined by EpiModel
-  (see `?EpiModel::param_random`). In this case, each simulation will sample one of the three defined values in the vector with equal probability. 
+  (see `?EpiModel::param_random`). In this case, each simulation will sample one of the three defined values in the vector with equal probability.
 - `dummy.param` is a function with no argument that returns a random value from a beta distribution.
 - `dummy.strat.param` is a function with no argument that returns 2 values sampled from normal distributions, each with different means and standard deviations.
 
@@ -303,7 +329,7 @@ mod <- netsim(est, param, init, control)
 mod
 ```
 
-The output is similar to what we saw with the generator functions defined above. See that the correlated parameter sets are sampled from together from the data frame of parameters. 
+The output is similar to what we saw with the generator functions defined above. See that the correlated parameter sets are sampled from together from the data frame of parameters.
 
 ```{r}
 related.param
@@ -357,7 +383,7 @@ In this example, we define two **updaters**, one that occurs at time step 100 an
 
 ### Incorporating Updaters
 
-Below we set up a complete example with a closed population SI model using the parameters and updaters defined above. Note that the parameter updaters get passed into `param.net` with the special `.param.updater.list` argument. 
+Below we set up a complete example with a closed population SI model using the parameters and updaters defined above. Note that the parameter updaters get passed into `param.net` with the special `.param.updater.list` argument.
 
 ```{r updater-module}
 param <- param.net(

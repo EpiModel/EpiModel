@@ -144,7 +144,7 @@ multidimensional)
 3. "type": a character string containing either "numeric", "logical" or
    "character". The type to cast the value to.
 
-Appart from these 3 columns, the \code{data.frame} can contain any number
+Apart from these 3 columns, the \code{data.frame} can contain any number
 of other columns. A typical use case would be to have a "details" and
 "source" columns to document where these parameters come from.
 }
