@@ -837,7 +837,7 @@ add.vertices.networkLite <- function(x, nv, vattr = NULL, last.mode = TRUE, ...)
   if(network.edgecount(e2, na.omit = FALSE) > 0) {
     edgelist <- dplyr::bind_rows(e1$el, e2$el)
     edgelist <- edgelist[!duplicated(edgelist[,c(".tail", ".head")]),]
-    out$el <- edgelist[order(edgelist[,1], edgelist[,2]),]
+    out$el <- edgelist[order(edgelist$.tail, edgelist$.head),]
   }
   out
 }
@@ -860,7 +860,7 @@ add.vertices.networkLite <- function(x, nv, vattr = NULL, last.mode = TRUE, ...)
     edgelist <- dplyr::bind_rows(e2$el, e1$el)
     nd <- !duplicated(edgelist[,c(".tail", ".head")])
     out$el <- out$el[nd[-seq_len(network.edgecount(e2, na.omit = FALSE))],]
-    out$el <- out$el[order(out$el[,1], out$el[,2]),]
+    out$el <- out$el[order(out$el$.tail, out$el$.head),]
   }
   out
 }
