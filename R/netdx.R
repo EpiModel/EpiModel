@@ -490,6 +490,9 @@ make_dissolution_stats <- function(diag.sim, coef.diss, nsteps, verbose = TRUE) 
                        },
                        c(term = "", args = ""))
   diss.terms <- gsub("\"", "", diss.terms)
+  if (grepl(",", diss.terms[2,2])==TRUE) {
+    diss.terms[2,2] <- strsplit(diss.terms[2,2], ",")[1]$args[1]
+  }    # Used to remove diff argument if present, regardless of its value
   if(ncol(diss.terms)==2) {
     diss_attr_name <- diss.terms[2,2]
   } else {
