@@ -490,10 +490,16 @@ make_dissolution_stats <- function(diag.sim, coef.diss, nsteps, verbose = TRUE) 
                        },
                        c(term = "", args = ""))
   diss.terms <- gsub("\"", "", diss.terms)
-  if (grepl(",", diss.terms[2,2])==TRUE) {
-    diss.terms[2,2] <- strsplit(diss.terms[2,2], ",")[1]$args[1]
-  }    # Used to remove diff argument if present, regardless of its value
   if(ncol(diss.terms)==2) {
+    if (grepl(",", diss.terms[2,2])==TRUE) {
+      if(grepl("=", diss.terms[2,2])==TRUE) {
+        diss_arg <- as.logical(strsplit(diss.terms[2,2], "=")$args[2])
+      } else {
+        (stop("Dissolution model does not conform to expected format."))
+      }
+      diss.terms[2,2] <- strsplit(diss.terms[2,2], ",")$args[1]
+    }    # Used to remove diff argument if present, regardless of its value
+    if(diss_term=="nodematch" & !exists("diss_arg")) diss_arg <- FALSE
     diss_attr_name <- diss.terms[2,2]
   } else {
     diss_attr_name <- NULL
@@ -503,8 +509,8 @@ make_dissolution_stats <- function(diag.sim, coef.diss, nsteps, verbose = TRUE) 
   pages <- sapply(seq_along(sim.df), function(x) {
                       meanage <- edgelist_meanage(el=sim.df[[x]], diss_term=diss_term,
                                    diss_attr=if(is.null(diss_term)) NULL else  
-                                     get_vertex_attribute(diag.sim[[x]], diss_attr_name)
-                      )
+                                     get_vertex_attribute(diag.sim[[x]], diss_attr_name),
+                                   diss_arg=if(!exists("diss_arg")) NULL else diss_arg)
                       l <- nsteps - nrow(meanage)
                       if (l > 0) {
                         meanage <- rbind(meanage, matrix(rep(NA, l*ncol(meanage)),nrow=l))
@@ -541,15 +547,37 @@ make_dissolution_stats <- function(diag.sim, coef.diss, nsteps, verbose = TRUE) 
   } else {
     if(diss_term=="nodematch") {
       # assumes same attribute values across sims -- appropriate for netdx (but not beyond)
-      attribute <- get_vertex_attribute(diag.sim[[1]], diss_attr_name) 
-      prop.diss <- sapply(seq_along(sim.df), function(d) {
-        t(sapply(seq_len(nsteps), function(x) {
-          c(sum(sim.df[[d]]$terminus==x & attribute[sim.df[[d]]$head]!=attribute[sim.df[[d]]$tail]) / 
-              sum(sim.df[[d]]$onset<x & sim.df[[d]]$terminus>=x & attribute[sim.df[[d]]$head]!=attribute[sim.df[[d]]$tail]),
-            sum(sim.df[[d]]$terminus==x & attribute[sim.df[[d]]$head]==attribute[sim.df[[d]]$tail]) / 
-              sum(sim.df[[d]]$onset<x & sim.df[[d]]$terminus>=x & attribute[sim.df[[d]]$head]==attribute[sim.df[[d]]$tail]))
-        }))
-      }, simplify="array")
+      attribute <- get_vertex_attribute(diag.sim[[1]], diss_attr_name)
+      
+      if(diss_arg==TRUE) {
+          attrvalues <- sort(unique(attribute))
+          prop.diss <- sapply(seq_along(sim.df), function(d) {
+            t(sapply(seq_len(nsteps), function(x) {
+              heterogs <- sum(sim.df[[d]]$terminus==x & 
+                                attribute[sim.df[[d]]$head]!=attribute[sim.df[[d]]$tail]) / 
+                          sum(sim.df[[d]]$onset<x & sim.df[[d]]$terminus>=x & 
+                                attribute[sim.df[[d]]$head]!=attribute[sim.df[[d]]$tail])
+              homogs <- sapply(seq_along(attrvalues), function(y) 
+                          sum(sim.df[[d]]$terminus==x & 
+                                attribute[sim.df[[d]]$head]==attrvalues[y] & 
+                                attribute[sim.df[[d]]$tail]==attrvalues[y]) / 
+                          sum(sim.df[[d]]$onset<x & sim.df[[d]]$terminus>=x & 
+                                attribute[sim.df[[d]]$head]==attrvalues[y] &
+                                attribute[sim.df[[d]]$tail]==attrvalues[y])
+              )  
+              return(c(heterogs,homogs))
+            }))
+          }, simplify="array")
+      } else {
+          prop.diss <- sapply(seq_along(sim.df), function(d) {
+            t(sapply(seq_len(nsteps), function(x) {
+              c(sum(sim.df[[d]]$terminus==x & attribute[sim.df[[d]]$head]!=attribute[sim.df[[d]]$tail]) / 
+                  sum(sim.df[[d]]$onset<x & sim.df[[d]]$terminus>=x & attribute[sim.df[[d]]$head]!=attribute[sim.df[[d]]$tail]),
+                sum(sim.df[[d]]$terminus==x & attribute[sim.df[[d]]$head]==attribute[sim.df[[d]]$tail]) / 
+                  sum(sim.df[[d]]$onset<x & sim.df[[d]]$terminus>=x & attribute[sim.df[[d]]$head]==attribute[sim.df[[d]]$tail]))
+            }))
+          }, simplify="array")
+      }
     } else {
       if(diss_term=="nodemix") {
         # assumes same attribute values across sims -- appropriate for netdx (but not beyond)
@@ -635,10 +663,17 @@ make_dissolution_stats <- function(diag.sim, coef.diss, nsteps, verbose = TRUE) 
         c("edges") 
   } else {
     if (diss_term=="nodematch") {
-      rownames(stats.table.duration) <- 
-        rownames(stats.table.dissolution) <- 
-        c(paste("match",diss_attr_name, "FALSE", sep="."),
-        paste("match",diss_attr_name, "TRUE ", sep="."))
+      if(diss_arg==TRUE) {
+        rownames(stats.table.duration) <- 
+          rownames(stats.table.dissolution) <- 
+          c(paste("match",diss_attr_name, "FALSE", sep="."),
+            sapply(seq_along(attrvalues), function(z) paste("match",diss_attr_name,"TRUE",attrvalues[z], sep='.')))
+      } else {
+        rownames(stats.table.duration) <- 
+          rownames(stats.table.dissolution) <- 
+          c(paste("match",diss_attr_name, "FALSE", sep="."),
+            paste("match",diss_attr_name, "TRUE ", sep="."))
+      }          
     } else {
       if (diss_term=="nodemix") {
         # assumes same attribute values across sims -- appropriate for netdx (but not beyond)

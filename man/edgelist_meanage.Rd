@@ -4,7 +4,7 @@
 \alias{edgelist_meanage}
 \title{Mean Age of Partnerships over Time}
 \usage{
-edgelist_meanage(el, diss_term = NULL, diss_attr = NULL)
+edgelist_meanage(el, diss_term = NULL, diss_attr = NULL, diss_arg = NULL)
 }
 \arguments{
 \item{el}{A timed edgelist with start and end times extracted from a
@@ -19,6 +19,14 @@ or \code{NULL} for homogeneous (edges-only) dissolution model}
 \item{diss_attr}{A vector containing values of the nodal attribute
 associated with the heterogeneity in the dissolution model,
 or \code{NULL} for homogeneous (edges-only) dissolution model}
+
+\item{diss_arg}{A vector containing any additional argument(s) to the 
+term associated with the heterogeneity in the dissolution model,
+or \code{NULL} if there is no relevant argument. At present, this is 
+only used when the dissolution model contains a \code{nodematch} term, 
+in which case \code{diss_arg} should equal either \code{TRUE} or 
+\code{FALSE} to indicate the value of the \code{diff} argument to 
+that term. Additional uses may be added in the future.}
 }
 \value{
 A matrix containing the mean edge age at each timestep (rows),

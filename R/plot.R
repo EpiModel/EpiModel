@@ -1573,6 +1573,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
     if(duration.imputed==TRUE) {
       data <- simplify2array(lapply(1:nsims,
                                     function(x)pages[,,x]+pages_imptd))
+      if(is.vector(data)) data <- array(data, dim=c(1,nsteps,nsims))    # when only one stat and only one timestep
     } else {
       data <- pages
     }

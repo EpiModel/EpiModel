@@ -543,6 +543,13 @@ edgelist_censor <- function(el) {
 #' @param diss_attr A vector containing values of the nodal attribute
 #'        associated with the heterogeneity in the dissolution model,
 #'        or \code{NULL} for homogeneous (edges-only) dissolution model 
+#' @param diss_arg A vector containing any additional argument(s) to the 
+#'        term associated with the heterogeneity in the dissolution model,
+#'        or \code{NULL} if there is no relevant argument. At present, this is 
+#'        only used when the dissolution model contains a \code{nodematch} term, 
+#'        in which case \code{diss_arg} should equal either \code{TRUE} or 
+#'        \code{FALSE} to indicate the value of the \code{diff} argument to 
+#'        that term. Additional uses may be added in the future.
 #'
 #' @details
 #' This function calculates the mean partnership age at each time step over
@@ -557,7 +564,7 @@ edgelist_censor <- function(el) {
 #'
 #' @keywords netUtils internal
 #'
-edgelist_meanage <- function(el, diss_term=NULL, diss_attr=NULL) {
+edgelist_meanage <- function(el, diss_term=NULL, diss_attr=NULL, diss_arg=NULL) {
 # TODO: remove nodefactor from documentation in later version
   terminus <- el$terminus
   onset <- el$onset
@@ -568,12 +575,17 @@ edgelist_meanage <- function(el, diss_term=NULL, diss_attr=NULL) {
     # TODO: remove nodefactor in future release
     meanpage <- matrix(NA, maxterm, 1)
   } else {
+    attrvalues <- sort(unique(diss_attr))
+    n.attrvalues <- length(attrvalues)
     attr1 <- diss_attr[el$head]
     attr2 <- diss_attr[el$tail]
-    if(diss_term=="nodematch") meanpage <- matrix(NA, maxterm, 2)
+    if(diss_term=="nodematch" && diss_arg==FALSE) {
+      meanpage <- matrix(NA, maxterm, 2)
+    }
+    if(diss_term=="nodematch" && diss_arg==TRUE) {
+      meanpage <- matrix(NA, maxterm, n.attrvalues+1)
+    }
     if(diss_term=="nodemix") {
-      attrvalues <- sort(unique(diss_attr))
-      n.attrvalues <- length(attrvalues)
       n.attrcombos <- n.attrvalues*(n.attrvalues+1)/2
       meanpage <- matrix(NA, maxterm, n.attrcombos)
       indices2.grid <- expand.grid(row = 1:n.attrvalues, col = 1:n.attrvalues)
@@ -593,8 +605,17 @@ edgelist_meanage <- function(el, diss_term=NULL, diss_attr=NULL) {
         attr1a <- attr1[actp]
         attr2a <- attr2[actp]
         if(diss_term=="nodematch") {
-          meanpage[at,1] <- mean(page[attr1a!=attr2a])
-          meanpage[at,2] <- mean(page[attr1a==attr2a])
+          if(diss_arg==TRUE) {
+            su_diss_attr <- sort(unique(diss_attr))
+            meanpage[at,1] <- mean(page[attr1a != attr2a])
+            for (k in seq_along(su_diss_attr)) {
+              meanpage[at,k+1] <- 
+                mean(page[attr1a==su_diss_attr[k] & attr2a==su_diss_attr[k]])
+            }
+          } else {
+            meanpage[at,1] <- mean(page[attr1a!=attr2a])
+            meanpage[at,2] <- mean(page[attr1a==attr2a])
+          }
         }
         if(diss_term=="nodemix") {
           for(i in 1:nrow(indices2.grid)) {
