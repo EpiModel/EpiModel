@@ -15,6 +15,7 @@ netest(
   set.control.ergm,
   set.control.stergm,
   set.control.tergm,
+  set.control.ergm.ego,
   verbose = FALSE,
   nested.edapprox = TRUE,
   keep.fit = FALSE,
@@ -22,14 +23,16 @@ netest(
 )
 }
 \arguments{
-\item{nw}{An object of class \code{network}.}
+\item{nw}{An object of class \code{network} or \code{egor}, with the latter
+indicating an \code{ergm.ego} fit.}
 
 \item{formation}{Right-hand sided STERGM formation formula in the form
 \code{~edges + ...}, where \code{...} are additional network
 statistics.}
 
 \item{target.stats}{Vector of target statistics for the formation model, with
-one number for each network statistic in the model.}
+one number for each network statistic in the model.  Ignored if
+fitting via \code{ergm.ego}.}
 
 \item{coef.diss}{An object of class \code{disscoef} output from the
 \code{\link{dissolution_coefs}} function.}
@@ -43,7 +46,9 @@ formula.}
 
 \item{edapprox}{If \code{TRUE}, use the indirect edges dissolution
 approximation  method for the dynamic model fit, otherwise use the
-more time-intensive full STERGM estimation (see details).}
+more time-intensive full STERGM estimation (see details).  For 
+\code{nw} of class \code{egor}, only \code{edapprox = TRUE} is 
+supported.}
 
 \item{set.control.ergm}{Control arguments passed to \code{ergm} (see
 details).}
@@ -53,6 +58,9 @@ details).}
 
 \item{set.control.tergm}{Control arguments passed to \code{tergm}
 (see details).}
+
+\item{set.control.ergm.ego}{Control arguments passed to \code{ergm.ego} (see
+details).}
 
 \item{verbose}{If \code{TRUE}, print model fitting progress to console.}
 
@@ -73,15 +81,15 @@ Estimates statistical network models using the exponential
              dynamic/temporal models (STERGM).
 }
 \details{
-\code{netest} is a wrapper function for the \code{ergm} and \code{stergm}
-functions that estimate static and dynamic network models, respectively.
-Network model estimation is the first step in simulating a stochastic network
-epidemic model in \code{EpiModel}. The output from \code{netest} is a
-necessary input for running the epidemic simulations in \code{\link{netsim}}.
-With a fitted network model, one should always first proceed to model
-diagnostics, available through the \code{\link{netdx}} function, to check
-model fit. A detailed description of fitting these models, along with
-examples, may be found in the
+\code{netest} is a wrapper function for the \code{ergm}, \code{ergm.ego}, 
+and \code{tergm} functions that estimate static and dynamic network models. 
+Network model estimation is the first step in simulating a stochastic 
+network epidemic model in \code{EpiModel}. The output from \code{netest} is
+a necessary input for running the epidemic simulations in 
+\code{\link{netsim}}. With a fitted network model, one should always first 
+proceed to model diagnostics, available through the \code{\link{netdx}} 
+function, to check model fit. A detailed description of fitting these 
+models, along with examples, may be found in the
 \href{http://www.epimodel.org/tut.html}{Basic Network Models} tutorials.
 }
 \section{Edges Dissolution Approximation}{
@@ -126,8 +134,8 @@ model coefficients (value = \code{TRUE}).
 
 \section{Control Arguments}{
 
-The \code{ergm} and \code{tergm} functions allow control settings for the
-model fitting process. When fitting a STERGM directly (setting
+The \code{ergm}, \code{ergm.ego}, and \code{tergm} functions allow control 
+settings for the model fitting process. When fitting a STERGM directly (setting
 \code{edapprox} to \code{FALSE}), control parameters may be passed to the
 \code{tergm} function with the \code{set.control.tergm} argument in
 \code{netest}. The controls should be input through the
@@ -136,10 +144,13 @@ model fitting process. When fitting a STERGM directly (setting
 
 When fitting a STERGM indirectly (setting \code{edapprox} to \code{TRUE}),
 control settings may be passed to the \code{ergm} function using
-\code{set.control.ergm} in \code{netest}. The controls should be input
-through the \code{control.ergm()} function, with the available parameters
-listed in the \code{\link[ergm:control.ergm]{control.ergm}} help page in the
-\code{ergm} package. An example is below.
+\code{set.control.ergm}, or to the \code{ergm.ego} function using
+\code{set.control.ergm.ego}.  The controls should be input through the
+\code{control.ergm()} and \code{control.ergm.ego()} functions, respectively,
+with the available parameters listed in the 
+\code{\link[ergm:control.ergm]{control.ergm}} help page in the \code{ergm} 
+package and the \code{\link[ergm.ego:control.ergm.ego]{control.ergm.ego}} 
+help page in the \code{ergm.ego} package. An example is below.
 }
 
 \examples{

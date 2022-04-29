@@ -39,6 +39,7 @@ Imports:
     utils,
     doParallel,
     ergm (>= 4.0),
+    ergm.ego (>= 1.0.670),
     foreach,
     network (>= 1.17),
     RColorBrewer,
@@ -53,6 +54,7 @@ Suggests:
     rmarkdown,
     shiny,
     testthat,
+    egor,
     tidyr
 VignetteBuilder: knitr
 LinkingTo: Rcpp, ergm
@@ -62,4 +64,5 @@ Remotes: github::statnet/statnet.common@master,
     github::statnet/network@master,
     github::statnet/networkDynamic@master,
     github::statnet/ergm@master,
+    github::statnet/ergm.ego@master,
     github::statnet/tergm@master
