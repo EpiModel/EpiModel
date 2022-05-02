@@ -1202,7 +1202,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
             }
             quants <- c((1 - qnts) / 2, 1 - ((1 - qnts) / 2))
             qnt.prev <- apply(dataj, 1, function(x) {
-              quantile(x, c(quants[1], quants[2]))
+              quantile(x, c(quants[1], quants[2]), na.rm = TRUE)
             })
             xx <- c(1:(ncol(qnt.prev)), (ncol(qnt.prev)):1)
             if (qnts.smooth == FALSE) {
@@ -1305,7 +1305,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
               }
               quants <- c((1 - qnts) / 2, 1 - ((1 - qnts) / 2))
               qnt.prev <- apply(dataj, 1, function(x) {
-                  quantile(x, c(quants[1], quants[2]))
+                  quantile(x, c(quants[1], quants[2]), na.rm = TRUE)
                 })
               xx <- c(1:(ncol(qnt.prev)), (ncol(qnt.prev)):1)
               if (qnts.smooth == FALSE) {
@@ -1418,7 +1418,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
               }
               quants <- c((1 - qnts) / 2, 1 - ((1 - qnts) / 2))
               qnt.prev <- apply(dataj, 1, function(x) {
-                quantile(x, c(quants[1], quants[2]))
+                quantile(x, c(quants[1], quants[2]), na.rm = TRUE)
               })
               xx <- c(1:(ncol(qnt.prev)), (ncol(qnt.prev)):1)
               if (qnts.smooth == FALSE) {
@@ -1472,7 +1472,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
             }
             quants <- c((1 - qnts) / 2, 1 - ((1 - qnts) / 2))
             qnt.prev <- apply(dataj, 1, function(x) {
-                  quantile(x, c(quants[1], quants[2]))
+                  quantile(x, c(quants[1], quants[2]), na.rm = TRUE)
               })
             xx <- c(1:(ncol(qnt.prev)), (ncol(qnt.prev)):1)
             if (qnts.smooth == FALSE) {
@@ -1709,7 +1709,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
               }
               quants <- c((1 - qnts) / 2, 1 - ((1 - qnts) / 2))
               qnt.prev <- apply(dataj, 1, function(x) {
-                quantile(x, c(quants[1], quants[2]))
+                quantile(x, c(quants[1], quants[2]), na.rm = TRUE)
               })
               xx <- c(1:(ncol(qnt.prev)), (ncol(qnt.prev)):1)
               if (qnts.smooth == FALSE) {
@@ -1799,7 +1799,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
               }
               quants <- c((1 - qnts) / 2, 1 - ((1 - qnts) / 2))
               qnt.prev <- apply(dataj, 1, function(x) {
-                quantile(x, c(quants[1], quants[2]))
+                quantile(x, c(quants[1], quants[2]), na.rm = TRUE)
               })
               xx <- c(1:(ncol(qnt.prev)), (ncol(qnt.prev)):1)
               if (qnts.smooth == FALSE) {
@@ -1907,7 +1907,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
               }
               quants <- c((1 - qnts) / 2, 1 - ((1 - qnts) / 2))
               qnt.prev <- apply(dataj, 1, function(x) {
-                quantile(x, c(quants[1], quants[2]))
+                quantile(x, c(quants[1], quants[2]), na.rm = TRUE)
               })
               xx <- c(1:(ncol(qnt.prev)), (ncol(qnt.prev)):1)
               if (qnts.smooth == FALSE) {
@@ -1961,7 +1961,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
               }
               quants <- c((1 - qnts) / 2, 1 - ((1 - qnts) / 2))
               qnt.prev <- apply(dataj, 1, function(x) {
-                quantile(x, c(quants[1], quants[2]))
+                quantile(x, c(quants[1], quants[2]), na.rm = TRUE)
               })
               xx <- c(1:(ncol(qnt.prev)), (ncol(qnt.prev)):1)
               if (qnts.smooth == FALSE) {
@@ -2173,7 +2173,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
               }
               quants <- c((1 - qnts) / 2, 1 - ((1 - qnts) / 2))
               qnt.prev <- apply(dataj, 1, function(x) {
-                quantile(x, c(quants[1], quants[2]))
+                quantile(x, c(quants[1], quants[2]), na.rm = TRUE)
               })
               xx <- c(1:(ncol(qnt.prev)), (ncol(qnt.prev)):1)
               if (qnts.smooth == FALSE) {
@@ -2263,7 +2263,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
               }
               quants <- c((1 - qnts) / 2, 1 - ((1 - qnts) / 2))
               qnt.prev <- apply(dataj, 1, function(x) {
-                quantile(x, c(quants[1], quants[2]))
+                quantile(x, c(quants[1], quants[2]), na.rm = TRUE)
               })
               xx <- c(1:(ncol(qnt.prev)), (ncol(qnt.prev)):1)
               if (qnts.smooth == FALSE) {
@@ -2371,7 +2371,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
               }
               quants <- c((1 - qnts) / 2, 1 - ((1 - qnts) / 2))
               qnt.prev <- apply(dataj, 1, function(x) {
-                quantile(x, c(quants[1], quants[2]))
+                quantile(x, c(quants[1], quants[2]), na.rm = TRUE)
               })
               xx <- c(1:(ncol(qnt.prev)), (ncol(qnt.prev)):1)
               if (qnts.smooth == FALSE) {
@@ -2425,7 +2425,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
               }
               quants <- c((1 - qnts) / 2, 1 - ((1 - qnts) / 2))
               qnt.prev <- apply(dataj, 1, function(x) {
-                quantile(x, c(quants[1], quants[2]))
+                quantile(x, c(quants[1], quants[2]), na.rm = TRUE)
               })
               xx <- c(1:(ncol(qnt.prev)), (ncol(qnt.prev)):1)
               if (qnts.smooth == FALSE) {
@@ -3254,7 +3254,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
 
           quants <- c((1 - qnts) / 2, 1 - ((1 - qnts) / 2))
           qnt.prev <- tapply(dataj[, -1], dataj[, 1], function(x) {
-            quantile(x, c(quants[1], quants[2]))
+            quantile(x, c(quants[1], quants[2]), na.rm = TRUE)
           })
           qnt.prev <- do.call("cbind", qnt.prev)
           xx <- c(1:(ncol(qnt.prev)), (ncol(qnt.prev)):1)
@@ -3350,7 +3350,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
 
           quants <- c((1 - qnts) / 2, 1 - ((1 - qnts) / 2))
           qnt.prev <- tapply(dataj[, -1], dataj[, 1], function(x) {
-            quantile(x, c(quants[1], quants[2]))
+            quantile(x, c(quants[1], quants[2]), na.rm = TRUE)
           })
           qnt.prev <- do.call("cbind", qnt.prev)
           xx <- c(1:(ncol(qnt.prev)), (ncol(qnt.prev)):1)
@@ -3455,7 +3455,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
             }
             quants <- c((1 - qnts) / 2, 1 - ((1 - qnts) / 2))
             qnt.prev <- tapply(dataj[, -1], dataj[, 1], function(x) {
-              quantile(x, c(quants[1], quants[2]))
+              quantile(x, c(quants[1], quants[2]), na.rm = TRUE)
             })
             qnt.prev <- do.call("cbind", qnt.prev)
             xx <- c(1:(ncol(qnt.prev)), (ncol(qnt.prev)):1)
@@ -3510,7 +3510,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
 
           quants <- c((1 - qnts) / 2, 1 - ((1 - qnts) / 2))
           qnt.prev <- tapply(dataj[, -1], dataj[, 1], function(x) {
-            quantile(x, c(quants[1], quants[2]))
+            quantile(x, c(quants[1], quants[2]), na.rm = TRUE)
           })
           qnt.prev <- do.call("cbind", qnt.prev)
           xx <- c(1:(ncol(qnt.prev)), (ncol(qnt.prev)):1)
