@@ -174,8 +174,5 @@ test_that("non-nested EDA works in netsim", {
   est <- netest(nw, formation = ~edges + nodematch("race"), target.stats = c(10, 5),
                 coef.diss = dc, nested.edapprox = FALSE)
   dxs <- netdx(est, nsteps = 2, nsims = 2, dynamic = FALSE)
-  param <- param.net(inf.prob = 0.3, act.rate = 0.5)
-  init <- init.net(i.num = 10)
-  control <- control.net(type = "SI", nsims = 1, nsteps = 5, verbose = FALSE)
   sim <- netsim(est, param, init, control)
 })
