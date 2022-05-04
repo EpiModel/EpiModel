@@ -1,5 +1,5 @@
 ---
-title: "Working With Model Parameters in EpiModel"
+title: "Working with Model Parameters in EpiModel"
 author: "EpiModel v`r packageVersion('EpiModel')`"
 date: "`r Sys.Date()`"
 vignette: >
@@ -159,30 +159,39 @@ One thing to note is that you must pass in the values for each sub-parameter in 
 
 When working with a lot of parameters, it is recommended to store the `scenarios.df` as CSV or Excel file so your parameters can be easily shared and edited.
 
-## Parameters Table
+## Parameters Input Via Table
 
-Similarly to the scenarios, the `param.net` function that creates the `param` object for the `netsim` function comes with a `data.frame.params` argument to pass in many parameters at once.
+Similar to the scenarios, the `param.net` function that creates the `param` object for `netsim` allows for inputting model parameters with a data.frame table. This allows a user to pass in many parameters at once, or work with a spreadsheet to track and update parameters before use in EpiModel.
 
-The `data.frame` of parameters to be given as input first 3 columns must be:
-1. 'param': the name of the parameter. If it is a multi dimension parameter, prepend the name, with `_1`, `_2`, etc for the position in the vector.
-2. 'value': the value for the parameter (or the Nth position if multidimensional)
-3. 'type': a character string containing either "numeric", "logical" or "character". The type the value will be cast to.
+The `data.frame` of parameters must be specifically formatted such that the first 3 columns must be:
+1. 'param': The name of the parameter. If this is a non-scalar  parameter (a vector of length > 1), end the parameter name with the position on the vector (e.g., `"p_1"`, `"p_2"`, ...).
+2. 'value': the value for the parameter (or the value of the parameter in the Nth position if non-scalar).
+3. 'type': a character string containing either `"numeric"`, `"logical"`, or `"character"` to define the parameter object class.
+
+In addition to these 3 columns, the `data.frame` can contain any number of other columns, such as `details` or `source` columns to document parameter meta-data. However, these extra columns will not be used by EpiModel.
+
+In this example, we are inputting the parameters into a `data.frame` via `tribble`. In practice, parameters may be stored in an Excel file or CSV file and imported into a `data.frame` using the usual read functions.
 
 ```{r param_table}
 df_params <- tribble(
   ~param, ~value, ~type,
-  "hiv.test.rate_1",  "0",            "numeric",
-  "hiv.test.rate_2",  "0",            "numeric",
-  "hiv.test.rate_3",  "0",            "numeric",
+  "hiv.test.rate_1",  "0.003",        "numeric",
+  "hiv.test.rate_2",  "0.102",        "numeric",
+  "hiv.test.rate_3",  "0.492",        "numeric",
   "prep.require.lnt", "TRUE",         "logical",
-  "group_1",          "first group",  "character",
-  "group_2",          "second group", "character"
+  "group_1",          "first",        "character",
+  "group_2",          "second",       "character"
 )
-param <- param.net(data.frame.params = df_params)
 knitr::kable(df_params)
 ```
 
-Apart from these 3 columns, the `data.frame` can contain any number of other columns. A typical use case would be to have a "details" and "source" columns to document where these parameters come from. As with the scenarios, it is recommended to store these parameters in a CSV or Excel file so they can be easily shared and edited.
+To use this table of parameters with `param.net`, pass in the table of parameters via the `data.frame.params` argument in `param.net`. Note that these parameters may also be combined with named parameters outside of a table, for maximum flexibility. In this example, we also pass in two extra parameters, `other.param` and `act.rate`. Note that when the `param` object is printed, all of the parameters are processed as expected.
+
+```{r param_table2}
+param <- param.net(data.frame.params = df_params, 
+                   other.param = c(5, 10), act.rate = 1)
+param
+```
 
 
 ## Random Parameters
