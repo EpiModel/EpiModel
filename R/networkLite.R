@@ -207,7 +207,7 @@ set.vertex.attribute.networkLite <- function(x,
 #' @export
 #'
 list.vertex.attributes.networkLite <- function(x, ...) {
-  names(x$attr)
+  sort(unique(names(x$attr)))
 }
 
 #' @rdname networkLitemethods
@@ -233,7 +233,7 @@ set.network.attribute.networkLite <- function(x, attrname, value, ...) {
 #' @export
 #'
 list.network.attributes.networkLite <- function(x, ...) {
-  names(x$gal)
+  sort(unique(names(x$gal)))
 }
 
 #' @rdname networkLitemethods
@@ -285,7 +285,7 @@ set.edge.value.networkLite <- function(x, attrname, value, e = seq_len(network.e
 #' @export
 #'
 list.edge.attributes.networkLite <- function(x, ...) {
-  colnames(x$el)[-c(1,2)]
+  sort(unique(colnames(x$el)[-c(1,2)]))
 }
 
 

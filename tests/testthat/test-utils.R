@@ -171,9 +171,9 @@ test_that("get_formula_term_attr checks", {
   expect_equal(get_formula_term_attr(~edges + nodefactor("race"), nw), "race")
   expect_equal(get_formula_term_attr(~edges + nodefactor("race") +
                                        nodematch("riskg"), nw),
-               c("riskg", "race"))
+               c("race", "riskg"))
   expect_equal(get_formula_term_attr(~edges + nodefactor(c("race", "riskg")) +
                                        nodematch("riskg"), nw),
-               c("riskg", "race"))
+               c("race", "riskg"))
 
 })
