@@ -221,7 +221,7 @@ copy_datattr_to_nwattr <- function(dat) {
 #' @title Dissolution Coefficients for Stochastic Network Models
 #'
 #' @description Calculates dissolution coefficients, given a dissolution model
-#'              and average edge duration, to pass as offsets to an ERGM/STERGM
+#'              and average edge duration, to pass as offsets to an ERGM/TERGM
 #'              model fit in \code{netest}.
 #'
 #' @param dissolution Right-hand sided STERGM dissolution formula
@@ -263,9 +263,8 @@ copy_datattr_to_nwattr <- function(dat) {
 #'  \item \code{~offset(edges) + offset(nodefactor("<attr>"))}: a heterogeneous
 #'         model in which the edge duration varies by a specified attribute. The
 #'         duration vector should first contain the base value, then the values
-#'         for every other value of that attribute in the term. This option is 
-#'         deprecated. 
-#'         # TODO: remove deprecation message in future release
+#'         for every other value of that attribute in the term. This option is
+#'         deprecated.
 #' }
 #'
 #' @return
@@ -282,8 +281,9 @@ copy_datattr_to_nwattr <- function(dat) {
 #'  \item \strong{coef.form.corr:} corrections to be subtracted from formation
 #'        coefficients.
 #'  \item \strong{d.rate:} the departure rate.
-#'  \item \strong{diss.model.type:} the form of the dissolution model; options 
-#'        include \code{edgesonly}, \code{nodematch}, \code{nodemix}, and \code{nodefactor}.
+#'  \item \strong{diss.model.type:} the form of the dissolution model; options
+#'        include \code{edgesonly}, \code{nodematch}, \code{nodemix}, and
+#'        \code{nodefactor}.
 #' }
 #'
 #' @export
@@ -383,12 +383,15 @@ dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
       } else {
         if (grepl("offset[(]nodefactor", t2)) {
           t2.term <- diss.model.type <- "nodefactor"
-          warning("Support for dissolution models containing a nodefactor term is deprecated, and will be removed in a future release.")
+          warning("Support for dissolution models containing a nodefactor term
+                  is deprecated, and will be removed in a future release.")
           # TODO: remove functionality and deprecation message in future release
         } else {
           if (grepl("offset[(]nodemix", t2)) {
           t2.term <- diss.model.type <- "nodemix"
-          } else stop("The form of the dissolution argument is invalid. Type help(\'dissolution_coefs\') to see the set of options allowed.")
+          } else stop("The form of the dissolution argument is invalid. Type
+                      help(\'dissolution_coefs\') to see the set of options
+                      allowed.")
         }
       }
     }
@@ -536,30 +539,30 @@ edgelist_censor <- function(el) {
 #' @param el A timed edgelist with start and end times extracted from a
 #'        \code{networkDynamic} object using the
 #'        \code{as.data.frame.networkDynamic} function.
-#' @param diss_term A string indicating the form of heterogeneity present 
-#'        in the dissolution model (options \code{nodematch}, \code{nodemix}, 
+#' @param diss_term A string indicating the form of heterogeneity present
+#'        in the dissolution model (options \code{nodematch}, \code{nodemix},
 #'        and \code{nodefactor})
-#'        or \code{NULL} for homogeneous (edges-only) dissolution model 
+#'        or \code{NULL} for homogeneous (edges-only) dissolution model
 #' @param diss_attr A vector containing values of the nodal attribute
 #'        associated with the heterogeneity in the dissolution model,
-#'        or \code{NULL} for homogeneous (edges-only) dissolution model 
-#' @param diss_arg A vector containing any additional argument(s) to the 
+#'        or \code{NULL} for homogeneous (edges-only) dissolution model
+#' @param diss_arg A vector containing any additional argument(s) to the
 #'        term associated with the heterogeneity in the dissolution model,
-#'        or \code{NULL} if there is no relevant argument. At present, this is 
-#'        only used when the dissolution model contains a \code{nodematch} term, 
-#'        in which case \code{diss_arg} should equal either \code{TRUE} or 
-#'        \code{FALSE} to indicate the value of the \code{diff} argument to 
+#'        or \code{NULL} if there is no relevant argument. At present, this is
+#'        only used when the dissolution model contains a \code{nodematch} term,
+#'        in which case \code{diss_arg} should equal either \code{TRUE} or
+#'        \code{FALSE} to indicate the value of the \code{diff} argument to
 #'        that term. Additional uses may be added in the future.
 #'
 #' @details
 #' This function calculates the mean partnership age at each time step over
-#' a dynamic network simulation expressed in the form of a timed edgelist. 
-#' Means may be calculated for all edges, or disaggregated by nodal attribute  
+#' a dynamic network simulation expressed in the form of a timed edgelist.
+#' Means may be calculated for all edges, or disaggregated by nodal attribute
 #' combinations.
-#' 
+#'
 #' @return A matrix containing the mean edge age at each timestep (rows),
-#' with either one column (for homogeneous models, i.e. when 
-#' \code{diss_term=NULL}) or one column per attribute value combination 
+#' with either one column (for homogeneous models, i.e. when
+#' \code{diss_term=NULL}) or one column per attribute value combination
 #' (for heterogeneous models).
 #'
 #' @keywords netUtils internal
@@ -592,12 +595,12 @@ edgelist_meanage <- function(el, diss_term=NULL, diss_attr=NULL, diss_arg=NULL) 
       rowleqcol <- indices2.grid$row <= indices2.grid$col #assumes undirected
       indices2.grid <- indices2.grid[rowleqcol, ]
   }}
-  
+
   for (at in minterm:maxterm) {
     actp <- (onset <= at & terminus > at) |
       (onset == at & terminus == at);
     page <- at - onset[actp] + 1
-  
+
     if (is.null(diss_term) || diss_term=="nodefactor") {
       # TODO: remove nodefactor in future release
       meanpage[at,1] <- mean(page)
@@ -609,7 +612,7 @@ edgelist_meanage <- function(el, diss_term=NULL, diss_attr=NULL, diss_arg=NULL) 
             su_diss_attr <- sort(unique(diss_attr))
             meanpage[at,1] <- mean(page[attr1a != attr2a])
             for (k in seq_along(su_diss_attr)) {
-              meanpage[at,k+1] <- 
+              meanpage[at,k+1] <-
                 mean(page[attr1a==su_diss_attr[k] & attr2a==su_diss_attr[k]])
             }
           } else {
@@ -621,14 +624,14 @@ edgelist_meanage <- function(el, diss_term=NULL, diss_attr=NULL, diss_arg=NULL) 
           for(i in 1:nrow(indices2.grid)) {
             if(indices2.grid$row[i]==indices2.grid$col[i]) {
               meanpage[at,i] <- mean(
-                page[attr1a==attrvalues[indices2.grid$row[i]] & 
+                page[attr1a==attrvalues[indices2.grid$row[i]] &
                          attr2a==attrvalues[indices2.grid$col[i]]]
-              )  
+              )
             } else {
             meanpage[at,i] <- mean(
-              c(page[attr1a==attrvalues[indices2.grid$row[i]] & 
+              c(page[attr1a==attrvalues[indices2.grid$row[i]] &
                      attr2a==attrvalues[indices2.grid$col[i]]],
-                page[attr1a==attrvalues[indices2.grid$col[i]] & 
+                page[attr1a==attrvalues[indices2.grid$col[i]] &
                      attr2a==attrvalues[indices2.grid$row[i]]]
                 ))
             }

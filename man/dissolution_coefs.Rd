@@ -30,13 +30,14 @@ A list of class \code{disscoef} with the following elements:
  \item \strong{coef.form.corr:} corrections to be subtracted from formation
        coefficients.
  \item \strong{d.rate:} the departure rate.
- \item \strong{diss.model.type:} the form of the dissolution model; options 
-       include \code{edgesonly}, \code{nodematch}, \code{nodemix}, and \code{nodefactor}.
+ \item \strong{diss.model.type:} the form of the dissolution model; options
+       include \code{edgesonly}, \code{nodematch}, \code{nodemix}, and
+       \code{nodefactor}.
 }
 }
 \description{
 Calculates dissolution coefficients, given a dissolution model
-             and average edge duration, to pass as offsets to an ERGM/STERGM
+             and average edge duration, to pass as offsets to an ERGM/TERGM
              model fit in \code{netest}.
 }
 \details{
@@ -71,9 +72,8 @@ model estimation in \code{\link{netest}} are as follows:
  \item \code{~offset(edges) + offset(nodefactor("<attr>"))}: a heterogeneous
         model in which the edge duration varies by a specified attribute. The
         duration vector should first contain the base value, then the values
-        for every other value of that attribute in the term. This option is 
-        deprecated. 
-        # TODO: remove deprecation message in future release
+        for every other value of that attribute in the term. This option is
+        deprecated.
 }
 }
 \examples{

@@ -11,8 +11,8 @@ edgelist_meanage(el, diss_term = NULL, diss_attr = NULL, diss_arg = NULL)
 \code{networkDynamic} object using the
 \code{as.data.frame.networkDynamic} function.}
 
-\item{diss_term}{A string indicating the form of heterogeneity present 
-in the dissolution model (options \code{nodematch}, \code{nodemix}, 
+\item{diss_term}{A string indicating the form of heterogeneity present
+in the dissolution model (options \code{nodematch}, \code{nodemix},
 and \code{nodefactor})
 or \code{NULL} for homogeneous (edges-only) dissolution model}
 
@@ -20,18 +20,18 @@ or \code{NULL} for homogeneous (edges-only) dissolution model}
 associated with the heterogeneity in the dissolution model,
 or \code{NULL} for homogeneous (edges-only) dissolution model}
 
-\item{diss_arg}{A vector containing any additional argument(s) to the 
+\item{diss_arg}{A vector containing any additional argument(s) to the
 term associated with the heterogeneity in the dissolution model,
-or \code{NULL} if there is no relevant argument. At present, this is 
-only used when the dissolution model contains a \code{nodematch} term, 
-in which case \code{diss_arg} should equal either \code{TRUE} or 
-\code{FALSE} to indicate the value of the \code{diff} argument to 
+or \code{NULL} if there is no relevant argument. At present, this is
+only used when the dissolution model contains a \code{nodematch} term,
+in which case \code{diss_arg} should equal either \code{TRUE} or
+\code{FALSE} to indicate the value of the \code{diff} argument to
 that term. Additional uses may be added in the future.}
 }
 \value{
 A matrix containing the mean edge age at each timestep (rows),
-with either one column (for homogeneous models, i.e. when 
-\code{diss_term=NULL}) or one column per attribute value combination 
+with either one column (for homogeneous models, i.e. when
+\code{diss_term=NULL}) or one column per attribute value combination
 (for heterogeneous models).
 }
 \description{
@@ -39,8 +39,8 @@ Outputs a matrix of mean ages of edges at a series of timesteps.
 }
 \details{
 This function calculates the mean partnership age at each time step over
-a dynamic network simulation expressed in the form of a timed edgelist. 
-Means may be calculated for all edges, or disaggregated by nodal attribute  
+a dynamic network simulation expressed in the form of a timed edgelist.
+Means may be calculated for all edges, or disaggregated by nodal attribute
 combinations.
 }
 \keyword{internal}
