@@ -2,29 +2,30 @@
 % Please edit documentation in R/dendo.R
 \name{plot.transmat}
 \alias{plot.transmat}
-\title{Plot transmat Infection Tree in One of Several Styles}
+\title{Plot transmat Infection Tree in Three Styles}
 \usage{
 \method{plot}{transmat}(x, style = c("phylo", "network", "transmissionTimeline"), ...)
 }
 \arguments{
 \item{x}{A \code{\link{transmat}} object to be plotted.}
 
-\item{style}{Character name of plot style. One of "phylo", "network",
-or "transmissionTimeline"}
+\item{style}{Character name of plot style. One of \code{"phylo"},
+\code{"network"}, or \code{"transmissionTimeline"}.}
 
 \item{...}{Additional plot arguments to be passed to lower-level plot
-functions (plot.network, plot.phylo, etc)}
+functions (\code{plot.network}, \code{plot.phylo}, or
+\code{transmissionTimeline}).}
 }
 \description{
-Plots the infection tree described in a \code{\link{transmat}}
-             object in one of two styles: a phylogenetic tree or an
-             un-rooted network.
+Plots the transmission matrix tree from from \code{get_transmat}
+             in one of three styles: a phylogram, a directed network, or
+             a transmission timeline.
 }
 \details{
-The phylo plot requires the \code{ape} package. The
-\code{ndtv::transmissionTimeline} requires that the \code{ndtv} package
-is installed. All of the options are essentially
+The \code{phylo} plot requires the \code{ape} package. The
+\code{transmissionTimeline} plot requires that the \code{ndtv} package.
 }
 \seealso{
-\code{\link{plot.network}}, \code{\link[ape]{plot.phylo}}
+\code{\link{plot.network}}, \code{\link[ape]{plot.phylo}},
+         \code{\link[ndtv]{transmissionTimeline}}.
 }

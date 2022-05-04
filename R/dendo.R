@@ -2,8 +2,7 @@
 #' @title Convert transmat Infection Tree into a phylo Object
 #'
 #' @description Converts a transmission matrix from the \code{get_transmat}
-#'              function into a \code{phylo} class object by reordering and
-#'              labeling.
+#'              function into a \code{phylo} class object.
 #'
 #' @param x An object of class \code{transmat}, the output from
 #'        \code{\link{get_transmat}}.
@@ -206,15 +205,18 @@ as.phylo.transmat <- function(x,
 
 #' @title Convert transmat Infection Tree into a network Object
 #'
-#' @description Converts the edges of the infection tree described in the
-#'              \code{\link{transmat}} object into a \code{\link{network}}
-#'              object, copying in appropriate edge attributes for 'at',
-#'              'infDur', 'transProb', 'actRate', and 'finalProb' and
-#'              constructing a vertex attribute for 'at'.
+#' @description Converts a transmission matrix from the \code{get_transmat}
+#'              function into a \link{network} class object.
 #'
-#' @param x An object of class \code{transmat} to be converted into a network
-#'        object.
+#' @param x An object of class \code{transmat} to be converted into a
+#'          \code{network} class object.
 #' @param ... Unused.
+#'
+#' @details
+#' When converting from a \code{transmat} to a \code{network} object, this
+#' functions copies the edge attributes within the transmission matrix
+#' (\code{'at'}, \code{'infDur'}, \code{'transProb'}, \code{'actRate'}, and
+#' \code{'finalProb'}) into edge attributes on the network.
 #'
 #' @return A \code{\link{network}} object.
 #'
@@ -244,26 +246,28 @@ as.network.transmat <- function(x, ...) {
   return(net)
 }
 
-#' @title Plot transmat Infection Tree in One of Several Styles
+#' @title Plot transmat Infection Tree in Three Styles
 #'
-#' @description Plots the infection tree described in a \code{\link{transmat}}
-#'              object in one of two styles: a phylogenetic tree or an
-#'              un-rooted network.
+#' @description Plots the transmission matrix tree from from \code{get_transmat}
+#'              in one of three styles: a phylogram, a directed network, or
+#'              a transmission timeline.
 #'
 #' @param x A \code{\link{transmat}} object to be plotted.
-#' @param style Character name of plot style. One of "phylo", "network",
-#'        or "transmissionTimeline"
-#' @param ...  Additional plot arguments to be passed to lower-level plot
-#'        functions (plot.network, plot.phylo, etc)
+#' @param style Character name of plot style. One of \code{"phylo"},
+#'              \code{"network"}, or \code{"transmissionTimeline"}.
+#' @param ... Additional plot arguments to be passed to lower-level plot
+#'            functions (\code{plot.network}, \code{plot.phylo}, or
+#'            \code{transmissionTimeline}).
 #'
-#' @details The phylo plot requires the \code{ape} package. The
-#' \code{ndtv::transmissionTimeline} requires that the \code{ndtv} package
-#' is installed. All of the options are essentially
+#' @details
+#' The \code{phylo} plot requires the \code{ape} package. The
+#' \code{transmissionTimeline} plot requires that the \code{ndtv} package.
 #'
 #' @export
 #' @method plot transmat
 #'
-#' @seealso \code{\link{plot.network}}, \code{\link[ape]{plot.phylo}}
+#' @seealso \code{\link{plot.network}}, \code{\link[ape]{plot.phylo}},
+#'          \code{\link[ndtv]{transmissionTimeline}}.
 #'
 plot.transmat <- function(x,
                           style = c("phylo", "network", "transmissionTimeline"),
@@ -278,8 +282,7 @@ plot.transmat <- function(x,
                    show.node.label = TRUE,
                    root.edge = TRUE,
                    label.offset = 0.1,
-                   ...
-                   )
+                   ...)
   )
 
 }
@@ -295,7 +298,7 @@ is.transmat <- function(x) {
   }
 }
 
-# this is a wrapper to load the namespace and call the transmissionTimeline
+# this is a wrapper to load the namespace and call the transmissionTimeline plot
 tm_transsmissionTree_plot <- function(x, ...) {
   requireNamespace("ndtv")
   ndtv::transmissionTimeline(x, ...)

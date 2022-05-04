@@ -23,8 +23,7 @@ A \code{phylo} class object.
 }
 \description{
 Converts a transmission matrix from the \code{get_transmat}
-             function into a \code{phylo} class object by reordering and
-             labeling.
+             function into a \code{phylo} class object.
 }
 \details{
 Converts a \code{\link{transmat}} object containing information about the
