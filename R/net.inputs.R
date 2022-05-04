@@ -88,21 +88,6 @@
 #' a different interpretation here, where it is the number of transmissible acts
 #' \emph{per partnership} per unit time.
 #'
-#' @section Data.Frame of Parameters:
-#' It is possible to set many parameters as once using a specially formatted
-#' \code{data.frame} passed in the \code{data.frame.parameters} argument. This
-#' \code{data.frame} first 3 columns must be:
-#' 1. "param": the name of the parameter. If it is a multi dimension parameter,
-#'    prepend the name, with "_1", "_2", etc for the position in the vector.
-#' 2. "value": the value for the parameter (or the Nth position if
-#' multidimensional)
-#' 3. "type": a character string containing either "numeric", "logical" or
-#'    "character". The type to cast the value to.
-#'
-#' Apart from these 3 columns, the \code{data.frame} can contain any number
-#' of other columns. A typical use case would be to have a "details" and
-#' "source" columns to document where these parameters come from.
-#'
 #' @section Time-Varying Parameters:
 #' The \code{inf.prob}, \code{act.rate}, \code{rec.rate} arguments (and their
 #' \code{.g2} companions) may be specified as time-varying parameters by passing
@@ -129,7 +114,31 @@
 #' for sampling is provided with \code{\link{param_random}} but any function
 #' will do.
 #'
-#' @section New Modules:
+#' @section Using a Parameter data.frame:
+#' It is possible to set input parameters using a specifically formatted
+#' \code{data.frame} object. The first 3 columns of this \code{data.frame} must
+#' be:
+#' \itemize{
+#'  \item \code{param}: The name of the parameter. If this is a non-scalar
+#'    parameter (a vector of length > 1), end the parameter name with the
+#'    position on the vector (e.g., \code{"p_1"}, \code{"p_2"}, ...).
+#'  \item \code{value}: the value for the parameter (or the value of the
+#'    parameter in the Nth position if non-scalar).
+#'  \item \code{type}: a character string containing either \code{"numeric"},
+#'    \code{"logical"}, or \code{"character"} to define the parameter object
+#'    class.
+#' }
+#'
+#' In addition to these 3 columns, the \code{data.frame} can contain any number
+#' of other columns, such as \code{details} or \code{source} columns to document
+#' parameter meta-data. However, these extra columns will not be used by
+#' EpiModel.
+#'
+#' This data.frame is then passed in to \code{param.net} under a
+#' \code{data.frame.parameters} argument. Further details and examples are
+#' provided in the "Working with Model Parameters in EpiModel" vignette.
+#'
+#' @section Parameters with New Modules:
 #' To build original models outside of the base models, new process modules
 #' may be constructed to replace the existing modules or to supplement the
 #' existing set. These are passed into the control settings in
@@ -137,8 +146,8 @@
 #' parameters named here, an original set of parameters, or a combination of
 #' both. The \code{...} allows the user to pass an arbitrary set of original
 #' model parameters into \code{param.net}. Whereas there are strict checks with
-#' default modules for parameter validity, these checks are the user's
-#' responsibility with new modules.
+#' default modules for parameter validity, this becomes a user
+#' responsibility when using new modules.
 #'
 #' @return An \code{EpiModel} object of class \code{param.net}.
 #'
