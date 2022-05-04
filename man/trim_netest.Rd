@@ -14,32 +14,32 @@ to a \code{networkLite}?}
 }
 \value{
 A \code{netest} object with formula environments, some networks,
-        and sample removed, optionally with the retained network object 
+        and sample removed, optionally with the retained network object
         converted to a \code{networkLite}.
 }
 \description{
-Trims formula environments, some networks, and 
-             \code{fit$sample} from the \code{netest} object.  Optionally 
+Trims formula environments, some networks, and
+             \code{fit$sample} from the \code{netest} object.  Optionally
              converts the retained network object to a \code{networkLite}.
 }
 \details{
 Removes \code{environment(object$constraints)},
-         \code{environment(object$coef.diss$dissolution)},  
-         \code{environment(object$formation)}, 
-         \code{object$fit$sample}, and \code{object$fit$newnetworks}.  When 
+         \code{environment(object$coef.diss$dissolution)},
+         \code{environment(object$formation)},
+         \code{object$fit$sample}, and \code{object$fit$newnetworks}.  When
          \code{edapprox = TRUE}, also removes \code{object$fit$network} and
-         \code{environment(object$fit$formula)}; when 
-         \code{edapprox = FALSE}, also removes \code{object$fit$newnetwork} 
-         and all but \code{formation} and \code{dissolution} from 
+         \code{environment(object$fit$formula)}; when
+         \code{edapprox = FALSE}, also removes \code{object$fit$newnetwork}
+         and all but \code{formation} and \code{dissolution} from
          \code{environment(object$fit$formula)}, as well as removing
          \code{environment(environment(object$fit$formula)$formation)} and
          \code{environment(environment(object$fit$formula)$dissolution)}.
-         Optionally converts the retained network object to a 
+         Optionally converts the retained network object to a
          \code{networkLite} (if \code{as.networkLite = TRUE}).
-         
-         For the output to be usable in simulation, there should not be 
+
+         For the output to be usable in simulation, there should not be
          substitutions in the formulas, other than \code{formation} and
-         \code{dissolution} in \code{object$fit$formula} when 
+         \code{dissolution} in \code{object$fit$formula} when
          \code{edapprox = FALSE}.
 }
 \examples{

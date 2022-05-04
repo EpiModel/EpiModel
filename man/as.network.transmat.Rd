@@ -7,8 +7,8 @@
 \method{as.network}{transmat}(x, ...)
 }
 \arguments{
-\item{x}{An object of class \code{transmat} to be converted into a network
-object.}
+\item{x}{An object of class \code{transmat} to be converted into a
+\code{network} class object.}
 
 \item{...}{Unused.}
 }
@@ -16,9 +16,12 @@ object.}
 A \code{\link{network}} object.
 }
 \description{
-Converts the edges of the infection tree described in the
-             \code{\link{transmat}} object into a \code{\link{network}}
-             object, copying in appropriate edge attributes for 'at',
-             'infDur', 'transProb', 'actRate', and 'finalProb' and
-             constructing a vertex attribute for 'at'.
+Converts a transmission matrix from the \code{get_transmat}
+             function into a \link{network} class object.
+}
+\details{
+When converting from a \code{transmat} to a \code{network} object, this
+functions copies the edge attributes within the transmission matrix
+(\code{'at'}, \code{'infDur'}, \code{'transProb'}, \code{'actRate'}, and
+\code{'finalProb'}) into edge attributes on the network.
 }
