@@ -109,12 +109,13 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
                   sequential = TRUE, keep.tedgelist = FALSE,
                   keep.tnetwork = FALSE, verbose = TRUE, ncores = 1,
                   skip.dissolution = FALSE) {
-  if (class(x) != "netest") {
+
+  if (!inherits(x, "netest")) {
     stop("x must be an object of class netest", call. = FALSE)
   }
 
   if (!missing(set.control.stergm)) {
-    warning("set.control.stergm is deprecated and will be removed in a future 
+    warning("set.control.stergm is deprecated and will be removed in a future
              version; use set.control.tergm instead.")
   }
 
@@ -133,7 +134,7 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
   } else {
     nw <- x$fit$network
   }
-  
+
   if (dynamic == TRUE && missing(nsteps)) {
     stop("Specify number of time steps with nsteps", call. = FALSE)
   }
@@ -216,7 +217,7 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
             nsim = 1,
             control = set.control.tergm
           )
-        }      
+        }
       }
     }
   }
@@ -254,7 +255,7 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
               control = set.control.stergm
             )
           } else {
-            diag.sim[[i]] <- simulate(fit.sim ~ Form(formation) + 
+            diag.sim[[i]] <- simulate(fit.sim ~ Form(formation) +
                                                 Persist(dissolution),
               coef = c(coef.form, coef.diss$coef.crude),
               time.slices = nsteps,
@@ -263,7 +264,7 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
               nsim = 1,
               control = set.control.tergm,
               dynamic = TRUE
-            )          
+            )
           }
           if (verbose == TRUE & nsims > 1) {
             cat("*")
@@ -283,7 +284,7 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
               basis = fit$newnetwork,
               control = set.control.ergm, dynamic = FALSE
             )
-            
+
             simulate(fit.sim,
               formation = formation,
               dissolution = dissolution,
@@ -304,7 +305,7 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
               control = set.control.ergm, dynamic = FALSE
             )
 
-            simulate(fit.sim ~ Form(formation) + 
+            simulate(fit.sim ~ Form(formation) +
                                Persist(dissolution),
               coef = c(coef.form, coef.diss$coef.crude),
               time.slices = nsteps,
@@ -313,7 +314,7 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
               nsim = 1,
               control = set.control.tergm,
               dynamic = TRUE
-            )          
+            )
           }
         }
       }

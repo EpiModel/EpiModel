@@ -90,7 +90,7 @@ brewer_ramp <- function(n, plt, delete.lights = TRUE) {
 #' @keywords internal
 deleteAttr <- function(attrList, ids) {
 
-  if (class(attrList) != "list") {
+  if (!inherits(attrList, "list")) {
     stop("attrList must be a list", call. = FALSE)
   }
 
@@ -127,7 +127,7 @@ deleteAttr <- function(attrList, ids) {
 delete_attr <- function(dat, ids) {
   attrList <- dat$attr
 
-  if (class(attrList) != "list") {
+  if (!inherits(attrList, "list")) {
     stop("dat object does not contain a valid attribute list", call. = FALSE)
   }
   if (length(unique(sapply(attrList, length))) != 1) {
@@ -335,8 +335,8 @@ netsim_cond_msg <- function(cond, module, at, msg) {
 
 #' @title Function to Reduce the Size of the \code{netest} Object
 #'
-#' @description Trims formula environments, some networks, and 
-#'              \code{fit$sample} from the \code{netest} object.  Optionally 
+#' @description Trims formula environments, some networks, and
+#'              \code{fit$sample} from the \code{netest} object.  Optionally
 #'              converts the retained network object to a \code{networkLite}.
 #'
 #' @param object A \code{netest} object.
@@ -344,26 +344,26 @@ netsim_cond_msg <- function(cond, module, at, msg) {
 #'        to a \code{networkLite}?
 #'
 #' @details Removes \code{environment(object$constraints)},
-#'          \code{environment(object$coef.diss$dissolution)},  
-#'          \code{environment(object$formation)}, 
-#'          \code{object$fit$sample}, and \code{object$fit$newnetworks}.  When 
+#'          \code{environment(object$coef.diss$dissolution)},
+#'          \code{environment(object$formation)},
+#'          \code{object$fit$sample}, and \code{object$fit$newnetworks}.  When
 #'          \code{edapprox = TRUE}, also removes \code{object$fit$network} and
-#'          \code{environment(object$fit$formula)}; when 
-#'          \code{edapprox = FALSE}, also removes \code{object$fit$newnetwork} 
-#'          and all but \code{formation} and \code{dissolution} from 
+#'          \code{environment(object$fit$formula)}; when
+#'          \code{edapprox = FALSE}, also removes \code{object$fit$newnetwork}
+#'          and all but \code{formation} and \code{dissolution} from
 #'          \code{environment(object$fit$formula)}, as well as removing
 #'          \code{environment(environment(object$fit$formula)$formation)} and
 #'          \code{environment(environment(object$fit$formula)$dissolution)}.
-#'          Optionally converts the retained network object to a 
+#'          Optionally converts the retained network object to a
 #'          \code{networkLite} (if \code{as.networkLite = TRUE}).
-#'          
-#'          For the output to be usable in simulation, there should not be 
+#'
+#'          For the output to be usable in simulation, there should not be
 #'          substitutions in the formulas, other than \code{formation} and
-#'          \code{dissolution} in \code{object$fit$formula} when 
+#'          \code{dissolution} in \code{object$fit$formula} when
 #'          \code{edapprox = FALSE}.
 #'
 #' @return A \code{netest} object with formula environments, some networks,
-#'         and sample removed, optionally with the retained network object 
+#'         and sample removed, optionally with the retained network object
 #'         converted to a \code{networkLite}.
 #'
 #' @export
@@ -403,10 +403,10 @@ trim_netest <- function(object, as.networkLite = TRUE) {
   object$fit$sample <- NULL
 
   object$fit$newnetworks <- NULL
-  
+
   object$coef.diss$dissolution <- trim_env(object$coef.diss$dissolution)
   object$formation <- trim_env(object$formation)
   object$constraints <- trim_env(object$constraints)
-  
+
   object
 }
