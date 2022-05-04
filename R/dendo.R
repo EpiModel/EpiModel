@@ -287,7 +287,7 @@ plot.transmat <- function(x,
 #' @aliases transmat
 #' @rdname get_transmat
 is.transmat <- function(x) {
-  if ("transmat" %in% class(x)) {
+  if (inherits(x, "transmat")) {
     return(TRUE)
   } else {
     return(FALSE)
