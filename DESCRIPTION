@@ -50,6 +50,7 @@ Imports:
     dplyr
 Suggests:
     knitr,
+    ndtv,
     rmarkdown,
     shiny,
     testthat,
