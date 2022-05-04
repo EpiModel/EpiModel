@@ -899,7 +899,7 @@ get_degree <- function(x) {
 #' mod2$control$nsteps
 #'
 truncate_sim <- function(x, at) {
-  if (class(x) != "icm" && class(x) != "netsim") {
+  if (!inherits(x, c("icm", "netsim"))) {
     stop("x must be either an object of class icm or class netsim",
          call. = FALSE)
   }

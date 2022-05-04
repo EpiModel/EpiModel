@@ -321,7 +321,7 @@ update_params <- function(param, new.param.list) {
   if (!inherits(param, "param.net")) {
     stop("x should be object of class param.net")
   }
-  if (class(new.param.list) != "list") {
+  if (!inherits(new.param.list, "list")) {
     stop("new.param.list should be object of class list")
   }
 
@@ -1028,7 +1028,7 @@ crosscheck.net <- function(x, param, init, control) {
     if (control[["start"]] == 1 && control[["skip.check"]] == FALSE) {
 
       # Main class check ----------------------------------------------------
-      if (class(x) != "netest" && class(x) != "netsim") {
+      if (!inherits(x, c("netest", "netsim"))) {
         stop("x must be either an object of class netest or class netsim",
              call. = FALSE)
       }
@@ -1151,7 +1151,7 @@ crosscheck.net <- function(x, param, init, control) {
       control[["resimulate.network"]] <- TRUE
 
       if (control[["skip.check"]] == FALSE) {
-        if (class(x) != "netsim") {
+        if (!inherits(x, "netsim")) {
           stop("x must be a netsim object if control setting start > 1",
                call. = FALSE)
         }
