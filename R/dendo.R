@@ -253,12 +253,14 @@ as.network.transmat <- function(x, ...) {
 #'              un-rooted network.
 #'
 #' @param x A \code{\link{transmat}} object to be plotted.
-#' @param style Character name of plot style. One of "phylo" or "network".
+#' @param style Character name of plot style. One of "phylo", "network",
+#'        or "transmissionTimeline"
 #' @param ...  Additional plot arguments to be passed to lower-level plot
-#'        functions (plot.network, plot.phylo, etc).
+#'        functions (plot.network, plot.phylo, etc)
 #'
-#' @details The phylo plot requires the \code{ape} package. The options are
-#' wrappers to other plot calls with some appropriate preset arguments.
+#' @details The phylo plot requires the \code{ape} package. The
+#' \code{ndtv::transmissionTimeline} requires that the \code{ndtv} package
+#' is installed. All of the options are essentially
 #'
 #' @export
 #' @method plot transmat
@@ -266,12 +268,13 @@ as.network.transmat <- function(x, ...) {
 #' @seealso \code{\link{plot.network}}, \code{\link[ape]{plot.phylo}}
 #'
 plot.transmat <- function(x,
-                          style = c("phylo", "network"),
+                          style = c("phylo", "network", "transmissionTimeline"),
                           ...) {
 
   style <- match.arg(style)
 
   switch(style,
+    "transmissionTimeline" = tm_transsmissionTree_plot(x, ...),
     "network" = plot.network(as.network(x), ...),
     "phylo" = plot(as.phylo.transmat(x),
                    show.node.label = TRUE,
@@ -292,4 +295,10 @@ is.transmat <- function(x) {
   } else {
     return(FALSE)
   }
+}
+
+# this is a wrapper to load the namespace and call the transmissionTimeline
+tm_transsmissionTree_plot <- function(x, ...) {
+  requireNamespace("ndtv")
+  ndtv::transmissionTimeline(x, ...)
 }
