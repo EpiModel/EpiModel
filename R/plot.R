@@ -557,7 +557,7 @@ plot.icm <- function(x, y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col,
       y <- grep(".num$", names(x$epi), value = TRUE)
     }
     if (groups == 2) {
-      if (class(x) == "icm") {
+      if (inherits(x, "icm")) {
         y <- c(grep(".num$", names(x$epi), value = TRUE),
                grep(".num.g2$", names(x$epi), value = TRUE))
       }
@@ -1015,7 +1015,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
   # Checks and Variables ----------------------------------------------------
 
   ## Check Object
-  if (class(x) != "netdx") {
+  if (!inherits(x, "netdx")) {
     stop("x must be an object of class netdx", call. = FALSE)
   }
 
@@ -2313,11 +2313,11 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
         y <- grep(".num$", names(x$epi), value = TRUE)
       }
       if (groups == 2) {
-        if (class(x) == "icm") {
+        if (inherits(x, "icm")) {
           y <- c(grep(".num$", names(x$epi), value = TRUE),
                  grep(".num.g2$", names(x$epi), value = TRUE))
         }
-        if (class(x) == "netsim") {
+        if (inherits(x, "netsim")) {
           y <- c(grep(".num$", names(x$epi), value = TRUE),
                  grep(".num.g2$", names(x$epi), value = TRUE))
         }
@@ -3188,10 +3188,10 @@ comp_plot.icm <- function(x, at = 1, digits = 3, ...) {
   vital <- x$param$vital
 
   # Standardize groups
-  if (class(x) == "icm") {
+  if (inherits(x, "icm")) {
     groups <- x$param$groups
   }
-  if (class(x) == "netsim") {
+  if (inherits(x, "netsim")) {
     groups <- x$param$groups
   }
   if (groups != 1) {
