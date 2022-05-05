@@ -48,7 +48,7 @@ test_that("Full STERGM with set.control.stergm", {
 
   # one core test
   expect_warning(dx <- netdx(est, nsims = 1, nsteps = 10, verbose = FALSE, 
-                             set.control.stergm = control.simulate.stergm()),
+                             set.control.stergm = control.simulate.network()),
                  "set.control.stergm is deprecated")
   expect_is(dx, "netdx")
   expect_true(!dx$edapprox)
@@ -56,7 +56,7 @@ test_that("Full STERGM with set.control.stergm", {
 
   # parallel test
   expect_warning(dx <- netdx(est, nsims = 2, nsteps = 10, ncores = 2, verbose = FALSE,
-                             set.control.stergm = control.simulate.stergm()),
+                             set.control.stergm = control.simulate.network()),
                  "set.control.stergm is deprecated")
   expect_is(dx, "netdx")
   expect_true(dx$nsims == 2)

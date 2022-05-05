@@ -83,7 +83,7 @@ get_network <- function(x, sim = 1, network = 1, collapse = FALSE, at,
     stop("Specify a single sim between 1 and ", nsims, call. = FALSE)
   }
 
-  if (class(x) == "netsim") {
+  if (inherits(x, "netsim")) {
     if (x$control$tergmLite == TRUE) {
       stop("Network object not saved in netsim object when 'tergmLite = TRUE'.
            Check control.net settings.",
@@ -93,28 +93,28 @@ get_network <- function(x, sim = 1, network = 1, collapse = FALSE, at,
       stop("Network object not saved in netsim object.
             Check control.net settings.", call. = FALSE)
     }
-  } else if (class(x) == "netdx") {
+  } else if (inherits(x, "netdx")) {
     if (is.null(x$network)) {
       stop("Network object not saved in netdx object.
             Check keep.tnetwork parameter", call. = FALSE)
     }
   }
 
-  if (class(x) == "netsim") {
+  if (inherits(x, "netsim")) {
     if (network > x$control$num.nw) {
       stop("Specify network between 1 and ", x$control$num.nw, call. = FALSE)
     }
   }
 
-  nsteps <- ifelse(class(x) == "netsim", x$control$nsteps, x$nsteps)
+  nsteps <- ifelse(inherits(x, "netsim"), x$control$nsteps, x$nsteps)
   if (collapse == TRUE && (missing(at) || at > nsteps)) {
     stop("Specify collapse time step between 1 and ", nsteps,
          call. = FALSE)
   }
   ## Extraction ##
-  if (class(x) == "netsim") {
+  if (inherits(x, "netsim")) {
     out <- x$network[[sim]][[network]]
-  } else if (class(x) == "netdx") {
+  } else if (inherits(x, "netdx")) {
     out <- x$network[[sim]]
   }
 
@@ -171,7 +171,7 @@ get_network <- function(x, sim = 1, network = 1, collapse = FALSE, at,
 get_transmat <- function(x, sim = 1) {
 
   ## Warnings and checks
-  if (class(x) != "netsim") {
+  if (!inherits(x, "netsim")) {
     stop("x must be of class netsim", call. = FALSE)
   }
 
@@ -248,7 +248,7 @@ get_nwstats <- function(x, sim, network = 1) {
     stop("x must be of class netsim or netdx", call. = FALSE)
   }
 
-  if (class(x) == "netsim") {
+  if (inherits(x, "netsim")) {
     nsims <- x$control$nsims
     nsteps <- x$control$nsteps
   } else {
@@ -268,7 +268,7 @@ get_nwstats <- function(x, sim, network = 1) {
     stop("Specify sims less than or equal to ", nsims, call. = FALSE)
   }
 
-  if (class(x) == "netsim") {
+  if (inherits(x, "netsim")) {
     if (x$control$save.nwstats == FALSE || is.null(x$stats$nwstats)) {
       stop("Network statistics not saved in netsim object, check control.net
            settings", call. = FALSE)
@@ -279,10 +279,10 @@ get_nwstats <- function(x, sim, network = 1) {
   }
 
   ## Extraction
-  if (class(x) == "netsim") {
+  if (inherits(x, "netsim")) {
     out <- lapply(x$stats$nwstats, function(n) n[[network]])
     out <- out[sim]
-  } else if (class(x) == "netdx") {
+  } else if (inherits(x, "netdx")) {
     out <- x$stats[sim]
   }
 
@@ -292,7 +292,7 @@ get_nwstats <- function(x, sim, network = 1) {
   row.names(out) <- seq_len(nrow((out)))
   out <- out[, c((ncol(out) - 1):ncol(out), 1:(ncol(out) - 2))]
 
-  if (class(x) == "netdx" && x$dynamic == FALSE) {
+  if (inherits(x, "netdx") && x$dynamic == FALSE) {
     out <- out[, -2]
     names(out)[1] <- "sim"
   }
@@ -365,7 +365,7 @@ get_nwparam <- function(x, network = 1) {
 #'
 get_sims <- function(x, sims, var) {
 
-  if (class(x) != "netsim") {
+  if (!inherits(x, "netsim")) {
     stop("x must be of class netsim", call. = FALSE)
   }
 

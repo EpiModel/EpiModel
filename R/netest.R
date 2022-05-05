@@ -21,14 +21,17 @@
 #' @param edapprox If \code{TRUE}, use the indirect edges dissolution
 #'        approximation  method for the dynamic model fit, otherwise use the
 #'        more time-intensive full STERGM estimation (see details).
-#' @param set.control.ergm Control arguments passed to \code{simulate.ergm} (see
+#' @param set.control.ergm Control arguments passed to \code{ergm} (see
 #'        details).
-#' @param set.control.stergm Deprecated; use \code{set.control.tergm} instead.
+#' @param set.control.stergm Deprecated control argument of class 
+#'        \code{control.stergm}; use \code{set.control.tergm} instead.
 #' @param set.control.tergm Control arguments passed to \code{tergm}
 #'        (see details).
 #' @param verbose If \code{TRUE}, print model fitting progress to console.
 #' @param nested.edapprox Logical. If \code{edapprox = TRUE} the dissolution
 #'        model is an initial segment of the formation model (see details).
+#' @param keep.fit Logical; should the \code{ergm} or \code{tergm} object be
+#'        returned as the \code{fit} element of the \code{netest} object?
 #' @param ... Additional arguments passed to other functions.
 #'
 #' @details
@@ -143,18 +146,18 @@
 netest <- function(nw, formation, target.stats, coef.diss, constraints,
                    coef.form = NULL, edapprox = TRUE,
                    set.control.ergm, set.control.stergm, set.control.tergm,
-                   verbose = FALSE, nested.edapprox = TRUE, ...) {
+                   verbose = FALSE, nested.edapprox = TRUE, keep.fit = FALSE, ...) {
 
   if (!missing(set.control.stergm)) {
-    warning("set.control.stergm is deprecated and will be removed in a future 
+    warning("set.control.stergm is deprecated and will be removed in a future
              version; use set.control.tergm instead.")
   }
-  
+
   if (missing(constraints)) {
     constraints	<- trim_env(~.)
   }
 
-  if (class(coef.diss) != "disscoef") {
+  if (!inherits(coef.diss, "disscoef")) {
     stop("dissolution must be of input through dissolution_coefs function",
          call. = FALSE)
   }
@@ -171,7 +174,7 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
 
   if (edapprox == FALSE) {
 
-    if (!missing(set.control.stergm)) {      
+    if (!missing(set.control.stergm)) {
       fit <- stergm(nw,
                     formation = formation,
                     dissolution = dissolution,
@@ -188,7 +191,7 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
       if (missing(set.control.tergm)) {
         set.control.tergm <- control.tergm()
       }
-    
+
       fit <- tergm(nw ~ Form(formation) + Persist(dissolution),
                    targets = "formation",
                    target.stats = target.stats,
@@ -206,7 +209,6 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
     form_names <- names(coef(fit)[which_form])[!fit$offset[which_form]]
 
     out <- list()
-    out$fit <- fit
     out$formation <- formation
     out$target.stats <- target.stats
     out$target.stats.names <-
@@ -216,6 +218,11 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
     out$coef.diss <- coef.diss
     out$constraints <- constraints
     out$edapprox <- edapprox
+    # convert ergm_state to network
+    out$newnetwork <- as.network(fit$newnetwork)
+    delete.network.attribute(out$newnetwork, "time")
+    delete.network.attribute(out$newnetwork, "lasttoggle")
+    out$formula <- fit$formula
 
   } else {
 
@@ -253,14 +260,7 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
       }
     }
 
-    # Reduce size of output object
-    fit$initialfit <- NULL
-    fit$constrained <- NULL
-    environment(fit$sample.obs) <- NULL
-    environment(fit$reference) <- NULL
-
     out <- list()
-    out$fit <- fit
     out$formation <- formation
     out$target.stats <- target.stats
     if (length(names(coef(fit))) == length(target.stats)) {
@@ -274,6 +274,13 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
     out$constraints <- constraints
     out$edapprox <- edapprox
     out$nested.edapprox <- nested.edapprox
+    out$newnetwork <- fit$newnetwork
+    out$formula <- fit$formula
+  }
+  
+  out$summary <- summary(fit, ...)
+  if (keep.fit == TRUE) {
+    out$fit <- fit
   }
 
   class(out) <- "netest"
@@ -404,10 +411,10 @@ diss_check <- function(formation, dissolution) {
 update_dissolution <- function(old.netest, new.coef.diss,
                                nested.edapprox = TRUE, ...) {
 
-  if (class(old.netest) != "netest") {
+  if (!inherits(old.netest, "netest")) {
     stop("old.netest must be an object of class netest", call. = FALSE)
   }
-  if (class(new.coef.diss) != "disscoef") {
+  if (!inherits(new.coef.diss, "disscoef")) {
     stop("new.coef.diss must be an object of class disscoef", call. = FALSE)
   }
   if (old.netest$edapprox != TRUE) {

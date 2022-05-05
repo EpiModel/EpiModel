@@ -24,8 +24,7 @@ initialize.net <- function(x, param, init, control, s) {
     dat <- create_dat_object(param, init, control)
 
     dat$nwparam <- list()
-    dat$nwparam[[1]] <- x[-which(names(x) == "fit")]
-
+    dat$nwparam[[1]] <- x[!(names(x) %in% c("fit", "newnetwork"))]
 
     # Initial Network Simulation ----------------------------------------------
 

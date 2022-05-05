@@ -17,6 +17,7 @@ netest(
   set.control.tergm,
   verbose = FALSE,
   nested.edapprox = TRUE,
+  keep.fit = FALSE,
   ...
 )
 }
@@ -44,10 +45,11 @@ formula.}
 approximation  method for the dynamic model fit, otherwise use the
 more time-intensive full STERGM estimation (see details).}
 
-\item{set.control.ergm}{Control arguments passed to \code{simulate.ergm} (see
+\item{set.control.ergm}{Control arguments passed to \code{ergm} (see
 details).}
 
-\item{set.control.stergm}{Deprecated; use \code{set.control.tergm} instead.}
+\item{set.control.stergm}{Deprecated control argument of class 
+\code{control.stergm}; use \code{set.control.tergm} instead.}
 
 \item{set.control.tergm}{Control arguments passed to \code{tergm}
 (see details).}
@@ -56,6 +58,9 @@ details).}
 
 \item{nested.edapprox}{Logical. If \code{edapprox = TRUE} the dissolution
 model is an initial segment of the formation model (see details).}
+
+\item{keep.fit}{Logical; should the \code{ergm} or \code{tergm} object be
+returned as the \code{fit} element of the \code{netest} object?}
 
 \item{...}{Additional arguments passed to other functions.}
 }

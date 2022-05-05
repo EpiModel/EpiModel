@@ -36,13 +36,15 @@ approximation method, simulates from the static ERGM fit.}
 statistics of interest. The default is the formation formula of the
 network model contained in \code{x}.}
 
-\item{set.control.ergm}{Control arguments passed to \code{simulate.ergm} (see
-details).}
+\item{set.control.ergm}{Control arguments passed to \code{ergm}'s 
+\code{simulate_formula.network} (see details).}
 
-\item{set.control.stergm}{Deprecated; use \code{set.control.tergm} instead.}
+\item{set.control.stergm}{Deprecated control argument of class 
+\code{control.simulate.network}; use \code{set.control.tergm} 
+instead.}
 
-\item{set.control.tergm}{Control arguments passed to \code{simulate.tergm}
-(see details).}
+\item{set.control.tergm}{Control arguments passed to \code{tergm}'s 
+\code{simulate_formula.network} (see details).}
 
 \item{sequential}{For static diagnostics (\code{dynamic=FALSE}): if
 \code{FALSE}, each of the \code{nsims} simulated Markov chains begins
@@ -85,21 +87,22 @@ plotting the \code{netdx} object.
 \section{Control Arguments}{
 
 Models fit with the full STERGM method in \code{netest} (setting the
-\code{edapprox} argument to \code{FALSE}) require only a call to
-\code{simulate.tergm}. Control parameters for those simulations may be set
-using \code{set.control.tergm} in \code{netdx}. The parameters should be
-input through the \code{control.simulate.tergm} function, with the
-available parameters listed in the \code{\link{control.simulate.tergm}} help
+\code{edapprox} argument to \code{FALSE}) require only a call to 
+\code{tergm}'s \code{simulate_formula.network}. Control parameters for those
+simulations may be set using \code{set.control.tergm} in \code{netdx}. 
+The parameters should be input through the 
+\code{control.simulate.formula.tergm} function, with the available 
+parameters listed in the \code{\link{control.simulate.formula.tergm}} help 
 page in the \code{tergm} package.
 
 Models fit with the ERGM method with the edges dissolution approximation
 (setting \code{edapprox} to \code{TRUE}) require a call first to
-\code{simulate.ergm} for simulating an initial network, and second to
-\code{simulate_formula.network} for simulating that static network forward through
+\code{ergm}'s \code{simulate_formula.network} for simulating an initial network, and second to
+\code{tergm}'s \code{simulate_formula.network} for simulating that static network forward through
 time. Control parameters may be set for both processes in \code{netdx}.
 For the first, the parameters should be input through the
-\code{control.simulate.ergm()} function, with the available parameters listed
-in the \code{\link[ergm:control.simulate.ergm]{control.simulate.ergm}} help
+\code{control.simulate.formula()} function, with the available parameters listed
+in the \code{\link[ergm:control.simulate.formula]{control.simulate.formula}} help
 page in the \code{ergm} package. For the second, parameters should be input
 through the \code{control.simulate.formula.tergm()} function, with the available
 parameters listed in the \code{\link{control.simulate.formula.tergm}} help page in
@@ -129,7 +132,7 @@ plot(dx1, method = "b", stats = c("edges", "concurrent"))
 dx2 <- netdx(est,
   nsims = 5, nsteps = 500,
   nwstats.formula = ~ edges + meandeg + concurrent,
-  set.control.ergm = control.simulate.ergm(MCMC.burnin = 1e6)
+  set.control.ergm = control.simulate.formula(MCMC.burnin = 1e6)
 )
 dx2
 plot(dx2, stats = c("edges", "meandeg"), plots.joined = FALSE)
