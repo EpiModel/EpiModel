@@ -301,8 +301,8 @@ for (trim in c(FALSE, TRUE)) {
     dx <- netdx(est, nsims = 1, nsteps = 10, verbose = FALSE)
     expect_output(print(dx), "edges")
     expect_output(print(dx), "concurrent")
-    expect_output(print(dx), "Edge Duration")
-    expect_output(print(dx), "Pct Edges Diss")
+    expect_output(print(dx), "Duration Diagnostics")
+    expect_output(print(dx), "Dissolution Diagnostics")
     expect_output(print(dx), "Target")
     expect_output(print(dx), "Sim Mean")
     expect_output(print(dx), "Pct Diff")
@@ -313,6 +313,27 @@ for (trim in c(FALSE, TRUE)) {
   
   })
 }  
+
+test_that("print.netdx and plot.netdx with heterogeneous diss", {
+  nw <- network_initialize(n = 100)
+  nw <- set_vertex_attribute(nw, 'neighborhood', rep(1:10,10))
+  formation <- ~edges+nodematch('neighborhood', diff=TRUE)
+  target.stats <- c(100,4,5,6,7,8,9,10,11,12,13)
+  coef.diss <- dissolution_coefs(dissolution = 
+                 ~offset(edges)+offset(nodematch('neighborhood',diff=TRUE)),
+                   duration = c(20,21,22,23,24,25,26,27,28,29,30))
+  est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
+  if (trim == TRUE) {
+    est <- trim_netest(est)
+  }
+  dx9 <- netdx(est, nsims = 5, nsteps = 100)
+  expect_length(dx9$stats.table.duration$Target, 11)
+  expect_length(dx9$stats.table.dissolution$`Sim Mean`, 11)
+  expect_output(print(dx9), "match.neighborhood.TRUE.7")  
+  plot(dx9)
+  plot(dx9, type = "duration")
+  plot(dx9, type = "dissolution")
+})
 
 test_that("Edges only models with set.control.stergm", {
   num <- 50
