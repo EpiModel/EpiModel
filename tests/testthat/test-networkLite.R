@@ -976,9 +976,7 @@ test_that("attribute setting and deleting behave equivalently for network and ne
         }
       }
 
-      expect_identical(nw, to_network_networkLite(nwL))
-
-      ## re-order everything for the next comparison...
+      ## re-order everything for these comparisons...
       for(en in setdiff(list.edge.attributes(nw), "na")) {
         ev <- get.edge.attribute(nwL, en)
         delete.edge.attribute(nwL, en)
@@ -996,7 +994,26 @@ test_that("attribute setting and deleting behave equivalently for network and ne
         delete.network.attribute(nwL, nn)
         set.network.attribute(nwL, nn, nv)      
       }
+
+      for(en in setdiff(list.edge.attributes(nwL), "na")) {
+        ev <- get.edge.attribute(nw, en)
+        delete.edge.attribute(nw, en)
+        set.edge.attribute(nw, en, ev)
+      }
       
+      for(vn in setdiff(list.vertex.attributes(nwL), c("na", "vertex.names"))) {
+        vv <- get.vertex.attribute(nw, vn)
+        delete.vertex.attribute(nw, vn)
+        set.vertex.attribute(nw, vn, vv)
+      }
+
+      for(nn in setdiff(list.network.attributes(nwL), c("n", "directed", "bipartite", "loops", "hyper", "multiple", "mnext"))) {
+        nv <- get.network.attribute(nw, nn)
+        delete.network.attribute(nw, nn)
+        set.network.attribute(nw, nn, nv)      
+      }
+      
+      expect_identical(nw, to_network_networkLite(nwL))
       expect_identical(as.networkLite(nw), nwL)
     }
   }

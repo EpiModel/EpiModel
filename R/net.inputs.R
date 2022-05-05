@@ -287,7 +287,7 @@ update_params <- function(param, new.param.list) {
   if (!inherits(param, "param.net")) {
     stop("x should be object of class param.net")
   }
-  if (class(new.param.list) != "list") {
+  if (!inherits(new.param.list, "list")) {
     stop("new.param.list should be object of class list")
   }
 
@@ -749,8 +749,8 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #'        when initializing the network with \code{edapprox = TRUE}; all other
 #'        simulations in \code{netsim} use \code{tergm}.
 #' @param set.control.tergm Control arguments passed to \code{tergm}'s
-#'        \code{simulate_formula.network}. See the help file for 
-#'        \code{\link{netdx}} for details and examples on specifying this 
+#'        \code{simulate_formula.network}. See the help file for
+#'        \code{\link{netdx}} for details and examples on specifying this
 #'        parameter.
 #' @param set.control.stergm Deprecated control argument of class 
 #'        \code{control.simulate.network}; use \code{set.control.tergm} 
@@ -849,7 +849,7 @@ control.net <- function(type,
                         set.control.tergm = control.simulate.formula.tergm(),
                         ...) {
   if (!missing(set.control.stergm)) {
-    warning("set.control.stergm is deprecated and will be removed in a future 
+    warning("set.control.stergm is deprecated and will be removed in a future
              version; use set.control.tergm instead.")
   }
 
@@ -996,7 +996,7 @@ crosscheck.net <- function(x, param, init, control) {
     if (control[["start"]] == 1 && control[["skip.check"]] == FALSE) {
 
       # Main class check ----------------------------------------------------
-      if (class(x) != "netest" && class(x) != "netsim") {
+      if (!inherits(x, c("netest", "netsim"))) {
         stop("x must be either an object of class netest or class netsim",
              call. = FALSE)
       }
@@ -1115,7 +1115,7 @@ crosscheck.net <- function(x, param, init, control) {
       control[["resimulate.network"]] <- TRUE
 
       if (control[["skip.check"]] == FALSE) {
-        if (class(x) != "netsim") {
+        if (!inherits(x, "netsim")) {
           stop("x must be a netsim object if control setting start > 1",
                call. = FALSE)
         }
