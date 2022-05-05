@@ -168,7 +168,7 @@ color_tea <- function(nd, old.var = "testatus", old.sus = "s", old.inf = "i",
 #' @export
 #'
 copy_nwattr_to_datattr <- function(dat) {
-  otha <- names(dat$nw[[1]]$val[[1]])
+  otha <- list.vertex.attributes(dat$nw[[1]])
   otha <- setdiff(otha, c("na", "vertex.names", "active",
                           "testatus.active", "tergm_pid"))
   if (length(otha) > 0) {
@@ -647,7 +647,7 @@ get_attr_prop <- function(dat, nwterms) {
 #'
 get_formula_term_attr <- function(form, nw) {
 
-  nw_attr <- names(nw$val[[1]])
+  nw_attr <- list.vertex.attributes(nw)
   nw_attr <- setdiff(nw_attr, c("active", "vertex.names", "na"))
 
   if (length(nw_attr) == 0) {
@@ -678,7 +678,7 @@ get_formula_term_attr <- function(form, nw) {
 #'
 get_network_term_attr <- function(nw) {
 
-  nw_attr <- names(nw$val[[1]])
+  nw_attr <- list.vertex.attributes(nw)
   nw_attr <- setdiff(nw_attr, c("active", "vertex.names", "na",
                                 "testatus.active", "tergm_pid"))
 
@@ -723,7 +723,7 @@ idgroup <- function(nw, ids) {
     stop("Specify ids between 1 and ", n)
   }
 
-  flag <- "group" %in% names(nw$val[[1]])
+  flag <- "group" %in% list.vertex.attributes(nw)
   if (!flag) {
     out <- rep(1, n)
   } else {
@@ -899,7 +899,7 @@ get_degree <- function(x) {
 #' mod2$control$nsteps
 #'
 truncate_sim <- function(x, at) {
-  if (class(x) != "icm" && class(x) != "netsim") {
+  if (!inherits(x, c("icm", "netsim"))) {
     stop("x must be either an object of class icm or class netsim",
          call. = FALSE)
   }

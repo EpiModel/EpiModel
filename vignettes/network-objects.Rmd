@@ -1,5 +1,5 @@
 ---
-title: "Working With Network Objects in EpiModel"
+title: "Working with Network Objects in EpiModel"
 author: "EpiModel v`r packageVersion('EpiModel')`"
 date: "`r Sys.Date()`"
 vignette: >
