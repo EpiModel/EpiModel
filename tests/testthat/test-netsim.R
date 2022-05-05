@@ -140,8 +140,8 @@ test_that("netsim duration 1", {
   # compare to manually produced networkDynamic
   set.seed(0)
   sim <- simulate(estd1$formation,
-                  coef = coef(estd1$fit),
-                  basis = estd1$fit$newnetwork,
+                  coef = estd1$coef.form.crude,
+                  basis = estd1$newnetwork,
                   control = control.simulate.formula(MCMC.burnin = 2e5),
                   dynamic = FALSE)
   for(i in 1:5) {
@@ -154,4 +154,25 @@ test_that("netsim duration 1", {
                                      dynamic = TRUE))
   }
   expect_identical(sim$mel, mod$network$sim1[[1]]$mel)  
+})
+
+test_that("non-nested EDA works in netsim", {
+  nw <- network.initialize(10, directed = FALSE)
+  nw %v% "race" <- rep(1:2, length.out = 10)
+  nw %v% "age" <- rep(1:5, length.out = 10)
+  dc <- dissolution_coefs(~offset(edges) + offset(nodematch("age")), c(3, 7))
+  est <- netest(nw, formation = ~edges + nodematch("race"), target.stats = c(10, 5),
+                coef.diss = dc, nested.edapprox = FALSE)
+  dxs <- netdx(est, nsteps = 2, nsims = 2, dynamic = FALSE)
+  dxd <- netdx(est, nsteps = 2, nsims = 2, dynamic = TRUE)
+  param <- param.net(inf.prob = 0.3, act.rate = 0.5)
+  init <- init.net(i.num = 10)
+  control <- control.net(type = "SI", nsims = 1, nsteps = 5, verbose = FALSE)
+  sim <- netsim(est, param, init, control)
+  
+  dc <- dissolution_coefs(~offset(edges) + offset(nodematch("age")), c(1, 1))
+  est <- netest(nw, formation = ~edges + nodematch("race"), target.stats = c(10, 5),
+                coef.diss = dc, nested.edapprox = FALSE)
+  dxs <- netdx(est, nsteps = 2, nsims = 2, dynamic = FALSE)
+  sim <- netsim(est, param, init, control)
 })

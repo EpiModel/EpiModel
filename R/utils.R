@@ -335,36 +335,39 @@ netsim_cond_msg <- function(cond, module, at, msg) {
 
 #' @title Function to Reduce the Size of the \code{netest} Object
 #'
-#' @description Trims formula environments, some networks, and
-#'              \code{fit$sample} from the \code{netest} object.  Optionally
-#'              converts the retained network object to a \code{networkLite}.
+#' @description Trims formula environments from the \code{netest} object.  
+#'              Optionally converts the \code{newnetwork} element of the
+#'              \code{netest} object to a \code{networkLite}, and removes the
+#'              \code{fit} element (if present) from the \code{netest} object.
 #'
 #' @param object A \code{netest} object.
-#' @param as.networkLite logical; should we convert the retained network object
+#' @param as.networkLite logical; should we convert \code{object$newnetwork}
 #'        to a \code{networkLite}?
+#' @param keep.fit logical; should we keep \code{fit} (if present) on the 
+#'        \code{netest} object?
 #'
 #' @details Removes \code{environment(object$constraints)},
-#'          \code{environment(object$coef.diss$dissolution)},
-#'          \code{environment(object$formation)},
-#'          \code{object$fit$sample}, and \code{object$fit$newnetworks}.  When
-#'          \code{edapprox = TRUE}, also removes \code{object$fit$network} and
-#'          \code{environment(object$fit$formula)}; when
-#'          \code{edapprox = FALSE}, also removes \code{object$fit$newnetwork}
-#'          and all but \code{formation} and \code{dissolution} from
-#'          \code{environment(object$fit$formula)}, as well as removing
-#'          \code{environment(environment(object$fit$formula)$formation)} and
-#'          \code{environment(environment(object$fit$formula)$dissolution)}.
-#'          Optionally converts the retained network object to a
-#'          \code{networkLite} (if \code{as.networkLite = TRUE}).
-#'
-#'          For the output to be usable in simulation, there should not be
+#'          \code{environment(object$coef.diss$dissolution)}, and
+#'          \code{environment(object$formation)}.  When 
+#'          \code{edapprox = TRUE}, also removes 
+#'          \code{environment(object$formula)}; when \code{edapprox = FALSE},
+#'          also removes all but \code{formation} and \code{dissolution} from 
+#'          \code{environment(object$formula)}, as well as removing
+#'          \code{environment(environment(object$formula)$formation)} and
+#'          \code{environment(environment(object$formula)$dissolution)}.
+#'          Optionally converts \code{object$newnetwork} to a 
+#'          \code{networkLite} (if \code{as.networkLite = TRUE}), and removes
+#'          \code{fit} (if present) from \code{object} 
+#'          (if \code{keep.fit = FALSE}).
+#'          
+#'          For the output to be usable in simulation, there should not be 
 #'          substitutions in the formulas, other than \code{formation} and
-#'          \code{dissolution} in \code{object$fit$formula} when
+#'          \code{dissolution} in \code{object$formula} when 
 #'          \code{edapprox = FALSE}.
 #'
-#' @return A \code{netest} object with formula environments, some networks,
-#'         and sample removed, optionally with the retained network object
-#'         converted to a \code{networkLite}.
+#' @return A \code{netest} object with formula environments removed, optionally
+#'         with the \code{newnetwork} element converted to a \code{networkLite}
+#'         and the \code{fit} element removed.
 #'
 #' @export
 #'
@@ -377,36 +380,28 @@ netsim_cond_msg <- function(cond, module, at, msg) {
 #'               set.control.ergm = control.ergm(MCMC.burnin = 1e5,
 #'                                               MCMC.interval = 1000))
 #' est <- trim_netest(est)
-trim_netest <- function(object, as.networkLite = TRUE) {
+trim_netest <- function(object, as.networkLite = TRUE, keep.fit = FALSE) {
   if (object$edapprox == TRUE) {
-    object$fit$network <- NULL
-
-    object$fit$formula <- trim_env(object$fit$formula)
-
-    if (as.networkLite == TRUE) {
-      object$fit$newnetwork <- as.networkLite(object$fit$newnetwork)
-    }
+    object$formula <- trim_env(object$formula)
   } else {
-    object$fit$newnetwork <- NULL
-
     # keep formation and dissolution in environment so formula can be evaluated
-    object$fit$formula <- trim_env(object$fit$formula, keep = c("formation", "dissolution"))
+    object$formula <- trim_env(object$formula, keep = c("formation", "dissolution"))
     # but trim environments for formation and dissolution
-    environment(object$fit$formula)$formation <- trim_env(environment(object$fit$formula)$formation)
-    environment(object$fit$formula)$dissolution <- trim_env(environment(object$fit$formula)$dissolution)
-
-    if (as.networkLite == TRUE) {
-      object$fit$network <- as.networkLite(object$fit$network)
-    }
+    environment(object$formula)$formation <- trim_env(environment(object$formula)$formation)
+    environment(object$formula)$dissolution <- trim_env(environment(object$formula)$dissolution)
   }
-
-  object$fit$sample <- NULL
-
-  object$fit$newnetworks <- NULL
 
   object$coef.diss$dissolution <- trim_env(object$coef.diss$dissolution)
   object$formation <- trim_env(object$formation)
   object$constraints <- trim_env(object$constraints)
+
+  if (keep.fit == FALSE) {
+    object$fit <- NULL
+  }
+  
+  if (as.networkLite == TRUE) {
+    object$newnetwork <- as.networkLite(object$newnetwork)
+  }
 
   object
 }
