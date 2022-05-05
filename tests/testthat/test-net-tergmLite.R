@@ -236,7 +236,7 @@ test_that("edgecov works with tergmLite", {
                 target.stats = c(30, 15, 10), 
                 coef.diss = dissolution_coefs(dissolution = ~offset(edges), duration = 1), edapprox = TRUE)
 
-  coefsign <- sign(coef(fit$fit)[3])
+  coefsign <- sign(fit$coef.form.crude[3])
 
   resim_fun <- function(dat, at) {
     n <- attr(dat$el[[1]], "n")

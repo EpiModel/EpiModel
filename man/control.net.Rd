@@ -170,7 +170,9 @@ for models in \code{tergmLite} simulations.}
 when initializing the network with \code{edapprox = TRUE}; all other
 simulations in \code{netsim} use \code{tergm}.}
 
-\item{set.control.stergm}{Deprecated; use \code{set.control.tergm} instead.}
+\item{set.control.stergm}{Deprecated control argument of class 
+\code{control.simulate.network}; use \code{set.control.tergm} 
+instead.}
 
 \item{set.control.tergm}{Control arguments passed to \code{tergm}'s
 \code{simulate_formula.network}. See the help file for

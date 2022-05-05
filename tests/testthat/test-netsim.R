@@ -140,8 +140,8 @@ test_that("netsim duration 1", {
   # compare to manually produced networkDynamic
   set.seed(0)
   sim <- simulate(estd1$formation,
-                  coef = coef(estd1$fit),
-                  basis = estd1$fit$newnetwork,
+                  coef = estd1$coef.form.crude,
+                  basis = estd1$newnetwork,
                   control = control.simulate.formula(MCMC.burnin = 2e5),
                   dynamic = FALSE)
   for(i in 1:5) {
