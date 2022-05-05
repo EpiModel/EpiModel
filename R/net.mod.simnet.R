@@ -37,13 +37,13 @@ sim_nets_t1 <- function(x, dat, nsteps) {
   # Simulate t0 basis network
   if (x$edapprox == TRUE) {
     nw <- simulate(x$formation,
-                   coef = coef(x$fit),
-                   basis = x$fit$newnetwork,
+                   coef = x$coef.form.crude,
+                   basis = x$newnetwork,
                    constraints = x$constraints,
                    control = set.control.ergm,
                    dynamic = FALSE)
   } else {
-    nw <- x$fit$network
+    nw <- x$newnetwork
   }
 
   # if TERGM, then use tergm package simulation for dynamic network
@@ -86,7 +86,7 @@ sim_nets_t1 <- function(x, dat, nsteps) {
     suppressWarnings({
       sim <- simulate(x$formation,
                       basis = nw,
-                      coef = coef(x$fit),
+                      coef = x$coef.form.crude,
                       time.slices = nsteps,
                       time.start = 1,
                       time.offset = 0,

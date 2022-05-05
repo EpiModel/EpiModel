@@ -786,7 +786,9 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #'        \code{simulate_formula.network}. See the help file for
 #'        \code{\link{netdx}} for details and examples on specifying this
 #'        parameter.
-#' @param set.control.stergm Deprecated; use \code{set.control.tergm} instead.
+#' @param set.control.stergm Deprecated control argument of class 
+#'        \code{control.simulate.network}; use \code{set.control.tergm} 
+#'        instead.
 #' @param ... Additional control settings passed to model.
 #'
 #' @details
@@ -1043,12 +1045,8 @@ crosscheck.net <- function(x, param, init, control) {
       }
 
       # Pull network object from netest object
-      if (x[["edapprox"]] == TRUE) {
-        nw <- x[["fit"]][["newnetwork"]]
-      } else {
-        nw <- x[["fit"]][["network"]]
-      }
-
+      nw <- x$newnetwork
+      
       # Defaults ------------------------------------------------------------
 
       # Is status in network formation formula?

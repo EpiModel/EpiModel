@@ -419,14 +419,19 @@ initialize_msm <- function(x, param, init, control, s) {
   # Initial network simulations
   dat$nw <- list()
   for (i in 1:3) {
-    dat$nw[[i]] <- simulate(x[[i]]$fit, response = NULL, basis = x[[i]]$fit$newnetwork)
+    dat[["nw"]][[i]] <- simulate(x[[i]][["formula"]],
+      coef = x[[i]][["coef.form.crude"]],
+      basis = x[[i]][["newnetwork"]],
+      constraints = x[[i]][["constraints"]],
+      dynamic = FALSE
+    )
   }
   nw <- dat$nw
 
   # Pull Network parameters
   dat$nwparam <- list()
   for (i in 1:3) {
-    dat$nwparam[i] <- list(x[[i]][-which(names(x[[i]]) == "fit")])
+    dat$nwparam[i] <- list(x[[i]][!(names(x[[i]]) %in% c("fit", "newnetwork"))])
   }
 
   # Convert to tergmLite method
