@@ -36,7 +36,7 @@ sim_nets_t1 <- function(x, dat, nsteps) {
 
   # Simulate t0 basis network
   if (x$edapprox == TRUE) {
-    nw <- simulate(x$formation,
+    nw <- simulate(x$formula,
                    coef = x$coef.form.crude,
                    basis = x$newnetwork,
                    constraints = x$constraints,
