@@ -104,6 +104,20 @@
 #' plot(dx2, type = "duration")
 #' plot(dx2, type = "dissolution", qnts.col = "orange2")
 #' plot(dx2, type = "dissolution", method = "b", col = "bisque")
+#' 
+#' # Dynamic diagnostics on a more complex model
+#' nw <- network_initialize(n = 1000)
+#' nw <- set_vertex_attribute(nw, 'neighborhood', rep(1:10,100))
+#' formation <- ~edges+nodematch('neighborhood', diff=TRUE)
+#' target.stats <- c(800,45,81,24,16,32,19,42,21,24,31)
+#' coef.diss <- dissolution_coefs(dissolution = 
+#'                      ~offset(edges)+offset(nodematch('neighborhood',diff=TRUE)),
+#'                      duration = c(52,58,61,55,81,62,52,64,52,68,58))
+#' est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
+#' dx11 <- netdx(est, nsims = 5, nsteps = 100)
+#' plot(dx11)
+#' plot(dx11, type = "duration", plots.joined=TRUE, qnts=0.2)
+#' plot(dx11, type = "dissolution", mean.smooth=FALSE, mean.col='red')
 #' }
 #'
 netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
