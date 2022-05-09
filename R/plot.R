@@ -1568,14 +1568,10 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
       warning("Support for dissolution models containing a nodefactor term is deprecated, and will be removed in a future release.", call.=FALSE)
     }
     
-    pages <- x$pages
-    pages_imptd <- x$pages_imptd
     if(duration.imputed==TRUE) {
-      data <- simplify2array(lapply(1:nsims,
-                                    function(x)pages[,,x]+pages_imptd))
-      if(is.vector(data)) data <- array(data, dim=c(1,nsteps,nsims))    # when only one stat and only one timestep
+      data <- x$pages_imptd
     } else {
-      data <- pages
+      data <- x$pages
     }
     
     

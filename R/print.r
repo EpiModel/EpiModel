@@ -213,7 +213,7 @@ print.netsim <- function(x, nwstats = TRUE, digits = 3, network = 1, ...) {
       )
       
       dissolution.stats <- make_dissolution_stats( 
-        diag.sim,
+        lapply(diag.sim, function(nwd) { tedgelist_to_diss_stats(as.data.frame(nwd), x$nwparam[[network]]$coef.diss, x$control$nsteps, network.collapse(nwd, at = 1L)) }),
         x$nwparam[[network]]$coef.diss,
         x$control$nsteps,
         verbose = FALSE
