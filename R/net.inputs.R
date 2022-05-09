@@ -114,7 +114,31 @@
 #' for sampling is provided with \code{\link{param_random}} but any function
 #' will do.
 #'
-#' @section New Modules:
+#' @section Using a Parameter data.frame:
+#' It is possible to set input parameters using a specifically formatted
+#' \code{data.frame} object. The first 3 columns of this \code{data.frame} must
+#' be:
+#' \itemize{
+#'  \item \code{param}: The name of the parameter. If this is a non-scalar
+#'    parameter (a vector of length > 1), end the parameter name with the
+#'    position on the vector (e.g., \code{"p_1"}, \code{"p_2"}, ...).
+#'  \item \code{value}: the value for the parameter (or the value of the
+#'    parameter in the Nth position if non-scalar).
+#'  \item \code{type}: a character string containing either \code{"numeric"},
+#'    \code{"logical"}, or \code{"character"} to define the parameter object
+#'    class.
+#' }
+#'
+#' In addition to these 3 columns, the \code{data.frame} can contain any number
+#' of other columns, such as \code{details} or \code{source} columns to document
+#' parameter meta-data. However, these extra columns will not be used by
+#' EpiModel.
+#'
+#' This data.frame is then passed in to \code{param.net} under a
+#' \code{data.frame.parameters} argument. Further details and examples are
+#' provided in the "Working with Model Parameters in EpiModel" vignette.
+#'
+#' @section Parameters with New Modules:
 #' To build original models outside of the base models, new process modules
 #' may be constructed to replace the existing modules or to supplement the
 #' existing set. These are passed into the control settings in
@@ -122,8 +146,8 @@
 #' parameters named here, an original set of parameters, or a combination of
 #' both. The \code{...} allows the user to pass an arbitrary set of original
 #' model parameters into \code{param.net}. Whereas there are strict checks with
-#' default modules for parameter validity, these checks are the user's
-#' responsibility with new modules.
+#' default modules for parameter validity, this becomes a user
+#' responsibility when using new modules.
 #'
 #' @return An \code{EpiModel} object of class \code{param.net}.
 #'
@@ -176,8 +200,20 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
                       rec.rate.g2, a.rate.g2, ds.rate.g2, di.rate.g2,
                       dr.rate.g2, ...) {
 
+
   # Get arguments
-  p <- list()
+  dot.args <- list(...)
+  names.dot.args <- names(dot.args)
+
+  # Use "data.frame.params" as default if available
+  if ("data.frame.params" %in% names.dot.args) {
+    p <- param.net_from_table(dot.args[["data.frame.params"]])
+    dot.args[["data.frame.params"]] <- NULL
+    names.dot.args <- names(dot.args)
+  } else {
+    p <- list()
+  }
+
   formal.args <- formals(sys.function())
   formal.args[["..."]] <- NULL
   for (arg in names(formal.args)) {
@@ -185,8 +221,6 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
       p[arg] <- list(get(arg))
     }
   }
-  dot.args <- list(...)
-  names.dot.args <- names(dot.args)
   if (length(dot.args) > 0) {
     for (i in seq_along(dot.args)) {
       p[[names.dot.args[i]]] <- dot.args[[i]]
@@ -1177,4 +1211,66 @@ crosscheck.net <- function(x, param, init, control) {
   ## In-place assignment to update param and control
   assign("param", param, pos = parent.frame())
   assign("control", control, pos = parent.frame())
+}
+
+#' @title Parameters List for Stochastic Network Models from a Formatted
+#'        Data Frame
+#'
+#' @description Sets the epidemic parameters for stochastic network models with
+#'              \code{\link{netsim}} using a specially formatted data frame of
+#'              parameters.
+#'
+#' @param long.param.df A \code{data.frame} of parameters. See details for the
+#'                      expected format.
+#'
+#' @return A list object of class \code{param.net}, which can be passed to
+#'         \code{\link{netsim}}.
+#'
+#' @details
+#' It is possible to set input parameters using a specifically formatted
+#' \code{data.frame} object. The first 3 columns of this \code{data.frame} must
+#' be:
+#' \itemize{
+#'  \item \code{param}: The name of the parameter. If this is a non-scalar
+#'    parameter (a vector of length > 1), end the parameter name with the
+#'    position on the vector (e.g., \code{"p_1"}, \code{"p_2"}, ...).
+#'  \item \code{value}: the value for the parameter (or the value of the
+#'    parameter in the Nth position if non-scalar).
+#'  \item \code{type}: a character string containing either \code{"numeric"},
+#'    \code{"logical"}, or \code{"character"} to define the parameter object
+#'    class.
+#' }
+#'
+#' In addition to these 3 columns, the \code{data.frame} can contain any number
+#' of other columns, such as \code{details} or \code{source} columns to document
+#' parameter meta-data. However, these extra columns will not be used by
+#' EpiModel.
+#'
+param.net_from_table <- function(long.param.df) {
+  # Checks
+  if (!all(c("param", "value", "type") %in% names(long.param.df))) {
+    stop(
+      "The `data.frame` must contain the following 3 columns:\n",
+      "'param', 'value'", " and 'type"
+    )
+  }
+  if (!all(long.param.df[["type"]] %in% c("numeric", "logical", "character"))) {
+    stop("The `type` column must contain only 'numeric', 'logical' or",
+         " 'character'")
+  }
+  check_params_names(long.param.df[["param"]])
+
+  # To flat params
+  flat.params <- Map(
+    function(g, x) g(x),
+    g = lapply(paste0("as.", long.param.df[["type"]]), get),
+    x = long.param.df[["value"]]
+  )
+  names(flat.params) <- long.param.df[["param"]]
+
+  # To param.list
+  param <- unflatten_params(flat.params)
+  class(param) <- c("param.net", "list")
+
+  return(param)
 }
