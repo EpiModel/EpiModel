@@ -15,7 +15,7 @@ output of \code{\link{get_formula_term_attr}}.}
 }
 \value{
 A table containing the proportional distribution of each attribute in
-        \code{nwterms}.
+\code{nwterms}.
 }
 \description{
 Calculates the proportional distribution of each vertex

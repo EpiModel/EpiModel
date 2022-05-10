@@ -146,7 +146,8 @@
 netest <- function(nw, formation, target.stats, coef.diss, constraints,
                    coef.form = NULL, edapprox = TRUE,
                    set.control.ergm, set.control.stergm, set.control.tergm,
-                   verbose = FALSE, nested.edapprox = TRUE, keep.fit = FALSE, ...) {
+                   verbose = FALSE, nested.edapprox = TRUE,
+                   keep.fit = FALSE, ...) {
 
   if (!missing(set.control.stergm)) {
     warning("set.control.stergm is deprecated and will be removed in a future
@@ -341,7 +342,8 @@ diss_check <- function(formation, dissolution) {
          nodematch and ", "nodefactor", call. = FALSE)
   }
   if (any(diss.terms[1, ] %in% c("nodefactor"))) {
-    warning("Support for dissolution models containing a nodefactor term is deprecated, and will be removed in a future release.")
+    warning("Support for dissolution models containing a nodefactor term is
+            deprecated, and will be removed in a future release.")
     # TODO: remove functionality and deprecation message in future release
   }
   if (any(matchpos != seq_len(ncol(diss.terms)))) {
