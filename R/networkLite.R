@@ -327,7 +327,7 @@ as.edgelist.networkLite <- function(x, attrname = NULL,
 
   if (output == "matrix") {
     m <- matrix(c(x$el$.tail, x$el$.head), ncol = 2)
-    if(!is.null(attrname)) {
+    if (!is.null(attrname)) {
       m <- cbind(m, x$el[[attrname]])
     }
   } else {
@@ -426,14 +426,14 @@ mixingmatrix.networkLite <- function(object, attr, ...) {
     #   for consistency with `network` behavior
     w <- which(value != 0, arr.ind = TRUE)
     if (is.bipartite(x)) {
-      w[,2] <- w[,2] + b1
+      w[, 2] <- w[, 2] + b1
     }
     if (!is.directed(x)) {
       w <- w[w[, 1] < w[, 2], , drop = FALSE]
     } else {
       w <- w[w[, 1] != w[, 2], , drop = FALSE]
     }
-    w <- w[order(w[, 1], w[, 2]),,drop = FALSE]
+    w <- w[order(w[, 1], w[, 2]), , drop = FALSE]
     x$el <- as_tibble(list(.tail = w[, 1],
                            .head = w[, 2],
                            na = logical(NROW(w))))
@@ -455,13 +455,13 @@ mixingmatrix.networkLite <- function(object, attr, ...) {
       }
       if (!is.directed(x)) {
         vals <- vals[w[, 1] < w[, 2]]
-        w <- w[w[, 1] < w[, 2],,drop = FALSE]
+        w <- w[w[, 1] < w[, 2], , drop = FALSE]
       } else {
         vals <- vals[w[, 1] != w[, 2]]
         w <- w[w[, 1] != w[, 2], , drop = FALSE]
       }
       vals <- vals[order(w[, 1], w[, 2])]
-      w <- w[order(w[, 1], w[, 2]),,drop = FALSE]
+      w <- w[order(w[, 1], w[, 2]), , drop = FALSE]
       if (names.eval == "na") {
         vals[is.na(vals)] <- FALSE
         tbl_list <- list(w[, 1], w[, 2], vals)
@@ -508,16 +508,16 @@ add.edges.networkLite <- function(x, tail, head, names.eval = NULL,
                                   vals.eval = NULL, ...) {
   tail <- NVL(unlist(tail), integer(0))
   head <- NVL(unlist(head), integer(0))
-  if(length(names.eval) == 0 || length(vals.eval) == 0) {
+  if (length(names.eval) == 0 || length(vals.eval) == 0) {
     update_tibble <- as_tibble(list(.tail = tail, .head = head,
                                     na = logical(length(tail))))
   } else {
-    if(!is.list(names.eval)) names.eval <-
+    if (!is.list(names.eval)) names.eval <-
         as.list(rep(names.eval, length.out = length(tail)))
-    if(!is.list(vals.eval)) vals.eval <-
+    if (!is.list(vals.eval)) vals.eval <-
         as.list(rep(vals.eval, length.out = length(names.eval)))
 
-    for(i in seq_along(vals.eval)) {
+    for (i in seq_along(vals.eval)) {
       vals.eval[[i]] <- as.list(vals.eval[[i]])
       names(vals.eval[[i]]) <- unlist(names.eval[[i]])
     }
@@ -525,7 +525,7 @@ add.edges.networkLite <- function(x, tail, head, names.eval = NULL,
     update_tibble <-
       dplyr::bind_cols(as_tibble(list(.tail = tail, .head = head)),
                         dplyr::bind_rows(lapply(vals.eval, function(x)
-                                                  if(length(x) > 0) as_tibble(x) else
+                                                  if (length(x) > 0) as_tibble(x) else
                                                     tibble(NULL, .rows = 1)
                                                 )
                                          ))
@@ -538,8 +538,8 @@ add.edges.networkLite <- function(x, tail, head, names.eval = NULL,
   xn <- substitute(x)
 
   x$el <- dplyr::bind_rows(x$el, update_tibble)
-  x$el <- x$el[order(x$el$.tail, x$el$.head),]
-  x$el <- x$el[!duplicated(x$el[,c(".tail", ".head")]),]
+  x$el <- x$el[order(x$el$.tail, x$el$.head), ]
+  x$el <- x$el[!duplicated(x$el[, c(".tail", ".head")]), ]
 
   on.exit(eval.parent(call("<-", xn, x)))
   invisible(x)
@@ -566,7 +566,7 @@ as.networkLite.network <- function(x, ...) {
     rv %n% name <- x %n% name
   }
 
-  eids <- unlist(get.dyads.eids(x, el[,1], el[,2], na.omit = FALSE))
+  eids <- unlist(get.dyads.eids(x, el[, 1], el[, 2], na.omit = FALSE))
   for (name in list.edge.attributes(x)) {
     rv %e% name <- unlist(get.edge.attribute(x, name, null.na = TRUE,
                                              deleted.edges.omit = FALSE,
@@ -594,18 +594,18 @@ to_network_networkLite <- function(x, ...) {
 
   el <- as.edgelist(x, na.rm = FALSE)
 
-  nw <- add.edges(nw, el[,1], el[,2])
+  nw <- add.edges(nw, el[, 1], el[, 2])
 
-  for(name in list.vertex.attributes(x)) {
+  for (name in list.vertex.attributes(x)) {
     nw %v% name <- x %v% name
   }
 
-  for(name in list.network.attributes(x)) {
+  for (name in list.network.attributes(x)) {
     nw %n% name <- x %n% name
   }
 
-  eids <- unlist(get.dyads.eids(nw, el[,1], el[,2], na.omit = FALSE))
-  for(name in list.edge.attributes(x)) {
+  eids <- unlist(get.dyads.eids(nw, el[, 1], el[, 2], na.omit = FALSE))
+  for (name in list.edge.attributes(x)) {
     set.edge.attribute(nw, name, x %e% name, eids)
   }
 
@@ -637,14 +637,14 @@ valid.eids.networkLite <- function(x, ...) {
 as_tibble.networkLite <- function(x, attrnames = NULL, na.rm = TRUE, ...) {
   if(is.logical(attrnames) || is.numeric(attrnames))
     attrnames <- na.omit(list.edge.attributes(x)[attrnames])
-  out <- x$el[,c(".tail", ".head", attrnames)]
+  out <- x$el[, c(".tail", ".head", attrnames)]
   if(na.rm && NROW(out) > 0) {
     na <- NVL(x %e% "na", FALSE)
-    out <- out[!na,]
+    out <- out[!na, ]
   }
   attr(out, "n") <- network.size(x)
   attr(out, "vnames") <- network.vertex.names(x)
-  if(is.bipartite(x)) attr(out, "bipartite") <- x %n% "bipartite"
+  if (is.bipartite(x)) attr(out, "bipartite") <- x %n% "bipartite"
   out
 }
 
@@ -666,7 +666,7 @@ as.matrix.networkLite <- function(x,
 as.matrix.networkLite.adjacency <- function(x, attrname = NULL, ...) {
   el <- as.edgelist(x, na.rm = FALSE)
 
-  if(!is.null(attrname)) {
+  if (!is.null(attrname)) {
     vals <- x %e% attrname
   } else {
     vals <- rep(1, network.edgecount(x, na.omit = FALSE))
@@ -677,12 +677,12 @@ as.matrix.networkLite.adjacency <- function(x, attrname = NULL, ...) {
 
   m <- matrix(0, nrow = n, ncol = n)
   m[el] <- vals
-  if(!is.directed(x)) {
-    m[el[,c(2,1)]] <- vals
+  if (!is.directed(x)) {
+    m[el[, c(2, 1)]] <- vals
   }
   dimnames(m) <- rep(list(network.vertex.names(x)), 2)
 
-  if(is.bipartite(x)) {
+  if (is.bipartite(x)) {
     bip <- x %n% "bipartite"
     m[seq_len(bip), -seq_len(bip)]
   } else {
@@ -693,18 +693,22 @@ as.matrix.networkLite.adjacency <- function(x, attrname = NULL, ...) {
 as.matrix.networkLite.incidence <- function(x, attrname = NULL, ...) {
   el <- as.edgelist(x, na.rm = FALSE)
 
-  vals <- NVL2(attrname, x %e% attrname, rep(1, network.edgecount(x, na.omit = FALSE)))
+  vals <- NVL2(attrname, x %e% attrname,
+               rep(1, network.edgecount(x, na.omit = FALSE)))
   vals[NVL(x %e% "na", FALSE)] <- NA
 
-  m <- matrix(0, nrow = network.size(x), ncol = network.edgecount(x, na.omit = FALSE))
+  m <- matrix(0, nrow = network.size(x),
+              ncol = network.edgecount(x, na.omit = FALSE))
 
-  m[cbind(el[,1], seq_len(NROW(el)))] <- if(is.directed(x)) -vals else vals
-  m[cbind(el[,2], seq_len(NROW(el)))] <- vals
+  m[cbind(el[, 1], seq_len(NROW(el)))] <- if(is.directed(x)) -vals else vals
+  m[cbind(el[, 2], seq_len(NROW(el)))] <- vals
 
   m
 }
 
-as.matrix.networkLite.edgelist <- function(x, attrname = NULL, na.rm = TRUE, ...) {
+as.matrix.networkLite.edgelist <- function(x, attrname = NULL,
+                                           na.rm = TRUE, ...) {
+
   m <- matrix(c(x$el$.tail, x$el$.head), ncol = 2)
   if (!is.null(attrname)) {
     m <- cbind(m, x$el[[attrname]])

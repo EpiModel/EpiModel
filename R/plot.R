@@ -936,10 +936,10 @@ draw_means <- function(x, y, mean.smooth, mean.lwd,
 #' it is not subject to censoring.
 #'
 #' The \code{plots.joined} argument will control whether the statistics
-#' are joined in one plot or plotted separately, assuming there are multiple statistics in the model.
-#' The default is based on the number of network statistics requested. The
-#' layout of the separate plots within the larger plot window is also based on
-#' the number of statistics.
+#' are joined in one plot or plotted separately, assuming there are multiple
+#' statistics in the model. The default is based on the number of network
+#' statistics requested. The layout of the separate plots within the larger plot
+#' window is also based on the number of statistics.
 #'
 #' @method plot netdx
 #' @export
@@ -954,7 +954,8 @@ draw_means <- function(x, y, mean.smooth, mean.lwd,
 #' nw <- set_vertex_attribute(nw, "sex", rbinom(500, 1, 0.5))
 #' formation <- ~edges + nodematch("sex")
 #' target.stats <- c(500, 300)
-#' coef.diss <- dissolution_coefs(dissolution = ~offset(edges)+offset(nodematch("sex")), duration = c(50, 40))
+#' coef.diss <- dissolution_coefs(dissolution = ~offset(edges) +
+#'                   offset(nodematch("sex")), duration = c(50, 40))
 #'
 #' # Estimate the model
 #' est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
@@ -1565,15 +1566,17 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
     }
 
     if (any(grepl("nodefactor", x$dissolution) == TRUE)) {
-      warning("Support for dissolution models containing a nodefactor term is deprecated, and will be removed in a future release.", call.=FALSE)
+      warning("Support for dissolution models containing a nodefactor term is
+              deprecated, and will be removed in a future release.",
+              call. = FALSE)
     }
 
     pages <- x$pages
     pages_imptd <- x$pages_imptd
-    if(duration.imputed==TRUE) {
+    if (duration.imputed == TRUE) {
       data <- simplify2array(lapply(1:nsims,
-                                    function(x)pages[,,x]+pages_imptd))
-      if(is.vector(data)) data <- array(data, dim=c(1,nsteps,nsims))    # when only one stat and only one timestep
+                                    function(x)pages[, , x] + pages_imptd))
+      if (is.vector(data)) data <- array(data, dim=c(1, nsteps, nsims))
     } else {
       data <- pages
     }
@@ -2039,7 +2042,9 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
   if (type == "dissolution") {
 
     if (any(grepl("nodefactor", x$dissolution) == TRUE)) {
-      warning("Support for dissolution models containing a nodefactor term is deprecated, and will be removed in a future release.", call.=FALSE)
+      warning("Support for dissolution models containing a nodefactor term is
+              deprecated, and will be removed in a future release.",
+              call. = FALSE)
     }
 
     data <- x$prop.diss
