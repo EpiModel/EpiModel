@@ -94,7 +94,7 @@ default colors based on \code{RColorBrewer} color palettes.}
 
 \item{targ.lty}{Line type for the line showing the target statistic values.}
 
-\item{plots.joined}{If \code{TRUE}, combine all target statistics in one 
+\item{plots.joined}{If \code{TRUE}, combine all target statistics in one
 plot, versus one plot per target statistic if \code{FALSE}.}
 
 \item{legend}{If \code{TRUE}, plot default legend.}
