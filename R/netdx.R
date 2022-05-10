@@ -620,7 +620,8 @@ make_dissolution_stats <- function(diag.sim, coef.diss,
                           sum(sim.df[[d]]$terminus == x &
                                 attribute[sim.df[[d]]$head] == attrvalues[y] &
                                 attribute[sim.df[[d]]$tail] == attrvalues[y]) /
-                          sum(sim.df[[d]]$onset<x & sim.df[[d]]$terminus >= x &
+                          sum(sim.df[[d]]$onset < x &
+                                sim.df[[d]]$terminus >= x &
                                 attribute[sim.df[[d]]$head] == attrvalues[y] &
                                 attribute[sim.df[[d]]$tail] == attrvalues[y])
               )
@@ -633,7 +634,7 @@ make_dissolution_stats <- function(diag.sim, coef.diss,
               c(sum(sim.df[[d]]$terminus == x &
                       attribute[sim.df[[d]]$head] !=
                       attribute[sim.df[[d]]$tail]) /
-                  sum(sim.df[[d]]$onset<x & sim.df[[d]]$terminus >= x &
+                  sum(sim.df[[d]]$onset < x & sim.df[[d]]$terminus >= x &
                         attribute[sim.df[[d]]$head] !=
                         attribute[sim.df[[d]]$tail]),
                 sum(sim.df[[d]]$terminus == x &
@@ -651,7 +652,7 @@ make_dissolution_stats <- function(diag.sim, coef.diss,
         attribute <- get_vertex_attribute(diag.sim[[1]], diss_attr_name)
         attrvalues <- sort(unique(attribute))
         n.attrvalues <- length(attrvalues)
-        n.attrcombos <- n.attrvalues*(n.attrvalues+1)/2
+        n.attrcombos <- n.attrvalues * (n.attrvalues + 1) / 2
         indices2.grid <- expand.grid(row = 1:n.attrvalues, col = 1:n.attrvalues)
         rowleqcol <- indices2.grid$row <= indices2.grid$col #assumes undirected
         indices2.grid <- indices2.grid[rowleqcol, ]
@@ -666,8 +667,9 @@ make_dissolution_stats <- function(diag.sim, coef.diss,
                               attribute[indices2.grid$col[y]] &
                             attribute[sim.df[[d]]$tail] ==
                               attribute[indices2.grid$row[y]])
-                sum(sim.df[[d]]$terminus==x & ingroup) /
-                  sum(sim.df[[d]]$onset<x & sim.df[[d]]$terminus>=x & ingroup)
+                sum(sim.df[[d]]$terminus == x & ingroup) /
+                  sum(sim.df[[d]]$onset < x &
+                        sim.df[[d]]$terminus >= x & ingroup)
               })
           }))
         }, simplify = "array")
@@ -682,7 +684,7 @@ make_dissolution_stats <- function(diag.sim, coef.diss,
 
   # Create duration table
   duration.imputed <- simplify2array(lapply(1:nsims,
-                              function(x)pages[,,x]+pages_imptd))
+                              function(x)pages[, , x] + pages_imptd))
   if (is.vector(duration.imputed) & nsteps == 1) {
     duration.imputed <- array(duration.imputed, dim = c(1, 1, nsims))
   }
@@ -715,7 +717,7 @@ make_dissolution_stats <- function(diag.sim, coef.diss,
     dissolution.sd <- NA
   }
 
-  dissolution.expected <- 1/coef_dur
+  dissolution.expected <- 1 / coef_dur
   dissolution.pctdiff <- (dissolution.mean - dissolution.expected) /
     dissolution.expected * 100
 
@@ -737,16 +739,16 @@ make_dissolution_stats <- function(diag.sim, coef.diss,
     rownames(stats.table.duration) <- rownames(stats.table.dissolution) <-
         c("edges")
   } else {
-    if (diss_term=="nodematch") {
-      if(diss_arg==TRUE) {
+    if (diss_term == "nodematch") {
+      if (diss_arg == TRUE) {
         rownames(stats.table.duration) <-
           rownames(stats.table.dissolution) <-
-          c(paste("match",diss_attr_name, "FALSE", sep="."),
+          c(paste("match", diss_attr_name, "FALSE", sep = "."),
             sapply(seq_along(attrvalues), function(z) paste("match",
                                                             diss_attr_name,
                                                             "TRUE",
                                                             attrvalues[z],
-                                                            sep = '.')))
+                                                            sep = ".")))
       } else {
         rownames(stats.table.duration) <-
           rownames(stats.table.dissolution) <-
@@ -754,12 +756,12 @@ make_dissolution_stats <- function(diag.sim, coef.diss,
             paste("match", diss_attr_name, "TRUE ", sep = "."))
       }
     } else {
-      if (diss_term=="nodemix") {
+      if (diss_term == "nodemix") {
         # assumes same attribute values across sims -- appropriate for netdx
         attribute <- get_vertex_attribute(diag.sim[[1]], diss_attr_name)
         attrvalues <- sort(unique(attribute))
         n.attrvalues <- length(attrvalues)
-        n.attrcombos <- n.attrvalues*(n.attrvalues+1)/2
+        n.attrcombos <- n.attrvalues * (n.attrvalues + 1) / 2
         indices2.grid <- expand.grid(row = 1:n.attrvalues, col = 1:n.attrvalues)
         rowleqcol <- indices2.grid$row <= indices2.grid$col #assumes undirected
         uun <- as.vector(outer(attrvalues, attrvalues, paste, sep = "."))

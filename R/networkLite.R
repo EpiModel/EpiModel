@@ -635,10 +635,10 @@ valid.eids.networkLite <- function(x, ...) {
 #'        and the latter being used as the attribute names themselves
 #' @export
 as_tibble.networkLite <- function(x, attrnames = NULL, na.rm = TRUE, ...) {
-  if(is.logical(attrnames) || is.numeric(attrnames))
+  if (is.logical(attrnames) || is.numeric(attrnames))
     attrnames <- na.omit(list.edge.attributes(x)[attrnames])
   out <- x$el[, c(".tail", ".head", attrnames)]
-  if(na.rm && NROW(out) > 0) {
+  if (na.rm && NROW(out) > 0) {
     na <- NVL(x %e% "na", FALSE)
     out <- out[!na, ]
   }
@@ -700,7 +700,7 @@ as.matrix.networkLite.incidence <- function(x, attrname = NULL, ...) {
   m <- matrix(0, nrow = network.size(x),
               ncol = network.edgecount(x, na.omit = FALSE))
 
-  m[cbind(el[, 1], seq_len(NROW(el)))] <- if(is.directed(x)) -vals else vals
+  m[cbind(el[, 1], seq_len(NROW(el)))] <- if (is.directed(x)) -vals else vals
   m[cbind(el[, 2], seq_len(NROW(el)))] <- vals
 
   m
@@ -714,7 +714,7 @@ as.matrix.networkLite.edgelist <- function(x, attrname = NULL,
     m <- cbind(m, x$el[[attrname]])
   }
   if (na.rm == TRUE) {
-    m <- m[!NVL(x %e% "na", FALSE),,drop=FALSE]
+    m <- m[!NVL(x %e% "na", FALSE), , drop = FALSE]
   }
   attr(m, "n") <- network.size(x)
   attr(m, "vnames") <- network.vertex.names(x)
@@ -729,8 +729,8 @@ is.na.networkLite <- function(x) {
                    directed = x %n% "directed",
                    bipartite = x %n% "bipartite")
   el <- as.edgelist(x, na.rm = FALSE)
-  elna <- el[NVL(x %e% "na", FALSE),,drop=FALSE]
-  add.edges(y, elna[,1], elna[,2])
+  elna <- el[NVL(x %e% "na", FALSE), , drop = FALSE]
+  add.edges(y, elna[, 1], elna[, 2])
   y
 }
 
@@ -776,8 +776,8 @@ delete.edges.networkLite <- function(x, eid, ...) {
 
   eid <- as.integer(eid)
   eid <- eid[eid >= 1 & eid <= NROW(x$el)]
-  if(length(eid) > 0) {
-    x$el <- x$el[-eid,]
+  if (length(eid) > 0) {
+    x$el <- x$el[-eid, ]
   }
 
   on.exit(eval.parent(call("<-", xn, x)))
@@ -792,12 +792,12 @@ delete.vertices.networkLite <- function(x, vid, ...) {
 
   vid <- as.integer(vid)
   vid <- vid[vid >= 1 & vid <= network.size(x)]
-  if(length(vid) > 0) {
+  if (length(vid) > 0) {
     # drop edges with deleted nodes
-    x$el <- x$el[!(x$el$.tail %in% vid | x$el$.head %in% vid),]
+    x$el <- x$el[!(x$el$.tail %in% vid | x$el$.head %in% vid), ]
 
     # drop vertex attributes for deleted nodes
-    x$attr <- x$attr[-vid,]
+    x$attr <- x$attr[-vid, ]
 
     # remap nodal indices for remaining edges
     a <- seq_len(network.size(x))
@@ -810,7 +810,7 @@ delete.vertices.networkLite <- function(x, vid, ...) {
 
     # update network attributes
     x %n% "n" <- x %n% "n" - length(vid)
-    if(is.bipartite(x)) {
+    if (is.bipartite(x)) {
       x %n% "bipartite" <- x %n% "bipartite" - sum(vid <= x %n% "bipartite")
     }
   }
@@ -827,15 +827,16 @@ delete.vertices.networkLite <- function(x, vid, ...) {
 #' @param last.mode logical; if \code{x} is bipartite, should the new vertices
 #'        be added to the second mode?
 #' @export
-add.vertices.networkLite <- function(x, nv, vattr = NULL, last.mode = TRUE, ...) {
+add.vertices.networkLite <- function(x, nv, vattr = NULL,
+                                     last.mode = TRUE, ...) {
   xn <- substitute(x)
 
   nv <- as.integer(nv)
-  if(nv > 0) {
+  if (nv > 0) {
     oldsize <- network.size(x)
     x %n% "n" <- oldsize + nv
 
-    if(is.bipartite(x) && !last.mode) {
+    if (is.bipartite(x) && !last.mode) {
       offset <- x %n% "bipartite"
       x %n% "bipartite" <- x %n% "bipartite" + nv
       x$el$.head <- x$el$.head + nv
@@ -843,24 +844,27 @@ add.vertices.networkLite <- function(x, nv, vattr = NULL, last.mode = TRUE, ...)
       offset <- oldsize
     }
 
-    if(!is.null(vattr)) {
-      if(is.list(vattr)) {
+    if (!is.null(vattr)) {
+      if (is.list(vattr)) {
         vattr <- rep(vattr, length.out = nv)
       } else {
         vattr <- as.list(rep(vattr, length.out = nv))
       }
 
       update_tibble <- dplyr::bind_rows(lapply(vattr,
-                                               function(x) if(length(x) > 0) as_tibble(x) else tibble(NULL, .rows = 1)))
+                                               function(x) if (length(x) > 0)
+                                                 as_tibble(x) else
+                                                   tibble(NULL, .rows = 1)))
     } else {
       update_tibble <- as_tibble(list(na = logical(nv)))
     }
-    update_tibble[["na"]] <- NVL(update_tibble[["na"]], logical(NROW(update_tibble)))
+    update_tibble[["na"]] <- NVL(update_tibble[["na"]],
+                                 logical(NROW(update_tibble)))
     update_tibble[["na"]][is.na(update_tibble[["na"]])] <- FALSE
 
-    x$attr <- dplyr::bind_rows(x$attr[seq_len(offset),],
+    x$attr <- dplyr::bind_rows(x$attr[seq_len(offset), ],
                                update_tibble,
-                               x$attr[offset + seq_len(oldsize - offset),])
+                               x$attr[offset + seq_len(oldsize - offset), ])
   }
 
   on.exit(eval.parent(call("<-", xn, x)))
@@ -883,10 +887,10 @@ add.vertices.networkLite <- function(x, nv, vattr = NULL, last.mode = TRUE, ...)
   }
 
   out <- e1
-  if(network.edgecount(e2, na.omit = FALSE) > 0) {
+  if (network.edgecount(e2, na.omit = FALSE) > 0) {
     edgelist <- dplyr::bind_rows(e1$el, e2$el)
-    edgelist <- edgelist[!duplicated(edgelist[,c(".tail", ".head")]),]
-    out$el <- edgelist[order(edgelist$.tail, edgelist$.head),]
+    edgelist <- edgelist[!duplicated(edgelist[, c(".tail", ".head")]), ]
+    out$el <- edgelist[order(edgelist$.tail, edgelist$.head), ]
   }
   out
 }
@@ -902,15 +906,16 @@ add.vertices.networkLite <- function(x, nv, vattr = NULL, last.mode = TRUE, ...)
   }
 
   if (any(NVL(e1 %e% "na", FALSE)) || any(NVL(e2 %e% "na", FALSE))) {
-    stop("subtracting networkLites with missing edges is not currently supported")
+    stop("subtracting networkLites with missing edges is
+         not currently supported")
   }
 
   out <- e1
-  if(network.edgecount(e2, na.omit = FALSE) > 0) {
+  if (network.edgecount(e2, na.omit = FALSE) > 0) {
     edgelist <- dplyr::bind_rows(e2$el, e1$el)
-    nd <- !duplicated(edgelist[,c(".tail", ".head")])
-    out$el <- out$el[nd[-seq_len(network.edgecount(e2, na.omit = FALSE))],]
-    out$el <- out$el[order(out$el$.tail, out$el$.head),]
+    nd <- !duplicated(edgelist[, c(".tail", ".head")])
+    out$el <- out$el[nd[-seq_len(network.edgecount(e2, na.omit = FALSE))], ]
+    out$el <- out$el[order(out$el$.tail, out$el$.head), ]
   }
   out
 }

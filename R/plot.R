@@ -1576,7 +1576,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
     if (duration.imputed == TRUE) {
       data <- simplify2array(lapply(1:nsims,
                                     function(x)pages[, , x] + pages_imptd))
-      if (is.vector(data)) data <- array(data, dim=c(1, nsteps, nsims))
+      if (is.vector(data)) data <- array(data, dim = c(1, nsteps, nsims))
     } else {
       data <- pages
     }
@@ -1702,7 +1702,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 
         for (j in seq_len(nstats)) {
 
-          dataj <- matrix(data[,j,], nrow=nsteps)
+          dataj <- matrix(data[, j, ], nrow = nsteps)
 
           ## Quantiles - ylim min and max ##
           if (dynamic == TRUE) {
@@ -1794,7 +1794,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         plot(1, 1, xlim = xlim, ylim = ylim,
              type = "n", xlab = xlab, ylab = ylab)
         for (j in seq_len(nstats)) {
-            dataj <- matrix(data[,j,], nrow=nsteps)
+            dataj <- matrix(data[, j, ], nrow = nsteps)
           if (dynamic == TRUE) {
             if (is.numeric(qnts)) {
               if (qnts < 0 | qnts > 1) {
@@ -1893,7 +1893,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         }
 
         for (j in seq_len(nstats)) {
-          dataj <- matrix(data[,j,], nrow=nsteps)
+          dataj <- matrix(data[, j, ], nrow = nsteps)
 
           ## Quantiles - ylim min max ##
           if (dynamic == TRUE) {
@@ -2019,7 +2019,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
     }
     if (method == "b") {
 
-      data <- matrix(aperm(data, c(1,3,2)), nrow=nsims*nsteps)
+      data <- matrix(aperm(data, c(1, 3, 2)), nrow = nsims * nsteps)
       colnames(data) <- nmstats
 
       boxplot(data, ...)
@@ -2168,7 +2168,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 
         for (j in seq_len(nstats)) {
 
-          dataj <- matrix(data[,j,], nrow=nsteps)
+          dataj <- matrix(data[, j, ], nrow = nsteps)
 
           ## Quantiles - ylim min and max ##
           if (dynamic == TRUE) {
@@ -2260,7 +2260,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         plot(1, 1, xlim = xlim, ylim = ylim,
              type = "n", xlab = xlab, ylab = ylab)
         for (j in seq_len(nstats)) {
-          dataj <- matrix(data[,j,], nrow=nsteps)
+          dataj <- matrix(data[, j, ], nrow = nsteps)
           if (dynamic == TRUE) {
             if (is.numeric(qnts)) {
               if (qnts < 0 | qnts > 1) {
@@ -2359,7 +2359,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         }
 
         for (j in seq_len(nstats)) {
-          dataj <- matrix(data[,j,], nrow=nsteps)
+          dataj <- matrix(data[, j, ], nrow = nsteps)
 
           ## Quantiles - ylim min max ##
           if (dynamic == TRUE) {
@@ -2485,7 +2485,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
     }
     if (method == "b") {
 
-      data <- matrix(aperm(data, c(1,3,2)), nrow=nsims*nsteps)
+      data <- matrix(aperm(data, c(1, 3, 2)), nrow = nsims * nsteps)
       colnames(data) <- nmstats
 
       boxplot(data, ...)
