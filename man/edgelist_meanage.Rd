@@ -4,56 +4,44 @@
 \alias{edgelist_meanage}
 \title{Mean Age of Partnerships over Time}
 \usage{
-edgelist_meanage(x, el)
+edgelist_meanage(el, diss_term = NULL, diss_attr = NULL, diss_arg = NULL)
 }
 \arguments{
-\item{x}{An \code{EpiModel} object of class \code{\link{netest}}.}
-
-\item{el}{If not passing \code{x}, a timed edgelist from a
-\code{networkDynamic} object extracted with the
+\item{el}{A timed edgelist with start and end times extracted from a
+\code{networkDynamic} object using the
 \code{as.data.frame.networkDynamic} function.}
+
+\item{diss_term}{A string indicating the form of heterogeneity present
+in the dissolution model (options \code{nodematch}, \code{nodemix},
+and \code{nodefactor})
+or \code{NULL} for homogeneous (edges-only) dissolution model}
+
+\item{diss_attr}{A vector containing values of the nodal attribute
+associated with the heterogeneity in the dissolution model,
+or \code{NULL} for homogeneous (edges-only) dissolution model}
+
+\item{diss_arg}{A vector containing any additional argument(s) to the
+term associated with the heterogeneity in the dissolution model,
+or \code{NULL} if there is no relevant argument. At present, this is
+only used when the dissolution model contains a \code{nodematch} term,
+in which case \code{diss_arg} should equal either \code{TRUE} or
+\code{FALSE} to indicate the value of the \code{diff} argument to
+that term. Additional uses may be added in the future.}
 }
 \value{
-A vector containing the mean edge age at each timestep.
+A matrix containing the mean edge age at each timestep (rows),
+with either one column (for homogeneous models, i.e. when
+\code{diss_term=NULL}) or one column per attribute value combination
+(for heterogeneous models).
 }
 \description{
-Outputs a vector of mean ages of edges at a series of timesteps.
+Outputs a matrix of mean ages of edges at a series of timesteps.
 }
 \details{
 This function calculates the mean partnership age at each time step over
-a dynamic network simulation from \code{\link{netest}}. These objects
-contain the network, edgelist, and dissolution objects needed for the
-calculation. Alternatively, one may pass in these objects separately if
-\code{netest} was not used, or statistics were not requested after
-the estimation.
-
-Currently, the calculations are limited to those dissolution formulas with a
-single homogenous dissolution (\code{~offset(edges)}). This functionality
-will be expanded in future releases.
-}
-\examples{
-# Initialize and parameterize the network model
-nw <- network_initialize(n = 100)
-formation <- ~edges
-target.stats <- 50
-coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
-
-# Model estimation
-est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
-
-# Simulate the network and extract a timed edgelist
-dx <- netdx(est, nsims = 1, nsteps = 100, keep.tedgelist = TRUE,
-      verbose = FALSE)
-el <- as.data.frame(dx)
-
-# Calculate ages directly from edgelist
-mean_ages <- edgelist_meanage(el = el)
-mean_ages
-
-# Alternatively, netdx calculates these
-dx$pages
-identical(dx$pages[[1]], mean_ages)
-
+a dynamic network simulation expressed in the form of a timed edgelist.
+Means may be calculated for all edges, or disaggregated by nodal attribute
+combinations.
 }
 \keyword{internal}
 \keyword{netUtils}

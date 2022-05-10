@@ -7,7 +7,7 @@
 edgelist_censor(el)
 }
 \arguments{
-\item{el}{Timed edgelist with start and end times extracted from a
+\item{el}{A timed edgelist with start and end times extracted from a
 \code{networkDynamic} object using the
 \code{as.data.frame.networkDynamic} function.}
 }
