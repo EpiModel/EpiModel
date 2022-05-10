@@ -116,7 +116,8 @@ print.netdx <- function(x, digits = 3, ...) {
   # TODO Remove nodefactor in future release.
   if (x$coef.diss$diss.model.type == "nodefactor") {
     cat("----------------------- \n")
-    cat("* Duration and dissolution results are averaged over for dissolution models containing a nodefactor term.")
+    cat("* Duration and dissolution results are averaged over for dissolution
+        models containing a nodefactor term.")
   }
   invisible()
 }

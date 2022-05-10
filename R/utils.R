@@ -266,12 +266,12 @@ mutate_epi <- function(x, ...) {
 #' @examples
 #' \dontrun{
 #' ## Example 1: Without rounding
-#' apportioned_vec_1 <- apportion_lr(4, c(1, 2, 3, 4, 5), c(0.25, 0, 0.25, 0.25,
-#'      0.25))
+#' apportioned_vec_1 <- apportion_lr(4, c(1, 2, 3, 4, 5),
+#'                                      c(0.25, 0, 0.25, 0.25, 0.25))
 #'
 #' ## Example 2: With rounding
-#' apportioned_vec_2 <- apportion_lr(5, c(1, 2, 3, 4, 5), c(0.21, 0, 0.29, 0.25,
-#'      0.25))
+#' apportioned_vec_2 <- apportion_lr(5, c(1, 2, 3, 4, 5),
+#'                                      c(0.21, 0, 0.29, 0.25, 0.25))
 #' }
 #'
 apportion_lr <- function(vector.length, values,
@@ -385,10 +385,13 @@ trim_netest <- function(object, as.networkLite = TRUE, keep.fit = FALSE) {
     object$formula <- trim_env(object$formula)
   } else {
     # keep formation and dissolution in environment so formula can be evaluated
-    object$formula <- trim_env(object$formula, keep = c("formation", "dissolution"))
+    object$formula <- trim_env(object$formula,
+                               keep = c("formation", "dissolution"))
     # but trim environments for formation and dissolution
-    environment(object$formula)$formation <- trim_env(environment(object$formula)$formation)
-    environment(object$formula)$dissolution <- trim_env(environment(object$formula)$dissolution)
+    environment(object$formula)$formation <-
+      trim_env(environment(object$formula)$formation)
+    environment(object$formula)$dissolution <-
+      trim_env(environment(object$formula)$dissolution)
   }
 
   object$coef.diss$dissolution <- trim_env(object$coef.diss$dissolution)
