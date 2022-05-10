@@ -1,4 +1,4 @@
-# Exported Functions ------------------------------------------------------
+# Network-related Utility Functions -----------------------------------------
 
 #' @title Check Degree Distribution for Balance in Target Statistics
 #'
@@ -168,7 +168,7 @@ color_tea <- function(nd, old.var = "testatus", old.sus = "s", old.inf = "i",
 #' @export
 #'
 copy_nwattr_to_datattr <- function(dat) {
-  otha <- names(dat$nw[[1]]$val[[1]])
+  otha <- list.vertex.attributes(dat$nw[[1]])
   otha <- setdiff(otha, c("na", "vertex.names", "active",
                           "testatus.active", "tergm_pid"))
   if (length(otha) > 0) {
@@ -221,7 +221,7 @@ copy_datattr_to_nwattr <- function(dat) {
 #' @title Dissolution Coefficients for Stochastic Network Models
 #'
 #' @description Calculates dissolution coefficients, given a dissolution model
-#'              and average edge duration, to pass as offsets to an ERGM/STERGM
+#'              and average edge duration, to pass as offsets to an ERGM/TERGM
 #'              model fit in \code{netest}.
 #'
 #' @param dissolution Right-hand sided STERGM dissolution formula
@@ -263,7 +263,8 @@ copy_datattr_to_nwattr <- function(dat) {
 #'  \item \code{~offset(edges) + offset(nodefactor("<attr>"))}: a heterogeneous
 #'         model in which the edge duration varies by a specified attribute. The
 #'         duration vector should first contain the base value, then the values
-#'         for every other value of that attribute in the term.
+#'         for every other value of that attribute in the term. This option is
+#'         deprecated.
 #' }
 #'
 #' @return
@@ -280,6 +281,9 @@ copy_datattr_to_nwattr <- function(dat) {
 #'  \item \strong{coef.form.corr:} corrections to be subtracted from formation
 #'        coefficients.
 #'  \item \strong{d.rate:} the departure rate.
+#'  \item \strong{diss.model.type:} the form of the dissolution model; options
+#'        include \code{edgesonly}, \code{nodematch}, \code{nodemix}, and
+#'        \code{nodefactor}.
 #' }
 #'
 #' @export
@@ -364,29 +368,35 @@ dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
     stop("All values in duration must be >= 1", call. = FALSE)
   }
   # Check form of dissolution formula
+  diss.model.type <- NA
   form.length <- length(strsplit(as.character(dissolution)[2], "[+]")[[1]])
   t1.edges <- grepl("offset[(]edges",
                     strsplit(as.character(dissolution)[2], "[+]")[[1]][1])
-  if (form.length == 2) {
-    t2 <- strsplit(as.character(dissolution)[2], "[+]")[[1]][2]
-    t2.term <- NULL
-    if (grepl("offset[(]nodematch", t2)) {
-      t2.term <- "nodematch"
-    } else if (grepl("offset[(]nodefactor", t2)) {
-      t2.term <- "nodefactor"
-    } else if (grepl("offset[(]nodemix", t2)) {
-      t2.term <- "nodemix"
+  if (form.length == 1 && t1.edges == TRUE) {
+    diss.model.type <- 'edgesonly'
+  } else {
+    if (form.length == 2 && t1.edges == TRUE) {
+      t2 <- strsplit(as.character(dissolution)[2], "[+]")[[1]][2]
+      t2.term <- NULL
+      if (grepl("offset[(]nodematch", t2)) {
+        t2.term <- diss.model.type <- "nodematch"
+      } else {
+        if (grepl("offset[(]nodefactor", t2)) {
+          t2.term <- diss.model.type <- "nodefactor"
+          warning("Support for dissolution models containing a nodefactor term
+                  is deprecated, and will be removed in a future release.")
+          # TODO: remove functionality and deprecation message in future release
+        } else {
+          if (grepl("offset[(]nodemix", t2)) {
+          t2.term <- diss.model.type <- "nodemix"
+          } else stop("The form of the dissolution argument is invalid. Type
+                      help(\'dissolution_coefs\') to see the set of options
+                      allowed.")
+        }
+      }
     }
   }
-  model.type <- NA
-  if (form.length == 1 && t1.edges == TRUE) {
-    model.type <- "homog"
-  } else if (form.length == 2 && t1.edges == TRUE &&
-             t2.term %in% c("nodematch", "nodefactor", "nodemix")) {
-    model.type <- "hetero"
-  } else {
-    model.type <- "invalid"
-  }
+
   if (length(d.rate) > 1) {
     stop("Length of d.rate must be 1", call. = FALSE)
   }
@@ -448,7 +458,7 @@ dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
   out$coef.adj <- coef.adj
   out$coef.form.corr <- coef.form.corr
   out$d.rate <- d.rate
-  out$model.type <- model.type
+  out$diss.model.type <- diss.model.type
   class(out) <- "disscoef"
   return(out)
 }
@@ -460,7 +470,7 @@ dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
 #'              left-censored, right-censored, both-censored, or uncensored for
 #'              a \code{networkDynamic} object.
 #'
-#' @param el Timed edgelist with start and end times extracted from a
+#' @param el A timed edgelist with start and end times extracted from a
 #'        \code{networkDynamic} object using the
 #'        \code{as.data.frame.networkDynamic} function.
 #'
@@ -524,70 +534,112 @@ edgelist_censor <- function(el) {
 
 #' @title Mean Age of Partnerships over Time
 #'
-#' @description Outputs a vector of mean ages of edges at a series of timesteps.
+#' @description Outputs a matrix of mean ages of edges at a series of timesteps.
 #'
-#' @param x An \code{EpiModel} object of class \code{\link{netest}}.
-#' @param el If not passing \code{x}, a timed edgelist from a
-#'        \code{networkDynamic} object extracted with the
+#' @param el A timed edgelist with start and end times extracted from a
+#'        \code{networkDynamic} object using the
 #'        \code{as.data.frame.networkDynamic} function.
+#' @param diss_term A string indicating the form of heterogeneity present
+#'        in the dissolution model (options \code{nodematch}, \code{nodemix},
+#'        and \code{nodefactor})
+#'        or \code{NULL} for homogeneous (edges-only) dissolution model
+#' @param diss_attr A vector containing values of the nodal attribute
+#'        associated with the heterogeneity in the dissolution model,
+#'        or \code{NULL} for homogeneous (edges-only) dissolution model
+#' @param diss_arg A vector containing any additional argument(s) to the
+#'        term associated with the heterogeneity in the dissolution model,
+#'        or \code{NULL} if there is no relevant argument. At present, this is
+#'        only used when the dissolution model contains a \code{nodematch} term,
+#'        in which case \code{diss_arg} should equal either \code{TRUE} or
+#'        \code{FALSE} to indicate the value of the \code{diff} argument to
+#'        that term. Additional uses may be added in the future.
 #'
 #' @details
 #' This function calculates the mean partnership age at each time step over
-#' a dynamic network simulation from \code{\link{netest}}. These objects
-#' contain the network, edgelist, and dissolution objects needed for the
-#' calculation. Alternatively, one may pass in these objects separately if
-#' \code{netest} was not used, or statistics were not requested after
-#' the estimation.
+#' a dynamic network simulation expressed in the form of a timed edgelist.
+#' Means may be calculated for all edges, or disaggregated by nodal attribute
+#' combinations.
 #'
-#' Currently, the calculations are limited to those dissolution formulas with a
-#' single homogenous dissolution (\code{~offset(edges)}). This functionality
-#' will be expanded in future releases.
+#' @return A matrix containing the mean edge age at each timestep (rows),
+#' with either one column (for homogeneous models, i.e. when
+#' \code{diss_term=NULL}) or one column per attribute value combination
+#' (for heterogeneous models).
 #'
-#' @return A vector containing the mean edge age at each timestep.
-#'
-#' @export
 #' @keywords netUtils internal
 #'
-#' @examples
-#' # Initialize and parameterize the network model
-#' nw <- network_initialize(n = 100)
-#' formation <- ~edges
-#' target.stats <- 50
-#' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
-#'
-#' # Model estimation
-#' est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
-#'
-#' # Simulate the network and extract a timed edgelist
-#' dx <- netdx(est, nsims = 1, nsteps = 100, keep.tedgelist = TRUE,
-#'       verbose = FALSE)
-#' el <- as.data.frame(dx)
-#'
-#' # Calculate ages directly from edgelist
-#' mean_ages <- edgelist_meanage(el = el)
-#' mean_ages
-#'
-#' # Alternatively, netdx calculates these
-#' dx$pages
-#' identical(dx$pages[[1]], mean_ages)
-#'
-edgelist_meanage <- function(x, el) {
-  # If passing a netest object directly
-  if (!(missing(x))) {
-    el <- x$edgelist
-  }
+edgelist_meanage <- function(el, diss_term=NULL, diss_attr=NULL, diss_arg=NULL) {
+# TODO: remove nodefactor from documentation in later version
   terminus <- el$terminus
   onset <- el$onset
   minterm <- 1
   maxterm <- max(terminus)
-  meanpage <- rep(NA, maxterm)
+
+  if (is.null(diss_term) || diss_term=="nodefactor") {
+    # TODO: remove nodefactor in future release
+    meanpage <- matrix(NA, maxterm, 1)
+  } else {
+    attrvalues <- sort(unique(diss_attr))
+    n.attrvalues <- length(attrvalues)
+    attr1 <- diss_attr[el$head]
+    attr2 <- diss_attr[el$tail]
+    if(diss_term=="nodematch" && diss_arg==FALSE) {
+      meanpage <- matrix(NA, maxterm, 2)
+    }
+    if(diss_term=="nodematch" && diss_arg==TRUE) {
+      meanpage <- matrix(NA, maxterm, n.attrvalues+1)
+    }
+    if(diss_term=="nodemix") {
+      n.attrcombos <- n.attrvalues*(n.attrvalues+1)/2
+      meanpage <- matrix(NA, maxterm, n.attrcombos)
+      indices2.grid <- expand.grid(row = 1:n.attrvalues, col = 1:n.attrvalues)
+      rowleqcol <- indices2.grid$row <= indices2.grid$col #assumes undirected
+      indices2.grid <- indices2.grid[rowleqcol, ]
+  }}
+
   for (at in minterm:maxterm) {
     actp <- (onset <= at & terminus > at) |
       (onset == at & terminus == at);
     page <- at - onset[actp] + 1
-    meanpage[at] <- mean(page)
+
+    if (is.null(diss_term) || diss_term=="nodefactor") {
+      # TODO: remove nodefactor in future release
+      meanpage[at,1] <- mean(page)
+    } else {
+        attr1a <- attr1[actp]
+        attr2a <- attr2[actp]
+        if(diss_term=="nodematch") {
+          if(diss_arg==TRUE) {
+            su_diss_attr <- sort(unique(diss_attr))
+            meanpage[at,1] <- mean(page[attr1a != attr2a])
+            for (k in seq_along(su_diss_attr)) {
+              meanpage[at,k+1] <-
+                mean(page[attr1a==su_diss_attr[k] & attr2a==su_diss_attr[k]])
+            }
+          } else {
+            meanpage[at,1] <- mean(page[attr1a!=attr2a])
+            meanpage[at,2] <- mean(page[attr1a==attr2a])
+          }
+        }
+        if(diss_term=="nodemix") {
+          for(i in 1:nrow(indices2.grid)) {
+            if(indices2.grid$row[i]==indices2.grid$col[i]) {
+              meanpage[at,i] <- mean(
+                page[attr1a==attrvalues[indices2.grid$row[i]] &
+                         attr2a==attrvalues[indices2.grid$col[i]]]
+              )
+            } else {
+            meanpage[at,i] <- mean(
+              c(page[attr1a==attrvalues[indices2.grid$row[i]] &
+                     attr2a==attrvalues[indices2.grid$col[i]]],
+                page[attr1a==attrvalues[indices2.grid$col[i]] &
+                     attr2a==attrvalues[indices2.grid$row[i]]]
+                ))
+            }
+          }
+        }
+    }
   }
-  meanpage <- meanpage[1:(length(meanpage) - 1)]
+  meanpage <- head(meanpage, -1)  # remove last row
   return(meanpage)
 }
 
@@ -647,7 +699,7 @@ get_attr_prop <- function(dat, nwterms) {
 #'
 get_formula_term_attr <- function(form, nw) {
 
-  nw_attr <- names(nw$val[[1]])
+  nw_attr <- list.vertex.attributes(nw)
   nw_attr <- setdiff(nw_attr, c("active", "vertex.names", "na"))
 
   if (length(nw_attr) == 0) {
@@ -678,7 +730,7 @@ get_formula_term_attr <- function(form, nw) {
 #'
 get_network_term_attr <- function(nw) {
 
-  nw_attr <- names(nw$val[[1]])
+  nw_attr <- list.vertex.attributes(nw)
   nw_attr <- setdiff(nw_attr, c("active", "vertex.names", "na",
                                 "testatus.active", "tergm_pid"))
 
@@ -723,7 +775,7 @@ idgroup <- function(nw, ids) {
     stop("Specify ids between 1 and ", n)
   }
 
-  flag <- "group" %in% names(nw$val[[1]])
+  flag <- "group" %in% list.vertex.attributes(nw)
   if (!flag) {
     out <- rep(1, n)
   } else {
@@ -899,7 +951,7 @@ get_degree <- function(x) {
 #' mod2$control$nsteps
 #'
 truncate_sim <- function(x, at) {
-  if (class(x) != "icm" && class(x) != "netsim") {
+  if (!inherits(x, c("icm", "netsim"))) {
     stop("x must be either an object of class icm or class netsim",
          call. = FALSE)
   }

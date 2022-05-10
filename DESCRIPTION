@@ -31,7 +31,7 @@ Depends:
     deSolve (>= 1.21),
     networkDynamic (>= 0.10),
     tergm (>= 4.0),
-    statnet.common (>= 4.4.0)
+    statnet.common (>= 4.6.0)
 Imports:
     graphics,
     grDevices,
@@ -51,6 +51,7 @@ Imports:
     dplyr
 Suggests:
     knitr,
+    ndtv,
     rmarkdown,
     shiny,
     testthat,
@@ -60,8 +61,7 @@ VignetteBuilder: knitr
 LinkingTo: Rcpp, ergm
 RoxygenNote: 7.1.2
 Encoding: UTF-8
-Remotes: github::statnet/statnet.common@master,
-    github::statnet/network@master,
+Remotes: github::statnet/network@master,
     github::statnet/networkDynamic@master,
     github::statnet/ergm@master,
     github::statnet/ergm.ego@master,

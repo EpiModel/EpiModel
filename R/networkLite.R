@@ -207,7 +207,7 @@ set.vertex.attribute.networkLite <- function(x,
 #' @export
 #'
 list.vertex.attributes.networkLite <- function(x, ...) {
-  names(x$attr)
+  sort(unique(names(x$attr)))
 }
 
 #' @rdname networkLitemethods
@@ -233,7 +233,7 @@ set.network.attribute.networkLite <- function(x, attrname, value, ...) {
 #' @export
 #'
 list.network.attributes.networkLite <- function(x, ...) {
-  names(x$gal)
+  sort(unique(names(x$gal)))
 }
 
 #' @rdname networkLitemethods
@@ -285,7 +285,7 @@ set.edge.value.networkLite <- function(x, attrname, value, e = seq_len(network.e
 #' @export
 #'
 list.edge.attributes.networkLite <- function(x, ...) {
-  colnames(x$el)[-c(1,2)]
+  sort(unique(colnames(x$el)[-c(1,2)]))
 }
 
 
@@ -837,7 +837,7 @@ add.vertices.networkLite <- function(x, nv, vattr = NULL, last.mode = TRUE, ...)
   if(network.edgecount(e2, na.omit = FALSE) > 0) {
     edgelist <- dplyr::bind_rows(e1$el, e2$el)
     edgelist <- edgelist[!duplicated(edgelist[,c(".tail", ".head")]),]
-    out$el <- edgelist[order(edgelist[,1], edgelist[,2]),]
+    out$el <- edgelist[order(edgelist$.tail, edgelist$.head),]
   }
   out
 }
@@ -860,7 +860,7 @@ add.vertices.networkLite <- function(x, nv, vattr = NULL, last.mode = TRUE, ...)
     edgelist <- dplyr::bind_rows(e2$el, e1$el)
     nd <- !duplicated(edgelist[,c(".tail", ".head")])
     out$el <- out$el[nd[-seq_len(network.edgecount(e2, na.omit = FALSE))],]
-    out$el <- out$el[order(out$el[,1], out$el[,2]),]
+    out$el <- out$el[order(out$el$.tail, out$el$.head),]
   }
   out
 }

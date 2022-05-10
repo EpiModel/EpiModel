@@ -1,9 +1,9 @@
 ---
-title: "Working With Custom Attributes and Summary Statistics in EpiModel"
+title: "Working with Custom Attributes and Summary Statistics in EpiModel"
 author: "EpiModel v`r packageVersion('EpiModel')`"
 date: "`r Sys.Date()`"
 vignette: >
-  %\VignetteIndexEntry{Working With Custom Attributes and Summary Statistics}
+  %\VignetteIndexEntry{Working with Custom Attributes and Summary Statistics}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 editor_options: 

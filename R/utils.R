@@ -90,7 +90,7 @@ brewer_ramp <- function(n, plt, delete.lights = TRUE) {
 #' @keywords internal
 deleteAttr <- function(attrList, ids) {
 
-  if (class(attrList) != "list") {
+  if (!inherits(attrList, "list")) {
     stop("attrList must be a list", call. = FALSE)
   }
 
@@ -127,7 +127,7 @@ deleteAttr <- function(attrList, ids) {
 delete_attr <- function(dat, ids) {
   attrList <- dat$attr
 
-  if (class(attrList) != "list") {
+  if (!inherits(attrList, "list")) {
     stop("dat object does not contain a valid attribute list", call. = FALSE)
   }
   if (length(unique(sapply(attrList, length))) != 1) {
@@ -390,7 +390,7 @@ trim_netest <- function(object, as.networkLite = TRUE, keep.fit = FALSE) {
     environment(object$formula)$formation <- trim_env(environment(object$formula)$formation)
     environment(object$formula)$dissolution <- trim_env(environment(object$formula)$dissolution)
   }
-  
+
   object$coef.diss$dissolution <- trim_env(object$coef.diss$dissolution)
   object$formation <- trim_env(object$formation)
   object$constraints <- trim_env(object$constraints)
@@ -402,6 +402,6 @@ trim_netest <- function(object, as.networkLite = TRUE, keep.fit = FALSE) {
   if (as.networkLite == TRUE) {
     object$newnetwork <- as.networkLite(object$newnetwork)
   }
-  
+
   object
 }

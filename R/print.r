@@ -103,22 +103,21 @@ print.netdx <- function(x, digits = 3, ...) {
   cat("\n----------------------- \n")
   print_nwstats_table(x$stats.table.formation, digits)
 
+  if (x$dynamic == TRUE & !is.null(x$stats.table.duration)) {
+    cat("\nDuration Diagnostics")
+    cat("\n----------------------- \n")
+    print_nwstats_table(x$stats.table.duration, digits)
+  }
   if (x$dynamic == TRUE & !is.null(x$stats.table.dissolution)) {
     cat("\nDissolution Diagnostics")
     cat("\n----------------------- \n")
-    if (x$coef.diss$dissolution == ~ offset(edges)) {
-      print_nwstats_table(x$stats.table.dissolution, digits)
-      if (x$coef.diss$model.type == "hetero") {
-        cat("----------------------- \n")
-        cat("* Heterogeneous dissolution model results averaged over")
-      }
-    } else {
-      cat("Not available when:")
-      cat("\n- dissolution formula is not `~ offset(edges)`")
-      cat("\n")
-    }
+    print_nwstats_table(x$stats.table.dissolution, digits)
   }
-
+  # TODO Remove nodefactor in future release.
+  if (x$coef.diss$diss.model.type == "nodefactor") {
+    cat("----------------------- \n")
+    cat("* Duration and dissolution results are averaged over for dissolution models containing a nodefactor term.")
+  }
   invisible()
 }
 
@@ -212,10 +211,9 @@ print.netsim <- function(x, nwstats = TRUE, digits = 3, network = 1, ...) {
         seq_len(x$control$nsims),
         get_network, network = network, x = x
       )
-      sim.df <- lapply(diag.sim, as.data.frame)
-
-      dissolution.stats <- make_dissolution_stats(
-        sim.df,
+      
+      dissolution.stats <- make_dissolution_stats( 
+        diag.sim,
         x$nwparam[[network]]$coef.diss,
         x$control$nsteps,
         verbose = FALSE
@@ -223,7 +221,7 @@ print.netsim <- function(x, nwstats = TRUE, digits = 3, network = 1, ...) {
 
       print_nwstats_table(dissolution.stats$stats.table.dissolution, digits)
 
-      if (x$nwparam[[network]]$coef.diss$model.type == "hetero") {
+      if (x$nwparam[[network]]$coef.diss$diss.model.type == "hetero") {
         cat("----------------------- \n")
         cat("* Heterogeneous dissolution model results averaged over")
       }
@@ -360,11 +358,11 @@ print.init.dcm <- function(x, ...) {
   cat("DCM Initial Conditions")
   cat("\n===========================\n")
   for (i in pToPrint) {
-    if (class(x[[i]]) %in% c("integer", "numeric") && length(x[[i]]) > 10) {
+    if (inherits(x[[i]], c("integer", "numeric")) && length(x[[i]]) > 10) {
       cat(names(x)[i], "=", x[[i]][1:5], "...", fill = 80)
-    } else if (class(x[[i]]) == "data.frame") {
+    } else if (inherits(x[[i]], "data.frame")) {
       cat(names(x)[i], "= <data.frame>\n")
-    } else if (class(x[[i]]) == "list") {
+    } else if (inherits(x[[i]], "list")) {
       cat(names(x)[i], "= <list>\n")
     } else {
       cat(names(x)[i], "=", x[[i]], fill = 80)
@@ -382,11 +380,11 @@ print.init.icm <- function(x, ...) {
   cat("ICM Initial Conditions")
   cat("\n===========================\n")
   for (i in pToPrint) {
-    if (class(x[[i]]) %in% c("integer", "numeric") && length(x[[i]]) > 10) {
+    if (inherits(x[[i]], c("integer", "numeric")) && length(x[[i]]) > 10) {
       cat(names(x)[i], "=", x[[i]][1:5], "...", fill = 80)
-    } else if (class(x[[i]]) == "data.frame") {
+    } else if (inherits(x[[i]], "data.frame")) {
       cat(names(x)[i], "= <data.frame>\n")
-    } else if (class(x[[i]]) == "list") {
+    } else if (inherits(x[[i]], "list")) {
       cat(names(x)[i], "= <list>\n")
     } else {
       cat(names(x)[i], "=", x[[i]], fill = 80)
@@ -404,11 +402,11 @@ print.init.net <- function(x, ...) {
   cat("Network Model Initial Conditions")
   cat("\n=================================\n")
   for (i in pToPrint) {
-    if (class(x[[i]]) %in% c("integer", "numeric") && length(x[[i]]) > 10) {
+    if (inherits(x[[i]], c("integer", "numeric")) && length(x[[i]]) > 10) {
       cat(names(x)[i], "=", x[[i]][1:5], "...", fill = 80)
-    } else if (class(x[[i]]) == "data.frame") {
+    } else if (inherits(x[[i]], "data.frame")) {
       cat(names(x)[i], "= <data.frame>\n")
-    } else if (class(x[[i]]) == "list") {
+    } else if (inherits(x[[i]], "list")) {
       cat(names(x)[i], "= <list>\n")
     } else {
       cat(names(x)[i], "=", x[[i]], fill = 80)
@@ -474,12 +472,12 @@ print.control.net <- function(x, ...) {
   cat("Network Model Control Settings")
   cat("\n===============================\n")
   for (i in pToPrint) {
-    if (class(x[[i]]) == "formula") {
+    if (inherits(x[[i]], "formula")) {
       cat(names(x)[i], "= "); cat(paste0(as.character(x[[i]])[1],
                                          as.character(x[[i]])[2]), "\n")
-    } else if (class(x[[i]]) == "data.frame") {
+    } else if (inherits(x[[i]], "data.frame")) {
       cat(names(x)[i], "= <data.frame>\n")
-    } else if (class(x[[i]]) == "list") {
+    } else if (inherits(x[[i]], "list")) {
       cat(names(x)[i], "= <list>\n")
     } else {
       cat(names(x)[i], "=", x[[i]], fill = 80)

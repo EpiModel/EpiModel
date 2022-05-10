@@ -159,15 +159,15 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
                    nested.edapprox = TRUE, keep.fit = FALSE, ...) {
 
   if (!missing(set.control.stergm)) {
-    warning("set.control.stergm is deprecated and will be removed in a future 
+    warning("set.control.stergm is deprecated and will be removed in a future
              version; use set.control.tergm instead.")
   }
-  
+
   if (missing(constraints)) {
     constraints	<- trim_env(~.)
   }
 
-  if (class(coef.diss) != "disscoef") {
+  if (!inherits(coef.diss, "disscoef")) {
     stop("dissolution must be of input through dissolution_coefs function",
          call. = FALSE)
   }
@@ -184,7 +184,7 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
 
   if (edapprox == FALSE) {
 
-    if (!missing(set.control.stergm)) {      
+    if (!missing(set.control.stergm)) {
       fit <- stergm(nw,
                     formation = formation,
                     dissolution = dissolution,
@@ -201,7 +201,7 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
       if (missing(set.control.tergm)) {
         set.control.tergm <- control.tergm()
       }
-    
+
       fit <- tergm(nw ~ Form(formation) + Persist(dissolution),
                    targets = "formation",
                    target.stats = target.stats,
@@ -358,7 +358,6 @@ diss_check <- function(formation, dissolution) {
                        },
                        c(term = "", args = ""))
 
-
   matchpos <- match(diss.terms[1, ], form.terms[1, ])
 
   if (any(is.na(matchpos))) {
@@ -369,6 +368,10 @@ diss_check <- function(formation, dissolution) {
     stop("The only allowed dissolution terms are edges, nodemix,
          nodematch and ", "nodefactor", call. = FALSE)
   }
+  if (any(diss.terms[1, ] %in% c("nodefactor"))) {
+    warning("Support for dissolution models containing a nodefactor term is deprecated, and will be removed in a future release.")
+    # TODO: remove functionality and deprecation message in future release
+  }  
   if (any(matchpos != seq_len(ncol(diss.terms)))) {
     stop("Order of terms in the dissolution model does not correspond to the ",
          "formation model.", call. = FALSE)
@@ -439,10 +442,10 @@ diss_check <- function(formation, dissolution) {
 update_dissolution <- function(old.netest, new.coef.diss,
                                nested.edapprox = TRUE, ...) {
 
-  if (class(old.netest) != "netest") {
+  if (!inherits(old.netest, "netest")) {
     stop("old.netest must be an object of class netest", call. = FALSE)
   }
-  if (class(new.coef.diss) != "disscoef") {
+  if (!inherits(new.coef.diss, "disscoef")) {
     stop("new.coef.diss must be an object of class disscoef", call. = FALSE)
   }
   if (old.netest$edapprox != TRUE) {
