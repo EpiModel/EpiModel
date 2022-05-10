@@ -29,9 +29,9 @@ in which case \code{diss_arg} should equal either \code{TRUE} or
 that term. Additional uses may be added in the future.}
 }
 \value{
-A matrix containing the mean edge age at each timestep (rows),
+A matrix containing the mean edge age at each time step (rows),
 with either one column (for homogeneous models, i.e. when
-\code{diss_term=NULL}) or one column per attribute value combination
+\code{diss_term = NULL}) or one column per attribute value combination
 (for heterogeneous models).
 }
 \description{

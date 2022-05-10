@@ -373,7 +373,7 @@ dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
   t1.edges <- grepl("offset[(]edges",
                     strsplit(as.character(dissolution)[2], "[+]")[[1]][1])
   if (form.length == 1 && t1.edges == TRUE) {
-    diss.model.type <- 'edgesonly'
+    diss.model.type <- "edgesonly"
   } else {
     if (form.length == 2 && t1.edges == TRUE) {
       t2 <- strsplit(as.character(dissolution)[2], "[+]")[[1]][2]
@@ -560,14 +560,15 @@ edgelist_censor <- function(el) {
 #' Means may be calculated for all edges, or disaggregated by nodal attribute
 #' combinations.
 #'
-#' @return A matrix containing the mean edge age at each timestep (rows),
+#' @return A matrix containing the mean edge age at each time step (rows),
 #' with either one column (for homogeneous models, i.e. when
-#' \code{diss_term=NULL}) or one column per attribute value combination
+#' \code{diss_term = NULL}) or one column per attribute value combination
 #' (for heterogeneous models).
 #'
 #' @keywords netUtils internal
 #'
-edgelist_meanage <- function(el, diss_term=NULL, diss_attr=NULL, diss_arg=NULL) {
+edgelist_meanage <- function(el, diss_term = NULL,
+                             diss_attr = NULL, diss_arg = NULL) {
 # TODO: remove nodefactor from documentation in later version
   terminus <- el$terminus
   onset <- el$onset
@@ -582,14 +583,14 @@ edgelist_meanage <- function(el, diss_term=NULL, diss_attr=NULL, diss_arg=NULL) 
     n.attrvalues <- length(attrvalues)
     attr1 <- diss_attr[el$head]
     attr2 <- diss_attr[el$tail]
-    if(diss_term=="nodematch" && diss_arg==FALSE) {
+    if(diss_term == "nodematch" && diss_arg == FALSE) {
       meanpage <- matrix(NA, maxterm, 2)
     }
-    if(diss_term=="nodematch" && diss_arg==TRUE) {
+    if(diss_term == "nodematch" && diss_arg == TRUE) {
       meanpage <- matrix(NA, maxterm, n.attrvalues+1)
     }
-    if(diss_term=="nodemix") {
-      n.attrcombos <- n.attrvalues*(n.attrvalues+1)/2
+    if(diss_term == "nodemix") {
+      n.attrcombos <- n.attrvalues * (n.attrvalues + 1) / 2
       meanpage <- matrix(NA, maxterm, n.attrcombos)
       indices2.grid <- expand.grid(row = 1:n.attrvalues, col = 1:n.attrvalues)
       rowleqcol <- indices2.grid$row <= indices2.grid$col #assumes undirected
@@ -601,14 +602,14 @@ edgelist_meanage <- function(el, diss_term=NULL, diss_attr=NULL, diss_arg=NULL) 
       (onset == at & terminus == at);
     page <- at - onset[actp] + 1
 
-    if (is.null(diss_term) || diss_term=="nodefactor") {
+    if (is.null(diss_term) || diss_term == "nodefactor") {
       # TODO: remove nodefactor in future release
       meanpage[at,1] <- mean(page)
     } else {
         attr1a <- attr1[actp]
         attr2a <- attr2[actp]
-        if(diss_term=="nodematch") {
-          if(diss_arg==TRUE) {
+        if(diss_term == "nodematch") {
+          if(diss_arg == TRUE) {
             su_diss_attr <- sort(unique(diss_attr))
             meanpage[at,1] <- mean(page[attr1a != attr2a])
             for (k in seq_along(su_diss_attr)) {
@@ -616,11 +617,11 @@ edgelist_meanage <- function(el, diss_term=NULL, diss_attr=NULL, diss_arg=NULL) 
                 mean(page[attr1a==su_diss_attr[k] & attr2a==su_diss_attr[k]])
             }
           } else {
-            meanpage[at,1] <- mean(page[attr1a!=attr2a])
-            meanpage[at,2] <- mean(page[attr1a==attr2a])
+            meanpage[at, 1] <- mean(page[attr1a!=attr2a])
+            meanpage[at, 2] <- mean(page[attr1a==attr2a])
           }
         }
-        if(diss_term=="nodemix") {
+        if(diss_term == "nodemix") {
           for(i in 1:nrow(indices2.grid)) {
             if(indices2.grid$row[i]==indices2.grid$col[i]) {
               meanpage[at,i] <- mean(
@@ -628,7 +629,7 @@ edgelist_meanage <- function(el, diss_term=NULL, diss_attr=NULL, diss_arg=NULL) 
                          attr2a==attrvalues[indices2.grid$col[i]]]
               )
             } else {
-            meanpage[at,i] <- mean(
+            meanpage[at, i] <- mean(
               c(page[attr1a==attrvalues[indices2.grid$row[i]] &
                      attr2a==attrvalues[indices2.grid$col[i]]],
                 page[attr1a==attrvalues[indices2.grid$col[i]] &

@@ -183,9 +183,11 @@ resim_nets <- function(dat, at) {
                                     control = set.control.stergm))
         } else {
           suppressWarnings(
-            dat$nw[[1]] <- simulate(dat$nw[[1]] ~ Form(nwparam$formation) +
-                                                  Persist(nwparam$coef.diss$dissolution),
-                                    coef = c(nwparam$coef.form, nwparam$coef.diss$coef.adj),
+            dat$nw[[1]] <- simulate(dat$nw[[1]] ~
+                                      Form(nwparam$formation) +
+                                      Persist(nwparam$coef.diss$dissolution),
+                                    coef = c(nwparam$coef.form,
+                                             nwparam$coef.diss$coef.adj),
                                     constraints = nwparam$constraints,
                                     time.start = at,
                                     time.slices = 1,
@@ -239,9 +241,11 @@ resim_nets <- function(dat, at) {
                                   control = set.control.stergm,
                                   output = "final")
         } else {
-          dat$nw[[1]] <- simulate(nwL ~ Form(nwparam$formation) +
-                                        Persist(nwparam$coef.diss$dissolution),
-                                  coef = c(nwparam$coef.form, nwparam$coef.diss$coef.adj),
+          dat$nw[[1]] <- simulate(nwL ~
+                                    Form(nwparam$formation) +
+                                    Persist(nwparam$coef.diss$dissolution),
+                                  coef = c(nwparam$coef.form,
+                                           nwparam$coef.diss$coef.adj),
                                   constraints = nwparam$constraints,
                                   time.start = at - 1,
                                   time.slices = 1,

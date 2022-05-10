@@ -79,17 +79,21 @@ networkLite <- function(x, ...) {
 
 #' @rdname networkLite
 #' @export
-networkLite.edgelist <- function(x,
-                                 attr = list(vertex.names = seq_len(attributes(x)[["n"]]),
-                                             na = logical(attributes(x)[["n"]])),
-                                 ...) {
+networkLite.edgelist <- function(
+    x,
+    attr = list(vertex.names = seq_len(attributes(x)[["n"]]),
+    na = logical(attributes(x)[["n"]])),
+    ...) {
+
   nw <- list(el = x,
              attr = as_tibble(attr),
              gal = attributes(x)[setdiff(names(attributes(x)),
-                                         c("class", "dim", "dimnames", "vnames", "mnext"))])
+                                         c("class", "dim", "dimnames",
+                                           "vnames", "mnext"))])
 
   if(!is_tibble(x)) {
-    nw$el <- as_tibble(list(.tail = as.integer(x[,1]), .head = as.integer(x[,2])))
+    nw$el <- as_tibble(list(.tail = as.integer(x[,1]),
+                            .head = as.integer(x[,2])))
   }
 
   nw$el[["na"]] <- NVL(nw$el[["na"]], logical(NROW(nw$el)))
@@ -116,8 +120,10 @@ networkLite.edgelist <- function(x,
     nw$gal[["multiple"]] <- FALSE
   }
 
-  if (!isFALSE(nw$gal[["loops"]]) || !isFALSE(nw$gal[["hyper"]]) || !isFALSE(nw$gal[["multiple"]])) {
-    stop("networkLite requires network attributes `loops`, `hyper`, and `multiple` be `FALSE`.")
+  if (!isFALSE(nw$gal[["loops"]]) || !isFALSE(nw$gal[["hyper"]]) ||
+      !isFALSE(nw$gal[["multiple"]])) {
+    stop("networkLite requires network attributes `loops`,
+         `hyper`, and `multiple` be `FALSE`.")
   }
 
   ## for consistency with network,
@@ -252,11 +258,15 @@ get.edge.value.networkLite <- get.edge.attribute.networkLite
 #' @param e edge indices to assign value
 #' @export
 #'
-set.edge.attribute.networkLite <- function(x, attrname, value, e = seq_len(network.edgecount(x, na.omit = FALSE)), ...) {
+set.edge.attribute.networkLite <- function(
+    x, attrname, value,
+    e = seq_len(network.edgecount(x, na.omit = FALSE)), ...) {
+
   xn <- substitute(x)
 
   if (!(attrname %in% list.edge.attributes(x))) {
-    x$el[[attrname]] <- rep(NA, length.out = network.edgecount(x, na.omit = FALSE))
+    x$el[[attrname]] <- rep(NA,
+                            length.out = network.edgecount(x, na.omit = FALSE))
   }
 
   x$el[[attrname]][e] <- value
@@ -268,11 +278,15 @@ set.edge.attribute.networkLite <- function(x, attrname, value, e = seq_len(netwo
 #' @rdname networkLitemethods
 #' @export
 #'
-set.edge.value.networkLite <- function(x, attrname, value, e = seq_len(network.edgecount(x, na.omit = FALSE)), ...) {
+set.edge.value.networkLite <- function(
+    x, attrname, value,
+    e = seq_len(network.edgecount(x, na.omit = FALSE)), ...) {
+
   xn <- substitute(x)
 
   if (!(attrname %in% list.edge.attributes(x))) {
-    x$el[[attrname]] <- rep(NA, length.out = network.edgecount(x, na.omit = FALSE))
+    x$el[[attrname]] <- rep(NA,
+                            length.out = network.edgecount(x, na.omit = FALSE))
   }
 
   x$el[[attrname]][e] <- value[as.matrix(x$el[e,c(".tail", ".head")])]
@@ -306,7 +320,9 @@ network.edgecount.networkLite <- function(x, na.omit = TRUE, ...) {
 #' @param na.rm should missing edges be dropped from edgelist?
 #' @export
 #'
-as.edgelist.networkLite <- function(x, attrname = NULL, output = c("matrix", "tibble"), na.rm = TRUE, ...) {
+as.edgelist.networkLite <- function(x, attrname = NULL,
+                                    output = c("matrix", "tibble"),
+                                    na.rm = TRUE, ...) {
   output <- match.arg(output)
 
   if (output == "matrix") {
@@ -331,7 +347,8 @@ as.edgelist.networkLite <- function(x, attrname = NULL, output = c("matrix", "ti
   attr(m, "bipartite") <- if (is.numeric(bip)) as.integer(bip) else bip
   attr(m, "directed") <- as.logical(is.directed(x))
   attr(m, "loops") <- as.logical(has.loops(x))
-  class(m) <- c(if(output == "matrix") "matrix_edgelist" else "tibble_edgelist", "edgelist", class(m))
+  class(m) <- c(if(output == "matrix") "matrix_edgelist" else "tibble_edgelist",
+                "edgelist", class(m))
   return(m)
 }
 
@@ -372,7 +389,8 @@ mixingmatrix.networkLite <- function(object, attr, ...) {
 #' @param add.edges should edges being assigned to be added if not already
 #'        present?
 #' @export
-"[<-.networkLite" <- function(x, i, j, names.eval = NULL, add.edges = FALSE, value) {
+"[<-.networkLite" <- function(x, i, j, names.eval = NULL,
+                              add.edges = FALSE, value) {
   if (!missing(i) || !missing(j)) {
     stop("`[<-.networkLite` does not support `i` and `j` arguments at this time")
   }
@@ -481,18 +499,26 @@ add.edges.networkLite <- function(x, tail, head, names.eval = NULL,
   tail <- NVL(unlist(tail), integer(0))
   head <- NVL(unlist(head), integer(0))
   if(length(names.eval) == 0 || length(vals.eval) == 0) {
-    update_tibble <- as_tibble(list(.tail = tail, .head = head, na = logical(length(tail))))
+    update_tibble <- as_tibble(list(.tail = tail, .head = head,
+                                    na = logical(length(tail))))
   } else {
-    if(!is.list(names.eval)) names.eval <- as.list(rep(names.eval, length.out = length(tail)))
-    if(!is.list(vals.eval)) vals.eval <- as.list(rep(vals.eval, length.out = length(names.eval)))
+    if(!is.list(names.eval)) names.eval <- as.list(rep(names.eval,
+                                                       length.out = length(tail)))
+    if(!is.list(vals.eval)) vals.eval <- as.list(rep(vals.eval,
+                                                     length.out = length(names.eval)))
 
     for(i in seq_along(vals.eval)) {
       vals.eval[[i]] <- as.list(vals.eval[[i]])
       names(vals.eval[[i]]) <- unlist(names.eval[[i]])
     }
 
-    update_tibble <- dplyr::bind_cols(as_tibble(list(.tail = tail, .head = head)),
-                                      dplyr::bind_rows(lapply(vals.eval, function(x) if(length(x) > 0) as_tibble(x) else tibble(NULL, .rows = 1))))
+    update_tibble <- dplyr::bind_cols(as_tibble(list(.tail = tail,
+                                                     .head = head)),
+                                      dplyr::bind_rows(lapply(vals.eval,
+                                                              function(x)
+                                                                if(length(x) > 0)
+                                                                  as_tibble(x) else
+                                                                    tibble(NULL, .rows = 1))))
   }
 
   update_tibble[["na"]] <- NVL(update_tibble[["na"]], logical(NROW(update_tibble)))
@@ -531,7 +557,9 @@ as.networkLite.network <- function(x, ...) {
 
   eids <- unlist(get.dyads.eids(x, el[,1], el[,2], na.omit = FALSE))
   for (name in list.edge.attributes(x)) {
-    rv %e% name <- unlist(get.edge.attribute(x, name, null.na = TRUE, deleted.edges.omit = FALSE, unlist = FALSE)[eids])
+    rv %e% name <- unlist(get.edge.attribute(x, name, null.na = TRUE,
+                                             deleted.edges.omit = FALSE,
+                                             unlist = FALSE)[eids])
   }
 
   for (name in setdiff(names(attributes(x)), c("class", "names"))) {
@@ -596,7 +624,8 @@ valid.eids.networkLite <- function(x, ...) {
 #'        and the latter being used as the attribute names themselves
 #' @export
 as_tibble.networkLite <- function(x, attrnames = NULL, na.rm = TRUE, ...) {
-  if(is.logical(attrnames) || is.numeric(attrnames)) attrnames <- na.omit(list.edge.attributes(x)[attrnames])
+  if(is.logical(attrnames) || is.numeric(attrnames))
+    attrnames <- na.omit(list.edge.attributes(x)[attrnames])
   out <- x$el[,c(".tail", ".head", attrnames)]
   if(na.rm && NROW(out) > 0) {
     na <- NVL(x %e% "na", FALSE)
@@ -612,7 +641,10 @@ as_tibble.networkLite <- function(x, attrnames = NULL, na.rm = TRUE, ...) {
 #' @param matrix.type type of matrix to return from
 #'        \code{as.matrix.networkLite}
 #' @export
-as.matrix.networkLite <- function(x, matrix.type = c("adjacency", "incidence", "edgelist"), attrname = NULL, ...) {
+as.matrix.networkLite <- function(x,
+                                  matrix.type = c("adjacency",
+                                                  "incidence", "edgelist"),
+                                  attrname = NULL, ...) {
   matrix.type <- match.arg(matrix.type)
   switch(matrix.type,
          adjacency = as.matrix.networkLite.adjacency(x, attrname, ...),
@@ -803,7 +835,8 @@ add.vertices.networkLite <- function(x, nv, vattr = NULL, last.mode = TRUE, ...)
         vattr <- as.list(rep(vattr, length.out = nv))
       }
 
-      update_tibble <- dplyr::bind_rows(lapply(vattr, function(x) if(length(x) > 0) as_tibble(x) else tibble(NULL, .rows=1)))
+      update_tibble <- dplyr::bind_rows(lapply(vattr,
+                                               function(x) if(length(x) > 0) as_tibble(x) else tibble(NULL, .rows = 1)))
     } else {
       update_tibble <- as_tibble(list(na = logical(nv)))
     }
@@ -826,7 +859,8 @@ add.vertices.networkLite <- function(x, nv, vattr = NULL, last.mode = TRUE, ...)
   if (!identical(e1 %n% "n", e2 %n% "n") ||
       !identical(e1 %n% "directed", e2 %n% "directed") ||
       !identical(e1 %n% "bipartite", e2 %n% "bipartite")) {
-    stop("cannot add networkLites of differing network size, directedness, or bipartiteness")
+    stop("cannot add networkLites of differing network size, directedness, or
+         bipartiteness")
   }
 
   if (any(NVL(e1 %e% "na", FALSE)) || any(NVL(e2 %e% "na", FALSE))) {
@@ -848,7 +882,8 @@ add.vertices.networkLite <- function(x, nv, vattr = NULL, last.mode = TRUE, ...)
   if (!identical(e1 %n% "n", e2 %n% "n") ||
       !identical(e1 %n% "directed", e2 %n% "directed") ||
       !identical(e1 %n% "bipartite", e2 %n% "bipartite")) {
-    stop("cannot subtract networkLites of differing network size, directedness, or bipartiteness")
+    stop("cannot subtract networkLites of differing network size, directedness,
+         or bipartiteness")
   }
 
   if (any(NVL(e1 %e% "na", FALSE)) || any(NVL(e2 %e% "na", FALSE))) {
