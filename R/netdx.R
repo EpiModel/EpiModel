@@ -491,7 +491,8 @@ make_formation_table <- function(merged.stats, targets) {
 #'
 #' @return a \code{list} of dissolution statistics
 #' @keywords internal
-make_dissolution_stats <- function(diag.sim, coef.diss, nsteps, verbose = TRUE) {
+make_dissolution_stats <- function(diag.sim, coef.diss,
+                                   nsteps, verbose = TRUE) {
   if (verbose == TRUE) {
     cat("\n- Calculating duration statistics")
   }
@@ -531,17 +532,18 @@ make_dissolution_stats <- function(diag.sim, coef.diss, nsteps, verbose = TRUE) 
                        },
                        c(term = "", args = ""))
   diss.terms <- gsub("\"", "", diss.terms)
-  if(ncol(diss.terms)==2) {
-    if (grepl(",", diss.terms[2,2])==TRUE) {
-      if(grepl("=", diss.terms[2,2])==TRUE) {
-        diss_arg <- as.logical(strsplit(diss.terms[2,2], "=")$args[2])
+  if (ncol(diss.terms) == 2) {
+    if (grepl(",", diss.terms[2, 2]) == TRUE) {
+      if (grepl("=", diss.terms[2, 2]) == TRUE) {
+        diss_arg <- as.logical(strsplit(diss.terms[2, 2], "=")$args[2])
       } else {
         (stop("Dissolution model does not conform to expected format."))
       }
-      diss.terms[2,2] <- strsplit(diss.terms[2,2], ",")$args[1]
+      diss.terms[2, 2] <- strsplit(diss.terms[2, 2], ",")$args[1]
     }    # Used to remove diff argument if present, regardless of its value
-    if(diss_term=="nodematch" & !exists("diss_arg")) diss_arg <- FALSE
-    diss_attr_name <- diss.terms[2,2]
+    if (diss_term == "nodematch" & !exists("diss_arg"))
+      diss_arg <- FALSE
+    diss_attr_name <- diss.terms[2, 2]
   } else {
     diss_attr_name <- NULL
   }
