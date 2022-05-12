@@ -23,7 +23,7 @@
 #'        more time-intensive full STERGM estimation (see details).
 #' @param set.control.ergm Control arguments passed to \code{ergm} (see
 #'        details).
-#' @param set.control.stergm Deprecated control argument of class 
+#' @param set.control.stergm Deprecated control argument of class
 #'        \code{control.stergm}; use \code{set.control.tergm} instead.
 #' @param set.control.tergm Control arguments passed to \code{tergm}
 #'        (see details).
@@ -146,7 +146,8 @@
 netest <- function(nw, formation, target.stats, coef.diss, constraints,
                    coef.form = NULL, edapprox = TRUE,
                    set.control.ergm, set.control.stergm, set.control.tergm,
-                   verbose = FALSE, nested.edapprox = TRUE, keep.fit = FALSE, ...) {
+                   verbose = FALSE, nested.edapprox = TRUE,
+                   keep.fit = FALSE, ...) {
 
   if (!missing(set.control.stergm)) {
     warning("set.control.stergm is deprecated and will be removed in a future
@@ -277,7 +278,7 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
     out$newnetwork <- fit$newnetwork
     out$formula <- fit$formula
   }
-  
+
   out$summary <- summary(fit, ...)
   if (keep.fit == TRUE) {
     out$fit <- fit
@@ -330,7 +331,6 @@ diss_check <- function(formation, dissolution) {
                        },
                        c(term = "", args = ""))
 
-
   matchpos <- match(diss.terms[1, ], form.terms[1, ])
 
   if (any(is.na(matchpos))) {
@@ -340,6 +340,11 @@ diss_check <- function(formation, dissolution) {
                                   "nodematch", "nodefactor"))) {
     stop("The only allowed dissolution terms are edges, nodemix,
          nodematch and ", "nodefactor", call. = FALSE)
+  }
+  if (any(diss.terms[1, ] %in% c("nodefactor"))) {
+    warning("Support for dissolution models containing a nodefactor term is
+            deprecated, and will be removed in a future release.")
+    # TODO: remove functionality and deprecation message in future release
   }
   if (any(matchpos != seq_len(ncol(diss.terms)))) {
     stop("Order of terms in the dissolution model does not correspond to the ",

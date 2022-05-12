@@ -12,39 +12,36 @@ trim_netest(object, as.networkLite = TRUE, keep.fit = FALSE)
 \item{as.networkLite}{logical; should we convert \code{object$newnetwork}
 to a \code{networkLite}?}
 
-\item{keep.fit}{logical; should we keep \code{fit} (if present) on the 
+\item{keep.fit}{logical; should we keep \code{fit} (if present) on the
 \code{netest} object?}
 }
 \value{
-A \code{netest} object with formula environments removed, optionally
-        with the \code{newnetwork} element converted to a \code{networkLite}
-        and the \code{fit} element removed.
+A \code{netest} object with formula environments removed, optionally with the
+\code{newnetwork} element converted to a \code{networkLite} and the
+\code{fit} element removed.
 }
 \description{
-Trims formula environments from the \code{netest} object.  
+Trims formula environments from the \code{netest} object.
              Optionally converts the \code{newnetwork} element of the
              \code{netest} object to a \code{networkLite}, and removes the
              \code{fit} element (if present) from the \code{netest} object.
 }
 \details{
 Removes \code{environment(object$constraints)},
-         \code{environment(object$coef.diss$dissolution)}, and
-         \code{environment(object$formation)}.  When 
-         \code{edapprox = TRUE}, also removes 
-         \code{environment(object$formula)}; when \code{edapprox = FALSE},
-         also removes all but \code{formation} and \code{dissolution} from 
-         \code{environment(object$formula)}, as well as removing
-         \code{environment(environment(object$formula)$formation)} and
-         \code{environment(environment(object$formula)$dissolution)}.
-         Optionally converts \code{object$newnetwork} to a 
-         \code{networkLite} (if \code{as.networkLite = TRUE}), and removes
-         \code{fit} (if present) from \code{object} 
-         (if \code{keep.fit = FALSE}).
-         
-         For the output to be usable in simulation, there should not be 
-         substitutions in the formulas, other than \code{formation} and
-         \code{dissolution} in \code{object$formula} when 
-         \code{edapprox = FALSE}.
+\code{environment(object$coef.diss$dissolution)}, and
+\code{environment(object$formation)}. When \code{edapprox = TRUE}, also
+removes \code{environment(object$formula)}; when \code{edapprox = FALSE},
+also removes all but \code{formation} and \code{dissolution} from
+\code{environment(object$formula)}, as well as removing
+\code{environment(environment(object$formula)$formation)} and
+\code{environment(environment(object$formula)$dissolution)}. Optionally
+converts \code{object$newnetwork} to a \code{networkLite} (if
+\code{as.networkLite = TRUE}), and removes \code{fit} (if present) from
+\code{object} (if \code{keep.fit = FALSE}).
+
+For the output to be usable in simulation, there should not be substitutions
+in the formulas, other than \code{formation} and \code{dissolution} in
+\code{object$formula} when \code{edapprox = FALSE}.
 }
 \examples{
 nw <- network_initialize(n = 100)
@@ -55,4 +52,5 @@ est <- netest(nw, formation, target.stats, coef.diss,
               set.control.ergm = control.ergm(MCMC.burnin = 1e5,
                                               MCMC.interval = 1000))
 est <- trim_netest(est)
+
 }

@@ -36,14 +36,14 @@ approximation method, simulates from the static ERGM fit.}
 statistics of interest. The default is the formation formula of the
 network model contained in \code{x}.}
 
-\item{set.control.ergm}{Control arguments passed to \code{ergm}'s 
+\item{set.control.ergm}{Control arguments passed to \code{ergm}'s
 \code{simulate_formula.network} (see details).}
 
-\item{set.control.stergm}{Deprecated control argument of class 
-\code{control.simulate.network}; use \code{set.control.tergm} 
+\item{set.control.stergm}{Deprecated control argument of class
+\code{control.simulate.network}; use \code{set.control.tergm}
 instead.}
 
-\item{set.control.tergm}{Control arguments passed to \code{tergm}'s 
+\item{set.control.tergm}{Control arguments passed to \code{tergm}'s
 \code{simulate_formula.network} (see details).}
 
 \item{sequential}{For static diagnostics (\code{dynamic=FALSE}): if
@@ -87,26 +87,28 @@ plotting the \code{netdx} object.
 \section{Control Arguments}{
 
 Models fit with the full STERGM method in \code{netest} (setting the
-\code{edapprox} argument to \code{FALSE}) require only a call to 
+\code{edapprox} argument to \code{FALSE}) require only a call to
 \code{tergm}'s \code{simulate_formula.network}. Control parameters for those
-simulations may be set using \code{set.control.tergm} in \code{netdx}. 
-The parameters should be input through the 
-\code{control.simulate.formula.tergm} function, with the available 
-parameters listed in the \code{\link{control.simulate.formula.tergm}} help 
+simulations may be set using \code{set.control.tergm} in \code{netdx}.
+The parameters should be input through the
+\code{control.simulate.formula.tergm} function, with the available
+parameters listed in the \code{\link{control.simulate.formula.tergm}} help
 page in the \code{tergm} package.
 
 Models fit with the ERGM method with the edges dissolution approximation
 (setting \code{edapprox} to \code{TRUE}) require a call first to
-\code{ergm}'s \code{simulate_formula.network} for simulating an initial network, and second to
-\code{tergm}'s \code{simulate_formula.network} for simulating that static network forward through
-time. Control parameters may be set for both processes in \code{netdx}.
-For the first, the parameters should be input through the
-\code{control.simulate.formula()} function, with the available parameters listed
-in the \code{\link[ergm:control.simulate.formula]{control.simulate.formula}} help
+\code{ergm}'s \code{simulate_formula.network} for simulating an initial
+network, and second to \code{tergm}'s \code{simulate_formula.network} for
+simulating that static network forward through time. Control parameters may
+be set for both processes in \code{netdx}. For the first, the parameters
+should be input through the \code{control.simulate.formula()} function, with
+the available parameters listed in the
+\code{\link[ergm:control.simulate.formula]{control.simulate.formula}} help
 page in the \code{ergm} package. For the second, parameters should be input
-through the \code{control.simulate.formula.tergm()} function, with the available
-parameters listed in the \code{\link{control.simulate.formula.tergm}} help page in
-the \code{tergm} package. An example is shown below.
+through the \code{control.simulate.formula.tergm()} function, with the
+available parameters listed in the
+\code{\link{control.simulate.formula.tergm}} help page in the \code{tergm}
+package. An example is shown below.
 }
 
 \examples{
@@ -139,6 +141,20 @@ plot(dx2, stats = c("edges", "meandeg"), plots.joined = FALSE)
 plot(dx2, type = "duration")
 plot(dx2, type = "dissolution", qnts.col = "orange2")
 plot(dx2, type = "dissolution", method = "b", col = "bisque")
+
+# Dynamic diagnostics on a more complex model
+nw <- network_initialize(n = 1000)
+nw <- set_vertex_attribute(nw, "neighborhood", rep(1:10, 100))
+formation <- ~edges + nodematch("neighborhood", diff = TRUE)
+target.stats <- c(800, 45, 81, 24, 16, 32, 19, 42, 21, 24, 31)
+coef.diss <- dissolution_coefs(dissolution = ~offset(edges) +
+                    offset(nodematch("neighborhood", diff = TRUE)),
+                    duration = c(52, 58, 61, 55, 81, 62, 52, 64, 52, 68, 58))
+est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
+dx11 <- netdx(est, nsims = 5, nsteps = 100)
+plot(dx11)
+plot(dx11, type = "duration", plots.joined = TRUE, qnts = 0.2)
+plot(dx11, type = "dissolution", mean.smooth = FALSE, mean.col = "red")
 }
 
 }

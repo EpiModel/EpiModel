@@ -68,7 +68,7 @@ sim_nets_t1 <- function(x, dat, nsteps) {
     } else {
       # Simulate dynamic network
       suppressWarnings({
-        sim <- simulate(nw ~ Form(x$formation) + 
+        sim <- simulate(nw ~ Form(x$formation) +
                              Persist(x$coef.diss$dissolution),
                         coef = c(x$coef.form, x$coef.diss$coef.crude),
                         time.slices = nsteps,
@@ -183,9 +183,11 @@ resim_nets <- function(dat, at) {
                                     control = set.control.stergm))
         } else {
           suppressWarnings(
-            dat$nw[[1]] <- simulate(dat$nw[[1]] ~ Form(nwparam$formation) + 
-                                                  Persist(nwparam$coef.diss$dissolution),
-                                    coef = c(nwparam$coef.form, nwparam$coef.diss$coef.adj),
+            dat$nw[[1]] <- simulate(dat$nw[[1]] ~
+                                      Form(nwparam$formation) +
+                                      Persist(nwparam$coef.diss$dissolution),
+                                    coef = c(nwparam$coef.form,
+                                             nwparam$coef.diss$coef.adj),
                                     constraints = nwparam$constraints,
                                     time.start = at,
                                     time.slices = 1,
@@ -239,9 +241,11 @@ resim_nets <- function(dat, at) {
                                   control = set.control.stergm,
                                   output = "final")
         } else {
-          dat$nw[[1]] <- simulate(nwL ~ Form(nwparam$formation) + 
-                                        Persist(nwparam$coef.diss$dissolution),
-                                  coef = c(nwparam$coef.form, nwparam$coef.diss$coef.adj),
+          dat$nw[[1]] <- simulate(nwL ~
+                                    Form(nwparam$formation) +
+                                    Persist(nwparam$coef.diss$dissolution),
+                                  coef = c(nwparam$coef.form,
+                                           nwparam$coef.diss$coef.adj),
                                   constraints = nwparam$constraints,
                                   time.start = at - 1,
                                   time.slices = 1,
@@ -270,7 +274,7 @@ resim_nets <- function(dat, at) {
           if (!is.null(set.control.stergm)) {
             set.control.stergm$term.options
           } else {
-            set.control.tergm$term.options          
+            set.control.tergm$term.options
           }
         } else {
           set.control.tergm$term.options

@@ -301,8 +301,8 @@ for (trim in c(FALSE, TRUE)) {
     dx <- netdx(est, nsims = 1, nsteps = 10, verbose = FALSE)
     expect_output(print(dx), "edges")
     expect_output(print(dx), "concurrent")
-    expect_output(print(dx), "Edge Duration")
-    expect_output(print(dx), "Pct Edges Diss")
+    expect_output(print(dx), "Duration Diagnostics")
+    expect_output(print(dx), "Dissolution Diagnostics")
     expect_output(print(dx), "Target")
     expect_output(print(dx), "Sim Mean")
     expect_output(print(dx), "Pct Diff")
@@ -313,6 +313,57 @@ for (trim in c(FALSE, TRUE)) {
   
   })
 }  
+
+test_that("print.netdx and plot.netdx with heterogeneous diss", {
+  nw <- network_initialize(n = 100)
+  nw <- set_vertex_attribute(nw, 'neighborhood', rep(1:10,10))
+  nw <- set_vertex_attribute(nw, 'position', rep(1:4,25))
+  formation <- ~edges+nodematch('neighborhood', diff=TRUE)
+  target.stats <- c(100,4,5,6,7,8,9,10,11,12,13)
+  coef.diss <- dissolution_coefs(dissolution = 
+                 ~offset(edges)+offset(nodematch('neighborhood',diff=TRUE)),
+                   duration = c(20,21,22,23,24,25,26,27,28,29,30))
+  est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
+  if (trim == TRUE) {
+    est <- trim_netest(est)
+  }
+  dx11 <- netdx(est, nsims = 5, nsteps = 100)
+  expect_length(dx11$stats.table.duration$Target, 11)
+  expect_length(dx11$stats.table.dissolution$`Sim Mean`, 11)
+  expect_output(print(dx11), "match.neighborhood.TRUE.7")  
+  plot(dx11)
+  plot(dx11, type = "duration")
+  plot(dx11, type = "dissolution")
+  
+  formation <- ~edges+nodemix('position')
+  target.stats <- c(100,9,7,8,8,12,8,15,5,10)
+  coef.diss <- dissolution_coefs(dissolution = 
+                                   ~offset(edges)+offset(nodemix('position')),
+                                 duration = c(80,75,80,70,85,65,70,75,60,80))
+  est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
+  if (trim == TRUE) {
+    est <- trim_netest(est)
+  }
+  dx12 <- netdx(est, nsims = 7, nsteps = 30)
+  expect_output(print(dx12), "60")
+  expect_output(print(dx12, digits=4), "0.0133")
+  expect_output(print(dx12), "mix.position.1.4")
+  plot(dx12, qnts=FALSE)
+  plot(dx12, type = "duration", qnts=0.8)
+  plot(dx12, type = "dissolution", sim.lines = TRUE, sim.col = 1:10)
+  
+  dx13 <- netdx(est, nsims = 1, nsteps = 1)
+  expect_true(dim(dx13$pages)[1]==1 & 
+              dim(dx13$pages)[2]==10 & 
+              dim(dx13$pages)[3]==1)
+  expect_true(dim(dx13$prop.diss)[1]==1 & 
+              dim(dx13$prop.diss)[2]==10 & 
+              dim(dx13$prop.diss)[3]==1)
+  
+})
+
+
+
 
 test_that("Edges only models with set.control.stergm", {
   num <- 50

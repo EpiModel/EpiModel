@@ -103,22 +103,22 @@ print.netdx <- function(x, digits = 3, ...) {
   cat("\n----------------------- \n")
   print_nwstats_table(x$stats.table.formation, digits)
 
+  if (x$dynamic == TRUE & !is.null(x$stats.table.duration)) {
+    cat("\nDuration Diagnostics")
+    cat("\n----------------------- \n")
+    print_nwstats_table(x$stats.table.duration, digits)
+  }
   if (x$dynamic == TRUE & !is.null(x$stats.table.dissolution)) {
     cat("\nDissolution Diagnostics")
     cat("\n----------------------- \n")
-    if (x$coef.diss$dissolution == ~ offset(edges)) {
-      print_nwstats_table(x$stats.table.dissolution, digits)
-      if (x$coef.diss$model.type == "hetero") {
-        cat("----------------------- \n")
-        cat("* Heterogeneous dissolution model results averaged over")
-      }
-    } else {
-      cat("Not available when:")
-      cat("\n- dissolution formula is not `~ offset(edges)`")
-      cat("\n")
-    }
+    print_nwstats_table(x$stats.table.dissolution, digits)
   }
-
+  # TODO Remove nodefactor in future release.
+  if (x$coef.diss$diss.model.type == "nodefactor") {
+    cat("----------------------- \n")
+    cat("* Duration and dissolution results are averaged over for dissolution
+        models containing a nodefactor term.")
+  }
   invisible()
 }
 
@@ -212,10 +212,9 @@ print.netsim <- function(x, nwstats = TRUE, digits = 3, network = 1, ...) {
         seq_len(x$control$nsims),
         get_network, network = network, x = x
       )
-      sim.df <- lapply(diag.sim, as.data.frame)
 
       dissolution.stats <- make_dissolution_stats(
-        sim.df,
+        diag.sim,
         x$nwparam[[network]]$coef.diss,
         x$control$nsteps,
         verbose = FALSE
@@ -223,7 +222,7 @@ print.netsim <- function(x, nwstats = TRUE, digits = 3, network = 1, ...) {
 
       print_nwstats_table(dissolution.stats$stats.table.dissolution, digits)
 
-      if (x$nwparam[[network]]$coef.diss$model.type == "hetero") {
+      if (x$nwparam[[network]]$coef.diss$diss.model.type == "hetero") {
         cat("----------------------- \n")
         cat("* Heterogeneous dissolution model results averaged over")
       }
