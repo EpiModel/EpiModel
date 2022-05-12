@@ -94,7 +94,7 @@ default colors based on \code{RColorBrewer} color palettes.}
 
 \item{targ.lty}{Line type for the line showing the target statistic values.}
 
-\item{plots.joined}{If \code{TRUE}, combine all target statistics in one 
+\item{plots.joined}{If \code{TRUE}, combine all target statistics in one
 plot, versus one plot per target statistic if \code{FALSE}.}
 
 \item{legend}{If \code{TRUE}, plot default legend.}
@@ -134,10 +134,10 @@ in the duration plot, but should reach its expected value more quickly, since
 it is not subject to censoring.
 
 The \code{plots.joined} argument will control whether the statistics
-are joined in one plot or plotted separately, assuming there are multiple statistics in the model.
-The default is based on the number of network statistics requested. The
-layout of the separate plots within the larger plot window is also based on
-the number of statistics.
+are joined in one plot or plotted separately, assuming there are multiple
+statistics in the model. The default is based on the number of network
+statistics requested. The layout of the separate plots within the larger plot
+window is also based on the number of statistics.
 }
 \examples{
 \dontrun{
@@ -146,7 +146,8 @@ nw <- network_initialize(n = 500)
 nw <- set_vertex_attribute(nw, "sex", rbinom(500, 1, 0.5))
 formation <- ~edges + nodematch("sex")
 target.stats <- c(500, 300)
-coef.diss <- dissolution_coefs(dissolution = ~offset(edges)+offset(nodematch("sex")), duration = c(50, 40))
+coef.diss <- dissolution_coefs(dissolution = ~offset(edges) +
+                  offset(nodematch("sex")), duration = c(50, 40))
 
 # Estimate the model
 est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)

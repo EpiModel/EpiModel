@@ -305,7 +305,7 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
     out$newnetwork <- fit$newnetwork
     out$formula <- fit$formula
   }
-  
+
   out$summary <- summary(fit, ...)
   if (keep.fit == TRUE) {
     out$fit <- fit
@@ -369,9 +369,10 @@ diss_check <- function(formation, dissolution) {
          nodematch and ", "nodefactor", call. = FALSE)
   }
   if (any(diss.terms[1, ] %in% c("nodefactor"))) {
-    warning("Support for dissolution models containing a nodefactor term is deprecated, and will be removed in a future release.")
+    warning("Support for dissolution models containing a nodefactor term is
+            deprecated, and will be removed in a future release.")
     # TODO: remove functionality and deprecation message in future release
-  }  
+  }
   if (any(matchpos != seq_len(ncol(diss.terms)))) {
     stop("Order of terms in the dissolution model does not correspond to the ",
          "formation model.", call. = FALSE)

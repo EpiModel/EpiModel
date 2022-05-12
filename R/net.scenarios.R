@@ -167,7 +167,8 @@ flatten_params <- function(params) {
 #' list the "special parameters" from a param list. They include some EpiModel
 #' internals as well as all parameters starting with "."
 #' @noRd
-list_special_params <- function(params) { builtin.special.params <- c(
+list_special_params <- function(params) {
+  builtin.special.params <- c(
     "random.params",
     "random.params.values"
   )

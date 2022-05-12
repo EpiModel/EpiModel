@@ -906,7 +906,7 @@ draw_means <- function(x, y, mean.smooth, mean.lwd,
 #'        whether or not to impute starting times for relationships extant at
 #'        the start of the simulation. Defaults to \code{TRUE} when
 #'        \code{type="duration"}.
-#' @param plots.joined If \code{TRUE}, combine all target statistics in one 
+#' @param plots.joined If \code{TRUE}, combine all target statistics in one
 #'        plot, versus one plot per target statistic if \code{FALSE}.
 #' @inheritParams plot.netsim
 #'
@@ -936,10 +936,10 @@ draw_means <- function(x, y, mean.smooth, mean.lwd,
 #' it is not subject to censoring.
 #'
 #' The \code{plots.joined} argument will control whether the statistics
-#' are joined in one plot or plotted separately, assuming there are multiple statistics in the model.
-#' The default is based on the number of network statistics requested. The
-#' layout of the separate plots within the larger plot window is also based on
-#' the number of statistics.
+#' are joined in one plot or plotted separately, assuming there are multiple
+#' statistics in the model. The default is based on the number of network
+#' statistics requested. The layout of the separate plots within the larger plot
+#' window is also based on the number of statistics.
 #'
 #' @method plot netdx
 #' @export
@@ -954,7 +954,8 @@ draw_means <- function(x, y, mean.smooth, mean.lwd,
 #' nw <- set_vertex_attribute(nw, "sex", rbinom(500, 1, 0.5))
 #' formation <- ~edges + nodematch("sex")
 #' target.stats <- c(500, 300)
-#' coef.diss <- dissolution_coefs(dissolution = ~offset(edges)+offset(nodematch("sex")), duration = c(50, 40))
+#' coef.diss <- dissolution_coefs(dissolution = ~offset(edges) +
+#'                   offset(nodematch("sex")), duration = c(50, 40))
 #'
 #' # Estimate the model
 #' est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
@@ -1558,29 +1559,31 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
   # Duration plot -----------------------------------------------------------
 
   if (type == "duration") {
-    
+
     if (!(is.logical(duration.imputed))) {
       stop("For plots of type duration, duration.imputed must
            be a logical value (TRUE/FALSE)", call. = FALSE)
     }
-    
+
     if (any(grepl("nodefactor", x$dissolution) == TRUE)) {
-      warning("Support for dissolution models containing a nodefactor term is deprecated, and will be removed in a future release.", call.=FALSE)
+      warning("Support for dissolution models containing a nodefactor term is
+              deprecated, and will be removed in a future release.",
+              call. = FALSE)
     }
-    
+
     pages <- x$pages
     pages_imptd <- x$pages_imptd
-    if(duration.imputed==TRUE) {
+    if (duration.imputed == TRUE) {
       data <- simplify2array(lapply(1:nsims,
-                                    function(x)pages[,,x]+pages_imptd))
-      if(is.vector(data)) data <- array(data, dim=c(1,nsteps,nsims))    # when only one stat and only one timestep
+                                    function(x)pages[, , x] + pages_imptd))
+      if (is.vector(data)) data <- array(data, dim = c(1, nsteps, nsims))
     } else {
       data <- pages
     }
-    
-    
+
+
     stats.dur.table <- x$stats.table.duration
-    
+
     xlim <- c(1, nsteps)
     if (length(da) > 0 & !is.null(da$xlim)) {
       xlim <- da$xlim
@@ -1589,21 +1592,21 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
     nmstats <- rownames(stats.dur.table)
     nstats <- length(nmstats)
     nsims <- x$nsims
-    
+
     ## Pull target stats
     targs <- which(!is.na(stats.dur.table$Target))
-    
-  
+
+
     ## Plotting
     if (missing(plots.joined)) {
       plots.joined <- ifelse(nstats > 3, FALSE, TRUE)
     }
-    
+
     if (nstats == 1) {
       plots.joined <- TRUE
       sim.col <- "dodgerblue3"
     }
-    
+
     if (missing(sim.lwd)) {
       if (nsims == 1) {
         sim.lwd <- 1
@@ -1611,7 +1614,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         sim.lwd <- max(c(1 - (nsims * 0.05), 0.5))
       }
     }
-    
+
     ## Color Vector Validation
     # 1. Sim.col, mean.col, qnts.col, targ.col must be missing or a vector of
     #    length 1 or nstats
@@ -1619,7 +1622,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
     #    but is a vector of length 1 and nstats is greater than 1,
     #    then replicate the color vector nstats times to achieve a vector of
     #    size nstats.
-    
+
     # Sim.col
     if (!missing(sim.col)) {
       if (!(length(sim.col) %in% c(1, nstats))) {
@@ -1629,8 +1632,8 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         sim.col <- rep(sim.col, nstats)
       }
     }
-    
-    
+
+
     # Mean.col
     if (!missing(mean.col)) {
       if (!(length(mean.col) %in% c(1, nstats))) {
@@ -1641,7 +1644,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         mean.col <- rep(mean.col, nstats)
       }
     }
-    
+
     # Qnts.col
     if (!missing(qnts.col)) {
       if (!(length(qnts.col) %in% c(1, nstats))) {
@@ -1651,7 +1654,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         qnts.col <- rep(qnts.col, nstats)
       }
     }
-    
+
     # Targ.col
     if (!missing(targ.col)) {
       if (!(length(targ.col) %in% c(1, nstats))) {
@@ -1661,7 +1664,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         targ.col <- rep(targ.col, nstats)
       }
     }
-    
+
     # Default colors
     if (missing(sim.col)) {
       if (plots.joined == TRUE) {
@@ -1671,7 +1674,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         sim.col <- rep("dodgerblue3", nstats)
       }
     }
-    
+
     ## Joined Plots
     if (method == "l") {
       if (missing(sim.lines)) {
@@ -1679,9 +1682,9 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
       } else {
         sim.lines <- sim.lines
       }
-      
+
       if (plots.joined == TRUE) {
-        
+
         ## Default legend
         if (missing(legend)) {
           if (nstats == 1) {
@@ -1690,16 +1693,16 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
             legend <- TRUE
           }
         }
-        
+
         #Initialize ylim min and max values
         qnt.min <- vector()
         qnt.max <- vector()
         mean.min <- vector()
         mean.max <- vector()
-        
+
         for (j in seq_len(nstats)) {
 
-          dataj <- matrix(data[,j,], nrow=nsteps)
+          dataj <- matrix(data[, j, ], nrow = nsteps)
 
           ## Quantiles - ylim min and max ##
           if (dynamic == TRUE) {
@@ -1724,7 +1727,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
               qnt.max[j] <-  max(yy)
             }
           }
-          
+
           ## Mean lines - ylim min and max ##
           if (mean.line == TRUE) {
             mean.prev <- rowMeans(dataj)
@@ -1735,9 +1738,9 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
             mean.min[j] <-  min(mean.prev)
             mean.max[j] <-  max(mean.prev)
           }
-          
+
         }
-        
+
         ## Default ylim
         if (length(da) > 0 && !is.null(da$ylim) && dynamic == TRUE) {
           ylim <- da$ylim
@@ -1750,14 +1753,14 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         } else {
           ylim <- c(min(data) * 0.9, max(data) * 1.1)
         }
-        
+
         ## Default ylab
         if (length(da) > 0 && !is.null(da$ylab)) {
           ylab <- da$ylab
         } else {
             ylab <- "duration"
         }
-        
+
         ## Default xlab
         if (length(da) > 0 && !is.null(da$xlab)) {
           xlab <- da$xlab
@@ -1765,7 +1768,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
           xlab <- "time"
         }
 
-        
+
         ## Default target line color
         if (missing(targ.col)) {
           if (nstats == 1) {
@@ -1774,7 +1777,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
             targ.col <- sim.col
           }
         }
-        
+
         ## Quantile band transparency and color
         if (dynamic == TRUE) {
           if (missing(qnts.alpha)) {
@@ -1786,12 +1789,12 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
             qnts.col <- adjustcolor(qnts.col, qnts.alpha)
           }
         }
-        
+
         ## Main plot window
         plot(1, 1, xlim = xlim, ylim = ylim,
              type = "n", xlab = xlab, ylab = ylab)
         for (j in seq_len(nstats)) {
-            dataj <- matrix(data[,j,], nrow=nsteps)          
+            dataj <- matrix(data[, j, ], nrow = nsteps)
           if (dynamic == TRUE) {
             if (is.numeric(qnts)) {
               if (qnts < 0 | qnts > 1) {
@@ -1813,7 +1816,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
               polygon(xx, yy, col = qnts.col[j], border = NA)
             }
           }
-          
+
           if (sim.lines == TRUE) {
             for (i in sims) {
               lines(dataj[, i], lwd = sim.lwd, col = sim.col[j])
@@ -1831,7 +1834,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
             lines(mean.prev, lwd = mean.lwd,
                   col = mean.col[j], lty = mean.lty)
           }
-          
+
           if (targ.line == TRUE) {
             if (j %in% targs) {
               abline(h = stats.dur.table$Target[j],
@@ -1839,25 +1842,25 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
                      col = targ.col[j])
             }
           }
-          
+
         }
-        
+
         ## Grid
         if (grid == TRUE) {
           grid()
         }
-        
-        
+
+
         if (legend == TRUE) {
           legend("topleft", legend = nmstats, lwd = 2,
                  col = sim.col[1:nstats], cex = 0.75, bg = "white")
         }
-        
+
       }
-      
+
       ## Split plots
       if (plots.joined == FALSE) {
-        
+
         if (nstats == 1) dimens <- c(1, 1)
         if (nstats == 2) dimens <- c(1, 2)
         if (nstats == 3) dimens <- c(1, 3)
@@ -1868,15 +1871,15 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         if (nstats %in% 10:12) dimens <- c(4, 3)
         if (nstats %in% 13:16) dimens <- c(4, 4)
         if (nstats > 16) dimens <- rep(ceiling(sqrt(nstats)), 2)
-        
+
         # Pull graphical parameters
         ops <- list(mar = par()$mar, mfrow = par()$mfrow, mgp = par()$mgp)
         par(mar = c(2.5, 2.5, 2, 1), mgp = c(2, 1, 0), mfrow = dimens)
-        
+
         if (missing(targ.col)) {
           targ.col <- rep("black", nstats)
         }
-        
+
         ## Quantile band transparency and color
         if (dynamic == TRUE) {
           if (missing(qnts.alpha)) {
@@ -1888,19 +1891,19 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
             qnts.col <- adjustcolor(qnts.col, qnts.alpha)
           }
         }
-        
+
         for (j in seq_len(nstats)) {
-          dataj <- matrix(data[,j,], nrow=nsteps)
-          
+          dataj <- matrix(data[, j, ], nrow = nsteps)
+
           ## Quantiles - ylim min max ##
           if (dynamic == TRUE) {
-            
+
             #Initialize ylim min max values
             qnt.min <- 1E10
             qnt.max <- -1E10
             mean.min <- 1E10
             mean.max <- -1E10
-            
+
             if (is.numeric(qnts)) {
               if (qnts < 0 | qnts > 1) {
                 stop("qnts must be between 0 and 1", call. = FALSE)
@@ -1922,7 +1925,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
               qnt.max <-  max(yy)
             }
           }
-          
+
           ## Mean lines - ylim min max ##
           if (mean.line == TRUE) {
             if (missing(mean.col)) {
@@ -1936,7 +1939,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
             mean.min <-  min(mean.prev)
             mean.max <-  max(mean.prev)
           }
-          
+
           ## Default ylim
           if (length(da) > 0 && !is.null(da$ylim) && dynamic == TRUE) {
             ylim <- da$ylim
@@ -1947,13 +1950,13 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
           } else {
             ylim <- c(min(dataj) * 0.9, max(dataj) * 1.1)
           }
-          
+
           plot(x = 1, y = 1,
                xlim = xlim,
                ylim = ylim,
                type = "n", main = nmstats[j],
                xlab = "", ylab = "")
-          
+
           if (dynamic == TRUE) {
             if (is.numeric(qnts)) {
               if (qnts < 0 | qnts > 1) {
@@ -1975,14 +1978,14 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
               polygon(xx, yy, col = qnts.col[j], border = NA)
             }
           }
-          
+
           if (sim.lines == TRUE) {
             for (i in sims) {
               lines(dataj[, i], lwd = sim.lwd,
                     col = sim.col[j])
             }
           }
-          
+
           if (mean.line == TRUE) {
             if (missing(mean.col)) {
               mean.col <- rep("black", nstats)
@@ -1995,7 +1998,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
             lines(mean.prev, lwd = mean.lwd,
                   col = mean.col[j], lty = mean.lty)
           }
-          
+
           if (targ.line == TRUE) {
             if (j %in% targs) {
               abline(h = stats.dur.table$Target[j],
@@ -2003,24 +2006,24 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
                      col = targ.col[j])
             }
           }
-          
+
           ## Grid
           if (grid == TRUE) {
             grid()
           }
         }
-        
+
         # Reset graphical parameters
         on.exit(par(ops))
       }
     }
     if (method == "b") {
-      
-      data <- matrix(aperm(data, c(1,3,2)), nrow=nsims*nsteps)
+
+      data <- matrix(aperm(data, c(1, 3, 2)), nrow = nsims * nsteps)
       colnames(data) <- nmstats
-      
+
       boxplot(data, ...)
-      
+
       for (j in seq_len(nstats)) {
           points(x = j, y = stats.dur.table$Target[j],
                  pch = 16, cex = 1.5, col = "blue")
@@ -2029,45 +2032,47 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
           grid()
         }
       }
-      
+
     }
-    
+
   }
-  
+
 # Dissolution plot -----------------------------------------------------------
 
   if (type == "dissolution") {
-    
+
     if (any(grepl("nodefactor", x$dissolution) == TRUE)) {
-      warning("Support for dissolution models containing a nodefactor term is deprecated, and will be removed in a future release.", call.=FALSE)
+      warning("Support for dissolution models containing a nodefactor term is
+              deprecated, and will be removed in a future release.",
+              call. = FALSE)
     }
-    
+
     data <- x$prop.diss
     stats.diss.table <- x$stats.table.dissolution
-    
+
     xlim <- c(1, nsteps)
     if (length(da) > 0 & !is.null(da$xlim)) {
       xlim <- da$xlim
     }
-    
+
     nmstats <- rownames(stats.diss.table)
     nstats <- length(nmstats)
     nsims <- x$nsims
-    
+
     ## Pull target stats
     targs <- which(!is.na(stats.diss.table$Target))
-    
-    
+
+
     ## Plotting
     if (missing(plots.joined)) {
       plots.joined <- ifelse(nstats > 3, FALSE, TRUE)
     }
-    
+
     if (nstats == 1) {
       plots.joined <- TRUE
       sim.col <- "dodgerblue3"
     }
-    
+
     if (missing(sim.lwd)) {
       if (nsims == 1) {
         sim.lwd <- 1
@@ -2075,7 +2080,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         sim.lwd <- max(c(1 - (nsims * 0.05), 0.5))
       }
     }
-    
+
     ## Color Vector Validation
     # 1. Sim.col, mean.col, qnts.col, targ.col must be missing or a vector of
     #    length 1 or nstats
@@ -2083,7 +2088,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
     #    but is a vector of length 1 and nstats is greater than 1,
     #    then replicate the color vector nstats times to achieve a vector of
     #    size nstats.
-    
+
     # Sim.col
     if (!missing(sim.col)) {
       if (!(length(sim.col) %in% c(1, nstats))) {
@@ -2093,8 +2098,8 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         sim.col <- rep(sim.col, nstats)
       }
     }
-    
-    
+
+
     # Mean.col
     if (!missing(mean.col)) {
       if (!(length(mean.col) %in% c(1, nstats))) {
@@ -2105,7 +2110,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         mean.col <- rep(mean.col, nstats)
       }
     }
-    
+
     # Qnts.col
     if (!missing(qnts.col)) {
       if (!(length(qnts.col) %in% c(1, nstats))) {
@@ -2115,7 +2120,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         qnts.col <- rep(qnts.col, nstats)
       }
     }
-    
+
     # Targ.col
     if (!missing(targ.col)) {
       if (!(length(targ.col) %in% c(1, nstats))) {
@@ -2125,7 +2130,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         targ.col <- rep(targ.col, nstats)
       }
     }
-    
+
     # Default colors
     if (missing(sim.col)) {
       if (plots.joined == TRUE) {
@@ -2135,7 +2140,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         sim.col <- rep("dodgerblue3", nstats)
       }
     }
-    
+
     ## Joined Plots
     if (method == "l") {
       if (missing(sim.lines)) {
@@ -2143,9 +2148,9 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
       } else {
         sim.lines <- sim.lines
       }
-      
+
       if (plots.joined == TRUE) {
-        
+
         ## Default legend
         if (missing(legend)) {
           if (nstats == 1) {
@@ -2154,17 +2159,17 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
             legend <- TRUE
           }
         }
-        
+
         #Initialize ylim min and max values
         qnt.min <- vector()
         qnt.max <- vector()
         mean.min <- vector()
         mean.max <- vector()
-        
+
         for (j in seq_len(nstats)) {
-          
-          dataj <- matrix(data[,j,], nrow=nsteps)
-          
+
+          dataj <- matrix(data[, j, ], nrow = nsteps)
+
           ## Quantiles - ylim min and max ##
           if (dynamic == TRUE) {
             if (is.numeric(qnts)) {
@@ -2188,7 +2193,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
               qnt.max[j] <-  max(yy)
             }
           }
-          
+
           ## Mean lines - ylim min and max ##
           if (mean.line == TRUE) {
             mean.prev <- rowMeans(dataj)
@@ -2199,9 +2204,9 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
             mean.min[j] <-  min(mean.prev)
             mean.max[j] <-  max(mean.prev)
           }
-          
+
         }
-        
+
         ## Default ylim
         if (length(da) > 0 && !is.null(da$ylim) && dynamic == TRUE) {
           ylim <- da$ylim
@@ -2214,22 +2219,22 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         } else {
           ylim <- c(min(data) * 0.9, max(data) * 1.1)
         }
-        
+
         ## Default ylab
         if (length(da) > 0 && !is.null(da$ylab)) {
           ylab <- da$ylab
         } else {
             ylab <- "dissolution rate"
         }
-        
+
         ## Default xlab
         if (length(da) > 0 && !is.null(da$xlab)) {
           xlab <- da$xlab
         } else {
           xlab <- "time"
         }
-        
-        
+
+
         ## Default target line color
         if (missing(targ.col)) {
           if (nstats == 1) {
@@ -2238,7 +2243,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
             targ.col <- sim.col
           }
         }
-        
+
         ## Quantile band transparency and color
         if (dynamic == TRUE) {
           if (missing(qnts.alpha)) {
@@ -2250,12 +2255,12 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
             qnts.col <- adjustcolor(qnts.col, qnts.alpha)
           }
         }
-        
+
         ## Main plot window
         plot(1, 1, xlim = xlim, ylim = ylim,
              type = "n", xlab = xlab, ylab = ylab)
         for (j in seq_len(nstats)) {
-          dataj <- matrix(data[,j,], nrow=nsteps)          
+          dataj <- matrix(data[, j, ], nrow = nsteps)
           if (dynamic == TRUE) {
             if (is.numeric(qnts)) {
               if (qnts < 0 | qnts > 1) {
@@ -2277,7 +2282,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
               polygon(xx, yy, col = qnts.col[j], border = NA)
             }
           }
-          
+
           if (sim.lines == TRUE) {
             for (i in sims) {
               lines(dataj[, i], lwd = sim.lwd, col = sim.col[j])
@@ -2295,7 +2300,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
             lines(mean.prev, lwd = mean.lwd,
                   col = mean.col[j], lty = mean.lty)
           }
-          
+
           if (targ.line == TRUE) {
             if (j %in% targs) {
               abline(h = stats.diss.table$Target[j],
@@ -2303,25 +2308,25 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
                      col = targ.col[j])
             }
           }
-          
+
         }
-        
+
         ## Grid
         if (grid == TRUE) {
           grid()
         }
-        
-        
+
+
         if (legend == TRUE) {
           legend("topleft", legend = nmstats, lwd = 2,
                  col = sim.col[1:nstats], cex = 0.75, bg = "white")
         }
-        
+
       }
-      
+
       ## Split plots
       if (plots.joined == FALSE) {
-        
+
         if (nstats == 1) dimens <- c(1, 1)
         if (nstats == 2) dimens <- c(1, 2)
         if (nstats == 3) dimens <- c(1, 3)
@@ -2332,15 +2337,15 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         if (nstats %in% 10:12) dimens <- c(4, 3)
         if (nstats %in% 13:16) dimens <- c(4, 4)
         if (nstats > 16) dimens <- rep(ceiling(sqrt(nstats)), 2)
-        
+
         # Pull graphical parameters
         ops <- list(mar = par()$mar, mfrow = par()$mfrow, mgp = par()$mgp)
         par(mar = c(2.5, 2.5, 2, 1), mgp = c(2, 1, 0), mfrow = dimens)
-        
+
         if (missing(targ.col)) {
           targ.col <- rep("black", nstats)
         }
-        
+
         ## Quantile band transparency and color
         if (dynamic == TRUE) {
           if (missing(qnts.alpha)) {
@@ -2352,19 +2357,19 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
             qnts.col <- adjustcolor(qnts.col, qnts.alpha)
           }
         }
-        
+
         for (j in seq_len(nstats)) {
-          dataj <- matrix(data[,j,], nrow=nsteps)
-          
+          dataj <- matrix(data[, j, ], nrow = nsteps)
+
           ## Quantiles - ylim min max ##
           if (dynamic == TRUE) {
-            
+
             #Initialize ylim min max values
             qnt.min <- 1E10
             qnt.max <- -1E10
             mean.min <- 1E10
             mean.max <- -1E10
-            
+
             if (is.numeric(qnts)) {
               if (qnts < 0 | qnts > 1) {
                 stop("qnts must be between 0 and 1", call. = FALSE)
@@ -2386,7 +2391,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
               qnt.max <-  max(yy)
             }
           }
-          
+
           ## Mean lines - ylim min max ##
           if (mean.line == TRUE) {
             if (missing(mean.col)) {
@@ -2400,7 +2405,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
             mean.min <-  min(mean.prev)
             mean.max <-  max(mean.prev)
           }
-          
+
           ## Default ylim
           if (length(da) > 0 && !is.null(da$ylim) && dynamic == TRUE) {
             ylim <- da$ylim
@@ -2411,13 +2416,13 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
           } else {
             ylim <- c(min(dataj) * 0.9, max(dataj) * 1.1)
           }
-          
+
           plot(x = 1, y = 1,
                xlim = xlim,
                ylim = ylim,
                type = "n", main = nmstats[j],
                xlab = "", ylab = "")
-          
+
           if (dynamic == TRUE) {
             if (is.numeric(qnts)) {
               if (qnts < 0 | qnts > 1) {
@@ -2439,14 +2444,14 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
               polygon(xx, yy, col = qnts.col[j], border = NA)
             }
           }
-          
+
           if (sim.lines == TRUE) {
             for (i in sims) {
               lines(dataj[, i], lwd = sim.lwd,
                     col = sim.col[j])
             }
           }
-          
+
           if (mean.line == TRUE) {
             if (missing(mean.col)) {
               mean.col <- rep("black", nstats)
@@ -2459,7 +2464,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
             lines(mean.prev, lwd = mean.lwd,
                   col = mean.col[j], lty = mean.lty)
           }
-          
+
           if (targ.line == TRUE) {
             if (j %in% targs) {
               abline(h = stats.diss.table$Target[j],
@@ -2467,24 +2472,24 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
                      col = targ.col[j])
             }
           }
-          
+
           ## Grid
           if (grid == TRUE) {
             grid()
           }
         }
-        
+
         # Reset graphical parameters
         on.exit(par(ops))
       }
     }
     if (method == "b") {
-      
-      data <- matrix(aperm(data, c(1,3,2)), nrow=nsims*nsteps)
+
+      data <- matrix(aperm(data, c(1, 3, 2)), nrow = nsims * nsteps)
       colnames(data) <- nmstats
-      
+
       boxplot(data, ...)
-      
+
       for (j in seq_len(nstats)) {
         points(x = j, y = stats.diss.table$Target[j],
                pch = 16, cex = 1.5, col = "blue")
@@ -2493,9 +2498,9 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
           grid()
         }
       }
-      
+
     }
-    
+
   }
 
 

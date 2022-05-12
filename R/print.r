@@ -116,7 +116,8 @@ print.netdx <- function(x, digits = 3, ...) {
   # TODO Remove nodefactor in future release.
   if (x$coef.diss$diss.model.type == "nodefactor") {
     cat("----------------------- \n")
-    cat("* Duration and dissolution results are averaged over for dissolution models containing a nodefactor term.")
+    cat("* Duration and dissolution results are averaged over for dissolution
+        models containing a nodefactor term.")
   }
   invisible()
 }
@@ -211,8 +212,8 @@ print.netsim <- function(x, nwstats = TRUE, digits = 3, network = 1, ...) {
         seq_len(x$control$nsims),
         get_network, network = network, x = x
       )
-      
-      dissolution.stats <- make_dissolution_stats( 
+
+      dissolution.stats <- make_dissolution_stats(
         diag.sim,
         x$nwparam[[network]]$coef.diss,
         x$control$nsteps,
