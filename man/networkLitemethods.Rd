@@ -136,7 +136,7 @@ as.networkLite(x, ...)
 
 \item{...}{Any additional arguments.}
 
-\item{value}{The attribute value to set in vertex, edge, and network 
+\item{value}{The attribute value to set in vertex, edge, and network
 attribute setters; the value to set edges to (must be FALSE)
 for the \code{networkLite} replacement method.}
 
@@ -159,7 +159,7 @@ described in \code{\link[ergm]{nodal_attributes}}.}
 
 \item{names.eval}{name(s) of edge attributes}
 
-\item{add.edges}{should edges being assigned to be added if not already 
+\item{add.edges}{should edges being assigned to be added if not already
 present?}
 
 \item{tail}{Vector of tails of edges to add to the networkLite.}
@@ -169,21 +169,21 @@ present?}
 \item{vals.eval}{value(s) of edge attributes}
 
 \item{attrnames}{vector specifying edge attributes to include in the tibble;
-may be logical, integer, or character vector, the former two being 
-used to select attribute names from \code{list.edge.attributes(x)}, 
+may be logical, integer, or character vector, the former two being
+used to select attribute names from \code{list.edge.attributes(x)},
 and the latter being used as the attribute names themselves}
 
-\item{matrix.type}{type of matrix to return from 
+\item{matrix.type}{type of matrix to return from
 \code{as.matrix.networkLite}}
 
-\item{eid}{edge indices to delete (between 1 and 
+\item{eid}{edge indices to delete (between 1 and
 \code{network.edgecount(x, na.omit = FALSE)})}
 
 \item{vid}{vertex indices to delete (between 1 and \code{network.size(x)})}
 
 \item{nv}{number of vertices to add to the \code{networkLite}}
 
-\item{vattr}{list (of length \code{nv}) of named lists of vertex attributes 
+\item{vattr}{list (of length \code{nv}) of named lists of vertex attributes
 for added vertices, or \code{NULL} to indicate vertex attributes are
 not being passed}
 

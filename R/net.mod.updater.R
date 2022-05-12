@@ -34,18 +34,16 @@ update_list <- function(x, new.x) {
 #'
 #' @details
 #' If a list \code{.param.updater.list} is present in the parameters, this
-#' function
-#' will update the \code{param} list with new values at given timesteps.
-#' Similarily, if a list \code{.control.updater.list} is present in the controls,
-#' this function will update the \code{param} list with new values at given
-#' timesteps.
-#' An updater is a list containing an \code{at} element governing when the
-#' changes will happen, an optional \code{verbose} Boolean controlling whether
-#' to output a message when a change is made (default = TRUE), and a
-#' \code{param} or \code{control} named list containing the new values(s) with
-#' which to update, with the names being the same as the parameter / control
-#' names. If the new value is a function but the old one is not, the function
-#' will be applied to the current element (see example).
+#' function will update the \code{param} list with new values at given time
+#' steps. Similarly, if a list \code{.control.updater.list} is present in the
+#' controls, this function will update the \code{param} list with new values at
+#' given time steps. An updater is a list containing an \code{at} element
+#' governing when the changes will happen, an optional \code{verbose} Boolean
+#' controlling whether to output a message when a change is made (default =
+#' TRUE), and a \code{param} or \code{control} named list containing the new
+#' values(s) with which to update, with the names being the same as the
+#' parameter / control names. If the new value is a function but the old one is
+#' not, the function will be applied to the current element (see example).
 #'
 #' @examples
 #' \dontrun{
