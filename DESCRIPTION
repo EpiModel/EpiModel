@@ -29,7 +29,7 @@ BugReports: https://github.com/EpiModel/EpiModel/issues
 Depends:
     R (>= 3.5),
     deSolve (>= 1.21),
-    networkDynamic (>= 0.10),
+    networkDynamic (>= 0.11.2),
     tergm (>= 4.0),
     statnet.common (>= 4.6.0)
 Imports:
@@ -60,5 +60,4 @@ LinkingTo: Rcpp, ergm
 RoxygenNote: 7.1.2
 Encoding: UTF-8
 Remotes: github::statnet/network@master,
-    github::statnet/networkDynamic@master,
     github::statnet/tergm@master
