@@ -136,7 +136,7 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
   }
 
   STERGM <- !missing(set.control.stergm)
-  if (STERGM) {
+  if (STERGM == TRUE) {
     warning("set.control.stergm is deprecated and will be removed in a future
              version; use set.control.tergm instead.")
   }
@@ -167,7 +167,7 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
     nwstats.formula <- x$formation
   }
 
-  if (!dynamic && !edapprox) {
+  if (dynamic == FALSE && edapprox == FALSE) {
     stop("cannot perform static simulation without edapprox")
   }
 
@@ -192,19 +192,19 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
                        constraints = x$constraints,
                        control = set.control.ergm, 
                        dynamic = FALSE,
-                       nsim = if(dynamic) 1L else nsims,
-                       output = if(dynamic) "network" else "stats",
-                       sequential = if(dynamic) FALSE else sequential,
-                       monitor = if(dynamic) NULL else nwstats.formula)
+                       nsim = if (dynamic == TRUE) 1L else nsims,
+                       output = if (dynamic == TRUE) "network" else "stats",
+                       sequential = if (dynamic == TRUE) FALSE else sequential,
+                       monitor = if (dynamic == TRUE) NULL else nwstats.formula)
     } else {
       init <- x$newnetwork
     }
 
-    if(!dynamic) {
+    if (dynamic == FALSE) {
       return(list(stats = init))
     }
 
-    if (STERGM) {
+    if (STERGM == TRUE) {
       diag.sim <- simulate(init,
                            formation = x$formation,
                            dissolution = x$coef.diss$dissolution,
@@ -237,18 +237,18 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
 
     out <- list(stats = stats, changes = changes)
 
-    if(keep.tedgelist || keep.tnetwork) {
+    if (keep.tedgelist == TRUE || keep.tnetwork == TRUE) {
       init[,] <- FALSE
       nwd <- networkDynamic(base.net = init, edge.toggles = changes[,-4L,drop=FALSE])
-      if(keep.tnetwork) {
+      if (keep.tnetwork == TRUE) {
         out$tnetwork <- nwd
       }
-      if(keep.tedgelist) {
+      if (keep.tedgelist == TRUE) {
         out$tedgelist <- as.data.frame(nwd)
       }
     }
 
-    if(!skip.dissolution) {
+    if (skip.dissolution == FALSE) {
       diss_stats <- toggles_to_diss_stats(changes[,-4L,drop=FALSE], x$coef.diss, nsteps, init)
       out <- c(out, diss_stats)
     }
@@ -256,7 +256,7 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
     out
   }
   
-  if (!dynamic || nsims == 1) {
+  if (dynamic == FALSE || nsims == 1) {
     diag.sim <- list(dosim())
   } else if (ncores == 1) {
     diag.sim <- list()
@@ -398,7 +398,7 @@ make_dissolution_stats <- function(diag.sim, coef.diss,
   }
   
   ## exclude nodefactor from heterogeneous dissolution calculation
-  if(coef.diss$diss.model.type == "nodefactor") {
+  if (coef.diss$diss.model.type == "nodefactor") {
     durs <- mean(coef.diss$duration)
   } else {
     durs <- coef.diss$duration
@@ -408,18 +408,18 @@ make_dissolution_stats <- function(diag.sim, coef.diss,
                  dim = c(nsteps, length(durs), length(diag.sim)))
 
   pages_imptd <- array(unlist(lapply(diag.sim, `[[`, "meanageimputed")),
-                 dim = c(nsteps, length(durs), length(diag.sim)))
+                       dim = c(nsteps, length(durs), length(diag.sim)))
 
   propdiss <- array(unlist(lapply(diag.sim, `[[`, "propdiss")),
                     dim = c(nsteps, length(durs), length(diag.sim)))
 
   combinedmeanageimputed <- do.call(rbind, lapply(diag.sim, `[[`, "meanmeanageimputed"))
   meanagesimputed <- colMeans(combinedmeanageimputed)
-  meanagesd <- apply(combinedmeanageimputed, 2, sd)
+  meanagesd <- apply(combinedmeanageimputed, 2L, sd)
 
   combinedpropdiss <- do.call(rbind, lapply(diag.sim, `[[`, "propdiss"))
   meanpropdiss <- colMeans(combinedpropdiss)
-  propdisssd <- apply(combinedpropdiss, 2, sd)
+  propdisssd <- apply(combinedpropdiss, 2L, sd)
   
   stats.table.duration <- data.frame("Target" = durs,
                                      "Sim Mean" = meanagesimputed,
@@ -459,7 +459,8 @@ toggles_to_diss_stats <- function(toggles, coef.diss, nsteps, nw, time.start = 0
   delete.network.attribute(nw, "lasttoggle")
   nw[,] <- FALSE
   
-  if(coef.diss$diss.model.type == "nodefactor") {
+  ## exclude nodefactor from heterogeneous dissolution calculation
+  if (coef.diss$diss.model.type == "nodefactor") {
     diss_formula <- ~offset(edges)
     durs <- mean(coef.diss$duration)
   } else {
@@ -480,9 +481,9 @@ toggles_to_diss_stats <- function(toggles, coef.diss, nsteps, nw, time.start = 0
   
   edgecounts <- changestats[,seq_along(durs),drop=FALSE]
   edgeages <- changestats[,seq_along(durs)+length(durs),drop=FALSE]
-  edgepers <- changestats[,seq_along(durs)+2*length(durs),drop=FALSE]
+  edgepers <- changestats[,seq_along(durs)+2L*length(durs),drop=FALSE]
 
-  if(length(durs) > 1L) {
+  if (length(durs) > 1L) {
     edgecounts[,1L] <- edgecounts[,1L] - rowSums(edgecounts[,-1L,drop=FALSE])
     edgeages[,1L] <- edgeages[,1L] - rowSums(edgeages[,-1L,drop=FALSE])
     edgepers[,1L] <- edgepers[,1L] - rowSums(edgepers[,-1L,drop=FALSE])
@@ -495,7 +496,7 @@ toggles_to_diss_stats <- function(toggles, coef.diss, nsteps, nw, time.start = 0
   edgeagesimputed <- edgeages
   toggles <- toggles[order(toggles[,2L],toggles[,3L],toggles[,1L]),,drop=FALSE]
   w <- which(toggles[,1] == time.start)
-  if(length(w) > 0L) {
+  if (length(w) > 0L) {
     # imputation
     dyad_types_formula <- nonsimp_update.formula(diss_formula, nw ~ ., from.new = "nw")
       
@@ -503,18 +504,18 @@ toggles_to_diss_stats <- function(toggles, coef.diss, nsteps, nw, time.start = 0
                                        toggles = cbind(seq_along(w), toggles[w,-1L,drop=FALSE]),
                                        stats.start = TRUE))
     
-    for(i in seq_along(w)) {
+    for (i in seq_along(w)) {
       dyad_type <- max(which(tgfrv[i,] != tgfrv[i+1L,]))
       imputed_correction <- rgeom(1L, 1/durs[dyad_type])
       index <- w[i]
-      if(index < NROW(toggles) &&
-           toggles[index,2L] == toggles[index+1L,2L] &&
-           toggles[index,3L] == toggles[index+1L,3L]) {
+      if (index < NROW(toggles) &&
+            toggles[index,2L] == toggles[index+1L,2L] &&
+            toggles[index,3L] == toggles[index+1L,3L]) {
         terminus_time <- toggles[index+1L,1L]
       } else {
         terminus_time <- time.start + nsteps + 1L
       }
-      if(terminus_time > time.start + 1L) {
+      if (terminus_time > time.start + 1L) {
         edgeagesimputed[seq_len(terminus_time - time.start - 1L),dyad_type] <-
           edgeagesimputed[seq_len(terminus_time - time.start - 1L),dyad_type] +
           imputed_correction
