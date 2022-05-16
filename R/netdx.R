@@ -505,7 +505,6 @@ toggles_to_diss_stats <- function(toggles, coef.diss, nsteps, nw, time.start = 0
     
     for (i in seq_along(w)) {
       dyad_type <- max(which(tgfrv[i,] != tgfrv[i+1L,]))
-      imputed_correction <- rgeom(1L, 1/durs[dyad_type])
       index <- w[i]
       if (index < NROW(toggles) &&
             toggles[index,2L] == toggles[index+1L,2L] &&
@@ -517,7 +516,7 @@ toggles_to_diss_stats <- function(toggles, coef.diss, nsteps, nw, time.start = 0
       if (terminus_time > time.start + 1L) {
         edgeagesimputed[seq_len(terminus_time - time.start - 1L),dyad_type] <-
           edgeagesimputed[seq_len(terminus_time - time.start - 1L),dyad_type] +
-          imputed_correction
+          rgeom(1L, 1/durs[dyad_type])
       }
     }
   }
