@@ -491,7 +491,6 @@ toggles_to_diss_stats <- function(toggles, coef.diss, nsteps, nw, time.start = 0
 
   edgediss <- edgecounts[-NROW(edgecounts),,drop=FALSE] - edgepers[-1L,,drop=FALSE]
   edgeages <- edgeages[-1L,,drop=FALSE]
-#  edgecounts <- edgecounts[-1L,,drop=FALSE]
 
   edgeagesimputed <- edgeages
   toggles <- toggles[order(toggles[,2L],toggles[,3L],toggles[,1L]),,drop=FALSE]
@@ -525,7 +524,7 @@ toggles_to_diss_stats <- function(toggles, coef.diss, nsteps, nw, time.start = 0
   
   meanage <- edgeages/edgecounts[-1L,,drop=FALSE]
   meanageimputed <- edgeagesimputed/edgecounts[-1L,,drop=FALSE]
-  propdiss <- edgediss/edgecounts[-1L,,drop=FALSE]
+  propdiss <- edgediss/edgecounts[-NROW(edgecounts),,drop=FALSE]
   
   ## handle division by zero...
   meanage[is.nan(meanage)] <- 0
