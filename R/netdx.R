@@ -204,6 +204,12 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
       return(list(stats = init))
     }
 
+    if (keep.tedgelist == TRUE || keep.tnetwork == TRUE) {
+      output <- "networkDynamic"
+    } else {
+      output <- "changes"
+    }
+
     if (STERGM == TRUE) {
       diag.sim <- simulate(init,
                            formation = x$formation,
@@ -215,7 +221,7 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
                            monitor = nwstats.formula,
                            time.start = 0L,
                            nsim = 1L,
-                           output = "changes",
+                           output = output,
                            control = set.control.stergm)
     } else {
       diag.sim <- simulate(init ~ Form(x$formation) + Persist(x$coef.diss$dissolution),
@@ -225,32 +231,34 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
                            monitor = nwstats.formula,
                            time.start = 0L,
                            nsim = 1L,
-                           output = "changes",
+                           output = output,
                            control = set.control.tergm,
                            dynamic = TRUE)
     }
     
-    stats <- attr(diag.sim, "stats")
+    out <- list(stats = attr(diag.sim, "stats"))
     
-    changes <- rbind(cbind(0L, as.edgelist(init), 1L),
-                     diag.sim)
-
-    out <- list(stats = stats, changes = changes)
-
-    if (keep.tedgelist == TRUE || keep.tnetwork == TRUE) {
-      init[,] <- FALSE
-      nwd <- networkDynamic(base.net = init, edge.toggles = changes[,-4L,drop=FALSE])
-      if (keep.tnetwork == TRUE) {
-        out$tnetwork <- nwd
+    if (output == "networkDynamic") {
+      sim.df <- as.data.frame(diag.sim)
+      toggles <- tedgelist_to_toggles(sim.df)
+    } else {
+      if (network.edgecount(init) > 0L) {
+        changes <- rbind(cbind(0L, as.edgelist(init), 1L),
+                         diag.sim)
       }
-      if (keep.tedgelist == TRUE) {
-        out$tedgelist <- as.data.frame(nwd)
-      }
+      toggles <- changes[,-4L,drop=FALSE]
+    }
+
+    if (keep.tnetwork == TRUE) {
+      out$tnetwork <- diag.sim
+    }
+    
+    if (keep.tedgelist == TRUE) {
+      out$tedgelist <- sim.df
     }
 
     if (skip.dissolution == FALSE) {
-      diss_stats <- toggles_to_diss_stats(changes[,-4L,drop=FALSE], x$coef.diss, nsteps, init)
-      out <- c(out, diss_stats)
+      out <- c(out, toggles_to_diss_stats(toggles, x$coef.diss, nsteps, init))
     }
     
     out
