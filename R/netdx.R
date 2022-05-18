@@ -242,9 +242,10 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
       sim.df <- as.data.frame(diag.sim)
       toggles <- tedgelist_to_toggles(sim.df)
     } else {
+      changes <- diag.sim
       if (network.edgecount(init) > 0L) {
         changes <- rbind(cbind(0L, as.edgelist(init), 1L),
-                         diag.sim)
+                         changes)
       }
       toggles <- changes[,-4L,drop=FALSE]
     }
