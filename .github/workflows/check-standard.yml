@@ -41,10 +41,7 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v1
         with:
-          extra-packages: |
-            any::rcmdcheck
-            any::statnet.common
-            any::ergm
+          extra-packages: rcmdcheck
 
       - uses: r-lib/actions/check-r-package@v1
 
