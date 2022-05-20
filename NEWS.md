@@ -4,9 +4,22 @@
 
 -   Network models can now use predefined scenarios with the `use_scenario`
  function. See the vignette, "Working with model parameters."
+- The `trim_netest` function has been added to reduce `netest` object size
+ in common use cases.
+- The `networkLite` class now supports edge attributes and a number of
+ additional functionalities.
+- Duration 1 models in `netsim` with `tergmLite = FALSE` now use `tergm` 
+ simulation to produce a `networkDynamic` as in the duration > 1 case.
+- `netdx` now supports heterogeneous dissolution diagnostics.
 
 ### BUG FIXES
 
+-   `EpiModel`'s custom terms `absdiffby` and `absdiffnodemix` are now usable 
+ (due to enabling symbol search).
+- The correct formula is now used in `sim_nets_t1` when initializing the
+ network with the non-nested edapprox.
+- References to `network` class internals have been removed from `net.utils.R`
+ to make the code function properly with `networkLite`s.
 
 ### OTHER
 
@@ -17,6 +30,12 @@ and custom).
 and `control.net` respectively were renamed `.param.updater.list` and
 `.control.updater.list`. The leading dot indicate that these are built-in
 EpiModel elements not to be confused with the user-defined ones.
+- Dissolution models using the `nodefactor` term have been deprecated.
+- `stergm` controls have been deprecated in favor of `tergm` controls.
+- The `ergm` and `tergm` fit objects are no longer retained on the `netest`
+ object by default.  Formula-style simulations are used consistently for both
+ `ergm` and `tergm` simulation, requiring control arguments of class 
+ `control.simulate.formula` and `control.simulate.formula.tergm`.
 
 ## EpiModel 2.2.1
 
