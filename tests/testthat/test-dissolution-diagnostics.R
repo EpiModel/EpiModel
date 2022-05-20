@@ -179,6 +179,81 @@ test_that("simulation diagnostics work as expected", {
   }
 })
 
+test_that("netsim produces a networkDynamic with the expected data.frame when resimulate.network = FALSE", {  
+  nw <- network_initialize(n = 50)
+  nw <- set_vertex_attribute(nw, "race", rbinom(50, 1, 0.5))
+  est <- netest(nw, formation = ~edges + nodematch("race"),
+                target.stats = c(25, 10),
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                verbose = FALSE)
+  param <- param.net(inf.prob = 0, act.rate = 0)
+  init <- init.net(status.vector = rep("i", 50))
+  control <- control.net(type = NULL, 
+                         nsims = 1, 
+                         nsteps = 5, 
+                         resimulate.network = FALSE,
+                         set.control.ergm = control.simulate.formula(),
+                         verbose = FALSE)
+  
+  set.seed(0)
+  mod <- netsim(est, param, init, control)  
+  nwd <- get_network(mod)
+  
+  set.seed(0)
+  nws <- simulate(est$formula,
+                  coef = est$coef.form.crude,
+                  basis = est$newnetwork,
+                  dynamic = FALSE)
+  
+  nws <- simulate(nws ~ Form(est$formation) + Persist(est$coef.diss$dissolution),
+                  coef = c(est$coef.form, est$coef.diss$coef.crude),
+                  time.start = 0,
+                  time.slices = 5,
+                  dynamic = TRUE)
+
+  expect_identical(as.data.frame(nws), as.data.frame(nwd))
+})
+
+test_that("netsim produces a networkDynamic with the expected data.frame when resimulate.network = TRUE", {  
+  nw <- network_initialize(n = 50)
+  nw <- set_vertex_attribute(nw, "race", rbinom(50, 1, 0.5))
+  est <- netest(nw, formation = ~edges + nodematch("race"),
+                target.stats = c(25, 10),
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                verbose = FALSE)
+  param <- param.net(inf.prob = 0, act.rate = 0)
+  init <- init.net(status.vector = rep("i", 50))
+  control <- control.net(type = NULL, 
+                         resim_nets.FUN = function(dat, at) {
+                                            dat <- set_epi(dat, "num", at - 1, 50)
+                                            resim_nets(dat, at)
+                                          },
+                         nsims = 1, 
+                         resimulate.network = TRUE,
+                         nsteps = 5, 
+                         verbose = FALSE)
+  
+  set.seed(0)
+  mod <- netsim(est, param, init, control)  
+  nwd <- get_network(mod)
+  
+  set.seed(0)
+  nws <- simulate(est$formula,
+                  coef = est$coef.form.crude,
+                  basis = est$newnetwork,
+                  control = list(MCMC.burnin = 2e5),
+                  dynamic = FALSE)
+  
+  for(i in seq_len(5)) {
+    nws <- simulate(nws ~ Form(est$formation) + Persist(est$coef.diss$dissolution),
+                    coef = c(est$coef.form, est$coef.diss$coef.crude),
+                    time.start = i - 1,
+                    dynamic = TRUE)
+  }
+    
+  expect_identical(as.data.frame(nws), as.data.frame(nwd))
+})
+
 test_that("tedgelist_to_toggles functions as expected", {
   logit <- function(p) log(p/(1-p))
   density <- 1/50
