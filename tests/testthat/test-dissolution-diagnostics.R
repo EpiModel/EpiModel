@@ -151,6 +151,9 @@ test_that("simulation diagnostics work as expected", {
           set.seed(seed)
           dx <- netdx(est, nsims = nsims, nsteps = nsteps, keep.tnetwork = keep.tnetwork)
           
+          print(dx)
+          plot(dx)
+          
           set.seed(seed)
           ds <- list()
           for (i in seq_len(nsims)) {
@@ -199,6 +202,9 @@ test_that("netsim produces a networkDynamic with the expected data.frame when re
   mod <- netsim(est, param, init, control)  
   nwd <- get_network(mod)
   
+  print(mod)
+  plot(mod)
+  
   set.seed(0)
   nws <- simulate(est$formula,
                   coef = est$coef.form.crude,
@@ -236,6 +242,9 @@ test_that("netsim produces a networkDynamic with the expected data.frame when re
   set.seed(0)
   mod <- netsim(est, param, init, control)  
   nwd <- get_network(mod)
+  
+  print(mod)
+  plot(mod)
   
   set.seed(0)
   nws <- simulate(est$formula,
