@@ -68,11 +68,7 @@ test_that("simulation diagnostics work as expected", {
                          dim = c(nsteps,length(durs),1))
     prop.diss <- array(edgediss/edgecounts[-NROW(edgecounts),,drop=FALSE],
                        dim = c(nsteps,length(durs),1))
-    
-    pages[is.nan(pages)] <- NA
-    pages_imptd[is.nan(pages_imptd)] <- NA
-    prop.diss[is.nan(prop.diss)] <- NA
-    
+        
     list(pages = pages,
          pages_imptd = pages_imptd,
          prop.diss = prop.diss)
