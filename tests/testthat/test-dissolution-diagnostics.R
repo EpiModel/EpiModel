@@ -116,65 +116,67 @@ test_that("simulation diagnostics work as expected", {
                          c(100, 100/9, 100/9, 100/9),
                          c(100, 200/3, 200/3)),
                     as.integer)
+                    
+  init.edges.list <- list(FALSE, FALSE, TRUE, TRUE)
+  nested.edapprox.list <- list(FALSE, TRUE, FALSE, TRUE)
+  keep.tnetwork.list <- list(TRUE, FALSE, FALSE, TRUE)
   
-  for (nested.edapprox in list(FALSE, TRUE)) { 
-    for (init.edges in list(FALSE, TRUE)) {
-      for (index in seq_along(coefs.diss)) {
-        for (keep.tnetwork in list(FALSE, TRUE)) {
-          coef.diss <- coefs.diss[[index]]
-          dyad_indexer <- dyad_indexers[[index]]
-          if (nested.edapprox == TRUE) {
-            formation <- formations[[index]]
-            target.stats <- targets[[index]]
-          } else {
-            formation <- ~edges
-            target.stats <- c(100)
-          }
-          
-          nw <- network.initialize(net_size, directed = FALSE)
-          nw %v% "attr" <- rep(1:3, length.out = net_size)
-                            
-          est <- suppressWarnings(netest(nw, 
-                                         formation = formation,
-                                         coef.diss = coef.diss,
-                                         target.stats = target.stats,
-                                         nested.edapprox = nested.edapprox))
-          
-          if (init.edges == FALSE) {
-            est$newnetwork[,] <- FALSE
-          }
-          
-          set.seed(seed)
-          dx <- netdx(est, nsims = nsims, nsteps = nsteps, keep.tnetwork = keep.tnetwork)
-          
-          print(dx)
-          plot(dx)
-          
-          set.seed(seed)
-          ds <- list()
-          for (i in seq_len(nsims)) {
-            ds[[i]] <- simulate_diss_stats(est, nsteps, dyad_indexer)
-          }
-          
-          if (coef.diss$diss.model.type == "nodefactor") {
-            durs <- mean(coef.diss$duration)
-          } else {
-            durs <- coef.diss$duration
-          }
-          
-          pages <- array(unlist(lapply(ds, `[[`, "pages")),
-                         dim = c(nsteps,length(durs),nsims))
-          pages_imptd <- array(unlist(lapply(ds, `[[`, "pages_imptd")),
-                               dim = c(nsteps,length(durs),nsims))
-          prop.diss <- array(unlist(lapply(ds, `[[`, "prop.diss")),
-                             dim = c(nsteps,length(durs),nsims))
-          
-          expect_equal(pages, dx$pages)
-          expect_equal(pages_imptd, dx$pages_imptd)
-          expect_equal(prop.diss, dx$prop.diss)
-        }
-      }
+  for(index in seq_along(coefs.diss)) {
+    init.edges <- init.edges.list[[index]]
+    nested.edapprox <- nested.edapprox.list[[index]]
+    keep.tnetwork <- keep.tnetwork.list[[index]]
+    coef.diss <- coefs.diss[[index]]
+    dyad_indexer <- dyad_indexers[[index]]
+    
+    if (nested.edapprox == TRUE) {
+      formation <- formations[[index]]
+      target.stats <- targets[[index]]
+    } else {
+      formation <- ~edges
+      target.stats <- c(100)
     }
+
+    nw <- network.initialize(net_size, directed = FALSE)
+    nw %v% "attr" <- rep(1:3, length.out = net_size)
+                      
+    est <- suppressWarnings(netest(nw, 
+                                   formation = formation,
+                                   coef.diss = coef.diss,
+                                   target.stats = target.stats,
+                                   nested.edapprox = nested.edapprox))
+    
+    if (init.edges == FALSE) {
+      est$newnetwork[,] <- FALSE
+    }
+    
+    set.seed(seed)
+    dx <- netdx(est, nsims = nsims, nsteps = nsteps, keep.tnetwork = keep.tnetwork)
+    
+    print(dx)
+    plot(dx)
+    
+    set.seed(seed)
+    ds <- list()
+    for (i in seq_len(nsims)) {
+      ds[[i]] <- simulate_diss_stats(est, nsteps, dyad_indexer)
+    }
+    
+    if (coef.diss$diss.model.type == "nodefactor") {
+      durs <- mean(coef.diss$duration)
+    } else {
+      durs <- coef.diss$duration
+    }
+    
+    pages <- array(unlist(lapply(ds, `[[`, "pages")),
+                   dim = c(nsteps,length(durs),nsims))
+    pages_imptd <- array(unlist(lapply(ds, `[[`, "pages_imptd")),
+                         dim = c(nsteps,length(durs),nsims))
+    prop.diss <- array(unlist(lapply(ds, `[[`, "prop.diss")),
+                       dim = c(nsteps,length(durs),nsims))
+    
+    expect_equal(pages, dx$pages)
+    expect_equal(pages_imptd, dx$pages_imptd)
+    expect_equal(prop.diss, dx$prop.diss)
   }
 })
 
