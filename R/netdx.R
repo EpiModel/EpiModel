@@ -422,14 +422,12 @@ make_dissolution_stats <- function(diag.sim, coef.diss,
   propdiss <- array(unlist(lapply(diag.sim, `[[`, "propdiss")),
                     dim = c(nsteps, length(durs), length(diag.sim)))
 
-  combinedmeanageimputed <- do.call(rbind, lapply(diag.sim, `[[`, "meanageimputed"))
-  meanagesimputed <- colMeans(combinedmeanageimputed, na.rm = TRUE)
   combinedmeanmeanageimputed <- do.call(rbind, lapply(diag.sim, `[[`, "meanmeanageimputed"))
+  meanagesimputed <- colMeans(combinedmeanmeanageimputed, na.rm = TRUE)
   meanagesd <- apply(combinedmeanmeanageimputed, 2L, sd, na.rm = TRUE)
 
-  combinedpropdiss <- do.call(rbind, lapply(diag.sim, `[[`, "propdiss"))
-  meanpropdiss <- colMeans(combinedpropdiss, na.rm = TRUE)
   combinedmeanpropdiss <- do.call(rbind, lapply(diag.sim, `[[`, "meanpropdiss"))  
+  meanpropdiss <- colMeans(combinedmeanpropdiss, na.rm = TRUE)
   propdisssd <- apply(combinedmeanpropdiss, 2L, sd, na.rm = TRUE)
   
   stats.table.duration <- data.frame("Target" = durs,
@@ -478,13 +476,10 @@ toggles_to_diss_stats <- function(toggles, coef.diss, nsteps, nw, time.start = 0
     diss_formula <- coef.diss$dissolution
     durs <- coef.diss$duration
   }
-  
-  ## careful with overall formula environment...
-  godfather_formula <- nonsimp_update.formula(diss_formula,
-                                              nw ~ . + EdgeAges(diss_formula) + Persist(diss_formula),
-                                              from.new = c("nw", "diss_formula"))
-  
-  changestats <- as.matrix(tergm.godfather(godfather_formula,
+    
+  changestats <- as.matrix(tergm.godfather(nw ~ Passthrough(diss_formula) 
+                                                + EdgeAges(diss_formula) 
+                                                + Persist(diss_formula),
                                            toggles = toggles,
                                            start = time.start - 1L,
                                            end = time.start + nsteps,
@@ -508,15 +503,13 @@ toggles_to_diss_stats <- function(toggles, coef.diss, nsteps, nw, time.start = 0
   toggles <- toggles[order(toggles[,2L],toggles[,3L],toggles[,1L]),,drop=FALSE]
   w <- which(toggles[,1] == time.start)
   if (length(w) > 0L) {
-    # imputation
-    dyad_types_formula <- nonsimp_update.formula(diss_formula, nw ~ ., from.new = "nw")
-      
-    tgfrv <- as.matrix(tergm.godfather(dyad_types_formula,
-                                       toggles = cbind(seq_along(w), toggles[w,-1L,drop=FALSE]),
-                                       stats.start = TRUE))
+    # imputation      
+    changestats <- as.matrix(tergm.godfather(nw ~ Passthrough(diss_formula),
+                                             toggles = cbind(seq_along(w), toggles[w,-1L,drop=FALSE]),
+                                             stats.start = TRUE))
     
     for (i in seq_along(w)) {
-      dyad_type <- max(which(tgfrv[i,] != tgfrv[i+1L,]))
+      dyad_type <- max(which(changestats[i,] != changestats[i+1L,]))
       index <- w[i]
       if (index < NROW(toggles) &&
             toggles[index,2L] == toggles[index+1L,2L] &&
@@ -533,21 +526,14 @@ toggles_to_diss_stats <- function(toggles, coef.diss, nsteps, nw, time.start = 0
     }
   }
   
+  ## 0/0 is possible, resulting in NaN, which is screened out by later na.rm's
   meanage <- edgeages/edgecounts[-1L,,drop=FALSE]
   meanageimputed <- edgeagesimputed/edgecounts[-1L,,drop=FALSE]
   propdiss <- edgediss/edgecounts[-NROW(edgecounts),,drop=FALSE]
-  
-  ## handle division by zero...
-  meanage[is.nan(meanage)] <- NA
-  meanageimputed[is.nan(meanageimputed)] <- NA
-  propdiss[is.nan(propdiss)] <- NA
-  
+    
   meanmeanageimputed <- colMeans(meanageimputed, na.rm = TRUE)
   meanpropdiss <- colMeans(propdiss, na.rm = TRUE)
-  
-  meanmeanageimputed[is.nan(meanmeanageimputed)] <- NA
-  meanpropdiss[is.nan(meanpropdiss)] <- NA
-  
+    
   return(list(edgecounts = edgecounts,
               edgeages = edgeages,
               edgeagesimputed = edgeagesimputed,
