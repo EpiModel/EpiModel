@@ -422,14 +422,15 @@ make_dissolution_stats <- function(diag.sim, coef.diss,
   propdiss <- array(unlist(lapply(diag.sim, `[[`, "propdiss")),
                     dim = c(nsteps, length(durs), length(diag.sim)))
 
-  combinedmeanageimputed <- do.call(rbind, lapply(diag.sim, `[[`, "meanmeanageimputed"))
-  meanagesimputed <- colMeans(combinedmeanageimputed)
-  meanagesd <- apply(combinedmeanageimputed, 2L, sd)
+  combinedmeanageimputed <- do.call(rbind, lapply(diag.sim, `[[`, "meanageimputed"))
+  meanagesimputed <- colMeans(combinedmeanageimputed, na.rm = TRUE)
+  combinedmeanmeanageimputed <- do.call(rbind, lapply(diag.sim, `[[`, "meanmeanageimputed"))
+  meanagesd <- apply(combinedmeanmeanageimputed, 2L, sd, na.rm = TRUE)
 
   combinedpropdiss <- do.call(rbind, lapply(diag.sim, `[[`, "propdiss"))
-  meanpropdiss <- colMeans(combinedpropdiss)
+  meanpropdiss <- colMeans(combinedpropdiss, na.rm = TRUE)
   combinedmeanpropdiss <- do.call(rbind, lapply(diag.sim, `[[`, "meanpropdiss"))  
-  propdisssd <- apply(combinedmeanpropdiss, 2L, sd)
+  propdisssd <- apply(combinedmeanpropdiss, 2L, sd, na.rm = TRUE)
   
   stats.table.duration <- data.frame("Target" = durs,
                                      "Sim Mean" = meanagesimputed,
@@ -537,12 +538,15 @@ toggles_to_diss_stats <- function(toggles, coef.diss, nsteps, nw, time.start = 0
   propdiss <- edgediss/edgecounts[-NROW(edgecounts),,drop=FALSE]
   
   ## handle division by zero...
-  meanage[is.nan(meanage)] <- 0
-  meanageimputed[is.nan(meanageimputed)] <- 0
-  propdiss[is.nan(propdiss)] <- 0
+  meanage[is.nan(meanage)] <- NA
+  meanageimputed[is.nan(meanageimputed)] <- NA
+  propdiss[is.nan(propdiss)] <- NA
   
-  meanmeanageimputed <- colMeans(meanageimputed)
-  meanpropdiss <- colMeans(propdiss)
+  meanmeanageimputed <- colMeans(meanageimputed, na.rm = TRUE)
+  meanpropdiss <- colMeans(propdiss, na.rm = TRUE)
+  
+  meanmeanageimputed[is.nan(meanmeanageimputed)] <- NA
+  meanpropdiss[is.nan(meanpropdiss)] <- NA
   
   return(list(edgecounts = edgecounts,
               edgeages = edgeages,
