@@ -428,7 +428,8 @@ make_dissolution_stats <- function(diag.sim, coef.diss,
 
   combinedpropdiss <- do.call(rbind, lapply(diag.sim, `[[`, "propdiss"))
   meanpropdiss <- colMeans(combinedpropdiss)
-  propdisssd <- apply(combinedpropdiss, 2L, sd)
+  combinedmeanpropdiss <- do.call(rbind, lapply(diag.sim, `[[`, "meanpropdiss"))  
+  propdisssd <- apply(combinedmeanpropdiss, 2L, sd)
   
   stats.table.duration <- data.frame("Target" = durs,
                                      "Sim Mean" = meanagesimputed,
@@ -541,6 +542,7 @@ toggles_to_diss_stats <- function(toggles, coef.diss, nsteps, nw, time.start = 0
   propdiss[is.nan(propdiss)] <- 0
   
   meanmeanageimputed <- colMeans(meanageimputed)
+  meanpropdiss <- colMeans(propdiss)
   
   return(list(edgecounts = edgecounts,
               edgeages = edgeages,
@@ -549,5 +551,6 @@ toggles_to_diss_stats <- function(toggles, coef.diss, nsteps, nw, time.start = 0
               meanage = meanage,
               meanageimputed = meanageimputed,
               propdiss = propdiss,
+              meanpropdiss = meanpropdiss,
               meanmeanageimputed = meanmeanageimputed))
 }
