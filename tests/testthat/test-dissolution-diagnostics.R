@@ -121,7 +121,7 @@ test_that("simulation diagnostics work as expected", {
   nested.edapprox.list <- list(FALSE, TRUE, FALSE, TRUE)
   keep.tnetwork.list <- list(TRUE, FALSE, FALSE, TRUE)
   
-  for(index in seq_along(coefs.diss)) {
+  for (index in seq_along(coefs.diss)) {
     init.edges <- init.edges.list[[index]]
     nested.edapprox <- nested.edapprox.list[[index]]
     keep.tnetwork <- keep.tnetwork.list[[index]]
@@ -251,7 +251,7 @@ test_that("netsim produces a networkDynamic with the expected data.frame when re
                   control = list(MCMC.burnin = 2e5),
                   dynamic = FALSE)
   
-  for(i in seq_len(5)) {
+  for (i in seq_len(5)) {
     nws <- simulate(nws ~ Form(est$formation) + Persist(est$coef.diss$dissolution),
                     coef = c(est$coef.form, est$coef.diss$coef.crude),
                     time.start = i - 1,
