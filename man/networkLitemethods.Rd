@@ -100,7 +100,7 @@ as.networkLite(x, ...)
 
 \method{as.networkDynamic}{networkLite}(object, ...)
 
-\method{valid.eids}{networkLite}(x, ...)
+valid.eids.networkLite(x, ...)
 
 \method{as_tibble}{networkLite}(x, attrnames = NULL, na.rm = TRUE, ...)
 
@@ -119,9 +119,9 @@ as.networkLite(x, ...)
 
 \method{delete.network.attribute}{networkLite}(x, attrname, ...)
 
-\method{delete.edges}{networkLite}(x, eid, ...)
+delete.edges.networkLite(x, eid, ...)
 
-\method{delete.vertices}{networkLite}(x, vid, ...)
+delete.vertices.networkLite(x, vid, ...)
 
 \method{add.vertices}{networkLite}(x, nv, vattr = NULL, last.mode = TRUE, ...)
 

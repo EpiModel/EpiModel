@@ -29,7 +29,7 @@ BugReports: https://github.com/EpiModel/EpiModel/issues
 Depends:
     R (>= 3.5),
     deSolve (>= 1.21),
-    networkDynamic (>= 0.10),
+    networkDynamic (>= 0.11.2),
     tergm (>= 4.0),
     statnet.common (>= 4.6.0)
 Imports:
@@ -40,7 +40,7 @@ Imports:
     doParallel,
     ergm (>= 4.2.1),
     foreach,
-    network (>= 1.17),
+    network (>= 1.17.2),
     RColorBrewer,
     ape,
     lazyeval,
@@ -59,6 +59,4 @@ VignetteBuilder: knitr
 LinkingTo: Rcpp, ergm
 RoxygenNote: 7.2.0
 Encoding: UTF-8
-Remotes: github::statnet/network@master,
-    github::statnet/networkDynamic@master,
-    github::statnet/tergm@master
+Remotes: github::statnet/tergm@master
