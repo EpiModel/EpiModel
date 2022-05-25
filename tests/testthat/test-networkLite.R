@@ -468,7 +468,6 @@ test_that("network and networkLite work equally in netest, netdx, and netsim", {
 
       # the rest should be equal, including coefs, stats, etc.
       expect_equal(trim_netest(est, as.networkLite = FALSE), trim_netest(estL))
-      expect_equal(est, estL)
       expect_equal(dxs, dxsL)
       expect_equal(dxd, dxdL)
       expect_equal(sim, simL)
