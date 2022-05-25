@@ -8,13 +8,15 @@
  in common use cases.
 - The `networkLite` class now supports edge attributes and a number of
  additional functionalities.
-- Duration 1 models in `netsim` with `tergmLite = FALSE` now use `tergm` 
+- Duration 1 models in `netsim` with `tergmLite = FALSE` now use `tergm`
  simulation to produce a `networkDynamic` as in the duration > 1 case.
 - `netdx` now supports heterogeneous dissolution diagnostics.
+- Network model parameters can now be supplied to `param.net` via a
+ `data.frame`. See the "Working with Model Parameters" vignette for details.
 
 ### BUG FIXES
 
--   `EpiModel`'s custom terms `absdiffby` and `absdiffnodemix` are now usable 
+-   `EpiModel`'s custom terms `absdiffby` and `absdiffnodemix` are now usable
  (due to enabling symbol search).
 - The correct formula is now used in `sim_nets_t1` when initializing the
  network with the non-nested edapprox.
@@ -34,8 +36,11 @@ EpiModel elements not to be confused with the user-defined ones.
 - `stergm` controls have been deprecated in favor of `tergm` controls.
 - The `ergm` and `tergm` fit objects are no longer retained on the `netest`
  object by default.  Formula-style simulations are used consistently for both
- `ergm` and `tergm` simulation, requiring control arguments of class 
+ `ergm` and `tergm` simulation, requiring control arguments of class
  `control.simulate.formula` and `control.simulate.formula.tergm`.
+- `ndtv` is added to "suggests" and `plot.transmat` now accept
+ "transmissionTimeline" again in its `style` argument to make a transmission tree
+ plot.
 
 ## EpiModel 2.2.1
 
