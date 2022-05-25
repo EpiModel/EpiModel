@@ -17,7 +17,6 @@ netest(
   set.control.tergm,
   verbose = FALSE,
   nested.edapprox = TRUE,
-  keep.fit = FALSE,
   ...
 )
 }
@@ -58,9 +57,6 @@ details).}
 
 \item{nested.edapprox}{Logical. If \code{edapprox = TRUE} the dissolution
 model is an initial segment of the formation model (see details).}
-
-\item{keep.fit}{Logical; should the \code{ergm} or \code{tergm} object be
-returned as the \code{fit} element of the \code{netest} object?}
 
 \item{...}{Additional arguments passed to other functions.}
 }
