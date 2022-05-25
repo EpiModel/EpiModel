@@ -462,12 +462,11 @@ test_that("network and networkLite work equally in netest, netdx, and netsim", {
       simL <- netsim(estL, param, init, control)
 
       # convert networks to networkLites
-      est$newnetwork <- as.networkLite(est$newnetwork)
       dxs$nw <- as.networkLite(dxs$nw)
       dxd$nw <- as.networkLite(dxd$nw)
 
       # the rest should be equal, including coefs, stats, etc.
-      expect_equal(trim_netest(est, as.networkLite = FALSE), trim_netest(estL))
+      expect_equal(trim_netest(est), trim_netest(estL))
       expect_equal(dxs, dxsL)
       expect_equal(dxd, dxdL)
       expect_equal(sim, simL)
