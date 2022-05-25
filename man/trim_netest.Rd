@@ -2,18 +2,18 @@
 % Please edit documentation in R/utils.R
 \name{trim_netest}
 \alias{trim_netest}
-\title{Function to Reduce the Size of the \code{netest} Object}
+\title{Function to Reduce the Size of a \code{netest} Object}
 \usage{
 trim_netest(object, as.networkLite = TRUE, keep.fit = FALSE)
 }
 \arguments{
-\item{object}{A \code{netest} object.}
+\item{object}{A \code{netest} class object.}
 
-\item{as.networkLite}{logical; should we convert \code{object$newnetwork}
-to a \code{networkLite}?}
+\item{as.networkLite}{If \code{TRUE}, converts \code{object$newnetwork}
+to a \code{networkLite}.}
 
-\item{keep.fit}{logical; should we keep \code{fit} (if present) on the
-\code{netest} object?}
+\item{keep.fit}{If \code{FALSE}, removes the \code{object$fit} (if present)
+on the \code{netest} object.}
 }
 \value{
 A \code{netest} object with formula environments removed, optionally with the
@@ -23,25 +23,39 @@ A \code{netest} object with formula environments removed, optionally with the
 \description{
 Trims formula environments from the \code{netest} object.
              Optionally converts the \code{newnetwork} element of the
-             \code{netest} object to a \code{networkLite}, and removes the
-             \code{fit} element (if present) from the \code{netest} object.
+             \code{netest} object to a \code{networkLite} class, and removes
+             the \code{fit} element (if present) from the \code{netest}
+             object.
 }
 \details{
-Removes \code{environment(object$constraints)},
-\code{environment(object$coef.diss$dissolution)}, and
-\code{environment(object$formation)}. When \code{edapprox = TRUE}, also
-removes \code{environment(object$formula)}; when \code{edapprox = FALSE},
-also removes all but \code{formation} and \code{dissolution} from
-\code{environment(object$formula)}, as well as removing
-\code{environment(environment(object$formula)$formation)} and
-\code{environment(environment(object$formula)$dissolution)}. Optionally
-converts \code{object$newnetwork} to a \code{networkLite} (if
-\code{as.networkLite = TRUE}), and removes \code{fit} (if present) from
-\code{object} (if \code{keep.fit = FALSE}).
+With larger, more complex network structures with epidemic models, it is
+generally useful to reduce the memory footprint of the fitted TERGM model
+object (estimated with \code{\link{netest}}). This utility function removes
+all but the bare essentials needed for simulating a network model with
+\code{\link{netsim}}.
 
-For the output to be usable in simulation, there should not be substitutions
-in the formulas, other than \code{formation} and \code{dissolution} in
-\code{object$formula} when \code{edapprox = FALSE}.
+Specifically, the function removes:
+\itemize{
+ \item \code{environment(object$constraints)}
+ \item \code{environment(object$coef.diss$dissolution)}
+ \item \code{environment(object$formation)}
+}
+
+When \code{edapprox = TRUE} in the \code{netest} call, also
+removes \code{environment(object$formula)}.
+
+When \code{edapprox = FALSE}, also removes all but \code{formation} and
+\code{dissolution} from \code{environment(object$formula)}, as well as
+\code{environment(environment(object$formula)$formation)} and
+\code{environment(environment(object$formula)$dissolution)}.
+
+If \code{as.networkLite = TRUE}, converts \code{object$newnetwork} to a
+\code{networkLite} object. If \code{keep.fit = FALSE}, removes \code{fit} (if
+present) from \code{object}.
+
+For the output to be usable in \code{\link{netsim}} simulation, there should
+not be substitutions in the formulas, other than \code{formation} and
+\code{dissolution} in \code{object$formula} when \code{edapprox = FALSE}.
 }
 \examples{
 nw <- network_initialize(n = 100)
@@ -51,6 +65,9 @@ coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 10)
 est <- netest(nw, formation, target.stats, coef.diss,
               set.control.ergm = control.ergm(MCMC.burnin = 1e5,
                                               MCMC.interval = 1000))
-est <- trim_netest(est)
+print(object.size(est), units = "KB")
+
+est.small <- trim_netest(est)
+print(object.size(est.small), units = "KB")
 
 }
