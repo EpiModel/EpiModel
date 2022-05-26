@@ -486,8 +486,13 @@ toggles_to_diss_stats <- function(toggles, coef.diss, nsteps, nw, time.start = 0
                                            stats.start = FALSE))
   
   edgecounts <- changestats[,seq_along(durs),drop=FALSE]
+
+  # drop offset() from names
+  colnames(edgecounts) <- substr(colnames(edgecounts), 8L, nchar(colnames(edgecounts)) - 1L)
+
   edgeages <- changestats[,seq_along(durs)+length(durs),drop=FALSE]
   colnames(edgeages) <- colnames(edgecounts)
+
   edgepers <- changestats[,seq_along(durs)+2L*length(durs),drop=FALSE]
 
   if (length(durs) > 1L) {
