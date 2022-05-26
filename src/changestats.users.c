@@ -44,3 +44,47 @@ CHANGESTAT_FN(d_absdiffby) {
   }
   UNDO_PREVIOUS_TOGGLES(i);
 }
+
+typedef struct {
+  int *venues;
+  int *lengths;
+  int *positions;
+  int binary;
+} fuzzynodematch_storage;
+
+I_CHANGESTAT_FN(i_fuzzynodematch) {
+  ALLOC_STORAGE(1, fuzzynodematch_storage, sto);
+
+  sto->venues = INTEGER(getListElement(mtp->R, "venues"));
+  sto->lengths = INTEGER(getListElement(mtp->R, "lengths")) - 1;
+  sto->positions = INTEGER(getListElement(mtp->R, "positions")) - 1;
+  sto->binary = asInteger(getListElement(mtp->R, "binary"));
+}
+
+C_CHANGESTAT_FN(c_fuzzynodematch) {
+  GET_STORAGE(fuzzynodematch_storage, sto);
+  
+  int i = 0;
+  int j = 0;
+  int *tailvenues = sto->venues + sto->positions[tail];
+  int *headvenues = sto->venues + sto->positions[head];
+  while(i < sto->lengths[tail] && j < sto->lengths[head]) {
+    if(tailvenues[i] < headvenues[j]) {
+      i++;
+    } else if(tailvenues[i] > headvenues[j]) {
+      j++;   
+    } else {
+      i++;
+      j++;
+      CHANGE_STAT[0]++;
+    }
+  }
+  
+  if(sto->binary) {
+    CHANGE_STAT[0] = CHANGE_STAT[0] > 0;
+  }
+  
+  if(edgestate) {
+    CHANGE_STAT[0] = -CHANGE_STAT[0];
+  }
+}
