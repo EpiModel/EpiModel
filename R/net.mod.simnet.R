@@ -150,11 +150,12 @@ resim_nets <- function(dat, at) {
   # Network resimulation
   if (anyActive == TRUE & resimulate.network == TRUE) {
 
-    # Full tergm/network Method
     if (tergmLite == FALSE) {
+      # Full tergm/network Method
       nw <- dat$nw[[1]]
       output <- "networkDynamic"
     } else {
+      # tergmLite/networkLite Method
       nw <- networkLite(dat$el[[1]], dat$attr)
       output <- "final"
       if (tergmLite.track.duration == TRUE) {
