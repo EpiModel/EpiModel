@@ -36,8 +36,6 @@
 #' @param verbose If \code{TRUE}, print model fitting progress to console.
 #' @param nested.edapprox Logical. If \code{edapprox = TRUE} the dissolution
 #'        model is an initial segment of the formation model (see details).
-#' @param keep.fit Logical; should the \code{ergm} or \code{tergm} object be
-#'        returned as the \code{fit} element of the \code{netest} object?
 #' @param ... Additional arguments passed to other functions.
 #'
 #' @details
@@ -156,7 +154,7 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
                    coef.form = NULL, edapprox = TRUE,
                    set.control.ergm, set.control.stergm, set.control.tergm,
                    set.control.ergm.ego, verbose = FALSE, 
-                   nested.edapprox = TRUE, keep.fit = FALSE, ...) {
+                   nested.edapprox = TRUE, ...) {
 
   if (!missing(set.control.stergm)) {
     warning("set.control.stergm is deprecated and will be removed in a future
@@ -307,9 +305,7 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
   }
 
   out$summary <- summary(fit, ...)
-  if (keep.fit == TRUE) {
-    out$fit <- fit
-  }
+  out$fit <- fit
 
   class(out) <- "netest"
   return(out)
