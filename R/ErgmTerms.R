@@ -109,3 +109,71 @@ InitErgmTerm.absdiffby <- function(nw, arglist, ...) {
        emptynwstats = 0
   )
 }
+
+
+#' @title Definition for fuzzynodematch ERGM Term
+#'
+#' @description This function defines and initializes the fuzzynodematch ERGM
+#'              term that allows for vectorized homophily.
+#'
+#' @param nw An object of class \code{network}.
+#' @param arglist A list of arguments as specified in the \code{ergm.userterms}
+#'        package framework.
+#' @param ... Additional data passed into the function as specified in the
+#'        \code{ergm.userterms} package framework.
+#'
+#' @details
+#' This ERGM user term was written to allow for vectorized homophily.  
+#' The \code{attr} term argument should specify a character vertex attribute.
+#' It is assumed that "venues" are encoded in the character string for a given
+#' node as \code{vwyxz} where \code{v} is the literal character \code{"v"} and 
+#' \code{w}, \code{x}, \code{y}, and \code{z} are integers between \code{0} and
+#' \code{9}.  Multiple venues in the same character string should be separated 
+#' by \code{"|"}.  A node with no venues may have any string not starting in 
+#' \code{"v"}.  Thus, \code{"v0034"} indicates the single venue indexed by 
+#' \code{34}, \code{"ego00089"} indicates no venue, and \code{"v0023|v1253"}
+#' indicates the two venues indexed by \code{23} and \code{1253}.
+#' 
+#' If the \code{binary} term argument is \code{FALSE} (the default), the change
+#' statistic for an on-toggle is the number of unique venues on which the two 
+#' nodes match; if \code{binary} is \code{TRUE}, the change statistic for an 
+#' on-toggle is \code{1} if the two nodes match on any venues, and \code{0} 
+#' otherwise.
+#'
+#' @aliases fuzzynodematch
+#'
+InitErgmTerm.fuzzynodematch <- function(nw, arglist, ...) {
+  a <- check.ErgmTerm(nw, arglist, 
+                      varnames = c("attr", "binary"),
+                      vartypes = c(ERGM_VATTR_SPEC, "logical"),
+                      defaultvalues = list(NULL, FALSE),
+                      required = c(TRUE, FALSE))
+
+  parse_sorted_unique_venues <- function(x) {
+    if(substr(x, 1, 1) == "v") {
+      out <- integer((nchar(x) + 1)/6)
+      for(i in seq_along(out)) {
+        out[i] <- as.integer(substr(x, 6*(i - 1) + 2, 6*i - 1))
+      }
+      sort(unique(out))
+    } else {
+      integer(0)
+    }
+  }
+
+  nodecov <- ergm_get_vattr(a$attr, nw, accept = "character")
+  venues <- lapply(nodecov, parse_sorted_unique_venues)
+  lengths <- unlist(lapply(venues, length))
+  positions <- cumsum(lengths) - lengths
+  venues <- unlist(venues)
+  binary <- a$binary
+  
+  list(name = "fuzzynodematch",
+       coef.names = paste("fuzzynodematch", attr(nodecov, "name"), sep = "."),
+       binary = as.integer(binary),
+       venues = as.integer(venues),
+       lengths = as.integer(lengths),
+       positions = as.integer(positions),
+       dependence = FALSE,
+       minval = 0)
+}
