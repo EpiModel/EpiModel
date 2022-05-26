@@ -57,7 +57,6 @@ sim_nets_t1 <- function(x, dat, nsteps) {
                       coef.diss = x$coef.diss$coef.crude,
                       time.slices = nsteps,
                       time.start = 0,
-                      time.offset = 1,
                       constraints = x$constraints,
                       monitor = nwstats.formula,
                       nsim = 1,
@@ -69,10 +68,8 @@ sim_nets_t1 <- function(x, dat, nsteps) {
                       coef = c(x$coef.form, x$coef.diss$coef.crude),
                       time.slices = nsteps,
                       time.start = 0,
-                      time.offset = 1,
                       constraints = x$constraints,
                       monitor = nwstats.formula,
-                      nsim = 1,
                       control = set.control.tergm,
                       dynamic = TRUE)
     }
@@ -82,10 +79,8 @@ sim_nets_t1 <- function(x, dat, nsteps) {
                     coef = x$coef.form.crude,
                     time.slices = nsteps,
                     time.start = 0,
-                    time.offset = 1,
                     constraints = x$constraints,
                     monitor = nwstats.formula,
-                    nsim = 1,
                     control = set.control.tergm,
                     dynamic = TRUE)
   }
@@ -157,125 +152,65 @@ resim_nets <- function(dat, at) {
 
     # Full tergm/network Method
     if (tergmLite == FALSE) {
+      nw <- dat$nw[[1]]
+      output <- "networkDynamic"
+    } else {
+      nw <- networkLite(dat$el[[1]], dat$attr)
+      output <- "final"
+      if (tergmLite.track.duration == TRUE) {
+        nw %n% "time" <- dat$nw[[1]] %n% "time"
+        nw %n% "lasttoggle" <- dat$nw[[1]] %n% "lasttoggle"
+      }
+    }
 
-      # TERGM simulation
-      if (isTERGM == TRUE) {
-        if (!is.null(set.control.stergm)) {
-          dat$nw[[1]] <- simulate(dat$nw[[1]],
-                                  formation = nwparam$formation,
-                                  dissolution = nwparam$coef.diss$dissolution,
-                                  coef.form = nwparam$coef.form,
-                                  coef.diss = nwparam$coef.diss$coef.adj,
-                                  constraints = nwparam$constraints,
-                                  time.start = at - 1,
-                                  time.slices = 1,
-                                  time.offset = 1,
-                                  monitor = nwstats.formula,
-                                  control = set.control.stergm)
-        } else {
-          dat$nw[[1]] <- simulate(dat$nw[[1]] ~
-                                    Form(nwparam$formation) +
-                                    Persist(nwparam$coef.diss$dissolution),
-                                  coef = c(nwparam$coef.form,
-                                           nwparam$coef.diss$coef.adj),
-                                  constraints = nwparam$constraints,
-                                  time.start = at - 1,
-                                  time.slices = 1,
-                                  time.offset = 1,
-                                  monitor = nwstats.formula,
-                                  control = set.control.tergm,
-                                  dynamic = TRUE)
-        }
-      } else {
-        dat$nw[[1]] <- simulate(nwparam$formation,
-                                basis = dat$nw[[1]],
-                                coef = c(nwparam$coef.form),
+    # TERGM simulation
+    if (isTERGM == TRUE) {
+      if (!is.null(set.control.stergm)) {
+        dat$nw[[1]] <- simulate(nw,
+                                formation = nwparam$formation,
+                                dissolution = nwparam$coef.diss$dissolution,
+                                coef.form = nwparam$coef.form,
+                                coef.diss = nwparam$coef.diss$coef.adj,
                                 constraints = nwparam$constraints,
                                 time.start = at - 1,
-                                time.slices = 1,
-                                time.offset = 1,
+                                output = output,
+                                monitor = nwstats.formula,
+                                control = set.control.stergm)
+      } else {
+        dat$nw[[1]] <- simulate(nw ~
+                                  Form(nwparam$formation) +
+                                  Persist(nwparam$coef.diss$dissolution),
+                                coef = c(nwparam$coef.form,
+                                         nwparam$coef.diss$coef.adj),
+                                constraints = nwparam$constraints,
+                                time.start = at - 1,
+                                output = output,
                                 monitor = nwstats.formula,
                                 control = set.control.tergm,
                                 dynamic = TRUE)
       }
-
-      # Update nwstats data frame
-      if (save.nwstats == TRUE) {
-        new.nwstats <- tail(attributes(dat$nw[[1]])$stats, 1)
-        keep.cols <- which(!duplicated(colnames(new.nwstats)))
-        new.nwstats <- new.nwstats[, keep.cols, drop = FALSE]
-        dat$stats$nwstats[[1]] <- rbind(dat$stats$nwstats[[1]], new.nwstats)
-      }
+    } else {
+      dat$nw[[1]] <- simulate(nwparam$formation,
+                              basis = nw,
+                              coef = c(nwparam$coef.form),
+                              constraints = nwparam$constraints,
+                              time.start = at - 1,
+                              output = output,
+                              monitor = nwstats.formula,
+                              control = set.control.tergm,
+                              dynamic = TRUE)
     }
 
-    # networkLite/tergmLite Method
+    # Update nwstats data frame
+    if (save.nwstats == TRUE) {
+      new.nwstats <- tail(attributes(dat$nw[[1]])$stats, 1)
+      keep.cols <- which(!duplicated(colnames(new.nwstats)))
+      new.nwstats <- new.nwstats[, keep.cols, drop = FALSE]
+      dat$stats$nwstats[[1]] <- rbind(dat$stats$nwstats[[1]], new.nwstats)
+    }
+    
     if (tergmLite == TRUE) {
-      nwL <- networkLite(dat$el[[1]], dat$attr)
-      if (tergmLite.track.duration == TRUE) {
-        nwL %n% "time" <- dat$nw[[1]] %n% "time"
-        nwL %n% "lasttoggle" <- dat$nw[[1]] %n% "lasttoggle"
-      }
-
-      if (isTERGM == TRUE) {
-        if (!is.null(set.control.stergm)) {
-          dat$nw[[1]] <- simulate(nwL,
-                                  formation = nwparam$formation,
-                                  dissolution = nwparam$coef.diss$dissolution,
-                                  coef.form = nwparam$coef.form,
-                                  coef.diss = nwparam$coef.diss$coef.adj,
-                                  constraints = nwparam$constraints,
-                                  time.start = at - 1,
-                                  time.slices = 1,
-                                  time.offset = 1, # default value
-                                  control = set.control.stergm,
-                                  output = "final")
-        } else {
-          dat$nw[[1]] <- simulate(nwL ~
-                                    Form(nwparam$formation) +
-                                    Persist(nwparam$coef.diss$dissolution),
-                                  coef = c(nwparam$coef.form,
-                                           nwparam$coef.diss$coef.adj),
-                                  constraints = nwparam$constraints,
-                                  time.start = at - 1,
-                                  time.slices = 1,
-                                  time.offset = 1, # default value
-                                  control = set.control.tergm,
-                                  output = "final",
-                                  dynamic = TRUE)
-        }
-      } else {
-        dat$nw[[1]] <- simulate(object = nwparam$formation,
-                                basis = nwL,
-                                coef = nwparam$coef.form,
-                                constraints = nwparam$constraints,
-                                time.start = at - 1,
-                                time.slices = 1,
-                                time.offset = 1, # default value
-                                control = set.control.tergm,
-                                output = "final",
-                                dynamic = TRUE)
-      }
-
       dat$el[[1]] <- as.edgelist(dat$nw[[1]])
-
-      if (save.nwstats == TRUE) {
-        term.options <- if (isTERGM == TRUE) {
-          if (!is.null(set.control.stergm)) {
-            set.control.stergm$term.options
-          } else {
-            set.control.tergm$term.options
-          }
-        } else {
-          set.control.tergm$term.options
-        }
-        nwstats <- summary(dat$control$nwstats.formulas[[1]],
-                           basis = dat$nw[[1]],
-                           term.options = term.options,
-                           dynamic = isTERGM)
-        keep.cols <- which(!duplicated(names(nwstats)))
-        dat$stats$nwstats[[1]] <- rbind(dat$stats$nwstats[[1]],
-                                        nwstats[keep.cols])
-      }
     }
   }
 
