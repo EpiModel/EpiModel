@@ -43,7 +43,8 @@
 #' \code{nwstats.formula} are saved for each time step. Summary statistics for
 #' the formation model terms, as well as dissolution model and relational
 #' duration statistics, are then calculated and can be accessed when printing or
-#' plotting the \code{netdx} object.
+#' plotting the \code{netdx} object.  See \code{\link{print.netdx}} and 
+#' \code{\link{plot.netdx}} for details on printing and plotting.
 #'
 #' @section Control Arguments:
 #' Models fit with the full STERGM method in \code{netest} (setting the
