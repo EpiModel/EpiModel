@@ -1751,7 +1751,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
                     max(max(qnt.max, na.rm = TRUE) * 1.1,
                         max(mean.max, na.rm = TRUE) * 1.1))
         } else {
-          ylim <- c(min(data) * 0.9, max(data) * 1.1)
+          ylim <- c(min(data, na.rm = TRUE) * 0.9, max(data, na.rm = TRUE) * 1.1)
         }
 
         ## Default ylab
@@ -1948,7 +1948,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
             ylim <- c(min(qnt.min * 0.9, mean.min * 0.9),
                       max(qnt.max * 1.1, mean.max * 1.1))
           } else {
-            ylim <- c(min(dataj) * 0.9, max(dataj) * 1.1)
+            ylim <- c(min(dataj, na.rm = TRUE) * 0.9, max(dataj, na.rm = TRUE) * 1.1)
           }
 
           plot(x = 1, y = 1,
@@ -2217,7 +2217,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
                     max(max(qnt.max, na.rm = TRUE) * 1.1,
                         max(mean.max, na.rm = TRUE) * 1.1))
         } else {
-          ylim <- c(min(data) * 0.9, max(data) * 1.1)
+          ylim <- c(min(data, na.rm = TRUE) * 0.9, max(data, na.rm = TRUE) * 1.1)
         }
 
         ## Default ylab
@@ -2414,7 +2414,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
             ylim <- c(min(qnt.min * 0.9, mean.min * 0.9),
                       max(qnt.max * 1.1, mean.max * 1.1))
           } else {
-            ylim <- c(min(dataj) * 0.9, max(dataj) * 1.1)
+            ylim <- c(min(dataj, na.rm = TRUE) * 0.9, max(dataj, na.rm = TRUE) * 1.1)
           }
 
           plot(x = 1, y = 1,
