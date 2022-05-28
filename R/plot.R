@@ -1823,7 +1823,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
             for (i in sims) {
               dataji <- dataj[, i]
               xs <- which(!is.na(dataji))
-              ys <- dtp[!is.na(dataji)]
+              ys <- dataji[!is.na(dataji)]
               lines(xs, ys, lwd = sim.lwd, col = sim.col[j])
             }
           }
@@ -1993,7 +1993,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
             for (i in sims) {
               dataji <- dataj[, i]
               xs <- which(!is.na(dataji))
-              ys <- dtp[!is.na(dataji)]
+              ys <- dataji[!is.na(dataji)]
               lines(xs, ys, lwd = sim.lwd,
                     col = sim.col[j])
             }
@@ -2305,7 +2305,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
             for (i in sims) {
               dataji <- dataj[, i]
               xs <- which(!is.na(dataji))
-              ys <- dtp[!is.na(dataji)]
+              ys <- dataji[!is.na(dataji)]
               lines(xs, ys, lwd = sim.lwd, col = sim.col[j])
             }
           }
@@ -2475,7 +2475,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
             for (i in sims) {
               dataji <- dataj[, i]
               xs <- which(!is.na(dataji))
-              ys <- dtp[!is.na(dataji)]            
+              ys <- dataji[!is.na(dataji)]            
               lines(xs, ys, lwd = sim.lwd,
                     col = sim.col[j])
             }
