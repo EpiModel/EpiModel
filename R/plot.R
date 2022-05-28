@@ -1808,10 +1808,12 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
               if (qnts.smooth == FALSE) {
                 yy <- c(qnt.prev[1, ], rev(qnt.prev[2, ]))
               } else {
-                yy <- c(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
-                                                y = qnt.prev[1, ]))$y,
-                        rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
-                                                    y = qnt.prev[2, ]))$y))
+                ss1 <- suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
+                                               y = qnt.prev[1, ]))
+                ss2 <- suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
+                                               y = qnt.prev[2, ]))
+                yy <- c(ss1$y, rev(ss2$y))
+                xx <- c(ss1$x, rev(ss2$x))
               }
               polygon(xx, yy, col = qnts.col[j], border = NA)
             }
@@ -1819,7 +1821,10 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 
           if (sim.lines == TRUE) {
             for (i in sims) {
-              lines(dataj[, i], lwd = sim.lwd, col = sim.col[j])
+              dataji <- dataj[, i]
+              xs <- which(!is.na(dataji))
+              ys <- dtp[!is.na(dataji)]
+              lines(xs, ys, lwd = sim.lwd, col = sim.col[j])
             }
           }
           if (mean.line == TRUE) {
@@ -1827,11 +1832,14 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
               mean.col <- sim.col
             }
             mean.prev <- rowMeans(dataj)
+            xs <- seq_along(mean.prev)
             if (mean.smooth == TRUE) {
-              mean.prev <- suppressWarnings(supsmu(x = seq_along(mean.prev),
-                                                   y = mean.prev))$y
+              ss <- suppressWarnings(supsmu(x = seq_along(mean.prev),
+                                            y = mean.prev))
+              mean.prev <- ss$y
+              xs <- ss$x              
             }
-            lines(mean.prev, lwd = mean.lwd,
+            lines(xs, mean.prev, lwd = mean.lwd,
                   col = mean.col[j], lty = mean.lty)
           }
 
@@ -1970,10 +1978,12 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
               if (qnts.smooth == FALSE) {
                 yy <- c(qnt.prev[1, ], rev(qnt.prev[2, ]))
               } else {
-                yy <- c(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
-                                                y = qnt.prev[1, ]))$y,
-                        rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
-                                                    y = qnt.prev[2, ]))$y))
+                ss1 <- suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
+                                               y = qnt.prev[1, ]))
+                ss2 <- suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
+                                               y = qnt.prev[2, ]))
+                yy <- c(ss1$y, rev(ss2$y))
+                xx <- c(ss1$x, rev(ss2$x))
               }
               polygon(xx, yy, col = qnts.col[j], border = NA)
             }
@@ -1981,7 +1991,10 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 
           if (sim.lines == TRUE) {
             for (i in sims) {
-              lines(dataj[, i], lwd = sim.lwd,
+              dataji <- dataj[, i]
+              xs <- which(!is.na(dataji))
+              ys <- dtp[!is.na(dataji)]
+              lines(xs, ys, lwd = sim.lwd,
                     col = sim.col[j])
             }
           }
@@ -1991,11 +2004,14 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
               mean.col <- rep("black", nstats)
             }
             mean.prev <- rowMeans(dataj)
+            xs <- seq_along(mean.prev)
             if (mean.smooth == TRUE) {
-              mean.prev <- suppressWarnings(supsmu(x = seq_along(mean.prev),
-                                                   y = mean.prev))$y
+              ss <- suppressWarnings(supsmu(x = seq_along(mean.prev),
+                                            y = mean.prev))
+              mean.prev <- ss$y
+              xs <- ss$x
             }
-            lines(mean.prev, lwd = mean.lwd,
+            lines(xs, mean.prev, lwd = mean.lwd,
                   col = mean.col[j], lty = mean.lty)
           }
 
@@ -2274,10 +2290,12 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
               if (qnts.smooth == FALSE) {
                 yy <- c(qnt.prev[1, ], rev(qnt.prev[2, ]))
               } else {
-                yy <- c(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
-                                                y = qnt.prev[1, ]))$y,
-                        rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
-                                                    y = qnt.prev[2, ]))$y))
+                ss1 <- suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
+                                               y = qnt.prev[1, ]))
+                ss2 <- suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
+                                               y = qnt.prev[2, ]))
+                yy <- c(ss1$y, rev(ss2$y))
+                xx <- c(ss1$x, rev(ss2$x))
               }
               polygon(xx, yy, col = qnts.col[j], border = NA)
             }
@@ -2285,7 +2303,10 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 
           if (sim.lines == TRUE) {
             for (i in sims) {
-              lines(dataj[, i], lwd = sim.lwd, col = sim.col[j])
+              dataji <- dataj[, i]
+              xs <- which(!is.na(dataji))
+              ys <- dtp[!is.na(dataji)]
+              lines(xs, ys, lwd = sim.lwd, col = sim.col[j])
             }
           }
           if (mean.line == TRUE) {
@@ -2293,11 +2314,14 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
               mean.col <- sim.col
             }
             mean.prev <- rowMeans(dataj)
+            xs <- seq_along(mean.prev)
             if (mean.smooth == TRUE) {
-              mean.prev <- suppressWarnings(supsmu(x = seq_along(mean.prev),
-                                                   y = mean.prev))$y
+              ss <- suppressWarnings(supsmu(x = seq_along(mean.prev),
+                                            y = mean.prev))
+              mean.prev <- ss$y
+              xs <- ss$x
             }
-            lines(mean.prev, lwd = mean.lwd,
+            lines(xs, mean.prev, lwd = mean.lwd,
                   col = mean.col[j], lty = mean.lty)
           }
 
@@ -2436,10 +2460,12 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
               if (qnts.smooth == FALSE) {
                 yy <- c(qnt.prev[1, ], rev(qnt.prev[2, ]))
               } else {
-                yy <- c(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
-                                                y = qnt.prev[1, ]))$y,
-                        rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
-                                                    y = qnt.prev[2, ]))$y))
+                ss1 <- suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
+                                               y = qnt.prev[1, ]))
+                ss2 <- suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
+                                               y = qnt.prev[2, ]))
+                yy <- c(ss1$y, rev(ss2$y))
+                xx <- c(ss1$x, rev(ss2$x))
               }
               polygon(xx, yy, col = qnts.col[j], border = NA)
             }
@@ -2447,7 +2473,10 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 
           if (sim.lines == TRUE) {
             for (i in sims) {
-              lines(dataj[, i], lwd = sim.lwd,
+              dataji <- dataj[, i]
+              xs <- which(!is.na(dataji))
+              ys <- dtp[!is.na(dataji)]            
+              lines(xs, ys, lwd = sim.lwd,
                     col = sim.col[j])
             }
           }
@@ -2457,11 +2486,14 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
               mean.col <- rep("black", nstats)
             }
             mean.prev <- rowMeans(dataj)
+            xs <- seq_along(mean.prev)
             if (mean.smooth == TRUE) {
-              mean.prev <- suppressWarnings(supsmu(x = seq_along(mean.prev),
-                                                   y = mean.prev))$y
+              ss <- suppressWarnings(supsmu(x = seq_along(mean.prev),
+                                            y = mean.prev))
+              mean.prev <- ss$y
+              xs <- ss$x
             }
-            lines(mean.prev, lwd = mean.lwd,
+            lines(xs, mean.prev, lwd = mean.lwd,
                   col = mean.col[j], lty = mean.lty)
           }
 
