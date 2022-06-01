@@ -21,7 +21,7 @@
   mean.lty = 1,
   qnts = 0.5,
   qnts.col,
-  qnts.alpha,
+  qnts.alpha = 0.5,
   qnts.smooth = TRUE,
   legend,
   leg.cex = 0.8,
@@ -38,7 +38,7 @@
   targ.col,
   targ.lwd = 2,
   targ.lty = 2,
-  plots.joined,
+  plots.joined = FALSE,
   ...
 )
 }
