@@ -899,9 +899,7 @@ get_means <- function(data, mean.smooth) {
 
 plot_stats_table <- function(data,
                              nmstats,
-                             nstats,
                              method,
-                             sims,
                              duration.imputed, 
                              sim.lines = FALSE, 
                              sim.col, 
@@ -922,23 +920,22 @@ plot_stats_table <- function(data,
                              plots.joined = FALSE,
                              draw_legend,
                              grid,
-                             nsims,
-                             nsteps,
                              targets,
                              dynamic,
                              da,
                              ...) {
-
-  xlim <- NVL(da$xlim, if(dynamic) c(1,nsteps) else c(1,nsims))
+                             
+  nstats <- length(nmstats)
+  xlim <- NVL(da$xlim, c(1, dim(data)[1]))
   
   xlab <- if(!plots.joined) "" else NVL(da$xlab, if(dynamic) "time" else "simulation number")
   ylab <- if(!plots.joined) "" else NVL(da$ylab, if(nstats == 1) nmstats else "Statistic")
   
   if (missing(sim.lwd)) {
-    if (nsims == 1 || dynamic == FALSE) {
-      sim.lwd <- 1
+    if (dim(data)[3] > 1) {
+      sim.lwd <- max(c(1 - (dim(data)[3] * 0.05), 0.5))    
     } else {
-      sim.lwd <- max(c(1 - (nsims * 0.05), 0.5))
+      sim.lwd <- 1
     }
   }
   
@@ -1340,15 +1337,16 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
   ## Subset data
   nstats <- length(outsts)
   data <- data[,outsts,,drop=FALSE]
-  
+  if(dynamic) {
+    # sims only used to subset data in dynamic case (?)
+    data <- data[,,sims,drop=FALSE]
+  }
   ## Pull target stats
   targets <- stats_table$Target[sts][outsts]
 
   plot_stats_table(data = data,
                    nmstats = nmstats,
-                   nstats = nstats,
                    method = method,
-                   sims = sims,
                    duration.imputed = duration.imputed, 
                    sim.lines = sim.lines, 
                    sim.col = sim.col, 
@@ -1369,8 +1367,6 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
                    plots.joined = plots.joined,
                    draw_legend = legend,
                    grid = grid,
-                   nsims = nsims,
-                   nsteps = nsteps,
                    targets = targets,
                    dynamic = dynamic,
                    da = da,
@@ -2036,9 +2032,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
     
     plot_stats_table(data = data,
                      nmstats = nmstats,
-                     nstats = nstats,
                      method = "l",#method,
-                     sims = sims,
                      duration.imputed = TRUE,#duration.imputed, 
                      sim.lines = sim.lines, 
                      sim.col = sim.col, 
@@ -2059,8 +2053,6 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
                      plots.joined = plots.joined,
                      draw_legend = legend,
                      grid = grid,
-                     nsims = nsims,
-                     nsteps = nsteps,
                      targets = targets,
                      dynamic = TRUE,#dynamic,
                      da = da,
