@@ -924,8 +924,17 @@ plot_stats_table <- function(data,
                              dynamic,
                              da,
                              ...) {
-                             
   nstats <- length(nmstats)
+
+  if (missing(plots.joined)) {
+    plots.joined <- ifelse(nstats > 3, FALSE, TRUE)
+  }
+
+  if (nstats == 1) {
+    plots.joined <- TRUE
+    sim.col <- "dodgerblue3"
+  }
+                             
   xlim <- NVL(da$xlim, c(1, dim(data)[1]))
   
   xlab <- if(!plots.joined) "" else NVL(da$xlab, if(dynamic) "time" else "simulation number")
