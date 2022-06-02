@@ -2020,10 +2020,18 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
           x$nwparam[[network]]$coef.diss$diss.model.type == "edgesonly") {
         diag.sim <- lapply(sims, get_network, network = network, x = x)
         
-        dstats <- make_dissolution_stats(diag.sim,
-                                         x$nwparam[[network]]$coef.diss,
-                                         x$control$nsteps,
-                                         verbose = FALSE)
+        dstats <- make_dissolution_stats( 
+          lapply(diag.sim, 
+                 function(nwd) { 
+                   toggles_to_diss_stats(tedgelist_to_toggles(as.data.frame(nwd)), 
+                                         x$nwparam[[network]]$coef.diss, 
+                                         x$control$nsteps, 
+                                         nwd) 
+                 }),
+          x$nwparam[[network]]$coef.diss,
+          x$control$nsteps,
+          verbose = FALSE
+        )
       } else {
         stop("cannot produce duration/dissolution plot")
       }
