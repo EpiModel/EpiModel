@@ -42,7 +42,7 @@ statistics for average edge duration, or \code{"dissolution"} for
 dissolution model statistics for proportion of ties dissolved per time
 step.}
 
-\item{method}{Plot method, with options of \code{"l"} for line plots and
+\item{method}{Plot method, with options of \code{"l"} for line plots and 
 \code{"b"} for boxplots.}
 
 \item{sims}{A vector of simulation numbers to plot.}
@@ -94,8 +94,8 @@ default colors based on \code{RColorBrewer} color palettes.}
 
 \item{targ.lty}{Line type for the line showing the target statistic values.}
 
-\item{plots.joined}{If \code{TRUE}, combine all target statistics in one
-plot, versus one plot per target statistic if \code{FALSE}.}
+\item{plots.joined}{If \code{TRUE}, combine all statistics in one
+plot, versus one plot per statistic if \code{FALSE}.}
 
 \item{legend}{If \code{TRUE}, plot default legend.}
 

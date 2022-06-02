@@ -39,6 +39,8 @@
   targ.lwd = 2,
   targ.lty = 2,
   plots.joined = FALSE,
+  duration.imputed = TRUE,
+  method = "l",
   ...
 )
 }
@@ -135,9 +137,19 @@ default colors based on \code{RColorBrewer} color palettes.}
 
 \item{targ.lty}{Line type for the line showing the target statistic values.}
 
-\item{plots.joined}{If \code{TRUE} and \code{type="formation"}, combine all
-target statistics in one plot, versus one plot per target statistic if
+\item{plots.joined}{If \code{TRUE} and 
+\code{type="formation","duration","dissolution"}, combine all 
+statistics in one plot, versus one plot per statistic if
 \code{FALSE}.}
+
+\item{duration.imputed}{If \code{type="duration"}, a logical indicating
+whether or not to impute starting times for relationships extant at
+the start of the simulation. Defaults to \code{TRUE} when
+\code{type="duration"}.}
+
+\item{method}{Plot method for 
+\code{type="formation","duration","dissolution"}, with options of 
+\code{"l"} for line plots and \code{"b"} for boxplots.}
 
 \item{...}{Additional arguments to pass.}
 }

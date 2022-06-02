@@ -1126,18 +1126,14 @@ plot_stats_table <- function(data,
 #'        statistics for average edge duration, or \code{"dissolution"} for
 #'        dissolution model statistics for proportion of ties dissolved per time
 #'        step.
-#' @param method Plot method, with options of \code{"l"} for line plots and
-#'        \code{"b"} for boxplots.
 #' @param sims A vector of simulation numbers to plot.
 #' @param stats Network statistics to plot, among those specified in the call
 #'        to \code{\link{netdx}}, with the default to plot all statistics
 #'        contained in the object.
-#' @param duration.imputed If \code{type="duration"}, a logical indicating
-#'        whether or not to impute starting times for relationships extant at
-#'        the start of the simulation. Defaults to \code{TRUE} when
-#'        \code{type="duration"}.
-#' @param plots.joined If \code{TRUE}, combine all target statistics in one
-#'        plot, versus one plot per target statistic if \code{FALSE}.
+#' @param method Plot method, with options of \code{"l"} for line plots and 
+#'        \code{"b"} for boxplots.
+#' @param plots.joined If \code{TRUE}, combine all statistics in one
+#'        plot, versus one plot per statistic if \code{FALSE}.
 #' @inheritParams plot.netsim
 #'
 #' @details
@@ -1276,7 +1272,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
   # Get dotargs
   da <- list(...)
 
-  type <- match.arg(type, c("formation", "dissolution", "duration"))
+  type <- match.arg(type, c("formation", "duration", "dissolution"))
   
   # Formation Plot ----------------------------------------------------------
   if (type == "formation") {  
@@ -1438,9 +1434,17 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #'        default colors based on \code{RColorBrewer} color palettes.
 #' @param targ.lwd Line width for the line showing the target statistic values.
 #' @param targ.lty Line type for the line showing the target statistic values.
-#' @param plots.joined If \code{TRUE} and \code{type="formation"}, combine all
-#'        target statistics in one plot, versus one plot per target statistic if
+#' @param plots.joined If \code{TRUE} and 
+#'        \code{type="formation","duration","dissolution"}, combine all 
+#'        statistics in one plot, versus one plot per statistic if
 #'        \code{FALSE}.
+#' @param method Plot method for 
+#'        \code{type="formation","duration","dissolution"}, with options of 
+#'        \code{"l"} for line plots and \code{"b"} for boxplots.
+#' @param duration.imputed If \code{type="duration"}, a logical indicating
+#'        whether or not to impute starting times for relationships extant at
+#'        the start of the simulation. Defaults to \code{TRUE} when
+#'        \code{type="duration"}.
 #' @param ... Additional arguments to pass.
 #'
 #' @details
@@ -1573,16 +1577,12 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
                         grid = FALSE, add = FALSE, network = 1, at = 1,
                         col.status = FALSE, shp.g2 = NULL, vertex.cex, stats,
                         targ.line = TRUE, targ.col, targ.lwd = 2, targ.lty = 2,
-                        plots.joined = FALSE, ...) {
+                        plots.joined = FALSE, duration.imputed = TRUE, method = "l", ...) {
 
-  # type check
-  if ((type %in% c("epi", "network", "formation")) == FALSE) {
-    stop("type must be one of: \"epi\", \"network\", or \"formation\" ",
-         call. = FALSE)
-  }
-
-  # Network plot ------------------------------------------------------------
+  type <- match.arg(type, c("epi", "network", "formation", "duration", "dissolution"))
+  
   if (type == "network") {
+    # Network plot ------------------------------------------------------------
 
     if (x$control$tergmLite == TRUE) {
       stop("networkDyanmic object is not saved in tergmLite netsim simulation.
@@ -1687,10 +1687,8 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
                    vertex.cex = vertex.cex, displaylabels = FALSE, ...)
     }
 
-  }
-
-  # Epidemic plot -----------------------------------------------------------
-  if (type == "epi") {
+  } else if (type == "epi") {
+    # Epidemic plot -----------------------------------------------------------
 
     ## Model dimensions and class ##
     nsteps <- x$control$nsteps
@@ -1968,12 +1966,8 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
       legend("topright", legend = y, lty = leg.lty, lwd = 2,
              col = mean.pal, cex = leg.cex, bg = "white")
     }
-
-  }
-
-
-  # Formation plot ----------------------------------------------------------
-  if (type == "formation") {
+  } else {
+    # stat plot
 
     ## Stats
     nsims <- x$control$nsims
@@ -1984,13 +1978,80 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
       stop("Maximum sims for this object is ", nsims, call. = FALSE)
     }
 
-    data <- get_nwstats(x, sims, network)
-    data <- data[,!(names(data)%in%c("time","sim")),drop=FALSE]
     nsims <- length(sims)
     nsteps <- x$control$nsteps
 
+    if (type == "formation") {
+      # Formation plot ----------------------------------------------------------
+    
+      data <- get_nwstats(x, sims, network)
+      data <- data[,!(names(data)%in%c("time","sim")),drop=FALSE]
+    
+      ## Find available stats
+      nmstats <- names(data)
+      
+      do <- array(0, dim = c(dim(data)[1]/nsims, dim(data)[2], nsims))
+      for(i in seq_len(nsims)) {
+        do[,,i] <- as.matrix(data[(i-1)*nsteps+seq_len(nsteps),])
+      }
+      data <- do
+      
+      
+      ## target stats
+      nwparam <- get_nwparam(x, network)
+      ts <- nwparam$target.stats
+      tsn <- nwparam$target.stats.names
+      if (length(tsn) != length(ts)) {
+        ts <- ts[which(ts > 0)]
+      }
+    
+      targets <- rep(NA, length.out = length(nmstats))
+      for(i in seq_along(targets)) {
+        if(nmstats[i] %in% tsn) {
+          targets[i] <- ts[which(tsn == nmstats[i])]
+        }
+      }      
+
+      ## could actually compute the mean, but all we need to know is that it isn't NA
+      stats_table <- data.frame("Target" = targets, "Sim Mean" = numeric(length(nmstats)))
+      colnames(stats_table) <- c("Target", "Sim Mean")
+      rownames(stats_table) <- nmstats
+    } else {
+      ## duration/dissolution plot
+      if (x$control$save.network &&
+          !x$control$tergmLite &&
+          x$nwparam[[network]]$coef.diss$diss.model.type == "edgesonly") {
+        diag.sim <- lapply(sims, get_network, network = network, x = x)
+        
+        dstats <- make_dissolution_stats(diag.sim,
+                                         x$nwparam[[network]]$coef.diss,
+                                         x$control$nsteps,
+                                         verbose = FALSE)
+      } else {
+        stop("cannot produce duration/dissolution plot")
+      }
+      
+      if(type == "duration") {
+        pages <- dstats$pages
+        pages_imptd <- dstats$pages_imptd
+        if (duration.imputed == TRUE) {
+          data <- simplify2array(lapply(1:nsims,
+                                        function(x)pages[, , x] + pages_imptd))
+          if (is.vector(data)) data <- array(data, dim = c(1, nsteps, nsims))
+        } else {
+          data <- pages
+        }
+        
+        stats_table <- dstats$stats.table.duration    
+      } else { # type == "dissolution"
+        data <- dstats$prop.diss
+        stats_table <- dstats$stats.table.dissolution  
+      }
+    }
+
     ## Find available stats
-    nmstats <- names(data)
+    sts <- which(!is.na(stats_table[, "Sim Mean"]))
+    nmstats <- rownames(stats_table)[sts]
     
     ## Pull and check stat argument
     if (missing(stats)) {
@@ -2005,35 +2066,19 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
         
     ## Subset data
     nstats <- length(outsts)
-    data <- data[,outsts,drop=FALSE]
+    data <- data[,outsts,,drop=FALSE]
     
-    do <- array(0, dim = c(nsteps, nstats, nsims))
-    for(i in seq_len(nsims)) {
-      do[,,i] <- as.matrix(data[(i-1)*nsteps+seq_len(nsteps),])
-    }
-    data <- do
+    ## we've already subset the data to `sims`
     
-    ## target stats
-    nwparam <- get_nwparam(x, network)
-    ts <- nwparam$target.stats
-    tsn <- nwparam$target.stats.names
-    if (length(tsn) != length(ts)) {
-      ts <- ts[which(ts > 0)]
-    }
+    ## Pull target stats
+    targets <- stats_table$Target[sts][outsts]
 
-    targets <- rep(NA, length.out = nstats)
-    for(i in seq_along(targets)) {
-      if(nmstats[i] %in% tsn) {
-        targets[i] <- ts[which(tsn == nmstats[i])]
-      }
-    }
-    
     da <- list(...)
-    
+
     plot_stats_table(data = data,
                      nmstats = nmstats,
-                     method = "l",#method,
-                     duration.imputed = TRUE,#duration.imputed, 
+                     method = method,
+                     duration.imputed = duration.imputed, 
                      sim.lines = sim.lines, 
                      sim.col = sim.col, 
                      sim.lwd = sim.lwd,
@@ -2054,7 +2099,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
                      draw_legend = legend,
                      grid = grid,
                      targets = targets,
-                     dynamic = TRUE,#dynamic,
+                     dynamic = TRUE, # always dynamic in netsim
                      da = da,
                      ...)
   }
