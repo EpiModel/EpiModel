@@ -86,7 +86,50 @@ print.netest <- function(x, digits = 3, ...) {
   invisible()
 }
 
-
+#' @rdname print.netdx
+#' @title Utility Function for Printing netdx Object
+#' @description Prints basic information and statistics from a \code{netdx} 
+#'              object.
+#' @param x an object of class \code{netdx}
+#' @param digits number of digits to print in statistics tables
+#' @param ... additional arguments (currently ignored)
+#' @details 
+#' Given a \code{netdx} object, \code{print.netdx} prints the diagnostic method
+#' (static/dynamic), number of simulations, and (if dynamic) the number of time
+#' steps per simulation used in generating the \code{netdx} object, as well as
+#' printing the formation statistics table and (if present) the duration and
+#' dissolution statistics tables.  The statistics tables are interpreted as 
+#' follows.
+#'
+#' Each row has the name of a particular network statistic.  In the formation
+#' table, these correspond to actual network statistics in the obvious way.
+#' In the duration and dissolution tables, these correspond to dissolution 
+#' model dyad types: in a homogeneous dissolution model, all dyads are of the 
+#' \code{edges} type; in a heterogeneous dissolution model, a dyad with a 
+#' nonzero \code{nodematch} or \code{nodemix} change statistic in the 
+#' dissolution model has type equal to that statistic, and has type equal to
+#' \code{edges} otherwise.  The statistics of interest for the duration and 
+#' dissolution tables are, respectively, the mean age of extant edges and the 
+#' edge dissolution rate, broken down by dissolution model dyad type.
+#' 
+#' The columns are named \code{Target}, \code{Sim Mean}, \code{Pct Diff}, and 
+#' \code{Sim SD}.  For the formation table, \code{Sim Mean} refers to the mean
+#' statistic value and \code{Sim SD} refers to the standard deviation in the
+#' statistic value, across all time steps in all simulations in the dynamic 
+#' case, and across all sampled networks in the static case.  For the duration 
+#' and dissolution tables, \code{Sim Mean} refers to the mean across 
+#' simulations of the mean across time steps within simulation, and 
+#' \code{Sim SD} refers to the standard deviation across simulations of the 
+#' mean across time steps within simulation, for the age and dissolution 
+#' statistics defined above.  For duration and dissolution tables, time steps 
+#' in a particular simulation with no edges of a particular dissolution dyad 
+#' type are dropped when computing the mean across time steps within that 
+#' simulation for that dyad type, and simulations with no edges of a particular
+#' dissolution dyad type are dropped when computing the mean or standard 
+#' deviation across simulations for that dyad type.  The \code{Target} column 
+#' indicates the target value (if present) for the network statistic, mean edge
+#' age, or edge dissolution rate, and the \code{Pct Diff} column gives 
+#' \code{(Sim Mean - Target)/Target} when \code{Target} is present.
 #' @export
 print.netdx <- function(x, digits = 3, ...) {
 
@@ -212,9 +255,15 @@ print.netsim <- function(x, nwstats = TRUE, digits = 3, network = 1, ...) {
         seq_len(x$control$nsims),
         get_network, network = network, x = x
       )
-
-      dissolution.stats <- make_dissolution_stats(
-        diag.sim,
+      
+      dissolution.stats <- make_dissolution_stats( 
+        lapply(diag.sim, 
+               function(nwd) { 
+                 toggles_to_diss_stats(tedgelist_to_toggles(as.data.frame(nwd)), 
+                                       x$nwparam[[network]]$coef.diss, 
+                                       x$control$nsteps, 
+                                       nwd) 
+               }),
         x$nwparam[[network]]$coef.diss,
         x$control$nsteps,
         verbose = FALSE
