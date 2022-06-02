@@ -38,7 +38,7 @@
   targ.col,
   targ.lwd = 2,
   targ.lty = 2,
-  plots.joined = FALSE,
+  plots.joined,
   duration.imputed = TRUE,
   method = "l",
   ...

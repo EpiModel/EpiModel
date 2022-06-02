@@ -917,7 +917,7 @@ plot_stats_table <- function(data,
                              targ.col,
                              targ.lwd,
                              targ.lty,
-                             plots.joined = FALSE,
+                             plots.joined,
                              draw_legend,
                              grid,
                              targets,
@@ -1248,7 +1248,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
                        mean.lwd = 2, mean.lty = 1, qnts = 0.5, qnts.col,
                        qnts.alpha = 0.5, qnts.smooth = TRUE, targ.line = TRUE,
                        targ.col, targ.lwd = 2, targ.lty = 2,
-                       plots.joined = FALSE, legend, grid = FALSE, ...) {
+                       plots.joined, legend, grid = FALSE, ...) {
 
   # Checks and Variables ----------------------------------------------------
 
@@ -1583,7 +1583,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
                         grid = FALSE, add = FALSE, network = 1, at = 1,
                         col.status = FALSE, shp.g2 = NULL, vertex.cex, stats,
                         targ.line = TRUE, targ.col, targ.lwd = 2, targ.lty = 2,
-                        plots.joined = FALSE, duration.imputed = TRUE, method = "l", ...) {
+                        plots.joined, duration.imputed = TRUE, method = "l", ...) {
 
   type <- match.arg(type, c("epi", "network", "formation", "duration", "dissolution"))
   
