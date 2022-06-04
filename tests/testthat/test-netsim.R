@@ -24,6 +24,8 @@ for (trim in c(FALSE, TRUE)) {
     expect_is(mod, "netsim")
     plot(mod)
     plot(mod, type = "formation")
+    plot(mod, type = "duration")
+    plot(mod, type = "dissolution")    
     plot(mod, type = "network")
     test_net(mod)
   })
