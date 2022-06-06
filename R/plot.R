@@ -1997,19 +1997,19 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
     if (type == "formation") {
       # Formation plot ----------------------------------------------------------
     
+      ## get nw stats
       data <- get_nwstats(x, sims, network)
-      data <- data[,!(names(data)%in%c("time","sim")),drop=FALSE]
-    
-      ## Find available stats
+      ## order by simulation and timestep
+      data <- data[order(data$sim, data$time),,drop=FALSE]
+      ## drop simulation and timestep columns
+      data <- data[,!(names(data)%in%c("sim","time")),drop=FALSE]
+      ## get names of stats
       nmstats <- names(data)
-      
-      do <- array(0, dim = c(dim(data)[1]/nsims, dim(data)[2], nsims))
-      for(i in seq_len(nsims)) {
-        do[,,i] <- as.matrix(data[(i-1)*nsteps+seq_len(nsteps),])
-      }
-      data <- do
-      
-      
+      ## convert to array
+      data <- array(c(as.matrix(data)), dim = c(nsteps, nsims, length(nmstats)))
+      ## permute array indices to be steps x stats x sims
+      data <- aperm(data, c(1,3,2))
+            
       ## target stats
       nwparam <- get_nwparam(x, network)
       ts <- nwparam$target.stats
@@ -2017,13 +2017,13 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
       if (length(tsn) != length(ts)) {
         ts <- ts[which(ts > 0)]
       }
-    
+
       targets <- rep(NA, length.out = length(nmstats))
       for(i in seq_along(targets)) {
         if(nmstats[i] %in% tsn) {
           targets[i] <- ts[which(tsn == nmstats[i])]
         }
-      }      
+      }
 
       stats_table <- data.frame("Target" = targets, "Sim Mean" = apply(data, 2, mean))
       colnames(stats_table) <- c("Target", "Sim Mean")
