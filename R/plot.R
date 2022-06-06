@@ -1135,12 +1135,15 @@ plot_stats_table <- function(data,
 #'        statistics for average edge duration, or \code{"dissolution"} for
 #'        dissolution model statistics for proportion of ties dissolved per time
 #'        step.
-#' @param sims A vector of simulation numbers to plot.
-#' @param stats Network statistics to plot, among those specified in the call
-#'        to \code{\link{netdx}}, with the default to plot all statistics
-#'        contained in the object.
 #' @param method Plot method, with options of \code{"l"} for line plots and 
 #'        \code{"b"} for boxplots.
+#' @param sims A vector of simulation numbers to plot.
+#' @param stats Statistics to plot.  For \code{type = "formation"},
+#'        \code{stats} are among those specified in the call to 
+#'        \code{\link{netdx}}; for \code{type = "duration","dissolution"},
+#'        \code{stats} are among those of the dissolution model (without 
+#'        \code{offset()}) with any data in the simulations.  The default is to
+#'        plot all statistics with any data in the simulations.
 #' @param plots.joined If \code{TRUE}, combine all statistics in one
 #'        plot, versus one plot per statistic if \code{FALSE}.
 #' @inheritParams plot.netsim
@@ -1154,13 +1157,12 @@ plot_stats_table <- function(data,
 #' call to \code{\link{netest}}.
 #'
 #' The \code{duration} plot shows the average age of existing edges at each time
-#' step, up until the maximum time step requested. This is calculated from 
-#' change statistics obtained from the \code{\link{tergm.godfather}} function. 
-#' The age is used as an estimator of the average duration of edges in the 
-#' equilibrium state. When \code{duration.imputed = FALSE}, edges that exist at
-#' the beginning of the simulation are assumed to have an age of 0, yielding a 
-#' burn-in period before the observed mean approaches its target. 
-#' When \code{duration.imputed = TRUE}, expected ages prior to the start of the
+#' step, up until the maximum time step requested. The age is used as an 
+#' estimator of the average duration of edges in the equilibrium state. When 
+#' \code{duration.imputed = FALSE}, edges that exist at the beginning of the 
+#' simulation are assumed to start with an age of 1, yielding a burn-in period 
+#' before the observed mean approaches its target.  When 
+#' \code{duration.imputed = TRUE}, expected ages prior to the start of the
 #' simulation are calculated from the dissolution model, typically eliminating 
 #' the need for a burn-in period.
 #'
@@ -1384,7 +1386,8 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #' @param x An \code{EpiModel} model object of class \code{netsim}.
 #' @param type Type of plot: \code{"epi"} for epidemic model results,
 #'        \code{"network"} for a static network plot (\code{plot.network}),
-#'        or \code{"formation"} for network formation statistics.
+#'        or \code{"formation"}, \code{"duration"}, or \code{"dissolution"} for
+#'        network formation, duration, or dissolution statistics.
 #' @param y Output compartments or flows from \code{netsim} object to plot.
 #' @param popfrac If \code{TRUE}, plot prevalence of values rather than numbers
 #'        (see details).
@@ -1431,9 +1434,13 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #'        and "square". Group 1 vertices will remain circles.
 #' @param vertex.cex Relative size of plotted vertices if \code{type="network"},
 #'        with implicit default of 1.
-#' @param stats If \code{type="formation"}, network statistics to plot, among
-#'        those specified in \code{nwstats.formula} of
-#'        \code{\link{control.net}}, with the default to plot all statistics.
+#' @param stats If \code{type="formation","duration","dissolution"}, statistics 
+#'        to plot.  For \code{type = "formation"}, \code{stats} are among those
+#'        specified in \code{nwstats.formula} of \code{\link{control.net}}; for
+#'        \code{type = "duration","dissolution"}, \code{stats} are among those
+#'        of the dissolution model (without \code{offset()}) with any data in 
+#'        the simulations.  The default is to plot all statistics with any data
+#'        in the simulations.
 #' @param targ.line If \code{TRUE}, plot target or expected value line for
 #'        the statistic of interest.
 #' @param targ.col Vector of standard R colors for target statistic lines, with
