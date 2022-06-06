@@ -2025,8 +2025,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
         }
       }      
 
-      ## could actually compute the mean, but all we need to know is that it isn't NA
-      stats_table <- data.frame("Target" = targets, "Sim Mean" = numeric(length(nmstats)))
+      stats_table <- data.frame("Target" = targets, "Sim Mean" = apply(data, 2, mean))
       colnames(stats_table) <- c("Target", "Sim Mean")
       rownames(stats_table) <- nmstats
     } else {
