@@ -864,7 +864,7 @@ get_qnts <- function(data, qnts, qnts.smooth) {
   qnt.prev <- apply(data, 1, function(x) {
     quantile(x, c(quants[1], quants[2]), na.rm = TRUE)
   })
-  if (qnts.smooth == FALSE) {
+  if (isFALSE(qnts.smooth)) {
     xx <- c(1:(ncol(qnt.prev)), (ncol(qnt.prev)):1)
     yy <- c(qnt.prev[1, ], rev(qnt.prev[2, ]))
     xx <- xx[!is.na(yy)]
@@ -883,7 +883,7 @@ get_qnts <- function(data, qnts, qnts.smooth) {
 
 get_means <- function(data, mean.smooth) {
   mean.prev <- rowMeans(data, na.rm = TRUE)
-  if (mean.smooth == FALSE) {
+  if (isFALSE(mean.smooth)) {
     xx <- seq_along(mean.prev)
     yy <- mean.prev
     xx <- xx[!is.na(yy)]
@@ -937,8 +937,8 @@ plot_stats_table <- function(data,
                              
   xlim <- NVL(da$xlim, c(1, dim(data)[1]))
   
-  xlab <- if(!plots.joined) "" else NVL(da$xlab, if(dynamic) "time" else "simulation number")
-  ylab <- if(!plots.joined) "" else NVL(da$ylab, if(nstats == 1) nmstats else "Statistic")
+  xlab <- if (isFALSE(plots.joined)) "" else NVL(da$xlab, if (isTRUE(dynamic)) "time" else "simulation number")
+  ylab <- if (isFALSE(plots.joined)) "" else NVL(da$ylab, if (nstats == 1) nmstats else "Statistic")
   
   if (missing(sim.lwd)) {
     if (dim(data)[3] > 1) {
@@ -955,7 +955,7 @@ plot_stats_table <- function(data,
   #    but is a vector of length 1 and nstats is greater than 1,
   #    then replicate the color vector nstats times to achieve a vector of
   #    size nstats.
-  rep_len_err <- function(object, default, name) {
+  check_len_rep <- function(object, default, name) {
     if (!missing(object)) {
       if (length(object) %in% c(1,nstats)) {
         rep(object, length.out = nstats)
@@ -967,30 +967,30 @@ plot_stats_table <- function(data,
     }
   }
   
-  sim.col <- rep_len_err(sim.col, 
-                         if(!plots.joined) "dodgerblue3" else seq_len(nstats + 1L)[-1L], 
-                         "sim.col")
+  sim.col <- check_len_rep(sim.col, 
+                           if (isFALSE(plots.joined)) "dodgerblue3" else seq_len(nstats + 1L)[-1L], 
+                           "sim.col")
 
-  mean.col <- rep_len_err(mean.col, 
-                          if(!plots.joined) "black" else sim.col, 
-                          "mean.col")
+  mean.col <- check_len_rep(mean.col, 
+                            if (isFALSE(plots.joined)) "black" else sim.col, 
+                            "mean.col")
 
-  qnts.col <- rep_len_err(qnts.col, 
-                          sim.col, 
-                          "qnts.col")
+  qnts.col <- check_len_rep(qnts.col, 
+                            sim.col, 
+                            "qnts.col")
   qnts.col <- adjustcolor(qnts.col, qnts.alpha)
 
-  targ.col <- rep_len_err(targ.col, 
-                          if(!plots.joined || nstats == 1) "black" else sim.col, 
-                          "targ.col")
+  targ.col <- check_len_rep(targ.col, 
+                            if (isFALSE(plots.joined) || nstats == 1) "black" else sim.col, 
+                            "targ.col")
   
-  draw_legend <- plots.joined && 
+  draw_legend <- isTRUE(plots.joined) && 
                  ((!missing(draw_legend) && isTRUE(draw_legend)) || 
-                 (missing(draw_legend) && nstats == 1))
+                  (missing(draw_legend) && nstats == 1))
 
-  draw_qnts <- dynamic && is.numeric(qnts)
+  draw_qnts <- isTRUE(dynamic) && is.numeric(qnts)
 
-  mains <- if(plots.joined) character(nstats) else nmstats
+  mains <- if (isTRUE(plots.joined)) character(nstats) else nmstats
 
   if (method == "l") {
     
@@ -1001,33 +1001,33 @@ plot_stats_table <- function(data,
     for (j in seq_len(nstats)) {
       dataj <- matrix(data[,j,], nrow = dim(data)[1])
       
-      if (draw_qnts) {
+      if (isTRUE(draw_qnts)) {
         qnts_list[[j]] <- get_qnts(dataj, qnts, qnts.smooth)
       }
       
-      if(mean.line) {
+      if (isTRUE(mean.line)) {
         means[[j]] <- get_means(dataj, mean.smooth)
       }
     }
     
-    for(j in seq_len(nstats)) {
+    for (j in seq_len(nstats)) {
       if (!is.null(da$ylim)) {
         ylims[[j]] <- da$ylim
       } else {
-        limdat <- c(if(plots.joined && sim.lines) data,
-                    if(!plots.joined && sim.lines) data[,j,],
-                    if(plots.joined && mean.line) unlist(lapply(means, `[[`, "y")),
-                    if(!plots.joined && mean.line) means[[j]]$y,
-                    if(plots.joined && draw_qnts) unlist(lapply(qnts_list, `[[`, "y")),
-                    if(!plots.joined && draw_qnts) qnts_list[[j]]$y,
-                    if(plots.joined && targ.line) targets,
-                    if(!plots.joined && targ.line) targets[j])
+        limdat <- c(if (isTRUE(plots.joined) && isTRUE(sim.lines)) data,
+                    if (isFALSE(plots.joined) && isTRUE(sim.lines)) data[,j,],
+                    if (isTRUE(plots.joined) && isTRUE(mean.line)) unlist(lapply(means, `[[`, "y")),
+                    if (isFALSE(plots.joined) && isTRUE(mean.line)) means[[j]]$y,
+                    if (isTRUE(plots.joined) && isTRUE(draw_qnts)) unlist(lapply(qnts_list, `[[`, "y")),
+                    if (isFALSE(plots.joined) && isTRUE(draw_qnts)) qnts_list[[j]]$y,
+                    if (isTRUE(plots.joined) && isTRUE(targ.line)) targets,
+                    if (isFALSE(plots.joined) && isTRUE(targ.line)) targets[j])
         
         ylims[[j]] <- c(0.9*min(limdat, na.rm = TRUE), 1.1*max(limdat, na.rm = TRUE))
       }
     }
 
-    if(!plots.joined) {
+    if (isFALSE(plots.joined)) {
       if (nstats == 1) dimens <- c(1, 1)
       if (nstats == 2) dimens <- c(1, 2)
       if (nstats == 3) dimens <- c(1, 3)
@@ -1046,7 +1046,7 @@ plot_stats_table <- function(data,
 
     ## do actual plotting
     for (j in seq_len(nstats)) {
-      if(j == 1 || !plots.joined) {
+      if (j == 1 || isFALSE(plots.joined)) {
         plot(NULL, 
              xlim = xlim, 
              ylim = ylims[[j]],
@@ -1057,11 +1057,11 @@ plot_stats_table <- function(data,
       }
       dataj <- matrix(data[,j,], nrow = dim(data)[1])
 
-      if (draw_qnts == TRUE) {
+      if (isTRUE(draw_qnts)) {
         polygon(qnts_list[[j]]$x, qnts_list[[j]]$y, col = qnts.col[j], border = NA)        
       }
 
-      if (sim.lines == TRUE) {
+      if (isTRUE(sim.lines)) {
         apply(dataj, 
               2, 
               function(y) lines(which(!is.na(y)), 
@@ -1070,7 +1070,7 @@ plot_stats_table <- function(data,
                                 col = sim.col[j]))
       }
       
-      if (mean.line == TRUE) {
+      if (isTRUE(mean.line)) {
         lines(means[[j]]$x, 
               means[[j]]$y, 
               lwd = mean.lwd,
@@ -1078,28 +1078,28 @@ plot_stats_table <- function(data,
               lty = mean.lty)
       }
 
-      if (targ.line == TRUE) {
+      if (isTRUE(targ.line)) {
         abline(h = targets[j],
                lty = targ.lty, 
                lwd = targ.lwd,
                col = targ.col[j])
       }
       
-      if(grid && !plots.joined) {
+      if (isTRUE(grid) && isFALSE(plots.joined)) {
         grid()
       }
     }
 
-    if(grid && plots.joined) {
+    if (isTRUE(grid) && isTRUE(plots.joined)) {
       grid()
     }
 
-    if (draw_legend) {
+    if (isTRUE(draw_legend)) {
       legend("topleft", legend = nmstats, lwd = 2,
              col = sim.col[1:nstats], cex = 0.75, bg = "white")
     }
     
-    if(!plots.joined) {
+    if (isFALSE(plots.joined)) {
       # Reset graphical parameters
       on.exit(par(ops))
     }
@@ -1117,7 +1117,7 @@ plot_stats_table <- function(data,
              pch = 16, cex = 1.5, col = "blue")
       
       ## Grid
-      if (grid == TRUE) {
+      if (isTRUE(grid)) {
           grid()
       }
     }
@@ -1291,7 +1291,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
     stats_table <- x$stats.table.formation
     
     data <- do.call("cbind", args = x$stats)
-    dim3 <- if (dynamic == TRUE) nsims else 1L
+    dim3 <- if (isTRUE(dynamic)) nsims else 1L
     data <- array(data, dim = c(dim(data)[1], dim(data)[2]/dim3, dim3))
   } else if (type == "duration") {
     if (is.logical(duration.imputed) == FALSE) {
@@ -1305,7 +1305,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
               call. = FALSE)
     }
 
-    if (duration.imputed == TRUE) {
+    if (isTRUE(duration.imputed)) {
       data <- x$pages_imptd
     } else {
       data <- x$pages
@@ -1341,8 +1341,8 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
   ## Subset data
   nstats <- length(outsts)
   data <- data[,outsts,,drop=FALSE]
-  if(dynamic) {
-    # sims only used to subset data in dynamic case (?)
+  if (isTRUE(dynamic)) {
+    # sims only used to subset data in dynamic case
     data <- data[,,sims,drop=FALSE]
   }
   ## Pull target stats
@@ -2030,9 +2030,9 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
       rownames(stats_table) <- nmstats
     } else {
       ## duration/dissolution plot
-      if (x$control$save.network &&
-          !x$control$tergmLite &&
-          x$nwparam[[network]]$coef.diss$diss.model.type == "edgesonly") {
+      if (isTRUE(x$control$save.network) &&
+          isFALSE(x$control$tergmLite) &&
+          isTRUE(x$nwparam[[network]]$coef.diss$diss.model.type == "edgesonly")) {
         diag.sim <- lapply(sims, get_network, network = network, x = x)
         
         dstats <- make_dissolution_stats( 
@@ -2053,8 +2053,8 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
              "dissolution model is edges-only")
       }
       
-      if(type == "duration") {
-        if (duration.imputed == TRUE) {
+      if (type == "duration") {
+        if (isTRUE(duration.imputed)) {
           data <- dstats$pages_imptd
         } else {
           data <- dstats$pages
