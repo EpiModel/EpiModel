@@ -2049,7 +2049,9 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
           verbose = FALSE
         )
       } else {
-        stop("cannot produce duration/dissolution plot")
+        stop("cannot produce duration/dissolution plot from `netsim` object ",
+             "unless `save.network` is `TRUE`, `tergmLite` is `FALSE`, and ",
+             "dissolution model is edges-only")
       }
       
       if(type == "duration") {
@@ -2075,7 +2077,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
       stats <- nmstats
     }
     if (any(stats %in% nmstats == FALSE)) {
-      stop("One or more requested stats not contained in netdx object",
+      stop("One or more requested stats not contained in netsim object",
            call. = FALSE)
     }
     outsts <- which(nmstats %in% stats)
