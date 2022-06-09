@@ -24,15 +24,12 @@
 \alias{as.networkLite.network}
 \alias{as.networkLite.networkLite}
 \alias{as.networkDynamic.networkLite}
-\alias{valid.eids.networkLite}
 \alias{as_tibble.networkLite}
 \alias{as.matrix.networkLite}
 \alias{is.na.networkLite}
 \alias{delete.vertex.attribute.networkLite}
 \alias{delete.edge.attribute.networkLite}
 \alias{delete.network.attribute.networkLite}
-\alias{delete.edges.networkLite}
-\alias{delete.vertices.networkLite}
 \alias{add.vertices.networkLite}
 \alias{+.networkLite}
 \alias{-.networkLite}
@@ -100,8 +97,6 @@ as.networkLite(x, ...)
 
 \method{as.networkDynamic}{networkLite}(object, ...)
 
-\method{valid.eids}{networkLite}(x, ...)
-
 \method{as_tibble}{networkLite}(x, attrnames = NULL, na.rm = TRUE, ...)
 
 \method{as.matrix}{networkLite}(
@@ -118,10 +113,6 @@ as.networkLite(x, ...)
 \method{delete.edge.attribute}{networkLite}(x, attrname, ...)
 
 \method{delete.network.attribute}{networkLite}(x, attrname, ...)
-
-\method{delete.edges}{networkLite}(x, eid, ...)
-
-\method{delete.vertices}{networkLite}(x, vid, ...)
 
 \method{add.vertices}{networkLite}(x, nv, vattr = NULL, last.mode = TRUE, ...)
 
@@ -175,11 +166,6 @@ and the latter being used as the attribute names themselves}
 
 \item{matrix.type}{type of matrix to return from
 \code{as.matrix.networkLite}}
-
-\item{eid}{edge indices to delete (between 1 and
-\code{network.edgecount(x, na.omit = FALSE)})}
-
-\item{vid}{vertex indices to delete (between 1 and \code{network.size(x)})}
 
 \item{nv}{number of vertices to add to the \code{networkLite}}
 
