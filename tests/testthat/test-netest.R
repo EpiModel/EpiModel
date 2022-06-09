@@ -139,6 +139,61 @@ test_that("differing length update_dissolution tests", {
                 round(as.numeric(est_het_compare$coef.form), 3)))
 })
 
+test_that("duration 1 update_dissolution tests", {
+  nw <- network_initialize(n = 1000)
+  nw %v% "race" <- rep(letters[1:5], length.out = 1000)
+
+  diss_het <- dissolution_coefs(~offset(edges) +
+                                  offset(nodematch("race", diff = TRUE)),
+                                c(300, 200, 100, 50, 150, 225), 0.001)
+
+  diss_hom_1 <- dissolution_coefs(~offset(edges), 1, 0)
+
+
+  est_het <- netest(nw = nw,
+                    formation = ~edges + nodemix("race", levels2 = 1:5),
+                    target.stats = c(500, 50, 50, 90, 30, 10),
+                    coef.diss = diss_het, nested.edapprox = FALSE)
+
+  est_hom_1 <- netest(nw = nw,
+                    formation = ~edges + nodemix("race", levels2 = 1:5),
+                    target.stats = c(500, 50, 50, 90, 30, 10),
+                    coef.diss = diss_hom_1)
+
+  est_hom_1_update <- update_dissolution(est_het, diss_hom_1)
+  est_het_update <- update_dissolution(est_hom_1, diss_het, nested.edapprox = FALSE)
+
+  expect_true(all(round(as.numeric(est_hom_1$coef.form), 3) ==
+                round(as.numeric(est_hom_1_update$coef.form), 3)))
+
+  expect_true(all(round(as.numeric(est_het$coef.form), 3) ==
+                round(as.numeric(est_het_update$coef.form), 3)))
+                
+  dx <- netdx(est_het, dynamic = TRUE, nsteps = 5)
+  dx <- netdx(est_het, dynamic = FALSE, nsims = 5)
+  
+  expect_error(dx <- netdx(est_hom_1, dynamic = TRUE, nsteps = 5), 
+               "Running dynamic diagnostics on a cross-sectional ERGM")
+  dx <- netdx(est_hom_1, dynamic = FALSE, nsims = 5)
+  
+  dx <- netdx(est_het_update, dynamic = TRUE, nsteps = 5)
+  dx <- netdx(est_het_update, dynamic = FALSE, nsims = 5)
+  
+  expect_error(dx <- netdx(est_hom_1_update, dynamic = TRUE, nsteps = 5), 
+               "Running dynamic diagnostics on a cross-sectional ERGM")
+  dx <- netdx(est_hom_1_update, dynamic = FALSE, nsims = 5)
+  
+  param <- param.net(inf.prob = 0.3, act.rate = 0.5, rec.rate = 0.05)
+  init <- init.net(r.num = 0, status.vector = rep("s", 1000))
+  control <- control.net(type = "SIR", nsims = 1, nsteps = 5, 
+                         resimulate.network = TRUE, verbose = FALSE,
+                         nwupdate.FUN = NULL)
+  mod <- netsim(est_het, param, init, control)
+  mod <- netsim(est_het_update, param, init, control)
+  mod <- netsim(est_hom_1, param, init, control)
+  mod <- netsim(est_hom_1_update, param, init, control)
+})
+
 test_that("differing length non-nested update_dissolution tests", {
   nw <- network_initialize(n = 1000)
   nw %v% "race" <- rep(letters[1:5], length.out = 1000)
