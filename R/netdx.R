@@ -294,7 +294,6 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
 
   ## List for stats for each simulation
   stats <- lapply(diag.sim, function(x) x$stats[,!duplicated(colnames(x$stats)),drop=FALSE])
-  merged.stats <- do.call(rbind, stats)
 
   ts.attr.names <- x$target.stats.names
   if (length(ts.attr.names) != length(target.stats)) {
@@ -305,8 +304,8 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
     targets = target.stats
   )
 
-  ## Calculate mean/sd from merged stats
-  stats.table.formation <- make_formation_table(merged.stats, ts.out)
+  ## Calculate mean/sd from stats
+  stats.table.formation <- make_formation_table(stats, ts.out, dynamic)
 
   # Calculate dissolution / duration stats
   if (skip.dissolution == FALSE) {
@@ -354,18 +353,26 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
 
 #' @title Calculate the Formation Statistics of a Network
 #'
-#' @param merged.stats A matrix of \code{nsims * nsteps} rows, with a column for
-#'   each of the formation targets.
+#' @param stats A list of matrices, one for each simulation, with one row for
+#'   each simulated network if \code{dynamic == FALSE}, one row for each time
+#'   step if \code{dynamic == TRUE}, and one column for each statistic.
 #' @param targets A \code{data.frame} of the formation targets with two columns:
 #'   "names" and "targets".
+#' @param dynamic logical; was the simulation performed dynamic?
 #'
 #' @return A \code{data.frame} of the formation statistics.
 #' @keywords internal
-make_formation_table <- function(merged.stats, targets) {
+make_formation_table <- function(stats, targets, dynamic) {
 
-  ## Calculate mean/sd from merged stats
-  stats.means <- colMeans(merged.stats)
-  stats.sd <- apply(merged.stats, 2, sd)
+  if (dynamic == TRUE) {
+    means.within <- do.call(rbind, lapply(stats, colMeans, na.rm = TRUE))
+    stats.means <- colMeans(means.within, na.rm = TRUE)
+    stats.sd <- apply(means.within, 2, sd, na.rm = TRUE)
+  } else {
+    stats <- do.call(rbind, stats)
+    stats.means <- colMeans(stats, na.rm = TRUE)
+    stats.sd <- apply(stats, 2, sd, na.rm = TRUE)/sqrt(NROW(stats))
+  }
 
   stats.table <- data.frame(
     sorder = seq_along(names(stats.means)),

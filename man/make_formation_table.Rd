@@ -4,14 +4,17 @@
 \alias{make_formation_table}
 \title{Calculate the Formation Statistics of a Network}
 \usage{
-make_formation_table(merged.stats, targets)
+make_formation_table(stats, targets, dynamic)
 }
 \arguments{
-\item{merged.stats}{A matrix of \code{nsims * nsteps} rows, with a column for
-each of the formation targets.}
+\item{stats}{A list of matrices, one for each simulation, with one row for
+each simulated network if \code{dynamic == FALSE}, one row for each time
+step if \code{dynamic == TRUE}, and one column for each statistic.}
 
 \item{targets}{A \code{data.frame} of the formation targets with two columns:
 "names" and "targets".}
+
+\item{dynamic}{logical; was the simulation performed dynamic?}
 }
 \value{
 A \code{data.frame} of the formation statistics.

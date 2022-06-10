@@ -222,7 +222,8 @@ print.netsim <- function(x, nwstats = TRUE, digits = 3, network = 1, ...) {
   cat("")
 
   if (nwstats && !is.null(x$stats$nwstats)) {
-    stats <- x$stats$nwstats
+    stats <- lapply(x$stats$nwstats, 
+                    function(stats_list) stats_list[[network]])
     nsims <- x$control$nsims
 
     target.stats <- x$nwparam[[network]]$target.stats
@@ -233,12 +234,10 @@ print.netsim <- function(x, nwstats = TRUE, digits = 3, network = 1, ...) {
     ts.out <- data.frame(names = ts.attr.names,
       targets = target.stats)
 
-    merged.stats <- Reduce(
-      function(a, x) rbind(a, x[[network]]),
-      stats, init = c()
-    )
-
-    stats.table.formation <- make_formation_table(merged.stats, ts.out)
+    stats.table.formation <- 
+      make_formation_table(stats, 
+                           ts.out, 
+                           all(x$nwparam[[network]]$coef.diss$duration > 1))
 
     cat("\n\nFormation Diagnostics")
     cat("\n----------------------- \n")
