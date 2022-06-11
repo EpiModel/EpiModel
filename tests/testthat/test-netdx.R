@@ -306,10 +306,10 @@ for (trim in c(FALSE, TRUE)) {
     expect_output(print(dx), "Target")
     expect_output(print(dx), "Sim Mean")
     expect_output(print(dx), "Pct Diff")
-    expect_output(print(dx), "Sim SD")
+    expect_output(print(dx), "Sim SE")
   
     dx <- netdx(est, nsims = 1, nsteps = 100, verbose = FALSE)
-    expect_output(print(dx), "NA")
+    expect_error(expect_output(print(dx), "NA"))
   
   })
 }  

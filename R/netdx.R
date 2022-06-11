@@ -305,7 +305,7 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
   )
 
   ## Calculate mean/sd from stats
-  stats.table.formation <- make_formation_table(stats, ts.out, dynamic)
+  stats.table.formation <- make_formation_table(stats, ts.out)
 
   # Calculate dissolution / duration stats
   if (skip.dissolution == FALSE) {
@@ -358,27 +358,23 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
 #'   step if \code{dynamic == TRUE}, and one column for each statistic.
 #' @param targets A \code{data.frame} of the formation targets with two columns:
 #'   "names" and "targets".
-#' @param dynamic logical; was the simulation performed dynamic?
 #'
 #' @return A \code{data.frame} of the formation statistics.
 #' @keywords internal
-make_formation_table <- function(stats, targets, dynamic) {
-
-  if (dynamic == TRUE) {
-    means.within <- do.call(rbind, lapply(stats, colMeans, na.rm = TRUE))
-    stats.means <- colMeans(means.within, na.rm = TRUE)
-    stats.sd <- apply(means.within, 2, sd, na.rm = TRUE)
-  } else {
-    stats <- do.call(rbind, stats)
-    stats.means <- colMeans(stats, na.rm = TRUE)
-    stats.sd <- apply(stats, 2, sd, na.rm = TRUE)/sqrt(NROW(stats))
-  }
-
+make_formation_table <- function(stats, targets) {
+  ess <- lapply(stats, function(x) apply(x, 2L, function(y) if (sum(!is.na(y)) <= 1L) NA else effectiveSize(na.omit(y))))
+  ess <- colSums(do.call(rbind, ess), na.rm = TRUE)
+  
+  stats <- do.call(rbind, stats)
+  stats.means <- colMeans(stats, na.rm = TRUE)
+  stats.sd <- apply(stats, 2L, sd, na.rm = TRUE)
+  stats.se <- stats.sd/sqrt(ess)
+  
   stats.table <- data.frame(
     sorder = seq_along(names(stats.means)),
     names = names(stats.means),
     stats.means,
-    stats.sd
+    stats.se
   )
 
   ## Create stats.formation table for output
@@ -393,7 +389,7 @@ make_formation_table <- function(stats, targets, dynamic) {
     "Target",
     "Sim Mean",
     "Pct Diff",
-    "Sim SD"
+    "Sim SE"
   )
 
   return(stats.table.formation)
@@ -421,34 +417,41 @@ make_dissolution_stats <- function(diag.sim, coef.diss,
     durs <- coef.diss$duration
   }
   
-  pages <- array(unlist(lapply(diag.sim, `[[`, "meanage")),
+  meanage_list <- lapply(diag.sim, `[[`, "meanage")
+  pages <- array(unlist(meanage_list),
                  dim = c(nsteps, length(durs), length(diag.sim)))
 
-  pages_imptd <- array(unlist(lapply(diag.sim, `[[`, "meanageimputed")),
+  meanage_imptd_list <- lapply(diag.sim, `[[`, "meanageimputed")
+  pages_imptd <- array(unlist(meanage_imptd_list),
                        dim = c(nsteps, length(durs), length(diag.sim)))
 
-  propdiss <- array(unlist(lapply(diag.sim, `[[`, "propdiss")),
+  propdiss_list <- lapply(diag.sim, `[[`, "propdiss")
+  propdiss <- array(unlist(propdiss_list),
                     dim = c(nsteps, length(durs), length(diag.sim)))
 
-  combinedmeanmeanageimputed <- do.call(rbind, lapply(diag.sim, `[[`, "meanmeanageimputed"))
-  meanagesimputed <- colMeans(combinedmeanmeanageimputed, na.rm = TRUE)
-  meanagesd <- apply(combinedmeanmeanageimputed, 2L, sd, na.rm = TRUE)
+  meanage_imptd_mean <- apply(pages_imptd, 2, mean, na.rm = TRUE)
+  meanage_imptd_sd <- apply(pages_imptd, 2, sd, na.rm = TRUE)
+  meanage_imptd_ess <- lapply(meanage_imptd_list, function(x) apply(x, 2L, function(y) if (sum(!is.na(y)) <= 1L) NA else effectiveSize(na.omit(y))))
+  meanage_imptd_ess <- colSums(do.call(rbind, meanage_imptd_ess), na.rm = TRUE)
+  meanage_imptd_se <- meanage_imptd_sd/sqrt(meanage_imptd_ess)
 
-  combinedmeanpropdiss <- do.call(rbind, lapply(diag.sim, `[[`, "meanpropdiss"))  
-  meanpropdiss <- colMeans(combinedmeanpropdiss, na.rm = TRUE)
-  propdisssd <- apply(combinedmeanpropdiss, 2L, sd, na.rm = TRUE)
+  propdiss_mean <- apply(propdiss, 2, mean, na.rm = TRUE)
+  propdiss_sd <- apply(propdiss, 2, sd, na.rm = TRUE)
+  propdiss_ess <- lapply(propdiss_list, function(x) apply(x, 2L, function(y) if (sum(!is.na(y)) <= 1L) NA else effectiveSize(na.omit(y))))
+  propdiss_ess <- colSums(do.call(rbind, propdiss_ess), na.rm = TRUE)
+  propdiss_se <- propdiss_sd/sqrt(propdiss_ess)
   
   stats.table.duration <- data.frame("Target" = durs,
-                                     "Sim Mean" = meanagesimputed,
-                                     "Pct Diff" = 100*(meanagesimputed - durs)/durs,
-                                     "Sim SD" = meanagesd)
-  colnames(stats.table.duration) <- c("Target", "Sim Mean", "Pct Diff", "Sim SD")
+                                     "Sim Mean" = meanage_imptd_mean,
+                                     "Pct Diff" = 100*(meanage_imptd_mean - durs)/durs,
+                                     "Sim SE" = meanage_imptd_se)
+  colnames(stats.table.duration) <- c("Target", "Sim Mean", "Pct Diff", "Sim SE")
   
   stats.table.dissolution <- data.frame("Target" = 1/durs,
-                                        "Sim Mean" = meanpropdiss,
-                                        "Pct Diff" = 100*(meanpropdiss - 1/durs)/(1/durs),
-                                        "Sim SD" = propdisssd)
-  colnames(stats.table.dissolution) <- c("Target", "Sim Mean", "Pct Diff", "Sim SD")
+                                        "Sim Mean" = propdiss_mean,
+                                        "Pct Diff" = 100*(propdiss_mean - 1/durs)/(1/durs),
+                                        "Sim SE" = propdiss_se)
+  colnames(stats.table.dissolution) <- c("Target", "Sim Mean", "Pct Diff", "Sim SE")
 
   # Construct return list
   return(

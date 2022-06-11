@@ -234,10 +234,7 @@ print.netsim <- function(x, nwstats = TRUE, digits = 3, network = 1, ...) {
     ts.out <- data.frame(names = ts.attr.names,
       targets = target.stats)
 
-    stats.table.formation <- 
-      make_formation_table(stats, 
-                           ts.out, 
-                           all(x$nwparam[[network]]$coef.diss$duration > 1))
+    stats.table.formation <- make_formation_table(stats, ts.out)
 
     cat("\n\nFormation Diagnostics")
     cat("\n----------------------- \n")

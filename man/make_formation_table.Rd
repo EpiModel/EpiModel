@@ -4,7 +4,7 @@
 \alias{make_formation_table}
 \title{Calculate the Formation Statistics of a Network}
 \usage{
-make_formation_table(stats, targets, dynamic)
+make_formation_table(stats, targets)
 }
 \arguments{
 \item{stats}{A list of matrices, one for each simulation, with one row for
@@ -13,8 +13,6 @@ step if \code{dynamic == TRUE}, and one column for each statistic.}
 
 \item{targets}{A \code{data.frame} of the formation targets with two columns:
 "names" and "targets".}
-
-\item{dynamic}{logical; was the simulation performed dynamic?}
 }
 \value{
 A \code{data.frame} of the formation statistics.
