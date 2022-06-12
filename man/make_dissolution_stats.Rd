@@ -7,7 +7,9 @@
 make_dissolution_stats(diag.sim, coef.diss, nsteps, verbose = TRUE)
 }
 \arguments{
-\item{diag.sim}{A list of network objects (one per simulation).}
+\item{diag.sim}{A list of dissolution statistics (as created by 
+\code{toggles_to_diss_stats}), of length equal to the number of 
+simulations.}
 
 \item{coef.diss}{The \code{coef.diss} element of \code{nwparam}.}
 
@@ -16,7 +18,8 @@ make_dissolution_stats(diag.sim, coef.diss, nsteps, verbose = TRUE)
 \item{verbose}{A verbosity toggle (default = TRUE).}
 }
 \value{
-a \code{list} of dissolution statistics
+A \code{list} of dissolution statistics, combined across 
+  simulations.
 }
 \description{
 Calculate the Dissolution Statistics of a Network

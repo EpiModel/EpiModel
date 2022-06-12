@@ -1482,6 +1482,10 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #'        \code{save.nwstats=TRUE}; the plot here will then show the network
 #'        statistics requested explicitly in \code{nwstats.formula}, or will use
 #'        the formation formula set in \code{netest} otherwise.
+#'  \item \strong{\code{type="duration","dissolution"}}: as in 
+#'        \code{\link{plot.netdx}}; supported in \code{plot.netsim} only when
+#'        the dissolution model is \code{~offset(edges)}, \code{tergmLite} is
+#'        \code{FALSE}, and \code{save.network} is \code{TRUE}.
 #' }
 #'
 #' @details

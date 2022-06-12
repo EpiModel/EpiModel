@@ -37,21 +37,17 @@ dissolution tables are, respectively, the mean age of extant edges and the
 edge dissolution rate, broken down by dissolution model dyad type.
 
 The columns are named \code{Target}, \code{Sim Mean}, \code{Pct Diff}, and 
-\code{Sim SD}.  For the formation table, \code{Sim Mean} refers to the mean
-statistic value and \code{Sim SD} refers to the standard deviation in the
-statistic value, across all time steps in all simulations in the dynamic 
-case, and across all sampled networks in the static case.  For the duration 
-and dissolution tables, \code{Sim Mean} refers to the mean across 
-simulations of the mean across time steps within simulation, and 
-\code{Sim SD} refers to the standard deviation across simulations of the 
-mean across time steps within simulation, for the age and dissolution 
-statistics defined above.  For duration and dissolution tables, time steps 
-in a particular simulation with no edges of a particular dissolution dyad 
-type are dropped when computing the mean across time steps within that 
-simulation for that dyad type, and simulations with no edges of a particular
-dissolution dyad type are dropped when computing the mean or standard 
-deviation across simulations for that dyad type.  The \code{Target} column 
-indicates the target value (if present) for the network statistic, mean edge
-age, or edge dissolution rate, and the \code{Pct Diff} column gives 
-\code{(Sim Mean - Target)/Target} when \code{Target} is present.
+\code{Sim SE}.  The \code{Sim Mean} column refers to the mean statistic
+value, across all time steps in all simulations in the dynamic case, and
+across all sampled networks in all simulations in the static case.  For
+duration and dissolution tables, time steps with no edges of a particular
+dissolution dyad type are dropped when computing the corresponding mean (all
+time steps with data are weighted equally in computing the mean; if there is
+no data at all for a particular statistic, the mean is \code{NA}).  The 
+\code{Sim SE} column refers to the standard error in the mean, estimated
+using \code{\link{coda::effectiveSize}}, again dropping time steps with no 
+data for duration and dissolution statistics.  The \code{Target} column 
+indicates the target value (if present) for the statistic, and the 
+\code{Pct Diff} column gives \code{(Sim Mean - Target)/Target} when 
+\code{Target} is present.
 }

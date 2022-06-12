@@ -353,9 +353,10 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
 
 #' @title Calculate the Formation Statistics of a Network
 #'
-#' @param stats A list of matrices, one for each simulation, with one row for
-#'   each simulated network if \code{dynamic == FALSE}, one row for each time
-#'   step if \code{dynamic == TRUE}, and one column for each statistic.
+#' @param stats A list of formation statistic matrices, one for each 
+#'   simulation, with one row for each simulated network if 
+#'   \code{dynamic == FALSE}, one row for each time step if 
+#'   \code{dynamic == TRUE}, and one column for each statistic.
 #' @param targets A \code{data.frame} of the formation targets with two columns:
 #'   "names" and "targets".
 #'
@@ -397,12 +398,15 @@ make_formation_table <- function(stats, targets) {
 
 #' @title Calculate the Dissolution Statistics of a Network
 #'
-#' @param diag.sim A list of network objects (one per simulation).
+#' @param diag.sim A list of dissolution statistics (as created by 
+#'   \code{toggles_to_diss_stats}), of length equal to the number of 
+#'   simulations.
 #' @param coef.diss The \code{coef.diss} element of \code{nwparam}.
 #' @param nsteps The number of simulated steps.
 #' @param verbose A verbosity toggle (default = TRUE).
 #'
-#' @return a \code{list} of dissolution statistics
+#' @return A \code{list} of dissolution statistics, combined across 
+#'   simulations.
 #' @keywords internal
 make_dissolution_stats <- function(diag.sim, coef.diss,
                                    nsteps, verbose = TRUE) {
