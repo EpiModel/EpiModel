@@ -45,9 +45,9 @@ dissolution dyad type are dropped when computing the corresponding mean (all
 time steps with data are weighted equally in computing the mean; if there is
 no data at all for a particular statistic, the mean is \code{NA}).  The 
 \code{Sim SE} column refers to the standard error in the mean, estimated
-using \code{\link{coda::effectiveSize}}, again dropping time steps with no 
-data for duration and dissolution statistics.  The \code{Target} column 
-indicates the target value (if present) for the statistic, and the 
-\code{Pct Diff} column gives \code{(Sim Mean - Target)/Target} when 
-\code{Target} is present.
+using \code{\link[=effectiveSize]{coda::effectiveSize}}, again dropping time
+steps with no data for duration and dissolution statistics.  The 
+\code{Target} column indicates the target value (if present) for the 
+statistic, and the \code{Pct Diff} column gives 
+\code{(Sim Mean - Target)/Target} when \code{Target} is present.
 }
