@@ -427,3 +427,21 @@ test_that("Edges only models with set.control.stergm", {
   plot(dx4, type = "dissolution")
   plot(dx4, method = "b", type = "dissolution")
 })
+
+test_that("z scores are not large for a reasonably long simulation", {
+  nw <- network_initialize(n = 100)
+  nw <- set_vertex_attribute(nw, "race", rep(0:1, length.out = 100))
+  est <- netest(nw, formation = ~edges + nodematch("race", diff = TRUE),
+                target.stats = c(50, 10, 10),
+                coef.diss = dissolution_coefs(~offset(edges) +
+                                                offset(nodematch("race", diff = TRUE)),
+                                              c(10, 20, 15)),
+                verbose = FALSE
+  )
+  
+  dx <- netdx(est, nsteps = 50, nsims = 10)
+  
+  expect_true(all(dx$stats.table.formation[["Z Score"]] < 10))
+  expect_true(all(dx$stats.table.duration[["Z Score"]] < 10))
+  expect_true(all(dx$stats.table.dissolution[["Z Score"]] < 10))
+})
