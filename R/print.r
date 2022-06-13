@@ -112,20 +112,22 @@ print.netest <- function(x, digits = 3, ...) {
 #' dissolution tables are, respectively, the mean age of extant edges and the 
 #' edge dissolution rate, broken down by dissolution model dyad type.
 #' 
-#' The columns are named \code{Target}, \code{Sim Mean}, \code{Pct Diff}, and 
-#' \code{Sim SE}.  The \code{Sim Mean} column refers to the mean statistic
-#' value, across all time steps in all simulations in the dynamic case, and
-#' across all sampled networks in all simulations in the static case.  For
-#' duration and dissolution tables, time steps with no edges of a particular
-#' dissolution dyad type are dropped when computing the corresponding mean (all
-#' time steps with data are weighted equally in computing the mean; if there is
-#' no data at all for a particular statistic, the mean is \code{NA}).  The 
-#' \code{Sim SE} column refers to the standard error in the mean, estimated
-#' using \code{\link[=effectiveSize]{coda::effectiveSize}}, again dropping time
-#' steps with no data for duration and dissolution statistics.  The 
-#' \code{Target} column indicates the target value (if present) for the 
-#' statistic, and the \code{Pct Diff} column gives 
-#' \code{(Sim Mean - Target)/Target} when \code{Target} is present.
+#' The columns are named \code{Target}, \code{Sim Mean}, \code{Pct Diff}, 
+#' \code{Sim SE}, and \code{Z Score}.  The \code{Sim Mean} column refers to the
+#' mean statistic value, across all time steps in all simulations in the 
+#' dynamic case, and across all sampled networks in all simulations in the 
+#' static case.  For duration and dissolution tables, time steps with no edges
+#' of a particular dissolution dyad type are dropped when computing the 
+#' corresponding mean (all time steps with data are weighted equally in 
+#' computing the mean; if there is no data at all for a particular statistic, 
+#' the mean is \code{NA}).  The \code{Sim SE} column refers to the standard 
+#' error in the mean, estimated using 
+#' \code{\link[=effectiveSize]{coda::effectiveSize}}, again dropping time steps
+#' with no data for duration and dissolution statistics.  The \code{Target} 
+#' column indicates the target value (if present) for the statistic, and the 
+#' \code{Pct Diff} column gives \code{(Sim Mean - Target)/Target} when 
+#' \code{Target} is present.  The \code{Z Score} column gives 
+#' \code{(Sim Mean - Target)/(Sim SE)}.
 #' @export
 print.netdx <- function(x, digits = 3, ...) {
 
