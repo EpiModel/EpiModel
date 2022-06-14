@@ -444,4 +444,8 @@ test_that("z scores are not large for a reasonably long simulation", {
   expect_true(all(abs(dx$stats.table.formation[["Z Score"]]) < 20))
   expect_true(all(abs(dx$stats.table.duration[["Z Score"]]) < 20))
   expect_true(all(abs(dx$stats.table.dissolution[["Z Score"]]) < 20))
+
+  dxs <- netdx(est, nsims = 1000, dynamic = FALSE)
+  
+  expect_true(all(abs(dxs$stats.table.formation[["Z Score"]]) < 20))
 })
