@@ -439,7 +439,7 @@ test_that("z scores are not large for a reasonably long simulation", {
                 verbose = FALSE
   )
   
-  dx <- netdx(est, nsteps = 50, nsims = 10)
+  dx <- netdx(est, nsteps = 1000, nsims = 1)
   
   expect_true(all(abs(dx$stats.table.formation[["Z Score"]]) < 10))
   expect_true(all(abs(dx$stats.table.duration[["Z Score"]]) < 10))
