@@ -814,14 +814,28 @@ draw_qnts <- function(x, y, qnts, qnts.pal, qnts.smooth,
   qnt.min <- 1E10
   qnt.max <- -1E10
 
-  for (j in seq_along(y)) {
-    gq <- get_qnts(x[[loc]][[y[j]]], qnts, qnts.smooth)
-    
-    if (plot.qnts == 1) {
-      polygon(gq$x, gq$y, col = qnts.pal[j], border = NA)
+  lcomp <- length(y)
+  for (j in seq_len(lcomp)) {
+    quants <- c((1 - qnts) / 2, 1 - ((1 - qnts) / 2))
+    qnt.prev <- apply(x[[loc]][[y[j]]], 1,
+                      function(x) {
+                        quantile(x, c(quants[1], quants[2]), na.rm = TRUE)
+                      })
+    qnt.prev <- qnt.prev[, complete.cases(t(qnt.prev))]
+    xx <- c(1:(ncol(qnt.prev)), (ncol(qnt.prev)):1)
+    if (qnts.smooth == FALSE) {
+      yy <- c(qnt.prev[1, ], rev(qnt.prev[2, ]))
     } else {
-      qnt.max[j] <- max(gq$y)
-      qnt.min[j] <- min(gq$y)
+      yy <- c(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
+                                      y = qnt.prev[1, ]))$y,
+              rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
+                                          y = qnt.prev[2, ]))$y))
+    }
+    if (plot.qnts == 1) {
+      polygon(xx, yy, col = qnts.pal[j], border = NA)
+    } else{
+      qnt.max[j] <-  max(yy)
+      qnt.min[j] <-  min(yy)
     }
   }
   if (plot.qnts == 0 & qnts.min_max == "max") {
@@ -831,6 +845,7 @@ draw_qnts <- function(x, y, qnts, qnts.pal, qnts.smooth,
   }
 }
 
+
 draw_means <- function(x, y, mean.smooth, mean.lwd,
                        mean.pal, mean.lty, loc = "epi",
                        plot.means = 1, mean.min_max = "max") {
@@ -838,15 +853,25 @@ draw_means <- function(x, y, mean.smooth, mean.lwd,
   mean.min <- 1E10
   mean.max <- -1E10
 
-  for (j in seq_along(y)) {
-    gm <- get_means(x[[loc]][[y[j]]], mean.smooth)
+  lcomp <- length(y)
+  nsims <- x$control$nsims
 
+  for (j in seq_len(lcomp)) {
+    if (nsims == 1) {
+      mean.prev <- x[[loc]][[y[j]]][, 1]
+    } else {
+      mean.prev <- rowMeans(x[[loc]][[y[j]]], na.rm = TRUE)
+    }
+    if (mean.smooth == TRUE) {
+      mean.prev <- suppressWarnings(supsmu(x = seq_along(mean.prev),
+                                           y = mean.prev))$y
+    }
     if (plot.means == 1) {
-      lines(gm$x, gm$y, lwd = mean.lwd[j],
+      lines(mean.prev, lwd = mean.lwd[j],
             col = mean.pal[j], lty = mean.lty[j])
     } else {
-      mean.max[j] <- max(gm$y)
-      mean.min[j] <- min(gm$y)
+      mean.max[j] <-  max(mean.prev, na.rm = TRUE)
+      mean.min[j] <-  min(mean.prev, na.rm = TRUE)
     }
   }
   if (plot.means == 0 & mean.min_max == "max") {
