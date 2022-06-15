@@ -128,9 +128,8 @@ with implicit default of 1.}
 to plot.  For \code{type = "formation"}, \code{stats} are among those
 specified in \code{nwstats.formula} of \code{\link{control.net}}; for
 \code{type = "duration","dissolution"}, \code{stats} are among those
-of the dissolution model (without \code{offset()}) with any data in 
-the simulations.  The default is to plot all statistics with any data
-in the simulations.}
+of the dissolution model (without \code{offset()}).  The default is 
+to plot all statistics.}
 
 \item{targ.line}{If \code{TRUE}, plot target or expected value line for
 the statistic of interest.}

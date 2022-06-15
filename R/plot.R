@@ -1142,8 +1142,7 @@ plot_stats_table <- function(data,
 #'        \code{stats} are among those specified in the call to 
 #'        \code{\link{netdx}}; for \code{type = "duration","dissolution"},
 #'        \code{stats} are among those of the dissolution model (without 
-#'        \code{offset()}) with any data in the simulations.  The default is to
-#'        plot all statistics with any data in the simulations.
+#'        \code{offset()}).  The default is to plot all statistics.
 #' @param plots.joined If \code{TRUE}, combine all statistics in one
 #'        plot, versus one plot per statistic if \code{FALSE}.
 #' @inheritParams plot.netsim
@@ -1438,9 +1437,8 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #'        to plot.  For \code{type = "formation"}, \code{stats} are among those
 #'        specified in \code{nwstats.formula} of \code{\link{control.net}}; for
 #'        \code{type = "duration","dissolution"}, \code{stats} are among those
-#'        of the dissolution model (without \code{offset()}) with any data in 
-#'        the simulations.  The default is to plot all statistics with any data
-#'        in the simulations.
+#'        of the dissolution model (without \code{offset()}).  The default is 
+#'        to plot all statistics.
 #' @param targ.line If \code{TRUE}, plot target or expected value line for
 #'        the statistic of interest.
 #' @param targ.col Vector of standard R colors for target statistic lines, with

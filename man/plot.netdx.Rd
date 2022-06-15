@@ -51,8 +51,7 @@ step.}
 \code{stats} are among those specified in the call to 
 \code{\link{netdx}}; for \code{type = "duration","dissolution"},
 \code{stats} are among those of the dissolution model (without 
-\code{offset()}) with any data in the simulations.  The default is to
-plot all statistics with any data in the simulations.}
+\code{offset()}).  The default is to plot all statistics.}
 
 \item{duration.imputed}{If \code{type="duration"}, a logical indicating
 whether or not to impute starting times for relationships extant at
