@@ -34,7 +34,10 @@ nonzero \code{nodematch} or \code{nodemix} change statistic in the
 dissolution model has type equal to that statistic, and has type equal to
 \code{edges} otherwise.  The statistics of interest for the duration and 
 dissolution tables are, respectively, the mean age of extant edges and the 
-edge dissolution rate, broken down by dissolution model dyad type.
+edge dissolution rate, broken down by dissolution model dyad type.  (The 
+current convention is to treat the mean age and dissolution rate for a 
+particular dissolution dyad type as 0 on time steps with no edges of that 
+type; this behavior may be changed in the future.)
 
 The columns are named \code{Target}, \code{Sim Mean}, \code{Pct Diff}, and 
 \code{Sim SD}.  For the formation table, \code{Sim Mean} refers to the mean
@@ -45,12 +48,7 @@ and dissolution tables, \code{Sim Mean} refers to the mean across
 simulations of the mean across time steps within simulation, and 
 \code{Sim SD} refers to the standard deviation across simulations of the 
 mean across time steps within simulation, for the age and dissolution 
-statistics defined above.  For duration and dissolution tables, time steps 
-in a particular simulation with no edges of a particular dissolution dyad 
-type are dropped when computing the mean across time steps within that 
-simulation for that dyad type, and simulations with no edges of a particular
-dissolution dyad type are dropped when computing the mean or standard 
-deviation across simulations for that dyad type.  The \code{Target} column 
+statistics defined above.  The \code{Target} column 
 indicates the target value (if present) for the network statistic, mean edge
 age, or edge dissolution rate, and the \code{Pct Diff} column gives 
 \code{(Sim Mean - Target)/Target} when \code{Target} is present.

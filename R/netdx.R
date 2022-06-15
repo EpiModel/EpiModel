@@ -532,11 +532,15 @@ toggles_to_diss_stats <- function(toggles, coef.diss, nsteps, nw, time.start = 0
     }
   }
   
-  ## 0/0 is possible, resulting in NaN, which is screened out by later na.rm's
+  ## 0/0 is possible, resulting in NaN, which we set to 0 for the time being...
   meanage <- edgeages/edgecounts[-1L,,drop=FALSE]
   meanageimputed <- edgeagesimputed/edgecounts[-1L,,drop=FALSE]
   propdiss <- edgediss/edgecounts[-NROW(edgecounts),,drop=FALSE]
-    
+
+  meanage[is.na(meanage)] <- 0
+  meanageimputed[is.na(meanageimputed)] <- 0
+  propdiss[is.na(propdiss)] <- 0
+  
   meanmeanageimputed <- colMeans(meanageimputed, na.rm = TRUE)
   meanpropdiss <- colMeans(propdiss, na.rm = TRUE)
     
