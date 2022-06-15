@@ -60,6 +60,4 @@ VignetteBuilder: knitr
 LinkingTo: Rcpp, ergm
 RoxygenNote: 7.2.0
 Encoding: UTF-8
-Remotes: github::statnet/network@master,
-    github::statnet/networkDynamic@master,
-    github::statnet/tergm@master
+Remotes: github::statnet/tergm@master
