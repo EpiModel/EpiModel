@@ -169,7 +169,7 @@ InitErgmTerm.fuzzynodematch <- function(nw, arglist, ...) {
   binary <- a$binary
   
   list(name = "fuzzynodematch",
-       coef.names = paste("fuzzynodematch", attr(nodecov, "name"), sep = "."),
+       coef.names = paste("fuzzynodematch", attr(nodecov, "name"), binary, sep = "."),
        binary = as.integer(binary),
        venues = as.integer(venues),
        lengths = as.integer(lengths),
