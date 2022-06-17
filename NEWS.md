@@ -4,7 +4,7 @@
 
 - Network models can now use predefined scenarios with the `use_scenario` function. See the **Working with Model Parameters** vignette for details.
 - The `trim_netest` function has been added to reduce `netest` object size in common use cases.
-- The `networkLite` class now supports edge attributes and a number of additional functionalities.
+- The `networkLite` class now supports some additional functionalities.
 - Duration = 1 time step models in `netsim` with `tergmLite = FALSE` now use `tergm` simulation to produce a `networkDynamic` as in the duration > 1 time step case.
 - `netdx` now supports heterogeneous dissolution diagnostics. See the example in `help("netdx")`.
 - Network model parameters can now be supplied to `param.net` via a `data.frame`. See the **Working with Model Parameters** vignette for details.

@@ -566,11 +566,11 @@ as.networkLite.network <- function(x, ...) {
     rv %n% name <- x %n% name
   }
 
-  eids <- unlist(get.dyads.eids(x, el[, 1], el[, 2], na.omit = FALSE))
+  eids <- unlist(get.dyads.eids(x, el[, 1], el[, 2]))
   for (name in list.edge.attributes(x)) {
-    rv %e% name <- unlist(get.edge.attribute(x, name, null.na = TRUE,
-                                             deleted.edges.omit = FALSE,
-                                             unlist = FALSE)[eids])
+    set.edge.attribute(rv, name, unlist(get.edge.attribute(x, name, null.na = TRUE,
+                                                           deleted.edges.omit = FALSE,
+                                                           unlist = FALSE)[eids]))
   }
 
   for (name in setdiff(names(attributes(x)), c("class", "names"))) {
@@ -604,7 +604,7 @@ to_network_networkLite <- function(x, ...) {
     nw %n% name <- x %n% name
   }
 
-  eids <- unlist(get.dyads.eids(nw, el[, 1], el[, 2], na.omit = FALSE))
+  eids <- unlist(get.dyads.eids(nw, el[, 1], el[, 2]))
   for (name in list.edge.attributes(x)) {
     set.edge.attribute(nw, name, x %e% name, eids)
   }
@@ -622,11 +622,11 @@ as.networkDynamic.networkLite <- function(object, ...) {
   as.networkDynamic(to_network_networkLite(object))
 }
 
-#' @rdname networkLitemethods
-#' @export
-valid.eids.networkLite <- function(x, ...) {
-  seq_len(NROW(x$el))
-}
+##### #' @rdname networkLitemethods
+##### #' @export
+##### valid.eids.networkLite <- function(x, ...) {
+#####   seq_len(NROW(x$el))
+##### }
 
 #' @rdname networkLitemethods
 #' @param attrnames vector specifying edge attributes to include in the tibble;
@@ -767,57 +767,57 @@ delete.network.attribute.networkLite <- function(x, attrname, ...) {
   invisible(x)
 }
 
-#' @rdname networkLitemethods
-#' @param eid edge indices to delete (between 1 and
-#'        \code{network.edgecount(x, na.omit = FALSE)})
-#' @export
-delete.edges.networkLite <- function(x, eid, ...) {
-  xn <- substitute(x)
-
-  eid <- as.integer(eid)
-  eid <- eid[eid >= 1 & eid <= NROW(x$el)]
-  if (length(eid) > 0) {
-    x$el <- x$el[-eid, ]
-  }
-
-  on.exit(eval.parent(call("<-", xn, x)))
-  invisible(x)
-}
-
-#' @rdname networkLitemethods
-#' @param vid vertex indices to delete (between 1 and \code{network.size(x)})
-#' @export
-delete.vertices.networkLite <- function(x, vid, ...) {
-  xn <- substitute(x)
-
-  vid <- as.integer(vid)
-  vid <- vid[vid >= 1 & vid <= network.size(x)]
-  if (length(vid) > 0) {
-    # drop edges with deleted nodes
-    x$el <- x$el[!(x$el$.tail %in% vid | x$el$.head %in% vid), ]
-
-    # drop vertex attributes for deleted nodes
-    x$attr <- x$attr[-vid, ]
-
-    # remap nodal indices for remaining edges
-    a <- seq_len(network.size(x))
-    b <- integer(network.size(x))
-    b[vid] <- 1L
-    b <- cumsum(b)
-    a <- a - b
-    x$el$.tail <- a[x$el$.tail]
-    x$el$.head <- a[x$el$.head]
-
-    # update network attributes
-    x %n% "n" <- x %n% "n" - length(vid)
-    if (is.bipartite(x)) {
-      x %n% "bipartite" <- x %n% "bipartite" - sum(vid <= x %n% "bipartite")
-    }
-  }
-
-  on.exit(eval.parent(call("<-", xn, x)))
-  invisible(x)
-}
+##### #' @rdname networkLitemethods
+##### #' @param eid edge indices to delete (between 1 and
+##### #'        \code{network.edgecount(x, na.omit = FALSE)})
+##### #' @export
+##### delete.edges.networkLite <- function(x, eid, ...) {
+#####   xn <- substitute(x)
+##### 
+#####   eid <- as.integer(eid)
+#####   eid <- eid[eid >= 1 & eid <= NROW(x$el)]
+#####   if (length(eid) > 0) {
+#####     x$el <- x$el[-eid, ]
+#####   }
+##### 
+#####   on.exit(eval.parent(call("<-", xn, x)))
+#####   invisible(x)
+##### }
+##### 
+##### #' @rdname networkLitemethods
+##### #' @param vid vertex indices to delete (between 1 and \code{network.size(x)})
+##### #' @export
+##### delete.vertices.networkLite <- function(x, vid, ...) {
+#####   xn <- substitute(x)
+##### 
+#####   vid <- as.integer(vid)
+#####   vid <- vid[vid >= 1 & vid <= network.size(x)]
+#####   if (length(vid) > 0) {
+#####     # drop edges with deleted nodes
+#####     x$el <- x$el[!(x$el$.tail %in% vid | x$el$.head %in% vid), ]
+##### 
+#####     # drop vertex attributes for deleted nodes
+#####     x$attr <- x$attr[-vid, ]
+##### 
+#####     # remap nodal indices for remaining edges
+#####     a <- seq_len(network.size(x))
+#####     b <- integer(network.size(x))
+#####     b[vid] <- 1L
+#####     b <- cumsum(b)
+#####     a <- a - b
+#####     x$el$.tail <- a[x$el$.tail]
+#####     x$el$.head <- a[x$el$.head]
+##### 
+#####     # update network attributes
+#####     x %n% "n" <- x %n% "n" - length(vid)
+#####     if (is.bipartite(x)) {
+#####       x %n% "bipartite" <- x %n% "bipartite" - sum(vid <= x %n% "bipartite")
+#####     }
+#####   }
+##### 
+#####   on.exit(eval.parent(call("<-", xn, x)))
+#####   invisible(x)
+##### }
 
 #' @rdname networkLitemethods
 #' @param nv number of vertices to add to the \code{networkLite}
