@@ -45,7 +45,7 @@ test_that("fuzzynodematch works as intended", {
       }
       
       for(binary in list(FALSE, TRUE)) {
-        gf_stats <- tergm.godfather(nw ~ fuzzynodematch(~attr, binary), toggles = toggles, stats.start = TRUE)
+        gf_stats <- tergm.godfather(nw ~ fuzzynodematch(~attr, binary = binary), toggles = toggles, stats.start = TRUE)
       
         manual_stats <- integer(NROW(toggles))
         for(i in seq_along(manual_stats)) {
