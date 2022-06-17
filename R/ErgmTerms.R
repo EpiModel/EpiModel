@@ -144,25 +144,21 @@ InitErgmTerm.absdiffby <- function(nw, arglist, ...) {
 #'
 InitErgmTerm.fuzzynodematch <- function(nw, arglist, ...) {
   a <- check.ErgmTerm(nw, arglist, 
-                      varnames = c("attr", "binary"),
-                      vartypes = c(ERGM_VATTR_SPEC, "logical"),
-                      defaultvalues = list(NULL, FALSE),
-                      required = c(TRUE, FALSE))
-
-  parse_sorted_unique_venues <- function(x) {
-    if(substr(x, 1, 1) == "v") {
-      out <- integer((nchar(x) + 1)/6)
-      for(i in seq_along(out)) {
-        out[i] <- as.integer(substr(x, 6*(i - 1) + 2, 6*i - 1))
-      }
-      sort(unique(out))
-    } else {
-      integer(0)
-    }
-  }
-
+                      varnames = c("attr", "split", "binary"),
+                      vartypes = c(ERGM_VATTR_SPEC, "character", "logical"),
+                      defaultvalues = list(NULL, "|", FALSE),
+                      required = c(TRUE, FALSE, FALSE))
+  
   nodecov <- ergm_get_vattr(a$attr, nw, accept = "character")
-  venues <- lapply(nodecov, parse_sorted_unique_venues)
+  venues <- strsplit(nodecov, split = a$split, fixed = TRUE)
+  
+  ## drop "" from venues
+  venues <- lapply(venues, function(x) x[nchar(x) > 0L])
+  
+  ## convert venues from strings to integers
+  levels <- sort(unique(unlist(venues)))
+  venues <- lapply(venues, function(x) sort(match(x, levels)))
+  
   lengths <- unlist(lapply(venues, length))
   positions <- cumsum(lengths) - lengths
   venues <- unlist(venues)
