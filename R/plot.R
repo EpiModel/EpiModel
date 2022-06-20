@@ -2053,6 +2053,14 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
       rownames(stats_table) <- nmstats
     } else {
       ## duration/dissolution plot
+      if (type == "duration" && isTRUE(duration.imputed)) {
+        warning("plotting duration statistics from a `netsim` object with",
+                " `duration.imputed = TRUE` will produce stochastic results",
+                " as durational corrections for onset-censored edges are",
+                " imputed randomly each time; this behavior may be changed in",
+                " the future")
+      }
+      
       if (isTRUE(x$control$save.network) &&
           isFALSE(x$control$tergmLite) &&
           isTRUE(x$nwparam[[network]]$coef.diss$diss.model.type == "edgesonly")) {
