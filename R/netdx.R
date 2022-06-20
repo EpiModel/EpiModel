@@ -411,8 +411,8 @@ make_dissolution_stats <- function(diag.sim, coef.diss,
     warning("duration/dissolution data contains undefined values due to", 
             " having zero edges of some dissolution dyad type(s) on some time",
             " step(s); these undefined values will be set to 0 when", 
-            " processing the data; this introduces a bias towards 0, and this",
-            " behavior may be changed in the future")
+            " processing the data; this behavior, which introduces a bias",
+            " towards 0, may be changed in the future")
   }
   
   ## exclude nodefactor from heterogeneous dissolution calculation
