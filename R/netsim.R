@@ -142,14 +142,16 @@ netsim <- function(x, param, init, control) {
     control$ncores <- min(parallel::detectCores(), control$ncores)
   }
 
+  dat_list <- lapply(seq_len(control$nsims), function(s) {
+    netsim_initialize(x, param, init, control, s)
+  })
+
   if (control$ncores == 1) {
-    sout <- lapply(seq_len(control$nsims), function(s) {
-      netsim_run(x, param, init, control, s)
-    })
+    sout <- Map(netsim_run, dat = dat_list, s = seq_len(control$nsims))
   } else if (control$ncores > 1) {
     doParallel::registerDoParallel(control$ncores)
-    sout <- foreach(s = seq_len(control$nsims)) %dopar% {
-      netsim_loop(x, param, init, control, s)
+    sout <- foreach(dat = dat_list, s = seq_len(control$nsims)) %dopar% {
+      netsim_run(dat, s)
     }
   }
 
@@ -160,75 +162,6 @@ netsim <- function(x, param, init, control) {
   }
 
   return(out)
-}
-
-#' @title Internal Function Running the Network Simulation Loop
-#'
-#' @description This function runs the initialization and simulation loop for
-#'              one simulation. Errors, warnings, and messages are pretty
-#'              printed using the \code{netsim_cond_msg} function (utils.R)
-#' @inheritParams initialize.net
-#'
-#' @inherit recovery.net return
-#'
-#' @keywords internal
-#'
-netsim_loop <- function(x, param, init, control, s) {
-  ## Instantiate random parameters
-  param <- generate_random_params(param, verbose = FALSE)
-
-  dat <- withCallingHandlers(
-    expr = {
-      ## Initialization Module
-      if (!is.null(control[["initialize.FUN"]])) {
-        current_mod <- "initialize.FUN"
-        at <- paste0("`Initialization Step` (", control$start, ")")
-        dat <- do.call(control[[current_mod]], list(x, param, init, control, s))
-      }
-
-      ### TIME LOOP
-      if (control$nsteps > 1) {
-        for (at in max(2, control$start):control$nsteps) {
-          current_mod <- "epimodel.internal"
-          dat <- set_current_timestep(dat, at)
-          # Applies updaters, if any
-          dat <- input_updater(dat)
-
-          ## Module order
-          morder <- get_control(dat, "module.order", override.null.error = TRUE)
-          if (is.null(morder)) {
-            bi.mods <- get_control(dat, "bi.mods")
-            user.mods <- get_control(dat, "user.mods")
-            lim.bi.mods <- bi.mods[
-              -which(bi.mods %in% c("initialize.FUN", "verbose.FUN"))
-            ]
-            morder <- c(user.mods, lim.bi.mods)
-          }
-
-          ## Evaluate modules
-          for (i in seq_along(morder)) {
-            current_mod <- morder[[i]]
-            mod.FUN <- get_control(dat, current_mod)
-            dat <- do.call(mod.FUN, list(dat, at))
-          }
-
-          ## Verbose module
-          verbose <- !is.null(control[["verbose.FUN"]])
-          if (verbose == TRUE) {
-            current_mod <- "verbose.FUN"
-            do.call(control[[current_mod]], list(dat, type = "progress", s, at))
-          }
-        }
-      }
-
-      dat
-    },
-    message = function(e) message(netsim_cond_msg("MESSAGE", current_mod, at)),
-    warning = function(e) message(netsim_cond_msg("WARNING", current_mod, at)),
-    error = function(e) message(netsim_cond_msg("ERROR", current_mod, at))
-  )
-
-  return(dat)
 }
 
 netsim_initialize <- function(x, param, init, control, s = 1) {
@@ -293,8 +226,7 @@ netsim_run_modules <- function(dat, s) {
   return(dat)
 }
 
-netsim_run <- function(x, param, init, control, s = 1) {
-  dat <- netsim_initialize(x, param, init, control)
+netsim_run <- function(dat, s = 1) {
   steps_to_run <- get_control(dat, "nsteps") - get_current_timestep(dat)
   dat <- netsim_run_nsteps(dat, steps_to_run, s)
   return(dat)
