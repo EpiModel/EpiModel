@@ -1208,6 +1208,13 @@ crosscheck.net <- function(x, param, init, control) {
          specified.", call. = FALSE)
   }
 
+  required_flags <- c("resimulate.network", "raw.output", "verbose")
+  for (flag in required_flags) {
+    if (is.null(control[[flag]])) {
+      control[[flag]] <- FALSE
+    }
+  }
+
   ## In-place assignment to update param and control
   assign("param", param, pos = parent.frame())
   assign("control", control, pos = parent.frame())
