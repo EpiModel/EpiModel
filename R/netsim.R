@@ -1,4 +1,3 @@
-
 #' @title Stochastic Network Models
 #'
 #' @description Simulates stochastic network epidemic models for infectious
@@ -232,7 +231,6 @@ netsim_loop <- function(x, param, init, control, s) {
   return(dat)
 }
 
-#' @export
 netsim_initialize <- function(x, param, init, control, s = 1) {
   param <- generate_random_params(param, verbose = FALSE)
   dat <- control[["initialize.FUN"]](x, param, init, control, s)
@@ -243,7 +241,6 @@ netsim_initialize <- function(x, param, init, control, s = 1) {
   return(dat)
 }
 
-#' @export
 netsim_run_nsteps <- function(dat, nsteps, s) {
   for (n in seq_len(nsteps)) {
     dat <- increment_timestep(dat)
@@ -252,7 +249,6 @@ netsim_run_nsteps <- function(dat, nsteps, s) {
   return(dat)
 }
 
-#' @export
 netsim_run_modules <- function(dat, s) {
   at <- get_current_timestep(dat)
 
