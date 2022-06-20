@@ -165,7 +165,7 @@
 #' nw <- network_initialize(n = 100)
 #' formation <- ~edges
 #' target.stats <- 50
-#' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
+#' coef.diss <- dissolution_coefs(dissolution = ~ offset(edges), duration = 20)
 #' est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 #'
 #' # Random epidemic parameter list (here act.rate values are sampled uniformly
@@ -228,48 +228,52 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
   }
 
   ## random.params checks
-   if ("random.params" %in% names.dot.args) {
-     for (nm in names(p[["random.params"]])) {
-       if (nm %in% names(p)) {
+  if ("random.params" %in% names.dot.args) {
+    for (nm in names(p[["random.params"]])) {
+      if (nm %in% names(p)) {
         warning(
           "The parameter `", nm, "` is defined twice, once as fixed",
           " and once as a random parameter.\n Only the random parameter",
           " definition will be used."
         )
-       }
-     }
-   }
+      }
+    }
+  }
 
   ## Defaults and Checks
   if ("b.rate" %in% names.dot.args) {
     p[["a.rate"]] <- dot.args[["b.rate"]]
     stop("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate
          to a.rate. ", "See documentation for details.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
   if ("b.rate.g2" %in% names.dot.args) {
     p[["a.rate.g2"]] <- dot.args[["b.rate.g2"]]
     stop("EpiModel 1.7.0 onward renamed the birth rate parameter b.rate.g2 to
          a.rate.g2. ", "See documentation for details.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
   # Check for mode to group suffix change
   m2.flag <- grep(".m2", names(p))
   if (length(m2.flag) > 0) {
     names(p) <- gsub(".m2", ".g2", names(p))
-    warning("EpiModel 2.0+ has updated parameter suffixes. ",
-            "All .m2 parameters changed to .g2. See documentation.")
-
+    warning(
+      "EpiModel 2.0+ has updated parameter suffixes. ",
+      "All .m2 parameters changed to .g2. See documentation."
+    )
   }
   if (missing(act.rate)) {
     p[["act.rate"]] <- 1
   }
   p[["vital"]] <- ifelse(!missing(a.rate) | !missing(ds.rate) |
-                      !missing(di.rate) | !missing(dr.rate), TRUE, FALSE)
+    !missing(di.rate) | !missing(dr.rate), TRUE, FALSE)
   if ("act.rate.g2" %in% names.dot.args) {
     warning("act.rate.g2 parameter was entered. ",
-            "If using built-in models, only act.rate parameter will apply.",
-            call. = FALSE)
+      "If using built-in models, only act.rate parameter will apply.",
+      call. = FALSE
+    )
   }
 
   if (!is.null(p[["inter.eff"]]) && is.null(p[["inter.start"]])) {
@@ -317,7 +321,6 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
 #' @export
 #'
 update_params <- function(param, new.param.list) {
-
   if (!inherits(param, "param.net")) {
     stop("x should be object of class param.net")
   }
@@ -425,11 +428,13 @@ param_random <- function(values, prob = NULL) {
 #' my_randoms <- list(
 #'   act.rate = param_random(c(0.25, 0.5, 0.75)),
 #'   tx.prob = function() rbeta(1, 1, 2),
-#'   stratified.test.rate = function() c(
-#'     rnorm(1, 0.05, 0.01),
-#'     rnorm(1, 0.15, 0.03),
-#'     rnorm(1, 0.25, 0.05)
-#'   )
+#'   stratified.test.rate = function() {
+#'     c(
+#'       rnorm(1, 0.05, 0.01),
+#'       rnorm(1, 0.15, 0.03),
+#'       rnorm(1, 0.25, 0.05)
+#'     )
+#'   }
 #' )
 #'
 #' # Parameter model with fixed and random parameters
@@ -451,22 +456,22 @@ param_random <- function(values, prob = NULL) {
 #' ## Addition of the `param.random.set` `data.frame`
 #'
 #' # This function will generate sets of correlated parameters
-#'  generate_correlated_params <- function() {
-#'    param.unique <- runif(1)
-#'    param.set.1 <- param.unique + runif(2)
-#'    param.set.2 <- param.unique * rnorm(3)
+#' generate_correlated_params <- function() {
+#'   param.unique <- runif(1)
+#'   param.set.1 <- param.unique + runif(2)
+#'   param.set.2 <- param.unique * rnorm(3)
 #'
-#'    return(list(param.unique, param.set.1, param.set.2))
-#'  }
+#'   return(list(param.unique, param.set.1, param.set.2))
+#' }
 #'
-#'  # Data.frame set of random parameters :
-#'  correlated_params <- t(replicate(10, unlist(generate_correlated_params())))
-#'  correlated_params <- as.data.frame(correlated_params)
-#'  colnames(correlated_params) <- c(
-#'    "param.unique",
-#'    "param.set.1_1", "param.set.1_2",
-#'    "param.set.2_1", "param.set.2_2", "param.set.2_3"
-#'  )
+#' # Data.frame set of random parameters :
+#' correlated_params <- t(replicate(10, unlist(generate_correlated_params())))
+#' correlated_params <- as.data.frame(correlated_params)
+#' colnames(correlated_params) <- c(
+#'   "param.unique",
+#'   "param.set.1_1", "param.set.1_2",
+#'   "param.set.2_1", "param.set.2_2", "param.set.2_3"
+#' )
 #'
 #' # Define random parameter list with the `param.random.set` element
 #' my_randoms <- list(
@@ -482,11 +487,10 @@ param_random <- function(values, prob = NULL) {
 #' # end user.
 #' paramDraw <- generate_random_params(param, verbose = TRUE)
 #' paramDraw
-#'
 #' }
 generate_random_params <- function(param, verbose = FALSE) {
   if (is.null(param[["random.params"]]) ||
-      length(param[["random.params"]]) == 0) {
+    length(param[["random.params"]]) == 0) {
     return(param)
   } else {
     random.params <- param[["random.params"]]
@@ -517,7 +521,8 @@ generate_random_params <- function(param, verbose = FALSE) {
     set.elements <- names(param.random.set)
     correct_format <- grepl("^[a-zA-Z0-9.]*(_[0-9]+)?$", set.elements)
     if (!all(correct_format)) {
-      stop("The following column names in `param.random.set` are malformed: \n",
+      stop(
+        "The following column names in `param.random.set` are malformed: \n",
         paste0(set.elements[!correct_format], collapse = ", "), "\n\n",
         "you can check the names with ",
         '`grepl("^[a-zA-Z0-9.]*(_[0-9]+)?$", your.names)` \n',
@@ -555,15 +560,19 @@ generate_random_params <- function(param, verbose = FALSE) {
   }
 
   if (!all(vapply(random.params, is.function, TRUE))) {
-    stop("all elements of `random.params` must be functions \n",
-         "(Except 'param.random.set')")
+    stop(
+      "all elements of `random.params` must be functions \n",
+      "(Except 'param.random.set')"
+    )
   }
 
   duplicated.rng <- names(rng_values) %in% rng_names
   if (any(duplicated.rng)) {
-    warning("Some parameters are set to be randomly assigned twice: \n",
-            paste0(rng_names[duplicated.rng], collapse = ", "), "\n\n",
-            "The version from a generator function will be used")
+    warning(
+      "Some parameters are set to be randomly assigned twice: \n",
+      paste0(rng_names[duplicated.rng], collapse = ", "), "\n\n",
+      "The version from a generator function will be used"
+    )
   }
 
   rng_values[rng_names] <- lapply(random.params, do.call, args = list())
@@ -575,7 +584,7 @@ generate_random_params <- function(param, verbose = FALSE) {
 
   if (verbose == TRUE) {
     msg <-
-     "The following values were randomly generated for the given parameters: \n"
+      "The following values were randomly generated for the given parameters: \n"
     msg <- c(msg, paste0("`", names(rng_values), "`: ", rng_values, "\n"))
     message(msg)
   }
@@ -661,8 +670,10 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
   m2.init <- grep("m2", names(p), value = TRUE)
   if (length(m2.init) > 0) {
     names(p) <- gsub(".m2", ".g2", names(p))
-    warning("EpiModel 2.0+ updated initial condition suffixes. ",
-            "All .m2 initial conditions changed to .g2. See documentation.")
+    warning(
+      "EpiModel 2.0+ updated initial condition suffixes. ",
+      "All .m2 initial conditions changed to .g2. See documentation."
+    )
   }
   if (!is.null(p[["i.num"]]) & !is.null(p[["status.vector"]])) {
     stop("Use i.num OR status.vector to set initial infected")
@@ -671,7 +682,7 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
     stop("infTime.vector may only be used if status.vector is used")
   }
   if (!is.null(p[["infTime.vector"]]) &
-      length(p[["infTime.vector"]]) != length(p[["status.vector"]])) {
+    length(p[["infTime.vector"]]) != length(p[["status.vector"]])) {
     stop("Length of infTime.vector must match length of status.vector")
   }
 
@@ -878,7 +889,8 @@ control.net <- function(type,
                         raw.output = FALSE,
                         tergmLite.track.duration = FALSE,
                         set.control.ergm = control.simulate.formula(
-                          MCMC.burnin = 2e5),
+                          MCMC.burnin = 2e5
+                        ),
                         set.control.stergm = NULL,
                         set.control.tergm = control.simulate.formula.tergm(),
                         ...) {
@@ -920,8 +932,9 @@ control.net <- function(type,
   if ("depend" %in% names(dot.args)) {
     p[["resimulate.network"]] <- dot.args[["depend"]]
     stop("EpiModel >= 2.0 has renamed the control.net setting `depend` to ",
-         "`resimulate.network`. Update your code accordingly.",
-         call. = FALSE)
+      "`resimulate.network`. Update your code accordingly.",
+      call. = FALSE
+    )
   }
 
   ## Module classification
@@ -936,7 +949,7 @@ control.net <- function(type,
         index <- index + 1
       }
     }
-  } else{
+  } else {
     p[["bi.mods"]] <- bi.mods
   }
   p[["user.mods"]] <- grep(".FUN", names(dot.args), value = TRUE)
@@ -944,11 +957,13 @@ control.net <- function(type,
 
   ## Defaults and checks
 
-  #Check whether any base modules have been redefined by user (note: must come
+  # Check whether any base modules have been redefined by user (note: must come
   # after above)
-  bi.nms <- bi.nms[-which(bi.nms %in% c("initialize.FUN", "resim_nets.FUN",
-                                        "verbose.FUN", "nwupdate.FUN",
-                                        "prevalence.FUN"))]
+  bi.nms <- bi.nms[-which(bi.nms %in% c(
+    "initialize.FUN", "resim_nets.FUN",
+    "verbose.FUN", "nwupdate.FUN",
+    "prevalence.FUN"
+  ))]
   if (length(bi.nms) > 0) {
     flag1 <- logical()
     for (args in seq_along(bi.nms)) {
@@ -994,7 +1009,8 @@ control.net <- function(type,
   }
   if (p[["tergmLite"]] == TRUE & p[["resimulate.network"]] == FALSE) {
     message("Because tergmLite = TRUE, resetting resimulate.network = TRUE",
-            call. = FALSE)
+      call. = FALSE
+    )
     p[["resimulate.network"]] <- TRUE
   }
 
@@ -1026,13 +1042,13 @@ crosscheck.net <- function(x, param, init, control) {
   check.control.class("net", "EpiModel crosscheck.net")
 
   if (!is.null(control[["type"]]) && length(control[["user.mods"]]) == 0) {
-
     if (control[["start"]] == 1 && control[["skip.check"]] == FALSE) {
 
       # Main class check ----------------------------------------------------
       if (!inherits(x, c("netest", "netsim"))) {
         stop("x must be either an object of class netest or class netsim",
-             call. = FALSE)
+          call. = FALSE
+        )
       }
       if (!inherits(param, "param.net")) {
         stop("param must an object of class param.net", call. = FALSE)
@@ -1088,19 +1104,21 @@ crosscheck.net <- function(x, param, init, control) {
           if (any(svals %in% c("s", "i", "r") == FALSE)) {
             stop("status.vector contains values other than \"s\", \"i\",
                  and \"r\" ",
-                 call. = FALSE)
+              call. = FALSE
+            )
           }
         } else {
           if (any(svals %in% c("s", "i") == FALSE)) {
             stop("status.vector contains values other than \"s\" and \"i\" ",
-                 call. = FALSE)
+              call. = FALSE
+            )
           }
         }
       }
 
       # Two-group model checks for inital conditions
       if (nGroups == 2 & is.null(init[["i.num.g2"]]) &
-          is.null(init[["status.vector"]]) & statOnNw == FALSE) {
+        is.null(init[["status.vector"]]) & statOnNw == FALSE) {
         stop("Specify i.num.g2 for two-group model simulations", call. = FALSE)
       }
 
@@ -1115,11 +1133,11 @@ crosscheck.net <- function(x, param, init, control) {
       }
       if (control[["type"]] == "SIR") {
         if (is.null(init[["r.num"]]) & is.null(init[["status.vector"]]) &
-            statOnNw == FALSE) {
+          statOnNw == FALSE) {
           stop("Specify r.num in init.net", call. = FALSE)
         }
         if (nGroups == 2 & is.null(init[["r.num.g2"]]) &
-            is.null(init[["status.vector"]]) & statOnNw == FALSE) {
+          is.null(init[["status.vector"]]) & statOnNw == FALSE) {
           stop("Specify r.num.g2 in init.net", call. = FALSE)
         }
       }
@@ -1141,38 +1159,39 @@ crosscheck.net <- function(x, param, init, control) {
           }
         }
       }
-
     }
 
     if (control[["start"]] > 1) {
-
       control[["resimulate.network"]] <- TRUE
 
       if (control[["skip.check"]] == FALSE) {
         if (!inherits(x, "netsim")) {
           stop("x must be a netsim object if control setting start > 1",
-               call. = FALSE)
+            call. = FALSE
+          )
         }
         if (is.null(x[["attr"]])) {
           stop("x must contain attr to restart simulation, see save.other ",
-               "control setting", call. = FALSE)
+            "control setting",
+            call. = FALSE
+          )
         }
         if (is.null(x[["network"]])) {
           stop("x must contain network object to restart simulation, ",
-               call. = FALSE)
+            call. = FALSE
+          )
         }
         if (control[["nsteps"]] < control[["start"]]) {
           stop("control setting nsteps must be > control setting start in ",
-               "restarted simulations", call. = FALSE)
+            "restarted simulations",
+            call. = FALSE
+          )
         }
         if (control[["start"]] > x[["control"]][["nsteps"]] + 1) {
           stop("control setting start must be 1 greater than the nsteps in
                the ", "prior simulation", call. = FALSE)
         }
-
-
       }
-
     }
 
 
@@ -1190,8 +1209,7 @@ crosscheck.net <- function(x, param, init, control) {
             control[["f.args"]][i] <- gsub(".FUN", ".net", args[i])
           }
         }
-      }
-      else {
+      } else {
         for (i in seq_along(args)) {
           if (is.null(control[[args[i]]])) {
             temp <- get(gsub(".FUN", ".2g.net", args[i]))
@@ -1213,6 +1231,10 @@ crosscheck.net <- function(x, param, init, control) {
     if (is.null(control[[flag]])) {
       control[[flag]] <- FALSE
     }
+  }
+
+  if (is.null(control$start)) {
+    control$start <- 1
   }
 
   ## In-place assignment to update param and control
@@ -1262,8 +1284,10 @@ param.net_from_table <- function(long.param.df) {
     )
   }
   if (!all(long.param.df[["type"]] %in% c("numeric", "logical", "character"))) {
-    stop("The `type` column must contain only 'numeric', 'logical' or",
-         " 'character'")
+    stop(
+      "The `type` column must contain only 'numeric', 'logical' or",
+      " 'character'"
+    )
   }
   check_params_names(long.param.df[["param"]])
 

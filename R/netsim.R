@@ -143,13 +143,12 @@ netsim <- function(x, param, init, control) {
     control$ncores <- min(parallel::detectCores(), control$ncores)
   }
 
-  s <- NULL
   if (control$ncores == 1) {
     sout <- lapply(seq_len(control$nsims), function(s) {
       netsim_run(x, param, init, control, s)
     })
   } else if (control$ncores > 1) {
-    doParallel::registerDoParallel(ncores)
+    doParallel::registerDoParallel(control$ncores)
     sout <- foreach(s = seq_len(control$nsims)) %dopar% {
       netsim_loop(x, param, init, control, s)
     }
@@ -237,19 +236,19 @@ netsim_loop <- function(x, param, init, control, s) {
 netsim_initialize <- function(x, param, init, control, s = 1) {
   param <- generate_random_params(param, verbose = FALSE)
   dat <- control[["initialize.FUN"]](x, param, init, control, s)
-  dat <- set_current_timestep(dat, 1)
+  if (get_control(dat, "start") != 1) {
+    dat <- set_current_timestep(dat, get_control(dat, "start") - 1)
+  }
 
   return(dat)
 }
 
 #' @export
 netsim_run_nsteps <- function(dat, nsteps, s) {
-  last_timestep <- get_current_timestep(dat) + nsteps
-  while (get_current_timestep(dat) < last_timestep) {
+  for (n in seq_len(nsteps)) {
     dat <- increment_timestep(dat)
     dat <- netsim_run_modules(dat, s)
   }
-
   return(dat)
 }
 
@@ -300,6 +299,7 @@ netsim_run_modules <- function(dat, s) {
 
 netsim_run <- function(x, param, init, control, s = 1) {
   dat <- netsim_initialize(x, param, init, control)
-  dat <- netsim_run_nsteps(dat, get_control(dat, "nsteps") - 1, s)
+  steps_to_run <- get_control(dat, "nsteps") - get_current_timestep(dat)
+  dat <- netsim_run_nsteps(dat, steps_to_run, s)
   return(dat)
 }
