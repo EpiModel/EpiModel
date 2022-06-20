@@ -365,6 +365,8 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
 make_formation_table <- function(stats, targets) {
   ess <- lapply(stats, function(x) apply(x, 2L, function(y) if (sum(!is.na(y)) <= 1L) NA else effectiveSize(na.omit(y))))
   ess <- colSums(do.call(rbind, ess), na.rm = TRUE)
+
+  stats.onesim.sd <- apply(do.call(rbind, lapply(stats, colMeans, na.rm = TRUE)), 2, sd, na.rm = TRUE)
   
   stats <- do.call(rbind, stats)
   stats.means <- colMeans(stats, na.rm = TRUE)
@@ -375,7 +377,9 @@ make_formation_table <- function(stats, targets) {
     sorder = seq_along(names(stats.means)),
     names = names(stats.means),
     stats.means,
-    stats.se
+    stats.se,
+    stats.onesim.sd,
+    stats.sd
   )
 
   ## Create stats.formation table for output
@@ -385,16 +389,20 @@ make_formation_table <- function(stats, targets) {
 
   stats.table$reldiff <- (stats.table$stats.means - stats.table$targets) /
     stats.table$targets * 100
-  stats.table.formation <- stats.table[, c(2, 4, 6, 5)]
+  stats.table.formation <- stats.table[, c(2, 4, 8, 5)]
   stats.table.formation <- cbind(stats.table.formation, 
                                  zscore = (stats.table.formation[,2] - stats.table.formation[,1]) / 
-                                           stats.table.formation[,4])
+                                           stats.table.formation[,4],
+                                 onesim.sd = stats.table[,6],
+                                 stats.sd = stats.table[,7])
   colnames(stats.table.formation) <- c(
     "Target",
     "Sim Mean",
     "Pct Diff",
     "Sim SE",
-    "Z Score"
+    "Z Score",
+    "SD(1-Sim Mean)",
+    "SD(Statistic)"
   )
 
   return(stats.table.formation)
@@ -443,25 +451,33 @@ make_dissolution_stats <- function(diag.sim, coef.diss,
   meanage_imptd_ess <- colSums(do.call(rbind, meanage_imptd_ess), na.rm = TRUE)
   meanage_imptd_se <- meanage_imptd_sd/sqrt(meanage_imptd_ess)
 
+  meanage_imptd_onesim_sd <- apply(do.call(rbind, lapply(diag.sim, `[[`, "meanmeanageimputed")), 2, sd, na.rm = TRUE)
+
   propdiss_mean <- apply(propdiss, 2, mean, na.rm = TRUE)
   propdiss_sd <- apply(propdiss, 2, sd, na.rm = TRUE)
   propdiss_ess <- lapply(propdiss_list, function(x) apply(x, 2L, function(y) if (sum(!is.na(y)) <= 1L) NA else effectiveSize(na.omit(y))))
   propdiss_ess <- colSums(do.call(rbind, propdiss_ess), na.rm = TRUE)
   propdiss_se <- propdiss_sd/sqrt(propdiss_ess)
+
+  propdiss_onesim_sd <- apply(do.call(rbind, lapply(diag.sim, `[[`, "meanpropdiss")), 2, sd, na.rm = TRUE)
   
   stats.table.duration <- data.frame("Target" = durs,
                                      "Sim Mean" = meanage_imptd_mean,
                                      "Pct Diff" = 100*(meanage_imptd_mean - durs)/durs,
                                      "Sim SE" = meanage_imptd_se,
-                                     "Z Score" = (meanage_imptd_mean - durs)/meanage_imptd_se)
-  colnames(stats.table.duration) <- c("Target", "Sim Mean", "Pct Diff", "Sim SE", "Z Score")
+                                     "Z Score" = (meanage_imptd_mean - durs)/meanage_imptd_se,
+                                     "SD(1-Sim Mean)" = meanage_imptd_onesim_sd,
+                                     "SD(Statistic)" = meanage_imptd_sd)
+  colnames(stats.table.duration) <- c("Target", "Sim Mean", "Pct Diff", "Sim SE", "Z Score", "SD(1-Sim Mean)", "SD(Statistic)")
   
   stats.table.dissolution <- data.frame("Target" = 1/durs,
                                         "Sim Mean" = propdiss_mean,
                                         "Pct Diff" = 100*(propdiss_mean - 1/durs)/(1/durs),
                                         "Sim SE" = propdiss_se,
-                                        "Z Score" = (propdiss_mean - 1/durs)/propdiss_se)
-  colnames(stats.table.dissolution) <- c("Target", "Sim Mean", "Pct Diff", "Sim SE", "Z Score")
+                                        "Z Score" = (propdiss_mean - 1/durs)/propdiss_se,
+                                        "SD(1-Sim Mean)" = propdiss_onesim_sd,
+                                        "SD(Statistic)" = propdiss_sd)
+  colnames(stats.table.dissolution) <- c("Target", "Sim Mean", "Pct Diff", "Sim SE", "Z Score", "SD(1-Sim Mean)", "SD(Statistic)")
 
   # Construct return list
   return(
