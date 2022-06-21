@@ -207,7 +207,7 @@ responsibility when using new modules.
 nw <- network_initialize(n = 100)
 formation <- ~edges
 target.stats <- 50
-coef.diss <- dissolution_coefs(dissolution = ~ offset(edges), duration = 20)
+coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
 est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 
 # Random epidemic parameter list (here act.rate values are sampled uniformly

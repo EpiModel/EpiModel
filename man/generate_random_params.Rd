@@ -64,13 +64,11 @@ random parameters to be correlated. To achieve this, a whole row of the
 my_randoms <- list(
   act.rate = param_random(c(0.25, 0.5, 0.75)),
   tx.prob = function() rbeta(1, 1, 2),
-  stratified.test.rate = function() {
-    c(
-      rnorm(1, 0.05, 0.01),
-      rnorm(1, 0.15, 0.03),
-      rnorm(1, 0.25, 0.05)
-    )
-  }
+  stratified.test.rate = function() c(
+    rnorm(1, 0.05, 0.01),
+    rnorm(1, 0.15, 0.03),
+    rnorm(1, 0.25, 0.05)
+  )
 )
 
 # Parameter model with fixed and random parameters
@@ -92,22 +90,22 @@ paramDraw
 ## Addition of the `param.random.set` `data.frame`
 
 # This function will generate sets of correlated parameters
-generate_correlated_params <- function() {
-  param.unique <- runif(1)
-  param.set.1 <- param.unique + runif(2)
-  param.set.2 <- param.unique * rnorm(3)
+ generate_correlated_params <- function() {
+   param.unique <- runif(1)
+   param.set.1 <- param.unique + runif(2)
+   param.set.2 <- param.unique * rnorm(3)
 
-  return(list(param.unique, param.set.1, param.set.2))
-}
+   return(list(param.unique, param.set.1, param.set.2))
+ }
 
-# Data.frame set of random parameters :
-correlated_params <- t(replicate(10, unlist(generate_correlated_params())))
-correlated_params <- as.data.frame(correlated_params)
-colnames(correlated_params) <- c(
-  "param.unique",
-  "param.set.1_1", "param.set.1_2",
-  "param.set.2_1", "param.set.2_2", "param.set.2_3"
-)
+ # Data.frame set of random parameters :
+ correlated_params <- t(replicate(10, unlist(generate_correlated_params())))
+ correlated_params <- as.data.frame(correlated_params)
+ colnames(correlated_params) <- c(
+   "param.unique",
+   "param.set.1_1", "param.set.1_2",
+   "param.set.2_1", "param.set.2_2", "param.set.2_3"
+ )
 
 # Define random parameter list with the `param.random.set` element
 my_randoms <- list(
@@ -123,5 +121,6 @@ param <- param.net(inf.prob = 0.3, random.params = my_randoms)
 # end user.
 paramDraw <- generate_random_params(param, verbose = TRUE)
 paramDraw
+
 }
 }
