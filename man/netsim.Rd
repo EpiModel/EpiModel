@@ -77,7 +77,7 @@ nw <- network_initialize(n = 100)
 nw <- set_vertex_attribute(nw, "group", rep(1:2, each = 50))
 formation <- ~edges
 target.stats <- 50
-coef.diss <- dissolution_coefs(dissolution = ~ offset(edges), duration = 20)
+coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
 est1 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 
 # Epidemic model
@@ -93,31 +93,23 @@ summary(mod1, at = 50)
 
 ## Example 2: SIR Model with Network Feedback
 # Recalculate dissolution coefficient with departure rate
-coef.diss <- dissolution_coefs(
-  dissolution = ~ offset(edges), duration = 20,
-  d.rate = 0.0021
-)
+coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20,
+                               d.rate = 0.0021)
 
 # Reestimate the model with new coefficient
 est2 <- netest(nw, formation, target.stats, coef.diss)
 
 # Reset parameters to include demographic rates
-param <- param.net(
-  inf.prob = 0.3, inf.prob.g2 = 0.15,
-  rec.rate = 0.02, rec.rate.g2 = 0.02,
-  a.rate = 0.002, a.rate.g2 = NA,
-  ds.rate = 0.001, ds.rate.g2 = 0.001,
-  di.rate = 0.001, di.rate.g2 = 0.001,
-  dr.rate = 0.001, dr.rate.g2 = 0.001
-)
-init <- init.net(
-  i.num = 10, i.num.g2 = 10,
-  r.num = 0, r.num.g2 = 0
-)
-control <- control.net(
-  type = "SIR", nsteps = 100, nsims = 5,
-  resimulate.network = TRUE, tergmLite = TRUE
-)
+param <- param.net(inf.prob = 0.3, inf.prob.g2 = 0.15,
+                   rec.rate = 0.02, rec.rate.g2 = 0.02,
+                   a.rate = 0.002, a.rate.g2 = NA,
+                   ds.rate = 0.001, ds.rate.g2 = 0.001,
+                   di.rate = 0.001, di.rate.g2 = 0.001,
+                   dr.rate = 0.001, dr.rate.g2 = 0.001)
+init <- init.net(i.num = 10, i.num.g2 = 10,
+                 r.num = 0, r.num.g2 = 0)
+control <- control.net(type = "SIR", nsteps = 100, nsims = 5,
+                       resimulate.network = TRUE, tergmLite = TRUE)
 
 # Simulate the model with new network fit
 mod2 <- netsim(est2, param, init, control)
