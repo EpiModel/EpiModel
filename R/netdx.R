@@ -426,6 +426,14 @@ make_dissolution_stats <- function(diag.sim, coef.diss,
     cat("\n- Calculating duration statistics")
   }
   
+  if (any(unlist(lapply(diag.sim, `[[`, "anyNA")))) {
+    warning("duration/dissolution data contains undefined values due to", 
+            " having zero edges of some dissolution dyad type(s) on some time",
+            " step(s); these undefined values will be set to 0 when", 
+            " processing the data; this behavior, which introduces a bias",
+            " towards 0, may be changed in the future")
+  }
+  
   ## exclude nodefactor from heterogeneous dissolution calculation
   if (coef.diss$diss.model.type == "nodefactor") {
     durs <- mean(coef.diss$duration)
@@ -573,9 +581,14 @@ toggles_to_diss_stats <- function(toggles, coef.diss, nsteps, nw, time.start = 0
   meanageimputed <- edgeagesimputed/edgecounts[-1L,,drop=FALSE]
   propdiss <- edgediss/edgecounts[-NROW(edgecounts),,drop=FALSE]
 
-  meanage[is.na(meanage)] <- 0
-  meanageimputed[is.na(meanageimputed)] <- 0
-  propdiss[is.na(propdiss)] <- 0
+  if (any(is.na(meanage)) || any(is.na(meanageimputed)) || any(is.na(propdiss))) {
+    meanage[is.na(meanage)] <- 0
+    meanageimputed[is.na(meanageimputed)] <- 0
+    propdiss[is.na(propdiss)] <- 0
+    anyNA <- TRUE
+  } else {
+    anyNA <- FALSE
+  }
   
   meanmeanageimputed <- colMeans(meanageimputed, na.rm = TRUE)
   meanpropdiss <- colMeans(propdiss, na.rm = TRUE)
@@ -588,5 +601,6 @@ toggles_to_diss_stats <- function(toggles, coef.diss, nsteps, nw, time.start = 0
               meanageimputed = meanageimputed,
               propdiss = propdiss,
               meanpropdiss = meanpropdiss,
-              meanmeanageimputed = meanmeanageimputed))
+              meanmeanageimputed = meanmeanageimputed,
+              anyNA = anyNA))
 }
