@@ -46,6 +46,8 @@ for (trim in c(FALSE, TRUE)) {
     plot(dx3, method = "b", type = "duration")
     plot(dx3, type = "dissolution")
     plot(dx3, method = "b", type = "dissolution")
+    plot(dx3, type = "formation", sim.lines = FALSE, plots.joined = FALSE, 
+         mean.line = FALSE, qnts = FALSE)
   
     ## Reduced monitoring formula
     dx4 <- netdx(est1, nsims = 2, nsteps = 10, verbose = FALSE,
