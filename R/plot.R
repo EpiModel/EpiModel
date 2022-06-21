@@ -1048,12 +1048,16 @@ plot_stats_table <- function(data,
                     if (isTRUE(plots.joined) && isTRUE(targ.line)) targets,
                     if (isFALSE(plots.joined) && isTRUE(targ.line)) targets[j])
         
-        ylimsj <- suppressWarnings(c(0.9*min(limdat, na.rm = TRUE), 1.1*max(limdat, na.rm = TRUE)))
+        ylimsj <- suppressWarnings(c(min(limdat, na.rm = TRUE), max(limdat, na.rm = TRUE)))
         
         if (any(is.infinite(ylimsj))) {
           ## should both be infinite in this case, indicating no non-missing data to plot;
           ## set both limits to 0 simply to avoid errors when calling plot below
           ylimsj <- c(0,0)
+        } else {
+          ## give +/- 10% buffer in a way that works for signed statistics
+          ylimsj[1] <- ylimsj[1] - 0.1*abs(ylimsj[1])
+          ylimsj[2] <- ylimsj[2] + 0.1*abs(ylimsj[2])
         }
         
         ylims[[j]] <- ylimsj
