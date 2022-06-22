@@ -125,9 +125,58 @@
 #'
 netsim <- function(x, param, init, control) {
   crosscheck.net(x, param, init, control)
-  if (!is.null(control[["verbose.FUN"]])) {
-    do.call(control[["verbose.FUN"]], list(control, type = "startup"))
+  control <- netsim_validate_control(control)
+  if (!is.null(control[["verbose.FUN"]]))
+    control[["verbose.FUN"]](control, type = "startup")
+
+  if (control$ncores > 1)
+    doParallel::registerDoParallel(control$ncores)
+
+  if (control$ncores == 1) {
+    dat_list <- lapply(
+      seq_len(control$nsims),
+      function(s) {
+        netsim_initialize(x, param, init, control, s)
+      }
+    )
+    dat_list <- Map(netsim_run, dat = dat_list, s = seq_along(dat_list))
+  } else {
+    dat_list <- foreach(s = seq_len(control$nsims)) %dopar% {
+      netsim_initialize(x, param, init, control, s)
+    }
+    dat_list <- foreach(dat = dat_list, s = seq_along(dat_list)) %dopar% {
+      netsim_run(dat, s)
+    }
+
   }
+
+  if (control$ncores > 1)
+    doParallel::stopImplicitCluster()
+
+  out <- if (control$raw.output) dat_list else process_out.net(dat_list)
+
+  if (control[[".checkpoint.clear"]])
+    netsim_clear_checkpoint(control)
+
+  return(out)
+}
+
+# Ensure default values for control.net
+#
+netsim_validate_control <- function(control) {
+  required_controls <- c(
+    "resimulate.network",
+    "raw.output",
+    "verbose"
+  )
+
+  for (flag in required_controls) {
+    if (is.null(control[[flag]]))
+      control[[flag]] <- FALSE
+  }
+
+  if (is.null(control$start))
+    control$start <- 1
 
   if (control$nsims == 1) {
     control$ncores <- 1
@@ -135,45 +184,51 @@ netsim <- function(x, param, init, control) {
     control$ncores <- min(parallel::detectCores(), control$ncores)
   }
 
-  if (control$ncores == 1) {
-    dat_list <- lapply(seq_len(control$nsims), function(s) {
-      netsim_initialize(x, param, init, control, s)
-    })
-  } else if (control$ncores > 1) {
-    doParallel::registerDoParallel(control$ncores)
-    dat_list <- foreach(s = seq_len(control$nsims)) %dopar% {
-      netsim_initialize(x, param, init, control, s)
-    }
-  }
-
-  if (control$ncores == 1) {
-    sout <- Map(netsim_run, dat = dat_list, s = seq_len(control$nsims))
-  } else if (control$ncores > 1) {
-    doParallel::registerDoParallel(control$ncores)
-    sout <- foreach(dat = dat_list, s = seq_len(control$nsims)) %dopar% {
-      netsim_run(dat, s)
-    }
-  }
-
-  if (control$raw.output) {
-    out <- sout
+  control[[".checkpointed"]] <- netsim_is_checkpointed(control)
+  if (!control[[".checkpointed"]]) {
+    control[[".checkpoint.steps"]] <- Inf
   } else {
-    out <- process_out.net(sout)
+    if (is.null(control[[".checkpoint.compress"]]))
+      control[[".checkpoint.compress"]] <- TRUE
+    if (is.null(control[[".checkpoint.clear"]]))
+      control[[".checkpoint.clear"]] <- TRUE
   }
 
-  return(out)
+  return(control)
 }
 
+# Create the `dat` object or load it if checkpointed
+#
 netsim_initialize <- function(x, param, init, control, s = 1) {
-  param <- generate_random_params(param, verbose = FALSE)
-  dat <- control[["initialize.FUN"]](x, param, init, control, s)
-  if (get_control(dat, "start") != 1) {
-    dat <- set_current_timestep(dat, get_control(dat, "start") - 1)
+  if (netsim_is_resume_checkpoint(control, s)) {
+    dat <- netsim_load_checkpoint(control, s)
+  } else {
+    param <- generate_random_params(param, verbose = FALSE)
+    dat <- control[["initialize.FUN"]](x, param, init, control, s)
+    if (get_control(dat, "start") != 1) {
+      dat <- set_current_timestep(dat, get_control(dat, "start") - 1)
+    }
   }
 
   return(dat)
 }
 
+# Run a simulation from a initialized dat object
+#
+netsim_run <- function(dat, s = 1) {
+  done <- FALSE
+  while (get_current_timestep(dat) < get_control(dat, "nsteps")) {
+    steps_to_run <- get_control(dat, "nsteps") - get_current_timestep(dat)
+    steps_to_run <- min(steps_to_run, get_control(dat, ".checkpoint.steps"))
+    dat <- netsim_run_nsteps(dat, steps_to_run, s)
+    netsim_save_checkpoint(dat, s)
+  }
+
+  return(dat)
+}
+
+# Run N simulation steps on a `dat` object
+#
 netsim_run_nsteps <- function(dat, nsteps, s) {
   for (n in seq_len(nsteps)) {
     dat <- increment_timestep(dat)
@@ -182,6 +237,8 @@ netsim_run_nsteps <- function(dat, nsteps, s) {
   return(dat)
 }
 
+# Run all the modules of a `dat` object once
+#
 netsim_run_modules <- function(dat, s) {
   at <- get_current_timestep(dat)
 
@@ -223,11 +280,5 @@ netsim_run_modules <- function(dat, s) {
     error = function(e) message(netsim_cond_msg("ERROR", current_mod, at))
   )
 
-  return(dat)
-}
-
-netsim_run <- function(dat, s = 1) {
-  steps_to_run <- get_control(dat, "nsteps") - get_current_timestep(dat)
-  dat <- netsim_run_nsteps(dat, steps_to_run, s)
   return(dat)
 }
