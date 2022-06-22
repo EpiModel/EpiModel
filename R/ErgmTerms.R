@@ -114,7 +114,7 @@ InitErgmTerm.absdiffby <- function(nw, arglist, ...) {
 #' @title Definition for fuzzynodematch ERGM Term
 #'
 #' @description This function defines and initializes the fuzzynodematch ERGM
-#'              term that allows for vectorized homophily.
+#'              term that allows for generalized homophily.
 #'
 #' @param nw An object of class \code{network}.
 #' @param arglist A list of arguments as specified in the \code{ergm.userterms}
@@ -123,22 +123,22 @@ InitErgmTerm.absdiffby <- function(nw, arglist, ...) {
 #'        \code{ergm.userterms} package framework.
 #'
 #' @details
-#' This ERGM user term was written to allow for vectorized homophily.  
-#' The \code{attr} term argument should specify a character vertex attribute.
-#' It is assumed that "venues" are encoded in the character string for a given
-#' node as \code{vwyxz} where \code{v} is the literal character \code{"v"} and 
-#' \code{w}, \code{x}, \code{y}, and \code{z} are integers between \code{0} and
-#' \code{9}.  Multiple venues in the same character string should be separated 
-#' by \code{"|"}.  A node with no venues may have any string not starting in 
-#' \code{"v"}.  Thus, \code{"v0034"} indicates the single venue indexed by 
-#' \code{34}, \code{"ego00089"} indicates no venue, and \code{"v0023|v1253"}
-#' indicates the two venues indexed by \code{23} and \code{1253}.
+#' This ERGM user term was written to allow for generalized homophily.  
+#' The \code{attr} term argument should specify a character vertex attribute
+#' encoding the "venues" associated to each node.  The \code{split} argument
+#' should specify a string that separates different "venues" in the attribute
+#' value for each node, as handled by \code{strsplit} with \code{fixed = TRUE}.
+#' For example, if \code{split} is \code{"|"} (the default), and the attribute
+#' value for a given node is \code{"a12|b476"}, then the associated venues for
+#' this node are \code{"a12"} and \code{"b476"}.  The empty string \code{""} is
+#' interpreted as "no venues".
 #' 
 #' If the \code{binary} term argument is \code{FALSE} (the default), the change
-#' statistic for an on-toggle is the number of unique venues on which the two 
-#' nodes match; if \code{binary} is \code{TRUE}, the change statistic for an 
-#' on-toggle is \code{1} if the two nodes match on any venues, and \code{0} 
-#' otherwise.
+#' statistic for an on-toggle is the number of unique venues associated to both
+#' nodes (informally speaking, this could be described as the number of venues 
+#' on which the two nodes "match"); if \code{binary} is \code{TRUE}, the change
+#' statistic for an on-toggle is \code{1} if any venue is associated to both 
+#' nodes, and \code{0} otherwise.
 #'
 #' @aliases fuzzynodematch
 #'
@@ -152,8 +152,8 @@ InitErgmTerm.fuzzynodematch <- function(nw, arglist, ...) {
   nodecov <- ergm_get_vattr(a$attr, nw, accept = "character")
   venues <- strsplit(nodecov, split = a$split, fixed = TRUE)
   
-  ## drop "" from venues
-  venues <- lapply(venues, function(x) x[nchar(x) > 0L])
+  ## drop "" from venues and enforce uniqueness of venues for each node
+  venues <- lapply(venues, function(x) unique(x[nchar(x) > 0L]))
   
   ## record number of venues and offset in position for each node
   lengths <- unlist(lapply(venues, length))
