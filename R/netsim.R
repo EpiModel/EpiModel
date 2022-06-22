@@ -155,7 +155,7 @@ netsim <- function(x, param, init, control) {
 
   out <- if (control$raw.output) dat_list else process_out.net(dat_list)
 
-  if (control[[".checkpoint.clear"]])
+  if (!control[[".checkpoint.keep"]])
     netsim_clear_checkpoint(control)
 
   return(out)
@@ -167,7 +167,8 @@ netsim_validate_control <- function(control) {
   required_controls <- c(
     "resimulate.network",
     "raw.output",
-    "verbose"
+    "verbose",
+    ".checkpoint.keep"
   )
 
   for (flag in required_controls) {
@@ -185,14 +186,11 @@ netsim_validate_control <- function(control) {
   }
 
   control[[".checkpointed"]] <- netsim_is_checkpointed(control)
-  if (!control[[".checkpointed"]]) {
+  if (!control[[".checkpointed"]])
     control[[".checkpoint.steps"]] <- Inf
-  } else {
-    if (is.null(control[[".checkpoint.compress"]]))
-      control[[".checkpoint.compress"]] <- TRUE
-    if (is.null(control[[".checkpoint.clear"]]))
-      control[[".checkpoint.clear"]] <- TRUE
-  }
+
+  if (is.null(control[[".checkpoint.compress"]]))
+    control[[".checkpoint.compress"]] <- TRUE
 
   return(control)
 }
@@ -221,7 +219,9 @@ netsim_run <- function(dat, s = 1) {
     steps_to_run <- get_control(dat, "nsteps") - get_current_timestep(dat)
     steps_to_run <- min(steps_to_run, get_control(dat, ".checkpoint.steps"))
     dat <- netsim_run_nsteps(dat, steps_to_run, s)
-    netsim_save_checkpoint(dat, s)
+
+    if (get_control(dat, ".checkpointed"))
+      netsim_save_checkpoint(dat, s)
   }
 
   return(dat)
