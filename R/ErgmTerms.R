@@ -155,13 +155,22 @@ InitErgmTerm.fuzzynodematch <- function(nw, arglist, ...) {
   ## drop "" from venues
   venues <- lapply(venues, function(x) x[nchar(x) > 0L])
   
-  ## convert venues from strings to integers
-  levels <- sort(unique(unlist(venues)))
-  venues <- lapply(venues, function(x) sort(match(x, levels)))
-  
+  ## record number of venues and offset in position for each node
   lengths <- unlist(lapply(venues, length))
   positions <- cumsum(lengths) - lengths
+
+  ## convert venues to vector
   venues <- unlist(venues)
+
+  ## convert venues from strings to integers
+  levels <- sort(unique(venues))
+  venues <- match(venues, levels)
+  
+  ## sort venues for each node
+  for(i in seq_along(lengths)) {
+    venues[positions[i] + seq_len(lengths[i])] <- sort(venues[positions[i] + seq_len(lengths[i])])
+  }
+  
   binary <- a$binary
   
   list(name = "fuzzynodematch",
