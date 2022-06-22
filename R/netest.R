@@ -424,54 +424,59 @@ update_dissolution <- function(old.netest, new.coef.diss,
 
   out <- old.netest
 
-  ## remove the old correction
-  if (out$nested.edapprox == TRUE) {
-    ## adjust the formation model coefficients to remove the old edapprox
-    l.cd.o <- length(out$coef.diss$coef.form.corr)
-    out$coef.form[1:l.cd.o] <- out$coef.form[1:l.cd.o] +
-      out$coef.diss$coef.form.corr
-  } else {
-    ## remove the part of the formation model and coefficient vector
-    ## corresponding to the old edapprox
-    old_diss_list <- list_rhs.formula(out$coef.diss$dissolution)
-
-    formation_list <- list_rhs.formula(out$formation)
-    formation_list <- formation_list[seq_len(length(formation_list) -
-                                               length(old_diss_list))]
-
-    formation <- append_rhs.formula(~., formation_list)
-    environment(formation) <- environment(out$formation)
-    formation[[2]] <- NULL # remove the . on the LHS
-
-    out$formation <- formation
-    out$coef.form <-
-      out$coef.form[seq_len(length(out$coef.form) -
-                              length(out$coef.diss$coef.form.corr))]
+  ## if an old correction was applied...
+  if (old.netest$coef.diss$coef.crude[1] != -Inf) {
+    ## remove the old correction
+    if (out$nested.edapprox == TRUE) {
+      ## adjust the formation model coefficients to remove the old edapprox
+      l.cd.o <- length(out$coef.diss$coef.form.corr)
+      out$coef.form[1:l.cd.o] <- out$coef.form[1:l.cd.o] +
+        out$coef.diss$coef.form.corr
+    } else {
+      ## remove the part of the formation model and coefficient vector
+      ## corresponding to the old edapprox
+      old_diss_list <- list_rhs.formula(out$coef.diss$dissolution)
+    
+      formation_list <- list_rhs.formula(out$formation)
+      formation_list <- formation_list[seq_len(length(formation_list) -
+                                                 length(old_diss_list))]
+    
+      formation <- append_rhs.formula(~., formation_list)
+      environment(formation) <- environment(out$formation)
+      formation[[2]] <- NULL # remove the . on the LHS
+    
+      out$formation <- formation
+      out$coef.form <-
+        out$coef.form[seq_len(length(out$coef.form) -
+                                length(out$coef.diss$coef.form.corr))]
+    }
   }
-
-  ## apply the new correction
-  if (nested.edapprox == TRUE) {
-    ## check that the new dissolution model is an initial segment of the
-    ## formation model
-    diss_check(out$formation, new.coef.diss$dissolution)
-
-    ## implement the new edapprox by adjusting the formation model coefficients
-    l.cd.n <- length(new.coef.diss$coef.form.corr)
-    out$coef.form[1:l.cd.n] <- out$coef.form[1:l.cd.n] -
-      new.coef.diss$coef.form.corr
-  } else {
-    ## implement the new edapprox by appending the new dissolution model to the
-    ## formation model and appending the relevant values to the vector of
-    ## formation model coefficients
-    formula_addition <- append_rhs.formula(~., new.coef.diss$dissolution,
-                                           keep.onesided = TRUE)
-    environment(formula_addition) <- environment(new.coef.diss$dissolution)
-    # the ... allows for copying via from.new
-    out$formation <- nonsimp_update.formula(out$formation,
-                                            formula_addition, ...)
-    out$coef.form <- c(out$coef.form, -new.coef.diss$coef.form.corr)
+  
+  ## if a new correction should be applied... 
+  if (new.coef.diss$coef.crude[1] != -Inf) {
+    ## apply the new correction
+    if (nested.edapprox == TRUE) {
+      ## check that the new dissolution model is an initial segment of the
+      ## formation model
+      diss_check(out$formation, new.coef.diss$dissolution)
+  
+      ## implement the new edapprox by adjusting the formation model coefficients
+      l.cd.n <- length(new.coef.diss$coef.form.corr)
+      out$coef.form[1:l.cd.n] <- out$coef.form[1:l.cd.n] -
+        new.coef.diss$coef.form.corr
+    } else {
+      ## implement the new edapprox by appending the new dissolution model to the
+      ## formation model and appending the relevant values to the vector of
+      ## formation model coefficients
+      formula_addition <- append_rhs.formula(~., new.coef.diss$dissolution,
+                                             keep.onesided = TRUE)
+      environment(formula_addition) <- environment(new.coef.diss$dissolution)
+      # the ... allows for copying via from.new
+      out$formation <- nonsimp_update.formula(out$formation,
+                                              formula_addition, ...)
+      out$coef.form <- c(out$coef.form, -new.coef.diss$coef.form.corr)
+    }
   }
-
 
   out$coef.diss <- new.coef.diss
   out$nested.edapprox <- nested.edapprox
