@@ -20,9 +20,16 @@ test_that("fuzzynodematch works as intended", {
           
           vcs <- matrix(as.logical(rbinom(n*nv, 1L, prob)), nrow = n)
           
+          duplicate <- sample(c(FALSE, TRUE), n, TRUE)
+          
           attr <- character(n)
           for (i in seq_along(attr)) {
-            attr[i] <- paste(vids[vcs[i,]], collapse = split)
+            charvec <- vids[vcs[i,]]
+            if (duplicate[i] == TRUE) {
+              charvec <- c(charvec, sample(charvec, length(charvec), TRUE))
+            }
+            charvec <- sample(charvec)
+            attr[i] <- paste(charvec, collapse = split)
           }
           
           nw <- network.initialize(n, directed = directed, bipartite = bipartite)
