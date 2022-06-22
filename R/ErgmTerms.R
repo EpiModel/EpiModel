@@ -167,9 +167,7 @@ InitErgmTerm.fuzzynodematch <- function(nw, arglist, ...) {
   venues <- match(venues, levels)
   
   ## sort venues for each node
-  for(i in seq_along(lengths)) {
-    venues[positions[i] + seq_len(lengths[i])] <- sort(venues[positions[i] + seq_len(lengths[i])])
-  }
+  venues <- unlist(lapply(seq_len(network.size(nw)), function(i) sort(venues[positions[i] + seq_len(lengths[i])])))
   
   binary <- a$binary
   
