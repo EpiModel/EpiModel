@@ -4,10 +4,11 @@
 
 - Network models can now use predefined scenarios with the `use_scenario` function. See the **Working with Model Parameters** vignette for details.
 - The `trim_netest` function has been added to reduce `netest` object size in common use cases.
-- The `networkLite` class now supports edge attributes and a number of additional functionalities.
+- The `networkLite` class now supports some additional functionalities.
 - Duration = 1 time step models in `netsim` with `tergmLite = FALSE` now use `tergm` simulation to produce a `networkDynamic` as in the duration > 1 time step case.
 - `netdx` now supports heterogeneous dissolution diagnostics. See the example in `help("netdx")`.
 - Network model parameters can now be supplied to `param.net` via a `data.frame`. See the **Working with Model Parameters** vignette for details.
+- A new term `fuzzynodematch` was added, to support modeling of more generalized notions of homophily.
 
 ### BUG FIXES
 
@@ -21,7 +22,7 @@
 - The parameters `param.updater.list` and `control.updater.list` in `param.net` and `control.net` respectively were renamed `.param.updater.list` and `.control.updater.list`. The leading dot indicate that these are built-in EpiModel elements not to be confused with the user-defined ones.
 - Dissolution models using the `nodefactor` term have been deprecated.
 - `stergm` controls have been deprecated in favor of `tergm` controls.
-- The `ergm` and `tergm` fit objects are no longer retained on the `netest` object by default. Formula-style simulations are used consistently for both `ergm` and `tergm` simulation, requiring control arguments of class `control.simulate.formula` and `control.simulate.formula.tergm`.
+- Formula-style simulations are used consistently for both `ergm` and `tergm` simulation, requiring control arguments of class `control.simulate.formula` and `control.simulate.formula.tergm`.
 - `ndtv` is added to "suggests" and `plot.transmat` now accept `transmissionTimeline` again in the `style` argument.
 
 
