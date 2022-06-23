@@ -9,6 +9,7 @@
 - `netdx` now supports heterogeneous dissolution diagnostics. See the example in `help("netdx")`.
 - Network model parameters can now be supplied to `param.net` via a `data.frame`. See the **Working with Model Parameters** vignette for details.
 - A new term `fuzzynodematch` was added, to support modeling of more generalized notions of homophily.
+- `ergm.ego` estimation is now supported by passing an `egor` object as the `nw` argument to `netest`.
 
 ### BUG FIXES
 
