@@ -129,9 +129,6 @@ netsim <- function(x, param, init, control) {
   if (!is.null(control[["verbose.FUN"]]))
     control[["verbose.FUN"]](control, type = "startup")
 
-  if (control$ncores > 1)
-    doParallel::registerDoParallel(control$ncores)
-
   if (control$ncores == 1) {
     dat_list <- lapply(
       seq_len(control$nsims),
@@ -141,6 +138,9 @@ netsim <- function(x, param, init, control) {
     )
     dat_list <- Map(netsim_run, dat = dat_list, s = seq_along(dat_list))
   } else {
+    doParallel::registerDoParallel(control$ncores)
+    on.exit(doParallel::stopImplicitCluster())
+
     dat_list <- foreach(s = seq_len(control$nsims)) %dopar% {
       netsim_initialize(x, param, init, control, s)
     }
@@ -149,9 +149,6 @@ netsim <- function(x, param, init, control) {
     }
 
   }
-
-  if (control$ncores > 1)
-    doParallel::stopImplicitCluster()
 
   out <- if (control$raw.output) dat_list else process_out.net(dat_list)
 
@@ -164,16 +161,22 @@ netsim <- function(x, param, init, control) {
 # Ensure default values for control.net
 #
 netsim_validate_control <- function(control) {
-  required_controls <- c(
-    "resimulate.network",
-    "raw.output",
-    "verbose",
-    ".checkpoint.keep"
+  # Controls to be set to TRUE or FALSE if missing
+  control_default_bool <- list(
+    "TRUE" = c(
+      ".checkpoint.compress"
+    ),
+    "FALSE" = c(
+      "resimulate.network",
+      "raw.output",
+      "verbose",
+      ".checkpoint.keep"
+    )
   )
 
-  for (flag in required_controls) {
-    if (is.null(control[[flag]]))
-      control[[flag]] <- FALSE
+  for (val in names(control_default_bool)) {
+    for (flag in control_default_bool[[val]])
+      if (is.null(control[[flag]])) control[[flag]] <- as.logical(val)
   }
 
   if (is.null(control$start))
@@ -186,11 +189,11 @@ netsim_validate_control <- function(control) {
   }
 
   control[[".checkpointed"]] <- netsim_is_checkpointed(control)
-  if (!control[[".checkpointed"]])
+  if (!control[[".checkpointed"]]) {
     control[[".checkpoint.steps"]] <- Inf
-
-  if (is.null(control[[".checkpoint.compress"]]))
-    control[[".checkpoint.compress"]] <- TRUE
+  } else {
+    control[[".checkpoint.steps"]] <- as.integer(control[[".checkpoint.steps"]])
+  }
 
   return(control)
 }
@@ -206,6 +209,8 @@ netsim_initialize <- function(x, param, init, control, s = 1) {
     if (get_control(dat, "start") != 1) {
       dat <- set_current_timestep(dat, get_control(dat, "start") - 1)
     }
+    if (get_control(dat, ".checkpointed"))
+      netsim_save_checkpoint(dat, s)
   }
 
   return(dat)

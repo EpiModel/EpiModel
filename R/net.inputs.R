@@ -822,6 +822,38 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #' nodes. By default, the rule is "current" for all attributes except status,
 #' in which case it is "s" (that is, all incoming nodes are susceptible).
 #'
+#' @section Checkpointed Models:
+#' \code{netsim} has a checkpoint system to prevent loosing all computation if
+#' the function is interupted (SIGINT, power loss, time limit exceeded on a
+#' computation cluster). When it is enabled, each simulation will be saved every
+#' ".checkpoint.steps" timestep. Then, if a checkpoint enabled simulation is
+#' launched again with \code{netsim}, it will restart at the last checkpoint.
+#'
+#' To enable the checkpoint capabilities of \code{netsim}, two control arguments
+#' have to be set: ".checkpoint.steps" a positive number of steps to be run
+#' between each save, and ".checkpoint.dir" the path to a directory to save the
+#' checkpointed simulations. If the ".checkpoint.dir" directory does not exist,
+#' netsim will attempt to create it on the first checkpoint, it is up to the
+#' user to ensure he has read and write access to the directory. With these two
+#' controls defined, one can simply re-run \code{netsim} with the same arguments
+#' to restart a set of simulation that was interrupted.
+#'
+#' Simulations are checkpointed individually, so if 3 simulations are run on a
+#' single core and the first 2 are finished then the interruption occurs during
+#' the third one, \code{netsim} will get the final step of the first 2 then
+#' restart the third one from the last checkpoint.
+#'
+#' A ".checkpoint.compress" argument can be set to overwrite the "compress"
+#' argument in \code{saveRDS} used to save the checkpointed simulations. The
+#' current default for \code{saveRDS} is "gunzip" (gz) that provides a fast
+#' compression that usually works well on network simulation objects.
+#'
+#' By default, if \code{netsim} reaches the end of all simulations, the
+#' checkpoint directory and its content is removed before returning the "netsim"
+#' object. The ".checkpoint.keep" argument can be set to TRUE to prevent this
+#' removal to inspect the raw simulation objects.
+#'
+#'
 #' @section New Modules:
 #' Base network models use a set of module functions that specify how the
 #' individual nodes in the network are subjected to infection, recovery,
