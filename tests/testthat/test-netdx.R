@@ -1,7 +1,7 @@
 context("Network diagnostics")
 
 for (trim in c(FALSE, TRUE)) {
-  
+
   test_that("Edges only models", {
     num <- 50
     nw <- network_initialize(n = num)
@@ -22,7 +22,7 @@ for (trim in c(FALSE, TRUE)) {
     plot(dx1, method = "b", type = "duration")
     plot(dx1, type = "dissolution")
     plot(dx1, method = "b", type = "dissolution")
-  
+
     ## Multiple simulations
     dx2 <- netdx(est1, nsims = 2, nsteps = 10, verbose = FALSE)
     expect_is(dx2, "netdx")
@@ -33,7 +33,7 @@ for (trim in c(FALSE, TRUE)) {
     plot(dx2, method = "b", type = "duration")
     plot(dx2, type = "dissolution")
     plot(dx2, method = "b", type = "dissolution")
-  
+
     ## Expanded monitoring formula
     dx3 <- netdx(est1, nsims = 2, nsteps = 10, verbose = FALSE,
                  nwstats.formula = ~edges + concurrent)
@@ -46,7 +46,7 @@ for (trim in c(FALSE, TRUE)) {
     plot(dx3, method = "b", type = "duration")
     plot(dx3, type = "dissolution")
     plot(dx3, method = "b", type = "dissolution")
-  
+
     ## Reduced monitoring formula
     dx4 <- netdx(est1, nsims = 2, nsteps = 10, verbose = FALSE,
                  nwstats.formula = ~meandeg)
@@ -59,7 +59,7 @@ for (trim in c(FALSE, TRUE)) {
     plot(dx4, type = "dissolution")
     plot(dx4, method = "b", type = "dissolution")
   })
-  
+
   test_that("Formation plot color vector length", {
     n <-  100
     mean.degree <- ((0 * 0.10) + (1 * 0.41) + (2 * 0.25) + (3 * 0.22))
@@ -76,13 +76,13 @@ for (trim in c(FALSE, TRUE)) {
     }
     dx <- netdx(est, nsims = 2, nsteps = 500,
                 nwstats.formula = ~edges + meandeg + degree(0:4) + concurrent)
-  
+
     expect_error(plot(dx, sim.col = c("green", "orange")))
     expect_error(plot(dx, mean.col = c("green", "orange")))
     expect_error(plot(dx, targ.col = c("green", "orange")))
     expect_error(plot(dx, qnts.col = c("green", "orange")))
   })
-  
+
   test_that("Netdx duration and dissolution plots error when
             skip.dissolution = TRUE", {
     nw <- network_initialize(n = 100)
@@ -94,13 +94,13 @@ for (trim in c(FALSE, TRUE)) {
      est <- trim_netest(est)
     }
     dx2 <- netdx(est, nsims = 1, nsteps = 500, skip.dissolution = TRUE)
-  
+
     expect_error(plot(dx2, type = "duration"),
                  "Plots of type duration and dissolution only available if netdx run with skip.dissolution = FALSE")
     expect_error(plot(dx2, type = "dissolution"),
                  "Plots of type duration and dissolution only available if netdx run with skip.dissolution = FALSE")
   })
-  
+
   test_that("Offset terms", {
     n <- 50
     nw <- network_initialize(n = n)
@@ -126,7 +126,7 @@ for (trim in c(FALSE, TRUE)) {
     plot(dx, type = "dissolution")
     plot(dx, method = "b", type = "dissolution")
     rm(dx)
-  
+
     ## Offset term with expanded formula
     dx <- netdx(est2, nsims = 2, nsteps = 50, verbose = FALSE,
                 nwstats.formula =
@@ -141,8 +141,8 @@ for (trim in c(FALSE, TRUE)) {
     plot(dx, type = "dissolution")
     plot(dx, method = "b", type = "dissolution")
   })
-  
-  
+
+
   test_that("Faux offset term", {
     n <- 50
     nw <- network_initialize(n = n)
@@ -154,7 +154,7 @@ for (trim in c(FALSE, TRUE)) {
     if (trim == TRUE) {
      est3 <- trim_netest(est3)
     }
-  
+
     dx <- netdx(est3, nsims = 2, nsteps = 50, verbose = FALSE)
     expect_is(dx, "netdx")
     print(dx)
@@ -166,8 +166,8 @@ for (trim in c(FALSE, TRUE)) {
     plot(dx, type = "dissolution")
     plot(dx, method = "b", type = "dissolution")
   })
-  
-  
+
+
   test_that("More complicated faux offset term", {
     skip_on_cran()
     nw <- network_initialize(n = 1000)
@@ -191,8 +191,8 @@ for (trim in c(FALSE, TRUE)) {
     dx
     expect_is(dx, "netdx")
   })
-  
-  
+
+
   test_that("Static diagnostic simulations", {
     nw <- network_initialize(n = 100)
     formation <- ~edges + concurrent
@@ -202,26 +202,26 @@ for (trim in c(FALSE, TRUE)) {
     if (trim == TRUE) {
      est4 <- trim_netest(est4)
     }
-  
+
     dx <- netdx(est4, dynamic = FALSE, nsims = 250,
                 nwstats.formula = ~edges + meandeg + concurrent)
     expect_is(dx, "netdx")
-  
+
     plot(dx)
     plot(dx, stats = "meandeg")
     plot(dx, plots.joined = FALSE)
-  
+
     plot(dx, method = "b", col = "bisque")
-  
+
     expect_error(plot(dx, method = "b", type = "duration"))
     expect_error(plot(dx, method = "b", type = "dissolution"))
-  
+
     # test for default formation model
     dx <- netdx(est4, dynamic = FALSE, nsims = 250, verbose = FALSE)
     expect_is(dx, "netdx")
   })
-  
-  
+
+
   test_that("Parallel methods", {
     skip_on_cran()
     skip_on_os(os = "windows")
@@ -234,11 +234,11 @@ for (trim in c(FALSE, TRUE)) {
     if (trim == TRUE) {
      est1 <- trim_netest(est1)
     }
-  
+
     dx1 <- netdx(est1, nsims = 2, nsteps = 25, ncores = 2)
     expect_is(dx1, "netdx")
   })
-  
+
   test_that("error checking", {
     nw <- network_initialize(n = 25)
     est <- netest(nw, formation = ~edges, target.stats = 25,
@@ -250,7 +250,7 @@ for (trim in c(FALSE, TRUE)) {
     expect_error(netdx(x = 1, nsteps = 100))
     expect_error(netdx(est), "Specify number of time steps with nsteps")
   })
-  
+
   test_that("Cross sectional ergm dynamic error check", {
     nw <- network_initialize(n = 100)
     formation <- ~edges
@@ -263,7 +263,7 @@ for (trim in c(FALSE, TRUE)) {
     expect_error(netdx(est, nsims = 5, nsteps = 500),
                  "Running dynamic diagnostics on a cross-sectional")
   })
-  
+
   test_that("Full STERGM", {
     skip_on_cran()
     skip_on_os(os = "windows")
@@ -274,21 +274,21 @@ for (trim in c(FALSE, TRUE)) {
     if (trim == TRUE) {
      est <- trim_netest(est)
     }
-  
+
     # one core test
     dx <- netdx(est, nsims = 1, nsteps = 10, verbose = FALSE)
     expect_is(dx, "netdx")
     expect_true(!dx$edapprox)
     expect_true(colnames(dx$stats[[1]]) == "edges")
-  
+
     # parallel test
     dx <- netdx(est, nsims = 2, nsteps = 10, ncores = 2, verbose = FALSE)
     expect_is(dx, "netdx")
     expect_true(dx$nsims == 2)
     expect_is(dx$nw, "network")
-  
+
   })
-  
+
   test_that("print.netdx output", {
     nw <- network_initialize(n = 100)
     formation <- ~edges + concurrent
@@ -307,12 +307,12 @@ for (trim in c(FALSE, TRUE)) {
     expect_output(print(dx), "Sim Mean")
     expect_output(print(dx), "Pct Diff")
     expect_output(print(dx), "Sim SD")
-  
+
     dx <- netdx(est, nsims = 1, nsteps = 100, verbose = FALSE)
     expect_output(print(dx), "NA")
-  
+
   })
-}  
+}
 
 test_that("print.netdx and plot.netdx with heterogeneous diss", {
   nw <- network_initialize(n = 100)
@@ -320,7 +320,7 @@ test_that("print.netdx and plot.netdx with heterogeneous diss", {
   nw <- set_vertex_attribute(nw, 'position', rep(1:4,25))
   formation <- ~edges+nodematch('neighborhood', diff=TRUE)
   target.stats <- c(100,4,5,6,7,8,9,10,11,12,13)
-  coef.diss <- dissolution_coefs(dissolution = 
+  coef.diss <- dissolution_coefs(dissolution =
                  ~offset(edges)+offset(nodematch('neighborhood',diff=TRUE)),
                    duration = c(20,21,22,23,24,25,26,27,28,29,30))
   est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
@@ -330,14 +330,14 @@ test_that("print.netdx and plot.netdx with heterogeneous diss", {
   dx11 <- netdx(est, nsims = 5, nsteps = 100)
   expect_length(dx11$stats.table.duration$Target, 11)
   expect_length(dx11$stats.table.dissolution$`Sim Mean`, 11)
-  expect_output(print(dx11), "match.neighborhood.TRUE.7")  
+  expect_output(print(dx11), "match.neighborhood.TRUE.7")
   plot(dx11)
   plot(dx11, type = "duration")
   plot(dx11, type = "dissolution")
-  
+
   formation <- ~edges+nodemix('position')
   target.stats <- c(100,9,7,8,8,12,8,15,5,10)
-  coef.diss <- dissolution_coefs(dissolution = 
+  coef.diss <- dissolution_coefs(dissolution =
                                    ~offset(edges)+offset(nodemix('position')),
                                  duration = c(80,75,80,70,85,65,70,75,60,80))
   est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
@@ -350,16 +350,17 @@ test_that("print.netdx and plot.netdx with heterogeneous diss", {
   expect_output(print(dx12), "mix.position.1.4")
   plot(dx12, qnts=FALSE)
   plot(dx12, type = "duration", qnts=0.8)
-  plot(dx12, type = "dissolution", sim.lines = TRUE, sim.col = 1:10)
-  
+  # plot(dx12, type = "dissolution", sim.lines = TRUE, sim.col = 1:10)
+  plot(dx12, type = "dissolution", sim.col = 1:10)
+
   dx13 <- netdx(est, nsims = 1, nsteps = 1)
-  expect_true(dim(dx13$pages)[1]==1 & 
-              dim(dx13$pages)[2]==10 & 
+  expect_true(dim(dx13$pages)[1]==1 &
+              dim(dx13$pages)[2]==10 &
               dim(dx13$pages)[3]==1)
-  expect_true(dim(dx13$prop.diss)[1]==1 & 
-              dim(dx13$prop.diss)[2]==10 & 
+  expect_true(dim(dx13$prop.diss)[1]==1 &
+              dim(dx13$prop.diss)[2]==10 &
               dim(dx13$prop.diss)[3]==1)
-  
+
 })
 
 

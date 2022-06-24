@@ -10,6 +10,7 @@
 - Network model parameters can now be supplied to `param.net` via a `data.frame`. See the **Working with Model Parameters** vignette for details.
 - A new term `fuzzynodematch` was added, to support modeling of more generalized notions of homophily.
 - `ergm.ego` estimation is now supported by passing an `egor` object as the `nw` argument to `netest`.
+- Network models can now be checkpointed to allow recovery and restarting simulation after interruption, as might occur with large-scale simulation jobs on high-performance computing (HPC) systems. See `help("control.net)`
 
 ### BUG FIXES
 
