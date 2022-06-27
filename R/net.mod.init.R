@@ -31,14 +31,28 @@ initialize.net <- function(x, param, init, control, s) {
     dat$nwparam <- list()
     dat$nwparam[[1]] <- x[!(names(x) %in% c("fit", "newnetwork"))]
 
+    dat <- set_control(dat, "isTERGM", all(dat$nwparam[[1]]$coef.diss$duration > 1))
+
     # Initial Network Simulation ----------------------------------------------
+
+    # Simulate t0 basis network
+    if (x$edapprox == TRUE) {
+      dat$nw[[1]] <- simulate(x$formula,
+                     coef = x$coef.form.crude,
+                     basis = x$newnetwork,
+                     constraints = x$constraints,
+                     control = get_control(dat, "set.control.ergm"),
+                     dynamic = FALSE)
+    } else {
+      dat$nw[[1]] <- x$newnetwork
+    }
 
     if (get_control(dat, "resimulate.network") == TRUE) {
       nsteps <- 1
     } else {
       nsteps <- get_control(dat, "nsteps")
     }
-    dat <- sim_nets_t1(x, dat, nsteps)
+    dat <- resim_nets(dat, at = 1, nsteps = nsteps)
 
     if (isTRUE(get_control(dat, "tergmLite"))) {
       dat$el[[1]] <- as.edgelist(network.collapse(dat$nw[[1]], at = 1))

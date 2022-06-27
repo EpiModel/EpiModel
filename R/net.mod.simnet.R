@@ -1,101 +1,4 @@
 
-#' @title Simulate Initial Network at Time 1 for Model Initialization
-#'
-#' @description This function simulates a dynamic network over one or multiple
-#'              time steps for TERGMs or one or multiple cross-sectional network
-#'              panels for ERGMs, for use in \code{\link{netsim}} modeling.
-#'
-#' @param x An \code{EpiModel} object of class \code{\link{netest}}.
-#' @inheritParams recovery.net
-#' @param nsteps For TERGMs, the number of time steps to simulate the network
-#'        over; for ERGMs, the number of independent network panels to simulate.
-#'
-#' @inherit recovery.net return
-#'
-#' @export
-#' @keywords netUtils internal
-#'
-sim_nets_t1 <- function(x, dat, nsteps) {
-
-  # control settings
-  nwparam <- get_nwparam(dat)
-  isTERGM <- all(nwparam$coef.diss$duration > 1)
-  dat <- set_control(dat, "isTERGM", isTERGM)
-
-  nwstats.formula <- get_control(dat, "nwstats.formula")
-
-  save.nwstats <- get_control(dat, "save.nwstats")
-
-  set.control.ergm <- get_control(dat, "set.control.ergm")
-  set.control.tergm <- get_control(dat, "set.control.tergm")
-  set.control.stergm <- get_control(dat, "set.control.stergm")
-
-  # Simulate t0 basis network
-  if (x$edapprox == TRUE) {
-    nw <- simulate(x$formula,
-                   coef = x$coef.form.crude,
-                   basis = x$newnetwork,
-                   constraints = x$constraints,
-                   control = set.control.ergm,
-                   dynamic = FALSE)
-  } else {
-    nw <- x$newnetwork
-  }
-
-  # if TERGM, then use tergm package simulation for dynamic network
-  if (isTERGM == TRUE) {
-    if (!is.null(set.control.stergm)) {
-      # Simulate dynamic network
-      sim <- simulate(nw,
-                      formation = x$formation,
-                      dissolution = x$coef.diss$dissolution,
-                      coef.form = x$coef.form,
-                      coef.diss = x$coef.diss$coef.crude,
-                      time.slices = nsteps,
-                      time.start = 0,
-                      constraints = x$constraints,
-                      monitor = nwstats.formula,
-                      nsim = 1,
-                      control = set.control.stergm)
-    } else {
-      # Simulate dynamic network
-      sim <- simulate(nw ~ Form(x$formation) +
-                           Persist(x$coef.diss$dissolution),
-                      coef = c(x$coef.form, x$coef.diss$coef.crude),
-                      time.slices = nsteps,
-                      time.start = 0,
-                      constraints = x$constraints,
-                      monitor = nwstats.formula,
-                      control = set.control.tergm,
-                      dynamic = TRUE)
-    }
-  } else {
-    sim <- simulate(x$formation,
-                    basis = nw,
-                    coef = x$coef.form.crude,
-                    time.slices = nsteps,
-                    time.start = 0,
-                    constraints = x$constraints,
-                    monitor = nwstats.formula,
-                    control = set.control.tergm,
-                    dynamic = TRUE)
-  }
-  
-  dat$nw[[1]] <- networkDynamic::activate.vertices(sim, onset = 0, terminus = Inf)
-
-  # Set up nwstats df
-  if (save.nwstats == TRUE) {
-    nwstats <- attributes(dat$nw[[1]])$stats
-
-    keep.cols <- which(!duplicated(colnames(nwstats)))
-    nwstats <- nwstats[, keep.cols, drop = FALSE]
-    dat$stats$nwstats[[1]] <- nwstats
-  }
-
-  return(dat)
-}
-
-
 #' @title Resimulate Dynamic Network at Time 2+
 #'
 #' @description This function resimulates the dynamic network in stochastic
@@ -104,13 +7,14 @@ sim_nets_t1 <- function(x, dat, nsteps) {
 #'              structure.
 #'
 #' @inheritParams recovery.net
+#' @param nsteps number of time steps to simulate
 #'
 #' @inherit recovery.net return
 #'
 #' @export
 #' @keywords netUtils internal
 #'
-resim_nets <- function(dat, at) {
+resim_nets <- function(dat, at, nsteps = 1) {
 
   # Control settings for resimulation
   tergmLite <- get_control(dat, "tergmLite")
@@ -123,30 +27,32 @@ resim_nets <- function(dat, at) {
   tergmLite.track.duration <- get_control(dat, "tergmLite.track.duration")
 
   # Edges Correction
-  dat <- edges_correct(dat, at)
-
-  # active attribute (all models)
-  active <- get_attr(dat, "active")
-  idsActive <- which(active == 1)
-  anyActive <- ifelse(length(idsActive) > 0, TRUE, FALSE)
-
-  # group attribute (built-in models)
-  if (dat$param$groups == 2) {
-    group <- get_attr(dat, "group")
-    groupids.1 <- which(group == 1)
-    groupids.2 <- which(group == 2)
-    nActiveG1 <- length(intersect(groupids.1, idsActive))
-    nActiveG2 <- length(intersect(groupids.2, idsActive))
-    anyActive <- ifelse(nActiveG1 > 0 & nActiveG2 > 0, TRUE, FALSE)
+  if (at > 1) {
+    dat <- edges_correct(dat, at)
+    
+    # active attribute (all models)
+    active <- get_attr(dat, "active")
+    idsActive <- which(active == 1)
+    anyActive <- ifelse(length(idsActive) > 0, TRUE, FALSE)
+    
+    # group attribute (built-in models)
+    if (dat$param$groups == 2) {
+      group <- get_attr(dat, "group")
+      groupids.1 <- which(group == 1)
+      groupids.2 <- which(group == 2)
+      nActiveG1 <- length(intersect(groupids.1, idsActive))
+      nActiveG2 <- length(intersect(groupids.2, idsActive))
+      anyActive <- ifelse(nActiveG1 > 0 & nActiveG2 > 0, TRUE, FALSE)
+    }
   }
 
   # Pull network model parameters
   nwparam <- get_nwparam(dat)
 
   # Network resimulation
-  if (anyActive == TRUE & resimulate.network == TRUE) {
+  if (at == 1 || (anyActive == TRUE && resimulate.network == TRUE)) {
 
-    if (tergmLite == FALSE) {
+    if (at == 1 || tergmLite == FALSE) {
       # Full tergm/network Method
       nw <- dat$nw[[1]]
       output <- "networkDynamic"
@@ -170,6 +76,7 @@ resim_nets <- function(dat, at) {
                                 coef.diss = nwparam$coef.diss$coef.adj,
                                 constraints = nwparam$constraints,
                                 time.start = at - 1,
+                                time.slices = nsteps,
                                 output = output,
                                 monitor = nwstats.formula,
                                 control = set.control.stergm)
@@ -181,6 +88,7 @@ resim_nets <- function(dat, at) {
                                          nwparam$coef.diss$coef.adj),
                                 constraints = nwparam$constraints,
                                 time.start = at - 1,
+                                time.slices = nsteps,
                                 output = output,
                                 monitor = nwstats.formula,
                                 control = set.control.tergm,
@@ -192,15 +100,20 @@ resim_nets <- function(dat, at) {
                               coef = c(nwparam$coef.form),
                               constraints = nwparam$constraints,
                               time.start = at - 1,
+                              time.slices = nsteps,
                               output = output,
                               monitor = nwstats.formula,
                               control = set.control.tergm,
                               dynamic = TRUE)
     }
 
+    if (at == 1) {
+      dat$nw[[1]] <- networkDynamic::activate.vertices(dat$nw[[1]], onset = 0, terminus = Inf)
+    }
+
     # Update nwstats data frame
     if (save.nwstats == TRUE) {
-      new.nwstats <- tail(attributes(dat$nw[[1]])$stats, 1)
+      new.nwstats <- attributes(dat$nw[[1]])$stats
       keep.cols <- which(!duplicated(colnames(new.nwstats)))
       new.nwstats <- new.nwstats[, keep.cols, drop = FALSE]
       dat$stats$nwstats[[1]] <- rbind(dat$stats$nwstats[[1]], new.nwstats)
