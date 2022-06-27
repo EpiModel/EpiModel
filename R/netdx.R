@@ -43,7 +43,8 @@
 #' \code{nwstats.formula} are saved for each time step. Summary statistics for
 #' the formation model terms, as well as dissolution model and relational
 #' duration statistics, are then calculated and can be accessed when printing or
-#' plotting the \code{netdx} object.
+#' plotting the \code{netdx} object.  See \code{\link{print.netdx}} and 
+#' \code{\link{plot.netdx}} for details on printing and plotting.
 #'
 #' @section Control Arguments:
 #' Models fit with the full STERGM method in \code{netest} (setting the
@@ -406,6 +407,14 @@ make_dissolution_stats <- function(diag.sim, coef.diss,
     cat("\n- Calculating duration statistics")
   }
   
+  if (any(unlist(lapply(diag.sim, `[[`, "anyNA")))) {
+    warning("duration/dissolution data contains undefined values due to", 
+            " having zero edges of some dissolution dyad type(s) on some time",
+            " step(s); these undefined values will be set to 0 when", 
+            " processing the data; this behavior, which introduces a bias",
+            " towards 0, may be changed in the future")
+  }
+  
   ## exclude nodefactor from heterogeneous dissolution calculation
   if (coef.diss$diss.model.type == "nodefactor") {
     durs <- mean(coef.diss$duration)
@@ -486,8 +495,13 @@ toggles_to_diss_stats <- function(toggles, coef.diss, nsteps, nw, time.start = 0
                                            stats.start = FALSE))
   
   edgecounts <- changestats[,seq_along(durs),drop=FALSE]
+
+  # drop offset() from names
+  colnames(edgecounts) <- substr(colnames(edgecounts), 8L, nchar(colnames(edgecounts)) - 1L)
+
   edgeages <- changestats[,seq_along(durs)+length(durs),drop=FALSE]
   colnames(edgeages) <- colnames(edgecounts)
+
   edgepers <- changestats[,seq_along(durs)+2L*length(durs),drop=FALSE]
 
   if (length(durs) > 1L) {
@@ -526,11 +540,20 @@ toggles_to_diss_stats <- function(toggles, coef.diss, nsteps, nw, time.start = 0
     }
   }
   
-  ## 0/0 is possible, resulting in NaN, which is screened out by later na.rm's
+  ## 0/0 is possible, resulting in NaN, which we set to 0 for the time being...
   meanage <- edgeages/edgecounts[-1L,,drop=FALSE]
   meanageimputed <- edgeagesimputed/edgecounts[-1L,,drop=FALSE]
   propdiss <- edgediss/edgecounts[-NROW(edgecounts),,drop=FALSE]
-    
+
+  if (any(is.na(meanage)) || any(is.na(meanageimputed)) || any(is.na(propdiss))) {
+    meanage[is.na(meanage)] <- 0
+    meanageimputed[is.na(meanageimputed)] <- 0
+    propdiss[is.na(propdiss)] <- 0
+    anyNA <- TRUE
+  } else {
+    anyNA <- FALSE
+  }
+  
   meanmeanageimputed <- colMeans(meanageimputed, na.rm = TRUE)
   meanpropdiss <- colMeans(propdiss, na.rm = TRUE)
     
@@ -542,5 +565,6 @@ toggles_to_diss_stats <- function(toggles, coef.diss, nsteps, nw, time.start = 0
               meanageimputed = meanageimputed,
               propdiss = propdiss,
               meanpropdiss = meanpropdiss,
-              meanmeanageimputed = meanmeanageimputed))
+              meanmeanageimputed = meanmeanageimputed,
+              anyNA = anyNA))
 }
