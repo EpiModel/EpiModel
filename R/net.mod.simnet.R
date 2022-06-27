@@ -107,10 +107,6 @@ resim_nets <- function(dat, at, nsteps = 1) {
                               dynamic = TRUE)
     }
 
-    if (at == 1) {
-      dat$nw[[1]] <- networkDynamic::activate.vertices(dat$nw[[1]], onset = 0, terminus = Inf)
-    }
-
     # Update nwstats data frame
     if (save.nwstats == TRUE) {
       new.nwstats <- attributes(dat$nw[[1]])$stats
@@ -119,7 +115,7 @@ resim_nets <- function(dat, at, nsteps = 1) {
       dat$stats$nwstats[[1]] <- rbind(dat$stats$nwstats[[1]], new.nwstats)
     }
     
-    if (tergmLite == TRUE) {
+    if (at > 1 && tergmLite == TRUE) {
       dat$el[[1]] <- as.edgelist(dat$nw[[1]])
     }
   }

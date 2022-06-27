@@ -53,6 +53,7 @@ initialize.net <- function(x, param, init, control, s) {
       nsteps <- get_control(dat, "nsteps")
     }
     dat <- resim_nets(dat, at = 1, nsteps = nsteps)
+    dat$nw[[1]] <- networkDynamic::activate.vertices(dat$nw[[1]], onset = 0, terminus = Inf)
 
     if (isTRUE(get_control(dat, "tergmLite"))) {
       dat$el[[1]] <- as.edgelist(network.collapse(dat$nw[[1]], at = 1))
