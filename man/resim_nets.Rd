@@ -4,13 +4,15 @@
 \alias{resim_nets}
 \title{Resimulate Dynamic Network at Time 2+}
 \usage{
-resim_nets(dat, at)
+resim_nets(dat, at, nsteps = 1)
 }
 \arguments{
 \item{dat}{Main list object containing a \code{networkDynamic} object and
 other initialization information passed from \code{\link{netsim}}.}
 
 \item{at}{Current time step.}
+
+\item{nsteps}{number of time steps to simulate}
 }
 \value{
 The updated \code{dat} main list object.
