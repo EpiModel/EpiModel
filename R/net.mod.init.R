@@ -23,6 +23,11 @@ initialize.net <- function(x, param, init, control, s) {
     # Main Data List --------------------------------------------------------
     dat <- create_dat_object(param, init, control)
 
+    # Reset default formula for nwstats.formula
+    if (get_control(dat, "nwstats.formula") == "formation") {
+      dat <- set_control(dat, "nwstats.formula", x$formation)
+    }
+
     dat$nwparam <- list()
     dat$nwparam[[1]] <- x[!(names(x) %in% c("fit", "newnetwork"))]
 
@@ -35,7 +40,14 @@ initialize.net <- function(x, param, init, control, s) {
     }
     dat <- sim_nets_t1(x, dat, nsteps)
 
-
+    if (isTRUE(get_control(dat, "tergmLite"))) {
+      dat$el[[1]] <- as.edgelist(network.collapse(dat$nw[[1]], at = 1))
+      if (isTRUE(get_control(dat, "isTERGM")) && isTRUE(get_control(dat, "tergmLite.track.duration"))) {
+        dat$nw[[1]] %n% "time" <- 1
+        dat$nw[[1]] %n% "lasttoggle" <- cbind(dat$el[[1]], 1)
+      }
+    }
+    
     # Nodal Attributes --------------------------------------------------------
 
     # Standard attributes
@@ -57,13 +69,6 @@ initialize.net <- function(x, param, init, control, s) {
 
     ## Infection Status and Time
     dat <- init_status.net(dat)
-
-    # Conversions for tergmLite
-    tergmLite <- get_control(dat, "tergmLite")
-    if (tergmLite == TRUE) {
-      dat <- init_tergmLite(dat)
-    }
-
 
     # Summary Stats -----------------------------------------------------------
     dat <- do.call(control[["prevalence.FUN"]], list(dat, at = 1))

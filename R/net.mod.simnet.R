@@ -22,10 +22,6 @@ sim_nets_t1 <- function(x, dat, nsteps) {
   isTERGM <- all(nwparam$coef.diss$duration > 1)
   dat <- set_control(dat, "isTERGM", isTERGM)
 
-  # Reset default formula for nwstats.formula
-  if (get_control(dat, "nwstats.formula") == "formation") {
-    dat <- set_control(dat, "nwstats.formula", x$formation)
-  }
   nwstats.formula <- get_control(dat, "nwstats.formula")
 
   save.nwstats <- get_control(dat, "save.nwstats")
