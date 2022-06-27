@@ -1,32 +1,4 @@
 
-test_that("init_tergmLite", {
-
-  library("EpiModel")
-  if (packageVersion("EpiModel") >= "2.1.0") {
-    nw <- network_initialize(100)
-    formation <- ~edges
-    target.stats <- 50
-    coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
-    x <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
-    
-    param <- param.net(inf.prob = 0.3)
-    init <- init.net(i.num = 10)
-    control <- control.net(type = "SI", nsteps = 100, nsims = 5, tergmLite = TRUE)
-    
-    # networkLite representation after initialization
-    dat <- crosscheck.net(x, param, init, control)
-    dat <- initialize.net(x, param, init, control)
-    str(dat, max.level = 1)
-    
-    # Element added is el (edgelist representation of network)...
-    dat$el
-    
-    # ... and nw is now a networkLite
-    dat$nw[[1]]
-  }
-})
-
-
 test_that("networkLite", {
 
   library("EpiModel")
