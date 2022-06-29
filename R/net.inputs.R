@@ -1293,6 +1293,13 @@ param.net_from_table <- function(long.param.df) {
   }
   check_params_names(long.param.df[["param"]])
 
+  duplicated_params <- duplicated(long.param.df[["param"]])
+  duplicated_params <- long.param.df[["param"]][duplicated_params]
+  if (length(duplicated_params) > 0) {
+    stop("The following parameters are duplicated: `",
+         paste0(duplicated_params, collapse = "`, `"), "`")
+  }
+
   # To flat params
   flat.params <- Map(
     function(g, x) g(x),
