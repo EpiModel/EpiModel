@@ -1,5 +1,5 @@
 
-#' @title Resimulate Dynamic Network at Time 2+
+#' @title Resimulate Dynamic Network at Time `at`
 #'
 #' @description This function resimulates the dynamic network in stochastic
 #'              network models simulated in \code{\link{netsim}} with dependence
@@ -27,32 +27,30 @@ resim_nets <- function(dat, at, nsteps = 1) {
   tergmLite.track.duration <- get_control(dat, "tergmLite.track.duration")
 
   # Edges Correction
-  if (at > 1) {
-    dat <- edges_correct(dat, at)
+  dat <- edges_correct(dat, at)
     
-    # active attribute (all models)
-    active <- get_attr(dat, "active")
-    idsActive <- which(active == 1)
-    anyActive <- ifelse(length(idsActive) > 0, TRUE, FALSE)
+  # active attribute (all models)
+  active <- get_attr(dat, "active")
+  idsActive <- which(active == 1)
+  anyActive <- ifelse(length(idsActive) > 0, TRUE, FALSE)
     
-    # group attribute (built-in models)
-    if (dat$param$groups == 2) {
-      group <- get_attr(dat, "group")
-      groupids.1 <- which(group == 1)
-      groupids.2 <- which(group == 2)
-      nActiveG1 <- length(intersect(groupids.1, idsActive))
-      nActiveG2 <- length(intersect(groupids.2, idsActive))
-      anyActive <- ifelse(nActiveG1 > 0 & nActiveG2 > 0, TRUE, FALSE)
-    }
+  # group attribute (built-in models)
+  if (dat$param$groups == 2) {
+    group <- get_attr(dat, "group")
+    groupids.1 <- which(group == 1)
+    groupids.2 <- which(group == 2)
+    nActiveG1 <- length(intersect(groupids.1, idsActive))
+    nActiveG2 <- length(intersect(groupids.2, idsActive))
+    anyActive <- ifelse(nActiveG1 > 0 & nActiveG2 > 0, TRUE, FALSE)
   }
 
   # Pull network model parameters
   nwparam <- get_nwparam(dat)
 
   # Network resimulation
-  if (at == 1 || (anyActive == TRUE && resimulate.network == TRUE)) {
+  if (anyActive == TRUE & resimulate.network == TRUE) {
 
-    if (at == 1 || tergmLite == FALSE) {
+    if (tergmLite == FALSE) {
       # Full tergm/network Method
       nw <- dat$nw[[1]]
       output <- "networkDynamic"
@@ -115,7 +113,7 @@ resim_nets <- function(dat, at, nsteps = 1) {
       dat$stats$nwstats[[1]] <- rbind(dat$stats$nwstats[[1]], new.nwstats)
     }
     
-    if (at > 1 && tergmLite == TRUE) {
+    if (tergmLite == TRUE) {
       dat$el[[1]] <- as.edgelist(dat$nw[[1]])
     }
   }
@@ -143,7 +141,7 @@ edges_correct <- function(dat, at) {
   groups <- get_param(dat, "groups")
   active <- get_attr(dat, "active")
 
-  if (resimulate.network == TRUE) {
+  if (at > 1 && resimulate.network == TRUE) {
 
     if (groups == 1) {
       index <- at - 1

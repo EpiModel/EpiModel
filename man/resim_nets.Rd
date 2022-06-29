@@ -2,7 +2,7 @@
 % Please edit documentation in R/net.mod.simnet.R
 \name{resim_nets}
 \alias{resim_nets}
-\title{Resimulate Dynamic Network at Time 2+}
+\title{Resimulate Dynamic Network at Time `at`}
 \usage{
 resim_nets(dat, at, nsteps = 1)
 }

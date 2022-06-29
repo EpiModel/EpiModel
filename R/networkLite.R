@@ -185,7 +185,11 @@ networkLite_initialize <- networkLite.numeric
 #' @export
 #'
 get.vertex.attribute.networkLite <- function(x, attrname, ...) {
-  x$attr[[attrname]]
+  if (attrname %in% list.vertex.attributes(x)) {
+    x$attr[[attrname]]
+  } else {
+    rep(NA, length.out = network.size(x))
+  }
 }
 
 #' @rdname networkLitemethods
