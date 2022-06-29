@@ -48,6 +48,10 @@ initialize.net <- function(x, param, init, control, s) {
     
     if (isTRUE(get_control(dat, "tergmLite"))) {
       dat$el[[1]] <- as.edgelist(dat$nw[[1]])
+      if (isTRUE(get_control(dat, "isTERGM")) && isTRUE(get_control(dat, "tergmLite.track.duration"))) {
+        dat$nw[[1]] %n% "time" <- 0
+        dat$nw[[1]] %n% "lasttoggle" <- cbind(dat$el[[1]], 0)
+      }
       for (netattrname in setdiff(list.network.attributes(dat$nw[[1]]), names(attributes(dat$el[[1]])))) {
         attr(dat$el[[1]], netattrname) <- get.network.attribute(dat$nw[[1]], netattrname)
       }
@@ -84,9 +88,6 @@ initialize.net <- function(x, param, init, control, s) {
     
     if (isFALSE("tergmLite")) {
       dat$nw[[1]] <- networkDynamic::activate.vertices(dat$nw[[1]], onset = 0, terminus = Inf)
-    } else if (isTRUE(get_control(dat, "isTERGM")) && isTRUE(get_control(dat, "tergmLite.track.duration"))) {
-      dat$nw[[1]] %n% "time" <- 1
-      dat$nw[[1]] %n% "lasttoggle" <- cbind(dat$el[[1]], 1)
     }
     
     ## Infection Status and Time
