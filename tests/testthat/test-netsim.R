@@ -105,20 +105,6 @@ test_that("netsim implicit save.network option", {
   expect_error(get_network(mod2))
 })
 
-test_that("netsim for edges only, SIR, one-mode, closed, 2 sim, set.control.stergm", {
-  param <- param.net(inf.prob = 0.3, act.rate = 0.5, rec.rate = 0.05)
-  init <- init.net(i.num = 10, r.num = 0)
-  expect_warning(control <- control.net(type = "SIR", nsims = 2, nsteps = 5, verbose = FALSE,
-                                        set.control.stergm = control.simulate.network()),
-                 "set.control.stergm is deprecated")
-  mod <- netsim(est, param, init, control)
-  expect_is(mod, "netsim")
-  plot(mod)
-  plot(mod, type = "formation")
-  plot(mod, type = "network")
-  test_net(mod)
-})
-
 test_that("netsim duration 1", {
   estd1 <- netest(nw, formation = ~edges + nodematch("race"),
                   target.stats = c(25, 10),

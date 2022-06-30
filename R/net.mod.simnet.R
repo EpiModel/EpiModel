@@ -22,7 +22,6 @@ resim_nets <- function(dat, at, nsteps = 1) {
   save.nwstats <- get_control(dat, "save.nwstats")
   resimulate.network <- get_control(dat, "resimulate.network")
   nwstats.formula <- get_control(dat, "nwstats.formula")
-  set.control.stergm <- get_control(dat, "set.control.stergm")
   set.control.tergm <- get_control(dat, "set.control.tergm")
   tergmLite.track.duration <- get_control(dat, "tergmLite.track.duration")
 
@@ -66,32 +65,19 @@ resim_nets <- function(dat, at, nsteps = 1) {
 
     # TERGM simulation
     if (isTERGM == TRUE) {
-      if (!is.null(set.control.stergm)) {
-        dat$nw[[1]] <- simulate(nw,
-                                formation = nwparam$formation,
-                                dissolution = nwparam$coef.diss$dissolution,
-                                coef.form = nwparam$coef.form,
-                                coef.diss = nwparam$coef.diss$coef.adj,
-                                constraints = nwparam$constraints,
-                                time.start = at - 1,
-                                time.slices = nsteps,
-                                output = output,
-                                monitor = nwstats.formula,
-                                control = set.control.stergm)
-      } else {
-        dat$nw[[1]] <- simulate(nw ~
-                                  Form(nwparam$formation) +
-                                  Persist(nwparam$coef.diss$dissolution),
-                                coef = c(nwparam$coef.form,
-                                         nwparam$coef.diss$coef.adj),
-                                constraints = nwparam$constraints,
-                                time.start = at - 1,
-                                time.slices = nsteps,
-                                output = output,
-                                monitor = nwstats.formula,
-                                control = set.control.tergm,
-                                dynamic = TRUE)
-      }
+      dat$nw[[1]] <- simulate(nw ~
+                                Form(nwparam$formation) +
+                                Persist(nwparam$coef.diss$dissolution),
+                              coef = c(nwparam$coef.form,
+                                       nwparam$coef.diss$coef.adj),
+                              constraints = nwparam$constraints,
+                              time.start = at - 1,
+                              time.slices = nsteps,
+                              output = output,
+                              monitor = nwstats.formula,
+                              control = set.control.tergm,
+                              dynamic = TRUE)
+      
     } else {
       dat$nw[[1]] <- simulate(nwparam$formation,
                               basis = nw,

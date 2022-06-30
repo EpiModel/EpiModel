@@ -14,9 +14,6 @@
 #'        network model contained in \code{x}.
 #' @param set.control.ergm Control arguments passed to \code{ergm}'s
 #'        \code{simulate_formula.network} (see details).
-#' @param set.control.stergm Deprecated control argument of class
-#'        \code{control.simulate.network}; use \code{set.control.tergm}
-#'        instead.
 #' @param set.control.tergm Control arguments passed to \code{tergm}'s
 #'        \code{simulate_formula.network} (see details).
 #' @param sequential For static diagnostics (\code{dynamic=FALSE}): if
@@ -126,7 +123,6 @@
 netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
                   nwstats.formula = "formation", 
                   set.control.ergm = control.simulate.formula(),
-                  set.control.stergm = control.simulate.network(), 
                   set.control.tergm = control.simulate.formula.tergm(),
                   sequential = TRUE, keep.tedgelist = FALSE,
                   keep.tnetwork = FALSE, verbose = TRUE, ncores = 1,
@@ -134,12 +130,6 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
 
   if (!inherits(x, "netest")) {
     stop("x must be an object of class netest", call. = FALSE)
-  }
-
-  STERGM <- !missing(set.control.stergm)
-  if (STERGM == TRUE) {
-    warning("set.control.stergm is deprecated and will be removed in a future
-             version; use set.control.tergm instead.")
   }
 
   ncores <- ifelse(nsims == 1, 1, min(parallel::detectCores(), ncores))
@@ -211,31 +201,16 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
       output <- "changes"
     }
 
-    if (STERGM == TRUE) {
-      diag.sim <- simulate(init,
-                           formation = x$formation,
-                           dissolution = x$coef.diss$dissolution,
-                           coef.form = x$coef.form,
-                           coef.diss = x$coef.diss$coef.crude,
-                           constraints = x$constraints,
-                           time.slices = nsteps,
-                           monitor = nwstats.formula,
-                           time.start = 0L,
-                           nsim = 1L,
-                           output = output,
-                           control = set.control.stergm)
-    } else {
-      diag.sim <- simulate(init ~ Form(x$formation) + Persist(x$coef.diss$dissolution),
-                           coef = c(x$coef.form, x$coef.diss$coef.crude),
-                           constraints = x$constraints,
-                           time.slices = nsteps,
-                           monitor = nwstats.formula,
-                           time.start = 0L,
-                           nsim = 1L,
-                           output = output,
-                           control = set.control.tergm,
-                           dynamic = TRUE)
-    }
+    diag.sim <- simulate(init ~ Form(x$formation) + Persist(x$coef.diss$dissolution),
+                         coef = c(x$coef.form, x$coef.diss$coef.crude),
+                         constraints = x$constraints,
+                         time.slices = nsteps,
+                         monitor = nwstats.formula,
+                         time.start = 0L,
+                         nsim = 1L,
+                         output = output,
+                         control = set.control.tergm,
+                         dynamic = TRUE)
     
     out <- list(stats = attr(diag.sim, "stats"))
     

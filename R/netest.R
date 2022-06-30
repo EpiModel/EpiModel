@@ -23,8 +23,6 @@
 #'        more time-intensive full STERGM estimation (see details).
 #' @param set.control.ergm Control arguments passed to \code{ergm} (see
 #'        details).
-#' @param set.control.stergm Deprecated control argument of class
-#'        \code{control.stergm}; use \code{set.control.tergm} instead.
 #' @param set.control.tergm Control arguments passed to \code{tergm}
 #'        (see details).
 #' @param verbose If \code{TRUE}, print model fitting progress to console.
@@ -33,7 +31,7 @@
 #' @param ... Additional arguments passed to other functions.
 #'
 #' @details
-#' \code{netest} is a wrapper function for the \code{ergm} and \code{stergm}
+#' \code{netest} is a wrapper function for the \code{ergm} and \code{tergm}
 #' functions that estimate static and dynamic network models, respectively.
 #' Network model estimation is the first step in simulating a stochastic network
 #' epidemic model in \code{EpiModel}. The output from \code{netest} is a
@@ -143,13 +141,8 @@
 #'
 netest <- function(nw, formation, target.stats, coef.diss, constraints,
                    coef.form = NULL, edapprox = TRUE,
-                   set.control.ergm, set.control.stergm, set.control.tergm,
+                   set.control.ergm, set.control.tergm,
                    verbose = FALSE, nested.edapprox = TRUE, ...) {
-
-  if (!missing(set.control.stergm)) {
-    warning("set.control.stergm is deprecated and will be removed in a future
-             version; use set.control.tergm instead.")
-  }
 
   if (missing(constraints)) {
     constraints	<- trim_env(~.)
@@ -172,34 +165,19 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
 
   if (edapprox == FALSE) {
 
-    if (!missing(set.control.stergm)) {
-      fit <- stergm(nw,
-                    formation = formation,
-                    dissolution = dissolution,
-                    targets = "formation",
-                    target.stats = target.stats,
-                    offset.coef.form = coef.form,
-                    offset.coef.diss = coef.diss$coef.crude,
-                    constraints = constraints,
-                    estimate = "EGMME",
-                    eval.loglik = FALSE,
-                    control = set.control.stergm,
-                    verbose = verbose)
-    } else {
-      if (missing(set.control.tergm)) {
-        set.control.tergm <- control.tergm()
-      }
-
-      fit <- tergm(nw ~ Form(formation) + Persist(dissolution),
-                   targets = "formation",
-                   target.stats = target.stats,
-                   offset.coef = c(coef.form, coef.diss$coef.crude),
-                   constraints = constraints,
-                   estimate = "EGMME",
-                   eval.loglik = FALSE,
-                   control = set.control.tergm,
-                   verbose = verbose)
+    if (missing(set.control.tergm)) {
+      set.control.tergm <- control.tergm()
     }
+
+    fit <- tergm(nw ~ Form(formation) + Persist(dissolution),
+                 targets = "formation",
+                 target.stats = target.stats,
+                 offset.coef = c(coef.form, coef.diss$coef.crude),
+                 constraints = constraints,
+                 estimate = "EGMME",
+                 eval.loglik = FALSE,
+                 control = set.control.tergm,
+                 verbose = verbose)
 
     coef.form <- fit # there is no longer a separate formation fit
     which_form <- which(grepl("^Form~", names(coef(fit))) |

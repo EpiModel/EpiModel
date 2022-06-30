@@ -13,7 +13,6 @@ netest(
   coef.form = NULL,
   edapprox = TRUE,
   set.control.ergm,
-  set.control.stergm,
   set.control.tergm,
   verbose = FALSE,
   nested.edapprox = TRUE,
@@ -47,9 +46,6 @@ more time-intensive full STERGM estimation (see details).}
 \item{set.control.ergm}{Control arguments passed to \code{ergm} (see
 details).}
 
-\item{set.control.stergm}{Deprecated control argument of class
-\code{control.stergm}; use \code{set.control.tergm} instead.}
-
 \item{set.control.tergm}{Control arguments passed to \code{tergm}
 (see details).}
 
@@ -69,7 +65,7 @@ Estimates statistical network models using the exponential
              dynamic/temporal models (STERGM).
 }
 \details{
-\code{netest} is a wrapper function for the \code{ergm} and \code{stergm}
+\code{netest} is a wrapper function for the \code{ergm} and \code{tergm}
 functions that estimate static and dynamic network models, respectively.
 Network model estimation is the first step in simulating a stochastic network
 epidemic model in \code{EpiModel}. The output from \code{netest} is a

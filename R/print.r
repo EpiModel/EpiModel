@@ -508,7 +508,6 @@ print.control.net <- function(x, ...) {
     !grepl(".FUN", names(x)) &
     names(x) != "f.args" &
     names(x) != "f.names" &
-    names(x) != "set.control.stergm" &
     names(x) != "set.control.tergm" &
     names(x) != "set.control.ergm" &
     !grepl("^mcmc\\.control", names(x)) &
