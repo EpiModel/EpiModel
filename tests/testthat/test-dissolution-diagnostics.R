@@ -15,13 +15,8 @@ test_that("simulation diagnostics work as expected", {
                      time.slices = nsteps,
                      dynamic = TRUE)
   
-    if (est$coef.diss$diss.model.type == "nodefactor") {
-      dissolution <- ~offset(edges)
-      durs <- mean(est$coef.diss$duration)
-    } else {
-      dissolution <- est$coef.diss$dissolution
-      durs <- est$coef.diss$duration
-    }
+    dissolution <- est$coef.diss$dissolution
+    durs <- est$coef.diss$duration
     
     sim.df <- as.data.frame(nws2)
   
@@ -81,8 +76,7 @@ test_that("simulation diagnostics work as expected", {
   
   coefs.diss <- list(dissolution_coefs(~offset(edges), 10, 0),
                      dissolution_coefs(~offset(edges)+offset(nodemix("attr", levels = 2:3, levels2 = c(2,1))), c(8,5,7), 0),
-                     dissolution_coefs(~offset(edges)+offset(nodematch("attr", diff = TRUE, levels = c(3,1,2))), c(31, 22, 3, 4), 0),
-                     suppressWarnings(dissolution_coefs(~offset(edges)+offset(nodefactor("attr", levels = c(3,1))), c(31, 3, 4), 0)))
+                     dissolution_coefs(~offset(edges)+offset(nodematch("attr", diff = TRUE, levels = c(3,1,2))), c(31, 22, 3, 4), 0))
   
   dyad_indexers <- list(function(tails, heads, nw) rep(1, length(tails)),
                         function(tails, heads, nw) {
@@ -103,23 +97,20 @@ test_that("simulation diagnostics work as expected", {
                           indices[tailattr == 1 & headattr == 1] <- 3
                           indices[tailattr == 2 & headattr == 2] <- 4
                           indices
-                        },
-                        function(tails, heads, nw) rep(1, length(tails)))
+                        })
   
   formations <- list(~edges,
                      ~edges + nodemix("attr", levels = 2:3, levels2 = c(2,1)),
-                     ~edges + nodematch("attr", diff = TRUE, levels = c(3,1,2)),
-                     ~edges + nodefactor("attr", levels = c(3,1)))
+                     ~edges + nodematch("attr", diff = TRUE, levels = c(3,1,2)))
   
   targets <- lapply(list(c(100),
                          c(100, 2*100/9, 2*100/9),
-                         c(100, 100/9, 100/9, 100/9),
-                         c(100, 200/3, 200/3)),
+                         c(100, 100/9, 100/9, 100/9)),
                     as.integer)
                     
-  init.edges.list <- list(FALSE, FALSE, TRUE, TRUE)
-  nested.edapprox.list <- list(FALSE, TRUE, FALSE, TRUE)
-  keep.tnetwork.list <- list(TRUE, FALSE, FALSE, TRUE)
+  init.edges.list <- list(FALSE, FALSE, TRUE)
+  nested.edapprox.list <- list(FALSE, TRUE, FALSE)
+  keep.tnetwork.list <- list(TRUE, FALSE, FALSE)
   
   for (index in seq_along(coefs.diss)) {
     init.edges <- init.edges.list[[index]]
@@ -139,11 +130,11 @@ test_that("simulation diagnostics work as expected", {
     nw <- network.initialize(net_size, directed = FALSE)
     nw %v% "attr" <- rep(1:3, length.out = net_size)
                       
-    est <- suppressWarnings(netest(nw, 
-                                   formation = formation,
-                                   coef.diss = coef.diss,
-                                   target.stats = target.stats,
-                                   nested.edapprox = nested.edapprox))
+    est <- netest(nw, 
+                  formation = formation,
+                  coef.diss = coef.diss,
+                  target.stats = target.stats,
+                  nested.edapprox = nested.edapprox)
     
     if (init.edges == FALSE) {
       est$newnetwork[,] <- FALSE
@@ -161,11 +152,7 @@ test_that("simulation diagnostics work as expected", {
       ds[[i]] <- simulate_diss_stats(est, nsteps, dyad_indexer)
     }
     
-    if (coef.diss$diss.model.type == "nodefactor") {
-      durs <- mean(coef.diss$duration)
-    } else {
-      durs <- coef.diss$duration
-    }
+    durs <- coef.diss$duration
     
     pages <- array(unlist(lapply(ds, `[[`, "pages")),
                    dim = c(nsteps,length(durs),nsims))

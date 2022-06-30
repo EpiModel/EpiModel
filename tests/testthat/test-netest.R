@@ -56,7 +56,7 @@ test_that("netest diss_check flags bad models", {
   nw <- set_vertex_attribute(nw, "race", rbinom(50, 1, 0.5))
 
   formation <- ~edges + nodematch("race")
-  dissolution <- ~offset(edges) + offset(nodefactor("race"))
+  dissolution <- ~offset(edges) + offset(nodemix("race"))
   coef.diss <- dissolution_coefs(dissolution, c(10, 20))
   expect_error(netest(nw, formation, target.stats = c(50, 20),
                coef.diss, verbose = FALSE),

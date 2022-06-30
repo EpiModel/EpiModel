@@ -310,14 +310,9 @@ diss_check <- function(formation, dissolution) {
     stop("Dissolution model is not a subset of formation model.", call. = FALSE)
   }
   if (!all(diss.terms[1, ] %in% c("edges", "nodemix",
-                                  "nodematch", "nodefactor"))) {
+                                  "nodematch"))) {
     stop("The only allowed dissolution terms are edges, nodemix,
-         nodematch and ", "nodefactor", call. = FALSE)
-  }
-  if (any(diss.terms[1, ] %in% c("nodefactor"))) {
-    warning("Support for dissolution models containing a nodefactor term is
-            deprecated, and will be removed in a future release.")
-    # TODO: remove functionality and deprecation message in future release
+         and nodematch", call. = FALSE)
   }
   if (any(matchpos != seq_len(ncol(diss.terms)))) {
     stop("Order of terms in the dissolution model does not correspond to the ",

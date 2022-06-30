@@ -154,12 +154,6 @@ print.netdx <- function(x, digits = 3, ...) {
     cat("\n----------------------- \n")
     print_nwstats_table(x$stats.table.dissolution, digits)
   }
-  # TODO Remove nodefactor in future release.
-  if (x$coef.diss$diss.model.type == "nodefactor") {
-    cat("----------------------- \n")
-    cat("* Duration and dissolution results are averaged over for dissolution
-        models containing a nodefactor term.")
-  }
   invisible()
 }
 

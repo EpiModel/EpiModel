@@ -1565,12 +1565,6 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
       stop("For plots of type duration, duration.imputed must
            be a logical value (TRUE/FALSE)", call. = FALSE)
     }
-
-    if (any(grepl("nodefactor", x$dissolution) == TRUE)) {
-      warning("Support for dissolution models containing a nodefactor term is
-              deprecated, and will be removed in a future release.",
-              call. = FALSE)
-    }
     
     if (duration.imputed == TRUE) {
       data <- x$pages_imptd
@@ -2037,12 +2031,6 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 # Dissolution plot -----------------------------------------------------------
 
   if (type == "dissolution") {
-
-    if (any(grepl("nodefactor", x$dissolution) == TRUE)) {
-      warning("Support for dissolution models containing a nodefactor term is
-              deprecated, and will be removed in a future release.",
-              call. = FALSE)
-    }
 
     data <- x$prop.diss
     stats.diss.table <- x$stats.table.dissolution

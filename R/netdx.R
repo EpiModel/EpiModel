@@ -390,12 +390,7 @@ make_dissolution_stats <- function(diag.sim, coef.diss,
             " towards 0, may be changed in the future")
   }
   
-  ## exclude nodefactor from heterogeneous dissolution calculation
-  if (coef.diss$diss.model.type == "nodefactor") {
-    durs <- mean(coef.diss$duration)
-  } else {
-    durs <- coef.diss$duration
-  }
+  durs <- coef.diss$duration
   
   pages <- array(unlist(lapply(diag.sim, `[[`, "meanage")),
                  dim = c(nsteps, length(durs), length(diag.sim)))
@@ -452,14 +447,8 @@ toggles_to_diss_stats <- function(toggles, coef.diss, nsteps, nw, time.start = 0
   delete.network.attribute(nw, "lasttoggle")
   nw[,] <- FALSE
   
-  ## exclude nodefactor from heterogeneous dissolution calculation
-  if (coef.diss$diss.model.type == "nodefactor") {
-    diss_formula <- ~offset(edges)
-    durs <- mean(coef.diss$duration)
-  } else {
-    diss_formula <- coef.diss$dissolution
-    durs <- coef.diss$duration
-  }
+  diss_formula <- coef.diss$dissolution
+  durs <- coef.diss$duration
     
   changestats <- as.matrix(tergm.godfather(nw ~ Passthrough(diss_formula) 
                                                 + EdgeAges(diss_formula) 
