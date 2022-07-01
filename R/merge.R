@@ -276,6 +276,8 @@ merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
     }
   }
 
-
+  ## whether or not we're saving them...
+  z$diss.stats <- c(z$diss.stats, y$diss.stats)
+  
   return(z)
 }

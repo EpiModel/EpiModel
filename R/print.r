@@ -246,27 +246,18 @@ print.netsim <- function(x, nwstats = TRUE, digits = 3, network = 1, ...) {
     cat("\nDissolution Diagnostics")
     cat("\n----------------------- \n")
 
-    if (x$control$save.network &&
+    if (x$control$save.diss.stats &&
+        x$control$save.network &&
         ! x$control$tergmLite &&
         x$nwparam[[network]]$coef.diss$dissolution == ~ offset(edges)) {
-      diag.sim <- lapply(
-        seq_len(x$control$nsims),
-        get_network, network = network, x = x
-      )
-      
-      dissolution.stats <- make_dissolution_stats( 
-        lapply(diag.sim, 
-               function(nwd) { 
-                 toggles_to_diss_stats(tedgelist_to_toggles(as.data.frame(nwd)), 
-                                       x$nwparam[[network]]$coef.diss, 
-                                       x$control$nsteps, 
-                                       nwd) 
-               }),
+
+      dissolution.stats <- make_dissolution_stats(
+        lapply(seq_len(x$control$nsims), function(sim) x$diss.stats[[sim]][[network]]),
         x$nwparam[[network]]$coef.diss,
         x$control$nsteps,
         verbose = FALSE
       )
-
+      
       print_nwstats_table(dissolution.stats$stats.table.dissolution, digits)
 
       if (x$nwparam[[network]]$coef.diss$diss.model.type == "hetero") {
@@ -277,6 +268,7 @@ print.netsim <- function(x, nwstats = TRUE, digits = 3, network = 1, ...) {
       cat("Not available when:")
       cat("\n- `control$tergmLite == TRUE`")
       cat("\n- `control$save.network == FALSE`")
+      cat("\n- `control$save.diss.stats == FALSE`")
       cat("\n- dissolution formula is not `~ offset(edges)`")
       cat("\n")
     }
