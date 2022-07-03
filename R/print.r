@@ -170,7 +170,7 @@ print.netsim <- function(x, nwstats = TRUE, digits = 3, network = 1, ...) {
     if (!is.null(x$network)) {
       cat("\nTransmissions:", simnames)
     } else {
-      cat("Transsmissions:", simnames)
+      cat("Transmissions:", simnames)
     }
   }
   if (!is.null(x$control$save.other)) {
