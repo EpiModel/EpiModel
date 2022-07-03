@@ -249,6 +249,7 @@ print.netsim <- function(x, nwstats = TRUE, digits = 3, network = 1, ...) {
     if (x$control$save.diss.stats &&
         x$control$save.network &&
         ! x$control$tergmLite &&
+        ! is.null(x$diss.stats) &&
         x$nwparam[[network]]$coef.diss$dissolution == ~ offset(edges)) {
 
       dissolution.stats <- make_dissolution_stats(
