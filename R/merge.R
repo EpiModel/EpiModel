@@ -282,7 +282,7 @@ merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
   if (keep.diss.stats == TRUE && !is.null(x$diss.stats) && 
       !is.null(y$diss.stats)) {
     z$diss.stats <- c(x$diss.stats, y$diss.stats)
-    names(z$diss.stats) <- paste0("sim", seq_len(z$control$nsims))
+    names(z$diss.stats) <- c(names(x$diss.stats), paste0("sim", new.range))
   } else {
     z$diss.stats <- NULL
   }
