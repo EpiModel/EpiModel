@@ -271,6 +271,7 @@ print.netsim <- function(x, nwstats = TRUE, digits = 3, network = 1, ...) {
       cat("\n- `control$save.network == FALSE`")
       cat("\n- `control$save.diss.stats == FALSE`")
       cat("\n- dissolution formula is not `~ offset(edges)`")
+      cat("\n- `keep.diss.stats == FALSE` (if merging)")
       cat("\n")
     }
   }

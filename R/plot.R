@@ -2079,7 +2079,8 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
       } else {
         stop("cannot produce duration/dissolution plot from `netsim` object ",
              "unless `save.diss.stats` is `TRUE`, `save.network` is `TRUE`, ",
-             "`tergmLite` is `FALSE`, and dissolution model is edges-only")
+             "`tergmLite` is `FALSE`, `keep.diss.stats` is `TRUE` (if ",
+             "merging), and dissolution model is edges-only")
       }
       
       if (type == "duration") {
