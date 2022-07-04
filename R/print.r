@@ -215,7 +215,10 @@ print.netsim <- function(x, nwstats = TRUE, digits = 3, network = 1, ...) {
     }
   }
   if (!is.null(x$control$save.other)) {
-    cat("\nOther Elements:", x$control$save.other)
+    names_present <- intersect(x$control$save.other, names(x))
+    if (length(names_present) > 0) {
+      cat("\nOther Elements:", names_present)
+    }
   }
   cat("")
 
