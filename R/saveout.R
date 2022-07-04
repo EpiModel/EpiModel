@@ -359,6 +359,12 @@ saveout.net <- function(dat, s, out = NULL) {
       }
     }
 
+    if (dat$control$save.diss.stats == TRUE &&
+        dat$control$save.network == TRUE &&
+        dat$control$tergmLite == FALSE) {
+      names(out$diss.stats) <- simnames
+    }
+
     # Remove functions from control list
     ftodel <- grep(".FUN", names(out$control), value = TRUE)
     out$control[ftodel] <- NULL
