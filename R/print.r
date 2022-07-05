@@ -264,10 +264,6 @@ print.netsim <- function(x, nwstats = TRUE, digits = 3, network = 1, ...) {
       
       print_nwstats_table(dissolution.stats$stats.table.dissolution, digits)
 
-      if (x$nwparam[[network]]$coef.diss$diss.model.type == "hetero") {
-        cat("----------------------- \n")
-        cat("* Heterogeneous dissolution model results averaged over")
-      }
     } else {
       cat("Not available when:")
       cat("\n- `control$tergmLite == TRUE`")
