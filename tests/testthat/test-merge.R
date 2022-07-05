@@ -119,3 +119,34 @@ test_that("merge works for open sims saving nw stats", {
   expect_true(length(unique(nws$sim)) == 2)
 
 })
+
+test_that("merge and print work as expected for save.other", {
+  nw <- network_initialize(n = 100)
+  formation <- ~edges
+  target.stats <- 50
+  coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 10)
+  est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
+
+  # Epidemic model
+  param <- param.net(inf.prob = 0.3)
+  init <- init.net(i.num = 10)
+  control <- control.net(type = "SI", nsteps = 5, nsims = 2, verbose = FALSE, 
+                         tergmLite = TRUE, resimulate.network = TRUE,
+                         save.other = c("attr", "el"))
+  mod <- netsim(est, param, init, control)
+
+  print(mod)
+  expect_output(print(mod), "Other Elements: attr el")
+  expect_equal(length(mod[["attr"]]), 2)
+  expect_equal(length(mod[["el"]]), 2)
+  
+  mod2 <- merge(mod, mod)
+  expect_output(print(mod2), "Other Elements: attr el")
+  expect_equal(length(mod2[["attr"]]), 4)
+  expect_equal(length(mod2[["el"]]), 4)
+  
+  mod3 <- merge(mod, mod, keep.other = FALSE)
+  expect_error(expect_output(print(mod3), "Other Elements"))
+  expect_true(is.null(mod3[["attr"]]))
+  expect_true(is.null(mod3[["el"]]))
+})

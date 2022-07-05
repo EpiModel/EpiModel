@@ -195,15 +195,15 @@ test_that("netsim diss.stats", {
   print(mod)
   expect_output(print(mod), "Dissolution Diagnostics.*Sim Mean")
   expect_error(expect_output(print(mod), "Not available when:"))
-  expect_true(!is.null(mod$diss.stats))
+  expect_equal(length(mod[["diss.stats"]]), 2)
   
   mod2 <- merge(mod, mod)
   expect_output(print(mod2), "Dissolution Diagnostics.*Sim Mean")
   expect_error(expect_output(print(mod2), "Not available when:"))
-  expect_true(!is.null(mod2$diss.stats))
+  expect_equal(length(mod2[["diss.stats"]]), 4)
   
   mod3 <- merge(mod, mod, keep.diss.stats = FALSE)
   expect_error(expect_output(print(mod3), "Dissolution Diagnostics.*Sim Mean"))
   expect_output(print(mod3), "Not available when:")
-  expect_true(is.null(mod3$diss.stats))
+  expect_true(is.null(mod3[["diss.stats"]]))
 })
