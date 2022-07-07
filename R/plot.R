@@ -899,7 +899,7 @@ get_qnts <- function(data, qnts, qnts.smooth) {
                                    y = qnt.prev[1, ]))
     ss2 <- suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
                                    y = qnt.prev[2, ]))
-    
+
     xx <- c(ss1$x, rev(ss2$x))
     yy <- c(ss1$y, rev(ss2$y))
   }
@@ -925,19 +925,19 @@ get_means <- function(data, mean.smooth) {
 plot_stats_table <- function(data,
                              nmstats,
                              method,
-                             duration.imputed, 
-                             sim.lines, 
-                             sim.col, 
+                             duration.imputed,
+                             sim.lines,
+                             sim.col,
                              sim.lwd,
-                             mean.line, 
-                             mean.smooth, 
+                             mean.line,
+                             mean.smooth,
                              mean.col,
-                             mean.lwd, 
-                             mean.lty, 
-                             qnts, 
+                             mean.lwd,
+                             mean.lty,
+                             qnts,
                              qnts.col,
-                             qnts.alpha, 
-                             qnts.smooth, 
+                             qnts.alpha,
+                             qnts.smooth,
                              targ.line,
                              targ.col,
                              targ.lwd,
@@ -959,20 +959,20 @@ plot_stats_table <- function(data,
     plots.joined <- TRUE
     sim.col <- "dodgerblue3"
   }
-                             
+
   xlim <- NVL(da$xlim, c(1, dim(data)[1]))
-  
+
   xlab <- if (isFALSE(plots.joined)) "" else NVL(da$xlab, if (isTRUE(dynamic)) "time" else "simulation number")
   ylab <- if (isFALSE(plots.joined)) "" else NVL(da$ylab, if (nstats == 1) nmstats else "Statistic")
-  
+
   if (missing(sim.lwd)) {
     if (dim(data)[3] > 1) {
-      sim.lwd <- max(c(1 - (dim(data)[3] * 0.05), 0.5))    
+      sim.lwd <- max(c(1 - (dim(data)[3] * 0.05), 0.5))
     } else {
       sim.lwd <- 1
     }
   }
-  
+
   ## Color Vector Validation
   # 1. Sim.col, mean.col, qnts.col, targ.col must be missing or a vector of
   #    length 1 or nstats
@@ -991,26 +991,26 @@ plot_stats_table <- function(data,
       rep(default, length.out = nstats)
     }
   }
-  
-  sim.col <- check_len_rep(sim.col, 
-                           if (isFALSE(plots.joined)) "dodgerblue3" else seq_len(nstats + 1L)[-1L], 
+
+  sim.col <- check_len_rep(sim.col,
+                           if (isFALSE(plots.joined)) "dodgerblue3" else seq_len(nstats + 1L)[-1L],
                            "sim.col")
 
-  mean.col <- check_len_rep(mean.col, 
-                            if (isFALSE(plots.joined)) "black" else sim.col, 
+  mean.col <- check_len_rep(mean.col,
+                            if (isFALSE(plots.joined)) "black" else sim.col,
                             "mean.col")
 
-  qnts.col <- check_len_rep(qnts.col, 
-                            sim.col, 
+  qnts.col <- check_len_rep(qnts.col,
+                            sim.col,
                             "qnts.col")
   qnts.col <- adjustcolor(qnts.col, qnts.alpha)
 
-  targ.col <- check_len_rep(targ.col, 
-                            if (isFALSE(plots.joined) || nstats == 1) "black" else sim.col, 
+  targ.col <- check_len_rep(targ.col,
+                            if (isFALSE(plots.joined) || nstats == 1) "black" else sim.col,
                             "targ.col")
-  
-  draw_legend <- isTRUE(plots.joined) && 
-                 ((!missing(draw_legend) && isTRUE(draw_legend)) || 
+
+  draw_legend <- isTRUE(plots.joined) &&
+                 ((!missing(draw_legend) && isTRUE(draw_legend)) ||
                   (missing(draw_legend) && nstats == 1))
 
   draw_qnts <- isTRUE(dynamic) && is.numeric(qnts)
@@ -1018,23 +1018,23 @@ plot_stats_table <- function(data,
   mains <- if (isTRUE(plots.joined)) character(nstats) else nmstats
 
   if (method == "l") {
-    
+
     qnts_list <- list()
     means <- list()
     ylims <- list()
-    
+
     for (j in seq_len(nstats)) {
       dataj <- matrix(data[,j,], nrow = dim(data)[1])
-      
+
       if (isTRUE(draw_qnts)) {
         qnts_list[[j]] <- get_qnts(dataj, qnts, qnts.smooth)
       }
-      
+
       if (isTRUE(mean.line)) {
         means[[j]] <- get_means(dataj, mean.smooth)
       }
     }
-    
+
     for (j in seq_len(nstats)) {
       if (!is.null(da$ylim)) {
         ylims[[j]] <- da$ylim
@@ -1047,9 +1047,9 @@ plot_stats_table <- function(data,
                     if (isFALSE(plots.joined) && isTRUE(draw_qnts)) qnts_list[[j]]$y,
                     if (isTRUE(plots.joined) && isTRUE(targ.line)) targets,
                     if (isFALSE(plots.joined) && isTRUE(targ.line)) targets[j])
-        
+
         ylimsj <- suppressWarnings(c(min(limdat, na.rm = TRUE), max(limdat, na.rm = TRUE)))
-        
+
         if (any(is.infinite(ylimsj))) {
           ## should both be infinite in this case, indicating no non-missing data to plot;
           ## set both limits to 0 simply to avoid errors when calling plot below
@@ -1059,7 +1059,7 @@ plot_stats_table <- function(data,
           ylimsj[1] <- ylimsj[1] - 0.1*abs(ylimsj[1])
           ylimsj[2] <- ylimsj[2] + 0.1*abs(ylimsj[2])
         }
-        
+
         ylims[[j]] <- ylimsj
       }
     }
@@ -1075,53 +1075,53 @@ plot_stats_table <- function(data,
       if (nstats %in% 10:12) dimens <- c(4, 3)
       if (nstats %in% 13:16) dimens <- c(4, 4)
       if (nstats > 16) dimens <- rep(ceiling(sqrt(nstats)), 2)
-      
+
       # Pull graphical parameters
       ops <- list(mar = par()$mar, mfrow = par()$mfrow, mgp = par()$mgp)
-      par(mar = c(2.5, 2.5, 2, 1), mgp = c(2, 1, 0), mfrow = dimens)      
+      par(mar = c(2.5, 2.5, 2, 1), mgp = c(2, 1, 0), mfrow = dimens)
     }
 
     ## do actual plotting
     for (j in seq_len(nstats)) {
       if (j == 1 || isFALSE(plots.joined)) {
-        plot(NULL, 
-             xlim = xlim, 
+        plot(NULL,
+             xlim = xlim,
              ylim = ylims[[j]],
-             type = "n", 
-             xlab = xlab, 
+             type = "n",
+             xlab = xlab,
              ylab = ylab,
              main = mains[j])
       }
       dataj <- matrix(data[,j,], nrow = dim(data)[1])
 
       if (isTRUE(draw_qnts)) {
-        polygon(qnts_list[[j]]$x, qnts_list[[j]]$y, col = qnts.col[j], border = NA)        
+        polygon(qnts_list[[j]]$x, qnts_list[[j]]$y, col = qnts.col[j], border = NA)
       }
 
       if (isTRUE(sim.lines)) {
-        apply(dataj, 
-              2, 
-              function(y) lines(which(!is.na(y)), 
-                                y[!is.na(y)], 
-                                lwd = sim.lwd, 
+        apply(dataj,
+              2,
+              function(y) lines(which(!is.na(y)),
+                                y[!is.na(y)],
+                                lwd = sim.lwd,
                                 col = sim.col[j]))
       }
-      
+
       if (isTRUE(mean.line)) {
-        lines(means[[j]]$x, 
-              means[[j]]$y, 
+        lines(means[[j]]$x,
+              means[[j]]$y,
               lwd = mean.lwd,
-              col = mean.col[j], 
+              col = mean.col[j],
               lty = mean.lty)
       }
 
       if (isTRUE(targ.line)) {
         abline(h = targets[j],
-               lty = targ.lty, 
+               lty = targ.lty,
                lwd = targ.lwd,
                col = targ.col[j])
       }
-      
+
       if (isTRUE(grid) && isFALSE(plots.joined)) {
         grid()
       }
@@ -1135,13 +1135,13 @@ plot_stats_table <- function(data,
       legend("topleft", legend = nmstats, lwd = 2,
              col = sim.col[1:nstats], cex = 0.75, bg = "white")
     }
-    
+
     if (isFALSE(plots.joined)) {
       # Reset graphical parameters
       on.exit(par(ops))
     }
   }
-  
+
   if (method == "b") {
 
     data <- matrix(aperm(data, c(1, 3, 2)), nrow = dim(data)[1] * dim(data)[3])
@@ -1152,7 +1152,7 @@ plot_stats_table <- function(data,
     for (j in seq_len(nstats)) {
       points(x = j, y = targets[j],
              pch = 16, cex = 1.5, col = "blue")
-      
+
       ## Grid
       if (isTRUE(grid)) {
           grid()
@@ -1172,13 +1172,13 @@ plot_stats_table <- function(data,
 #'        statistics for average edge duration, or \code{"dissolution"} for
 #'        dissolution model statistics for proportion of ties dissolved per time
 #'        step.
-#' @param method Plot method, with options of \code{"l"} for line plots and 
+#' @param method Plot method, with options of \code{"l"} for line plots and
 #'        \code{"b"} for boxplots.
 #' @param sims A vector of simulation numbers to plot.
 #' @param stats Statistics to plot.  For \code{type = "formation"},
-#'        \code{stats} are among those specified in the call to 
+#'        \code{stats} are among those specified in the call to
 #'        \code{\link{netdx}}; for \code{type = "duration","dissolution"},
-#'        \code{stats} are among those of the dissolution model (without 
+#'        \code{stats} are among those of the dissolution model (without
 #'        \code{offset()}).  The default is to plot all statistics.
 #' @param plots.joined If \code{TRUE}, combine all statistics in one
 #'        plot, versus one plot per statistic if \code{FALSE}.
@@ -1193,13 +1193,13 @@ plot_stats_table <- function(data,
 #' call to \code{\link{netest}}.
 #'
 #' The \code{duration} plot shows the average age of existing edges at each time
-#' step, up until the maximum time step requested. The age is used as an 
-#' estimator of the average duration of edges in the equilibrium state. When 
-#' \code{duration.imputed = FALSE}, edges that exist at the beginning of the 
-#' simulation are assumed to start with an age of 1, yielding a burn-in period 
-#' before the observed mean approaches its target.  When 
+#' step, up until the maximum time step requested. The age is used as an
+#' estimator of the average duration of edges in the equilibrium state. When
+#' \code{duration.imputed = FALSE}, edges that exist at the beginning of the
+#' simulation are assumed to start with an age of 1, yielding a burn-in period
+#' before the observed mean approaches its target.  When
 #' \code{duration.imputed = TRUE}, expected ages prior to the start of the
-#' simulation are calculated from the dissolution model, typically eliminating 
+#' simulation are calculated from the dissolution model, typically eliminating
 #' the need for a burn-in period.
 #'
 #' The \code{dissolution} plot shows the proportion of the extant ties that are
@@ -1321,11 +1321,11 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
   da <- list(...)
 
   type <- match.arg(type, c("formation", "duration", "dissolution"))
-  
+
   # Formation Plot ----------------------------------------------------------
-  if (type == "formation") {  
+  if (type == "formation") {
     stats_table <- x$stats.table.formation
-    
+
     data <- do.call("cbind", args = x$stats)
     dim3 <- if (isTRUE(dynamic)) nsims else 1L
     data <- array(data, dim = c(dim(data)[1], dim(data)[2]/dim3, dim3))
@@ -1347,7 +1347,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
       data <- x$pages
     }
 
-    stats_table <- x$stats.table.duration    
+    stats_table <- x$stats.table.duration
   } else { # type == "dissolution"
     if (any(grepl("nodefactor", x$dissolution) == TRUE)) {
       warning("Support for dissolution models containing a nodefactor term is
@@ -1356,9 +1356,9 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
     }
 
     data <- x$prop.diss
-    stats_table <- x$stats.table.dissolution  
+    stats_table <- x$stats.table.dissolution
   }
-  
+
   ## Find available stats
   sts <- which(!is.na(stats_table[, "Sim Mean"]))
   nmstats <- rownames(stats_table)[sts]
@@ -1373,7 +1373,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
   }
   outsts <- which(nmstats %in% stats)
   nmstats <- nmstats[outsts]
-      
+
   ## Subset data
   nstats <- length(outsts)
   data <- data[,outsts,,drop=FALSE]
@@ -1387,19 +1387,19 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
   plot_stats_table(data = data,
                    nmstats = nmstats,
                    method = method,
-                   duration.imputed = duration.imputed, 
-                   sim.lines = sim.lines, 
-                   sim.col = sim.col, 
+                   duration.imputed = duration.imputed,
+                   sim.lines = sim.lines,
+                   sim.col = sim.col,
                    sim.lwd = sim.lwd,
-                   mean.line = mean.line, 
-                   mean.smooth = mean.smooth, 
+                   mean.line = mean.line,
+                   mean.smooth = mean.smooth,
                    mean.col = mean.col,
-                   mean.lwd = mean.lwd, 
-                   mean.lty = mean.lty, 
-                   qnts = qnts, 
+                   mean.lwd = mean.lwd,
+                   mean.lty = mean.lty,
+                   qnts = qnts,
                    qnts.col = qnts.col,
-                   qnts.alpha = qnts.alpha, 
-                   qnts.smooth = qnts.smooth, 
+                   qnts.alpha = qnts.alpha,
+                   qnts.smooth = qnts.smooth,
                    targ.line = targ.line,
                    targ.col = targ.col,
                    targ.lwd = targ.lwd,
@@ -1470,11 +1470,11 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #'        and "square". Group 1 vertices will remain circles.
 #' @param vertex.cex Relative size of plotted vertices if \code{type="network"},
 #'        with implicit default of 1.
-#' @param stats If \code{type="formation","duration","dissolution"}, statistics 
+#' @param stats If \code{type="formation","duration","dissolution"}, statistics
 #'        to plot.  For \code{type = "formation"}, \code{stats} are among those
 #'        specified in \code{nwstats.formula} of \code{\link{control.net}}; for
 #'        \code{type = "duration","dissolution"}, \code{stats} are among those
-#'        of the dissolution model (without \code{offset()}).  The default is 
+#'        of the dissolution model (without \code{offset()}).  The default is
 #'        to plot all statistics.
 #' @param targ.line If \code{TRUE}, plot target or expected value line for
 #'        the statistic of interest.
@@ -1482,12 +1482,12 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #'        default colors based on \code{RColorBrewer} color palettes.
 #' @param targ.lwd Line width for the line showing the target statistic values.
 #' @param targ.lty Line type for the line showing the target statistic values.
-#' @param plots.joined If \code{TRUE} and 
-#'        \code{type="formation","duration","dissolution"}, combine all 
+#' @param plots.joined If \code{TRUE} and
+#'        \code{type="formation","duration","dissolution"}, combine all
 #'        statistics in one plot, versus one plot per statistic if
 #'        \code{FALSE}.
-#' @param method Plot method for 
-#'        \code{type="formation","duration","dissolution"}, with options of 
+#' @param method Plot method for
+#'        \code{type="formation","duration","dissolution"}, with options of
 #'        \code{"l"} for line plots and \code{"b"} for boxplots.
 #' @param duration.imputed If \code{type="duration"}, a logical indicating
 #'        whether or not to impute starting times for relationships extant at
@@ -1628,7 +1628,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
                         plots.joined, duration.imputed = TRUE, method = "l", ...) {
 
   type <- match.arg(type, c("epi", "network", "formation", "duration", "dissolution"))
-  
+
   if (type == "network") {
     # Network plot ------------------------------------------------------------
 
@@ -2031,7 +2031,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
 
     if (type == "formation") {
       # Formation plot ----------------------------------------------------------
-    
+
       ## get nw stats
       data <- get_nwstats(x, sims, network)
       ## order by simulation and timestep
@@ -2044,7 +2044,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
       data <- array(c(as.matrix(data)), dim = c(nsteps, nsims, length(nmstats)))
       ## permute array indices to be steps x stats x sims
       data <- aperm(data, c(1,3,2))
-            
+
       ## target stats
       nwparam <- get_nwparam(x, network)
       ts <- nwparam$target.stats
@@ -2072,19 +2072,19 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
                 " imputed randomly each time; this behavior may be changed in",
                 " the future")
       }
-      
+
       if (isTRUE(x$control$save.network) &&
           isFALSE(x$control$tergmLite) &&
           isTRUE(x$nwparam[[network]]$coef.diss$diss.model.type == "edgesonly")) {
         diag.sim <- lapply(sims, get_network, network = network, x = x)
-        
-        dstats <- make_dissolution_stats( 
-          lapply(diag.sim, 
-                 function(nwd) { 
-                   toggles_to_diss_stats(tedgelist_to_toggles(as.data.frame(nwd)), 
-                                         x$nwparam[[network]]$coef.diss, 
-                                         x$control$nsteps, 
-                                         nwd) 
+
+        dstats <- make_dissolution_stats(
+          lapply(diag.sim,
+                 function(nwd) {
+                   toggles_to_diss_stats(tedgelist_to_toggles(as.data.frame(nwd)),
+                                         x$nwparam[[network]]$coef.diss,
+                                         x$control$nsteps,
+                                         nwd)
                  }),
           x$nwparam[[network]]$coef.diss,
           x$control$nsteps,
@@ -2095,25 +2095,25 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
              "unless `save.network` is `TRUE`, `tergmLite` is `FALSE`, and ",
              "dissolution model is edges-only")
       }
-      
+
       if (type == "duration") {
         if (isTRUE(duration.imputed)) {
           data <- dstats$pages_imptd
         } else {
           data <- dstats$pages
         }
-        
-        stats_table <- dstats$stats.table.duration    
+
+        stats_table <- dstats$stats.table.duration
       } else { # type == "dissolution"
         data <- dstats$prop.diss
-        stats_table <- dstats$stats.table.dissolution  
+        stats_table <- dstats$stats.table.dissolution
       }
     }
 
     ## Find available stats
     sts <- which(!is.na(stats_table[, "Sim Mean"]))
     nmstats <- rownames(stats_table)[sts]
-    
+
     ## Pull and check stat argument
     if (missing(stats)) {
       stats <- nmstats
@@ -2124,13 +2124,13 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
     }
     outsts <- which(nmstats %in% stats)
     nmstats <- nmstats[outsts]
-        
+
     ## Subset data
     nstats <- length(outsts)
     data <- data[,outsts,,drop=FALSE]
-    
+
     ## we've already subset the data to `sims`
-    
+
     ## Pull target stats
     targets <- stats_table$Target[sts][outsts]
 
@@ -2139,19 +2139,19 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
     plot_stats_table(data = data,
                      nmstats = nmstats,
                      method = method,
-                     duration.imputed = duration.imputed, 
-                     sim.lines = sim.lines, 
-                     sim.col = sim.col, 
+                     duration.imputed = duration.imputed,
+                     sim.lines = sim.lines,
+                     sim.col = sim.col,
                      sim.lwd = sim.lwd,
-                     mean.line = mean.line, 
-                     mean.smooth = mean.smooth, 
+                     mean.line = mean.line,
+                     mean.smooth = mean.smooth,
                      mean.col = mean.col,
-                     mean.lwd = mean.lwd, 
-                     mean.lty = mean.lty, 
-                     qnts = qnts, 
+                     mean.lwd = mean.lwd,
+                     mean.lty = mean.lty,
+                     qnts = qnts,
                      qnts.col = qnts.col,
-                     qnts.alpha = qnts.alpha, 
-                     qnts.smooth = qnts.smooth, 
+                     qnts.alpha = qnts.alpha,
+                     qnts.smooth = qnts.smooth,
                      targ.line = targ.line,
                      targ.col = targ.col,
                      targ.lwd = targ.lwd,
