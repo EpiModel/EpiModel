@@ -919,14 +919,15 @@ draw_means <- function(x, y, mean.smooth, mean.lwd,
 #' call to \code{\link{netest}}.
 #'
 #' The \code{duration} plot shows the average age of existing edges at each time
-#' step, up until the maximum time step requested. This is calculated with the
-#' \code{\link{edgelist_meanage}} function. The age is used as an estimator of
-#' the average duration of edges in the equilibrium state. When
-#' \code{duration.imputed = FALSE}, edges that exist at the beginning of the
-#' simulation are assumed to have an age of 0, yielding a burn-in period before
-#' the observed mean approaches its target. When \code{duration.imputed = TRUE},
-#' expected ages prior to the start of the simulation are calculated from the
-#' dissolution model, typically eliminating the need for a burn-in period.
+#' step, up until the maximum time step requested. This is calculated from 
+#' change statistics obtained from the \code{\link{tergm.godfather}} function. 
+#' The age is used as an estimator of the average duration of edges in the 
+#' equilibrium state. When \code{duration.imputed = FALSE}, edges that exist at
+#' the beginning of the simulation are assumed to have an age of 0, yielding a 
+#' burn-in period before the observed mean approaches its target. 
+#' When \code{duration.imputed = TRUE}, expected ages prior to the start of the
+#' simulation are calculated from the dissolution model, typically eliminating 
+#' the need for a burn-in period.
 #'
 #' The \code{dissolution} plot shows the proportion of the extant ties that are
 #' dissolved at each time step, up until the maximum time step requested.
@@ -1570,15 +1571,11 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
               deprecated, and will be removed in a future release.",
               call. = FALSE)
     }
-
-    pages <- x$pages
-    pages_imptd <- x$pages_imptd
+    
     if (duration.imputed == TRUE) {
-      data <- simplify2array(lapply(1:nsims,
-                                    function(x)pages[, , x] + pages_imptd))
-      if (is.vector(data)) data <- array(data, dim = c(1, nsteps, nsims))
+      data <- x$pages_imptd
     } else {
-      data <- pages
+      data <- x$pages
     }
 
 

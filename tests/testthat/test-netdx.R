@@ -330,7 +330,7 @@ test_that("print.netdx and plot.netdx with heterogeneous diss", {
   dx11 <- netdx(est, nsims = 5, nsteps = 100)
   expect_length(dx11$stats.table.duration$Target, 11)
   expect_length(dx11$stats.table.dissolution$`Sim Mean`, 11)
-  expect_output(print(dx11), "match.neighborhood.TRUE.7")
+  expect_output(print(dx11), "match.neighborhood.7")  
   plot(dx11)
   plot(dx11, type = "duration")
   plot(dx11, type = "dissolution")

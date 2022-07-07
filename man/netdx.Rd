@@ -10,9 +10,9 @@ netdx(
   dynamic = TRUE,
   nsteps,
   nwstats.formula = "formation",
-  set.control.ergm,
-  set.control.stergm,
-  set.control.tergm,
+  set.control.ergm = control.simulate.formula(),
+  set.control.stergm = control.simulate.network(),
+  set.control.tergm = control.simulate.formula.tergm(),
   sequential = TRUE,
   keep.tedgelist = FALSE,
   keep.tnetwork = FALSE,
@@ -82,7 +82,8 @@ number of time steps per simulation. The network statistics in
 \code{nwstats.formula} are saved for each time step. Summary statistics for
 the formation model terms, as well as dissolution model and relational
 duration statistics, are then calculated and can be accessed when printing or
-plotting the \code{netdx} object.
+plotting the \code{netdx} object.  See \code{\link{print.netdx}} and 
+\code{\link{plot.netdx}} for details on printing and plotting.
 }
 \section{Control Arguments}{
 

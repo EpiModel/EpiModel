@@ -107,8 +107,8 @@ get_network <- function(x, sim = 1, network = 1, collapse = FALSE, at,
   }
 
   nsteps <- ifelse(inherits(x, "netsim"), x$control$nsteps, x$nsteps)
-  if (collapse == TRUE && (missing(at) || at > nsteps)) {
-    stop("Specify collapse time step between 1 and ", nsteps,
+  if (collapse == TRUE && (missing(at) || at > nsteps || at < 0)) {
+    stop("Specify collapse time step between 0 and ", nsteps,
          call. = FALSE)
   }
   ## Extraction ##
