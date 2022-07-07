@@ -294,7 +294,7 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
   }
 
   ## List for stats for each simulation
-  stats <- lapply(diag.sim, function(x) x$stats[,!duplicated(colnames(x$stats)),drop=FALSE])
+  stats <- lapply(diag.sim, function(x) x$stats[, !duplicated(colnames(x$stats)), drop = FALSE])
   merged.stats <- do.call(rbind, stats)
 
   ts.attr.names <- x$target.stats.names
@@ -445,13 +445,13 @@ make_dissolution_stats <- function(diag.sim, coef.diss,
 
   stats.table.duration <- data.frame("Target" = durs,
                                      "Sim Mean" = meanagesimputed,
-                                     "Pct Diff" = 100*(meanagesimputed - durs) / durs,
+                                     "Pct Diff" = 100 * (meanagesimputed - durs) / durs,
                                      "Sim SD" = meanagesd)
   colnames(stats.table.duration) <- c("Target", "Sim Mean", "Pct Diff", "Sim SD")
 
-  stats.table.dissolution <- data.frame("Target" = 1/durs,
+  stats.table.dissolution <- data.frame("Target" = 1 / durs,
                                         "Sim Mean" = meanpropdiss,
-                                        "Pct Diff" = 100*(meanpropdiss - 1/durs) / (1/durs),
+                                        "Pct Diff" = 100 * (meanpropdiss - 1 / durs) / (1 / durs),
                                         "Sim SD" = propdisssd)
   colnames(stats.table.dissolution) <- c("Target", "Sim Mean", "Pct Diff", "Sim SD")
 
@@ -480,7 +480,7 @@ toggles_to_diss_stats <- function(toggles, coef.diss,
   nw <- as.network(nw) # drop nwd
   delete.network.attribute(nw, "time")
   delete.network.attribute(nw, "lasttoggle")
-  nw[,] <- FALSE
+  nw[, ] <- FALSE
 
   ## exclude nodefactor from heterogeneous dissolution calculation
   if (coef.diss$diss.model.type == "nodefactor") {
@@ -505,18 +505,18 @@ toggles_to_diss_stats <- function(toggles, coef.diss,
   colnames(edgecounts) <- substr(colnames(edgecounts), 8L,
                                  nchar(colnames(edgecounts)) - 1L)
 
-  edgeages <- changestats[,seq_along(durs)+length(durs), drop = FALSE]
+  edgeages <- changestats[, seq_along(durs)+length(durs), drop = FALSE]
   colnames(edgeages) <- colnames(edgecounts)
 
-  edgepers <- changestats[,seq_along(durs)+2L*length(durs), drop = FALSE]
+  edgepers <- changestats[, seq_along(durs) + 2L * length(durs), drop = FALSE]
 
   if (length(durs) > 1L) {
-    edgecounts[,1L] <- edgecounts[,1L] - rowSums(edgecounts[, -1L, drop = FALSE])
+    edgecounts[,1L] <- edgecounts[, 1L] - rowSums(edgecounts[, -1L, drop = FALSE])
     edgeages[, 1L] <- edgeages[, 1L] - rowSums(edgeages[, -1L, drop = FALSE])
     edgepers[, 1L] <- edgepers[, 1L] - rowSums(edgepers[, -1L, drop = FALSE])
   }
 
-  edgediss <- edgecounts[-NROW(edgecounts),,drop=FALSE] -
+  edgediss <- edgecounts[-NROW(edgecounts), , drop = FALSE] -
     edgepers[-1L, , drop = FALSE]
   edgeages <- edgeages[-1L, , drop = FALSE]
 
@@ -535,9 +535,9 @@ toggles_to_diss_stats <- function(toggles, coef.diss,
       dyad_type <- max(which(changestats[i, ] != changestats[i+1L, ]))
       index <- w[i]
       if (index < NROW(toggles) &&
-            toggles[index,2L] == toggles[index+1L, 2L] &&
-            toggles[index,3L] == toggles[index+1L, 3L]) {
-        terminus_time <- toggles[index+1L, 1L]
+            toggles[index, 2L] == toggles[index + 1L, 2L] &&
+            toggles[index, 3L] == toggles[index + 1L, 3L]) {
+        terminus_time <- toggles[index + 1L, 1L]
       } else {
         terminus_time <- time.start + nsteps + 1L
       }
@@ -550,9 +550,9 @@ toggles_to_diss_stats <- function(toggles, coef.diss,
   }
 
   ## 0/0 is possible, resulting in NaN, which we set to 0 for the time being...
-  meanage <- edgeages/edgecounts[-1L, , drop = FALSE]
-  meanageimputed <- edgeagesimputed/edgecounts[-1L, , drop = FALSE]
-  propdiss <- edgediss/edgecounts[-NROW(edgecounts), , drop = FALSE]
+  meanage <- edgeages / edgecounts[-1L, , drop = FALSE]
+  meanageimputed <- edgeagesimputed / edgecounts[-1L, , drop = FALSE]
+  propdiss <- edgediss / edgecounts[-NROW(edgecounts), , drop = FALSE]
 
   if (any(is.na(meanage)) || any(is.na(meanageimputed)) || any(is.na(propdiss))) {
     meanage[is.na(meanage)] <- 0

@@ -630,10 +630,8 @@ plot.icm <- function(x, y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col,
       min.prev <- min(x$epi[[y]], na.rm = TRUE)
       max.prev <- max(x$epi[[y]], na.rm = TRUE)
     } else {
-      min.prev <- min(sapply(y, function(comps) min(x$epi[[comps]],
-                                                    na.rm = TRUE)))
-      max.prev <- max(sapply(y, function(comps) max(x$epi[[comps]],
-                                                    na.rm = TRUE)))
+      min.prev <- min(sapply(y, function(comps) min(x$epi[[comps]], na.rm = TRUE)))
+      max.prev <- max(sapply(y, function(comps) max(x$epi[[comps]], na.rm = TRUE)))
     }
   } else {
     min.prev <- 0
@@ -704,8 +702,7 @@ plot.icm <- function(x, y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col,
              (mean.line == TRUE || qnts == TRUE)) {
     ylim <- c(min(qnt.min * 0.9, mean.min * 0.9),
               max(qnt.max * 1.1, mean.max * 1.1))
-  }
-  else {
+  } else {
     ylim <- c(min.prev, max.prev)
   }
 
@@ -835,7 +832,7 @@ draw_qnts <- function(x, y, qnts, qnts.pal, qnts.smooth,
     }
     if (plot.qnts == 1) {
       polygon(xx, yy, col = qnts.pal[j], border = NA)
-    } else{
+    } else {
       qnt.max[j] <-  max(yy)
       qnt.min[j] <-  min(yy)
     }
@@ -1042,7 +1039,7 @@ plot_stats_table <- function(data,
         ylims[[j]] <- da$ylim
       } else {
         limdat <- c(if (isTRUE(plots.joined) && isTRUE(sim.lines)) data,
-                    if (isFALSE(plots.joined) && isTRUE(sim.lines)) data[,j,],
+                    if (isFALSE(plots.joined) && isTRUE(sim.lines)) data[, j, ],
                     if (isTRUE(plots.joined) && isTRUE(mean.line)) unlist(lapply(means, `[[`, "y")),
                     if (isFALSE(plots.joined) && isTRUE(mean.line)) means[[j]]$y,
                     if (isTRUE(plots.joined) && isTRUE(draw_qnts)) unlist(lapply(qnts_list, `[[`, "y")),
@@ -1055,11 +1052,11 @@ plot_stats_table <- function(data,
         if (any(is.infinite(ylimsj))) {
           ## should both be infinite in this case, indicating no non-missing data to plot;
           ## set both limits to 0 simply to avoid errors when calling plot below
-          ylimsj <- c(0,0)
+          ylimsj <- c(0, 0)
         } else {
           ## give +/- 10% buffer in a way that works for signed statistics
-          ylimsj[1] <- ylimsj[1] - 0.1*abs(ylimsj[1])
-          ylimsj[2] <- ylimsj[2] + 0.1*abs(ylimsj[2])
+          ylimsj[1] <- ylimsj[1] - 0.1 * abs(ylimsj[1])
+          ylimsj[2] <- ylimsj[2] + 0.1 * abs(ylimsj[2])
         }
 
         ylims[[j]] <- ylimsj
