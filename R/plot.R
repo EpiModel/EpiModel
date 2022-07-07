@@ -285,13 +285,15 @@ plot.dcm <- function(x, y, popfrac = FALSE, run, col, lwd, lty, alpha = 0.9,
         } else {
           pal <- adjustcolor(brewer.pal(max(c(lcomp, 4)), col), alpha)
           fixpal <- pal
-          fixpal[1] <- pal[2]; fixpal[2] <- pal[1]
+          fixpal[1] <- pal[2]
+          fixpal[2] <- pal[1]
           pal <- fixpal
         }
         if (groups == 2 && noy == TRUE) {
           pal <- adjustcolor(brewer.pal(3, col), alpha)
           fixpal <- pal
-          fixpal[1] <- pal[2]; fixpal[2] <- pal[1]
+          fixpal[1] <- pal[2]
+          fixpal[2] <- pal[1]
           pal <- fixpal
           if (dis.type != "SIR") {
             pal <- pal[1:2]
@@ -1092,7 +1094,7 @@ plot_stats_table <- function(data,
              ylab = ylab,
              main = mains[j])
       }
-      dataj <- matrix(data[,j,], nrow = dim(data)[1])
+      dataj <- matrix(data[, j, ], nrow = dim(data)[1])
 
       if (isTRUE(draw_qnts)) {
         polygon(qnts_list[[j]]$x, qnts_list[[j]]$y, col = qnts.col[j], border = NA)

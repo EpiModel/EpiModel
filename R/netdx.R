@@ -469,8 +469,8 @@ make_dissolution_stats <- function(diag.sim, coef.diss,
 
 tedgelist_to_toggles <- function(tedgelist) {
   tedgelist <- as.matrix(tedgelist)
-  toggles <- rbind(tedgelist[,c(1L,3L,4L),drop=FALSE],
-                   tedgelist[!tedgelist[,6L],c(2L,3L,4L),drop=FALSE])
+  toggles <- rbind(tedgelist[, c(1L, 3L, 4L), drop = FALSE],
+                   tedgelist[!tedgelist[, 6L], c(2L, 3L, 4L), drop = FALSE])
   colnames(toggles) <- c("time", "tail", "head")
   toggles
 }
@@ -499,10 +499,11 @@ toggles_to_diss_stats <- function(toggles, coef.diss,
                                            end = time.start + nsteps,
                                            stats.start = FALSE))
 
-  edgecounts <- changestats[,seq_along(durs),drop=FALSE]
+  edgecounts <- changestats[, seq_along(durs), drop = FALSE]
 
   # drop offset() from names
-  colnames(edgecounts) <- substr(colnames(edgecounts), 8L, nchar(colnames(edgecounts)) - 1L)
+  colnames(edgecounts) <- substr(colnames(edgecounts), 8L,
+                                 nchar(colnames(edgecounts)) - 1L)
 
   edgeages <- changestats[,seq_along(durs)+length(durs), drop = FALSE]
   colnames(edgeages) <- colnames(edgecounts)
@@ -520,8 +521,8 @@ toggles_to_diss_stats <- function(toggles, coef.diss,
   edgeages <- edgeages[-1L, , drop = FALSE]
 
   edgeagesimputed <- edgeages
-  toggles <- toggles[order(toggles[,2L], toggles[,3L],
-                           toggles[,1L]), , drop = FALSE]
+  toggles <- toggles[order(toggles[, 2L], toggles[, 3L],
+                           toggles[, 1L]), , drop = FALSE]
   w <- which(toggles[,1] == time.start)
   if (length(w) > 0L) {
     # imputation
@@ -549,7 +550,7 @@ toggles_to_diss_stats <- function(toggles, coef.diss,
   }
 
   ## 0/0 is possible, resulting in NaN, which we set to 0 for the time being...
-  meanage <- edgeages/edgecounts[-1L,,drop=FALSE]
+  meanage <- edgeages/edgecounts[-1L, , drop = FALSE]
   meanageimputed <- edgeagesimputed/edgecounts[-1L, , drop = FALSE]
   propdiss <- edgediss/edgecounts[-NROW(edgecounts), , drop = FALSE]
 
