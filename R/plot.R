@@ -1024,7 +1024,7 @@ plot_stats_table <- function(data,
     ylims <- list()
 
     for (j in seq_len(nstats)) {
-      dataj <- matrix(data[,j,], nrow = dim(data)[1])
+      dataj <- matrix(data[, j, ], nrow = dim(data)[1])
 
       if (isTRUE(draw_qnts)) {
         qnts_list[[j]] <- get_qnts(dataj, qnts, qnts.smooth)
@@ -1376,10 +1376,10 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 
   ## Subset data
   nstats <- length(outsts)
-  data <- data[,outsts,,drop=FALSE]
+  data <- data[,outsts, , drop = FALSE]
   if (isTRUE(dynamic)) {
     # sims only used to subset data in dynamic case
-    data <- data[,,sims,drop=FALSE]
+    data <- data[, , sims, drop = FALSE]
   }
   ## Pull target stats
   targets <- stats_table$Target[sts][outsts]
@@ -2035,15 +2035,15 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
       ## get nw stats
       data <- get_nwstats(x, sims, network)
       ## order by simulation and timestep
-      data <- data[order(data$sim, data$time),,drop=FALSE]
+      data <- data[order(data$sim, data$time), , drop = FALSE]
       ## drop simulation and timestep columns
-      data <- data[,!(names(data)%in%c("sim","time")),drop=FALSE]
+      data <- data[,!(names(data)%in%c("sim","time")), drop = FALSE]
       ## get names of stats
       nmstats <- names(data)
       ## convert to array
       data <- array(c(as.matrix(data)), dim = c(nsteps, nsims, length(nmstats)))
       ## permute array indices to be steps x stats x sims
-      data <- aperm(data, c(1,3,2))
+      data <- aperm(data, c(1, 3, 2))
 
       ## target stats
       nwparam <- get_nwparam(x, network)
@@ -2060,7 +2060,8 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
         }
       }
 
-      stats_table <- data.frame("Target" = targets, "Sim Mean" = apply(data, 2, mean))
+      stats_table <- data.frame("Target" = targets,
+                                "Sim Mean" = apply(data, 2, mean))
       colnames(stats_table) <- c("Target", "Sim Mean")
       rownames(stats_table) <- nmstats
     } else {

@@ -445,13 +445,13 @@ make_dissolution_stats <- function(diag.sim, coef.diss,
 
   stats.table.duration <- data.frame("Target" = durs,
                                      "Sim Mean" = meanagesimputed,
-                                     "Pct Diff" = 100*(meanagesimputed - durs)/durs,
+                                     "Pct Diff" = 100*(meanagesimputed - durs) / durs,
                                      "Sim SD" = meanagesd)
   colnames(stats.table.duration) <- c("Target", "Sim Mean", "Pct Diff", "Sim SD")
 
   stats.table.dissolution <- data.frame("Target" = 1/durs,
                                         "Sim Mean" = meanpropdiss,
-                                        "Pct Diff" = 100*(meanpropdiss - 1/durs)/(1/durs),
+                                        "Pct Diff" = 100*(meanpropdiss - 1/durs) / (1/durs),
                                         "Sim SD" = propdisssd)
   colnames(stats.table.dissolution) <- c("Target", "Sim Mean", "Pct Diff", "Sim SD")
 
@@ -511,8 +511,8 @@ toggles_to_diss_stats <- function(toggles, coef.diss,
 
   if (length(durs) > 1L) {
     edgecounts[,1L] <- edgecounts[,1L] - rowSums(edgecounts[, -1L, drop = FALSE])
-    edgeages[,1L] <- edgeages[,1L] - rowSums(edgeages[,-1L, drop = FALSE])
-    edgepers[,1L] <- edgepers[,1L] - rowSums(edgepers[,-1L, drop = FALSE])
+    edgeages[, 1L] <- edgeages[, 1L] - rowSums(edgeages[, -1L, drop = FALSE])
+    edgepers[, 1L] <- edgepers[, 1L] - rowSums(edgepers[, -1L, drop = FALSE])
   }
 
   edgediss <- edgecounts[-NROW(edgecounts),,drop=FALSE] -

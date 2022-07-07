@@ -277,7 +277,8 @@ netsim_run_modules <- function(dat, s) {
       if (!is.null(get_control(dat, "verbose.FUN"))) {
         current_mod <- "verbose.FUN"
         verbose.FUN <- get_control(dat, current_mod)
-        do.call(get_control(dat, "verbose.FUN"), list(dat, type = "progress", s, at))
+        do.call(get_control(dat, "verbose.FUN"),
+                list(dat, type = "progress", s, at))
       }
 
       dat
