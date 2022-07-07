@@ -140,7 +140,9 @@ netsim <- function(x, param, init, control) {
   } else {
     doParallel::registerDoParallel(control$ncores)
     on.exit(doParallel::stopImplicitCluster())
-
+    # Prevents R CMD CHECK Note with variables declared in `foreach`
+    dat <- s <- NULL
+    
     dat_list <- foreach(s = seq_len(control$nsims)) %dopar% {
       netsim_initialize(x, param, init, control, s)
     }
