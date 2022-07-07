@@ -10,7 +10,6 @@
   keep.transmat = TRUE,
   keep.network = TRUE,
   keep.nwstats = TRUE,
-  keep.summary.stats = TRUE,
   keep.other = TRUE,
   param.error = TRUE,
   ...
@@ -32,9 +31,6 @@ only saved when (\code{tergmLite == FALSE}).}
 
 \item{keep.nwstats}{If \code{TRUE}, keep the network statistics (as set by
 the \code{nwstats.formula} parameter in \code{control.netsim}) from
-the original \code{x} and \code{y} elements.}
-
-\item{keep.summary.stats}{If \code{TRUE}, keep the summary statistics from
 the original \code{x} and \code{y} elements.}
 
 \item{keep.other}{If \code{TRUE}, keep the other simulation elements (as set
