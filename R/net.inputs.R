@@ -708,9 +708,7 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #'        impact the network structure (e.g., vital dynamics).
 #' @param tergmLite Logical indicating usage of either \code{tergm}
 #'        (\code{tergmLite = FALSE}), or \code{tergmLite}
-#'        (\code{tergmLite = TRUE}). Default of \code{FALSE}. (See the
-#'        \href{https://statnet.org/tut/EpiModel2.html#tergmLite}{EpiModel 2.0
-#'        migration document} for details on \code{tergmLite}.)
+#'        (\code{tergmLite = TRUE}). Default of \code{FALSE}.
 #' @param cumulative.edgelist If \code{TRUE}, calculates a cumulative edgelist
 #'        within the network simulation module. This is used when tergmLite is
 #'        used and the entire networkDynamic object is not used.
