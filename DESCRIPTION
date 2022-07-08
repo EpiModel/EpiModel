@@ -19,10 +19,10 @@ Authors@R: c(person("Samuel", "Jenness",
     role=c("aut"), email="morrism@uw.edu"),
     person("Adrien", "Le Guillou",
     role=c("aut"), email="contact@aleguillou.org"),
-    person("Skye", "Bender-deMoll",
-    role=c("ctb"), email="skyebend@uw.edu"),
     person("Chad", "Klumb",
-    role=c("ctb"), email="cklumb@gmail.com"))
+    role=c("aut"), email="cklumb@gmail.com"),
+    person("Skye", "Bender-deMoll",
+    role=c("ctb"), email="skyebend@uw.edu"))
 License: GPL-3
 URL: http://www.epimodel.org/
 BugReports: https://github.com/EpiModel/EpiModel/issues

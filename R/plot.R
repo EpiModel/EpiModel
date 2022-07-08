@@ -2068,36 +2068,23 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
       colnames(stats_table) <- c("Target", "Sim Mean")
       rownames(stats_table) <- nmstats
     } else {
-      ## duration/dissolution plot
-      if (type == "duration" && isTRUE(duration.imputed)) {
-        warning("plotting duration statistics from a `netsim` object with",
-                " `duration.imputed = TRUE` will produce stochastic results",
-                " as durational corrections for onset-censored edges are",
-                " imputed randomly each time; this behavior may be changed in",
-                " the future")
-      }
-
-      if (isTRUE(x$control$save.network) &&
+      ## duration/dissolution plot      
+      if (isTRUE(x$control$save.diss.stats) &&
+          isTRUE(x$control$save.network) &&
           isFALSE(x$control$tergmLite) &&
-          isTRUE(x$nwparam[[network]]$coef.diss$diss.model.type == "edgesonly")) {
-        diag.sim <- lapply(sims, get_network, network = network, x = x)
-
+          isFALSE(is.null(x$diss.stats)) &&
+          isTRUE(x$nwparam[[network]]$coef.diss$diss.model.type == "edgesonly")) {        
         dstats <- make_dissolution_stats(
-          lapply(diag.sim,
-                 function(nwd) {
-                   toggles_to_diss_stats(tedgelist_to_toggles(as.data.frame(nwd)),
-                                         x$nwparam[[network]]$coef.diss,
-                                         x$control$nsteps,
-                                         nwd)
-                 }),
+          lapply(sims, function(sim) x$diss.stats[[sim]][[network]]),
           x$nwparam[[network]]$coef.diss,
           x$control$nsteps,
           verbose = FALSE
         )
       } else {
         stop("cannot produce duration/dissolution plot from `netsim` object ",
-             "unless `save.network` is `TRUE`, `tergmLite` is `FALSE`, and ",
-             "dissolution model is edges-only")
+             "unless `save.diss.stats` is `TRUE`, `save.network` is `TRUE`, ",
+             "`tergmLite` is `FALSE`, `keep.diss.stats` is `TRUE` (if ",
+             "merging), and dissolution model is edges-only")
       }
 
       if (type == "duration") {

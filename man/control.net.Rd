@@ -39,6 +39,7 @@ control.net(
   set.control.ergm = control.simulate.formula(MCMC.burnin = 2e+05),
   set.control.stergm = NULL,
   set.control.tergm = control.simulate.formula.tergm(),
+  save.diss.stats = TRUE,
   ...
 )
 }
@@ -176,6 +177,11 @@ instead.}
 \code{simulate_formula.network}. See the help file for
 \code{\link{netdx}} for details and examples on specifying this
 parameter.}
+
+\item{save.diss.stats}{If \code{TRUE}, \code{netsim} will compute and save
+duration/dissolution statistics for plotting and printing, provided
+\code{save.network} is \code{TRUE}, \code{tergmLite} is \code{FALSE},
+and the dissolution model is homogeneous.}
 
 \item{...}{Additional control settings passed to model.}
 }
