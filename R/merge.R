@@ -116,6 +116,8 @@ merge.icm <- function(x, y, ...) {
 #'        params (in \code{\link{param.net}}) or controls (passed in
 #'        \code{\link{control.net}}) an error will prevent the merge. Use
 #'        \code{FALSE} to override that check.
+#' @param keep.diss.stats If \code{TRUE}, keep \code{diss.stats} from the 
+#'        original \code{x} and \code{y} objects.
 #' @param ...  Additional merge arguments (not currently used).
 #'
 #' @details
@@ -164,8 +166,8 @@ merge.icm <- function(x, y, ...) {
 #' as.data.frame(z)
 #'
 merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
-                         keep.nwstats = TRUE, keep.other = TRUE,
-                         param.error = TRUE, ...) {
+                         keep.nwstats = TRUE, keep.other = TRUE, 
+                         param.error = TRUE, keep.diss.stats = TRUE, ...) {
 
   ## Check structure
   if (length(x) != length(y) || !identical(names(x), names(y))) {
@@ -273,6 +275,13 @@ merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
     }
   }
 
-
+  if (keep.diss.stats == TRUE && !is.null(x$diss.stats) && 
+      !is.null(y$diss.stats)) {
+    z$diss.stats <- c(x$diss.stats, y$diss.stats)
+    names(z$diss.stats) <- c(names(x$diss.stats), paste0("sim", new.range))
+  } else {
+    z$diss.stats <- NULL
+  }
+  
   return(z)
 }

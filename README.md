@@ -14,6 +14,7 @@ Tools for simulating mathematical models of infectious disease dynamics. Epidemi
 | [Steven M. Goodreau](http://faculty.washington.edu/goodreau/) | Department of Anthropology              | University of Washington |
 | [Martina Morris](http://faculty.washington.edu/morrism/)      | Departments of Statistics and Sociology | University of Washington |
 | [Adrien Le Guillou](http://samueljenness.org/team.html)       | Department of Epidemiology              | Emory University         |
+| Chad Klumb                                                    | Center for Studies in Demography and Ecology | University of Washington |
 
 Additional contributors to EpiModel are listed on the [contributors](https://github.com/EpiModel/EpiModel/graphs/contributors) page.
 
@@ -32,23 +33,19 @@ if (!require("remotes")) install.packages("remotes")
 remotes::install_github("EpiModel/EpiModel")
 ```
 
-### EpiModel 2.0
-
-In July 2020, we released EpiModel version 2.0. This major software package update incorporates a substantial redesign of many elements of the EpiModel infrastructure and application programming interface (API). We anticipate that there will be some minor backwards incompatibilities with any EpiModel code developed with versions 1.x. There is a EpiModel 2.0 migration document available in the <a href="http://www.epimodel.org/tut.html" target="_blank"> Tutorials</a> page.
-
 ### Documentation and Support
 
-**Website.** The main website for EpiModel, with tutorials and other supporting files is <a href="http://epimodel.org/" target="_blank">http://epimodel.org/</a>.
+**Website.** The main website for EpiModel, with tutorials and other supporting files, is here: <a href="http://epimodel.org/" target="_blank">http://epimodel.org/</a>.
 
-**Methods Paper.** A good place to start learning about EpiModel is the main methods paper published in the *Journal of Statistical Software.* It is available at <a href="http://doi.org/10.18637/jss.v084.i08" target="_blank">http://doi.org/10.18637/jss.v084.i08</a>.
+**Methods Paper.** A good place to start learning about EpiModel is the main methods paper published in the *Journal of Statistical Software.* It is available at: <a href="http://doi.org/10.18637/jss.v084.i08" target="_blank">http://doi.org/10.18637/jss.v084.i08</a>.
 
 **Summer Course.** Network Modeling for Epidemics is our annual 5-day course at the University of Washington where we teach the statistical theory, software tools, and applied modeling methods using EpiModel. <a href="http://statnet.github.io/nme/" target="_blank">Our course materials</a> are open-source and updated annually around the time of the course.
 
-**Getting Help.** Users are encouraged to use Github issues on this repository as a place to ask questions (both technical coding quesitons and conceptual modeling questions), report bugs, and request new features & functionality.
+**Getting Help.** Users are encouraged to use Github issues on this repository as a place to ask questions (both technical coding quesitons and conceptual modeling questions), report bugs, and request new features & functionality. Broader modeling questions can be posted on the Discussions board here.
 
 ### The EpiModel Gallery
 
-We recently started a new <a href="https://github.com/EpiModel/EpiModel-Gallery" target="_blank">EpiModel Gallery</a> that contains templates of extensions to EpiModel, for now focused on network-based mathematical models. We will be continuing to add new examples the gallery, and encourage users to either file requests for new examples or contribute them following our guidelines.
+The <a href="https://github.com/EpiModel/EpiModel-Gallery" target="_blank">EpiModel Gallery</a>  contains templates of extensions to EpiModel, for now focused on network-based mathematical modeling class. We will be continuing to add new examples the gallery, and encourage users to either file requests for new examples or else to contribute them directly.
 
 ### Citation
 

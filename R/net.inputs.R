@@ -788,6 +788,10 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #' @param set.control.stergm Deprecated control argument of class
 #'        \code{control.simulate.network}; use \code{set.control.tergm}
 #'        instead.
+#' @param save.diss.stats If \code{TRUE}, \code{netsim} will compute and save
+#'        duration/dissolution statistics for plotting and printing, provided
+#'        \code{save.network} is \code{TRUE}, \code{tergmLite} is \code{FALSE},
+#'        and the dissolution model is homogeneous.
 #' @param ... Additional control settings passed to model.
 #'
 #' @details
@@ -912,6 +916,7 @@ control.net <- function(type,
                           MCMC.burnin = 2e5),
                         set.control.stergm = NULL,
                         set.control.tergm = control.simulate.formula.tergm(),
+                        save.diss.stats = TRUE,
                         ...) {
   if (!missing(set.control.stergm)) {
     warning("set.control.stergm is deprecated and will be removed in a future
@@ -1028,7 +1033,7 @@ control.net <- function(type,
             call. = FALSE)
     p[["resimulate.network"]] <- TRUE
   }
-
+  
   ## Output
   p <- set.control.class("control.net", p)
   return(p)
