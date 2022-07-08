@@ -214,7 +214,7 @@ merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
 
 
   ## Transmission matrix
-  if (keep.transmat == TRUE && !is.null(x$stats$transmat) && 
+  if (keep.transmat == TRUE && !is.null(x$stats$transmat) &&
       !is.null(y$stats$transmat)) {
     for (i in new.range) {
       z$stats$transmat[[i]] <- y$stats$transmat[[i - x$control$nsims]]

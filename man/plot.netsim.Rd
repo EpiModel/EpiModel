@@ -21,7 +21,7 @@
   mean.lty = 1,
   qnts = 0.5,
   qnts.col,
-  qnts.alpha,
+  qnts.alpha = 0.5,
   qnts.smooth = TRUE,
   legend,
   leg.cex = 0.8,
@@ -39,6 +39,8 @@
   targ.lwd = 2,
   targ.lty = 2,
   plots.joined,
+  duration.imputed = TRUE,
+  method = "l",
   ...
 )
 }
@@ -47,7 +49,8 @@
 
 \item{type}{Type of plot: \code{"epi"} for epidemic model results,
 \code{"network"} for a static network plot (\code{plot.network}),
-or \code{"formation"} for network formation statistics.}
+or \code{"formation"}, \code{"duration"}, or \code{"dissolution"} for
+network formation, duration, or dissolution statistics.}
 
 \item{y}{Output compartments or flows from \code{netsim} object to plot.}
 
@@ -121,9 +124,12 @@ and "square". Group 1 vertices will remain circles.}
 \item{vertex.cex}{Relative size of plotted vertices if \code{type="network"},
 with implicit default of 1.}
 
-\item{stats}{If \code{type="formation"}, network statistics to plot, among
-those specified in \code{nwstats.formula} of
-\code{\link{control.net}}, with the default to plot all statistics.}
+\item{stats}{If \code{type="formation","duration","dissolution"}, statistics
+to plot.  For \code{type = "formation"}, \code{stats} are among those
+specified in \code{nwstats.formula} of \code{\link{control.net}}; for
+\code{type = "duration","dissolution"}, \code{stats} are among those
+of the dissolution model (without \code{offset()}).  The default is
+to plot all statistics.}
 
 \item{targ.line}{If \code{TRUE}, plot target or expected value line for
 the statistic of interest.}
@@ -135,9 +141,19 @@ default colors based on \code{RColorBrewer} color palettes.}
 
 \item{targ.lty}{Line type for the line showing the target statistic values.}
 
-\item{plots.joined}{If \code{TRUE} and \code{type="formation"}, combine all
-target statistics in one plot, versus one plot per target statistic if
+\item{plots.joined}{If \code{TRUE} and
+\code{type="formation","duration","dissolution"}, combine all
+statistics in one plot, versus one plot per statistic if
 \code{FALSE}.}
+
+\item{duration.imputed}{If \code{type="duration"}, a logical indicating
+whether or not to impute starting times for relationships extant at
+the start of the simulation. Defaults to \code{TRUE} when
+\code{type="duration"}.}
+
+\item{method}{Plot method for
+\code{type="formation","duration","dissolution"}, with options of
+\code{"l"} for line plots and \code{"b"} for boxplots.}
 
 \item{...}{Additional arguments to pass.}
 }

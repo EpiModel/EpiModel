@@ -34,8 +34,10 @@ create_scenario_list <- function(scenarios.df) {
 
   scenarios <- lapply(
     scenarios.names,
-    function(id) make_scenario(
-      scenarios.df[scenarios.df[[".scenario.id"]] == id, ])
+    function(id) {
+      make_scenario(
+        scenarios.df[scenarios.df[[".scenario.id"]] == id, ])
+     }
   )
 
   names(scenarios) <- scenarios.names

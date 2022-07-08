@@ -967,7 +967,7 @@ control.net <- function(type,
         index <- index + 1
       }
     }
-  } else{
+  } else {
     p[["bi.mods"]] <- bi.mods
   }
   p[["user.mods"]] <- grep(".FUN", names(dot.args), value = TRUE)
