@@ -21,8 +21,8 @@ This function defines and initializes the fuzzynodematch ERGM
              term that allows for generalized homophily.
 }
 \details{
-This ERGM user term was written to allow for generalized homophily.  
-The \code{attr} term argument should specify a character vertex attribute
+This ERGM user term was written to allow for generalized homophily.The
+\code{attr} term argument should specify a character vertex attribute
 encoding the "venues" associated to each node.  The \code{split} argument
 should specify a string that separates different "venues" in the attribute
 value for each node, as handled by \code{strsplit} with \code{fixed = TRUE}.
@@ -33,8 +33,8 @@ interpreted as "no venues".
 
 If the \code{binary} term argument is \code{FALSE} (the default), the change
 statistic for an on-toggle is the number of unique venues associated to both
-nodes (informally speaking, this could be described as the number of venues 
+nodes (informally speaking, this could be described as the number of venues
 on which the two nodes "match"); if \code{binary} is \code{TRUE}, the change
-statistic for an on-toggle is \code{1} if any venue is associated to both 
+statistic for an on-toggle is \code{1} if any venue is associated to both
 nodes, and \code{0} otherwise.
 }

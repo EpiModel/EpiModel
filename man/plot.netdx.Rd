@@ -42,15 +42,15 @@ statistics for average edge duration, or \code{"dissolution"} for
 dissolution model statistics for proportion of ties dissolved per time
 step.}
 
-\item{method}{Plot method, with options of \code{"l"} for line plots and 
+\item{method}{Plot method, with options of \code{"l"} for line plots and
 \code{"b"} for boxplots.}
 
 \item{sims}{A vector of simulation numbers to plot.}
 
 \item{stats}{Statistics to plot.  For \code{type = "formation"},
-\code{stats} are among those specified in the call to 
+\code{stats} are among those specified in the call to
 \code{\link{netdx}}; for \code{type = "duration","dissolution"},
-\code{stats} are among those of the dissolution model (without 
+\code{stats} are among those of the dissolution model (without
 \code{offset()}).  The default is to plot all statistics.}
 
 \item{duration.imputed}{If \code{type="duration"}, a logical indicating
@@ -119,13 +119,13 @@ statistics in the network model formation formula specified in the original
 call to \code{\link{netest}}.
 
 The \code{duration} plot shows the average age of existing edges at each time
-step, up until the maximum time step requested. The age is used as an 
-estimator of the average duration of edges in the equilibrium state. When 
-\code{duration.imputed = FALSE}, edges that exist at the beginning of the 
-simulation are assumed to start with an age of 1, yielding a burn-in period 
-before the observed mean approaches its target.  When 
+step, up until the maximum time step requested. The age is used as an
+estimator of the average duration of edges in the equilibrium state. When
+\code{duration.imputed = FALSE}, edges that exist at the beginning of the
+simulation are assumed to start with an age of 1, yielding a burn-in period
+before the observed mean approaches its target.  When
 \code{duration.imputed = TRUE}, expected ages prior to the start of the
-simulation are calculated from the dissolution model, typically eliminating 
+simulation are calculated from the dissolution model, typically eliminating
 the need for a burn-in period.
 
 The \code{dissolution} plot shows the proportion of the extant ties that are
