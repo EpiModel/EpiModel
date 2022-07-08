@@ -225,6 +225,23 @@ saveout.net <- function(dat, s, out = NULL) {
         out[[el.name]] <- list(dat[[el.name]])
       }
     }
+    
+    if (dat$control$save.diss.stats == TRUE &&
+        dat$control$save.network == TRUE &&
+        dat$control$tergmLite == FALSE) {
+      
+      ## for each simulated network, if dissolution model is edges-only, compute diss stats
+      out$diss.stats <- list(lapply(seq_len(num.nw), function(network) {
+        if (dat$nwparam[[network]]$coef.diss$diss.model.type == "edgesonly") {
+          toggles_to_diss_stats(tedgelist_to_toggles(as.data.frame(dat$nw[[network]])), 
+                                dat$nwparam[[network]]$coef.diss, 
+                                dat$control$nsteps, 
+                                dat$nw[[network]])
+        } else {
+          NULL
+        }
+      }))
+    }
   }
 
   if (s > 1) {
@@ -287,6 +304,24 @@ saveout.net <- function(dat, s, out = NULL) {
         out[[el.name]][[s]] <- dat[[el.name]]
       }
     }
+
+    if (dat$control$save.diss.stats == TRUE &&
+        dat$control$save.network == TRUE &&
+        dat$control$tergmLite == FALSE) {
+      
+      ## for each simulated network, if dissolution model is edges-only, compute diss stats
+      out$diss.stats[[s]] <- lapply(seq_len(num.nw), function(network) {
+        if (dat$nwparam[[network]]$coef.diss$diss.model.type == "edgesonly") {
+          toggles_to_diss_stats(tedgelist_to_toggles(as.data.frame(dat$nw[[network]])), 
+                                dat$nwparam[[network]]$coef.diss, 
+                                dat$control$nsteps, 
+                                dat$nw[[network]])
+        } else {
+          NULL
+        }
+      })
+    }
+
   }
 
   ## Final processing
@@ -322,6 +357,12 @@ saveout.net <- function(dat, s, out = NULL) {
       if (dat$control$save.network == TRUE) {
         names(out$network) <- simnames
       }
+    }
+
+    if (dat$control$save.diss.stats == TRUE &&
+        dat$control$save.network == TRUE &&
+        dat$control$tergmLite == FALSE) {
+      names(out$diss.stats) <- simnames
     }
 
     # Remove functions from control list
