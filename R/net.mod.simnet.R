@@ -89,8 +89,9 @@ sim_nets_t1 <- function(x, dat, nsteps) {
                     control = set.control.tergm,
                     dynamic = TRUE)
   }
-  
-  dat$nw[[1]] <- networkDynamic::activate.vertices(sim, onset = 0, terminus = Inf)
+
+  dat$nw[[1]] <- networkDynamic::activate.vertices(sim, onset = 0,
+                                                   terminus = Inf)
 
   # Set up nwstats df
   if (save.nwstats == TRUE) {

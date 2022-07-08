@@ -124,110 +124,169 @@
 #' }
 #'
 netsim <- function(x, param, init, control) {
-  check.control.class("net", "EpiModel netsim")
-
   crosscheck.net(x, param, init, control)
-  if (!is.null(control[["verbose.FUN"]])) {
-    do.call(control[["verbose.FUN"]], list(control, type = "startup"))
-  }
+  control <- netsim_validate_control(control)
+  if (!is.null(control[["verbose.FUN"]]))
+    control[["verbose.FUN"]](control, type = "startup")
 
-  nsims <- control$nsims
-  ncores <- ifelse(nsims == 1, 1, min(parallel::detectCores(), control$ncores))
-  control$ncores <- ncores
-
-  if (is.null(control$resimulate.network)) {
-    control$resimulate.network <- FALSE
-  }
-
-  s <- NULL
-  if (ncores == 1) {
-    sout <- lapply(seq_len(control$nsims), function(s) {
-      # Run the simulation
-      netsim_loop(x, param, init, control, s)
-    })
-  }
-
-  if (ncores > 1) {
-    doParallel::registerDoParallel(ncores)
-    sout <- foreach(s = 1:nsims) %dopar% {
-      # Run the simulation
-      netsim_loop(x, param, init, control, s)
-    }
-  }
-
-  # Process the outputs unless `control$raw.output` is `TRUE`
-  if (!is.null(control$raw.output) && control$raw.output == TRUE) {
-    out <- sout
+  if (control$ncores == 1) {
+    dat_list <- lapply(
+      seq_len(control$nsims),
+      function(s) {
+        netsim_initialize(x, param, init, control, s)
+      }
+    )
+    dat_list <- Map(netsim_run, dat = dat_list, s = seq_along(dat_list))
   } else {
-    out <- process_out.net(sout)
+    doParallel::registerDoParallel(control$ncores)
+    on.exit(doParallel::stopImplicitCluster())
+    # Prevents R CMD CHECK Note with variables declared in `foreach`
+    dat <- s <- NULL
+
+    dat_list <- foreach(s = seq_len(control$nsims)) %dopar% {
+      netsim_initialize(x, param, init, control, s)
+    }
+    dat_list <- foreach(dat = dat_list, s = seq_along(dat_list)) %dopar% {
+      netsim_run(dat, s)
+    }
+
   }
+
+  out <- if (control$raw.output) dat_list else process_out.net(dat_list)
+
+  if (!control[[".checkpoint.keep"]])
+    netsim_clear_checkpoint(control)
 
   return(out)
 }
 
-#' @title Internal Function Running the Network Simulation Loop
-#'
-#' @description This function runs the initialization and simulation loop for
-#'              one simulation. Errors, warnings, and messages are pretty
-#'              printed using the \code{netsim_cond_msg} function (utils.R)
-#' @inheritParams initialize.net
-#'
-#' @inherit recovery.net return
-#'
-#' @keywords internal
-#'
-netsim_loop <- function(x, param, init, control, s) {
-  ## Instantiate random parameters
-  param <- generate_random_params(param, verbose = FALSE)
+# Ensure default values for control.net
+#
+netsim_validate_control <- function(control) {
+  # Controls to be set to TRUE or FALSE if missing
+  control_default_bool <- list(
+    "TRUE" = c(
+      ".checkpoint.compress"
+    ),
+    "FALSE" = c(
+      "resimulate.network",
+      "raw.output",
+      "verbose",
+      ".checkpoint.keep"
+    )
+  )
+
+  for (val in names(control_default_bool)) {
+    for (flag in control_default_bool[[val]])
+      if (is.null(control[[flag]])) control[[flag]] <- as.logical(val)
+  }
+
+  if (is.null(control$start))
+    control$start <- 1
+
+  if (control$nsims == 1) {
+    control$ncores <- 1
+  } else {
+    control$ncores <- min(parallel::detectCores(), control$ncores)
+  }
+
+  control[[".checkpointed"]] <- netsim_is_checkpointed(control)
+  if (!control[[".checkpointed"]]) {
+    control[[".checkpoint.steps"]] <- Inf
+  } else {
+    control[[".checkpoint.steps"]] <- as.integer(control[[".checkpoint.steps"]])
+  }
+
+  return(control)
+}
+
+# Create the `dat` object or load it if checkpointed
+#
+netsim_initialize <- function(x, param, init, control, s = 1) {
+  if (netsim_is_resume_checkpoint(control, s)) {
+    dat <- netsim_load_checkpoint(control, s)
+  } else {
+    param <- generate_random_params(param, verbose = FALSE)
+    dat <- control[["initialize.FUN"]](x, param, init, control, s)
+    if (get_control(dat, "start") != 1) {
+      dat <- set_current_timestep(dat, get_control(dat, "start") - 1)
+    }
+    if (get_control(dat, ".checkpointed"))
+      netsim_save_checkpoint(dat, s)
+  }
+
+  return(dat)
+}
+
+# Run a simulation from a initialized dat object
+#
+netsim_run <- function(dat, s = 1) {
+  done <- FALSE
+  while (get_current_timestep(dat) < get_control(dat, "nsteps")) {
+    steps_to_run <- get_control(dat, "nsteps") - get_current_timestep(dat)
+    steps_to_run <- min(steps_to_run, get_control(dat, ".checkpoint.steps"))
+    dat <- netsim_run_nsteps(dat, steps_to_run, s)
+
+    if (get_control(dat, ".checkpointed"))
+      netsim_save_checkpoint(dat, s)
+  }
+
+  return(dat)
+}
+
+# Run N simulation steps on a `dat` object
+#
+netsim_run_nsteps <- function(dat, nsteps, s) {
+  for (n in seq_len(nsteps)) {
+    dat <- increment_timestep(dat)
+    dat <- netsim_run_modules(dat, s)
+  }
+  return(dat)
+}
+
+# Run all the modules of a `dat` object once
+#
+netsim_run_modules <- function(dat, s) {
+  at <- get_current_timestep(dat)
 
   dat <- withCallingHandlers(
     expr = {
-      ## Initialization Module
-      if (!is.null(control[["initialize.FUN"]])) {
-        current_mod <- "initialize.FUN"
-        at <- paste0("`Initialization Step` (", control$start, ")")
-        dat <- do.call(control[[current_mod]], list(x, param, init, control, s))
+      current_mod <- "epimodel.internal"
+      # Applies updaters, if any
+      dat <- input_updater(dat)
+
+      ## Module order
+      morder <- get_control(dat, "module.order", override.null.error = TRUE)
+      if (is.null(morder)) {
+        bi.mods <- get_control(dat, "bi.mods")
+        user.mods <- get_control(dat, "user.mods")
+        lim.bi.mods <- bi.mods[
+          -which(bi.mods %in% c("initialize.FUN", "verbose.FUN"))
+        ]
+        morder <- c(user.mods, lim.bi.mods)
       }
 
-      ### TIME LOOP
-      if (control$nsteps > 1) {
-        for (at in max(2, control$start):control$nsteps) {
-          current_mod <- "epimodel.internal"
-          dat <- set_current_timestep(dat, at)
-          # Applies updaters, if any
-          dat <- input_updater(dat)
+      ## Evaluate modules
+      for (i in seq_along(morder)) {
+        current_mod <- morder[[i]]
+        mod.FUN <- get_control(dat, current_mod)
+        dat <- do.call(mod.FUN, list(dat, at))
+      }
 
-          ## Module order
-          morder <- get_control(dat, "module.order", override.null.error = TRUE)
-          if (is.null(morder)) {
-            bi.mods <- get_control(dat, "bi.mods")
-            user.mods <- get_control(dat, "user.mods")
-            lim.bi.mods <- bi.mods[
-              -which(bi.mods %in% c("initialize.FUN", "verbose.FUN"))]
-            morder <- c(user.mods, lim.bi.mods)
-          }
-
-          ## Evaluate modules
-          for (i in seq_along(morder)) {
-            current_mod <- morder[[i]]
-            mod.FUN <- get_control(dat, current_mod)
-            dat <- do.call(mod.FUN, list(dat, at))
-          }
-
-          ## Verbose module
-          verbose <- !is.null(control[["verbose.FUN"]])
-          if (verbose == TRUE) {
-            current_mod <- "verbose.FUN"
-            do.call(control[[current_mod]], list(dat, type = "progress", s, at))
-          }
-        }
+      ## Verbose module
+      if (!is.null(get_control(dat, "verbose.FUN"))) {
+        current_mod <- "verbose.FUN"
+        verbose.FUN <- get_control(dat, current_mod)
+        do.call(get_control(dat, "verbose.FUN"),
+                list(dat, type = "progress", s, at))
       }
 
       dat
     },
     message = function(e) message(netsim_cond_msg("MESSAGE", current_mod, at)),
     warning = function(e) message(netsim_cond_msg("WARNING", current_mod, at)),
-    error = function(e) message(netsim_cond_msg("ERROR", current_mod, at)))
+    error = function(e) message(netsim_cond_msg("ERROR", current_mod, at))
+  )
 
   return(dat)
 }

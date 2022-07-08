@@ -43,7 +43,7 @@
 #' \code{nwstats.formula} are saved for each time step. Summary statistics for
 #' the formation model terms, as well as dissolution model and relational
 #' duration statistics, are then calculated and can be accessed when printing or
-#' plotting the \code{netdx} object.  See \code{\link{print.netdx}} and 
+#' plotting the \code{netdx} object.  See \code{\link{print.netdx}} and
 #' \code{\link{plot.netdx}} for details on printing and plotting.
 #'
 #' @section Control Arguments:
@@ -124,9 +124,9 @@
 #' }
 #'
 netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
-                  nwstats.formula = "formation", 
+                  nwstats.formula = "formation",
                   set.control.ergm = control.simulate.formula(),
-                  set.control.stergm = control.simulate.network(), 
+                  set.control.stergm = control.simulate.network(),
                   set.control.tergm = control.simulate.formula.tergm(),
                   sequential = TRUE, keep.tedgelist = FALSE,
                   keep.tnetwork = FALSE, verbose = TRUE, ncores = 1,
@@ -191,7 +191,7 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
                        coef = x$coef.form.crude,
                        basis = x$newnetwork,
                        constraints = x$constraints,
-                       control = set.control.ergm, 
+                       control = set.control.ergm,
                        dynamic = FALSE,
                        nsim = if (dynamic == TRUE) 1L else nsims,
                        output = if (dynamic == TRUE) "network" else "stats",
@@ -225,7 +225,8 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
                            output = output,
                            control = set.control.stergm)
     } else {
-      diag.sim <- simulate(init ~ Form(x$formation) + Persist(x$coef.diss$dissolution),
+      diag.sim <- simulate(init ~ Form(x$formation) +
+                             Persist(x$coef.diss$dissolution),
                            coef = c(x$coef.form, x$coef.diss$coef.crude),
                            constraints = x$constraints,
                            time.slices = nsteps,
@@ -236,9 +237,9 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
                            control = set.control.tergm,
                            dynamic = TRUE)
     }
-    
+
     out <- list(stats = attr(diag.sim, "stats"))
-    
+
     if (output == "networkDynamic") {
       sim.df <- as.data.frame(diag.sim)
       toggles <- tedgelist_to_toggles(sim.df)
@@ -248,13 +249,13 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
         changes <- rbind(cbind(0L, as.edgelist(init), 1L),
                          changes)
       }
-      toggles <- changes[,-4L,drop=FALSE]
+      toggles <- changes[, -4L, drop=FALSE]
     }
 
     if (keep.tnetwork == TRUE) {
       out$tnetwork <- diag.sim
     }
-    
+
     if (keep.tedgelist == TRUE) {
       out$tedgelist <- sim.df
     }
@@ -262,10 +263,10 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
     if (skip.dissolution == FALSE) {
       out <- c(out, toggles_to_diss_stats(toggles, x$coef.diss, nsteps, init))
     }
-    
+
     out
   }
-  
+
   if (dynamic == FALSE || nsims == 1) {
     diag.sim <- list(dosim())
   } else if (ncores == 1) {
@@ -273,8 +274,8 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
     if (verbose == TRUE) {
       cat("\n |")
     }
-    for (i in seq_len(nsims)) {    
-      diag.sim[[i]] <- dosim()      
+    for (i in seq_len(nsims)) {
+      diag.sim[[i]] <- dosim()
       if (verbose == TRUE) {
         cat("*")
       }
@@ -285,15 +286,15 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
   } else {
     cluster.size <- min(nsims, ncores)
     registerDoParallel(cluster.size)
-    diag.sim <- foreach(i = seq_len(nsims)) %dopar% dosim()  
+    diag.sim <- foreach(i = seq_len(nsims)) %dopar% dosim()
   }
-  
+
   if (verbose == TRUE) {
     cat("\n- Calculating formation statistics")
   }
 
   ## List for stats for each simulation
-  stats <- lapply(diag.sim, function(x) x$stats[,!duplicated(colnames(x$stats)),drop=FALSE])
+  stats <- lapply(diag.sim, function(x) x$stats[, !duplicated(colnames(x$stats)), drop = FALSE])
 
   ts.attr.names <- x$target.stats.names
   if (length(ts.attr.names) != length(target.stats)) {
@@ -425,15 +426,15 @@ make_dissolution_stats <- function(diag.sim, coef.diss,
   if (verbose == TRUE) {
     cat("\n- Calculating duration statistics")
   }
-  
+
   if (any(unlist(lapply(diag.sim, `[[`, "anyNA")))) {
-    warning("duration/dissolution data contains undefined values due to", 
+    warning("duration/dissolution data contains undefined values due to",
             " having zero edges of some dissolution dyad type(s) on some time",
-            " step(s); these undefined values will be set to 0 when", 
+            " step(s); these undefined values will be set to 0 when",
             " processing the data; this behavior, which introduces a bias",
             " towards 0, may be changed in the future")
   }
-  
+
   ## exclude nodefactor from heterogeneous dissolution calculation
   if (coef.diss$diss.model.type == "nodefactor") {
     durs <- mean(coef.diss$duration)
@@ -501,18 +502,19 @@ make_dissolution_stats <- function(diag.sim, coef.diss,
 
 tedgelist_to_toggles <- function(tedgelist) {
   tedgelist <- as.matrix(tedgelist)
-  toggles <- rbind(tedgelist[,c(1L,3L,4L),drop=FALSE],
-                   tedgelist[!tedgelist[,6L],c(2L,3L,4L),drop=FALSE])
+  toggles <- rbind(tedgelist[, c(1L, 3L, 4L), drop = FALSE],
+                   tedgelist[!tedgelist[, 6L], c(2L, 3L, 4L), drop = FALSE])
   colnames(toggles) <- c("time", "tail", "head")
   toggles
 }
 
-toggles_to_diss_stats <- function(toggles, coef.diss, nsteps, nw, time.start = 0L) {
+toggles_to_diss_stats <- function(toggles, coef.diss,
+                                  nsteps, nw, time.start = 0L) {
   nw <- as.network(nw) # drop nwd
   delete.network.attribute(nw, "time")
   delete.network.attribute(nw, "lasttoggle")
-  nw[,] <- FALSE
-  
+  nw[, ] <- FALSE
+
   ## exclude nodefactor from heterogeneous dissolution calculation
   if (coef.diss$diss.model.type == "nodefactor") {
     diss_formula <- ~offset(edges)
@@ -521,65 +523,69 @@ toggles_to_diss_stats <- function(toggles, coef.diss, nsteps, nw, time.start = 0
     diss_formula <- coef.diss$dissolution
     durs <- coef.diss$duration
   }
-    
-  changestats <- as.matrix(tergm.godfather(nw ~ Passthrough(diss_formula) 
-                                                + EdgeAges(diss_formula) 
+
+  changestats <- as.matrix(tergm.godfather(nw ~ Passthrough(diss_formula)
+                                                + EdgeAges(diss_formula)
                                                 + Persist(diss_formula),
                                            toggles = toggles,
                                            start = time.start - 1L,
                                            end = time.start + nsteps,
                                            stats.start = FALSE))
-  
-  edgecounts <- changestats[,seq_along(durs),drop=FALSE]
+
+  edgecounts <- changestats[, seq_along(durs), drop = FALSE]
 
   # drop offset() from names
-  colnames(edgecounts) <- substr(colnames(edgecounts), 8L, nchar(colnames(edgecounts)) - 1L)
+  colnames(edgecounts) <- substr(colnames(edgecounts), 8L,
+                                 nchar(colnames(edgecounts)) - 1L)
 
-  edgeages <- changestats[,seq_along(durs)+length(durs),drop=FALSE]
+  edgeages <- changestats[, seq_along(durs)+length(durs), drop = FALSE]
   colnames(edgeages) <- colnames(edgecounts)
 
-  edgepers <- changestats[,seq_along(durs)+2L*length(durs),drop=FALSE]
+  edgepers <- changestats[, seq_along(durs) + 2L * length(durs), drop = FALSE]
 
   if (length(durs) > 1L) {
-    edgecounts[,1L] <- edgecounts[,1L] - rowSums(edgecounts[,-1L,drop=FALSE])
-    edgeages[,1L] <- edgeages[,1L] - rowSums(edgeages[,-1L,drop=FALSE])
-    edgepers[,1L] <- edgepers[,1L] - rowSums(edgepers[,-1L,drop=FALSE])
+    edgecounts[,1L] <- edgecounts[, 1L] - rowSums(edgecounts[, -1L, drop = FALSE])
+    edgeages[, 1L] <- edgeages[, 1L] - rowSums(edgeages[, -1L, drop = FALSE])
+    edgepers[, 1L] <- edgepers[, 1L] - rowSums(edgepers[, -1L, drop = FALSE])
   }
 
-  edgediss <- edgecounts[-NROW(edgecounts),,drop=FALSE] - edgepers[-1L,,drop=FALSE]
-  edgeages <- edgeages[-1L,,drop=FALSE]
+  edgediss <- edgecounts[-NROW(edgecounts), , drop = FALSE] -
+    edgepers[-1L, , drop = FALSE]
+  edgeages <- edgeages[-1L, , drop = FALSE]
 
   edgeagesimputed <- edgeages
-  toggles <- toggles[order(toggles[,2L],toggles[,3L],toggles[,1L]),,drop=FALSE]
+  toggles <- toggles[order(toggles[, 2L], toggles[, 3L],
+                           toggles[, 1L]), , drop = FALSE]
   w <- which(toggles[,1] == time.start)
   if (length(w) > 0L) {
-    # imputation      
+    # imputation
     changestats <- as.matrix(tergm.godfather(nw ~ Passthrough(diss_formula),
-                                             toggles = cbind(seq_along(w), toggles[w,-1L,drop=FALSE]),
+                                             toggles = cbind(seq_along(w),
+                                                             toggles[w, -1L, drop = FALSE]),
                                              stats.start = TRUE))
-    
+
     for (i in seq_along(w)) {
-      dyad_type <- max(which(changestats[i,] != changestats[i+1L,]))
+      dyad_type <- max(which(changestats[i, ] != changestats[i+1L, ]))
       index <- w[i]
       if (index < NROW(toggles) &&
-            toggles[index,2L] == toggles[index+1L,2L] &&
-            toggles[index,3L] == toggles[index+1L,3L]) {
-        terminus_time <- toggles[index+1L,1L]
+            toggles[index, 2L] == toggles[index + 1L, 2L] &&
+            toggles[index, 3L] == toggles[index + 1L, 3L]) {
+        terminus_time <- toggles[index + 1L, 1L]
       } else {
         terminus_time <- time.start + nsteps + 1L
       }
       if (terminus_time > time.start + 1L) {
-        edgeagesimputed[seq_len(terminus_time - time.start - 1L),dyad_type] <-
-          edgeagesimputed[seq_len(terminus_time - time.start - 1L),dyad_type] +
+        edgeagesimputed[seq_len(terminus_time - time.start - 1L), dyad_type] <-
+          edgeagesimputed[seq_len(terminus_time - time.start - 1L), dyad_type] +
           rgeom(1L, 1/durs[dyad_type])
       }
     }
   }
-  
+
   ## 0/0 is possible, resulting in NaN, which we set to 0 for the time being...
-  meanage <- edgeages/edgecounts[-1L,,drop=FALSE]
-  meanageimputed <- edgeagesimputed/edgecounts[-1L,,drop=FALSE]
-  propdiss <- edgediss/edgecounts[-NROW(edgecounts),,drop=FALSE]
+  meanage <- edgeages / edgecounts[-1L, , drop = FALSE]
+  meanageimputed <- edgeagesimputed / edgecounts[-1L, , drop = FALSE]
+  propdiss <- edgediss / edgecounts[-NROW(edgecounts), , drop = FALSE]
 
   if (any(is.na(meanage)) || any(is.na(meanageimputed)) || any(is.na(propdiss))) {
     meanage[is.na(meanage)] <- 0
@@ -589,10 +595,10 @@ toggles_to_diss_stats <- function(toggles, coef.diss, nsteps, nw, time.start = 0
   } else {
     anyNA <- FALSE
   }
-  
+
   meanmeanageimputed <- colMeans(meanageimputed, na.rm = TRUE)
   meanpropdiss <- colMeans(propdiss, na.rm = TRUE)
-    
+
   return(list(edgecounts = edgecounts,
               edgeages = edgeages,
               edgeagesimputed = edgeagesimputed,

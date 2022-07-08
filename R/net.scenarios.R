@@ -34,8 +34,10 @@ create_scenario_list <- function(scenarios.df) {
 
   scenarios <- lapply(
     scenarios.names,
-    function(id) make_scenario(
-      scenarios.df[scenarios.df[[".scenario.id"]] == id, ])
+    function(id) {
+      make_scenario(
+        scenarios.df[scenarios.df[[".scenario.id"]] == id, ])
+     }
   )
 
   names(scenarios) <- scenarios.names
@@ -192,11 +194,13 @@ unflatten_params <- function(params.flat) {
   check_params_names(names(params.flat))
   check_params_flat(params.flat)
 
-  set.elements.names <- vapply(
-    names(params.flat),
-    function(x) sub("_.*$", "", x),
-    ""
-  )
+  # get the param name and position for each element.
+  # With pos == 1 if none provided
+  elts <- strsplit(names(params.flat), "_")
+  set.elements.names <- vapply(elts, function(x) x[1], "")
+  set.elements.pos <- vapply(elts, function(x) {
+    as.numeric(if (length(x) == 2) x[2] else 1)
+  }, numeric(1))
 
   params.names <- unique(set.elements.names)
   params <- vector(mode = "list", length = length(params.names))
@@ -204,7 +208,7 @@ unflatten_params <- function(params.flat) {
 
   for (i in seq_along(set.elements.names)) {
     nme <- set.elements.names[[i]]
-    params[[nme]] <- c(params[[nme]], params.flat[[i]])
+    params[[nme]][set.elements.pos[i]] <- params.flat[[i]]
   }
 
   return(params)

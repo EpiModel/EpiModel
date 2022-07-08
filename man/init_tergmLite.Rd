@@ -21,9 +21,8 @@ Initialize EpiModel netsim Object for tergmLite Simulation
 \details{
 This function is typically used within the initialization modules of
 \code{EpiModel} to establish the necessary infrastructure needed for
-\href{https://statnet.org/tut/EpiModel2.html#tergmLite}{\code{tergmLite}}
-network resimulation. The example below demonstrates the specific information
-returned.
+\code{tergmLite} network resimulation. The example below demonstrates the
+specific information returned.
 }
 \examples{
 \dontrun{

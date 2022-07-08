@@ -1,3 +1,4 @@
+
 #' @title Epidemic Parameters for Stochastic Network Models
 #'
 #' @description Sets the epidemic parameters for stochastic network models
@@ -707,9 +708,7 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #'        impact the network structure (e.g., vital dynamics).
 #' @param tergmLite Logical indicating usage of either \code{tergm}
 #'        (\code{tergmLite = FALSE}), or \code{tergmLite}
-#'        (\code{tergmLite = TRUE}). Default of \code{FALSE}. (See the
-#'        \href{https://statnet.org/tut/EpiModel2.html#tergmLite}{EpiModel 2.0
-#'        migration document} for details on \code{tergmLite}.)
+#'        (\code{tergmLite = TRUE}). Default of \code{FALSE}.
 #' @param cumulative.edgelist If \code{TRUE}, calculates a cumulative edgelist
 #'        within the network simulation module. This is used when tergmLite is
 #'        used and the entire networkDynamic object is not used.
@@ -820,6 +819,38 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #' specifies how the race, sex, and status attributes should be set for incoming
 #' nodes. By default, the rule is "current" for all attributes except status,
 #' in which case it is "s" (that is, all incoming nodes are susceptible).
+#'
+#' @section Checkpointing Simulations:
+#' \code{netsim} has a built-in checkpoint system to prevent losing computation
+#' work if the function is interrupted (SIGINT, power loss, time limit exceeded
+#' on a computation cluster). When enabled, each simulation will be saved every
+#' \code{.checkpoint.steps} time steps. Then, if a checkpoint enabled simulation
+#' is launched again with \code{netsim}, it will restart at the last checkpoint
+#' available in the saved data.
+#'
+#' To enable the checkpoint capabilities of \code{netsim}, two control arguments
+#' have to be set: \code{.checkpoint.steps}, which is a positive number of time
+#' steps to be run between each file save; and \code{.checkpoint.dir}, which is
+#' the path to a directory to save the checkpointed data. If
+#' \code{.checkpoint.dir} directory does not exist, \code{netsim} will attempt
+#' to create it on the first checkpoint save. With these two controls defined,
+#' one can simply re-run \code{netsim} with the same arguments to restart a set
+#' of simulations that were interrupted.
+#'
+#' Simulations are checkpointed individually: for example, if 3 simulations are
+#' run on a single core, the first 2 are finished, then the interruption occurs
+#' during the third, \code{netsim} will only restart the third one from the last
+#' checkpoint.
+#'
+#' A \code{.checkpoint.compress} argument can be set to overwrite the
+#' \code{compress} argument in \code{saveRDS} used to save the checkpointed
+#' data. The current default for \code{saveRDS} is \code{gunzip (gz)}, which
+#' provides fast compression that usually works well on \code{netsim} objects.
+#'
+#' By default, if \code{netsim} reaches the end of all simulations, the
+#' checkpoint data directory and its content are removed before returning the
+#' \code{netsim} object. The \code{.checkpoint.keep} argument can be set to TRUE
+#' to prevent this removal to inspect the raw simulation objects.
 #'
 #' @section New Modules:
 #' Base network models use a set of module functions that specify how the
@@ -936,7 +967,7 @@ control.net <- function(type,
         index <- index + 1
       }
     }
-  } else{
+  } else {
     p[["bi.mods"]] <- bi.mods
   }
   p[["user.mods"]] <- grep(".FUN", names(dot.args), value = TRUE)
@@ -1259,6 +1290,13 @@ param.net_from_table <- function(long.param.df) {
          " 'character'")
   }
   check_params_names(long.param.df[["param"]])
+
+  duplicated_params <- duplicated(long.param.df[["param"]])
+  duplicated_params <- long.param.df[["param"]][duplicated_params]
+  if (length(duplicated_params) > 0) {
+    stop("The following parameters are duplicated: `",
+         paste0(duplicated_params, collapse = "`, `"), "`")
+  }
 
   # To flat params
   flat.params <- Map(

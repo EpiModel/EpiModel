@@ -14,7 +14,7 @@
 \item{...}{additional arguments (currently ignored)}
 }
 \description{
-Prints basic information and statistics from a \code{netdx} 
+Prints basic information and statistics from a \code{netdx}
              object.
 }
 \details{
@@ -22,21 +22,21 @@ Given a \code{netdx} object, \code{print.netdx} prints the diagnostic method
 (static/dynamic), number of simulations, and (if dynamic) the number of time
 steps per simulation used in generating the \code{netdx} object, as well as
 printing the formation statistics table and (if present) the duration and
-dissolution statistics tables.  The statistics tables are interpreted as 
+dissolution statistics tables.  The statistics tables are interpreted as
 follows.
 
 Each row has the name of a particular network statistic.  In the formation
 table, these correspond to actual network statistics in the obvious way.
-In the duration and dissolution tables, these correspond to dissolution 
-model dyad types: in a homogeneous dissolution model, all dyads are of the 
-\code{edges} type; in a heterogeneous dissolution model, a dyad with a 
-nonzero \code{nodematch} or \code{nodemix} change statistic in the 
+In the duration and dissolution tables, these correspond to dissolution
+model dyad types: in a homogeneous dissolution model, all dyads are of the
+\code{edges} type; in a heterogeneous dissolution model, a dyad with a
+nonzero \code{nodematch} or \code{nodemix} change statistic in the
 dissolution model has type equal to that statistic, and has type equal to
-\code{edges} otherwise.  The statistics of interest for the duration and 
-dissolution tables are, respectively, the mean age of extant edges and the 
-edge dissolution rate, broken down by dissolution model dyad type.  (The 
-current convention is to treat the mean age and dissolution rate for a 
-particular dissolution dyad type as 0 on time steps with no edges of that 
+\code{edges} otherwise.  The statistics of interest for the duration and
+dissolution tables are, respectively, the mean age of extant edges and the
+edge dissolution rate, broken down by dissolution model dyad type.  (The
+current convention is to treat the mean age and dissolution rate for a
+particular dissolution dyad type as 0 on time steps with no edges of that
 type; this behavior may be changed in the future.)
 
 The columns are named \code{Target}, \code{Sim Mean}, \code{Pct Diff}, 

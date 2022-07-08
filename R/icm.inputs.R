@@ -398,8 +398,7 @@ crosscheck.icm <- function(param, init, control) {
           control[[args[i]]] <- temp
         }
       }
-    }
-    else {
+    } else {
       for (i in seq_along(args)) {
         if (is.null(control[[args[i]]])) {
           temp <- get(gsub(".FUN", ".icm.bip", args[i]))

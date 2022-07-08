@@ -1,6 +1,6 @@
 Package: EpiModel
 Version: 2.3.0
-Date: 2022-05-20
+Date: 2022-06-23
 Title: Mathematical Modeling of Infectious Disease Dynamics
 Description: Tools for simulating mathematical models of infectious disease dynamics.
     Epidemic model classes include deterministic compartmental models, stochastic
@@ -29,8 +29,8 @@ BugReports: https://github.com/EpiModel/EpiModel/issues
 Depends:
     R (>= 3.5),
     deSolve (>= 1.21),
-    networkDynamic (>= 0.10),
-    tergm (>= 4.0),
+    networkDynamic (>= 0.11.2),
+    tergm (>= 4.1.0),
     statnet.common (>= 4.6.0)
 Imports:
     graphics,
@@ -38,9 +38,9 @@ Imports:
     stats,
     utils,
     doParallel,
-    ergm (>= 4.2.1),
+    ergm (>= 4.2.2),
     foreach,
-    network (>= 1.17),
+    network (>= 1.17.2),
     RColorBrewer,
     ape,
     lazyeval,
@@ -60,4 +60,3 @@ VignetteBuilder: knitr
 LinkingTo: Rcpp, ergm
 RoxygenNote: 7.2.0
 Encoding: UTF-8
-Remotes: github::statnet/tergm@master
