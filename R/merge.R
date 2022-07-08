@@ -53,7 +53,7 @@ merge.icm <- function(x, y, ...) {
   if (length(x) != length(y) || !identical(names(x), names(y))) {
     stop("x and y have different structure")
   }
-  if (x$control$nsims > 1 & y$control$nsims > 1 &
+  if (x$control$nsims > 1 && y$control$nsims > 1 &&
       !identical(sapply(x, class), sapply(y, class))) {
     stop("x and y have different structure")
   }
@@ -173,7 +173,7 @@ merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
   }
   x$control$nsims <- as.integer(x$control$nsims)
   y$control$nsims <- as.integer(y$control$nsims)
-  if (x$control$nsims > 1 & y$control$nsims > 1 &
+  if (x$control$nsims > 1 && y$control$nsims > 1 &&
       !all(sapply(x, function(i) class(i)[1]) ==
            sapply(y, function(i) class(i)[1]))) {
     stop("x and y have different structure")
@@ -228,7 +228,7 @@ merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
 
 
   ## Network objects
-  if (keep.network == TRUE & !is.null(x$network) & !is.null(y$network)) {
+  if (keep.network == TRUE && !is.null(x$network) && !is.null(y$network)) {
     for (i in new.range) {
       z$network[[i]] <- y$network[[i - x$control$nsims]]
       if (!is.null(z$network)) {
@@ -241,8 +241,7 @@ merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
 
 
   ## Network statistics
-  if (keep.nwstats == TRUE & !is.null(x$stats$nwstats) &
-      !is.null(y$stats$nwstats)) {
+  if (keep.nwstats == TRUE && !is.null(x$stats$nwstats) && !is.null(y$stats$nwstats)) {
     for (i in new.range) {
       z$stats$nwstats[[i]] <- y$stats$nwstats[[i - x$control$nsims]]
       if (!is.null(z$stats$nwstats)) {
@@ -254,7 +253,7 @@ merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
   }
 
   ## Other
-  if (!is.null(x$control$save.other) & !is.null(y$control$save.other)) {
+  if (!is.null(x$control$save.other) && !is.null(y$control$save.other)) {
     other.x <- x$control$save.other
     other.y <- y$control$save.other
     if (keep.other == TRUE) {

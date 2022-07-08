@@ -378,9 +378,9 @@ crosscheck.dcm <- function(param, init, control) {
       param$act.rate <- 1
     }
     if (is.null(param$vital)) {
-      if (!is.null(param$a.rate) |
-          !is.null(param$ds.rate) |
-          !is.null(param$di.rate) |
+      if (!is.null(param$a.rate) ||
+          !is.null(param$ds.rate) ||
+          !is.null(param$di.rate) ||
           !is.null(param$dr.rate)) {
         param$vital <- TRUE
       } else {
@@ -407,17 +407,17 @@ crosscheck.dcm <- function(param, init, control) {
     }
 
     # Check that rec.rate is supplied for SIR models
-    if (control$type %in% c("SIR", "SIS") & is.null(param$rec.rate)) {
+    if (control$type %in% c("SIR", "SIS") && is.null(param$rec.rate)) {
       stop("Specify rec.rate in param.dcm", call. = FALSE)
-      if (param$groups == 2 & is.null(param$rec.rate.g2)) {
+      if (param$groups == 2 && is.null(param$rec.rate.g2)) {
         stop("Specify rec.rate.g2 in param.dcm", call. = FALSE)
       }
     }
 
     # Check that r.num is supplied for SIR models
-    if (control$type == "SIR" & is.null(init$r.num)) {
+    if (control$type == "SIR" && is.null(init$r.num)) {
       stop("Specify r.num in init.dcm", call. = FALSE)
-      if (param$groups == 2 & is.null(init$r.num.g2)) {
+      if (param$groups == 2 && is.null(init$r.num.g2)) {
         stop("Specify r.num.g2 in init.dcm", call. = FALSE)
       }
     }
@@ -440,7 +440,7 @@ crosscheck.dcm <- function(param, init, control) {
     }
 
     # Over-specified initial conditions
-    if (control$type != "SIR" & any(c("r.num", "r.num.g2") %in% names(init))) {
+    if (control$type != "SIR" && any(c("r.num", "r.num.g2") %in% names(init))) {
       stop("Specified initial number recovered for non-SIR model",
            call. = FALSE)
     }

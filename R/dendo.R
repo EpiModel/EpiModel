@@ -110,7 +110,7 @@ as.phylo.transmat <- function(x,
   origNodes <- unique(as.vector(el))
   # if vertex.exit.times included check that it is consistant
   if (!is.null(vertex.exit.times)) {
-    if (length(origNodes) > length(vertex.exit.times) |
+    if (length(origNodes) > length(vertex.exit.times) ||
         any(origNodes > length(vertex.exit.times))) {
       stop("Vertex ids in edgelist imply a larger network size than
            vertex.exit.times")

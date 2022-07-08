@@ -287,7 +287,7 @@ control.icm <- function(type, nsteps, nsims = 1,
 
 
   ## Defaults and checks
-  if (is.null(p$type) | !(p$type %in% c("SI", "SIS", "SIR"))) {
+  if (is.null(p$type) || !(p$type %in% c("SI", "SIS", "SIR"))) {
     stop("Specify type as \"SI\", \"SIS\", or \"SIR\" ", call. = FALSE)
   }
   if (is.null(p$nsteps)) {
@@ -338,7 +338,7 @@ crosscheck.icm <- function(param, init, control) {
       if (is.null(param$rec.rate)) {
         stop("Specify rec.rate in param.icm", call. = FALSE)
       }
-      if (param$groups == 2 & is.null(param$rec.rate.g2)) {
+      if (param$groups == 2 && is.null(param$rec.rate.g2)) {
         stop("Specify rec.rate.g2 in param.icm", call. = FALSE)
       }
     }
@@ -349,7 +349,7 @@ crosscheck.icm <- function(param, init, control) {
       if (is.null(init$r.num)) {
         stop("Specify r.num in init.icm", call. = FALSE)
       }
-      if (param$groups == 2 & is.null(init$r.num.g2)) {
+      if (param$groups == 2 && is.null(init$r.num.g2)) {
         stop("Specify r.num.g2 in init.icm", call. = FALSE)
       }
     }
