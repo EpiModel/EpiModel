@@ -821,13 +821,13 @@ draw_qnts <- function(x, y, qnts, qnts.pal, qnts.smooth,
                         quantile(x, c(quants[1], quants[2]), na.rm = TRUE)
                       })
     qnt.prev <- qnt.prev[, complete.cases(t(qnt.prev))]
-    xx <- c(1:(ncol(qnt.prev)), (ncol(qnt.prev)):1)
+    xx <- c(seq_len(ncol(qnt.prev)), rev(seq_len(ncol(qnt.prev))))
     if (qnts.smooth == FALSE) {
       yy <- c(qnt.prev[1, ], rev(qnt.prev[2, ]))
     } else {
-      yy <- c(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
+      yy <- c(suppressWarnings(supsmu(x = seq_len(ncol(qnt.prev)),
                                       y = qnt.prev[1, ]))$y,
-              rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
+              rev(suppressWarnings(supsmu(x = seq_len(ncol(qnt.prev)),
                                           y = qnt.prev[2, ]))$y))
     }
     if (plot.qnts == 1) {
@@ -889,14 +889,14 @@ get_qnts <- function(data, qnts, qnts.smooth) {
     quantile(x, c(quants[1], quants[2]), na.rm = TRUE)
   })
   if (isFALSE(qnts.smooth)) {
-    xx <- c(1:(ncol(qnt.prev)), (ncol(qnt.prev)):1)
+    xx <- c(seq_len(ncol(qnt.prev)), rev(seq_len(ncol(qnt.prev))))
     yy <- c(qnt.prev[1, ], rev(qnt.prev[2, ]))
     xx <- xx[!is.na(yy)]
     yy <- yy[!is.na(yy)]
   } else {
-    ss1 <- suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
+    ss1 <- suppressWarnings(supsmu(x = seq_len(ncol(qnt.prev)),
                                    y = qnt.prev[1, ]))
-    ss2 <- suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
+    ss2 <- suppressWarnings(supsmu(x = rev(seq_len(ncol(qnt.prev))),
                                    y = qnt.prev[2, ]))
 
     xx <- c(ss1$x, rev(ss2$x))
@@ -1310,7 +1310,6 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
   if (max(sims) > nsims) {
     stop("Maximum sim number is", nsims, call. = FALSE)
   }
-  nsteps <- x$nsteps
   dynamic <- x$dynamic
 
   # Get dotargs
@@ -1371,7 +1370,6 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
   nmstats <- nmstats[outsts]
 
   ## Subset data
-  nstats <- length(outsts)
   data <- data[, outsts, , drop = FALSE]
   if (isTRUE(dynamic)) {
     # sims only used to subset data in dynamic case
@@ -2120,7 +2118,6 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
     nmstats <- nmstats[outsts]
 
     ## Subset data
-    nstats <- length(outsts)
     data <- data[, outsts, , drop = FALSE]
 
     ## we've already subset the data to `sims`
