@@ -264,7 +264,7 @@ print.netsim <- function(x, nwstats = TRUE, digits = 3, network = 1, ...) {
         x$control$nsteps,
         verbose = FALSE
       )
-      
+
       print_nwstats_table(dissolution.stats$stats.table.dissolution, digits)
 
     } else {

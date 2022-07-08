@@ -2056,12 +2056,12 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
       colnames(stats_table) <- c("Target", "Sim Mean")
       rownames(stats_table) <- nmstats
     } else {
-      ## duration/dissolution plot      
+      ## duration/dissolution plot
       if (isTRUE(x$control$save.diss.stats) &&
           isTRUE(x$control$save.network) &&
           isFALSE(x$control$tergmLite) &&
           isFALSE(is.null(x$diss.stats)) &&
-          isTRUE(x$nwparam[[network]]$coef.diss$diss.model.type == "edgesonly")) {        
+          isTRUE(x$nwparam[[network]]$coef.diss$diss.model.type == "edgesonly")) {
         dstats <- make_dissolution_stats(
           lapply(sims, function(sim) x$diss.stats[[sim]][[network]]),
           x$nwparam[[network]]$coef.diss,

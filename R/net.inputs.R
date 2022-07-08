@@ -1033,7 +1033,7 @@ control.net <- function(type,
             call. = FALSE)
     p[["resimulate.network"]] <- TRUE
   }
-  
+
   ## Output
   p <- set.control.class("control.net", p)
   return(p)
