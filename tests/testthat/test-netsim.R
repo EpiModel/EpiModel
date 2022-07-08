@@ -24,6 +24,8 @@ for (trim in c(FALSE, TRUE)) {
     expect_is(mod, "netsim")
     plot(mod)
     plot(mod, type = "formation")
+    plot(mod, type = "duration")
+    plot(mod, type = "dissolution")    
     plot(mod, type = "network")
     test_net(mod)
   })
@@ -145,13 +147,13 @@ test_that("netsim duration 1", {
                   control = control.simulate.formula(MCMC.burnin = 2e5),
                   dynamic = FALSE)
   for(i in 1:5) {
-    suppressWarnings(sim <- simulate(estd1$formation,
-                                     basis = sim,
-                                     time.slices = 1,
-                                     time.start = i,
-                                     time.offset = 0,
-                                     coef = c(estd1$coef.form),
-                                     dynamic = TRUE))
+    sim <- simulate(estd1$formation,
+                    basis = sim,
+                    time.slices = 1,
+                    time.start = i - 1,
+                    time.offset = 1,
+                    coef = c(estd1$coef.form),
+                    dynamic = TRUE)
   }
   expect_identical(sim$mel, mod$network$sim1[[1]]$mel)  
 })

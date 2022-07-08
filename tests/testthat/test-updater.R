@@ -84,10 +84,10 @@ test_that("netsim with param updater", {
   expect_message(mod <- netsim(est, param, init, control))
 
   # `resimulate.network` is turned of at step 30. We check that the number of
-  # observations in the "networkDynamic" object is < than 30 and not 50 (the
+  # observations in the "networkDynamic" object is < than 31 and not 50 (the
   # number of timestep in the simulation)
   n_obs <- length(
     get.network.attribute(mod$network[[1]][[1]], 'net.obs.period')$observations
   )
-  expect_lt(n_obs, 30)
+  expect_lt(n_obs, 31)
 })
