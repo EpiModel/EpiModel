@@ -202,55 +202,38 @@ merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
     stop("x and y have different controls")
   }
 
-
   z <- x
-  new.range <- (x$control$nsims + 1):(x$control$nsims + y$control$nsims)
-
+  z$control$nsims <- x$control$nsims + y$control$nsims
+  newnames <- paste0("sim", seq_len(z$control$nsims))
+  
   # Merge epi data
   for (i in seq_along(x$epi)) {
     z$epi[[i]] <- cbind(x$epi[[i]], y$epi[[i]])
-    names(z$epi[[i]])[new.range] <- paste0("sim", new.range)
+    names(z$epi[[i]]) <- newnames
   }
-
-  z$control$nsims <- max(new.range)
-
 
   ## Transmission matrix
   if (keep.transmat == TRUE && !is.null(x$stats$transmat) &&
       !is.null(y$stats$transmat)) {
-    for (i in new.range) {
-      z$stats$transmat[[i]] <- y$stats$transmat[[i - x$control$nsims]]
-      if (!is.null(z$stats$transmat)) {
-        names(z$stats$transmat)[i] <- paste0("sim", i)
-      }
-    }
+    z$stats$transmat <- c(x$stats$transmat, y$stats$transmat)
+    names(z$stats$transmat) <- newnames
   } else {
     z$stats$transmat <- NULL
   }
 
-
   ## Network objects
   if (keep.network == TRUE & !is.null(x$network) & !is.null(y$network)) {
-    for (i in new.range) {
-      z$network[[i]] <- y$network[[i - x$control$nsims]]
-      if (!is.null(z$network)) {
-        names(z$network)[i] <- paste0("sim", i)
-      }
-    }
+    z$network <- c(x$network, y$network)
+    names(z$network) <- newnames
   } else {
     z$network <- NULL
   }
 
-
   ## Network statistics
   if (keep.nwstats == TRUE & !is.null(x$stats$nwstats) &
       !is.null(y$stats$nwstats)) {
-    for (i in new.range) {
-      z$stats$nwstats[[i]] <- y$stats$nwstats[[i - x$control$nsims]]
-      if (!is.null(z$stats$nwstats)) {
-        names(z$stats$nwstats)[i] <- paste0("sim", i)
-      }
-    }
+    z$stats$nwstats <- c(x$stats$nwstats, y$stats$nwstats)
+    names(z$stats$nwstats) <- newnames
   } else {
     z$stats$nwstats <- NULL
   }
@@ -263,6 +246,7 @@ merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
       if (!identical(other.x, other.y)) {
         stop("Elements in save.other differ between x and y", call. = FALSE)
       }
+      new.range <- (x$control$nsims + 1):(x$control$nsims + y$control$nsims)
       for (j in seq_along(other.x)) {
         for (i in new.range) {
           z[[other.x[j]]][[i]] <- y[[other.x[j]]][[i - x$control$nsims]]
@@ -278,7 +262,7 @@ merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
   if (keep.diss.stats == TRUE && !is.null(x$diss.stats) && 
       !is.null(y$diss.stats)) {
     z$diss.stats <- c(x$diss.stats, y$diss.stats)
-    names(z$diss.stats) <- c(names(x$diss.stats), paste0("sim", new.range))
+    names(z$diss.stats) <- newnames
   } else {
     z$diss.stats <- NULL
   }
