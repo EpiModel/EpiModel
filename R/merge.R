@@ -109,8 +109,6 @@ merge.icm <- function(x, y, ...) {
 #' @param keep.nwstats If \code{TRUE}, keep the network statistics (as set by
 #'        the \code{nwstats.formula} parameter in \code{control.netsim}) from
 #'        the original \code{x} and \code{y} elements.
-#' @param keep.summary.stats If \code{TRUE}, keep the summary statistics from
-#'        the original \code{x} and \code{y} elements.
 #' @param keep.other If \code{TRUE}, keep the other simulation elements (as set
 #'        by the \code{save.other} parameter in \code{control.netsim}) from the
 #'        original \code{x} and \code{y} elements.
@@ -118,6 +116,8 @@ merge.icm <- function(x, y, ...) {
 #'        params (in \code{\link{param.net}}) or controls (passed in
 #'        \code{\link{control.net}}) an error will prevent the merge. Use
 #'        \code{FALSE} to override that check.
+#' @param keep.diss.stats If \code{TRUE}, keep \code{diss.stats} from the 
+#'        original \code{x} and \code{y} objects.
 #' @param ...  Additional merge arguments (not currently used).
 #'
 #' @details
@@ -166,8 +166,8 @@ merge.icm <- function(x, y, ...) {
 #' as.data.frame(z)
 #'
 merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
-                         keep.nwstats = TRUE, keep.summary.stats = TRUE,
-                         keep.other = TRUE, param.error = TRUE, ...) {
+                         keep.nwstats = TRUE, keep.other = TRUE, 
+                         param.error = TRUE, keep.diss.stats = TRUE, ...) {
 
   ## Check structure
   if (length(x) != length(y) || !identical(names(x), names(y))) {
@@ -216,13 +216,12 @@ merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
 
 
   ## Transmission matrix
-  if (keep.transmat == TRUE) {
+  if (keep.transmat == TRUE && !is.null(x$stats$transmat) &&
+      !is.null(y$stats$transmat)) {
     for (i in new.range) {
-      if (!is.null(x$stats$transmat) & !is.null(y$stats$transmat)) {
-        z$stats$transmat[[i]] <- y$stats$transmat[[i - x$control$nsims]]
-        if (!is.null(z$stats$transmat)) {
-          names(z$stats$transmat)[i] <- paste0("sim", i)
-        }
+      z$stats$transmat[[i]] <- y$stats$transmat[[i - x$control$nsims]]
+      if (!is.null(z$stats$transmat)) {
+        names(z$stats$transmat)[i] <- paste0("sim", i)
       }
     }
   } else {
@@ -276,6 +275,13 @@ merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
     }
   }
 
-
+  if (keep.diss.stats == TRUE && !is.null(x$diss.stats) && 
+      !is.null(y$diss.stats)) {
+    z$diss.stats <- c(x$diss.stats, y$diss.stats)
+    names(z$diss.stats) <- c(names(x$diss.stats), paste0("sim", new.range))
+  } else {
+    z$diss.stats <- NULL
+  }
+  
   return(z)
 }

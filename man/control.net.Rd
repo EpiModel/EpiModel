@@ -38,6 +38,7 @@ control.net(
   tergmLite.track.duration = FALSE,
   set.control.ergm = control.simulate.formula(MCMC.burnin = 2e+05),
   set.control.tergm = control.simulate.formula.tergm(),
+  save.diss.stats = TRUE,
   ...
 )
 }
@@ -68,9 +69,7 @@ impact the network structure (e.g., vital dynamics).}
 
 \item{tergmLite}{Logical indicating usage of either \code{tergm}
 (\code{tergmLite = FALSE}), or \code{tergmLite}
-(\code{tergmLite = TRUE}). Default of \code{FALSE}. (See the
-\href{https://statnet.org/tut/EpiModel2.html#tergmLite}{EpiModel 2.0
-migration document} for details on \code{tergmLite}.)}
+(\code{tergmLite = TRUE}). Default of \code{FALSE}.}
 
 \item{cumulative.edgelist}{If \code{TRUE}, calculates a cumulative edgelist
 within the network simulation module. This is used when tergmLite is
@@ -173,6 +172,11 @@ simulations in \code{netsim} use \code{tergm}.}
 \code{simulate_formula.network}. See the help file for
 \code{\link{netdx}} for details and examples on specifying this
 parameter.}
+
+\item{save.diss.stats}{If \code{TRUE}, \code{netsim} will compute and save
+duration/dissolution statistics for plotting and printing, provided
+\code{save.network} is \code{TRUE}, \code{tergmLite} is \code{FALSE},
+and the dissolution model is homogeneous.}
 
 \item{...}{Additional control settings passed to model.}
 }

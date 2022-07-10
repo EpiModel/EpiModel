@@ -88,45 +88,45 @@ print.netest <- function(x, digits = 3, ...) {
 
 #' @rdname print.netdx
 #' @title Utility Function for Printing netdx Object
-#' @description Prints basic information and statistics from a \code{netdx} 
+#' @description Prints basic information and statistics from a \code{netdx}
 #'              object.
 #' @param x an object of class \code{netdx}
 #' @param digits number of digits to print in statistics tables
 #' @param ... additional arguments (currently ignored)
-#' @details 
+#' @details
 #' Given a \code{netdx} object, \code{print.netdx} prints the diagnostic method
 #' (static/dynamic), number of simulations, and (if dynamic) the number of time
 #' steps per simulation used in generating the \code{netdx} object, as well as
 #' printing the formation statistics table and (if present) the duration and
-#' dissolution statistics tables.  The statistics tables are interpreted as 
+#' dissolution statistics tables.  The statistics tables are interpreted as
 #' follows.
 #'
 #' Each row has the name of a particular network statistic.  In the formation
 #' table, these correspond to actual network statistics in the obvious way.
-#' In the duration and dissolution tables, these correspond to dissolution 
-#' model dyad types: in a homogeneous dissolution model, all dyads are of the 
-#' \code{edges} type; in a heterogeneous dissolution model, a dyad with a 
-#' nonzero \code{nodematch} or \code{nodemix} change statistic in the 
+#' In the duration and dissolution tables, these correspond to dissolution
+#' model dyad types: in a homogeneous dissolution model, all dyads are of the
+#' \code{edges} type; in a heterogeneous dissolution model, a dyad with a
+#' nonzero \code{nodematch} or \code{nodemix} change statistic in the
 #' dissolution model has type equal to that statistic, and has type equal to
-#' \code{edges} otherwise.  The statistics of interest for the duration and 
-#' dissolution tables are, respectively, the mean age of extant edges and the 
-#' edge dissolution rate, broken down by dissolution model dyad type.  (The 
-#' current convention is to treat the mean age and dissolution rate for a 
-#' particular dissolution dyad type as 0 on time steps with no edges of that 
+#' \code{edges} otherwise.  The statistics of interest for the duration and
+#' dissolution tables are, respectively, the mean age of extant edges and the
+#' edge dissolution rate, broken down by dissolution model dyad type.  (The
+#' current convention is to treat the mean age and dissolution rate for a
+#' particular dissolution dyad type as 0 on time steps with no edges of that
 #' type; this behavior may be changed in the future.)
-#' 
-#' The columns are named \code{Target}, \code{Sim Mean}, \code{Pct Diff}, and 
+#'
+#' The columns are named \code{Target}, \code{Sim Mean}, \code{Pct Diff}, and
 #' \code{Sim SD}.  For the formation table, \code{Sim Mean} refers to the mean
 #' statistic value and \code{Sim SD} refers to the standard deviation in the
-#' statistic value, across all time steps in all simulations in the dynamic 
-#' case, and across all sampled networks in the static case.  For the duration 
-#' and dissolution tables, \code{Sim Mean} refers to the mean across 
-#' simulations of the mean across time steps within simulation, and 
-#' \code{Sim SD} refers to the standard deviation across simulations of the 
-#' mean across time steps within simulation, for the age and dissolution 
-#' statistics defined above.  The \code{Target} column 
+#' statistic value, across all time steps in all simulations in the dynamic
+#' case, and across all sampled networks in the static case.  For the duration
+#' and dissolution tables, \code{Sim Mean} refers to the mean across
+#' simulations of the mean across time steps within simulation, and
+#' \code{Sim SD} refers to the standard deviation across simulations of the
+#' mean across time steps within simulation, for the age and dissolution
+#' statistics defined above.  The \code{Target} column
 #' indicates the target value (if present) for the network statistic, mean edge
-#' age, or edge dissolution rate, and the \code{Pct Diff} column gives 
+#' age, or edge dissolution rate, and the \code{Pct Diff} column gives
 #' \code{(Sim Mean - Target)/Target} when \code{Target} is present.
 #' @export
 print.netdx <- function(x, digits = 3, ...) {
@@ -205,11 +205,14 @@ print.netsim <- function(x, nwstats = TRUE, digits = 3, network = 1, ...) {
     if (!is.null(x$network)) {
       cat("\nTransmissions:", simnames)
     } else {
-      cat("Transsmissions:", simnames)
+      cat("Transmissions:", simnames)
     }
   }
   if (!is.null(x$control$save.other)) {
-    cat("\nOther Elements:", x$control$save.other)
+    names_present <- intersect(x$control$save.other, names(x))
+    if (length(names_present) > 0) {
+      cat("\nOther Elements:", names_present)
+    }
   }
   cat("")
 
@@ -240,38 +243,28 @@ print.netsim <- function(x, nwstats = TRUE, digits = 3, network = 1, ...) {
     cat("\nDissolution Diagnostics")
     cat("\n----------------------- \n")
 
-    if (x$control$save.network &&
+    if (x$control$save.diss.stats &&
+        x$control$save.network &&
         ! x$control$tergmLite &&
+        ! is.null(x$diss.stats) &&
         x$nwparam[[network]]$coef.diss$dissolution == ~ offset(edges)) {
-      diag.sim <- lapply(
-        seq_len(x$control$nsims),
-        get_network, network = network, x = x
-      )
-      
-      dissolution.stats <- make_dissolution_stats( 
-        lapply(diag.sim, 
-               function(nwd) { 
-                 toggles_to_diss_stats(tedgelist_to_toggles(as.data.frame(nwd)), 
-                                       x$nwparam[[network]]$coef.diss, 
-                                       x$control$nsteps, 
-                                       nwd) 
-               }),
+
+      dissolution.stats <- make_dissolution_stats(
+        lapply(seq_len(x$control$nsims), function(sim) x$diss.stats[[sim]][[network]]),
         x$nwparam[[network]]$coef.diss,
         x$control$nsteps,
         verbose = FALSE
       )
-
+      
       print_nwstats_table(dissolution.stats$stats.table.dissolution, digits)
 
-      if (x$nwparam[[network]]$coef.diss$diss.model.type == "hetero") {
-        cat("----------------------- \n")
-        cat("* Heterogeneous dissolution model results averaged over")
-      }
     } else {
       cat("Not available when:")
       cat("\n- `control$tergmLite == TRUE`")
       cat("\n- `control$save.network == FALSE`")
+      cat("\n- `control$save.diss.stats == FALSE`")
       cat("\n- dissolution formula is not `~ offset(edges)`")
+      cat("\n- `keep.diss.stats == FALSE` (if merging)")
       cat("\n")
     }
   }

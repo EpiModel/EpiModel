@@ -708,9 +708,7 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #'        impact the network structure (e.g., vital dynamics).
 #' @param tergmLite Logical indicating usage of either \code{tergm}
 #'        (\code{tergmLite = FALSE}), or \code{tergmLite}
-#'        (\code{tergmLite = TRUE}). Default of \code{FALSE}. (See the
-#'        \href{https://statnet.org/tut/EpiModel2.html#tergmLite}{EpiModel 2.0
-#'        migration document} for details on \code{tergmLite}.)
+#'        (\code{tergmLite = TRUE}). Default of \code{FALSE}.
 #' @param cumulative.edgelist If \code{TRUE}, calculates a cumulative edgelist
 #'        within the network simulation module. This is used when tergmLite is
 #'        used and the entire networkDynamic object is not used.
@@ -787,6 +785,10 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #'        \code{simulate_formula.network}. See the help file for
 #'        \code{\link{netdx}} for details and examples on specifying this
 #'        parameter.
+#' @param save.diss.stats If \code{TRUE}, \code{netsim} will compute and save
+#'        duration/dissolution statistics for plotting and printing, provided
+#'        \code{save.network} is \code{TRUE}, \code{tergmLite} is \code{FALSE},
+#'        and the dissolution model is homogeneous.
 #' @param ... Additional control settings passed to model.
 #'
 #' @details
@@ -910,6 +912,7 @@ control.net <- function(type,
                         set.control.ergm = control.simulate.formula(
                           MCMC.burnin = 2e5),
                         set.control.tergm = control.simulate.formula.tergm(),
+                        save.diss.stats = TRUE,
                         ...) {
 
   # Get arguments
@@ -961,7 +964,7 @@ control.net <- function(type,
         index <- index + 1
       }
     }
-  } else{
+  } else {
     p[["bi.mods"]] <- bi.mods
   }
   p[["user.mods"]] <- grep(".FUN", names(dot.args), value = TRUE)
@@ -1022,7 +1025,7 @@ control.net <- function(type,
             call. = FALSE)
     p[["resimulate.network"]] <- TRUE
   }
-
+  
   ## Output
   p <- set.control.class("control.net", p)
   return(p)
@@ -1284,6 +1287,13 @@ param.net_from_table <- function(long.param.df) {
          " 'character'")
   }
   check_params_names(long.param.df[["param"]])
+
+  duplicated_params <- duplicated(long.param.df[["param"]])
+  duplicated_params <- long.param.df[["param"]][duplicated_params]
+  if (length(duplicated_params) > 0) {
+    stop("The following parameters are duplicated: `",
+         paste0(duplicated_params, collapse = "`, `"), "`")
+  }
 
   # To flat params
   flat.params <- Map(

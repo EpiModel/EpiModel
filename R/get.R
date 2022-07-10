@@ -405,6 +405,9 @@ get_sims <- function(x, sims, var) {
     if (!is.null(out$stats$transmat)) {
       out$stats$transmat[delsim] <- NULL
     }
+    if (!is.null(out$diss.stats)) {
+      out$diss.stats[delsim] <- NULL
+    }
     if (!is.null(out$control$save.other)) {
       oname <- out$control$save.other
       for (i in seq_along(oname)) {
