@@ -91,6 +91,16 @@ test_that("get_sims extracts simulations", {
   expect_is(get_sims(mod, sims = 1:3), "netsim")
   expect_is(get_sims(mod, sims = 1, var = c("i.num", "s.num")), "netsim")
   expect_is(get_sims(mod, sims = c(1, 3), var = c("i.num", "s.num")), "netsim")
+  expect_equal(length(get_sims(mod, sims = 1:3)$diss.stats), 3)
+  expect_equal(names(get_sims(mod, sims = 1:3)$diss.stats), c("sim1", "sim2", "sim3"))
+  expect_equal(length(get_sims(mod, sims = c(1, 3))$diss.stats), 2)
+  expect_equal(names(get_sims(mod, sims = c(1, 3))$diss.stats), c("sim1", "sim3"))
+  expect_equal(length(get_sims(mod, sims = 2)$diss.stats), 1)
+  expect_equal(names(get_sims(mod, sims = 2)$diss.stats), c("sim2"))
+  expect_equal(length(merge(get_sims(mod, sims = 2:3), 
+                            get_sims(mod, sims = c(1,3)))$diss.stats), 4)
+  plot(get_sims(mod, sims = 2), type = "duration")
+  plot(get_sims(mod, sims = c(1, 3)), type = "dissolution")  
 })
 
 

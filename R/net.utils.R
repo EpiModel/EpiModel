@@ -388,10 +388,12 @@ dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
           # TODO: remove functionality and deprecation message in future release
         } else {
           if (grepl("offset[(]nodemix", t2)) {
-          t2.term <- diss.model.type <- "nodemix"
-          } else stop("The form of the dissolution argument is invalid. Type
+            t2.term <- diss.model.type <- "nodemix"
+          } else {
+            stop("The form of the dissolution argument is invalid. Type
                       help(\'dissolution_coefs\') to see the set of options
                       allowed.")
+          }
         }
       }
     }

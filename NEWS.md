@@ -7,6 +7,7 @@
 - The `networkLite` class now supports some additional functionalities.
 - Duration = 1 time step models in `netsim` with `tergmLite = FALSE` now use `tergm` simulation to produce a `networkDynamic` as in the duration > 1 time step case.
 - `netdx` now supports heterogeneous dissolution diagnostics. See the example in `help("netdx")`.
+- `plot.netsim` now supports `type = "duration","dissolution"` for homogeneous dissolution models.
 - Network model parameters can now be supplied to `param.net` via a `data.frame`. See the **Working with Model Parameters** vignette for details.
 - A new term `fuzzynodematch` was added, to support modeling of more generalized notions of homophily.
 - Network models can now be checkpointed to allow recovery and restarting simulation after interruption, as might occur with large-scale simulation jobs on high-performance computing (HPC) systems. See `help("control.net)`
