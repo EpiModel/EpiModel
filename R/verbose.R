@@ -17,13 +17,13 @@
 verbose.dcm <- function(x, type, s = 1) {
 
   if (type == "startup") {
-    if (x$verbose == TRUE & x$nruns > 1) {
+    if (x$verbose == TRUE && x$nruns > 1) {
       cat("\nStarting DCM Simulation...")
     }
   }
 
   if (type == "progress") {
-    if (x$verbose == TRUE & x$nruns > 1) {
+    if (x$verbose == TRUE && x$nruns > 1) {
       cat("\nRun = ", s, "/", x$nruns, sep = "")
     }
   }

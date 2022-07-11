@@ -79,7 +79,7 @@ nwupdate.net <- function(dat, at) {
   }
 
   ## Copy static attributes to network object
-  if (tergmLite == FALSE & resimulate.network == TRUE) {
+  if (tergmLite == FALSE && resimulate.network == TRUE) {
     dat <- copy_datattr_to_nwattr(dat)
   }
 

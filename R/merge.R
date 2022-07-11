@@ -53,7 +53,7 @@ merge.icm <- function(x, y, ...) {
   if (length(x) != length(y) || !identical(names(x), names(y))) {
     stop("x and y have different structure")
   }
-  if (x$control$nsims > 1 & y$control$nsims > 1 &
+  if (x$control$nsims > 1 && y$control$nsims > 1 &&
       !identical(sapply(x, class), sapply(y, class))) {
     stop("x and y have different structure")
   }
@@ -116,7 +116,7 @@ merge.icm <- function(x, y, ...) {
 #'        params (in \code{\link{param.net}}) or controls (passed in
 #'        \code{\link{control.net}}) an error will prevent the merge. Use
 #'        \code{FALSE} to override that check.
-#' @param keep.diss.stats If \code{TRUE}, keep \code{diss.stats} from the 
+#' @param keep.diss.stats If \code{TRUE}, keep \code{diss.stats} from the
 #'        original \code{x} and \code{y} objects.
 #' @param ...  Additional merge arguments (not currently used).
 #'
@@ -166,7 +166,7 @@ merge.icm <- function(x, y, ...) {
 #' as.data.frame(z)
 #'
 merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
-                         keep.nwstats = TRUE, keep.other = TRUE, 
+                         keep.nwstats = TRUE, keep.other = TRUE,
                          param.error = TRUE, keep.diss.stats = TRUE, ...) {
 
   ## Check structure
@@ -175,7 +175,7 @@ merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
   }
   x$control$nsims <- as.integer(x$control$nsims)
   y$control$nsims <- as.integer(y$control$nsims)
-  if (x$control$nsims > 1 & y$control$nsims > 1 &
+  if (x$control$nsims > 1 && y$control$nsims > 1 &&
       !all(sapply(x, function(i) class(i)[1]) ==
            sapply(y, function(i) class(i)[1]))) {
     stop("x and y have different structure")
@@ -205,7 +205,7 @@ merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
   z <- x
   z$control$nsims <- x$control$nsims + y$control$nsims
   newnames <- paste0("sim", seq_len(z$control$nsims))
-  
+
   # Merge epi data
   for (i in seq_along(x$epi)) {
     z$epi[[i]] <- cbind(x$epi[[i]], y$epi[[i]])
@@ -222,16 +222,16 @@ merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
   }
 
   ## Network objects
-  if (keep.network == TRUE & !is.null(x$network) & !is.null(y$network)) {
+  if (keep.network == TRUE && !is.null(x$network) && !is.null(y$network)) {
     z$network <- c(x$network, y$network)
     names(z$network) <- newnames
+
   } else {
     z$network <- NULL
   }
 
   ## Network statistics
-  if (keep.nwstats == TRUE & !is.null(x$stats$nwstats) &
-      !is.null(y$stats$nwstats)) {
+  if (keep.nwstats == TRUE && !is.null(x$stats$nwstats) && !is.null(y$stats$nwstats)) {
     z$stats$nwstats <- c(x$stats$nwstats, y$stats$nwstats)
     names(z$stats$nwstats) <- newnames
   } else {
@@ -239,7 +239,7 @@ merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
   }
 
   ## Other
-  if (!is.null(x$control$save.other) & !is.null(y$control$save.other)) {
+  if (!is.null(x$control$save.other) && !is.null(y$control$save.other)) {
     other.x <- x$control$save.other
     other.y <- y$control$save.other
     if (keep.other == TRUE) {
@@ -259,13 +259,13 @@ merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
     }
   }
 
-  if (keep.diss.stats == TRUE && !is.null(x$diss.stats) && 
+  if (keep.diss.stats == TRUE && !is.null(x$diss.stats) &&
       !is.null(y$diss.stats)) {
     z$diss.stats <- c(x$diss.stats, y$diss.stats)
     names(z$diss.stats) <- newnames
   } else {
     z$diss.stats <- NULL
   }
-  
+
   return(z)
 }
