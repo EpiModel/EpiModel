@@ -525,9 +525,7 @@ add.edges.networkLite <- function(x, tail, head, names.eval = NULL,
     update_tibble <-
       dplyr::bind_cols(as_tibble(list(.tail = tail, .head = head)),
                         dplyr::bind_rows(lapply(vals.eval, function(x)
-                                                  if (length(x) > 0) as_tibble(x) else
-                                                    tibble(NULL, .rows = 1)
-                                                )
+                                                  if (length(x) > 0) as_tibble(x) else tibble(NULL, .rows = 1))
                                          ))
   }
 
@@ -621,12 +619,6 @@ to_network_networkLite <- function(x, ...) {
 as.networkDynamic.networkLite <- function(object, ...) {
   as.networkDynamic(to_network_networkLite(object))
 }
-
-##### #' @rdname networkLitemethods
-##### #' @export
-##### valid.eids.networkLite <- function(x, ...) {
-#####   seq_len(NROW(x$el))
-##### }
 
 #' @rdname networkLitemethods
 #' @param attrnames vector specifying edge attributes to include in the tibble;
@@ -767,58 +759,6 @@ delete.network.attribute.networkLite <- function(x, attrname, ...) {
   invisible(x)
 }
 
-##### #' @rdname networkLitemethods
-##### #' @param eid edge indices to delete (between 1 and
-##### #'        \code{network.edgecount(x, na.omit = FALSE)})
-##### #' @export
-##### delete.edges.networkLite <- function(x, eid, ...) {
-#####   xn <- substitute(x)
-#####
-#####   eid <- as.integer(eid)
-#####   eid <- eid[eid >= 1 & eid <= NROW(x$el)]
-#####   if (length(eid) > 0) {
-#####     x$el <- x$el[-eid, ]
-#####   }
-#####
-#####   on.exit(eval.parent(call("<-", xn, x)))
-#####   invisible(x)
-##### }
-#####
-##### #' @rdname networkLitemethods
-##### #' @param vid vertex indices to delete (between 1 and \code{network.size(x)})
-##### #' @export
-##### delete.vertices.networkLite <- function(x, vid, ...) {
-#####   xn <- substitute(x)
-#####
-#####   vid <- as.integer(vid)
-#####   vid <- vid[vid >= 1 & vid <= network.size(x)]
-#####   if (length(vid) > 0) {
-#####     # drop edges with deleted nodes
-#####     x$el <- x$el[!(x$el$.tail %in% vid | x$el$.head %in% vid), ]
-#####
-#####     # drop vertex attributes for deleted nodes
-#####     x$attr <- x$attr[-vid, ]
-#####
-#####     # remap nodal indices for remaining edges
-#####     a <- seq_len(network.size(x))
-#####     b <- integer(network.size(x))
-#####     b[vid] <- 1L
-#####     b <- cumsum(b)
-#####     a <- a - b
-#####     x$el$.tail <- a[x$el$.tail]
-#####     x$el$.head <- a[x$el$.head]
-#####
-#####     # update network attributes
-#####     x %n% "n" <- x %n% "n" - length(vid)
-#####     if (is.bipartite(x)) {
-#####       x %n% "bipartite" <- x %n% "bipartite" - sum(vid <= x %n% "bipartite")
-#####     }
-#####   }
-#####
-#####   on.exit(eval.parent(call("<-", xn, x)))
-#####   invisible(x)
-##### }
-
 #' @rdname networkLitemethods
 #' @param nv number of vertices to add to the \code{networkLite}
 #' @param vattr list (of length \code{nv}) of named lists of vertex attributes
@@ -852,9 +792,8 @@ add.vertices.networkLite <- function(x, nv, vattr = NULL,
       }
 
       update_tibble <- dplyr::bind_rows(lapply(vattr,
-                                               function(x) if (length(x) > 0)
-                                                 as_tibble(x) else
-                                                   tibble(NULL, .rows = 1)))
+                                               function(x)
+                                                 if (length(x) > 0) as_tibble(x) else tibble(NULL, .rows = 1)))
     } else {
       update_tibble <- as_tibble(list(na = logical(nv)))
     }
