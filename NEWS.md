@@ -3,29 +3,29 @@
 ### NEW FEATURES
 
 - Network models can now use predefined scenarios with the `use_scenario` function. See the **Working with Model Parameters** vignette for details.
-- The `trim_netest` function has been added to reduce `netest` object size in common use cases.
+- The `trim_netest` function has been added to reduce `netest` object sizes in common use cases.
 - The `networkLite` class now supports some additional functionalities.
-- Duration = 1 time step models in `netsim` with `tergmLite = FALSE` now use `tergm` simulation to produce a `networkDynamic` as in the duration > 1 time step case.
-- `netdx` now supports heterogeneous dissolution diagnostics. See the example in `help("netdx")`.
-- `plot.netsim` now supports `type = "duration","dissolution"` for homogeneous dissolution models.
+- Duration = 1 time step models in `netsim` with `tergmLite = FALSE` now use `tergm` simulation to produce a `networkDynamic` class object, similar to the duration > 1 time step case.
+- `netdx` now supports heterogeneous dissolution model diagnostics. See the example in `help("netdx")`.
+- `plot.netsim` now supports `type = "duration","dissolution"` for homogeneous ("edges-only") dissolution models.
 - Network model parameters can now be supplied to `param.net` via a `data.frame`. See the **Working with Model Parameters** vignette for details.
 - A new term `fuzzynodematch` was added, to support modeling of more generalized notions of homophily.
-- Network models can now be checkpointed to allow recovery and restarting simulation after interruption, as might occur with large-scale simulation jobs on high-performance computing (HPC) systems. See `help("control.net)`
+- Network models can now be checkpointed to automate saving, recovering, and restarting simulations after interruption, as might occur with large-scale simulation jobs on high-performance computing (HPC) systems. See `help("control.net)`.
 
 ### BUG FIXES
 
-- EpiModel's custom terms `absdiffby` and `absdiffnodemix` are now usable (due to enabling symbol search).
-- The correct formula is now used in `sim_nets_t1` when initializing the network with the non-nested edapprox.
+- EpiModel's custom terms `absdiffby` and `absdiffnodemix` are now usable again (due to enabling symbol search).
+- The correct formula is now used in `sim_nets_t1` when initializing the network with the non-nested edges dissolution approximation approach in `netest`.
 - References to `network` class internals have been removed from `net.utils.R` to make the code function properly with `networkLite`s.
 
 ### OTHER
 
 - The `updater.net` module was removed as an optional module but its functionalities are now the default behavior for all network models (built-in and custom).
-- The parameters `param.updater.list` and `control.updater.list` in `param.net` and `control.net` respectively were renamed `.param.updater.list` and `.control.updater.list`. The leading dot indicate that these are built-in EpiModel elements not to be confused with the user-defined ones.
+- The parameters `param.updater.list` and `control.updater.list` in `param.net` and `control.net` respectively were renamed `.param.updater.list` and `.control.updater.list`. The leading dot indicates that these are built-in EpiModel elements not to be confused with the user-defined ones.
 - Dissolution models using the `nodefactor` term have been deprecated.
 - `stergm` controls have been deprecated in favor of `tergm` controls.
 - Formula-style simulations are used consistently for both `ergm` and `tergm` simulation, requiring control arguments of class `control.simulate.formula` and `control.simulate.formula.tergm`.
-- `ndtv` is added to "suggests" and `plot.transmat` now accept `transmissionTimeline` again in the `style` argument.
+- `ndtv` is added to "Suggests" (again) and `plot.transmat` now accepts the `transmissionTimeline` in the `style` argument (again).
 
 
 ## EpiModel 2.2.1
