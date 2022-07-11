@@ -365,6 +365,13 @@ saveout.net <- function(dat, s, out = NULL) {
       names(out$diss.stats) <- simnames
     }
 
+    if (!is.null(dat$control$save.other)) {
+      for (i in seq_along(dat$control$save.other)) {
+        el.name <- dat$control$save.other[i]
+        names(out[[el.name]]) <- simnames
+      }
+    }
+
     # Remove functions from control list
     ftodel <- grep(".FUN", names(out$control), value = TRUE)
     out$control[ftodel] <- NULL
