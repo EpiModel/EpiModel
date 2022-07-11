@@ -205,7 +205,7 @@ merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
   z <- x
   z$control$nsims <- x$control$nsims + y$control$nsims
   newnames <- paste0("sim", seq_len(z$control$nsims))
-  
+
   # Merge epi data
   for (i in seq_along(x$epi)) {
     z$epi[[i]] <- cbind(x$epi[[i]], y$epi[[i]])
