@@ -375,10 +375,10 @@ plot.dcm <- function(x, y, popfrac = FALSE, run, col, lwd, lty, alpha = 0.9,
   # Default legend type
   if (noleg == TRUE) {
     legend <- "n"
-    if (lcomp == 1 & nruns < 3) {
+    if (lcomp == 1 && nruns < 3) {
       legend <- "full"
     }
-    if (lcomp == 1 & nruns >= 3) {
+    if (lcomp == 1 && nruns >= 3) {
       legend <- "lim"
     }
     if (lcomp > 1) {
@@ -388,10 +388,10 @@ plot.dcm <- function(x, y, popfrac = FALSE, run, col, lwd, lty, alpha = 0.9,
       legend <- "n"
     }
   } else {
-    if (legend == "lim" & nruns < 3) {
+    if (legend == "lim" && nruns < 3) {
       legend <- "full"
     }
-    if (legend == "lim" & lcomp == 2) {
+    if (legend == "lim" && lcomp == 2) {
       legend <- "full"
     }
   }
@@ -402,10 +402,10 @@ plot.dcm <- function(x, y, popfrac = FALSE, run, col, lwd, lty, alpha = 0.9,
       leg.names <- y
     }
     if (nruns > 1) {
-      if (norun == TRUE & lcomp == 1) {
+      if (norun == TRUE && lcomp == 1) {
         leg.names <- names(x$epi[[y[1]]])
       }
-      if (norun == FALSE & lcomp == 1) {
+      if (norun == FALSE && lcomp == 1) {
         if (length(run) == 1) {
           leg.names <- y
         }
@@ -443,7 +443,7 @@ plot.dcm <- function(x, y, popfrac = FALSE, run, col, lwd, lty, alpha = 0.9,
              col = c(pal[1], "white", pal[nruns]), cex = leg.cex)
     }
   }
-  if (norun == FALSE & legend != "n") {
+  if (norun == FALSE && legend != "n") {
     if (lcomp == 1) {
       legend("topright", legend = leg.names,
              bg = "white", lty = lty[seq_along(run)],
@@ -541,7 +541,7 @@ plot.icm <- function(x, y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col,
   if (max(sims) > nsims) {
     stop("Set sim to between 1 and ", nsims, call. = FALSE)
   }
-  if (is.null(x$param$groups) | !is.numeric(x$param$groups)) {
+  if (is.null(x$param$groups) || !is.numeric(x$param$groups)) {
     groups <- 1
     x$param$groups <- 1
   } else {
@@ -613,10 +613,10 @@ plot.icm <- function(x, y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col,
     }
   }
 
-  if (missing(sim.alpha) & nsims == 1) {
+  if (missing(sim.alpha) && nsims == 1) {
     sim.alpha <- 0.9
   }
-  if (missing(sim.alpha) & nsims > 1) {
+  if (missing(sim.alpha) && nsims > 1) {
     sim.alpha <- max(c(0.05, 1 - log10(nsims) / 3))
   }
   sim.pal <- adjustcolor(sim.col, sim.alpha)
@@ -661,12 +661,12 @@ plot.icm <- function(x, y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col,
   if (nsims == 1) {
     disp.qnts <- FALSE
   }
-  if (groups == 1 & missing(qnts)) {
+  if (groups == 1 && missing(qnts)) {
     disp.qnts <- TRUE
     qnts <- 0.5
   }
   if (disp.qnts == TRUE) {
-    if (qnts > 1 | qnts < 0) {
+    if (qnts > 1 || qnts < 0) {
       stop("qnts must be between 0 and 1", call. = FALSE)
     }
     qnt.min <- draw_qnts(x, y, qnts, qnts.pal, qnts.smooth, "epi", 0, "min")
@@ -698,7 +698,7 @@ plot.icm <- function(x, y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col,
   # Dynamic scaling based on sim.lines and mean lines and quantile bands
   if (!is.null(da$ylim)) {
     ylim <- da$ylim
-  } else if (is.null(da$ylim) & sim.lines == FALSE &
+  } else if (is.null(da$ylim) && sim.lines == FALSE &&
              (mean.line == TRUE || qnts == TRUE)) {
     ylim <- c(min(qnt.min * 0.9, mean.min * 0.9),
               max(qnt.max * 1.1, mean.max * 1.1))
@@ -745,12 +745,12 @@ plot.icm <- function(x, y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col,
   if (nsims == 1) {
     disp.qnts <- FALSE
   }
-  if (groups == 1 & missing(qnts)) {
+  if (groups == 1 && missing(qnts)) {
     disp.qnts <- TRUE
     qnts <- 0.5
   }
   if (disp.qnts == TRUE) {
-    if (qnts > 1 | qnts < 0) {
+    if (qnts > 1 || qnts < 0) {
       stop("qnts must be between 0 and 1", call. = FALSE)
     }
     draw_qnts(x, y, qnts, qnts.pal, qnts.smooth)
@@ -796,7 +796,7 @@ plot.icm <- function(x, y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col,
 
   ## Legends ##
   if (!missing(legend) && legend == TRUE) {
-    if (groups == 2 & nocomp == TRUE) {
+    if (groups == 2 && nocomp == TRUE) {
       leg.lty <- mean.lty
     } else {
       leg.lty <- 1
@@ -821,13 +821,13 @@ draw_qnts <- function(x, y, qnts, qnts.pal, qnts.smooth,
                         quantile(x, c(quants[1], quants[2]), na.rm = TRUE)
                       })
     qnt.prev <- qnt.prev[, complete.cases(t(qnt.prev))]
-    xx <- c(1:(ncol(qnt.prev)), (ncol(qnt.prev)):1)
+    xx <- c(seq_len(ncol(qnt.prev)), rev(seq_len(ncol(qnt.prev))))
     if (qnts.smooth == FALSE) {
       yy <- c(qnt.prev[1, ], rev(qnt.prev[2, ]))
     } else {
-      yy <- c(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
+      yy <- c(suppressWarnings(supsmu(x = seq_len(ncol(qnt.prev)),
                                       y = qnt.prev[1, ]))$y,
-              rev(suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
+              rev(suppressWarnings(supsmu(x = seq_len(ncol(qnt.prev)),
                                           y = qnt.prev[2, ]))$y))
     }
     if (plot.qnts == 1) {
@@ -837,9 +837,9 @@ draw_qnts <- function(x, y, qnts, qnts.pal, qnts.smooth,
       qnt.min[j] <-  min(yy)
     }
   }
-  if (plot.qnts == 0 & qnts.min_max == "max") {
+  if (plot.qnts == 0 && qnts.min_max == "max") {
     return(max(qnt.max))
-  } else if (plot.qnts == 0 & qnts.min_max == "min") {
+  } else if (plot.qnts == 0 && qnts.min_max == "min") {
     return(min(qnt.min))
   }
 }
@@ -873,15 +873,15 @@ draw_means <- function(x, y, mean.smooth, mean.lwd,
       mean.min[j] <-  min(mean.prev, na.rm = TRUE)
     }
   }
-  if (plot.means == 0 & mean.min_max == "max") {
+  if (plot.means == 0 && mean.min_max == "max") {
     return(max(mean.max))
-  } else if (plot.means == 0 & mean.min_max == "min") {
+  } else if (plot.means == 0 && mean.min_max == "min") {
     return(min(mean.min))
   }
 }
 
 get_qnts <- function(data, qnts, qnts.smooth) {
-  if (qnts < 0 | qnts > 1) {
+  if (qnts < 0 || qnts > 1) {
     stop("qnts must be between 0 and 1", call. = FALSE)
   }
   quants <- c((1 - qnts) / 2, 1 - ((1 - qnts) / 2))
@@ -889,14 +889,14 @@ get_qnts <- function(data, qnts, qnts.smooth) {
     quantile(x, c(quants[1], quants[2]), na.rm = TRUE)
   })
   if (isFALSE(qnts.smooth)) {
-    xx <- c(1:(ncol(qnt.prev)), (ncol(qnt.prev)):1)
+    xx <- c(seq_len(ncol(qnt.prev)), rev(seq_len(ncol(qnt.prev))))
     yy <- c(qnt.prev[1, ], rev(qnt.prev[2, ]))
     xx <- xx[!is.na(yy)]
     yy <- yy[!is.na(yy)]
   } else {
-    ss1 <- suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
+    ss1 <- suppressWarnings(supsmu(x = seq_len(ncol(qnt.prev)),
                                    y = qnt.prev[1, ]))
-    ss2 <- suppressWarnings(supsmu(x = 1:(ncol(qnt.prev)),
+    ss2 <- suppressWarnings(supsmu(x = rev(seq_len(ncol(qnt.prev))),
                                    y = qnt.prev[2, ]))
 
     xx <- c(ss1$x, rev(ss2$x))
@@ -981,7 +981,7 @@ plot_stats_table <- function(data,
   #    size nstats.
   check_len_rep <- function(object, default, name) {
     if (!missing(object)) {
-      if (length(object) %in% c(1,nstats)) {
+      if (length(object) %in% c(1, nstats)) {
         rep(object, length.out = nstats)
       } else {
         stop(paste0(name, " must be either missing or a vector of length 1 or nstats (", nstats, ")"))
@@ -1100,10 +1100,7 @@ plot_stats_table <- function(data,
       if (isTRUE(sim.lines)) {
         apply(dataj,
               2,
-              function(y) lines(which(!is.na(y)),
-                                y[!is.na(y)],
-                                lwd = sim.lwd,
-                                col = sim.col[j]))
+              function(y) lines(which(!is.na(y)), y[!is.na(y)], lwd = sim.lwd, col = sim.col[j]))
       }
 
       if (isTRUE(mean.line)) {
@@ -1299,8 +1296,8 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
          "run with dynamic = TRUE", call. = FALSE)
   }
 
-  if (is.null(x$stats.table.dissolution) & type %in% c("duration",
-                                                       "dissolution")) {
+  if (is.null(x$stats.table.dissolution) && type %in% c("duration",
+                                                        "dissolution")) {
     stop("Plots of type duration and dissolution only available if netdx ",
          "run with skip.dissolution = FALSE", call. = FALSE)
   }
@@ -1313,7 +1310,6 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
   if (max(sims) > nsims) {
     stop("Maximum sim number is", nsims, call. = FALSE)
   }
-  nsteps <- x$nsteps
   dynamic <- x$dynamic
 
   # Get dotargs
@@ -1327,7 +1323,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 
     data <- do.call("cbind", args = x$stats)
     dim3 <- if (isTRUE(dynamic)) nsims else 1L
-    data <- array(data, dim = c(dim(data)[1], dim(data)[2]/dim3, dim3))
+    data <- array(data, dim = c(dim(data)[1], dim(data)[2] / dim3, dim3))
   } else if (type == "duration") {
     if (is.logical(duration.imputed) == FALSE) {
       stop("For plots of type duration, duration.imputed must
@@ -1347,7 +1343,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
     }
 
     stats_table <- x$stats.table.duration
-  } else { # type == "dissolution"
+  } else { # if type is "dissolution"
     if (any(grepl("nodefactor", x$dissolution) == TRUE)) {
       warning("Support for dissolution models containing a nodefactor term is
               deprecated, and will be removed in a future release.",
@@ -1374,8 +1370,7 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
   nmstats <- nmstats[outsts]
 
   ## Subset data
-  nstats <- length(outsts)
-  data <- data[,outsts, , drop = FALSE]
+  data <- data[, outsts, , drop = FALSE]
   if (isTRUE(dynamic)) {
     # sims only used to subset data in dynamic case
     data <- data[, , sims, drop = FALSE]
@@ -1750,7 +1745,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
     if (max(sims) > nsims) {
       stop("Set sim to between 1 and ", nsims, call. = FALSE)
     }
-    if (is.null(x$param$groups) | !is.numeric(x$param$groups)) {
+    if (is.null(x$param$groups) || !is.numeric(x$param$groups)) {
       groups <- 1
       x$param$groups <- 1
     } else {
@@ -1822,10 +1817,10 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
       }
     }
 
-    if (missing(sim.alpha) & nsims == 1) {
+    if (missing(sim.alpha) && nsims == 1) {
       sim.alpha <- 0.9
     }
-    if (missing(sim.alpha) & nsims > 1) {
+    if (missing(sim.alpha) && nsims > 1) {
       sim.alpha <- max(c(0.05, 1 - log10(nsims) / 3))
     }
     sim.pal <- adjustcolor(sim.col, sim.alpha)
@@ -1837,9 +1832,9 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
       popfrac <- FALSE
     }
     if (nopopfrac == TRUE) {
-      if (any(grepl(".flow", y)) |
-          (groups == 1 & all(grepl(".num$", y)) == FALSE) |
-          (groups == 2 & all(c(grepl(".num$", y), grepl(".g2$", y)) == FALSE)) |
+      if (any(grepl(".flow", y)) ||
+          (groups == 1 && all(grepl(".num$", y)) == FALSE) ||
+          (groups == 2 && all(c(grepl(".num$", y), grepl(".g2$", y)) == FALSE)) ||
           any(y %in% c("num", "num.g2", "num.g2"))) {
         popfrac <- FALSE
       }
@@ -1852,10 +1847,8 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
         min.prev <- min(x$epi[[y]], na.rm = TRUE)
         max.prev <- max(x$epi[[y]], na.rm = TRUE)
       } else {
-        min.prev <- min(sapply(y, function(comps) min(x$epi[[comps]],
-                                                      na.rm = TRUE)))
-        max.prev <- max(sapply(y, function(comps) max(x$epi[[comps]],
-                                                      na.rm = TRUE)))
+        min.prev <- min(sapply(y, function(comps) min(x$epi[[comps]], na.rm = TRUE)))
+        max.prev <- max(sapply(y, function(comps) max(x$epi[[comps]], na.rm = TRUE)))
       }
     } else {
       min.prev <- 0
@@ -1879,7 +1872,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
     }
 
     if (disp.qnts == TRUE) {
-      if (qnts > 1 | qnts < 0) {
+      if (qnts > 1 || qnts < 0) {
         stop("qnts must be between 0 and 1", call. = FALSE)
       }
       qnt.max <- draw_qnts(x, y, qnts, qnts.pal, qnts.smooth, "epi", 0, "max")
@@ -1913,12 +1906,11 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
     if (is.null(da$xlim)) {
       da$xlim <- c(0, nsteps)
     }
-    if (is.null(da$ylim) & (popfrac == TRUE || sim.lines == TRUE)) {
+    if (is.null(da$ylim) && (popfrac == TRUE || sim.lines == TRUE)) {
       da$ylim <- c(min.prev, max.prev)
-    } else if (is.null(da$ylim) & popfrac == FALSE & sim.lines == FALSE &
+    } else if (is.null(da$ylim) && popfrac == FALSE && sim.lines == FALSE &&
                (mean.line == TRUE || qnts == TRUE)) {
-      da$ylim <- c(min(qnt.min * 0.9, mean.min * 0.9), max(qnt.max * 1.1,
-                                                        mean.max * 1.1))
+      da$ylim <- c(min(qnt.min * 0.9, mean.min * 0.9), max(qnt.max * 1.1, mean.max * 1.1))
     }
 
     if (is.null(da$main)) {
@@ -1960,7 +1952,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
     }
 
     if (disp.qnts == TRUE) {
-      if (qnts > 1 | qnts < 0) {
+      if (qnts > 1 || qnts < 0) {
         stop("qnts must be between 0 and 1", call. = FALSE)
       }
       y.l <- length(y)
@@ -2009,7 +2001,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
 
     ## Legends ##
     if (!missing(legend) && legend == TRUE) {
-      if (groups == 2 & nocomp == TRUE) {
+      if (groups == 2 && nocomp == TRUE) {
         leg.lty <- mean.lty
       } else {
         leg.lty <- 1
@@ -2040,7 +2032,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
       ## order by simulation and timestep
       data <- data[order(data$sim, data$time), , drop = FALSE]
       ## drop simulation and timestep columns
-      data <- data[,!(names(data)%in%c("sim","time")), drop = FALSE]
+      data <- data[, !(names(data) %in% c("sim", "time")), drop = FALSE]
       ## get names of stats
       nmstats <- names(data)
       ## convert to array
@@ -2057,8 +2049,8 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
       }
 
       targets <- rep(NA, length.out = length(nmstats))
-      for(i in seq_along(targets)) {
-        if(nmstats[i] %in% tsn) {
+      for (i in seq_along(targets)) {
+        if (nmstats[i] %in% tsn) {
           targets[i] <- ts[which(tsn == nmstats[i])]
         }
       }
@@ -2068,12 +2060,12 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
       colnames(stats_table) <- c("Target", "Sim Mean")
       rownames(stats_table) <- nmstats
     } else {
-      ## duration/dissolution plot      
+      ## duration/dissolution plot
       if (isTRUE(x$control$save.diss.stats) &&
           isTRUE(x$control$save.network) &&
           isFALSE(x$control$tergmLite) &&
           isFALSE(is.null(x$diss.stats)) &&
-          isTRUE(x$nwparam[[network]]$coef.diss$diss.model.type == "edgesonly")) {        
+          isTRUE(x$nwparam[[network]]$coef.diss$diss.model.type == "edgesonly")) {
         dstats <- make_dissolution_stats(
           lapply(sims, function(sim) x$diss.stats[[sim]][[network]]),
           x$nwparam[[network]]$coef.diss,
@@ -2095,7 +2087,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
         }
 
         stats_table <- dstats$stats.table.duration
-      } else { # type == "dissolution"
+      } else { # if type is "dissolution"
         data <- dstats$prop.diss
         stats_table <- dstats$stats.table.dissolution
       }
@@ -2117,8 +2109,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
     nmstats <- nmstats[outsts]
 
     ## Subset data
-    nstats <- length(outsts)
-    data <- data[,outsts,,drop=FALSE]
+    data <- data[, outsts, , drop = FALSE]
 
     ## we've already subset the data to `sims`
 
@@ -2235,7 +2226,7 @@ comp_plot.dcm <- function(x, at = 1, digits = 3, run = 1, ...) {
   }
 
   ## Time
-  if (at > nsteps | at < 1) {
+  if (at > nsteps || at < 1) {
     stop("Specify a time step between 1 and ", nsteps)
   }
   intime <- at
@@ -2324,7 +2315,7 @@ comp_plot.icm <- function(x, at = 1, digits = 3, ...) {
   }
 
   # Time
-  if (at > nsteps | at < 1) {
+  if (at > nsteps || at < 1) {
     stop("Specify a timestep between 1 and ", nsteps,
          call. = FALSE)
   }

@@ -154,7 +154,7 @@ resim_nets <- function(dat, at) {
   nwparam <- get_nwparam(dat)
 
   # Network resimulation
-  if (anyActive == TRUE & resimulate.network == TRUE) {
+  if (anyActive == TRUE && resimulate.network == TRUE) {
 
     # Full tergm/network Method
     if (tergmLite == FALSE) {

@@ -252,7 +252,7 @@ as.data.frame.icm <- function(x, row.names = NULL, optional = FALSE,
   }
 
   if (out == "qnt") {
-    if (missing(qval) || length(qval) > 1 || (qval > 1 | qval < 0)) {
+    if (missing(qval) || length(qval) > 1 || (qval > 1 || qval < 0)) {
       stop("Must specify qval as single value between 0 and 1", call. = FALSE)
     }
     for (i in seq_along(x$epi)) {

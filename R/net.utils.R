@@ -51,12 +51,12 @@ check_degdist_bal <- function(num.g1, num.g2,
   cat("=============================================\n")
   reldiff <- (tot.deg.g1 - tot.deg.g2) / tot.deg.g2
   absdiff <- abs(tot.deg.g1 - tot.deg.g2)
-  if (sum(deg.dist.g1) <= 0.999 | sum(deg.dist.g1) >= 1.001 |
-      sum(deg.dist.g2) <= 0.999 | sum(deg.dist.g2) >= 1.001 | absdiff > 1) {
-    if (sum(deg.dist.g1) <= 0.999 | sum(deg.dist.g1) >= 1.001) {
+  if (sum(deg.dist.g1) <= 0.999 || sum(deg.dist.g1) >= 1.001 ||
+      sum(deg.dist.g2) <= 0.999 || sum(deg.dist.g2) >= 1.001 || absdiff > 1) {
+    if (sum(deg.dist.g1) <= 0.999 || sum(deg.dist.g1) >= 1.001) {
       cat("** deg.dist.g1 TOTAL != 1 \n")
     }
-    if (sum(deg.dist.g2) <= 0.999 | sum(deg.dist.g2) >= 1.001) {
+    if (sum(deg.dist.g2) <= 0.999 || sum(deg.dist.g2) >= 1.001) {
       cat("** deg.dist.g2 TOTAL != 1 \n")
     }
     if (absdiff > 1) {
@@ -705,7 +705,7 @@ auto_update_attr <- function(dat, newNodes, curr.tab) {
     vname <- names(curr.tab)[i]
     needs.updating <- ifelse(length(get_attr(dat, vname)) < length(active),
                              TRUE, FALSE)
-    if (length(vname) > 0 & needs.updating == TRUE) {
+    if (length(vname) > 0 && needs.updating == TRUE) {
       rule <- rules[[vname]]
 
       if (is.null(rule)) {
