@@ -207,3 +207,23 @@ test_that("netsim diss.stats", {
   expect_output(print(mod3), "Not available when:")
   expect_true(is.null(mod3[["diss.stats"]]))
 })
+
+test_that("save.other sim naming", {
+  nw <- network_initialize(n = 50)
+  est <- netest(nw, formation = ~edges,
+                target.stats = c(25),
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                verbose = FALSE)
+  param <- param.net(inf.prob = 0.3, act.rate = 0.5)
+  init <- init.net(i.num = 10)
+  control <- control.net(type = "SI", nsims = 2, nsteps = 5, verbose = FALSE, 
+                         save.other = c("nw"), resimulate.network = TRUE)
+  mod <- netsim(est, param, init, control)
+  expect_equal(names(mod[["nw"]]), paste0("sim", 1:2))
+  mod2 <- merge(mod, mod)
+  expect_equal(names(mod2[["nw"]]), paste0("sim", 1:4))
+  mod3 <- get_sims(mod2, c(1,3,4))
+  expect_equal(names(mod3[["nw"]]), paste0("sim", 1:3))
+  mod4 <- merge(mod, mod, keep.other = FALSE)
+  expect_equal(names(mod4[["nw"]]), NULL)
+})
