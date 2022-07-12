@@ -17,6 +17,7 @@
 - EpiModel's custom terms `absdiffby` and `absdiffnodemix` are now usable again (due to enabling symbol search).
 - The correct formula is now used in `sim_nets_t1` when initializing the network with the non-nested edges dissolution approximation approach in `netest`.
 - References to `network` class internals have been removed from `net.utils.R` to make the code function properly with `networkLite`s.
+- `update_dissolution` now correctly handles duration 1 models.
 
 ### OTHER
 
@@ -29,6 +30,7 @@
 - Systematic review and improvement of documentation across the package.
 - `netest` and `netdx` now have default control arguments following R's default argument mechanism.
 - Simulation names are now attached to `netsim` object fields produced via the `save.other` mechanism.
+- Imputed durational corrections for onset-censored edges are now sampled from a geometric distribution rather than simply using the mean of that distribution.
 
 
 ## EpiModel 2.2.1
