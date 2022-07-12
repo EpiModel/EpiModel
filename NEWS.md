@@ -27,6 +27,7 @@
 - Formula-style simulations are used consistently for both `ergm` and `tergm` simulation, requiring control arguments of class `control.simulate.formula` and `control.simulate.formula.tergm`.
 - `ndtv` is added to "Suggests" (again) and `plot.transmat` now accepts the `transmissionTimeline` in the `style` argument (again).
 - Systematic review and improvement of documentation across the package.
+- Simulation names are now attached to `netsim` object fields produced via the `save.other` mechanism.
 
 
 ## EpiModel 2.2.1
