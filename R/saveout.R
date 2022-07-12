@@ -350,7 +350,7 @@ saveout.net <- function(dat, s, out = NULL) {
     }
 
     if (dat$control$save.transmat == TRUE) {
-      names(out$stats$transmat) <- simnames[seq_along(out$stats$transmat)]
+      names(out$stats$transmat) <- simnames
     }
 
     if (dat$control$tergmLite == FALSE) {
