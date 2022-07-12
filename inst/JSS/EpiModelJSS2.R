@@ -363,7 +363,7 @@ progress <- function(dat, at) {
 }
 
 ## Initialize the network and estimate the ERGM
-nw <- network_initialize(500, directed = FALSE)
+nw <- network_initialize(500)
 est4 <- netest(nw, formation = ~edges, target.stats = 150,
                coef.diss = dissolution_coefs(~offset(edges), 10))
 
