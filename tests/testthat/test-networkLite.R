@@ -426,7 +426,7 @@ test_that("network and networkLite work equally in netest, netdx, and netsim", {
         next
       }
 
-      nw <- network_initialize(n = 100, directed = directed, bipartite = bipartite)
+      nw <- network.initialize(n = 100, directed = directed, bipartite = bipartite)
       nw <- set_vertex_attribute(nw, "race", rbinom(50, 1, 0.5))
 
       set.seed(0)

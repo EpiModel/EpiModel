@@ -525,9 +525,7 @@ add.edges.networkLite <- function(x, tail, head, names.eval = NULL,
     update_tibble <-
       dplyr::bind_cols(as_tibble(list(.tail = tail, .head = head)),
                         dplyr::bind_rows(lapply(vals.eval, function(x)
-                                                  if (length(x) > 0) as_tibble(x) else
-                                                    tibble(NULL, .rows = 1)
-                                                )
+                                                  if (length(x) > 0) as_tibble(x) else tibble(NULL, .rows = 1))
                                          ))
   }
 
@@ -794,9 +792,8 @@ add.vertices.networkLite <- function(x, nv, vattr = NULL,
       }
 
       update_tibble <- dplyr::bind_rows(lapply(vattr,
-                                               function(x) if (length(x) > 0)
-                                                 as_tibble(x) else
-                                                   tibble(NULL, .rows = 1)))
+                                               function(x)
+                                                 if (length(x) > 0) as_tibble(x) else tibble(NULL, .rows = 1)))
     } else {
       update_tibble <- as_tibble(list(na = logical(nv)))
     }

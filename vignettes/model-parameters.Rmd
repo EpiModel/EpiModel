@@ -113,14 +113,14 @@ began.
 Now we can merge and plot the results:
 
 ```{r plotting, fig.width = 8}
-plot(d_list$base$time, d_list$base$i.num, 
+plot(d_list$base$time, d_list$base$i.num,
      type = "l", col = 1, lwd = 2, ylim = c(0, 250))
-lines(d_list$initial_change$time, d_list$initial_change$i.num, 
+lines(d_list$initial_change$time, d_list$initial_change$i.num,
       type = "l", col = 2, lwd = 2)
-lines(d_list$multiple_changes$time, d_list$multiple_changes$i.num, 
+lines(d_list$multiple_changes$time, d_list$multiple_changes$i.num,
       type = "l", col = 3, lwd = 2)
 abline(v = c(100, 200), lty = 2)
-legend("topleft", legend = names(d_list), 
+legend("topleft", legend = names(d_list),
        col = 1:3, lwd = 2, cex = 0.9, bty = "n")
 ```
 
@@ -184,7 +184,7 @@ knitr::kable(df_params)
 To use this table of parameters with `param.net`, pass in the table of parameters via the `data.frame.params` argument in `param.net`. Note that these parameters may also be combined with named parameters outside of a table, for maximum flexibility. In this example, we also pass in two extra parameters, `other.param` and `act.rate`. Note that when the `param` object is printed, all of the parameters are processed as expected.
 
 ```{r param_table2}
-param <- param.net(data.frame.params = df_params, 
+param <- param.net(data.frame.params = df_params,
                    other.param = c(5, 10), act.rate = 1)
 param
 ```
@@ -235,10 +235,10 @@ The first option is to define a generator function for each parameter we want to
 my.randoms <- list(
   act.rate = param_random(c(0.25, 0.5, 0.75)),
   dummy.param = function() rbeta(1, 1, 2),
-  dummy.strat.param = function() c(
-    rnorm(1, 0.05, 0.01),
-    rnorm(1, 0.15, 0.03)
-  )
+  dummy.strat.param = function() {
+    c(rnorm(1, 0.05, 0.01),
+      rnorm(1, 0.15, 0.03))
+  }
 )
 
 param <- param.net(

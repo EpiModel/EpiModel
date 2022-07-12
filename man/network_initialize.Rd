@@ -4,33 +4,10 @@
 \alias{network_initialize}
 \title{Initialize Network Object}
 \usage{
-network_initialize(
-  n,
-  directed = FALSE,
-  hyper = FALSE,
-  loops = FALSE,
-  multiple = FALSE,
-  bipartite = FALSE
-)
+network_initialize(n)
 }
 \arguments{
 \item{n}{Network size.}
-
-\item{directed}{Logical; should edges be interpreted as directed?}
-
-\item{hyper}{Logical; are hyperedges allowed?}
-
-\item{loops}{Logical; should loops be allowed?}
-
-\item{multiple}{Logical; are multiplex edges allowed?}
-
-\item{bipartite}{Count; should the network be interpreted as bipartite? If
-present (i.e., non-NULL) it is the count of the number of actors in
-the first mode of the bipartite network. In this case, the overall
-number of vertices is equal to the number of 'actors' (first mode)
-plus the number of ‘events’ (second mode), with the vertex.ids of all
-actors preceding all events. The edges are then interpreted as
-nondirected.}
 }
 \value{
 Returns an object of class \code{network}.
@@ -41,7 +18,8 @@ Initialize an undirected network object for use in EpiModel
 }
 \details{
 This function is used in \code{EpiModel} workflows to initialize an empty
-network object with the directed network attribute hard set to \code{FALSE}.
+network object.  The network attributes \code{directed}, \code{bipartite},
+\code{hyper}, \code{loops}, and \code{multiple} are set to \code{FALSE}.
 }
 \examples{
 nw <- network_initialize(100)

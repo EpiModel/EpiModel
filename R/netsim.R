@@ -221,7 +221,6 @@ netsim_initialize <- function(x, param, init, control, s = 1) {
 # Run a simulation from a initialized dat object
 #
 netsim_run <- function(dat, s = 1) {
-  done <- FALSE
   while (get_current_timestep(dat) < get_control(dat, "nsteps")) {
     steps_to_run <- get_control(dat, "nsteps") - get_current_timestep(dat)
     steps_to_run <- min(steps_to_run, get_control(dat, ".checkpoint.steps"))
@@ -276,7 +275,6 @@ netsim_run_modules <- function(dat, s) {
       ## Verbose module
       if (!is.null(get_control(dat, "verbose.FUN"))) {
         current_mod <- "verbose.FUN"
-        verbose.FUN <- get_control(dat, current_mod)
         do.call(get_control(dat, "verbose.FUN"),
                 list(dat, type = "progress", s, at))
       }

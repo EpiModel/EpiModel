@@ -665,13 +665,13 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
     warning("EpiModel 2.0+ updated initial condition suffixes. ",
             "All .m2 initial conditions changed to .g2. See documentation.")
   }
-  if (!is.null(p[["i.num"]]) & !is.null(p[["status.vector"]])) {
+  if (!is.null(p[["i.num"]]) && !is.null(p[["status.vector"]])) {
     stop("Use i.num OR status.vector to set initial infected")
   }
-  if (!is.null(p[["infTime.vector"]]) & is.null(p[["status.vector"]])) {
+  if (!is.null(p[["infTime.vector"]]) && is.null(p[["status.vector"]])) {
     stop("infTime.vector may only be used if status.vector is used")
   }
-  if (!is.null(p[["infTime.vector"]]) &
+  if (!is.null(p[["infTime.vector"]]) &&
       length(p[["infTime.vector"]]) != length(p[["status.vector"]])) {
     stop("Length of infTime.vector must match length of status.vector")
   }
@@ -1028,12 +1028,12 @@ control.net <- function(type,
   if (p[["tergmLite"]] == TRUE) {
     p[["save.network"]] <- FALSE
   }
-  if (p[["tergmLite"]] == TRUE & p[["resimulate.network"]] == FALSE) {
+  if (p[["tergmLite"]] == TRUE && p[["resimulate.network"]] == FALSE) {
     message("Because tergmLite = TRUE, resetting resimulate.network = TRUE",
             call. = FALSE)
     p[["resimulate.network"]] <- TRUE
   }
-  
+
   ## Output
   p <- set.control.class("control.net", p)
   return(p)
@@ -1092,7 +1092,7 @@ crosscheck.net <- function(x, param, init, control) {
       nGroups <- length(unique(get_vertex_attribute(nw, "group")))
       nGroups <- ifelse(nGroups == 2, 2, 1)
 
-      if (nGroups == 2 & is.null(control[["pid.prefix"]])) {
+      if (nGroups == 2 && is.null(control[["pid.prefix"]])) {
         control[["pid.prefix"]] <- c("g1.", "g2.")
       }
 
@@ -1135,8 +1135,8 @@ crosscheck.net <- function(x, param, init, control) {
       }
 
       # Two-group model checks for inital conditions
-      if (nGroups == 2 & is.null(init[["i.num.g2"]]) &
-          is.null(init[["status.vector"]]) & statOnNw == FALSE) {
+      if (nGroups == 2 && is.null(init[["i.num.g2"]]) &&
+          is.null(init[["status.vector"]]) && statOnNw == FALSE) {
         stop("Specify i.num.g2 for two-group model simulations", call. = FALSE)
       }
 
@@ -1145,23 +1145,22 @@ crosscheck.net <- function(x, param, init, control) {
         if (is.null(param[["rec.rate"]])) {
           stop("Specify rec.rate in param.net", call. = FALSE)
         }
-        if (nGroups == 2 & is.null(param[["rec.rate.g2"]])) {
+        if (nGroups == 2 && is.null(param[["rec.rate.g2"]])) {
           stop("Specify rec.rate.g2 in param.net", call. = FALSE)
         }
       }
       if (control[["type"]] == "SIR") {
-        if (is.null(init[["r.num"]]) & is.null(init[["status.vector"]]) &
-            statOnNw == FALSE) {
+        if (is.null(init[["r.num"]]) && is.null(init[["status.vector"]]) && statOnNw == FALSE) {
           stop("Specify r.num in init.net", call. = FALSE)
         }
-        if (nGroups == 2 & is.null(init[["r.num.g2"]]) &
-            is.null(init[["status.vector"]]) & statOnNw == FALSE) {
+        if (nGroups == 2 && is.null(init[["r.num.g2"]]) &&
+            is.null(init[["status.vector"]]) && statOnNw == FALSE) {
           stop("Specify r.num.g2 in init.net", call. = FALSE)
         }
       }
 
       # Check demographic parameters for two-group models
-      if (nGroups == 2 & param[["vital"]] == TRUE) {
+      if (nGroups == 2 && param[["vital"]] == TRUE) {
         if (is.null(param[["a.rate.g2"]])) {
           stop("Specify a.rate.g2 in param.net", call. = FALSE)
         }
@@ -1226,8 +1225,7 @@ crosscheck.net <- function(x, param, init, control) {
             control[["f.args"]][i] <- gsub(".FUN", ".net", args[i])
           }
         }
-      }
-      else {
+      } else {
         for (i in seq_along(args)) {
           if (is.null(control[[args[i]]])) {
             temp <- get(gsub(".FUN", ".2g.net", args[i]))
