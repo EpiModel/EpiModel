@@ -12,9 +12,9 @@ netest(
   constraints,
   coef.form = NULL,
   edapprox = TRUE,
-  set.control.ergm,
-  set.control.stergm,
-  set.control.tergm,
+  set.control.ergm = control.ergm(),
+  set.control.stergm = control.stergm(),
+  set.control.tergm = control.tergm(),
   verbose = FALSE,
   nested.edapprox = TRUE,
   ...
