@@ -419,6 +419,7 @@ get_sims <- function(x, sims, var) {
       oname <- out$control$save.other
       for (i in seq_along(oname)) {
         out[[oname[i]]][delsim] <- NULL
+        names(out[[oname[i]]]) <- newnames
       }
     }
   }

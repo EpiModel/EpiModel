@@ -350,7 +350,7 @@ saveout.net <- function(dat, s, out = NULL) {
     }
 
     if (dat$control$save.transmat == TRUE) {
-      names(out$stats$transmat) <- simnames[seq_along(out$stats$transmat)]
+      names(out$stats$transmat) <- simnames
     }
 
     if (dat$control$tergmLite == FALSE) {
@@ -363,6 +363,13 @@ saveout.net <- function(dat, s, out = NULL) {
         dat$control$save.network == TRUE &&
         dat$control$tergmLite == FALSE) {
       names(out$diss.stats) <- simnames
+    }
+
+    if (!is.null(dat$control$save.other)) {
+      for (i in seq_along(dat$control$save.other)) {
+        el.name <- dat$control$save.other[i]
+        names(out[[el.name]]) <- simnames
+      }
     }
 
     # Remove functions from control list

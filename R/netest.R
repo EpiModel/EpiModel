@@ -152,9 +152,11 @@
 #'
 netest <- function(nw, formation, target.stats, coef.diss, constraints,
                    coef.form = NULL, edapprox = TRUE,
-                   set.control.ergm, set.control.stergm, set.control.tergm,
-                   set.control.ergm.ego, verbose = FALSE, 
-                   nested.edapprox = TRUE, ...) {
+                   set.control.ergm = control.ergm(), 
+                   set.control.stergm = control.stergm(), 
+                   set.control.tergm = control.tergm(),
+                   set.control.ergm.ego,
+                   verbose = FALSE, nested.edapprox = TRUE, ...) {
 
   if (!missing(set.control.stergm)) {
     warning("set.control.stergm is deprecated and will be removed in a future
@@ -196,10 +198,6 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
                     control = set.control.stergm,
                     verbose = verbose)
     } else {
-      if (missing(set.control.tergm)) {
-        set.control.tergm <- control.tergm()
-      }
-
       fit <- tergm(nw ~ Form(formation) + Persist(dissolution),
                    targets = "formation",
                    target.stats = target.stats,
@@ -252,10 +250,6 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
       
     } else {
       # ergm case
-      if (missing(set.control.ergm)) {
-        set.control.ergm <- control.ergm()
-      }
-
       fit <- ergm(formation.nw,
                   target.stats = target.stats,
                   constraints = constraints,
@@ -264,7 +258,6 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
                   control = set.control.ergm,
                   verbose = verbose)
     }
-
 
     coef.form <- coef(fit)
     coef.form.crude <- coef.form
