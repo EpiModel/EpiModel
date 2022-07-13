@@ -251,6 +251,7 @@ merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
         for (i in new.range) {
           z[[other.x[j]]][[i]] <- y[[other.x[j]]][[i - x$control$nsims]]
         }
+        names(z[[other.x[j]]]) <- newnames
       }
     } else {
       for (j in seq_along(other.x)) {
