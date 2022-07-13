@@ -155,7 +155,7 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
                    set.control.ergm = control.ergm(), 
                    set.control.stergm = control.stergm(), 
                    set.control.tergm = control.tergm(),
-                   set.control.ergm.ego,
+                   set.control.ergm.ego = control.ergm.ego(),
                    verbose = FALSE, nested.edapprox = TRUE, ...) {
 
   if (!missing(set.control.stergm)) {
@@ -235,10 +235,6 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
 
     if (is(nw, "egor")) {
       # ergm.ego case
-      if (missing(set.control.ergm.ego)) {
-        set.control.ergm.ego <- control.ergm.ego()
-      }
-
       fit <- ergm.ego(formation.nw,
                       popsize = 0,
                       constraints = constraints,
