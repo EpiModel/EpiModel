@@ -244,7 +244,7 @@ print.netsim <- function(x, nwstats = TRUE, digits = 3, network = 1, ...) {
 
     stats.table.formation <- make_formation_table(merged.stats, ts.out)
 
-    cat("\n\nFormation Diagnostics")
+    cat("\n\nFormation Statistics")
     cat("\n----------------------- \n")
     print_nwstats_table(stats.table.formation, digits = digits)
     cat("\n")
@@ -262,16 +262,16 @@ print.netsim <- function(x, nwstats = TRUE, digits = 3, network = 1, ...) {
         verbose = FALSE
       )
 
-      cat("\nDuration Diagnostics")
+      cat("\nDuration Statistics")
       cat("\n----------------------- \n")
       print_nwstats_table(dissolution.stats$stats.table.duration, digits)
 
-      cat("\nDissolution Diagnostics")
+      cat("\nDissolution Statistics")
       cat("\n----------------------- \n")
       print_nwstats_table(dissolution.stats$stats.table.dissolution, digits)
 
     } else {
-      cat("\nDuration and Dissolution Diagnostics")
+      cat("\nDuration and Dissolution Statistics")
       cat("\n----------------------- \n")
       cat("Not available when:")
       cat("\n- `control$tergmLite == TRUE`")
