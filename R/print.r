@@ -249,9 +249,6 @@ print.netsim <- function(x, nwstats = TRUE, digits = 3, network = 1, ...) {
     print_nwstats_table(stats.table.formation, digits = digits)
     cat("\n")
 
-    cat("\nDissolution Diagnostics")
-    cat("\n----------------------- \n")
-
     if (x$control$save.diss.stats &&
         x$control$save.network &&
         ! x$control$tergmLite &&
@@ -265,9 +262,17 @@ print.netsim <- function(x, nwstats = TRUE, digits = 3, network = 1, ...) {
         verbose = FALSE
       )
 
+      cat("\nDuration Diagnostics")
+      cat("\n----------------------- \n")
+      print_nwstats_table(dissolution.stats$stats.table.duration, digits)
+
+      cat("\nDissolution Diagnostics")
+      cat("\n----------------------- \n")
       print_nwstats_table(dissolution.stats$stats.table.dissolution, digits)
 
     } else {
+      cat("\nDuration and Dissolution Diagnostics")
+      cat("\n----------------------- \n")
       cat("Not available when:")
       cat("\n- `control$tergmLite == TRUE`")
       cat("\n- `control$save.network == FALSE`")
