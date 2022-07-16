@@ -40,7 +40,7 @@ particular dissolution dyad type as 0 on time steps with no edges of that
 type; this behavior may be changed in the future.)
 
 The columns are named \code{Target}, \code{Sim Mean}, \code{Pct Diff}, 
-\code{Sim SE}, \code{Z Score}, \code{SD(1-Sim Mean)}, and 
+\code{Sim SE}, \code{Z Score}, \code{SD(Sim Means)}, and 
 \code{SD(Statistic)}.  The \code{Sim Mean} column refers to the mean 
 statistic value, across all time steps in all simulations in the dynamic
 case, and across all sampled networks in all simulations in the static case.
@@ -49,7 +49,7 @@ using \code{\link[=effectiveSize]{coda::effectiveSize}}.  The \code{Target}
 column indicates the target value (if present) for the statistic, and the 
 \code{Pct Diff} column gives \code{(Sim Mean - Target)/Target} when 
 \code{Target} is present.  The \code{Z Score} column gives 
-\code{(Sim Mean - Target)/(Sim SE)}.  The \code{SD(1-Sim Mean)} column gives
+\code{(Sim Mean - Target)/(Sim SE)}.  The \code{SD(Sim Means)} column gives
 the empirical standard deviation across simulations of the mean statistic
 value within simulation, and \code{SD(Statistic)} gives the empirical 
 standard deviation of the statistic value across all the simulated data.
