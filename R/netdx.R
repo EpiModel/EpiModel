@@ -402,7 +402,7 @@ make_formation_table <- function(stats, targets) {
     "Pct Diff",
     "Sim SE",
     "Z Score",
-    "SD(1-Sim Mean)",
+    "SD(Sim Means)",
     "SD(Statistic)"
   )
 
@@ -475,18 +475,18 @@ make_dissolution_stats <- function(diag.sim, coef.diss,
                                      "Pct Diff" = 100*(meanage_imptd_mean - durs)/durs,
                                      "Sim SE" = meanage_imptd_se,
                                      "Z Score" = (meanage_imptd_mean - durs)/meanage_imptd_se,
-                                     "SD(1-Sim Mean)" = meanage_imptd_onesim_sd,
+                                     "SD(Sim Means)" = meanage_imptd_onesim_sd,
                                      "SD(Statistic)" = meanage_imptd_sd)
-  colnames(stats.table.duration) <- c("Target", "Sim Mean", "Pct Diff", "Sim SE", "Z Score", "SD(1-Sim Mean)", "SD(Statistic)")
+  colnames(stats.table.duration) <- c("Target", "Sim Mean", "Pct Diff", "Sim SE", "Z Score", "SD(Sim Means)", "SD(Statistic)")
   
   stats.table.dissolution <- data.frame("Target" = 1/durs,
                                         "Sim Mean" = propdiss_mean,
                                         "Pct Diff" = 100*(propdiss_mean - 1/durs)/(1/durs),
                                         "Sim SE" = propdiss_se,
                                         "Z Score" = (propdiss_mean - 1/durs)/propdiss_se,
-                                        "SD(1-Sim Mean)" = propdiss_onesim_sd,
+                                        "SD(Sim Means)" = propdiss_onesim_sd,
                                         "SD(Statistic)" = propdiss_sd)
-  colnames(stats.table.dissolution) <- c("Target", "Sim Mean", "Pct Diff", "Sim SE", "Z Score", "SD(1-Sim Mean)", "SD(Statistic)")
+  colnames(stats.table.dissolution) <- c("Target", "Sim Mean", "Pct Diff", "Sim SE", "Z Score", "SD(Sim Means)", "SD(Statistic)")
 
   # Construct return list
   return(
