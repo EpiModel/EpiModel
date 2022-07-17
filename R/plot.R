@@ -1324,10 +1324,13 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
     data <- do.call("cbind", args = x$stats)
     dim3 <- if (isTRUE(dynamic)) nsims else 1L
     data <- array(data, dim = c(dim(data)[1], dim(data)[2] / dim3, dim3))
-  } else if (type == "duration") {
-    if (is.logical(duration.imputed) == FALSE) {
-      stop("For plots of type duration, duration.imputed must
-           be a logical value (TRUE/FALSE)", call. = FALSE)
+  } else { # duration/dissolution case
+    if (x$anyNA == TRUE) {
+      warning("duration/dissolution data contains undefined values due to",
+              " having zero edges of some dissolution dyad type(s) on some time",
+              " step(s); these undefined values will be set to 0 when",
+              " processing the data; this behavior, which introduces a bias",
+              " towards 0, may be changed in the future")
     }
 
     if (any(grepl("nodefactor", x$dissolution) == TRUE)) {
@@ -1336,22 +1339,23 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
               call. = FALSE)
     }
 
-    if (isTRUE(duration.imputed)) {
-      data <- x$pages_imptd
-    } else {
-      data <- x$pages
+    if (type == "duration") {
+      if (is.logical(duration.imputed) == FALSE) {
+        stop("For plots of type duration, duration.imputed must
+             be a logical value (TRUE/FALSE)", call. = FALSE)
+      }
+      
+      if (isTRUE(duration.imputed)) {
+        data <- x$pages_imptd
+      } else {
+        data <- x$pages
+      }
+      
+      stats_table <- x$stats.table.duration
+    } else { # if type is "dissolution"
+      data <- x$prop.diss
+      stats_table <- x$stats.table.dissolution
     }
-
-    stats_table <- x$stats.table.duration
-  } else { # if type is "dissolution"
-    if (any(grepl("nodefactor", x$dissolution) == TRUE)) {
-      warning("Support for dissolution models containing a nodefactor term is
-              deprecated, and will be removed in a future release.",
-              call. = FALSE)
-    }
-
-    data <- x$prop.diss
-    stats_table <- x$stats.table.dissolution
   }
 
   ## Find available stats
@@ -2066,30 +2070,35 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
           isFALSE(x$control$tergmLite) &&
           isFALSE(is.null(x$diss.stats)) &&
           isTRUE(x$nwparam[[network]]$coef.diss$diss.model.type == "edgesonly")) {
-        dstats <- make_dissolution_stats(
-          lapply(sims, function(sim) x$diss.stats[[sim]][[network]]),
-          x$nwparam[[network]]$coef.diss,
-          x$control$nsteps,
-          verbose = FALSE
-        )
+
+        if (any(unlist(lapply(x$diss.stats, `[[`, "anyNA")))) {
+          warning("duration/dissolution data contains undefined values due to",
+                  " having zero edges of some dissolution dyad type(s) on some time",
+                  " step(s); these undefined values will be set to 0 when",
+                  " processing the data; this behavior, which introduces a bias",
+                  " towards 0, may be changed in the future")
+        }
+
+        if (type == "duration") {
+          if (isTRUE(duration.imputed)) {
+            data <- lapply(x$diss.stats, function(ds) ds[[network]][["meanageimputed"]])
+          } else {
+            data <- lapply(x$diss.stats, function(ds) ds[[network]][["meanage"]])
+          }
+          ts <- x$nwparam[[network]]$coef.diss$duration
+        } else { # if type is "dissolution"
+          data <- lapply(x$diss.stats, function(ds) ds[[network]][["propdiss"]])
+          ts <- 1/x$nwparam[[network]]$coef.diss$duration
+        }
+        
+        stats_table <- make_stats_table(data, ts)
+        data <- array(unlist(data), dim = c(nsteps, length(ts), nsims))
+
       } else {
         stop("cannot produce duration/dissolution plot from `netsim` object ",
              "unless `save.diss.stats` is `TRUE`, `save.network` is `TRUE`, ",
              "`tergmLite` is `FALSE`, `keep.diss.stats` is `TRUE` (if ",
              "merging), and dissolution model is edges-only")
-      }
-
-      if (type == "duration") {
-        if (isTRUE(duration.imputed)) {
-          data <- dstats$pages_imptd
-        } else {
-          data <- dstats$pages
-        }
-
-        stats_table <- dstats$stats.table.duration
-      } else { # if type is "dissolution"
-        data <- dstats$prop.diss
-        stats_table <- dstats$stats.table.dissolution
       }
     }
 
