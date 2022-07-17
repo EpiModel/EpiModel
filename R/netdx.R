@@ -500,6 +500,13 @@ make_dissolution_stats <- function(diag.sim, coef.diss,
   )
 }
 
+#' @title Convert Timed Edgelist to Matrix of Toggles
+#'
+#' @param tedgelist A timed edgelist, as produced by 
+#'   \code{\link{as.data.frame.networkDynamic}}.
+#'
+#' @return The matrix of toggles corresponding to \code{tedgelist}.
+#' @keywords internal
 tedgelist_to_toggles <- function(tedgelist) {
   tedgelist <- as.matrix(tedgelist)
   toggles <- rbind(tedgelist[, c(1L, 3L, 4L), drop = FALSE],
@@ -508,6 +515,18 @@ tedgelist_to_toggles <- function(tedgelist) {
   toggles
 }
 
+#' @title Convert Matrix of Toggles to Dissolution and Duration Statistics
+#'
+#' @param toggles A matrix of toggles, as produced by 
+#'   \code{\link{tedgelist_to_toggles}}.
+#' @param coef.diss Dissolution coefficients used in the simulation.
+#' @param nsteps Number of time steps in the simulation.
+#' @param nw Network used in the simulation.
+#' @param time.start Starting time for the simulation.
+#'
+#' @return Named list containing dissolution and duration statistics matrices
+#'   and other related information.
+#' @keywords internal
 toggles_to_diss_stats <- function(toggles, coef.diss,
                                   nsteps, nw, time.start = 0L) {
   nw <- as.network(nw) # drop nwd
