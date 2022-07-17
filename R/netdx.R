@@ -359,6 +359,19 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
   return(out)
 }
 
+#' @title Create a Summary Table of Simulation Statistics
+#'
+#' @param stats A list of simulated statistics matrices, of length equal to the
+#'   number of simulations performed.  Each matrix should have one row for each
+#'   simulated network if \code{dynamic == FALSE}, one row for each time step 
+#'   if \code{dynamic == TRUE}, and one column for each statistic.
+#' @param targets A vector of target values for the statistics in \code{stats}.
+#'   May be named (in which case targets will be matched to statistics based on
+#'   column names in matrices in \code{stats}) or unnamed (in which case 
+#'   targets will be matched to statistics based on position).
+#'
+#' @return A \code{data.frame} summarizing the simulated statistics.
+#' @keywords internal
 make_stats_table <- function(stats, targets) {
   ess <- lapply(stats, function(x) apply(x, 2L, function(y) if (sum(!is.na(y)) <= 1L) NA else effectiveSize(na.omit(y))))
   ess <- colSums(do.call(rbind, ess), na.rm = TRUE)
@@ -386,7 +399,7 @@ make_stats_table <- function(stats, targets) {
                             "SD(Statistic)" = stats.sd)
   colnames(stats.table) <- c("Target", "Sim Mean", "Pct Diff", "Sim SE", "Z Score", "SD(Sim Means)", "SD(Statistic)")
   rownames(stats.table) <- names(stats.means)
-  
+
   return(stats.table)
 }
 
