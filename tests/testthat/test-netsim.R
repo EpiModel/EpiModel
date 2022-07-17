@@ -193,17 +193,19 @@ test_that("netsim diss.stats", {
   mod <- netsim(est, param, init, control)
 
   print(mod)
-  expect_output(print(mod), "Dissolution Diagnostics.*Sim Mean")
+  expect_output(print(mod), "Duration Statistics.*Sim Mean")
+  expect_output(print(mod), "Dissolution Statistics.*Sim Mean")
   expect_error(expect_output(print(mod), "Not available when:"))
   expect_equal(length(mod[["diss.stats"]]), 2)
   
   mod2 <- merge(mod, mod)
-  expect_output(print(mod2), "Dissolution Diagnostics.*Sim Mean")
+  expect_output(print(mod2), "Duration Statistics.*Sim Mean")
+  expect_output(print(mod2), "Dissolution Statistics.*Sim Mean")
   expect_error(expect_output(print(mod2), "Not available when:"))
   expect_equal(length(mod2[["diss.stats"]]), 4)
   
   mod3 <- merge(mod, mod, keep.diss.stats = FALSE)
-  expect_error(expect_output(print(mod3), "Dissolution Diagnostics.*Sim Mean"))
+  expect_output(print(mod3), "Duration and Dissolution Statistics")
   expect_output(print(mod3), "Not available when:")
   expect_true(is.null(mod3[["diss.stats"]]))
 })
