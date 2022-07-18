@@ -407,7 +407,8 @@ make_stats_table <- function(stats, targets) {
   
   if (!is.null(names(targets))) {
     stats.targets <- rep(NA, length.out = length(stats.means))
-    stats.targets[na.omit(match(names(targets), names(stats.means)))] <- targets
+    matches <- match(names(targets), names(stats.means))
+    stats.targets[na.omit(matches)] <- targets[!is.na(matches)]
   } else {
     stats.targets <- targets
   }
