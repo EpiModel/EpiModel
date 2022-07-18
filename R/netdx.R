@@ -202,7 +202,9 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
     }
 
     if (dynamic == FALSE) {
-      return(list(stats = init))
+      stats <- init
+      attr(stats, "ess") <- ess(stats)
+      return(list(stats = stats))
     }
 
     if (keep.tedgelist == TRUE || keep.tnetwork == TRUE) {
@@ -238,7 +240,9 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
                            dynamic = TRUE)
     }
 
-    out <- list(stats = attr(diag.sim, "stats"))
+    stats <- attr(diag.sim, "stats")
+    attr(stats, "ess") <- ess(stats)
+    out <- list(stats = stats)
 
     if (output == "networkDynamic") {
       sim.df <- as.data.frame(diag.sim)
@@ -359,6 +363,16 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
   return(out)
 }
 
+## internal wrapper around coda::effectiveSize, returning a vector of NAs
+##   rather than throwing an error when there are 0 or 1 observations
+ess <- function(x) {
+  if (NROW(x) <= 1L) {
+    structure(rep(NA, length.out = NCOL(x)), names = colnames(x))
+  } else {
+    coda::effectiveSize(x)
+  }
+}
+
 #' @title Create a Summary Table of Simulation Statistics
 #'
 #' @param stats A list of simulated statistics matrices, of length equal to the
@@ -373,15 +387,15 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
 #' @return A \code{data.frame} summarizing the simulated statistics.
 #' @keywords internal
 make_stats_table <- function(stats, targets) {
-  ess <- lapply(stats, function(x) apply(x, 2L, function(y) if (sum(!is.na(y)) <= 1L) NA else effectiveSize(na.omit(y))))
-  ess <- colSums(do.call(rbind, ess), na.rm = TRUE)
+  ess_list <- lapply(stats, function(x) NVL(attr(x, "ess"), ess(x)))
+  ess_sum <- colSums(do.call(rbind, ess_list), na.rm = TRUE)
 
   stats.onesim.sd <- apply(do.call(rbind, lapply(stats, colMeans, na.rm = TRUE)), 2, sd, na.rm = TRUE)
   
   stats <- do.call(rbind, stats)
   stats.means <- colMeans(stats, na.rm = TRUE)
   stats.sd <- apply(stats, 2L, sd, na.rm = TRUE)
-  stats.se <- stats.sd/sqrt(ess)
+  stats.se <- stats.sd/sqrt(ess_sum)
   
   if (!is.null(names(targets))) {
     stats.targets <- rep(NA, length.out = length(stats.means))
@@ -518,6 +532,10 @@ toggles_to_diss_stats <- function(toggles, coef.diss,
     anyNA <- FALSE
   }
 
+  attr(meanage, "ess") <- ess(meanage)
+  attr(meanageimputed, "ess") <- ess(meanageimputed)
+  attr(propdiss, "ess") <- ess(propdiss)
+  
   return(list(meanage = meanage,
               meanageimputed = meanageimputed,
               propdiss = propdiss,
