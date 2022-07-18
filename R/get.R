@@ -287,7 +287,7 @@ get_nwstats <- function(x, sim, network = 1) {
   }
 
   out <- as.data.frame(do.call("rbind", out))
-  out$time <- rep(1:min(nsteps, nrow(out)), length(sim))
+  out$time <- rep(seq_len(min(nsteps, nrow(out))), length(sim))
   out$sim <- rep(sim, each = min(nsteps, nrow(out)))
   row.names(out) <- seq_len(nrow((out)))
   out <- out[, c((ncol(out) - 1):ncol(out), 1:(ncol(out) - 2))]
