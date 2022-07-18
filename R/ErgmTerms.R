@@ -43,7 +43,7 @@ InitErgmTerm.absdiffnodemix <- function(nw, arglist, ...) {
   nodecovby <- match(nodecovby, u, nomatch = length(u) + 1)
   ui <- seq(along = u)
 
-  uui <- matrix(1:length(ui) ^ 2, length(ui), length(ui))
+  uui <- matrix(seq_along(ui) ^ 2, length(ui), length(ui))
   urm <- t(sapply(ui, rep, length(ui)))
   ucm <- sapply(ui, rep, length(ui))
   uun <- outer(u, u, paste, sep = ".")
