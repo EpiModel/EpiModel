@@ -51,8 +51,17 @@ test_that("netsim, SI, Cumulative Edgelist", {
   d <- get_cumulative_edgelists_df(mod[[1]])
   expect_gte(min(d$stop, na.rm = TRUE), 40)
 
-  d <- get_partners(mod[[1]], 100, 1:4)
+  d <- get_partners(dat = mod[[1]], index_posit_ids = 1:10, networks = 1)
   expect_equal(colnames(d), c("index", "partner", "start", "stop", "network"))
+
+  # expect errors when trying to access networks that don't exist
+  expect_error(
+    get_partners(dat = mod[[1]], index_posit_ids = 1:10, networks = 2)
+  )
+
+  expect_error(
+    update_cumulative_edgelist(dat = mod[[1]], network = 2)
+  )
 })
 
 test_that("netsim, SI, Cumulative Edgelist with arrivals and departures", {

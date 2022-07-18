@@ -19,6 +19,7 @@
 - The correct formula is now used in `sim_nets_t1` when initializing the network with the non-nested edges dissolution approximation approach in `netest`.
 - References to `network` class internals have been removed from `net.utils.R` to make the code function properly with `networkLite`s.
 - `update_dissolution` now correctly handles duration 1 models.
+- `get_edgelists` and `get_cumulative_edgelists` now throw informative errors when the `network` refers to non-existing networks. `get_partners` and `get_cumulative_edgelists_df` will throw errors as well as they call those functions internally.
 
 ### OTHER
 

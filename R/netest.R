@@ -152,8 +152,8 @@
 #'
 netest <- function(nw, formation, target.stats, coef.diss, constraints,
                    coef.form = NULL, edapprox = TRUE,
-                   set.control.ergm = control.ergm(), 
-                   set.control.stergm = control.stergm(), 
+                   set.control.ergm = control.ergm(),
+                   set.control.stergm = control.stergm(),
                    set.control.tergm = control.tergm(),
                    set.control.ergm.ego = control.ergm.ego(),
                    verbose = FALSE, nested.edapprox = TRUE, ...) {

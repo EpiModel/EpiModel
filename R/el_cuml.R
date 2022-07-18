@@ -15,6 +15,10 @@
 #'
 #' @export
 get_edgelist <- function(dat, network) {
+  if (!network %in% seq_along(dat[["nwparam"]])) {
+    stop("There is no network '", network, "' to get the edgelist from")
+  }
+
   if (get_control(dat, "tergmLite")) {
     el <- dat[["el"]][[network]]
   } else {
@@ -46,6 +50,11 @@ get_edgelist <- function(dat, network) {
 #'
 #' @export
 get_cumulative_edgelist <- function(dat, network) {
+  if (!network %in% seq_along(dat[["nwparam"]])) {
+    stop("There is no network '", network,
+         "' to get the cumulative edgelist from")
+  }
+
   if (length(dat[["el.cuml"]]) < network) {
     el_cuml <- NULL
   } else {
