@@ -364,7 +364,8 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
 }
 
 ## internal wrapper around coda::effectiveSize, returning a vector of NAs
-##   rather than throwing an error when there are 0 or 1 observations
+##   rather than throwing an error when there are 0 or 1 observations; the
+##   argument x should be a matrix with column names
 ess <- function(x) {
   if (NROW(x) <= 1L) {
     structure(rep(NA, length.out = NCOL(x)), names = colnames(x))
@@ -377,12 +378,19 @@ ess <- function(x) {
 #'
 #' @param stats A list of simulated statistics matrices, of length equal to the
 #'   number of simulations performed.  Each matrix should have one row for each
-#'   simulated network if \code{dynamic == FALSE}, one row for each time step 
-#'   if \code{dynamic == TRUE}, and one column for each statistic.
+#'   simulated network if \code{dynamic == FALSE}, one row for each time step
+#'   if \code{dynamic == TRUE}, and one column for each statistic.  The columns
+#'   should be named for the statistics they correspond to, with all matrices
+#'   having the same statistics, in the same order.  Each matrix may have an
+#'   \code{attr}-style attribute named \code{"ess"} attached, giving the
+#'   effective sample sizes for the columns of the matrix; if this attribute is
+#'   \code{NULL}, then the effective sample sizes will be computed within the
+#'   call to \code{make_stats_table}.
 #' @param targets A vector of target values for the statistics in \code{stats}.
 #'   May be named (in which case targets will be matched to statistics based on
 #'   column names in matrices in \code{stats}) or unnamed (in which case 
-#'   targets will be matched to statistics based on position).
+#'   targets will be matched to statistics based on position, and the number of
+#'   targets must equal the number of columns).
 #'
 #' @return A \code{data.frame} summarizing the simulated statistics.
 #' @keywords internal
