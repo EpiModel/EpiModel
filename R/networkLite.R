@@ -522,11 +522,10 @@ add.edges.networkLite <- function(x, tail, head, names.eval = NULL,
       names(vals.eval[[i]]) <- unlist(names.eval[[i]])
     }
 
+    f <- function(x) if (length(x) > 0) as_tibble(x) else tibble(NULL, .rows = 1)
     update_tibble <-
       dplyr::bind_cols(as_tibble(list(.tail = tail, .head = head)),
-                        dplyr::bind_rows(lapply(vals.eval, function(x)
-                                                  if (length(x) > 0) as_tibble(x) else tibble(NULL, .rows = 1))
-                                         ))
+                        dplyr::bind_rows(lapply(vals.eval, f)))
   }
 
   update_tibble[["na"]] <- NVL(update_tibble[["na"]],
@@ -791,9 +790,8 @@ add.vertices.networkLite <- function(x, nv, vattr = NULL,
         vattr <- as.list(rep(vattr, length.out = nv))
       }
 
-      update_tibble <- dplyr::bind_rows(lapply(vattr,
-                                               function(x)
-                                                 if (length(x) > 0) as_tibble(x) else tibble(NULL, .rows = 1)))
+      f <- function(x) if (length(x) > 0) as_tibble(x) else tibble(NULL, .rows = 1)
+      update_tibble <- dplyr::bind_rows(lapply(vattr, f))
     } else {
       update_tibble <- as_tibble(list(na = logical(nv)))
     }
