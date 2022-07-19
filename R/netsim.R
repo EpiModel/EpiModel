@@ -144,12 +144,9 @@ netsim <- function(x, param, init, control) {
     dat <- s <- NULL
 
     dat_list <- foreach(s = seq_len(control$nsims)) %dopar% {
-      netsim_initialize(x, param, init, control, s)
-    }
-    dat_list <- foreach(dat = dat_list, s = seq_along(dat_list)) %dopar% {
+      dat <- netsim_initialize(x, param, init, control, s)
       netsim_run(dat, s)
     }
-
   }
 
   out <- if (control$raw.output) dat_list else process_out.net(dat_list)
