@@ -23,6 +23,7 @@ jobs:
       - name: Lint
         run: lintr::lint_package(exclusions = c(list.files("inst", recursive = TRUE, full.names = TRUE),
                                                 list.files("tests", recursive = TRUE, full.names = TRUE),
+                                                list.files("vignettes", recursive = TRUE, full.names = TRUE),
                                                 "R/test.R",
                                                 "R/RcppExports.R",
                                                 "R/dcm.mods.R"))
