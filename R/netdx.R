@@ -483,6 +483,7 @@ toggles_to_diss_stats <- function(toggles, coef.diss,
   nw[, ] <- FALSE
 
   ## exclude nodefactor from heterogeneous dissolution calculation
+  # nolint start
   if (coef.diss$diss.model.type == "nodefactor") {
     diss_formula <- ~offset(edges)
     durs <- mean(coef.diss$duration)
@@ -490,6 +491,7 @@ toggles_to_diss_stats <- function(toggles, coef.diss,
     diss_formula <- coef.diss$dissolution
     durs <- coef.diss$duration
   }
+  # nolint end
 
   changestats <- as.matrix(tergm.godfather(nw ~ Passthrough(diss_formula)
                                                 + EdgeAges(diss_formula)
