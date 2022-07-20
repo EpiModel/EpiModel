@@ -234,8 +234,7 @@ print.netsim <- function(x, nwstats = TRUE, digits = 3, network = 1, ...) {
   cat("")
 
   if (nwstats && !is.null(x$stats$nwstats)) {
-    stats <- lapply(x$stats$nwstats, 
-                    function(stats_list) stats_list[[network]])
+    stats <- get_nwstats(x, network = network, mode = "list")
     nsims <- x$control$nsims
 
     target.stats <- x$nwparam[[network]]$target.stats

@@ -2032,17 +2032,11 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
       # Formation plot ----------------------------------------------------------
 
       ## get nw stats
-      data <- get_nwstats(x, sims, network)
-      ## order by simulation and timestep
-      data <- data[order(data$sim, data$time), , drop = FALSE]
-      ## drop simulation and timestep columns
-      data <- data[, !(names(data) %in% c("sim", "time")), drop = FALSE]
+      data <- get_nwstats(x, sims, network, mode = "list")
       ## get names of stats
-      nmstats <- names(data)
+      nmstats <- colnames(data[[1]])
       ## convert to array
-      data <- array(c(as.matrix(data)), dim = c(nsteps, nsims, length(nmstats)))
-      ## permute array indices to be steps x stats x sims
-      data <- aperm(data, c(1, 3, 2))
+      data <- array(unlist(data), dim = c(nsteps, length(nmstats), nsims))
 
       ## target stats
       nwparam <- get_nwparam(x, network)
