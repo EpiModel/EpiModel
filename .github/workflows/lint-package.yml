@@ -1,4 +1,4 @@
-# Workflow derived from https://github.com/r-lib/actions/tree/master/examples
+# Workflow derived from https://github.com/r-lib/actions/tree/v2/examples
 # Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
 on:
   push:
@@ -6,7 +6,7 @@ on:
   pull_request:
     branches: [main, master]
 
-name: lint-project
+name: lint
 
 jobs:
   lint:
@@ -22,7 +22,8 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: lintr
+          extra-packages: any::lintr, local::.
+          needs: lint
 
       - name: Lint
         run: lintr::lint_package()
