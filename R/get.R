@@ -197,7 +197,8 @@ get_transmat <- function(x, sim = 1) {
 #' @description Extracts network statistics from a network epidemic model
 #'              simulated with \code{netsim} or a network diagnostics object
 #'              simulated with \code{netdx}. Statistics can be returned either
-#'              as a single data frame or as a list of \code{mcmc} objects.
+#'              as a single data frame or as a list of matrices (one matrix
+#'              for each simulation).
 #'
 #' @param x An \code{EpiModel} object of class \code{\link{netsim}} or
 #'        \code{\link{netdx}}.
@@ -208,8 +209,7 @@ get_transmat <- function(x, sim = 1) {
 #' @param mode Either \code{"data.frame"} or \code{"list"}, indicating the
 #'        desired output.
 #'
-#' @return A data frame or list of \code{mcmc} objects containing the network
-#'         statistics.
+#' @return A data frame or list of matrices containing the network statistics.
 #'
 #' @keywords extract
 #' @export
@@ -293,7 +293,7 @@ get_nwstats <- function(x, sim, network = 1, mode = c("data.frame", "list")) {
   }
   
   if (mode == "list") {
-    return(out)
+    return(lapply(out, as.matrix))
   }
 
   out <- as.data.frame(do.call("rbind", out))

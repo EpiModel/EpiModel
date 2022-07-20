@@ -20,14 +20,14 @@ objects).}
 desired output.}
 }
 \value{
-A data frame or list of \code{mcmc} objects containing the network
-        statistics.
+A data frame or list of matrices containing the network statistics.
 }
 \description{
 Extracts network statistics from a network epidemic model
              simulated with \code{netsim} or a network diagnostics object
              simulated with \code{netdx}. Statistics can be returned either
-             as a single data frame or as a list of \code{mcmc} objects.
+             as a single data frame or as a list of matrices (one matrix
+             for each simulation).
 }
 \examples{
 # Two-group Bernoulli random graph TERGM
