@@ -1,6 +1,6 @@
 # EpiModel
 
-[![Version](http://img.shields.io/badge/Version-2.3.0-orange.svg?style=flat)](https://github.com/EpiModel/EpiModel/releases/tag/v2.3.0) [![](http://cranlogs.r-pkg.org/badges/EpiModel?color=blue)](http://cran.rstudio.com/web/packages/EpiModel/index.html) [![](http://cranlogs.r-pkg.org/badges/grand-total/EpiModel?color=blue)](http://cran.rstudio.com/web/packages/EpiModel/index.html) [![Build Status](https://github.com/EpiModel/EpiModel/workflows/R-CMD-check/badge.svg)](https://github.com/EpiModel/EpiModel/actions) [![Methods](https://img.shields.io/badge/docs-Methods-943ad8.svg)](http://doi.org/10.18637/jss.v084.i08)
+[![Version](http://img.shields.io/badge/Version-2.3.0-orange.svg?style=flat)](https://github.com/EpiModel/EpiModel/releases/tag/v2.3.0) [![](http://cranlogs.r-pkg.org/badges/EpiModel?color=blue)](https://CRAN.R-project.org/package=EpiModel) [![](http://cranlogs.r-pkg.org/badges/grand-total/EpiModel?color=blue)](https://CRAN.R-project.org/package=EpiModel) [![Build Status](https://github.com/EpiModel/EpiModel/workflows/R-CMD-check/badge.svg)](https://github.com/EpiModel/EpiModel/actions) [![Methods](https://img.shields.io/badge/docs-Methods-943ad8.svg)](https://doi.org/10.18637/jss.v084.i08)
 
 <br> <img src="http://www.epimodel.org/movie.gif" align="right"/>
 
@@ -20,7 +20,7 @@ Additional contributors to EpiModel are listed on the [contributors](https://git
 
 ### Installation
 
-The current release version can be found on <a href="http://cran.r-project.org/web/packages/EpiModel/index.html" target="_blank">CRAN</a> and installed with:
+The current release version can be found on <a href="https://CRAN.R-project.org/package=EpiModel" target="_blank">CRAN</a> and installed with:
 
 ``` r
 install.packages("EpiModel", dependencies = TRUE)
@@ -35,13 +35,13 @@ remotes::install_github("EpiModel/EpiModel")
 
 ### Documentation and Support
 
-**Website.** The main website for EpiModel, with tutorials and other supporting files, is here: <a href="http://epimodel.org/" target="_blank">http://epimodel.org/</a>.
+**Website.** The main website for EpiModel, with tutorials and other supporting files, is here: <a href="http://www.epimodel.org/" target="_blank">http://www.epimodel.org/</a>.
 
-**Methods Paper.** A good place to start learning about EpiModel is the main methods paper published in the *Journal of Statistical Software.* It is available at: <a href="http://doi.org/10.18637/jss.v084.i08" target="_blank">http://doi.org/10.18637/jss.v084.i08</a>.
+**Methods Paper.** A good place to start learning about EpiModel is the main methods paper published in the *Journal of Statistical Software.* It is available at: <a href="https://doi.org/10.18637/jss.v084.i08" target="_blank">https://doi.org/10.18637/jss.v084.i08</a>.
 
-**Summer Course.** Network Modeling for Epidemics is our annual 5-day course at the University of Washington where we teach the statistical theory, software tools, and applied modeling methods using EpiModel. <a href="http://statnet.github.io/nme/" target="_blank">Our course materials</a> are open-source and updated annually around the time of the course.
+**Summer Course.** Network Modeling for Epidemics is our annual 5-day course at the University of Washington where we teach the statistical theory, software tools, and applied modeling methods using EpiModel. <a href="https://statnet.org/nme/" target="_blank">Our course materials</a> are open-source and updated annually around the time of the course.
 
-**Getting Help.** Users are encouraged to use Github issues on this repository as a place to ask questions (both technical coding quesitons and conceptual modeling questions), report bugs, and request new features & functionality. Broader modeling questions can be posted on the Discussions board here.
+**Getting Help.** Users are encouraged to use Github issues on this repository as a place to ask questions (both technical coding questions and conceptual modeling questions), report bugs, and request new features & functionality. Broader modeling questions can be posted on the Discussions board here.
 
 ### The EpiModel Gallery
 
