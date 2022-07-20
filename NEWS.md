@@ -1,3 +1,12 @@
+## EpiModel 2.3.1
+
+### NEW FEATURES
+
+### BUG FIXES
+
+### OTHER
+
+
 ## EpiModel 2.3.0
 
 ### NEW FEATURES
@@ -19,6 +28,7 @@
 - References to `network` class internals have been removed from `net.utils.R` to make the code function properly with `networkLite`s.
 - `update_dissolution` now correctly handles duration 1 models.
 - `get_edgelists` and `get_cumulative_edgelists` now throw informative errors when the `network` refers to non-existing networks. `get_partners` and `get_cumulative_edgelists_df` will throw errors as well as they call those functions internally.
+- fix double memory allocation in `netsim` with `ncores > 1`
 
 ### OTHER
 
