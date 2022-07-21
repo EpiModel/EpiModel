@@ -2075,13 +2075,13 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
 
         if (type == "duration") {
           if (isTRUE(duration.imputed)) {
-            data <- lapply(x$diss.stats, function(ds) ds[[network]][["meanageimputed"]])
+            data <- lapply(sims, function(sim) x$diss.stats[[sim]][[network]][["meanageimputed"]])
           } else {
-            data <- lapply(x$diss.stats, function(ds) ds[[network]][["meanage"]])
+            data <- lapply(sims, function(sim) x$diss.stats[[sim]][[network]][["meanage"]])
           }
           ts <- x$nwparam[[network]]$coef.diss$duration
         } else { # if type is "dissolution"
-          data <- lapply(x$diss.stats, function(ds) ds[[network]][["propdiss"]])
+          data <- lapply(sims, function(sim) x$diss.stats[[sim]][[network]][["propdiss"]])
           ts <- 1/x$nwparam[[network]]$coef.diss$duration
         }
         
