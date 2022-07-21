@@ -2033,10 +2033,6 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
 
       ## get nw stats
       data <- get_nwstats(x, sims, network, mode = "list")
-      ## get names of stats
-      nmstats <- colnames(data[[1]])
-      ## convert to array
-      data <- array(unlist(data), dim = c(nsteps, length(nmstats), nsims))
 
       ## target stats
       nwparam <- get_nwparam(x, network)
@@ -2045,18 +2041,8 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
       if (length(tsn) != length(ts)) {
         ts <- ts[which(ts > 0)]
       }
-
-      targets <- rep(NA, length.out = length(nmstats))
-      for (i in seq_along(targets)) {
-        if (nmstats[i] %in% tsn) {
-          targets[i] <- ts[which(tsn == nmstats[i])]
-        }
-      }
-
-      stats_table <- data.frame("Target" = targets,
-                                "Sim Mean" = apply(data, 2, mean))
-      colnames(stats_table) <- c("Target", "Sim Mean")
-      rownames(stats_table) <- nmstats
+      names(ts) <- tsn
+      
     } else {
       ## duration/dissolution plot
       if (isTRUE(x$control$save.diss.stats) &&
@@ -2084,10 +2070,6 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
           data <- lapply(sims, function(sim) x$diss.stats[[sim]][[network]][["propdiss"]])
           ts <- 1/x$nwparam[[network]]$coef.diss$duration
         }
-        
-        stats_table <- make_stats_table(data, ts)
-        data <- array(unlist(data), dim = c(nsteps, length(ts), nsims))
-
       } else {
         stop("cannot produce duration/dissolution plot from `netsim` object ",
              "unless `save.diss.stats` is `TRUE`, `save.network` is `TRUE`, ",
@@ -2095,6 +2077,9 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
              "merging), and dissolution model is edges-only")
       }
     }
+
+    stats_table <- make_stats_table(data, ts)
+    data <- array(unlist(data), dim = c(dim(data[[1]]), nsims))
 
     ## Find available stats
     sts <- which(!is.na(stats_table[, "Sim Mean"]))
