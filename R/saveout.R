@@ -200,6 +200,7 @@ saveout.net <- function(dat, s, out = NULL) {
 
     out$stats <- list()
     if (dat$control$save.nwstats == TRUE) {
+      attr(dat$stats$nwstats, "ess") <- ess(dat$stats$nwstats)
       out$stats$nwstats <- list(dat$stats$nwstats)
     }
 
@@ -280,6 +281,7 @@ saveout.net <- function(dat, s, out = NULL) {
     out$raw.records[[s]] <- dat$raw.records
 
     if (dat$control$save.nwstats == TRUE) {
+      attr(dat$stats$nwstats, "ess") <- ess(dat$stats$nwstats)
       out$stats$nwstats[[s]] <- dat$stats$nwstats
     }
 
