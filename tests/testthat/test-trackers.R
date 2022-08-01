@@ -17,29 +17,18 @@ test_that("netsim, SI, custom trackers", {
   epi_s_num <- function(dat, at) {
     needed_attributes <- c("status")
     output <- with(get_attr_list(dat, needed_attributes), {
-      out <- sum(status == "s", na.rm = TRUE)
-
-      out
+      sum(status == "s", na.rm = TRUE)
     })
-
     return(output)
   }
 
   epi_prop_infected <- function(dat, at) {
-    # we need two attributes for our calculation: `status` and `active`
     needed_attributes <- c("status", "active")
-
-    # we use `with` to simplify code
     output <- with(get_attr_list(dat, needed_attributes), {
-      pop <- active == 1 # we only look at active nodes
-      cond <- status == "i" # we want to know which are infected (status == "i")
-
-      # how many are `infected` among the `active`
-      out <- sum(cond & pop, na.rm = TRUE) / sum(pop, na.rm = TRUE)
-
-      out
+      pop <- active == 1
+      cond <- status == "i"
+      sum(cond & pop, na.rm = TRUE) / sum(pop, na.rm = TRUE)
     })
-
     return(output)
   }
 
@@ -49,13 +38,12 @@ test_that("netsim, SI, custom trackers", {
   )
 
   control <- control.net(
-    type = NULL, # must be NULL as we use a custom module
+    type = "SI",
     nsims = 1,
     nsteps = 50,
     verbose = FALSE,
     infection.FUN = infection.net,
-    trackers.FUN = trackers.net,
-    tracker.list = some.trackers
+    .tracker.list = some.trackers
   )
 
   param <- param.net(
@@ -69,4 +57,7 @@ test_that("netsim, SI, custom trackers", {
 
   expect_true(all(c("prop_infected", "s_num") %in% names(d)))
   expect_is(d[["prop_infected"]], "numeric")
+  # the custom epi trackers are not run during intialization so the first value
+  # is always NA
+  expect_true(all(d$s_num[2:50] == d$s.num[2:50]))
 })

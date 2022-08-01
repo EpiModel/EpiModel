@@ -6,6 +6,7 @@
 
 ### OTHER
 
+- The `tracker.net` module was removed as an optional module but its functionalities are now the default behavior for all network models (built-in and custom). The *tracker function* now only take `dat` as argument and are passed to the `.tracker.list` argument to `control.net`.
 
 ## EpiModel 2.3.0
 
