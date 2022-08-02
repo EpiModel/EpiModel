@@ -223,7 +223,7 @@ test_that("Models with duration = 1", {
 })
 
 test_that("edgecov works with tergmLite", {
-  nw <- network_initialize(n = 20, directed = FALSE)
+  nw <- network_initialize(n = 20)
   nw %v% "race" <- rep(c("a", "b"), length.out = 20)
 
   # create matrix for edgecov term

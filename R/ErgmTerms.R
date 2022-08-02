@@ -43,7 +43,7 @@ InitErgmTerm.absdiffnodemix <- function(nw, arglist, ...) {
   nodecovby <- match(nodecovby, u, nomatch = length(u) + 1)
   ui <- seq(along = u)
 
-  uui <- matrix(1:length(ui) ^ 2, length(ui), length(ui))
+  uui <- matrix(seq_along(ui) ^ 2, length(ui), length(ui))
   urm <- t(sapply(ui, rep, length(ui)))
   ucm <- sapply(ui, rep, length(ui))
   uun <- outer(u, u, paste, sep = ".")
@@ -167,8 +167,7 @@ InitErgmTerm.fuzzynodematch <- function(nw, arglist, ...) {
   venues <- match(venues, levels)
 
   ## sort venues for each node
-  venues <- unlist(lapply(seq_len(network.size(nw)), function(i)
-    sort(venues[positions[i] + seq_len(lengths[i])])))
+  venues <- unlist(lapply(seq_len(network.size(nw)), function(i) sort(venues[positions[i] + seq_len(lengths[i])])))
 
   binary <- a$binary
 

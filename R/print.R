@@ -76,11 +76,14 @@ print.netest <- function(x, digits = 3, ...) {
 
   cat("\n\nModel Form")
   cat("\n-----------------------")
-  cat("\nFormation: "); print(x$formation)
+  cat("\nFormation: ")
+  print(x$formation)
   cat("Target Statistics:", x$target.stats)
-  cat("\nConstraints: "); cat(paste0(as.character(x$constraints)[1],
-                                     as.character(x$constraints)[2]))
-  cat("\n\nDissolution: "); cat(as.character(x$coef.diss$dissolution), sep = "")
+  cat("\nConstraints: ")
+  cat(paste0(as.character(x$constraints)[1],
+             as.character(x$constraints)[2]))
+  cat("\n\nDissolution: ")
+  cat(as.character(x$coef.diss$dissolution), sep = "")
   cat("\nTarget Statistics:", x$coef.diss$duration)
 
   invisible()
@@ -144,12 +147,12 @@ print.netdx <- function(x, digits = 3, ...) {
   cat("\n----------------------- \n")
   print_nwstats_table(x$stats.table.formation, digits)
 
-  if (x$dynamic == TRUE & !is.null(x$stats.table.duration)) {
+  if (x$dynamic == TRUE && !is.null(x$stats.table.duration)) {
     cat("\nDuration Diagnostics")
     cat("\n----------------------- \n")
     print_nwstats_table(x$stats.table.duration, digits)
   }
-  if (x$dynamic == TRUE & !is.null(x$stats.table.dissolution)) {
+  if (x$dynamic == TRUE && !is.null(x$stats.table.dissolution)) {
     cat("\nDissolution Diagnostics")
     cat("\n----------------------- \n")
     print_nwstats_table(x$stats.table.dissolution, digits)
@@ -241,13 +244,10 @@ print.netsim <- function(x, nwstats = TRUE, digits = 3, network = 1, ...) {
 
     stats.table.formation <- make_formation_table(merged.stats, ts.out)
 
-    cat("\n\nFormation Diagnostics")
+    cat("\n\nFormation Statistics")
     cat("\n----------------------- \n")
     print_nwstats_table(stats.table.formation, digits = digits)
     cat("\n")
-
-    cat("\nDissolution Diagnostics")
-    cat("\n----------------------- \n")
 
     if (x$control$save.diss.stats &&
         x$control$save.network &&
@@ -261,10 +261,18 @@ print.netsim <- function(x, nwstats = TRUE, digits = 3, network = 1, ...) {
         x$control$nsteps,
         verbose = FALSE
       )
-      
+
+      cat("\nDuration Statistics")
+      cat("\n----------------------- \n")
+      print_nwstats_table(dissolution.stats$stats.table.duration, digits)
+
+      cat("\nDissolution Statistics")
+      cat("\n----------------------- \n")
       print_nwstats_table(dissolution.stats$stats.table.dissolution, digits)
 
     } else {
+      cat("\nDuration and Dissolution Statistics")
+      cat("\n----------------------- \n")
       cat("Not available when:")
       cat("\n- `control$tergmLite == TRUE`")
       cat("\n- `control$save.network == FALSE`")
@@ -285,7 +293,8 @@ print.disscoef <- function(x, ...) {
 
   cat("Dissolution Coefficients")
   cat("\n=======================")
-  cat("\nDissolution Model: "); cat(as.character(x$dissolution), sep = "")
+  cat("\nDissolution Model: ")
+  cat(as.character(x$dissolution), sep = "")
   cat("\nTarget Statistics:", x$duration)
   cat("\nCrude Coefficient:", x$coef.crude)
   cat("\nMortality/Exit Rate:", x$d.rate)
@@ -514,8 +523,9 @@ print.control.net <- function(x, ...) {
   cat("\n===============================\n")
   for (i in pToPrint) {
     if (inherits(x[[i]], "formula")) {
-      cat(names(x)[i], "= "); cat(paste0(as.character(x[[i]])[1],
-                                         as.character(x[[i]])[2]), "\n")
+      cat(names(x)[i], "= ")
+      cat(paste0(as.character(x[[i]])[1],
+                 as.character(x[[i]])[2]), "\n")
     } else if (inherits(x[[i]], "data.frame")) {
       cat(names(x)[i], "= <data.frame>\n")
     } else if (inherits(x[[i]], "list")) {

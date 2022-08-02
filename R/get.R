@@ -287,7 +287,7 @@ get_nwstats <- function(x, sim, network = 1) {
   }
 
   out <- as.data.frame(do.call("rbind", out))
-  out$time <- rep(1:min(nsteps, nrow(out)), length(sim))
+  out$time <- rep(seq_len(min(nsteps, nrow(out))), length(sim))
   out$sim <- rep(sim, each = min(nsteps, nrow(out)))
   row.names(out) <- seq_len(nrow((out)))
   out <- out[, c((ncol(out) - 1):ncol(out), 1:(ncol(out) - 2))]
@@ -390,32 +390,39 @@ get_sims <- function(x, sims, var) {
     stop("Maximum sims value for this object is ", nsims, call. = FALSE)
   }
 
-  delsim <- setdiff(1:nsims, sims)
   out <- x
+  out$control$nsims <- length(sims)
+  newnames <- paste0("sim", seq_len(out$control$nsims))
+
+  delsim <- setdiff(1:nsims, sims)
   if (length(delsim) > 0) {
     for (i in seq_along(out$epi)) {
       out$epi[[i]] <- out$epi[[i]][, -delsim, drop = FALSE]
     }
     if (!is.null(out$network)) {
       out$network[delsim] <- NULL
+      names(out$network) <- newnames
     }
     if (!is.null(out$stats$nwstats)) {
       out$stats$nwstats[delsim] <- NULL
+      names(out$stats$nwstats) <- newnames
     }
     if (!is.null(out$stats$transmat)) {
       out$stats$transmat[delsim] <- NULL
+      names(out$stats$transmat) <- newnames
     }
     if (!is.null(out$diss.stats)) {
       out$diss.stats[delsim] <- NULL
+      names(out$diss.stats) <- newnames
     }
     if (!is.null(out$control$save.other)) {
       oname <- out$control$save.other
       for (i in seq_along(oname)) {
         out[[oname[i]]][delsim] <- NULL
+        names(out[[oname[i]]]) <- newnames
       }
     }
   }
-  out$control$nsims <- length(sims)
 
   if (!missing(var)) {
     match.vars <- which(var %in% names(x$epi))

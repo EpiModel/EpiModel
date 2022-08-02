@@ -43,7 +43,7 @@ params (in \code{\link{param.net}}) or controls (passed in
 \code{\link{control.net}}) an error will prevent the merge. Use
 \code{FALSE} to override that check.}
 
-\item{keep.diss.stats}{If \code{TRUE}, keep \code{diss.stats} from the 
+\item{keep.diss.stats}{If \code{TRUE}, keep \code{diss.stats} from the
 original \code{x} and \code{y} objects.}
 
 \item{...}{Additional merge arguments (not currently used).}

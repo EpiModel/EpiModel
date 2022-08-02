@@ -94,8 +94,8 @@ make_scenario <- function(scenario.rows) {
 use_scenario <- function(param, scenario) {
   scenario.params <- unique(unlist(lapply(
     scenario[[".param.updater.list"]],
-    function(element) names(element[["param"]]
-  ))))
+    function(element) names(element[["param"]])
+  )))
 
   undef.params <- setdiff(scenario.params, names(param))
   if (length(undef.params) > 0) {

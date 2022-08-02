@@ -157,7 +157,7 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
     stop("Specify number of time steps with nsteps", call. = FALSE)
   }
 
-  if (any(x$coef.diss$duration == 1) & dynamic == TRUE) {
+  if (any(x$coef.diss$duration == 1) && dynamic == TRUE) {
     stop("Running dynamic diagnostics on a cross-sectional ERGM (duration = 1)
          is not possible. \nSet netdx parameter 'dynamic' to 'FALSE'",
       call. = FALSE
@@ -249,7 +249,7 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
         changes <- rbind(cbind(0L, as.edgelist(init), 1L),
                          changes)
       }
-      toggles <- changes[, -4L, drop=FALSE]
+      toggles <- changes[, -4L, drop = FALSE]
     }
 
     if (keep.tnetwork == TRUE) {
@@ -483,6 +483,7 @@ toggles_to_diss_stats <- function(toggles, coef.diss,
   nw[, ] <- FALSE
 
   ## exclude nodefactor from heterogeneous dissolution calculation
+  # nolint start
   if (coef.diss$diss.model.type == "nodefactor") {
     diss_formula <- ~offset(edges)
     durs <- mean(coef.diss$duration)
@@ -490,6 +491,7 @@ toggles_to_diss_stats <- function(toggles, coef.diss,
     diss_formula <- coef.diss$dissolution
     durs <- coef.diss$duration
   }
+  # nolint end
 
   changestats <- as.matrix(tergm.godfather(nw ~ Passthrough(diss_formula)
                                                 + EdgeAges(diss_formula)
@@ -505,13 +507,13 @@ toggles_to_diss_stats <- function(toggles, coef.diss,
   colnames(edgecounts) <- substr(colnames(edgecounts), 8L,
                                  nchar(colnames(edgecounts)) - 1L)
 
-  edgeages <- changestats[, seq_along(durs)+length(durs), drop = FALSE]
+  edgeages <- changestats[, seq_along(durs) + length(durs), drop = FALSE]
   colnames(edgeages) <- colnames(edgecounts)
 
   edgepers <- changestats[, seq_along(durs) + 2L * length(durs), drop = FALSE]
 
   if (length(durs) > 1L) {
-    edgecounts[,1L] <- edgecounts[, 1L] - rowSums(edgecounts[, -1L, drop = FALSE])
+    edgecounts[, 1L] <- edgecounts[, 1L] - rowSums(edgecounts[, -1L, drop = FALSE])
     edgeages[, 1L] <- edgeages[, 1L] - rowSums(edgeages[, -1L, drop = FALSE])
     edgepers[, 1L] <- edgepers[, 1L] - rowSums(edgepers[, -1L, drop = FALSE])
   }
@@ -523,7 +525,7 @@ toggles_to_diss_stats <- function(toggles, coef.diss,
   edgeagesimputed <- edgeages
   toggles <- toggles[order(toggles[, 2L], toggles[, 3L],
                            toggles[, 1L]), , drop = FALSE]
-  w <- which(toggles[,1] == time.start)
+  w <- which(toggles[, 1] == time.start)
   if (length(w) > 0L) {
     # imputation
     changestats <- as.matrix(tergm.godfather(nw ~ Passthrough(diss_formula),
@@ -532,7 +534,7 @@ toggles_to_diss_stats <- function(toggles, coef.diss,
                                              stats.start = TRUE))
 
     for (i in seq_along(w)) {
-      dyad_type <- max(which(changestats[i, ] != changestats[i+1L, ]))
+      dyad_type <- max(which(changestats[i, ] != changestats[i + 1L, ]))
       index <- w[i]
       if (index < NROW(toggles) &&
             toggles[index, 2L] == toggles[index + 1L, 2L] &&
@@ -544,7 +546,7 @@ toggles_to_diss_stats <- function(toggles, coef.diss,
       if (terminus_time > time.start + 1L) {
         edgeagesimputed[seq_len(terminus_time - time.start - 1L), dyad_type] <-
           edgeagesimputed[seq_len(terminus_time - time.start - 1L), dyad_type] +
-          rgeom(1L, 1/durs[dyad_type])
+          rgeom(1L, 1 / durs[dyad_type])
       }
     }
   }
