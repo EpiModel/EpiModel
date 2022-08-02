@@ -205,10 +205,11 @@ saveout.net <- function(dat, s, out = NULL) {
 
     if (dat$control$save.transmat == TRUE) {
       if (!is.null(dat$stats$transmat)) {
-        row.names(dat$stats$transmat) <- seq_len(nrow(dat$stats$transmat))
-        out$stats$transmat <- list(dat$stats$transmat)
+        transmat <- dplyr::bind_rows(dat$stats$transmat)
+        row.names(transmat) <- seq_len(nrow(transmat))
+        out$stats$transmat <- list(transmat)
       } else {
-        out$stats$transmat <- list(data.frame())
+        out$stats$transmat <- list(dplyr::tibble())
       }
       class(out$stats$transmat) <- c("transmat", class(out$stats$transmat))
     }
@@ -285,10 +286,11 @@ saveout.net <- function(dat, s, out = NULL) {
 
     if (dat$control$save.transmat == TRUE) {
       if (!is.null(dat$stats$transmat)) {
-        row.names(dat$stats$transmat) <- seq_len(nrow(dat$stats$transmat))
-        out$stats$transmat[[s]] <- dat$stats$transmat
+        transmat <- dplyr::bind_rows(dat$stats$transmat)
+        row.names(transmat) <- seq_len(nrow(transmat))
+        out$stats$transmat <- list(transmat)
       } else {
-        out$stats$transmat[[s]] <- data.frame()
+        out$stats$transmat[[s]] <- dplyr::tibble()
       }
     }
 
