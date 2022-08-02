@@ -22,7 +22,7 @@ infection.icm <- function(dat, at) {
 
 
   del <- NULL
-  if (length(p1) > 0 & length(p2) > 0) {
+  if (length(p1) > 0 && length(p2) > 0) {
     del <- data.frame(p1, p2)
       while (any(del$p1 == del$p2)) {
         del$p2 <- ifelse(del$p1 == del$p2,
@@ -169,7 +169,7 @@ infection.icm.bip <- function(dat, at) {
                   acts, replace = TRUE)
 
   del <- NULL
-  if (length(p1) > 0 & length(p2) > 0) {
+  if (length(p1) > 0 && length(p2) > 0) {
     del <- data.frame(p1, p2)
 
     ## Discordant edgelist

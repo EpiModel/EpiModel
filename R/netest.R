@@ -141,7 +141,8 @@
 #'
 netest <- function(nw, formation, target.stats, coef.diss, constraints,
                    coef.form = NULL, edapprox = TRUE,
-                   set.control.ergm, set.control.tergm,
+                   set.control.ergm = control.ergm(), 
+                   set.control.tergm = control.tergm(),
                    verbose = FALSE, nested.edapprox = TRUE, ...) {
 
   if (missing(constraints)) {
@@ -164,10 +165,6 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
   }
 
   if (edapprox == FALSE) {
-
-    if (missing(set.control.tergm)) {
-      set.control.tergm <- control.tergm()
-    }
 
     fit <- tergm(nw ~ Form(formation) + Persist(dissolution),
                  targets = "formation",
@@ -201,10 +198,6 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
     out$formula <- fit$formula
 
   } else {
-
-    if (missing(set.control.ergm)) {
-      set.control.ergm <- control.ergm()
-    }
 
     formation.nw <- nonsimp_update.formula(formation, nw ~ ., from.new = "nw")
 

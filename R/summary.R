@@ -49,7 +49,7 @@ summary.dcm <- function(object, at, run = 1, digits = 3, ...) {
 
   df <- as.data.frame(object, run = run)
 
-  if (missing(at) || (at > nsteps | at < 1)) {
+  if (missing(at) || (at > nsteps || at < 1)) {
     stop("Specify at between 1 and ", nsteps)
   }
   df <- df[df$time == at, ]
@@ -68,6 +68,7 @@ summary.dcm <- function(object, at, run = 1, digits = 3, ...) {
     }
   }
 
+  # nolint start
   if (type == "SI") {
     stats <- with(df, c(s.num, s.prev,
                         i.num, i.prev,
@@ -172,6 +173,7 @@ summary.dcm <- function(object, at, run = 1, digits = 3, ...) {
       mat <- cbind(mat, mat.g2)
     }
   }
+  # nolint end
 
   if (groups == 1) {
     colnames(mat) <- c("n", "pct")
@@ -251,7 +253,7 @@ summary.icm <- function(object, at, digits = 3, ...) {
   vital <- object$param$vital
   nsteps <- object$control$nsteps
 
-  if (missing(at) || (at > nsteps | at < 1)) {
+  if (missing(at) || (at > nsteps || at < 1)) {
     stop("Specify a time step between 1 and ", nsteps)
   }
 
@@ -498,7 +500,7 @@ summary.netsim <- function(object, at, digits = 3, ...) {
   vital <- object$param$vital
   nsteps <- object$control$nsteps
 
-  if (missing(at) || (at > nsteps | at < 1)) {
+  if (missing(at) || (at > nsteps || at < 1)) {
     stop("Specify at between 1 and ", nsteps)
   }
 

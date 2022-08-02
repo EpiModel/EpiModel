@@ -179,17 +179,39 @@ test_that("netsim diss.stats", {
   mod <- netsim(est, param, init, control)
 
   print(mod)
-  expect_output(print(mod), "Dissolution Diagnostics.*Sim Mean")
+  expect_output(print(mod), "Duration Statistics.*Sim Mean")
+  expect_output(print(mod), "Dissolution Statistics.*Sim Mean")
   expect_error(expect_output(print(mod), "Not available when:"))
   expect_equal(length(mod[["diss.stats"]]), 2)
   
   mod2 <- merge(mod, mod)
-  expect_output(print(mod2), "Dissolution Diagnostics.*Sim Mean")
+  expect_output(print(mod2), "Duration Statistics.*Sim Mean")
+  expect_output(print(mod2), "Dissolution Statistics.*Sim Mean")
   expect_error(expect_output(print(mod2), "Not available when:"))
   expect_equal(length(mod2[["diss.stats"]]), 4)
   
   mod3 <- merge(mod, mod, keep.diss.stats = FALSE)
-  expect_error(expect_output(print(mod3), "Dissolution Diagnostics.*Sim Mean"))
+  expect_output(print(mod3), "Duration and Dissolution Statistics")
   expect_output(print(mod3), "Not available when:")
   expect_true(is.null(mod3[["diss.stats"]]))
+})
+
+test_that("save.other sim naming", {
+  nw <- network_initialize(n = 50)
+  est <- netest(nw, formation = ~edges,
+                target.stats = c(25),
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                verbose = FALSE)
+  param <- param.net(inf.prob = 0.3, act.rate = 0.5)
+  init <- init.net(i.num = 10)
+  control <- control.net(type = "SI", nsims = 2, nsteps = 5, verbose = FALSE, 
+                         save.other = c("nw"), resimulate.network = TRUE)
+  mod <- netsim(est, param, init, control)
+  expect_equal(names(mod[["nw"]]), paste0("sim", 1:2))
+  mod2 <- merge(mod, mod)
+  expect_equal(names(mod2[["nw"]]), paste0("sim", 1:4))
+  mod3 <- get_sims(mod2, c(1,3,4))
+  expect_equal(names(mod3[["nw"]]), paste0("sim", 1:3))
+  mod4 <- merge(mod, mod, keep.other = FALSE)
+  expect_equal(names(mod4[["nw"]]), NULL)
 })

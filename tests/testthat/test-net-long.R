@@ -566,7 +566,7 @@ test_that("Open population 1 group models", {
 test_that("Open-population two-group models", {
   skip_on_cran()
 
-  nw <- network_initialize(n = 100, directed = FALSE)
+  nw <- network_initialize(n = 100)
   nw <- set_vertex_attribute(nw, "group", rep(1:2, each = 50))
   est5.vit <- netest(nw, formation = ~edges + nodematch("group"),
                      target.stats = c(25, 0),
