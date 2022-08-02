@@ -288,7 +288,7 @@ saveout.net <- function(dat, s, out = NULL) {
       if (!is.null(dat$stats$transmat)) {
         transmat <- dplyr::bind_rows(dat$stats$transmat)
         row.names(transmat) <- seq_len(nrow(transmat))
-        out$stats$transmat <- list(transmat)
+        out$stats$transmat[[s]] <- list(transmat)
       } else {
         out$stats$transmat[[s]] <- dplyr::tibble()
       }
