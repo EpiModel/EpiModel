@@ -215,10 +215,6 @@ test_that("netsim produces a networkDynamic with the expected data.frame when re
   param <- param.net(inf.prob = 0, act.rate = 0)
   init <- init.net(status.vector = rep("i", 50))
   control <- control.net(type = NULL, 
-                         resim_nets.FUN = function(dat, at) {
-                                            dat <- set_epi(dat, "num", at - 1, 50)
-                                            resim_nets(dat, at)
-                                          },
                          nsims = 1, 
                          resimulate.network = TRUE,
                          nsteps = 5, 

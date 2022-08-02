@@ -33,30 +33,8 @@ initialize.net <- function(x, param, init, control, s) {
 
     dat <- set_control(dat, "isTERGM", all(dat$nwparam[[1]]$coef.diss$duration > 1))
 
-    # Initial Network Simulation ----------------------------------------------
-    # Simulate t0 basis network
-    if (x$edapprox == TRUE) {
-      dat$nw[[1]] <- simulate(x$formula,
-                              coef = x$coef.form.crude,
-                              basis = x$newnetwork,
-                              constraints = x$constraints,
-                              control = get_control(dat, "set.control.ergm"),
-                              dynamic = FALSE)
-    } else {
-      dat$nw[[1]] <- x$newnetwork
-    }
+    dat$nw[[1]] <- x$newnetwork
     
-    if (isTRUE(get_control(dat, "tergmLite"))) {
-      dat$el[[1]] <- as.edgelist(dat$nw[[1]])
-      if (isTRUE(get_control(dat, "isTERGM")) && isTRUE(get_control(dat, "tergmLite.track.duration"))) {
-        dat$nw[[1]] %n% "time" <- 0
-        dat$nw[[1]] %n% "lasttoggle" <- cbind(dat$el[[1]], 0)
-      }
-      for (netattrname in setdiff(list.network.attributes(dat$nw[[1]]), names(attributes(dat$el[[1]])))) {
-        attr(dat$el[[1]], netattrname) <- get.network.attribute(dat$nw[[1]], netattrname)
-      }
-    }
-
     # Nodal Attributes --------------------------------------------------------
     # Standard attributes
     num <- network.size(dat$nw[[1]])
@@ -76,20 +54,8 @@ initialize.net <- function(x, param, init, control, s) {
     }
 
     # Simulate first time step
-    resim.net <- get_control(dat, "resimulate.network")
-    if (resim.net == TRUE) {
-      nsteps <- 1
-    } else {
-      nsteps <- get_control(dat, "nsteps")
-    }
-    dat <- set_control(dat, "resimulate.network", TRUE)
-    dat <- resim_nets(dat, at = 1, nsteps = nsteps)
-    dat <- set_control(dat, "resimulate.network", resim.net)
-    
-    if (isFALSE("tergmLite")) {
-      dat$nw[[1]] <- networkDynamic::activate.vertices(dat$nw[[1]], onset = 0, terminus = Inf)
-    }
-    
+    dat <- sim_nets_t1(x, dat, network = 1L)
+        
     ## Infection Status and Time
     dat <- init_status.net(dat)
 

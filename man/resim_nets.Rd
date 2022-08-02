@@ -4,7 +4,7 @@
 \alias{resim_nets}
 \title{Resimulate Dynamic Network at Time `at`}
 \usage{
-resim_nets(dat, at, nsteps = 1)
+resim_nets(dat, at)
 }
 \arguments{
 \item{dat}{Main list object containing a \code{networkDynamic} object and
