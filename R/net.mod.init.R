@@ -31,8 +31,7 @@ initialize.net <- function(x, param, init, control, s) {
     dat$nwparam <- list()
     dat$nwparam[[1]] <- x[!(names(x) %in% c("fit", "newnetwork"))]
 
-    dat <- set_control(dat, "isTERGM", all(dat$nwparam[[1]]$coef.diss$duration > 1))
-
+    dat$nw <- list()
     dat$nw[[1]] <- x$newnetwork
     
     # Nodal Attributes --------------------------------------------------------
@@ -68,11 +67,6 @@ initialize.net <- function(x, param, init, control, s) {
 
     dat$nw <- x$network[[s]]
     dat$nwparam <- x$nwparam
-    if (is.null(dat$control$isTERGM)) {
-      nwparam <- get_nwparam(dat)
-      isTERGM <- all(nwparam$coef.diss$duration > 1)
-      dat <- set_control(dat, "isTERGM", isTERGM)
-    }
     dat$epi <- sapply(x$epi, function(var) var[s])
     names(dat$epi) <- names(x$epi)
     dat$attr <- x$attr[[s]]

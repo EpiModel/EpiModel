@@ -2,7 +2,7 @@
 % Please edit documentation in R/net.mod.simnet.R
 \name{resim_nets}
 \alias{resim_nets}
-\title{Resimulate Dynamic Network at Time `at`}
+\title{Resimulate Dynamic Network at Time 2+}
 \usage{
 resim_nets(dat, at)
 }
@@ -11,8 +11,6 @@ resim_nets(dat, at)
 other initialization information passed from \code{\link{netsim}}.}
 
 \item{at}{Current time step.}
-
-\item{nsteps}{number of time steps to simulate}
 }
 \value{
 The updated \code{dat} main list object.
