@@ -5,7 +5,6 @@
 #'              time steps for TERGMs or one or multiple cross-sectional network
 #'              panels for ERGMs, for use in \code{\link{netsim}} modeling.
 #'
-#' @param x An \code{EpiModel} object of class \code{\link{netest}}.
 #' @inheritParams recovery.net
 #' @param network Index of network to simulate.
 #'
@@ -14,14 +13,16 @@
 #' @export
 #' @keywords netUtils internal
 #'
-sim_nets_t1 <- function(x, dat, network = 1L) {
+sim_nets_t1 <- function(dat, network = 1L) {
 
+  nwparam <- get_nwparam(dat, network)
+  
   # Simulate t0 basis network
-  if (x$edapprox == TRUE) {
-    dat$nw[[network]] <- simulate(x$formula,
-                                  coef = x$coef.form.crude,
-                                  basis = x$newnetwork,
-                                  constraints = x$constraints,
+  if (nwparam$edapprox == TRUE) {
+    dat$nw[[network]] <- simulate(nwparam$formula,
+                                  coef = nwparam$coef.form.crude,
+                                  basis = dat$nw[[network]],
+                                  constraints = nwparam$constraints,
                                   control = get_control(dat, "set.control.ergm"),
                                   dynamic = FALSE)
   }
@@ -57,20 +58,38 @@ sim_nets_t1 <- function(x, dat, network = 1L) {
   return(dat)
 }
 
-simulate_dat <- function(dat, at, network = 1L, nsteps = 1L) {
-  ## get network for (re)simulation
+make_sim_network <- function(dat, network = 1L) {
   if (get_control(dat, "tergmLite") == FALSE) {
-    # Full tergm/network Method
+    ## networkDynamic
     nw <- dat$nw[[network]]
-    output <- "networkDynamic"
   } else {
-    # tergmLite/networkLite Method
+    ## networkLite
     nw <- networkLite(dat$el[[network]], dat$attr)
-    output <- "final"
     if (get_control(dat, "tergmLite.track.duration") == TRUE) {
       nw %n% "time" <- dat$nw[[network]] %n% "time"
       nw %n% "lasttoggle" <- dat$nw[[network]] %n% "lasttoggle"
     }
+  }
+  return(nw)
+}
+
+set_sim_network <- function(dat, nw, network = 1L) {
+  dat$nw[[network]] <- nw
+  if (get_control(dat, "tergmLite") == TRUE) {
+    dat$el[[network]] <- as.edgelist(nw)
+  }
+  return(dat)  
+}
+
+simulate_dat <- function(dat, at, network = 1L, nsteps = 1L) {
+  ## get/construct network for (re)simulation
+  nw <- make_sim_network(dat, network = network)
+  
+  ## determine output type
+  if (get_control(dat, "tergmLite") == FALSE) {
+    output <- "networkDynamic"
+  } else {
+    output <- "final"
   }
 
   nwparam <- get_nwparam(dat, network = network)
@@ -85,31 +104,40 @@ simulate_dat <- function(dat, at, network = 1L, nsteps = 1L) {
   }
   
   # TERGM simulation
-  dat$nw[[network]] <- simulate(formula,
-                                coef = coef,
-                                basis = nw,
-                                constraints = nwparam$constraints,
-                                time.start = at - 1,
-                                time.slices = nsteps,
-                                output = output,
-                                monitor = get_control(dat, "nwstats.formula"),
-                                control = get_control(dat, "set.control.tergm"),
-                                dynamic = TRUE)
+  nw <- simulate(formula,
+                 coef = coef,
+                 basis = nw,
+                 constraints = nwparam$constraints,
+                 time.start = at - 1,
+                 time.slices = nsteps,
+                 output = output,
+                 control = get_control(dat, "set.control.tergm"),
+                 dynamic = TRUE)
 
-  # Update nwstats data frame
-  if (get_control(dat, "save.nwstats") == TRUE) {
-    new.nwstats <- attributes(dat$nw[[network]])$stats
-    keep.cols <- which(!duplicated(colnames(new.nwstats)))
-    new.nwstats <- new.nwstats[, keep.cols, drop = FALSE]
-    dat$stats$nwstats[[network]] <- rbind(dat$stats$nwstats[[network]], new.nwstats)
-  }
+  dat <- set_sim_network(dat, nw, network = network)
   
-  if (get_control(dat, "tergmLite") == TRUE) {
-    dat$el[[network]] <- as.edgelist(dat$nw[[network]])
-  }
-
   return(dat)
 }
+
+summary_nets <- function(dat, at) {
+  if (get_control(dat, "save.nwstats") == TRUE) {
+    for(network in seq_along(dat$nw)) {
+      nwstats <- summary(get_control(dat, "nwstats.formula"),
+                         basis = make_sim_network(dat, network = network),
+                         at = at, # needed for networkDynamic case
+                         term.options = get_control(dat, "set.control.tergm")$term.options)
+      if (is(nwstats, "matrix")) {
+        nwstats <- nwstats[, !duplicated(colnames(nwstats)), drop = FALSE]
+      } else {
+        nwstats <- nwstats[!duplicated(names(nwstats))]
+      }
+      dat$stats$nwstats[[network]] <- rbind(dat$stats$nwstats[[network]], nwstats)
+      rownames(dat$stats$nwstats[[network]]) <- NULL
+    }
+  }
+  return(dat)
+}
+
 
 #' @title Resimulate Dynamic Network at Time 2+
 #'
@@ -128,7 +156,9 @@ simulate_dat <- function(dat, at, network = 1L, nsteps = 1L) {
 resim_nets <- function(dat, at) {
 
   # Edges Correction
-  dat <- edges_correct(dat, at)
+  for (network in seq_along(dat$nw)) {
+    dat <- edges_correct(dat, at, network = network)
+  }
     
   # active attribute (all models)
   active <- get_attr(dat, "active")
@@ -147,9 +177,15 @@ resim_nets <- function(dat, at) {
 
   # Network resimulation
   if (anyActive == TRUE && get_control(dat, "resimulate.network") == TRUE) {
-    dat <- simulate_dat(dat, at)
+    for (network in seq_along(dat$nw)) {
+      dat <- simulate_dat(dat, at, network = network)
+    }
   }
 
+  if (get_control(dat, "resimulate.network") == TRUE) {
+    dat <- summary_nets(dat, at)
+  }
+  
   return(dat)
 }
 
@@ -161,28 +197,30 @@ resim_nets <- function(dat, at) {
 #'              degree of nodes in the network.
 #'
 #' @inheritParams recovery.net
+#' @param network Network index to update.
 #'
 #' @inherit recovery.net return
 #'
 #' @keywords internal
 #' @export
 #'
-edges_correct <- function(dat, at) {
+edges_correct <- function(dat, at, network = 1L) {
 
   resimulate.network <- get_control(dat, "resimulate.network")
   groups <- get_param(dat, "groups")
   active <- get_attr(dat, "active")
 
   if (resimulate.network == TRUE) {
-
     if (groups == 1) {
       index <- at - 1
       old.num <- get_epi(dat, "num", index)
       new.num <- sum(active == 1)
-      dat$nwparam[[1]]$coef.form[1] <- dat$nwparam[[1]]$coef.form[1] +
+      dat$nwparam[[network]]$coef.form[1] <- 
+        dat$nwparam[[network]]$coef.form[1] +
         log(old.num) -
         log(new.num)
     }
+
     if (groups == 2) {
       index <- at - 1
       group <- get_attr(dat, "group")
@@ -190,10 +228,12 @@ edges_correct <- function(dat, at) {
       old.num.g2 <- get_epi(dat, "num.g2", index)
       new.num.g1 <- sum(active == 1 & group == 1)
       new.num.g2 <- sum(active == 1 & group == 2)
-      dat$nwparam[[1]]$coef.form[1] <- dat$nwparam[[1]]$coef.form[1] +
+      dat$nwparam[[network]]$coef.form[1] <- 
+        dat$nwparam[[network]]$coef.form[1] +
         log(2 * old.num.g1 * old.num.g2 / (old.num.g1 + old.num.g2)) -
         log(2 * new.num.g1 * new.num.g2 / (new.num.g1 + new.num.g2))
     }
   }
+
   return(dat)
 }

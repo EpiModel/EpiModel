@@ -4,11 +4,9 @@
 \alias{sim_nets_t1}
 \title{Simulate Initial Network at Time 1 for Model Initialization}
 \usage{
-sim_nets_t1(x, dat, network = 1L)
+sim_nets_t1(dat, network = 1L)
 }
 \arguments{
-\item{x}{An \code{EpiModel} object of class \code{\link{netest}}.}
-
 \item{dat}{Main list object containing a \code{networkDynamic} object and
 other initialization information passed from \code{\link{netsim}}.}
 
