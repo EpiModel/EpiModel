@@ -4,13 +4,11 @@
 \alias{sim_nets_t1}
 \title{Simulate Initial Network at Time 1 for Model Initialization}
 \usage{
-sim_nets_t1(dat, network = 1L)
+sim_nets_t1(dat)
 }
 \arguments{
 \item{dat}{Main list object containing a \code{networkDynamic} object and
 other initialization information passed from \code{\link{netsim}}.}
-
-\item{network}{Index of network to simulate.}
 }
 \value{
 The updated \code{dat} main list object.

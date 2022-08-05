@@ -53,9 +53,7 @@ initialize.net <- function(x, param, init, control, s) {
     }
 
     # Simulate first time step
-    for (network in seq_along(dat$nw)) {
-      dat <- sim_nets_t1(dat, network = network)
-    }
+    dat <- sim_nets_t1(dat)
     
     # Get summary stats if needed
     if (get_control(dat, "resimulate.network") == TRUE) {

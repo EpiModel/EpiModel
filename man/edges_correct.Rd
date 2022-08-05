@@ -4,15 +4,13 @@
 \alias{edges_correct}
 \title{Adjustment for the Edges Coefficient with Changing Network Size}
 \usage{
-edges_correct(dat, at, network = 1L)
+edges_correct(dat, at)
 }
 \arguments{
 \item{dat}{Main list object containing a \code{networkDynamic} object and
 other initialization information passed from \code{\link{netsim}}.}
 
 \item{at}{Current time step.}
-
-\item{network}{Network index to update.}
 }
 \value{
 The updated \code{dat} main list object.
