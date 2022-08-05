@@ -269,6 +269,10 @@ netsim_run_modules <- function(dat, s) {
         dat <- do.call(mod.FUN, list(dat, at))
       }
 
+      current_mod <- "epimodel.internal"
+      # Run the user-provided trackers, if any
+      dat <- epi_trackers(dat)
+
       ## Verbose module
       if (!is.null(get_control(dat, "verbose.FUN"))) {
         current_mod <- "verbose.FUN"

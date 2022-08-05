@@ -6,7 +6,7 @@ vignette: >
   %\VignetteIndexEntry{Working with Custom Attributes and Summary Statistics}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
-editor_options: 
+editor_options:
   chunk_output_type: console
 ---
 
@@ -252,18 +252,17 @@ We extract the mean age at the previous time step using `EpiModel::get_epi` and 
 
 ### Custom Epidemic Trackers
 
-It can be useful to create small *Epidemic Trackers* outside of the modules and use them only when we need them. EpiModel contains an optional module called `EpiModel::trackers.net` allowing such functionality.
+It can be useful to create small *Epidemic Trackers* outside of the modules and use them only when we need them. EpiModel will automatically run the custom trackers passed to the `.tracker.list` argument of `control.net`.
 
 #### Writing Tracker Functions
 
-We call a *tracker function* a `function` that takes `dat` and `at` as arguments and outputs a scalar value. Every *tracker function* is run by the `trackers.net` module at each time step.
+We call a *tracker function* a `function` that takes `dat` as arguments and outputs a scalar value. Every *tracker function* is run by `EpiModel::netsim` at each time step.
 
 ```{r tracker-example}
-epi_s_num <- function(dat, at) {
+epi_s_num <- function(dat) {
   needed_attributes <- c("status")
   output <- with(get_attr_list(dat, needed_attributes), {
-    out <- sum(status == "susceptible", na.rm = TRUE)
-    out
+    sum(status == "s", na.rm = TRUE)
   })
   return(output)
 }
@@ -274,20 +273,17 @@ The `epi_s_num` function defined above is a *tracker function*. It calculates at
 The next example is a *tracker function* that calculates the proportion of the population infected at each time step. Let's look what each element does:
 
 ```{r tracker-commented}
-epi_prop_infected <- function(dat, at) {
+epi_prop_infected <- function(dat) {
   # we need two attributes for our calculation: `status` and `active`
   needed_attributes <- c("status", "active")
-
   # we use `with` to simplify code
   output <- with(EpiModel::get_attr_list(dat, needed_attributes), {
-    pop <- active == 1             # we only look at active nodes
-    cond <- status == "infected"   # which are infected
+    pop <- active == 1    # we only look at active nodes
+    cond <- status == "i" # which are infected
 
     # how many are `infected` among the `active`
-    out <- sum(cond & pop, na.rm = TRUE) / sum(pop, na.rm = TRUE)
-    out
+    sum(cond & pop, na.rm = TRUE) / sum(pop, na.rm = TRUE)
   })
-
   return(output)
 }
 ```
@@ -296,12 +292,12 @@ We recommend that you write your *tracker functions* using this format:
 
 1.  Define a `needed_attributes` variable containing a vector of attribute names: in this example: "status" and "active".
 2.  Use `with` and `EpiModel::get_attr_list(dat, needed_attributes)` to work in an environment with only the objects you need. This helps clarify what the tracker does and simplify any debugging. We save the result of this call into `output`.
-3.  Define `out` as the calculated outcome inside `with`. This *must* be a scalar. This is the last element evaluated by the `with` expression.
+3.  The last statement in the `with` expression is what will be stored in `output`. This *must* be a scalar.
 4.  `return(output)`, what was calculated inside the `with` construct.
 
-#### Using A `trackers.net` Module
+#### Using custom *tracker functions*
 
-This functionality is part of an optional module provided by `EpiModel`, `trackers.net`. This module must be enabled in `control.net`.  The *tracker functions* themselves must be declared as a named list in `control.net`: `tracker.list`. Let's make a simple SI epidemic model with some added trackers:
+This functionality is enabled by passing the *tracker functions* as a named list in `control.net`: `.tracker.list`. Let's make a simple SI epidemic model with some added trackers:
 
 ```{r tracker-list}
 # Create the `tracker.list` list
@@ -311,13 +307,11 @@ some.trackers <- list(
 )
 
 control <- EpiModel::control.net(
-  type = NULL, # must be NULL as we use custom extension modules
+  type = "SI",
   nsims = 1,
   nsteps = 50,
   verbose = FALSE,
-  infection.FUN = EpiModel::infection.net,
-  trackers.FUN = EpiModel::trackers.net,
-  tracker.list = some.trackers
+  .tracker.list = some.trackers
 )
 
 param <- EpiModel::param.net(
@@ -343,13 +337,11 @@ d <- as.data.frame(sim)
 knitr::kable(tail(d, n = 15))
 ```
 
-Each function must be named in the `tracker.list` list. The name given there will be used to identify the *tracker function* in the `epi` list and will be the name of the corresponding column of the `data.frame` produced by `as.data.frame(sim)` where `sim` is a `netsim` object.
+Each function must be named in the `.tracker.list` list. The name given there will be used to identify the *tracker function* in the `epi` list and will be the name of the corresponding column of the `data.frame` produced by `as.data.frame(sim)` where `sim` is a `netsim` object.
 
 *Note*: in the `some.trackers` list, we put `epi_prop_infected` and `epi_s_num` without parentheses at the end. This is because we store the `function` and not the result of calling the function.
 
-This is the minimal `control.net` to enable the module. Usually, in research-level models, we will want to add other extension modules. See the "Advanced Extension Models" section in the [EpiModel Tutorials](http://www.epimodel.org/tut.html) site for further examples.
-
-**Important**: when enabling the `trackers.net` module, one must pay particular attention to the order the modules are run. It is recommended to have the `trackers.net` module run last so the tracked values will reflect the state of the model at the end of the time step.
+**Important**: The trackers are **Always** run at the end of a simulation step. The value outputted reflect the state of the simulation *after* all the modules performed their tasks.
 
 ## Record Any Object (Advanced Debugging)
 

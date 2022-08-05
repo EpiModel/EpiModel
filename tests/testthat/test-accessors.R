@@ -75,7 +75,7 @@ test_that("`dat` getters and setter", {
 
   ## Epi tests
   dat <- add_epi(dat, "i")
-  expect_equal(dat$epi$i, rep(NA, dat$control$nsteps))
+  expect_equal(dat$epi$i, rep(NA_real_, dat$control$nsteps))
 
   expect_error(set_epi(dat, "i", c(1, 4), 4))
 
