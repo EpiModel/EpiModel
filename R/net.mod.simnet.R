@@ -111,30 +111,20 @@ simulate_dat <- function(dat, at, nsteps = 1L) {
                  time.slices = nsteps,
                  output = output,
                  control = get_control(dat, "set.control.tergm"),
+                 monitor = get_control(dat, "nwstats.formula"),
                  dynamic = TRUE)
 
   dat <- set_sim_network(dat, nw)
   
-  return(dat)
-}
-
-summary_nets <- function(dat, at) {
   if (get_control(dat, "save.nwstats") == TRUE) {
-    nwstats <- summary(get_control(dat, "nwstats.formula"),
-                       basis = make_sim_network(dat),
-                       at = at, # needed for networkDynamic case
-                       term.options = get_control(dat, "set.control.tergm")$term.options)
-    if (is(nwstats, "matrix")) {
-      nwstats <- nwstats[, !duplicated(colnames(nwstats)), drop = FALSE]
-    } else {
-      nwstats <- nwstats[!duplicated(names(nwstats))]
-    }
-    dat$stats$nwstats[[1]] <- rbind(dat$stats$nwstats[[1]], nwstats)
-    rownames(dat$stats$nwstats[[1]]) <- NULL
+    new.nwstats <- attributes(nw)$stats
+    keep.cols <- which(!duplicated(colnames(new.nwstats)))
+    new.nwstats <- new.nwstats[, keep.cols, drop = FALSE]
+    dat$stats$nwstats[[1]] <- rbind(dat$stats$nwstats[[1]], new.nwstats)  
   }
+  
   return(dat)
 }
-
 
 #' @title Resimulate Dynamic Network at Time 2+
 #'
@@ -175,10 +165,6 @@ resim_nets <- function(dat, at) {
     dat <- simulate_dat(dat, at)
   }
 
-  if (get_control(dat, "resimulate.network") == TRUE) {
-    dat <- summary_nets(dat, at)
-  }
-  
   return(dat)
 }
 

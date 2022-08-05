@@ -55,15 +55,6 @@ initialize.net <- function(x, param, init, control, s) {
     # Simulate first time step
     dat <- sim_nets_t1(dat)
     
-    # Get summary stats if needed
-    if (get_control(dat, "resimulate.network") == TRUE) {
-      dat <- summary_nets(dat, at = 1L)
-    } else {
-      for (at in seq_len(get_control(dat, "nsteps"))) {
-        dat <- summary_nets(dat, at = at)
-      }
-    }
-    
     ## Infection Status and Time
     dat <- init_status.net(dat)
 
