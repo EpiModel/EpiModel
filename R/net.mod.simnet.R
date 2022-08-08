@@ -7,39 +7,40 @@
 #'              cross-sectional network panels for ERGMs.
 #'
 #' @inheritParams recovery.net
+#' @param network index of the network to initialize
 #'
 #' @inherit recovery.net return
 #'
 #' @export
 #' @keywords netUtils internal
 #'
-sim_nets_t1 <- function(dat) {
+sim_nets_t1 <- function(dat, network = 1L) {
 
-  nwparam <- get_nwparam(dat, network = 1)
+  nwparam <- get_nwparam(dat, network = network)
 
   # Simulate t0 basis network
   if (nwparam$edapprox == TRUE) {
-    dat$nw[[1]] <- simulate(nwparam$formula,
-                            coef = nwparam$coef.form.crude,
-                            basis = dat$nw[[1]],
-                            constraints = nwparam$constraints,
-                            control = get_control(dat, "set.control.ergm"),
-                            dynamic = FALSE)
+    dat$nw[[network]] <- simulate(nwparam$formula,
+                                  coef = nwparam$coef.form.crude,
+                                  basis = dat$nw[[network]],
+                                  constraints = nwparam$constraints,
+                                  control = get_control(dat, "set.control.ergm", network = network),
+                                  dynamic = FALSE)
   }
 
   if (get_control(dat, "tergmLite") == TRUE) {
     ## set up el
-    dat$el[[1]] <- as.edgelist(dat$nw[[1]])
+    dat$el[[network]] <- as.edgelist(dat$nw[[network]])
     if (get_control(dat, "tergmLite.track.duration") == TRUE) {
       ## set up time, lasttoggle
-      dat$nw[[1]] %n% "time" <- 0L
-      dat$nw[[1]] %n% "lasttoggle" <- cbind(dat$el[[1]], 0L)
+      dat$nw[[network]] %n% "time" <- 0L
+      dat$nw[[network]] %n% "lasttoggle" <- cbind(dat$el[[network]], 0L)
     }
     ## copy over network attributes
-    for (netattrname in setdiff(list.network.attributes(dat$nw[[1]]), 
-                                names(attributes(dat$el[[1]])))) {
-      attr(dat$el[[1]], netattrname) <- 
-        get.network.attribute(dat$nw[[1]], netattrname)
+    for (netattrname in setdiff(list.network.attributes(dat$nw[[network]]),
+                                names(attributes(dat$el[[network]])))) {
+      attr(dat$el[[network]], netattrname) <-
+        get.network.attribute(dat$nw[[network]], netattrname)
     }
   }
 
@@ -49,12 +50,12 @@ sim_nets_t1 <- function(dat) {
     nsteps <- get_control(dat, "nsteps")
   }
 
-  dat <- simulate_dat(dat, at = 1L, nsteps = nsteps)
+  dat <- simulate_dat(dat, at = 1L, network = network, nsteps = nsteps)
 
   if (get_control(dat, "tergmLite") == FALSE) {
-    dat$nw[[1]] <- networkDynamic::activate.vertices(dat$nw[[1]], 
-                                                     onset = 0,
-                                                     terminus = Inf)
+    dat$nw[[network]] <- networkDynamic::activate.vertices(dat$nw[[network]],
+                                                           onset = 0L,
+                                                           terminus = Inf)
   }
 
   return(dat)
@@ -66,22 +67,23 @@ sim_nets_t1 <- function(dat) {
 #'              current state of the simulation.
 #'
 #' @inheritParams recovery.net
+#' @param network index of the network to construct
 #'
 #' @return The network.
 #'
 #' @export
 #' @keywords netUtils internal
 #'
-make_sim_network <- function(dat) {
+make_sim_network <- function(dat, network = 1L) {
   if (get_control(dat, "tergmLite") == FALSE) {
     ## networkDynamic
-    nw <- dat$nw[[1]]
+    nw <- dat$nw[[network]]
   } else {
     ## networkLite
-    nw <- networkLite(dat$el[[1]], dat$attr)
+    nw <- networkLite(dat$el[[network]], dat$attr)
     if (get_control(dat, "tergmLite.track.duration") == TRUE) {
-      nw %n% "time" <- dat$nw[[1]] %n% "time"
-      nw %n% "lasttoggle" <- dat$nw[[1]] %n% "lasttoggle"
+      nw %n% "time" <- dat$nw[[network]] %n% "time"
+      nw %n% "lasttoggle" <- dat$nw[[network]] %n% "lasttoggle"
     }
   }
   return(nw)
@@ -94,16 +96,17 @@ make_sim_network <- function(dat) {
 #'
 #' @inheritParams recovery.net
 #' @param nw the network
+#' @param network index of the network to set
 #'
 #' @inherit recovery.net return
 #'
 #' @export
 #' @keywords netUtils internal
 #'
-set_sim_network <- function(dat, nw) {
-  dat$nw[[1]] <- nw
+set_sim_network <- function(dat, nw, network = 1L) {
+  dat$nw[[network]] <- nw
   if (get_control(dat, "tergmLite") == TRUE) {
-    dat$el[[1]] <- as.edgelist(nw)
+    dat$el[[network]] <- as.edgelist(nw)
   }
   return(dat)  
 }
@@ -117,6 +120,7 @@ set_sim_network <- function(dat, nw) {
 #'              \code{save.nwstats == TRUE}.
 #'
 #' @inheritParams recovery.net
+#' @param network index of the network to simulate
 #' @param nsteps number of time steps to simulate
 #'
 #' @inherit recovery.net return
@@ -124,9 +128,9 @@ set_sim_network <- function(dat, nw) {
 #' @export
 #' @keywords netUtils internal
 #'
-simulate_dat <- function(dat, at, nsteps = 1L) {
+simulate_dat <- function(dat, at, network = 1L, nsteps = 1L) {
   ## get/construct network for (re)simulation
-  nw <- make_sim_network(dat)
+  nw <- make_sim_network(dat, network = network)
 
   ## determine output type
   if (get_control(dat, "tergmLite") == FALSE) {
@@ -135,7 +139,7 @@ simulate_dat <- function(dat, at, nsteps = 1L) {
     output <- "final"
   }
 
-  nwparam <- get_nwparam(dat, network = 1)
+  nwparam <- get_nwparam(dat, network = network)
 
   if (all(nwparam$coef.diss$duration > 1)) {
     formula <- ~Form(nwparam$formation) + 
@@ -154,17 +158,17 @@ simulate_dat <- function(dat, at, nsteps = 1L) {
                  time.start = at - 1,
                  time.slices = nsteps,
                  output = output,
-                 control = get_control(dat, "set.control.tergm"),
-                 monitor = get_control(dat, "nwstats.formula"),
+                 control = get_control(dat, "set.control.tergm", network = network),
+                 monitor = get_control(dat, "nwstats.formula", network = network),
                  dynamic = TRUE)
 
-  dat <- set_sim_network(dat, nw)
+  dat <- set_sim_network(dat, nw, network = network)
 
   if (get_control(dat, "save.nwstats") == TRUE) {
     new.nwstats <- attributes(nw)$stats
     keep.cols <- which(!duplicated(colnames(new.nwstats)))
     new.nwstats <- new.nwstats[, keep.cols, drop = FALSE]
-    dat$stats$nwstats[[1]] <- rbind(dat$stats$nwstats[[1]], new.nwstats)  
+    dat$stats$nwstats[[network]] <- rbind(dat$stats$nwstats[[network]], new.nwstats)  
   }
 
   return(dat)
@@ -220,13 +224,15 @@ resim_nets <- function(dat, at) {
 #'              degree of nodes in the network.
 #'
 #' @inheritParams recovery.net
+#' @param network indices of the networks for which to update the edges 
+#'        coefficient
 #'
 #' @inherit recovery.net return
 #'
 #' @keywords internal
 #' @export
 #'
-edges_correct <- function(dat, at) {
+edges_correct <- function(dat, at, network = seq_along(dat$nwparam)) {
 
   resimulate.network <- get_control(dat, "resimulate.network")
   groups <- get_param(dat, "groups")
@@ -238,9 +244,7 @@ edges_correct <- function(dat, at) {
       index <- at - 1
       old.num <- get_epi(dat, "num", index)
       new.num <- sum(active == 1)
-      dat$nwparam[[1]]$coef.form[1] <- dat$nwparam[[1]]$coef.form[1] +
-        log(old.num) -
-        log(new.num)
+      adjustment <- log(old.num) - log(new.num)
     }
     if (groups == 2) {
       index <- at - 1
@@ -249,9 +253,14 @@ edges_correct <- function(dat, at) {
       old.num.g2 <- get_epi(dat, "num.g2", index)
       new.num.g1 <- sum(active == 1 & group == 1)
       new.num.g2 <- sum(active == 1 & group == 2)
-      dat$nwparam[[1]]$coef.form[1] <- dat$nwparam[[1]]$coef.form[1] +
+      adjustment <-
         log(2 * old.num.g1 * old.num.g2 / (old.num.g1 + old.num.g2)) -
         log(2 * new.num.g1 * new.num.g2 / (new.num.g1 + new.num.g2))
+    }
+
+    for (net_index in network) {
+      dat$nwparam[[net_index]]$coef.form[1] <-
+        dat$nwparam[[net_index]]$coef.form[1] + adjustment
     }
   }
   return(dat)

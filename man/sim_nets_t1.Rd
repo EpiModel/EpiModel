@@ -4,11 +4,13 @@
 \alias{sim_nets_t1}
 \title{Initialize Network Used in netsim}
 \usage{
-sim_nets_t1(dat)
+sim_nets_t1(dat, network = 1L)
 }
 \arguments{
 \item{dat}{Main list object containing a \code{networkDynamic} object and
 other initialization information passed from \code{\link{netsim}}.}
+
+\item{network}{index of the network to initialize}
 }
 \value{
 The updated \code{dat} main list object.

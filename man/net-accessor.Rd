@@ -52,13 +52,13 @@ add_param(dat, item)
 
 set_param(dat, item, value)
 
-get_control_list(dat, item = NULL)
+get_control_list(dat, item = NULL, network)
 
-get_control(dat, item, override.null.error = FALSE)
+get_control(dat, item, override.null.error = FALSE, network)
 
 add_control(dat, item)
 
-set_control(dat, item, value)
+set_control(dat, item, value, network)
 
 get_init_list(dat, item = NULL)
 
@@ -100,6 +100,8 @@ elements to append at the end of \code{item}.}
 \code{item}; for \code{set_epi}, the timestep at which to add the new
 value for the epi output \code{item}; for \code{append_core_attr}, the
 current time step.}
+
+\item{network}{index of the network for which to get or set control}
 }
 \value{
 A vector or a list of vectors for \code{get_} functions; the main

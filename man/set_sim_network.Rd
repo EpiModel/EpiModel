@@ -4,13 +4,15 @@
 \alias{set_sim_network}
 \title{Set Network on dat Object}
 \usage{
-set_sim_network(dat, nw)
+set_sim_network(dat, nw, network = 1L)
 }
 \arguments{
 \item{dat}{Main list object containing a \code{networkDynamic} object and
 other initialization information passed from \code{\link{netsim}}.}
 
 \item{nw}{the network}
+
+\item{network}{index of the network to set}
 }
 \value{
 The updated \code{dat} main list object.

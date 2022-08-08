@@ -402,8 +402,9 @@ set_param <- function(dat, item, value) {
 }
 
 #' @rdname net-accessor
+#' @param network index of the network for which to get or set control
 #' @export
-get_control_list <- function(dat, item = NULL) {
+get_control_list <- function(dat, item = NULL, network) {
   if (is.null(item)) {
     out <- dat[["control"]]
 
@@ -418,12 +419,16 @@ get_control_list <- function(dat, item = NULL) {
     out <- dat[["control"]][item]
   }
 
+  if (!missing(network)) {
+    out <- lapply(out, function(x) if (is(x, "multilayer")) x[[network]] else x)
+  }
+
   return(out)
 }
 
 #' @rdname net-accessor
 #' @export
-get_control <- function(dat, item, override.null.error = FALSE) {
+get_control <- function(dat, item, override.null.error = FALSE, network) {
   if (!item %in% names(dat[["control"]])) {
     if (override.null.error) {
       out <- NULL
@@ -433,6 +438,10 @@ get_control <- function(dat, item, override.null.error = FALSE) {
     }
   } else {
     out <- dat[["control"]][[item]]
+  }
+
+  if (!missing(network) && is(out, "multilayer")) {
+    out <- out[[network]]
   }
 
   return(out)
@@ -453,12 +462,23 @@ add_control <- function(dat, item) {
 
 #' @rdname net-accessor
 #' @export
-set_control <- function(dat, item, value) {
+set_control <- function(dat, item, value, network) {
   if (!item %in% names(dat[["control"]])) {
     dat <- add_control(dat, item)
   }
-
-  dat[["control"]][[item]] <- value
+  
+  if (missing(network)) {
+    dat[["control"]][[item]] <- value
+  } else {
+    oldval <- dat[["control"]][[item]]
+    if (is(oldval, "multilayer")) {
+      dat[["control"]][[item]][[network]] <- value
+    } else {
+      newval <- rep(list(oldval), length.out = length(dat$nwparam))
+      newval[[network]] <- value      
+      dat[["control"]][[item]] <- do.call(multilayer, newval)
+    }
+  }
 
   return(dat)
 }

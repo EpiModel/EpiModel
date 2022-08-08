@@ -1307,3 +1307,22 @@ param.net_from_table <- function(long.param.df) {
 
   return(param)
 }
+
+#' @title Specify Controls by Network
+#'
+#' @description This utility function allows specification of certain
+#'              \code{\link{netsim}} controls to vary by network.
+#'
+#' @param ... control arguments to apply to each network, with the index of the
+#'        network corresponding to the index of the control argument
+#'
+#' @return an object of class \code{multilayer} containing the specified
+#'         control arguments
+#'
+#' @export
+#'
+multilayer <- function(...) {
+  out <- list(...)
+  class(out) <- c("multilayer", class(out))
+  return(out)
+}

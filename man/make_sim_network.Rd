@@ -4,11 +4,13 @@
 \alias{make_sim_network}
 \title{Construct Network from dat Object}
 \usage{
-make_sim_network(dat)
+make_sim_network(dat, network = 1L)
 }
 \arguments{
 \item{dat}{Main list object containing a \code{networkDynamic} object and
 other initialization information passed from \code{\link{netsim}}.}
+
+\item{network}{index of the network to construct}
 }
 \value{
 The network.

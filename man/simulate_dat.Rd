@@ -4,13 +4,15 @@
 \alias{simulate_dat}
 \title{Simulate a Network for a Specified Number of Time Steps}
 \usage{
-simulate_dat(dat, at, nsteps = 1L)
+simulate_dat(dat, at, network = 1L, nsteps = 1L)
 }
 \arguments{
 \item{dat}{Main list object containing a \code{networkDynamic} object and
 other initialization information passed from \code{\link{netsim}}.}
 
 \item{at}{Current time step.}
+
+\item{network}{index of the network to simulate}
 
 \item{nsteps}{number of time steps to simulate}
 }
