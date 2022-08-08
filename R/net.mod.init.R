@@ -111,6 +111,10 @@ initialize.net <- function(x, param, init, control, s) {
     names(dat$epi) <- names(x$epi)
     dat$attr <- x$attr[[s]]
     dat$stats <- sapply(x$stats, function(var) var[[s]])
+    if (is.data.frame(dat$stats$transmat)) {
+      nsteps <- get_control(dat, "nsteps")
+      dat$stats$transmat <- padded_vector(list(dat$stats$transmat), nsteps)
+    }
   }
 
   return(dat)
