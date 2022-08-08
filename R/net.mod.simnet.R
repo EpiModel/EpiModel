@@ -15,7 +15,7 @@
 sim_nets_t1 <- function(dat) {
 
   nwparam <- get_nwparam(dat, network = 1)
-  
+
   # Simulate t0 basis network
   if (nwparam$edapprox == TRUE) {
     dat$nw[[1]] <- simulate(nwparam$formula,
@@ -25,7 +25,7 @@ sim_nets_t1 <- function(dat) {
                             control = get_control(dat, "set.control.ergm"),
                             dynamic = FALSE)
   }
-  
+
   if (get_control(dat, "tergmLite") == TRUE) {
     ## set up el
     dat$el[[1]] <- as.edgelist(dat$nw[[1]])
@@ -35,8 +35,10 @@ sim_nets_t1 <- function(dat) {
       dat$nw[[1]] %n% "lasttoggle" <- cbind(dat$el[[1]], 0L)
     }
     ## copy over network attributes
-    for (netattrname in setdiff(list.network.attributes(dat$nw[[1]]), names(attributes(dat$el[[1]])))) {
-      attr(dat$el[[1]], netattrname) <- get.network.attribute(dat$nw[[1]], netattrname)
+    for (netattrname in setdiff(list.network.attributes(dat$nw[[1]]), 
+                                names(attributes(dat$el[[1]])))) {
+      attr(dat$el[[1]], netattrname) <- 
+        get.network.attribute(dat$nw[[1]], netattrname)
     }
   }
 
@@ -83,7 +85,7 @@ set_sim_network <- function(dat, nw) {
 simulate_dat <- function(dat, at, nsteps = 1L) {
   ## get/construct network for (re)simulation
   nw <- make_sim_network(dat)
-  
+
   ## determine output type
   if (get_control(dat, "tergmLite") == FALSE) {
     output <- "networkDynamic"
@@ -92,7 +94,7 @@ simulate_dat <- function(dat, at, nsteps = 1L) {
   }
 
   nwparam <- get_nwparam(dat, network = 1)
-  
+
   if (all(nwparam$coef.diss$duration > 1)) {
     formula <- ~Form(nwparam$formation) + 
                 Persist(nwparam$coef.diss$dissolution)
@@ -101,7 +103,7 @@ simulate_dat <- function(dat, at, nsteps = 1L) {
     formula <- nwparam$formation
     coef <- nwparam$coef.form
   }
-  
+
   # TERGM simulation
   nw <- simulate(formula,
                  coef = coef,
@@ -115,14 +117,14 @@ simulate_dat <- function(dat, at, nsteps = 1L) {
                  dynamic = TRUE)
 
   dat <- set_sim_network(dat, nw)
-  
+
   if (get_control(dat, "save.nwstats") == TRUE) {
     new.nwstats <- attributes(nw)$stats
     keep.cols <- which(!duplicated(colnames(new.nwstats)))
     new.nwstats <- new.nwstats[, keep.cols, drop = FALSE]
     dat$stats$nwstats[[1]] <- rbind(dat$stats$nwstats[[1]], new.nwstats)  
   }
-  
+
   return(dat)
 }
 
@@ -144,12 +146,12 @@ resim_nets <- function(dat, at) {
 
   # Edges Correction
   dat <- edges_correct(dat, at)
-    
+
   # active attribute (all models)
   active <- get_attr(dat, "active")
   idsActive <- which(active == 1)
   anyActive <- ifelse(length(idsActive) > 0, TRUE, FALSE)
-    
+
   # group attribute (built-in models)
   if (dat$param$groups == 2) {
     group <- get_attr(dat, "group")
@@ -189,16 +191,15 @@ edges_correct <- function(dat, at) {
   active <- get_attr(dat, "active")
 
   if (resimulate.network == TRUE) {
+
     if (groups == 1) {
       index <- at - 1
       old.num <- get_epi(dat, "num", index)
       new.num <- sum(active == 1)
-      dat$nwparam[[1]]$coef.form[1] <- 
-        dat$nwparam[[1]]$coef.form[1] +
+      dat$nwparam[[1]]$coef.form[1] <- dat$nwparam[[1]]$coef.form[1] +
         log(old.num) -
         log(new.num)
     }
-
     if (groups == 2) {
       index <- at - 1
       group <- get_attr(dat, "group")
@@ -206,12 +207,10 @@ edges_correct <- function(dat, at) {
       old.num.g2 <- get_epi(dat, "num.g2", index)
       new.num.g1 <- sum(active == 1 & group == 1)
       new.num.g2 <- sum(active == 1 & group == 2)
-      dat$nwparam[[1]]$coef.form[1] <- 
-        dat$nwparam[[1]]$coef.form[1] +
+      dat$nwparam[[1]]$coef.form[1] <- dat$nwparam[[1]]$coef.form[1] +
         log(2 * old.num.g1 * old.num.g2 / (old.num.g1 + old.num.g2)) -
         log(2 * new.num.g1 * new.num.g2 / (new.num.g1 + new.num.g2))
     }
   }
-
   return(dat)
 }

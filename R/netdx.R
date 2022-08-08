@@ -211,7 +211,7 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
                          output = output,
                          control = set.control.tergm,
                          dynamic = TRUE)
-    
+
     out <- list(stats = attr(diag.sim, "stats"))
 
     if (output == "networkDynamic") {
@@ -389,7 +389,7 @@ make_dissolution_stats <- function(diag.sim, coef.diss,
             " processing the data; this behavior, which introduces a bias",
             " towards 0, may be changed in the future")
   }
-  
+
   durs <- coef.diss$duration
 
   pages <- array(unlist(lapply(diag.sim, `[[`, "meanage")),
@@ -450,10 +450,10 @@ toggles_to_diss_stats <- function(toggles, coef.diss,
   delete.network.attribute(nw, "time")
   delete.network.attribute(nw, "lasttoggle")
   nw[, ] <- FALSE
-  
+
   diss_formula <- coef.diss$dissolution
   durs <- coef.diss$duration
-    
+
   changestats <- as.matrix(tergm.godfather(nw ~ Passthrough(diss_formula)
                                                 + EdgeAges(diss_formula)
                                                 + Persist(diss_formula),

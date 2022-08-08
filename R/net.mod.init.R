@@ -23,18 +23,16 @@ initialize.net <- function(x, param, init, control, s) {
     # Main Data List --------------------------------------------------------
     dat <- create_dat_object(param, init, control)
 
+    dat$nw <- list(x$newnetwork)
+    dat$nwparam <- list(x[!(names(x) %in% c("fit", "newnetwork"))])
+
     # Reset default formula for nwstats.formula
     if (get_control(dat, "nwstats.formula") == "formation") {
       dat <- set_control(dat, "nwstats.formula", x$formation)
     }
 
-    dat$nwparam <- list()
-    dat$nwparam[[1]] <- x[!(names(x) %in% c("fit", "newnetwork"))]
-
-    dat$nw <- list()
-    dat$nw[[1]] <- x$newnetwork
-    
     # Nodal Attributes --------------------------------------------------------
+
     # Standard attributes
     num <- network.size(dat$nw[[1]])
     dat <- append_core_attr(dat, 1, num)
@@ -54,7 +52,7 @@ initialize.net <- function(x, param, init, control, s) {
 
     # Simulate first time step
     dat <- sim_nets_t1(dat)
-    
+
     ## Infection Status and Time
     dat <- init_status.net(dat)
 
