@@ -1,9 +1,10 @@
 
-#' @title Simulate Initial Network at Time 1 for Model Initialization
+#' @title Initialize Network Used in netsim
 #'
-#' @description This function simulates a dynamic network over one or multiple
-#'              time steps for TERGMs or one or multiple cross-sectional network
-#'              panels for ERGMs, for use in \code{\link{netsim}} modeling.
+#' @description This function initializes the network used in
+#'              \code{\link{netsim}}, simulating a dynamic network over one or
+#'              multiple time steps for TERGMs or one or multiple
+#'              cross-sectional network panels for ERGMs.
 #'
 #' @inheritParams recovery.net
 #'
@@ -59,6 +60,18 @@ sim_nets_t1 <- function(dat) {
   return(dat)
 }
 
+#' @title Construct Network from dat Object
+#'
+#' @description This function returns the network object representing the
+#'              current state of the simulation.
+#'
+#' @inheritParams recovery.net
+#'
+#' @return The network.
+#'
+#' @export
+#' @keywords netUtils internal
+#'
 make_sim_network <- function(dat) {
   if (get_control(dat, "tergmLite") == FALSE) {
     ## networkDynamic
@@ -74,6 +87,19 @@ make_sim_network <- function(dat) {
   return(nw)
 }
 
+#' @title Set Network on dat Object
+#'
+#' @description This function updates the dat object given the network
+#'              representing the current state of the simulation.
+#'
+#' @inheritParams recovery.net
+#' @param nw the network
+#'
+#' @inherit recovery.net return
+#'
+#' @export
+#' @keywords netUtils internal
+#'
 set_sim_network <- function(dat, nw) {
   dat$nw[[1]] <- nw
   if (get_control(dat, "tergmLite") == TRUE) {
@@ -82,6 +108,22 @@ set_sim_network <- function(dat, nw) {
   return(dat)  
 }
 
+#' @title Simulate a Network for a Specified Number of Time Steps
+#'
+#' @description This function simulates a dynamic network over one or multiple
+#'              time steps for TERGMs or one or multiple cross-sectional network
+#'              panels for ERGMs, for use in \code{\link{netsim}} modeling.
+#'              Network statistics are also extracted and saved if 
+#'              \code{save.nwstats == TRUE}.
+#'
+#' @inheritParams recovery.net
+#' @param nsteps number of time steps to simulate
+#'
+#' @inherit recovery.net return
+#'
+#' @export
+#' @keywords netUtils internal
+#'
 simulate_dat <- function(dat, at, nsteps = 1L) {
   ## get/construct network for (re)simulation
   nw <- make_sim_network(dat)
