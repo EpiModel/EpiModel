@@ -210,7 +210,9 @@ resim_nets <- function(dat, at) {
 
   # Network resimulation
   if (anyActive == TRUE && get_control(dat, "resimulate.network") == TRUE) {
-    dat <- simulate_dat(dat, at)
+    for (network in seq_along(dat$nwparam)) {
+      dat <- simulate_dat(dat, at, network = network)
+    }
   }
 
   return(dat)

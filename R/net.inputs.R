@@ -1058,9 +1058,11 @@ crosscheck.net <- function(x, param, init, control) {
     if (control[["start"]] == 1 && control[["skip.check"]] == FALSE) {
 
       # Main class check ----------------------------------------------------
-      if (!inherits(x, c("netest", "netsim"))) {
-        stop("x must be either an object of class netest or class netsim",
-             call. = FALSE)
+      if (!inherits(x, "netsim") && !inherits(x, "netest") &&
+          !(inherits(x, "list") && length(x) > 0 && 
+            all(unlist(lapply(x, inherits, "netest"))))) {
+        stop("x must be either an object of class netest or class netsim,",
+             " or a list of objects of class netest", call. = FALSE)
       }
       if (!inherits(param, "param.net")) {
         stop("param must an object of class param.net", call. = FALSE)
@@ -1073,7 +1075,13 @@ crosscheck.net <- function(x, param, init, control) {
       }
 
       # Pull network object from netest object
-      nw <- x$newnetwork
+      if (inherits(x, "netest")) {
+        nw <- x$newnetwork
+      } else if (inherits(x, "netsim")) {
+        nw <- x$network[[1]][[1]]
+      } else {
+        nw <- x[[1]]$newnetwork
+      }
 
       # Defaults ------------------------------------------------------------
 
