@@ -4,7 +4,7 @@
 \alias{copy_datattr_to_nwattr}
 \title{Copy Vertex Attributes from the \code{dat} List to the Network Object}
 \usage{
-copy_datattr_to_nwattr(dat)
+copy_datattr_to_nwattr(dat, network = seq_along(dat$nwparam))
 }
 \arguments{
 \item{dat}{Main list object containing a \code{networkDynamic} object and
