@@ -48,7 +48,7 @@ initialize.net <- function(x, param, init, control, s) {
       dat$temp$nwterms <- nwterms
       dat$temp$t1.tab <- get_attr_prop(dat, nwterms)
     }
-    
+
     if (get_control(dat, "save.nwstats") == TRUE) {
       dat$stats$nwstats <- rep(list(), length.out = length(dat$nwparam))
     }
