@@ -44,6 +44,7 @@ test_that("netsim runs with multiple networks", {
       }
 
       for (network in seq_len(5)) {
+        print(mod, network = network)
         plot(mod, type = "formation", network = network)
 
         if (tergmLite == FALSE) {
