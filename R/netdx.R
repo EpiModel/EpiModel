@@ -354,9 +354,9 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
 
 #' @title Calculate the Formation Statistics of a Network
 #'
-#' @param stats A list of formation statistic matrices, one for each 
-#'   simulation, with one row for each simulated network if 
-#'   \code{dynamic == FALSE}, one row for each time step if 
+#' @param stats A list of formation statistic matrices, one for each
+#'   simulation, with one row for each simulated network if
+#'   \code{dynamic == FALSE}, one row for each time step if
 #'   \code{dynamic == TRUE}, and one column for each statistic.
 #' @param targets A \code{data.frame} of the formation targets with two columns:
 #'   "names" and "targets".
@@ -364,16 +364,17 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
 #' @return A \code{data.frame} of the formation statistics.
 #' @keywords internal
 make_formation_table <- function(stats, targets) {
-  ess <- lapply(stats, function(x) apply(x, 2L, function(y) if (sum(!is.na(y)) <= 1L) NA else effectiveSize(na.omit(y))))
+  ess <- lapply(stats,
+                function(x) apply(x, 2L, function(y) if (sum(!is.na(y)) <= 1L) NA else effectiveSize(na.omit(y))))
   ess <- colSums(do.call(rbind, ess), na.rm = TRUE)
 
   stats.onesim.sd <- apply(do.call(rbind, lapply(stats, colMeans, na.rm = TRUE)), 2, sd, na.rm = TRUE)
-  
+
   stats <- do.call(rbind, stats)
   stats.means <- colMeans(stats, na.rm = TRUE)
   stats.sd <- apply(stats, 2L, sd, na.rm = TRUE)
-  stats.se <- stats.sd/sqrt(ess)
-  
+  stats.se <- stats.sd / sqrt(ess)
+
   stats.table <- data.frame(
     sorder = seq_along(names(stats.means)),
     names = names(stats.means),
@@ -391,11 +392,11 @@ make_formation_table <- function(stats, targets) {
   stats.table$reldiff <- (stats.table$stats.means - stats.table$targets) /
     stats.table$targets * 100
   stats.table.formation <- stats.table[, c(2, 4, 8, 5)]
-  stats.table.formation <- cbind(stats.table.formation, 
-                                 zscore = (stats.table.formation[,2] - stats.table.formation[,1]) / 
-                                           stats.table.formation[,4],
-                                 onesim.sd = stats.table[,6],
-                                 stats.sd = stats.table[,7])
+  stats.table.formation <- cbind(stats.table.formation,
+                                 zscore = (stats.table.formation[, 2] - stats.table.formation[, 1]) /
+                                           stats.table.formation[, 4],
+                                 onesim.sd = stats.table[, 6],
+                                 stats.sd = stats.table[, 7])
   colnames(stats.table.formation) <- c(
     "Target",
     "Sim Mean",
@@ -411,14 +412,14 @@ make_formation_table <- function(stats, targets) {
 
 #' @title Calculate the Dissolution Statistics of a Network
 #'
-#' @param diag.sim A list of dissolution statistics (as created by 
-#'   \code{toggles_to_diss_stats}), of length equal to the number of 
+#' @param diag.sim A list of dissolution statistics (as created by
+#'   \code{toggles_to_diss_stats}), of length equal to the number of
 #'   simulations.
 #' @param coef.diss The \code{coef.diss} element of \code{nwparam}.
 #' @param nsteps The number of simulated steps.
 #' @param verbose A verbosity toggle (default = TRUE).
 #'
-#' @return A \code{list} of dissolution statistics, combined across 
+#' @return A \code{list} of dissolution statistics, combined across
 #'   simulations.
 #' @keywords internal
 make_dissolution_stats <- function(diag.sim, coef.diss,
@@ -441,7 +442,7 @@ make_dissolution_stats <- function(diag.sim, coef.diss,
   } else {
     durs <- coef.diss$duration
   }
-  
+
   meanage_list <- lapply(diag.sim, `[[`, "meanage")
   pages <- array(unlist(meanage_list),
                  dim = c(nsteps, length(durs), length(diag.sim)))
@@ -456,37 +457,61 @@ make_dissolution_stats <- function(diag.sim, coef.diss,
 
   meanage_imptd_mean <- apply(pages_imptd, 2, mean, na.rm = TRUE)
   meanage_imptd_sd <- apply(pages_imptd, 2, sd, na.rm = TRUE)
-  meanage_imptd_ess <- lapply(meanage_imptd_list, function(x) apply(x, 2L, function(y) if (sum(!is.na(y)) <= 1L) NA else effectiveSize(na.omit(y))))
+  meanage_imptd_ess <- lapply(meanage_imptd_list,
+                              function(x) {
+                                apply(x,
+                                      2L,
+                                      function(y) if (sum(!is.na(y)) <= 1L) NA else effectiveSize(na.omit(y)))
+                              })
   meanage_imptd_ess <- colSums(do.call(rbind, meanage_imptd_ess), na.rm = TRUE)
-  meanage_imptd_se <- meanage_imptd_sd/sqrt(meanage_imptd_ess)
+  meanage_imptd_se <- meanage_imptd_sd / sqrt(meanage_imptd_ess)
 
   meanage_imptd_onesim_sd <- apply(do.call(rbind, lapply(diag.sim, `[[`, "meanmeanageimputed")), 2, sd, na.rm = TRUE)
 
   propdiss_mean <- apply(propdiss, 2, mean, na.rm = TRUE)
   propdiss_sd <- apply(propdiss, 2, sd, na.rm = TRUE)
-  propdiss_ess <- lapply(propdiss_list, function(x) apply(x, 2L, function(y) if (sum(!is.na(y)) <= 1L) NA else effectiveSize(na.omit(y))))
+  propdiss_ess <- lapply(propdiss_list,
+                         function(x) {
+                           apply(x,
+                                 2L,
+                                 function(y) if (sum(!is.na(y)) <= 1L) NA else effectiveSize(na.omit(y)))
+                         })
   propdiss_ess <- colSums(do.call(rbind, propdiss_ess), na.rm = TRUE)
-  propdiss_se <- propdiss_sd/sqrt(propdiss_ess)
+  propdiss_se <- propdiss_sd / sqrt(propdiss_ess)
 
   propdiss_onesim_sd <- apply(do.call(rbind, lapply(diag.sim, `[[`, "meanpropdiss")), 2, sd, na.rm = TRUE)
-  
+
   stats.table.duration <- data.frame("Target" = durs,
                                      "Sim Mean" = meanage_imptd_mean,
-                                     "Pct Diff" = 100*(meanage_imptd_mean - durs)/durs,
+                                     "Pct Diff" = 100 * (meanage_imptd_mean - durs) / durs,
                                      "Sim SE" = meanage_imptd_se,
-                                     "Z Score" = (meanage_imptd_mean - durs)/meanage_imptd_se,
+                                     "Z Score" = (meanage_imptd_mean - durs) / meanage_imptd_se,
                                      "SD(Sim Means)" = meanage_imptd_onesim_sd,
                                      "SD(Statistic)" = meanage_imptd_sd)
-  colnames(stats.table.duration) <- c("Target", "Sim Mean", "Pct Diff", "Sim SE", "Z Score", "SD(Sim Means)", "SD(Statistic)")
-  
-  stats.table.dissolution <- data.frame("Target" = 1/durs,
+  colnames(stats.table.duration) <-
+    c("Target",
+      "Sim Mean",
+      "Pct Diff",
+      "Sim SE",
+      "Z Score",
+      "SD(Sim Means)",
+      "SD(Statistic)")
+
+  stats.table.dissolution <- data.frame("Target" = 1 / durs,
                                         "Sim Mean" = propdiss_mean,
-                                        "Pct Diff" = 100*(propdiss_mean - 1/durs)/(1/durs),
+                                        "Pct Diff" = 100 * (propdiss_mean - 1 / durs) / (1 / durs),
                                         "Sim SE" = propdiss_se,
-                                        "Z Score" = (propdiss_mean - 1/durs)/propdiss_se,
+                                        "Z Score" = (propdiss_mean - 1 / durs) / propdiss_se,
                                         "SD(Sim Means)" = propdiss_onesim_sd,
                                         "SD(Statistic)" = propdiss_sd)
-  colnames(stats.table.dissolution) <- c("Target", "Sim Mean", "Pct Diff", "Sim SE", "Z Score", "SD(Sim Means)", "SD(Statistic)")
+  colnames(stats.table.dissolution) <-
+    c("Target",
+      "Sim Mean",
+      "Pct Diff",
+      "Sim SE",
+      "Z Score",
+      "SD(Sim Means)",
+      "SD(Statistic)")
 
   # Construct return list
   return(
@@ -502,7 +527,7 @@ make_dissolution_stats <- function(diag.sim, coef.diss,
 
 #' @title Convert Timed Edgelist to Matrix of Toggles
 #'
-#' @param tedgelist A timed edgelist, as produced by 
+#' @param tedgelist A timed edgelist, as produced by
 #'   \code{\link{as.data.frame.networkDynamic}}.
 #'
 #' @return The matrix of toggles corresponding to \code{tedgelist}.
@@ -517,7 +542,7 @@ tedgelist_to_toggles <- function(tedgelist) {
 
 #' @title Convert Matrix of Toggles to Dissolution and Duration Statistics
 #'
-#' @param toggles A matrix of toggles, as produced by 
+#' @param toggles A matrix of toggles, as produced by
 #'   \code{\link{tedgelist_to_toggles}}.
 #' @param coef.diss Dissolution coefficients used in the simulation.
 #' @param nsteps Number of time steps in the simulation.

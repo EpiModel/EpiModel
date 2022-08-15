@@ -7,8 +7,8 @@
 make_dissolution_stats(diag.sim, coef.diss, nsteps, verbose = TRUE)
 }
 \arguments{
-\item{diag.sim}{A list of dissolution statistics (as created by 
-\code{toggles_to_diss_stats}), of length equal to the number of 
+\item{diag.sim}{A list of dissolution statistics (as created by
+\code{toggles_to_diss_stats}), of length equal to the number of
 simulations.}
 
 \item{coef.diss}{The \code{coef.diss} element of \code{nwparam}.}
@@ -18,7 +18,7 @@ simulations.}
 \item{verbose}{A verbosity toggle (default = TRUE).}
 }
 \value{
-A \code{list} of dissolution statistics, combined across 
+A \code{list} of dissolution statistics, combined across
   simulations.
 }
 \description{

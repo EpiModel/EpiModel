@@ -7,7 +7,7 @@
 tedgelist_to_toggles(tedgelist)
 }
 \arguments{
-\item{tedgelist}{A timed edgelist, as produced by 
+\item{tedgelist}{A timed edgelist, as produced by
 \code{\link{as.data.frame.networkDynamic}}.}
 }
 \value{

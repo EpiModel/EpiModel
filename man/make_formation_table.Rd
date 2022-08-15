@@ -7,9 +7,9 @@
 make_formation_table(stats, targets)
 }
 \arguments{
-\item{stats}{A list of formation statistic matrices, one for each 
-simulation, with one row for each simulated network if 
-\code{dynamic == FALSE}, one row for each time step if 
+\item{stats}{A list of formation statistic matrices, one for each
+simulation, with one row for each simulated network if
+\code{dynamic == FALSE}, one row for each time step if
 \code{dynamic == TRUE}, and one column for each statistic.}
 
 \item{targets}{A \code{data.frame} of the formation targets with two columns:
