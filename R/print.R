@@ -118,19 +118,20 @@ print.netest <- function(x, digits = 3, ...) {
 #' particular dissolution dyad type as 0 on time steps with no edges of that
 #' type; this behavior may be changed in the future.)
 #'
-#' The columns are named \code{Target}, \code{Sim Mean}, \code{Pct Diff}, and
-#' \code{Sim SD}.  For the formation table, \code{Sim Mean} refers to the mean
-#' statistic value and \code{Sim SD} refers to the standard deviation in the
+#' The columns are named \code{Target}, \code{Sim Mean}, \code{Pct Diff},
+#' \code{Sim SE}, \code{Z Score}, \code{SD(Sim Means)}, and
+#' \code{SD(Statistic)}.  The \code{Sim Mean} column refers to the mean
 #' statistic value, across all time steps in all simulations in the dynamic
-#' case, and across all sampled networks in the static case.  For the duration
-#' and dissolution tables, \code{Sim Mean} refers to the mean across
-#' simulations of the mean across time steps within simulation, and
-#' \code{Sim SD} refers to the standard deviation across simulations of the
-#' mean across time steps within simulation, for the age and dissolution
-#' statistics defined above.  The \code{Target} column
-#' indicates the target value (if present) for the network statistic, mean edge
-#' age, or edge dissolution rate, and the \code{Pct Diff} column gives
-#' \code{(Sim Mean - Target)/Target} when \code{Target} is present.
+#' case, and across all sampled networks in all simulations in the static case.
+#' The \code{Sim SE} column refers to the standard error in the mean, estimated
+#' using \code{\link[=effectiveSize]{coda::effectiveSize}}.  The \code{Target}
+#' column indicates the target value (if present) for the statistic, and the
+#' \code{Pct Diff} column gives \code{(Sim Mean - Target)/Target} when
+#' \code{Target} is present.  The \code{Z Score} column gives
+#' \code{(Sim Mean - Target)/(Sim SE)}.  The \code{SD(Sim Means)} column gives
+#' the empirical standard deviation across simulations of the mean statistic
+#' value within simulation, and \code{SD(Statistic)} gives the empirical
+#' standard deviation of the statistic value across all the simulated data.
 #' @export
 print.netdx <- function(x, digits = 3, ...) {
 
@@ -156,6 +157,13 @@ print.netdx <- function(x, digits = 3, ...) {
     cat("\nDissolution Diagnostics")
     cat("\n----------------------- \n")
     print_nwstats_table(x$stats.table.dissolution, digits)
+  }
+  if (x$anyNA == TRUE) {
+    warning("duration/dissolution data contains undefined values due to",
+            " having zero edges of some dissolution dyad type(s) on some time",
+            " step(s); these undefined values will be set to 0 when",
+            " processing the data; this behavior, which introduces a bias",
+            " towards 0, may be changed in the future")
   }
   # TODO Remove nodefactor in future release.
   if (x$coef.diss$diss.model.type == "nodefactor") {
@@ -226,7 +234,7 @@ print.netsim <- function(x, nwstats = TRUE, digits = 3, network = 1, ...) {
   cat("")
 
   if (nwstats && !is.null(x$stats$nwstats)) {
-    stats <- x$stats$nwstats
+    stats <- get_nwstats(x, network = network, mode = "list")
     nsims <- x$control$nsims
 
     target.stats <- x$nwparam[[network]]$target.stats
@@ -234,15 +242,9 @@ print.netsim <- function(x, nwstats = TRUE, digits = 3, network = 1, ...) {
     if (length(ts.attr.names) != length(target.stats)) {
       target.stats <- target.stats[which(target.stats > 0)]
     }
-    ts.out <- data.frame(names = ts.attr.names,
-      targets = target.stats)
+    names(target.stats) <- ts.attr.names
 
-    merged.stats <- Reduce(
-      function(a, x) rbind(a, x[[network]]),
-      stats, init = c()
-    )
-
-    stats.table.formation <- make_formation_table(merged.stats, ts.out)
+    stats.table.formation <- make_stats_table(stats, target.stats)
 
     cat("\n\nFormation Statistics")
     cat("\n----------------------- \n")
@@ -255,20 +257,27 @@ print.netsim <- function(x, nwstats = TRUE, digits = 3, network = 1, ...) {
         ! is.null(x$diss.stats) &&
         x$nwparam[[network]]$coef.diss$dissolution == ~ offset(edges)) {
 
-      dissolution.stats <- make_dissolution_stats(
-        lapply(seq_len(x$control$nsims), function(sim) x$diss.stats[[sim]][[network]]),
-        x$nwparam[[network]]$coef.diss,
-        x$control$nsteps,
-        verbose = FALSE
-      )
+      if (any(unlist(lapply(x$diss.stats, `[[`, "anyNA")))) {
+        warning("duration/dissolution data contains undefined values due to",
+                " having zero edges of some dissolution dyad type(s) on some time",
+                " step(s); these undefined values will be set to 0 when",
+                " processing the data; this behavior, which introduces a bias",
+                " towards 0, may be changed in the future")
+      }
+
+      dur_stats <- lapply(x$diss.stats, function(ds) ds[[network]][["meanageimputed"]])
+      diss_stats <- lapply(x$diss.stats, function(ds) ds[[network]][["propdiss"]])
+
+      dur_table <- make_stats_table(dur_stats, x$nwparam[[network]]$coef.diss$duration)
+      diss_table <- make_stats_table(diss_stats, 1 / x$nwparam[[network]]$coef.diss$duration)
 
       cat("\nDuration Statistics")
       cat("\n----------------------- \n")
-      print_nwstats_table(dissolution.stats$stats.table.duration, digits)
+      print_nwstats_table(dur_table, digits)
 
       cat("\nDissolution Statistics")
       cat("\n----------------------- \n")
-      print_nwstats_table(dissolution.stats$stats.table.dissolution, digits)
+      print_nwstats_table(diss_table, digits)
 
     } else {
       cat("\nDuration and Dissolution Statistics")

@@ -194,9 +194,11 @@ get_transmat <- function(x, sim = 1) {
 
 #' @title Extract Network Statistics from netsim or netdx Object
 #'
-#' @description Extracts a data frame of network statistics from a network
-#'              epidemic model simulated with \code{netsim} or a network
-#'              diagnostics object simulated with \code{netdx}.
+#' @description Extracts network statistics from a network epidemic model
+#'              simulated with \code{netsim} or a network diagnostics object
+#'              simulated with \code{netdx}. Statistics can be returned either
+#'              as a single data frame or as a list of matrices (one matrix
+#'              for each simulation).
 #'
 #' @param x An \code{EpiModel} object of class \code{\link{netsim}} or
 #'        \code{\link{netdx}}.
@@ -204,8 +206,10 @@ get_transmat <- function(x, sim = 1) {
 #' @param network Network number, for \code{netsim} objects with multiple
 #'        overlapping networks (advanced use, and not applicable to \code{netdx}
 #'        objects).
+#' @param mode Either \code{"data.frame"} or \code{"list"}, indicating the
+#'        desired output.
 #'
-#' @return A data frame of network statistics.
+#' @return A data frame or list of matrices containing the network statistics.
 #'
 #' @keywords extract
 #' @export
@@ -241,7 +245,9 @@ get_transmat <- function(x, sim = 1) {
 #' summary(get_nwstats(mod))
 #' colMeans(get_nwstats(mod))
 #'
-get_nwstats <- function(x, sim, network = 1) {
+get_nwstats <- function(x, sim, network = 1, mode = c("data.frame", "list")) {
+
+  mode <- match.arg(mode)
 
   ## Warnings and checks ##
   if (!(class(x) %in% c("netsim", "netdx"))) {
@@ -284,6 +290,10 @@ get_nwstats <- function(x, sim, network = 1) {
     out <- out[sim]
   } else if (inherits(x, "netdx")) {
     out <- x$stats[sim]
+  }
+
+  if (mode == "list") {
+    return(lapply(out, as.matrix))
   }
 
   out <- as.data.frame(do.call("rbind", out))
