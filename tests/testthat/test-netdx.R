@@ -308,11 +308,11 @@ for (trim in c(FALSE, TRUE)) {
     expect_output(print(dx), "Target")
     expect_output(print(dx), "Sim Mean")
     expect_output(print(dx), "Pct Diff")
-    expect_output(print(dx), "Sim SD")
-
+    expect_output(print(dx), "Sim SE")
+  
     dx <- netdx(est, nsims = 1, nsteps = 100, verbose = FALSE)
     expect_output(print(dx), "NA")
-
+  
   })
 }
 
@@ -430,4 +430,43 @@ test_that("Edges only models with set.control.stergm", {
   plot(dx4, method = "b", type = "duration")
   plot(dx4, type = "dissolution")
   plot(dx4, method = "b", type = "dissolution")
+})
+
+test_that("z scores are not large for a reasonably long simulation", {
+  nw <- network_initialize(n = 100)
+  nw <- set_vertex_attribute(nw, "race", rep(0:1, length.out = 100))
+  est <- netest(nw, formation = ~edges + nodematch("race", diff = TRUE),
+                target.stats = c(50, 10, 10),
+                coef.diss = dissolution_coefs(~offset(edges) +
+                                                offset(nodematch("race", diff = TRUE)),
+                                              c(10, 20, 15)),
+                verbose = FALSE
+  )
+  
+  dx <- netdx(est, nsteps = 1000, nsims = 1)
+  
+  expect_true(all(abs(dx$stats.table.formation[["Z Score"]]) < 20))
+  expect_true(all(abs(dx$stats.table.duration[["Z Score"]]) < 20))
+  expect_true(all(abs(dx$stats.table.dissolution[["Z Score"]]) < 20))
+
+  dxs <- netdx(est, nsims = 1000, dynamic = FALSE)
+  
+  expect_true(all(abs(dxs$stats.table.formation[["Z Score"]]) < 20))
+})
+
+test_that("make_stats_table behaves as expected", {
+  stat_names <- letters[1:5]
+  stats_1 <- 1:5
+  stats_2 <- c(6,9,5,2,7)
+  m1 <- matrix(stats_1, ncol = 5, nrow = 10, byrow = TRUE)
+  m2 <- matrix(stats_2, ncol = 5, nrow = 10, byrow = TRUE)
+  colnames(m2) <- colnames(m1) <- stat_names
+  stats <- list(m1, m2)
+  targets <- c(a = 3, f = 6, e = 7, c = 9, x = 10, d = 2000)
+  targs <- c(3, NA, 9, 2000, 7)
+  mst <- make_stats_table(stats, targets)
+  expect_equal(rownames(mst), colnames(m1))
+  expect_equal(mst[["Sim Mean"]], (stats_1 + stats_2)/2)
+  expect_equal(mst[["Target"]], targs)
+  expect_equal(mst[["Pct Diff"]], 100*((stats_1 + stats_2)/2 - targs)/targs)
 })

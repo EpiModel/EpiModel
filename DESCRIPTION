@@ -48,7 +48,8 @@ Imports:
     ggplot2,
     tibble,
     methods,
-    dplyr
+    dplyr,
+    coda
 Suggests:
     knitr,
     ndtv,
