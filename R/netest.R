@@ -22,14 +22,14 @@
 #'        formula.
 #' @param edapprox If \code{TRUE}, use the indirect edges dissolution
 #'        approximation  method for the dynamic model fit, otherwise use the
-#'        more time-intensive full STERGM estimation (see details).  For 
-#'        \code{nw} of class \code{egor}, only \code{edapprox = TRUE} is 
+#'        more time-intensive full STERGM estimation (see details).  For
+#'        \code{nw} of class \code{egor}, only \code{edapprox = TRUE} is
 #'        supported.
 #' @param set.control.ergm Control arguments passed to \code{ergm} (see
 #'        details).
 #' @param set.control.ergm.ego Control arguments passed to \code{ergm.ego} (see
 #'        details).
-#' @param set.control.stergm Deprecated control argument of class 
+#' @param set.control.stergm Deprecated control argument of class
 #'        \code{control.stergm}; use \code{set.control.tergm} instead.
 #' @param set.control.tergm Control arguments passed to \code{tergm}
 #'        (see details).
@@ -39,14 +39,14 @@
 #' @param ... Additional arguments passed to other functions.
 #'
 #' @details
-#' \code{netest} is a wrapper function for the \code{ergm}, \code{ergm.ego}, 
-#' and \code{tergm} functions that estimate static and dynamic network models. 
-#' Network model estimation is the first step in simulating a stochastic 
+#' \code{netest} is a wrapper function for the \code{ergm}, \code{ergm.ego},
+#' and \code{tergm} functions that estimate static and dynamic network models.
+#' Network model estimation is the first step in simulating a stochastic
 #' network epidemic model in \code{EpiModel}. The output from \code{netest} is
-#' a necessary input for running the epidemic simulations in 
-#' \code{\link{netsim}}. With a fitted network model, one should always first 
-#' proceed to model diagnostics, available through the \code{\link{netdx}} 
-#' function, to check model fit. A detailed description of fitting these 
+#' a necessary input for running the epidemic simulations in
+#' \code{\link{netsim}}. With a fitted network model, one should always first
+#' proceed to model diagnostics, available through the \code{\link{netdx}}
+#' function, to check model fit. A detailed description of fitting these
 #' models, along with examples, may be found in the
 #' \href{http://www.epimodel.org/tut.html}{Basic Network Models} tutorials.
 #'
@@ -89,7 +89,7 @@
 #' model coefficients (value = \code{TRUE}).
 #'
 #' @section Control Arguments:
-#' The \code{ergm}, \code{ergm.ego}, and \code{tergm} functions allow control 
+#' The \code{ergm}, \code{ergm.ego}, and \code{tergm} functions allow control
 #' settings for the model fitting process. When fitting a STERGM directly (setting
 #' \code{edapprox} to \code{FALSE}), control parameters may be passed to the
 #' \code{tergm} function with the \code{set.control.tergm} argument in
@@ -102,9 +102,9 @@
 #' \code{set.control.ergm}, or to the \code{ergm.ego} function using
 #' \code{set.control.ergm.ego}.  The controls should be input through the
 #' \code{control.ergm()} and \code{control.ergm.ego()} functions, respectively,
-#' with the available parameters listed in the 
-#' \code{\link[ergm:control.ergm]{control.ergm}} help page in the \code{ergm} 
-#' package and the \code{\link[ergm.ego:control.ergm.ego]{control.ergm.ego}} 
+#' with the available parameters listed in the
+#' \code{\link[ergm:control.ergm]{control.ergm}} help page in the \code{ergm}
+#' package and the \code{\link[ergm.ego:control.ergm.ego]{control.ergm.ego}}
 #' help page in the \code{ergm.ego} package. An example is below.
 #'
 #' @return A fitted network model object of class \code{netest}.
@@ -241,9 +241,9 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
                       offset.coef = coef.form,
                       control = set.control.ergm.ego,
                       verbose = verbose)
-                      
+
       target.stats <- fit$m
-      
+
     } else {
       # ergm case
       fit <- ergm(formation.nw,
