@@ -311,7 +311,7 @@ add_epi <- function(dat, item) {
     stop("Cannot create the epi output, ", item, ": exists already")
   }
 
-  dat[["epi"]][[item]] <- rep(NA, dat[["control"]][["nsteps"]])
+  dat[["epi"]][[item]] <- padded_vector(NA_real_, dat[["control"]][["nsteps"]])
 
   return(dat)
 }
@@ -327,12 +327,12 @@ set_epi <- function(dat, item, at,  value) {
     dat <- add_epi(dat, item)
   }
 
+  # ensure that the vector is of size `nsteps`, right padded with NA
   if (at > length(dat[["epi"]][[item]])) {
-
-      dat[["epi"]][[item]] <- c(
-        dat[["epi"]][[item]],
-        rep(NA, dat[["control"]][["nsteps"]] - length(dat[["epi"]][[item]]))
-      )
+    dat[["epi"]][[item]] <- padded_vector(
+      dat[["epi"]][[item]],
+      dat[["control"]][["nsteps"]]
+    )
   }
 
   dat[["epi"]][[item]][at] <- value
@@ -677,4 +677,15 @@ is_active_unique_ids <- function(dat, unique_ids) {
 is_active_posit_ids <- function(dat, posit_ids) {
   active <- get_attr(dat, "active")
   return(active[posit_ids] %in% 1)
+}
+
+# Make a vector of size `size` by padding an `orig` element
+# pad with NULL if `orig` is a `list` and with `NA` otherwise
+padded_vector <- function(orig, size) {
+  if (is.list(orig)) {
+    out <- c(orig, vector(mode = "list", size - length(orig)))
+  } else {
+    out <- c(orig, rep(NA, size - length(orig)))
+  }
+  return(out)
 }

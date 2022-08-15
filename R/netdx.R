@@ -399,7 +399,7 @@ make_stats_table <- function(stats, targets) {
   ess_sum <- colSums(do.call(rbind, ess_list), na.rm = TRUE)
 
   stats.onesim.sd <- apply(do.call(rbind, lapply(stats, colMeans, na.rm = TRUE)), 2, sd, na.rm = TRUE)
-  
+
   stats <- do.call(rbind, stats)
   stats.means <- colMeans(stats, na.rm = TRUE)
   stats.sd <- apply(stats, 2L, sd, na.rm = TRUE)
@@ -428,7 +428,7 @@ make_stats_table <- function(stats, targets) {
 
 #' @title Convert Timed Edgelist to Matrix of Toggles
 #'
-#' @param tedgelist A timed edgelist, as produced by 
+#' @param tedgelist A timed edgelist, as produced by
 #'   \code{\link{as.data.frame.networkDynamic}}.
 #'
 #' @return The matrix of toggles corresponding to \code{tedgelist}.
@@ -443,7 +443,7 @@ tedgelist_to_toggles <- function(tedgelist) {
 
 #' @title Convert Matrix of Toggles to Dissolution and Duration Statistics
 #'
-#' @param toggles A matrix of toggles, as produced by 
+#' @param toggles A matrix of toggles, as produced by
 #'   \code{\link{tedgelist_to_toggles}}.
 #' @param coef.diss Dissolution coefficients used in the simulation.
 #' @param nsteps Number of time steps in the simulation.
