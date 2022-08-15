@@ -453,3 +453,20 @@ test_that("z scores are not large for a reasonably long simulation", {
   
   expect_true(all(abs(dxs$stats.table.formation[["Z Score"]]) < 20))
 })
+
+test_that("make_stats_table behaves as expected", {
+  stat_names <- letters[1:5]
+  stats_1 <- 1:5
+  stats_2 <- c(6,9,5,2,7)
+  m1 <- matrix(stats_1, ncol = 5, nrow = 10, byrow = TRUE)
+  m2 <- matrix(stats_2, ncol = 5, nrow = 10, byrow = TRUE)
+  colnames(m2) <- colnames(m1) <- stat_names
+  stats <- list(m1, m2)
+  targets <- c(a = 3, f = 6, e = 7, c = 9, x = 10, d = 2000)
+  targs <- c(3, NA, 9, 2000, 7)
+  mst <- make_stats_table(stats, targets)
+  expect_equal(rownames(mst), colnames(m1))
+  expect_equal(mst[["Sim Mean"]], (stats_1 + stats_2)/2)
+  expect_equal(mst[["Target"]], targs)
+  expect_equal(mst[["Pct Diff"]], 100*((stats_1 + stats_2)/2 - targs)/targs)
+})

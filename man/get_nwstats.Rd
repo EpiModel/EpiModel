@@ -4,7 +4,7 @@
 \alias{get_nwstats}
 \title{Extract Network Statistics from netsim or netdx Object}
 \usage{
-get_nwstats(x, sim, network = 1)
+get_nwstats(x, sim, network = 1, mode = c("data.frame", "list"))
 }
 \arguments{
 \item{x}{An \code{EpiModel} object of class \code{\link{netsim}} or
@@ -15,14 +15,19 @@ get_nwstats(x, sim, network = 1)
 \item{network}{Network number, for \code{netsim} objects with multiple
 overlapping networks (advanced use, and not applicable to \code{netdx}
 objects).}
+
+\item{mode}{Either \code{"data.frame"} or \code{"list"}, indicating the
+desired output.}
 }
 \value{
-A data frame of network statistics.
+A data frame or list of matrices containing the network statistics.
 }
 \description{
-Extracts a data frame of network statistics from a network
-             epidemic model simulated with \code{netsim} or a network
-             diagnostics object simulated with \code{netdx}.
+Extracts network statistics from a network epidemic model
+             simulated with \code{netsim} or a network diagnostics object
+             simulated with \code{netdx}. Statistics can be returned either
+             as a single data frame or as a list of matrices (one matrix
+             for each simulation).
 }
 \examples{
 # Two-group Bernoulli random graph TERGM

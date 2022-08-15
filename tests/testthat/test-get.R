@@ -159,3 +159,60 @@ test_that("get_sims error flags", {
   expect_equal(dim(get_param_set(mod)), c(3, length(set.colnames)))
 })
 
+dxs <- netdx(est, dynamic = FALSE, nsims = 5, 
+             nwstats.formula = ~edges + nodemix("group", levels2 = TRUE))
+dxd <- netdx(est, dynamic = TRUE, nsims = 5, nsteps = 3)
+
+control1 <- control.net(type = "SI", nsteps = 2, nsims = 3,
+                        verbose = FALSE, tergmLite = FALSE,
+                        resimulate.network = TRUE, 
+                        nwstats.formula = ~edges + triangle)
+mod1 <- netsim(est, param, init, control1)
+
+control2 <- control.net(type = "SI", nsteps = 3, nsims = 4,
+                        verbose = FALSE, tergmLite = FALSE,
+                        resimulate.network = FALSE)
+mod2 <- netsim(est, param, init, control2)
+
+control3 <- control.net(type = "SI", nsteps = 4, nsims = 2,
+                        verbose = FALSE, tergmLite = TRUE,
+                        resimulate.network = TRUE,
+                        nwstats.formula = ~edges +
+                                           nodematch("group", diff = TRUE))
+mod3 <- netsim(est, param, init, control3)
+
+test_that("get_nwstats with mode = list behaves as expected", {
+  expect_equal(unique(lapply(get_nwstats(dxs, mode = "list"), class)),
+               list(c("matrix", "array")))
+  expect_equal(unique(lapply(get_nwstats(dxd, mode = "list"), class)),
+               list(c("matrix", "array")))
+  expect_equal(unique(lapply(get_nwstats(mod1, mode = "list"), class)),
+               list(c("matrix", "array")))
+  expect_equal(unique(lapply(get_nwstats(mod2, mode = "list"), class)),
+               list(c("matrix", "array")))
+  expect_equal(unique(lapply(get_nwstats(mod3, mode = "list"), class)),
+               list(c("matrix", "array")))
+
+  expect_equal(unique(lapply(get_nwstats(dxs, mode = "list"), dim)),
+               list(c(5, 4)))
+  expect_equal(unique(lapply(get_nwstats(dxd, mode = "list"), dim)),
+               list(c(3, 1)))
+  expect_equal(unique(lapply(get_nwstats(mod1, mode = "list"), dim)),
+               list(c(2, 2)))
+  expect_equal(unique(lapply(get_nwstats(mod2, mode = "list"), dim)),
+               list(c(3, 1)))
+  expect_equal(unique(lapply(get_nwstats(mod3, mode = "list"), dim)),
+               list(c(4, 3)))
+
+  expect_equal(length(get_nwstats(dxs, mode = "list")), 1)
+  expect_equal(length(get_nwstats(dxd, mode = "list")), 5)
+  expect_equal(length(get_nwstats(mod1, mode = "list")), 3)
+  expect_equal(length(get_nwstats(mod2, mode = "list")), 4)
+  expect_equal(length(get_nwstats(mod3, mode = "list")), 2)
+
+  expect_equal(length(get_nwstats(dxs, sim = c(1), mode = "list")), 1)
+  expect_equal(length(get_nwstats(dxd, sim = c(5,3,1), mode = "list")), 3)
+  expect_equal(length(get_nwstats(mod1, sim = c(2,3), mode = "list")), 2)
+  expect_equal(length(get_nwstats(mod2, sim = c(1,3,2), mode = "list")), 3)
+  expect_equal(length(get_nwstats(mod3, sim = c(1,2), mode = "list")), 2)
+})

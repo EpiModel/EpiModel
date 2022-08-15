@@ -158,6 +158,13 @@ print.netdx <- function(x, digits = 3, ...) {
     cat("\n----------------------- \n")
     print_nwstats_table(x$stats.table.dissolution, digits)
   }
+  if (x$anyNA == TRUE) {
+    warning("duration/dissolution data contains undefined values due to",
+            " having zero edges of some dissolution dyad type(s) on some time",
+            " step(s); these undefined values will be set to 0 when",
+            " processing the data; this behavior, which introduces a bias",
+            " towards 0, may be changed in the future")
+  }
   # TODO Remove nodefactor in future release.
   if (x$coef.diss$diss.model.type == "nodefactor") {
     cat("----------------------- \n")
@@ -227,8 +234,7 @@ print.netsim <- function(x, nwstats = TRUE, digits = 3, network = 1, ...) {
   cat("")
 
   if (nwstats && !is.null(x$stats$nwstats)) {
-    stats <- lapply(x$stats$nwstats,
-                    function(stats_list) stats_list[[network]])
+    stats <- get_nwstats(x, network = network, mode = "list")
     nsims <- x$control$nsims
 
     target.stats <- x$nwparam[[network]]$target.stats
@@ -236,10 +242,9 @@ print.netsim <- function(x, nwstats = TRUE, digits = 3, network = 1, ...) {
     if (length(ts.attr.names) != length(target.stats)) {
       target.stats <- target.stats[which(target.stats > 0)]
     }
-    ts.out <- data.frame(names = ts.attr.names,
-      targets = target.stats)
+    names(target.stats) <- ts.attr.names
 
-    stats.table.formation <- make_formation_table(stats, ts.out)
+    stats.table.formation <- make_stats_table(stats, target.stats)
 
     cat("\n\nFormation Statistics")
     cat("\n----------------------- \n")
@@ -252,20 +257,27 @@ print.netsim <- function(x, nwstats = TRUE, digits = 3, network = 1, ...) {
         ! is.null(x$diss.stats) &&
         x$nwparam[[network]]$coef.diss$dissolution == ~ offset(edges)) {
 
-      dissolution.stats <- make_dissolution_stats(
-        lapply(seq_len(x$control$nsims), function(sim) x$diss.stats[[sim]][[network]]),
-        x$nwparam[[network]]$coef.diss,
-        x$control$nsteps,
-        verbose = FALSE
-      )
+      if (any(unlist(lapply(x$diss.stats, `[[`, "anyNA")))) {
+        warning("duration/dissolution data contains undefined values due to",
+                " having zero edges of some dissolution dyad type(s) on some time",
+                " step(s); these undefined values will be set to 0 when",
+                " processing the data; this behavior, which introduces a bias",
+                " towards 0, may be changed in the future")
+      }
+
+      dur_stats <- lapply(x$diss.stats, function(ds) ds[[network]][["meanageimputed"]])
+      diss_stats <- lapply(x$diss.stats, function(ds) ds[[network]][["propdiss"]])
+
+      dur_table <- make_stats_table(dur_stats, x$nwparam[[network]]$coef.diss$duration)
+      diss_table <- make_stats_table(diss_stats, 1 / x$nwparam[[network]]$coef.diss$duration)
 
       cat("\nDuration Statistics")
       cat("\n----------------------- \n")
-      print_nwstats_table(dissolution.stats$stats.table.duration, digits)
+      print_nwstats_table(dur_table, digits)
 
       cat("\nDissolution Statistics")
       cat("\n----------------------- \n")
-      print_nwstats_table(dissolution.stats$stats.table.dissolution, digits)
+      print_nwstats_table(diss_table, digits)
 
     } else {
       cat("\nDuration and Dissolution Statistics")
