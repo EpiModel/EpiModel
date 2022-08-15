@@ -1344,13 +1344,13 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
         stop("For plots of type duration, duration.imputed must
              be a logical value (TRUE/FALSE)", call. = FALSE)
       }
-      
+
       if (isTRUE(duration.imputed)) {
         data <- x$pages_imptd
       } else {
         data <- x$pages
       }
-      
+
       stats_table <- x$stats.table.duration
     } else { # if type is "dissolution"
       data <- x$prop.diss
@@ -2042,7 +2042,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
         ts <- ts[which(ts > 0)]
       }
       names(ts) <- tsn
-      
+
     } else {
       ## duration/dissolution plot
       if (isTRUE(x$control$save.diss.stats) &&
@@ -2068,7 +2068,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
           ts <- x$nwparam[[network]]$coef.diss$duration
         } else { # if type is "dissolution"
           data <- lapply(sims, function(sim) x$diss.stats[[sim]][[network]][["propdiss"]])
-          ts <- 1/x$nwparam[[network]]$coef.diss$duration
+          ts <- 1 / x$nwparam[[network]]$coef.diss$duration
         }
       } else {
         stop("cannot produce duration/dissolution plot from `netsim` object ",

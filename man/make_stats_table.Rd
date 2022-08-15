@@ -20,7 +20,7 @@ call to \code{make_stats_table}.}
 
 \item{targets}{A vector of target values for the statistics in \code{stats}.
 May be named (in which case targets will be matched to statistics based on
-column names in matrices in \code{stats}) or unnamed (in which case 
+column names in matrices in \code{stats}) or unnamed (in which case
 targets will be matched to statistics based on position, and the number of
 targets must equal the number of columns).}
 }

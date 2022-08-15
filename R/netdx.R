@@ -320,10 +320,11 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
     } else {
       durs <- coef.diss$duration
     }
-    
+
     dims <- c(nsteps, length(durs), length(diag.sim))
     dissolution.stats <- list("stats.table.duration" = make_stats_table(lapply(diag.sim, `[[`, "meanageimputed"), durs),
-                              "stats.table.dissolution" = make_stats_table(lapply(diag.sim, `[[`, "propdiss"), 1/durs),
+                              "stats.table.dissolution" = make_stats_table(lapply(diag.sim, `[[`, "propdiss"),
+                                                                           1 / durs),
                               "pages" = array(unlist(lapply(diag.sim, `[[`, "meanage")), dim = dims),
                               "pages_imptd" = array(unlist(lapply(diag.sim, `[[`, "meanageimputed")), dim = dims),
                               "prop.diss" = array(unlist(lapply(diag.sim, `[[`, "propdiss")), dim = dims),
@@ -388,7 +389,7 @@ ess <- function(x) {
 #'   call to \code{make_stats_table}.
 #' @param targets A vector of target values for the statistics in \code{stats}.
 #'   May be named (in which case targets will be matched to statistics based on
-#'   column names in matrices in \code{stats}) or unnamed (in which case 
+#'   column names in matrices in \code{stats}) or unnamed (in which case
 #'   targets will be matched to statistics based on position, and the number of
 #'   targets must equal the number of columns).
 #'
@@ -403,8 +404,8 @@ make_stats_table <- function(stats, targets) {
   stats <- do.call(rbind, stats)
   stats.means <- colMeans(stats, na.rm = TRUE)
   stats.sd <- apply(stats, 2L, sd, na.rm = TRUE)
-  stats.se <- stats.sd/sqrt(ess_sum)
-  
+  stats.se <- stats.sd / sqrt(ess_sum)
+
   if (!is.null(names(targets))) {
     stats.targets <- rep(NA, length.out = length(stats.means))
     matches <- match(names(targets), names(stats.means))
@@ -415,9 +416,9 @@ make_stats_table <- function(stats, targets) {
 
   stats.table <- data.frame("Target" = stats.targets,
                             "Sim Mean" = stats.means,
-                            "Pct Diff" = 100*(stats.means - stats.targets)/stats.targets,
+                            "Pct Diff" = 100 * (stats.means - stats.targets) / stats.targets,
                             "Sim SE" = stats.se,
-                            "Z Score" = (stats.means - stats.targets)/stats.se,
+                            "Z Score" = (stats.means - stats.targets) / stats.se,
                             "SD(Sim Means)" = stats.onesim.sd,
                             "SD(Statistic)" = stats.sd)
   colnames(stats.table) <- c("Target", "Sim Mean", "Pct Diff", "Sim SE", "Z Score", "SD(Sim Means)", "SD(Statistic)")
@@ -546,7 +547,7 @@ toggles_to_diss_stats <- function(toggles, coef.diss,
   attr(meanage, "ess") <- ess(meanage)
   attr(meanageimputed, "ess") <- ess(meanageimputed)
   attr(propdiss, "ess") <- ess(propdiss)
-  
+
   return(list(meanage = meanage,
               meanageimputed = meanageimputed,
               propdiss = propdiss,

@@ -248,7 +248,7 @@ get_transmat <- function(x, sim = 1) {
 get_nwstats <- function(x, sim, network = 1, mode = c("data.frame", "list")) {
 
   mode <- match.arg(mode)
-  
+
   ## Warnings and checks ##
   if (!(class(x) %in% c("netsim", "netdx"))) {
     stop("x must be of class netsim or netdx", call. = FALSE)
@@ -291,7 +291,7 @@ get_nwstats <- function(x, sim, network = 1, mode = c("data.frame", "list")) {
   } else if (inherits(x, "netdx")) {
     out <- x$stats[sim]
   }
-  
+
   if (mode == "list") {
     return(lapply(out, as.matrix))
   }

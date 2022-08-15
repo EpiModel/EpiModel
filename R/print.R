@@ -267,10 +267,10 @@ print.netsim <- function(x, nwstats = TRUE, digits = 3, network = 1, ...) {
 
       dur_stats <- lapply(x$diss.stats, function(ds) ds[[network]][["meanageimputed"]])
       diss_stats <- lapply(x$diss.stats, function(ds) ds[[network]][["propdiss"]])
-      
+
       dur_table <- make_stats_table(dur_stats, x$nwparam[[network]]$coef.diss$duration)
-      diss_table <- make_stats_table(diss_stats, 1/x$nwparam[[network]]$coef.diss$duration)
-      
+      diss_table <- make_stats_table(diss_stats, 1 / x$nwparam[[network]]$coef.diss$duration)
+
       cat("\nDuration Statistics")
       cat("\n----------------------- \n")
       print_nwstats_table(dur_table, digits)
