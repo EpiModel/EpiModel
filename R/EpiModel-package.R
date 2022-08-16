@@ -155,3 +155,6 @@
 #' @keywords package
 #'
 NULL
+
+#' @export
+ergm.ego::control.ergm.ego
