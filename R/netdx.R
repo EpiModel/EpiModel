@@ -202,7 +202,9 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
     }
 
     if (dynamic == FALSE) {
-      return(list(stats = init))
+      stats <- init
+      attr(stats, "ess") <- ess(stats)
+      return(list(stats = stats))
     }
 
     if (keep.tedgelist == TRUE || keep.tnetwork == TRUE) {
@@ -238,7 +240,9 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
                            dynamic = TRUE)
     }
 
-    out <- list(stats = attr(diag.sim, "stats"))
+    stats <- attr(diag.sim, "stats")
+    attr(stats, "ess") <- ess(stats)
+    out <- list(stats = stats)
 
     if (output == "networkDynamic") {
       sim.df <- as.data.frame(diag.sim)
@@ -295,7 +299,6 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
 
   ## List for stats for each simulation
   stats <- lapply(diag.sim, function(x) x$stats[, !duplicated(colnames(x$stats)), drop = FALSE])
-  merged.stats <- do.call(rbind, stats)
 
   ts.attr.names <- x$target.stats.names
   if (length(ts.attr.names) != length(target.stats)) {
@@ -305,20 +308,27 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
     names = ts.attr.names,
     targets = target.stats
   )
+  names(target.stats) <- ts.attr.names
 
-  ## Calculate mean/sd from merged stats
-  stats.table.formation <- make_formation_table(merged.stats, ts.out)
+  ## Calculate mean/sd from stats
+  stats.table.formation <- make_stats_table(stats, target.stats)
 
   # Calculate dissolution / duration stats
-  if (skip.dissolution == FALSE) {
-    if (dynamic == TRUE) {
-      dissolution.stats <- make_dissolution_stats(
-        diag.sim,
-        x$coef.diss,
-        nsteps,
-        verbose
-      )
+  if (skip.dissolution == FALSE && dynamic == TRUE) {
+    if (coef.diss$diss.model.type == "nodefactor") {
+      durs <- mean(coef.diss$duration)
+    } else {
+      durs <- coef.diss$duration
     }
+
+    dims <- c(nsteps, length(durs), length(diag.sim))
+    dissolution.stats <- list("stats.table.duration" = make_stats_table(lapply(diag.sim, `[[`, "meanageimputed"), durs),
+                              "stats.table.dissolution" = make_stats_table(lapply(diag.sim, `[[`, "propdiss"),
+                                                                           1 / durs),
+                              "pages" = array(unlist(lapply(diag.sim, `[[`, "meanage")), dim = dims),
+                              "pages_imptd" = array(unlist(lapply(diag.sim, `[[`, "meanageimputed")), dim = dims),
+                              "prop.diss" = array(unlist(lapply(diag.sim, `[[`, "propdiss")), dim = dims),
+                              "anyNA" = any(unlist(lapply(diag.sim, `[[`, "anyNA"))))
   }
 
   ## Save output
@@ -348,125 +358,82 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
       out$network <- lapply(diag.sim, `[[`, "tnetwork")
     }
   }
+  out$anyNA <- NVL(out$anyNA, FALSE)
 
   class(out) <- "netdx"
   return(out)
 }
 
-#' @title Calculate the Formation Statistics of a Network
-#'
-#' @param merged.stats A matrix of \code{nsims * nsteps} rows, with a column for
-#'   each of the formation targets.
-#' @param targets A \code{data.frame} of the formation targets with two columns:
-#'   "names" and "targets".
-#'
-#' @return A \code{data.frame} of the formation statistics.
-#' @keywords internal
-make_formation_table <- function(merged.stats, targets) {
-
-  ## Calculate mean/sd from merged stats
-  stats.means <- colMeans(merged.stats)
-  stats.sd <- apply(merged.stats, 2, sd)
-
-  stats.table <- data.frame(
-    sorder = seq_along(names(stats.means)),
-    names = names(stats.means),
-    stats.means,
-    stats.sd
-  )
-
-  ## Create stats.formation table for output
-  stats.table <- merge(targets, stats.table, all = TRUE)
-  stats.table <- stats.table[order(stats.table[["sorder"]]), , drop = FALSE]
-  rownames(stats.table) <- stats.table$names
-
-  stats.table$reldiff <- (stats.table$stats.means - stats.table$targets) /
-    stats.table$targets * 100
-  stats.table.formation <- stats.table[, c(2, 4, 6, 5)]
-  colnames(stats.table.formation) <- c(
-    "Target",
-    "Sim Mean",
-    "Pct Diff",
-    "Sim SD"
-  )
-
-  return(stats.table.formation)
-}
-
-#' @title Calculate the Dissolution Statistics of a Network
-#'
-#' @param diag.sim A list of network objects (one per simulation).
-#' @param coef.diss The \code{coef.diss} element of \code{nwparam}.
-#' @param nsteps The number of simulated steps.
-#' @param verbose A verbosity toggle (default = TRUE).
-#'
-#' @return a \code{list} of dissolution statistics
-#' @keywords internal
-make_dissolution_stats <- function(diag.sim, coef.diss,
-                                   nsteps, verbose = TRUE) {
-  if (verbose == TRUE) {
-    cat("\n- Calculating duration statistics")
-  }
-
-  if (any(unlist(lapply(diag.sim, `[[`, "anyNA")))) {
-    warning("duration/dissolution data contains undefined values due to",
-            " having zero edges of some dissolution dyad type(s) on some time",
-            " step(s); these undefined values will be set to 0 when",
-            " processing the data; this behavior, which introduces a bias",
-            " towards 0, may be changed in the future")
-  }
-
-  ## exclude nodefactor from heterogeneous dissolution calculation
-  if (coef.diss$diss.model.type == "nodefactor") {
-    durs <- mean(coef.diss$duration)
+## internal wrapper around coda::effectiveSize, returning a vector of NAs
+##   rather than throwing an error when there are 0 or 1 observations; the
+##   argument x should be a matrix with column names
+ess <- function(x) {
+  if (NROW(x) <= 1L) {
+    structure(rep(NA, length.out = NCOL(x)), names = colnames(x))
   } else {
-    durs <- coef.diss$duration
+    coda::effectiveSize(x)
   }
-
-  pages <- array(unlist(lapply(diag.sim, `[[`, "meanage")),
-                 dim = c(nsteps, length(durs), length(diag.sim)))
-
-  pages_imptd <- array(unlist(lapply(diag.sim, `[[`, "meanageimputed")),
-                       dim = c(nsteps, length(durs), length(diag.sim)))
-
-  propdiss <- array(unlist(lapply(diag.sim, `[[`, "propdiss")),
-                    dim = c(nsteps, length(durs), length(diag.sim)))
-
-  combinedmeanmeanageimputed <- do.call(rbind,
-                                        lapply(diag.sim,
-                                               `[[`, "meanmeanageimputed"))
-  meanagesimputed <- colMeans(combinedmeanmeanageimputed, na.rm = TRUE)
-  meanagesd <- apply(combinedmeanmeanageimputed, 2L, sd, na.rm = TRUE)
-
-  combinedmeanpropdiss <- do.call(rbind, lapply(diag.sim,
-                                                `[[`, "meanpropdiss"))
-  meanpropdiss <- colMeans(combinedmeanpropdiss, na.rm = TRUE)
-  propdisssd <- apply(combinedmeanpropdiss, 2L, sd, na.rm = TRUE)
-
-  stats.table.duration <- data.frame("Target" = durs,
-                                     "Sim Mean" = meanagesimputed,
-                                     "Pct Diff" = 100 * (meanagesimputed - durs) / durs,
-                                     "Sim SD" = meanagesd)
-  colnames(stats.table.duration) <- c("Target", "Sim Mean", "Pct Diff", "Sim SD")
-
-  stats.table.dissolution <- data.frame("Target" = 1 / durs,
-                                        "Sim Mean" = meanpropdiss,
-                                        "Pct Diff" = 100 * (meanpropdiss - 1 / durs) / (1 / durs),
-                                        "Sim SD" = propdisssd)
-  colnames(stats.table.dissolution) <- c("Target", "Sim Mean", "Pct Diff", "Sim SD")
-
-  # Construct return list
-  return(
-    list(
-      "stats.table.duration" = stats.table.duration,
-      "stats.table.dissolution" = stats.table.dissolution,
-      "pages" = pages,
-      "pages_imptd" = pages_imptd,
-      "prop.diss" = propdiss
-    )
-  )
 }
 
+#' @title Create a Summary Table of Simulation Statistics
+#'
+#' @param stats A list of simulated statistics matrices, of length equal to the
+#'   number of simulations performed.  Each matrix should have one row for each
+#'   simulated network if \code{dynamic == FALSE}, one row for each time step
+#'   if \code{dynamic == TRUE}, and one column for each statistic.  The columns
+#'   should be named for the statistics they correspond to, with all matrices
+#'   having the same statistics, in the same order.  Each matrix may have an
+#'   \code{attr}-style attribute named \code{"ess"} attached, giving the
+#'   effective sample sizes for the columns of the matrix; if this attribute is
+#'   \code{NULL}, then the effective sample sizes will be computed within the
+#'   call to \code{make_stats_table}.
+#' @param targets A vector of target values for the statistics in \code{stats}.
+#'   May be named (in which case targets will be matched to statistics based on
+#'   column names in matrices in \code{stats}) or unnamed (in which case
+#'   targets will be matched to statistics based on position, and the number of
+#'   targets must equal the number of columns).
+#'
+#' @return A \code{data.frame} summarizing the simulated statistics.
+#' @keywords internal
+make_stats_table <- function(stats, targets) {
+  ess_list <- lapply(stats, function(x) NVL(attr(x, "ess"), ess(x)))
+  ess_sum <- colSums(do.call(rbind, ess_list), na.rm = TRUE)
+
+  stats.onesim.sd <- apply(do.call(rbind, lapply(stats, colMeans, na.rm = TRUE)), 2, sd, na.rm = TRUE)
+
+  stats <- do.call(rbind, stats)
+  stats.means <- colMeans(stats, na.rm = TRUE)
+  stats.sd <- apply(stats, 2L, sd, na.rm = TRUE)
+  stats.se <- stats.sd / sqrt(ess_sum)
+
+  if (!is.null(names(targets))) {
+    stats.targets <- rep(NA, length.out = length(stats.means))
+    matches <- match(names(targets), names(stats.means))
+    stats.targets[na.omit(matches)] <- targets[!is.na(matches)]
+  } else {
+    stats.targets <- targets
+  }
+
+  stats.table <- data.frame("Target" = stats.targets,
+                            "Sim Mean" = stats.means,
+                            "Pct Diff" = 100 * (stats.means - stats.targets) / stats.targets,
+                            "Sim SE" = stats.se,
+                            "Z Score" = (stats.means - stats.targets) / stats.se,
+                            "SD(Sim Means)" = stats.onesim.sd,
+                            "SD(Statistic)" = stats.sd)
+  colnames(stats.table) <- c("Target", "Sim Mean", "Pct Diff", "Sim SE", "Z Score", "SD(Sim Means)", "SD(Statistic)")
+  rownames(stats.table) <- names(stats.means)
+
+  return(stats.table)
+}
+
+#' @title Convert Timed Edgelist to Matrix of Toggles
+#'
+#' @param tedgelist A timed edgelist, as produced by
+#'   \code{\link{as.data.frame.networkDynamic}}.
+#'
+#' @return The matrix of toggles corresponding to \code{tedgelist}.
+#' @keywords internal
 tedgelist_to_toggles <- function(tedgelist) {
   tedgelist <- as.matrix(tedgelist)
   toggles <- rbind(tedgelist[, c(1L, 3L, 4L), drop = FALSE],
@@ -475,6 +442,18 @@ tedgelist_to_toggles <- function(tedgelist) {
   toggles
 }
 
+#' @title Convert Matrix of Toggles to Dissolution and Duration Statistics
+#'
+#' @param toggles A matrix of toggles, as produced by
+#'   \code{\link{tedgelist_to_toggles}}.
+#' @param coef.diss Dissolution coefficients used in the simulation.
+#' @param nsteps Number of time steps in the simulation.
+#' @param nw Network used in the simulation.
+#' @param time.start Starting time for the simulation.
+#'
+#' @return Named list containing dissolution and duration statistics matrices
+#'   and other related information.
+#' @keywords internal
 toggles_to_diss_stats <- function(toggles, coef.diss,
                                   nsteps, nw, time.start = 0L) {
   nw <- as.network(nw) # drop nwd
@@ -565,17 +544,12 @@ toggles_to_diss_stats <- function(toggles, coef.diss,
     anyNA <- FALSE
   }
 
-  meanmeanageimputed <- colMeans(meanageimputed, na.rm = TRUE)
-  meanpropdiss <- colMeans(propdiss, na.rm = TRUE)
+  attr(meanage, "ess") <- ess(meanage)
+  attr(meanageimputed, "ess") <- ess(meanageimputed)
+  attr(propdiss, "ess") <- ess(propdiss)
 
-  return(list(edgecounts = edgecounts,
-              edgeages = edgeages,
-              edgeagesimputed = edgeagesimputed,
-              edgediss = edgediss,
-              meanage = meanage,
+  return(list(meanage = meanage,
               meanageimputed = meanageimputed,
               propdiss = propdiss,
-              meanpropdiss = meanpropdiss,
-              meanmeanageimputed = meanmeanageimputed,
               anyNA = anyNA))
 }
