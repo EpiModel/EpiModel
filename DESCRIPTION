@@ -47,7 +47,8 @@ Imports:
     ggplot2,
     tibble,
     methods,
-    dplyr
+    dplyr,
+    coda
 Suggests:
     knitr,
     ndtv,
@@ -57,5 +58,5 @@ Suggests:
     tidyr
 VignetteBuilder: knitr
 LinkingTo: Rcpp, ergm
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.1
 Encoding: UTF-8
