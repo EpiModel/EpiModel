@@ -45,12 +45,12 @@ nwupdate.net <- function(dat, at) {
     if (tergmLite == FALSE) {
       for (network in seq_along(dat$nwparam)) {
         dat$nw[[network]] <- add.vertices(dat$nw[[network]], nv = nArrivals)
-        
+
         dat$nw[[network]] <- activate.vertices(dat$nw[[network]],
                                                onset = at,
                                                terminus = Inf,
                                                v = arrivals)
-        
+
         dat$nw[[network]] <- activate.vertex.attribute(dat$nw[[network]],
                                                        prefix = "testatus",
                                                        value = status[arrivals],

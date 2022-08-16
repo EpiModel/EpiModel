@@ -466,7 +466,7 @@ set_control <- function(dat, item, value, network) {
   if (!item %in% names(dat[["control"]])) {
     dat <- add_control(dat, item)
   }
-  
+
   if (missing(network)) {
     dat[["control"]][[item]] <- value
   } else {
@@ -475,7 +475,7 @@ set_control <- function(dat, item, value, network) {
       dat[["control"]][[item]][[network]] <- value
     } else {
       newval <- rep(list(oldval), length.out = length(dat$nwparam))
-      newval[[network]] <- value      
+      newval[[network]] <- value
       dat[["control"]][[item]] <- do.call(multilayer, newval)
     }
   }

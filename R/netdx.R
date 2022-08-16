@@ -431,7 +431,9 @@ toggles_to_diss_stats <- function(toggles, coef.diss,
   delete.network.attribute(nw, "lasttoggle")
   nw[, ] <- FALSE
 
+  # nolint start
   diss_formula <- coef.diss$dissolution
+  # nolint end
   durs <- coef.diss$duration
 
   changestats <- as.matrix(tergm.godfather(nw ~ Passthrough(diss_formula)

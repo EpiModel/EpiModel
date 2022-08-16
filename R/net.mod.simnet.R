@@ -108,7 +108,7 @@ set_sim_network <- function(dat, nw, network = 1L) {
   if (get_control(dat, "tergmLite") == TRUE) {
     dat$el[[network]] <- as.edgelist(nw)
   }
-  return(dat)  
+  return(dat)
 }
 
 #' @title Simulate a Network for a Specified Number of Time Steps
@@ -116,7 +116,7 @@ set_sim_network <- function(dat, nw, network = 1L) {
 #' @description This function simulates a dynamic network over one or multiple
 #'              time steps for TERGMs or one or multiple cross-sectional network
 #'              panels for ERGMs, for use in \code{\link{netsim}} modeling.
-#'              Network statistics are also extracted and saved if 
+#'              Network statistics are also extracted and saved if
 #'              \code{save.nwstats == TRUE}.
 #'
 #' @inheritParams recovery.net
@@ -142,7 +142,7 @@ simulate_dat <- function(dat, at, network = 1L, nsteps = 1L) {
   nwparam <- get_nwparam(dat, network = network)
 
   if (all(nwparam$coef.diss$duration > 1)) {
-    formula <- ~Form(nwparam$formation) + 
+    formula <- ~Form(nwparam$formation) +
                 Persist(nwparam$coef.diss$dissolution)
     coef <- c(nwparam$coef.form, nwparam$coef.diss$coef.adj)
   } else {
@@ -168,7 +168,7 @@ simulate_dat <- function(dat, at, network = 1L, nsteps = 1L) {
     new.nwstats <- attributes(nw)$stats
     keep.cols <- which(!duplicated(colnames(new.nwstats)))
     new.nwstats <- new.nwstats[, keep.cols, drop = FALSE]
-    dat$stats$nwstats[[network]] <- rbind(dat$stats$nwstats[[network]], new.nwstats)  
+    dat$stats$nwstats[[network]] <- rbind(dat$stats$nwstats[[network]], new.nwstats)
   }
 
   return(dat)
@@ -226,7 +226,7 @@ resim_nets <- function(dat, at) {
 #'              degree of nodes in the network.
 #'
 #' @inheritParams recovery.net
-#' @param network indices of the networks for which to update the edges 
+#' @param network indices of the networks for which to update the edges
 #'        coefficient
 #'
 #' @inherit recovery.net return

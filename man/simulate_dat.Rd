@@ -23,7 +23,7 @@ The updated \code{dat} main list object.
 This function simulates a dynamic network over one or multiple
              time steps for TERGMs or one or multiple cross-sectional network
              panels for ERGMs, for use in \code{\link{netsim}} modeling.
-             Network statistics are also extracted and saved if 
+             Network statistics are also extracted and saved if
              \code{save.nwstats == TRUE}.
 }
 \keyword{internal}

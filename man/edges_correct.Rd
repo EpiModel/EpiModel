@@ -12,7 +12,7 @@ other initialization information passed from \code{\link{netsim}}.}
 
 \item{at}{Current time step.}
 
-\item{network}{indices of the networks for which to update the edges 
+\item{network}{indices of the networks for which to update the edges
 coefficient}
 }
 \value{

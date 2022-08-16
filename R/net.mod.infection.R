@@ -61,38 +61,38 @@ infection.net <- function(dat, at) {
     for (network in seq_along(dat$nwparam)) {
       # Get discordant edgelist
       del <- discord_edgelist(dat, at, network = network)
-      
+
       # If some discordant edges, then proceed
       if (!(is.null(del))) {
-      
+
         # Infection duration to at
         del$infDur <- at - infTime[del$inf]
         del$infDur[del$infDur == 0] <- 1
-      
+
         # Calculate infection-stage transmission rates
         linf.prob <- length(inf.prob)
         del$transProb <- ifelse(del$infDur <= linf.prob,
                                 inf.prob[del$infDur],
                                 inf.prob[linf.prob])
-      
+
         # Interventions
         if (!is.null(inter.eff) && at >= inter.start) {
           del$transProb <- del$transProb * (1 - inter.eff)
         }
-      
+
         # Calculate infection-stage act/contact rates
         lact.rate <- length(act.rate)
         del$actRate <- ifelse(del$infDur <= lact.rate,
                               act.rate[del$infDur],
                               act.rate[lact.rate])
-      
+
         # Calculate final transmission probability per timestep
         del$finalProb <- 1 - (1 - del$transProb) ^ del$actRate
-      
+
         # Randomize transmissions and subset df
         transmit <- rbinom(nrow(del), 1, del$finalProb)
         del <- del[which(transmit == 1), ]
-      
+
         # Set new infections vector
         idsNewInf <- unique(del$sus)
         status <- get_attr(dat, "status")
@@ -190,14 +190,14 @@ infection.2g.net <- function(dat, at) {
     for (network in seq_along(dat$nwparam)) {
       # Get discordant edgelist
       del <- discord_edgelist(dat, at, network = network)
-      
+
       # If some discordant edges, then proceed
       if (!(is.null(del))) {
-      
+
         # Infection duration to at
         del$infDur <- at - infTime[del$inf]
         del$infDur[del$infDur == 0] <- 1
-      
+
         # Calculate infection-stage transmission rates
         linf.prob <- length(inf.prob)
         if (is.null(inf.prob.g2)) {
@@ -214,25 +214,25 @@ infection.2g.net <- function(dat, at) {
                                          inf.prob.g2[del$infDur],
                                          inf.prob.g2[linf.prob]))
         }
-      
+
         # Interventions
         if (!is.null(inter.eff) && at >= inter.start) {
           del$transProb <- del$transProb * (1 - inter.eff)
         }
-      
+
         # Calculate infection-stage act/contact rates
         lact.rate <- length(act.rate)
         del$actRate <- ifelse(del$infDur <= lact.rate,
                               act.rate[del$infDur],
                               act.rate[lact.rate])
-      
+
         # Calculate final transmission probability per timestep
         del$finalProb <- 1 - (1 - del$transProb) ^ del$actRate
-      
+
         # Randomize transmissions and subset df
         transmit <- rbinom(nrow(del), 1, del$finalProb)
         del <- del[which(transmit == 1), ]
-      
+
         # Set new infections vector
         idsNewInf <- unique(del$sus)
         status[idsNewInf] <- "i"
