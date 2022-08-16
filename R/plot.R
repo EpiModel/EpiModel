@@ -1324,34 +1324,32 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
     data <- do.call("cbind", args = x$stats)
     dim3 <- if (isTRUE(dynamic)) nsims else 1L
     data <- array(data, dim = c(dim(data)[1], dim(data)[2] / dim3, dim3))
-  } else if (type == "duration") {
-    if (is.logical(duration.imputed) == FALSE) {
-      stop("For plots of type duration, duration.imputed must
-           be a logical value (TRUE/FALSE)", call. = FALSE)
+  } else { # duration/dissolution case
+    if (x$anyNA == TRUE) {
+      warning("duration/dissolution data contains undefined values due to",
+              " having zero edges of some dissolution dyad type(s) on some time",
+              " step(s); these undefined values will be set to 0 when",
+              " processing the data; this behavior, which introduces a bias",
+              " towards 0, may be changed in the future")
     }
 
-    if (any(grepl("nodefactor", x$dissolution) == TRUE)) {
-      warning("Support for dissolution models containing a nodefactor term is
-              deprecated, and will be removed in a future release.",
-              call. = FALSE)
-    }
+    if (type == "duration") {
+      if (is.logical(duration.imputed) == FALSE) {
+        stop("For plots of type duration, duration.imputed must
+             be a logical value (TRUE/FALSE)", call. = FALSE)
+      }
 
-    if (isTRUE(duration.imputed)) {
-      data <- x$pages_imptd
-    } else {
-      data <- x$pages
-    }
+      if (isTRUE(duration.imputed)) {
+        data <- x$pages_imptd
+      } else {
+        data <- x$pages
+      }
 
-    stats_table <- x$stats.table.duration
-  } else { # if type is "dissolution"
-    if (any(grepl("nodefactor", x$dissolution) == TRUE)) {
-      warning("Support for dissolution models containing a nodefactor term is
-              deprecated, and will be removed in a future release.",
-              call. = FALSE)
+      stats_table <- x$stats.table.duration
+    } else { # if type is "dissolution"
+      data <- x$prop.diss
+      stats_table <- x$stats.table.dissolution
     }
-
-    data <- x$prop.diss
-    stats_table <- x$stats.table.dissolution
   }
 
   ## Find available stats
@@ -1511,6 +1509,10 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #'        \code{save.nwstats=TRUE}; the plot here will then show the network
 #'        statistics requested explicitly in \code{nwstats.formula}, or will use
 #'        the formation formula set in \code{netest} otherwise.
+#'  \item \strong{\code{type="duration","dissolution"}}: as in
+#'        \code{\link{plot.netdx}}; supported in \code{plot.netsim} only when
+#'        the dissolution model is \code{~offset(edges)}, \code{tergmLite} is
+#'        \code{FALSE}, and \code{save.network} is \code{TRUE}.
 #' }
 #'
 #' @details
@@ -2024,17 +2026,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
       # Formation plot ----------------------------------------------------------
 
       ## get nw stats
-      data <- get_nwstats(x, sims, network)
-      ## order by simulation and timestep
-      data <- data[order(data$sim, data$time), , drop = FALSE]
-      ## drop simulation and timestep columns
-      data <- data[, !(names(data) %in% c("sim", "time")), drop = FALSE]
-      ## get names of stats
-      nmstats <- names(data)
-      ## convert to array
-      data <- array(c(as.matrix(data)), dim = c(nsteps, nsims, length(nmstats)))
-      ## permute array indices to be steps x stats x sims
-      data <- aperm(data, c(1, 3, 2))
+      data <- get_nwstats(x, sims, network, mode = "list")
 
       ## target stats
       nwparam <- get_nwparam(x, network)
@@ -2043,18 +2035,8 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
       if (length(tsn) != length(ts)) {
         ts <- ts[which(ts > 0)]
       }
+      names(ts) <- tsn
 
-      targets <- rep(NA, length.out = length(nmstats))
-      for (i in seq_along(targets)) {
-        if (nmstats[i] %in% tsn) {
-          targets[i] <- ts[which(tsn == nmstats[i])]
-        }
-      }
-
-      stats_table <- data.frame("Target" = targets,
-                                "Sim Mean" = apply(data, 2, mean))
-      colnames(stats_table) <- c("Target", "Sim Mean")
-      rownames(stats_table) <- nmstats
     } else {
       ## duration/dissolution plot
       if (isTRUE(x$control$save.diss.stats) &&
@@ -2062,32 +2044,36 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
           isFALSE(x$control$tergmLite) &&
           isFALSE(is.null(x$diss.stats)) &&
           isTRUE(x$nwparam[[network]]$coef.diss$diss.model.type == "edgesonly")) {
-        dstats <- make_dissolution_stats(
-          lapply(sims, function(sim) x$diss.stats[[sim]][[network]]),
-          x$nwparam[[network]]$coef.diss,
-          x$control$nsteps,
-          verbose = FALSE
-        )
+
+        if (any(unlist(lapply(x$diss.stats, `[[`, "anyNA")))) {
+          warning("duration/dissolution data contains undefined values due to",
+                  " having zero edges of some dissolution dyad type(s) on some time",
+                  " step(s); these undefined values will be set to 0 when",
+                  " processing the data; this behavior, which introduces a bias",
+                  " towards 0, may be changed in the future")
+        }
+
+        if (type == "duration") {
+          if (isTRUE(duration.imputed)) {
+            data <- lapply(sims, function(sim) x$diss.stats[[sim]][[network]][["meanageimputed"]])
+          } else {
+            data <- lapply(sims, function(sim) x$diss.stats[[sim]][[network]][["meanage"]])
+          }
+          ts <- x$nwparam[[network]]$coef.diss$duration
+        } else { # if type is "dissolution"
+          data <- lapply(sims, function(sim) x$diss.stats[[sim]][[network]][["propdiss"]])
+          ts <- 1 / x$nwparam[[network]]$coef.diss$duration
+        }
       } else {
         stop("cannot produce duration/dissolution plot from `netsim` object ",
              "unless `save.diss.stats` is `TRUE`, `save.network` is `TRUE`, ",
              "`tergmLite` is `FALSE`, `keep.diss.stats` is `TRUE` (if ",
              "merging), and dissolution model is edges-only")
       }
-
-      if (type == "duration") {
-        if (isTRUE(duration.imputed)) {
-          data <- dstats$pages_imptd
-        } else {
-          data <- dstats$pages
-        }
-
-        stats_table <- dstats$stats.table.duration
-      } else { # if type is "dissolution"
-        data <- dstats$prop.diss
-        stats_table <- dstats$stats.table.dissolution
-      }
     }
+
+    stats_table <- make_stats_table(data, ts)
+    data <- array(unlist(data), dim = c(dim(data[[1]]), nsims))
 
     ## Find available stats
     sts <- which(!is.na(stats_table[, "Sim Mean"]))
