@@ -26,11 +26,25 @@ test_that("netsim runs with multiple networks", {
                              nsteps = 5,
                              tergmLite = tergmLite,
                              resimulate.network = resimulate.network,
-                             nwstats.formula = ~edges+nodematch("race")+degree(0:3),
+                             tergmLite.track.duration = TRUE,
+                             nwstats.formula = multilayer(~triangle, "formation", ~mean.age, ~degree(0:3), "formation"),
                              verbose = TRUE)
 
       set.seed(0)
       mod <- netsim(list(est10, est1, est20, est1, est20), param, init, control)  
+
+      stat_names <- list(c("triangle"),
+                         c("edges", "nodematch.race"),
+                         c("mean.age"),
+                         c("degree0", "degree1", "degree2", "degree3"),
+                         c("edges", "nodematch.race"))
+
+      for (sim in seq_len(3)) {
+        for (network in seq_len(5)) {
+          expect_identical(colnames(get_nwstats(mod, sim = sim, network = network, mode = "list")[[1]]),
+                           stat_names[[network]])
+        }
+      }
 
       expect_is(mod, "netsim")
 
