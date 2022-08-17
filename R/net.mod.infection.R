@@ -101,6 +101,7 @@ infection.net <- function(dat, at) {
     } # end some discordant edges condition
   } # end some active discordant nodes condition
 
+
   # Output ------------------------------------------------------------------
 
   # Save transmission matrix
@@ -170,6 +171,7 @@ infection.2g.net <- function(dat, at) {
 
   # Initialize vectors
   nInf <- nInfG2 <- totInf <- 0
+
 
   # Process -----------------------------------------------------------------
   # If some infected AND some susceptible, then proceed
