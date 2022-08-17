@@ -51,75 +51,66 @@ infection.net <- function(dat, at) {
   # Initialize vectors
   nInf <- 0
 
-  cuml_transmissions <- NULL
-  cuml_nInf <- 0
-
   # Process -----------------------------------------------------------------
   # If some infected AND some susceptible, then proceed
   if (nElig > 0 && nElig < nActive) {
 
-    for (network in seq_along(dat$nwparam)) {
-      # Get discordant edgelist
-      del <- discord_edgelist(dat, at, network = network)
+    # Get discordant edgelist
+    del <- do.call(rbind, lapply(seq_along(dat$nwparam), discord_edgelist, dat = dat, at = at))
 
-      # If some discordant edges, then proceed
-      if (!(is.null(del))) {
+    # If some discordant edges, then proceed
+    if (!(is.null(del))) {
 
-        # Infection duration to at
-        del$infDur <- at - infTime[del$inf]
-        del$infDur[del$infDur == 0] <- 1
+      # Infection duration to at
+      del$infDur <- at - infTime[del$inf]
+      del$infDur[del$infDur == 0] <- 1
 
-        # Calculate infection-stage transmission rates
-        linf.prob <- length(inf.prob)
-        del$transProb <- ifelse(del$infDur <= linf.prob,
-                                inf.prob[del$infDur],
-                                inf.prob[linf.prob])
+      # Calculate infection-stage transmission rates
+      linf.prob <- length(inf.prob)
+      del$transProb <- ifelse(del$infDur <= linf.prob,
+                              inf.prob[del$infDur],
+                              inf.prob[linf.prob])
 
-        # Interventions
-        if (!is.null(inter.eff) && at >= inter.start) {
-          del$transProb <- del$transProb * (1 - inter.eff)
-        }
+      # Interventions
+      if (!is.null(inter.eff) && at >= inter.start) {
+        del$transProb <- del$transProb * (1 - inter.eff)
+      }
 
-        # Calculate infection-stage act/contact rates
-        lact.rate <- length(act.rate)
-        del$actRate <- ifelse(del$infDur <= lact.rate,
-                              act.rate[del$infDur],
-                              act.rate[lact.rate])
+      # Calculate infection-stage act/contact rates
+      lact.rate <- length(act.rate)
+      del$actRate <- ifelse(del$infDur <= lact.rate,
+                            act.rate[del$infDur],
+                            act.rate[lact.rate])
 
-        # Calculate final transmission probability per timestep
-        del$finalProb <- 1 - (1 - del$transProb) ^ del$actRate
+      # Calculate final transmission probability per timestep
+      del$finalProb <- 1 - (1 - del$transProb) ^ del$actRate
 
-        # Randomize transmissions and subset df
-        transmit <- rbinom(nrow(del), 1, del$finalProb)
-        del <- del[which(transmit == 1), ]
+      # Randomize transmissions and subset df
+      transmit <- rbinom(nrow(del), 1, del$finalProb)
+      del <- del[which(transmit == 1), ]
 
-        # Set new infections vector
-        idsNewInf <- unique(del$sus)
-        status <- get_attr(dat, "status")
-        status[idsNewInf] <- "i"
-        dat <- set_attr(dat, "status", status)
-        infTime[idsNewInf] <- at
-        dat <- set_attr(dat, "infTime", infTime)
-        nInf <- length(idsNewInf)
+      # Set new infections vector
+      idsNewInf <- unique(del$sus)
+      status <- get_attr(dat, "status")
+      status[idsNewInf] <- "i"
+      dat <- set_attr(dat, "status", status)
+      infTime[idsNewInf] <- at
+      dat <- set_attr(dat, "infTime", infTime)
+      nInf <- length(idsNewInf)
 
-        cuml_nInf <- cuml_nInf + nInf
-        if (nInf > 0) {
-          cuml_transmissions <- rbind(cuml_transmissions, del)
-        }
-      } # end some discordant edges condition
-    } # end loop over networks
+    } # end some discordant edges condition
   } # end some active discordant nodes condition
 
   # Output ------------------------------------------------------------------
 
   # Save transmission matrix
 
-  if (cuml_nInf > 0) {
-    dat <- set_transmat(dat, cuml_transmissions, at)
+  if (nInf > 0) {
+    dat <- set_transmat(dat, del, at)
   }
 
   ## Save incidence vector
-  dat <- set_epi(dat, "si.flow", at, cuml_nInf)
+  dat <- set_epi(dat, "si.flow", at, nInf)
 
   return(dat)
 }
@@ -180,91 +171,79 @@ infection.2g.net <- function(dat, at) {
   # Initialize vectors
   nInf <- nInfG2 <- totInf <- 0
 
-  cuml_transmissions <- NULL
-  cuml_nInf <- cuml_nInfG2 <- cuml_totInf <- 0
-
   # Process -----------------------------------------------------------------
   # If some infected AND some susceptible, then proceed
   if (nElig > 0 && nElig < nActive) {
 
-    for (network in seq_along(dat$nwparam)) {
-      # Get discordant edgelist
-      del <- discord_edgelist(dat, at, network = network)
+    # Get discordant edgelist
+    del <- do.call(rbind, lapply(seq_along(dat$nwparam), discord_edgelist, dat = dat, at = at))
 
-      # If some discordant edges, then proceed
-      if (!(is.null(del))) {
+    # If some discordant edges, then proceed
+    if (!(is.null(del))) {
 
-        # Infection duration to at
-        del$infDur <- at - infTime[del$inf]
-        del$infDur[del$infDur == 0] <- 1
+      # Infection duration to at
+      del$infDur <- at - infTime[del$inf]
+      del$infDur[del$infDur == 0] <- 1
 
-        # Calculate infection-stage transmission rates
-        linf.prob <- length(inf.prob)
-        if (is.null(inf.prob.g2)) {
-          del$transProb <- ifelse(del$infDur <= linf.prob,
-                                  inf.prob[del$infDur],
-                                  inf.prob[linf.prob])
-        } else {
-          #FLAG
-          del$transProb <- ifelse(group[del$sus] == 1,
-                                  ifelse(del$infDur <= linf.prob,
-                                         inf.prob[del$infDur],
-                                         inf.prob[linf.prob]),
-                                  ifelse(del$infDur <= linf.prob,
-                                         inf.prob.g2[del$infDur],
-                                         inf.prob.g2[linf.prob]))
-        }
+      # Calculate infection-stage transmission rates
+      linf.prob <- length(inf.prob)
+      if (is.null(inf.prob.g2)) {
+        del$transProb <- ifelse(del$infDur <= linf.prob,
+                                inf.prob[del$infDur],
+                                inf.prob[linf.prob])
+      } else {
+        #FLAG
+        del$transProb <- ifelse(group[del$sus] == 1,
+                                ifelse(del$infDur <= linf.prob,
+                                       inf.prob[del$infDur],
+                                       inf.prob[linf.prob]),
+                                ifelse(del$infDur <= linf.prob,
+                                       inf.prob.g2[del$infDur],
+                                       inf.prob.g2[linf.prob]))
+      }
 
-        # Interventions
-        if (!is.null(inter.eff) && at >= inter.start) {
-          del$transProb <- del$transProb * (1 - inter.eff)
-        }
+      # Interventions
+      if (!is.null(inter.eff) && at >= inter.start) {
+        del$transProb <- del$transProb * (1 - inter.eff)
+      }
 
-        # Calculate infection-stage act/contact rates
-        lact.rate <- length(act.rate)
-        del$actRate <- ifelse(del$infDur <= lact.rate,
-                              act.rate[del$infDur],
-                              act.rate[lact.rate])
+      # Calculate infection-stage act/contact rates
+      lact.rate <- length(act.rate)
+      del$actRate <- ifelse(del$infDur <= lact.rate,
+                            act.rate[del$infDur],
+                            act.rate[lact.rate])
 
-        # Calculate final transmission probability per timestep
-        del$finalProb <- 1 - (1 - del$transProb) ^ del$actRate
+      # Calculate final transmission probability per timestep
+      del$finalProb <- 1 - (1 - del$transProb) ^ del$actRate
 
-        # Randomize transmissions and subset df
-        transmit <- rbinom(nrow(del), 1, del$finalProb)
-        del <- del[which(transmit == 1), ]
+      # Randomize transmissions and subset df
+      transmit <- rbinom(nrow(del), 1, del$finalProb)
+      del <- del[which(transmit == 1), ]
 
-        # Set new infections vector
-        idsNewInf <- unique(del$sus)
-        status[idsNewInf] <- "i"
-        dat <- set_attr(dat, "status", status)
-        infTime[idsNewInf] <- at
-        dat <- set_attr(dat, "infTime", infTime)
-        nInf <- sum(group[idsNewInf] == 1)
-        nInfG2 <- sum(group[idsNewInf] == 2)
-        totInf <- nInf + nInfG2
+      # Set new infections vector
+      idsNewInf <- unique(del$sus)
+      status[idsNewInf] <- "i"
+      dat <- set_attr(dat, "status", status)
+      infTime[idsNewInf] <- at
+      dat <- set_attr(dat, "infTime", infTime)
+      nInf <- sum(group[idsNewInf] == 1)
+      nInfG2 <- sum(group[idsNewInf] == 2)
+      totInf <- nInf + nInfG2
 
-        cuml_nInf <- cuml_nInf + nInf
-        cuml_nInfG2 <- cuml_nInfG2 + nInfG2
-        cuml_totInf <- cuml_totInf + totInf
-
-        if (totInf > 0) {
-          cuml_transmissions <- rbind(cuml_transmissions, del)
-        }
-      } # end some discordant edges condition
-    } # end loop over networks
+    } # end some discordant edges condition
   } # end some active discordant nodes condition
 
 
   # Output ------------------------------------------------------------------
 
   # Save transmission matrix
-  if (cuml_totInf > 0) {
-    dat <- set_transmat(dat, cuml_transmissions, at)
+  if (totInf > 0) {
+    dat <- set_transmat(dat, del, at)
   }
 
   ## Save incidence vector
-  dat <- set_epi(dat, "si.flow", at, cuml_nInf)
-  dat <- set_epi(dat, "si.flow.g2", at, cuml_nInfG2)
+  dat <- set_epi(dat, "si.flow", at, nInf)
+  dat <- set_epi(dat, "si.flow.g2", at, nInfG2)
 
   return(dat)
 }
