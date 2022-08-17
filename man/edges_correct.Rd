@@ -4,16 +4,13 @@
 \alias{edges_correct}
 \title{Adjustment for the Edges Coefficient with Changing Network Size}
 \usage{
-edges_correct(dat, at, network = seq_along(dat$nwparam))
+edges_correct(dat, at)
 }
 \arguments{
 \item{dat}{Main list object containing a \code{networkDynamic} object and
 other initialization information passed from \code{\link{netsim}}.}
 
 \item{at}{Current time step.}
-
-\item{network}{indices of the networks for which to update the edges
-coefficient}
 }
 \value{
 The updated \code{dat} main list object.

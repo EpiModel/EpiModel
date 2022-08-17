@@ -199,7 +199,7 @@ copy_nwattr_to_datattr <- function(dat) {
 #' @keywords netUtils internal
 #' @export
 #'
-copy_datattr_to_nwattr <- function(dat, network = seq_along(dat$nwparam)) {
+copy_datattr_to_nwattr <- function(dat) {
   nwterms <- dat$temp$nwterms
   special.attr <- "status"
   if (dat$param$groups == 2) {
@@ -210,16 +210,16 @@ copy_datattr_to_nwattr <- function(dat, network = seq_along(dat$nwparam)) {
   attr <- dat$attr[attr.to.copy]
   if (length(attr.to.copy) > 0) {
     if (length(attr.to.copy) == 1) {
-      for (net_index in network) {
-        dat$nw[[net_index]] <- set_vertex_attribute(dat$nw[[net_index]],
-                                                    names(attr),
-                                                    attr[[1]])
+      for (network in seq_along(dat$nwparam)) {
+        dat$nw[[network]] <- set_vertex_attribute(dat$nw[[network]],
+                                                  names(attr),
+                                                  attr[[1]])
       }
     } else {
-      for (net_index in network) {
-        dat$nw[[net_index]] <- set_vertex_attribute(dat$nw[[net_index]],
-                                                    names(attr),
-                                                    attr)
+      for (network in seq_along(dat$nwparam)) {
+        dat$nw[[network]] <- set_vertex_attribute(dat$nw[[network]],
+                                                  names(attr),
+                                                  attr)
       }
     }
   }

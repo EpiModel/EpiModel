@@ -402,9 +402,8 @@ set_param <- function(dat, item, value) {
 }
 
 #' @rdname net-accessor
-#' @param network index of the network for which to get or set control
 #' @export
-get_control_list <- function(dat, item = NULL, network) {
+get_control_list <- function(dat, item = NULL) {
   if (is.null(item)) {
     out <- dat[["control"]]
 
@@ -419,14 +418,11 @@ get_control_list <- function(dat, item = NULL, network) {
     out <- dat[["control"]][item]
   }
 
-  if (!missing(network)) {
-    out <- lapply(out, function(x) if (is(x, "multilayer")) x[[network]] else x)
-  }
-
   return(out)
 }
 
 #' @rdname net-accessor
+#' @param network index of network for which to get or set control
 #' @export
 get_control <- function(dat, item, override.null.error = FALSE, network) {
   if (!item %in% names(dat[["control"]])) {

@@ -226,15 +226,13 @@ resim_nets <- function(dat, at) {
 #'              degree of nodes in the network.
 #'
 #' @inheritParams recovery.net
-#' @param network indices of the networks for which to update the edges
-#'        coefficient
 #'
 #' @inherit recovery.net return
 #'
 #' @keywords internal
 #' @export
 #'
-edges_correct <- function(dat, at, network = seq_along(dat$nwparam)) {
+edges_correct <- function(dat, at) {
 
   resimulate.network <- get_control(dat, "resimulate.network")
   groups <- get_param(dat, "groups")
@@ -260,9 +258,9 @@ edges_correct <- function(dat, at, network = seq_along(dat$nwparam)) {
         log(2 * new.num.g1 * new.num.g2 / (new.num.g1 + new.num.g2))
     }
 
-    for (net_index in network) {
-      dat$nwparam[[net_index]]$coef.form[1] <-
-        dat$nwparam[[net_index]]$coef.form[1] + adjustment
+    for (network in seq_along(dat$nwparam)) {
+      dat$nwparam[[network]]$coef.form[1] <-
+        dat$nwparam[[network]]$coef.form[1] + adjustment
     }
   }
   return(dat)
