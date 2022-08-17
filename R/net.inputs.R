@@ -1320,7 +1320,6 @@ param.net_from_table <- function(long.param.df) {
 #'              \code{\link{netsim}} control arguments currently supporting
 #'              \code{multilayer} specifications are \code{nwstats.formula},
 #'              \code{set.control.ergm}, and \code{set.control.tergm}.
-#'              
 #'
 #' @param ... control arguments to apply to each network, with the index of the
 #'        network corresponding to the index of the control argument
