@@ -16,5 +16,8 @@ an object of class \code{multilayer} containing the specified
 }
 \description{
 This utility function allows specification of certain
-             \code{\link{netsim}} controls to vary by network.
+             \code{\link{netsim}} controls to vary by network.  The
+             \code{\link{netsim}} control arguments currently supporting
+             \code{multilayer} specifications are \code{nwstats.formula},
+             \code{set.control.ergm}, and \code{set.control.tergm}.
 }

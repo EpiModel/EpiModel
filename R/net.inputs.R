@@ -753,7 +753,7 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #'        argument.
 #' @param nwstats.formula A right-hand sided ERGM formula that includes network
 #'        statistics of interest, with the default to the formation formula
-#'        terms.
+#'        terms. Supports \code{\link{multilayer}} specification.
 #' @param save.network If \code{TRUE}, networkDynamic/network object is
 #'        saved at simulation end. Implicit reset to \code{FALSE} if
 #'        \code{tergmLite = TRUE} (because network history is not saved with
@@ -780,11 +780,12 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #' @param set.control.ergm Control arguments passed to \code{ergm}'s
 #'        \code{simulate_formula.network}.  In \code{netsim}, this is only used
 #'        when initializing the network with \code{edapprox = TRUE}; all other
-#'        simulations in \code{netsim} use \code{tergm}.
+#'        simulations in \code{netsim} use \code{tergm}. Supports
+#'        \code{\link{multilayer}} specification.
 #' @param set.control.tergm Control arguments passed to \code{tergm}'s
 #'        \code{simulate_formula.network}. See the help file for
 #'        \code{\link{netdx}} for details and examples on specifying this
-#'        parameter.
+#'        parameter. Supports \code{\link{multilayer}} specification.
 #' @param save.diss.stats If \code{TRUE}, \code{netsim} will compute and save
 #'        duration/dissolution statistics for plotting and printing, provided
 #'        \code{save.network} is \code{TRUE}, \code{tergmLite} is \code{FALSE},
@@ -1315,7 +1316,11 @@ param.net_from_table <- function(long.param.df) {
 #' @title Specify Controls by Network
 #'
 #' @description This utility function allows specification of certain
-#'              \code{\link{netsim}} controls to vary by network.
+#'              \code{\link{netsim}} controls to vary by network.  The
+#'              \code{\link{netsim}} control arguments currently supporting
+#'              \code{multilayer} specifications are \code{nwstats.formula},
+#'              \code{set.control.ergm}, and \code{set.control.tergm}.
+#'              
 #'
 #' @param ... control arguments to apply to each network, with the index of the
 #'        network corresponding to the index of the control argument

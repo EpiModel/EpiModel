@@ -130,7 +130,7 @@ argument.}
 
 \item{nwstats.formula}{A right-hand sided ERGM formula that includes network
 statistics of interest, with the default to the formation formula
-terms.}
+terms. Supports \code{\link{multilayer}} specification.}
 
 \item{save.transmat}{If \code{TRUE}, complete transmission matrix is saved at
 simulation end. Default of \code{TRUE}.}
@@ -166,12 +166,13 @@ for models in \code{tergmLite} simulations.}
 \item{set.control.ergm}{Control arguments passed to \code{ergm}'s
 \code{simulate_formula.network}.  In \code{netsim}, this is only used
 when initializing the network with \code{edapprox = TRUE}; all other
-simulations in \code{netsim} use \code{tergm}.}
+simulations in \code{netsim} use \code{tergm}. Supports
+\code{\link{multilayer}} specification.}
 
 \item{set.control.tergm}{Control arguments passed to \code{tergm}'s
 \code{simulate_formula.network}. See the help file for
 \code{\link{netdx}} for details and examples on specifying this
-parameter.}
+parameter. Supports \code{\link{multilayer}} specification.}
 
 \item{save.diss.stats}{If \code{TRUE}, \code{netsim} will compute and save
 duration/dissolution statistics for plotting and printing, provided
