@@ -139,6 +139,7 @@ test_that("netsim duration 1", {
                     time.start = i - 1,
                     time.offset = 1,
                     coef = c(estd1$coef.form),
+                    monitor = ~edges + nodematch("race"),
                     dynamic = TRUE)
   }
   expect_identical(sim$mel, mod$network$sim1[[1]]$mel)  
