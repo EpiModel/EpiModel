@@ -48,7 +48,8 @@ Imports:
     tibble,
     methods,
     dplyr,
-    coda
+    coda,
+    networkLite
 Suggests:
     knitr,
     ndtv,
