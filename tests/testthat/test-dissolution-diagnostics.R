@@ -13,7 +13,6 @@ test_that("simulation diagnostics work as expected", {
                      coef = c(est$coef.form, est$coef.diss$coef.crude),
                      basis = nws1,
                      time.slices = nsteps,
-                     monitor = "formation",
                      dynamic = TRUE)
   
     dissolution <- est$coef.diss$dissolution
@@ -72,7 +71,7 @@ test_that("simulation diagnostics work as expected", {
 
   net_size <- 100
   nsteps <- 10
-  nsims <- 1
+  nsims <- 2
   seed <- 0
   
   coefs.diss <- list(dissolution_coefs(~offset(edges), 10, 0),
@@ -163,7 +162,7 @@ test_that("simulation diagnostics work as expected", {
                        dim = c(nsteps,length(durs),nsims))
     
     expect_equal(pages, dx$pages)
-#    expect_equal(pages_imptd, dx$pages_imptd)
+    expect_equal(pages_imptd, dx$pages_imptd)
     expect_equal(prop.diss, dx$prop.diss)
   }
 })
@@ -201,7 +200,6 @@ test_that("netsim produces a networkDynamic with the expected data.frame when re
                   coef = c(est$coef.form, est$coef.diss$coef.crude),
                   time.start = 0,
                   time.slices = 5,
-                  monitor = est$formation,
                   dynamic = TRUE)
 
   expect_identical(as.data.frame(nws), as.data.frame(nwd))
@@ -240,7 +238,6 @@ test_that("netsim produces a networkDynamic with the expected data.frame when re
     nws <- simulate(nws ~ Form(est$formation) + Persist(est$coef.diss$dissolution),
                     coef = c(est$coef.form, est$coef.diss$coef.crude),
                     time.start = i - 1,
-                    monitor = est$formation,
                     dynamic = TRUE)
   }
     
