@@ -143,9 +143,9 @@
 #' @importFrom ape as.phylo collapse.singles
 #' @importFrom lazyeval lazy_dots lazy_eval
 #' @importFrom statnet.common trim_env nonsimp_update.formula append_rhs.formula
-#'             list_rhs.formula set.control.class check.control.class NVL NVL2
+#'             list_rhs.formula set.control.class check.control.class NVL
 #' @importFrom methods is
-#' @importFrom tibble as_tibble is_tibble tibble
+#' @importFrom tibble tibble
 #' @importFrom coda effectiveSize
 #'
 #' @useDynLib EpiModel, .registration = TRUE
