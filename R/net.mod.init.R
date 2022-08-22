@@ -82,6 +82,11 @@ initialize.net <- function(x, param, init, control, s) {
       nsteps <- get_control(dat, "nsteps")
       dat$stats$transmat <- padded_vector(list(dat$stats$transmat), nsteps)
     }
+    for (network in seq_along(dat$nwparam)) {
+      if (get_control(dat, "nwstats.formula", network = network) == "formation") {
+        dat <- set_control(dat, "nwstats.formula", dat$nwparam[[network]]$formation, network = network)
+      }
+    }
   }
 
   return(dat)
