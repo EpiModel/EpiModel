@@ -732,6 +732,9 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #'        function of \code{\link{recovery.net}}.
 #' @param resim_nets.FUN Module to resimulate the network at each time step,
 #'        with the default function of \code{\link{resim_nets}}.
+#' @param summary_nets.FUN Module to extract summary statistics of the network
+#'        at each time step, with the default function of
+#'        \code{\link{summary_nets}}.
 #' @param infection.FUN Module to simulate disease infection, with the default
 #'        function of \code{\link{infection.net}}.
 #' @param nwupdate.FUN Module to handle updating of network structure and nodal
@@ -892,6 +895,7 @@ control.net <- function(type,
                         epi.by,
                         initialize.FUN = initialize.net,
                         resim_nets.FUN = resim_nets,
+                        summary_nets.FUN = summary_nets,
                         infection.FUN = NULL,
                         recovery.FUN = NULL,
                         departures.FUN = NULL,
@@ -976,8 +980,8 @@ control.net <- function(type,
   #Check whether any base modules have been redefined by user (note: must come
   # after above)
   bi.nms <- bi.nms[-which(bi.nms %in% c("initialize.FUN", "resim_nets.FUN",
-                                        "verbose.FUN", "nwupdate.FUN",
-                                        "prevalence.FUN"))]
+                                        "summary_nets.FUN", "verbose.FUN",
+                                        "nwupdate.FUN", "prevalence.FUN"))]
   if (length(bi.nms) > 0) {
     flag1 <- logical()
     for (args in seq_along(bi.nms)) {

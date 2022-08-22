@@ -66,4 +66,4 @@ Remotes:
     github::statnet/network@master,
     github::statnet/networkDynamic@master,
     github::statnet/ergm@master,
-    github::statnet/tergm@master
+    github::statnet/tergm@summary_nwd_colnames

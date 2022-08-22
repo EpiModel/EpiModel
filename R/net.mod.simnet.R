@@ -150,6 +150,13 @@ simulate_dat <- function(dat, at, network = 1L, nsteps = 1L) {
     coef <- nwparam$coef.form
   }
 
+  if (get_control(dat, "save.nwstats") == TRUE &&
+      get_control(dat, "resimulate.network") == FALSE) {
+    monitor <- get_control(dat, "nwstats.formula", network = network)
+  } else {
+    monitor <- NULL # will be handled by summary_nets, if needed
+  }
+
   # TERGM simulation
   nw <- simulate(formula,
                  coef = coef,
@@ -159,16 +166,17 @@ simulate_dat <- function(dat, at, network = 1L, nsteps = 1L) {
                  time.slices = nsteps,
                  output = output,
                  control = get_control(dat, "set.control.tergm", network = network),
-                 monitor = get_control(dat, "nwstats.formula", network = network),
+                 monitor = monitor,
                  dynamic = TRUE)
 
   dat <- set_sim_network(dat, nw, network = network)
 
-  if (get_control(dat, "save.nwstats") == TRUE) {
+  if (!is.null(monitor)) {
     new.nwstats <- attributes(nw)$stats
     keep.cols <- which(!duplicated(colnames(new.nwstats)))
     new.nwstats <- new.nwstats[, keep.cols, drop = FALSE]
     dat$stats$nwstats[[network]] <- rbind(dat$stats$nwstats[[network]], new.nwstats)
+    rownames(dat$stats$nwstats[[network]]) <- NULL
   }
 
   return(dat)

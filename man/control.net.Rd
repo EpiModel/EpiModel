@@ -18,6 +18,7 @@ control.net(
   epi.by,
   initialize.FUN = initialize.net,
   resim_nets.FUN = resim_nets,
+  summary_nets.FUN = summary_nets,
   infection.FUN = NULL,
   recovery.FUN = NULL,
   departures.FUN = NULL,
@@ -93,6 +94,10 @@ default function of \code{\link{initialize.net}}.}
 
 \item{resim_nets.FUN}{Module to resimulate the network at each time step,
 with the default function of \code{\link{resim_nets}}.}
+
+\item{summary_nets.FUN}{Module to extract summary statistics of the network
+at each time step, with the default function of
+\code{\link{summary_nets}}.}
 
 \item{infection.FUN}{Module to simulate disease infection, with the default
 function of \code{\link{infection.net}}.}

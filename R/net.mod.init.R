@@ -60,6 +60,7 @@ initialize.net <- function(x, param, init, control, s) {
       }
       dat <- sim_nets_t1(dat, network = network)
     }
+    dat <- summary_nets(dat, at = 1L)
 
     ## Infection Status and Time
     dat <- init_status.net(dat)
