@@ -40,6 +40,7 @@ control.net(
   set.control.ergm = control.simulate.formula(MCMC.burnin = 2e+05),
   set.control.tergm = control.simulate.formula.tergm(),
   save.diss.stats = TRUE,
+  dat.updates = NULL,
   ...
 )
 }
@@ -183,6 +184,24 @@ parameter. Supports \code{\link{multilayer}} specification.}
 duration/dissolution statistics for plotting and printing, provided
 \code{save.network} is \code{TRUE}, \code{tergmLite} is \code{FALSE},
 and the dissolution model is homogeneous.}
+
+\item{dat.updates}{Either \code{NULL}, a single function taking arguments
+\code{dat}, \code{at}, and \code{network}, or a list of functions of
+length one greater than the number of networks being simulated, with
+each function in the list taking arguments \code{dat} and \code{at}.
+If a single function is passed, it will be called before the first
+network is resimulated in \code{resim_nets} and after each network is
+resimulated in \code{resim_nets}, with \code{network = 0L} before the
+first network is resimulated and with \code{network = i} after the
+\code{i}th network is resimulated. If a list of functions is passed,
+the first function will be called before the first network is
+resimulated in \code{resim_nets}, and the \code{i + 1}th function
+will be called after the \code{i}th network is resimulated. The
+function(s) should return \code{dat} with any updates needed to
+correctly represent the network states for calls to \code{simulate}
+and/or \code{summary}. This can be useful if nodal attributes
+appearing in one network model depend on nodal degrees in a different
+network.}
 
 \item{...}{Additional control settings passed to model.}
 }

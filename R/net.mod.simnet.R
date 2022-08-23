@@ -218,8 +218,29 @@ resim_nets <- function(dat, at) {
 
   # Network resimulation
   if (anyActive == TRUE && get_control(dat, "resimulate.network") == TRUE) {
+    dat.updates <- get_control(dat, "dat.updates")
+    if (!is.null(dat.updates)) {
+      dat <- dat.updates(dat = dat, at = at, network = 0L)
+    }
     for (network in seq_along(dat$nwparam)) {
       dat <- simulate_dat(dat, at, network = network)
+      if (!is.null(dat.updates)) {
+        dat <- dat.updates(dat = dat, at = at, network = network)
+      }
+    }
+  }
+
+  cumulative.edgelist <- get_control(
+    dat, "cumulative.edgelist", override.null.error = TRUE)
+  # Cummulative edgelist
+  if (!is.null(cumulative.edgelist) && cumulative.edgelist == TRUE) {
+
+    truncate.el.cuml <- get_control(
+      dat, "truncate.el.cuml", override.null.error = TRUE)
+    truncate.el.cuml <- if (is.null(truncate.el.cuml)) 1 else truncate.el.cuml
+
+    for (network in seq_along(dat[["nwparam"]])) {
+      dat <- update_cumulative_edgelist(dat, network, truncate.el.cuml)
     }
   }
 

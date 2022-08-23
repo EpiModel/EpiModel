@@ -20,8 +20,6 @@ nwupdate.net <- function(dat, at) {
 
   ## Controls
   tergmLite <- get_control(dat, "tergmLite")
-  cumulative.edgelist <- get_control(
-    dat, "cumulative.edgelist", override.null.error = TRUE)
 
   resimulate.network <- get_control(dat, "resimulate.network")
 
@@ -104,18 +102,6 @@ nwupdate.net <- function(dat, at) {
                                                      value = status,
                                                      onset = at,
                                                      terminus = Inf)
-    }
-  }
-
-  # Cummulative edgelist
-  if (!is.null(cumulative.edgelist) && cumulative.edgelist == TRUE) {
-
-    truncate.el.cuml <- get_control(
-      dat, "truncate.el.cuml", override.null.error = TRUE)
-    truncate.el.cuml <- if (is.null(truncate.el.cuml)) 1 else truncate.el.cuml
-
-    for (network in seq_along(dat[["nwparam"]])) {
-      dat <- update_cumulative_edgelist(dat, network, truncate.el.cuml)
     }
   }
 

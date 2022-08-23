@@ -89,6 +89,13 @@ initialize.net <- function(x, param, init, control, s) {
     }
   }
 
+  dat.updates <- get_control(dat, "dat.updates")
+  if (is.list(dat.updates)) {
+    set_control(dat, "dat.updates", 
+                function(dat, at, network) {
+                  dat.updates[[network + 1L]](dat = dat, at = at)
+                })
+  }
   return(dat)
 }
 
