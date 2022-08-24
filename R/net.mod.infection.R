@@ -56,7 +56,7 @@ infection.net <- function(dat, at) {
   if (nElig > 0 && nElig < nActive) {
 
     # Get discordant edgelist
-    del <- do.call(rbind, lapply(seq_along(dat$nwparam), discord_edgelist, dat = dat, at = at))
+    del <- do.call(rbind, lapply(seq_along(dat$nwparam), discord_edgelist, dat = dat, at = at, include.network = TRUE))
 
     # If some discordant edges, then proceed
     if (!(is.null(del))) {
@@ -178,7 +178,7 @@ infection.2g.net <- function(dat, at) {
   if (nElig > 0 && nElig < nActive) {
 
     # Get discordant edgelist
-    del <- do.call(rbind, lapply(seq_along(dat$nwparam), discord_edgelist, dat = dat, at = at))
+    del <- do.call(rbind, lapply(seq_along(dat$nwparam), discord_edgelist, dat = dat, at = at, include.network = TRUE))
 
     # If some discordant edges, then proceed
     if (!(is.null(del))) {
@@ -261,6 +261,8 @@ infection.2g.net <- function(dat, at) {
 #'        the current edgelist from. Default of \code{network = 1}.
 #' @param infstat Character vector of disease status values that are considered
 #'        infectious, defining the SI pairs.
+#' @param include.network Should the \code{network} value be included as the
+#'        final column of the discordant edgelist?
 #'
 #' @details
 #' This internal function works within the parent \code{\link{infection.net}}
@@ -289,7 +291,7 @@ infection.2g.net <- function(dat, at) {
 #' @export
 #' @keywords netMod internal
 #'
-discord_edgelist <- function(dat, at, network = 1, infstat = "i") {
+discord_edgelist <- function(dat, at, network = 1, infstat = "i", include.network = FALSE) {
 
   status <- get_attr(dat, "status")
   active <- get_attr(dat, "active")
@@ -318,6 +320,10 @@ discord_edgelist <- function(dat, at, network = 1, infstat = "i") {
         del <- NULL
       }
     }
+  }
+
+  if (NROW(del) > 0 && include.network == TRUE) {
+    del <- cbind(del, network = network)
   }
 
   return(del)
