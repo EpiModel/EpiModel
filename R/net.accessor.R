@@ -437,6 +437,9 @@ get_control <- function(dat, item, override.null.error = FALSE, network) {
   }
 
   if (!missing(network) && is(out, "multilayer")) {
+    if (length(out) < network) {
+      stop("Multilayer control argument `", item, "` lacks a value for network ", network, ".")
+    }
     out <- out[[network]]
   }
 
