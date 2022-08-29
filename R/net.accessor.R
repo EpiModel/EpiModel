@@ -439,7 +439,7 @@ get_control <- function(dat, item, override.null.error = FALSE) {
 }
 
 #' @rdname net-accessor
-#' @param network index of network for which to get or set control
+#' @param network index of network for which to get control
 #' @export
 get_network_control <- function(dat, item, override.null.error = FALSE, network) {
   if (missing(network)) {

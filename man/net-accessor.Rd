@@ -104,7 +104,7 @@ elements to append at the end of \code{item}.}
 value for the epi output \code{item}; for \code{append_core_attr}, the
 current time step.}
 
-\item{network}{index of network for which to get or set control}
+\item{network}{index of network for which to get control}
 }
 \value{
 A vector or a list of vectors for \code{get_} functions; the main

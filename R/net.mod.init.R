@@ -68,6 +68,7 @@ initialize.net <- function(x, param, init, control, s) {
     # Restart/Reinit Simulations ----------------------------------------------
   } else if (control$start > 1) {
     dat <- create_dat_object(param = x$param, control = control)
+
     dat$nw <- x$network[[s]]
     dat$nwparam <- x$nwparam
     dat$epi <- sapply(x$epi, function(var) var[s])
