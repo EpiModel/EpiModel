@@ -422,9 +422,8 @@ get_control_list <- function(dat, item = NULL) {
 }
 
 #' @rdname net-accessor
-#' @param network index of network for which to get or set control
 #' @export
-get_control <- function(dat, item, override.null.error = FALSE, network) {
+get_control <- function(dat, item, override.null.error = FALSE) {
   if (!item %in% names(dat[["control"]])) {
     if (override.null.error) {
       out <- NULL
@@ -436,12 +435,34 @@ get_control <- function(dat, item, override.null.error = FALSE, network) {
     out <- dat[["control"]][[item]]
   }
 
-  if (!missing(network) && is(out, "multilayer")) {
-    if (length(out) < network) {
-      stop("Multilayer control argument `", item, "` lacks a value for network ", network, ".")
-    }
-    out <- out[[network]]
+  return(out)
+}
+
+#' @rdname net-accessor
+#' @param network index of network for which to get or set control
+#' @export
+get_network_control <- function(dat, item, override.null.error = FALSE, network) {
+  if (missing(network)) {
+    stop("`get_network_control` requires `network` argument.")
   }
+
+  if (!item %in% names(dat[["control"]])) {
+    if (override.null.error) {
+      return(NULL)
+    } else {
+      stop("There is no control value called `", item,
+           "` in the control list of the main list object (dat)")
+    }
+  } else {
+    out <- dat[["control"]][[item]]
+  }
+
+  if (!is(out, "multilayer")) {
+    stop("Control value `", item, "` accessed through `get_network_control` ",
+         "is not of class `multilayer`.")
+  }
+
+  out <- out[[network]]
 
   return(out)
 }
@@ -461,23 +482,12 @@ add_control <- function(dat, item) {
 
 #' @rdname net-accessor
 #' @export
-set_control <- function(dat, item, value, network) {
+set_control <- function(dat, item, value) {
   if (!item %in% names(dat[["control"]])) {
     dat <- add_control(dat, item)
   }
 
-  if (missing(network)) {
-    dat[["control"]][[item]] <- value
-  } else {
-    oldval <- dat[["control"]][[item]]
-    if (is(oldval, "multilayer")) {
-      dat[["control"]][[item]][[network]] <- value
-    } else {
-      newval <- rep(list(oldval), length.out = length(dat$nwparam))
-      newval[[network]] <- value
-      dat[["control"]][[item]] <- do.call(multilayer, newval)
-    }
-  }
+  dat[["control"]][[item]] <- value
 
   return(dat)
 }

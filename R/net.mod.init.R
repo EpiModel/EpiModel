@@ -53,11 +53,8 @@ initialize.net <- function(x, param, init, control, s) {
       dat$stats$nwstats <- rep(list(), length.out = length(dat$nwparam))
     }
 
-    # Handle "formation" monitor and simulate first time step
+    # simulate first time step
     for (network in seq_along(dat$nwparam)) {
-      if (get_control(dat, "nwstats.formula", network = network) == "formation") {
-        dat <- set_control(dat, "nwstats.formula", dat$nwparam[[network]]$formation, network = network)
-      }
       dat <- sim_nets_t1(dat, network = network)
     }
     dat <- summary_nets(dat, at = 1L)
@@ -71,7 +68,6 @@ initialize.net <- function(x, param, init, control, s) {
     # Restart/Reinit Simulations ----------------------------------------------
   } else if (control$start > 1) {
     dat <- create_dat_object(param = x$param, control = control)
-
     dat$nw <- x$network[[s]]
     dat$nwparam <- x$nwparam
     dat$epi <- sapply(x$epi, function(var) var[s])
@@ -82,20 +78,8 @@ initialize.net <- function(x, param, init, control, s) {
       nsteps <- get_control(dat, "nsteps")
       dat$stats$transmat <- padded_vector(list(dat$stats$transmat), nsteps)
     }
-    for (network in seq_along(dat$nwparam)) {
-      if (get_control(dat, "nwstats.formula", network = network) == "formation") {
-        dat <- set_control(dat, "nwstats.formula", dat$nwparam[[network]]$formation, network = network)
-      }
-    }
   }
 
-  dat.updates <- get_control(dat, "dat.updates")
-  if (is.list(dat.updates)) {
-    set_control(dat, "dat.updates",
-                function(dat, at, network) {
-                  dat.updates[[network + 1L]](dat = dat, at = at)
-                })
-  }
   return(dat)
 }
 

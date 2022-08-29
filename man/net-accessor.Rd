@@ -17,6 +17,7 @@
 \alias{set_param}
 \alias{get_control_list}
 \alias{get_control}
+\alias{get_network_control}
 \alias{add_control}
 \alias{set_control}
 \alias{get_init_list}
@@ -54,11 +55,13 @@ set_param(dat, item, value)
 
 get_control_list(dat, item = NULL)
 
-get_control(dat, item, override.null.error = FALSE, network)
+get_control(dat, item, override.null.error = FALSE)
+
+get_network_control(dat, item, override.null.error = FALSE, network)
 
 add_control(dat, item)
 
-set_control(dat, item, value, network)
+set_control(dat, item, value)
 
 get_init_list(dat, item = NULL)
 

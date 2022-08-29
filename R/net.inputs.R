@@ -1195,7 +1195,6 @@ crosscheck.net <- function(x, param, init, control) {
           }
         }
       }
-
     }
 
     if (control[["start"]] > 1) {
@@ -1223,10 +1222,7 @@ crosscheck.net <- function(x, param, init, control) {
           stop("control setting start must be 1 greater than the nsteps in
                the ", "prior simulation", call. = FALSE)
         }
-
-
       }
-
     }
 
 
@@ -1259,6 +1255,47 @@ crosscheck.net <- function(x, param, init, control) {
   if (!is.null(control[["type"]]) && length(control[["user.mods"]]) > 0) {
     stop("Control setting 'type' must be NULL if any user-specified modules
          specified.", call. = FALSE)
+  }
+
+  if (inherits(x, "netest")) {
+    nwparam <- list(x)
+  } else if (inherits(x, "netsim")) {
+    nwparam <- x$nwparam
+  } else { # must be list of netest
+    nwparam <- x
+  }
+
+  num_nw <- length(nwparam)
+
+  # convert relevant control arguments to multilayer if they are not already, and check length
+  for (control_arg_name in c("nwstats.formula", "set.control.ergm", "set.control.tergm")) {
+    control_arg_value <- control[[control_arg_name]]
+    if (!is(control_arg_value, "multilayer")) {
+      control[[control_arg_name]] <- do.call(multilayer, rep(list(control_arg_value), length.out = num_nw))
+    } else if (length(control_arg_value) != num_nw) {
+      stop("multilayer control argument `", control_arg_name, "` has length ",
+           length(control_arg_value), " but should have length ", num_nw, ".")
+    }
+  }
+
+  # convert nwstats.formula = "formation" to actual formation formula
+  for (network in seq_len(num_nw)) {
+    if (!is.null(control[["nwstats.formula"]][[network]]) &&
+        control[["nwstats.formula"]][[network]] == "formation") {
+      control[["nwstats.formula"]][[network]] <- nwparam[[network]]$formation
+    }
+  }
+
+  # convert dat.updates to a function of dat, at, network if it is not already
+  dat.updates <- control[["dat.updates"]]
+  if (is.list(dat.updates)) {
+    if (length(dat.updates) != num_nw + 1L) {
+      stop("control argument `dat.updates` is of length ", length(dat.updates),
+           " but should be of length ", num_nw + 1L, ".")
+    }
+    control[["dat.updates"]] <- trim_env(function(dat, at, network) {
+                                           dat.updates[[network + 1L]](dat = dat, at = at)
+                                         }, keep = c("dat.updates"))
   }
 
   ## In-place assignment to update param and control
