@@ -1,61 +1,64 @@
 
-#' @title Initialize Network Used in netsim
+#' @title Initialize Networks Used in netsim
 #'
-#' @description This function initializes the network used in
-#'              \code{\link{netsim}}, simulating a dynamic network over one or
-#'              multiple time steps for TERGMs or one or multiple
-#'              cross-sectional network panels for ERGMs.
+#' @description This function initializes the networks used in
+#'              \code{\link{netsim}}. The initial edge set for a given network
+#'              is obtained either from simulating the cross-sectional model
+#'              (if \code{edapprox == TRUE}) or from the \code{newnetwork}
+#'              element of the \code{netest} object (if
+#'              \code{edapprox == FALSE}).  Once the initial edge sets are
+#'              determined, the first time step is simulated.
 #'
 #' @inheritParams recovery.net
-#' @param network index of the network to initialize
 #'
 #' @inherit recovery.net return
 #'
 #' @export
 #' @keywords netUtils internal
 #'
-sim_nets_t1 <- function(dat, network = 1L) {
+sim_nets_t1 <- function(dat) {
+  for (network in seq_along(dat$nwparam)) {
+    nwparam <- get_nwparam(dat, network = network)
 
-  nwparam <- get_nwparam(dat, network = network)
-
-  # Simulate t0 basis network
-  if (nwparam$edapprox == TRUE) {
-    dat$nw[[network]] <- simulate(nwparam$formula,
-                                  coef = nwparam$coef.form.crude,
-                                  basis = dat$nw[[network]],
-                                  constraints = nwparam$constraints,
-                                  control = get_network_control(dat, "set.control.ergm", network = network),
-                                  dynamic = FALSE)
-  }
-
-  if (get_control(dat, "tergmLite") == TRUE) {
-    ## set up el
-    dat$el[[network]] <- as.edgelist(dat$nw[[network]])
-    if (get_control(dat, "tergmLite.track.duration") == TRUE) {
-      ## set up time, lasttoggle
-      dat$nw[[network]] %n% "time" <- 0L
-      dat$nw[[network]] %n% "lasttoggle" <- cbind(dat$el[[network]], 0L)
+    # Simulate t0 basis network
+    if (nwparam$edapprox == TRUE) {
+      dat$nw[[network]] <- simulate(nwparam$formula,
+                                    coef = nwparam$coef.form.crude,
+                                    basis = dat$nw[[network]],
+                                    constraints = nwparam$constraints,
+                                    control = get_network_control(dat, "set.control.ergm", network = network),
+                                    dynamic = FALSE)
     }
-    ## copy over network attributes
-    for (netattrname in setdiff(list.network.attributes(dat$nw[[network]]),
-                                names(attributes(dat$el[[network]])))) {
-      attr(dat$el[[network]], netattrname) <-
-        get.network.attribute(dat$nw[[network]], netattrname)
+
+    if (get_control(dat, "tergmLite") == TRUE) {
+      ## set up el
+      dat$el[[network]] <- as.edgelist(dat$nw[[network]])
+      if (get_control(dat, "tergmLite.track.duration") == TRUE) {
+        ## set up time, lasttoggle
+        dat$nw[[network]] %n% "time" <- 0L
+        dat$nw[[network]] %n% "lasttoggle" <- cbind(dat$el[[network]], 0L)
+      }
+      ## copy over network attributes
+      for (netattrname in setdiff(list.network.attributes(dat$nw[[network]]),
+                                  names(attributes(dat$el[[network]])))) {
+        attr(dat$el[[network]], netattrname) <-
+          get.network.attribute(dat$nw[[network]], netattrname)
+      }
     }
-  }
 
-  if (get_control(dat, "resimulate.network") == TRUE) {
-    nsteps <- 1L
-  } else {
-    nsteps <- get_control(dat, "nsteps")
-  }
+    if (get_control(dat, "resimulate.network") == TRUE) {
+      nsteps <- 1L
+    } else {
+      nsteps <- get_control(dat, "nsteps")
+    }
 
-  dat <- simulate_dat(dat, at = 1L, network = network, nsteps = nsteps)
+    dat <- simulate_dat(dat, at = 1L, network = network, nsteps = nsteps)
 
-  if (get_control(dat, "tergmLite") == FALSE) {
-    dat$nw[[network]] <- networkDynamic::activate.vertices(dat$nw[[network]],
-                                                           onset = 0L,
-                                                           terminus = Inf)
+    if (get_control(dat, "tergmLite") == FALSE) {
+      dat$nw[[network]] <- networkDynamic::activate.vertices(dat$nw[[network]],
+                                                             onset = 0L,
+                                                             terminus = Inf)
+    }
   }
 
   return(dat)

@@ -54,9 +54,7 @@ initialize.net <- function(x, param, init, control, s) {
     }
 
     # simulate first time step
-    for (network in seq_along(dat$nwparam)) {
-      dat <- sim_nets_t1(dat, network = network)
-    }
+    dat <- sim_nets_t1(dat)
     dat <- summary_nets(dat, at = 1L)
 
     ## Infection Status and Time

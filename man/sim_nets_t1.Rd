@@ -2,24 +2,25 @@
 % Please edit documentation in R/net.mod.simnet.R
 \name{sim_nets_t1}
 \alias{sim_nets_t1}
-\title{Initialize Network Used in netsim}
+\title{Initialize Networks Used in netsim}
 \usage{
-sim_nets_t1(dat, network = 1L)
+sim_nets_t1(dat)
 }
 \arguments{
 \item{dat}{Main list object containing a \code{networkDynamic} object and
 other initialization information passed from \code{\link{netsim}}.}
-
-\item{network}{index of the network to initialize}
 }
 \value{
 The updated \code{dat} main list object.
 }
 \description{
-This function initializes the network used in
-             \code{\link{netsim}}, simulating a dynamic network over one or
-             multiple time steps for TERGMs or one or multiple
-             cross-sectional network panels for ERGMs.
+This function initializes the networks used in
+             \code{\link{netsim}}. The initial edge set for a given network
+             is obtained either from simulating the cross-sectional model
+             (if \code{edapprox == TRUE}) or from the \code{newnetwork}
+             element of the \code{netest} object (if
+             \code{edapprox == FALSE}).  Once the initial edge sets are
+             determined, the first time step is simulated.
 }
 \keyword{internal}
 \keyword{netUtils}
