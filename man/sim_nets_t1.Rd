@@ -19,8 +19,10 @@ This function initializes the networks used in
              is obtained either from simulating the cross-sectional model
              (if \code{edapprox == TRUE}) or from the \code{newnetwork}
              element of the \code{netest} object (if
-             \code{edapprox == FALSE}).  Once the initial edge sets are
-             determined, the first time step is simulated.
+             \code{edapprox == FALSE}). Once the initial edge sets are
+             determined, the first time step is simulated if
+             \code{resimulate.network == TRUE}, and all time steps are
+             simulated if \code{resimulate.network == FALSE}.
 }
 \keyword{internal}
 \keyword{netUtils}
