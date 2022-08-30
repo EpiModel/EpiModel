@@ -5,7 +5,7 @@
 #'              disease.
 #'
 #' @param x If \code{control$start == 1}, either a fitted network model object
-#'        of class \code{netest} or a list of such objects. If 
+#'        of class \code{netest} or a list of such objects. If
 #'        \code{control$start > 1}, an object of class \code{netsim}. When
 #'        multiple networks are used, network size and vertex attributes are
 #'        drawn from the first network when initializing with
