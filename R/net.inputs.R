@@ -798,18 +798,18 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #'        length one greater than the number of networks being simulated, with
 #'        each function in the list taking arguments \code{dat} and \code{at}.
 #'        If a single function is passed, it will be called before the first
-#'        network is resimulated in \code{resim_nets} and after each network is
-#'        resimulated in \code{resim_nets}, with \code{network = 0L} before the
-#'        first network is resimulated and with \code{network = i} after the
-#'        \code{i}th network is resimulated. If a list of functions is passed,
-#'        the first function will be called before the first network is
-#'        resimulated in \code{resim_nets}, and the \code{i + 1}th function
-#'        will be called after the \code{i}th network is resimulated. The
-#'        function(s) should return \code{dat} with any updates needed to
-#'        correctly represent the network states for calls to \code{simulate}
-#'        and/or \code{summary}. This can be useful if nodal attributes
-#'        appearing in one network model depend on nodal degrees in a different
-#'        network.
+#'        network is simulated and after each network is simulated, with
+#'        \code{network = 0L} before the first network is simulated and with
+#'        \code{network = i} after the \code{i}th network is simulated. If a
+#'        list of functions is passed, the first function will be called before
+#'        the first network is simulated, and the \code{i + 1}th function will
+#'        be called after the \code{i}th network is simulated. (Note that
+#'        \code{at = 0L} is used for initial cross-sectional simulations in
+#'        \code{\link{sim_nets_t1}}.) The function(s) should return \code{dat}
+#'        with any updates needed to correctly represent the network states for
+#'        calls to \code{simulate} and/or \code{summary}. This can be useful if
+#'        nodal attributes appearing in one network model depend on nodal
+#'        degrees in a different network.
 #' @param ... Additional control settings passed to model.
 #'
 #' @details

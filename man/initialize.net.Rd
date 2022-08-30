@@ -7,7 +7,12 @@
 initialize.net(x, param, init, control, s)
 }
 \arguments{
-\item{x}{An \code{EpiModel} object of class \code{\link{netest}}.}
+\item{x}{If \code{control$start == 1}, either a fitted network model object
+of class \code{netest} or a list of such objects. If 
+\code{control$start > 1}, an object of class \code{netsim}. When
+multiple networks are used, network size and vertex attributes are
+drawn from the first network when initializing with
+\code{control$start == 1}.}
 
 \item{param}{An \code{EpiModel} object of class \code{\link{param.net}}.}
 
@@ -22,7 +27,7 @@ A \code{dat} main list object.
 }
 \description{
 This function initializes the main \code{dat} object on which
-             data are stored, simulates the initial state of the network, and
-             simulates disease status and other attributes.
+             data are stored, simulates the initial state of the networks,
+             and simulates disease status and other attributes.
 }
 \keyword{internal}

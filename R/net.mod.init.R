@@ -2,10 +2,15 @@
 #' @title Initialization: netsim Module
 #'
 #' @description This function initializes the main \code{dat} object on which
-#'              data are stored, simulates the initial state of the network, and
-#'              simulates disease status and other attributes.
+#'              data are stored, simulates the initial state of the networks,
+#'              and simulates disease status and other attributes.
 #'
-#' @param x An \code{EpiModel} object of class \code{\link{netest}}.
+#' @param x If \code{control$start == 1}, either a fitted network model object
+#'        of class \code{netest} or a list of such objects. If 
+#'        \code{control$start > 1}, an object of class \code{netsim}. When
+#'        multiple networks are used, network size and vertex attributes are
+#'        drawn from the first network when initializing with
+#'        \code{control$start == 1}.
 #' @param param An \code{EpiModel} object of class \code{\link{param.net}}.
 #' @param init An \code{EpiModel} object of class \code{\link{init.net}}.
 #' @param control An \code{EpiModel} object of class \code{\link{control.net}}.

@@ -4,9 +4,12 @@
 #' @description Simulates stochastic network epidemic models for infectious
 #'              disease.
 #'
-#' @param x Fitted network model object, as an object of class \code{netest}.
-#'        Alternatively, if restarting a previous simulation, may be an object
-#'        of class \code{netsim}.
+#' @param x If \code{control$start == 1}, either a fitted network model object
+#'        of class \code{netest} or a list of such objects. If 
+#'        \code{control$start > 1}, an object of class \code{netsim}. When
+#'        multiple networks are used, network size and vertex attributes are
+#'        drawn from the first network when initializing with
+#'        \code{control$start == 1}.
 #' @param param Model parameters, as an object of class \code{param.net}.
 #' @param init Initial conditions, as an object of class \code{init.net}.
 #' @param control Control settings, as an object of class
@@ -53,8 +56,9 @@
 #'        \code{\link{control.net}} and the
 #'        \href{http://www.epimodel.org/tut.html}{tutorials} for further
 #'        details.
-#'  \item \strong{network:} a list of \code{networkDynamic} objects,
-#'         one for each model simulation.
+#'  \item \strong{network:} a list of lists of \code{networkDynamic} objects,
+#'        with one list of \code{networkDynamic} objects for each model
+#'        simulation.
 #' }
 #' If \code{control$raw.output == TRUE}: A list of the raw (pre-processed)
 #' \code{netsim} \code{dat} objects, for use in simulation continuation.
