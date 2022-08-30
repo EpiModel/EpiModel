@@ -17,6 +17,12 @@
 #' @keywords netUtils internal
 #'
 sim_nets_t1 <- function(dat) {
+  dat.updates <- get_control(dat, "dat.updates")
+
+  if (!is.null(dat.updates)) {
+    dat <- dat.updates(dat = dat, at = 0L, network = 0L)
+  }
+
   for (network in seq_along(dat$nwparam)) {
     nwparam <- get_nwparam(dat, network = network)
 
@@ -28,6 +34,10 @@ sim_nets_t1 <- function(dat) {
                                     constraints = nwparam$constraints,
                                     control = get_network_control(dat, "set.control.ergm", network = network),
                                     dynamic = FALSE)
+    }
+
+    if (!is.null(dat.updates)) {
+      dat <- dat.updates(dat = dat, at = 0L, network = network)
     }
 
     if (get_control(dat, "tergmLite") == TRUE) {
@@ -45,14 +55,24 @@ sim_nets_t1 <- function(dat) {
           get.network.attribute(dat$nw[[network]], netattrname)
       }
     }
+  }
 
-    if (get_control(dat, "resimulate.network") == TRUE) {
-      nsteps <- 1L
-    } else {
-      nsteps <- get_control(dat, "nsteps")
-    }
+  if (get_control(dat, "resimulate.network") == TRUE) {
+    nsteps <- 1L
+  } else {
+    nsteps <- get_control(dat, "nsteps")
+  }
 
+  if (!is.null(dat.updates)) {
+    dat <- dat.updates(dat = dat, at = 1L, network = 0L)
+  }
+
+  for (network in seq_along(dat$nwparam)) {
     dat <- simulate_dat(dat, at = 1L, network = network, nsteps = nsteps)
+
+    if (!is.null(dat.updates)) {
+      dat <- dat.updates(dat = dat, at = 1L, network = network)
+    }
 
     if (get_control(dat, "tergmLite") == FALSE) {
       dat$nw[[network]] <- networkDynamic::activate.vertices(dat$nw[[network]],
