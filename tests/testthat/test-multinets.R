@@ -27,8 +27,10 @@ test_that("netsim runs with multiple networks", {
                              tergmLite = tergmLite,
                              resimulate.network = resimulate.network,
                              tergmLite.track.duration = TRUE,
+                             dat.updates = function (dat, at, network) dat,
                              nwstats.formula = multilayer(~triangle, "formation", ~mean.age, ~degree(0:3), "formation"),
                              verbose = TRUE)
+      print(control)
 
       set.seed(0)
       mod <- netsim(list(est10, est1, est20, est1, est20), param, init, control)  
