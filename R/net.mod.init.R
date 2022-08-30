@@ -29,6 +29,7 @@ initialize.net <- function(x, param, init, control, s) {
 
     dat$nw <- lapply(x, `[[`, "newnetwork")
     dat$nwparam <- lapply(x, function(y) y[!(names(y) %in% c("fit", "newnetwork"))])
+    if (get_control(dat, "tergmLite") == TRUE) dat$el <- lapply(dat$nw, as.edgelist)
 
     # Nodal Attributes --------------------------------------------------------
 
