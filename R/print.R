@@ -515,7 +515,7 @@ print.control.net <- function(x, ...) {
     names(x) != "f.names" &
     names(x) != "set.control.tergm" &
     names(x) != "set.control.ergm" &
-    !grepl("^mcmc\\.control", names(x)) &
+    names(x) != "dat.updates" &
     !(names(x) %in% c("bi.mods", "user.mods"))
   )
 
