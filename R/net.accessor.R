@@ -442,7 +442,9 @@ get_control <- function(dat, item, override.null.error = FALSE) {
 #' @param network index of network for which to get control
 #' @export
 get_network_control <- function(dat, network, item, override.null.error = FALSE) {
-  force(network) # in case it's missing
+  if (missing(network)) {
+    stop("`get_network_control` requires `network` argument.")
+  }
 
   if (!item %in% names(dat[["control"]])) {
     if (override.null.error) {
