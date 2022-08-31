@@ -18,10 +18,10 @@ summary_nets <- function(dat, at) {
   if (get_control(dat, "save.nwstats") == TRUE &&
       get_control(dat, "resimulate.network") == TRUE) {
     for (network in seq_along(dat$nwparam)) {
-      nwstats <- summary(get_network_control(dat, "nwstats.formula", network = network),
+      nwstats <- summary(get_network_control(dat, network, "nwstats.formula"),
                          basis = make_sim_network(dat, network = network),
                          at = at, # needed for networkDynamic case
-                         term.options = get_network_control(dat, "set.control.tergm", network = network)$term.options)
+                         term.options = get_network_control(dat, network, "set.control.tergm")$term.options)
       if (is(nwstats, "matrix")) {
         nwstats <- nwstats[, !duplicated(colnames(nwstats)), drop = FALSE]
       } else {

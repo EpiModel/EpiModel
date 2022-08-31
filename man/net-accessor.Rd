@@ -57,7 +57,7 @@ get_control_list(dat, item = NULL)
 
 get_control(dat, item, override.null.error = FALSE)
 
-get_network_control(dat, item, override.null.error = FALSE, network)
+get_network_control(dat, network, item, override.null.error = FALSE)
 
 add_control(dat, item)
 

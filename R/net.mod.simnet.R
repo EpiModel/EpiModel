@@ -34,7 +34,7 @@ sim_nets_t1 <- function(dat) {
                                     coef = nwparam$coef.form.crude,
                                     basis = dat$nw[[network]],
                                     constraints = nwparam$constraints,
-                                    control = get_network_control(dat, "set.control.ergm", network = network),
+                                    control = get_network_control(dat, network, "set.control.ergm"),
                                     dynamic = FALSE)
     }
 
@@ -177,7 +177,7 @@ simulate_dat <- function(dat, at, network = 1L, nsteps = 1L) {
 
   if (get_control(dat, "save.nwstats") == TRUE &&
       get_control(dat, "resimulate.network") == FALSE) {
-    monitor <- get_network_control(dat, "nwstats.formula", network = network)
+    monitor <- get_network_control(dat, network, "nwstats.formula")
   } else {
     monitor <- NULL # will be handled by summary_nets, if needed
   }
@@ -190,7 +190,7 @@ simulate_dat <- function(dat, at, network = 1L, nsteps = 1L) {
                  time.start = at - 1,
                  time.slices = nsteps,
                  output = output,
-                 control = get_network_control(dat, "set.control.tergm", network = network),
+                 control = get_network_control(dat, network, "set.control.tergm"),
                  monitor = monitor,
                  dynamic = TRUE)
 
