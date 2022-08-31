@@ -518,7 +518,7 @@ generate_random_params <- function(param, verbose = FALSE) {
     sampled.row <- sample.int(nrow(param.random.set), 1)
 
     # Convert to `param` format
-    sampled.set <- unflatten_params(param.random.set[sampled.row,])
+    sampled.set <- unflatten_params(param.random.set[sampled.row, ])
 
     # Update `rng_values`
     rng_values <- update_list(rng_values, sampled.set)
