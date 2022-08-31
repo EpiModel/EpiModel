@@ -56,10 +56,11 @@ infection.net <- function(dat, at) {
   if (nElig > 0 && nElig < nActive) {
 
     # Get discordant edgelist
-    del <- do.call(rbind, lapply(seq_along(dat$nwparam), discord_edgelist, dat = dat, at = at, include.network = TRUE))
+    del_list <- lapply(seq_along(dat$nwparam), discord_edgelist, dat = dat, at = at, include.network = TRUE)
+    del <- dplyr::bind_rows(del_list)
 
     # If some discordant edges, then proceed
-    if (!(is.null(del))) {
+    if (NROW(del) > 0) {
 
       # Infection duration to at
       del$infDur <- at - infTime[del$inf]
@@ -178,10 +179,11 @@ infection.2g.net <- function(dat, at) {
   if (nElig > 0 && nElig < nActive) {
 
     # Get discordant edgelist
-    del <- do.call(rbind, lapply(seq_along(dat$nwparam), discord_edgelist, dat = dat, at = at, include.network = TRUE))
+    del_list <- lapply(seq_along(dat$nwparam), discord_edgelist, dat = dat, at = at, include.network = TRUE)
+    del <- dplyr::bind_rows(del_list)
 
     # If some discordant edges, then proceed
-    if (!(is.null(del))) {
+    if (NROW(del) > 0) {
 
       # Infection duration to at
       del$infDur <- at - infTime[del$inf]
@@ -323,7 +325,7 @@ discord_edgelist <- function(dat, at, network = 1, infstat = "i", include.networ
   }
 
   if (NROW(del) > 0 && include.network == TRUE) {
-    del <- cbind(del, network = network)
+    del <- dplyr::bind_cols(del, network = network)
   }
 
   return(del)
