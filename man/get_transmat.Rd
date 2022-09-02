@@ -8,15 +8,19 @@
 \usage{
 is.transmat(x)
 
-get_transmat(x, sim = 1)
+get_transmat(x, sim = 1, deduplicate = TRUE)
 }
 \arguments{
 \item{x}{An \code{EpiModel} object of class \code{\link{netsim}}.}
 
 \item{sim}{Simulation number of extracted network.}
+
+\item{deduplicate}{If multiple infectious acts can occur at each timestep,
+should one be randomly chosen as the first. (default = TRUE)
+If FALSE, all infectious events are returned.}
 }
 \value{
-A data frame with the following columns
+A data frame (tibble) with the following columns (on builtin models)
 \itemize{
  \item \strong{at:} the time step at which the transmission occurred.
  \item \strong{sus:} the ID number of the susceptible (newly infected) node.
