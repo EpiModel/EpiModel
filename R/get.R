@@ -134,9 +134,12 @@ get_network <- function(x, sim = 1, network = 1, collapse = FALSE, at,
 #'
 #' @param x An \code{EpiModel} object of class \code{\link{netsim}}.
 #' @param sim Simulation number of extracted network.
+#' @param deduplicate If multiple infectious acts can occur at each timestep,
+#'   should one be randomly chosen as the first. (default = TRUE)
+#'   If FALSE, all infectious events are returned.
 #'
 #' @return
-#' A data frame with the following columns
+#' A data frame (tibble) with the following columns (on builtin models)
 #' \itemize{
 #'  \item \strong{at:} the time step at which the transmission occurred.
 #'  \item \strong{sus:} the ID number of the susceptible (newly infected) node.
@@ -168,7 +171,7 @@ get_network <- function(x, sim = 1, network = 1, collapse = FALSE, at,
 #' ## Extract the transmission matrix from simulation 2
 #' get_transmat(mod, sim = 2)
 #'
-get_transmat <- function(x, sim = 1) {
+get_transmat <- function(x, sim = 1, deduplicate = TRUE) {
 
   ## Warnings and checks
   if (!inherits(x, "netsim")) {
@@ -186,7 +189,12 @@ get_transmat <- function(x, sim = 1) {
 
   ## Extraction
   out <- x$stats$transmat[[sim]]
-  out <- as.data.frame(out)
+  out <- dplyr::as_tibble(out)
+
+  if (deduplicate) {
+    out <- dplyr::sample_n(dplyr::group_by(out, at, sus), 1)
+  }
+
   class(out) <- c("transmat", class(out))
   return(out)
 }

@@ -2,6 +2,8 @@
 
 ### NEW FEATURES
 
+- `get_transmat` now gets an optional `deduplicate` argument to chose one "infectious" acts in case multiple occured at the same time step
+
 ### BUG FIXES
 
 ### OTHER
