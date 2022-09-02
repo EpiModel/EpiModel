@@ -514,45 +514,14 @@ generate_random_params <- function(param, verbose = FALSE) {
       stop("`param.random.set` must be a data.frame")
     }
 
-    # Check the format of the names
-    set.elements <- names(param.random.set)
-    correct_format <- grepl("^[a-zA-Z0-9.]*(_[0-9]+)?$", set.elements)
-    if (!all(correct_format)) {
-      stop("The following column names in `param.random.set` are malformed: \n",
-        paste0(set.elements[!correct_format], collapse = ", "), "\n\n",
-        "you can check the names with ",
-        '`grepl("^[a-zA-Z0-9.]*(_[0-9]+)?$", your.names)` \n',
-        "Example: 'unique.param', 'param.set_1', 'param.set_2'"
-      )
-    }
-
-    # Construct a `data.frame` matching the names with the parameters
-    set.elements <- names(param.random.set)
-    set.elements.split <- data.frame(do.call(
-      rbind,
-      strsplit(set.elements, "_")
-    ))
-
-    nums <- grepl("^[0-9]+$", set.elements.split[, 2])
-    set.elements.split[, 2] <- as.numeric(
-      ifelse(nums, set.elements.split[, 2], "1")
-    )
-
-    set.elements <- cbind(set.elements, set.elements.split)
-    colnames(set.elements) <- c("name", "param", "position")
-
     # Pick one row of the `data.frame`
     sampled.row <- sample.int(nrow(param.random.set), 1)
-    param.random.set <- param.random.set[sampled.row, ]
 
-    # Set the new values in `rng_values`
-    for (i in seq_len(nrow(set.elements))) {
-      value <- param.random.set[1, set.elements[i, "name"][[1]]]
-      parameter <- set.elements[i, "param"][[1]]
-      position <- set.elements[i, "position"][[1]]
+    # Convert to `param` format
+    sampled.set <- unflatten_params(param.random.set[sampled.row, ])
 
-      rng_values[[parameter]][position] <- value
-    }
+    # Update `rng_values`
+    rng_values <- update_list(rng_values, sampled.set)
   }
 
   if (!all(vapply(random.params, is.function, TRUE))) {
@@ -568,9 +537,7 @@ generate_random_params <- function(param, verbose = FALSE) {
   }
 
   rng_values[rng_names] <- lapply(random.params, do.call, args = list())
-  for (nm in rng_names) {
-    param[nm] <- rng_values[nm]
-  }
+  param <- update_list(param, rng_values)
 
   param[["random.params.values"]] <- rng_values
 
