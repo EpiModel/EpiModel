@@ -8,6 +8,7 @@
 
 - The `tracker.net` module was removed as an optional extension module; this functionality is now the default for all network models (built-in and extension). The *tracker function* now only takes `dat` as an argument and are passed to the `.tracker.list` argument in `control.net`. See the *Working with Attributes and Summary Statistics Vignette* for more details.
 - speedup the `transmat` storage by using `padded_vector` instead of repeated `rbind`. The result of `get_transmat(netsim_object)` is unchanged.
+- use `unflatten_params` in `generate_random_params` instead of bespoke code.
 
 ## EpiModel 2.3.0
 
