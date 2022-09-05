@@ -62,7 +62,7 @@ LinkingTo: Rcpp, ergm
 RoxygenNote: 7.2.1
 Encoding: UTF-8
 Remotes:
-    github::statnet/statnet.common@networkLite,
+    github::statnet/statnet.common@master,
     github::EpiModel/networkLite@networkLite,
     github::statnet/ergm@networkLite,
     github::statnet/tergm@networkLite
