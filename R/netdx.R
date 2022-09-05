@@ -456,7 +456,7 @@ tedgelist_to_toggles <- function(tedgelist) {
 #' @keywords internal
 toggles_to_diss_stats <- function(toggles, coef.diss,
                                   nsteps, nw, time.start = 0L) {
-  nw <- as.network(nw) # drop nwd
+  nw <- as.network(nw, allow.networkLite = TRUE) # drop nwd, allow networkLite
   delete.network.attribute(nw, "time")
   delete.network.attribute(nw, "lasttoggle")
   nw[, ] <- FALSE
