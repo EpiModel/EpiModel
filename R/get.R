@@ -191,9 +191,11 @@ get_transmat <- function(x, sim = 1, deduplicate = TRUE) {
   out <- x$stats$transmat[[sim]]
   out <- dplyr::as_tibble(out)
 
+  # nolint start
   if (deduplicate) {
     out <- dplyr::sample_n(dplyr::group_by(out, at, sus), 1)
   }
+  # nolint end
 
   class(out) <- c("transmat", class(out))
   return(out)
