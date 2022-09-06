@@ -85,6 +85,7 @@ test_that("network and networkLite simulate equally in tergm", {
       nw_1 <- simulate(nw ~ Form(~edges + nodefactor("a") + nodecov(~b^2 + b)) + Persist(~edges), coef = coef, output = "final", dynamic = TRUE)
       set.seed(0)
       nwL_1 <- simulate(nwL ~ Form(~edges + nodefactor("a") + nodecov(~b^2 + b)) + Persist(~edges), coef = coef, output = "final", dynamic = TRUE)
+      expect_is(nwL_1, "networkLite")
 
       expect_equal(as.edgelist(nw_1), as.edgelist(nwL_1))
       expect_identical(nw_1 %n% "lasttoggle", nwL_1 %n% "lasttoggle")
@@ -101,6 +102,7 @@ test_that("network and networkLite simulate equally in tergm", {
       nw_2 <- simulate(nw_1 ~ Form(~edges + nodefactor("a") + nodecov(~b^2 + b)) + Persist(~edges), coef = coef, output = "final", dynamic = TRUE)
       set.seed(0)
       nwL_2 <- simulate(nwL_1 ~ Form(~edges + nodefactor("a") + nodecov(~b^2 + b)) + Persist(~edges), coef = coef, output = "final", dynamic = TRUE)
+      expect_is(nwL_2, "networkLite")
 
       expect_equal(as.edgelist(nw_2), as.edgelist(nwL_2))
       expect_identical(nw_2 %n% "lasttoggle", nwL_2 %n% "lasttoggle")
@@ -117,6 +119,7 @@ test_that("network and networkLite simulate equally in tergm", {
       nw_3 <- simulate(nw_2 ~ Form(~edges + nodefactor("a") + nodecov(~b^2 + b)) + Persist(~edges), coef = coef, output = "final", dynamic = TRUE)
       set.seed(0)
       nwL_3 <- simulate(nwL_2 ~ Form(~edges + nodefactor("a") + nodecov(~b^2 + b)) + Persist(~edges), coef = coef, output = "final", dynamic = TRUE)
+      expect_is(nwL_3, "networkLite")
 
       expect_equal(as.edgelist(nw_3), as.edgelist(nwL_3))
       expect_identical(nw_3 %n% "lasttoggle", nwL_3 %n% "lasttoggle")
@@ -196,6 +199,7 @@ test_that("network and networkLite simulate equally in ergm", {
       nw_1 <- simulate(nw ~ edges + nodefactor("a") + nodecov(~b^2 + b), coef = coef, output = "network", dynamic = FALSE)
       set.seed(0)
       nwL_1 <- simulate(nwL ~ edges + nodefactor("a") + nodecov(~b^2 + b), coef = coef, output = "network", dynamic = FALSE)
+      expect_is(nwL_1, "networkLite")
 
       expect_equal(as.edgelist(nw_1), as.edgelist(nwL_1))
       if(directed) {
@@ -210,6 +214,7 @@ test_that("network and networkLite simulate equally in ergm", {
       nw_2 <- simulate(nw_1 ~ edges + nodefactor("a") + nodecov(~b^2 + b), coef = coef, output = "network", dynamic = FALSE)
       set.seed(0)
       nwL_2 <- simulate(nwL_1 ~ edges + nodefactor("a") + nodecov(~b^2 + b), coef = coef, output = "network", dynamic = FALSE)
+      expect_is(nwL_2, "networkLite")
 
       expect_equal(as.edgelist(nw_2), as.edgelist(nwL_2))
       if(directed) {
@@ -247,6 +252,7 @@ test_that("network and networkLite simulate equally in san", {
       nw_1 <- san(nw ~ edges + nodefactor("a") + nodecov(~b^2 + b), target.stats = c(1000, 500, 300, 200, 600, 1500))
       set.seed(0)
       nwL_1 <- san(nwL ~ edges + nodefactor("a") + nodecov(~b^2 + b), target.stats = c(1000, 500, 300, 200, 600, 1500))
+      expect_is(nwL_1, "networkLite")
 
       expect_equal(as.edgelist(nw_1), as.edgelist(nwL_1))
       if(directed) {
@@ -261,6 +267,7 @@ test_that("network and networkLite simulate equally in san", {
       nw_2 <- san(nw_1 ~ edges + nodefactor("a") + nodecov(~b^2 + b), target.stats = c(800, 400, 200, 100, 600, 1200))
       set.seed(0)
       nwL_2 <- san(nwL_1 ~ edges + nodefactor("a") + nodecov(~b^2 + b), target.stats = c(800, 400, 200, 100, 600, 1200))
+      expect_is(nwL_2, "networkLite")
 
       expect_equal(as.edgelist(nw_2), as.edgelist(nwL_2))
       if(directed) {
@@ -292,11 +299,14 @@ test_that("network and networkLite fit and simulate equal missing-data ergms", {
       
       set.seed(0)
       eL <- ergm(nwL ~ absdiff("age"), control = list(MCMLE.effectiveSize = NULL))
+      expect_is(eL$newnetwork, "networkLite")
       set.edge.attribute(nwL, "na", na)
       set.seed(0)
       eLna <- ergm(nwL ~ absdiff("age"), control = list(MCMLE.effectiveSize = NULL))
+      expect_is(eLna$newnetwork, "networkLite")
       eL2 <- simulate(eLna)
-      
+      expect_is(eL2, "networkLite")
+
       set.seed(0)
       nw <- network.initialize(net_size, directed = directed, bipartite = bipartite)
       nw <- san(nw ~ edges, target.stats = network.dyadcount(nw)/10)
@@ -334,8 +344,10 @@ test_that("network and networkLite fit and simulate equal valued ergms", {
       nwL %v% "age" <- runif(net_size)
       set.edge.attribute(nwL, "w", runif(network.edgecount(nwL)))
       eL <- ergm(nwL ~ absdiff("age"), response = "w", reference = ~Unif(0,1), control = list(MCMLE.effectiveSize = NULL))
+      expect_is(eL$newnetwork, "networkLite")
       eL2 <- simulate(eL)
-      
+      expect_is(eL2, "networkLite")
+
       set.seed(0)
       nw <- network.initialize(net_size, directed = directed, bipartite = bipartite)
       nw <- san(nw ~ edges, target.stats = network.dyadcount(nw))
