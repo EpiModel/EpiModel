@@ -2,7 +2,7 @@
 
 ### NEW FEATURES
 
-- `get_transmat` now gets an optional `deduplicate` argument to chose one "infectious" acts in case multiple occured at the same time step
+- `get_transmat` adds a `deduplicate` argument to select one transmitting acts in the case that multiple transmissions occurred at the same time step to a newly infected person.
 
 ### BUG FIXES
 
