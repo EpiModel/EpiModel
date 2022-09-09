@@ -122,25 +122,13 @@ sim_nets_t1 <- function(x, dat, nsteps) {
 #'
 resim_nets <- function(dat, at) {
 
-  # Control settings for resimulation
-  tergmLite <- get_control(dat, "tergmLite")
-  isTERGM <- get_control(dat, "isTERGM")
-  save.nwstats <- get_control(dat, "save.nwstats")
+  # Check for network resimulation flag
   resimulate.network <- get_control(dat, "resimulate.network")
-  nwstats.formula <- get_control(dat, "nwstats.formula")
-  set.control.stergm <- get_control(dat, "set.control.stergm")
-  set.control.tergm <- get_control(dat, "set.control.tergm")
-  tergmLite.track.duration <- get_control(dat, "tergmLite.track.duration")
 
-  # Edges Correction
-  dat <- edges_correct(dat, at)
-
-  # active attribute (all models)
+  # Calculate active attribute
   active <- get_attr(dat, "active")
   idsActive <- which(active == 1)
   anyActive <- ifelse(length(idsActive) > 0, TRUE, FALSE)
-
-  # group attribute (built-in models)
   if (dat$param$groups == 2) {
     group <- get_attr(dat, "group")
     groupids.1 <- which(group == 1)
@@ -150,11 +138,23 @@ resim_nets <- function(dat, at) {
     anyActive <- ifelse(nActiveG1 > 0 & nActiveG2 > 0, TRUE, FALSE)
   }
 
-  # Pull network model parameters
-  nwparam <- get_nwparam(dat)
-
   # Network resimulation
   if (anyActive == TRUE && resimulate.network == TRUE) {
+
+    # Control settings for resimulation
+    tergmLite <- get_control(dat, "tergmLite")
+    isTERGM <- get_control(dat, "isTERGM")
+    save.nwstats <- get_control(dat, "save.nwstats")
+    nwstats.formula <- get_control(dat, "nwstats.formula")
+    set.control.stergm <- get_control(dat, "set.control.stergm")
+    set.control.tergm <- get_control(dat, "set.control.tergm")
+    tergmLite.track.duration <- get_control(dat, "tergmLite.track.duration")
+
+    # Edges Correction
+    dat <- edges_correct(dat, at)
+
+    # Pull network model parameters
+    nwparam <- get_nwparam(dat)
 
     # Full tergm/network Method
     if (tergmLite == FALSE) {
