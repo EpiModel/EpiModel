@@ -2,6 +2,8 @@
 
 ### NEW FEATURES
 
+- `netsim` now supports multiple networks (with a common node set)
+
 ### BUG FIXES
 
 ### OTHER
