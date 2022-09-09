@@ -253,7 +253,7 @@ test_that("edgecov works with tergmLite", {
                          set.control.ergm = control.simulate.formula(MCMC.burnin = 1e5))
   sim <- netsim(fit, param, init, control)
 
-  expect_equal(unname(sim$stats$nwstats$sim1[[1]][2,1]), 0)
-  expect_equal(unname(sim$stats$nwstats$sim1[[1]][3,1]), network.dyadcount(nw))
-  expect_equal(unname(sim$stats$nwstats$sim1[[1]][4,1]), 0)
+  expect_equal(unname(sim$stats$nwstats$sim1[[1]][2,1,drop=TRUE]), 0)
+  expect_equal(unname(sim$stats$nwstats$sim1[[1]][3,1,drop=TRUE]), network.dyadcount(nw))
+  expect_equal(unname(sim$stats$nwstats$sim1[[1]][4,1,drop=TRUE]), 0)
 })

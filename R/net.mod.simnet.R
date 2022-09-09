@@ -175,6 +175,7 @@ simulate_dat <- function(dat, at, network = 1L, nsteps = 1L) {
     coef <- nwparam$coef.form
   }
 
+  ## we only obtain stats in simulate_dat if resimulate.network == FALSE
   if (get_control(dat, "save.nwstats") == TRUE &&
       get_control(dat, "resimulate.network") == FALSE) {
     monitor <- get_network_control(dat, network, "nwstats.formula")
@@ -196,12 +197,12 @@ simulate_dat <- function(dat, at, network = 1L, nsteps = 1L) {
 
   dat <- set_sim_network(dat, nw, network = network)
 
+  ## monitor only used if resimulate.network == FALSE and at == 1L
   if (!is.null(monitor)) {
     new.nwstats <- attributes(nw)$stats
     keep.cols <- which(!duplicated(colnames(new.nwstats)))
     new.nwstats <- new.nwstats[, keep.cols, drop = FALSE]
-    dat$stats$nwstats[[network]] <- rbind(dat$stats$nwstats[[network]], new.nwstats)
-    rownames(dat$stats$nwstats[[network]]) <- NULL
+    dat$stats$nwstats[[network]] <- list(as_tibble(new.nwstats))
   }
 
   return(dat)

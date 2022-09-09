@@ -56,7 +56,12 @@ initialize.net <- function(x, param, init, control, s) {
     }
 
     if (get_control(dat, "save.nwstats") == TRUE) {
-      dat$stats$nwstats <- rep(list(), length.out = length(dat$nwparam))
+      if (get_control(dat, "resimulate.network") == TRUE) {
+        dat$stats$nwstats <- rep(list(padded_vector(list(), get_control(dat, "nsteps"))),
+                                 length.out = length(dat$nwparam))
+      } else {
+        dat$stats$nwstats <- rep(list(list()), length.out = length(dat$nwparam))
+      }
     }
 
     # simulate first time step
@@ -79,6 +84,14 @@ initialize.net <- function(x, param, init, control, s) {
     names(dat$epi) <- names(x$epi)
     dat$attr <- x$attr[[s]]
     dat$stats <- sapply(x$stats, function(var) var[[s]])
+    if (get_control(dat, "save.nwstats") == TRUE) {
+      dat$stats$nwstats <- lapply(dat$stats$nwstats,
+                                  function(oldstats) {
+                                    padded_vector(list(oldstats),
+                                                  get_control(dat, "nsteps") -
+                                                    get_control(dat, "start") + 2L)
+                                  })
+    }
     if (is.data.frame(dat$stats$transmat)) {
       nsteps <- get_control(dat, "nsteps")
       dat$stats$transmat <- padded_vector(list(dat$stats$transmat), nsteps)

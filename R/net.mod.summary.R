@@ -23,12 +23,17 @@ summary_nets <- function(dat, at) {
                          at = at, # needed for networkDynamic case
                          term.options = get_network_control(dat, network, "set.control.tergm")$term.options)
       if (is(nwstats, "matrix")) {
-        nwstats <- nwstats[, !duplicated(colnames(nwstats)), drop = FALSE]
+        nwstats <- nwstats[, !duplicated(colnames(nwstats)), drop = TRUE]
       } else {
         nwstats <- nwstats[!duplicated(names(nwstats))]
       }
-      dat$stats$nwstats[[network]] <- rbind(dat$stats$nwstats[[network]], nwstats)
-      rownames(dat$stats$nwstats[[network]]) <- NULL
+      start_time <- get_control(dat, "start")
+      if (start_time > 1L) {
+        loc <- at - start_time + 2L
+      } else {
+        loc <- at
+      }
+      dat$stats$nwstats[[network]][[loc]] <- nwstats
     }
   }
   return(dat)

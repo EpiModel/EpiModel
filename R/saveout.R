@@ -200,7 +200,12 @@ saveout.net <- function(dat, s, out = NULL) {
 
     out$stats <- list()
     if (dat$control$save.nwstats == TRUE) {
-      out$stats$nwstats <- list(lapply(dat$stats$nwstats, function(y) structure(y, ess = ess(y))))
+      ## bind rows
+      nwstats <- lapply(dat$stats$nwstats, dplyr::bind_rows)
+      ## compute ess
+      nwstats <- lapply(nwstats, function(y) structure(y, ess = ess(y)))
+      ## store as first element in list on output object
+      out$stats$nwstats <- list(nwstats)
     }
 
     if (dat$control$save.transmat == TRUE) {
@@ -281,7 +286,12 @@ saveout.net <- function(dat, s, out = NULL) {
     out$raw.records[[s]] <- dat$raw.records
 
     if (dat$control$save.nwstats == TRUE) {
-      out$stats$nwstats[[s]] <- lapply(dat$stats$nwstats, function(y) structure(y, ess = ess(y)))
+      ## bind rows
+      nwstats <- lapply(dat$stats$nwstats, dplyr::bind_rows)
+      ## compute ess
+      nwstats <- lapply(nwstats, function(y) structure(y, ess = ess(y)))
+      ## store as s'th element in list on output object
+      out$stats$nwstats[[s]] <- nwstats
     }
 
     if (dat$control$save.transmat == TRUE) {
