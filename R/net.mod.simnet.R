@@ -142,7 +142,8 @@ set_sim_network <- function(dat, nw, network = 1L) {
 #'              time steps for TERGMs or one or multiple cross-sectional network
 #'              panels for ERGMs, for use in \code{\link{netsim}} modeling.
 #'              Network statistics are also extracted and saved if
-#'              \code{save.nwstats == TRUE}.
+#'              \code{save.nwstats == TRUE} and
+#'              \code{resimulate.network == FALSE}.
 #'
 #' @inheritParams recovery.net
 #' @param network index of the network to simulate

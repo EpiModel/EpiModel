@@ -10,9 +10,8 @@ netsim(x, param, init, control)
 \item{x}{If \code{control$start == 1}, either a fitted network model object
 of class \code{netest} or a list of such objects. If
 \code{control$start > 1}, an object of class \code{netsim}. When
-multiple networks are used, network size and vertex attributes are
-drawn from the first network when initializing with
-\code{control$start == 1}.}
+multiple networks are used, the node sets (including network size
+and nodal attributes) are assumed to be the same for all networks.}
 
 \item{param}{Model parameters, as an object of class \code{param.net}.}
 
