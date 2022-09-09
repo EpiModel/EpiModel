@@ -145,7 +145,7 @@
 #' @importFrom statnet.common trim_env nonsimp_update.formula append_rhs.formula
 #'             list_rhs.formula set.control.class check.control.class NVL
 #' @importFrom methods is
-#' @importFrom tibble tibble
+#' @importFrom tibble as_tibble tibble
 #' @importFrom coda effectiveSize
 #'
 #' @useDynLib EpiModel, .registration = TRUE
