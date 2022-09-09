@@ -79,8 +79,8 @@ test_that("netsim runs with multiple networks", {
           plot(sim, network = network)
           plot(sim, type = "formation", network = network)
           if (tergmLite == FALSE) {
-            plot(mod, type = "dissolution", network = network)
-            plot(mod, type = "duration", network = network)
+            plot(sim, type = "dissolution", network = network)
+            plot(sim, type = "duration", network = network)
           }
         }
 
