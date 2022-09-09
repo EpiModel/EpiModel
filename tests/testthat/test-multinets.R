@@ -48,7 +48,18 @@ test_that("netsim runs with multiple networks", {
                                  tergmLite = tergmLite,
                                  resimulate.network = resimulate.network,
                                  tergmLite.track.duration = TRUE,
-                                 dat.updates = function (dat, at, network) dat,
+                                 dat.updates = function (dat, at, network) {
+                                   if (at > 0L && network > 0L) {
+                                     if (get_control(dat, "tergmLite") == TRUE) {
+                                       dat <- set_attr(dat, paste0("deg.", network),
+                                                       get_degree(dat$el[[network]]))
+                                     } else {
+                                       dat <- set_attr(dat, paste0("deg.", network),
+                                                       get_degree(as.edgelist(network.collapse(dat$nw[[network]], at = at))))
+                                     }
+                                   }
+                                   dat
+                                 },
                                  nwstats.formula = multilayer(~triangle, "formation", ~mean.age, ~degree(0:3), "formation"),
                                  verbose = TRUE,
                                  save.network = !tergmLite,
@@ -89,13 +100,18 @@ test_that("netsim runs with multiple networks", {
             if (tergmLite == TRUE) {
               expect_is(sim$nw[[simno]][[network]], "networkLite")
               expect_equal(sim$el[[simno]][[network]], as.edgelist(sim$nw[[simno]][[network]]))
+              expect_equal(sim$attr[[simno]][[paste0("deg.", network)]], get_degree(sim$el[[simno]][[network]]))
               if (network %in% tergm_nets) {
                 expect_equal(sim$nw[[simno]][[network]] %n% "time", nsteps)
                 expect_true(all((sim$nw[[simno]][[network]] %n% "lasttoggle")[,3] >= 0))
                 expect_true(all((sim$nw[[simno]][[network]] %n% "lasttoggle")[,3] <= nsteps))
               }
             } else {
-              expect_is(sim$nw[[simno]][[network]], "networkDynamic")            
+              expect_is(sim$nw[[simno]][[network]], "networkDynamic")
+              if (resimulate.network == TRUE || iteration == 2) {
+                expect_equal(sim$attr[[simno]][[paste0("deg.", network)]],
+                             get_degree(as.edgelist(network.collapse(sim$network[[simno]][[network]], at = nsteps))))
+              }
             }
 
             expect_equal(sim$nwparam[[network]]$coef.form[1],

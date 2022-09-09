@@ -19,44 +19,42 @@
 #' @keywords netUtils internal
 #'
 sim_nets_t1 <- function(dat) {
-  dat.updates <- get_control(dat, "dat.updates")
+  dat.updates <- NVL(get_control(dat, "dat.updates"), function(dat, ...) dat)
 
-  if (!is.null(dat.updates)) {
-    dat <- dat.updates(dat = dat, at = 0L, network = 0L)
-  }
-
+  ## simulate zeroth timestep cross-sectional network
+  ## (default to newnetwork if full tergm fit)
+  dat <- dat.updates(dat = dat, at = 0L, network = 0L)
   for (network in seq_along(dat$nwparam)) {
     nwparam <- get_nwparam(dat, network = network)
 
     # Simulate t0 basis network
     if (nwparam$edapprox == TRUE) {
-      dat$nw[[network]] <- simulate(nwparam$formula,
-                                    coef = nwparam$coef.form.crude,
-                                    basis = dat$nw[[network]],
-                                    constraints = nwparam$constraints,
-                                    control = get_network_control(dat, network, "set.control.ergm"),
-                                    dynamic = FALSE)
+      nw <- simulate(nwparam$formula,
+                     coef = nwparam$coef.form.crude,
+                     basis = dat$nw[[network]],
+                     constraints = nwparam$constraints,
+                     control = get_network_control(dat, network, "set.control.ergm"),
+                     dynamic = FALSE)
+
+      dat <- set_sim_network(dat = dat, network = network, nw = nw)
     }
 
-    if (!is.null(dat.updates)) {
-      dat <- dat.updates(dat = dat, at = 0L, network = network)
-    }
-
+    ## set up network attributes in tergmLite case
     if (get_control(dat, "tergmLite") == TRUE) {
-      ## set up el
-      dat$el[[network]] <- as.edgelist(dat$nw[[network]])
+      ## set up time, lasttoggle
       if (get_control(dat, "tergmLite.track.duration") == TRUE) {
-        ## set up time, lasttoggle
         dat$nw[[network]] %n% "time" <- 0L
         dat$nw[[network]] %n% "lasttoggle" <- cbind(dat$el[[network]], 0L)
       }
-      ## copy over network attributes
+      ## copy over network attributes to edgelist
       for (netattrname in setdiff(list.network.attributes(dat$nw[[network]]),
                                   names(attributes(dat$el[[network]])))) {
         attr(dat$el[[network]], netattrname) <-
           get.network.attribute(dat$nw[[network]], netattrname)
       }
     }
+
+    dat <- dat.updates(dat = dat, at = 0L, network = network)
   }
 
   if (get_control(dat, "resimulate.network") == TRUE) {
@@ -65,22 +63,17 @@ sim_nets_t1 <- function(dat) {
     nsteps <- get_control(dat, "nsteps")
   }
 
-  if (!is.null(dat.updates)) {
-    dat <- dat.updates(dat = dat, at = 1L, network = 0L)
-  }
-
+  ## simulate first timestep (if resimulate.network == TRUE)
+  ## or all timesteps (if resimulate.network == FALSE)
+  dat <- dat.updates(dat = dat, at = 1L, network = 0L)
   for (network in seq_along(dat$nwparam)) {
     dat <- simulate_dat(dat, at = 1L, network = network, nsteps = nsteps)
-
-    if (!is.null(dat.updates)) {
-      dat <- dat.updates(dat = dat, at = 1L, network = network)
-    }
-
     if (get_control(dat, "tergmLite") == FALSE) {
       dat$nw[[network]] <- networkDynamic::activate.vertices(dat$nw[[network]],
                                                              onset = 0L,
                                                              terminus = Inf)
     }
+    dat <- dat.updates(dat = dat, at = 1L, network = network)
   }
 
   return(dat)
@@ -120,15 +113,15 @@ make_sim_network <- function(dat, network = 1L) {
 #'              representing the current state of the simulation.
 #'
 #' @inheritParams recovery.net
-#' @param nw the network
 #' @param network index of the network to set
+#' @param nw the network
 #'
 #' @inherit recovery.net return
 #'
 #' @export
 #' @keywords netUtils internal
 #'
-set_sim_network <- function(dat, nw, network = 1L) {
+set_sim_network <- function(dat, network = 1L, nw) {
   dat$nw[[network]] <- nw
   if (get_control(dat, "tergmLite") == TRUE) {
     dat$el[[network]] <- as.edgelist(nw)
@@ -155,18 +148,8 @@ set_sim_network <- function(dat, nw, network = 1L) {
 #' @keywords netUtils internal
 #'
 simulate_dat <- function(dat, at, network = 1L, nsteps = 1L) {
-  ## get/construct network for (re)simulation
-  nw <- make_sim_network(dat, network = network)
-
-  ## determine output type
-  if (get_control(dat, "tergmLite") == FALSE) {
-    output <- "networkDynamic"
-  } else {
-    output <- "final"
-  }
-
+  ## determine formula and coefficients
   nwparam <- get_nwparam(dat, network = network)
-
   if (all(nwparam$coef.diss$duration > 1)) {
     formula <- ~Form(nwparam$formation) +
                 Persist(nwparam$coef.diss$dissolution)
@@ -176,7 +159,15 @@ simulate_dat <- function(dat, at, network = 1L, nsteps = 1L) {
     coef <- nwparam$coef.form
   }
 
-  ## we only obtain stats in simulate_dat if resimulate.network == FALSE
+  ## determine output type
+  if (get_control(dat, "tergmLite") == FALSE) {
+    output <- "networkDynamic"
+  } else {
+    output <- "final"
+  }
+
+  ## determine monitor, if needed; note that we only obtain 
+  ## stats in simulate_dat if resimulate.network == FALSE
   if (get_control(dat, "save.nwstats") == TRUE &&
       get_control(dat, "resimulate.network") == FALSE) {
     monitor <- get_network_control(dat, network, "nwstats.formula")
@@ -184,10 +175,10 @@ simulate_dat <- function(dat, at, network = 1L, nsteps = 1L) {
     monitor <- NULL # will be handled by summary_nets, if needed
   }
 
-  # TERGM simulation
+  ## always TERGM simulation
   nw <- simulate(formula,
                  coef = coef,
-                 basis = nw,
+                 basis = make_sim_network(dat = dat, network = network),
                  constraints = nwparam$constraints,
                  time.start = at - 1,
                  time.slices = nsteps,
@@ -196,9 +187,10 @@ simulate_dat <- function(dat, at, network = 1L, nsteps = 1L) {
                  monitor = monitor,
                  dynamic = TRUE)
 
-  dat <- set_sim_network(dat, nw, network = network)
+  ## update network (and el, if tergmLite) on the dat object
+  dat <- set_sim_network(dat = dat, network = network, nw = nw)
 
-  ## monitor only used if resimulate.network == FALSE and at == 1L
+  ## if monitor was used, record the results
   if (!is.null(monitor)) {
     new.nwstats <- attributes(nw)$stats
     keep.cols <- which(!duplicated(colnames(new.nwstats)))
@@ -243,17 +235,13 @@ resim_nets <- function(dat, at) {
     anyActive <- ifelse(nActiveG1 > 0 & nActiveG2 > 0, TRUE, FALSE)
   }
 
-  # Network resimulation
+  # Network resimulation, with dat.updates interspersed
   if (anyActive == TRUE && get_control(dat, "resimulate.network") == TRUE) {
-    dat.updates <- get_control(dat, "dat.updates")
-    if (!is.null(dat.updates)) {
-      dat <- dat.updates(dat = dat, at = at, network = 0L)
-    }
+    dat.updates <- NVL(get_control(dat, "dat.updates"), function(dat, ...) dat)
+    dat <- dat.updates(dat = dat, at = at, network = 0L)
     for (network in seq_along(dat$nwparam)) {
-      dat <- simulate_dat(dat, at, network = network)
-      if (!is.null(dat.updates)) {
-        dat <- dat.updates(dat = dat, at = at, network = network)
-      }
+      dat <- simulate_dat(dat = dat, at = at, network = network)
+      dat <- dat.updates(dat = dat, at = at, network = network)
     }
   }
 
