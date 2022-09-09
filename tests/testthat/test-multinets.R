@@ -16,95 +16,116 @@ test_that("netsim runs with multiple networks", {
   est1 <- update_dissolution(est, dc1)
   est20 <- update_dissolution(est, dc20)
 
+  est <- list(est10, est1, est20, est1, est20)
+
   param <- param.net(inf.prob = 0.3, act.rate = 0.1)
   init <- init.net(i.num = 10)
 
   nsims <- 3L
-  nsteps <- 5L
+  nnets <- 5L
+  tergm_nets <- c(1,3,5)
+
+  stat_names <- list(c("triangle"),
+                     c("edges", "nodematch.race"),
+                     c("mean.age"),
+                     c("degree0", "degree1", "degree2", "degree3"),
+                     c("edges", "nodematch.race"))
 
   for (tergmLite in c(FALSE, TRUE)) {
     for (resimulate.network in unique(c(tergmLite, TRUE))) {
-      control <- control.net(type = "SI", 
-                             nsims = nsims, 
-                             nsteps = nsteps,
-                             tergmLite = tergmLite,
-                             resimulate.network = resimulate.network,
-                             tergmLite.track.duration = TRUE,
-                             dat.updates = function (dat, at, network) dat,
-                             nwstats.formula = multilayer(~triangle, "formation", ~mean.age, ~degree(0:3), "formation"),
-                             verbose = TRUE,
-                             save.network = !tergmLite,
-                             save.other = c("attr"))
-      print(control)
+      if (tergmLite == TRUE) {
+        save.other <- c("nw", "attr", "el", "temp")
+      } else {
+        save.other <- c("nw", "attr", "temp")      
+      }
 
-      mod <- netsim(list(est10, est1, est20, est1, est20), param, init, control)  
-
-      stat_names <- list(c("triangle"),
-                         c("edges", "nodematch.race"),
-                         c("mean.age"),
-                         c("degree0", "degree1", "degree2", "degree3"),
-                         c("edges", "nodematch.race"))
-
-      for (sim in seq_len(3)) {
-        for (network in seq_len(5)) {
-          stats_matrix <- get_nwstats(mod, sim = sim, network = network, mode = "list")[[1]]
-          expect_identical(NCOL(stats_matrix), length(stat_names[[network]]))
-          expect_identical(NROW(stats_matrix), nsteps)
-          expect_identical(colnames(stats_matrix), stat_names[[network]])
+      for (iteration in 1:2) {
+        if (iteration == 1) {
+          nsteps <- 5L
+          control <- control.net(type = "SI", 
+                                 nsims = nsims, 
+                                 nsteps = nsteps,
+                                 tergmLite = tergmLite,
+                                 resimulate.network = resimulate.network,
+                                 tergmLite.track.duration = TRUE,
+                                 dat.updates = function (dat, at, network) dat,
+                                 nwstats.formula = multilayer(~triangle, "formation", ~mean.age, ~degree(0:3), "formation"),
+                                 verbose = TRUE,
+                                 save.network = !tergmLite,
+                                 save.other = save.other)
+          print(control)
+          basis <- est
+        } else {
+          if (tergmLite == TRUE) {
+            next
+          }
+          control$start <- nsteps + 1L
+          nsteps <- 11L
+          control$nsteps <- nsteps
+          basis <- sim          
         }
-      }
+        sim <- netsim(basis, param, init, control)
 
-      expect_is(mod, "netsim")
-
-      print(mod)
-
-      plot(mod, type = "formation")
-
-      if (tergmLite == FALSE) {
-        plot(mod, type = "dissolution")
-        plot(mod, type = "duration")
-      }
-
-      for (network in seq_len(5)) {
-        print(mod, network = network)
-        plot(mod, type = "formation", network = network)
-
+        print(sim)
+        plot(sim)
+        plot(sim, type = "formation")
         if (tergmLite == FALSE) {
-          plot(mod, type = "dissolution", network = network)
-          plot(mod, type = "duration", network = network)
+          plot(sim, type = "dissolution")
+          plot(sim, type = "duration")
         }
-      }
-      
-      if (tergmLite == FALSE) {
-        control$start <- 6L
-        control$nsteps <- 11L
 
-        print(control)
-
-        mod2 <- netsim(mod, param, init, control)  
-
-        for (sim in seq_len(3)) {
-          for (network in seq_len(5)) {
-            stats_matrix <- get_nwstats(mod2, sim = sim, network = network, mode = "list")[[1]]
-            expect_identical(NCOL(stats_matrix), length(stat_names[[network]]))
-            expect_identical(NROW(stats_matrix), control$nsteps)
-            expect_identical(colnames(stats_matrix), stat_names[[network]])
+        for (network in seq_len(nnets)) {
+          print(sim, network = network)
+          plot(sim, network = network)
+          plot(sim, type = "formation", network = network)
+          if (tergmLite == FALSE) {
+            plot(mod, type = "dissolution", network = network)
+            plot(mod, type = "duration", network = network)
           }
         }
 
-        expect_is(mod2, "netsim")
-        
-        print(mod2)
-        
-        plot(mod2, type = "formation")        
-        plot(mod2, type = "dissolution")
-        plot(mod2, type = "duration")
-        
-        for (network in seq_len(5)) {
-          print(mod, network = network)
-          plot(mod, type = "formation", network = network)        
-          plot(mod, type = "dissolution", network = network)
-          plot(mod, type = "duration", network = network)
+        for(simno in seq_len(nsims)) {
+          for(network in seq_len(nnets)) {
+            if (tergmLite == TRUE) {
+              expect_is(sim$nw[[simno]][[network]], "networkLite")
+              expect_equal(sim$el[[simno]][[network]], as.edgelist(sim$nw[[simno]][[network]]))
+              if (network %in% tergm_nets) {
+                expect_equal(sim$nw[[simno]][[network]] %n% "time", nsteps)
+                expect_true(all((sim$nw[[simno]][[network]] %n% "lasttoggle")[,3] >= 0))
+                expect_true(all((sim$nw[[simno]][[network]] %n% "lasttoggle")[,3] <= nsteps))
+              }
+            } else {
+              expect_is(sim$nw[[simno]][[network]], "networkDynamic")            
+            }
+
+            expect_equal(sim$nwparam[[network]]$coef.form[1],
+                         est[[network]]$coef.form[1] +
+                           log(network.size(est[[network]]$newnetwork)) -
+                           log(network.size(sim$nw[[simno]][[network]])))
+
+            expect_equal(network.size(est[[network]]$newnetwork), sim$epi$num[[simno]][1])
+            expect_equal(network.size(sim$nw[[simno]][[network]]), sim$epi$num[[simno]][nsteps])
+
+            stats_matrix <- get_nwstats(sim, network = network, mode = "list")[[simno]]
+            expect_equal(NCOL(stats_matrix), length(stat_names[[network]]))
+            expect_equal(NROW(stats_matrix), nsteps)
+            expect_equal(colnames(stats_matrix), stat_names[[network]])
+
+            final_stats <- stats_matrix[nsteps,]
+            names(final_stats) <- colnames(stats_matrix)
+            if (tergmLite == TRUE) {
+              nwL <- networkLite(sim$el[[simno]][[network]], sim$attr[[simno]])
+              if (network %in% tergm_nets) {
+                nwL %n% "time" <- sim$nw[[simno]][[network]] %n% "time"
+                nwL %n% "lasttoggle" <- sim$nw[[simno]][[network]] %n% "lasttoggle"
+              }
+              expect_equal(final_stats,
+                           summary(get_network_control(sim, network = network, "nwstats.formula"), basis = nwL))
+            } else {
+              expect_equal(final_stats,
+                           summary(get_network_control(sim, network = network, "nwstats.formula"), at = nsteps, basis = sim$nw[[simno]][[network]])[,,drop=TRUE])
+            }
+          }
         }
       }
     }
