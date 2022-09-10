@@ -257,3 +257,97 @@ test_that("edgecov works with tergmLite", {
   expect_equal(unname(sim$stats$nwstats$sim1[[1]][3,1,drop=TRUE]), network.dyadcount(nw))
   expect_equal(unname(sim$stats$nwstats$sim1[[1]][4,1,drop=TRUE]), 0)
 })
+
+test_that("tergm and tergmLite produce consistent durational statistics", {
+  nw <- network_initialize(n = 50)
+  nw <- set_vertex_attribute(nw, "race", rbinom(50, 1, 0.5))
+  est <- netest(nw, formation = ~edges + nodematch("race"),
+                target.stats = c(25, 10),
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                verbose = FALSE)
+
+  nsims <- 3
+  nsteps <- 5
+
+  for (trim in list(FALSE, TRUE)) {
+    if (trim == TRUE) {
+      est2 <- trim_netest(est)
+    } else {
+      est2 <- est    
+    }
+    param <- param.net(inf.prob = 0, act.rate = 0)
+    init <- init.net(i.num = 0)
+    control <- control.net(type = NULL,
+                           nsims = nsims,
+                           nsteps = nsteps,
+                           resimulate.network = TRUE,
+                           tergmLite = FALSE,
+                           nwstats.formula = ~edges + mean.age,
+                           verbose = FALSE)
+
+    set.seed(0)
+    mod <- netsim(est2, param, init, control)
+    stats <- get_nwstats(mod)
+
+    control$tergmLite <- TRUE
+    control$tergmLite.track.duration <- TRUE
+
+    set.seed(0)
+    mod2 <- netsim(est2, param, init, control)
+    stats2 <- get_nwstats(mod2)
+
+    expect_identical(stats, stats2)
+    expect_true(all(stats$mean.age >= 0 & stats$mean.age <= nsteps + 1))
+
+    control$tergmLite <- FALSE
+    control$resimulate.network <- FALSE
+
+    set.seed(0)
+    mod3 <- netsim(est2, param, init, control)
+    stats3 <- get_nwstats(mod3)
+    expect_true(all(stats3$mean.age >= 0 & stats3$mean.age <= nsteps + 1))
+  }
+})
+
+test_that("durational monitor with tergmLite", {
+  nw <- network_initialize(n = 50)
+  nw <- set_vertex_attribute(nw, "race", rbinom(50, 1, 0.5))
+
+  nsims <- 2
+  nsteps <- 4
+
+  param <- param.net(inf.prob = 0.3, act.rate = 0.4)
+  init <- init.net(i.num = 10)
+
+  for (duration in list(1,10)) {
+    est <- netest(nw, formation = ~edges + nodematch("race"),
+                  target.stats = c(25, 10),
+                  coef.diss = dissolution_coefs(~offset(edges), duration, 0),
+                  verbose = FALSE)
+    
+    for (trim in list(FALSE, TRUE)) {
+      if (trim == TRUE) {
+        est2 <- trim_netest(est)
+      } else {
+        est2 <- est    
+      }
+      
+      for (tergmLite.track.duration in list(FALSE, TRUE)) {
+        control <- control.net(type = "SI",
+                               nsims = nsims,
+                               nsteps = nsteps,
+                               resimulate.network = TRUE,
+                               tergmLite = TRUE,
+                               tergmLite.track.duration = tergmLite.track.duration,
+                               nwstats.formula = ~edges + mean.age,
+                               verbose = FALSE)
+        
+        mod <- netsim(est2, param, init, control)
+        stats <- get_nwstats(mod)
+        
+        expect_true(all(stats$mean.age >= 0))
+        print(stats$mean.age)
+      }
+    }
+  }
+})

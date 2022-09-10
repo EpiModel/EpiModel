@@ -21,6 +21,7 @@ summary_nets <- function(dat, at) {
       nwstats <- summary(get_network_control(dat, network, "nwstats.formula"),
                          basis = make_sim_network(dat, network = network),
                          at = at, # needed for networkDynamic case
+                         dynamic = TRUE,
                          term.options = get_network_control(dat, network, "set.control.tergm")$term.options)
       if (is(nwstats, "matrix")) {
         nwstats <- nwstats[, !duplicated(colnames(nwstats)), drop = TRUE]

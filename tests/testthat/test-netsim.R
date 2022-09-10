@@ -132,6 +132,9 @@ test_that("netsim duration 1", {
                   basis = estd1$newnetwork,
                   control = control.simulate.formula(MCMC.burnin = 2e5),
                   dynamic = FALSE)
+  sim <- networkDynamic::as.networkDynamic(sim)
+  sim <- networkDynamic::activate.vertices(sim, onset = 0, terminus = Inf)
+  sim <- networkDynamic::activate.edges(sim, onset = 0, terminus = Inf)
   for(i in 1:5) {
     sim <- simulate(estd1$formation,
                     basis = sim,
@@ -141,7 +144,7 @@ test_that("netsim duration 1", {
                     coef = c(estd1$coef.form),
                     dynamic = TRUE)
   }
-  expect_identical(sim$mel, mod$network$sim1[[1]]$mel)  
+  expect_identical(as.data.frame(sim), as.data.frame(mod$network$sim1[[1]]))  
 })
 
 test_that("non-nested EDA works in netsim", {

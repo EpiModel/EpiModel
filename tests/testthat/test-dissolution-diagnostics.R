@@ -195,7 +195,9 @@ test_that("netsim produces a networkDynamic with the expected data.frame when re
                   coef = est$coef.form.crude,
                   basis = est$newnetwork,
                   dynamic = FALSE)
-  
+  nws <- networkDynamic::as.networkDynamic(nws)
+  nws <- networkDynamic::activate.vertices(nws, onset = 0, terminus = Inf)
+  nws <- networkDynamic::activate.edges(nws, onset = 0, terminus = Inf)
   nws <- simulate(nws ~ Form(est$formation) + Persist(est$coef.diss$dissolution),
                   coef = c(est$coef.form, est$coef.diss$coef.crude),
                   time.start = 0,
@@ -233,7 +235,9 @@ test_that("netsim produces a networkDynamic with the expected data.frame when re
                   basis = est$newnetwork,
                   control = list(MCMC.burnin = 2e5),
                   dynamic = FALSE)
-  
+  nws <- networkDynamic::as.networkDynamic(nws)
+  nws <- networkDynamic::activate.vertices(nws, onset = 0, terminus = Inf)
+  nws <- networkDynamic::activate.edges(nws, onset = 0, terminus = Inf)  
   for (i in seq_len(5)) {
     nws <- simulate(nws ~ Form(est$formation) + Persist(est$coef.diss$dissolution),
                     coef = c(est$coef.form, est$coef.diss$coef.crude),
