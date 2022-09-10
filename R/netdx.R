@@ -203,6 +203,9 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
       output <- "changes"
     }
 
+    init %n% "time" <- 0L
+    init %n% "lasttoggle" <- cbind(as.edgelist(init), 0L)
+
     diag.sim <- simulate(init ~ Form(x$formation) + Persist(x$coef.diss$dissolution),
                          coef = c(x$coef.form, x$coef.diss$coef.crude),
                          constraints = x$constraints,
