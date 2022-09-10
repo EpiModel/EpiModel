@@ -335,14 +335,14 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
 }
 
 ## internal wrapper around coda::effectiveSize, returning a vector of NAs
-##   rather than throwing an error when there are 0 or 1 observations; the
-##   argument x should be a matrix with column names
+##   if coda::effectiveSize throws an error; argument x should be a matrix
+##   with column names
 ess <- function(x) {
-  if (NROW(x) <= 1L) {
-    structure(rep(NA, length.out = NCOL(x)), names = colnames(x))
-  } else {
-    coda::effectiveSize(x)
-  }
+  tryCatch(coda::effectiveSize(x),
+           error = function(e) {
+                     structure(rep(NA, length.out = NCOL(x)),
+                               names = colnames(x))
+                   })
 }
 
 #' @title Create a Summary Table of Simulation Statistics
