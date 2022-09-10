@@ -147,3 +147,49 @@ test_that("netsim runs with multiple networks", {
     }
   }
 })
+
+test_that("multilayer specifications", {
+  nw <- network_initialize(n = 100)
+
+  dc1 <- dissolution_coefs(~offset(edges), 1, 0)
+  dc100 <- dissolution_coefs(~offset(edges), 100, 0)
+  dc200 <- dissolution_coefs(~offset(edges), 200, 0)
+
+  est1 <- netest(nw, formation = ~edges,
+                 target.stats = c(250),
+                 coef.diss = dc1,
+                 verbose = FALSE)
+
+  est100 <- update_dissolution(est1, dc100)
+  est200 <- update_dissolution(est1, dc200)
+
+  param <- param.net(inf.prob = 0.3, act.rate = 0.1)
+  init <- init.net(i.num = 10)
+  control <- control.net(type = "SI", 
+                         nsims = 2, 
+                         nsteps = 10,
+                         tergmLite = TRUE,
+                         resimulate.network = TRUE,
+                         tergmLite.track.duration = multilayer(TRUE, FALSE, TRUE, FALSE, FALSE),
+                         nwstats.formula = multilayer(~edges + triangle + mean.age,
+                                                      ~edges + degree(0:1) + mean.age,
+                                                      ~edges + degree(1:2) + mean.age,
+                                                      ~edges + concurrent + mean.age,
+                                                      "formation"),
+                         verbose = FALSE)
+   
+  basis <- list(est100, est200, est1, est1, est200)
+  sim <- netsim(basis, param, init, control)
+  
+  for (network in seq_len(5L)) {
+    stats <- get_nwstats(sim, network = network)
+    if (network < 5L) {
+      expect_true(all(stats$mean.age >= 0))
+      if (get_network_control(sim, network, "tergmLite.track.duration") == TRUE) {
+        expect_true(all(stats$mean.age <= 11))
+      } else {
+        expect_true(all(stats$mean.age >= 1000)) # large number indicating tergm defaults are being used
+      }
+    }
+  }
+})
