@@ -169,7 +169,7 @@ simulate_dat <- function(dat, at, network = 1L, nsteps = 1L) {
     output <- "final"
   }
 
-  ## determine monitor, if needed; note that we only obtain 
+  ## determine monitor, if needed; note that we only obtain
   ## stats in simulate_dat if resimulate.network == FALSE
   if (get_control(dat, "save.nwstats") == TRUE &&
       get_control(dat, "resimulate.network") == FALSE) {
