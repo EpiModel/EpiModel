@@ -28,10 +28,11 @@ sim_nets_t1 <- function(dat) {
     nwparam <- get_nwparam(dat, network = network)
 
     # Simulate t0 basis network nw
+    nw <- dat$nw[[network]]
     if (nwparam$edapprox == TRUE) {
       nw <- simulate(nwparam$formula,
                      coef = nwparam$coef.form.crude,
-                     basis = dat$nw[[network]],
+                     basis = nw,
                      constraints = nwparam$constraints,
                      control = get_network_control(dat, network, "set.control.ergm"),
                      dynamic = FALSE)
@@ -41,7 +42,7 @@ sim_nets_t1 <- function(dat) {
       ## set up network attributes and edgelist in tergmLite case
       el <- as.edgelist(nw)
       ## set up time and lasttoggle if tracking duration
-      if (get_control(dat, "tergmLite.track.duration") == TRUE) {
+      if (get_network_control(dat, network, "tergmLite.track.duration") == TRUE) {
         nw %n% "time" <- 0L
         nw %n% "lasttoggle" <- cbind(el, 0L)
       }
@@ -101,7 +102,7 @@ make_sim_network <- function(dat, network = 1L) {
   } else {
     ## networkLite
     nw <- networkLite(dat$el[[network]], dat$attr)
-    if (get_control(dat, "tergmLite.track.duration") == TRUE) {
+    if (get_network_control(dat, network, "tergmLite.track.duration") == TRUE) {
       nw %n% "time" <- dat$nw[[network]] %n% "time"
       nw %n% "lasttoggle" <- dat$nw[[network]] %n% "lasttoggle"
     }

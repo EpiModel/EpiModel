@@ -167,7 +167,8 @@ modules specified.}
 data (one per simulation) instead of a formatted \code{netsim} object.}
 
 \item{tergmLite.track.duration}{If \code{TRUE}, track duration information
-for models in \code{tergmLite} simulations.}
+for models in \code{tergmLite} simulations. Supports
+\code{\link{multilayer}} specification.}
 
 \item{set.control.ergm}{Control arguments passed to \code{ergm}'s
 \code{simulate_formula.network}.  In \code{netsim}, this is only used

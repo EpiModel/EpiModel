@@ -19,5 +19,6 @@ This utility function allows specification of certain
              \code{\link{netsim}} controls to vary by network.  The
              \code{\link{netsim}} control arguments currently supporting
              \code{multilayer} specifications are \code{nwstats.formula},
-             \code{set.control.ergm}, and \code{set.control.tergm}.
+             \code{set.control.ergm}, \code{set.control.tergm}, and
+             \code{tergmLite.track.duration}.
 }

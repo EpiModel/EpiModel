@@ -81,7 +81,7 @@ nwupdate.net <- function(dat, at) {
       for (network in seq_along(dat$nwparam)) {
         dat$el[[network]] <- delete_vertices(dat$el[[network]], departures)
 
-        if (dat$control$tergmLite.track.duration) {
+        if (get_network_control(dat, network, "tergmLite.track.duration") == TRUE) {
           dat$nw[[network]] %n% "lasttoggle" <-
             delete_vertices(dat$nw[[network]] %n% "lasttoggle", departures)
         }

@@ -746,7 +746,8 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #' @param raw.output If \code{TRUE}, \code{netsim} will output a list of netsim
 #'        data (one per simulation) instead of a formatted \code{netsim} object.
 #' @param tergmLite.track.duration If \code{TRUE}, track duration information
-#'        for models in \code{tergmLite} simulations.
+#'        for models in \code{tergmLite} simulations. Supports
+#'        \code{\link{multilayer}} specification.
 #' @param set.control.ergm Control arguments passed to \code{ergm}'s
 #'        \code{simulate_formula.network}.  In \code{netsim}, this is only used
 #'        when initializing the network with \code{edapprox = TRUE}; all other
@@ -1235,7 +1236,8 @@ crosscheck.net <- function(x, param, init, control) {
   num_nw <- length(nwparam)
 
   # convert relevant control arguments to multilayer if they are not already, and check length
-  for (control_arg_name in c("nwstats.formula", "set.control.ergm", "set.control.tergm")) {
+  for (control_arg_name in c("nwstats.formula", "set.control.ergm",
+                             "set.control.tergm", "tergmLite.track.duration")) {
     control_arg_value <- control[[control_arg_name]]
     if (!is(control_arg_value, "multilayer")) {
       control[[control_arg_name]] <- do.call(multilayer, rep(list(control_arg_value), length.out = num_nw))
@@ -1345,7 +1347,8 @@ param.net_from_table <- function(long.param.df) {
 #'              \code{\link{netsim}} controls to vary by network.  The
 #'              \code{\link{netsim}} control arguments currently supporting
 #'              \code{multilayer} specifications are \code{nwstats.formula},
-#'              \code{set.control.ergm}, and \code{set.control.tergm}.
+#'              \code{set.control.ergm}, \code{set.control.tergm}, and
+#'              \code{tergmLite.track.duration}.
 #'
 #' @param ... control arguments to apply to each network, with the index of the
 #'        network corresponding to the index of the control argument
