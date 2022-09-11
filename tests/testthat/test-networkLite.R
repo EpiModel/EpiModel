@@ -361,3 +361,87 @@ test_that("network and networkLite fit and simulate equal valued ergms", {
     }
   }
 })
+
+test_that("conversions between network, networkLite, and networkDynamic behave as expected with non-atomic attributes", {
+  logit <- function(p) log(p/(1-p))
+  nw <- network.initialize(100, directed = FALSE)
+
+  ## set some arbitrary non-atomic vertex attribute
+  set.vertex.attribute(nw, "vertex_attr",
+                       lapply(seq_len(network.size(nw)),
+                              function(i) { runif(rbinom(1,10,0.5)) } ))
+
+  nw <- san(nw ~ edges, target.stats = c(100))
+
+  ## set some arbitrary non-atomic edge attribute
+  set.edge.attribute(nw, "edge_attr",
+                     lapply(seq_len(network.edgecount(nw)),
+                            function(i) { list(runif(rbinom(1,10,0.5))) } ))
+
+  ## edge activities will be non-atomic
+  nwD <- simulate(nw ~ edges, coef = c(logit(1/10)), dynamic = TRUE, time.slices = 100)
+
+  for (dynamic in list(FALSE, TRUE)) {
+    if (dynamic == FALSE) {
+      nw_base <- nw
+      nwL <- as.networkLite(nw_base)
+      nw_rebase <- to_network_networkLite(nwL)
+    } else {
+      nw_base <- nwD
+      nwL <- as.networkLite(nw_base)
+      ## avoiding a call to as.networkDynamic for now
+      nw_rebase <- to_network_networkLite(nwL)
+      class(nw_rebase) <- c("networkDynamic", "network")
+    }
+    
+    expect_identical(as.edgelist(nw_base), as.edgelist(nwL))
+    expect_identical(as.edgelist(nwL), as.edgelist(nw_rebase))
+    
+    expect_identical(list.vertex.attributes(nw_base), list.vertex.attributes(nwL))
+    expect_identical(list.vertex.attributes(nwL), list.vertex.attributes(nw_rebase))
+    
+    expect_identical(list.edge.attributes(nw_base), list.edge.attributes(nwL))
+    expect_identical(list.edge.attributes(nwL), list.edge.attributes(nw_rebase))
+    
+    expect_identical(setdiff(list.network.attributes(nw_base), "mnext"), list.network.attributes(nwL))
+    expect_identical(list.network.attributes(nwL), setdiff(list.network.attributes(nw_rebase), "mnext"))
+    
+    for (attrname in list.vertex.attributes(nwL)) {
+      for (unlist in list(FALSE, TRUE)) {
+        expect_identical(get.vertex.attribute(nw_base, attrname, unlist = unlist),
+                         get.vertex.attribute(nwL, attrname, unlist = unlist))
+        expect_identical(get.vertex.attribute(nwL, attrname, unlist = unlist),
+                         get.vertex.attribute(nw_rebase, attrname, unlist = unlist))
+      }
+    }
+    
+    ## need to consistently order edges before comparing edge attributes
+    el <- as.edgelist(nwL)
+    eidsD <- unlist(get.dyads.eids(nw_base, el[,1], el[,2]))
+    eidsLD <- unlist(get.dyads.eids(nw_rebase, el[,1], el[,2]))
+    
+    for (attrname in list.edge.attributes(nwL)) {
+      ## NULLs will be converted to NAs; otherwise identical
+      eaD <- get.edge.attribute(nw_base, attrname, unlist = FALSE)[eidsD]
+      eaL <- get.edge.attribute(nwL, attrname, unlist = FALSE)
+      eaLD <- get.edge.attribute(nw_rebase, attrname, unlist = FALSE)[eidsLD]
+    
+      nullD <- unlist(lapply(eaD, is.null))
+      naL <- is.na(eaL)
+      naLD <- is.na(eaLD)
+    
+      expect_identical(nullD, naL)
+      expect_identical(naL, naLD)
+    
+      expect_identical(eaD[!nullD], eaL[!naL])
+      expect_identical(eaL[!naL], eaLD[!naLD])
+    }
+    
+    for (attrname in list.network.attributes(nwL)) {
+      expect_identical(get.network.attribute(nw_base, attrname),
+                       get.network.attribute(nwL, attrname))
+      expect_identical(get.network.attribute(nwL, attrname),
+                       get.network.attribute(nw_rebase, attrname))
+    }
+  }
+})
