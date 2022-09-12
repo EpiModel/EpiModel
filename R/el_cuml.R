@@ -15,13 +15,16 @@
 #'
 #' @export
 get_edgelist <- function(dat, network) {
-  if (!network %in% seq_along(dat[["nwparam"]])) {
-    stop("There is no network '", network, "' to get the edgelist from")
-  }
 
   if (get_control(dat, "tergmLite")) {
+    if (!network %in% seq_along(dat[["el"]])) {
+      stop("There is no network '", network, "' to get an edgelist from")
+    }
     el <- dat[["el"]][[network]]
   } else {
+    if (!network %in% seq_along(dat[["nw"]])) {
+      stop("There is no network '", network, "' to get an edgelist from")
+    }
     at <- get_current_timestep(dat)
     el <- networkDynamic::get.dyads.active(dat[["nw"]][[network]], at = at)
   }
