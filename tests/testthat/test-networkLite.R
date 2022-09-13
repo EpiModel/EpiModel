@@ -421,20 +421,12 @@ test_that("conversions between network, networkLite, and networkDynamic behave a
     eidsLD <- unlist(get.dyads.eids(nw_rebase, el[,1], el[,2]))
     
     for (attrname in list.edge.attributes(nwL)) {
-      ## NULLs will be converted to NAs; otherwise identical
-      eaD <- get.edge.attribute(nw_base, attrname, unlist = FALSE)[eidsD]
-      eaL <- get.edge.attribute(nwL, attrname, unlist = FALSE)
-      eaLD <- get.edge.attribute(nw_rebase, attrname, unlist = FALSE)[eidsLD]
-    
-      nullD <- unlist(lapply(eaD, is.null))
-      naL <- is.na(eaL)
-      naLD <- is.na(eaLD)
-    
-      expect_identical(nullD, naL)
-      expect_identical(naL, naLD)
-    
-      expect_identical(eaD[!nullD], eaL[!naL])
-      expect_identical(eaL[!naL], eaLD[!naLD])
+      eaD <- get.edge.attribute(nw_base, attrname, null.na = FALSE, unlist = FALSE)[eidsD]
+      eaL <- get.edge.attribute(nwL, attrname, null.na = FALSE, unlist = FALSE)
+      eaLD <- get.edge.attribute(nw_rebase, attrname, null.na = FALSE, unlist = FALSE)[eidsLD]
+
+      expect_identical(eaD, eaL)
+      expect_identical(eaL, eaLD)
     }
     
     for (attrname in list.network.attributes(nwL)) {
