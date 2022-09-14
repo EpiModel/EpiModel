@@ -220,15 +220,10 @@ simulate_dat <- function(dat, at, network = 1L, nsteps = 1L) {
 #'
 resim_nets <- function(dat, at) {
 
-  # Edges Correction
-  dat <- edges_correct(dat, at)
-
-  # active attribute (all models)
+  # Calculate active attribute
   active <- get_attr(dat, "active")
   idsActive <- which(active == 1)
   anyActive <- ifelse(length(idsActive) > 0, TRUE, FALSE)
-
-  # group attribute (built-in models)
   if (dat$param$groups == 2) {
     group <- get_attr(dat, "group")
     groupids.1 <- which(group == 1)
@@ -240,6 +235,10 @@ resim_nets <- function(dat, at) {
 
   # Network resimulation, with dat.updates interspersed
   if (anyActive == TRUE && get_control(dat, "resimulate.network") == TRUE) {
+    ## Edges Correction
+    dat <- edges_correct(dat, at)
+
+    ## network resimulation
     dat.updates <- NVL(get_control(dat, "dat.updates"), function(dat, ...) dat)
     dat <- dat.updates(dat = dat, at = at, network = 0L)
     for (network in seq_along(dat$nwparam)) {
