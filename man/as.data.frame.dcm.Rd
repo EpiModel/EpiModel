@@ -23,8 +23,8 @@ A data frame containing the data from \code{x}.
 }
 \description{
 This function extracts a model run from an object of class
-             \code{dcm} into a data frame using the generic
-             \code{as.data.frame} function.
+\code{dcm} into a data frame using the generic
+\code{as.data.frame} function.
 }
 \details{
 Model output from \code{\link{dcm}} simulations are available as a data

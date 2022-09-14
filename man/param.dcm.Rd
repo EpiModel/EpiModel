@@ -105,7 +105,7 @@ An \code{EpiModel} object of class \code{param.dcm}.
 }
 \description{
 Sets the epidemic parameters for deterministic compartmental
-             models simulated with \code{dcm}.
+models simulated with \code{dcm}.
 }
 \details{
 \code{param.dcm} sets the epidemic parameters for deterministic compartmental
@@ -160,7 +160,7 @@ the user's responsibility with these original models.
 
 \seealso{
 Use \code{\link{init.dcm}} to specify the initial conditions and
-         \code{\link{control.dcm}} to specify the control settings. Run the
-         parameterized model with \code{\link{dcm}}.
+\code{\link{control.dcm}} to specify the control settings. Run the
+parameterized model with \code{\link{dcm}}.
 }
 \keyword{parameterization}

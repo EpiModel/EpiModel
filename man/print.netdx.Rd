@@ -15,7 +15,7 @@
 }
 \description{
 Prints basic information and statistics from a \code{netdx}
-             object.
+object.
 }
 \details{
 Given a \code{netdx} object, \code{print.netdx} prints the diagnostic method

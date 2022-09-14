@@ -18,9 +18,9 @@ package framework.}
 }
 \description{
 This function defines and initializes the absdiffby ERGM term
-             that allows for representing homophily with respect to a
-             non-binary attribute (e.g., age) differentially by a binary
-             attribute (e.g., sex).
+that allows for representing homophily with respect to a
+non-binary attribute (e.g., age) differentially by a binary
+attribute (e.g., sex).
 }
 \details{
 This ERGM user term was written to allow for age-based homophily in

@@ -11,7 +11,7 @@ get_param_set(sims)
 }
 \value{
 A \code{data.frame} with one row per simulation and one column per
-  parameter or parameter element where the parameters are of size > 1.
+parameter or parameter element where the parameters are of size > 1.
 }
 \description{
 Extract the Parameter Set from Network Simulations

@@ -17,19 +17,19 @@ icm(param, init, control)
 \value{
 A list of class \code{icm} with the following elements:
 \itemize{
- \item \strong{param:} the epidemic parameters passed into the model through
-       \code{param}, with additional parameters added as necessary.
- \item \strong{control:} the control settings passed into the model through
-       \code{control}, with additional controls added as necessary.
- \item \strong{epi:} a list of data frames, one for each epidemiological
-       output from the model. Outputs for base models always include the
-       size of each compartment, as well as flows in, out of, and between
-       compartments.
+\item \strong{param:} the epidemic parameters passed into the model through
+\code{param}, with additional parameters added as necessary.
+\item \strong{control:} the control settings passed into the model through
+\code{control}, with additional controls added as necessary.
+\item \strong{epi:} a list of data frames, one for each epidemiological
+output from the model. Outputs for base models always include the
+size of each compartment, as well as flows in, out of, and between
+compartments.
 }
 }
 \description{
 Simulates stochastic individual contact epidemic models for
-             infectious disease.
+infectious disease.
 }
 \details{
 Individual contact models are intended to be the stochastic microsimulation

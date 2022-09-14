@@ -17,10 +17,10 @@ netsim_cond_msg(cond, module, at, msg)
 }
 \value{
 A formatted string describing where and when the \code{condition}
-        occurred as well as the \code{condition}'s message.
+occurred as well as the \code{condition}'s message.
 }
 \description{
 This function returns a formatted string describing when, where,
-             and why an error, message, or warning occurred.
+and why an error, message, or warning occurred.
 }
 \keyword{internal}

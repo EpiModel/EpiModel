@@ -20,7 +20,7 @@ with an RColorBrewer color palette.
 }
 \description{
 Returns a vector of colors consistent with a high-brightness set
-             of colors from an \code{RColorBrewer} palette.
+of colors from an \code{RColorBrewer} palette.
 }
 \details{
 \code{RColorBrewer} provides easy access to helpful color palettes, but the

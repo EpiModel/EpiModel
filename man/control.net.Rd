@@ -190,7 +190,7 @@ An \code{EpiModel} object of class \code{control.net}.
 }
 \description{
 Sets the controls for stochastic network models simulated with
-             \code{\link{netsim}}.
+\code{\link{netsim}}.
 }
 \details{
 \code{control.net} sets the required control settings for any network model
@@ -201,30 +201,29 @@ of control settings for base models, consult the
 For all base models, the \code{type} argument is a necessary parameter
 and it has no default.
 }
-\section{The \code{attr.rules} Argument}{
+\section{The attr.rules Argument}{
 
 The \code{attr.rules} parameter is used to specify the rules for how nodal
 attribute values for incoming nodes should be set. These rules are only
 necessary for models in which there are incoming nodes (i.e., arrivals).
 There are three rules available for each attribute value:
 \itemize{
- \item \strong{"current":} new nodes will be assigned this attribute in
-       proportion to the distribution of that attribute among existing nodes
-       at that current time step.
- \item \strong{"t1":} new nodes will be assigned this attribute in proportion
-       to the distribution of that attribute among nodes at time 1 (that is,
-       the proportions set in the original network for \code{\link{netest}}).
- \item \strong{<Value>:} all new nodes will be assigned this specific value,
-       with no variation.
-}
-For example, the rules list
-\code{attr.rules = list(race = "t1", sex = "current", status = "s")}
+\item \strong{\code{current}} new nodes will be assigned this attribute in
+proportion to the distribution of that attribute among existing nodes
+at that current time step.
+\item \strong{\code{t1}} new nodes will be assigned this attribute in proportion
+to the distribution of that attribute among nodes at time 1 (that is,
+the proportions set in the original network for \code{\link{netest}}).
+\item \strong{\code{Value}} all new nodes will be assigned this specific value, with no
+variation.
+For example, the rules list \code{attr.rules = list(race = "t1", sex = "current", status = "s")}
 specifies how the race, sex, and status attributes should be set for incoming
 nodes. By default, the rule is "current" for all attributes except status,
 in which case it is "s" (that is, all incoming nodes are susceptible).
 }
+}
 
-\section{Checkpointing Simulations}{
+\section{Check pointing Simulations}{
 
 \code{netsim} has a built-in checkpoint system to prevent losing computation
 work if the function is interrupted (SIGINT, power loss, time limit exceeded
@@ -277,7 +276,7 @@ workflow by setting the parameter value for that argument to \code{NULL}.
 
 \seealso{
 Use \code{\link{param.net}} to specify model parameters and
-         \code{\link{init.net}} to specify the initial conditions. Run the
-         parameterized model with \code{\link{netsim}}.
+\code{\link{init.net}} to specify the initial conditions. Run the
+parameterized model with \code{\link{netsim}}.
 }
 \keyword{parameterization}

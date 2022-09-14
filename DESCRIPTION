@@ -61,3 +61,4 @@ VignetteBuilder: knitr
 LinkingTo: Rcpp, ergm
 RoxygenNote: 7.2.1
 Encoding: UTF-8
+Roxygen: list(markdown = TRUE)

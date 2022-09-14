@@ -105,7 +105,7 @@ An \code{EpiModel} object of class \code{param.icm}.
 }
 \description{
 Sets the epidemic parameters for stochastic individual contact
-             models simulated with \code{icm}.
+models simulated with \code{icm}.
 }
 \details{
 \code{param.icm} sets the epidemic parameters for the stochastic individual
@@ -152,7 +152,7 @@ responsibility with new modules.
 
 \seealso{
 Use \code{\link{init.icm}} to specify the initial conditions and
-         \code{\link{control.icm}} to specify the control settings. Run the
-         parameterized model with \code{\link{icm}}.
+\code{\link{control.icm}} to specify the control settings. Run the
+parameterized model with \code{\link{icm}}.
 }
 \keyword{parameterization}

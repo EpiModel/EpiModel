@@ -18,7 +18,7 @@ package framework.}
 }
 \description{
 This function defines and initializes the fuzzynodematch ERGM
-             term that allows for generalized homophily.
+term that allows for generalized homophily.
 }
 \details{
 This ERGM user term was written to allow for generalized homophily.The

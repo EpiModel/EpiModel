@@ -19,8 +19,8 @@ attribute updated based on the number of new vertices specified in \code{nv}.
 }
 \description{
 This function performs a simple operation of updating the
-             edgelist attribute \code{n} that tracks the total network
-             size implicit in an edgelist representation of the network.
+edgelist attribute \code{n} that tracks the total network
+size implicit in an edgelist representation of the network.
 }
 \details{
 This function is used in \code{EpiModel} modules to add vertices (nodes) to

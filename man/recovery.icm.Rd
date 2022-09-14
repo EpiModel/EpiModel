@@ -16,8 +16,8 @@ The updated \code{dat} main list object.
 }
 \description{
 This function simulates recovery from the infected state
-             either to a distinct recovered state (SIR model type) or back
-             to a susceptible state (SIS model type), for use in
-             \code{\link{icm}}.
+either to a distinct recovered state (SIR model type) or back
+to a susceptible state (SIS model type), for use in
+\code{\link{icm}}.
 }
 \keyword{internal}

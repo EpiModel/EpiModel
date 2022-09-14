@@ -17,7 +17,7 @@ The updated \code{dat} main list object.
 }
 \description{
 This function simulates departure for use in \link{netsim}
-       simulations.
+simulations.
 }
 \seealso{
 \code{\link{netsim}}

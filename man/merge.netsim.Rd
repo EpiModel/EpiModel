@@ -50,11 +50,11 @@ original \code{x} and \code{y} objects.}
 }
 \value{
 An \code{EpiModel} object of class \code{\link{netsim}} containing
-        the data from both \code{x} and \code{y}.
+the data from both \code{x} and \code{y}.
 }
 \description{
 Merges epidemiological data from two independent simulations of
-             stochastic network models from \code{netsim}.
+stochastic network models from \code{netsim}.
 }
 \details{
 This merge function combines the results of two independent simulations of

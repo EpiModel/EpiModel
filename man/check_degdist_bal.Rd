@@ -17,8 +17,8 @@ check_degdist_bal(num.g1, num.g2, deg.dist.g1, deg.dist.g2)
 }
 \description{
 Checks for consistency in the implied network statistics
-             of a two-group network in which the group size and
-             group-specific degree distributions are specified.
+of a two-group network in which the group size and
+group-specific degree distributions are specified.
 }
 \details{
 This function outputs the number of nodes of degree 0 to g, where g is the

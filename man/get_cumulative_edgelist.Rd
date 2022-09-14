@@ -17,13 +17,13 @@ multiple overlapping networks.)}
 \value{
 A cumulative edgelist in \code{data.frame} form with 4 columns:
 \itemize{
-  \item \code{head}: the unique ID (see \code{get_unique_ids}) of the
-        head node on the edge.
-  \item \code{tail}: the unique ID (see \code{get_unique_ids}) of the
-        tail node on the edge.
-  \item \code{start}: the time step in which the edge started.
-  \item \code{stop}: the time step in which the edge stopped; if ongoing,
-        then \code{NA} is returned.
+\item \code{head}: the unique ID (see \code{get_unique_ids}) of the
+head node on the edge.
+\item \code{tail}: the unique ID (see \code{get_unique_ids}) of the
+tail node on the edge.
+\item \code{start}: the time step in which the edge started.
+\item \code{stop}: the time step in which the edge stopped; if ongoing,
+then \code{NA} is returned.
 }
 }
 \description{

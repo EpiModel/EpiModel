@@ -3,7 +3,7 @@
 \name{delete_vertices}
 \alias{delete_vertices}
 \title{Fast Version of network::delete.vertices for Edgelist-formatted
-       Network}
+Network}
 \usage{
 delete_vertices(el, vid)
 }
@@ -20,10 +20,10 @@ permuted downward.
 }
 \description{
 Given a current two-column matrix of edges and a vector of IDs
-             to delete from the matrix, this function first removes any rows
-             of the edgelist in which the IDs are present and then permutes
-             downward the index of IDs on the edgelist that were numerically
-             larger than the IDs deleted.
+to delete from the matrix, this function first removes any rows
+of the edgelist in which the IDs are present and then permutes
+downward the index of IDs on the edgelist that were numerically
+larger than the IDs deleted.
 }
 \details{
 This function is used in \code{EpiModel} modules to remove vertices (nodes)

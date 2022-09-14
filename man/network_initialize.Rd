@@ -14,7 +14,7 @@ Returns an object of class \code{network}.
 }
 \description{
 Initialize an undirected network object for use in EpiModel
-             workflows.
+workflows.
 }
 \details{
 This function is used in \code{EpiModel} workflows to initialize an empty

@@ -18,7 +18,7 @@ The updated \code{dat} main list object.
 }
 \description{
 This function initializes the main \code{dat} object on which
-             data are stored, and simulates disease status and other
-             attributes.
+data are stored, and simulates disease status and other
+attributes.
 }
 \keyword{internal}

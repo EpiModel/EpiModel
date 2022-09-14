@@ -20,8 +20,8 @@ The updated \code{dat} main list object.
 }
 \description{
 This function simulates a dynamic network over one or multiple
-             time steps for TERGMs or one or multiple cross-sectional network
-             panels for ERGMs, for use in \code{\link{netsim}} modeling.
+time steps for TERGMs or one or multiple cross-sectional network
+panels for ERGMs, for use in \code{\link{netsim}} modeling.
 }
 \keyword{internal}
 \keyword{netUtils}

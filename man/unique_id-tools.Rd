@@ -23,21 +23,21 @@ A vector of unique or positional identifiers.
 }
 \description{
 EpiModel refers to its nodes either by positional identifiers
-             (\code{posit_ids}), which describe the position of a node in the
-             \code{attr} vector, or by unique identifiers
-             (\code{unique_ids}), which allow references to nodes even after
-             they are deactivated.
+(\code{posit_ids}), which describe the position of a node in the
+\code{attr} vector, or by unique identifiers
+(\code{unique_ids}), which allow references to nodes even after
+they are deactivated.
 }
 \section{All elements}{
 
-  When \code{unique_ids} or \code{posit_ids} is NULL (default)
-  the full list of positional IDs or unique IDs is returned.
+When \code{unique_ids} or \code{posit_ids} is NULL (default)
+the full list of positional IDs or unique IDs is returned.
 }
 
 \section{Deactivated nodes}{
 
-  When providing \code{unique_ids} of deactivated nodes to
-  \code{get_posit_ids}, \code{NA}s are returned instead and a warning is
-  produced.
+When providing \code{unique_ids} of deactivated nodes to
+\code{get_posit_ids}, \code{NA}s are returned instead and a warning is
+produced.
 }
 

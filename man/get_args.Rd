@@ -16,6 +16,6 @@ A list of argument names and values.
 }
 \description{
 Returns a list of argument names and values for use for
-             parameter processing functions.
+parameter processing functions.
 }
 \keyword{internal}
