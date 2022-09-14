@@ -130,16 +130,16 @@ get_network <- function(x, sim = 1, network = 1, collapse = FALSE, at,
 #' @title Extract Transmissions Matrix from Network Epidemic Model
 #'
 #' @description Extracts the matrix of transmission data for each transmission
-#'              event that occured within a network epidemic model.
+#'              event that occurred within a network epidemic model.
 #'
 #' @param x An \code{EpiModel} object of class \code{\link{netsim}}.
 #' @param sim Simulation number of extracted network.
-#' @param deduplicate If multiple infectious acts can occur at each timestep,
-#'   should one be randomly chosen as the first. (default = TRUE)
-#'   If FALSE, all infectious events are returned.
+#' @param deduplicate If \code{TRUE}, randomly select one transmission event in
+#'        the case that multiple events current per newly infected agent within
+#'        a time step.
 #'
 #' @return
-#' A data frame (tibble) with the following columns (on builtin models)
+#' A data frame with the following standard columns:
 #' \itemize{
 #'  \item \strong{at:} the time step at which the transmission occurred.
 #'  \item \strong{sus:} the ID number of the susceptible (newly infected) node.
