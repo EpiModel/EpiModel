@@ -1169,15 +1169,15 @@ plot_stats_table <- function(data,
 #'        dissolution model statistics for proportion of ties dissolved per time
 #'        step.
 #' @param method Plot method, with options of \code{"l"} for line plots and
-#'        \code{"b"} for boxplots.
+#'        \code{"b"} for box plots.
 #' @param sims A vector of simulation numbers to plot.
-#' @param stats Statistics to plot.  For \code{type = "formation"},
-#'        \code{stats} are among those specified in the call to
-#'        \code{\link{netdx}}; for \code{type = "duration","dissolution"},
-#'        \code{stats} are among those of the dissolution model (without
-#'        \code{offset()}).  The default is to plot all statistics.
-#' @param plots.joined If \code{TRUE}, combine all statistics in one
-#'        plot, versus one plot per statistic if \code{FALSE}.
+#' @param stats Statistics to plot. For \code{type = "formation"}, \code{stats}
+#'        are among those specified in the call to \code{\link{netdx}};
+#'        for \code{type = "duration", "dissolution"}, \code{stats} are among
+#'        those of the dissolution model (without \code{offset()}). The default
+#'        is to plot all statistics.
+#' @param plots.joined If \code{TRUE}, combine all statistics in one plot,
+#'        versus one plot per statistic if \code{FALSE}.
 #' @inheritParams plot.netsim
 #'
 #' @details
@@ -1460,19 +1460,19 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #'        to existing plot window.
 #' @param network Network number, for simulations with multiple networks
 #'        representing the population.
-#' @param at If \code{type="network"}, time step for network graph.
+#' @param at If \code{type = "network"}, time step for network graph.
 #' @param col.status If \code{TRUE} and \code{type="network"}, automatic disease
 #'        status colors (blue = susceptible, red = infected, green = recovered).
-#' @param shp.g2 If \code{type="network"} and \code{x} is for a two-group model,
+#' @param shp.g2 If \code{type = "network"} and \code{x} is for a two-group model,
 #'        shapes for the Group 2 vertices, with acceptable inputs of "triangle"
 #'        and "square". Group 1 vertices will remain circles.
 #' @param vertex.cex Relative size of plotted vertices if \code{type="network"},
 #'        with implicit default of 1.
 #' @param stats If \code{type="formation","duration","dissolution"}, statistics
-#'        to plot.  For \code{type = "formation"}, \code{stats} are among those
+#'        to plot. For \code{type = "formation"}, \code{stats} are among those
 #'        specified in \code{nwstats.formula} of \code{\link{control.net}}; for
-#'        \code{type = "duration","dissolution"}, \code{stats} are among those
-#'        of the dissolution model (without \code{offset()}).  The default is
+#'        \code{type = "duration", "dissolution"}, \code{stats} are among those
+#'        of the dissolution model (without \code{offset()}). The default is
 #'        to plot all statistics.
 #' @param targ.line If \code{TRUE}, plot target or expected value line for
 #'        the statistic of interest.
@@ -1484,13 +1484,12 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #'        \code{type="formation","duration","dissolution"}, combine all
 #'        statistics in one plot, versus one plot per statistic if
 #'        \code{FALSE}.
-#' @param method Plot method for
-#'        \code{type="formation","duration","dissolution"}, with options of
-#'        \code{"l"} for line plots and \code{"b"} for boxplots.
-#' @param duration.imputed If \code{type="duration"}, a logical indicating
+#' @param method Plot method for \code{type="formation", "duration", "dissolution"},
+#'        with options of \code{"l"} for line plots and \code{"b"} for box plots.
+#' @param duration.imputed If \code{type = "duration"}, a logical indicating
 #'        whether or not to impute starting times for relationships extant at
 #'        the start of the simulation. Defaults to \code{TRUE} when
-#'        \code{type="duration"}.
+#'        \code{type = "duration"}.
 #' @param ... Additional arguments to pass.
 #'
 #' @details

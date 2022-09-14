@@ -208,13 +208,13 @@ attribute values for incoming nodes should be set. These rules are only
 necessary for models in which there are incoming nodes (i.e., arrivals).
 There are three rules available for each attribute value:
 \itemize{
-\item \strong{\code{current}} new nodes will be assigned this attribute in
+\item \strong{\code{current}}: new nodes will be assigned this attribute in
 proportion to the distribution of that attribute among existing nodes
 at that current time step.
-\item \strong{\code{t1}} new nodes will be assigned this attribute in proportion
+\item \strong{\code{t1}}: new nodes will be assigned this attribute in proportion
 to the distribution of that attribute among nodes at time 1 (that is,
 the proportions set in the original network for \code{\link{netest}}).
-\item \strong{\code{Value}} all new nodes will be assigned this specific value, with no
+\item \strong{\code{Value}}: all new nodes will be assigned this specific value, with no
 variation.
 For example, the rules list \code{attr.rules = list(race = "t1", sex = "current", status = "s")}
 specifies how the race, sex, and status attributes should be set for incoming
@@ -223,7 +223,7 @@ in which case it is "s" (that is, all incoming nodes are susceptible).
 }
 }
 
-\section{Check pointing Simulations}{
+\section{Checkpointing Simulations}{
 
 \code{netsim} has a built-in checkpoint system to prevent losing computation
 work if the function is interrupted (SIGINT, power loss, time limit exceeded
