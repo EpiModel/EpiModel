@@ -1053,7 +1053,7 @@ crosscheck.net <- function(x, param, init, control) {
         x <- list(x)
       }
       if (!inherits(x, "list") || length(x) == 0 ||
-          !all(unlist(lapply(x, inherits, "netest")))) {
+          !all(vapply(x, inherits, logical(1), "netest"))) {
         stop("x must be either an object of class netest or a list of objects",
              " of class netest when start == 1", call. = FALSE)
       }

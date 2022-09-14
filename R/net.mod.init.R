@@ -27,7 +27,7 @@ initialize.net <- function(x, param, init, control, s) {
     # Main Data List --------------------------------------------------------
     dat <- create_dat_object(param, init, control)
 
-    if (is(x, "netest")) {
+    if (inherits(x, "netest")) {
       x <- list(x)
     }
 
