@@ -6,6 +6,8 @@
 
 ### BUG FIXES
 
+- fix an issue where `get_sims` was not properly subseting `el.cuml` and `_last_unique_id`
+
 ### OTHER
 
 - The `tracker.net` module was removed as an optional extension module, and this functionality is now  default for all network models (built-in and extension models). See the *Working with Attributes and Summary Statistics Vignette* for more details.
