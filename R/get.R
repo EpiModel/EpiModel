@@ -417,6 +417,17 @@ get_sims <- function(x, sims, var) {
     for (i in seq_along(out$epi)) {
       out$epi[[i]] <- out$epi[[i]][, -delsim, drop = FALSE]
     }
+
+    if (!is.null(out[["_last_unique_id"]])) {
+      out[["_last_unique_id"]] <- out[["_last_unique_id"]][sims]
+      names(out[["_last_unique_id"]]) <- newnames
+    }
+    if (!is.null(out$el.cuml) && length(out$el.cuml) == nsims) {
+      out$el.cuml[delsim] <- NULL
+      names(out$el.cuml) <- newnames
+    } else {
+      out$el.cuml <- list()
+    }
     if (!is.null(out$network)) {
       out$network[delsim] <- NULL
       names(out$network) <- newnames
