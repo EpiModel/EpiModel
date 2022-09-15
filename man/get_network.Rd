@@ -37,14 +37,14 @@ directly.}
 }
 \value{
 A \code{networkDynamic} object (if \code{collapse = FALSE}) or a
-        static \code{network} object (if \code{collapse = TRUE}).
+static \code{network} object (if \code{collapse = TRUE}).
 }
 \description{
 Extracts the \code{networkDynamic} object from either a
-             network epidemic model object generated with \code{netsim} or a
-             network diagnostic simulation generated with \code{netdx}, with
-             the option to collapse the extracted \code{networkDynamic}
-             object down to a static \code{network} object.
+network epidemic model object generated with \code{netsim} or a
+network diagnostic simulation generated with \code{netdx}, with
+the option to collapse the extracted \code{networkDynamic}
+object down to a static \code{network} object.
 }
 \details{
 This function requires that the \code{networkDynamic} object is saved during

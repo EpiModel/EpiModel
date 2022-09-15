@@ -23,8 +23,8 @@ A data frame containing the data from \code{x}.
 }
 \description{
 This function extracts timed edgelists for objects of class
-             \code{netdx} into a data frame using the generic
-             \code{as.data.frame} function.
+\code{netdx} into a data frame using the generic
+\code{as.data.frame} function.
 }
 \examples{
 # Initialize and parameterize the network model

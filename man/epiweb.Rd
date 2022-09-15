@@ -14,8 +14,8 @@ and \code{"net"}.}
 }
 \description{
 Runs a web browser-based GUI of deterministic compartmental
-             models, stochastic individual contact models, and basic network
-             models.
+models, stochastic individual contact models, and basic network
+models.
 }
 \details{
 \code{epiweb} runs a web-based GUI of one-group deterministic compartmental

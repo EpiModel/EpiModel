@@ -15,12 +15,12 @@ The updated \code{dat} main list object.
 }
 \description{
 Copies the vertex attributes stored on the main \code{attr} list
-             on \code{dat} to the network object on \code{dat}.
+on \code{dat} to the network object on \code{dat}.
 }
 \seealso{
 \code{\link{get_formula_term_attr}}, \code{\link{get_attr_prop}},
-         \code{\link{auto_update_attr}}, and
-         \code{\link{copy_nwattr_to_datattr}}.
+\code{\link{auto_update_attr}}, and
+\code{\link{copy_nwattr_to_datattr}}.
 }
 \keyword{internal}
 \keyword{netUtils}

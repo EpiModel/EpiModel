@@ -44,8 +44,8 @@ The updated object of class \code{networkDynamic}.
 }
 \description{
 Creates a new color-named temporally-extended attribute (TEA)
-             variable in a \code{networkDynamic} object containing a disease
-             status TEA in numeric format.
+variable in a \code{networkDynamic} object containing a disease
+status TEA in numeric format.
 }
 \details{
 The \code{ndtv} package (\url{https://cran.r-project.org/package=ndtv})

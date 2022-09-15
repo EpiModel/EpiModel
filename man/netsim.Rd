@@ -21,29 +21,29 @@ of class \code{netsim}.}
 \value{
 A list of class \code{netsim} with the following elements:
 \itemize{
- \item \strong{param:} the epidemic parameters passed into the model through
-       \code{param}, with additional parameters added as necessary.
- \item \strong{control:} the control settings passed into the model through
-       \code{control}, with additional controls added as necessary.
- \item \strong{epi:} a list of data frames, one for each epidemiological
-       output from the model. Outputs for base models always include the
-       size of each compartment, as well as flows in, out of, and between
-       compartments.
- \item \strong{stats:} a list containing two sublists, \code{nwstats} for any
-       network statistics saved in the simulation, and \code{transmat} for
-       the transmission matrix saved in the simulation. See
-       \code{\link{control.net}} and the
-       \href{http://www.epimodel.org/tut.html}{tutorials} for further
-       details.
- \item \strong{network:} a list of \code{networkDynamic} objects,
-        one for each model simulation.
+\item \strong{param:} the epidemic parameters passed into the model through
+\code{param}, with additional parameters added as necessary.
+\item \strong{control:} the control settings passed into the model through
+\code{control}, with additional controls added as necessary.
+\item \strong{epi:} a list of data frames, one for each epidemiological
+output from the model. Outputs for base models always include the
+size of each compartment, as well as flows in, out of, and between
+compartments.
+\item \strong{stats:} a list containing two sublists, \code{nwstats} for any
+network statistics saved in the simulation, and \code{transmat} for
+the transmission matrix saved in the simulation. See
+\code{\link{control.net}} and the
+\href{http://www.epimodel.org/tut.html}{tutorials} for further
+details.
+\item \strong{network:} a list of \code{networkDynamic} objects,
+one for each model simulation.
 }
 If \code{control$raw.output == TRUE}: A list of the raw (pre-processed)
 \code{netsim} \code{dat} objects, for use in simulation continuation.
 }
 \description{
 Simulates stochastic network epidemic models for infectious
-             disease.
+disease.
 }
 \details{
 Stochastic network models explicitly represent phenomena within and across
@@ -128,8 +128,8 @@ Software. 2018; 84(8): 1-47.
 }
 \seealso{
 Extract the model results with \code{\link{as.data.frame.netsim}}.
-         Summarize the time-specific model results with
-         \code{\link{summary.netsim}}. Plot the model results with
-         \code{\link{plot.netsim}}.
+Summarize the time-specific model results with
+\code{\link{summary.netsim}}. Plot the model results with
+\code{\link{plot.netsim}}.
 }
 \keyword{model}

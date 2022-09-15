@@ -22,7 +22,7 @@ A vector containing the sampled value(s).
 }
 \description{
 Provides a sampling function useful for dynamic simulations, in
-             which the length of the input vector may be multiple lengths and
-             the size of the sample may be 0.
+which the length of the input vector may be multiple lengths and
+the size of the sample may be 0.
 }
 \keyword{internal}

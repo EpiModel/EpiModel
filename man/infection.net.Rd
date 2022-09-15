@@ -17,23 +17,23 @@ The updated \code{dat} main list object.
 }
 \description{
 This function simulates the main infection process given the
-             current state of the partnerships and disease in the system.
+current state of the partnerships and disease in the system.
 }
 \details{
 The main steps in this infection module are as follows:
 \enumerate{
- \item Get IDs for current infected and susceptible nodes given the current
-       disease status.
- \item Call \code{\link{discord_edgelist}} to get the current discordant
-       edgelist given step 1.
- \item Determine the transmission rates (e.g., as a function of group).
- \item Pull the number of acts per partnership in a time step from the
-       \code{act.rate} parameter.
- \item Calculate the final transmission probabilities given the transmission
-       rates and act rates.
- \item Randomly transmit on the discordant edgelist.
- \item Conduct bookkeeping for new infections to update status on the nodes
-       and calculate disease incidence.
+\item Get IDs for current infected and susceptible nodes given the current
+disease status.
+\item Call \code{\link{discord_edgelist}} to get the current discordant
+edgelist given step 1.
+\item Determine the transmission rates (e.g., as a function of group).
+\item Pull the number of acts per partnership in a time step from the
+\code{act.rate} parameter.
+\item Calculate the final transmission probabilities given the transmission
+rates and act rates.
+\item Randomly transmit on the discordant edgelist.
+\item Conduct bookkeeping for new infections to update status on the nodes
+and calculate disease incidence.
 }
 }
 \seealso{

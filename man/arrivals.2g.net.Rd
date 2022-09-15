@@ -17,7 +17,7 @@ The updated \code{dat} main list object.
 }
 \description{
 This function simulates new arrivals into the network
-  for use in \code{\link{netsim}} simulations.
+for use in \code{\link{netsim}} simulations.
 }
 \seealso{
 \code{\link{netsim}}

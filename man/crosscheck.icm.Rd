@@ -18,7 +18,7 @@ This function returns no objects.
 }
 \description{
 This function checks that the three parameter lists from
-             \code{\link{param.icm}}, \code{\link{init.icm}}, and
-             \code{\link{control.icm}} are consistent.
+\code{\link{param.icm}}, \code{\link{init.icm}}, and
+\code{\link{control.icm}} are consistent.
 }
 \keyword{internal}

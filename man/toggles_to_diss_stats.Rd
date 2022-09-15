@@ -20,7 +20,7 @@ toggles_to_diss_stats(toggles, coef.diss, nsteps, nw, time.start = 0L)
 }
 \value{
 Named list containing dissolution and duration statistics matrices
-  and other related information.
+and other related information.
 }
 \description{
 Convert Matrix of Toggles to Dissolution and Duration Statistics

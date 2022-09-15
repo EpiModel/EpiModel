@@ -22,7 +22,7 @@ A \code{dat} main list object.
 }
 \description{
 This function initializes the main \code{dat} object on which
-             data are stored, simulates the initial state of the network, and
-             simulates disease status and other attributes.
+data are stored, simulates the initial state of the network, and
+simulates disease status and other attributes.
 }
 \keyword{internal}

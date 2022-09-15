@@ -32,11 +32,11 @@ at the starting time step of disease simulation, \eqn{t_1}. For
 multiple-simulation function calls, these are reset at the beginning of each
 individual simulation.
 \itemize{
- \item \code{\link{initialize.net}}: sets up the main data structure used
-       in the simulation, initializes which nodes are infected (via the
-       initial conditions passed in \code{\link{init.net}}), and simulates a
-       first time step of the networks given the network model fit from
-       \code{\link{netest}}.
+\item \code{\link{initialize.net}}: sets up the main data structure used
+in the simulation, initializes which nodes are infected (via the
+initial conditions passed in \code{\link{init.net}}), and simulates a
+first time step of the networks given the network model fit from
+\code{\link{netest}}.
 }
 }
 
@@ -48,14 +48,14 @@ attributes of the nodes and the edges. Recovery of nodes is likewise
 simulated as a function of nodal attributes of those infected nodes. These
 functions also calculate summary flow measures such as disease incidence.
 \itemize{
- \item \code{\link{infection.net}}: simulates disease transmission given an
-       edgelist of discordant partnerships by calculating the relevant
-       transmission and act rates for each edge, and then updating the nodal
-       attributes and summary statistics.
- \item \code{\link{recovery.net}}: simulates recovery from infection either
-       to a lifelong immune state (for SIR models) or back to the susceptible
-       state (for SIS models), as a function of the recovery rate parameters
-       specified in \code{\link{param.net}}.
+\item \code{\link{infection.net}}: simulates disease transmission given an
+edgelist of discordant partnerships by calculating the relevant
+transmission and act rates for each edge, and then updating the nodal
+attributes and summary statistics.
+\item \code{\link{recovery.net}}: simulates recovery from infection either
+to a lifelong immune state (for SIR models) or back to the susceptible
+state (for SIS models), as a function of the recovery rate parameters
+specified in \code{\link{param.net}}.
 }
 }
 
@@ -66,14 +66,14 @@ time step to update entries into and exits from the network. These are used
 in epidemic models with network feedback, in which the network is resimulated
 at each time step to account for the nodal changes affecting the edges.
 \itemize{
- \item \code{\link{departures.net}}: randomly simulates departure for nodes
-       given their disease status (susceptible, infected, recovered), and
-       their group-specific departure rates specified in
-       \code{\link{param.net}}. Departures involve deactivating nodes.
- \item \code{\link{arrivals.net}}: randomly simulates new arrivals into the
-       network given the current population size and the arrival rate
-       specified in the \code{a.rate} parameters. This involves adding new
-       nodes into the network.
+\item \code{\link{departures.net}}: randomly simulates departure for nodes
+given their disease status (susceptible, infected, recovered), and
+their group-specific departure rates specified in
+\code{\link{param.net}}. Departures involve deactivating nodes.
+\item \code{\link{arrivals.net}}: randomly simulates new arrivals into the
+network given the current population size and the arrival rate
+specified in the \code{a.rate} parameters. This involves adding new
+nodes into the network.
 }
 }
 
@@ -83,9 +83,9 @@ In dependent network models, the network object is resimulated at each time
 step to account for changes in the size of the network (changed through
 entries and exits), and the disease status of the nodes.
 \itemize{
- \item \code{\link{resim_nets}}: resimulates the network object one time step
-       forward given the set of formation and dissolution coefficients
-       estimated in \code{\link{netest}}.
+\item \code{\link{resim_nets}}: resimulates the network object one time step
+forward given the set of formation and dissolution coefficients
+estimated in \code{\link{netest}}.
 }
 }
 
@@ -94,12 +94,12 @@ entries and exits), and the disease status of the nodes.
 Network simulations require bookkeeping at each time step to calculate the
 summary epidemiological statistics used in the model output analysis.
 \itemize{
- \item \code{\link{prevalence.net}}: calculates the number in each disease
-       state (susceptible, infected, recovered) at each time step for those
-       active nodes in the network. If the \code{epi.by} control is used, it
-       calculates these statistics by a set of specified nodal attributes.
- \item \code{\link{verbose.net}}: summarizes the current state of the
-       simulation and prints this to the console.
+\item \code{\link{prevalence.net}}: calculates the number in each disease
+state (susceptible, infected, recovered) at each time step for those
+active nodes in the network. If the \code{epi.by} control is used, it
+calculates these statistics by a set of specified nodal attributes.
+\item \code{\link{verbose.net}}: summarizes the current state of the
+simulation and prints this to the console.
 }
 }
 

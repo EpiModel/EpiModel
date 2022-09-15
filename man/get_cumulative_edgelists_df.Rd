@@ -17,16 +17,16 @@ networks.) If \code{NULL}, extract from all networks.}
 \value{
 A \code{data.frame} with 5 columns:
 \itemize{
-  \item \code{index}: the unique ID (see \code{get_unique_ids}) of the
-        indexes.
-  \item \code{partner}: the unique ID (see \code{get_unique_ids}) of the
-        partners/contacts.
-  \item \code{start}: the time step in which the edge started.
-  \item \code{stop}: the time step in which the edge stopped; if ongoing,
-        then \code{NA} is returned.
-  \item \code{network}: the numerical index for the network on which the
-        partnership/contact is located.
- }
+\item \code{index}: the unique ID (see \code{get_unique_ids}) of the
+indexes.
+\item \code{partner}: the unique ID (see \code{get_unique_ids}) of the
+partners/contacts.
+\item \code{start}: the time step in which the edge started.
+\item \code{stop}: the time step in which the edge stopped; if ongoing,
+then \code{NA} is returned.
+\item \code{network}: the numerical index for the network on which the
+partnership/contact is located.
+}
 }
 \description{
 Get the Cumulative Edgelists of a Model

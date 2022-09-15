@@ -18,7 +18,7 @@ This function returns no objects.
 }
 \description{
 This function checks that the three parameter lists from
-             \code{\link{param.dcm}}, \code{\link{init.dcm}}, and
-             \code{\link{control.dcm}} are consistent.
+\code{\link{param.dcm}}, \code{\link{init.dcm}}, and
+\code{\link{control.dcm}} are consistent.
 }
 \keyword{internal}

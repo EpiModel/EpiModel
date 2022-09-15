@@ -3,7 +3,7 @@
 \name{format_param}
 \alias{format_param}
 \title{Format One Parameter for Printing with the \code{print.param.xxx}
-       Functions}
+Functions}
 \usage{
 format_param(param_name, param_value)
 }
@@ -14,6 +14,6 @@ format_param(param_name, param_value)
 }
 \description{
 Format One Parameter for Printing with the \code{print.param.xxx}
-       Functions
+Functions
 }
 \keyword{internal}
