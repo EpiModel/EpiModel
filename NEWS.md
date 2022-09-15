@@ -2,6 +2,8 @@
 
 ### NEW FEATURES
 
+- `get_transmat` adds a `deduplicate` argument to select one transmitting acts in the case that multiple transmissions occurred at the same time step to a newly infected person.
+
 ### BUG FIXES
 
 - fix an issue where `get_sims` was not properly subseting `el.cuml` and `_last_unique_id`
