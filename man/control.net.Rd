@@ -183,9 +183,6 @@ attributes appearing in one network model depend on nodal degrees in
 a different network.}
 
 \item{...}{Additional control settings passed to model.}
-
-\item{set.control.stergm}{Deprecated control argument of class \code{control.simulate.network}. Use
-\code{set.control.tergm} instead.}
 }
 \value{
 An EpiModel object of class \code{control.net}.
