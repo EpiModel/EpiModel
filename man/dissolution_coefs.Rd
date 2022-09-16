@@ -19,6 +19,19 @@ homogeneous rate that applies to the entire population.}
 \value{
 A list of class \code{disscoef} with the following elements:
 \itemize{
+\item \strong{dissolution:} right-hand sided STERGM dissolution formula
+passed in the function call.
+\item \strong{duration:} mean edge durations passed into the function.
+\item \strong{coef.crude:} mean durations transformed into logit
+coefficients.
+\item \strong{coef.adj:} crude coefficients adjusted for the risk of
+departure on edge persistence, if the \code{d.rate} argument is
+supplied.
+\item \strong{coef.form.corr:} corrections to be subtracted from formation
+coefficients.
+\item \strong{d.rate:} the departure rate.
+\item \strong{diss.model.type:} the form of the dissolution model; options
+include \code{edgesonly}, \code{nodematch}, and \code{nodemix}.
 }
 }
 \description{
@@ -41,6 +54,20 @@ departure as a competing risk to edge dissolution.
 The current dissolution models supported by this function and in network
 model estimation in \code{\link{netest}} are as follows:
 \itemize{
+\item \code{~offset(edges)}: a homogeneous dissolution model in which the
+edge duration is the same for all partnerships. This requires
+specifying one duration value.
+\item \code{~offset(edges) + offset(nodematch("<attr>"))}: a heterogeneous
+model in which the edge duration varies by whether the nodes in the
+dyad have similar values of a specified attribute. The duration
+vector should now contain two values: the first is the mean edge
+duration of non-matched dyads, and the second is the duration of the
+matched dyads.
+\item \code{~offset(edges) + offset(nodemix("<attr>"))}: a heterogeneous
+model that extends the nodematch model to include non-binary
+attributes for homophily. The duration vector should first contain
+the base value, then the values for every other possible combination
+in the term.
 }
 }
 \examples{

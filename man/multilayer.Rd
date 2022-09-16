@@ -12,13 +12,13 @@ network corresponding to the index of the control argument}
 }
 \value{
 an object of class \code{multilayer} containing the specified
-        control arguments
+control arguments
 }
 \description{
 This utility function allows specification of certain
-             \code{\link{netsim}} controls to vary by network.  The
-             \code{\link{netsim}} control arguments currently supporting
-             \code{multilayer} specifications are \code{nwstats.formula},
-             \code{set.control.ergm}, \code{set.control.tergm}, and
-             \code{tergmLite.track.duration}.
+\code{\link{netsim}} controls to vary by network.  The
+\code{\link{netsim}} control arguments currently supporting
+\code{multilayer} specifications are \code{nwstats.formula},
+\code{set.control.ergm}, \code{set.control.tergm}, and
+\code{tergmLite.track.duration}.
 }

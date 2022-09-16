@@ -92,6 +92,27 @@ documentation for the specific control functions help pages.
 With the models parameterized, the functions for simulating epidemic models
 are:
 \itemize{
+\item \code{\link{dcm}} for deterministic compartmental models.
+\item \code{\link{icm}} for individual contact models.
+\item Network models are simulated in a three-step process:
+\enumerate{
+\item \code{\link{netest}} estimates the statistical model for the network
+structure itself (i.e., how partnerships form and dissolve over time
+given the parameterization of those processes). This function is a
+wrapper around the \code{ergm} and \code{tergm} functions in the
+\code{ergm} and \code{tergm} packages. The current statistical
+framework for model simulation is called "egocentric inference":
+target statistics summarizing these formation and dissolution
+processes collected from an egocentric sample of the population.
+\item \code{\link{netdx}} runs diagnostics on the dynamic model fit by
+simulating the base network over time to ensure the model fits the
+targets for formation and dissolution.
+\item \code{\link{netsim}} simulates the stochastic network epidemic
+models, with a given network model fit in \code{\link{netest}}. Here
+the function requires this model fit object along with the
+parameters, initial conditions, and control settings as defined
+above.
+}
 }
 }
 

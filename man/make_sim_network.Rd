@@ -17,7 +17,7 @@ The network.
 }
 \description{
 This function returns the network object representing the
-             current state of the simulation.
+current state of the simulation.
 }
 \keyword{internal}
 \keyword{netUtils}

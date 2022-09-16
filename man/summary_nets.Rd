@@ -17,10 +17,10 @@ The updated \code{dat} main list object.
 }
 \description{
 This function calls \code{summary} on each network being
-             simulated in \code{netsim}, provided \code{save.nwstats} and
-             \code{resimulate.network} are both \code{TRUE}. It records the
-             statistics represented by \code{nwstats.formula} in
-             \code{dat$stats$nwstats}.
+simulated in \code{netsim}, provided \code{save.nwstats} and
+\code{resimulate.network} are both \code{TRUE}. It records the
+statistics represented by \code{nwstats.formula} in
+\code{dat$stats$nwstats}.
 }
 \keyword{internal}
 \keyword{netUtils}

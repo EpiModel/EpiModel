@@ -19,7 +19,7 @@ The updated \code{dat} main list object.
 }
 \description{
 This function updates the dat object given the network
-             representing the current state of the simulation.
+representing the current state of the simulation.
 }
 \keyword{internal}
 \keyword{netUtils}

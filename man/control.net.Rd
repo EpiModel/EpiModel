@@ -89,6 +89,12 @@ contained in the network model formation formula, otherwise it is ignored.}
 \item{resim_nets.FUN}{Module to resimulate the network at each time step, with the default
 function of \code{\link{resim_nets}}.}
 
+\item{summary_nets.FUN}{Module to extract summary statistics of the network
+at each time step, with the default function of \code{\link{summary_nets}}.}
+
+\item{infection.FUN}{Module to simulate disease infection, with the default function of
+\code{\link{infection.net}}.}
+
 \item{recovery.FUN}{Module to simulate disease recovery, with the default function of
 \code{\link{recovery.net}}.}
 
@@ -116,6 +122,10 @@ above. \code{initialize.FUN} will always be run first and \code{verbose.FUN} wil
 \item{save.nwstats}{If \code{TRUE}, save network statistics in a data frame. The statistics to be
 saved are specified in the \code{nwstats.formula} argument.}
 
+\item{nwstats.formula}{A right-hand sided ERGM formula that includes network statistics of
+interest, with the default to the formation formula terms. Supports \code{\link{multilayer}}
+specification.}
+
 \item{save.transmat}{If \code{TRUE}, complete transmission matrix is saved at simulation end.}
 
 \item{save.network}{If \code{TRUE}, networkDynamic or network object is saved at simulation end.
@@ -140,29 +150,42 @@ modules specified.}
 \item{raw.output}{If \code{TRUE}, \code{netsim} will output a list of raw data (one per simulation) instead
 of a cleaned and formatted \code{netsim} object.}
 
+\item{tergmLite.track.duration}{If \code{TRUE}, track duration information for models in \code{tergmLite}
+simulations. Supports \code{\link{multilayer}} specification.}
+
+\item{set.control.ergm}{Control arguments passed to \code{ergm::simulate_formula.network}. In \code{netsim},
+this is only used when initializing the network with \code{edapprox = TRUE}. All other
+simulations in \code{netsim} use \code{tergm}. Supports \code{\link{multilayer}} specification.}
+
+\item{set.control.tergm}{Control arguments passed to \code{tergm::simulate_formula.network}. See the
+help file for \code{\link{netdx}} for details and examples on specifying this parameter. Supports
+\code{\link{multilayer}} specification.}
+
 \item{save.diss.stats}{If \code{TRUE}, \code{netsim} will compute and save duration and dissolution
 statistics for plotting and printing, provided \code{save.network} is \code{TRUE}, \code{tergmLite} is
 \code{FALSE}, and the dissolution model is homogeneous.}
 
-\item{dat.updates}{Either \code{NULL}, a single function taking arguments
-\code{dat}, \code{at}, and \code{network}, or a list of functions of
-length one greater than the number of networks being simulated, with
-each function in the list taking arguments \code{dat} and \code{at}.
-If a single function is passed, it will be called before the first
-network is simulated and after each network is simulated, with
-\code{network = 0L} before the first network is simulated and with
-\code{network = i} after the \code{i}th network is simulated. If a
-list of functions is passed, the first function will be called before
-the first network is simulated, and the \code{i + 1}th function will
-be called after the \code{i}th network is simulated. (Note that
-\code{at = 0L} is used for initial cross-sectional simulations in
-\code{\link{sim_nets_t1}}.) The function(s) should return \code{dat}
+\item{dat.updates}{Either \code{NULL}, a single function taking arguments \code{dat},
+\code{at}, and \code{network}, or a list of functions of length one greater
+than the number of networks being simulated, with each function in
+the list taking arguments \code{dat} and \code{at}. If a single function is
+passed, it will be called before the first network is simulated and
+after each network is simulated, with \code{network = 0L} before the first
+network is simulated and with \code{network = i} after the \code{i}th network
+is simulated. If a list of functions is passed, the first function
+will be called before the first network is simulated, and the
+\code{i + 1}th function will be called after the \code{i}th network is
+simulated. (Note that \code{at = 0L} is used for initial cross-sectional
+simulations in \code{\link{sim_nets_t1}}.) The function(s) should return \code{dat}
 with any updates needed to correctly represent the network states for
-calls to \code{simulate} and/or \code{summary}. This can be useful if
-nodal attributes appearing in one network model depend on nodal
-degrees in a different network.}
+calls to \code{simulate} and/or \code{summary}. This can be useful if nodal
+attributes appearing in one network model depend on nodal degrees in
+a different network.}
 
 \item{...}{Additional control settings passed to model.}
+
+\item{set.control.stergm}{Deprecated control argument of class \code{control.simulate.network}. Use
+\code{set.control.tergm} instead.}
 }
 \value{
 An EpiModel object of class \code{control.net}.
