@@ -20,8 +20,8 @@ Returns an object of class \code{network}.
 }
 \description{
 Sets a vertex attribute on an object of class \code{network}.
-             This function simplifies the related function in the
-             \code{network} package.
+This function simplifies the related function in the
+\code{network} package.
 }
 \details{
 This function is used in \code{EpiModel} workflows to set vertex attributes

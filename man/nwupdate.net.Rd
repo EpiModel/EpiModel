@@ -17,5 +17,5 @@ The updated \code{dat} main list object.
 }
 \description{
 This function handles all calls to the network object contained
-             on the main \code{dat} object handled in \code{netsim}.
+on the main \code{dat} object handled in \code{netsim}.
 }

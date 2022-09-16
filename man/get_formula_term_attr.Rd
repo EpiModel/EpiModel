@@ -16,6 +16,6 @@ A character vector of vertex attributes.
 }
 \description{
 Given a formation formula for a network model, outputs a
-             character vector of vertex attributes to be used in
-             \code{\link{netsim}} simulations.
+character vector of vertex attributes to be used in
+\code{\link{netsim}} simulations.
 }

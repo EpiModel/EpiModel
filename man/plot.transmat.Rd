@@ -18,8 +18,8 @@ functions (\code{plot.network}, \code{plot.phylo}, or
 }
 \description{
 Plots the transmission matrix tree from from \code{get_transmat}
-             in one of three styles: a phylogram, a directed network, or
-             a transmission timeline.
+in one of three styles: a phylogram, a directed network, or
+a transmission timeline.
 }
 \details{
 The \code{phylo} plot requires the \code{ape} package. The
@@ -27,5 +27,5 @@ The \code{phylo} plot requires the \code{ape} package. The
 }
 \seealso{
 \code{\link{plot.network}}, \code{\link[ape]{plot.phylo}},
-         \code{\link[ndtv]{transmissionTimeline}}.
+\code{\link[ndtv]{transmissionTimeline}}.
 }

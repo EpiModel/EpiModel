@@ -12,27 +12,27 @@ process_out.net(dat_list)
 \value{
 A list of class \code{netsim} with the following elements:
 \itemize{
- \item \strong{param:} the epidemic parameters passed into the model through
-       \code{param}, with additional parameters added as necessary.
- \item \strong{control:} the control settings passed into the model through
-       \code{control}, with additional controls added as necessary.
- \item \strong{epi:} a list of data frames, one for each epidemiological
-       output from the model. Outputs for base models always include the
-       size of each compartment, as well as flows in, out of, and between
-       compartments.
- \item \strong{stats:} a list containing two sublists, \code{nwstats} for any
-       network statistics saved in the simulation, and \code{transmat} for
-       the transmission matrix saved in the simulation. See
-       \code{\link{control.net}} and the
-       \href{http://www.epimodel.org/tut.html}{tutorials} for further
-       details.
- \item \strong{network:} a list of \code{networkDynamic} objects,
-        one for each model simulation.
+\item \strong{param:} the epidemic parameters passed into the model through
+\code{param}, with additional parameters added as necessary.
+\item \strong{control:} the control settings passed into the model through
+\code{control}, with additional controls added as necessary.
+\item \strong{epi:} a list of data frames, one for each epidemiological
+output from the model. Outputs for base models always include the
+size of each compartment, as well as flows in, out of, and between
+compartments.
+\item \strong{stats:} a list containing two sublists, \code{nwstats} for any
+network statistics saved in the simulation, and \code{transmat} for
+the transmission matrix saved in the simulation. See
+\code{\link{control.net}} and the
+\href{http://www.epimodel.org/tut.html}{tutorials} for further
+details.
+\item \strong{network:} a list of \code{networkDynamic} objects,
+one for each model simulation.
 }
 }
 \description{
 This function transfers the data from a list of the main
-             \code{dat} objects to the output \code{out} object at the end of
-             all simulations in \code{\link{netsim}}.
+\code{dat} objects to the output \code{out} object at the end of
+all simulations in \code{\link{netsim}}.
 }
 \keyword{internal}

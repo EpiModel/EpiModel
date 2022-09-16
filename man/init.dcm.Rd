@@ -33,7 +33,7 @@ An \code{EpiModel} object of class \code{init.dcm}.
 }
 \description{
 Sets the initial conditions for deterministic compartmental
-             models simulated with \code{dcm}.
+models simulated with \code{dcm}.
 }
 \details{
 The initial conditions for a model solved with \code{\link{dcm}} should be
@@ -50,7 +50,7 @@ are output. More details on this requirement are outlined in the
 }
 \seealso{
 Use \code{\link{param.dcm}} to specify model parameters and
-         \code{\link{control.dcm}} to specify the control settings. Run the
-         parameterized model with \code{\link{dcm}}.
+\code{\link{control.dcm}} to specify the control settings. Run the
+parameterized model with \code{\link{dcm}}.
 }
 \keyword{parameterization}

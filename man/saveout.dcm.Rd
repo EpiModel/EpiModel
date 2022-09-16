@@ -20,19 +20,19 @@ saveout.dcm(df, s, param, control, out = NULL)
 \value{
 A list with the following elements:
 \itemize{
- \item \strong{param:} the epidemic parameters passed into the model through
-       \code{\link{param.dcm}}, with additional parameters added as
-       necessary.
- \item \strong{control:} the control settings passed into the model through
-       \code{\link{control.dcm}}, with additional controls added as
-       necessary.
- \item \strong{epi:} a list of data frames, one for each epidemiological
-       output from the model.
+\item \strong{param:} the epidemic parameters passed into the model through
+\code{\link{param.dcm}}, with additional parameters added as
+necessary.
+\item \strong{control:} the control settings passed into the model through
+\code{\link{control.dcm}}, with additional controls added as
+necessary.
+\item \strong{epi:} a list of data frames, one for each epidemiological
+output from the model.
 }
 }
 \description{
 This function transfers the data from the main \code{df}
-             object to the output \code{out} object at the end of each
-             run in \code{\link{dcm}}.
+object to the output \code{out} object at the end of each
+run in \code{\link{dcm}}.
 }
 \keyword{internal}

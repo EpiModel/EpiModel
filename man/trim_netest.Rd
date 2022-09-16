@@ -22,10 +22,10 @@ A \code{netest} object with formula environments removed, optionally with the
 }
 \description{
 Trims formula environments from the \code{netest} object.
-             Optionally converts the \code{newnetwork} element of the
-             \code{netest} object to a \code{networkLite} class, and removes
-             the \code{fit} element (if present) from the \code{netest}
-             object.
+Optionally converts the \code{newnetwork} element of the
+\code{netest} object to a \code{networkLite} class, and removes
+the \code{fit} element (if present) from the \code{netest}
+object.
 }
 \details{
 With larger, more complex network structures with epidemic models, it is
@@ -36,9 +36,9 @@ all but the bare essentials needed for simulating a network model with
 
 Specifically, the function removes:
 \itemize{
- \item \code{environment(object$constraints)}
- \item \code{environment(object$coef.diss$dissolution)}
- \item \code{environment(object$formation)}
+\item \code{environment(object$constraints)}
+\item \code{environment(object$coef.diss$dissolution)}
+\item \code{environment(object$formation)}
 }
 
 When \code{edapprox = TRUE} in the \code{netest} call, also

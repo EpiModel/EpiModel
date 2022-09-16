@@ -14,12 +14,12 @@ mutate_epi(x, ...)
 }
 \value{
 The updated \code{EpiModel} object of class \code{dcm}, \code{icm},
-        or \code{netsim}.
+or \code{netsim}.
 }
 \description{
 Inspired by \code{dplyr::mutate}, \code{mutate_epi} adds new
-             variables to the epidemiological and related variables within
-             simulated model objects of any class in \code{EpiModel}.
+variables to the epidemiological and related variables within
+simulated model objects of any class in \code{EpiModel}.
 }
 \examples{
 # DCM example

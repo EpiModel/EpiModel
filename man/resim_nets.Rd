@@ -17,9 +17,9 @@ The updated \code{dat} main list object.
 }
 \description{
 This function resimulates the dynamic network in stochastic
-             network models simulated in \code{\link{netsim}} with dependence
-             between the epidemic and demographic processes and the network
-             structure.
+network models simulated in \code{\link{netsim}} with dependence
+between the epidemic and demographic processes and the network
+structure.
 }
 \keyword{internal}
 \keyword{netUtils}

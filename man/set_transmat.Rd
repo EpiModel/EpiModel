@@ -20,7 +20,7 @@ The updated \code{dat} main list object.
 }
 \description{
 This function appends the transmission matrix created during
-             \code{infection.net} and \code{infection.2g.net}.
+\code{infection.net} and \code{infection.2g.net}.
 }
 \details{
 This internal function works within the parent \code{\link{infection.net}}

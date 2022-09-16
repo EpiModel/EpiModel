@@ -20,6 +20,6 @@ all simulations, or "progress" for time step specific messages.}
 }
 \description{
 This function prints progress from stochastic network models
-             simulated with \code{\link{netsim}} to the console.
+simulated with \code{\link{netsim}} to the console.
 }
 \keyword{internal}

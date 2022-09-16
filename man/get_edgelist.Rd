@@ -20,5 +20,5 @@ posit_ids (see \code{get_posit_ids}) of the nodes in each edge.
 }
 \description{
 This function outputs an edgelist from the specified network,
-             selecting the method depending on the stored network type.
+selecting the method depending on the stored network type.
 }

@@ -16,11 +16,11 @@ identical model parameterization as \code{x}.}
 }
 \value{
 An \code{EpiModel} object of class \code{\link{icm}} containing the
-        data from both \code{x} and \code{y}.
+data from both \code{x} and \code{y}.
 }
 \description{
 Merges epidemiological data from two independent simulations of
-             stochastic individual contact models from \code{\link{icm}}.
+stochastic individual contact models from \code{\link{icm}}.
 }
 \details{
 This merge function combines the results of two independent simulations of

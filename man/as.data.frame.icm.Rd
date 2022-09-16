@@ -41,8 +41,8 @@ A data frame containing the data from \code{x}.
 }
 \description{
 This function extracts model simulations for objects of classes
-             \code{icm} and \code{netsim} into a data frame using
-             the generic \code{as.data.frame} function.
+\code{icm} and \code{netsim} into a data frame using
+the generic \code{as.data.frame} function.
 }
 \details{
 These methods work for both \code{icm} and \code{netsim} class models. The

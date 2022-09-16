@@ -18,7 +18,7 @@ A \code{dat} main list object.
 }
 \description{
 This helper function populates a \code{dat} main list object
-             with the minimal required elements. All parameters are optional.
-             When none are given the resulting object is only a shell list
-             with the different named elements defined as empty lists.
+with the minimal required elements. All parameters are optional.
+When none are given the resulting object is only a shell list
+with the different named elements defined as empty lists.
 }

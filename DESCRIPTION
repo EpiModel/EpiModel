@@ -47,6 +47,7 @@ Imports:
     ggplot2,
     tibble,
     methods,
+    rlang,
     dplyr,
     coda,
     networkLite
@@ -64,3 +65,4 @@ Encoding: UTF-8
 Remotes:
     github::EpiModel/networkLite@networkLite,
     github::statnet/networkDynamic@networkLite
+Roxygen: list(markdown = TRUE)

@@ -11,6 +11,6 @@ mcat(test)
 }
 \description{
 Writes the name of a test and \code{...} to console to show test
-             progress.
+progress.
 }
 \keyword{internal}
