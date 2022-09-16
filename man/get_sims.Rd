@@ -20,13 +20,13 @@ selecting the average simulation from the set if \code{sims = "mean"}.}
 }
 \value{
 An updated object of class \code{netsim} containing only the
-        simulations specified in \code{sims} and the variables specified in
-        \code{var}.
+simulations specified in \code{sims} and the variables specified in
+\code{var}.
 }
 \description{
 Subsets the entire \code{netsim} object to a subset of
-             simulations, essentially functioning like a reverse of
-             \code{merge}.
+simulations, essentially functioning like a reverse of
+\code{merge}.
 }
 \examples{
 # Network model estimation

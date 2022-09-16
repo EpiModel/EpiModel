@@ -24,8 +24,8 @@ An updated network model object of class \code{netest}.
 }
 \description{
 Adjusts the dissolution component of a dynamic ERGM fit using
-             the \code{\link{netest}} function with the edges dissolution
-             approximation method.
+the \code{\link{netest}} function with the edges dissolution
+approximation method.
 }
 \details{
 Fitting an ERGM is a computationally intensive process when the model

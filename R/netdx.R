@@ -1,6 +1,6 @@
 #' @title Dynamic Network Model Diagnostics
 #'
-#' @description Runs dynamic diagnostics on an ERGM/STERGM estimated through
+#' @description Runs dynamic diagnostics on an ERGM/STERGM estimated with
 #'              \code{\link{netest}}.
 #'
 #' @param x An \code{EpiModel} object of class \code{netest}.
@@ -51,10 +51,10 @@
 #' \code{edapprox} argument to \code{FALSE}) require only a call to
 #' \code{tergm}'s \code{simulate_formula.network}. Control parameters for those
 #' simulations may be set using \code{set.control.tergm} in \code{netdx}.
-#' The parameters should be input through the
-#' \code{control.simulate.formula.tergm} function, with the available
-#' parameters listed in the \code{\link{control.simulate.formula.tergm}} help
-#' page in the \code{tergm} package.
+#' The parameters should be input through the \code{control.simulate.formula.tergm}
+#' function, with the available parameters listed in the
+#' \code{\link{control.simulate.formula.tergm}} help page in the \code{tergm}
+#' package.
 #'
 #' Models fit with the ERGM method with the edges dissolution approximation
 #' (setting \code{edapprox} to \code{TRUE}) require a call first to
@@ -67,13 +67,14 @@
 #' \code{\link[ergm:control.simulate.formula]{control.simulate.formula}} help
 #' page in the \code{ergm} package. For the second, parameters should be input
 #' through the \code{control.simulate.formula.tergm()} function, with the
-#' available parameters listed in the
-#' \code{\link{control.simulate.formula.tergm}} help page in the \code{tergm}
-#' package. An example is shown below.
+#' available parameters listed in the \code{\link{control.simulate.formula.tergm}}
+#' help page in the \code{tergm} package. An example is shown below.
 #'
-#' @return A list of class \code{netdx}.
+#' @return
+#' A list of class `netdx`.
 #'
-#' @seealso Plot these model diagnostics with \code{\link{plot.netdx}}.
+#' @seealso
+#' Plot these model diagnostics with [`plot.netdx`].
 #'
 #' @export
 #'
@@ -116,11 +117,12 @@
 #' coef.diss <- dissolution_coefs(dissolution = ~offset(edges) +
 #'                     offset(nodematch("neighborhood", diff = TRUE)),
 #'                     duration = c(52, 58, 61, 55, 81, 62, 52, 64, 52, 68, 58))
-#' est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
-#' dx11 <- netdx(est, nsims = 5, nsteps = 100)
-#' plot(dx11)
-#' plot(dx11, type = "duration", plots.joined = TRUE, qnts = 0.2)
-#' plot(dx11, type = "dissolution", mean.smooth = FALSE, mean.col = "red")
+#' est2 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
+#' dx3 <- netdx(est2, nsims = 5, nsteps = 100)
+#' print(dx3)
+#' plot(dx3)
+#' plot(dx3, type = "duration", plots.joined = TRUE, qnts = 0.2, legend = TRUE)
+#' plot(dx3, type = "dissolution", mean.smooth = FALSE, mean.col = "red")
 #' }
 #'
 netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,

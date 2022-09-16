@@ -15,7 +15,7 @@ The updated \code{dat} main list object.
 }
 \description{
 This function adds 1 to the timestep counter stored in the
-             \code{dat} main list object.
+\code{dat} main list object.
 }
 \section{Mutability}{
 

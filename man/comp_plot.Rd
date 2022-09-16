@@ -30,8 +30,8 @@ comp_plot(x, at, digits, ...)
 }
 \description{
 Plots a compartment flow diagram for deterministic compartmental
-             models, stochastic individual contact models, and stochastic
-             network models.
+models, stochastic individual contact models, and stochastic
+network models.
 }
 \details{
 The \code{comp_plot} function provides a visual summary of an epidemic model

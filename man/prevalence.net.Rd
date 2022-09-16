@@ -17,7 +17,7 @@ The updated \code{dat} main list object.
 }
 \description{
 Provides all active model state sizes from the network at the
-             specified time step, output to a list of vectors.
+specified time step, output to a list of vectors.
 }
 \details{
 This network utility is used during the \code{\link{netsim}} simulation

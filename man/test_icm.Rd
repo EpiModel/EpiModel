@@ -11,7 +11,7 @@ test_icm(x)
 }
 \description{
 Tests whether the model output from an individual contact model
-             is consistent with key balancing equations for compartment and
-             flow sizes for each simulation for each time step.
+is consistent with key balancing equations for compartment and
+flow sizes for each simulation for each time step.
 }
 \keyword{internal}

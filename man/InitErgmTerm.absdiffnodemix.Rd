@@ -18,9 +18,9 @@ package framework.}
 }
 \description{
 This function defines and initializes the absdiffnodemix ERGM
-             term that allows for targeting homophily based on a non-binary
-             attribute (e.g., age) by combinations of a binary attribute
-             (e.g., race).
+term that allows for targeting homophily based on a non-binary
+attribute (e.g., age) by combinations of a binary attribute
+(e.g., race).
 }
 \details{
 This ERGM user term was written to allow for age-based homophily in

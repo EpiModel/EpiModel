@@ -16,8 +16,8 @@ Returns an object of class \code{network}.
 }
 \description{
 Gets a vertex attribute from an object of class \code{network}.
-             This functions simplifies the related function in the
-             \code{network} package.
+This functions simplifies the related function in the
+\code{network} package.
 }
 \details{
 This function is used in \code{EpiModel} workflows to query vertex

@@ -69,7 +69,7 @@ An \code{EpiModel} object of class \code{control.icm}.
 }
 \description{
 Sets the controls for stochastic individual contact models
-             simulated with \code{\link{icm}}.
+simulated with \code{\link{icm}}.
 }
 \details{
 \code{control.icm} sets the required control settings for any stochastic
@@ -96,7 +96,7 @@ time step by passing a module function via the \code{...} argument.
 
 \seealso{
 Use \code{\link{param.icm}} to specify model parameters and
-         \code{\link{init.icm}} to specify the initial conditions. Run the
-         parameterized model with \code{\link{icm}}.
+\code{\link{init.icm}} to specify the initial conditions. Run the
+parameterized model with \code{\link{icm}}.
 }
 \keyword{parameterization}

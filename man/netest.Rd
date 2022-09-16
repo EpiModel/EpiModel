@@ -73,8 +73,8 @@ A fitted network model object of class \code{netest}.
 }
 \description{
 Estimates statistical network models using the exponential
-             random graph modeling (ERGM) framework with extensions for
-             dynamic/temporal models (STERGM).
+random graph modeling (ERGM) framework with extensions for
+dynamic/temporal models (STERGM).
 }
 \details{
 \code{netest} is a wrapper function for the \code{ergm}, \code{ergm.ego},
@@ -186,7 +186,7 @@ Software. 2018; 84(8): 1-47.
 }
 \seealso{
 Use \code{\link{netdx}} to diagnose the fitted network model, and
-         \code{\link{netsim}} to simulate epidemic spread over a simulated
-         dynamic network consistent with the model fit.
+\code{\link{netsim}} to simulate epidemic spread over a simulated
+dynamic network consistent with the model fit.
 }
 \keyword{model}

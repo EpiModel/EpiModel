@@ -17,9 +17,9 @@ The updated \code{dat} main list object.
 }
 \description{
 Changes the current timestep in the \code{dat} object. Use with
-             caution. This function exists to work around unforeseen corner
-             cases. In most situation, \code{increment_timestep} is
-             preferred.
+caution. This function exists to work around unforeseen corner
+cases. In most situation, \code{increment_timestep} is
+preferred.
 }
 \section{Mutability}{
 

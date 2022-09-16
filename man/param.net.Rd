@@ -100,7 +100,7 @@ An \code{EpiModel} object of class \code{param.net}.
 }
 \description{
 Sets the epidemic parameters for stochastic network models
-             simulated with \code{\link{netsim}}.
+simulated with \code{\link{netsim}}.
 }
 \details{
 \code{param.net} sets the epidemic parameters for the stochastic network
@@ -168,14 +168,14 @@ It is possible to set input parameters using a specifically formatted
 \code{data.frame} object. The first 3 columns of this \code{data.frame} must
 be:
 \itemize{
- \item \code{param}: The name of the parameter. If this is a non-scalar
-   parameter (a vector of length > 1), end the parameter name with the
-   position on the vector (e.g., \code{"p_1"}, \code{"p_2"}, ...).
- \item \code{value}: the value for the parameter (or the value of the
-   parameter in the Nth position if non-scalar).
- \item \code{type}: a character string containing either \code{"numeric"},
-   \code{"logical"}, or \code{"character"} to define the parameter object
-   class.
+\item \code{param}: The name of the parameter. If this is a non-scalar
+parameter (a vector of length > 1), end the parameter name with the
+position on the vector (e.g., \code{"p_1"}, \code{"p_2"}, ...).
+\item \code{value}: the value for the parameter (or the value of the
+parameter in the Nth position if non-scalar).
+\item \code{type}: a character string containing either \code{"numeric"},
+\code{"logical"}, or \code{"character"} to define the parameter object
+class.
 }
 
 In addition to these 3 columns, the \code{data.frame} can contain any number
@@ -240,7 +240,7 @@ get_param_set(sim)
 }
 \seealso{
 Use \code{\link{init.net}} to specify the initial conditions and
-         \code{\link{control.net}} to specify the control settings. Run the
-         parameterized model with \code{\link{netsim}}.
+\code{\link{control.net}} to specify the control settings. Run the
+parameterized model with \code{\link{netsim}}.
 }
 \keyword{parameterization}

@@ -23,7 +23,7 @@ The \code{scenarios.df} is a \code{data.frame} of values to be used as
 parameters.
 
 It must contain a ".at" column, specifying when the changes should occur.
-It requires the "updater" module of EpiModel. *See, vignette*. If the ".at"
+It requires the "updater" module of EpiModel. \emph{See, vignette}. If the ".at"
 value of a row is less than two, the changes will be applied to the
 parameter list iteself. The second mandatory column is ".scenario.id". It
 is used to distinguish the different scenarios. If multiple rows share the
@@ -33,8 +33,8 @@ intervention limited in time).
 
 The other column names must correspond either to:
 the name of one parameter if this parameter is of size 1 or the name of the
-parameter with "_1", "_2", "_N" with the second part being the position of
+parameter with "_1", "_2", "\emph{N" with the second part being the position of
 the value for a parameter of size > 1. This means that the parameter names
-cannot contain any underscore "_". (e.g "a.rate", "d.rate_1", "d.rate_2")
+cannot contain any underscore "}". (e.g "a.rate", "d.rate_1", "d.rate_2")
 }
 

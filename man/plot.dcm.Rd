@@ -67,7 +67,7 @@ to existing plot window.}
 }
 \description{
 Plots epidemiological data from a deterministic compartment
-             epidemic model solved with \code{\link{dcm}}.
+epidemic model solved with \code{\link{dcm}}.
 }
 \details{
 This function plots epidemiological outcomes from a deterministic
@@ -83,10 +83,12 @@ Compartment prevalence is the size of a compartment over some denominator.
 To plot the raw numbers from any compartment, use \code{popfrac=FALSE}; this
 is the default. The \code{popfrac} parameter calculates
 and plots the denominators of all specified compartments using these rules:
-1) for one-group models, the prevalence of any compartment is the compartment
+\enumerate{
+\item for one-group models, the prevalence of any compartment is the compartment
 size divided by the total population size; 2) for two-group models, the
 prevalence of any compartment is the compartment size divided by the group
 size.
+}
 }
 
 \section{Color Palettes}{

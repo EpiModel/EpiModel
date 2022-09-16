@@ -88,7 +88,7 @@ to existing plot window.}
 }
 \description{
 Plots epidemiological data from a stochastic individual contact
-             model simulated with \code{\link{icm}}.
+model simulated with \code{\link{icm}}.
 }
 \details{
 This plotting function will extract the epidemiological output from a model
@@ -112,8 +112,8 @@ variables to the \code{icm} object to plot or analyze.
 
 The quantiles show the range of outcome values within a certain specified
 quantile range. By default, the interquartile range is shown: that is the
-middle 50\% of the data. This is specified by \code{qnts=0.5}. To show the
-middle 95\% of the data, specify \code{qnts=0.95}. To toggle off the polygons
+middle 50\\% of the data. This is specified by \code{qnts=0.5}. To show the
+middle 95\\% of the data, specify \code{qnts=0.95}. To toggle off the polygons
 where they are plotted by default, specify \code{qnts=FALSE}.
 }
 \examples{

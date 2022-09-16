@@ -43,20 +43,20 @@ dissolution model statistics for proportion of ties dissolved per time
 step.}
 
 \item{method}{Plot method, with options of \code{"l"} for line plots and
-\code{"b"} for boxplots.}
+\code{"b"} for box plots.}
 
 \item{sims}{A vector of simulation numbers to plot.}
 
-\item{stats}{Statistics to plot.  For \code{type = "formation"},
-\code{stats} are among those specified in the call to
-\code{\link{netdx}}; for \code{type = "duration","dissolution"},
-\code{stats} are among those of the dissolution model (without
-\code{offset()}).  The default is to plot all statistics.}
+\item{stats}{Statistics to plot. For \code{type = "formation"}, \code{stats}
+are among those specified in the call to \code{\link{netdx}};
+for \code{type = "duration", "dissolution"}, \code{stats} are among
+those of the dissolution model (without \code{offset()}). The default
+is to plot all statistics.}
 
-\item{duration.imputed}{If \code{type="duration"}, a logical indicating
+\item{duration.imputed}{If \code{type = "duration"}, a logical indicating
 whether or not to impute starting times for relationships extant at
 the start of the simulation. Defaults to \code{TRUE} when
-\code{type="duration"}.}
+\code{type = "duration"}.}
 
 \item{sim.lines}{If \code{TRUE}, plot individual simulation lines. Default is
 to plot lines for one-group models but not for two-group models.}
@@ -96,8 +96,8 @@ default colors based on \code{RColorBrewer} color palettes.}
 
 \item{targ.lty}{Line type for the line showing the target statistic values.}
 
-\item{plots.joined}{If \code{TRUE}, combine all statistics in one
-plot, versus one plot per statistic if \code{FALSE}.}
+\item{plots.joined}{If \code{TRUE}, combine all statistics in one plot,
+versus one plot per statistic if \code{FALSE}.}
 
 \item{legend}{If \code{TRUE}, plot default legend.}
 
@@ -108,7 +108,7 @@ plot, versus one plot per statistic if \code{FALSE}.}
 }
 \description{
 Plots dynamic network model diagnostics calculated in
-             \code{\link{netdx}}.
+\code{\link{netdx}}.
 }
 \details{
 The plot function for \code{netdx} objects will generate plots of two types

@@ -16,7 +16,7 @@ The updated object of class \code{netsim} or \code{icm}.
 }
 \description{
 Left-truncates simulation epidemiological summary statistics
-             and network statistics at a specified time step.
+and network statistics at a specified time step.
 }
 \details{
 This function would be used when running a follow-up simulation from time

@@ -58,7 +58,7 @@ An \code{EpiModel} object of class \code{control.dcm}.
 }
 \description{
 Sets the controls for deterministic compartmental models
-             simulated with \code{\link{dcm}}.
+simulated with \code{\link{dcm}}.
 }
 \details{
 \code{control.dcm} sets the required control settings for any deterministic
@@ -84,7 +84,7 @@ and examples are found in the
 
 \seealso{
 Use \code{\link{param.dcm}} to specify model parameters and
-         \code{\link{init.dcm}} to specify the initial conditions. Run the
-         parameterized model with \code{\link{dcm}}.
+\code{\link{init.dcm}} to specify the initial conditions. Run the
+parameterized model with \code{\link{dcm}}.
 }
 \keyword{parameterization}

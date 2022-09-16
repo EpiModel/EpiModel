@@ -19,8 +19,8 @@ A 0 argument generator function to sample one of the values from the
 }
 \description{
 This function returns a 0 argument function that can be used as
-  a generator function in the \code{random.params} argument of the
-  \code{\link{param.net}} function.
+a generator function in the \code{random.params} argument of the
+\code{\link{param.net}} function.
 }
 \examples{
 # Define function with equal sampling probability
