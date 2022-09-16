@@ -16,7 +16,7 @@ The updated \code{dat} main list object.
 }
 \description{
 This function simulates arrival for use in \code{\link{icm}}
-             simulations.
+simulations.
 }
 \seealso{
 \code{\link{icm}}

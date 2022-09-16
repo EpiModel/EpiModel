@@ -130,13 +130,16 @@ get_network <- function(x, sim = 1, network = 1, collapse = FALSE, at,
 #' @title Extract Transmissions Matrix from Network Epidemic Model
 #'
 #' @description Extracts the matrix of transmission data for each transmission
-#'              event that occured within a network epidemic model.
+#'              event that occurred within a network epidemic model.
 #'
 #' @param x An \code{EpiModel} object of class \code{\link{netsim}}.
 #' @param sim Simulation number of extracted network.
+#' @param deduplicate If \code{TRUE}, randomly select one transmission event in
+#'        the case that multiple events current per newly infected agent within
+#'        a time step.
 #'
 #' @return
-#' A data frame with the following columns
+#' A data frame with the following standard columns:
 #' \itemize{
 #'  \item \strong{at:} the time step at which the transmission occurred.
 #'  \item \strong{sus:} the ID number of the susceptible (newly infected) node.
@@ -168,7 +171,7 @@ get_network <- function(x, sim = 1, network = 1, collapse = FALSE, at,
 #' ## Extract the transmission matrix from simulation 2
 #' get_transmat(mod, sim = 2)
 #'
-get_transmat <- function(x, sim = 1) {
+get_transmat <- function(x, sim = 1, deduplicate = TRUE) {
 
   ## Warnings and checks
   if (!inherits(x, "netsim")) {
@@ -186,7 +189,12 @@ get_transmat <- function(x, sim = 1) {
 
   ## Extraction
   out <- x$stats$transmat[[sim]]
-  out <- as.data.frame(out)
+  out <- dplyr::as_tibble(out)
+
+  if (deduplicate) {
+    out <- dplyr::sample_n(dplyr::group_by(out, .data$at, .data$sus), 1)
+  }
+
   class(out) <- c("transmat", class(out))
   return(out)
 }
@@ -408,6 +416,17 @@ get_sims <- function(x, sims, var) {
   if (length(delsim) > 0) {
     for (i in seq_along(out$epi)) {
       out$epi[[i]] <- out$epi[[i]][, -delsim, drop = FALSE]
+    }
+
+    if (!is.null(out[["_last_unique_id"]])) {
+      out[["_last_unique_id"]] <- out[["_last_unique_id"]][sims]
+      names(out[["_last_unique_id"]]) <- newnames
+    }
+    if (!is.null(out$el.cuml) && length(out$el.cuml) == nsims) {
+      out$el.cuml[delsim] <- NULL
+      names(out$el.cuml) <- newnames
+    } else {
+      out$el.cuml <- list()
     }
     if (!is.null(out$network)) {
       out$network[delsim] <- NULL

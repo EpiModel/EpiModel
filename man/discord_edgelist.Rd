@@ -24,9 +24,9 @@ final column of the discordant edgelist?}
 \value{
 This function returns a \code{data.frame} with the following columns:
 \itemize{
- \item \strong{time:} time step queried.
- \item \strong{sus:} ID number for the susceptible partner.
- \item \strong{inf:} ID number for the infectious partner.
+\item \strong{time:} time step queried.
+\item \strong{sus:} ID number for the susceptible partner.
+\item \strong{inf:} ID number for the infectious partner.
 }
 The output from this function is added to the transmission \code{data.frame}
 object that is requested as output in \code{netsim} simulations with
@@ -34,8 +34,8 @@ the \code{save.trans=TRUE} argument.
 }
 \description{
 This function returns a \code{data.frame} with a discordant
-             edgelist, defined as the set of edges in which the status of the
-             two partners is one susceptible and one infected.
+edgelist, defined as the set of edges in which the status of the
+two partners is one susceptible and one infected.
 }
 \details{
 This internal function works within the parent \code{\link{infection.net}}

@@ -13,11 +13,11 @@ contain an attribute for the total network size, \code{n}.}
 }
 \value{
 A vector of length equal to the total network size, containing the
-        current degree of each node in the network.
+current degree of each node in the network.
 }
 \description{
 A fast method for querying the current degree of all individuals
-             within a network.
+within a network.
 }
 \details{
 Individual-level data on the current degree of nodes within a network is

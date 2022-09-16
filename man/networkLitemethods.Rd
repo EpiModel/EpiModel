@@ -180,12 +180,12 @@ be added to the second mode?}
 }
 \value{
 An edgelist for \code{as.edgelist.networkLite}; an updated
-        \code{networkLite} object for the replacement method. The other
-        methods return no objects.
+\code{networkLite} object for the replacement method. The other
+methods return no objects.
 }
 \description{
 S3 methods for networkLite class, for generics defined in
-             network package.
+network package.
 }
 \details{
 Allows use of networkLite objects in \code{ergm_model}.

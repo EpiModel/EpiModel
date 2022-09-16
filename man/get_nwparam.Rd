@@ -14,7 +14,7 @@ representing the population.}
 }
 \description{
 Extracts a list of network model parameters saved in the
-             initialization module.
+initialization module.
 }
 \keyword{extract}
 \keyword{internal}

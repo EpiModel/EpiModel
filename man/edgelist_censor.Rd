@@ -13,12 +13,12 @@ edgelist_censor(el)
 }
 \value{
 A 4 x 2 table containing the number and percent of edges in \code{el}
-        that are left-censored, right-censored, both-censored, or uncensored.
+that are left-censored, right-censored, both-censored, or uncensored.
 }
 \description{
 Outputs a table of the number and percent of edges that are
-             left-censored, right-censored, both-censored, or uncensored for
-             a \code{networkDynamic} object.
+left-censored, right-censored, both-censored, or uncensored for
+a \code{networkDynamic} object.
 }
 \details{
 Given a STERGM simulation over a specified number of time steps, the edges

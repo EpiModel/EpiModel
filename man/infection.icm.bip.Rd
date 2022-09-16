@@ -16,6 +16,6 @@ The updated \code{dat} main list object.
 }
 \description{
 This function simulates the main infection process given the
-             current state of the actors in the system.
+current state of the actors in the system.
 }
 \keyword{internal}

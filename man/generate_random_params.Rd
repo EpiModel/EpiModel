@@ -18,7 +18,7 @@ A fully instantiated \code{param} list.
 }
 \description{
 This function uses the generative functions in the
-             \code{random.params} list to create values for the parameters.
+\code{random.params} list to create values for the parameters.
 }
 \section{\code{random.params}}{
 
@@ -45,9 +45,9 @@ values to be used as parameters.
 
 The column names must correspond either to:
 the name of one parameter, if this parameter is of size 1; or the name of one
-parameter with "_1", "_2", etc. appended, with the number representing the
+parameter with "_1", "\emph{2", etc. appended, with the number representing the
 position of the value, if this parameter is of size > 1. This means that the
-parameter names cannot contain any underscores "_" if you intend to use
+parameter names cannot contain any underscores "}" if you intend to use
 \code{param_random_set}.
 
 The point of the \code{param.random.set} \code{data.frame} is to allow the

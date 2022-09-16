@@ -19,7 +19,7 @@ EpiModel function \code{\link{netsim}}.
 }
 \description{
 Updates epidemic model parameters originally set with
-             \code{\link{param.net}} and adds new parameters.
+\code{\link{param.net}} and adds new parameters.
 }
 \details{
 This function can update any original parameters specified with

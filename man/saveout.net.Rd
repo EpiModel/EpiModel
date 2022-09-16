@@ -17,24 +17,24 @@ other initialization information passed from \code{\link{netsim}}.}
 \value{
 A list with the following elements:
 \itemize{
- \item \strong{param:} the epidemic parameters passed into the model through
-       \code{\link{param.net}}, with additional parameters added as
-       necessary.
- \item \strong{control:} the control settings passed into the model through
-       \code{\link{control.net}}, with additional controls added as
-       necessary.
- \item \strong{epi:} a list of data frames, one for each epidemiological
-       output from the model.
- \item \strong{stats:} a list containing two sublists, \code{nwstats} for any
-       network statistics saved in the simulation, and \code{transmat} for
-       the transmission matrix saved in the simulation.
- \item \strong{network:} a list of \code{networkDynamic} objects,
-        one for each model simulation.
+\item \strong{param:} the epidemic parameters passed into the model through
+\code{\link{param.net}}, with additional parameters added as
+necessary.
+\item \strong{control:} the control settings passed into the model through
+\code{\link{control.net}}, with additional controls added as
+necessary.
+\item \strong{epi:} a list of data frames, one for each epidemiological
+output from the model.
+\item \strong{stats:} a list containing two sublists, \code{nwstats} for any
+network statistics saved in the simulation, and \code{transmat} for
+the transmission matrix saved in the simulation.
+\item \strong{network:} a list of \code{networkDynamic} objects,
+one for each model simulation.
 }
 }
 \description{
 This function transfers the data from the main \code{dat}
-             object to the output \code{out} object at the end of each
-             simulation in \code{\link{netsim}}.
+object to the output \code{out} object at the end of each
+simulation in \code{\link{netsim}}.
 }
 \keyword{internal}

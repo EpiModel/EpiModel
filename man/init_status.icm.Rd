@@ -14,7 +14,7 @@ The updated \code{dat} main list object.
 }
 \description{
 This function sets the initial disease status on the
-             network given the specified initial conditions.
+network given the specified initial conditions.
 }
 \seealso{
 This is an initialization module for \code{\link{icm}}.

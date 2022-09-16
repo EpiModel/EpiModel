@@ -20,12 +20,12 @@ The updated \code{dat} main list object.
 }
 \description{
 Updates the vertex attributes on a network for new nodes
-             incoming into that network, based on a set of rules for each
-             attribute that the user specifies in \code{\link{control.net}}.
+incoming into that network, based on a set of rules for each
+attribute that the user specifies in \code{\link{control.net}}.
 }
 \seealso{
 \code{\link{copy_nwattr_to_datattr}}, \code{\link{get_attr_prop}},
-         \code{\link{auto_update_attr}}.
+\code{\link{auto_update_attr}}.
 }
 \keyword{internal}
 \keyword{netUtils}

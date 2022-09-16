@@ -20,8 +20,8 @@ This function returns no objects.
 }
 \description{
 This function checks that the estimation object from
-             \code{\link{netest}} and the three parameter lists from
-             \code{\link{param.net}}, \code{\link{init.net}}, and
-             \code{\link{control.net}} are consistent.
+\code{\link{netest}} and the three parameter lists from
+\code{\link{param.net}}, \code{\link{init.net}}, and
+\code{\link{control.net}} are consistent.
 }
 \keyword{internal}

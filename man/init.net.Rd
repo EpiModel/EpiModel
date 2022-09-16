@@ -37,7 +37,7 @@ An \code{EpiModel} object of class \code{init.net}.
 }
 \description{
 Sets the initial conditions for stochastic network models
-             simulated with \code{netsim}.
+simulated with \code{netsim}.
 }
 \details{
 The initial conditions for a model solved with \code{\link{netsim}} should be
@@ -59,7 +59,7 @@ init.net(status.vector = status, infTime.vector = infTime)
 }
 \seealso{
 Use \code{\link{param.net}} to specify model parameters and
-         \code{\link{control.net}} to specify the control settings. Run the
-         parameterized model with \code{\link{netsim}}.
+\code{\link{control.net}} to specify the control settings. Run the
+parameterized model with \code{\link{netsim}}.
 }
 \keyword{parameterization}

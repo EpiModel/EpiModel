@@ -3,7 +3,7 @@
 \name{check_attr_lengths}
 \alias{check_attr_lengths}
 \title{Check that All Attributes in the Main Object are of Equal
-       Length}
+Length}
 \usage{
 check_attr_lengths(dat)
 }
@@ -16,7 +16,7 @@ invisible(TRUE) if everything is correct; an error if not.
 }
 \description{
 Check that All Attributes in the Main Object are of Equal
-       Length
+Length
 }
 \keyword{internal}
 \keyword{not_used}

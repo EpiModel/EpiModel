@@ -108,13 +108,13 @@ current time step.}
 }
 \value{
 A vector or a list of vectors for \code{get_} functions; the main
-        list object for \code{set_}, \code{append_}, and \code{add_}
-        functions.
+list object for \code{set_}, \code{append_}, and \code{add_}
+functions.
 }
 \description{
 These \code{get_}, \code{set_}, \code{append_}, and \code{add_}
-             functions allow a safe and efficient way to retrieve and mutate
-             the main list object of network models (\code{dat}).
+functions allow a safe and efficient way to retrieve and mutate
+the main list object of network models (\code{dat}).
 }
 \section{Core Attribute}{
 

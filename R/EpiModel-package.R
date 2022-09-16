@@ -147,6 +147,7 @@
 #' @importFrom methods is
 #' @importFrom tibble as_tibble is_tibble tibble
 #' @importFrom coda effectiveSize
+#' @importFrom rlang .data
 #'
 #' @useDynLib EpiModel, .registration = TRUE
 #'

@@ -17,7 +17,7 @@ The updated \code{dat} main list object.
 }
 \description{
 Adjusts the edges coefficient in a dynamic network model
-             simulated in \code{\link{netsim}} to preserve the mean
-             degree of nodes in the network.
+simulated in \code{\link{netsim}} to preserve the mean
+degree of nodes in the network.
 }
 \keyword{internal}

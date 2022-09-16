@@ -33,7 +33,7 @@ An \code{EpiModel} object of class \code{init.icm}.
 }
 \description{
 Sets the initial conditions for stochastic individual contact
-             models simulated with \code{icm}.
+models simulated with \code{icm}.
 }
 \details{
 The initial conditions for a model solved with \code{\link{icm}} should be
@@ -44,7 +44,7 @@ an overview of initial conditions for base ICM class models, consult the
 }
 \seealso{
 Use \code{\link{param.icm}} to specify model parameters and
-         \code{\link{control.icm}} to specify the control settings. Run the
-         parameterized model with \code{\link{icm}}.
+\code{\link{control.icm}} to specify the control settings. Run the
+parameterized model with \code{\link{icm}}.
 }
 \keyword{parameterization}

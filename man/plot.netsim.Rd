@@ -112,12 +112,12 @@ to existing plot window.}
 \item{network}{Network number, for simulations with multiple networks
 representing the population.}
 
-\item{at}{If \code{type="network"}, time step for network graph.}
+\item{at}{If \code{type = "network"}, time step for network graph.}
 
 \item{col.status}{If \code{TRUE} and \code{type="network"}, automatic disease
 status colors (blue = susceptible, red = infected, green = recovered).}
 
-\item{shp.g2}{If \code{type="network"} and \code{x} is for a two-group model,
+\item{shp.g2}{If \code{type = "network"} and \code{x} is for a two-group model,
 shapes for the Group 2 vertices, with acceptable inputs of "triangle"
 and "square". Group 1 vertices will remain circles.}
 
@@ -125,10 +125,10 @@ and "square". Group 1 vertices will remain circles.}
 with implicit default of 1.}
 
 \item{stats}{If \code{type="formation","duration","dissolution"}, statistics
-to plot.  For \code{type = "formation"}, \code{stats} are among those
+to plot. For \code{type = "formation"}, \code{stats} are among those
 specified in \code{nwstats.formula} of \code{\link{control.net}}; for
-\code{type = "duration","dissolution"}, \code{stats} are among those
-of the dissolution model (without \code{offset()}).  The default is
+\code{type = "duration", "dissolution"}, \code{stats} are among those
+of the dissolution model (without \code{offset()}). The default is
 to plot all statistics.}
 
 \item{targ.line}{If \code{TRUE}, plot target or expected value line for
@@ -146,47 +146,46 @@ default colors based on \code{RColorBrewer} color palettes.}
 statistics in one plot, versus one plot per statistic if
 \code{FALSE}.}
 
-\item{duration.imputed}{If \code{type="duration"}, a logical indicating
+\item{duration.imputed}{If \code{type = "duration"}, a logical indicating
 whether or not to impute starting times for relationships extant at
 the start of the simulation. Defaults to \code{TRUE} when
-\code{type="duration"}.}
+\code{type = "duration"}.}
 
-\item{method}{Plot method for
-\code{type="formation","duration","dissolution"}, with options of
-\code{"l"} for line plots and \code{"b"} for boxplots.}
+\item{method}{Plot method for \code{type="formation", "duration", "dissolution"},
+with options of \code{"l"} for line plots and \code{"b"} for box plots.}
 
 \item{...}{Additional arguments to pass.}
 }
 \description{
 Plots epidemiological and network data from a stochastic network
-             model simulated with \code{\link{netsim}}.
+model simulated with \code{\link{netsim}}.
 }
 \details{
 This plot function can produce three types of plots with a stochastic network
 model simulated through \code{\link{netsim}}:
 \enumerate{
- \item \strong{\code{type="epi"}}: epidemic model results (e.g., disease
-       prevalence and incidence) may be plotted.
- \item \strong{\code{type="network"}}: a static network plot will be
-       generated. A static network plot of a dynamic network is a
-       cross-sectional extraction of that dynamic network at a specific
-       time point. This plotting function wraps the
-       \code{\link{plot.network}} function in the \code{network} package.
-       Consult the help page for \code{plot.network} for all of the plotting
-       parameters. In addition, four plotting parameters specific to
-       \code{netsim} plots are available: \code{sim}, \code{at},
-       \code{col.status}, and \code{shp.g2}.
- \item \strong{\code{type="formation"}}: summary network statistics related
-       to the network model formation are plotted. These plots are similar
-       to the formation plots for \code{netdx} objects. When running a
-       \code{netsim} simulation, one must specify there that
-       \code{save.nwstats=TRUE}; the plot here will then show the network
-       statistics requested explicitly in \code{nwstats.formula}, or will use
-       the formation formula set in \code{netest} otherwise.
- \item \strong{\code{type="duration","dissolution"}}: as in
-       \code{\link{plot.netdx}}; supported in \code{plot.netsim} only when
-       the dissolution model is \code{~offset(edges)}, \code{tergmLite} is
-       \code{FALSE}, and \code{save.network} is \code{TRUE}.
+\item \strong{\code{type="epi"}}: epidemic model results (e.g., disease
+prevalence and incidence) may be plotted.
+\item \strong{\code{type="network"}}: a static network plot will be
+generated. A static network plot of a dynamic network is a
+cross-sectional extraction of that dynamic network at a specific
+time point. This plotting function wraps the
+\code{\link{plot.network}} function in the \code{network} package.
+Consult the help page for \code{plot.network} for all of the plotting
+parameters. In addition, four plotting parameters specific to
+\code{netsim} plots are available: \code{sim}, \code{at},
+\code{col.status}, and \code{shp.g2}.
+\item \strong{\code{type="formation"}}: summary network statistics related
+to the network model formation are plotted. These plots are similar
+to the formation plots for \code{netdx} objects. When running a
+\code{netsim} simulation, one must specify there that
+\code{save.nwstats=TRUE}; the plot here will then show the network
+statistics requested explicitly in \code{nwstats.formula}, or will use
+the formation formula set in \code{netest} otherwise.
+\item \strong{\code{type="duration","dissolution"}}: as in
+\code{\link{plot.netdx}}; supported in \code{plot.netsim} only when
+the dissolution model is \code{~offset(edges)}, \code{tergmLite} is
+\code{FALSE}, and \code{save.network} is \code{TRUE}.
 }
 
 When \code{type="epi"}, this plotting function will extract the
@@ -211,8 +210,8 @@ variables to the \code{netsim} object to plot or analyze.
 
 The quantiles show the range of outcome values within a certain specified
 quantile range. By default, the interquartile range is shown: that is the
-middle 50\% of the data. This is specified by \code{qnts=0.5}. To show the
-middle 95\% of the data, specify \code{qnts=0.95}. To toggle off the polygons
+middle 50\\% of the data. This is specified by \code{qnts=0.5}. To show the
+middle 95\\% of the data, specify \code{qnts=0.95}. To toggle off the polygons
 where they are plotted by default, specify \code{qnts=FALSE}.
 
 When \code{type="network"}, this function will plot cross sections of the

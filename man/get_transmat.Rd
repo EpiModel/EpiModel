@@ -8,30 +8,34 @@
 \usage{
 is.transmat(x)
 
-get_transmat(x, sim = 1)
+get_transmat(x, sim = 1, deduplicate = TRUE)
 }
 \arguments{
 \item{x}{An \code{EpiModel} object of class \code{\link{netsim}}.}
 
 \item{sim}{Simulation number of extracted network.}
+
+\item{deduplicate}{If \code{TRUE}, randomly select one transmission event in
+the case that multiple events current per newly infected agent within
+a time step.}
 }
 \value{
-A data frame with the following columns
+A data frame with the following standard columns:
 \itemize{
- \item \strong{at:} the time step at which the transmission occurred.
- \item \strong{sus:} the ID number of the susceptible (newly infected) node.
- \item \strong{inf:} the ID number of the infecting node.
- \item \strong{infDur:} the duration of the infecting node's disease at the
-       time of the transmission.
- \item \strong{transProb:} the probability of transmission per act.
- \item \strong{actRate:} the rate of acts per unit time.
- \item \strong{finalProb:} the final transmission probability for the
-       transmission event.
+\item \strong{at:} the time step at which the transmission occurred.
+\item \strong{sus:} the ID number of the susceptible (newly infected) node.
+\item \strong{inf:} the ID number of the infecting node.
+\item \strong{infDur:} the duration of the infecting node's disease at the
+time of the transmission.
+\item \strong{transProb:} the probability of transmission per act.
+\item \strong{actRate:} the rate of acts per unit time.
+\item \strong{finalProb:} the final transmission probability for the
+transmission event.
 }
 }
 \description{
 Extracts the matrix of transmission data for each transmission
-             event that occured within a network epidemic model.
+event that occurred within a network epidemic model.
 }
 \examples{
 ## Simulate SI epidemic on two-group Bernoulli random graph

@@ -16,7 +16,7 @@ tm <- get_transmat(mod1)
 test_that("transmat class", {
   expect_true(is.transmat(tm))
   expect_false(is.transmat(list()))
-  expect_equal(class(tm), c("transmat", "data.frame"))
+  expect_true(inherits(tm, c("transmat", "data.frame")))
   expect_equal(names(tm), c("at", "sus", "inf", "network", "infDur", "transProb",
                             "actRate", "finalProb"))
 })
