@@ -737,8 +737,6 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #' @param set.control.tergm Control arguments passed to `tergm::simulate_formula.network`. See the
 #'        help file for [`netdx`] for details and examples on specifying this parameter. Supports
 #'        [`multilayer`] specification.
-#' @param set.control.stergm Deprecated control argument of class `control.simulate.network`. Use
-#'        `set.control.tergm` instead.
 #' @param save.diss.stats If `TRUE`, `netsim` will compute and save duration and dissolution
 #'        statistics for plotting and printing, provided `save.network` is `TRUE`, `tergmLite` is
 #'        `FALSE`, and the dissolution model is homogeneous.
