@@ -8,8 +8,9 @@
 ### BUG FIXES
 
 - Fix `get_sims` not properly subsetting `el.cuml` and `_last_unique_id`.
-- Fix parallel memory leak in `netsim`. 
+- Fix parallel memory leak in `netsim`.
 - Rework the network resimulation module to allow for working with observed network data. See this [EpiModel Gallery Example](https://github.com/EpiModel/EpiModel-Gallery/tree/main/2018-08-ObservedNetworkData).
+- Fix error message for tergmLite/resimulate.network collision
 
 ### OTHER
 
