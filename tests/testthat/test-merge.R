@@ -137,10 +137,10 @@ test_that("merge.netsim works as expected for transmat", {
 
   mod2 <- merge(mod, mod)
   expect_equal(length(mod2$stats$transmat), 4)
-  
+
   mod3 <- merge(mod, mod, keep.transmat = FALSE)
   expect_true(is.null(mod3$stats$transmat))
-  
+
   mod4 <- merge(mod2, mod3)
   expect_true(is.null(mod4$stats$transmat))
 })
@@ -155,21 +155,23 @@ test_that("merge and print work as expected for save.other", {
   # Epidemic model
   param <- param.net(inf.prob = 0.3)
   init <- init.net(i.num = 10)
-  control <- control.net(type = "SI", nsteps = 5, nsims = 2, verbose = FALSE, 
+  control <- control.net(type = "SI", nsteps = 5, nsims = 2, verbose = FALSE,
                          tergmLite = TRUE, resimulate.network = TRUE,
                          save.other = c("attr", "el"))
   mod <- netsim(est, param, init, control)
 
-  print(mod)
+  capture_output(
+    print(mod)
+  )
   expect_output(print(mod), "Other Elements: attr el")
   expect_equal(length(mod[["attr"]]), 2)
   expect_equal(length(mod[["el"]]), 2)
-  
+
   mod2 <- merge(mod, mod)
   expect_output(print(mod2), "Other Elements: attr el")
   expect_equal(length(mod2[["attr"]]), 4)
   expect_equal(length(mod2[["el"]]), 4)
-  
+
   mod3 <- merge(mod, mod, keep.other = FALSE)
   expect_error(expect_output(print(mod3), "Other Elements"))
   expect_true(is.null(mod3[["attr"]]))

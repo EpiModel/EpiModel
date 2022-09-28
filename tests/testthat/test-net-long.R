@@ -1,7 +1,5 @@
 context("Network extended models")
 
-################################################################################
-
 test_that("edges models", {
   skip_on_cran()
 
@@ -303,9 +301,11 @@ test_that("High departure rate models", {
                          resimulate.network = TRUE, verbose = FALSE)
   x <- netsim(est, param, init, control)
   expect_equal(unique(sapply(x$epi, nrow)), 25)
-  summary(x, at = 25)
   expect_output(summary(x, at = 25), "EpiModel Summary")
-  get_nwstats(x)
+
+  capture_output(
+    get_nwstats(x)
+  )
 
   plot(x)
   plot(x, y = "si.flow", mean.smooth = TRUE)
@@ -694,55 +694,6 @@ test_that("Extinction open-population models", {
 
 ################################################################################
 
-test_that("Extended post-simulation diagnosntic tests", {
-  skip_on_cran()
-
-  nw <- network_initialize(n = 100)
-  nw <- set_vertex_attribute(nw, "risk", rep(1:5, each = 20))
-
-  est <- netest(nw,
-                formation = ~edges + nodefactor("risk"),
-                target.stats = c(50, 20, 20, 20, 20),
-                coef.diss = dissolution_coefs(~offset(edges), 25))
-
-  dx <- netdx(est, nsims = 2, nsteps = 10)
-  plot(dx)
-
-  param <- param.net(inf.prob = 0.5)
-  init <- init.net(i.num = 10)
-
-  control <- control.net(type = "SI", nsteps = 10, nsims = 2)
-  sim <- netsim(est, param, init, control)
-  plot(sim, type = "formation")
-
-  control <- control.net(type = "SI", nsteps = 10, nsims = 1)
-  sim <- netsim(est, param, init, control)
-  plot(sim, type = "formation")
-
-  est <- netest(nw,
-                formation = ~edges + concurrent,
-                target.stats = c(50, 20),
-                coef.diss = dissolution_coefs(~offset(edges), 25))
-
-  dx <- netdx(est, nsims = 5, nsteps = 100)
-  plot(dx)
-
-  param <- param.net(inf.prob = 0.5)
-  init <- init.net(i.num = 10)
-
-  control <- control.net(type = "SI", nsteps = 10, nsims = 2)
-  sim <- netsim(est, param, init, control)
-  plot(sim, type = "formation")
-
-  control <- control.net(type = "SI", nsteps = 10, nsims = 1)
-  sim <- netsim(est, param, init, control)
-  plot(sim, type = "formation")
-
-})
-
-
-################################################################################
-
 test_that("status.vector and infTime.vector", {
 
   n <- 100
@@ -760,11 +711,11 @@ test_that("status.vector and infTime.vector", {
   infTime[which(status == "i")] <- -rgeom(sum(status == "i"), prob = 0.01) + 2
   init <- init.net(status.vector = status, infTime.vector = infTime)
 
-  control <- control.net(type = "SIS", nsteps = 100, nsims = 5, verbose.int = 0)
+  control <- control.net(type = "SIS", nsteps = 100, nsims = 5, verbose = FALSE)
   mod1 <- netsim(est1, param, init, control)
   expect_is(mod1, "netsim")
 
-  control <- control.net(type = "SIR", nsteps = 100, nsims = 5, verbose.int = 0)
+  control <- control.net(type = "SIR", nsteps = 100, nsims = 5, verbose = FALSE)
   mod2 <- netsim(est1, param, init, control)
   expect_is(mod2, "netsim")
 
