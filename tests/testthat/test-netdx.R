@@ -10,7 +10,7 @@ for (trim in c(FALSE, TRUE)) {
     coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
     est1 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
     if (trim == TRUE) {
-     est1 <- trim_netest(est1)
+      est1 <- trim_netest(est1)
     }
     ## Single simulation
     dx1 <- netdx(est1, nsims = 1, nsteps = 10, verbose = FALSE)
@@ -71,6 +71,7 @@ for (trim in c(FALSE, TRUE)) {
   })
 
   test_that("Formation plot color vector length", {
+    skip_on_cran()
     n <-  100
     mean.degree <- ((0 * 0.10) + (1 * 0.41) + (2 * 0.25) + (3 * 0.22))
     expected.concurrent <- n * 0.49
@@ -95,6 +96,7 @@ for (trim in c(FALSE, TRUE)) {
 
   test_that("Netdx duration and dissolution plots error when
             skip.dissolution = TRUE", {
+    skip_on_cran()
     nw <- network_initialize(n = 100)
     formation <- ~edges
     target.stats <- 50
@@ -280,31 +282,6 @@ for (trim in c(FALSE, TRUE)) {
                  "Running dynamic diagnostics on a cross-sectional")
   })
 
-  test_that("Full STERGM", {
-    skip_on_cran()
-    skip_on_os(os = "windows")
-    nw <- network_initialize(n = 50)
-    est <- netest(nw, formation = ~edges, target.stats = 25,
-                  coef.diss = dissolution_coefs(~offset(edges), 10, 0),
-                  edapprox = FALSE, verbose = FALSE)
-    if (trim == TRUE) {
-     est <- trim_netest(est)
-    }
-
-    # one core test
-    dx <- netdx(est, nsims = 1, nsteps = 10, verbose = FALSE)
-    expect_is(dx, "netdx")
-    expect_true(!dx$edapprox)
-    expect_true(colnames(dx$stats[[1]]) == "edges")
-
-    # parallel test
-    dx <- netdx(est, nsims = 2, nsteps = 10, ncores = 2, verbose = FALSE)
-    expect_is(dx, "netdx")
-    expect_true(dx$nsims == 2)
-    expect_is(dx$nw, "network")
-
-  })
-
   test_that("print.netdx output", {
     nw <- network_initialize(n = 100)
     formation <- ~edges + concurrent
@@ -330,6 +307,7 @@ for (trim in c(FALSE, TRUE)) {
   })
 
   test_that("print.netdx and plot.netdx with heterogeneous diss", {
+    skip_on_cran()
     set.seed(12345)
     nw <- network_initialize(n = 100)
     nw <- set_vertex_attribute(nw, "neighborhood", rep(1:10, 10))
@@ -372,7 +350,6 @@ for (trim in c(FALSE, TRUE)) {
     dx13 <- netdx(est, nsims = 1, nsteps = 1, verbose = FALSE)
     expect_true(dim(dx13$pages)[1]==1 & dim(dx13$pages)[2]==10 & dim(dx13$pages)[3]==1)
     expect_true(dim(dx13$prop.diss)[1]==1 & dim(dx13$prop.diss)[2]==10 & dim(dx13$prop.diss)[3]==1)
-
   })
 
 }

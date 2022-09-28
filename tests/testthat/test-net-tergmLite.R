@@ -1,8 +1,9 @@
-context("Network models with tergmLite")
+context("Network models with tergmLite (All SOC)")
 
 # tergmLite = TRUE -----
 
 test_that("tergmLite: 1G, Closed", {
+  skip_on_cran()
 
   # SI
   num <- 1000
@@ -52,6 +53,7 @@ test_that("tergmLite: 1G, Closed", {
 })
 
 test_that("tergmLite: 2G, Closed", {
+  skip_on_cran()
 
   # SI
   num1 <- num2 <- 500
@@ -107,6 +109,7 @@ test_that("tergmLite: 2G, Closed", {
 
 
 test_that("tergmLite: 1G, Open", {
+  skip_on_cran()
 
   # SI
   num <- 1000
@@ -165,6 +168,7 @@ test_that("tergmLite: 1G, Open", {
 
 
 test_that("tergmLite: 2G, Open", {
+  skip_on_cran()
 
   # SI
   num1 <- num2 <- 500
@@ -224,6 +228,7 @@ test_that("tergmLite: 2G, Open", {
 
 
 test_that("Models with duration = 1", {
+  skip_on_cran()
 
   num <- 1000
   nw <- network_initialize(n = num)

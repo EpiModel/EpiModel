@@ -1,4 +1,4 @@
-context("Network extended models")
+context("Network extended models (All SOC)")
 
 test_that("edges models", {
   skip_on_cran()
@@ -332,7 +332,7 @@ test_that("High departure rate models", {
 ################################################################################
 
 test_that("erroneous two-group models", {
-
+  skip_on_cran()
   nw <- network_initialize(n = 100)
   nw <- set_vertex_attribute(nw, "group", rep(0:1, each = 50))
   est <- netest(nw, formation = ~edges, target.stats = 25,
@@ -695,7 +695,7 @@ test_that("Extinction open-population models", {
 ################################################################################
 
 test_that("status.vector and infTime.vector", {
-
+  skip_on_cran()
   n <- 100
   nw <- network_initialize(n = n)
   formation <- ~edges
