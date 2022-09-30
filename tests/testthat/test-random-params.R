@@ -51,7 +51,7 @@ test_that("Random parameters generators", {
   )
 
   randoms <- c(my_randoms, list(param.random.set = correlated_params))
-  param <- param.net(inf.prob = 0.3, act.rate = 0.1, random.params = randoms)
+  param <- param.net(inf.prob = 0.3, random.params = randoms)
   expect_silent(generate_random_params(param))
 
   # duplicated `act.rate` random definition
@@ -61,7 +61,9 @@ test_that("Random parameters generators", {
     "param.set.2_1", "param.set.2_2", "param.set.2_3"
   )
   randoms <- c(my_randoms, list(param.random.set = correlated_params))
-  param <- param.net(inf.prob = 0.3, act.rate = 0.1, random.params = randoms)
+  expect_warning(
+    param <- param.net(inf.prob = 0.3, act.rate = 0.1, random.params = randoms)
+  )
   expect_warning(generate_random_params(param))
 
   # malformed name "param_set.1_1"
@@ -71,12 +73,12 @@ test_that("Random parameters generators", {
     "param.set.2_1", "param.set.2_2", "param.set.2_3"
   )
   randoms <- c(my_randoms, list(param.random.set = correlated_params))
-  param <- param.net(inf.prob = 0.3, act.rate = 0.1, random.params = randoms)
+  param <- param.net(inf.prob = 0.3, random.params = randoms)
   expect_error(generate_random_params(param))
 
   # param.random.set not a data.frame
   randoms <- c(my_randoms, list(param.random.set = list()))
-  param <- param.net(inf.prob = 0.3, act.rate = 0.1, random.params = randoms)
+  param <- param.net(inf.prob = 0.3, random.params = randoms)
   expect_error(generate_random_params(param))
 })
 
