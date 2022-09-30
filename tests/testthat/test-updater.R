@@ -28,21 +28,6 @@ test_that("netsim with param updater", {
   list.control.updaters <- list(
     # this is one updater
     list(
-      at = 15,
-      verbose = TRUE,
-      control = list(
-        verbose = TRUE
-      )
-    ),
-    # this is another updater
-    list(
-      at = 25,
-      verbose = TRUE,
-      control = list(
-        verbose = FALSE
-      )
-    ),
-    list(
       at = 30,
       verbose = TRUE,
       control = list(

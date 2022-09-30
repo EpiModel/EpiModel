@@ -104,6 +104,7 @@
 ## })
 
 test_that("network and networkLite simulate equally in ergm", {
+
   net_size <- 100
   bip_size <- 40
 
@@ -303,6 +304,7 @@ test_that("direct conversion between network and networkLite functions as expect
 ## })
 
 test_that("network and networkLite simulate equally in tergm", {
+  skip_on_cran()
   net_size <- 100
   bip_size <- 40
 
@@ -414,6 +416,7 @@ test_that("network and networkLite simulate equally in tergm", {
 })
 
 test_that("network and networkLite work equally in netest, netdx, and netsim", {
+  skip_on_cran()
   net_size <- 100
   bip_size <- 40
 
@@ -596,6 +599,7 @@ test_that("network and networkLite produce identical matrices, edgelists, and ti
 ## })
 
 test_that("network and networkLite `[<-` and add.edges produce consistent edgelists", {
+  skip_on_cran()
   net_size <- 100
   bip_size <- 40
   edges_target <- net_size
