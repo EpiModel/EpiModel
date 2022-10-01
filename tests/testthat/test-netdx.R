@@ -1,8 +1,9 @@
-context("Network diagnostics")
+context("Network diagnostics (All SOC)")
 
 for (trim in c(FALSE, TRUE)) {
 
   test_that("Edges only models", {
+    skip_on_cran()
     num <- 50
     nw <- network_initialize(n = num)
     formation <- ~edges
@@ -114,6 +115,7 @@ for (trim in c(FALSE, TRUE)) {
   })
 
   test_that("Offset terms", {
+    skip_on_cran()
     n <- 50
     nw <- network_initialize(n = n)
     nw <- set_vertex_attribute(nw, "loc", rep(0:1, each = n / 2))
@@ -158,6 +160,7 @@ for (trim in c(FALSE, TRUE)) {
   })
 
   test_that("Faux offset term", {
+    skip_on_cran()
     n <- 50
     nw <- network_initialize(n = n)
     nw <- set_vertex_attribute(nw, "loc", rep(0:1, each = n / 2))
@@ -212,6 +215,7 @@ for (trim in c(FALSE, TRUE)) {
 
 
   test_that("Static diagnostic simulations", {
+    skip_on_cran()
     nw <- network_initialize(n = 100)
     formation <- ~edges + concurrent
     target.stats <- c(50, 20)
@@ -258,6 +262,7 @@ for (trim in c(FALSE, TRUE)) {
   })
 
   test_that("error checking", {
+    skip_on_cran()
     nw <- network_initialize(n = 25)
     est <- netest(nw, formation = ~edges, target.stats = 25,
                   coef.diss = dissolution_coefs(~offset(edges), 10, 0),
@@ -270,6 +275,7 @@ for (trim in c(FALSE, TRUE)) {
   })
 
   test_that("Cross sectional ergm dynamic error check", {
+    skip_on_cran()
     nw <- network_initialize(n = 100)
     formation <- ~edges
     target.stats <- 50
@@ -283,6 +289,7 @@ for (trim in c(FALSE, TRUE)) {
   })
 
   test_that("print.netdx output", {
+    skip_on_cran()
     nw <- network_initialize(n = 100)
     formation <- ~edges + concurrent
     target.stats <- c(50, 25)
@@ -356,6 +363,7 @@ for (trim in c(FALSE, TRUE)) {
 
 
 test_that("Edges only models with set.control.stergm", {
+  skip_on_cran()
   num <- 50
   nw <- network_initialize(n = num)
   formation <- ~edges
@@ -428,6 +436,7 @@ test_that("Edges only models with set.control.stergm", {
 })
 
 test_that("z scores are not large for a reasonably long simulation", {
+  skip_on_cran()
   nw <- network_initialize(n = 100)
   nw <- set_vertex_attribute(nw, "race", rep(0:1, length.out = 100))
   est <- netest(nw, formation = ~edges + nodematch("race", diff = TRUE),
@@ -450,6 +459,7 @@ test_that("z scores are not large for a reasonably long simulation", {
 })
 
 test_that("make_stats_table behaves as expected", {
+  skip_on_cran()
   stat_names <- letters[1:5]
   stats_1 <- 1:5
   stats_2 <- c(6, 9, 5, 2, 7)
