@@ -1,6 +1,6 @@
 # EpiModel
 
-[![Version](http://img.shields.io/badge/Version-2.3.0-orange.svg?style=flat)](https://github.com/EpiModel/EpiModel/releases/tag/v2.3.0) [![](http://cranlogs.r-pkg.org/badges/EpiModel?color=blue)](https://CRAN.R-project.org/package=EpiModel) [![](http://cranlogs.r-pkg.org/badges/grand-total/EpiModel?color=blue)](https://CRAN.R-project.org/package=EpiModel) [![Build Status](https://github.com/EpiModel/EpiModel/workflows/R-CMD-check/badge.svg)](https://github.com/EpiModel/EpiModel/actions) [![Methods](https://img.shields.io/badge/docs-Methods-943ad8.svg)](https://doi.org/10.18637/jss.v084.i08)
+[![Version](http://img.shields.io/badge/Version-2.3.1-orange.svg?style=flat)](https://github.com/EpiModel/EpiModel/releases/tag/v2.3.1) [![](http://cranlogs.r-pkg.org/badges/EpiModel?color=blue)](https://CRAN.R-project.org/package=EpiModel) [![](http://cranlogs.r-pkg.org/badges/grand-total/EpiModel?color=blue)](https://CRAN.R-project.org/package=EpiModel) [![Build Status](https://github.com/EpiModel/EpiModel/workflows/R-CMD-check/badge.svg)](https://github.com/EpiModel/EpiModel/actions) [![Methods](https://img.shields.io/badge/docs-Methods-943ad8.svg)](https://doi.org/10.18637/jss.v084.i08)
 
 <br> <img src="http://www.epimodel.org/movie.gif" align="right"/>
 
