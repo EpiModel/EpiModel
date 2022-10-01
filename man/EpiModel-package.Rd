@@ -10,7 +10,7 @@
 Package: \tab EpiModel\cr
 Type: \tab Package\cr
 Version: \tab 2.3.1\cr
-Date: \tab 2022-09-25\cr
+Date: \tab 2022-10-01\cr
 License: \tab GPL-3\cr
 LazyLoad: \tab yes\cr
 }

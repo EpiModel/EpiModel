@@ -18,6 +18,7 @@
 - Speed up the transmission matrix (`transmat`) storage by using `padded_vector` instead of repeated `rbind` calls. The result of `get_transmat(netsim_object)` is unchanged.
 - Use `unflatten_params` in `generate_random_params` instead of bespoke code.
 - Standardize and speed up the summary calculations and plotting functionality for `netdx` and `netsim` objects.
+- Streamline unit tests for testing on CRAN.
 
 
 ## EpiModel 2.3.0
