@@ -177,6 +177,7 @@ test_that("non-nested EDA works in netsim", {
                 coef.diss = dc, nested.edapprox = FALSE)
   dxs <- netdx(est, nsteps = 2, nsims = 2, dynamic = FALSE, verbose = FALSE)
   sim <- netsim(est, param, init, control)
+  expect_is(sim, "netsim")
 })
 
 test_that("netsim diss.stats", {
