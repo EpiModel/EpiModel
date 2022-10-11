@@ -131,223 +131,222 @@ test_that("differing length update_dissolution tests", {
                 round(as.numeric(est_het_compare$coef.form), 3)))
 })
 
-# test_that("duration 1 update_dissolution tests", {
-#   nw <- network_initialize(n = 1000)
-#   nw %v% "race" <- rep(letters[1:5], length.out = 1000)
-#
-#   diss_het <- dissolution_coefs(~offset(edges) +
-#                                   offset(nodematch("race", diff = TRUE)),
-#                                 c(300, 200, 100, 50, 150, 225), 0.001)
-#
-#   diss_hom_1 <- dissolution_coefs(~offset(edges), 1, 0)
-#
-#
-#   est_het <- netest(nw = nw,
-#                     formation = ~edges + nodemix("race", levels2 = 1:5),
-#                     target.stats = c(500, 50, 50, 90, 30, 10),
-#                     coef.diss = diss_het, nested.edapprox = FALSE)
-#
-#   est_hom_1 <- netest(nw = nw,
-#                     formation = ~edges + nodemix("race", levels2 = 1:5),
-#                     target.stats = c(500, 50, 50, 90, 30, 10),
-#                     coef.diss = diss_hom_1)
-#
-#   est_hom_1_update <- update_dissolution(est_het, diss_hom_1)
-#   est_het_update <- update_dissolution(est_hom_1, diss_het, nested.edapprox = FALSE)
-#
-#   expect_true(all(round(as.numeric(est_hom_1$coef.form), 3) ==
-#                 round(as.numeric(est_hom_1_update$coef.form), 3)))
-#
-#   expect_true(all(round(as.numeric(est_het$coef.form), 3) ==
-#                 round(as.numeric(est_het_update$coef.form), 3)))
-#
-#   dx <- netdx(est_het, dynamic = TRUE, nsteps = 5, verbose = FALSE)
-#   dx <- netdx(est_het, dynamic = FALSE, nsims = 5, verbose = FALSE)
-#
-#   expect_error(dx <- netdx(est_hom_1, dynamic = TRUE, nsteps = 5),
-#                "Running dynamic diagnostics on a cross-sectional ERGM")
-#   dx <- netdx(est_hom_1, dynamic = FALSE, nsims = 5, verbose = FALSE)
-#
-#   dx <- netdx(est_het_update, dynamic = TRUE, nsteps = 5, verbose = FALSE)
-#   dx <- netdx(est_het_update, dynamic = FALSE, nsims = 5, verbose = FALSE)
-#
-#   expect_error(dx <- netdx(est_hom_1_update, dynamic = TRUE, nsteps = 5),
-#                "Running dynamic diagnostics on a cross-sectional ERGM")
-#   dx <- netdx(est_hom_1_update, dynamic = FALSE, nsims = 5, verbose = FALSE)
-#
-#   param <- param.net(inf.prob = 0.3, act.rate = 0.5, rec.rate = 0.05)
-#   init <- init.net(r.num = 0, status.vector = rep("s", 1000))
-#   control <- control.net(type = "SIR", nsims = 1, nsteps = 5,
-#                          resimulate.network = TRUE, verbose = FALSE,
-#                          nwupdate.FUN = NULL)
-#   mod <- netsim(est_het, param, init, control)
-#   mod <- netsim(est_het_update, param, init, control)
-#   mod <- netsim(est_hom_1, param, init, control)
-#   mod <- netsim(est_hom_1_update, param, init, control)
-# })
+test_that("duration 1 update_dissolution tests", {
+  nw <- network_initialize(n = 1000)
+  nw %v% "race" <- rep(letters[1:5], length.out = 1000)
 
-# test_that("differing length non-nested update_dissolution tests", {
-#   nw <- network_initialize(n = 1000)
-#   nw %v% "race" <- rep(letters[1:5], length.out = 1000)
-#   nw %v% "age" <- rep(1:3, length.out = 1000)
-#
-#   diss_het <- dissolution_coefs(~offset(edges) +
-#                                   offset(nodematch("age", diff = TRUE)),
-#                                 c(300, 50, 150, 225), 0.001)
-#   diss_hom <- dissolution_coefs(~offset(edges), 200, 0.001)
-#
-#   est_het <- netest(nw = nw,
-#                     formation = ~edges + nodematch("race", diff = TRUE),
-#                     target.stats = c(500, 50, 50, 90, 30, 10),
-#                     coef.diss = diss_het,
-#                     nested.edapprox = FALSE)
-#
-#   est_hom <- netest(nw = nw,
-#                     formation = ~edges + nodematch("race", diff = TRUE),
-#                     target.stats = c(500, 50, 50, 90, 30, 10),
-#                     coef.diss = diss_hom,
-#                     nested.edapprox = FALSE)
-#
-#   est_hom_compare <- update_dissolution(est_het, diss_hom, nested.edapprox = FALSE)
-#   est_het_compare <- update_dissolution(est_hom, diss_het, nested.edapprox = FALSE)
-#
-#   expect_true(all(round(as.numeric(est_hom$coef.form), 3) ==
-#                 round(as.numeric(est_hom_compare$coef.form), 3)))
-#
-#   expect_true(all(round(as.numeric(est_het$coef.form), 3) ==
-#                 round(as.numeric(est_het_compare$coef.form), 3)))
-#
-#   expect_equal(est_hom_compare$formation, ~edges + nodematch("race", diff = TRUE) +
-#                  offset(edges))
-#   expect_equal(est_het_compare$formation, ~edges + nodematch("race", diff = TRUE) +
-#                  offset(edges) + offset(nodematch("age", diff = TRUE)))
-# })
+  diss_het <- dissolution_coefs(~offset(edges) +
+                                  offset(nodematch("race", diff = TRUE)),
+                                c(300, 200, 100, 50, 150, 225), 0.001)
+
+  diss_hom_1 <- dissolution_coefs(~offset(edges), 1, 0)
 
 
-# test_that("non-nested EDA", {
-#   nw <- network_initialize(n = 1000)
-#   nw %v% "race" <- rep(letters[1:5], length.out = 1000)
-#   nw %v% "age" <- rep(1:3, length.out = 1000)
-#
-#   diss_het_1 <- dissolution_coefs(~offset(edges) +
-#                                     offset(nodematch("race", diff = TRUE)),
-#                                   c(300, 200, 100, 50, 150, 225), 0.001)
-#   diss_het_2 <- dissolution_coefs(~offset(edges) +
-#                                     offset(nodematch("age", diff = TRUE)),
-#                                   c(55, 45, 65, 80), 0.001)
-#
-#   est_nest_1 <- netest(nw = nw,
-#                        formation = ~edges + nodematch("race", diff = TRUE),
-#                        target.stats = c(500, 50, 50, 90, 30, 10),
-#                        coef.diss = diss_het_1)
-#
-#   est_non_1 <- netest(nw = nw,
-#                       formation = ~edges + nodematch("race", diff = TRUE),
-#                       target.stats = c(500, 50, 50, 90, 30, 10),
-#                       coef.diss = diss_het_1,
-#                       nested = FALSE)
-#
-#   expect_error(est_nest_2 <- netest(nw = nw,
-#                                     formation = ~edges + nodematch("race", diff = TRUE),
-#                                     target.stats = c(500, 50, 50, 90, 30, 10),
-#                                     coef.diss = diss_het_2),
-#                                     "Term options for one or more terms in dissolution model")
-#
-#   est_non_2 <- netest(nw = nw,
-#                       formation = ~edges + nodematch("race", diff = TRUE),
-#                       target.stats = c(500, 50, 50, 90, 30, 10),
-#                       coef.diss = diss_het_2,
-#                       nested = FALSE)
-#
-#   est_nest_1_non_2 <- update_dissolution(est_nest_1, diss_het_2, nested = FALSE)
-#   est_non_1_non_2 <- update_dissolution(est_non_1, diss_het_2, nested = FALSE)
-#   expect_error(est_nest_1_nest_2 <- update_dissolution(est_nest_1, diss_het_2, nested = TRUE),
-#                "Term options for one or more terms in dissolution model")
-#   expect_error(est_non_1_nest_2 <- update_dissolution(est_non_1, diss_het_2, nested = TRUE),
-#                "Term options for one or more terms in dissolution model")
-#   est_non_2_nest_1 <- update_dissolution(est_non_2, diss_het_1, nested = TRUE)
-#   est_non_2_non_1 <- update_dissolution(est_non_2, diss_het_1, nested = FALSE)
-#
-#
-#   expect_true(all(round(as.numeric(est_nest_1$coef.form), 3) ==
-#                 round(as.numeric(est_non_2_nest_1$coef.form), 3)))
-#
-#   expect_true(all(round(as.numeric(est_non_1$coef.form), 3) ==
-#                 round(as.numeric(est_non_2_non_1$coef.form), 3)))
-#
-#   expect_true(all(round(as.numeric(est_non_2$coef.form), 3) ==
-#                 round(as.numeric(est_nest_1_non_2$coef.form), 3)))
-#
-#   expect_true(all(round(as.numeric(est_non_2$coef.form), 3) ==
-#                 round(as.numeric(est_non_1_non_2$coef.form), 3)))
-#
-#   expect_equal(est_nest_1$formation, ~edges + nodematch("race", diff = TRUE))
-#   expect_equal(est_non_1$formation, ~edges + nodematch("race", diff = TRUE) +
-#                  offset(edges) + offset(nodematch("race", diff = TRUE)))
-#   expect_equal(est_non_2$formation, ~edges + nodematch("race", diff = TRUE) +
-#                  offset(edges) + offset(nodematch("age", diff = TRUE)))
-#
-#   expect_equal(est_nest_1_non_2$formation, ~edges + nodematch("race", diff = TRUE) +
-#                  offset(edges) + offset(nodematch("age", diff = TRUE)))
-#   expect_equal(est_non_1_non_2$formation, ~edges + nodematch("race", diff = TRUE) +
-#                  offset(edges) + offset(nodematch("age", diff = TRUE)))
-#   expect_equal(est_non_2_nest_1$formation, ~edges + nodematch("race", diff = TRUE))
-#   expect_equal(est_non_2_non_1$formation, ~edges + nodematch("race", diff = TRUE) +
-#                  offset(edges) + offset(nodematch("race", diff = TRUE)))
-# })
+  est_het <- netest(nw = nw,
+                    formation = ~edges + nodemix("race", levels2 = 1:5),
+                    target.stats = c(500, 50, 50, 90, 30, 10),
+                    coef.diss = diss_het, nested.edapprox = FALSE)
 
-# test_that("environment handling in non-nested EDA", {
-#   nw <- network_initialize(n = 1000)
-#   nw %v% "race" <- rep(letters[1:5], length.out = 1000)
-#   nw %v% "age" <- rep(1:3, length.out = 1000)
-#
-#   make_formula <- function() {
-#     a <- "age"
-#     ff <- ~offset(edges) + offset(nodematch(a, diff = TRUE))
-#     ff
-#   }
-#
-#   ff <- make_formula()
-#
-#   coef_diss <- dissolution_coefs(ff, c(55, 45, 65, 80))
-#
-#   r <- "race"
-#
-#   netest_1 <- netest(nw = nw,
-#                      formation = ~edges + nodematch(r, diff = TRUE),
-#                      target.stats = c(500, 50, 50, 90, 40, 60),
-#                      coef.diss = coef_diss,
-#                      nested.edapprox = FALSE)
-#
-#   expect_error(netdx_1 <- netdx(netest_1, nsims = 2, nsteps = 5, dynamic = TRUE, verbose = FALSE),
-#                "object 'a' not found")
-#
-#   netest_2 <- netest(nw = nw,
-#                      formation = ~edges + nodematch(r, diff = TRUE),
-#                      target.stats = c(500, 50, 50, 90, 40, 60),
-#                      coef.diss = coef_diss,
-#                      nested.edapprox = FALSE,
-#                      from.new = "a")
-#
-#   expect_error(netdx_2 <- netdx(netest_2, nsims = 2, nsteps = 5, dynamic = TRUE, verbose = FALSE), NA)
-#
-#   make_formula_2 <- function() {
-#     x <- "race"
-#     ff <- ~offset(edges) + offset(nodematch(x, diff = TRUE))
-#     ff
-#   }
-#
-#   ff_2 <- make_formula_2()
-#
-#   coef_diss_2 <- dissolution_coefs(ff_2, c(30, 40, 50, 25, 35, 55))
-#
-#   expect_error(netest_3 <- update_dissolution(netest_2, coef_diss_2,
-#                                               nested.edapprox = TRUE),
-#                "Term options for one or more terms in dissolution model")
-#   netest_3 <- update_dissolution(netest_2, coef_diss_2, nested.edapprox = FALSE)
-#   expect_error(netdx_3 <- netdx(netest_3, nsims = 2, nsteps = 5, dynamic = TRUE, verbose = FALSE),
-#                "object 'x' not found")
-#   netest_4 <- update_dissolution(netest_2, coef_diss_2, nested.edapprox = FALSE,
-#                                  from.new = "x")
-#   expect_error(netdx_4 <- netdx(netest_4, nsims = 2, nsteps = 5, dynamic = TRUE, verbose = FALSE), NA)
-# })
+  est_hom_1 <- netest(nw = nw,
+                    formation = ~edges + nodemix("race", levels2 = 1:5),
+                    target.stats = c(500, 50, 50, 90, 30, 10),
+                    coef.diss = diss_hom_1)
+
+  est_hom_1_update <- update_dissolution(est_het, diss_hom_1)
+  est_het_update <- update_dissolution(est_hom_1, diss_het, nested.edapprox = FALSE)
+
+  expect_true(all(round(as.numeric(est_hom_1$coef.form), 3) ==
+                round(as.numeric(est_hom_1_update$coef.form), 3)))
+
+  expect_true(all(round(as.numeric(est_het$coef.form), 3) ==
+                round(as.numeric(est_het_update$coef.form), 3)))
+
+  dx <- netdx(est_het, dynamic = TRUE, nsteps = 5, verbose = FALSE)
+  dx <- netdx(est_het, dynamic = FALSE, nsims = 5, verbose = FALSE)
+
+  expect_error(dx <- netdx(est_hom_1, dynamic = TRUE, nsteps = 5),
+               "Running dynamic diagnostics on a cross-sectional ERGM")
+  dx <- netdx(est_hom_1, dynamic = FALSE, nsims = 5, verbose = FALSE)
+
+  dx <- netdx(est_het_update, dynamic = TRUE, nsteps = 5, verbose = FALSE)
+  dx <- netdx(est_het_update, dynamic = FALSE, nsims = 5, verbose = FALSE)
+
+  expect_error(dx <- netdx(est_hom_1_update, dynamic = TRUE, nsteps = 5),
+               "Running dynamic diagnostics on a cross-sectional ERGM")
+  dx <- netdx(est_hom_1_update, dynamic = FALSE, nsims = 5, verbose = FALSE)
+
+  param <- param.net(inf.prob = 0.3, act.rate = 0.5, rec.rate = 0.05)
+  init <- init.net(r.num = 0, status.vector = rep("s", 1000))
+  control <- control.net(type = "SIR", nsims = 1, nsteps = 5,
+                         resimulate.network = TRUE, verbose = FALSE,
+                         nwupdate.FUN = NULL)
+  mod <- netsim(est_het, param, init, control)
+  mod <- netsim(est_het_update, param, init, control)
+  mod <- netsim(est_hom_1, param, init, control)
+  mod <- netsim(est_hom_1_update, param, init, control)
+})
+
+test_that("differing length non-nested update_dissolution tests", {
+  nw <- network_initialize(n = 1000)
+  nw %v% "race" <- rep(letters[1:5], length.out = 1000)
+  nw %v% "age" <- rep(1:3, length.out = 1000)
+
+  diss_het <- dissolution_coefs(~offset(edges) +
+                                  offset(nodematch("age", diff = TRUE)),
+                                c(300, 50, 150, 225), 0.001)
+  diss_hom <- dissolution_coefs(~offset(edges), 200, 0.001)
+
+  est_het <- netest(nw = nw,
+                    formation = ~edges + nodematch("race", diff = TRUE),
+                    target.stats = c(500, 50, 50, 90, 30, 10),
+                    coef.diss = diss_het,
+                    nested.edapprox = FALSE)
+
+  est_hom <- netest(nw = nw,
+                    formation = ~edges + nodematch("race", diff = TRUE),
+                    target.stats = c(500, 50, 50, 90, 30, 10),
+                    coef.diss = diss_hom,
+                    nested.edapprox = FALSE)
+
+  est_hom_compare <- update_dissolution(est_het, diss_hom, nested.edapprox = FALSE)
+  est_het_compare <- update_dissolution(est_hom, diss_het, nested.edapprox = FALSE)
+
+  expect_true(all(round(as.numeric(est_hom$coef.form), 3) ==
+                round(as.numeric(est_hom_compare$coef.form), 3)))
+
+  expect_true(all(round(as.numeric(est_het$coef.form), 3) ==
+                round(as.numeric(est_het_compare$coef.form), 3)))
+
+  expect_equal(est_hom_compare$formation, ~edges + nodematch("race", diff = TRUE) +
+                 offset(edges))
+  expect_equal(est_het_compare$formation, ~edges + nodematch("race", diff = TRUE) +
+                 offset(edges) + offset(nodematch("age", diff = TRUE)))
+})
+
+test_that("non-nested EDA", {
+  nw <- network_initialize(n = 1000)
+  nw %v% "race" <- rep(letters[1:5], length.out = 1000)
+  nw %v% "age" <- rep(1:3, length.out = 1000)
+
+  diss_het_1 <- dissolution_coefs(~offset(edges) +
+                                    offset(nodematch("race", diff = TRUE)),
+                                  c(300, 200, 100, 50, 150, 225), 0.001)
+  diss_het_2 <- dissolution_coefs(~offset(edges) +
+                                    offset(nodematch("age", diff = TRUE)),
+                                  c(55, 45, 65, 80), 0.001)
+
+  est_nest_1 <- netest(nw = nw,
+                       formation = ~edges + nodematch("race", diff = TRUE),
+                       target.stats = c(500, 50, 50, 90, 30, 10),
+                       coef.diss = diss_het_1)
+
+  est_non_1 <- netest(nw = nw,
+                      formation = ~edges + nodematch("race", diff = TRUE),
+                      target.stats = c(500, 50, 50, 90, 30, 10),
+                      coef.diss = diss_het_1,
+                      nested = FALSE)
+
+  expect_error(est_nest_2 <- netest(nw = nw,
+                                    formation = ~edges + nodematch("race", diff = TRUE),
+                                    target.stats = c(500, 50, 50, 90, 30, 10),
+                                    coef.diss = diss_het_2),
+                                    "Term options for one or more terms in dissolution model")
+
+  est_non_2 <- netest(nw = nw,
+                      formation = ~edges + nodematch("race", diff = TRUE),
+                      target.stats = c(500, 50, 50, 90, 30, 10),
+                      coef.diss = diss_het_2,
+                      nested = FALSE)
+
+  est_nest_1_non_2 <- update_dissolution(est_nest_1, diss_het_2, nested = FALSE)
+  est_non_1_non_2 <- update_dissolution(est_non_1, diss_het_2, nested = FALSE)
+  expect_error(est_nest_1_nest_2 <- update_dissolution(est_nest_1, diss_het_2, nested = TRUE),
+               "Term options for one or more terms in dissolution model")
+  expect_error(est_non_1_nest_2 <- update_dissolution(est_non_1, diss_het_2, nested = TRUE),
+               "Term options for one or more terms in dissolution model")
+  est_non_2_nest_1 <- update_dissolution(est_non_2, diss_het_1, nested = TRUE)
+  est_non_2_non_1 <- update_dissolution(est_non_2, diss_het_1, nested = FALSE)
+
+
+  expect_true(all(round(as.numeric(est_nest_1$coef.form), 3) ==
+                round(as.numeric(est_non_2_nest_1$coef.form), 3)))
+
+  expect_true(all(round(as.numeric(est_non_1$coef.form), 3) ==
+                round(as.numeric(est_non_2_non_1$coef.form), 3)))
+
+  expect_true(all(round(as.numeric(est_non_2$coef.form), 3) ==
+                round(as.numeric(est_nest_1_non_2$coef.form), 3)))
+
+  expect_true(all(round(as.numeric(est_non_2$coef.form), 3) ==
+                round(as.numeric(est_non_1_non_2$coef.form), 3)))
+
+  expect_equal(est_nest_1$formation, ~edges + nodematch("race", diff = TRUE))
+  expect_equal(est_non_1$formation, ~edges + nodematch("race", diff = TRUE) +
+                 offset(edges) + offset(nodematch("race", diff = TRUE)))
+  expect_equal(est_non_2$formation, ~edges + nodematch("race", diff = TRUE) +
+                 offset(edges) + offset(nodematch("age", diff = TRUE)))
+
+  expect_equal(est_nest_1_non_2$formation, ~edges + nodematch("race", diff = TRUE) +
+                 offset(edges) + offset(nodematch("age", diff = TRUE)))
+  expect_equal(est_non_1_non_2$formation, ~edges + nodematch("race", diff = TRUE) +
+                 offset(edges) + offset(nodematch("age", diff = TRUE)))
+  expect_equal(est_non_2_nest_1$formation, ~edges + nodematch("race", diff = TRUE))
+  expect_equal(est_non_2_non_1$formation, ~edges + nodematch("race", diff = TRUE) +
+                 offset(edges) + offset(nodematch("race", diff = TRUE)))
+})
+
+test_that("environment handling in non-nested EDA", {
+  nw <- network_initialize(n = 1000)
+  nw %v% "race" <- rep(letters[1:5], length.out = 1000)
+  nw %v% "age" <- rep(1:3, length.out = 1000)
+
+  make_formula <- function() {
+    a <- "age"
+    ff <- ~offset(edges) + offset(nodematch(a, diff = TRUE))
+    ff
+  }
+
+  ff <- make_formula()
+
+  coef_diss <- dissolution_coefs(ff, c(55, 45, 65, 80))
+
+  r <- "race"
+
+  netest_1 <- netest(nw = nw,
+                     formation = ~edges + nodematch(r, diff = TRUE),
+                     target.stats = c(500, 50, 50, 90, 40, 60),
+                     coef.diss = coef_diss,
+                     nested.edapprox = FALSE)
+
+  expect_error(netdx_1 <- netdx(netest_1, nsims = 2, nsteps = 5, dynamic = TRUE, verbose = FALSE),
+               "object 'a' not found")
+
+  netest_2 <- netest(nw = nw,
+                     formation = ~edges + nodematch(r, diff = TRUE),
+                     target.stats = c(500, 50, 50, 90, 40, 60),
+                     coef.diss = coef_diss,
+                     nested.edapprox = FALSE,
+                     from.new = "a")
+
+  expect_error(netdx_2 <- netdx(netest_2, nsims = 2, nsteps = 5, dynamic = TRUE, verbose = FALSE), NA)
+
+  make_formula_2 <- function() {
+    x <- "race"
+    ff <- ~offset(edges) + offset(nodematch(x, diff = TRUE))
+    ff
+  }
+
+  ff_2 <- make_formula_2()
+
+  coef_diss_2 <- dissolution_coefs(ff_2, c(30, 40, 50, 25, 35, 55))
+
+  expect_error(netest_3 <- update_dissolution(netest_2, coef_diss_2,
+                                              nested.edapprox = TRUE),
+               "Term options for one or more terms in dissolution model")
+  netest_3 <- update_dissolution(netest_2, coef_diss_2, nested.edapprox = FALSE)
+  expect_error(netdx_3 <- netdx(netest_3, nsims = 2, nsteps = 5, dynamic = TRUE, verbose = FALSE),
+               "object 'x' not found")
+  netest_4 <- update_dissolution(netest_2, coef_diss_2, nested.edapprox = FALSE,
+                                 from.new = "x")
+  expect_error(netdx_4 <- netdx(netest_4, nsims = 2, nsteps = 5, dynamic = TRUE, verbose = FALSE), NA)
+})
