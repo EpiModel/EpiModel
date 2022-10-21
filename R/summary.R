@@ -68,7 +68,6 @@ summary.dcm <- function(object, at, run = 1, digits = 3, ...) {
     }
   }
 
-  # nolint start
   if (type == "SI") {
     stats <- with(df, c(s.num, s.prev,
                         i.num, i.prev,
@@ -173,7 +172,6 @@ summary.dcm <- function(object, at, run = 1, digits = 3, ...) {
       mat <- cbind(mat, mat.g2)
     }
   }
-  # nolint end
 
   if (groups == 1) {
     colnames(mat) <- c("n", "pct")
