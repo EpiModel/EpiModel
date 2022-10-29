@@ -141,6 +141,7 @@ test_that("netsim duration 1", {
                     time.slices = 1,
                     time.start = i - 1,
                     time.offset = 1,
+                    control = list(MCMC.prop.args = list(discordance_fraction = 0)),
                     coef = c(estd1$coef.form),
                     dynamic = TRUE)
   }
