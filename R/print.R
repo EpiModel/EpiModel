@@ -133,6 +133,7 @@ print.netest <- function(x, digits = 3, ...) {
 #' value within simulation, and \code{SD(Statistic)} gives the empirical
 #' standard deviation of the statistic value across all the simulated data.
 #' @export
+
 print.netdx <- function(x, digits = 3, ...) {
 
   cat("EpiModel Network Diagnostics")
@@ -159,7 +160,7 @@ print.netdx <- function(x, digits = 3, ...) {
     print_nwstats_table(x$stats.table.dissolution, digits)
   }
   if (x$anyNA == TRUE) {
-    warning("duration/dissolution data contains undefined values due to",
+    warning("duration and dissolution data contains undefined values due to",
             " having zero edges of some dissolution dyad type(s) on some time",
             " step(s); these undefined values will be set to 0 when",
             " processing the data; this behavior, which introduces a bias",

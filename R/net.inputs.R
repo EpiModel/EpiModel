@@ -974,8 +974,7 @@ control.net <- function(type,
     p[["save.network"]] <- FALSE
   }
   if (p[["tergmLite"]] == TRUE && p[["resimulate.network"]] == FALSE) {
-    message("Because tergmLite = TRUE, resetting resimulate.network = TRUE",
-            call. = FALSE)
+    message("Because tergmLite = TRUE, resetting resimulate.network = TRUE")
     p[["resimulate.network"]] <- TRUE
   }
 

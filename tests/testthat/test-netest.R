@@ -43,8 +43,7 @@ test_that("netest works for heterogeneous dissolutions", {
   nw <- set_vertex_attribute(nw, "race", rbinom(50, 1, 0.5))
   est <- netest(nw, formation = ~edges + nodematch("race"),
                 target.stats = c(50, 20),
-                coef.diss = dissolution_coefs(~offset(edges) +
-                                                offset(nodematch("race")),
+                coef.diss = dissolution_coefs(~offset(edges) + offset(nodematch("race")),
                                               c(10, 20)),
                 verbose = FALSE
   )
@@ -54,13 +53,6 @@ test_that("netest works for heterogeneous dissolutions", {
 test_that("netest diss_check flags bad models", {
   nw <- network_initialize(n = 100)
   nw <- set_vertex_attribute(nw, "race", rbinom(50, 1, 0.5))
-
-  formation <- ~edges + nodematch("race")
-  dissolution <- ~offset(edges) + offset(nodemix("race"))
-  coef.diss <- dissolution_coefs(dissolution, c(10, 20))
-  expect_error(netest(nw, formation, target.stats = c(50, 20),
-               coef.diss, verbose = FALSE),
-               "Dissolution model is not a subset of formation model.")
 
   formation <- ~edges + nodematch("race", diff = TRUE)
   dissolution <- ~offset(edges) + offset(nodematch("race"))
@@ -168,24 +160,24 @@ test_that("duration 1 update_dissolution tests", {
 
   expect_true(all(round(as.numeric(est_het$coef.form), 3) ==
                 round(as.numeric(est_het_update$coef.form), 3)))
-                
-  dx <- netdx(est_het, dynamic = TRUE, nsteps = 5)
-  dx <- netdx(est_het, dynamic = FALSE, nsims = 5)
-  
-  expect_error(dx <- netdx(est_hom_1, dynamic = TRUE, nsteps = 5), 
+
+  dx <- netdx(est_het, dynamic = TRUE, nsteps = 5, verbose = FALSE)
+  dx <- netdx(est_het, dynamic = FALSE, nsims = 5, verbose = FALSE)
+
+  expect_error(dx <- netdx(est_hom_1, dynamic = TRUE, nsteps = 5),
                "Running dynamic diagnostics on a cross-sectional ERGM")
-  dx <- netdx(est_hom_1, dynamic = FALSE, nsims = 5)
-  
-  dx <- netdx(est_het_update, dynamic = TRUE, nsteps = 5)
-  dx <- netdx(est_het_update, dynamic = FALSE, nsims = 5)
-  
-  expect_error(dx <- netdx(est_hom_1_update, dynamic = TRUE, nsteps = 5), 
+  dx <- netdx(est_hom_1, dynamic = FALSE, nsims = 5, verbose = FALSE)
+
+  dx <- netdx(est_het_update, dynamic = TRUE, nsteps = 5, verbose = FALSE)
+  dx <- netdx(est_het_update, dynamic = FALSE, nsims = 5, verbose = FALSE)
+
+  expect_error(dx <- netdx(est_hom_1_update, dynamic = TRUE, nsteps = 5),
                "Running dynamic diagnostics on a cross-sectional ERGM")
-  dx <- netdx(est_hom_1_update, dynamic = FALSE, nsims = 5)
-  
+  dx <- netdx(est_hom_1_update, dynamic = FALSE, nsims = 5, verbose = FALSE)
+
   param <- param.net(inf.prob = 0.3, act.rate = 0.5, rec.rate = 0.05)
   init <- init.net(r.num = 0, status.vector = rep("s", 1000))
-  control <- control.net(type = "SIR", nsims = 1, nsteps = 5, 
+  control <- control.net(type = "SIR", nsims = 1, nsteps = 5,
                          resimulate.network = TRUE, verbose = FALSE,
                          nwupdate.FUN = NULL)
   mod <- netsim(est_het, param, init, control)
@@ -230,7 +222,6 @@ test_that("differing length non-nested update_dissolution tests", {
   expect_equal(est_het_compare$formation, ~edges + nodematch("race", diff = TRUE) +
                  offset(edges) + offset(nodematch("age", diff = TRUE)))
 })
-
 
 test_that("non-nested EDA", {
   nw <- network_initialize(n = 1000)
@@ -327,7 +318,7 @@ test_that("environment handling in non-nested EDA", {
                      coef.diss = coef_diss,
                      nested.edapprox = FALSE)
 
-  expect_error(netdx_1 <- netdx(netest_1, nsims = 2, nsteps = 5, dynamic = TRUE),
+  expect_error(netdx_1 <- netdx(netest_1, nsims = 2, nsteps = 5, dynamic = TRUE, verbose = FALSE),
                "object 'a' not found")
 
   netest_2 <- netest(nw = nw,
@@ -337,7 +328,7 @@ test_that("environment handling in non-nested EDA", {
                      nested.edapprox = FALSE,
                      from.new = "a")
 
-  expect_error(netdx_2 <- netdx(netest_2, nsims = 2, nsteps = 5, dynamic = TRUE), NA)
+  expect_error(netdx_2 <- netdx(netest_2, nsims = 2, nsteps = 5, dynamic = TRUE, verbose = FALSE), NA)
 
   make_formula_2 <- function() {
     x <- "race"
@@ -353,21 +344,9 @@ test_that("environment handling in non-nested EDA", {
                                               nested.edapprox = TRUE),
                "Term options for one or more terms in dissolution model")
   netest_3 <- update_dissolution(netest_2, coef_diss_2, nested.edapprox = FALSE)
-  expect_error(netdx_3 <- netdx(netest_3, nsims = 2, nsteps = 5, dynamic = TRUE),
+  expect_error(netdx_3 <- netdx(netest_3, nsims = 2, nsteps = 5, dynamic = TRUE, verbose = FALSE),
                "object 'x' not found")
   netest_4 <- update_dissolution(netest_2, coef_diss_2, nested.edapprox = FALSE,
                                  from.new = "x")
-  expect_error(netdx_4 <- netdx(netest_4, nsims = 2, nsteps = 5, dynamic = TRUE), NA)
-})
-
-# STERGM --------------------------------------------------------------------
-
-test_that("Basic STERGM fit", {
-  skip_on_cran()
-  nw <- network_initialize(n = 50)
-  est <- netest(nw, formation = ~edges, target.stats = 25,
-                coef.diss = dissolution_coefs(~offset(edges), 10, 0),
-                edapprox = FALSE, verbose = FALSE)
-  expect_is(est, "netest")
-  expect_true(!est$edapprox)
+  expect_error(netdx_4 <- netdx(netest_4, nsims = 2, nsteps = 5, dynamic = TRUE, verbose = FALSE), NA)
 })
