@@ -62,5 +62,6 @@ LinkingTo: Rcpp, ergm
 RoxygenNote: 7.2.1
 Encoding: UTF-8
 Remotes:
+    github::statnet/ergm@master,
     github::statnet/tergm@master
 Roxygen: list(markdown = TRUE)
