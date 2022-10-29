@@ -151,8 +151,9 @@ set_sim_network <- function(dat, network = 1L, nw) {
 #' @keywords netUtils internal
 #'
 simulate_dat <- function(dat, at, network = 1L, nsteps = 1L) {
-  ## determine formula and coefficients
+  ## determine formula and coefficients; set discordance_fraction in ergm case
   nwparam <- get_nwparam(dat, network = network)
+  simulation_control <- get_network_control(dat, network, "set.control.tergm")
   if (all(nwparam$coef.diss$duration > 1)) {
     formula <- ~Form(nwparam$formation) +
                 Persist(nwparam$coef.diss$dissolution)
@@ -160,6 +161,7 @@ simulate_dat <- function(dat, at, network = 1L, nsteps = 1L) {
   } else {
     formula <- nwparam$formation
     coef <- nwparam$coef.form
+    simulation_control$MCMC.prop.args <- list(discordance_fraction = 0)
   }
 
   ## determine output type
@@ -186,7 +188,7 @@ simulate_dat <- function(dat, at, network = 1L, nsteps = 1L) {
                  time.start = at - 1,
                  time.slices = nsteps,
                  output = output,
-                 control = get_network_control(dat, network, "set.control.tergm"),
+                 control = simulation_control,
                  monitor = monitor,
                  dynamic = TRUE)
 
