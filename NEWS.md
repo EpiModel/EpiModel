@@ -19,6 +19,7 @@
 - Use `unflatten_params` in `generate_random_params` instead of bespoke code.
 - Standardize and speed up the summary calculations and plotting functionality for `netdx` and `netsim` objects.
 - Streamline unit tests for testing on CRAN.
+- Change in the inner behavior of `saveout.net`: missing elements on some simulations now produce a warning instead of an error. Additionally, elements passed to `save.other` that are not present in the final object are skipped silently instead of producing an error.
 
 
 ## EpiModel 2.3.0
