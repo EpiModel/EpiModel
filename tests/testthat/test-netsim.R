@@ -232,3 +232,24 @@ test_that("save.other sim naming", {
   mod4 <- merge(mod, mod, keep.other = FALSE)
   expect_equal(names(mod4[["nw"]]), NULL)
 })
+
+test_that("name_saveout_elts unit", {
+  simnames <- paste0("sim", 1:4)
+  elt_name <- "this_elt"
+
+  elt <- rep(list(sample(10)), 4)
+  named_elt <- expect_silent(name_saveout_elts(elt, elt_name, simnames))
+  expect_equal(names(named_elt), simnames)
+
+  # wrong size produces a warning
+  elt <- rep(list(sample(10)), 2)
+  named_elt <- expect_warning(name_saveout_elts(elt, elt_name, simnames))
+  expect_null(names(named_elt))
+  expect_equal(elt, named_elt)
+
+  # empty element returns silently
+  elt <- NULL
+  named_elt <- expect_silent(name_saveout_elts(elt, elt_name, simnames))
+  expect_null(names(named_elt))
+  expect_equal(elt, named_elt)
+})
