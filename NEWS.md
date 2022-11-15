@@ -11,6 +11,7 @@
 - Fix parallel memory leak in `netsim`.
 - Rework the network resimulation module to allow for working with observed network data. See this [EpiModel Gallery Example](https://github.com/EpiModel/EpiModel-Gallery/tree/main/2018-08-ObservedNetworkData).
 - Fix error message for tergmLite/resimulate.network collision
+- Fix error where `get_attr_history` would crash when some attribute history `posit_ids` argument is `integer(0)`
 
 ### OTHER
 
