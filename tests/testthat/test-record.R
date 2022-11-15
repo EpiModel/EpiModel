@@ -28,6 +28,15 @@ test_that("Time varying elements", {
       at
     )
 
+    # test when 0 nodes selected
+    some_nodes <- integer(0)
+    dat <- record_attr_history(
+      dat, at,
+      "attr_none",
+      some_nodes,
+      at
+    )
+
     return(dat)
   }
 
