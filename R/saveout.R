@@ -229,7 +229,8 @@ saveout.net <- function(dat, s, out = NULL) {
 
     if (dat$control$save.diss.stats == TRUE &&
         dat$control$save.network == TRUE &&
-        dat$control$tergmLite == FALSE) {
+        dat$control$tergmLite == FALSE &&
+        !is.null(dat$nwparam)) {
 
       ## for each simulated network, if dissolution model is edges-only, compute diss stats
       out$diss.stats <- list(lapply(seq_len(num.nw), function(network) {
@@ -309,7 +310,8 @@ saveout.net <- function(dat, s, out = NULL) {
 
     if (dat$control$save.diss.stats == TRUE &&
         dat$control$save.network == TRUE &&
-        dat$control$tergmLite == FALSE) {
+        dat$control$tergmLite == FALSE &&
+        !is.null(dat$nwparam)) {
 
       ## for each simulated network, if dissolution model is edges-only, compute diss stats
       out$diss.stats[[s]] <- lapply(seq_len(num.nw), function(network) {
