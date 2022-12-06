@@ -205,6 +205,7 @@ netsim_initialize <- function(x, param, init, control, s = 1) {
   } else {
     param <- generate_random_params(param, verbose = FALSE)
     dat <- control[["initialize.FUN"]](x, param, init, control, s)
+    dat <- make_module_list(dat)
     if (get_control(dat, "start") != 1) {
       dat <- set_current_timestep(dat, get_control(dat, "start") - 1)
     }
@@ -250,23 +251,13 @@ netsim_run_modules <- function(dat, s) {
       current_mod <- "epimodel.internal"
       # Applies updaters, if any
       dat <- input_updater(dat)
+      dat <- modules_updater(dat)
 
-      ## Module order
-      morder <- get_control(dat, "module.order", override.null.error = TRUE)
-      if (is.null(morder)) {
-        bi.mods <- get_control(dat, "bi.mods")
-        user.mods <- get_control(dat, "user.mods")
-        lim.bi.mods <- bi.mods[
-          -which(bi.mods %in% c("initialize.FUN", "verbose.FUN"))
-        ]
-        morder <- c(user.mods, lim.bi.mods)
-      }
+      modules <- get_modules(dat)
 
-      ## Evaluate modules
-      for (i in seq_along(morder)) {
-        current_mod <- morder[[i]]
-        mod.FUN <- get_control(dat, current_mod)
-        dat <- do.call(mod.FUN, list(dat, at))
+      for (i in seq_along(modules)) {
+        current_mod <- names(modules)[i]
+        dat <- modules[[i]](dat, at)
       }
 
       current_mod <- "epimodel.internal"
@@ -287,5 +278,75 @@ netsim_run_modules <- function(dat, s) {
     error = function(e) message(netsim_cond_msg("ERROR", current_mod, at))
   )
 
+  return(dat)
+}
+
+modules_updater <- function(dat) {
+  to_disable <- get_param(dat, ".modules.to.disable", override.null.error = TRUE)
+  if (!is.null(to_disable)) {
+    dat <- remove_modules(dat, to_disable)
+    dat <- set_param(dat, ".modules.to.disable", NULL)
+ }
+  return(dat)
+}
+
+get_modules <- function(dat) {
+  dat[["_modules_list"]]
+}
+
+set_modules <- function(dat, modules) {
+  dat[["_modules_list"]] <- modules
+}
+
+make_module_list <- function(dat) {
+  ## Module order
+  morder <- get_control(dat, "module.order", override.null.error = TRUE)
+  if (is.null(morder)) {
+    bi.mods <- get_control(dat, "bi.mods")
+    user.mods <- get_control(dat, "user.mods")
+    lim.bi.mods <- bi.mods[
+      -which(bi.mods %in% c("initialize.FUN", "verbose.FUN"))
+      ]
+    morder <- c(user.mods, lim.bi.mods)
+  }
+
+  ## Make the `modules` list
+  modules <- vector(mode = "list", length = length(morder))
+  for (i in seq_along(morder)) {
+    modules [[i]] <- get_control(dat, morder[i])
+  }
+  names(modules) <- morder
+  dat <- set_modules(dat, modules)
+
+  return(dat)
+}
+
+remove_modules <- function(dat, names.to.remove) {
+  modules <- get_modules(dat)
+  at <- get_current_timestep(dat)
+
+  # Trying to remove modules not present => warning
+  missing_mods <- setdiff(names.to.remove, names(modules))
+  if (length(missing) > 0) {
+    stop(
+      "\n\nAt timestep = ", at, ":\n",
+      "    an attempt was made to remove the following modules: \n'", missing_mods,
+      paste0(missing_mods, collapse = "', '"), "'\n",
+      "But they were not in the modules list. Maybe a typo was made"
+    )
+
+    names.to.remove <- intersect(names.to.remove, names(modules))
+  }
+
+  # In any case => message
+  modules <- modules[!names(modules) %in% names.to.remove]
+  message(
+      "\n\nAt timestep = ", at, ":\n",
+      "    the following modules: \n'", missing_mods,
+      paste0(missing_mods, collapse = "', '"), "'\n",
+      "were disabled."
+  )
+
+  dat <- set_modules(dat, modules)
   return(dat)
 }
