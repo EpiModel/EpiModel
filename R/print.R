@@ -133,7 +133,6 @@ print.netest <- function(x, digits = 3, ...) {
 #' value within simulation, and \code{SD(Statistic)} gives the empirical
 #' standard deviation of the statistic value across all the simulated data.
 #' @export
-
 print.netdx <- function(x, digits = 3, ...) {
 
   cat("EpiModel Network Diagnostics")
@@ -160,11 +159,11 @@ print.netdx <- function(x, digits = 3, ...) {
     print_nwstats_table(x$stats.table.dissolution, digits)
   }
   if (x$anyNA == TRUE) {
-    warning("duration and dissolution data contains undefined values due to",
-            " having zero edges of some dissolution dyad type(s) on some time",
-            " step(s); these undefined values will be set to 0 when",
-            " processing the data; this behavior, which introduces a bias",
-            " towards 0, may be changed in the future")
+    cat("\nNOTE: Duration and dissolution data contains undefined values due to",
+            "having zero edges of some dissolution dyad type(s) on some time",
+            "steps; these undefined values will be set to 0 when",
+            "processing the data; this behavior, which introduces a bias",
+            "towards 0, may be changed in the future.")
   }
   invisible()
 }
@@ -253,11 +252,8 @@ print.netsim <- function(x, nwstats = TRUE, digits = 3, network = 1, ...) {
         x$nwparam[[network]]$coef.diss$dissolution == ~ offset(edges)) {
 
       if (any(unlist(lapply(x$diss.stats, `[[`, "anyNA")))) {
-        warning("duration/dissolution data contains undefined values due to",
-                " having zero edges of some dissolution dyad type(s) on some time",
-                " step(s); these undefined values will be set to 0 when",
-                " processing the data; this behavior, which introduces a bias",
-                " towards 0, may be changed in the future")
+        cat("\nNOTE: Duration & dissolution data contains undefined values due to zero edges of some dissolution
+            dyad type(s) on some time step; these undefined values will be set to 0 when processing the data.")
       }
 
       dur_stats <- lapply(x$diss.stats, function(ds) ds[[network]][["meanageimputed"]])
