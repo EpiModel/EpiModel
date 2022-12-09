@@ -1,3 +1,4 @@
+context("networkLite (All SOC)")
 
 ## test_that("network and networkLite behave identically in ergm and gof", {
 ##   skip_on_cran()
@@ -104,6 +105,8 @@
 ## })
 
 test_that("network and networkLite simulate equally in ergm", {
+  skip_on_cran()
+
   net_size <- 100
   bip_size <- 40
 
@@ -157,6 +160,7 @@ test_that("network and networkLite simulate equally in ergm", {
 })
 
 test_that("network and networkLite simulate equally in san", {
+  skip_on_cran()
   net_size <- 100
   bip_size <- 40
 
@@ -208,6 +212,7 @@ test_that("network and networkLite simulate equally in san", {
 })
 
 test_that("direct conversion between network and networkLite functions as expected", {
+  skip_on_cran()
   net_size <- 100
   bip_size <- 40
 
@@ -303,6 +308,7 @@ test_that("direct conversion between network and networkLite functions as expect
 ## })
 
 test_that("network and networkLite simulate equally in tergm", {
+  skip_on_cran()
   net_size <- 100
   bip_size <- 40
 
@@ -414,6 +420,7 @@ test_that("network and networkLite simulate equally in tergm", {
 })
 
 test_that("network and networkLite work equally in netest, netdx, and netsim", {
+  skip_on_cran()
   net_size <- 100
   bip_size <- 40
 
@@ -475,6 +482,7 @@ test_that("network and networkLite work equally in netest, netdx, and netsim", {
 })
 
 test_that("network and networkLite produce identical matrices, edgelists, and tibbles", {
+  skip_on_cran()
   net_size <- 100
   bip_size <- 40
   edges_target <- net_size
@@ -596,6 +604,7 @@ test_that("network and networkLite produce identical matrices, edgelists, and ti
 ## })
 
 test_that("network and networkLite `[<-` and add.edges produce consistent edgelists", {
+  skip_on_cran()
   net_size <- 100
   bip_size <- 40
   edges_target <- net_size
@@ -688,6 +697,7 @@ test_that("network and networkLite `[<-` and add.edges produce consistent edgeli
 
 
 test_that("network and networkLite `+` and `-` produce consistent results", {
+  skip_on_cran()
   net_size <- 100
   bip_size <- 40
   edges_target <- 10*net_size
@@ -713,6 +723,7 @@ test_that("network and networkLite `+` and `-` produce consistent results", {
 })
 
 test_that("network to networkLite conversion handles deleted edges with attributes appropriately", {
+  skip_on_cran()
   net_size <- 10
   bip_size <- 4
 
@@ -741,6 +752,7 @@ test_that("network to networkLite conversion handles deleted edges with attribut
 })
 
 test_that("network and networkLite behave equivalently for basic access and mutation", {
+  skip_on_cran()
   net_size <- 10
   bip_size <- 4
 
@@ -800,6 +812,7 @@ test_that("network and networkLite behave equivalently for basic access and muta
 })
 
 test_that("add.vertices and add.edges with irregular attribute arguments behave equivalently for network and networkLite", {
+  skip_on_cran()
   net_size <- 100
   bip_size <- 40
 
@@ -911,6 +924,7 @@ test_that("add.vertices and add.edges with irregular attribute arguments behave 
 })
 
 test_that("attribute setting and deleting behave equivalently for network and networkLite", {
+  skip_on_cran()
   net_size <- 10
   bip_size <- 4
 

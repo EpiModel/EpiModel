@@ -266,8 +266,8 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
         ## formation model and appending the relevant values to the vector of
         ## formation model coefficients
         formula_addition <- append_rhs.formula(~., coef.diss$dissolution,
-                                               keep.onesided = TRUE)
-        environment(formula_addition) <- environment(coef.diss$dissolution)
+                                               keep.onesided = TRUE,
+                                               env = environment(coef.diss$dissolution))
 
         # the ... allows for copying via from.new
         formation <- nonsimp_update.formula(formation, formula_addition, ...)
@@ -458,8 +458,8 @@ update_dissolution <- function(old.netest, new.coef.diss,
       formation_list <- formation_list[seq_len(length(formation_list) -
                                                  length(old_diss_list))]
 
-      formation <- append_rhs.formula(~., formation_list)
-      environment(formation) <- environment(out$formation)
+      formation <- append_rhs.formula(~., formation_list,
+                                      env = environment(out$formation))
       formation[[2]] <- NULL # remove the . on the LHS
 
       out$formation <- formation
@@ -486,8 +486,8 @@ update_dissolution <- function(old.netest, new.coef.diss,
       ## formation model and appending the relevant values to the vector of
       ## formation model coefficients
       formula_addition <- append_rhs.formula(~., new.coef.diss$dissolution,
-                                             keep.onesided = TRUE)
-      environment(formula_addition) <- environment(new.coef.diss$dissolution)
+                                             keep.onesided = TRUE,
+                                             env = environment(new.coef.diss$dissolution))
       # the ... allows for copying via from.new
       out$formation <- nonsimp_update.formula(out$formation,
                                               formula_addition, ...)

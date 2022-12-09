@@ -90,9 +90,11 @@ test_that("New network models vignette example", {
                          departures.FUN = dfunc,
                          arrivals.FUN = afunc, aging.FUN = aging,
                          infection.FUN = infection.net,
-                         tergmLite = FALSE, resimulate.network = TRUE)
+                         tergmLite = FALSE, resimulate.network = TRUE, verbose = FALSE)
   mod1 <- netsim(est, param, init, control)
-  mod1
+  capture_output(
+    mod1
+  )
 
   expect_is(mod1, "netsim")
   expect_output(print(mod1), "resim_nets.FUN")
@@ -109,7 +111,7 @@ test_that("New network models vignette example", {
                          module.order = c("resim_nets.FUN", "infection.FUN",
                                           "aging.FUN", "arrivals.FUN",
                                           "departures.FUN", "prevalence.FUN"),
-                         tergmLite = FALSE, resimulate.network = TRUE)
+                         tergmLite = FALSE, resimulate.network = TRUE, verbose = FALSE)
   mod2 <- netsim(est, param, init, control)
   expect_is(mod2, "netsim")
 
@@ -133,7 +135,7 @@ test_that("New network models vignette example", {
                          module.order = c("resim_nets.FUN", "infection.FUN",
                                           "aging.FUN", "arrivals.FUN",
                                           "departures.FUN", "prevalence.FUN"),
-                         tergmLite = TRUE, resimulate.network = TRUE)
+                         tergmLite = TRUE, resimulate.network = TRUE, verbose = FALSE)
   mod4 <- netsim(est, param, init, control)
   expect_is(mod4, "netsim")
 
@@ -146,7 +148,7 @@ test_that("New network models vignette example", {
                          module.order = c("resim_nets.FUN", "infection.FUN",
                                           "aging.FUN", "arrivals.FUN",
                                           "departures.FUN", "prevalence.FUN"),
-                         tergmLite = TRUE, resimulate.network = TRUE)
+                         tergmLite = TRUE, resimulate.network = TRUE, verbose = FALSE)
   mod5 <- netsim(est, param, init, control)
   expect_is(mod5, "netsim")
 

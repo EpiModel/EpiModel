@@ -630,16 +630,11 @@ get_attr_history <- function(sims) {
 
     for (a in attributes.names) {
       parts <- Filter(function(x) x[["attribute"]] == a, records)
-      parts <- lapply(parts, as.data.frame)
-      d <- do.call("rbind", parts)
+      parts <- lapply(parts, dplyr::as_tibble)
+      d <- dplyr::bind_rows(parts)
       d[["sim"]] <- simnum
-      d <- d[, c("sim", "time", "attribute", "uids", "values")]
-
-      if (is.null(dfs[[a]])) {
-        dfs[[a]] <- d
-      } else {
-        dfs[[a]] <- rbind(dfs[[a]], d)
-      }
+      d <- dplyr::select(d, "sim", "time", "attribute", "uids", "values")
+      dfs[[a]] <- dplyr::bind_rows(dfs[[a]], d)
     }
   }
 
