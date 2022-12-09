@@ -35,7 +35,7 @@ test_that("SIS with scenarios", {
     ~.scenario.id, ~.at, ~inf.prob, ~rec.rate,
     "multiple_changes", "text", 0.1, 0.1
   )
-  expect_error(scenarios.list <- create_scenario_list(scenarios.df))
+  expect_error(create_scenario_list(scenarios.df))
 
   # inf_prob with an underscore
   scenarios.df <- dplyr::tribble(

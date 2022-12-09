@@ -159,13 +159,13 @@ test_that("get_sims error flags", {
   expect_equal(dim(get_param_set(mod)), c(3, length(set.colnames)))
 })
 
-dxs <- netdx(est, dynamic = FALSE, nsims = 5, 
-             nwstats.formula = ~edges + nodemix("group", levels2 = TRUE))
-dxd <- netdx(est, dynamic = TRUE, nsims = 5, nsteps = 3)
+dxs <- netdx(est, dynamic = FALSE, nsims = 5,
+             nwstats.formula = ~edges + nodemix("group", levels2 = TRUE), verbose = FALSE)
+dxd <- netdx(est, dynamic = TRUE, nsims = 5, nsteps = 3, verbose = FALSE)
 
 control1 <- control.net(type = "SI", nsteps = 2, nsims = 3,
                         verbose = FALSE, tergmLite = FALSE,
-                        resimulate.network = TRUE, 
+                        resimulate.network = TRUE,
                         nwstats.formula = ~edges + triangle)
 mod1 <- netsim(est, param, init, control1)
 

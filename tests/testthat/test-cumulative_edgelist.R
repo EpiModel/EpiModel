@@ -1,4 +1,4 @@
-context("cumulative edgelist")
+context("Cumulative edgelist (All SOC)")
 
 nw <- network_initialize(n = 100)
 est <- netest(
@@ -17,6 +17,7 @@ param <- param.net(
 init <- init.net(i.num = 10)
 
 test_that("netsim, SI, Cumulative Edgelist", {
+  skip_on_cran()
   control <- control.net(
     type = "SI",
     nsims = 1,
@@ -65,6 +66,7 @@ test_that("netsim, SI, Cumulative Edgelist", {
 })
 
 test_that("netsim, SI, Cumulative Edgelist with arrivals and departures", {
+  skip_on_cran()
   nw <- network_initialize(n = 100)
 
   formation <- ~edges

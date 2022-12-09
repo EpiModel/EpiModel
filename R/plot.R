@@ -1326,11 +1326,8 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
     data <- array(data, dim = c(dim(data)[1], dim(data)[2] / dim3, dim3))
   } else { # duration/dissolution case
     if (x$anyNA == TRUE) {
-      warning("duration/dissolution data contains undefined values due to",
-              " having zero edges of some dissolution dyad type(s) on some time",
-              " step(s); these undefined values will be set to 0 when",
-              " processing the data; this behavior, which introduces a bias",
-              " towards 0, may be changed in the future")
+      cat("\nNOTE: Duration & dissolution data contains undefined values due to zero edges of some dissolution
+            dyad type(s) on some time step; these undefined values will be set to 0 when processing the data.")
     }
 
     if (any(grepl("nodefactor", x$dissolution) == TRUE)) {
@@ -2051,11 +2048,8 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
           isTRUE(x$nwparam[[network]]$coef.diss$diss.model.type == "edgesonly")) {
 
         if (any(unlist(lapply(x$diss.stats, `[[`, "anyNA")))) {
-          warning("duration/dissolution data contains undefined values due to",
-                  " having zero edges of some dissolution dyad type(s) on some time",
-                  " step(s); these undefined values will be set to 0 when",
-                  " processing the data; this behavior, which introduces a bias",
-                  " towards 0, may be changed in the future")
+          cat("\nNOTE: Duration & dissolution data contains undefined values due to zero edges of some dissolution
+            dyad type(s) on some time step; these undefined values will be set to 0 when processing the data.")
         }
 
         if (type == "duration") {

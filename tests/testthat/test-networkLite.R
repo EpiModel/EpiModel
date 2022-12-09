@@ -1,4 +1,7 @@
+context("networkLite (All SOC)")
+
 test_that("network and networkLite work equally in netest, netdx, and netsim", {
+  skip_on_cran()
   net_size <- 100
   bip_size <- 40
 
@@ -60,6 +63,7 @@ test_that("network and networkLite work equally in netest, netdx, and netsim", {
 })
 
 test_that("network and networkLite simulate equally in tergm", {
+  skip_on_cran()
   net_size <- 100
   bip_size <- 40
 
@@ -174,6 +178,7 @@ test_that("network and networkLite simulate equally in tergm", {
 })
 
 test_that("network and networkLite simulate equally in ergm", {
+  skip_on_cran()
   net_size <- 100
   bip_size <- 40
 
@@ -229,6 +234,7 @@ test_that("network and networkLite simulate equally in ergm", {
 })
 
 test_that("network and networkLite simulate equally in san", {
+  skip_on_cran()
   net_size <- 100
   bip_size <- 40
 
@@ -282,6 +288,7 @@ test_that("network and networkLite simulate equally in san", {
 })
 
 test_that("network and networkLite fit and simulate equal missing-data ergms", {
+  skip_on_cran()
   net_size <- 50
   bip_size <- 20
   
@@ -329,6 +336,7 @@ test_that("network and networkLite fit and simulate equal missing-data ergms", {
 })
 
 test_that("network and networkLite fit and simulate equal valued ergms", {
+  skip_on_cran()
   net_size <- 50
   bip_size <- 20
   
@@ -363,6 +371,7 @@ test_that("network and networkLite fit and simulate equal valued ergms", {
 })
 
 test_that("conversions between network, networkLite, and networkDynamic behave as expected with non-atomic attributes", {
+  skip_on_cran()
   logit <- function(p) log(p/(1-p))
   nw <- network.initialize(100, directed = FALSE)
 

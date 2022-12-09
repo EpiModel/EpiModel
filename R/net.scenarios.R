@@ -128,12 +128,12 @@ use_scenario <- function(param, scenario) {
 #' Helper function validating the format of a `scenarios.df`
 #' @noRd
 check_scenarios_df <- function(scenarios.df) {
-  checks <- c(
-    all(c(".scenario.id", ".at") %in% names(scenarios.df)),
+  checks <-
+    all(c(".scenario.id", ".at") %in% names(scenarios.df)) &&
+    is.numeric(scenarios.df[[".at"]]) &&
     all(as.integer(scenarios.df[[".at"]]) == scenarios.df[[".at"]])
-  )
 
-  if (! all(checks)) {
+  if (!checks) {
     stop(
       "A `data.frame` of scenarios must have a '.scenario.id' column \n",
       "and a '.at' column containing integers."

@@ -1,3 +1,17 @@
+## EpiModel 2.3.2
+
+### NEW FEATURES
+
+
+### BUG FIXES
+
+- Fix error where `get_attr_history` would crash when some attribute history `posit_ids` argument is `integer(0)`
+- Change in the internal behavior of `saveout.net`: missing elements on some simulations now produce a warning instead of an error. Additionally, elements passed to `save.other` that are not present in the final object are skipped silently instead of producing an error.
+
+### OTHER
+
+
+
 ## EpiModel 2.3.1
 
 ### NEW FEATURES
@@ -8,8 +22,10 @@
 ### BUG FIXES
 
 - Fix `get_sims` not properly subsetting `el.cuml` and `_last_unique_id`.
-- Fix parallel memory leak in `netsim`. 
+- Fix parallel memory leak in `netsim`.
 - Rework the network resimulation module to allow for working with observed network data. See this [EpiModel Gallery Example](https://github.com/EpiModel/EpiModel-Gallery/tree/main/2018-08-ObservedNetworkData).
+- Fix error message for tergmLite/resimulate.network collision
+
 
 ### OTHER
 
@@ -17,6 +33,7 @@
 - Speed up the transmission matrix (`transmat`) storage by using `padded_vector` instead of repeated `rbind` calls. The result of `get_transmat(netsim_object)` is unchanged.
 - Use `unflatten_params` in `generate_random_params` instead of bespoke code.
 - Standardize and speed up the summary calculations and plotting functionality for `netdx` and `netsim` objects.
+- Streamline unit tests for testing on CRAN.
 
 
 ## EpiModel 2.3.0

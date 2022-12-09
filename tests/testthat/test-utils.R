@@ -34,10 +34,10 @@ test_that("color_tea", {
   est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
   param <- param.net(inf.prob = 0.3, rec.rate = 0.001)
   init <- init.net(i.num = 25, r.num = 25)
-  control <- control.net(type = "SIR", nsteps = 10, nsims = 1, verbose.int = 0)
+  control <- control.net(type = "SIR", nsteps = 10, nsims = 1, verbose = FALSE)
   mod <- netsim(est, param, init, control)
   nd <- get_network(mod)
-  nd <- color_tea(nd)
+  nd <- color_tea(nd, verbose = FALSE)
   expect_is(nd, "networkDynamic")
   expect_true(length(unique(
     get.vertex.attribute.active(nd, "ndtvcol", at = 1))) == 3)
