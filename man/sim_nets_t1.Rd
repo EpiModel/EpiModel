@@ -22,7 +22,10 @@ element of the \code{netest} object (if
 \code{edapprox == FALSE}). Once the initial edge sets are
 determined, the first time step is simulated if
 \code{resimulate.network == TRUE}, and all time steps are
-simulated if \code{resimulate.network == FALSE}.
+simulated if \code{resimulate.network == FALSE}. Initializes the
+\code{sim.num(.g2)} epi fields used in
+\code{\link{edges_correct}} for computing edge coefficient
+adjustments.
 }
 \keyword{internal}
 \keyword{netUtils}

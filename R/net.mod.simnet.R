@@ -9,7 +9,10 @@
 #'              \code{edapprox == FALSE}). Once the initial edge sets are
 #'              determined, the first time step is simulated if
 #'              \code{resimulate.network == TRUE}, and all time steps are
-#'              simulated if \code{resimulate.network == FALSE}.
+#'              simulated if \code{resimulate.network == FALSE}. Initializes the
+#'              \code{sim.num(.g2)} epi fields used in
+#'              \code{\link{edges_correct}} for computing edge coefficient
+#'              adjustments.
 #'
 #' @inheritParams recovery.net
 #'
@@ -69,6 +72,14 @@ sim_nets_t1 <- function(dat) {
     nsteps <- 1L
   } else {
     nsteps <- get_control(dat, "nsteps")
+  }
+
+  ## initialize sim.num(.g2) epi fields
+  if (get_param(dat, "groups") == 1) {
+    dat$epi$sim.num <- rep(sum(dat$attr$active == 1), length.out = nsteps)
+  } else {
+    dat$epi$sim.num <- rep(sum(dat$attr$active == 1 & dat$attr$group == 1), length.out = nsteps)
+    dat$epi$sim.num.g2 <- rep(sum(dat$attr$active == 1 & dat$attr$group == 2), length.out = nsteps)
   }
 
   ## simulate first timestep (if resimulate.network == TRUE)
@@ -271,7 +282,10 @@ resim_nets <- function(dat, at) {
 #'
 #' @description Adjusts the edges coefficient in a dynamic network model
 #'              simulated in \code{\link{netsim}} to preserve the mean
-#'              degree of nodes in the network.
+#'              degree of nodes in the network. Requires \code{at >= 2}.
+#'              Maintains the \code{sim.num(.g2)} epi fields (initialized in
+#'              \code{\link{sim_nets_t1}}) for computing the coefficient
+#'              adjustment.
 #'
 #' @inheritParams recovery.net
 #'
@@ -287,20 +301,20 @@ edges_correct <- function(dat, at) {
   active <- get_attr(dat, "active")
 
   if (resimulate.network == TRUE) {
-
     if (groups == 1) {
-      index <- at - 1
-      old.num <- get_epi(dat, "num", index)
+      old.num <- get_epi(dat, "sim.num", at - 1)
       new.num <- sum(active == 1)
+      dat <- set_epi(dat, "sim.num", at, new.num)
       adjustment <- log(old.num) - log(new.num)
     }
     if (groups == 2) {
-      index <- at - 1
+      old.num.g1 <- get_epi(dat, "sim.num", at - 1)
+      old.num.g2 <- get_epi(dat, "sim.num.g2", at - 1)
       group <- get_attr(dat, "group")
-      old.num.g1 <- get_epi(dat, "num", index)
-      old.num.g2 <- get_epi(dat, "num.g2", index)
       new.num.g1 <- sum(active == 1 & group == 1)
       new.num.g2 <- sum(active == 1 & group == 2)
+      dat <- set_epi(dat, "sim.num", at, new.num.g1)
+      dat <- set_epi(dat, "sim.num.g2", at, new.num.g2)
       adjustment <-
         log(2 * old.num.g1 * old.num.g2 / (old.num.g1 + old.num.g2)) -
         log(2 * new.num.g1 * new.num.g2 / (new.num.g1 + new.num.g2))
