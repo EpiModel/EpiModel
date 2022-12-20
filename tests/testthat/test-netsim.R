@@ -243,3 +243,41 @@ test_that("name_saveout_elts unit", {
   expect_null(names(named_elt))
   expect_equal(elt, named_elt)
 })
+
+test_that("edges correction behaves as expected", {
+  nw <- network_initialize(n = 500)
+
+  est <- netest(nw, formation = ~edges + degree(1),
+                target.stats = c(250, 100),
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                verbose = FALSE)
+
+  param <- param.net(inf.prob = 0.4, act.rate = 1,
+                     a.rate = 0.01, ds.rate = 0.01, di.rate = 0.01)
+  init <- init.net(i.num = 100)
+  for (tergmLite in list(FALSE, TRUE)) {
+    for (resimulate.network in unique(c(tergmLite, TRUE))) {
+      control <- control.net(type = "SI", nsteps = 15, nsims = 1, ncores = 1,
+                             resimulate.network = resimulate.network,
+                             tergmLite = tergmLite,
+                             verbose = FALSE,
+                             save.network = TRUE,
+                             save.other = c("attr"))
+      sim <- netsim(est, param, init, control)
+
+      expect_equal(est$coef.form[1] + log(network.size(nw)),
+                   sim$nwparam[[1]]$coef.form[1] + log(sim$epi$sim.num[15,1]),
+                   tolerance = 1e-6)
+
+      if (tergmLite == FALSE) {
+        control$nsteps <- 25
+        control$start <- 16
+        sim2 <- netsim(sim, param, init, control)
+
+        expect_equal(est$coef.form[1] + log(network.size(nw)),
+                     sim2$nwparam[[1]]$coef.form[1] + log(sim2$epi$sim.num[25,1]),
+                     tolerance = 1e-6)
+      }
+    }
+  }
+})
