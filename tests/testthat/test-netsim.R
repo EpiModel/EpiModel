@@ -135,15 +135,21 @@ test_that("netsim duration 1", {
   sim <- networkDynamic::as.networkDynamic(sim)
   sim <- networkDynamic::activate.vertices(sim, onset = 0, terminus = Inf)
   sim <- networkDynamic::activate.edges(sim, onset = 0, terminus = Inf)
+
+  sim %n% "net.obs.period" <- list(observations = list(c(0,1)),
+                                   mode = "discrete",
+                                   time.increment =  1,
+                                   time.unit = "step")
+
   for(i in 1:5) {
-    sim <- simulate(estd1$formation,
-                    basis = sim,
-                    time.slices = 1,
-                    time.start = i - 1,
-                    time.offset = 1,
-                    control = list(MCMC.prop.args = list(discordance_fraction = 0)),
-                    coef = c(estd1$coef.form),
-                    dynamic = TRUE)
+    sim <- suppressWarnings(simulate(estd1$formation,
+                                     basis = sim,
+                                     time.slices = 1,
+                                     time.start = i,
+                                     time.offset = 0,
+                                     control = list(MCMC.prop.args = list(discordance_fraction = 0)),
+                                     coef = c(estd1$coef.form),
+                                     dynamic = TRUE))
   }
   expect_identical(as.data.frame(sim), as.data.frame(mod$network$sim1[[1]]))
 })

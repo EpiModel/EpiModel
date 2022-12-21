@@ -250,11 +250,17 @@ test_that("netsim produces a networkDynamic with the expected data.frame when re
   nws <- networkDynamic::activate.vertices(nws, onset = 0, terminus = Inf)
   nws <- networkDynamic::activate.edges(nws, onset = 0, terminus = Inf)
 
+  nws %n% "net.obs.period" <- list(observations = list(c(0,1)),
+                                   mode = "discrete",
+                                   time.increment =  1,
+                                   time.unit = "step")
+
   for (i in seq_len(5)) {
-    nws <- simulate(nws ~ Form(est$formation) + Persist(est$coef.diss$dissolution),
-                    coef = c(est$coef.form, est$coef.diss$coef.crude),
-                    time.start = i - 1,
-                    dynamic = TRUE)
+    nws <- suppressWarnings(simulate(nws ~ Form(est$formation) + Persist(est$coef.diss$dissolution),
+                                     coef = c(est$coef.form, est$coef.diss$coef.crude),
+                                     time.start = i,
+                                     time.offset = 0,
+                                     dynamic = TRUE))
   }
 
   expect_identical(as.data.frame(nws), as.data.frame(nwd))

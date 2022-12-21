@@ -61,6 +61,12 @@ sim_nets_t1 <- function(dat) {
       nw <- networkDynamic::as.networkDynamic(nw)
       nw <- networkDynamic::activate.vertices(nw, onset = 0L, terminus = Inf)
       nw <- networkDynamic::activate.edges(nw, onset = 0L, terminus = Inf)
+      if (get_control(dat, "resimulate.network") == TRUE) {
+        nw %n% "net.obs.period" <- list(observations = list(c(0,1)),
+                                        mode = "discrete",
+                                        time.increment =  1,
+                                        time.unit = "step")
+      }
     }
     ## set network on dat object
     dat$nw[[network]] <- nw
@@ -191,17 +197,25 @@ simulate_dat <- function(dat, at, network = 1L, nsteps = 1L) {
     monitor <- NULL # will be handled by summary_nets, if needed
   }
 
+  if (get_control(dat, "tergmLite") == FALSE &&
+      get_control(dat, "resimulate.network") == TRUE) {
+    time_offset <- 0L
+  } else {
+    time_offset <- 1L
+  }
+
   ## always TERGM simulation
-  nw <- simulate(formula,
-                 coef = coef,
-                 basis = make_sim_network(dat = dat, network = network),
-                 constraints = nwparam$constraints,
-                 time.start = at - 1,
-                 time.slices = nsteps,
-                 output = output,
-                 control = simulation_control,
-                 monitor = monitor,
-                 dynamic = TRUE)
+  nw <- suppressWarnings(simulate(formula,
+                                  coef = coef,
+                                  basis = make_sim_network(dat = dat, network = network),
+                                  constraints = nwparam$constraints,
+                                  time.start = at - time_offset,
+                                  time.offset = time_offset,
+                                  time.slices = nsteps,
+                                  output = output,
+                                  control = simulation_control,
+                                  monitor = monitor,
+                                  dynamic = TRUE))
 
   ## update network (and el, if tergmLite) on the dat object
   dat <- set_sim_network(dat = dat, network = network, nw = nw)
