@@ -1,6 +1,6 @@
 context("multiple network models")
 
-test_that("netsim runs with multiple networks", {
+test_that("netsim runs with multiple networks, assuming a closed population", {
   nw <- network_initialize(n = 50)
   nw <- set_vertex_attribute(nw, "race", rbinom(50, 1, 0.5))
 
@@ -25,11 +25,29 @@ test_that("netsim runs with multiple networks", {
   nnets <- 5L
   tergm_nets <- c(1,3,5)
 
+  resim_stat_names <- list(c("triangle", "nodefactor.deg.4.1"),
+                           c("edges", "nodematch.race"),
+                           c("mean.age", "nodefactor.deg.2.2"),
+                           c("degree0", "degree1", "degree2", "degree3"),
+                           c("edges", "nodematch.race", "nodefactor.deg.5.1"))
+
+  resim_nwstats_formulas <- multilayer(~triangle + nodefactor("deg.4", levels = I(1)),
+                                       "formation",
+                                       ~mean.age + nodefactor("deg.2", levels = I(2)),
+                                       ~degree(0:3),
+                                       ~edges + nodematch("race") + nodefactor("deg.5", levels = I(1)))
+
   stat_names <- list(c("triangle"),
                      c("edges", "nodematch.race"),
                      c("mean.age"),
                      c("degree0", "degree1", "degree2", "degree3"),
                      c("edges", "nodematch.race"))
+
+  nwstats_formulas <- multilayer(~triangle,
+                                 "formation",
+                                 ~mean.age,
+                                 ~degree(0:3),
+                                 "formation")
 
   for (tergmLite in c(FALSE, TRUE)) {
     for (resimulate.network in unique(c(tergmLite, TRUE))) {
@@ -37,6 +55,14 @@ test_that("netsim runs with multiple networks", {
         save.other <- c("nw", "attr", "el", "temp")
       } else {
         save.other <- c("nw", "attr", "temp")      
+      }
+
+      if (resimulate.network == TRUE) {
+        sim_stat_names <- resim_stat_names
+        sim_nwstats_formulas <- resim_nwstats_formulas
+      } else {
+        sim_stat_names <- stat_names
+        sim_nwstats_formulas <- nwstats_formulas
       }
 
       for (iteration in 1:2) {
@@ -49,18 +75,21 @@ test_that("netsim runs with multiple networks", {
                                  resimulate.network = resimulate.network,
                                  tergmLite.track.duration = TRUE,
                                  dat.updates = function (dat, at, network) {
-                                   if (at > 0L && network > 0L) {
+                                   if (network > 0L) {
                                      if (get_control(dat, "tergmLite") == TRUE) {
                                        dat <- set_attr(dat, paste0("deg.", network),
                                                        get_degree(dat$el[[network]]))
                                      } else {
                                        dat <- set_attr(dat, paste0("deg.", network),
                                                        get_degree(as.edgelist(network.collapse(dat$nw[[network]], at = at))))
+                                       for (other_net in seq_along(dat$nwparam)) {
+                                         dat$nw[[other_net]] <- set_vertex_attribute(dat$nw[[other_net]], paste0("deg.", network), get_attr(dat, paste0("deg.", network)))
+                                       }
                                      }
                                    }
                                    dat
                                  },
-                                 nwstats.formula = multilayer(~triangle, "formation", ~mean.age, ~degree(0:3), "formation"),
+                                 nwstats.formula = sim_nwstats_formulas,
                                  verbose = TRUE,
                                  save.network = !tergmLite,
                                  save.other = save.other)
@@ -123,9 +152,9 @@ test_that("netsim runs with multiple networks", {
             expect_equal(network.size(sim$nw[[simno]][[network]]), sim$epi$num[[simno]][nsteps])
 
             stats_matrix <- get_nwstats(sim, network = network, mode = "list")[[simno]]
-            expect_equal(NCOL(stats_matrix), length(stat_names[[network]]))
+            expect_equal(NCOL(stats_matrix), length(sim_stat_names[[network]]))
             expect_equal(NROW(stats_matrix), nsteps)
-            expect_equal(colnames(stats_matrix), stat_names[[network]])
+            expect_equal(colnames(stats_matrix), sim_stat_names[[network]])
 
             final_stats <- stats_matrix[nsteps,]
             names(final_stats) <- colnames(stats_matrix)
