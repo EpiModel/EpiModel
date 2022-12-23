@@ -55,9 +55,9 @@ sim_nets_t1 <- function(dat) {
       nw <- networkDynamic::activate.vertices(nw, onset = 0L, terminus = Inf)
       nw <- networkDynamic::activate.edges(nw, onset = 0L, terminus = Inf)
       if (get_control(dat, "resimulate.network") == TRUE) {
-        nw %n% "net.obs.period" <- list(observations = list(c(0,1)),
+        nw %n% "net.obs.period" <- list(observations = list(c(0, 1)),
                                         mode = "discrete",
-                                        time.increment =  1,
+                                        time.increment = 1,
                                         time.unit = "step")
       }
     }
