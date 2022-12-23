@@ -30,8 +30,10 @@ sim_nets_t1 <- function(dat) {
   for (network in seq_along(dat$nwparam)) {
     nwparam <- get_nwparam(dat, network = network)
 
-    # Simulate t0 basis network nw
-    nw <- dat$nw[[network]]
+    ## (re)construct input network
+    nw <- make_sim_network(dat, network)
+
+    ## simulate t0 basis network nw if using edapprox
     if (nwparam$edapprox == TRUE) {
       nw <- simulate(nwparam$formula,
                      coef = nwparam$coef.form.crude,
@@ -42,20 +44,11 @@ sim_nets_t1 <- function(dat) {
     }
 
     if (get_control(dat, "tergmLite") == TRUE) {
-      ## set up network attributes and edgelist in tergmLite case
-      el <- as.edgelist(nw)
       ## set up time and lasttoggle if tracking duration
       if (get_network_control(dat, network, "tergmLite.track.duration") == TRUE) {
         nw %n% "time" <- 0L
-        nw %n% "lasttoggle" <- cbind(el, 0L)
+        nw %n% "lasttoggle" <- cbind(as.edgelist(nw), 0L)
       }
-      ## copy over network attributes to edgelist
-      for (netattrname in setdiff(list.network.attributes(nw),
-                                  names(attributes(el)))) {
-        attr(el, netattrname) <- get.network.attribute(nw, netattrname)
-      }
-      ## set edgelist on dat object
-      dat$el[[network]] <- el
     } else {
       ## set up vertex and edge activity in networkDynamic case
       nw <- networkDynamic::as.networkDynamic(nw)
@@ -69,8 +62,8 @@ sim_nets_t1 <- function(dat) {
       }
     }
     ## set network on dat object
-    dat$nw[[network]] <- nw
-
+    dat <- set_sim_network(dat, network, nw)
+    ## update dat object as needed
     dat <- dat.updates(dat = dat, at = 0L, network = network)
   }
 
