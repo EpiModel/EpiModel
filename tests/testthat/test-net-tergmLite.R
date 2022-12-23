@@ -268,18 +268,22 @@ test_that("edgecov works with tergmLite", {
 
   coefsign <- sign(fit$coef.form.crude[3])
 
-  resim_fun <- function(dat, at) {
-    n <- attr(dat$el[[1]], "n")
-    m <- matrix(if(at == 3) +Inf else -Inf, n, n)*coefsign
-    attr(dat$el[[1]], "ec") <- m
-    resim_nets(dat, at)
-  }
-
   param <- param.net(inf.prob = 0.3, act.rate = 1)
   init <- init.net(i.num = 5, r.num = 0)
   control <- control.net(type = NULL, nsteps = 4, nsims = 1, ncores = 1,
-                         resim_nets.FUN = resim_fun, tergmLite = TRUE,
-                         resimulate.network = TRUE, nwstats.formula = ~edges,
+                         dat.updates = function(dat, at, network) {
+                           if (network == 0L) {
+                             if (at == 0L) {
+                               attr(dat$el[[1]], "ec") <- dat$nw[[1]] %n% "ec"
+                             } else {
+                               n <- attr(dat$el[[1]], "n")
+                               m <- matrix(if(at == 3) +Inf else -Inf, n, n)*coefsign
+                               attr(dat$el[[1]], "ec") <- m
+                             }
+                           }
+                           return(dat)
+                         }, tergmLite = TRUE, resimulate.network = TRUE,
+                         nwstats.formula = ~edges,
                          set.control.ergm = control.simulate.formula(MCMC.burnin = 1e5),
                          verbose = FALSE)
   sim <- netsim(fit, param, init, control)
