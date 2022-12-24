@@ -83,7 +83,8 @@ test_that("netsim runs with multiple networks, with open or closed population", 
                                    resimulate.network = resimulate.network,
                                    tergmLite.track.duration = TRUE,
                                    dat.updates = function (dat, at, network) {
-                                     if (get_control(dat, "resimulate.network") == TRUE && get_control(dat, "start") > 1L) {
+                                     if (get_control(dat, "resimulate.network") == TRUE &&
+                                         get_control(dat, "start") > 1L) {
                                        dat$temp <- temp
                                      }
                                      if (network > 0L) {
@@ -145,6 +146,10 @@ test_that("netsim runs with multiple networks, with open or closed population", 
 
           for(simno in seq_len(nsims)) {
             for(network in seq_len(nnets)) {
+              expect_equal(sim$coef.form[[simno]][[network]][1],
+                           est[[network]]$coef.form[1] +
+                             log(network.size(est[[network]]$newnetwork)) -
+                             log(sim$epi$sim.num[nsteps, simno]))
               if (tergmLite == TRUE) {
                 expect_is(sim$nw[[simno]][[network]], "networkLite")
                 if (open_population == FALSE) {
