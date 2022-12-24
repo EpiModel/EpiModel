@@ -1190,7 +1190,7 @@ crosscheck.net <- function(x, param, init, control) {
     nwparam <- list(x)
   } else if (inherits(x, "netsim")) {
     nwparam <- x$nwparam
-  } else if (inherits(x, "network")) {
+  } else if (inherits(x, "networkDynamic")) {
     nwparam <- list(x) # relevant to EpiModel gallery example
   } else { # must be list of netest
     nwparam <- x
