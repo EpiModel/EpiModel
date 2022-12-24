@@ -79,6 +79,9 @@ initialize.net <- function(x, param, init, control, s) {
 
     dat$nw <- x$network[[s]]
     dat$nwparam <- x$nwparam
+    for (network in seq_along(dat$nwparam)) {
+      dat$nwparam[[network]]$coef.form <- x$coef.form[[s]][[network]]
+    }
     dat$epi <- sapply(x$epi, function(var) var[s])
     names(dat$epi) <- names(x$epi)
     dat$attr <- x$attr[[s]]

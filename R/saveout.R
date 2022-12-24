@@ -181,6 +181,9 @@ saveout.net <- function(dat, s, out = NULL) {
     out$control$num.nw <- num.nw
     out[["last_timestep"]] <- get_current_timestep(dat)
 
+    out$coef.form <- list()
+    out$coef.form[[s]] <- lapply(dat$nwparam, `[[`, "coef.form")
+
     out$epi <- list()
     for (j in seq_along(dat$epi)) {
       out$epi[[names(dat$epi)[j]]] <- data.frame(dat$epi[j])
@@ -275,6 +278,8 @@ saveout.net <- function(dat, s, out = NULL) {
       }
     }
 
+    out$coef.form[[s]] <- lapply(dat$nwparam, `[[`, "coef.form")
+
     for (j in seq_along(dat$epi)) {
       out$epi[[names(dat$epi)[j]]][, s] <- data.frame(dat$epi[j])
     }
@@ -351,6 +356,8 @@ saveout.net <- function(dat, s, out = NULL) {
     for (elt in top_lvl_elts) {
       out[[elt]] <- name_saveout_elts(out[[elt]], elt, simnames)
     }
+
+    out$coef.form <- name_saveout_elts(out$coef.form, "coef.form", simnames)
 
     if (dat$control$save.nwstats == TRUE) {
       out$stats$nwstats <- name_saveout_elts(
