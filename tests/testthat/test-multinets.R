@@ -18,8 +18,8 @@ test_that("netsim runs with multiple networks, with open or closed population", 
 
   est <- list(est10, est1, est20, est1, est20)
 
-  param_open <- param.net(inf.prob = 0.3, act.rate = 0.1, a.rate = 0.02,
-                          di.rate = 0.02, ds.rate = 0.02)
+  param_open <- param.net(inf.prob = 0.3, act.rate = 0.1, a.rate = 0.03,
+                          di.rate = 0.03, ds.rate = 0.03)
   param_closed <- param.net(inf.prob = 0.3, act.rate = 0.1)
 
   init <- init.net(i.num = 10)
@@ -141,7 +141,8 @@ test_that("netsim runs with multiple networks, with open or closed population", 
             expect_equal(sim$nwparam[[network]]$coef.form[1],
                          est[[network]]$coef.form[1] +
                            log(network.size(est[[network]]$newnetwork)) -
-                           log(sim$epi$sim.num[nsteps, 1]))
+                           log(sim$epi$sim.num[nsteps, 1]),
+                         tolerance = 1e-6)
           }
 
           for(simno in seq_len(nsims)) {
@@ -149,7 +150,8 @@ test_that("netsim runs with multiple networks, with open or closed population", 
               expect_equal(sim$coef.form[[simno]][[network]][1],
                            est[[network]]$coef.form[1] +
                              log(network.size(est[[network]]$newnetwork)) -
-                             log(sim$epi$sim.num[nsteps, simno]))
+                             log(sim$epi$sim.num[nsteps, simno]),
+                           tolerance = 1e-6)
               if (tergmLite == TRUE) {
                 expect_is(sim$nw[[simno]][[network]], "networkLite")
                 if (open_population == FALSE) {
