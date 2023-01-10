@@ -94,9 +94,9 @@ remove_modules <- function(dat, names.to.remove) {
   if (length(missing) > 0) {
     stop(
       "\n\nAt timestep = ", at, ":\n",
-      "    an attempt was made to remove the following modules: \n'", missing_mods,
+      "    an attempt was made to remove the following modules: \n'",
       paste0(missing_mods, collapse = "', '"), "'\n",
-      "But they were not in the modules list. Maybe a typo was made"
+      "But they were not in the modules list."
     )
 
     names.to.remove <- intersect(names.to.remove, names(modules))
@@ -106,9 +106,8 @@ remove_modules <- function(dat, names.to.remove) {
   modules <- modules[!names(modules) %in% names.to.remove]
   message(
       "\n\nAt timestep = ", at, ":\n",
-      "    the following modules: \n'", missing_mods,
-      paste0(missing_mods, collapse = "', '"), "'\n",
-      "were disabled."
+      "    the following modules were disabled: \n'",
+      paste0(names.to.remove, collapse = "', '"), "'\n"
   )
 
   dat <- set_modules(dat, modules)
