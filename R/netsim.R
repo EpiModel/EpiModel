@@ -206,6 +206,7 @@ netsim_initialize <- function(x, param, init, control, s = 1) {
     param <- generate_random_params(param, verbose = FALSE)
     dat <- control[["initialize.FUN"]](x, param, init, control, s)
     dat <- make_module_list(dat)
+    check_end_horizon(dat)
     if (get_control(dat, "start") != 1) {
       dat <- set_current_timestep(dat, get_control(dat, "start") - 1)
     }
@@ -251,7 +252,7 @@ netsim_run_modules <- function(dat, s) {
       current_mod <- "epimodel.internal"
       # Applies updaters, if any
       dat <- input_updater(dat)
-      dat <- modules_updater(dat)
+      dat <- trigger_end_horizon(dat)
 
       modules <- get_modules(dat)
 

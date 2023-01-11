@@ -16,7 +16,6 @@ create_dat_object <- function(param = list(), init = list(), control = list()) {
     "param"     = param,
     "init"      = init,
     "control"   = control,
-
     "attr"      = list(),
     "epi"       = list(),
     "stats"     = list(),

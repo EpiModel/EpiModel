@@ -1,27 +1,3 @@
-#' @title Function to Modify the List of Modules During the Simulation
-#'
-#' @inheritParams recovery.net
-#' @inherit recovery.net return
-#'
-#' @details
-#' This function removes modules from the module list by reading the
-#' ".modules.to.remove" parameter. If the parameter is empty, the function
-#' immediatly returns. Otherwise, the modules specified are removed. After the
-#' removal, the ".modules.to.remove" parameter is set back to NULL.
-#' Therefore, this functionnality is to be used with the "scenarios" API or the
-#' ".param.updater" parameter as module removal should happen at specified
-#' timestep.
-#'
-#' @keywords internal
-modules_updater <- function(dat) {
-  to_remove <- get_param(dat, ".modules.to.remove", override.null.error = TRUE)
-  if (!is.null(to_remove)) {
-    dat <- remove_modules(dat, to_remove)
-    dat <- set_param(dat, ".modules.to.remove", NULL)
- }
-  return(dat)
-}
-
 #' @title Get the List of Modules
 #'
 #' @inheritParams recovery.net
@@ -68,14 +44,13 @@ make_module_list <- function(dat) {
   ## Make the `modules` list
   modules <- vector(mode = "list", length = length(morder))
   for (i in seq_along(morder)) {
-    modules [[i]] <- get_control(dat, morder[i])
+    modules[[i]] <- get_control(dat, morder[i])
   }
   names(modules) <- morder
   dat <- set_modules(dat, modules)
 
   return(dat)
 }
-
 
 #' @title Remove a Set of Modules From the Module List
 #'
@@ -91,7 +66,7 @@ remove_modules <- function(dat, names.to.remove) {
 
   # Trying to remove modules not present => warning
   missing_mods <- setdiff(names.to.remove, names(modules))
-  if (length(missing) > 0) {
+  if (length(missing_mods) > 0) {
     stop(
       "\n\nAt timestep = ", at, ":\n",
       "    an attempt was made to remove the following modules: \n'",
@@ -106,7 +81,7 @@ remove_modules <- function(dat, names.to.remove) {
   modules <- modules[!names(modules) %in% names.to.remove]
   message(
       "\n\nAt timestep = ", at, ":\n",
-      "    the following modules were disabled: \n'",
+      "    the following modules were removed: \n'",
       paste0(names.to.remove, collapse = "', '"), "'\n"
   )
 
