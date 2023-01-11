@@ -21,7 +21,13 @@ trigger_end_horizon <- function(dat) {
   return(dat)
 }
 
-# Check the format of the end.horizon control
+#' Check the format of the end.horizon control
+#'
+#' @inheritParams recovery.net
+#'
+#' @return TRUE invisibly on succes, errors otherwise
+#'
+#' @keywords internal
 check_end_horizon_control <- function(dat) {
   end_horizon <- get_control(dat, "end.horizon", override.null.error = TRUE)
   if (is.null(end_horizon))
