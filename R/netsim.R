@@ -284,7 +284,11 @@ netsim_run_modules <- function(dat, s) {
     },
     message = function(e) message(netsim_cond_msg("MESSAGE", current_mod, at)),
     warning = function(e) message(netsim_cond_msg("WARNING", current_mod, at)),
-    error = function(e) message(netsim_cond_msg("ERROR", current_mod, at))
+    error = function(e) {
+      message(netsim_cond_msg("ERROR", current_mod, at))
+      message("Below is the error's traceback:")
+      traceback()
+    }
   )
 
   return(dat)
