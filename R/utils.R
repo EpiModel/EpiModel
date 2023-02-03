@@ -337,6 +337,15 @@ netsim_cond_msg <- function(cond, module, at, msg) {
 #'
 #' @keywords internal
 netsim_error_logger <- function(dat, s) {
+  if (get_control(dat, ".traceback.on.error")) {
+    message("\n",
+      "***************\n",
+      "** TRACEBACK **\n",
+      "***************"
+    )
+    traceback(0)
+  }
+
   if (get_control(dat, ".dump.frame.on.error")) {
     dump_name <- format(Sys.time(), format = "dump_%Y%m%d_%H%M%S")
     dump_name <- paste0(dump_name, "_", s, ".rda")
@@ -349,15 +358,6 @@ netsim_error_logger <- function(dat, s) {
     )
     utils::dump.frames()
     save.image(file = dump_name)
-  }
-
-  if (get_control(dat, ".traceback.on.error")) {
-    message("\n",
-      "***************\n",
-      "** TRACEBACK **\n",
-      "***************"
-    )
-    traceback(0)
   }
 }
 
