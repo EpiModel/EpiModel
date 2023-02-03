@@ -333,6 +333,35 @@ netsim_cond_msg <- function(cond, module, at, msg) {
   paste0("\n\tA ", cond, " occured in module '", module, "' at step ", at)
 }
 
+#'  Handle the logging of traceback and dumping of frames on error
+#'
+#' @keywords internal
+netsim_error_logger <- function(dat, s) {
+  if (get_control(dat, ".dump.frame.on.error")) {
+    dump_name <- format(Sys.time(), format = "dump_%Y%m%d_%H%M%S")
+    dump_name <- paste0(dump_name, "_", s, ".rda")
+    star_header <- paste0(rep("*", nchar(dump_name)))
+    message("\n",
+      star_header, "\n",
+      "DUMP FILE:\n",
+      dump_name, "\n",
+      star_header, "\n"
+    )
+    utils::dump.frames()
+    save.image(file = dump_name)
+  }
+
+  if (get_control(dat, ".traceback.on.error")) {
+    message("\n",
+      "***************\n",
+      "** TRACEBACK **\n",
+      "***************"
+    )
+    traceback(0)
+  }
+}
+
+
 #' @title Function to Reduce the Size of a \code{netest} Object
 #'
 #' @description Trims formula environments from the \code{netest} object.
