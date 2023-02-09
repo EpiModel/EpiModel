@@ -32,12 +32,18 @@ test_that("netsim with checkpoint", {
   control$end.horizon <- end_horizon_err_mod
   expect_error(netsim(est, param, init, control))
 
-  end_horizon <- list(at = 5, modules = c("resim_nets.FUN"))
+  # test for actual removal of 2 modules at once
+  #   - resimulation module (nwstats will stop being produced)
+  #   - infection module (prevalence will stay constant; see notes)
+  end_horizon <- list(at = 5, modules = c("resim_nets.FUN", "infection.FUN"))
   control <- control.net(
-    type = "SI", nsims = 1, nsteps = 10, ncores = 1, resimulate.network = TRUE,
-    end.horizon = end_horizon
+    type = "SI", nsims = 1, nsteps = 20, ncores = 1, resimulate.network = TRUE,
+    verbose = FALSE, end.horizon = end_horizon
   )
-
+  sim <- netsim(est, param, init, control)
   expect_true(nrow(get_nwstats(sim)) == 4)
 
+  # SI module without arrival or departure
+  # prevalence stays constant if the infection module is disabled
+  expect_length(unique(sim$epi$i.num[5:20, 1]), 1)
 })
