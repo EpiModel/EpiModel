@@ -31,4 +31,13 @@ test_that("netsim with checkpoint", {
   end_horizon_err_mod <- list(at = "a", modules = "not_there.FUN")
   control$end.horizon <- end_horizon_err_mod
   expect_error(netsim(est, param, init, control))
+
+  end_horizon <- list(at = 5, modules = c("resim_nets.FUN"))
+  control <- control.net(
+    type = "SI", nsims = 1, nsteps = 10, ncores = 1, resimulate.network = TRUE,
+    end.horizon = end_horizon
+  )
+
+  expect_true(nrow(get_nwstats(sim)) == 4)
+
 })
