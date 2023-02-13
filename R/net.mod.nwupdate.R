@@ -41,7 +41,7 @@ nwupdate.net <- function(dat, at) {
            print(cbind(sapply(get_attr_list(dat), length))))
     }
     if (tergmLite == FALSE) {
-      for (network in seq_along(dat$nwparam)) {
+      for (network in seq_len(dat$num.nw)) {
         dat$nw[[network]] <- add.vertices(dat$nw[[network]], nv = nArrivals)
 
         dat$nw[[network]] <- activate.vertices(dat$nw[[network]],
@@ -58,7 +58,7 @@ nwupdate.net <- function(dat, at) {
       }
     }
     if (tergmLite == TRUE) {
-      for (network in seq_along(dat$nwparam)) {
+      for (network in seq_len(dat$num.nw)) {
         dat$el[[network]] <- add_vertices(dat$el[[network]], nv = nArrivals)
       }
     }
@@ -68,7 +68,7 @@ nwupdate.net <- function(dat, at) {
   ## Departures
   if (length(departures) > 0) {
     if (tergmLite == FALSE) {
-      for (network in seq_along(dat$nwparam)) {
+      for (network in seq_len(dat$num.nw)) {
         dat$nw[[network]] <- deactivate.vertices(dat$nw[[network]],
                                                  onset = at,
                                                  terminus = Inf,
@@ -78,7 +78,7 @@ nwupdate.net <- function(dat, at) {
     }
     if (tergmLite == TRUE) {
       dat <- delete_attr(dat, departures)
-      for (network in seq_along(dat$nwparam)) {
+      for (network in seq_len(dat$num.nw)) {
         dat$el[[network]] <- delete_vertices(dat$el[[network]], departures)
 
         if (get_network_control(dat, network, "tergmLite.track.duration") == TRUE) {
@@ -96,7 +96,7 @@ nwupdate.net <- function(dat, at) {
 
   ## Update temporally extended disease status
   if (tergmLite == FALSE) {
-    for (network in seq_along(dat$nwparam)) {
+    for (network in seq_len(dat$num.nw)) {
       dat$nw[[network]] <- activate.vertex.attribute(dat$nw[[network]],
                                                      prefix = "testatus",
                                                      value = status,
