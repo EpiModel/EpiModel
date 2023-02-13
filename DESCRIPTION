@@ -63,6 +63,5 @@ LinkingTo: Rcpp, ergm
 RoxygenNote: 7.2.3
 Encoding: UTF-8
 Remotes:
-    github::EpiModel/networkLite@networkLite,
-    github::statnet/networkDynamic@networkLite
+    github::statnet/networkDynamic@master
 Roxygen: list(markdown = TRUE)
