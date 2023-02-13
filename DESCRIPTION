@@ -60,7 +60,7 @@ Suggests:
     tidyr
 VignetteBuilder: knitr
 LinkingTo: Rcpp, ergm
-RoxygenNote: 7.2.2
+RoxygenNote: 7.2.3
 Encoding: UTF-8
 Remotes:
     github::EpiModel/networkLite@networkLite,
