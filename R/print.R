@@ -233,9 +233,6 @@ print.netsim <- function(x, nwstats = TRUE, digits = 3, network = 1, ...) {
 
     target.stats <- x$nwparam[[network]]$target.stats
     ts.attr.names <- x$nwparam[[network]]$target.stats.names
-    if (length(ts.attr.names) != length(target.stats)) {
-      target.stats <- target.stats[which(target.stats > 0)]
-    }
     names(target.stats) <- ts.attr.names
 
     stats.table.formation <- make_stats_table(stats, target.stats)
