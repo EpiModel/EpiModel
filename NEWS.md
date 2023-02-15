@@ -2,6 +2,7 @@
 
 ### NEW FEATURES
 
+- Addition of an `end.horizon` control to trigger the End Horizon that removes a set of modules at a given time step
 
 ### BUG FIXES
 

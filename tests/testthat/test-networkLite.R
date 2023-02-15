@@ -519,7 +519,9 @@ test_that("network and networkLite produce identical matrices, edgelists, and ti
           expect_identical(as.edgelist(nw, attrname = attrname, na.rm = na.rm, output = "tibble"),
                            as.edgelist(nwL, attrname = attrname, na.rm = na.rm, output = "tibble"))
 
-          expect_identical(tibble::as_tibble(nw, attrname = attrname, na.rm = na.rm),
+          tbl <- tibble::as_tibble(nw, attrname = attrname, na.rm = na.rm)
+          attr(tbl, "n") <- network.size(nw)
+          expect_identical(tbl,
                            tibble::as_tibble(nwL, attrname = attrname, na.rm = na.rm))
         }
       }
