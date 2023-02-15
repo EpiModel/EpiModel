@@ -31,6 +31,7 @@ initialize.net <- function(x, param, init, control, s) {
       x <- list(x)
     }
 
+    dat$num.nw <- length(x)
     dat$nw <- lapply(x, `[[`, "newnetwork")
     dat$nwparam <- lapply(x, function(y) y[!(names(y) %in% c("fit", "newnetwork"))])
     if (get_control(dat, "tergmLite") == TRUE) dat$el <- lapply(dat$nw, as.edgelist)
@@ -77,9 +78,10 @@ initialize.net <- function(x, param, init, control, s) {
   } else if (control$start > 1) {
     dat <- create_dat_object(param = x$param, control = control)
 
+    dat$num.nw <- x$num.nw
     dat$nw <- x$network[[s]]
     dat$nwparam <- x$nwparam
-    for (network in seq_along(dat$nwparam)) {
+    for (network in seq_len(dat$num.nw)) {
       dat$nwparam[[network]]$coef.form <- x$coef.form[[s]][[network]]
     }
     dat$epi <- sapply(x$epi, function(var) var[s])
@@ -214,13 +216,13 @@ init_status.net <- function(dat) {
   ## Set up TEA status
   if (tergmLite == FALSE) {
     if (statOnNw == FALSE) {
-      for (network in seq_along(dat$nwparam)) {
+      for (network in seq_len(dat$num.nw)) {
         dat$nw[[network]] <- set_vertex_attribute(dat$nw[[network]],
                                                   "status",
                                                   status)
       }
     }
-    for (network in seq_along(dat$nwparam)) {
+    for (network in seq_len(dat$num.nw)) {
       dat$nw[[network]] <- activate.vertex.attribute(dat$nw[[network]],
                                                      prefix = "testatus",
                                                      value = status,

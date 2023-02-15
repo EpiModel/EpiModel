@@ -2,6 +2,10 @@
 
 ### NEW FEATURES
 
+- `ergm.ego` estimation is now supported by passing an `egor` object as the `nw` argument to `netest`.
+- Addition of an `end.horizon` control to trigger the End Horizon that removes a set of modules at a given time step
+- `netsim` now supports multiple networks (with a common node set)
+
 
 ### BUG FIXES
 
@@ -16,7 +20,6 @@
 
 ### NEW FEATURES
 
-- `netsim` now supports multiple networks (with a common node set)
 - `netdx` now calculates additional summary statistics to quantify variability within and across simulations for model diagnostics. See the help page for the associated print function for futher details: `help("print.netdx")`.
 - `get_transmat` adds a `deduplicate` argument to randomly select one transmitting act in the case that multiple potential transmissions occur within a time step to the newly infected person.
 

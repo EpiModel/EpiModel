@@ -101,8 +101,8 @@ get_network <- function(x, sim = 1, network = 1, collapse = FALSE, at,
   }
 
   if (inherits(x, "netsim")) {
-    if (network > x$control$num.nw) {
-      stop("Specify network between 1 and ", x$control$num.nw, call. = FALSE)
+    if (network > x$num.nw) {
+      stop("Specify network between 1 and ", x$num.nw, call. = FALSE)
     }
   }
 
@@ -287,8 +287,8 @@ get_nwstats <- function(x, sim, network = 1, mode = c("data.frame", "list")) {
       stop("Network statistics not saved in netsim object, check control.net
            settings", call. = FALSE)
     }
-    if (network > x$control$num.nw) {
-      stop("Specify network between 1 and ", x$control$num.nw, call. = FALSE)
+    if (network > x$num.nw) {
+      stop("Specify network between 1 and ", x$num.nw, call. = FALSE)
     }
   }
 

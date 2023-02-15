@@ -27,7 +27,7 @@ sim_nets_t1 <- function(dat) {
   ## simulate zeroth timestep cross-sectional network
   ## (default to newnetwork, set already in mod.initialize, if full tergm fit)
   dat <- dat.updates(dat = dat, at = 0L, network = 0L)
-  for (network in seq_along(dat$nwparam)) {
+  for (network in seq_len(dat$num.nw)) {
     nwparam <- get_nwparam(dat, network = network)
 
     ## (re)construct input network
@@ -84,7 +84,7 @@ sim_nets_t1 <- function(dat) {
   ## simulate first timestep (if resimulate.network == TRUE)
   ## or all timesteps (if resimulate.network == FALSE)
   dat <- dat.updates(dat = dat, at = 1L, network = 0L)
-  for (network in seq_along(dat$nwparam)) {
+  for (network in seq_len(dat$num.nw)) {
     dat <- simulate_dat(dat, at = 1L, network = network, nsteps = nsteps)
     dat <- dat.updates(dat = dat, at = 1L, network = network)
   }
@@ -261,7 +261,7 @@ resim_nets <- function(dat, at) {
     ## network resimulation
     dat.updates <- NVL(get_control(dat, "dat.updates"), function(dat, ...) dat)
     dat <- dat.updates(dat = dat, at = at, network = 0L)
-    for (network in seq_along(dat$nwparam)) {
+    for (network in seq_len(dat$num.nw)) {
       dat <- simulate_dat(dat = dat, at = at, network = network)
       dat <- dat.updates(dat = dat, at = at, network = network)
     }
@@ -276,7 +276,7 @@ resim_nets <- function(dat, at) {
       dat, "truncate.el.cuml", override.null.error = TRUE)
     truncate.el.cuml <- if (is.null(truncate.el.cuml)) 1 else truncate.el.cuml
 
-    for (network in seq_along(dat[["nwparam"]])) {
+    for (network in seq_len(dat$num.nw)) {
       dat <- update_cumulative_edgelist(dat, network, truncate.el.cuml)
     }
   }
@@ -327,7 +327,7 @@ edges_correct <- function(dat, at) {
         log(2 * new.num.g1 * new.num.g2 / (new.num.g1 + new.num.g2))
     }
 
-    for (network in seq_along(dat$nwparam)) {
+    for (network in seq_len(dat$num.nw)) {
       dat$nwparam[[network]]$coef.form[1] <-
         dat$nwparam[[network]]$coef.form[1] + adjustment
     }
