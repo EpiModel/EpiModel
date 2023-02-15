@@ -130,6 +130,7 @@
 #' @name EpiModel-package
 #' @aliases EpiModel
 #' @import ergm network networkDynamic tergm ggplot2
+#' @importFrom egor as.egor
 #' @importFrom ergm.ego ergm.ego control.ergm.ego
 #' @importFrom deSolve dede ode
 #' @importFrom doParallel registerDoParallel
