@@ -40,6 +40,7 @@ Imports:
     doParallel,
     ergm (>= 4.2.2),
     ergm.ego (>= 1.0.1),
+    egor,
     foreach,
     network (>= 1.17.2),
     RColorBrewer,
@@ -57,7 +58,6 @@ Suggests:
     rmarkdown,
     shiny,
     testthat,
-    egor,
     tidyr
 VignetteBuilder: knitr
 LinkingTo: Rcpp, ergm
