@@ -166,19 +166,12 @@ saveout.icm <- function(dat, s, out = NULL) {
 #'
 saveout.net <- function(dat, s, out = NULL) {
 
-  # Counts number of simulated networks
-  if (get_control(dat, "tergmLite") == TRUE) {
-    num.nw <- length(dat$el)
-  } else {
-    num.nw <- length(dat$nw)
-  }
-
   if (s == 1) {
     out <- list()
     out$param <- dat$param
     out$control <- dat$control
     out$nwparam <- dat$nwparam
-    out$control$num.nw <- num.nw
+    out$num.nw <- dat$num.nw
     out[["last_timestep"]] <- get_current_timestep(dat)
 
     out$coef.form <- list()
@@ -241,7 +234,7 @@ saveout.net <- function(dat, s, out = NULL) {
         !is.null(dat$nwparam)) {
 
       ## for each simulated network, if dissolution model is edges-only, compute diss stats
-      out$diss.stats <- list(lapply(seq_len(num.nw), function(network) {
+      out$diss.stats <- list(lapply(seq_len(dat$num.nw), function(network) {
         if (dat$nwparam[[network]]$coef.diss$diss.model.type == "edgesonly") {
           toggles_to_diss_stats(tedgelist_to_toggles(as.data.frame(dat$nw[[network]])),
                                 dat$nwparam[[network]]$coef.diss,
@@ -329,7 +322,7 @@ saveout.net <- function(dat, s, out = NULL) {
         !is.null(dat$nwparam)) {
 
       ## for each simulated network, if dissolution model is edges-only, compute diss stats
-      out$diss.stats[[s]] <- lapply(seq_len(num.nw), function(network) {
+      out$diss.stats[[s]] <- lapply(seq_len(dat$num.nw), function(network) {
         if (dat$nwparam[[network]]$coef.diss$diss.model.type == "edgesonly") {
           toggles_to_diss_stats(tedgelist_to_toggles(as.data.frame(dat$nw[[network]])),
                                 dat$nwparam[[network]]$coef.diss,

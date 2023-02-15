@@ -1196,22 +1196,22 @@ crosscheck.net <- function(x, param, init, control) {
     nwparam <- x
   }
 
-  num_nw <- length(nwparam)
+  num.nw <- length(nwparam)
 
   # convert relevant control arguments to multilayer if they are not already, and check length
   for (control_arg_name in c("nwstats.formula", "set.control.ergm",
                              "set.control.tergm", "tergmLite.track.duration")) {
     control_arg_value <- control[[control_arg_name]]
     if (!is(control_arg_value, "multilayer")) {
-      control[[control_arg_name]] <- do.call(multilayer, rep(list(control_arg_value), length.out = num_nw))
-    } else if (length(control_arg_value) != num_nw) {
+      control[[control_arg_name]] <- do.call(multilayer, rep(list(control_arg_value), length.out = num.nw))
+    } else if (length(control_arg_value) != num.nw) {
       stop("multilayer control argument `", control_arg_name, "` has length ",
-           length(control_arg_value), " but should have length ", num_nw, ".")
+           length(control_arg_value), " but should have length ", num.nw, ".")
     }
   }
 
   # convert nwstats.formula = "formation" to actual formation formula
-  for (network in seq_len(num_nw)) {
+  for (network in seq_len(num.nw)) {
     if (!is.null(control[["nwstats.formula"]][[network]]) &&
         control[["nwstats.formula"]][[network]] == "formation") {
       control[["nwstats.formula"]][[network]] <- nwparam[[network]]$formation
@@ -1221,9 +1221,9 @@ crosscheck.net <- function(x, param, init, control) {
   # convert dat.updates to a function of dat, at, network if it is not already
   dat.updates <- control[["dat.updates"]]
   if (is.list(dat.updates)) {
-    if (length(dat.updates) != num_nw + 1L) {
+    if (length(dat.updates) != num.nw + 1L) {
       stop("control argument `dat.updates` is of length ", length(dat.updates),
-           " but should be of length ", num_nw + 1L, ".")
+           " but should be of length ", num.nw + 1L, ".")
     }
     control[["dat.updates"]] <- trim_env(function(dat, at, network) {
                                            dat.updates[[network + 1L]](dat = dat, at = at)

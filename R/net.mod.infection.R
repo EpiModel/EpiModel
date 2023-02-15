@@ -56,7 +56,7 @@ infection.net <- function(dat, at) {
   if (nElig > 0 && nElig < nActive) {
 
     # Get discordant edgelist
-    del_list <- lapply(seq_along(dat$nwparam), discord_edgelist, dat = dat, at = at, include.network = TRUE)
+    del_list <- lapply(seq_len(dat$num.nw), discord_edgelist, dat = dat, at = at, include.network = TRUE)
     del <- dplyr::bind_rows(del_list)
 
     # If some discordant edges, then proceed
@@ -179,7 +179,7 @@ infection.2g.net <- function(dat, at) {
   if (nElig > 0 && nElig < nActive) {
 
     # Get discordant edgelist
-    del_list <- lapply(seq_along(dat$nwparam), discord_edgelist, dat = dat, at = at, include.network = TRUE)
+    del_list <- lapply(seq_len(dat$num.nw), discord_edgelist, dat = dat, at = at, include.network = TRUE)
     del <- dplyr::bind_rows(del_list)
 
     # If some discordant edges, then proceed
