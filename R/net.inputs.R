@@ -819,6 +819,16 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #' tutorials. One may remove existing modules, such as `arrivals.FUN`, from the workflow by setting
 #' the parameter value for that argument to `NULL`.
 #'
+#' @section End Horizon:
+#' `netsim` implements an "End Horizon" mechanism, where a set of modules are
+#' removed from the simulation at a specific time step. This is enabled through
+#' the `end.horizon` parameter to `control.net`.
+#'
+#' This parameter must receive a `list` with fields `at`, the time step at which
+#' the end horizon occurs, and `modules`, a character vector with the names of
+#' the modules to remove. (e.g `list(at = 208, modules = c("arrivals.FUN",
+#' "infections.FUN")))
+#'
 #' @return
 #' An EpiModel object of class `control.net`.
 #'
