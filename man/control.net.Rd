@@ -240,6 +240,18 @@ tutorials. One may remove existing modules, such as \code{arrivals.FUN}, from th
 the parameter value for that argument to \code{NULL}.
 }
 
+\section{End Horizon}{
+
+\code{netsim} implements an "End Horizon" mechanism, where a set of modules are
+removed from the simulation at a specific time step. This is enabled through
+the \code{end.horizon} parameter to \code{control.net}.
+
+This parameter must receive a \code{list} with fields \code{at}, the time step at which
+the end horizon occurs, and \code{modules}, a character vector with the names of
+the modules to remove. (e.g `list(at = 208, modules = c("arrivals.FUN",
+"infections.FUN")))
+}
+
 \seealso{
 Use \code{\link{param.net}} to specify model parameters and \code{\link{init.net}} to specify the initial conditions.
 Run the parameterized model with \code{\link{netsim}}.

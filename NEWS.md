@@ -3,6 +3,8 @@
 ### NEW FEATURES
 
 - `ergm.ego` estimation is now supported by passing an `egor` object as the `nw` argument to `netest`.
+- Addition of an `end.horizon` control to trigger the End Horizon that removes a set of modules at a given time step
+
 
 ### BUG FIXES
 
