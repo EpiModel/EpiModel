@@ -321,12 +321,12 @@ test_that("environment handling in non-nested EDA", {
   expect_error(netdx_1 <- netdx(netest_1, nsims = 2, nsteps = 5, dynamic = TRUE, verbose = FALSE),
                "object 'a' not found")
 
-  netest_2 <- netest(nw = nw,
-                     formation = ~edges + nodematch(r, diff = TRUE),
-                     target.stats = c(500, 50, 50, 90, 40, 60),
-                     coef.diss = coef_diss,
-                     nested.edapprox = FALSE,
-                     from.new = "a")
+  supressWarnings(netest_2 <- netest(nw = nw,
+                                     formation = ~edges + nodematch(r, diff = TRUE),
+                                     target.stats = c(500, 50, 50, 90, 40, 60),
+                                     coef.diss = coef_diss,
+                                     nested.edapprox = FALSE,
+                                     from.new = "a"))
 
   expect_error(netdx_2 <- netdx(netest_2, nsims = 2, nsteps = 5, dynamic = TRUE, verbose = FALSE), NA)
 
