@@ -5,6 +5,7 @@
 - `ergm.ego` estimation is now supported by passing an `egor` object as the `nw` argument to `netest`.
 - Addition of an `end.horizon` control to trigger the End Horizon that removes a set of modules at a given time step
 - `netsim` now supports multiple networks (with a common node set)
+- Addition of the `.traceback.on.error` and `.dump.frames.on.error` controls to print the `traceback` on error even on multicore settings and `dump.frames` for remote debugging.
 
 
 ### BUG FIXES
