@@ -12,12 +12,11 @@ test_that("extremal targets are handled correctly", {
     nw <- set_vertex_attribute(nw, "race", rbinom(100, 1, 0.5))
     nw <- set_vertex_attribute(nw, "sex", rbinom(100, 1, 0.5))
 
+    target_stats <- c(50, 0, 20, 0, 0)
     if (egor == TRUE) {
       nw <- san(ff, basis = nw, target.stats = target_stats, offset.coef = c(-Inf,-Inf))
       target_stats <- summary(ff_sum, basis = nw)
       nw <- as.egor(nw)
-    } else {
-      target_stats <- c(50, 0, 20, 0, 0)
     }
 
     target_stats_names <- c("edges", "nodematch.sex", "nodematch.race", "deg6+", "degree5")
