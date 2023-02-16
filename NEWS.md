@@ -2,19 +2,19 @@
 
 ### NEW FEATURES
 
-- `ergm.ego` estimation is now supported by passing an `egor` object as the `nw` argument to `netest`.
-- Addition of an `end.horizon` control to trigger the End Horizon that removes a set of modules at a given time step
+- Estimation with the `ergm.ego` package estimation is now supported. This is accomplished by passing an `egor` class object instead of a `network` class object as the `nw` argument to `netest`.
+- Added an `end.horizon` control setting to `control.net`. This allows one to remove a set of modules within network epidemic models at a given time step. This end horizon is needed for cost-effectiveness analyses and related models that require tracking person time in the absence of disease transmision.
+- Added `.traceback.on.error` and `.dump.frames.on.error` controls to print the `traceback` on error even on multicore settings and `dump.frames` for remote debugging.
 - `netsim` now supports multiple networks (with a common node set)
-- Addition of the `.traceback.on.error` and `.dump.frames.on.error` controls to print the `traceback` on error even on multicore settings and `dump.frames` for remote debugging.
-
 
 ### BUG FIXES
 
-- Fix error where `get_attr_history` would crash when some attribute history `posit_ids` argument is `integer(0)`
-- Change in the internal behavior of `saveout.net`: missing elements on some simulations now produce a warning instead of an error. Additionally, elements passed to `save.other` that are not present in the final object are skipped silently instead of producing an error.
+- Fixed an error where `get_attr_history` would crash when attribute history of `posit_ids` argument was `integer(0)`.
+- Changed in the internal behavior of `saveout.net`: missing elements on some simulations now produce a warning instead of an error. Additionally, elements passed to `save.other` that are not present in the final object are skipped silently instead of producing an error.
 
 ### OTHER
 
+- Removed functionality for the `networkLite` class (sparse network representations needed for epidemic modeling) from EpiModel and placed into its own package on CRAN: https://CRAN.R-project.org/package=networkLite. 
 
 
 ## EpiModel 2.3.1
@@ -30,7 +30,6 @@
 - Fix parallel memory leak in `netsim`.
 - Rework the network resimulation module to allow for working with observed network data. See this [EpiModel Gallery Example](https://github.com/EpiModel/EpiModel-Gallery/tree/main/2018-08-ObservedNetworkData).
 - Fix error message for tergmLite/resimulate.network collision
-
 
 ### OTHER
 
