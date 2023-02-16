@@ -29,7 +29,7 @@ BugReports: https://github.com/EpiModel/EpiModel/issues
 Depends:
     R (>= 3.5),
     deSolve (>= 1.21),
-    networkDynamic (>= 0.11.2),
+    networkDynamic (>= 0.11.3),
     tergm (>= 4.1.0),
     statnet.common (>= 4.6.0)
 Imports:
@@ -50,7 +50,8 @@ Imports:
     methods,
     rlang,
     dplyr,
-    coda
+    coda,
+    networkLite
 Suggests:
     knitr,
     ndtv,
