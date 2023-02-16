@@ -1,8 +1,9 @@
-context("ergm.ego")
+context("ergm.ego (All SOC)")
 
 # Test ergm.ego ---------------------------------------------------
 
 test_that("ergm and ergm.ego produce the same results in EpiModel", {
+  skip_on_cran()
   for (trim in list(FALSE, TRUE)) {
     for (ppopnw in list(FALSE, TRUE)) {
       nw <- network_initialize(n = 50)
@@ -37,17 +38,17 @@ test_that("ergm and ergm.ego produce the same results in EpiModel", {
       expect_identical(netest_ergm$coef.form.crude, netest_ergm.ego$coef.form.crude)
 
       set.seed(0)
-      dx_ergm <- netdx(netest_ergm, nsteps = 5, dynamic = FALSE)
+      dx_ergm <- netdx(netest_ergm, nsteps = 5, dynamic = FALSE, verbose = FALSE)
       set.seed(0)
-      dx_ergm.ego <- netdx(netest_ergm.ego, nsteps = 5, dynamic = FALSE)
+      dx_ergm.ego <- netdx(netest_ergm.ego, nsteps = 5, dynamic = FALSE, verbose = FALSE)
 
       expect_identical(dx_ergm$stats, dx_ergm.ego$stats)
       expect_identical(dx_ergm$stats.table.formation, dx_ergm.ego$stats.table.formation)
 
       set.seed(0)
-      dxd_ergm <- netdx(netest_ergm, nsteps = 5, dynamic = TRUE)
+      dxd_ergm <- netdx(netest_ergm, nsteps = 5, dynamic = TRUE, verbose = FALSE)
       set.seed(0)
-      dxd_ergm.ego <- netdx(netest_ergm.ego, nsteps = 5, dynamic = TRUE)
+      dxd_ergm.ego <- netdx(netest_ergm.ego, nsteps = 5, dynamic = TRUE, verbose = FALSE)
 
       expect_identical(dxd_ergm$stats, dxd_ergm.ego$stats)
       expect_identical(dxd_ergm$stats.table.formation, dxd_ergm.ego$stats.table.formation)
