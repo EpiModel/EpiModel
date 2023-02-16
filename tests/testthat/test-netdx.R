@@ -331,11 +331,15 @@ for (trim in c(FALSE, TRUE)) {
     dx11 <- netdx(est, nsims = 5, nsteps = 100, verbose = FALSE)
     expect_length(dx11$stats.table.duration$Target, 11)
     expect_length(dx11$stats.table.dissolution$`Sim Mean`, 11)
-    suppressWarnings({
+    suppressMessages({
       expect_output(print(dx11), "match.neighborhood.7")
       plot(dx11)
-      plot(dx11, type = "duration")
-      plot(dx11, type = "dissolution")
+      capture_output(
+        plot(dx11, type = "duration")
+      )
+      capture_output(
+        plot(dx11, type = "dissolution")
+      )
     })
 
     formation <- ~edges + nodemix("position")
