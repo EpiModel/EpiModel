@@ -314,7 +314,6 @@ apportion_lr <- function(vector.length, values,
   return(result)
 }
 
-
 #' @title Message to Find in Which Module a \code{condition} Occurred
 #'
 #' @description This function returns a formatted string describing when, where,
@@ -333,7 +332,20 @@ netsim_cond_msg <- function(cond, module, at, msg) {
   paste0("\n\tA ", cond, " occured in module '", module, "' at step ", at)
 }
 
-#'  Handle the logging of traceback and dumping of frames on error
+#'  Handle the Logging of Traceback and Dumping of Frames on Error
+#'
+#'  If `control$.traceback.on.error == TRUE`, this function prints the traceback
+#'  of the current simulation to STDIN. This is useful when `ncores > 1` or in
+#'  HPC settings.
+#'  If `control$.dump.frames.on.error == TRUE`, this function saves a debugging
+#'  dump for "postmortem debugging". The dumps are named
+#'  "dump_%Y%m%d_%H%M%S_s.rda" and stored at the root of the working directory.
+#'
+#' @inheritParams recovery.net
+#' @param s The number of the simulation that failed
+#'
+#' @return Nothing, after logging and dumping frames, the function gives the
+#'   control back to the general error handler
 #'
 #' @keywords internal
 netsim_error_logger <- function(dat, s) {
