@@ -2028,9 +2028,6 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
       nwparam <- get_nwparam(x, network)
       ts <- nwparam$target.stats
       tsn <- nwparam$target.stats.names
-      if (length(tsn) != length(ts)) {
-        ts <- ts[which(ts > 0)]
-      }
       names(ts) <- tsn
 
     } else {
