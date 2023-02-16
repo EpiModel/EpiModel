@@ -169,7 +169,9 @@ netsim_validate_control <- function(control) {
       "resimulate.network",
       "raw.output",
       "verbose",
-      ".checkpoint.keep"
+      ".checkpoint.keep",
+      ".traceback.on.error",
+      ".dump.frame.on.error"
     )
   )
 
@@ -277,7 +279,10 @@ netsim_run_modules <- function(dat, s) {
     },
     message = function(e) message(netsim_cond_msg("MESSAGE", current_mod, at)),
     warning = function(e) message(netsim_cond_msg("WARNING", current_mod, at)),
-    error = function(e) message(netsim_cond_msg("ERROR", current_mod, at))
+    error = function(e) {
+      message(netsim_cond_msg("ERROR", current_mod, at))
+      netsim_error_logger(dat, s)
+    }
   )
 
   return(dat)
