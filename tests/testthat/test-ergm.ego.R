@@ -10,7 +10,7 @@ test_that("ergm and ergm.ego produce the same results in EpiModel", {
       nw %v% "race" <- rep(1:2, length.out = 50)
       nw <- san(nw ~ edges, target.stats = c(50))
 
-      nwe <- egor::as.egor(nw)
+      nwe <- as.egor(nw)
 
       nw[,] <- FALSE
 

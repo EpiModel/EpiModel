@@ -278,11 +278,8 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
     out <- list()
     out$formation <- formation
     out$target.stats <- target.stats
-    if (length(names(coef(fit))) == length(target.stats)) {
-      out$target.stats.names <- names(coef(fit))
-    } else {
-      out$target.stats.names <- names(coef(fit))[!fit$offset]
-    }
+    ## subselect coef names for targeted statistics, including extremal targets
+    out$target.stats.names <- names(coef(fit))[!fit$offset | (fit$drop != 0)]
     out$coef.form <- coef.form
     out$coef.form.crude <- coef.form.crude
     out$coef.diss <- coef.diss
