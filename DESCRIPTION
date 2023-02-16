@@ -29,19 +29,19 @@ BugReports: https://github.com/EpiModel/EpiModel/issues
 Depends:
     R (>= 3.5),
     deSolve (>= 1.21),
-    networkDynamic (>= 0.11.2),
-    tergm (>= 4.1.0),
-    statnet.common (>= 4.6.0)
+    networkDynamic (>= 0.11.3),
+    tergm (>= 4.1.1),
+    statnet.common (>= 4.8.0)
 Imports:
     graphics,
     grDevices,
     stats,
     utils,
     doParallel,
-    ergm (>= 4.2.2),
+    ergm (>= 4.4.0),
     ergm.ego (>= 1.0.1),
     foreach,
-    network (>= 1.17.2),
+    network (>= 1.18.1),
     RColorBrewer,
     ape,
     lazyeval,
@@ -50,7 +50,8 @@ Imports:
     methods,
     rlang,
     dplyr,
-    coda
+    coda,
+    networkLite (>= 1.0.1)
 Suggests:
     knitr,
     ndtv,
