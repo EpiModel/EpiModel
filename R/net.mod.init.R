@@ -76,10 +76,39 @@ initialize.net <- function(x, param, init, control, s) {
 
     # Restart/Reinit Simulations ----------------------------------------------
   } else if (control$start > 1) {
+    ## check that required names are present
+    required_names <- c(
+      "param",
+      "nwparam",
+      "epi",
+      "attr",
+      "temp",
+      if (control[["tergmLite"]] == TRUE) "el",
+      if (control[["tergmLite"]] == FALSE ||
+          any(unlist(control[["tergmLite.track.duration"]])) == TRUE) "network",
+      "coef.form",
+      "num.nw"
+    )
+    missing_names <- setdiff(required_names, names(x))
+    if (length(missing_names) > 0) {
+      stop("x is missing the following elements required for re-initialization: ",
+           paste.and(missing_names), call. = FALSE)
+    }
+
     dat <- create_dat_object(param = x$param, control = control)
 
     dat$num.nw <- x$num.nw
-    dat$nw <- x$network[[s]]
+    if (control[["tergmLite"]] == TRUE) {
+      dat$el <- x$el[[s]]
+    }
+    if (control[["tergmLite"]] == FALSE || any(unlist(control[["tergmLite.track.duration"]])) == TRUE) {
+      dat$nw <- x$network[[s]]
+    }
+
+    # copy if present
+    if (length(x[["el.cuml"]]) >= s) dat[["el.cuml"]] <- x[["el.cuml"]][[s]]
+    if (length(x[["_last_unique_id"]]) >= s) dat[["_last_unique_id"]] <- x[["_last_unique_id"]][[s]]
+
     dat$nwparam <- x$nwparam
     for (network in seq_len(dat$num.nw)) {
       dat$nwparam[[network]]$coef.form <- x$coef.form[[s]][[network]]
@@ -87,7 +116,9 @@ initialize.net <- function(x, param, init, control, s) {
     dat$epi <- sapply(x$epi, function(var) var[s])
     names(dat$epi) <- names(x$epi)
     dat$attr <- x$attr[[s]]
-    dat$stats <- sapply(x$stats, function(var) var[[s]])
+    dat$temp <- x$temp[[s]]
+
+    dat$stats <- lapply(x$stats, function(var) var[[s]])
     if (get_control(dat, "save.nwstats") == TRUE) {
       dat$stats$nwstats <- lapply(dat$stats$nwstats,
                                   function(oldstats) {

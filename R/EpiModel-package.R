@@ -146,6 +146,7 @@
 #' @importFrom lazyeval lazy_dots lazy_eval
 #' @importFrom statnet.common trim_env nonsimp_update.formula append_rhs.formula
 #'             list_rhs.formula set.control.class check.control.class NVL
+#'             paste.and
 #' @importFrom methods is
 #' @importFrom tibble as_tibble tibble
 #' @importFrom coda effectiveSize

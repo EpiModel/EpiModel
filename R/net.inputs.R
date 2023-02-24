@@ -712,9 +712,7 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #' @param nwstats.formula A right-hand sided ERGM formula that includes network statistics of
 #'        interest, with the default to the formation formula terms. Supports [`multilayer`]
 #'        specification.
-#' @param save.network If `TRUE`, networkDynamic or network object is saved at simulation end.
-#'        This is implicitly reset to `FALSE` if `tergmLite = TRUE` (because network history is not
-#'        saved with tergmLite).
+#' @param save.network If `TRUE`, networkDynamic or networkLite object is saved at simulation end.
 #' @param save.transmat If `TRUE`, complete transmission matrix is saved at simulation end.
 #' @param save.other A character vector of elements on the `dat` main data list to save out after
 #'        each simulation. One example for base models is the attribute list, `"attr"`, at the final
@@ -980,9 +978,7 @@ control.net <- function(type,
   if (is.null(p[["save.network"]])) {
     p[["save.network"]] <- TRUE
   }
-  if (p[["tergmLite"]] == TRUE) {
-    p[["save.network"]] <- FALSE
-  }
+
   if (p[["tergmLite"]] == TRUE && p[["resimulate.network"]] == FALSE) {
     message("Because tergmLite = TRUE, resetting resimulate.network = TRUE")
     p[["resimulate.network"]] <- TRUE
@@ -1149,8 +1145,8 @@ crosscheck.net <- function(x, param, init, control) {
           stop("x must contain attr to restart simulation, see save.other ",
                "control setting", call. = FALSE)
         }
-        if (is.null(x[["network"]])) {
-          stop("x must contain network object to restart simulation, ",
+        if (is.null(x[["network"]]) && control[["tergmLite"]] == FALSE) {
+          stop("x must contain network object to restart simulation when tergmLite == FALSE, ",
                call. = FALSE)
         }
         if (control[["nsteps"]] < control[["start"]]) {

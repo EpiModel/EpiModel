@@ -106,14 +106,11 @@ test_that("netsim runs with multiple networks, with open or closed population", 
                                    },
                                    nwstats.formula = sim_nwstats_formulas,
                                    verbose = TRUE,
-                                   save.network = !tergmLite,
+                                   save.network = TRUE,
                                    save.other = save.other)
             print(control)
             basis <- est
           } else {
-            if (tergmLite == TRUE) {
-              next
-            }
             control$start <- nsteps + 1L
             nsteps <- 11L
             control$nsteps <- nsteps

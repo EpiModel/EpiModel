@@ -128,9 +128,7 @@ specification.}
 
 \item{save.transmat}{If \code{TRUE}, complete transmission matrix is saved at simulation end.}
 
-\item{save.network}{If \code{TRUE}, networkDynamic or network object is saved at simulation end.
-This is implicitly reset to \code{FALSE} if \code{tergmLite = TRUE} (because network history is not
-saved with tergmLite).}
+\item{save.network}{If \code{TRUE}, networkDynamic or networkLite object is saved at simulation end.}
 
 \item{save.other}{A character vector of elements on the \code{dat} main data list to save out after
 each simulation. One example for base models is the attribute list, \code{"attr"}, at the final

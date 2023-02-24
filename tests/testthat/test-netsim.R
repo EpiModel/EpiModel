@@ -288,7 +288,7 @@ test_that("edges correction behaves as expected", {
                                tergmLite = tergmLite,
                                verbose = FALSE,
                                save.network = TRUE,
-                               save.other = c("attr"))
+                               save.other = c("attr", "temp"))
         sim <- netsim(est, param, init, control)
 
         for (simno in seq_len(nsims)) {
