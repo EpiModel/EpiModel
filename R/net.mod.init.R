@@ -14,6 +14,14 @@
 #' @param init An \code{EpiModel} object of class \code{\link{init.net}}.
 #' @param control An \code{EpiModel} object of class \code{\link{control.net}}.
 #' @param s Simulation number, used for restarting dependent simulations.
+#' @details When re-initializing a simulation, the \code{netsim} object passed
+#'          to \code{initialize.net} must contain the elements \code{param},
+#'          \code{nwparam}, \code{epi}, \code{attr}, \code{temp},
+#'          \code{coef.form}, and \code{num.nw}. If \code{tergmLite == TRUE} it
+#'          must also contain the element \code{el}. If either
+#'          \code{tergmLite == FALSE} or \code{tergmLite.track.duration} is
+#'          \code{TRUE} for any network it must also contain the element
+#'          \code{network}.
 #'
 #' @return A \code{dat} main list object.
 #'
@@ -101,13 +109,18 @@ initialize.net <- function(x, param, init, control, s) {
     if (control[["tergmLite"]] == TRUE) {
       dat$el <- x$el[[s]]
     }
-    if (control[["tergmLite"]] == FALSE || any(unlist(control[["tergmLite.track.duration"]])) == TRUE) {
+    if (control[["tergmLite"]] == FALSE ||
+        any(unlist(control[["tergmLite.track.duration"]])) == TRUE) {
       dat$nw <- x$network[[s]]
     }
 
     # copy if present
-    if (length(x[["el.cuml"]]) >= s) dat[["el.cuml"]] <- x[["el.cuml"]][[s]]
-    if (length(x[["_last_unique_id"]]) >= s) dat[["_last_unique_id"]] <- x[["_last_unique_id"]][[s]]
+    if (length(x[["el.cuml"]]) >= s) {
+      dat[["el.cuml"]] <- x[["el.cuml"]][[s]]
+    }
+    if (length(x[["_last_unique_id"]]) >= s) {
+      dat[["_last_unique_id"]] <- x[["_last_unique_id"]][[s]]
+    }
 
     dat$nwparam <- x$nwparam
     for (network in seq_len(dat$num.nw)) {
