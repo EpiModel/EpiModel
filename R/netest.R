@@ -198,7 +198,8 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
                     control = set.control.stergm,
                     verbose = verbose)
     } else {
-      fit <- tergm(nw ~ Form(formation) + Persist(dissolution),
+      fit <- tergm(~Form(formation) + Persist(dissolution),
+                   basis = nw,
                    targets = "formation",
                    target.stats = target.stats,
                    offset.coef = c(coef.form, coef.diss$coef.crude),
@@ -231,11 +232,11 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
     out$formula <- fit$formula
 
   } else {
-    formation.nw <- nonsimp_update.formula(formation, nw ~ ., from.new = "nw")
 
     if (is(nw, "egor")) {
       # ergm.ego case
-      fit <- ergm.ego(formation.nw,
+      fit <- ergm.ego(formation,
+                      basis = nw,
                       popsize = 0,
                       constraints = constraints,
                       offset.coef = coef.form,
@@ -246,7 +247,8 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
 
     } else {
       # ergm case
-      fit <- ergm(formation.nw,
+      fit <- ergm(formation,
+                  basis = nw,
                   target.stats = target.stats,
                   constraints = constraints,
                   offset.coef = coef.form,
