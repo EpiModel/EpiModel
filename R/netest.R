@@ -286,7 +286,7 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
     out$constraints <- constraints
     out$edapprox <- edapprox
     out$nested.edapprox <- nested.edapprox
-    out$newnetwork <- fit$newnetwork
+    out$newnetwork <- NVL(fit$newnetwork, fit$network)
     out$formula <- fit$formula
   }
 
