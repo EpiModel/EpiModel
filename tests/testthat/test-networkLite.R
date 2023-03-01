@@ -1,7 +1,7 @@
 context("networkLite (All SOC)")
 
 test_that("network and networkLite work equally in netest, netdx, and netsim", {
-
+  skip_on_cran()
   net_size <- 100
   bip_size <- 40
 
