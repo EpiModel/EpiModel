@@ -379,7 +379,6 @@ diss_check <- function(formation, dissolution) {
 #' @param nested.edapprox Logical. If \code{edapprox = TRUE} the dissolution
 #'        model is an initial segment of the formation model (see details in
 #'        \code{\link{netest}}).
-#' @param ... Additional arguments passed to other functions.
 #'
 #' @details
 #' Fitting an ERGM is a computationally intensive process when the model
@@ -422,7 +421,7 @@ diss_check <- function(formation, dissolution) {
 #'}
 #'
 update_dissolution <- function(old.netest, new.coef.diss,
-                               nested.edapprox = TRUE, ...) {
+                               nested.edapprox = TRUE) {
 
   if (!inherits(old.netest, "netest")) {
     stop("old.netest must be an object of class netest", call. = FALSE)
