@@ -217,10 +217,17 @@ test_that("differing length non-nested update_dissolution tests", {
   expect_true(all(round(as.numeric(est_het$coef.form), 3) ==
                 round(as.numeric(est_het_compare$coef.form), 3)))
 
-  expect_equal(est_hom_compare$formation, ~edges + nodematch("race", diff = TRUE) +
-                 offset(edges))
-  expect_equal(est_het_compare$formation, ~edges + nodematch("race", diff = TRUE) +
-                 offset(edges) + offset(nodematch("age", diff = TRUE)))
+  expect_equal(est_hom_compare$formation, ~Passthrough(formation) + Passthrough(dissolution))
+  expect_equal(eval(quote(formation), envir = environment(est_hom_compare$formation)),
+               ~edges + nodematch("race", diff = TRUE))
+  expect_equal(eval(quote(dissolution), envir = environment(est_hom_compare$formation)),
+               ~offset(edges))
+
+  expect_equal(est_het_compare$formation, ~Passthrough(formation) + Passthrough(dissolution))
+  expect_equal(eval(quote(formation), envir = environment(est_het_compare$formation)),
+               ~edges + nodematch("race", diff = TRUE))
+  expect_equal(eval(quote(dissolution), envir = environment(est_het_compare$formation)),
+               ~offset(edges) + offset(nodematch("age", diff = TRUE)))
 })
 
 test_that("non-nested EDA", {
@@ -281,18 +288,38 @@ test_that("non-nested EDA", {
                 round(as.numeric(est_non_1_non_2$coef.form), 3)))
 
   expect_equal(est_nest_1$formation, ~edges + nodematch("race", diff = TRUE))
-  expect_equal(est_non_1$formation, ~edges + nodematch("race", diff = TRUE) +
-                 offset(edges) + offset(nodematch("race", diff = TRUE)))
-  expect_equal(est_non_2$formation, ~edges + nodematch("race", diff = TRUE) +
-                 offset(edges) + offset(nodematch("age", diff = TRUE)))
 
-  expect_equal(est_nest_1_non_2$formation, ~edges + nodematch("race", diff = TRUE) +
-                 offset(edges) + offset(nodematch("age", diff = TRUE)))
-  expect_equal(est_non_1_non_2$formation, ~edges + nodematch("race", diff = TRUE) +
-                 offset(edges) + offset(nodematch("age", diff = TRUE)))
+  expect_equal(est_non_1$formation, ~Passthrough(formation) + Passthrough(dissolution))
+  expect_equal(eval(quote(formation), envir = environment(est_non_1$formation)),
+               ~edges + nodematch("race", diff = TRUE))
+  expect_equal(eval(quote(dissolution), envir = environment(est_non_1$formation)),
+               ~offset(edges) + offset(nodematch("race", diff = TRUE)))
+
+  expect_equal(est_non_2$formation, ~Passthrough(formation) + Passthrough(dissolution))
+  expect_equal(eval(quote(formation), envir = environment(est_non_2$formation)),
+               ~edges + nodematch("race", diff = TRUE))
+  expect_equal(eval(quote(dissolution), envir = environment(est_non_2$formation)),
+               ~offset(edges) + offset(nodematch("age", diff = TRUE)))
+
+  expect_equal(est_nest_1_non_2$formation, ~Passthrough(formation) + Passthrough(dissolution))
+  expect_equal(eval(quote(formation), envir = environment(est_nest_1_non_2$formation)),
+               ~edges + nodematch("race", diff = TRUE))
+  expect_equal(eval(quote(dissolution), envir = environment(est_nest_1_non_2$formation)),
+               ~offset(edges) + offset(nodematch("age", diff = TRUE)))
+
+  expect_equal(est_non_1_non_2$formation, ~Passthrough(formation) + Passthrough(dissolution))
+  expect_equal(eval(quote(formation), envir = environment(est_non_1_non_2$formation)),
+               ~edges + nodematch("race", diff = TRUE))
+  expect_equal(eval(quote(dissolution), envir = environment(est_non_1_non_2$formation)),
+               ~offset(edges) + offset(nodematch("age", diff = TRUE)))
+
   expect_equal(est_non_2_nest_1$formation, ~edges + nodematch("race", diff = TRUE))
-  expect_equal(est_non_2_non_1$formation, ~edges + nodematch("race", diff = TRUE) +
-                 offset(edges) + offset(nodematch("race", diff = TRUE)))
+
+  expect_equal(est_non_2_non_1$formation, ~Passthrough(formation) + Passthrough(dissolution))
+  expect_equal(eval(quote(formation), envir = environment(est_non_2_non_1$formation)),
+               ~edges + nodematch("race", diff = TRUE))
+  expect_equal(eval(quote(dissolution), envir = environment(est_non_2_non_1$formation)),
+               ~offset(edges) + offset(nodematch("race", diff = TRUE)))
 })
 
 test_that("environment handling in non-nested EDA", {
@@ -318,17 +345,7 @@ test_that("environment handling in non-nested EDA", {
                      coef.diss = coef_diss,
                      nested.edapprox = FALSE)
 
-  expect_error(netdx_1 <- netdx(netest_1, nsims = 2, nsteps = 5, dynamic = TRUE, verbose = FALSE),
-               "object 'a' not found")
-
-  suppressWarnings(netest_2 <- netest(nw = nw,
-                                      formation = ~edges + nodematch(r, diff = TRUE),
-                                      target.stats = c(500, 50, 50, 90, 40, 60),
-                                      coef.diss = coef_diss,
-                                      nested.edapprox = FALSE,
-                                      from.new = "a"))
-
-  expect_error(netdx_2 <- netdx(netest_2, nsims = 2, nsteps = 5, dynamic = TRUE, verbose = FALSE), NA)
+  netdx_1 <- netdx(netest_1, nsims = 2, nsteps = 5, dynamic = TRUE, verbose = FALSE)
 
   make_formula_2 <- function() {
     x <- "race"
@@ -340,13 +357,9 @@ test_that("environment handling in non-nested EDA", {
 
   coef_diss_2 <- dissolution_coefs(ff_2, c(30, 40, 50, 25, 35, 55))
 
-  expect_error(netest_3 <- update_dissolution(netest_2, coef_diss_2,
+  expect_error(netest_2 <- update_dissolution(netest_1, coef_diss_2,
                                               nested.edapprox = TRUE),
                "Term options for one or more terms in dissolution model")
-  netest_3 <- update_dissolution(netest_2, coef_diss_2, nested.edapprox = FALSE)
-  expect_error(netdx_3 <- netdx(netest_3, nsims = 2, nsteps = 5, dynamic = TRUE, verbose = FALSE),
-               "object 'x' not found")
-  netest_4 <- update_dissolution(netest_2, coef_diss_2, nested.edapprox = FALSE,
-                                 from.new = "x")
-  expect_error(netdx_4 <- netdx(netest_4, nsims = 2, nsteps = 5, dynamic = TRUE, verbose = FALSE), NA)
+  netest_2 <- update_dissolution(netest_1, coef_diss_2, nested.edapprox = FALSE)
+  netdx_2 <- netdx(netest_2, nsims = 2, nsteps = 5, dynamic = TRUE, verbose = FALSE)
 })
