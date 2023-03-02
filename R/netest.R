@@ -267,12 +267,9 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
         ## implement the edapprox by appending the dissolution model to the
         ## formation model and appending the relevant values to the vector of
         ## formation model coefficients
-        formula_addition <- append_rhs.formula(~., coef.diss$dissolution,
-                                               keep.onesided = TRUE,
-                                               env = environment(coef.diss$dissolution))
-
-        # the ... allows for copying via from.new
-        formation <- nonsimp_update.formula(formation, formula_addition, ...)
+        dissolution <- coef.diss$dissolution
+        formation <- trim_env(~Passthrough(formation) + Passthrough(dissolution),
+                              keep = c("formation", "dissolution"))
         coef.form <- c(coef.form, -coef.diss$coef.form.corr)
       }
     }
@@ -451,17 +448,8 @@ update_dissolution <- function(old.netest, new.coef.diss,
     } else {
       ## remove the part of the formation model and coefficient vector
       ## corresponding to the old edapprox
-      old_diss_list <- list_rhs.formula(out$coef.diss$dissolution)
-
-      formation_list <- list_rhs.formula(out$formation)
-      formation_list <- formation_list[seq_len(length(formation_list) -
-                                                 length(old_diss_list))]
-
-      formation <- append_rhs.formula(~., formation_list,
-                                      env = environment(out$formation))
-      formation[[2]] <- NULL # remove the . on the LHS
-
-      out$formation <- formation
+      out$formation <- eval(quote(formation),
+                            envir = environment(out$formation))
       out$coef.form <-
         out$coef.form[seq_len(length(out$coef.form) -
                                 length(out$coef.diss$coef.form.corr))]
@@ -484,12 +472,10 @@ update_dissolution <- function(old.netest, new.coef.diss,
       ## implement new edapprox by appending the new dissolution model to the
       ## formation model and appending the relevant values to the vector of
       ## formation model coefficients
-      formula_addition <- append_rhs.formula(~., new.coef.diss$dissolution,
-                                             keep.onesided = TRUE,
-                                             env = environment(new.coef.diss$dissolution))
-      # the ... allows for copying via from.new
-      out$formation <- nonsimp_update.formula(out$formation,
-                                              formula_addition, ...)
+      formation <- out$formation
+      dissolution <- new.coef.diss$dissolution
+      out$formation <- trim_env(~Passthrough(formation) + Passthrough(dissolution),
+                                keep = c("formation", "dissolution"))
       out$coef.form <- c(out$coef.form, -new.coef.diss$coef.form.corr)
     }
   }
