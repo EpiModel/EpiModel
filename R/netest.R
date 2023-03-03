@@ -267,7 +267,6 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
         ## implement the edapprox by appending the dissolution model to the
         ## formation model and appending the relevant values to the vector of
         ## formation model coefficients
-        dissolution <- coef.diss$dissolution
         formation <- trim_env(~Passthrough(formation) + Passthrough(dissolution),
                               keep = c("formation", "dissolution"))
         coef.form <- c(coef.form, -coef.diss$coef.form.corr)
