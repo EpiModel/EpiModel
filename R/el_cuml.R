@@ -58,7 +58,20 @@ get_cumulative_edgelist <- function(dat, network) {
          "' to get the cumulative edgelist from")
   }
 
+  if (!get_control(dat, "cumulative.edgelist")) {
+    warning("Trying to acces the cumulative edgelist even though it is not
+      calculated. (`cumulative.edgelist` control == FALSE)")
+  }
+
   if (length(dat[["el.cuml"]]) < network) {
+  message(
+      "\n\nAt timestep = ", get_current_timestep(dat), ":\n",
+      "    the cumulative edgelist for network '", network,
+      "' is created from scratch \n",
+      "    ** if this message repeats, check that the  \n'",
+      "    ** `update_cumulative_edgelist` function \n",
+      "    ** is called after the networks resimulation. \n"
+  )
     el_cuml <- NULL
   } else {
     el_cuml <- dat[["el.cuml"]][[network]]

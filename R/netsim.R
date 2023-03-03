@@ -171,7 +171,8 @@ netsim_validate_control <- function(control) {
       "verbose",
       ".checkpoint.keep",
       ".traceback.on.error",
-      ".dump.frame.on.error"
+      ".dump.frame.on.error",
+      "cumulative.edgelist"
     )
   )
 
@@ -179,6 +180,10 @@ netsim_validate_control <- function(control) {
     for (flag in control_default_bool[[val]])
       if (is.null(control[[flag]])) control[[flag]] <- as.logical(val)
   }
+
+  # truncate the cumulative edgelists to keep only active partnerships
+  if (is.null(control$truncate.el.cuml))
+    control$truncate.el.cuml <- 0
 
   if (is.null(control$start))
     control$start <- 1
