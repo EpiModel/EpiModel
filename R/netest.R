@@ -229,7 +229,7 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
     out$newnetwork <- as.network(fit$newnetwork)
     delete.network.attribute(out$newnetwork, "time")
     delete.network.attribute(out$newnetwork, "lasttoggle")
-    out$formula <- fit$formula
+    out$formula <- trim_env(fit$formula, keep = c("formation", "dissolution"))
 
   } else {
 

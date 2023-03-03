@@ -395,24 +395,22 @@ netsim_error_logger <- function(dat, s) {
 #' all but the bare essentials needed for simulating a network model with
 #' \code{\link{netsim}}.
 #'
-#' The function always removes \code{environment(object$constraints)} and
-#' \code{environment(object$coef.diss$dissolution)}.
+#' The function always removes the environments of \code{object$constraints} and
+#' \code{object$coef.diss$dissolution}.
 #'
-#' When \code{edapprox = TRUE} in the \code{netest} call, also
-#' removes \code{environment(object$formula)}.
+#' When both \code{edapprox = TRUE} and \code{nested.edapprox = TRUE} in the
+#' \code{netest} call, also removes the environments of \code{object$formula}
+#' and \code{object$formation}.
 #'
-#' When \code{edapprox = FALSE}, also removes all but \code{formation} and
-#' \code{dissolution} from \code{environment(object$formula)}, as well as
-#' \code{environment(environment(object$formula)$formation)} and
-#' \code{environment(environment(object$formula)$dissolution)}.
+#' When both \code{edapprox = TRUE} and \code{nested.edapprox = FALSE} in the
+#' \code{netest} call, also removes the environments of \code{object$formula},
+#' \code{environment(object$formation)$formation}, and
+#' \code{environment(object$formation)$dissolution}.
 #'
-#' When \code{edapprox = FALSE} or both \code{edapprox = TRUE} and
-#' \code{nested.edapprox = TRUE}, also removes
-#' \code{environment(object$formation)}.
-#'
-#' When both \code{edapprox = TRUE} and \code{nested.edapprox = FALSE}, also
-#' removes \code{environment(environment(object$formation)$formation)} and
-#' \code{environment(environment(object$formation)$dissolution)}.
+#' When \code{edapprox = FALSE} in the \code{netest} call, also removes the
+#' environments of \code{object$formation},
+#' \code{environment(object$formula)$formation} and
+#' \code{environment(object$formula)$dissolution}.
 #'
 #' If \code{as.networkLite = TRUE}, converts \code{object$newnetwork} to a
 #' \code{networkLite} object. If \code{keep.fit = FALSE}, removes \code{fit} (if
@@ -450,6 +448,7 @@ trim_netest <- function(object, as.networkLite = TRUE, keep.fit = FALSE) {
     if (object$nested.edapprox == TRUE) {
       object$formation <- trim_env(object$formation)
     } else {
+      # trim environments for formation and dissolution inside formation
       environment(object$formation)$formation <-
         trim_env(environment(object$formation)$formation)
       environment(object$formation)$dissolution <-
@@ -457,10 +456,7 @@ trim_netest <- function(object, as.networkLite = TRUE, keep.fit = FALSE) {
     }
   } else {
     object$formation <- trim_env(object$formation)
-    # keep formation and dissolution in environment so formula can be evaluated
-    object$formula <- trim_env(object$formula,
-                               keep = c("formation", "dissolution"))
-    # but trim environments for formation and dissolution
+    # trim environments for formation and dissolution inside formula
     environment(object$formula)$formation <-
       trim_env(environment(object$formula)$formation)
     environment(object$formula)$dissolution <-
