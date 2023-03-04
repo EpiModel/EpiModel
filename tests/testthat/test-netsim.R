@@ -403,7 +403,7 @@ test_that("networkLites produced by netsim match those produced by simulate when
   init <- init.net(i.num = 0, r.num = 0)
   control <- control.net(type = "SIR", nsims = 1, nsteps = 5, verbose = FALSE,
                          save.network = TRUE, resimulate.network = TRUE,
-                         tergmLite = TRUE, save.other = c("attr", "temp", "el"),
+                         tergmLite = TRUE, save.other = c("attr", "temp", "el", "net_attr"),
                          tergmLite.track.duration = TRUE, save.transmat = FALSE)
   est <- trim_netest(est)
   set.seed(0)

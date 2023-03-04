@@ -60,6 +60,7 @@ nwupdate.net <- function(dat, at) {
     if (tergmLite == TRUE) {
       for (network in seq_len(dat$num.nw)) {
         dat$el[[network]] <- add_vertices(dat$el[[network]], nv = nArrivals)
+        dat$net_attr[[network]][["n"]] <- dat$net_attr[[network]][["n"]] + nArrivals
       }
     }
   }
@@ -80,10 +81,11 @@ nwupdate.net <- function(dat, at) {
       dat <- delete_attr(dat, departures)
       for (network in seq_len(dat$num.nw)) {
         dat$el[[network]] <- delete_vertices(dat$el[[network]], departures)
+        dat$net_attr[[network]][["n"]] <- dat$net_attr[[network]][["n"]] - length(departures)
 
         if (get_network_control(dat, network, "tergmLite.track.duration") == TRUE) {
-          dat$nw[[network]] %n% "lasttoggle" <-
-            delete_vertices(dat$nw[[network]] %n% "lasttoggle", departures)
+          dat$net_attr[[network]][["lasttoggle"]] <-
+            delete_vertices(dat$net_attr[[network]][["lasttoggle"]], departures)
         }
       }
     }

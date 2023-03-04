@@ -56,9 +56,9 @@ test_that("netsim runs with multiple networks, with open or closed population", 
     for (resimulate.network in unique(c(tergmLite, TRUE))) {
       for (open_population in unique(c(FALSE, resimulate.network))) {
         if (tergmLite == TRUE) {
-          save.other <- c("nw", "attr", "el", "temp")
+          save.other <- c("attr", "el", "temp", "net_attr")
         } else {
-          save.other <- c("nw", "attr", "temp")
+          save.other <- c("attr", "temp")
         }
         if (open_population == TRUE) {
           param <- param_open
@@ -150,21 +150,21 @@ test_that("netsim runs with multiple networks, with open or closed population", 
                              log(sim$epi$sim.num[nsteps, simno]),
                            tolerance = 1e-6)
               if (tergmLite == TRUE) {
-                expect_is(sim$nw[[simno]][[network]], "networkLite")
+                expect_is(sim$network[[simno]][[network]], "networkLite")
                 if (open_population == FALSE) {
-                  expect_equal(sim$el[[simno]][[network]], as.edgelist(sim$nw[[simno]][[network]]))
+                  expect_equal(sim$el[[simno]][[network]], as.edgelist(sim$network[[simno]][[network]]))
                   expect_equal(sim$attr[[simno]][[paste0("deg.", network)]], get_degree(sim$el[[simno]][[network]]))
                 }
                 if (network %in% tergm_nets) {
-                  expect_equal(sim$nw[[simno]][[network]] %n% "time", nsteps)
-                  expect_true(all((sim$nw[[simno]][[network]] %n% "lasttoggle")[,3] >= 0))
-                  expect_true(all((sim$nw[[simno]][[network]] %n% "lasttoggle")[,3] <= nsteps))
+                  expect_equal(sim$network[[simno]][[network]] %n% "time", nsteps)
+                  expect_true(all((sim$network[[simno]][[network]] %n% "lasttoggle")[,3] >= 0))
+                  expect_true(all((sim$network[[simno]][[network]] %n% "lasttoggle")[,3] <= nsteps))
                 }
               } else {
-                expect_is(sim$nw[[simno]][[network]], "networkDynamic")
+                expect_is(sim$network[[simno]][[network]], "networkDynamic")
                 if (open_population == FALSE) {
                   if (resimulate.network == TRUE || iteration == 2) {
-                    expect_equal(sim$nw[[simno]][[network]] %v% paste0("deg.", network),
+                    expect_equal(sim$network[[simno]][[network]] %v% paste0("deg.", network),
                                  get_degree(as.edgelist(network.collapse(sim$network[[simno]][[network]], at = nsteps))))
                   }
                 }
@@ -172,10 +172,12 @@ test_that("netsim runs with multiple networks, with open or closed population", 
 
               expect_equal(network.size(est[[network]]$newnetwork), sim$epi$num[[simno]][1])
               if (tergmLite == TRUE) {
-                expect_equal(network.size(sim$nw[[simno]][[network]]),
-                             sim$epi$sim.num[[simno]][nsteps])
+                if (open_population == FALSE) {
+                  expect_equal(network.size(sim$network[[simno]][[network]]),
+                               sim$epi$sim.num[[simno]][nsteps])
+                }
               } else {
-                expect_equal(network.size(network.collapse(sim$nw[[simno]][[network]], at = nsteps)),
+                expect_equal(network.size(network.collapse(sim$network[[simno]][[network]], at = nsteps)),
                              sim$epi$num[[simno]][nsteps])
               }
 
@@ -190,14 +192,14 @@ test_that("netsim runs with multiple networks, with open or closed population", 
                 if (tergmLite == TRUE) {
                   nwL <- networkLite(sim$el[[simno]][[network]], sim$attr[[simno]])
                   if (network %in% tergm_nets) {
-                    nwL %n% "time" <- sim$nw[[simno]][[network]] %n% "time"
-                    nwL %n% "lasttoggle" <- sim$nw[[simno]][[network]] %n% "lasttoggle"
+                    nwL %n% "time" <- sim$network[[simno]][[network]] %n% "time"
+                    nwL %n% "lasttoggle" <- sim$network[[simno]][[network]] %n% "lasttoggle"
                   }
                   expect_equal(final_stats,
                                summary(get_network_control(sim, network = network, "nwstats.formula"), basis = nwL))
                 } else {
                   expect_equal(final_stats,
-                               summary(get_network_control(sim, network = network, "nwstats.formula"), at = nsteps, basis = sim$nw[[simno]][[network]])[,,drop=TRUE])
+                               summary(get_network_control(sim, network = network, "nwstats.formula"), at = nsteps, basis = sim$network[[simno]][[network]])[,,drop=TRUE])
                 }
               }
             }

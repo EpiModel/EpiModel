@@ -272,14 +272,10 @@ test_that("edgecov works with tergmLite", {
   init <- init.net(i.num = 5, r.num = 0)
   control <- control.net(type = NULL, nsteps = 4, nsims = 1, ncores = 1,
                          dat.updates = function(dat, at, network) {
-                           if (network == 0L) {
-                             if (at == 0L) {
-                               attr(dat$el[[1]], "ec") <- dat$nw[[1]] %n% "ec"
-                             } else {
-                               n <- attr(dat$el[[1]], "n")
-                               m <- matrix(if(at == 3) +Inf else -Inf, n, n)*coefsign
-                               attr(dat$el[[1]], "ec") <- m
-                             }
+                           if (network == 0L && at > 0L) {
+                             n <- dat$net_attr[[1]][["n"]]
+                             m <- matrix(if(at == 3) +Inf else -Inf, n, n)*coefsign
+                             dat$net_attr[[1]][["ec"]] <- m
                            }
                            return(dat)
                          }, tergmLite = TRUE, resimulate.network = TRUE,

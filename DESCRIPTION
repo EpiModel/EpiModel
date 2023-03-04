@@ -65,3 +65,4 @@ LinkingTo: Rcpp, ergm
 RoxygenNote: 7.2.3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
+Remotes: github::EpiModel/networkLite@net_attr
