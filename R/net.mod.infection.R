@@ -32,138 +32,37 @@
 #' to obtain a discordant edgelist.
 #'
 infection.net <- function(dat, at) {
-
-  # Variables ---------------------------------------------------------------
-  active <- get_attr(dat, "active")
-  status <- get_attr(dat, "status")
-  infTime <- get_attr(dat, "infTime")
-
-  inf.prob <- get_param(dat, "inf.prob")
-  act.rate <- get_param(dat, "act.rate")
-  inter.eff <- get_param(dat, "inter.eff", override.null.error = TRUE)
-  inter.start <- get_param(dat, "inter.start", override.null.error = TRUE)
-
-  # Vector of infected and susceptible IDs
-  idsInf <- which(active == 1 & status == "i")
-  nActive <- sum(active == 1)
-  nElig <- length(idsInf)
-
-  # Initialize vectors
-  nInf <- 0
-
-  # Process -----------------------------------------------------------------
-  # If some infected AND some susceptible, then proceed
-  if (nElig > 0 && nElig < nActive) {
-
-    # Get discordant edgelist
-    del_list <- lapply(seq_len(dat$num.nw), discord_edgelist, dat = dat, at = at, include.network = TRUE)
-    del <- dplyr::bind_rows(del_list)
-
-    # If some discordant edges, then proceed
-    if (NROW(del) > 0) {
-
-      # Infection duration to at
-      del$infDur <- at - infTime[del$inf]
-      del$infDur[del$infDur == 0] <- 1
-
-      # Calculate infection-stage transmission rates
-      linf.prob <- length(inf.prob)
-      del$transProb <- ifelse(del$infDur <= linf.prob,
-                              inf.prob[del$infDur],
-                              inf.prob[linf.prob])
-
-      # Interventions
-      if (!is.null(inter.eff) && at >= inter.start) {
-        del$transProb <- del$transProb * (1 - inter.eff)
-      }
-
-      # Calculate infection-stage act/contact rates
-      lact.rate <- length(act.rate)
-      del$actRate <- ifelse(del$infDur <= lact.rate,
-                            act.rate[del$infDur],
-                            act.rate[lact.rate])
-
-      # Calculate final transmission probability per timestep
-      del$finalProb <- 1 - (1 - del$transProb) ^ del$actRate
-
-      # Randomize transmissions and subset df
-      transmit <- rbinom(nrow(del), 1, del$finalProb)
-      del <- del[which(transmit == 1), ]
-
-      # Set new infections vector
-      idsNewInf <- unique(del$sus)
-      status <- get_attr(dat, "status")
-      status[idsNewInf] <- "i"
-      dat <- set_attr(dat, "status", status)
-      infTime[idsNewInf] <- at
-      dat <- set_attr(dat, "infTime", infTime)
-      nInf <- length(idsNewInf)
-
-    } # end some discordant edges condition
-  } # end some active discordant nodes condition
-
-
-  # Output ------------------------------------------------------------------
-
-  # Save transmission matrix
-
-  if (nInf > 0) {
-    dat <- set_transmat(dat, del, at)
-  }
-
-  ## Save incidence vector
-  dat <- set_epi(dat, "si.flow", at, nInf)
-
-  return(dat)
+  infection_with_ngroups(dat, at, 1)
 }
 
-#' @title Primary Infection Module for netsim
-#'
-#' @description This function simulates the main infection process given the
-#'              current state of the partnerships and disease in the system.
-#'
-#' @inheritParams recovery.net
-#'
-#' @details
-#' The main steps in this infection module are as follows:
-#' \enumerate{
-#'  \item Get IDs for current infected and susceptibles given the current
-#'        disease status.
-#'  \item Call \code{\link{discord_edgelist}} to get the current discordant
-#'        edgelist given step 1.
-#'  \item Determine the transmission rates (e.g., as a function of group).
-#'  \item Pull the number of acts per partnership in a time step from the
-#'        \code{act.rate} parameter.
-#'  \item Calculate the final transmission probabilities given the transmission
-#'        rates and act rates.
-#'  \item Randomly transmit on the discordant edgelist.
-#'  \item Conduct bookkeeping for new infections to update status on the nodes
-#'        and calculate disease incidence.
-#' }
-#'
-#' @inherit recovery.net return
-#'
+#' @rdname infection.net
 #' @export
 #' @keywords netMod internal
 #'
-#' @seealso \code{\link{discord_edgelist}} is used within \code{infection.net}
-#' to obtain a discordant edgelist.
-#'
 infection.2g.net <- function(dat, at) {
+  infection_with_ngroups(dat, at, 2)
+}
+
+infection_with_ngroups <- function(dat, at, ngroups) {
 
   # Variables ---------------------------------------------------------------
 
   active <- get_attr(dat, "active")
   infTime <- get_attr(dat, "infTime")
   status <- get_attr(dat, "status")
-  group <- get_attr(dat, "group")
 
-  inf.prob <- get_param(dat, "inf.prob")
-  inf.prob.g2 <- get_param(dat, "inf.prob.g2")
+  if (ngroups > 1) {
+    group <- get_attr(dat, "group")
+  } else {
+    group <- rep(1, length(active))
+  }
+  suffixes <- c("", if (ngroups > 1) paste0(".g", seq_len(ngroups)[-1]))
+
+  inf.probs <- lapply(seq_along(suffixes), function(i) get_param(dat, paste0("inf.prob", suffixes[i])))
+
   act.rate <- get_param(dat, "act.rate")
   inter.eff <- get_param(dat, "inter.eff", override.null.error = TRUE)
   inter.start <- get_param(dat, "inter.start", override.null.error = TRUE)
-
 
   # Vector of infected and susceptible IDs
   idsInf <- which(active == 1 & status == "i")
@@ -171,8 +70,8 @@ infection.2g.net <- function(dat, at) {
   nElig <- length(idsInf)
 
   # Initialize vectors
-  nInf <- nInfG2 <- totInf <- 0
-
+  nInf <- integer(ngroups)
+  totInf <- 0
 
   # Process -----------------------------------------------------------------
   # If some infected AND some susceptible, then proceed
@@ -186,24 +85,13 @@ infection.2g.net <- function(dat, at) {
     if (NROW(del) > 0) {
 
       # Infection duration to at
-      del$infDur <- at - infTime[del$inf]
-      del$infDur[del$infDur == 0] <- 1
+      del$infDur <- pmax(1, at - infTime[del$inf])
 
       # Calculate infection-stage transmission rates
-      linf.prob <- length(inf.prob)
-      if (is.null(inf.prob.g2)) {
-        del$transProb <- ifelse(del$infDur <= linf.prob,
-                                inf.prob[del$infDur],
-                                inf.prob[linf.prob])
-      } else {
-        #FLAG
-        del$transProb <- ifelse(group[del$sus] == 1,
-                                ifelse(del$infDur <= linf.prob,
-                                       inf.prob[del$infDur],
-                                       inf.prob[linf.prob]),
-                                ifelse(del$infDur <= linf.prob,
-                                       inf.prob.g2[del$infDur],
-                                       inf.prob.g2[linf.prob]))
+      for (g in seq_len(ngroups)) {
+        ## allow NULL inf.prob.g2, for backwards compatiblity
+        inf.prob <- NVL(inf.probs[[g]], inf.probs[[1]])
+        del$transProb[group[del$sus] == g] <- inf.prob[pmin(del$infDur[group[del$sus] == g], length(inf.prob))]
       }
 
       # Interventions
@@ -212,10 +100,7 @@ infection.2g.net <- function(dat, at) {
       }
 
       # Calculate infection-stage act/contact rates
-      lact.rate <- length(act.rate)
-      del$actRate <- ifelse(del$infDur <= lact.rate,
-                            act.rate[del$infDur],
-                            act.rate[lact.rate])
+      del$actRate <- act.rate[pmin(del$infDur, length(act.rate))]
 
       # Calculate final transmission probability per timestep
       del$finalProb <- 1 - (1 - del$transProb) ^ del$actRate
@@ -230,9 +115,8 @@ infection.2g.net <- function(dat, at) {
       dat <- set_attr(dat, "status", status)
       infTime[idsNewInf] <- at
       dat <- set_attr(dat, "infTime", infTime)
-      nInf <- sum(group[idsNewInf] == 1)
-      nInfG2 <- sum(group[idsNewInf] == 2)
-      totInf <- nInf + nInfG2
+      nInf <- tabulate(group[idsNewInf], nbins = ngroups)
+      totInf <- sum(nInf)
 
     } # end some discordant edges condition
   } # end some active discordant nodes condition
@@ -246,8 +130,9 @@ infection.2g.net <- function(dat, at) {
   }
 
   ## Save incidence vector
-  dat <- set_epi(dat, "si.flow", at, nInf)
-  dat <- set_epi(dat, "si.flow.g2", at, nInfG2)
+  for (g in seq_len(ngroups)) {
+    dat <- set_epi(dat, paste0("si.flow", suffixes[g]), at, nInf[g])
+  }
 
   return(dat)
 }

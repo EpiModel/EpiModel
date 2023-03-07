@@ -2,9 +2,12 @@
 % Please edit documentation in R/net.mod.infection.R
 \name{infection.net}
 \alias{infection.net}
+\alias{infection.2g.net}
 \title{Primary Infection Module for netsim}
 \usage{
 infection.net(dat, at)
+
+infection.2g.net(dat, at)
 }
 \arguments{
 \item{dat}{Main list object containing a \code{networkDynamic} object and
