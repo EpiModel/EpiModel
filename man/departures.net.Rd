@@ -2,9 +2,12 @@
 % Please edit documentation in R/net.mod.vital.R
 \name{departures.net}
 \alias{departures.net}
+\alias{departures.2g.net}
 \title{Departures: netsim Module}
 \usage{
 departures.net(dat, at)
+
+departures.2g.net(dat, at)
 }
 \arguments{
 \item{dat}{Main list object containing a \code{networkDynamic} object and

@@ -2,9 +2,12 @@
 % Please edit documentation in R/net.mod.vital.R
 \name{arrivals.net}
 \alias{arrivals.net}
+\alias{arrivals.2g.net}
 \title{Arrivals: netsim Module}
 \usage{
 arrivals.net(dat, at)
+
+arrivals.2g.net(dat, at)
 }
 \arguments{
 \item{dat}{Main list object containing a \code{networkDynamic} object and
