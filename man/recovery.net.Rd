@@ -2,9 +2,12 @@
 % Please edit documentation in R/net.mod.recovery.R
 \name{recovery.net}
 \alias{recovery.net}
+\alias{recovery.2g.net}
 \title{Recovery: netsim Module}
 \usage{
 recovery.net(dat, at)
+
+recovery.2g.net(dat, at)
 }
 \arguments{
 \item{dat}{Main list object containing a \code{networkDynamic} object and
