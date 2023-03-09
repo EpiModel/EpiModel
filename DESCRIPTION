@@ -30,7 +30,7 @@ Depends:
     R (>= 3.5),
     deSolve (>= 1.21),
     networkDynamic (>= 0.11.3),
-    tergm (>= 4.1.1),
+    tergm (>= 4.1-2489),
     statnet.common (>= 4.8.0)
 Imports:
     graphics,
@@ -38,8 +38,8 @@ Imports:
     stats,
     utils,
     doParallel,
-    ergm (>= 4.4.0),
-    ergm.ego (>= 1.0.1),
+    ergm (>= 4.4-7194),
+    ergm.ego (>= 1.0-687),
     egor,
     foreach,
     network (>= 1.18.1),
