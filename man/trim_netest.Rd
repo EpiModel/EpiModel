@@ -34,20 +34,22 @@ object (estimated with \code{\link{netest}}). This utility function removes
 all but the bare essentials needed for simulating a network model with
 \code{\link{netsim}}.
 
-Specifically, the function removes:
-\itemize{
-\item \code{environment(object$constraints)}
-\item \code{environment(object$coef.diss$dissolution)}
-\item \code{environment(object$formation)}
-}
+The function always removes the environments of \code{object$constraints} and
+\code{object$coef.diss$dissolution}.
 
-When \code{edapprox = TRUE} in the \code{netest} call, also
-removes \code{environment(object$formula)}.
+When both \code{edapprox = TRUE} and \code{nested.edapprox = TRUE} in the
+\code{netest} call, also removes the environments of \code{object$formula}
+and \code{object$formation}.
 
-When \code{edapprox = FALSE}, also removes all but \code{formation} and
-\code{dissolution} from \code{environment(object$formula)}, as well as
-\code{environment(environment(object$formula)$formation)} and
-\code{environment(environment(object$formula)$dissolution)}.
+When both \code{edapprox = TRUE} and \code{nested.edapprox = FALSE} in the
+\code{netest} call, also removes the environments of \code{object$formula},
+\code{environment(object$formation)$formation}, and
+\code{environment(object$formation)$dissolution}.
+
+When \code{edapprox = FALSE} in the \code{netest} call, also removes the
+environments of \code{object$formation},
+\code{environment(object$formula)$formation} and
+\code{environment(object$formula)$dissolution}.
 
 If \code{as.networkLite = TRUE}, converts \code{object$newnetwork} to a
 \code{networkLite} object. If \code{keep.fit = FALSE}, removes \code{fit} (if
@@ -55,7 +57,9 @@ present) from \code{object}.
 
 For the output to be usable in \code{\link{netsim}} simulation, there should
 not be substitutions in the formulas, other than \code{formation} and
-\code{dissolution} in \code{object$formula} when \code{edapprox = FALSE}.
+\code{dissolution} in \code{object$formula} when \code{edapprox = FALSE} and
+in \code{object$formation} when both \code{edapprox = TRUE} and
+\code{nested.edapprox = FALSE}.
 }
 \examples{
 nw <- network_initialize(n = 100)

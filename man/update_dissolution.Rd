@@ -4,7 +4,7 @@
 \alias{update_dissolution}
 \title{Adjust Dissolution Component of Network Model Fit}
 \usage{
-update_dissolution(old.netest, new.coef.diss, nested.edapprox = TRUE, ...)
+update_dissolution(old.netest, new.coef.diss, nested.edapprox = TRUE)
 }
 \arguments{
 \item{old.netest}{An object of class \code{netest}, from the
@@ -16,8 +16,6 @@ update_dissolution(old.netest, new.coef.diss, nested.edapprox = TRUE, ...)
 \item{nested.edapprox}{Logical. If \code{edapprox = TRUE} the dissolution
 model is an initial segment of the formation model (see details in
 \code{\link{netest}}).}
-
-\item{...}{Additional arguments passed to other functions.}
 }
 \value{
 An updated network model object of class \code{netest}.
