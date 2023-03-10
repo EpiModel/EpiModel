@@ -470,8 +470,10 @@ update_dissolution <- function(old.netest, new.coef.diss,
       ## implement new edapprox by appending the new dissolution model to the
       ## formation model and appending the relevant values to the vector of
       ## formation model coefficients
+      # nolint start
       formation <- out$formation
       dissolution <- new.coef.diss$dissolution
+      # nolint end
       out$formation <- trim_env(~Passthrough(formation) + Passthrough(dissolution),
                                 keep = c("formation", "dissolution"))
       out$coef.form <- c(out$coef.form, -new.coef.diss$coef.form.corr)
