@@ -215,10 +215,9 @@ saveout.net <- function(dat, s, out = NULL) {
       class(out$stats$transmat) <- c("transmat", class(out$stats$transmat))
     }
 
-    if (dat$control$tergmLite == FALSE) {
-      if (dat$control$save.network == TRUE) {
-        out$network <- list(dat$nw)
-      }
+    if (dat$control$save.network == TRUE) {
+      ## call make_sim_network to use most up-to-date el and attr in tergmLite case
+      out$network <- list(lapply(seq_len(dat$num.nw), make_sim_network, dat = dat))
     }
 
     if (!is.null(dat$control$save.other)) {
@@ -303,10 +302,9 @@ saveout.net <- function(dat, s, out = NULL) {
       }
     }
 
-    if (dat$control$tergmLite == FALSE) {
-      if (dat$control$save.network == TRUE) {
-        out$network[[s]] <- dat$nw
-      }
+    if (dat$control$save.network == TRUE) {
+      ## call make_sim_network to use most up-to-date el and attr in tergmLite case
+      out$network[[s]] <- lapply(seq_len(dat$num.nw), make_sim_network, dat = dat)
     }
 
     if (!is.null(dat$control$save.other)) {
@@ -333,7 +331,6 @@ saveout.net <- function(dat, s, out = NULL) {
         }
       })
     }
-
   }
 
   ## Final processing
@@ -362,7 +359,7 @@ saveout.net <- function(dat, s, out = NULL) {
         out$stats$transmat, "stats$transmat", simnames)
     }
 
-    if (dat$control$tergmLite == FALSE && dat$control$save.network == TRUE) {
+    if (dat$control$save.network == TRUE) {
       out$network <- name_saveout_elts(out$network, "network", simnames)
     }
 
@@ -381,11 +378,6 @@ saveout.net <- function(dat, s, out = NULL) {
     out$control[ftodel] <- NULL
     out$control$currsim <- NULL
     environment(out$control$nwstats.formula) <- NULL
-
-    if (!("temp" %in% dat$control$save.other)) {
-      out$temp <- NULL
-    }
-
   }
 
   return(out)

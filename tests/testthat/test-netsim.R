@@ -288,7 +288,7 @@ test_that("edges correction behaves as expected", {
                                tergmLite = tergmLite,
                                verbose = FALSE,
                                save.network = TRUE,
-                               save.other = c("attr"))
+                               save.other = c("attr", "temp"))
         sim <- netsim(est, param, init, control)
 
         for (simno in seq_len(nsims)) {
@@ -334,4 +334,118 @@ test_that("edges correction behaves as expected", {
       }
     }
   }
+})
+
+test_that("networkDynamics produced by netsim match those produced by simulate when they should", {
+  nw <- network_initialize(n = 50)
+  est <- netest(nw, formation = ~edges,
+                target.stats = c(25),
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                verbose = FALSE)
+  param <- param.net(inf.prob = 0, act.rate = 0, rec.rate = 0)
+  init <- init.net(i.num = 0, r.num = 0)
+  control <- control.net(type = "SIR", nsims = 1, nsteps = 5, verbose = FALSE,
+                         save.network = TRUE, resimulate.network = TRUE,
+                         save.diss.stats = FALSE, save.other = c("attr", "temp"),
+                         save.transmat = FALSE)
+  set.seed(0)
+  mod <- netsim(est, param, init, control)
+  control$start <- 6
+  control$nsteps <- 11
+  mod2 <- netsim(mod, param, init, control)
+
+  # compare to manually produced networkDynamic
+  set.seed(0)
+  sim <- simulate(est$formation,
+                  coef = est$coef.form.crude,
+                  basis = est$newnetwork,
+                  control = control.simulate.formula(MCMC.burnin = 2e5),
+                  dynamic = FALSE)
+  sim <- networkDynamic::as.networkDynamic(sim)
+  sim <- networkDynamic::activate.vertices(sim, onset = 0, terminus = Inf)
+  sim <- networkDynamic::activate.edges(sim, onset = 0, terminus = Inf)
+
+  sim %n% "net.obs.period" <- list(observations = list(c(0,1)),
+                                   mode = "discrete",
+                                   time.increment =  1,
+                                   time.unit = "step")
+
+  for(i in 1:5) {
+    sim <- suppressWarnings(simulate(~Form(est$formation) + Persist(est$coef.diss$dissolution),
+                                     basis = sim,
+                                     time.slices = 1,
+                                     time.start = i,
+                                     time.offset = 0,
+                                     coef = c(est$coef.form, est$coef.diss$coef.crude),
+                                     dynamic = TRUE))
+  }
+  expect_identical(as.data.frame(sim), as.data.frame(mod$network$sim1[[1]]))
+
+  for(i in 6:11) {
+    sim <- suppressWarnings(simulate(~Form(est$formation) + Persist(est$coef.diss$dissolution),
+                                     basis = sim,
+                                     time.slices = 1,
+                                     time.start = i,
+                                     time.offset = 0,
+                                     coef = c(est$coef.form, est$coef.diss$coef.crude),
+                                     dynamic = TRUE))
+  }
+  expect_identical(as.data.frame(sim), as.data.frame(mod2$network$sim1[[1]]))
+})
+
+test_that("networkLites produced by netsim match those produced by simulate when they should", {
+  nw <- network_initialize(n = 50)
+  est <- netest(nw, formation = ~edges,
+                target.stats = c(25),
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                verbose = FALSE)
+  param <- param.net(inf.prob = 0, act.rate = 0, rec.rate = 0)
+  init <- init.net(i.num = 0, r.num = 0)
+  control <- control.net(type = "SIR", nsims = 1, nsteps = 5, verbose = FALSE,
+                         save.network = TRUE, resimulate.network = TRUE,
+                         tergmLite = TRUE, save.other = c("attr", "temp", "el", "net_attr"),
+                         tergmLite.track.duration = TRUE, save.transmat = FALSE)
+  est <- trim_netest(est)
+  set.seed(0)
+  mod <- netsim(est, param, init, control)
+  control$start <- 6
+  control$nsteps <- 11
+  mod2 <- netsim(mod, param, init, control)
+
+  # compare to manually produced networkDynamic
+  set.seed(0)
+  sim <- simulate(est$formation,
+                  coef = est$coef.form.crude,
+                  basis = est$newnetwork,
+                  control = control.simulate.formula(MCMC.burnin = 2e5),
+                  dynamic = FALSE)
+
+  sim %n% "time" <- 0L
+  sim %n% "lasttoggle" <- cbind(as.edgelist(sim), 0L)
+
+  for(i in 1:5) {
+    sim <- suppressWarnings(simulate(~Form(est$formation) + Persist(est$coef.diss$dissolution),
+                                     basis = sim,
+                                     time.slices = 1,
+                                     time.start = i - 1,
+                                     time.offset = 1,
+                                     output = "final",
+                                     coef = c(est$coef.form, est$coef.diss$coef.crude),
+                                     dynamic = TRUE))
+  }
+  expect_equal(as.edgelist(sim), as.edgelist(mod$network$sim1[[1]]), check.attributes = FALSE)
+  expect_equal(sim %n% "lasttoggle", mod$network$sim1[[1]] %n% "lasttoggle")
+
+  for(i in 6:11) {
+    sim <- suppressWarnings(simulate(~Form(est$formation) + Persist(est$coef.diss$dissolution),
+                                     basis = sim,
+                                     time.slices = 1,
+                                     time.start = i - 1,
+                                     time.offset = 1,
+                                     output = "final",
+                                     coef = c(est$coef.form, est$coef.diss$coef.crude),
+                                     dynamic = TRUE))
+  }
+  expect_equal(as.edgelist(sim), as.edgelist(mod2$network$sim1[[1]]), check.attributes = FALSE)
+  expect_equal(sim %n% "lasttoggle", mod2$network$sim1[[1]] %n% "lasttoggle")
 })

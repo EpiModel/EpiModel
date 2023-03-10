@@ -14,6 +14,13 @@
 #' @param init An \code{EpiModel} object of class \code{\link{init.net}}.
 #' @param control An \code{EpiModel} object of class \code{\link{control.net}}.
 #' @param s Simulation number, used for restarting dependent simulations.
+#' @details When re-initializing a simulation, the \code{netsim} object passed
+#'          to \code{initialize.net} must contain the elements \code{param},
+#'          \code{nwparam}, \code{epi}, \code{attr}, \code{temp},
+#'          \code{coef.form}, and \code{num.nw}. If \code{tergmLite == TRUE} it
+#'          must also contain the elements \code{el} and \code{net_attr}. If
+#'          \code{tergmLite == FALSE} it must also contain the element
+#'          \code{network}.
 #'
 #' @return A \code{dat} main list object.
 #'
@@ -32,24 +39,30 @@ initialize.net <- function(x, param, init, control, s) {
     }
 
     dat$num.nw <- length(x)
-    dat$nw <- lapply(x, `[[`, "newnetwork")
     dat$nwparam <- lapply(x, function(y) y[!(names(y) %in% c("fit", "newnetwork"))])
-    if (get_control(dat, "tergmLite") == TRUE) dat$el <- lapply(dat$nw, as.edgelist)
+    nws <- lapply(x, `[[`, "newnetwork")
+    nw <- nws[[1]]
+    if (get_control(dat, "tergmLite") == TRUE) {
+      dat$el <- lapply(nws, as.edgelist)
+      dat$net_attr <- lapply(nws, get_network_attributes)
+    } else {
+      dat$nw <- nws
+    }
 
     # Nodal Attributes --------------------------------------------------------
 
     # Standard attributes
-    num <- network.size(dat$nw[[1]])
+    num <- network.size(nw)
     dat <- append_core_attr(dat, 1, num)
 
-    groups <- length(unique(get_vertex_attribute(dat$nw[[1]], "group")))
+    groups <- length(unique(get_vertex_attribute(nw, "group")))
     dat <- set_param(dat, "groups", groups)
 
     ## Pull attr on nw to dat$attr
-    dat <- copy_nwattr_to_datattr(dat)
+    dat <- copy_nwattr_to_datattr(dat, nw)
 
     ## Store current proportions of attr
-    nwterms <- get_network_term_attr(dat$nw[[1]])
+    nwterms <- get_network_term_attr(nw)
     if (!is.null(nwterms)) {
       dat$temp$nwterms <- nwterms
       dat$temp$t1.tab <- get_attr_prop(dat, nwterms)
@@ -76,10 +89,43 @@ initialize.net <- function(x, param, init, control, s) {
 
     # Restart/Reinit Simulations ----------------------------------------------
   } else if (control$start > 1) {
+    ## check that required names are present
+    required_names <- c(
+      "param",
+      "nwparam",
+      "epi",
+      "attr",
+      "temp",
+      "coef.form",
+      "num.nw",
+      if (control[["tergmLite"]] == TRUE) c("el", "net_attr"),
+      if (control[["tergmLite"]] == FALSE) "network"
+    )
+    missing_names <- setdiff(required_names, names(x))
+    if (length(missing_names) > 0) {
+      stop("x is missing the following elements required for re-initialization: ",
+           paste.and(missing_names), call. = FALSE)
+    }
+
     dat <- create_dat_object(param = x$param, control = control)
 
     dat$num.nw <- x$num.nw
-    dat$nw <- x$network[[s]]
+    if (control[["tergmLite"]] == TRUE) {
+      dat$el <- x$el[[s]]
+      dat$net_attr <- x$net_attr[[s]]
+    }
+    if (control[["tergmLite"]] == FALSE) {
+      dat$nw <- x$network[[s]]
+    }
+
+    # copy if present
+    if (length(x[["el.cuml"]]) >= s) {
+      dat[["el.cuml"]] <- x[["el.cuml"]][[s]]
+    }
+    if (length(x[["_last_unique_id"]]) >= s) {
+      dat[["_last_unique_id"]] <- x[["_last_unique_id"]][[s]]
+    }
+
     dat$nwparam <- x$nwparam
     for (network in seq_len(dat$num.nw)) {
       dat$nwparam[[network]]$coef.form <- x$coef.form[[s]][[network]]
@@ -87,7 +133,9 @@ initialize.net <- function(x, param, init, control, s) {
     dat$epi <- sapply(x$epi, function(var) var[s])
     names(dat$epi) <- names(x$epi)
     dat$attr <- x$attr[[s]]
-    dat$stats <- sapply(x$stats, function(var) var[[s]])
+    dat$temp <- x$temp[[s]]
+
+    dat$stats <- lapply(x$stats, function(var) var[[s]])
     if (get_control(dat, "save.nwstats") == TRUE) {
       dat$stats$nwstats <- lapply(dat$stats$nwstats,
                                   function(oldstats) {
@@ -208,8 +256,7 @@ init_status.net <- function(dat) {
     }
     dat <- set_attr(dat, "status", status)
   } else {
-    status <- get_vertex_attribute(dat$nw[[1]], "status")
-    dat <- set_attr(dat, "status", status)
+    status <- get_attr(dat, "status") # already copied in copy_nwattr_to_datattr
   }
 
 

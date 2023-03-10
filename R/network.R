@@ -88,3 +88,34 @@ get_vertex_attribute <- function(x, attrname) {
                                null.na = TRUE, unlist = TRUE)
   return(attr)
 }
+
+#' @title Get Network Attributes from a Network Object
+#'
+#' @description Gets all network attributes except \code{"mnext"} from its
+#'              network argument.
+#'
+#' @param x An object of class \code{network} or \code{networkLite}.
+#'
+#' @details
+#' This function is used in \code{EpiModel} workflows to copy relevant network
+#' attributes from the network object to the \code{dat} object when initializing
+#' \code{netsim} runs.
+#'
+#' @return
+#' Returns the named list of network attributes.
+#'
+#' @export
+#'
+#' @examples
+#' nw <- network_initialize(100)
+#' get_network_attributes(nw)
+#'
+get_network_attributes <- function(x) {
+  out <- list()
+  for (name in setdiff(list.network.attributes(x), c("mnext"))) {
+    new <- list(get.network.attribute(x, name))
+    names(new) <- name
+    out <- c(out, new)
+  }
+  out
+}

@@ -37,8 +37,8 @@ the transmission matrix saved in the simulation. See
 \code{\link{control.net}} and the
 \href{http://www.epimodel.org/tut.html}{tutorials} for further
 details.
-\item \strong{network:} a list of lists of \code{networkDynamic} objects,
-with one list of \code{networkDynamic} objects for each model
+\item \strong{network:} a list of lists of \code{networkDynamic} or
+\code{networkLite} objects, with one list of objects for each model
 simulation.
 }
 If \code{control$raw.output == TRUE}: A list of the raw (pre-processed)
