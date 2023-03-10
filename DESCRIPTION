@@ -52,7 +52,7 @@ Imports:
     rlang,
     dplyr,
     coda,
-    networkLite (>= 1.0.1)
+    networkLite (>= 1.0.5)
 Suggests:
     knitr,
     ndtv,
@@ -65,4 +65,3 @@ LinkingTo: Rcpp, ergm
 RoxygenNote: 7.2.3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-Remotes: github::EpiModel/networkLite@main
