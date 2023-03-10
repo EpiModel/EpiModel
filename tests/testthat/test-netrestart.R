@@ -83,7 +83,7 @@ test_that("reinitialization works with open population, nwterms, and epi.by", {
                            nsims = 1, resimulate.network = TRUE,
                            verbose = FALSE, tergmLite = tergmLite,
                            epi.by = "race",
-                           save.other = c("attr", "temp", if (tergmLite) "el"))
+                           save.other = c("attr", "temp", if (tergmLite) c("el", "net_attr")))
 
     x <- netsim(est, param, init, control)
     expect_is(x, "netsim")

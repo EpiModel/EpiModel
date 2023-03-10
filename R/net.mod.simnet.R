@@ -111,11 +111,7 @@ make_sim_network <- function(dat, network = 1L) {
     nw <- dat$nw[[network]]
   } else {
     ## networkLite
-    nw <- networkLite(dat$el[[network]], dat$attr)
-    if (get_network_control(dat, network, "tergmLite.track.duration") == TRUE) {
-      nw %n% "time" <- dat$nw[[network]] %n% "time"
-      nw %n% "lasttoggle" <- dat$nw[[network]] %n% "lasttoggle"
-    }
+    nw <- networkLite(dat$el[[network]], dat$attr, dat$net_attr[[network]])
   }
   return(nw)
 }
@@ -135,9 +131,14 @@ make_sim_network <- function(dat, network = 1L) {
 #' @keywords netUtils internal
 #'
 set_sim_network <- function(dat, network = 1L, nw) {
-  dat$nw[[network]] <- nw
   if (get_control(dat, "tergmLite") == TRUE) {
     dat$el[[network]] <- as.edgelist(nw)
+    if (get_network_control(dat, network, "tergmLite.track.duration") == TRUE) {
+      dat$net_attr[[network]][["time"]] <- nw %n% "time"
+      dat$net_attr[[network]][["lasttoggle"]] <- nw %n% "lasttoggle"
+    }
+  } else {
+    dat$nw[[network]] <- nw
   }
   return(dat)
 }

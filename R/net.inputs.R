@@ -1145,12 +1145,9 @@ crosscheck.net <- function(x, param, init, control) {
           stop("x must contain attr to restart simulation, see save.other ",
                "control setting", call. = FALSE)
         }
-        if (is.null(x[["network"]]) &&
-            (control[["tergmLite"]] == FALSE ||
-             any(unlist(control[["tergmLite.track.duration"]])) == TRUE)) {
+        if (is.null(x[["network"]]) && control[["tergmLite"]] == FALSE) {
           stop("x must contain network object to restart simulation when ",
-               "tergmLite == FALSE or tergmLite.track.duration == TRUE for ",
-               "any network, ", call. = FALSE)
+               "tergmLite == FALSE, ", call. = FALSE)
         }
         if (control[["nsteps"]] < control[["start"]]) {
           stop("control setting nsteps must be > control setting start in ",

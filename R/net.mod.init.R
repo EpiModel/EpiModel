@@ -18,9 +18,8 @@
 #'          to \code{initialize.net} must contain the elements \code{param},
 #'          \code{nwparam}, \code{epi}, \code{attr}, \code{temp},
 #'          \code{coef.form}, and \code{num.nw}. If \code{tergmLite == TRUE} it
-#'          must also contain the element \code{el}. If either
-#'          \code{tergmLite == FALSE} or \code{tergmLite.track.duration} is
-#'          \code{TRUE} for any network it must also contain the element
+#'          must also contain the elements \code{el} and \code{net_attr}. If
+#'          \code{tergmLite == FALSE} it must also contain the element
 #'          \code{network}.
 #'
 #' @return A \code{dat} main list object.
@@ -40,24 +39,30 @@ initialize.net <- function(x, param, init, control, s) {
     }
 
     dat$num.nw <- length(x)
-    dat$nw <- lapply(x, `[[`, "newnetwork")
     dat$nwparam <- lapply(x, function(y) y[!(names(y) %in% c("fit", "newnetwork"))])
-    if (get_control(dat, "tergmLite") == TRUE) dat$el <- lapply(dat$nw, as.edgelist)
+    nws <- lapply(x, `[[`, "newnetwork")
+    nw <- nws[[1]]
+    if (get_control(dat, "tergmLite") == TRUE) {
+      dat$el <- lapply(nws, as.edgelist)
+      dat$net_attr <- lapply(nws, get_network_attributes)
+    } else {
+      dat$nw <- nws
+    }
 
     # Nodal Attributes --------------------------------------------------------
 
     # Standard attributes
-    num <- network.size(dat$nw[[1]])
+    num <- network.size(nw)
     dat <- append_core_attr(dat, 1, num)
 
-    groups <- length(unique(get_vertex_attribute(dat$nw[[1]], "group")))
+    groups <- length(unique(get_vertex_attribute(nw, "group")))
     dat <- set_param(dat, "groups", groups)
 
     ## Pull attr on nw to dat$attr
-    dat <- copy_nwattr_to_datattr(dat)
+    dat <- copy_nwattr_to_datattr(dat, nw)
 
     ## Store current proportions of attr
-    nwterms <- get_network_term_attr(dat$nw[[1]])
+    nwterms <- get_network_term_attr(nw)
     if (!is.null(nwterms)) {
       dat$temp$nwterms <- nwterms
       dat$temp$t1.tab <- get_attr_prop(dat, nwterms)
@@ -91,11 +96,10 @@ initialize.net <- function(x, param, init, control, s) {
       "epi",
       "attr",
       "temp",
-      if (control[["tergmLite"]] == TRUE) "el",
-      if (control[["tergmLite"]] == FALSE ||
-          any(unlist(control[["tergmLite.track.duration"]])) == TRUE) "network",
       "coef.form",
-      "num.nw"
+      "num.nw",
+      if (control[["tergmLite"]] == TRUE) c("el", "net_attr"),
+      if (control[["tergmLite"]] == FALSE) "network"
     )
     missing_names <- setdiff(required_names, names(x))
     if (length(missing_names) > 0) {
@@ -108,9 +112,9 @@ initialize.net <- function(x, param, init, control, s) {
     dat$num.nw <- x$num.nw
     if (control[["tergmLite"]] == TRUE) {
       dat$el <- x$el[[s]]
+      dat$net_attr <- x$net_attr[[s]]
     }
-    if (control[["tergmLite"]] == FALSE ||
-        any(unlist(control[["tergmLite.track.duration"]])) == TRUE) {
+    if (control[["tergmLite"]] == FALSE) {
       dat$nw <- x$network[[s]]
     }
 
@@ -252,8 +256,7 @@ init_status.net <- function(dat) {
     }
     dat <- set_attr(dat, "status", status)
   } else {
-    status <- get_vertex_attribute(dat$nw[[1]], "status")
-    dat <- set_attr(dat, "status", status)
+    status <- get_attr(dat, "status") # already copied in copy_nwattr_to_datattr
   }
 
 

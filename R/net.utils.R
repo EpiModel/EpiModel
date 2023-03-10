@@ -158,6 +158,7 @@ color_tea <- function(nd, old.var = "testatus", old.sus = "s", old.inf = "i",
 #'              main \code{attr} list in the \code{dat} data object.
 #'
 #' @inheritParams recovery.net
+#' @param nw Network from which to copy vertex attributes.
 #'
 #' @inherit recovery.net return
 #'
@@ -167,13 +168,13 @@ color_tea <- function(nd, old.var = "testatus", old.sus = "s", old.inf = "i",
 #' @keywords netUtils internal
 #' @export
 #'
-copy_nwattr_to_datattr <- function(dat) {
-  otha <- list.vertex.attributes(dat$nw[[1]])
+copy_nwattr_to_datattr <- function(dat, nw) {
+  otha <- list.vertex.attributes(nw)
   otha <- setdiff(otha, c("na", "vertex.names", "active",
                           "testatus.active", "tergm_pid"))
   if (length(otha) > 0) {
     for (i in seq_along(otha)) {
-      va <- get_vertex_attribute(dat$nw[[1]], otha[i])
+      va <- get_vertex_attribute(nw, otha[i])
       dat$attr[[otha[i]]] <- va
       if (!is.null(dat$control$epi.by) && dat$control$epi.by == otha[i]) {
         dat$temp$epi.by.vals <- unique(va)
