@@ -31,8 +31,7 @@ supplied.
 coefficients.
 \item \strong{d.rate:} the departure rate.
 \item \strong{diss.model.type:} the form of the dissolution model; options
-include \code{edgesonly}, \code{nodematch}, \code{nodemix}, and
-\code{nodefactor}.
+include \code{edgesonly}, \code{nodematch}, and \code{nodemix}.
 }
 }
 \description{
@@ -69,11 +68,6 @@ model that extends the nodematch model to include non-binary
 attributes for homophily. The duration vector should first contain
 the base value, then the values for every other possible combination
 in the term.
-\item \code{~offset(edges) + offset(nodefactor("<attr>"))}: a heterogeneous
-model in which the edge duration varies by a specified attribute. The
-duration vector should first contain the base value, then the values
-for every other value of that attribute in the term. This option is
-deprecated.
 }
 }
 \examples{

@@ -41,10 +41,6 @@ prevalence.net <- function(dat, at) {
     assign(ebn, l[[ebn]])
   }
 
-  if (at == 1) {
-    dat$epi <- list()
-  }
-
   if (groups == 1) {
     dat <- set_epi(dat, "s.num", at, sum(status == "s"))
     if (eb == TRUE) {

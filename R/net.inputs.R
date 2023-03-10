@@ -692,6 +692,8 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #'        [`recovery.net`].
 #' @param resim_nets.FUN Module to resimulate the network at each time step, with the default
 #'        function of [`resim_nets`].
+#' @param summary_nets.FUN Module to extract summary statistics of the network
+#'        at each time step, with the default function of [`summary_nets`].
 #' @param infection.FUN Module to simulate disease infection, with the default function of
 #'        [`infection.net`].
 #' @param nwupdate.FUN Module to handle updating of network structure and nodal attributes due to
@@ -708,10 +710,9 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #' @param save.nwstats If `TRUE`, save network statistics in a data frame. The statistics to be
 #'        saved are specified in the `nwstats.formula` argument.
 #' @param nwstats.formula A right-hand sided ERGM formula that includes network statistics of
-#'        interest, with the default to the formation formula terms.
-#' @param save.network If `TRUE`, networkDynamic or network object is saved at simulation end.
-#'        This is implicitly reset to `FALSE` if `tergmLite = TRUE` (because network history is not
-#'        saved with tergmLite).
+#'        interest, with the default to the formation formula terms. Supports [`multilayer`]
+#'        specification.
+#' @param save.network If `TRUE`, networkDynamic or networkLite object is saved at simulation end.
 #' @param save.transmat If `TRUE`, complete transmission matrix is saved at simulation end.
 #' @param save.other A character vector of elements on the `dat` main data list to save out after
 #'        each simulation. One example for base models is the attribute list, `"attr"`, at the final
@@ -727,17 +728,32 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #' @param raw.output If `TRUE`, `netsim` will output a list of raw data (one per simulation) instead
 #'        of a cleaned and formatted `netsim` object.
 #' @param tergmLite.track.duration If `TRUE`, track duration information for models in `tergmLite`
-#'        simulations.
+#'        simulations. Supports [`multilayer`] specification.
 #' @param set.control.ergm Control arguments passed to `ergm::simulate_formula.network`. In `netsim`,
 #'        this is only used when initializing the network with `edapprox = TRUE`. All other
-#'        simulations in `netsim` use `tergm`.
+#'        simulations in `netsim` use `tergm`. Supports [`multilayer`] specification.
 #' @param set.control.tergm Control arguments passed to `tergm::simulate_formula.network`. See the
-#'        help file for [`netdx`] for details and examples on specifying this parameter.
-#' @param set.control.stergm Deprecated control argument of class `control.simulate.network`. Use
-#'        `set.control.tergm` instead.
+#'        help file for [`netdx`] for details and examples on specifying this parameter. Supports
+#'        [`multilayer`] specification.
 #' @param save.diss.stats If `TRUE`, `netsim` will compute and save duration and dissolution
 #'        statistics for plotting and printing, provided `save.network` is `TRUE`, `tergmLite` is
 #'        `FALSE`, and the dissolution model is homogeneous.
+#' @param dat.updates Either `NULL`, a single function taking arguments `dat`,
+#'        `at`, and `network`, or a list of functions of length one greater
+#'        than the number of networks being simulated, with each function in
+#'        the list taking arguments `dat` and `at`. If a single function is
+#'        passed, it will be called before the first network is simulated and
+#'        after each network is simulated, with `network = 0L` before the first
+#'        network is simulated and with `network = i` after the `i`th network
+#'        is simulated. If a list of functions is passed, the first function
+#'        will be called before the first network is simulated, and the
+#'        `i + 1`th function will be called after the `i`th network is
+#'        simulated. (Note that `at = 0L` is used for initial cross-sectional
+#'        simulations in [`sim_nets_t1`].) The function(s) should return `dat`
+#'        with any updates needed to correctly represent the network states for
+#'        calls to `simulate` and/or `summary`. This can be useful if nodal
+#'        attributes appearing in one network model depend on nodal degrees in
+#'        a different network.
 #' @param ... Additional control settings passed to model.
 #'
 #' @details
@@ -835,6 +851,7 @@ control.net <- function(type,
                         epi.by,
                         initialize.FUN = initialize.net,
                         resim_nets.FUN = resim_nets,
+                        summary_nets.FUN = summary_nets,
                         infection.FUN = NULL,
                         recovery.FUN = NULL,
                         departures.FUN = NULL,
@@ -854,15 +871,10 @@ control.net <- function(type,
                         raw.output = FALSE,
                         tergmLite.track.duration = FALSE,
                         set.control.ergm = control.simulate.formula(MCMC.burnin = 2e5),
-                        set.control.stergm = NULL,
                         set.control.tergm = control.simulate.formula.tergm(),
                         save.diss.stats = TRUE,
+                        dat.updates = NULL,
                         ...) {
-
-  if (!missing(set.control.stergm)) {
-    warning("set.control.stergm is deprecated and will be removed in a future
-             version; use set.control.tergm instead.")
-  }
 
   # Get arguments
   p <- list()
@@ -924,8 +936,8 @@ control.net <- function(type,
   #Check whether any base modules have been redefined by user (note: must come
   # after above)
   bi.nms <- bi.nms[-which(bi.nms %in% c("initialize.FUN", "resim_nets.FUN",
-                                        "verbose.FUN", "nwupdate.FUN",
-                                        "prevalence.FUN"))]
+                                        "summary_nets.FUN", "verbose.FUN",
+                                        "nwupdate.FUN", "prevalence.FUN"))]
   if (length(bi.nms) > 0) {
     flag1 <- logical()
     for (args in seq_along(bi.nms)) {
@@ -966,9 +978,7 @@ control.net <- function(type,
   if (is.null(p[["save.network"]])) {
     p[["save.network"]] <- TRUE
   }
-  if (p[["tergmLite"]] == TRUE) {
-    p[["save.network"]] <- FALSE
-  }
+
   if (p[["tergmLite"]] == TRUE && p[["resimulate.network"]] == FALSE) {
     message("Because tergmLite = TRUE, resetting resimulate.network = TRUE")
     p[["resimulate.network"]] <- TRUE
@@ -1006,9 +1016,13 @@ crosscheck.net <- function(x, param, init, control) {
     if (control[["start"]] == 1 && control[["skip.check"]] == FALSE) {
 
       # Main class check ----------------------------------------------------
-      if (!inherits(x, c("netest", "netsim"))) {
-        stop("x must be either an object of class netest or class netsim",
-             call. = FALSE)
+      if (inherits(x, "netest")) {
+        x <- list(x)
+      }
+      if (!inherits(x, "list") || length(x) == 0 ||
+          !all(vapply(x, inherits, logical(1), "netest"))) {
+        stop("x must be either an object of class netest or a list of objects",
+             " of class netest when start == 1", call. = FALSE)
       }
       if (!inherits(param, "param.net")) {
         stop("param must an object of class param.net", call. = FALSE)
@@ -1021,7 +1035,7 @@ crosscheck.net <- function(x, param, init, control) {
       }
 
       # Pull network object from netest object
-      nw <- x$newnetwork
+      nw <- x[[1]]$newnetwork
 
       # Defaults ------------------------------------------------------------
 
@@ -1116,7 +1130,6 @@ crosscheck.net <- function(x, param, init, control) {
           }
         }
       }
-
     }
 
     if (control[["start"]] > 1) {
@@ -1132,9 +1145,9 @@ crosscheck.net <- function(x, param, init, control) {
           stop("x must contain attr to restart simulation, see save.other ",
                "control setting", call. = FALSE)
         }
-        if (is.null(x[["network"]])) {
-          stop("x must contain network object to restart simulation, ",
-               call. = FALSE)
+        if (is.null(x[["network"]]) && control[["tergmLite"]] == FALSE) {
+          stop("x must contain network object to restart simulation when ",
+               "tergmLite == FALSE, ", call. = FALSE)
         }
         if (control[["nsteps"]] < control[["start"]]) {
           stop("control setting nsteps must be > control setting start in ",
@@ -1144,10 +1157,7 @@ crosscheck.net <- function(x, param, init, control) {
           stop("control setting start must be 1 greater than the nsteps in
                the ", "prior simulation", call. = FALSE)
         }
-
-
       }
-
     }
 
 
@@ -1180,6 +1190,50 @@ crosscheck.net <- function(x, param, init, control) {
   if (!is.null(control[["type"]]) && length(control[["user.mods"]]) > 0) {
     stop("Control setting 'type' must be NULL if any user-specified modules
          specified.", call. = FALSE)
+  }
+
+  if (inherits(x, "netest")) {
+    nwparam <- list(x)
+  } else if (inherits(x, "netsim")) {
+    nwparam <- x$nwparam
+  } else if (inherits(x, "networkDynamic")) {
+    nwparam <- list(x) # relevant to EpiModel gallery example
+  } else { # must be list of netest
+    nwparam <- x
+  }
+
+  num.nw <- length(nwparam)
+
+  # convert relevant control arguments to multilayer if they are not already, and check length
+  for (control_arg_name in c("nwstats.formula", "set.control.ergm",
+                             "set.control.tergm", "tergmLite.track.duration")) {
+    control_arg_value <- control[[control_arg_name]]
+    if (!is(control_arg_value, "multilayer")) {
+      control[[control_arg_name]] <- do.call(multilayer, rep(list(control_arg_value), length.out = num.nw))
+    } else if (length(control_arg_value) != num.nw) {
+      stop("multilayer control argument `", control_arg_name, "` has length ",
+           length(control_arg_value), " but should have length ", num.nw, ".")
+    }
+  }
+
+  # convert nwstats.formula = "formation" to actual formation formula
+  for (network in seq_len(num.nw)) {
+    if (!is.null(control[["nwstats.formula"]][[network]]) &&
+        control[["nwstats.formula"]][[network]] == "formation") {
+      control[["nwstats.formula"]][[network]] <- nwparam[[network]]$formation
+    }
+  }
+
+  # convert dat.updates to a function of dat, at, network if it is not already
+  dat.updates <- control[["dat.updates"]]
+  if (is.list(dat.updates)) {
+    if (length(dat.updates) != num.nw + 1L) {
+      stop("control argument `dat.updates` is of length ", length(dat.updates),
+           " but should be of length ", num.nw + 1L, ".")
+    }
+    control[["dat.updates"]] <- trim_env(function(dat, at, network) {
+                                           dat.updates[[network + 1L]](dat = dat, at = at)
+                                         }, keep = c("dat.updates"))
   }
 
   ## In-place assignment to update param and control
@@ -1254,4 +1308,27 @@ param.net_from_table <- function(long.param.df) {
   class(param) <- c("param.net", "list")
 
   return(param)
+}
+
+#' @title Specify Controls by Network
+#'
+#' @description This utility function allows specification of certain
+#'              \code{\link{netsim}} controls to vary by network.  The
+#'              \code{\link{netsim}} control arguments currently supporting
+#'              \code{multilayer} specifications are \code{nwstats.formula},
+#'              \code{set.control.ergm}, \code{set.control.tergm}, and
+#'              \code{tergmLite.track.duration}.
+#'
+#' @param ... control arguments to apply to each network, with the index of the
+#'        network corresponding to the index of the control argument
+#'
+#' @return an object of class \code{multilayer} containing the specified
+#'         control arguments
+#'
+#' @export
+#'
+multilayer <- function(...) {
+  out <- list(...)
+  class(out) <- c("multilayer", class(out))
+  return(out)
 }

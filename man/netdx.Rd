@@ -11,7 +11,6 @@ netdx(
   nsteps,
   nwstats.formula = "formation",
   set.control.ergm = control.simulate.formula(),
-  set.control.stergm = control.simulate.network(),
   set.control.tergm = control.simulate.formula.tergm(),
   sequential = TRUE,
   keep.tedgelist = FALSE,
@@ -38,10 +37,6 @@ network model contained in \code{x}.}
 
 \item{set.control.ergm}{Control arguments passed to \code{ergm}'s
 \code{simulate_formula.network} (see details).}
-
-\item{set.control.stergm}{Deprecated control argument of class
-\code{control.simulate.network}; use \code{set.control.tergm}
-instead.}
 
 \item{set.control.tergm}{Control arguments passed to \code{tergm}'s
 \code{simulate_formula.network} (see details).}

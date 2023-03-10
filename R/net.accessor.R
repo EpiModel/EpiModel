@@ -439,6 +439,35 @@ get_control <- function(dat, item, override.null.error = FALSE) {
 }
 
 #' @rdname net-accessor
+#' @param network index of network for which to get control
+#' @export
+get_network_control <- function(dat, network, item, override.null.error = FALSE) {
+  if (missing(network)) {
+    stop("`get_network_control` requires `network` argument.")
+  }
+
+  if (!item %in% names(dat[["control"]])) {
+    if (override.null.error) {
+      return(NULL)
+    } else {
+      stop("There is no control value called `", item,
+           "` in the control list of the main list object (dat)")
+    }
+  } else {
+    out <- dat[["control"]][[item]]
+  }
+
+  if (!is(out, "multilayer")) {
+    stop("Control value `", item, "` accessed through `get_network_control` ",
+         "is not of class `multilayer`.")
+  }
+
+  out <- out[[network]]
+
+  return(out)
+}
+
+#' @rdname net-accessor
 #' @export
 add_control <- function(dat, item) {
   if (item %in% names(dat[["control"]])) {

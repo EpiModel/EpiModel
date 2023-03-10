@@ -17,12 +17,12 @@
 get_edgelist <- function(dat, network) {
 
   if (get_control(dat, "tergmLite")) {
-    if (!network %in% seq_along(dat[["el"]])) {
+    if (!network %in% seq_len(dat$num.nw)) {
       stop("There is no network '", network, "' to get an edgelist from")
     }
     el <- dat[["el"]][[network]]
   } else {
-    if (!network %in% seq_along(dat[["nw"]])) {
+    if (!network %in% seq_len(dat$num.nw)) {
       stop("There is no network '", network, "' to get an edgelist from")
     }
     at <- get_current_timestep(dat)
@@ -53,7 +53,7 @@ get_edgelist <- function(dat, network) {
 #'
 #' @export
 get_cumulative_edgelist <- function(dat, network) {
-  if (!network %in% seq_along(dat[["nwparam"]])) {
+  if (!network %in% seq_len(dat$num.nw)) {
     stop("There is no network '", network,
          "' to get the cumulative edgelist from")
   }
@@ -154,7 +154,7 @@ update_cumulative_edgelist <- function(dat, network, truncate = 0) {
 #'
 #' @export
 get_cumulative_edgelists_df <- function(dat, networks = NULL) {
-  networks <- if (is.null(networks)) seq_along(dat[["nwparam"]]) else networks
+  networks <- if (is.null(networks)) seq_len(dat$num.nw) else networks
 
   el_cuml_list <- lapply(networks, get_cumulative_edgelist, dat = dat)
   el_cuml_df <- dplyr::bind_rows(el_cuml_list)

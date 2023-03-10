@@ -310,7 +310,6 @@ for (trim in c(FALSE, TRUE)) {
 
     dx <- netdx(est, nsims = 1, nsteps = 100, verbose = FALSE)
     expect_output(print(dx), "NA")
-
   })
 
   test_that("print.netdx and plot.netdx with heterogeneous diss", {
@@ -362,82 +361,7 @@ for (trim in c(FALSE, TRUE)) {
     expect_true(dim(dx13$pages)[1]==1 & dim(dx13$pages)[2]==10 & dim(dx13$pages)[3]==1)
     expect_true(dim(dx13$prop.diss)[1]==1 & dim(dx13$prop.diss)[2]==10 & dim(dx13$prop.diss)[3]==1)
   })
-
 }
-
-
-test_that("Edges only models with set.control.stergm", {
-  skip_on_cran()
-  num <- 50
-  nw <- network_initialize(n = num)
-  formation <- ~edges
-  target.stats <- 15
-  coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
-  est1 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
-
-  ## Single simulation
-  expect_warning(dx1 <- netdx(est1, nsims = 1, nsteps = 10, verbose = FALSE,
-                              set.control.stergm = control.simulate.network()),
-                 "set.control.stergm is deprecated")
-  expect_is(dx1, "netdx")
-  capture_output(
-    print(dx1)
-  )
-  plot(dx1)
-  plot(dx1, method = "b")
-  plot(dx1, type = "duration", mean.smooth = FALSE)
-  plot(dx1, method = "b", type = "duration")
-  plot(dx1, type = "dissolution")
-  plot(dx1, method = "b", type = "dissolution")
-
-  ## Multiple simulations
-  expect_warning(dx2 <- netdx(est1, nsims = 2, nsteps = 10, verbose = FALSE,
-                              set.control.stergm = control.simulate.network()),
-                 "set.control.stergm is deprecated")
-  expect_is(dx2, "netdx")
-  capture_output(
-    print(dx2)
-  )
-  plot(dx2)
-  plot(dx2, method = "b")
-  plot(dx2, type = "duration")
-  plot(dx2, method = "b", type = "duration")
-  plot(dx2, type = "dissolution")
-  plot(dx2, method = "b", type = "dissolution")
-
-  ## Expanded monitoring formula
-  expect_warning(dx3 <- netdx(est1, nsims = 2, nsteps = 10, verbose = FALSE,
-                              nwstats.formula = ~edges + concurrent,
-                              set.control.stergm = control.simulate.network()),
-                 "set.control.stergm is deprecated")
-  expect_is(dx3, "netdx")
-  capture_output(
-    print(dx3)
-  )
-  plot(dx3)
-  plot(dx3, plots.joined = FALSE)
-  plot(dx3, method = "b")
-  plot(dx3, type = "duration")
-  plot(dx3, method = "b", type = "duration")
-  plot(dx3, type = "dissolution")
-  plot(dx3, method = "b", type = "dissolution")
-
-  ## Reduced monitoring formula
-  expect_warning(dx4 <- netdx(est1, nsims = 2, nsteps = 10, verbose = FALSE,
-                              nwstats.formula = ~meandeg,
-                              set.control.stergm = control.simulate.network()),
-                 "set.control.stergm is deprecated")
-  expect_is(dx4, "netdx")
-  capture_output(
-    print(dx4)
-  )
-  plot(dx4)
-  plot(dx4, method = "b")
-  plot(dx4, type = "duration")
-  plot(dx4, method = "b", type = "duration")
-  plot(dx4, type = "dissolution")
-  plot(dx4, method = "b", type = "dissolution")
-})
 
 test_that("z scores are not large for a reasonably long simulation", {
   skip_on_cran()

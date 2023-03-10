@@ -7,7 +7,11 @@
 initialize.net(x, param, init, control, s)
 }
 \arguments{
-\item{x}{An \code{EpiModel} object of class \code{\link{netest}}.}
+\item{x}{If \code{control$start == 1}, either a fitted network model object
+of class \code{netest} or a list of such objects. If
+\code{control$start > 1}, an object of class \code{netsim}. When
+multiple networks are used, the node sets (including network size
+and nodal attributes) are assumed to be the same for all networks.}
 
 \item{param}{An \code{EpiModel} object of class \code{\link{param.net}}.}
 
@@ -22,7 +26,16 @@ A \code{dat} main list object.
 }
 \description{
 This function initializes the main \code{dat} object on which
-data are stored, simulates the initial state of the network, and
-simulates disease status and other attributes.
+data are stored, simulates the initial state of the networks,
+and simulates disease status and other attributes.
+}
+\details{
+When re-initializing a simulation, the \code{netsim} object passed
+to \code{initialize.net} must contain the elements \code{param},
+\code{nwparam}, \code{epi}, \code{attr}, \code{temp},
+\code{coef.form}, and \code{num.nw}. If \code{tergmLite == TRUE} it
+must also contain the elements \code{el} and \code{net_attr}. If
+\code{tergmLite == FALSE} it must also contain the element
+\code{network}.
 }
 \keyword{internal}

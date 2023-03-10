@@ -33,9 +33,9 @@ test_that("netsim with checkpoint", {
   expect_error(netsim(est, param, init, control))
 
   # test for actual removal of 2 modules at once
-  #   - resimulation module (nwstats will stop being produced)
+  #   - summary module (nwstats will stop being produced)
   #   - infection module (prevalence will stay constant; see notes)
-  end_horizon <- list(at = 5, modules = c("resim_nets.FUN", "infection.FUN"))
+  end_horizon <- list(at = 5, modules = c("summary_nets.FUN", "infection.FUN"))
   control <- control.net(
     type = "SI", nsims = 1, nsteps = 20, ncores = 1, resimulate.network = TRUE,
     verbose = FALSE, end.horizon = end_horizon

@@ -13,7 +13,6 @@ netest(
   coef.form = NULL,
   edapprox = TRUE,
   set.control.ergm = control.ergm(),
-  set.control.stergm = control.stergm(),
   set.control.tergm = control.tergm(),
   set.control.ergm.ego = control.ergm.ego(),
   verbose = FALSE,
@@ -51,9 +50,6 @@ supported.}
 
 \item{set.control.ergm}{Control arguments passed to \code{ergm} (see
 details).}
-
-\item{set.control.stergm}{Deprecated control argument of class
-\code{control.stergm}; use \code{set.control.tergm} instead.}
 
 \item{set.control.tergm}{Control arguments passed to \code{tergm}
 (see details).}
