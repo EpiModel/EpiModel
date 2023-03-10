@@ -34,52 +34,8 @@ initialize.net <- function(x, param, init, control, s) {
     # Main Data List --------------------------------------------------------
     dat <- create_dat_object(param, init, control)
 
-    if (inherits(x, "netest")) {
-      x <- list(x)
-    }
-
-    dat$num.nw <- length(x)
-    dat$nwparam <- lapply(x, function(y) y[!(names(y) %in% c("fit", "newnetwork"))])
-    nws <- lapply(x, `[[`, "newnetwork")
-    nw <- nws[[1]]
-    if (get_control(dat, "tergmLite") == TRUE) {
-      dat$el <- lapply(nws, as.edgelist)
-      dat$net_attr <- lapply(nws, get_network_attributes)
-    } else {
-      dat$nw <- nws
-    }
-
-    # Nodal Attributes --------------------------------------------------------
-
-    # Standard attributes
-    num <- network.size(nw)
-    dat <- append_core_attr(dat, 1, num)
-
-    groups <- length(unique(get_vertex_attribute(nw, "group")))
-    dat <- set_param(dat, "groups", groups)
-
-    ## Pull attr on nw to dat$attr
-    dat <- copy_nwattr_to_datattr(dat, nw)
-
-    ## Store current proportions of attr
-    nwterms <- get_network_term_attr(nw)
-    if (!is.null(nwterms)) {
-      dat$temp$nwterms <- nwterms
-      dat$temp$t1.tab <- get_attr_prop(dat, nwterms)
-    }
-
-    if (get_control(dat, "save.nwstats") == TRUE) {
-      if (get_control(dat, "resimulate.network") == TRUE) {
-        dat$stats$nwstats <- rep(list(padded_vector(list(), get_control(dat, "nsteps"))),
-                                 length.out = length(dat$nwparam))
-      } else {
-        dat$stats$nwstats <- rep(list(list()), length.out = length(dat$nwparam))
-      }
-    }
-
-    # simulate first time step
-    dat <- sim_nets_t1(dat)
-    dat <- summary_nets(dat, at = 1L)
+    # network and stats initialization
+    dat <- init_nets(dat, x)
 
     ## Infection Status and Time
     dat <- init_status.net(dat)
@@ -320,6 +276,73 @@ init_status.net <- function(dat) {
 
     dat <- set_attr(dat, "infTime", infTime)
   }
+
+  return(dat)
+}
+
+#' @title Network Data and Stats Initialization
+#'
+#' @description This function initializes the network data and stats on the main
+#'              \code{dat} object.
+#'
+#' @param dat A \code{dat} object obtained from \code{\link{create_dat_object}},
+#'        including the \code{control} argument.
+#' @param x Either a fitted network model object of class \code{netest}, or a
+#'        list of such objects.
+#'
+#' @return A \code{dat} main list object with network data and stats
+#'         initialized.
+#'
+#' @export
+#' @keywords internal
+#'
+init_nets <- function(dat, x) {
+  if (inherits(x, "netest")) {
+    x <- list(x)
+  }
+
+  dat$num.nw <- length(x)
+  dat$nwparam <- lapply(x, function(y) y[!(names(y) %in% c("fit", "newnetwork"))])
+  nws <- lapply(x, `[[`, "newnetwork")
+  nw <- nws[[1]]
+  if (get_control(dat, "tergmLite") == TRUE) {
+    dat$el <- lapply(nws, as.edgelist)
+    dat$net_attr <- lapply(nws, get_network_attributes)
+  } else {
+    dat$nw <- nws
+  }
+
+  # Nodal Attributes --------------------------------------------------------
+
+  # Standard attributes
+  num <- network.size(nw)
+  dat <- append_core_attr(dat, 1, num)
+
+  groups <- length(unique(get_vertex_attribute(nw, "group")))
+  dat <- set_param(dat, "groups", groups)
+
+  ## Pull attr on nw to dat$attr
+  dat <- copy_nwattr_to_datattr(dat, nw)
+
+  ## Store current proportions of attr
+  nwterms <- get_network_term_attr(nw)
+  if (!is.null(nwterms)) {
+    dat$temp$nwterms <- nwterms
+    dat$temp$t1.tab <- get_attr_prop(dat, nwterms)
+  }
+
+  if (get_control(dat, "save.nwstats") == TRUE) {
+    if (get_control(dat, "resimulate.network") == TRUE) {
+      dat$stats$nwstats <- rep(list(padded_vector(list(), get_control(dat, "nsteps"))),
+                               length.out = length(dat$nwparam))
+    } else {
+      dat$stats$nwstats <- rep(list(list()), length.out = length(dat$nwparam))
+    }
+  }
+
+  # simulate first time step
+  dat <- sim_nets_t1(dat)
+  dat <- summary_nets(dat, at = 1L)
 
   return(dat)
 }
