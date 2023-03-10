@@ -165,12 +165,6 @@ print.netdx <- function(x, digits = 3, ...) {
             "processing the data; this behavior, which introduces a bias",
             "towards 0, may be changed in the future.")
   }
-  # TODO Remove nodefactor in future release.
-  if (x$coef.diss$diss.model.type == "nodefactor") {
-    cat("----------------------- \n")
-    cat("* Duration and dissolution results are averaged over for dissolution
-        models containing a nodefactor term.")
-  }
   invisible()
 }
 
@@ -513,10 +507,9 @@ print.control.net <- function(x, ...) {
     !grepl(".FUN", names(x)) &
     names(x) != "f.args" &
     names(x) != "f.names" &
-    names(x) != "set.control.stergm" &
     names(x) != "set.control.tergm" &
     names(x) != "set.control.ergm" &
-    !grepl("^mcmc\\.control", names(x)) &
+    names(x) != "dat.updates" &
     !(names(x) %in% c("bi.mods", "user.mods"))
   )
 

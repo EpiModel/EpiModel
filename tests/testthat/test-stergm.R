@@ -35,21 +35,3 @@ test_that("Full STERGM", {
     expect_is(mod, "netsim")
   }
 })
-
-test_that("Full STERGM with set.control.stergm", {
-  skip_on_cran()
-  nw <- network_initialize(n = 50)
-  expect_warning(est <- netest(nw, formation = ~edges, target.stats = 25,
-                        set.control.stergm = control.stergm(),
-                        coef.diss = dissolution_coefs(~offset(edges), 10, 0),
-                        edapprox = FALSE, verbose = FALSE),
-                 "set.control.stergm is deprecated")
-
-  expect_warning(dx <- netdx(est, nsims = 1, nsteps = 10, verbose = FALSE,
-                             set.control.stergm = control.simulate.network()),
-                 "set.control.stergm is deprecated")
-  expect_is(dx, "netdx")
-  expect_true(!dx$edapprox)
-  expect_true(colnames(dx$stats[[1]]) == "edges")
-
-})

@@ -15,13 +15,8 @@ test_that("simulation diagnostics work as expected", {
                      time.slices = nsteps,
                      dynamic = TRUE)
 
-    if (est$coef.diss$diss.model.type == "nodefactor") {
-      dissolution <- ~offset(edges)
-      durs <- mean(est$coef.diss$duration)
-    } else {
-      dissolution <- est$coef.diss$dissolution
-      durs <- est$coef.diss$duration
-    }
+    dissolution <- est$coef.diss$dissolution
+    durs <- est$coef.diss$duration
 
     sim.df <- as.data.frame(nws2)
 
@@ -83,10 +78,7 @@ test_that("simulation diagnostics work as expected", {
                      dissolution_coefs(~offset(edges)+offset(nodemix("attr", levels = 2:3,
                                                                      levels2 = c(2,1))), c(8,5,7), 0),
                      dissolution_coefs(~offset(edges)+offset(nodematch("attr", diff = TRUE,
-                                                                       levels = c(3,1,2))), c(31, 22, 3, 4), 0),
-                     suppressWarnings(dissolution_coefs(~offset(edges)+offset(nodefactor("attr",
-                                                                                         levels = c(3,1))),
-                                                        c(31, 3, 4), 0)))
+                                                                       levels = c(3,1,2))), c(31, 22, 3, 4), 0))
 
   dyad_indexers <- list(function(tails, heads, nw) rep(1, length(tails)),
                         function(tails, heads, nw) {
@@ -107,23 +99,20 @@ test_that("simulation diagnostics work as expected", {
                           indices[tailattr == 1 & headattr == 1] <- 3
                           indices[tailattr == 2 & headattr == 2] <- 4
                           indices
-                        },
-                        function(tails, heads, nw) rep(1, length(tails)))
+                        })
 
   formations <- list(~edges,
                      ~edges + nodemix("attr", levels = 2:3, levels2 = c(2,1)),
-                     ~edges + nodematch("attr", diff = TRUE, levels = c(3,1,2)),
-                     ~edges + nodefactor("attr", levels = c(3,1)))
+                     ~edges + nodematch("attr", diff = TRUE, levels = c(3,1,2)))
 
   targets <- lapply(list(c(100),
                          c(100, 2*100/9, 2*100/9),
-                         c(100, 100/9, 100/9, 100/9),
-                         c(100, 200/3, 200/3)),
+                         c(100, 100/9, 100/9, 100/9)),
                     as.integer)
 
-  init.edges.list <- list(FALSE, FALSE, TRUE, TRUE)
-  nested.edapprox.list <- list(FALSE, TRUE, FALSE, TRUE)
-  keep.tnetwork.list <- list(TRUE, FALSE, FALSE, TRUE)
+  init.edges.list <- list(FALSE, FALSE, TRUE)
+  nested.edapprox.list <- list(FALSE, TRUE, FALSE)
+  keep.tnetwork.list <- list(TRUE, FALSE, FALSE)
 
   for (index in seq_along(coefs.diss)) {
     init.edges <- init.edges.list[[index]]
@@ -143,11 +132,11 @@ test_that("simulation diagnostics work as expected", {
     nw <- network.initialize(net_size, directed = FALSE)
     nw %v% "attr" <- rep(1:3, length.out = net_size)
 
-    est <- suppressWarnings(netest(nw,
-                                   formation = formation,
-                                   coef.diss = coef.diss,
-                                   target.stats = target.stats,
-                                   nested.edapprox = nested.edapprox))
+    est <- netest(nw,
+                  formation = formation,
+                  coef.diss = coef.diss,
+                  target.stats = target.stats,
+                  nested.edapprox = nested.edapprox)
 
     if (init.edges == FALSE) {
       est$newnetwork[,] <- FALSE
@@ -167,11 +156,7 @@ test_that("simulation diagnostics work as expected", {
       ds[[i]] <- simulate_diss_stats(est, nsteps, dyad_indexer)
     }
 
-    if (coef.diss$diss.model.type == "nodefactor") {
-      durs <- mean(coef.diss$duration)
-    } else {
-      durs <- coef.diss$duration
-    }
+    durs <- coef.diss$duration
 
     pages <- array(unlist(lapply(ds, `[[`, "pages")),
                    dim = c(nsteps,length(durs),nsims))
@@ -217,6 +202,10 @@ test_that("netsim produces a networkDynamic with the expected data.frame when re
                   basis = est$newnetwork,
                   dynamic = FALSE)
 
+  nws <- networkDynamic::as.networkDynamic(nws)
+  nws <- networkDynamic::activate.vertices(nws, onset = 0, terminus = Inf)
+  nws <- networkDynamic::activate.edges(nws, onset = 0, terminus = Inf)
+
   nws <- simulate(nws ~ Form(est$formation) + Persist(est$coef.diss$dissolution),
                   coef = c(est$coef.form, est$coef.diss$coef.crude),
                   time.start = 0,
@@ -236,10 +225,6 @@ test_that("netsim produces a networkDynamic with the expected data.frame when re
   param <- param.net(inf.prob = 0, act.rate = 0)
   init <- init.net(status.vector = rep("i", 50))
   control <- control.net(type = NULL,
-                         resim_nets.FUN = function(dat, at) {
-                                            dat <- set_epi(dat, "num", at - 1, 50)
-                                            resim_nets(dat, at)
-                                          },
                          nsims = 1,
                          resimulate.network = TRUE,
                          nsteps = 5,
@@ -261,11 +246,21 @@ test_that("netsim produces a networkDynamic with the expected data.frame when re
                   control = list(MCMC.burnin = 2e5),
                   dynamic = FALSE)
 
+  nws <- networkDynamic::as.networkDynamic(nws)
+  nws <- networkDynamic::activate.vertices(nws, onset = 0, terminus = Inf)
+  nws <- networkDynamic::activate.edges(nws, onset = 0, terminus = Inf)
+
+  nws %n% "net.obs.period" <- list(observations = list(c(0,1)),
+                                   mode = "discrete",
+                                   time.increment =  1,
+                                   time.unit = "step")
+
   for (i in seq_len(5)) {
-    nws <- simulate(nws ~ Form(est$formation) + Persist(est$coef.diss$dissolution),
-                    coef = c(est$coef.form, est$coef.diss$coef.crude),
-                    time.start = i - 1,
-                    dynamic = TRUE)
+    nws <- suppressWarnings(simulate(nws ~ Form(est$formation) + Persist(est$coef.diss$dissolution),
+                                     coef = c(est$coef.form, est$coef.diss$coef.crude),
+                                     time.start = i,
+                                     time.offset = 0,
+                                     dynamic = TRUE))
   }
 
   expect_identical(as.data.frame(nws), as.data.frame(nwd))

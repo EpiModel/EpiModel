@@ -158,6 +158,7 @@ color_tea <- function(nd, old.var = "testatus", old.sus = "s", old.inf = "i",
 #'              main \code{attr} list in the \code{dat} data object.
 #'
 #' @inheritParams recovery.net
+#' @param nw Network from which to copy vertex attributes.
 #'
 #' @inherit recovery.net return
 #'
@@ -167,13 +168,13 @@ color_tea <- function(nd, old.var = "testatus", old.sus = "s", old.inf = "i",
 #' @keywords netUtils internal
 #' @export
 #'
-copy_nwattr_to_datattr <- function(dat) {
-  otha <- list.vertex.attributes(dat$nw[[1]])
+copy_nwattr_to_datattr <- function(dat, nw) {
+  otha <- list.vertex.attributes(nw)
   otha <- setdiff(otha, c("na", "vertex.names", "active",
                           "testatus.active", "tergm_pid"))
   if (length(otha) > 0) {
     for (i in seq_along(otha)) {
-      va <- get_vertex_attribute(dat$nw[[1]], otha[i])
+      va <- get_vertex_attribute(nw, otha[i])
       dat$attr[[otha[i]]] <- va
       if (!is.null(dat$control$epi.by) && dat$control$epi.by == otha[i]) {
         dat$temp$epi.by.vals <- unique(va)
@@ -210,9 +211,17 @@ copy_datattr_to_nwattr <- function(dat) {
   attr <- dat$attr[attr.to.copy]
   if (length(attr.to.copy) > 0) {
     if (length(attr.to.copy) == 1) {
-      dat$nw[[1]] <- set_vertex_attribute(dat$nw[[1]], names(attr), attr[[1]])
+      for (network in seq_len(dat$num.nw)) {
+        dat$nw[[network]] <- set_vertex_attribute(dat$nw[[network]],
+                                                  names(attr),
+                                                  attr[[1]])
+      }
     } else {
-      dat$nw[[1]] <- set_vertex_attribute(dat$nw[[1]], names(attr), attr)
+      for (network in seq_len(dat$num.nw)) {
+        dat$nw[[network]] <- set_vertex_attribute(dat$nw[[network]],
+                                                  names(attr),
+                                                  attr)
+      }
     }
   }
   return(dat)
@@ -260,11 +269,6 @@ copy_datattr_to_nwattr <- function(dat) {
 #'         attributes for homophily. The duration vector should first contain
 #'         the base value, then the values for every other possible combination
 #'         in the term.
-#'  \item \code{~offset(edges) + offset(nodefactor("<attr>"))}: a heterogeneous
-#'         model in which the edge duration varies by a specified attribute. The
-#'         duration vector should first contain the base value, then the values
-#'         for every other value of that attribute in the term. This option is
-#'         deprecated.
 #' }
 #'
 #' @return
@@ -282,8 +286,7 @@ copy_datattr_to_nwattr <- function(dat) {
 #'        coefficients.
 #'  \item \strong{d.rate:} the departure rate.
 #'  \item \strong{diss.model.type:} the form of the dissolution model; options
-#'        include \code{edgesonly}, \code{nodematch}, \code{nodemix}, and
-#'        \code{nodefactor}.
+#'        include \code{edgesonly}, \code{nodematch}, and \code{nodemix}.
 #' }
 #'
 #' @export
@@ -380,21 +383,12 @@ dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
       t2.term <- NULL
       if (grepl("offset[(]nodematch", t2)) {
         t2.term <- diss.model.type <- "nodematch"
+      } else if (grepl("offset[(]nodemix", t2)) {
+        t2.term <- diss.model.type <- "nodemix"
       } else {
-        if (grepl("offset[(]nodefactor", t2)) {
-          t2.term <- diss.model.type <- "nodefactor"
-          warning("Support for dissolution models containing a nodefactor term
-                  is deprecated, and will be removed in a future release.")
-          # TODO: remove functionality and deprecation message in future release
-        } else {
-          if (grepl("offset[(]nodemix", t2)) {
-            t2.term <- diss.model.type <- "nodemix"
-          } else {
-            stop("The form of the dissolution argument is invalid. Type
-                      help(\'dissolution_coefs\') to see the set of options
-                      allowed.")
-          }
-        }
+        stop("The form of the dissolution argument is invalid. Type
+              help(\'dissolution_coefs\') to see the set of options
+              allowed.")
       }
     }
   }
@@ -426,7 +420,7 @@ dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
     coef.form.corr <- log(1 + pg / (1 - pg))
   }
   if (form.length == 2) {
-    if (t2.term %in% c("nodematch", "nodefactor", "nodemix")) {
+    if (t2.term %in% c("nodematch", "nodemix")) {
       coef.crude <- coef.adj <- coef.form.corr <- NA
       for (i in seq_along(duration)) {
         pg <- (duration[i] - 1) / duration[i]
@@ -449,8 +443,8 @@ dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
         }
       }
     } else {
-      stop("Supported heterogeneous dissolution model terms are nodematch, ",
-           "nodefactor, or nodemix", call. = FALSE)
+      stop("Supported heterogeneous dissolution model terms are nodematch ",
+           "or nodemix", call. = FALSE)
     }
   }
   out <- list()

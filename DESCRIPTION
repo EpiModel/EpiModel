@@ -52,7 +52,7 @@ Imports:
     rlang,
     dplyr,
     coda,
-    networkLite (>= 1.0.1)
+    networkLite (>= 1.0.5)
 Suggests:
     knitr,
     ndtv,

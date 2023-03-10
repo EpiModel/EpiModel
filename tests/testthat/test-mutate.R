@@ -17,9 +17,10 @@ test_that("mutate_epi.netsim", {
 
   mod1 <- mutate_epi(mod1, i.prev = i.num / num,
                      i.prev.g2 = i.num.g2 / num.g2)
-  expect_equal(names(mod1$epi), c("s.num", "i.num", "num", "s.num.g2",
-                                  "i.num.g2", "num.g2", "si.flow", "si.flow.g2",
-                                  "i.prev", "i.prev.g2"))
+  expect_equal(names(mod1$epi), c("sim.num", "sim.num.g2", "s.num", "i.num",
+                                  "num", "s.num.g2", "i.num.g2", "num.g2",
+                                  "si.flow", "si.flow.g2", "i.prev",
+                                  "i.prev.g2"))
 
   # Add incidence rate per 100 person years (assume time step = 1 week)
   mod1 <- mutate_epi(mod1, ir100 = 5200 * (si.flow + si.flow.g2) /
