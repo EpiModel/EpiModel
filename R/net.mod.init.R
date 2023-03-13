@@ -37,6 +37,15 @@ initialize.net <- function(x, param, init, control, s) {
     # network and stats initialization
     dat <- init_nets(dat, x)
 
+    ## Store current proportions of attr
+    if (!is.null(dat$temp$nwterms)) {
+      dat$temp$t1.tab <- get_attr_prop(dat, dat$temp$nwterms)
+    }
+
+    # simulate first time step
+    dat <- sim_nets_t1(dat)
+    dat <- summary_nets(dat, at = 1L)
+
     ## Infection Status and Time
     dat <- init_status.net(dat)
 
@@ -301,6 +310,7 @@ init_nets <- function(dat, x) {
     x <- list(x)
   }
 
+  ## initialize network data on dat object
   dat$num.nw <- length(x)
   dat$nwparam <- lapply(x, function(y) y[!(names(y) %in% c("fit", "newnetwork"))])
   nws <- lapply(x, `[[`, "newnetwork")
@@ -324,13 +334,10 @@ init_nets <- function(dat, x) {
   ## Pull attr on nw to dat$attr
   dat <- copy_nwattr_to_datattr(dat, nw)
 
-  ## Store current proportions of attr
-  nwterms <- get_network_term_attr(nw)
-  if (!is.null(nwterms)) {
-    dat$temp$nwterms <- nwterms
-    dat$temp$t1.tab <- get_attr_prop(dat, nwterms)
-  }
+  ## record names of relevant vertex attributes
+  dat$temp$nwterms <- get_network_term_attr(nw)
 
+  ## initialize stats data structure
   if (get_control(dat, "save.nwstats") == TRUE) {
     if (get_control(dat, "resimulate.network") == TRUE) {
       dat$stats$nwstats <- rep(list(padded_vector(list(), get_control(dat, "nsteps"))),
@@ -339,10 +346,6 @@ init_nets <- function(dat, x) {
       dat$stats$nwstats <- rep(list(list()), length.out = length(dat$nwparam))
     }
   }
-
-  # simulate first time step
-  dat <- sim_nets_t1(dat)
-  dat <- summary_nets(dat, at = 1L)
 
   return(dat)
 }
