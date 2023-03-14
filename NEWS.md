@@ -6,6 +6,7 @@
 - Added an `end.horizon` control setting to `control.net`. This allows one to remove a set of modules within network epidemic models at a given time step. This end horizon is needed for cost-effectiveness analyses and related models that require tracking person time in the absence of disease transmision.
 - Added `.traceback.on.error` and `.dump.frames.on.error` controls to print the `traceback` on error even on multicore settings and `dump.frames` for remote debugging.
 - Add a `get_cumulative_degree` function with an interface similar to `get_partners`
+- `netsim` now supports multiple networks (with a common node set)
 
 ### BUG FIXES
 

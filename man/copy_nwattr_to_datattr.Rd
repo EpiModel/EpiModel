@@ -4,11 +4,13 @@
 \alias{copy_nwattr_to_datattr}
 \title{Copy Vertex Attributes From Network to \code{dat} List}
 \usage{
-copy_nwattr_to_datattr(dat)
+copy_nwattr_to_datattr(dat, nw)
 }
 \arguments{
 \item{dat}{Main list object containing a \code{networkDynamic} object and
 other initialization information passed from \code{\link{netsim}}.}
+
+\item{nw}{Network from which to copy vertex attributes.}
 }
 \value{
 The updated \code{dat} main list object.

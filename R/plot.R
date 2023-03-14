@@ -1330,12 +1330,6 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
             dyad type(s) on some time step; these undefined values will be set to 0 when processing the data.")
     }
 
-    if (any(grepl("nodefactor", x$dissolution) == TRUE)) {
-      warning("Support for dissolution models containing a nodefactor term is
-              deprecated, and will be removed in a future release.",
-              call. = FALSE)
-    }
-
     if (type == "duration") {
       if (is.logical(duration.imputed) == FALSE) {
         stop("For plots of type duration, duration.imputed must

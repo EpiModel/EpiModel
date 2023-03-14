@@ -166,20 +166,16 @@ saveout.icm <- function(dat, s, out = NULL) {
 #'
 saveout.net <- function(dat, s, out = NULL) {
 
-  # Counts number of simulated networks
-  if (get_control(dat, "tergmLite") == TRUE) {
-    num.nw <- length(dat$el)
-  } else {
-    num.nw <- length(dat$nw)
-  }
-
   if (s == 1) {
     out <- list()
     out$param <- dat$param
     out$control <- dat$control
     out$nwparam <- dat$nwparam
-    out$control$num.nw <- num.nw
+    out$num.nw <- dat$num.nw
     out[["last_timestep"]] <- get_current_timestep(dat)
+
+    out$coef.form <- list()
+    out$coef.form[[s]] <- lapply(dat$nwparam, `[[`, "coef.form")
 
     out$epi <- list()
     for (j in seq_along(dat$epi)) {
@@ -200,7 +196,12 @@ saveout.net <- function(dat, s, out = NULL) {
 
     out$stats <- list()
     if (dat$control$save.nwstats == TRUE) {
-      out$stats$nwstats <- list(lapply(dat$stats$nwstats, function(y) structure(y, ess = ess(y))))
+      ## bind rows
+      nwstats <- lapply(dat$stats$nwstats, dplyr::bind_rows)
+      ## compute ess
+      nwstats <- lapply(nwstats, function(y) structure(y, ess = ess(y)))
+      ## store as first element in list on output object
+      out$stats$nwstats <- list(nwstats)
     }
 
     if (dat$control$save.transmat == TRUE) {
@@ -214,10 +215,9 @@ saveout.net <- function(dat, s, out = NULL) {
       class(out$stats$transmat) <- c("transmat", class(out$stats$transmat))
     }
 
-    if (dat$control$tergmLite == FALSE) {
-      if (dat$control$save.network == TRUE) {
-        out$network <- list(dat$nw)
-      }
+    if (dat$control$save.network == TRUE) {
+      ## call make_sim_network to use most up-to-date el and attr in tergmLite case
+      out$network <- list(lapply(seq_len(dat$num.nw), make_sim_network, dat = dat))
     }
 
     if (!is.null(dat$control$save.other)) {
@@ -233,7 +233,7 @@ saveout.net <- function(dat, s, out = NULL) {
         !is.null(dat$nwparam)) {
 
       ## for each simulated network, if dissolution model is edges-only, compute diss stats
-      out$diss.stats <- list(lapply(seq_len(num.nw), function(network) {
+      out$diss.stats <- list(lapply(seq_len(dat$num.nw), function(network) {
         if (dat$nwparam[[network]]$coef.diss$diss.model.type == "edgesonly") {
           toggles_to_diss_stats(tedgelist_to_toggles(as.data.frame(dat$nw[[network]])),
                                 dat$nwparam[[network]]$coef.diss,
@@ -270,6 +270,8 @@ saveout.net <- function(dat, s, out = NULL) {
       }
     }
 
+    out$coef.form[[s]] <- lapply(dat$nwparam, `[[`, "coef.form")
+
     for (j in seq_along(dat$epi)) {
       out$epi[[names(dat$epi)[j]]][, s] <- data.frame(dat$epi[j])
     }
@@ -282,7 +284,12 @@ saveout.net <- function(dat, s, out = NULL) {
     out$raw.records[[s]] <- dat$raw.records
 
     if (dat$control$save.nwstats == TRUE) {
-      out$stats$nwstats[[s]] <- lapply(dat$stats$nwstats, function(y) structure(y, ess = ess(y)))
+      ## bind rows
+      nwstats <- lapply(dat$stats$nwstats, dplyr::bind_rows)
+      ## compute ess
+      nwstats <- lapply(nwstats, function(y) structure(y, ess = ess(y)))
+      ## store as s'th element in list on output object
+      out$stats$nwstats[[s]] <- nwstats
     }
 
     if (dat$control$save.transmat == TRUE) {
@@ -295,10 +302,9 @@ saveout.net <- function(dat, s, out = NULL) {
       }
     }
 
-    if (dat$control$tergmLite == FALSE) {
-      if (dat$control$save.network == TRUE) {
-        out$network[[s]] <- dat$nw
-      }
+    if (dat$control$save.network == TRUE) {
+      ## call make_sim_network to use most up-to-date el and attr in tergmLite case
+      out$network[[s]] <- lapply(seq_len(dat$num.nw), make_sim_network, dat = dat)
     }
 
     if (!is.null(dat$control$save.other)) {
@@ -314,7 +320,7 @@ saveout.net <- function(dat, s, out = NULL) {
         !is.null(dat$nwparam)) {
 
       ## for each simulated network, if dissolution model is edges-only, compute diss stats
-      out$diss.stats[[s]] <- lapply(seq_len(num.nw), function(network) {
+      out$diss.stats[[s]] <- lapply(seq_len(dat$num.nw), function(network) {
         if (dat$nwparam[[network]]$coef.diss$diss.model.type == "edgesonly") {
           toggles_to_diss_stats(tedgelist_to_toggles(as.data.frame(dat$nw[[network]])),
                                 dat$nwparam[[network]]$coef.diss,
@@ -325,7 +331,6 @@ saveout.net <- function(dat, s, out = NULL) {
         }
       })
     }
-
   }
 
   ## Final processing
@@ -342,6 +347,8 @@ saveout.net <- function(dat, s, out = NULL) {
       out[[elt]] <- name_saveout_elts(out[[elt]], elt, simnames)
     }
 
+    out$coef.form <- name_saveout_elts(out$coef.form, "coef.form", simnames)
+
     if (dat$control$save.nwstats == TRUE) {
       out$stats$nwstats <- name_saveout_elts(
         out$stats$nwstats, "stats$nwstats", simnames)
@@ -352,7 +359,7 @@ saveout.net <- function(dat, s, out = NULL) {
         out$stats$transmat, "stats$transmat", simnames)
     }
 
-    if (dat$control$tergmLite == FALSE && dat$control$save.network == TRUE) {
+    if (dat$control$save.network == TRUE) {
       out$network <- name_saveout_elts(out$network, "network", simnames)
     }
 
@@ -371,11 +378,6 @@ saveout.net <- function(dat, s, out = NULL) {
     out$control[ftodel] <- NULL
     out$control$currsim <- NULL
     environment(out$control$nwstats.formula) <- NULL
-
-    if (!("temp" %in% dat$control$save.other)) {
-      out$temp <- NULL
-    }
-
   }
 
   return(out)
