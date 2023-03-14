@@ -5,14 +5,12 @@
 #'              random graph modeling (ERGM) framework with extensions for
 #'              dynamic/temporal models (STERGM).
 #'
-#' @param nw An object of class \code{network} or \code{egor}, with the latter
-#'        indicating an \code{ergm.ego} fit.
+#' @param nw An object of class \code{network}.
 #' @param formation Right-hand sided STERGM formation formula in the form
 #'        \code{~edges + ...}, where \code{...} are additional network
 #'        statistics.
 #' @param target.stats Vector of target statistics for the formation model, with
-#'        one number for each network statistic in the model.  Ignored if
-#'        fitting via \code{ergm.ego}.
+#'        one number for each network statistic in the model.
 #' @param coef.diss An object of class \code{disscoef} output from the
 #'        \code{\link{dissolution_coefs}} function.
 #' @param constraints Right-hand sided formula specifying constraints for the
@@ -22,12 +20,8 @@
 #'        formula.
 #' @param edapprox If \code{TRUE}, use the indirect edges dissolution
 #'        approximation  method for the dynamic model fit, otherwise use the
-#'        more time-intensive full STERGM estimation (see details).  For
-#'        \code{nw} of class \code{egor}, only \code{edapprox = TRUE} is
-#'        supported.
+#'        more time-intensive full STERGM estimation (see details).
 #' @param set.control.ergm Control arguments passed to \code{ergm} (see
-#'        details).
-#' @param set.control.ergm.ego Control arguments passed to \code{ergm.ego} (see
 #'        details).
 #' @param set.control.tergm Control arguments passed to \code{tergm}
 #'        (see details).
@@ -37,16 +31,16 @@
 #' @param ... Additional arguments passed to other functions.
 #'
 #' @details
-#' \code{netest} is a wrapper function for the \code{ergm}, \code{ergm.ego},
-#' and \code{tergm} functions that estimate static and dynamic network models.
-#' Network model estimation is the first step in simulating a stochastic
-#' network epidemic model in \code{EpiModel}. The output from \code{netest} is
-#' a necessary input for running the epidemic simulations in
-#' \code{\link{netsim}}. With a fitted network model, one should always first
-#' proceed to model diagnostics, available through the \code{\link{netdx}}
-#' function, to check model fit. A detailed description of fitting these
-#' models, along with examples, may be found in the
-#' \href{http://www.epimodel.org/tut.html}{Basic Network Models} tutorials.
+#' \code{netest} is a wrapper function for the \code{ergm} and \code{tergm}
+#' functions that estimate static and dynamic network models. Network model
+#' estimation is the first step in simulating a stochastic network epidemic
+#' model in \code{EpiModel}. The output from \code{netest} is a necessary input
+#' for running the epidemic simulations in \code{\link{netsim}}. With a fitted
+#' network model, one should always first proceed to model diagnostics,
+#' available through the \code{\link{netdx}} function, to check model fit. A
+#' detailed description of fitting these models, along with examples, may be
+#' found in the \href{http://www.epimodel.org/tut.html}{Basic Network Models}
+#' tutorials.
 #'
 #' @section Edges Dissolution Approximation:
 #' The edges dissolution approximation method is described in Carnegie et al.
@@ -87,8 +81,8 @@
 #' model coefficients (value = \code{TRUE}).
 #'
 #' @section Control Arguments:
-#' The \code{ergm}, \code{ergm.ego}, and \code{tergm} functions allow control
-#' settings for the model fitting process. When fitting a STERGM directly (setting
+#' The \code{ergm} and \code{tergm} functions allow control settings for the
+#' model fitting process. When fitting a STERGM directly (setting
 #' \code{edapprox} to \code{FALSE}), control parameters may be passed to the
 #' \code{tergm} function with the \code{set.control.tergm} argument in
 #' \code{netest}. The controls should be input through the
@@ -97,13 +91,10 @@
 #'
 #' When fitting a STERGM indirectly (setting \code{edapprox} to \code{TRUE}),
 #' control settings may be passed to the \code{ergm} function using
-#' \code{set.control.ergm}, or to the \code{ergm.ego} function using
-#' \code{set.control.ergm.ego}.  The controls should be input through the
-#' \code{control.ergm()} and \code{control.ergm.ego()} functions, respectively,
-#' with the available parameters listed in the
+#' \code{set.control.ergm}.  The controls should be input through the
+#' \code{control.ergm()} function, with the available parameters listed in the
 #' \code{\link[ergm:control.ergm]{control.ergm}} help page in the \code{ergm}
-#' package and the \code{\link[ergm.ego:control.ergm.ego]{control.ergm.ego}}
-#' help page in the \code{ergm.ego} package. An example is below.
+#' package. An example is below.
 #'
 #' @return A fitted network model object of class \code{netest}.
 #'
@@ -152,7 +143,6 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
                    coef.form = NULL, edapprox = TRUE,
                    set.control.ergm = control.ergm(),
                    set.control.tergm = control.tergm(),
-                   set.control.ergm.ego = control.ergm.ego(),
                    verbose = FALSE, nested.edapprox = TRUE, ...) {
 
   if (missing(constraints)) {
@@ -210,27 +200,14 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
   } else {
     formation.nw <- nonsimp_update.formula(formation, nw ~ ., from.new = "nw")
 
-    if (is(nw, "egor")) {
-      # ergm.ego case
-      fit <- ergm.ego(formation.nw,
-                      popsize = 0,
-                      constraints = constraints,
-                      offset.coef = coef.form,
-                      control = set.control.ergm.ego,
-                      verbose = verbose)
-
-      target.stats <- fit$m
-
-    } else {
-      # ergm case
-      fit <- ergm(formation.nw,
-                  target.stats = target.stats,
-                  constraints = constraints,
-                  offset.coef = coef.form,
-                  eval.loglik = FALSE,
-                  control = set.control.ergm,
-                  verbose = verbose)
-    }
+    # ergm case
+    fit <- ergm(formation.nw,
+                target.stats = target.stats,
+                constraints = constraints,
+                offset.coef = coef.form,
+                eval.loglik = FALSE,
+                control = set.control.ergm,
+                verbose = verbose)
 
     coef.form <- coef(fit)
     coef.form.crude <- coef.form

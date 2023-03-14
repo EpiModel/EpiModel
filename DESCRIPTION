@@ -39,8 +39,6 @@ Imports:
     utils,
     doParallel,
     ergm (>= 4.4.0),
-    ergm.ego (>= 1.0.1),
-    egor,
     foreach,
     network (>= 1.18.1),
     RColorBrewer,
