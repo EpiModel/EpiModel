@@ -245,5 +245,5 @@ get_cumulative_degree <- function(dat, index_posit_ids, networks = NULL,
     dat, index_posit_ids, networks,
     truncate, only.active.nodes
   )
-  dplyr::summarize(partners, degree = dplyr::n(), .by = index)
+  dplyr::summarize(partners, degree = dplyr::n(), .by = "index")
 }
