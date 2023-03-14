@@ -216,3 +216,15 @@ test_that("get_nwstats with mode = list behaves as expected", {
   expect_equal(length(get_nwstats(mod2, sim = c(1,3,2), mode = "list")), 3)
   expect_equal(length(get_nwstats(mod3, sim = c(1,2), mode = "list")), 2)
 })
+
+test_that("get_network_attributes functions as intended", {
+  nw <- network.initialize(10, directed = FALSE, bipartite = 4)
+  nw %n% "newattr" <- "string"
+  expect_equal(get_network_attributes(nw), list(bipartite = 4,
+                                                directed = FALSE,
+                                                hyper = FALSE,
+                                                loops = FALSE,
+                                                multiple = FALSE,
+                                                n = 10,
+                                                newattr = "string"))
+})

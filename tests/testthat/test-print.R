@@ -56,7 +56,7 @@ test_that("print.netsim", {
   expect_output(print(mod), "Model type: SI")
   expect_output(print(mod), "No. NW groups: 2")
   expect_output(print(mod),
-                "Variables: s.num i.num num s.num.g2 i.num.g2 num.g2")
+                "Variables: sim.num sim.num.g2 s.num i.num num s.num.g2")
 })
 
 test_that("print.disscoefs", {

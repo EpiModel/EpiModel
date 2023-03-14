@@ -29,8 +29,6 @@
 #'        details).
 #' @param set.control.ergm.ego Control arguments passed to \code{ergm.ego} (see
 #'        details).
-#' @param set.control.stergm Deprecated control argument of class
-#'        \code{control.stergm}; use \code{set.control.tergm} instead.
 #' @param set.control.tergm Control arguments passed to \code{tergm}
 #'        (see details).
 #' @param verbose If \code{TRUE}, print model fitting progress to console.
@@ -153,15 +151,9 @@
 netest <- function(nw, formation, target.stats, coef.diss, constraints,
                    coef.form = NULL, edapprox = TRUE,
                    set.control.ergm = control.ergm(),
-                   set.control.stergm = control.stergm(),
                    set.control.tergm = control.tergm(),
                    set.control.ergm.ego = control.ergm.ego(),
                    verbose = FALSE, nested.edapprox = TRUE, ...) {
-
-  if (!missing(set.control.stergm)) {
-    warning("set.control.stergm is deprecated and will be removed in a future
-             version; use set.control.tergm instead.")
-  }
 
   if (missing(constraints)) {
     constraints	<- trim_env(~.)
@@ -184,30 +176,15 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
 
   if (edapprox == FALSE) {
 
-    if (!missing(set.control.stergm)) {
-      fit <- stergm(nw,
-                    formation = formation,
-                    dissolution = dissolution,
-                    targets = "formation",
-                    target.stats = target.stats,
-                    offset.coef.form = coef.form,
-                    offset.coef.diss = coef.diss$coef.crude,
-                    constraints = constraints,
-                    estimate = "EGMME",
-                    eval.loglik = FALSE,
-                    control = set.control.stergm,
-                    verbose = verbose)
-    } else {
-      fit <- tergm(nw ~ Form(formation) + Persist(dissolution),
-                   targets = "formation",
-                   target.stats = target.stats,
-                   offset.coef = c(coef.form, coef.diss$coef.crude),
-                   constraints = constraints,
-                   estimate = "EGMME",
-                   eval.loglik = FALSE,
-                   control = set.control.tergm,
-                   verbose = verbose)
-    }
+    fit <- tergm(nw ~ Form(formation) + Persist(dissolution),
+                 targets = "formation",
+                 target.stats = target.stats,
+                 offset.coef = c(coef.form, coef.diss$coef.crude),
+                 constraints = constraints,
+                 estimate = "EGMME",
+                 eval.loglik = FALSE,
+                 control = set.control.tergm,
+                 verbose = verbose)
 
     coef.form <- fit # there is no longer a separate formation fit
     which_form <- which(grepl("^Form~", names(coef(fit))) |
@@ -346,14 +323,9 @@ diss_check <- function(formation, dissolution) {
     stop("Dissolution model is not a subset of formation model.", call. = FALSE)
   }
   if (!all(diss.terms[1, ] %in% c("edges", "nodemix",
-                                  "nodematch", "nodefactor"))) {
+                                  "nodematch"))) {
     stop("The only allowed dissolution terms are edges, nodemix,
-         nodematch and ", "nodefactor", call. = FALSE)
-  }
-  if (any(diss.terms[1, ] %in% c("nodefactor"))) {
-    warning("Support for dissolution models containing a nodefactor term is
-            deprecated, and will be removed in a future release.")
-    # TODO: remove functionality and deprecation message in future release
+         and nodematch", call. = FALSE)
   }
   if (any(matchpos != seq_len(ncol(diss.terms)))) {
     stop("Order of terms in the dissolution model does not correspond to the ",

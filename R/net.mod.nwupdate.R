@@ -20,8 +20,6 @@ nwupdate.net <- function(dat, at) {
 
   ## Controls
   tergmLite <- get_control(dat, "tergmLite")
-  cumulative.edgelist <- get_control(dat, "cumulative.edgelist")
-
   resimulate.network <- get_control(dat, "resimulate.network")
 
   ## Vital Dynamics
@@ -42,19 +40,27 @@ nwupdate.net <- function(dat, at) {
            print(cbind(sapply(get_attr_list(dat), length))))
     }
     if (tergmLite == FALSE) {
-      dat$nw[[1]] <- add.vertices(dat$nw[[1]], nv = nArrivals)
+      for (network in seq_len(dat$num.nw)) {
+        dat$nw[[network]] <- add.vertices(dat$nw[[network]], nv = nArrivals)
 
-      dat$nw[[1]] <- activate.vertices(dat$nw[[1]], onset = at,
-                                       terminus = Inf, v = arrivals)
-
-      dat$nw[[1]] <- activate.vertex.attribute(dat$nw[[1]],
-                                               prefix = "testatus",
-                                               value = status[arrivals],
-                                               onset = at, terminus = Inf,
+        dat$nw[[network]] <- activate.vertices(dat$nw[[network]],
+                                               onset = at,
+                                               terminus = Inf,
                                                v = arrivals)
+
+        dat$nw[[network]] <- activate.vertex.attribute(dat$nw[[network]],
+                                                       prefix = "testatus",
+                                                       value = status[arrivals],
+                                                       onset = at,
+                                                       terminus = Inf,
+                                                       v = arrivals)
+      }
     }
     if (tergmLite == TRUE) {
-      dat$el[[1]] <- add_vertices(dat$el[[1]], nv = nArrivals)
+      for (network in seq_len(dat$num.nw)) {
+        dat$el[[network]] <- add_vertices(dat$el[[network]], nv = nArrivals)
+        dat$net_attr[[network]][["n"]] <- dat$net_attr[[network]][["n"]] + nArrivals
+      }
     }
   }
 
@@ -62,17 +68,24 @@ nwupdate.net <- function(dat, at) {
   ## Departures
   if (length(departures) > 0) {
     if (tergmLite == FALSE) {
-      dat$nw[[1]] <- deactivate.vertices(dat$nw[[1]], onset = at,
-                                         terminus = Inf, v = departures,
-                                         deactivate.edges = TRUE)
+      for (network in seq_len(dat$num.nw)) {
+        dat$nw[[network]] <- deactivate.vertices(dat$nw[[network]],
+                                                 onset = at,
+                                                 terminus = Inf,
+                                                 v = departures,
+                                                 deactivate.edges = TRUE)
+      }
     }
     if (tergmLite == TRUE) {
       dat <- delete_attr(dat, departures)
-      dat$el[[1]] <- delete_vertices(dat$el[[1]], departures)
+      for (network in seq_len(dat$num.nw)) {
+        dat$el[[network]] <- delete_vertices(dat$el[[network]], departures)
+        dat$net_attr[[network]][["n"]] <- dat$net_attr[[network]][["n"]] - length(departures)
 
-      if (dat$control$tergmLite.track.duration) {
-        dat$nw[[1]] %n% "lasttoggle" <-
-          delete_vertices(dat$nw[[1]] %n% "lasttoggle", departures)
+        if (get_network_control(dat, network, "tergmLite.track.duration") == TRUE) {
+          dat$net_attr[[network]][["lasttoggle"]] <-
+            delete_vertices(dat$net_attr[[network]][["lasttoggle"]], departures)
+        }
       }
     }
   }
@@ -84,19 +97,12 @@ nwupdate.net <- function(dat, at) {
 
   ## Update temporally extended disease status
   if (tergmLite == FALSE) {
-    dat$nw[[1]] <- activate.vertex.attribute(dat$nw[[1]],
-                                             prefix = "testatus",
-                                             value = status,
-                                             onset = at,
-                                             terminus = Inf)
-  }
-
-  # Cummulative edgelist
-  if (cumulative.edgelist) {
-    truncate.el.cuml <- get_control(dat, "truncate.el.cuml")
-
-    for (network in seq_along(dat[["nwparam"]])) {
-      dat <- update_cumulative_edgelist(dat, network, truncate.el.cuml)
+    for (network in seq_len(dat$num.nw)) {
+      dat$nw[[network]] <- activate.vertex.attribute(dat$nw[[network]],
+                                                     prefix = "testatus",
+                                                     value = status,
+                                                     onset = at,
+                                                     terminus = Inf)
     }
   }
 

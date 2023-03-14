@@ -2,26 +2,30 @@
 % Please edit documentation in R/net.mod.simnet.R
 \name{sim_nets_t1}
 \alias{sim_nets_t1}
-\title{Simulate Initial Network at Time 1 for Model Initialization}
+\title{Initialize Networks Used in netsim}
 \usage{
-sim_nets_t1(x, dat, nsteps)
+sim_nets_t1(dat)
 }
 \arguments{
-\item{x}{An \code{EpiModel} object of class \code{\link{netest}}.}
-
 \item{dat}{Main list object containing a \code{networkDynamic} object and
 other initialization information passed from \code{\link{netsim}}.}
-
-\item{nsteps}{For TERGMs, the number of time steps to simulate the network
-over; for ERGMs, the number of independent network panels to simulate.}
 }
 \value{
 The updated \code{dat} main list object.
 }
 \description{
-This function simulates a dynamic network over one or multiple
-time steps for TERGMs or one or multiple cross-sectional network
-panels for ERGMs, for use in \code{\link{netsim}} modeling.
+This function initializes the networks used in
+\code{\link{netsim}}. The initial edge set for a given network
+is obtained either from simulating the cross-sectional model
+(if \code{edapprox == TRUE}) or from the \code{newnetwork}
+element of the \code{netest} object (if
+\code{edapprox == FALSE}). Once the initial edge sets are
+determined, the first time step is simulated if
+\code{resimulate.network == TRUE}, and all time steps are
+simulated if \code{resimulate.network == FALSE}. Initializes the
+\code{sim.num(.g2)} epi fields used in
+\code{\link{edges_correct}} for computing edge coefficient
+adjustments.
 }
 \keyword{internal}
 \keyword{netUtils}
