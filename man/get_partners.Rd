@@ -2,7 +2,7 @@
 % Please edit documentation in R/el_cuml.R
 \name{get_partners}
 \alias{get_partners}
-\title{Return the Historical Partners (Contacts) of a Set of Index Patients}
+\title{Return the Historical Partners (Contacts) of a Set of Index Nodes}
 \usage{
 get_partners(
   dat,
@@ -43,5 +43,5 @@ partnership/contact is located.
 }
 }
 \description{
-Return the Historical Partners (Contacts) of a Set of Index Patients
+Return the Historical Partners (Contacts) of a Set of Index Nodes
 }
