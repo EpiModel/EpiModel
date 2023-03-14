@@ -12,6 +12,22 @@ get_cumulative_degree(
   only.active.nodes = FALSE
 )
 }
+\arguments{
+\item{dat}{Main list object containing a \code{networkDynamic} object and
+other initialization information passed from \code{\link{netsim}}.}
+
+\item{index_posit_ids}{The positional IDs of the indexes of interest.}
+
+\item{networks}{Numerical indexes of the networks to extract the partnerships
+from. (May be > 1 for models with multiple overlapping
+networks.) If \code{NULL}, extract from all networks.}
+
+\item{truncate}{After how many time steps a partnership that is no longer
+active should be removed from the output.}
+
+\item{only.active.nodes}{If \code{TRUE}, then inactive (e.g., deceased)
+partners will be removed from the output.}
+}
 \value{
 A \code{data.frame} with 2 columns:
 \itemize{

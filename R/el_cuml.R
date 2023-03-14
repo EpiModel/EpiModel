@@ -225,6 +225,8 @@ get_partners <- function(dat, index_posit_ids, networks = NULL,
 
 #' @title Return the Cumulative Degree of a Set of Index Nodes
 #'
+#' @inheritParams get_partners
+#'
 #' @return
 #' A \code{data.frame} with 2 columns:
 #' \itemize{
