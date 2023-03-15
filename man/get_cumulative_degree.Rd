@@ -31,7 +31,7 @@ partners will be removed from the output.}
 \value{
 A \code{data.frame} with 2 columns:
 \itemize{
-\item \code{index}: the unique ID (see \code{get_unique_ids}) of the
+\item \code{index_pid}: the positional ID (see \code{get_posit_ids}) of the
 indexes.
 \item \code{degree}: the cumulative degree of the index.
 }

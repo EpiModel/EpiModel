@@ -230,7 +230,7 @@ get_partners <- function(dat, index_posit_ids, networks = NULL,
 #' @return
 #' A \code{data.frame} with 2 columns:
 #' \itemize{
-#'   \item \code{index}: the unique ID (see \code{get_unique_ids}) of the
+#'   \item \code{index_pid}: the positional ID (see \code{get_posit_ids}) of the
 #'         indexes.
 #'   \item \code{degree}: the cumulative degree of the index.
 #'  }
@@ -243,9 +243,11 @@ get_partners <- function(dat, index_posit_ids, networks = NULL,
 #' @export
 get_cumulative_degree <- function(dat, index_posit_ids, networks = NULL,
                                   truncate = Inf, only.active.nodes = FALSE) {
-  partners <- get_partners(
+  get_partners(
     dat, index_posit_ids, networks,
     truncate, only.active.nodes
-  )
-  dplyr::summarize(partners, degree = dplyr::n(), .by = "index")
+  ) |>
+    dplyr::summarize(degree = dplyr::n(), .by = "index") |>
+    dplyr::mutate(index = get_posit_ids(dat, .data$index)) |>
+    dplyr::select(index_pid = "index", "degree")
 }
