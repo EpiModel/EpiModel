@@ -3,6 +3,7 @@
 ### NEW FEATURES
 
 - `netsim` now supports multiple networks (with a common node set)
+- Add a `get_cumulative_degree` function with an interface similar to `get_partners`
 
 ### BUG FIXES
 
@@ -24,7 +25,7 @@
 
 ### OTHER
 
-- Removed functionality for the `networkLite` class (sparse network representations needed for epidemic modeling) from EpiModel and placed into its own package on CRAN: https://CRAN.R-project.org/package=networkLite. 
+- Removed functionality for the `networkLite` class (sparse network representations needed for epidemic modeling) from EpiModel and placed into its own package on CRAN: https://CRAN.R-project.org/package=networkLite.
 
 
 ## EpiModel 2.3.1
