@@ -97,6 +97,7 @@ test_that("netsim, SI, Cumulative Edgelist with arrivals and departures", {
   el_cuml <- get_cumulative_edgelists_df(dat)
   spids <- sample(pid, 20)
   partners <- get_partners(dat, spids)
+  degree_cuml <- get_cumulative_degree(dat, spids)
 
   # checks the unicity of UIDs
   expect_true(all(table(uid) == 1))
