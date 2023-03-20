@@ -268,15 +268,9 @@ resim_nets <- function(dat, at) {
     }
   }
 
-  cumulative.edgelist <- get_control(
-    dat, "cumulative.edgelist", override.null.error = TRUE)
   # Cummulative edgelist
-  if (!is.null(cumulative.edgelist) && cumulative.edgelist == TRUE) {
-
-    truncate.el.cuml <- get_control(
-      dat, "truncate.el.cuml", override.null.error = TRUE)
-    truncate.el.cuml <- if (is.null(truncate.el.cuml)) 1 else truncate.el.cuml
-
+  if (get_control(dat, "cumulative.edgelist")) {
+    truncate.el.cuml <- get_control(dat, "truncate.el.cuml")
     for (network in seq_len(dat$num.nw)) {
       dat <- update_cumulative_edgelist(dat, network, truncate.el.cuml)
     }
