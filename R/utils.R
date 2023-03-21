@@ -387,6 +387,8 @@ netsim_error_logger <- function(dat, s) {
 #'        to a \code{networkLite}.
 #' @param keep.fit If \code{FALSE}, removes the \code{object$fit} (if present)
 #'        on the \code{netest} object.
+#' @param keep Character vector of object names to keep in formula environments.
+#'        By default, all objects are removed.
 #'
 #' @details
 #' With larger, more complex network structures with epidemic models, it is
@@ -395,35 +397,35 @@ netsim_error_logger <- function(dat, s) {
 #' all but the bare essentials needed for simulating a network model with
 #' \code{\link{netsim}}.
 #'
-#' The function always removes the environments of \code{object$constraints} and
+#' The function always trims the environments of \code{object$constraints} and
 #' \code{object$coef.diss$dissolution}.
 #'
 #' When both \code{edapprox = TRUE} and \code{nested.edapprox = TRUE} in the
-#' \code{netest} call, also removes the environments of \code{object$formula}
+#' \code{netest} call, also trims the environments of \code{object$formula}
 #' and \code{object$formation}.
 #'
 #' When both \code{edapprox = TRUE} and \code{nested.edapprox = FALSE} in the
-#' \code{netest} call, also removes the environments of \code{object$formula},
+#' \code{netest} call, also trims the environments of \code{object$formula},
 #' \code{environment(object$formation)$formation}, and
 #' \code{environment(object$formation)$dissolution}.
 #'
-#' When \code{edapprox = FALSE} in the \code{netest} call, also removes the
+#' When \code{edapprox = FALSE} in the \code{netest} call, also trims the
 #' environments of \code{object$formation},
 #' \code{environment(object$formula)$formation} and
 #' \code{environment(object$formula)$dissolution}.
+#'
+#' By default all objects are removed from these trimmed environments. Specific
+#' objects may be retained by passing their names as the \code{keep} argument.
+#' For the output of \code{trim_netest} to be usable in \code{\link{netsim}}
+#' simulation, any objects referenced in the formulas should be included in the
+#' \code{keep} argument.
 #'
 #' If \code{as.networkLite = TRUE}, converts \code{object$newnetwork} to a
 #' \code{networkLite} object. If \code{keep.fit = FALSE}, removes \code{fit} (if
 #' present) from \code{object}.
 #'
-#' For the output to be usable in \code{\link{netsim}} simulation, there should
-#' not be substitutions in the formulas, other than \code{formation} and
-#' \code{dissolution} in \code{object$formula} when \code{edapprox = FALSE} and
-#' in \code{object$formation} when both \code{edapprox = TRUE} and
-#' \code{nested.edapprox = FALSE}.
-#'
 #' @return
-#' A \code{netest} object with formula environments removed, optionally with the
+#' A \code{netest} object with formula environments trimmed, optionally with the
 #' \code{newnetwork} element converted to a \code{networkLite} and the
 #' \code{fit} element removed.
 #'
@@ -442,29 +444,30 @@ netsim_error_logger <- function(dat, s) {
 #' est.small <- trim_netest(est)
 #' print(object.size(est.small), units = "KB")
 #'
-trim_netest <- function(object, as.networkLite = TRUE, keep.fit = FALSE) {
+trim_netest <- function(object, as.networkLite = TRUE, keep.fit = FALSE,
+                        keep = character(0)) {
   if (object$edapprox == TRUE) {
-    object$formula <- trim_env(object$formula)
+    object$formula <- trim_env(object$formula, keep = keep)
     if (object$nested.edapprox == TRUE) {
-      object$formation <- trim_env(object$formation)
+      object$formation <- trim_env(object$formation, keep = keep)
     } else {
       # trim environments for formation and dissolution inside formation
       environment(object$formation)$formation <-
-        trim_env(environment(object$formation)$formation)
+        trim_env(environment(object$formation)$formation, keep = keep)
       environment(object$formation)$dissolution <-
-        trim_env(environment(object$formation)$dissolution)
+        trim_env(environment(object$formation)$dissolution, keep = keep)
     }
   } else {
-    object$formation <- trim_env(object$formation)
+    object$formation <- trim_env(object$formation, keep = keep)
     # trim environments for formation and dissolution inside formula
     environment(object$formula)$formation <-
-      trim_env(environment(object$formula)$formation)
+      trim_env(environment(object$formula)$formation, keep = keep)
     environment(object$formula)$dissolution <-
-      trim_env(environment(object$formula)$dissolution)
+      trim_env(environment(object$formula)$dissolution, keep = keep)
   }
 
-  object$coef.diss$dissolution <- trim_env(object$coef.diss$dissolution)
-  object$constraints <- trim_env(object$constraints)
+  object$coef.diss$dissolution <- trim_env(object$coef.diss$dissolution, keep = keep)
+  object$constraints <- trim_env(object$constraints, keep = keep)
 
   if (keep.fit == FALSE) {
     object$fit <- NULL
