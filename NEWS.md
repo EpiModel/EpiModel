@@ -26,7 +26,8 @@
 ### OTHER
 
 - Removed functionality for the `networkLite` class (sparse network representations needed for epidemic modeling) from EpiModel and placed into its own package on CRAN: https://CRAN.R-project.org/package=networkLite.
-
+- the `cumulative.edgelist` and `truncate.el.cuml` controls get default values in `netsim_validate_control` (`FALSE` and `0`). Better messages and warnings are sent
+when trying to access an uncreated cumulative edgelist.
 
 ## EpiModel 2.3.1
 

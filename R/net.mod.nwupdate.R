@@ -20,7 +20,6 @@ nwupdate.net <- function(dat, at) {
 
   ## Controls
   tergmLite <- get_control(dat, "tergmLite")
-
   resimulate.network <- get_control(dat, "resimulate.network")
 
   ## Vital Dynamics
