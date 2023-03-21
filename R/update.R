@@ -118,21 +118,43 @@ delete_vertices <- function(el, vid) {
 
   vid <- sort(vid)
 
+  new.el <- delete_edges(el, vid)
+  if (length(vid) > 0 && NROW(new.el) > 0) {
+    o1 <- order(new.el[, 1])
+    new.el[, 1] <- shiftVec(new.el[o1, 1], vid)[order(o1)]
+    o2 <- order(new.el[, 2])
+    new.el[, 2] <- shiftVec(new.el[o2, 2], vid)[order(o2)]
+  }
+  if (!is.null(attr(el, "n"))) attr(new.el, "n") <- attr(el, "n") - length(vid)
+
+  return(new.el)
+}
+
+
+#' @title Remove Edges That Include Specified Vertices
+#'
+#' @description Given a current two-column matrix of edges and a vector of
+#'              vertex IDs, this function removes any rows of the edgelist in
+#'              which the IDs are present.
+#'
+#' @param el A two-column matrix of current edges (edgelist).
+#' @param vid A vector of vertex IDs whose edges are to be deleted from the
+#'            edgelist.
+#'
+#' @return
+#' Returns an updated edgelist object, with any edges including the specified
+#' vertices removed.
+#'
+#' @export
+#'
+delete_edges <- function(el, vid) {
   new.el <- el
   if (length(vid) > 0) {
     el.rows.to.del <- which(el[, 1] %in% vid | el[, 2] %in% vid)
     if (length(el.rows.to.del) > 0) {
       new.el <- el[-el.rows.to.del, , drop = FALSE]
+      if (!is.null(attr(el, "n"))) attr(new.el, "n") <- attr(el, "n")
     }
-    if (NROW(new.el) > 0) {
-      o1 <- order(new.el[, 1])
-      new.el[, 1] <- shiftVec(new.el[o1, 1], vid)[order(o1)]
-      o2 <- order(new.el[, 2])
-      new.el[, 2] <- shiftVec(new.el[o2, 2], vid)[order(o2)]
-    }
-    if (!is.null(attr(el, "n"))) attr(new.el, "n") <- attr(el, "n") -
-                                                      length(vid)
   }
-
-  return(new.el)
+  new.el
 }
