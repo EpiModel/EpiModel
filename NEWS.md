@@ -5,6 +5,7 @@
 - Estimation with the `ergm.ego` package estimation is now supported. This is accomplished by passing an `egor` class object instead of a `network` class object as the `nw` argument to `netest`.
 - Added an `end.horizon` control setting to `control.net`. This allows one to remove a set of modules within network epidemic models at a given time step. This end horizon is needed for cost-effectiveness analyses and related models that require tracking person time in the absence of disease transmision.
 - Added `.traceback.on.error` and `.dump.frames.on.error` controls to print the `traceback` on error even on multicore settings and `dump.frames` for remote debugging.
+- Add a `get_cumulative_degree` function with an interface similar to `get_partners`
 - `netsim` now supports multiple networks (with a common node set)
 
 ### BUG FIXES
@@ -14,8 +15,9 @@
 
 ### OTHER
 
-- Removed functionality for the `networkLite` class (sparse network representations needed for epidemic modeling) from EpiModel and placed into its own package on CRAN: https://CRAN.R-project.org/package=networkLite. 
-
+- Removed functionality for the `networkLite` class (sparse network representations needed for epidemic modeling) from EpiModel and placed into its own package on CRAN: https://CRAN.R-project.org/package=networkLite.
+- the `cumulative.edgelist` and `truncate.el.cuml` controls get default values in `netsim_validate_control` (`FALSE` and `0`). Better messages and warnings are sent
+when trying to access an uncreated cumulative edgelist.
 
 ## EpiModel 2.3.1
 
