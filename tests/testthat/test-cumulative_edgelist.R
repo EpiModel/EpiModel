@@ -65,6 +65,27 @@ test_that("netsim, SI, Cumulative Edgelist", {
   )
 })
 
+test_that("netsim, SI, Cumulative Edgelist - missing args", {
+  skip_on_cran()
+  control <- control.net(
+    type = "SI",
+    nsims = 1,
+    nsteps = 10,
+    resimulate.network = TRUE,
+    tergmLite = TRUE,
+    verbose = FALSE,
+    raw.output = TRUE
+  )
+
+  mod <- netsim(est, param, init, control)
+  expect_message(get_cumulative_edgelists_df(mod[[1]]))
+  expect_warning(get_cumulative_edgelists_df(mod[[1]]))
+
+  expect_equal(mod[[1]]$control$cumulative.edgelist, FALSE)
+  expect_equal(mod[[1]]$control$truncate.el.cuml, 0)
+
+})
+
 test_that("netsim, SI, Cumulative Edgelist with arrivals and departures", {
   skip_on_cran()
   nw <- network_initialize(n = 100)
@@ -97,6 +118,7 @@ test_that("netsim, SI, Cumulative Edgelist with arrivals and departures", {
   el_cuml <- get_cumulative_edgelists_df(dat)
   spids <- sample(pid, 20)
   partners <- get_partners(dat, spids)
+  degree_cuml <- get_cumulative_degree(dat, spids)
 
   # checks the unicity of UIDs
   expect_true(all(table(uid) == 1))

@@ -58,7 +58,20 @@ get_cumulative_edgelist <- function(dat, network) {
          "' to get the cumulative edgelist from")
   }
 
+  if (!get_control(dat, "cumulative.edgelist")) {
+    warning("Trying to acces the cumulative edgelist even though it is not
+      calculated. (`cumulative.edgelist` control == FALSE)")
+  }
+
   if (length(dat[["el.cuml"]]) < network) {
+  message(
+      "\n\nAt timestep = ", get_current_timestep(dat), ":\n",
+      "    the cumulative edgelist for network '", network,
+      "' is created from scratch \n",
+      "    ** if this message repeats, check that the  \n'",
+      "    ** `update_cumulative_edgelist` function \n",
+      "    ** is called after the networks resimulation. \n"
+  )
     el_cuml <- NULL
   } else {
     el_cuml <- dat[["el.cuml"]][[network]]
@@ -165,7 +178,7 @@ get_cumulative_edgelists_df <- function(dat, networks = NULL) {
   return(el_cuml_df)
 }
 
-#' @title Return the Historical Partners (Contacts) of a Set of Index Patients
+#' @title Return the Historical Partners (Contacts) of a Set of Index Nodes
 #'
 #' @param index_posit_ids The positional IDs of the indexes of interest.
 #' @param networks Numerical indexes of the networks to extract the partnerships
@@ -221,4 +234,33 @@ get_partners <- function(dat, index_posit_ids, networks = NULL,
   }
 
   return(partner_df)
+}
+
+#' @title Return the Cumulative Degree of a Set of Index Nodes
+#'
+#' @inheritParams get_partners
+#'
+#' @return
+#' A \code{data.frame} with 2 columns:
+#' \itemize{
+#'   \item \code{index_pid}: the positional ID (see \code{get_posit_ids}) of the
+#'         indexes.
+#'   \item \code{degree}: the cumulative degree of the index.
+#'  }
+#'
+#' @section Cumulative Degree:
+#' The cumulative degree of a node is the number of edges connected to this
+#' node at during the time window. The time window is by default all the steps
+#' stored in the `cumulative_edgelist` or set by the `truncate` parameter.
+#'
+#' @export
+get_cumulative_degree <- function(dat, index_posit_ids, networks = NULL,
+                                  truncate = Inf, only.active.nodes = FALSE) {
+  get_partners(
+    dat, index_posit_ids, networks,
+    truncate, only.active.nodes
+  ) |>
+    dplyr::summarize(degree = dplyr::n(), .by = "index") |>
+    dplyr::mutate(index = get_posit_ids(dat, .data$index)) |>
+    dplyr::select(index_pid = "index", "degree")
 }
