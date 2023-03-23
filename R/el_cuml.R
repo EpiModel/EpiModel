@@ -63,7 +63,7 @@ get_cumulative_edgelist <- function(dat, network) {
       calculated. (`cumulative.edgelist` control == FALSE)")
   }
 
-  if (length(dat[["el.cuml"]]) < network) {
+  if (is.null(dat[["el.cuml"]][[network]]) && get_current_timestep(dat) > 1) {
   message(
       "\n\nAt timestep = ", get_current_timestep(dat), ":\n",
       "    the cumulative edgelist for network '", network,
