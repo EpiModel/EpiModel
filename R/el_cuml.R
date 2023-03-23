@@ -168,32 +168,38 @@ get_cumulative_edgelists_df <- function(dat, networks = NULL) {
   return(el_cuml_df)
 }
 
-#' @title Return the Historical Partners (Contacts) of a Set of Index Nodes
+#' @title Return the Historical Contacts (Partners) of a Set of Index Nodes
+#'
+#' @description
+#' From a full cumulative edgelist that contains the history of contacts (both persistent and
+#' one-time), this function returns a data frame containing details of the index (head) and partner
+#' (tail) nodes, along with start and stop time steps for the partnership and the network location.
 #'
 #' @param index_posit_ids The positional IDs of the indexes of interest.
-#' @param networks Numerical indexes of the networks to extract the partnerships
-#'                 from. (May be > 1 for models with multiple overlapping
-#'                 networks.) If \code{NULL}, extract from all networks.
-#' @param only.active.nodes If \code{TRUE}, then inactive (e.g., deceased)
-#'                          partners will be removed from the output.
-#'
+#' @param networks Numerical indexes of the networks to extract the partnerships from. (May be > 1
+#'        for models with multi-layer networks.) If `NULL`, extract from all networks.
+#' @param only.active.nodes If `TRUE`, then inactive (e.g., deceased) partners will be removed from
+#'        the output.
 #' @inheritParams update_cumulative_edgelist
 #'
 #' @return
-#' A \code{data.frame} with 5 columns:
-#' \itemize{
-#'   \item \code{index}: the unique ID (see \code{get_unique_ids}) of the
-#'         indexes.
-#'   \item \code{partner}: the unique ID (see \code{get_unique_ids}) of the
-#'         partners/contacts.
-#'   \item \code{start}: the time step in which the edge started.
-#'   \item \code{stop}: the time step in which the edge stopped; if ongoing,
-#'         then \code{NA} is returned.
-#'   \item \code{network}: the numerical index for the network on which the
-#'         partnership/contact is located.
-#'  }
+#' A `data.frame` with 5 columns:
+#'   * `index`: the unique IDs of the indexes.
+#'   * `partner`: the unique IDs of the partners/contacts.
+#'   * `start`: the time step at which the edge started.
+#'   * `stop`: the time step in which the edge stopped; if ongoing, then `NA` is returned.
+#'   * `network`: the numerical index for the network on which the partnership/contact is located.
+#'
+#' @details
+#' Note that `get_partners` takes as input the positional IDs of the indexes of interest but returns
+#' the unique IDs. That is by design, because while `get_partners` would be expected to be called
+#' for active nodes, some partners (contacts) of nodes may be inactive in the network history.
+#' Therefore, both index and partner IDs are returned as unique IDs for consistency. To convert
+#' between a positional to a unique ID, you may use [`get_posit_ids`]; to convert between a
+#' unique ID to a positional ID, you may use [`get_unique_ids`].
 #'
 #' @export
+#'
 get_partners <- function(dat, index_posit_ids, networks = NULL,
                          truncate = Inf, only.active.nodes = FALSE) {
 
