@@ -2,7 +2,7 @@
 % Please edit documentation in R/el_cuml.R
 \name{get_partners}
 \alias{get_partners}
-\title{Return the Historical Partners (Contacts) of a Set of Index Nodes}
+\title{Return the Historical Contacts (Partners) of a Set of Index Nodes}
 \usage{
 get_partners(
   dat,
@@ -18,30 +18,35 @@ other initialization information passed from \code{\link{netsim}}.}
 
 \item{index_posit_ids}{The positional IDs of the indexes of interest.}
 
-\item{networks}{Numerical indexes of the networks to extract the partnerships
-from. (May be > 1 for models with multiple overlapping
-networks.) If \code{NULL}, extract from all networks.}
+\item{networks}{Numerical indexes of the networks to extract the partnerships from. (May be > 1
+for models with multi-layer networks.) If \code{NULL}, extract from all networks.}
 
 \item{truncate}{After how many time steps a partnership that is no longer
 active should be removed from the output.}
 
-\item{only.active.nodes}{If \code{TRUE}, then inactive (e.g., deceased)
-partners will be removed from the output.}
+\item{only.active.nodes}{If \code{TRUE}, then inactive (e.g., deceased) partners will be removed from
+the output.}
 }
 \value{
 A \code{data.frame} with 5 columns:
 \itemize{
-\item \code{index}: the unique ID (see \code{get_unique_ids}) of the
-indexes.
-\item \code{partner}: the unique ID (see \code{get_unique_ids}) of the
-partners/contacts.
-\item \code{start}: the time step in which the edge started.
-\item \code{stop}: the time step in which the edge stopped; if ongoing,
-then \code{NA} is returned.
-\item \code{network}: the numerical index for the network on which the
-partnership/contact is located.
+\item \code{index}: the unique IDs of the indexes.
+\item \code{partner}: the unique IDs of the partners/contacts.
+\item \code{start}: the time step at which the edge started.
+\item \code{stop}: the time step in which the edge stopped; if ongoing, then \code{NA} is returned.
+\item \code{network}: the numerical index for the network on which the partnership/contact is located.
 }
 }
 \description{
-Return the Historical Partners (Contacts) of a Set of Index Nodes
+From a full cumulative edgelist that contains the history of contacts (both persistent and
+one-time), this function returns a data frame containing details of the index (head) and partner
+(tail) nodes, along with start and stop time steps for the partnership and the network location.
+}
+\details{
+Note that \code{get_partners} takes as input the positional IDs of the indexes of interest but returns
+the unique IDs. That is by design, because while \code{get_partners} would be expected to be called
+for active nodes, some partners (contacts) of nodes may be inactive in the network history.
+Therefore, both index and partner IDs are returned as unique IDs for consistency. To convert
+between a positional to a unique ID, you may use \code{\link{get_posit_ids}}; to convert between a
+unique ID to a positional ID, you may use \code{\link{get_unique_ids}}.
 }
