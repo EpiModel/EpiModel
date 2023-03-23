@@ -708,16 +708,19 @@ is_active_posit_ids <- function(dat, posit_ids) {
   return(active[posit_ids] %in% 1)
 }
 
-#' Grow a Vector to a Given Size, Padding it With Empty Elements
+#' @title Grow a Vector to a Given Size, Padding it With Empty Elements
 #'
-#' Grow a vector to a given size, padding it with  `NULL` if `orig` is a `list`
+#' @description Grow a vector to a given size, padding it with  `NULL` if `orig` is a `list`
 #' and with `NA` otherwise
 #'
-#' @param orig a vector to grow
-#' @param size the final size of the vector
+#' @param orig A vector to grow.
+#' @param size The final size of the vector.
 #'
-#' @return a vector of size `size` padded with `NULL`s or `NA`s at the end
+#' @return
+#' A vector of size `size` padded with `NULL`s or `NA`s at the end.
+#'
 #' @export
+#'
 padded_vector <- function(orig, size) {
   if (is.list(orig)) {
     out <- c(orig, vector(mode = "list", size - length(orig)))

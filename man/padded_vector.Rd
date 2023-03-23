@@ -7,12 +7,12 @@
 padded_vector(orig, size)
 }
 \arguments{
-\item{orig}{a vector to grow}
+\item{orig}{A vector to grow.}
 
-\item{size}{the final size of the vector}
+\item{size}{The final size of the vector.}
 }
 \value{
-a vector of size \code{size} padded with \code{NULL}s or \code{NA}s at the end
+A vector of size \code{size} padded with \code{NULL}s or \code{NA}s at the end.
 }
 \description{
 Grow a vector to a given size, padding it with  \code{NULL} if \code{orig} is a \code{list}
