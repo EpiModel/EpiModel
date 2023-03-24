@@ -165,7 +165,7 @@ simulate_dat <- function(dat, at, network = 1L, nsteps = 1L) {
   ## determine formula and coefficients; set discordance_fraction in ergm case
   nwparam <- get_nwparam(dat, network = network)
   simulation_control <- get_network_control(dat, network, "set.control.tergm")
-  if (all(nwparam$coef.diss$duration > 1)) {
+  if (any(nwparam$coef.diss$duration > 1)) {
     formula <- ~Form(nwparam$formation) +
                 Persist(nwparam$coef.diss$dissolution)
     coef <- c(nwparam$coef.form, nwparam$coef.diss$coef.adj)
