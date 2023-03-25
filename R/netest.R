@@ -164,7 +164,7 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
          call. = FALSE)
   }
   dissolution <- coef.diss$dissolution
-  if (coef.diss$coef.crude[1] == -Inf) {
+  if (coef.diss$duration[1] == 1) {
     is.tergm <- FALSE
   } else {
     is.tergm <- TRUE
