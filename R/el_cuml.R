@@ -55,12 +55,12 @@ get_edgelist <- function(dat, network) {
 get_cumulative_edgelist <- function(dat, network) {
   if (!network %in% seq_len(dat$num.nw)) {
     stop("There is no network '", network,
-         "' to get the cumulative edgelist from")
+         "' from which to get the cumulative edgelist.")
   }
 
   if (!get_control(dat, "cumulative.edgelist")) {
-    stop("Trying to acces the cumulative edgelist even though it is not
-      calculated. (`cumulative.edgelist` control == FALSE)")
+    stop("Failed to get the cumulative edgelist. It is likely not stored because the
+         `cumulative.edgelist` control setting is set to `FALSE`.")
   }
 
   el_cuml <- dat[["el.cuml"]][[network]]
