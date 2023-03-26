@@ -55,27 +55,15 @@ get_edgelist <- function(dat, network) {
 get_cumulative_edgelist <- function(dat, network) {
   if (!network %in% seq_len(dat$num.nw)) {
     stop("There is no network '", network,
-         "' to get the cumulative edgelist from")
+         "' from which to get the cumulative edgelist.")
   }
 
   if (!get_control(dat, "cumulative.edgelist")) {
-    warning("Trying to acces the cumulative edgelist even though it is not
-      calculated. (`cumulative.edgelist` control == FALSE)")
+    stop("Failed to get the cumulative edgelist. It is likely not stored because the
+         `cumulative.edgelist` control setting is set to `FALSE`.")
   }
 
-  if (length(dat[["el.cuml"]]) < network) {
-  message(
-      "\n\nAt timestep = ", get_current_timestep(dat), ":\n",
-      "    the cumulative edgelist for network '", network,
-      "' is created from scratch \n",
-      "    ** if this message repeats, check that the  \n'",
-      "    ** `update_cumulative_edgelist` function \n",
-      "    ** is called after the networks resimulation. \n"
-  )
-    el_cuml <- NULL
-  } else {
-    el_cuml <- dat[["el.cuml"]][[network]]
-  }
+  el_cuml <- dat[["el.cuml"]][[network]]
 
   if (is.null(el_cuml)) {
     el_cuml <- tibble::tibble(
@@ -107,9 +95,11 @@ get_cumulative_edgelist <- function(dat, network) {
 #' behavior to keep track of the active edges' start step.
 #'
 #' @inherit recovery.net return
-#'
-#' @export
 update_cumulative_edgelist <- function(dat, network, truncate = 0) {
+  if (!get_control(dat, "cumulative.edgelist")) {
+    return(dat)
+  }
+
   el <- get_edgelist(dat, network)
   el_cuml <- get_cumulative_edgelist(dat, network)
 
