@@ -78,8 +78,8 @@ test_that("netsim, SI, Cumulative Edgelist - missing args", {
   )
 
   mod <- netsim(est, param, init, control)
-  expect_message(get_cumulative_edgelists_df(mod[[1]]))
-  expect_warning(get_cumulative_edgelists_df(mod[[1]]))
+
+  expect_error(get_cumulative_edgelists_df(mod[[1]]))
 
   expect_equal(mod[[1]]$control$cumulative.edgelist, FALSE)
   expect_equal(mod[[1]]$control$truncate.el.cuml, 0)

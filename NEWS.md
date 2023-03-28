@@ -9,6 +9,8 @@
 
 ### OTHER
 
+- `update_cumulative_edgelist` is now called unconditionally and governed by the `cumulative.edgelist` control.
+- trying to access a cumulative edgelist when `cumulative.edgelist == FALSE` causes an error
 
 ## EpiModel 2.3.2
 
