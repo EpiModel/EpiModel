@@ -158,3 +158,45 @@ delete_edges <- function(el, vid) {
   }
   new.el
 }
+
+#' Depart Nodes from the dat Object
+#'
+#' @param dat the \code{dat} object
+#' @param departures the vertex ids of nodes to depart
+#'
+#' @details If \code{tergmLite} is \code{FALSE}, the vertex ids
+#' \code{departures} are deactivated (from the current timestep onward) in each
+#' \code{networkDynamic} stored in \code{dat$nw}. If \code{tergmLite} is
+#' \code{TRUE}, the vertex ids \code{departures} are deleted from \code{dat$el},
+#' \code{dat$attr}, and \code{dat$net_attr}.
+#'
+#' @return the updated \code{dat} object with the nodes in \code{departures}
+#'         departed
+#'
+#' @export
+#'
+depart_nodes <- function(dat, departures) {
+  if (length(departures) > 0) {
+    if (get_control(dat, "tergmLite") == FALSE) {
+      for (network in seq_len(dat$num.nw)) {
+        dat$nw[[network]] <- deactivate.vertices(dat$nw[[network]],
+                                                 onset = get_current_timestep(dat),
+                                                 terminus = Inf,
+                                                 v = departures,
+                                                 deactivate.edges = TRUE)
+      }
+    } else {
+      dat <- delete_attr(dat, departures)
+      for (network in seq_len(dat$num.nw)) {
+        dat$el[[network]] <- delete_vertices(dat$el[[network]], departures)
+        dat$net_attr[[network]][["n"]] <- dat$net_attr[[network]][["n"]] - length(departures)
+
+        if (get_network_control(dat, network, "tergmLite.track.duration") == TRUE) {
+          dat$net_attr[[network]][["lasttoggle"]] <-
+            delete_vertices(dat$net_attr[[network]][["lasttoggle"]], departures)
+        }
+      }
+    }
+  }
+  return(dat)
+}

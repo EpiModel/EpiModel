@@ -66,29 +66,7 @@ nwupdate.net <- function(dat, at) {
 
 
   ## Departures
-  if (length(departures) > 0) {
-    if (tergmLite == FALSE) {
-      for (network in seq_len(dat$num.nw)) {
-        dat$nw[[network]] <- deactivate.vertices(dat$nw[[network]],
-                                                 onset = at,
-                                                 terminus = Inf,
-                                                 v = departures,
-                                                 deactivate.edges = TRUE)
-      }
-    }
-    if (tergmLite == TRUE) {
-      dat <- delete_attr(dat, departures)
-      for (network in seq_len(dat$num.nw)) {
-        dat$el[[network]] <- delete_vertices(dat$el[[network]], departures)
-        dat$net_attr[[network]][["n"]] <- dat$net_attr[[network]][["n"]] - length(departures)
-
-        if (get_network_control(dat, network, "tergmLite.track.duration") == TRUE) {
-          dat$net_attr[[network]][["lasttoggle"]] <-
-            delete_vertices(dat$net_attr[[network]][["lasttoggle"]], departures)
-        }
-      }
-    }
-  }
+  dat <- depart_nodes(dat, departures)
 
   ## Copy static attributes to network object
   if (tergmLite == FALSE && resimulate.network == TRUE) {
