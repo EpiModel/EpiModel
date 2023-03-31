@@ -31,7 +31,7 @@ sim_nets_t1 <- function(dat) {
     nwparam <- get_nwparam(dat, network = network)
 
     ## (re)construct input network
-    nw <- make_sim_network(dat, network)
+    nw <- get_network(dat, network)
 
     ## simulate t0 basis network nw if using edapprox
     if (nwparam$edapprox == TRUE) {
@@ -90,30 +90,6 @@ sim_nets_t1 <- function(dat) {
   }
 
   return(dat)
-}
-
-#' @title Construct Network from dat Object
-#'
-#' @description This function returns the network object representing the
-#'              current state of the simulation.
-#'
-#' @inheritParams recovery.net
-#' @param network index of the network to construct
-#'
-#' @return The network.
-#'
-#' @export
-#' @keywords netUtils internal
-#'
-make_sim_network <- function(dat, network = 1L) {
-  if (get_control(dat, "tergmLite") == FALSE) {
-    ## networkDynamic
-    nw <- dat$nw[[network]]
-  } else {
-    ## networkLite
-    nw <- networkLite(dat$el[[network]], dat$attr, dat$net_attr[[network]])
-  }
-  return(nw)
 }
 
 #' @title Set Network on dat Object
@@ -201,7 +177,7 @@ simulate_dat <- function(dat, at, network = 1L, nsteps = 1L) {
   ## always TERGM simulation
   nw <- suppressWarnings(simulate(formula,
                                   coef = coef,
-                                  basis = make_sim_network(dat = dat, network = network),
+                                  basis = get_network(x = dat, network = network),
                                   constraints = nwparam$constraints,
                                   time.start = at - time_offset,
                                   time.offset = time_offset,

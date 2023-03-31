@@ -216,8 +216,8 @@ saveout.net <- function(dat, s, out = NULL) {
     }
 
     if (dat$control$save.network == TRUE) {
-      ## call make_sim_network to use most up-to-date el and attr in tergmLite case
-      out$network <- list(lapply(seq_len(dat$num.nw), make_sim_network, dat = dat))
+      ## call get_network to use most up-to-date el and attr in tergmLite case
+      out$network <- list(lapply(seq_len(dat$num.nw), get_network, x = dat))
     }
 
     if (!is.null(dat$control$save.other)) {
@@ -303,8 +303,8 @@ saveout.net <- function(dat, s, out = NULL) {
     }
 
     if (dat$control$save.network == TRUE) {
-      ## call make_sim_network to use most up-to-date el and attr in tergmLite case
-      out$network[[s]] <- lapply(seq_len(dat$num.nw), make_sim_network, dat = dat)
+      ## call get_network to use most up-to-date el and attr in tergmLite case
+      out$network[[s]] <- lapply(seq_len(dat$num.nw), get_network, x = dat)
     }
 
     if (!is.null(dat$control$save.other)) {

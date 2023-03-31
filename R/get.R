@@ -17,11 +17,7 @@
 #'        a static \code{network} object at a specified time step.
 #' @param at If \code{collapse} is \code{TRUE}, the time step at which the
 #'        extracted network should be collapsed.
-#' @param ergm.create.nd If \code{TRUE} and \code{x} contains a static ERGM
-#'        (i.e., a netest model with duration = 1), then create a
-#'        \code{networkDynamic} object from the stored list of static
-#'        \code{network} objects; if \code{FALSE}, output the network list
-#'        directly.
+#' @param ... Additional arguments.
 #'
 #' @details
 #' This function requires that the \code{networkDynamic} object is saved during
@@ -70,53 +66,34 @@
 #' ## Extract and collapse the network from simulation 1 at time step 5
 #' get_network(mod, collapse = TRUE, at = 5)
 #'
-get_network <- function(x, sim = 1, network = 1, collapse = FALSE, at,
-                        ergm.create.nd = TRUE) {
+get_network <- function(x, ...) {
+  UseMethod("get_network")
+}
+
+#' @rdname get_network
+#'
+#' @export
+#'
+get_network.netdx <- function(x, sim = 1, network = 1, collapse = FALSE, at, ...) {
 
   ## Warnings and checks ##
-  if (!(class(x) %in% c("netsim", "netdx"))) {
-    stop("x must be of class netsim or netdx", call. = FALSE)
-  }
-
-  nsims <- ifelse(class(x) == "netsim", x$control$nsims, x$nsims)
+  nsims <- x$nsims
   if (length(sim) > 1 || sim > nsims) {
     stop("Specify a single sim between 1 and ", nsims, call. = FALSE)
   }
 
-  if (inherits(x, "netsim")) {
-    if (x$control$tergmLite == TRUE) {
-      stop("Network object not saved in netsim object when 'tergmLite = TRUE'.
-           Check control.net settings.",
-           call. = FALSE)
-    }
-    if (x$control$tergmLite == TRUE || is.null(x$network)) {
-      stop("Network object not saved in netsim object.
-            Check control.net settings.", call. = FALSE)
-    }
-  } else if (inherits(x, "netdx")) {
-    if (is.null(x$network)) {
-      stop("Network object not saved in netdx object.
-            Check keep.tnetwork parameter", call. = FALSE)
-    }
+  if (is.null(x$network)) {
+    stop("Network object not saved in netdx object.
+          Check keep.tnetwork parameter", call. = FALSE)
   }
 
-  if (inherits(x, "netsim")) {
-    if (network > x$num.nw) {
-      stop("Specify network between 1 and ", x$num.nw, call. = FALSE)
-    }
-  }
-
-  nsteps <- ifelse(inherits(x, "netsim"), x$control$nsteps, x$nsteps)
+  nsteps <- x$nsteps
   if (collapse == TRUE && (missing(at) || at > nsteps || at < 0)) {
-    stop("Specify collapse time step between 0 and ", nsteps,
-         call. = FALSE)
+    stop("Specify collapse time step between 0 and ", nsteps, call. = FALSE)
   }
+
   ## Extraction ##
-  if (inherits(x, "netsim")) {
-    out <- x$network[[sim]][[network]]
-  } else if (inherits(x, "netdx")) {
-    out <- x$network[[sim]]
-  }
+  out <- x$network[[sim]]
 
   ## Collapsing
   if (collapse == TRUE) {
@@ -124,6 +101,63 @@ get_network <- function(x, sim = 1, network = 1, collapse = FALSE, at,
   }
 
   return(out)
+}
+
+#' @rdname get_network
+#'
+#' @export
+#'
+get_network.netsim <- function(x, sim = 1, network = 1, collapse = FALSE, at, ...) {
+
+  ## Warnings and checks ##
+  nsims <- x$control$nsims
+  if (length(sim) > 1 || sim > nsims) {
+    stop("Specify a single sim between 1 and ", nsims, call. = FALSE)
+  }
+
+  if (x$control$tergmLite == TRUE) {
+    stop("Network object not saved in netsim object when 'tergmLite = TRUE'.
+         Check control.net settings.",
+         call. = FALSE)
+  }
+  if (x$control$tergmLite == TRUE || is.null(x$network)) {
+    stop("Network object not saved in netsim object.
+          Check control.net settings.", call. = FALSE)
+  }
+
+  if (network > x$num.nw) {
+    stop("Specify network between 1 and ", x$num.nw, call. = FALSE)
+  }
+
+  nsteps <- x$control$nsteps
+  if (collapse == TRUE && (missing(at) || at > nsteps || at < 0)) {
+    stop("Specify collapse time step between 0 and ", nsteps, call. = FALSE)
+  }
+
+  ## Extraction ##
+  out <- x$network[[sim]][[network]]
+
+  ## Collapsing
+  if (collapse == TRUE) {
+    out <- network.collapse(out, at = at)
+  }
+
+  return(out)
+}
+
+#' @rdname get_network
+#'
+#' @export
+#'
+get_network.netsim_dat <- function(x, network = 1L, ...) {
+  if (get_control(x, "tergmLite") == FALSE) {
+    ## networkDynamic
+    nw <- x$nw[[network]]
+  } else {
+    ## networkLite
+    nw <- networkLite(x$el[[network]], x$attr, x$net_attr[[network]])
+  }
+  return(nw)
 }
 
 

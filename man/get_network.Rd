@@ -2,20 +2,24 @@
 % Please edit documentation in R/get.R
 \name{get_network}
 \alias{get_network}
+\alias{get_network.netdx}
+\alias{get_network.netsim}
+\alias{get_network.netsim_dat}
 \title{Extract networkDynamic and network Objects from Network Simulations}
 \usage{
-get_network(
-  x,
-  sim = 1,
-  network = 1,
-  collapse = FALSE,
-  at,
-  ergm.create.nd = TRUE
-)
+get_network(x, ...)
+
+\method{get_network}{netdx}(x, sim = 1, network = 1, collapse = FALSE, at, ...)
+
+\method{get_network}{netsim}(x, sim = 1, network = 1, collapse = FALSE, at, ...)
+
+\method{get_network}{netsim_dat}(x, network = 1L, ...)
 }
 \arguments{
 \item{x}{An \code{EpiModel} object of class \code{\link{netsim}} or
 \code{\link{netdx}}.}
+
+\item{...}{Additional arguments.}
 
 \item{sim}{Simulation number of extracted network.}
 
@@ -28,12 +32,6 @@ a static \code{network} object at a specified time step.}
 
 \item{at}{If \code{collapse} is \code{TRUE}, the time step at which the
 extracted network should be collapsed.}
-
-\item{ergm.create.nd}{If \code{TRUE} and \code{x} contains a static ERGM
-(i.e., a netest model with duration = 1), then create a
-\code{networkDynamic} object from the stored list of static
-\code{network} objects; if \code{FALSE}, output the network list
-directly.}
 }
 \value{
 A \code{networkDynamic} object (if \code{collapse = FALSE}) or a

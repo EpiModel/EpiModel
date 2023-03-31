@@ -23,6 +23,8 @@ create_dat_object <- function(param = list(), init = list(), control = list()) {
     "_timestep" = 1
   )
 
+  class(dat) <- c("netsim_dat", class(dat))
+
   return(dat)
 }
 
