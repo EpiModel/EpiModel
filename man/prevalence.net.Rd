@@ -7,13 +7,14 @@
 prevalence.net(dat, at)
 }
 \arguments{
-\item{dat}{Main list object containing a \code{networkDynamic} object and
-other initialization information passed from \code{\link{netsim}}.}
+\item{dat}{Main \code{netsim_dat} object containing a \code{networkDynamic}
+object and other initialization information passed from
+\code{\link{netsim}}.}
 
 \item{at}{Current time step.}
 }
 \value{
-The updated \code{dat} main list object.
+The updated \code{netsim_dat} main list object.
 }
 \description{
 Provides all active model state sizes from the network at the

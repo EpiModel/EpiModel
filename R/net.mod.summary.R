@@ -5,7 +5,8 @@
 #'              simulated in \code{netsim}, provided \code{save.nwstats} and
 #'              \code{resimulate.network} are both \code{TRUE}. It records the
 #'              statistics represented by \code{nwstats.formula} in
-#'              \code{dat$stats$nwstats}.
+#'              \code{dat$stats$nwstats}, where \code{dat} is the main
+#'              \code{netsim_dat} class object.
 #'
 #' @inheritParams recovery.net
 #'

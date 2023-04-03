@@ -1,15 +1,16 @@
-#' @title Create a Minimal Main List Object for a Network Model
+#' @title Create a Minimal netsim_dat Main List Object for a Network Model
 #'
-#' @description This helper function populates a \code{dat} main list object
-#'              with the minimal required elements. All parameters are optional.
-#'              When none are given the resulting object is only a shell list
-#'              with the different named elements defined as empty lists.
+#' @description This helper function populates a \code{netsim_dat} main list
+#'              object with the minimal required elements. All parameters are
+#'              optional. When none are given the resulting object is only a
+#'              shell list of class \code{netsim_dat} with the different named
+#'              elements defined as empty lists.
 #'
 #' @param param An \code{EpiModel} object of class \code{\link{param.net}}.
 #' @param init An \code{EpiModel} object of class \code{\link{init.net}}.
 #' @param control An \code{EpiModel} object of class \code{\link{control.net}}.
 #'
-#' @return A \code{dat} main list object.
+#' @return A \code{netsim_dat} main list object.
 #' @export
 create_dat_object <- function(param = list(), init = list(), control = list()) {
   dat <- list(
@@ -40,9 +41,9 @@ get_current_timestep <- function(dat) {
 
 #' @title Set the Current Timestep
 #'
-#' @description Changes the current timestep in the \code{dat} object. Use with
-#'              caution. This function exists to work around unforeseen corner
-#'              cases. In most situation, \code{increment_timestep} is
+#' @description Changes the current timestep in the \code{netsim_dat} object.
+#'              Use with caution. This function exists to work around unforeseen
+#'              corner cases. In most situation, \code{increment_timestep} is
 #'              preferred.
 #'
 #' @inheritParams recovery.net
@@ -51,8 +52,8 @@ get_current_timestep <- function(dat) {
 #' @inherit recovery.net return
 #'
 #' @section Mutability:
-#' This DOES NOT modify the \code{dat} object in place. The result must be
-#' assigned back to \code{dat} in order to be registered:
+#' This DOES NOT modify the \code{netsim_dat} object in place. The result must
+#' be assigned back to \code{dat} in order to be registered:
 #' \code{dat <- increment_timestep(dat)}.
 #'
 #' @export
@@ -64,15 +65,15 @@ set_current_timestep <- function(dat, timestep) {
 #' @title Increment the Current Timestep
 #'
 #' @description This function adds 1 to the timestep counter stored in the
-#'              \code{dat} main list object.
+#'              \code{netsim_dat} main list object.
 #'
 #' @inheritParams recovery.net
 #'
 #' @inherit recovery.net return
 #'
 #' @section Mutability:
-#' This DOES NOT modify the \code{dat} object in place. The result must be
-#' assigned back to \code{dat} in order to be registered:
+#' This DOES NOT modify the \code{netsim_dat} object in place. The result must
+#' be assigned back to \code{dat} in order to be registered:
 #' \code{dat <- increment_timestep(dat)}.
 #'
 #' @export

@@ -14,7 +14,7 @@ initialize.icm(param, init, control)
 \item{control}{An \code{EpiModel} object of class \code{\link{control.icm}}.}
 }
 \value{
-The updated \code{dat} main list object.
+The updated \code{netsim_dat} main list object.
 }
 \description{
 This function initializes the main \code{dat} object on which

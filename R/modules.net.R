@@ -29,11 +29,11 @@
 #' multiple-simulation function calls, these are reset at the beginning of each
 #' individual simulation.
 #' \itemize{
-#'  \item \code{\link{initialize.net}}: sets up the main data structure used
-#'        in the simulation, initializes which nodes are infected (via the
-#'        initial conditions passed in \code{\link{init.net}}), and simulates a
-#'        first time step of the networks given the network model fit from
-#'        \code{\link{netest}}.
+#'  \item \code{\link{initialize.net}}: sets up the main \code{netsim_dat} data
+#'        structure used in the simulation, initializes which nodes are infected
+#'        (via the initial conditions passed in \code{\link{init.net}}), and
+#'        simulates a first time step of the networks given the network model
+#'        fit from \code{\link{netest}}.
 #' }
 #'
 #' @section Disease Status Modification Modules:

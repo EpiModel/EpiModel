@@ -12,7 +12,7 @@ arrivals.icm.bip(dat, at)
 \item{at}{Current time step.}
 }
 \value{
-The updated \code{dat} main list object.
+The updated \code{netsim_dat} main list object.
 }
 \description{
 This function simulates arrival for use in \code{\link{icm}}

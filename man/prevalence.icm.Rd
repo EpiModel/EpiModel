@@ -12,7 +12,7 @@ prevalence.icm(dat, at)
 \item{at}{Current time step.}
 }
 \value{
-The updated \code{dat} main list object.
+The updated \code{netsim_dat} main list object.
 }
 \description{
 This function provides all active model state sizes from

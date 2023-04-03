@@ -426,7 +426,7 @@ get_nwstats <- function(x, sim, network = 1, mode = c("data.frame", "list")) {
 #' @description Extracts a list of network model parameters saved in the
 #'              initialization module.
 #'
-#' @param x Main data object used in \code{netsim} simulations.
+#' @param x Main \code{netsim_dat} data object used in \code{netsim} simulations.
 #' @param network Network number, for simulations with multiple networks
 #'        representing the population.
 #'

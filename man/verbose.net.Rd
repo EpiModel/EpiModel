@@ -8,8 +8,8 @@ verbose.net(x, type, s = 1, at = 2)
 }
 \arguments{
 \item{x}{If the \code{type} is "startup", then an object of class
-\code{control.net}; otherwise \code{dat}, the main data object in
-\code{\link{netsim}} simulations.}
+\code{control.net}; otherwise, an object of class \code{netsim_dat},
+the main data object in \code{\link{netsim}} simulations.}
 
 \item{type}{Progress type, either of "startup" for starting messages before
 all simulations, or "progress" for time step specific messages.}

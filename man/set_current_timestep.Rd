@@ -7,24 +7,25 @@
 set_current_timestep(dat, timestep)
 }
 \arguments{
-\item{dat}{Main list object containing a \code{networkDynamic} object and
-other initialization information passed from \code{\link{netsim}}.}
+\item{dat}{Main \code{netsim_dat} object containing a \code{networkDynamic}
+object and other initialization information passed from
+\code{\link{netsim}}.}
 
 \item{timestep}{The new value for the timestep.}
 }
 \value{
-The updated \code{dat} main list object.
+The updated \code{netsim_dat} main list object.
 }
 \description{
-Changes the current timestep in the \code{dat} object. Use with
-caution. This function exists to work around unforeseen corner
-cases. In most situation, \code{increment_timestep} is
+Changes the current timestep in the \code{netsim_dat} object.
+Use with caution. This function exists to work around unforeseen
+corner cases. In most situation, \code{increment_timestep} is
 preferred.
 }
 \section{Mutability}{
 
-This DOES NOT modify the \code{dat} object in place. The result must be
-assigned back to \code{dat} in order to be registered:
+This DOES NOT modify the \code{netsim_dat} object in place. The result must
+be assigned back to \code{dat} in order to be registered:
 \code{dat <- increment_timestep(dat)}.
 }
 

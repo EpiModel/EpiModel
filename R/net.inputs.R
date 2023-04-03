@@ -714,9 +714,9 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #'        specification.
 #' @param save.network If `TRUE`, networkDynamic or networkLite object is saved at simulation end.
 #' @param save.transmat If `TRUE`, complete transmission matrix is saved at simulation end.
-#' @param save.other A character vector of elements on the `dat` main data list to save out after
-#'        each simulation. One example for base models is the attribute list, `"attr"`, at the final
-#'        time step.
+#' @param save.other A character vector of elements on the `netsim_dat` main data list to save out
+#'        after each simulation. One example for base models is the attribute list, `"attr"`, at
+#'        the final time step.
 #' @param verbose If `TRUE`, print model progress to the console.
 #' @param verbose.int Time step interval for printing progress to console, where `0` prints
 #'        completion status of entire simulation and positive integer `x` prints progress after
@@ -741,7 +741,10 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #' @param dat.updates Either `NULL`, a single function taking arguments `dat`,
 #'        `at`, and `network`, or a list of functions of length one greater
 #'        than the number of networks being simulated, with each function in
-#'        the list taking arguments `dat` and `at`. If a single function is
+#'        the list taking arguments `dat` and `at`. Here `dat` is the main
+#'        `netsim_dat` class object, `at` is the current timestep, and `network`
+#'        is an index indicating the current position within the sequence of
+#'        network (re)simulations on each time step. If a single function is
 #'        passed, it will be called before the first network is simulated and
 #'        after each network is simulated, with `network = 0L` before the first
 #'        network is simulated and with `network = i` after the `i`th network
@@ -749,11 +752,11 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #'        will be called before the first network is simulated, and the
 #'        `i + 1`th function will be called after the `i`th network is
 #'        simulated. (Note that `at = 0L` is used for initial cross-sectional
-#'        simulations in [`sim_nets_t1`].) The function(s) should return `dat`
-#'        with any updates needed to correctly represent the network states for
-#'        calls to `simulate` and/or `summary`. This can be useful if nodal
-#'        attributes appearing in one network model depend on nodal degrees in
-#'        a different network.
+#'        simulations in [`sim_nets_t1`].) The function(s) should return the
+#'        `netsim_dat` object with any updates needed to correctly represent the
+#'        network states for calls to `simulate` and/or `summary`. This can be
+#'        useful if nodal attributes appearing in one network model depend on
+#'        nodal degrees in a different network.
 #' @param ... Additional control settings passed to model.
 #'
 #' @details

@@ -12,7 +12,7 @@ recovery.icm(dat, at)
 \item{at}{Current time step.}
 }
 \value{
-The updated \code{dat} main list object.
+The updated \code{netsim_dat} main list object.
 }
 \description{
 This function simulates recovery from the infected state
