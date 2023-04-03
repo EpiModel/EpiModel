@@ -63,7 +63,11 @@ get_cumulative_edgelist <- function(dat, network) {
          `cumulative.edgelist` control setting is set to `FALSE`.")
   }
 
-  el_cuml <- dat[["el.cuml"]][[network]]
+  if (length(dat$el.cuml) >= network) {
+    el_cuml <- dat[["el.cuml"]][[network]]
+  } else {
+    el_cuml <- NULL
+  }
 
   if (is.null(el_cuml)) {
     el_cuml <- tibble::tibble(
@@ -95,6 +99,7 @@ get_cumulative_edgelist <- function(dat, network) {
 #' behavior to keep track of the active edges' start step.
 #'
 #' @inherit recovery.net return
+#'
 update_cumulative_edgelist <- function(dat, network, truncate = 0) {
   if (!get_control(dat, "cumulative.edgelist")) {
     return(dat)
