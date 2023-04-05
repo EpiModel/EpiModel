@@ -74,6 +74,10 @@ initialize.net <- function(x, param, init, control, s) {
 
     dat <- create_dat_object(param = param, control = control)
 
+    if (is.null(param[["groups"]])) {
+      dat <- set_param(dat, "groups", x$param$groups)
+    }
+
     dat$num.nw <- x$num.nw
     if (control[["tergmLite"]] == TRUE) {
       dat$el <- x$el[[s]]
