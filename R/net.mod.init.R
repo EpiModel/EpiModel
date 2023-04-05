@@ -72,7 +72,7 @@ initialize.net <- function(x, param, init, control, s) {
            paste.and(missing_names), call. = FALSE)
     }
 
-    dat <- create_dat_object(param = x$param, control = control)
+    dat <- create_dat_object(param = param, control = control)
 
     dat$num.nw <- x$num.nw
     if (control[["tergmLite"]] == TRUE) {
