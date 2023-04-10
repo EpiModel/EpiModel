@@ -86,7 +86,7 @@ infection.icm <- function(dat, at) {
 #'
 #' @inheritParams prevalence.icm
 #'
-#' @return The updated \code{dat} main list object.
+#' @return The updated \code{icm_dat} class main data object.
 #'
 #' @export
 #' @keywords internal

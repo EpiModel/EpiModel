@@ -7,12 +7,13 @@
 recovery.icm(dat, at)
 }
 \arguments{
-\item{dat}{Main data object passed through \code{icm} simulations.}
+\item{dat}{Main \code{icm_dat} class data object passed through \code{icm}
+simulations.}
 
 \item{at}{Current time step.}
 }
 \value{
-The updated \code{dat} main list object.
+The updated \code{icm_dat} class main data object.
 }
 \description{
 This function simulates recovery from the infected state

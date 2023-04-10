@@ -75,9 +75,9 @@ saveout.dcm <- function(df, s, param, control, out = NULL) {
 
 #' @title Save icm Data to Output List Format
 #'
-#' @description This function transfers the data from the main \code{dat}
-#'              object to the output \code{out} object at the end of each
-#'              simulation in \code{\link{icm}}.
+#' @description This function transfers the data from the main \code{icm_dat}
+#'              class data object to the output \code{out} object at the end of
+#'              each simulation in \code{\link{icm}}.
 #'
 #' @inheritParams prevalence.icm
 #' @param s Current simulation number.
