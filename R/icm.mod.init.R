@@ -9,7 +9,7 @@
 #' @param init An \code{EpiModel} object of class \code{\link{init.icm}}.
 #' @param control An \code{EpiModel} object of class \code{\link{control.icm}}.
 #'
-#' @inherit recovery.net return
+#' @inherit recovery.icm return
 #'
 #' @export
 #' @keywords internal
@@ -56,7 +56,7 @@ initialize.icm <- function(param, init, control) {
 #'
 #' @inheritParams prevalence.icm
 #'
-#' @inherit recovery.net return
+#' @inherit recovery.icm return
 #'
 #' @seealso This is an initialization module for \code{\link{icm}}.
 #'
