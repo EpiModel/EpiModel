@@ -22,12 +22,12 @@ and nodal attributes) are assumed to be the same for all networks.}
 \item{s}{Simulation number, used for restarting dependent simulations.}
 }
 \value{
-A \code{dat} main list object.
+A \code{netsim_dat} class main data object.
 }
 \description{
-This function initializes the main \code{dat} object on which
-data are stored, simulates the initial state of the networks,
-and simulates disease status and other attributes.
+This function initializes the main \code{netsim_dat} class data
+object on which data are stored, simulates the initial state of
+the networks, and simulates disease status and other attributes.
 }
 \details{
 When re-initializing a simulation, the \code{netsim} object passed

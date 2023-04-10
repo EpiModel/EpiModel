@@ -2,7 +2,7 @@
 % Please edit documentation in R/net.accessor.R
 \name{check_attr_lengths}
 \alias{check_attr_lengths}
-\title{Check that All Attributes in the Main Object are of Equal
+\title{Check that All Attributes in the Main \code{netsim_dat} Object are of Equal
 Length}
 \usage{
 check_attr_lengths(dat)
@@ -16,7 +16,7 @@ object and other initialization information passed from
 invisible(TRUE) if everything is correct; an error if not.
 }
 \description{
-Check that All Attributes in the Main Object are of Equal
+Check that All Attributes in the Main \code{netsim_dat} Object are of Equal
 Length
 }
 \keyword{internal}

@@ -1,4 +1,4 @@
-#' @title Functions to Access and Edit the Main List Object in Network Models
+#' @title Functions to Access and Edit the Main netsim_dat Object in Network Models
 #'
 #' @description These \code{get_}, \code{set_}, \code{append_}, and \code{add_}
 #'              functions allow a safe and efficient way to retrieve and mutate
@@ -593,7 +593,7 @@ update_unique_ids <- function(dat, n.new) {
   return(dat)
 }
 
-#' @title Check that All Attributes in the Main Object are of Equal
+#' @title Check that All Attributes in the Main `netsim_dat` Object are of Equal
 #'        Length
 #'
 #' @inheritParams recovery.net

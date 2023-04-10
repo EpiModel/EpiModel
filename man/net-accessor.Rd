@@ -25,7 +25,7 @@
 \alias{add_init}
 \alias{set_init}
 \alias{append_core_attr}
-\title{Functions to Access and Edit the Main List Object in Network Models}
+\title{Functions to Access and Edit the Main netsim_dat Object in Network Models}
 \usage{
 get_attr_list(dat, item = NULL)
 
