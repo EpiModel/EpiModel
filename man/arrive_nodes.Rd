@@ -2,26 +2,27 @@
 % Please edit documentation in R/update.R
 \name{arrive_nodes}
 \alias{arrive_nodes}
-\title{Arrive New Nodes to the dat Object}
+\title{Arrive New Nodes to the netsim_dat Object}
 \usage{
 arrive_nodes(dat, nArrivals)
 }
 \arguments{
-\item{dat}{the \code{dat} object}
+\item{dat}{the \code{netsim_dat} object}
 
 \item{nArrivals}{number of new nodes to arrive}
 }
 \value{
-the updated \code{dat} object with \code{nArrivals} new nodes added
+the updated \code{netsim_dat} object with \code{nArrivals} new nodes
+added
 }
 \description{
-Arrive New Nodes to the dat Object
+Arrive New Nodes to the netsim_dat Object
 }
 \details{
 \code{nArrivals} new nodes are added to the network data stored on
-the \code{dat} object. If \code{tergmLite} is \code{FALSE}, these nodes are
-activated from the current timestep onward. Attributes for the new nodes must
-be set separately.
+the \code{netsim_dat} object. If \code{tergmLite} is \code{FALSE}, these
+nodes are activated from the current timestep onward. Attributes for the new
+nodes must be set separately.
 
 Note that this function only supports arriving new nodes; returning to an
 active state nodes that were previously active in the network is not
