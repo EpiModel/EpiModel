@@ -3,7 +3,8 @@
 ### NEW FEATURES
 
 - `netsim` now supports multiple networks (with a common node set)
-- Add a `get_cumulative_degree` function with an interface similar to `get_partners`
+- Add a `get_cumulative_degree` function with an interface similar to `get_partners`.
+- Generic `get_network` and `set_network` functions created for more consistent access to the network objects within `netsim_dat` class objects.
 
 ### BUG FIXES
 
@@ -11,6 +12,7 @@
 
 - `update_cumulative_edgelist` is now called unconditionally and governed by the `cumulative.edgelist` control.
 - trying to access a cumulative edgelist when `cumulative.edgelist == FALSE` causes an error.
+- `netsim` data objects now properly classed as `netsim_dat`.
 - `icm` data objects now properly classed as `icm_dat`, consistent with `netsim` objects.
 
 ## EpiModel 2.3.2
