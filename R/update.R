@@ -159,9 +159,10 @@ delete_edges <- function(el, vid) {
   new.el
 }
 
-#' Depart Nodes from the dat Object
+
+#' Depart Nodes from the netsim_dat Object
 #'
-#' @param dat the \code{dat} object
+#' @param dat the \code{netsim_dat} object
 #' @param departures the vertex ids of nodes to depart
 #'
 #' @details If \code{tergmLite} is \code{FALSE}, the vertex ids
@@ -170,8 +171,8 @@ delete_edges <- function(el, vid) {
 #' \code{TRUE}, the vertex ids \code{departures} are deleted from \code{dat$el},
 #' \code{dat$attr}, and \code{dat$net_attr}.
 #'
-#' @return the updated \code{dat} object with the nodes in \code{departures}
-#'         departed
+#' @return the updated \code{netsim_dat} object with the nodes in
+#' \code{departures} departed
 #'
 #' @export
 #'

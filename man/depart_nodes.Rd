@@ -2,21 +2,20 @@
 % Please edit documentation in R/update.R
 \name{depart_nodes}
 \alias{depart_nodes}
-\title{Depart Nodes from the dat Object}
+\title{Depart Nodes from the netsim_dat Object}
 \usage{
 depart_nodes(dat, departures)
 }
 \arguments{
-\item{dat}{the \code{dat} object}
-
+\item{dat}{the \code{netsim_dat} object}
 \item{departures}{the vertex ids of nodes to depart}
 }
 \value{
-the updated \code{dat} object with the nodes in \code{departures}
-departed
+the updated \code{netsim_dat} object with the nodes in
+\code{departures} departed
 }
 \description{
-Depart Nodes from the dat Object
+Depart Nodes from the netsim_dat Object
 }
 \details{
 If \code{tergmLite} is \code{FALSE}, the vertex ids
