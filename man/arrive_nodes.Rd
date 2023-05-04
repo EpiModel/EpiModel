@@ -8,6 +8,7 @@ arrive_nodes(dat, nArrivals)
 }
 \arguments{
 \item{dat}{the \code{netsim_dat} object}
+
 \item{nArrivals}{number of new nodes to arrive}
 }
 \value{
