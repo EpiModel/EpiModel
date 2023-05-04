@@ -130,9 +130,9 @@ specification.}
 
 \item{save.network}{If \code{TRUE}, networkDynamic or networkLite object is saved at simulation end.}
 
-\item{save.other}{A character vector of elements on the \code{dat} main data list to save out after
-each simulation. One example for base models is the attribute list, \code{"attr"}, at the final
-time step.}
+\item{save.other}{A character vector of elements on the \code{netsim_dat} main data list to save out
+after each simulation. One example for base models is the attribute list, \code{"attr"}, at
+the final time step.}
 
 \item{verbose}{If \code{TRUE}, print model progress to the console.}
 
@@ -166,7 +166,10 @@ statistics for plotting and printing, provided \code{save.network} is \code{TRUE
 \item{dat.updates}{Either \code{NULL}, a single function taking arguments \code{dat},
 \code{at}, and \code{network}, or a list of functions of length one greater
 than the number of networks being simulated, with each function in
-the list taking arguments \code{dat} and \code{at}. If a single function is
+the list taking arguments \code{dat} and \code{at}. Here \code{dat} is the main
+\code{netsim_dat} class object, \code{at} is the current timestep, and \code{network}
+is an index indicating the current position within the sequence of
+network (re)simulations on each time step. If a single function is
 passed, it will be called before the first network is simulated and
 after each network is simulated, with \code{network = 0L} before the first
 network is simulated and with \code{network = i} after the \code{i}th network
@@ -174,11 +177,11 @@ is simulated. If a list of functions is passed, the first function
 will be called before the first network is simulated, and the
 \code{i + 1}th function will be called after the \code{i}th network is
 simulated. (Note that \code{at = 0L} is used for initial cross-sectional
-simulations in \code{\link{sim_nets_t1}}.) The function(s) should return \code{dat}
-with any updates needed to correctly represent the network states for
-calls to \code{simulate} and/or \code{summary}. This can be useful if nodal
-attributes appearing in one network model depend on nodal degrees in
-a different network.}
+simulations in \code{\link{sim_nets_t1}}.) The function(s) should return the
+\code{netsim_dat} object with any updates needed to correctly represent the
+network states for calls to \code{simulate} and/or \code{summary}. This can be
+useful if nodal attributes appearing in one network model depend on
+nodal degrees in a different network.}
 
 \item{...}{Additional control settings passed to model.}
 }

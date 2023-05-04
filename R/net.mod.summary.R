@@ -5,7 +5,8 @@
 #'              simulated in \code{netsim}, provided \code{save.nwstats} and
 #'              \code{resimulate.network} are both \code{TRUE}. It records the
 #'              statistics represented by \code{nwstats.formula} in
-#'              \code{dat$stats$nwstats}.
+#'              \code{dat$stats$nwstats}, where \code{dat} is the main
+#'              \code{netsim_dat} class object.
 #'
 #' @inheritParams recovery.net
 #'
@@ -19,7 +20,7 @@ summary_nets <- function(dat, at) {
       get_control(dat, "resimulate.network") == TRUE) {
     for (network in seq_len(dat$num.nw)) {
       nwstats <- summary(get_network_control(dat, network, "nwstats.formula"),
-                         basis = make_sim_network(dat, network = network),
+                         basis = get_network(dat, network = network),
                          at = at, # needed for networkDynamic case
                          dynamic = TRUE,
                          term.options = get_network_control(dat, network, "set.control.tergm")$term.options)

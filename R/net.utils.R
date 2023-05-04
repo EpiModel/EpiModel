@@ -152,10 +152,10 @@ color_tea <- function(nd, old.var = "testatus", old.sus = "s", old.inf = "i",
 }
 
 
-#' @title Copy Vertex Attributes From Network to \code{dat} List
+#' @title Copy Vertex Attributes From Network to \code{netsim_dat} List
 #'
 #' @description Copies the vertex attributes stored on the network object to the
-#'              main \code{attr} list in the \code{dat} data object.
+#'              main \code{attr} list in the \code{netsim_dat} data object.
 #'
 #' @inheritParams recovery.net
 #' @param nw Network from which to copy vertex attributes.
@@ -185,10 +185,12 @@ copy_nwattr_to_datattr <- function(dat, nw) {
 }
 
 
-#' @title Copy Vertex Attributes from the \code{dat} List to the Network Object
+#' @title Copy Vertex Attributes from the \code{netsim_dat} List to the Network
+#'        Objects
 #'
 #' @description Copies the vertex attributes stored on the main \code{attr} list
-#'              on \code{dat} to the network object on \code{dat}.
+#'              of the \code{netsim_dat} object to each of the network objects
+#'              stored on the \code{netsim_dat} object.
 #'
 #' @inheritParams recovery.net
 #'

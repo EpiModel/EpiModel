@@ -14,11 +14,10 @@ initialize.icm(param, init, control)
 \item{control}{An \code{EpiModel} object of class \code{\link{control.icm}}.}
 }
 \value{
-The updated \code{dat} main list object.
+The updated \code{icm_dat} class main data object.
 }
 \description{
-This function initializes the main \code{dat} object on which
-data are stored, and simulates disease status and other
-attributes.
+This function initializes the main \code{icm_dat} class data
+object, and simulates disease status and other attributes.
 }
 \keyword{internal}

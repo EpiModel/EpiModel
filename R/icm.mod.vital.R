@@ -6,7 +6,7 @@
 #'
 #' @inheritParams prevalence.icm
 #'
-#' @inherit recovery.net return
+#' @inherit recovery.icm return
 #'
 #' @seealso \code{\link{icm}}
 #'
@@ -99,7 +99,7 @@ departures.icm <- function(dat, at) {
 #'
 #' @inheritParams prevalence.icm
 #'
-#' @inherit recovery.net return
+#' @inherit recovery.icm return
 #'
 #' @seealso \code{\link{icm}}
 #'
@@ -148,7 +148,7 @@ arrivals.icm <- function(dat, at) {
 #'
 #' @inheritParams prevalence.icm
 #'
-#' @inherit recovery.net return
+#' @inherit recovery.icm return
 #'
 #' @seealso \code{\link{icm}}
 #'
@@ -260,7 +260,7 @@ departures.icm.bip <- function(dat, at) {
 #'
 #' @inheritParams prevalence.icm
 #'
-#' @inherit recovery.net return
+#' @inherit recovery.icm return
 #'
 #' @seealso \code{\link{icm}}
 #'

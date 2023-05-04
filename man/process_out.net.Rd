@@ -7,7 +7,8 @@
 process_out.net(dat_list)
 }
 \arguments{
-\item{dat_list}{A list of main objects in \code{netsim} simulations.}
+\item{dat_list}{A list of main \code{netsim_dat} objects in \code{netsim}
+simulations.}
 }
 \value{
 A list of class \code{netsim} with the following elements:
@@ -32,7 +33,7 @@ one for each model simulation.
 }
 \description{
 This function transfers the data from a list of the main
-\code{dat} objects to the output \code{out} object at the end of
-all simulations in \code{\link{netsim}}.
+\code{netsim_dat} objects to the output \code{out} object at the
+end of all simulations in \code{\link{netsim}}.
 }
 \keyword{internal}
