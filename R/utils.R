@@ -81,6 +81,8 @@ brewer_ramp <- function(n, plt, delete.lights = TRUE) {
 #'
 #' @description Deletes elements from the main attribute list.
 #'
+#' @details This function is deprecated; use \code{\link{delete_attr}} instead.
+#'
 #' @param attrList Attribute list.
 #' @param ids ID numbers to delete from the list.
 #'
@@ -89,6 +91,9 @@ brewer_ramp <- function(n, plt, delete.lights = TRUE) {
 #' @export
 #' @keywords internal
 deleteAttr <- function(attrList, ids) {
+  .Deprecate_once(msg = paste0("`deleteAttr` is deprecated and will be removed",
+                               " in a future version of EpiModel; use",
+                               " `delete_attr` instead"))
 
   if (!inherits(attrList, "list")) {
     stop("attrList must be a list", call. = FALSE)

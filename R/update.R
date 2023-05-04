@@ -201,6 +201,7 @@ depart_nodes <- function(dat, departures) {
   return(dat)
 }
 
+
 #' Arrive New Nodes to the dat Object
 #'
 #' @param dat the \code{dat} object
