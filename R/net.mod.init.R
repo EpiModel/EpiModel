@@ -72,7 +72,16 @@ initialize.net <- function(x, param, init, control, s) {
            paste.and(missing_names), call. = FALSE)
     }
 
-    dat <- create_dat_object(param = x$param, control = control)
+    dat <- create_dat_object(param = param, control = control)
+
+    missing_params <- setdiff(names(x$param), names(param))
+    for (mp in missing_params) {
+      dat <- set_param(dat, mp, x$param[[mp]])
+    }
+
+    # recycle sims in the restart object
+    # e.g. 5 sim out of a size 3 restart object we will give: 1, 2, 3, 1, 2
+    s <- (s - 1) %% length(x$attr) + 1
 
     dat$num.nw <- x$num.nw
     if (control[["tergmLite"]] == TRUE) {
