@@ -7,8 +7,9 @@
 record_attr_history(dat, at, attribute, posit_ids, values)
 }
 \arguments{
-\item{dat}{Main list object containing a \code{networkDynamic} object and
-other initialization information passed from \code{\link{netsim}}.}
+\item{dat}{Main \code{netsim_dat} object containing a \code{networkDynamic}
+object and other initialization information passed from
+\code{\link{netsim}}.}
 
 \item{at}{The time where the recording happens.}
 
@@ -20,15 +21,15 @@ other initialization information passed from \code{\link{netsim}}.}
 \item{values}{The values to be recorded.}
 }
 \value{
-The updated \code{dat} main list object.
+The updated \code{netsim_dat} main list object.
 }
 \description{
 This function records values specific to a time-step and a group of nodes.
 In the records, the \code{posit_ids} are converted to \code{unique_ids} which
 allows the recording of data for nodes that are no longer in the network by
 the end of the run. The records are stored in \code{dat[["attr.history"]]}
-and can be accessed from the \code{netsim} object with
-\code{get_attr_history}.
+where \code{dat} is the main \code{netsim_dat} class object, and can be
+accessed from the \code{netsim} object with \code{get_attr_history}.
 }
 \details{
 See the "Time-Varying Parameters" section of the "Working With Model

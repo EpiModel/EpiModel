@@ -18,8 +18,8 @@ network argument.
 }
 \details{
 This function is used in \code{EpiModel} workflows to copy relevant network
-attributes from the network object to the \code{dat} object when initializing
-\code{netsim} runs.
+attributes from the network object to the \code{netsim_dat} object when
+initializing \code{netsim} runs.
 }
 \examples{
 nw <- network_initialize(100)

@@ -7,11 +7,12 @@
 epi_trackers(dat)
 }
 \arguments{
-\item{dat}{Main list object containing a \code{networkDynamic} object and
-other initialization information passed from \code{\link{netsim}}.}
+\item{dat}{Main \code{netsim_dat} object containing a \code{networkDynamic}
+object and other initialization information passed from
+\code{\link{netsim}}.}
 }
 \value{
-The updated \code{dat} main list object.
+The updated \code{netsim_dat} main list object.
 }
 \description{
 see the "Working with Custom Attributes and Summary Statistics in EpiModel"
@@ -20,14 +21,14 @@ vignette.
 \section{The \code{tracker.list} list}{
 
 \code{.tracker.list} is a list of NAMED functions stored in the
-\code{control} list of the \code{dat} main list object.
+\code{control} list of the main \code{netsim_dat} class object.
 }
 
 \section{Tracker Functions}{
 
 This function will apply the tracker functions present in the control list
 \code{.tracker.list}. Each tracker must be a function with EXACTLY one
-argument: the \code{dat} main list object. They must return a VALUE of
+argument: the \code{netsim_dat} main list object. They must return a VALUE of
 length one (numeric, logical or character).
 }
 

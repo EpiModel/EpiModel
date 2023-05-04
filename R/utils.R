@@ -81,6 +81,8 @@ brewer_ramp <- function(n, plt, delete.lights = TRUE) {
 #'
 #' @description Deletes elements from the main attribute list.
 #'
+#' @details This function is deprecated; use \code{\link{delete_attr}} instead.
+#'
 #' @param attrList Attribute list.
 #' @param ids ID numbers to delete from the list.
 #'
@@ -89,6 +91,9 @@ brewer_ramp <- function(n, plt, delete.lights = TRUE) {
 #' @export
 #' @keywords internal
 deleteAttr <- function(attrList, ids) {
+  .Deprecate_once(msg = paste0("`deleteAttr` is deprecated and will be removed",
+                               " in a future version of EpiModel; use",
+                               " `delete_attr` instead"))
 
   if (!inherits(attrList, "list")) {
     stop("attrList must be a list", call. = FALSE)
@@ -116,8 +121,9 @@ deleteAttr <- function(attrList, ids) {
 #'
 #' @description Deletes elements from the main attribute list.
 #'
-#' @param dat Main data object passed through \code{netsim} or \code{icm}
-#'            simulations.
+#' @param dat Either the \code{netsim_dat} class object passed through
+#'            \code{netsim} simulations, or the main data object passed through
+#'            \code{icm} simulations.
 #' @param ids ID numbers to delete from the list.
 #'
 #' @inherit recovery.net return

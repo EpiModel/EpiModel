@@ -5,8 +5,8 @@
 #' In the records, the \code{posit_ids} are converted to \code{unique_ids} which
 #' allows the recording of data for nodes that are no longer in the network by
 #' the end of the run. The records are stored in \code{dat[["attr.history"]]}
-#' and can be accessed from the \code{netsim} object with
-#' \code{get_attr_history}.
+#' where \code{dat} is the main \code{netsim_dat} class object, and can be
+#' accessed from the \code{netsim} object with \code{get_attr_history}.
 #'
 #' @inheritParams recovery.net
 #' @param at The time where the recording happens.
@@ -67,8 +67,9 @@ record_attr_history <- function(dat, at, attribute, posit_ids, values) {
 #' @description
 #' This function records any object during a simulation to allow its
 #' inspection afterward. The records are stored in \code{dat[["raw.records"]]}
-#' during the simulation and in the \code{netsim} object under the
-#' \code{raw.records} sublists.
+#' during the simulation, where \code{dat} is the main \code{netsim_dat} class
+#' object, and in the \code{netsim} object under the \code{raw.records}
+#' sublists.
 #'
 #' @inheritParams recovery.net
 #' @param at The time where the recording happens.

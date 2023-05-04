@@ -8,7 +8,6 @@ depart_nodes(dat, departures)
 }
 \arguments{
 \item{dat}{the \code{netsim_dat} object}
-
 \item{departures}{the vertex ids of nodes to depart}
 }
 \value{

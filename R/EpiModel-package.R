@@ -145,7 +145,7 @@
 #' @importFrom ape as.phylo collapse.singles
 #' @importFrom lazyeval lazy_dots lazy_eval
 #' @importFrom statnet.common trim_env set.control.class check.control.class NVL
-#'             paste.and
+#'             paste.and .Deprecate_once
 #' @importFrom methods is
 #' @importFrom tibble as_tibble tibble
 #' @importFrom coda effectiveSize

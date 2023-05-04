@@ -1,9 +1,9 @@
 
 #' @title Initialization: netsim Module
 #'
-#' @description This function initializes the main \code{dat} object on which
-#'              data are stored, simulates the initial state of the networks,
-#'              and simulates disease status and other attributes.
+#' @description This function initializes the main \code{netsim_dat} class data
+#'              object on which data are stored, simulates the initial state of
+#'              the networks, and simulates disease status and other attributes.
 #'
 #' @param x If \code{control$start == 1}, either a fitted network model object
 #'        of class \code{netest} or a list of such objects. If
@@ -22,7 +22,7 @@
 #'          \code{tergmLite == FALSE} it must also contain the element
 #'          \code{network}.
 #'
-#' @return A \code{dat} main list object.
+#' @return A \code{netsim_dat} class main data object.
 #'
 #' @export
 #' @keywords internal
@@ -72,7 +72,16 @@ initialize.net <- function(x, param, init, control, s) {
            paste.and(missing_names), call. = FALSE)
     }
 
-    dat <- create_dat_object(param = x$param, control = control)
+    dat <- create_dat_object(param = param, control = control)
+
+    missing_params <- setdiff(names(x$param), names(param))
+    for (mp in missing_params) {
+      dat <- set_param(dat, mp, x$param[[mp]])
+    }
+
+    # recycle sims in the restart object
+    # e.g. 5 sim out of a size 3 restart object we will give: 1, 2, 3, 1, 2
+    s <- (s - 1) %% length(x$attr) + 1
 
     dat$num.nw <- x$num.nw
     if (control[["tergmLite"]] == TRUE) {
@@ -292,15 +301,16 @@ init_status.net <- function(dat) {
 #' @title Network Data and Stats Initialization
 #'
 #' @description This function initializes the network data and stats on the main
-#'              \code{dat} object.
+#'              \code{netsim_dat} class data object.
 #'
-#' @param dat A \code{dat} object obtained from \code{\link{create_dat_object}},
-#'        including the \code{control} argument.
+#' @param dat A main data object of class \code{netsim_dat} obtained from
+#'        \code{\link{create_dat_object}}, including the \code{control}
+#'        argument.
 #' @param x Either a fitted network model object of class \code{netest}, or a
 #'        list of such objects.
 #'
-#' @return A \code{dat} main list object with network data and stats
-#'         initialized.
+#' @return A \code{netsim_dat} class main data object with network data and
+#'         stats initialized.
 #'
 #' @export
 #' @keywords internal

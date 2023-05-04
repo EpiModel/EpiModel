@@ -7,8 +7,9 @@
 record_raw_object(dat, at, label, object)
 }
 \arguments{
-\item{dat}{Main list object containing a \code{networkDynamic} object and
-other initialization information passed from \code{\link{netsim}}.}
+\item{dat}{Main \code{netsim_dat} object containing a \code{networkDynamic}
+object and other initialization information passed from
+\code{\link{netsim}}.}
 
 \item{at}{The time where the recording happens.}
 
@@ -17,13 +18,14 @@ other initialization information passed from \code{\link{netsim}}.}
 \item{object}{The object to be recorded.}
 }
 \value{
-The updated \code{dat} main list object.
+The updated \code{netsim_dat} main list object.
 }
 \description{
 This function records any object during a simulation to allow its
 inspection afterward. The records are stored in \code{dat[["raw.records"]]}
-during the simulation and in the \code{netsim} object under the
-\code{raw.records} sublists.
+during the simulation, where \code{dat} is the main \code{netsim_dat} class
+object, and in the \code{netsim} object under the \code{raw.records}
+sublists.
 }
 \details{
 See the "Time-Varying Parameters" section of the "Working With Model
