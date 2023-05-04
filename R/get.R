@@ -65,7 +65,7 @@
 #'
 #' # Run diagnostics, saving the networkDynamic objects
 #' dx <- netdx(est, nsteps = 10, nsims = 3, keep.tnetwork = TRUE,
-#'      verbose = FALSE)
+#'             verbose = FALSE)
 #'
 #' # Extract the network for simulation 2 from dx object
 #' get_network(dx, sim = 2)
