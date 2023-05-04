@@ -7,8 +7,9 @@
 check_end_horizon_control(dat)
 }
 \arguments{
-\item{dat}{Main list object containing a \code{networkDynamic} object and
-other initialization information passed from \code{\link{netsim}}.}
+\item{dat}{Main \code{netsim_dat} object containing a \code{networkDynamic}
+object and other initialization information passed from
+\code{\link{netsim}}.}
 }
 \value{
 TRUE invisibly on succes, errors otherwise

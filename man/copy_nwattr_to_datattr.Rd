@@ -2,22 +2,23 @@
 % Please edit documentation in R/net.utils.R
 \name{copy_nwattr_to_datattr}
 \alias{copy_nwattr_to_datattr}
-\title{Copy Vertex Attributes From Network to \code{dat} List}
+\title{Copy Vertex Attributes From Network to \code{netsim_dat} List}
 \usage{
 copy_nwattr_to_datattr(dat, nw)
 }
 \arguments{
-\item{dat}{Main list object containing a \code{networkDynamic} object and
-other initialization information passed from \code{\link{netsim}}.}
+\item{dat}{Main \code{netsim_dat} object containing a \code{networkDynamic}
+object and other initialization information passed from
+\code{\link{netsim}}.}
 
 \item{nw}{Network from which to copy vertex attributes.}
 }
 \value{
-The updated \code{dat} main list object.
+The updated \code{netsim_dat} main list object.
 }
 \description{
 Copies the vertex attributes stored on the network object to the
-main \code{attr} list in the \code{dat} data object.
+main \code{attr} list in the \code{netsim_dat} data object.
 }
 \seealso{
 \code{\link{get_formula_term_attr}}, \code{\link{get_attr_prop}},

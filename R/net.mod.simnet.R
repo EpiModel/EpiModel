@@ -31,7 +31,7 @@ sim_nets_t1 <- function(dat) {
     nwparam <- get_nwparam(dat, network = network)
 
     ## (re)construct input network
-    nw <- make_sim_network(dat, network)
+    nw <- get_network(dat, network)
 
     ## simulate t0 basis network nw if using edapprox
     if (nwparam$edapprox == TRUE) {
@@ -62,7 +62,7 @@ sim_nets_t1 <- function(dat) {
       }
     }
     ## set network on dat object
-    dat <- set_sim_network(dat, network, nw)
+    dat <- set_network(dat, network, nw)
     ## update dat object as needed
     dat <- dat.updates(dat = dat, at = 0L, network = network)
   }
@@ -89,57 +89,6 @@ sim_nets_t1 <- function(dat) {
     dat <- dat.updates(dat = dat, at = 1L, network = network)
   }
 
-  return(dat)
-}
-
-#' @title Construct Network from dat Object
-#'
-#' @description This function returns the network object representing the
-#'              current state of the simulation.
-#'
-#' @inheritParams recovery.net
-#' @param network index of the network to construct
-#'
-#' @return The network.
-#'
-#' @export
-#' @keywords netUtils internal
-#'
-make_sim_network <- function(dat, network = 1L) {
-  if (get_control(dat, "tergmLite") == FALSE) {
-    ## networkDynamic
-    nw <- dat$nw[[network]]
-  } else {
-    ## networkLite
-    nw <- networkLite(dat$el[[network]], dat$attr, dat$net_attr[[network]])
-  }
-  return(nw)
-}
-
-#' @title Set Network on dat Object
-#'
-#' @description This function updates the dat object given the network
-#'              representing the current state of the simulation.
-#'
-#' @inheritParams recovery.net
-#' @param network index of the network to set
-#' @param nw the network
-#'
-#' @inherit recovery.net return
-#'
-#' @export
-#' @keywords netUtils internal
-#'
-set_sim_network <- function(dat, network = 1L, nw) {
-  if (get_control(dat, "tergmLite") == TRUE) {
-    dat$el[[network]] <- as.edgelist(nw)
-    if (get_network_control(dat, network, "tergmLite.track.duration") == TRUE) {
-      dat$net_attr[[network]][["time"]] <- nw %n% "time"
-      dat$net_attr[[network]][["lasttoggle"]] <- nw %n% "lasttoggle"
-    }
-  } else {
-    dat$nw[[network]] <- nw
-  }
   return(dat)
 }
 
@@ -201,7 +150,7 @@ simulate_dat <- function(dat, at, network = 1L, nsteps = 1L) {
   ## always TERGM simulation
   nw <- suppressWarnings(simulate(formula,
                                   coef = coef,
-                                  basis = make_sim_network(dat = dat, network = network),
+                                  basis = get_network(x = dat, network = network),
                                   constraints = nwparam$constraints,
                                   time.start = at - time_offset,
                                   time.offset = time_offset,
@@ -212,7 +161,7 @@ simulate_dat <- function(dat, at, network = 1L, nsteps = 1L) {
                                   dynamic = TRUE))
 
   ## update network (and el, if tergmLite) on the dat object
-  dat <- set_sim_network(dat = dat, network = network, nw = nw)
+  dat <- set_network(x = dat, network = network, nw = nw)
 
   ## if monitor was used, record the results
   if (!is.null(monitor)) {

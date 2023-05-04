@@ -60,7 +60,7 @@
 #'        simulation.
 #' }
 #' If \code{control$raw.output == TRUE}: A list of the raw (pre-processed)
-#' \code{netsim} \code{dat} objects, for use in simulation continuation.
+#' \code{netsim_dat} objects, for use in simulation continuation.
 #'
 #' @references
 #' Jenness SM, Goodreau SM and Morris M. EpiModel: An R Package for Mathematical

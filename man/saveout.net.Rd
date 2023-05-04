@@ -7,8 +7,9 @@
 saveout.net(dat, s, out = NULL)
 }
 \arguments{
-\item{dat}{Main list object containing a \code{networkDynamic} object and
-other initialization information passed from \code{\link{netsim}}.}
+\item{dat}{Main \code{netsim_dat} object containing a \code{networkDynamic}
+object and other initialization information passed from
+\code{\link{netsim}}.}
 
 \item{s}{Current simulation number.}
 
@@ -33,7 +34,7 @@ one for each model simulation.
 }
 }
 \description{
-This function transfers the data from the main \code{dat}
+This function transfers the data from the main \code{netsim_dat}
 object to the output \code{out} object at the end of each
 simulation in \code{\link{netsim}}.
 }

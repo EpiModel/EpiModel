@@ -2,57 +2,74 @@
 % Please edit documentation in R/get.R
 \name{get_network}
 \alias{get_network}
-\title{Extract networkDynamic and network Objects from Network Simulations}
+\alias{get_network.netdx}
+\alias{get_network.netsim}
+\alias{get_network.netsim_dat}
+\title{Extract Network Objects from Network Simulations}
 \usage{
-get_network(
-  x,
-  sim = 1,
-  network = 1,
-  collapse = FALSE,
-  at,
-  ergm.create.nd = TRUE
-)
+get_network(x, ...)
+
+\method{get_network}{netdx}(x, sim = 1, collapse = FALSE, at, ...)
+
+\method{get_network}{netsim}(x, sim = 1, network = 1, collapse = FALSE, at, ...)
+
+\method{get_network}{netsim_dat}(x, network = 1L, ...)
 }
 \arguments{
-\item{x}{An \code{EpiModel} object of class \code{\link{netsim}} or
-\code{\link{netdx}}.}
+\item{x}{An \code{EpiModel} object of class \code{\link{netsim}},
+\code{\link{netdx}}, or \code{netsim_dat}.}
 
-\item{sim}{Simulation number of extracted network.}
+\item{...}{Additional arguments.}
 
-\item{network}{Network number, for \code{netsim} objects with multiple
-overlapping networks (advanced use, and not applicable to \code{netdx}
-objects).}
+\item{sim}{Simulation number of extracted network, for \code{netdx} and
+\code{netsim}.}
 
 \item{collapse}{If \code{TRUE}, collapse the \code{networkDynamic} object to
-a static \code{network} object at a specified time step.}
+a static \code{network} object at a specified time step. Applicable to
+\code{netdx} objects and \code{netsim} objects with
+\code{tergmLite == FALSE}.}
 
 \item{at}{If \code{collapse} is \code{TRUE}, the time step at which the
-extracted network should be collapsed.}
+extracted network should be collapsed. Applicable to \code{netdx}
+objects and \code{netsim} objects with \code{tergmLite == FALSE}.}
 
-\item{ergm.create.nd}{If \code{TRUE} and \code{x} contains a static ERGM
-(i.e., a netest model with duration = 1), then create a
-\code{networkDynamic} object from the stored list of static
-\code{network} objects; if \code{FALSE}, output the network list
-directly.}
+\item{network}{Network number, for \code{netsim} or \code{netsim_dat} objects
+with multiple overlapping networks (advanced use, and not applicable
+to \code{netdx} objects).}
 }
 \value{
-A \code{networkDynamic} object (if \code{collapse = FALSE}) or a
-static \code{network} object (if \code{collapse = TRUE}).
+For \code{netdx} or \code{netsim} with \code{tergmLite == FALSE}, a
+\code{networkDynamic} object (if \code{collapse = FALSE}) or a
+static \code{network} object (if \code{collapse = TRUE}). For
+\code{netsim} with \code{tergmLite == TRUE} or \code{netsim_dat} with
+\code{tergmLite == TRUE}, a \code{networkLite} object. For
+\code{netsim_dat} with \code{tergmLite == FALSE}, a
+\code{networkDynamic} object.
 }
 \description{
-Extracts the \code{networkDynamic} object from either a
-network epidemic model object generated with \code{netsim} or a
-network diagnostic simulation generated with \code{netdx}, with
-the option to collapse the extracted \code{networkDynamic}
-object down to a static \code{network} object.
+Extracts the network object from either a network epidemic model
+object generated with \code{netsim}, a network diagnostic
+simulation generated with \code{netdx}, or a \code{netsim_dat}
+object used internally in \code{netsim}. For \code{netdx} or
+\code{netsim} with \code{tergmLite == FALSE}, the extracted
+network object is a \code{networkDynamic}, which can be
+collapsed down to a static \code{network} object with the
+\code{collapse} and \code{at} arguments. For \code{netsim} with
+\code{tergmLite == TRUE}, the extracted network object is the
+final \code{networkLite}, the \code{collapse} argument should be
+\code{FALSE}, and the \code{at} argument should be missing. For
+\code{netsim_dat}, the \code{collapse} and \code{at} arguments
+are not supported, and the network object is either the current
+\code{networkLite} (if \code{tergmLite == TRUE}) or the current
+\code{networkDynamic} (if \code{tergmLite == FALSE}).
 }
 \details{
-This function requires that the \code{networkDynamic} object is saved during
-the network simulation while running either \code{\link{netsim}} or
-\code{\link{netdx}}. For the former, that is specified by setting the
-\code{tergmLite} parameter in \code{\link{control.net}} to \code{FALSE}.
-For the latter, that is specified with the \code{keep.tedgelist} parameter
-directly in \code{\link{netdx}}.
+This function requires that the network object is saved during the network
+simulation while running either \code{\link{netsim}} or \code{\link{netdx}}.
+For the former, that is specified by setting the \code{save.network}
+parameter in \code{\link{control.net}} to \code{TRUE}. For the latter, that
+is specified with the \code{keep.tnetwork} parameter directly in
+\code{\link{netdx}}.
 }
 \examples{
 # Set up network and TERGM formula

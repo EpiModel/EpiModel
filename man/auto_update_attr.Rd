@@ -7,8 +7,9 @@
 auto_update_attr(dat, newNodes, curr.tab)
 }
 \arguments{
-\item{dat}{Main list object containing a \code{networkDynamic} object and
-other initialization information passed from \code{\link{netsim}}.}
+\item{dat}{Main \code{netsim_dat} object containing a \code{networkDynamic}
+object and other initialization information passed from
+\code{\link{netsim}}.}
 
 \item{newNodes}{Vector of nodal IDs for incoming nodes at the current time
 step.}
@@ -16,7 +17,7 @@ step.}
 \item{curr.tab}{Current proportional distribution of all vertex attributes.}
 }
 \value{
-The updated \code{dat} main list object.
+The updated \code{netsim_dat} main list object.
 }
 \description{
 Updates the vertex attributes on a network for new nodes

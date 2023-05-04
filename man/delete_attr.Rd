@@ -7,13 +7,14 @@
 delete_attr(dat, ids)
 }
 \arguments{
-\item{dat}{Main data object passed through \code{netsim} or \code{icm}
-simulations.}
+\item{dat}{Either the \code{netsim_dat} class object passed through
+\code{netsim} simulations, or the main data object passed through
+\code{icm} simulations.}
 
 \item{ids}{ID numbers to delete from the list.}
 }
 \value{
-The updated \code{dat} main list object.
+The updated \code{netsim_dat} main list object.
 }
 \description{
 Deletes elements from the main attribute list.

@@ -75,9 +75,9 @@ saveout.dcm <- function(df, s, param, control, out = NULL) {
 
 #' @title Save icm Data to Output List Format
 #'
-#' @description This function transfers the data from the main \code{dat}
-#'              object to the output \code{out} object at the end of each
-#'              simulation in \code{\link{icm}}.
+#' @description This function transfers the data from the main \code{icm_dat}
+#'              class data object to the output \code{out} object at the end of
+#'              each simulation in \code{\link{icm}}.
 #'
 #' @inheritParams prevalence.icm
 #' @param s Current simulation number.
@@ -135,7 +135,7 @@ saveout.icm <- function(dat, s, out = NULL) {
 
 #' @title Save netsim Data to Output List Format
 #'
-#' @description This function transfers the data from the main \code{dat}
+#' @description This function transfers the data from the main \code{netsim_dat}
 #'              object to the output \code{out} object at the end of each
 #'              simulation in \code{\link{netsim}}.
 #'
@@ -216,8 +216,8 @@ saveout.net <- function(dat, s, out = NULL) {
     }
 
     if (dat$control$save.network == TRUE) {
-      ## call make_sim_network to use most up-to-date el and attr in tergmLite case
-      out$network <- list(lapply(seq_len(dat$num.nw), make_sim_network, dat = dat))
+      ## call get_network to use most up-to-date el and attr in tergmLite case
+      out$network <- list(lapply(seq_len(dat$num.nw), get_network, x = dat))
     }
 
     if (!is.null(dat$control$save.other)) {
@@ -303,8 +303,8 @@ saveout.net <- function(dat, s, out = NULL) {
     }
 
     if (dat$control$save.network == TRUE) {
-      ## call make_sim_network to use most up-to-date el and attr in tergmLite case
-      out$network[[s]] <- lapply(seq_len(dat$num.nw), make_sim_network, dat = dat)
+      ## call get_network to use most up-to-date el and attr in tergmLite case
+      out$network[[s]] <- lapply(seq_len(dat$num.nw), get_network, x = dat)
     }
 
     if (!is.null(dat$control$save.other)) {
@@ -387,10 +387,11 @@ saveout.net <- function(dat, s, out = NULL) {
 #' @title Save a List of netsim Data to Output List Format
 #'
 #' @description This function transfers the data from a list of the main
-#'              \code{dat} objects to the output \code{out} object at the end of
-#'              all simulations in \code{\link{netsim}}.
+#'              \code{netsim_dat} objects to the output \code{out} object at the
+#'              end of all simulations in \code{\link{netsim}}.
 #'
-#' @param dat_list A list of main objects in \code{netsim} simulations.
+#' @param dat_list A list of main \code{netsim_dat} objects in \code{netsim}
+#'        simulations.
 #'
 #' @return
 #' A list of class \code{netsim} with the following elements:

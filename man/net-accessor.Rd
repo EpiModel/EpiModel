@@ -25,7 +25,7 @@
 \alias{add_init}
 \alias{set_init}
 \alias{append_core_attr}
-\title{Functions to Access and Edit the Main List Object in Network Models}
+\title{Functions to Access and Edit the Main netsim_dat Object in Network Models}
 \usage{
 get_attr_list(dat, item = NULL)
 
@@ -74,8 +74,9 @@ set_init(dat, item, value)
 append_core_attr(dat, at, n.new)
 }
 \arguments{
-\item{dat}{Main list object containing a \code{networkDynamic} object and
-other initialization information passed from \code{\link{netsim}}.}
+\item{dat}{Main \code{netsim_dat} object containing a \code{networkDynamic}
+object and other initialization information passed from
+\code{\link{netsim}}.}
 
 \item{item}{A character vector containing the name of the element to access
 (for \code{get_} functions), create (for \code{add_} functions), or
@@ -114,7 +115,8 @@ functions.
 \description{
 These \code{get_}, \code{set_}, \code{append_}, and \code{add_}
 functions allow a safe and efficient way to retrieve and mutate
-the main list object of network models (\code{dat}).
+the main \code{netsim_dat} class object of network models
+(typical variable name \code{dat}).
 }
 \section{Core Attribute}{
 
@@ -129,8 +131,8 @@ simulation (see \code{\link{arrivals.net}}).
 \section{Mutability}{
 
 The \code{set_}, \code{append_}, and \code{add_} functions DO NOT modify the
-\code{dat} object in place. The result must be assigned back to \code{dat} in
-order to be registered: \code{dat <- set_*(dat, item, value)}.
+\code{netsim_dat} object in place. The result must be assigned back to
+\code{dat} in order to be registered: \code{dat <- set_*(dat, item, value)}.
 }
 
 \section{\code{set_} and \code{append_} vs \code{add_}}{
@@ -152,6 +154,7 @@ dat <- list(
     nsteps = 150
   )
 )
+class(dat) <- c("netsim_dat", class(dat))
 
 dat <- add_attr(dat, "age")
 dat <- set_attr(dat, "age", runif(100))

@@ -7,8 +7,9 @@
 set_transmat(dat, del, at)
 }
 \arguments{
-\item{dat}{Main list object containing a \code{networkDynamic} object and
-other initialization information passed from \code{\link{netsim}}.}
+\item{dat}{Main \code{netsim_dat} object containing a \code{networkDynamic}
+object and other initialization information passed from
+\code{\link{netsim}}.}
 
 \item{del}{Discordant edgelist created within \code{\link{infection.net}} and
 \code{\link{infection.2g.net}}.}
@@ -16,7 +17,7 @@ other initialization information passed from \code{\link{netsim}}.}
 \item{at}{Current time step.}
 }
 \value{
-The updated \code{dat} main list object.
+The updated \code{netsim_dat} main list object.
 }
 \description{
 This function appends the transmission matrix created during
@@ -25,5 +26,5 @@ This function appends the transmission matrix created during
 \details{
 This internal function works within the parent \code{\link{infection.net}}
 functions to save the transmission matrix created at time step \code{at} to
-the main list object \code{dat}.
+the main \code{netsim_dat} class object \code{dat}.
 }

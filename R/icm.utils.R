@@ -5,10 +5,11 @@
 #'              the network at the specified time step, output to a list of
 #'              vectors.
 #'
-#' @param dat Main data object passed through \code{icm} simulations.
+#' @param dat Main \code{icm_dat} class data object passed through \code{icm}
+#'        simulations.
 #' @param at Current time step.
 #'
-#' @inherit recovery.net return
+#' @inherit recovery.icm return
 #'
 #' @export
 #' @keywords internal
@@ -62,7 +63,7 @@ prevalence.icm <- function(dat, at) {
 #'
 #' @inheritParams prevalence.icm
 #'
-#' @inherit recovery.net return
+#' @inherit recovery.icm return
 #'
 #' @export
 #' @keywords internal

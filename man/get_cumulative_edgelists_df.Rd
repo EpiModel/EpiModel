@@ -7,8 +7,9 @@
 get_cumulative_edgelists_df(dat, networks = NULL)
 }
 \arguments{
-\item{dat}{Main list object containing a \code{networkDynamic} object and
-other initialization information passed from \code{\link{netsim}}.}
+\item{dat}{Main \code{netsim_dat} object containing a \code{networkDynamic}
+object and other initialization information passed from
+\code{\link{netsim}}.}
 
 \item{networks}{Numerical indexes of the networks to extract the partnerships
 from. (May be > 1 for models with multiple overlapping
