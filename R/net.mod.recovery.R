@@ -6,11 +6,12 @@
 #'              to a susceptible state (SIS model type), for use in
 #'              \code{\link{netsim}}.
 #'
-#' @param dat Main list object containing a \code{networkDynamic} object and
-#'        other initialization information passed from \code{\link{netsim}}.
+#' @param dat Main \code{netsim_dat} object containing a \code{networkDynamic}
+#'        object and other initialization information passed from
+#'        \code{\link{netsim}}.
 #' @param at Current time step.
 #'
-#' @return The updated \code{dat} main list object.
+#' @return The updated \code{netsim_dat} main list object.
 #'
 #' @export
 #' @keywords internal

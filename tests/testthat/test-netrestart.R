@@ -80,7 +80,7 @@ test_that("reinitialization works with open population, nwterms, and epi.by", {
 
   for (tergmLite in c(FALSE, TRUE)) {
     control <- control.net(type = "SI", nsteps = 5,
-                           nsims = 1, resimulate.network = TRUE,
+                           nsims = 2, resimulate.network = TRUE,
                            verbose = FALSE, tergmLite = tergmLite,
                            epi.by = "race",
                            save.other = c("attr", "temp", if (tergmLite) c("el", "net_attr")))

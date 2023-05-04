@@ -121,8 +121,9 @@ deleteAttr <- function(attrList, ids) {
 #'
 #' @description Deletes elements from the main attribute list.
 #'
-#' @param dat Main data object passed through \code{netsim} or \code{icm}
-#'            simulations.
+#' @param dat Either the \code{netsim_dat} class object passed through
+#'            \code{netsim} simulations, or the main data object passed through
+#'            \code{icm} simulations.
 #' @param ids ID numbers to delete from the list.
 #'
 #' @inherit recovery.net return

@@ -1,38 +1,53 @@
 
-#' @title Extract networkDynamic and network Objects from Network Simulations
+#' @title Extract Network Objects from Network Simulations
 #'
-#' @description Extracts the \code{networkDynamic} object from either a
-#'              network epidemic model object generated with \code{netsim} or a
-#'              network diagnostic simulation generated with \code{netdx}, with
-#'              the option to collapse the extracted \code{networkDynamic}
-#'              object down to a static \code{network} object.
+#' @description Extracts the network object from either a network epidemic model
+#'              object generated with \code{netsim}, a network diagnostic
+#'              simulation generated with \code{netdx}, or a \code{netsim_dat}
+#'              object used internally in \code{netsim}. For \code{netdx} or
+#'              \code{netsim} with \code{tergmLite == FALSE}, the extracted
+#'              network object is a \code{networkDynamic}, which can be
+#'              collapsed down to a static \code{network} object with the
+#'              \code{collapse} and \code{at} arguments. For \code{netsim} with
+#'              \code{tergmLite == TRUE}, the extracted network object is the
+#'              final \code{networkLite}, the \code{collapse} argument should be
+#'              \code{FALSE}, and the \code{at} argument should be missing. For
+#'              \code{netsim_dat}, the \code{collapse} and \code{at} arguments
+#'              are not supported, and the network object is either the current
+#'              \code{networkLite} (if \code{tergmLite == TRUE}) or the current
+#'              \code{networkDynamic} (if \code{tergmLite == FALSE}).
 #'
-#' @param x An \code{EpiModel} object of class \code{\link{netsim}} or
-#'        \code{\link{netdx}}.
-#' @param sim Simulation number of extracted network.
-#' @param network Network number, for \code{netsim} objects with multiple
-#'        overlapping networks (advanced use, and not applicable to \code{netdx}
-#'        objects).
+#' @param x An \code{EpiModel} object of class \code{\link{netsim}},
+#'        \code{\link{netdx}}, or \code{netsim_dat}.
+#' @param sim Simulation number of extracted network, for \code{netdx} and
+#'        \code{netsim}.
+#' @param network Network number, for \code{netsim} or \code{netsim_dat} objects
+#'        with multiple overlapping networks (advanced use, and not applicable
+#'        to \code{netdx} objects).
 #' @param collapse If \code{TRUE}, collapse the \code{networkDynamic} object to
-#'        a static \code{network} object at a specified time step.
+#'        a static \code{network} object at a specified time step. Applicable to
+#'        \code{netdx} objects and \code{netsim} objects with
+#'        \code{tergmLite == FALSE}.
 #' @param at If \code{collapse} is \code{TRUE}, the time step at which the
-#'        extracted network should be collapsed.
-#' @param ergm.create.nd If \code{TRUE} and \code{x} contains a static ERGM
-#'        (i.e., a netest model with duration = 1), then create a
-#'        \code{networkDynamic} object from the stored list of static
-#'        \code{network} objects; if \code{FALSE}, output the network list
-#'        directly.
+#'        extracted network should be collapsed. Applicable to \code{netdx}
+#'        objects and \code{netsim} objects with \code{tergmLite == FALSE}.
+#' @param ... Additional arguments.
 #'
 #' @details
-#' This function requires that the \code{networkDynamic} object is saved during
-#' the network simulation while running either \code{\link{netsim}} or
-#' \code{\link{netdx}}. For the former, that is specified by setting the
-#' \code{tergmLite} parameter in \code{\link{control.net}} to \code{FALSE}.
-#' For the latter, that is specified with the \code{keep.tedgelist} parameter
-#' directly in \code{\link{netdx}}.
+#' This function requires that the network object is saved during the network
+#' simulation while running either \code{\link{netsim}} or \code{\link{netdx}}.
+#' For the former, that is specified by setting the \code{save.network}
+#' parameter in \code{\link{control.net}} to \code{TRUE}. For the latter, that
+#' is specified with the \code{keep.tnetwork} parameter directly in
+#' \code{\link{netdx}}.
 #'
-#' @return A \code{networkDynamic} object (if \code{collapse = FALSE}) or a
-#'         static \code{network} object (if \code{collapse = TRUE}).
+#' @return For \code{netdx} or \code{netsim} with \code{tergmLite == FALSE}, a
+#'         \code{networkDynamic} object (if \code{collapse = FALSE}) or a
+#'         static \code{network} object (if \code{collapse = TRUE}). For
+#'         \code{netsim} with \code{tergmLite == TRUE} or \code{netsim_dat} with
+#'         \code{tergmLite == TRUE}, a \code{networkLite} object. For
+#'         \code{netsim_dat} with \code{tergmLite == FALSE}, a
+#'         \code{networkDynamic} object.
 #'
 #' @keywords extract
 #' @export
@@ -50,7 +65,7 @@
 #'
 #' # Run diagnostics, saving the networkDynamic objects
 #' dx <- netdx(est, nsteps = 10, nsims = 3, keep.tnetwork = TRUE,
-#'      verbose = FALSE)
+#'             verbose = FALSE)
 #'
 #' # Extract the network for simulation 2 from dx object
 #' get_network(dx, sim = 2)
@@ -70,53 +85,34 @@
 #' ## Extract and collapse the network from simulation 1 at time step 5
 #' get_network(mod, collapse = TRUE, at = 5)
 #'
-get_network <- function(x, sim = 1, network = 1, collapse = FALSE, at,
-                        ergm.create.nd = TRUE) {
+get_network <- function(x, ...) {
+  UseMethod("get_network")
+}
+
+#' @rdname get_network
+#'
+#' @export
+#'
+get_network.netdx <- function(x, sim = 1, collapse = FALSE, at, ...) {
 
   ## Warnings and checks ##
-  if (!(class(x) %in% c("netsim", "netdx"))) {
-    stop("x must be of class netsim or netdx", call. = FALSE)
-  }
-
-  nsims <- ifelse(class(x) == "netsim", x$control$nsims, x$nsims)
+  nsims <- x$nsims
   if (length(sim) > 1 || sim > nsims) {
     stop("Specify a single sim between 1 and ", nsims, call. = FALSE)
   }
 
-  if (inherits(x, "netsim")) {
-    if (x$control$tergmLite == TRUE) {
-      stop("Network object not saved in netsim object when 'tergmLite = TRUE'.
-           Check control.net settings.",
-           call. = FALSE)
-    }
-    if (x$control$tergmLite == TRUE || is.null(x$network)) {
-      stop("Network object not saved in netsim object.
-            Check control.net settings.", call. = FALSE)
-    }
-  } else if (inherits(x, "netdx")) {
-    if (is.null(x$network)) {
-      stop("Network object not saved in netdx object.
-            Check keep.tnetwork parameter", call. = FALSE)
-    }
+  if (is.null(x$network)) {
+    stop("Network object not saved in netdx object.
+          Check keep.tnetwork parameter", call. = FALSE)
   }
 
-  if (inherits(x, "netsim")) {
-    if (network > x$num.nw) {
-      stop("Specify network between 1 and ", x$num.nw, call. = FALSE)
-    }
-  }
-
-  nsteps <- ifelse(inherits(x, "netsim"), x$control$nsteps, x$nsteps)
+  nsteps <- x$nsteps
   if (collapse == TRUE && (missing(at) || at > nsteps || at < 0)) {
-    stop("Specify collapse time step between 0 and ", nsteps,
-         call. = FALSE)
+    stop("Specify collapse time step between 0 and ", nsteps, call. = FALSE)
   }
+
   ## Extraction ##
-  if (inherits(x, "netsim")) {
-    out <- x$network[[sim]][[network]]
-  } else if (inherits(x, "netdx")) {
-    out <- x$network[[sim]]
-  }
+  out <- x$network[[sim]]
 
   ## Collapsing
   if (collapse == TRUE) {
@@ -126,6 +122,112 @@ get_network <- function(x, sim = 1, network = 1, collapse = FALSE, at,
   return(out)
 }
 
+#' @rdname get_network
+#'
+#' @export
+#'
+get_network.netsim <- function(x, sim = 1, network = 1, collapse = FALSE, at, ...) {
+
+  ## Warnings and checks ##
+  nsims <- x$control$nsims
+  if (length(sim) > 1 || sim > nsims) {
+    stop("Specify a single sim between 1 and ", nsims, call. = FALSE)
+  }
+
+  if (x$control$tergmLite == TRUE && collapse == TRUE) {
+    stop("Argument `collapse` should be FALSE when x$control$tergmLite == TRUE",
+         call. = FALSE)
+  }
+
+  if (x$control$tergmLite == TRUE && missing(at) == FALSE) {
+    stop("Argument `at` should be missing when x$control$tergmLite == TRUE",
+         call. = FALSE)
+  }
+
+  if (is.null(x$network)) {
+    stop("Network object not saved in netsim object. Check control.net settings.",
+         call. = FALSE)
+  }
+
+  if (network < 1 || network > x$num.nw) {
+    stop("Specify network between 1 and ", x$num.nw, call. = FALSE)
+  }
+
+  nsteps <- x$control$nsteps
+  if (collapse == TRUE && (missing(at) || at > nsteps || at < 0)) {
+    stop("Specify collapse time step between 0 and ", nsteps, call. = FALSE)
+  }
+
+  ## Extraction ##
+  out <- x$network[[sim]][[network]]
+
+  ## Collapsing
+  if (collapse == TRUE) {
+    out <- network.collapse(out, at = at)
+  }
+
+  return(out)
+}
+
+#' @rdname get_network
+#'
+#' @export
+#'
+get_network.netsim_dat <- function(x, network = 1L, ...) {
+  if (get_control(x, "tergmLite") == FALSE) {
+    ## networkDynamic
+    nw <- x$nw[[network]]
+  } else {
+    ## networkLite
+    nw <- networkLite(x$el[[network]], x$attr, x$net_attr[[network]])
+  }
+  return(nw)
+}
+
+
+#' @title Set Network State During netsim Simulation
+#'
+#' @description This function updates the \code{netsim_dat} object given a
+#'              network representing the current state of the simulation.
+#'
+#' @param x a \code{netsim_dat} object
+#' @param network the index of the network to set on \code{x}
+#' @param nw the value of the network to set on \code{x}
+#'
+#' @details If running \code{tergmLite} simulation, this function updates
+#' \code{x$el[[network]]} and (if \code{tergmLite.track.duration} is \code{TRUE}
+#' for the network index \code{network}) the network attributes \code{"time"}
+#' and \code{"lasttoggle"} in \code{x$net_attr[[network]]}. If not running
+#' \code{tergmLite} simulation, this function updates the \code{networkDynamic}
+#' object stored in \code{x$nw[[network]]}. The input \code{nw} should be of
+#' class \code{networkLite} when running \code{tergmLite} simulation, and of
+#' class \code{networkDynamic} when not running \code{tergmLite} simulation.
+#'
+#' @return the \code{netsim_dat} object with the network state updated
+#'
+#' @export
+#' @keywords netUtils internal
+#'
+set_network <- function(x, ...) {
+  UseMethod("set_network")
+}
+
+#' @rdname set_network
+#'
+#' @export
+#'
+set_network.netsim_dat <- function(x, network = 1L, nw, ...) {
+  if (get_control(x, "tergmLite") == TRUE) {
+    x$el[[network]] <- as.edgelist(nw)
+    if (get_network_control(x, network, "tergmLite.track.duration") == TRUE) {
+      x$net_attr[[network]][["time"]] <- nw %n% "time"
+      x$net_attr[[network]][["lasttoggle"]] <- nw %n% "lasttoggle"
+    }
+  } else {
+    x$nw[[network]] <- nw
+  }
+  return(x)
+}
 
 #' @title Extract Transmissions Matrix from Network Epidemic Model
 #'
@@ -324,7 +426,7 @@ get_nwstats <- function(x, sim, network = 1, mode = c("data.frame", "list")) {
 #' @description Extracts a list of network model parameters saved in the
 #'              initialization module.
 #'
-#' @param x Main data object used in \code{netsim} simulations.
+#' @param x Main \code{netsim_dat} data object used in \code{netsim} simulations.
 #' @param network Network number, for simulations with multiple networks
 #'        representing the population.
 #'

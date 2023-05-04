@@ -7,18 +7,19 @@
 init_nets(dat, x)
 }
 \arguments{
-\item{dat}{A \code{dat} object obtained from \code{\link{create_dat_object}},
-including the \code{control} argument.}
+\item{dat}{A main data object of class \code{netsim_dat} obtained from
+\code{\link{create_dat_object}}, including the \code{control}
+argument.}
 
 \item{x}{Either a fitted network model object of class \code{netest}, or a
 list of such objects.}
 }
 \value{
-A \code{dat} main list object with network data and stats
-initialized.
+A \code{netsim_dat} class main data object with network data and
+stats initialized.
 }
 \description{
 This function initializes the network data and stats on the main
-\code{dat} object.
+\code{netsim_dat} class data object.
 }
 \keyword{internal}

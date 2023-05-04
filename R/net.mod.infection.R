@@ -343,7 +343,7 @@ discord_edgelist <- function(dat, at, network = 1, infstat = "i", include.networ
 #' @details
 #' This internal function works within the parent \code{\link{infection.net}}
 #' functions to save the transmission matrix created at time step \code{at} to
-#' the main list object \code{dat}.
+#' the main \code{netsim_dat} class object \code{dat}.
 #'
 #' @inherit recovery.net return
 #'
