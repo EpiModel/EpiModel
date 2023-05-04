@@ -5,7 +5,8 @@
 #'              the network at the specified time step, output to a list of
 #'              vectors.
 #'
-#' @param dat Main data object passed through \code{icm} simulations.
+#' @param dat Main \code{icm_dat} class data object passed through \code{icm}
+#'        simulations.
 #' @param at Current time step.
 #'
 #' @inherit recovery.icm return

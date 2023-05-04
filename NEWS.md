@@ -10,7 +10,8 @@
 ### OTHER
 
 - `update_cumulative_edgelist` is now called unconditionally and governed by the `cumulative.edgelist` control.
-- trying to access a cumulative edgelist when `cumulative.edgelist == FALSE` causes an error
+- trying to access a cumulative edgelist when `cumulative.edgelist == FALSE` causes an error.
+- `icm` data objects now properly classed as `icm_dat`, consistent with `netsim` objects.
 
 ## EpiModel 2.3.2
 
