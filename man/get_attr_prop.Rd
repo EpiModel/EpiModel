@@ -7,8 +7,9 @@
 get_attr_prop(dat, nwterms)
 }
 \arguments{
-\item{dat}{Main list object containing a \code{networkDynamic} object and
-other initialization information passed from \code{\link{netsim}}.}
+\item{dat}{Main \code{netsim_dat} object containing a \code{networkDynamic}
+object and other initialization information passed from
+\code{\link{netsim}}.}
 
 \item{nwterms}{Vector of attributes on the network object, usually as
 output of \code{\link{get_formula_term_attr}}.}

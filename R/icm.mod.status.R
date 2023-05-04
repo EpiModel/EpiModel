@@ -6,7 +6,7 @@
 #'
 #' @inheritParams prevalence.icm
 #'
-#' @inherit recovery.net return
+#' @inherit recovery.icm return
 #'
 #' @export
 #' @keywords internal
@@ -86,7 +86,7 @@ infection.icm <- function(dat, at) {
 #'
 #' @inheritParams prevalence.icm
 #'
-#' @inherit recovery.net return
+#' @return The updated \code{icm_dat} class main data object.
 #'
 #' @export
 #' @keywords internal
@@ -144,7 +144,7 @@ recovery.icm <- function(dat, at) {
 #'
 #' @inheritParams prevalence.icm
 #'
-#' @inherit recovery.net return
+#' @inherit recovery.icm return
 #'
 #' @export
 #' @keywords internal
@@ -231,7 +231,7 @@ infection.icm.bip <- function(dat, at) {
 #'
 #' @inheritParams prevalence.icm
 #'
-#' @inherit recovery.net return
+#' @inherit recovery.icm return
 #'
 #' @export
 #' @keywords internal

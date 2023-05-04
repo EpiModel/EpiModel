@@ -1,8 +1,9 @@
-#' @title Functions to Access and Edit the Main List Object in Network Models
+#' @title Functions to Access and Edit the Main netsim_dat Object in Network Models
 #'
 #' @description These \code{get_}, \code{set_}, \code{append_}, and \code{add_}
 #'              functions allow a safe and efficient way to retrieve and mutate
-#'              the main list object of network models (\code{dat}).
+#'              the main \code{netsim_dat} class object of network models
+#'              (typical variable name \code{dat}).
 #'
 #' @inheritParams recovery.net
 #' @param item A character vector containing the name of the element to access
@@ -39,8 +40,8 @@
 #'
 #' @section Mutability:
 #' The \code{set_}, \code{append_}, and \code{add_} functions DO NOT modify the
-#' \code{dat} object in place. The result must be assigned back to \code{dat} in
-#' order to be registered: \code{dat <- set_*(dat, item, value)}.
+#' \code{netsim_dat} object in place. The result must be assigned back to
+#' \code{dat} in order to be registered: \code{dat <- set_*(dat, item, value)}.
 #'
 #' @section \code{set_} and \code{append_} vs \code{add_}:
 #' The \code{set_} and \code{append_} functions edit a pre-existing element or
@@ -59,6 +60,7 @@
 #'     nsteps = 150
 #'   )
 #' )
+#' class(dat) <- c("netsim_dat", class(dat))
 #'
 #' dat <- add_attr(dat, "age")
 #' dat <- set_attr(dat, "age", runif(100))
@@ -591,7 +593,7 @@ update_unique_ids <- function(dat, n.new) {
   return(dat)
 }
 
-#' @title Check that All Attributes in the Main Object are of Equal
+#' @title Check that All Attributes in the Main `netsim_dat` Object are of Equal
 #'        Length
 #'
 #' @inheritParams recovery.net

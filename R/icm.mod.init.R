@@ -1,15 +1,14 @@
 
 #' @title Initialization: icm Module
 #'
-#' @description This function initializes the main \code{dat} object on which
-#'              data are stored, and simulates disease status and other
-#'              attributes.
+#' @description This function initializes the main \code{icm_dat} class data
+#'              object, and simulates disease status and other attributes.
 #'
 #' @param param An \code{EpiModel} object of class \code{\link{param.icm}}.
 #' @param init An \code{EpiModel} object of class \code{\link{init.icm}}.
 #' @param control An \code{EpiModel} object of class \code{\link{control.icm}}.
 #'
-#' @inherit recovery.net return
+#' @inherit recovery.icm return
 #'
 #' @export
 #' @keywords internal
@@ -21,6 +20,7 @@ initialize.icm <- function(param, init, control) {
   dat$param <- param
   dat$init <- init
   dat$control <- control
+  class(dat) <- c("icm_dat", class(dat))
 
 
   # Set attributes
@@ -56,7 +56,7 @@ initialize.icm <- function(param, init, control) {
 #'
 #' @inheritParams prevalence.icm
 #'
-#' @inherit recovery.net return
+#' @inherit recovery.icm return
 #'
 #' @seealso This is an initialization module for \code{\link{icm}}.
 #'
