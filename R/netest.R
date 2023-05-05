@@ -164,7 +164,7 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
          call. = FALSE)
   }
   dissolution <- coef.diss$dissolution
-  if (coef.diss$coef.crude[1] == -Inf) {
+  if (coef.diss$duration[1] == 1) {
     is.tergm <- FALSE
   } else {
     is.tergm <- TRUE
@@ -176,7 +176,8 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
 
   if (edapprox == FALSE) {
 
-    fit <- tergm(nw ~ Form(formation) + Persist(dissolution),
+    fit <- tergm(~Form(formation) + Persist(dissolution),
+                 basis = nw,
                  targets = "formation",
                  target.stats = target.stats,
                  offset.coef = c(coef.form, coef.diss$coef.crude),
@@ -205,14 +206,14 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
     out$newnetwork <- as.network(fit$newnetwork)
     delete.network.attribute(out$newnetwork, "time")
     delete.network.attribute(out$newnetwork, "lasttoggle")
-    out$formula <- fit$formula
+    out$formula <- trim_env(fit$formula, keep = c("formation", "dissolution"))
 
   } else {
-    formation.nw <- nonsimp_update.formula(formation, nw ~ ., from.new = "nw")
 
     if (is(nw, "egor")) {
       # ergm.ego case
-      fit <- ergm.ego(formation.nw,
+      fit <- ergm.ego(formation,
+                      basis = nw,
                       popsize = 0,
                       constraints = constraints,
                       offset.coef = coef.form,
@@ -223,7 +224,8 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
 
     } else {
       # ergm case
-      fit <- ergm(formation.nw,
+      fit <- ergm(formation,
+                  basis = nw,
                   target.stats = target.stats,
                   constraints = constraints,
                   offset.coef = coef.form,
@@ -242,12 +244,8 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
         ## implement the edapprox by appending the dissolution model to the
         ## formation model and appending the relevant values to the vector of
         ## formation model coefficients
-        formula_addition <- append_rhs.formula(~., coef.diss$dissolution,
-                                               keep.onesided = TRUE,
-                                               env = environment(coef.diss$dissolution))
-
-        # the ... allows for copying via from.new
-        formation <- nonsimp_update.formula(formation, formula_addition, ...)
+        formation <- trim_env(~Passthrough(formation) + Passthrough(dissolution),
+                              keep = c("formation", "dissolution"))
         coef.form <- c(coef.form, -coef.diss$coef.form.corr)
       }
     }
@@ -263,7 +261,7 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
     out$constraints <- constraints
     out$edapprox <- edapprox
     out$nested.edapprox <- nested.edapprox
-    out$newnetwork <- fit$newnetwork
+    out$newnetwork <- NVL(fit$newnetwork, fit$network)
     out$formula <- fit$formula
   }
 
@@ -352,7 +350,6 @@ diss_check <- function(formation, dissolution) {
 #' @param nested.edapprox Logical. If \code{edapprox = TRUE} the dissolution
 #'        model is an initial segment of the formation model (see details in
 #'        \code{\link{netest}}).
-#' @param ... Additional arguments passed to other functions.
 #'
 #' @details
 #' Fitting an ERGM is a computationally intensive process when the model
@@ -395,7 +392,7 @@ diss_check <- function(formation, dissolution) {
 #'}
 #'
 update_dissolution <- function(old.netest, new.coef.diss,
-                               nested.edapprox = TRUE, ...) {
+                               nested.edapprox = TRUE) {
 
   if (!inherits(old.netest, "netest")) {
     stop("old.netest must be an object of class netest", call. = FALSE)
@@ -421,17 +418,8 @@ update_dissolution <- function(old.netest, new.coef.diss,
     } else {
       ## remove the part of the formation model and coefficient vector
       ## corresponding to the old edapprox
-      old_diss_list <- list_rhs.formula(out$coef.diss$dissolution)
-
-      formation_list <- list_rhs.formula(out$formation)
-      formation_list <- formation_list[seq_len(length(formation_list) -
-                                                 length(old_diss_list))]
-
-      formation <- append_rhs.formula(~., formation_list,
-                                      env = environment(out$formation))
-      formation[[2]] <- NULL # remove the . on the LHS
-
-      out$formation <- formation
+      out$formation <- eval(quote(formation),
+                            envir = environment(out$formation))
       out$coef.form <-
         out$coef.form[seq_len(length(out$coef.form) -
                                 length(out$coef.diss$coef.form.corr))]
@@ -454,12 +442,12 @@ update_dissolution <- function(old.netest, new.coef.diss,
       ## implement new edapprox by appending the new dissolution model to the
       ## formation model and appending the relevant values to the vector of
       ## formation model coefficients
-      formula_addition <- append_rhs.formula(~., new.coef.diss$dissolution,
-                                             keep.onesided = TRUE,
-                                             env = environment(new.coef.diss$dissolution))
-      # the ... allows for copying via from.new
-      out$formation <- nonsimp_update.formula(out$formation,
-                                              formula_addition, ...)
+      # nolint start
+      formation <- out$formation
+      dissolution <- new.coef.diss$dissolution
+      # nolint end
+      out$formation <- trim_env(~Passthrough(formation) + Passthrough(dissolution),
+                                keep = c("formation", "dissolution"))
       out$coef.form <- c(out$coef.form, -new.coef.diss$coef.form.corr)
     }
   }

@@ -81,6 +81,8 @@ brewer_ramp <- function(n, plt, delete.lights = TRUE) {
 #'
 #' @description Deletes elements from the main attribute list.
 #'
+#' @details This function is deprecated; use \code{\link{delete_attr}} instead.
+#'
 #' @param attrList Attribute list.
 #' @param ids ID numbers to delete from the list.
 #'
@@ -89,6 +91,9 @@ brewer_ramp <- function(n, plt, delete.lights = TRUE) {
 #' @export
 #' @keywords internal
 deleteAttr <- function(attrList, ids) {
+  .Deprecate_once(msg = paste0("`deleteAttr` is deprecated and will be removed",
+                               " in a future version of EpiModel; use",
+                               " `delete_attr` instead"))
 
   if (!inherits(attrList, "list")) {
     stop("attrList must be a list", call. = FALSE)
@@ -388,6 +393,8 @@ netsim_error_logger <- function(dat, s) {
 #'        to a \code{networkLite}.
 #' @param keep.fit If \code{FALSE}, removes the \code{object$fit} (if present)
 #'        on the \code{netest} object.
+#' @param keep Character vector of object names to keep in formula environments.
+#'        By default, all objects are removed.
 #'
 #' @details
 #' With larger, more complex network structures with epidemic models, it is
@@ -396,31 +403,35 @@ netsim_error_logger <- function(dat, s) {
 #' all but the bare essentials needed for simulating a network model with
 #' \code{\link{netsim}}.
 #'
-#' Specifically, the function removes:
-#' \itemize{
-#'  \item \code{environment(object$constraints)}
-#'  \item \code{environment(object$coef.diss$dissolution)}
-#'  \item \code{environment(object$formation)}
-#' }
+#' The function always trims the environments of \code{object$constraints} and
+#' \code{object$coef.diss$dissolution}.
 #'
-#' When \code{edapprox = TRUE} in the \code{netest} call, also
-#' removes \code{environment(object$formula)}.
+#' When both \code{edapprox = TRUE} and \code{nested.edapprox = TRUE} in the
+#' \code{netest} call, also trims the environments of \code{object$formula}
+#' and \code{object$formation}.
 #'
-#' When \code{edapprox = FALSE}, also removes all but \code{formation} and
-#' \code{dissolution} from \code{environment(object$formula)}, as well as
-#' \code{environment(environment(object$formula)$formation)} and
-#' \code{environment(environment(object$formula)$dissolution)}.
+#' When both \code{edapprox = TRUE} and \code{nested.edapprox = FALSE} in the
+#' \code{netest} call, also trims the environments of \code{object$formula},
+#' \code{environment(object$formation)$formation}, and
+#' \code{environment(object$formation)$dissolution}.
+#'
+#' When \code{edapprox = FALSE} in the \code{netest} call, also trims the
+#' environments of \code{object$formation},
+#' \code{environment(object$formula)$formation} and
+#' \code{environment(object$formula)$dissolution}.
+#'
+#' By default all objects are removed from these trimmed environments. Specific
+#' objects may be retained by passing their names as the \code{keep} argument.
+#' For the output of \code{trim_netest} to be usable in \code{\link{netsim}}
+#' simulation, any objects referenced in the formulas should be included in the
+#' \code{keep} argument.
 #'
 #' If \code{as.networkLite = TRUE}, converts \code{object$newnetwork} to a
 #' \code{networkLite} object. If \code{keep.fit = FALSE}, removes \code{fit} (if
 #' present) from \code{object}.
 #'
-#' For the output to be usable in \code{\link{netsim}} simulation, there should
-#' not be substitutions in the formulas, other than \code{formation} and
-#' \code{dissolution} in \code{object$formula} when \code{edapprox = FALSE}.
-#'
 #' @return
-#' A \code{netest} object with formula environments removed, optionally with the
+#' A \code{netest} object with formula environments trimmed, optionally with the
 #' \code{newnetwork} element converted to a \code{networkLite} and the
 #' \code{fit} element removed.
 #'
@@ -439,23 +450,30 @@ netsim_error_logger <- function(dat, s) {
 #' est.small <- trim_netest(est)
 #' print(object.size(est.small), units = "KB")
 #'
-trim_netest <- function(object, as.networkLite = TRUE, keep.fit = FALSE) {
+trim_netest <- function(object, as.networkLite = TRUE, keep.fit = FALSE,
+                        keep = character(0)) {
   if (object$edapprox == TRUE) {
-    object$formula <- trim_env(object$formula)
+    object$formula <- trim_env(object$formula, keep = keep)
+    if (object$nested.edapprox == TRUE) {
+      object$formation <- trim_env(object$formation, keep = keep)
+    } else {
+      # trim environments for formation and dissolution inside formation
+      environment(object$formation)$formation <-
+        trim_env(environment(object$formation)$formation, keep = keep)
+      environment(object$formation)$dissolution <-
+        trim_env(environment(object$formation)$dissolution, keep = keep)
+    }
   } else {
-    # keep formation and dissolution in environment so formula can be evaluated
-    object$formula <- trim_env(object$formula,
-                               keep = c("formation", "dissolution"))
-    # but trim environments for formation and dissolution
+    object$formation <- trim_env(object$formation, keep = keep)
+    # trim environments for formation and dissolution inside formula
     environment(object$formula)$formation <-
-      trim_env(environment(object$formula)$formation)
+      trim_env(environment(object$formula)$formation, keep = keep)
     environment(object$formula)$dissolution <-
-      trim_env(environment(object$formula)$dissolution)
+      trim_env(environment(object$formula)$dissolution, keep = keep)
   }
 
-  object$coef.diss$dissolution <- trim_env(object$coef.diss$dissolution)
-  object$formation <- trim_env(object$formation)
-  object$constraints <- trim_env(object$constraints)
+  object$coef.diss$dissolution <- trim_env(object$coef.diss$dissolution, keep = keep)
+  object$constraints <- trim_env(object$constraints, keep = keep)
 
   if (keep.fit == FALSE) {
     object$fit <- NULL

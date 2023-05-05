@@ -149,7 +149,7 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
     stop("Specify number of time steps with nsteps", call. = FALSE)
   }
 
-  if (all(x$coef.diss$duration == 1) && dynamic == TRUE) {
+  if (x$coef.diss$duration[1] == 1 && dynamic == TRUE) {
     stop("Running dynamic diagnostics on a cross-sectional ERGM (duration = 1) is not possible.
          \nSet netdx parameter 'dynamic' to 'FALSE'",
       call. = FALSE

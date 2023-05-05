@@ -4,7 +4,12 @@
 \alias{trim_netest}
 \title{Function to Reduce the Size of a \code{netest} Object}
 \usage{
-trim_netest(object, as.networkLite = TRUE, keep.fit = FALSE)
+trim_netest(
+  object,
+  as.networkLite = TRUE,
+  keep.fit = FALSE,
+  keep = character(0)
+)
 }
 \arguments{
 \item{object}{A \code{netest} class object.}
@@ -14,9 +19,12 @@ to a \code{networkLite}.}
 
 \item{keep.fit}{If \code{FALSE}, removes the \code{object$fit} (if present)
 on the \code{netest} object.}
+
+\item{keep}{Character vector of object names to keep in formula environments.
+By default, all objects are removed.}
 }
 \value{
-A \code{netest} object with formula environments removed, optionally with the
+A \code{netest} object with formula environments trimmed, optionally with the
 \code{newnetwork} element converted to a \code{networkLite} and the
 \code{fit} element removed.
 }
@@ -34,28 +42,32 @@ object (estimated with \code{\link{netest}}). This utility function removes
 all but the bare essentials needed for simulating a network model with
 \code{\link{netsim}}.
 
-Specifically, the function removes:
-\itemize{
-\item \code{environment(object$constraints)}
-\item \code{environment(object$coef.diss$dissolution)}
-\item \code{environment(object$formation)}
-}
+The function always trims the environments of \code{object$constraints} and
+\code{object$coef.diss$dissolution}.
 
-When \code{edapprox = TRUE} in the \code{netest} call, also
-removes \code{environment(object$formula)}.
+When both \code{edapprox = TRUE} and \code{nested.edapprox = TRUE} in the
+\code{netest} call, also trims the environments of \code{object$formula}
+and \code{object$formation}.
 
-When \code{edapprox = FALSE}, also removes all but \code{formation} and
-\code{dissolution} from \code{environment(object$formula)}, as well as
-\code{environment(environment(object$formula)$formation)} and
-\code{environment(environment(object$formula)$dissolution)}.
+When both \code{edapprox = TRUE} and \code{nested.edapprox = FALSE} in the
+\code{netest} call, also trims the environments of \code{object$formula},
+\code{environment(object$formation)$formation}, and
+\code{environment(object$formation)$dissolution}.
+
+When \code{edapprox = FALSE} in the \code{netest} call, also trims the
+environments of \code{object$formation},
+\code{environment(object$formula)$formation} and
+\code{environment(object$formula)$dissolution}.
+
+By default all objects are removed from these trimmed environments. Specific
+objects may be retained by passing their names as the \code{keep} argument.
+For the output of \code{trim_netest} to be usable in \code{\link{netsim}}
+simulation, any objects referenced in the formulas should be included in the
+\code{keep} argument.
 
 If \code{as.networkLite = TRUE}, converts \code{object$newnetwork} to a
 \code{networkLite} object. If \code{keep.fit = FALSE}, removes \code{fit} (if
 present) from \code{object}.
-
-For the output to be usable in \code{\link{netsim}} simulation, there should
-not be substitutions in the formulas, other than \code{formation} and
-\code{dissolution} in \code{object$formula} when \code{edapprox = FALSE}.
 }
 \examples{
 nw <- network_initialize(n = 100)

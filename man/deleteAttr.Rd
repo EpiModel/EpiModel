@@ -17,4 +17,7 @@ The updated attribute list.
 \description{
 Deletes elements from the main attribute list.
 }
+\details{
+This function is deprecated; use \code{\link{delete_attr}} instead.
+}
 \keyword{internal}
