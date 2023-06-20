@@ -7,8 +7,7 @@
 epiweb(class, ...)
 }
 \arguments{
-\item{class}{Model class, with options of \code{"dcm"}, \code{"icm"}
-and \code{"net"}.}
+\item{class}{Model class, with options of \code{"dcm"}, \code{"icm"}, and \code{"net"}.}
 
 \item{...}{Additional arguments passed to \code{shiny::runApp}.}
 }
@@ -40,9 +39,8 @@ epiweb(class = "net")
 }
 \references{
 RStudio. shiny: Web Application Framework for R. R package version 1.0.5.
-2015. \url{https://shiny.rstudio.com/}
+2015. \url{https://shiny.posit.co/}.
 }
 \seealso{
 \code{\link{dcm}}, \code{\link{icm}}, \code{\link{netsim}}
 }
-\keyword{GUI}
