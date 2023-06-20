@@ -2,18 +2,17 @@
 
 ### NEW FEATURES
 
-- `netsim` now supports multiple networks (with a common node set)
-- Add a `get_cumulative_degree` function with an interface similar to `get_partners`.
+- Stochastic network models, simulated with `netsim`, now support multi-layer networks. These are networks with a common common node set but different edge set (e.g., home-based and community-based contact layers). An example implementation can be found at the EpiModel Gallery: https://github.com/EpiModel/EpiModel-Gallery/tree/multinets/2022-12-Multinets. 
+- Add a `get_cumulative_degree` function with an interface similar to `get_partners`. This function helps look up cumulative degree over a time period (e.g., number of partners over the past year) for a specified set of nodes. 
 - Generic `get_network` and `set_network` functions created for more consistent access to the network objects within `netsim_dat` class objects.
-
-### BUG FIXES
 
 ### OTHER
 
 - `update_cumulative_edgelist` is now called unconditionally and governed by the `cumulative.edgelist` control.
-- trying to access a cumulative edgelist when `cumulative.edgelist == FALSE` causes an error.
+- Attempting to access a cumulative edgelist when the `control.net` setting `cumulative.edgelist == FALSE` causes an error.
 - `netsim` data objects now properly classed as `netsim_dat`.
 - `icm` data objects now properly classed as `icm_dat`, consistent with `netsim` objects.
+
 
 ## EpiModel 2.3.2
 
