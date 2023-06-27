@@ -11,3 +11,4 @@ exclusions: list(
   "R/test.R",
   "R/RcppExports.R",
   "R/dcm.mods.R")
+
