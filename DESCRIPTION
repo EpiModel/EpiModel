@@ -30,16 +30,16 @@ Depends:
     R (>= 3.5),
     deSolve (>= 1.21),
     networkDynamic (>= 0.11.3),
-    tergm (>= 4.1.1),
-    statnet.common (>= 4.8.0)
+    tergm (== 4.1.1),
+    statnet.common (== 4.8.0)
 Imports:
     graphics,
     grDevices,
     stats,
     utils,
     doParallel,
-    ergm (>= 4.4.0),
-    ergm.ego (>= 1.0.1),
+    ergm (== 4.4.0),
+    ergm.ego (== 1.0.1),
     egor,
     foreach,
     network (>= 1.18.1),
@@ -60,6 +60,11 @@ Suggests:
     shiny,
     testthat,
     tidyr
+Remotes:
+    github::statnet/statnet.common@4.8.0,
+    github::statnet/ergm@4.4.0,
+    github::statnet/ergm.ego@1.0.1,
+    github::statnet/tergm@4.1.1
 VignetteBuilder: knitr
 LinkingTo: Rcpp, ergm
 RoxygenNote: 7.2.3
