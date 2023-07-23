@@ -24,7 +24,7 @@ Authors@R: c(person("Samuel", "Jenness",
     person("Skye", "Bender-deMoll",
     role=c("ctb"), email="skyebend@uw.edu"))
 License: GPL-3
-URL: http://www.epimodel.org/
+URL: http://www.epimodel.org/, http://epimodel.github.io/EpiModel/
 BugReports: https://github.com/EpiModel/EpiModel/issues
 Depends:
     R (>= 4.1),
