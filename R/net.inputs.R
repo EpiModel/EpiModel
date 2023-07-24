@@ -229,17 +229,17 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
   }
 
   ## random.params checks
-   if ("random.params" %in% names.dot.args) {
-     for (nm in names(p[["random.params"]])) {
-       if (nm %in% names(p)) {
+  if ("random.params" %in% names.dot.args) {
+    for (nm in names(p[["random.params"]])) {
+      if (nm %in% names(p)) {
         warning(
           "The parameter `", nm, "` is defined twice, once as fixed",
           " and once as a random parameter.\n Only the random parameter",
           " definition will be used."
         )
-       }
-     }
-   }
+      }
+    }
+  }
 
   ## Defaults and Checks
   if ("b.rate" %in% names.dot.args) {
@@ -266,7 +266,7 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
     p[["act.rate"]] <- 1
   }
   p[["vital"]] <- ifelse(!missing(a.rate) | !missing(ds.rate) |
-                      !missing(di.rate) | !missing(dr.rate), TRUE, FALSE)
+                           !missing(di.rate) | !missing(dr.rate), TRUE, FALSE)
   if ("act.rate.g2" %in% names.dot.args) {
     warning("act.rate.g2 parameter was entered. ",
             "If using built-in models, only act.rate parameter will apply.",
@@ -487,7 +487,7 @@ param_random <- function(values, prob = NULL) {
 #' }
 generate_random_params <- function(param, verbose = FALSE) {
   if (is.null(param[["random.params"]]) ||
-      length(param[["random.params"]]) == 0) {
+        length(param[["random.params"]]) == 0) {
     return(param)
   } else {
     random.params <- param[["random.params"]]
@@ -543,7 +543,7 @@ generate_random_params <- function(param, verbose = FALSE) {
 
   if (verbose == TRUE) {
     msg <-
-     "The following values were randomly generated for the given parameters: \n"
+      "The following values were randomly generated for the given parameters: \n"
     msg <- c(msg, paste0("`", names(rng_values), "`: ", rng_values, "\n"))
     message(msg)
   }
@@ -639,7 +639,7 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
     stop("infTime.vector may only be used if status.vector is used")
   }
   if (!is.null(p[["infTime.vector"]]) &&
-      length(p[["infTime.vector"]]) != length(p[["status.vector"]])) {
+        length(p[["infTime.vector"]]) != length(p[["status.vector"]])) {
     stop("Length of infTime.vector must match length of status.vector")
   }
 
@@ -1023,7 +1023,7 @@ crosscheck.net <- function(x, param, init, control) {
         x <- list(x)
       }
       if (!inherits(x, "list") || length(x) == 0 ||
-          !all(vapply(x, inherits, logical(1), "netest"))) {
+            !all(vapply(x, inherits, logical(1), "netest"))) {
         stop("x must be either an object of class netest or a list of objects",
              " of class netest when start == 1", call. = FALSE)
       }
@@ -1093,7 +1093,7 @@ crosscheck.net <- function(x, param, init, control) {
 
       # Two-group model checks for inital conditions
       if (nGroups == 2 && is.null(init[["i.num.g2"]]) &&
-          is.null(init[["status.vector"]]) && statOnNw == FALSE) {
+            is.null(init[["status.vector"]]) && statOnNw == FALSE) {
         stop("Specify i.num.g2 for two-group model simulations", call. = FALSE)
       }
 
@@ -1111,7 +1111,7 @@ crosscheck.net <- function(x, param, init, control) {
           stop("Specify r.num in init.net", call. = FALSE)
         }
         if (nGroups == 2 && is.null(init[["r.num.g2"]]) &&
-            is.null(init[["status.vector"]]) && statOnNw == FALSE) {
+              is.null(init[["status.vector"]]) && statOnNw == FALSE) {
           stop("Specify r.num.g2 in init.net", call. = FALSE)
         }
       }
@@ -1222,7 +1222,7 @@ crosscheck.net <- function(x, param, init, control) {
   # convert nwstats.formula = "formation" to actual formation formula
   for (network in seq_len(num.nw)) {
     if (!is.null(control[["nwstats.formula"]][[network]]) &&
-        control[["nwstats.formula"]][[network]] == "formation") {
+          control[["nwstats.formula"]][[network]] == "formation") {
       control[["nwstats.formula"]][[network]] <- nwparam[[network]]$formation
     }
   }
@@ -1235,8 +1235,8 @@ crosscheck.net <- function(x, param, init, control) {
            " but should be of length ", num.nw + 1L, ".")
     }
     control[["dat.updates"]] <- trim_env(function(dat, at, network) {
-                                           dat.updates[[network + 1L]](dat = dat, at = at)
-                                         }, keep = c("dat.updates"))
+      dat.updates[[network + 1L]](dat = dat, at = at)
+    }, keep = c("dat.updates"))
   }
 
   ## In-place assignment to update param and control

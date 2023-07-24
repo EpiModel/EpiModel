@@ -36,8 +36,8 @@ create_scenario_list <- function(scenarios.df) {
     scenarios.names,
     function(id) {
       make_scenario(
-        scenarios.df[scenarios.df[[".scenario.id"]] == id, ])
-     }
+                    scenarios.df[scenarios.df[[".scenario.id"]] == id, ])
+    }
   )
 
   names(scenarios) <- scenarios.names
@@ -110,9 +110,8 @@ use_scenario <- function(param, scenario) {
   )
 
   for (i in which(elements.at < 2)) {
-    param <- update_params(
-      param,
-      scenario[[".param.updater.list"]][[i]][["param"]])
+    param <- update_params(param,
+                           scenario[[".param.updater.list"]][[i]][["param"]])
   }
 
   param[[".param.updater.list"]] <- c(
@@ -243,7 +242,7 @@ check_params_names <- function(params.names) {
   special.params.names <- list_special_params(params.names)
   if (length(special.params.names) != 0) {
     stop("The following special parameter names are not allowed: \n`",
-         paste0(special.params.names, collapse = "`, `"), "`\n\n"
+      paste0(special.params.names, collapse = "`, `"), "`\n\n"
     )
   }
 

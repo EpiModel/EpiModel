@@ -50,5 +50,5 @@ check_end_horizon_control <- function(dat) {
     )
   }
 
-   return(invisible(TRUE))
+  return(invisible(TRUE))
 }

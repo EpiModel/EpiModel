@@ -14,7 +14,7 @@
 infection.icm <- function(dat, at) {
 
   ## Expected acts
-    acts <- round(dat$param$act.rate * dat$epi$num[at - 1] / 2)
+  acts <- round(dat$param$act.rate * dat$epi$num[at - 1] / 2)
 
   ## Edgelist
   p1 <- ssample(which(dat$attr$active == 1), acts, replace = TRUE)
@@ -24,10 +24,10 @@ infection.icm <- function(dat, at) {
   del <- NULL
   if (length(p1) > 0 && length(p2) > 0) {
     del <- data.frame(p1, p2)
-      while (any(del$p1 == del$p2)) {
-        del$p2 <- ifelse(del$p1 == del$p2,
-                         ssample(which(dat$attr$active == 1), 1), del$p2)
-      }
+    while (any(del$p1 == del$p2)) {
+      del$p2 <- ifelse(del$p1 == del$p2,
+                       ssample(which(dat$attr$active == 1), 1), del$p2)
+    }
 
 
 
@@ -35,7 +35,7 @@ infection.icm <- function(dat, at) {
     del$p1.stat <- dat$attr$status[del$p1]
     del$p2.stat <- dat$attr$status[del$p2]
     serodis <- (del$p1.stat == "s" & del$p2.stat == "i") |
-               (del$p1.stat == "i" & del$p2.stat == "s")
+      (del$p1.stat == "i" & del$p2.stat == "s")
     del <- del[serodis == TRUE, ]
 
 
@@ -49,8 +49,8 @@ infection.icm <- function(dat, at) {
       del$trans <- rbinom(nrow(del), 1, del$tprob)
       del <- del[del$trans == TRUE, ]
       if (nrow(del) > 0) {
-          newIds <- unique(ifelse(del$p1.stat == "s", del$p1, del$p2))
-          nInf <- length(newIds)
+        newIds <- unique(ifelse(del$p1.stat == "s", del$p1, del$p2))
+        nInf <- length(newIds)
 
         dat$attr$status[newIds] <- "i"
         dat$attr$infTime[newIds] <- at
@@ -152,21 +152,21 @@ recovery.icm <- function(dat, at) {
 infection.icm.bip <- function(dat, at) {
 
   ## Expected acts
-    if (dat$param$balance == "g1") {
-      acts <- round(dat$param$act.rate *
-                      (dat$epi$num[at - 1] + dat$epi$num.g2[at - 1]) / 2)
-    }
-    if (dat$param$balance == "g2") {
-      acts <- round(dat$param$act.rate.g2 *
-                      (dat$epi$num[at - 1] + dat$epi$num.g2[at - 1]) / 2)
-    }
+  if (dat$param$balance == "g1") {
+    acts <- round(dat$param$act.rate *
+                    (dat$epi$num[at - 1] + dat$epi$num.g2[at - 1]) / 2)
+  }
+  if (dat$param$balance == "g2") {
+    acts <- round(dat$param$act.rate.g2 *
+                    (dat$epi$num[at - 1] + dat$epi$num.g2[at - 1]) / 2)
+  }
 
 
   ## Edgelist
-    p1 <- ssample(which(dat$attr$active == 1 & dat$attr$group == 1),
-                  acts, replace = TRUE)
-    p2 <- ssample(which(dat$attr$active == 1 & dat$attr$group == 2),
-                  acts, replace = TRUE)
+  p1 <- ssample(which(dat$attr$active == 1 & dat$attr$group == 1),
+                acts, replace = TRUE)
+  p2 <- ssample(which(dat$attr$active == 1 & dat$attr$group == 2),
+                acts, replace = TRUE)
 
   del <- NULL
   if (length(p1) > 0 && length(p2) > 0) {
@@ -182,21 +182,21 @@ infection.icm.bip <- function(dat, at) {
 
     ## Transmission on edgelist
     if (nrow(del) > 0) {
-        del$tprob <- ifelse(del$p1.stat == "s", dat$param$inf.prob,
-                            dat$param$inf.prob.g2)
+      del$tprob <- ifelse(del$p1.stat == "s", dat$param$inf.prob,
+                          dat$param$inf.prob.g2)
       if (!is.null(dat$param$inter.eff) && at >= dat$param$inter.start) {
         del$tprob <- del$tprob * (1 - dat$param$inter.eff)
       }
       del$trans <- rbinom(nrow(del), 1, del$tprob)
       del <- del[del$trans == TRUE, ]
       if (nrow(del) > 0) {
-          newIdsg1 <- unique(del$p1[del$p1.stat == "s"])
-          newIdsg2 <- unique(del$p2[del$p2.stat == "s"])
-          nInf <- length(newIdsg1)
-          nInfg2 <- length(newIdsg2)
-          newIds <- c(newIdsg1, newIdsg2)
-          dat$attr$status[newIds] <- "i"
-          dat$attr$infTime[newIds] <- at
+        newIdsg1 <- unique(del$p1[del$p1.stat == "s"])
+        newIdsg2 <- unique(del$p2[del$p2.stat == "s"])
+        nInf <- length(newIdsg1)
+        nInfg2 <- length(newIdsg2)
+        newIds <- c(newIdsg1, newIdsg2)
+        dat$attr$status[newIds] <- "i"
+        dat$attr$infTime[newIds] <- at
       } else {
         nInf <- nInfg2 <- 0
       }
@@ -266,13 +266,13 @@ recovery.icm.bip <- function(dat, at) {
     rates <- c(rec.rate, rec.rate.g2)
     ratesElig <- rates[gElig]
 
-      vecRecov <- which(rbinom(nElig, 1, ratesElig) == 1)
-      if (length(vecRecov) > 0) {
-        idsRecov <- idsElig[vecRecov]
-        nRecov <- sum(group[idsRecov] == 1)
-        nRecovG2 <- sum(group[idsRecov] == 2)
-        status[idsRecov] <- recovState
-      }
+    vecRecov <- which(rbinom(nElig, 1, ratesElig) == 1)
+    if (length(vecRecov) > 0) {
+      idsRecov <- idsElig[vecRecov]
+      nRecov <- sum(group[idsRecov] == 1)
+      nRecovG2 <- sum(group[idsRecov] == 2)
+      status[idsRecov] <- recovState
+    }
   }
   dat$attr$status <- status
 
@@ -287,11 +287,11 @@ recovery.icm.bip <- function(dat, at) {
   } else {
     dat$epi[[outName[1]]][at] <- nRecov
   }
-    if (at == 2) {
-      dat$epi[[outName[2]]] <- c(0, nRecovG2)
-    } else {
-      dat$epi[[outName[2]]][at] <- nRecovG2
-    }
+  if (at == 2) {
+    dat$epi[[outName[2]]] <- c(0, nRecovG2)
+  } else {
+    dat$epi[[outName[2]]][at] <- nRecovG2
+  }
 
   return(dat)
 }

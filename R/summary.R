@@ -387,7 +387,7 @@ summary.icm <- function(object, at, digits = 3, ...) {
                  df.mn$di.flow, df.sd$di.flow, NA)
       mat <- rbind(mat, matrix(stats, byrow = TRUE, nrow = length(stats) / 3))
       rownames(mat)[rownames(mat) == ""] <- c("Arrival ->", "S Departure ->",
-                                            "I Departure ->")
+                                              "I Departure ->")
     }
 
     ## Group 2 stats
