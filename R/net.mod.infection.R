@@ -334,25 +334,25 @@ discord_edgelist <- function(dat, at, network = 1, infstat = "i", include.networ
 #' @title Get Discordant Edgelist Based on Specified Status Variable
 #'
 #' @description This function returns a `data.frame` with a discordant
-#'              edgelist, defined as the set of edges for which the status attribute 
+#'              edgelist, defined as the set of edges for which the status attribute
 #'              of interest is infected for one partner and susceptible for the other.
 #'
 #' @inheritParams recovery.net
 #' @param status.attr The name of the status attribute of interest. This parameter is required.
-#' @param head.status The value(s) of `status.attr` for which to look for the head of the edge. 
-#'        Can be a single value or a vector. Default of `head.status = "i"`. 
-#' @param tail.status  The value(s) of `status.attr` for which to look for the tail of the edge. 
-#'        Can be a single value or a vector. Default of `tail.status = "s"`.               
+#' @param head.status The value(s) of `status.attr` for which to look for the head of the edge.
+#'        Can be a single value or a vector. Default of `head.status = "i"`.
+#' @param tail.status  The value(s) of `status.attr` for which to look for the tail of the edge.
+#'        Can be a single value or a vector. Default of `tail.status = "s"`.
 #' @param networks In case of models with multiple networks, the network(s) from which to pull
-#'        the current edgelist. Can be a single value or a vector. If `NULL` (the default), 
+#'        the current edgelist. Can be a single value or a vector. If `NULL` (the default),
 #'        then all networks will be included.
 #'
 #' @details
 #' This is a generalized version of the `discord_edgelist` function.
-#' It creates an edgelist of current partnerships in which the status attribute 
-#' of interest (as specified by the parameter `status.attr`) of one partner matches 
-#' the value (or one of the values) of the `head.status` parameter while the 
-#' corresponding status attribute of the other partner matches  the value (or 
+#' It creates an edgelist of current partnerships in which the status attribute
+#' of interest (as specified by the parameter `status.attr`) of one partner matches
+#' the value (or one of the values) of the `head.status` parameter while the
+#' corresponding status attribute of the other partner matches  the value (or
 #' one of the values) of `tail.status` parameter.
 #'
 #' @return
@@ -370,10 +370,10 @@ discord_edgelist <- function(dat, at, network = 1, infstat = "i", include.networ
 #'
 get_discordant_edgelist <- function(dat, status.attr, head.status = "i",
                                     tail.status = "s", networks = NULL) {
-  
+
   status <- get_attr(dat, status.attr)
   active <- get_attr(dat, "active")
-  
+
   del <- tibble::tibble(
     head  = numeric(0),
     tail  = numeric(0),
@@ -381,34 +381,34 @@ get_discordant_edgelist <- function(dat, status.attr, head.status = "i",
     head_status = numeric(0),
     tail_status = numeric(0)
   )
-  
+
   networks <- if (is.null(networks)) seq_len(dat$num.nw) else networks
-  
+
   el_list <- lapply(lapply(networks, get_edgelist, dat = dat), as.data.frame)
-  el_df <- dplyr::bind_rows(lapply(el_list, function(x) if(nrow(x) == 0) NULL else x))
-  
+  el_df <- dplyr::bind_rows(lapply(el_list, function(x) if (nrow(x) == 0) NULL else x))
+
   el_sizes <- vapply(el_list, nrow, numeric(1))
   el_df[["network"]] <- rep(networks, el_sizes)
-  
+
   if (nrow(el_df) > 0) {
-    HTpairs <- el_df[status[el_df$V1] %in% head.status & 
-                    status[el_df$V2] %in% tail.status, , drop = FALSE]
-    THpairs <- el_df[status[el_df$V1] %in% tail.status & 
-                    status[el_df$V2] %in% head.status, , drop = FALSE]
-    discord.pairs <- dplyr::bind_rows(HTpairs, setNames(THpairs[, c(2, 1, 3)], 
+    HTpairs <- el_df[status[el_df$V1] %in% head.status &
+                       status[el_df$V2] %in% tail.status, , drop = FALSE]
+    THpairs <- el_df[status[el_df$V1] %in% tail.status &
+                       status[el_df$V2] %in% head.status, , drop = FALSE]
+    discord.pairs <- dplyr::bind_rows(HTpairs, setNames(THpairs[, c(2, 1, 3)],
                                                         names(HTpairs)))
-    keep <- rowSums(matrix(c(active[discord.pairs$V1], 
-                             active[discord.pairs$V2]),ncol = 2)) == 2
+    keep <- rowSums(matrix(c(active[discord.pairs$V1],
+                             active[discord.pairs$V2]), ncol = 2)) == 2
     discord.pairs <- discord.pairs[keep, ]
-    
+
     if (nrow(discord.pairs) > 0) {
-      del <- tibble::tibble(head = discord.pairs$V1, tail = discord.pairs$V2, 
+      del <- tibble::tibble(head = discord.pairs$V1, tail = discord.pairs$V2,
                             network = discord.pairs$network,
-                            head_status = status[discord.pairs$V1], 
+                            head_status = status[discord.pairs$V1],
                             tail_status = status[discord.pairs$V2])
     }
   }
-  
+
   return(del)
 }
 
