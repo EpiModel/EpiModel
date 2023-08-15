@@ -335,17 +335,14 @@ discord_edgelist <- function(dat, at, network = 1, infstat = "i", include.networ
 #'
 #' @description This function returns a `data.frame` with a discordant
 #'              edgelist, defined as the set of edges for which the status attribute
-#'              of interest is infected for one partner and susceptible for the other.
+#'              of interest is discordant between the two partners.
 #'
-#' @inheritParams recovery.net
-#' @param status.attr The name of the status attribute of interest. This parameter is required.
+#' @inheritParams get_cumulative_edgelists_df
+#' @param status.attr The name of the status attribute of interest.
 #' @param head.status The value(s) of `status.attr` for which to look for the head of the edge.
-#'        Can be a single value or a vector. Default of `head.status = "i"`.
+#'        Can be a single value or a vector.
 #' @param tail.status  The value(s) of `status.attr` for which to look for the tail of the edge.
-#'        Can be a single value or a vector. Default of `tail.status = "s"`.
-#' @param networks In case of models with multiple networks, the network(s) from which to pull
-#'        the current edgelist. Can be a single value or a vector. If `NULL` (the default),
-#'        then all networks will be included.
+#'        Can be a single value or a vector. 
 #'
 #' @details
 #' This is a generalized version of the `discord_edgelist` function.
@@ -368,11 +365,10 @@ discord_edgelist <- function(dat, at, network = 1, infstat = "i", include.networ
 #' @export
 #' @keywords netMod internal
 #'
-get_discordant_edgelist <- function(dat, status.attr, head.status = "i",
-                                    tail.status = "s", networks = NULL) {
+get_discordant_edgelist <- function(dat, status.attr, head.status,
+                                    tail.status, networks = NULL) {
 
   status <- get_attr(dat, status.attr)
-  active <- get_attr(dat, "active")
 
   del <- tibble::tibble(
     head  = numeric(0),
@@ -384,8 +380,10 @@ get_discordant_edgelist <- function(dat, status.attr, head.status = "i",
 
   networks <- if (is.null(networks)) seq_len(dat$num.nw) else networks
 
-  el_list <- lapply(lapply(networks, get_edgelist, dat = dat), as.data.frame)
-  el_df <- dplyr::bind_rows(lapply(el_list, function(x) if (nrow(x) == 0) NULL else x))
+  el_list <- lapply(networks, get_edgelist, dat = dat)
+  el_list <- lapply(el_list, as.data.frame)
+  el_list <- lapply(el_list, function(x) if (nrow(x) == 0) NULL else x)
+  el_df <- dplyr::bind_rows(el_list)
 
   el_sizes <- vapply(el_list, nrow, numeric(1))
   el_df[["network"]] <- rep(networks, el_sizes)
@@ -397,9 +395,6 @@ get_discordant_edgelist <- function(dat, status.attr, head.status = "i",
                        status[el_df$V2] %in% head.status, , drop = FALSE]
     discord.pairs <- dplyr::bind_rows(HTpairs, setNames(THpairs[, c(2, 1, 3)],
                                                         names(HTpairs)))
-    keep <- rowSums(matrix(c(active[discord.pairs$V1],
-                             active[discord.pairs$V2]), ncol = 2)) == 2
-    discord.pairs <- discord.pairs[keep, ]
 
     if (nrow(discord.pairs) > 0) {
       del <- tibble::tibble(head = discord.pairs$V1, tail = discord.pairs$V2,

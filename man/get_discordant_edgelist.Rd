@@ -7,8 +7,8 @@
 get_discordant_edgelist(
   dat,
   status.attr,
-  head.status = "i",
-  tail.status = "s",
+  head.status,
+  tail.status,
   networks = NULL
 )
 }
@@ -17,17 +17,17 @@ get_discordant_edgelist(
 object and other initialization information passed from
 \code{\link{netsim}}.}
 
-\item{status.attr}{The name of the status attribute of interest. This parameter is required.}
+\item{status.attr}{The name of the status attribute of interest.}
 
 \item{head.status}{The value(s) of \code{status.attr} for which to look for the head of the edge.
-Can be a single value or a vector. Default of \code{head.status = "i"}.}
+Can be a single value or a vector.}
 
 \item{tail.status}{The value(s) of \code{status.attr} for which to look for the tail of the edge.
-Can be a single value or a vector. Default of \code{tail.status = "s"}.}
+Can be a single value or a vector.}
 
-\item{networks}{In case of models with multiple networks, the network(s) from which to pull
-the current edgelist. Can be a single value or a vector. If \code{NULL} (the default),
-then all networks will be included.}
+\item{networks}{Numerical indexes of the networks to extract the partnerships
+from. (May be > 1 for models with multiple overlapping
+networks.) If \code{NULL}, extract from all networks.}
 }
 \value{
 A \code{data.frame} with the following columns:
@@ -42,7 +42,7 @@ A \code{data.frame} with the following columns:
 \description{
 This function returns a \code{data.frame} with a discordant
 edgelist, defined as the set of edges for which the status attribute
-of interest is infected for one partner and susceptible for the other.
+of interest is discordant between the two partners.
 }
 \details{
 This is a generalized version of the \code{discord_edgelist} function.
