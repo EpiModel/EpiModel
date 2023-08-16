@@ -349,16 +349,16 @@ discord_edgelist <- function(dat, at, network = 1, infstat = "i", include.networ
 #' It creates an edgelist of current partnerships in which the status attribute
 #' of interest (as specified by the parameter `status.attr`) of one partner matches
 #' the value (or one of the values) of the `head.status` parameter while the
-#' corresponding status attribute of the other partner matches  the value (or
-#' one of the values) of `tail.status` parameter.
+#' corresponding status attribute of the other partner matches the value (or
+#' one of the values) of the `tail.status` parameter.
 #'
 #' @return
 #' A `data.frame` with the following columns:
 #'  * `head`: Positional ID of the head node.
 #'  * `tail`: Positional ID of the tail node.
-#'  * `network`: The numerical index of the network on which the partnership is located.
 #'  * `head_status`: Status of the head node.
 #'  * `tail_status`: Status of the tail node.
+#'  * `network`: The numerical index of the network on which the partnership is located.
 #'
 #' @seealso \code{\link{discord_edgelist}}
 #'
@@ -367,44 +367,83 @@ discord_edgelist <- function(dat, at, network = 1, infstat = "i", include.networ
 #'
 get_discordant_edgelist <- function(dat, status.attr, head.status,
                                     tail.status, networks = NULL) {
-
-  status <- get_attr(dat, status.attr)
-
-  del <- tibble::tibble(
-    head  = numeric(0),
-    tail  = numeric(0),
-    network = numeric(0),
-    head_status = numeric(0),
-    tail_status = numeric(0)
-  )
-
-  networks <- if (is.null(networks)) seq_len(dat$num.nw) else networks
-
-  el_list <- lapply(networks, get_edgelist, dat = dat)
-  el_list <- lapply(el_list, as.data.frame)
-  el_list <- lapply(el_list, function(x) if (nrow(x) == 0) NULL else x)
-  el_df <- dplyr::bind_rows(el_list)
-
-  el_sizes <- vapply(el_list, nrow, numeric(1))
-  el_df[["network"]] <- rep(networks, el_sizes)
-
-  if (nrow(el_df) > 0) {
-    HTpairs <- el_df[status[el_df$V1] %in% head.status &
-                       status[el_df$V2] %in% tail.status, , drop = FALSE]
-    THpairs <- el_df[status[el_df$V1] %in% tail.status &
-                       status[el_df$V2] %in% head.status, , drop = FALSE]
-    discord.pairs <- dplyr::bind_rows(HTpairs, setNames(THpairs[, c(2, 1, 3)],
-                                                        names(HTpairs)))
-
-    if (nrow(discord.pairs) > 0) {
-      del <- tibble::tibble(head = discord.pairs$V1, tail = discord.pairs$V2,
-                            network = discord.pairs$network,
-                            head_status = status[discord.pairs$V1],
-                            tail_status = status[discord.pairs$V2])
-    }
+  
+  if (length(intersect(head.status, tail.status)) > 0 &
+      get_current_timestep(dat) == (get_control(dat, "start") + 1)) {
+    warning("The head.status and tail.status arguments should be discordant.")
   }
 
-  return(del)
+  status <- get_attr(dat, status.attr)
+  
+  d_el <- get_edgelists_df(dat, networks)
+  
+  d_el_ordered <- dplyr::filter(
+    d_el,
+    status[d_el$head] %in% head.status &
+    status[d_el$tail] %in% tail.status
+  )
+  
+  d_el_rev <- dplyr::filter(
+    d_el,
+    status[d_el$tail] %in% head.status &
+    status[d_el$head] %in% tail.status
+  ) |>
+    dplyr::select(head = "tail", tail = "head", "network")
+  
+  d_el <- dplyr::bind_rows(d_el_ordered, d_el_rev) |>
+    dplyr::mutate(
+      head_status = status[.data$head],
+      tail_status = status[.data$tail]
+    ) |>
+    dplyr::select(
+      "head", "tail", "head_status", "tail_status", "network"
+    )
+  
+  return(d_el)
+
+}
+
+#' @title Get the Edgelist(s) from the Specified Network(s)
+#'
+#' @inheritParams get_cumulative_edgelists_df
+#'
+#' @return
+#' A `data.frame` with the following columns:
+#'  * `head`: Positional ID of the head node.
+#'  * `tail`: Positional ID of the tail node.
+#'  * `network`: The numerical index of the network on which the edge is located.
+#'
+#' @export
+get_edgelists_df <- function(dat, networks = NULL) {
+  
+  networks <- if (is.null(networks)) seq_len(dat$num.nw) else networks
+  el_list <- lapply(networks, get_edgelist, dat = dat)
+  el_tibble <- lapply(el_list, as_tibble_edgelist)
+  d_el <- dplyr::bind_rows(el_tibble)
+  
+  el_sizes <- vapply(el_list, nrow, numeric(1))
+  d_el[["network"]] <- rep(networks, el_sizes)
+  
+  return(d_el)
+}
+
+#' @title Convert an Edgelist into a Tibble
+#'
+#' @param el An edgelist in matrix or data frame form. 
+#'
+#' @return
+#' The edgelist in tibble form with two columns named `head` and `tail`.
+#'
+#' @export
+as_tibble_edgelist <- function(el) {
+  
+  if (nrow(el) > 0) {
+    t_el <- tibble::tibble(head = el[, 1], tail = el[, 2])
+  } else {
+    t_el <- tibble::tibble(head = integer(0), tail = integer(0))
+  }
+  
+  return(t_el)
 }
 
 #' @title Save Transmission Matrix

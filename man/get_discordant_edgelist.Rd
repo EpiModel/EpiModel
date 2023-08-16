@@ -34,9 +34,9 @@ A \code{data.frame} with the following columns:
 \itemize{
 \item \code{head}: Positional ID of the head node.
 \item \code{tail}: Positional ID of the tail node.
-\item \code{network}: The numerical index of the network on which the partnership is located.
 \item \code{head_status}: Status of the head node.
 \item \code{tail_status}: Status of the tail node.
+\item \code{network}: The numerical index of the network on which the partnership is located.
 }
 }
 \description{
@@ -49,8 +49,8 @@ This is a generalized version of the \code{discord_edgelist} function.
 It creates an edgelist of current partnerships in which the status attribute
 of interest (as specified by the parameter \code{status.attr}) of one partner matches
 the value (or one of the values) of the \code{head.status} parameter while the
-corresponding status attribute of the other partner matches  the value (or
-one of the values) of \code{tail.status} parameter.
+corresponding status attribute of the other partner matches the value (or
+one of the values) of the \code{tail.status} parameter.
 }
 \seealso{
 \code{\link{discord_edgelist}}
