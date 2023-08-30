@@ -235,9 +235,9 @@ dcm <- function(param, init, control) {
                            method = control$odemethod))
     } else {
       df <- data.frame(dede(y = t0,
-                           times = times,
-                           func = model,
-                           parms = all.p))
+                            times = times,
+                            func = model,
+                            parms = all.p))
     }
 
     ## Recalculate Flows

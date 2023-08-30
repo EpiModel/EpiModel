@@ -147,7 +147,7 @@ get_attr <- function(dat, item, posit_ids = NULL, override.null.error = FALSE) {
         }
       } else if (is.numeric(posit_ids)) {
         if (length(posit_ids > 0) &&
-            any(posit_ids > length(dat[["attr"]][[item]]))) {
+              any(posit_ids > length(dat[["attr"]][[item]]))) {
           stop("Some (numeric) `posit_ids` are larger than the number of ",
                "nodes in the network")
         }
@@ -177,14 +177,14 @@ add_attr <- function(dat, item) {
 #' @rdname net-accessor
 #' @export
 set_attr <- function(dat, item, value, posit_ids = NULL,
-  override.length.check = FALSE) {
+                     override.length.check = FALSE) {
   if (!item %in% names(dat[["attr"]])) {
     dat <- add_attr(dat, item)
   }
 
   if (is.null(posit_ids)) {
     if (!override.length.check &&
-      length(value) != length(dat[["attr"]][["active"]])) {
+          length(value) != length(dat[["attr"]][["active"]])) {
       stop(
         "When trying to edit the ", `item`, " nodal attribute: ",
         "The size of the `value` vector is not equal to the number of nodes in",
@@ -198,22 +198,22 @@ set_attr <- function(dat, item, value, posit_ids = NULL,
     if (is.logical(posit_ids)) {
       if (length(posit_ids) != length(dat[["attr"]][[item]])) {
         stop("(logical) `posit_ids` has to have a length equal to the number ",
-          "of nodes in the network")
+             "of nodes in the network")
       }
     } else if (is.numeric(posit_ids)) {
       if (length(posit_ids) == 0) {
         return(dat)
       } else if (any(posit_ids > length(dat[["attr"]][[item]]))) {
         stop("Some (numeric) `posit_ids` are larger than the number of nodes ",
-          " in the network")
+             " in the network")
       }
     } else {
       stop("`posit_ids` must be logical, numeric, or NULL")
     }
 
     if (!override.length.check &&
-      length(value) != 1 &&
-      length(value) != length(dat[["attr"]][["active"]][posit_ids])) {
+          length(value) != 1 &&
+          length(value) != length(dat[["attr"]][["active"]][posit_ids])) {
       stop(
         "When trying to edit the `", item, "` nodal attribute: ",
         "The size of the `value` vector is not equal to the number of nodes ",
@@ -585,7 +585,7 @@ append_core_attr <- function(dat, at, n.new) {
 #' @keywords internal
 update_unique_ids <- function(dat, n.new) {
   last_unique_id <- if (is.null(dat[["_last_unique_id"]])) 0L
-                    else dat[["_last_unique_id"]]
+  else dat[["_last_unique_id"]]
   next_unique_ids <- seq_len(n.new) + last_unique_id
   dat[["_last_unique_id"]] <- last_unique_id + as.integer(n.new)
   dat <- append_attr(dat, "unique_id", next_unique_ids, n.new)

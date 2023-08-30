@@ -102,11 +102,11 @@ InitErgmTerm.absdiffby <- function(nw, arglist, ...) {
                       attr(nodeby, "name"), sep = ".")
 
   list(name = "absdiffby",
-       coef.names = coef.names,
-       pkgname = "EpiModel",
-       inputs = c(a$assym, nodecov, nodeby),
-       dependence = FALSE,
-       emptynwstats = 0
+    coef.names = coef.names,
+    pkgname = "EpiModel",
+    inputs = c(a$assym, nodecov, nodeby),
+    dependence = FALSE,
+    emptynwstats = 0
   )
 }
 

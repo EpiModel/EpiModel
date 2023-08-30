@@ -17,7 +17,7 @@
 #'
 summary_nets <- function(dat, at) {
   if (get_control(dat, "save.nwstats") == TRUE &&
-      get_control(dat, "resimulate.network") == TRUE) {
+        get_control(dat, "resimulate.network") == TRUE) {
     for (network in seq_len(dat$num.nw)) {
       nwstats <- summary(get_network_control(dat, network, "nwstats.formula"),
                          basis = get_network(dat, network = network),

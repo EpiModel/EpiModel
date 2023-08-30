@@ -495,7 +495,7 @@ get_sims <- function(x, sims, var) {
     stop("Specify sims as a vector of simulations or \"mean\" ", call. = FALSE)
   }
   if (length(sims) == 1 && sims ==
-      "mean" && (missing(var) || length(var) > 1)) {
+        "mean" && (missing(var) || length(var) > 1)) {
     stop("If sims == 'mean' then var must be a single varible name",
          call. = FALSE)
   }

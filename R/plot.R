@@ -367,7 +367,7 @@ plot.dcm <- function(x, y, popfrac = FALSE, run, col, lwd, lty, alpha = 0.9,
 
   ## Grid
   if (grid == TRUE) {
-     grid()
+    grid()
   }
 
   ## Legend
@@ -699,7 +699,7 @@ plot.icm <- function(x, y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col,
   if (!is.null(da$ylim)) {
     ylim <- da$ylim
   } else if (is.null(da$ylim) && sim.lines == FALSE &&
-             (mean.line == TRUE || qnts == TRUE)) {
+               (mean.line == TRUE || qnts == TRUE)) {
     ylim <- c(min(qnt.min * 0.9, mean.min * 0.9),
               max(qnt.max * 1.1, mean.max * 1.1))
   } else {
@@ -791,7 +791,7 @@ plot.icm <- function(x, y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col,
 
   ## Grid
   if (grid == TRUE) {
-      grid()
+    grid()
   }
 
   ## Legends ##
@@ -1009,8 +1009,8 @@ plot_stats_table <- function(data,
                             "targ.col")
 
   draw_legend <- isTRUE(plots.joined) &&
-                 ((!missing(draw_legend) && isTRUE(draw_legend)) ||
-                  (missing(draw_legend) && nstats == 1))
+    ((!missing(draw_legend) && isTRUE(draw_legend)) ||
+       (missing(draw_legend) && nstats == 1))
 
   draw_qnts <- isTRUE(dynamic) && is.numeric(qnts)
 
@@ -1151,7 +1151,7 @@ plot_stats_table <- function(data,
 
       ## Grid
       if (isTRUE(grid)) {
-          grid()
+        grid()
       }
     }
   }
@@ -1639,7 +1639,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
       sims <- 1
     }
     if (length(sims) > 1 || (!is.numeric(sims) &&
-                             !(sims %in% c("mean", "max", "min")))) {
+                               !(sims %in% c("mean", "max", "min")))) {
       stop("sims argument must be single simulation number",
            "or \"mean\", \"max\", or \"min\" ", call. = FALSE)
     }
@@ -1647,7 +1647,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
     sims.arg <- sims
     if (sims == "mean") {
       sims <- which.min(abs(as.numeric(x$epi$i.num[at, ]) -
-                           mean(as.numeric(x$epi$i.num[at, ]))))
+                              mean(as.numeric(x$epi$i.num[at, ]))))
       sims.val <- as.numeric(x$epi$i.num[at, sims])
     }
     if (sims == "max") {
@@ -1827,9 +1827,9 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
     }
     if (nopopfrac == TRUE) {
       if (any(grepl(".flow", y)) ||
-          (groups == 1 && all(grepl(".num$", y)) == FALSE) ||
-          (groups == 2 && all(c(grepl(".num$", y), grepl(".g2$", y)) == FALSE)) ||
-          any(y %in% c("num", "num.g2", "num.g2"))) {
+            (groups == 1 && all(grepl(".num$", y)) == FALSE) ||
+            (groups == 2 && all(c(grepl(".num$", y), grepl(".g2$", y)) == FALSE)) ||
+            any(y %in% c("num", "num.g2", "num.g2"))) {
         popfrac <- FALSE
       }
     }
@@ -1903,7 +1903,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
     if (is.null(da$ylim) && (popfrac == TRUE || sim.lines == TRUE)) {
       da$ylim <- c(min.prev, max.prev)
     } else if (is.null(da$ylim) && popfrac == FALSE && sim.lines == FALSE &&
-               (mean.line == TRUE || qnts == TRUE)) {
+                 (mean.line == TRUE || qnts == TRUE)) {
       da$ylim <- c(min(qnt.min * 0.9, mean.min * 0.9), max(qnt.max * 1.1, mean.max * 1.1))
     }
 
@@ -1990,7 +1990,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
 
     ## Grid
     if (grid == TRUE) {
-        grid()
+      grid()
     }
 
     ## Legends ##
@@ -2033,10 +2033,10 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
     } else {
       ## duration/dissolution plot
       if (isTRUE(x$control$save.diss.stats) &&
-          isTRUE(x$control$save.network) &&
-          isFALSE(x$control$tergmLite) &&
-          isFALSE(is.null(x$diss.stats)) &&
-          isTRUE(x$nwparam[[network]]$coef.diss$diss.model.type == "edgesonly")) {
+            isTRUE(x$control$save.network) &&
+            isFALSE(x$control$tergmLite) &&
+            isFALSE(is.null(x$diss.stats)) &&
+            isTRUE(x$nwparam[[network]]$coef.diss$diss.model.type == "edgesonly")) {
 
         if (any(unlist(lapply(x$diss.stats, `[[`, "anyNA")))) {
           cat("\nNOTE: Duration & dissolution data contains undefined values due to zero edges of some dissolution

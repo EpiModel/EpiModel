@@ -181,7 +181,7 @@ netsim_validate_control <- function(control) {
 
   for (val in names(control_default_bool)) {
     for (flag in control_default_bool[[val]])
-      if (is.null(control[[flag]])) control[[flag]] <- as.logical(val)
+    if (is.null(control[[flag]])) control[[flag]] <- as.logical(val)
   }
 
   # truncate the cumulative edgelists to keep only active partnerships

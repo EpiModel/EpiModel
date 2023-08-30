@@ -379,9 +379,9 @@ crosscheck.dcm <- function(param, init, control) {
     }
     if (is.null(param$vital)) {
       if (!is.null(param$a.rate) ||
-          !is.null(param$ds.rate) ||
-          !is.null(param$di.rate) ||
-          !is.null(param$dr.rate)) {
+            !is.null(param$ds.rate) ||
+            !is.null(param$di.rate) ||
+            !is.null(param$dr.rate)) {
         param$vital <- TRUE
       } else {
         param$vital <- FALSE
@@ -395,7 +395,7 @@ crosscheck.dcm <- function(param, init, control) {
     }
 
     if (param$groups == 2 && (is.null(param$balance) ||
-                              !(param$balance %in% c("g1", "g2")))) {
+                                !(param$balance %in% c("g1", "g2")))) {
       stop("Specify balance=\"g1\" or balance=\"g2\" with 2-group models",
            call. = FALSE)
     }

@@ -52,7 +52,7 @@ check_degdist_bal <- function(num.g1, num.g2,
   reldiff <- (tot.deg.g1 - tot.deg.g2) / tot.deg.g2
   absdiff <- abs(tot.deg.g1 - tot.deg.g2)
   if (sum(deg.dist.g1) <= 0.999 || sum(deg.dist.g1) >= 1.001 ||
-      sum(deg.dist.g2) <= 0.999 || sum(deg.dist.g2) >= 1.001 || absdiff > 1) {
+        sum(deg.dist.g2) <= 0.999 || sum(deg.dist.g2) >= 1.001 || absdiff > 1) {
     if (sum(deg.dist.g1) <= 0.999 || sum(deg.dist.g1) >= 1.001) {
       cat("** deg.dist.g1 TOTAL != 1 \n")
     }

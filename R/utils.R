@@ -294,9 +294,9 @@ apportion_lr <- function(vector.length, values,
   }
   if (!(length(proportions) == length(values) && round(sum(proportions),
                                                        10) == 1) &&
-      (!(length(proportions) == length(values) - 1 && round(sum(proportions),
-                                                            10) <= 1 &&
-         round(sum(proportions), 10) >= 0))) {
+        (!(length(proportions) == length(values) - 1 && round(sum(proportions),
+                                                              10) <= 1 &&
+             round(sum(proportions), 10) >= 0))) {
     stop("error in proportions length or proportions sum")
   }
 

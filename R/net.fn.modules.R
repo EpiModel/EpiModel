@@ -37,7 +37,7 @@ make_module_list <- function(dat) {
     user.mods <- get_control(dat, "user.mods")
     lim.bi.mods <- bi.mods[
       -which(bi.mods %in% c("initialize.FUN", "verbose.FUN"))
-      ]
+    ]
     morder <- c(user.mods, lim.bi.mods)
   }
 
@@ -80,9 +80,9 @@ remove_modules <- function(dat, names.to.remove) {
   # In any case => message
   modules <- modules[!names(modules) %in% names.to.remove]
   message(
-      "\n\nAt timestep = ", at, ":\n",
-      "    the following modules were removed: \n'",
-      paste0(names.to.remove, collapse = "', '"), "'\n"
+    "\n\nAt timestep = ", at, ":\n",
+    "    the following modules were removed: \n'",
+    paste0(names.to.remove, collapse = "', '"), "'\n"
   )
 
   dat <- set_modules(dat, modules)
