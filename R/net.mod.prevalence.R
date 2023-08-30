@@ -47,7 +47,7 @@ prevalence.net <- function(dat, at) {
       for (i in seq_along(ebun)) {
         ebn.temp <- paste0("s.num", ebun[i])
         dat <- set_epi(dat, ebn.temp, at, sum(status == "s" &
-          get(ebn) == ebv[i]))
+                                                get(ebn) == ebv[i]))
       }
     }
 
@@ -56,7 +56,7 @@ prevalence.net <- function(dat, at) {
       for (i in seq_along(ebun)) {
         ebn.temp <- paste0("i.num", ebun[i])
         dat <- set_epi(dat, ebn.temp, at, sum(status == "i" &
-          get(ebn) == ebv[i]))
+                                                get(ebn) == ebv[i]))
       }
     }
 
@@ -66,7 +66,7 @@ prevalence.net <- function(dat, at) {
         for (i in seq_along(ebun)) {
           ebn.temp <- paste0("r.num", ebun[i])
           dat <- set_epi(dat, ebn.temp, at, sum(status == "r" &
-            get(ebn) == ebv[i]))
+                                                  get(ebn) == ebv[i]))
         }
       }
     }
@@ -88,8 +88,8 @@ prevalence.net <- function(dat, at) {
       for (i in seq_along(ebun)) {
         ebn.temp <- paste0("s.num", ebun[i])
         dat <- set_epi(dat, ebn.temp, at, sum(status == "s" &
-          group == 1 &
-          get(ebn) == ebv[i]))
+                                                group == 1 &
+                                                get(ebn) == ebv[i]))
       }
     }
     dat <- set_epi(dat, "i.num", at, sum(status == "i" & group == 1))
@@ -97,8 +97,8 @@ prevalence.net <- function(dat, at) {
       for (i in seq_along(ebun)) {
         ebn.temp <- paste0("i.num", ebun[i])
         dat <- set_epi(dat, ebn.temp, at, sum(status == "i" &
-          group == 1 &
-          get(ebn) == ebv[i]))
+                                                group == 1 &
+                                                get(ebn) == ebv[i]))
       }
     }
     if (type == "SIR") {
@@ -107,8 +107,8 @@ prevalence.net <- function(dat, at) {
         for (i in seq_along(ebun)) {
           ebn.temp <- paste0("r.num", ebun[i])
           dat <- set_epi(dat, ebn.temp, at, sum(status == "r" &
-            group == 1 &
-            get(ebn) == ebv[i]))
+                                                  group == 1 &
+                                                  get(ebn) == ebv[i]))
         }
       }
     }
@@ -118,7 +118,7 @@ prevalence.net <- function(dat, at) {
       for (i in seq_along(ebun)) {
         ebn.temp <- paste0("num", ebun[i])
         dat <- set_epi(dat, ebn.temp, at, sum(group == 1 &
-          get(ebn) == ebv[i]))
+                                                get(ebn) == ebv[i]))
       }
     }
     dat <- set_epi(dat, "s.num.g2", at, sum(status == "s" & group == 2))
@@ -126,8 +126,8 @@ prevalence.net <- function(dat, at) {
       for (i in seq_along(ebun)) {
         ebn.temp <- paste0("s.num.g2", ebun[i])
         dat <- set_epi(dat, ebn.temp, at, sum(status == "s" &
-          group == 2 &
-          get(ebn) == ebv[i]))
+                                                group == 2 &
+                                                get(ebn) == ebv[i]))
       }
     }
     dat <- set_epi(dat, "i.num.g2", at, sum(status == "i" & group == 2))
@@ -135,8 +135,8 @@ prevalence.net <- function(dat, at) {
       for (i in seq_along(ebun)) {
         ebn.temp <- paste0("i.num.g2", ebun[i])
         dat <- set_epi(dat, ebn.temp, at, sum(status == "i" &
-          group == 2 &
-          get(ebn) == ebv[i]))
+                                                group == 2 &
+                                                get(ebn) == ebv[i]))
       }
     }
     if (type == "SIR") {
@@ -145,8 +145,8 @@ prevalence.net <- function(dat, at) {
         for (i in seq_along(ebun)) {
           ebn.temp <- paste0("r.num.g2", ebun[i])
           dat <- set_epi(dat, ebn.temp, at, sum(status == "r" &
-            group == 2 &
-            get(ebn) == ebv[i]))
+                                                  group == 2 &
+                                                  get(ebn) == ebv[i]))
         }
       }
     }
@@ -155,7 +155,7 @@ prevalence.net <- function(dat, at) {
       for (i in seq_along(ebun)) {
         ebn.temp <- paste0("num.g2", ebun[i])
         dat <- set_epi(dat, ebn.temp, at, sum(group == 2 &
-          get(ebn) == ebv[i]))
+                                                get(ebn) == ebv[i]))
       }
     }
   }

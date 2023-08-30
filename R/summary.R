@@ -68,7 +68,6 @@ summary.dcm <- function(object, at, run = 1, digits = 3, ...) {
     }
   }
 
-  # nolint start
   if (type == "SI") {
     stats <- with(df, c(s.num, s.prev,
                         i.num, i.prev,
@@ -173,7 +172,6 @@ summary.dcm <- function(object, at, run = 1, digits = 3, ...) {
       mat <- cbind(mat, mat.g2)
     }
   }
-  # nolint end
 
   if (groups == 1) {
     colnames(mat) <- c("n", "pct")
@@ -389,7 +387,7 @@ summary.icm <- function(object, at, digits = 3, ...) {
                  df.mn$di.flow, df.sd$di.flow, NA)
       mat <- rbind(mat, matrix(stats, byrow = TRUE, nrow = length(stats) / 3))
       rownames(mat)[rownames(mat) == ""] <- c("Arrival ->", "S Departure ->",
-                                            "I Departure ->")
+                                              "I Departure ->")
     }
 
     ## Group 2 stats

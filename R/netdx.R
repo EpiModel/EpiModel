@@ -342,9 +342,8 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
 ess <- function(x) {
   tryCatch(coda::effectiveSize(x),
            error = function(e) {
-                     structure(rep(NA, length.out = NCOL(x)),
-                               names = colnames(x))
-                   })
+             structure(rep(NA, length.out = NCOL(x)), names = colnames(x))
+           })
 }
 
 #' @title Create a Summary Table of Simulation Statistics
@@ -439,8 +438,8 @@ toggles_to_diss_stats <- function(toggles, coef.diss,
   durs <- coef.diss$duration
 
   changestats <- as.matrix(tergm.godfather(nw ~ Passthrough(diss_formula)
-                                                + EdgeAges(diss_formula)
-                                                + Persist(diss_formula),
+                                           + EdgeAges(diss_formula)
+                                           + Persist(diss_formula),
                                            toggles = toggles,
                                            start = time.start - 1L,
                                            end = time.start + nsteps,
