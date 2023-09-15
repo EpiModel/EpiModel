@@ -1,5 +1,5 @@
 
-## EpiModel 2.4.0
+## EpiModel 2.4.1
 
 ### NEW FEATURES
 
