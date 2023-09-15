@@ -725,6 +725,7 @@ get_attr_history <- function(sims) {
 
   for (name in simnames) {
     records <- sims[["attr.history"]][[name]]
+    records <- records$as_list()
     attributes <- vapply(records, function(x) x[["attribute"]], "")
     attributes.names <- unique(attributes)
 

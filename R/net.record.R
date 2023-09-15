@@ -38,7 +38,7 @@
 #' @export
 record_attr_history <- function(dat, at, attribute, posit_ids, values) {
   if (is.null(dat[["attr.history"]])) {
-    dat[["attr.history"]] <- list()
+    dat[["attr.history"]] <- collections::queue()
   }
 
   if (length(values) != 1 && length(values) != length(posit_ids)) {
@@ -54,11 +54,7 @@ record_attr_history <- function(dat, at, attribute, posit_ids, values) {
   element <- list(at, attribute, get_unique_ids(dat, posit_ids), values)
   names(element) <- c("time", "attribute", "uids", "values")
 
-  dat[["attr.history"]] <- append(
-    dat[["attr.history"]],
-    list(element)
-  )
-
+  dat[["attr.history"]]$push(element)
   return(dat)
 }
 
@@ -69,7 +65,7 @@ record_attr_history <- function(dat, at, attribute, posit_ids, values) {
 #' inspection afterward. The records are stored in \code{dat[["raw.records"]]}
 #' during the simulation, where \code{dat} is the main \code{netsim_dat} class
 #' object, and in the \code{netsim} object under the \code{raw.records}
-#' sublists.
+#' \code{collections::queue} object.
 #'
 #' @inheritParams recovery.net
 #' @param at The time where the recording happens.
@@ -93,16 +89,13 @@ record_attr_history <- function(dat, at, attribute, posit_ids, values) {
 #' @export
 record_raw_object <- function(dat, at, label, object) {
   if (is.null(dat[["raw.records"]])) {
-    dat[["raw.records"]] <- list()
+    dat[["raw.records"]] <- collections::queue()
   }
 
   element <- list(at, label, object)
   names(element) <- c("time", "label", "object")
 
-  dat[["raw.records"]] <- append(
-    dat[["raw.records"]],
-    list(element)
-  )
+  dat[["raw.records"]]$push(element)
 
   return(dat)
 }
