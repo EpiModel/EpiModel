@@ -100,6 +100,7 @@ get_cumulative_edgelist <- function(dat, network) {
 #'
 #' @inherit recovery.net return
 #'
+#' @export
 update_cumulative_edgelist <- function(dat, network, truncate = 0) {
   if (!get_control(dat, "cumulative.edgelist")) {
     return(dat)
