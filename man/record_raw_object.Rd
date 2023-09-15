@@ -25,7 +25,7 @@ This function records any object during a simulation to allow its
 inspection afterward. The records are stored in \code{dat[["raw.records"]]}
 during the simulation, where \code{dat} is the main \code{netsim_dat} class
 object, and in the \code{netsim} object under the \code{raw.records}
-sublists.
+\code{collections::queue} object.
 }
 \details{
 See the "Time-Varying Parameters" section of the "Working With Model

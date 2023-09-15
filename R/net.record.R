@@ -65,7 +65,7 @@ record_attr_history <- function(dat, at, attribute, posit_ids, values) {
 #' inspection afterward. The records are stored in \code{dat[["raw.records"]]}
 #' during the simulation, where \code{dat} is the main \code{netsim_dat} class
 #' object, and in the \code{netsim} object under the \code{raw.records}
-#' sublists.
+#' \code{collections::queue} object.
 #'
 #' @inheritParams recovery.net
 #' @param at The time where the recording happens.
