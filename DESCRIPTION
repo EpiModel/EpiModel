@@ -37,6 +37,7 @@ Imports:
     grDevices,
     stats,
     utils,
+    collections,
     doParallel,
     ergm (>= 4.5.0),
     ergm.ego (>= 1.1.0),
