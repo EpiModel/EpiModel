@@ -1,4 +1,3 @@
-
 #' @title Get an Edgelist From the Specified Network
 #'
 #' @description This function outputs an edgelist from the specified network,
@@ -31,6 +30,124 @@ get_edgelist <- function(dat, network) {
 
   return(el)
 }
+
+## Discordant Edgelist ---------------------------------------------------------
+
+#' @title Get Discordant Edgelist Based on Specified Status Variable
+#'
+#' @description This function returns a `data.frame` with a discordant
+#'              edgelist, defined as the set of edges for which the status attribute
+#'              of interest is discordant between the two partners.
+#'
+#' @inheritParams get_cumulative_edgelists_df
+#' @param status.attr The name of the status attribute of interest.
+#' @param head.status The value(s) of `status.attr` for which to look for the head of the edge.
+#'        Can be a single value or a vector.
+#' @param tail.status  The value(s) of `status.attr` for which to look for the tail of the edge.
+#'        Can be a single value or a vector.
+#'
+#' @details
+#' This is a generalized version of the `discord_edgelist` function.
+#' It creates an edgelist of current partnerships in which the status attribute
+#' of interest (as specified by the parameter `status.attr`) of one partner matches
+#' the value (or one of the values) of the `head.status` parameter while the
+#' corresponding status attribute of the other partner matches the value (or
+#' one of the values) of the `tail.status` parameter.
+#'
+#' @return
+#' A `data.frame` with the following columns:
+#'  * `head`: Positional ID of the head node.
+#'  * `tail`: Positional ID of the tail node.
+#'  * `head_status`: Status of the head node.
+#'  * `tail_status`: Status of the tail node.
+#'  * `network`: The numerical index of the network on which the partnership is located.
+#'
+#' @seealso \code{\link{discord_edgelist}}
+#'
+#' @export
+#' @keywords netMod internal
+#'
+get_discordant_edgelist <- function(dat, status.attr, head.status,
+                                    tail.status, networks = NULL) {
+  if (get_current_timestep(dat) == get_control(dat, "start") + 1 &&
+      length(intersect(head.status, tail.status)) > 0) {
+    warning("The head.status and tail.status arguments should be discordant.")
+  }
+
+  status <- get_attr(dat, status.attr)
+
+  d_el <- get_edgelists_df(dat, networks)
+
+  d_el_ordered <- dplyr::filter(
+    d_el,
+    status[d_el$head] %in% head.status &
+      status[d_el$tail] %in% tail.status
+  )
+
+  d_el_rev <- dplyr::filter(
+    d_el,
+    status[d_el$tail] %in% head.status &
+      status[d_el$head] %in% tail.status
+  ) |>
+    dplyr::select(head = "tail", tail = "head", "network")
+
+  d_el <- dplyr::bind_rows(d_el_ordered, d_el_rev) |>
+    dplyr::mutate(
+      head_status = status[.data$head],
+      tail_status = status[.data$tail]
+    ) |>
+    dplyr::select(
+      "head", "tail", "head_status", "tail_status", "network"
+    )
+
+  return(d_el)
+
+}
+
+#' @title Get the Edgelist(s) from the Specified Network(s)
+#'
+#' @inheritParams get_cumulative_edgelists_df
+#'
+#' @return
+#' A `data.frame` with the following columns:
+#'  * `head`: Positional ID of the head node.
+#'  * `tail`: Positional ID of the tail node.
+#'  * `network`: The numerical index of the network on which the edge is located.
+#'
+#' @export
+get_edgelists_df <- function(dat, networks = NULL) {
+
+  networks <- if (is.null(networks)) seq_len(dat$num.nw) else networks
+  el_list <- lapply(networks, get_edgelist, dat = dat)
+  el_tibble <- lapply(el_list, as_tibble_edgelist)
+  d_el <- dplyr::bind_rows(el_tibble)
+
+  el_sizes <- vapply(el_list, nrow, numeric(1))
+  d_el[["network"]] <- rep(networks, el_sizes)
+
+  return(d_el)
+}
+
+#' @title Convert an Edgelist into a Tibble
+#'
+#' @param el An edgelist in matrix or data frame form.
+#'
+#' @return
+#' The edgelist in tibble form with two columns named `head` and `tail`.
+#'
+#' @export
+as_tibble_edgelist <- function(el) {
+
+  if (nrow(el) > 0) {
+    t_el <- tibble::tibble(head = el[, 1], tail = el[, 2])
+  } else {
+    t_el <- tibble::tibble(head = integer(0), tail = integer(0))
+  }
+
+  return(t_el)
+}
+
+## Cumulative Edgelists --------------------------------------------------------
 
 #' @title Get a Cumulative Edgelist From a Specified Network
 #'
