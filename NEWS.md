@@ -3,7 +3,8 @@
 
 ### NEW FEATURES
 
--
+- export a generic `get_discordant_edgelist` where the attribute to be use to
+assess discordance as well as the values for each group can be specified.
 
 ### OTHER
 
