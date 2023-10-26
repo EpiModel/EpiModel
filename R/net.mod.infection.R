@@ -331,7 +331,6 @@ discord_edgelist <- function(dat, at, network = 1, infstat = "i", include.networ
   return(del)
 }
 
-
 #' @title Save Transmission Matrix
 #'
 #' @description This function appends the transmission matrix created during
