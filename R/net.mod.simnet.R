@@ -116,7 +116,7 @@ simulate_dat <- function(dat, at, network = 1L, nsteps = 1L) {
   simulation_control <- get_network_control(dat, network, "set.control.tergm")
   if (nwparam$coef.diss$duration[1] > 1) {
     formula <- ~Form(nwparam$formation) +
-                Persist(nwparam$coef.diss$dissolution)
+      Persist(nwparam$coef.diss$dissolution)
     coef <- c(nwparam$coef.form, nwparam$coef.diss$coef.adj)
   } else {
     formula <- nwparam$formation
@@ -134,14 +134,14 @@ simulate_dat <- function(dat, at, network = 1L, nsteps = 1L) {
   ## determine monitor, if needed; note that we only obtain
   ## stats in simulate_dat if resimulate.network == FALSE
   if (get_control(dat, "save.nwstats") == TRUE &&
-      get_control(dat, "resimulate.network") == FALSE) {
+        get_control(dat, "resimulate.network") == FALSE) {
     monitor <- get_network_control(dat, network, "nwstats.formula")
   } else {
     monitor <- NULL # will be handled by summary_nets, if needed
   }
 
   if (get_control(dat, "tergmLite") == FALSE &&
-      get_control(dat, "resimulate.network") == TRUE) {
+        get_control(dat, "resimulate.network") == TRUE) {
     time_offset <- 0L
   } else {
     time_offset <- 1L

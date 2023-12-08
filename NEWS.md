@@ -1,9 +1,22 @@
+
+## EpiModel 2.4.1
+
+### NEW FEATURES
+
+- export a generic `get_discordant_edgelist` where the attribute to be use to
+assess discordance as well as the values for each group can be specified.
+
+### OTHER
+
+- Speed up `raw.records` and `attr.history` with `collections::queue` instead of
+`base::list`
+
 ## EpiModel 2.4.0
 
 ### NEW FEATURES
 
-- Stochastic network models, simulated with `netsim`, now support multi-layer networks. These are networks with a common common node set but different edge set (e.g., home-based and community-based contact layers). An example implementation can be found at the [EpiModel Gallery](https://github.com/EpiModel/EpiModel-Gallery/tree/multinets/2022-12-Multinets). 
-- Add a `get_cumulative_degree` function with an interface similar to `get_partners`. This function helps look up cumulative degree over a time period (e.g., number of partners over the past year) for a specified set of nodes. 
+- Stochastic network models, simulated with `netsim`, now support multi-layer networks. These are networks with a common common node set but different edge set (e.g., home-based and community-based contact layers). An example implementation can be found at the [EpiModel Gallery](https://github.com/EpiModel/EpiModel-Gallery/tree/multinets/2022-12-Multinets).
+- Add a `get_cumulative_degree` function with an interface similar to `get_partners`. This function helps look up cumulative degree over a time period (e.g., number of partners over the past year) for a specified set of nodes.
 - Generic `get_network` and `set_network` functions created for more consistent access to the network objects within `netsim_dat` class objects.
 
 ### OTHER

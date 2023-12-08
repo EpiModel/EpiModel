@@ -228,9 +228,9 @@ saveout.net <- function(dat, s, out = NULL) {
     }
 
     if (dat$control$save.diss.stats == TRUE &&
-        dat$control$save.network == TRUE &&
-        dat$control$tergmLite == FALSE &&
-        !is.null(dat$nwparam)) {
+          dat$control$save.network == TRUE &&
+          dat$control$tergmLite == FALSE &&
+          !is.null(dat$nwparam)) {
 
       ## for each simulated network, if dissolution model is edges-only, compute diss stats
       out$diss.stats <- list(lapply(seq_len(dat$num.nw), function(network) {
@@ -315,9 +315,9 @@ saveout.net <- function(dat, s, out = NULL) {
     }
 
     if (dat$control$save.diss.stats == TRUE &&
-        dat$control$save.network == TRUE &&
-        dat$control$tergmLite == FALSE &&
-        !is.null(dat$nwparam)) {
+          dat$control$save.network == TRUE &&
+          dat$control$tergmLite == FALSE &&
+          !is.null(dat$nwparam)) {
 
       ## for each simulated network, if dissolution model is edges-only, compute diss stats
       out$diss.stats[[s]] <- lapply(seq_len(dat$num.nw), function(network) {
@@ -350,13 +350,13 @@ saveout.net <- function(dat, s, out = NULL) {
     out$coef.form <- name_saveout_elts(out$coef.form, "coef.form", simnames)
 
     if (dat$control$save.nwstats == TRUE) {
-      out$stats$nwstats <- name_saveout_elts(
-        out$stats$nwstats, "stats$nwstats", simnames)
+      out$stats$nwstats <- name_saveout_elts(out$stats$nwstats,
+                                             "stats$nwstats", simnames)
     }
 
     if (dat$control$save.transmat == TRUE) {
-      out$stats$transmat <- name_saveout_elts(
-        out$stats$transmat, "stats$transmat", simnames)
+      out$stats$transmat <- name_saveout_elts(out$stats$transmat,
+                                              "stats$transmat", simnames)
     }
 
     if (dat$control$save.network == TRUE) {
@@ -364,8 +364,8 @@ saveout.net <- function(dat, s, out = NULL) {
     }
 
     if (dat$control$save.diss.stats == TRUE &&
-        dat$control$save.network == TRUE &&
-        dat$control$tergmLite == FALSE) {
+          dat$control$save.network == TRUE &&
+          dat$control$tergmLite == FALSE) {
       out$diss.stats <- name_saveout_elts(out$diss.stats, "diss.stats", simnames)
     }
 
@@ -435,9 +435,8 @@ name_saveout_elts <- function(elt, elt_name, simnames) {
   if (length(elt) == length(simnames)) {
     names(elt) <- simnames
   } else if (length(elt) > 0) {
-    warning(
-      "The number of `", elt_name, "` is not the number of simulations.",
-      "Unable to assign each to the correct simulation.")
+    warning("The number of `", elt_name, "` is not the number of simulations.",
+            "Unable to assign each to the correct simulation.")
   }
   return(elt)
 }

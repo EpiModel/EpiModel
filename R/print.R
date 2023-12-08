@@ -160,10 +160,10 @@ print.netdx <- function(x, digits = 3, ...) {
   }
   if (x$anyNA == TRUE) {
     cat("\nNOTE: Duration and dissolution data contains undefined values due to",
-            "having zero edges of some dissolution dyad type(s) on some time",
-            "steps; these undefined values will be set to 0 when",
-            "processing the data; this behavior, which introduces a bias",
-            "towards 0, may be changed in the future.")
+        "having zero edges of some dissolution dyad type(s) on some time",
+        "steps; these undefined values will be set to 0 when",
+        "processing the data; this behavior, which introduces a bias",
+        "towards 0, may be changed in the future.")
   }
   invisible()
 }
@@ -243,10 +243,10 @@ print.netsim <- function(x, nwstats = TRUE, digits = 3, network = 1, ...) {
     cat("\n")
 
     if (x$control$save.diss.stats &&
-        x$control$save.network &&
-        ! x$control$tergmLite &&
-        ! is.null(x$diss.stats) &&
-        x$nwparam[[network]]$coef.diss$dissolution == ~ offset(edges)) {
+          x$control$save.network &&
+          ! x$control$tergmLite &&
+          ! is.null(x$diss.stats) &&
+          x$nwparam[[network]]$coef.diss$dissolution == ~ offset(edges)) {
 
       if (any(unlist(lapply(x$diss.stats, `[[`, "anyNA")))) {
         cat("\nNOTE: Duration & dissolution data contains undefined values due to zero edges of some dissolution
@@ -367,7 +367,7 @@ print.param.net <- function(x, ...) {
   }
 
   cat("Fixed Parameters")
-    cat("\n---------------------------\n")
+  cat("\n---------------------------\n")
   for (i in pToPrint) {
     format_param(names(x)[i], x[[i]])
   }
@@ -505,12 +505,12 @@ print.control.net <- function(x, ...) {
 
   pToPrint <- which(
     !grepl(".FUN", names(x)) &
-    names(x) != "f.args" &
-    names(x) != "f.names" &
-    names(x) != "set.control.tergm" &
-    names(x) != "set.control.ergm" &
-    names(x) != "dat.updates" &
-    !(names(x) %in% c("bi.mods", "user.mods"))
+      names(x) != "f.args" &
+      names(x) != "f.names" &
+      names(x) != "set.control.tergm" &
+      names(x) != "set.control.ergm" &
+      names(x) != "dat.updates" &
+      !(names(x) %in% c("bi.mods", "user.mods"))
   )
 
 

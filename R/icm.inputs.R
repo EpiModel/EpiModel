@@ -98,7 +98,7 @@ param.icm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
   p$groups <- ifelse(any(grepl(".g2", names(p))) == TRUE, 2, 1)
 
   if (p$groups == 2 && (is.null(p$balance) ||
-                        !(p$balance %in% c("g1", "g2")))) {
+                          !(p$balance %in% c("g1", "g2")))) {
     stop("Specify balance=\"g1\" or balance=\"g2\" with 2-group models")
   }
 

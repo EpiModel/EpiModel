@@ -54,7 +54,7 @@ merge.icm <- function(x, y, ...) {
     stop("x and y have different structure")
   }
   if (x$control$nsims > 1 && y$control$nsims > 1 &&
-      !identical(sapply(x, class), sapply(y, class))) {
+        !identical(sapply(x, class), sapply(y, class))) {
     stop("x and y have different structure")
   }
 
@@ -176,8 +176,8 @@ merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
   x$control$nsims <- as.integer(x$control$nsims)
   y$control$nsims <- as.integer(y$control$nsims)
   if (x$control$nsims > 1 && y$control$nsims > 1 &&
-      !all(sapply(x, function(i) class(i)[1]) ==
-           sapply(y, function(i) class(i)[1]))) {
+        !all(sapply(x, function(i) class(i)[1]) ==
+               sapply(y, function(i) class(i)[1]))) {
     stop("x and y have different structure")
   }
 
@@ -214,7 +214,7 @@ merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
 
   ## Transmission matrix
   if (keep.transmat == TRUE && !is.null(x$stats$transmat) &&
-      !is.null(y$stats$transmat)) {
+        !is.null(y$stats$transmat)) {
     z$stats$transmat <- c(x$stats$transmat, y$stats$transmat)
     names(z$stats$transmat) <- newnames
   } else {
@@ -251,7 +251,9 @@ merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
         for (i in new.range) {
           z[[other.x[j]]][[i]] <- y[[other.x[j]]][[i - x$control$nsims]]
         }
-        names(z[[other.x[j]]]) <- newnames
+        if (!is.null(z[[other.x[j]]])) {
+          names(z[[other.x[j]]]) <- newnames
+        }
       }
     } else {
       for (j in seq_along(other.x)) {
@@ -261,7 +263,7 @@ merge.netsim <- function(x, y, keep.transmat = TRUE, keep.network = TRUE,
   }
 
   if (keep.diss.stats == TRUE && !is.null(x$diss.stats) &&
-      !is.null(y$diss.stats)) {
+        !is.null(y$diss.stats)) {
     z$diss.stats <- c(x$diss.stats, y$diss.stats)
     names(z$diss.stats) <- newnames
   } else {

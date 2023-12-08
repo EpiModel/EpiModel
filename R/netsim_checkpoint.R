@@ -50,6 +50,6 @@ netsim_get_checkpoint_filename <- function(control, s) {
 #
 netsim_clear_checkpoint <- function(control) {
   if (control[[".checkpointed"]])
-      unlink(control[[".checkpoint.dir"]], recursive = TRUE)
+    unlink(control[[".checkpoint.dir"]], recursive = TRUE)
   invisible(TRUE)
 }
