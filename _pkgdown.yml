@@ -1,0 +1,11 @@
+url: http://epimodel.github.io/EpiModel/
+template:
+  bootstrap: 5
+
+home:
+  links:
+    - text: "EpiModel project"
+      href: "https://www.epimodel.org/"
+    - text: "Training materials"
+      href: "https://epimodel.github.io/epimodel-training/"
+
