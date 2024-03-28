@@ -204,6 +204,10 @@ netsim_validate_control <- function(control) {
     control[[".checkpoint.steps"]] <- as.integer(control[[".checkpoint.steps"]])
   }
 
+  if (control$nsteps < 1 || control$nsteps == Inf) {
+    stop("`control$nsteps` must be positive and not infinite.")
+  }
+
   return(control)
 }
 
