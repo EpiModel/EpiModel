@@ -74,12 +74,7 @@ sim_nets_t1 <- function(dat) {
   }
 
   ## initialize sim.num(.g2) epi fields
-  if (get_param(dat, "groups") == 1) {
-    dat$epi$sim.num <- rep(sum(dat$attr$active == 1), length.out = nsteps)
-  } else {
-    dat$epi$sim.num <- rep(sum(dat$attr$active == 1 & dat$attr$group == 1), length.out = nsteps)
-    dat$epi$sim.num.g2 <- rep(sum(dat$attr$active == 1 & dat$attr$group == 2), length.out = nsteps)
-  }
+  dat <- update_sim_num(dat)
 
   ## simulate first timestep (if resimulate.network == TRUE)
   ## or all timesteps (if resimulate.network == FALSE)
@@ -207,6 +202,7 @@ resim_nets <- function(dat, at) {
   if (anyActive == TRUE && get_control(dat, "resimulate.network") == TRUE) {
     ## Edges Correction
     dat <- edges_correct(dat, at)
+    dat <- update_sim_num(dat)
 
     ## network resimulation
     dat.updates <- NVL(get_control(dat, "dat.updates"), function(dat, ...) dat)
@@ -251,19 +247,16 @@ edges_correct <- function(dat, at) {
 
   if (resimulate.network == TRUE) {
     if (groups == 1) {
-      old.num <- get_epi(dat, "sim.num", at - 1)
+      old.num <- dat$run$sim.num
       new.num <- sum(active == 1)
-      dat <- set_epi(dat, "sim.num", at, new.num)
       adjustment <- log(old.num) - log(new.num)
     }
     if (groups == 2) {
-      old.num.g1 <- get_epi(dat, "sim.num", at - 1)
-      old.num.g2 <- get_epi(dat, "sim.num.g2", at - 1)
+      old.num.g1 <- dat$run$sim.num
+      old.num.g2 <- dat$run$sim.num.g2
       group <- get_attr(dat, "group")
       new.num.g1 <- sum(active == 1 & group == 1)
       new.num.g2 <- sum(active == 1 & group == 2)
-      dat <- set_epi(dat, "sim.num", at, new.num.g1)
-      dat <- set_epi(dat, "sim.num.g2", at, new.num.g2)
       adjustment <-
         log(2 * old.num.g1 * old.num.g2 / (old.num.g1 + old.num.g2)) -
         log(2 * new.num.g1 * new.num.g2 / (new.num.g1 + new.num.g2))
@@ -274,5 +267,21 @@ edges_correct <- function(dat, at) {
         dat$nwparam[[network]]$coef.form[1] + adjustment
     }
   }
+
   return(dat)
 }
+
+# Store the current number of nodes in the network or per network group in
+# `dat$run`.
+# This is used to adjuste the `edges` coefficient of tergm
+update_sim_num <- function(dat) {
+  if (get_param(dat, "groups") == 1) {
+    dat$run$sim.num <- sum(dat$attr$active == 1)
+  } else {
+    dat$run$sim.num <- sum(dat$attr$active == 1 & dat$attr$group == 1)
+    dat$run$sim.num.g2 <- sum(dat$attr$active == 1 & dat$attr$group == 2)
+  }
+  return(dat)
+}
+
+

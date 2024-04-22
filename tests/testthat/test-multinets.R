@@ -107,7 +107,7 @@ test_that("netsim runs with multiple networks, with open or closed population", 
                                    nwstats.formula = sim_nwstats_formulas,
                                    verbose = TRUE,
                                    save.network = TRUE,
-                                   save.other = save.other)
+                                   save.other = c(save.other, "run"))
             print(control)
             basis <- est
           } else {
@@ -138,7 +138,7 @@ test_that("netsim runs with multiple networks, with open or closed population", 
             expect_equal(sim$nwparam[[network]]$coef.form[1],
                          est[[network]]$coef.form[1] +
                            log(network.size(est[[network]]$newnetwork)) -
-                           log(sim$epi$sim.num[nsteps, 1]),
+                           log(sim$run[[1]]$sim.num),
                          tolerance = 1e-6)
           }
 
@@ -147,7 +147,7 @@ test_that("netsim runs with multiple networks, with open or closed population", 
               expect_equal(sim$coef.form[[simno]][[network]][1],
                            est[[network]]$coef.form[1] +
                              log(network.size(est[[network]]$newnetwork)) -
-                             log(sim$epi$sim.num[nsteps, simno]),
+                             log(sim$run[[simno]]$sim.num),
                            tolerance = 1e-6)
               if (tergmLite == TRUE) {
                 expect_is(sim$network[[simno]][[network]], "networkLite")
@@ -174,11 +174,11 @@ test_that("netsim runs with multiple networks, with open or closed population", 
               if (tergmLite == TRUE) {
                 if (open_population == FALSE) {
                   expect_equal(network.size(sim$network[[simno]][[network]]),
-                               sim$epi$sim.num[[simno]][nsteps])
+                               sim$run[[simno]]$sim.num)
                 }
               } else {
                 expect_equal(network.size(network.collapse(sim$network[[simno]][[network]], at = nsteps)),
-                             sim$epi$num[[simno]][nsteps])
+                               sim$run[[simno]]$sim.num)
               }
 
               stats_matrix <- get_nwstats(sim, network = network, mode = "list")[[simno]]
@@ -227,8 +227,8 @@ test_that("multilayer specifications", {
 
   param <- param.net(inf.prob = 0.3, act.rate = 0.1)
   init <- init.net(i.num = 10)
-  control <- control.net(type = "SI", 
-                         nsims = 2, 
+  control <- control.net(type = "SI",
+                         nsims = 2,
                          nsteps = 10,
                          tergmLite = TRUE,
                          resimulate.network = TRUE,

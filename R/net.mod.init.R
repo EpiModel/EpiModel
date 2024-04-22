@@ -124,6 +124,8 @@ initialize.net <- function(x, param, init, control, s) {
     }
   }
 
+  dat <- update_sim_num(dat)
+
   return(dat)
 }
 
