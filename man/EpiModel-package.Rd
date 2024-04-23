@@ -136,4 +136,30 @@ developed \code{EpiModelHIV}, which is available on Github at
 developed \code{EpiModelCOVID}, which is available at
 \url{https://github.com/EpiModel/EpiModelCOVID}.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{http://www.epimodel.org/}
+  \item \url{http://epimodel.github.io/EpiModel/}
+  \item Report bugs at \url{https://github.com/EpiModel/EpiModel/issues}
+}
+
+}
+\author{
+\strong{Maintainer}: Samuel Jenness \email{samuel.m.jenness@emory.edu}
+
+Authors:
+\itemize{
+  \item Steven M. Goodreau \email{goodreau@uw.edu}
+  \item Martina Morris \email{morrism@uw.edu}
+  \item Adrien Le Guillou \email{contact@aleguillou.org}
+  \item Chad Klumb \email{cklumb@gmail.com}
+}
+
+Other contributors:
+\itemize{
+  \item Skye Bender-deMoll \email{skyebend@uw.edu} [contributor]
+}
+
+}
 \keyword{package}

@@ -153,10 +153,9 @@
 #'
 #' @useDynLib EpiModel, .registration = TRUE
 #'
-#' @docType package
 #' @keywords package
 #'
-NULL
+"_PACKAGE"
 
 #' @export
 ergm.ego::control.ergm.ego

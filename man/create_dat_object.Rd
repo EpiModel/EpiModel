@@ -4,7 +4,12 @@
 \alias{create_dat_object}
 \title{Create a Minimal netsim_dat Main List Object for a Network Model}
 \usage{
-create_dat_object(param = list(), init = list(), control = list())
+create_dat_object(
+  param = list(),
+  init = list(),
+  control = list(),
+  run = list()
+)
 }
 \arguments{
 \item{param}{An \code{EpiModel} object of class \code{\link{param.net}}.}
@@ -12,6 +17,10 @@ create_dat_object(param = list(), init = list(), control = list())
 \item{init}{An \code{EpiModel} object of class \code{\link{init.net}}.}
 
 \item{control}{An \code{EpiModel} object of class \code{\link{control.net}}.}
+
+\item{run}{A \code{list} that will contains the objects created by
+\code{\link{netsim}} that are required for between step communication. This
+list must be preserved for restarting models.}
 }
 \value{
 A \code{netsim_dat} main list object.
