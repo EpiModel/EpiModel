@@ -20,7 +20,7 @@ The updated \code{netsim_dat} main list object.
 Adjusts the edges coefficient in a dynamic network model
 simulated in \code{\link{netsim}} to preserve the mean
 degree of nodes in the network. Requires \code{at >= 2}.
-Maintains the \code{sim.num(.g2)} epi fields (initialized in
+Maintains the \code{num(.g2)} epi fields (initialized in
 \code{\link{sim_nets_t1}}) for computing the coefficient
 adjustment.
 }

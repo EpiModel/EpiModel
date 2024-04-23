@@ -288,19 +288,19 @@ test_that("edges correction behaves as expected", {
                                tergmLite = tergmLite,
                                verbose = FALSE,
                                save.network = TRUE,
-                               save.other = c("attr", "temp"))
+                               save.other = c("attr", "temp", "run"))
         sim <- netsim(est, param, init, control)
 
         for (simno in seq_len(nsims)) {
           if (ngroups == 1) {
             expect_equal(est$coef.form[1] + log(network.size(nw)),
-                         sim$coef.form[[simno]][[1]][1] + log(sim$epi$sim.num[nsteps,simno]),
+                         sim$coef.form[[simno]][[1]][1] + log(sim$run[[simno]]$num),
                          tolerance = 1e-6)
           } else {
             n1.old <- sum(est$newnetwork %v% "group" == 1)
             n2.old <- sum(est$newnetwork %v% "group" == 2)
-            n1.new <- sim$epi$sim.num[nsteps,simno]
-            n2.new <- sim$epi$sim.num.g2[nsteps,simno]
+            n1.new <- sim$run[[simno]]$num
+            n2.new <- sim$run[[simno]]$num.g2
 
             expect_equal(est$coef.form[1] + log(2*n1.old*n2.old/(n1.old+n2.old)),
                          sim$coef.form[[simno]][[1]][1] + log(2*n1.new*n2.new/(n1.new+n2.new)),
@@ -317,18 +317,18 @@ test_that("edges correction behaves as expected", {
           for (simno in seq_len(nsims)) {
             if (ngroups == 1) {
               expect_equal(est$coef.form[1] + log(network.size(nw)),
-                           sim2$coef.form[[simno]][[1]][1] + log(sim2$epi$sim.num[nsteps,simno]),
-                           tolerance = 1e-6)
+                          sim$coef.form[[simno]][[1]][1] + log(sim$run[[simno]]$num),
+                          tolerance = 1e-6)
             } else {
               n1.old <- sum(est$newnetwork %v% "group" == 1)
               n2.old <- sum(est$newnetwork %v% "group" == 2)
-              n1.new <- sim2$epi$sim.num[nsteps,simno]
-              n2.new <- sim2$epi$sim.num.g2[nsteps,simno]
+              n1.new <- sim$run[[simno]]$num
+              n2.new <- sim$run[[simno]]$num.g2
 
               expect_equal(est$coef.form[1] + log(2*n1.old*n2.old/(n1.old+n2.old)),
-                           sim2$coef.form[[simno]][[1]][1] + log(2*n1.new*n2.new/(n1.new+n2.new)),
-                           tolerance = 1e-6)
-            }
+                          sim$coef.form[[simno]][[1]][1] + log(2*n1.new*n2.new/(n1.new+n2.new)),
+                          tolerance = 1e-6)
+              }
           }
         }
       }

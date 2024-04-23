@@ -9,10 +9,14 @@
 #' @param param An \code{EpiModel} object of class \code{\link{param.net}}.
 #' @param init An \code{EpiModel} object of class \code{\link{init.net}}.
 #' @param control An \code{EpiModel} object of class \code{\link{control.net}}.
+#' @param run A \code{list} that will contains the objects created by
+#' \code{\link{netsim}} that are required for between step communication. This
+#' list must be preserved for restarting models.
 #'
 #' @return A \code{netsim_dat} main list object.
 #' @export
-create_dat_object <- function(param = list(), init = list(), control = list()) {
+create_dat_object <- function(param = list(), init = list(), control = list(),
+                              run = list()) {
   dat <- list(
     "param"     = param,
     "init"      = init,
@@ -21,6 +25,7 @@ create_dat_object <- function(param = list(), init = list(), control = list()) {
     "epi"       = list(),
     "stats"     = list(),
     "temp"      = list(),
+    "run"       = run,
     "_timestep" = 1
   )
 
