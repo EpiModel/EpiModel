@@ -12,7 +12,8 @@
 #'
 #' @return A \code{netsim_dat} main list object.
 #' @export
-create_dat_object <- function(param = list(), init = list(), control = list()) {
+create_dat_object <- function(param = list(), init = list(), control = list(),
+                              run = list()) {
   dat <- list(
     "param"     = param,
     "init"      = init,
@@ -21,7 +22,7 @@ create_dat_object <- function(param = list(), init = list(), control = list()) {
     "epi"       = list(),
     "stats"     = list(),
     "temp"      = list(),
-    "run"       = list(),
+    "run"       = run,
     "_timestep" = 1
   )
 

@@ -61,6 +61,7 @@ initialize.net <- function(x, param, init, control, s) {
       "epi",
       "attr",
       "temp",
+      "run",
       "coef.form",
       "num.nw",
       if (control[["tergmLite"]] == TRUE) c("el", "net_attr"),
@@ -72,7 +73,7 @@ initialize.net <- function(x, param, init, control, s) {
            paste.and(missing_names), call. = FALSE)
     }
 
-    dat <- create_dat_object(param = param, control = control)
+    dat <- create_dat_object(param = param, control = control, run = x$run[[s]])
 
     missing_params <- setdiff(names(x$param), names(param))
     for (mp in missing_params) {
@@ -123,8 +124,6 @@ initialize.net <- function(x, param, init, control, s) {
       dat$stats$transmat <- padded_vector(list(dat$stats$transmat), nsteps)
     }
   }
-
-  dat <- update_sim_num(dat)
 
   return(dat)
 }

@@ -173,11 +173,13 @@ test_that("netsim runs with multiple networks, with open or closed population", 
               expect_equal(network.size(est[[network]]$newnetwork), sim$epi$num[[simno]][1])
               if (tergmLite == TRUE) {
                 if (open_population == FALSE) {
-                  expect_equal(network.size(sim$network[[simno]][[network]]),
+                  expect_equal(sim$epi$num[nsteps - 1,simno],
                                sim$run[[simno]]$sim.num)
                 }
               } else {
-                expect_equal(network.size(network.collapse(sim$network[[simno]][[network]], at = nsteps)),
+                expect_equal(network.size(network.collapse(sim$network[[simno]][[network]], at = nsteps - 1)),
+                               sim$run[[simno]]$sim.num)
+                expect_equal(network.size(network.collapse(sim$network[[simno]][[network]], at = nsteps - 1)),
                                sim$run[[simno]]$sim.num)
               }
 
