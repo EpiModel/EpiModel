@@ -283,5 +283,3 @@ update_sim_num <- function(dat) {
   }
   return(dat)
 }
-
-

@@ -70,7 +70,7 @@ get_edgelist <- function(dat, network) {
 get_discordant_edgelist <- function(dat, status.attr, head.status,
                                     tail.status, networks = NULL) {
   if (get_current_timestep(dat) == get_control(dat, "start") + 1 &&
-      length(intersect(head.status, tail.status)) > 0) {
+        length(intersect(head.status, tail.status)) > 0) {
     warning("The head.status and tail.status arguments should be discordant.")
   }
 
