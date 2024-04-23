@@ -10,7 +10,7 @@ assess discordance as well as the values for each group can be specified.
 
 - Speed up `raw.records` and `attr.history` with `collections::queue` instead of
 `base::list`
-- Remove `dat$epi$sim.num` and replace it with `dat$run$sim.num` (single value).
+- Remove `dat$epi$sim.num(.g2)` and replace it with `dat$run$num(.g2)` (single value).
 
 ## EpiModel 2.4.0
 

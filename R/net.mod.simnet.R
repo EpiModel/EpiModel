@@ -10,7 +10,7 @@
 #'              determined, the first time step is simulated if
 #'              \code{resimulate.network == TRUE}, and all time steps are
 #'              simulated if \code{resimulate.network == FALSE}. Initializes the
-#'              \code{sim.num(.g2)} epi fields used in
+#'              \code{num(.g2)} epi fields used in
 #'              \code{\link{edges_correct}} for computing edge coefficient
 #'              adjustments.
 #'
@@ -73,7 +73,7 @@ sim_nets_t1 <- function(dat) {
     nsteps <- get_control(dat, "nsteps")
   }
 
-  ## initialize sim.num(.g2) epi fields
+  ## initialize num(.g2) run fields
   dat <- update_sim_num(dat)
 
   ## simulate first timestep (if resimulate.network == TRUE)
@@ -228,7 +228,7 @@ resim_nets <- function(dat, at) {
 #' @description Adjusts the edges coefficient in a dynamic network model
 #'              simulated in \code{\link{netsim}} to preserve the mean
 #'              degree of nodes in the network. Requires \code{at >= 2}.
-#'              Maintains the \code{sim.num(.g2)} epi fields (initialized in
+#'              Maintains the \code{num(.g2)} epi fields (initialized in
 #'              \code{\link{sim_nets_t1}}) for computing the coefficient
 #'              adjustment.
 #'
@@ -247,13 +247,13 @@ edges_correct <- function(dat, at) {
 
   if (resimulate.network == TRUE) {
     if (groups == 1) {
-      old.num <- dat$run$sim.num
+      old.num <- dat$run$num
       new.num <- sum(active == 1)
       adjustment <- log(old.num) - log(new.num)
     }
     if (groups == 2) {
-      old.num.g1 <- dat$run$sim.num
-      old.num.g2 <- dat$run$sim.num.g2
+      old.num.g1 <- dat$run$num
+      old.num.g2 <- dat$run$num.g2
       group <- get_attr(dat, "group")
       new.num.g1 <- sum(active == 1 & group == 1)
       new.num.g2 <- sum(active == 1 & group == 2)
@@ -276,10 +276,10 @@ edges_correct <- function(dat, at) {
 # This is used to adjuste the `edges` coefficient of tergm
 update_sim_num <- function(dat) {
   if (get_param(dat, "groups") == 1) {
-    dat$run$sim.num <- sum(dat$attr$active == 1)
+    dat$run$num <- sum(dat$attr$active == 1)
   } else {
-    dat$run$sim.num <- sum(dat$attr$active == 1 & dat$attr$group == 1)
-    dat$run$sim.num.g2 <- sum(dat$attr$active == 1 & dat$attr$group == 2)
+    dat$run$num <- sum(dat$attr$active == 1 & dat$attr$group == 1)
+    dat$run$num.g2 <- sum(dat$attr$active == 1 & dat$attr$group == 2)
   }
   return(dat)
 }

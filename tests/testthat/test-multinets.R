@@ -138,7 +138,7 @@ test_that("netsim runs with multiple networks, with open or closed population", 
             expect_equal(sim$nwparam[[network]]$coef.form[1],
                          est[[network]]$coef.form[1] +
                            log(network.size(est[[network]]$newnetwork)) -
-                           log(sim$run[[1]]$sim.num),
+                           log(sim$run[[1]]$num),
                          tolerance = 1e-6)
           }
 
@@ -147,7 +147,7 @@ test_that("netsim runs with multiple networks, with open or closed population", 
               expect_equal(sim$coef.form[[simno]][[network]][1],
                            est[[network]]$coef.form[1] +
                              log(network.size(est[[network]]$newnetwork)) -
-                             log(sim$run[[simno]]$sim.num),
+                             log(sim$run[[simno]]$num),
                            tolerance = 1e-6)
               if (tergmLite == TRUE) {
                 expect_is(sim$network[[simno]][[network]], "networkLite")
@@ -174,13 +174,13 @@ test_that("netsim runs with multiple networks, with open or closed population", 
               if (tergmLite == TRUE) {
                 if (open_population == FALSE) {
                   expect_equal(sim$epi$num[nsteps - 1,simno],
-                               sim$run[[simno]]$sim.num)
+                               sim$run[[simno]]$num)
                 }
               } else {
                 expect_equal(network.size(network.collapse(sim$network[[simno]][[network]], at = nsteps - 1)),
-                               sim$run[[simno]]$sim.num)
+                               sim$run[[simno]]$num)
                 expect_equal(network.size(network.collapse(sim$network[[simno]][[network]], at = nsteps - 1)),
-                               sim$run[[simno]]$sim.num)
+                               sim$run[[simno]]$num)
               }
 
               stats_matrix <- get_nwstats(sim, network = network, mode = "list")[[simno]]

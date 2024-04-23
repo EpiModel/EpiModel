@@ -294,13 +294,13 @@ test_that("edges correction behaves as expected", {
         for (simno in seq_len(nsims)) {
           if (ngroups == 1) {
             expect_equal(est$coef.form[1] + log(network.size(nw)),
-                         sim$coef.form[[simno]][[1]][1] + log(sim$run[[simno]]$sim.num),
+                         sim$coef.form[[simno]][[1]][1] + log(sim$run[[simno]]$num),
                          tolerance = 1e-6)
           } else {
             n1.old <- sum(est$newnetwork %v% "group" == 1)
             n2.old <- sum(est$newnetwork %v% "group" == 2)
-            n1.new <- sim$run[[simno]]$sim.num
-            n2.new <- sim$run[[simno]]$sim.num.g2
+            n1.new <- sim$run[[simno]]$num
+            n2.new <- sim$run[[simno]]$num.g2
 
             expect_equal(est$coef.form[1] + log(2*n1.old*n2.old/(n1.old+n2.old)),
                          sim$coef.form[[simno]][[1]][1] + log(2*n1.new*n2.new/(n1.new+n2.new)),
@@ -317,13 +317,13 @@ test_that("edges correction behaves as expected", {
           for (simno in seq_len(nsims)) {
             if (ngroups == 1) {
               expect_equal(est$coef.form[1] + log(network.size(nw)),
-                          sim$coef.form[[simno]][[1]][1] + log(sim$run[[simno]]$sim.num),
+                          sim$coef.form[[simno]][[1]][1] + log(sim$run[[simno]]$num),
                           tolerance = 1e-6)
             } else {
               n1.old <- sum(est$newnetwork %v% "group" == 1)
               n2.old <- sum(est$newnetwork %v% "group" == 2)
-              n1.new <- sim$run[[simno]]$sim.num
-              n2.new <- sim$run[[simno]]$sim.num.g2
+              n1.new <- sim$run[[simno]]$num
+              n2.new <- sim$run[[simno]]$num.g2
 
               expect_equal(est$coef.form[1] + log(2*n1.old*n2.old/(n1.old+n2.old)),
                           sim$coef.form[[simno]][[1]][1] + log(2*n1.new*n2.new/(n1.new+n2.new)),
