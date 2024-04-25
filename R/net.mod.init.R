@@ -93,14 +93,6 @@ initialize.net <- function(x, param, init, control, s) {
       dat$nw <- x$network[[s]]
     }
 
-    # copy if present
-    if (length(x[["el.cuml"]]) >= s) {
-      dat[["el.cuml"]] <- x[["el.cuml"]][[s]]
-    }
-    if (length(x[["_last_unique_id"]]) >= s) {
-      dat[["_last_unique_id"]] <- x[["_last_unique_id"]][[s]]
-    }
-
     dat$nwparam <- x$nwparam
     for (network in seq_len(dat$num.nw)) {
       dat$nwparam[[network]]$coef.form <- x$coef.form[[s]][[network]]

@@ -574,7 +574,7 @@ append_core_attr <- function(dat, at, n.new) {
 #'
 #' @description This function is called by \code{\link{append_core_attr}} and
 #' appends new \code{unique_ids} to the created nodes. It also keeps track of
-#' the already used \code{unique_ids} with the \code{dat[["_last_unique_id"]]}
+#' the already used \code{unique_ids} with the \code{dat$run$last_unique_id}
 #' variable.
 #'
 #' @inheritParams recovery.net
@@ -584,10 +584,9 @@ append_core_attr <- function(dat, at, n.new) {
 #'
 #' @keywords internal
 update_unique_ids <- function(dat, n.new) {
-  last_unique_id <- if (is.null(dat[["_last_unique_id"]])) 0L
-  else dat[["_last_unique_id"]]
+  last_unique_id <- dat$run$last_unique_id
   next_unique_ids <- seq_len(n.new) + last_unique_id
-  dat[["_last_unique_id"]] <- last_unique_id + as.integer(n.new)
+  dat$run$last_unique_id <- last_unique_id + as.integer(n.new)
   dat <- append_attr(dat, "unique_id", next_unique_ids, n.new)
 
   return(dat)

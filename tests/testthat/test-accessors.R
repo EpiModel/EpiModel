@@ -2,20 +2,12 @@ context("`dat` object getters and setters")
 
 test_that("`dat` getters and setter", {
 
-  dat <- list(
-    attr = list(
-      active = rbinom(100, 1, 0.9)
-    ),
-    epi = list(),
-    param = list(),
-    init = list(),
-    control = list(
-      nsteps = 150
-    )
-  )
+  dat <- create_dat_object(control = list(nsteps = 150))
+  dat$attr = list(active = rbinom(100, 1, 0.9))
 
   ## Attr tests
   dat <- add_attr(dat, "age")
+
   expect_equal(dat$attr$age, rep(NA, length(dat$attr$active)))
   expect_error(dat <- add_attr(dat, "age"))
 
@@ -151,15 +143,8 @@ test_that("`dat` getters and setter", {
 })
 
 test_that("Net core attributes", {
-  dat <- list(
-    attr = list(),
-    epi = list(),
-    param = list(),
-    init = list(),
-    control = list(
-      nsteps = 150
-    )
-  )
+
+  dat <- create_dat_object(control = list(nsteps = 150))
 
   # Append the first nodes (empty list before)
   dat <- append_core_attr(dat, at = 1,  n.new = 100)

@@ -172,7 +172,6 @@ saveout.net <- function(dat, s, out = NULL) {
     out$control <- dat$control
     out$nwparam <- dat$nwparam
     out$num.nw <- dat$num.nw
-    out[["last_timestep"]] <- get_current_timestep(dat)
 
     out$coef.form <- list()
     out$coef.form[[s]] <- lapply(dat$nwparam, `[[`, "coef.form")
@@ -182,14 +181,8 @@ saveout.net <- function(dat, s, out = NULL) {
       out$epi[[names(dat$epi)[j]]] <- data.frame(dat$epi[j])
     }
 
-    out$el.cuml <- list()
-    out$el.cuml[[s]] <- dat$el.cuml
-
     out$run <- list()
     out$run[[s]] <- dat$run
-
-    out[["_last_unique_id"]] <- list()
-    out[["_last_unique_id"]][[s]] <- dat[["_last_unique_id"]]
 
     out$attr.history <- list()
     out$attr.history[[s]] <- dat$attr.history
@@ -279,11 +272,6 @@ saveout.net <- function(dat, s, out = NULL) {
       out$epi[[names(dat$epi)[j]]][, s] <- data.frame(dat$epi[j])
     }
 
-    out$el.cuml[[s]] <- dat$el.cuml
-    out$run[[s]] <- dat$run
-
-    out[["_last_unique_id"]][[s]] <- dat[["_last_unique_id"]]
-
     out$attr.history[[s]] <- dat$attr.history
     out$raw.records[[s]] <- dat$raw.records
 
@@ -346,7 +334,7 @@ saveout.net <- function(dat, s, out = NULL) {
       colnames(out$epi[[i]]) <- simnames
     }
 
-    top_lvl_elts <- c("el.cuml", "_last_unique_id", "attr.history", ".records")
+    top_lvl_elts <- c("attr.history", ".records")
     for (elt in top_lvl_elts) {
       out[[elt]] <- name_saveout_elts(out[[elt]], elt, simnames)
     }

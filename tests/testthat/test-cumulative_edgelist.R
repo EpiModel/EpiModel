@@ -123,9 +123,9 @@ test_that("netsim, SI, Cumulative Edgelist with arrivals and departures", {
   # checks the unicity of UIDs
   expect_true(all(table(uid) == 1))
   # checks that all attributed UID are not in the currently attributed UIDs
-  expect_false(setequal(seq_len(dat[["_last_unique_id"]]), get_unique_ids(dat)))
+  expect_false(setequal(seq_len(dat$run$last_unique_id), get_unique_ids(dat)))
   # checks that all attributed UID are not in the currently attributed PIDs
-  expect_false(setequal(seq_len(dat[["_last_unique_id"]]), get_posit_ids(dat)))
+  expect_false(setequal(seq_len(dat$run$last_unique_id), get_posit_ids(dat)))
 
   # checks the translation between UID and PID in get_partners
   expect_true(all(get_posit_ids(dat, unique(partners$index)) %in% spids))

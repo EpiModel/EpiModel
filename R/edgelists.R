@@ -180,8 +180,8 @@ get_cumulative_edgelist <- function(dat, network) {
          `cumulative.edgelist` control setting is set to `FALSE`.")
   }
 
-  if (length(dat$el.cuml) >= network) {
-    el_cuml <- dat[["el.cuml"]][[network]]
+  if (length(dat$run$el.cuml) >= network) {
+    el_cuml <- dat$run$el.cuml[[network]]
   } else {
     el_cuml <- NULL
   }
@@ -252,7 +252,7 @@ update_cumulative_edgelist <- function(dat, network, truncate = 0) {
     el_cuml <- el_cuml[rel.age <= truncate, ]
   }
 
-  dat[["el.cuml"]][[network]] <- el_cuml[, c("head", "tail", "start", "stop")]
+  dat$run$el.cuml[[network]] <- el_cuml[, c("head", "tail", "start", "stop")]
 
   return(dat)
 }
