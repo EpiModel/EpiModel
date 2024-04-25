@@ -181,9 +181,6 @@ saveout.net <- function(dat, s, out = NULL) {
       out$epi[[names(dat$epi)[j]]] <- data.frame(dat$epi[j])
     }
 
-    out$run <- list()
-    out$run[[s]] <- dat$run
-
     out$attr.history <- list()
     out$attr.history[[s]] <- dat$attr.history
 
