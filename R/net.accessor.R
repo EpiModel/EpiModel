@@ -49,7 +49,7 @@
 #' functions internally.
 #'
 #' @examples
-#' dat <- create_dat_object()
+#' dat <- create_dat_object(control = list(nsteps = 150))
 #' dat <- append_core_attr(dat, 1, 100)
 #'
 #' dat <- add_attr(dat, "age")
@@ -379,7 +379,7 @@ add_epi <- function(dat, item) {
     stop("Cannot create the epi output, ", item, ": exists already")
   }
 
-  dat[["epi"]][[item]] <- padded_vector(NA_real_, dat[["control"]][["nsteps"]])
+  dat[["epi"]][[item]] <- padded_vector(NA_real_, get_control(dat, "nsteps"))
 
   return(dat)
 }

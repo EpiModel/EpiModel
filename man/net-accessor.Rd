@@ -146,7 +146,7 @@ functions internally.
 }
 
 \examples{
-dat <- create_dat_object()
+dat <- create_dat_object(control = list(nsteps = 150))
 dat <- append_core_attr(dat, 1, 100)
 
 dat <- add_attr(dat, "age")
