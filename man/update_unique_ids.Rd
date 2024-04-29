@@ -19,7 +19,7 @@ The updated \code{netsim_dat} main list object.
 \description{
 This function is called by \code{\link{append_core_attr}} and
 appends new \code{unique_ids} to the created nodes. It also keeps track of
-the already used \code{unique_ids} with the \code{dat[["_last_unique_id"]]}
+the already used \code{unique_ids} with the \code{dat$run$last_unique_id}
 variable.
 }
 \keyword{internal}

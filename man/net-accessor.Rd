@@ -7,6 +7,7 @@
 \alias{add_attr}
 \alias{set_attr}
 \alias{append_attr}
+\alias{remove_node_attr}
 \alias{get_epi_list}
 \alias{get_epi}
 \alias{add_epi}
@@ -36,6 +37,8 @@ add_attr(dat, item)
 set_attr(dat, item, value, posit_ids = NULL, override.length.check = FALSE)
 
 append_attr(dat, item, value, n.new)
+
+remove_node_attr(dat, posit_ids)
 
 get_epi_list(dat, item = NULL)
 

@@ -2,20 +2,20 @@ context("`dat` object getters and setters")
 
 test_that("`dat` getters and setter", {
 
+  n_nodes <- 100
   dat <- create_dat_object(control = list(nsteps = 150))
-  dat$attr = list(active = rbinom(100, 1, 0.9))
+  dat <- append_attr(dat, "active", rbinom(n_nodes, 1, 0.9), n_nodes)
 
   ## Attr tests
   dat <- add_attr(dat, "age")
-
-  expect_equal(dat$attr$age, rep(NA, length(dat$attr$active)))
+  expect_equal(get_attr(dat, "age"), rep(NA, n_nodes))
   expect_error(dat <- add_attr(dat, "age"))
 
   expect_error(set_attr(dat, "age", 4))
 
-  new_ages <- runif(length(dat$attr$active))
+  new_ages <- runif(n_nodes)
   dat <- set_attr(dat, "age", new_ages)
-  expect_equal(dat$attr$age, new_ages)
+  expect_equal(get_attr(dat, "age"), new_ages)
 
   dat <- set_attr(dat, "age2", new_ages)
   expect_silent(dat <- set_attr(dat, "age2", rep(new_ages, 2),
@@ -32,13 +32,11 @@ test_that("`dat` getters and setter", {
   expect_error(get_attr(dat, "age", c(1, 1000)))
   expect_error(get_attr(dat, "age", c(TRUE, FALSE)))
 
-  expect_silent(
-    dat <- set_attr(dat, "status", rbinom(length(dat$attr$active), 1, 0.4))
-  )
+  expect_silent(dat <- set_attr(dat, "status", rbinom(n_nodes, 1, 0.4)))
 
   expect_silent(dat <- set_attr(dat, "age", 2, posit_ids = 1:4))
   expect_equal(get_attr(dat, "age", 1:4), rep(2, 4))
-  posit_ids <- c(rep(TRUE, 4), rep(FALSE, length(dat$attr$active) - 4))
+  posit_ids <- c(rep(TRUE, 4), rep(FALSE, n_nodes - 4))
   expect_silent(dat <- set_attr(dat, "age", 6, posit_ids = posit_ids))
   expect_equal(get_attr(dat, "age", 1:4), rep(6, 4))
 
@@ -48,14 +46,9 @@ test_that("`dat` getters and setter", {
   expect_error(dat <- set_attr(dat, "age", c(1, 2), posit_ids = c(TRUE, FALSE)))
 
 
-  expect_equal(get_attr_list(dat), dat$attr)
-  expect_equal(get_attr_list(dat, c("age", "status")),
-               dat$attr[c("age", "status")])
-
   expect_error(get_attr_list(dat, "sex"))
 
-  expect_error(dat <- append_attr(dat, "status",
-                          rbinom(length(dat$attr$active), 10)))
+  expect_error(dat <- append_attr(dat, "status", rbinom(n_nodes, 10)))
 
   expect_error(dat <- append_attr(dat, "status", 1, -1))
 
@@ -67,15 +60,15 @@ test_that("`dat` getters and setter", {
 
   ## Epi tests
   dat <- add_epi(dat, "i")
-  expect_equal(dat$epi$i, rep(NA_real_, dat$control$nsteps))
+  expect_equal(dat$epi$i, rep(NA_real_, get_control(dat, "nsteps")))
 
   expect_error(set_epi(dat, "i", c(1, 4), 4))
 
   dat <- set_epi(dat, "i", 150, 10)
-  expect_equal(dat$epi$i[150], 10)
+  expect_equal(get_epi(dat, "i")[150], 10)
 
   dat <- set_epi(dat, "s", 110, 10)
-  expect_equal(dat$epi$s[110], 10)
+  expect_equal(get_epi(dat, "s")[110], 10)
 
   expect_equal(get_epi(dat, "i", c(1, 100)), dat$epi$i[c(1, 100)])
   expect_equal(get_epi(dat, "i", dat$epi$i > 0.5), dat$epi$i[dat$epi$i > 0.5])
@@ -89,8 +82,7 @@ test_that("`dat` getters and setter", {
   dat <- set_epi(dat, "i", 160, 8)
   expect_length(dat$epi$i, 200)
 
-  expect_equal(get_epi_list(dat), dat$epi)
-  expect_equal(get_epi_list(dat, c("i", "s")), dat$epi[c("i", "s")])
+  expect_equal(get_epi_list(dat, c("i", "s")), get_epi_list(dat)[c("i", "s")])
 
   expect_error(get_epi_list(dat, "r"))
 
@@ -112,10 +104,6 @@ test_that("`dat` getters and setter", {
   dat <- set_init(dat, "y", 5)
   dat <- set_control(dat, "y", 5)
 
-  expect_equal(dat$param$y, 5)
-  expect_equal(dat$init$y, 5)
-  expect_equal(dat$control$y, 5)
-
   expect_equal(get_param(dat, "y"), 5)
   expect_equal(get_init(dat, "y"), 5)
   expect_equal(get_control(dat, "y"), 5)
@@ -132,9 +120,9 @@ test_that("`dat` getters and setter", {
   expect_equal(get_init_list(dat), dat$init)
   expect_equal(get_control_list(dat), dat$control)
 
-  expect_equal(get_param_list(dat, "x"), dat$param["x"])
-  expect_equal(get_init_list(dat, "x"), dat$init["x"])
-  expect_equal(get_control_list(dat, "x"), dat$control["x"])
+  expect_equal(get_param_list(dat, "x"), get_param_list(dat)["x"])
+  expect_equal(get_init_list(dat, "x"), get_init_list(dat)["x"])
+  expect_equal(get_control_list(dat, "x"), get_control_list(dat)["x"])
 
   expect_error(get_param_list(dat, "z"))
   expect_error(get_init_list(dat, "z"))

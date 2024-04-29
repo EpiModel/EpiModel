@@ -253,6 +253,16 @@ append_attr <- function(dat, item, value, n.new) {
 
 #' @rdname net-accessor
 #' @export
+remove_node_attr <- function(dat, posit_ids) {
+  if (is.null(posit_ids)) return(dat)
+  attr_list <- get_attr_list(dat)
+  attr_list <- lapply(attr_list, function(x) x[-posit_ids])
+  dat$attr <- attr_list
+  return(dat)
+}
+
+#' @rdname net-accessor
+#' @export
 get_epi_list <- function(dat, item = NULL) {
   if (is.null(item)) {
     out <- dat[["epi"]]
