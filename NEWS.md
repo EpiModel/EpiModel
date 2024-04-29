@@ -1,10 +1,11 @@
 
-## EpiModel 2.4.1
+## EpiModel 2.5
 
 ### NEW FEATURES
 
 - export a generic `get_discordant_edgelist` where the attribute to be use to
 assess discordance as well as the values for each group can be specified.
+- start migration of all the required elements for restarting simulation in `dat$run`
 
 ### OTHER
 
@@ -12,6 +13,7 @@ assess discordance as well as the values for each group can be specified.
 `base::list`
 - Remove `dat$epi$sim.num(.g2)` and replace it with `dat$run$num(.g2)` (single value).
 - move `el.cuml`, `_last_unique_id` and `_last_timestep` to `dat$run`
+- move `attr` to `dat$run` and update the tests
 
 ## EpiModel 2.4.0
 
