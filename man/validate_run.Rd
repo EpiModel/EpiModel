@@ -6,6 +6,14 @@
 \usage{
 validate_run(dat)
 }
+\arguments{
+\item{dat}{Main \code{netsim_dat} object containing a \code{networkDynamic}
+object and other initialization information passed from
+\code{\link{netsim}}.}
+}
+\value{
+The updated \code{netsim_dat} main list object.
+}
 \description{
 Ensures that the \code{run} sublist contains all the mandatory elements
 }

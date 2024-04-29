@@ -36,6 +36,10 @@ create_dat_object <- function(param = list(), init = list(), control = list(),
 }
 
 #' Ensures that the `run` sublist contains all the mandatory elements
+#'
+#' @inheritParams recovery.net
+#'
+#' @inherit recovery.net return
 validate_run <- function(dat) {
   defaults <- list(
     current_timestep = 1L,
