@@ -106,22 +106,32 @@
 #' @name net-accessor
 NULL
 
+raw_get_attr_list <- function(dat) return(dat$run$attr)
+raw_set_attr_list <- function(dat, attr_list) {
+  dat$run$attr <- attr_list
+  return(dat)
+}
+raw_set_attr <- function(dat, item, val) {
+  dat$run$attr[[item]] <- val
+  return(dat)
+}
+
 #' @rdname net-accessor
 #' @export
 get_attr_list <- function(dat, item = NULL) {
+  attr_list <- raw_get_attr_list(dat)
   if (is.null(item)) {
-    out <- dat[["attr"]]
-
-  } else {
-    missing_item <- setdiff(item, names(dat[["attr"]]))
-    if (length(missing_item) > 0) {
-      stop("There is no attributes called `",
-           paste(missing_item, collapse = ", "),
-           "` in the attributes list of the main list object (dat)")
-    }
-
-    out <- dat[["attr"]][item]
+    return(attr_list)
   }
+
+  missing_item <- setdiff(item, names(attr_list))
+  if (length(missing_item) > 0) {
+    stop("There is no attributes called `",
+      paste(missing_item, collapse = ", "),
+      "` in the attributes list of the main list object (dat)")
+  }
+
+  out <- attr_list[item]
 
   return(out)
 }
@@ -129,48 +139,45 @@ get_attr_list <- function(dat, item = NULL) {
 #' @rdname net-accessor
 #' @export
 get_attr <- function(dat, item, posit_ids = NULL, override.null.error = FALSE) {
-  if (!item %in% names(dat[["attr"]])) {
-    if (override.null.error) {
-      out <- NULL
-    } else {
-      stop("There is no attribute called `", item,
-           "` in the attributes list of the main list object (dat)")
-    }
-  } else {
-    if (is.null(posit_ids)) {
-      out <- dat[["attr"]][[item]]
-    } else {
-      if (is.logical(posit_ids)) {
-        if (length(posit_ids) != length(dat[["attr"]][[item]])) {
-          stop("(logical) `posit_ids` has to have a length equal to the ",
-               "number of nodes in the network")
-        }
-      } else if (is.numeric(posit_ids)) {
-        if (length(posit_ids > 0) &&
-              any(posit_ids > length(dat[["attr"]][[item]]))) {
-          stop("Some (numeric) `posit_ids` are larger than the number of ",
-               "nodes in the network")
-        }
-      } else {
-        stop("`posit_ids` must be logical, numeric, or NULL")
-      }
+  attr_list <- raw_get_attr_list(dat)
 
-      out <- dat[["attr"]][[item]][posit_ids]
-    }
+  if (!item %in% names(attr_list)) {
+    if (override.null.error) return(NULL)
+
+    stop("There is no attribute called `", item,
+      "` in the attributes list of the main list object (dat)")
   }
 
-  return(out)
+  if (is.null(posit_ids)) return(attr_list[[item]])
+
+  if (!is.logical(posit_ids) && !is.numeric(posit_ids)) {
+    stop("`posit_ids` must be logical, numeric, or NULL")
+  }
+
+  attr <- attr_list[[item]]
+
+  if (is.logical(posit_ids) && length(posit_ids) != length(attr)) {
+      stop("(logical) `posit_ids` has to have a length equal to the ",
+        "number of nodes in the network")
+  }
+
+  if (is.numeric(posit_ids) &&
+    length(posit_ids > 0) && any(posit_ids > length(attr))) {
+      stop("Some (numeric) `posit_ids` are larger than the number of ",
+        "nodes in the network")
+    }
+
+  return(attr[posit_ids])
 }
 
 #' @rdname net-accessor
 #' @export
 add_attr <- function(dat, item) {
-  if (item %in% names(dat[["attr"]])) {
+  attr_list <- get_attr_list(dat)
+  if (item %in% names(attr_list)) {
     stop("Cannot create the attribute '", item, "': exists already")
   }
-
-  dat[["attr"]][[item]] <- rep(NA, length(dat[["attr"]][["active"]]))
-
+  dat <- raw_set_attr(dat, item, rep(NA, length(attr_list$active)))
   return(dat)
 }
 
@@ -178,32 +185,33 @@ add_attr <- function(dat, item) {
 #' @export
 set_attr <- function(dat, item, value, posit_ids = NULL,
                      override.length.check = FALSE) {
-  if (!item %in% names(dat[["attr"]])) {
+  attr_list <- raw_get_attr_list(dat)
+  if (!item %in% names(attr_list)) {
     dat <- add_attr(dat, item)
   }
 
   if (is.null(posit_ids)) {
     if (!override.length.check &&
-          length(value) != length(dat[["attr"]][["active"]])) {
+          length(value) != length(attr_list$active)) {
       stop(
         "When trying to edit the ", `item`, " nodal attribute: ",
         "The size of the `value` vector is not equal to the number of nodes in",
         " the network. \n",
-        "Expected: ", length(dat[["attr"]][["active"]]), "\n",
+        "Expected: ", length(attr_list$active), "\n",
         "Given: ", length(value)
       )
     }
-    dat[["attr"]][[item]] <- value
+    dat <- raw_set_attr(dat, item, value)
   } else {
     if (is.logical(posit_ids)) {
-      if (length(posit_ids) != length(dat[["attr"]][[item]])) {
+      if (length(posit_ids) != length(attr_list[[item]])) {
         stop("(logical) `posit_ids` has to have a length equal to the number ",
              "of nodes in the network")
       }
     } else if (is.numeric(posit_ids)) {
       if (length(posit_ids) == 0) {
         return(dat)
-      } else if (any(posit_ids > length(dat[["attr"]][[item]]))) {
+      } else if (any(posit_ids > length(attr_list[[item]]))) {
         stop("Some (numeric) `posit_ids` are larger than the number of nodes ",
              " in the network")
       }
@@ -213,7 +221,7 @@ set_attr <- function(dat, item, value, posit_ids = NULL,
 
     if (!override.length.check &&
           length(value) != 1 &&
-          length(value) != length(dat[["attr"]][["active"]][posit_ids])) {
+          length(value) != length(posit_ids)) {
       stop(
         "When trying to edit the `", item, "` nodal attribute: ",
         "The size of the `value` vector is not equal to the number of nodes ",
@@ -223,11 +231,70 @@ set_attr <- function(dat, item, value, posit_ids = NULL,
       )
     }
 
-    dat[["attr"]][[item]][posit_ids] <- value
+    attr <- attr_list[[item]]
+    attr[posit_ids] <- value
+    dat <- raw_set_attr(dat, item, attr)
   }
 
   return(dat)
 }
+
+# #' @rdname net-accessor
+# #' @export
+# set_attr <- function(dat, item, value, posit_ids = NULL,
+#                      override.length.check = FALSE) {
+#   attr_list <- raw_get_attr_list(dat)
+#   if (!item %in% names(attr_list)) {
+#     dat <- add_attr(dat, item)
+#   }
+#
+#   attr <- attr_list[[item]]
+#
+#   if (is.null(posit_ids)) {
+#     if (!override.length.check && length(value) != length(attr)) {
+#       stop(
+#         "When trying to edit the ", `item`, " nodal attribute: ",
+#         "The size of the `value` vector is not equal to the number of nodes in",
+#         " the network. \n",
+#         "Expected: ", length(attr), "\n",
+#         "Given: ", length(value)
+#       )
+#     }
+#
+#     attr <- value
+#   } else {
+#     if (is.logical(posit_ids) && length(posit_ids) != length(attr)) {
+#       stop("(logical) `posit_ids` has to have a length equal to the number ",
+#         "of nodes in the network")
+#     } else if (is.numeric(posit_ids)) {
+#       if (length(posit_ids) == 0) {
+#         return(dat)
+#       } else if (any(posit_ids > length(attr))) {
+#         stop("Some (numeric) `posit_ids` are larger than the number of nodes ",
+#              " in the network")
+#       }
+#     } else {
+#       stop("`posit_ids` must be logical, numeric, or NULL")
+#     }
+#
+#     if (!override.length.check &&
+#       length(value) != 1 &&
+#       length(value) != length(posit_ids)) {
+#       stop(
+#         "When trying to edit the `", item, "` nodal attribute: ",
+#         "The size of the `value` vector is not equal to the number of nodes ",
+#         "selected by the `posit_ids` vector nor of length 1. \n",
+#         "Expected: ", length(posit_ids), " or 1 \n",
+#         "Given: ", length(value)
+#       )
+#     }
+#
+#     attr[posit_ids] <- value
+#     dat <- raw_set_attr(dat, item, attr)
+#   }
+#
+#   return(dat)
+# }
 
 #' @rdname net-accessor
 #' @export
@@ -255,9 +322,9 @@ append_attr <- function(dat, item, value, n.new) {
 #' @export
 remove_node_attr <- function(dat, posit_ids) {
   if (is.null(posit_ids)) return(dat)
-  attr_list <- get_attr_list(dat)
+  attr_list <- raw_get_attr_list(dat)
   attr_list <- lapply(attr_list, function(x) x[-posit_ids])
-  dat$attr <- attr_list
+  dat <- raw_set_attr_list(dat, attr_list)
   return(dat)
 }
 
@@ -611,8 +678,9 @@ update_unique_ids <- function(dat, n.new) {
 #'
 #' @keywords internal not_used
 check_attr_lengths <- function(dat) {
-  attr_lengths <- vapply(dat[["attr"]], length, numeric(1))
-  expected_length <- attr_lengths["active"]
+  attr_list <- raw_get_attr_list(dat)
+  attr_lengths <- vapply(attr_list, length, numeric(1))
+  expected_length <- attr_lengths$active
   wrong_lengths <- which(attr_lengths != expected_length)
 
   if (length(wrong_lengths > 0)) {

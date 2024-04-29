@@ -86,15 +86,15 @@ test_that("merge for netsim", {
   control <- control.net(type = "SI", nsteps = 20, nsims = 2,
                          save.nwstats = TRUE,
                          nwstats.formula = ~edges + degree(0),
-                         verbose = FALSE, save.other = "attr")
+                         verbose = FALSE, save.other = "run")
   x <- netsim(est, param, init, control)
   y <- netsim(est, param, init, control)
   z <- merge(x, y, keep.other = TRUE)
   expect_is(z, "netsim")
-  expect_true(length(z$attr) == 4)
-  expect_true(length(z$attr[[1]]) == 6)
+  expect_true(length(z$run) == 4)
+  expect_true(length(z$run[[1]]$attr) == 6)
   z <- merge(x, y, keep.other = FALSE)
-  expect_true(any(names(z) == "attr") == FALSE)
+  expect_true(any(names(z) == "run") == FALSE)
 })
 
 test_that("merge works for open sims saving nw stats", {
@@ -157,23 +157,23 @@ test_that("merge and print work as expected for save.other", {
   init <- init.net(i.num = 10)
   control <- control.net(type = "SI", nsteps = 5, nsims = 2, verbose = FALSE,
                          tergmLite = TRUE, resimulate.network = TRUE,
-                         save.other = c("attr", "el"))
+                         save.other = c("run", "el"))
   mod <- netsim(est, param, init, control)
 
   capture_output(
     print(mod)
   )
-  expect_output(print(mod), "Other Elements: attr el")
-  expect_equal(length(mod[["attr"]]), 2)
+  expect_output(print(mod), "Other Elements: run el")
+  expect_equal(length(mod[["run"]]), 2)
   expect_equal(length(mod[["el"]]), 2)
 
   mod2 <- merge(mod, mod)
-  expect_output(print(mod2), "Other Elements: attr el")
-  expect_equal(length(mod2[["attr"]]), 4)
+  expect_output(print(mod2), "Other Elements: run el")
+  expect_equal(length(mod2[["run"]]), 4)
   expect_equal(length(mod2[["el"]]), 4)
 
   mod3 <- merge(mod, mod, keep.other = FALSE)
   expect_error(expect_output(print(mod3), "Other Elements"))
-  expect_true(is.null(mod3[["attr"]]))
+  expect_true(is.null(mod3[["run"]]))
   expect_true(is.null(mod3[["el"]]))
 })

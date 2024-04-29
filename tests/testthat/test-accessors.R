@@ -4,7 +4,7 @@ test_that("`dat` getters and setter", {
 
   n_nodes <- 100
   dat <- create_dat_object(control = list(nsteps = 150))
-  dat <- append_attr(dat, "active", rbinom(n_nodes, 1, 0.9), n_nodes)
+  dat <- append_core_attr(dat, at = 1,  n.new = 100)
 
   ## Attr tests
   dat <- add_attr(dat, "age")

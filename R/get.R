@@ -179,7 +179,8 @@ get_network.netsim_dat <- function(x, network = 1L, ...) {
     nw <- x$nw[[network]]
   } else {
     ## networkLite
-    nw <- networkLite(x$el[[network]], x$attr, x$net_attr[[network]])
+    attr_list <- raw_get_attr_list(x)
+    nw <- networkLite(x$el[[network]], attr_list, x$net_attr[[network]])
   }
   return(nw)
 }

@@ -1,4 +1,4 @@
-context("Attribute copying between network and dat$attr")
+context("Attribute copying between network and `dat`")
 
 ################################################################################
 
