@@ -21,10 +21,10 @@ create_dat_object <- function(param = list(), init = list(), control = list(),
     "run"       = run,
     "param"     = param,
     "control"   = control,
-    "init"      = init,
     "epi"       = list(),
+    "temp"      = list(),
     "stats"     = list(),
-    "temp"      = list()
+    "init"      = init
   )
 
   dat <- validate_run(dat)
