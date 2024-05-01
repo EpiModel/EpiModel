@@ -72,7 +72,7 @@ param.net_from_table <- function(long.param.df) {
   }
   if (!all(long.param.df$type %in% list_param.df_types())) {
     stop("The `type` column must contain only: ",
-      paste0(list_param.df_types(), collapse = ", "))
+         paste0(list_param.df_types(), collapse = ", "))
   }
   check_params_names(long.param.df$param)
 
@@ -113,4 +113,3 @@ param.net_to_table <- function(params) {
     type = vapply(flat_params, param.df_type, "")
   )
 }
-
