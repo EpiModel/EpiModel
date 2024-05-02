@@ -5,6 +5,8 @@
 
 - export a generic `get_discordant_edgelist` where the attribute to be use to
 assess discordance as well as the values for each group can be specified.
+- export `param.net_from_table` and `param.net_to_table` helper functions to
+convert parameter list and parameter data.frames used by `param.net`
 
 ### OTHER
 
