@@ -18,7 +18,7 @@
 create_dat_object <- function(param = list(), init = list(), control = list(),
                               run = list()) {
   dat <- list(
-    "run"       = run,
+    "run"       = validate_run(run),
     "param"     = param,
     "control"   = control,
     "epi"       = list(),
@@ -27,8 +27,6 @@ create_dat_object <- function(param = list(), init = list(), control = list(),
     "init"      = init
   )
 
-  dat <- validate_run(dat)
-
   class(dat) <- c("netsim_dat", class(dat))
 
   return(dat)
@@ -36,22 +34,22 @@ create_dat_object <- function(param = list(), init = list(), control = list(),
 
 #' Ensures that the `run` sublist contains all the mandatory elements
 #'
-#' @inheritParams recovery.net
-#'
-#' @inherit recovery.net return
-validate_run <- function(dat) {
+#' @param run A `run` sublist to validate
+#' @return A valid `run` sublist
+#' @noRd
+validate_run <- function(run) {
   defaults <- list(
     current_timestep = 1L,
     last_unique_id = 0L
   )
 
-  for (i in seq_along(defaults)) {
-    if (is.null(dat$run[[ names(defaults)[i] ]])) {
-      dat$run[[ names(defaults)[i] ]] <- defaults[[i]]
+  for (elt_name in names(defaults)) {
+    if (is.null(run[[elt_name]])) {
+      run[[elt_name]] <- defaults[[elt_name]]
     }
   }
 
-  return(dat)
+  return(run)
 }
 
 #' @title Return the Current Timestep
