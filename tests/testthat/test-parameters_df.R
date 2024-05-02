@@ -18,6 +18,10 @@ test_that("Load parameters from data.frame", {
   expect_s3_class(param, "param.net")
   expect_type(param, "list")
 
+  # convert back to a `long.param.df`
+  param.df_back <- param.net_from_table(params.df) |> param.net_to_table()
+  expect_true(all(params.df[c("param", "value", "type")] == param.df_back))
+
   # wrong column name
   params.df <- dplyr::tribble(~name, ~value, ~type, "p1", "10", "numeric")
   expect_error(param <- param.net_from_table(params.df))
