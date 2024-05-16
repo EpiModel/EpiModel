@@ -13,6 +13,7 @@ convert parameter list and parameter data.frames used by `param.net`
 - Speed up `raw.records` and `attr.history` with `collections::queue` instead of
 `base::list`
 - Remove `dat$epi$sim.num(.g2)` and replace it with `dat$run$num(.g2)` (single value).
+- add `save.diss.stats` to the checked control values
 
 ## EpiModel 2.4.0
 
