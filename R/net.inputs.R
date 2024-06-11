@@ -714,6 +714,8 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #'        specification.
 #' @param save.network If `TRUE`, networkDynamic or networkLite object is saved at simulation end.
 #' @param save.transmat If `TRUE`, complete transmission matrix is saved at simulation end.
+#' @param save.run If `TRUE`, the `run` sublist of `dat` is saved, allowing a
+#'   simulation to restart from this output.
 #' @param save.other A character vector of elements on the `netsim_dat` main data list to save out
 #'        after each simulation. One example for base models is the attribute list, `"attr"`, at
 #'        the final time step.

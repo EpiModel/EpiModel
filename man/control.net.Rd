@@ -131,6 +131,9 @@ specification.}
 
 \item{save.network}{If \code{TRUE}, networkDynamic or networkLite object is saved at simulation end.}
 
+\item{save.run}{If \code{TRUE}, the \code{run} sublist of \code{dat} is saved, allowing a
+simulation to restart from this output.}
+
 \item{save.other}{A character vector of elements on the \code{netsim_dat} main data list to save out
 after each simulation. One example for base models is the attribute list, \code{"attr"}, at
 the final time step.}

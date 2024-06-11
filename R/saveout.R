@@ -221,7 +221,13 @@ saveout.net <- function(dat, s, out = NULL) {
     if (!is.null(dat$control$save.other)) {
       for (i in seq_along(dat$control$save.other)) {
         el.name <- dat$control$save.other[i]
-        out[[el.name]] <- list(dat[[el.name]])
+        if (el.name %in% names(dat)) {
+          out[[el.name]][[s]] <- dat[[el.name]]
+        } else if (el.name %in% names(dat$run)) {
+          out[[el.name]][[s]] <- dat$run[[el.name]]
+        } else {
+          warning("`", el.name, "` is not saved in `dat` or `dat$run`")
+        }
       }
     }
 
@@ -308,7 +314,13 @@ saveout.net <- function(dat, s, out = NULL) {
     if (!is.null(dat$control$save.other)) {
       for (i in seq_along(dat$control$save.other)) {
         el.name <- dat$control$save.other[i]
-        out[[el.name]][[s]] <- dat[[el.name]]
+        if (el.name %in% names(dat)) {
+          out[[el.name]][[s]] <- dat[[el.name]]
+        } else if (el.name %in% names(dat$run)) {
+          out[[el.name]][[s]] <- dat$run[[el.name]]
+        } else {
+          warning("`", el.name, "` is not saved in `dat` or `dat$run`")
+        }
       }
     }
 
@@ -371,8 +383,11 @@ saveout.net <- function(dat, s, out = NULL) {
       out$diss.stats <- name_saveout_elts(out$diss.stats, "diss.stats", simnames)
     }
 
+    # only rename top level elements, not the ones part of `run`
     for (el.name in dat$control$save.other) {
-      out[[el.name]] <- name_saveout_elts(out[[el.name]], el.name, simnames)
+      if (el.name %in% names(out)) {
+        out[[el.name]] <- name_saveout_elts(out[[el.name]], el.name, simnames)
+      }
     }
 
     # Remove functions from control list
