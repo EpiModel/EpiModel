@@ -180,7 +180,7 @@ get_cumulative_edgelist <- function(dat, network) {
          `cumulative.edgelist` control setting is set to `FALSE`.")
   }
 
-  if (length(dat$el.cuml) >= network) {
+  if (length(dat$run$el_cuml_cur) >= network) {
     el_cuml <- dplyr::bind_rows(
       get_raw_elcuml(dat, network, active = FALSE),
       get_raw_elcuml(dat, network, active = TRUE)

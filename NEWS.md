@@ -1,10 +1,11 @@
 
-## EpiModel 2.4.1
+## EpiModel 2.5
 
 ### NEW FEATURES
 
 - export a generic `get_discordant_edgelist` where the attribute to be use to
 assess discordance as well as the values for each group can be specified.
+- start migration of all the required elements for restarting simulation in `dat$run`
 - export `param.net_from_table` and `param.net_to_table` helper functions to
 convert parameter list and parameter data.frames used by `param.net`
 
@@ -13,6 +14,8 @@ convert parameter list and parameter data.frames used by `param.net`
 - Speed up `raw.records` and `attr.history` with `collections::queue` instead of
 `base::list`
 - Remove `dat$epi$sim.num(.g2)` and replace it with `dat$run$num(.g2)` (single value).
+- move `el.cuml`, `_last_unique_id` and `_last_timestep` to `dat$run`
+- move `attr` to `dat$run` and update the tests
 
 ## EpiModel 2.4.0
 

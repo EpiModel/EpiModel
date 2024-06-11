@@ -131,21 +131,7 @@ deleteAttr <- function(attrList, ids) {
 #' @export
 #' @keywords internal
 delete_attr <- function(dat, ids) {
-  attrList <- dat$attr
-
-  if (!inherits(attrList, "list")) {
-    stop("dat object does not contain a valid attribute list", call. = FALSE)
-  }
-  if (length(unique(sapply(attrList, length))) != 1) {
-    stop("attribute list must be rectangular (same number of obs per element)")
-  }
-
-  if (length(ids) > 0) {
-    attrList <- lapply(attrList, function(x) x[-ids])
-  }
-
-  dat$attr <- attrList
-  return(dat)
+  remove_node_attr(dat, ids)
 }
 
 

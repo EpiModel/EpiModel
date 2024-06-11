@@ -1,4 +1,3 @@
-
 #' @title Initialization: netsim Module
 #'
 #' @description This function initializes the main \code{netsim_dat} class data
@@ -59,7 +58,6 @@ initialize.net <- function(x, param, init, control, s) {
       "param",
       "nwparam",
       "epi",
-      "attr",
       "temp",
       "run",
       "coef.form",
@@ -82,7 +80,7 @@ initialize.net <- function(x, param, init, control, s) {
 
     # recycle sims in the restart object
     # e.g. 5 sim out of a size 3 restart object we will give: 1, 2, 3, 1, 2
-    s <- (s - 1) %% length(x$attr) + 1
+    s <- (s - 1) %% length(x$run) + 1
 
     dat$num.nw <- x$num.nw
     if (control[["tergmLite"]] == TRUE) {
@@ -93,21 +91,12 @@ initialize.net <- function(x, param, init, control, s) {
       dat$nw <- x$network[[s]]
     }
 
-    # copy if present
-    if (length(x[["el.cuml"]]) >= s) {
-      dat[["el.cuml"]] <- x[["el.cuml"]][[s]]
-    }
-    if (length(x[["_last_unique_id"]]) >= s) {
-      dat[["_last_unique_id"]] <- x[["_last_unique_id"]][[s]]
-    }
-
     dat$nwparam <- x$nwparam
     for (network in seq_len(dat$num.nw)) {
       dat$nwparam[[network]]$coef.form <- x$coef.form[[s]][[network]]
     }
     dat$epi <- sapply(x$epi, function(var) var[s])
     names(dat$epi) <- names(x$epi)
-    dat$attr <- x$attr[[s]]
     dat$temp <- x$temp[[s]]
 
     dat$stats <- lapply(x$stats, function(var) var[[s]])

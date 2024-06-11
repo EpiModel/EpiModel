@@ -18,20 +18,38 @@
 create_dat_object <- function(param = list(), init = list(), control = list(),
                               run = list()) {
   dat <- list(
+    "run"       = validate_run(run),
     "param"     = param,
-    "init"      = init,
     "control"   = control,
-    "attr"      = list(),
     "epi"       = list(),
-    "stats"     = list(),
     "temp"      = list(),
-    "run"       = run,
-    "_timestep" = 1
+    "stats"     = list(),
+    "init"      = init
   )
 
   class(dat) <- c("netsim_dat", class(dat))
 
   return(dat)
+}
+
+#' Ensures that the `run` sublist contains all the mandatory elements
+#'
+#' @param run A `run` sublist to validate
+#' @return A valid `run` sublist
+#' @noRd
+validate_run <- function(run) {
+  defaults <- list(
+    current_timestep = 1L,
+    last_unique_id = 0L
+  )
+
+  for (elt_name in names(defaults)) {
+    if (is.null(run[[elt_name]])) {
+      run[[elt_name]] <- defaults[[elt_name]]
+    }
+  }
+
+  return(run)
 }
 
 #' @title Return the Current Timestep
@@ -41,7 +59,7 @@ create_dat_object <- function(param = list(), init = list(), control = list(),
 #' @return The current timestep.
 #' @export
 get_current_timestep <- function(dat) {
-  return(dat[["_timestep"]])
+  return(dat$run$current_timestep)
 }
 
 #' @title Set the Current Timestep
@@ -63,7 +81,7 @@ get_current_timestep <- function(dat) {
 #'
 #' @export
 set_current_timestep <- function(dat, timestep) {
-  dat[["_timestep"]] <- timestep
+  dat$run$current_timestep <- timestep
   return(dat)
 }
 
@@ -83,6 +101,6 @@ set_current_timestep <- function(dat, timestep) {
 #'
 #' @export
 increment_timestep <- function(dat) {
-  dat[["_timestep"]] <- dat[["_timestep"]] + 1
+  dat$run$current_timestep <- dat$run$current_timestep + 1
   return(dat)
 }

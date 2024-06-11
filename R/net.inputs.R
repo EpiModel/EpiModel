@@ -1144,8 +1144,8 @@ crosscheck.net <- function(x, param, init, control) {
           stop("x must be a netsim object if control setting start > 1",
                call. = FALSE)
         }
-        if (is.null(x[["attr"]])) {
-          stop("x must contain attr to restart simulation, see save.other ",
+        if (is.null(x[["run"]])) {
+          stop("x must contain run to restart simulation, see save.other ",
                "control setting", call. = FALSE)
         }
         if (is.null(x[["network"]]) && control[["tergmLite"]] == FALSE) {

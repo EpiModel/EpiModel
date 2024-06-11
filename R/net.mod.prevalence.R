@@ -26,8 +26,9 @@ prevalence.net <- function(dat, at) {
   groups <- get_param(dat, "groups")
 
   # Subset attr to active == 1
-  l <- lapply(seq_along(dat$attr), function(x) dat$attr[[x]][active == 1])
-  names(l) <- names(dat$attr)
+  attr_list <- get_attr_list(dat)
+  l <- lapply(seq_along(attr_list), function(x) attr_list[[x]][active == 1])
+  names(l) <- names(attr_list)
   l$active <- l$infTime <- NULL
 
   status <- l$status

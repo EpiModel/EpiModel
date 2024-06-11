@@ -44,28 +44,20 @@ test_that("color_tea", {
 })
 
 test_that("delete_attr", {
-  dat <- list()
+  dat <- create_dat_object()
+  dat <- append_attr(dat, "a", 1:5, 5)
+  dat <- append_attr(dat, "b", 6:10, 5)
 
-  l1 <- list(a = 1:5, b = 6:10)
-  dat$attr <- l1
   dat <- delete_attr(dat, 5)
   expect_is(dat, "list")
 
   dat <- delete_attr(dat, 2:3)
-  expect_true(length(unique(sapply(dat$attr, length))) == 1)
+  expect_true(length(unique(vapply(get_attr_list(dat), length, 1))) == 1)
 
   l2 <- dat
   l3 <- delete_attr(dat, NULL)
 
   expect_equal(l2, l3)
-
-  l4 <- list(a = 1:3, b = 5:20)
-  dat$attr <- l4
-  expect_error(delete_attr(dat, 2:4))
-  expect_error(delete_attr(dat, 1))
-
-
-
 })
 
 test_that("ssample", {

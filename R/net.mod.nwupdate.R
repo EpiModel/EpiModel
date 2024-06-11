@@ -35,9 +35,9 @@ nwupdate.net <- function(dat, at) {
       curr.tab <- get_attr_prop(dat, nwterms)
       dat <- auto_update_attr(dat, arrivals, curr.tab)
     }
-    if (length(unique(sapply(dat$attr, length))) != 1) {
+    if (length(unique(vapply(get_attr_list(dat), length, 1))) != 1) {
       stop("Attribute list of unequal length. Check arrivals.net module.\n",
-           print(cbind(sapply(get_attr_list(dat), length))))
+           print(cbind(vapply(get_attr_list(dat), length, 1))))
     }
     dat <- arrive_nodes(dat, nArrivals)
   }

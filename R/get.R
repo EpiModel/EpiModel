@@ -179,7 +179,8 @@ get_network.netsim_dat <- function(x, network = 1L, ...) {
     nw <- x$nw[[network]]
   } else {
     ## networkLite
-    nw <- networkLite(x$el[[network]], x$attr, x$net_attr[[network]])
+    attr_list <- raw_get_attr_list(x)
+    nw <- networkLite(x$el[[network]], attr_list, x$net_attr[[network]])
   }
   return(nw)
 }
@@ -520,16 +521,6 @@ get_sims <- function(x, sims, var) {
       out$epi[[i]] <- out$epi[[i]][, -delsim, drop = FALSE]
     }
 
-    if (!is.null(out[["_last_unique_id"]])) {
-      out[["_last_unique_id"]] <- out[["_last_unique_id"]][sims]
-      names(out[["_last_unique_id"]]) <- newnames
-    }
-    if (!is.null(out$el.cuml) && length(out$el.cuml) == nsims) {
-      out$el.cuml[delsim] <- NULL
-      names(out$el.cuml) <- newnames
-    } else {
-      out$el.cuml <- list()
-    }
     if (!is.null(out$network)) {
       out$network[delsim] <- NULL
       names(out$network) <- newnames

@@ -1,4 +1,4 @@
-context("Attribute copying between network and dat$attr")
+context("Attribute copying between network and `dat`")
 
 ################################################################################
 
@@ -24,27 +24,18 @@ test_that("Copying attributes from network to attribute list", {
 
   sim <- netsim(est, param, init, control)
 
-  # Character attribute
-  dat.attr <- prop.table(table(sim[[1]]$attr$race))
-  nw.attr <- prop.table(table(get_vertex_attribute(sim[[1]]$nw[[1]], "race")))
+  for (simno in c(1, 2)) {
+    dat <- sim[[simno]]
+    # Character attribute
+    dat.attr <- prop.table(table(get_attr(dat, "race")))
+    nw.attr <- prop.table(table(get_vertex_attribute(dat$nw[[1]], "race")))
 
-  expect_equal(dat.attr, nw.attr)
+    expect_equal(dat.attr, nw.attr)
 
-  # Numeric attribute
-  dat.attr <- prop.table(table(sim[[1]]$attr$region))
-  nw.attr <- prop.table(table(get_vertex_attribute(sim[[1]]$nw[[1]], "region")))
+    # Numeric attribute
+    dat.attr <- prop.table(table(get_attr(dat, "region")))
+    nw.attr <- prop.table(table(get_vertex_attribute(dat$nw[[1]], "region")))
 
-  expect_equal(dat.attr, nw.attr)
-
-  # Second simulation
-  dat.attr <- prop.table(table(sim[[2]]$attr$race))
-  nw.attr <- prop.table(table(get_vertex_attribute(sim[[2]]$nw[[1]], "race")))
-
-  expect_equal(dat.attr, nw.attr)
-
-  dat.attr <- prop.table(table(sim[[2]]$attr$region))
-  nw.attr <- prop.table(table(get_vertex_attribute(sim[[2]]$nw[[1]], "region")))
-
-  expect_equal(dat.attr, nw.attr)
-
+    expect_equal(dat.attr, nw.attr)
+  }
 })
