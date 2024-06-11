@@ -383,3 +383,24 @@ get_cumulative_degree <- function(dat, index_posit_ids, networks = NULL,
     dplyr::mutate(index = get_posit_ids(dat, .data$index)) |>
     dplyr::select(index_pid = "index", "degree")
 }
+
+get_raw_elcuml <- function(dat, network, active) {
+  loc <- if (active) "el_cuml_cur" else "el_cuml_hist"
+
+  if (length(dat$el.cuml) >= network) {
+    el_cuml <- dat[[loc]][[network]]
+  } else {
+    el_cuml <- NULL
+  }
+
+  if (is.null(el_cuml)) {
+    el_cuml <- tibble::tibble(
+      head  = numeric(0),
+      tail  = numeric(0),
+      start = numeric(0),
+      stop  = numeric(0)
+    )
+  }
+
+  return(el_cuml)
+}
