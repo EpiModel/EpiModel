@@ -180,18 +180,10 @@ get_cumulative_edgelist <- function(dat, network) {
          `cumulative.edgelist` control setting is set to `FALSE`.")
   }
 
-  if (length(dat$run$el_cuml_cur) >= network) {
-    el_cuml <- dplyr::bind_rows(
-      get_raw_elcuml(dat, network, active = FALSE),
-      get_raw_elcuml(dat, network, active = TRUE)
-    )
-  } else {
-    el_cuml <- NULL
-  }
-
-  if (is.null(el_cuml)) {
-    el_cuml <- empty_el_cuml()
-  }
+  el_cuml <- dplyr::bind_rows(
+    get_raw_elcuml(dat, network, active = FALSE),
+    get_raw_elcuml(dat, network, active = TRUE)
+  )
 
   return(el_cuml)
 }
@@ -227,37 +219,40 @@ update_cumulative_edgelist <- function(dat, network, truncate = 0) {
 
   at <- get_current_timestep(dat)
 
-  el <- tibble::tibble(
-    head = get_unique_ids(dat, el[, 1]),
-    tail = get_unique_ids(dat, el[, 2]),
-    cur = TRUE
-  )
-
-  el_cuml_cur <- dplyr::full_join(el_cuml_cur, el, by = c("head", "tail"))
-
-  # new edges
-  new_edges <- is.na(el_cuml_cur$start)
-  if (any(new_edges)) {
-    el_cuml_cur[new_edges, ]$start <- at
-  }
-
+  # truncate el_cuml_hist
   if (truncate != Inf && truncate != 0) {
     rel.age <- at - el_cuml_hist$stop
     el_cuml_hist <- el_cuml_hist[rel.age <= truncate, ]
   }
 
+  el <- tibble::tibble(
+    head = get_unique_ids(dat, el[, 1]),
+    tail = get_unique_ids(dat, el[, 2]),
+    current = TRUE
+  )
+
+  el_cuml_cur <- dplyr::full_join(el_cuml_cur, el, by = c("head", "tail"))
+
+  # new edges
+  new_edges_ids <- which(is.na(el_cuml_cur$start))
+  if (length(new_edges_ids) > 0) {
+    el_cuml_cur[new_edges_ids, ]$start <- at
+  }
+
   # terminated edges
-  terminated_edges <- is.na(el_cuml_cur$current)
-  if (any(terminated_edges)) {
-    term_el <- el_cuml_cur[terminated_edges, ]
+  terminated_edges_ids <- which(is.na(el_cuml_cur$current))
+  el_cuml_cur$current <- NULL
+
+  if (length(terminated_edges_ids) > 0) {
+    el_cuml_term <- el_cuml_cur[terminated_edges_ids, ]
 
     # with truncate == 0, don't save any historic edges
     if (truncate != 0) {
-      term_el$stop <- at - 1
-      el_cuml_hist <- dplyr::bind_rows(el_cuml_hist, term_el)
+      el_cuml_term$stop <- at - 1
+      el_cuml_hist <- dplyr::bind_rows(el_cuml_hist, el_cuml_term)
     }
 
-    el_cuml_cur <- el_cuml_cur[-term_el, ]
+    el_cuml_cur <- el_cuml_cur[-terminated_edges_ids, ]
   }
 
   dat <- set_raw_elcuml(dat, network, el_cuml_cur, active = TRUE)
@@ -402,8 +397,8 @@ get_cumulative_degree <- function(dat, index_posit_ids, networks = NULL,
 get_raw_elcuml <- function(dat, network, active) {
   loc <- if (active) "el_cuml_cur" else "el_cuml_hist"
 
-  if (length(dat$el.cuml) >= network) {
-    el_cuml <- dat[[loc]][[network]]
+  if (length(dat$run[[loc]]) >= network) {
+    el_cuml <- dat$run[[loc]][[network]]
   } else {
     el_cuml <- NULL
   }
@@ -417,7 +412,7 @@ get_raw_elcuml <- function(dat, network, active) {
 
 set_raw_elcuml <- function(dat, network, el_cuml, active) {
   loc <- if (active) "el_cuml_cur" else "el_cuml_hist"
-  dat[[loc]][[network]] <- el_cuml
+  dat$run[[loc]][[network]] <- el_cuml
   return(dat)
 }
 
