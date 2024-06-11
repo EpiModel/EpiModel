@@ -181,6 +181,11 @@ saveout.net <- function(dat, s, out = NULL) {
       out$epi[[names(dat$epi)[j]]] <- data.frame(dat$epi[j])
     }
 
+    if (dat$control$save.run) {
+      out$run <- list()
+      out$run[[s]] <- dat$run
+    }
+
     out$attr.history <- list()
     out$attr.history[[s]] <- dat$attr.history
 
@@ -269,6 +274,10 @@ saveout.net <- function(dat, s, out = NULL) {
       out$epi[[names(dat$epi)[j]]][, s] <- data.frame(dat$epi[j])
     }
 
+    if (dat$control$save.run) {
+      out$run[[s]] <- dat$run
+    }
+
     out$attr.history[[s]] <- dat$attr.history
     out$raw.records[[s]] <- dat$raw.records
 
@@ -329,6 +338,10 @@ saveout.net <- function(dat, s, out = NULL) {
     simnames <- paste0("sim", seq_len(dat$control$nsims))
     for (i in as.vector(which(lapply(out$epi, class) == "data.frame"))) {
       colnames(out$epi[[i]]) <- simnames
+    }
+
+    if (length(out$run) > 0) {
+      out$run <- name_saveout_elts(out$run, "run", simnames)
     }
 
     top_lvl_elts <- c("attr.history", ".records")
@@ -420,6 +433,8 @@ process_out.net <- function(dat_list) {
   return(out)
 }
 
+# Assign names to the save elements
+# Gives a warning if there aren't enough elements
 name_saveout_elts <- function(elt, elt_name, simnames) {
   if (length(elt) == length(simnames)) {
     names(elt) <- simnames

@@ -867,6 +867,7 @@ control.net <- function(type,
                         nwstats.formula = "formation",
                         save.transmat = TRUE,
                         save.network,
+                        save.run = FALSE,
                         save.other,
                         verbose = TRUE,
                         verbose.int = 1,
@@ -1145,7 +1146,7 @@ crosscheck.net <- function(x, param, init, control) {
                call. = FALSE)
         }
         if (is.null(x[["run"]])) {
-          stop("x must contain run to restart simulation, see save.other ",
+          stop("x must contain `run` to restart simulation, see `save.run` ",
                "control setting", call. = FALSE)
         }
         if (is.null(x[["network"]]) && control[["tergmLite"]] == FALSE) {

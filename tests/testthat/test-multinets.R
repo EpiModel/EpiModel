@@ -56,9 +56,9 @@ test_that("netsim runs with multiple networks, with open or closed population", 
     for (resimulate.network in unique(c(tergmLite, TRUE))) {
       for (open_population in unique(c(FALSE, resimulate.network))) {
         if (tergmLite == TRUE) {
-          save.other <- c("run", "el", "temp", "net_attr")
+          save.other <- c("el", "temp", "net_attr")
         } else {
-          save.other <- c("run", "temp")
+          save.other <- c("temp")
         }
         if (open_population == TRUE) {
           param <- param_open
@@ -107,7 +107,8 @@ test_that("netsim runs with multiple networks, with open or closed population", 
                                    nwstats.formula = sim_nwstats_formulas,
                                    verbose = TRUE,
                                    save.network = TRUE,
-                                   save.other = c(save.other, "run"))
+                                   save.run = TRUE,
+                                   save.other = c(save.other))
             print(control)
             basis <- est
           } else {

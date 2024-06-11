@@ -75,7 +75,7 @@ test_that("Serosorting model in open population", {
                                             nodematch("status"),
                          tergmLite = FALSE,
                          resimulate.network = TRUE,
-                         save.other = "run",
+                         save.run = TRUE,
                          verbose = FALSE)
 
   sim <- netsim(est, param, init, control)
@@ -122,7 +122,7 @@ test_that("Serosorting model in closed population", {
                            nodematch("status"),
                          tergmLite = FALSE,
                          resimulate.network = TRUE,
-                         save.other = "run",
+                         save.run = TRUE,
                          verbose = FALSE)
 
   sim <- netsim(est, param, init, control)
@@ -173,7 +173,7 @@ test_that("Serosorting model in open population, with tergmLite", {
                            nodematch("status"),
                          tergmLite = TRUE,
                          resimulate.network = TRUE,
-                         save.other = "run",
+                         save.run = TRUE,
                          verbose = FALSE)
 
   sim <- netsim(est, param, init, control)
@@ -199,7 +199,7 @@ test_that("Save attributes to output", {
 
   init <- init.net(i.num = 10, i.num.g2 = 10)
   control <- control.net(type = "SI", nsteps = 10, nsims = 2,
-                         save.other = "run", resimulate.network = TRUE,
+                         save.run = TRUE, resimulate.network = TRUE,
                          verbose = FALSE)
 
   sim1 <- netsim(est1, param, init, control)
