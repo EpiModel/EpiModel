@@ -186,6 +186,11 @@ saveout.net <- function(dat, s, out = NULL) {
       out$run[[s]] <- dat$run
     }
 
+    if (dat$control$save.cumulative.edgelist) {
+      out$cumulative.edgelist <- list()
+      out$cumulative.edgelist[[s]] <- get_cumulative_edgelists_df(dat)
+    }
+
     out$attr.history <- list()
     out$attr.history[[s]] <- dat$attr.history
 
@@ -284,6 +289,10 @@ saveout.net <- function(dat, s, out = NULL) {
       out$run[[s]] <- dat$run
     }
 
+    if (dat$control$save.cumulative.edgelist) {
+      out$cumulative.edgelist[[s]] <- get_cumulative_edgelists_df(dat)
+    }
+
     out$attr.history[[s]] <- dat$attr.history
     out$raw.records[[s]] <- dat$raw.records
 
@@ -359,6 +368,11 @@ saveout.net <- function(dat, s, out = NULL) {
     top_lvl_elts <- c("attr.history", ".records")
     for (elt in top_lvl_elts) {
       out[[elt]] <- name_saveout_elts(out[[elt]], elt, simnames)
+    }
+
+    if (dat$control$save.cumulative.edgelist) {
+      out$cumulative.edgelist <- name_saveout_elts(
+        out$cumulative.edgelist, "cumulative.edgelist", simnames)
     }
 
     out$coef.form <- name_saveout_elts(out$coef.form, "coef.form", simnames)

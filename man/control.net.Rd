@@ -32,13 +32,14 @@ control.net(
   save.transmat = TRUE,
   save.network,
   save.run = FALSE,
+  save.cumulative.edgelist = FALSE,
   save.other,
   verbose = TRUE,
   verbose.int = 1,
   skip.check = FALSE,
   raw.output = FALSE,
   tergmLite.track.duration = FALSE,
-  set.control.ergm = control.simulate.formula(MCMC.burnin = 200000),
+  set.control.ergm = control.simulate.formula(MCMC.burnin = 2e+05),
   set.control.tergm = control.simulate.formula.tergm(),
   save.diss.stats = TRUE,
   dat.updates = NULL,
@@ -133,6 +134,8 @@ specification.}
 
 \item{save.run}{If \code{TRUE}, the \code{run} sublist of \code{dat} is saved, allowing a
 simulation to restart from this output.}
+
+\item{save.cumulative.edgelist}{If \code{TRUE}, the \code{cumulative.edgelist} is saved at simulation end.}
 
 \item{save.other}{A character vector of elements on the \code{netsim_dat} main data list to save out
 after each simulation. One example for base models is the attribute list, \code{"attr"}, at
