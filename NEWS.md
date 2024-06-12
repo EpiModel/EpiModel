@@ -8,6 +8,7 @@ assess discordance as well as the values for each group can be specified.
 - start migration of all the required elements for restarting simulation in `dat$run`
 - export `param.net_from_table` and `param.net_to_table` helper functions to
 convert parameter list and parameter data.frames used by `param.net`
+- Allow saving the cumulative edge-list at the end of simulation using the `save.cumulative.edgelist` control flag.
 
 ### OTHER
 
