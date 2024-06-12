@@ -210,7 +210,7 @@ set_attr <- function(dat, item, value, posit_ids = NULL,
 
     if (!override.length.check &&
           length(value) != 1 &&
-          length(value) != attr_list$active[posit_ids]) {
+          length(value) != length(attr_list$active[posit_ids])) {
       stop(
         "When trying to edit the `", item, "` nodal attribute: ",
         "The size of the `value` vector is not equal to the number of nodes ",
