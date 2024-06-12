@@ -14,8 +14,9 @@ convert parameter list and parameter data.frames used by `param.net`
 - Speed up `raw.records` and `attr.history` with `collections::queue` instead of
 `base::list`
 - Remove `dat$epi$sim.num(.g2)` and replace it with `dat$run$num(.g2)` (single value).
-- move `el.cuml`, `_last_unique_id` and `_last_timestep` to `dat$run`
-- move `attr` to `dat$run` and update the tests
+- Move `el.cuml`, `_last_unique_id` and `_last_timestep` to `dat$run`
+- Move `attr` to `dat$run` and update the tests.
+- Speed up cumulative edge-list calculation by splitting current and historic edges.
 
 ## EpiModel 2.4.0
 
