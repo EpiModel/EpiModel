@@ -408,7 +408,7 @@ test_that("networkLites produced by netsim match those produced by simulate when
                          save.network = TRUE, resimulate.network = TRUE,
                          tergmLite = TRUE,
                          save.run = TRUE,
-                         save.other = c("el", "net_attr"),
+                         save.other = c(),
                          tergmLite.track.duration = TRUE, save.transmat = FALSE)
   est <- trim_netest(est)
   set.seed(0)

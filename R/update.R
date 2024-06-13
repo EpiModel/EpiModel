@@ -189,12 +189,12 @@ depart_nodes <- function(dat, departures) {
     } else {
       dat <- delete_attr(dat, departures)
       for (network in seq_len(dat$num.nw)) {
-        dat$el[[network]] <- delete_vertices(dat$el[[network]], departures)
-        dat$net_attr[[network]][["n"]] <- dat$net_attr[[network]][["n"]] - length(departures)
+        dat$run$el[[network]] <- delete_vertices(dat$run$el[[network]], departures)
+        dat$run$net_attr[[network]][["n"]] <- dat$run$net_attr[[network]][["n"]] - length(departures)
 
         if (get_network_control(dat, network, "tergmLite.track.duration") == TRUE) {
-          dat$net_attr[[network]][["lasttoggle"]] <-
-            delete_vertices(dat$net_attr[[network]][["lasttoggle"]], departures)
+          dat$run$net_attr[[network]][["lasttoggle"]] <-
+            delete_vertices(dat$run$net_attr[[network]][["lasttoggle"]], departures)
         }
       }
     }
@@ -234,8 +234,8 @@ arrive_nodes <- function(dat, nArrivals) {
       }
     } else {
       for (network in seq_len(dat$num.nw)) {
-        dat$el[[network]] <- add_vertices(dat$el[[network]], nv = nArrivals)
-        dat$net_attr[[network]][["n"]] <- dat$net_attr[[network]][["n"]] + nArrivals
+        dat$run$el[[network]] <- add_vertices(dat$run$el[[network]], nv = nArrivals)
+        dat$run$net_attr[[network]][["n"]] <- dat$run$net_attr[[network]][["n"]] + nArrivals
       }
     }
   }

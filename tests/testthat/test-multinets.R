@@ -56,7 +56,7 @@ test_that("netsim runs with multiple networks, with open or closed population", 
     for (resimulate.network in unique(c(tergmLite, TRUE))) {
       for (open_population in unique(c(FALSE, resimulate.network))) {
         if (tergmLite == TRUE) {
-          save.other <- c("el", "net_attr")
+          save.other <- c()
         } else {
           save.other <- c()
         }
@@ -86,7 +86,7 @@ test_that("netsim runs with multiple networks, with open or closed population", 
                                      if (network > 0L) {
                                        if (get_control(dat, "tergmLite") == TRUE) {
                                          dat <- set_attr(dat, paste0("deg.", network),
-                                                         get_degree(dat$el[[network]]))
+                                                         get_degree(dat$run$el[[network]]))
                                        } else {
                                          deg_attr <- get_degree(as.edgelist(network.collapse(dat$nw[[network]],
                                                                                              at = at,
@@ -148,8 +148,8 @@ test_that("netsim runs with multiple networks, with open or closed population", 
               if (tergmLite == TRUE) {
                 expect_is(sim$network[[simno]][[network]], "networkLite")
                 if (open_population == FALSE) {
-                  expect_equal(sim$el[[simno]][[network]], as.edgelist(sim$network[[simno]][[network]]))
-                  expect_equal(sim$run[[simno]]$attr[[paste0("deg.", network)]], get_degree(sim$el[[simno]][[network]]))
+                  expect_equal(sim$run[[simno]]$el[[network]], as.edgelist(sim$network[[simno]][[network]]))
+                  expect_equal(sim$run[[simno]]$attr[[paste0("deg.", network)]], get_degree(sim$run[[simno]]$el[[network]]))
                 }
                 if (network %in% tergm_nets) {
                   expect_equal(sim$network[[simno]][[network]] %n% "time", nsteps)
@@ -188,7 +188,7 @@ test_that("netsim runs with multiple networks, with open or closed population", 
                 final_stats <- stats_matrix[nsteps,]
                 names(final_stats) <- colnames(stats_matrix)
                 if (tergmLite == TRUE) {
-                  nwL <- networkLite(sim$el[[simno]][[network]], sim$run[[simno]]$attr)
+                  nwL <- networkLite(sim$run[[simno]]$el[[network]], sim$run[[simno]]$attr)
                   if (network %in% tergm_nets) {
                     nwL %n% "time" <- sim$network[[simno]][[network]] %n% "time"
                     nwL %n% "lasttoggle" <- sim$network[[simno]][[network]] %n% "lasttoggle"

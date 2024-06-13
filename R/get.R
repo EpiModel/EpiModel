@@ -180,7 +180,7 @@ get_network.netsim_dat <- function(x, network = 1L, ...) {
   } else {
     ## networkLite
     attr_list <- raw_get_attr_list(x)
-    nw <- networkLite(x$el[[network]], attr_list, x$net_attr[[network]])
+    nw <- networkLite(x$run$el[[network]], attr_list, x$run$net_attr[[network]])
   }
   return(nw)
 }
@@ -219,10 +219,10 @@ set_network <- function(x, ...) {
 #'
 set_network.netsim_dat <- function(x, network = 1L, nw, ...) {
   if (get_control(x, "tergmLite") == TRUE) {
-    x$el[[network]] <- as.edgelist(nw)
+    x$run$el[[network]] <- as.edgelist(nw)
     if (get_network_control(x, network, "tergmLite.track.duration") == TRUE) {
-      x$net_attr[[network]][["time"]] <- nw %n% "time"
-      x$net_attr[[network]][["lasttoggle"]] <- nw %n% "lasttoggle"
+      x$run$net_attr[[network]][["time"]] <- nw %n% "time"
+      x$run$net_attr[[network]][["lasttoggle"]] <- nw %n% "lasttoggle"
     }
   } else {
     x$nw[[network]] <- nw

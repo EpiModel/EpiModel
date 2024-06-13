@@ -61,7 +61,6 @@ initialize.net <- function(x, param, init, control, s) {
       "run",
       "coef.form",
       "num.nw",
-      if (control[["tergmLite"]] == TRUE) c("el", "net_attr"),
       if (control[["tergmLite"]] == FALSE) "network"
     )
     missing_names <- setdiff(required_names, names(x))
@@ -82,10 +81,6 @@ initialize.net <- function(x, param, init, control, s) {
     s <- (s - 1) %% length(x$run) + 1
 
     dat$num.nw <- x$num.nw
-    if (control[["tergmLite"]] == TRUE) {
-      dat$el <- x$el[[s]]
-      dat$net_attr <- x$net_attr[[s]]
-    }
     if (control[["tergmLite"]] == FALSE) {
       dat$nw <- x$network[[s]]
     }
@@ -314,8 +309,8 @@ init_nets <- function(dat, x) {
   nws <- lapply(x, `[[`, "newnetwork")
   nw <- nws[[1]]
   if (get_control(dat, "tergmLite") == TRUE) {
-    dat$el <- lapply(nws, as.edgelist)
-    dat$net_attr <- lapply(nws, get_network_attributes)
+    dat$run$el <- lapply(nws, as.edgelist)
+    dat$run$net_attr <- lapply(nws, get_network_attributes)
   } else {
     dat$nw <- nws
   }

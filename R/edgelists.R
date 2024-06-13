@@ -19,7 +19,7 @@ get_edgelist <- function(dat, network) {
     if (!network %in% seq_len(dat$num.nw)) {
       stop("There is no network '", network, "' to get an edgelist from")
     }
-    el <- dat[["el"]][[network]]
+    el <- dat$run$el[[network]]
   } else {
     if (!network %in% seq_len(dat$num.nw)) {
       stop("There is no network '", network, "' to get an edgelist from")
