@@ -289,7 +289,7 @@ test_that("edges correction behaves as expected", {
                                verbose = FALSE,
                                save.network = TRUE,
                                save.run = TRUE,
-                               save.other = c("temp"))
+                               save.other = c())
         sim <- netsim(est, param, init, control)
 
         for (simno in seq_len(nsims)) {
@@ -349,7 +349,7 @@ test_that("networkDynamics produced by netsim match those produced by simulate w
                          save.network = TRUE, resimulate.network = TRUE,
                          save.diss.stats = FALSE,
                          save.run = TRUE,
-                         save.other = c("temp"),
+                         save.other = c(),
                          save.transmat = FALSE)
   set.seed(0)
   mod <- netsim(est, param, init, control)
@@ -408,7 +408,7 @@ test_that("networkLites produced by netsim match those produced by simulate when
                          save.network = TRUE, resimulate.network = TRUE,
                          tergmLite = TRUE,
                          save.run = TRUE,
-                         save.other = c("temp", "el", "net_attr"),
+                         save.other = c("el", "net_attr"),
                          tergmLite.track.duration = TRUE, save.transmat = FALSE)
   est <- trim_netest(est)
   set.seed(0)

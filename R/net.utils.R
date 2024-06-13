@@ -177,7 +177,7 @@ copy_nwattr_to_datattr <- function(dat, nw) {
       va <- get_vertex_attribute(nw, otha[i])
       dat <- set_attr(dat, otha[i], va)
       if (!is.null(dat$control$epi.by) && dat$control$epi.by == otha[i]) {
-        dat$temp$epi.by.vals <- unique(va)
+        dat$run$epi.by.vals <- unique(va)
       }
     }
   }
@@ -203,7 +203,7 @@ copy_nwattr_to_datattr <- function(dat, nw) {
 #' @export
 #'
 copy_datattr_to_nwattr <- function(dat) {
-  nwterms <- dat$temp$nwterms
+  nwterms <- dat$run$nwterms
   special.attr <- "status"
   if (dat$param$groups == 2) {
     special.attr <- c(special.attr, "group")
@@ -695,7 +695,7 @@ auto_update_attr <- function(dat, newNodes, curr.tab) {
 
   rules <- get_control(dat, "attr.rules")
   active <- get_attr(dat, "active")
-  t1.tab <- dat$temp$t1.tab
+  t1.tab <- dat$run$t1.tab
 
   for (i in seq_along(curr.tab)) {
     vname <- names(curr.tab)[i]

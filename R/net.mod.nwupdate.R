@@ -30,7 +30,7 @@ nwupdate.net <- function(dat, at) {
   if (nArrivals > 0) {
 
     ## Arrivals
-    nwterms <- dat$temp$nwterms
+    nwterms <- dat$run$nwterms
     if (!is.null(nwterms)) {
       curr.tab <- get_attr_prop(dat, nwterms)
       dat <- auto_update_attr(dat, arrivals, curr.tab)

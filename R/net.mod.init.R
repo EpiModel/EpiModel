@@ -15,7 +15,7 @@
 #' @param s Simulation number, used for restarting dependent simulations.
 #' @details When re-initializing a simulation, the \code{netsim} object passed
 #'          to \code{initialize.net} must contain the elements \code{param},
-#'          \code{nwparam}, \code{epi}, \code{attr}, \code{temp},
+#'          \code{nwparam}, \code{epi}, \code{attr},
 #'          \code{coef.form}, and \code{num.nw}. If \code{tergmLite == TRUE} it
 #'          must also contain the elements \code{el} and \code{net_attr}. If
 #'          \code{tergmLite == FALSE} it must also contain the element
@@ -37,8 +37,8 @@ initialize.net <- function(x, param, init, control, s) {
     dat <- init_nets(dat, x)
 
     ## Store current proportions of attr
-    if (!is.null(dat$temp$nwterms)) {
-      dat$temp$t1.tab <- get_attr_prop(dat, dat$temp$nwterms)
+    if (!is.null(dat$run$nwterms)) {
+      dat$run$t1.tab <- get_attr_prop(dat, dat$run$nwterms)
     }
 
     # simulate first time step
@@ -58,7 +58,6 @@ initialize.net <- function(x, param, init, control, s) {
       "param",
       "nwparam",
       "epi",
-      "temp",
       "run",
       "coef.form",
       "num.nw",
@@ -97,7 +96,6 @@ initialize.net <- function(x, param, init, control, s) {
     }
     dat$epi <- sapply(x$epi, function(var) var[s])
     names(dat$epi) <- names(x$epi)
-    dat$temp <- x$temp[[s]]
 
     dat$stats <- lapply(x$stats, function(var) var[[s]])
     if (get_control(dat, "save.nwstats") == TRUE) {
@@ -196,7 +194,7 @@ init_status.net <- function(dat) {
     group <- rep(1, num)
   }
 
-  statOnNw <- "status" %in% dat$temp$nwterms
+  statOnNw <- "status" %in% dat$run$nwterms
 
   # Status ------------------------------------------------------------------
 
@@ -335,7 +333,7 @@ init_nets <- function(dat, x) {
   dat <- copy_nwattr_to_datattr(dat, nw)
 
   ## record names of relevant vertex attributes
-  dat$temp$nwterms <- get_network_term_attr(nw)
+  dat$run$nwterms <- get_network_term_attr(nw)
 
   ## initialize stats data structure
   if (get_control(dat, "save.nwstats") == TRUE) {

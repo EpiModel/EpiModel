@@ -14,7 +14,7 @@ test_that("network models can be restarted", {
   control <- control.net(type = "SI", nsteps = 5, nsims = 1,
                          resimulate.network = TRUE, verbose = FALSE,
                          save.run = TRUE,
-                         save.other = "temp")
+                         save.other = c())
   x <- netsim(est.vit, param, init, control)
 
   control <- control.net(type = "SI", nsteps = 10, start = 6,
@@ -85,7 +85,7 @@ test_that("reinitialization works with open population, nwterms, and epi.by", {
                            verbose = FALSE, tergmLite = tergmLite,
                            epi.by = "race",
                            save.run = TRUE,
-                           save.other = c("temp", if (tergmLite) c("el", "net_attr")))
+                           save.other = c(if (tergmLite) c("el", "net_attr")))
 
     x <- netsim(est, param, init, control)
     expect_is(x, "netsim")

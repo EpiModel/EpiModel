@@ -39,6 +39,7 @@ create_dat_object <- function(param = list(), init = list(), control = list(),
 #' @noRd
 validate_run <- function(run) {
   defaults <- list(
+    attr = list(),
     current_timestep = 1L,
     last_unique_id = 0L
   )

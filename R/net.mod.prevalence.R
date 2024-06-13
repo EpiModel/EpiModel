@@ -37,7 +37,7 @@ prevalence.net <- function(dat, at) {
   eb <- !is.null(dat$control$epi.by)
   if (eb == TRUE) {
     ebn <- get_control(dat, "epi.by")
-    ebv <- dat$temp$epi.by.vals
+    ebv <- dat$run$epi.by.vals
     ebun <- paste0(".", ebn, ebv)
     assign(ebn, l[[ebn]])
   }
