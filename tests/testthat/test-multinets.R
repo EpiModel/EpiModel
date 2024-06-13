@@ -56,9 +56,9 @@ test_that("netsim runs with multiple networks, with open or closed population", 
     for (resimulate.network in unique(c(tergmLite, TRUE))) {
       for (open_population in unique(c(FALSE, resimulate.network))) {
         if (tergmLite == TRUE) {
-          save.other <- c("el", "temp", "net_attr")
+          save.other <- c("el", "net_attr")
         } else {
-          save.other <- c("temp")
+          save.other <- character(0)
         }
         if (open_population == TRUE) {
           param <- param_open
@@ -83,10 +83,6 @@ test_that("netsim runs with multiple networks, with open or closed population", 
                                    resimulate.network = resimulate.network,
                                    tergmLite.track.duration = TRUE,
                                    dat.updates = function (dat, at, network) {
-                                     if (get_control(dat, "resimulate.network") == TRUE &&
-                                         get_control(dat, "start") > 1L) {
-                                       dat$temp <- temp
-                                     }
                                      if (network > 0L) {
                                        if (get_control(dat, "tergmLite") == TRUE) {
                                          dat <- set_attr(dat, paste0("deg.", network),
@@ -105,8 +101,7 @@ test_that("netsim runs with multiple networks, with open or closed population", 
                                      dat
                                    },
                                    nwstats.formula = sim_nwstats_formulas,
-                                   verbose = TRUE,
-                                   save.network = TRUE,
+                                   verbose = TRUE, save.network = TRUE,
                                    save.run = TRUE,
                                    save.other = c(save.other))
             print(control)
@@ -118,7 +113,7 @@ test_that("netsim runs with multiple networks, with open or closed population", 
             basis <- sim
           }
           sim <- netsim(basis, param, init, control)
-          temp <- sim$temp$sim1
+          # temp <- sim$temp$sim1
 
           print(sim)
           plot(sim)

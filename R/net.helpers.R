@@ -40,7 +40,8 @@ create_dat_object <- function(param = list(), init = list(), control = list(),
 validate_run <- function(run) {
   defaults <- list(
     current_timestep = 1L,
-    last_unique_id = 0L
+    last_unique_id = 0L,
+    attr = list()
   )
 
   for (elt_name in names(defaults)) {
