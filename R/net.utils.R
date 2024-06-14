@@ -173,10 +173,11 @@ copy_nwattr_to_datattr <- function(dat, nw) {
   otha <- setdiff(otha, c("na", "vertex.names", "active",
                           "testatus.active", "tergm_pid"))
   if (length(otha) > 0) {
+    epi_by <- get_control(dat, "epi.by", override.null.error = TRUE)
     for (i in seq_along(otha)) {
       va <- get_vertex_attribute(nw, otha[i])
       dat <- set_attr(dat, otha[i], va)
-      if (!is.null(dat$control$epi.by) && dat$control$epi.by == otha[i]) {
+      if (!is.null(epi_by) && epi_by == otha[i]) {
         dat$run$epi.by.vals <- unique(va)
       }
     }

@@ -348,16 +348,17 @@ get_epi <- function(dat, item, at = NULL, override.null.error = FALSE) {
            "` in the epi out list of the main list object (dat)")
     }
   } else {
+    nsteps <- get_control(dat, "nsteps")
     if (is.null(at)) {
       out <- dat[["epi"]][[item]]
     } else {
       if (is.logical(at)) {
-        if (length(at) != dat[["control"]][["nsteps"]]) {
+        if (length(at) != nsteps) {
           stop("(logical) `at` has to have a length equal to the number of
               steps planned for for the simulation (control[['nsteps']])")
         }
       } else if (is.numeric(at)) {
-        if (any(at > dat[["control"]][["nsteps"]])) {
+        if (any(at > nsteps)) {
           stop("Some (numeric) `at` are larger than the number of
               steps planned for for the simulation (control[['nsteps']])")
         }
@@ -396,14 +397,12 @@ set_epi <- function(dat, item, at,  value) {
   }
 
   # ensure that the vector is of size `nsteps`, right padded with NA
+  nsteps <- get_control(dat, "nsteps")
   if (at > length(dat[["epi"]][[item]])) {
-    dat[["epi"]][[item]] <- padded_vector(
-      dat[["epi"]][[item]],
-      dat[["control"]][["nsteps"]]
-    )
+    dat$epi[[item]] <- padded_vector(dat$epi[[item]], nsteps)
   }
 
-  dat[["epi"]][[item]][at] <- value
+  dat$epi[[item]][at] <- value
 
   return(dat)
 }
