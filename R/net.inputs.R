@@ -1153,10 +1153,6 @@ crosscheck.net <- function(x, param, init, control) {
           stop("x must contain `run` to restart simulation, see `save.run` ",
                "control setting", call. = FALSE)
         }
-        if (is.null(x[["network"]]) && control[["tergmLite"]] == FALSE) {
-          stop("x must contain network object to restart simulation when ",
-               "tergmLite == FALSE, ", call. = FALSE)
-        }
         if (control[["nsteps"]] < control[["start"]]) {
           stop("control setting nsteps must be > control setting start in ",
                "restarted simulations", call. = FALSE)

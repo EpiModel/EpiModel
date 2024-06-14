@@ -674,7 +674,7 @@ infect <- function(dat, at) {
 
   active <- dat$attr$active
   status <- dat$attr$status
-  nw <- dat$nw
+  nw <- dat$run$nw
 
   idsInf <- which(active == 1 & status == "i")
   nActive <- sum(active == 1)
@@ -704,7 +704,7 @@ infect <- function(dat, at) {
   } else {
     dat$epi$se.flow[at] <- nInf
   }
-  dat$nw <- nw
+  dat$run$nw <- nw
   return(dat)
 }
 ```

@@ -180,7 +180,7 @@ depart_nodes <- function(dat, departures) {
   if (length(departures) > 0) {
     if (get_control(dat, "tergmLite") == FALSE) {
       for (network in seq_len(dat$num.nw)) {
-        dat$nw[[network]] <- deactivate.vertices(dat$nw[[network]],
+        dat$run$nw[[network]] <- deactivate.vertices(dat$run$nw[[network]],
                                                  onset = get_current_timestep(dat),
                                                  terminus = Inf,
                                                  v = departures,
@@ -227,7 +227,7 @@ arrive_nodes <- function(dat, nArrivals) {
   if (nArrivals > 0) {
     if (get_control(dat, "tergmLite") == FALSE) {
       for (network in seq_len(dat$num.nw)) {
-        dat$nw[[network]] <- add.vertices.active(dat$nw[[network]],
+        dat$run$nw[[network]] <- add.vertices.active(dat$run$nw[[network]],
                                                  nv = nArrivals,
                                                  onset = get_current_timestep(dat),
                                                  terminus = Inf)

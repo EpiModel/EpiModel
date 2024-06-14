@@ -60,8 +60,7 @@ initialize.net <- function(x, param, init, control, s) {
       "epi",
       "run",
       "coef.form",
-      "num.nw",
-      if (control[["tergmLite"]] == FALSE) "network"
+      "num.nw"
     )
     missing_names <- setdiff(required_names, names(x))
     if (length(missing_names) > 0) {
@@ -81,9 +80,6 @@ initialize.net <- function(x, param, init, control, s) {
     s <- (s - 1) %% length(x$run) + 1
 
     dat$num.nw <- x$num.nw
-    if (control[["tergmLite"]] == FALSE) {
-      dat$nw <- x$network[[s]]
-    }
 
     dat$nwparam <- x$nwparam
     for (network in seq_len(dat$num.nw)) {
@@ -221,13 +217,13 @@ init_status.net <- function(dat) {
   if (tergmLite == FALSE) {
     if (statOnNw == FALSE) {
       for (network in seq_len(dat$num.nw)) {
-        dat$nw[[network]] <- set_vertex_attribute(dat$nw[[network]],
+        dat$run$nw[[network]] <- set_vertex_attribute(dat$run$nw[[network]],
                                                   "status",
                                                   status)
       }
     }
     for (network in seq_len(dat$num.nw)) {
-      dat$nw[[network]] <- activate.vertex.attribute(dat$nw[[network]],
+      dat$run$nw[[network]] <- activate.vertex.attribute(dat$run$nw[[network]],
                                                      prefix = "testatus",
                                                      value = status,
                                                      onset = 1,
@@ -312,7 +308,7 @@ init_nets <- function(dat, x) {
     dat$run$el <- lapply(nws, as.edgelist)
     dat$run$net_attr <- lapply(nws, get_network_attributes)
   } else {
-    dat$nw <- nws
+    dat$run$nw <- nws
   }
 
   # Nodal Attributes --------------------------------------------------------
