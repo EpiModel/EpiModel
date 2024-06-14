@@ -88,11 +88,11 @@ test_that("netsim runs with multiple networks, with open or closed population", 
                                          dat <- set_attr(dat, paste0("deg.", network),
                                                          get_degree(dat$run$el[[network]]))
                                        } else {
-                                         deg_attr <- get_degree(as.edgelist(network.collapse(dat$nw[[network]],
+                                         deg_attr <- get_degree(as.edgelist(network.collapse(dat$run$nw[[network]],
                                                                                              at = at,
                                                                                              retain.all.vertices = TRUE)))
                                          for (other_net in seq_len(dat$num.nw)) {
-                                           dat$nw[[other_net]] <- set_vertex_attribute(dat$nw[[other_net]],
+                                           dat$run$nw[[other_net]] <- set_vertex_attribute(dat$run$nw[[other_net]],
                                                                                        paste0("deg.", network),
                                                                                        deg_attr)
                                          }

@@ -417,16 +417,16 @@ initialize_msm <- function(x, param, init, control, s) {
 
   ## Network Setup ##
   # Initial network simulations
-  dat$nw <- list()
+  dat$run$nw <- list()
   for (i in 1:3) {
-    dat[["nw"]][[i]] <- simulate(x[[i]][["formula"]],
+    dat$run$nw[[i]] <- simulate(x[[i]][["formula"]],
       coef = x[[i]][["coef.form.crude"]],
       basis = x[[i]][["newnetwork"]],
       constraints = x[[i]][["constraints"]],
       dynamic = FALSE
     )
   }
-  nw <- dat$nw
+  nw <- dat$run$nw
 
   # Pull Network parameters
   dat$nwparam <- list()

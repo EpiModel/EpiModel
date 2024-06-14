@@ -26,7 +26,7 @@ library(EpiModel)
 This vignette discusses mechanisms usable inside `EpiModel` network models with custom modules. More information about these in the "New Network Models with
 EpiModel" section of [the EpiModel tutorials](http://www.epimodel.org/tut.html).
 
-Inside the simulation, the networks themselves are stored under `dat[["nw"]]`. Ultimately this vignette will describe multiple aspects of working with network
+Inside the simulation, the networks themselves are stored under `dat$run$nw`. Ultimately this vignette will describe multiple aspects of working with network
 objects.
 
 ## Cumulative Edgelist
@@ -52,7 +52,7 @@ The function returns a modified version of `dat` that needs to be assigned back.
 The following snippet will update the cumulative edgelist for all the networks used by a model and remove the edges that ended more than 100 steps ago.
 
 ```{r el_cuml-snippet, eval = FALSE}
-for (n_network in seq_along(dat[["nw"]])) {
+for (n_network in seq_along(dat$run$nw)) {
   dat <- update_cumulative_edgelist(dat, n_network, truncate = 100)
 }
 ```

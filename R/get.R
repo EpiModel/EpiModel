@@ -176,7 +176,7 @@ get_network.netsim <- function(x, sim = 1, network = 1, collapse = FALSE, at, ..
 get_network.netsim_dat <- function(x, network = 1L, ...) {
   if (get_control(x, "tergmLite") == FALSE) {
     ## networkDynamic
-    nw <- x$nw[[network]]
+    nw <- x$run$nw[[network]]
   } else {
     ## networkLite
     attr_list <- raw_get_attr_list(x)
@@ -225,7 +225,7 @@ set_network.netsim_dat <- function(x, network = 1L, nw, ...) {
       x$run$net_attr[[network]][["lasttoggle"]] <- nw %n% "lasttoggle"
     }
   } else {
-    x$nw[[network]] <- nw
+    x$run$nw[[network]] <- nw
   }
   return(x)
 }

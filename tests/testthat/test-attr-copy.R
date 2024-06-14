@@ -28,13 +28,13 @@ test_that("Copying attributes from network to attribute list", {
     dat <- sim[[simno]]
     # Character attribute
     dat.attr <- prop.table(table(get_attr(dat, "race")))
-    nw.attr <- prop.table(table(get_vertex_attribute(dat$nw[[1]], "race")))
+    nw.attr <- prop.table(table(get_vertex_attribute(dat$run$nw[[1]], "race")))
 
     expect_equal(dat.attr, nw.attr)
 
     # Numeric attribute
     dat.attr <- prop.table(table(get_attr(dat, "region")))
-    nw.attr <- prop.table(table(get_vertex_attribute(dat$nw[[1]], "region")))
+    nw.attr <- prop.table(table(get_vertex_attribute(dat$run$nw[[1]], "region")))
 
     expect_equal(dat.attr, nw.attr)
   }
