@@ -15,11 +15,7 @@
 #' @param s Simulation number, used for restarting dependent simulations.
 #' @details When re-initializing a simulation, the \code{netsim} object passed
 #'          to \code{initialize.net} must contain the elements \code{param},
-#'          \code{nwparam}, \code{epi}, \code{attr},
-#'          \code{coef.form}, and \code{num.nw}. If \code{tergmLite == TRUE} it
-#'          must also contain the elements \code{el} and \code{net_attr}. If
-#'          \code{tergmLite == FALSE} it must also contain the element
-#'          \code{network}.
+#'          \code{nwparam}, \code{epi}, \code{coef.form}, and \code{num.nw}.
 #'
 #' @return A \code{netsim_dat} class main data object.
 #'
@@ -54,30 +50,29 @@ initialize.net <- function(x, param, init, control, s) {
     # Restart/Reinit Simulations ----------------------------------------------
   } else if (control$start > 1) {
     ## check that required names are present
-    required_names <- c(
-      "param",
-      "nwparam",
-      "epi",
-      "run",
-      "coef.form",
-      "num.nw"
-    )
+    required_names <- c("param", "nwparam", "epi", "run", "coef.form", "num.nw")
     missing_names <- setdiff(required_names, names(x))
     if (length(missing_names) > 0) {
-      stop("x is missing the following elements required for re-initialization: ",
-           paste.and(missing_names), call. = FALSE)
-    }
-
-    dat <- create_dat_object(param = param, control = control, run = x$run[[s]])
-
-    missing_params <- setdiff(names(x$param), names(param))
-    for (mp in missing_params) {
-      dat <- set_param(dat, mp, x$param[[mp]])
+      stop(
+        "x is missing the following elements required for re-initialization: ",
+        paste.and(missing_names), call. = FALSE
+      )
     }
 
     # recycle sims in the restart object
     # e.g. 5 sim out of a size 3 restart object we will give: 1, 2, 3, 1, 2
     s <- (s - 1) %% length(x$run) + 1
+
+    dat <- create_dat_object(
+      param = param,
+      control = control,
+      run = x$run[[s]]
+    )
+
+    missing_params <- setdiff(names(x$param), names(param))
+    for (mp in missing_params) {
+      dat <- set_param(dat, mp, x$param[[mp]])
+    }
 
     dat$num.nw <- x$num.nw
 
@@ -90,12 +85,11 @@ initialize.net <- function(x, param, init, control, s) {
 
     dat$stats <- lapply(x$stats, function(var) var[[s]])
     if (get_control(dat, "save.nwstats") == TRUE) {
+      nsteps <- get_control(dat, "nsteps")
+      start <- get_control(dat, "start")
       dat$stats$nwstats <- lapply(dat$stats$nwstats,
-                                  function(oldstats) {
-                                    padded_vector(list(oldstats),
-                                                  get_control(dat, "nsteps") -
-                                                    get_control(dat, "start") + 2L)
-                                  })
+        function(oldstats) padded_vector(list(oldstats), nsteps - start + 2L)
+      )
     }
     if (is.data.frame(dat$stats$transmat)) {
       nsteps <- get_control(dat, "nsteps")
