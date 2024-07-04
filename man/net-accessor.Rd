@@ -7,6 +7,7 @@
 \alias{add_attr}
 \alias{set_attr}
 \alias{append_attr}
+\alias{remove_node_attr}
 \alias{get_epi_list}
 \alias{get_epi}
 \alias{add_epi}
@@ -36,6 +37,8 @@ add_attr(dat, item)
 set_attr(dat, item, value, posit_ids = NULL, override.length.check = FALSE)
 
 append_attr(dat, item, value, n.new)
+
+remove_node_attr(dat, posit_ids)
 
 get_epi_list(dat, item = NULL)
 
@@ -143,23 +146,12 @@ functions internally.
 }
 
 \examples{
-dat <- list(
-  attr = list(
-    active = rbinom(100, 1, 0.9)
-  ),
-  epi = list(),
-  param = list(),
-  init = list(),
-  control = list(
-    nsteps = 150
-  )
-)
-class(dat) <- c("netsim_dat", class(dat))
+dat <- create_dat_object(control = list(nsteps = 150))
+dat <- append_core_attr(dat, 1, 100)
 
 dat <- add_attr(dat, "age")
 dat <- set_attr(dat, "age", runif(100))
 dat <- set_attr(dat, "status", rbinom(100, 1, 0.9))
-dat <- set_attr(dat, "status", rep(1, 150), override.length.check = TRUE)
 dat <- append_attr(dat, "status", 1, 10)
 dat <- append_attr(dat, "age", NA, 10)
 get_attr_list(dat)

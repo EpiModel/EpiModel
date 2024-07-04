@@ -176,9 +176,20 @@ netsim_validate_control <- function(control) {
       ".traceback.on.error",
       ".dump.frame.on.error",
       "cumulative.edgelist",
-      "save.diss.stats"
+      "save.diss.stats",
+      "tergmLite",
+      "save.network",
+      "save.diss.stats",
+      "save.nwstats",
+      "save.transmat",
+      "save.network",
+      "save.cumulative.edgelist",
+      "save.run"
     )
   )
+
+  if (is.null(control$save.other))
+    control$save.other <- character(0)
 
   for (val in names(control_default_bool)) {
     for (flag in control_default_bool[[val]])

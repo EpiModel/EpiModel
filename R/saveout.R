@@ -172,7 +172,6 @@ saveout.net <- function(dat, s, out = NULL) {
     out$control <- dat$control
     out$nwparam <- dat$nwparam
     out$num.nw <- dat$num.nw
-    out[["last_timestep"]] <- get_current_timestep(dat)
 
     out$coef.form <- list()
     out$coef.form[[s]] <- lapply(dat$nwparam, `[[`, "coef.form")
@@ -182,14 +181,15 @@ saveout.net <- function(dat, s, out = NULL) {
       out$epi[[names(dat$epi)[j]]] <- data.frame(dat$epi[j])
     }
 
-    out$el.cuml <- list()
-    out$el.cuml[[s]] <- dat$el.cuml
+    if (dat$control$save.run) {
+      out$run <- list()
+      out$run[[s]] <- dat$run
+    }
 
-    out$run <- list()
-    out$run[[s]] <- dat$run
-
-    out[["_last_unique_id"]] <- list()
-    out[["_last_unique_id"]][[s]] <- dat[["_last_unique_id"]]
+    if (dat$control$save.cumulative.edgelist) {
+      out$cumulative.edgelist <- list()
+      out$cumulative.edgelist[[s]] <- get_cumulative_edgelists_df(dat)
+    }
 
     out$attr.history <- list()
     out$attr.history[[s]] <- dat$attr.history
@@ -226,7 +226,13 @@ saveout.net <- function(dat, s, out = NULL) {
     if (!is.null(dat$control$save.other)) {
       for (i in seq_along(dat$control$save.other)) {
         el.name <- dat$control$save.other[i]
-        out[[el.name]] <- list(dat[[el.name]])
+        if (el.name %in% names(dat)) {
+          out[[el.name]][[s]] <- dat[[el.name]]
+        } else if (el.name %in% names(dat$run)) {
+          out[[el.name]][[s]] <- dat$run[[el.name]]
+        } else {
+          warning("`", el.name, "` is not saved in `dat` or `dat$run`")
+        }
       }
     }
 
@@ -238,10 +244,10 @@ saveout.net <- function(dat, s, out = NULL) {
       ## for each simulated network, if dissolution model is edges-only, compute diss stats
       out$diss.stats <- list(lapply(seq_len(dat$num.nw), function(network) {
         if (dat$nwparam[[network]]$coef.diss$diss.model.type == "edgesonly") {
-          toggles_to_diss_stats(tedgelist_to_toggles(as.data.frame(dat$nw[[network]])),
+          toggles_to_diss_stats(tedgelist_to_toggles(as.data.frame(dat$run$nw[[network]])),
                                 dat$nwparam[[network]]$coef.diss,
                                 dat$control$nsteps,
-                                dat$nw[[network]])
+                                dat$run$nw[[network]])
         } else {
           NULL
         }
@@ -279,10 +285,13 @@ saveout.net <- function(dat, s, out = NULL) {
       out$epi[[names(dat$epi)[j]]][, s] <- data.frame(dat$epi[j])
     }
 
-    out$el.cuml[[s]] <- dat$el.cuml
-    out$run[[s]] <- dat$run
+    if (dat$control$save.run) {
+      out$run[[s]] <- dat$run
+    }
 
-    out[["_last_unique_id"]][[s]] <- dat[["_last_unique_id"]]
+    if (dat$control$save.cumulative.edgelist) {
+      out$cumulative.edgelist[[s]] <- get_cumulative_edgelists_df(dat)
+    }
 
     out$attr.history[[s]] <- dat$attr.history
     out$raw.records[[s]] <- dat$raw.records
@@ -314,7 +323,13 @@ saveout.net <- function(dat, s, out = NULL) {
     if (!is.null(dat$control$save.other)) {
       for (i in seq_along(dat$control$save.other)) {
         el.name <- dat$control$save.other[i]
-        out[[el.name]][[s]] <- dat[[el.name]]
+        if (el.name %in% names(dat)) {
+          out[[el.name]][[s]] <- dat[[el.name]]
+        } else if (el.name %in% names(dat$run)) {
+          out[[el.name]][[s]] <- dat$run[[el.name]]
+        } else {
+          warning("`", el.name, "` is not saved in `dat` or `dat$run`")
+        }
       }
     }
 
@@ -326,10 +341,10 @@ saveout.net <- function(dat, s, out = NULL) {
       ## for each simulated network, if dissolution model is edges-only, compute diss stats
       out$diss.stats[[s]] <- lapply(seq_len(dat$num.nw), function(network) {
         if (dat$nwparam[[network]]$coef.diss$diss.model.type == "edgesonly") {
-          toggles_to_diss_stats(tedgelist_to_toggles(as.data.frame(dat$nw[[network]])),
+          toggles_to_diss_stats(tedgelist_to_toggles(as.data.frame(dat$run$nw[[network]])),
                                 dat$nwparam[[network]]$coef.diss,
                                 dat$control$nsteps,
-                                dat$nw[[network]])
+                                dat$run$nw[[network]])
         } else {
           NULL
         }
@@ -346,9 +361,18 @@ saveout.net <- function(dat, s, out = NULL) {
       colnames(out$epi[[i]]) <- simnames
     }
 
-    top_lvl_elts <- c("el.cuml", "_last_unique_id", "attr.history", ".records")
+    if (length(out$run) > 0) {
+      out$run <- name_saveout_elts(out$run, "run", simnames)
+    }
+
+    top_lvl_elts <- c("attr.history", ".records")
     for (elt in top_lvl_elts) {
       out[[elt]] <- name_saveout_elts(out[[elt]], elt, simnames)
+    }
+
+    if (dat$control$save.cumulative.edgelist) {
+      out$cumulative.edgelist <- name_saveout_elts(
+        out$cumulative.edgelist, "cumulative.edgelist", simnames)
     }
 
     out$coef.form <- name_saveout_elts(out$coef.form, "coef.form", simnames)
@@ -373,8 +397,11 @@ saveout.net <- function(dat, s, out = NULL) {
       out$diss.stats <- name_saveout_elts(out$diss.stats, "diss.stats", simnames)
     }
 
+    # only rename top level elements, not the ones part of `run`
     for (el.name in dat$control$save.other) {
-      out[[el.name]] <- name_saveout_elts(out[[el.name]], el.name, simnames)
+      if (el.name %in% names(out)) {
+        out[[el.name]] <- name_saveout_elts(out[[el.name]], el.name, simnames)
+      }
     }
 
     # Remove functions from control list
@@ -435,6 +462,8 @@ process_out.net <- function(dat_list) {
   return(out)
 }
 
+# Assign names to the save elements
+# Gives a warning if there aren't enough elements
 name_saveout_elts <- function(elt, elt_name, simnames) {
   if (length(elt) == length(simnames)) {
     names(elt) <- simnames

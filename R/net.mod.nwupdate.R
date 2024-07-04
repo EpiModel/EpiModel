@@ -30,14 +30,14 @@ nwupdate.net <- function(dat, at) {
   if (nArrivals > 0) {
 
     ## Arrivals
-    nwterms <- dat$temp$nwterms
+    nwterms <- dat$run$nwterms
     if (!is.null(nwterms)) {
       curr.tab <- get_attr_prop(dat, nwterms)
       dat <- auto_update_attr(dat, arrivals, curr.tab)
     }
-    if (length(unique(sapply(dat$attr, length))) != 1) {
+    if (length(unique(vapply(get_attr_list(dat), length, 1))) != 1) {
       stop("Attribute list of unequal length. Check arrivals.net module.\n",
-           print(cbind(sapply(get_attr_list(dat), length))))
+           print(cbind(vapply(get_attr_list(dat), length, 1))))
     }
     dat <- arrive_nodes(dat, nArrivals)
   }
@@ -54,7 +54,7 @@ nwupdate.net <- function(dat, at) {
   ## Update temporally extended disease status
   if (tergmLite == FALSE) {
     for (network in seq_len(dat$num.nw)) {
-      dat$nw[[network]] <- activate.vertex.attribute(dat$nw[[network]],
+      dat$run$nw[[network]] <- activate.vertex.attribute(dat$run$nw[[network]],
                                                      prefix = "testatus",
                                                      value = status,
                                                      onset = at,

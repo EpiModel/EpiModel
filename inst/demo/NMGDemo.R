@@ -134,8 +134,8 @@ initialize.net <- function(x, param, init, control, s) {
   ## Store current proportions of attr
   nwterms <- get_network_term_attr(nw)
   if (!is.null(nwterms)) {
-    dat$temp$nwterms <- nwterms
-    dat$temp$t1.tab <- get_attr_prop(dat, nwterms)
+    dat$run$nwterms <- nwterms
+    dat$run$t1.tab <- get_attr_prop(dat, nwterms)
   }
 
   ## Infection Status and Time
@@ -417,16 +417,16 @@ initialize_msm <- function(x, param, init, control, s) {
 
   ## Network Setup ##
   # Initial network simulations
-  dat$nw <- list()
+  dat$run$nw <- list()
   for (i in 1:3) {
-    dat[["nw"]][[i]] <- simulate(x[[i]][["formula"]],
+    dat$run$nw[[i]] <- simulate(x[[i]][["formula"]],
       coef = x[[i]][["coef.form.crude"]],
       basis = x[[i]][["newnetwork"]],
       constraints = x[[i]][["constraints"]],
       dynamic = FALSE
     )
   }
-  nw <- dat$nw
+  nw <- dat$run$nw
 
   # Pull Network parameters
   dat$nwparam <- list()
@@ -484,7 +484,7 @@ initialize_msm <- function(x, param, init, control, s) {
   dat$epi <- list()
 
   # Prevalence Tracking
-  # dat$temp$max.uid <- num
+  # dat$run$max.uid <- num
   dat <- prevalence_msm(dat, at = 1)
 
   # Setup Partner List

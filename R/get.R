@@ -176,10 +176,11 @@ get_network.netsim <- function(x, sim = 1, network = 1, collapse = FALSE, at, ..
 get_network.netsim_dat <- function(x, network = 1L, ...) {
   if (get_control(x, "tergmLite") == FALSE) {
     ## networkDynamic
-    nw <- x$nw[[network]]
+    nw <- x$run$nw[[network]]
   } else {
     ## networkLite
-    nw <- networkLite(x$el[[network]], x$attr, x$net_attr[[network]])
+    attr_list <- raw_get_attr_list(x)
+    nw <- networkLite(x$run$el[[network]], attr_list, x$run$net_attr[[network]])
   }
   return(nw)
 }
@@ -218,13 +219,13 @@ set_network <- function(x, ...) {
 #'
 set_network.netsim_dat <- function(x, network = 1L, nw, ...) {
   if (get_control(x, "tergmLite") == TRUE) {
-    x$el[[network]] <- as.edgelist(nw)
+    x$run$el[[network]] <- as.edgelist(nw)
     if (get_network_control(x, network, "tergmLite.track.duration") == TRUE) {
-      x$net_attr[[network]][["time"]] <- nw %n% "time"
-      x$net_attr[[network]][["lasttoggle"]] <- nw %n% "lasttoggle"
+      x$run$net_attr[[network]][["time"]] <- nw %n% "time"
+      x$run$net_attr[[network]][["lasttoggle"]] <- nw %n% "lasttoggle"
     }
   } else {
-    x$nw[[network]] <- nw
+    x$run$nw[[network]] <- nw
   }
   return(x)
 }
@@ -520,16 +521,6 @@ get_sims <- function(x, sims, var) {
       out$epi[[i]] <- out$epi[[i]][, -delsim, drop = FALSE]
     }
 
-    if (!is.null(out[["_last_unique_id"]])) {
-      out[["_last_unique_id"]] <- out[["_last_unique_id"]][sims]
-      names(out[["_last_unique_id"]]) <- newnames
-    }
-    if (!is.null(out$el.cuml) && length(out$el.cuml) == nsims) {
-      out$el.cuml[delsim] <- NULL
-      names(out$el.cuml) <- newnames
-    } else {
-      out$el.cuml <- list()
-    }
     if (!is.null(out$network)) {
       out$network[delsim] <- NULL
       names(out$network) <- newnames

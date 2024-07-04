@@ -208,7 +208,7 @@ dfunc <- function(dat, at) {
     if (nDeaths > 0) {
       dat$attr$active[idsDeaths] <- 0
       dat$attr$exitTime[idsDeaths] <- at
-      dat$nw <- deactivate.vertices(dat$nw, onset = at, terminus = Inf,
+      dat$run$nw <- deactivate.vertices(dat$run$nw, onset = at, terminus = Inf,
                                     v = idsDeaths, deactivate.edges = TRUE)
     }
   }
@@ -227,7 +227,7 @@ bfunc <- function(dat, at) {
 
   growth.rate <- dat$param$growth.rate
   exptPopSize <- dat$epi$num[1] * (1 + growth.rate * at)
-  n <- network.size(dat$nw)
+  n <- network.size(dat$run$nw)
 
   numNeeded <- exptPopSize - sum(dat$attr$active == 1)
   if (numNeeded > 0) {
@@ -236,9 +236,9 @@ bfunc <- function(dat, at) {
     nBirths <- 0
   }
   if (nBirths > 0) {
-    dat$nw <- add.vertices(dat$nw, nv = nBirths)
+    dat$run$nw <- add.vertices(dat$run$nw, nv = nBirths)
     newNodes <- (n + 1):(n + nBirths)
-    dat$nw <- activate.vertices(dat$nw, onset = at,
+    dat$run$nw <- activate.vertices(dat$run$nw, onset = at,
                                 terminus = Inf, v = newNodes)
 
     dat$attr$active <- c(dat$attr$active, rep(1, nBirths))
@@ -287,7 +287,7 @@ infect <- function(dat, at) {
 
   active <- dat$attr$active
   status <- dat$attr$status
-  nw <- dat$nw
+  nw <- dat$run$nw
 
   idsInf <- which(active == 1 & status == "i")
   nActive <- sum(active == 1)
@@ -318,7 +318,7 @@ infect <- function(dat, at) {
   else {
     dat$epi$se.flow[at] <- nInf
   }
-  dat$nw <- nw
+  dat$run$nw <- nw
   return(dat)
 }
 

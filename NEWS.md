@@ -1,5 +1,5 @@
 
-## EpiModel 2.4.1
+## EpiModel 2.5
 
 ### NEW FEATURES
 
@@ -7,6 +7,8 @@
 assess discordance as well as the values for each group can be specified.
 - export `param.net_from_table` and `param.net_to_table` helper functions to
 convert parameter list and parameter data.frames used by `param.net`
+- Allow saving the cumulative edge-list at the end of simulation using the `save.cumulative.edgelist` control flag.
+- Restarting a simulation now only require saving `dat$run`
 
 ### OTHER
 
@@ -14,6 +16,9 @@ convert parameter list and parameter data.frames used by `param.net`
 `base::list`
 - Remove `dat$epi$sim.num(.g2)` and replace it with `dat$run$num(.g2)` (single value).
 - add `save.diss.stats` to the checked control values
+- Move `el.cuml`, `_last_unique_id` and `_last_timestep` to `dat$run`
+- Move `attr` to `dat$run` and update the tests.
+- Speed up cumulative edge-list calculation by splitting current and historic edges.
 
 ## EpiModel 2.4.0
 
