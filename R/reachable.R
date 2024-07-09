@@ -3,7 +3,7 @@
 #' @return A `cumulative_edgelist` object, a `data.frame` with at least the
 #' following columns: `head`, `tail`, `start`, `stop`.
 #'
-#' @detail
+#' @details
 #' The edges are active from time `start` to time `stop` included. If stop is
 #' `NA`, the edge was not disolved in the simulation that generated the list.
 #'
@@ -12,6 +12,7 @@ as_cumulative_edgelist <- function(x) {
   UseMethod("as_cumulative_edgelist")
 }
 
+#' @export
 as_cumulative_edgelist.networkDynamic <- function(x) {
   d <- as.data.frame(x)
   d <- d[c("head", "tail", "onset", "terminus")]
@@ -29,7 +30,7 @@ as_cumulative_edgelist.networkDynamic <- function(x) {
 dedup_cumulative_edgelist <- function(el) {
   el_n <- el |>
     dplyr::group_by(head, tail) |>
-    dplyr::mutate(n = n()) |>
+    dplyr::mutate(n = dplyr::n()) |>
     dplyr::ungroup()
 
   e_unique <- el_n |>
@@ -221,7 +222,7 @@ get_connected_subnet <- function(adj_list, nodes) {
 #'
 #' @return An adjacency list for the network
 #'
-#' @detail
+#' @details
 #' The adjacency list is a `list` of length `n_nodes`. The entry for each node
 #' is a integer vector containing the index of all the nodes connected to it.
 #' This layout makes it directly subsetable in O(1) at the expanse of memory
