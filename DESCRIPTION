@@ -60,6 +60,7 @@ Suggests:
     rmarkdown,
     shiny,
     testthat,
+    progressr,
     tidyr
 VignetteBuilder: knitr
 LinkingTo: Rcpp, ergm

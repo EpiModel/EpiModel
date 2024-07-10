@@ -6,6 +6,9 @@
 \usage{
 as_cumulative_edgelist(x)
 }
+\arguments{
+\item{x}{An object to be converted to a cumulative edgelist}
+}
 \value{
 A \code{cumulative_edgelist} object, a \code{data.frame} with at least the
 following columns: \code{head}, \code{tail}, \code{start}, \code{stop}.

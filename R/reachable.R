@@ -1,5 +1,7 @@
 #' Convert an object to a `cumulative_edgelist`
 #'
+#' @param x An object to be converted to a cumulative edgelist
+#'
 #' @return A `cumulative_edgelist` object, a `data.frame` with at least the
 #' following columns: `head`, `tail`, `start`, `stop`.
 #'

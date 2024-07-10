@@ -45,6 +45,7 @@ test_that("netsim, SI, Cumulative Edgelist", {
     verbose = FALSE,
     truncate.el.cuml = 40,
     cumulative.edgelist = TRUE,
+    save.cumulative.edgelist = TRUE,
     raw.output = TRUE
   )
 
@@ -63,6 +64,21 @@ test_that("netsim, SI, Cumulative Edgelist", {
   expect_error(
     update_cumulative_edgelist(dat = mod[[1]], network = 2)
   )
+
+  # Cumulative edgelist extraction and reachable set
+  sim <- process_out.net(mod)
+  el_cuml <- sim$cumulative.edgelist[[1]]
+  el_cuml <- dedup_cumulative_edgelist(el_cuml)
+
+  nnodes <- max(el_cuml$head, el_cuml$tail)
+
+  from_step <- min(el_cuml$start)
+  to_step <- 100
+  nodes <- sample(nnodes, 10)
+  # Only test that the functions run without error. See the functions examples
+  # to check correctness
+  el_tp <- get_forward_reachable(el_cuml, from_step, to_step, nodes)
+  el_tp <- get_backward_reachable(el_cuml, from_step, to_step, nodes)
 })
 
 test_that("netsim, SI, Cumulative Edgelist - missing args", {
