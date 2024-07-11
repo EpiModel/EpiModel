@@ -22,13 +22,19 @@ least columns: head, tail, start and stop. Start and stop are inclusive.}
 all nodes)}
 }
 \value{
-A named list of reachable nodes for each of the \code{nodes}.
+A named list containing:
+\code{reached}: the set of reachable nodes for each of the \code{nodes}.
+\code{lengths}: A matrix of \code{length(nodes)} rows and one column per timestep + 1
+with the length of the reachable set at each step from \code{from_step - 1}
+to \code{to_step}. The first column is always one as the set of reachables
+at the beginning is just the node itself.
 }
 \description{
 These functions return the Forward or Backward Reachable Nodes of a set of
 nodes in a network over a time. It is much faster than iterating
-\code{tsna::tPath} over all nodes but does not give the distance between each
-node. Only the reachable status over a time period.
+\code{tsna::tPath}. The distance between to each node can be back calculated
+using the length of the reachable set at each time step and the fact that the
+reachable sets are ordered by the time to arrival.
 }
 \section{Time and Memory Use}{
 
@@ -75,7 +81,7 @@ nnodes <- max(el_cuml$head, el_cuml$tail)
 nodes <- sample(nnodes, 100)
 
 # `get_forward_reachable` uses steps [from_step, to_step] inclusive
-el_fwd <- get_forward_reachable(el_cuml, 1, 52, nodes)
+el_fwd <- get_forward_reachable(el_cuml, 1, 52, nodes)[["reached"]]
 
 # check if the results are consistent with `tsna::tPath`
 for (i in seq_along(el_tp)) {
@@ -91,7 +97,7 @@ for (i in seq_along(el_tp)) {
 }
 
 # Backward:
-el_bkwd <- get_backward_reachable(el_cuml, 1, 52, nodes = 1)
+el_bkwd <- get_backward_reachable(el_cuml, 1, 52, nodes = 1)[["reached"]]
 t_bkwd <- tsna::tPath(
   nd, v = nodes[[i]],
   start = 1, end = 52 + 1,
