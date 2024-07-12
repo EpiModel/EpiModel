@@ -6,9 +6,21 @@
 \alias{get_backward_reachable}
 \title{Get the Forward or Backward Reachable Nodes for a Set of Nodes}
 \usage{
-get_forward_reachable(el_cuml, from_step, to_step, nodes = NULL)
+get_forward_reachable(
+  el_cuml,
+  from_step,
+  to_step,
+  nodes = NULL,
+  dense_optim = FALSE
+)
 
-get_backward_reachable(el_cuml, from_step, to_step, nodes = NULL)
+get_backward_reachable(
+  el_cuml,
+  from_step,
+  to_step,
+  nodes = NULL,
+  dense_optim = FALSE
+)
 }
 \arguments{
 \item{el_cuml}{a cumulative edgelist object. That is a data.frame with at
@@ -20,6 +32,9 @@ least columns: head, tail, start and stop. Start and stop are inclusive.}
 
 \item{nodes}{the subset of nodes to calculate the FRP for. (default = NULL,
 all nodes)}
+
+\item{dense_optim}{a flag to turn on an optimization speeding up the
+computation on denser networks. (default = FALSE)}
 }
 \value{
 A named list containing:

@@ -13,6 +13,8 @@
 #' @param to_step the end of the time period.
 #' @param nodes the subset of nodes to calculate the FRP for. (default = NULL,
 #'        all nodes)
+#' @param dense_optim a flag to turn on an optimization speeding up the
+#'        computation on denser networks. (default = FALSE)
 #'
 #' @return
 #' A named list containing:
@@ -93,26 +95,13 @@ NULL
 
 #' @rdname reachable-nodes
 #' @export
-get_forward_reachable <- function(el_cuml, from_step, to_step, nodes = NULL) {
-  n_nodes <- max(c(el_cuml$head, el_cuml$tail))
-  n_steps <- to_step - from_step + 1
-
-  if (is.null(nodes))
-    nodes <- seq_len(n_nodes)
-
-  # the initial FRP contains only the vertex itself
-  reach_cur <- as.list(nodes)
-  reach_lengths <- matrix(0, ncol = n_steps + 1, nrow = length(nodes))
-  reach_lengths[, 1] <- 1
-  names(reach_cur) <- paste0("node_", nodes)
-  rownames(reach_lengths) <- names(reach_cur)
-
+get_forward_reachable <- function(el_cuml, from_step, to_step, nodes = NULL,
+                                  dense_optim = FALSE) {
   # Prepare the cumulative edgelist:
   # - set the `stop` time to `Inf` instead of NA
   # - remove the edges that don't exist in the analysis period
   # - set the oldest edges `start` to `to_step`
   #     (QoL to calcuate the `change_times`)
-
   # nolint start
   el_cuml <- el_cuml |>
     dplyr::mutate(stop = ifelse(is.na(stop), Inf, stop)) |> # current edges never ends
@@ -121,8 +110,33 @@ get_forward_reachable <- function(el_cuml, from_step, to_step, nodes = NULL) {
     dplyr::select(start, stop, head, tail)
   # nolint end
 
+  # Make the node indexes continuous
+  # (original indexes are reset at the end)
+  orig_indexes <- sort(unique(c(el_cuml$head, el_cuml$tail)))
+  el_cuml$head <- match(el_cuml$head, orig_indexes)
+  el_cuml$tail <- match(el_cuml$tail, orig_indexes)
+
+  if (is.null(nodes)) {
+    nodes <- seq_along(orig_indexes)
+  } else {
+    nodes <- match(nodes, orig_indexes)
+    nodes <- nodes[!is.na(nodes)]
+  }
+
+  if (length(nodes) == 0) {
+    warning("No nodes have edges in the network over this period")
+    return(list(reached = list(), lengths = matrix(0)))
+  }
+
   # Only consider steps where new edges occur
   change_times <- sort(unique(el_cuml$start))
+  n_steps <- to_step - from_step + 1
+
+  # the initial FRP contains only the vertex itself
+  reach_cur <- as.list(nodes)
+  reach_lengths <- matrix(0, ncol = n_steps + 1, nrow = length(nodes))
+  reach_lengths[, 1] <- 1
+
   p <- progressr::progressor(length(change_times))
 
   for (cur_step in change_times) {
@@ -138,7 +152,9 @@ get_forward_reachable <- function(el_cuml, from_step, to_step, nodes = NULL) {
     # nolint end
 
     # get subnet works with adjacency list
-    adj_list <- get_adj_list(el_cur, n_nodes)
+    adj_list <- get_adj_list(el_cur, length(orig_indexes))
+    if (dense_optim)
+      adj_list <- get_subnet_adj_list(adj_list)
 
     # at time T, the REACH(T) of a node is the subnet connected to the REACH(T-1)
     new_reached <- lapply(reach_cur, get_connected_nodes, adj_list = adj_list)
@@ -147,6 +163,10 @@ get_forward_reachable <- function(el_cuml, from_step, to_step, nodes = NULL) {
   }
 
   reach_lengths <- t(apply(reach_lengths, 1, cumsum))
+  reach_cur <- lapply(reach_cur, \(x) orig_indexes[x])
+
+  names(reach_cur) <- paste0("node_", orig_indexes[nodes])
+  rownames(reach_lengths) <- names(reach_cur)
   colnames(reach_lengths) <- paste0("step_", (from_step - 1):to_step)
 
   return(
@@ -159,14 +179,15 @@ get_forward_reachable <- function(el_cuml, from_step, to_step, nodes = NULL) {
 
 #' @rdname reachable-nodes
 #' @export
-get_backward_reachable <- function(el_cuml, from_step, to_step, nodes = NULL) {
+get_backward_reachable <- function(el_cuml, from_step, to_step, nodes = NULL,
+                                   dense_optim = FALSE) {
   # simply invert the time before calling get_forward_reachable`
   el_cuml$stop <- ifelse(is.na(el_cuml$stop), Inf, el_cuml$stop)
   tmp <- el_cuml$start
   el_cuml$start <- - el_cuml$stop
   el_cuml$stop <- - tmp
 
-  get_forward_reachable(el_cuml, -to_step, -from_step, nodes)
+  get_forward_reachable(el_cuml, -to_step, -from_step, nodes, dense_optim)
 }
 
 #' Returns all the node connected directly or indirectly to a set of nodes
@@ -213,6 +234,40 @@ get_adj_list <- function(el, n_nodes) {
     e_tail <- tail[i]
     adj_list[[e_head]] <- c(adj_list[[e_head]], e_tail)
     adj_list[[e_tail]] <- c(adj_list[[e_tail]], e_head)
+  }
+  adj_list
+}
+
+#' Return an adjacency list of subnets
+#'
+#' @param adj_list A normal adjacency list
+#'
+#' @return An adjacency list where only the first node of a subnet contains the
+#' subnet and all other contain only the first node
+#'
+#' @details
+#' A graph with 4 components: 1, 2, 3, 4, and 5 and 6, 7, 8  would yield a list
+#' like so:
+#' 1: 2, 3, 4
+#' 2: 1
+#' 3: 1
+#' 4: 1
+#' 5: numeric(0)
+#' 6: 7, 8
+#' 7: 6,
+#' 8: 6
+#'
+#' This format speeds up the construction of reachable sets on dense networks
+get_subnet_adj_list <- function(adj_list) {
+  for (i in seq_along(adj_list)) {
+    # if first elt connected to before himself, already in a subnet
+    if (length(adj_list[[i]]) == 0 || adj_list[[i]][1] < i)
+      next
+    # get current subnet of i
+    subnet <- get_connected_nodes(adj_list, i)
+    adj_list[[i]] <- subnet
+    # all members of subnet point to i
+    adj_list[subnet] <- i
   }
   adj_list
 }
@@ -279,3 +334,82 @@ dedup_cumulative_edgelist <- function(el) {
   dplyr::bind_rows(e_unique, e_dedup)
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+get_forward_reachable_old <- function(el_cuml, from_step, to_step, nodes = NULL) {
+
+  # Prepare the cumulative edgelist:
+  # - set the `stop` time to `Inf` instead of NA
+  # - remove the edges that don't exist in the analysis period
+  # - set the oldest edges `start` to `to_step`
+  #     (QoL to calcuate the `change_times`)
+  # nolint start
+  el_cuml <- el_cuml |>
+    dplyr::mutate(stop = ifelse(is.na(stop), Inf, stop)) |> # current edges never ends
+    dplyr::filter(start <= to_step, stop >= from_step) |> # remove edges before and after analysis period
+    dplyr::mutate(start = ifelse(start < from_step, from_step, start)) |> # set older edges to start at beginning of analysis
+    dplyr::select(start, stop, head, tail)
+  # nolint end
+  #
+  n_nodes <- max(c(el_cuml$head, el_cuml$tail))
+
+  if (is.null(nodes))
+    nodes <- seq_len(n_nodes)
+
+  # Only consider steps where new edges occur
+  change_times <- sort(unique(el_cuml$start))
+  n_steps <- to_step - from_step + 1
+
+  # the initial FRP contains only the vertex itself
+  reach_cur <- as.list(nodes)
+  reach_lengths <- matrix(0, ncol = n_steps + 1, nrow = length(nodes))
+  reach_lengths[, 1] <- 1
+
+  p <- progressr::progressor(length(change_times))
+
+  for (cur_step in change_times) {
+    p()
+
+    # nolint start
+    #
+    # IN EL_CUML: duration is [start, stop] (inclusive)
+    # all active edges a time `cur_step` are needed (not only start).
+    # This is because getting connected to a node X means also indirectly
+    # connecting to its connections, even the ones that started earlier.
+    el_cur <- dplyr::filter(el_cuml, start <= cur_step, stop >= cur_step)
+    # nolint end
+
+    # get subnet works with adjacency list
+    adj_list <- get_adj_list(el_cur, n_nodes)
+
+    # at time T, the REACH(T) of a node is the subnet connected to the REACH(T-1)
+    new_reached <- lapply(reach_cur, get_connected_nodes, adj_list = adj_list)
+    reach_lengths[, cur_step - from_step + 2] <- vapply(new_reached, length, 0)
+    reach_cur <- Map(c, reach_cur, new_reached)
+  }
+
+  reach_lengths <- t(apply(reach_lengths, 1, cumsum))
+
+  names(reach_cur) <- paste0("node_", nodes)
+  rownames(reach_lengths) <- names(reach_cur)
+  colnames(reach_lengths) <- paste0("step_", (from_step - 1):to_step)
+
+  return(
+    list(
+      reached = reach_cur,
+      lengths = reach_lengths
+    )
+  )
+}
