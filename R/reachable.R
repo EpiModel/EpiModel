@@ -147,6 +147,7 @@ get_forward_reachable <- function(el_cuml, from_step, to_step, nodes = NULL) {
   }
 
   reach_lengths <- t(apply(reach_lengths, 1, cumsum))
+  colnames(reach_lengths) <- paste0("step_", (from_step - 1):to_step)
 
   return(
     list(
