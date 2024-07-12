@@ -9,6 +9,9 @@ assess discordance as well as the values for each group can be specified.
 convert parameter list and parameter data.frames used by `param.net`
 - Allow saving the cumulative edge-list at the end of simulation using the `save.cumulative.edgelist` control flag.
 - Restarting a simulation now only require saving `dat$run`
+- export `get_forward_reachable` and `get_backward_reachable` functions that
+works similar to `tsna::tPath` for multiple nodes and using cumulative
+edgelists.
 
 ### OTHER
 
