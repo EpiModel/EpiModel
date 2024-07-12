@@ -18,6 +18,7 @@ edgelists.
 - Speed up `raw.records` and `attr.history` with `collections::queue` instead of
 `base::list`
 - Remove `dat$epi$sim.num(.g2)` and replace it with `dat$run$num(.g2)` (single value).
+- add `save.diss.stats` to the checked control values
 - Move `el.cuml`, `_last_unique_id` and `_last_timestep` to `dat$run`
 - Move `attr` to `dat$run` and update the tests.
 - Speed up cumulative edge-list calculation by splitting current and historic edges.
