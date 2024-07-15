@@ -6,9 +6,21 @@
 \alias{get_backward_reachable}
 \title{Get the Forward or Backward Reachable Nodes for a Set of Nodes}
 \usage{
-get_forward_reachable(el_cuml, from_step, to_step, nodes = NULL)
+get_forward_reachable(
+  el_cuml,
+  from_step,
+  to_step,
+  nodes = NULL,
+  dense_optim = "auto"
+)
 
-get_backward_reachable(el_cuml, from_step, to_step, nodes = NULL)
+get_backward_reachable(
+  el_cuml,
+  from_step,
+  to_step,
+  nodes = NULL,
+  dense_optim = "auto"
+)
 }
 \arguments{
 \item{el_cuml}{a cumulative edgelist object. That is a data.frame with at
@@ -20,6 +32,12 @@ least columns: head, tail, start and stop. Start and stop are inclusive.}
 
 \item{nodes}{the subset of nodes to calculate the FRP for. (default = NULL,
 all nodes)}
+
+\item{dense_optim}{pre-process the adjacency list to speed up the
+computations on dense networks. "auto" (default), enable the
+optimisation when \code{n_edges > n_nodes}. "yes" always enables and "no"
+always disables. The overhead of the optimization is not worth it on
+sparse networks.}
 }
 \value{
 A named list containing:
@@ -31,11 +49,25 @@ at the beginning is just the node itself.
 }
 \description{
 These functions return the Forward or Backward Reachable Nodes of a set of
-nodes in a network over a time. It is much faster than iterating
+nodes in a network over a time. Warning, these functions ignore nodes without
+edges in the period of interest. See the \verb{Number of Nodes} section for
+details It is much faster than iterating
 \code{tsna::tPath}. The distance between to each node can be back calculated
 using the length of the reachable set at each time step and the fact that the
 reachable sets are ordered by the time to arrival.
 }
+\section{Number of Nodes}{
+
+To speed up the calculations and lower the memory usage, these functions
+only take into account nodes with edges in the cumulative edgelist over the
+period of interest. The nodes are identified in the \code{reached} and \code{lengths}
+sublists by names (e.g. \code{node_1093}). Nodes without any edges are therefore
+not calculated as the only node they reach is themselve (length of 1).
+Take this fact into account when exploring the distribution of Forward
+Reachable Paths for example. As the nodes with FRP == 1 are not in the
+output.
+}
+
 \section{Time and Memory Use}{
 
 These functions may be used to efficiently calculate multiple sets of
@@ -57,17 +89,6 @@ to display the progress bar. Or see the
 for more information and customization.
 }
 
-\section{Number of Nodes}{
-
-As cumulative edgelists do not contain the total number of nodes in the
-network, if \code{nodes = NULL}, the total number of node on the network is
-assumed to be the highest ID recorded in an edge.
-We can therefore arrive to a situation where there is less elements in the
-output than node in the network if the last N nodes (by ID) are never
-connected. And therefore are not recorded in the cumulative edgelist.
-However, it means that these nodes have no reachable nodes appart themselves.
-}
-
 \examples{
 \dontrun{
 
@@ -84,22 +105,25 @@ nodes <- sample(nnodes, 100)
 el_fwd <- get_forward_reachable(el_cuml, 1, 52, nodes)[["reached"]]
 
 # check if the results are consistent with `tsna::tPath`
-for (i in seq_along(el_tp)) {
+nodes <- strsplit(names(el_fwd), "_")
+for (i in seq_along(el_fwd)) {
+  node <- as.integer(nodes[[i]][2])
   t_fwd <- tsna::tPath(
-    nd, v = nodes[[i]],
+    nd, v = node,
     start = 1, end = 52 + 1, # tPath works from [start, end) right exclusive
     direction = "fwd"
   )
 
   t_fwd_set <- which(t_fwd$tdist < Inf)
   if(!setequal(el_fwd[[i]], t_fwd_set))
-    stop("Missmatch on node: ", names(nodes)[[i]])
+    stop("Missmatch on node: ", node)
 }
 
 # Backward:
 el_bkwd <- get_backward_reachable(el_cuml, 1, 52, nodes = 1)[["reached"]]
+nodes <- strsplit(names(el_bkwd), "_")
 t_bkwd <- tsna::tPath(
-  nd, v = nodes[[i]],
+  nd, v = nodes[i][2],
   start = 1, end = 52 + 1,
   direction = "bkwd", type = "latest.depart"
 )
