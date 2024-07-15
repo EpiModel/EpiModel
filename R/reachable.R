@@ -2,7 +2,9 @@
 #'
 #' @description
 #' These functions return the Forward or Backward Reachable Nodes of a set of
-#' nodes in a network over a time. It is much faster than iterating
+#' nodes in a network over a time. Warning, these functions ignore nodes without
+#' edges in the period of interest. See the `Number of Nodes` section for
+#' details It is much faster than iterating
 #' \code{tsna::tPath}. The distance between to each node can be back calculated
 #' using the length of the reachable set at each time step and the fact that the
 #' reachable sets are ordered by the time to arrival.
@@ -13,8 +15,11 @@
 #' @param to_step the end of the time period.
 #' @param nodes the subset of nodes to calculate the FRP for. (default = NULL,
 #'        all nodes)
-#' @param dense_optim a flag to turn on an optimization speeding up the
-#'        computation on denser networks. (default = FALSE)
+#' @param dense_optim pre-process the adjacency list to speed up the
+#'        computations on dense networks. "auto" (default), enable the
+#'        optimisation when `n_edges > n_nodes`. "yes" always enables and "no"
+#'        always disables. The overhead of the optimization is not worth it on
+#'        sparse networks.
 #'
 #' @return
 #' A named list containing:
@@ -23,6 +28,16 @@
 #'      with the length of the reachable set at each step from `from_step - 1`
 #'      to `to_step`. The first column is always one as the set of reachables
 #'      at the beginning is just the node itself.
+#'
+#' @section Number of Nodes:
+#' To speed up the calculations and lower the memory usage, these functions
+#' only take into account nodes with edges in the cumulative edgelist over the
+#' period of interest. The nodes are identified in the `reached` and `lengths`
+#' sublists by names (e.g. `node_1093`). Nodes without any edges are therefore
+#' not calculated as the only node they reach is themselve (length of 1).
+#' Take this fact into account when exploring the distribution of Forward
+#' Reachable Paths for example. As the nodes with FRP == 1 are not in the
+#' output.
 #'
 #' @section Time and Memory Use:
 #' These functions may be used to efficiently calculate multiple sets of
@@ -41,15 +56,6 @@
 #' \href{https://progressr.futureverse.org/articles/progressr-intro.html}{progressr package}
 #' for more information and customization.
 #'
-#' @section Number of Nodes:
-#' As cumulative edgelists do not contain the total number of nodes in the
-#' network, if `nodes = NULL`, the total number of node on the network is
-#' assumed to be the highest ID recorded in an edge.
-#' We can therefore arrive to a situation where there is less elements in the
-#' output than node in the network if the last N nodes (by ID) are never
-#' connected. And therefore are not recorded in the cumulative edgelist.
-#' However, it means that these nodes have no reachable nodes appart themselves.
-#'
 #' @examples
 #' \dontrun{
 #'
@@ -66,22 +72,25 @@
 #' el_fwd <- get_forward_reachable(el_cuml, 1, 52, nodes)[["reached"]]
 #'
 #' # check if the results are consistent with `tsna::tPath`
-#' for (i in seq_along(el_tp)) {
+#' nodes <- strsplit(names(el_fwd), "_")
+#' for (i in seq_along(el_fwd)) {
+#'   node <- as.integer(nodes[[i]][2])
 #'   t_fwd <- tsna::tPath(
-#'     nd, v = nodes[[i]],
+#'     nd, v = node,
 #'     start = 1, end = 52 + 1, # tPath works from [start, end) right exclusive
 #'     direction = "fwd"
 #'   )
 #'
 #'   t_fwd_set <- which(t_fwd$tdist < Inf)
 #'   if(!setequal(el_fwd[[i]], t_fwd_set))
-#'     stop("Missmatch on node: ", names(nodes)[[i]])
+#'     stop("Missmatch on node: ", node)
 #' }
 #'
 #' # Backward:
 #' el_bkwd <- get_backward_reachable(el_cuml, 1, 52, nodes = 1)[["reached"]]
+#' nodes <- strsplit(names(el_bkwd), "_")
 #' t_bkwd <- tsna::tPath(
-#'   nd, v = nodes[[i]],
+#'   nd, v = nodes[i][2],
 #'   start = 1, end = 52 + 1,
 #'   direction = "bkwd", type = "latest.depart"
 #' )
@@ -96,7 +105,7 @@ NULL
 #' @rdname reachable-nodes
 #' @export
 get_forward_reachable <- function(el_cuml, from_step, to_step, nodes = NULL,
-                                  dense_optim = FALSE) {
+                                  dense_optim = "auto") {
   # Prepare the cumulative edgelist:
   # - set the `stop` time to `Inf` instead of NA
   # - remove the edges that don't exist in the analysis period
@@ -151,10 +160,14 @@ get_forward_reachable <- function(el_cuml, from_step, to_step, nodes = NULL,
     el_cur <- dplyr::filter(el_cuml, start <= cur_step, stop >= cur_step)
     # nolint end
 
-    # get subnet works with adjacency list
     adj_list <- get_adj_list(el_cur, length(orig_indexes))
-    if (dense_optim)
+
+    # precompute the network components. Useful for dense networks
+    if (dense_optim == "yes") {
       adj_list <- get_subnet_adj_list(adj_list)
+    } else if (dense_optim == "auto" && nrow(el_cur) > length(orig_indexes)) {
+      adj_list <- get_subnet_adj_list(adj_list)
+    }
 
     # at time T, the REACH(T) of a node is the subnet connected to the REACH(T-1)
     new_reached <- lapply(reach_cur, get_connected_nodes, adj_list = adj_list)
@@ -180,7 +193,7 @@ get_forward_reachable <- function(el_cuml, from_step, to_step, nodes = NULL,
 #' @rdname reachable-nodes
 #' @export
 get_backward_reachable <- function(el_cuml, from_step, to_step, nodes = NULL,
-                                   dense_optim = FALSE) {
+                                   dense_optim = "auto") {
   # simply invert the time before calling get_forward_reachable`
   el_cuml$stop <- ifelse(is.na(el_cuml$stop), Inf, el_cuml$stop)
   tmp <- el_cuml$start
@@ -332,84 +345,4 @@ dedup_cumulative_edgelist <- function(el) {
     unique()
 
   dplyr::bind_rows(e_unique, e_dedup)
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-get_forward_reachable_old <- function(el_cuml, from_step, to_step, nodes = NULL) {
-
-  # Prepare the cumulative edgelist:
-  # - set the `stop` time to `Inf` instead of NA
-  # - remove the edges that don't exist in the analysis period
-  # - set the oldest edges `start` to `to_step`
-  #     (QoL to calcuate the `change_times`)
-  # nolint start
-  el_cuml <- el_cuml |>
-    dplyr::mutate(stop = ifelse(is.na(stop), Inf, stop)) |> # current edges never ends
-    dplyr::filter(start <= to_step, stop >= from_step) |> # remove edges before and after analysis period
-    dplyr::mutate(start = ifelse(start < from_step, from_step, start)) |> # set older edges to start at beginning of analysis
-    dplyr::select(start, stop, head, tail)
-  # nolint end
-  #
-  n_nodes <- max(c(el_cuml$head, el_cuml$tail))
-
-  if (is.null(nodes))
-    nodes <- seq_len(n_nodes)
-
-  # Only consider steps where new edges occur
-  change_times <- sort(unique(el_cuml$start))
-  n_steps <- to_step - from_step + 1
-
-  # the initial FRP contains only the vertex itself
-  reach_cur <- as.list(nodes)
-  reach_lengths <- matrix(0, ncol = n_steps + 1, nrow = length(nodes))
-  reach_lengths[, 1] <- 1
-
-  p <- progressr::progressor(length(change_times))
-
-  for (cur_step in change_times) {
-    p()
-
-    # nolint start
-    #
-    # IN EL_CUML: duration is [start, stop] (inclusive)
-    # all active edges a time `cur_step` are needed (not only start).
-    # This is because getting connected to a node X means also indirectly
-    # connecting to its connections, even the ones that started earlier.
-    el_cur <- dplyr::filter(el_cuml, start <= cur_step, stop >= cur_step)
-    # nolint end
-
-    # get subnet works with adjacency list
-    adj_list <- get_adj_list(el_cur, n_nodes)
-
-    # at time T, the REACH(T) of a node is the subnet connected to the REACH(T-1)
-    new_reached <- lapply(reach_cur, get_connected_nodes, adj_list = adj_list)
-    reach_lengths[, cur_step - from_step + 2] <- vapply(new_reached, length, 0)
-    reach_cur <- Map(c, reach_cur, new_reached)
-  }
-
-  reach_lengths <- t(apply(reach_lengths, 1, cumsum))
-
-  names(reach_cur) <- paste0("node_", nodes)
-  rownames(reach_lengths) <- names(reach_cur)
-  colnames(reach_lengths) <- paste0("step_", (from_step - 1):to_step)
-
-  return(
-    list(
-      reached = reach_cur,
-      lengths = reach_lengths
-    )
-  )
 }

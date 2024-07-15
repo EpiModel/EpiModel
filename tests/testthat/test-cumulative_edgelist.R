@@ -78,7 +78,7 @@ test_that("netsim, SI, Cumulative Edgelist", {
   # Only test that the functions run without error. See the functions examples
   # to check correctness
   el_tp <- get_forward_reachable(el_cuml, from_step, to_step, nodes)
-  el_tp <- get_backward_reachable(el_cuml, from_step, to_step, nodes, TRUE)
+  el_tp <- get_backward_reachable(el_cuml, from_step, to_step, nodes, "yes")
 })
 
 test_that("netsim, SI, Cumulative Edgelist - missing args", {
