@@ -1,552 +1,192 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/404.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/LICENSE.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/articles/Intro.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/articles/attributes-and-summary-statistics.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/articles/model-parameters.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/articles/network-objects.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/authors.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/index.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/news/index.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/EpiModel-package.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/InitErgmTerm.absdiffby.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/InitErgmTerm.absdiffnodemix.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/InitErgmTerm.fuzzynodematch.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/add_vertices.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/apportion_lr.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/arrivals.2g.net.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/arrivals.icm.bip.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/arrivals.icm.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/arrivals.net.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/arrive_nodes.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/as.data.frame.dcm.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/as.data.frame.icm.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/as.data.frame.netdx.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/as.network.transmat.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/as.phylo.transmat.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/as_tibble_edgelist.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/auto_update_attr.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/brewer_ramp.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/check_attr_lengths.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/check_degdist_bal.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/check_end_horizon_control.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/color_tea.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/common_updater.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/comp_plot.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/control.dcm.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/control.icm.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/control.net.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/copy_datattr_to_nwattr.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/copy_nwattr_to_datattr.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/create_dat_object.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/create_scenario_list.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/crosscheck.dcm.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/crosscheck.icm.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/crosscheck.net.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/dcm.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/dcm.mods.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/deleteAttr.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/delete_attr.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/delete_edges.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/delete_vertices.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/depart_nodes.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/departures.2g.net.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/departures.icm.bip.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/departures.icm.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/departures.net.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/discord_edgelist.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/dissolution_coefs.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/edgelist_censor.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/edges_correct.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/epi_trackers.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/epiweb.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/format_param.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/generate_random_params.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/geom_bands.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/get_args.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/get_attr_history.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/get_attr_prop.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/get_cumulative_degree.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/get_cumulative_edgelist.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/get_cumulative_edgelists_df.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/get_current_timestep.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/get_degree.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/get_discordant_edgelist.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/get_edgelist.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/get_edgelists_df.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/get_formula_term_attr.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/get_modules.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/get_network.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/get_network_attributes.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/get_network_term_attr.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/get_nwparam.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/get_nwstats.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/get_param_set.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/get_partners.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/get_sims.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/get_transmat.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/get_vertex_attribute.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/icm.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/idgroup.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/increment_timestep.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/infection.2g.net.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/infection.icm.bip.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/infection.icm.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/infection.net.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/init.dcm.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/init.icm.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/init.net.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/init_nets.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/init_status.icm.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/init_status.net.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/initialize.icm.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/initialize.net.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/is_active_posit_ids.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/is_active_unique_ids.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/make_module_list.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/make_stats_table.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/mcat.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/merge.icm.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/merge.netsim.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/modules.icm.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/modules.net.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/multilayer.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/mutate_epi.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/net-accessor.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/netdx.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/netest.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/netsim.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/netsim_cond_msg.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/netsim_error_logger.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/network_initialize.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/nwupdate.net.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/padded_vector.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/param.dcm.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/param.icm.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/param.net.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/param.net_from_table.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/param.net_to_table.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/param_random.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/plot.dcm.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/plot.icm.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/plot.netdx.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/plot.netsim.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/plot.transmat.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/prevalence.icm.bip.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/prevalence.icm.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/prevalence.net.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/print.netdx.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/print_nwstats_table.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/process_out.net.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/record_attr_history.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/record_raw_object.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/recovery.2g.net.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/recovery.icm.bip.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/recovery.icm.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/recovery.net.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/reexports.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/remove_modules.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/resim_nets.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/saveout.dcm.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/saveout.icm.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/saveout.net.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/set_current_timestep.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/set_modules.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/set_network.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/set_transmat.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/set_vertex_attribute.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/sim_nets_t1.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/simulate_dat.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/ssample.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/summary.dcm.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/summary.icm.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/summary.netest.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/summary.netsim.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/summary_nets.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/tedgelist_to_toggles.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/test_icm.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/test_net.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/toggles_to_diss_stats.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/trigger_end_horizon.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/trim_netest.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/truncate_sim.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/unique_id-tools.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/update_cumulative_edgelist.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/update_dissolution.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/update_list.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/update_params.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/update_unique_ids.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/use_scenario.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/verbose.dcm.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/verbose.icm.html</loc>
-  </url>
-  <url>
-    <loc>http://epimodel.github.io/EpiModel/reference/verbose.net.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>http://epimodel.github.io/EpiModel/404.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/LICENSE.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/articles/Intro.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/articles/attributes-and-summary-statistics.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/articles/index.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/articles/model-parameters.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/articles/network-objects.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/authors.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/index.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/news/index.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/EpiModel-package.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/InitErgmTerm.absdiffby.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/InitErgmTerm.absdiffnodemix.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/InitErgmTerm.fuzzynodematch.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/add_vertices.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/apportion_lr.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/arrivals.2g.net.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/arrivals.icm.bip.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/arrivals.icm.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/arrivals.net.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/arrive_nodes.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/as.data.frame.dcm.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/as.data.frame.icm.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/as.data.frame.netdx.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/as.network.transmat.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/as.phylo.transmat.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/as_cumulative_edgelist.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/as_tibble_edgelist.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/auto_update_attr.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/brewer_ramp.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/check_attr_lengths.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/check_degdist_bal.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/check_end_horizon_control.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/color_tea.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/common_updater.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/comp_plot.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/control.dcm.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/control.icm.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/control.net.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/copy_datattr_to_nwattr.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/copy_nwattr_to_datattr.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/create_dat_object.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/create_scenario_list.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/crosscheck.dcm.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/crosscheck.icm.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/crosscheck.net.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/dcm.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/dcm.mods.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/dedup_cumulative_edgelist.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/deleteAttr.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/delete_attr.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/delete_edges.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/delete_vertices.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/depart_nodes.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/departures.2g.net.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/departures.icm.bip.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/departures.icm.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/departures.net.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/discord_edgelist.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/dissolution_coefs.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/edgelist_censor.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/edges_correct.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/epi_trackers.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/epiweb.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/format_param.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/generate_random_params.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/geom_bands.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/get_adj_list.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/get_args.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/get_attr_history.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/get_attr_prop.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/get_connected_nodes.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/get_cumulative_degree.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/get_cumulative_edgelist.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/get_cumulative_edgelists_df.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/get_current_timestep.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/get_degree.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/get_discordant_edgelist.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/get_edgelist.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/get_edgelists_df.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/get_formula_term_attr.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/get_modules.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/get_network.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/get_network_attributes.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/get_network_term_attr.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/get_nwparam.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/get_nwstats.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/get_param_set.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/get_partners.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/get_sims.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/get_subnet_adj_list.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/get_transmat.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/get_vertex_attribute.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/icm.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/idgroup.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/increment_timestep.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/index.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/infection.2g.net.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/infection.icm.bip.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/infection.icm.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/infection.net.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/init.dcm.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/init.icm.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/init.net.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/init_nets.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/init_status.icm.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/init_status.net.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/initialize.icm.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/initialize.net.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/is_active_posit_ids.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/is_active_unique_ids.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/make_module_list.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/make_stats_table.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/mcat.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/merge.icm.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/merge.netsim.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/modules.icm.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/modules.net.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/multilayer.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/mutate_epi.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/net-accessor.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/netdx.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/netest.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/netsim.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/netsim_cond_msg.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/netsim_error_logger.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/network_initialize.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/nwupdate.net.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/padded_vector.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/param.dcm.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/param.icm.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/param.net.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/param.net_from_table.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/param.net_to_table.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/param_random.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/plot.dcm.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/plot.icm.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/plot.netdx.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/plot.netsim.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/plot.transmat.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/prevalence.icm.bip.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/prevalence.icm.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/prevalence.net.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/print.netdx.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/print_nwstats_table.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/process_out.net.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/reachable-nodes.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/record_attr_history.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/record_raw_object.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/recovery.2g.net.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/recovery.icm.bip.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/recovery.icm.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/recovery.net.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/reexports.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/remove_modules.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/resim_nets.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/saveout.dcm.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/saveout.icm.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/saveout.net.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/set_current_timestep.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/set_modules.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/set_network.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/set_transmat.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/set_vertex_attribute.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/sim_nets_t1.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/simulate_dat.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/ssample.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/summary.dcm.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/summary.icm.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/summary.netest.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/summary.netsim.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/summary_nets.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/tedgelist_to_toggles.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/test_icm.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/test_net.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/toggles_to_diss_stats.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/trigger_end_horizon.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/trim_netest.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/truncate_sim.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/unique_id-tools.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/update_cumulative_edgelist.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/update_dissolution.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/update_list.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/update_params.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/update_unique_ids.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/use_scenario.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/verbose.dcm.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/verbose.icm.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/verbose.net.html</loc></url>
 </urlset>
+
