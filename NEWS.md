@@ -15,6 +15,8 @@ it's on the model builder to put all elements in `dat$run`.
 - export `get_forward_reachable` and `get_backward_reachable` functions that
 works similar to `tsna::tPath` for multiple nodes and using cumulative
 edgelists.
+- export `overwrite_attrs`, a helper function to overwrite the initial
+attributes of the nodes in a network simulation. See `?overwrite_attrs`
 
 ### OTHER
 
@@ -29,6 +31,7 @@ value). These values keep track of the current size of the network and are only
 needed during model runs.
 - Speed up cumulative edge-list calculation by splitting current and historic
 edges.
+- The `deleteAttr` function that was deprecated in 2.4.2 is now removed.
 
 ## EpiModel 2.4.0
 
