@@ -275,11 +275,13 @@ edges_correct <- function(dat, at) {
 # `dat$run`.
 # This is used to adjuste the `edges` coefficient of tergm
 update_sim_num <- function(dat) {
+  active <- get_attr(dat, "active")
   if (get_param(dat, "groups") == 1) {
-    dat$run$num <- sum(dat$attr$active == 1)
+    dat$run$num <- sum(active == 1)
   } else {
-    dat$run$num <- sum(dat$attr$active == 1 & dat$attr$group == 1)
-    dat$run$num.g2 <- sum(dat$attr$active == 1 & dat$attr$group == 2)
+    group <- get_attr(dat, "group")
+    dat$run$num <- sum(active == 1 & group == 1)
+    dat$run$num.g2 <- sum(active == 1 & group == 2)
   }
   return(dat)
 }

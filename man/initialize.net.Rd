@@ -32,10 +32,6 @@ the networks, and simulates disease status and other attributes.
 \details{
 When re-initializing a simulation, the \code{netsim} object passed
 to \code{initialize.net} must contain the elements \code{param},
-\code{nwparam}, \code{epi}, \code{attr}, \code{temp},
-\code{coef.form}, and \code{num.nw}. If \code{tergmLite == TRUE} it
-must also contain the elements \code{el} and \code{net_attr}. If
-\code{tergmLite == FALSE} it must also contain the element
-\code{network}.
+\code{nwparam}, \code{epi}, \code{coef.form}, and \code{num.nw}.
 }
 \keyword{internal}

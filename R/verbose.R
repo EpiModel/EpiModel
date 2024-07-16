@@ -114,8 +114,8 @@ verbose.net <- function(x, type, s = 1, at = 2) {
         cat("\n----------------------------")
         cat("\nSimulation: ", s, "/", x$control$nsims, sep = "")
         cat("\nTimestep: ", at, "/", x$control$nsteps, sep = "")
-        active <- x$attr$active
-        status <- x$attr$status[which(active == 1)]
+        active <- get_attr(x, "active")
+        status <- get_attr(x, "status", posit_ids = which(active == 1))
         if (inherits(status, "character")) {
           status <- ifelse(status == "i", 1, 0)
         }

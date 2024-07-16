@@ -173,11 +173,12 @@ copy_nwattr_to_datattr <- function(dat, nw) {
   otha <- setdiff(otha, c("na", "vertex.names", "active",
                           "testatus.active", "tergm_pid"))
   if (length(otha) > 0) {
+    epi_by <- get_control(dat, "epi.by", override.null.error = TRUE)
     for (i in seq_along(otha)) {
       va <- get_vertex_attribute(nw, otha[i])
-      dat$attr[[otha[i]]] <- va
-      if (!is.null(dat$control$epi.by) && dat$control$epi.by == otha[i]) {
-        dat$temp$epi.by.vals <- unique(va)
+      dat <- set_attr(dat, otha[i], va)
+      if (!is.null(epi_by) && epi_by == otha[i]) {
+        dat$run$epi.by.vals <- unique(va)
       }
     }
   }
@@ -203,24 +204,24 @@ copy_nwattr_to_datattr <- function(dat, nw) {
 #' @export
 #'
 copy_datattr_to_nwattr <- function(dat) {
-  nwterms <- dat$temp$nwterms
+  nwterms <- dat$run$nwterms
   special.attr <- "status"
   if (dat$param$groups == 2) {
     special.attr <- c(special.attr, "group")
   }
   nwterms <- union(nwterms, special.attr)
   attr.to.copy <- union(nwterms, special.attr)
-  attr <- dat$attr[attr.to.copy]
+  attr <- get_attr_list(dat, attr.to.copy)
   if (length(attr.to.copy) > 0) {
     if (length(attr.to.copy) == 1) {
       for (network in seq_len(dat$num.nw)) {
-        dat$nw[[network]] <- set_vertex_attribute(dat$nw[[network]],
+        dat$run$nw[[network]] <- set_vertex_attribute(dat$run$nw[[network]],
                                                   names(attr),
                                                   attr[[1]])
       }
     } else {
       for (network in seq_len(dat$num.nw)) {
-        dat$nw[[network]] <- set_vertex_attribute(dat$nw[[network]],
+        dat$run$nw[[network]] <- set_vertex_attribute(dat$run$nw[[network]],
                                                   names(attr),
                                                   attr)
       }
@@ -554,14 +555,14 @@ get_attr_prop <- function(dat, nwterms) {
   if (is.null(nwterms)) {
     return(NULL)
   }
-
-  nwVal <- names(dat$attr)
+  attr_list <- get_attr_list(dat)
+  nwVal <- names(attr_list)
   nwVal <- setdiff(nwVal, c("na", "vertex.names", "active", "entrTime",
                             "exitTime", "infTime", "group", "status"))
   out <- list()
   if (length(nwVal) > 0) {
     for (i in seq_along(nwVal)) {
-      tab <- prop.table(table(dat$attr[[nwVal[i]]]))
+      tab <- prop.table(table(attr_list[[nwVal[i]]]))
       out[[i]] <- tab
     }
     names(out) <- nwVal
@@ -695,7 +696,7 @@ auto_update_attr <- function(dat, newNodes, curr.tab) {
 
   rules <- get_control(dat, "attr.rules")
   active <- get_attr(dat, "active")
-  t1.tab <- dat$temp$t1.tab
+  t1.tab <- dat$run$t1.tab
 
   for (i in seq_along(curr.tab)) {
     vname <- names(curr.tab)[i]
@@ -736,7 +737,7 @@ auto_update_attr <- function(dat, newNodes, curr.tab) {
       } else {
         nattr <- rep(rules[[vname]], length(newNodes))
       }
-      dat$attr[[vname]] <- c(dat$attr[[vname]], nattr)
+      dat <- append_attr(dat, vname, nattr, length(nattr))
     }
   }
 

@@ -273,9 +273,9 @@ test_that("edgecov works with tergmLite", {
   control <- control.net(type = NULL, nsteps = 4, nsims = 1, ncores = 1,
                          dat.updates = function(dat, at, network) {
                            if (network == 0L && at > 0L) {
-                             n <- dat$net_attr[[1]][["n"]]
+                             n <- dat$run$net_attr[[1]][["n"]]
                              m <- matrix(if(at == 3) +Inf else -Inf, n, n)*coefsign
-                             dat$net_attr[[1]][["ec"]] <- m
+                             dat$run$net_attr[[1]][["ec"]] <- m
                            }
                            return(dat)
                          }, tergmLite = TRUE, resimulate.network = TRUE,
@@ -305,7 +305,7 @@ test_that("tergm and tergmLite produce consistent durational statistics", {
     if (trim == TRUE) {
       est2 <- trim_netest(est)
     } else {
-      est2 <- est    
+      est2 <- est
     }
     param <- param.net(inf.prob = 0, act.rate = 0)
     init <- init.net(i.num = 0)
@@ -356,14 +356,14 @@ test_that("durational monitor with tergmLite", {
                   target.stats = c(25, 10),
                   coef.diss = dissolution_coefs(~offset(edges), duration, 0),
                   verbose = FALSE)
-    
+
     for (trim in list(FALSE, TRUE)) {
       if (trim == TRUE) {
         est2 <- trim_netest(est)
       } else {
-        est2 <- est    
+        est2 <- est
       }
-      
+
       for (tergmLite.track.duration in list(FALSE, TRUE)) {
         control <- control.net(type = "SI",
                                nsims = nsims,
@@ -373,10 +373,10 @@ test_that("durational monitor with tergmLite", {
                                tergmLite.track.duration = tergmLite.track.duration,
                                nwstats.formula = ~edges + mean.age,
                                verbose = FALSE)
-        
+
         mod <- netsim(est2, param, init, control)
         stats <- get_nwstats(mod)
-        
+
         expect_true(all(stats$mean.age >= 0))
         print(stats$mean.age)
       }

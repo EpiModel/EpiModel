@@ -45,6 +45,7 @@ test_that("netsim, SI, Cumulative Edgelist", {
     verbose = FALSE,
     truncate.el.cuml = 40,
     cumulative.edgelist = TRUE,
+    save.cumulative.edgelist = TRUE,
     raw.output = TRUE
   )
 
@@ -63,6 +64,21 @@ test_that("netsim, SI, Cumulative Edgelist", {
   expect_error(
     update_cumulative_edgelist(dat = mod[[1]], network = 2)
   )
+
+  # Cumulative edgelist extraction and reachable set
+  sim <- process_out.net(mod)
+  el_cuml <- sim$cumulative.edgelist[[1]]
+  el_cuml <- dedup_cumulative_edgelist(el_cuml)
+
+  nnodes <- max(el_cuml$head, el_cuml$tail)
+
+  from_step <- min(el_cuml$start)
+  to_step <- 100
+  nodes <- sample(nnodes, 10)
+  # Only test that the functions run without error. See the functions examples
+  # to check correctness
+  el_tp <- get_forward_reachable(el_cuml, from_step, to_step, nodes)
+  el_tp <- get_backward_reachable(el_cuml, from_step, to_step, nodes, "yes")
 })
 
 test_that("netsim, SI, Cumulative Edgelist - missing args", {
@@ -123,9 +139,9 @@ test_that("netsim, SI, Cumulative Edgelist with arrivals and departures", {
   # checks the unicity of UIDs
   expect_true(all(table(uid) == 1))
   # checks that all attributed UID are not in the currently attributed UIDs
-  expect_false(setequal(seq_len(dat[["_last_unique_id"]]), get_unique_ids(dat)))
+  expect_false(setequal(seq_len(dat$run$last_unique_id), get_unique_ids(dat)))
   # checks that all attributed UID are not in the currently attributed PIDs
-  expect_false(setequal(seq_len(dat[["_last_unique_id"]]), get_posit_ids(dat)))
+  expect_false(setequal(seq_len(dat$run$last_unique_id), get_posit_ids(dat)))
 
   # checks the translation between UID and PID in get_partners
   expect_true(all(get_posit_ids(dat, unique(partners$index)) %in% spids))

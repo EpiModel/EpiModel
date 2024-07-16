@@ -1,5 +1,5 @@
 
-## EpiModel 2.4.1
+## EpiModel 2.5
 
 ### NEW FEATURES
 
@@ -7,12 +7,28 @@
 assess discordance as well as the values for each group can be specified.
 - export `param.net_from_table` and `param.net_to_table` helper functions to
 convert parameter list and parameter data.frames used by `param.net`
+- Allow saving the cumulative edge-list at the end of simulation using the
+`save.cumulative.edgelist` control flag.
+- Restarting a simulation now only require saving `dat$run`. This removes the
+need to keep track of all the elements required at the end of a simulation. Now
+it's on the model builder to put all elements in `dat$run`.
+- export `get_forward_reachable` and `get_backward_reachable` functions that
+works similar to `tsna::tPath` for multiple nodes and using cumulative
+edgelists.
 
 ### OTHER
 
 - Speed up `raw.records` and `attr.history` with `collections::queue` instead of
 `base::list`
-- Remove `dat$epi$sim.num(.g2)` and replace it with `dat$run$num(.g2)` (single value).
+- add `save.diss.stats` to the checked control values. Prevents undefined values
+when using `control.net` wrappers.
+- Move `el.cuml`, `_last_unique_id` and `_last_timestep` and `attr` to `dat$run`
+and update the tests. Part of the re-structuration of the `dat` object to create
+- Remove `dat$epi$sim.num(.g2)` and replace it with `dat$run$num(.g2)` (single
+value). These values keep track of the current size of the network and are only
+needed during model runs.
+- Speed up cumulative edge-list calculation by splitting current and historic
+edges.
 
 ## EpiModel 2.4.0
 

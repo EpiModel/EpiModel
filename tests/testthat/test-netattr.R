@@ -75,7 +75,7 @@ test_that("Serosorting model in open population", {
                                             nodematch("status"),
                          tergmLite = FALSE,
                          resimulate.network = TRUE,
-                         save.other = "attr",
+                         save.run = TRUE,
                          verbose = FALSE)
 
   sim <- netsim(est, param, init, control)
@@ -89,7 +89,7 @@ test_that("Serosorting model in open population", {
   expect_true(sum(is.na(tea20)) == 0)
 
   fstat.nw <- get_vertex_attribute(nD, "status")
-  fstat.attr <- sim$attr[[1]]$status
+  fstat.attr <- sim$run[[1]]$attr$status
 
   expect_identical(tea20, fstat.nw)
   expect_identical(fstat.nw, fstat.attr)
@@ -122,7 +122,7 @@ test_that("Serosorting model in closed population", {
                            nodematch("status"),
                          tergmLite = FALSE,
                          resimulate.network = TRUE,
-                         save.other = "attr",
+                         save.run = TRUE,
                          verbose = FALSE)
 
   sim <- netsim(est, param, init, control)
@@ -138,7 +138,7 @@ test_that("Serosorting model in closed population", {
   expect_true(sum(is.na(tea20)) == 0)
 
   fstat.nw <- get_vertex_attribute(nD, "status")
-  fstat.attr <- sim$attr[[1]]$status
+  fstat.attr <- sim$run[[1]]$attr$status
 
   expect_identical(tea20, fstat.nw)
   expect_identical(fstat.nw, fstat.attr)
@@ -173,7 +173,7 @@ test_that("Serosorting model in open population, with tergmLite", {
                            nodematch("status"),
                          tergmLite = TRUE,
                          resimulate.network = TRUE,
-                         save.other = "attr",
+                         save.run = TRUE,
                          verbose = FALSE)
 
   sim <- netsim(est, param, init, control)
@@ -199,13 +199,13 @@ test_that("Save attributes to output", {
 
   init <- init.net(i.num = 10, i.num.g2 = 10)
   control <- control.net(type = "SI", nsteps = 10, nsims = 2,
-                         save.other = "attr", resimulate.network = TRUE,
+                         save.run = TRUE, resimulate.network = TRUE,
                          verbose = FALSE)
 
   sim1 <- netsim(est1, param, init, control)
   expect_is(sim1, "netsim")
-  expect_is(sim1$attr[[1]], "list")
-  expect_true(all(c("entrTime", "exitTime") %in% names(sim1$attr[[1]])))
+  expect_is(sim1$run[[1]]$attr, "list")
+  expect_true(all(c("entrTime", "exitTime") %in% names(sim1$run[[1]]$attr)))
 })
 
 

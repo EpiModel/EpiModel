@@ -341,7 +341,7 @@ infect2 <- function(dat, at) {
   ## 1. Pull in parameters relevant to infection process process. E.g.,
   # Exposure rate
   e.rate <- get_param(dat, "e.rate")
-  ## 2. Pull current attribute list identifying succeptible and infectious 
+  ## 2. Pull current attribute list identifying succeptible and infectious
   ## individuals. E.g.,
   status <- get_attr(dat, "status")
   ## 3. Run infection process
@@ -355,7 +355,7 @@ infect2 <- function(dat, at) {
 ## Example schematic of user-defined function: aging
 aging <- function(dat, at) {
   ## 1. Pull current age
-  age <- get_attr(dat, "attr")
+  age <- get_attr(dat, "age")
   ## 2. Advance age attribute by one time step
   age <- age + 1
   ## 3. Set updated age attribute on dat object
@@ -498,7 +498,7 @@ my_initialize <- function() {
   dat <- set_attr(dat, "active", rep(1, num), override.length.check = TRUE)
   dat <- set_attr(dat, "entrTime", rep(1, num))
   dat <- set_attr(dat, "exitTime", rep(NA, num))
-  
+
 }
 ```
 
@@ -532,7 +532,7 @@ target.stats <- 400
 should be updated to the two-group syntax, noting that to replicate the bipartite structure of the old network, we need to set the `nodematch("group")` terms target statistic to 0 (though this statistic can range from anywhere from 0 to the edges statistic).
 
 ```{r echo = TRUE, eval = FALSE}
-## EpiModel 2.0 
+## EpiModel 2.0
 num1 <- num2 <- 500
 
 ## Update to new initialization function network_initialize.
@@ -577,7 +577,7 @@ Finally, control parameters `depend` and `save.network` (along with `save.transm
 
 ```{r echo = TRUE, eval = FALSE}
 ## EpiModel 1.x
-control <- control.net(type = "SI", nsteps = 100, depend = FALSE, 
+control <- control.net(type = "SI", nsteps = 100, depend = FALSE,
                        save.network = TRUE)
 ```
 
@@ -646,7 +646,7 @@ The input parameters for departures do not need to be updated. However, users sh
 ```{r echo = TRUE, eval = FALSE}
 ## EpiModel 1.x
 init <- init.net(i.num = 30)
-control <- control.net(type = "SIR", nsteps = 100, depend = TRUE, 
+control <- control.net(type = "SIR", nsteps = 100, depend = TRUE,
                        save.network = FALSE)
 ```
 
@@ -671,17 +671,17 @@ Our final example is an extension of the SIR model not represented in base EpiMo
 ## EpiModel 1.x
 ## Modified infection module
 infect <- function(dat, at) {
-  
+
   active <- dat$attr$active
   status <- dat$attr$status
-  nw <- dat$nw
-  
+  nw <- dat$run$nw
+
   idsInf <- which(active == 1 & status == "i")
   nActive <- sum(active == 1)
-  
+
   nElig <- length(idsInf)
   nInf <- 0
-  
+
   if (nElig > 0 && nElig < nActive) {
     del <- discord_edgelist(dat, at)
     if (!(is.null(del))) {
@@ -698,13 +698,13 @@ infect <- function(dat, at) {
       }
     }
   }
-  
+
   if (at == 2) {
     dat$epi$se.flow <- c(0, nInf)
   } else {
     dat$epi$se.flow[at] <- nInf
   }
-  dat$nw <- nw
+  dat$run$nw <- nw
   return(dat)
 }
 ```
@@ -717,19 +717,19 @@ The `$` operations must all be updated with their respective accessor functions,
 
 ## Modified infection module
 infect2 <- function(dat, at) {
-  
+
   active <- get_attr(dat, "active")
   status <- get_attr(dat, "status")
   infTime <- get_attr(dat, "infTime")
   inf.prob <- get_param(dat, "inf.prob")
   act.rate <- get_param(dat, "act.rate")
-  
+
   idsInf <- which(active == 1 & status == "i")
   nActive <- sum(active == 1)
-  
+
   nElig <- length(idsInf)
   nInf <- 0
-  
+
   if (nElig > 0 && nElig < nActive) {
     del <- discord_edgelist(dat, at)
     if (!(is.null(del))) {
@@ -747,9 +747,9 @@ infect2 <- function(dat, at) {
       }
     }
   }
-  
+
   dat <- set_epi(dat, "se.flow", at, nInf)
-  
+
   return(dat)
 }
 ```
@@ -761,18 +761,18 @@ Next, we have the disease progression module, which moves individuals from the e
 
 ## New disease progression module
 progress <- function(dat, at) {
-  
+
   active <- dat$attr$active
   status <- dat$attr$status
-  
+
   ei.rate <- dat$param$ei.rate
   ir.rate <- dat$param$ir.rate
-  
+
   ## E to I progression
   nInf <- 0
   idsEligInf <- which(active == 1 & status == "e")
   nEligInf <- length(idsEligInf)
-  
+
   if (nEligInf > 0) {
     vecInf <- which(rbinom(nEligInf, 1, ei.rate) == 1)
     if (length(vecInf) > 0) {
@@ -781,12 +781,12 @@ progress <- function(dat, at) {
       status[idsInf] <- "i"
     }
   }
-  
+
   ## I to R progression
   nRec <- 0
   idsEligRec <- which(active == 1 & status == "i")
   nEligRec <- length(idsEligRec)
-  
+
   if (nEligRec > 0) {
     vecRec <- which(rbinom(nEligRec, 1, ir.rate) == 1)
     if (length(vecRec) > 0) {
@@ -795,9 +795,9 @@ progress <- function(dat, at) {
       status[idsRec] <- "r"
     }
   }
-  
+
   dat$attr$status <- status
-  
+
   if (at == 2) {
     dat$epi$ei.flow <- c(0, nInf)
     dat$epi$ir.flow <- c(0, nRec)
@@ -809,7 +809,7 @@ progress <- function(dat, at) {
     dat$epi$e.num[at] <- sum(active == 1 & status == "e")
     dat$epi$r.num[at] <- sum(active == 1 & status == "r")
   }
-  
+
   return(dat)
 }
 ```
@@ -822,18 +822,18 @@ with their respective accessor versions. Note here the standard workflow for any
 
 ## New disease progression module
 progress2 <- function(dat, at) {
-  
+
   active <- get_attr(dat, "active")
   status <- get_attr(dat, "status")
-  
+
   ei.rate <- get_param(dat, "ei.rate")
   ir.rate <- get_param(dat, "ir.rate")
-  
+
   ## E to I progression
   nInf <- 0
   idsEligInf <- which(active == 1 & status == "e")
   nEligInf <- length(idsEligInf)
-  
+
   if (nEligInf > 0) {
     vecInf <- which(rbinom(nEligInf, 1, ei.rate) == 1)
     if (length(vecInf) > 0) {
@@ -842,12 +842,12 @@ progress2 <- function(dat, at) {
       status[idsInf] <- "i"
     }
   }
-  
+
   ## I to R progression
   nRec <- 0
   idsEligRec <- which(active == 1 & status == "i")
   nEligRec <- length(idsEligRec)
-  
+
   if (nEligRec > 0) {
     vecRec <- which(rbinom(nEligRec, 1, ir.rate) == 1)
     if (length(vecRec) > 0) {
@@ -856,14 +856,14 @@ progress2 <- function(dat, at) {
       status[idsRec] <- "r"
     }
   }
-  
+
   dat <- set_attr(dat, "status", status)
-  
+
   dat <- set_epi(dat, "ei.flow", at, nInf)
   dat <- set_epi(dat, "ir.flow", at, nRec)
   dat <- set_epi(dat, "e.num", at, sum(active == 1 & status == "e"))
   dat <- set_epi(dat, "r.num", at, sum(active == 1 & status == "r"))
-  
+
   return(dat)
 }
 ```
@@ -910,7 +910,7 @@ In EpiModel 2.0, if any base modules have been changed or any user defined modul
 
 ## Epidemic model control settings
 # If any user defined functions, type must be NULL
-control <- control.net(type = NULL, nsteps = 100, nsims = 1, 
+control <- control.net(type = NULL, nsteps = 100, nsims = 1,
                        infection.FUN = infect2, progress.FUN = progress2)
 ```
 
