@@ -332,3 +332,53 @@ init_nets <- function(dat, x) {
 
   return(dat)
 }
+
+#' @title Helper to use a `data.frame` to initialize some attributes
+#'
+#' @description Uses `dat$init$init_attr` to overwrite some attributes of the
+#' nodes at initialization
+#'
+#' @details
+#' If an `init_attr` `data.frame` is present in `dat$init`, use it to overwrite
+#' the attributes it contains.
+#' `init_attr` must have a number of rows equal to the number of nodes in the
+#' model as the attributes will be overwritten one to one, ensuring the correct
+#' ordering.
+#' `init_attr` columns MUST have a corresponding attribute already initialized.
+#' See "R/default_attributes.R" for adding new attributes to the model.
+#' `init_attr` is removed from `dat$init` at the end of the function to free up
+#' its memory.
+#'
+#' @inheritParams recovery.net
+#' @inherit recovery.net return
+#'
+#' @export
+#'
+overwrite_attrs <- function(dat) {
+  init_attr <- get_init(dat, "init_attr", override.null.error = TRUE)
+  if (is.null(init_attr)) {
+    return(dat)
+  }
+  message("init_attr used for initialization of attributes")
+
+  status <- get_attr(dat, "status")
+  if (nrow(init_attr) != length(status)) {
+    stop("init_attr should contains the same number of nodes as the model")
+  }
+
+  new_attrs <- setdiff(names(init_attr), names(dat$attr))
+  if (length(new_attrs) > 0) {
+    stop(
+      "Some attributes in `init_attr` are not present in `dat`: ",
+      paste0(new_attrs, collapse = " ,")
+    )
+  }
+
+  core_attrs <- c("active", "entrTime", "exitTime", "unique_id")
+  for (attr_name in setdiff(names(init_attr), core_attrs)) {
+    dat <- set_attr(dat, attr_name, init_attr[[attr_name]])
+  }
+
+  dat$init$init_attr <- NULL
+  dat
+}
