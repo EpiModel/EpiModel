@@ -49,6 +49,7 @@
 <li>Allow saving the cumulative edge-list at the end of simulation using the <code>save.cumulative.edgelist</code> control flag.</li>
 <li>Restarting a simulation now only require saving <code>dat$run</code>. This removes the need to keep track of all the elements required at the end of a simulation. Now it’s on the model builder to put all elements in <code>dat$run</code>.</li>
 <li>export <code>get_forward_reachable</code> and <code>get_backward_reachable</code> functions that works similar to <code><a href="https://rdrr.io/pkg/tsna/man/paths.html" class="external-link">tsna::tPath</a></code> for multiple nodes and using cumulative edgelists.</li>
+<li>Export <code>overwrite_attrs</code>, a helper function to overwrite the attributes of the nodes with a <code>data.frame</code> at the start of the simulation. (see <code><a href="../reference/overwrite_attrs.html">?overwrite_attrs</a></code>)</li>
 </ul></div>
 <div class="section level3">
 <h3 id="other-2-5">OTHER<a class="anchor" aria-label="anchor" href="#other-2-5"></a></h3>
@@ -58,6 +59,7 @@
 <li>Move <code>el.cuml</code>, <code>_last_unique_id</code> and <code>_last_timestep</code> and <code>attr</code> to <code>dat$run</code> and update the tests. Part of the re-structuration of the <code>dat</code> object to create</li>
 <li>Remove <code>dat$epi$sim.num(.g2)</code> and replace it with <code>dat$run$num(.g2)</code> (single value). These values keep track of the current size of the network and are only needed during model runs.</li>
 <li>Speed up cumulative edge-list calculation by splitting current and historic edges.</li>
+<li>Remove <code>deleteAttr</code> function deprecated since 2.4.0</li>
 </ul></div>
 </div>
     <div class="section level2">

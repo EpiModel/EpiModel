@@ -48,7 +48,6 @@
 <url><loc>http://epimodel.github.io/EpiModel/reference/dcm.html</loc></url>
 <url><loc>http://epimodel.github.io/EpiModel/reference/dcm.mods.html</loc></url>
 <url><loc>http://epimodel.github.io/EpiModel/reference/dedup_cumulative_edgelist.html</loc></url>
-<url><loc>http://epimodel.github.io/EpiModel/reference/deleteAttr.html</loc></url>
 <url><loc>http://epimodel.github.io/EpiModel/reference/delete_attr.html</loc></url>
 <url><loc>http://epimodel.github.io/EpiModel/reference/delete_edges.html</loc></url>
 <url><loc>http://epimodel.github.io/EpiModel/reference/delete_vertices.html</loc></url>
@@ -127,6 +126,7 @@
 <url><loc>http://epimodel.github.io/EpiModel/reference/netsim_error_logger.html</loc></url>
 <url><loc>http://epimodel.github.io/EpiModel/reference/network_initialize.html</loc></url>
 <url><loc>http://epimodel.github.io/EpiModel/reference/nwupdate.net.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/overwrite_attrs.html</loc></url>
 <url><loc>http://epimodel.github.io/EpiModel/reference/padded_vector.html</loc></url>
 <url><loc>http://epimodel.github.io/EpiModel/reference/param.dcm.html</loc></url>
 <url><loc>http://epimodel.github.io/EpiModel/reference/param.icm.html</loc></url>
