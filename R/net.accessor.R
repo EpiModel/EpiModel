@@ -11,7 +11,7 @@
 #'        edit (for \code{set_} and \code{append_} functions). Can be of length
 #'        > 1 for \code{get_*_list} functions.
 #' @param posit_ids For \code{set_attr} and \code{get_attr}, a numeric vector of
-#'        posit_ids or a logical vector to subset the desired \code{item}.
+#'        posit_ids to subset the desired \code{item}.
 #' @param value New value to be attributed in the \code{set_} and \code{append_}
 #'        functions.
 #' @param override.null.error If TRUE, \code{get_} will return NULL if the
@@ -69,7 +69,6 @@
 #' get_epi_list(dat, c("i.num", "s.num"))
 #' get_epi(dat, "i.num")
 #' get_epi(dat, "i.num", c(1, 4))
-#' get_epi(dat, "i.num", rbinom(150, 1, 0.2) == 1)
 #'
 #' dat <- add_param(dat, "x")
 #' dat <- set_param(dat, "x", 0.4)
@@ -197,63 +196,6 @@ set_attr <- function(dat, item, value, posit_ids = NULL,
 
   return(dat)
 }
-
-# #' @rdname net-accessor
-# #' @export
-# set_attr <- function(dat, item, value, posit_ids = NULL,
-#                      override.length.check = FALSE) {
-#   attr_list <- raw_get_attr_list(dat)
-#   if (!item %in% names(attr_list)) {
-#     dat <- add_attr(dat, item)
-#   }
-#
-#   attr <- attr_list[[item]]
-#
-#   if (is.null(posit_ids)) {
-#     if (!override.length.check && length(value) != length(attr)) {
-#       stop(
-#         "When trying to edit the ", `item`, " nodal attribute: ",
-#         "The size of the `value` vector is not equal to the number of nodes in",
-#         " the network. \n",
-#         "Expected: ", length(attr), "\n",
-#         "Given: ", length(value)
-#       )
-#     }
-#
-#     attr <- value
-#   } else {
-#     if (is.logical(posit_ids) && length(posit_ids) != length(attr)) {
-#       stop("(logical) `posit_ids` has to have a length equal to the number ",
-#         "of nodes in the network")
-#     } else if (is.numeric(posit_ids)) {
-#       if (length(posit_ids) == 0) {
-#         return(dat)
-#       } else if (any(posit_ids > length(attr))) {
-#         stop("Some (numeric) `posit_ids` are larger than the number of nodes ",
-#              " in the network")
-#       }
-#     } else {
-#       stop("`posit_ids` must be logical, numeric, or NULL")
-#     }
-#
-#     if (!override.length.check &&
-#       length(value) != 1 &&
-#       length(value) != length(posit_ids)) {
-#       stop(
-#         "When trying to edit the `", item, "` nodal attribute: ",
-#         "The size of the `value` vector is not equal to the number of nodes ",
-#         "selected by the `posit_ids` vector nor of length 1. \n",
-#         "Expected: ", length(posit_ids), " or 1 \n",
-#         "Given: ", length(value)
-#       )
-#     }
-#
-#     attr[posit_ids] <- value
-#     dat <- raw_set_attr(dat, item, attr)
-#   }
-#
-#   return(dat)
-# }
 
 #' @rdname net-accessor
 #' @export
