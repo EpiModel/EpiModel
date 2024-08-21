@@ -131,31 +131,19 @@ get_attr <- function(dat, item, posit_ids = NULL, override.null.error = FALSE) {
   attr_list <- raw_get_attr_list(dat)
 
   if (!item %in% names(attr_list)) {
-    if (override.null.error) return(NULL)
-
-    stop("There is no attribute called `", item,
-      "` in the attributes list of the main list object (dat)")
-  }
-
-  if (is.null(posit_ids)) return(attr_list[[item]])
-
-  if (!is.logical(posit_ids) && !is.numeric(posit_ids)) {
-    stop("`posit_ids` must be logical, numeric, or NULL")
-  }
-
-  attr <- attr_list[[item]]
-
-  if (is.logical(posit_ids) && length(posit_ids) != length(attr)) {
-      stop("(logical) `posit_ids` has to have a length equal to the ",
-        "number of nodes in the network")
-  }
-
-  if (is.numeric(posit_ids) &&
-    length(posit_ids > 0) && any(posit_ids > length(attr))) {
-      stop("Some (numeric) `posit_ids` are larger than the number of ",
-        "nodes in the network")
+    if (!override.null.error) {
+      stop("There is no attribute called `", item,
+        "` in the attributes list of the main list object (dat)")
     }
+    return(NULL)
+  }
 
+  if (is.null(posit_ids)) {
+    return(attr_list[[item]])
+  }
+
+  assert_valid_posit_ids(dat, posit_ids)
+  attr <- attr_list[[item]]
   return(attr[posit_ids])
 }
 
@@ -192,25 +180,8 @@ set_attr <- function(dat, item, value, posit_ids = NULL,
     }
     dat <- raw_set_attr(dat, item, value)
   } else {
-    if (is.logical(posit_ids)) {
-      if (length(posit_ids) != length(attr_list[[item]])) {
-        stop("(logical) `posit_ids` has to have a length equal to the number ",
-             "of nodes in the network")
-      }
-    } else if (is.numeric(posit_ids)) {
-      if (length(posit_ids) == 0) {
-        return(dat)
-      } else if (any(posit_ids > length(attr_list[[item]]))) {
-        stop("Some (numeric) `posit_ids` are larger than the number of nodes ",
-             " in the network")
-      }
-    } else {
-      stop("`posit_ids` must be logical, numeric, or NULL")
-    }
-
-    if (!override.length.check &&
-          length(value) != 1 &&
-          length(value) != length(attr_list$active[posit_ids])) {
+    assert_valid_posit_ids(dat, posit_ids)
+    if (length(value) != 1 && length(value) != length(posit_ids)) {
       stop(
         "When trying to edit the `", item, "` nodal attribute: ",
         "The size of the `value` vector is not equal to the number of nodes ",
@@ -219,7 +190,6 @@ set_attr <- function(dat, item, value, posit_ids = NULL,
         "Given: ", length(value)
       )
     }
-
     attr <- attr_list[[item]]
     attr[posit_ids] <- value
     dat <- raw_set_attr(dat, item, attr)
@@ -310,7 +280,10 @@ append_attr <- function(dat, item, value, n.new) {
 #' @rdname net-accessor
 #' @export
 remove_node_attr <- function(dat, posit_ids) {
-  if (is.null(posit_ids)) return(dat)
+  if (is.null(posit_ids)) {
+    return(dat)
+  }
+  assert_valid_posit_ids(dat, posit_ids)
   attr_list <- raw_get_attr_list(dat)
   attr_list <- lapply(attr_list, function(x) x[-posit_ids])
   dat <- raw_set_attr_list(dat, attr_list)
@@ -321,67 +294,45 @@ remove_node_attr <- function(dat, posit_ids) {
 #' @export
 get_epi_list <- function(dat, item = NULL) {
   if (is.null(item)) {
-    out <- dat[["epi"]]
-
+    out <- dat$epi
   } else {
-    missing_item <- setdiff(item, names(dat[["epi"]]))
+    missing_item <- setdiff(item, names(dat$epi))
     if (length(missing_item) > 0) {
       stop("There is no epi output called `",
            paste(missing_item, collapse = ", "),
            "` in the epi output list of the main list object (dat)")
     }
-
-    out <- dat[["epi"]][item]
+    out <- dat$epi[item]
   }
-
   return(out)
 }
 
 #' @rdname net-accessor
 #' @export
 get_epi <- function(dat, item, at = NULL, override.null.error = FALSE) {
-  if (!item %in% names(dat[["epi"]])) {
-    if (override.null.error) {
-      out <- NULL
-    } else {
+  if (!item %in% names(dat$epi)) {
+    if (!override.null.error) {
       stop("There is no epi out called `", item,
            "` in the epi out list of the main list object (dat)")
     }
-  } else {
-    nsteps <- get_control(dat, "nsteps")
-    if (is.null(at)) {
-      out <- dat[["epi"]][[item]]
-    } else {
-      if (is.logical(at)) {
-        if (length(at) != nsteps) {
-          stop("(logical) `at` has to have a length equal to the number of
-              steps planned for for the simulation (control[['nsteps']])")
-        }
-      } else if (is.numeric(at)) {
-        if (any(at > nsteps)) {
-          stop("Some (numeric) `at` are larger than the number of
-              steps planned for for the simulation (control[['nsteps']])")
-        }
-      } else {
-        stop("`at` must be logical, numeric, or NULL")
-      }
-
-      out <- dat[["epi"]][[item]][at]
-    }
+    return(NULL)
   }
 
-  return(out)
+  if (is.null(at)) {
+    return(dat$epi[[item]])
+  }
+
+  assert_valid_time_steps(dat, at)
+  return(dat$epi[[item]][at])
 }
 
 #' @rdname net-accessor
 #' @export
 add_epi <- function(dat, item) {
-  if (item %in% names(dat[["epi"]])) {
+  if (item %in% names(dat$epi)) {
     stop("Cannot create the epi output, ", item, ": exists already")
   }
-
-  dat[["epi"]][[item]] <- padded_vector(NA_real_, get_control(dat, "nsteps"))
-
+  dat$epi[[item]] <- padded_vector(NA_real_, get_control(dat, "nsteps"))
   return(dat)
 }
 
@@ -392,18 +343,17 @@ set_epi <- function(dat, item, at,  value) {
     stop("`at` must be numeric and of length one")
   }
 
-  if (!item %in% names(dat[["epi"]])) {
+  if (!item %in% names(dat$epi)) {
     dat <- add_epi(dat, item)
   }
 
   # ensure that the vector is of size `nsteps`, right padded with NA
   nsteps <- get_control(dat, "nsteps")
-  if (at > length(dat[["epi"]][[item]])) {
+  if (at > length(dat$epi[[item]])) {
     dat$epi[[item]] <- padded_vector(dat$epi[[item]], nsteps)
   }
 
   dat$epi[[item]][at] <- value
-
   return(dat)
 }
 
@@ -411,60 +361,49 @@ set_epi <- function(dat, item, at,  value) {
 #' @export
 get_param_list <- function(dat, item = NULL) {
   if (is.null(item)) {
-    out <- dat[["param"]]
-
-  } else {
-    missing_item <- setdiff(item, names(dat[["param"]]))
-    if (length(missing_item) > 0) {
-      stop("There is no parameters called `",
-           paste(missing_item, collapse = ", "),
-           "` in the parameter list of the main list object (dat)")
-    }
-
-    out <- dat[["param"]][item]
+    return(dat$param)
   }
 
-  return(out)
+  missing_item <- setdiff(item, names(dat$param))
+  if (length(missing_item) > 0) {
+    stop("There is no parameters called `",
+      paste(missing_item, collapse = ", "),
+      "` in the parameter list of the main list object (dat)")
+  }
+  return(dat$param[item])
 }
 
 #' @rdname net-accessor
 #' @export
 get_param <- function(dat, item, override.null.error = FALSE) {
-  if (!item %in% names(dat[["param"]])) {
-    if (override.null.error) {
-      out <- NULL
-    } else {
+  if (!item %in% names(dat$param)) {
+    if (!override.null.error) {
       stop("There is no parameter called `", item,
            "` in the parameter list of the main list object (dat)")
     }
-  } else {
-    out <- dat[["param"]][[item]]
+    return(NULL)
   }
 
-  return(out)
+  return(dat$param[[item]])
 }
 
 #' @rdname net-accessor
 #' @export
 add_param <- function(dat, item) {
-  if (item %in% names(dat[["param"]])) {
+  if (item %in% names(dat$param)) {
     stop("Cannot create the parameter, ", item, ": exists already")
   }
-
-  dat[["param"]][[item]] <- NA
-
+  dat$param[[item]] <- NA
   return(dat)
 }
 
 #' @rdname net-accessor
 #' @export
 set_param <- function(dat, item, value) {
-  if (!item %in% names(dat[["param"]])) {
+  if (!item %in% names(dat$param)) {
     dat <- add_param(dat, item)
   }
-
-  dat[["param"]][[item]] <- value
-
+  dat$param[[item]] <- value
   return(dat)
 }
 
@@ -472,90 +411,70 @@ set_param <- function(dat, item, value) {
 #' @export
 get_control_list <- function(dat, item = NULL) {
   if (is.null(item)) {
-    out <- dat[["control"]]
-
-  } else {
-    missing_item <- setdiff(item, names(dat[["control"]]))
-    if (length(missing_item) > 0) {
-      stop("There is no control value called `",
-           paste(missing_item, collapse = ", "),
-           "` in the control list of the main list object (dat)")
-    }
-
-    out <- dat[["control"]][item]
+    return(dat$control)
   }
 
-  return(out)
+  missing_item <- setdiff(item, names(dat$control))
+  if (length(missing_item) > 0) {
+    stop("There is no control value called `",
+      paste(missing_item, collapse = ", "),
+      "` in the control list of the main list object (dat)")
+  }
+
+  return(dat$control[item])
 }
 
 #' @rdname net-accessor
 #' @export
 get_control <- function(dat, item, override.null.error = FALSE) {
-  if (!item %in% names(dat[["control"]])) {
-    if (override.null.error) {
-      out <- NULL
-    } else {
+  if (!item %in% names(dat$control)) {
+    if (!override.null.error) {
       stop("There is no control value called `", item,
            "` in the control list of the main list object (dat)")
     }
-  } else {
-    out <- dat[["control"]][[item]]
+    return(NULL)
   }
-
-  return(out)
+  return(dat$control[[item]])
 }
 
 #' @rdname net-accessor
 #' @param network index of network for which to get control
 #' @export
 get_network_control <- function(dat, network, item, override.null.error = FALSE) {
-  if (missing(network)) {
-    stop("`get_network_control` requires `network` argument.")
-  }
-
-  if (!item %in% names(dat[["control"]])) {
-    if (override.null.error) {
-      return(NULL)
-    } else {
+  if (!item %in% names(dat$control)) {
+    if (!override.null.error) {
       stop("There is no control value called `", item,
            "` in the control list of the main list object (dat)")
     }
-  } else {
-    out <- dat[["control"]][[item]]
+    return(NULL)
   }
+  out <- dat$control[[item]]
 
   if (!is(out, "multilayer")) {
     stop("Control value `", item, "` accessed through `get_network_control` ",
          "is not of class `multilayer`.")
   }
-
-  out <- out[[network]]
-
-  return(out)
+  return(out[[network]])
 }
 
 #' @rdname net-accessor
 #' @export
 add_control <- function(dat, item) {
-  if (item %in% names(dat[["control"]])) {
+  if (item %in% names(dat$control)) {
     stop("Cannot create the control value, ", item,
          ": exists already")
   }
-
-  dat[["control"]][[item]] <- NA
-
+  dat$control[[item]] <- NA
   return(dat)
 }
 
 #' @rdname net-accessor
 #' @export
 set_control <- function(dat, item, value) {
-  if (!item %in% names(dat[["control"]])) {
+  if (!item %in% names(dat$control)) {
     dat <- add_control(dat, item)
   }
-
-  dat[["control"]][[item]] <- value
-
+  dat$control[[item]] <- value
   return(dat)
 }
 
@@ -563,61 +482,49 @@ set_control <- function(dat, item, value) {
 #' @export
 get_init_list <- function(dat, item = NULL) {
   if (is.null(item)) {
-    out <- dat[["init"]]
-
-  } else {
-    missing_item <- setdiff(item, names(dat[["init"]]))
-    if (length(missing_item) > 0) {
-      stop("There is no init value called `",
-           paste(missing_item, collapse = ", "),
-           "` in the init list of the main list object (dat)")
-    }
-
-    out <- dat[["init"]][item]
+    return(dat$init)
   }
 
-  return(out)
+  missing_item <- setdiff(item, names(dat$init))
+  if (length(missing_item) > 0) {
+    stop("There is no init value called `",
+      paste(missing_item, collapse = ", "),
+      "` in the init list of the main list object (dat)")
+  }
+  return(dat$init[item])
 }
 
 #' @rdname net-accessor
 #' @export
 get_init <- function(dat, item, override.null.error = FALSE) {
-  if (!item %in% names(dat[["init"]])) {
-    if (override.null.error) {
-      out <- NULL
-    } else {
+  if (!item %in% names(dat$init)) {
+    if (!override.null.error) {
       stop("There is no init value called `", item,
            "` in the init list of the main list object (dat)")
     }
-  } else {
-    out <- dat[["init"]][[item]]
+    return(NULL)
   }
-
-  return(out)
+  return(dat$init[[item]])
 }
 
 #' @rdname net-accessor
 #' @export
 add_init <- function(dat, item) {
-  if (item %in% names(dat[["init"]])) {
+  if (item %in% names(dat$init)) {
     stop("Cannot create the init value, ", item,
          ": exists already")
   }
-
-  dat[["init"]][[item]] <- NA
-
+  dat$init[[item]] <- NA
   return(dat)
 }
 
 #' @rdname net-accessor
 #' @export
 set_init <- function(dat, item, value) {
-  if (!item %in% names(dat[["init"]])) {
+  if (!item %in% names(dat$init)) {
     dat <- add_init(dat, item)
   }
-
-  dat[["init"]][[item]] <- value
-
+  dat$init[[item]] <- value
   return(dat)
 }
 
@@ -629,9 +536,7 @@ append_core_attr <- function(dat, at, n.new) {
   dat <- append_attr(dat, "active", 1, n.new)
   dat <- append_attr(dat, "entrTime", at, n.new)
   dat <- append_attr(dat, "exitTime", NA, n.new)
-
   dat <- update_unique_ids(dat, n.new)
-
   return(dat)
 }
 
@@ -653,7 +558,6 @@ update_unique_ids <- function(dat, n.new) {
   next_unique_ids <- seq_len(n.new) + last_unique_id
   dat$run$last_unique_id <- last_unique_id + as.integer(n.new)
   dat <- append_attr(dat, "unique_id", next_unique_ids, n.new)
-
   return(dat)
 }
 
@@ -721,7 +625,6 @@ get_unique_ids <- function(dat, posit_ids = NULL) {
   if (is.null(posit_ids)) {
     return(get_attr(dat, "unique_id"))
   }
-
   unique_ids <- get_attr(dat, "unique_id", posit_ids = posit_ids)
   return(unique_ids)
 }
@@ -733,32 +636,13 @@ get_posit_ids <- function(dat, unique_ids = NULL) {
     return(seq_along(get_attr(dat, "active")))
   }
   posit_ids <- base::match(unique_ids, get_attr(dat, "unique_id"))
-
   if (any(is.na(posit_ids))) {
     warning(
       "While converting `unique_ids` to `posit_ids`, some `unique_ids`",
       " correspond to deactivated nodes and NAs were produced"
     )
   }
-
   return(posit_ids)
-}
-
-#' @title Are These Nodes Active (Unique IDs)
-#'
-#' @inheritParams recovery.net
-#' @param unique_ids A vector of node unique identifiers.
-#'
-#' @return A logical vector with TRUE if the node is still active and FALSE
-#' otherwise.
-#'
-#' @export
-is_active_unique_ids <- function(dat, unique_ids) {
-  suppressWarnings({
-    posit_ids <- get_posit_ids(dat, unique_ids)
-  })
-
-  return(is_active_posit_ids(dat, posit_ids))
 }
 
 #' @title Are These Nodes Active (Positional IDs)
@@ -775,6 +659,22 @@ is_active_posit_ids <- function(dat, posit_ids) {
   return(active[posit_ids] %in% 1)
 }
 
+#' @title Are These Nodes Active (Unique IDs)
+#'
+#' @inheritParams recovery.net
+#' @param unique_ids A vector of node unique identifiers.
+#'
+#' @return A logical vector with TRUE if the node is still active and FALSE
+#' otherwise.
+#'
+#' @export
+is_active_unique_ids <- function(dat, unique_ids) {
+  suppressWarnings({
+    posit_ids <- get_posit_ids(dat, unique_ids)
+  })
+  return(is_active_posit_ids(dat, posit_ids))
+}
+
 #' @title Grow a Vector to a Given Size, Padding it With Empty Elements
 #'
 #' @description Grow a vector to a given size, padding it with  `NULL` if `orig` is a `list`
@@ -787,7 +687,6 @@ is_active_posit_ids <- function(dat, posit_ids) {
 #' A vector of size `size` padded with `NULL`s or `NA`s at the end.
 #'
 #' @export
-#'
 padded_vector <- function(orig, size) {
   if (is.list(orig)) {
     out <- c(orig, vector(mode = "list", size - length(orig)))
@@ -795,4 +694,26 @@ padded_vector <- function(orig, size) {
     out <- c(orig, rep(NA, size - length(orig)))
   }
   return(out)
+}
+
+#' Check if `posit_ids` are corrects (numeric and <= NNodes)
+#' @noRd
+assert_valid_posit_ids <- function(dat, posit_ids) {
+  if (!is.numeric(posit_ids))
+      stop("`posit_ids` must be `numeric`")
+  if (any(posit_ids > length(get_attr(dat, "active"))))
+    stop("Some `posit_ids` are larger than the number of nodes ",
+         " in the network")
+  invisible(posit_ids)
+}
+
+#' Check if `time_steps` are corrects (numeric and <= nsteps)
+#' @noRd
+assert_valid_time_steps <- function(dat, time_steps) {
+  if (!is.numeric(time_steps))
+    stop("time steps must be `numeric`")
+  if ((any(time_steps > get_control(dat, "nsteps"))))
+    stop("Some time steps are larger than the number of
+          steps planned for for the simulation (control$nsteps)")
+  invisible(time_steps)
 }
