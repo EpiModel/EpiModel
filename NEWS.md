@@ -33,6 +33,9 @@ needed during model runs.
 - Speed up cumulative edge-list calculation by splitting current and historic
 edges.
 - Remove `deleteAttr` function deprecated since 2.4.0
+- all function accepting `posit_ids` as argument must now pass exclusively a
+numeric vector. Logical vectors are not accepted anymore as they were making the
+code heavier and were very error prone.
 
 ## EpiModel 2.4.0
 
