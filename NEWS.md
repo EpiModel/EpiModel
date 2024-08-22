@@ -33,6 +33,7 @@ needed during model runs.
 - Speed up cumulative edge-list calculation by splitting current and historic
 edges.
 - Remove `deleteAttr` function deprecated since 2.4.0
+- Fixes the `get_qnts` function to get correct quantiles on formation plots
 
 ## EpiModel 2.4.0
 

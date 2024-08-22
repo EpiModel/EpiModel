@@ -896,7 +896,7 @@ get_qnts <- function(data, qnts, qnts.smooth) {
   } else {
     ss1 <- suppressWarnings(supsmu(x = seq_len(ncol(qnt.prev)),
                                    y = qnt.prev[1, ]))
-    ss2 <- suppressWarnings(supsmu(x = rev(seq_len(ncol(qnt.prev))),
+    ss2 <- suppressWarnings(supsmu(x = seq_len(ncol(qnt.prev)),
                                    y = qnt.prev[2, ]))
 
     xx <- c(ss1$x, rev(ss2$x))
