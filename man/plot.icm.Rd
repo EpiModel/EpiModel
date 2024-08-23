@@ -24,7 +24,6 @@
   qnts.smooth = TRUE,
   legend,
   leg.cex = 0.8,
-  axs = "r",
   grid = FALSE,
   add = FALSE,
   ...
@@ -74,9 +73,6 @@ transparent and 1 = opaque (see \code{adjustcolor} function).}
 \item{legend}{If \code{TRUE}, plot default legend.}
 
 \item{leg.cex}{Legend scale size.}
-
-\item{axs}{Plot axis type (see \code{\link{par}} for details), with default
-of \code{"r"}.}
 
 \item{grid}{If \code{TRUE}, a grid is added to the background of plot
 (see \code{\link{grid}} for details), with default of nx by ny.}

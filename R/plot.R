@@ -25,8 +25,6 @@
 #' @param leg.name Character string to use for legend, with the default
 #'        determined automatically based on the \code{y} input.
 #' @param leg.cex Legend scale size.
-#' @param axs Plot axis type (see \code{\link{par}} for details), with default
-#'        of "r".
 #' @param grid If \code{TRUE}, a grid is added to the background of plot
 #'        (see \code{\link{grid}} for details), with default of nx by ny.
 #' @param add If \code{TRUE}, new plot window is not called and lines are added
@@ -102,7 +100,7 @@
 #'      run = 10, lty = 2, legend = "n", add = TRUE)
 #'
 plot.dcm <- function(x, y, popfrac = FALSE, run, col, lwd, lty, alpha = 0.9,
-                     legend, leg.name, leg.cex = 0.8, axs = "r", grid = FALSE,
+                     legend, leg.name, leg.cex = 0.8, grid = FALSE,
                      add = FALSE, ...) {
 
   ## Set missing flags
@@ -228,8 +226,8 @@ plot.dcm <- function(x, y, popfrac = FALSE, run, col, lwd, lty, alpha = 0.9,
   ## Main plot window
   if (add == FALSE) {
     plot(1, 1, type = "n", bty = "n",
-         xaxs = axs, yaxs = axs, xlim = xlim, ylim = ylim,
-         xlab = xlab, ylab = ylab, main = main)
+         xlim = xlim, ylim = ylim,
+         xlab = xlab, ylab = ylab, main = main, ...)
   }
 
 
@@ -530,7 +528,7 @@ plot.icm <- function(x, y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col,
                      sim.lwd,  sim.alpha, mean.line = TRUE, mean.smooth = TRUE,
                      mean.col, mean.lwd = 2, mean.lty = 1, qnts = 0.5, qnts.col,
                      qnts.alpha, qnts.smooth = TRUE, legend, leg.cex = 0.8,
-                     axs = "r", grid = FALSE, add = FALSE, ...) {
+                     grid = FALSE, add = FALSE, ...) {
 
   ## Model dimensions and class ##
   nsteps <- x$control$nsteps
@@ -731,8 +729,8 @@ plot.icm <- function(x, y, popfrac = FALSE, sim.lines = FALSE, sims, sim.col,
   ## Main plot window ##
   if (add == FALSE) {
     plot(1, 1, type = "n", bty = "n",
-         xaxs = axs, yaxs = axs, xlim = xlim, ylim = ylim,
-         xlab = xlab, ylab = ylab, main = main)
+         xlim = xlim, ylim = ylim,
+         xlab = xlab, ylab = ylab, main = main, ...)
   }
 
 
@@ -1443,8 +1441,6 @@ plot.netdx <- function(x, type = "formation", method = "l", sims, stats,
 #' @param qnts.smooth If \code{TRUE}, use a loess smoother on quantile polygons.
 #' @param legend If \code{TRUE}, plot default legend.
 #' @param leg.cex Legend scale size.
-#' @param axs Plot axis type (see \code{\link{par}} for details), with default
-#'        of \code{"r"}.
 #' @param grid If \code{TRUE}, a grid is added to the background of plot
 #'        (see \code{\link{grid}} for details), with default of nx by ny.
 #' @param add If \code{TRUE}, new plot window is not called and lines are added
@@ -1613,7 +1609,7 @@ plot.netsim <- function(x, type = "epi", y, popfrac = FALSE, sim.lines = FALSE,
                         sims, sim.col, sim.lwd, sim.alpha, mean.line = TRUE,
                         mean.smooth = TRUE, mean.col, mean.lwd = 2,
                         mean.lty = 1, qnts = 0.5, qnts.col, qnts.alpha = 0.5,
-                        qnts.smooth = TRUE, legend, leg.cex = 0.8, axs = "r",
+                        qnts.smooth = TRUE, legend, leg.cex = 0.8,
                         grid = FALSE, add = FALSE, network = 1, at = 1,
                         col.status = FALSE, shp.g2 = NULL, vertex.cex, stats,
                         targ.line = TRUE, targ.col, targ.lwd = 2, targ.lty = 2,

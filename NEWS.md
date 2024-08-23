@@ -33,6 +33,9 @@ needed during model runs.
 - Speed up cumulative edge-list calculation by splitting current and historic
 edges.
 - Remove `deleteAttr` function deprecated since 2.4.0
+- `plot.` `netsim`, `icm` and `dcm` now pass their ellipsis (...) to the inner
+`plot` call. This removes the need for explicit `axs` argument to theses
+functions
 
 ## EpiModel 2.4.0
 

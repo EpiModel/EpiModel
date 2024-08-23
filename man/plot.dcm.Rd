@@ -16,7 +16,6 @@
   legend,
   leg.name,
   leg.cex = 0.8,
-  axs = "r",
   grid = FALSE,
   add = FALSE,
   ...
@@ -52,9 +51,6 @@ R color format, or alternatively as a color palette from
 determined automatically based on the \code{y} input.}
 
 \item{leg.cex}{Legend scale size.}
-
-\item{axs}{Plot axis type (see \code{\link{par}} for details), with default
-of "r".}
 
 \item{grid}{If \code{TRUE}, a grid is added to the background of plot
 (see \code{\link{grid}} for details), with default of nx by ny.}
