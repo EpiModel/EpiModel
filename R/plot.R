@@ -450,6 +450,7 @@ geom_bands <- function(mapping, lower = 0.25, upper = 0.75, alpha = 0.25, ...) {
                fun.min = function(x) quantile(x, lower),
                fun.max = function(x) quantile(x, upper),
                alpha = alpha, ...)
+}
 
 
 # Helper Functions --------------------------------------------------------
