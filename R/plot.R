@@ -105,17 +105,15 @@ draw_means <- function(x, y, mean.smooth, mean.lwd,
   nsims <- x$control$nsims
 
   for (j in seq_len(lcomp)) {
-    if (nsims == 1) {
-      mean.prev <- x[[loc]][[y[j]]][, 1]
-    } else {
-      mean.prev <- rowMeans(x[[loc]][[y[j]]], na.rm = TRUE)
-    }
+    mean.prev <- rowMeans(x[[loc]][[y[j]]], na.rm = TRUE)
+    xs <- seq_len(length(mean.prev))
     if (mean.smooth == TRUE) {
-      mean.prev <- suppressWarnings(supsmu(x = seq_along(mean.prev),
-                                           y = mean.prev))$y
+      smoother <- suppressWarnings(supsmu(x = xs, y = mean.prev))
+      mean.prev <- smoother$y
+      xs <- smoother$x
     }
     if (plot.means == 1) {
-      lines(mean.prev, lwd = mean.lwd[j],
+      lines(x = xs, y = mean.prev, lwd = mean.lwd[j],
             col = mean.pal[j], lty = mean.lty[j])
     } else {
       mean.max[j] <-  max(mean.prev, na.rm = TRUE)
