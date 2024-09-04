@@ -45,6 +45,7 @@ test_that("color_tea", {
 
 test_that("delete_attr", {
   dat <- create_dat_object()
+  dat <- append_core_attr(dat, 1, 5)
   dat <- append_attr(dat, "a", 1:5, 5)
   dat <- append_attr(dat, "b", 6:10, 5)
 

@@ -113,10 +113,10 @@ get_forward_reachable <- function(el_cuml, from_step, to_step, nodes = NULL,
   #     (QoL to calcuate the `change_times`)
   # nolint start
   el_cuml <- el_cuml |>
-    dplyr::mutate(stop = ifelse(is.na(stop), Inf, stop)) |> # current edges never ends
-    dplyr::filter(start <= to_step, stop >= from_step) |> # remove edges before and after analysis period
-    dplyr::mutate(start = ifelse(start < from_step, from_step, start)) |> # set older edges to start at beginning of analysis
-    dplyr::select(start, stop, head, tail)
+    dplyr::mutate(stop = ifelse(is.na(.data$stop), Inf, .data$stop)) |> # current edges never ends
+    dplyr::filter(.data$start <= to_step, .data$stop >= from_step) |> # remove edges before and after analysis period
+    dplyr::mutate(start = ifelse(.data$start < from_step, from_step, .data$start)) |> # set older edges to start at beginning of analysis
+    dplyr::select("start", "stop", "head", "tail")
   # nolint end
 
   # Make the node indexes continuous
@@ -323,24 +323,25 @@ dedup_cumulative_edgelist <- function(el) {
     dplyr::ungroup()
 
   e_unique <- el_n |>
-    dplyr::filter(n == 1) |>
-    dplyr::select(-n)
+    dplyr::filter(.data$n == 1) |>
+    dplyr::select(-"n")
 
   e_dup <- el_n |>
-    dplyr::filter(n > 1) |>
-    dplyr::select(-n) |>
-    dplyr::arrange(head, tail, start, stop)
+    dplyr::filter(.data$n > 1) |>
+    dplyr::select(-"n") |>
+    dplyr::arrange(.data$head, .data$tail, .data$start, .data$stop)
 
   e_dedup <- e_dup |>
-    dplyr::group_by(head, tail) |>
+    dplyr::group_by(.data$head, .data$tail) |>
     dplyr::mutate(
-      lstart = dplyr::lag(start),
-      lstop = dplyr::lag(stop),
-      overlap = !is.na(lstop) & !is.na(lstart) & start <= lstop,
-      stop = ifelse(overlap, max(stop, lstop, na.rm = TRUE), stop),
-      start = ifelse(overlap, min(start, lstart, na.rm = TRUE), start)
+      lstart = dplyr::lag(.data$start),
+      lstop = dplyr::lag(.data$stop),
+      overlap = !is.na(.data$lstop) & !is.na(.data$lstart) &
+                .data$start <= .data$lstop,
+      stop = ifelse(.data$overlap, max(.data$stop, .data$lstop, na.rm = TRUE), .data$stop),
+      start = ifelse(.data$overlap, min(.data$start, .data$lstart, na.rm = TRUE), .data$start)
     ) |>
-    dplyr::select(-c(lstart, lstop, overlap)) |>
+    dplyr::select(-c(.data$lstart, .data$lstop, .data$overlap)) |>
     dplyr::ungroup() |>
     unique()
 

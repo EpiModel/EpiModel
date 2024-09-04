@@ -25,7 +25,6 @@ test_that("`dat` getters and setter", {
 
   expect_equal(get_attr(dat, "age"), new_ages)
   expect_equal(get_attr(dat, "age", c(1, 5)), new_ages[c(1, 5)])
-  expect_equal(get_attr(dat, "age", new_ages > 0.5), new_ages[new_ages > 0.5])
 
   expect_error(get_attr(dat, "age_absent"))
   expect_null(get_attr(dat, "age_absent", override.null.error = TRUE))
@@ -36,14 +35,12 @@ test_that("`dat` getters and setter", {
 
   expect_silent(dat <- set_attr(dat, "age", 2, posit_ids = 1:4))
   expect_equal(get_attr(dat, "age", 1:4), rep(2, 4))
-  posit_ids <- c(rep(TRUE, 4), rep(FALSE, n_nodes - 4))
-  expect_silent(dat <- set_attr(dat, "age", 6, posit_ids = posit_ids))
-  expect_equal(get_attr(dat, "age", 1:4), rep(6, 4))
 
   expect_error(dat <- set_attr(dat, "age", c(1, 2), posit_ids = 1:4))
   expect_error(dat <- set_attr(dat, "age", 1, posit_ids = c(1, 1000)))
-  expect_error(dat <- set_attr(dat, "age", 1, posit_ids = c("a", "b")))
-  expect_error(dat <- set_attr(dat, "age", c(1, 2), posit_ids = c(TRUE, FALSE)))
+
+  expect_error(dat <- set_attr(dat, "age", 1, posit_ids = TRUE))
+  expect_error(dat <- set_attr(dat, "age", 1, posit_ids = "a"))
 
 
   expect_error(get_attr_list(dat, "sex"))
@@ -71,7 +68,6 @@ test_that("`dat` getters and setter", {
   expect_equal(get_epi(dat, "s")[110], 10)
 
   expect_equal(get_epi(dat, "i", c(1, 100)), dat$epi$i[c(1, 100)])
-  expect_equal(get_epi(dat, "i", dat$epi$i > 0.5), dat$epi$i[dat$epi$i > 0.5])
 
   expect_error(get_epi(dat, "age_absent"))
   expect_null(get_epi(dat, "age_absent", override.null.error = TRUE))
