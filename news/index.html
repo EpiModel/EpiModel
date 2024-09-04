@@ -60,6 +60,7 @@
 <li>Remove <code>dat$epi$sim.num(.g2)</code> and replace it with <code>dat$run$num(.g2)</code> (single value). These values keep track of the current size of the network and are only needed during model runs.</li>
 <li>Speed up cumulative edge-list calculation by splitting current and historic edges.</li>
 <li>Remove <code>deleteAttr</code> function deprecated since 2.4.0</li>
+<li>all function accepting <code>posit_ids</code> as argument must now pass exclusively a numeric vector. Logical vectors are not accepted anymore as they were making the code heavier and were very error prone.</li>
 </ul></div>
 </div>
     <div class="section level2">

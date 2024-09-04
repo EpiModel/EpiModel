@@ -123,7 +123,7 @@ edit (for <code>set_</code> and <code>append_</code> functions). Can be of lengt
 
 <dt id="arg-posit-ids">posit_ids<a class="anchor" aria-label="anchor" href="#arg-posit-ids"></a></dt>
 <dd><p>For <code>set_attr</code> and <code>get_attr</code>, a numeric vector of
-posit_ids or a logical vector to subset the desired <code>item</code>.</p></dd>
+posit_ids to subset the desired <code>item</code>.</p></dd>
 
 
 <dt id="arg-override-null-error">override.null.error<a class="anchor" aria-label="anchor" href="#arg-override-null-error"></a></dt>
@@ -334,9 +334,6 @@ functions internally.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [126] NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA 10</span>
 <span class="r-in"><span><span class="fu">get_epi</span><span class="op">(</span><span class="va">dat</span>, <span class="st">"i.num"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] NA NA</span>
-<span class="r-in"><span><span class="fu">get_epi</span><span class="op">(</span><span class="va">dat</span>, <span class="st">"i.num"</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="fl">150</span>, <span class="fl">1</span>, <span class="fl">0.2</span><span class="op">)</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [26] NA NA NA NA NA NA NA NA NA 10</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu">add_param</span><span class="op">(</span><span class="va">dat</span>, <span class="st">"x"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu">set_param</span><span class="op">(</span><span class="va">dat</span>, <span class="st">"x"</span>, <span class="fl">0.4</span><span class="op">)</span></span></span>
