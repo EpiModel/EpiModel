@@ -121,14 +121,14 @@ get_means <- function(data, mean.smooth) {
 # Calculate denominators
 denom <- function(x, y, popfrac) {
 
-  cont.val <- ifelse(class(x) == "dcm", "nruns", "nsims")
-  if (popfrac == TRUE) {
+  cont.val <- if (inherits(x, "dcm")) "nruns" else "nsims"
+  if (popfrac) {
     for (i in seq_along(y)) {
       dname <- paste(strsplit(y[i], "[.]")[[1]][-1], collapse = ".")
       x$epi[[y[i]]] <- x$epi[[y[i]]] / x$epi[[dname]]
     }
   }
-  if (popfrac == FALSE && x$control[[cont.val]] == 1) {
+  if (!popfrac && x$control[[cont.val]] == 1) {
     for (j in seq_along(y)) {
       x$epi[[y[j]]] <- data.frame(x$epi[[y[j]]])
     }

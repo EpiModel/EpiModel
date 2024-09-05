@@ -127,64 +127,36 @@ plot.netdx <- function(x, type = "formation", method = "l", sims = NULL,
                        targ.col = NULL, targ.lwd = 2, targ.lty = 2,
                        plots.joined = NULL, legend = NULL, grid = FALSE, ...) {
 
-  # Checks and Variables ----------------------------------------------------
-
-  ## Check Object
-  if (!inherits(x, "netdx")) {
-    stop("x must be an object of class netdx", call. = FALSE)
-  }
-
-  if (x$dynamic == FALSE && type %in% c("duration", "dissolution")) {
-    stop("Plots of type duration and dissolution only available if netdx ",
-         "run with dynamic = TRUE", call. = FALSE)
-  }
-
-  if (is.null(x$stats.table.dissolution) && type %in% c("duration",
-                                                        "dissolution")) {
-    stop("Plots of type duration and dissolution only available if netdx ",
-         "run with skip.dissolution = FALSE", call. = FALSE)
-  }
-
-  ## Check sims
-  nsims <- x$nsims
-  if (is.null(sims)) {
-    sims <- seq_len(nsims)
-  }
-  if (max(sims) > nsims) {
-    stop("Maximum sim number is", nsims, call. = FALSE)
-  }
-  dynamic <- x$dynamic
-
-  # Get dotargs
-  da <- list(...)
-
+  # Checks ---------------------------------------------------------------------
   type <- match.arg(type, c("formation", "duration", "dissolution"))
+  sims <- if (is.null(sims)) seq_len(x$nsims) else sims
+  if (max(sims) > x$nsims) stop("Maximum sim number is", x$nsims, call. = FALSE)
 
-  # Formation Plot ----------------------------------------------------------
+  # Formation Plot -------------------------------------------------------------
   if (type == "formation") {
     stats_table <- x$stats.table.formation
-
     data <- do.call("cbind", args = x$stats)
-    dim3 <- if (isTRUE(dynamic)) nsims else 1L
+    dim3 <- if (x$dynamic) x$nsims else 1L
     data <- array(data, dim = c(dim(data)[1], dim(data)[2] / dim3, dim3))
-  } else { # duration/dissolution case
-    if (x$anyNA == TRUE) {
-      cat("\nNOTE: Duration & dissolution data contains undefined values due to zero edges of some dissolution
-            dyad type(s) on some time step; these undefined values will be set to 0 when processing the data.")
+  } else { # duration/dissolution case -----------------------------------------
+    if (!x$dynamic || is.null(x$stats.table.dissolution)) {
+      stop(
+        "Plots of type duration and dissolution only available if netdx ",
+        "run with `dynamic = TRUE` and `skip.dissolution = FALSE`",
+        call. = FALSE
+      )
+    }
+
+    if (x$anyNA) {
+      message(
+        "\nNOTE: Duration & dissolution data contains undefined values due to",
+        " zero edges of some dissolution dyad type(s) on some time step;",
+        " these undefined values will be set to 0 when processing the data."
+      )
     }
 
     if (type == "duration") {
-      if (is.logical(duration.imputed) == FALSE) {
-        stop("For plots of type duration, duration.imputed must
-             be a logical value (TRUE/FALSE)", call. = FALSE)
-      }
-
-      if (isTRUE(duration.imputed)) {
-        data <- x$pages_imptd
-      } else {
-        data <- x$pages
-      }
-
+      data <- if (duration.imputed) x$pages_imptd else x$pages
       stats_table <- x$stats.table.duration
     } else { # if type is "dissolution"
       data <- x$prop.diss
@@ -197,10 +169,8 @@ plot.netdx <- function(x, type = "formation", method = "l", sims = NULL,
   nmstats <- rownames(stats_table)[sts]
 
   ## Pull and check stat argument
-  if (is.null(stats)) {
-    stats <- nmstats
-  }
-  if (any(stats %in% nmstats == FALSE)) {
+  stats <- if (is.null(stats)) nmstats else stats
+  if (!all(stats %in% nmstats)) {
     stop("One or more requested stats not contained in netdx object",
          call. = FALSE)
   }
@@ -209,38 +179,36 @@ plot.netdx <- function(x, type = "formation", method = "l", sims = NULL,
 
   ## Subset data
   data <- data[, outsts, , drop = FALSE]
-  if (isTRUE(dynamic)) {
-    # sims only used to subset data in dynamic case
-    data <- data[, , sims, drop = FALSE]
-  }
+  # sims only used to subset data in dynamic case
+  if (x$dynamic) data <- data[, , sims, drop = FALSE]
   ## Pull target stats
   targets <- stats_table$Target[sts][outsts]
 
-  plot_stats_table(data = data,
-                   nmstats = nmstats,
-                   method = method,
-                   duration.imputed = duration.imputed,
-                   sim.lines = sim.lines,
-                   sim.col = sim.col,
-                   sim.lwd = sim.lwd,
-                   mean.line = mean.line,
-                   mean.smooth = mean.smooth,
-                   mean.col = mean.col,
-                   mean.lwd = mean.lwd,
-                   mean.lty = mean.lty,
-                   qnts = qnts,
-                   qnts.col = qnts.col,
-                   qnts.alpha = qnts.alpha,
-                   qnts.smooth = qnts.smooth,
-                   targ.line = targ.line,
-                   targ.col = targ.col,
-                   targ.lwd = targ.lwd,
-                   targ.lty = targ.lty,
-                   plots.joined = plots.joined,
-                   draw_legend = legend,
-                   grid = grid,
-                   targets = targets,
-                   dynamic = dynamic,
-                   da = da,
-                   ...)
+  plot_stats_table(
+    data = data,
+    nmstats = nmstats,
+    method = method,
+    sim.lines = sim.lines,
+    sim.col = sim.col,
+    sim.lwd = sim.lwd,
+    mean.line = mean.line,
+    mean.smooth = mean.smooth,
+    mean.col = mean.col,
+    mean.lwd = mean.lwd,
+    mean.lty = mean.lty,
+    qnts = qnts,
+    qnts.col = qnts.col,
+    qnts.alpha = qnts.alpha,
+    qnts.smooth = qnts.smooth,
+    targ.line = targ.line,
+    targ.col = targ.col,
+    targ.lwd = targ.lwd,
+    targ.lty = targ.lty,
+    plots.joined = plots.joined,
+    draw_legend = legend,
+    grid = grid,
+    targets = targets,
+    dynamic = x$dynamic,
+    ...
+  )
 }

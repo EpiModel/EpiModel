@@ -1,5 +1,4 @@
 plot_stats_table <- function(data, nmstats, method,
-                             duration.imputed = NULL, # not used
                              sim.lines,
                              sim.col = NULL, sim.lwd = NULL, mean.line,
                              mean.smooth, mean.col = NULL,

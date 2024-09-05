@@ -217,506 +217,518 @@ plot.netsim <- function(x, type = "epi", y = NULL, popfrac = FALSE,
                         method = "l", main = NULL, xlim = NULL, xlab = NULL,
                         ylim = NULL, ylab = NULL, ...) {
 
-  type <- match.arg(type, c("epi", "network", "formation", "duration", "dissolution"))
+  type <- match.arg(
+    type,
+    c("epi", "network", "formation", "duration", "dissolution")
+  )
 
   if (type == "network") {
-    # Network plot ------------------------------------------------------------
-
-    if (x$control$tergmLite == TRUE) {
-      stop("networkDyanmic object is not saved in tergmLite netsim simulation.
-            Check control setting tergmLite", call. = FALSE)
-    }
-
-    nsteps <- x$control$nsteps
-    if (at > x$control$nsteps) {
-      stop("Specify a time step between 1 and ", nsteps, call. = FALSE)
-    }
-
-    nsims <- x$control$nsims
-    if (is.null(sims)) {
-      sims <- 1
-    }
-    if (length(sims) > 1 || (!is.numeric(sims) &&
-                               !(sims %in% c("mean", "max", "min")))) {
-      stop("sims argument must be single simulation number",
-           "or \"mean\", \"max\", or \"min\" ", call. = FALSE)
-    }
-
-    sims.arg <- sims
-    if (sims == "mean") {
-      sims <- which.min(abs(as.numeric(x$epi$i.num[at, ]) -
-                              mean(as.numeric(x$epi$i.num[at, ]))))
-      sims.val <- as.numeric(x$epi$i.num[at, sims])
-    }
-    if (sims == "max") {
-      sims <- as.numeric(which.max(x$epi$i.num[at, ]))
-      sims.val <- x$epi$i.num[at, sims]
-    }
-    if (sims == "min") {
-      sims <- as.numeric(which.min(x$epi$i.num[at, ]))
-      sims.val <- x$epi$i.num[at, sims]
-    }
-
-    obj <- get_network(x, sims, network, collapse = TRUE, at = at)
-    tergmLite <- x$control$tergmLite
-
-    miss_vertex.cex <- is.null(vertex.cex)
-
-    if (!is.null(shp.g2)) {
-      if (all(shp.g2 != c("square", "triangle"))) {
-        stop("shp.g2 accepts inputs of either \"square\" or \"triangle\" ",
-             call. = FALSE)
-      }
-
-      grp.flag <- length(unique(get_vertex_attribute(obj, "group")))
-      if (is.numeric(grp.flag)) {
-        mids <- idgroup(obj)
-        if (shp.g2 == "square") {
-          vertex.sides <- ifelse(mids == 1, 50, 4)
-          vertex.rot <- 45
-          if (miss_vertex.cex == TRUE) {
-            vertex.cex <- 1
-          }
-        }
-        if (shp.g2 == "triangle") {
-          vertex.sides <- ifelse(mids == 1, 50, 3)
-          vertex.rot <- 90
-          if (miss_vertex.cex == TRUE) {
-            vertex.cex <- 1
-          }
-        }
-
-      } else {
-        warning("shp.g2 applies to two-group networks only, so ignoring.")
-        vertex.sides <- 50
-        vertex.rot <- 0
-        if (miss_vertex.cex == TRUE) {
-          vertex.cex <- 1
-        }
-      }
-    } else {
-      vertex.sides <- 50
-      vertex.rot <- 0
-      if (miss_vertex.cex == TRUE) {
-        vertex.cex <- 1
-      }
-    }
-    if (col.status == TRUE) {
-      if (tergmLite == TRUE) {
-        stop("Plotting status colors requires tergmLite=FALSE in netsim
-             control settings.", call. = FALSE)
-      }
-      pal <- adjustcolor(c(4, 2, 3), 0.75)
-      if (tergmLite == FALSE) {
-        testatus <- get.vertex.attribute.active(obj, "testatus", at = at)
-        cols <- rep(pal[1], length(testatus))
-        cols[testatus == "i"] <- pal[2]
-        cols[testatus == "r"] <- pal[3]
-      }
-      plot.network(obj, vertex.col = cols, vertex.border = "grey60",
-                   edge.col = "grey40", vertex.sides = vertex.sides,
-                   vertex.rot = vertex.rot, vertex.cex = vertex.cex,
-                   displaylabels = FALSE, ...)
-      if (sims.arg %in% c("mean", "max", "min")) {
-        mtext(side = 1, text = paste("Sim =", sims, " | Prev =", sims.val))
-      }
-    } else {
-      plot.network(obj, vertex.sides = vertex.sides, vertex.rot = vertex.rot,
-                   vertex.cex = vertex.cex, displaylabels = FALSE, ...)
-    }
-
+    plot_netsim_network(x, at, sims, network, shp.g2, col.status, vertex.cex, ...)
   } else if (type == "epi") {
-    # Epidemic plot -----------------------------------------------------------
-
-    ## Model dimensions and class ##
-    nsteps <- x$control$nsteps
-    nsims <- x$control$nsims
-    if (is.null(sims)) {
-      sims <- seq_len(nsims)
-    }
-    if (max(sims) > nsims) {
-      stop("Set sim to between 1 and ", nsims, call. = FALSE)
-    }
-    if (is.null(x$param$groups) || !is.numeric(x$param$groups)) {
-      groups <- 1
-      x$param$groups <- 1
-    } else {
-      groups <- x$param$groups
-    }
-
-    ## Compartments ##
-    nocomp <- is.null(y)
-    if (nocomp) {
-      if (groups == 1) {
-        y <- grep(".num$", names(x$epi), value = TRUE)
-      }
-      if (groups == 2) {
-        if (inherits(x, "icm")) {
-          y <- c(grep(".num$", names(x$epi), value = TRUE),
-                 grep(".num.g2$", names(x$epi), value = TRUE))
-        }
-        if (inherits(x, "netsim")) {
-          y <- c(grep(".num$", names(x$epi), value = TRUE),
-                 grep(".num.g2$", names(x$epi), value = TRUE))
-        }
-      }
-      if (is.null(legend)) {
-        legend <- TRUE
-      }
-    }
-    if (nocomp == FALSE) {
-      if (any(y %in% names(x$epi) == FALSE)) {
-        stop("Specified y is not available in object", call. = FALSE)
-      }
-    }
-    lcomp <- length(y)
-
-
-    ## Color palettes ##
-
-    # Main color palette
-    bpal <- c(4, 2, 3, 5:100)
-
-    # Mean line
-    if (is.null(mean.col)) {
-      mean.col <- bpal
-    }
-    mean.pal <- adjustcolor(mean.col, 0.9)
-
-    # Quantile bands
-    if (is.null(qnts.col)) {
-      qnts.col <- bpal
-    }
-    qnts.pal <- adjustcolor(qnts.col, qnts.alpha)
-
-    # Sim lines
-    if (is.null(sim.lwd)) {
-      sim.lwd <- rep(0.75, lcomp)
-    } else {
-      if (length(sim.lwd) < lcomp) {
-        sim.lwd <- rep(sim.lwd, lcomp)
-      }
-    }
-
-    if (is.null(sim.col)) {
-      sim.col <- bpal
-    } else {
-      if (length(sim.col) < lcomp) {
-        sim.col <- rep(sim.col, lcomp)
-      }
-    }
-
-    if (is.null(sim.alpha) && nsims == 1) {
-      sim.alpha <- 0.9
-    }
-    if (is.null(sim.alpha) && nsims > 1) {
-      sim.alpha <- max(c(0.05, 1 - log10(nsims) / 3))
-    }
-    sim.pal <- adjustcolor(sim.col, sim.alpha)
-
-
-    ## Prevalence calculations ##
-    nopopfrac <- ifelse(missing(popfrac), TRUE, FALSE)
-    if (nopopfrac == TRUE) {
-      popfrac <- FALSE
-    }
-    if (nopopfrac == TRUE) {
-      if (any(grepl(".flow", y)) ||
-            (groups == 1 && all(grepl(".num$", y)) == FALSE) ||
-            (groups == 2 && all(c(grepl(".num$", y), grepl(".g2$", y)) == FALSE)) ||
-            any(y %in% c("num", "num.g2", "num.g2"))) {
-        popfrac <- FALSE
-      }
-    }
-    x <- denom(x, y, popfrac)
-
-    # Compartment max
-    if (popfrac == FALSE) {
-      if (lcomp == 1) {
-        min.prev <- min(x$epi[[y]], na.rm = TRUE)
-        max.prev <- max(x$epi[[y]], na.rm = TRUE)
-      } else {
-        min.prev <- min(sapply(y, function(comps) min(x$epi[[comps]], na.rm = TRUE)))
-        max.prev <- max(sapply(y, function(comps) max(x$epi[[comps]], na.rm = TRUE)))
-      }
-    } else {
-      min.prev <- 0
-      max.prev <- 1
-    }
-
-    # Initialize ylim max values
-    qnt.min <- 1E10
-    qnt.max <- -1E10
-    mean.min <- 1E10
-    mean.max <- -1E10
-
-    ## Quantiles - ylim max ##
-    if (qnts == FALSE) {
-      disp.qnts <- FALSE
-    } else {
-      disp.qnts <- TRUE
-    }
-    if (nsims == 1) {
-      disp.qnts <- FALSE
-    }
-
-    if (disp.qnts == TRUE) {
-      if (qnts > 1 || qnts < 0) {
-        stop("qnts must be between 0 and 1", call. = FALSE)
-      }
-      qnt.max <- draw_qnts(x, y, qnts, qnts.pal, qnts.smooth, "epi", 0, "max")
-      qnt.min <- draw_qnts(x, y, qnts, qnts.pal, qnts.smooth, "epi", 0, "min")
-    }
-
-
-    ## Mean lines - ylim max ##
-    if (mean.line == TRUE) {
-
-      if (!missing(mean.lwd) && length(mean.lwd) < lcomp) {
-        mean.lwd <- rep(mean.lwd, lcomp)
-      }
-      if (missing(mean.lwd)) {
-        mean.lwd <- rep(1.5, lcomp)
-      }
-
-      if (!missing(mean.lty) && length(mean.lty) < lcomp) {
-        mean.lty <- rep(mean.lty, lcomp)
-      }
-      if (missing(mean.lty)) {
-        mean.lty <- rep(1, lcomp)
-      }
-      mean.max <- draw_means(x, y, mean.smooth, mean.lwd, mean.pal,
-                             mean.lty, "epi", 0, "max")
-      mean.min <- draw_means(x, y, mean.smooth, mean.lwd, mean.pal,
-                             mean.lty, "epi", 0, "min")
-    }
-
-    ## Missing args ##
-    if (is.null(xlim)) {
-      xlim <- c(0, nsteps)
-    }
-    if (is.null(ylim) && (popfrac == TRUE || sim.lines == TRUE)) {
-      ylim <- c(min.prev, max.prev)
-    } else if (is.null(ylim) && popfrac == FALSE && sim.lines == FALSE &&
-                 (mean.line == TRUE || qnts == TRUE)) {
-      ylim <- c(min(qnt.min * 0.9, mean.min * 0.9), max(qnt.max * 1.1, mean.max * 1.1))
-    }
-
-    if (is.null(main)) {
-      main <- ""
-    }
-
-    if (is.null(xlab)) {
-      xlab <- "Time"
-    }
-
-    if (is.null(ylab)) {
-      if (popfrac == FALSE) {
-        ylab <- "Number"
-      } else {
-        ylab <- "Prevalence"
-      }
-    }
-
-    ## Main plot window ##
-    if (add == FALSE) {
-      da <- list()
-      da$x <- 1
-      da$y <- 1
-      da$type <- "n"
-      da$bty <- "n"
-      da$xlim <- xlim
-      da$xlab <- xlab
-      da$ylim <- ylim
-      da$ylab <- ylab
-      da$main <- main
-
-      do.call(plot, da)
-    }
-
-
-    ## Quantiles ##
-    ## NOTE: Why is this repeated from above?
-    if (qnts == FALSE) {
-      disp.qnts <- FALSE
-    } else {
-      disp.qnts <- TRUE
-    }
-    if (nsims == 1) {
-      disp.qnts <- FALSE
-    }
-
-    if (disp.qnts == TRUE) {
-      if (qnts > 1 || qnts < 0) {
-        stop("qnts must be between 0 and 1", call. = FALSE)
-      }
-      y.l <- length(y)
-      qnts.pal <- qnts.pal[1:y.l]
-      draw_qnts(x, y, qnts, qnts.pal, qnts.smooth)
-    }
-
-
-    ## Simulation lines ##
-    if (sim.lines == TRUE) {
-      for (j in seq_len(lcomp)) {
-        for (i in sims) {
-          lines(x$epi[[y[j]]][, i], lwd = sim.lwd[j], col = sim.pal[j])
-        }
-      }
-    }
-
-
-    ## Mean lines ##
-    if (mean.line == TRUE) {
-
-      if (!missing(mean.lwd) && length(mean.lwd) < lcomp) {
-        mean.lwd <- rep(mean.lwd, lcomp)
-      }
-      if (missing(mean.lwd)) {
-        mean.lwd <- rep(2.5, lcomp)
-      }
-
-      if (!missing(mean.lty) && length(mean.lty) < lcomp) {
-        mean.lty <- rep(mean.lty, lcomp)
-      }
-      if (missing(mean.lty)) {
-        if (nocomp == FALSE) {
-          mean.lty <- rep(1, lcomp)
-        }
-      }
-      y.n <- length(y)
-      mean.pal <- mean.pal[1:y.n]
-      draw_means(x, y, mean.smooth, mean.lwd, mean.pal, mean.lty)
-    }
-
-    ## Grid
-    if (grid == TRUE) {
-      grid()
-    }
-
-    ## Legends ##
-    if (!missing(legend) && legend == TRUE) {
-      if (groups == 2 && nocomp == TRUE) {
-        leg.lty <- mean.lty
-      } else {
-        leg.lty <- 1
-      }
-      legend("topright", legend = y, lty = leg.lty, lwd = 2,
-             col = mean.pal, cex = leg.cex, bg = "white")
-    }
+    plot_netsim_epi(x, y, sims, legend, mean.col, qnts.col, sim.lwd,
+                            sim.col, sim.alpha, popfrac, qnts, qnts.alpha, qnts.smooth,
+                            mean.line, mean.smooth, add,
+                            mean.lwd, mean.lty, xlim, ylim, main, xlab, ylab,
+                            sim.lines, grid, leg.cex, ...)
   } else {
-    # stat plot
-
-    ## Stats
-    nsims <- x$control$nsims
-    if (is.null(sims)) {
-      sims <- 1:nsims
-    }
-    if (max(sims) > nsims) {
-      stop("Maximum sims for this object is ", nsims, call. = FALSE)
-    }
-
-    nsims <- length(sims)
-    nsteps <- x$control$nsteps
-
-    if (type == "formation") {
-      # Formation plot ----------------------------------------------------------
-
-      ## get nw stats
-      data <- get_nwstats(x, sims, network, mode = "list")
-
-      ## target stats
-      nwparam <- get_nwparam(x, network)
-      ts <- nwparam$target.stats
-      tsn <- nwparam$target.stats.names
-      names(ts) <- tsn
-
-    } else {
-      ## duration/dissolution plot
-      if (isTRUE(x$control$save.diss.stats) &&
-            isTRUE(x$control$save.network) &&
-            isFALSE(x$control$tergmLite) &&
-            isFALSE(is.null(x$diss.stats)) &&
-            isTRUE(x$nwparam[[network]]$coef.diss$diss.model.type == "edgesonly")) {
-
-        if (any(unlist(lapply(x$diss.stats, `[[`, "anyNA")))) {
-          cat("\nNOTE: Duration & dissolution data contains undefined values due to zero edges of some dissolution
-            dyad type(s) on some time step; these undefined values will be set to 0 when processing the data.")
-        }
-
-        if (type == "duration") {
-          if (isTRUE(duration.imputed)) {
-            data <- lapply(sims, function(sim) x$diss.stats[[sim]][[network]][["meanageimputed"]])
-          } else {
-            data <- lapply(sims, function(sim) x$diss.stats[[sim]][[network]][["meanage"]])
-          }
-          ts <- x$nwparam[[network]]$coef.diss$duration
-        } else { # if type is "dissolution"
-          data <- lapply(sims, function(sim) x$diss.stats[[sim]][[network]][["propdiss"]])
-          ts <- 1 / x$nwparam[[network]]$coef.diss$duration
-        }
-      } else {
-        stop("cannot produce duration/dissolution plot from `netsim` object ",
-             "unless `save.diss.stats` is `TRUE`, `save.network` is `TRUE`, ",
-             "`tergmLite` is `FALSE`, `keep.diss.stats` is `TRUE` (if ",
-             "merging), and dissolution model is edges-only")
-      }
-    }
-
-    stats_table <- make_stats_table(data, ts)
-    data <- array(unlist(data), dim = c(dim(data[[1]]), nsims))
-
-    ## Find available stats
-    sts <- which(!is.na(stats_table[, "Sim Mean"]))
-    nmstats <- rownames(stats_table)[sts]
-
-    ## Pull and check stat argument
-    if (is.null(stats)) {
-      stats <- nmstats
-    }
-    if (any(stats %in% nmstats == FALSE)) {
-      stop("One or more requested stats not contained in netsim object",
-           call. = FALSE)
-    }
-    outsts <- which(nmstats %in% stats)
-    nmstats <- nmstats[outsts]
-
-    ## Subset data
-    data <- data[, outsts, , drop = FALSE]
-
-    ## we've already subset the data to `sims`
-
-    ## Pull target stats
-    targets <- stats_table$Target[sts][outsts]
-
-    plot_stats_table(data = data,
-                     nmstats = nmstats,
-                     method = method,
-                     duration.imputed = duration.imputed,
-                     sim.lines = sim.lines,
-                     sim.col = sim.col,
-                     sim.lwd = sim.lwd,
-                     mean.line = mean.line,
-                     mean.smooth = mean.smooth,
-                     mean.col = mean.col,
-                     mean.lwd = mean.lwd,
-                     mean.lty = mean.lty,
-                     qnts = qnts,
-                     qnts.col = qnts.col,
-                     qnts.alpha = qnts.alpha,
-                     qnts.smooth = qnts.smooth,
-                     targ.line = targ.line,
-                     targ.col = targ.col,
-                     targ.lwd = targ.lwd,
-                     targ.lty = targ.lty,
-                     plots.joined = plots.joined,
-                     draw_legend = legend,
-                     grid = grid,
-                     targets = targets,
-                     dynamic = TRUE, # always dynamic in netsim
-                     xlim = xlim, xlab = xlab,
-                     ylim = ylim, ylab = ylab,
-                     ...)
+    plot_netsim_stats(
+      x, type, sims, stats, network, duration.imputed,
+      method, sim.lines, sim.col, sim.lwd,
+      mean.line, mean.smooth, mean.col, mean.lwd,
+      mean.lty, qnts, qnts.col, qnts.alpha, qnts.smooth,
+      targ.line, targ.col, targ.lwd, targ.lty,
+      plots.joined, legend, grid, xlim, xlab,
+      ylim, ylab, ...)
   }
 }
 
+plot_netsim_network <- function(x, at, sims, network, shp.g2, col.status, vertex.cex, ...) {
+  # Network plot ------------------------------------------------------------
+  if (x$control$tergmLite) {
+    stop("networkDyanmic object is not saved in tergmLite netsim simulation.
+      Check control setting tergmLite", call. = FALSE)
+  }
+
+  nsteps <- x$control$nsteps
+  if (at > nsteps) {
+    stop("Specify a time step between 1 and ", nsteps, call. = FALSE)
+  }
+
+  nsims <- x$control$nsims
+  sims <- if (is.null(sims)) 1 else sims
+  if (length(sims) > 1 ||
+    (!is.numeric(sims) && !(sims %in% c("mean", "max", "min")))) {
+    stop("sims argument must be single simulation number",
+      "or \"mean\", \"max\", or \"min\" ", call. = FALSE)
+  }
+
+  sims.arg <- sims
+  if (sims == "mean") {
+    sims <- which.min(
+      abs(as.numeric(x$epi$i.num[at, ]) - mean(as.numeric(x$epi$i.num[at, ])))
+    )
+    sims.val <- as.numeric(x$epi$i.num[at, sims])
+  } else if (sims == "max") {
+    sims <- as.numeric(which.max(x$epi$i.num[at, ]))
+    sims.val <- x$epi$i.num[at, sims]
+  } else if (sims == "min") {
+    sims <- as.numeric(which.min(x$epi$i.num[at, ]))
+    sims.val <- x$epi$i.num[at, sims]
+  }
+
+  obj <- get_network(x, sims, network, collapse = TRUE, at = at)
+  tergmLite <- x$control$tergmLite
+  miss_vertex.cex <- is.null(vertex.cex)
+
+  if (!is.null(shp.g2)) {
+    if (all(!shp.g2 %in% c("square", "triangle"))) {
+      stop("shp.g2 accepts inputs of either \"square\" or \"triangle\" ",
+        call. = FALSE)
+    }
+
+    grp.flag <- length(unique(get_vertex_attribute(obj, "group")))
+    if (is.numeric(grp.flag)) {
+      mids <- idgroup(obj)
+      if (shp.g2 == "square") {
+        vertex.sides <- ifelse(mids == 1, 50, 4)
+        vertex.rot <- 45
+        if (miss_vertex.cex) {
+          vertex.cex <- 1
+        }
+      }
+      if (shp.g2 == "triangle") {
+        vertex.sides <- ifelse(mids == 1, 50, 3)
+        vertex.rot <- 90
+        if (miss_vertex.cex) {
+          vertex.cex <- 1
+        }
+      }
+
+    } else {
+      warning("shp.g2 applies to two-group networks only, so ignoring.")
+      vertex.sides <- 50
+      vertex.rot <- 0
+      if (miss_vertex.cex) {
+        vertex.cex <- 1
+      }
+    }
+  } else {
+    vertex.sides <- 50
+    vertex.rot <- 0
+    if (miss_vertex.cex) {
+      vertex.cex <- 1
+    }
+  }
+  if (col.status) {
+    if (tergmLite) {
+      stop("Plotting status colors requires tergmLite=FALSE in netsim
+        control settings.", call. = FALSE)
+    }
+    pal <- adjustcolor(c(4, 2, 3), 0.75)
+    if (!tergmLite) {
+      testatus <- get.vertex.attribute.active(obj, "testatus", at = at)
+      cols <- rep(pal[1], length(testatus))
+      cols[testatus == "i"] <- pal[2]
+      cols[testatus == "r"] <- pal[3]
+    }
+    plot.network(obj, vertex.col = cols, vertex.border = "grey60",
+      edge.col = "grey40", vertex.sides = vertex.sides,
+      vertex.rot = vertex.rot, vertex.cex = vertex.cex,
+      displaylabels = FALSE, ...)
+    if (sims.arg %in% c("mean", "max", "min")) {
+      mtext(side = 1, text = paste("Sim =", sims, " | Prev =", sims.val))
+    }
+  } else {
+    plot.network(obj, vertex.sides = vertex.sides, vertex.rot = vertex.rot,
+      vertex.cex = vertex.cex, displaylabels = FALSE, ...)
+  }
+}
+
+plot_netsim_epi <- function(x, y, sims, legend, mean.col, qnts.col, sim.lwd,
+                            sim.col, sim.alpha, popfrac, qnts, qnts.alpha, qnts.smooth,
+                            mean.line, mean.smooth, add,
+                            mean.lwd, mean.lty, xlim, ylim, main, xlab, ylab,
+                            sim.lines, grid, leg.cex, ...) {
+  ## Model dimensions and class ##
+  nsteps <- x$control$nsteps
+  nsims <- x$control$nsims
+  if (is.null(sims)) {
+    sims <- seq_len(nsims)
+  }
+  if (max(sims) > nsims) {
+    stop("Set sim to between 1 and ", nsims, call. = FALSE)
+  }
+  if (is.null(x$param$groups) || !is.numeric(x$param$groups)) {
+    groups <- 1
+    x$param$groups <- 1
+  } else {
+    groups <- x$param$groups
+  }
+
+  ## Compartments ##
+  nocomp <- is.null(y)
+  if (nocomp) {
+    if (groups == 1) {
+      y <- grep(".num$", names(x$epi), value = TRUE)
+    }
+    if (groups == 2) {
+      if (inherits(x, "icm")) {
+        y <- c(grep(".num$", names(x$epi), value = TRUE),
+          grep(".num.g2$", names(x$epi), value = TRUE))
+      }
+      if (inherits(x, "netsim")) {
+        y <- c(grep(".num$", names(x$epi), value = TRUE),
+          grep(".num.g2$", names(x$epi), value = TRUE))
+      }
+    }
+    if (is.null(legend)) {
+      legend <- TRUE
+    }
+  }
+  if (!nocomp) {
+    if (any(y %in% names(x$epi) == FALSE)) {
+      stop("Specified y is not available in object", call. = FALSE)
+    }
+  }
+  lcomp <- length(y)
+
+
+  ## Color palettes ##
+
+  # Main color palette
+  bpal <- c(4, 2, 3, 5:100)
+
+  # Mean line
+  if (is.null(mean.col)) {
+    mean.col <- bpal
+  }
+  mean.pal <- adjustcolor(mean.col, 0.9)
+
+  # Quantile bands
+  if (is.null(qnts.col)) {
+    qnts.col <- bpal
+  }
+  qnts.pal <- adjustcolor(qnts.col, qnts.alpha)
+
+  # Sim lines
+  if (is.null(sim.lwd)) {
+    sim.lwd <- rep(0.75, lcomp)
+  } else {
+    if (length(sim.lwd) < lcomp) {
+      sim.lwd <- rep(sim.lwd, lcomp)
+    }
+  }
+
+  if (is.null(sim.col)) {
+    sim.col <- bpal
+  } else {
+    if (length(sim.col) < lcomp) {
+      sim.col <- rep(sim.col, lcomp)
+    }
+  }
+
+  if (is.null(sim.alpha) && nsims == 1) {
+    sim.alpha <- 0.9
+  }
+  if (is.null(sim.alpha) && nsims > 1) {
+    sim.alpha <- max(c(0.05, 1 - log10(nsims) / 3))
+  }
+  sim.pal <- adjustcolor(sim.col, sim.alpha)
+
+
+  ## Prevalence calculations ##
+  x <- denom(x, y, popfrac)
+
+  # Compartment max
+  if (!popfrac) {
+    if (lcomp == 1) {
+      min.prev <- min(x$epi[[y]], na.rm = TRUE)
+      max.prev <- max(x$epi[[y]], na.rm = TRUE)
+    } else {
+      min.prev <- min(sapply(y, function(comps) min(x$epi[[comps]], na.rm = TRUE)))
+      max.prev <- max(sapply(y, function(comps) max(x$epi[[comps]], na.rm = TRUE)))
+    }
+  } else {
+    min.prev <- 0
+    max.prev <- 1
+  }
+
+  # Initialize ylim max values
+  qnt.min <- 1E10
+  qnt.max <- -1E10
+  mean.min <- 1E10
+  mean.max <- -1E10
+
+  ## Quantiles - ylim max ##
+  if (qnts == FALSE) {
+    disp.qnts <- FALSE
+  } else {
+    disp.qnts <- TRUE
+  }
+  if (nsims == 1) {
+    disp.qnts <- FALSE
+  }
+
+  if (disp.qnts == TRUE) {
+    if (qnts > 1 || qnts < 0) {
+      stop("qnts must be between 0 and 1", call. = FALSE)
+    }
+    qnt.max <- draw_qnts(x, y, qnts, qnts.pal, qnts.smooth, "epi", 0, "max")
+    qnt.min <- draw_qnts(x, y, qnts, qnts.pal, qnts.smooth, "epi", 0, "min")
+  }
+
+
+  ## Mean lines - ylim max ##
+  if (mean.line == TRUE) {
+
+    if (!is.null(mean.lwd) && length(mean.lwd) < lcomp) {
+      mean.lwd <- rep(mean.lwd, lcomp)
+    }
+    if (is.null(mean.lwd)) {
+      mean.lwd <- rep(1.5, lcomp)
+    }
+
+    if (!is.null(mean.lty) && length(mean.lty) < lcomp) {
+      mean.lty <- rep(mean.lty, lcomp)
+    }
+    if (is.null(mean.lty)) {
+      mean.lty <- rep(1, lcomp)
+    }
+    mean.max <- draw_means(x, y, mean.smooth, mean.lwd, mean.pal,
+      mean.lty, "epi", 0, "max")
+    mean.min <- draw_means(x, y, mean.smooth, mean.lwd, mean.pal,
+      mean.lty, "epi", 0, "min")
+  }
+
+  ## Missing args ##
+  if (is.null(xlim)) {
+    xlim <- c(0, nsteps)
+  }
+  if (is.null(ylim) && (popfrac == TRUE || sim.lines == TRUE)) {
+    ylim <- c(min.prev, max.prev)
+  } else if (is.null(ylim) && popfrac == FALSE && sim.lines == FALSE &&
+    (mean.line == TRUE || qnts == TRUE)) {
+    ylim <- c(min(qnt.min * 0.9, mean.min * 0.9), max(qnt.max * 1.1, mean.max * 1.1))
+  }
+
+  if (is.null(main)) {
+    main <- ""
+  }
+
+  if (is.null(xlab)) {
+    xlab <- "Time"
+  }
+
+  if (is.null(ylab)) {
+    if (popfrac == FALSE) {
+      ylab <- "Number"
+    } else {
+      ylab <- "Prevalence"
+    }
+  }
+
+  ## Main plot window ##
+  if (add == FALSE) {
+    da <- list()
+    da$x <- 1
+    da$y <- 1
+    da$type <- "n"
+    da$bty <- "n"
+    da$xlim <- xlim
+    da$xlab <- xlab
+    da$ylim <- ylim
+    da$ylab <- ylab
+    da$main <- main
+
+    do.call(plot, da)
+  }
+
+
+  ## Quantiles ##
+  ## NOTE: Why is this repeated from above?
+  if (qnts == FALSE) {
+    disp.qnts <- FALSE
+  } else {
+    disp.qnts <- TRUE
+  }
+  if (nsims == 1) {
+    disp.qnts <- FALSE
+  }
+
+  if (disp.qnts == TRUE) {
+    if (qnts > 1 || qnts < 0) {
+      stop("qnts must be between 0 and 1", call. = FALSE)
+    }
+    y.l <- length(y)
+    qnts.pal <- qnts.pal[1:y.l]
+    draw_qnts(x, y, qnts, qnts.pal, qnts.smooth)
+  }
+
+
+  ## Simulation lines ##
+  if (sim.lines == TRUE) {
+    for (j in seq_len(lcomp)) {
+      for (i in sims) {
+        lines(x$epi[[y[j]]][, i], lwd = sim.lwd[j], col = sim.pal[j])
+      }
+    }
+  }
+
+
+  ## Mean lines ##
+  if (mean.line == TRUE) {
+
+    if (!is.null(mean.lwd) && length(mean.lwd) < lcomp) {
+      mean.lwd <- rep(mean.lwd, lcomp)
+    }
+    if (is.null(mean.lwd)) {
+      mean.lwd <- rep(2.5, lcomp)
+    }
+
+    if (!is.null(mean.lty) && length(mean.lty) < lcomp) {
+      mean.lty <- rep(mean.lty, lcomp)
+    }
+    if (is.null(mean.lty)) {
+      if (nocomp == FALSE) {
+        mean.lty <- rep(1, lcomp)
+      }
+    }
+    y.n <- length(y)
+    mean.pal <- mean.pal[1:y.n]
+    draw_means(x, y, mean.smooth, mean.lwd, mean.pal, mean.lty)
+  }
+
+  ## Grid
+  if (grid) grid()
+
+  ## Legends ##
+  if (!is.null(legend) && legend) {
+    if (groups == 2 && nocomp) {
+      leg.lty <- mean.lty
+    } else {
+      leg.lty <- 1
+    }
+    legend("topright", legend = y, lty = leg.lty, lwd = 2,
+      col = mean.pal, cex = leg.cex, bg = "white")
+  }
+}
+
+plot_netsim_stats <- function(x, type, sims, stats, network, duration.imputed,
+                              method, sim.lines, sim.col, sim.lwd,
+                              mean.line, mean.smooth, mean.col, mean.lwd,
+                              mean.lty, qnts, qnts.col, qnts.alpha, qnts.smooth,
+                              targ.line, targ.col, targ.lwd, targ.lty,
+                              plots.joined, legend, grid, xlim, xlab,
+                              ylim, ylab, ...) {
+
+  nsims <- x$control$nsims
+  if (is.null(sims)) {
+    sims <- seq_len(nsims)
+  }
+  if (max(sims) > nsims) {
+    stop("Maximum sims for this object is ", nsims, call. = FALSE)
+  }
+
+  nsims <- length(sims)
+  nsteps <- x$control$nsteps
+
+  if (type == "formation") {
+    # Formation plot ----------------------------------------------------------
+
+    ## get nw stats
+    data <- get_nwstats(x, sims, network, mode = "list")
+
+    ## target stats
+    nwparam <- get_nwparam(x, network)
+    ts <- nwparam$target.stats
+    tsn <- nwparam$target.stats.names
+    names(ts) <- tsn
+
+  } else {
+    ## duration/dissolution plot
+    if (isTRUE(x$control$save.diss.stats) &&
+      isTRUE(x$control$save.network) &&
+      isFALSE(x$control$tergmLite) &&
+      isFALSE(is.null(x$diss.stats)) &&
+      isTRUE(x$nwparam[[network]]$coef.diss$diss.model.type == "edgesonly")) {
+
+      if (any(unlist(lapply(x$diss.stats, `[[`, "anyNA")))) {
+        cat("\nNOTE: Duration & dissolution data contains undefined values due to zero edges of some dissolution
+          dyad type(s) on some time step; these undefined values will be set to 0 when processing the data.")
+      }
+
+      if (type == "duration") {
+        if (isTRUE(duration.imputed)) {
+          data <- lapply(sims, function(sim) x$diss.stats[[sim]][[network]][["meanageimputed"]])
+        } else {
+          data <- lapply(sims, function(sim) x$diss.stats[[sim]][[network]][["meanage"]])
+        }
+        ts <- x$nwparam[[network]]$coef.diss$duration
+      } else { # if type is "dissolution"
+        data <- lapply(sims, function(sim) x$diss.stats[[sim]][[network]][["propdiss"]])
+        ts <- 1 / x$nwparam[[network]]$coef.diss$duration
+      }
+    } else {
+      stop("cannot produce duration/dissolution plot from `netsim` object ",
+        "unless `save.diss.stats` is `TRUE`, `save.network` is `TRUE`, ",
+        "`tergmLite` is `FALSE`, `keep.diss.stats` is `TRUE` (if ",
+        "merging), and dissolution model is edges-only")
+    }
+  }
+
+  stats_table <- make_stats_table(data, ts)
+  data <- array(unlist(data), dim = c(dim(data[[1]]), nsims))
+
+  ## Find available stats
+  sts <- which(!is.na(stats_table[, "Sim Mean"]))
+  nmstats <- rownames(stats_table)[sts]
+
+  ## Pull and check stat argument
+  if (is.null(stats)) {
+    stats <- nmstats
+  }
+  if (any(stats %in% nmstats == FALSE)) {
+    stop("One or more requested stats not contained in netsim object",
+      call. = FALSE)
+  }
+  outsts <- which(nmstats %in% stats)
+  nmstats <- nmstats[outsts]
+
+  ## Subset data
+  data <- data[, outsts, , drop = FALSE]
+
+  ## we've already subset the data to `sims`
+
+  ## Pull target stats
+  targets <- stats_table$Target[sts][outsts]
+
+  plot_stats_table(
+    data = data,
+    nmstats = nmstats,
+    method = method,
+    sim.lines = sim.lines,
+    sim.col = sim.col,
+    sim.lwd = sim.lwd,
+    mean.line = mean.line,
+    mean.smooth = mean.smooth,
+    mean.col = mean.col,
+    mean.lwd = mean.lwd,
+    mean.lty = mean.lty,
+    qnts = qnts,
+    qnts.col = qnts.col,
+    qnts.alpha = qnts.alpha,
+    qnts.smooth = qnts.smooth,
+    targ.line = targ.line,
+    targ.col = targ.col,
+    targ.lwd = targ.lwd,
+    targ.lty = targ.lty,
+    plots.joined = plots.joined,
+    draw_legend = legend,
+    grid = grid,
+    targets = targets,
+    dynamic = TRUE, # always dynamic in netsim
+    xlim = xlim, xlab = xlab,
+    ylim = ylim, ylab = ylab,
+    ...
+  )
+}
