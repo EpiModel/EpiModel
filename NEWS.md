@@ -36,6 +36,7 @@ edges.
 - `plot.` `netsim`, `icm` and `dcm` now pass their ellipsis (...) to the inner
 `plot` call. This removes the need for explicit `axs` argument to theses
 functions
+- Fixes the `get_qnts` function to get correct quantiles on formation plots
 
 ## EpiModel 2.4.0
 
