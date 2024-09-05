@@ -341,7 +341,7 @@ dedup_cumulative_edgelist <- function(el) {
       stop = ifelse(.data$overlap, max(.data$stop, .data$lstop, na.rm = TRUE), .data$stop),
       start = ifelse(.data$overlap, min(.data$start, .data$lstart, na.rm = TRUE), .data$start)
     ) |>
-    dplyr::select(-c(.data$lstart, .data$lstop, .data$overlap)) |>
+    dplyr::select(-c("lstart", "lstop", "overlap")) |>
     dplyr::ungroup() |>
     unique()
 

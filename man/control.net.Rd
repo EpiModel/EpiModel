@@ -39,7 +39,7 @@ control.net(
   skip.check = FALSE,
   raw.output = FALSE,
   tergmLite.track.duration = FALSE,
-  set.control.ergm = control.simulate.formula(MCMC.burnin = 2e+05),
+  set.control.ergm = control.simulate.formula(MCMC.burnin = 200000),
   set.control.tergm = control.simulate.formula.tergm(),
   save.diss.stats = TRUE,
   dat.updates = NULL,
