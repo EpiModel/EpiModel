@@ -37,6 +37,9 @@ edges.
 `plot` call. This removes the need for explicit `axs` argument to theses
 functions
 - Fixes the `get_qnts` function to get correct quantiles on formation plots
+- all function accepting `posit_ids` as argument must now pass exclusively a
+numeric vector. Logical vectors are not accepted anymore as they were making the
+code heavier and were very error prone.
 
 ## EpiModel 2.4.0
 
