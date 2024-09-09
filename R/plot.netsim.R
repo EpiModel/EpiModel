@@ -223,22 +223,22 @@ plot.netsim <- function(x, type = "epi", y = NULL, popfrac = FALSE,
   )
 
   if (type == "network") {
-    plot_netsim_network(x, at, sims, network, shp.g2, col.status, vertex.cex, ...)
+    plot_netsim_network(x, at, sims, network, shp.g2, col.status, vertex.cex,
+                        ...)
   } else if (type == "epi") {
-    plot_netsim_epi(x, y, sims, legend, mean.col, qnts.col, sim.lwd,
-                            sim.col, sim.alpha, popfrac, qnts, qnts.alpha, qnts.smooth,
-                            mean.line, mean.smooth, add,
-                            mean.lwd, mean.lty, xlim, ylim, main, xlab, ylab,
-                            sim.lines, grid, leg.cex, ...)
+    plot_netsim_epi(
+      x, y, sims, legend, mean.col, qnts.col, sim.lwd, sim.col, sim.alpha,
+      popfrac, qnts, qnts.alpha, qnts.smooth, mean.line, mean.smooth, add,
+      mean.lwd, mean.lty, xlim, ylim, main, xlab, ylab, sim.lines, grid,
+      leg.cex, ...
+    )
   } else {
     plot_netsim_stats(
-      x, type, sims, stats, network, duration.imputed,
-      method, sim.lines, sim.col, sim.lwd,
-      mean.line, mean.smooth, mean.col, mean.lwd,
-      mean.lty, qnts, qnts.col, qnts.alpha, qnts.smooth,
-      targ.line, targ.col, targ.lwd, targ.lty,
-      plots.joined, legend, grid, xlim, xlab,
-      ylim, ylab, ...)
+      x, type, sims, stats, network, duration.imputed, method, sim.lines,
+      sim.col, sim.lwd, mean.line, mean.smooth, mean.col, mean.lwd, mean.lty,
+      qnts, qnts.col, qnts.alpha, qnts.smooth, targ.line, targ.col, targ.lwd,
+      targ.lty, plots.joined, legend, grid, xlim, xlab, ylim, ylab, ...
+    )
   }
 }
 
@@ -254,7 +254,6 @@ plot_netsim_network <- function(x, at, sims, network, shp.g2, col.status, vertex
     stop("Specify a time step between 1 and ", nsteps, call. = FALSE)
   }
 
-  nsims <- x$control$nsims
   sims <- if (is.null(sims)) 1 else sims
   if (length(sims) > 1 ||
     (!is.numeric(sims) && !(sims %in% c("mean", "max", "min")))) {
@@ -283,7 +282,7 @@ plot_netsim_network <- function(x, at, sims, network, shp.g2, col.status, vertex
   if (!is.null(shp.g2)) {
     if (all(!shp.g2 %in% c("square", "triangle"))) {
       stop("shp.g2 accepts inputs of either \"square\" or \"triangle\" ",
-        call. = FALSE)
+           call. = FALSE)
     }
 
     grp.flag <- length(unique(get_vertex_attribute(obj, "group")))
@@ -344,54 +343,42 @@ plot_netsim_network <- function(x, at, sims, network, shp.g2, col.status, vertex
   }
 }
 
-plot_netsim_epi <- function(x, y, sims, legend, mean.col, qnts.col, sim.lwd,
-                            sim.col, sim.alpha, popfrac, qnts, qnts.alpha, qnts.smooth,
-                            mean.line, mean.smooth, add,
-                            mean.lwd, mean.lty, xlim, ylim, main, xlab, ylab,
-                            sim.lines, grid, leg.cex, ...) {
+plot_netsim_epi <- function(x, y = NULL, sims = NULL, legend = NULL,
+                            mean.col = NULL, qnts.col = NULL, sim.lwd = NULL,
+                            sim.col = NULL, sim.alpha = NULL, popfrac = FALSE,
+                            qnts = 0.5, qnts.alpha = 0.5, qnts.smooth = TRUE,
+                            mean.line = TRUE, mean.smooth = TRUE, add = FALSE,
+                            mean.lwd = 2, mean.lty = 1, xlim = NULL,
+                            ylim = NULL, main = NULL, xlab = NULL, ylab = NULL,
+                            sim.lines = FALSE, grid = FALSE, leg.cex = 0.8,
+                            ...) {
   ## Model dimensions and class ##
   nsteps <- x$control$nsteps
   nsims <- x$control$nsims
-  if (is.null(sims)) {
-    sims <- seq_len(nsims)
-  }
-  if (max(sims) > nsims) {
-    stop("Set sim to between 1 and ", nsims, call. = FALSE)
-  }
+  sims <- if (is.null(sims)) seq_len(nsims) else sims
+  if (max(sims) > nsims) stop("Set sim to between 1 and ", nsims, call. = FALSE)
   if (is.null(x$param$groups) || !is.numeric(x$param$groups)) {
-    groups <- 1
     x$param$groups <- 1
-  } else {
-    groups <- x$param$groups
   }
+  groups <- x$param$groups
 
   ## Compartments ##
   nocomp <- is.null(y)
   if (nocomp) {
+    legend <- if (is.null(legend)) TRUE else legend
     if (groups == 1) {
       y <- grep(".num$", names(x$epi), value = TRUE)
+    } else if (groups == 2) {
+      y <- c(
+        grep(".num$", names(x$epi), value = TRUE),
+        grep(".num.g2$", names(x$epi), value = TRUE)
+      )
     }
-    if (groups == 2) {
-      if (inherits(x, "icm")) {
-        y <- c(grep(".num$", names(x$epi), value = TRUE),
-          grep(".num.g2$", names(x$epi), value = TRUE))
-      }
-      if (inherits(x, "netsim")) {
-        y <- c(grep(".num$", names(x$epi), value = TRUE),
-          grep(".num.g2$", names(x$epi), value = TRUE))
-      }
-    }
-    if (is.null(legend)) {
-      legend <- TRUE
-    }
+  } else if (!all(y %in% names(x$epi))) {
+    stop("Specified y is not available in object", call. = FALSE)
   }
-  if (!nocomp) {
-    if (any(y %in% names(x$epi) == FALSE)) {
-      stop("Specified y is not available in object", call. = FALSE)
-    }
-  }
-  lcomp <- length(y)
 
+  lcomp <- length(y)
 
   ## Color palettes ##
 
@@ -399,55 +386,38 @@ plot_netsim_epi <- function(x, y, sims, legend, mean.col, qnts.col, sim.lwd,
   bpal <- c(4, 2, 3, 5:100)
 
   # Mean line
-  if (is.null(mean.col)) {
-    mean.col <- bpal
-  }
+  mean.col <- if (is.null(mean.col)) bpal else mean.col
   mean.pal <- adjustcolor(mean.col, 0.9)
 
   # Quantile bands
-  if (is.null(qnts.col)) {
-    qnts.col <- bpal
-  }
+  qnts.col <- if (is.null(qnts.col)) bpal else qnts.col
   qnts.pal <- adjustcolor(qnts.col, qnts.alpha)
 
   # Sim lines
-  if (is.null(sim.lwd)) {
-    sim.lwd <- rep(0.75, lcomp)
-  } else {
-    if (length(sim.lwd) < lcomp) {
-      sim.lwd <- rep(sim.lwd, lcomp)
-    }
+  sim.lwd <- if (is.null(sim.lwd)) 0.75 else sim.lwd
+  if (length(sim.lwd) < lcomp) {
+    sim.lwd <- rep(sim.lwd, lcomp)
   }
 
-  if (is.null(sim.col)) {
-    sim.col <- bpal
-  } else {
-    if (length(sim.col) < lcomp) {
-      sim.col <- rep(sim.col, lcomp)
-    }
+  sim.col <- if (is.null(sim.col)) bpal else sim.col
+  if (length(sim.col) < lcomp) {
+    sim.col <- rep(sim.col, lcomp)
   }
 
   if (is.null(sim.alpha) && nsims == 1) {
     sim.alpha <- 0.9
-  }
-  if (is.null(sim.alpha) && nsims > 1) {
+  } else if (is.null(sim.alpha) && nsims > 1) {
     sim.alpha <- max(c(0.05, 1 - log10(nsims) / 3))
   }
   sim.pal <- adjustcolor(sim.col, sim.alpha)
-
 
   ## Prevalence calculations ##
   x <- denom(x, y, popfrac)
 
   # Compartment max
   if (!popfrac) {
-    if (lcomp == 1) {
-      min.prev <- min(x$epi[[y]], na.rm = TRUE)
-      max.prev <- max(x$epi[[y]], na.rm = TRUE)
-    } else {
-      min.prev <- min(sapply(y, function(comps) min(x$epi[[comps]], na.rm = TRUE)))
-      max.prev <- max(sapply(y, function(comps) max(x$epi[[comps]], na.rm = TRUE)))
-    }
+      min.prev <- min(sapply(y, \(comps) min(x$epi[[comps]], na.rm = TRUE)))
+      max.prev <- max(sapply(y, \(comps) max(x$epi[[comps]], na.rm = TRUE)))
   } else {
     min.prev <- 0
     max.prev <- 1
@@ -460,16 +430,13 @@ plot_netsim_epi <- function(x, y, sims, legend, mean.col, qnts.col, sim.lwd,
   mean.max <- -1E10
 
   ## Quantiles - ylim max ##
-  if (qnts == FALSE) {
+  if (qnts == FALSE || nsims == 1) {
     disp.qnts <- FALSE
   } else {
     disp.qnts <- TRUE
   }
-  if (nsims == 1) {
-    disp.qnts <- FALSE
-  }
 
-  if (disp.qnts == TRUE) {
+  if (disp.qnts) {
     if (qnts > 1 || qnts < 0) {
       stop("qnts must be between 0 and 1", call. = FALSE)
     }
@@ -479,70 +446,59 @@ plot_netsim_epi <- function(x, y, sims, legend, mean.col, qnts.col, sim.lwd,
 
 
   ## Mean lines - ylim max ##
-  if (mean.line == TRUE) {
-
+  if (mean.line) {
     if (!is.null(mean.lwd) && length(mean.lwd) < lcomp) {
       mean.lwd <- rep(mean.lwd, lcomp)
     }
     if (is.null(mean.lwd)) {
       mean.lwd <- rep(1.5, lcomp)
     }
-
     if (!is.null(mean.lty) && length(mean.lty) < lcomp) {
       mean.lty <- rep(mean.lty, lcomp)
     }
     if (is.null(mean.lty)) {
       mean.lty <- rep(1, lcomp)
     }
-    mean.max <- draw_means(x, y, mean.smooth, mean.lwd, mean.pal,
-      mean.lty, "epi", 0, "max")
-    mean.min <- draw_means(x, y, mean.smooth, mean.lwd, mean.pal,
-      mean.lty, "epi", 0, "min")
+    mean.max <- draw_means(
+      x, y,
+      mean.smooth, mean.lwd, mean.pal, mean.lty,
+      "epi", 0, "max"
+    )
+    mean.min <- draw_means(
+      x, y,
+      mean.smooth, mean.lwd, mean.pal, mean.lty,
+      "epi", 0, "min"
+    )
   }
 
   ## Missing args ##
-  if (is.null(xlim)) {
-    xlim <- c(0, nsteps)
-  }
-  if (is.null(ylim) && (popfrac == TRUE || sim.lines == TRUE)) {
+  xlim <- if (is.null(xlim)) c(0, nsteps) else xlim
+
+  if (is.null(ylim) && (popfrac || sim.lines)) {
     ylim <- c(min.prev, max.prev)
-  } else if (is.null(ylim) && popfrac == FALSE && sim.lines == FALSE &&
-    (mean.line == TRUE || qnts == TRUE)) {
-    ylim <- c(min(qnt.min * 0.9, mean.min * 0.9), max(qnt.max * 1.1, mean.max * 1.1))
+  } else if (is.null(ylim) && !popfrac && !sim.lines &&
+               (mean.line || qnts == TRUE)) {
+    ylim <- c(
+      min(qnt.min * 0.9, mean.min * 0.9),
+      max(qnt.max * 1.1, mean.max * 1.1)
+    )
   }
 
-  if (is.null(main)) {
-    main <- ""
-  }
+  main <- if (is.null(main)) "" else main
 
-  if (is.null(xlab)) {
-    xlab <- "Time"
-  }
+  xlab <- if (is.null(xlab)) "Time" else xlab
 
   if (is.null(ylab)) {
-    if (popfrac == FALSE) {
-      ylab <- "Number"
-    } else {
-      ylab <- "Prevalence"
-    }
+    ylab <- if (popfrac) "Prevalence" else "Number"
   }
 
   ## Main plot window ##
-  if (add == FALSE) {
-    da <- list()
-    da$x <- 1
-    da$y <- 1
-    da$type <- "n"
-    da$bty <- "n"
-    da$xlim <- xlim
-    da$xlab <- xlab
-    da$ylim <- ylim
-    da$ylab <- ylab
-    da$main <- main
-
-    do.call(plot, da)
+  if (!add) {
+    do.call(plot, list(
+        x = 1, y = 1, type = "n", bty = "n",
+        xlim = xlim, xlab = xlab, ylim = ylim, ylab = ylab, main = main
+    ))
   }
-
 
   ## Quantiles ##
   ## NOTE: Why is this repeated from above?
@@ -566,7 +522,7 @@ plot_netsim_epi <- function(x, y, sims, legend, mean.col, qnts.col, sim.lwd,
 
 
   ## Simulation lines ##
-  if (sim.lines == TRUE) {
+  if (sim.lines) {
     for (j in seq_len(lcomp)) {
       for (i in sims) {
         lines(x$epi[[y[j]]][, i], lwd = sim.lwd[j], col = sim.pal[j])
@@ -576,25 +532,23 @@ plot_netsim_epi <- function(x, y, sims, legend, mean.col, qnts.col, sim.lwd,
 
 
   ## Mean lines ##
-  if (mean.line == TRUE) {
-
+  if (mean.line) {
     if (!is.null(mean.lwd) && length(mean.lwd) < lcomp) {
       mean.lwd <- rep(mean.lwd, lcomp)
     }
     if (is.null(mean.lwd)) {
       mean.lwd <- rep(2.5, lcomp)
     }
-
     if (!is.null(mean.lty) && length(mean.lty) < lcomp) {
       mean.lty <- rep(mean.lty, lcomp)
     }
     if (is.null(mean.lty)) {
-      if (nocomp == FALSE) {
+      if (!nocomp) {
         mean.lty <- rep(1, lcomp)
       }
     }
     y.n <- length(y)
-    mean.pal <- mean.pal[1:y.n]
+    mean.pal <- mean.pal[seq_len(y.n)]
     draw_means(x, y, mean.smooth, mean.lwd, mean.pal, mean.lty)
   }
 
@@ -608,8 +562,10 @@ plot_netsim_epi <- function(x, y, sims, legend, mean.col, qnts.col, sim.lwd,
     } else {
       leg.lty <- 1
     }
-    legend("topright", legend = y, lty = leg.lty, lwd = 2,
-      col = mean.pal, cex = leg.cex, bg = "white")
+    legend(
+      "topright", legend = y, lty = leg.lty, lwd = 2, col = mean.pal,
+      cex = leg.cex, bg = "white"
+    )
   }
 }
 
@@ -620,56 +576,45 @@ plot_netsim_stats <- function(x, type, sims, stats, network, duration.imputed,
                               targ.line, targ.col, targ.lwd, targ.lty,
                               plots.joined, legend, grid, xlim, xlab,
                               ylim, ylab, ...) {
-
-  nsims <- x$control$nsims
-  if (is.null(sims)) {
-    sims <- seq_len(nsims)
-  }
-  if (max(sims) > nsims) {
-    stop("Maximum sims for this object is ", nsims, call. = FALSE)
-  }
-
+  sims <- if (is.null(sims)) seq_len(x$control$nsims) else sims
+  if (max(sims) > x$control$nsims)
+    stop("Maximum sim number is", x$control$nsims, call. = FALSE)
   nsims <- length(sims)
-  nsteps <- x$control$nsteps
 
-  if (type == "formation") {
     # Formation plot ----------------------------------------------------------
-
-    ## get nw stats
+  if (type == "formation") {
     data <- get_nwstats(x, sims, network, mode = "list")
-
     ## target stats
     nwparam <- get_nwparam(x, network)
     ts <- nwparam$target.stats
     tsn <- nwparam$target.stats.names
     names(ts) <- tsn
-
   } else {
     ## duration/dissolution plot
-    if (isTRUE(x$control$save.diss.stats) &&
-      isTRUE(x$control$save.network) &&
-      isFALSE(x$control$tergmLite) &&
-      isFALSE(is.null(x$diss.stats)) &&
-      isTRUE(x$nwparam[[network]]$coef.diss$diss.model.type == "edgesonly")) {
+    if (x$control$save.diss.stats && x$control$save.network &&
+          !x$control$tergmLite && !is.null(x$diss.stats) &&
+          x$nwparam[[network]]$coef.diss$diss.model.type == "edgesonly") {
 
       if (any(unlist(lapply(x$diss.stats, `[[`, "anyNA")))) {
-        cat("\nNOTE: Duration & dissolution data contains undefined values due to zero edges of some dissolution
-          dyad type(s) on some time step; these undefined values will be set to 0 when processing the data.")
+        message(
+          "\nNOTE: Duration & dissolution data contains undefined values due ",
+          "to zero edges of some dissolution dyad type(s) on some time step;",
+          " these undefined values will be set to 0 when processing the data."
+        )
       }
 
       if (type == "duration") {
-        if (isTRUE(duration.imputed)) {
-          data <- lapply(sims, function(sim) x$diss.stats[[sim]][[network]][["meanageimputed"]])
-        } else {
-          data <- lapply(sims, function(sim) x$diss.stats[[sim]][[network]][["meanage"]])
-        }
+        elt <- if (duration.imputed) "meanageimputed" else "meanage"
+        data <- lapply(sims, \(sim) x$diss.stats[[sim]][[network]][[elt]])
         ts <- x$nwparam[[network]]$coef.diss$duration
       } else { # if type is "dissolution"
-        data <- lapply(sims, function(sim) x$diss.stats[[sim]][[network]][["propdiss"]])
+        elt <- "propdiss"
+        data <- lapply(sims, \(sim) x$diss.stats[[sim]][[network]][[elt]])
         ts <- 1 / x$nwparam[[network]]$coef.diss$duration
       }
     } else {
-      stop("cannot produce duration/dissolution plot from `netsim` object ",
+      stop(
+        "Cannot produce duration/dissolution plot from `netsim` object ",
         "unless `save.diss.stats` is `TRUE`, `save.network` is `TRUE`, ",
         "`tergmLite` is `FALSE`, `keep.diss.stats` is `TRUE` (if ",
         "merging), and dissolution model is edges-only")
@@ -684,19 +629,16 @@ plot_netsim_stats <- function(x, type, sims, stats, network, duration.imputed,
   nmstats <- rownames(stats_table)[sts]
 
   ## Pull and check stat argument
-  if (is.null(stats)) {
-    stats <- nmstats
-  }
-  if (any(stats %in% nmstats == FALSE)) {
-    stop("One or more requested stats not contained in netsim object",
-      call. = FALSE)
+  stats <- if (is.null(stats)) nmstats else stats
+  if (!all(stats %in% nmstats)) {
+    stop("One or more requested stats not contained in netdx object",
+         call. = FALSE)
   }
   outsts <- which(nmstats %in% stats)
   nmstats <- nmstats[outsts]
 
   ## Subset data
   data <- data[, outsts, , drop = FALSE]
-
   ## we've already subset the data to `sims`
 
   ## Pull target stats

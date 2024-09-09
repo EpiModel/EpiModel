@@ -182,16 +182,13 @@ as.data.frame.dcm <- function(x, row.names = NULL, optional = FALSE, run,
 #' }
 #'
 as.data.frame.icm <- function(x, row.names = NULL, optional = FALSE,
-                              out = "vals", sim, qval, ...) {
+                              out = "vals", sim = NULL, qval = NULL, ...) {
 
-  df <- data.frame(time = 1:x$control$nsteps)
+  df <- data.frame(time = seq_len(x$control$nsteps))
   nsims <- x$control$nsims
 
   if (out == "vals") {
-
-    if (missing(sim)) {
-      sim <- 1:nsims
-    }
+    sim <- if (is.null(sim)) seq_len(nsims) else sim
     if (max(sim) > nsims) {
       stop("Maximum sim is ", nsims, call. = FALSE)
     }
@@ -207,7 +204,7 @@ as.data.frame.icm <- function(x, row.names = NULL, optional = FALSE,
         }
         df$sim <- j
       } else {
-        tdf <- data.frame(time = 1:x$control$nsteps)
+        tdf <- data.frame(time = seq_len(x$control$nsteps))
         for (i in seq_along(x$epi)) {
           if (nsims == 1) {
             tdf[, i + 1] <- x$epi[[i]]
@@ -220,39 +217,28 @@ as.data.frame.icm <- function(x, row.names = NULL, optional = FALSE,
       }
     }
     df <- df[, c(ncol(df), 1:(ncol(df) - 1))]
-
-  }
-
-  ## Output means
-  if (out == "mean") {
+  } else if (out == "mean") { ## Output means
     if (nsims == 1) {
       for (i in seq_along(x$epi)) {
         df[, i + 1] <- x$epi[[i]]
       }
-    }
-    if (nsims > 1) {
+    } else {
       for (i in seq_along(x$epi)) {
         df[, i + 1] <- rowMeans(x$epi[[i]], na.rm = TRUE)
       }
     }
-  }
-
-  ## Output standard deviations
-  if (out == "sd") {
+  } else if (out == "sd") { ## Output standard deviations
     if (nsims == 1) {
       for (i in seq_along(x$epi)) {
         df[, i + 1] <- 0
       }
-    }
-    if (nsims > 1) {
+    } else {
       for (i in seq_along(x$epi)) {
         df[, i + 1] <- apply(x$epi[[i]], 1, sd, na.rm = TRUE)
       }
     }
-  }
-
-  if (out == "qnt") {
-    if (missing(qval) || length(qval) > 1 || (qval > 1 || qval < 0)) {
+  } else if (out == "qnt") {
+    if (is.null(qval) || length(qval) > 1 || (qval > 1 || qval < 0)) {
       stop("Must specify qval as single value between 0 and 1", call. = FALSE)
     }
     for (i in seq_along(x$epi)) {
@@ -275,14 +261,9 @@ as.data.frame.icm <- function(x, row.names = NULL, optional = FALSE,
 #' @export
 #' @rdname as.data.frame.icm
 as.data.frame.netsim <- function(x, row.names = NULL, optional = FALSE,
-                                 out = "vals", sim, ...) {
-  if (missing(sim)) {
-    sim <- 1:x$control$nsims
-  }
-  df <- as.data.frame.icm(x, row.names = row.names, optional = optional,
-                          sim = sim, out = out, ...)
-  return(df)
-
+                                 out = "vals", sim = NULL, ...) {
+  as.data.frame.icm(x, row.names = row.names, optional = optional,
+                    sim = sim, out = out, ...)
 }
 
 #' @title Extract Timed Edgelists for netdx Objects

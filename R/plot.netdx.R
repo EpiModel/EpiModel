@@ -127,7 +127,6 @@ plot.netdx <- function(x, type = "formation", method = "l", sims = NULL,
                        targ.col = NULL, targ.lwd = 2, targ.lty = 2,
                        plots.joined = NULL, legend = NULL, grid = FALSE, ...) {
 
-  # Checks ---------------------------------------------------------------------
   type <- match.arg(type, c("formation", "duration", "dissolution"))
   sims <- if (is.null(sims)) seq_len(x$nsims) else sims
   if (max(sims) > x$nsims) stop("Maximum sim number is", x$nsims, call. = FALSE)
@@ -148,11 +147,11 @@ plot.netdx <- function(x, type = "formation", method = "l", sims = NULL,
     }
 
     if (x$anyNA) {
-      message(
-        "\nNOTE: Duration & dissolution data contains undefined values due to",
-        " zero edges of some dissolution dyad type(s) on some time step;",
-        " these undefined values will be set to 0 when processing the data."
-      )
+        message(
+          "\nNOTE: Duration & dissolution data contains undefined values due ",
+          "to zero edges of some dissolution dyad type(s) on some time step;",
+          " these undefined values will be set to 0 when processing the data."
+        )
     }
 
     if (type == "duration") {

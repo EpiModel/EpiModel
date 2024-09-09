@@ -176,7 +176,6 @@ netsim_validate_control <- function(control) {
       ".traceback.on.error",
       ".dump.frame.on.error",
       "cumulative.edgelist",
-      "save.diss.stats",
       "tergmLite",
       "save.network",
       "save.diss.stats",
