@@ -44,7 +44,7 @@ plot.epi.data.frame <- function(df, y = NULL, sims = NULL, legend = NULL,
       nsims = max(df$sim)
     )
   )
-  EpiModel:::plot_netsim_epi(
+  plot_netsim_epi(
     ntemp, y, sims, legend, mean.col, qnts.col, sim.lwd, sim.col, sim.alpha,
     popfrac, qnts, qnts.alpha, qnts.smooth, mean.line, mean.smooth, add,
     mean.lwd, mean.lty, xlim, ylim, main, xlab, ylab, sim.lines, grid,

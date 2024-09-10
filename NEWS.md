@@ -18,6 +18,12 @@ edgelists.
 - Export `overwrite_attrs`, a helper function to overwrite the attributes of the
 nodes with a `data.frame` at the start of the simulation. (see
 `?overwrite_attrs`)
+- `as.data.frame` for `netsim` and `icm` now assign the `epi.data.frame` class
+in addition to `data.frame`.
+- Addition of the `plot.epi.data.frame` method to plot `epi.data.frame` similar
+to `plot.netsim(type = "epi")`.
+- Export `as.epi.data.frame` that assign the `epi.data.frame` class and
+validate that the input `data.frame` is correctly formatted.
 
 ### OTHER
 
@@ -37,6 +43,7 @@ edges.
 `plot` call. This removes the need for explicit `axs` argument to theses
 functions
 - Fixes the `get_qnts` function to get correct quantiles on formation plots
+- Refactoring of all plotting functions for ease of debugging and parameter checking.
 - all function accepting `posit_ids` as argument must now pass exclusively a
 numeric vector. Logical vectors are not accepted anymore as they were making the
 code heavier and were very error prone.
