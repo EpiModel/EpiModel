@@ -5,7 +5,7 @@
 \title{Plot Epidemic Model Results From a Netsim Data.Frame}
 \usage{
 \method{plot}{epi.data.frame}(
-  df,
+  x,
   y = NULL,
   sims = NULL,
   legend = NULL,
@@ -35,7 +35,7 @@
 )
 }
 \arguments{
-\item{df}{A \code{data.frame} obtain with \code{as.data.frame(netsim_object)}.}
+\item{x}{A \code{data.frame} obtain with \code{as.data.frame(netsim_object)}.}
 
 \item{y}{Output compartments or flows from \code{netsim} object to plot.}
 
@@ -111,3 +111,4 @@ to plot lines for one-group models but not for two-group models.}
 This function is a wrapper around \code{plot.netsim} accepting a
 \code{data.frame} obtain with \code{as.data.frame(netsim_object)}.
 }
+\keyword{plot}

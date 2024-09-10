@@ -23,12 +23,14 @@ df2epi <- function(x) {
 #' @description This function is a wrapper around `plot.netsim` accepting a
 #'   `data.frame` obtain with `as.data.frame(netsim_object)`.
 #'
-#' @param df A `data.frame` obtain with `as.data.frame(netsim_object)`.
+#' @param x A `data.frame` obtain with `as.data.frame(netsim_object)`.
 #' @inheritParams plot.netsim
 #'
 #' @method plot epi.data.frame
 #' @export
-plot.epi.data.frame <- function(df, y = NULL, sims = NULL, legend = NULL,
+#'
+#' @keywords plot
+plot.epi.data.frame <- function(x, y = NULL, sims = NULL, legend = NULL,
                                 mean.col = NULL, qnts.col = NULL, sim.lwd = NULL,
                                 sim.col = NULL, sim.alpha = NULL, popfrac = FALSE,
                                 qnts = 0.5, qnts.alpha = 0.5, qnts.smooth = TRUE,
