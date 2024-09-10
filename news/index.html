@@ -49,6 +49,10 @@
 <li>Restarting a simulation now only requires saving <code>dat$run</code>. This removes the need to keep track of all the elements required at the end of a simulation. This requires the EpiModel user to put all elements in <code>dat$run</code>.</li>
 <li>Export <code>get_forward_reachable</code> and <code>get_backward_reachable</code> functions that works similarly to but more efficiently than <code><a href="https://rdrr.io/pkg/tsna/man/paths.html" class="external-link">tsna::tPath</a></code> for multiple nodes and using cumulative edgelists.</li>
 <li>Export <code>overwrite_attrs</code>, a helper function to overwrite the attributes of the nodes with a <code>data.frame</code> at the start of the simulation. (see <code><a href="../reference/overwrite_attrs.html">?overwrite_attrs</a></code>).</li>
+<li>
+<code>as.data.frame</code> for model classes <code>netsim</code> and <code>icm</code> now assign the <code>epi.data.frame</code> class in addition to <code>data.frame</code>.</li>
+<li>Add the <code>plot.epi.data.frame</code> method to plot <code>epi.data.frame</code> similar to <code>plot.netsim(type = "epi")</code>.</li>
+<li>Export <code>as.epi.data.frame</code> that assign the <code>epi.data.frame</code> class and validate that the input <code>data.frame</code> is correctly formatted.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="other-2-5">OTHER<a class="anchor" aria-label="anchor" href="#other-2-5"></a></h3>

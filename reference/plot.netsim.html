@@ -38,7 +38,7 @@ model simulated with netsim."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Plot Data from a Stochastic Network Epidemic Model</h1>
-      <small class="dont-index">Source: <a href="https://github.com/EpiModel/EpiModel/blob/main/R/plot.R" class="external-link"><code>R/plot.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/EpiModel/EpiModel/blob/main/R/plot.netsim.R" class="external-link"><code>R/plot.netsim.R</code></a></small>
       <div class="d-none name"><code>plot.netsim.Rd</code></div>
     </div>
 
@@ -53,40 +53,44 @@ model simulated with <code><a href="netsim.html">netsim</a></code>.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span></span>
 <span>  <span class="va">x</span>,</span>
 <span>  type <span class="op">=</span> <span class="st">"epi"</span>,</span>
-<span>  <span class="va">y</span>,</span>
+<span>  y <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  popfrac <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  sim.lines <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  <span class="va">sims</span>,</span>
-<span>  <span class="va">sim.col</span>,</span>
-<span>  <span class="va">sim.lwd</span>,</span>
-<span>  <span class="va">sim.alpha</span>,</span>
+<span>  sims <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  sim.col <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  sim.lwd <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  sim.alpha <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  mean.line <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  mean.smooth <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  <span class="va">mean.col</span>,</span>
+<span>  mean.col <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  mean.lwd <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>  mean.lty <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  qnts <span class="op">=</span> <span class="fl">0.5</span>,</span>
-<span>  <span class="va">qnts.col</span>,</span>
+<span>  qnts.col <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  qnts.alpha <span class="op">=</span> <span class="fl">0.5</span>,</span>
 <span>  qnts.smooth <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  <span class="va">legend</span>,</span>
+<span>  legend <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  leg.cex <span class="op">=</span> <span class="fl">0.8</span>,</span>
-<span>  axs <span class="op">=</span> <span class="st">"r"</span>,</span>
 <span>  grid <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  add <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  network <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  at <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  col.status <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  shp.g2 <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  <span class="va">vertex.cex</span>,</span>
-<span>  <span class="va">stats</span>,</span>
+<span>  vertex.cex <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  stats <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  targ.line <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  <span class="va">targ.col</span>,</span>
+<span>  targ.col <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  targ.lwd <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>  targ.lty <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>  <span class="va">plots.joined</span>,</span>
+<span>  plots.joined <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  duration.imputed <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  method <span class="op">=</span> <span class="st">"l"</span>,</span>
+<span>  main <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  xlim <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  xlab <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  ylim <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  ylab <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -190,11 +194,6 @@ transparent and 1 = opaque (see <code>adjustcolor</code> function).</p></dd>
 <dd><p>Legend scale size.</p></dd>
 
 
-<dt id="arg-axs">axs<a class="anchor" aria-label="anchor" href="#arg-axs"></a></dt>
-<dd><p>Plot axis type (see <code><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></code> for details), with default
-of <code>"r"</code>.</p></dd>
-
-
 <dt id="arg-grid">grid<a class="anchor" aria-label="anchor" href="#arg-grid"></a></dt>
 <dd><p>If <code>TRUE</code>, a grid is added to the background of plot
 (see <code><a href="https://rdrr.io/r/graphics/grid.html" class="external-link">grid</a></code> for details), with default of nx by ny.</p></dd>
@@ -274,6 +273,29 @@ the start of the simulation. Defaults to <code>TRUE</code> when
 <dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
 <dd><p>Plot method for <code>type="formation", "duration", "dissolution"</code>,
 with options of <code>"l"</code> for line plots and <code>"b"</code> for box plots.</p></dd>
+
+
+<dt id="arg-main">main<a class="anchor" aria-label="anchor" href="#arg-main"></a></dt>
+<dd><p>a main title for the plot, see also <code><a href="https://rdrr.io/r/graphics/title.html" class="external-link">title</a></code>.</p></dd>
+
+
+<dt id="arg-xlim">xlim<a class="anchor" aria-label="anchor" href="#arg-xlim"></a></dt>
+<dd><p>the x limits (x1, x2) of the plot.  Note that <code>x1 &gt; x2</code>
+    is allowed and leads to a ‘reversed axis’.</p>
+<p>The default value, <code>NULL</code>, indicates that the range of the
+    <a href="https://rdrr.io/r/base/is.finite.html" class="external-link">finite</a> values to be plotted should be used.</p></dd>
+
+
+<dt id="arg-xlab">xlab<a class="anchor" aria-label="anchor" href="#arg-xlab"></a></dt>
+<dd><p>a label for the x axis, defaults to a description of <code>x</code>.</p></dd>
+
+
+<dt id="arg-ylim">ylim<a class="anchor" aria-label="anchor" href="#arg-ylim"></a></dt>
+<dd><p>the y limits of the plot.</p></dd>
+
+
+<dt id="arg-ylab">ylab<a class="anchor" aria-label="anchor" href="#arg-ylab"></a></dt>
+<dd><p>a label for the y axis, defaults to a description of <code>y</code>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

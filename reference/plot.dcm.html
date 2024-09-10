@@ -38,7 +38,7 @@ epidemic model solved with dcm."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Plot Data from a Deterministic Compartmental Epidemic Model</h1>
-      <small class="dont-index">Source: <a href="https://github.com/EpiModel/EpiModel/blob/main/R/plot.R" class="external-link"><code>R/plot.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/EpiModel/EpiModel/blob/main/R/plot.dcm.R" class="external-link"><code>R/plot.dcm.R</code></a></small>
       <div class="d-none name"><code>plot.dcm.Rd</code></div>
     </div>
 
@@ -52,19 +52,23 @@ epidemic model solved with <code><a href="dcm.html">dcm</a></code>.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for class 'dcm'</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span></span>
 <span>  <span class="va">x</span>,</span>
-<span>  <span class="va">y</span>,</span>
+<span>  y <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  popfrac <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  <span class="va">run</span>,</span>
-<span>  <span class="va">col</span>,</span>
-<span>  <span class="va">lwd</span>,</span>
-<span>  <span class="va">lty</span>,</span>
+<span>  run <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  col <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  lwd <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  lty <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  alpha <span class="op">=</span> <span class="fl">0.9</span>,</span>
-<span>  <span class="va">legend</span>,</span>
-<span>  <span class="va">leg.name</span>,</span>
+<span>  legend <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  leg.name <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  leg.cex <span class="op">=</span> <span class="fl">0.8</span>,</span>
-<span>  axs <span class="op">=</span> <span class="st">"r"</span>,</span>
 <span>  grid <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  add <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  main <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  xlim <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  ylim <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  xlab <span class="op">=</span> <span class="st">"Time"</span>,</span>
+<span>  ylab <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -125,11 +129,6 @@ determined automatically based on the <code>y</code> input.</p></dd>
 <dd><p>Legend scale size.</p></dd>
 
 
-<dt id="arg-axs">axs<a class="anchor" aria-label="anchor" href="#arg-axs"></a></dt>
-<dd><p>Plot axis type (see <code><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></code> for details), with default
-of "r".</p></dd>
-
-
 <dt id="arg-grid">grid<a class="anchor" aria-label="anchor" href="#arg-grid"></a></dt>
 <dd><p>If <code>TRUE</code>, a grid is added to the background of plot
 (see <code><a href="https://rdrr.io/r/graphics/grid.html" class="external-link">grid</a></code> for details), with default of nx by ny.</p></dd>
@@ -138,6 +137,29 @@ of "r".</p></dd>
 <dt id="arg-add">add<a class="anchor" aria-label="anchor" href="#arg-add"></a></dt>
 <dd><p>If <code>TRUE</code>, new plot window is not called and lines are added
 to existing plot window.</p></dd>
+
+
+<dt id="arg-main">main<a class="anchor" aria-label="anchor" href="#arg-main"></a></dt>
+<dd><p>a main title for the plot, see also <code><a href="https://rdrr.io/r/graphics/title.html" class="external-link">title</a></code>.</p></dd>
+
+
+<dt id="arg-xlim">xlim<a class="anchor" aria-label="anchor" href="#arg-xlim"></a></dt>
+<dd><p>the x limits (x1, x2) of the plot.  Note that <code>x1 &gt; x2</code>
+    is allowed and leads to a ‘reversed axis’.</p>
+<p>The default value, <code>NULL</code>, indicates that the range of the
+    <a href="https://rdrr.io/r/base/is.finite.html" class="external-link">finite</a> values to be plotted should be used.</p></dd>
+
+
+<dt id="arg-ylim">ylim<a class="anchor" aria-label="anchor" href="#arg-ylim"></a></dt>
+<dd><p>the y limits of the plot.</p></dd>
+
+
+<dt id="arg-xlab">xlab<a class="anchor" aria-label="anchor" href="#arg-xlab"></a></dt>
+<dd><p>a label for the x axis, defaults to a description of <code>x</code>.</p></dd>
+
+
+<dt id="arg-ylab">ylab<a class="anchor" aria-label="anchor" href="#arg-ylab"></a></dt>
+<dd><p>a label for the y axis, defaults to a description of <code>y</code>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

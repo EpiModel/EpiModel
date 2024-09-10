@@ -23,6 +23,7 @@
 <url><loc>http://epimodel.github.io/EpiModel/reference/as.data.frame.dcm.html</loc></url>
 <url><loc>http://epimodel.github.io/EpiModel/reference/as.data.frame.icm.html</loc></url>
 <url><loc>http://epimodel.github.io/EpiModel/reference/as.data.frame.netdx.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/as.epi.data.frame.html</loc></url>
 <url><loc>http://epimodel.github.io/EpiModel/reference/as.network.transmat.html</loc></url>
 <url><loc>http://epimodel.github.io/EpiModel/reference/as.phylo.transmat.html</loc></url>
 <url><loc>http://epimodel.github.io/EpiModel/reference/as_cumulative_edgelist.html</loc></url>
@@ -135,6 +136,7 @@
 <url><loc>http://epimodel.github.io/EpiModel/reference/param.net_to_table.html</loc></url>
 <url><loc>http://epimodel.github.io/EpiModel/reference/param_random.html</loc></url>
 <url><loc>http://epimodel.github.io/EpiModel/reference/plot.dcm.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/plot.epi.data.frame.html</loc></url>
 <url><loc>http://epimodel.github.io/EpiModel/reference/plot.icm.html</loc></url>
 <url><loc>http://epimodel.github.io/EpiModel/reference/plot.netdx.html</loc></url>
 <url><loc>http://epimodel.github.io/EpiModel/reference/plot.netsim.html</loc></url>
