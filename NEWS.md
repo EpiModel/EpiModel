@@ -3,50 +3,26 @@
 
 ### NEW FEATURES
 
-- export a generic `get_discordant_edgelist` where the attribute to be use to
-assess discordance as well as the values for each group can be specified.
-- export `param.net_from_table` and `param.net_to_table` helper functions to
-convert parameter list and parameter data.frames used by `param.net`
-- Allow saving the cumulative edge-list at the end of simulation using the
-`save.cumulative.edgelist` control flag.
-- Restarting a simulation now only require saving `dat$run`. This removes the
-need to keep track of all the elements required at the end of a simulation. Now
-it's on the model builder to put all elements in `dat$run`.
-- export `get_forward_reachable` and `get_backward_reachable` functions that
-works similar to `tsna::tPath` for multiple nodes and using cumulative
-edgelists.
-- Export `overwrite_attrs`, a helper function to overwrite the attributes of the
-nodes with a `data.frame` at the start of the simulation. (see
-`?overwrite_attrs`)
-- `as.data.frame` for `netsim` and `icm` now assign the `epi.data.frame` class
-in addition to `data.frame`.
-- Addition of the `plot.epi.data.frame` method to plot `epi.data.frame` similar
-to `plot.netsim(type = "epi")`.
-- Export `as.epi.data.frame` that assign the `epi.data.frame` class and
-validate that the input `data.frame` is correctly formatted.
+- Export a generic `get_discordant_edgelist` where the attribute used to assess discordance as well as the values for each group can be specified.
+- Export `param.net_from_table` and `param.net_to_table` helper functions to convert parameter list and parameter data.frames used by `param.net`.
+- Allow saving the cumulative edge-list at the end of simulation using the `save.cumulative.edgelist` control argument.
+- Restarting a simulation now only requires saving `dat$run`. This removes the need to keep track of all the elements required at the end of a simulation. This requires the EpiModel user to put all elements in `dat$run`.
+- Export `get_forward_reachable` and `get_backward_reachable` functions that works similarly to but more efficiently than `tsna::tPath` for multiple nodes and using cumulative edgelists.
+- Export `overwrite_attrs`, a helper function to overwrite the attributes of the nodes with a `data.frame` at the start of the simulation. (see `?overwrite_attrs`).
+- `as.data.frame` for model classes `netsim` and `icm` now assign the `epi.data.frame` class in addition to `data.frame`.
+- Add the `plot.epi.data.frame` method to plot `epi.data.frame` similar to `plot.netsim(type = "epi")`.
+- Export `as.epi.data.frame` that assign the `epi.data.frame` class and validate that the input `data.frame` is correctly formatted.
 
 ### OTHER
 
-- Speed up `raw.records` and `attr.history` with `collections::queue` instead of
-`base::list`
-- add `save.diss.stats` to the checked control values. Prevents undefined values
-when using `control.net` wrappers.
-- Move `el.cuml`, `_last_unique_id` and `_last_timestep` and `attr` to `dat$run`
-and update the tests. Part of the re-structuration of the `dat` object to create
-- Remove `dat$epi$sim.num(.g2)` and replace it with `dat$run$num(.g2)` (single
-value). These values keep track of the current size of the network and are only
-needed during model runs.
-- Speed up cumulative edge-list calculation by splitting current and historic
-edges.
-- Remove `deleteAttr` function deprecated since 2.4.0
-- `plot.` `netsim`, `icm` and `dcm` now pass their ellipsis (...) to the inner
-`plot` call. This removes the need for explicit `axs` argument to theses
-functions
-- Fixes the `get_qnts` function to get correct quantiles on formation plots
-- Refactoring of all plotting functions for ease of debugging and parameter checking.
-- all function accepting `posit_ids` as argument must now pass exclusively a
-numeric vector. Logical vectors are not accepted anymore as they were making the
-code heavier and were very error prone.
+- Speed up `raw.records` and `attr.history` with `collections::queue` instead of `base::list`.
+- Add `save.diss.stats` to the checked control values. Prevents undefined values when using `control.net` wrappers.
+- Move `el.cuml`, `_last_unique_id`, and `_last_timestep` and `attr` to `dat$run` and update the tests; part of the restructuring of the `dat` object. 
+- Remove `dat$epi$sim.num(.g2)` and replace it with `dat$run$num(.g2)` (single value). These values keep track of the current size of the network and are only needed during model runs.
+- Speed up cumulative edge-list calculation by splitting current and historic edges.
+- Remove `deleteAttr` function deprecated since EpiModel v2.4.0.
+- All function accepting `posit_ids` as argument must now pass exclusively a numeric vector. Logical vectors are not accepted anymore as they were making the code heavier and were error prone.
+
 
 ## EpiModel 2.4.0
 
