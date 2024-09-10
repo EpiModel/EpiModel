@@ -212,16 +212,16 @@ init_status.net <- function(dat) {
     if (statOnNw == FALSE) {
       for (network in seq_len(dat$num.nw)) {
         dat$run$nw[[network]] <- set_vertex_attribute(dat$run$nw[[network]],
-                                                  "status",
-                                                  status)
+                                                      "status",
+                                                      status)
       }
     }
     for (network in seq_len(dat$num.nw)) {
       dat$run$nw[[network]] <- activate.vertex.attribute(dat$run$nw[[network]],
-                                                     prefix = "testatus",
-                                                     value = status,
-                                                     onset = 1,
-                                                     terminus = Inf)
+                                                         prefix = "testatus",
+                                                         value = status,
+                                                         onset = 1,
+                                                         terminus = Inf)
     }
   }
 

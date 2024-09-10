@@ -151,14 +151,15 @@ get_forward_reachable <- function(el_cuml, from_step, to_step, nodes = NULL,
   for (cur_step in change_times) {
     p()
 
-    # nolint start
-    #
     # IN EL_CUML: duration is [start, stop] (inclusive)
     # all active edges a time `cur_step` are needed (not only start).
     # This is because getting connected to a node X means also indirectly
     # connecting to its connections, even the ones that started earlier.
-    el_cur <- dplyr::filter(el_cuml, start <= cur_step, stop >= cur_step)
-    # nolint end
+    el_cur <- dplyr::filter(
+      el_cuml,
+      .data$start <= cur_step,
+      .data$stop >= cur_step
+    )
 
     adj_list <- get_adj_list(el_cur, length(orig_indexes))
 
@@ -336,8 +337,10 @@ dedup_cumulative_edgelist <- function(el) {
     dplyr::mutate(
       lstart = dplyr::lag(.data$start),
       lstop = dplyr::lag(.data$stop),
-      overlap = !is.na(.data$lstop) & !is.na(.data$lstart) &
-                .data$start <= .data$lstop,
+      overlap =
+        !is.na(.data$lstop) &
+        !is.na(.data$lstart) &
+        .data$start <= .data$lstop,
       stop = ifelse(.data$overlap, max(.data$stop, .data$lstop, na.rm = TRUE), .data$stop),
       start = ifelse(.data$overlap, min(.data$start, .data$lstart, na.rm = TRUE), .data$start)
     ) |>

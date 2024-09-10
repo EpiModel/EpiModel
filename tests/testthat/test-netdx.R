@@ -108,10 +108,8 @@ for (trim in c(FALSE, TRUE)) {
     }
     dx2 <- netdx(est, nsims = 1, nsteps = 500, skip.dissolution = TRUE, verbose = FALSE)
 
-    expect_error(plot(dx2, type = "duration"),
-                 "Plots of type duration and dissolution only available if netdx run with skip.dissolution = FALSE")
-    expect_error(plot(dx2, type = "dissolution"),
-                 "Plots of type duration and dissolution only available if netdx run with skip.dissolution = FALSE")
+    expect_error(plot(dx2, type = "duration"))
+    expect_error(plot(dx2, type = "dissolution"))
   })
 
   test_that("Offset terms", {

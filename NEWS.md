@@ -9,6 +9,9 @@
 - Restarting a simulation now only requires saving `dat$run`. This removes the need to keep track of all the elements required at the end of a simulation. This requires the EpiModel user to put all elements in `dat$run`.
 - Export `get_forward_reachable` and `get_backward_reachable` functions that works similarly to but more efficiently than `tsna::tPath` for multiple nodes and using cumulative edgelists.
 - Export `overwrite_attrs`, a helper function to overwrite the attributes of the nodes with a `data.frame` at the start of the simulation. (see `?overwrite_attrs`).
+- `as.data.frame` for model classes `netsim` and `icm` now assign the `epi.data.frame` class in addition to `data.frame`.
+- Add the `plot.epi.data.frame` method to plot `epi.data.frame` similar to `plot.netsim(type = "epi")`.
+- Export `as.epi.data.frame` that assign the `epi.data.frame` class and validate that the input `data.frame` is correctly formatted.
 
 ### OTHER
 

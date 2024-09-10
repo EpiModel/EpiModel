@@ -115,8 +115,8 @@ get_attr_list <- function(dat, item = NULL) {
   missing_item <- setdiff(item, names(attr_list))
   if (length(missing_item) > 0) {
     stop("There is no attributes called `",
-      paste(missing_item, collapse = ", "),
-      "` in the attributes list of the main list object (dat)")
+         paste(missing_item, collapse = ", "),
+         "` in the attributes list of the main list object (dat)")
   }
 
   out <- attr_list[item]
@@ -132,7 +132,7 @@ get_attr <- function(dat, item, posit_ids = NULL, override.null.error = FALSE) {
   if (!item %in% names(attr_list)) {
     if (!override.null.error) {
       stop("There is no attribute called `", item,
-        "` in the attributes list of the main list object (dat)")
+           "` in the attributes list of the main list object (dat)")
     }
     return(NULL)
   }
@@ -309,8 +309,8 @@ get_param_list <- function(dat, item = NULL) {
   missing_item <- setdiff(item, names(dat$param))
   if (length(missing_item) > 0) {
     stop("There is no parameters called `",
-      paste(missing_item, collapse = ", "),
-      "` in the parameter list of the main list object (dat)")
+         paste(missing_item, collapse = ", "),
+         "` in the parameter list of the main list object (dat)")
   }
   return(dat$param[item])
 }
@@ -359,8 +359,8 @@ get_control_list <- function(dat, item = NULL) {
   missing_item <- setdiff(item, names(dat$control))
   if (length(missing_item) > 0) {
     stop("There is no control value called `",
-      paste(missing_item, collapse = ", "),
-      "` in the control list of the main list object (dat)")
+         paste(missing_item, collapse = ", "),
+         "` in the control list of the main list object (dat)")
   }
 
   return(dat$control[item])
@@ -430,8 +430,8 @@ get_init_list <- function(dat, item = NULL) {
   missing_item <- setdiff(item, names(dat$init))
   if (length(missing_item) > 0) {
     stop("There is no init value called `",
-      paste(missing_item, collapse = ", "),
-      "` in the init list of the main list object (dat)")
+         paste(missing_item, collapse = ", "),
+         "` in the init list of the main list object (dat)")
   }
   return(dat$init[item])
 }
@@ -642,7 +642,7 @@ padded_vector <- function(orig, size) {
 #' @noRd
 assert_valid_posit_ids <- function(dat, posit_ids) {
   if (!is.numeric(posit_ids))
-      stop("`posit_ids` must be `numeric`")
+    stop("`posit_ids` must be `numeric`")
   if (any(posit_ids > length(get_attr(dat, "active"))))
     stop("Some `posit_ids` are larger than the number of nodes ",
          " in the network")

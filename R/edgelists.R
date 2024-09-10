@@ -425,4 +425,3 @@ empty_el_cuml <- function() {
     stop  = numeric(0)
   )
 }
-

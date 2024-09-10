@@ -55,10 +55,10 @@ nwupdate.net <- function(dat, at) {
   if (tergmLite == FALSE) {
     for (network in seq_len(dat$num.nw)) {
       dat$run$nw[[network]] <- activate.vertex.attribute(dat$run$nw[[network]],
-                                                     prefix = "testatus",
-                                                     value = status,
-                                                     onset = at,
-                                                     terminus = Inf)
+                                                         prefix = "testatus",
+                                                         value = status,
+                                                         onset = at,
+                                                         terminus = Inf)
     }
   }
 

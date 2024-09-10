@@ -10,12 +10,19 @@
   row.names = NULL,
   optional = FALSE,
   out = "vals",
-  sim,
-  qval,
+  sim = NULL,
+  qval = NULL,
   ...
 )
 
-\method{as.data.frame}{netsim}(x, row.names = NULL, optional = FALSE, out = "vals", sim, ...)
+\method{as.data.frame}{netsim}(
+  x,
+  row.names = NULL,
+  optional = FALSE,
+  out = "vals",
+  sim = NULL,
+  ...
+)
 }
 \arguments{
 \item{x}{An \code{EpiModel} object of class \code{icm} or \code{netsim}.}
