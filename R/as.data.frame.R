@@ -249,6 +249,7 @@ as.data.frame.icm <- function(x, row.names = NULL, optional = FALSE,
 
   if (out == "vals") {
     names(df)[3:ncol(df)] <- names(x$epi)
+    df <- as.epi.data.frame(df)
   } else {
     names(df)[2:ncol(df)] <- names(x$epi)
   }
@@ -336,5 +337,23 @@ as.data.frame.netdx <- function(x, row.names = NULL, optional = FALSE,
     df <- df[, c(ncol(df), 1:(ncol(df) - 1))]
   }
 
+  return(df)
+}
+
+#' Validate and Convert to epi.data.frame
+#'
+#' This methods ensures that the `data.frame` is correctly formatted as an
+#' `epi.data.frame`
+#'
+#' @export
+as.epi.data.frame <- function(df) {
+  if (!inherits(df, "data.frame"))
+    stop("Input must be a `data.frame`")
+  if (!all(c("time", "sim") %in% names(df)))
+    stop("Input must contain a `time` and a `sim` column")
+  n_steps <- max(df$time)
+  if (!all(by(df$time, df$sim, length) == n_steps))
+    stop("Input must have the same number of time step per simulation")
+  class(df) <- c("epi.data.frame", class(df))
   return(df)
 }
