@@ -43,24 +43,22 @@
 <h2 class="pkg-version" data-toc-text="2.5" id="epimodel-25">EpiModel 2.5<a class="anchor" aria-label="anchor" href="#epimodel-25"></a></h2>
 <div class="section level3">
 <h3 id="new-features-2-5">NEW FEATURES<a class="anchor" aria-label="anchor" href="#new-features-2-5"></a></h3>
-<ul><li>export a generic <code>get_discordant_edgelist</code> where the attribute to be use to assess discordance as well as the values for each group can be specified.</li>
-<li>export <code>param.net_from_table</code> and <code>param.net_to_table</code> helper functions to convert parameter list and parameter data.frames used by <code>param.net</code>
-</li>
-<li>Allow saving the cumulative edge-list at the end of simulation using the <code>save.cumulative.edgelist</code> control flag.</li>
-<li>Restarting a simulation now only require saving <code>dat$run</code>. This removes the need to keep track of all the elements required at the end of a simulation. Now it’s on the model builder to put all elements in <code>dat$run</code>.</li>
-<li>export <code>get_forward_reachable</code> and <code>get_backward_reachable</code> functions that works similar to <code><a href="https://rdrr.io/pkg/tsna/man/paths.html" class="external-link">tsna::tPath</a></code> for multiple nodes and using cumulative edgelists.</li>
-<li>Export <code>overwrite_attrs</code>, a helper function to overwrite the attributes of the nodes with a <code>data.frame</code> at the start of the simulation. (see <code><a href="../reference/overwrite_attrs.html">?overwrite_attrs</a></code>)</li>
+<ul><li>Export a generic <code>get_discordant_edgelist</code> where the attribute used to assess discordance as well as the values for each group can be specified.</li>
+<li>Export <code>param.net_from_table</code> and <code>param.net_to_table</code> helper functions to convert parameter list and parameter data.frames used by <code>param.net</code>.</li>
+<li>Allow saving the cumulative edge-list at the end of simulation using the <code>save.cumulative.edgelist</code> control argument.</li>
+<li>Restarting a simulation now only requires saving <code>dat$run</code>. This removes the need to keep track of all the elements required at the end of a simulation. This requires the EpiModel user to put all elements in <code>dat$run</code>.</li>
+<li>Export <code>get_forward_reachable</code> and <code>get_backward_reachable</code> functions that works similarly to but more efficiently than <code><a href="https://rdrr.io/pkg/tsna/man/paths.html" class="external-link">tsna::tPath</a></code> for multiple nodes and using cumulative edgelists.</li>
+<li>Export <code>overwrite_attrs</code>, a helper function to overwrite the attributes of the nodes with a <code>data.frame</code> at the start of the simulation. (see <code><a href="../reference/overwrite_attrs.html">?overwrite_attrs</a></code>).</li>
 </ul></div>
 <div class="section level3">
 <h3 id="other-2-5">OTHER<a class="anchor" aria-label="anchor" href="#other-2-5"></a></h3>
-<ul><li>Speed up <code>raw.records</code> and <code>attr.history</code> with <code><a href="https://rdrr.io/pkg/collections/man/queue.html" class="external-link">collections::queue</a></code> instead of <code><a href="https://rdrr.io/r/base/list.html" class="external-link">base::list</a></code>
-</li>
-<li>add <code>save.diss.stats</code> to the checked control values. Prevents undefined values when using <code>control.net</code> wrappers.</li>
-<li>Move <code>el.cuml</code>, <code>_last_unique_id</code> and <code>_last_timestep</code> and <code>attr</code> to <code>dat$run</code> and update the tests. Part of the re-structuration of the <code>dat</code> object to create</li>
+<ul><li>Speed up <code>raw.records</code> and <code>attr.history</code> with <code><a href="https://rdrr.io/pkg/collections/man/queue.html" class="external-link">collections::queue</a></code> instead of <code><a href="https://rdrr.io/r/base/list.html" class="external-link">base::list</a></code>.</li>
+<li>Add <code>save.diss.stats</code> to the checked control values. Prevents undefined values when using <code>control.net</code> wrappers.</li>
+<li>Move <code>el.cuml</code>, <code>_last_unique_id</code>, and <code>_last_timestep</code> and <code>attr</code> to <code>dat$run</code> and update the tests; part of the restructuring of the <code>dat</code> object.</li>
 <li>Remove <code>dat$epi$sim.num(.g2)</code> and replace it with <code>dat$run$num(.g2)</code> (single value). These values keep track of the current size of the network and are only needed during model runs.</li>
 <li>Speed up cumulative edge-list calculation by splitting current and historic edges.</li>
-<li>Remove <code>deleteAttr</code> function deprecated since 2.4.0</li>
-<li>all function accepting <code>posit_ids</code> as argument must now pass exclusively a numeric vector. Logical vectors are not accepted anymore as they were making the code heavier and were very error prone.</li>
+<li>Remove <code>deleteAttr</code> function deprecated since EpiModel v2.4.0.</li>
+<li>All function accepting <code>posit_ids</code> as argument must now pass exclusively a numeric vector. Logical vectors are not accepted anymore as they were making the code heavier and were error prone.</li>
 </ul></div>
 </div>
     <div class="section level2">
