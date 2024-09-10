@@ -345,6 +345,8 @@ as.data.frame.netdx <- function(x, row.names = NULL, optional = FALSE,
 #' This methods ensures that the `data.frame` is correctly formatted as an
 #' `epi.data.frame`
 #'
+#' @param df A `data.frame` to convert into an `epi.data.frame`
+#'
 #' @export
 as.epi.data.frame <- function(df) {
   if (!inherits(df, "data.frame"))

@@ -6,6 +6,9 @@
 \usage{
 as.epi.data.frame(df)
 }
+\arguments{
+\item{df}{A \code{data.frame} to convert into an \code{epi.data.frame}}
+}
 \description{
 This methods ensures that the \code{data.frame} is correctly formatted as an
 \code{epi.data.frame}
