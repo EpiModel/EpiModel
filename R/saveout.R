@@ -372,7 +372,8 @@ saveout.net <- function(dat, s, out = NULL) {
 
     if (dat$control$save.cumulative.edgelist) {
       out$cumulative.edgelist <- name_saveout_elts(
-        out$cumulative.edgelist, "cumulative.edgelist", simnames)
+        out$cumulative.edgelist, "cumulative.edgelist", simnames
+      )
     }
 
     out$coef.form <- name_saveout_elts(out$coef.form, "coef.form", simnames)

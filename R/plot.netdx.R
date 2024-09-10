@@ -147,11 +147,11 @@ plot.netdx <- function(x, type = "formation", method = "l", sims = NULL,
     }
 
     if (x$anyNA) {
-        message(
-          "\nNOTE: Duration & dissolution data contains undefined values due ",
-          "to zero edges of some dissolution dyad type(s) on some time step;",
-          " these undefined values will be set to 0 when processing the data."
-        )
+      message(
+        "\nNOTE: Duration & dissolution data contains undefined values due ",
+        "to zero edges of some dissolution dyad type(s) on some time step;",
+        " these undefined values will be set to 0 when processing the data."
+      )
     }
 
     if (type == "duration") {

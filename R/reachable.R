@@ -336,8 +336,10 @@ dedup_cumulative_edgelist <- function(el) {
     dplyr::mutate(
       lstart = dplyr::lag(.data$start),
       lstop = dplyr::lag(.data$stop),
-      overlap = !is.na(.data$lstop) & !is.na(.data$lstart) &
-                .data$start <= .data$lstop,
+      overlap =
+        !is.na(.data$lstop) &
+        !is.na(.data$lstart) &
+        .data$start <= .data$lstop,
       stop = ifelse(.data$overlap, max(.data$stop, .data$lstop, na.rm = TRUE), .data$stop),
       start = ifelse(.data$overlap, min(.data$start, .data$lstart, na.rm = TRUE), .data$start)
     ) |>

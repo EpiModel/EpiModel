@@ -180,21 +180,29 @@ depart_nodes <- function(dat, departures) {
   if (length(departures) > 0) {
     if (get_control(dat, "tergmLite") == FALSE) {
       for (network in seq_len(dat$num.nw)) {
-        dat$run$nw[[network]] <- deactivate.vertices(dat$run$nw[[network]],
-                                                 onset = get_current_timestep(dat),
-                                                 terminus = Inf,
-                                                 v = departures,
-                                                 deactivate.edges = TRUE)
+        dat$run$nw[[network]] <- deactivate.vertices(
+          dat$run$nw[[network]],
+          onset = get_current_timestep(dat),
+          terminus = Inf,
+          v = departures,
+          deactivate.edges = TRUE
+        )
       }
     } else {
       dat <- delete_attr(dat, departures)
       for (network in seq_len(dat$num.nw)) {
-        dat$run$el[[network]] <- delete_vertices(dat$run$el[[network]], departures)
-        dat$run$net_attr[[network]][["n"]] <- dat$run$net_attr[[network]][["n"]] - length(departures)
+        dat$run$el[[network]] <- delete_vertices(
+          dat$run$el[[network]],
+          departures
+        )
+        dat$run$net_attr[[network]][["n"]] <-
+          dat$run$net_attr[[network]][["n"]] - length(departures)
 
-        if (get_network_control(dat, network, "tergmLite.track.duration") == TRUE) {
-          dat$run$net_attr[[network]][["lasttoggle"]] <-
-            delete_vertices(dat$run$net_attr[[network]][["lasttoggle"]], departures)
+        if (get_network_control(dat, network, "tergmLite.track.duration")) {
+          dat$run$net_attr[[network]][["lasttoggle"]] <- delete_vertices(
+            dat$run$net_attr[[network]][["lasttoggle"]],
+            departures
+          )
         }
       }
     }
@@ -225,17 +233,23 @@ depart_nodes <- function(dat, departures) {
 #'
 arrive_nodes <- function(dat, nArrivals) {
   if (nArrivals > 0) {
-    if (get_control(dat, "tergmLite") == FALSE) {
+    if (!get_control(dat, "tergmLite")) {
       for (network in seq_len(dat$num.nw)) {
-        dat$run$nw[[network]] <- add.vertices.active(dat$run$nw[[network]],
-                                                 nv = nArrivals,
-                                                 onset = get_current_timestep(dat),
-                                                 terminus = Inf)
+        dat$run$nw[[network]] <- add.vertices.active(
+          dat$run$nw[[network]],
+          nv = nArrivals,
+          onset = get_current_timestep(dat),
+          terminus = Inf
+        )
       }
     } else {
       for (network in seq_len(dat$num.nw)) {
-        dat$run$el[[network]] <- add_vertices(dat$run$el[[network]], nv = nArrivals)
-        dat$run$net_attr[[network]][["n"]] <- dat$run$net_attr[[network]][["n"]] + nArrivals
+        dat$run$el[[network]] <- add_vertices(
+          dat$run$el[[network]],
+          nv = nArrivals
+        )
+        dat$run$net_attr[[network]][["n"]] <-
+          dat$run$net_attr[[network]][["n"]] + nArrivals
       }
     }
   }

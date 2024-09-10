@@ -256,9 +256,9 @@ plot_netsim_network <- function(x, at, sims, network, shp.g2, col.status, vertex
 
   sims <- if (is.null(sims)) 1 else sims
   if (length(sims) > 1 ||
-    (!is.numeric(sims) && !(sims %in% c("mean", "max", "min")))) {
+        (!is.numeric(sims) && !(sims %in% c("mean", "max", "min")))) {
     stop("sims argument must be single simulation number",
-      "or \"mean\", \"max\", or \"min\" ", call. = FALSE)
+         "or \"mean\", \"max\", or \"min\" ", call. = FALSE)
   }
 
   sims.arg <- sims
@@ -331,15 +331,15 @@ plot_netsim_network <- function(x, at, sims, network, shp.g2, col.status, vertex
       cols[testatus == "r"] <- pal[3]
     }
     plot.network(obj, vertex.col = cols, vertex.border = "grey60",
-      edge.col = "grey40", vertex.sides = vertex.sides,
-      vertex.rot = vertex.rot, vertex.cex = vertex.cex,
-      displaylabels = FALSE, ...)
+                 edge.col = "grey40", vertex.sides = vertex.sides,
+                 vertex.rot = vertex.rot, vertex.cex = vertex.cex,
+                 displaylabels = FALSE, ...)
     if (sims.arg %in% c("mean", "max", "min")) {
       mtext(side = 1, text = paste("Sim =", sims, " | Prev =", sims.val))
     }
   } else {
     plot.network(obj, vertex.sides = vertex.sides, vertex.rot = vertex.rot,
-      vertex.cex = vertex.cex, displaylabels = FALSE, ...)
+                 vertex.cex = vertex.cex, displaylabels = FALSE, ...)
   }
 }
 
@@ -416,8 +416,8 @@ plot_netsim_epi <- function(x, y = NULL, sims = NULL, legend = NULL,
 
   # Compartment max
   if (!popfrac) {
-      min.prev <- min(sapply(y, \(comps) min(x$epi[[comps]], na.rm = TRUE)))
-      max.prev <- max(sapply(y, \(comps) max(x$epi[[comps]], na.rm = TRUE)))
+    min.prev <- min(sapply(y, \(comps) min(x$epi[[comps]], na.rm = TRUE)))
+    max.prev <- max(sapply(y, \(comps) max(x$epi[[comps]], na.rm = TRUE)))
   } else {
     min.prev <- 0
     max.prev <- 1
@@ -495,8 +495,8 @@ plot_netsim_epi <- function(x, y = NULL, sims = NULL, legend = NULL,
   ## Main plot window ##
   if (!add) {
     do.call(plot, list(
-        x = 1, y = 1, type = "n", bty = "n",
-        xlim = xlim, xlab = xlab, ylim = ylim, ylab = ylab, main = main
+      x = 1, y = 1, type = "n", bty = "n",
+      xlim = xlim, xlab = xlab, ylim = ylim, ylab = ylab, main = main
     ))
   }
 
@@ -581,7 +581,7 @@ plot_netsim_stats <- function(x, type, sims, stats, network, duration.imputed,
     stop("Maximum sim number is", x$control$nsims, call. = FALSE)
   nsims <- length(sims)
 
-    # Formation plot ----------------------------------------------------------
+  # Formation plot ----------------------------------------------------------
   if (type == "formation") {
     data <- get_nwstats(x, sims, network, mode = "list")
     ## target stats
@@ -617,7 +617,8 @@ plot_netsim_stats <- function(x, type, sims, stats, network, duration.imputed,
         "Cannot produce duration/dissolution plot from `netsim` object ",
         "unless `save.diss.stats` is `TRUE`, `save.network` is `TRUE`, ",
         "`tergmLite` is `FALSE`, `keep.diss.stats` is `TRUE` (if ",
-        "merging), and dissolution model is edges-only")
+        "merging), and dissolution model is edges-only"
+      )
     }
   }
 

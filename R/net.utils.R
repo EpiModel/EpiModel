@@ -216,14 +216,14 @@ copy_datattr_to_nwattr <- function(dat) {
     if (length(attr.to.copy) == 1) {
       for (network in seq_len(dat$num.nw)) {
         dat$run$nw[[network]] <- set_vertex_attribute(dat$run$nw[[network]],
-                                                  names(attr),
-                                                  attr[[1]])
+                                                      names(attr),
+                                                      attr[[1]])
       }
     } else {
       for (network in seq_len(dat$num.nw)) {
         dat$run$nw[[network]] <- set_vertex_attribute(dat$run$nw[[network]],
-                                                  names(attr),
-                                                  attr)
+                                                      names(attr),
+                                                      attr)
       }
     }
   }

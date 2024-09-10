@@ -10,7 +10,7 @@ draw_qnts <- function(x, y, qnts, qnts.pal, qnts.smooth,
     quants <- c((1 - qnts) / 2, 1 - ((1 - qnts) / 2))
     qnt.prev <- apply(
       x[[loc]][[y[j]]], 1,
-      function(x) quantile(x, c(quants[1], quants[2]), na.rm = TRUE )
+      function(x) quantile(x, c(quants[1], quants[2]), na.rm = TRUE)
     )
     qnt.prev <- qnt.prev[, complete.cases(t(qnt.prev))]
     xx <- c(seq_len(ncol(qnt.prev)), rev(seq_len(ncol(qnt.prev))))
@@ -18,12 +18,11 @@ draw_qnts <- function(x, y, qnts, qnts.pal, qnts.smooth,
       yy <- c(qnt.prev[1, ], rev(qnt.prev[2, ]))
     } else {
       yy <- c(
-        suppressWarnings(
-          supsmu(x = seq_len(ncol(qnt.prev)), y = qnt.prev[1, ])
-        )$y,
-        rev(suppressWarnings(
-          supsmu(x = seq_len(ncol(qnt.prev)), y = qnt.prev[2, ]))$y
-        ))
+        suppressWarnings(supsmu(x = seq_len(ncol(qnt.prev)),
+                                y = qnt.prev[1, ]))$y,
+        rev(suppressWarnings(supsmu(x = seq_len(ncol(qnt.prev)),
+                                    y = qnt.prev[2, ]))$y)
+      )
     }
     if (plot.qnts == 1) {
       polygon(xx, yy, col = qnts.pal[j], border = NA)
@@ -48,7 +47,6 @@ draw_means <- function(x, y, mean.smooth, mean.lwd,
   mean.max <- -1E10
 
   lcomp <- length(y)
-  nsims <- x$control$nsims
 
   for (j in seq_len(lcomp)) {
     mean.prev <- rowMeans(x[[loc]][[y[j]]], na.rm = TRUE)
@@ -136,4 +134,3 @@ denom <- function(x, y, popfrac) {
 
   return(x)
 }
-

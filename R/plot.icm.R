@@ -211,7 +211,7 @@ plot.icm <- function(x, y = NULL, popfrac = FALSE, sim.lines = FALSE,
   if (is.null(ylim)) {
     if (sim.lines == FALSE && mean.line == TRUE) {
       ylim <- c(min(qnt.min * 0.9, mean.min * 0.9),
-        max(qnt.max * 1.1, mean.max * 1.1))
+                max(qnt.max * 1.1, mean.max * 1.1))
     } else {
       ylim <- c(min.prev, max.prev)
     }
