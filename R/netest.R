@@ -93,7 +93,7 @@
 #' \code{tergm} function with the \code{set.control.tergm} argument in
 #' \code{netest}. The controls should be input through the
 #' \code{control.tergm()} function, with the available parameters listed in the
-#' \code{\link{control.tergm}} help page in the \code{tergm} package.
+#' [`control.tergm`] help page in the \code{tergm} package.
 #'
 #' When fitting a STERGM indirectly (setting \code{edapprox} to \code{TRUE}),
 #' control settings may be passed to the \code{ergm} function using

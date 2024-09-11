@@ -45,7 +45,7 @@ The columns are named \code{Target}, \code{Sim Mean}, \code{Pct Diff},
 statistic value, across all time steps in all simulations in the dynamic
 case, and across all sampled networks in all simulations in the static case.
 The \code{Sim SE} column refers to the standard error in the mean, estimated
-using \code{\link[=effectiveSize]{coda::effectiveSize}}.  The \code{Target}
+using \code{\link[coda:effectiveSize]{coda::effectiveSize}}.  The \code{Target}
 column indicates the target value (if present) for the statistic, and the
 \code{Pct Diff} column gives \code{(Sim Mean - Target)/Target} when
 \code{Target} is present.  The \code{Z Score} column gives

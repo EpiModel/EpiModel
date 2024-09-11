@@ -32,7 +32,7 @@ solutions for fractional time steps may be obtained by setting this to
 a number between 0 and 1.}
 
 \item{odemethod}{Ordinary differential equation (ODE) integration method,
-with the default of the "Runge-Kutta 4" method (see \code{\link{ode}}
+with the default of the "Runge-Kutta 4" method (see \code{\link[deSolve:ode]{deSolve::ode}}
 for other options).}
 
 \item{dede}{If \code{TRUE}, use the delayed differential equation solver,

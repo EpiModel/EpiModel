@@ -50,7 +50,7 @@
 #' simulations may be set using \code{set.control.tergm} in \code{netdx}.
 #' The parameters should be input through the \code{control.simulate.formula.tergm}
 #' function, with the available parameters listed in the
-#' \code{\link{control.simulate.formula.tergm}} help page in the \code{tergm}
+#' [`tergm::control.simulate.formula.tergm`] help page in the \code{tergm}
 #' package.
 #'
 #' Models fit with the ERGM method with the edges dissolution approximation
@@ -64,7 +64,7 @@
 #' \code{\link[ergm:control.simulate.formula]{control.simulate.formula}} help
 #' page in the \code{ergm} package. For the second, parameters should be input
 #' through the \code{control.simulate.formula.tergm()} function, with the
-#' available parameters listed in the \code{\link{control.simulate.formula.tergm}}
+#' available parameters listed in the [`control.simulate.formula.tergm`]
 #' help page in the \code{tergm} package. An example is shown below.
 #'
 #' @return
@@ -401,7 +401,7 @@ make_stats_table <- function(stats, targets) {
 #' @title Convert Timed Edgelist to Matrix of Toggles
 #'
 #' @param tedgelist A timed edgelist, as produced by
-#'   \code{\link{as.data.frame.networkDynamic}}.
+#'   [`networkDynamic::as.data.frame.networkDynamic`].
 #'
 #' @return The matrix of toggles corresponding to \code{tedgelist}.
 #' @keywords internal

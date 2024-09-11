@@ -250,7 +250,7 @@ init.dcm <- function(s.num, i.num, r.num, s.num.g2, i.num.g2, r.num.g2,
 #'        solutions for fractional time steps may be obtained by setting this to
 #'        a number between 0 and 1.
 #' @param odemethod Ordinary differential equation (ODE) integration method,
-#'        with the default of the "Runge-Kutta 4" method (see \code{\link{ode}}
+#'        with the default of the "Runge-Kutta 4" method (see [`deSolve::ode`]
 #'        for other options).
 #' @param dede If \code{TRUE}, use the delayed differential equation solver,
 #'        which allows for time-lagged variables.

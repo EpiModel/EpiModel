@@ -87,7 +87,7 @@
 #'        generated. A static network plot of a dynamic network is a
 #'        cross-sectional extraction of that dynamic network at a specific
 #'        time point. This plotting function wraps the
-#'        \code{\link{plot.network}} function in the \code{network} package.
+#'        [`network::plot.network`] function in the \code{network} package.
 #'        Consult the help page for \code{plot.network} for all of the plotting
 #'        parameters. In addition, four plotting parameters specific to
 #'        \code{netsim} plots are available: \code{sim}, \code{at},
@@ -147,7 +147,7 @@
 #' @export
 #'
 #' @keywords plot
-#' @seealso \code{\link{plot.network}}, \code{\link{mutate_epi}}
+#' @seealso [`network::plot.network`], \code{\link{mutate_epi}}
 #'
 #' @examples
 #' ## SI Model without Network Feedback

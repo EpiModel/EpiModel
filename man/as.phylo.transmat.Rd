@@ -27,7 +27,7 @@ function into a \code{phylo} class object.
 }
 \details{
 Converts a \code{\link{transmat}} object containing information about the
-history of a simulated infection into a \code{\link{phylo}} object
+history of a simulated infection into a \code{\link[ape:read.tree]{ape::phylo}} object
 representation suitable for plotting as a tree with
 \code{\link[ape]{plot.phylo}}. Each infection event becomes a 'node'
 (horizontal branch) in the resulting \code{phylo} tree, and each network

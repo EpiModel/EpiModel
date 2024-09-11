@@ -39,7 +39,7 @@
 
 \item{col}{Color for lines, either specified as a single color in a standard
 R color format, or alternatively as a color palette from
-\code{\link{RColorBrewer}} (see details).}
+\link[RColorBrewer:ColorBrewer]{RColorBrewer::RColorBrewer} (see details).}
 
 \item{lwd}{Line width for output lines.}
 
@@ -110,10 +110,10 @@ size.
 
 Since \code{\link{dcm}} supports multiple run sensitivity models, plotting
 the results of such models uses a complex color scheme for distinguishing
-runs. This is accomplished using the \code{\link{RColorBrewer}} color
+runs. This is accomplished using the \code{\link[RColorBrewer:ColorBrewer]{RColorBrewer::RColorBrewer}} color
 palettes, which include a range of linked colors using named palettes. For
 \code{plot.dcm}, one may either specify a brewer color palette listed in
-\code{\link{brewer.pal.info}}, or, alternatively, a vector of standard R
+\code{\link[RColorBrewer:ColorBrewer]{RColorBrewer::brewer.pal.info}}, or, alternatively, a vector of standard R
 colors (named, hexidecimal, or positive integers; see \code{\link{col2rgb}}).
 }
 
@@ -155,6 +155,6 @@ plot(mod, y = c("s.num", "i.num"),
 
 }
 \seealso{
-\code{\link{dcm}}, \code{\link{brewer.pal.info}}
+\code{\link{dcm}}, \code{\link[RColorBrewer:ColorBrewer]{RColorBrewer::brewer.pal.info}}
 }
 \keyword{plot}

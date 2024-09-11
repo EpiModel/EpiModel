@@ -11,7 +11,7 @@
 #'        (default is run 1).
 #' @param col Color for lines, either specified as a single color in a standard
 #'        R color format, or alternatively as a color palette from
-#'        \code{\link{RColorBrewer}} (see details).
+#'        [RColorBrewer::RColorBrewer] (see details).
 #' @param lwd Line width for output lines.
 #' @param lty Line type for output lines.
 #' @param alpha Transparency level for lines, where 0 = transparent and
@@ -53,10 +53,10 @@
 #' @section Color Palettes:
 #' Since \code{\link{dcm}} supports multiple run sensitivity models, plotting
 #' the results of such models uses a complex color scheme for distinguishing
-#' runs. This is accomplished using the \code{\link{RColorBrewer}} color
+#' runs. This is accomplished using the [`RColorBrewer::RColorBrewer`] color
 #' palettes, which include a range of linked colors using named palettes. For
 #' \code{plot.dcm}, one may either specify a brewer color palette listed in
-#' \code{\link{brewer.pal.info}}, or, alternatively, a vector of standard R
+#' [`RColorBrewer::brewer.pal.info`], or, alternatively, a vector of standard R
 #' colors (named, hexidecimal, or positive integers; see \code{\link{col2rgb}}).
 #'
 #' @section Plot Legends:
@@ -73,7 +73,7 @@
 #' @export
 #'
 #' @keywords plot
-#' @seealso \code{\link{dcm}}, \code{\link{brewer.pal.info}}
+#' @seealso \code{\link{dcm}}, [`RColorBrewer::brewer.pal.info`]
 #'
 #' @examples
 #' # Deterministic SIR model with varying act rate

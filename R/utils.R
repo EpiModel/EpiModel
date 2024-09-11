@@ -4,7 +4,7 @@
 #' @description Returns a vector of colors consistent with a high-brightness set
 #'              of colors from an \code{RColorBrewer} palette.
 #'
-#' @param plt \code{RColorBrewer} palette from \code{\link{brewer.pal}}.
+#' @param plt \code{RColorBrewer} palette from [`RColorBrewer::brewer.pal`].
 #' @param n Number of colors to return.
 #' @param delete.lights If TRUE, delete the lightest colors from the color
 #'        palette; this helps with plotting in many high-contrast palettes.
@@ -21,7 +21,7 @@
 #' A vector of length equal to \code{n} with a range of color values consistent
 #' with an RColorBrewer color palette.
 #'
-#' @seealso \code{\link{RColorBrewer}}
+#' @seealso [RColorBrewer::RColorBrewer]
 #' @keywords colorUtils internal
 #' @export
 #'
