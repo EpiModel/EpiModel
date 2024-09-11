@@ -13,11 +13,11 @@
 \item{...}{Unused.}
 }
 \value{
-A \code{\link{network}} object.
+A \code{\link[network:network]{network::network}} object.
 }
 \description{
 Converts a transmission matrix from the \code{get_transmat}
-function into a \link{network} class object.
+function into a \code{\link[network:network]{network::network}} class object.
 }
 \details{
 When converting from a \code{transmat} to a \code{network} object, this

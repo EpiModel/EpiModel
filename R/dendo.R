@@ -15,7 +15,7 @@
 #'
 #' @details
 #' Converts a \code{\link{transmat}} object containing information about the
-#' history of a simulated infection into a \code{\link{phylo}} object
+#' history of a simulated infection into a [`ape::phylo`] object
 #' representation suitable for plotting as a tree with
 #' \code{\link[ape]{plot.phylo}}. Each infection event becomes a 'node'
 #' (horizontal branch) in the resulting \code{phylo} tree, and each network
@@ -206,7 +206,7 @@ as.phylo.transmat <- function(x,
 #' @title Convert transmat Infection Tree into a network Object
 #'
 #' @description Converts a transmission matrix from the \code{get_transmat}
-#'              function into a \link{network} class object.
+#'              function into a [`network::network`] class object.
 #'
 #' @param x An object of class \code{transmat} to be converted into a
 #'          \code{network} class object.
@@ -218,7 +218,7 @@ as.phylo.transmat <- function(x,
 #' (\code{'at'}, \code{'infDur'}, \code{'transProb'}, \code{'actRate'}, and
 #' \code{'finalProb'}) into edge attributes on the network.
 #'
-#' @return A \code{\link{network}} object.
+#' @return A [`network::network`] object.
 #'
 #' @method as.network transmat
 #' @export
@@ -266,7 +266,7 @@ as.network.transmat <- function(x, ...) {
 #' @export
 #' @method plot transmat
 #'
-#' @seealso \code{\link{plot.network}}, \code{\link[ape]{plot.phylo}},
+#' @seealso [`network::plot.network`], \code{\link[ape]{plot.phylo}},
 #'          \code{\link[ndtv]{transmissionTimeline}}.
 #'
 plot.transmat <- function(x,

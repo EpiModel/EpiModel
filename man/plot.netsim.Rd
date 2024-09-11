@@ -185,7 +185,7 @@ prevalence and incidence) may be plotted.
 generated. A static network plot of a dynamic network is a
 cross-sectional extraction of that dynamic network at a specific
 time point. This plotting function wraps the
-\code{\link{plot.network}} function in the \code{network} package.
+\code{\link[network:plot.network]{network::plot.network}} function in the \code{network} package.
 Consult the help page for \code{plot.network} for all of the plotting
 parameters. In addition, four plotting parameters specific to
 \code{netsim} plots are available: \code{sim}, \code{at},
@@ -296,6 +296,6 @@ plot(mod, type = "formation", stats = "meandeg",
 
 }
 \seealso{
-\code{\link{plot.network}}, \code{\link{mutate_epi}}
+\code{\link[network:plot.network]{network::plot.network}}, \code{\link{mutate_epi}}
 }
 \keyword{plot}

@@ -26,6 +26,6 @@ The \code{phylo} plot requires the \code{ape} package. The
 \code{transmissionTimeline} plot requires that the \code{ndtv} package.
 }
 \seealso{
-\code{\link{plot.network}}, \code{\link[ape]{plot.phylo}},
+\code{\link[network:plot.network]{network::plot.network}}, \code{\link[ape]{plot.phylo}},
 \code{\link[ndtv]{transmissionTimeline}}.
 }

@@ -88,7 +88,7 @@ Models fit with the full STERGM method in \code{netest} (setting the
 simulations may be set using \code{set.control.tergm} in \code{netdx}.
 The parameters should be input through the \code{control.simulate.formula.tergm}
 function, with the available parameters listed in the
-\code{\link{control.simulate.formula.tergm}} help page in the \code{tergm}
+\code{\link[tergm:control.simulate.tergm]{tergm::control.simulate.formula.tergm}} help page in the \code{tergm}
 package.
 
 Models fit with the ERGM method with the edges dissolution approximation

@@ -9,7 +9,7 @@ brewer_ramp(n, plt, delete.lights = TRUE)
 \arguments{
 \item{n}{Number of colors to return.}
 
-\item{plt}{\code{RColorBrewer} palette from \code{\link{brewer.pal}}.}
+\item{plt}{\code{RColorBrewer} palette from \code{\link[RColorBrewer:ColorBrewer]{RColorBrewer::brewer.pal}}.}
 
 \item{delete.lights}{If TRUE, delete the lightest colors from the color
 palette; this helps with plotting in many high-contrast palettes.}
@@ -41,7 +41,7 @@ for (i in seq_along(pals)) {
 
 }
 \seealso{
-\code{\link{RColorBrewer}}
+\link[RColorBrewer:ColorBrewer]{RColorBrewer::RColorBrewer}
 }
 \keyword{colorUtils}
 \keyword{internal}
