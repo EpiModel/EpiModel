@@ -40,10 +40,10 @@ plot.epi.data.frame <- function(x, y = NULL, sims = NULL, legend = NULL,
                                 sim.lines = FALSE, grid = FALSE, leg.cex = 0.8,
                                 ...) {
   ntemp <- list(
-    epi = df2epi(df),
+    epi = df2epi(x),
     control = list(
-      nsteps = max(df$time),
-      nsims = max(df$sim)
+      nsteps = max(x$time),
+      nsims = max(x$sim)
     )
   )
   plot_netsim_epi(
