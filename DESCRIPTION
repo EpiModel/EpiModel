@@ -30,7 +30,7 @@ Depends:
     R (>= 4.1),
     deSolve (>= 1.21),
     networkDynamic (>= 0.11.3),
-    tergm (>= 4.2.0),
+    tergm (>= 4.2.1),
     statnet.common (>= 4.10.0)
 Imports:
     graphics,
