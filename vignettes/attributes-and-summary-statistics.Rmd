@@ -23,7 +23,7 @@ library(EpiModel)
 
 ## Introduction
 
-This vignette discusses some recent updates in `EpiModel` on working with attributes and summary statistics within the stochastic network model class. This material is oriented towards custom models with extension modules and functions. Further details are provided in the "New Network Models with EpiModel" section of [the EpiModel tutorials](https://www.epimodel.org/tut.html).
+This vignette discusses some recent updates in `EpiModel` on working with attributes and summary statistics within the stochastic network model class. This material is oriented towards custom models with extension modules and functions. More information about these in the [Extending EpiModel](https://epimodel.github.io/sismid/9_extending/mod9-Intro.html) section of the [Network Modeling for Epidemics](https://epimodel.github.io/sismid/) course materials.
 
 In network simulations with `netsim`, we store all data in the *Main List Object* (referred to as `dat`). In this vignette we will discuss with three types of data on `dat`:
 

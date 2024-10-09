@@ -108,7 +108,7 @@
 #' }
 #'
 #' @references
-#' The EpiModel website is at \url{http://www.epimodel.org/}, and the source
+#' The EpiModel website is at \url{https://www.epimodel.org/}, and the source
 #' code is at \url{https://github.com/EpiModel/EpiModel}. Bug reports and
 #' feature requests are welcome.
 #'

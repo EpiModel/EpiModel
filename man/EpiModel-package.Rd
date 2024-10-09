@@ -117,7 +117,7 @@ above.
 }
 
 \references{
-The EpiModel website is at \url{http://www.epimodel.org/}, and the source
+The EpiModel website is at \url{https://www.epimodel.org/}, and the source
 code is at \url{https://github.com/EpiModel/EpiModel}. Bug reports and
 feature requests are welcome.
 
@@ -139,9 +139,9 @@ developed \code{EpiModelCOVID}, which is available at
 \seealso{
 Useful links:
 \itemize{
-  \item \url{http://www.epimodel.org/}
-  \item \url{http://epimodel.github.io/EpiModel/}
-  \item Report bugs at \url{https://github.com/EpiModel/EpiModel/issues}
+  \item \url{https://www.epimodel.org/}
+  \item \url{https://epimodel.github.io/EpiModel/}
+  \item Report bugs at \url{https://github.com/EpiModel/EpiModel/issues/}
 }
 
 }

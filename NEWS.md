@@ -28,7 +28,8 @@
 
 ### NEW FEATURES
 
-- Stochastic network models, simulated with `netsim`, now support multi-layer networks. These are networks with a common common node set but different edge set (e.g., home-based and community-based contact layers). An example implementation can be found at the [EpiModel Gallery](https://github.com/EpiModel/EpiModel-Gallery/tree/multinets/2022-12-Multinets).
+- Stochastic network models, simulated with `netsim`, now support multi-layer networks. These are networks with a common common node set but different edge set (e.g., home-based and community-based contact layers). 
+An example implementation can be found at the [EpiModel Gallery](https://github.com/EpiModel/EpiModel-Gallery/tree/main/2022-12-Multinets).
 - Add a `get_cumulative_degree` function with an interface similar to `get_partners`. This function helps look up cumulative degree over a time period (e.g., number of partners over the past year) for a specified set of nodes.
 - Generic `get_network` and `set_network` functions created for more consistent access to the network objects within `netsim_dat` class objects.
 
@@ -764,7 +765,7 @@ when trying to access an uncreated cumulative edgelist.
 
 - Internal model functions have been significantly revised to improve efficiency.
 
-- The dcm function can handle model functions, parameter sets, and initial conditions of arbitrary complexity. See the HTML vignette on this topic at: <http://www.epimodel.org/>
+- The dcm function can handle model functions, parameter sets, and initial conditions of arbitrary complexity. See the HTML vignette on this topic at: <https://www.epimodel.org/>
 
 - Moved the package vignettes external to the package to reduce package size and build time.
 
