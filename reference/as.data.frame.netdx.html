@@ -109,322 +109,312 @@ all simulations will be output.</p></dd>
 <span class="r-in"><span><span class="co"># Extract data from the first simulation</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">dx</span>, sim <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    onset terminus tail head onset.censored terminus.censored duration edge.id</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1      0       11    2   67          FALSE              TRUE       11       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2      0       11    3   62          FALSE              TRUE       11       2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3      0       11    4   16          FALSE              TRUE       11       3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4      0       11    4   58          FALSE              TRUE       11       4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5      0       11    5   39          FALSE              TRUE       11       5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6      0        7    6   61          FALSE             FALSE        7       6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7      0        5    6   70          FALSE             FALSE        5       7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8      0       11    6   79          FALSE              TRUE       11       8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9      0       11    7   74          FALSE              TRUE       11       9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10     0        1    8   50          FALSE             FALSE        1      10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11     0        3   10   79          FALSE             FALSE        3      11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12     0       11   10   81          FALSE              TRUE       11      12</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13     0       11   10   86          FALSE              TRUE       11      13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14     0       10   11   55          FALSE             FALSE       10      14</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15     0       11   11   85          FALSE              TRUE       11      15</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 16     0       11   12   52          FALSE              TRUE       11      16</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 17     0        9   13   88          FALSE             FALSE        9      17</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 18     0       11   14   86          FALSE              TRUE       11      18</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 19     0       11   20   62          FALSE              TRUE       11      19</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 20     0       11   21   23          FALSE              TRUE       11      20</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 21     0       11   22   47          FALSE              TRUE       11      21</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 22     0        6   23   46          FALSE             FALSE        6      22</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 23     0        8   25   42          FALSE             FALSE        8      23</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 24     0        8   25   46          FALSE             FALSE        8      24</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 25     0        8   25   98          FALSE             FALSE        8      25</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 26     0        1   28   85          FALSE             FALSE        1      26</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 27     0       11   30   89          FALSE              TRUE       11      27</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 28     0       11   32   70          FALSE              TRUE       11      28</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 29     0       11   32   77          FALSE              TRUE       11      29</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 30     0       11   33   47          FALSE              TRUE       11      30</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 31     0        7   35   60          FALSE             FALSE        7      31</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 32     0        1   36   92          FALSE             FALSE        1      32</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 33     0       11   40   54          FALSE              TRUE       11      33</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 34     0       11   41   70          FALSE              TRUE       11      34</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 35     0       11   43   89          FALSE              TRUE       11      35</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 36     0       11   44   98          FALSE              TRUE       11      36</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 37     0       11   47   97          FALSE              TRUE       11      37</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 38     0        9   51   68          FALSE             FALSE        9      38</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 39     0       11   55   58          FALSE              TRUE       11      39</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 40     0        1   55   81          FALSE             FALSE        1      40</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 41     0       11   56   66          FALSE              TRUE       11      41</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 42     0       11   57  100          FALSE              TRUE       11      42</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 43     0       11   60   69          FALSE              TRUE       11      43</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 44     0        1   61   73          FALSE             FALSE        1      44</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 45     0        9   61   95          FALSE             FALSE        9      45</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 46     0        2   64   75          FALSE             FALSE        2      46</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 47     0        1   64   98          FALSE             FALSE        1      47</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 48     0       11   69   71          FALSE              TRUE       11      48</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 49     0        8   75   90          FALSE             FALSE        8      49</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 50     0       11   86   93          FALSE              TRUE       11      50</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 51     0       11   91   93          FALSE              TRUE       11      51</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 52     0        9   92   98          FALSE             FALSE        9      52</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 53     1        5   50   91          FALSE             FALSE        4      53</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 54     1       11   97  100          FALSE              TRUE       10      54</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 55     2       11   38   68          FALSE              TRUE        9      55</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 56     2       11    2   10          FALSE              TRUE        9      56</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 57     2       11   40   69          FALSE              TRUE        9      57</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 58     3       11   49   89          FALSE              TRUE        8      58</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 59     4        6   11   97          FALSE             FALSE        2      59</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 60     4       11    6   35          FALSE              TRUE        7      60</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 61     5        8   68   87          FALSE             FALSE        3      61</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 62     5       11   68   70          FALSE              TRUE        6      62</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 63     5       11   49   75          FALSE              TRUE        6      63</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 64     6       11   15   37          FALSE              TRUE        5      64</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 65     6       11   25   91          FALSE              TRUE        5      65</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 66     6       11   27   52          FALSE              TRUE        5      66</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 67     6       11   77   91          FALSE              TRUE        5      67</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 68     6       11   30   33          FALSE              TRUE        5      68</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 69     7       11   18   37          FALSE              TRUE        4      69</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 70     7       11    4   85          FALSE              TRUE        4      70</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 71     8       11   45   96          FALSE              TRUE        3      71</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 72     8       11   94   95          FALSE              TRUE        3      72</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 73     8       11   11   80          FALSE              TRUE        3      73</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 74     8       11   61   99          FALSE              TRUE        3      74</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 75     8       11   38   58          FALSE              TRUE        3      75</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 76     8       11   37   93          FALSE              TRUE        3      76</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 77     9       11   28   31          FALSE              TRUE        2      77</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 78     9       11   13   86          FALSE              TRUE        2      78</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 79     9       11   43   97          FALSE              TRUE        2      79</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 80    10       11   37   89          FALSE              TRUE        1      80</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1      0        7    1   18          FALSE             FALSE        7       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2      0        5    1   62          FALSE             FALSE        5       2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3      0        2    2   58          FALSE             FALSE        2       3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4      0        1    2   88          FALSE             FALSE        1       4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5      0        6    3   24          FALSE             FALSE        6       5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6      0       11    3   90          FALSE              TRUE       11       6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7      0       11    4   98          FALSE              TRUE       11       7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8      0       11    5   13          FALSE              TRUE       11       8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9      0       10    7   76          FALSE             FALSE       10       9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10     0        4    8   51          FALSE             FALSE        4      10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11     0        4   10   69          FALSE             FALSE        4      11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12     0        6   10  100          FALSE             FALSE        6      12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13     0       11   11   29          FALSE              TRUE       11      13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14     0        3   11   66          FALSE             FALSE        3      14</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15     0       11   12   67          FALSE              TRUE       11      15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16     0       11   16   44          FALSE              TRUE       11      16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17     0       11   17   63          FALSE              TRUE       11      17</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18     0        4   18   48          FALSE             FALSE        4      18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19     0       11   18   90          FALSE              TRUE       11      19</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20     0       11   18   94          FALSE              TRUE       11      20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21     0       11   20   96          FALSE              TRUE       11      21</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22     0       11   21   63          FALSE              TRUE       11      22</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23     0       11   21   84          FALSE              TRUE       11      23</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24     0       11   22   23          FALSE              TRUE       11      24</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25     0       11   24   32          FALSE              TRUE       11      25</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 26     0       11   27   89          FALSE              TRUE       11      26</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 27     0       11   28   45          FALSE              TRUE       11      27</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 28     0        1   29   68          FALSE             FALSE        1      28</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 29     0       11   30   57          FALSE              TRUE       11      29</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 30     0       11   30   73          FALSE              TRUE       11      30</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 31     0       11   32   41          FALSE              TRUE       11      31</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 32     0       11   32   46          FALSE              TRUE       11      32</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 33     0       11   32   53          FALSE              TRUE       11      33</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 34     0       11   32   66          FALSE              TRUE       11      34</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 35     0        9   35   40          FALSE             FALSE        9      35</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 36     0       11   35   88          FALSE              TRUE       11      36</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 37     0       11   37   38          FALSE              TRUE       11      37</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 38     0       11   37   62          FALSE              TRUE       11      38</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 39     0       10   37   93          FALSE             FALSE       10      39</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 40     0       11   38   41          FALSE              TRUE       11      40</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 41     0       11   38   49          FALSE              TRUE       11      41</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 42     0        2   38   62          FALSE             FALSE        2      42</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 43     0       11   41   99          FALSE              TRUE       11      43</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 44     0        6   42   78          FALSE             FALSE        6      44</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 45     0       11   43   93          FALSE              TRUE       11      45</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 46     0       11   44   69          FALSE              TRUE       11      46</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 47     0       11   49   88          FALSE              TRUE       11      47</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 48     0       11   52   78          FALSE              TRUE       11      48</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 49     0       11   57   83          FALSE              TRUE       11      49</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 50     0       10   68   97          FALSE             FALSE       10      50</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 51     0        7   74   83          FALSE             FALSE        7      51</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 52     0       11   74  100          FALSE              TRUE       11      52</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 53     0        1   89   93          FALSE             FALSE        1      53</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 54     0       11   90   91          FALSE              TRUE       11      54</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 55     0        2   91   99          FALSE             FALSE        2      55</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 56     0        5   93   97          FALSE             FALSE        5      56</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 57     1        6   41   93          FALSE             FALSE        5      57</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 58     1       10    9   86          FALSE             FALSE        9      58</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 59     2       11   38   99          FALSE              TRUE        9      59</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 60     2       11   39   99          FALSE              TRUE        9      60</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 61     2       10   29   36          FALSE             FALSE        8      61</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 62     3       11   38   94          FALSE              TRUE        8      62</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 63     4       11   21   82          FALSE              TRUE        7      63</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 64     4       11   75   90          FALSE              TRUE        7      64</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 65     4       11   42   89          FALSE              TRUE        7      65</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 66     4       11   12   28          FALSE              TRUE        7      66</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 67     5        8   60   73          FALSE             FALSE        3      67</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 68     6       11   12   83          FALSE              TRUE        5      68</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 69     6       11   26   81          FALSE              TRUE        5      69</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 70     7        8   58   62          FALSE             FALSE        1      70</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 71     7       11    1   61          FALSE              TRUE        4      71</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 72     7       11   32   69          FALSE              TRUE        4      72</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 73     7       11   57   97          FALSE              TRUE        4      73</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 74     7       11   54   75          FALSE              TRUE        4      74</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 75     8       11   74   96          FALSE              TRUE        3      75</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 76     8       11   33   97          FALSE              TRUE        3      76</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 77     8       11   10   21          FALSE              TRUE        3      77</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 78     8       11    6   79          FALSE              TRUE        3      78</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 79     9       11   88   94          FALSE              TRUE        2      79</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 80    10       11    5   92          FALSE              TRUE        1      80</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Extract data from all simulations</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">dx</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     sim onset terminus tail head onset.censored terminus.censored duration</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1     1     0       11    2   67          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2     1     0       11    3   62          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3     1     0       11    4   16          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4     1     0       11    4   58          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5     1     0       11    5   39          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6     1     0        7    6   61          FALSE             FALSE        7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7     1     0        5    6   70          FALSE             FALSE        5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8     1     0       11    6   79          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9     1     0       11    7   74          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10    1     0        1    8   50          FALSE             FALSE        1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11    1     0        3   10   79          FALSE             FALSE        3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12    1     0       11   10   81          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13    1     0       11   10   86          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14    1     0       10   11   55          FALSE             FALSE       10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15    1     0       11   11   85          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 16    1     0       11   12   52          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 17    1     0        9   13   88          FALSE             FALSE        9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 18    1     0       11   14   86          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 19    1     0       11   20   62          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 20    1     0       11   21   23          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 21    1     0       11   22   47          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 22    1     0        6   23   46          FALSE             FALSE        6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 23    1     0        8   25   42          FALSE             FALSE        8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 24    1     0        8   25   46          FALSE             FALSE        8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 25    1     0        8   25   98          FALSE             FALSE        8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 26    1     0        1   28   85          FALSE             FALSE        1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 27    1     0       11   30   89          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 28    1     0       11   32   70          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 29    1     0       11   32   77          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 30    1     0       11   33   47          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 31    1     0        7   35   60          FALSE             FALSE        7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 32    1     0        1   36   92          FALSE             FALSE        1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 33    1     0       11   40   54          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 34    1     0       11   41   70          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 35    1     0       11   43   89          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 36    1     0       11   44   98          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 37    1     0       11   47   97          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 38    1     0        9   51   68          FALSE             FALSE        9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 39    1     0       11   55   58          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 40    1     0        1   55   81          FALSE             FALSE        1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 41    1     0       11   56   66          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 42    1     0       11   57  100          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 43    1     0       11   60   69          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 44    1     0        1   61   73          FALSE             FALSE        1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 45    1     0        9   61   95          FALSE             FALSE        9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 46    1     0        2   64   75          FALSE             FALSE        2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 47    1     0        1   64   98          FALSE             FALSE        1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 48    1     0       11   69   71          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 49    1     0        8   75   90          FALSE             FALSE        8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 50    1     0       11   86   93          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 51    1     0       11   91   93          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 52    1     0        9   92   98          FALSE             FALSE        9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 53    1     1        5   50   91          FALSE             FALSE        4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 54    1     1       11   97  100          FALSE              TRUE       10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 55    1     2       11   38   68          FALSE              TRUE        9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 56    1     2       11    2   10          FALSE              TRUE        9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 57    1     2       11   40   69          FALSE              TRUE        9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 58    1     3       11   49   89          FALSE              TRUE        8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 59    1     4        6   11   97          FALSE             FALSE        2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 60    1     4       11    6   35          FALSE              TRUE        7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 61    1     5        8   68   87          FALSE             FALSE        3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 62    1     5       11   68   70          FALSE              TRUE        6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 63    1     5       11   49   75          FALSE              TRUE        6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 64    1     6       11   15   37          FALSE              TRUE        5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 65    1     6       11   25   91          FALSE              TRUE        5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 66    1     6       11   27   52          FALSE              TRUE        5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 67    1     6       11   77   91          FALSE              TRUE        5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 68    1     6       11   30   33          FALSE              TRUE        5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 69    1     7       11   18   37          FALSE              TRUE        4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 70    1     7       11    4   85          FALSE              TRUE        4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 71    1     8       11   45   96          FALSE              TRUE        3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 72    1     8       11   94   95          FALSE              TRUE        3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 73    1     8       11   11   80          FALSE              TRUE        3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 74    1     8       11   61   99          FALSE              TRUE        3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 75    1     8       11   38   58          FALSE              TRUE        3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 76    1     8       11   37   93          FALSE              TRUE        3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 77    1     9       11   28   31          FALSE              TRUE        2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 78    1     9       11   13   86          FALSE              TRUE        2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 79    1     9       11   43   97          FALSE              TRUE        2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 80    1    10       11   37   89          FALSE              TRUE        1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 81    2     0       11    1   43          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 82    2     0        8    2   10          FALSE             FALSE        8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 83    2     0        8    4   62          FALSE             FALSE        8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 84    2     0        3    5   83          FALSE             FALSE        3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 85    2     0       11    5   90          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 86    2     0       11    6   20          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 87    2     0       11    7   58          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 88    2     0       11    9   69          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 89    2     0        3    9   77          FALSE             FALSE        3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 90    2     0       11   11   86          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 91    2     0       11   13   52          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 92    2     0        9   18   90          FALSE             FALSE        9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 93    2     0        6   19   38          FALSE             FALSE        6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 94    2     0       11   19   54          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 95    2     0        3   21   34          FALSE             FALSE        3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 96    2     0       11   21   54          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 97    2     0        9   23   93          FALSE             FALSE        9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 98    2     0       11   24   40          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 99    2     0       11   24   89          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 100   2     0       11   26   36          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 101   2     0        1   27   46          FALSE             FALSE        1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 102   2     0        3   28   53          FALSE             FALSE        3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 103   2     0       11   30   90          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 104   2     0        5   31   76          FALSE             FALSE        5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 105   2     0       11   39   83          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 106   2     0        1   46   97          FALSE             FALSE        1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 107   2     0       11   48   65          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 108   2     0       11   49   68          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 109   2     0       11   49  100          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 110   2     0        3   51   85          FALSE             FALSE        3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 111   2     0       11   55   96          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 112   2     0        5   56   70          FALSE             FALSE        5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 113   2     0        2   56   74          FALSE             FALSE        2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 114   2     0       11   57   90          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 115   2     0       11   59   60          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 116   2     0        4   64   87          FALSE             FALSE        4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 117   2     0       11   65   67          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 118   2     0       11   65   74          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 119   2     0       11   68   83          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 120   2     0       11   68   84          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 121   2     0       11   73   86          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 122   2     0       11   74   85          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 123   2     0       11   76   77          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 124   2     0       11   76   81          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 125   2     0       11   77   91          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 126   2     0        4   78   88          FALSE             FALSE        4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 127   2     1        4   56   91          FALSE             FALSE        3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 128   2     2       11   29   55          FALSE              TRUE        9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 129   2     2       11   74   91          FALSE              TRUE        9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 130   2     2       11   17   39          FALSE              TRUE        9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 131   2     2        5   26   63          FALSE             FALSE        3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 132   2     2       11   46   54          FALSE              TRUE        9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 133   2     3       11   20   85          FALSE              TRUE        8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 134   2     3        5   60   79          FALSE             FALSE        2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 135   2     4       11   13   86          FALSE              TRUE        7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 136   2     5       11    9   37          FALSE              TRUE        6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 137   2     5       11   10   47          FALSE              TRUE        6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 138   2     5       11    7   22          FALSE              TRUE        6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 139   2     5       11    5   62          FALSE              TRUE        6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 140   2     5        9   38   97          FALSE             FALSE        4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 141   2     7       11   83   87          FALSE              TRUE        4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 142   2     7       11    7   38          FALSE              TRUE        4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 143   2     8       11   54   96          FALSE              TRUE        3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 144   2     9       11   51   73          FALSE              TRUE        2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 145   2     9       11   86   87          FALSE              TRUE        2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 146   2     9       11   33   87          FALSE              TRUE        2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 147   2    10       11    7   71          FALSE              TRUE        1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 148   3     0       11    1   40          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 149   3     0       11    1   80          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 150   3     0       11    2   17          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 151   3     0        8    2   93          FALSE             FALSE        8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 152   3     0       11    2   97          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 153   3     0        7    3   53          FALSE             FALSE        7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 154   3     0        1    3   78          FALSE             FALSE        1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 155   3     0       11    5   74          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 156   3     0       11    6   56          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 157   3     0        9    8   14          FALSE             FALSE        9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 158   3     0       10    8   41          FALSE             FALSE       10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 159   3     0       11    8   71          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 160   3     0       11   11   16          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 161   3     0       11   12   62          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 162   3     0        4   13   22          FALSE             FALSE        4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 163   3     0        4   13   95          FALSE             FALSE        4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 164   3     0       11   15   21          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 165   3     0       11   16   73          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 166   3     0        3   17   88          FALSE             FALSE        3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 167   3     0       11   18   22          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 168   3     0       11   18   23          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 169   3     0        3   18   95          FALSE             FALSE        3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 170   3     0       11   19   28          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 171   3     0       11   22   68          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 172   3     0       11   24   67          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 173   3     0        6   24   85          FALSE             FALSE        6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 174   3     0       11   25   82          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 175   3     0       11   26   27          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 176   3     0        7   26  100          FALSE             FALSE        7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 177   3     0       11   29   84          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 178   3     0       11   32   46          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 179   3     0        6   32   87          FALSE             FALSE        6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 180   3     0       11   33   62          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 181   3     0        3   33   79          FALSE             FALSE        3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 182   3     0       11   35   64          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 183   3     0        4   36   48          FALSE             FALSE        4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 184   3     0       11   37   73          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 185   3     0        8   38   60          FALSE             FALSE        8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 186   3     0       11   39   73          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 187   3     0       11   41   76          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 188   3     0       11   41   78          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 189   3     0       11   42   62          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 190   3     0       11   42   66          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 191   3     0        6   45   53          FALSE             FALSE        6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 192   3     0       11   46   59          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 193   3     0       11   50   95          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 194   3     0        9   55   85          FALSE             FALSE        9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 195   3     0       11   56   70          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 196   3     0        4   60   65          FALSE             FALSE        4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 197   3     0        6   61   65          FALSE             FALSE        6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 198   3     0        3   65   81          FALSE             FALSE        3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 199   3     0        6   70   76          FALSE             FALSE        6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 200   3     0        3   77   80          FALSE             FALSE        3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 201   3     0        6   77   96          FALSE             FALSE        6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 202   3     0       11   80   84          FALSE              TRUE       11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 203   3     0       10   86   93          FALSE             FALSE       10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 204   3     1       11   27   82          FALSE              TRUE       10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 205   3     1       11   53   56          FALSE              TRUE       10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 206   3     1       11   24   89          FALSE              TRUE       10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 207   3     1       11    3   28          FALSE              TRUE       10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 208   3     2       11   21   38          FALSE              TRUE        9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 209   3     2        6   23   95          FALSE             FALSE        4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 210   3     2       11   33   44          FALSE              TRUE        9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 211   3     2       10   66   98          FALSE             FALSE        8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 212   3     3        6   70   93          FALSE             FALSE        3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 213   3     3       11   27   36          FALSE              TRUE        8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 214   3     4       11    2   57          FALSE              TRUE        7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 215   3     4       11    3   96          FALSE              TRUE        7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 216   3     4       11   58   98          FALSE              TRUE        7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 217   3     5        9    4   66          FALSE             FALSE        4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 218   3     5       11   32   77          FALSE              TRUE        6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 219   3     5       11   13   19          FALSE              TRUE        6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 220   3     5        8   58   92          FALSE             FALSE        3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 221   3     6        7   11   69          FALSE             FALSE        1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 222   3     6       11   29   43          FALSE              TRUE        5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 223   3     6       11   13   58          FALSE              TRUE        5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 224   3     7       11   26   99          FALSE              TRUE        4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 225   3     8       11   90   95          FALSE              TRUE        3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 226   3     8       11   43   68          FALSE              TRUE        3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 227   3     8       11   50   58          FALSE              TRUE        3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 228   3     9       11    4   54          FALSE              TRUE        2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 229   3     9       10   30   31          FALSE             FALSE        1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 230   3     9       11    9   61          FALSE              TRUE        2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 231   3    10       11   89   94          FALSE              TRUE        1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 232   3    10       11   51   58          FALSE              TRUE        1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1     1     0        7    1   18          FALSE             FALSE        7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2     1     0        5    1   62          FALSE             FALSE        5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3     1     0        2    2   58          FALSE             FALSE        2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4     1     0        1    2   88          FALSE             FALSE        1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5     1     0        6    3   24          FALSE             FALSE        6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6     1     0       11    3   90          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7     1     0       11    4   98          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8     1     0       11    5   13          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9     1     0       10    7   76          FALSE             FALSE       10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10    1     0        4    8   51          FALSE             FALSE        4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11    1     0        4   10   69          FALSE             FALSE        4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12    1     0        6   10  100          FALSE             FALSE        6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13    1     0       11   11   29          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14    1     0        3   11   66          FALSE             FALSE        3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15    1     0       11   12   67          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16    1     0       11   16   44          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17    1     0       11   17   63          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18    1     0        4   18   48          FALSE             FALSE        4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19    1     0       11   18   90          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20    1     0       11   18   94          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21    1     0       11   20   96          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22    1     0       11   21   63          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23    1     0       11   21   84          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24    1     0       11   22   23          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25    1     0       11   24   32          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 26    1     0       11   27   89          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 27    1     0       11   28   45          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 28    1     0        1   29   68          FALSE             FALSE        1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 29    1     0       11   30   57          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 30    1     0       11   30   73          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 31    1     0       11   32   41          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 32    1     0       11   32   46          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 33    1     0       11   32   53          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 34    1     0       11   32   66          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 35    1     0        9   35   40          FALSE             FALSE        9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 36    1     0       11   35   88          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 37    1     0       11   37   38          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 38    1     0       11   37   62          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 39    1     0       10   37   93          FALSE             FALSE       10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 40    1     0       11   38   41          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 41    1     0       11   38   49          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 42    1     0        2   38   62          FALSE             FALSE        2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 43    1     0       11   41   99          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 44    1     0        6   42   78          FALSE             FALSE        6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 45    1     0       11   43   93          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 46    1     0       11   44   69          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 47    1     0       11   49   88          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 48    1     0       11   52   78          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 49    1     0       11   57   83          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 50    1     0       10   68   97          FALSE             FALSE       10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 51    1     0        7   74   83          FALSE             FALSE        7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 52    1     0       11   74  100          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 53    1     0        1   89   93          FALSE             FALSE        1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 54    1     0       11   90   91          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 55    1     0        2   91   99          FALSE             FALSE        2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 56    1     0        5   93   97          FALSE             FALSE        5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 57    1     1        6   41   93          FALSE             FALSE        5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 58    1     1       10    9   86          FALSE             FALSE        9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 59    1     2       11   38   99          FALSE              TRUE        9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 60    1     2       11   39   99          FALSE              TRUE        9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 61    1     2       10   29   36          FALSE             FALSE        8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 62    1     3       11   38   94          FALSE              TRUE        8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 63    1     4       11   21   82          FALSE              TRUE        7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 64    1     4       11   75   90          FALSE              TRUE        7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 65    1     4       11   42   89          FALSE              TRUE        7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 66    1     4       11   12   28          FALSE              TRUE        7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 67    1     5        8   60   73          FALSE             FALSE        3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 68    1     6       11   12   83          FALSE              TRUE        5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 69    1     6       11   26   81          FALSE              TRUE        5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 70    1     7        8   58   62          FALSE             FALSE        1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 71    1     7       11    1   61          FALSE              TRUE        4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 72    1     7       11   32   69          FALSE              TRUE        4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 73    1     7       11   57   97          FALSE              TRUE        4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 74    1     7       11   54   75          FALSE              TRUE        4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 75    1     8       11   74   96          FALSE              TRUE        3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 76    1     8       11   33   97          FALSE              TRUE        3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 77    1     8       11   10   21          FALSE              TRUE        3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 78    1     8       11    6   79          FALSE              TRUE        3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 79    1     9       11   88   94          FALSE              TRUE        2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 80    1    10       11    5   92          FALSE              TRUE        1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 81    2     0       11    1   10          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 82    2     0        2    2   97          FALSE             FALSE        2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 83    2     0        5    4   18          FALSE             FALSE        5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 84    2     0       11    4   41          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 85    2     0        2    5   36          FALSE             FALSE        2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 86    2     0       11    5   45          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 87    2     0        3    6   13          FALSE             FALSE        3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 88    2     0       11    6   63          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 89    2     0        3    7   45          FALSE             FALSE        3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 90    2     0        4    8   29          FALSE             FALSE        4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 91    2     0        2    9   38          FALSE             FALSE        2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 92    2     0       11   11   75          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 93    2     0        3   13   41          FALSE             FALSE        3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 94    2     0       11   16   88          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 95    2     0       11   16   91          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 96    2     0       11   22   55          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 97    2     0       11   23   49          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 98    2     0        2   25   51          FALSE             FALSE        2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 99    2     0        8   27   57          FALSE             FALSE        8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 100   2     0       11   28   77          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 101   2     0        6   32   57          FALSE             FALSE        6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 102   2     0        7   34   52          FALSE             FALSE        7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 103   2     0       11   36   55          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 104   2     0       11   37   87          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 105   2     0       11   38   52          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 106   2     0       11   39   87          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 107   2     0       11   44   49          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 108   2     0       11   47   93          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 109   2     0        3   51   99          FALSE             FALSE        3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 110   2     0       11   52   69          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 111   2     0       11   54   97          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 112   2     0       11   63   96          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 113   2     0       11   64   75          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 114   2     0        2   67   68          FALSE             FALSE        2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 115   2     0       11   73   89          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 116   2     0       11   73  100          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 117   2     0       11   74   91          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 118   2     0        6   76   77          FALSE             FALSE        6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 119   2     0        3   79   99          FALSE             FALSE        3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 120   2     0       10   81  100          FALSE             FALSE       10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 121   2     0       11   83  100          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 122   2     0       11   87   98          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 123   2     0       11   92   96          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 124   2     0        3   92  100          FALSE             FALSE        3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 125   2     0       11   97   98          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 126   2     1       11    1  100          FALSE              TRUE       10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 127   2     1       11   62   93          FALSE              TRUE       10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 128   2     1       11   58   62          FALSE              TRUE       10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 129   2     2       10   61   97          FALSE             FALSE        8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 130   2     2        7   52   65          FALSE             FALSE        5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 131   2     2       11   48   95          FALSE              TRUE        9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 132   2     3       11    8   53          FALSE              TRUE        8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 133   2     3       11   63   99          FALSE              TRUE        8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 134   2     3        7   54   61          FALSE             FALSE        4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 135   2     3        5    1   31          FALSE             FALSE        2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 136   2     4       11   15   17          FALSE              TRUE        7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 137   2     4        9   57   99          FALSE             FALSE        5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 138   2     5       11   24   53          FALSE              TRUE        6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 139   2     5       11   19   72          FALSE              TRUE        6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 140   2     6        7   24   85          FALSE             FALSE        1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 141   2     6       11   65   97          FALSE              TRUE        5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 142   2     6       11   44   65          FALSE              TRUE        5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 143   2     6       11    3    5          FALSE              TRUE        5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 144   2     7       11   26   66          FALSE              TRUE        4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 145   2     8       11   16   83          FALSE              TRUE        3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 146   2     8       11   22   73          FALSE              TRUE        3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 147   2     8       11   14   79          FALSE              TRUE        3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 148   2     9       10   27   50          FALSE             FALSE        1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 149   2    10       11   55   71          FALSE              TRUE        1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 150   3     0        8    4   12          FALSE             FALSE        8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 151   3     0       10    5   51          FALSE             FALSE       10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 152   3     0       11    6   49          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 153   3     0        8    7   94          FALSE             FALSE        8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 154   3     0       11    8   18          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 155   3     0        2    8   39          FALSE             FALSE        2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 156   3     0       11    9   86          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 157   3     0       11   10   71          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 158   3     0        8   10   78          FALSE             FALSE        8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 159   3     0        5   11   55          FALSE             FALSE        5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 160   3     0       11   11   88          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 161   3     0        1   13   66          FALSE             FALSE        1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 162   3     0       11   14   41          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 163   3     0       11   15   38          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 164   3     0        8   16   99          FALSE             FALSE        8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 165   3     0        8   17   80          FALSE             FALSE        8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 166   3     0       11   18   79          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 167   3     0       11   20   32          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 168   3     0       10   21   92          FALSE             FALSE       10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 169   3     0        1   22   27          FALSE             FALSE        1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 170   3     0        9   22   37          FALSE             FALSE        9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 171   3     0       11   23   33          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 172   3     0        1   24   43          FALSE             FALSE        1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 173   3     0        5   24   56          FALSE             FALSE        5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 174   3     0       11   25   42          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 175   3     0       11   25   78          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 176   3     0       11   27   59          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 177   3     0       11   27   67          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 178   3     0       11   32   73          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 179   3     0       11   33   69          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 180   3     0        7   34   85          FALSE             FALSE        7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 181   3     0       11   36   56          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 182   3     0        1   38   39          FALSE             FALSE        1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 183   3     0        5   44   54          FALSE             FALSE        5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 184   3     0        2   45   48          FALSE             FALSE        2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 185   3     0       11   45   69          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 186   3     0       10   47   74          FALSE             FALSE       10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 187   3     0       11   49   58          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 188   3     0       11   49   88          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 189   3     0       11   50   81          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 190   3     0       11   53   80          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 191   3     0        8   57   64          FALSE             FALSE        8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 192   3     0       11   59   75          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 193   3     0       11   63   83          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 194   3     0        4   65   68          FALSE             FALSE        4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 195   3     0        6   69   75          FALSE             FALSE        6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 196   3     0       11   70   88          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 197   3     0       11   76   86          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 198   3     0       11   83   95          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 199   3     0       11   90   99          FALSE              TRUE       11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 200   3     1       10    3   16          FALSE             FALSE        9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 201   3     2       11   59   67          FALSE              TRUE        9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 202   3     2        7   38   97          FALSE             FALSE        5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 203   3     2       11   39   86          FALSE              TRUE        9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 204   3     2       11   70   91          FALSE              TRUE        9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 205   3     4       11   48   71          FALSE              TRUE        7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 206   3     4        7    7   75          FALSE             FALSE        3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 207   3     5       11   27   43          FALSE              TRUE        6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 208   3     5       11    5   55          FALSE              TRUE        6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 209   3     5       11    6   44          FALSE              TRUE        6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 210   3     5       11    2   16          FALSE              TRUE        6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 211   3     5       11    6   16          FALSE              TRUE        6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 212   3     6       11   23   91          FALSE              TRUE        5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 213   3     6       11   26   41          FALSE              TRUE        5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 214   3     6       11   45   81          FALSE              TRUE        5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 215   3     7        9    6   77          FALSE             FALSE        2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 216   3     7        9   69   87          FALSE             FALSE        2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 217   3     7       11   39   65          FALSE              TRUE        4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 218   3     7       11    9   27          FALSE              TRUE        4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 219   3     8       11   14   18          FALSE              TRUE        3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 220   3     8       11    2   25          FALSE              TRUE        3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 221   3    10       11   23   49          FALSE              TRUE        1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 222   3    10       11   44   87          FALSE              TRUE        1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     edge.id</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1         1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2         2</span>
@@ -573,91 +563,81 @@ all simulations will be output.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 145      65</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 146      66</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 147      67</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 148       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 149       2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 150       3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 151       4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 152       5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 153       6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 154       7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 155       8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 156       9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 157      10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 158      11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 159      12</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 160      13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 161      14</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 162      15</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 163      16</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 164      17</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 165      18</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 166      19</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 167      20</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 168      21</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 169      22</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 170      23</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 171      24</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 172      25</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 173      26</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 174      27</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 175      28</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 176      29</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 177      30</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 178      31</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 179      32</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 180      33</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 181      34</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 182      35</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 183      36</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 184      37</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 185      38</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 186      39</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 187      40</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 188      41</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 189      42</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 190      43</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 191      44</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 192      45</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 193      46</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 194      47</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 195      48</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 196      49</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 197      50</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 198      51</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 199      52</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 200      53</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 201      54</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 202      55</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 203      56</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 204      57</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 205      58</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 206      59</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 207      60</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 208      61</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 209      62</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 210      63</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 211      64</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 212      65</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 213      66</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 214      67</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 215      68</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 216      69</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 217      70</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 218      71</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 219      72</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 220      73</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 221      74</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 222      75</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 223      76</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 224      77</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 225      78</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 226      79</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 227      80</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 228      81</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 229      82</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 230      83</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 231      84</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 232      85</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 148      68</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 149      69</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 150       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 151       2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 152       3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 153       4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 154       5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 155       6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 156       7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 157       8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 158       9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 159      10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 160      11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 161      12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 162      13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 163      14</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 164      15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 165      16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 166      17</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 167      18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 168      19</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 169      20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 170      21</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 171      22</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 172      23</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 173      24</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 174      25</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 175      26</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 176      27</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 177      28</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 178      29</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 179      30</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 180      31</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 181      32</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 182      33</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 183      34</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 184      35</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 185      36</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 186      37</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 187      38</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 188      39</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 189      40</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 190      41</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 191      42</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 192      43</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 193      44</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 194      45</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 195      46</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 196      47</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 197      48</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 198      49</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 199      50</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 200      51</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 201      52</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 202      53</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 203      54</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 204      55</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 205      56</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 206      57</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 207      58</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 208      59</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 209      60</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 210      61</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 211      62</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 212      63</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 213      64</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 214      65</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 215      66</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 216      67</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 217      68</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 218      69</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 219      70</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 220      71</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 221      72</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 222      73</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
@@ -670,7 +650,7 @@ all simulations will be output.</p></dd>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer></div>

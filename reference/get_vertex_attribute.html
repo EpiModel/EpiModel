@@ -83,19 +83,19 @@ attributes on an initialized empty network object (see
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">nw</span> <span class="op">&lt;-</span> <span class="fu"><a href="network_initialize.html">network_initialize</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">nw</span> <span class="op">&lt;-</span> <span class="fu"><a href="set_vertex_attribute.html">set_vertex_attribute</a></span><span class="op">(</span><span class="va">nw</span>, <span class="st">"age"</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">15</span>, <span class="fl">65</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">get_vertex_attribute</span><span class="op">(</span><span class="va">nw</span>, <span class="st">"age"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [1] 43.47784 59.21381 35.39877 19.44689 45.81683 41.39566 47.78289 32.67148</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [9] 55.99195 53.90063 49.36378 47.04044 36.00459 55.75245 42.46837 50.41658</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [17] 60.29835 58.51409 25.63327 16.26506 26.64246 57.27511 26.72104 49.35028</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [25] 21.38467 16.29437 35.25605 59.77655 30.80213 62.48113 19.90708 34.30642</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [33] 15.73975 20.34742 20.32534 49.05127 20.99210 27.26253 18.32362 57.01248</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [41] 20.14331 48.77607 28.43391 54.79549 48.95817 28.51167 39.87412 43.93837</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [49] 32.34548 23.59062 46.59179 30.91689 17.24170 47.09865 21.43769 59.76126</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [57] 60.23974 60.88306 57.70437 35.02258 57.97019 56.94412 54.93326 38.01736</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [65] 31.68261 30.63796 15.19070 63.49352 44.16824 39.52825 27.89115 43.93854</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [73] 23.61228 33.08111 34.18572 28.95392 62.07336 30.18576 42.23325 35.55849</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [81] 37.83716 62.77983 41.00452 37.75657 24.16395 18.76982 42.94183 48.99380</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [89] 35.24415 20.67075 52.87634 27.56321 41.22902 35.56261 56.83255 53.67443</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [97] 49.83690 29.44250 49.49479 44.52212</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [1] 43.18446 52.02268 23.08326 29.82809 23.53834 27.96412 47.06339 34.05321</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [9] 15.36450 25.84393 30.15816 43.67931 54.72058 32.81972 41.62817 32.16732</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [17] 63.93147 45.06544 43.45082 16.64340 48.60093 61.49712 30.69253 46.86644</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [25] 37.92518 41.87167 46.96175 56.69525 34.72267 31.99487 48.67462 57.67431</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [33] 38.58060 38.91728 35.65662 21.80262 58.11414 53.04670 19.25438 60.82528</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [41] 30.41047 24.19338 40.87094 29.60332 42.06039 64.00766 24.36419 42.57918</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [49] 41.74313 64.25065 42.62640 58.70364 64.15349 16.27865 35.78527 19.73172</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [57] 38.17145 18.22314 49.50566 61.96927 16.56265 53.55983 51.09118 50.13094</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [65] 24.46165 19.93328 22.31336 15.40808 64.01666 45.86197 42.48395 18.86733</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [73] 29.25935 33.04471 45.45428 51.72479 49.60836 48.49588 43.60618 41.03531</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [81] 26.13409 43.42104 15.96463 56.64862 29.63464 63.94389 34.67233 62.39618</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [89] 35.27721 28.80682 30.58655 49.66932 54.86645 61.87829 56.21041 44.51593</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [97] 33.14902 43.93295 28.94766 15.70056</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
@@ -108,7 +108,7 @@ attributes on an initialized empty network object (see
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer></div>
