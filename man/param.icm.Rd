@@ -111,9 +111,7 @@ models simulated with \code{icm}.
 \code{param.icm} sets the epidemic parameters for the stochastic individual
 contact models simulated with the \code{\link{icm}} function. Models
 may use the base types, for which these parameters are used, or new process
-modules which may use these parameters (but not necessarily). A detailed
-description of ICM parameterization for base models is found in the
-\href{http://www.epimodel.org/tut.html}{Basic ICMs} tutorial.
+modules which may use these parameters (but not necessarily).
 
 For base models, the model specification will be chosen as a result of
 the model parameters entered here and the control settings in
@@ -133,8 +131,7 @@ mixing, the product of one group size and act rate must equal the product of
 the other group size and act rate: \eqn{N_1 \alpha_1 = N_2 \alpha_2}, where
 \eqn{N_i} is the group size and \eqn{\alpha_i} the group-specific act rate
 at time \eqn{t}. The \code{balance} parameter here specifies which group's
-act rate should control the others with respect to balancing. See the
-\href{http://www.epimodel.org/tut.html}{Basic ICMs} tutorial.
+act rate should control the others with respect to balancing.
 }
 
 \section{New Modules}{

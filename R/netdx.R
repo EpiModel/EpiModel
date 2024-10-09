@@ -1,71 +1,71 @@
 #' @title Dynamic Network Model Diagnostics
 #'
 #' @description Runs dynamic diagnostics on an ERGM/STERGM estimated with
-#'              \code{\link{netest}}.
+#'              [`netest`].
 #'
-#' @param x An \code{EpiModel} object of class \code{netest}.
+#' @param x An `EpiModel` object of class `netest`.
 #' @param nsims Number of simulations to run.
-#' @param dynamic If \code{TRUE}, runs dynamic diagnostics. If \code{FALSE} and
-#'        the \code{netest} object was fit with the Edges Dissolution
+#' @param dynamic If `TRUE`, runs dynamic diagnostics. If `FALSE` and
+#'        the `netest` object was fit with the Edges Dissolution
 #'        approximation method, simulates from the static ERGM fit.
 #' @param nsteps Number of time steps per simulation (dynamic simulations only).
 #' @param nwstats.formula A right-hand sided ERGM formula with the network
 #'        statistics of interest. The default is the formation formula of the
-#'        network model contained in \code{x}.
-#' @param set.control.ergm Control arguments passed to \code{ergm}'s
-#'        \code{simulate_formula.network} (see details).
-#' @param set.control.tergm Control arguments passed to \code{tergm}'s
-#'        \code{simulate_formula.network} (see details).
-#' @param sequential For static diagnostics (\code{dynamic=FALSE}): if
-#'        \code{FALSE}, each of the \code{nsims} simulated Markov chains begins
-#'        at the initial network; if \code{TRUE}, the end of one simulation is
+#'        network model contained in `x`.
+#' @param set.control.ergm Control arguments passed to `ergm`'s
+#'        `simulate_formula.network` (see details).
+#' @param set.control.tergm Control arguments passed to `tergm`'s
+#'        `simulate_formula.network` (see details).
+#' @param sequential For static diagnostics (`dynamic=FALSE`): if
+#'        `FALSE`, each of the `nsims` simulated Markov chains begins
+#'        at the initial network; if `TRUE`, the end of one simulation is
 #'        used as the start of the next.
-#' @param keep.tedgelist If \code{TRUE}, keep the timed edgelist generated from
+#' @param keep.tedgelist If `TRUE`, keep the timed edgelist generated from
 #'        the dynamic simulations. Returned in the form of a list of matrices,
-#'        with one entry per simulation. Accessible at \code{$edgelist}.
-#' @param keep.tnetwork If \code{TRUE}, keep the full networkDynamic objects
+#'        with one entry per simulation. Accessible at `$edgelist`.
+#' @param keep.tnetwork If `TRUE`, keep the full networkDynamic objects
 #'        from the dynamic simulations. Returned in the form of a list of nD
-#'        objects, with one entry per simulation. Accessible at \code{$network}.
-#' @param verbose If \code{TRUE}, print progress to the console.
+#'        objects, with one entry per simulation. Accessible at `$network`.
+#' @param verbose If `TRUE`, print progress to the console.
 #' @param ncores Number of processor cores to run multiple simulations
-#'        on, using the \code{foreach} and \code{doParallel} implementations.
-#' @param skip.dissolution If \code{TRUE}, skip over the calculations of
-#'        duration and dissolution stats in \code{netdx}.
+#'        on, using the `foreach` and `doParallel` implementations.
+#' @param skip.dissolution If `TRUE`, skip over the calculations of
+#'        duration and dissolution stats in `netdx`.
 #'
 #' @details
-#' The \code{netdx} function handles dynamic network diagnostics for network
-#' models fit with the \code{\link{netest}} function. Given the fitted model,
-#' \code{netdx} simulates a specified number of dynamic networks for a specified
+#' The `netdx` function handles dynamic network diagnostics for network
+#' models fit with the [`netest`] function. Given the fitted model,
+#' `netdx` simulates a specified number of dynamic networks for a specified
 #' number of time steps per simulation. The network statistics in
-#' \code{nwstats.formula} are saved for each time step. Summary statistics for
+#' `nwstats.formula` are saved for each time step. Summary statistics for
 #' the formation model terms, as well as dissolution model and relational
 #' duration statistics, are then calculated and can be accessed when printing or
-#' plotting the \code{netdx} object.  See \code{\link{print.netdx}} and
-#' \code{\link{plot.netdx}} for details on printing and plotting.
+#' plotting the `netdx` object. See [`print.netdx`] and [`plot.netdx`]
+#' for details on printing and plotting.
 #'
 #' @section Control Arguments:
-#' Models fit with the full STERGM method in \code{netest} (setting the
-#' \code{edapprox} argument to \code{FALSE}) require only a call to
-#' \code{tergm}'s \code{simulate_formula.network}. Control parameters for those
-#' simulations may be set using \code{set.control.tergm} in \code{netdx}.
-#' The parameters should be input through the \code{control.simulate.formula.tergm}
+#' Models fit with the full STERGM method in `netest` (setting the
+#' `edapprox` argument to `FALSE`) require only a call to
+#' `tergm`'s `simulate_formula.network`. Control parameters for those
+#' simulations may be set using `set.control.tergm` in `netdx`.
+#' The parameters should be input through the `control.simulate.formula.tergm`
 #' function, with the available parameters listed in the
-#' [`tergm::control.simulate.formula.tergm`] help page in the \code{tergm}
+#' [`tergm::control.simulate.formula.tergm`] help page in the `tergm`
 #' package.
 #'
 #' Models fit with the ERGM method with the edges dissolution approximation
-#' (setting \code{edapprox} to \code{TRUE}) require a call first to
-#' \code{ergm}'s \code{simulate_formula.network} for simulating an initial
-#' network, and second to \code{tergm}'s \code{simulate_formula.network} for
+#' (setting `edapprox` to `TRUE`) require a call first to
+#' `ergm`'s `simulate_formula.network` for simulating an initial
+#' network, and second to `tergm`'s `simulate_formula.network` for
 #' simulating that static network forward through time. Control parameters may
-#' be set for both processes in \code{netdx}. For the first, the parameters
-#' should be input through the \code{control.simulate.formula()} function, with
+#' be set for both processes in `netdx`. For the first, the parameters
+#' should be input through the `control.simulate.formula()` function, with
 #' the available parameters listed in the
-#' \code{\link[ergm:control.simulate.formula]{control.simulate.formula}} help
-#' page in the \code{ergm} package. For the second, parameters should be input
-#' through the \code{control.simulate.formula.tergm()} function, with the
-#' available parameters listed in the [`control.simulate.formula.tergm`]
-#' help page in the \code{tergm} package. An example is shown below.
+#' [`ergm::control.simulate.formula`] help
+#' page in the `ergm` package. For the second, parameters should be input
+#' through the `control.simulate.formula.tergm()` function, with the
+#' available parameters listed in the [`tergm::control.simulate.formula.tergm`]
+#' help page in the `tergm` package. An example is shown below.
 #'
 #' @return
 #' A list of class `netdx`.

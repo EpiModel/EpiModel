@@ -24,8 +24,7 @@ compartments.
 \item \strong{stats:} a list containing two sublists, \code{nwstats} for any
 network statistics saved in the simulation, and \code{transmat} for
 the transmission matrix saved in the simulation. See
-\code{\link{control.net}} and the
-\href{http://www.epimodel.org/tut.html}{tutorials} for further
+\code{\link{control.net}} for further
 details.
 \item \strong{network:} a list of \code{networkDynamic} objects,
 one for each model simulation.

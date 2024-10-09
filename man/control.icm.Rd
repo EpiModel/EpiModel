@@ -75,10 +75,8 @@ simulated with \code{\link{icm}}.
 \code{control.icm} sets the required control settings for any stochastic
 individual contact model solved with the \code{\link{icm}} function. Controls
 are required for both base model types and when passing original process
-modules. For an overview of control settings for base ICM class models,
-consult the \href{http://www.epimodel.org/tut.html}{Basic ICMs} tutorial. For
-all base models, the \code{type} argument is a necessary parameter and it has
-no default.
+modules. For all base models, the \code{type} argument is a necessary parameter
+and it has no default.
 }
 \section{New Modules}{
 

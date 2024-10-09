@@ -44,7 +44,7 @@ The initial conditions for a model solved with \code{\link{netsim}} should be
 input into the \code{init.net} function. This function handles initial
 conditions for both base models and new modules. For an overview of
 specifying initial conditions across a variety of base network models,
-consult the \href{http://www.epimodel.org/tut.html}{Basic Network Models}
+consult the \href{https://epimodel.github.io/sismid/}{Network Modeling for Epidemics}
 tutorials.
 }
 \examples{

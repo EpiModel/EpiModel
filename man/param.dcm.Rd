@@ -112,8 +112,6 @@ models simulated with \code{dcm}.
 models solved with the \code{\link{dcm}} function. The models may use the
 base types, for which these parameters are used, or original model
 specifications for which these parameters may be used (but not necessarily).
-A detailed description of DCM parameterization for base models is found
-in the \href{http://www.epimodel.org/tut.html}{Basic DCMs} tutorial.
 
 For base models, the model specification will be selected as a function
 of the model parameters entered here and the control settings in
@@ -133,29 +131,24 @@ mixing, the product of one group size and act rate must equal the product of
 the other group size and act rate: \eqn{N_1 \alpha_1 = N_2 \alpha_2}, where
 \eqn{N_i} is the group size and \eqn{\alpha_i} the group-specific act rate
 at time \eqn{t}. The \code{balance} parameter here specifies which group's
-act rate should control the others with respect to balancing. See the
-\href{http://www.epimodel.org/tut.html}{Basic DCMs} tutorial for further
-details.
+act rate should control the others with respect to balancing.
 }
 
 \section{Sensitivity Analyses}{
 
 \code{dcm} has been designed to easily run DCM sensitivity analyses, where a
 series of models varying one or more of the model parameters is run. This is
-possible by setting any parameter as a vector of length greater than one. See
-the \href{http://www.epimodel.org/tut.html}{Basic DCMs} tutorial.
+possible by setting any parameter as a vector of length greater than one.
 }
 
 \section{New Model Types}{
 
-To build original model specifications outside of the base models, start
-by consulting the \href{http://www.epimodel.org/tut.html}{New DCMs with
-EpiModel} tutorial. Briefly, an original model may use either the existing
-model parameters named here, an original set of parameters, or a combination
-of both. The \code{...} argument allows the user to pass an arbitrary set of
-new model parameters into \code{param.dcm}. Whereas there are strict checks
-for base models that the model parameters are valid, parameter validity is
-the user's responsibility with these original models.
+An original model may use either the existing model parameters named here,
+an original set of parameters, or a combination of both. The \code{...}
+argument allows the user to pass an arbitrary set of new model parameters into
+\code{param.dcm}. Whereas there are strict checks for base models that the
+model parameters are valid, parameter validity is the user's responsibility
+with these original models.
 }
 
 \seealso{

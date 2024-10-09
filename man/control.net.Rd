@@ -203,8 +203,8 @@ Sets the controls for stochastic network models simulated with
 \code{control.net} sets the required control settings for any network model solved with the \code{\link{netsim}}
 function. Controls are required for both base model types and when passing original process
 modules. For an overview of control settings for base models, consult the
-\href{http://www.epimodel.org/tut.html}{Basic Network Models} tutorials. For all base models, the
-\code{type} argument is a necessary parameter and it has no default.
+\href{https://epimodel.github.io/sismid/}{Network Modeling for Epidemics} course materials For
+all base models, the \code{type} argument is a necessary parameter and it has no default.
 }
 \section{The attr.rules Argument}{
 
@@ -263,8 +263,10 @@ function.
 
 For original models, one may substitute replacement module functions for any of the default
 functions. New modules may be added to the workflow at each time step by passing a module function
-via the \code{...} argument. Consult the \href{http://www.epimodel.org/tut.html}{New Network Models}
-tutorials. One may remove existing modules, such as \code{arrivals.FUN}, from the workflow by setting
+via the \code{...} argument. Consult the
+\href{https://epimodel.github.io/sismid/9_extending/mod9-Intro.html}{Extending EpiModel}
+section of the Network Modeling for Epidemics course materials.
+One may remove existing modules, such as \code{arrivals.FUN}, from the workflow by setting
 the parameter value for that argument to \code{NULL}.
 }
 
