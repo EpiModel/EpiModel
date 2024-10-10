@@ -10,7 +10,7 @@ test_that("ergm and ergm.ego produce the same results in EpiModel", {
       nw %v% "race" <- rep(1:2, length.out = 50)
       nw <- san(nw ~ edges, target.stats = c(50))
 
-      nwe <- as.egor(nw)
+      nwe <- ergm.ego:::as.egor.network(nw)
 
       nw[,] <- FALSE
 
@@ -18,9 +18,9 @@ test_that("ergm and ergm.ego produce the same results in EpiModel", {
       if (ppopnw == TRUE) {
         netest_ergm.ego <- netest(nwe, formation = ~edges + degree(1) + nodemix("race"),
                                   coef.diss = dissolution_coefs(~offset(edges), 10, 0),
-                                  set.control.ergm.ego = control.ergm.ego(ppopsize = nw))
+                                  set.control.ergm.ego = ergm.ego::control.ergm.ego(ppopsize = nw))
       } else {
-        ## assumes node order is preserved in nw -> as.egor(nw) -> pseudopopulation in ergm.ego
+        ## assumes node order is preserved in nw -> ergm.ego:::as.egor.network(nw) -> pseudopopulation in ergm.ego
         netest_ergm.ego <- netest(nwe, formation = ~edges + degree(1) + nodemix("race"),
                                   coef.diss = dissolution_coefs(~offset(edges), 10, 0))
       }

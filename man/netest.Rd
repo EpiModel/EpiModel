@@ -14,7 +14,7 @@ netest(
   edapprox = TRUE,
   set.control.ergm = control.ergm(),
   set.control.tergm = control.tergm(),
-  set.control.ergm.ego = control.ergm.ego(),
+  set.control.ergm.ego = NULL,
   verbose = FALSE,
   nested.edapprox = TRUE,
   ...
