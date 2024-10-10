@@ -80,13 +80,12 @@ indicating an <code>ergm.ego</code> fit.</p></dd>
 
 <dt id="arg-formation">formation<a class="anchor" aria-label="anchor" href="#arg-formation"></a></dt>
 <dd><p>Right-hand sided STERGM formation formula in the form
-<code>~edges + ...</code>, where <code>...</code> are additional network
-statistics.</p></dd>
+<code>~edges + ...</code>, where <code>...</code> are additional network statistics.</p></dd>
 
 
 <dt id="arg-target-stats">target.stats<a class="anchor" aria-label="anchor" href="#arg-target-stats"></a></dt>
 <dd><p>Vector of target statistics for the formation model, with
-one number for each network statistic in the model.  Ignored if
+one number for each network statistic in the model. Ignored if
 fitting via <code>ergm.ego</code>.</p></dd>
 
 
@@ -110,18 +109,15 @@ formula.</p></dd>
 <dd><p>If <code>TRUE</code>, use the indirect edges dissolution
 approximation  method for the dynamic model fit, otherwise use the
 more time-intensive full STERGM estimation (see details).  For
-<code>nw</code> of class <code>egor</code>, only <code>edapprox = TRUE</code> is
-supported.</p></dd>
+<code>nw</code> of class <code>egor</code>, only <code>edapprox = TRUE</code> is supported.</p></dd>
 
 
 <dt id="arg-set-control-ergm">set.control.ergm<a class="anchor" aria-label="anchor" href="#arg-set-control-ergm"></a></dt>
-<dd><p>Control arguments passed to <code>ergm</code> (see
-details).</p></dd>
+<dd><p>Control arguments passed to <code>ergm</code> (see details).</p></dd>
 
 
 <dt id="arg-set-control-tergm">set.control.tergm<a class="anchor" aria-label="anchor" href="#arg-set-control-tergm"></a></dt>
-<dd><p>Control arguments passed to <code>tergm</code>
-(see details).</p></dd>
+<dd><p>Control arguments passed to <code>tergm</code> (see details).</p></dd>
 
 
 <dt id="arg-set-control-ergm-ego">set.control.ergm.ego<a class="anchor" aria-label="anchor" href="#arg-set-control-ergm-ego"></a></dt>
@@ -148,16 +144,16 @@ model is an initial segment of the formation model (see details).</p></dd>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p><code>netest</code> is a wrapper function for the <code>ergm</code>, <code>ergm.ego</code>,
-and <code>tergm</code> functions that estimate static and dynamic network models.
-Network model estimation is the first step in simulating a stochastic
-network epidemic model in <code>EpiModel</code>. The output from <code>netest</code> is
-a necessary input for running the epidemic simulations in
-<code><a href="netsim.html">netsim</a></code>. With a fitted network model, one should always first
-proceed to model diagnostics, available through the <code><a href="netdx.html">netdx</a></code>
+    <p><code>netest</code> is a wrapper function for the <code>ergm</code>, <code>ergm.ego</code>, and <code>tergm</code>
+functions that estimate static and dynamic network models. Network model
+estimation is the first step in simulating a stochastic network epidemic model
+in <code>EpiModel</code>. The output from <code>netest</code> is a necessary input for running the
+epidemic simulations in <code><a href="netsim.html">netsim</a></code>. With a fitted network model, one should
+always first proceed to model diagnostics, available through the <code><a href="netdx.html">netdx</a></code>
 function, to check model fit. A detailed description of fitting these
 models, along with examples, may be found in the
-<a href="http://www.epimodel.org/tut.html" class="external-link">Basic Network Models</a> tutorials.</p>
+<a href="https://epimodel.github.io/sismid/" class="external-link">Network Modeling for Epidemics</a>
+tutorials.</p>
     </div>
     <div class="section level2">
     <h2 id="edges-dissolution-approximation">Edges Dissolution Approximation<a class="anchor" aria-label="anchor" href="#edges-dissolution-approximation"></a></h2>
@@ -202,29 +198,28 @@ model coefficients (value = <code>TRUE</code>).</p>
     <h2 id="control-arguments">Control Arguments<a class="anchor" aria-label="anchor" href="#control-arguments"></a></h2>
 
 
-<p>The <code>ergm</code>, <code>ergm.ego</code>, and <code>tergm</code> functions allow control
-settings for the model fitting process. When fitting a STERGM directly (setting
+<p>The <code>ergm</code>, <code>ergm.ego</code>, and <code>tergm</code> functions allow control settings for the
+model fitting process. When fitting a STERGM directly (setting
 <code>edapprox</code> to <code>FALSE</code>), control parameters may be passed to the
-<code>tergm</code> function with the <code>set.control.tergm</code> argument in
-<code>netest</code>. The controls should be input through the
-<code><a href="https://rdrr.io/pkg/tergm/man/control.tergm.html" class="external-link">control.tergm()</a></code> function, with the available parameters listed in the
-<code><a href="https://rdrr.io/pkg/tergm/man/control.tergm.html" class="external-link">control.tergm</a></code> help page in the <code>tergm</code> package.</p>
-<p>When fitting a STERGM indirectly (setting <code>edapprox</code> to <code>TRUE</code>),
-control settings may be passed to the <code>ergm</code> function using
-<code>set.control.ergm</code>, or to the <code>ergm.ego</code> function using
-<code>set.control.ergm.ego</code>.  The controls should be input through the
-<code>control.ergm()</code> and <code>control.ergm.ego()</code> functions, respectively,
-with the available parameters listed in the
-<code><a href="https://rdrr.io/pkg/ergm/man/control.ergm.html" class="external-link">control.ergm</a></code> help page in the <code>ergm</code>
-package and the <code><a href="https://rdrr.io/pkg/ergm.ego/man/control.ergm.ego.html" class="external-link">control.ergm.ego</a></code>
-help page in the <code>ergm.ego</code> package. An example is below.</p>
+<code>tergm</code> function with the <code>set.control.tergm</code> argument in <code>netest</code>.
+The controls should be input through the <code><a href="https://rdrr.io/pkg/tergm/man/control.tergm.html" class="external-link">control.tergm()</a></code> function,
+with the available parameters listed in the <code><a href="https://rdrr.io/pkg/tergm/man/control.tergm.html" class="external-link">tergm::control.tergm</a></code> help
+page in the <code>tergm</code> package.</p>
+<p>When fitting a STERGM indirectly (setting <code>edapprox</code> to <code>TRUE</code>), control
+settings may be passed to the <code>ergm</code> function using <code>set.control.ergm</code>,
+or to the <code>ergm.ego</code> function using <code>set.control.ergm.ego</code>. The controls
+should be input through the <code>control.ergm()</code> and <code>control.ergm.ego()</code>
+functions, respectively, with the available parameters listed in the
+<code><a href="https://rdrr.io/pkg/ergm/man/control.ergm.html" class="external-link">ergm::control.ergm</a></code> help page in the <code>ergm</code> package and the
+<code><a href="https://rdrr.io/pkg/ergm.ego/man/control.ergm.ego.html" class="external-link">ergm.ego::control.ergm.ego</a></code> help page in the <code>ergm.ego</code>
+package. An example is below.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
-    <p>Krivitsky PN, Handcock MS. "A separable model for dynamic networks." JRSS(B).
-2014; 76.1:29-46.</p>
-<p>Carnegie NB, Krivitsky PN, Hunter DR, Goodreau SM. An approximation method
-for improving dynamic network model fitting. Journal of Computational and
+    <p>Krivitsky PN, Handcock MS. "A Separable Model for Dynamic Networks." JRSS(B).
+2014; 76.1: 29-46.</p>
+<p>Carnegie NB, Krivitsky PN, Hunter DR, Goodreau SM. An Approximation Method
+for Improving Dynamic Network Model Fitting. Journal of Computational and
 Graphical Statistics. 2014; 24(2): 502-519.</p>
 <p>Jenness SM, Goodreau SM and Morris M. EpiModel: An R Package for Mathematical
 Modeling of Infectious Disease over Networks. Journal of Statistical
@@ -232,9 +227,9 @@ Software. 2018; 84(8): 1-47.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p>Use <code><a href="netdx.html">netdx</a></code> to diagnose the fitted network model, and
-<code><a href="netsim.html">netsim</a></code> to simulate epidemic spread over a simulated
-dynamic network consistent with the model fit.</p></div>
+    <div class="dont-index"><p>Use <code><a href="netdx.html">netdx</a></code> to diagnose the fitted network model, and <code><a href="netsim.html">netsim</a></code>
+to simulate epidemic spread over a simulated dynamic network
+consistent with the model fit.</p></div>
     </div>
 
     <div class="section level2">
@@ -285,7 +280,7 @@ dynamic network consistent with the model fit.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Model Form</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -----------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Formation: ~edges + concurrent</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55daa0f353a0&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x560dca6b4b58&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Target Statistics: 50 25</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Constraints: ~.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>

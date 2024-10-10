@@ -90,8 +90,7 @@ compartments.</p></li>
 <li><p><strong>stats:</strong> a list containing two sublists, <code>nwstats</code> for any
 network statistics saved in the simulation, and <code>transmat</code> for
 the transmission matrix saved in the simulation. See
-<code><a href="control.net.html">control.net</a></code> and the
-<a href="http://www.epimodel.org/tut.html" class="external-link">tutorials</a> for further
+<code><a href="control.net.html">control.net</a></code> for further
 details.</p></li>
 <li><p><strong>network:</strong> a list of lists of <code>networkDynamic</code> or
 <code>networkLite</code> objects, with one list of objects for each model
@@ -107,20 +106,20 @@ have duration, allowing for repeated transmission-related acts within the
 same dyad, specification of edge formation and dissolution rates, control
 over the temporal sequencing of multiple edges, and specification of
 network-level features. A detailed description of these models, along with
-examples, is found in the <a href="http://www.epimodel.org/tut.html" class="external-link">Basic
-Network Models</a> tutorials.</p>
+examples, is found in the <a href="https://epimodel.github.io/sismid/" class="external-link">Network Modeling for Epidemics</a>
+course materials.</p>
 <p>The <code>netsim</code> function performs modeling of both the base model types
 and original models. Base model types include one-group and two-group models
-with disease types for Susceptible-Infected (SI),
-Susceptible-Infected-Recovered (SIR), and
-Susceptible-Infected-Susceptible (SIS).</p>
+with disease types for Susceptible-Infected (SI), Susceptible-Infected-Recovered (SIR),
+and Susceptible-Infected-Susceptible (SIS).</p>
 <p>Original models may be parameterized by writing new process modules that
 either take the place of existing modules (for example, disease recovery), or
 supplement the set of existing processes with a new one contained in a new
 module. This functionality is documented in the
-<a href="http://www.epimodel.org/tut.html" class="external-link">Extension Network Models</a> tutorials.
-The list of modules within <code>netsim</code> available for modification is listed
-in <code><a href="modules.net.html">modules.net</a></code>.</p>
+<a href="https://epimodel.github.io/sismid/9_extending/mod9-Intro.html" class="external-link">Extending EpiModel</a>
+section of the <a href="https://epimodel.github.io/sismid/" class="external-link">Network Modeling for Epidemics</a>
+course materials. The list of modules within <code>netsim</code> available for
+modification is listed in <code><a href="modules.net.html">modules.net</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>

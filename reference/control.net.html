@@ -328,8 +328,8 @@ nodal degrees in a different network.</p></dd>
     <p><code>control.net</code> sets the required control settings for any network model solved with the <code><a href="netsim.html">netsim</a></code>
 function. Controls are required for both base model types and when passing original process
 modules. For an overview of control settings for base models, consult the
-<a href="http://www.epimodel.org/tut.html" class="external-link">Basic Network Models</a> tutorials. For all base models, the
-<code>type</code> argument is a necessary parameter and it has no default.</p>
+<a href="https://epimodel.github.io/sismid/" class="external-link">Network Modeling for Epidemics</a> course materials For
+all base models, the <code>type</code> argument is a necessary parameter and it has no default.</p>
     </div>
     <div class="section level2">
     <h2 id="the-attr-rules-argument">The attr.rules Argument<a class="anchor" aria-label="anchor" href="#the-attr-rules-argument"></a></h2>
@@ -384,8 +384,10 @@ the simulation. The default infection module, for example, is contained in the <
 function.</p>
 <p>For original models, one may substitute replacement module functions for any of the default
 functions. New modules may be added to the workflow at each time step by passing a module function
-via the <code>...</code> argument. Consult the <a href="http://www.epimodel.org/tut.html" class="external-link">New Network Models</a>
-tutorials. One may remove existing modules, such as <code>arrivals.FUN</code>, from the workflow by setting
+via the <code>...</code> argument. Consult the
+<a href="https://epimodel.github.io/sismid/9_extending/mod9-Intro.html" class="external-link">Extending EpiModel</a>
+section of the Network Modeling for Epidemics course materials.
+One may remove existing modules, such as <code>arrivals.FUN</code>, from the workflow by setting
 the parameter value for that argument to <code>NULL</code>.</p>
     </div>
     <div class="section level2">

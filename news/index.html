@@ -71,7 +71,7 @@
 <h2 class="pkg-version" data-toc-text="2.4.0" id="epimodel-240">EpiModel 2.4.0<a class="anchor" aria-label="anchor" href="#epimodel-240"></a></h2><p class="text-muted">CRAN release: 2023-06-20</p>
 <div class="section level3">
 <h3 id="new-features-2-4-0">NEW FEATURES<a class="anchor" aria-label="anchor" href="#new-features-2-4-0"></a></h3>
-<ul><li>Stochastic network models, simulated with <code>netsim</code>, now support multi-layer networks. These are networks with a common common node set but different edge set (e.g., home-based and community-based contact layers). An example implementation can be found at the <a href="https://github.com/EpiModel/EpiModel-Gallery/tree/multinets/2022-12-Multinets" class="external-link">EpiModel Gallery</a>.</li>
+<ul><li>Stochastic network models, simulated with <code>netsim</code>, now support multi-layer networks. These are networks with a common common node set but different edge set (e.g., home-based and community-based contact layers). An example implementation can be found at the <a href="https://github.com/EpiModel/EpiModel-Gallery/tree/main/2022-12-Multinets" class="external-link">EpiModel Gallery</a>.</li>
 <li>Add a <code>get_cumulative_degree</code> function with an interface similar to <code>get_partners</code>. This function helps look up cumulative degree over a time period (e.g., number of partners over the past year) for a specified set of nodes.</li>
 <li>Generic <code>get_network</code> and <code>set_network</code> functions created for more consistent access to the network objects within <code>netsim_dat</code> class objects.</li>
 </ul></div>
@@ -849,7 +849,7 @@
 <li><p>Network models with independence between epidemic/demographic processes and network structures (independent models) were previously first simulated with epiNet.simNet, and then those pre-simulated networks were input to epiNet.simTrans. Now the network model simulation is all handled within the simulation function, netsim.</p></li>
 <li><p>Network model diagnostics have been moved from within the network estimation process (netest) to their own function: netdx. The parameter names for running, printing, and plotting the results of these diagnostics have been updated for consistency. See ?netdx and related functions.</p></li>
 <li><p>Internal model functions have been significantly revised to improve efficiency.</p></li>
-<li><p>The dcm function can handle model functions, parameter sets, and initial conditions of arbitrary complexity. See the HTML vignette on this topic at: <a href="http://www.epimodel.org/" class="external-link uri">http://www.epimodel.org/</a></p></li>
+<li><p>The dcm function can handle model functions, parameter sets, and initial conditions of arbitrary complexity. See the HTML vignette on this topic at: <a href="https://www.epimodel.org/" class="external-link uri">https://www.epimodel.org/</a></p></li>
 <li><p>Moved the package vignettes external to the package to reduce package size and build time.</p></li>
 </ul><p><br></p>
 </div>

@@ -194,9 +194,7 @@ set for group 1 (with <code>balance="g1"</code>) or group 2 (with
     <p><code>param.icm</code> sets the epidemic parameters for the stochastic individual
 contact models simulated with the <code><a href="icm.html">icm</a></code> function. Models
 may use the base types, for which these parameters are used, or new process
-modules which may use these parameters (but not necessarily). A detailed
-description of ICM parameterization for base models is found in the
-<a href="http://www.epimodel.org/tut.html" class="external-link">Basic ICMs</a> tutorial.</p>
+modules which may use these parameters (but not necessarily).</p>
 <p>For base models, the model specification will be chosen as a result of
 the model parameters entered here and the control settings in
 <code><a href="control.icm.html">control.icm</a></code>. One-group and two-group models are available,
@@ -217,8 +215,7 @@ mixing, the product of one group size and act rate must equal the product of
 the other group size and act rate: \(N_1 \alpha_1 = N_2 \alpha_2\), where
 \(N_i\) is the group size and \(\alpha_i\) the group-specific act rate
 at time \(t\). The <code>balance</code> parameter here specifies which group's
-act rate should control the others with respect to balancing. See the
-<a href="http://www.epimodel.org/tut.html" class="external-link">Basic ICMs</a> tutorial.</p>
+act rate should control the others with respect to balancing.</p>
     </div>
     <div class="section level2">
     <h2 id="new-modules">New Modules<a class="anchor" aria-label="anchor" href="#new-modules"></a></h2>
