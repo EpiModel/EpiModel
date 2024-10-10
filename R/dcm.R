@@ -14,16 +14,13 @@
 #' the \code{deSolve} package to model disease as a deterministic compartmental
 #' system. The parameterization for these models follows the standard approach
 #' in \code{EpiModel}, with epidemic parameters, initial conditions, and control
-#' settings. A description of solving DCMs with the \code{dcm} function may be
-#' found in the \href{http://www.epimodel.org/tut.html}{Basic DCMs} tutorial.
+#' settings.
 #'
 #' The \code{dcm} function performs  modeling of both base model types and
 #' original models with new structures. Base model types include one-group
 #' and two-group models with disease types for Susceptible-Infected (SI),
 #' Susceptible-Infected-Recovered (SIR), and Susceptible-Infected-Susceptible
-#' (SIS). New model types may be written and input into \code{dcm} following the
-#' steps outlined in the \href{http://www.epimodel.org/tut.html}{New DCMs}
-#' tutorial. Both base and original models require the \code{param},
+#' (SIS). Both base and original models require the \code{param},
 #' \code{init}, and \code{control} inputs.
 #'
 #' @return

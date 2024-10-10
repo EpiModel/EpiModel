@@ -63,11 +63,8 @@ simulated with \code{\link{dcm}}.
 \details{
 \code{control.dcm} sets the required control settings for any deterministic
 compartmental models solved with the \code{\link{dcm}} function. Controls are
-required for both base model types and original models. For an overview of
-control settings for base DCM class models, consult the
-\href{http://www.epimodel.org/tut.html}{Basic DCMs} tutorial.
-For all base models, the \code{type} argument is a necessary parameter
-and it has no default.
+required for both base model types and original models. For all base models,
+the \code{type} argument is a necessary parameter and it has no default.
 }
 \section{New Model Functions}{
 
@@ -77,9 +74,7 @@ not be run. These model forms may be used as templates to write original
 model functions.
 
 These new models may be input and solved with \code{\link{dcm}} using the
-\code{new.mod} argument, which requires as input a model function. Details
-and examples are found in the
-\href{http://www.epimodel.org/tut.html}{New DCMs} tutorial.
+\code{new.mod} argument, which requires as input a model function.
 }
 
 \seealso{

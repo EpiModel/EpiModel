@@ -5,48 +5,44 @@
 #'              random graph modeling (ERGM) framework with extensions for
 #'              dynamic/temporal models (STERGM).
 #'
-#' @param nw An object of class \code{network} or \code{egor}, with the latter
-#'        indicating an \code{ergm.ego} fit.
+#' @param nw An object of class `network` or `egor`, with the latter
+#'        indicating an `ergm.ego` fit.
 #' @param formation Right-hand sided STERGM formation formula in the form
-#'        \code{~edges + ...}, where \code{...} are additional network
-#'        statistics.
+#'        `~edges + ...`, where `...` are additional network statistics.
 #' @param target.stats Vector of target statistics for the formation model, with
-#'        one number for each network statistic in the model.  Ignored if
-#'        fitting via \code{ergm.ego}.
-#' @param coef.diss An object of class \code{disscoef} output from the
-#'        \code{\link{dissolution_coefs}} function.
+#'        one number for each network statistic in the model. Ignored if
+#'        fitting via `ergm.ego`.
+#' @param coef.diss An object of class `disscoef` output from the
+#'        [`dissolution_coefs`] function.
 #' @param constraints Right-hand sided formula specifying constraints for the
-#'        modeled network, in the form \code{~...}, where \code{...} are
+#'        modeled network, in the form `~...`, where `...` are
 #'        constraint terms. By default, no constraints are set.
 #' @param coef.form Vector of coefficients for the offset terms in the formation
 #'        formula.
-#' @param edapprox If \code{TRUE}, use the indirect edges dissolution
+#' @param edapprox If `TRUE`, use the indirect edges dissolution
 #'        approximation  method for the dynamic model fit, otherwise use the
 #'        more time-intensive full STERGM estimation (see details).  For
-#'        \code{nw} of class \code{egor}, only \code{edapprox = TRUE} is
-#'        supported.
-#' @param set.control.ergm Control arguments passed to \code{ergm} (see
+#'        `nw` of class `egor`, only `edapprox = TRUE` is supported.
+#' @param set.control.ergm Control arguments passed to `ergm` (see details).
+#' @param set.control.ergm.ego Control arguments passed to `ergm.ego` (see
 #'        details).
-#' @param set.control.ergm.ego Control arguments passed to \code{ergm.ego} (see
-#'        details).
-#' @param set.control.tergm Control arguments passed to \code{tergm}
-#'        (see details).
-#' @param verbose If \code{TRUE}, print model fitting progress to console.
-#' @param nested.edapprox Logical. If \code{edapprox = TRUE} the dissolution
+#' @param set.control.tergm Control arguments passed to `tergm` (see details).
+#' @param verbose If `TRUE`, print model fitting progress to console.
+#' @param nested.edapprox Logical. If `edapprox = TRUE` the dissolution
 #'        model is an initial segment of the formation model (see details).
 #' @param ... Additional arguments passed to other functions.
 #'
 #' @details
-#' \code{netest} is a wrapper function for the \code{ergm}, \code{ergm.ego},
-#' and \code{tergm} functions that estimate static and dynamic network models.
-#' Network model estimation is the first step in simulating a stochastic
-#' network epidemic model in \code{EpiModel}. The output from \code{netest} is
-#' a necessary input for running the epidemic simulations in
-#' \code{\link{netsim}}. With a fitted network model, one should always first
-#' proceed to model diagnostics, available through the \code{\link{netdx}}
+#' `netest` is a wrapper function for the `ergm`, `ergm.ego`, and `tergm`
+#' functions that estimate static and dynamic network models. Network model
+#' estimation is the first step in simulating a stochastic network epidemic model
+#' in `EpiModel`. The output from `netest` is a necessary input for running the
+#' epidemic simulations in [`netsim`]. With a fitted network model, one should
+#' always first proceed to model diagnostics, available through the [`netdx`]
 #' function, to check model fit. A detailed description of fitting these
 #' models, along with examples, may be found in the
-#' \href{http://www.epimodel.org/tut.html}{Basic Network Models} tutorials.
+#' [Network Modeling for Epidemics](https://epimodel.github.io/sismid/)
+#' tutorials.
 #'
 #' @section Edges Dissolution Approximation:
 #' The edges dissolution approximation method is described in Carnegie et al.
@@ -72,47 +68,46 @@
 #' than to conduct inference on the formation model. The user is strongly
 #' encouraged to examine the behavior of the resulting simulations to confirm
 #' that the approximation is adequate for their purposes. For an example, see
-#' the vignette for the package \code{tergm}.
+#' the vignette for the package `tergm`.
 #'
 #' It has recently been found that subtracting a modified version of the
 #' dissolution coefficients from the formation coefficients provides a more
 #' principled approximation, and this is now the form of the approximation
-#' applied by \code{netest}. The modified values subtracted from the formation
+#' applied by `netest`. The modified values subtracted from the formation
 #' coefficients are equivalent to the (crude) dissolution coefficients with
-#' their target durations increased by 1. The \code{nested.edapprox} argument
+#' their target durations increased by 1. The `nested.edapprox` argument
 #' toggles whether to implement this modified version by appending the
 #' dissolution terms to the formation model and appending the relevant values to
-#' the vector of formation model coefficients (value = \code{FALSE}), whereas
+#' the vector of formation model coefficients (value = `FALSE`), whereas
 #' the standard version subtracts the relevant values from the initial formation
-#' model coefficients (value = \code{TRUE}).
+#' model coefficients (value = `TRUE`).
 #'
 #' @section Control Arguments:
-#' The \code{ergm}, \code{ergm.ego}, and \code{tergm} functions allow control
-#' settings for the model fitting process. When fitting a STERGM directly (setting
-#' \code{edapprox} to \code{FALSE}), control parameters may be passed to the
-#' \code{tergm} function with the \code{set.control.tergm} argument in
-#' \code{netest}. The controls should be input through the
-#' \code{control.tergm()} function, with the available parameters listed in the
-#' [`control.tergm`] help page in the \code{tergm} package.
+#' The `ergm`, `ergm.ego`, and `tergm` functions allow control settings for the
+#' model fitting process. When fitting a STERGM directly (setting
+#' `edapprox` to `FALSE`), control parameters may be passed to the
+#' `tergm` function with the `set.control.tergm` argument in `netest`.
+#' The controls should be input through the `control.tergm()` function,
+#' with the available parameters listed in the [`tergm::control.tergm`] help
+#' page in the `tergm` package.
 #'
-#' When fitting a STERGM indirectly (setting \code{edapprox} to \code{TRUE}),
-#' control settings may be passed to the \code{ergm} function using
-#' \code{set.control.ergm}, or to the \code{ergm.ego} function using
-#' \code{ergm.ego::set.control.ergm.ego}.  The controls should be input through the
-#' \code{control.ergm()} and \code{control.ergm.ego()} functions, respectively,
-#' with the available parameters listed in the
-#' \code{\link[ergm:control.ergm]{control.ergm}} help page in the \code{ergm}
-#' package and the \code{\link[ergm.ego:control.ergm.ego]{control.ergm.ego}}
-#' help page in the \code{ergm.ego} package. An example is below.
+#' When fitting a STERGM indirectly (setting `edapprox` to `TRUE`), control
+#' settings may be passed to the `ergm` function using `set.control.ergm`,
+#' or to the `ergm.ego` function using `set.control.ergm.ego`. The controls
+#' should be input through the `control.ergm()` and `control.ergm.ego()`
+#' functions, respectively, with the available parameters listed in the
+#' [`ergm::control.ergm`] help page in the `ergm` package and the
+#' [`ergm.ego::control.ergm.ego`] help page in the `ergm.ego`
+#' package. An example is below.
 #'
-#' @return A fitted network model object of class \code{netest}.
+#' @return A fitted network model object of class `netest`.
 #'
 #' @references
-#' Krivitsky PN, Handcock MS. "A separable model for dynamic networks." JRSS(B).
-#' 2014; 76.1:29-46.
+#' Krivitsky PN, Handcock MS. "A Separable Model for Dynamic Networks." JRSS(B).
+#' 2014; 76.1: 29-46.
 #'
-#' Carnegie NB, Krivitsky PN, Hunter DR, Goodreau SM. An approximation method
-#' for improving dynamic network model fitting. Journal of Computational and
+#' Carnegie NB, Krivitsky PN, Hunter DR, Goodreau SM. An Approximation Method
+#' for Improving Dynamic Network Model Fitting. Journal of Computational and
 #' Graphical Statistics. 2014; 24(2): 502-519.
 #'
 #' Jenness SM, Goodreau SM and Morris M. EpiModel: An R Package for Mathematical
@@ -120,9 +115,9 @@
 #' Software. 2018; 84(8): 1-47.
 #'
 #' @keywords model
-#' @seealso Use \code{\link{netdx}} to diagnose the fitted network model, and
-#'          \code{\link{netsim}} to simulate epidemic spread over a simulated
-#'          dynamic network consistent with the model fit.
+#' @seealso Use [`netdx`] to diagnose the fitted network model, and [`netsim`]
+#'          to simulate epidemic spread over a simulated dynamic network
+#'          consistent with the model fit.
 #'
 #' @export
 #'

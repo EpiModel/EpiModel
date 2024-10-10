@@ -67,7 +67,8 @@
 #' may use the base types, for which these parameters are used, or new process
 #' modules which may use these parameters (but not necessarily). A detailed
 #' description of network model parameterization for base models is found in
-#' the \href{http://www.epimodel.org/tut.html}{Basic Network Models} tutorial.
+#' the [Network Modeling for Epidemics](https://epimodel.github.io/sismid/)
+#' tutorials.
 #'
 #' For base models, the model specification will be chosen as a result of
 #' the model parameters entered here and the control settings in
@@ -100,8 +101,8 @@
 #' third time step. If the infected person has not recovered or exited the
 #' population by the fourth time step, the third element in the vector will
 #' carry forward until one of those events occurs or the simulation ends. For
-#' further examples, see the \href{https://statnet.org/nme/}{NME Course
-#' Tutorials}.
+#' further examples, see the
+#' [Network Modeling for Epidemics](https://epimodel.github.io/sismid/) tutorials.
 #'
 #' @section Random Parameters:
 #' In addition to deterministic parameters in either fixed or time-varying
@@ -581,7 +582,7 @@ generate_random_params <- function(param, verbose = FALSE) {
 #' input into the \code{init.net} function. This function handles initial
 #' conditions for both base models and new modules. For an overview of
 #' specifying initial conditions across a variety of base network models,
-#' consult the \href{http://www.epimodel.org/tut.html}{Basic Network Models}
+#' consult the [Network Modeling for Epidemics](https://epimodel.github.io/sismid/)
 #' tutorials.
 #'
 #' @return An \code{EpiModel} object of class \code{init.net}.
@@ -766,8 +767,8 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #' `control.net` sets the required control settings for any network model solved with the [`netsim`]
 #' function. Controls are required for both base model types and when passing original process
 #' modules. For an overview of control settings for base models, consult the
-#' [Basic Network Models](http://www.epimodel.org/tut.html) tutorials. For all base models, the
-#' `type` argument is a necessary parameter and it has no default.
+#' [Network Modeling for Epidemics](https://epimodel.github.io/sismid/) course materials For
+#' all base models, the `type` argument is a necessary parameter and it has no default.
 #'
 #' @section The attr.rules Argument:
 #' The \code{attr.rules} parameter is used to specify the rules for how nodal attribute values for
@@ -819,8 +820,10 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #'
 #' For original models, one may substitute replacement module functions for any of the default
 #' functions. New modules may be added to the workflow at each time step by passing a module function
-#' via the `...` argument. Consult the [New Network Models](http://www.epimodel.org/tut.html)
-#' tutorials. One may remove existing modules, such as `arrivals.FUN`, from the workflow by setting
+#' via the `...` argument. Consult the
+#' [Extending EpiModel](https://epimodel.github.io/sismid/9_extending/mod9-Intro.html)
+#' section of the Network Modeling for Epidemics course materials.
+#' One may remove existing modules, such as `arrivals.FUN`, from the workflow by setting
 #' the parameter value for that argument to `NULL`.
 #'
 #' @section End Horizon:

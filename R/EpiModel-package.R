@@ -5,7 +5,7 @@
 #'    Package: \tab EpiModel\cr
 #'    Type: \tab Package\cr
 #'    Version: \tab 2.5.0\cr
-#'    Date: \tab 2024-09-10\cr
+#'    Date: \tab 2024-10-10\cr
 #'    License: \tab GPL-3\cr
 #'    LazyLoad: \tab yes\cr
 #' }
@@ -108,7 +108,7 @@
 #' }
 #'
 #' @references
-#' The EpiModel website is at \url{http://www.epimodel.org/}, and the source
+#' The EpiModel website is at \url{https://www.epimodel.org/}, and the source
 #' code is at \url{https://github.com/EpiModel/EpiModel}. Bug reports and
 #' feature requests are welcome.
 #'

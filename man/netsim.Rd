@@ -34,8 +34,7 @@ compartments.
 \item \strong{stats:} a list containing two sublists, \code{nwstats} for any
 network statistics saved in the simulation, and \code{transmat} for
 the transmission matrix saved in the simulation. See
-\code{\link{control.net}} and the
-\href{http://www.epimodel.org/tut.html}{tutorials} for further
+\code{\link{control.net}} for further
 details.
 \item \strong{network:} a list of lists of \code{networkDynamic} or
 \code{networkLite} objects, with one list of objects for each model
@@ -55,22 +54,22 @@ have duration, allowing for repeated transmission-related acts within the
 same dyad, specification of edge formation and dissolution rates, control
 over the temporal sequencing of multiple edges, and specification of
 network-level features. A detailed description of these models, along with
-examples, is found in the \href{http://www.epimodel.org/tut.html}{Basic
-Network Models} tutorials.
+examples, is found in the \href{https://epimodel.github.io/sismid/}{Network Modeling for Epidemics}
+course materials.
 
 The \code{netsim} function performs modeling of both the base model types
 and original models. Base model types include one-group and two-group models
-with disease types for Susceptible-Infected (SI),
-Susceptible-Infected-Recovered (SIR), and
-Susceptible-Infected-Susceptible (SIS).
+with disease types for Susceptible-Infected (SI), Susceptible-Infected-Recovered (SIR),
+and Susceptible-Infected-Susceptible (SIS).
 
 Original models may be parameterized by writing new process modules that
 either take the place of existing modules (for example, disease recovery), or
 supplement the set of existing processes with a new one contained in a new
 module. This functionality is documented in the
-\href{http://www.epimodel.org/tut.html}{Extension Network Models} tutorials.
-The list of modules within \code{netsim} available for modification is listed
-in \code{\link{modules.net}}.
+\href{https://epimodel.github.io/sismid/9_extending/mod9-Intro.html}{Extending EpiModel}
+section of the \href{https://epimodel.github.io/sismid/}{Network Modeling for Epidemics}
+course materials. The list of modules within \code{netsim} available for
+modification is listed in \code{\link{modules.net}}.
 }
 \examples{
 \dontrun{

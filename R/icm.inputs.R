@@ -10,9 +10,7 @@
 #' \code{param.icm} sets the epidemic parameters for the stochastic individual
 #' contact models simulated with the \code{\link{icm}} function. Models
 #' may use the base types, for which these parameters are used, or new process
-#' modules which may use these parameters (but not necessarily). A detailed
-#' description of ICM parameterization for base models is found in the
-#' \href{http://www.epimodel.org/tut.html}{Basic ICMs} tutorial.
+#' modules which may use these parameters (but not necessarily).
 #'
 #' For base models, the model specification will be chosen as a result of
 #' the model parameters entered here and the control settings in
@@ -31,8 +29,7 @@
 #' the other group size and act rate: \eqn{N_1 \alpha_1 = N_2 \alpha_2}, where
 #' \eqn{N_i} is the group size and \eqn{\alpha_i} the group-specific act rate
 #' at time \eqn{t}. The \code{balance} parameter here specifies which group's
-#' act rate should control the others with respect to balancing. See the
-#' \href{http://www.epimodel.org/tut.html}{Basic ICMs} tutorial.
+#' act rate should control the others with respect to balancing.
 #'
 #' @section New Modules:
 #' To build original models outside of the base models, new process modules
@@ -135,9 +132,7 @@ param.icm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
 #' @details
 #' The initial conditions for a model solved with \code{\link{icm}} should be
 #' input into the \code{init.icm} function. This function handles initial
-#' conditions for both base models and original models using new modules. For
-#' an overview of initial conditions for base ICM class models, consult the
-#' \href{http://www.epimodel.org/tut.html}{Basic ICMs} tutorial.
+#' conditions for both base models and original models using new modules.
 #'
 #' @return An \code{EpiModel} object of class \code{init.icm}.
 #'
@@ -216,10 +211,8 @@ init.icm <- function(s.num, i.num, r.num,
 #' \code{control.icm} sets the required control settings for any stochastic
 #' individual contact model solved with the \code{\link{icm}} function. Controls
 #' are required for both base model types and when passing original process
-#' modules. For an overview of control settings for base ICM class models,
-#' consult the \href{http://www.epimodel.org/tut.html}{Basic ICMs} tutorial. For
-#' all base models, the \code{type} argument is a necessary parameter and it has
-#' no default.
+#' modules. For all base models, the \code{type} argument is a necessary parameter
+#' and it has no default.
 #'
 #' @section New Modules:
 #' Base ICM models use a set of module functions that specify

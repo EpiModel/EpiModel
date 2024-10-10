@@ -23,8 +23,7 @@ library(EpiModel)
 
 ## Introduction
 
-This vignette discusses mechanisms usable inside `EpiModel` network models with custom modules. More information about these in the "New Network Models with
-EpiModel" section of [the EpiModel tutorials](http://www.epimodel.org/tut.html).
+This vignette discusses mechanisms usable inside `EpiModel` network models with custom modules. More information about these in the [Extending EpiModel](https://epimodel.github.io/sismid/9_extending/mod9-Intro.html) section of the [Network Modeling for Epidemics](https://epimodel.github.io/sismid/) course materials.
 
 Inside the simulation, the networks themselves are stored under `dat$run$nw`. Ultimately this vignette will describe multiple aspects of working with network
 objects.

@@ -25,11 +25,10 @@ netest(
 indicating an \code{ergm.ego} fit.}
 
 \item{formation}{Right-hand sided STERGM formation formula in the form
-\code{~edges + ...}, where \code{...} are additional network
-statistics.}
+\code{~edges + ...}, where \code{...} are additional network statistics.}
 
 \item{target.stats}{Vector of target statistics for the formation model, with
-one number for each network statistic in the model.  Ignored if
+one number for each network statistic in the model. Ignored if
 fitting via \code{ergm.ego}.}
 
 \item{coef.diss}{An object of class \code{disscoef} output from the
@@ -45,14 +44,11 @@ formula.}
 \item{edapprox}{If \code{TRUE}, use the indirect edges dissolution
 approximation  method for the dynamic model fit, otherwise use the
 more time-intensive full STERGM estimation (see details).  For
-\code{nw} of class \code{egor}, only \code{edapprox = TRUE} is
-supported.}
+\code{nw} of class \code{egor}, only \code{edapprox = TRUE} is supported.}
 
-\item{set.control.ergm}{Control arguments passed to \code{ergm} (see
-details).}
+\item{set.control.ergm}{Control arguments passed to \code{ergm} (see details).}
 
-\item{set.control.tergm}{Control arguments passed to \code{tergm}
-(see details).}
+\item{set.control.tergm}{Control arguments passed to \code{tergm} (see details).}
 
 \item{set.control.ergm.ego}{Control arguments passed to \code{ergm.ego} (see
 details).}
@@ -73,16 +69,16 @@ random graph modeling (ERGM) framework with extensions for
 dynamic/temporal models (STERGM).
 }
 \details{
-\code{netest} is a wrapper function for the \code{ergm}, \code{ergm.ego},
-and \code{tergm} functions that estimate static and dynamic network models.
-Network model estimation is the first step in simulating a stochastic
-network epidemic model in \code{EpiModel}. The output from \code{netest} is
-a necessary input for running the epidemic simulations in
-\code{\link{netsim}}. With a fitted network model, one should always first
-proceed to model diagnostics, available through the \code{\link{netdx}}
+\code{netest} is a wrapper function for the \code{ergm}, \code{ergm.ego}, and \code{tergm}
+functions that estimate static and dynamic network models. Network model
+estimation is the first step in simulating a stochastic network epidemic model
+in \code{EpiModel}. The output from \code{netest} is a necessary input for running the
+epidemic simulations in \code{\link{netsim}}. With a fitted network model, one should
+always first proceed to model diagnostics, available through the \code{\link{netdx}}
 function, to check model fit. A detailed description of fitting these
 models, along with examples, may be found in the
-\href{http://www.epimodel.org/tut.html}{Basic Network Models} tutorials.
+\href{https://epimodel.github.io/sismid/}{Network Modeling for Epidemics}
+tutorials.
 }
 \section{Edges Dissolution Approximation}{
 
@@ -126,23 +122,22 @@ model coefficients (value = \code{TRUE}).
 
 \section{Control Arguments}{
 
-The \code{ergm}, \code{ergm.ego}, and \code{tergm} functions allow control
-settings for the model fitting process. When fitting a STERGM directly (setting
+The \code{ergm}, \code{ergm.ego}, and \code{tergm} functions allow control settings for the
+model fitting process. When fitting a STERGM directly (setting
 \code{edapprox} to \code{FALSE}), control parameters may be passed to the
-\code{tergm} function with the \code{set.control.tergm} argument in
-\code{netest}. The controls should be input through the
-\code{control.tergm()} function, with the available parameters listed in the
-\code{\link{control.tergm}} help page in the \code{tergm} package.
+\code{tergm} function with the \code{set.control.tergm} argument in \code{netest}.
+The controls should be input through the \code{control.tergm()} function,
+with the available parameters listed in the \code{\link[tergm:control.tergm]{tergm::control.tergm}} help
+page in the \code{tergm} package.
 
-When fitting a STERGM indirectly (setting \code{edapprox} to \code{TRUE}),
-control settings may be passed to the \code{ergm} function using
-\code{set.control.ergm}, or to the \code{ergm.ego} function using
-\code{set.control.ergm.ego}.  The controls should be input through the
-\code{control.ergm()} and \code{control.ergm.ego()} functions, respectively,
-with the available parameters listed in the
-\code{\link[ergm:control.ergm]{control.ergm}} help page in the \code{ergm}
-package and the \code{\link[ergm.ego:control.ergm.ego]{control.ergm.ego}}
-help page in the \code{ergm.ego} package. An example is below.
+When fitting a STERGM indirectly (setting \code{edapprox} to \code{TRUE}), control
+settings may be passed to the \code{ergm} function using \code{set.control.ergm},
+or to the \code{ergm.ego} function using \code{set.control.ergm.ego}. The controls
+should be input through the \code{control.ergm()} and \code{control.ergm.ego()}
+functions, respectively, with the available parameters listed in the
+\code{\link[ergm:control.ergm]{ergm::control.ergm}} help page in the \code{ergm} package and the
+\code{\link[ergm.ego:control.ergm.ego]{ergm.ego::control.ergm.ego}} help page in the \code{ergm.ego}
+package. An example is below.
 }
 
 \examples{
@@ -169,11 +164,11 @@ est
 
 }
 \references{
-Krivitsky PN, Handcock MS. "A separable model for dynamic networks." JRSS(B).
-2014; 76.1:29-46.
+Krivitsky PN, Handcock MS. "A Separable Model for Dynamic Networks." JRSS(B).
+2014; 76.1: 29-46.
 
-Carnegie NB, Krivitsky PN, Hunter DR, Goodreau SM. An approximation method
-for improving dynamic network model fitting. Journal of Computational and
+Carnegie NB, Krivitsky PN, Hunter DR, Goodreau SM. An Approximation Method
+for Improving Dynamic Network Model Fitting. Journal of Computational and
 Graphical Statistics. 2014; 24(2): 502-519.
 
 Jenness SM, Goodreau SM and Morris M. EpiModel: An R Package for Mathematical
@@ -181,8 +176,8 @@ Modeling of Infectious Disease over Networks. Journal of Statistical
 Software. 2018; 84(8): 1-47.
 }
 \seealso{
-Use \code{\link{netdx}} to diagnose the fitted network model, and
-\code{\link{netsim}} to simulate epidemic spread over a simulated
-dynamic network consistent with the model fit.
+Use \code{\link{netdx}} to diagnose the fitted network model, and \code{\link{netsim}}
+to simulate epidemic spread over a simulated dynamic network
+consistent with the model fit.
 }
 \keyword{model}

@@ -48,11 +48,11 @@ used as the start of the next.}
 
 \item{keep.tedgelist}{If \code{TRUE}, keep the timed edgelist generated from
 the dynamic simulations. Returned in the form of a list of matrices,
-with one entry per simulation. Accessible at \code{$edgelist}.}
+with one entry per simulation. Accessible at \verb{$edgelist}.}
 
 \item{keep.tnetwork}{If \code{TRUE}, keep the full networkDynamic objects
 from the dynamic simulations. Returned in the form of a list of nD
-objects, with one entry per simulation. Accessible at \code{$network}.}
+objects, with one entry per simulation. Accessible at \verb{$network}.}
 
 \item{verbose}{If \code{TRUE}, print progress to the console.}
 
@@ -77,8 +77,8 @@ number of time steps per simulation. The network statistics in
 \code{nwstats.formula} are saved for each time step. Summary statistics for
 the formation model terms, as well as dissolution model and relational
 duration statistics, are then calculated and can be accessed when printing or
-plotting the \code{netdx} object.  See \code{\link{print.netdx}} and
-\code{\link{plot.netdx}} for details on printing and plotting.
+plotting the \code{netdx} object. See \code{\link{print.netdx}} and \code{\link{plot.netdx}}
+for details on printing and plotting.
 }
 \section{Control Arguments}{
 
@@ -99,10 +99,10 @@ simulating that static network forward through time. Control parameters may
 be set for both processes in \code{netdx}. For the first, the parameters
 should be input through the \code{control.simulate.formula()} function, with
 the available parameters listed in the
-\code{\link[ergm:control.simulate.formula]{control.simulate.formula}} help
+\code{\link[ergm:control.simulate.ergm]{ergm::control.simulate.formula}} help
 page in the \code{ergm} package. For the second, parameters should be input
 through the \code{control.simulate.formula.tergm()} function, with the
-available parameters listed in the \code{\link{control.simulate.formula.tergm}}
+available parameters listed in the \code{\link[tergm:control.simulate.tergm]{tergm::control.simulate.formula.tergm}}
 help page in the \code{tergm} package. An example is shown below.
 }
 

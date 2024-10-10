@@ -21,7 +21,7 @@ The **EpiModel** package provides tools for simulating mathematical models of in
 
 ### Documentation
 
-This vignette provides a general orientation to the **EpiModel** tutorials and documentation within the package and hosted elsewhere online. Most full-length tutorials may be found at the **EpiModel** website (<http://www.epimodel.org>), which also points to our **Network Modeling for Epidemics (NME)** short-course (<https://statnet.org/nme/>). 
+This vignette provides a general orientation to the **EpiModel** tutorials and documentation within the package and hosted elsewhere online. Most full-length tutorials may be found at the **EpiModel** website (<https://www.epimodel.org>), which also points to our **Network Modeling for Epidemics (NME)** short-course (<https://epimodel.github.io/sismid/>). 
 
 The current version of EpiModel is v`r vers`. Within the package, you can consult the extensive help documentation and vignettes for each exported function:
 
@@ -34,8 +34,8 @@ To see the latest updates to **EpiModel**, consult the `NEWS` file in the packag
 If you are interested in the stochastic network model class, we suggest learning about using **EpiModel** with the following sequence:
 
 1. The best place to start is our primary main methods paper, published in the *Journal of Statistical Software* at the reference below. 
-2. After that, we suggest you work through the NME course materials to understand some of the background network theory and see how to run parameterize and run built-in network models (Day 1-4 materials).
-3. Those interested in extending EpiModel for novel research aims should then consult the model extension materials of NME (Days 4-5), and look at the variety of extension model templates in our **EpiModel Gallery** (<https://github.com/EpiModel/EpiModel-Gallery>).
+2. After that, we suggest you work through the Network Modeling for Epidemics course materials to understand some of the background network theory and see how to run parameterize and run built-in network models.
+3. Those interested in extending EpiModel for novel research aims should then consult the model extension materials of the NME course, and look at the variety of extension model templates in our **EpiModel Gallery** (<https://github.com/EpiModel/EpiModel-Gallery>).
 4. Some of the latest developments in EpiModel are related to working with network model inputs and outputs, which are covered in these advanced topics vignettes within the package:
 
 - Working With Model Parameters in EpiModel
