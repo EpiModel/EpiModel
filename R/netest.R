@@ -147,7 +147,7 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
                    coef.form = NULL, edapprox = TRUE,
                    set.control.ergm = control.ergm(),
                    set.control.tergm = control.tergm(),
-                   set.control.ergm.ego = control.ergm.ego(),
+                   set.control.ergm.ego = NULL,
                    verbose = FALSE, nested.edapprox = TRUE, ...) {
 
   if (missing(constraints)) {
@@ -205,16 +205,22 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
 
   } else {
 
-    if (is(nw, "egor")) {
+    if (inherits(nw, "egor")) {
       # ergm.ego case
-      fit <- ergm.ego(formation,
-                      basis = nw,
-                      popsize = 0,
-                      constraints = constraints,
-                      offset.coef = coef.form,
-                      control = set.control.ergm.ego,
-                      verbose = verbose)
+      if (system.file(package = "ergm.ego") == "")
+        stop("The `ergm.ego` package is required to estimate from `egor` objects.\n ")
+      if (is.null(set.control.ergm.ego))
+        set.control.ergm.ego <- ergm.ego::control.ergm.ego()
 
+      fit <- ergm.ego::ergm.ego(
+        formation,
+        basis = nw,
+        popsize = 0,
+        constraints = constraints,
+        offset.coef = coef.form,
+        control = set.control.ergm.ego,
+        verbose = verbose
+      )
       target.stats <- fit$m
 
     } else {

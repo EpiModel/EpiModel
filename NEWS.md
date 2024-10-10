@@ -17,11 +17,12 @@
 
 - Speed up `raw.records` and `attr.history` with `collections::queue` instead of `base::list`.
 - Add `save.diss.stats` to the checked control values. Prevents undefined values when using `control.net` wrappers.
-- Move `el.cuml`, `_last_unique_id`, and `_last_timestep` and `attr` to `dat$run` and update the tests; part of the restructuring of the `dat` object. 
+- Move `el.cuml`, `_last_unique_id`, and `_last_timestep` and `attr` to `dat$run` and update the tests; part of the restructuring of the `dat` object.
 - Remove `dat$epi$sim.num(.g2)` and replace it with `dat$run$num(.g2)` (single value). These values keep track of the current size of the network and are only needed during model runs.
 - Speed up cumulative edge-list calculation by splitting current and historic edges.
 - Remove `deleteAttr` function deprecated since EpiModel v2.4.0.
 - All function accepting `posit_ids` as argument must now pass exclusively a numeric vector. Logical vectors are not accepted anymore as they were making the code heavier and were error prone.
+- `ergm.ego` is now a suggestion to shorten the dependency chain. It needs to be installed separately to use `netest` with an `egor` object.
 
 
 ## EpiModel 2.4.0
