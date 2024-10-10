@@ -98,7 +98,7 @@
 #' When fitting a STERGM indirectly (setting \code{edapprox} to \code{TRUE}),
 #' control settings may be passed to the \code{ergm} function using
 #' \code{set.control.ergm}, or to the \code{ergm.ego} function using
-#' \code{set.control.ergm.ego}.  The controls should be input through the
+#' \code{ergm.ego::set.control.ergm.ego}.  The controls should be input through the
 #' \code{control.ergm()} and \code{control.ergm.ego()} functions, respectively,
 #' with the available parameters listed in the
 #' \code{\link[ergm:control.ergm]{control.ergm}} help page in the \code{ergm}
@@ -152,7 +152,7 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
                    coef.form = NULL, edapprox = TRUE,
                    set.control.ergm = control.ergm(),
                    set.control.tergm = control.tergm(),
-                   set.control.ergm.ego = control.ergm.ego(),
+                   set.control.ergm.ego = NULL,
                    verbose = FALSE, nested.edapprox = TRUE, ...) {
 
   if (missing(constraints)) {
@@ -210,16 +210,27 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
 
   } else {
 
-    if (is(nw, "egor")) {
+    if (inherits(nw, "egor")) {
       # ergm.ego case
-      fit <- ergm.ego(formation,
-                      basis = nw,
-                      popsize = 0,
-                      constraints = constraints,
-                      offset.coef = coef.form,
-                      control = set.control.ergm.ego,
-                      verbose = verbose)
+      if (system.file(package = "ergm.ego") == "") {
+        stop(
+          "The `ergm.ego` is required to estimate `egor` input objects.\n ",
+          "Install it with `install.packages('ergm.ego').\n "
+        )
 
+      }
+      if (is.null(set.control.ergm.ego))
+        set.control.ergm.ego <- ergm.ego::control.ergm.ego()
+
+      fit <- ergm.ego::ergm.ego(
+        formation,
+        basis = nw,
+        popsize = 0,
+        constraints = constraints,
+        offset.coef = coef.form,
+        control = set.control.ergm.ego,
+        verbose = verbose
+      )
       target.stats <- fit$m
 
     } else {

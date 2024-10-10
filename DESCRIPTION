@@ -40,8 +40,6 @@ Imports:
     collections,
     doParallel,
     ergm (>= 4.7.1),
-    ergm.ego (>= 1.1.0),
-    egor,
     foreach,
     network (>= 1.18.1),
     RColorBrewer,
@@ -55,6 +53,8 @@ Imports:
     coda,
     networkLite (>= 1.0.5)
 Suggests:
+    ergm.ego (>= 1.1.0),
+    egor,
     knitr,
     ndtv,
     rmarkdown,

@@ -16,7 +16,7 @@ test_that("extremal targets are handled correctly", {
     if (egor == TRUE) {
       nw <- san(ff, basis = nw, target.stats = target_stats, offset.coef = c(-Inf,-Inf))
       target_stats <- summary(ff_sum, basis = nw)
-      nw <- as.egor(nw)
+      nw <- ergm.ego:::as.egor.network(nw)
     }
 
     target_stats_names <- c("edges", "nodematch.sex", "nodematch.race", "deg6+", "degree5")
