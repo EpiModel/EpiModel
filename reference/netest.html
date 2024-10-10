@@ -62,7 +62,7 @@ dynamic/temporal models (STERGM).</p>
 <span>  edapprox <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  set.control.ergm <span class="op">=</span> <span class="fu">control.ergm</span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  set.control.tergm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/tergm/man/control.tergm.html" class="external-link">control.tergm</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>  set.control.ergm.ego <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/ergm.ego/man/control.ergm.ego.html" class="external-link">control.ergm.ego</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  set.control.ergm.ego <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  nested.edapprox <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  <span class="va">...</span></span>
@@ -213,7 +213,7 @@ settings for the model fitting process. When fitting a STERGM directly (setting
 control settings may be passed to the <code>ergm</code> function using
 <code>set.control.ergm</code>, or to the <code>ergm.ego</code> function using
 <code>set.control.ergm.ego</code>.  The controls should be input through the
-<code>control.ergm()</code> and <code><a href="https://rdrr.io/pkg/ergm.ego/man/control.ergm.ego.html" class="external-link">control.ergm.ego()</a></code> functions, respectively,
+<code>control.ergm()</code> and <code>control.ergm.ego()</code> functions, respectively,
 with the available parameters listed in the
 <code><a href="https://rdrr.io/pkg/ergm/man/control.ergm.html" class="external-link">control.ergm</a></code> help page in the <code>ergm</code>
 package and the <code><a href="https://rdrr.io/pkg/ergm.ego/man/control.ergm.ego.html" class="external-link">control.ergm.ego</a></code>
@@ -285,7 +285,7 @@ dynamic network consistent with the model fit.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Model Form</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -----------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Formation: ~edges + concurrent</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55e04a2ce118&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55daa0f353a0&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Target Statistics: 50 25</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Constraints: ~.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
