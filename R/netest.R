@@ -214,7 +214,7 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints,
       # ergm.ego case
       if (system.file(package = "ergm.ego") == "") {
         stop(
-          "The `ergm.ego` is required to estimate `egor` input objects.\n ",
+          "The `ergm.ego` package is required to estimate from `egor` objects.\n ",
           "Install it with `install.packages('ergm.ego').\n "
         )
 
