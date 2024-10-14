@@ -1,6 +1,6 @@
 # EpiModel
 
-[![CRAN Version](http://img.shields.io/badge/Version-2.4.0-orange.svg?style=flat)](https://github.com/EpiModel/EpiModel/releases/tag/v2.4.0) [![](http://cranlogs.r-pkg.org/badges/EpiModel?color=blue)](https://CRAN.R-project.org/package=EpiModel) [![](http://cranlogs.r-pkg.org/badges/grand-total/EpiModel?color=blue)](https://CRAN.R-project.org/package=EpiModel) [![Build Status](https://github.com/EpiModel/EpiModel/workflows/R-CMD-check/badge.svg)](https://github.com/EpiModel/EpiModel/actions) [![Methods](https://img.shields.io/badge/docs-Methods-943ad8.svg)](https://doi.org/10.18637/jss.v084.i08)
+[![CRAN Version](http://img.shields.io/badge/Version-2.5.0-orange.svg?style=flat)](https://github.com/EpiModel/EpiModel/releases/tag/v2.5.0) [![](http://cranlogs.r-pkg.org/badges/EpiModel?color=blue)](https://CRAN.R-project.org/package=EpiModel) [![](http://cranlogs.r-pkg.org/badges/grand-total/EpiModel?color=blue)](https://CRAN.R-project.org/package=EpiModel) [![Build Status](https://github.com/EpiModel/EpiModel/workflows/R-CMD-check/badge.svg)](https://github.com/EpiModel/EpiModel/actions) [![Methods](https://img.shields.io/badge/docs-Methods-943ad8.svg)](https://doi.org/10.18637/jss.v084.i08)
 
 <br> <img src="https://www.epimodel.org/movie.gif" align="right"/>
 
@@ -39,7 +39,7 @@ remotes::install_github("EpiModel/EpiModel")
 
 **Methods Paper.** A good place to start learning about EpiModel is the main methods paper published in the *Journal of Statistical Software.* It is available at: <a href="https://doi.org/10.18637/jss.v084.i08" target="_blank">https://doi.org/10.18637/jss.v084.i08</a>.
 
-**Summer Course.** Network Modeling for Epidemics is our annual 5-day course at the University of Washington where we teach the statistical theory, software tools, and applied modeling methods using EpiModel. <a href="https://statnet.org/nme/" target="_blank">Our course materials</a> are open-source and updated annually around the time of the course.
+**Summer Course.** Network Modeling for Epidemics is our annual summer workshop/course where we teach the statistical theory, software tools, and applied modeling methods using EpiModel. It is now part of the Summer Institute in Statistics and Modeling in Infectious Diseases (SISMID) at Emory University. <a href="https://epimodel.github.io/sismid/" target="_blank">Our course materials</a> are open-source and updated annually around the time of the course.
 
 **Getting Help.** Users are encouraged to use Github issues on this repository as a place to ask questions (both technical coding questions and conceptual modeling questions), report bugs, and request new features & functionality. Broader modeling questions can be posted on the Discussions board here.
 
