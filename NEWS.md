@@ -1,3 +1,8 @@
+## EpiModel 2.5.1
+
+### OTHER
+
+- Fix bug where the `ellipsis` (`...`) was not passed correctly to the `base::plot` in the `plot.netsim` function.
 
 ## EpiModel 2.5
 
@@ -29,7 +34,7 @@
 
 ### NEW FEATURES
 
-- Stochastic network models, simulated with `netsim`, now support multi-layer networks. These are networks with a common common node set but different edge set (e.g., home-based and community-based contact layers). 
+- Stochastic network models, simulated with `netsim`, now support multi-layer networks. These are networks with a common common node set but different edge set (e.g., home-based and community-based contact layers).
 An example implementation can be found at the [EpiModel Gallery](https://github.com/EpiModel/EpiModel-Gallery/tree/main/2022-12-Multinets).
 - Add a `get_cumulative_degree` function with an interface similar to `get_partners`. This function helps look up cumulative degree over a time period (e.g., number of partners over the past year) for a specified set of nodes.
 - Generic `get_network` and `set_network` functions created for more consistent access to the network objects within `netsim_dat` class objects.
