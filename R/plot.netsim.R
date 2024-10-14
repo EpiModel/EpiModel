@@ -496,7 +496,7 @@ plot_netsim_epi <- function(x, y = NULL, sims = NULL, legend = NULL,
   if (!add) {
     do.call(plot, list(
       x = 1, y = 1, type = "n", bty = "n",
-      xlim = xlim, xlab = xlab, ylim = ylim, ylab = ylab, main = main
+      xlim = xlim, xlab = xlab, ylim = ylim, ylab = ylab, main = main, ...
     ))
   }
 
