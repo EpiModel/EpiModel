@@ -3,6 +3,7 @@
 ### OTHER
 
 - Fix bug where the `ellipsis` (`...`) was not passed correctly to the `base::plot` in the `plot.netsim` function.
+- Set `MCMC.maxchanges = Inf` as default for TERGM MCMC. Lift the check on the maximum number of MCMC changes per step for bigger or dense networks.
 
 ## EpiModel 2.5
 
