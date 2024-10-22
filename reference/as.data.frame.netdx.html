@@ -105,6 +105,9 @@ all simulations will be output.</p></dd>
 <span class="r-in"><span><span class="co"># Simulate the network with netdx</span></span></span>
 <span class="r-in"><span><span class="va">dx</span> <span class="op">&lt;-</span> <span class="fu"><a href="netdx.html">netdx</a></span><span class="op">(</span><span class="va">est</span>, nsims <span class="op">=</span> <span class="fl">3</span>, nsteps <span class="op">=</span> <span class="fl">10</span>, keep.tedgelist <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>            verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>NAs introduced by coercion to integer range</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>NAs introduced by coercion to integer range</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>NAs introduced by coercion to integer range</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Extract data from the first simulation</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">dx</span>, sim <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>

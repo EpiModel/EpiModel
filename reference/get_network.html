@@ -177,6 +177,9 @@ is specified with the <code>keep.tnetwork</code> parameter directly in
 <span class="r-in"><span><span class="co"># Run diagnostics, saving the networkDynamic objects</span></span></span>
 <span class="r-in"><span><span class="va">dx</span> <span class="op">&lt;-</span> <span class="fu"><a href="netdx.html">netdx</a></span><span class="op">(</span><span class="va">est</span>, nsteps <span class="op">=</span> <span class="fl">10</span>, nsims <span class="op">=</span> <span class="fl">3</span>, keep.tnetwork <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>            verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>NAs introduced by coercion to integer range</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>NAs introduced by coercion to integer range</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>NAs introduced by coercion to integer range</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Extract the network for simulation 2 from dx object</span></span></span>
 <span class="r-in"><span><span class="fu">get_network</span><span class="op">(</span><span class="va">dx</span>, sim <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
