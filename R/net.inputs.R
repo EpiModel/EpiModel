@@ -882,7 +882,7 @@ control.net <- function(type,
                         raw.output = FALSE,
                         tergmLite.track.duration = FALSE,
                         set.control.ergm = control.simulate.formula(MCMC.burnin = 2e5),
-                        set.control.tergm = control.simulate.formula.tergm(),
+                        set.control.tergm = control.simulate.formula.tergm(MCMC.maxchanges = Inf),
                         save.diss.stats = TRUE,
                         dat.updates = NULL,
                         ...) {
