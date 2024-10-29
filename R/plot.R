@@ -12,8 +12,10 @@ draw_qnts <- function(x, y, qnts, qnts.pal, qnts.smooth,
       x[[loc]][[y[j]]], 1,
       function(x) quantile(x, c(quants[1], quants[2]), na.rm = TRUE)
     )
-    qnt.prev <- qnt.prev[, complete.cases(t(qnt.prev))]
-    xx <- c(seq_len(ncol(qnt.prev)), rev(seq_len(ncol(qnt.prev))))
+    complete_rows <- complete.cases(t(qnt.prev))
+    x_cords <- seq_len(ncol(qnt.prev))[complete_rows]
+    xx <- c(x_cords, rev(x_cords))
+    qnt.prev <- qnt.prev[, complete_rows]
     if (qnts.smooth == FALSE) {
       yy <- c(qnt.prev[1, ], rev(qnt.prev[2, ]))
     } else {
