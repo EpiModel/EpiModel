@@ -317,6 +317,8 @@ as_cumulative_edgelist.networkDynamic <- function(x) {
 #' @param el A cumulative edgelist with potentially overlapping edges
 #'
 #' @return A cumulative edgelist with no overlapping edges
+#'
+#' @export
 dedup_cumulative_edgelist <- function(el) {
   el_n <- el |>
     dplyr::group_by(head, tail) |>
