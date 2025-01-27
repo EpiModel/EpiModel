@@ -7,22 +7,21 @@
 epiweb(class, ...)
 }
 \arguments{
-\item{class}{Model class, with options of \code{"dcm"}, \code{"icm"}, and \code{"net"}.}
+\item{class}{Model class, with options of \code{"dcm"} and \code{"icm"}.}
 
 \item{...}{Additional arguments passed to \code{shiny::runApp}.}
 }
 \description{
 Runs a web browser-based GUI of deterministic compartmental
-models, stochastic individual contact models, and basic network
-models.
+models and stochastic individual contact models.
 }
 \details{
 \code{epiweb} runs a web-based GUI of one-group deterministic compartmental
-models, stochastic individual contact models, and stochastic network models
-with user input on model type, state sizes, and parameters. Model output may
-be plotted, summarized, and saved as raw data using the core \code{EpiModel}
-functionality for these model classes. These applications are built using
-the \code{shiny} package framework.
+models and stochastic individual contact models with user input on model
+type, state sizes, and parameters. Model output may be plotted, summarized,
+and saved as raw data using the core \code{EpiModel} functionality for these
+model classes. These applications are built using the \code{shiny} package
+framework.
 }
 \examples{
 \dontrun{
@@ -31,9 +30,6 @@ epiweb(class = "dcm")
 
 ## Stochastic individual contact models
 epiweb(class = "icm")
-
-## Stochastic network models
-epiweb(class = "net")
 }
 
 }
@@ -42,5 +38,5 @@ RStudio. shiny: Web Application Framework for R. R package version 1.0.5.
 2015. \url{https://shiny.posit.co/}.
 }
 \seealso{
-\code{\link{dcm}}, \code{\link{icm}}, \code{\link{netsim}}
+\code{\link{dcm}}, \code{\link{icm}}
 }
