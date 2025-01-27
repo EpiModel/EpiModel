@@ -170,7 +170,7 @@ shinyServer(function(input, output) {
                 value = 1,
                 step = 1)
   })
-  output$outData <- renderDataTable({
+  output$outData <- DT::renderDT({
     if (input$datasel == "Means") {
       round(as.data.frame(mod()), input$tabdig)
     } else if (input$datasel == "Standard Deviations") {

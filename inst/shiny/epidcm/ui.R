@@ -153,7 +153,7 @@ shinyUI(fluidPage(
 
         tabPanel("Data",
          h4("Model Data"),
-         dataTableOutput("outData"),
+         DT::DTOutput("outData"),
          fluidRow(
            column(4,
                   numericInput(inputId = "tabdig",
