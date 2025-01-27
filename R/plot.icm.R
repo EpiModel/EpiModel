@@ -147,9 +147,10 @@ plot.icm <- function(x, y = NULL, popfrac = FALSE, sim.lines = FALSE,
     }
   }
 
-  if (is.null(sim.alpha)) {
-    sim.alpha <- 1 - log10(nsims) / 3
-    sim.alpha <- dplyr::between(sim.alpha, 0.05, 0.9)
+  if (is.null(sim.alpha) && nsims == 1) {
+    sim.alpha <- 0.9
+  } else if (is.null(sim.alpha) && nsims > 1) {
+    sim.alpha <- max(c(0.05, 1 - log10(nsims) / 3))
   }
   sim.pal <- adjustcolor(sim.col, sim.alpha)
 
