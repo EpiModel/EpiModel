@@ -154,7 +154,7 @@ shinyServer(function(input, output) {
 
 
   ## Data tab
-  output$outData <- renderDataTable({
+  output$outData <- DT::renderDT({
     round(as.data.frame(mod()), input$tabdig)
   }, options = list(lengthMenu = c(10, 25, 50, 100), pageLength = 10))
 

@@ -53,6 +53,7 @@ Imports:
     coda,
     networkLite (>= 1.0.5)
 Suggests:
+    DT,
     ergm.ego (>= 1.1.0),
     egor,
     knitr,

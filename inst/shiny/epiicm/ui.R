@@ -171,7 +171,7 @@ shinyUI(fluidPage(
                                      uiOutput("simnoControl"))))
          ), # end wellPanel
          fluidRow(
-           dataTableOutput("outData")),
+           DT::DTOutput("outData")),
          fluidRow(
            column(4,
                   numericInput(inputId = "tabdig",
