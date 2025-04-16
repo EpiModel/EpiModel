@@ -521,6 +521,10 @@ get_sims <- function(x, sims, var) {
       out$epi[[i]] <- out$epi[[i]][, -delsim, drop = FALSE]
     }
 
+    if (!is.null(out$run)) {
+      out$run[delsim] <- NULL
+      names(out$run) <- newnames
+    }
     if (!is.null(out$network)) {
       out$network[delsim] <- NULL
       names(out$network) <- newnames
