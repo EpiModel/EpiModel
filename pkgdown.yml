@@ -1,12 +1,12 @@
 pandoc: 3.1.11
-pkgdown: 2.1.1
+pkgdown: 2.1.2
 pkgdown_sha: ~
 articles:
   attributes-and-summary-statistics: attributes-and-summary-statistics.html
   Intro: Intro.html
   model-parameters: model-parameters.html
   network-objects: network-objects.html
-last_built: 2025-01-28T15:17Z
+last_built: 2025-04-30T16:03Z
 urls:
   reference: http://epimodel.github.io/EpiModel/reference
   article: http://epimodel.github.io/EpiModel/articles
