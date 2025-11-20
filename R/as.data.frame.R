@@ -7,7 +7,7 @@
 #'
 #' @param x An \code{EpiModel} object of class \code{\link{dcm}}.
 #' @param run Run number for model; used for multiple-run sensitivity models. If
-#'        not specified, will output data from all runs in a stacked data frame.
+#'        `NULL` (default), will output data from all runs in a stacked data frame.
 #' @param row.names See \code{\link{as.data.frame.default}}.
 #' @param optional See \code{\link{as.data.frame.default}}.
 #' @param ...  See \code{\link{as.data.frame.default}}.
@@ -53,13 +53,13 @@
 #' mod2 <- dcm(param, init, control)
 #' as.data.frame(mod2)
 #'
-as.data.frame.dcm <- function(x, row.names = NULL, optional = FALSE, run,
+as.data.frame.dcm <- function(x, row.names = NULL, optional = FALSE, run = NULL,
                               ...) {
 
   df <- data.frame(time = x$control$timesteps)
   nruns <- x$control$nruns
-  if (missing(run)) {
-    run <- 1:nruns
+  if (is.null(run)) {
+    run <- seq_len(nruns)
   }
 
   # Output for models with 1 run
@@ -274,7 +274,7 @@ as.data.frame.netsim <- function(x, row.names = NULL, optional = FALSE,
 #'              \code{as.data.frame} function.
 #'
 #' @param x An \code{EpiModel} object of class \code{netdx}.
-#' @param sim The simulation number to output. If not specified, then data from
+#' @param sim The simulation number to output. If `NULL`, then data from
 #'        all simulations will be output.
 #' @param row.names See \code{\link{as.data.frame.default}}.
 #' @param optional See \code{\link{as.data.frame.default}}.
@@ -307,15 +307,15 @@ as.data.frame.netsim <- function(x, row.names = NULL, optional = FALSE,
 #' as.data.frame(dx)
 #'
 as.data.frame.netdx <- function(x, row.names = NULL, optional = FALSE,
-                                sim, ...) {
+                                sim = NULL, ...) {
 
   if (is.null(x$tedgelist)) {
     stop("Edgelist not saved in netdx object, check keep.tedgelist parameter",
          call. = FALSE)
   }
 
-  if (missing(sim)) {
-    sim <- 1:x$nsims
+  if (is.null(sim)) {
+    sim <- seq_len(x$nsims)
   }
   if (max(sim) > x$nsims) {
     stop(paste("Maximum sim is", x$nsims), call. = FALSE)
