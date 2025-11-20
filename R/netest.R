@@ -143,14 +143,14 @@
 #' # To estimate the STERGM directly, use edapprox = FALSE
 #' # est2 <- netest(nw, formation, target.stats, coef.diss, edapprox = FALSE)
 #'
-netest <- function(nw, formation, target.stats, coef.diss, constraints,
+netest <- function(nw, formation, target.stats, coef.diss, constraints = NULL,
                    coef.form = NULL, edapprox = TRUE,
                    set.control.ergm = control.ergm(),
                    set.control.tergm = control.tergm(MCMC.maxchanges = Inf),
                    set.control.ergm.ego = NULL,
                    verbose = FALSE, nested.edapprox = TRUE, ...) {
 
-  if (missing(constraints)) {
+  if (is.null(constraints)) {
     constraints	<- trim_env(~.)
   }
 

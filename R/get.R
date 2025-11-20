@@ -11,7 +11,7 @@
 #'              \code{collapse} and \code{at} arguments. For \code{netsim} with
 #'              \code{tergmLite == TRUE}, the extracted network object is the
 #'              final \code{networkLite}, the \code{collapse} argument should be
-#'              \code{FALSE}, and the \code{at} argument should be missing. For
+#'              \code{FALSE}, and the \code{at} argument should be `NULL` For
 #'              \code{netsim_dat}, the \code{collapse} and \code{at} arguments
 #'              are not supported, and the network object is either the current
 #'              \code{networkLite} (if \code{tergmLite == TRUE}) or the current
@@ -93,7 +93,7 @@ get_network <- function(x, ...) {
 #'
 #' @export
 #'
-get_network.netdx <- function(x, sim = 1, collapse = FALSE, at, ...) {
+get_network.netdx <- function(x, sim = 1, collapse = FALSE, at = NULL, ...) {
 
   ## Warnings and checks ##
   nsims <- x$nsims
@@ -107,7 +107,7 @@ get_network.netdx <- function(x, sim = 1, collapse = FALSE, at, ...) {
   }
 
   nsteps <- x$nsteps
-  if (collapse == TRUE && (missing(at) || at > nsteps || at < 0)) {
+  if (collapse == TRUE && (is.null(at) || at > nsteps || at < 0)) {
     stop("Specify collapse time step between 0 and ", nsteps, call. = FALSE)
   }
 
@@ -139,8 +139,8 @@ get_network.netsim <- function(x, sim = 1, network = 1, collapse = FALSE, at, ..
          call. = FALSE)
   }
 
-  if (x$control$tergmLite == TRUE && missing(at) == FALSE) {
-    stop("Argument `at` should be missing when x$control$tergmLite == TRUE",
+  if (x$control$tergmLite == TRUE && !is.null(at)) {
+    stop("Argument `at` should be NULL when x$control$tergmLite == TRUE",
          call. = FALSE)
   }
 
@@ -154,7 +154,7 @@ get_network.netsim <- function(x, sim = 1, network = 1, collapse = FALSE, at, ..
   }
 
   nsteps <- x$control$nsteps
-  if (collapse == TRUE && (missing(at) || at > nsteps || at < 0)) {
+  if (collapse == TRUE && (is.null(at) || at > nsteps || at < 0)) {
     stop("Specify collapse time step between 0 and ", nsteps, call. = FALSE)
   }
 
@@ -314,6 +314,7 @@ get_transmat <- function(x, sim = 1, deduplicate = TRUE) {
 #' @param x An \code{EpiModel} object of class \code{\link{netsim}} or
 #'        \code{\link{netdx}}.
 #' @param sim A vector of simulation numbers from the extracted object.
+#'        (Default = NULL, all simulations are included)
 #' @param network Network number, for \code{netsim} objects with multiple
 #'        overlapping networks (advanced use, and not applicable to \code{netdx}
 #'        objects).
@@ -356,7 +357,7 @@ get_transmat <- function(x, sim = 1, deduplicate = TRUE) {
 #' summary(get_nwstats(mod))
 #' colMeans(get_nwstats(mod))
 #'
-get_nwstats <- function(x, sim, network = 1, mode = c("data.frame", "list")) {
+get_nwstats <- function(x, sim = NULL, network = 1, mode = c("data.frame", "list")) {
 
   mode <- match.arg(mode)
 
@@ -378,8 +379,8 @@ get_nwstats <- function(x, sim, network = 1, mode = c("data.frame", "list")) {
     }
   }
 
-  if (missing(sim)) {
-    sim <- 1:nsims
+  if (is.null(sim)) {
+    sim <- seq_len(nsims)
   }
   if (max(sim) > nsims) {
     stop("Specify sims less than or equal to ", nsims, call. = FALSE)
@@ -484,7 +485,7 @@ get_nwparam <- function(x, network = 1) {
 #' # Extract the mean simulation for the variable i.num
 #' sim.mean <- get_sims(mod1, sims = "mean", var = "i.num")
 #'
-get_sims <- function(x, sims, var) {
+get_sims <- function(x, sims = NULL, var = NULL) {
 
   if (!inherits(x, "netsim")) {
     stop("x must be of class netsim", call. = FALSE)
@@ -492,11 +493,12 @@ get_sims <- function(x, sims, var) {
 
   nsims <- x$control$nsims
 
-  if (missing(sims)) {
+  # TODO: make it "mean" by default and remove this check?
+  if (is.null(sims)) {
     stop("Specify sims as a vector of simulations or \"mean\" ", call. = FALSE)
   }
   if (length(sims) == 1 && sims ==
-        "mean" && (missing(var) || length(var) > 1)) {
+        "mean" && (is.null(var) || length(var) > 1)) {
     stop("If sims == 'mean' then var must be a single varible name",
          call. = FALSE)
   }
@@ -550,7 +552,7 @@ get_sims <- function(x, sims, var) {
     }
   }
 
-  if (!missing(var)) {
+  if (!is.null(var)) {
     match.vars <- which(var %in% names(x$epi))
     out$epi <- out$epi[match.vars]
   }
