@@ -126,8 +126,8 @@ get_network.netdx <- function(x, sim = 1, collapse = FALSE, at = NULL, ...) {
 #'
 #' @export
 #'
-get_network.netsim <- function(x, sim = 1, network = 1, collapse = FALSE, at, ...) {
-
+get_network.netsim <- function(x, sim = 1, network = 1, collapse = FALSE,
+                               at = NULL, ...) {
   ## Warnings and checks ##
   nsims <- x$control$nsims
   if (length(sim) > 1 || sim > nsims) {
