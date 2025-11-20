@@ -2,7 +2,8 @@ linters: linters_with_defaults(
   object_name_linter = NULL,
   cyclocomp_linter = NULL,
   line_length_linter(length = 120L),
-  object_usage_linter(skip_with = TRUE))
+  object_usage_linter(skip_with = TRUE),
+  trailing_blank_lines_linter=NULL)
 exclusions: list(
   "inst",
   "tests",
