@@ -9,7 +9,7 @@ is_active_unique_ids(dat, unique_ids)
 \arguments{
 \item{dat}{Main \code{netsim_dat} object containing a \code{networkDynamic}
 object and other initialization information passed from
-\code{\link{netsim}}.}
+\code{\link[=netsim]{netsim()}}.}
 
 \item{unique_ids}{A vector of node unique identifiers.}
 }

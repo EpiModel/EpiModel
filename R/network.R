@@ -7,12 +7,12 @@
 #' @param n Network size.
 #'
 #' @details
-#' This function is used in \code{EpiModel} workflows to initialize an empty
-#' network object.  The network attributes \code{directed}, \code{bipartite},
-#' \code{hyper}, \code{loops}, and \code{multiple} are set to \code{FALSE}.
+#' This function is used in `EpiModel` workflows to initialize an empty
+#' network object.  The network attributes `directed`, `bipartite`,
+#' `hyper`, `loops`, and `multiple` are set to `FALSE`.
 #'
 #' @return
-#' Returns an object of class \code{network}.
+#' Returns an object of class `network`.
 #'
 #' @export
 #'
@@ -28,9 +28,9 @@ network_initialize <- function(n) {
 
 #' @title Set Vertex Attribute on Network Object
 #'
-#' @description Sets a vertex attribute on an object of class \code{network}.
+#' @description Sets a vertex attribute on an object of class `network`.
 #'              This function simplifies the related function in the
-#'              \code{network} package.
+#'              `network` package.
 #'
 #' @param x An object of class network.
 #' @param attrname The name of the attribute to set.
@@ -38,11 +38,11 @@ network_initialize <- function(n) {
 #' @param v IDs for the vertices whose attributes are to be altered.
 #'
 #' @details
-#' This function is used in \code{EpiModel} workflows to set vertex attributes
-#' on an initialized empty network object (see \code{\link{network_initialize}}.
+#' This function is used in `EpiModel` workflows to set vertex attributes
+#' on an initialized empty network object (see [network_initialize()].
 #'
 #' @return
-#' Returns an object of class \code{network}.
+#' Returns an object of class `network`.
 #'
 #' @export
 #'
@@ -61,20 +61,20 @@ set_vertex_attribute <- function(x, attrname, value, v) {
 
 #' @title Get Vertex Attribute on Network Object
 #'
-#' @description Gets a vertex attribute from an object of class \code{network}.
+#' @description Gets a vertex attribute from an object of class `network`.
 #'              This functions simplifies the related function in the
-#'              \code{network} package.
+#'              `network` package.
 #'
 #' @param x An object of class network.
 #' @param attrname The name of the attribute to get.
 #'
 #' @details
-#' This function is used in \code{EpiModel} workflows to query vertex
+#' This function is used in `EpiModel` workflows to query vertex
 #' attributes on an initialized empty network object (see
-#' \code{\link{network_initialize}}).
+#' [network_initialize()]).
 #'
 #' @return
-#' Returns an object of class \code{network}.
+#' Returns an object of class `network`.
 #'
 #' @export
 #'
@@ -91,15 +91,15 @@ get_vertex_attribute <- function(x, attrname) {
 
 #' @title Get Network Attributes from a Network Object
 #'
-#' @description Gets all network attributes except \code{"mnext"} from its
+#' @description Gets all network attributes except `"mnext"` from its
 #'              network argument.
 #'
-#' @param x An object of class \code{network} or \code{networkLite}.
+#' @param x An object of class `network` or `networkLite`.
 #'
 #' @details
-#' This function is used in \code{EpiModel} workflows to copy relevant network
-#' attributes from the network object to the \code{netsim_dat} object when
-#' initializing \code{netsim} runs.
+#' This function is used in `EpiModel` workflows to copy relevant network
+#' attributes from the network object to the `netsim_dat` object when
+#' initializing `netsim` runs.
 #'
 #' @return
 #' Returns the named list of network attributes.

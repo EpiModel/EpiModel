@@ -10,7 +10,7 @@ check_attr_lengths(dat)
 \arguments{
 \item{dat}{Main \code{netsim_dat} object containing a \code{networkDynamic}
 object and other initialization information passed from
-\code{\link{netsim}}.}
+\code{\link[=netsim]{netsim()}}.}
 }
 \value{
 invisible(TRUE) if everything is correct; an error if not.

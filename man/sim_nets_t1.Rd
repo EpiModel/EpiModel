@@ -9,14 +9,14 @@ sim_nets_t1(dat)
 \arguments{
 \item{dat}{Main \code{netsim_dat} object containing a \code{networkDynamic}
 object and other initialization information passed from
-\code{\link{netsim}}.}
+\code{\link[=netsim]{netsim()}}.}
 }
 \value{
 The updated \code{netsim_dat} main list object.
 }
 \description{
 This function initializes the networks used in
-\code{\link{netsim}}. The initial edge set for a given network
+\code{\link[=netsim]{netsim()}}. The initial edge set for a given network
 is obtained either from simulating the cross-sectional model
 (if \code{edapprox == TRUE}) or from the \code{newnetwork}
 element of the \code{netest} object (if
@@ -25,7 +25,7 @@ determined, the first time step is simulated if
 \code{resimulate.network == TRUE}, and all time steps are
 simulated if \code{resimulate.network == FALSE}. Initializes the
 \code{num(.g2)} epi fields used in
-\code{\link{edges_correct}} for computing edge coefficient
+\code{\link[=edges_correct]{edges_correct()}} for computing edge coefficient
 adjustments.
 }
 \keyword{internal}

@@ -1,153 +1,152 @@
 #' @title Plot Data from a Stochastic Network Epidemic Model
 #'
 #' @description Plots epidemiological and network data from a stochastic network
-#'              model simulated with \code{\link{netsim}}.
+#'              model simulated with [netsim()].
 #'
-#' @param x An \code{EpiModel} model object of class \code{netsim}.
-#' @param type Type of plot: \code{"epi"} for epidemic model results,
-#'        \code{"network"} for a static network plot (\code{plot.network}),
-#'        or \code{"formation"}, \code{"duration"}, or \code{"dissolution"} for
+#' @param x An `EpiModel` model object of class `netsim`.
+#' @param type Type of plot: `"epi"` for epidemic model results,
+#'        `"network"` for a static network plot (`plot.network`),
+#'        or `"formation"`, `"duration"`, or `"dissolution"` for
 #'        network formation, duration, or dissolution statistics.
-#' @param y Output compartments or flows from \code{netsim} object to plot.
-#' @param popfrac If \code{TRUE}, plot prevalence of values rather than numbers
+#' @param y Output compartments or flows from `netsim` object to plot.
+#' @param popfrac If `TRUE`, plot prevalence of values rather than numbers
 #'        (see details).
-#' @param sim.lines If \code{TRUE}, plot individual simulation lines. Default is
+#' @param sim.lines If `TRUE`, plot individual simulation lines. Default is
 #'        to plot lines for one-group models but not for two-group models.
-#' @param sims If \code{type="epi"} or \code{"formation"}, a vector of
-#'        simulation numbers to plot. If \code{type="network"}, a single
-#'        simulation number for which to plot the network, or else \code{"min"}
+#' @param sims If `type="epi"` or `"formation"`, a vector of
+#'        simulation numbers to plot. If `type="network"`, a single
+#'        simulation number for which to plot the network, or else `"min"`
 #'        to plot the simulation number with the lowest disease prevalence,
-#'        \code{"max"} for the simulation with the highest disease prevalence,
-#'        or \code{"mean"} for the simulation with the prevalence closest to the
+#'        `"max"` for the simulation with the highest disease prevalence,
+#'        or `"mean"` for the simulation with the prevalence closest to the
 #'        mean across simulations at the specified time step.
 #' @param sim.col Vector of any standard R color format for simulation lines.
 #' @param sim.lwd Line width for simulation lines.
 #' @param sim.alpha Transparency level for simulation lines, where
-#'        0 = transparent and 1 = opaque (see \code{adjustcolor} function).
-#' @param mean.line If \code{TRUE}, plot mean of simulations across time.
-#' @param mean.smooth If \code{TRUE}, use a loess smoother on the mean line.
+#'        0 = transparent and 1 = opaque (see `adjustcolor` function).
+#' @param mean.line If `TRUE`, plot mean of simulations across time.
+#' @param mean.smooth If `TRUE`, use a loess smoother on the mean line.
 #' @param mean.col Vector of any standard R color format for mean lines.
 #' @param mean.lwd Line width for mean lines.
 #' @param mean.lty Line type for mean lines.
 #' @param qnts If numeric, plot polygon of simulation quantiles based on the
-#'        range implied by the argument (see details). If \code{FALSE}, suppress
+#'        range implied by the argument (see details). If `FALSE`, suppress
 #'        polygon from plot.
 #' @param qnts.col Vector of any standard R color format for polygons.
 #' @param qnts.alpha Transparency level for quantile polygons, where 0 =
-#'        transparent and 1 = opaque (see \code{adjustcolor} function).
-#' @param qnts.smooth If \code{TRUE}, use a loess smoother on quantile polygons.
-#' @param legend If \code{TRUE}, plot default legend.
+#'        transparent and 1 = opaque (see `adjustcolor` function).
+#' @param qnts.smooth If `TRUE`, use a loess smoother on quantile polygons.
+#' @param legend If `TRUE`, plot default legend.
 #' @param leg.cex Legend scale size.
-#' @param grid If \code{TRUE}, a grid is added to the background of plot
-#'        (see \code{\link{grid}} for details), with default of nx by ny.
-#' @param add If \code{TRUE}, new plot window is not called and lines are added
+#' @param grid If `TRUE`, a grid is added to the background of plot
+#'        (see [grid()] for details), with default of nx by ny.
+#' @param add If `TRUE`, new plot window is not called and lines are added
 #'        to existing plot window.
 #' @param network Network number, for simulations with multiple networks
 #'        representing the population.
-#' @param at If \code{type = "network"}, time step for network graph.
-#' @param col.status If \code{TRUE} and \code{type="network"}, automatic disease
+#' @param at If `type = "network"`, time step for network graph.
+#' @param col.status If `TRUE` and `type="network"`, automatic disease
 #'        status colors (blue = susceptible, red = infected, green = recovered).
-#' @param shp.g2 If \code{type = "network"} and \code{x} is for a two-group model,
+#' @param shp.g2 If `type = "network"` and `x` is for a two-group model,
 #'        shapes for the Group 2 vertices, with acceptable inputs of "triangle"
 #'        and "square". Group 1 vertices will remain circles.
-#' @param vertex.cex Relative size of plotted vertices if \code{type="network"},
+#' @param vertex.cex Relative size of plotted vertices if `type="network"`,
 #'        with implicit default of 1.
-#' @param stats If \code{type="formation","duration","dissolution"}, statistics
-#'        to plot. For \code{type = "formation"}, \code{stats} are among those
-#'        specified in \code{nwstats.formula} of \code{\link{control.net}}; for
-#'        \code{type = "duration", "dissolution"}, \code{stats} are among those
-#'        of the dissolution model (without \code{offset()}). The default is
+#' @param stats If `type="formation","duration","dissolution"`, statistics
+#'        to plot. For `type = "formation"`, `stats` are among those
+#'        specified in `nwstats.formula` of [control.net()]; for
+#'        `type = "duration", "dissolution"`, `stats` are among those
+#'        of the dissolution model (without `offset()`). The default is
 #'        to plot all statistics.
-#' @param targ.line If \code{TRUE}, plot target or expected value line for
+#' @param targ.line If `TRUE`, plot target or expected value line for
 #'        the statistic of interest.
 #' @param targ.col Vector of standard R colors for target statistic lines, with
-#'        default colors based on \code{RColorBrewer} color palettes.
+#'        default colors based on `RColorBrewer` color palettes.
 #' @param targ.lwd Line width for the line showing the target statistic values.
 #' @param targ.lty Line type for the line showing the target statistic values.
-#' @param plots.joined If \code{TRUE} and
-#'        \code{type="formation","duration","dissolution"}, combine all
+#' @param plots.joined If `TRUE` and
+#'        `type="formation","duration","dissolution"`, combine all
 #'        statistics in one plot, versus one plot per statistic if
-#'        \code{FALSE}.
-#' @param method Plot method for \code{type="formation", "duration", "dissolution"},
-#'        with options of \code{"l"} for line plots and \code{"b"} for box plots.
-#' @param duration.imputed If \code{type = "duration"}, a logical indicating
+#'        `FALSE`.
+#' @param method Plot method for `type="formation", "duration", "dissolution"`,
+#'        with options of `"l"` for line plots and `"b"` for box plots.
+#' @param duration.imputed If `type = "duration"`, a logical indicating
 #'        whether or not to impute starting times for relationships extant at
-#'        the start of the simulation. Defaults to \code{TRUE} when
-#'        \code{type = "duration"}.
+#'        the start of the simulation. Defaults to `TRUE` when
+#'        `type = "duration"`.
 #' @param ... Additional arguments to pass.
 #' @inheritParams graphics::plot
 #'
 #' @details
 #' This plot function can produce three types of plots with a stochastic network
-#' model simulated through \code{\link{netsim}}:
-#' \enumerate{
-#'  \item \strong{\code{type="epi"}}: epidemic model results (e.g., disease
+#' model simulated through [netsim()]:
+#'
+#'  1. **`type="epi"`**: epidemic model results (e.g., disease
 #'        prevalence and incidence) may be plotted.
-#'  \item \strong{\code{type="network"}}: a static network plot will be
+#'  2. **`type="network"`**: a static network plot will be
 #'        generated. A static network plot of a dynamic network is a
 #'        cross-sectional extraction of that dynamic network at a specific
 #'        time point. This plotting function wraps the
-#'        [`network::plot.network`] function in the \code{network} package.
-#'        Consult the help page for \code{plot.network} for all of the plotting
+#'        [`network::plot.network`] function in the `network` package.
+#'        Consult the help page for `plot.network` for all of the plotting
 #'        parameters. In addition, four plotting parameters specific to
-#'        \code{netsim} plots are available: \code{sim}, \code{at},
-#'        \code{col.status}, and \code{shp.g2}.
-#'  \item \strong{\code{type="formation"}}: summary network statistics related
+#'        `netsim` plots are available: `sim`, `at`,
+#'        `col.status`, and `shp.g2`.
+#'  3. **`type="formation"`**: summary network statistics related
 #'        to the network model formation are plotted. These plots are similar
-#'        to the formation plots for \code{netdx} objects. When running a
-#'        \code{netsim} simulation, one must specify there that
-#'        \code{save.nwstats=TRUE}; the plot here will then show the network
-#'        statistics requested explicitly in \code{nwstats.formula}, or will use
-#'        the formation formula set in \code{netest} otherwise.
-#'  \item \strong{\code{type="duration","dissolution"}}: as in
-#'        \code{\link{plot.netdx}}; supported in \code{plot.netsim} only when
-#'        the dissolution model is \code{~offset(edges)}, \code{tergmLite} is
-#'        \code{FALSE}, and \code{save.network} is \code{TRUE}.
-#' }
+#'        to the formation plots for `netdx` objects. When running a
+#'        `netsim` simulation, one must specify there that
+#'        `save.nwstats=TRUE`; the plot here will then show the network
+#'        statistics requested explicitly in `nwstats.formula`, or will use
+#'        the formation formula set in `netest` otherwise.
+#'  4. **`type="duration","dissolution"`**: as in
+#'        [plot.netdx()]; supported in `plot.netsim` only when
+#'        the dissolution model is `~offset(edges)`, `tergmLite` is
+#'        `FALSE`, and `save.network` is `TRUE`.
 #'
 #' @details
-#' When \code{type="epi"}, this plotting function will extract the
-#' epidemiological output from a model object of class \code{netsim} and plot
+#' When `type="epi"`, this plotting function will extract the
+#' epidemiological output from a model object of class `netsim` and plot
 #' the time series data of disease prevalence and other results. The summary
 #' statistics that the function calculates and plots are individual simulation
 #' lines, means of the individual simulation lines, and quantiles of those
 #' individual simulation lines. The mean line, toggled on with
-#' \code{mean.line=TRUE}, is calculated as the row mean across simulations at
+#' `mean.line=TRUE`, is calculated as the row mean across simulations at
 #' each time step.
 #'
 #' Compartment prevalences are the size of a compartment over some denominator.
-#' To plot the raw numbers from any compartment, use \code{popfrac=FALSE}; this
-#' is the default for any plots of flows. The \code{popfrac} parameter
+#' To plot the raw numbers from any compartment, use `popfrac=FALSE`; this
+#' is the default for any plots of flows. The `popfrac` parameter
 #' calculates and plots the denominators of all specified compartments using
 #' these rules: 1) for one-group models, the prevalence of any compartment is
 #' the compartment size divided by the total population size; 2) for two-group
 #' models, the prevalence of any compartment is the compartment size divided by
 #' the group population size. For any prevalences that are not automatically
-#' calculated, the \code{\link{mutate_epi}} function may be used to add new
-#' variables to the \code{netsim} object to plot or analyze.
+#' calculated, the [mutate_epi()] function may be used to add new
+#' variables to the `netsim` object to plot or analyze.
 #'
 #' The quantiles show the range of outcome values within a certain specified
 #' quantile range. By default, the interquartile range is shown: that is the
-#' middle 50\% of the data. This is specified by \code{qnts=0.5}. To show the
-#' middle 95\% of the data, specify \code{qnts=0.95}. To toggle off the polygons
-#' where they are plotted by default, specify \code{qnts=FALSE}.
+#' middle 50\% of the data. This is specified by `qnts=0.5`. To show the
+#' middle 95\% of the data, specify `qnts=0.95`. To toggle off the polygons
+#' where they are plotted by default, specify `qnts=FALSE`.
 #'
-#' When \code{type="network"}, this function will plot cross sections of the
+#' When `type="network"`, this function will plot cross sections of the
 #' simulated networks at specified time steps. Because it is only possible to
 #' plot one time step from one simulation at a time, it is necessary to enter
-#' these in the \code{at} and \code{sims} parameters. To aid in visualizing
+#' these in the `at` and `sims` parameters. To aid in visualizing
 #' representative and extreme simulations at specific time steps, the
-#' \code{sims} parameter may be set to \code{"mean"} to plot the simulation in
+#' `sims` parameter may be set to `"mean"` to plot the simulation in
 #' which the disease prevalence is closest to the average across all
-#' simulations, \code{"min"} to plot the simulation in which the prevalence is
-#' lowest, and \code{"max"} to plot the simulation in which the prevalence is
+#' simulations, `"min"` to plot the simulation in which the prevalence is
+#' lowest, and `"max"` to plot the simulation in which the prevalence is
 #' highest.
 #'
 #' @method plot netsim
 #' @export
 #'
 #' @keywords plot
-#' @seealso [`network::plot.network`], \code{\link{mutate_epi}}
+#' @seealso [`network::plot.network`], [mutate_epi()]
 #'
 #' @examples
 #' ## SI Model without Network Feedback

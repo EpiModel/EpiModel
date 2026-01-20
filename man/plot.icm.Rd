@@ -80,7 +80,7 @@ transparent and 1 = opaque (see \code{adjustcolor} function).}
 \item{leg.cex}{Legend scale size.}
 
 \item{grid}{If \code{TRUE}, a grid is added to the background of plot
-(see \code{\link{grid}} for details), with default of nx by ny.}
+(see \code{\link[=grid]{grid()}} for details), with default of nx by ny.}
 
 \item{add}{If \code{TRUE}, new plot window is not called and lines are added
 to existing plot window.}
@@ -103,7 +103,7 @@ to existing plot window.}
 }
 \description{
 Plots epidemiological data from a stochastic individual contact
-model simulated with \code{\link{icm}}.
+model simulated with \code{\link[=icm]{icm()}}.
 }
 \details{
 This plotting function will extract the epidemiological output from a model
@@ -122,7 +122,7 @@ these rules: 1) for one-group models, the prevalence of any compartment is
 the compartment size divided by the total population size; 2) for two-group
 models, the prevalence of any compartment is the compartment size divided by
 the group population size. For any prevalences that are not automatically
-calculated, the \code{\link{mutate_epi}} function may be used to add new
+calculated, the \code{\link[=mutate_epi]{mutate_epi()}} function may be used to add new
 variables to the \code{icm} object to plot or analyze.
 
 The quantiles show the range of outcome values within a certain specified
@@ -157,6 +157,6 @@ plot(mod2, y = "si.flow", qnts.smooth = FALSE, qnts = 1)
 
 }
 \seealso{
-\code{\link{icm}}
+\code{\link[=icm]{icm()}}
 }
 \keyword{plot}

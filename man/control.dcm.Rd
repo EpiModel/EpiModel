@@ -58,11 +58,11 @@ An \code{EpiModel} object of class \code{control.dcm}.
 }
 \description{
 Sets the controls for deterministic compartmental models
-simulated with \code{\link{dcm}}.
+simulated with \code{\link[=dcm]{dcm()}}.
 }
 \details{
 \code{control.dcm} sets the required control settings for any deterministic
-compartmental models solved with the \code{\link{dcm}} function. Controls are
+compartmental models solved with the \code{\link[=dcm]{dcm()}} function. Controls are
 required for both base model types and original models. For all base models,
 the \code{type} argument is a necessary parameter and it has no default.
 }
@@ -73,13 +73,13 @@ The form of the model function for base models may be displayed with the
 not be run. These model forms may be used as templates to write original
 model functions.
 
-These new models may be input and solved with \code{\link{dcm}} using the
+These new models may be input and solved with \code{\link[=dcm]{dcm()}} using the
 \code{new.mod} argument, which requires as input a model function.
 }
 
 \seealso{
-Use \code{\link{param.dcm}} to specify model parameters and
-\code{\link{init.dcm}} to specify the initial conditions. Run the
-parameterized model with \code{\link{dcm}}.
+Use \code{\link[=param.dcm]{param.dcm()}} to specify model parameters and
+\code{\link[=init.dcm]{init.dcm()}} to specify the initial conditions. Run the
+parameterized model with \code{\link[=dcm]{dcm()}}.
 }
 \keyword{parameterization}

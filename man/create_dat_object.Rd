@@ -12,14 +12,14 @@ create_dat_object(
 )
 }
 \arguments{
-\item{param}{An \code{EpiModel} object of class \code{\link{param.net}}.}
+\item{param}{An \code{EpiModel} object of class \code{\link[=param.net]{param.net()}}.}
 
-\item{init}{An \code{EpiModel} object of class \code{\link{init.net}}.}
+\item{init}{An \code{EpiModel} object of class \code{\link[=init.net]{init.net()}}.}
 
-\item{control}{An \code{EpiModel} object of class \code{\link{control.net}}.}
+\item{control}{An \code{EpiModel} object of class \code{\link[=control.net]{control.net()}}.}
 
 \item{run}{A \code{list} that will contains the objects created by
-\code{\link{netsim}} that are required for between step communication. This
+\code{\link[=netsim]{netsim()}} that are required for between step communication. This
 list must be preserved for restarting models.}
 }
 \value{

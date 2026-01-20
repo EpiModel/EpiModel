@@ -9,7 +9,7 @@ saveout.net(dat, s, out = NULL)
 \arguments{
 \item{dat}{Main \code{netsim_dat} object containing a \code{networkDynamic}
 object and other initialization information passed from
-\code{\link{netsim}}.}
+\code{\link[=netsim]{netsim()}}.}
 
 \item{s}{Current simulation number.}
 
@@ -19,10 +19,10 @@ object and other initialization information passed from
 A list with the following elements:
 \itemize{
 \item \strong{param:} the epidemic parameters passed into the model through
-\code{\link{param.net}}, with additional parameters added as
+\code{\link[=param.net]{param.net()}}, with additional parameters added as
 necessary.
 \item \strong{control:} the control settings passed into the model through
-\code{\link{control.net}}, with additional controls added as
+\code{\link[=control.net]{control.net()}}, with additional controls added as
 necessary.
 \item \strong{epi:} a list of data frames, one for each epidemiological
 output from the model.
@@ -36,6 +36,6 @@ one for each model simulation.
 \description{
 This function transfers the data from the main \code{netsim_dat}
 object to the output \code{out} object at the end of each
-simulation in \code{\link{netsim}}.
+simulation in \code{\link[=netsim]{netsim()}}.
 }
 \keyword{internal}

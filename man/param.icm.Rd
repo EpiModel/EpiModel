@@ -109,13 +109,13 @@ models simulated with \code{icm}.
 }
 \details{
 \code{param.icm} sets the epidemic parameters for the stochastic individual
-contact models simulated with the \code{\link{icm}} function. Models
+contact models simulated with the \code{\link[=icm]{icm()}} function. Models
 may use the base types, for which these parameters are used, or new process
 modules which may use these parameters (but not necessarily).
 
 For base models, the model specification will be chosen as a result of
 the model parameters entered here and the control settings in
-\code{\link{control.icm}}. One-group and two-group models are available,
+\code{\link[=control.icm]{control.icm()}}. One-group and two-group models are available,
 where the former assumes a homogeneous mixing in the population and the
 latter assumes some form of heterogeneous mixing between two distinct
 partitions in the population (e.g., men and women). Specifying any group two
@@ -139,7 +139,7 @@ act rate should control the others with respect to balancing.
 To build original models outside of the base models, new process modules
 may be constructed to replace the existing modules or to supplement the
 existing set. These are passed into the control settings in
-\code{\link{control.icm}}. New modules may use either the existing model
+\code{\link[=control.icm]{control.icm()}}. New modules may use either the existing model
 parameters named here, an original set of parameters, or a combination of
 both. The \code{...} allows the user to pass an arbitrary set of original
 model parameters into \code{param.icm}. Whereas there are strict checks with
@@ -148,8 +148,8 @@ responsibility with new modules.
 }
 
 \seealso{
-Use \code{\link{init.icm}} to specify the initial conditions and
-\code{\link{control.icm}} to specify the control settings. Run the
-parameterized model with \code{\link{icm}}.
+Use \code{\link[=init.icm]{init.icm()}} to specify the initial conditions and
+\code{\link[=control.icm]{control.icm()}} to specify the control settings. Run the
+parameterized model with \code{\link[=icm]{icm()}}.
 }
 \keyword{parameterization}

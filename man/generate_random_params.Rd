@@ -22,7 +22,7 @@ This function uses the generative functions in the
 }
 \section{\code{random.params}}{
 
-The \code{random.params} argument to the \code{\link{param.net}} function
+The \code{random.params} argument to the \code{\link[=param.net]{param.net()}} function
 must be a named list of functions that each return a value that can be used
 as the argument with the same name. In the example below, \code{param_random}
 is a function factory provided by EpiModel for \code{act.rate} and

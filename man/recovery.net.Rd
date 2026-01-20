@@ -9,7 +9,7 @@ recovery.net(dat, at)
 \arguments{
 \item{dat}{Main \code{netsim_dat} object containing a \code{networkDynamic}
 object and other initialization information passed from
-\code{\link{netsim}}.}
+\code{\link[=netsim]{netsim()}}.}
 
 \item{at}{Current time step.}
 }
@@ -20,6 +20,6 @@ The updated \code{netsim_dat} main list object.
 This function simulates recovery from the infected state
 either to a distinct recovered state (SIR model type) or back
 to a susceptible state (SIS model type), for use in
-\code{\link{netsim}}.
+\code{\link[=netsim]{netsim()}}.
 }
 \keyword{internal}

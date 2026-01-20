@@ -4,15 +4,15 @@
 #' @description Simulates stochastic network epidemic models for infectious
 #'              disease.
 #'
-#' @param x If \code{control$start == 1}, either a fitted network model object
-#'        of class \code{netest} or a list of such objects. If
-#'        \code{control$start > 1}, an object of class \code{netsim}. When
+#' @param x If `control$start == 1`, either a fitted network model object
+#'        of class `netest` or a list of such objects. If
+#'        `control$start > 1`, an object of class `netsim`. When
 #'        multiple networks are used, the node sets (including network size
 #'        and nodal attributes) are assumed to be the same for all networks.
-#' @param param Model parameters, as an object of class \code{param.net}.
-#' @param init Initial conditions, as an object of class \code{init.net}.
+#' @param param Model parameters, as an object of class `param.net`.
+#' @param init Initial conditions, as an object of class `init.net`.
 #' @param control Control settings, as an object of class
-#'        \code{control.net}.
+#'        `control.net`.
 #'
 #' @details
 #' Stochastic network models explicitly represent phenomena within and across
@@ -24,7 +24,7 @@
 #' examples, is found in the [Network Modeling for Epidemics](https://epimodel.github.io/sismid/)
 #' course materials.
 #'
-#' The \code{netsim} function performs modeling of both the base model types
+#' The `netsim` function performs modeling of both the base model types
 #' and original models. Base model types include one-group and two-group models
 #' with disease types for Susceptible-Infected (SI), Susceptible-Infected-Recovered (SIR),
 #' and Susceptible-Infected-Susceptible (SIS).
@@ -35,41 +35,41 @@
 #' module. This functionality is documented in the
 #' [Extending EpiModel](https://epimodel.github.io/sismid/9_extending/mod9-Intro.html)
 #' section of the [Network Modeling for Epidemics](https://epimodel.github.io/sismid/)
-#' course materials. The list of modules within \code{netsim} available for
-#' modification is listed in \code{\link{modules.net}}.
+#' course materials. The list of modules within `netsim` available for
+#' modification is listed in [modules.net()].
 #'
 #' @return
-#' A list of class \code{netsim} with the following elements:
-#' \itemize{
-#'  \item \strong{param:} the epidemic parameters passed into the model through
-#'        \code{param}, with additional parameters added as necessary.
-#'  \item \strong{control:} the control settings passed into the model through
-#'        \code{control}, with additional controls added as necessary.
-#'  \item \strong{epi:} a list of data frames, one for each epidemiological
+#' A list of class `netsim` with the following elements:
+#'
+#'  * **param:** the epidemic parameters passed into the model through
+#'        `param`, with additional parameters added as necessary.
+#'  * **control:** the control settings passed into the model through
+#'        `control`, with additional controls added as necessary.
+#'  * **epi:** a list of data frames, one for each epidemiological
 #'        output from the model. Outputs for base models always include the
 #'        size of each compartment, as well as flows in, out of, and between
 #'        compartments.
-#'  \item \strong{stats:} a list containing two sublists, \code{nwstats} for any
-#'        network statistics saved in the simulation, and \code{transmat} for
+#'  * **stats:** a list containing two sublists, `nwstats` for any
+#'        network statistics saved in the simulation, and `transmat` for
 #'        the transmission matrix saved in the simulation. See
-#'        \code{\link{control.net}} for further
+#'        [control.net()] for further
 #'        details.
-#'  \item \strong{network:} a list of lists of \code{networkDynamic} or
-#'        \code{networkLite} objects, with one list of objects for each model
+#'  * **network:** a list of lists of `networkDynamic` or
+#'        `networkLite` objects, with one list of objects for each model
 #'        simulation.
-#' }
-#' If \code{control$raw.output == TRUE}: A list of the raw (pre-processed)
-#' \code{netsim_dat} objects, for use in simulation continuation.
+#'
+#' If `control$raw.output == TRUE`: A list of the raw (pre-processed)
+#' `netsim_dat` objects, for use in simulation continuation.
 #'
 #' @references
 #' Jenness SM, Goodreau SM and Morris M. EpiModel: An R Package for Mathematical
 #' Modeling of Infectious Disease over Networks. Journal of Statistical
 #' Software. 2018; 84(8): 1-47.
 #'
-#' @seealso Extract the model results with \code{\link{as.data.frame.netsim}}.
+#' @seealso Extract the model results with [as.data.frame.netsim()].
 #'          Summarize the time-specific model results with
-#'          \code{\link{summary.netsim}}. Plot the model results with
-#'          \code{\link{plot.netsim}}.
+#'          [summary.netsim()]. Plot the model results with
+#'          [plot.netsim()].
 #'
 #' @keywords model
 #' @export

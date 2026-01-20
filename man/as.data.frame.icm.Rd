@@ -27,9 +27,9 @@
 \arguments{
 \item{x}{An \code{EpiModel} object of class \code{icm} or \code{netsim}.}
 
-\item{row.names}{See \code{\link{as.data.frame.default}}.}
+\item{row.names}{See \code{\link[=as.data.frame.default]{as.data.frame.default()}}.}
 
-\item{optional}{See \code{\link{as.data.frame.default}}.}
+\item{optional}{See \code{\link[=as.data.frame.default]{as.data.frame.default()}}.}
 
 \item{out}{Data output to data frame: \code{"mean"} for row means across
 simulations, \code{"sd"} for row standard deviations across
@@ -41,7 +41,7 @@ specified, then data from all simulations will be output.}
 
 \item{qval}{Quantile value required when \code{out="qnt"}.}
 
-\item{...}{See \code{\link{as.data.frame.default}}.}
+\item{...}{See \code{\link[=as.data.frame.default]{as.data.frame.default()}}.}
 }
 \value{
 A data frame containing the data from \code{x}.

@@ -2,23 +2,23 @@
 #' @title Epidemic Parameters for Stochastic Individual Contact Models
 #'
 #' @description Sets the epidemic parameters for stochastic individual contact
-#'              models simulated with \code{icm}.
+#'              models simulated with `icm`.
 #'
 #' @inheritParams param.dcm
 #'
 #' @details
-#' \code{param.icm} sets the epidemic parameters for the stochastic individual
-#' contact models simulated with the \code{\link{icm}} function. Models
+#' `param.icm` sets the epidemic parameters for the stochastic individual
+#' contact models simulated with the [icm()] function. Models
 #' may use the base types, for which these parameters are used, or new process
 #' modules which may use these parameters (but not necessarily).
 #'
 #' For base models, the model specification will be chosen as a result of
 #' the model parameters entered here and the control settings in
-#' \code{\link{control.icm}}. One-group and two-group models are available,
+#' [control.icm()]. One-group and two-group models are available,
 #' where the former assumes a homogeneous mixing in the population and the
 #' latter assumes some form of heterogeneous mixing between two distinct
 #' partitions in the population (e.g., men and women). Specifying any group two
-#' parameters (those with a \code{.g2}) implies the simulation of a two-group
+#' parameters (those with a `.g2`) implies the simulation of a two-group
 #' model. All the parameters for a desired model type must be specified, even if
 #' they are zero.
 #'
@@ -28,25 +28,25 @@
 #' mixing, the product of one group size and act rate must equal the product of
 #' the other group size and act rate: \eqn{N_1 \alpha_1 = N_2 \alpha_2}, where
 #' \eqn{N_i} is the group size and \eqn{\alpha_i} the group-specific act rate
-#' at time \eqn{t}. The \code{balance} parameter here specifies which group's
+#' at time \eqn{t}. The `balance` parameter here specifies which group's
 #' act rate should control the others with respect to balancing.
 #'
 #' @section New Modules:
 #' To build original models outside of the base models, new process modules
 #' may be constructed to replace the existing modules or to supplement the
 #' existing set. These are passed into the control settings in
-#' \code{\link{control.icm}}. New modules may use either the existing model
+#' [control.icm()]. New modules may use either the existing model
 #' parameters named here, an original set of parameters, or a combination of
-#' both. The \code{...} allows the user to pass an arbitrary set of original
-#' model parameters into \code{param.icm}. Whereas there are strict checks with
+#' both. The `...` allows the user to pass an arbitrary set of original
+#' model parameters into `param.icm`. Whereas there are strict checks with
 #' default modules for parameter validity, these checks are the user's
 #' responsibility with new modules.
 #'
-#' @return An \code{EpiModel} object of class \code{param.icm}.
+#' @return An `EpiModel` object of class `param.icm`.
 #'
-#' @seealso Use \code{\link{init.icm}} to specify the initial conditions and
-#'          \code{\link{control.icm}} to specify the control settings. Run the
-#'          parameterized model with \code{\link{icm}}.
+#' @seealso Use [init.icm()] to specify the initial conditions and
+#'          [control.icm()] to specify the control settings. Run the
+#'          parameterized model with [icm()].
 #'
 #' @keywords parameterization
 #'
@@ -112,7 +112,7 @@ param.icm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
 #' @title Initial Conditions for Stochastic Individual Contact Models
 #'
 #' @description Sets the initial conditions for stochastic individual contact
-#'              models simulated with \code{icm}.
+#'              models simulated with `icm`.
 #'
 #' @param s.num Number of initial susceptible persons. For two-group models,
 #'        this is the number of initial group 1 susceptible persons.
@@ -120,25 +120,25 @@ param.icm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
 #'        is the number of initial group 1 infected persons.
 #' @param r.num Number of initial recovered persons. For two-group models, this
 #'        is the number of initial group 1 recovered persons. This parameter is
-#'        only used for the \code{SIR} model type.
+#'        only used for the `SIR` model type.
 #' @param s.num.g2 Number of initial susceptible persons in group 2. This
 #'        parameter is only used for two-group models.
 #' @param i.num.g2 Number of initial infected persons in group 2. This parameter
 #'        is only used for two-group models.
 #' @param r.num.g2 Number of initial recovered persons in group 2. This
-#'        parameter is only used for two-group \code{SIR} models.
+#'        parameter is only used for two-group `SIR` models.
 #' @param ... Additional initial conditions passed to model.
 #'
 #' @details
-#' The initial conditions for a model solved with \code{\link{icm}} should be
-#' input into the \code{init.icm} function. This function handles initial
+#' The initial conditions for a model solved with [icm()] should be
+#' input into the `init.icm` function. This function handles initial
 #' conditions for both base models and original models using new modules.
 #'
-#' @return An \code{EpiModel} object of class \code{init.icm}.
+#' @return An `EpiModel` object of class `init.icm`.
 #'
-#' @seealso Use \code{\link{param.icm}} to specify model parameters and
-#'          \code{\link{control.icm}} to specify the control settings. Run the
-#'          parameterized model with \code{\link{icm}}.
+#' @seealso Use [param.icm()] to specify model parameters and
+#'          [control.icm()] to specify the control settings. Run the
+#'          parameterized model with [icm()].
 #'
 #' @keywords parameterization
 #'
@@ -174,63 +174,63 @@ init.icm <- function(s.num, i.num, r.num,
 #' @title Control Settings for Stochastic Individual Contact Models
 #'
 #' @description Sets the controls for stochastic individual contact models
-#'              simulated with \code{\link{icm}}.
+#'              simulated with [icm()].
 #'
-#' @param type Disease type to be modeled, with the choice of \code{"SI"} for
-#'        Susceptible-Infected diseases, \code{"SIR"} for
-#'        Susceptible-Infected-Recovered diseases, and \code{"SIS"} for
+#' @param type Disease type to be modeled, with the choice of `"SI"` for
+#'        Susceptible-Infected diseases, `"SIR"` for
+#'        Susceptible-Infected-Recovered diseases, and `"SIS"` for
 #'        Susceptible-Infected-Susceptible diseases.
 #' @param nsteps Number of time steps to solve the model over. This must be a
 #'        positive integer.
 #' @param nsims Number of simulations to run.
 #' @param initialize.FUN Module to initialize the model at the outset, with the
-#'        default function of \code{\link{initialize.icm}}.
+#'        default function of [initialize.icm()].
 #' @param infection.FUN Module to simulate disease infection, with the default
-#'        function of \code{\link{infection.icm}}.
+#'        function of [infection.icm()].
 #' @param recovery.FUN Module to simulate disease recovery, with the default
-#'        function of \code{\link{recovery.icm}}.
+#'        function of [recovery.icm()].
 #' @param departures.FUN Module to simulate departures or exits, with the
-#'        default function of \code{\link{departures.icm}}.
+#'        default function of [departures.icm()].
 #' @param arrivals.FUN Module to simulate arrivals or entries, with the default
-#'        function of \code{\link{arrivals.icm}}.
+#'        function of [arrivals.icm()].
 #' @param prevalence.FUN Module to calculate disease prevalence at each time
-#'        step, with the default function of \code{\link{prevalence.icm}}.
-#' @param verbose If \code{TRUE}, print model progress to the console.
+#'        step, with the default function of [prevalence.icm()].
+#' @param verbose If `TRUE`, print model progress to the console.
 #' @param verbose.int Time step interval for printing progress to console, where
 #'        0 (the default) prints completion status of entire simulation and
-#'        positive integer \code{x} prints progress after every \code{x} time
+#'        positive integer `x` prints progress after every `x` time
 #'        steps.
-#' @param skip.check If \code{TRUE}, skips the default error checking for the
+#' @param skip.check If `TRUE`, skips the default error checking for the
 #'        structure and consistency of the parameter values, initial conditions,
 #'        and control settings before running base epidemic models. Setting
-#'        this to \code{FALSE} is recommended when running models with new
+#'        this to `FALSE` is recommended when running models with new
 #'        modules specified.
 #' @param ... Additional control settings passed to model.
 #'
 #' @details
-#' \code{control.icm} sets the required control settings for any stochastic
-#' individual contact model solved with the \code{\link{icm}} function. Controls
+#' `control.icm` sets the required control settings for any stochastic
+#' individual contact model solved with the [icm()] function. Controls
 #' are required for both base model types and when passing original process
-#' modules. For all base models, the \code{type} argument is a necessary parameter
+#' modules. For all base models, the `type` argument is a necessary parameter
 #' and it has no default.
 #'
 #' @section New Modules:
 #' Base ICM models use a set of module functions that specify
 #' how the individual agents in the population are subjected to infection,
 #' recovery, demographics, and other processes. Core modules are those listed in
-#' the \code{.FUN} arguments. For each module, there is a default function used
+#' the `.FUN` arguments. For each module, there is a default function used
 #' in the simulation. The default infection module, for example, is contained in
-#' the \code{\link{infection.icm}} function.
+#' the [infection.icm()] function.
 #'
 #' For original models, one may substitute replacement module functions for any
 #' of the default functions. New modules may be added to the workflow at each
-#' time step by passing a module function via the \code{...} argument.
+#' time step by passing a module function via the `...` argument.
 #'
-#' @return An \code{EpiModel} object of class \code{control.icm}.
+#' @return An `EpiModel` object of class `control.icm`.
 #'
-#' @seealso Use \code{\link{param.icm}} to specify model parameters and
-#'          \code{\link{init.icm}} to specify the initial conditions. Run the
-#'          parameterized model with \code{\link{icm}}.
+#' @seealso Use [param.icm()] to specify model parameters and
+#'          [init.icm()] to specify the initial conditions. Run the
+#'          parameterized model with [icm()].
 #'
 #' @keywords parameterization
 #'
@@ -297,12 +297,12 @@ control.icm <- function(type, nsteps, nsims = 1,
 #' @title Cross Checking of Inputs for Stochastic Individual Contact Models
 #'
 #' @description This function checks that the three parameter lists from
-#'              \code{\link{param.icm}}, \code{\link{init.icm}}, and
-#'              \code{\link{control.icm}} are consistent.
+#'              [param.icm()], [init.icm()], and
+#'              [control.icm()] are consistent.
 #'
-#' @param param An \code{EpiModel} object of class \code{\link{param.icm}}.
-#' @param init An \code{EpiModel} object of class \code{\link{init.icm}}.
-#' @param control An \code{EpiModel} object of class \code{\link{control.icm}}.
+#' @param param An `EpiModel` object of class [param.icm()].
+#' @param init An `EpiModel` object of class [init.icm()].
+#' @param control An `EpiModel` object of class [control.icm()].
 #'
 #' @return
 #' This function returns no objects.

@@ -9,7 +9,7 @@ netsim_error_logger(dat, s)
 \arguments{
 \item{dat}{Main \code{netsim_dat} object containing a \code{networkDynamic}
 object and other initialization information passed from
-\code{\link{netsim}}.}
+\code{\link[=netsim]{netsim()}}.}
 
 \item{s}{The number of the simulation that failed}
 }

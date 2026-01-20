@@ -9,7 +9,7 @@ auto_update_attr(dat, newNodes, curr.tab)
 \arguments{
 \item{dat}{Main \code{netsim_dat} object containing a \code{networkDynamic}
 object and other initialization information passed from
-\code{\link{netsim}}.}
+\code{\link[=netsim]{netsim()}}.}
 
 \item{newNodes}{Vector of nodal IDs for incoming nodes at the current time
 step.}
@@ -22,11 +22,11 @@ The updated \code{netsim_dat} main list object.
 \description{
 Updates the vertex attributes on a network for new nodes
 incoming into that network, based on a set of rules for each
-attribute that the user specifies in \code{\link{control.net}}.
+attribute that the user specifies in \code{\link[=control.net]{control.net()}}.
 }
 \seealso{
-\code{\link{copy_nwattr_to_datattr}}, \code{\link{get_attr_prop}},
-\code{\link{auto_update_attr}}.
+\code{\link[=copy_nwattr_to_datattr]{copy_nwattr_to_datattr()}}, \code{\link[=get_attr_prop]{get_attr_prop()}},
+\code{\link[=auto_update_attr]{auto_update_attr()}}.
 }
 \keyword{internal}
 \keyword{netUtils}
