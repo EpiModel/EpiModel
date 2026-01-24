@@ -803,7 +803,6 @@ get_degree <- function(x) {
   return(out)
 }
 
-
 #' @title Truncate Simulation Time Series
 #'
 #' @description Left-truncates simulation epidemiological summary statistics
@@ -845,7 +844,7 @@ truncate_sim <- function(x, at) {
   }
   rows <- at:(x$control$nsteps)
   # epi
-  x$epi <- lapply(x$epi, function(r) r[rows, ])
+  x$epi <- lapply(x$epi, function(r) r[rows, , drop = FALSE])
   # control settings
   x$control$start <- 1
   x$control$nsteps <- max(seq_along(rows))
