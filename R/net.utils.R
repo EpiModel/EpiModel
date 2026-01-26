@@ -851,3 +851,80 @@ truncate_sim <- function(x, at) {
   x$control$nsteps <- max(seq_along(rows))
   return(x)
 }
+
+
+
+# Make a Restart Point From a Netsim Object
+#
+# @export
+make_restart_point <- function(sim_obj, sim_num = 1, keep_steps = 1, time_attrs = NULL) {
+  if (!inherits(sim_obj, c("netsim"))) {
+    stop("`sim_obj` must be  an object of class `netsim`")
+  }
+  required_names <- c("param", "nwparam", "epi", "run", "coef.form", "num.nw")
+  missing_names <- setdiff(required_names, names(sim_obj))
+  if (length(missing_names) > 0) {
+    stop(
+      "`sim_obj` is missing the following elements required for",
+      " re-initialization: ", paste.and(missing_names)
+    )
+  }
+
+  # Select  the simulation of interest, that renames the selected sim: `sim1`
+  x <- get_sims(sim_obj, sims = sim_num)
+  n_steps <- x$control$nsteps
+  run_ls <- x$run$sim1
+
+  # Keep only the last `keep_steps` rows of each epi
+  keep_rows <- (n_steps - keep_steps + 1):n_steps
+  x$epi <- lapply(x$epi, function(r) r[keep_rows, , drop = FALSE])
+
+  # Fix UIDs
+  n_nodes <- length(run_ls$attr$active)
+  uid_offset <- min(run_ls$attr$unique_id) - 1
+  run_ls$attrs$unique_id <- run_ls$unique_id - uid_offset
+  run_ls$last_unique_id <- run_ls$last_unique_id - uid_offset
+
+  # Time correction
+  time_offset <- n_steps - keep_steps
+  x$control$start <- 1
+  x$control$nsteps <- keep_steps
+
+  # Time attributes - offset so last step is now step 1
+  time_attrs <- union(c("entrTime", "exitTime"), time_attrs)
+  run_ls$attr[time_attrs] <- lapply(
+    run_ls$attr[time_attrs],
+    function(v) v - time_offset
+  )
+
+  # Cumulative Edgelist - keep only the current one, fix time and UIDs
+  run_ls$el_cuml_cur <- lapply(
+    run_ls$el_cuml_cur,
+    function(el) {
+      el$head <- el$head - uid_offset
+      el$tail <- el$tail - uid_offset
+      el$start <- el$start - time_offset
+      el
+    }
+  )
+  # Keep just the structure of the historical one
+  run_ls$el_cuml_hist <- lapply(
+    run_ls$el_cuml_hist,
+    function(el) el[numeric(0), , drop = FALSE]
+  )
+
+  # the edgelist stores the name of the vertices. We don't use it with
+  # `tergmLite` and it takes a lot of space
+  if (x$control$tergmLite) {
+    run_ls$el <- lapply(run_ls$el, function(x) {
+      attr(x, "vnames") <- NULL
+      x
+    })
+  }
+
+  x$run$sim1 <- run_ls
+  x$attr.history <- list()
+  x$raw.records <- list()
+  x$stats <- list()
+  return(x)
+}
