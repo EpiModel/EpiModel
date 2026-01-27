@@ -2,15 +2,15 @@
 #' @title RColorBrewer Color Ramp for EpiModel Plots
 #'
 #' @description Returns a vector of colors consistent with a high-brightness set
-#'              of colors from an \code{RColorBrewer} palette.
+#'              of colors from an `RColorBrewer` palette.
 #'
-#' @param plt \code{RColorBrewer} palette from [`RColorBrewer::brewer.pal`].
+#' @param plt `RColorBrewer` palette from [`RColorBrewer::brewer.pal`].
 #' @param n Number of colors to return.
 #' @param delete.lights If TRUE, delete the lightest colors from the color
 #'        palette; this helps with plotting in many high-contrast palettes.
 #'
 #' @details
-#' \code{RColorBrewer} provides easy access to helpful color palettes, but the
+#' `RColorBrewer` provides easy access to helpful color palettes, but the
 #' built-in palettes are limited to the set of colors in the existing palette.
 #' This function expands the palette size to any number of colors by filling
 #' in the gaps. Also, colors within the "div" and "seq" set of palettes whose
@@ -18,7 +18,7 @@
 #' visualization of plots.
 #'
 #' @return
-#' A vector of length equal to \code{n} with a range of color values consistent
+#' A vector of length equal to `n` with a range of color values consistent
 #' with an RColorBrewer color palette.
 #'
 #' @seealso [RColorBrewer::RColorBrewer]
@@ -80,9 +80,9 @@ brewer_ramp <- function(n, plt, delete.lights = TRUE) {
 #'
 #' @description Deletes elements from the main attribute list.
 #'
-#' @param dat Either the \code{netsim_dat} class object passed through
-#'            \code{netsim} simulations, or the main data object passed through
-#'            \code{icm} simulations.
+#' @param dat Either the `netsim_dat` class object passed through
+#'            `netsim` simulations, or the main data object passed through
+#'            `icm` simulations.
 #' @param ids ID numbers to delete from the list.
 #'
 #' @inherit recovery.net return
@@ -130,16 +130,16 @@ ssample <- function(x, size, replace = FALSE, prob = NULL) {
 
 #' @title Add New Epidemiology Variables
 #'
-#' @description Inspired by \code{dplyr::mutate}, \code{mutate_epi} adds new
+#' @description Inspired by `dplyr::mutate`, `mutate_epi` adds new
 #'              variables to the epidemiological and related variables within
-#'              simulated model objects of any class in \code{EpiModel}.
+#'              simulated model objects of any class in `EpiModel`.
 #'
-#' @param x An \code{EpiModel} object of class \code{dcm}, \code{icm}, or
-#'        \code{netsim}.
+#' @param x An `EpiModel` object of class `dcm`, `icm`, or
+#'        `netsim`.
 #' @param ... Name-value pairs of expressions (see examples below).
 #'
-#' @return The updated \code{EpiModel} object of class \code{dcm}, \code{icm},
-#'         or \code{netsim}.
+#' @return The updated `EpiModel` object of class `dcm`, `icm`,
+#'         or `netsim`.
 #'
 #' @export
 #'
@@ -207,10 +207,10 @@ mutate_epi <- function(x, ...) {
 #' @param values Values for the output vector.
 #' @param proportions Proportion distribution with one number for each value.
 #'        This must sum to 1.
-#' @param shuffled If \code{TRUE}, randomly shuffle the order of the vector.
+#' @param shuffled If `TRUE`, randomly shuffle the order of the vector.
 #'
-#' @return A vector of length \code{vector.length} containing the apportioned
-#'         values from \code{values}.
+#' @return A vector of length `vector.length` containing the apportioned
+#'         values from `values`.
 #'
 #' @export
 #'
@@ -265,18 +265,18 @@ apportion_lr <- function(vector.length, values,
   return(result)
 }
 
-#' @title Message to Find in Which Module a \code{condition} Occurred
+#' @title Message to Find in Which Module a `condition` Occurred
 #'
 #' @description This function returns a formatted string describing when, where,
 #'              and why an error, message, or warning occurred.
 #'
-#' @param cond The type of \code{condition} handled (message, warning, error).
-#' @param module The name of the module where the \code{condition} occurred.
-#' @param at The time step the \code{condition} occurred.
-#' @param msg The \code{condition}'s message.
+#' @param cond The type of `condition` handled (message, warning, error).
+#' @param module The name of the module where the `condition` occurred.
+#' @param at The time step the `condition` occurred.
+#' @param msg The `condition`'s message.
 #'
-#' @return A formatted string describing where and when the \code{condition}
-#'         occurred as well as the \code{condition}'s message.
+#' @return A formatted string describing where and when the `condition`
+#'         occurred as well as the `condition`'s message.
 #'
 #' @keywords internal
 netsim_cond_msg <- function(cond, module, at, msg) {
@@ -325,60 +325,60 @@ netsim_error_logger <- function(dat, s) {
 }
 
 
-#' @title Function to Reduce the Size of a \code{netest} Object
+#' @title Function to Reduce the Size of a `netest` Object
 #'
-#' @description Trims formula environments from the \code{netest} object.
-#'              Optionally converts the \code{newnetwork} element of the
-#'              \code{netest} object to a \code{networkLite} class, and removes
-#'              the \code{fit} element (if present) from the \code{netest}
+#' @description Trims formula environments from the `netest` object.
+#'              Optionally converts the `newnetwork` element of the
+#'              `netest` object to a `networkLite` class, and removes
+#'              the `fit` element (if present) from the `netest`
 #'              object.
 #'
-#' @param object A \code{netest} class object.
-#' @param as.networkLite If \code{TRUE}, converts \code{object$newnetwork}
-#'        to a \code{networkLite}.
-#' @param keep.fit If \code{FALSE}, removes the \code{object$fit} (if present)
-#'        on the \code{netest} object.
+#' @param object A `netest` class object.
+#' @param as.networkLite If `TRUE`, converts `object$newnetwork`
+#'        to a `networkLite`.
+#' @param keep.fit If `FALSE`, removes the `object$fit` (if present)
+#'        on the `netest` object.
 #' @param keep Character vector of object names to keep in formula environments.
 #'        By default, all objects are removed.
 #'
 #' @details
 #' With larger, more complex network structures with epidemic models, it is
 #' generally useful to reduce the memory footprint of the fitted TERGM model
-#' object (estimated with \code{\link{netest}}). This utility function removes
+#' object (estimated with [netest()]). This utility function removes
 #' all but the bare essentials needed for simulating a network model with
-#' \code{\link{netsim}}.
+#' [netsim()].
 #'
-#' The function always trims the environments of \code{object$constraints} and
-#' \code{object$coef.diss$dissolution}.
+#' The function always trims the environments of `object$constraints` and
+#' `object$coef.diss$dissolution`.
 #'
-#' When both \code{edapprox = TRUE} and \code{nested.edapprox = TRUE} in the
-#' \code{netest} call, also trims the environments of \code{object$formula}
-#' and \code{object$formation}.
+#' When both `edapprox = TRUE` and `nested.edapprox = TRUE` in the
+#' `netest` call, also trims the environments of `object$formula`
+#' and `object$formation`.
 #'
-#' When both \code{edapprox = TRUE} and \code{nested.edapprox = FALSE} in the
-#' \code{netest} call, also trims the environments of \code{object$formula},
-#' \code{environment(object$formation)$formation}, and
-#' \code{environment(object$formation)$dissolution}.
+#' When both `edapprox = TRUE` and `nested.edapprox = FALSE` in the
+#' `netest` call, also trims the environments of `object$formula`,
+#' `environment(object$formation)$formation`, and
+#' `environment(object$formation)$dissolution`.
 #'
-#' When \code{edapprox = FALSE} in the \code{netest} call, also trims the
-#' environments of \code{object$formation},
-#' \code{environment(object$formula)$formation} and
-#' \code{environment(object$formula)$dissolution}.
+#' When `edapprox = FALSE` in the `netest` call, also trims the
+#' environments of `object$formation`,
+#' `environment(object$formula)$formation` and
+#' `environment(object$formula)$dissolution`.
 #'
 #' By default all objects are removed from these trimmed environments. Specific
-#' objects may be retained by passing their names as the \code{keep} argument.
-#' For the output of \code{trim_netest} to be usable in \code{\link{netsim}}
+#' objects may be retained by passing their names as the `keep` argument.
+#' For the output of `trim_netest` to be usable in [netsim()]
 #' simulation, any objects referenced in the formulas should be included in the
-#' \code{keep} argument.
+#' `keep` argument.
 #'
-#' If \code{as.networkLite = TRUE}, converts \code{object$newnetwork} to a
-#' \code{networkLite} object. If \code{keep.fit = FALSE}, removes \code{fit} (if
-#' present) from \code{object}.
+#' If `as.networkLite = TRUE`, converts `object$newnetwork` to a
+#' `networkLite` object. If `keep.fit = FALSE`, removes `fit` (if
+#' present) from `object`.
 #'
 #' @return
-#' A \code{netest} object with formula environments trimmed, optionally with the
-#' \code{newnetwork} element converted to a \code{networkLite} and the
-#' \code{fit} element removed.
+#' A `netest` object with formula environments trimmed, optionally with the
+#' `newnetwork` element converted to a `networkLite` and the
+#' `fit` element removed.
 #'
 #' @export
 #'

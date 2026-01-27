@@ -2,16 +2,16 @@
 #' @title Initialize Networks Used in netsim
 #'
 #' @description This function initializes the networks used in
-#'              \code{\link{netsim}}. The initial edge set for a given network
+#'              [netsim()]. The initial edge set for a given network
 #'              is obtained either from simulating the cross-sectional model
-#'              (if \code{edapprox == TRUE}) or from the \code{newnetwork}
-#'              element of the \code{netest} object (if
-#'              \code{edapprox == FALSE}). Once the initial edge sets are
+#'              (if `edapprox == TRUE`) or from the `newnetwork`
+#'              element of the `netest` object (if
+#'              `edapprox == FALSE`). Once the initial edge sets are
 #'              determined, the first time step is simulated if
-#'              \code{resimulate.network == TRUE}, and all time steps are
-#'              simulated if \code{resimulate.network == FALSE}. Initializes the
-#'              \code{num(.g2)} epi fields used in
-#'              \code{\link{edges_correct}} for computing edge coefficient
+#'              `resimulate.network == TRUE`, and all time steps are
+#'              simulated if `resimulate.network == FALSE`. Initializes the
+#'              `num(.g2)` epi fields used in
+#'              [edges_correct()] for computing edge coefficient
 #'              adjustments.
 #'
 #' @inheritParams recovery.net
@@ -91,10 +91,10 @@ sim_nets_t1 <- function(dat) {
 #'
 #' @description This function simulates a dynamic network over one or multiple
 #'              time steps for TERGMs or one or multiple cross-sectional network
-#'              panels for ERGMs, for use in \code{\link{netsim}} modeling.
+#'              panels for ERGMs, for use in [netsim()] modeling.
 #'              Network statistics are also extracted and saved if
-#'              \code{save.nwstats == TRUE} and
-#'              \code{resimulate.network == FALSE}.
+#'              `save.nwstats == TRUE` and
+#'              `resimulate.network == FALSE`.
 #'
 #' @inheritParams recovery.net
 #' @param network index of the network to simulate
@@ -172,7 +172,7 @@ simulate_dat <- function(dat, at, network = 1L, nsteps = 1L) {
 #' @title Resimulate Dynamic Network at Time 2+
 #'
 #' @description This function resimulates the dynamic network in stochastic
-#'              network models simulated in \code{\link{netsim}} with dependence
+#'              network models simulated in [netsim()] with dependence
 #'              between the epidemic and demographic processes and the network
 #'              structure.
 #'
@@ -226,10 +226,10 @@ resim_nets <- function(dat, at) {
 #' @title Adjustment for the Edges Coefficient with Changing Network Size
 #'
 #' @description Adjusts the edges coefficient in a dynamic network model
-#'              simulated in \code{\link{netsim}} to preserve the mean
-#'              degree of nodes in the network. Requires \code{at >= 2}.
-#'              Maintains the \code{num(.g2)} epi fields (initialized in
-#'              \code{\link{sim_nets_t1}}) for computing the coefficient
+#'              simulated in [netsim()] to preserve the mean
+#'              degree of nodes in the network. Requires `at >= 2`.
+#'              Maintains the `num(.g2)` epi fields (initialized in
+#'              [sim_nets_t1()]) for computing the coefficient
 #'              adjustment.
 #'
 #' @inheritParams recovery.net

@@ -32,22 +32,22 @@ positive integer.}
 \item{nsims}{Number of simulations to run.}
 
 \item{initialize.FUN}{Module to initialize the model at the outset, with the
-default function of \code{\link{initialize.icm}}.}
+default function of \code{\link[=initialize.icm]{initialize.icm()}}.}
 
 \item{infection.FUN}{Module to simulate disease infection, with the default
-function of \code{\link{infection.icm}}.}
+function of \code{\link[=infection.icm]{infection.icm()}}.}
 
 \item{recovery.FUN}{Module to simulate disease recovery, with the default
-function of \code{\link{recovery.icm}}.}
+function of \code{\link[=recovery.icm]{recovery.icm()}}.}
 
 \item{departures.FUN}{Module to simulate departures or exits, with the
-default function of \code{\link{departures.icm}}.}
+default function of \code{\link[=departures.icm]{departures.icm()}}.}
 
 \item{arrivals.FUN}{Module to simulate arrivals or entries, with the default
-function of \code{\link{arrivals.icm}}.}
+function of \code{\link[=arrivals.icm]{arrivals.icm()}}.}
 
 \item{prevalence.FUN}{Module to calculate disease prevalence at each time
-step, with the default function of \code{\link{prevalence.icm}}.}
+step, with the default function of \code{\link[=prevalence.icm]{prevalence.icm()}}.}
 
 \item{verbose}{If \code{TRUE}, print model progress to the console.}
 
@@ -69,11 +69,11 @@ An \code{EpiModel} object of class \code{control.icm}.
 }
 \description{
 Sets the controls for stochastic individual contact models
-simulated with \code{\link{icm}}.
+simulated with \code{\link[=icm]{icm()}}.
 }
 \details{
 \code{control.icm} sets the required control settings for any stochastic
-individual contact model solved with the \code{\link{icm}} function. Controls
+individual contact model solved with the \code{\link[=icm]{icm()}} function. Controls
 are required for both base model types and when passing original process
 modules. For all base models, the \code{type} argument is a necessary parameter
 and it has no default.
@@ -85,7 +85,7 @@ how the individual agents in the population are subjected to infection,
 recovery, demographics, and other processes. Core modules are those listed in
 the \code{.FUN} arguments. For each module, there is a default function used
 in the simulation. The default infection module, for example, is contained in
-the \code{\link{infection.icm}} function.
+the \code{\link[=infection.icm]{infection.icm()}} function.
 
 For original models, one may substitute replacement module functions for any
 of the default functions. New modules may be added to the workflow at each
@@ -93,8 +93,8 @@ time step by passing a module function via the \code{...} argument.
 }
 
 \seealso{
-Use \code{\link{param.icm}} to specify model parameters and
-\code{\link{init.icm}} to specify the initial conditions. Run the
-parameterized model with \code{\link{icm}}.
+Use \code{\link[=param.icm]{param.icm()}} to specify model parameters and
+\code{\link[=init.icm]{init.icm()}} to specify the initial conditions. Run the
+parameterized model with \code{\link[=icm]{icm()}}.
 }
 \keyword{parameterization}

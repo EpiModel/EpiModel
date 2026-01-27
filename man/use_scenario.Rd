@@ -16,7 +16,7 @@ scenarios using the \code{create_scenario_list} function. See the vignette
 }
 \value{
 An updated list object of class \code{param.net}, which can be passed to the
-EpiModel function \code{\link{netsim}}.
+EpiModel function \code{\link[=netsim]{netsim()}}.
 }
 \description{
 Apply a scenario object to a param.net object

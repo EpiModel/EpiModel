@@ -6,17 +6,17 @@
 #'              attribute (e.g., age) by combinations of a binary attribute
 #'              (e.g., race).
 #'
-#' @param nw An object of class \code{network}.
-#' @param arglist A list of arguments as specified in the \code{ergm.userterms}
+#' @param nw An object of class `network`.
+#' @param arglist A list of arguments as specified in the `ergm.userterms`
 #'        package framework.
 #' @param ... Additional data passed into the function as specified in the
-#'        \code{ergm.userterms} package framework.
+#'        `ergm.userterms` package framework.
 #'
 #' @details
 #' This ERGM user term was written to allow for age-based homophily in
-#' partnership formation that is heterogeneous by race. The \code{absdiff}
+#' partnership formation that is heterogeneous by race. The `absdiff`
 #' component targets the distribution of age mixing on that continuous
-#' variable, and the \code{nodemix} component differentiates this for
+#' variable, and the `nodemix` component differentiates this for
 #' black-black, black-white, and white-white couples.
 #'
 #' @aliases absdiffnodemix
@@ -70,16 +70,16 @@ InitErgmTerm.absdiffnodemix <- function(nw, arglist, ...) {
 #'              non-binary attribute (e.g., age) differentially by a binary
 #'              attribute (e.g., sex).
 #'
-#' @param nw An object of class \code{network}.
-#' @param arglist A list of arguments as specified in the \code{ergm.userterms}
+#' @param nw An object of class `network`.
+#' @param arglist A list of arguments as specified in the `ergm.userterms`
 #'        package framework.
 #' @param ... Additional data passed into the function as specified in the
-#'        \code{ergm.userterms} package framework.
+#'        `ergm.userterms` package framework.
 #'
 #' @details
 #' This ERGM user term was written to allow for age-based homophily in
-#' partnership formation that is asymmetric by sex. The \code{absdiff} component
-#' targets age-based homophily while the \code{by} component allows that to be
+#' partnership formation that is asymmetric by sex. The `absdiff` component
+#' targets age-based homophily while the `by` component allows that to be
 #' structured by a binary attribute such as "male", in order to enforce an
 #' offset in the average difference. This allows, for example, a average age
 #' difference in partnerships, but with males (on average) older than females.
@@ -116,29 +116,29 @@ InitErgmTerm.absdiffby <- function(nw, arglist, ...) {
 #' @description This function defines and initializes the fuzzynodematch ERGM
 #'              term that allows for generalized homophily.
 #'
-#' @param nw An object of class \code{network}.
-#' @param arglist A list of arguments as specified in the \code{ergm.userterms}
+#' @param nw An object of class `network`.
+#' @param arglist A list of arguments as specified in the `ergm.userterms`
 #'        package framework.
 #' @param ... Additional data passed into the function as specified in the
-#'        \code{ergm.userterms} package framework.
+#'        `ergm.userterms` package framework.
 #'
 #' @details
 #' This ERGM user term was written to allow for generalized homophily.The
-#' \code{attr} term argument should specify a character vertex attribute
-#' encoding the "venues" associated to each node.  The \code{split} argument
+#' `attr` term argument should specify a character vertex attribute
+#' encoding the "venues" associated to each node.  The `split` argument
 #' should specify a string that separates different "venues" in the attribute
-#' value for each node, as handled by \code{strsplit} with \code{fixed = TRUE}.
-#' For example, if \code{split} is \code{"|"} (the default), and the attribute
-#' value for a given node is \code{"a12|b476"}, then the associated venues for
-#' this node are \code{"a12"} and \code{"b476"}.  The empty string \code{""} is
+#' value for each node, as handled by `strsplit` with `fixed = TRUE`.
+#' For example, if `split` is `"|"` (the default), and the attribute
+#' value for a given node is `"a12|b476"`, then the associated venues for
+#' this node are `"a12"` and `"b476"`.  The empty string `""` is
 #' interpreted as "no venues".
 #'
-#' If the \code{binary} term argument is \code{FALSE} (the default), the change
+#' If the `binary` term argument is `FALSE` (the default), the change
 #' statistic for an on-toggle is the number of unique venues associated to both
 #' nodes (informally speaking, this could be described as the number of venues
-#' on which the two nodes "match"); if \code{binary} is \code{TRUE}, the change
-#' statistic for an on-toggle is \code{1} if any venue is associated to both
-#' nodes, and \code{0} otherwise.
+#' on which the two nodes "match"); if `binary` is `TRUE`, the change
+#' statistic for an on-toggle is `1` if any venue is associated to both
+#' nodes, and `0` otherwise.
 #'
 #' @aliases fuzzynodematch
 #'

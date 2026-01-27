@@ -4,21 +4,21 @@
 #'              models, stochastic individual contact models, and stochastic
 #'              network models.
 #'
-#' @param x An \code{EpiModel} object of class \code{dcm}, \code{icm}, or
-#'        \code{netsim}.
+#' @param x An `EpiModel` object of class `dcm`, `icm`, or
+#'        `netsim`.
 #' @param at Time step for model statistics.
 #' @param digits Number of significant digits to print.
 #' @param ... Additional arguments passed to plot (not currently used).
 #'
 #' @details
-#' The \code{comp_plot} function provides a visual summary of an epidemic model
-#' at a specific time step. The information contained in \code{comp_plot} is the
-#' same as in the \code{summary} functions for a model, but presented
+#' The `comp_plot` function provides a visual summary of an epidemic model
+#' at a specific time step. The information contained in `comp_plot` is the
+#' same as in the `summary` functions for a model, but presented
 #' graphically as a compartment flow diagram.
 #'
-#' For \code{dcm} class plots, specify the model run number if the model
-#' contains multiple runs, as in a sensitivity analysis. For \code{icm} and
-#' \code{netsim} class plots, the \code{run} argument is not used; the plots
+#' For `dcm` class plots, specify the model run number if the model
+#' contains multiple runs, as in a sensitivity analysis. For `icm` and
+#' `netsim` class plots, the `run` argument is not used; the plots
 #' show the means and standard deviations across simulations at the specified
 #' time step.
 #'
@@ -151,7 +151,7 @@ comp_plot.icm <- function(x, at = 1, digits = 3, ...) {
   on.exit(par(ops))
 }
 
-#' @param run Model run number, for \code{dcm} class models with multiple runs
+#' @param run Model run number, for `dcm` class models with multiple runs
 #'        (sensitivity analyses).
 #' @method comp_plot dcm
 #' @rdname comp_plot

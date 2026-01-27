@@ -15,16 +15,16 @@ parameters.}
 }
 \value{
 An updated list object of class \code{param.net}, which can be passed to the
-EpiModel function \code{\link{netsim}}.
+EpiModel function \code{\link[=netsim]{netsim()}}.
 }
 \description{
 Updates epidemic model parameters originally set with
-\code{\link{param.net}} and adds new parameters.
+\code{\link[=param.net]{param.net()}} and adds new parameters.
 }
 \details{
 This function can update any original parameters specified with
-\code{\link{param.net}} and add new parameters. This function would be used
-if the inputs to \code{\link{param.net}} were a long list of fixed model
+\code{\link[=param.net]{param.net()}} and add new parameters. This function would be used
+if the inputs to \code{\link[=param.net]{param.net()}} were a long list of fixed model
 parameters that needed supplemental replacements or additions for particular
 model runs (e.g., changing an intervention efficacy parameter but leaving all
 other parameters fixed).

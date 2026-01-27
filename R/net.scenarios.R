@@ -4,12 +4,12 @@
 #' to a model a predefined timesteps. They are usually used by a researcher who
 #' wants to model counterfactuals using a pre calibrated model.
 #'
-#' @param scenarios.df a \code{data.frame}
+#' @param scenarios.df a `data.frame`
 #'
 #' @return a list of EpiModel scenarios
 #'
 #' @section scenarios.df:
-#' The \code{scenarios.df} is a \code{data.frame} of values to be used as
+#' The `scenarios.df` is a `data.frame` of values to be used as
 #' parameters.
 #'
 #' It must contain a ".at" column, specifying when the changes should occur.
@@ -75,15 +75,15 @@ make_scenario <- function(scenario.rows) {
 
 #' Apply a scenario object to a param.net object
 #'
-#' @param scenario a scenario object usually created from a \code{data.frame} of
-#' scenarios using the \code{create_scenario_list} function. See the vignette
+#' @param scenario a scenario object usually created from a `data.frame` of
+#' scenarios using the `create_scenario_list` function. See the vignette
 #' "network-model-scenarios".
 #'
 #' @section scenario:
 #' A scenario is a list containing an "id" field, the name of the scenario and
 #' a ".param.updater.list" containing a list of updaters that modifies the
 #' parameters of the model at given time steps. If a scenario contains a
-#' parameter not defined in the \code{param} object, an error will be produced.
+#' parameter not defined in the `param` object, an error will be produced.
 #' See the vignette "model-parameters" for the technical detail of their
 #' implementation.
 #'

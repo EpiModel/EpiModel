@@ -7,11 +7,11 @@
 initialize.icm(param, init, control)
 }
 \arguments{
-\item{param}{An \code{EpiModel} object of class \code{\link{param.icm}}.}
+\item{param}{An \code{EpiModel} object of class \code{\link[=param.icm]{param.icm()}}.}
 
-\item{init}{An \code{EpiModel} object of class \code{\link{init.icm}}.}
+\item{init}{An \code{EpiModel} object of class \code{\link[=init.icm]{init.icm()}}.}
 
-\item{control}{An \code{EpiModel} object of class \code{\link{control.icm}}.}
+\item{control}{An \code{EpiModel} object of class \code{\link[=control.icm]{control.icm()}}.}
 }
 \value{
 The updated \code{icm_dat} class main data object.

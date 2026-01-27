@@ -4,37 +4,37 @@
 #' @description Solves deterministic compartmental epidemic models for
 #'              infectious disease.
 #'
-#' @param param Model parameters, as an object of class \code{\link{param.dcm}}.
-#' @param init Initial conditions, as an object of class \code{\link{init.dcm}}.
+#' @param param Model parameters, as an object of class [param.dcm()].
+#' @param init Initial conditions, as an object of class [init.dcm()].
 #' @param control Control settings, as an object of class
-#'        \code{\link{control.dcm}}.
+#'        [control.dcm()].
 #'
 #' @details
-#' The \code{dcm} function uses the ordinary differential equation solver in
-#' the \code{deSolve} package to model disease as a deterministic compartmental
+#' The `dcm` function uses the ordinary differential equation solver in
+#' the `deSolve` package to model disease as a deterministic compartmental
 #' system. The parameterization for these models follows the standard approach
-#' in \code{EpiModel}, with epidemic parameters, initial conditions, and control
+#' in `EpiModel`, with epidemic parameters, initial conditions, and control
 #' settings.
 #'
-#' The \code{dcm} function performs  modeling of both base model types and
+#' The `dcm` function performs  modeling of both base model types and
 #' original models with new structures. Base model types include one-group
 #' and two-group models with disease types for Susceptible-Infected (SI),
 #' Susceptible-Infected-Recovered (SIR), and Susceptible-Infected-Susceptible
-#' (SIS). Both base and original models require the \code{param},
-#' \code{init}, and \code{control} inputs.
+#' (SIS). Both base and original models require the `param`,
+#' `init`, and `control` inputs.
 #'
 #' @return
-#' A list of class \code{dcm} with the following elements:
-#' \itemize{
-#'  \item \strong{param:} the epidemic parameters passed into the model through
-#'        \code{param}, with additional parameters added as necessary.
-#'  \item \strong{control:} the control settings passed into the model through
-#'        \code{control}, with additional controls added as necessary.
-#'  \item \strong{epi:} a list of data frames, one for each epidemiological
+#' A list of class `dcm` with the following elements:
+#'
+#'  * **param:** the epidemic parameters passed into the model through
+#'        `param`, with additional parameters added as necessary.
+#'  * **control:** the control settings passed into the model through
+#'        `control`, with additional controls added as necessary.
+#'  * **epi:** a list of data frames, one for each epidemiological
 #'        output from the model. Outputs for base models always include the
 #'        size of each compartment, as well as flows in, out of, and between
 #'        compartments.
-#' }
+#'
 #'
 #' @references
 #' Soetaert K, Petzoldt T, Setzer W. Solving Differential Equations in
@@ -43,10 +43,10 @@
 #'
 #' @keywords model
 #'
-#' @seealso Extract the model results with \code{\link{as.data.frame.dcm}}.
-#' Summarize the time-specific model results with \code{\link{summary.dcm}}.
-#' Plot the model results with \code{\link{plot.dcm}}. Plot a compartment flow
-#' diagram with \code{\link{comp_plot}}.
+#' @seealso Extract the model results with [as.data.frame.dcm()].
+#' Summarize the time-specific model results with [summary.dcm()].
+#' Plot the model results with [plot.dcm()]. Plot a compartment flow
+#' diagram with [comp_plot()].
 #'
 #' @export
 #'

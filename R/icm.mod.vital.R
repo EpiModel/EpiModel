@@ -1,14 +1,14 @@
 
 #' @title Departure: icm Module
 #'
-#' @description This function simulates departure for use in \code{\link{icm}}
+#' @description This function simulates departure for use in [icm()]
 #'              simulations.
 #'
 #' @inheritParams prevalence.icm
 #'
 #' @inherit recovery.icm return
 #'
-#' @seealso \code{\link{icm}}
+#' @seealso [icm()]
 #'
 #' @export
 #' @keywords internal
@@ -94,14 +94,14 @@ departures.icm <- function(dat, at) {
 
 #' @title Arrivals: icm Module
 #'
-#' @description This function simulates arrival for use in \code{\link{icm}}
+#' @description This function simulates arrival for use in [icm()]
 #'              simulations.
 #'
 #' @inheritParams prevalence.icm
 #'
 #' @inherit recovery.icm return
 #'
-#' @seealso \code{\link{icm}}
+#' @seealso [icm()]
 #'
 #' @export
 #' @keywords internal
@@ -143,14 +143,14 @@ arrivals.icm <- function(dat, at) {
 
 #' @title Departure: Bipartite icm Module
 #'
-#' @description This function simulates departure for use in \code{\link{icm}}
+#' @description This function simulates departure for use in [icm()]
 #'              simulations.
 #'
 #' @inheritParams prevalence.icm
 #'
 #' @inherit recovery.icm return
 #'
-#' @seealso \code{\link{icm}}
+#' @seealso [icm()]
 #'
 #' @export
 #' @keywords internal
@@ -255,14 +255,14 @@ departures.icm.bip <- function(dat, at) {
 
 #' @title Arrivals: Bipartite icm Module
 #'
-#' @description This function simulates arrival for use in \code{\link{icm}}
+#' @description This function simulates arrival for use in [icm()]
 #'              simulations.
 #'
 #' @inheritParams prevalence.icm
 #'
 #' @inherit recovery.icm return
 #'
-#' @seealso \code{\link{icm}}
+#' @seealso [icm()]
 #'
 #' @export
 #' @keywords internal

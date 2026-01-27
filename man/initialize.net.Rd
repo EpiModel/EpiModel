@@ -13,11 +13,11 @@ of class \code{netest} or a list of such objects. If
 multiple networks are used, the node sets (including network size
 and nodal attributes) are assumed to be the same for all networks.}
 
-\item{param}{An \code{EpiModel} object of class \code{\link{param.net}}.}
+\item{param}{An \code{EpiModel} object of class \code{\link[=param.net]{param.net()}}.}
 
-\item{init}{An \code{EpiModel} object of class \code{\link{init.net}}.}
+\item{init}{An \code{EpiModel} object of class \code{\link[=init.net]{init.net()}}.}
 
-\item{control}{An \code{EpiModel} object of class \code{\link{control.net}}.}
+\item{control}{An \code{EpiModel} object of class \code{\link[=control.net]{control.net()}}.}
 
 \item{s}{Simulation number, used for restarting dependent simulations.}
 }

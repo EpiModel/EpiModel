@@ -53,6 +53,6 @@ summary(mod, at = 100)
 
 }
 \seealso{
-\code{\link{netsim}}
+\code{\link[=netsim]{netsim()}}
 }
 \keyword{extract}

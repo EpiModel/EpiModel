@@ -1,53 +1,53 @@
 #' @title Plot Dynamic Network Model Diagnostics
 #'
 #' @description Plots dynamic network model diagnostics calculated in
-#'              \code{\link{netdx}}.
+#'              [netdx()].
 #'
-#' @param x An \code{EpiModel} object of class \code{netdx}.
-#' @param type Plot type, with options of \code{"formation"} for network
-#'        model formation statistics, \code{"duration"} for dissolution model
-#'        statistics for average edge duration, or \code{"dissolution"} for
+#' @param x An `EpiModel` object of class `netdx`.
+#' @param type Plot type, with options of `"formation"` for network
+#'        model formation statistics, `"duration"` for dissolution model
+#'        statistics for average edge duration, or `"dissolution"` for
 #'        dissolution model statistics for proportion of ties dissolved per time
 #'        step.
-#' @param method Plot method, with options of \code{"l"} for line plots and
-#'        \code{"b"} for box plots.
+#' @param method Plot method, with options of `"l"` for line plots and
+#'        `"b"` for box plots.
 #' @param sims A vector of simulation numbers to plot.
-#' @param stats Statistics to plot. For \code{type = "formation"}, \code{stats}
-#'        are among those specified in the call to \code{\link{netdx}};
-#'        for \code{type = "duration", "dissolution"}, \code{stats} are among
-#'        those of the dissolution model (without \code{offset()}). The default
+#' @param stats Statistics to plot. For `type = "formation"`, `stats`
+#'        are among those specified in the call to [netdx()];
+#'        for `type = "duration", "dissolution"`, `stats` are among
+#'        those of the dissolution model (without `offset()`). The default
 #'        is to plot all statistics.
-#' @param plots.joined If \code{TRUE}, combine all statistics in one plot,
-#'        versus one plot per statistic if \code{FALSE}.
+#' @param plots.joined If `TRUE`, combine all statistics in one plot,
+#'        versus one plot per statistic if `FALSE`.
 #' @inheritParams plot.netsim
 #' @inheritParams graphics::plot
 #'
 #' @details
-#' The plot function for \code{netdx} objects will generate plots of two types
+#' The plot function for `netdx` objects will generate plots of two types
 #' of model diagnostic statistics that run as part of the diagnostic tools
-#' within that function. The \code{formation} plot shows the summary statistics
-#' requested in \code{nwstats.formula}, where the default includes those
+#' within that function. The `formation` plot shows the summary statistics
+#' requested in `nwstats.formula`, where the default includes those
 #' statistics in the network model formation formula specified in the original
-#' call to \code{\link{netest}}.
+#' call to [netest()].
 #'
-#' The \code{duration} plot shows the average age of existing edges at each time
+#' The `duration` plot shows the average age of existing edges at each time
 #' step, up until the maximum time step requested. The age is used as an
 #' estimator of the average duration of edges in the equilibrium state. When
-#' \code{duration.imputed = FALSE}, edges that exist at the beginning of the
+#' `duration.imputed = FALSE`, edges that exist at the beginning of the
 #' simulation are assumed to start with an age of 1, yielding a burn-in period
 #' before the observed mean approaches its target.  When
-#' \code{duration.imputed = TRUE}, expected ages prior to the start of the
+#' `duration.imputed = TRUE`, expected ages prior to the start of the
 #' simulation are calculated from the dissolution model, typically eliminating
 #' the need for a burn-in period.
 #'
-#' The \code{dissolution} plot shows the proportion of the extant ties that are
+#' The `dissolution` plot shows the proportion of the extant ties that are
 #' dissolved at each time step, up until the maximum time step requested.
 #' Typically, the proportion of ties that are dissolved is the reciprocal of the
 #' mean relational duration. This plot thus contains similar information to that
 #' in the duration plot, but should reach its expected value more quickly, since
 #' it is not subject to censoring.
 #'
-#' The \code{plots.joined} argument will control whether the statistics
+#' The `plots.joined` argument will control whether the statistics
 #' are joined in one plot or plotted separately, assuming there are multiple
 #' statistics in the model. The default is based on the number of network
 #' statistics requested. The layout of the separate plots within the larger plot
@@ -57,7 +57,7 @@
 #' @export
 #'
 #' @keywords plot
-#' @seealso \code{\link{netdx}}
+#' @seealso [netdx()]
 #'
 #' @examples
 #' \dontrun{

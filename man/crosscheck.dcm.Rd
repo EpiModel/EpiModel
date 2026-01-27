@@ -7,18 +7,18 @@
 crosscheck.dcm(param, init, control)
 }
 \arguments{
-\item{param}{An \code{EpiModel} object of class \code{\link{param.dcm}}.}
+\item{param}{An \code{EpiModel} object of class \code{\link[=param.dcm]{param.dcm()}}.}
 
-\item{init}{An \code{EpiModel} object of class \code{\link{init.dcm}}.}
+\item{init}{An \code{EpiModel} object of class \code{\link[=init.dcm]{init.dcm()}}.}
 
-\item{control}{An \code{EpiModel} object of class \code{\link{control.dcm}}.}
+\item{control}{An \code{EpiModel} object of class \code{\link[=control.dcm]{control.dcm()}}.}
 }
 \value{
 This function returns no objects.
 }
 \description{
 This function checks that the three parameter lists from
-\code{\link{param.dcm}}, \code{\link{init.dcm}}, and
-\code{\link{control.dcm}} are consistent.
+\code{\link[=param.dcm]{param.dcm()}}, \code{\link[=init.dcm]{init.dcm()}}, and
+\code{\link[=control.dcm]{control.dcm()}} are consistent.
 }
 \keyword{internal}

@@ -18,10 +18,10 @@ simulations.}
 A list with the following elements:
 \itemize{
 \item \strong{param:} the epidemic parameters passed into the model through
-\code{\link{param.icm}}, with additional parameters added as
+\code{\link[=param.icm]{param.icm()}}, with additional parameters added as
 necessary.
 \item \strong{control:} the control settings passed into the model through
-\code{\link{control.icm}}, with additional controls added as
+\code{\link[=control.icm]{control.icm()}}, with additional controls added as
 necessary.
 \item \strong{epi:} a list of data frames, one for each epidemiological
 output from the model.
@@ -30,6 +30,6 @@ output from the model.
 \description{
 This function transfers the data from the main \code{icm_dat}
 class data object to the output \code{out} object at the end of
-each simulation in \code{\link{icm}}.
+each simulation in \code{\link[=icm]{icm()}}.
 }
 \keyword{internal}

@@ -7,8 +7,8 @@
 get_nwstats(x, sim, network = 1, mode = c("data.frame", "list"))
 }
 \arguments{
-\item{x}{An \code{EpiModel} object of class \code{\link{netsim}} or
-\code{\link{netdx}}.}
+\item{x}{An \code{EpiModel} object of class \code{\link[=netsim]{netsim()}} or
+\code{\link[=netdx]{netdx()}}.}
 
 \item{sim}{A vector of simulation numbers from the extracted object.}
 
