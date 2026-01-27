@@ -4,10 +4,10 @@
 #' @description Simulates stochastic individual contact epidemic models for
 #'              infectious disease.
 #'
-#' @param param Model parameters, as an object of class \code{\link{param.icm}}.
-#' @param init Initial conditions, as an object of class \code{\link{init.icm}}.
+#' @param param Model parameters, as an object of class [param.icm()].
+#' @param init Initial conditions, as an object of class [init.icm()].
 #' @param control Control settings, as an object of class
-#'        \code{\link{control.icm}}.
+#'        [control.icm()].
 #'
 #' @details
 #' Individual contact models are intended to be the stochastic microsimulation
@@ -16,7 +16,7 @@
 #' stochastic variation. The stochasticity is inherent in all transition
 #' processes: infection, recovery, and demographics.
 #'
-#' The \code{icm} function performs  modeling of both the base model types
+#' The `icm` function performs  modeling of both the base model types
 #' and original models. Base model types include one-group and two-group
 #' models with disease types for Susceptible-Infected (SI),
 #' Susceptible-Infected-Recovered (SIR), and Susceptible-Infected-Susceptible
@@ -26,24 +26,24 @@
 #' original module.
 #'
 #' @return
-#' A list of class \code{icm} with the following elements:
-#' \itemize{
-#'  \item \strong{param:} the epidemic parameters passed into the model through
-#'        \code{param}, with additional parameters added as necessary.
-#'  \item \strong{control:} the control settings passed into the model through
-#'        \code{control}, with additional controls added as necessary.
-#'  \item \strong{epi:} a list of data frames, one for each epidemiological
+#' A list of class `icm` with the following elements:
+#'
+#'  * **param:** the epidemic parameters passed into the model through
+#'        `param`, with additional parameters added as necessary.
+#'  * **control:** the control settings passed into the model through
+#'        `control`, with additional controls added as necessary.
+#'  * **epi:** a list of data frames, one for each epidemiological
 #'        output from the model. Outputs for base models always include the
 #'        size of each compartment, as well as flows in, out of, and between
 #'        compartments.
-#' }
+#'
 #'
 #' @keywords model
 #'
-#' @seealso Extract the model results with \code{\link{as.data.frame.icm}}.
-#' Summarize the time-specific model results with \code{\link{summary.icm}}.
-#' Plot the model results with \code{\link{plot.icm}}. Plot a compartment flow
-#' diagram with \code{\link{comp_plot}}.
+#' @seealso Extract the model results with [as.data.frame.icm()].
+#' Summarize the time-specific model results with [summary.icm()].
+#' Plot the model results with [plot.icm()]. Plot a compartment flow
+#' diagram with [comp_plot()].
 #'
 #' @export
 #'

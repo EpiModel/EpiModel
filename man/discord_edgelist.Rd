@@ -9,7 +9,7 @@ discord_edgelist(dat, at, network = 1, infstat = "i", include.network = FALSE)
 \arguments{
 \item{dat}{Main \code{netsim_dat} object containing a \code{networkDynamic}
 object and other initialization information passed from
-\code{\link{netsim}}.}
+\code{\link[=netsim]{netsim()}}.}
 
 \item{at}{Current time step.}
 
@@ -29,6 +29,7 @@ This function returns a \code{data.frame} with the following columns:
 \item \strong{sus:} ID number for the susceptible partner.
 \item \strong{inf:} ID number for the infectious partner.
 }
+
 The output from this function is added to the transmission \code{data.frame}
 object that is requested as output in \code{netsim} simulations with
 the \code{save.trans=TRUE} argument.
@@ -39,7 +40,7 @@ edgelist, defined as the set of edges in which the status of the
 two partners is one susceptible and one infected.
 }
 \details{
-This internal function works within the parent \code{\link{infection.net}}
+This internal function works within the parent \code{\link[=infection.net]{infection.net()}}
 function to pull the current edgelist from the dynamic network object, look
 up the disease status of the head and tails on the edge, and subset the list
 to those edges with one susceptible and one infected node.
@@ -50,7 +51,7 @@ parameter. For extension models with multiple infectious states, this can be
 a vector of length greater than 1: \code{infstat = c("i", "a")}.
 }
 \seealso{
-\code{\link{netsim}}, \code{\link{infection.net}}
+\code{\link[=netsim]{netsim()}}, \code{\link[=infection.net]{infection.net()}}
 }
 \keyword{internal}
 \keyword{netMod}

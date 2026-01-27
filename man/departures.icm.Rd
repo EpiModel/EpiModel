@@ -16,10 +16,10 @@ simulations.}
 The updated \code{icm_dat} class main data object.
 }
 \description{
-This function simulates departure for use in \code{\link{icm}}
+This function simulates departure for use in \code{\link[=icm]{icm()}}
 simulations.
 }
 \seealso{
-\code{\link{icm}}
+\code{\link[=icm]{icm()}}
 }
 \keyword{internal}

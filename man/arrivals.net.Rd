@@ -9,7 +9,7 @@ arrivals.net(dat, at)
 \arguments{
 \item{dat}{Main \code{netsim_dat} object containing a \code{networkDynamic}
 object and other initialization information passed from
-\code{\link{netsim}}.}
+\code{\link[=netsim]{netsim()}}.}
 
 \item{at}{Current time step.}
 }
@@ -18,10 +18,10 @@ The updated \code{netsim_dat} main list object.
 }
 \description{
 This function simulates new arrivals into the network
-for use in \code{\link{netsim}} simulations.
+for use in \code{\link[=netsim]{netsim()}} simulations.
 }
 \seealso{
-\code{\link{netsim}}
+\code{\link[=netsim]{netsim()}}
 }
 \keyword{internal}
 \keyword{netMod}

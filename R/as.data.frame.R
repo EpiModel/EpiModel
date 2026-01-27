@@ -2,27 +2,28 @@
 #' @title Extract Model Data for Deterministic Compartmental Models
 #'
 #' @description This function extracts a model run from an object of class
-#'              \code{dcm} into a data frame using the generic
-#'              \code{as.data.frame} function.
+#'              `dcm` into a data frame using the generic
+#'              `as.data.frame` function.
 #'
-#' @param x An \code{EpiModel} object of class \code{\link{dcm}}.
+#' @param x An `EpiModel` object of class [dcm()].
 #' @param run Run number for model; used for multiple-run sensitivity models. If
 #'        `NULL` (default), will output data from all runs in a stacked data frame.
-#' @param row.names See \code{\link{as.data.frame.default}}.
-#' @param optional See \code{\link{as.data.frame.default}}.
-#' @param ...  See \code{\link{as.data.frame.default}}.
+#'        not specified, will output data from all runs in a stacked data frame.
+#' @param row.names See [as.data.frame.default()].
+#' @param optional See [as.data.frame.default()].
+#' @param ...  See [as.data.frame.default()].
 #'
 #' @details
-#' Model output from \code{\link{dcm}} simulations are available as a data
+#' Model output from [dcm()] simulations are available as a data
 #' frame with this helper function. The output data frame will include
 #' columns for time, the size of each compartment, the overall population
 #' size (the sum of compartment sizes), and the size of each flow.
 #'
 #' For models with multiple runs (i.e., varying parameters - see example below),
-#' the default with the \code{run} parameter not specified will output all runs
+#' the default with the `run` parameter not specified will output all runs
 #' in a single stacked data frame.
 #'
-#' @return A data frame containing the data from \code{x}.
+#' @return A data frame containing the data from `x`.
 #'
 #' @method as.data.frame dcm
 #' @keywords extract
@@ -108,30 +109,30 @@ as.data.frame.dcm <- function(x, row.names = NULL, optional = FALSE, run = NULL,
 #' @title Extract Model Data for Stochastic Models
 #'
 #' @description This function extracts model simulations for objects of classes
-#'              \code{icm} and \code{netsim} into a data frame using
-#'              the generic \code{as.data.frame} function.
+#'              `icm` and `netsim` into a data frame using
+#'              the generic `as.data.frame` function.
 #'
-#' @param x An \code{EpiModel} object of class \code{icm} or \code{netsim}.
-#' @param out Data output to data frame: \code{"mean"} for row means across
-#'        simulations, \code{"sd"} for row standard deviations across
-#'        simulations, \code{"qnt"} for row quantiles at the level specified in
-#'        \code{qval}, or \code{"vals"} for values from individual simulations.
-#' @param sim If \code{out="vals"}, the simulation number to output. If not
+#' @param x An `EpiModel` object of class `icm` or `netsim`.
+#' @param out Data output to data frame: `"mean"` for row means across
+#'        simulations, `"sd"` for row standard deviations across
+#'        simulations, `"qnt"` for row quantiles at the level specified in
+#'        `qval`, or `"vals"` for values from individual simulations.
+#' @param sim If `out="vals"`, the simulation number to output. If not
 #'        specified, then data from all simulations will be output.
-#' @param qval Quantile value required when \code{out="qnt"}.
-#' @param row.names See \code{\link{as.data.frame.default}}.
-#' @param optional See \code{\link{as.data.frame.default}}.
-#' @param ...  See \code{\link{as.data.frame.default}}.
+#' @param qval Quantile value required when `out="qnt"`.
+#' @param row.names See [as.data.frame.default()].
+#' @param optional See [as.data.frame.default()].
+#' @param ...  See [as.data.frame.default()].
 #'
 #' @details
-#' These methods work for both \code{icm} and \code{netsim} class models. The
+#' These methods work for both `icm` and `netsim` class models. The
 #' available output includes time-specific means, standard deviations,
 #' quantiles, and simulation values (compartment and flow sizes) from these
 #' stochastic model classes. Means, standard deviations, and quantiles are
 #' calculated by taking the row summary (i.e., each row of data is corresponds
 #' to a time step) across all simulations in the model output.
 #'
-#' @return A data frame containing the data from \code{x}.
+#' @return A data frame containing the data from `x`.
 #'
 #' @method as.data.frame icm
 #' @keywords extract
@@ -270,17 +271,17 @@ as.data.frame.netsim <- function(x, row.names = NULL, optional = FALSE,
 #' @title Extract Timed Edgelists for netdx Objects
 #'
 #' @description This function extracts timed edgelists for objects of class
-#'              \code{netdx} into a data frame using the generic
-#'              \code{as.data.frame} function.
+#'              `netdx` into a data frame using the generic
+#'              `as.data.frame` function.
 #'
-#' @param x An \code{EpiModel} object of class \code{netdx}.
+#' @param x An `EpiModel` object of class `netdx`.
 #' @param sim The simulation number to output. If `NULL`, then data from
 #'        all simulations will be output.
-#' @param row.names See \code{\link{as.data.frame.default}}.
-#' @param optional See \code{\link{as.data.frame.default}}.
-#' @param ...  See \code{\link{as.data.frame.default}}.
+#' @param row.names See [as.data.frame.default()].
+#' @param optional See [as.data.frame.default()].
+#' @param ...  See [as.data.frame.default()].
 #'
-#' @return A data frame containing the data from \code{x}.
+#' @return A data frame containing the data from `x`.
 #'
 #' @method as.data.frame netdx
 #' @keywords extract

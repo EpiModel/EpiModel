@@ -7,16 +7,16 @@
 \method{as.data.frame}{dcm}(x, row.names = NULL, optional = FALSE, run, ...)
 }
 \arguments{
-\item{x}{An \code{EpiModel} object of class \code{\link{dcm}}.}
+\item{x}{An \code{EpiModel} object of class \code{\link[=dcm]{dcm()}}.}
 
-\item{row.names}{See \code{\link{as.data.frame.default}}.}
+\item{row.names}{See \code{\link[=as.data.frame.default]{as.data.frame.default()}}.}
 
-\item{optional}{See \code{\link{as.data.frame.default}}.}
+\item{optional}{See \code{\link[=as.data.frame.default]{as.data.frame.default()}}.}
 
 \item{run}{Run number for model; used for multiple-run sensitivity models. If
 not specified, will output data from all runs in a stacked data frame.}
 
-\item{...}{See \code{\link{as.data.frame.default}}.}
+\item{...}{See \code{\link[=as.data.frame.default]{as.data.frame.default()}}.}
 }
 \value{
 A data frame containing the data from \code{x}.
@@ -27,7 +27,7 @@ This function extracts a model run from an object of class
 \code{as.data.frame} function.
 }
 \details{
-Model output from \code{\link{dcm}} simulations are available as a data
+Model output from \code{\link[=dcm]{dcm()}} simulations are available as a data
 frame with this helper function. The output data frame will include
 columns for time, the size of each compartment, the overall population
 size (the sum of compartment sizes), and the size of each flow.

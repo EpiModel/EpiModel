@@ -58,7 +58,7 @@ determined automatically based on the \code{y} input.}
 \item{leg.cex}{Legend scale size.}
 
 \item{grid}{If \code{TRUE}, a grid is added to the background of plot
-(see \code{\link{grid}} for details), with default of nx by ny.}
+(see \code{\link[=grid]{grid()}} for details), with default of nx by ny.}
 
 \item{add}{If \code{TRUE}, new plot window is not called and lines are added
 to existing plot window.}
@@ -78,15 +78,15 @@ to existing plot window.}
 \item{ylab}{a label for the y axis, defaults to a description of \code{y}.}
 
 \item{...}{Additional arguments to pass to main plot window (see
-\code{\link{plot.default}}).}
+\code{\link[=plot.default]{plot.default()}}).}
 }
 \description{
 Plots epidemiological data from a deterministic compartment
-epidemic model solved with \code{\link{dcm}}.
+epidemic model solved with \code{\link[=dcm]{dcm()}}.
 }
 \details{
 This function plots epidemiological outcomes from a deterministic
-compartmental model solved with \code{\link{dcm}}. Depending on the number of
+compartmental model solved with \code{\link[=dcm]{dcm()}}. Depending on the number of
 model runs (sensitivity analyses) and number of groups, the default plot is
 the fractional proportion of each compartment in the model over time. The
 specific compartments or flows to plot may be set using the \code{y}
@@ -108,13 +108,13 @@ size.
 
 \section{Color Palettes}{
 
-Since \code{\link{dcm}} supports multiple run sensitivity models, plotting
+Since \code{\link[=dcm]{dcm()}} supports multiple run sensitivity models, plotting
 the results of such models uses a complex color scheme for distinguishing
 runs. This is accomplished using the \code{\link[RColorBrewer:ColorBrewer]{RColorBrewer::RColorBrewer}} color
 palettes, which include a range of linked colors using named palettes. For
 \code{plot.dcm}, one may either specify a brewer color palette listed in
 \code{\link[RColorBrewer:ColorBrewer]{RColorBrewer::brewer.pal.info}}, or, alternatively, a vector of standard R
-colors (named, hexidecimal, or positive integers; see \code{\link{col2rgb}}).
+colors (named, hexidecimal, or positive integers; see \code{\link[=col2rgb]{col2rgb()}}).
 }
 
 \section{Plot Legends}{
@@ -155,6 +155,6 @@ plot(mod, y = c("s.num", "i.num"),
 
 }
 \seealso{
-\code{\link{dcm}}, \code{\link[RColorBrewer:ColorBrewer]{RColorBrewer::brewer.pal.info}}
+\code{\link[=dcm]{dcm()}}, \code{\link[RColorBrewer:ColorBrewer]{RColorBrewer::brewer.pal.info}}
 }
 \keyword{plot}

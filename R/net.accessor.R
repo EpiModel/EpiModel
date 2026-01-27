@@ -1,51 +1,51 @@
 #' @title Functions to Access and Edit the Main netsim_dat Object in Network Models
 #'
-#' @description These \code{get_}, \code{set_}, \code{append_}, and \code{add_}
+#' @description These `get_`, `set_`, `append_`, and `add_`
 #'              functions allow a safe and efficient way to retrieve and mutate
-#'              the main \code{netsim_dat} class object of network models
-#'              (typical variable name \code{dat}).
+#'              the main `netsim_dat` class object of network models
+#'              (typical variable name `dat`).
 #'
 #' @inheritParams recovery.net
 #' @param item A character vector containing the name of the element to access
-#'        (for \code{get_} functions), create (for \code{add_} functions), or
-#'        edit (for \code{set_} and \code{append_} functions). Can be of length
-#'        > 1 for \code{get_*_list} functions.
-#' @param posit_ids For \code{set_attr} and \code{get_attr}, a numeric vector of
-#'        posit_ids to subset the desired \code{item}.
-#' @param value New value to be attributed in the \code{set_} and \code{append_}
+#'        (for `get_` functions), create (for `add_` functions), or
+#'        edit (for `set_` and `append_` functions). Can be of length
+#'        > 1 for `get_*_list` functions.
+#' @param posit_ids For `set_attr` and `get_attr`, a numeric vector of
+#'        posit_ids to subset the desired `item`.
+#' @param value New value to be attributed in the `set_` and `append_`
 #'        functions.
-#' @param override.null.error If TRUE, \code{get_} will return NULL if the
-#'         \code{item} does not exist instead of throwing an error.
+#' @param override.null.error If TRUE, `get_` will return NULL if the
+#'         `item` does not exist instead of throwing an error.
 #'         (default = FALSE).
-#' @param override.length.check If TRUE, \code{set_attr} allows the modification
-#'        of the \code{item} size. (default = FALSE).
-#' @param n.new For \code{append_core_attr}, the number of new nodes to initiate
-#'        with core attributes; for \code{append_attr}, the number of new
-#'        elements to append at the end of \code{item}.
-#' @param at For \code{get_epi}, the timestep at which to access the specified
-#'        \code{item}; for \code{set_epi}, the timestep at which to add the new
-#'        value for the epi output \code{item}; for \code{append_core_attr}, the
+#' @param override.length.check If TRUE, `set_attr` allows the modification
+#'        of the `item` size. (default = FALSE).
+#' @param n.new For `append_core_attr`, the number of new nodes to initiate
+#'        with core attributes; for `append_attr`, the number of new
+#'        elements to append at the end of `item`.
+#' @param at For `get_epi`, the timestep at which to access the specified
+#'        `item`; for `set_epi`, the timestep at which to add the new
+#'        value for the epi output `item`; for `append_core_attr`, the
 #'        current time step.
-#' @return A vector or a list of vectors for \code{get_} functions; the main
-#'         list object for \code{set_}, \code{append_}, and \code{add_}
+#' @return A vector or a list of vectors for `get_` functions; the main
+#'         list object for `set_`, `append_`, and `add_`
 #'         functions.
 #'
 #' @section Core Attribute:
-#' The \code{append_core_attr} function initializes the attributes necessary for
+#' The `append_core_attr` function initializes the attributes necessary for
 #' EpiModel to work (the four core attributes are: "active", "unique_id",
 #' "entrTime", and "exitTime"). These attributes are used in the initialization
 #' phase of the simulation, to create the nodes (see
-#' \code{\link{initialize.net}}); and also used when adding nodes during the
-#' simulation (see \code{\link{arrivals.net}}).
+#' [initialize.net()]); and also used when adding nodes during the
+#' simulation (see [arrivals.net()]).
 #'
 #' @section Mutability:
-#' The \code{set_}, \code{append_}, and \code{add_} functions DO NOT modify the
-#' \code{netsim_dat} object in place. The result must be assigned back to
-#' \code{dat} in order to be registered: \code{dat <- set_*(dat, item, value)}.
+#' The `set_`, `append_`, and `add_` functions DO NOT modify the
+#' `netsim_dat` object in place. The result must be assigned back to
+#' `dat` in order to be registered: `dat <- set_*(dat, item, value)`.
 #'
-#' @section \code{set_} and \code{append_} vs \code{add_}:
-#' The \code{set_} and \code{append_} functions edit a pre-existing element or
-#' create a new one if it does not exist already by calling the \code{add_}
+#' @section `set_` and `append_` vs `add_`:
+#' The `set_` and `append_` functions edit a pre-existing element or
+#' create a new one if it does not exist already by calling the `add_`
 #' functions internally.
 #'
 #' @examples
@@ -484,13 +484,13 @@ append_core_attr <- function(dat, at, n.new) {
 
 #' @title Create the Unique Identifiers for New Nodes
 #'
-#' @description This function is called by \code{\link{append_core_attr}} and
-#' appends new \code{unique_ids} to the created nodes. It also keeps track of
-#' the already used \code{unique_ids} with the \code{dat$run$last_unique_id}
+#' @description This function is called by [append_core_attr()] and
+#' appends new `unique_ids` to the created nodes. It also keeps track of
+#' the already used `unique_ids` with the `dat$run$last_unique_id`
 #' variable.
 #'
 #' @inheritParams recovery.net
-#' @param n.new The number of new nodes to give \code{unique_ids} to.
+#' @param n.new The number of new nodes to give `unique_ids` to.
 #'
 #' @inherit recovery.net return
 #'
@@ -539,18 +539,18 @@ check_attr_lengths <- function(dat) {
 #' @title Convert Unique Identifiers to/from Positional Identifiers
 #'
 #' @description EpiModel refers to its nodes either by positional identifiers
-#'              (\code{posit_ids}), which describe the position of a node in the
-#'              \code{attr} vector, or by unique identifiers
-#'              (\code{unique_ids}), which allow references to nodes even after
+#'              (`posit_ids`), which describe the position of a node in the
+#'              `attr` vector, or by unique identifiers
+#'              (`unique_ids`), which allow references to nodes even after
 #'              they are deactivated.
 #'
 #' @section All elements:
-#'   When \code{unique_ids} or \code{posit_ids} is NULL (default)
+#'   When `unique_ids` or `posit_ids` is NULL (default)
 #'   the full list of positional IDs or unique IDs is returned.
 #'
 #' @section Deactivated nodes:
-#'   When providing \code{unique_ids} of deactivated nodes to
-#'   \code{get_posit_ids}, \code{NA}s are returned instead and a warning is
+#'   When providing `unique_ids` of deactivated nodes to
+#'   `get_posit_ids`, `NA`s are returned instead and a warning is
 #'   produced.
 #'
 #' @inheritParams recovery.net

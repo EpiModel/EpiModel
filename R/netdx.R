@@ -350,21 +350,21 @@ ess <- function(x) {
 #'
 #' @param stats A list of simulated statistics matrices, of length equal to the
 #'   number of simulations performed.  Each matrix should have one row for each
-#'   simulated network if \code{dynamic == FALSE}, one row for each time step
-#'   if \code{dynamic == TRUE}, and one column for each statistic.  The columns
+#'   simulated network if `dynamic == FALSE`, one row for each time step
+#'   if `dynamic == TRUE`, and one column for each statistic.  The columns
 #'   should be named for the statistics they correspond to, with all matrices
 #'   having the same statistics, in the same order.  Each matrix may have an
-#'   \code{attr}-style attribute named \code{"ess"} attached, giving the
+#'   `attr`-style attribute named `"ess"` attached, giving the
 #'   effective sample sizes for the columns of the matrix; if this attribute is
-#'   \code{NULL}, then the effective sample sizes will be computed within the
-#'   call to \code{make_stats_table}.
-#' @param targets A vector of target values for the statistics in \code{stats}.
+#'   `NULL`, then the effective sample sizes will be computed within the
+#'   call to `make_stats_table`.
+#' @param targets A vector of target values for the statistics in `stats`.
 #'   May be named (in which case targets will be matched to statistics based on
-#'   column names in matrices in \code{stats}) or unnamed (in which case
+#'   column names in matrices in `stats`) or unnamed (in which case
 #'   targets will be matched to statistics based on position, and the number of
 #'   targets must equal the number of columns).
 #'
-#' @return A \code{data.frame} summarizing the simulated statistics.
+#' @return A `data.frame` summarizing the simulated statistics.
 #' @keywords internal
 make_stats_table <- function(stats, targets) {
   ess_list <- lapply(stats, function(x) NVL(attr(x, "ess"), ess(x)))
@@ -403,7 +403,7 @@ make_stats_table <- function(stats, targets) {
 #' @param tedgelist A timed edgelist, as produced by
 #'   [`networkDynamic::as.data.frame.networkDynamic`].
 #'
-#' @return The matrix of toggles corresponding to \code{tedgelist}.
+#' @return The matrix of toggles corresponding to `tedgelist`.
 #' @keywords internal
 tedgelist_to_toggles <- function(tedgelist) {
   tedgelist <- as.matrix(tedgelist)
@@ -416,7 +416,7 @@ tedgelist_to_toggles <- function(tedgelist) {
 #' @title Convert Matrix of Toggles to Dissolution and Duration Statistics
 #'
 #' @param toggles A matrix of toggles, as produced by
-#'   \code{\link{tedgelist_to_toggles}}.
+#'   [tedgelist_to_toggles()].
 #' @param coef.diss Dissolution coefficients used in the simulation.
 #' @param nsteps Number of time steps in the simulation.
 #' @param nw Network used in the simulation.

@@ -9,7 +9,7 @@ infection.2g.net(dat, at)
 \arguments{
 \item{dat}{Main \code{netsim_dat} object containing a \code{networkDynamic}
 object and other initialization information passed from
-\code{\link{netsim}}.}
+\code{\link[=netsim]{netsim()}}.}
 
 \item{at}{Current time step.}
 }
@@ -25,11 +25,11 @@ The main steps in this infection module are as follows:
 \enumerate{
 \item Get IDs for current infected and susceptibles given the current
 disease status.
-\item Call \code{\link{discord_edgelist}} to get the current discordant
+\item Call \code{\link[=discord_edgelist]{discord_edgelist()}} to get the current discordant
 edgelist given step 1.
 \item Determine the transmission rates (e.g., as a function of group).
 \item Pull the number of acts per partnership in a time step from the
-\code{act.rate} parameter.
+act.rate` parameter.
 \item Calculate the final transmission probabilities given the transmission
 rates and act rates.
 \item Randomly transmit on the discordant edgelist.
@@ -38,7 +38,7 @@ and calculate disease incidence.
 }
 }
 \seealso{
-\code{\link{discord_edgelist}} is used within \code{infection.net}
+\code{\link[=discord_edgelist]{discord_edgelist()}} is used within \code{infection.net}
 to obtain a discordant edgelist.
 }
 \keyword{internal}

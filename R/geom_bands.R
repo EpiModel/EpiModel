@@ -1,16 +1,16 @@
 #' @title ggplot2 Geom for Quantile Bands
 #'
 #' @description Plots quantile bands given a data.frame with stochastic model
-#'              results from \code{\link{icm}} or \code{\link{netsim}}.
+#'              results from [icm()] or [netsim()].
 #'
-#' @param mapping Standard aesthetic mapping \code{aes()} input for ggplot2.
+#' @param mapping Standard aesthetic mapping `aes()` input for ggplot2.
 #' @param lower Lower quantile for the time series.
 #' @param upper Upper quantile for the time series.
 #' @param alpha Transparency of the ribbon fill.
-#' @param ... Additional arguments passed to \code{stat_summary}.
+#' @param ... Additional arguments passed to `stat_summary`.
 #'
 #' @details
-#' This is a wrapper around \code{ggplot::stat_summary} with a ribbon geom as
+#' This is a wrapper around `ggplot::stat_summary` with a ribbon geom as
 #' aesthetic output.
 #'
 #' @export

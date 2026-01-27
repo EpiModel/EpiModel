@@ -8,14 +8,14 @@
 #'
 #' @inherit recovery.net return
 #'
-#' @section The \code{tracker.list} list:
-#' \code{.tracker.list} is a list of NAMED functions stored in the
-#' \code{control} list of the main \code{netsim_dat} class object.
+#' @section The `tracker.list` list:
+#' `.tracker.list` is a list of NAMED functions stored in the
+#' `control` list of the main `netsim_dat` class object.
 #'
 #' @section Tracker Functions:
 #' This function will apply the tracker functions present in the control list
-#' \code{.tracker.list}. Each tracker must be a function with EXACTLY one
-#' argument: the \code{netsim_dat} main list object. They must return a VALUE of
+#' `.tracker.list`. Each tracker must be a function with EXACTLY one
+#' argument: the `netsim_dat` main list object. They must return a VALUE of
 #' length one (numeric, logical or character).
 #'
 #' @examples
@@ -81,7 +81,7 @@
 #' d
 #' }
 #'
-#' @seealso \code{\link{netsim}}
+#' @seealso [netsim()]
 #'
 #' @keywords internal
 epi_trackers <- function(dat) {

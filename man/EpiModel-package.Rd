@@ -59,6 +59,7 @@ disease in which one may transition back and forth from the
 susceptible to infected states throughout life. Examples include
 bacterial sexually transmitted diseases like gonorrhea.
 }
+
 These basic disease types may be extended in any arbitrarily complex way to
 simulate specific diseases for research questions.
 }
@@ -68,19 +69,19 @@ simulate specific diseases for research questions.
 EpiModel uses three model setup functions for each model class to input the
 necessary parameters, initial conditions, and control settings:
 \itemize{
-\item \code{\link{param.dcm}}, \code{\link{param.icm}}, and
-\code{\link{param.net}} are used to input epidemic parameters for each
+\item \code{\link[=param.dcm]{param.dcm()}}, \code{\link[=param.icm]{param.icm()}}, and
+\code{\link[=param.net]{param.net()}} are used to input epidemic parameters for each
 of the three model classes. Parameters include the rate of contacts or
 acts between actors, the probability of transmission per contact, and
 recovery and demographic rates for models that include those
 transitions.
-\item \code{\link{init.dcm}}, \code{\link{init.icm}}, and
-\code{\link{init.net}} are used to input the initial conditions for
+\item \code{\link[=init.dcm]{init.dcm()}}, \code{\link[=init.icm]{init.icm()}}, and
+\code{\link[=init.net]{init.net()}} are used to input the initial conditions for
 each class. The main conditions are limited to the numbers or, if
 applicable, the specific agents in the population who are infected or
 recovered at the simulation outset.
-\item \code{\link{control.dcm}}, \code{\link{control.icm}}, and
-\code{\link{control.net}} are used to specify the remaining control
+\item \code{\link[=control.dcm]{control.dcm()}}, \code{\link[=control.icm]{control.icm()}}, and
+\code{\link[=control.net]{control.net()}} are used to specify the remaining control
 settings for each simulation. The core controls for base model
 types include the disease type, number of time steps, and number of
 simulations. Controls are also used to input new model functions (for
@@ -92,11 +93,11 @@ documentation for the specific control functions help pages.
 With the models parameterized, the functions for simulating epidemic models
 are:
 \itemize{
-\item \code{\link{dcm}} for deterministic compartmental models.
-\item \code{\link{icm}} for individual contact models.
+\item \code{\link[=dcm]{dcm()}} for deterministic compartmental models.
+\item \code{\link[=icm]{icm()}} for individual contact models.
 \item Network models are simulated in a three-step process:
 \enumerate{
-\item \code{\link{netest}} estimates the statistical model for the network
+\item \code{\link[=netest]{netest()}} estimates the statistical model for the network
 structure itself (i.e., how partnerships form and dissolve over time
 given the parameterization of those processes). This function is a
 wrapper around the \code{ergm} and \code{tergm} functions in the
@@ -104,11 +105,11 @@ wrapper around the \code{ergm} and \code{tergm} functions in the
 framework for model simulation is called "egocentric inference":
 target statistics summarizing these formation and dissolution
 processes collected from an egocentric sample of the population.
-\item \code{\link{netdx}} runs diagnostics on the dynamic model fit by
+\item \code{\link[=netdx]{netdx()}} runs diagnostics on the dynamic model fit by
 simulating the base network over time to ensure the model fits the
 targets for formation and dissolution.
-\item \code{\link{netsim}} simulates the stochastic network epidemic
-models, with a given network model fit in \code{\link{netest}}. Here
+\item \code{\link[=netsim]{netsim()}} simulates the stochastic network epidemic
+models, with a given network model fit in \code{\link[=netest]{netest()}}. Here
 the function requires this model fit object along with the
 parameters, initial conditions, and control settings as defined
 above.

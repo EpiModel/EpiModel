@@ -16,8 +16,8 @@ get_network(x, ...)
 \method{get_network}{netsim_dat}(x, network = 1L, ...)
 }
 \arguments{
-\item{x}{An \code{EpiModel} object of class \code{\link{netsim}},
-\code{\link{netdx}}, or \code{netsim_dat}.}
+\item{x}{An \code{EpiModel} object of class \code{\link[=netsim]{netsim()}},
+\code{\link[=netdx]{netdx()}}, or \code{netsim_dat}.}
 
 \item{...}{Additional arguments.}
 
@@ -65,11 +65,11 @@ are not supported, and the network object is either the current
 }
 \details{
 This function requires that the network object is saved during the network
-simulation while running either \code{\link{netsim}} or \code{\link{netdx}}.
+simulation while running either \code{\link[=netsim]{netsim()}} or \code{\link[=netdx]{netdx()}}.
 For the former, that is specified by setting the \code{save.network}
-parameter in \code{\link{control.net}} to \code{TRUE}. For the latter, that
+parameter in \code{\link[=control.net]{control.net()}} to \code{TRUE}. For the latter, that
 is specified with the \code{keep.tnetwork} parameter directly in
-\code{\link{netdx}}.
+\code{\link[=netdx]{netdx()}}.
 }
 \examples{
 # Set up network and TERGM formula

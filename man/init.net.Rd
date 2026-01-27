@@ -40,7 +40,7 @@ Sets the initial conditions for stochastic network models
 simulated with \code{netsim}.
 }
 \details{
-The initial conditions for a model solved with \code{\link{netsim}} should be
+The initial conditions for a model solved with \code{\link[=netsim]{netsim()}} should be
 input into the \code{init.net} function. This function handles initial
 conditions for both base models and new modules. For an overview of
 specifying initial conditions across a variety of base network models,
@@ -58,8 +58,8 @@ init.net(status.vector = status, infTime.vector = infTime)
 
 }
 \seealso{
-Use \code{\link{param.net}} to specify model parameters and
-\code{\link{control.net}} to specify the control settings. Run the
-parameterized model with \code{\link{netsim}}.
+Use \code{\link[=param.net]{param.net()}} to specify model parameters and
+\code{\link[=control.net]{control.net()}} to specify the control settings. Run the
+parameterized model with \code{\link[=netsim]{netsim()}}.
 }
 \keyword{parameterization}

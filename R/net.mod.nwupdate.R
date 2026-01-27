@@ -2,7 +2,7 @@
 #' @title Dynamic Network Updates
 #'
 #' @description This function handles all calls to the network object contained
-#'              on the main \code{netsim_dat} object handled in \code{netsim}.
+#'              on the main `netsim_dat` object handled in `netsim`.
 #'
 #' @inheritParams recovery.net
 #'

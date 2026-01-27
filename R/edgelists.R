@@ -10,7 +10,7 @@
 #'
 #' @return
 #' An edgelist in matrix form with two columns. Each column contains the
-#' posit_ids (see \code{get_posit_ids}) of the nodes in each edge.
+#' posit_ids (see `get_posit_ids`) of the nodes in each edge.
 #'
 #' @export
 get_edgelist <- function(dat, network) {
@@ -62,7 +62,7 @@ get_edgelist <- function(dat, network) {
 #'  * `tail_status`: Status of the tail node.
 #'  * `network`: The numerical index of the network on which the partnership is located.
 #'
-#' @seealso \code{\link{discord_edgelist}}
+#' @seealso [discord_edgelist()]
 #'
 #' @export
 #' @keywords netMod internal
@@ -157,16 +157,16 @@ as_tibble_edgelist <- function(el) {
 #'                multiple overlapping networks.)
 #'
 #' @return
-#' A cumulative edgelist in \code{data.frame} form with 4 columns:
-#' \itemize{
-#'   \item \code{head}: the unique ID (see \code{get_unique_ids}) of the
+#' A cumulative edgelist in `data.frame` form with 4 columns:
+#'
+#'   * `head`: the unique ID (see `get_unique_ids`) of the
 #'         head node on the edge.
-#'   \item \code{tail}: the unique ID (see \code{get_unique_ids}) of the
+#'   * `tail`: the unique ID (see `get_unique_ids`) of the
 #'         tail node on the edge.
-#'   \item \code{start}: the time step in which the edge started.
-#'   \item \code{stop}: the time step in which the edge stopped; if ongoing,
-#'         then \code{NA} is returned.
-#' }
+#'   * `start`: the time step in which the edge started.
+#'   * `stop`: the time step in which the edge stopped; if ongoing,
+#'         then `NA` is returned.
+#'
 #'
 #' @export
 get_cumulative_edgelist <- function(dat, network) {
@@ -198,11 +198,11 @@ get_cumulative_edgelist <- function(dat, network) {
 #'                 active should be removed from the output.
 #'
 #' @section Truncation:
-#' To avoid storing a cumulative edgelist too long, the \code{truncate}
+#' To avoid storing a cumulative edgelist too long, the `truncate`
 #' parameter defines a number of steps after which an edge that is no longer
 #' active is truncated out of the cumulative edgelist.
-#' When \code{truncate = Inf}, no edges are ever removed. When
-#' \code{truncate = 0}, only the active edges are kept. You may want this
+#' When `truncate = Inf`, no edges are ever removed. When
+#' `truncate = 0`, only the active edges are kept. You may want this
 #' behavior to keep track of the active edges' start step.
 #'
 #' @inherit recovery.net return
@@ -266,21 +266,21 @@ update_cumulative_edgelist <- function(dat, network, truncate = 0) {
 #' @inheritParams recovery.net
 #' @param networks Numerical indexes of the networks to extract the partnerships
 #'                 from. (May be > 1 for models with multiple overlapping
-#'                 networks.) If \code{NULL}, extract from all networks.
+#'                 networks.) If `NULL`, extract from all networks.
 #'
 #' @return
-#' A \code{data.frame} with 5 columns:
-#' \itemize{
-#'   \item \code{index}: the unique ID (see \code{get_unique_ids}) of the
+#' A `data.frame` with 5 columns:
+#'
+#'   * `index`: the unique ID (see `get_unique_ids`) of the
 #'         indexes.
-#'   \item \code{partner}: the unique ID (see \code{get_unique_ids}) of the
+#'   * `partner`: the unique ID (see `get_unique_ids`) of the
 #'         partners/contacts.
-#'   \item \code{start}: the time step in which the edge started.
-#'   \item \code{stop}: the time step in which the edge stopped; if ongoing,
-#'         then \code{NA} is returned.
-#'   \item \code{network}: the numerical index for the network on which the
+#'   * `start`: the time step in which the edge started.
+#'   * `stop`: the time step in which the edge stopped; if ongoing,
+#'         then `NA` is returned.
+#'   * `network`: the numerical index for the network on which the
 #'         partnership/contact is located.
-#'  }
+#'
 #'
 #' @export
 get_cumulative_edgelists_df <- function(dat, networks = NULL) {
@@ -364,12 +364,12 @@ get_partners <- function(dat, index_posit_ids, networks = NULL,
 #' @inheritParams get_partners
 #'
 #' @return
-#' A \code{data.frame} with 2 columns:
-#' \itemize{
-#'   \item \code{index_pid}: the positional ID (see \code{get_posit_ids}) of the
+#' A `data.frame` with 2 columns:
+#'
+#'   * `index_pid`: the positional ID (see `get_posit_ids`) of the
 #'         indexes.
-#'   \item \code{degree}: the cumulative degree of the index.
-#'  }
+#'   * `degree`: the cumulative degree of the index.
+#'
 #'
 #' @section Cumulative Degree:
 #' The cumulative degree of a node is the number of edges connected to this

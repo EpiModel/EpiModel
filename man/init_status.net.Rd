@@ -9,7 +9,7 @@ init_status.net(dat)
 \arguments{
 \item{dat}{Main \code{netsim_dat} object containing a \code{networkDynamic}
 object and other initialization information passed from
-\code{\link{netsim}}.}
+\code{\link[=netsim]{netsim()}}.}
 }
 \value{
 The updated \code{netsim_dat} main list object.
@@ -26,7 +26,7 @@ number infected based on the number specified, either as a set of random
 draws from a binomial distribution or as the exact number specified. In
 either case, the specific nodes infected are a random sample from the
 network. In contrast, a set of specific nodes may be infected by passing a
-vector containing the status of each node to \code{\link{netsim}}.
+vector containing the status of each node to \code{\link[=netsim]{netsim()}}.
 
 For the initially infected nodes, this module sets the time of infection as
 \eqn{t_1}, the starting time of network simulations. For models with vital
@@ -40,7 +40,7 @@ to set the infection times to be in the past, these times are multiplied by
 when the disease simulation time loop starts.
 }
 \seealso{
-This is an initialization module for \code{\link{netsim}}.
+This is an initialization module for \code{\link[=netsim]{netsim()}}.
 }
 \keyword{internal}
 \keyword{netMod}

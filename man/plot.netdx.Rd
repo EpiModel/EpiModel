@@ -48,8 +48,8 @@ step.}
 \item{sims}{A vector of simulation numbers to plot.}
 
 \item{stats}{Statistics to plot. For \code{type = "formation"}, \code{stats}
-are among those specified in the call to \code{\link{netdx}};
-for \code{type = "duration", "dissolution"}, \code{stats} are among
+are among those specified in the call to \code{\link[=netdx]{netdx()}};
+for \verb{type = "duration", "dissolution"}, \code{stats} are among
 those of the dissolution model (without \code{offset()}). The default
 is to plot all statistics.}
 
@@ -102,13 +102,13 @@ versus one plot per statistic if \code{FALSE}.}
 \item{legend}{If \code{TRUE}, plot default legend.}
 
 \item{grid}{If \code{TRUE}, a grid is added to the background of plot
-(see \code{\link{grid}} for details), with default of nx by ny.}
+(see \code{\link[=grid]{grid()}} for details), with default of nx by ny.}
 
 \item{...}{Additional arguments to pass.}
 }
 \description{
 Plots dynamic network model diagnostics calculated in
-\code{\link{netdx}}.
+\code{\link[=netdx]{netdx()}}.
 }
 \details{
 The plot function for \code{netdx} objects will generate plots of two types
@@ -116,7 +116,7 @@ of model diagnostic statistics that run as part of the diagnostic tools
 within that function. The \code{formation} plot shows the summary statistics
 requested in \code{nwstats.formula}, where the default includes those
 statistics in the network model formation formula specified in the original
-call to \code{\link{netest}}.
+call to \code{\link[=netest]{netest()}}.
 
 The \code{duration} plot shows the average age of existing edges at each time
 step, up until the maximum time step requested. The age is used as an
@@ -202,6 +202,6 @@ plot(dx2, type = "dissolution", method = "b", col = "pink1")
 
 }
 \seealso{
-\code{\link{netdx}}
+\code{\link[=netdx]{netdx()}}
 }
 \keyword{plot}

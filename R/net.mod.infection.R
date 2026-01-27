@@ -8,27 +8,26 @@
 #'
 #' @details
 #' The main steps in this infection module are as follows:
-#' \enumerate{
-#'  \item Get IDs for current infected and susceptible nodes given the current
-#'        disease status.
-#'  \item Call \code{\link{discord_edgelist}} to get the current discordant
-#'        edgelist given step 1.
-#'  \item Determine the transmission rates (e.g., as a function of group).
-#'  \item Pull the number of acts per partnership in a time step from the
-#'        \code{act.rate} parameter.
-#'  \item Calculate the final transmission probabilities given the transmission
-#'        rates and act rates.
-#'  \item Randomly transmit on the discordant edgelist.
-#'  \item Conduct bookkeeping for new infections to update status on the nodes
-#'        and calculate disease incidence.
-#' }
+#'
+#'  1. Get IDs for current infected and susceptible nodes given the current
+#'     disease status.
+#'  2. Call [discord_edgelist()] to get the current discordant
+#'     edgelist given step 1.
+#'  3. Determine the transmission rates (e.g., as a function of group).
+#'  4. Pull the number of acts per partnership in a time step from the
+#'     `act.rate` parameter.
+#'  5. Calculate the final transmission probabilities given the transmission
+#'     rates and act rates.
+#'  6. Randomly transmit on the discordant edgelist.
+#'  7. Conduct bookkeeping for new infections to update status on the nodes
+#'     and calculate disease incidence.
 #'
 #' @inherit recovery.net return
 #'
 #' @export
 #' @keywords netMod internal
 #'
-#' @seealso \code{\link{discord_edgelist}} is used within \code{infection.net}
+#' @seealso [discord_edgelist()] is used within `infection.net`
 #' to obtain a discordant edgelist.
 #'
 infection.net <- function(dat, at) {
@@ -126,27 +125,27 @@ infection.net <- function(dat, at) {
 #'
 #' @details
 #' The main steps in this infection module are as follows:
-#' \enumerate{
-#'  \item Get IDs for current infected and susceptibles given the current
-#'        disease status.
-#'  \item Call \code{\link{discord_edgelist}} to get the current discordant
-#'        edgelist given step 1.
-#'  \item Determine the transmission rates (e.g., as a function of group).
-#'  \item Pull the number of acts per partnership in a time step from the
-#'        \code{act.rate} parameter.
-#'  \item Calculate the final transmission probabilities given the transmission
-#'        rates and act rates.
-#'  \item Randomly transmit on the discordant edgelist.
-#'  \item Conduct bookkeeping for new infections to update status on the nodes
-#'        and calculate disease incidence.
-#' }
+#'
+#'  1. Get IDs for current infected and susceptibles given the current
+#'     disease status.
+#'  2. Call [discord_edgelist()] to get the current discordant
+#'     edgelist given step 1.
+#'  3. Determine the transmission rates (e.g., as a function of group).
+#'  4. Pull the number of acts per partnership in a time step from the
+#'     act.rate` parameter.
+#'  5. Calculate the final transmission probabilities given the transmission
+#'     rates and act rates.
+#'  6. Randomly transmit on the discordant edgelist.
+#'  7. Conduct bookkeeping for new infections to update status on the nodes
+#'     and calculate disease incidence.
+#'
 #'
 #' @inherit recovery.net return
 #'
 #' @export
 #' @keywords netMod internal
 #'
-#' @seealso \code{\link{discord_edgelist}} is used within \code{infection.net}
+#' @seealso [discord_edgelist()] is used within `infection.net`
 #' to obtain a discordant edgelist.
 #'
 infection.2g.net <- function(dat, at) {
@@ -254,41 +253,41 @@ infection.2g.net <- function(dat, at) {
 
 #' @title Discordant Edgelist
 #'
-#' @description This function returns a \code{data.frame} with a discordant
+#' @description This function returns a `data.frame` with a discordant
 #'              edgelist, defined as the set of edges in which the status of the
 #'              two partners is one susceptible and one infected.
 #'
 #' @inheritParams recovery.net
 #' @param network In case of models with multiple networks, the network to pull
-#'        the current edgelist from. Default of \code{network = 1}.
+#'        the current edgelist from. Default of `network = 1`.
 #' @param infstat Character vector of disease status values that are considered
 #'        infectious, defining the SI pairs.
-#' @param include.network Should the \code{network} value be included as the
+#' @param include.network Should the `network` value be included as the
 #'        final column of the discordant edgelist?
 #'
 #' @details
-#' This internal function works within the parent \code{\link{infection.net}}
+#' This internal function works within the parent [infection.net()]
 #' function to pull the current edgelist from the dynamic network object, look
 #' up the disease status of the head and tails on the edge, and subset the list
 #' to those edges with one susceptible and one infected node.
 #'
 #' EpiModel v2.0.3 extended the function by allowing flexibility in the
-#' definition what disease status counts as infectious, with the \code{infstat}
+#' definition what disease status counts as infectious, with the `infstat`
 #' parameter. For extension models with multiple infectious states, this can be
-#' a vector of length greater than 1: \code{infstat = c("i", "a")}.
+#' a vector of length greater than 1: `infstat = c("i", "a")`.
 #'
 #' @return
-#' This function returns a \code{data.frame} with the following columns:
-#' \itemize{
-#'  \item \strong{time:} time step queried.
-#'  \item \strong{sus:} ID number for the susceptible partner.
-#'  \item \strong{inf:} ID number for the infectious partner.
-#' }
-#' The output from this function is added to the transmission \code{data.frame}
-#' object that is requested as output in \code{netsim} simulations with
-#' the \code{save.trans=TRUE} argument.
+#' This function returns a `data.frame` with the following columns:
 #'
-#' @seealso \code{\link{netsim}}, \code{\link{infection.net}}
+#'  * **time:** time step queried.
+#'  * **sus:** ID number for the susceptible partner.
+#'  * **inf:** ID number for the infectious partner.
+#'
+#' The output from this function is added to the transmission `data.frame`
+#' object that is requested as output in `netsim` simulations with
+#' the `save.trans=TRUE` argument.
+#'
+#' @seealso [netsim()], [infection.net()]
 #'
 #' @export
 #' @keywords netMod internal
@@ -334,16 +333,16 @@ discord_edgelist <- function(dat, at, network = 1, infstat = "i", include.networ
 #' @title Save Transmission Matrix
 #'
 #' @description This function appends the transmission matrix created during
-#'              \code{infection.net} and \code{infection.2g.net}.
+#'              `infection.net` and `infection.2g.net`.
 #'
 #' @inheritParams recovery.net
-#' @param del Discordant edgelist created within \code{\link{infection.net}} and
-#'        \code{\link{infection.2g.net}}.
+#' @param del Discordant edgelist created within [infection.net()] and
+#'        [infection.2g.net()].
 #'
 #' @details
-#' This internal function works within the parent \code{\link{infection.net}}
-#' functions to save the transmission matrix created at time step \code{at} to
-#' the main \code{netsim_dat} class object \code{dat}.
+#' This internal function works within the parent [infection.net()]
+#' functions to save the transmission matrix created at time step `at` to
+#' the main `netsim_dat` class object `dat`.
 #'
 #' @inherit recovery.net return
 #'
