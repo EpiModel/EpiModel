@@ -12,6 +12,7 @@
   out = "vals",
   sim = NULL,
   qval = NULL,
+  repair = "drop",
   ...
 )
 
@@ -21,6 +22,7 @@
   optional = FALSE,
   out = "vals",
   sim = NULL,
+  repair = "drop",
   ...
 )
 }
@@ -41,6 +43,9 @@ specified, then data from all simulations will be output.}
 
 \item{qval}{Quantile value required when \code{out="qnt"}.}
 
+\item{repair}{What to do with epi trackers that are too short. "drop" will
+remove theme from the output, "pad" will add \code{NA} rows to get to the
+right size(Default = "drop").}
 \item{...}{See \code{\link[=as.data.frame.default]{as.data.frame.default()}}.}
 }
 \value{
