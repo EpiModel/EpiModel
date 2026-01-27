@@ -67,9 +67,7 @@
 #'               root.edge = TRUE,
 #'               cex = 0.75)
 #'
-as.phylo.transmat <- function(x,
-                              vertex.exit.times,
-                              ...) {
+as.phylo.transmat <- function(x, vertex.exit.times = NULL, ...) {
 
   # if not named properly, assume inf, sus at
   if (!all(c("inf", "sus", "at") %in% names(x))) {
@@ -78,9 +76,6 @@ as.phylo.transmat <- function(x,
     names(x) <- c("inf", "sus", "at")
   }
   tm <- x
-  if (missing(vertex.exit.times)) {
-    vertex.exit.times <- NULL
-  }
   # find roots (infectors that never appear as sus)
   v <- setdiff(unique(tm$inf), unique(tm$sus))
   if (length(v) > 1) {

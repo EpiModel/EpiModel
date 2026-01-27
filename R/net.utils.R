@@ -121,18 +121,18 @@ check_degdist_bal <- function(num.g1, num.g2,
 #' @export
 #'
 color_tea <- function(nd, old.var = "testatus", old.sus = "s", old.inf = "i",
-                      old.rec = "r", new.var = "ndtvcol", new.sus, new.inf,
-                      new.rec, verbose = TRUE) {
-  if (missing(new.inf)) {
+                      old.rec = "r", new.var = "ndtvcol", new.sus = NULL,
+                      new.inf = NULL, new.rec = NULL, verbose = TRUE) {
+  if (is.null(new.inf)) {
     new.inf <- adjustcolor(2, 0.75)
   }
-  if (missing(new.sus)) {
+  if (is.null(new.sus)) {
     new.sus <- adjustcolor(4, 0.75)
   }
-  if (missing(new.rec)) {
+  if (is.null(new.rec)) {
     new.rec <- adjustcolor(3, 0.75)
   }
-  times <- 1:max(get.change.times(nd))
+  times <- seq_len(max(get.change.times(nd)))
   for (at in times) {
     stat <- get.vertex.attribute.active(nd, old.var, at = at)
     infected <- which(stat == old.inf)
@@ -641,7 +641,7 @@ get_network_term_attr <- function(nw) {
 #'
 #' @param nw Object of class `network` or `networkDynamic`.
 #' @param ids Vector of ID numbers for which the group number
-#'        should be returned.
+#'        should be returned. If `NULL` (default), return all IDs.
 #'
 #' @return A vector containing the group number for each of the specified nodes.
 #'
@@ -654,9 +654,9 @@ get_network_term_attr <- function(nw) {
 #' idgroup(nw)
 #' idgroup(nw, ids = c(3, 6))
 #'
-idgroup <- function(nw, ids) {
+idgroup <- function(nw, ids = NULL) {
   n <- network.size(nw)
-  if (missing(ids)) {
+  if (is.null(ids)) {
     ids <- seq_len(n)
   }
   if (any(ids > n)) {

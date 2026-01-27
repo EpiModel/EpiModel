@@ -122,7 +122,7 @@
 #' plot(dx3, type = "dissolution", mean.smooth = FALSE, mean.col = "red")
 #' }
 #'
-netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
+netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps = NULL,
                   nwstats.formula = "formation",
                   set.control.ergm = control.simulate.formula(),
                   set.control.tergm = control.simulate.formula.tergm(MCMC.maxchanges = Inf),
@@ -145,7 +145,7 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps,
   edapprox <- x$edapprox
   nw <- x$newnetwork
 
-  if (dynamic == TRUE && missing(nsteps)) {
+  if (dynamic && is.null(nsteps)) {
     stop("Specify number of time steps with nsteps", call. = FALSE)
   }
 
