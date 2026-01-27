@@ -9,7 +9,7 @@ resim_nets(dat, at)
 \arguments{
 \item{dat}{Main \code{netsim_dat} object containing a \code{networkDynamic}
 object and other initialization information passed from
-\code{\link{netsim}}.}
+\code{\link[=netsim]{netsim()}}.}
 
 \item{at}{Current time step.}
 }
@@ -18,7 +18,7 @@ The updated \code{netsim_dat} main list object.
 }
 \description{
 This function resimulates the dynamic network in stochastic
-network models simulated in \code{\link{netsim}} with dependence
+network models simulated in \code{\link[=netsim]{netsim()}} with dependence
 between the epidemic and demographic processes and the network
 structure.
 }

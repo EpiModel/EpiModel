@@ -100,11 +100,11 @@ An \code{EpiModel} object of class \code{param.net}.
 }
 \description{
 Sets the epidemic parameters for stochastic network models
-simulated with \code{\link{netsim}}.
+simulated with \code{\link[=netsim]{netsim()}}.
 }
 \details{
 \code{param.net} sets the epidemic parameters for the stochastic network
-models simulated with the \code{\link{netsim}} function. Models
+models simulated with the \code{\link[=netsim]{netsim()}} function. Models
 may use the base types, for which these parameters are used, or new process
 modules which may use these parameters (but not necessarily). A detailed
 description of network model parameterization for base models is found in
@@ -113,7 +113,7 @@ tutorials.
 
 For base models, the model specification will be chosen as a result of
 the model parameters entered here and the control settings in
-\code{\link{control.net}}. One-group and two-group models are available,
+\code{\link[=control.net]{control.net()}}. One-group and two-group models are available,
 where the latter assumes a heterogeneous mixing between two distinct
 partitions in the population (e.g., men and women). Specifying any two-group
 parameters (those with a \code{.g2}) implies the simulation of a two-group
@@ -128,7 +128,7 @@ are mathematically instantaneous events: they have no duration in time, and
 thus no changes may occur within them over time. In contrast, network models
 allow for partnership durations defined by the dynamic network model,
 summarized in the model dissolution coefficients calculated in
-\code{\link{dissolution_coefs}}. Therefore, the \code{act.rate} parameter has
+\code{\link[=dissolution_coefs]{dissolution_coefs()}}. Therefore, the \code{act.rate} parameter has
 a different interpretation here, where it is the number of transmissible acts
 \emph{per partnership} per unit time.
 }
@@ -158,8 +158,8 @@ distribution definition; in either case, one draw from the generator would
 be completed per individual simulation. This is possible by passing a list
 named \code{random.params} into \code{param.net}, with each element of
 \code{random.params} a named generator function. See the help page and
-examples in \code{\link{generate_random_params}}. A simple factory function
-for sampling is provided with \code{\link{param_random}} but any function
+examples in \code{\link[=generate_random_params]{generate_random_params()}}. A simple factory function
+for sampling is provided with \code{\link[=param_random]{param_random()}} but any function
 will do.
 }
 
@@ -194,7 +194,7 @@ provided in the "Working with Model Parameters in EpiModel" vignette.
 To build original models outside of the base models, new process modules
 may be constructed to replace the existing modules or to supplement the
 existing set. These are passed into the control settings in
-\code{\link{control.net}}. New modules may use either the existing model
+\code{\link[=control.net]{control.net()}}. New modules may use either the existing model
 parameters named here, an original set of parameters, or a combination of
 both. The \code{...} allows the user to pass an arbitrary set of original
 model parameters into \code{param.net}. Whereas there are strict checks with
@@ -240,8 +240,8 @@ get_param_set(sim)
 
 }
 \seealso{
-Use \code{\link{init.net}} to specify the initial conditions and
-\code{\link{control.net}} to specify the control settings. Run the
-parameterized model with \code{\link{netsim}}.
+Use \code{\link[=init.net]{init.net()}} to specify the initial conditions and
+\code{\link[=control.net]{control.net()}} to specify the control settings. Run the
+parameterized model with \code{\link[=netsim]{netsim()}}.
 }
 \keyword{parameterization}

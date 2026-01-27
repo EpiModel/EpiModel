@@ -2,7 +2,7 @@
 #' @title Epidemic Parameters for Stochastic Network Models
 #'
 #' @description Sets the epidemic parameters for stochastic network models
-#'              simulated with \code{\link{netsim}}.
+#'              simulated with [netsim()].
 #'
 #' @param inf.prob Probability of infection per transmissible act between
 #'        a susceptible and an infected person. In two-group models, this is the
@@ -16,22 +16,22 @@
 #'        exposure.
 #' @param inter.start Time step at which the intervention starts, between 1 and
 #'        the number of time steps specified in the model. This will default to
-#'        1 if \code{inter.eff} is defined but this parameter is not.
-#' @param act.rate Average number of transmissible acts \emph{per partnership}
-#'        per unit time (see \code{act.rate} Parameter below). This may also be
+#'        1 if `inter.eff` is defined but this parameter is not.
+#' @param act.rate Average number of transmissible acts *per partnership*
+#'        per unit time (see `act.rate` Parameter below). This may also be
 #'        a vector of rates, with each element corresponding to the rate in
 #'        that time step of infection (see Time-Varying Parameters below).
-#' @param rec.rate Average rate of recovery with immunity (in \code{SIR} models)
-#'        or re-susceptibility (in \code{SIS} models). The recovery rate is the
+#' @param rec.rate Average rate of recovery with immunity (in `SIR` models)
+#'        or re-susceptibility (in `SIS` models). The recovery rate is the
 #'        reciprocal of the disease duration. For two-group models, this is the
 #'        recovery rate for group 1 persons only. This parameter is only used
-#'        for \code{SIR} and \code{SIS} models. This may also be a vector
+#'        for `SIR` and `SIS` models. This may also be a vector
 #'        of rates, with each element corresponding to the rate in that time
 #'        step of infection (see Time-Varying Parameters below).
 #' @param a.rate Arrival or entry rate. For one-group models, the arrival rate
 #'        is the rate of new arrivals per person per unit time. For two-group
 #'        models, the arrival rate is parameterized as a rate per group 1
-#'        person per unit time, with the \code{a.rate.g2} rate set as described
+#'        person per unit time, with the `a.rate.g2` rate set as described
 #'        below.
 #' @param ds.rate Departure or exit rate for susceptible persons. For two-group
 #'        models, it is the rate for group 1 susceptible persons only.
@@ -39,31 +39,31 @@
 #'        models, it is the rate for group 1 infected persons only.
 #' @param dr.rate Departure or exit rate for recovered persons. For two-group
 #'        models, it is the rate for group 1 recovered persons only. This
-#'        parameter is only used for \code{SIR} models.
+#'        parameter is only used for `SIR` models.
 #' @param inf.prob.g2 Probability of transmission given a transmissible act
 #'        between a susceptible group 2 person and an infected group 1 person.
 #'        It is the probability of transmission to group 2 members.
-#' @param rec.rate.g2 Average rate of recovery with immunity (in \code{SIR}
-#'        models) or re-susceptibility (in \code{SIS} models) for group 2
-#'        persons. This parameter is only used for two-group \code{SIR} and
-#'        \code{SIS} models.
+#' @param rec.rate.g2 Average rate of recovery with immunity (in `SIR`
+#'        models) or re-susceptibility (in `SIS` models) for group 2
+#'        persons. This parameter is only used for two-group `SIR` and
+#'        `SIS` models.
 #' @param a.rate.g2 Arrival or entry rate for group 2. This may either be
 #'        specified numerically as the rate of new arrivals per group 2 person
-#'        per unit time, or as \code{NA}, in which case the group 1 rate,
-#'        \code{a.rate}, governs the group 2 rate. The latter is used when, for
+#'        per unit time, or as `NA`, in which case the group 1 rate,
+#'        `a.rate`, governs the group 2 rate. The latter is used when, for
 #'        example, the first group is conceptualized as female, and the female
 #'        population size determines the arrival rate. Such arrivals are evenly
 #'        allocated between the two groups.
 #' @param ds.rate.g2 Departure or exit rate for group 2 susceptible persons.
 #' @param di.rate.g2 Departure or exit rate for group 2 infected persons.
 #' @param dr.rate.g2 Departure or exit rate for group 2 recovered persons. This
-#'        parameter is only used for \code{SIR} model types.
+#'        parameter is only used for `SIR` model types.
 #'
 #' @param ... Additional arguments passed to model.
 #'
 #' @details
-#' \code{param.net} sets the epidemic parameters for the stochastic network
-#' models simulated with the \code{\link{netsim}} function. Models
+#' `param.net` sets the epidemic parameters for the stochastic network
+#' models simulated with the [netsim()] function. Models
 #' may use the base types, for which these parameters are used, or new process
 #' modules which may use these parameters (but not necessarily). A detailed
 #' description of network model parameterization for base models is found in
@@ -72,31 +72,31 @@
 #'
 #' For base models, the model specification will be chosen as a result of
 #' the model parameters entered here and the control settings in
-#' \code{\link{control.net}}. One-group and two-group models are available,
+#' [control.net()]. One-group and two-group models are available,
 #' where the latter assumes a heterogeneous mixing between two distinct
 #' partitions in the population (e.g., men and women). Specifying any two-group
-#' parameters (those with a \code{.g2}) implies the simulation of a two-group
+#' parameters (those with a `.g2`) implies the simulation of a two-group
 #' model. All the parameters for a desired model type must be specified, even if
 #' they are zero.
 #'
-#' @section The \code{act.rate} Parameter:
+#' @section The `act.rate` Parameter:
 #' A key difference between these network models and DCM/ICM classes is the
 #' treatment of transmission events. With DCM and ICM, contacts or partnerships
 #' are mathematically instantaneous events: they have no duration in time, and
 #' thus no changes may occur within them over time. In contrast, network models
 #' allow for partnership durations defined by the dynamic network model,
 #' summarized in the model dissolution coefficients calculated in
-#' \code{\link{dissolution_coefs}}. Therefore, the \code{act.rate} parameter has
+#' [dissolution_coefs()]. Therefore, the `act.rate` parameter has
 #' a different interpretation here, where it is the number of transmissible acts
-#' \emph{per partnership} per unit time.
+#' *per partnership* per unit time.
 #'
 #' @section Time-Varying Parameters:
-#' The \code{inf.prob}, \code{act.rate}, \code{rec.rate} arguments (and their
-#' \code{.g2} companions) may be specified as time-varying parameters by passing
+#' The `inf.prob`, `act.rate`, `rec.rate` arguments (and their
+#' `.g2` companions) may be specified as time-varying parameters by passing
 #' in a vector of probabilities or rates, respectively. The value in each
 #' position on the vector then corresponds to the probability or rate at that
-#' discrete time step for the infected partner. For example, an \code{inf.prob}
-#' of \code{c(0.5, 0.5, 0.1)} would simulate a 0.5 transmission probability for
+#' discrete time step for the infected partner. For example, an `inf.prob`
+#' of `c(0.5, 0.5, 0.1)` would simulate a 0.5 transmission probability for
 #' the first two time steps of a person's infection, followed by a 0.1 for the
 #' third time step. If the infected person has not recovered or exited the
 #' population by the fourth time step, the third element in the vector will
@@ -110,52 +110,52 @@
 #' These might include a vector of potential parameter values or a statistical
 #' distribution definition; in either case, one draw from the generator would
 #' be completed per individual simulation. This is possible by passing a list
-#' named \code{random.params} into \code{param.net}, with each element of
-#' \code{random.params} a named generator function. See the help page and
-#' examples in \code{\link{generate_random_params}}. A simple factory function
-#' for sampling is provided with \code{\link{param_random}} but any function
+#' named `random.params` into `param.net`, with each element of
+#' `random.params` a named generator function. See the help page and
+#' examples in [generate_random_params()]. A simple factory function
+#' for sampling is provided with [param_random()] but any function
 #' will do.
 #'
 #' @section Using a Parameter data.frame:
 #' It is possible to set input parameters using a specifically formatted
-#' \code{data.frame} object. The first 3 columns of this \code{data.frame} must
+#' `data.frame` object. The first 3 columns of this `data.frame` must
 #' be:
-#' \itemize{
-#'  \item \code{param}: The name of the parameter. If this is a non-scalar
-#'    parameter (a vector of length > 1), end the parameter name with the
-#'    position on the vector (e.g., \code{"p_1"}, \code{"p_2"}, ...).
-#'  \item \code{value}: the value for the parameter (or the value of the
-#'    parameter in the Nth position if non-scalar).
-#'  \item \code{type}: a character string containing either \code{"numeric"},
-#'    \code{"logical"}, or \code{"character"} to define the parameter object
-#'    class.
-#' }
 #'
-#' In addition to these 3 columns, the \code{data.frame} can contain any number
-#' of other columns, such as \code{details} or \code{source} columns to document
+#'  * `param`: The name of the parameter. If this is a non-scalar
+#'    parameter (a vector of length > 1), end the parameter name with the
+#'    position on the vector (e.g., `"p_1"`, `"p_2"`, ...).
+#'  * `value`: the value for the parameter (or the value of the
+#'    parameter in the Nth position if non-scalar).
+#'  * `type`: a character string containing either `"numeric"`,
+#'    `"logical"`, or `"character"` to define the parameter object
+#'    class.
+#'
+#'
+#' In addition to these 3 columns, the `data.frame` can contain any number
+#' of other columns, such as `details` or `source` columns to document
 #' parameter meta-data. However, these extra columns will not be used by
 #' EpiModel.
 #'
-#' This data.frame is then passed in to \code{param.net} under a
-#' \code{data.frame.parameters} argument. Further details and examples are
+#' This data.frame is then passed in to `param.net` under a
+#' `data.frame.parameters` argument. Further details and examples are
 #' provided in the "Working with Model Parameters in EpiModel" vignette.
 #'
 #' @section Parameters with New Modules:
 #' To build original models outside of the base models, new process modules
 #' may be constructed to replace the existing modules or to supplement the
 #' existing set. These are passed into the control settings in
-#' \code{\link{control.net}}. New modules may use either the existing model
+#' [control.net()]. New modules may use either the existing model
 #' parameters named here, an original set of parameters, or a combination of
-#' both. The \code{...} allows the user to pass an arbitrary set of original
-#' model parameters into \code{param.net}. Whereas there are strict checks with
+#' both. The `...` allows the user to pass an arbitrary set of original
+#' model parameters into `param.net`. Whereas there are strict checks with
 #' default modules for parameter validity, this becomes a user
 #' responsibility when using new modules.
 #'
-#' @return An \code{EpiModel} object of class \code{param.net}.
+#' @return An `EpiModel` object of class `param.net`.
 #'
-#' @seealso Use \code{\link{init.net}} to specify the initial conditions and
-#'          \code{\link{control.net}} to specify the control settings. Run the
-#'          parameterized model with \code{\link{netsim}}.
+#' @seealso Use [init.net()] to specify the initial conditions and
+#'          [control.net()] to specify the control settings. Run the
+#'          parameterized model with [netsim()].
 #'
 #' @keywords parameterization
 #'
@@ -286,29 +286,29 @@ param.net <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
 #' @title Update Model Parameters for Stochastic Network Models
 #'
 #' @description Updates epidemic model parameters originally set with
-#'              \code{\link{param.net}} and adds new parameters.
+#'              [param.net()] and adds new parameters.
 #'
-#' @param param Object of class \code{param.net}, output from function of same
+#' @param param Object of class `param.net`, output from function of same
 #'              name.
 #' @param new.param.list Named list of new parameters to add to original
 #'        parameters.
 #'
 #' @details
 #' This function can update any original parameters specified with
-#' \code{\link{param.net}} and add new parameters. This function would be used
-#' if the inputs to \code{\link{param.net}} were a long list of fixed model
+#' [param.net()] and add new parameters. This function would be used
+#' if the inputs to [param.net()] were a long list of fixed model
 #' parameters that needed supplemental replacements or additions for particular
 #' model runs (e.g., changing an intervention efficacy parameter but leaving all
 #' other parameters fixed).
 #'
-#' The \code{new.param.list} object should be a named list object containing
-#' named parameters matching those already in \code{x} (in which case those
+#' The `new.param.list` object should be a named list object containing
+#' named parameters matching those already in `x` (in which case those
 #' original parameter values will be replaced) or not matching (in which case
-#' new parameters will be added to \code{param}).
+#' new parameters will be added to `param`).
 #'
 #' @return
-#' An updated list object of class \code{param.net}, which can be passed to the
-#' EpiModel function \code{\link{netsim}}.
+#' An updated list object of class `param.net`, which can be passed to the
+#' EpiModel function [netsim()].
 #'
 #' @examples
 #' x <- param.net(inf.prob = 0.5, act.rate = 2)
@@ -338,18 +338,18 @@ update_params <- function(param, new.param.list) {
 #' @title Create a Value Sampler for Random Parameters
 #'
 #' @description This function returns a 0 argument function that can be used as
-#'   a generator function in the \code{random.params} argument of the
-#'   \code{\link{param.net}} function.
+#'   a generator function in the `random.params` argument of the
+#'   [param.net()] function.
 #'
 #' @param values A vector of values to sample from.
-#' @param prob A vector of weights to use during sampling. If \code{NULL},
+#' @param prob A vector of weights to use during sampling. If `NULL`,
 #'        all values have the same probability of being picked
-#'        (default = \code{NULL}).
+#'        (default = `NULL`).
 #'
 #' @return A 0 argument generator function to sample one of the values from the
-#' \code{values} vector.
+#' `values` vector.
 #'
-#' @seealso \code{\link{param.net}} and \code{\link{generate_random_params}}
+#' @seealso [param.net()] and [generate_random_params()]
 #' @export
 #'
 #' @examples
@@ -377,32 +377,32 @@ param_random <- function(values, prob = NULL) {
 #' @title Generate Values for Random Parameters
 #'
 #' @description This function uses the generative functions in the
-#'              \code{random.params} list to create values for the parameters.
+#'              `random.params` list to create values for the parameters.
 #'
-#' @param param The \code{param} argument received by the \code{netsim}
+#' @param param The `param` argument received by the `netsim`
 #'              functions.
 #' @param verbose Should the function output the generated values
 #'                (default = FALSE)?
 #'
-#' @return A fully instantiated \code{param} list.
+#' @return A fully instantiated `param` list.
 #'
 
-#' @section \code{random.params}:
-#' The \code{random.params} argument to the \code{\link{param.net}} function
+#' @section `random.params`:
+#' The `random.params` argument to the [param.net()] function
 #' must be a named list of functions that each return a value that can be used
-#' as the argument with the same name. In the example below, \code{param_random}
-#' is a function factory provided by EpiModel for \code{act.rate} and
-#' for \code{tx.halt.part.prob} we provide bespoke functions. A function factory
+#' as the argument with the same name. In the example below, `param_random`
+#' is a function factory provided by EpiModel for `act.rate` and
+#' for `tx.halt.part.prob` we provide bespoke functions. A function factory
 #' is a function that returns a new function
 #' (see https://adv-r.hadley.nz/function-factories.html).
 #'
 #' @section Generator Functions:
-#' The functions used inside \code{random_params} must be 0 argument functions
+#' The functions used inside `random_params` must be 0 argument functions
 #' returning a valid value for the parameter with the same name.
 #'
-#' @section \code{param_random_set}:
-#' The \code{random_params} list can optionally contain a
-#' \code{param_random_set} element. It must be a \code{data.frame} of possible
+#' @section `param_random_set`:
+#' The `random_params` list can optionally contain a
+#' `param_random_set` element. It must be a `data.frame` of possible
 #' values to be used as parameters.
 #'
 #' The column names must correspond either to:
@@ -410,11 +410,11 @@ param_random <- function(values, prob = NULL) {
 #' parameter with "_1", "_2", etc. appended, with the number representing the
 #' position of the value, if this parameter is of size > 1. This means that the
 #' parameter names cannot contain any underscores "_" if you intend to use
-#' \code{param_random_set}.
+#' `param_random_set`.
 #'
-#' The point of the \code{param.random.set} \code{data.frame} is to allow the
+#' The point of the `param.random.set` `data.frame` is to allow the
 #' random parameters to be correlated. To achieve this, a whole row of the
-#' \code{data.frame} is selected for each simulation.
+#' `data.frame` is selected for each simulation.
 #'
 #' @export
 #'
@@ -556,40 +556,40 @@ generate_random_params <- function(param, verbose = FALSE) {
 #' @title Initial Conditions for Stochastic Network Models
 #'
 #' @description Sets the initial conditions for stochastic network models
-#'              simulated with \code{netsim}.
+#'              simulated with `netsim`.
 #'
 #' @param i.num Number of initial infected persons. For two-group models, this
 #'        is the number of initial group 1 infected persons.
 #' @param r.num Number of initial recovered persons. For two-group models, this
 #'        is the number of initial group 1 recovered persons. This parameter is
-#'        only used for the \code{SIR} model type.
+#'        only used for the `SIR` model type.
 #' @param i.num.g2 Number of initial infected persons in group 2. This parameter
 #'        is only used for two-group models.
 #' @param r.num.g2 Number of initial recovered persons in group 2. This
-#'        parameter is only used for two-group \code{SIR} models.
+#'        parameter is only used for two-group `SIR` models.
 #' @param status.vector A vector of length equal to the size of the input
 #'        network, containing the status of each node. Setting status here
-#'        overrides any inputs passed in the \code{.num} arguments.
+#'        overrides any inputs passed in the `.num` arguments.
 #' @param infTime.vector A vector of length equal to the size of the input
 #'        network, containing the (historical) time of infection for each of
-#'        those nodes with a current status of \code{"i"}. Can only be used if
-#'        \code{status.vector} is used, and must contain \code{NA} values for
-#'        any nodes whose status is not \code{"i"}.
+#'        those nodes with a current status of `"i"`. Can only be used if
+#'        `status.vector` is used, and must contain `NA` values for
+#'        any nodes whose status is not `"i"`.
 #' @param ... Additional initial conditions passed to model.
 #'
 #' @details
-#' The initial conditions for a model solved with \code{\link{netsim}} should be
-#' input into the \code{init.net} function. This function handles initial
+#' The initial conditions for a model solved with [netsim()] should be
+#' input into the `init.net` function. This function handles initial
 #' conditions for both base models and new modules. For an overview of
 #' specifying initial conditions across a variety of base network models,
 #' consult the [Network Modeling for Epidemics](https://epimodel.github.io/sismid/)
 #' tutorials.
 #'
-#' @return An \code{EpiModel} object of class \code{init.net}.
+#' @return An `EpiModel` object of class `init.net`.
 #'
-#' @seealso Use \code{\link{param.net}} to specify model parameters and
-#'          \code{\link{control.net}} to specify the control settings. Run the
-#'          parameterized model with \code{\link{netsim}}.
+#' @seealso Use [param.net()] to specify model parameters and
+#'          [control.net()] to specify the control settings. Run the
+#'          parameterized model with [netsim()].
 #'
 #' @keywords parameterization
 #'
@@ -771,7 +771,7 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #' all base models, the `type` argument is a necessary parameter and it has no default.
 #'
 #' @section The attr.rules Argument:
-#' The \code{attr.rules} parameter is used to specify the rules for how nodal attribute values for
+#' The `attr.rules` parameter is used to specify the rules for how nodal attribute values for
 #' incoming nodes should be set. These rules are only necessary for models in which there are
 #' incoming nodes (i.e., arrivals). There are three rules available for each attribute value:
 #'  * **`current`**: new nodes will be assigned this attribute in proportion to the distribution of
@@ -800,7 +800,7 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #' arguments to restart a set of simulations that were interrupted.
 #'
 #' Simulations are checkpointed individually: for example, if 3 simulations are run on a single core,
-#' the first 2 are finished, then the interruption occurs during the third, \code{netsim} will only
+#' the first 2 are finished, then the interruption occurs during the third, `netsim` will only
 #' restart the third one from the last checkpoint.
 #'
 #' A `.checkpoint.compress` argument can be set to overwrite the `compress` argument in `saveRDS`
@@ -1004,14 +1004,14 @@ control.net <- function(type,
 #' @title Cross Checking of Inputs for Stochastic Network Models
 #'
 #' @description This function checks that the estimation object from
-#'              \code{\link{netest}} and the three parameter lists from
-#'              \code{\link{param.net}}, \code{\link{init.net}}, and
-#'              \code{\link{control.net}} are consistent.
+#'              [netest()] and the three parameter lists from
+#'              [param.net()], [init.net()], and
+#'              [control.net()] are consistent.
 #'
-#' @param x An \code{EpiModel} object of class \code{\link{netest}}.
-#' @param param An \code{EpiModel} object of class \code{\link{param.net}}.
-#' @param init An \code{EpiModel} object of class \code{\link{init.net}}.
-#' @param control An \code{EpiModel} object of class \code{\link{control.net}}.
+#' @param x An `EpiModel` object of class [netest()].
+#' @param param An `EpiModel` object of class [param.net()].
+#' @param init An `EpiModel` object of class [init.net()].
+#' @param control An `EpiModel` object of class [control.net()].
 #'
 #' @return
 #' This function returns no objects.
@@ -1251,16 +1251,16 @@ crosscheck.net <- function(x, param, init, control) {
 #' @title Specify Controls by Network
 #'
 #' @description This utility function allows specification of certain
-#'              \code{\link{netsim}} controls to vary by network.  The
-#'              \code{\link{netsim}} control arguments currently supporting
-#'              \code{multilayer} specifications are \code{nwstats.formula},
-#'              \code{set.control.ergm}, \code{set.control.tergm}, and
-#'              \code{tergmLite.track.duration}.
+#'              [netsim()] controls to vary by network.  The
+#'              [netsim()] control arguments currently supporting
+#'              `multilayer` specifications are `nwstats.formula`,
+#'              `set.control.ergm`, `set.control.tergm`, and
+#'              `tergmLite.track.duration`.
 #'
 #' @param ... control arguments to apply to each network, with the index of the
 #'        network corresponding to the index of the control argument
 #'
-#' @return an object of class \code{multilayer} containing the specified
+#' @return an object of class `multilayer` containing the specified
 #'         control arguments
 #'
 #' @export

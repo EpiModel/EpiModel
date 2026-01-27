@@ -5,7 +5,7 @@
 #' nodes in a network over a time. Warning, these functions ignore nodes without
 #' edges in the period of interest. See the `Number of Nodes` section for
 #' details It is much faster than iterating
-#' \code{tsna::tPath}. The distance between to each node can be back calculated
+#' `tsna::tPath`. The distance between to each node can be back calculated
 #' using the length of the reachable set at each time step and the fact that the
 #' reachable sets are ordered by the time to arrival.
 #'

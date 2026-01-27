@@ -15,7 +15,7 @@ get_discordant_edgelist(
 \arguments{
 \item{dat}{Main \code{netsim_dat} object containing a \code{networkDynamic}
 object and other initialization information passed from
-\code{\link{netsim}}.}
+\code{\link[=netsim]{netsim()}}.}
 
 \item{status.attr}{The name of the status attribute of interest.}
 
@@ -53,7 +53,7 @@ corresponding status attribute of the other partner matches the value (or
 one of the values) of the \code{tail.status} parameter.
 }
 \seealso{
-\code{\link{discord_edgelist}}
+\code{\link[=discord_edgelist]{discord_edgelist()}}
 }
 \keyword{internal}
 \keyword{netMod}

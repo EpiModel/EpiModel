@@ -3,22 +3,22 @@
 #' @title Fast Version of network::add.vertices for Edgelist-formatted Network
 #'
 #' @description This function performs a simple operation of updating the
-#'              edgelist attribute \code{n} that tracks the total network
+#'              edgelist attribute `n` that tracks the total network
 #'              size implicit in an edgelist representation of the network.
 #'
 #' @param el A two-column matrix of current edges (edgelist) with an attribute
-#'           variable \code{n} containing the total current network size.
+#'           variable `n` containing the total current network size.
 #' @param nv A integer equal to the number of nodes to add to the network
 #'           size at the given time step.
 #'
 #' @details
-#' This function is used in \code{EpiModel} modules to add vertices (nodes) to
+#' This function is used in `EpiModel` modules to add vertices (nodes) to
 #' the edgelist object to account for entries into the population (e.g., births
 #' and in-migration).
 #'
 #' @return
-#' Returns the matrix of current edges, \code{el}, with the population size
-#' attribute updated based on the number of new vertices specified in \code{nv}.
+#' Returns the matrix of current edges, `el`, with the population size
+#' attribute updated based on the number of new vertices specified in `nv`.
 #'
 #' @export
 #'
@@ -66,16 +66,16 @@ add_vertices <- function(el, nv) {
 #'              larger than the IDs deleted.
 #'
 #' @param el A two-column matrix of current edges (edgelist) with an attribute
-#'           variable \code{n} containing the total current network size.
+#'           variable `n` containing the total current network size.
 #' @param vid A vector of IDs to delete from the edgelist.
 #'
 #' @details
-#' This function is used in \code{EpiModel} modules to remove vertices (nodes)
+#' This function is used in `EpiModel` modules to remove vertices (nodes)
 #' from the edgelist object to account for exits from the population (e.g.,
 #' deaths and out-migration).
 #'
 #' @return
-#' Returns an updated edgelist object, \code{el}, with the edges of deleted
+#' Returns an updated edgelist object, `el`, with the edges of deleted
 #' vertices removed from the edgelist and the ID numbers of the remaining edges
 #' permuted downward.
 #'
@@ -162,17 +162,17 @@ delete_edges <- function(el, vid) {
 
 #' Depart Nodes from the netsim_dat Object
 #'
-#' @param dat the \code{netsim_dat} object
+#' @param dat the `netsim_dat` object
 #' @param departures the vertex ids of nodes to depart
 #'
-#' @details If \code{tergmLite} is \code{FALSE}, the vertex ids
-#' \code{departures} are deactivated (from the current timestep onward) in each
-#' \code{networkDynamic} stored in \code{dat$nw}. If \code{tergmLite} is
-#' \code{TRUE}, the vertex ids \code{departures} are deleted from \code{dat$el},
-#' \code{dat$attr}, and \code{dat$net_attr}.
+#' @details If `tergmLite` is `FALSE`, the vertex ids
+#' `departures` are deactivated (from the current timestep onward) in each
+#' `networkDynamic` stored in `dat$nw`. If `tergmLite` is
+#' `TRUE`, the vertex ids `departures` are deleted from `dat$el`,
+#' `dat$attr`, and `dat$net_attr`.
 #'
-#' @return the updated \code{netsim_dat} object with the nodes in
-#' \code{departures} departed
+#' @return the updated `netsim_dat` object with the nodes in
+#' `departures` departed
 #'
 #' @export
 #'
@@ -213,11 +213,11 @@ depart_nodes <- function(dat, departures) {
 
 #' Arrive New Nodes to the netsim_dat Object
 #'
-#' @param dat the \code{netsim_dat} object
+#' @param dat the `netsim_dat` object
 #' @param nArrivals number of new nodes to arrive
 #'
-#' @details \code{nArrivals} new nodes are added to the network data stored on
-#' the \code{netsim_dat} object. If \code{tergmLite} is \code{FALSE}, these
+#' @details `nArrivals` new nodes are added to the network data stored on
+#' the `netsim_dat` object. If `tergmLite` is `FALSE`, these
 #' nodes are activated from the current timestep onward. Attributes for the new
 #' nodes must be set separately.
 #'
@@ -225,7 +225,7 @@ depart_nodes <- function(dat, departures) {
 #' active state nodes that were previously active in the network is not
 #' supported.
 #'
-#' @return the updated \code{netsim_dat} object with \code{nArrivals} new nodes
+#' @return the updated `netsim_dat` object with `nArrivals` new nodes
 #' added
 #'
 #'

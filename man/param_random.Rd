@@ -20,7 +20,7 @@ A 0 argument generator function to sample one of the values from the
 \description{
 This function returns a 0 argument function that can be used as
 a generator function in the \code{random.params} argument of the
-\code{\link{param.net}} function.
+\code{\link[=param.net]{param.net()}} function.
 }
 \examples{
 # Define function with equal sampling probability
@@ -33,5 +33,5 @@ b()
 
 }
 \seealso{
-\code{\link{param.net}} and \code{\link{generate_random_params}}
+\code{\link[=param.net]{param.net()}} and \code{\link[=generate_random_params]{generate_random_params()}}
 }

@@ -7,12 +7,12 @@
 icm(param, init, control)
 }
 \arguments{
-\item{param}{Model parameters, as an object of class \code{\link{param.icm}}.}
+\item{param}{Model parameters, as an object of class \code{\link[=param.icm]{param.icm()}}.}
 
-\item{init}{Initial conditions, as an object of class \code{\link{init.icm}}.}
+\item{init}{Initial conditions, as an object of class \code{\link[=init.icm]{init.icm()}}.}
 
 \item{control}{Control settings, as an object of class
-\code{\link{control.icm}}.}
+\code{\link[=control.icm]{control.icm()}}.}
 }
 \value{
 A list of class \code{icm} with the following elements:
@@ -89,9 +89,9 @@ plot(mod4)
 
 }
 \seealso{
-Extract the model results with \code{\link{as.data.frame.icm}}.
-Summarize the time-specific model results with \code{\link{summary.icm}}.
-Plot the model results with \code{\link{plot.icm}}. Plot a compartment flow
-diagram with \code{\link{comp_plot}}.
+Extract the model results with \code{\link[=as.data.frame.icm]{as.data.frame.icm()}}.
+Summarize the time-specific model results with \code{\link[=summary.icm]{summary.icm()}}.
+Plot the model results with \code{\link[=plot.icm]{plot.icm()}}. Plot a compartment flow
+diagram with \code{\link[=comp_plot]{comp_plot()}}.
 }
 \keyword{model}

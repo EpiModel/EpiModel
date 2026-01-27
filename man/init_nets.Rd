@@ -8,7 +8,7 @@ init_nets(dat, x)
 }
 \arguments{
 \item{dat}{A main data object of class \code{netsim_dat} obtained from
-\code{\link{create_dat_object}}, including the \code{control}
+\code{\link[=create_dat_object]{create_dat_object()}}, including the \code{control}
 argument.}
 
 \item{x}{Either a fitted network model object of class \code{netest}, or a

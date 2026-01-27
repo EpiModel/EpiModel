@@ -1,45 +1,45 @@
 #' @title Plot Data from a Stochastic Individual Contact Epidemic Model
 #'
 #' @description Plots epidemiological data from a stochastic individual contact
-#'              model simulated with \code{\link{icm}}.
+#'              model simulated with [icm()].
 #'
-#' @param x An \code{EpiModel} model object of class \code{icm}.
-#' @param y Output compartments or flows from \code{icm} object to plot. -------
+#' @param x An `EpiModel` model object of class `icm`.
+#' @param y Output compartments or flows from `icm` object to plot. -------
 #' @param sims A vector of simulation numbers to plot.
 #' @inheritParams plot.netsim
 #' @inheritParams graphics::plot
 #'
 #' @details
 #' This plotting function will extract the epidemiological output from a model
-#' object of class \code{icm} and plot the time series data of disease
+#' object of class `icm` and plot the time series data of disease
 #' prevalence and other results. The summary statistics that the function
 #' calculates and plots are individual simulation lines, means of the individual
 #' simulation lines, and quantiles of those individual simulation lines. The
-#' mean line, toggled on with \code{mean.line=TRUE}, is calculated as the row
+#' mean line, toggled on with `mean.line=TRUE`, is calculated as the row
 #' mean across simulations at each time step.
 #'
 #' Compartment prevalences are the size of a compartment over some denominator.
-#' To plot the raw numbers from any compartment, use \code{popfrac=FALSE}; this
-#' is the default for any plots of flows. The \code{popfrac} parameter
+#' To plot the raw numbers from any compartment, use `popfrac=FALSE`; this
+#' is the default for any plots of flows. The `popfrac` parameter
 #' calculates and plots the denominators of all specified compartments using
 #' these rules: 1) for one-group models, the prevalence of any compartment is
 #' the compartment size divided by the total population size; 2) for two-group
 #' models, the prevalence of any compartment is the compartment size divided by
 #' the group population size. For any prevalences that are not automatically
-#' calculated, the \code{\link{mutate_epi}} function may be used to add new
-#' variables to the \code{icm} object to plot or analyze.
+#' calculated, the [mutate_epi()] function may be used to add new
+#' variables to the `icm` object to plot or analyze.
 #'
 #' The quantiles show the range of outcome values within a certain specified
 #' quantile range. By default, the interquartile range is shown: that is the
-#' middle 50\% of the data. This is specified by \code{qnts=0.5}. To show the
-#' middle 95\% of the data, specify \code{qnts=0.95}. To toggle off the polygons
-#' where they are plotted by default, specify \code{qnts=FALSE}.
+#' middle 50\% of the data. This is specified by `qnts=0.5`. To show the
+#' middle 95\% of the data, specify `qnts=0.95`. To toggle off the polygons
+#' where they are plotted by default, specify `qnts=FALSE`.
 #'
 #' @method plot icm
 #' @export
 #'
 #' @keywords plot
-#' @seealso \code{\link{icm}}
+#' @seealso [icm()]
 #'
 #' @examples
 #' ## Example 1: Plotting multiple compartment values from SIR model

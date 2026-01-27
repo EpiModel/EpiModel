@@ -1,13 +1,13 @@
 #' @title Departures: netsim Module
 #'
-#' @description This function simulates departure for use in \link{netsim}
+#' @description This function simulates departure for use in [netsim]
 #'        simulations.
 #'
 #' @inheritParams recovery.net
 #'
 #' @inherit recovery.net return
 #'
-#' @seealso \code{\link{netsim}}
+#' @seealso [netsim()]
 #'
 #' @export
 #' @keywords netMod internal
@@ -93,13 +93,13 @@ departures.net <- function(dat, at) {
 #' @title Arrivals: netsim Module
 #'
 #' @description This function simulates new arrivals into the network
-#'   for use in \code{\link{netsim}} simulations.
+#'   for use in [netsim()] simulations.
 #'
 #' @inheritParams recovery.net
 #'
 #' @inherit recovery.net return
 #'
-#' @seealso \code{\link{netsim}}
+#' @seealso [netsim()]
 #'
 #' @export
 #' @keywords netMod internal
@@ -137,14 +137,14 @@ arrivals.net <- function(dat, at) {
 
 #' @title Departures: netsim Module
 #'
-#' @description This function simulates departure for use in \link{netsim}
+#' @description This function simulates departure for use in [netsim]
 #'        simulations.
 #'
 #' @inheritParams recovery.net
 #'
 #' @inherit recovery.net return
 #'
-#' @seealso \code{\link{netsim}}
+#' @seealso [netsim()]
 #'
 #' @export
 #' @keywords netMod internal
@@ -247,13 +247,13 @@ departures.2g.net <- function(dat, at) {
 #' @title Arrivals: netsim Module
 #'
 #' @description This function simulates new arrivals into the network
-#'   for use in \code{\link{netsim}} simulations.
+#'   for use in [netsim()] simulations.
 #'
 #' @inheritParams recovery.net
 #'
 #' @inherit recovery.net return
 #'
-#' @seealso \code{\link{netsim}}
+#' @seealso [netsim()]
 #'
 #' @export
 #' @keywords netMod internal

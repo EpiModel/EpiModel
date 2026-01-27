@@ -1,12 +1,12 @@
 
 #' @title Extract Summary Statistics of Networks Used in netsim
 #'
-#' @description This function calls \code{summary} on each network being
-#'              simulated in \code{netsim}, provided \code{save.nwstats} and
-#'              \code{resimulate.network} are both \code{TRUE}. It records the
-#'              statistics represented by \code{nwstats.formula} in
-#'              \code{dat$stats$nwstats}, where \code{dat} is the main
-#'              \code{netsim_dat} class object.
+#' @description This function calls `summary` on each network being
+#'              simulated in `netsim`, provided `save.nwstats` and
+#'              `resimulate.network` are both `TRUE`. It records the
+#'              statistics represented by `nwstats.formula` in
+#'              `dat$stats$nwstats`, where `dat` is the main
+#'              `netsim_dat` class object.
 #'
 #' @inheritParams recovery.net
 #'

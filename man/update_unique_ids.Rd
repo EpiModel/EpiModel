@@ -9,7 +9,7 @@ update_unique_ids(dat, n.new)
 \arguments{
 \item{dat}{Main \code{netsim_dat} object containing a \code{networkDynamic}
 object and other initialization information passed from
-\code{\link{netsim}}.}
+\code{\link[=netsim]{netsim()}}.}
 
 \item{n.new}{The number of new nodes to give \code{unique_ids} to.}
 }
@@ -17,7 +17,7 @@ object and other initialization information passed from
 The updated \code{netsim_dat} main list object.
 }
 \description{
-This function is called by \code{\link{append_core_attr}} and
+This function is called by \code{\link[=append_core_attr]{append_core_attr()}} and
 appends new \code{unique_ids} to the created nodes. It also keeps track of
 the already used \code{unique_ids} with the \code{dat$run$last_unique_id}
 variable.

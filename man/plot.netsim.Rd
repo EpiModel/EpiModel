@@ -105,7 +105,7 @@ transparent and 1 = opaque (see \code{adjustcolor} function).}
 \item{leg.cex}{Legend scale size.}
 
 \item{grid}{If \code{TRUE}, a grid is added to the background of plot
-(see \code{\link{grid}} for details), with default of nx by ny.}
+(see \code{\link[=grid]{grid()}} for details), with default of nx by ny.}
 
 \item{add}{If \code{TRUE}, new plot window is not called and lines are added
 to existing plot window.}
@@ -125,10 +125,10 @@ and "square". Group 1 vertices will remain circles.}
 \item{vertex.cex}{Relative size of plotted vertices if \code{type="network"},
 with implicit default of 1.}
 
-\item{stats}{If \code{type="formation","duration","dissolution"}, statistics
+\item{stats}{If \verb{type="formation","duration","dissolution"}, statistics
 to plot. For \code{type = "formation"}, \code{stats} are among those
-specified in \code{nwstats.formula} of \code{\link{control.net}}; for
-\code{type = "duration", "dissolution"}, \code{stats} are among those
+specified in \code{nwstats.formula} of \code{\link[=control.net]{control.net()}}; for
+\verb{type = "duration", "dissolution"}, \code{stats} are among those
 of the dissolution model (without \code{offset()}). The default is
 to plot all statistics.}
 
@@ -143,7 +143,7 @@ default colors based on \code{RColorBrewer} color palettes.}
 \item{targ.lty}{Line type for the line showing the target statistic values.}
 
 \item{plots.joined}{If \code{TRUE} and
-\code{type="formation","duration","dissolution"}, combine all
+\verb{type="formation","duration","dissolution"}, combine all
 statistics in one plot, versus one plot per statistic if
 \code{FALSE}.}
 
@@ -152,7 +152,7 @@ whether or not to impute starting times for relationships extant at
 the start of the simulation. Defaults to \code{TRUE} when
 \code{type = "duration"}.}
 
-\item{method}{Plot method for \code{type="formation", "duration", "dissolution"},
+\item{method}{Plot method for \verb{type="formation", "duration", "dissolution"},
 with options of \code{"l"} for line plots and \code{"b"} for box plots.}
 
 \item{main}{a main title for the plot, see also \code{\link[graphics]{title}}.}
@@ -173,11 +173,11 @@ with options of \code{"l"} for line plots and \code{"b"} for box plots.}
 }
 \description{
 Plots epidemiological and network data from a stochastic network
-model simulated with \code{\link{netsim}}.
+model simulated with \code{\link[=netsim]{netsim()}}.
 }
 \details{
 This plot function can produce three types of plots with a stochastic network
-model simulated through \code{\link{netsim}}:
+model simulated through \code{\link[=netsim]{netsim()}}:
 \enumerate{
 \item \strong{\code{type="epi"}}: epidemic model results (e.g., disease
 prevalence and incidence) may be plotted.
@@ -197,8 +197,8 @@ to the formation plots for \code{netdx} objects. When running a
 \code{save.nwstats=TRUE}; the plot here will then show the network
 statistics requested explicitly in \code{nwstats.formula}, or will use
 the formation formula set in \code{netest} otherwise.
-\item \strong{\code{type="duration","dissolution"}}: as in
-\code{\link{plot.netdx}}; supported in \code{plot.netsim} only when
+\item \strong{\verb{type="duration","dissolution"}}: as in
+\code{\link[=plot.netdx]{plot.netdx()}}; supported in \code{plot.netsim} only when
 the dissolution model is \code{~offset(edges)}, \code{tergmLite} is
 \code{FALSE}, and \code{save.network} is \code{TRUE}.
 }
@@ -220,7 +220,7 @@ these rules: 1) for one-group models, the prevalence of any compartment is
 the compartment size divided by the total population size; 2) for two-group
 models, the prevalence of any compartment is the compartment size divided by
 the group population size. For any prevalences that are not automatically
-calculated, the \code{\link{mutate_epi}} function may be used to add new
+calculated, the \code{\link[=mutate_epi]{mutate_epi()}} function may be used to add new
 variables to the \code{netsim} object to plot or analyze.
 
 The quantiles show the range of outcome values within a certain specified
@@ -296,6 +296,6 @@ plot(mod, type = "formation", stats = "meandeg",
 
 }
 \seealso{
-\code{\link[network:plot.network]{network::plot.network}}, \code{\link{mutate_epi}}
+\code{\link[network:plot.network]{network::plot.network}}, \code{\link[=mutate_epi]{mutate_epi()}}
 }
 \keyword{plot}

@@ -7,18 +7,18 @@
 crosscheck.icm(param, init, control)
 }
 \arguments{
-\item{param}{An \code{EpiModel} object of class \code{\link{param.icm}}.}
+\item{param}{An \code{EpiModel} object of class \code{\link[=param.icm]{param.icm()}}.}
 
-\item{init}{An \code{EpiModel} object of class \code{\link{init.icm}}.}
+\item{init}{An \code{EpiModel} object of class \code{\link[=init.icm]{init.icm()}}.}
 
-\item{control}{An \code{EpiModel} object of class \code{\link{control.icm}}.}
+\item{control}{An \code{EpiModel} object of class \code{\link[=control.icm]{control.icm()}}.}
 }
 \value{
 This function returns no objects.
 }
 \description{
 This function checks that the three parameter lists from
-\code{\link{param.icm}}, \code{\link{init.icm}}, and
-\code{\link{control.icm}} are consistent.
+\code{\link[=param.icm]{param.icm()}}, \code{\link[=init.icm]{init.icm()}}, and
+\code{\link[=control.icm]{control.icm()}} are consistent.
 }
 \keyword{internal}

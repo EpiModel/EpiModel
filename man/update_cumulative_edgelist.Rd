@@ -9,7 +9,7 @@ update_cumulative_edgelist(dat, network, truncate = 0)
 \arguments{
 \item{dat}{Main \code{netsim_dat} object containing a \code{networkDynamic}
 object and other initialization information passed from
-\code{\link{netsim}}.}
+\code{\link[=netsim]{netsim()}}.}
 
 \item{network}{Numerical index of the network for which the cumulative
 edgelist will be updated. (May be > 1 for models with

@@ -8,21 +8,21 @@ update_dissolution(old.netest, new.coef.diss, nested.edapprox = TRUE)
 }
 \arguments{
 \item{old.netest}{An object of class \code{netest}, from the
-\code{\link{netest}} function.}
+\code{\link[=netest]{netest()}} function.}
 
 \item{new.coef.diss}{An object of class \code{disscoef}, from the
-\code{\link{dissolution_coefs}} function.}
+\code{\link[=dissolution_coefs]{dissolution_coefs()}} function.}
 
 \item{nested.edapprox}{Logical. If \code{edapprox = TRUE} the dissolution
 model is an initial segment of the formation model (see details in
-\code{\link{netest}}).}
+\code{\link[=netest]{netest()}}).}
 }
 \value{
 An updated network model object of class \code{netest}.
 }
 \description{
 Adjusts the dissolution component of a dynamic ERGM fit using
-the \code{\link{netest}} function with the edges dissolution
+the \code{\link[=netest]{netest()}} function with the edges dissolution
 approximation method.
 }
 \details{

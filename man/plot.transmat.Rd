@@ -7,7 +7,7 @@
 \method{plot}{transmat}(x, style = c("phylo", "network", "transmissionTimeline"), ...)
 }
 \arguments{
-\item{x}{A \code{\link{transmat}} object to be plotted.}
+\item{x}{A \code{\link[=transmat]{transmat()}} object to be plotted.}
 
 \item{style}{Character name of plot style. One of \code{"phylo"},
 \code{"network"}, or \code{"transmissionTimeline"}.}
@@ -26,6 +26,6 @@ The \code{phylo} plot requires the \code{ape} package. The
 \code{transmissionTimeline} plot requires that the \code{ndtv} package.
 }
 \seealso{
-\code{\link[network:plot.network]{network::plot.network}}, \code{\link[ape]{plot.phylo}},
-\code{\link[ndtv]{transmissionTimeline}}.
+\code{\link[network:plot.network]{network::plot.network}}, \code{\link[ape:plot.phylo]{ape::plot.phylo()}},
+\code{\link[ndtv:transmissionTimeline]{ndtv::transmissionTimeline()}}.
 }

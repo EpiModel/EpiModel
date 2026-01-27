@@ -109,13 +109,13 @@ models simulated with \code{dcm}.
 }
 \details{
 \code{param.dcm} sets the epidemic parameters for deterministic compartmental
-models solved with the \code{\link{dcm}} function. The models may use the
+models solved with the \code{\link[=dcm]{dcm()}} function. The models may use the
 base types, for which these parameters are used, or original model
 specifications for which these parameters may be used (but not necessarily).
 
 For base models, the model specification will be selected as a function
 of the model parameters entered here and the control settings in
-\code{\link{control.dcm}}. One-group and two-group models are available,
+\code{\link[=control.dcm]{control.dcm()}}. One-group and two-group models are available,
 where the former assumes a homogeneous mixing in the population and the
 latter assumes some form of heterogeneous mixing between two distinct
 partitions in the population (e.g., men and women). Specifying any group two
@@ -152,8 +152,8 @@ with these original models.
 }
 
 \seealso{
-Use \code{\link{init.dcm}} to specify the initial conditions and
-\code{\link{control.dcm}} to specify the control settings. Run the
-parameterized model with \code{\link{dcm}}.
+Use \code{\link[=init.dcm]{init.dcm()}} to specify the initial conditions and
+\code{\link[=control.dcm]{control.dcm()}} to specify the control settings. Run the
+parameterized model with \code{\link[=dcm]{dcm()}}.
 }
 \keyword{parameterization}

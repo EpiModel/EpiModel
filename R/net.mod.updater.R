@@ -1,12 +1,12 @@
-#' @title Update List \code{x} Using the Elements of List \code{new.x}.
+#' @title Update List `x` Using the Elements of List `new.x`.
 #'
 #' @param x A list.
 #' @param new.x A list.
 #'
-#' @return The full \code{x} list with the modifications added by \code{new.x}.
+#' @return The full `x` list with the modifications added by `new.x`.
 #'
 #' @details
-#' This function updates list \code{x} by name. If \code{x} and \code{new.x}
+#' This function updates list `x` by name. If `x` and `new.x`
 #' elements are not named, the function will not work properly. If a function is
 #' provided to replace an element that was originally not a function, this
 #' function will be applied to the original value.
@@ -33,14 +33,14 @@ update_list <- function(x, new.x) {
 #' @inherit recovery.net return
 #'
 #' @details
-#' If a list \code{.param.updater.list} is present in the parameters, this
-#' function will update the \code{param} list with new values at given time
-#' steps. Similarly, if a list \code{.control.updater.list} is present in the
-#' controls, this function will update the \code{param} list with new values at
-#' given time steps. An updater is a list containing an \code{at} element
-#' governing when the changes will happen, an optional \code{verbose} Boolean
+#' If a list `.param.updater.list` is present in the parameters, this
+#' function will update the `param` list with new values at given time
+#' steps. Similarly, if a list `.control.updater.list` is present in the
+#' controls, this function will update the `param` list with new values at
+#' given time steps. An updater is a list containing an `at` element
+#' governing when the changes will happen, an optional `verbose` Boolean
 #' controlling whether to output a message when a change is made (default =
-#' TRUE), and a \code{param} or \code{control} named list containing the new
+#' TRUE), and a `param` or `control` named list containing the new
 #' values(s) with which to update, with the names being the same as the
 #' parameter / control names. If the new value is a function but the old one is
 #' not, the function will be applied to the current element (see example).
@@ -134,7 +134,7 @@ input_updater <- function(dat) {
 #' @title Update Either the "param" or "control" List
 #'
 #' @inheritParams recovery.net
-#' @param type Either \code{"param"} or \code{"control"}.
+#' @param type Either `"param"` or `"control"`.
 #'
 #' @inherit recovery.net return
 #'

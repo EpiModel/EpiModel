@@ -32,32 +32,32 @@ list_param.df_types <- function() {
 #'        Data Frame
 #'
 #' @description Sets the epidemic parameters for stochastic network models with
-#'              \code{\link{netsim}} using a specially formatted data frame of
+#'              [netsim()] using a specially formatted data frame of
 #'              parameters.
 #'
-#' @param long.param.df A \code{data.frame} of parameters. See details for the
+#' @param long.param.df A `data.frame` of parameters. See details for the
 #'                      expected format.
 #'
-#' @return A list object of class \code{param.net}, which can be passed to
-#'         \code{\link{netsim}}.
+#' @return A list object of class `param.net`, which can be passed to
+#'         [netsim()].
 #'
 #' @section long.param.df:
 #' It is possible to set input parameters using a specifically formatted
-#' \code{data.frame} object. The first 3 columns of this \code{data.frame} must
+#' `data.frame` object. The first 3 columns of this `data.frame` must
 #' be:
-#' \itemize{
-#'  \item \code{param}: The name of the parameter. If this is a non-scalar
-#'    parameter (a vector of length > 1), end the parameter name with the
-#'    position on the vector (e.g., \code{"p_1"}, \code{"p_2"}, ...).
-#'  \item \code{value}: the value for the parameter (or the value of the
-#'    parameter in the Nth position if non-scalar).
-#'  \item \code{type}: a character string containing either \code{"numeric"},
-#'    \code{"logical"}, or \code{"character"} to define the parameter object
-#'    class.
-#' }
 #'
-#' In addition to these 3 columns, the \code{data.frame} can contain any number
-#' of other columns, such as \code{details} or \code{source} columns to document
+#'  * `param`: The name of the parameter. If this is a non-scalar
+#'    parameter (a vector of length > 1), end the parameter name with the
+#'    position on the vector (e.g., `"p_1"`, `"p_2"`, ...).
+#'  * `value`: the value for the parameter (or the value of the
+#'    parameter in the Nth position if non-scalar).
+#'  * `type`: a character string containing either `"numeric"`,
+#'    `"logical"`, or `"character"` to define the parameter object
+#'    class.
+#'
+#'
+#' In addition to these 3 columns, the `data.frame` can contain any number
+#' of other columns, such as `details` or `source` columns to document
 #' parameter meta-data. However, these extra columns will not be used by
 #' EpiModel.
 #'
@@ -101,7 +101,7 @@ param.net_from_table <- function(long.param.df) {
 #'
 #' @inheritSection param.net_from_table long.param.df
 #'
-#' @return  A \code{data.frame} of parameters.
+#' @return  A `data.frame` of parameters.
 #'
 #' @export
 param.net_to_table <- function(params) {
