@@ -10,7 +10,7 @@ copy_datattr_to_nwattr(dat)
 \arguments{
 \item{dat}{Main \code{netsim_dat} object containing a \code{networkDynamic}
 object and other initialization information passed from
-\code{\link{netsim}}.}
+\code{\link[=netsim]{netsim()}}.}
 }
 \value{
 The updated \code{netsim_dat} main list object.
@@ -21,9 +21,9 @@ of the \code{netsim_dat} object to each of the network objects
 stored on the \code{netsim_dat} object.
 }
 \seealso{
-\code{\link{get_formula_term_attr}}, \code{\link{get_attr_prop}},
-\code{\link{auto_update_attr}}, and
-\code{\link{copy_nwattr_to_datattr}}.
+\code{\link[=get_formula_term_attr]{get_formula_term_attr()}}, \code{\link[=get_attr_prop]{get_attr_prop()}},
+\code{\link[=auto_update_attr]{auto_update_attr()}}, and
+\code{\link[=copy_nwattr_to_datattr]{copy_nwattr_to_datattr()}}.
 }
 \keyword{internal}
 \keyword{netUtils}

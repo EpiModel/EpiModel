@@ -13,11 +13,11 @@ expected format.}
 }
 \value{
 A list object of class \code{param.net}, which can be passed to
-\code{\link{netsim}}.
+\code{\link[=netsim]{netsim()}}.
 }
 \description{
 Sets the epidemic parameters for stochastic network models with
-\code{\link{netsim}} using a specially formatted data frame of
+\code{\link[=netsim]{netsim()}} using a specially formatted data frame of
 parameters.
 }
 \section{long.param.df}{

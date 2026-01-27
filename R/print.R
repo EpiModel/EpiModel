@@ -91,15 +91,15 @@ print.netest <- function(x, digits = 3, ...) {
 
 #' @rdname print.netdx
 #' @title Utility Function for Printing netdx Object
-#' @description Prints basic information and statistics from a \code{netdx}
+#' @description Prints basic information and statistics from a `netdx`
 #'              object.
-#' @param x an object of class \code{netdx}
+#' @param x an object of class `netdx`
 #' @param digits number of digits to print in statistics tables
 #' @param ... additional arguments (currently ignored)
 #' @details
-#' Given a \code{netdx} object, \code{print.netdx} prints the diagnostic method
+#' Given a `netdx` object, `print.netdx` prints the diagnostic method
 #' (static/dynamic), number of simulations, and (if dynamic) the number of time
-#' steps per simulation used in generating the \code{netdx} object, as well as
+#' steps per simulation used in generating the `netdx` object, as well as
 #' printing the formation statistics table and (if present) the duration and
 #' dissolution statistics tables.  The statistics tables are interpreted as
 #' follows.
@@ -108,29 +108,29 @@ print.netest <- function(x, digits = 3, ...) {
 #' table, these correspond to actual network statistics in the obvious way.
 #' In the duration and dissolution tables, these correspond to dissolution
 #' model dyad types: in a homogeneous dissolution model, all dyads are of the
-#' \code{edges} type; in a heterogeneous dissolution model, a dyad with a
-#' nonzero \code{nodematch} or \code{nodemix} change statistic in the
+#' `edges` type; in a heterogeneous dissolution model, a dyad with a
+#' nonzero `nodematch` or `nodemix` change statistic in the
 #' dissolution model has type equal to that statistic, and has type equal to
-#' \code{edges} otherwise.  The statistics of interest for the duration and
+#' `edges` otherwise.  The statistics of interest for the duration and
 #' dissolution tables are, respectively, the mean age of extant edges and the
 #' edge dissolution rate, broken down by dissolution model dyad type.  (The
 #' current convention is to treat the mean age and dissolution rate for a
 #' particular dissolution dyad type as 0 on time steps with no edges of that
 #' type; this behavior may be changed in the future.)
 #'
-#' The columns are named \code{Target}, \code{Sim Mean}, \code{Pct Diff},
-#' \code{Sim SE}, \code{Z Score}, \code{SD(Sim Means)}, and
-#' \code{SD(Statistic)}.  The \code{Sim Mean} column refers to the mean
+#' The columns are named `Target`, `Sim Mean`, `Pct Diff`,
+#' `Sim SE`, `Z Score`, `SD(Sim Means)`, and
+#' `SD(Statistic)`.  The `Sim Mean` column refers to the mean
 #' statistic value, across all time steps in all simulations in the dynamic
 #' case, and across all sampled networks in all simulations in the static case.
-#' The \code{Sim SE} column refers to the standard error in the mean, estimated
-#' using [`coda::effectiveSize`].  The \code{Target}
+#' The `Sim SE` column refers to the standard error in the mean, estimated
+#' using [`coda::effectiveSize`].  The `Target`
 #' column indicates the target value (if present) for the statistic, and the
-#' \code{Pct Diff} column gives \code{(Sim Mean - Target)/Target} when
-#' \code{Target} is present.  The \code{Z Score} column gives
-#' \code{(Sim Mean - Target)/(Sim SE)}.  The \code{SD(Sim Means)} column gives
+#' `Pct Diff` column gives `(Sim Mean - Target)/Target` when
+#' `Target` is present.  The `Z Score` column gives
+#' `(Sim Mean - Target)/(Sim SE)`.  The `SD(Sim Means)` column gives
 #' the empirical standard deviation across simulations of the mean statistic
-#' value within simulation, and \code{SD(Statistic)} gives the empirical
+#' value within simulation, and `SD(Statistic)` gives the empirical
 #' standard deviation of the statistic value across all the simulated data.
 #' @export
 print.netdx <- function(x, digits = 3, ...) {
@@ -301,7 +301,7 @@ print.disscoef <- function(x, ...) {
   invisible()
 }
 
-#' @title Format One Parameter for Printing with the \code{print.param.xxx}
+#' @title Format One Parameter for Printing with the `print.param.xxx`
 #'        Functions
 #'
 #' @param param_name The name of the parameter to print.
@@ -547,8 +547,8 @@ print.control.net <- function(x, ...) {
 
 #' @title Print Helper For Network Stats Tables
 #'
-#' @param nwtable A formation or dissolution statistics \code{data.frame}.
-#' @param digits Argument to be passed to \code{round}.
+#' @param nwtable A formation or dissolution statistics `data.frame`.
+#' @param digits Argument to be passed to `round`.
 #'
 #' @keywords internal
 print_nwstats_table <- function(nwtable, digits) {

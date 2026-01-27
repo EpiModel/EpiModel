@@ -17,9 +17,9 @@
 )
 }
 \arguments{
-\item{x}{An \code{EpiModel} object of class \code{\link{netsim}}.}
+\item{x}{An \code{EpiModel} object of class \code{\link[=netsim]{netsim()}}.}
 
-\item{y}{Another \code{EpiModel} object of class \code{\link{netsim}},
+\item{y}{Another \code{EpiModel} object of class \code{\link[=netsim]{netsim()}},
 with the identical model parameterization as \code{x}.}
 
 \item{keep.transmat}{If \code{TRUE}, keep the transmission matrices from the
@@ -39,8 +39,8 @@ by the \code{save.other} parameter in \code{control.netsim}) from the
 original \code{x} and \code{y} elements.}
 
 \item{param.error}{If \code{TRUE}, if \code{x} and \code{y} have different
-params (in \code{\link{param.net}}) or controls (passed in
-\code{\link{control.net}}) an error will prevent the merge. Use
+params (in \code{\link[=param.net]{param.net()}}) or controls (passed in
+\code{\link[=control.net]{control.net()}}) an error will prevent the merge. Use
 \code{FALSE} to override that check.}
 
 \item{keep.diss.stats}{If \code{TRUE}, keep \code{diss.stats} from the
@@ -49,7 +49,7 @@ original \code{x} and \code{y} objects.}
 \item{...}{Additional merge arguments (not currently used).}
 }
 \value{
-An \code{EpiModel} object of class \code{\link{netsim}} containing
+An \code{EpiModel} object of class \code{\link[=netsim]{netsim()}} containing
 the data from both \code{x} and \code{y}.
 }
 \description{
@@ -58,7 +58,7 @@ stochastic network models from \code{netsim}.
 }
 \details{
 This merge function combines the results of two independent simulations of
-\code{\link{netsim}} class models, simulated under separate function calls.
+\code{\link[=netsim]{netsim()}} class models, simulated under separate function calls.
 The model parameterization between the two calls must be exactly the same,
 except for the number of simulations in each call. This allows for manual
 parallelization of model simulations.

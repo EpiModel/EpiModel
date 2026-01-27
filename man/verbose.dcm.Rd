@@ -18,6 +18,6 @@ all runs, or "progress" for time step specific messages.}
 }
 \description{
 This function prints progress from deterministic compartmental
-models simulated with \code{\link{dcm}} to the console.
+models simulated with \code{\link[=dcm]{dcm()}} to the console.
 }
 \keyword{internal}

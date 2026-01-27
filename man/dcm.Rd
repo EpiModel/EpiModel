@@ -7,12 +7,12 @@
 dcm(param, init, control)
 }
 \arguments{
-\item{param}{Model parameters, as an object of class \code{\link{param.dcm}}.}
+\item{param}{Model parameters, as an object of class \code{\link[=param.dcm]{param.dcm()}}.}
 
-\item{init}{Initial conditions, as an object of class \code{\link{init.dcm}}.}
+\item{init}{Initial conditions, as an object of class \code{\link[=init.dcm]{init.dcm()}}.}
 
 \item{control}{Control settings, as an object of class
-\code{\link{control.dcm}}.}
+\code{\link[=control.dcm]{control.dcm()}}.}
 }
 \value{
 A list of class \code{dcm} with the following elements:
@@ -94,9 +94,9 @@ R: Package deSolve. Journal of Statistical Software. 2010; 33(9): 1-25.
 \doi{10.18637/jss.v033.i09}.
 }
 \seealso{
-Extract the model results with \code{\link{as.data.frame.dcm}}.
-Summarize the time-specific model results with \code{\link{summary.dcm}}.
-Plot the model results with \code{\link{plot.dcm}}. Plot a compartment flow
-diagram with \code{\link{comp_plot}}.
+Extract the model results with \code{\link[=as.data.frame.dcm]{as.data.frame.dcm()}}.
+Summarize the time-specific model results with \code{\link[=summary.dcm]{summary.dcm()}}.
+Plot the model results with \code{\link[=plot.dcm]{plot.dcm()}}. Plot a compartment flow
+diagram with \code{\link[=comp_plot]{comp_plot()}}.
 }
 \keyword{model}

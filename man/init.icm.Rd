@@ -36,13 +36,13 @@ Sets the initial conditions for stochastic individual contact
 models simulated with \code{icm}.
 }
 \details{
-The initial conditions for a model solved with \code{\link{icm}} should be
+The initial conditions for a model solved with \code{\link[=icm]{icm()}} should be
 input into the \code{init.icm} function. This function handles initial
 conditions for both base models and original models using new modules.
 }
 \seealso{
-Use \code{\link{param.icm}} to specify model parameters and
-\code{\link{control.icm}} to specify the control settings. Run the
-parameterized model with \code{\link{icm}}.
+Use \code{\link[=param.icm]{param.icm()}} to specify model parameters and
+\code{\link[=control.icm]{control.icm()}} to specify the control settings. Run the
+parameterized model with \code{\link[=icm]{icm()}}.
 }
 \keyword{parameterization}

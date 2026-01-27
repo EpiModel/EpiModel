@@ -9,7 +9,7 @@ get_edgelist(dat, network)
 \arguments{
 \item{dat}{Main \code{netsim_dat} object containing a \code{networkDynamic}
 object and other initialization information passed from
-\code{\link{netsim}}.}
+\code{\link[=netsim]{netsim()}}.}
 
 \item{network}{Numerical index of the network from which the edgelist should
 be extracted. (May be > 1 for models with multiple overlapping

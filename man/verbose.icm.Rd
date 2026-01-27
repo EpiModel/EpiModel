@@ -20,6 +20,6 @@ all simulations, or "progress" for time step specific messages.}
 }
 \description{
 This function prints progress from stochastic individual contact
-models simulated with \code{\link{icm}} to the console.
+models simulated with \code{\link[=icm]{icm()}} to the console.
 }
 \keyword{internal}

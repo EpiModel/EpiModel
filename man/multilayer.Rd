@@ -16,8 +16,8 @@ control arguments
 }
 \description{
 This utility function allows specification of certain
-\code{\link{netsim}} controls to vary by network.  The
-\code{\link{netsim}} control arguments currently supporting
+\code{\link[=netsim]{netsim()}} controls to vary by network.  The
+\code{\link[=netsim]{netsim()}} control arguments currently supporting
 \code{multilayer} specifications are \code{nwstats.formula},
 \code{set.control.ergm}, \code{set.control.tergm}, and
 \code{tergmLite.track.duration}.

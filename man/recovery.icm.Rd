@@ -19,6 +19,6 @@ The updated \code{icm_dat} class main data object.
 This function simulates recovery from the infected state
 either to a distinct recovered state (SIR model type) or back
 to a susceptible state (SIS model type), for use in
-\code{\link{icm}}.
+\code{\link[=icm]{icm()}}.
 }
 \keyword{internal}

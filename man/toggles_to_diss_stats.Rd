@@ -8,7 +8,7 @@ toggles_to_diss_stats(toggles, coef.diss, nsteps, nw, time.start = 0L)
 }
 \arguments{
 \item{toggles}{A matrix of toggles, as produced by
-\code{\link{tedgelist_to_toggles}}.}
+\code{\link[=tedgelist_to_toggles]{tedgelist_to_toggles()}}.}
 
 \item{coef.diss}{Dissolution coefficients used in the simulation.}
 

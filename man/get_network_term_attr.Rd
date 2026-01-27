@@ -14,5 +14,5 @@ A character vector of vertex attributes.
 }
 \description{
 Given a simulated network, outputs a character vector of vertex
-attributes to be used in \code{\link{netsim}} simulations.
+attributes to be used in \code{\link[=netsim]{netsim()}} simulations.
 }

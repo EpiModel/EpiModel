@@ -22,7 +22,7 @@ This functions simplifies the related function in the
 \details{
 This function is used in \code{EpiModel} workflows to query vertex
 attributes on an initialized empty network object (see
-\code{\link{network_initialize}}).
+\code{\link[=network_initialize]{network_initialize()}}).
 }
 \examples{
 nw <- network_initialize(100)
