@@ -874,8 +874,8 @@ truncate_sim <- function(x, at) {
 #' The restart point created always contains a single simulation and drops the
 #' `attr.history`, the `raw.records` and `stats` from the initial simulation.
 #'
-#' The epi trackers and cumulative edgelists are truncated to only contain the
-#' last `keep_steps` entries.
+#' The epi trackers, cumulative edgelists, transmission matrix and `nwstats` are
+#' truncated to only contain the last `keep_steps` entries.
 #'
 #' Warning: the `time_attrs` argument is mandatory. Almost all simulation worth
 #' restarting have such attributes (e.g. time.of.hiv.infection). If no such
@@ -890,6 +890,26 @@ truncate_sim <- function(x, at) {
 #'   nsteps = restart_point$control$nsteps + 1 + 104)
 #' )
 #' ```
+#'
+#' @examples
+#' \dontrun{
+#' # With  pre-existing `sim`, `param` and `init` object (see `netsim`)
+#'
+#' # List all attributes that store a time step
+#' time_attrs <- c(
+#'   "inf.time",
+#'   "stage.time",
+#'   "aids.time",
+#'   "prep.start.last"
+#' )
+#' # Make a restart point a re-run for 10 more timesteps
+#' x <- make_restart_point(sim, time_attrs, sim_num = 1, keep_steps = 1)
+#' control <- control_msm(
+#'   start               = x$control$nsteps + 1,
+#'   nsteps              = x$control$nsteps + 1 + 10
+#' )
+#' sim <- netsim(x, param, init, control)
+#' }
 #'
 #' @return a trimed `netsim` object with only one simulation that is ready to be
 #'         used as a restart point.
@@ -914,6 +934,9 @@ make_restart_point <- function(sim_obj, time_attrs,
   if (sim_num < 1 || sim_num > sim_obj$control$nsims) {
     stop("`sim_num` must be be >= 1 and <= `sim_obj$control$nsims`")
   }
+  if (!x$control$tergmLite) {
+    stop("Only `netsim` object with `tergmLite == TRUE` are supported")
+  }
 
   # Select  the simulation of interest, that renames the selected sim: `sim1`
   x <- get_sims(sim_obj, sims = sim_num)
@@ -926,6 +949,14 @@ make_restart_point <- function(sim_obj, time_attrs,
   }
   keep_rows <- (n_steps - keep_steps + 1):n_steps
   x$epi <- lapply(x$epi, function(r) r[keep_rows, , drop = FALSE])
+
+  # If `nwstats` are saved, keep only the last rows
+  if (x$control$save.nwstats) {
+    x$stats$nwstats$sim1 <- lapply(
+      x$stats$nwstats$sim1,
+      function(d) d[keep_rows, , drop = FALSE]
+    )
+  }
 
   # Fix UIDs
   n_nodes <- length(run_ls$attr$active)
@@ -971,22 +1002,131 @@ make_restart_point <- function(sim_obj, time_attrs,
       el$start <- el$start - time_offset
       el$stop <- el$stop - time_offset
       el[el$stop >= 1, , drop = FALSE]
-      # el[numeric(0), , drop = FALSE]
     }
   )
 
   # the edgelist stores the name of the vertices. We don't use it with
   # `tergmLite` and it takes a lot of space
-  if (x$control$tergmLite) {
-    run_ls$el <- lapply(run_ls$el, function(x) {
-      attr(x, "vnames") <- NULL
-      x
-    })
+  run_ls$el <- lapply(run_ls$el, function(x) {
+    attr(x, "vnames") <- NULL
+    x
+  })
+
+  # If transmat was saved, trim it and offset the `at` column
+  if (x$control$save.transmat) {
+    tsmt <- x$stats$transmat$sim1
+    tsmt$at <- tsmt$at - time_offset
+    x$stats$transmat$sim1 <- tsmt[tsmt$at > 0, , drop = FALSE]
   }
 
   x$run$sim1 <- run_ls
   x$attr.history <- list()
   x$raw.records <- list()
-  x$stats <- list()
   return(x)
+}
+
+#' @title Function to Reduce the Size of a `netest` Object
+#'
+#' @description Trims formula environments from the `netest` object.
+#'              Optionally converts the `newnetwork` element of the
+#'              `netest` object to a `networkLite` class, and removes
+#'              the `fit` element (if present) from the `netest`
+#'              object.
+#'
+#' @param object A `netest` class object.
+#' @param as.networkLite If `TRUE`, converts `object$newnetwork`
+#'        to a `networkLite`.
+#' @param keep.fit If `FALSE`, removes the `object$fit` (if present)
+#'        on the `netest` object.
+#' @param keep Character vector of object names to keep in formula environments.
+#'        By default, all objects are removed.
+#'
+#' @details
+#' With larger, more complex network structures with epidemic models, it is
+#' generally useful to reduce the memory footprint of the fitted TERGM model
+#' object (estimated with [netest()]). This utility function removes
+#' all but the bare essentials needed for simulating a network model with
+#' [netsim()].
+#'
+#' The function always trims the environments of `object$constraints` and
+#' `object$coef.diss$dissolution`.
+#'
+#' When both `edapprox = TRUE` and `nested.edapprox = TRUE` in the
+#' `netest` call, also trims the environments of `object$formula`
+#' and `object$formation`.
+#'
+#' When both `edapprox = TRUE` and `nested.edapprox = FALSE` in the
+#' `netest` call, also trims the environments of `object$formula`,
+#' `environment(object$formation)$formation`, and
+#' `environment(object$formation)$dissolution`.
+#'
+#' When `edapprox = FALSE` in the `netest` call, also trims the
+#' environments of `object$formation`,
+#' `environment(object$formula)$formation` and
+#' `environment(object$formula)$dissolution`.
+#'
+#' By default all objects are removed from these trimmed environments. Specific
+#' objects may be retained by passing their names as the `keep` argument.
+#' For the output of `trim_netest` to be usable in [netsim()]
+#' simulation, any objects referenced in the formulas should be included in the
+#' `keep` argument.
+#'
+#' If `as.networkLite = TRUE`, converts `object$newnetwork` to a
+#' `networkLite` object. If `keep.fit = FALSE`, removes `fit` (if
+#' present) from `object`.
+#'
+#' @return
+#' A `netest` object with formula environments trimmed, optionally with the
+#' `newnetwork` element converted to a `networkLite` and the
+#' `fit` element removed.
+#'
+#' @export
+#'
+#' @examples
+#' nw <- network_initialize(n = 100)
+#' formation <- ~edges + concurrent
+#' target.stats <- c(50, 25)
+#' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 10)
+#' est <- netest(nw, formation, target.stats, coef.diss,
+#'               set.control.ergm = control.ergm(MCMC.burnin = 1e5,
+#'                                               MCMC.interval = 1000))
+#' print(object.size(est), units = "KB")
+#'
+#' est.small <- trim_netest(est)
+#' print(object.size(est.small), units = "KB")
+#'
+trim_netest <- function(object, as.networkLite = TRUE, keep.fit = FALSE,
+                        keep = character(0)) {
+  if (object$edapprox == TRUE) {
+    object$formula <- trim_env(object$formula, keep = keep)
+    if (object$nested.edapprox == TRUE) {
+      object$formation <- trim_env(object$formation, keep = keep)
+    } else {
+      # trim environments for formation and dissolution inside formation
+      environment(object$formation)$formation <-
+        trim_env(environment(object$formation)$formation, keep = keep)
+      environment(object$formation)$dissolution <-
+        trim_env(environment(object$formation)$dissolution, keep = keep)
+    }
+  } else {
+    object$formation <- trim_env(object$formation, keep = keep)
+    # trim environments for formation and dissolution inside formula
+    environment(object$formula)$formation <-
+      trim_env(environment(object$formula)$formation, keep = keep)
+    environment(object$formula)$dissolution <-
+      trim_env(environment(object$formula)$dissolution, keep = keep)
+  }
+
+  object$coef.diss$dissolution <- trim_env(object$coef.diss$dissolution, keep = keep)
+  object$constraints <- trim_env(object$constraints, keep = keep)
+
+  if (keep.fit == FALSE) {
+    object$fit <- NULL
+  }
+
+  if (as.networkLite == TRUE) {
+    object$newnetwork <- as.networkLite(object$newnetwork)
+  }
+
+  return(object)
 }

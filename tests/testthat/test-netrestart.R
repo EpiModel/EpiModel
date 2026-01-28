@@ -95,3 +95,63 @@ test_that("reinitialization works with open population, nwterms, and epi.by", {
     expect_is(y, "netsim")
   }
 })
+
+test_that("reinitialization a truncated netsim object", {
+  # TODO: add more test path (or test on EMHIVp)
+  # TODO: explain the why and how of this
+  nw <- network_initialize(n = 50)
+  nw %v% "race" <- rep(0:1, length.out = 50)
+  est <- netest(
+    nw,
+    formation = ~edges + nodematch("race"),
+    target.stats = c(25, 15),
+    coef.diss = dissolution_coefs(~offset(edges), 10, 0.05),
+    verbose = FALSE
+  )
+
+  param <- param.net(
+    inf.prob = 0.5,
+    act.rate = 2,
+    a.rate = 0.05,
+    ds.rate = 0.05,
+    di.rate = 0.05
+  )
+
+  init <- init.net(i.num = 10)
+
+  control <- control.net(
+    type = "SI", nsteps = 10,
+    nsims = 2, resimulate.network = TRUE,
+    verbose = FALSE, tergmLite = TRUE,
+    epi.by = "race",
+    save.run = TRUE,
+    save.other = c()
+  )
+
+  x <- netsim(est, param, init, control)
+  expect_is(x, "netsim")
+  restart_point <- make_restart_point(
+    sim_obj = x,
+    sim_num = 1,
+    time_attrs = c("infTime")
+  )
+  control$start <- restart_point$control$nsteps + 1
+  control$nsteps <- restart_point$control$nsteps + 1 + 11
+  y <- netsim(restart_point, param, init, control)
+  expect_is(y, "netsim")
+
+  control <- control.net(
+    type = "SI", nsteps = 5,
+    nsims = 2, resimulate.network = TRUE,
+    verbose = FALSE, tergmLite = FALSE,
+    epi.by = "race",
+    save.run = TRUE,
+    save.other = c()
+  )
+  x <- netsim(est, param, init, control)
+  expect_error(make_restart_point(
+    sim_obj = x,
+    sim_num = 1,
+    time_attrs = c("infTime")
+  ))
+})
