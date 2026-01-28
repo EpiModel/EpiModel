@@ -905,8 +905,8 @@ truncate_sim <- function(x, at) {
 #' # Make a restart point a re-run for 10 more timesteps
 #' x <- make_restart_point(sim, time_attrs, sim_num = 1, keep_steps = 1)
 #' control <- control_msm(
-#'   start               = x$control$nsteps + 1,
-#'   nsteps              = x$control$nsteps + 1 + 10
+#'   start = x$control$nsteps + 1,
+#'   nsteps = x$control$nsteps + 1 + 10
 #' )
 #' sim <- netsim(x, param, init, control)
 #' }
@@ -934,7 +934,7 @@ make_restart_point <- function(sim_obj, time_attrs,
   if (sim_num < 1 || sim_num > sim_obj$control$nsims) {
     stop("`sim_num` must be be >= 1 and <= `sim_obj$control$nsims`")
   }
-  if (!x$control$tergmLite) {
+  if (!sim_obj$control$tergmLite) {
     stop("Only `netsim` object with `tergmLite == TRUE` are supported")
   }
 

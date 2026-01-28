@@ -97,8 +97,6 @@ test_that("reinitialization works with open population, nwterms, and epi.by", {
 })
 
 test_that("reinitialization a truncated netsim object", {
-  # TODO: add more test path (or test on EMHIVp)
-  # TODO: explain the why and how of this
   nw <- network_initialize(n = 50)
   nw %v% "race" <- rep(0:1, length.out = 50)
   est <- netest(
@@ -128,13 +126,18 @@ test_that("reinitialization a truncated netsim object", {
     save.other = c()
   )
 
-  x <- netsim(est, param, init, control)
-  expect_is(x, "netsim")
+  sim <- netsim(est, param, init, control)
+  expect_is(sim, "netsim")
+
+  # From a `netsim`, chose the simulation to use and trim the all but one
+  # timestep to get a lighter restart object.
   restart_point <- make_restart_point(
-    sim_obj = x,
-    sim_num = 1,
-    time_attrs = c("infTime")
+    sim_obj = sim,
+    time_attrs = c("infTime"),
+    sim_num = 1
   )
+
+  # In this case, the `restart_point` contains a single timestap
   control$start <- restart_point$control$nsteps + 1
   control$nsteps <- restart_point$control$nsteps + 1 + 11
   y <- netsim(restart_point, param, init, control)
@@ -148,9 +151,9 @@ test_that("reinitialization a truncated netsim object", {
     save.run = TRUE,
     save.other = c()
   )
-  x <- netsim(est, param, init, control)
+  sim <- netsim(est, param, init, control)
   expect_error(make_restart_point(
-    sim_obj = x,
+    sim_obj = sim,
     sim_num = 1,
     time_attrs = c("infTime")
   ))
