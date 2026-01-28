@@ -850,3 +850,143 @@ truncate_sim <- function(x, at) {
   x$control$nsteps <- max(seq_along(rows))
   return(x)
 }
+
+
+
+#' Make a Restart Point From a `netsim` Object
+#'
+#' Extract the elements required for re-initializing a `netsim` simulation from
+#' a completed simulation. This function also resets the Unique IDs and Time
+#' values to reduce the size of the simulation.
+#'
+#' @param sim_obj a `netsim` object from an ended `netsim` call.
+#' @param sim_num the number of the simulation to extract from the `netsim`
+#'        object (default = 1).
+#' @param keep_steps The number of simulation steps to keep from the previous
+#'        run. By default only keep one but more is possible if some
+#'        back-history is wanted.
+#' @param time_attrs a `character` vector containing the names of the attributes
+#'        that are expressed in time-steps. These will be offsetted so the last
+#'        step in the original simulation become the step 1 (default) in the new
+#'        ones. If no such attributes exist, pass `c()`.
+#'
+#' @details
+#' The restart point created always contains a single simulation and drops the
+#' `attr.history`, the `raw.records` and `stats` from the initial simulation.
+#'
+#' The epi trackers and cumulative edgelists are truncated to only contain the
+#' last `keep_steps` entries.
+#'
+#' Warning: the `time_attrs` argument is mandatory. Almost all simulation worth
+#' restarting have such attributes (e.g. time.of.hiv.infection). If no such
+#' argument exists, passing `c()` will allow the function to run while ensuring
+#' that this was done on purpose.
+#'
+#' When restarting from the output of this function, it is suggested to express
+#' the time steps in a relative maner in `control.net`:
+#' ```
+#' control.net(
+#'   start = restart_point$control$nsteps + 1),
+#'   nsteps = restart_point$control$nsteps + 1 + 104)
+#' )
+#' ```
+#'
+#' @return a trimed `netsim` object with only one simulation that is ready to be
+#'         used as a restart point.
+#'
+#'
+#' @export
+make_restart_point <- function(sim_obj, time_attrs,
+                               sim_num = 1, keep_steps = 1) {
+  if (!inherits(sim_obj, c("netsim"))) {
+    stop("`sim_obj` must be  an object of class `netsim`")
+  }
+  required_names <- c(
+    "control", "param", "nwparam", "epi", "run", "coef.form", "num.nw"
+  )
+  missing_names <- setdiff(required_names, names(sim_obj))
+  if (length(missing_names) > 0) {
+    stop(
+      "`sim_obj` is missing the following elements required for",
+      " re-initialization: ", paste.and(missing_names)
+    )
+  }
+  if (sim_num < 1 || sim_num > sim_obj$control$nsims) {
+    stop("`sim_num` must be be >= 1 and <= `sim_obj$control$nsims`")
+  }
+
+  # Select  the simulation of interest, that renames the selected sim: `sim1`
+  x <- get_sims(sim_obj, sims = sim_num)
+  n_steps <- x$control$nsteps
+  run_ls <- x$run$sim1
+
+  # Keep only the last `keep_steps` rows of each epi
+  if (keep_steps < 1 || keep_steps > n_steps) {
+    stop("`keep_steps` must be >= 1 and <= `sim_obj$control$nsteps`")
+  }
+  keep_rows <- (n_steps - keep_steps + 1):n_steps
+  x$epi <- lapply(x$epi, function(r) r[keep_rows, , drop = FALSE])
+
+  # Fix UIDs
+  n_nodes <- length(run_ls$attr$active)
+  uid_offset <- min(run_ls$attr$unique_id) - 1
+  run_ls$attr$unique_id <- run_ls$attr$unique_id - uid_offset
+  run_ls$last_unique_id <- run_ls$last_unique_id - uid_offset
+
+  # Time correction
+  time_offset <- n_steps - keep_steps
+  x$control$start <- 1
+  x$control$nsteps <- keep_steps
+
+  # Time attributes - offset so last step is now `keep_steps`
+  time_attrs <- union(c("entrTime", "exitTime"), time_attrs)
+  missing_attrs <- setdiff(time_attrs, names(run_ls$attr))
+  if (length(missing_attrs) > 0) {
+    stop(
+      "Some time attributes are not present in the attributes list:",
+      paste.and(missing_names)
+    )
+  }
+  run_ls$attr[time_attrs] <- lapply(
+    run_ls$attr[time_attrs],
+    function(v) v - time_offset
+  )
+
+  # Cumulative Edgelist - fix time and UIDs
+  run_ls$el_cuml_cur <- lapply(
+    run_ls$el_cuml_cur,
+    function(el) {
+      el$head <- el$head - uid_offset
+      el$tail <- el$tail - uid_offset
+      el$start <- el$start - time_offset
+      el
+    }
+  )
+  # For Historical one - truncate to 1 (only edges in the kept history)
+  run_ls$el_cuml_hist <- lapply(
+    run_ls$el_cuml_hist,
+    function(el) {
+      el$head <- el$head - uid_offset
+      el$tail <- el$tail - uid_offset
+      el$start <- el$start - time_offset
+      el$stop <- el$stop - time_offset
+      el[el$stop >= 1, , drop = FALSE]
+      # el[numeric(0), , drop = FALSE]
+    }
+  )
+
+  # the edgelist stores the name of the vertices. We don't use it with
+  # `tergmLite` and it takes a lot of space
+  if (x$control$tergmLite) {
+    run_ls$el <- lapply(run_ls$el, function(x) {
+      attr(x, "vnames") <- NULL
+      x
+    })
+  }
+
+  x$run$sim1 <- run_ls
+  x$attr.history <- list()
+  x$raw.records <- list()
+  x$stats <- list()
+  return(x)
+}
