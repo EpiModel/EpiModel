@@ -2,7 +2,7 @@
 #' @title Epidemic Parameters for Deterministic Compartmental Models
 #'
 #' @description Sets the epidemic parameters for deterministic compartmental
-#'              models simulated with \code{dcm}.
+#'              models simulated with `dcm`.
 #'
 #' @param inf.prob Probability of infection per transmissible act between
 #'        a susceptible and an infected person. In two-group models, this is the
@@ -13,20 +13,20 @@
 #'        exposure.
 #' @param inter.start Time step at which the intervention starts, between 1 and
 #'        the number of time steps specified in the model. This will default to
-#'        1 if \code{inter.eff} is defined but this parameter is not.
+#'        1 if `inter.eff` is defined but this parameter is not.
 #' @param act.rate Average number of transmissible acts per person per unit
 #'        time. For two-group models, this is the number of acts per group 1
 #'        person per unit time; a balance between the acts in groups 1 and 2 is
-#'        necessary, and set using the \code{balance} parameter (see details).
-#' @param rec.rate Average rate of recovery with immunity (in \code{SIR} models)
-#'        or re-susceptibility (in \code{SIS} models). The recovery rate is the
+#'        necessary, and set using the `balance` parameter (see details).
+#' @param rec.rate Average rate of recovery with immunity (in `SIR` models)
+#'        or re-susceptibility (in `SIS` models). The recovery rate is the
 #'        reciprocal of the disease duration. For two-group models, this is the
 #'        recovery rate for group 1 persons only. This parameter is only used
-#'        for \code{SIR} and \code{SIS} models.
+#'        for `SIR` and `SIS` models.
 #' @param a.rate Arrival or entry rate. For one-group models, the arrival rate
 #'        is the rate of new arrivals per person per unit time. For two-group
 #'        models, the arrival rate is parameterized as a rate per group 1
-#'        person per unit time, with the \code{a.rate.g2} rate set as described
+#'        person per unit time, with the `a.rate.g2` rate set as described
 #'        below.
 #' @param ds.rate Departure or exit rate for susceptible persons. For two-group
 #'        models, it is the rate for the group 1 susceptible persons only.
@@ -34,46 +34,46 @@
 #'        models, it is the rate for the group 1 infected persons only.
 #' @param dr.rate Departure or exit rate for recovered persons. For two-group
 #'        models, it is the rate for the group 1 recovered persons only. This
-#'        parameter is only used for \code{SIR} models.
+#'        parameter is only used for `SIR` models.
 #' @param inf.prob.g2 Probability of infection per transmissible act
 #'        between a susceptible group 2 person and an infected group 1 person.
 #'        It is the probability of infection to group 2 members.
 #' @param act.rate.g2 Average number of transmissible acts per group 2 person
 #'        per unit time; a balance between the acts in groups 1 and 2 is
-#'        necessary, and set using the \code{balance} parameter (see details).
-#' @param rec.rate.g2 Average rate of recovery with immunity (in \code{SIR}
-#'        models) or re-susceptibility (in \code{SIS} models) for group 2
-#'        persons. This parameter is only used for two-group \code{SIR} and
-#'        \code{SIS} models.
+#'        necessary, and set using the `balance` parameter (see details).
+#' @param rec.rate.g2 Average rate of recovery with immunity (in `SIR`
+#'        models) or re-susceptibility (in `SIS` models) for group 2
+#'        persons. This parameter is only used for two-group `SIR` and
+#'        `SIS` models.
 #' @param a.rate.g2 Arrival or entry rate for group 2. This may either be
 #'        specified numerically as the rate of new arrivals per group 2 persons
-#'        per unit time, or as \code{NA} in which case the group 1 rate,
-#'        \code{a.rate}, governs the group 2 rate. The latter is used when,
+#'        per unit time, or as `NA` in which case the group 1 rate,
+#'        `a.rate`, governs the group 2 rate. The latter is used when,
 #'        for example, the first group is conceptualized as female, and the
 #'        female population size determines the arrival rate. Such arrivals are
 #'        evenly allocated between the two groups.
 #' @param ds.rate.g2 Departure or exit rate for group 2 susceptible persons.
 #' @param di.rate.g2 Departure or exit rate for group 2 infected persons.
 #' @param dr.rate.g2 Departure or exit rate for group 2 recovered persons. This
-#'        parameter is only used for \code{SIR} model types.
-#' @param balance For two-group models, balance the \code{act.rate} to the rate
-#'        set for group 1 (with \code{balance="g1"}) or group 2 (with
-#'        \code{balance="g2"}). See details.
+#'        parameter is only used for `SIR` model types.
+#' @param balance For two-group models, balance the `act.rate` to the rate
+#'        set for group 1 (with `balance="g1"`) or group 2 (with
+#'        `balance="g2"`). See details.
 #' @param ... Additional arguments passed to model.
 #'
 #' @details
-#' \code{param.dcm} sets the epidemic parameters for deterministic compartmental
-#' models solved with the \code{\link{dcm}} function. The models may use the
+#' `param.dcm` sets the epidemic parameters for deterministic compartmental
+#' models solved with the [dcm()] function. The models may use the
 #' base types, for which these parameters are used, or original model
 #' specifications for which these parameters may be used (but not necessarily).
 #'
 #' For base models, the model specification will be selected as a function
 #' of the model parameters entered here and the control settings in
-#' \code{\link{control.dcm}}. One-group and two-group models are available,
+#' [control.dcm()]. One-group and two-group models are available,
 #' where the former assumes a homogeneous mixing in the population and the
 #' latter assumes some form of heterogeneous mixing between two distinct
 #' partitions in the population (e.g., men and women). Specifying any group two
-#' parameters (those with a \code{.g2}) implies the simulation of a two-group
+#' parameters (those with a `.g2`) implies the simulation of a two-group
 #' model. All the parameters for a desired model type must be specified, even if
 #' they are zero.
 #'
@@ -83,27 +83,27 @@
 #' mixing, the product of one group size and act rate must equal the product of
 #' the other group size and act rate: \eqn{N_1 \alpha_1 = N_2 \alpha_2}, where
 #' \eqn{N_i} is the group size and \eqn{\alpha_i} the group-specific act rate
-#' at time \eqn{t}. The \code{balance} parameter here specifies which group's
+#' at time \eqn{t}. The `balance` parameter here specifies which group's
 #' act rate should control the others with respect to balancing.
 #'
 #' @section Sensitivity Analyses:
-#' \code{dcm} has been designed to easily run DCM sensitivity analyses, where a
+#' `dcm` has been designed to easily run DCM sensitivity analyses, where a
 #' series of models varying one or more of the model parameters is run. This is
 #' possible by setting any parameter as a vector of length greater than one.
 #'
 #' @section New Model Types:
 #' An original model may use either the existing model parameters named here,
-#' an original set of parameters, or a combination of both. The \code{...}
+#' an original set of parameters, or a combination of both. The `...`
 #' argument allows the user to pass an arbitrary set of new model parameters into
-#' \code{param.dcm}. Whereas there are strict checks for base models that the
+#' `param.dcm`. Whereas there are strict checks for base models that the
 #' model parameters are valid, parameter validity is the user's responsibility
 #' with these original models.
 #'
-#' @return An \code{EpiModel} object of class \code{param.dcm}.
+#' @return An `EpiModel` object of class `param.dcm`.
 #'
-#' @seealso Use \code{\link{init.dcm}} to specify the initial conditions and
-#'          \code{\link{control.dcm}} to specify the control settings. Run the
-#'          parameterized model with \code{\link{dcm}}.
+#' @seealso Use [init.dcm()] to specify the initial conditions and
+#'          [control.dcm()] to specify the control settings. Run the
+#'          parameterized model with [dcm()].
 #'
 #' @keywords parameterization
 #'
@@ -154,7 +154,7 @@ param.dcm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
 #' @title Initial Conditions for Deterministic Compartmental Models
 #'
 #' @description Sets the initial conditions for deterministic compartmental
-#'              models simulated with \code{dcm}.
+#'              models simulated with `dcm`.
 #'
 #' @param s.num Number of initial susceptible persons. For two-group models,
 #'        this is the number of initial group 1 susceptible persons.
@@ -162,18 +162,18 @@ param.dcm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
 #'        is the number of initial group 1 infected persons.
 #' @param r.num Number of initial recovered persons. For two-group models, this
 #'        is the number of initial group 1 recovered persons. This parameter is
-#'        only used for the \code{SIR} model type.
+#'        only used for the `SIR` model type.
 #' @param s.num.g2 Number of initial susceptible persons in group 2. This
 #'        parameter is only used for two-group models.
 #' @param i.num.g2 Number of initial infected persons in group 2. This parameter
 #'        is only used for two-group models.
 #' @param r.num.g2 Number of initial recovered persons in group 2. This
-#'        parameter is only used for two-group \code{SIR} models.
+#'        parameter is only used for two-group `SIR` models.
 #' @param ... Additional initial conditions passed to model.
 #'
 #' @details
-#' The initial conditions for a model solved with \code{\link{dcm}} should be
-#' input into the \code{init.dcm} function. This function handles initial
+#' The initial conditions for a model solved with [dcm()] should be
+#' input into the `init.dcm` function. This function handles initial
 #' conditions for both base model types and original models.
 #'
 #' Original models may use the parameter names listed as arguments here, a new
@@ -181,11 +181,11 @@ param.dcm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
 #' must be input in the same order that the solved derivatives from the model
 #' are output.
 #'
-#' @return An \code{EpiModel} object of class \code{init.dcm}.
+#' @return An `EpiModel` object of class `init.dcm`.
 #'
-#' @seealso Use \code{\link{param.dcm}} to specify model parameters and
-#'          \code{\link{control.dcm}} to specify the control settings. Run the
-#'          parameterized model with \code{\link{dcm}}.
+#' @seealso Use [param.dcm()] to specify model parameters and
+#'          [control.dcm()] to specify the control settings. Run the
+#'          parameterized model with [dcm()].
 #'
 #' @keywords parameterization
 #'
@@ -227,11 +227,11 @@ init.dcm <- function(s.num, i.num, r.num, s.num.g2, i.num.g2, r.num.g2,
 #' @title Control Settings for Deterministic Compartmental Models
 #'
 #' @description Sets the controls for deterministic compartmental models
-#'              simulated with \code{\link{dcm}}.
+#'              simulated with [dcm()].
 #'
-#' @param type Disease type to be modeled, with the choice of \code{"SI"} for
-#'        Susceptible-Infected diseases, \code{"SIR"} for
-#'        Susceptible-Infected-Recovered diseases, and \code{"SIS"} for
+#' @param type Disease type to be modeled, with the choice of `"SI"` for
+#'        Susceptible-Infected diseases, `"SIR"` for
+#'        Susceptible-Infected-Recovered diseases, and `"SIS"` for
 #'        Susceptible-Infected-Susceptible diseases.
 #' @param nsteps Number of time steps to solve the model over or vector of times
 #'        to solve the model over. If the number of time steps, then this must
@@ -242,39 +242,39 @@ init.dcm <- function(s.num, i.num, r.num, s.num.g2, i.num.g2, r.num.g2,
 #' @param odemethod Ordinary differential equation (ODE) integration method,
 #'        with the default of the "Runge-Kutta 4" method (see [`deSolve::ode`]
 #'        for other options).
-#' @param dede If \code{TRUE}, use the delayed differential equation solver,
+#' @param dede If `TRUE`, use the delayed differential equation solver,
 #'        which allows for time-lagged variables.
 #' @param new.mod If not running a base model type, a function with a new
 #'        model to be simulated (see details).
-#' @param sens.param If \code{TRUE}, evaluate arguments in parameters with
+#' @param sens.param If `TRUE`, evaluate arguments in parameters with
 #'        length greater than 1 as sensitivity analyses, with one model run per
-#'        value of the parameter. If \code{FALSE}, one model will be run with
+#'        value of the parameter. If `FALSE`, one model will be run with
 #'        parameters of arbitrary length (the model may error unless the model
 #'        function is designed to accomodate parameter vectors).
-#' @param print.mod If \code{TRUE}, print the model form to the console.
-#' @param verbose If \code{TRUE}, print model progress to the console.
+#' @param print.mod If `TRUE`, print the model form to the console.
+#' @param verbose If `TRUE`, print model progress to the console.
 #' @param ... additional control settings passed to model.
 #'
 #' @details
-#' \code{control.dcm} sets the required control settings for any deterministic
-#' compartmental models solved with the \code{\link{dcm}} function. Controls are
+#' `control.dcm` sets the required control settings for any deterministic
+#' compartmental models solved with the [dcm()] function. Controls are
 #' required for both base model types and original models. For all base models,
-#' the \code{type} argument is a necessary parameter and it has no default.
+#' the `type` argument is a necessary parameter and it has no default.
 #'
 #' @section New Model Functions:
 #' The form of the model function for base models may be displayed with the
-#' \code{print.mod} argument set to \code{TRUE}. In this case, the model will
+#' `print.mod` argument set to `TRUE`. In this case, the model will
 #' not be run. These model forms may be used as templates to write original
 #' model functions.
 #'
-#' These new models may be input and solved with \code{\link{dcm}} using the
-#' \code{new.mod} argument, which requires as input a model function.
+#' These new models may be input and solved with [dcm()] using the
+#' `new.mod` argument, which requires as input a model function.
 #'
-#' @return An \code{EpiModel} object of class \code{control.dcm}.
+#' @return An `EpiModel` object of class `control.dcm`.
 #'
-#' @seealso Use \code{\link{param.dcm}} to specify model parameters and
-#'          \code{\link{init.dcm}} to specify the initial conditions. Run the
-#'          parameterized model with \code{\link{dcm}}.
+#' @seealso Use [param.dcm()] to specify model parameters and
+#'          [init.dcm()] to specify the initial conditions. Run the
+#'          parameterized model with [dcm()].
 #'
 #' @keywords parameterization
 #'
@@ -328,12 +328,12 @@ control.dcm <- function(type, nsteps, dt = 1, odemethod = "rk4",
 #' @title Cross Checking of Inputs for Deterministic Compartmental Models
 #'
 #' @description This function checks that the three parameter lists from
-#'              \code{\link{param.dcm}}, \code{\link{init.dcm}}, and
-#'              \code{\link{control.dcm}} are consistent.
+#'              [param.dcm()], [init.dcm()], and
+#'              [control.dcm()] are consistent.
 #'
-#' @param param An \code{EpiModel} object of class \code{\link{param.dcm}}.
-#' @param init An \code{EpiModel} object of class \code{\link{init.dcm}}.
-#' @param control An \code{EpiModel} object of class \code{\link{control.dcm}}.
+#' @param param An `EpiModel` object of class [param.dcm()].
+#' @param init An `EpiModel` object of class [init.dcm()].
+#' @param control An `EpiModel` object of class [control.dcm()].
 #'
 #' @return
 #' This function returns no objects.

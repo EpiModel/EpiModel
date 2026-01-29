@@ -1,23 +1,23 @@
 #' @title Initialization: netsim Module
 #'
-#' @description This function initializes the main \code{netsim_dat} class data
+#' @description This function initializes the main `netsim_dat` class data
 #'              object on which data are stored, simulates the initial state of
 #'              the networks, and simulates disease status and other attributes.
 #'
-#' @param x If \code{control$start == 1}, either a fitted network model object
-#'        of class \code{netest} or a list of such objects. If
-#'        \code{control$start > 1}, an object of class \code{netsim}. When
+#' @param x If `control$start == 1`, either a fitted network model object
+#'        of class `netest` or a list of such objects. If
+#'        `control$start > 1`, an object of class `netsim`. When
 #'        multiple networks are used, the node sets (including network size
 #'        and nodal attributes) are assumed to be the same for all networks.
-#' @param param An \code{EpiModel} object of class \code{\link{param.net}}.
-#' @param init An \code{EpiModel} object of class \code{\link{init.net}}.
-#' @param control An \code{EpiModel} object of class \code{\link{control.net}}.
+#' @param param An `EpiModel` object of class [param.net()].
+#' @param init An `EpiModel` object of class [init.net()].
+#' @param control An `EpiModel` object of class [control.net()].
 #' @param s Simulation number, used for restarting dependent simulations.
-#' @details When re-initializing a simulation, the \code{netsim} object passed
-#'          to \code{initialize.net} must contain the elements \code{param},
-#'          \code{nwparam}, \code{epi}, \code{coef.form}, and \code{num.nw}.
+#' @details When re-initializing a simulation, the `netsim` object passed
+#'          to `initialize.net` must contain the elements `param`,
+#'          `nwparam`, `epi`, `coef.form`, and `num.nw`.
 #'
-#' @return A \code{netsim_dat} class main data object.
+#' @return A `netsim_dat` class main data object.
 #'
 #' @export
 #' @keywords internal
@@ -116,13 +116,13 @@ initialize.net <- function(x, param, init, control, s) {
 #' draws from a binomial distribution or as the exact number specified. In
 #' either case, the specific nodes infected are a random sample from the
 #' network. In contrast, a set of specific nodes may be infected by passing a
-#' vector containing the status of each node to \code{\link{netsim}}.
+#' vector containing the status of each node to [netsim()].
 #'
 #' For the initially infected nodes, this module sets the time of infection as
 #' \eqn{t_1}, the starting time of network simulations. For models with vital
 #' dynamics, the infection time for those initially infected nodes is a random
 #' draw from an exponential distribution with the rate parameter defined by the
-#' \code{di.rate} argument. For models without vital dynamics, the infection
+#' `di.rate` argument. For models without vital dynamics, the infection
 #' time is a random draw from a uniform distribution of integers with a minimum
 #' of 1 and a maximum of the number of time steps in the model. In both cases,
 #' to set the infection times to be in the past, these times are multiplied by
@@ -131,7 +131,7 @@ initialize.net <- function(x, param, init, control, s) {
 #'
 #' @inherit recovery.net return
 #'
-#' @seealso This is an initialization module for \code{\link{netsim}}.
+#' @seealso This is an initialization module for [netsim()].
 #'
 #' @export
 #' @keywords netMod internal
@@ -274,15 +274,15 @@ init_status.net <- function(dat) {
 #' @title Network Data and Stats Initialization
 #'
 #' @description This function initializes the network data and stats on the main
-#'              \code{netsim_dat} class data object.
+#'              `netsim_dat` class data object.
 #'
-#' @param dat A main data object of class \code{netsim_dat} obtained from
-#'        \code{\link{create_dat_object}}, including the \code{control}
+#' @param dat A main data object of class `netsim_dat` obtained from
+#'        [create_dat_object()], including the `control`
 #'        argument.
-#' @param x Either a fitted network model object of class \code{netest}, or a
+#' @param x Either a fitted network model object of class `netest`, or a
 #'        list of such objects.
 #'
-#' @return A \code{netsim_dat} class main data object with network data and
+#' @return A `netsim_dat` class main data object with network data and
 #'         stats initialized.
 #'
 #' @export

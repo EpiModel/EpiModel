@@ -2,27 +2,28 @@
 #' @title Extract Model Data for Deterministic Compartmental Models
 #'
 #' @description This function extracts a model run from an object of class
-#'              \code{dcm} into a data frame using the generic
-#'              \code{as.data.frame} function.
+#'              `dcm` into a data frame using the generic
+#'              `as.data.frame` function.
 #'
-#' @param x An \code{EpiModel} object of class \code{\link{dcm}}.
+#' @param x An `EpiModel` object of class [dcm()].
 #' @param run Run number for model; used for multiple-run sensitivity models. If
+#'        `NULL` (default), will output data from all runs in a stacked data frame.
 #'        not specified, will output data from all runs in a stacked data frame.
-#' @param row.names See \code{\link{as.data.frame.default}}.
-#' @param optional See \code{\link{as.data.frame.default}}.
-#' @param ...  See \code{\link{as.data.frame.default}}.
+#' @param row.names See [as.data.frame.default()].
+#' @param optional See [as.data.frame.default()].
+#' @param ...  See [as.data.frame.default()].
 #'
 #' @details
-#' Model output from \code{\link{dcm}} simulations are available as a data
+#' Model output from [dcm()] simulations are available as a data
 #' frame with this helper function. The output data frame will include
 #' columns for time, the size of each compartment, the overall population
 #' size (the sum of compartment sizes), and the size of each flow.
 #'
 #' For models with multiple runs (i.e., varying parameters - see example below),
-#' the default with the \code{run} parameter not specified will output all runs
+#' the default with the `run` parameter not specified will output all runs
 #' in a single stacked data frame.
 #'
-#' @return A data frame containing the data from \code{x}.
+#' @return A data frame containing the data from `x`.
 #'
 #' @method as.data.frame dcm
 #' @keywords extract
@@ -53,13 +54,13 @@
 #' mod2 <- dcm(param, init, control)
 #' as.data.frame(mod2)
 #'
-as.data.frame.dcm <- function(x, row.names = NULL, optional = FALSE, run,
+as.data.frame.dcm <- function(x, row.names = NULL, optional = FALSE, run = NULL,
                               ...) {
 
   df <- data.frame(time = x$control$timesteps)
   nruns <- x$control$nruns
-  if (missing(run)) {
-    run <- 1:nruns
+  if (is.null(run)) {
+    run <- seq_len(nruns)
   }
 
   # Output for models with 1 run
@@ -108,30 +109,33 @@ as.data.frame.dcm <- function(x, row.names = NULL, optional = FALSE, run,
 #' @title Extract Model Data for Stochastic Models
 #'
 #' @description This function extracts model simulations for objects of classes
-#'              \code{icm} and \code{netsim} into a data frame using
-#'              the generic \code{as.data.frame} function.
+#'              `icm` and `netsim` into a data frame using
+#'              the generic `as.data.frame` function.
 #'
-#' @param x An \code{EpiModel} object of class \code{icm} or \code{netsim}.
-#' @param out Data output to data frame: \code{"mean"} for row means across
-#'        simulations, \code{"sd"} for row standard deviations across
-#'        simulations, \code{"qnt"} for row quantiles at the level specified in
-#'        \code{qval}, or \code{"vals"} for values from individual simulations.
-#' @param sim If \code{out="vals"}, the simulation number to output. If not
+#' @param x An `EpiModel` object of class `icm` or `netsim`.
+#' @param out Data output to data frame: `"mean"` for row means across
+#'        simulations, `"sd"` for row standard deviations across
+#'        simulations, `"qnt"` for row quantiles at the level specified in
+#'        `qval`, or `"vals"` for values from individual simulations.
+#' @param sim If `out="vals"`, the simulation number to output. If not
 #'        specified, then data from all simulations will be output.
-#' @param qval Quantile value required when \code{out="qnt"}.
-#' @param row.names See \code{\link{as.data.frame.default}}.
-#' @param optional See \code{\link{as.data.frame.default}}.
-#' @param ...  See \code{\link{as.data.frame.default}}.
+#' @param qval Quantile value required when `out="qnt"`.
+#' @param row.names See [as.data.frame.default()].
+#' @param optional See [as.data.frame.default()].
+#' @param repair What to do with epi trackers that are too short. "drop" will
+#'        remove theme from the output, "pad" will add `NA` rows to get to the
+#'        right size(Default = "drop").
+#' @param ...  See [as.data.frame.default()].
 #'
 #' @details
-#' These methods work for both \code{icm} and \code{netsim} class models. The
+#' These methods work for both `icm` and `netsim` class models. The
 #' available output includes time-specific means, standard deviations,
 #' quantiles, and simulation values (compartment and flow sizes) from these
 #' stochastic model classes. Means, standard deviations, and quantiles are
 #' calculated by taking the row summary (i.e., each row of data is corresponds
 #' to a time step) across all simulations in the model output.
 #'
-#' @return A data frame containing the data from \code{x}.
+#' @return A data frame containing the data from `x`.
 #'
 #' @method as.data.frame icm
 #' @keywords extract
@@ -182,76 +186,65 @@ as.data.frame.dcm <- function(x, row.names = NULL, optional = FALSE, run,
 #' }
 #'
 as.data.frame.icm <- function(x, row.names = NULL, optional = FALSE,
-                              out = "vals", sim = NULL, qval = NULL, ...) {
-
-  df <- data.frame(time = seq_len(x$control$nsteps))
+                              out = "vals", sim = NULL, qval = NULL,
+                              repair = "drop", ...) {
   nsims <- x$control$nsims
+  sim <- if (is.null(sim)) seq_len(nsims) else sim
+  if (max(sim) > nsims) {
+    stop("Maximum sim is ", nsims, call. = FALSE)
+  }
 
-  if (out == "vals") {
-    sim <- if (is.null(sim)) seq_len(nsims) else sim
-    if (max(sim) > nsims) {
-      stop("Maximum sim is ", nsims, call. = FALSE)
+  # Find and repair EPIs with the wrong length
+  n_steps <- x$control$nsteps
+  epi_lengths <- vapply(x$epi, nrow, 0)
+  broken_epi <- names(x$epi)[epi_lengths != n_steps]
+  if (length(broken_epi) > 0) {
+    if (repair == "drop") {
+      warning("Dropping: ", paste0(broken_epi, sep = ", "), " - wrong length")
+      x$epi <- x$epi[epi_lengths == n_steps]
+    } else if (repair == "pad") {
+      warning("Padding with NA: ", paste0(broken_epi, sep = ", "),
+              " - wrong length")
+      x$epi[broken_epi] <- lapply(x$epi[broken_epi], \(d) {
+        n_miss <- n_steps - nrow(d)
+        padding_rows <- as.data.frame(matrix(NA, nrow = n_miss, ncol = ncol(d)))
+        colnames(padding_rows) <- colnames(d)
+        rbind(d, padding_rows)
+      })
+    } else {
+      stop(
+        "Some EPIs had the wrong size: ", paste0(broken_epi, sep = ", "),
+        "No repair method set, stopping"
+      )
     }
+  }
 
-    for (j in sim) {
-      if (j == min(sim)) {
-        for (i in seq_along(x$epi)) {
-          if (nsims == 1) {
-            df[, i + 1] <- x$epi[[i]]
-          } else {
-            df[, i + 1] <- x$epi[[i]][, j]
-          }
-        }
-        df$sim <- j
-      } else {
-        tdf <- data.frame(time = seq_len(x$control$nsteps))
-        for (i in seq_along(x$epi)) {
-          if (nsims == 1) {
-            tdf[, i + 1] <- x$epi[[i]]
-          } else {
-            tdf[, i + 1] <- x$epi[[i]][, j]
-          }
-        }
-        tdf$sim <- j
-        df <- rbind(df, tdf)
-      }
-    }
-    df <- df[, c(ncol(df), 1:(ncol(df) - 1))]
-  } else if (out == "mean") { ## Output means
-    if (nsims == 1) {
-      for (i in seq_along(x$epi)) {
-        df[, i + 1] <- x$epi[[i]]
-      }
-    } else {
-      for (i in seq_along(x$epi)) {
-        df[, i + 1] <- rowMeans(x$epi[[i]], na.rm = TRUE)
-      }
-    }
-  } else if (out == "sd") { ## Output standard deviations
-    if (nsims == 1) {
-      for (i in seq_along(x$epi)) {
-        df[, i + 1] <- 0
-      }
-    } else {
-      for (i in seq_along(x$epi)) {
-        df[, i + 1] <- apply(x$epi[[i]], 1, sd, na.rm = TRUE)
-      }
-    }
+  # How to combine the different simulations
+  combine_fun <- if (out == "vals") {
+    function(epi) Reduce(c, epi[, sim, drop = FALSE])
+  } else if (out == "mean") {
+    function(epi) rowMeans(epi[, sim, drop = FALSE], na.rm = TRUE)
+  } else if (out == "sd") {
+    function(epi) apply(epi[, sim, drop = FALSE], 1, sd, na.rm = TRUE)
   } else if (out == "qnt") {
     if (is.null(qval) || length(qval) > 1 || (qval > 1 || qval < 0)) {
       stop("Must specify qval as single value between 0 and 1", call. = FALSE)
     }
-    for (i in seq_along(x$epi)) {
-      df[, i + 1] <- apply(x$epi[[i]], 1, quantile, probs = qval,
-                           na.rm = TRUE, names = FALSE)
+    function(epi) {
+      apply(epi[, sim, drop = FALSE], 1, quantile,
+            probs = qval, na.rm = TRUE, names = FALSE)
     }
   }
+  epi_ls <- lapply(x$epi, combine_fun)
 
-  if (out == "vals") {
-    names(df)[3:ncol(df)] <- names(x$epi)
-    df <- as.epi.data.frame(df)
-  } else {
-    names(df)[2:ncol(df)] <- names(x$epi)
+  if (out == "vals") { # add columns `time` and `sim`
+    common_elts <- list(
+      sim = rep(sim, each = n_steps),
+      time = rep(seq_len(n_steps), length(sim))
+    )
+    df <- as.epi.data.frame(as.data.frame(c(common_elts, epi_ls)))
+  } else { # add column `time`
+    df <- as.data.frame(c(list(time = seq_len(n_steps)), epi_ls))
   }
 
   return(df)
@@ -262,25 +255,26 @@ as.data.frame.icm <- function(x, row.names = NULL, optional = FALSE,
 #' @export
 #' @rdname as.data.frame.icm
 as.data.frame.netsim <- function(x, row.names = NULL, optional = FALSE,
-                                 out = "vals", sim = NULL, ...) {
+                                 out = "vals", sim = NULL, repair = "drop",
+                                 ...) {
   as.data.frame.icm(x, row.names = row.names, optional = optional,
-                    sim = sim, out = out, ...)
+                    sim = sim, out = out, repair = repair, ...)
 }
 
 #' @title Extract Timed Edgelists for netdx Objects
 #'
 #' @description This function extracts timed edgelists for objects of class
-#'              \code{netdx} into a data frame using the generic
-#'              \code{as.data.frame} function.
+#'              `netdx` into a data frame using the generic
+#'              `as.data.frame` function.
 #'
-#' @param x An \code{EpiModel} object of class \code{netdx}.
-#' @param sim The simulation number to output. If not specified, then data from
+#' @param x An `EpiModel` object of class `netdx`.
+#' @param sim The simulation number to output. If `NULL`, then data from
 #'        all simulations will be output.
-#' @param row.names See \code{\link{as.data.frame.default}}.
-#' @param optional See \code{\link{as.data.frame.default}}.
-#' @param ...  See \code{\link{as.data.frame.default}}.
+#' @param row.names See [as.data.frame.default()].
+#' @param optional See [as.data.frame.default()].
+#' @param ...  See [as.data.frame.default()].
 #'
-#' @return A data frame containing the data from \code{x}.
+#' @return A data frame containing the data from `x`.
 #'
 #' @method as.data.frame netdx
 #' @keywords extract
@@ -307,15 +301,15 @@ as.data.frame.netsim <- function(x, row.names = NULL, optional = FALSE,
 #' as.data.frame(dx)
 #'
 as.data.frame.netdx <- function(x, row.names = NULL, optional = FALSE,
-                                sim, ...) {
+                                sim = NULL, ...) {
 
   if (is.null(x$tedgelist)) {
     stop("Edgelist not saved in netdx object, check keep.tedgelist parameter",
          call. = FALSE)
   }
 
-  if (missing(sim)) {
-    sim <- 1:x$nsims
+  if (is.null(sim)) {
+    sim <- seq_len(x$nsims)
   }
   if (max(sim) > x$nsims) {
     stop(paste("Maximum sim is", x$nsims), call. = FALSE)

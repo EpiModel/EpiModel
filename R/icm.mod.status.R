@@ -82,11 +82,11 @@ infection.icm <- function(dat, at) {
 #' @description This function simulates recovery from the infected state
 #'              either to a distinct recovered state (SIR model type) or back
 #'              to a susceptible state (SIS model type), for use in
-#'              \code{\link{icm}}.
+#'              [icm()].
 #'
 #' @inheritParams prevalence.icm
 #'
-#' @return The updated \code{icm_dat} class main data object.
+#' @return The updated `icm_dat` class main data object.
 #'
 #' @export
 #' @keywords internal
@@ -227,7 +227,7 @@ infection.icm.bip <- function(dat, at) {
 #' @description This function simulates recovery from the infected state
 #'              either to a distinct recovered state (SIR model type) or back
 #'              to a susceptible state (SIS model type), for use in
-#'              \code{\link{icm}}.
+#'              [icm()].
 #'
 #' @inheritParams prevalence.icm
 #'

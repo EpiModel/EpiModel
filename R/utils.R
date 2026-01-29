@@ -2,15 +2,15 @@
 #' @title RColorBrewer Color Ramp for EpiModel Plots
 #'
 #' @description Returns a vector of colors consistent with a high-brightness set
-#'              of colors from an \code{RColorBrewer} palette.
+#'              of colors from an `RColorBrewer` palette.
 #'
-#' @param plt \code{RColorBrewer} palette from [`RColorBrewer::brewer.pal`].
+#' @param plt `RColorBrewer` palette from [`RColorBrewer::brewer.pal`].
 #' @param n Number of colors to return.
 #' @param delete.lights If TRUE, delete the lightest colors from the color
 #'        palette; this helps with plotting in many high-contrast palettes.
 #'
 #' @details
-#' \code{RColorBrewer} provides easy access to helpful color palettes, but the
+#' `RColorBrewer` provides easy access to helpful color palettes, but the
 #' built-in palettes are limited to the set of colors in the existing palette.
 #' This function expands the palette size to any number of colors by filling
 #' in the gaps. Also, colors within the "div" and "seq" set of palettes whose
@@ -18,7 +18,7 @@
 #' visualization of plots.
 #'
 #' @return
-#' A vector of length equal to \code{n} with a range of color values consistent
+#' A vector of length equal to `n` with a range of color values consistent
 #' with an RColorBrewer color palette.
 #'
 #' @seealso [RColorBrewer::RColorBrewer]
@@ -80,9 +80,9 @@ brewer_ramp <- function(n, plt, delete.lights = TRUE) {
 #'
 #' @description Deletes elements from the main attribute list.
 #'
-#' @param dat Either the \code{netsim_dat} class object passed through
-#'            \code{netsim} simulations, or the main data object passed through
-#'            \code{icm} simulations.
+#' @param dat Either the `netsim_dat` class object passed through
+#'            `netsim` simulations, or the main data object passed through
+#'            `icm` simulations.
 #' @param ids ID numbers to delete from the list.
 #'
 #' @inherit recovery.net return
@@ -130,16 +130,16 @@ ssample <- function(x, size, replace = FALSE, prob = NULL) {
 
 #' @title Add New Epidemiology Variables
 #'
-#' @description Inspired by \code{dplyr::mutate}, \code{mutate_epi} adds new
+#' @description Inspired by `dplyr::mutate`, `mutate_epi` adds new
 #'              variables to the epidemiological and related variables within
-#'              simulated model objects of any class in \code{EpiModel}.
+#'              simulated model objects of any class in `EpiModel`.
 #'
-#' @param x An \code{EpiModel} object of class \code{dcm}, \code{icm}, or
-#'        \code{netsim}.
+#' @param x An `EpiModel` object of class `dcm`, `icm`, or
+#'        `netsim`.
 #' @param ... Name-value pairs of expressions (see examples below).
 #'
-#' @return The updated \code{EpiModel} object of class \code{dcm}, \code{icm},
-#'         or \code{netsim}.
+#' @return The updated `EpiModel` object of class `dcm`, `icm`,
+#'         or `netsim`.
 #'
 #' @export
 #'
@@ -207,10 +207,10 @@ mutate_epi <- function(x, ...) {
 #' @param values Values for the output vector.
 #' @param proportions Proportion distribution with one number for each value.
 #'        This must sum to 1.
-#' @param shuffled If \code{TRUE}, randomly shuffle the order of the vector.
+#' @param shuffled If `TRUE`, randomly shuffle the order of the vector.
 #'
-#' @return A vector of length \code{vector.length} containing the apportioned
-#'         values from \code{values}.
+#' @return A vector of length `vector.length` containing the apportioned
+#'         values from `values`.
 #'
 #' @export
 #'
@@ -263,170 +263,4 @@ apportion_lr <- function(vector.length, values,
   }
 
   return(result)
-}
-
-#' @title Message to Find in Which Module a \code{condition} Occurred
-#'
-#' @description This function returns a formatted string describing when, where,
-#'              and why an error, message, or warning occurred.
-#'
-#' @param cond The type of \code{condition} handled (message, warning, error).
-#' @param module The name of the module where the \code{condition} occurred.
-#' @param at The time step the \code{condition} occurred.
-#' @param msg The \code{condition}'s message.
-#'
-#' @return A formatted string describing where and when the \code{condition}
-#'         occurred as well as the \code{condition}'s message.
-#'
-#' @keywords internal
-netsim_cond_msg <- function(cond, module, at, msg) {
-  paste0("\n\tA ", cond, " occured in module '", module, "' at step ", at)
-}
-
-#'  Handle the Logging of Traceback and Dumping of Frames on Error
-#'
-#'  If `control$.traceback.on.error == TRUE`, this function prints the traceback
-#'  of the current simulation to STDIN. This is useful when `ncores > 1` or in
-#'  HPC settings.
-#'  If `control$.dump.frames.on.error == TRUE`, this function saves a debugging
-#'  dump for "postmortem debugging". The dumps are named
-#'  "dump_%Y%m%d_%H%M%S_s.rda" and stored at the root of the working directory.
-#'
-#' @inheritParams recovery.net
-#' @param s The number of the simulation that failed
-#'
-#' @return Nothing, after logging and dumping frames, the function gives the
-#'   control back to the general error handler
-#'
-#' @keywords internal
-netsim_error_logger <- function(dat, s) {
-  if (get_control(dat, ".traceback.on.error")) {
-    message("\n",
-      "***************\n",
-      "** TRACEBACK **\n",
-      "***************"
-    )
-    traceback(0)
-  }
-
-  if (get_control(dat, ".dump.frame.on.error")) {
-    dump_name <- format(Sys.time(), format = "dump_%Y%m%d_%H%M%S")
-    dump_name <- paste0(dump_name, "_", s, ".rda")
-    star_header <- paste0(rep("*", nchar(dump_name)))
-    message("\n",
-      star_header, "\n",
-      "DUMP FILE:\n",
-      dump_name, "\n",
-      star_header, "\n"
-    )
-    utils::dump.frames()
-    save.image(file = dump_name)
-  }
-}
-
-
-#' @title Function to Reduce the Size of a \code{netest} Object
-#'
-#' @description Trims formula environments from the \code{netest} object.
-#'              Optionally converts the \code{newnetwork} element of the
-#'              \code{netest} object to a \code{networkLite} class, and removes
-#'              the \code{fit} element (if present) from the \code{netest}
-#'              object.
-#'
-#' @param object A \code{netest} class object.
-#' @param as.networkLite If \code{TRUE}, converts \code{object$newnetwork}
-#'        to a \code{networkLite}.
-#' @param keep.fit If \code{FALSE}, removes the \code{object$fit} (if present)
-#'        on the \code{netest} object.
-#' @param keep Character vector of object names to keep in formula environments.
-#'        By default, all objects are removed.
-#'
-#' @details
-#' With larger, more complex network structures with epidemic models, it is
-#' generally useful to reduce the memory footprint of the fitted TERGM model
-#' object (estimated with \code{\link{netest}}). This utility function removes
-#' all but the bare essentials needed for simulating a network model with
-#' \code{\link{netsim}}.
-#'
-#' The function always trims the environments of \code{object$constraints} and
-#' \code{object$coef.diss$dissolution}.
-#'
-#' When both \code{edapprox = TRUE} and \code{nested.edapprox = TRUE} in the
-#' \code{netest} call, also trims the environments of \code{object$formula}
-#' and \code{object$formation}.
-#'
-#' When both \code{edapprox = TRUE} and \code{nested.edapprox = FALSE} in the
-#' \code{netest} call, also trims the environments of \code{object$formula},
-#' \code{environment(object$formation)$formation}, and
-#' \code{environment(object$formation)$dissolution}.
-#'
-#' When \code{edapprox = FALSE} in the \code{netest} call, also trims the
-#' environments of \code{object$formation},
-#' \code{environment(object$formula)$formation} and
-#' \code{environment(object$formula)$dissolution}.
-#'
-#' By default all objects are removed from these trimmed environments. Specific
-#' objects may be retained by passing their names as the \code{keep} argument.
-#' For the output of \code{trim_netest} to be usable in \code{\link{netsim}}
-#' simulation, any objects referenced in the formulas should be included in the
-#' \code{keep} argument.
-#'
-#' If \code{as.networkLite = TRUE}, converts \code{object$newnetwork} to a
-#' \code{networkLite} object. If \code{keep.fit = FALSE}, removes \code{fit} (if
-#' present) from \code{object}.
-#'
-#' @return
-#' A \code{netest} object with formula environments trimmed, optionally with the
-#' \code{newnetwork} element converted to a \code{networkLite} and the
-#' \code{fit} element removed.
-#'
-#' @export
-#'
-#' @examples
-#' nw <- network_initialize(n = 100)
-#' formation <- ~edges + concurrent
-#' target.stats <- c(50, 25)
-#' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 10)
-#' est <- netest(nw, formation, target.stats, coef.diss,
-#'               set.control.ergm = control.ergm(MCMC.burnin = 1e5,
-#'                                               MCMC.interval = 1000))
-#' print(object.size(est), units = "KB")
-#'
-#' est.small <- trim_netest(est)
-#' print(object.size(est.small), units = "KB")
-#'
-trim_netest <- function(object, as.networkLite = TRUE, keep.fit = FALSE,
-                        keep = character(0)) {
-  if (object$edapprox == TRUE) {
-    object$formula <- trim_env(object$formula, keep = keep)
-    if (object$nested.edapprox == TRUE) {
-      object$formation <- trim_env(object$formation, keep = keep)
-    } else {
-      # trim environments for formation and dissolution inside formation
-      environment(object$formation)$formation <-
-        trim_env(environment(object$formation)$formation, keep = keep)
-      environment(object$formation)$dissolution <-
-        trim_env(environment(object$formation)$dissolution, keep = keep)
-    }
-  } else {
-    object$formation <- trim_env(object$formation, keep = keep)
-    # trim environments for formation and dissolution inside formula
-    environment(object$formula)$formation <-
-      trim_env(environment(object$formula)$formation, keep = keep)
-    environment(object$formula)$dissolution <-
-      trim_env(environment(object$formula)$dissolution, keep = keep)
-  }
-
-  object$coef.diss$dissolution <- trim_env(object$coef.diss$dissolution, keep = keep)
-  object$constraints <- trim_env(object$constraints, keep = keep)
-
-  if (keep.fit == FALSE) {
-    object$fit <- NULL
-  }
-
-  if (as.networkLite == TRUE) {
-    object$newnetwork <- as.networkLite(object$newnetwork)
-  }
-
-  return(object)
 }

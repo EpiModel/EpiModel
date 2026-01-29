@@ -36,7 +36,7 @@ Sets the initial conditions for deterministic compartmental
 models simulated with \code{dcm}.
 }
 \details{
-The initial conditions for a model solved with \code{\link{dcm}} should be
+The initial conditions for a model solved with \code{\link[=dcm]{dcm()}} should be
 input into the \code{init.dcm} function. This function handles initial
 conditions for both base model types and original models.
 
@@ -46,8 +46,8 @@ must be input in the same order that the solved derivatives from the model
 are output.
 }
 \seealso{
-Use \code{\link{param.dcm}} to specify model parameters and
-\code{\link{control.dcm}} to specify the control settings. Run the
-parameterized model with \code{\link{dcm}}.
+Use \code{\link[=param.dcm]{param.dcm()}} to specify model parameters and
+\code{\link[=control.dcm]{control.dcm()}} to specify the control settings. Run the
+parameterized model with \code{\link[=dcm]{dcm()}}.
 }
 \keyword{parameterization}

@@ -1,27 +1,27 @@
 
 #' @title Save dcm Data to Output List Format
 #'
-#' @description This function transfers the data from the main \code{df}
-#'              object to the output \code{out} object at the end of each
-#'              run in \code{\link{dcm}}.
+#' @description This function transfers the data from the main `df`
+#'              object to the output `out` object at the end of each
+#'              run in [dcm()].
 #'
-#' @param df Main object in \code{\link{dcm}} simulations.
+#' @param df Main object in [dcm()] simulations.
 #' @param s Current run number.
-#' @param param Param list set in \code{\link{param.dcm}}.
-#' @param control Control list set in \code{\link{control.dcm}}.
+#' @param param Param list set in [param.dcm()].
+#' @param control Control list set in [control.dcm()].
 #' @param out Out list passed back in for updating at runs 2+.
 #'
 #' @return A list with the following elements:
-#' \itemize{
-#'  \item \strong{param:} the epidemic parameters passed into the model through
-#'        \code{\link{param.dcm}}, with additional parameters added as
+#'
+#'  * **param:** the epidemic parameters passed into the model through
+#'        [param.dcm()], with additional parameters added as
 #'        necessary.
-#'  \item \strong{control:} the control settings passed into the model through
-#'        \code{\link{control.dcm}}, with additional controls added as
+#'  * **control:** the control settings passed into the model through
+#'        [control.dcm()], with additional controls added as
 #'        necessary.
-#'  \item \strong{epi:} a list of data frames, one for each epidemiological
+#'  * **epi:** a list of data frames, one for each epidemiological
 #'        output from the model.
-#' }
+#'
 #'
 #' @keywords internal
 #' @export
@@ -75,9 +75,9 @@ saveout.dcm <- function(df, s, param, control, out = NULL) {
 
 #' @title Save icm Data to Output List Format
 #'
-#' @description This function transfers the data from the main \code{icm_dat}
-#'              class data object to the output \code{out} object at the end of
-#'              each simulation in \code{\link{icm}}.
+#' @description This function transfers the data from the main `icm_dat`
+#'              class data object to the output `out` object at the end of
+#'              each simulation in [icm()].
 #'
 #' @inheritParams prevalence.icm
 #' @param s Current simulation number.
@@ -85,16 +85,16 @@ saveout.dcm <- function(df, s, param, control, out = NULL) {
 #'
 #' @return
 #' A list with the following elements:
-#' \itemize{
-#'  \item \strong{param:} the epidemic parameters passed into the model through
-#'        \code{\link{param.icm}}, with additional parameters added as
+#'
+#'  * **param:** the epidemic parameters passed into the model through
+#'        [param.icm()], with additional parameters added as
 #'        necessary.
-#'  \item \strong{control:} the control settings passed into the model through
-#'        \code{\link{control.icm}}, with additional controls added as
+#'  * **control:** the control settings passed into the model through
+#'        [control.icm()], with additional controls added as
 #'        necessary.
-#'  \item \strong{epi:} a list of data frames, one for each epidemiological
+#'  * **epi:** a list of data frames, one for each epidemiological
 #'        output from the model.
-#' }
+#'
 #'
 #' @keywords internal
 #' @export
@@ -135,9 +135,9 @@ saveout.icm <- function(dat, s, out = NULL) {
 
 #' @title Save netsim Data to Output List Format
 #'
-#' @description This function transfers the data from the main \code{netsim_dat}
-#'              object to the output \code{out} object at the end of each
-#'              simulation in \code{\link{netsim}}.
+#' @description This function transfers the data from the main `netsim_dat`
+#'              object to the output `out` object at the end of each
+#'              simulation in [netsim()].
 #'
 #' @inheritParams recovery.net
 #' @param s Current simulation number.
@@ -145,21 +145,21 @@ saveout.icm <- function(dat, s, out = NULL) {
 #'
 #' @return
 #' A list with the following elements:
-#' \itemize{
-#'  \item \strong{param:} the epidemic parameters passed into the model through
-#'        \code{\link{param.net}}, with additional parameters added as
+#'
+#'  * **param:** the epidemic parameters passed into the model through
+#'        [param.net()], with additional parameters added as
 #'        necessary.
-#'  \item \strong{control:} the control settings passed into the model through
-#'        \code{\link{control.net}}, with additional controls added as
+#'  * **control:** the control settings passed into the model through
+#'        [control.net()], with additional controls added as
 #'        necessary.
-#'  \item \strong{epi:} a list of data frames, one for each epidemiological
+#'  * **epi:** a list of data frames, one for each epidemiological
 #'        output from the model.
-#'  \item \strong{stats:} a list containing two sublists, \code{nwstats} for any
-#'        network statistics saved in the simulation, and \code{transmat} for
+#'  * **stats:** a list containing two sublists, `nwstats` for any
+#'        network statistics saved in the simulation, and `transmat` for
 #'        the transmission matrix saved in the simulation.
-#'  \item \strong{network:} a list of \code{networkDynamic} objects,
+#'  * **network:** a list of `networkDynamic` objects,
 #'         one for each model simulation.
-#' }
+#'
 #'
 #' @keywords internal
 #' @export
@@ -419,31 +419,31 @@ saveout.net <- function(dat, s, out = NULL) {
 #' @title Save a List of netsim Data to Output List Format
 #'
 #' @description This function transfers the data from a list of the main
-#'              \code{netsim_dat} objects to the output \code{out} object at the
-#'              end of all simulations in \code{\link{netsim}}.
+#'              `netsim_dat` objects to the output `out` object at the
+#'              end of all simulations in [netsim()].
 #'
-#' @param dat_list A list of main \code{netsim_dat} objects in \code{netsim}
+#' @param dat_list A list of main `netsim_dat` objects in `netsim`
 #'        simulations.
 #'
 #' @return
-#' A list of class \code{netsim} with the following elements:
-#' \itemize{
-#'  \item \strong{param:} the epidemic parameters passed into the model through
-#'        \code{param}, with additional parameters added as necessary.
-#'  \item \strong{control:} the control settings passed into the model through
-#'        \code{control}, with additional controls added as necessary.
-#'  \item \strong{epi:} a list of data frames, one for each epidemiological
+#' A list of class `netsim` with the following elements:
+#'
+#'  * **param:** the epidemic parameters passed into the model through
+#'        `param`, with additional parameters added as necessary.
+#'  * **control:** the control settings passed into the model through
+#'        `control`, with additional controls added as necessary.
+#'  * **epi:** a list of data frames, one for each epidemiological
 #'        output from the model. Outputs for base models always include the
 #'        size of each compartment, as well as flows in, out of, and between
 #'        compartments.
-#'  \item \strong{stats:} a list containing two sublists, \code{nwstats} for any
-#'        network statistics saved in the simulation, and \code{transmat} for
+#'  * **stats:** a list containing two sublists, `nwstats` for any
+#'        network statistics saved in the simulation, and `transmat` for
 #'        the transmission matrix saved in the simulation. See
-#'        \code{\link{control.net}} for further
+#'        [control.net()] for further
 #'        details.
-#'  \item \strong{network:} a list of \code{networkDynamic} objects,
+#'  * **network:** a list of `networkDynamic` objects,
 #'         one for each model simulation.
-#' }
+#'
 #'
 #' @keywords internal
 #' @export

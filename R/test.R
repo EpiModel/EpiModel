@@ -10,7 +10,7 @@
 
 #' @title Write Out Test Progress to Console
 #'
-#' @description Writes the name of a test and \code{...} to console to show test
+#' @description Writes the name of a test and `...` to console to show test
 #'              progress.
 #'
 #' @param test Character string with the name of a test.
@@ -29,7 +29,7 @@ mcat <- function(test) {
 #'              consistent with key balancing equations for compartment and
 #'              flow sizes for each simulation for each time step.
 #'
-#' @param x An object of class \code{netsim}.
+#' @param x An object of class `netsim`.
 #'
 #' @keywords internal
 #' @export
@@ -180,7 +180,7 @@ test_net <- function(x) {
 #'              is consistent with key balancing equations for compartment and
 #'              flow sizes for each simulation for each time step.
 #'
-#' @param x An object of class \code{icm}.
+#' @param x An object of class `icm`.
 #'
 #' @keywords internal
 #' @export

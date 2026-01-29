@@ -143,14 +143,14 @@
 #' # To estimate the STERGM directly, use edapprox = FALSE
 #' # est2 <- netest(nw, formation, target.stats, coef.diss, edapprox = FALSE)
 #'
-netest <- function(nw, formation, target.stats, coef.diss, constraints,
+netest <- function(nw, formation, target.stats, coef.diss, constraints = NULL,
                    coef.form = NULL, edapprox = TRUE,
                    set.control.ergm = control.ergm(),
                    set.control.tergm = control.tergm(MCMC.maxchanges = Inf),
                    set.control.ergm.ego = NULL,
                    verbose = FALSE, nested.edapprox = TRUE, ...) {
 
-  if (missing(constraints)) {
+  if (is.null(constraints)) {
     constraints	<- trim_env(~.)
   }
 
@@ -341,16 +341,16 @@ diss_check <- function(formation, dissolution) {
 #' @title Adjust Dissolution Component of Network Model Fit
 #'
 #' @description Adjusts the dissolution component of a dynamic ERGM fit using
-#'              the \code{\link{netest}} function with the edges dissolution
+#'              the [netest()] function with the edges dissolution
 #'              approximation method.
 #'
-#' @param old.netest An object of class \code{netest}, from the
-#'        \code{\link{netest}} function.
-#' @param new.coef.diss An object of class \code{disscoef}, from the
-#'        \code{\link{dissolution_coefs}} function.
-#' @param nested.edapprox Logical. If \code{edapprox = TRUE} the dissolution
+#' @param old.netest An object of class `netest`, from the
+#'        [netest()] function.
+#' @param new.coef.diss An object of class `disscoef`, from the
+#'        [dissolution_coefs()] function.
+#' @param nested.edapprox Logical. If `edapprox = TRUE` the dissolution
 #'        model is an initial segment of the formation model (see details in
-#'        \code{\link{netest}}).
+#'        [netest()]).
 #'
 #' @details
 #' Fitting an ERGM is a computationally intensive process when the model
@@ -363,7 +363,7 @@ diss_check <- function(formation, dissolution) {
 #' different models with different average edge durations as targets. The
 #' example below exhibits that case.
 #'
-#' @return An updated network model object of class \code{netest}.
+#' @return An updated network model object of class `netest`.
 #'
 #' @export
 #'

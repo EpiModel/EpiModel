@@ -36,6 +36,6 @@ summary(mod, at = 50)
 
 }
 \seealso{
-\code{\link{icm}}
+\code{\link[=icm]{icm()}}
 }
 \keyword{extract}

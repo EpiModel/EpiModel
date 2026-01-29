@@ -24,7 +24,7 @@ compartments.
 \item \strong{stats:} a list containing two sublists, \code{nwstats} for any
 network statistics saved in the simulation, and \code{transmat} for
 the transmission matrix saved in the simulation. See
-\code{\link{control.net}} for further
+\code{\link[=control.net]{control.net()}} for further
 details.
 \item \strong{network:} a list of \code{networkDynamic} objects,
 one for each model simulation.
@@ -33,6 +33,6 @@ one for each model simulation.
 \description{
 This function transfers the data from a list of the main
 \code{netsim_dat} objects to the output \code{out} object at the
-end of all simulations in \code{\link{netsim}}.
+end of all simulations in \code{\link[=netsim]{netsim()}}.
 }
 \keyword{internal}

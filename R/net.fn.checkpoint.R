@@ -22,7 +22,13 @@ netsim_is_resume_checkpoint <- function(control, s) {
 }
 
 netsim_load_checkpoint <- function(control, s) {
-  readRDS(netsim_get_checkpoint_filename(control, s))
+  checkpoint_path <- netsim_get_checkpoint_filename(control, s)
+  dat <- readRDS(checkpoint_path)
+  message(
+    "Simulation ", s, " - Restarting from step ", get_current_timestep(dat),
+    " - file: \"", checkpoint_path, "\""
+  )
+  return(dat)
 }
 
 netsim_save_checkpoint <- function(dat, s) {
@@ -37,6 +43,11 @@ netsim_save_checkpoint <- function(dat, s) {
 
   if (file.exists(checkpoint_file_name)) file.remove(checkpoint_file_name)
   file.rename(tmp_file_name, checkpoint_file_name)
+
+  message(
+    "Simulation ", s, " - Checkpoint at step ", get_current_timestep(dat),
+    " - file: \"", checkpoint_file_name, "\""
+  )
 
   invisible(dat)
 }

@@ -9,7 +9,7 @@ simulate_dat(dat, at, network = 1L, nsteps = 1L)
 \arguments{
 \item{dat}{Main \code{netsim_dat} object containing a \code{networkDynamic}
 object and other initialization information passed from
-\code{\link{netsim}}.}
+\code{\link[=netsim]{netsim()}}.}
 
 \item{at}{Current time step.}
 
@@ -23,7 +23,7 @@ The updated \code{netsim_dat} main list object.
 \description{
 This function simulates a dynamic network over one or multiple
 time steps for TERGMs or one or multiple cross-sectional network
-panels for ERGMs, for use in \code{\link{netsim}} modeling.
+panels for ERGMs, for use in \code{\link[=netsim]{netsim()}} modeling.
 Network statistics are also extracted and saved if
 \code{save.nwstats == TRUE} and
 \code{resimulate.network == FALSE}.

@@ -2,16 +2,16 @@
 #' @title Merge Data across Stochastic Individual Contact Model Simulations
 #'
 #' @description Merges epidemiological data from two independent simulations of
-#'              stochastic individual contact models from \code{\link{icm}}.
+#'              stochastic individual contact models from [icm()].
 #'
-#' @param x An \code{EpiModel} object of class \code{\link{icm}}.
-#' @param y Another \code{EpiModel} object of class \code{\link{icm}}, with the
-#'        identical model parameterization as \code{x}.
+#' @param x An `EpiModel` object of class [icm()].
+#' @param y Another `EpiModel` object of class [icm()], with the
+#'        identical model parameterization as `x`.
 #' @param ...  Additional merge arguments (not used).
 #'
 #' @details
 #' This merge function combines the results of two independent simulations of
-#' \code{\link{icm}} class models, simulated under separate function calls. The
+#' [icm()] class models, simulated under separate function calls. The
 #' model parameterization between the two calls must be exactly the same, except
 #' for the number of simulations in each call. This allows for manual
 #' parallelization of model simulations.
@@ -22,8 +22,8 @@
 #' parameterization in every respect (except number of simulations) and binds
 #' the results.
 #'
-#' @return An \code{EpiModel} object of class \code{\link{icm}} containing the
-#'         data from both \code{x} and \code{y}.
+#' @return An `EpiModel` object of class [icm()] containing the
+#'         data from both `x` and `y`.
 #'
 #' @method merge icm
 #' @keywords extract
@@ -95,34 +95,34 @@ merge.icm <- function(x, y, ...) {
 #' @title Merge Model Simulations across netsim Objects
 #'
 #' @description Merges epidemiological data from two independent simulations of
-#'              stochastic network models from \code{netsim}.
+#'              stochastic network models from `netsim`.
 #'
-#' @param x An \code{EpiModel} object of class \code{\link{netsim}}.
-#' @param y Another \code{EpiModel} object of class \code{\link{netsim}},
-#'        with the identical model parameterization as \code{x}.
-#' @param keep.transmat If \code{TRUE}, keep the transmission matrices from the
-#'        original \code{x} and \code{y} elements. Note: transmission matrices
-#'        only saved when (\code{save.transmat == TRUE}).
-#' @param keep.network If \code{TRUE}, keep the \code{networkDynamic} objects
-#'        from the original \code{x} and \code{y} elements. Note: network
-#'        only saved when (\code{tergmLite == FALSE}).
-#' @param keep.nwstats If \code{TRUE}, keep the network statistics (as set by
-#'        the \code{nwstats.formula} parameter in \code{control.netsim}) from
-#'        the original \code{x} and \code{y} elements.
-#' @param keep.other If \code{TRUE}, keep the other simulation elements (as set
-#'        by the \code{save.other} parameter in \code{control.netsim}) from the
-#'        original \code{x} and \code{y} elements.
-#' @param param.error If \code{TRUE}, if \code{x} and \code{y} have different
-#'        params (in \code{\link{param.net}}) or controls (passed in
-#'        \code{\link{control.net}}) an error will prevent the merge. Use
-#'        \code{FALSE} to override that check.
-#' @param keep.diss.stats If \code{TRUE}, keep \code{diss.stats} from the
-#'        original \code{x} and \code{y} objects.
+#' @param x An `EpiModel` object of class [netsim()].
+#' @param y Another `EpiModel` object of class [netsim()],
+#'        with the identical model parameterization as `x`.
+#' @param keep.transmat If `TRUE`, keep the transmission matrices from the
+#'        original `x` and `y` elements. Note: transmission matrices
+#'        only saved when (`save.transmat == TRUE`).
+#' @param keep.network If `TRUE`, keep the `networkDynamic` objects
+#'        from the original `x` and `y` elements. Note: network
+#'        only saved when (`tergmLite == FALSE`).
+#' @param keep.nwstats If `TRUE`, keep the network statistics (as set by
+#'        the `nwstats.formula` parameter in `control.netsim`) from
+#'        the original `x` and `y` elements.
+#' @param keep.other If `TRUE`, keep the other simulation elements (as set
+#'        by the `save.other` parameter in `control.netsim`) from the
+#'        original `x` and `y` elements.
+#' @param param.error If `TRUE`, if `x` and `y` have different
+#'        params (in [param.net()]) or controls (passed in
+#'        [control.net()]) an error will prevent the merge. Use
+#'        `FALSE` to override that check.
+#' @param keep.diss.stats If `TRUE`, keep `diss.stats` from the
+#'        original `x` and `y` objects.
 #' @param ...  Additional merge arguments (not currently used).
 #'
 #' @details
 #' This merge function combines the results of two independent simulations of
-#' \code{\link{netsim}} class models, simulated under separate function calls.
+#' [netsim()] class models, simulated under separate function calls.
 #' The model parameterization between the two calls must be exactly the same,
 #' except for the number of simulations in each call. This allows for manual
 #' parallelization of model simulations.
@@ -133,8 +133,8 @@ merge.icm <- function(x, y, ...) {
 #' parameterization in every respect (except number of simulations) and binds
 #' the results.
 #'
-#' @return An \code{EpiModel} object of class \code{\link{netsim}} containing
-#'         the data from both \code{x} and \code{y}.
+#' @return An `EpiModel` object of class [netsim()] containing
+#'         the data from both `x` and `y`.
 #'
 #' @method merge netsim
 #' @keywords extract

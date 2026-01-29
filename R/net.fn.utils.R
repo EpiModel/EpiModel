@@ -74,65 +74,65 @@ check_degdist_bal <- function(num.g1, num.g2,
 }
 
 
-#' @title Create a TEA Variable for Infection Status for \code{ndtv} Animations
+#' @title Create a TEA Variable for Infection Status for `ndtv` Animations
 #'
 #' @description Creates a new color-named temporally-extended attribute (TEA)
-#'              variable in a \code{networkDynamic} object containing a disease
+#'              variable in a `networkDynamic` object containing a disease
 #'              status TEA in numeric format.
 #'
-#' @param nd An object of class \code{networkDynamic}.
+#' @param nd An object of class `networkDynamic`.
 #' @param old.var Old TEA variable name.
 #' @param old.sus Status value for susceptible in old TEA variable.
 #' @param old.inf Status value for infected in old TEA variable.
 #' @param old.rec Status value for recovered in old TEA variable.
-#' @param new.var New TEA variable name to be stored in \code{networkDynamic}
+#' @param new.var New TEA variable name to be stored in `networkDynamic`
 #'        object.
 #' @param new.sus Status value for susceptible in new TEA variable.
 #' @param new.inf Status value for infected in new TEA variable.
 #' @param new.rec Status value for recovered in new TEA variable.
-#' @param verbose If \code{TRUE}, print progress to console.
+#' @param verbose If `TRUE`, print progress to console.
 #'
 #' @details
-#' The \code{ndtv} package (\url{https://cran.r-project.org/package=ndtv})
+#' The `ndtv` package (<https://cran.r-project.org/package=ndtv>)
 #' produces animated visuals for dynamic networks with evolving edge structures
-#' and nodal attributes. Nodal attribute dynamics in \code{ndtv} movies require
+#' and nodal attributes. Nodal attribute dynamics in `ndtv` movies require
 #' a temporally extended attribute (TEA) containing a standard R color for each
-#' node at each time step. By default, the \code{EpiModel} package uses TEAs to
+#' node at each time step. By default, the `EpiModel` package uses TEAs to
 #' store disease status history in network model simulations run in
-#' \code{\link{netsim}}. But that status TEA is in numeric format (0, 1, 2).
-#' The \code{color_tea} function transforms those numeric values of that disease
+#' [netsim()]. But that status TEA is in numeric format (0, 1, 2).
+#' The `color_tea` function transforms those numeric values of that disease
 #' status TEA into a TEA with color values in order to visualize status changes
-#' in \code{ndtv}.
+#' in `ndtv`.
 #'
-#' The convention in \code{\link{plot.netsim}} is to color the susceptible
+#' The convention in [plot.netsim()] is to color the susceptible
 #' nodes as blue, infected nodes as red, and recovered nodes as green. Alternate
-#' colors may be specified using the \code{new.sus}, \code{new.inf}, and
-#' \code{new.rec} parameters, respectively.
+#' colors may be specified using the `new.sus`, `new.inf`, and
+#' `new.rec` parameters, respectively.
 #'
-#' Using the \code{color_tea} function with a \code{netsim} object requires that
-#' TEAs for disease status be used and that the \code{networkDynamic} object be
-#' saved in the output: \code{tergmListe} must be  set to \code{FALSE} in
-#' \code{\link{control.net}}.
+#' Using the `color_tea` function with a `netsim` object requires that
+#' TEAs for disease status be used and that the `networkDynamic` object be
+#' saved in the output: `tergmListe` must be  set to `FALSE` in
+#' [control.net()].
 #'
-#' @return The updated object of class \code{networkDynamic}.
+#' @return The updated object of class `networkDynamic`.
 #'
-#' @seealso \code{\link{netsim}} and the \code{ndtv} package documentation.
+#' @seealso [netsim()] and the `ndtv` package documentation.
 #' @keywords colorUtils
 #' @export
 #'
 color_tea <- function(nd, old.var = "testatus", old.sus = "s", old.inf = "i",
-                      old.rec = "r", new.var = "ndtvcol", new.sus, new.inf,
-                      new.rec, verbose = TRUE) {
-  if (missing(new.inf)) {
+                      old.rec = "r", new.var = "ndtvcol", new.sus = NULL,
+                      new.inf = NULL, new.rec = NULL, verbose = TRUE) {
+  if (is.null(new.inf)) {
     new.inf <- adjustcolor(2, 0.75)
   }
-  if (missing(new.sus)) {
+  if (is.null(new.sus)) {
     new.sus <- adjustcolor(4, 0.75)
   }
-  if (missing(new.rec)) {
+  if (is.null(new.rec)) {
     new.rec <- adjustcolor(3, 0.75)
   }
-  times <- 1:max(get.change.times(nd))
+  times <- seq_len(max(get.change.times(nd)))
   for (at in times) {
     stat <- get.vertex.attribute.active(nd, old.var, at = at)
     infected <- which(stat == old.inf)
@@ -152,19 +152,19 @@ color_tea <- function(nd, old.var = "testatus", old.sus = "s", old.inf = "i",
 }
 
 
-#' @title Copy Vertex Attributes From Network to \code{netsim_dat} List
+#' @title Copy Vertex Attributes From Network to `netsim_dat` List
 #'
 #' @description Copies the vertex attributes stored on the network object to the
-#'              main \code{attr} list in the \code{netsim_dat} data object.
+#'              main `attr` list in the `netsim_dat` data object.
 #'
 #' @inheritParams recovery.net
 #' @param nw Network from which to copy vertex attributes.
 #'
 #' @inherit recovery.net return
 #'
-#' @seealso \code{\link{get_formula_term_attr}}, \code{\link{get_attr_prop}},
-#'          \code{\link{auto_update_attr}}, and
-#'          \code{\link{copy_datattr_to_nwattr}}.
+#' @seealso [get_formula_term_attr()], [get_attr_prop()],
+#'          [auto_update_attr()], and
+#'          [copy_datattr_to_nwattr()].
 #' @keywords netUtils internal
 #' @export
 #'
@@ -186,20 +186,20 @@ copy_nwattr_to_datattr <- function(dat, nw) {
 }
 
 
-#' @title Copy Vertex Attributes from the \code{netsim_dat} List to the Network
+#' @title Copy Vertex Attributes from the `netsim_dat` List to the Network
 #'        Objects
 #'
-#' @description Copies the vertex attributes stored on the main \code{attr} list
-#'              of the \code{netsim_dat} object to each of the network objects
-#'              stored on the \code{netsim_dat} object.
+#' @description Copies the vertex attributes stored on the main `attr` list
+#'              of the `netsim_dat` object to each of the network objects
+#'              stored on the `netsim_dat` object.
 #'
 #' @inheritParams recovery.net
 #'
 #' @inherit recovery.net return
 #'
-#' @seealso \code{\link{get_formula_term_attr}}, \code{\link{get_attr_prop}},
-#'          \code{\link{auto_update_attr}}, and
-#'          \code{\link{copy_nwattr_to_datattr}}.
+#' @seealso [get_formula_term_attr()], [get_attr_prop()],
+#'          [auto_update_attr()], and
+#'          [copy_nwattr_to_datattr()].
 #' @keywords netUtils internal
 #' @export
 #'
@@ -234,10 +234,10 @@ copy_datattr_to_nwattr <- function(dat) {
 #'
 #' @description Calculates dissolution coefficients, given a dissolution model
 #'              and average edge duration, to pass as offsets to an ERGM/TERGM
-#'              model fit in \code{netest}.
+#'              model fit in `netest`.
 #'
 #' @param dissolution Right-hand sided STERGM dissolution formula
-#'        (see \code{\link{netest}}). See below for list of supported
+#'        (see [netest()]). See below for list of supported
 #'        dissolution models.
 #' @param duration A vector of mean edge durations in arbitrary time units.
 #' @param d.rate Departure or exit rate from the population, as a single
@@ -245,52 +245,52 @@ copy_datattr_to_nwattr <- function(dat) {
 #'
 #' @details
 #' This function performs two calculations for dissolution coefficients
-#' used in a network model estimated with \code{\link{netest}}:
-#' \enumerate{
-#'  \item \strong{Transformation:} the mean durations of edges in a network are
-#'        mathematically transformed to logit coefficients.
-#'  \item \strong{Adjustment:} in a dynamic network simulation in an open
-#'        population (in which there are departures), it is further necessary to
-#'        adjust these coefficients; this upward adjustment accounts for
-#'        departure as a competing risk to edge dissolution.
-#' }
+#' used in a network model estimated with [netest()]:
+#'
+#'  1. **Transformation:** the mean durations of edges in a network are
+#'     mathematically transformed to logit coefficients.
+#'  2. **Adjustment:** in a dynamic network simulation in an open
+#'     population (in which there are departures), it is further necessary to
+#'     adjust these coefficients; this upward adjustment accounts for
+#'     departure as a competing risk to edge dissolution.
+#'
 #'
 #' The current dissolution models supported by this function and in network
-#' model estimation in \code{\link{netest}} are as follows:
-#' \itemize{
-#'  \item \code{~offset(edges)}: a homogeneous dissolution model in which the
+#' model estimation in [netest()] are as follows:
+#'
+#'  * `~offset(edges)`: a homogeneous dissolution model in which the
 #'         edge duration is the same for all partnerships. This requires
 #'         specifying one duration value.
-#'  \item \code{~offset(edges) + offset(nodematch("<attr>"))}: a heterogeneous
+#'  * `~offset(edges) + offset(nodematch("<attr>"))`: a heterogeneous
 #'         model in which the edge duration varies by whether the nodes in the
 #'         dyad have similar values of a specified attribute. The duration
 #'         vector should now contain two values: the first is the mean edge
 #'         duration of non-matched dyads, and the second is the duration of the
 #'         matched dyads.
-#'  \item \code{~offset(edges) + offset(nodemix("<attr>"))}: a heterogeneous
+#'  * `~offset(edges) + offset(nodemix("<attr>"))`: a heterogeneous
 #'         model that extends the nodematch model to include non-binary
 #'         attributes for homophily. The duration vector should first contain
 #'         the base value, then the values for every other possible combination
 #'         in the term.
-#' }
+#'
 #'
 #' @return
-#' A list of class \code{disscoef} with the following elements:
-#' \itemize{
-#'  \item \strong{dissolution:} right-hand sided STERGM dissolution formula
+#' A list of class `disscoef` with the following elements:
+#'
+#'  * **dissolution:** right-hand sided STERGM dissolution formula
 #'         passed in the function call.
-#'  \item \strong{duration:} mean edge durations passed into the function.
-#'  \item \strong{coef.crude:} mean durations transformed into logit
+#'  * **duration:** mean edge durations passed into the function.
+#'  * **coef.crude:** mean durations transformed into logit
 #'        coefficients.
-#'  \item \strong{coef.adj:} crude coefficients adjusted for the risk of
-#'        departure on edge persistence, if the \code{d.rate} argument is
+#'  * **coef.adj:** crude coefficients adjusted for the risk of
+#'        departure on edge persistence, if the `d.rate` argument is
 #'        supplied.
-#'  \item \strong{coef.form.corr:} corrections to be subtracted from formation
+#'  * **coef.form.corr:** corrections to be subtracted from formation
 #'        coefficients.
-#'  \item \strong{d.rate:} the departure rate.
-#'  \item \strong{diss.model.type:} the form of the dissolution model; options
-#'        include \code{edgesonly}, \code{nodematch}, and \code{nodemix}.
-#' }
+#'  * **d.rate:** the departure rate.
+#'  * **diss.model.type:** the form of the dissolution model; options
+#'        include `edgesonly`, `nodematch`, and `nodemix`.
+#'
 #'
 #' @export
 #' @keywords netUtils
@@ -467,13 +467,13 @@ dissolution_coefs <- function(dissolution, duration, d.rate = 0) {
 #'
 #' @description Outputs a table of the number and percent of edges that are
 #'              left-censored, right-censored, both-censored, or uncensored for
-#'              a \code{networkDynamic} object.
+#'              a `networkDynamic` object.
 #'
 #' @param el A timed edgelist with start and end times extracted from a
-#'        \code{networkDynamic} object using the
-#'        \code{as.data.frame.networkDynamic} function.
+#'        `networkDynamic` object using the
+#'        `as.data.frame.networkDynamic` function.
 #'
-#' @return A 4 x 2 table containing the number and percent of edges in \code{el}
+#' @return A 4 x 2 table containing the number and percent of edges in `el`
 #'         that are left-censored, right-censored, both-censored, or uncensored.
 #'
 #' @export
@@ -538,15 +538,15 @@ edgelist_censor <- function(el) {
 #'
 #' @inheritParams recovery.net
 #' @param nwterms Vector of attributes on the network object, usually as
-#'        output of \code{\link{get_formula_term_attr}}.
+#'        output of [get_formula_term_attr()].
 #'
 #' @return
 #' A table containing the proportional distribution of each attribute in
-#' \code{nwterms}.
+#' `nwterms`.
 #'
-#' @seealso \code{\link{get_formula_term_attr}},
-#'          \code{\link{copy_nwattr_to_datattr}},
-#'          \code{\link{auto_update_attr}}.
+#' @seealso [get_formula_term_attr()],
+#'          [copy_nwattr_to_datattr()],
+#'          [auto_update_attr()].
 #' @keywords netUtils internal
 #' @export
 #'
@@ -576,7 +576,7 @@ get_attr_prop <- function(dat, nwterms) {
 #'
 #' @description Given a formation formula for a network model, outputs a
 #'              character vector of vertex attributes to be used in
-#'              \code{\link{netsim}} simulations.
+#'              [netsim()] simulations.
 #'
 #' @param form An ERGM model formula.
 #' @param nw A network object.
@@ -608,7 +608,7 @@ get_formula_term_attr <- function(form, nw) {
 #' @title Output Network Attributes into a Character Vector
 #'
 #' @description Given a simulated network, outputs a character vector of vertex
-#'              attributes to be used in \code{\link{netsim}} simulations.
+#'              attributes to be used in [netsim()] simulations.
 #'
 #' @param nw A network object.
 #'
@@ -639,9 +639,9 @@ get_network_term_attr <- function(nw) {
 #'
 #' @description Outputs group numbers given ID numbers for a two-group network.
 #'
-#' @param nw Object of class \code{network} or \code{networkDynamic}.
+#' @param nw Object of class `network` or `networkDynamic`.
 #' @param ids Vector of ID numbers for which the group number
-#'        should be returned.
+#'        should be returned. If `NULL` (default), return all IDs.
 #'
 #' @return A vector containing the group number for each of the specified nodes.
 #'
@@ -654,9 +654,9 @@ get_network_term_attr <- function(nw) {
 #' idgroup(nw)
 #' idgroup(nw, ids = c(3, 6))
 #'
-idgroup <- function(nw, ids) {
+idgroup <- function(nw, ids = NULL) {
   n <- network.size(nw)
-  if (missing(ids)) {
+  if (is.null(ids)) {
     ids <- seq_len(n)
   }
   if (any(ids > n)) {
@@ -678,7 +678,7 @@ idgroup <- function(nw, ids) {
 #'
 #' @description Updates the vertex attributes on a network for new nodes
 #'              incoming into that network, based on a set of rules for each
-#'              attribute that the user specifies in \code{\link{control.net}}.
+#'              attribute that the user specifies in [control.net()].
 #'
 #' @inheritParams recovery.net
 #' @param newNodes Vector of nodal IDs for incoming nodes at the current time
@@ -687,8 +687,8 @@ idgroup <- function(nw, ids) {
 #'
 #' @inherit recovery.net return
 #'
-#' @seealso \code{\link{copy_nwattr_to_datattr}}, \code{\link{get_attr_prop}},
-#'          \code{\link{auto_update_attr}}.
+#' @seealso [copy_nwattr_to_datattr()], [get_attr_prop()],
+#'          [auto_update_attr()].
 #' @keywords netUtils internal
 #' @export
 #'
@@ -750,19 +750,19 @@ auto_update_attr <- function(dat, newNodes, curr.tab) {
 #' @description A fast method for querying the current degree of all individuals
 #'              within a network.
 #'
-#' @param x Either an object of class \code{network} or \code{edgelist}
-#'        generated from a network. If \code{x} is an edgelist, then it must
-#'        contain an attribute for the total network size, \code{n}.
+#' @param x Either an object of class `network` or `edgelist`
+#'        generated from a network. If `x` is an edgelist, then it must
+#'        contain an attribute for the total network size, `n`.
 #'
 #' @details
 #' Individual-level data on the current degree of nodes within a network is
-#' often useful for summary statistics. Given a \code{network} class object,
-#' \code{net}, one way to look up the current degree is to get a summary of the
-#' ERGM term, \code{sociality}, as in:
-#' \code{summary(net ~ sociality(nodes = NULL))}. But that is computationally
+#' often useful for summary statistics. Given a `network` class object,
+#' `net`, one way to look up the current degree is to get a summary of the
+#' ERGM term, `sociality`, as in:
+#' `summary(net ~ sociality(nodes = NULL))`. But that is computationally
 #' inefficient for a number of reasons. This function provides a fast method for
 #' generating the vector of degrees using a query of the edgelist. It is even
-#' faster if the parameter \code{x} is already transformed into an edgelist.
+#' faster if the parameter `x` is already transformed into an edgelist.
 #'
 #' @return A vector of length equal to the total network size, containing the
 #'         current degree of each node in the network.
@@ -803,22 +803,21 @@ get_degree <- function(x) {
   return(out)
 }
 
-
 #' @title Truncate Simulation Time Series
 #'
 #' @description Left-truncates simulation epidemiological summary statistics
 #'              and network statistics at a specified time step.
 #'
-#' @param x Object of class \code{netsim} or \code{icm}.
+#' @param x Object of class `netsim` or `icm`.
 #' @param at Time step at which to left-truncate the time series.
 #'
 #' @details
 #' This function would be used when running a follow-up simulation from time
-#' steps \code{b} to \code{c} after a burn-in period from time \code{a} to
-#' \code{b}, where the final time window of interest for data analysis is
-#' \code{b} to \code{c} only.
+#' steps `b` to `c` after a burn-in period from time `a` to
+#' `b`, where the final time window of interest for data analysis is
+#' `b` to `c` only.
 #'
-#' @return The updated object of class \code{netsim} or \code{icm}.
+#' @return The updated object of class `netsim` or `icm`.
 #'
 #' @export
 #'
@@ -845,9 +844,288 @@ truncate_sim <- function(x, at) {
   }
   rows <- at:(x$control$nsteps)
   # epi
-  x$epi <- lapply(x$epi, function(r) r[rows, ])
+  x$epi <- lapply(x$epi, function(r) r[rows, , drop = FALSE])
   # control settings
   x$control$start <- 1
   x$control$nsteps <- max(seq_along(rows))
   return(x)
+}
+
+#' Make a Lightweight Restart Point From a `netsim` Object with tergmLite
+#'
+#' Extract the elements required for re-initializing a `netsim` simulation from
+#' a completed simulation. This function also resets the Unique IDs and Time
+#' values to reduce the size of the simulation. This function only works for
+#' simulations where `control$tergmLite = TRUE`
+#'
+#' @param sim_obj a `netsim` object from an ended `netsim` call.
+#' @param sim_num the number of the simulation to extract from the `netsim`
+#'        object (default = 1).
+#' @param keep_steps The number of simulation steps to keep from the previous
+#'        run. By default only keep one but more is possible if some
+#'        back-history is wanted.
+#' @param time_attrs a `character` vector containing the names of the attributes
+#'        that are expressed in time-steps. These will be offsetted so the last
+#'        step in the original simulation become the step 1 (default) in the new
+#'        ones. If no such attributes exist, pass `c()`.
+#'
+#' @details
+#' The restart point created always contains a single simulation and drops the
+#' `attr.history`, the `raw.records` and `stats` from the initial simulation.
+#'
+#' The epi trackers, cumulative edgelists, transmission matrix and `nwstats` are
+#' truncated to only contain the last `keep_steps` entries.
+#'
+#' Warning: the `time_attrs` argument is mandatory. Almost all simulation worth
+#' restarting have such attributes (e.g. time.of.hiv.infection). If no such
+#' argument exists, passing `c()` will allow the function to run while ensuring
+#' that this was done on purpose.
+#'
+#' When restarting from the output of this function, it is suggested to express
+#' the time steps in a relative maner in `control.net`:
+#' ```
+#' control.net(
+#'   start = restart_point$control$nsteps + 1),
+#'   nsteps = restart_point$control$nsteps + 1 + 104)
+#' )
+#' ```
+#'
+#' @examples
+#' \dontrun{
+#' # With  pre-existing `sim`, `param` and `init` object (see `netsim`)
+#'
+#' # List all attributes that store a time step
+#' time_attrs <- c(
+#'   "inf.time",
+#'   "stage.time",
+#'   "aids.time",
+#'   "prep.start.last"
+#' )
+#' # Make a restart point a re-run for 10 more timesteps
+#' x <- make_restart_point(sim, time_attrs, sim_num = 1, keep_steps = 1)
+#' control <- control_msm(
+#'   start = x$control$nsteps + 1,
+#'   nsteps = x$control$nsteps + 1 + 10
+#' )
+#' sim <- netsim(x, param, init, control)
+#' }
+#'
+#' @return a trimed `netsim` object with only one simulation that is ready to be
+#'         used as a restart point.
+#'
+#'
+#' @export
+make_restart_point <- function(sim_obj, time_attrs,
+                               sim_num = 1, keep_steps = 1) {
+  if (!inherits(sim_obj, c("netsim"))) {
+    stop("`sim_obj` must be  an object of class `netsim`")
+  }
+  required_names <- c(
+    "control", "param", "nwparam", "epi", "run", "coef.form", "num.nw"
+  )
+  missing_names <- setdiff(required_names, names(sim_obj))
+  if (length(missing_names) > 0) {
+    stop(
+      "`sim_obj` is missing the following elements required for",
+      " re-initialization: ", paste.and(missing_names)
+    )
+  }
+  if (sim_num < 1 || sim_num > sim_obj$control$nsims) {
+    stop("`sim_num` must be be >= 1 and <= `sim_obj$control$nsims`")
+  }
+  if (!sim_obj$control$tergmLite) {
+    stop("Only `netsim` object with `tergmLite == TRUE` are supported")
+  }
+
+  # Select  the simulation of interest, that renames the selected sim: `sim1`
+  x <- get_sims(sim_obj, sims = sim_num)
+  n_steps <- x$control$nsteps
+  run_ls <- x$run$sim1
+
+  # Keep only the last `keep_steps` rows of each epi
+  if (keep_steps < 1 || keep_steps > n_steps) {
+    stop("`keep_steps` must be >= 1 and <= `sim_obj$control$nsteps`")
+  }
+  keep_rows <- (n_steps - keep_steps + 1):n_steps
+  x$epi <- lapply(x$epi, function(r) r[keep_rows, , drop = FALSE])
+
+  # If `nwstats` are saved, keep only the last rows
+  if (x$control$save.nwstats) {
+    x$stats$nwstats$sim1 <- lapply(
+      x$stats$nwstats$sim1,
+      function(d) d[keep_rows, , drop = FALSE]
+    )
+  }
+
+  # Fix UIDs
+  n_nodes <- length(run_ls$attr$active)
+  uid_offset <- min(run_ls$attr$unique_id) - 1
+  run_ls$attr$unique_id <- run_ls$attr$unique_id - uid_offset
+  run_ls$last_unique_id <- run_ls$last_unique_id - uid_offset
+
+  # Time correction
+  time_offset <- n_steps - keep_steps
+  x$control$start <- 1
+  x$control$nsteps <- keep_steps
+
+  # Time attributes - offset so last step is now `keep_steps`
+  time_attrs <- union(c("entrTime", "exitTime"), time_attrs)
+  missing_attrs <- setdiff(time_attrs, names(run_ls$attr))
+  if (length(missing_attrs) > 0) {
+    stop(
+      "Some time attributes are not present in the attributes list:",
+      paste.and(missing_names)
+    )
+  }
+  run_ls$attr[time_attrs] <- lapply(
+    run_ls$attr[time_attrs],
+    function(v) v - time_offset
+  )
+
+  # Cumulative Edgelist - fix time and UIDs
+  run_ls$el_cuml_cur <- lapply(
+    run_ls$el_cuml_cur,
+    function(el) {
+      el$head <- el$head - uid_offset
+      el$tail <- el$tail - uid_offset
+      el$start <- el$start - time_offset
+      el
+    }
+  )
+  # For Historical one - truncate to 1 (only edges in the kept history)
+  run_ls$el_cuml_hist <- lapply(
+    run_ls$el_cuml_hist,
+    function(el) {
+      el$head <- el$head - uid_offset
+      el$tail <- el$tail - uid_offset
+      el$start <- el$start - time_offset
+      el$stop <- el$stop - time_offset
+      el[el$stop >= 1, , drop = FALSE]
+    }
+  )
+
+  # the edgelist stores the name of the vertices. We don't use it with
+  # `tergmLite` and it takes a lot of space
+  run_ls$el <- lapply(run_ls$el, function(x) {
+    attr(x, "vnames") <- NULL
+    x
+  })
+
+  # If transmat was saved, trim it and offset the `at` column
+  if (x$control$save.transmat) {
+    tsmt <- x$stats$transmat$sim1
+    tsmt$at <- tsmt$at - time_offset
+    x$stats$transmat$sim1 <- tsmt[tsmt$at > 0, , drop = FALSE]
+  }
+
+  x$run$sim1 <- run_ls
+  x$attr.history <- list()
+  x$raw.records <- list()
+  return(x)
+}
+
+#' @title Function to Reduce the Size of a `netest` Object
+#'
+#' @description Trims formula environments from the `netest` object.
+#'              Optionally converts the `newnetwork` element of the
+#'              `netest` object to a `networkLite` class, and removes
+#'              the `fit` element (if present) from the `netest`
+#'              object.
+#'
+#' @param object A `netest` class object.
+#' @param as.networkLite If `TRUE`, converts `object$newnetwork`
+#'        to a `networkLite`.
+#' @param keep.fit If `FALSE`, removes the `object$fit` (if present)
+#'        on the `netest` object.
+#' @param keep Character vector of object names to keep in formula environments.
+#'        By default, all objects are removed.
+#'
+#' @details
+#' With larger, more complex network structures with epidemic models, it is
+#' generally useful to reduce the memory footprint of the fitted TERGM model
+#' object (estimated with [netest()]). This utility function removes
+#' all but the bare essentials needed for simulating a network model with
+#' [netsim()].
+#'
+#' The function always trims the environments of `object$constraints` and
+#' `object$coef.diss$dissolution`.
+#'
+#' When both `edapprox = TRUE` and `nested.edapprox = TRUE` in the
+#' `netest` call, also trims the environments of `object$formula`
+#' and `object$formation`.
+#'
+#' When both `edapprox = TRUE` and `nested.edapprox = FALSE` in the
+#' `netest` call, also trims the environments of `object$formula`,
+#' `environment(object$formation)$formation`, and
+#' `environment(object$formation)$dissolution`.
+#'
+#' When `edapprox = FALSE` in the `netest` call, also trims the
+#' environments of `object$formation`,
+#' `environment(object$formula)$formation` and
+#' `environment(object$formula)$dissolution`.
+#'
+#' By default all objects are removed from these trimmed environments. Specific
+#' objects may be retained by passing their names as the `keep` argument.
+#' For the output of `trim_netest` to be usable in [netsim()]
+#' simulation, any objects referenced in the formulas should be included in the
+#' `keep` argument.
+#'
+#' If `as.networkLite = TRUE`, converts `object$newnetwork` to a
+#' `networkLite` object. If `keep.fit = FALSE`, removes `fit` (if
+#' present) from `object`.
+#'
+#' @return
+#' A `netest` object with formula environments trimmed, optionally with the
+#' `newnetwork` element converted to a `networkLite` and the
+#' `fit` element removed.
+#'
+#' @export
+#'
+#' @examples
+#' nw <- network_initialize(n = 100)
+#' formation <- ~edges + concurrent
+#' target.stats <- c(50, 25)
+#' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 10)
+#' est <- netest(nw, formation, target.stats, coef.diss,
+#'               set.control.ergm = control.ergm(MCMC.burnin = 1e5,
+#'                                               MCMC.interval = 1000))
+#' print(object.size(est), units = "KB")
+#'
+#' est.small <- trim_netest(est)
+#' print(object.size(est.small), units = "KB")
+#'
+trim_netest <- function(object, as.networkLite = TRUE, keep.fit = FALSE,
+                        keep = character(0)) {
+  if (object$edapprox == TRUE) {
+    object$formula <- trim_env(object$formula, keep = keep)
+    if (object$nested.edapprox == TRUE) {
+      object$formation <- trim_env(object$formation, keep = keep)
+    } else {
+      # trim environments for formation and dissolution inside formation
+      environment(object$formation)$formation <-
+        trim_env(environment(object$formation)$formation, keep = keep)
+      environment(object$formation)$dissolution <-
+        trim_env(environment(object$formation)$dissolution, keep = keep)
+    }
+  } else {
+    object$formation <- trim_env(object$formation, keep = keep)
+    # trim environments for formation and dissolution inside formula
+    environment(object$formula)$formation <-
+      trim_env(environment(object$formula)$formation, keep = keep)
+    environment(object$formula)$dissolution <-
+      trim_env(environment(object$formula)$dissolution, keep = keep)
+  }
+
+  object$coef.diss$dissolution <- trim_env(object$coef.diss$dissolution, keep = keep)
+  object$constraints <- trim_env(object$constraints, keep = keep)
+
+  if (keep.fit == FALSE) {
+    object$fit <- NULL
+  }
+
+  if (as.networkLite == TRUE) {
+    object$newnetwork <- as.networkLite(object$newnetwork)
+  }
+
+  return(object)
 }

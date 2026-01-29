@@ -34,12 +34,13 @@ compartments.
 \item \strong{stats:} a list containing two sublists, \code{nwstats} for any
 network statistics saved in the simulation, and \code{transmat} for
 the transmission matrix saved in the simulation. See
-\code{\link{control.net}} for further
+\code{\link[=control.net]{control.net()}} for further
 details.
 \item \strong{network:} a list of lists of \code{networkDynamic} or
 \code{networkLite} objects, with one list of objects for each model
 simulation.
 }
+
 If \code{control$raw.output == TRUE}: A list of the raw (pre-processed)
 \code{netsim_dat} objects, for use in simulation continuation.
 }
@@ -69,7 +70,7 @@ module. This functionality is documented in the
 \href{https://epimodel.github.io/sismid/9_extending/mod9-Intro.html}{Extending EpiModel}
 section of the \href{https://epimodel.github.io/sismid/}{Network Modeling for Epidemics}
 course materials. The list of modules within \code{netsim} available for
-modification is listed in \code{\link{modules.net}}.
+modification is listed in \code{\link[=modules.net]{modules.net()}}.
 }
 \examples{
 \dontrun{
@@ -129,9 +130,9 @@ Modeling of Infectious Disease over Networks. Journal of Statistical
 Software. 2018; 84(8): 1-47.
 }
 \seealso{
-Extract the model results with \code{\link{as.data.frame.netsim}}.
+Extract the model results with \code{\link[=as.data.frame.netsim]{as.data.frame.netsim()}}.
 Summarize the time-specific model results with
-\code{\link{summary.netsim}}. Plot the model results with
-\code{\link{plot.netsim}}.
+\code{\link[=summary.netsim]{summary.netsim()}}. Plot the model results with
+\code{\link[=plot.netsim]{plot.netsim()}}.
 }
 \keyword{model}

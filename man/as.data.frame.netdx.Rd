@@ -4,19 +4,19 @@
 \alias{as.data.frame.netdx}
 \title{Extract Timed Edgelists for netdx Objects}
 \usage{
-\method{as.data.frame}{netdx}(x, row.names = NULL, optional = FALSE, sim, ...)
+\method{as.data.frame}{netdx}(x, row.names = NULL, optional = FALSE, sim = NULL, ...)
 }
 \arguments{
 \item{x}{An \code{EpiModel} object of class \code{netdx}.}
 
-\item{row.names}{See \code{\link{as.data.frame.default}}.}
+\item{row.names}{See \code{\link[=as.data.frame.default]{as.data.frame.default()}}.}
 
-\item{optional}{See \code{\link{as.data.frame.default}}.}
+\item{optional}{See \code{\link[=as.data.frame.default]{as.data.frame.default()}}.}
 
-\item{sim}{The simulation number to output. If not specified, then data from
+\item{sim}{The simulation number to output. If \code{NULL}, then data from
 all simulations will be output.}
 
-\item{...}{See \code{\link{as.data.frame.default}}.}
+\item{...}{See \code{\link[=as.data.frame.default]{as.data.frame.default()}}.}
 }
 \value{
 A data frame containing the data from \code{x}.

@@ -1,11 +1,11 @@
 
 #' @title Convert transmat Infection Tree into a phylo Object
 #'
-#' @description Converts a transmission matrix from the \code{get_transmat}
-#'              function into a \code{phylo} class object.
+#' @description Converts a transmission matrix from the `get_transmat`
+#'              function into a `phylo` class object.
 #'
-#' @param x An object of class \code{transmat}, the output from
-#'        \code{\link{get_transmat}}.
+#' @param x An object of class `transmat`, the output from
+#'        [get_transmat()].
 #' @param vertex.exit.times Optional numeric vector providing the time of
 #'        departure of vertices, to be used to scale the lengths of branches
 #'        reaching to the tips. Index position on vector corresponds to network
@@ -14,25 +14,25 @@
 #' @param ... Further arguments (unused).
 #'
 #' @details
-#' Converts a \code{\link{transmat}} object containing information about the
+#' Converts a [transmat()] object containing information about the
 #' history of a simulated infection into a [`ape::phylo`] object
 #' representation suitable for plotting as a tree with
-#' \code{\link[ape]{plot.phylo}}. Each infection event becomes a 'node'
-#' (horizontal branch) in the resulting \code{phylo} tree, and each network
+#' [ape::plot.phylo()]. Each infection event becomes a 'node'
+#' (horizontal branch) in the resulting `phylo` tree, and each network
 #' vertex becomes a 'tip' of the tree. The infection events are labeled with the
 #' vertex ID of the infector to make it possible to trace the path of infection.
 #'
 #' The infection timing information is included to position the phylo-nodes,
 #' with the lines to the tips drawn to the max time value +1 (unless
-#' \code{vertex.exit.times} are passed in it effectively assumes all vertices
+#' `vertex.exit.times` are passed in it effectively assumes all vertices
 #' are active until the end of the simulation).
 #'
-#' If the \code{transmat} contains multiple infection seeds (there are multiple
+#' If the `transmat` contains multiple infection seeds (there are multiple
 #' trees with separate root nodes), this function will return a list of class
-#' \code{multiPhylo}, each element of which is a \code{phylo} object. See
-#' \code{\link[ape]{read.tree}}.
+#' `multiPhylo`, each element of which is a `phylo` object. See
+#' [ape::read.tree()].
 #'
-#' @return A \code{phylo} class object.
+#' @return A `phylo` class object.
 #'
 #' @importFrom ape as.phylo
 #' @export as.phylo.transmat
@@ -67,9 +67,7 @@
 #'               root.edge = TRUE,
 #'               cex = 0.75)
 #'
-as.phylo.transmat <- function(x,
-                              vertex.exit.times,
-                              ...) {
+as.phylo.transmat <- function(x, vertex.exit.times = NULL, ...) {
 
   # if not named properly, assume inf, sus at
   if (!all(c("inf", "sus", "at") %in% names(x))) {
@@ -78,9 +76,6 @@ as.phylo.transmat <- function(x,
     names(x) <- c("inf", "sus", "at")
   }
   tm <- x
-  if (missing(vertex.exit.times)) {
-    vertex.exit.times <- NULL
-  }
   # find roots (infectors that never appear as sus)
   v <- setdiff(unique(tm$inf), unique(tm$sus))
   if (length(v) > 1) {
@@ -205,18 +200,18 @@ as.phylo.transmat <- function(x,
 
 #' @title Convert transmat Infection Tree into a network Object
 #'
-#' @description Converts a transmission matrix from the \code{get_transmat}
+#' @description Converts a transmission matrix from the `get_transmat`
 #'              function into a [`network::network`] class object.
 #'
-#' @param x An object of class \code{transmat} to be converted into a
-#'          \code{network} class object.
+#' @param x An object of class `transmat` to be converted into a
+#'          `network` class object.
 #' @param ... Unused.
 #'
 #' @details
-#' When converting from a \code{transmat} to a \code{network} object, this
+#' When converting from a `transmat` to a `network` object, this
 #' functions copies the edge attributes within the transmission matrix
-#' (\code{'at'}, \code{'infDur'}, \code{'transProb'}, \code{'actRate'}, and
-#' \code{'finalProb'}) into edge attributes on the network.
+#' (`'at'`, `'infDur'`, `'transProb'`, `'actRate'`, and
+#' `'finalProb'`) into edge attributes on the network.
 #'
 #' @return A [`network::network`] object.
 #'
@@ -248,26 +243,26 @@ as.network.transmat <- function(x, ...) {
 
 #' @title Plot transmat Infection Tree in Three Styles
 #'
-#' @description Plots the transmission matrix tree from from \code{get_transmat}
+#' @description Plots the transmission matrix tree from from `get_transmat`
 #'              in one of three styles: a phylogram, a directed network, or
 #'              a transmission timeline.
 #'
-#' @param x A \code{\link{transmat}} object to be plotted.
-#' @param style Character name of plot style. One of \code{"phylo"},
-#'              \code{"network"}, or \code{"transmissionTimeline"}.
+#' @param x A [transmat()] object to be plotted.
+#' @param style Character name of plot style. One of `"phylo"`,
+#'              `"network"`, or `"transmissionTimeline"`.
 #' @param ... Additional plot arguments to be passed to lower-level plot
-#'            functions (\code{plot.network}, \code{plot.phylo}, or
-#'            \code{transmissionTimeline}).
+#'            functions (`plot.network`, `plot.phylo`, or
+#'            `transmissionTimeline`).
 #'
 #' @details
-#' The \code{phylo} plot requires the \code{ape} package. The
-#' \code{transmissionTimeline} plot requires that the \code{ndtv} package.
+#' The `phylo` plot requires the `ape` package. The
+#' `transmissionTimeline` plot requires that the `ndtv` package.
 #'
 #' @export
 #' @method plot transmat
 #'
-#' @seealso [`network::plot.network`], \code{\link[ape]{plot.phylo}},
-#'          \code{\link[ndtv]{transmissionTimeline}}.
+#' @seealso [`network::plot.network`], [ape::plot.phylo()],
+#'          [ndtv::transmissionTimeline()].
 #'
 plot.transmat <- function(x,
                           style = c("phylo", "network", "transmissionTimeline"),

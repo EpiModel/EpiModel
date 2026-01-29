@@ -1,23 +1,23 @@
 
 #' @title Summary Model Statistics
 #'
-#' @description Extracts and prints model statistics solved with \code{dcm}.
+#' @description Extracts and prints model statistics solved with `dcm`.
 #'
-#' @param object An \code{EpiModel} object of class \code{dcm}.
+#' @param object An `EpiModel` object of class `dcm`.
 #' @param at Time step for model statistics.
-#' @param run Model run number, for \code{dcm} class models with multiple runs
+#' @param run Model run number, for `dcm` class models with multiple runs
 #'        (sensitivity analyses).
 #' @param digits Number of significant digits to print.
 #' @param ... Additional summary function arguments (not used).
 #'
 #' @details
 #' This function provides summary statistics for the main epidemiological
-#' outcomes (state and transition size and prevalence) from a \code{dcm} model.
+#' outcomes (state and transition size and prevalence) from a `dcm` model.
 #' Time-specific summary measures are provided, so it is necessary to input a
 #' time of interest. For multiple-run models (sensitivity analyses), input a
 #' model run number. See examples below.
 #'
-#' @seealso \code{\link{dcm}}
+#' @seealso [dcm()]
 #'
 #' @method summary dcm
 #' @keywords extract
@@ -49,7 +49,7 @@ summary.dcm <- function(object, at, run = 1, digits = 3, ...) {
 
   df <- as.data.frame(object, run = run)
 
-  if (missing(at) || (at > nsteps || at < 1)) {
+  if (at > nsteps || at < 1) {
     stop("Specify at between 1 and ", nsteps)
   }
   df <- df[df$time == at, ]
@@ -214,20 +214,20 @@ summary.dcm <- function(object, at, run = 1, digits = 3, ...) {
 
 #' @title Summary Model Statistics
 #'
-#' @description Extracts and prints model statistics simulated with \code{icm}.
+#' @description Extracts and prints model statistics simulated with `icm`.
 #'
-#' @param object An \code{EpiModel} object of class \code{icm}.
+#' @param object An `EpiModel` object of class `icm`.
 #' @param at Time step for model statistics.
 #' @param digits Number of significant digits to print.
 #' @param ... Additional summary function arguments.
 #'
 #' @details
 #' This function provides summary statistics for the main epidemiological
-#' outcomes (state and transition size and prevalence) from an \code{icm} model.
+#' outcomes (state and transition size and prevalence) from an `icm` model.
 #' Time-specific summary measures are provided, so it is necessary to input a
 #' time of interest.
 #'
-#' @seealso \code{\link{icm}}
+#' @seealso [icm()]
 #'
 #' @method summary icm
 #' @keywords extract
@@ -251,7 +251,7 @@ summary.icm <- function(object, at, digits = 3, ...) {
   vital <- object$param$vital
   nsteps <- object$control$nsteps
 
-  if (missing(at) || (at > nsteps || at < 1)) {
+  if (at > nsteps || at < 1) {
     stop("Specify a time step between 1 and ", nsteps)
   }
 
@@ -445,20 +445,20 @@ summary.icm <- function(object, at, digits = 3, ...) {
 #' @title Summary Model Statistics
 #'
 #' @description Extracts and prints model statistics simulated with
-#' \code{netsim}.
+#' `netsim`.
 #'
-#' @param object An \code{EpiModel} object of class \code{netsim}.
+#' @param object An `EpiModel` object of class `netsim`.
 #' @param at Time step for model statistics.
 #' @param digits Number of significant digits to print.
 #' @param ... Additional summary function arguments.
 #'
 #' @details
 #' This function provides summary statistics for the main epidemiological
-#' outcomes (state and transition size and prevalence) from a \code{netsim}
+#' outcomes (state and transition size and prevalence) from a `netsim`
 #' model. Time-specific summary measures are provided, so it is necessary to
 #' input a time of interest.
 #'
-#' @seealso \code{\link{netsim}}
+#' @seealso [netsim()]
 #'
 #' @method summary netsim
 #' @keywords extract
@@ -498,7 +498,7 @@ summary.netsim <- function(object, at, digits = 3, ...) {
   vital <- object$param$vital
   nsteps <- object$control$nsteps
 
-  if (missing(at) || (at > nsteps || at < 1)) {
+  if (at > nsteps || at < 1) {
     stop("Specify at between 1 and ", nsteps)
   }
 
@@ -700,7 +700,7 @@ summary.netsim <- function(object, at, digits = 3, ...) {
 #' @description Prints the summary model fit statistics for an ERGM or STERGM
 #' fit.
 #'
-#' @param object An \code{EpiModel} object of class \code{netest}.
+#' @param object An `EpiModel` object of class `netest`.
 #' @param ... Additional summary function arguments.
 #'
 #' @method summary netest
@@ -708,16 +708,16 @@ summary.netsim <- function(object, at, digits = 3, ...) {
 #' @export
 #'
 #' @details
-#' This function is simply a wrapper function for \code{summary.ergm}.
+#' This function is simply a wrapper function for `summary.ergm`.
 #' Additionally, if the edges dissolution approximation was used to fit the
 #' temporal ERGM, then the dissolution coefficient information will be printed.
 #'
-#' If the \code{fit} object is attached to the \code{netest} object, then
-#' \code{summary.netest} will call \code{summary} on \code{fit} using the
-#' \code{...} passed to \code{summary.netest}.  Otherwise,
-#' \code{summary.netest} will print the stored summary of the fit generated
-#' in the original \code{netest} call, using the \code{...} passed to
-#' \code{netest}.
+#' If the `fit` object is attached to the `netest` object, then
+#' `summary.netest` will call `summary` on `fit` using the
+#' `...` passed to `summary.netest`.  Otherwise,
+#' `summary.netest` will print the stored summary of the fit generated
+#' in the original `netest` call, using the `...` passed to
+#' `netest`.
 #'
 summary.netest <- function(object, ...) {
 

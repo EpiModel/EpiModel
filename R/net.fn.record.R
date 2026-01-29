@@ -2,17 +2,17 @@
 #'
 #' @description
 #' This function records values specific to a time-step and a group of nodes.
-#' In the records, the \code{posit_ids} are converted to \code{unique_ids} which
+#' In the records, the `posit_ids` are converted to `unique_ids` which
 #' allows the recording of data for nodes that are no longer in the network by
-#' the end of the run. The records are stored in \code{dat[["attr.history"]]}
-#' where \code{dat} is the main \code{netsim_dat} class object, and can be
-#' accessed from the \code{netsim} object with \code{get_attr_history}.
+#' the end of the run. The records are stored in `dat[["attr.history"]]`
+#' where `dat` is the main `netsim_dat` class object, and can be
+#' accessed from the `netsim` object with `get_attr_history`.
 #'
 #' @inheritParams recovery.net
 #' @param at The time where the recording happens.
 #' @param attribute The name of the value to record.
 #' @param posit_ids A numeric vector of posit_ids to which the measure applies.
-#'   (see \code{get_posit_ids}).
+#'   (see `get_posit_ids`).
 #' @param values The values to be recorded.
 #'
 #' @inherit recovery.net return
@@ -62,10 +62,10 @@ record_attr_history <- function(dat, at, attribute, posit_ids, values) {
 #'
 #' @description
 #' This function records any object during a simulation to allow its
-#' inspection afterward. The records are stored in \code{dat[["raw.records"]]}
-#' during the simulation, where \code{dat} is the main \code{netsim_dat} class
-#' object, and in the \code{netsim} object under the \code{raw.records}
-#' \code{collections::queue} object.
+#' inspection afterward. The records are stored in `dat[["raw.records"]]`
+#' during the simulation, where `dat` is the main `netsim_dat` class
+#' object, and in the `netsim` object under the `raw.records`
+#' `collections::queue` object.
 #'
 #' @inheritParams recovery.net
 #' @param at The time where the recording happens.

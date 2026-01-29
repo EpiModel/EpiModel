@@ -1,11 +1,11 @@
 #' @title Plot Data from a Deterministic Compartmental Epidemic Model
 #'
 #' @description Plots epidemiological data from a deterministic compartment
-#'              epidemic model solved with \code{\link{dcm}}.
+#'              epidemic model solved with [dcm()].
 #'
-#' @param x An \code{EpiModel} object of class \code{dcm}.
-#' @param y Output compartments or flows from \code{dcm} object to plot.
-#' @param popfrac If \code{TRUE}, plot prevalence of values rather than numbers
+#' @param x An `EpiModel` object of class `dcm`.
+#' @param y Output compartments or flows from `dcm` object to plot.
+#' @param popfrac If `TRUE`, plot prevalence of values rather than numbers
 #'        (see details).
 #' @param run Run number to plot, for models with multiple runs
 #'        (default is run 1).
@@ -15,35 +15,35 @@
 #' @param lwd Line width for output lines.
 #' @param lty Line type for output lines.
 #' @param alpha Transparency level for lines, where 0 = transparent and
-#'        1 = opaque (see \code{adjustcolor} function).
-#' @param legend Type of legend to plot. Values are \code{"n"} for no legend,
-#'        \code{"full"} for full legend, and \code{"lim"} for limited legend
+#'        1 = opaque (see `adjustcolor` function).
+#' @param legend Type of legend to plot. Values are `"n"` for no legend,
+#'        `"full"` for full legend, and `"lim"` for limited legend
 #'        (see details).
 #' @param leg.name Character string to use for legend, with the default
-#'        determined automatically based on the \code{y} input.
+#'        determined automatically based on the `y` input.
 #' @param leg.cex Legend scale size.
-#' @param grid If \code{TRUE}, a grid is added to the background of plot
-#'        (see \code{\link{grid}} for details), with default of nx by ny.
-#' @param add If \code{TRUE}, new plot window is not called and lines are added
+#' @param grid If `TRUE`, a grid is added to the background of plot
+#'        (see [grid()] for details), with default of nx by ny.
+#' @param add If `TRUE`, new plot window is not called and lines are added
 #'        to existing plot window.
 #' @param ... Additional arguments to pass to main plot window (see
-#'        \code{\link{plot.default}}).
+#'        [plot.default()]).
 #'
 #' @inheritParams plot.netsim
 #' @inheritParams graphics::plot
 #'
 #' @details
 #' This function plots epidemiological outcomes from a deterministic
-#' compartmental model solved with \code{\link{dcm}}. Depending on the number of
+#' compartmental model solved with [dcm()]. Depending on the number of
 #' model runs (sensitivity analyses) and number of groups, the default plot is
 #' the fractional proportion of each compartment in the model over time. The
-#' specific compartments or flows to plot may be set using the \code{y}
+#' specific compartments or flows to plot may be set using the `y`
 #' parameter, and in multiple run models the specific run may also be specified.
 #'
-#' @section The \code{popfrac} Argument:
+#' @section The `popfrac` Argument:
 #' Compartment prevalence is the size of a compartment over some denominator.
-#' To plot the raw numbers from any compartment, use \code{popfrac=FALSE}; this
-#' is the default. The \code{popfrac} parameter calculates
+#' To plot the raw numbers from any compartment, use `popfrac=FALSE`; this
+#' is the default. The `popfrac` parameter calculates
 #' and plots the denominators of all specified compartments using these rules:
 #' 1) for one-group models, the prevalence of any compartment is the compartment
 #' size divided by the total population size; 2) for two-group models, the
@@ -51,29 +51,29 @@
 #' size.
 #'
 #' @section Color Palettes:
-#' Since \code{\link{dcm}} supports multiple run sensitivity models, plotting
+#' Since [dcm()] supports multiple run sensitivity models, plotting
 #' the results of such models uses a complex color scheme for distinguishing
 #' runs. This is accomplished using the [`RColorBrewer::RColorBrewer`] color
 #' palettes, which include a range of linked colors using named palettes. For
-#' \code{plot.dcm}, one may either specify a brewer color palette listed in
+#' `plot.dcm`, one may either specify a brewer color palette listed in
 #' [`RColorBrewer::brewer.pal.info`], or, alternatively, a vector of standard R
-#' colors (named, hexidecimal, or positive integers; see \code{\link{col2rgb}}).
+#' colors (named, hexidecimal, or positive integers; see [col2rgb()]).
 #'
 #' @section Plot Legends:
 #' There are three automatic legend types available, and the legend is
-#' added by default for plots. To turn off the legend, use \code{legend="n"}. To
+#' added by default for plots. To turn off the legend, use `legend="n"`. To
 #' plot a legend with values for every line in a sensitivity analysis, use
-#' \code{legend="full"}. With models with many runs, this may be visually
-#' overwhelming. In those cases, use \code{legend="lim"} to plot a legend
+#' `legend="full"`. With models with many runs, this may be visually
+#' overwhelming. In those cases, use `legend="lim"` to plot a legend
 #' limited to the highest and lowest values of the varying parameter in the
 #' model. In cases where the default legend names are not helpful, one may
-#' override those names with the \code{leg.name} argument.
+#' override those names with the `leg.name` argument.
 #'
 #' @method plot dcm
 #' @export
 #'
 #' @keywords plot
-#' @seealso \code{\link{dcm}}, [`RColorBrewer::brewer.pal.info`]
+#' @seealso [dcm()], [`RColorBrewer::brewer.pal.info`]
 #'
 #' @examples
 #' # Deterministic SIR model with varying act rate

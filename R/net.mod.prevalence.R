@@ -7,7 +7,7 @@
 #' @inheritParams recovery.net
 #'
 #' @details
-#' This network utility is used during the \code{\link{netsim}} simulation
+#' This network utility is used during the [netsim()] simulation
 #' process to efficiently query the current size of each state or compartment
 #' in the model at any given timestep. For a two-group network, the current
 #' state size for each group and overall is provided.

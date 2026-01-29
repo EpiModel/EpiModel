@@ -101,7 +101,7 @@ to existing plot window.}
 to plot lines for one-group models but not for two-group models.}
 
 \item{grid}{If \code{TRUE}, a grid is added to the background of plot
-(see \code{\link{grid}} for details), with default of nx by ny.}
+(see \code{\link[=grid]{grid()}} for details), with default of nx by ny.}
 
 \item{leg.cex}{Legend scale size.}
 

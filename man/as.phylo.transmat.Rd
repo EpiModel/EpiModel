@@ -4,11 +4,11 @@
 \alias{as.phylo.transmat}
 \title{Convert transmat Infection Tree into a phylo Object}
 \usage{
-\method{as.phylo}{transmat}(x, vertex.exit.times, ...)
+\method{as.phylo}{transmat}(x, vertex.exit.times = NULL, ...)
 }
 \arguments{
 \item{x}{An object of class \code{transmat}, the output from
-\code{\link{get_transmat}}.}
+\code{\link[=get_transmat]{get_transmat()}}.}
 
 \item{vertex.exit.times}{Optional numeric vector providing the time of
 departure of vertices, to be used to scale the lengths of branches
@@ -26,10 +26,10 @@ Converts a transmission matrix from the \code{get_transmat}
 function into a \code{phylo} class object.
 }
 \details{
-Converts a \code{\link{transmat}} object containing information about the
+Converts a \code{\link[=transmat]{transmat()}} object containing information about the
 history of a simulated infection into a \code{\link[ape:read.tree]{ape::phylo}} object
 representation suitable for plotting as a tree with
-\code{\link[ape]{plot.phylo}}. Each infection event becomes a 'node'
+\code{\link[ape:plot.phylo]{ape::plot.phylo()}}. Each infection event becomes a 'node'
 (horizontal branch) in the resulting \code{phylo} tree, and each network
 vertex becomes a 'tip' of the tree. The infection events are labeled with the
 vertex ID of the infector to make it possible to trace the path of infection.
@@ -42,7 +42,7 @@ are active until the end of the simulation).
 If the \code{transmat} contains multiple infection seeds (there are multiple
 trees with separate root nodes), this function will return a list of class
 \code{multiPhylo}, each element of which is a \code{phylo} object. See
-\code{\link[ape]{read.tree}}.
+\code{\link[ape:read.tree]{ape::read.tree()}}.
 }
 \examples{
 set.seed(13)

@@ -12,6 +12,7 @@
   out = "vals",
   sim = NULL,
   qval = NULL,
+  repair = "drop",
   ...
 )
 
@@ -21,15 +22,16 @@
   optional = FALSE,
   out = "vals",
   sim = NULL,
+  repair = "drop",
   ...
 )
 }
 \arguments{
 \item{x}{An \code{EpiModel} object of class \code{icm} or \code{netsim}.}
 
-\item{row.names}{See \code{\link{as.data.frame.default}}.}
+\item{row.names}{See \code{\link[=as.data.frame.default]{as.data.frame.default()}}.}
 
-\item{optional}{See \code{\link{as.data.frame.default}}.}
+\item{optional}{See \code{\link[=as.data.frame.default]{as.data.frame.default()}}.}
 
 \item{out}{Data output to data frame: \code{"mean"} for row means across
 simulations, \code{"sd"} for row standard deviations across
@@ -41,7 +43,11 @@ specified, then data from all simulations will be output.}
 
 \item{qval}{Quantile value required when \code{out="qnt"}.}
 
-\item{...}{See \code{\link{as.data.frame.default}}.}
+\item{repair}{What to do with epi trackers that are too short. "drop" will
+remove theme from the output, "pad" will add \code{NA} rows to get to the
+right size(Default = "drop").}
+
+\item{...}{See \code{\link[=as.data.frame.default]{as.data.frame.default()}}.}
 }
 \value{
 A data frame containing the data from \code{x}.

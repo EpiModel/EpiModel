@@ -2,52 +2,53 @@
 #' @title Extract Network Objects from Network Simulations
 #'
 #' @description Extracts the network object from either a network epidemic model
-#'              object generated with \code{netsim}, a network diagnostic
-#'              simulation generated with \code{netdx}, or a \code{netsim_dat}
-#'              object used internally in \code{netsim}. For \code{netdx} or
-#'              \code{netsim} with \code{tergmLite == FALSE}, the extracted
-#'              network object is a \code{networkDynamic}, which can be
-#'              collapsed down to a static \code{network} object with the
-#'              \code{collapse} and \code{at} arguments. For \code{netsim} with
-#'              \code{tergmLite == TRUE}, the extracted network object is the
-#'              final \code{networkLite}, the \code{collapse} argument should be
-#'              \code{FALSE}, and the \code{at} argument should be missing. For
-#'              \code{netsim_dat}, the \code{collapse} and \code{at} arguments
+
+#'              object generated with `netsim`, a network diagnostic
+#'              simulation generated with `netdx`, or a `netsim_dat`
+#'              object used internally in `netsim`. For `netdx` or
+#'              `netsim` with `tergmLite == FALSE`, the extracted
+#'              network object is a `networkDynamic`, which can be
+#'              collapsed down to a static `network` object with the
+#'              `collapse` and `at` arguments. For `netsim` with
+#'              `tergmLite == TRUE`, the extracted network object is the
+#'              final `networkLite`, the `collapse` argument should be
+#'              `FALSE`, and the `at` argument should be missing. For
+#'              `netsim_dat`, the `collapse` and `at` arguments
 #'              are not supported, and the network object is either the current
-#'              \code{networkLite} (if \code{tergmLite == TRUE}) or the current
-#'              \code{networkDynamic} (if \code{tergmLite == FALSE}).
+#'              `networkLite` (if `tergmLite == TRUE`) or the current
+#'              `networkDynamic` (if `tergmLite == FALSE`).
 #'
-#' @param x An \code{EpiModel} object of class \code{\link{netsim}},
-#'        \code{\link{netdx}}, or \code{netsim_dat}.
-#' @param sim Simulation number of extracted network, for \code{netdx} and
-#'        \code{netsim}.
-#' @param network Network number, for \code{netsim} or \code{netsim_dat} objects
+#' @param x An `EpiModel` object of class [netsim()],
+#'        [netdx()], or `netsim_dat`.
+#' @param sim Simulation number of extracted network, for `netdx` and
+#'        `netsim`.
+#' @param network Network number, for `netsim` or `netsim_dat` objects
 #'        with multiple overlapping networks (advanced use, and not applicable
-#'        to \code{netdx} objects).
-#' @param collapse If \code{TRUE}, collapse the \code{networkDynamic} object to
-#'        a static \code{network} object at a specified time step. Applicable to
-#'        \code{netdx} objects and \code{netsim} objects with
-#'        \code{tergmLite == FALSE}.
-#' @param at If \code{collapse} is \code{TRUE}, the time step at which the
-#'        extracted network should be collapsed. Applicable to \code{netdx}
-#'        objects and \code{netsim} objects with \code{tergmLite == FALSE}.
+#'        to `netdx` objects).
+#' @param collapse If `TRUE`, collapse the `networkDynamic` object to
+#'        a static `network` object at a specified time step. Applicable to
+#'        `netdx` objects and `netsim` objects with
+#'        `tergmLite == FALSE`.
+#' @param at If `collapse` is `TRUE`, the time step at which the
+#'        extracted network should be collapsed. Applicable to `netdx`
+#'        objects and `netsim` objects with `tergmLite == FALSE`.
 #' @param ... Additional arguments.
 #'
 #' @details
 #' This function requires that the network object is saved during the network
-#' simulation while running either \code{\link{netsim}} or \code{\link{netdx}}.
-#' For the former, that is specified by setting the \code{save.network}
-#' parameter in \code{\link{control.net}} to \code{TRUE}. For the latter, that
-#' is specified with the \code{keep.tnetwork} parameter directly in
-#' \code{\link{netdx}}.
+#' simulation while running either [netsim()] or [netdx()].
+#' For the former, that is specified by setting the `save.network`
+#' parameter in [control.net()] to `TRUE`. For the latter, that
+#' is specified with the `keep.tnetwork` parameter directly in
+#' [netdx()].
 #'
-#' @return For \code{netdx} or \code{netsim} with \code{tergmLite == FALSE}, a
-#'         \code{networkDynamic} object (if \code{collapse = FALSE}) or a
-#'         static \code{network} object (if \code{collapse = TRUE}). For
-#'         \code{netsim} with \code{tergmLite == TRUE} or \code{netsim_dat} with
-#'         \code{tergmLite == TRUE}, a \code{networkLite} object. For
-#'         \code{netsim_dat} with \code{tergmLite == FALSE}, a
-#'         \code{networkDynamic} object.
+#' @return For `netdx` or `netsim` with `tergmLite == FALSE`, a
+#'         `networkDynamic` object (if `collapse = FALSE`) or a
+#'         static `network` object (if `collapse = TRUE`). For
+#'         `netsim` with `tergmLite == TRUE` or `netsim_dat` with
+#'         `tergmLite == TRUE`, a `networkLite` object. For
+#'         `netsim_dat` with `tergmLite == FALSE`, a
+#'         `networkDynamic` object.
 #'
 #' @keywords extract
 #' @export
@@ -93,7 +94,7 @@ get_network <- function(x, ...) {
 #'
 #' @export
 #'
-get_network.netdx <- function(x, sim = 1, collapse = FALSE, at, ...) {
+get_network.netdx <- function(x, sim = 1, collapse = FALSE, at = NULL, ...) {
 
   ## Warnings and checks ##
   nsims <- x$nsims
@@ -107,7 +108,7 @@ get_network.netdx <- function(x, sim = 1, collapse = FALSE, at, ...) {
   }
 
   nsteps <- x$nsteps
-  if (collapse == TRUE && (missing(at) || at > nsteps || at < 0)) {
+  if (collapse == TRUE && (is.null(at) || at > nsteps || at < 0)) {
     stop("Specify collapse time step between 0 and ", nsteps, call. = FALSE)
   }
 
@@ -126,8 +127,8 @@ get_network.netdx <- function(x, sim = 1, collapse = FALSE, at, ...) {
 #'
 #' @export
 #'
-get_network.netsim <- function(x, sim = 1, network = 1, collapse = FALSE, at, ...) {
-
+get_network.netsim <- function(x, sim = 1, network = 1, collapse = FALSE,
+                               at = NULL, ...) {
   ## Warnings and checks ##
   nsims <- x$control$nsims
   if (length(sim) > 1 || sim > nsims) {
@@ -139,8 +140,8 @@ get_network.netsim <- function(x, sim = 1, network = 1, collapse = FALSE, at, ..
          call. = FALSE)
   }
 
-  if (x$control$tergmLite == TRUE && missing(at) == FALSE) {
-    stop("Argument `at` should be missing when x$control$tergmLite == TRUE",
+  if (x$control$tergmLite == TRUE && !is.null(at)) {
+    stop("Argument `at` should be NULL when x$control$tergmLite == TRUE",
          call. = FALSE)
   }
 
@@ -154,7 +155,7 @@ get_network.netsim <- function(x, sim = 1, network = 1, collapse = FALSE, at, ..
   }
 
   nsteps <- x$control$nsteps
-  if (collapse == TRUE && (missing(at) || at > nsteps || at < 0)) {
+  if (collapse == TRUE && (is.null(at) || at > nsteps || at < 0)) {
     stop("Specify collapse time step between 0 and ", nsteps, call. = FALSE)
   }
 
@@ -188,23 +189,23 @@ get_network.netsim_dat <- function(x, network = 1L, ...) {
 
 #' @title Set Network State During netsim Simulation
 #'
-#' @description This function updates the \code{netsim_dat} object given a
+#' @description This function updates the `netsim_dat` object given a
 #'              network representing the current state of the simulation.
 #'
-#' @param x a \code{netsim_dat} object
-#' @param network the index of the network to set on \code{x}
-#' @param nw the value of the network to set on \code{x}
+#' @param x a `netsim_dat` object
+#' @param network the index of the network to set on `x`
+#' @param nw the value of the network to set on `x`
 #'
-#' @details If running \code{tergmLite} simulation, this function updates
-#' \code{x$el[[network]]} and (if \code{tergmLite.track.duration} is \code{TRUE}
-#' for the network index \code{network}) the network attributes \code{"time"}
-#' and \code{"lasttoggle"} in \code{x$net_attr[[network]]}. If not running
-#' \code{tergmLite} simulation, this function updates the \code{networkDynamic}
-#' object stored in \code{x$nw[[network]]}. The input \code{nw} should be of
-#' class \code{networkLite} when running \code{tergmLite} simulation, and of
-#' class \code{networkDynamic} when not running \code{tergmLite} simulation.
+#' @details If running `tergmLite` simulation, this function updates
+#' `x$el[[network]]` and (if `tergmLite.track.duration` is `TRUE`
+#' for the network index `network`) the network attributes `"time"`
+#' and `"lasttoggle"` in `x$net_attr[[network]]`. If not running
+#' `tergmLite` simulation, this function updates the `networkDynamic`
+#' object stored in `x$nw[[network]]`. The input `nw` should be of
+#' class `networkLite` when running `tergmLite` simulation, and of
+#' class `networkDynamic` when not running `tergmLite` simulation.
 #'
-#' @return the \code{netsim_dat} object with the network state updated
+#' @return the `netsim_dat` object with the network state updated
 #'
 #' @export
 #' @keywords netUtils internal
@@ -235,25 +236,25 @@ set_network.netsim_dat <- function(x, network = 1L, nw, ...) {
 #' @description Extracts the matrix of transmission data for each transmission
 #'              event that occurred within a network epidemic model.
 #'
-#' @param x An \code{EpiModel} object of class \code{\link{netsim}}.
+#' @param x An `EpiModel` object of class [netsim()].
 #' @param sim Simulation number of extracted network.
-#' @param deduplicate If \code{TRUE}, randomly select one transmission event in
+#' @param deduplicate If `TRUE`, randomly select one transmission event in
 #'        the case that multiple events current per newly infected agent within
 #'        a time step.
 #'
 #' @return
 #' A data frame with the following standard columns:
-#' \itemize{
-#'  \item \strong{at:} the time step at which the transmission occurred.
-#'  \item \strong{sus:} the ID number of the susceptible (newly infected) node.
-#'  \item \strong{inf:} the ID number of the infecting node.
-#'  \item \strong{infDur:} the duration of the infecting node's disease at the
+#'
+#'  * **at:** the time step at which the transmission occurred.
+#'  * **sus:** the ID number of the susceptible (newly infected) node.
+#'  * **inf:** the ID number of the infecting node.
+#'  * **infDur:** the duration of the infecting node's disease at the
 #'        time of the transmission.
-#'  \item \strong{transProb:} the probability of transmission per act.
-#'  \item \strong{actRate:} the rate of acts per unit time.
-#'  \item \strong{finalProb:} the final transmission probability for the
+#'  * **transProb:** the probability of transmission per act.
+#'  * **actRate:** the rate of acts per unit time.
+#'  * **finalProb:** the final transmission probability for the
 #'        transmission event.
-#' }
+#'
 #'
 #' @keywords extract
 #' @export
@@ -306,18 +307,19 @@ get_transmat <- function(x, sim = 1, deduplicate = TRUE) {
 #' @title Extract Network Statistics from netsim or netdx Object
 #'
 #' @description Extracts network statistics from a network epidemic model
-#'              simulated with \code{netsim} or a network diagnostics object
-#'              simulated with \code{netdx}. Statistics can be returned either
+#'              simulated with `netsim` or a network diagnostics object
+#'              simulated with `netdx`. Statistics can be returned either
 #'              as a single data frame or as a list of matrices (one matrix
 #'              for each simulation).
 #'
-#' @param x An \code{EpiModel} object of class \code{\link{netsim}} or
-#'        \code{\link{netdx}}.
+#' @param x An `EpiModel` object of class [netsim()] or
+#'        [netdx()].
 #' @param sim A vector of simulation numbers from the extracted object.
-#' @param network Network number, for \code{netsim} objects with multiple
-#'        overlapping networks (advanced use, and not applicable to \code{netdx}
+#'        (Default = NULL, all simulations are included)
+#' @param network Network number, for `netsim` objects with multiple
+#'        overlapping networks (advanced use, and not applicable to `netdx`
 #'        objects).
-#' @param mode Either \code{"data.frame"} or \code{"list"}, indicating the
+#' @param mode Either `"data.frame"` or `"list"`, indicating the
 #'        desired output.
 #'
 #' @return A data frame or list of matrices containing the network statistics.
@@ -356,7 +358,7 @@ get_transmat <- function(x, sim = 1, deduplicate = TRUE) {
 #' summary(get_nwstats(mod))
 #' colMeans(get_nwstats(mod))
 #'
-get_nwstats <- function(x, sim, network = 1, mode = c("data.frame", "list")) {
+get_nwstats <- function(x, sim = NULL, network = 1, mode = c("data.frame", "list")) {
 
   mode <- match.arg(mode)
 
@@ -378,8 +380,8 @@ get_nwstats <- function(x, sim, network = 1, mode = c("data.frame", "list")) {
     }
   }
 
-  if (missing(sim)) {
-    sim <- 1:nsims
+  if (is.null(sim)) {
+    sim <- seq_len(nsims)
   }
   if (max(sim) > nsims) {
     stop("Specify sims less than or equal to ", nsims, call. = FALSE)
@@ -427,7 +429,7 @@ get_nwstats <- function(x, sim, network = 1, mode = c("data.frame", "list")) {
 #' @description Extracts a list of network model parameters saved in the
 #'              initialization module.
 #'
-#' @param x Main \code{netsim_dat} data object used in \code{netsim} simulations.
+#' @param x Main `netsim_dat` data object used in `netsim` simulations.
 #' @param network Network number, for simulations with multiple networks
 #'        representing the population.
 #'
@@ -441,22 +443,22 @@ get_nwparam <- function(x, network = 1) {
 
 #' @title Extract Network Simulations
 #'
-#' @description Subsets the entire \code{netsim} object to a subset of
+#' @description Subsets the entire `netsim` object to a subset of
 #'              simulations, essentially functioning like a reverse of
-#'              \code{merge}.
+#'              `merge`.
 #'
-#' @param x An object of class \code{netsim}.
+#' @param x An object of class `netsim`.
 #' @param sims Either a numeric vector of simulation numbers to retain in the
-#'        output object, or \code{"mean"}, which selects the one simulation with
-#'        the value of the variable specified in \code{var} closest to the mean
-#'        of \code{var} across all simulations.
-#' @param var A character vector of variables to retain from \code{x} if
-#'        \code{sims} is a numeric vector, or a single variable name for
-#'        selecting the average simulation from the set if \code{sims = "mean"}.
+#'        output object, or `"mean"`, which selects the one simulation with
+#'        the value of the variable specified in `var` closest to the mean
+#'        of `var` across all simulations.
+#' @param var A character vector of variables to retain from `x` if
+#'        `sims` is a numeric vector, or a single variable name for
+#'        selecting the average simulation from the set if `sims = "mean"`.
 #'
-#' @return An updated object of class \code{netsim} containing only the
-#'         simulations specified in \code{sims} and the variables specified in
-#'         \code{var}.
+#' @return An updated object of class `netsim` containing only the
+#'         simulations specified in `sims` and the variables specified in
+#'         `var`.
 #'
 #' @keywords extract
 #' @export
@@ -484,7 +486,7 @@ get_nwparam <- function(x, network = 1) {
 #' # Extract the mean simulation for the variable i.num
 #' sim.mean <- get_sims(mod1, sims = "mean", var = "i.num")
 #'
-get_sims <- function(x, sims, var) {
+get_sims <- function(x, sims = NULL, var = NULL) {
 
   if (!inherits(x, "netsim")) {
     stop("x must be of class netsim", call. = FALSE)
@@ -492,11 +494,12 @@ get_sims <- function(x, sims, var) {
 
   nsims <- x$control$nsims
 
-  if (missing(sims)) {
+  # TODO: make it "mean" by default and remove this check?
+  if (is.null(sims)) {
     stop("Specify sims as a vector of simulations or \"mean\" ", call. = FALSE)
   }
   if (length(sims) == 1 && sims ==
-        "mean" && (missing(var) || length(var) > 1)) {
+        "mean" && (is.null(var) || length(var) > 1)) {
     stop("If sims == 'mean' then var must be a single varible name",
          call. = FALSE)
   }
@@ -550,7 +553,7 @@ get_sims <- function(x, sims, var) {
     }
   }
 
-  if (!missing(var)) {
+  if (!is.null(var)) {
     match.vars <- which(var %in% names(x$epi))
     out$epi <- out$epi[match.vars]
   }
@@ -564,8 +567,8 @@ get_sims <- function(x, sims, var) {
 #' @description Returns a list of argument names and values for use for
 #'              parameter processing functions.
 #'
-#' @param formal.args The output of \code{formals(sys.function())}.
-#' @param dot.args The output of \code{list(...)}.
+#' @param formal.args The output of `formals(sys.function())`.
+#' @param dot.args The output of `list(...)`.
 #'
 #' @return A list of argument names and values.
 #'
@@ -590,19 +593,19 @@ get_args <- function(formal.args, dot.args) {
 
 #' @title Extract the Parameter Set from Network Simulations
 #'
-#' @param sims An \code{EpiModel} object of class \code{netsim}.
+#' @param sims An `EpiModel` object of class `netsim`.
 #'
-#' @return A \code{data.frame} with one row per simulation and one column per
+#' @return A `data.frame` with one row per simulation and one column per
 #'   parameter or parameter element where the parameters are of size > 1.
 #'
 #' @section Output Format:
-#' The outputted \code{data.frame} has one row per simulation and the columns
+#' The outputted `data.frame` has one row per simulation and the columns
 #' correspond to the parameters used in this simulation.
 #'
 #' The column name will match the parameter name if it is a size 1 parameter or
 #' if the parameter is of size > 1, there will be N columns (with N being the
-#' size of the parameter) named \code{parameter.name_1},
-#' \code{parameter.name_2}, ..., \code{parameter.name_N}.
+#' size of the parameter) named `parameter.name_1`,
+#' `parameter.name_2`, ..., `parameter.name_N`.
 #'
 #'
 #' @examples
@@ -694,10 +697,10 @@ get_param_set <- function(sims) {
 
 #' @title Extract the Attributes History from Network Simulations
 #'
-#' @param sims An \code{EpiModel} object of class \code{netsim}.
+#' @param sims An `EpiModel` object of class `netsim`.
 #'
-#' @return A list of \code{data.frame}s, one for each "measure" recorded in the
-#' simulation by the \code{record_attr_history} function.
+#' @return A list of `data.frame`s, one for each "measure" recorded in the
+#' simulation by the `record_attr_history` function.
 #'
 #' @examples
 #' \dontrun{
