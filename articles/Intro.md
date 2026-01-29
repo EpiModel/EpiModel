@@ -1,0 +1,73 @@
+# EpiModel: Mathematical Modeling of Infectious Disease Dynamics
+
+### Introduction
+
+The **EpiModel** package provides tools for simulating mathematical
+models of infectious disease dynamics. Epidemic model classes include
+deterministic compartmental models, stochastic individual-contact
+models, and stochastic network models. Network models use the robust
+statistical methods of temporal exponential-family random graph models
+(ERGMs) from the Statnet suite of software packages in R. Standard
+templates for epidemic modeling include SI, SIR, and SIS disease types.
+EpiModel features an API for extending these templates to address novel
+scientific research aims.
+
+### Documentation
+
+This vignette provides a general orientation to the **EpiModel**
+tutorials and documentation within the package and hosted elsewhere
+online. Most full-length tutorials may be found at the **EpiModel**
+website (<https://www.epimodel.org>), which also points to our **Network
+Modeling for Epidemics (NME)** short-course
+(<https://epimodel.github.io/sismid/>).
+
+The current version of EpiModel is v2.5.0. Within the package, you can
+consult the extensive help documentation and vignettes for each exported
+function:
+
+``` r
+help(package = "EpiModel")
+```
+
+To see the latest updates to **EpiModel**, consult the `NEWS` file in
+the package, which is also summarized on our Github Releases
+(<https://github.com/EpiModel/EpiModel/releases>).
+
+If you are interested in the stochastic network model class, we suggest
+learning about using **EpiModel** with the following sequence:
+
+1.  The best place to start is our primary main methods paper, published
+    in the *Journal of Statistical Software* at the reference below.
+2.  After that, we suggest you work through the Network Modeling for
+    Epidemics course materials to understand some of the background
+    network theory and see how to run parameterize and run built-in
+    network models.
+3.  Those interested in extending EpiModel for novel research aims
+    should then consult the model extension materials of the NME course,
+    and look at the variety of extension model templates in our
+    **EpiModel Gallery**
+    (<https://github.com/EpiModel/EpiModel-Gallery>).
+4.  Some of the latest developments in EpiModel are related to working
+    with network model inputs and outputs, which are covered in these
+    advanced topics vignettes within the package:
+
+- Working With Model Parameters in EpiModel
+- Working With Custom Attributes and Summary Statistics in EpiModel
+- Working With Network Objects in EpiModel
+
+### Getting Help
+
+Any technical coding questions, non-technical conceptual modeling
+questions, or EpiModel feature requests may be posted as a Github issues
+at our main Github repository
+(<https://github.com/EpiModel/EpiModel/issues>).
+
+### EpiModel Citation
+
+If using EpiModel for teaching or research, please include a citation to
+our primary methods paper:
+
+> Jenness SM, Goodreau SM and Morris M. EpiModel: An R Package for
+> Mathematical Modeling of Infectious Disease over Networks. *Journal of
+> Statistical Software.* 2018; 84(8): 1-47. doi: 10.18637/jss.v084.i08
+> (<https://doi.org/10.18637/jss.v084.i08>).

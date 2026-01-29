@@ -60,6 +60,7 @@ the generic <code>as.data.frame</code> function.</p>
 <span>  out <span class="op">=</span> <span class="st">"vals"</span>,</span>
 <span>  sim <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  qval <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  repair <span class="op">=</span> <span class="st">"drop"</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -70,6 +71,7 @@ the generic <code>as.data.frame</code> function.</p>
 <span>  optional <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  out <span class="op">=</span> <span class="st">"vals"</span>,</span>
 <span>  sim <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  repair <span class="op">=</span> <span class="st">"drop"</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -83,11 +85,11 @@ the generic <code>as.data.frame</code> function.</p>
 
 
 <dt id="arg-row-names">row.names<a class="anchor" aria-label="anchor" href="#arg-row-names"></a></dt>
-<dd><p>See <code><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame.default</a></code>.</p></dd>
+<dd><p>See <code><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame.default()</a></code>.</p></dd>
 
 
 <dt id="arg-optional">optional<a class="anchor" aria-label="anchor" href="#arg-optional"></a></dt>
-<dd><p>See <code><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame.default</a></code>.</p></dd>
+<dd><p>See <code><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame.default()</a></code>.</p></dd>
 
 
 <dt id="arg-out">out<a class="anchor" aria-label="anchor" href="#arg-out"></a></dt>
@@ -106,8 +108,14 @@ specified, then data from all simulations will be output.</p></dd>
 <dd><p>Quantile value required when <code>out="qnt"</code>.</p></dd>
 
 
+<dt id="arg-repair">repair<a class="anchor" aria-label="anchor" href="#arg-repair"></a></dt>
+<dd><p>What to do with epi trackers that are too short. "drop" will
+remove theme from the output, "pad" will add <code>NA</code> rows to get to the
+right size(Default = "drop").</p></dd>
+
+
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>See <code><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame.default</a></code>.</p></dd>
+<dd><p>See <code><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame.default()</a></code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -138,100 +146,100 @@ to a time step) across all simulations in the model output.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    sim time s.num i.num num si.flow is.flow</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1    1    1   500     1 501       0       0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2    1    2   500     1 501       0       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3    1    3   500     1 501       1       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4    1    4   497     4 501       3       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5    1    5   493     8 501       7       3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6    1    6   485    16 501      10       2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7    1    7   462    39 501      29       6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8    1    8   418    83 501      53       9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9    1    9   326   175 501     112      20</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10   1   10   208   293 501     146      28</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3    1    3   499     2 501       1       0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4    1    4   494     7 501       5       0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5    1    5   485    16 501      10       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6    1    6   465    36 501      22       2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7    1    7   419    82 501      54       8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8    1    8   342   159 501      89      12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9    1    9   249   252 501     125      32</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10   1   10   139   362 501     146      36</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 11   2    1   500     1 501       0       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12   2    2   500     1 501       2       2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13   2    3   500     1 501       0       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14   2    4   498     3 501       2       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15   2    5   493     8 501       6       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 16   2    6   485    16 501       9       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 17   2    7   470    31 501      21       6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 18   2    8   428    73 501      47       5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 19   2    9   351   150 501     101      24</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 20   2   10   253   248 501     128      30</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12   2    2   499     2 501       1       0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13   2    3   498     3 501       1       0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14   2    4   496     5 501       3       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15   2    5   486    15 501      12       2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16   2    6   460    41 501      30       4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17   2    7   406    95 501      56       2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18   2    8   303   198 501     120      17</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19   2    9   191   310 501     144      32</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20   2   10   110   391 501     119      38</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 21   3    1   500     1 501       0       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 22   3    2   498     3 501       3       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 23   3    3   495     6 501       4       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 24   3    4   489    12 501       7       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 25   3    5   471    30 501      22       4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 26   3    6   433    68 501      46       8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 27   3    7   354   147 501      98      19</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 28   3    8   255   246 501     132      33</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 29   3    9   150   351 501     141      36</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 30   3   10    82   419 501     108      40</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22   3    2   501     0 501       0       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23   3    3   501     0 501       0       0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24   3    4   501     0 501       0       0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25   3    5   501     0 501       0       0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 26   3    6   501     0 501       0       0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 27   3    7   501     0 501       0       0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 28   3    8   501     0 501       0       0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 29   3    9   501     0 501       0       0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 30   3   10   501     0 501       0       0</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">mod</span>, sim <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    sim time s.num i.num num si.flow is.flow</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1    2    1   500     1 501       0       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2    2    2   500     1 501       2       2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3    2    3   500     1 501       0       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4    2    4   498     3 501       2       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5    2    5   493     8 501       6       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6    2    6   485    16 501       9       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7    2    7   470    31 501      21       6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8    2    8   428    73 501      47       5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9    2    9   351   150 501     101      24</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10   2   10   253   248 501     128      30</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2    2    2   499     2 501       1       0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3    2    3   498     3 501       1       0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4    2    4   496     5 501       3       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5    2    5   486    15 501      12       2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6    2    6   460    41 501      30       4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7    2    7   406    95 501      56       2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8    2    8   303   198 501     120      17</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9    2    9   191   310 501     144      32</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10   2   10   110   391 501     119      38</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Time-specific means across simulations</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">mod</span>, out <span class="op">=</span> <span class="st">"mean"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    time    s.num      i.num num    si.flow    is.flow</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1     1 500.0000   1.000000 501   0.000000  0.0000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2     2 499.3333   1.666667 501   1.666667  1.0000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3     3 498.3333   2.666667 501   1.666667  0.6666667</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4     4 494.6667   6.333333 501   4.000000  0.3333333</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5     5 485.6667  15.333333 501  11.666667  2.6666667</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6     6 467.6667  33.333333 501  21.666667  3.6666667</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7     7 428.6667  72.333333 501  49.333333 10.3333333</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8     8 367.0000 134.000000 501  77.333333 15.6666667</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9     9 275.6667 225.333333 501 118.000000 26.6666667</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10   10 181.0000 320.000000 501 127.333333 32.6666667</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1     1 500.0000   1.000000 501  0.0000000  0.0000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2     2 500.0000   1.000000 501  0.3333333  0.3333333</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3     3 499.3333   1.666667 501  0.6666667  0.0000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4     4 497.0000   4.000000 501  2.6666667  0.3333333</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5     5 490.6667  10.333333 501  7.3333333  1.0000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6     6 475.3333  25.666667 501 17.3333333  2.0000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7     7 442.0000  59.000000 501 36.6666667  3.3333333</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8     8 382.0000 119.000000 501 69.6666667  9.6666667</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9     9 313.6667 187.333333 501 89.6666667 21.3333333</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10   10 250.0000 251.000000 501 88.3333333 24.6666667</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Time-specific standard deviations across simulations</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">mod</span>, out <span class="op">=</span> <span class="st">"sd"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    time      s.num      i.num num   si.flow    is.flow</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1     1   0.000000   0.000000   0  0.000000  0.0000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2     2   1.154701   1.154701   0  1.527525  1.0000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3     3   2.886751   2.886751   0  2.081666  0.5773503</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4     4   4.932883   4.932883   0  2.645751  0.5773503</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5     5  12.701706  12.701706   0  8.962886  1.5275252</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6     6  30.022214  30.022214   0 21.079216  3.7859389</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7     7  64.786830  64.786830   0 42.335958  7.5055535</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8     8  97.123633  97.123633   0 47.437678 15.1437556</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9     9 109.546033 109.546033   0 20.663978  8.3266640</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10   10  88.639720  88.639720   0 19.008770  6.4291005</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    time      s.num      i.num num    si.flow    is.flow</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1     1   0.000000   0.000000   0  0.0000000  0.0000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2     2   1.000000   1.000000   0  0.5773503  0.5773503</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3     3   1.527525   1.527525   0  0.5773503  0.0000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4     4   3.605551   3.605551   0  2.5166115  0.5773503</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5     5   8.962886   8.962886   0  6.4291005  1.0000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6     6  22.368132  22.368132   0 15.5349069  2.0000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7     7  51.507281  51.507281   0 31.7700068  4.1633320</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8     8 104.885652 104.885652   0 62.2923216  8.7368949</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9     9 164.806958 164.806958   0 78.2325593 18.4752086</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10   10 217.855457 217.855457   0 77.6809715 21.3853532</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Time-specific quantile values across simulations</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">mod</span>, out <span class="op">=</span> <span class="st">"qnt"</span>, qval <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    time s.num i.num num si.flow is.flow</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1     1 500.0   1.0 501     0.0     0.0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2     2 499.0   1.0 501     1.0     0.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3     3 497.5   1.0 501     0.5     0.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4     4 493.0   3.5 501     2.5     0.0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5     5 482.0   8.0 501     6.5     2.0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6     6 459.0  16.0 501     9.5     1.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7     7 408.0  35.0 501    25.0     6.0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8     8 336.5  78.0 501    50.0     7.0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9     9 238.0 162.5 501   106.5    22.0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10   10 145.0 270.5 501   118.0    29.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2     2 499.5   0.5 501     0.0     0.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3     3 498.5   1.0 501     0.5     0.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4     4 495.0   2.5 501     1.5     0.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5     5 485.5   7.5 501     5.0     0.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6     6 462.5  18.0 501    11.0     1.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7     7 412.5  41.0 501    27.0     1.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8     8 322.5  79.5 501    44.5     6.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9     9 220.0 126.0 501    62.5    16.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10   10 124.5 181.0 501    59.5    18.0</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">mod</span>, out <span class="op">=</span> <span class="st">"qnt"</span>, qval <span class="op">=</span> <span class="fl">0.75</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    time s.num i.num num si.flow is.flow</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1     1 500.0   1.0 501     0.0     0.0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2     2 500.0   2.0 501     2.5     1.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3     3 500.0   3.5 501     2.5     1.0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4     4 497.5   8.0 501     5.0     0.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5     5 493.0  19.0 501    14.5     3.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6     6 485.0  42.0 501    28.0     5.0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7     7 466.0  93.0 501    63.5    12.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8     8 423.0 164.5 501    92.5    21.0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9     9 338.5 263.0 501   126.5    30.0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10   10 230.5 356.0 501   137.0    35.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2     2 500.5   1.5 501     0.5     0.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3     3 500.0   2.5 501     1.0     0.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4     4 498.5   6.0 501     4.0     0.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5     5 493.5  15.5 501    11.0     1.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6     6 483.0  38.5 501    26.0     3.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7     7 460.0  88.5 501    55.0     5.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8     8 421.5 178.5 501   104.5    14.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9     9 375.0 281.0 501   134.5    32.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10   10 320.0 376.5 501   132.5    37.0</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="co">## Stochastic SI Network Model</span></span></span>
@@ -266,7 +274,7 @@ to a time step) across all simulations in the model output.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer></div>

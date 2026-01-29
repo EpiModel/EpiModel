@@ -1,0 +1,193 @@
+# Epidemic Parameters for Stochastic Individual Contact Models
+
+Sets the epidemic parameters for stochastic individual contact models
+simulated with `icm`.
+
+## Usage
+
+``` r
+param.icm(
+  inf.prob,
+  inter.eff,
+  inter.start,
+  act.rate,
+  rec.rate,
+  a.rate,
+  ds.rate,
+  di.rate,
+  dr.rate,
+  inf.prob.g2,
+  act.rate.g2,
+  rec.rate.g2,
+  a.rate.g2,
+  ds.rate.g2,
+  di.rate.g2,
+  dr.rate.g2,
+  balance,
+  ...
+)
+```
+
+## Arguments
+
+- inf.prob:
+
+  Probability of infection per transmissible act between a susceptible
+  and an infected person. In two-group models, this is the probability
+  of infection for the group 1 members.
+
+- inter.eff:
+
+  Efficacy of an intervention which affects the per-act probability of
+  infection. Efficacy is defined as 1 - the relative hazard of infection
+  given exposure to the intervention, compared to no exposure.
+
+- inter.start:
+
+  Time step at which the intervention starts, between 1 and the number
+  of time steps specified in the model. This will default to 1 if
+  `inter.eff` is defined but this parameter is not.
+
+- act.rate:
+
+  Average number of transmissible acts per person per unit time. For
+  two-group models, this is the number of acts per group 1 person per
+  unit time; a balance between the acts in groups 1 and 2 is necessary,
+  and set using the `balance` parameter (see details).
+
+- rec.rate:
+
+  Average rate of recovery with immunity (in `SIR` models) or
+  re-susceptibility (in `SIS` models). The recovery rate is the
+  reciprocal of the disease duration. For two-group models, this is the
+  recovery rate for group 1 persons only. This parameter is only used
+  for `SIR` and `SIS` models.
+
+- a.rate:
+
+  Arrival or entry rate. For one-group models, the arrival rate is the
+  rate of new arrivals per person per unit time. For two-group models,
+  the arrival rate is parameterized as a rate per group 1 person per
+  unit time, with the `a.rate.g2` rate set as described below.
+
+- ds.rate:
+
+  Departure or exit rate for susceptible persons. For two-group models,
+  it is the rate for the group 1 susceptible persons only.
+
+- di.rate:
+
+  Departure or exit rate for infected persons. For two-group models, it
+  is the rate for the group 1 infected persons only.
+
+- dr.rate:
+
+  Departure or exit rate for recovered persons. For two-group models, it
+  is the rate for the group 1 recovered persons only. This parameter is
+  only used for `SIR` models.
+
+- inf.prob.g2:
+
+  Probability of infection per transmissible act between a susceptible
+  group 2 person and an infected group 1 person. It is the probability
+  of infection to group 2 members.
+
+- act.rate.g2:
+
+  Average number of transmissible acts per group 2 person per unit time;
+  a balance between the acts in groups 1 and 2 is necessary, and set
+  using the `balance` parameter (see details).
+
+- rec.rate.g2:
+
+  Average rate of recovery with immunity (in `SIR` models) or
+  re-susceptibility (in `SIS` models) for group 2 persons. This
+  parameter is only used for two-group `SIR` and `SIS` models.
+
+- a.rate.g2:
+
+  Arrival or entry rate for group 2. This may either be specified
+  numerically as the rate of new arrivals per group 2 persons per unit
+  time, or as `NA` in which case the group 1 rate, `a.rate`, governs the
+  group 2 rate. The latter is used when, for example, the first group is
+  conceptualized as female, and the female population size determines
+  the arrival rate. Such arrivals are evenly allocated between the two
+  groups.
+
+- ds.rate.g2:
+
+  Departure or exit rate for group 2 susceptible persons.
+
+- di.rate.g2:
+
+  Departure or exit rate for group 2 infected persons.
+
+- dr.rate.g2:
+
+  Departure or exit rate for group 2 recovered persons. This parameter
+  is only used for `SIR` model types.
+
+- balance:
+
+  For two-group models, balance the `act.rate` to the rate set for group
+  1 (with `balance="g1"`) or group 2 (with `balance="g2"`). See details.
+
+- ...:
+
+  Additional arguments passed to model.
+
+## Value
+
+An `EpiModel` object of class `param.icm`.
+
+## Details
+
+`param.icm` sets the epidemic parameters for the stochastic individual
+contact models simulated with the
+[`icm()`](http://epimodel.github.io/EpiModel/reference/icm.md) function.
+Models may use the base types, for which these parameters are used, or
+new process modules which may use these parameters (but not
+necessarily).
+
+For base models, the model specification will be chosen as a result of
+the model parameters entered here and the control settings in
+[`control.icm()`](http://epimodel.github.io/EpiModel/reference/control.icm.md).
+One-group and two-group models are available, where the former assumes a
+homogeneous mixing in the population and the latter assumes some form of
+heterogeneous mixing between two distinct partitions in the population
+(e.g., men and women). Specifying any group two parameters (those with a
+`.g2`) implies the simulation of a two-group model. All the parameters
+for a desired model type must be specified, even if they are zero.
+
+## Act Balancing
+
+In two-group models, a balance between the number of acts for group 1
+members and those for group 2 members must be maintained. With purely
+heterogeneous mixing, the product of one group size and act rate must
+equal the product of the other group size and act rate: \\N_1 \alpha_1 =
+N_2 \alpha_2\\, where \\N_i\\ is the group size and \\\alpha_i\\ the
+group-specific act rate at time \\t\\. The `balance` parameter here
+specifies which group's act rate should control the others with respect
+to balancing.
+
+## New Modules
+
+To build original models outside of the base models, new process modules
+may be constructed to replace the existing modules or to supplement the
+existing set. These are passed into the control settings in
+[`control.icm()`](http://epimodel.github.io/EpiModel/reference/control.icm.md).
+New modules may use either the existing model parameters named here, an
+original set of parameters, or a combination of both. The `...` allows
+the user to pass an arbitrary set of original model parameters into
+`param.icm`. Whereas there are strict checks with default modules for
+parameter validity, these checks are the user's responsibility with new
+modules.
+
+## See also
+
+Use
+[`init.icm()`](http://epimodel.github.io/EpiModel/reference/init.icm.md)
+to specify the initial conditions and
+[`control.icm()`](http://epimodel.github.io/EpiModel/reference/control.icm.md)
+to specify the control settings. Run the parameterized model with
+[`icm()`](http://epimodel.github.io/EpiModel/reference/icm.md).

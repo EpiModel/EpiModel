@@ -40,7 +40,7 @@ model fit in netest."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Dissolution Coefficients for Stochastic Network Models</h1>
-      <small class="dont-index">Source: <a href="https://github.com/EpiModel/EpiModel/blob/main/R/net.utils.R" class="external-link"><code>R/net.utils.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/EpiModel/EpiModel/blob/main/R/net.fn.utils.R" class="external-link"><code>R/net.fn.utils.R</code></a></small>
       <div class="d-none name"><code>dissolution_coefs.Rd</code></div>
     </div>
 
@@ -61,7 +61,7 @@ model fit in <code>netest</code>.</p>
 
 <dl><dt id="arg-dissolution">dissolution<a class="anchor" aria-label="anchor" href="#arg-dissolution"></a></dt>
 <dd><p>Right-hand sided STERGM dissolution formula
-(see <code><a href="netest.html">netest</a></code>). See below for list of supported
+(see <code><a href="netest.html">netest()</a></code>). See below for list of supported
 dissolution models.</p></dd>
 
 
@@ -93,14 +93,14 @@ include <code>edgesonly</code>, <code>nodematch</code>, and <code>nodemix</code>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>This function performs two calculations for dissolution coefficients
-used in a network model estimated with <code><a href="netest.html">netest</a></code>:</p><ol><li><p><strong>Transformation:</strong> the mean durations of edges in a network are
+used in a network model estimated with <code><a href="netest.html">netest()</a></code>:</p><ol><li><p><strong>Transformation:</strong> the mean durations of edges in a network are
 mathematically transformed to logit coefficients.</p></li>
 <li><p><strong>Adjustment:</strong> in a dynamic network simulation in an open
 population (in which there are departures), it is further necessary to
 adjust these coefficients; this upward adjustment accounts for
 departure as a competing risk to edge dissolution.</p></li>
 </ol><p>The current dissolution models supported by this function and in network
-model estimation in <code><a href="netest.html">netest</a></code> are as follows:</p><ul><li><p><code>~offset(edges)</code>: a homogeneous dissolution model in which the
+model estimation in <code><a href="netest.html">netest()</a></code> are as follows:</p><ul><li><p><code>~offset(edges)</code>: a homogeneous dissolution model in which the
 edge duration is the same for all partnerships. This requires
 specifying one duration value.</p></li>
 <li><p><code>~offset(edges) + offset(nodematch("&lt;attr&gt;"))</code>: a heterogeneous
@@ -229,7 +229,7 @@ in the term.</p></li>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer></div>

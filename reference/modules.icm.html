@@ -3,16 +3,16 @@
 in which contacts between individuals are instantaneous events in discrete
 time. They are intended to be the stochastic microsimulation analogs to
 deterministic compartmental models.
-The icm function handles both the simulation tasks. Within this
+The icm() function handles both the simulation tasks. Within this
 function are a series of modules that initialize the simulation and then
 simulate new infections, recoveries, and vital dynamics at each time step. A
 module also handles the basic bookkeeping calculations for disease
 prevalence.
 Writing original ICMs will require modifying the existing modules or
-adding new modules to the workflow in icm. The existing modules
+adding new modules to the workflow in icm(). The existing modules
 may be used as a template for replacement or new modules.
 This help page presents a brief overview of the module functions in the order
-in which they are used within icm, in order to help guide users
+in which they are used within icm(), in order to help guide users
 in writing their own module functions. These module functions are not shown
 on the help index since they are not called directly by the end-user. To
 understand these functions in more detail, review the separate help pages
@@ -20,16 +20,16 @@ listed below."><meta property="og:description" content="Stochastic individual co
 in which contacts between individuals are instantaneous events in discrete
 time. They are intended to be the stochastic microsimulation analogs to
 deterministic compartmental models.
-The icm function handles both the simulation tasks. Within this
+The icm() function handles both the simulation tasks. Within this
 function are a series of modules that initialize the simulation and then
 simulate new infections, recoveries, and vital dynamics at each time step. A
 module also handles the basic bookkeeping calculations for disease
 prevalence.
 Writing original ICMs will require modifying the existing modules or
-adding new modules to the workflow in icm. The existing modules
+adding new modules to the workflow in icm(). The existing modules
 may be used as a template for replacement or new modules.
 This help page presents a brief overview of the module functions in the order
-in which they are used within icm, in order to help guide users
+in which they are used within icm(), in order to help guide users
 in writing their own module functions. These module functions are not shown
 on the help index since they are not called directly by the end-user. To
 understand these functions in more detail, review the separate help pages
@@ -79,16 +79,16 @@ listed below."></head><body>
 in which contacts between individuals are instantaneous events in discrete
 time. They are intended to be the stochastic microsimulation analogs to
 deterministic compartmental models.</p>
-<p>The <code><a href="icm.html">icm</a></code> function handles both the simulation tasks. Within this
+<p>The <code><a href="icm.html">icm()</a></code> function handles both the simulation tasks. Within this
 function are a series of modules that initialize the simulation and then
 simulate new infections, recoveries, and vital dynamics at each time step. A
 module also handles the basic bookkeeping calculations for disease
 prevalence.</p>
 <p>Writing original ICMs will require modifying the existing modules or
-adding new modules to the workflow in <code><a href="icm.html">icm</a></code>. The existing modules
+adding new modules to the workflow in <code><a href="icm.html">icm()</a></code>. The existing modules
 may be used as a template for replacement or new modules.</p>
 <p>This help page presents a brief overview of the module functions in the order
-in which they are used within <code><a href="icm.html">icm</a></code>, in order to help guide users
+in which they are used within <code><a href="icm.html">icm()</a></code>, in order to help guide users
 in writing their own module functions. These module functions are not shown
 on the help index since they are not called directly by the end-user. To
 understand these functions in more detail, review the separate help pages
@@ -103,9 +103,9 @@ listed below.</p>
 <p>This function sets up agent attributes, like disease status, on the network
 at the starting time step of disease simulation, \(t_1\). For
 multiple-simulation function calls, these are reset at the beginning of each
-simulation.</p><ul><li><p><code><a href="initialize.icm.html">initialize.icm</a></code>: sets which agents are initially
+simulation.</p><ul><li><p><code><a href="initialize.icm.html">initialize.icm()</a></code>: sets which agents are initially
 infected, through the initial conditions passed in
-<code><a href="init.icm.html">init.icm</a></code>.</p></li>
+<code><a href="init.icm.html">init.icm()</a></code>.</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="disease-status-modification-modules">Disease Status Modification Modules<a class="anchor" aria-label="anchor" href="#disease-status-modification-modules"></a></h2>
@@ -115,11 +115,11 @@ infected, through the initial conditions passed in
 of the population at that step. Infection of agents is simulated as a
 function of disease parameters and population composition. Recovery of agents
 is likewise simulated with respect to infected nodes. These functions also
-analyze the flows for summary measures such as disease incidence.</p><ul><li><p><code><a href="infection.icm.html">infection.icm</a></code>: randomly draws an edgelist given the
+analyze the flows for summary measures such as disease incidence.</p><ul><li><p><code><a href="infection.icm.html">infection.icm()</a></code>: randomly draws an edgelist given the
 parameters, subsets the list for discordant pairs, and simulates
 transmission on those discordant pairs through a series of draws from
 a binomial distribution.</p></li>
-<li><p><code><a href="recovery.icm.html">recovery.icm</a></code>: simulates recovery from infection either
+<li><p><code><a href="recovery.icm.html">recovery.icm()</a></code>: simulates recovery from infection either
 to a lifelong immune state (for SIR models) or back to the susceptible
 state (for SIS models), as a function of the recovery rate specified
 in the <code>rec.rate</code> parameter. The recovery rate may vary for
@@ -131,12 +131,12 @@ two-group models.</p></li>
 
 <p>Vital dynamics such as arrival and departure processes are simulated at each
 time step to update entries into and exits from the population. These are
-used in open-population ICMs.</p><ul><li><p><code><a href="departures.icm.html">departures.icm</a></code>: randomly simulates departures or exits
+used in open-population ICMs.</p><ul><li><p><code><a href="departures.icm.html">departures.icm()</a></code>: randomly simulates departures or exits
 for agents given the departure rate specified in the disease-state and
-group-specific departure parameters in <code><a href="param.icm.html">param.icm</a></code>. This
+group-specific departure parameters in <code><a href="param.icm.html">param.icm()</a></code>. This
 involves deactivating agents from the population, but their historical
 data is preserved in the simulation.</p></li>
-<li><p><code><a href="arrivals.icm.html">arrivals.icm</a></code>: randomly simulates new arrivals into the
+<li><p><code><a href="arrivals.icm.html">arrivals.icm()</a></code>: randomly simulates new arrivals into the
 population given the current population size and the arrival rate
 parameters. This involves adding new agents into the population.</p></li>
 </ul></div>
@@ -145,7 +145,7 @@ parameters. This involves adding new agents into the population.</p></li>
 
 
 <p>Simulations require bookkeeping at each time step to calculate the
-summary epidemiological statistics used in the model output analysis.</p><ul><li><p><code><a href="prevalence.icm.html">prevalence.icm</a></code>: calculates the number in each disease
+summary epidemiological statistics used in the model output analysis.</p><ul><li><p><code><a href="prevalence.icm.html">prevalence.icm()</a></code>: calculates the number in each disease
 state (susceptible, infected, recovered) at each time step for those
 active agents in the population.</p></li>
 </ul></div>
@@ -159,7 +159,7 @@ active agents in the population.</p></li>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer></div>

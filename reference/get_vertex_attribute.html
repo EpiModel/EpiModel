@@ -75,7 +75,7 @@ This functions simplifies the related function in the
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>This function is used in <code>EpiModel</code> workflows to query vertex
 attributes on an initialized empty network object (see
-<code><a href="network_initialize.html">network_initialize</a></code>).</p>
+<code><a href="network_initialize.html">network_initialize()</a></code>).</p>
     </div>
 
     <div class="section level2">
@@ -83,19 +83,19 @@ attributes on an initialized empty network object (see
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">nw</span> <span class="op">&lt;-</span> <span class="fu"><a href="network_initialize.html">network_initialize</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">nw</span> <span class="op">&lt;-</span> <span class="fu"><a href="set_vertex_attribute.html">set_vertex_attribute</a></span><span class="op">(</span><span class="va">nw</span>, <span class="st">"age"</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">15</span>, <span class="fl">65</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">get_vertex_attribute</span><span class="op">(</span><span class="va">nw</span>, <span class="st">"age"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [1] 43.18446 52.02268 23.08326 29.82809 23.53834 27.96412 47.06339 34.05321</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [9] 15.36450 25.84393 30.15816 43.67931 54.72058 32.81972 41.62817 32.16732</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [17] 63.93147 45.06544 43.45082 16.64340 48.60093 61.49712 30.69253 46.86644</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [25] 37.92518 41.87167 46.96175 56.69525 34.72267 31.99487 48.67462 57.67431</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [33] 38.58060 38.91728 35.65662 21.80262 58.11414 53.04670 19.25438 60.82528</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [41] 30.41047 24.19338 40.87094 29.60332 42.06039 64.00766 24.36419 42.57918</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [49] 41.74313 64.25065 42.62640 58.70364 64.15349 16.27865 35.78527 19.73172</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [57] 38.17145 18.22314 49.50566 61.96927 16.56265 53.55983 51.09118 50.13094</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [65] 24.46165 19.93328 22.31336 15.40808 64.01666 45.86197 42.48395 18.86733</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [73] 29.25935 33.04471 45.45428 51.72479 49.60836 48.49588 43.60618 41.03531</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [81] 26.13409 43.42104 15.96463 56.64862 29.63464 63.94389 34.67233 62.39618</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [89] 35.27721 28.80682 30.58655 49.66932 54.86645 61.87829 56.21041 44.51593</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [97] 33.14902 43.93295 28.94766 15.70056</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [1] 32.40370 45.68135 42.16617 20.89352 44.00478 30.15790 37.50859 31.57665</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [9] 53.61829 21.70735 42.76415 27.23673 43.39668 62.62701 42.56360 32.77265</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [17] 27.23223 20.73923 48.55989 33.21743 51.42172 26.12451 45.36705 36.85397</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [25] 43.16719 34.05502 49.91213 27.21978 36.93182 17.46908 49.97064 64.76065</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [33] 42.98299 46.01470 48.26360 26.84640 49.55004 61.89715 49.93418 26.43900</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [41] 64.35403 40.35135 46.35231 42.65546 38.95769 17.43891 60.03029 33.55751</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [49] 57.70832 42.73381 16.88279 60.96045 61.01202 29.97121 64.41018 60.77834</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [57] 39.68208 28.71390 60.11038 27.61939 51.18840 55.33086 56.68488 64.11624</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [65] 26.23454 61.32423 60.81915 16.70723 20.65001 29.14788 45.05377 31.81573</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [73] 18.00476 23.05251 50.84553 47.36582 55.06137 31.09444 63.12240 17.62437</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [81] 25.21570 39.93163 61.20032 59.35233 48.43742 30.92952 48.48934 29.64794</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [89] 36.17831 52.39447 27.05252 31.18440 26.55983 23.25098 23.91550 42.54580</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [97] 22.54389 62.94820 22.07813 59.19446</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
@@ -108,7 +108,7 @@ attributes on an initialized empty network object (see
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer></div>

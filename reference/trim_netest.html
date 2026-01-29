@@ -44,7 +44,7 @@ object."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Function to Reduce the Size of a <code>netest</code> Object</h1>
-      <small class="dont-index">Source: <a href="https://github.com/EpiModel/EpiModel/blob/main/R/utils.R" class="external-link"><code>R/utils.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/EpiModel/EpiModel/blob/main/R/net.fn.utils.R" class="external-link"><code>R/net.fn.utils.R</code></a></small>
       <div class="d-none name"><code>trim_netest.Rd</code></div>
     </div>
 
@@ -99,9 +99,9 @@ By default, all objects are removed.</p></dd>
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>With larger, more complex network structures with epidemic models, it is
 generally useful to reduce the memory footprint of the fitted TERGM model
-object (estimated with <code><a href="netest.html">netest</a></code>). This utility function removes
+object (estimated with <code><a href="netest.html">netest()</a></code>). This utility function removes
 all but the bare essentials needed for simulating a network model with
-<code><a href="netsim.html">netsim</a></code>.</p>
+<code><a href="netsim.html">netsim()</a></code>.</p>
 <p>The function always trims the environments of <code>object$constraints</code> and
 <code>object$coef.diss$dissolution</code>.</p>
 <p>When both <code>edapprox = TRUE</code> and <code>nested.edapprox = TRUE</code> in the
@@ -117,7 +117,7 @@ environments of <code>object$formation</code>,
 <code>environment(object$formula)$dissolution</code>.</p>
 <p>By default all objects are removed from these trimmed environments. Specific
 objects may be retained by passing their names as the <code>keep</code> argument.
-For the output of <code>trim_netest</code> to be usable in <code><a href="netsim.html">netsim</a></code>
+For the output of <code>trim_netest</code> to be usable in <code><a href="netsim.html">netsim()</a></code>
 simulation, any objects referenced in the formulas should be included in the
 <code>keep</code> argument.</p>
 <p>If <code>as.networkLite = TRUE</code>, converts <code>object$newnetwork</code> to a
@@ -143,28 +143,23 @@ present) from <code>object</code>.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Iteration 1 of at most 60:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 1 </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Optimizing with step length 1.0000.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> The log-likelihood improved by 0.7827.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The log-likelihood improved by 0.3250.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Estimating equations are not within tolerance region.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Iteration 2 of at most 60:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 1 </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Optimizing with step length 1.0000.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> The log-likelihood improved by 0.1112.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Estimating equations are not within tolerance region.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Iteration 3 of at most 60:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 1 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Optimizing with step length 1.0000.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> The log-likelihood improved by 0.0299.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The log-likelihood improved by 0.0237.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Convergence test p-value: &lt; 0.0001. </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Converged with 99% confidence.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Finished MCMLE.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> This model was fit using MCMC.  To examine model diagnostics and check</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> for degeneracy, use the mcmc.diagnostics() function.</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/object.size.html" class="external-link">object.size</a></span><span class="op">(</span><span class="va">est</span><span class="op">)</span>, units <span class="op">=</span> <span class="st">"KB"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 413.9 Kb</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 423.5 Kb</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">est.small</span> <span class="op">&lt;-</span> <span class="fu">trim_netest</span><span class="op">(</span><span class="va">est</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/object.size.html" class="external-link">object.size</a></span><span class="op">(</span><span class="va">est.small</span><span class="op">)</span>, units <span class="op">=</span> <span class="st">"KB"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 57.6 Kb</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 58.8 Kb</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
@@ -177,7 +172,7 @@ present) from <code>object</code>.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer></div>

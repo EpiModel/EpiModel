@@ -91,10 +91,10 @@ are not supported, and the network object is either the current
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_network</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'netdx'</span></span>
-<span><span class="fu">get_network</span><span class="op">(</span><span class="va">x</span>, sim <span class="op">=</span> <span class="fl">1</span>, collapse <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">at</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">get_network</span><span class="op">(</span><span class="va">x</span>, sim <span class="op">=</span> <span class="fl">1</span>, collapse <span class="op">=</span> <span class="cn">FALSE</span>, at <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'netsim'</span></span>
-<span><span class="fu">get_network</span><span class="op">(</span><span class="va">x</span>, sim <span class="op">=</span> <span class="fl">1</span>, network <span class="op">=</span> <span class="fl">1</span>, collapse <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">at</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">get_network</span><span class="op">(</span><span class="va">x</span>, sim <span class="op">=</span> <span class="fl">1</span>, network <span class="op">=</span> <span class="fl">1</span>, collapse <span class="op">=</span> <span class="cn">FALSE</span>, at <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'netsim_dat'</span></span>
 <span><span class="fu">get_network</span><span class="op">(</span><span class="va">x</span>, network <span class="op">=</span> <span class="fl">1L</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
@@ -105,8 +105,8 @@ are not supported, and the network object is either the current
 
 
 <dl><dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
-<dd><p>An <code>EpiModel</code> object of class <code><a href="netsim.html">netsim</a></code>,
-<code><a href="netdx.html">netdx</a></code>, or <code>netsim_dat</code>.</p></dd>
+<dd><p>An <code>EpiModel</code> object of class <code><a href="netsim.html">netsim()</a></code>,
+<code><a href="netdx.html">netdx()</a></code>, or <code>netsim_dat</code>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -150,11 +150,11 @@ static <code>network</code> object (if <code>collapse = TRUE</code>). For
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>This function requires that the network object is saved during the network
-simulation while running either <code><a href="netsim.html">netsim</a></code> or <code><a href="netdx.html">netdx</a></code>.
+simulation while running either <code><a href="netsim.html">netsim()</a></code> or <code><a href="netdx.html">netdx()</a></code>.
 For the former, that is specified by setting the <code>save.network</code>
-parameter in <code><a href="control.net.html">control.net</a></code> to <code>TRUE</code>. For the latter, that
+parameter in <code><a href="control.net.html">control.net()</a></code> to <code>TRUE</code>. For the latter, that
 is specified with the <code>keep.tnetwork</code> parameter directly in
-<code><a href="netdx.html">netdx</a></code>.</p>
+<code><a href="netdx.html">netdx()</a></code>.</p>
     </div>
 
     <div class="section level2">
@@ -203,9 +203,9 @@ is specified with the <code>keep.tnetwork</code> parameter directly in
 <span class="r-out co"><span class="r-pr">#&gt;</span>   multiple = FALSE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   bipartite = FALSE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   net.obs.period: (not shown)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   total edges= 72 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   total edges= 75 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     missing edges= 0 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     non-missing edges= 72 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     non-missing edges= 75 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Vertex attribute names: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     group vertex.names </span>
@@ -222,9 +222,9 @@ is specified with the <code>keep.tnetwork</code> parameter directly in
 <span class="r-out co"><span class="r-pr">#&gt;</span>   loops = FALSE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   multiple = FALSE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   bipartite = FALSE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   total edges= 49 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   total edges= 55 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     missing edges= 0 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     non-missing edges= 49 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     non-missing edges= 55 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Vertex attribute names: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     group vertex.names </span>
@@ -263,9 +263,9 @@ is specified with the <code>keep.tnetwork</code> parameter directly in
 <span class="r-out co"><span class="r-pr">#&gt;</span>   bipartite = FALSE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   net.obs.period: (not shown)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   vertex.pid = tergm_pid </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   total edges= 79 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   total edges= 81 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     missing edges= 0 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     non-missing edges= 79 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     non-missing edges= 81 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Vertex attribute names: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     active group status tergm_pid testatus.active vertex.names </span>
@@ -283,9 +283,9 @@ is specified with the <code>keep.tnetwork</code> parameter directly in
 <span class="r-out co"><span class="r-pr">#&gt;</span>   multiple = FALSE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   bipartite = FALSE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   vertex.pid = tergm_pid </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   total edges= 64 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   total edges= 49 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     missing edges= 0 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     non-missing edges= 64 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     non-missing edges= 49 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Vertex attribute names: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     group status tergm_pid testatus vertex.names </span>
@@ -303,7 +303,7 @@ is specified with the <code>keep.tnetwork</code> parameter directly in
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer></div>

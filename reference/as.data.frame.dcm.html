@@ -53,7 +53,7 @@ as.data.frame function."></head><body>
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for class 'dcm'</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">x</span>, row.names <span class="op">=</span> <span class="cn">NULL</span>, optional <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">run</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">x</span>, row.names <span class="op">=</span> <span class="cn">NULL</span>, optional <span class="op">=</span> <span class="cn">FALSE</span>, run <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -61,24 +61,25 @@ as.data.frame function."></head><body>
 
 
 <dl><dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
-<dd><p>An <code>EpiModel</code> object of class <code><a href="dcm.html">dcm</a></code>.</p></dd>
+<dd><p>An <code>EpiModel</code> object of class <code><a href="dcm.html">dcm()</a></code>.</p></dd>
 
 
 <dt id="arg-row-names">row.names<a class="anchor" aria-label="anchor" href="#arg-row-names"></a></dt>
-<dd><p>See <code><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame.default</a></code>.</p></dd>
+<dd><p>See <code><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame.default()</a></code>.</p></dd>
 
 
 <dt id="arg-optional">optional<a class="anchor" aria-label="anchor" href="#arg-optional"></a></dt>
-<dd><p>See <code><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame.default</a></code>.</p></dd>
+<dd><p>See <code><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame.default()</a></code>.</p></dd>
 
 
 <dt id="arg-run">run<a class="anchor" aria-label="anchor" href="#arg-run"></a></dt>
 <dd><p>Run number for model; used for multiple-run sensitivity models. If
+<code>NULL</code> (default), will output data from all runs in a stacked data frame.
 not specified, will output data from all runs in a stacked data frame.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>See <code><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame.default</a></code>.</p></dd>
+<dd><p>See <code><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame.default()</a></code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -87,7 +88,7 @@ not specified, will output data from all runs in a stacked data frame.</p></dd>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>Model output from <code><a href="dcm.html">dcm</a></code> simulations are available as a data
+    <p>Model output from <code><a href="dcm.html">dcm()</a></code> simulations are available as a data
 frame with this helper function. The output data frame will include
 columns for time, the size of each compartment, the overall population
 size (the sum of compartment sizes), and the size of each flow.</p>
@@ -289,7 +290,7 @@ in a single stacked data frame.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer></div>

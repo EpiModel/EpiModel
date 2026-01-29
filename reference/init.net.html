@@ -101,7 +101,7 @@ any nodes whose status is not <code>"i"</code>.</p></dd>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The initial conditions for a model solved with <code><a href="netsim.html">netsim</a></code> should be
+    <p>The initial conditions for a model solved with <code><a href="netsim.html">netsim()</a></code> should be
 input into the <code>init.net</code> function. This function handles initial
 conditions for both base models and new modules. For an overview of
 specifying initial conditions across a variety of base network models,
@@ -110,9 +110,9 @@ tutorials.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p>Use <code><a href="param.net.html">param.net</a></code> to specify model parameters and
-<code><a href="control.net.html">control.net</a></code> to specify the control settings. Run the
-parameterized model with <code><a href="netsim.html">netsim</a></code>.</p></div>
+    <div class="dont-index"><p>Use <code><a href="param.net.html">param.net()</a></code> to specify model parameters and
+<code><a href="control.net.html">control.net()</a></code> to specify the control settings. Run the
+parameterized model with <code><a href="netsim.html">netsim()</a></code>.</p></div>
     </div>
 
     <div class="section level2">
@@ -126,9 +126,9 @@ parameterized model with <code><a href="netsim.html">netsim</a></code>.</p></div
 <span class="r-in"><span><span class="fu">init.net</span><span class="op">(</span>status.vector <span class="op">=</span> <span class="va">status</span>, infTime.vector <span class="op">=</span> <span class="va">infTime</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Network Model Initial Conditions</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> =================================</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> status.vector = s s s s s s i s s s s s i s s s s s s s s s s i i s s s s s s s </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> s s s s i s s s i i i s s i s s s s i s s s i s s s s s s s i s s s s s s s s s </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> i s s s i s s s s i s s i s s i s s s s s s s s s i i s</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> status.vector = s s s s s s s i i s s s s s s i s s s s s i s s s s s s s s i s </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> s s i s s s i i s s i s s s i s s s s s s s i s s s s s s s s s s i i s s s s s </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> s s s s s s s s s s s s s s s s s s s s s s s s s s s s</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> infTime.vector = NA NA NA NA NA ...</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
@@ -142,7 +142,7 @@ parameterized model with <code><a href="netsim.html">netsim</a></code>.</p></div
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer></div>

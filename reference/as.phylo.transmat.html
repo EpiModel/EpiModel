@@ -50,7 +50,7 @@ function into a <code>phylo</code> class object.</p>
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for class 'transmat'</span></span>
-<span><span class="fu">as.phylo</span><span class="op">(</span><span class="va">x</span>, <span class="va">vertex.exit.times</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">as.phylo</span><span class="op">(</span><span class="va">x</span>, vertex.exit.times <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -59,7 +59,7 @@ function into a <code>phylo</code> class object.</p>
 
 <dl><dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
 <dd><p>An object of class <code>transmat</code>, the output from
-<code><a href="get_transmat.html">get_transmat</a></code>.</p></dd>
+<code><a href="get_transmat.html">get_transmat()</a></code>.</p></dd>
 
 
 <dt id="arg-vertex-exit-times">vertex.exit.times<a class="anchor" aria-label="anchor" href="#arg-vertex-exit-times"></a></dt>
@@ -80,10 +80,10 @@ tree.</p></dd>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>Converts a <code><a href="get_transmat.html">transmat</a></code> object containing information about the
+    <p>Converts a <code><a href="get_transmat.html">transmat()</a></code> object containing information about the
 history of a simulated infection into a <code><a href="https://rdrr.io/pkg/ape/man/read.tree.html" class="external-link">ape::phylo</a></code> object
 representation suitable for plotting as a tree with
-<code><a href="https://rdrr.io/pkg/ape/man/plot.phylo.html" class="external-link">plot.phylo</a></code>. Each infection event becomes a 'node'
+<code><a href="https://rdrr.io/pkg/ape/man/plot.phylo.html" class="external-link">ape::plot.phylo()</a></code>. Each infection event becomes a 'node'
 (horizontal branch) in the resulting <code>phylo</code> tree, and each network
 vertex becomes a 'tip' of the tree. The infection events are labeled with the
 vertex ID of the infector to make it possible to trace the path of infection.</p>
@@ -94,7 +94,7 @@ are active until the end of the simulation).</p>
 <p>If the <code>transmat</code> contains multiple infection seeds (there are multiple
 trees with separate root nodes), this function will return a list of class
 <code>multiPhylo</code>, each element of which is a <code>phylo</code> object. See
-<code><a href="https://rdrr.io/pkg/ape/man/read.tree.html" class="external-link">read.tree</a></code>.</p>
+<code><a href="https://rdrr.io/pkg/ape/man/read.tree.html" class="external-link">ape::read.tree()</a></code>.</p>
     </div>
 
     <div class="section level2">
@@ -164,7 +164,7 @@ trees with separate root nodes), this function will return a list of class
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer></div>

@@ -59,7 +59,7 @@ current state of the partnerships and disease in the system.</p>
 <dl><dt id="arg-dat">dat<a class="anchor" aria-label="anchor" href="#arg-dat"></a></dt>
 <dd><p>Main <code>netsim_dat</code> object containing a <code>networkDynamic</code>
 object and other initialization information passed from
-<code><a href="netsim.html">netsim</a></code>.</p></dd>
+<code><a href="netsim.html">netsim()</a></code>.</p></dd>
 
 
 <dt id="arg-at">at<a class="anchor" aria-label="anchor" href="#arg-at"></a></dt>
@@ -74,11 +74,11 @@ object and other initialization information passed from
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The main steps in this infection module are as follows:</p><ol><li><p>Get IDs for current infected and susceptibles given the current
 disease status.</p></li>
-<li><p>Call <code><a href="discord_edgelist.html">discord_edgelist</a></code> to get the current discordant
+<li><p>Call <code><a href="discord_edgelist.html">discord_edgelist()</a></code> to get the current discordant
 edgelist given step 1.</p></li>
 <li><p>Determine the transmission rates (e.g., as a function of group).</p></li>
 <li><p>Pull the number of acts per partnership in a time step from the
-<code>act.rate</code> parameter.</p></li>
+act.rate` parameter.</p></li>
 <li><p>Calculate the final transmission probabilities given the transmission
 rates and act rates.</p></li>
 <li><p>Randomly transmit on the discordant edgelist.</p></li>
@@ -87,7 +87,7 @@ and calculate disease incidence.</p></li>
 </ol></div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="discord_edgelist.html">discord_edgelist</a></code> is used within <code>infection.net</code>
+    <div class="dont-index"><p><code><a href="discord_edgelist.html">discord_edgelist()</a></code> is used within <code>infection.net</code>
 to obtain a discordant edgelist.</p></div>
     </div>
 
@@ -100,7 +100,7 @@ to obtain a discordant edgelist.</p></div>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer></div>

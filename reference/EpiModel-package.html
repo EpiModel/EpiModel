@@ -113,19 +113,19 @@ simulate specific diseases for research questions.</p>
 
 
 <p>EpiModel uses three model setup functions for each model class to input the
-necessary parameters, initial conditions, and control settings:</p><ul><li><p><code><a href="param.dcm.html">param.dcm</a></code>, <code><a href="param.icm.html">param.icm</a></code>, and
-<code><a href="param.net.html">param.net</a></code> are used to input epidemic parameters for each
+necessary parameters, initial conditions, and control settings:</p><ul><li><p><code><a href="param.dcm.html">param.dcm()</a></code>, <code><a href="param.icm.html">param.icm()</a></code>, and
+<code><a href="param.net.html">param.net()</a></code> are used to input epidemic parameters for each
 of the three model classes. Parameters include the rate of contacts or
 acts between actors, the probability of transmission per contact, and
 recovery and demographic rates for models that include those
 transitions.</p></li>
-<li><p><code><a href="init.dcm.html">init.dcm</a></code>, <code><a href="init.icm.html">init.icm</a></code>, and
-<code><a href="init.net.html">init.net</a></code> are used to input the initial conditions for
+<li><p><code><a href="init.dcm.html">init.dcm()</a></code>, <code><a href="init.icm.html">init.icm()</a></code>, and
+<code><a href="init.net.html">init.net()</a></code> are used to input the initial conditions for
 each class. The main conditions are limited to the numbers or, if
 applicable, the specific agents in the population who are infected or
 recovered at the simulation outset.</p></li>
-<li><p><code><a href="control.dcm.html">control.dcm</a></code>, <code><a href="control.icm.html">control.icm</a></code>, and
-<code><a href="control.net.html">control.net</a></code> are used to specify the remaining control
+<li><p><code><a href="control.dcm.html">control.dcm()</a></code>, <code><a href="control.icm.html">control.icm()</a></code>, and
+<code><a href="control.net.html">control.net()</a></code> are used to specify the remaining control
 settings for each simulation. The core controls for base model
 types include the disease type, number of time steps, and number of
 simulations. Controls are also used to input new model functions (for
@@ -133,9 +133,9 @@ DCMs) and new model modules (for ICMs and network models) to allow the
 user to simulate fully original epidemic models in EpiModel. See the
 documentation for the specific control functions help pages.</p></li>
 </ul><p>With the models parameterized, the functions for simulating epidemic models
-are:</p><ul><li><p><code><a href="dcm.html">dcm</a></code> for deterministic compartmental models.</p></li>
-<li><p><code><a href="icm.html">icm</a></code> for individual contact models.</p></li>
-<li><p>Network models are simulated in a three-step process:</p><ol><li><p><code><a href="netest.html">netest</a></code> estimates the statistical model for the network
+are:</p><ul><li><p><code><a href="dcm.html">dcm()</a></code> for deterministic compartmental models.</p></li>
+<li><p><code><a href="icm.html">icm()</a></code> for individual contact models.</p></li>
+<li><p>Network models are simulated in a three-step process:</p><ol><li><p><code><a href="netest.html">netest()</a></code> estimates the statistical model for the network
 structure itself (i.e., how partnerships form and dissolve over time
 given the parameterization of those processes). This function is a
 wrapper around the <code>ergm</code> and <code>tergm</code> functions in the
@@ -143,11 +143,11 @@ wrapper around the <code>ergm</code> and <code>tergm</code> functions in the
 framework for model simulation is called "egocentric inference":
 target statistics summarizing these formation and dissolution
 processes collected from an egocentric sample of the population.</p></li>
-<li><p><code><a href="netdx.html">netdx</a></code> runs diagnostics on the dynamic model fit by
+<li><p><code><a href="netdx.html">netdx()</a></code> runs diagnostics on the dynamic model fit by
 simulating the base network over time to ensure the model fits the
 targets for formation and dissolution.</p></li>
-<li><p><code><a href="netsim.html">netsim</a></code> simulates the stochastic network epidemic
-models, with a given network model fit in <code><a href="netest.html">netest</a></code>. Here
+<li><p><code><a href="netsim.html">netsim()</a></code> simulates the stochastic network epidemic
+models, with a given network model fit in <code><a href="netest.html">netest()</a></code>. Here
 the function requires this model fit object along with the
 parameters, initial conditions, and control settings as defined
 above.</p></li>
@@ -198,7 +198,7 @@ developed <code>EpiModelCOVID</code>, which is available at
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer></div>
