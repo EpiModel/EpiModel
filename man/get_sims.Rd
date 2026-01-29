@@ -4,7 +4,7 @@
 \alias{get_sims}
 \title{Extract Network Simulations}
 \usage{
-get_sims(x, sims, var)
+get_sims(x, sims = NULL, var = NULL)
 }
 \arguments{
 \item{x}{An object of class \code{netsim}.}

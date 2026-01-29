@@ -8,7 +8,7 @@ netdx(
   x,
   nsims = 1,
   dynamic = TRUE,
-  nsteps,
+  nsteps = NULL,
   nwstats.formula = "formation",
   set.control.ergm = control.simulate.formula(),
   set.control.tergm = control.simulate.formula.tergm(MCMC.maxchanges = Inf),

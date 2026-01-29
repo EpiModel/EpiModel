@@ -851,13 +851,12 @@ truncate_sim <- function(x, at) {
   return(x)
 }
 
-
-
-#' Make a Restart Point From a `netsim` Object
+#' Make a Lightweight Restart Point From a `netsim` Object with tergmLite
 #'
 #' Extract the elements required for re-initializing a `netsim` simulation from
 #' a completed simulation. This function also resets the Unique IDs and Time
-#' values to reduce the size of the simulation.
+#' values to reduce the size of the simulation. This function only works for
+#' simulations where `control$tergmLite = TRUE`
 #'
 #' @param sim_obj a `netsim` object from an ended `netsim` call.
 #' @param sim_num the number of the simulation to extract from the `netsim`

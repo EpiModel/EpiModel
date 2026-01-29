@@ -4,13 +4,14 @@
 \alias{get_nwstats}
 \title{Extract Network Statistics from netsim or netdx Object}
 \usage{
-get_nwstats(x, sim, network = 1, mode = c("data.frame", "list"))
+get_nwstats(x, sim = NULL, network = 1, mode = c("data.frame", "list"))
 }
 \arguments{
 \item{x}{An \code{EpiModel} object of class \code{\link[=netsim]{netsim()}} or
 \code{\link[=netdx]{netdx()}}.}
 
-\item{sim}{A vector of simulation numbers from the extracted object.}
+\item{sim}{A vector of simulation numbers from the extracted object.
+(Default = NULL, all simulations are included)}
 
 \item{network}{Network number, for \code{netsim} objects with multiple
 overlapping networks (advanced use, and not applicable to \code{netdx}

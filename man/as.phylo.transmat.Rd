@@ -4,7 +4,7 @@
 \alias{as.phylo.transmat}
 \title{Convert transmat Infection Tree into a phylo Object}
 \usage{
-\method{as.phylo}{transmat}(x, vertex.exit.times, ...)
+\method{as.phylo}{transmat}(x, vertex.exit.times = NULL, ...)
 }
 \arguments{
 \item{x}{An object of class \code{transmat}, the output from

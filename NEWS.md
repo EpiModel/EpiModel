@@ -1,9 +1,17 @@
 ## EpiModel 2.5.1
 
+### NEW FEATURES
+
+- Export a `make_restart_point` function that takes in a `netsim` simulation object, truncate it to the smallest set of elements required to restart new simulations from. See [make_restart_point()].
+
 ### OTHER
 
 - Fix bug where the `ellipsis` (`...`) was not passed correctly to the `base::plot` in the `plot.netsim` function.
 - Set `MCMC.maxchanges = Inf` as default for TERGM MCMC. Lift the check on the maximum number of MCMC changes per step for bigger or dense networks.
+- Convert the Roxygen2 documentation to Markdown (previously LaTeX).
+- Use `arg = NULL` in function definition instead of `missing(arg)` in function body when possible.
+- Add `message`s when a function restarts from a checkpointed state.
+- Make `as.data.frame.icm` and `as.data.frame.net` resistant to cases where some Epi trackers are smaller than the rest, usually due to restarting. See [as.data.frame.icm()] and [as.data.frame.net()].
 
 ## EpiModel 2.5
 

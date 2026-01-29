@@ -4,7 +4,7 @@
 \alias{as.data.frame.dcm}
 \title{Extract Model Data for Deterministic Compartmental Models}
 \usage{
-\method{as.data.frame}{dcm}(x, row.names = NULL, optional = FALSE, run, ...)
+\method{as.data.frame}{dcm}(x, row.names = NULL, optional = FALSE, run = NULL, ...)
 }
 \arguments{
 \item{x}{An \code{EpiModel} object of class \code{\link[=dcm]{dcm()}}.}
@@ -14,6 +14,7 @@
 \item{optional}{See \code{\link[=as.data.frame.default]{as.data.frame.default()}}.}
 
 \item{run}{Run number for model; used for multiple-run sensitivity models. If
+\code{NULL} (default), will output data from all runs in a stacked data frame.
 not specified, will output data from all runs in a stacked data frame.}
 
 \item{...}{See \code{\link[=as.data.frame.default]{as.data.frame.default()}}.}

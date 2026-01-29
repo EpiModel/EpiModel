@@ -4,7 +4,7 @@
 \alias{set_vertex_attribute}
 \title{Set Vertex Attribute on Network Object}
 \usage{
-set_vertex_attribute(x, attrname, value, v)
+set_vertex_attribute(x, attrname, value, v = NULL)
 }
 \arguments{
 \item{x}{An object of class network.}

@@ -46,6 +46,7 @@ specified, then data from all simulations will be output.}
 \item{repair}{What to do with epi trackers that are too short. "drop" will
 remove theme from the output, "pad" will add \code{NA} rows to get to the
 right size(Default = "drop").}
+
 \item{...}{See \code{\link[=as.data.frame.default]{as.data.frame.default()}}.}
 }
 \value{

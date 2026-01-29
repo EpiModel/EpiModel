@@ -9,9 +9,9 @@
 \usage{
 get_network(x, ...)
 
-\method{get_network}{netdx}(x, sim = 1, collapse = FALSE, at, ...)
+\method{get_network}{netdx}(x, sim = 1, collapse = FALSE, at = NULL, ...)
 
-\method{get_network}{netsim}(x, sim = 1, network = 1, collapse = FALSE, at, ...)
+\method{get_network}{netsim}(x, sim = 1, network = 1, collapse = FALSE, at = NULL, ...)
 
 \method{get_network}{netsim_dat}(x, network = 1L, ...)
 }

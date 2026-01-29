@@ -9,7 +9,7 @@ netest(
   formation,
   target.stats,
   coef.diss,
-  constraints,
+  constraints = NULL,
   coef.form = NULL,
   edapprox = TRUE,
   set.control.ergm = control.ergm(),
