@@ -231,7 +231,7 @@ netsim_initialize <- function(x, param, init, control, s = 1) {
     dat <- control[["initialize.FUN"]](x, param, init, control, s)
     dat <- make_module_list(dat)
     if (get_control(dat, "start") != 1) {
-      dat <- set_current_timestep(dat, get_control(dat, "start") - 1)
+      dat <- set_current_timestep(dat, get_control(dat, "start") - 1L)
     }
     if (get_control(dat, ".checkpointed"))
       netsim_save_checkpoint(dat, s)

@@ -475,9 +475,9 @@ set_init <- function(dat, item, value) {
 #' @rdname net-accessor
 #' @export
 append_core_attr <- function(dat, at, n.new) {
-  dat <- append_attr(dat, "active", 1, n.new)
-  dat <- append_attr(dat, "entrTime", at, n.new)
-  dat <- append_attr(dat, "exitTime", NA, n.new)
+  dat <- append_attr(dat, "active", 1L, n.new)
+  dat <- append_attr(dat, "entrTime", as.integer(at), n.new)
+  dat <- append_attr(dat, "exitTime", NA_integer_, n.new)
   dat <- update_unique_ids(dat, n.new)
   return(dat)
 }
@@ -598,7 +598,7 @@ get_posit_ids <- function(dat, unique_ids = NULL) {
 #' @export
 is_active_posit_ids <- function(dat, posit_ids) {
   active <- get_attr(dat, "active")
-  return(active[posit_ids] %in% 1)
+  return(active[posit_ids] %in% 1L)
 }
 
 #' @title Are These Nodes Active (Unique IDs)

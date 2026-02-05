@@ -913,7 +913,6 @@ truncate_sim <- function(x, at) {
 #' @return a trimed `netsim` object with only one simulation that is ready to be
 #'         used as a restart point.
 #'
-#'
 #' @export
 make_restart_point <- function(sim_obj, time_attrs,
                                sim_num = 1, keep_steps = 1) {

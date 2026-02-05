@@ -60,7 +60,7 @@ validate_run <- function(run) {
 #' @return The current timestep.
 #' @export
 get_current_timestep <- function(dat) {
-  return(dat$run$current_timestep)
+  return(as.integer(dat$run$current_timestep))
 }
 
 #' @title Set the Current Timestep
@@ -82,7 +82,7 @@ get_current_timestep <- function(dat) {
 #'
 #' @export
 set_current_timestep <- function(dat, timestep) {
-  dat$run$current_timestep <- timestep
+  dat$run$current_timestep <- as.integer(timestep)
   return(dat)
 }
 
@@ -102,6 +102,6 @@ set_current_timestep <- function(dat, timestep) {
 #'
 #' @export
 increment_timestep <- function(dat) {
-  dat$run$current_timestep <- dat$run$current_timestep + 1
+  dat$run$current_timestep <- dat$run$current_timestep + 1L
   return(dat)
 }
