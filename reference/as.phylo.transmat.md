@@ -87,7 +87,7 @@ head(tm, 15)
 #> # A tibble: 15 × 8
 #> # Groups:   at, sus [15]
 #>       at   sus   inf network infDur transProb actRate finalProb
-#>    <dbl> <int> <int>   <int>  <dbl>     <dbl>   <dbl>     <dbl>
+#>    <int> <int> <int>   <int>  <dbl>     <dbl>   <dbl>     <dbl>
 #>  1     2     7    31       1      3       0.5       1       0.5
 #>  2     2    94    31       1      3       0.5       1       0.5
 #>  3     4    20    31       1      5       0.5       1       0.5

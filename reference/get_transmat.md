@@ -72,7 +72,7 @@ get_transmat(mod, sim = 2)
 #> # A tibble: 20 × 8
 #> # Groups:   at, sus [20]
 #>       at   sus   inf network infDur transProb actRate finalProb
-#>    <dbl> <int> <int>   <int>  <dbl>     <dbl>   <dbl>     <dbl>
+#>    <int> <int> <int>   <int>  <dbl>     <dbl>   <dbl>     <dbl>
 #>  1     2     1    43       1      7      0.3        1      0.3 
 #>  2     2    12    13       1      6      0.3        1      0.3 
 #>  3     2    19    34       1      1      0.3        1      0.3 
