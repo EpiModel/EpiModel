@@ -127,8 +127,8 @@
 #'
 #' The quantiles show the range of outcome values within a certain specified
 #' quantile range. By default, the interquartile range is shown: that is the
-#' middle 50\% of the data. This is specified by `qnts=0.5`. To show the
-#' middle 95\% of the data, specify `qnts=0.95`. To toggle off the polygons
+#' middle 50% of the data. This is specified by `qnts=0.5`. To show the
+#' middle 95% of the data, specify `qnts=0.95`. To toggle off the polygons
 #' where they are plotted by default, specify `qnts=FALSE`.
 #'
 #' When `type="network"`, this function will plot cross sections of the
