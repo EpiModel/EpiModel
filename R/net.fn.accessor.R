@@ -113,7 +113,7 @@ get_attr_list <- function(dat, item = NULL) {
   }
 
   missing_item <- setdiff(item, names(attr_list))
-  if (length(missing_item) > 0) {
+  if (length(missing_item) > 0L) {
     stop("There is no attributes called `",
          paste(missing_item, collapse = ", "),
          "` in the attributes list of the main list object (dat)")
@@ -180,7 +180,7 @@ set_attr <- function(dat, item, value, posit_ids = NULL,
     dat <- raw_set_attr(dat, item, value)
   } else {
     assert_valid_posit_ids(dat, posit_ids)
-    if (length(value) != 1 && length(value) != length(posit_ids)) {
+    if (length(value) != 1L && length(value) != length(posit_ids)) {
       stop(
         "When trying to edit the `", item, "` nodal attribute: ",
         "The size of the `value` vector is not equal to the number of nodes ",
@@ -200,11 +200,11 @@ set_attr <- function(dat, item, value, posit_ids = NULL,
 #' @rdname net-accessor
 #' @export
 append_attr <- function(dat, item, value, n.new) {
-  if (!is.numeric(n.new) || n.new < 0) {
+  if (!is.numeric(n.new) || n.new < 0L) {
     stop("`n_new` must be numeric and greater than or equal to zero.")
   }
 
-  if (length(value) == 1) {
+  if (length(value) == 1L) {
     new_vals <- rep(value, n.new)
   } else if (length(value) == n.new) {
     new_vals <- value
@@ -239,7 +239,7 @@ get_epi_list <- function(dat, item = NULL) {
     out <- dat$epi
   } else {
     missing_item <- setdiff(item, names(dat$epi))
-    if (length(missing_item) > 0) {
+    if (length(missing_item) > 0L) {
       stop("There is no epi output called `",
            paste(missing_item, collapse = ", "),
            "` in the epi output list of the main list object (dat)")
@@ -281,7 +281,7 @@ add_epi <- function(dat, item) {
 #' @rdname net-accessor
 #' @export
 set_epi <- function(dat, item, at,  value) {
-  if (length(at) != 1 || !is.numeric(at)) {
+  if (length(at) != 1L || !is.numeric(at)) {
     stop("`at` must be numeric and of length one")
   }
 
@@ -307,7 +307,7 @@ get_param_list <- function(dat, item = NULL) {
   }
 
   missing_item <- setdiff(item, names(dat$param))
-  if (length(missing_item) > 0) {
+  if (length(missing_item) > 0L) {
     stop("There is no parameters called `",
          paste(missing_item, collapse = ", "),
          "` in the parameter list of the main list object (dat)")
@@ -357,7 +357,7 @@ get_control_list <- function(dat, item = NULL) {
   }
 
   missing_item <- setdiff(item, names(dat$control))
-  if (length(missing_item) > 0) {
+  if (length(missing_item) > 0L) {
     stop("There is no control value called `",
          paste(missing_item, collapse = ", "),
          "` in the control list of the main list object (dat)")
@@ -428,7 +428,7 @@ get_init_list <- function(dat, item = NULL) {
   }
 
   missing_item <- setdiff(item, names(dat$init))
-  if (length(missing_item) > 0) {
+  if (length(missing_item) > 0L) {
     stop("There is no init value called `",
          paste(missing_item, collapse = ", "),
          "` in the init list of the main list object (dat)")
@@ -513,11 +513,11 @@ update_unique_ids <- function(dat, n.new) {
 #' @keywords internal not_used
 check_attr_lengths <- function(dat) {
   attr_list <- raw_get_attr_list(dat)
-  attr_lengths <- vapply(attr_list, length, numeric(1))
+  attr_lengths <- vapply(attr_list, length, integer(1))
   expected_length <- attr_lengths$active
   wrong_lengths <- which(attr_lengths != expected_length)
 
-  if (length(wrong_lengths > 0)) {
+  if (length(wrong_lengths > 0L)) {
     msg <- c(
       "Some attribute are not of the correct length \n",
       "Expected length: ", expected_length, "\n",
