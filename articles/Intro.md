@@ -21,7 +21,7 @@ website (<https://www.epimodel.org>), which also points to our **Network
 Modeling for Epidemics (NME)** short-course
 (<https://epimodel.github.io/sismid/>).
 
-The current version of EpiModel is v2.5.0. Within the package, you can
+The current version of EpiModel is v2.5.5. Within the package, you can
 consult the extensive help documentation and vignettes for each exported
 function:
 

@@ -15,6 +15,12 @@
   function that allows flexibility in whether to reset the truncated
   model object to a new “time zero”.
 
+### BUG FIXES
+
+- Fix issue with Shiny app for `icm` model class (available with
+  `epiweb("icm")` with plotting function if `nsims == 1)`. Also updated
+  deprecated Shiny data table output functions.
+
 ### OTHER
 
 - Fix bug where the `ellipsis` (`...`) was not passed correctly to the
