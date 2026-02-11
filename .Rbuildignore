@@ -21,3 +21,4 @@ inst/JSS/
 ^docs$
 ^pkgdown$
 CLAUDE.md
+^\.claude$
