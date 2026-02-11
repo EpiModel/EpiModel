@@ -4,12 +4,16 @@
 \alias{truncate_sim}
 \title{Truncate Simulation Time Series}
 \usage{
-truncate_sim(x, at)
+truncate_sim(x, at, reset.time = TRUE)
 }
 \arguments{
 \item{x}{Object of class \code{dcm}, \code{netsim}, or \code{icm}.}
 
 \item{at}{Time step at which to left-truncate the time series.}
+
+\item{reset.time}{If \code{TRUE}, the time step sequence in the truncated model
+will be reset to start at 1. If \code{FALSE}, the original time step
+values will be preserved. Default is \code{TRUE}.}
 }
 \value{
 The updated object of class \code{dcm}, \code{netsim}, or \code{icm}.

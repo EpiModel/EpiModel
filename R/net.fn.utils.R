@@ -810,6 +810,9 @@ get_degree <- function(x) {
 #'
 #' @param x Object of class `dcm`, `netsim`, or `icm`.
 #' @param at Time step at which to left-truncate the time series.
+#' @param reset.time If `TRUE`, the time step sequence in the truncated model
+#'        will be reset to start at 1. If `FALSE`, the original time step
+#'        values will be preserved. Default is `TRUE`.
 #'
 #' @details
 #' This function would be used when running a follow-up simulation from time
@@ -842,7 +845,7 @@ get_degree <- function(x) {
 #' mod2 <- truncate_sim(mod1, at = 150)
 #' mod2$control$nsteps
 #'
-truncate_sim <- function(x, at) {
+truncate_sim <- function(x, at, reset.time = TRUE) {
   if (!inherits(x, c("dcm", "icm", "netsim"))) {
     stop("x must be an object of class dcm, icm, or netsim",
          call. = FALSE)
@@ -858,15 +861,23 @@ truncate_sim <- function(x, at) {
     # epi
     x$epi <- lapply(x$epi, function(r) r[rows, , drop = FALSE])
     # control settings
-    x$control$timesteps <- x$control$timesteps[rows]
+    if (reset.time) {
+      x$control$timesteps <- x$control$timesteps[rows] - (at - 1)
+    } else {
+      x$control$timesteps <- x$control$timesteps[rows]
+    }
     x$control$nsteps <- max(x$control$timesteps)
   } else {
     rows <- at:(x$control$nsteps)
     # epi
     x$epi <- lapply(x$epi, function(r) r[rows, , drop = FALSE])
     # control settings
-    x$control$start <- 1
-    x$control$nsteps <- max(seq_along(rows))
+    if (reset.time) {
+      x$control$start <- 1
+      x$control$nsteps <- max(seq_along(rows))
+    } else {
+      x$control$start <- at
+    }
   }
 
   return(x)
