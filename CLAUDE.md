@@ -65,6 +65,21 @@ Network simulations (`netsim`) use a module-based architecture. Each simulation 
 
 Users can replace or extend any module via `control.net()` to build custom models. ICM follows a similar but simpler module pattern (`icm.mod.*.R`).
 
+### Shared Plotting Infrastructure
+
+`plot.icm` (`R/plot.icm.R`) and `plot_netsim_epi` (`R/plot.netsim.R`) share helper functions `draw_means()` and `draw_qnts()` defined in `R/plot.R`. Changes to plotting behavior (e.g., axis offsets, coordinate handling) must be coordinated across all three files. `plot.dcm` (`R/plot.dcm.R`) is independent and uses `control$timesteps` directly for x-coordinates.
+
+`as.data.frame.netsim` delegates entirely to `as.data.frame.icm`, so changes to the ICM method automatically apply to netsim. The `as.epi.data.frame` validator in the same file checks structural consistency of the output.
+
+### Time Handling Differences Across Model Classes
+
+DCM and ICM/netsim handle time differently in their output objects:
+
+- **DCM**: `control$timesteps` stores the explicit time vector (may be non-integer when `dt < 1`). `control$nsteps` is the max time value. `control$nruns` is the number of parameter sensitivity runs. Plot and data frame methods use `timesteps` directly.
+- **ICM/netsim**: Time is implicit via row indices. `control$nsteps` is both the number of rows and the max time step. `control$nsims` is the number of stochastic simulations. `control$start` provides a time offset (default 1). `as.data.frame.icm` builds the time column from `start` and `nsteps`.
+
+When modifying functions that touch time or epi structure, verify behavior across all three classes and check that `as.data.frame`, `plot`, and `summary` methods still work correctly.
+
 ### Key Source File Groups
 
 - **`R/net.inputs.R`** (largest file): Validates and processes all network model inputs (`param.net`, `init.net`, `control.net`)
