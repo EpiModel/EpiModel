@@ -349,7 +349,7 @@ as.epi.data.frame <- function(df) {
     stop("Input must be a `data.frame`")
   if (!all(c("time", "sim") %in% names(df)))
     stop("Input must contain a `time` and a `sim` column")
-  n_steps <- max(df$time)
+  n_steps <- length(unique(df$time))
   if (!all(by(df$time, df$sim, length) == n_steps))
     stop("Input must have the same number of time step per simulation")
   class(df) <- c("epi.data.frame", class(df))
