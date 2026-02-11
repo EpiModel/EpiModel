@@ -7,12 +7,12 @@
 truncate_sim(x, at)
 }
 \arguments{
-\item{x}{Object of class \code{netsim} or \code{icm}.}
+\item{x}{Object of class \code{dcm}, \code{netsim}, or \code{icm}.}
 
 \item{at}{Time step at which to left-truncate the time series.}
 }
 \value{
-The updated object of class \code{netsim} or \code{icm}.
+The updated object of class \code{dcm}, \code{netsim}, or \code{icm}.
 }
 \description{
 Left-truncates simulation epidemiological summary statistics
@@ -25,19 +25,24 @@ steps \code{b} to \code{c} after a burn-in period from time \code{a} to
 \code{b} to \code{c} only.
 }
 \examples{
+# DCM example
+param <- param.dcm(inf.prob = 0.2, act.rate = 0.25)
+init <- init.dcm(s.num = 500, i.num = 1)
+control <- control.dcm(type = "SI", nsteps = 200)
+mod1 <- dcm(param, init, control)
+mod1$control$nsteps
+
+mod2 <- truncate_sim(mod1, at = 150)
+mod2$control$nsteps
+
+# ICM example
 param <- param.icm(inf.prob = 0.2, act.rate = 0.25)
 init <- init.icm(s.num = 500, i.num = 1)
 control <- control.icm(type = "SI", nsteps = 200, nsims = 1)
 mod1 <- icm(param, init, control)
-df <- as.data.frame(mod1)
-print(df)
-plot(mod1)
 mod1$control$nsteps
 
 mod2 <- truncate_sim(mod1, at = 150)
-df2 <- as.data.frame(mod2)
-print(df2)
-plot(mod2)
 mod2$control$nsteps
 
 }
