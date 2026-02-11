@@ -392,13 +392,18 @@ plot.dcm <- function(x, y = NULL, popfrac = FALSE, run = NULL, col = NULL,
       }
     }
   } else {
-    if (lcomp == 1) {
-      leg.names <- paste(leg.name, 1:nruns)
+    if (nruns == 1) {
+      leg.names <- leg.name
     }
-    if (lcomp > 1) {
-      leg.names <- y
-      warning("Legend names ignored for multiple y plots of multiple run
-              models", call. = FALSE)
+    if (nruns > 1) {
+      if (lcomp == 1) {
+        leg.names <- paste(leg.name, 1:nruns)
+      }
+      if (lcomp > 1) {
+        leg.names <- y
+        warning("Legend names ignored for multiple y plots of multiple run models",
+                call. = FALSE)
+      }
     }
   }
 
