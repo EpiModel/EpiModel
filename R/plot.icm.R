@@ -77,6 +77,8 @@ plot.icm <- function(x, y = NULL, popfrac = FALSE, sim.lines = FALSE,
 
   ## Model dimensions and class ##
   nsteps <- x$control$nsteps
+  start <- if (is.null(x$control$start)) 1 else x$control$start
+  offset <- start - 1
   nsims <- x$control$nsims
   if (is.null(sims)) {
     sims <- seq_len(nsims)
@@ -174,7 +176,7 @@ plot.icm <- function(x, y = NULL, popfrac = FALSE, sim.lines = FALSE,
 
   ## Missing args ##
   if (is.null(xlim)) {
-    xlim <- c(0, nsteps)
+    xlim <- c(offset, offset + nsteps)
   }
 
   #Initialize ylim min max values
@@ -188,8 +190,8 @@ plot.icm <- function(x, y = NULL, popfrac = FALSE, sim.lines = FALSE,
     if (qnts > 1 || qnts < 0) {
       stop("qnts must be between 0 and 1", call. = FALSE)
     }
-    qnt.min <- draw_qnts(x, y, qnts, qnts.pal, qnts.smooth, "epi", 0, "min")
-    qnt.max <- draw_qnts(x, y, qnts, qnts.pal, qnts.smooth, "epi", 0, "max")
+    qnt.min <- draw_qnts(x, y, qnts, qnts.pal, qnts.smooth, "epi", 0, "min", offset)
+    qnt.max <- draw_qnts(x, y, qnts, qnts.pal, qnts.smooth, "epi", 0, "max", offset)
   }
 
   ## Mean lines - ylim max ##
@@ -203,9 +205,9 @@ plot.icm <- function(x, y = NULL, popfrac = FALSE, sim.lines = FALSE,
       mean.lty <- rep(mean.lty, lcomp)
     }
     mean.min <- draw_means(x, y, mean.smooth, mean.lwd,
-                           mean.pal, mean.lty, "epi", 0, "min")
+                           mean.pal, mean.lty, "epi", 0, "min", offset)
     mean.max <- draw_means(x, y, mean.smooth, mean.lwd,
-                           mean.pal, mean.lty, "epi", 0, "max")
+                           mean.pal, mean.lty, "epi", 0, "max", offset)
   }
 
   # Dynamic scaling based on sim.lines and mean lines and quantile bands
@@ -239,14 +241,15 @@ plot.icm <- function(x, y = NULL, popfrac = FALSE, sim.lines = FALSE,
     if (qnts > 1 || qnts < 0) {
       stop("qnts must be between 0 and 1", call. = FALSE)
     }
-    draw_qnts(x, y, qnts, qnts.pal, qnts.smooth)
+    draw_qnts(x, y, qnts, qnts.pal, qnts.smooth, offset = offset)
   }
 
   ## Simulation lines ##
   if (sim.lines == TRUE) {
     for (j in seq_len(lcomp)) {
       for (i in sims) {
-        lines(x$epi[[y[j]]][, i], lwd = sim.lwd[j], col = sim.pal[j])
+        lines(seq_len(nrow(x$epi[[y[j]]])) + offset,
+              x$epi[[y[j]]][, i], lwd = sim.lwd[j], col = sim.pal[j])
       }
     }
   }
@@ -262,7 +265,8 @@ plot.icm <- function(x, y = NULL, popfrac = FALSE, sim.lines = FALSE,
     if (length(mean.lty) < lcomp) {
       mean.lty <- rep(mean.lty, lcomp)
     }
-    draw_means(x, y, mean.smooth, mean.lwd, mean.pal, mean.lty)
+    draw_means(x, y, mean.smooth, mean.lwd, mean.pal, mean.lty,
+               offset = offset)
   }
 
   ## Grid

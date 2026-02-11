@@ -353,6 +353,8 @@ plot_netsim_epi <- function(x, y = NULL, sims = NULL, legend = NULL,
                             ...) {
   ## Model dimensions and class ##
   nsteps <- x$control$nsteps
+  start <- if (is.null(x$control$start)) 1 else x$control$start
+  offset <- start - 1
   nsims <- x$control$nsims
   sims <- if (is.null(sims)) seq_len(nsims) else sims
   if (max(sims) > nsims) stop("Set sim to between 1 and ", nsims, call. = FALSE)
@@ -439,8 +441,8 @@ plot_netsim_epi <- function(x, y = NULL, sims = NULL, legend = NULL,
     if (qnts > 1 || qnts < 0) {
       stop("qnts must be between 0 and 1", call. = FALSE)
     }
-    qnt.max <- draw_qnts(x, y, qnts, qnts.pal, qnts.smooth, "epi", 0, "max")
-    qnt.min <- draw_qnts(x, y, qnts, qnts.pal, qnts.smooth, "epi", 0, "min")
+    qnt.max <- draw_qnts(x, y, qnts, qnts.pal, qnts.smooth, "epi", 0, "max", offset)
+    qnt.min <- draw_qnts(x, y, qnts, qnts.pal, qnts.smooth, "epi", 0, "min", offset)
   }
 
 
@@ -461,17 +463,17 @@ plot_netsim_epi <- function(x, y = NULL, sims = NULL, legend = NULL,
     mean.max <- draw_means(
       x, y,
       mean.smooth, mean.lwd, mean.pal, mean.lty,
-      "epi", 0, "max"
+      "epi", 0, "max", offset
     )
     mean.min <- draw_means(
       x, y,
       mean.smooth, mean.lwd, mean.pal, mean.lty,
-      "epi", 0, "min"
+      "epi", 0, "min", offset
     )
   }
 
   ## Missing args ##
-  xlim <- if (is.null(xlim)) c(0, nsteps) else xlim
+  xlim <- if (is.null(xlim)) c(offset, offset + nsteps) else xlim
 
   if (is.null(ylim) && (popfrac || sim.lines)) {
     ylim <- c(min.prev, max.prev)
@@ -516,7 +518,7 @@ plot_netsim_epi <- function(x, y = NULL, sims = NULL, legend = NULL,
     }
     y.l <- length(y)
     qnts.pal <- qnts.pal[1:y.l]
-    draw_qnts(x, y, qnts, qnts.pal, qnts.smooth)
+    draw_qnts(x, y, qnts, qnts.pal, qnts.smooth, offset = offset)
   }
 
 
@@ -524,7 +526,8 @@ plot_netsim_epi <- function(x, y = NULL, sims = NULL, legend = NULL,
   if (sim.lines) {
     for (j in seq_len(lcomp)) {
       for (i in sims) {
-        lines(x$epi[[y[j]]][, i], lwd = sim.lwd[j], col = sim.pal[j])
+        lines(seq_len(nrow(x$epi[[y[j]]])) + offset,
+              x$epi[[y[j]]][, i], lwd = sim.lwd[j], col = sim.pal[j])
       }
     }
   }
@@ -548,7 +551,8 @@ plot_netsim_epi <- function(x, y = NULL, sims = NULL, legend = NULL,
     }
     y.n <- length(y)
     mean.pal <- mean.pal[seq_len(y.n)]
-    draw_means(x, y, mean.smooth, mean.lwd, mean.pal, mean.lty)
+    draw_means(x, y, mean.smooth, mean.lwd, mean.pal, mean.lty,
+               offset = offset)
   }
 
   ## Grid

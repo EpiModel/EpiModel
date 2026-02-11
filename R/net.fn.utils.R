@@ -885,9 +885,9 @@ truncate_sim <- function(x, at, reset.time = TRUE) {
     # epi
     x$epi <- lapply(x$epi, function(r) r[rows, , drop = FALSE])
     # control settings
+    x$control$nsteps <- max(seq_along(rows))
     if (reset.time) {
       x$control$start <- 1
-      x$control$nsteps <- max(seq_along(rows))
     } else {
       x$control$start <- at
     }
