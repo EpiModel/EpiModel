@@ -7,13 +7,13 @@
 \alias{truncate_sim.netsim}
 \title{Truncate Simulation Time Series}
 \usage{
-truncate_sim(x, at, reset.time, ...)
+truncate_sim(x, at, reset.time)
 
-\method{truncate_sim}{dcm}(x, at, reset.time = TRUE, ...)
+\method{truncate_sim}{dcm}(x, at, reset.time = TRUE)
 
-\method{truncate_sim}{icm}(x, at, reset.time = TRUE, ...)
+\method{truncate_sim}{icm}(x, at, reset.time = TRUE)
 
-\method{truncate_sim}{netsim}(x, at, reset.time = TRUE, ...)
+\method{truncate_sim}{netsim}(x, at, reset.time = TRUE)
 }
 \arguments{
 \item{x}{Object of class \code{dcm}, \code{netsim}, or \code{icm}.}
@@ -23,8 +23,6 @@ truncate_sim(x, at, reset.time, ...)
 \item{reset.time}{If \code{TRUE}, the time step sequence in the truncated model
 will be reset to start at 1. If \code{FALSE}, the original time step
 values will be preserved. Default is \code{TRUE}.}
-
-\item{...}{Additional arguments (not currently used).}
 }
 \value{
 The updated object of class \code{dcm}, \code{netsim}, or \code{icm}.

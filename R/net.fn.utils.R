@@ -813,7 +813,6 @@ get_degree <- function(x) {
 #' @param reset.time If `TRUE`, the time step sequence in the truncated model
 #'        will be reset to start at 1. If `FALSE`, the original time step
 #'        values will be preserved. Default is `TRUE`.
-#' @param ... Additional arguments (not currently used).
 #'
 #' @details
 #' This function would be used when running a follow-up simulation from time
@@ -859,14 +858,14 @@ get_degree <- function(x) {
 #' plot(mod2b)
 #' head(as.data.frame(mod2b))
 #'
-truncate_sim <- function(x, at, reset.time, ...) {
+truncate_sim <- function(x, at, reset.time) {
   UseMethod("truncate_sim")
 }
 
 #' @method truncate_sim dcm
 #' @rdname truncate_sim
 #' @export
-truncate_sim.dcm <- function(x, at, reset.time = TRUE, ...) {
+truncate_sim.dcm <- function(x, at, reset.time = TRUE) {
   row_start <- which(x$control$timesteps == at)
   if (length(row_start) == 0) {
     stop("Specified value of at is not in the control$timesteps vector",
@@ -888,7 +887,7 @@ truncate_sim.dcm <- function(x, at, reset.time = TRUE, ...) {
 #' @method truncate_sim icm
 #' @rdname truncate_sim
 #' @export
-truncate_sim.icm <- function(x, at, reset.time = TRUE, ...) {
+truncate_sim.icm <- function(x, at, reset.time = TRUE) {
   rows <- at:(x$control$nsteps)
   # epi
   x$epi <- lapply(x$epi, function(r) r[rows, , drop = FALSE])
@@ -905,8 +904,8 @@ truncate_sim.icm <- function(x, at, reset.time = TRUE, ...) {
 #' @method truncate_sim netsim
 #' @rdname truncate_sim
 #' @export
-truncate_sim.netsim <- function(x, at, reset.time = TRUE, ...) {
-  truncate_sim.icm(x, at = at, reset.time = reset.time, ...)
+truncate_sim.netsim <- function(x, at, reset.time = TRUE) {
+  truncate_sim.icm(x, at = at, reset.time = reset.time)
 }
 
 #' Make a Lightweight Restart Point From a `netsim` Object with tergmLite
