@@ -196,6 +196,7 @@ as.data.frame.icm <- function(x, row.names = NULL, optional = FALSE,
 
   # Find and repair EPIs with the wrong length
   n_steps <- x$control$nsteps
+  start <- if (is.null(x$control$start)) 1L else x$control$start
   epi_lengths <- vapply(x$epi, nrow, 0)
   broken_epi <- names(x$epi)[epi_lengths != n_steps]
   if (length(broken_epi) > 0) {
@@ -237,14 +238,15 @@ as.data.frame.icm <- function(x, row.names = NULL, optional = FALSE,
   }
   epi_ls <- lapply(x$epi, combine_fun)
 
+  time_seq <- seq(start, start + n_steps - 1)
   if (out == "vals") { # add columns `time` and `sim`
     common_elts <- list(
       sim = rep(sim, each = n_steps),
-      time = rep(seq_len(n_steps), length(sim))
+      time = rep(time_seq, length(sim))
     )
     df <- as.epi.data.frame(as.data.frame(c(common_elts, epi_ls)))
   } else { # add column `time`
-    df <- as.data.frame(c(list(time = seq_len(n_steps)), epi_ls))
+    df <- as.data.frame(c(list(time = time_seq), epi_ls))
   }
 
   return(df)
@@ -347,7 +349,7 @@ as.epi.data.frame <- function(df) {
     stop("Input must be a `data.frame`")
   if (!all(c("time", "sim") %in% names(df)))
     stop("Input must contain a `time` and a `sim` column")
-  n_steps <- max(df$time)
+  n_steps <- length(unique(df$time))
   if (!all(by(df$time, df$sim, length) == n_steps))
     stop("Input must have the same number of time step per simulation")
   class(df) <- c("epi.data.frame", class(df))

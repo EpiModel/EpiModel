@@ -808,8 +808,11 @@ get_degree <- function(x) {
 #' @description Left-truncates simulation epidemiological summary statistics
 #'              and network statistics at a specified time step.
 #'
-#' @param x Object of class `netsim` or `icm`.
+#' @param x Object of class `dcm`, `netsim`, or `icm`.
 #' @param at Time step at which to left-truncate the time series.
+#' @param reset.time If `TRUE`, the time step sequence in the truncated model
+#'        will be reset to start at 1. If `FALSE`, the original time step
+#'        values will be preserved. Default is `TRUE`.
 #'
 #' @details
 #' This function would be used when running a follow-up simulation from time
@@ -817,38 +820,92 @@ get_degree <- function(x) {
 #' `b`, where the final time window of interest for data analysis is
 #' `b` to `c` only.
 #'
-#' @return The updated object of class `netsim` or `icm`.
+#' @return The updated object of class `dcm`, `netsim`, or `icm`.
 #'
 #' @export
 #'
 #' @examples
+#' # DCM examples
+#' param <- param.dcm(inf.prob = 0.2, act.rate = 0.25)
+#' init <- init.dcm(s.num = 500, i.num = 1)
+#' control <- control.dcm(type = "SI", nsteps = 200)
+#' mod1 <- dcm(param, init, control)
+#' plot(mod1)
+#'
+#' # Reset time
+#' mod2a <- truncate_sim(mod1, at = 150)
+#' plot(mod2a)
+#' head(as.data.frame(mod2a))
+#'
+#' # Do not reset time
+#' mod2b <- truncate_sim(mod1, at = 150, reset.time = FALSE)
+#' plot(mod2b)
+#' head(as.data.frame(mod2b))
+#'
+#' # ICM example
 #' param <- param.icm(inf.prob = 0.2, act.rate = 0.25)
 #' init <- init.icm(s.num = 500, i.num = 1)
 #' control <- control.icm(type = "SI", nsteps = 200, nsims = 1)
 #' mod1 <- icm(param, init, control)
-#' df <- as.data.frame(mod1)
-#' print(df)
-#' plot(mod1)
-#' mod1$control$nsteps
 #'
-#' mod2 <- truncate_sim(mod1, at = 150)
-#' df2 <- as.data.frame(mod2)
-#' print(df2)
-#' plot(mod2)
-#' mod2$control$nsteps
+#' # Reset time
+#' mod2a <- truncate_sim(mod1, at = 150)
+#' plot(mod2a)
+#' head(as.data.frame(mod2a))
 #'
-truncate_sim <- function(x, at) {
-  if (!inherits(x, c("icm", "netsim"))) {
-    stop("x must be either an object of class icm or class netsim",
+#' # Do not reset time
+#' mod2b <- truncate_sim(mod1, at = 150, reset.time = FALSE)
+#' plot(mod2b)
+#' head(as.data.frame(mod2b))
+#'
+truncate_sim <- function(x, at, reset.time) {
+  UseMethod("truncate_sim")
+}
+
+#' @method truncate_sim dcm
+#' @rdname truncate_sim
+#' @export
+truncate_sim.dcm <- function(x, at, reset.time = TRUE) {
+  row_start <- which(x$control$timesteps == at)
+  if (length(row_start) == 0) {
+    stop("Specified value of at is not in the control$timesteps vector",
          call. = FALSE)
   }
+  rows <- row_start:nrow(x$epi[[1]])
+  # epi
+  x$epi <- lapply(x$epi, function(r) r[rows, , drop = FALSE])
+  # control settings
+  if (reset.time) {
+    x$control$timesteps <- x$control$timesteps[rows] - (at - 1)
+  } else {
+    x$control$timesteps <- x$control$timesteps[rows]
+  }
+  x$control$nsteps <- max(x$control$timesteps)
+  return(x)
+}
+
+#' @method truncate_sim icm
+#' @rdname truncate_sim
+#' @export
+truncate_sim.icm <- function(x, at, reset.time = TRUE) {
   rows <- at:(x$control$nsteps)
   # epi
   x$epi <- lapply(x$epi, function(r) r[rows, , drop = FALSE])
   # control settings
-  x$control$start <- 1
   x$control$nsteps <- max(seq_along(rows))
+  if (reset.time) {
+    x$control$start <- 1
+  } else {
+    x$control$start <- at
+  }
   return(x)
+}
+
+#' @method truncate_sim netsim
+#' @rdname truncate_sim
+#' @export
+truncate_sim.netsim <- function(x, at, reset.time = TRUE) {
+  truncate_sim.icm(x, at = at, reset.time = reset.time)
 }
 
 #' Make a Lightweight Restart Point From a `netsim` Object with tergmLite

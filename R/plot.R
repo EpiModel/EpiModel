@@ -1,6 +1,7 @@
 ## Helper utilities ------------------------------------------------------------
 draw_qnts <- function(x, y, qnts, qnts.pal, qnts.smooth,
-                      loc = "epi", plot.qnts = 1, qnts.min_max = "max") {
+                      loc = "epi", plot.qnts = 1, qnts.min_max = "max",
+                      offset = 0) {
 
   qnt.min <- 1E10
   qnt.max <- -1E10
@@ -13,7 +14,7 @@ draw_qnts <- function(x, y, qnts, qnts.pal, qnts.smooth,
       function(x) quantile(x, c(quants[1], quants[2]), na.rm = TRUE)
     )
     complete_rows <- complete.cases(t(qnt.prev))
-    x_cords <- seq_len(ncol(qnt.prev))[complete_rows]
+    x_cords <- seq_len(ncol(qnt.prev))[complete_rows] + offset
     xx <- c(x_cords, rev(x_cords))
     qnt.prev <- qnt.prev[, complete_rows]
     if (qnts.smooth == FALSE) {
@@ -43,7 +44,8 @@ draw_qnts <- function(x, y, qnts, qnts.pal, qnts.smooth,
 
 draw_means <- function(x, y, mean.smooth, mean.lwd,
                        mean.pal, mean.lty, loc = "epi",
-                       plot.means = 1, mean.min_max = "max") {
+                       plot.means = 1, mean.min_max = "max",
+                       offset = 0) {
 
   mean.min <- 1E10
   mean.max <- -1E10
@@ -52,7 +54,7 @@ draw_means <- function(x, y, mean.smooth, mean.lwd,
 
   for (j in seq_len(lcomp)) {
     mean.prev <- rowMeans(x[[loc]][[y[j]]], na.rm = TRUE)
-    xs <- seq_len(length(mean.prev))
+    xs <- seq_len(length(mean.prev)) + offset
     if (mean.smooth == TRUE) {
       smoother <- suppressWarnings(supsmu(x = xs, y = mean.prev))
       mean.prev <- smoother$y

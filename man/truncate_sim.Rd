@@ -2,17 +2,30 @@
 % Please edit documentation in R/net.fn.utils.R
 \name{truncate_sim}
 \alias{truncate_sim}
+\alias{truncate_sim.dcm}
+\alias{truncate_sim.icm}
+\alias{truncate_sim.netsim}
 \title{Truncate Simulation Time Series}
 \usage{
-truncate_sim(x, at)
+truncate_sim(x, at, reset.time)
+
+\method{truncate_sim}{dcm}(x, at, reset.time = TRUE)
+
+\method{truncate_sim}{icm}(x, at, reset.time = TRUE)
+
+\method{truncate_sim}{netsim}(x, at, reset.time = TRUE)
 }
 \arguments{
-\item{x}{Object of class \code{netsim} or \code{icm}.}
+\item{x}{Object of class \code{dcm}, \code{netsim}, or \code{icm}.}
 
 \item{at}{Time step at which to left-truncate the time series.}
+
+\item{reset.time}{If \code{TRUE}, the time step sequence in the truncated model
+will be reset to start at 1. If \code{FALSE}, the original time step
+values will be preserved. Default is \code{TRUE}.}
 }
 \value{
-The updated object of class \code{netsim} or \code{icm}.
+The updated object of class \code{dcm}, \code{netsim}, or \code{icm}.
 }
 \description{
 Left-truncates simulation epidemiological summary statistics
@@ -25,19 +38,37 @@ steps \code{b} to \code{c} after a burn-in period from time \code{a} to
 \code{b} to \code{c} only.
 }
 \examples{
+# DCM examples
+param <- param.dcm(inf.prob = 0.2, act.rate = 0.25)
+init <- init.dcm(s.num = 500, i.num = 1)
+control <- control.dcm(type = "SI", nsteps = 200)
+mod1 <- dcm(param, init, control)
+plot(mod1)
+
+# Reset time
+mod2a <- truncate_sim(mod1, at = 150)
+plot(mod2a)
+head(as.data.frame(mod2a))
+
+# Do not reset time
+mod2b <- truncate_sim(mod1, at = 150, reset.time = FALSE)
+plot(mod2b)
+head(as.data.frame(mod2b))
+
+# ICM example
 param <- param.icm(inf.prob = 0.2, act.rate = 0.25)
 init <- init.icm(s.num = 500, i.num = 1)
 control <- control.icm(type = "SI", nsteps = 200, nsims = 1)
 mod1 <- icm(param, init, control)
-df <- as.data.frame(mod1)
-print(df)
-plot(mod1)
-mod1$control$nsteps
 
-mod2 <- truncate_sim(mod1, at = 150)
-df2 <- as.data.frame(mod2)
-print(df2)
-plot(mod2)
-mod2$control$nsteps
+# Reset time
+mod2a <- truncate_sim(mod1, at = 150)
+plot(mod2a)
+head(as.data.frame(mod2a))
+
+# Do not reset time
+mod2b <- truncate_sim(mod1, at = 150, reset.time = FALSE)
+plot(mod2b)
+head(as.data.frame(mod2b))
 
 }
