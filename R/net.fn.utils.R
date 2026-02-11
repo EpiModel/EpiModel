@@ -825,25 +825,38 @@ get_degree <- function(x) {
 #' @export
 #'
 #' @examples
-#' # DCM example
+#' # DCM examples
 #' param <- param.dcm(inf.prob = 0.2, act.rate = 0.25)
 #' init <- init.dcm(s.num = 500, i.num = 1)
 #' control <- control.dcm(type = "SI", nsteps = 200)
 #' mod1 <- dcm(param, init, control)
-#' mod1$control$nsteps
+#' plot(mod1)
 #'
-#' mod2 <- truncate_sim(mod1, at = 150)
-#' mod2$control$nsteps
+#' # Reset time
+#' mod2a <- truncate_sim(mod1, at = 150)
+#' plot(mod2a)
+#' head(as.data.frame(mod2a))
+#'
+#' # Do not reset time
+#' mod2b <- truncate_sim(mod1, at = 150, reset.time = FALSE)
+#' plot(mod2b)
+#' head(as.data.frame(mod2b))
 #'
 #' # ICM example
 #' param <- param.icm(inf.prob = 0.2, act.rate = 0.25)
 #' init <- init.icm(s.num = 500, i.num = 1)
 #' control <- control.icm(type = "SI", nsteps = 200, nsims = 1)
 #' mod1 <- icm(param, init, control)
-#' mod1$control$nsteps
 #'
-#' mod2 <- truncate_sim(mod1, at = 150)
-#' mod2$control$nsteps
+#' # Reset time
+#' mod2a <- truncate_sim(mod1, at = 150)
+#' plot(mod2a)
+#' head(as.data.frame(mod2a))
+#'
+#' # Do not reset time
+#' mod2b <- truncate_sim(mod1, at = 150, reset.time = FALSE)
+#' plot(mod2b)
+#' head(as.data.frame(mod2b))
 #'
 truncate_sim <- function(x, at, reset.time = TRUE) {
   if (!inherits(x, c("dcm", "icm", "netsim"))) {
