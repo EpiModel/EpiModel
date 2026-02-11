@@ -49,7 +49,16 @@ and network statistics at a specified time step.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">truncate_sim</span><span class="op">(</span><span class="va">x</span>, <span class="va">at</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">truncate_sim</span><span class="op">(</span><span class="va">x</span>, <span class="va">at</span>, <span class="va">reset.time</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'dcm'</span></span>
+<span><span class="fu">truncate_sim</span><span class="op">(</span><span class="va">x</span>, <span class="va">at</span>, reset.time <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'icm'</span></span>
+<span><span class="fu">truncate_sim</span><span class="op">(</span><span class="va">x</span>, <span class="va">at</span>, reset.time <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'netsim'</span></span>
+<span><span class="fu">truncate_sim</span><span class="op">(</span><span class="va">x</span>, <span class="va">at</span>, reset.time <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -57,16 +66,22 @@ and network statistics at a specified time step.</p>
 
 
 <dl><dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
-<dd><p>Object of class <code>netsim</code> or <code>icm</code>.</p></dd>
+<dd><p>Object of class <code>dcm</code>, <code>netsim</code>, or <code>icm</code>.</p></dd>
 
 
 <dt id="arg-at">at<a class="anchor" aria-label="anchor" href="#arg-at"></a></dt>
 <dd><p>Time step at which to left-truncate the time series.</p></dd>
 
+
+<dt id="arg-reset-time">reset.time<a class="anchor" aria-label="anchor" href="#arg-reset-time"></a></dt>
+<dd><p>If <code>TRUE</code>, the time step sequence in the truncated model
+will be reset to start at 1. If <code>FALSE</code>, the original time step
+values will be preserved. Default is <code>TRUE</code>.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>The updated object of class <code>netsim</code> or <code>icm</code>.</p>
+    <p>The updated object of class <code>dcm</code>, <code>netsim</code>, or <code>icm</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -78,277 +93,71 @@ steps <code>b</code> to <code>c</code> after a burn-in period from time <code>a<
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">param</span> <span class="op">&lt;-</span> <span class="fu"><a href="param.icm.html">param.icm</a></span><span class="op">(</span>inf.prob <span class="op">=</span> <span class="fl">0.2</span>, act.rate <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># DCM examples</span></span></span>
+<span class="r-in"><span><span class="va">param</span> <span class="op">&lt;-</span> <span class="fu"><a href="param.dcm.html">param.dcm</a></span><span class="op">(</span>inf.prob <span class="op">=</span> <span class="fl">0.2</span>, act.rate <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">init</span> <span class="op">&lt;-</span> <span class="fu"><a href="init.dcm.html">init.dcm</a></span><span class="op">(</span>s.num <span class="op">=</span> <span class="fl">500</span>, i.num <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">control</span> <span class="op">&lt;-</span> <span class="fu"><a href="control.dcm.html">control.dcm</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"SI"</span>, nsteps <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">mod1</span> <span class="op">&lt;-</span> <span class="fu"><a href="dcm.html">dcm</a></span><span class="op">(</span><span class="va">param</span>, <span class="va">init</span>, <span class="va">control</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mod1</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="truncate_sim-1.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Reset time</span></span></span>
+<span class="r-in"><span><span class="va">mod2a</span> <span class="op">&lt;-</span> <span class="fu">truncate_sim</span><span class="op">(</span><span class="va">mod1</span>, at <span class="op">=</span> <span class="fl">150</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mod2a</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="truncate_sim-2.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">mod2a</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   time     s.num    i.num  si.flow num</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1    1 112.84481 388.1552 4.311261 501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2    2 108.53355 392.4664 4.190826 501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3    3 104.34273 396.6573 4.070349 501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4    4 100.27238 400.7276 3.950125 501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5    5  96.32225 404.6777 3.830430 501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6    6  92.49182 408.5082 3.711524 501</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Do not reset time</span></span></span>
+<span class="r-in"><span><span class="va">mod2b</span> <span class="op">&lt;-</span> <span class="fu">truncate_sim</span><span class="op">(</span><span class="va">mod1</span>, at <span class="op">=</span> <span class="fl">150</span>, reset.time <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mod2b</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="truncate_sim-3.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">mod2b</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   time     s.num    i.num  si.flow num</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  150 112.84481 388.1552 4.311261 501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  151 108.53355 392.4664 4.190826 501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  152 104.34273 396.6573 4.070349 501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  153 100.27238 400.7276 3.950125 501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  154  96.32225 404.6777 3.830430 501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  155  92.49182 408.5082 3.711524 501</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># ICM example</span></span></span>
+<span class="r-in"><span><span class="va">param</span> <span class="op">&lt;-</span> <span class="fu"><a href="param.icm.html">param.icm</a></span><span class="op">(</span>inf.prob <span class="op">=</span> <span class="fl">0.2</span>, act.rate <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">init</span> <span class="op">&lt;-</span> <span class="fu"><a href="init.icm.html">init.icm</a></span><span class="op">(</span>s.num <span class="op">=</span> <span class="fl">500</span>, i.num <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">control</span> <span class="op">&lt;-</span> <span class="fu"><a href="control.icm.html">control.icm</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"SI"</span>, nsteps <span class="op">=</span> <span class="fl">200</span>, nsims <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">mod1</span> <span class="op">&lt;-</span> <span class="fu"><a href="icm.html">icm</a></span><span class="op">(</span><span class="va">param</span>, <span class="va">init</span>, <span class="va">control</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">mod1</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     sim time s.num i.num num si.flow</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1     1    1   500     1 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2     1    2   500     1 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3     1    3   500     1 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4     1    4   500     1 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5     1    5   500     1 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6     1    6   500     1 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7     1    7   500     1 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8     1    8   500     1 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9     1    9   500     1 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10    1   10   500     1 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11    1   11   500     1 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12    1   12   499     2 501       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13    1   13   499     2 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14    1   14   499     2 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15    1   15   497     4 501       2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 16    1   16   496     5 501       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 17    1   17   496     5 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 18    1   18   495     6 501       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 19    1   19   494     7 501       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 20    1   20   494     7 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 21    1   21   494     7 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 22    1   22   494     7 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 23    1   23   494     7 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 24    1   24   494     7 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 25    1   25   494     7 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 26    1   26   494     7 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 27    1   27   492     9 501       2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 28    1   28   492     9 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 29    1   29   491    10 501       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 30    1   30   491    10 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 31    1   31   491    10 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 32    1   32   491    10 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 33    1   33   491    10 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 34    1   34   490    11 501       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 35    1   35   490    11 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 36    1   36   490    11 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 37    1   37   490    11 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 38    1   38   490    11 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 39    1   39   489    12 501       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 40    1   40   489    12 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 41    1   41   488    13 501       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 42    1   42   488    13 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 43    1   43   486    15 501       2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 44    1   44   486    15 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 45    1   45   486    15 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 46    1   46   485    16 501       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 47    1   47   483    18 501       2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 48    1   48   483    18 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 49    1   49   481    20 501       2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 50    1   50   480    21 501       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 51    1   51   478    23 501       2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 52    1   52   477    24 501       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 53    1   53   474    27 501       3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 54    1   54   473    28 501       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 55    1   55   471    30 501       2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 56    1   56   469    32 501       2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 57    1   57   468    33 501       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 58    1   58   467    34 501       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 59    1   59   466    35 501       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 60    1   60   465    36 501       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 61    1   61   463    38 501       2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 62    1   62   462    39 501       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 63    1   63   459    42 501       3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 64    1   64   459    42 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 65    1   65   457    44 501       2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 66    1   66   451    50 501       6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 67    1   67   448    53 501       3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 68    1   68   446    55 501       2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 69    1   69   440    61 501       6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 70    1   70   437    64 501       3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 71    1   71   434    67 501       3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 72    1   72   432    69 501       2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 73    1   73   432    69 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 74    1   74   428    73 501       4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 75    1   75   427    74 501       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 76    1   76   424    77 501       3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 77    1   77   421    80 501       3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 78    1   78   416    85 501       5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 79    1   79   412    89 501       4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 80    1   80   406    95 501       6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 81    1   81   399   102 501       7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 82    1   82   396   105 501       3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 83    1   83   393   108 501       3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 84    1   84   386   115 501       7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 85    1   85   383   118 501       3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 86    1   86   374   127 501       9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 87    1   87   372   129 501       2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 88    1   88   369   132 501       3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 89    1   89   364   137 501       5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 90    1   90   355   146 501       9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 91    1   91   352   149 501       3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 92    1   92   347   154 501       5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 93    1   93   338   163 501       9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 94    1   94   327   174 501      11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 95    1   95   319   182 501       8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 96    1   96   314   187 501       5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 97    1   97   306   195 501       8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 98    1   98   301   200 501       5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 99    1   99   291   210 501      10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 100   1  100   285   216 501       6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 101   1  101   281   220 501       4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 102   1  102   269   232 501      12</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 103   1  103   266   235 501       3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 104   1  104   256   245 501      10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 105   1  105   251   250 501       5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 106   1  106   246   255 501       5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 107   1  107   240   261 501       6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 108   1  108   235   266 501       5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 109   1  109   228   273 501       7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 110   1  110   218   283 501      10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 111   1  111   214   287 501       4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 112   1  112   206   295 501       8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 113   1  113   200   301 501       6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 114   1  114   198   303 501       2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 115   1  115   195   306 501       3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 116   1  116   187   314 501       8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 117   1  117   180   321 501       7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 118   1  118   177   324 501       3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 119   1  119   169   332 501       8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 120   1  120   165   336 501       4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 121   1  121   159   342 501       6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 122   1  122   157   344 501       2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 123   1  123   152   349 501       5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 124   1  124   145   356 501       7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 125   1  125   136   365 501       9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 126   1  126   133   368 501       3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 127   1  127   128   373 501       5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 128   1  128   126   375 501       2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 129   1  129   121   380 501       5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 130   1  130   116   385 501       5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 131   1  131   115   386 501       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 132   1  132   108   393 501       7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 133   1  133   103   398 501       5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 134   1  134    99   402 501       4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 135   1  135    97   404 501       2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 136   1  136    96   405 501       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 137   1  137    94   407 501       2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 138   1  138    92   409 501       2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 139   1  139    90   411 501       2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 140   1  140    84   417 501       6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 141   1  141    80   421 501       4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 142   1  142    77   424 501       3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 143   1  143    75   426 501       2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 144   1  144    70   431 501       5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 145   1  145    66   435 501       4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 146   1  146    61   440 501       5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 147   1  147    57   444 501       4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 148   1  148    57   444 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 149   1  149    52   449 501       5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 150   1  150    49   452 501       3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 151   1  151    48   453 501       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 152   1  152    42   459 501       6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 153   1  153    41   460 501       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 154   1  154    41   460 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 155   1  155    41   460 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 156   1  156    40   461 501       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 157   1  157    39   462 501       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 158   1  158    35   466 501       4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 159   1  159    32   469 501       3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 160   1  160    30   471 501       2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 161   1  161    27   474 501       3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 162   1  162    24   477 501       3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 163   1  163    24   477 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 164   1  164    22   479 501       2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 165   1  165    22   479 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 166   1  166    22   479 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 167   1  167    22   479 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 168   1  168    22   479 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 169   1  169    22   479 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 170   1  170    21   480 501       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 171   1  171    19   482 501       2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 172   1  172    19   482 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 173   1  173    18   483 501       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 174   1  174    18   483 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 175   1  175    17   484 501       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 176   1  176    17   484 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 177   1  177    14   487 501       3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 178   1  178    13   488 501       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 179   1  179    13   488 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 180   1  180    13   488 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 181   1  181    13   488 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 182   1  182    13   488 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 183   1  183    13   488 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 184   1  184    12   489 501       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 185   1  185    12   489 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 186   1  186     9   492 501       3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 187   1  187     9   492 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 188   1  188     8   493 501       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 189   1  189     7   494 501       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 190   1  190     7   494 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 191   1  191     6   495 501       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 192   1  192     4   497 501       2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 193   1  193     4   497 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 194   1  194     4   497 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 195   1  195     4   497 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 196   1  196     4   497 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 197   1  197     4   497 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 198   1  198     4   497 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 199   1  199     4   497 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 200   1  200     3   498 501       1</span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mod1</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="truncate_sim-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span><span class="va">mod1</span><span class="op">$</span><span class="va">control</span><span class="op">$</span><span class="va">nsteps</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 200</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">mod2</span> <span class="op">&lt;-</span> <span class="fu">truncate_sim</span><span class="op">(</span><span class="va">mod1</span>, at <span class="op">=</span> <span class="fl">150</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">df2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">mod2</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">df2</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    sim time s.num i.num num si.flow</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1    1    1    49   452 501       3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2    1    2    48   453 501       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3    1    3    42   459 501       6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4    1    4    41   460 501       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5    1    5    41   460 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6    1    6    41   460 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7    1    7    40   461 501       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8    1    8    39   462 501       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9    1    9    35   466 501       4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10   1   10    32   469 501       3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11   1   11    30   471 501       2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12   1   12    27   474 501       3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13   1   13    24   477 501       3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14   1   14    24   477 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15   1   15    22   479 501       2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 16   1   16    22   479 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 17   1   17    22   479 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 18   1   18    22   479 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 19   1   19    22   479 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 20   1   20    22   479 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 21   1   21    21   480 501       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 22   1   22    19   482 501       2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 23   1   23    19   482 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 24   1   24    18   483 501       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 25   1   25    18   483 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 26   1   26    17   484 501       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 27   1   27    17   484 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 28   1   28    14   487 501       3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 29   1   29    13   488 501       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 30   1   30    13   488 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 31   1   31    13   488 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 32   1   32    13   488 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 33   1   33    13   488 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 34   1   34    13   488 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 35   1   35    12   489 501       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 36   1   36    12   489 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 37   1   37     9   492 501       3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 38   1   38     9   492 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 39   1   39     8   493 501       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 40   1   40     7   494 501       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 41   1   41     7   494 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 42   1   42     6   495 501       1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 43   1   43     4   497 501       2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 44   1   44     4   497 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 45   1   45     4   497 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 46   1   46     4   497 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 47   1   47     4   497 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 48   1   48     4   497 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 49   1   49     4   497 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 50   1   50     4   497 501       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 51   1   51     3   498 501       1</span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mod2</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="truncate_sim-2.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span><span class="va">mod2</span><span class="op">$</span><span class="va">control</span><span class="op">$</span><span class="va">nsteps</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 51</span>
+<span class="r-in"><span><span class="co"># Reset time</span></span></span>
+<span class="r-in"><span><span class="va">mod2a</span> <span class="op">&lt;-</span> <span class="fu">truncate_sim</span><span class="op">(</span><span class="va">mod1</span>, at <span class="op">=</span> <span class="fl">150</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mod2a</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="truncate_sim-4.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">mod2a</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   sim time s.num i.num num si.flow</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1   1    1    49   452 501       3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2   1    2    48   453 501       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3   1    3    42   459 501       6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4   1    4    41   460 501       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5   1    5    41   460 501       0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6   1    6    41   460 501       0</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Do not reset time</span></span></span>
+<span class="r-in"><span><span class="va">mod2b</span> <span class="op">&lt;-</span> <span class="fu">truncate_sim</span><span class="op">(</span><span class="va">mod1</span>, at <span class="op">=</span> <span class="fl">150</span>, reset.time <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mod2b</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="truncate_sim-5.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">mod2b</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   sim time s.num i.num num si.flow</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1   1  150    49   452 501       3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2   1  151    48   453 501       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3   1  152    42   459 501       6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4   1  153    41   460 501       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5   1  154    41   460 501       0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6   1  155    41   460 501       0</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

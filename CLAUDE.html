@@ -106,6 +106,20 @@
 </ol><p>Users can replace or extend any module via <code><a href="reference/control.net.html">control.net()</a></code> to build custom models. ICM follows a similar but simpler module pattern (<code>icm.mod.*.R</code>).</p>
 </div>
 <div class="section level3">
+<h3 id="shared-plotting-infrastructure">Shared Plotting Infrastructure<a class="anchor" aria-label="anchor" href="#shared-plotting-infrastructure"></a></h3>
+<p><code>plot.icm</code> (<code>R/plot.icm.R</code>) and <code>plot_netsim_epi</code> (<code>R/plot.netsim.R</code>) share helper functions <code>draw_means()</code> and <code>draw_qnts()</code> defined in <code>R/plot.R</code>. Changes to plotting behavior (e.g., axis offsets, coordinate handling) must be coordinated across all three files. <code>plot.dcm</code> (<code>R/plot.dcm.R</code>) is independent and uses <code>control$timesteps</code> directly for x-coordinates.</p>
+<p><code>as.data.frame.netsim</code> delegates entirely to <code>as.data.frame.icm</code>, so changes to the ICM method automatically apply to netsim. The <code>as.epi.data.frame</code> validator in the same file checks structural consistency of the output.</p>
+</div>
+<div class="section level3">
+<h3 id="time-handling-differences-across-model-classes">Time Handling Differences Across Model Classes<a class="anchor" aria-label="anchor" href="#time-handling-differences-across-model-classes"></a></h3>
+<p>DCM and ICM/netsim handle time differently in their output objects:</p>
+<ul><li>
+<strong>DCM</strong>: <code>control$timesteps</code> stores the explicit time vector (may be non-integer when <code>dt &lt; 1</code>). <code>control$nsteps</code> is the max time value. <code>control$nruns</code> is the number of parameter sensitivity runs. Plot and data frame methods use <code>timesteps</code> directly.</li>
+<li>
+<strong>ICM/netsim</strong>: Time is implicit via row indices. <code>control$nsteps</code> is both the number of rows and the max time step. <code>control$nsims</code> is the number of stochastic simulations. <code>control$start</code> provides a time offset (default 1). <code>as.data.frame.icm</code> builds the time column from <code>start</code> and <code>nsteps</code>.</li>
+</ul><p>When modifying functions that touch time or epi structure, verify behavior across all three classes and check that <code>as.data.frame</code>, <code>plot</code>, and <code>summary</code> methods still work correctly.</p>
+</div>
+<div class="section level3">
 <h3 id="key-source-file-groups">Key Source File Groups<a class="anchor" aria-label="anchor" href="#key-source-file-groups"></a></h3>
 <ul><li>
 <strong><code>R/net.inputs.R</code></strong> (largest file): Validates and processes all network model inputs (<code>param.net</code>, <code>init.net</code>, <code>control.net</code>)</li>

@@ -43,16 +43,17 @@
 <h2 class="pkg-version" data-toc-text="2.5.1" id="epimodel-251">EpiModel 2.5.1<a class="anchor" aria-label="anchor" href="#epimodel-251"></a></h2>
 <div class="section level3">
 <h3 id="new-features-2-5-1">NEW FEATURES<a class="anchor" aria-label="anchor" href="#new-features-2-5-1"></a></h3>
-<ul><li>Export a <code>make_restart_point</code> function that takes in a <code>netsim</code> simulation object, truncate it to the smallest set of elements required to restart new simulations from. See [make_restart_point()].</li>
+<ul><li>Export a <code>make_restart_point</code> function that takes in a <code>netsim</code> simulation object, truncate it to the smallest set of elements required to restart new simulations from. See <code><a href="../reference/make_restart_point.html">?make_restart_point</a></code>.</li>
+<li>Refactored <code>truncate_sim</code> into an S3 generic with class-specific methods for supported object classes. <code>truncate_sim</code> now supports the <code>dcm</code> model class, along with <code>icm</code> and <code>netsim</code> classes as previously supported. Additionally, there is a new <code>reset.time</code> argument to the function that allows flexibility in whether to reset the truncated model object to a new “time zero”.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="other-2-5-1">OTHER<a class="anchor" aria-label="anchor" href="#other-2-5-1"></a></h3>
 <ul><li>Fix bug where the <code>ellipsis</code> (<code>...</code>) was not passed correctly to the <code><a href="https://rdrr.io/r/base/plot.html" class="external-link">base::plot</a></code> in the <code>plot.netsim</code> function.</li>
 <li>Set <code>MCMC.maxchanges = Inf</code> as default for TERGM MCMC. Lift the check on the maximum number of MCMC changes per step for bigger or dense networks.</li>
-<li>Convert the Roxygen2 documentation to Markdown (previously LaTeX).</li>
+<li>Convert the Roxygen2 documentation to Markdown (previously <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mi>a</mi><mi>T</mi><mi>e</mi><mi>X</mi></mrow><annotation encoding="application/x-tex">LaTeX</annotation></semantics></math>).</li>
 <li>Use <code>arg = NULL</code> in function definition instead of <code>missing(arg)</code> in function body when possible.</li>
 <li>Add <code>message</code>s when a function restarts from a checkpointed state.</li>
-<li>Make <code>as.data.frame.icm</code> and <code>as.data.frame.net</code> resistant to cases where some Epi trackers are smaller than the rest, usually due to restarting. See [as.data.frame.icm()] and [as.data.frame.net()].</li>
+<li>Make <code>as.data.frame.icm</code> and <code>as.data.frame.net</code> resistant to cases where some summary statistic (“epi”) trackers are smaller than the rest, usually due to restarting. See <code><a href="../reference/as.data.frame.icm.html">?as.data.frame.icm</a></code> and <code>?as.data.frame.net</code>.</li>
 </ul></div>
 </div>
     <div class="section level2">

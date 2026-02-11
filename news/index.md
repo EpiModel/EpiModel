@@ -7,7 +7,13 @@
 - Export a `make_restart_point` function that takes in a `netsim`
   simulation object, truncate it to the smallest set of elements
   required to restart new simulations from. See
-  \[make_restart_point()\].
+  [`?make_restart_point`](http://epimodel.github.io/EpiModel/reference/make_restart_point.md).
+- Refactored `truncate_sim` into an S3 generic with class-specific
+  methods for supported object classes. `truncate_sim` now supports the
+  `dcm` model class, along with `icm` and `netsim` classes as previously
+  supported. Additionally, there is a new `reset.time` argument to the
+  function that allows flexibility in whether to reset the truncated
+  model object to a new “time zero”.
 
 ### OTHER
 
@@ -17,13 +23,15 @@
 - Set `MCMC.maxchanges = Inf` as default for TERGM MCMC. Lift the check
   on the maximum number of MCMC changes per step for bigger or dense
   networks.
-- Convert the Roxygen2 documentation to Markdown (previously LaTeX).
+- Convert the Roxygen2 documentation to Markdown (previously $LaTeX$).
 - Use `arg = NULL` in function definition instead of `missing(arg)` in
   function body when possible.
 - Add `message`s when a function restarts from a checkpointed state.
 - Make `as.data.frame.icm` and `as.data.frame.net` resistant to cases
-  where some Epi trackers are smaller than the rest, usually due to
-  restarting. See \[as.data.frame.icm()\] and \[as.data.frame.net()\].
+  where some summary statistic (“epi”) trackers are smaller than the
+  rest, usually due to restarting. See
+  [`?as.data.frame.icm`](http://epimodel.github.io/EpiModel/reference/as.data.frame.icm.md)
+  and `?as.data.frame.net`.
 
 ## EpiModel 2.5
 
