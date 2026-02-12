@@ -54,7 +54,7 @@ draw_means <- function(x, y, mean.smooth, mean.lwd,
 
   for (j in seq_len(lcomp)) {
     mean.prev <- rowMeans(x[[loc]][[y[j]]], na.rm = TRUE)
-    xs <- seq_len(length(mean.prev)) + offset
+    xs <- seq_along(mean.prev) + offset
     if (mean.smooth == TRUE) {
       smoother <- suppressWarnings(supsmu(x = xs, y = mean.prev))
       mean.prev <- smoother$y

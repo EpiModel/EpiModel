@@ -1014,7 +1014,6 @@ make_restart_point <- function(sim_obj, time_attrs,
   }
 
   # Fix UIDs
-  n_nodes <- length(run_ls$attr$active)
   uid_offset <- min(run_ls$attr$unique_id) - 1
   run_ls$attr$unique_id <- run_ls$attr$unique_id - uid_offset
   run_ls$last_unique_id <- run_ls$last_unique_id - uid_offset
