@@ -20,7 +20,7 @@ get_sims(x, sims = NULL, var = NULL)
   Either a numeric vector of simulation numbers to retain in the output
   object, or `"mean"`, which selects the one simulation with the value
   of the variable specified in `var` closest to the mean of `var` across
-  all simulations.
+  all simulations at the final step.
 
 - var:
 

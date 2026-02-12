@@ -20,6 +20,8 @@
 - Fix issue with Shiny app for `icm` model class (available with
   `epiweb("icm")` with plotting function if `nsims == 1)`. Also updated
   deprecated Shiny data table output functions.
+- Fix error with `get_sims` related to variable subsetting with the
+  `var` argument.
 
 ### OTHER
 
