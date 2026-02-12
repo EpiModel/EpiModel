@@ -83,28 +83,255 @@
 </li>
 </ul></div>
 <div class="section level2">
-<h2 id="architecture">Architecture<a class="anchor" aria-label="anchor" href="#architecture"></a></h2>
-<div class="section level3">
-<h3 id="modular-simulation-design">Modular Simulation Design<a class="anchor" aria-label="anchor" href="#modular-simulation-design"></a></h3>
-<p>Network simulations (<code>netsim</code>) use a module-based architecture. Each simulation time step executes a sequence of modules:</p>
-<ol style="list-style-type: decimal"><li>
-<strong>Initialization</strong> (<code>net.mod.init.R</code>) - Set up initial conditions</li>
-<li>
-<strong>Network simulation</strong> (<code>net.mod.simnet.R</code>) - Simulate network dynamics via ERGM/STERGM</li>
-<li>
-<strong>Infection</strong> (<code>net.mod.infection.R</code>) - Disease transmission across edges</li>
-<li>
-<strong>Recovery</strong> (<code>net.mod.recovery.R</code>) - Disease recovery transitions</li>
-<li>
-<strong>Vital dynamics</strong> (<code>net.mod.vital.R</code>) - Arrivals and departures</li>
-<li>
-<strong>Network update</strong> (<code>net.mod.nwupdate.R</code>) - Post-step network bookkeeping</li>
-<li>
-<strong>Prevalence</strong> (<code>net.mod.prevalence.R</code>) - Track disease prevalence</li>
-<li>
-<strong>Summary</strong> (<code>net.mod.summary.R</code>) - Record summary statistics</li>
-</ol><p>Users can replace or extend any module via <code><a href="reference/control.net.html">control.net()</a></code> to build custom models. ICM follows a similar but simpler module pattern (<code>icm.mod.*.R</code>).</p>
+<h2 id="what-is-epimodel">What is EpiModel?<a class="anchor" aria-label="anchor" href="#what-is-epimodel"></a></h2>
+<p>EpiModel is an R package for simulating mathematical models of infectious disease dynamics. Its distinguishing capability is stochastic network epidemic modeling grounded in the statistical framework of Exponential-family Random Graph Models (ERGMs). EpiModel supports three classes of epidemic models:</p>
+<ol style="list-style-type: decimal"><li><p><strong>Deterministic Compartmental Models (DCMs)</strong> – solved via ordinary differential equations (using the <code>deSolve</code> package). Population-level, continuous-time, no stochasticity. Good for quick explorations and closed-form analysis.</p></li>
+<li><p><strong>Stochastic Individual Contact Models (ICMs)</strong> – discrete-time agent-based models with random mixing. Each individual is represented but there is no persistent network structure; contacts are drawn randomly each time step.</p></li>
+<li><p><strong>Stochastic Network Models</strong> – the primary focus. These use ERGMs/TERGMs (Temporal ERGMs) to represent dynamic contact networks where partnerships form, persist, and dissolve over time according to statistically estimated rules. Epidemics then propagate across these networks. This is what makes EpiModel unique.</p></li>
+</ol></div>
+<div class="section level2">
+<h2 id="why-network-models-matter-for-epidemics">Why Network Models Matter for Epidemics<a class="anchor" aria-label="anchor" href="#why-network-models-matter-for-epidemics"></a></h2>
+<p>Traditional epidemic models assume random (“mass-action”) mixing: any individual can contact any other individual with equal probability. Real contact patterns are structured – people have a fixed number of partners, partnerships have durations, there is clustering, assortative mixing by attributes like age or race, and concurrency (overlapping partnerships).</p>
+<p>Network models capture these structural features because: - <strong>Degree distributions</strong> control how many partners each person has (not everyone has the same number). - <strong>Relational durations</strong> mean partnerships persist over time, creating sustained transmission opportunities. - <strong>Concurrency</strong> (having multiple simultaneous partners) dramatically accelerates epidemic spread compared to serial monogamy, even when the total number of contacts is identical. - <strong>Assortative mixing</strong> (e.g., by age, race, risk group) creates subpopulation-level dynamics where epidemics can concentrate in or bridge between groups. - <strong>Clustering</strong> (triangles, shared partners) can slow epidemics by trapping transmission within already-infected clusters. - <strong>Feedback</strong> between network and epidemic is possible: behavioral changes in response to infection status (serosorting), demographic turnover that reshapes the network, and interventions that alter contact patterns.</p>
 </div>
+<div class="section level2">
+<h2 id="key-technical-concepts">Key Technical Concepts<a class="anchor" aria-label="anchor" href="#key-technical-concepts"></a></h2>
+<div class="section level3">
+<h3 id="built-in-disease-types">Built-in Disease Types<a class="anchor" aria-label="anchor" href="#built-in-disease-types"></a></h3>
+<p>EpiModel has three built-in compartmental structures: <strong>SI</strong> (Susceptible-Infected), <strong>SIR</strong> (Susceptible-Infected-Recovered), and <strong>SIS</strong> (Susceptible-Infected-Susceptible). These can be run in one-group or two-group configurations, with or without demography (open/closed populations). The extension API allows arbitrary disease states.</p>
+</div>
+<div class="section level3">
+<h3 id="the-network-model-pipeline-5-steps">The Network Model Pipeline (5 Steps)<a class="anchor" aria-label="anchor" href="#the-network-model-pipeline-5-steps"></a></h3>
+<p>This is the core workflow for any network epidemic model:</p>
+<p><strong>Step 1: Initialize the network</strong></p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">nw</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/network_initialize.html">network_initialize</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span>
+<span><span class="va">nw</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/set_vertex_attribute.html">set_vertex_attribute</a></span><span class="op">(</span><span class="va">nw</span>, <span class="st">"risk"</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">1</span>, each <span class="op">=</span> <span class="fl">250</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><strong>Step 2: Parameterize formation and dissolution</strong></p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">formation</span> <span class="op">&lt;-</span> <span class="op">~</span><span class="va">edges</span> <span class="op">+</span> <span class="va">concurrent</span> <span class="op">+</span> <span class="fu">degrange</span><span class="op">(</span>from <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
+<span><span class="va">target.stats</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">175</span>, <span class="fl">110</span>, <span class="fl">0</span><span class="op">)</span></span>
+<span><span class="va">coef.diss</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/dissolution_coefs.html">dissolution_coefs</a></span><span class="op">(</span>dissolution <span class="op">=</span> <span class="op">~</span><span class="fu"><a href="https://rdrr.io/r/stats/offset.html" class="external-link">offset</a></span><span class="op">(</span><span class="va">edges</span><span class="op">)</span>, duration <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></code></pre></div>
+<p>Key formula: <code>target edges = mean_degree * N / 2</code></p>
+<p><strong>Step 3: Estimate the network model</strong></p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">est</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/netest.html">netest</a></span><span class="op">(</span><span class="va">nw</span>, <span class="va">formation</span>, <span class="va">target.stats</span>, <span class="va">coef.diss</span><span class="op">)</span></span></code></pre></div>
+<p><strong>Step 4: Diagnose model fit</strong></p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">dx</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/netdx.html">netdx</a></span><span class="op">(</span><span class="va">est</span>, nsims <span class="op">=</span> <span class="fl">10</span>, nsteps <span class="op">=</span> <span class="fl">1000</span>, ncores <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">dx</span><span class="op">)</span>                        <span class="co"># formation diagnostics</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">dx</span>, type <span class="op">=</span> <span class="st">"duration"</span><span class="op">)</span>     <span class="co"># dissolution diagnostics</span></span></code></pre></div>
+<p><strong>Step 5: Simulate the epidemic</strong></p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">param</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/param.net.html">param.net</a></span><span class="op">(</span>inf.prob <span class="op">=</span> <span class="fl">0.4</span>, act.rate <span class="op">=</span> <span class="fl">2</span>, rec.rate <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span></span>
+<span><span class="va">init</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/init.net.html">init.net</a></span><span class="op">(</span>i.num <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<span><span class="va">control</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/control.net.html">control.net</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"SIS"</span>, nsims <span class="op">=</span> <span class="fl">5</span>, nsteps <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span>
+<span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/netsim.html">netsim</a></span><span class="op">(</span><span class="va">est</span>, <span class="va">param</span>, <span class="va">init</span>, <span class="va">control</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="ergm-terms-reference">ERGM Terms Reference<a class="anchor" aria-label="anchor" href="#ergm-terms-reference"></a></h3>
+<p>ERGM terms define network structure in the formation model. Common terms used in EpiModel:</p>
+<p><strong>Dyad-independent terms</strong> (faster estimation, edge probabilities don’t depend on other edges): - <code>edges</code> – total edge count; controls density. Target = <code>mean_degree * N / 2</code>. - <code>nodefactor("attr")</code> – differential activity by attribute level. Target = <code>mean_degree_of_level * level_size</code>. - <code>nodematch("attr")</code> – assortative mixing (homophily). Target = <code>proportion_matched * total_edges</code>. Use <code>diff=TRUE</code> for per-level homophily. - <code>nodemix("attr")</code> – full mixing matrix by attribute combinations. - <code>nodecov("attr")</code> – sum of continuous attribute values across edges. - <code>absdiff("attr")</code> – sum of absolute differences in continuous attribute across edges (e.g., age homophily).</p>
+<p><strong>Dyad-dependent terms</strong> (require MCMC estimation): - <code>degree(k)</code> – number of nodes with exactly degree k. - <code>degree(0:k, by = "group")</code> – group-stratified degree distribution. - <code>concurrent</code> (alias for <code>mindegree(2)</code>) – number of nodes with 2+ simultaneous partners. - <code>degrange(from = k)</code> – constrain maximum degree (target = 0 means no nodes with degree &gt;= k). - <code>triangles</code> – clustering. - <code>gwesp</code> – geometrically weighted edgewise shared partners (flexible clustering).</p>
+<p><strong>Dissolution models</strong> are limited to dyad-independent terms with <code><a href="https://rdrr.io/r/stats/offset.html" class="external-link">offset()</a></code>:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="op">~</span><span class="fu"><a href="https://rdrr.io/r/stats/offset.html" class="external-link">offset</a></span><span class="op">(</span><span class="va">edges</span><span class="op">)</span>                                     <span class="co"># homogeneous duration</span></span>
+<span><span class="op">~</span><span class="fu"><a href="https://rdrr.io/r/stats/offset.html" class="external-link">offset</a></span><span class="op">(</span><span class="va">edges</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/offset.html" class="external-link">offset</a></span><span class="op">(</span><span class="fu">nodematch</span><span class="op">(</span><span class="st">"race"</span><span class="op">)</span><span class="op">)</span>         <span class="co"># differential duration by attribute match</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="transmission-probability-formula">Transmission Probability Formula<a class="anchor" aria-label="anchor" href="#transmission-probability-formula"></a></h3>
+<p>Per-partnership per-timestep transmission probability:</p>
+<pre><code><span><span class="va">finalProb</span> <span class="op">=</span> <span class="fl">1</span> <span class="op">-</span> <span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">transProb</span><span class="op">)</span><span class="op">^</span><span class="va">actRate</span></span></code></pre>
+<p>Where <code>transProb</code> is the per-act transmission probability and <code>actRate</code> is the number of acts per partnership per time step.</p>
+</div>
+<div class="section level3">
+<h3 id="dissolution-coefficient-adjustment-for-mortality">Dissolution Coefficient Adjustment for Mortality<a class="anchor" aria-label="anchor" href="#dissolution-coefficient-adjustment-for-mortality"></a></h3>
+<p>When modeling open populations with demographic turnover, dissolution coefficients must be adjusted for exogenous edge loss from node departure:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">coef.diss</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/dissolution_coefs.html">dissolution_coefs</a></span><span class="op">(</span><span class="op">~</span><span class="fu"><a href="https://rdrr.io/r/stats/offset.html" class="external-link">offset</a></span><span class="op">(</span><span class="va">edges</span><span class="op">)</span>, duration <span class="op">=</span> <span class="fl">40</span>, d.rate <span class="op">=</span> <span class="fl">0.001</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="network-estimation-methods">Network Estimation Methods<a class="anchor" aria-label="anchor" href="#network-estimation-methods"></a></h3>
+<ul><li>
+<strong>Approximation method</strong> (<code>edapprox = TRUE</code>, default): Uses ERGM for cross-sectional fit with analytic dissolution adjustment. Fast and stable. Best when durations &gt; 50 time steps.</li>
+<li>
+<strong>Direct STERGM</strong> (<code>edapprox = FALSE</code>): Full Separable Temporal ERGM estimation. Necessary when durations are short (~10-25 time steps). Slower but more accurate for short durations.</li>
+</ul></div>
+</div>
+<div class="section level2">
+<h2 id="the-epimodel-extension-api">The EpiModel Extension API<a class="anchor" aria-label="anchor" href="#the-epimodel-extension-api"></a></h2>
+<p>The extension API allows building custom research-level models with arbitrary disease states, demographic processes, interventions, and feedback mechanisms. This is the most powerful and most used feature of EpiModel for applied research.</p>
+<div class="section level3">
+<h3 id="three-core-api-rules">Three Core API Rules<a class="anchor" aria-label="anchor" href="#three-core-api-rules"></a></h3>
+<p><strong>Rule 1 – Function Signature:</strong> Every module function must have exactly this form:</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">module_function</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">dat</span>, <span class="va">at</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="co"># ... processes that update dat ...</span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+<ul><li>
+<code>dat</code> is the master data object containing all model state.</li>
+<li>
+<code>at</code> is the current time step.</li>
+</ul><p><strong>Rule 2 – Accessor Functions:</strong> All data on <code>dat</code> is accessed through getter/setter functions:</p>
+<table class="table"><colgroup><col width="50%"><col width="50%"></colgroup><thead><tr class="header"><th>Function</th>
+<th>Purpose</th>
+</tr></thead><tbody><tr class="odd"><td><code>get_attr(dat, "name")</code></td>
+<td>Read a nodal attribute vector</td>
+</tr><tr class="even"><td><code>set_attr(dat, "name", value)</code></td>
+<td>Write a nodal attribute vector</td>
+</tr><tr class="odd"><td><code>get_param(dat, "name")</code></td>
+<td>Read a model parameter</td>
+</tr><tr class="even"><td><code>get_epi(dat, "name", at)</code></td>
+<td>Read an epidemic summary statistic</td>
+</tr><tr class="odd"><td><code>set_epi(dat, "name", at, value)</code></td>
+<td>Write an epidemic summary statistic</td>
+</tr><tr class="even"><td><code>append_core_attr(dat, at, n.new)</code></td>
+<td>Initialize required attributes for new nodes</td>
+</tr><tr class="odd"><td><code>append_attr(dat, "name", value, n.new)</code></td>
+<td>Append a custom attribute for new nodes</td>
+</tr><tr class="even"><td><code>discord_edgelist(dat, at)</code></td>
+<td>Get susceptible-infected discordant edge pairs</td>
+</tr><tr class="odd"><td><code>set_transmat(dat, del, at)</code></td>
+<td>Record transmission events</td>
+</tr></tbody></table><p><strong>Rule 3 – Three-Step Design Pattern:</strong> Each module: (a) reads inputs from <code>dat</code>, (b) performs stochastic processes on individual nodes, (c) writes updated state back to <code>dat</code>.</p>
+</div>
+<div class="section level3">
+<h3 id="module-classification">Module Classification<a class="anchor" aria-label="anchor" href="#module-classification"></a></h3>
+<ul><li>
+<strong>Standard modules</strong> (typically not modified): initialization, network resimulation, bookkeeping.</li>
+<li>
+<strong>Flexible modules</strong> (designed to be customized): infection, disease progression, departures, arrivals.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="required-nodal-attributes">Required Nodal Attributes<a class="anchor" aria-label="anchor" href="#required-nodal-attributes"></a></h3>
+<p>Every node must have: <code>active</code>, <code>status</code>, <code>infTime</code>, <code>entrTime</code>, <code>exitTime</code>.</p>
+</div>
+<div class="section level3">
+<h3 id="departure-module-api-rule">Departure Module API Rule<a class="anchor" aria-label="anchor" href="#departure-module-api-rule"></a></h3>
+<p>When nodes depart (die), two attributes MUST be set:</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">active</span><span class="op">[</span><span class="va">idsDepts</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">0</span></span>
+<span><span class="va">exitTime</span><span class="op">[</span><span class="va">idsDepts</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">at</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="arrival-module-api-rule">Arrival Module API Rule<a class="anchor" aria-label="anchor" href="#arrival-module-api-rule"></a></h3>
+<p>When nodes arrive (are born), use <code>append_core_attr</code> first (handles <code>active</code>, <code>entrTime</code>, <code>exitTime</code>), then <code>append_attr</code> for every other attribute:</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/net-accessor.html">append_core_attr</a></span><span class="op">(</span><span class="va">dat</span>, at <span class="op">=</span> <span class="va">at</span>, n.new <span class="op">=</span> <span class="va">nArrivals</span><span class="op">)</span></span>
+<span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/net-accessor.html">append_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"status"</span>, <span class="st">"s"</span>, <span class="va">nArrivals</span><span class="op">)</span></span>
+<span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/net-accessor.html">append_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"infTime"</span>, <span class="cn">NA</span>, <span class="va">nArrivals</span><span class="op">)</span></span>
+<span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/net-accessor.html">append_attr</a></span><span class="op">(</span><span class="va">dat</span>, <span class="st">"age"</span>, <span class="fl">0</span>, <span class="va">nArrivals</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="the-statustime-guard-pattern">The statusTime Guard Pattern<a class="anchor" aria-label="anchor" href="#the-statustime-guard-pattern"></a></h3>
+<p>To prevent multiple disease state transitions in a single time step, use a <code>statusTime</code> attribute that tracks when status last changed. Only nodes where <code>statusTime &lt; at</code> are eligible for transition:</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">idsElig</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">active</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">status</span> <span class="op">==</span> <span class="st">"e"</span> <span class="op">&amp;</span> <span class="va">statusTime</span> <span class="op">&lt;</span> <span class="va">at</span><span class="op">)</span></span></code></pre></div>
+<p>After each transition, update: <code>statusTime[transitioned_ids] &lt;- at</code>.</p>
+</div>
+<div class="section level3">
+<h3 id="extension-model-controlnet-setup">Extension Model control.net Setup<a class="anchor" aria-label="anchor" href="#extension-model-controlnet-setup"></a></h3>
+<p>For extension models, <code>type</code> must be <code>NULL</code> and custom module functions are passed by name:</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">control</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/control.net.html">control.net</a></span><span class="op">(</span></span>
+<span>  type <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  nsteps <span class="op">=</span> <span class="fl">500</span>, nsims <span class="op">=</span> <span class="fl">10</span>, ncores <span class="op">=</span> <span class="fl">5</span>,</span>
+<span>  infection.FUN <span class="op">=</span> <span class="va">infect</span>,</span>
+<span>  progress.FUN <span class="op">=</span> <span class="va">progress</span>,</span>
+<span>  aging.FUN <span class="op">=</span> <span class="va">aging</span>,</span>
+<span>  departures.FUN <span class="op">=</span> <span class="va">dfunc</span>,</span>
+<span>  arrivals.FUN <span class="op">=</span> <span class="va">afunc</span>,</span>
+<span>  dx.FUN <span class="op">=</span> <span class="va">dx_covid</span>,</span>
+<span>  resimulate.network <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  tergmLite <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="key-controlnet-parameters">Key control.net Parameters<a class="anchor" aria-label="anchor" href="#key-controlnet-parameters"></a></h3>
+<ul><li>
+<code>resimulate.network = TRUE</code> – required when network depends on changing attributes (feedback, demography).</li>
+<li>
+<code>tergmLite = TRUE</code> – 20-50x faster simulation but does not retain full network object (no network plots at specific time points).</li>
+<li>
+<code>epi.by = "attr"</code> – automatically generates attribute-stratified epidemic statistics (e.g., <code>i.num.risk0</code>, <code>i.num.risk1</code>).</li>
+<li>
+<code>nwstats.formula</code> – track additional network statistics during simulation.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="the-group-attribute-special">The <code>group</code> Attribute (Special)<a class="anchor" aria-label="anchor" href="#the-group-attribute-special"></a></h3>
+<p>The <code>group</code> attribute (values <code>1</code> and <code>2</code> only) is treated specially by EpiModel’s built-in models: - Automatically stratifies epidemic outputs (e.g., <code>i.num</code>, <code>i.num.g2</code>). - Allows group-specific parameters via <code>.g2</code> suffix: <code>inf.prob.g2</code>, <code>rec.rate.g2</code>.</p>
+<p>For more flexible attribute handling (more than 2 groups, non-stratified parameters), use a regular attribute like <code>"risk"</code> with <code>epi.by</code> in <code>control.net</code>.</p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="disease-model-examples-in-the-training-materials">Disease Model Examples in the Training Materials<a class="anchor" aria-label="anchor" href="#disease-model-examples-in-the-training-materials"></a></h2>
+<div class="section level3">
+<h3 id="basic-built-in-models">Basic Built-in Models<a class="anchor" aria-label="anchor" href="#basic-built-in-models"></a></h3>
+<ul><li>
+<strong>SI</strong>: Simple epidemic growth (e.g., HIV without treatment).</li>
+<li>
+<strong>SIR</strong>: Epidemic with recovery and immunity (e.g., measles).</li>
+<li>
+<strong>SIS</strong>: Epidemic with reinfection (e.g., bacterial STIs like gonorrhea).</li>
+</ul></div>
+<div class="section level3">
+<h3 id="custom-dcm-extensions">Custom DCM Extensions<a class="anchor" aria-label="anchor" href="#custom-dcm-extensions"></a></h3>
+<ul><li>
+<strong>SEIR</strong>: Adds exposed/latent stage (e.g., Ebola). Custom ODE function passed to <code>control.dcm(new.mod = SEIR)</code>.</li>
+<li>
+<strong>Variable Mixing (Q-statistic)</strong>: Models assortative/disassortative mixing with continuous Q parameter.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="custom-network-model-extensions">Custom Network Model Extensions<a class="anchor" aria-label="anchor" href="#custom-network-model-extensions"></a></h3>
+<ul><li>
+<strong>SEIR on network</strong>: Adds latent “e” state. Infection transitions S -&gt; E (not S -&gt; I). Separate progression module handles E -&gt; I and I -&gt; R.</li>
+<li>
+<strong>COVID with demography</strong>: SEIR plus age-structured population, age-specific mortality, births, and disease-induced excess mortality.</li>
+<li>
+<strong>COVID with screening and interventions</strong>: States S, E, A (asymptomatic), Ip (preclinical), Ic (clinical symptomatic), R. Includes diagnostic screening module with PCR sensitivity, symptomatic vs. asymptomatic testing rates, case isolation through act rate reduction, and age-dependent clinical pathway probability.</li>
+</ul></div>
+</div>
+<div class="section level2">
+<h2 id="feedback-mechanisms">Feedback Mechanisms<a class="anchor" aria-label="anchor" href="#feedback-mechanisms"></a></h2>
+<p>Network models can incorporate bidirectional feedback between epidemic and network:</p>
+<ol style="list-style-type: decimal"><li>
+<strong>Demography</strong>: Births and deaths change population size and composition, reshaping the network.</li>
+<li>
+<strong>Serosorting</strong>: Using <code>status</code> as an ERGM term causes the network to dynamically respond to changing prevalence. Differential degree by disease status and preferential within-status partnering are modeled via <code>nodefactor("status")</code> and <code>nodematch("status")</code>.</li>
+<li>
+<strong>Behavioral interventions</strong>: Diagnosed individuals can have reduced act rates. Interventions can be time-dependent (starting at a specific time step).</li>
+<li>
+<strong>Built-in vaccine/condom intervention</strong>: <code>inter.eff</code> (efficacy as relative reduction in <code>inf.prob</code>) and <code>inter.start</code> (time step when intervention begins).</li>
+</ol><p>When <code>status</code> is used in the ERGM formation formula, it must be initialized directly on the network object (not via <code>init.net</code>), and <code><a href="reference/init.net.html">init.net()</a></code> is called empty as a placeholder.</p>
+<p>In feedback models, network statistics are NOT preserved at their target levels over time – what is preserved is the log-odds conditional on other terms. As prevalence changes, edge counts and degree distributions shift dynamically.</p>
+</div>
+<div class="section level2">
+<h2 id="output-analysis">Output Analysis<a class="anchor" aria-label="anchor" href="#output-analysis"></a></h2>
+<div class="section level3">
+<h3 id="data-extraction">Data Extraction<a class="anchor" aria-label="anchor" href="#data-extraction"></a></h3>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span>                                    <span class="co"># summary of inputs and outputs</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">sim</span>, at <span class="op">=</span> <span class="fl">500</span><span class="op">)</span>                        <span class="co"># statistics at a specific time step</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span>                            <span class="co"># per-simulation raw data</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">sim</span>, out <span class="op">=</span> <span class="st">"mean"</span><span class="op">)</span>              <span class="co"># means across simulations</span></span>
+<span><span class="fu"><a href="reference/get_network.html">get_network</a></span><span class="op">(</span><span class="va">sim</span>, sim <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>                     <span class="co"># extract networkDynamic object</span></span>
+<span><span class="fu"><a href="reference/get_transmat.html">get_transmat</a></span><span class="op">(</span><span class="va">sim</span>, sim <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>                    <span class="co"># transmission matrix (who infected whom)</span></span>
+<span><span class="fu"><a href="reference/as.phylo.transmat.html">as.phylo.transmat</a></span><span class="op">(</span><span class="fu"><a href="reference/get_transmat.html">get_transmat</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span><span class="op">)</span>          <span class="co"># convert to phylogenetic tree</span></span>
+<span><span class="fu"><a href="reference/mutate_epi.html">mutate_epi</a></span><span class="op">(</span><span class="va">sim</span>, ir <span class="op">=</span> <span class="op">(</span><span class="va">si.flow</span> <span class="op">/</span> <span class="va">s.num</span><span class="op">)</span> <span class="op">*</span> <span class="fl">100</span><span class="op">)</span> <span class="co"># compute derived epidemic statistics</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="visualization">Visualization<a class="anchor" aria-label="anchor" href="#visualization"></a></h3>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span>                                      <span class="co"># compartment sizes over time</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">sim</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"si.flow"</span>, <span class="st">"is.flow"</span><span class="op">)</span><span class="op">)</span>        <span class="co"># flow sizes</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">sim</span>, type <span class="op">=</span> <span class="st">"network"</span>, col.status <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># network colored by disease status</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">dx</span><span class="op">)</span>                                       <span class="co"># formation diagnostics</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">dx</span>, type <span class="op">=</span> <span class="st">"duration"</span><span class="op">)</span>                    <span class="co"># dissolution fit</span></span></code></pre></div>
+</div>
+</div>
+<div class="section level2">
+<h2 id="other-broader-architecture-notes">Other Broader Architecture Notes<a class="anchor" aria-label="anchor" href="#other-broader-architecture-notes"></a></h2>
 <div class="section level3">
 <h3 id="shared-plotting-infrastructure">Shared Plotting Infrastructure<a class="anchor" aria-label="anchor" href="#shared-plotting-infrastructure"></a></h3>
 <p><code>plot.icm</code> (<code>R/plot.icm.R</code>) and <code>plot_netsim_epi</code> (<code>R/plot.netsim.R</code>) share helper functions <code>draw_means()</code> and <code>draw_qnts()</code> defined in <code>R/plot.R</code>. Changes to plotting behavior (e.g., axis offsets, coordinate handling) must be coordinated across all three files. <code>plot.dcm</code> (<code>R/plot.dcm.R</code>) is independent and uses <code>control$timesteps</code> directly for x-coordinates.</p>
@@ -138,7 +365,7 @@
 </div>
 <div class="section level3">
 <h3 id="compiled-code-src">Compiled Code (src/)<a class="anchor" aria-label="anchor" href="#compiled-code-src"></a></h3>
-<p>C/C++ source provides performance-critical functionality: - <code>changestats.users.c</code> - Custom ERGM terms (<code>fuzzynodematch</code>, <code>absdiffby</code>, <code>absdiffnodemix</code>) - <code>updatenw.cpp</code> - Rcpp-based network update operations - <code>RcppExports.cpp</code> - Auto-generated Rcpp bindings (do not edit manually)</p>
+<p>C/C++ source provides additional ERGM terms (like ergm’s built-in nodematch or nodefactor): - <code>changestats.users.c</code> - Custom ERGM terms (<code>fuzzynodematch</code>, <code>absdiffby</code>, <code>absdiffnodemix</code>) - <code>updatenw.cpp</code> - Rcpp-based network update operations - <code>RcppExports.cpp</code> - Auto-generated Rcpp bindings (do not edit manually)</p>
 </div>
 <div class="section level3">
 <h3 id="multi-network-support">Multi-Network Support<a class="anchor" aria-label="anchor" href="#multi-network-support"></a></h3>
@@ -148,6 +375,10 @@
 <div class="section level2">
 <h2 id="dependencies">Dependencies<a class="anchor" aria-label="anchor" href="#dependencies"></a></h2>
 <p>The package heavily depends on the Statnet ecosystem: <code>ergm</code>, <code>tergm</code>, <code>network</code>, <code>networkDynamic</code>, <code>networkLite</code>, <code>statnet.common</code>. Understanding ERGM model specification is important for working with network model code.</p>
+</div>
+<div class="section level2">
+<h2 id="testing-without-full-dependencies">Testing Without Full Dependencies<a class="anchor" aria-label="anchor" href="#testing-without-full-dependencies"></a></h2>
+<p>The Statnet dependencies (ergm, tergm, etc.) are heavy. For changes to core module code (e.g., changes to the infection or recovery module), plotting, or data frame methods, test the logic directly rather than attempting full package installation. Push and rely on CI for integration tests.</p>
 </div>
 </div>
 
