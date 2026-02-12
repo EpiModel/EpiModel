@@ -49,11 +49,11 @@
 #'
 #' @section Displaying Progress:
 #' These functions are using the
-#' [progressr package](https://progressr.futureverse.org/articles/progressr-intro.html)
+#' [progressr package](https://progressr.futureverse.org/articles/progressr-01-intro.html)
 #' to display its progression. Use
 #' \code{progressr::with_progress({ fwd_reach <- get_forward_reachable(el, from = 1, to = 260) })}
 #' to display the progress bar. Or see the
-#' [progressr package](https://progressr.futureverse.org/articles/progressr-intro.html)
+#' [progressr package](https://progressr.futureverse.org/articles/progressr-01-intro.html)
 #' for more information and customization.
 #'
 #' @examples
