@@ -43,6 +43,8 @@
   [`?as.data.frame.icm`](http://epimodel.github.io/EpiModel/reference/as.data.frame.icm.md)
   and `?as.data.frame.net`.
 - Store core nodal attributes as integers for improved performance.
+- Store `epi` trackers as integers by default for improved performance.
+  Automatic `numeric` coercion occurs when necessary.
 - Restore global [`options()`](https://rdrr.io/r/base/options.html)
   state in plotting functions (`comp_plot`) to comply with CRAN policy.
 - Address lintr checks across the package.

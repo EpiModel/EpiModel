@@ -61,6 +61,7 @@
 <li>Add <code>message</code>s when a function restarts from a checkpointed state.</li>
 <li>Make <code>as.data.frame.icm</code> and <code>as.data.frame.net</code> resistant to cases where some summary statistic (“epi”) trackers are smaller than the rest, usually due to restarting. See <code><a href="../reference/as.data.frame.icm.html">?as.data.frame.icm</a></code> and <code>?as.data.frame.net</code>.</li>
 <li>Store core nodal attributes as integers for improved performance.</li>
+<li>Store <code>epi</code> trackers as integers by default for improved performance. Automatic <code>numeric</code> coercion occurs when necessary.</li>
 <li>Restore global <code><a href="https://rdrr.io/r/base/options.html" class="external-link">options()</a></code> state in plotting functions (<code>comp_plot</code>) to comply with CRAN policy.</li>
 <li>Address lintr checks across the package.</li>
 </ul></div>
