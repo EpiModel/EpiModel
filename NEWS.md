@@ -20,6 +20,7 @@
 -   Add `message`s when a function restarts from a checkpointed state.
 -   Make `as.data.frame.icm` and `as.data.frame.net` resistant to cases where some summary statistic ("epi") trackers are smaller than the rest, usually due to restarting. See `?as.data.frame.icm` and `?as.data.frame.net`.
 -   Store core nodal attributes as integers for improved performance.
+-   Store `epi` trackers as integers by default for improved performance. Automatic `numeric` coercion occurs when necessary.
 -   Restore global `options()` state in plotting functions (`comp_plot`) to comply with CRAN policy.
 -   Address lintr checks across the package.
 
