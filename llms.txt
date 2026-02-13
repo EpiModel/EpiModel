@@ -435,8 +435,17 @@ document above.
 - [`plot(`*`<transmat>`*`)`](http://epimodel.github.io/EpiModel/reference/plot.transmat.md)
   : Plot transmat Infection Tree in Three Styles
 
+- [`print(`*`<dcm>`*`)`](http://epimodel.github.io/EpiModel/reference/print.dcm.md)
+  : Print Method for DCM Objects
+
+- [`print(`*`<icm>`*`)`](http://epimodel.github.io/EpiModel/reference/print.icm.md)
+  : Print Method for ICM Objects
+
 - [`print(`*`<netdx>`*`)`](http://epimodel.github.io/EpiModel/reference/print.netdx.md)
   : Utility Function for Printing netdx Object
+
+- [`print(`*`<netsim>`*`)`](http://epimodel.github.io/EpiModel/reference/print.netsim.md)
+  : Print Method for Network Model Simulations
 
 - [`get_forward_reachable()`](http://epimodel.github.io/EpiModel/reference/reachable-nodes.md)
   [`get_backward_reachable()`](http://epimodel.github.io/EpiModel/reference/reachable-nodes.md)

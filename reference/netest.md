@@ -237,7 +237,7 @@ est
 #> Model Form
 #> -----------------------
 #> Formation: ~edges + concurrent
-#> <environment: 0x55a9d71fc1a0>
+#> <environment: 0x55f7645afa90>
 #> Target Statistics: 50 25
 #> Constraints: ~.
 #> 

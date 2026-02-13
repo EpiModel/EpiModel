@@ -146,7 +146,10 @@
 <url><loc>http://epimodel.github.io/EpiModel/reference/prevalence.icm.bip.html</loc></url>
 <url><loc>http://epimodel.github.io/EpiModel/reference/prevalence.icm.html</loc></url>
 <url><loc>http://epimodel.github.io/EpiModel/reference/prevalence.net.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/print.dcm.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/print.icm.html</loc></url>
 <url><loc>http://epimodel.github.io/EpiModel/reference/print.netdx.html</loc></url>
+<url><loc>http://epimodel.github.io/EpiModel/reference/print.netsim.html</loc></url>
 <url><loc>http://epimodel.github.io/EpiModel/reference/print_nwstats_table.html</loc></url>
 <url><loc>http://epimodel.github.io/EpiModel/reference/process_out.net.html</loc></url>
 <url><loc>http://epimodel.github.io/EpiModel/reference/reachable-nodes.html</loc></url>
