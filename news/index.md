@@ -1,6 +1,6 @@
 # Changelog
 
-## EpiModel 2.5.1
+## EpiModel 2.5.5
 
 ### NEW FEATURES
 
@@ -22,6 +22,8 @@
   deprecated Shiny data table output functions.
 - Fix error with `get_sims` related to variable subsetting with the
   `var` argument.
+- Fix `plot.dcm` ignoring custom legend names when `nruns = 1` and
+  multiple compartments are plotted.
 
 ### OTHER
 
@@ -40,6 +42,10 @@
   rest, usually due to restarting. See
   [`?as.data.frame.icm`](http://epimodel.github.io/EpiModel/reference/as.data.frame.icm.md)
   and `?as.data.frame.net`.
+- Store core nodal attributes as integers for improved performance.
+- Restore global [`options()`](https://rdrr.io/r/base/options.html)
+  state in plotting functions (`comp_plot`) to comply with CRAN policy.
+- Address lintr checks across the package.
 
 ## EpiModel 2.5
 

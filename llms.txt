@@ -1,7 +1,7 @@
 # EpiModel
 
 [![CRAN
-Version](http://img.shields.io/badge/Version-2.5.0-orange.svg?style=flat)](https://github.com/EpiModel/EpiModel/releases/tag/v2.5.0)
+Version](https://img.shields.io/badge/Version-2.5.5-orange.svg?style=flat)](https://github.com/EpiModel/EpiModel/releases/tag/v2.5.5)
 [![](http://cranlogs.r-pkg.org/badges/EpiModel?color=blue)](https://CRAN.R-project.org/package=EpiModel)
 [![](http://cranlogs.r-pkg.org/badges/grand-total/EpiModel?color=blue)](https://CRAN.R-project.org/package=EpiModel)
 [![Build
