@@ -20,17 +20,12 @@ R CMD INSTALL .
 # Generate documentation from Roxygen2 comments (updates NAMESPACE and man/)
 Rscript -e 'roxygen2::roxygenise()'
 
-# Run full test suite
-Rscript -e 'testthat::test_dir("tests/testthat")'
+# Full package check -- the primary way to test (tests + examples + CRAN compliance)
+# This runs all unit tests in tests/ AND all examples in man pages
+R CMD build . && _R_CHECK_FORCE_SUGGESTS_=false R CMD check --as-cran --no-manual EpiModel_*.tar.gz
 
-# Run a single test file
-Rscript -e 'testthat::test_file("tests/testthat/test-dcm.R")'
-
-# Full package check (tests + CRAN compliance)
-R CMD check --no-manual .
-
-# Build tarball first, then check (the canonical way)
-R CMD build . && R CMD check EpiModel_*.tar.gz
+# Run a single test file (must load the package first for namespace access)
+Rscript -e 'library(EpiModel); testthat::test_file("tests/testthat/test-dcm.R")'
 
 # Lint the package
 Rscript -e 'lintr::lint_package()'
@@ -39,6 +34,12 @@ Rscript -e 'lintr::lint_package()'
 After modifying any Roxygen2 comments (`#'` blocks) or `@export` tags, re-run `roxygen2::roxygenise()` to regenerate NAMESPACE and man/ files before testing.
 
 After modifying C/C++ code in `src/`, the package must be reinstalled (`R CMD INSTALL .`) before testing.
+
+### Testing Notes
+
+- **Use `R CMD check` as the canonical test method.** It runs all unit tests via `testthat::test_check()` (which properly loads the package namespace) AND runs all documentation examples. There is no need to separately run `test_check` or `test_package` -- `R CMD check` already covers both.
+- **Do NOT use `testthat::test_dir("tests/testthat")`** -- it does not load the package namespace, so internal/unexported functions (e.g., `tedgelist_to_toggles`, `name_saveout_elts`) and re-exported imports (e.g., `networkLite`) will not be found, causing spurious test failures.
+- Use `_R_CHECK_FORCE_SUGGESTS_=false` to skip optional Suggests packages that may not be installed (e.g., `ergm.ego`, `ndtv`, `egor`).
 
 ## Code Style
 
@@ -363,5 +364,42 @@ Models can use multiple network layers (e.g., sexual + needle-sharing networks).
 
 The package heavily depends on the Statnet ecosystem: `ergm`, `tergm`, `network`, `networkDynamic`, `networkLite`, `statnet.common`. Understanding ERGM model specification is important for working with network model code.
 
-## Testing Without Full Dependencies
-The Statnet dependencies (ergm, tergm, etc.) are heavy. For changes to core module code (e.g., changes to the infection or recovery module), plotting, or data frame methods, test the logic directly rather than attempting full package installation. Push and rely on CI for integration tests.
+## Environment Setup for Testing
+
+R is not pre-installed in the Claude Code environment but can be installed. When asked to run a full package test:
+
+1. **Install R 4.5+ from the CRAN repository** (the default Ubuntu repo has an older version):
+   ```bash
+   chmod 1777 /tmp  # fix temp dir permissions if needed
+   wget -qO- https://cloud.r-project.org/bin/linux/ubuntu/marutter_pubkey.asc | \
+     gpg --dearmor -o /usr/share/keyrings/r-project.gpg
+   echo "deb [signed-by=/usr/share/keyrings/r-project.gpg] \
+     https://cloud.r-project.org/bin/linux/ubuntu noble-cran40/" \
+     > /etc/apt/sources.list.d/r-project.list
+   apt-get update && apt-get install -y r-base r-base-dev
+   ```
+
+2. **Install system libraries** needed by R package dependencies:
+   ```bash
+   apt-get install -y libxml2-dev libcurl4-openssl-dev libssl-dev \
+     libfontconfig1-dev libharfbuzz-dev libfribidi-dev libfreetype6-dev \
+     libpng-dev libtiff5-dev libjpeg-dev pandoc
+   ```
+
+3. **Install R package dependencies**:
+   ```r
+   install.packages(c("deSolve", "networkDynamic", "tergm", "statnet.common",
+     "ergm", "network", "networkLite", "collections", "doParallel", "foreach",
+     "RColorBrewer", "ape", "lazyeval", "ggplot2", "tibble", "rlang", "dplyr",
+     "coda", "Rcpp", "testthat", "knitr", "rmarkdown", "progressr", "tidyr",
+     "roxygen2", "lintr", "xml2", "DT", "shiny"),
+     repos = "https://cloud.r-project.org", Ncpus = 4)
+   ```
+
+4. **Install and check** the package:
+   ```bash
+   R CMD INSTALL .
+   R CMD build . && _R_CHECK_FORCE_SUGGESTS_=false R CMD check --as-cran --no-manual EpiModel_*.tar.gz
+   ```
+
+For minor changes (plotting, data frame methods, etc.) where a full environment setup is not warranted, push and rely on CI for integration tests.
