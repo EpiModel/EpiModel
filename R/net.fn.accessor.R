@@ -274,7 +274,7 @@ add_epi <- function(dat, item) {
   if (item %in% names(dat$epi)) {
     stop("Cannot create the epi output, ", item, ": exists already")
   }
-  dat$epi[[item]] <- padded_vector(NA_real_, get_control(dat, "nsteps"))
+  dat$epi[[item]] <- padded_vector(NA_integer_, get_control(dat, "nsteps"))
   return(dat)
 }
 
