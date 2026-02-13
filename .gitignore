@@ -28,3 +28,5 @@ inst/doc
 /Meta/
 .Rprofile
 docs
+*.Rcheck/
+*.tar.gz
