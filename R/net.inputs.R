@@ -1075,7 +1075,6 @@ crosscheck.net <- function(x, param, init, control) {
         if ("i.num" %in% names(init) && nw1 != init1) {
           warning("Overriding init infected settings with network
                   status attribute", call. = FALSE, immediate. = TRUE)
-          if (interactive()) Sys.sleep(4)
         }
       }
 

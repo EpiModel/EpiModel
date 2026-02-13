@@ -98,6 +98,7 @@ comp_plot.icm <- function(x, at = 1, digits = 3, ...) {
 
   ## Change graphical parameters
   ops <- list(mar = par()$mar, mfrow = par()$mfrow, mgp = par()$mgp)
+  old_scipen <- getOption("scipen")
   par(mar = c(0, 0, 2, 0))
   options(scipen = 10)
 
@@ -147,8 +148,11 @@ comp_plot.icm <- function(x, at = 1, digits = 3, ...) {
     }
   }
 
-  # Reset graphical parameters
-  on.exit(par(ops))
+  # Reset graphical parameters and options
+  on.exit({
+    par(ops)
+    options(scipen = old_scipen)
+  })
 }
 
 #' @param run Model run number, for `dcm` class models with multiple runs
@@ -184,6 +188,7 @@ comp_plot.dcm <- function(x, at = 1, digits = 3, run = 1, ...) {
 
   ## Change graphical parameters
   ops <- list(mar = par()$mar, mfrow = par()$mfrow, mgp = par()$mgp)
+  old_scipen <- getOption("scipen")
   par(mar = c(0, 0, 2, 0))
   options(scipen = 10)
 
@@ -233,8 +238,11 @@ comp_plot.dcm <- function(x, at = 1, digits = 3, run = 1, ...) {
     }
   }
 
-  # Reset graphical parameters
-  on.exit(par(ops))
+  # Reset graphical parameters and options
+  on.exit({
+    par(ops)
+    options(scipen = old_scipen)
+  })
 }
 
 ## comp_plot helper utilities ##

@@ -1,4 +1,4 @@
-## EpiModel 2.5.1
+## EpiModel 2.5.5
 
 ### NEW FEATURES
 
@@ -9,6 +9,7 @@
 
 -   Fix issue with Shiny app for `icm` model class (available with `epiweb("icm")` with plotting function if `nsims == 1)`. Also updated deprecated Shiny data table output functions.
 -   Fix error with `get_sims` related to variable subsetting with the `var` argument.
+-   Fix `plot.dcm` ignoring custom legend names when `nruns = 1` and multiple compartments are plotted.
 
 ### OTHER
 
@@ -18,6 +19,9 @@
 -   Use `arg = NULL` in function definition instead of `missing(arg)` in function body when possible.
 -   Add `message`s when a function restarts from a checkpointed state.
 -   Make `as.data.frame.icm` and `as.data.frame.net` resistant to cases where some summary statistic ("epi") trackers are smaller than the rest, usually due to restarting. See `?as.data.frame.icm` and `?as.data.frame.net`.
+-   Store core nodal attributes as integers for improved performance.
+-   Restore global `options()` state in plotting functions (`comp_plot`) to comply with CRAN policy.
+-   Address lintr checks across the package.
 
 ## EpiModel 2.5
 
