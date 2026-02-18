@@ -27,7 +27,7 @@ test_that("netest works with offset.coef terms", {
   nw <- network_initialize(n = 100)
   nw <- set_vertex_attribute(nw, "role", rep(c("I", "V", "R"), c(10, 80, 10)))
   est <- netest(nw, formation = ~edges + offset(nodematch("role", diff = TRUE,
-                                                          keep = 1:2)),
+                                                          levels = 1:2)),
                 coef.form = c(-Inf, -Inf), target.stats = c(40),
                 coef.diss = dissolution_coefs(~offset(edges), 52 * 2, 0.0009),
                 verbose = FALSE)

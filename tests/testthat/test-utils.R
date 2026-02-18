@@ -110,7 +110,7 @@ test_that("get_degree", {
   sim <- simulate(fit, dynamic = FALSE)
 
   # Slow ERGM-based method
-  ergm.method <- unname(summary(sim ~ sociality(base = 0)))
+  ergm.method <- unname(summary(sim ~ sociality(nodes = TRUE)))
   ergm.method
 
   # Fast tabulate method with network object
