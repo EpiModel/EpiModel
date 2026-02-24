@@ -120,7 +120,7 @@ for (trim in c(FALSE, TRUE)) {
     dissolution <- ~offset(edges)
     duration <- 40
     coef.diss <- dissolution_coefs(dissolution, duration)
-    formation <- ~edges + offset(nodemix("loc", base = c(1, 3)))
+    formation <- ~edges + offset(nodemix("loc", levels2 = -c(1, 3)))
     target.stats <- 15
     est2 <- netest(nw, formation, target.stats, coef.diss, coef.form = -Inf,
                    verbose = FALSE)
@@ -163,7 +163,7 @@ for (trim in c(FALSE, TRUE)) {
     nw <- network_initialize(n = n)
     nw <- set_vertex_attribute(nw, "loc", rep(0:1, each = n / 2))
     coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 40)
-    formation <- ~edges + nodemix("loc", base = c(1, 3))
+    formation <- ~edges + nodemix("loc", levels2 = -c(1, 3))
     target.stats <- c(15, 0)
     est3 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
     if (trim == TRUE) {
