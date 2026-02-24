@@ -212,6 +212,9 @@ coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 10)
 est <- netest(nw, formation, target.stats, coef.diss,
               set.control.ergm = control.ergm(MCMC.burnin = 1e5,
                                               MCMC.interval = 1000))
+#> Starting simulated annealing (SAN)
+#> Iteration 1 of at most 4
+#> Finished simulated annealing
 #> Starting maximum pseudolikelihood estimation (MPLE):
 #> Obtaining the responsible dyads.
 #> Evaluating the predictor and response matrix.
@@ -237,7 +240,7 @@ est
 #> Model Form
 #> -----------------------
 #> Formation: ~edges + concurrent
-#> <environment: 0x55f7645afa90>
+#> <environment: 0x5622ec3c3390>
 #> Target Statistics: 50 25
 #> Constraints: ~.
 #> 

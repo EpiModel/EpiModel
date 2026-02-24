@@ -38,6 +38,9 @@ est <- netest(nw,
   coef.diss = dissolution_coefs(~offset(edges), 10, 0),
   verbose = FALSE
 )
+#> Starting simulated annealing (SAN)
+#> Iteration 1 of at most 4
+#> Finished simulated annealing
 #> Starting maximum pseudolikelihood estimation (MPLE):
 #> Obtaining the responsible dyads.
 #> Evaluating the predictor and response matrix.
@@ -330,6 +333,9 @@ est <- netest(
   coef.diss = dissolution_coefs(~offset(edges), 10, 0),
   verbose = FALSE
 )
+#> Starting simulated annealing (SAN)
+#> Iteration 1 of at most 4
+#> Finished simulated annealing
 #> Starting maximum pseudolikelihood estimation (MPLE):
 #> Obtaining the responsible dyads.
 #> Evaluating the predictor and response matrix.
@@ -829,6 +835,9 @@ est <- netest(
   coef.diss = dissolution_coefs(~offset(edges), 10, 0),
   verbose = FALSE
 )
+#> Starting simulated annealing (SAN)
+#> Iteration 1 of at most 4
+#> Finished simulated annealing
 #> Starting maximum pseudolikelihood estimation (MPLE):
 #> Obtaining the responsible dyads.
 #> Evaluating the predictor and response matrix.

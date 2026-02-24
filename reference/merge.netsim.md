@@ -101,6 +101,9 @@ nw <- network_initialize(n = 100)
 coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 10)
 est <- netest(nw, formation = ~edges, target.stats = 25,
               coef.diss = coef.diss, verbose = FALSE)
+#> Starting simulated annealing (SAN)
+#> Iteration 1 of at most 4
+#> Finished simulated annealing
 #> Starting maximum pseudolikelihood estimation (MPLE):
 #> Obtaining the responsible dyads.
 #> Evaluating the predictor and response matrix.

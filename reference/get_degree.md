@@ -40,6 +40,9 @@ nw <- network_initialize(n = 500)
 
 set.seed(1)
 fit <- ergm(nw ~ edges, target.stats = 250)
+#> Starting simulated annealing (SAN)
+#> Iteration 1 of at most 4
+#> Finished simulated annealing
 #> Starting maximum pseudolikelihood estimation (MPLE):
 #> Obtaining the responsible dyads.
 #> Evaluating the predictor and response matrix.

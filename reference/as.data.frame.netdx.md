@@ -51,6 +51,9 @@ coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
 
 # Model estimation
 est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
+#> Starting simulated annealing (SAN)
+#> Iteration 1 of at most 4
+#> Finished simulated annealing
 #> Starting maximum pseudolikelihood estimation (MPLE):
 #> Obtaining the responsible dyads.
 #> Evaluating the predictor and response matrix.

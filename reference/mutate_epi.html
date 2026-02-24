@@ -92,6 +92,9 @@ or <code>netsim</code>.</p>
 <span class="r-in"><span><span class="va">target.stats</span> <span class="op">&lt;-</span> <span class="fl">50</span></span></span>
 <span class="r-in"><span><span class="va">coef.diss</span> <span class="op">&lt;-</span> <span class="fu"><a href="dissolution_coefs.html">dissolution_coefs</a></span><span class="op">(</span>dissolution <span class="op">=</span> <span class="op">~</span><span class="fu"><a href="https://rdrr.io/r/stats/offset.html" class="external-link">offset</a></span><span class="op">(</span><span class="va">edges</span><span class="op">)</span>, duration <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">est1</span> <span class="op">&lt;-</span> <span class="fu"><a href="netest.html">netest</a></span><span class="op">(</span><span class="va">nw</span>, <span class="va">formation</span>, <span class="va">target.stats</span>, <span class="va">coef.diss</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Starting simulated annealing (SAN)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Iteration 1 of at most 4</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Finished simulated annealing</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Starting maximum pseudolikelihood estimation (MPLE):</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Obtaining the responsible dyads.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Evaluating the predictor and response matrix.</span>
