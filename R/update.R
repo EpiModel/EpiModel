@@ -117,15 +117,20 @@ add_vertices <- function(el, nv) {
 delete_vertices <- function(el, vid) {
 
   vid <- sort(vid)
+  n <- attr(el, "n")
 
-  new.el <- delete_edges(el, vid)
-  if (length(vid) > 0 && NROW(new.el) > 0) {
-    o1 <- order(new.el[, 1])
-    new.el[, 1] <- shiftVec(new.el[o1, 1], vid)[order(o1)]
-    o2 <- order(new.el[, 2])
-    new.el[, 2] <- shiftVec(new.el[o2, 2], vid)[order(o2)]
+  if (!is.null(n) && length(vid) > 0 && NROW(el) > 0) {
+    new.el <- delete_vertices_cpp(el, vid, n)
+  } else {
+    new.el <- delete_edges(el, vid)
+    if (length(vid) > 0 && NROW(new.el) > 0) {
+      o1 <- order(new.el[, 1])
+      new.el[, 1] <- shiftVec(new.el[o1, 1], vid)[order(o1)]
+      o2 <- order(new.el[, 2])
+      new.el[, 2] <- shiftVec(new.el[o2, 2], vid)[order(o2)]
+    }
   }
-  if (!is.null(attr(el, "n"))) attr(new.el, "n") <- attr(el, "n") - length(vid)
+  if (!is.null(n)) attr(new.el, "n") <- n - length(vid)
 
   return(new.el)
 }

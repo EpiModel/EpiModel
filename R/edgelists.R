@@ -225,34 +225,34 @@ update_cumulative_edgelist <- function(dat, network, truncate = 0) {
     el_cuml_hist <- el_cuml_hist[rel.age <= truncate, ]
   }
 
-  el <- tibble::tibble(
-    head = get_unique_ids(dat, el[, 1]),
-    tail = get_unique_ids(dat, el[, 2]),
-    current = TRUE
+  # Convert current edgelist node IDs to unique IDs
+  cur_head <- get_unique_ids(dat, el[, 1])
+  cur_tail <- get_unique_ids(dat, el[, 2])
+
+  # Use C++ hash join to categorize edges
+  result <- update_cuml_edgelist_cpp(
+    el_cuml_cur$head, el_cuml_cur$tail, el_cuml_cur$start,
+    cur_head, cur_tail,
+    at
   )
 
-  el_cuml_cur <- dplyr::full_join(el_cuml_cur, el, by = c("head", "tail"))
+  # Build updated active cumulative edgelist
+  el_cuml_cur <- tibble::tibble(
+    head  = result$active_head,
+    tail  = result$active_tail,
+    start = result$active_start,
+    stop  = rep(NA_real_, length(result$active_head))
+  )
 
-  # new edges
-  new_edges_ids <- which(is.na(el_cuml_cur$start))
-  if (length(new_edges_ids) > 0) {
-    el_cuml_cur[new_edges_ids, ]$start <- at
-  }
-
-  # terminated edges
-  terminated_edges_ids <- which(is.na(el_cuml_cur$current))
-  el_cuml_cur$current <- NULL
-
-  if (length(terminated_edges_ids) > 0) {
-    el_cuml_term <- el_cuml_cur[terminated_edges_ids, ]
-
-    # with truncate == 0, don't save any historic edges
-    if (truncate != 0) {
-      el_cuml_term$stop <- at - 1
-      el_cuml_hist <- dplyr::bind_rows(el_cuml_hist, el_cuml_term)
-    }
-
-    el_cuml_cur <- el_cuml_cur[-terminated_edges_ids, ]
+  # Handle terminated edges
+  if (length(result$term_head) > 0 && truncate != 0) {
+    el_cuml_term <- tibble::tibble(
+      head  = result$term_head,
+      tail  = result$term_tail,
+      start = result$term_start,
+      stop  = result$term_stop
+    )
+    el_cuml_hist <- dplyr::bind_rows(el_cuml_hist, el_cuml_term)
   }
 
   dat <- set_raw_elcuml(dat, network, el_cuml_cur, active = TRUE)

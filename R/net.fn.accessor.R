@@ -227,7 +227,7 @@ remove_node_attr <- function(dat, posit_ids) {
   }
   assert_valid_posit_ids(dat, posit_ids)
   attr_list <- raw_get_attr_list(dat)
-  attr_list <- lapply(attr_list, function(x) x[-posit_ids])
+  attr_list <- remove_node_attr_cpp(attr_list, as.integer(posit_ids))
   dat <- raw_set_attr_list(dat, attr_list)
   return(dat)
 }

@@ -10,6 +10,49 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
+// remove_node_attr_cpp
+List remove_node_attr_cpp(List attr_list, IntegerVector posit_ids);
+RcppExport SEXP _EpiModel_remove_node_attr_cpp(SEXP attr_listSEXP, SEXP posit_idsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type attr_list(attr_listSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type posit_ids(posit_idsSEXP);
+    rcpp_result_gen = Rcpp::wrap(remove_node_attr_cpp(attr_list, posit_ids));
+    return rcpp_result_gen;
+END_RCPP
+}
+// discord_edgelist_cpp
+List discord_edgelist_cpp(IntegerMatrix el, CharacterVector status, IntegerVector active, CharacterVector infstat, int at_val);
+RcppExport SEXP _EpiModel_discord_edgelist_cpp(SEXP elSEXP, SEXP statusSEXP, SEXP activeSEXP, SEXP infstatSEXP, SEXP at_valSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< IntegerMatrix >::type el(elSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type status(statusSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type active(activeSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type infstat(infstatSEXP);
+    Rcpp::traits::input_parameter< int >::type at_val(at_valSEXP);
+    rcpp_result_gen = Rcpp::wrap(discord_edgelist_cpp(el, status, active, infstat, at_val));
+    return rcpp_result_gen;
+END_RCPP
+}
+// update_cuml_edgelist_cpp
+List update_cuml_edgelist_cpp(NumericVector cuml_head, NumericVector cuml_tail, NumericVector cuml_start, NumericVector cur_head, NumericVector cur_tail, int at);
+RcppExport SEXP _EpiModel_update_cuml_edgelist_cpp(SEXP cuml_headSEXP, SEXP cuml_tailSEXP, SEXP cuml_startSEXP, SEXP cur_headSEXP, SEXP cur_tailSEXP, SEXP atSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type cuml_head(cuml_headSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type cuml_tail(cuml_tailSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type cuml_start(cuml_startSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type cur_head(cur_headSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type cur_tail(cur_tailSEXP);
+    Rcpp::traits::input_parameter< int >::type at(atSEXP);
+    rcpp_result_gen = Rcpp::wrap(update_cuml_edgelist_cpp(cuml_head, cuml_tail, cuml_start, cur_head, cur_tail, at));
+    return rcpp_result_gen;
+END_RCPP
+}
 // shiftVec
 IntegerVector shiftVec(IntegerVector x, IntegerVector y);
 RcppExport SEXP _EpiModel_shiftVec(SEXP xSEXP, SEXP ySEXP) {
@@ -22,9 +65,26 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// delete_vertices_cpp
+IntegerMatrix delete_vertices_cpp(IntegerMatrix el, IntegerVector vid, int n);
+RcppExport SEXP _EpiModel_delete_vertices_cpp(SEXP elSEXP, SEXP vidSEXP, SEXP nSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< IntegerMatrix >::type el(elSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type vid(vidSEXP);
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    rcpp_result_gen = Rcpp::wrap(delete_vertices_cpp(el, vid, n));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_EpiModel_remove_node_attr_cpp", (DL_FUNC) &_EpiModel_remove_node_attr_cpp, 2},
+    {"_EpiModel_discord_edgelist_cpp", (DL_FUNC) &_EpiModel_discord_edgelist_cpp, 5},
+    {"_EpiModel_update_cuml_edgelist_cpp", (DL_FUNC) &_EpiModel_update_cuml_edgelist_cpp, 6},
     {"_EpiModel_shiftVec", (DL_FUNC) &_EpiModel_shiftVec, 2},
+    {"_EpiModel_delete_vertices_cpp", (DL_FUNC) &_EpiModel_delete_vertices_cpp, 3},
     {NULL, NULL, 0}
 };
 
