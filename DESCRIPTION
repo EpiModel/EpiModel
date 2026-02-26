@@ -53,11 +53,13 @@ Imports:
     coda,
     networkLite (>= 1.0.5)
 Suggests:
+    bslib (>= 0.6.0),
     DT,
     ergm.ego (>= 1.1.0),
     egor,
     knitr,
     ndtv,
+    plotly (>= 4.10.0),
     rmarkdown,
     shiny,
     testthat,

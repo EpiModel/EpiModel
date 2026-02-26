@@ -34,6 +34,14 @@
 #'
 epiweb <- function(class, ...) {
   if (class == "dcm") {
+    if (!requireNamespace("shiny", quietly = TRUE)) {
+      stop("Package \"shiny\" is required. Install with: ",
+           "install.packages(\"shiny\")", call. = FALSE)
+    }
+    if (!requireNamespace("bslib", quietly = TRUE)) {
+      stop("Package \"bslib\" is required for the DCM app. Install with: ",
+           "install.packages(\"bslib\")", call. = FALSE)
+    }
     shiny::runApp(system.file("shiny", "epidcm", package = "EpiModel"), ...)
   } else if (class == "icm") {
     shiny::runApp(system.file("shiny", "epiicm", package = "EpiModel"), ...)
