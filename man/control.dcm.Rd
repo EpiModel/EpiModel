@@ -8,7 +8,7 @@ control.dcm(
   type,
   nsteps,
   dt = 1,
-  odemethod = "rk4",
+  odemethod = "lsoda",
   dede = FALSE,
   new.mod = NULL,
   sens.param = TRUE,
@@ -32,8 +32,8 @@ solutions for fractional time steps may be obtained by setting this to
 a number between 0 and 1.}
 
 \item{odemethod}{Ordinary differential equation (ODE) integration method,
-with the default of the "Runge-Kutta 4" method (see \code{\link[deSolve:ode]{deSolve::ode}}
-for other options).}
+with the default of \code{"lsoda"} (see \code{\link[deSolve:ode]{deSolve::ode}} for other
+options).}
 
 \item{dede}{If \code{TRUE}, use the delayed differential equation solver,
 which allows for time-lagged variables.}
@@ -66,6 +66,17 @@ compartmental models solved with the \code{\link[=dcm]{dcm()}} function. Control
 required for both base model types and original models. For all base models,
 the \code{type} argument is a necessary parameter and it has no default.
 }
+\section{ODE Solver}{
+
+As of EpiModel 2.5.5, the default ODE solver was changed from \code{"rk4"}
+(fixed-step Runge-Kutta 4) to \code{"lsoda"} (adaptive step-size). The \code{"lsoda"}
+method automatically adjusts its internal step size, providing numerical
+stability across a wide range of parameter values. The fixed-step \code{"rk4"}
+solver could produce numerical instability (negative compartment sizes, NaN
+values) for models with high transmission rates or stiff dynamics. Users who
+require the previous behavior can set \code{odemethod = "rk4"} explicitly.
+}
+
 \section{New Model Functions}{
 
 The form of the model function for base models may be displayed with the

@@ -1,5 +1,9 @@
 ## EpiModel 2.5.5
 
+### BREAKING CHANGES
+
+-   Changed the default ODE solver in `control.dcm()` from `"rk4"` (fixed-step Runge-Kutta 4) to `"lsoda"` (adaptive step-size). The `"lsoda"` solver automatically adjusts its internal step size, preventing numerical instability (negative compartment sizes, NaN values) that could occur with `"rk4"` for models with high transmission rates or stiff dynamics. Users who require the previous behavior can set `odemethod = "rk4"` explicitly in `control.dcm()`. The `"lsoda"` method is also the default solver in the `deSolve` package.
+
 ### NEW FEATURES
 
 -   Export a `make_restart_point` function that takes in a `netsim` simulation object, truncate it to the smallest set of elements required to restart new simulations from. See `?make_restart_point`.
