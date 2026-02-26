@@ -46,9 +46,9 @@ shinyServer(function(input, output, session) {
       updateCheckboxInput(session, "enable_sensitivity", value = FALSE)
     } else if (input$preset == "Measles-like (SIR)") {
       updateSelectInput(session, "modtype", selected = "SIR")
-      updateSliderInput(session, "inf.prob", value = 0.9)
-      updateSliderInput(session, "act.rate", value = 12)
-      updateSliderInput(session, "rec.rate", value = round(1 / 8, 3))
+      updateSliderInput(session, "inf.prob", value = 0.5)
+      updateSliderInput(session, "act.rate", value = 3)
+      updateSliderInput(session, "rec.rate", value = 0.1)
       updateNumericInput(session, "s.num", value = 10000)
       updateNumericInput(session, "i.num", value = 1)
       updateNumericInput(session, "r.num", value = 0)
@@ -91,15 +91,6 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "sens_param", choices = choices)
   })
 
-  # Update time slider range when nsteps changes
-  observe({
-    ns <- input$nsteps
-    if (!is.null(ns) && !is.na(ns) && ns >= 1) {
-      updateSliderInput(session, "summTs",
-                        max = ns,
-                        value = min(input$summTs, ns))
-    }
-  })
 
 
   # =========================================================================
@@ -152,11 +143,11 @@ shinyServer(function(input, output, session) {
     control.dcm(type = input$modtype,
                 nsteps = input$nsteps,
                 dt = 1,
-                odemethod = "rk4",
+                odemethod = "lsoda",
                 verbose = FALSE)
   })
 
-  mod <- eventReactive(input$runMod, {
+  mod <- reactive({
     validate(
       need(input$s.num > 0, "Number susceptible must be positive"),
       need(input$i.num >= 0, "Number infected cannot be negative"),
@@ -176,120 +167,6 @@ shinyServer(function(input, output, session) {
         NULL
       }
     )
-  }, ignoreNULL = FALSE)
-
-
-  # =========================================================================
-  # Key Measures
-  # =========================================================================
-  output$keyMeasures <- renderUI({
-    m <- mod()
-    req(m)
-
-    # R0 calculation
-    p <- m$param
-    if (input$modtype == "SI") {
-      r0_val <- p$inf.prob[1] * p$act.rate[1]
-      r0_label <- "Force of Infection"
-      r0_formula <- "inf.prob \u00D7 act.rate"
-    } else {
-      removal <- p$rec.rate[1]
-      if (!is.null(p$di.rate)) removal <- removal + p$di.rate[1]
-      r0_val <- (p$inf.prob[1] * p$act.rate[1]) / removal
-      r0_label <- HTML("R<sub>0</sub>")
-      r0_formula <- "inf.prob \u00D7 act.rate / removal rate"
-    }
-
-    # Get time-specific measures (use run 1 for multi-run models)
-    ts <- input$summTs
-    df <- as.data.frame(m, run = 1)
-    ts_row <- df[df$time == ts, ]
-    if (nrow(ts_row) > 0) {
-      row <- ts_row[1, ]
-      prev <- round(row$i.num / row$num, 4)
-      if ("si.flow" %in% names(row) && !is.na(row$si.flow)) {
-        inc <- round(row$si.flow, 1)
-      } else {
-        inc <- NA
-      }
-    } else {
-      prev <- NA
-      inc <- NA
-    }
-
-    tagList(
-      div(class = "mb-2",
-          tags$strong(r0_label), ": ",
-          tags$span(round(r0_val, 2), class = "text-primary fs-5"),
-          br(),
-          tags$small(class = "text-muted", r0_formula)
-      ),
-      hr(class = "my-2"),
-      div(class = "mb-2",
-          tags$strong("Prevalence"),
-          tags$small(paste0(" (t=", ts, ")")), ": ",
-          tags$span(
-            if (!is.na(prev)) paste0(round(prev * 100, 1), "%") else "---",
-            class = "text-danger"
-          )
-      ),
-      div(class = "mb-1",
-          tags$strong("New Infections"),
-          tags$small(paste0(" (t=", ts, ")")), ": ",
-          tags$span(
-            if (!is.na(inc)) inc else "---",
-            class = "text-warning"
-          )
-      )
-    )
-  })
-
-
-  # =========================================================================
-  # Main Plot (base R)
-  # =========================================================================
-  base_plot <- function() {
-    m <- mod()
-    req(m)
-
-    par(mar = c(3.5, 3.5, 1.2, 1), mgp = c(2.1, 1, 0))
-
-    if (input$compsel == "Compartment Prevalence") {
-      plot(m, popfrac = TRUE, lwd = 3, legend = "full",
-           leg.cex = 1.1, main = "")
-    } else if (input$compsel == "Compartment Size") {
-      plot(m, popfrac = FALSE, lwd = 3, legend = "full",
-           leg.cex = 1.1, main = "")
-    } else if (input$compsel == "Disease Incidence") {
-      plot(m, y = "si.flow", popfrac = FALSE, lwd = 3,
-           legend = "n", main = "")
-    } else if (input$compsel == "Recovery Flow") {
-      plot(m, y = "ir.flow", popfrac = FALSE, lwd = 3,
-           legend = "n", main = "")
-    } else if (input$compsel == "Re-susceptibility Flow") {
-      plot(m, y = "is.flow", popfrac = FALSE, lwd = 3,
-           legend = "n", main = "")
-    } else if (input$compsel == "Arrival Flow") {
-      plot(m, y = "a.flow", popfrac = FALSE, lwd = 3,
-           legend = "n", main = "")
-    } else if (input$compsel == "Departure Flows") {
-      y_flows <- "ds.flow"
-      if ("di.flow" %in% names(m$epi)) y_flows <- c(y_flows, "di.flow")
-      if ("dr.flow" %in% names(m$epi)) y_flows <- c(y_flows, "dr.flow")
-      plot(m, y = y_flows, popfrac = FALSE, lwd = 3,
-           legend = "full", leg.cex = 1.1, main = "")
-    }
-
-    # Draw intervention line
-    if (input$enable_intervention && !is.null(m$param$inter.eff)) {
-      abline(v = m$param$inter.start, lty = 2, col = "#95A5A6", lwd = 1.5)
-      mtext("intervention", side = 3, at = m$param$inter.start,
-            cex = 0.7, col = "#95A5A6")
-    }
-  }
-
-  output$MainPlot <- renderPlot({
-    base_plot()
   })
 
 
@@ -298,7 +175,7 @@ shinyServer(function(input, output, session) {
   # =========================================================================
   output$plotlyUI <- renderUI({
     if (requireNamespace("plotly", quietly = TRUE)) {
-      plotly::plotlyOutput("MainPlotly", height = "450px")
+      plotly::plotlyOutput("MainPlotly", height = "675px")
     } else {
       helpText("Install the 'plotly' package for interactive plots: ",
                tags$code("install.packages(\"plotly\")"))
@@ -368,21 +245,34 @@ shinyServer(function(input, output, session) {
         }
       } else {
         p <- plotly::plot_ly()
-        run_names <- names(m$epi[[plot_cols[1]]])
+
+        # Get sensitivity parameter values for legend labels
+        sens_param_name <- input$sens_param
+        sens_vals <- m$param[[sens_param_name]]
+        run_labels <- paste0(sens_param_name, " = ", round(sens_vals, 4))
+
+        # For multi-run, reduce to primary variable to match base R plot.dcm
+        is_prev <- input$compsel == "Compartment Prevalence"
+        if (is_prev) {
+          plot_cols <- "i.num.prev"
+          y_label <- "Prevalence (Infected)"
+        } else if (input$compsel == "Compartment Size") {
+          plot_cols <- "i.num"
+          y_label <- "Number Infected"
+        }
+
         palette <- grDevices::colorRampPalette(c("#3498DB", "#E74C3C"))(nruns)
         for (i in seq_len(nruns)) {
+          run_df <- as.data.frame(m, run = i)
+          if (is_prev) {
+            run_df[["i.num.prev"]] <- run_df$i.num / run_df$num
+          }
           for (col in plot_cols) {
-            run_df <- as.data.frame(m, run = i)
             p <- plotly::add_trace(
               p, x = run_df$time, y = run_df[[col]],
               type = "scatter", mode = "lines",
-              name = if (length(plot_cols) == 1) {
-                run_names[i]
-              } else {
-                paste(col, run_names[i])
-              },
-              line = list(color = palette[i], width = 2),
-              legendgroup = run_names[i]
+              name = run_labels[i],
+              line = list(color = palette[i], width = 2)
             )
           }
         }
@@ -424,43 +314,217 @@ shinyServer(function(input, output, session) {
   output$dlMainPlot <- downloadHandler(
     filename = "EpiModel_DCM_Plot.pdf",
     content = function(file) {
-      pdf(file = file, height = 6, width = 10)
-      base_plot()
+      m <- mod()
+      req(m)
+      pdf(file = file, height = 8, width = 12)
+      par(mar = c(3.5, 3.5, 1.2, 1), mgp = c(2.1, 1, 0))
+      if (input$compsel == "Compartment Prevalence") {
+        plot(m, popfrac = TRUE, lwd = 3, legend = "full",
+             leg.cex = 1.1, main = "")
+      } else if (input$compsel == "Compartment Size") {
+        plot(m, popfrac = FALSE, lwd = 3, legend = "full",
+             leg.cex = 1.1, main = "")
+      } else if (input$compsel == "Disease Incidence") {
+        plot(m, y = "si.flow", popfrac = FALSE, lwd = 3,
+             legend = "n", main = "")
+      } else {
+        plot(m, popfrac = TRUE, lwd = 3, legend = "full",
+             leg.cex = 1.1, main = "")
+      }
       dev.off()
     }
   )
 
 
   # =========================================================================
-  # Compartment Diagram
-  # =========================================================================
-  output$CompPlot <- renderPlot({
-    m <- mod()
-    req(m)
-
-    ts <- input$summTs
-    if (is.na(ts)) ts <- 1
-    ts <- max(1, min(ts, m$control$nsteps))
-
-    # comp_plot only supports 1-group models
-    if (m$param$groups == 1) {
-      comp_plot(m, at = ts, digits = 1)
-    }
-  })
-
-
-  # =========================================================================
   # Summary
   # =========================================================================
-  output$outSummary <- renderPrint({
+  output$outSummary <- renderUI({
     m <- mod()
     req(m)
 
-    ts <- input$summTs
-    if (is.na(ts)) ts <- 1
-    ts <- max(1, min(ts, m$control$nsteps))
+    p <- m$param
+    nruns <- m$control$nruns
+    type <- m$control$type
+    df <- as.data.frame(m, run = 1)
+    nsteps <- m$control$nsteps
 
-    summary(m, at = ts, digits = 3)
+    # Helper for styled stat boxes
+    stat_box <- function(label, value, color = "#2C3E50") {
+      div(
+        class = "d-inline-block text-center me-4 mb-2",
+        style = "min-width: 100px;",
+        div(style = paste0("font-size: 1.17rem; font-weight: 500; color: ", color, ";"),
+            value),
+        div(class = "text-muted", style = "font-size: 0.81rem;", label)
+      )
+    }
+
+    # --- R0 / Force of Infection ---
+    if (type == "SI") {
+      foi <- p$inf.prob[1] * p$act.rate[1]
+      r0_section <- tagList(
+        tags$h6(class = "text-uppercase fw-semibold mb-2", "Transmission"),
+        stat_box("Force of Infection", round(foi, 2), "#E74C3C"),
+        p(class = "text-muted", style = "font-size: 0.81rem;",
+          "In SI models, all infections are permanent.",
+          "The force of infection (inf.prob \u00D7 act.rate) determines",
+          "how quickly the susceptible population is depleted.")
+      )
+    } else {
+      removal <- p$rec.rate[1]
+      if (!is.null(p$di.rate)) removal <- removal + p$di.rate[1]
+      r0 <- (p$inf.prob[1] * p$act.rate[1]) / removal
+      if (r0 > 1) {
+        r0_interp <- "greater than 1, so the infection will spread in the population."
+      } else if (r0 == 1) {
+        r0_interp <- "exactly 1, so the epidemic is at a tipping point."
+      } else {
+        r0_interp <- "less than 1, so the infection will die out."
+      }
+      r0_section <- tagList(
+        tags$h6(class = "text-uppercase fw-semibold mb-2", "Transmission"),
+        stat_box(HTML("R<sub>0</sub>"), round(r0, 2),
+                 if (r0 > 1) "#E74C3C" else "#18BC9C"),
+        p(class = "text-muted", style = "font-size: 0.81rem;",
+          HTML(paste0("R<sub>0</sub> is ", r0_interp,
+                      " Each infected person generates on average <strong>",
+                      round(r0, 2), "</strong> new infections",
+                      " before recovering.")))
+      )
+    }
+
+    # --- Peak & Timeline (run 1) ---
+    peak_i <- max(df$i.num)
+    peak_t <- df$time[which.max(df$i.num)]
+    peak_prev <- peak_i / df$num[which.max(df$i.num)]
+    final_prev <- df$i.num[nrow(df)] / df$num[nrow(df)]
+
+    # Cumulative infections
+    if ("si.flow" %in% names(df)) {
+      cum_inf <- sum(df$si.flow, na.rm = TRUE)
+      attack_rate <- cum_inf / df$s.num[1]
+    } else {
+      cum_inf <- NA
+      attack_rate <- NA
+    }
+
+    timeline_section <- tagList(
+      hr(),
+      tags$h6(class = "text-uppercase fw-semibold mb-2", "Epidemic Timeline"),
+      div(
+        class = "d-flex flex-wrap",
+        stat_box("Peak Infected", format(round(peak_i), big.mark = ","),
+                 "#E74C3C"),
+        stat_box("Peak Time", paste0("t = ", peak_t), "#3498DB"),
+        stat_box("Peak Prevalence", paste0(round(peak_prev * 100, 1), "%"),
+                 "#E74C3C")
+      ),
+      if (!is.na(cum_inf)) {
+        div(
+          class = "d-flex flex-wrap",
+          stat_box("Cumulative Infections",
+                   format(round(cum_inf), big.mark = ","), "#2C3E50"),
+          stat_box("Attack Rate", paste0(round(min(attack_rate, 1) * 100, 1), "%"),
+                   "#2C3E50")
+        )
+      },
+      if (final_prev < 0.001 && type != "SI") {
+        p(class = "text-muted", style = "font-size: 0.81rem;",
+          "The epidemic has largely resolved by the end of the simulation.")
+      } else if (type == "SI") {
+        p(class = "text-muted", style = "font-size: 0.81rem;",
+          "In SI models, prevalence increases monotonically toward 100%.")
+      } else {
+        p(class = "text-muted", style = "font-size: 0.81rem;",
+          paste0("At the end of the simulation (t = ", nsteps,
+                 "), prevalence is ", round(final_prev * 100, 1), "%."))
+      }
+    )
+
+    # --- Intervention impact ---
+    if (!is.null(p$inter.eff) && !is.null(p$inter.start)) {
+      inter_section <- tagList(
+        hr(),
+        tags$h6(class = "text-uppercase fw-semibold mb-2", "Intervention"),
+        p(style = "font-size: 0.81rem;",
+          paste0("An intervention reducing transmission by ",
+                 round(p$inter.eff * 100), "% begins at t = ",
+                 p$inter.start, ". ",
+                 "Effective transmission probability drops from ",
+                 round(p$inf.prob[1], 3), " to ",
+                 round(p$inf.prob[1] * (1 - p$inter.eff), 3),
+                 " per act."))
+      )
+    } else {
+      inter_section <- NULL
+    }
+
+    # --- Vital dynamics ---
+    if (!is.null(p$a.rate) && p$vital) {
+      vital_section <- tagList(
+        hr(),
+        tags$h6(class = "text-uppercase fw-semibold mb-2", "Vital Dynamics"),
+        p(class = "text-muted", style = "font-size: 0.81rem;",
+          paste0("Births enter at rate ", p$a.rate, " per person per time step. ",
+                 "Deaths occur at rate ", p$ds.rate, " across all compartments. ",
+                 "Final population size: ",
+                 format(round(df$num[nrow(df)]), big.mark = ","),
+                 " (started at ",
+                 format(round(df$num[1]), big.mark = ","), ")."))
+      )
+    } else {
+      vital_section <- NULL
+    }
+
+    # --- Sensitivity note ---
+    if (nruns > 1) {
+      sens_section <- tagList(
+        hr(),
+        tags$h6(class = "text-uppercase fw-semibold mb-2", "Sensitivity Analysis"),
+        p(class = "text-muted", style = "font-size: 0.81rem;",
+          paste0(nruns, " model runs varying ", input$sens_param,
+                 " from ", min(p[[input$sens_param]]),
+                 " to ", max(p[[input$sens_param]]), ".",
+                 " Statistics above are shown for run 1."))
+      )
+    } else {
+      sens_section <- NULL
+    }
+
+    # --- Model configuration ---
+    config_section <- tagList(
+      hr(),
+      tags$h6(class = "text-uppercase fw-semibold mb-2", "Model Configuration"),
+      tags$table(
+        class = "table table-sm table-borderless",
+        style = "max-width: 400px; font-size: 0.81rem;",
+        tags$tr(tags$td(class = "text-muted", "Disease Type"),
+                tags$td(tags$strong(type))),
+        tags$tr(tags$td(class = "text-muted", "Population"),
+                tags$td(format(round(df$num[1]), big.mark = ","))),
+        tags$tr(tags$td(class = "text-muted", "Time Steps"),
+                tags$td(nsteps)),
+        tags$tr(tags$td(class = "text-muted", "Transmission Prob."),
+                tags$td(p$inf.prob[1])),
+        tags$tr(tags$td(class = "text-muted", "Act Rate"),
+                tags$td(p$act.rate[1])),
+        if (type != "SI") {
+          tags$tr(tags$td(class = "text-muted", "Recovery Rate"),
+                  tags$td(p$rec.rate[1]))
+        }
+      )
+    )
+
+    # Assemble
+    tagList(
+      r0_section,
+      timeline_section,
+      inter_section,
+      vital_section,
+      sens_section,
+      config_section
+    )
   })
 
 

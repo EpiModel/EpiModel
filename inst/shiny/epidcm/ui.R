@@ -13,8 +13,8 @@ library(EpiModel)
 app_theme <- bs_theme(
   version = 5,
   bootswatch = "flatly",
-  base_font = font_google("Source Sans Pro"),
-  heading_font = font_google("Source Sans Pro"),
+  base_font = font_google("Atkinson Hyperlegible"),
+  heading_font = font_google("Atkinson Hyperlegible"),
   "primary" = "#2C3E50",
   "success" = "#18BC9C",
   "info" = "#3498DB",
@@ -29,10 +29,6 @@ page_sidebar(
   # ===== Sidebar =====
   sidebar = sidebar(
     width = 320,
-
-    # Run button
-    actionButton("runMod", "Run Model",
-                 class = "btn-primary btn-lg w-100 mb-3"),
 
     # Disease type and presets
     selectInput("modtype", "Disease Type",
@@ -133,63 +129,26 @@ page_sidebar(
 
   # ===== Main Panel =====
 
-  # Top row: plot + key measures
-  layout_columns(
-    col_widths = c(8, 4),
-
-    # -- Main Plot Card --
-    card(
-      full_screen = TRUE,
-      card_header(
-        class = "d-flex justify-content-between align-items-center",
-        "Epidemic Trajectory",
-        div(
-          class = "d-flex align-items-center gap-2",
-          selectInput("compsel", NULL,
-                      choices = c("Compartment Prevalence",
-                                  "Compartment Size",
-                                  "Disease Incidence"),
-                      width = "220px"),
-          checkboxInput("use_plotly", "Interactive", value = FALSE),
-          downloadButton("dlMainPlot", "PDF", class = "btn-sm btn-outline-secondary")
-        )
-      ),
-      card_body(
-        conditionalPanel(
-          "!input.use_plotly",
-          plotOutput("MainPlot", height = "450px")
-        ),
-        conditionalPanel(
-          "input.use_plotly",
-          uiOutput("plotlyUI")
-        )
+  # -- Main Plot Card --
+  card(
+    full_screen = TRUE,
+    card_header(
+      class = "d-flex justify-content-between align-items-center",
+      "Epidemic Trajectory",
+      div(
+        class = "d-flex align-items-center gap-2",
+        selectInput("compsel", NULL,
+                    choices = c("Compartment Prevalence",
+                                "Compartment Size",
+                                "Disease Incidence"),
+                    width = "330px"),
+        downloadButton("dlMainPlot", "PDF", class = "btn-sm btn-outline-secondary")
       )
     ),
-
-    # -- Right Column: Key Measures + Compartment Diagram --
-    layout_columns(
-      col_widths = 12,
-
-      # Key Measures
-      card(
-        card_header("Key Measures"),
-        card_body(
-          uiOutput("keyMeasures")
-        )
-      ),
-
-      # Compartment Diagram
-      card(
-        card_header("Model Diagram"),
-        card_body(
-          plotOutput("CompPlot", height = "220px"),
-          sliderInput("summTs", "Time Step",
-                      min = 1, max = 500, value = 1, step = 1,
-                      width = "100%")
-        )
-      )
+    card_body(
+      uiOutput("plotlyUI")
     )
-  ), # end layout_columns top row
+  ),
 
   # Bottom row: Summary / Data / About tabs
   navset_card_tab(
@@ -197,7 +156,7 @@ page_sidebar(
 
     nav_panel(
       "Summary",
-      verbatimTextOutput("outSummary")
+      div(class = "p-3", uiOutput("outSummary"))
     ),
 
     nav_panel(
@@ -211,42 +170,191 @@ page_sidebar(
     ),
 
     nav_panel(
-      "About",
+      "Guide",
       div(
         class = "p-3",
-        h4("About This Application"),
-        p("This application solves and visualizes deterministic compartmental
-          epidemic models (DCMs) using the",
+        style = "max-width: 900px;",
+
+        # --- Overview ---
+        h4("User Guide"),
+        p("This application solves and visualizes",
+          tags$strong("deterministic compartmental models (DCMs)"),
+          "of infectious disease transmission using the",
           tags$a("EpiModel", href = "https://www.epimodel.org/",
                  target = "_blank"),
-          "package for R."),
-        p("Models include SI, SIR, and SIS disease types with options for
-          vital dynamics (births and deaths) and public health interventions.
-          Explore how epidemic parameters affect disease spread by adjusting
-          the controls in the sidebar."),
-        p("For more complex models, including stochastic individual contact
-          models and network models, see the command-line version of EpiModel.
-          Tutorials and documentation are available at the",
+          "package for R. DCMs represent populations as aggregate compartments
+          and track the flow of individuals between disease states over time.
+          The dynamics are governed by ordinary differential equations (ODEs)
+          solved numerically with an adaptive step-size solver (lsoda)."),
+
+        # --- Disease Types ---
+        hr(),
+        h5("Disease Types"),
+        p("Three compartmental structures are available, each representing
+          a different natural history of infection:"),
+        tags$ul(
+          tags$li(tags$strong("SI (Susceptible-Infected):"),
+                  "Individuals move from susceptible to infected and remain
+                  infected permanently. There is no recovery. This is appropriate
+                  for chronic infections like HIV (without treatment) or herpes."),
+          tags$li(tags$strong("SIR (Susceptible-Infected-Recovered):"),
+                  "Infected individuals recover and gain lasting immunity.
+                  Once recovered, they cannot be re-infected. This applies to
+                  many acute viral infections like measles, influenza, and
+                  SARS-CoV-2 (as a simplification)."),
+          tags$li(tags$strong("SIS (Susceptible-Infected-Susceptible):"),
+                  "Infected individuals recover but return to the susceptible
+                  state with no lasting immunity. They can be re-infected.
+                  This is typical for many bacterial STIs like gonorrhea
+                  and chlamydia.")
+        ),
+
+        # --- Epidemic Parameters ---
+        hr(),
+        h5("Epidemic Parameters"),
+        tags$ul(
+          tags$li(tags$strong("Transmission Probability per Act:"),
+                  "The probability that an infection is transmitted during a
+                  single contact (act) between an infected and a susceptible
+                  individual. Ranges from 0 to 1."),
+          tags$li(tags$strong("Act Rate:"),
+                  "The average number of contact events (acts) per person
+                  per unit time. Higher act rates mean more opportunities for
+                  transmission."),
+          tags$li(tags$strong("Recovery Rate:"),
+                  "(SIR and SIS only.) The per-capita rate at which infected
+                  individuals recover per time step. The average duration of
+                  infection is 1 / recovery rate.")
+        ),
+        p("Together, these parameters determine the",
+          tags$strong("basic reproduction number"),
+          HTML("(R<sub>0</sub>),"),
+          "the average number of secondary infections caused by one infected
+          individual in a fully susceptible population:"),
+        p(class = "text-center",
+          style = "font-size: 1.1rem;",
+          HTML("R<sub>0</sub> = (transmission probability &times;
+                act rate) / recovery rate")),
+        p(HTML("When R<sub>0</sub> > 1, the epidemic will grow.
+          When R<sub>0</sub> < 1, the infection will die out.")),
+
+        # --- Scenario Presets ---
+        hr(),
+        h5("Scenario Presets"),
+        p("Three built-in presets configure all parameters to reasonable
+          values for common infectious diseases:"),
+        tags$ul(
+          tags$li(tags$strong("Flu-like (SIR):"),
+                  "Low per-act transmission probability (0.03) with a high
+                  contact rate (10 acts/time step), reflecting airborne spread.
+                  Recovery in about 7 days."),
+          tags$li(tags$strong("STI-like (SIS):"),
+                  "Moderate transmission probability (0.2) with a low contact
+                  rate (0.5 acts/time step), reflecting sexual transmission.
+                  Slow recovery (rate = 0.01)."),
+          tags$li(tags$strong("Measles-like (SIR):"),
+                  "High transmission probability (0.5) and moderate contact
+                  rate (3 acts/time step), producing a high",
+                  HTML("R<sub>0</sub>"),
+                  "of 15. Rapid epidemic growth and quick resolution.")
+        ),
+        p("Select", tags$em("Custom"), "to set parameters manually."),
+
+        # --- Interventions ---
+        hr(),
+        h5("Interventions"),
+        p("When enabled, an intervention reduces the transmission probability
+          by a proportional amount starting at a specified time step. For
+          example, an efficacy of 0.5 cuts the transmission probability in
+          half. This can represent public health measures such as vaccination
+          campaigns, mask mandates, contact tracing, or behavioral
+          interventions."),
+        p("The intervention effect is shown as a vertical dashed line on the
+          plot. Compare epidemic trajectories with and without the intervention
+          to assess its impact."),
+
+        # --- Sensitivity Analysis ---
+        hr(),
+        h5("Sensitivity Analysis"),
+        p("Sensitivity analysis runs the model multiple times, each with a
+          different value for a selected parameter. The parameter is varied
+          across evenly spaced values between a minimum and maximum that you
+          specify. This reveals how sensitive the epidemic outcome is to
+          uncertainty in that parameter."),
+        p("When sensitivity analysis is active, the plot shows one trajectory
+          per run (colored from blue to red), with each line labeled by its
+          parameter value. The Summary tab reports statistics for the first
+          run only."),
+
+        # --- Vital Dynamics ---
+        hr(),
+        h5("Vital Dynamics"),
+        p("By default, the population is closed (no births or deaths). Enabling
+          vital dynamics adds a constant per-capita birth rate (new susceptibles
+          entering the population) and a constant per-capita death rate applied
+          equally across all compartments. This is important for modeling
+          endemic equilibria over longer time horizons, where demographic
+          turnover replenishes the susceptible pool."),
+
+        # --- Reading the Output ---
+        hr(),
+        h5("Reading the Output"),
+        p("The application provides three output views:"),
+        tags$ul(
+          tags$li(tags$strong("Plot:"),
+                  "Interactive time-series plots (powered by plotly) showing
+                  compartment sizes, prevalence, disease incidence, or specific
+                  flow variables. Hover over any point to see exact values.
+                  Use the plotly toolbar to zoom, pan, or download the plot
+                  as a PNG."),
+          tags$li(tags$strong("Summary:"),
+                  HTML("Key epidemic metrics including R<sub>0</sub>, peak
+                  infected count and timing, cumulative infections, and attack
+                  rate. Additional sections appear when interventions, vital
+                  dynamics, or sensitivity analysis are enabled.")),
+          tags$li(tags$strong("Data:"),
+                  "The full simulation output as a searchable, sortable table.
+                  Download the raw data as a CSV file for further analysis.")
+        ),
+
+        # --- Further Resources ---
+        hr(),
+        h5("Further Resources"),
+        p("This application uses a subset of EpiModel's capabilities. The
+          full R package supports stochastic individual contact models (ICMs)
+          and stochastic network models built on exponential-family random
+          graph models (ERGMs). For tutorials and documentation, visit the",
           tags$a("EpiModel website.", href = "https://www.epimodel.org/",
                  target = "_blank")),
-        p("Source code and bug reports:",
-          tags$a("GitHub", href = "https://github.com/EpiModel/EpiModel",
-                 target = "_blank")),
-        p("R package on CRAN:",
-          tags$a("EpiModel",
-                 href = "https://cran.r-project.org/package=EpiModel",
-                 target = "_blank")),
+        tags$ul(
+          tags$li("Source code and bug reports:",
+                  tags$a("GitHub",
+                         href = "https://github.com/EpiModel/EpiModel",
+                         target = "_blank")),
+          tags$li("R package on CRAN:",
+                  tags$a("EpiModel",
+                         href = "https://cran.r-project.org/package=EpiModel",
+                         target = "_blank")),
+          tags$li("Course materials:",
+                  tags$a("SISMID EpiModel Workshop",
+                         href = "https://epimodel.github.io/sismid/",
+                         target = "_blank"))
+        ),
+
+        # --- Citation ---
         hr(),
-        p(tags$strong("Citation:"),
-          "Jenness SM, Goodreau SM, Morris M (2018).",
+        h5("Citation"),
+        p("Jenness SM, Goodreau SM, Morris M (2018).",
           tags$em("EpiModel: An R Package for Mathematical Modeling of
                    Infectious Disease over Networks."),
           "Journal of Statistical Software, 84(8), 1-47.",
           tags$a("doi:10.18637/jss.v084.i08",
                  href = "https://doi.org/10.18637/jss.v084.i08",
                  target = "_blank")),
+
+        # --- Authors ---
         hr(),
-        p(tags$strong("Authors")),
+        h5("Authors"),
         p("Samuel M. Jenness, Department of Epidemiology, Emory University"),
         p("Steven M. Goodreau, Department of Anthropology, University of Washington"),
         p("Martina Morris, Departments of Statistics and Sociology, University of Washington")
