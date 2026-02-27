@@ -31,19 +31,19 @@ test_that("extremal targets are handled correctly", {
     expect_equal(est$target.stats, target_stats)
     expect_equal(est$target.stats.names, target_stats_names)
 
-    dxs <- netdx(est, nsims = 10, dynamic = FALSE)
-    print(dxs)
+    dxs <- netdx(est, nsims = 10, dynamic = FALSE, verbose = FALSE)
+    invisible(capture.output(print(dxs)))
     plot(dxs)
 
-    dxd <- netdx(est, nsims = 10, nsteps = 5, dynamic = TRUE)
-    print(dxd)
+    dxd <- netdx(est, nsims = 10, nsteps = 5, dynamic = TRUE, verbose = FALSE)
+    invisible(capture.output(print(dxd)))
     plot(dxd)
 
     param <- param.net(inf.prob = 0.3, act.rate = 0.5)
     init <- init.net(i.num = 10)
     control <- control.net(type = "SI", nsims = 2, nsteps = 5, verbose = FALSE)
     mod <- netsim(est, param, init, control)
-    print(mod)
+    invisible(capture.output(print(mod)))
 
     plot(mod)
     plot(mod, type = "formation")

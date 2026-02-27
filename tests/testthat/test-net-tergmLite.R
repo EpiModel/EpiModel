@@ -378,7 +378,7 @@ test_that("durational monitor with tergmLite", {
         stats <- get_nwstats(mod)
 
         expect_true(all(stats$mean.age >= 0))
-        print(stats$mean.age)
+        invisible(capture.output(print(stats$mean.age)))
       }
     }
   }

@@ -386,10 +386,10 @@ test_that("non-nested EDA produces expected statistic names, with or without tri
                          "nodematch.race.3", "offset(edges)", "offset(nodematch.age.1)",
                          "offset(nodematch.age.2)")
 
-    dxs <- netdx(est, nsims = 100, dynamic = FALSE)
+    dxs <- netdx(est, nsims = 100, dynamic = FALSE, verbose = FALSE)
     expect_equal(rownames(dxs$stats.table.formation), formation_names)
 
-    dxd <- netdx(est, nsims = 2, nsteps = 7, dynamic = TRUE)
+    dxd <- netdx(est, nsims = 2, nsteps = 7, dynamic = TRUE, verbose = FALSE)
     expect_equal(rownames(dxd$stats.table.formation), formation_names)
 
     param <- param.net(inf.prob = 0.3, act.rate = 0.5)
@@ -512,8 +512,8 @@ test_that("non-nested EDA with substitutions", {
                   coef.diss = diss_2)
 
   run_sims <- function(est, expected_names) {
-    dxs <- netdx(est, nsims = 10, dynamic = FALSE)
-    dxd <- netdx(est, nsims = 2, nsteps = 5, dynamic = TRUE)
+    dxs <- netdx(est, nsims = 10, dynamic = FALSE, verbose = FALSE)
+    dxd <- netdx(est, nsims = 2, nsteps = 5, dynamic = TRUE, verbose = FALSE)
     param <- param.net(inf.prob = 0.3, act.rate = 0.5)
     init <- init.net(i.num = 3)
     control <- control.net(type = "SI", nsims = 1, nsteps = 5, verbose = FALSE)

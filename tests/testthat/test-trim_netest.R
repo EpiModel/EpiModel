@@ -11,8 +11,8 @@ test_that("trim_netest keep argument behaves as expected", {
                 coef.diss = dissolution_coefs(~offset(edges), 10, 0),
                 verbose = FALSE)
 
-  dxs <- netdx(est, nsims = 10, dynamic = FALSE)
-  dxd <- netdx(est, nsims = 2, nsteps = 10, dynamic = TRUE)
+  dxs <- netdx(est, nsims = 10, dynamic = FALSE, verbose = FALSE)
+  dxd <- netdx(est, nsims = 2, nsteps = 10, dynamic = TRUE, verbose = FALSE)
 
   param <- param.net(inf.prob = 0.3, act.rate = 0.5)
   init <- init.net(i.num = 10)
@@ -34,8 +34,8 @@ test_that("trim_netest keep argument behaves as expected", {
 
   trim_est_keep <- trim_netest(est, keep = "attrname")
 
-  trim_dxs_keep <- netdx(trim_est_keep, nsims = 10, dynamic = FALSE)
-  trim_dxd_keep <- netdx(trim_est_keep, nsims = 2, nsteps = 10, dynamic = TRUE)
+  trim_dxs_keep <- netdx(trim_est_keep, nsims = 10, dynamic = FALSE, verbose = FALSE)
+  trim_dxd_keep <- netdx(trim_est_keep, nsims = 2, nsteps = 10, dynamic = TRUE, verbose = FALSE)
   trim_sim_keep <- netsim(trim_est_keep, param, init, control)
 
   expect_is(trim_dxs_keep, "netdx")
