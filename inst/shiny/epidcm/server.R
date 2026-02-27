@@ -7,20 +7,16 @@
 library(shiny)
 library(EpiModel)
 
-# Compartment color palette
-comp_colors <- c(
-  "s.num" = "#3498DB",  # blue
-  "i.num" = "#E74C3C",  # red
-  "r.num" = "#18BC9C",  # green
-  "num"   = "#95A5A6"   # gray
-)
-
 shinyServer(function(input, output, session) {
 
   # =========================================================================
   # Presets
   # =========================================================================
+  preset_updating <- reactiveVal(FALSE)
+
   observeEvent(input$preset, {
+    preset_updating(TRUE)
+    on.exit(preset_updating(FALSE))
     if (input$preset == "Flu-like (SIR)") {
       updateSelectInput(session, "modtype", selected = "SIR")
       updateSliderInput(session, "inf.prob", value = 0.03)
@@ -59,6 +55,13 @@ shinyServer(function(input, output, session) {
     }
   })
 
+  # Reset preset to "Custom" when user manually changes disease type
+  observeEvent(input$modtype, {
+    if (!preset_updating() && input$preset != "Custom") {
+      updateSelectInput(session, "preset", selected = "Custom")
+    }
+  })
+
   # =========================================================================
   # Dynamic UI updates
   # =========================================================================
@@ -66,7 +69,7 @@ shinyServer(function(input, output, session) {
   # Update flow choices based on model type and vital dynamics
   observe({
     type <- input$modtype
-    vital <- input$enable_vital
+    vital <- isTRUE(input$enable_vital)
     choices <- c("Compartment Prevalence", "Compartment Size",
                  "Disease Incidence")
     if (type == "SIR") {
@@ -106,13 +109,13 @@ shinyServer(function(input, output, session) {
     }
 
     # Intervention
-    if (input$enable_intervention) {
+    if (isTRUE(input$enable_intervention)) {
       p$inter.eff <- input$inter.eff
       p$inter.start <- input$inter.start
     }
 
     # Vital dynamics
-    if (input$enable_vital) {
+    if (isTRUE(input$enable_vital)) {
       p$a.rate <- input$a.rate
       p$ds.rate <- input$death_rate
       p$di.rate <- input$death_rate
@@ -122,7 +125,7 @@ shinyServer(function(input, output, session) {
     }
 
     # Sensitivity analysis: override selected param with vector
-    if (input$enable_sensitivity) {
+    if (isTRUE(input$enable_sensitivity)) {
       nruns <- as.integer(input$sens_nruns)
       sens_vals <- seq(input$sens_min, input$sens_max, length.out = nruns)
       p[[input$sens_param]] <- sens_vals
@@ -171,79 +174,78 @@ shinyServer(function(input, output, session) {
 
 
   # =========================================================================
-  # Main Plot (plotly)
+  # Main Plot (plotly — directly in UI, no renderUI wrapper)
   # =========================================================================
-  output$plotlyUI <- renderUI({
-    if (requireNamespace("plotly", quietly = TRUE)) {
-      plotly::plotlyOutput("MainPlotly", height = "675px")
-    } else {
-      helpText("Install the 'plotly' package for interactive plots: ",
-               tags$code("install.packages(\"plotly\")"))
-    }
-  })
+  output$MainPlotly <- plotly::renderPlotly({
+    m <- mod()
+    req(m)
 
-  if (requireNamespace("plotly", quietly = TRUE)) {
-    output$MainPlotly <- plotly::renderPlotly({
-      m <- mod()
-      req(m)
+    df <- as.data.frame(m)
+    nruns <- m$control$nruns
 
-      df <- as.data.frame(m)
-      nruns <- m$control$nruns
-
-      # Determine what to plot
-      if (input$compsel == "Compartment Prevalence") {
-        y_cols <- c("s.num", "i.num")
-        if (input$modtype == "SIR") y_cols <- c(y_cols, "r.num")
-        for (col in y_cols) {
-          df[[paste0(col, ".prev")]] <- df[[col]] / df$num
-        }
-        plot_cols <- paste0(y_cols, ".prev")
-        y_label <- "Prevalence"
-      } else if (input$compsel == "Compartment Size") {
-        plot_cols <- c("s.num", "i.num")
-        if (input$modtype == "SIR") plot_cols <- c(plot_cols, "r.num")
-        y_label <- "Number"
-      } else if (input$compsel == "Disease Incidence") {
-        plot_cols <- "si.flow"
-        y_label <- "New Infections"
-      } else if (input$compsel == "Recovery Flow") {
-        plot_cols <- "ir.flow"
-        y_label <- "Recoveries"
-      } else if (input$compsel == "Re-susceptibility Flow") {
-        plot_cols <- "is.flow"
-        y_label <- "Re-susceptible"
-      } else if (input$compsel == "Arrival Flow") {
-        plot_cols <- "a.flow"
-        y_label <- "Arrivals"
-      } else if (input$compsel == "Departure Flows") {
-        plot_cols <- intersect(c("ds.flow", "di.flow", "dr.flow"), names(df))
-        y_label <- "Departures"
-      } else {
-        plot_cols <- "i.num"
-        y_label <- "Number"
+    # Determine what to plot
+    if (input$compsel == "Compartment Prevalence") {
+      y_cols <- c("s.num", "i.num")
+      if (input$modtype == "SIR") y_cols <- c(y_cols, "r.num")
+      for (col in y_cols) {
+        df[[paste0(col, ".prev")]] <- df[[col]] / df$num
       }
+      plot_cols <- paste0(y_cols, ".prev")
+      y_label <- "Prevalence"
+    } else if (input$compsel == "Compartment Size") {
+      plot_cols <- c("s.num", "i.num")
+      if (input$modtype == "SIR") plot_cols <- c(plot_cols, "r.num")
+      y_label <- "Number"
+    } else if (input$compsel == "Disease Incidence") {
+      plot_cols <- "si.flow"
+      y_label <- "New Infections"
+    } else if (input$compsel == "Recovery Flow") {
+      plot_cols <- "ir.flow"
+      y_label <- "Recoveries"
+    } else if (input$compsel == "Re-susceptibility Flow") {
+      plot_cols <- "is.flow"
+      y_label <- "Re-susceptible"
+    } else if (input$compsel == "Arrival Flow") {
+      plot_cols <- "a.flow"
+      y_label <- "Arrivals"
+    } else if (input$compsel == "Departure Flows") {
+      plot_cols <- intersect(c("ds.flow", "di.flow", "dr.flow"), names(df))
+      y_label <- "Departures"
+    } else {
+      plot_cols <- "i.num"
+      y_label <- "Number"
+    }
 
-      # Color map
-      col_map <- c("s.num" = "#3498DB", "s.num.prev" = "#3498DB",
-                    "i.num" = "#E74C3C", "i.num.prev" = "#E74C3C",
-                    "r.num" = "#18BC9C", "r.num.prev" = "#18BC9C",
-                    "si.flow" = "#E74C3C", "ir.flow" = "#18BC9C",
-                    "is.flow" = "#3498DB",
-                    "a.flow" = "#18BC9C",
-                    "ds.flow" = "#3498DB", "di.flow" = "#E74C3C",
-                    "dr.flow" = "#18BC9C")
+    # Color and label maps
+    col_map <- c("s.num" = "#3498DB", "s.num.prev" = "#3498DB",
+                  "i.num" = "#E74C3C", "i.num.prev" = "#E74C3C",
+                  "r.num" = "#18BC9C", "r.num.prev" = "#18BC9C",
+                  "si.flow" = "#E74C3C", "ir.flow" = "#18BC9C",
+                  "is.flow" = "#3498DB",
+                  "a.flow" = "#18BC9C",
+                  "ds.flow" = "#3498DB", "di.flow" = "#E74C3C",
+                  "dr.flow" = "#18BC9C")
+    label_map <- c("s.num" = "Susceptible", "s.num.prev" = "Susceptible",
+                    "i.num" = "Infected", "i.num.prev" = "Infected",
+                    "r.num" = "Recovered", "r.num.prev" = "Recovered",
+                    "si.flow" = "S \u2192 I",
+                    "ir.flow" = "I \u2192 R", "is.flow" = "I \u2192 S",
+                    "a.flow" = "Arrivals",
+                    "ds.flow" = "Deaths (S)", "di.flow" = "Deaths (I)",
+                    "dr.flow" = "Deaths (R)")
 
-      # Build plot
-      if (nruns == 1) {
-        p <- plotly::plot_ly()
-        for (col in plot_cols) {
-          clr <- ifelse(col %in% names(col_map), col_map[[col]], "#2C3E50")
-          p <- plotly::add_trace(p, x = df$time, y = df[[col]],
-                                 type = "scatter", mode = "lines",
-                                 name = col,
-                                 line = list(color = clr, width = 2.5))
-        }
-      } else {
+    # Build plot
+    if (nruns == 1) {
+      p <- plotly::plot_ly()
+      for (col in plot_cols) {
+        clr <- ifelse(col %in% names(col_map), col_map[[col]], "#2C3E50")
+        lbl <- ifelse(col %in% names(label_map), label_map[[col]], col)
+        p <- plotly::add_trace(p, x = df$time, y = df[[col]],
+                               type = "scatter", mode = "lines",
+                               name = lbl,
+                               line = list(color = clr, width = 2.5))
+      }
+    } else {
         p <- plotly::plot_ly()
 
         # Get sensitivity parameter values for legend labels
@@ -279,7 +281,7 @@ shinyServer(function(input, output, session) {
       }
 
       # Intervention line
-      if (input$enable_intervention && !is.null(m$param$inter.eff)) {
+      if (isTRUE(input$enable_intervention) && !is.null(m$param$inter.eff)) {
         p <- plotly::layout(
           p,
           shapes = list(
@@ -305,7 +307,6 @@ shinyServer(function(input, output, session) {
                           modeBarButtonsToRemove = c("lasso2d", "select2d"))
       p
     })
-  }
 
 
   # =========================================================================
@@ -499,6 +500,8 @@ shinyServer(function(input, output, session) {
       tags$table(
         class = "table table-sm table-borderless",
         style = "max-width: 400px; font-size: 0.81rem;",
+        tags$tr(tags$td(class = "text-muted", "Model Class"),
+                tags$td(tags$strong("DCM (Deterministic)"))),
         tags$tr(tags$td(class = "text-muted", "Disease Type"),
                 tags$td(tags$strong(type))),
         tags$tr(tags$td(class = "text-muted", "Population"),

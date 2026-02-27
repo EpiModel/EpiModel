@@ -7,6 +7,7 @@
 library(shiny)
 library(bslib)
 library(DT)
+library(plotly)
 library(EpiModel)
 
 # -- Theme --
@@ -146,7 +147,7 @@ page_sidebar(
       )
     ),
     card_body(
-      uiOutput("plotlyUI")
+      plotlyOutput("MainPlotly", height = "500px")
     )
   ),
 
@@ -247,16 +248,17 @@ page_sidebar(
           tags$li(tags$strong("Flu-like (SIR):"),
                   "Low per-act transmission probability (0.03) with a high
                   contact rate (10 acts/time step), reflecting airborne spread.
-                  Recovery in about 7 days."),
+                  Recovery in about 7 days. Population of 10,000."),
           tags$li(tags$strong("STI-like (SIS):"),
                   "Moderate transmission probability (0.2) with a low contact
                   rate (0.5 acts/time step), reflecting sexual transmission.
-                  Slow recovery (rate = 0.01)."),
+                  Slow recovery (rate = 0.01). Population of 1,000."),
           tags$li(tags$strong("Measles-like (SIR):"),
                   "High transmission probability (0.5) and moderate contact
                   rate (3 acts/time step), producing a high",
                   HTML("R<sub>0</sub>"),
-                  "of 15. Rapid epidemic growth and quick resolution.")
+                  "of 15. Rapid epidemic growth and quick resolution.
+                  Population of 10,000.")
         ),
         p("Select", tags$em("Custom"), "to set parameters manually."),
 

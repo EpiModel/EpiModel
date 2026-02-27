@@ -91,8 +91,16 @@ epiweb <- function(class, ...) {
            "install.packages(\"shiny\")", call. = FALSE)
     }
     if (!requireNamespace("bslib", quietly = TRUE)) {
-      stop("Package \"bslib\" is required for the DCM app. Install with: ",
+      stop("Package \"bslib\" is required. Install with: ",
            "install.packages(\"bslib\")", call. = FALSE)
+    }
+    if (!requireNamespace("DT", quietly = TRUE)) {
+      stop("Package \"DT\" is required. Install with: ",
+           "install.packages(\"DT\")", call. = FALSE)
+    }
+    if (!requireNamespace("plotly", quietly = TRUE)) {
+      stop("Package \"plotly\" is required. Install with: ",
+           "install.packages(\"plotly\")", call. = FALSE)
     }
     shiny::runApp(system.file("shiny", "epidcm", package = "EpiModel"), ...)
   } else if (class == "icm") {
@@ -101,8 +109,16 @@ epiweb <- function(class, ...) {
            "install.packages(\"shiny\")", call. = FALSE)
     }
     if (!requireNamespace("bslib", quietly = TRUE)) {
-      stop("Package \"bslib\" is required for the ICM app. Install with: ",
+      stop("Package \"bslib\" is required. Install with: ",
            "install.packages(\"bslib\")", call. = FALSE)
+    }
+    if (!requireNamespace("DT", quietly = TRUE)) {
+      stop("Package \"DT\" is required. Install with: ",
+           "install.packages(\"DT\")", call. = FALSE)
+    }
+    if (!requireNamespace("plotly", quietly = TRUE)) {
+      stop("Package \"plotly\" is required. Install with: ",
+           "install.packages(\"plotly\")", call. = FALSE)
     }
     shiny::runApp(system.file("shiny", "epiicm", package = "EpiModel"), ...)
   } else {
