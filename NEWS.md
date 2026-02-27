@@ -23,7 +23,7 @@
 
 -   Added `requireNamespace` checks for `DT` and `plotly` in `epiweb()` to provide clear installation instructions if these packages are missing.
 -   Fix bug where the `ellipsis` (`...`) was not passed correctly to the `base::plot` in the `plot.netsim` function.
--   Set `MCMC.maxchanges = Inf` as default for TERGM MCMC. Lift the check on the maximum number of MCMC changes per step for bigger or dense networks.
+-   Set `MCMC.maxchanges` to `.Machine$integer.max` as default for TERGM MCMC. Lift the check on the maximum number of MCMC changes per step for bigger or dense networks.
 -   Convert the Roxygen2 documentation to Markdown (previously $LaTeX$).
 -   Use `arg = NULL` in function definition instead of `missing(arg)` in function body when possible.
 -   Add `message`s when a function restarts from a checkpointed state.
