@@ -1,4 +1,4 @@
-context("Standard network models")
+context("Standard Network Models")
 
 nw <- network_initialize(n = 50)
 nw <- set_vertex_attribute(nw, "race", rbinom(50, 1, 0.5))
@@ -455,7 +455,7 @@ test_that("networkLites produced by netsim match those produced by simulate when
   expect_equal(sim %n% "lasttoggle", mod2$network$sim1[[1]] %n% "lasttoggle")
 })
 
-context("netsim checkpoint")
+context("Netsim Checkpoint")
 
 test_that("netsim with checkpoint", {
   nw <- network_initialize(n = 50)
@@ -499,7 +499,7 @@ test_that("netsim with checkpoint", {
   expect_false(mod$control[[".checkpointed"]])
 })
 
-context("netsim end horizon")
+context("Netsim End Horizon")
 
 test_that("netsim with checkpoint", {
   nw <- network_initialize(n = 50)
@@ -551,7 +551,7 @@ test_that("netsim with checkpoint", {
   expect_length(unique(sim$epi$i.num[5:20, 1]), 1)
 })
 
-context("Network models with formation offsets")
+context("Network Models with Formation Offsets")
 
 test_that("netsim works with standard offset models", {
   nw <- network_initialize(n = 50)
@@ -589,7 +589,7 @@ test_that("netsim works with faux offset models", {
   test_net(mod)
 })
 
-context("Time Varying Network Parameters")
+context("Time-Varying Network Parameters")
 
 test_that("time varying parameters for one-mode", {
   nw <- network_initialize(n = 100)

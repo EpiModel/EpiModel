@@ -1,4 +1,4 @@
-context("DCM standard models")
+context("DCM Standard Models")
 
 # SI Models ---------------------------------------------------------------
 
@@ -310,7 +310,7 @@ test_that("control checks", {
 # dcm extension check -----------------------------------------------------
 
 
-context("DCM delayed differential equation models")
+context("DCM Delayed Differential Equation Models")
 
 test_that("Delayed differntial equation models function", {
 
@@ -348,7 +348,7 @@ test_that("Delayed differntial equation models function", {
 })
 
 
-context("New DCM models")
+context("New DCM Models")
 
 
 test_that("New DCMs Example 1", {

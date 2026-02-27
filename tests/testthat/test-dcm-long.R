@@ -1,4 +1,4 @@
-context("DCM extended models (All SOC)")
+context("DCM Extended Models (All SOC)")
 
 # SI Models ---------------------------------------------------------------
 

@@ -1,4 +1,4 @@
-context("Stochastic model merging")
+context("Stochastic Model Merging")
 
 
 # merge.icm ---------------------------------------------------------------

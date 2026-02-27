@@ -1,4 +1,4 @@
-context("`dat` object getters and setters")
+context("Accessors: Getters and Setters")
 
 test_that("`dat` getters and setter", {
 
@@ -154,7 +154,7 @@ test_that("Net core attributes", {
   expect_warning(get_posit_ids(dat, 25:35))
 })
 
-context("Attribute copying between network and `dat`")
+context("Accessors: Attribute Copying")
 
 ################################################################################
 

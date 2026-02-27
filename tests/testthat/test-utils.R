@@ -171,13 +171,13 @@ test_that("get_formula_term_attr checks", {
 
 })
 
-context("Shiny app")
+context("Shiny App")
 
 test_that("epiweb works", {
   expect_error(epiweb(class = "foo"))
 })
 
-context("update.R functionality")
+context("update.R Functionality")
 
 test_that("add_vertices, delete_vertices, delete_edges behave as expected", {
   net_size <- 10L

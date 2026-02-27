@@ -1,4 +1,4 @@
-context("test netsim parallel")
+context("Netsim Parallel")
 
 test_that("netsim par, 1 sim, 1 core", {
   skip_on_cran()

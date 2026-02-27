@@ -1,4 +1,4 @@
-context("Network models with tergmLite (All SOC)")
+context("Network Models with tergmLite (All SOC)")
 
 # tergmLite = TRUE -----
 

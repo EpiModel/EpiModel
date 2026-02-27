@@ -1,4 +1,4 @@
-context("ICM extended models (All SOC)")
+context("ICM Extended Models (All SOC)")
 
 # SI Models ---------------------------------------------------------------
 

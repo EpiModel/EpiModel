@@ -1,4 +1,4 @@
-context("Multi-layer network models")
+context("Multi-Layer Network Models")
 
 test_that("netsim runs with multiple networks, with open or closed population", {
   nw <- network_initialize(n = 50)

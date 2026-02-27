@@ -1,4 +1,4 @@
-context("ICM standard models")
+context("ICM Standard Models")
 
 # SI Models ---------------------------------------------------------------
 
@@ -140,7 +140,7 @@ test_that("Act rate balance works when specified to g2", {
   expect_is(x, "icm")
 })
 
-context("New ICM models")
+context("New ICM Models")
 
 test_that("ICM new modules", {
 

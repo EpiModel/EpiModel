@@ -1,4 +1,4 @@
-context("Network estimation functions")
+context("Network Estimation")
 
 
 # Test formation models ---------------------------------------------------
@@ -548,7 +548,7 @@ test_that("non-nested EDA with substitutions", {
   run_sims(est_24, formation_names_rr)
 })
 
-context("trim_netest functionality")
+context("trim_netest Functionality")
 
 test_that("trim_netest keep argument behaves as expected", {
   nw <- network_initialize(n = 50)

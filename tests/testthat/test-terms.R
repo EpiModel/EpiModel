@@ -1,4 +1,4 @@
-context("EpiModel terms")
+context("EpiModel Terms")
 
 nw <- network_initialize(n = 50)
 age <- runif(50)
@@ -66,7 +66,7 @@ test_that("EpiModel terms produce correct change statistics", {
                check.attributes = FALSE)
 })
 
-context("fuzzynodematch")
+context("fuzzynodematch Term")
 
 test_that("fuzzynodematch works as intended", {
   n <- 1000L

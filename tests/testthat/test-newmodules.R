@@ -160,7 +160,7 @@ test_that("New network models vignette example", {
 
 })
 
-context("Network model with param updater")
+context("Network Model with Param Updater")
 
 test_that("netsim with param updater", {
   # Create the list.param.updaters
@@ -239,7 +239,7 @@ test_that("netsim with param updater", {
   expect_lt(n_obs, 31)
 })
 
-context("Network model with scenarios")
+context("Network Model with Scenarios")
 
 test_that("SIS with scenarios", {
   set.seed(10)
@@ -294,7 +294,7 @@ test_that("SIS with scenarios", {
   expect_error(sc.param <- use_scenario(param, scenarios.list[[1]]))
 })
 
-context("Records: attr_history and raw objects")
+context("Records: attr_history and Raw Objects")
 
 test_that("Time varying elements", {
   test_logger <- function(dat, at) {
@@ -435,7 +435,7 @@ test_that("netsim, SI, custom trackers", {
   expect_true(all(d$s_num[2:50] == d$s.num[2:50]))
 })
 
-context("Load parameters from data.frame")
+context("Load Parameters from data.frame")
 
 test_that("Load parameters from data.frame", {
   params.df <- dplyr::tribble(
@@ -490,7 +490,7 @@ test_that("Load parameters from data.frame", {
   expect_error(param <- param.net_from_table(params.df))
 })
 
-context("Random parameters generators")
+context("Random Parameter Generators")
 
 test_that("Random parameters generators", {
 

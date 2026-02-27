@@ -1,4 +1,4 @@
-context("Network attributes with arrivals")
+context("Network Attributes with Arrivals")
 
 test_that("Updating attributes in open populations", {
   nw <- network_initialize(n = 50)
@@ -250,7 +250,7 @@ test_that("Check TE Status Variable Against Epi Stats", {
 
 })
 
-context("Network model restart")
+context("Network Model Restart")
 
 test_that("network models can be restarted", {
   skip_on_cran()
