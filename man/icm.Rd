@@ -38,7 +38,7 @@ on individual agents in discrete time as a function of processes with
 stochastic variation. The stochasticity is inherent in all transition
 processes: infection, recovery, and demographics.
 
-The \code{icm} function performs  modeling of both the base model types
+The \code{icm} function performs modeling of both the base model types
 and original models. Base model types include one-group and two-group
 models with disease types for Susceptible-Infected (SI),
 Susceptible-Infected-Recovered (SIR), and Susceptible-Infected-Susceptible

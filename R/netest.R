@@ -20,8 +20,8 @@
 #' @param coef.form Vector of coefficients for the offset terms in the formation
 #'        formula.
 #' @param edapprox If `TRUE`, use the indirect edges dissolution
-#'        approximation  method for the dynamic model fit, otherwise use the
-#'        more time-intensive full STERGM estimation (see details).  For
+#'        approximation method for the dynamic model fit, otherwise use the
+#'        more time-intensive full STERGM estimation (see details). For
 #'        `nw` of class `egor`, only `edapprox = TRUE` is supported.
 #' @param set.control.ergm Control arguments passed to `ergm` (see details).
 #' @param set.control.ergm.ego Control arguments passed to `ergm.ego` (see
@@ -155,7 +155,7 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints = NULL,
   }
 
   if (!inherits(coef.diss, "disscoef")) {
-    stop("dissolution must be of input through dissolution_coefs function",
+    stop("dissolution must be input through the dissolution_coefs function",
          call. = FALSE)
   }
   dissolution <- coef.diss$dissolution

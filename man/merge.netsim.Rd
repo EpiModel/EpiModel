@@ -31,11 +31,11 @@ from the original \code{x} and \code{y} elements. Note: network
 only saved when (\code{tergmLite == FALSE}).}
 
 \item{keep.nwstats}{If \code{TRUE}, keep the network statistics (as set by
-the \code{nwstats.formula} parameter in \code{control.netsim}) from
+the \code{nwstats.formula} parameter in \code{control.net}) from
 the original \code{x} and \code{y} elements.}
 
 \item{keep.other}{If \code{TRUE}, keep the other simulation elements (as set
-by the \code{save.other} parameter in \code{control.netsim}) from the
+by the \code{save.other} parameter in \code{control.net}) from the
 original \code{x} and \code{y} elements.}
 
 \item{param.error}{If \code{TRUE}, if \code{x} and \code{y} have different

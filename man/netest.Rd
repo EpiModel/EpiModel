@@ -42,8 +42,8 @@ constraint terms. By default, no constraints are set.}
 formula.}
 
 \item{edapprox}{If \code{TRUE}, use the indirect edges dissolution
-approximation  method for the dynamic model fit, otherwise use the
-more time-intensive full STERGM estimation (see details).  For
+approximation method for the dynamic model fit, otherwise use the
+more time-intensive full STERGM estimation (see details). For
 \code{nw} of class \code{egor}, only \code{edapprox = TRUE} is supported.}
 
 \item{set.control.ergm}{Control arguments passed to \code{ergm} (see details).}

@@ -114,7 +114,7 @@ get_attr_list <- function(dat, item = NULL) {
 
   missing_item <- setdiff(item, names(attr_list))
   if (length(missing_item) > 0L) {
-    stop("There is no attributes called `",
+    stop("There are no attributes called `",
          paste(missing_item, collapse = ", "),
          "` in the attributes list of the main list object (dat)")
   }
@@ -201,7 +201,7 @@ set_attr <- function(dat, item, value, posit_ids = NULL,
 #' @export
 append_attr <- function(dat, item, value, n.new) {
   if (!is.numeric(n.new) || n.new < 0L) {
-    stop("`n_new` must be numeric and greater than or equal to zero.")
+    stop("`n.new` must be numeric and greater than or equal to zero.")
   }
 
   if (length(value) == 1L) {
@@ -254,8 +254,8 @@ get_epi_list <- function(dat, item = NULL) {
 get_epi <- function(dat, item, at = NULL, override.null.error = FALSE) {
   if (!item %in% names(dat$epi)) {
     if (!override.null.error) {
-      stop("There is no epi out called `", item,
-           "` in the epi out list of the main list object (dat)")
+      stop("There is no epi output called `", item,
+           "` in the epi output list of the main list object (dat)")
     }
     return(NULL)
   }
@@ -308,7 +308,7 @@ get_param_list <- function(dat, item = NULL) {
 
   missing_item <- setdiff(item, names(dat$param))
   if (length(missing_item) > 0L) {
-    stop("There is no parameters called `",
+    stop("There are no parameters called `",
          paste(missing_item, collapse = ", "),
          "` in the parameter list of the main list object (dat)")
   }
@@ -519,7 +519,7 @@ check_attr_lengths <- function(dat) {
 
   if (length(wrong_lengths > 0L)) {
     msg <- c(
-      "Some attribute are not of the correct length \n",
+      "Some attributes are not of the correct length \n",
       "Expected length: ", expected_length, "\n",
       "Wrong length attributes: \n"
     )
@@ -619,7 +619,7 @@ is_active_unique_ids <- function(dat, unique_ids) {
 
 #' @title Grow a Vector to a Given Size, Padding it With Empty Elements
 #'
-#' @description Grow a vector to a given size, padding it with  `NULL` if `orig` is a `list`
+#' @description Grow a vector to a given size, padding it with `NULL` if `orig` is a `list`
 #' and with `NA` otherwise
 #'
 #' @param orig A vector to grow.

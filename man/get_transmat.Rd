@@ -16,7 +16,7 @@ get_transmat(x, sim = 1, deduplicate = TRUE)
 \item{sim}{Simulation number of extracted network.}
 
 \item{deduplicate}{If \code{TRUE}, randomly select one transmission event in
-the case that multiple events current per newly infected agent within
+the case that multiple events occur per newly infected agent within
 a time step.}
 }
 \value{

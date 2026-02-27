@@ -44,7 +44,7 @@ specified, then data from all simulations will be output.}
 \item{qval}{Quantile value required when \code{out="qnt"}.}
 
 \item{repair}{What to do with epi trackers that are too short. "drop" will
-remove theme from the output, "pad" will add \code{NA} rows to get to the
+remove them from the output, "pad" will add \code{NA} rows to get to the
 right size(Default = "drop").}
 
 \item{...}{See \code{\link[=as.data.frame.default]{as.data.frame.default()}}.}
@@ -62,7 +62,7 @@ These methods work for both \code{icm} and \code{netsim} class models. The
 available output includes time-specific means, standard deviations,
 quantiles, and simulation values (compartment and flow sizes) from these
 stochastic model classes. Means, standard deviations, and quantiles are
-calculated by taking the row summary (i.e., each row of data is corresponds
+calculated by taking the row summary (i.e., each row of data corresponds
 to a time step) across all simulations in the model output.
 }
 \examples{

@@ -8,7 +8,6 @@
 #' @param x An `EpiModel` object of class [dcm()].
 #' @param run Run number for model; used for multiple-run sensitivity models. If
 #'        `NULL` (default), will output data from all runs in a stacked data frame.
-#'        not specified, will output data from all runs in a stacked data frame.
 #' @param row.names See [as.data.frame.default()].
 #' @param optional See [as.data.frame.default()].
 #' @param ...  See [as.data.frame.default()].
@@ -123,7 +122,7 @@ as.data.frame.dcm <- function(x, row.names = NULL, optional = FALSE, run = NULL,
 #' @param row.names See [as.data.frame.default()].
 #' @param optional See [as.data.frame.default()].
 #' @param repair What to do with epi trackers that are too short. "drop" will
-#'        remove theme from the output, "pad" will add `NA` rows to get to the
+#'        remove them from the output, "pad" will add `NA` rows to get to the
 #'        right size(Default = "drop").
 #' @param ...  See [as.data.frame.default()].
 #'
@@ -132,7 +131,7 @@ as.data.frame.dcm <- function(x, row.names = NULL, optional = FALSE, run = NULL,
 #' available output includes time-specific means, standard deviations,
 #' quantiles, and simulation values (compartment and flow sizes) from these
 #' stochastic model classes. Means, standard deviations, and quantiles are
-#' calculated by taking the row summary (i.e., each row of data is corresponds
+#' calculated by taking the row summary (i.e., each row of data corresponds
 #' to a time step) across all simulations in the model output.
 #'
 #' @return A data frame containing the data from `x`.
