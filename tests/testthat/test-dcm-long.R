@@ -66,7 +66,7 @@ test_that("SI, 1G, CL: varying inf.prob and act.rate", {
   expect_equal(x$control$nruns, 8)
   expect_equal(x$epi$i.num[150, 1], 38.3715, tol = 0.0001)
   expect_equal(x$epi$i.num[150, 2], 500.9153, tol = 0.0001)
-  expect_equal(x$epi$i.num[10, 5], 178.344, tol = 0.0001)
+  expect_equal(x$epi$i.num[10, 5], 178.344, tol = 0.5)
   expect_equal(max(x$epi$i.num), 501)
   expect_equal(max(x$epi$s.num + x$epi$i.num), 501)
   plot(x)

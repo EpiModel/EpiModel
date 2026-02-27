@@ -125,7 +125,7 @@
 netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps = NULL,
                   nwstats.formula = "formation",
                   set.control.ergm = control.simulate.formula(),
-                  set.control.tergm = control.simulate.formula.tergm(MCMC.maxchanges = Inf),
+                  set.control.tergm = control.simulate.formula.tergm(MCMC.maxchanges = .Machine$integer.max),
                   sequential = TRUE, keep.tedgelist = FALSE,
                   keep.tnetwork = FALSE, verbose = TRUE, ncores = 1,
                   skip.dissolution = FALSE) {
