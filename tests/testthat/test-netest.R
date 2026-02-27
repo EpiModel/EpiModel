@@ -418,8 +418,8 @@ test_that("trimming non-nested EDA fails when it should", {
 
   est <- trim_netest(est)
 
-  expect_error(dxs <- netdx(est, nsims = 100, dynamic = FALSE), "object 'r' not found")
-  expect_error(dxd <- netdx(est, nsims = 2, nsteps = 7, dynamic = TRUE), "object 'r' not found")
+  expect_error(dxs <- netdx(est, nsims = 100, dynamic = FALSE, verbose = FALSE), "object 'r' not found")
+  expect_error(dxd <- netdx(est, nsims = 2, nsteps = 7, dynamic = TRUE, verbose = FALSE), "object 'r' not found")
 
   param <- param.net(inf.prob = 0.3, act.rate = 0.5)
   init <- init.net(i.num = 3)
@@ -438,8 +438,8 @@ test_that("trimming non-nested EDA fails when it should", {
 
   est <- trim_netest(est)
 
-  expect_error(dxs <- netdx(est, nsims = 100, dynamic = FALSE), "object 'a' not found")
-  expect_error(dxd <- netdx(est, nsims = 2, nsteps = 7, dynamic = TRUE), "object 'a' not found")
+  expect_error(dxs <- netdx(est, nsims = 100, dynamic = FALSE, verbose = FALSE), "object 'a' not found")
+  expect_error(dxd <- netdx(est, nsims = 2, nsteps = 7, dynamic = TRUE, verbose = FALSE), "object 'a' not found")
 
   param <- param.net(inf.prob = 0.3, act.rate = 0.5)
   init <- init.net(i.num = 3)
