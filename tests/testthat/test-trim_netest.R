@@ -25,9 +25,9 @@ test_that("trim_netest keep argument behaves as expected", {
 
   trim_est <- trim_netest(est)
 
-  expect_error(netdx(trim_est, nsims = 10, dynamic = FALSE),
+  expect_error(netdx(trim_est, nsims = 10, dynamic = FALSE, verbose = FALSE),
                "object 'attrname' not found")
-  expect_error(netdx(trim_est, nsims = 2, nsteps = 10, dynamic = TRUE),
+  expect_error(netdx(trim_est, nsims = 2, nsteps = 10, dynamic = TRUE, verbose = FALSE),
                "object 'attrname' not found")
   expect_error(netsim(trim_est, param, init, control),
                "object 'attrname' not found")
