@@ -1,4 +1,4 @@
-## EpiModel 2.5.5
+## EpiModel 2.6.0
 
 ### BREAKING CHANGES
 
