@@ -6,17 +6,22 @@
 
 ### NEW FEATURES
 
+-   Redesigned the `epiweb()` Shiny applications for both DCM and ICM model classes with a modern interface built on bslib (Bootstrap 5), the Atkinson Hyperlegible font, and interactive plotly visualizations.
+-   The DCM app (`epiweb("dcm")`) is now fully reactive with no run button, includes scenario presets (Flu-like, STI-like, Measles-like), intervention modeling with visual indicators, sensitivity analysis with blue-to-red color ramp, vital dynamics, a narrative Summary tab with R0 and epidemic timeline statistics, and a comprehensive Guide tab.
+-   The ICM app (`epiweb("icm")`) features a Run Model button for on-demand stochastic simulation, mean trajectory lines with IQR ribbons across multiple simulations, the same scenario presets adapted for smaller populations, intervention and vital dynamics support, a Summary tab with stochastic variation statistics, and a Data tab with switchable views (means, standard deviations, individual simulations).
+-   Both apps include PDF plot download and CSV data export.
 -   Export a `make_restart_point` function that takes in a `netsim` simulation object, truncate it to the smallest set of elements required to restart new simulations from. See `?make_restart_point`.
 -   Refactored `truncate_sim` into an S3 generic with class-specific methods for supported object classes. `truncate_sim` now supports the `dcm` model class, along with `icm` and `netsim` classes as previously supported. Additionally, there is a new `reset.time` argument to the function that allows flexibility in whether to reset the truncated model object to a new "time zero".
 
 ### BUG FIXES
 
--   Fix issue with Shiny app for `icm` model class (available with `epiweb("icm")` with plotting function if `nsims == 1)`. Also updated deprecated Shiny data table output functions.
+-   Fixed a bug in the ICM Shiny app where Shiny's `numericInput` returns integer-class values, which were silently excluded by `init.icm`'s internal `sapply(init, class) == "numeric"` filter, causing a population size of zero and an "invalid first argument" error in `sample()`.
 -   Fix error with `get_sims` related to variable subsetting with the `var` argument.
 -   Fix `plot.dcm` ignoring custom legend names when `nruns = 1` and multiple compartments are plotted.
 
 ### OTHER
 
+-   Added `requireNamespace` checks for `DT` and `plotly` in `epiweb()` to provide clear installation instructions if these packages are missing.
 -   Fix bug where the `ellipsis` (`...`) was not passed correctly to the `base::plot` in the `plot.netsim` function.
 -   Set `MCMC.maxchanges = Inf` as default for TERGM MCMC. Lift the check on the maximum number of MCMC changes per step for bigger or dense networks.
 -   Convert the Roxygen2 documentation to Markdown (previously $LaTeX$).
