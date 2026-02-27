@@ -547,3 +547,148 @@ test_that("non-nested EDA with substitutions", {
   run_sims(est_23, formation_names_ra)
   run_sims(est_24, formation_names_rr)
 })
+
+context("trim_netest functionality")
+
+test_that("trim_netest keep argument behaves as expected", {
+  nw <- network_initialize(n = 50)
+  nw <- set_vertex_attribute(nw, "sex", rbinom(50, 1, 0.5))
+
+  attrname <- "sex"
+
+  est <- netest(nw, formation = ~edges + nodematch(attrname),
+                target.stats = c(25, 10),
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                verbose = FALSE)
+
+  dxs <- netdx(est, nsims = 10, dynamic = FALSE, verbose = FALSE)
+  dxd <- netdx(est, nsims = 2, nsteps = 10, dynamic = TRUE, verbose = FALSE)
+
+  param <- param.net(inf.prob = 0.3, act.rate = 0.5)
+  init <- init.net(i.num = 10)
+  control <- control.net(type = "SI", nsims = 1, nsteps = 5, verbose = FALSE)
+  sim <- netsim(est, param, init, control)
+
+  expect_is(dxs, "netdx")
+  expect_is(dxd, "netdx")
+  expect_is(sim, "netsim")
+
+  trim_est <- trim_netest(est)
+
+  expect_error(netdx(trim_est, nsims = 10, dynamic = FALSE, verbose = FALSE),
+               "object 'attrname' not found")
+  expect_error(netdx(trim_est, nsims = 2, nsteps = 10, dynamic = TRUE, verbose = FALSE),
+               "object 'attrname' not found")
+  expect_error(netsim(trim_est, param, init, control),
+               "object 'attrname' not found")
+
+  trim_est_keep <- trim_netest(est, keep = "attrname")
+
+  trim_dxs_keep <- netdx(trim_est_keep, nsims = 10, dynamic = FALSE, verbose = FALSE)
+  trim_dxd_keep <- netdx(trim_est_keep, nsims = 2, nsteps = 10, dynamic = TRUE, verbose = FALSE)
+  trim_sim_keep <- netsim(trim_est_keep, param, init, control)
+
+  expect_is(trim_dxs_keep, "netdx")
+  expect_is(trim_dxd_keep, "netdx")
+  expect_is(trim_sim_keep, "netsim")
+})
+
+context("Full STERGM Workflow (All SOC)")
+
+test_that("Full STERGM", {
+  skip_on_cran()
+  skip_on_os("windows")
+  nw <- network_initialize(n = 50)
+  est <- netest(nw, formation = ~edges, target.stats = 25,
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                edapprox = FALSE, verbose = FALSE)
+
+  for (trim in c(FALSE, TRUE)) {
+    if (trim == TRUE) {
+      est2 <- trim_netest(est)
+    } else {
+      est2 <- est
+    }
+
+    # one core test
+    dx <- netdx(est2, nsims = 1, nsteps = 10, verbose = FALSE)
+    expect_is(dx, "netdx")
+    expect_true(!dx$edapprox)
+    expect_true(colnames(dx$stats[[1]]) == "edges")
+
+    # parallel test
+    dx <- netdx(est2, nsims = 2, nsteps = 10, ncores = 2, verbose = FALSE)
+    expect_is(dx, "netdx")
+    expect_true(dx$nsims == 2)
+    expect_is(dx$nw, "network")
+
+    param <- param.net(inf.prob = 0.3)
+    init <- init.net(i.num = 10)
+    control <- control.net(type = "SI", nsteps = 5, nsims = 1, verbose = FALSE)
+    mod <- netsim(est2, param, init, control)
+    expect_is(mod, "netsim")
+  }
+})
+
+context("Extremal Targets")
+
+test_that("extremal targets are handled correctly", {
+  ff <- ~edges + offset(degrange(6)) + nodematch("sex") + nodematch("race") +
+          degrange(6) + offset(nodematch("sex")) + degree(5)
+
+  ff_sum <- ~edges + nodematch("sex") + nodematch("race") + degrange(6) +
+              degree(5)
+
+  for (egor in list(FALSE, TRUE)) {
+    nw <- network_initialize(n = 100)
+    nw <- set_vertex_attribute(nw, "race", rbinom(100, 1, 0.5))
+    nw <- set_vertex_attribute(nw, "sex", rbinom(100, 1, 0.5))
+
+    target_stats <- c(50, 0, 20, 0, 0)
+    if (egor == TRUE) {
+      nw <- san(ff, basis = nw, target.stats = target_stats, offset.coef = c(-Inf,-Inf))
+      target_stats <- summary(ff_sum, basis = nw)
+      nw <- ergm.ego:::as.egor.network(nw)
+    }
+
+    target_stats_names <- c("edges", "nodematch.sex", "nodematch.race", "deg6+", "degree5")
+    target_stats_names_regexp <- c("edges", "nodematch\\.sex", "nodematch\\.race", "deg6\\+", "degree5")
+
+    est <- netest(nw, formation = ff,
+                  target.stats = target_stats,
+                  coef.form = c(1, -Inf),
+                  coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                  verbose = FALSE)
+
+    expect_equal(est$target.stats, target_stats)
+    expect_equal(est$target.stats.names, target_stats_names)
+
+    dxs <- netdx(est, nsims = 10, dynamic = FALSE, verbose = FALSE)
+    invisible(capture.output(print(dxs)))
+    plot(dxs)
+
+    dxd <- netdx(est, nsims = 10, nsteps = 5, dynamic = TRUE, verbose = FALSE)
+    invisible(capture.output(print(dxd)))
+    plot(dxd)
+
+    param <- param.net(inf.prob = 0.3, act.rate = 0.5)
+    init <- init.net(i.num = 10)
+    control <- control.net(type = "SI", nsims = 2, nsteps = 5, verbose = FALSE)
+    mod <- netsim(est, param, init, control)
+    invisible(capture.output(print(mod)))
+
+    plot(mod)
+    plot(mod, type = "formation")
+    plot(mod, type = "duration")
+    plot(mod, type = "dissolution")
+    plot(mod, type = "network")
+
+    for (obj in list(dxs, dxd, mod)) {
+      for(i in seq_along(target_stats_names_regexp)) {
+        expect_output(print(obj), paste0(target_stats_names_regexp[i], " *", target_stats[i]))
+      }
+      expect_output(print(obj), paste0("offset\\(deg6\\+\\)", " *", "NA"))
+      expect_output(print(obj), paste0("offset\\(nodematch\\.sex\\)", " *", "NA"))
+    }
+  }
+})
