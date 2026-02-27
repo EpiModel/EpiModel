@@ -25,14 +25,29 @@ netest(
 indicating an \code{ergm.ego} fit.}
 
 \item{formation}{Right-hand sided STERGM formation formula in the form
-\code{~edges + ...}, where \code{...} are additional network statistics.}
+\code{~edges + ...}, where \code{...} are additional network statistics
+(ERGM terms). This formula specifies which structural features of
+the network should be reproduced by the model. Common terms include
+\code{edges} (overall connectivity), \code{nodematch} (homophily by attribute),
+\code{concurrent} (overlapping partnerships), and \code{degree} (degree
+distribution constraints). See \code{\link[ergm:ergmTerm]{ergm::ergm-terms}} for the full
+list of available terms.}
 
 \item{target.stats}{Vector of target statistics for the formation model, with
-one number for each network statistic in the model. Ignored if
-fitting via \code{ergm.ego}.}
+one number for each network statistic in the model. These are the
+observed (or desired) values for each term in the formation formula.
+For example, if \code{formation = ~edges + concurrent}, then
+\code{target.stats = c(175, 40)} means the model should produce
+approximately 175 edges and 40 nodes with 2 or more partners. For
+an \code{edges}-only model, a useful starting value is
+\code{mean_degree * network_size / 2}. Ignored if fitting via \code{ergm.ego}.}
 
 \item{coef.diss}{An object of class \code{disscoef} output from the
-\code{\link{dissolution_coefs}} function.}
+\code{\link{dissolution_coefs}} function. This encodes the average partnership
+duration(s) and the corresponding dissolution model coefficients.
+For models with vital dynamics (arrivals and departures), the
+\code{d.rate} argument in \code{\link{dissolution_coefs}} should be set to adjust
+for the competing risk of node departure.}
 
 \item{constraints}{Right-hand sided formula specifying constraints for the
 modeled network, in the form \code{~...}, where \code{...} are
@@ -43,8 +58,13 @@ formula.}
 
 \item{edapprox}{If \code{TRUE}, use the indirect edges dissolution
 approximation method for the dynamic model fit, otherwise use the
-more time-intensive full STERGM estimation (see details). For
-\code{nw} of class \code{egor}, only \code{edapprox = TRUE} is supported.}
+more time-intensive full STERGM estimation (see details). The
+approximation is recommended for most use cases, especially when
+average partnership durations are moderate to long (> 25 time steps).
+Direct STERGM estimation (\code{edapprox = FALSE}) is slower but may be
+preferred for very short durations or when inferential quantities
+(standard errors, p-values) on formation coefficients are needed.
+For \code{nw} of class \code{egor}, only \code{edapprox = TRUE} is supported.}
 
 \item{set.control.ergm}{Control arguments passed to \code{ergm} (see details).}
 
@@ -61,12 +81,19 @@ model is an initial segment of the formation model (see details).}
 \item{...}{Additional arguments passed to other functions.}
 }
 \value{
-A fitted network model object of class \code{netest}.
+A fitted network model object of class \code{netest}. This object is
+passed to \code{\link{netdx}} for diagnostics and to \code{\link{netsim}} for epidemic
+simulation. Use \code{print()} to view the model form, including the
+formation formula, target statistics, and dissolution model. Use
+\code{summary()} to view the estimated model coefficients and goodness-of-fit
+statistics from the underlying ERGM or STERGM fit.
 }
 \description{
 Estimates statistical network models using the exponential
 random graph modeling (ERGM) framework with extensions for
-dynamic/temporal models (STERGM).
+dynamic/temporal models (STERGM). This is typically the first
+step in the network modeling pipeline, followed by \code{\link{netdx}}
+for model diagnostics and \code{\link{netsim}} for epidemic simulation.
 }
 \details{
 \code{netest} is a wrapper function for the \code{ergm}, \code{ergm.ego}, and \code{tergm}
@@ -140,6 +167,21 @@ functions, respectively, with the available parameters listed in the
 package. An example is below.
 }
 
+\section{Typical Workflow}{
+
+The network modeling pipeline in EpiModel typically follows these steps:
+\enumerate{
+\item Initialize a network: \code{\link{network_initialize}}
+\item Specify formation and dissolution: a formation formula (e.g.,
+\code{~edges + concurrent}) with target statistics, and dissolution
+coefficients via \code{\link{dissolution_coefs}}
+\item Estimate the network model: \code{netest()}
+\item Diagnose model fit: \code{\link{netdx}}
+\item Simulate the epidemic: \code{\link{netsim}} with \code{\link{param.net}}, \code{\link{init.net}},
+and \code{\link{control.net}}
+}
+}
+
 \examples{
 # Initialize a network of 100 nodes
 nw <- network_initialize(n = 100)
@@ -157,10 +199,25 @@ coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 10)
 est <- netest(nw, formation, target.stats, coef.diss,
               set.control.ergm = control.ergm(MCMC.burnin = 1e5,
                                               MCMC.interval = 1000))
+# View the model form (formation, targets, dissolution)
 est
 
-# To estimate the STERGM directly, use edapprox = FALSE
-# est2 <- netest(nw, formation, target.stats, coef.diss, edapprox = FALSE)
+# View the estimated coefficients
+summary(est)
+
+\dontrun{
+# Model with homophily on a nodal attribute
+nw2 <- network_initialize(n = 500)
+nw2 <- set_vertex_attribute(nw2, "risk", rep(0:1, each = 250))
+formation2 <- ~edges + nodematch("risk")
+target.stats2 <- c(175, 110)
+coef.diss2 <- dissolution_coefs(dissolution = ~offset(edges), duration = 50)
+est2 <- netest(nw2, formation2, target.stats2, coef.diss2)
+est2
+
+# Direct STERGM estimation (slower, for short durations or inference)
+est3 <- netest(nw, formation, target.stats, coef.diss, edapprox = FALSE)
+}
 
 }
 \references{
@@ -176,8 +233,11 @@ Modeling of Infectious Disease over Networks. Journal of Statistical
 Software. 2018; 84(8): 1-47.
 }
 \seealso{
-Use \code{\link{netdx}} to diagnose the fitted network model, and \code{\link{netsim}}
-to simulate epidemic spread over a simulated dynamic network
-consistent with the model fit.
+Use \code{\link{dissolution_coefs}} to compute dissolution coefficients
+before estimation. Use \code{\link{netdx}} to diagnose the fitted network
+model, and \code{\link{netsim}} to simulate epidemic spread over a simulated
+dynamic network consistent with the model fit. Parameterize the
+epidemic simulation with \code{\link{param.net}}, \code{\link{init.net}}, and
+\code{\link{control.net}}.
 }
 \keyword{model}

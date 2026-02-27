@@ -1,17 +1,36 @@
 #' @title Dynamic Network Model Diagnostics
 #'
-#' @description Runs dynamic diagnostics on an ERGM/STERGM estimated with
-#'              [`netest`].
+#' @description Runs diagnostic simulations on an ERGM/STERGM estimated with
+#'              [`netest`] to assess whether the fitted model reproduces the
+#'              intended network features. Both static (cross-sectional) and
+#'              dynamic (temporal) diagnostics are supported. This is the
+#'              recommended second step in the network modeling pipeline, after
+#'              estimation with [`netest`] and before epidemic simulation with
+#'              [`netsim`].
 #'
 #' @param x An `EpiModel` object of class `netest`.
-#' @param nsims Number of simulations to run.
-#' @param dynamic If `TRUE`, runs dynamic diagnostics. If `FALSE` and
-#'        the `netest` object was fit with the Edges Dissolution
-#'        approximation method, simulates from the static ERGM fit.
-#' @param nsteps Number of time steps per simulation (dynamic simulations only).
+#' @param nsims Number of simulations to run. For dynamic diagnostics, 5--10
+#'        simulations are usually sufficient to assess model fit. For static
+#'        diagnostics, use 10,000+ draws to obtain stable estimates.
+#' @param dynamic If `TRUE`, runs dynamic diagnostics that simulate the
+#'        temporal network forward in time, checking both formation targets
+#'        and partnership duration/dissolution. If `FALSE`, draws from the
+#'        static ERGM fit to check cross-sectional network structure only
+#'        (faster, but does not verify dissolution dynamics). Static
+#'        diagnostics are only available when the model was fit with the
+#'        edges dissolution approximation (`edapprox = TRUE` in [`netest`]).
+#' @param nsteps Number of time steps per simulation (dynamic simulations
+#'        only). Should be at least several multiples of the longest target
+#'        partnership duration to allow the duration and dissolution statistics
+#'        to stabilize. For example, if the target duration is 50, running for
+#'        500 time steps is a reasonable starting point.
 #' @param nwstats.formula A right-hand sided ERGM formula with the network
 #'        statistics of interest. The default is the formation formula of the
-#'        network model contained in `x`.
+#'        network model contained in `x`. You may track additional network
+#'        statistics beyond the formation terms by specifying them here, such
+#'        as `~ edges + meandeg + concurrent + degree(0:4)`. This is useful
+#'        for verifying that the model produces reasonable values for network
+#'        features that were not directly targeted in the formation model.
 #' @param set.control.ergm Control arguments passed to `ergm`'s
 #'        `simulate_formula.network` (see details).
 #' @param set.control.tergm Control arguments passed to `tergm`'s
@@ -67,26 +86,63 @@
 #' available parameters listed in the [`tergm::control.simulate.formula.tergm`]
 #' help page in the `tergm` package. An example is shown below.
 #'
+#' @section Static vs. Dynamic Diagnostics:
+#' Static diagnostics (`dynamic = FALSE`) draw many independent networks from
+#' the fitted ERGM and compare the resulting statistics to the target values.
+#' This is fast and checks whether the cross-sectional structure is correct,
+#' but it does not verify partnership durations or dissolution rates. Dynamic
+#' diagnostics (`dynamic = TRUE`) simulate the full temporal network forward
+#' in time, checking both formation targets and dissolution/duration dynamics.
+#' Dynamic diagnostics are slower but more comprehensive, and are required to
+#' verify models that will be used with vital dynamics (arrivals/departures).
+#'
+#' @section Interpreting Diagnostics:
+#' After running `netdx`, use `print()` and [`plot.netdx`] to inspect the
+#' results. Key indicators of a good model fit include:
+#'
+#'  * **Formation statistics:** The "Sim Mean" should be close to the
+#'    "Target" value. A small "Pct Diff" (< 5\%) and a "Z Score" near 0
+#'    indicate good fit.
+#'  * **Duration statistics** (dynamic only): The simulated mean edge
+#'    durations should match the values passed to [`dissolution_coefs`].
+#'  * **Dissolution statistics** (dynamic only): The simulated dissolution
+#'    rates should be approximately `1 / duration`.
+#'
+#' Common problems: If formation statistics are off, the ERGM may need
+#' increased burn-in (via `set.control.ergm`), or the target statistics
+#' may be incompatible (e.g., specifying more edges than the network can
+#' support). If durations are off but formation is correct, verify that
+#' `d.rate` was correctly specified in [`dissolution_coefs`] for models
+#' with vital dynamics.
+#'
 #' @return
-#' A list of class `netdx`.
+#' A list of class `netdx`. Use `print()` to view summary tables of
+#' formation statistics, duration, and dissolution diagnostics. Use
+#' [`plot.netdx`] to visualize these diagnostics over time. Use
+#' [as.data.frame.netdx()] to extract timed edgelists (if
+#' `keep.tedgelist = TRUE`).
 #'
 #' @seealso
-#' Plot these model diagnostics with [`plot.netdx`].
+#' Estimate the network model with [`netest`] before running diagnostics.
+#' Plot diagnostics with [`plot.netdx`] and print summary tables with
+#' [`print.netdx`]. After diagnostics confirm a good fit, simulate the
+#' epidemic with [`netsim`].
 #'
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' # Network initialization and model parameterization
+#' # Static diagnostics on a simple model
 #' nw <- network_initialize(n = 100)
 #' formation <- ~edges
 #' target.stats <- 50
-#' coef.diss <- dissolution_coefs(dissolution = ~ offset(edges), duration = 25)
-#'
-#' # Estimate the model
+#' coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 25)
 #' est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
+#' dx <- netdx(est, nsims = 1e4, dynamic = FALSE, verbose = FALSE)
+#' dx
+#' plot(dx)
 #'
-#' # Static diagnostics on the ERGM fit
+#' \dontrun{
+#' # Static diagnostics with additional network statistics
 #' dx1 <- netdx(est,
 #'   nsims = 1e4, dynamic = FALSE,
 #'   nwstats.formula = ~ edges + meandeg + concurrent
