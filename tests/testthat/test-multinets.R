@@ -1,4 +1,4 @@
-context("multiple network models")
+context("Multi-layer network models")
 
 test_that("netsim runs with multiple networks, with open or closed population", {
   nw <- network_initialize(n = 50)
@@ -173,8 +173,6 @@ test_that("netsim runs with multiple networks, with open or closed population", 
                                sim$run[[simno]]$num)
                 }
               } else {
-                expect_equal(network.size(network.collapse(sim$network[[simno]][[network]], at = nsteps - 1)),
-                               sim$run[[simno]]$num)
                 expect_equal(network.size(network.collapse(sim$network[[simno]][[network]], at = nsteps - 1)),
                                sim$run[[simno]]$num)
               }
