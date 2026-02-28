@@ -227,8 +227,21 @@ netsim <- function(x, param, init, control) {
     )
     dat_list <- Map(netsim_run, dat = dat_list, s = seq_along(dat_list))
   } else {
+    # On macOS, Apple's Accelerate framework uses Grand Central Dispatch
+    # for multi-threaded BLAS operations, which crashes when used inside
+    # forked child processes (mclapply). Restrict BLAS to a single thread
+    # before forking to prevent segfaults.
+    if (Sys.info()[["sysname"]] == "Darwin") {
+      old_veclib <- Sys.getenv("VECLIB_MAXIMUM_THREADS", unset = NA)
+      Sys.setenv(VECLIB_MAXIMUM_THREADS = "1")
+      on.exit({
+        if (is.na(old_veclib)) Sys.unsetenv("VECLIB_MAXIMUM_THREADS")
+        else Sys.setenv(VECLIB_MAXIMUM_THREADS = old_veclib)
+      }, add = TRUE)
+    }
+
     doParallel::registerDoParallel(control$ncores)
-    on.exit(doParallel::stopImplicitCluster())
+    on.exit(doParallel::stopImplicitCluster(), add = TRUE)
     # Prevents R CMD CHECK Note with variables declared in `foreach`
     dat <- s <- NULL
 
