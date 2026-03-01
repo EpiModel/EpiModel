@@ -243,6 +243,17 @@ with these original models.</p>
 parameterized model with <code><a href="dcm.html">dcm()</a></code>.</p></div>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># SI model parameters</span></span></span>
+<span class="r-in"><span><span class="va">param</span> <span class="op">&lt;-</span> <span class="fu">param.dcm</span><span class="op">(</span>inf.prob <span class="op">=</span> <span class="fl">0.2</span>, act.rate <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># SIS model with sensitivity analysis over act.rate</span></span></span>
+<span class="r-in"><span><span class="va">param</span> <span class="op">&lt;-</span> <span class="fu">param.dcm</span><span class="op">(</span>inf.prob <span class="op">=</span> <span class="fl">0.2</span>, act.rate <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">0.5</span>, <span class="fl">0.1</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                   rec.rate <span class="op">=</span> <span class="fl">1</span><span class="op">/</span><span class="fl">50</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

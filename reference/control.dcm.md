@@ -60,11 +60,11 @@ control.dcm(
 
 - sens.param:
 
-  If `TRUE`, evaluate arguments in parameters with length greater than 1
-  as sensitivity analyses, with one model run per value of the
-  parameter. If `FALSE`, one model will be run with parameters of
-  arbitrary length (the model may error unless the model function is
-  designed to accommodate parameter vectors).
+  If `TRUE`, evaluate arguments in parameters or initial conditions with
+  length greater than 1 as sensitivity analyses, with one model run per
+  value. If `FALSE`, one model will be run with parameters and initial
+  conditions of arbitrary length (the model may error unless the model
+  function is designed to accommodate vectors).
 
 - print.mod:
 

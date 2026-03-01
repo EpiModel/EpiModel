@@ -194,3 +194,14 @@ to specify the initial conditions and
 [`control.dcm()`](http://epimodel.github.io/EpiModel/reference/control.dcm.md)
 to specify the control settings. Run the parameterized model with
 [`dcm()`](http://epimodel.github.io/EpiModel/reference/dcm.md).
+
+## Examples
+
+``` r
+# SI model parameters
+param <- param.dcm(inf.prob = 0.2, act.rate = 0.25)
+
+# SIS model with sensitivity analysis over act.rate
+param <- param.dcm(inf.prob = 0.2, act.rate = seq(0.1, 0.5, 0.1),
+                   rec.rate = 1/50)
+```

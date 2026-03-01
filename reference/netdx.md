@@ -243,7 +243,7 @@ dx
 #> Formation Diagnostics
 #> ----------------------- 
 #>       Target Sim Mean Pct Diff Sim SE Z Score SD(Sim Means) SD(Statistic)
-#> edges     50   49.956   -0.087  0.069  -0.631            NA         6.922
+#> edges     50   50.009    0.019  0.072   0.131            NA         6.974
 plot(dx)
 
 

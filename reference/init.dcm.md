@@ -62,6 +62,18 @@ new set of names, or a combination of both. With new models, initial
 conditions must be input in the same order that the solved derivatives
 from the model are output.
 
+## Sensitivity Analyses
+
+Like
+[`param.dcm()`](http://epimodel.github.io/EpiModel/reference/param.dcm.md),
+initial conditions may be specified as vectors of length greater than
+one to run sensitivity analyses over initial conditions. When
+`sens.param = TRUE` in
+[`control.dcm()`](http://epimodel.github.io/EpiModel/reference/control.dcm.md)
+(the default), each element of the vector produces a separate model run.
+If both parameters and initial conditions have vector values, all
+vectors must have the same length.
+
 ## See also
 
 Use
@@ -70,3 +82,13 @@ to specify model parameters and
 [`control.dcm()`](http://epimodel.github.io/EpiModel/reference/control.dcm.md)
 to specify the control settings. Run the parameterized model with
 [`dcm()`](http://epimodel.github.io/EpiModel/reference/dcm.md).
+
+## Examples
+
+``` r
+# SI model initial conditions
+init <- init.dcm(s.num = 500, i.num = 1)
+
+# Sensitivity analysis over initial infected count
+init <- init.dcm(s.num = 500, i.num = c(1, 5, 25))
+```

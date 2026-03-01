@@ -84,8 +84,8 @@ infTime[which(status == "i")] <- -rgeom(sum(status == "i"), prob = 0.01) + 2
 init.net(status.vector = status, infTime.vector = infTime)
 #> Network Model Initial Conditions
 #> =================================
-#> status.vector = s s s s s s s i i s s s s s s i s s s s s i s s s s s s s s i s 
-#> s s i s s s i i s s i s s s i s s s s s s s i s s s s s s s s s s i i s s s s s 
-#> s s s s s s s s s s s s s s s s s s s s s s s s s s s s
+#> status.vector = s s s s s i i s s s s s s i s s s s s i s s s s s s s s i s s s 
+#> i s s s i i s s i s s s i s s s s s s s i s s s s s s s s s s i i s s s s s s s 
+#> s s s s s s s s s s s s s s s s s s s s s s s s s s i s
 #> infTime.vector = NA NA NA NA NA ...
 ```

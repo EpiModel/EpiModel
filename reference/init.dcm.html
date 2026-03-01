@@ -106,12 +106,32 @@ must be input in the same order that the solved derivatives from the model
 are output.</p>
     </div>
     <div class="section level2">
+    <h2 id="sensitivity-analyses">Sensitivity Analyses<a class="anchor" aria-label="anchor" href="#sensitivity-analyses"></a></h2>
+
+
+<p>Like <code><a href="param.dcm.html">param.dcm()</a></code>, initial conditions may be specified as vectors of length
+greater than one to run sensitivity analyses over initial conditions. When
+<code>sens.param = TRUE</code> in <code><a href="control.dcm.html">control.dcm()</a></code> (the default), each element of the
+vector produces a separate model run. If both parameters and initial
+conditions have vector values, all vectors must have the same length.</p>
+    </div>
+    <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p>Use <code><a href="param.dcm.html">param.dcm()</a></code> to specify model parameters and
 <code><a href="control.dcm.html">control.dcm()</a></code> to specify the control settings. Run the
 parameterized model with <code><a href="dcm.html">dcm()</a></code>.</p></div>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># SI model initial conditions</span></span></span>
+<span class="r-in"><span><span class="va">init</span> <span class="op">&lt;-</span> <span class="fu">init.dcm</span><span class="op">(</span>s.num <span class="op">=</span> <span class="fl">500</span>, i.num <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Sensitivity analysis over initial infected count</span></span></span>
+<span class="r-in"><span><span class="va">init</span> <span class="op">&lt;-</span> <span class="fu">init.dcm</span><span class="op">(</span>s.num <span class="op">=</span> <span class="fl">500</span>, i.num <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">5</span>, <span class="fl">25</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

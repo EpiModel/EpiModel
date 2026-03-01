@@ -99,6 +99,11 @@ mod1
 #> inf.prob = 0.2
 #> act.rate = 0.25
 #> 
+#> Initial Conditions
+#> -----------------------
+#> s.num = 500
+#> i.num = 1
+#> 
 #> Model Output
 #> -----------------------
 #> Variables: s.num i.num si.flow num
@@ -134,6 +139,12 @@ mod2
 #> di.rate = 0.02857143
 #> dr.rate = 0.01
 #> 
+#> Initial Conditions
+#> -----------------------
+#> s.num = 500
+#> i.num = 1
+#> r.num = 0
+#> 
 #> Model Output
 #> -----------------------
 #> Variables: s.num i.num r.num si.flow ir.flow a.flow 
@@ -164,6 +175,11 @@ mod3
 #> inf.prob = 0.2
 #> act.rate = 0.1 0.2 0.3 0.4 0.5
 #> rec.rate = 0.02
+#> 
+#> Initial Conditions
+#> -----------------------
+#> s.num = 500
+#> i.num = 1
 #> 
 #> Model Output
 #> -----------------------
@@ -206,11 +222,51 @@ mod4
 #> di.rate.g2 = 0.02
 #> balance = g1
 #> 
+#> Initial Conditions
+#> -----------------------
+#> s.num = 500
+#> i.num = 1
+#> s.num.g2 = 500
+#> i.num.g2 = 0
+#> 
 #> Model Output
 #> -----------------------
 #> Variables: s.num i.num s.num.g2 i.num.g2 si.flow a.flow 
 #> ds.flow di.flow si.flow.g2 a.flow.g2 ds.flow.g2 di.flow.g2 
 #> num num.g2
 plot(mod4)
+
+
+## Example 5: SI Model with Varying Initial Conditions
+param <- param.dcm(inf.prob = 0.2, act.rate = 0.25)
+init <- init.dcm(s.num = 500, i.num = c(1, 5, 25))
+control <- control.dcm(type = "SI", nsteps = 500)
+mod5 <- dcm(param, init, control)
+mod5
+#> EpiModel Simulation
+#> =======================
+#> Model class: dcm
+#> 
+#> Simulation Summary
+#> -----------------------
+#> Model type: SI
+#> No. runs: 3
+#> No. time steps: 500
+#> No. groups: 1
+#> 
+#> Model Parameters
+#> -----------------------
+#> inf.prob = 0.2
+#> act.rate = 0.25
+#> 
+#> Initial Conditions
+#> -----------------------
+#> s.num = 500
+#> i.num = 1 5 25
+#> 
+#> Model Output
+#> -----------------------
+#> Variables: s.num si.flow i.num num
+plot(mod5)
 
 ```

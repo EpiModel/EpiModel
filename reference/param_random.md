@@ -44,5 +44,5 @@ a()
 # Define function with unequal sampling probability
 b <- param_random(1:5, prob = c(0.1, 0.1, 0.1, 0.1, 0.6))
 b()
-#> [1] 3
+#> [1] 5
 ```

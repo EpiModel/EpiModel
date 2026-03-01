@@ -103,11 +103,11 @@ model to be simulated (see details).</p></dd>
 
 
 <dt id="arg-sens-param">sens.param<a class="anchor" aria-label="anchor" href="#arg-sens-param"></a></dt>
-<dd><p>If <code>TRUE</code>, evaluate arguments in parameters with
-length greater than 1 as sensitivity analyses, with one model run per
-value of the parameter. If <code>FALSE</code>, one model will be run with
-parameters of arbitrary length (the model may error unless the model
-function is designed to accommodate parameter vectors).</p></dd>
+<dd><p>If <code>TRUE</code>, evaluate arguments in parameters or initial
+conditions with length greater than 1 as sensitivity analyses, with
+one model run per value. If <code>FALSE</code>, one model will be run with
+parameters and initial conditions of arbitrary length (the model may
+error unless the model function is designed to accommodate vectors).</p></dd>
 
 
 <dt id="arg-print-mod">print.mod<a class="anchor" aria-label="anchor" href="#arg-print-mod"></a></dt>
