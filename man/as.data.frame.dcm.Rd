@@ -14,8 +14,7 @@
 \item{optional}{See \code{\link[=as.data.frame.default]{as.data.frame.default()}}.}
 
 \item{run}{Run number for model; used for multiple-run sensitivity models. If
-\code{NULL} (default), will output data from all runs in a stacked data frame.
-not specified, will output data from all runs in a stacked data frame.}
+\code{NULL} (default), will output data from all runs in a stacked data frame.}
 
 \item{...}{See \code{\link[=as.data.frame.default]{as.data.frame.default()}}.}
 }

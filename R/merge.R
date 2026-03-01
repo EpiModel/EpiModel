@@ -107,10 +107,10 @@ merge.icm <- function(x, y, ...) {
 #'        from the original `x` and `y` elements. Note: network
 #'        only saved when (`tergmLite == FALSE`).
 #' @param keep.nwstats If `TRUE`, keep the network statistics (as set by
-#'        the `nwstats.formula` parameter in `control.netsim`) from
+#'        the `nwstats.formula` parameter in `control.net`) from
 #'        the original `x` and `y` elements.
 #' @param keep.other If `TRUE`, keep the other simulation elements (as set
-#'        by the `save.other` parameter in `control.netsim`) from the
+#'        by the `save.other` parameter in `control.net`) from the
 #'        original `x` and `y` elements.
 #' @param param.error If `TRUE`, if `x` and `y` have different
 #'        params (in [param.net()]) or controls (passed in

@@ -15,6 +15,7 @@
 
 ### BUG FIXES
 
+-   Fix segfault in `netsim()` when running multi-core simulations on macOS after a single-core run in the same R session. A recent Xcode update causes Apple's Accelerate BLAS to initialize multi-threaded Grand Central Dispatch state that is incompatible with the process forking used by `mclapply`. `netsim()` now sets `VECLIB_MAXIMUM_THREADS=1` on macOS before any simulation run to keep the process fork-safe.
 -   Fixed a bug in the ICM Shiny app where Shiny's `numericInput` returns integer-class values, which were silently excluded by `init.icm`'s internal `sapply(init, class) == "numeric"` filter, causing a population size of zero and an "invalid first argument" error in `sample()`.
 -   Fix error with `get_sims` related to variable subsetting with the `var` argument.
 -   Fix `plot.dcm` ignoring custom legend names when `nruns = 1` and multiple compartments are plotted.

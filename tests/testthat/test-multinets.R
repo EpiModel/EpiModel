@@ -1,4 +1,4 @@
-context("multiple network models")
+context("Multi-Layer Network Models")
 
 test_that("netsim runs with multiple networks, with open or closed population", {
   nw <- network_initialize(n = 50)
@@ -101,11 +101,11 @@ test_that("netsim runs with multiple networks, with open or closed population", 
                                      dat
                                    },
                                    nwstats.formula = sim_nwstats_formulas,
-                                   verbose = TRUE,
+                                   verbose = FALSE,
                                    save.network = TRUE,
                                    save.run = TRUE,
                                    save.other = c(save.other))
-            print(control)
+            invisible(capture.output(print(control)))
             basis <- est
           } else {
             control$start <- nsteps + 1L
@@ -115,7 +115,7 @@ test_that("netsim runs with multiple networks, with open or closed population", 
           }
           sim <- netsim(basis, param, init, control)
 
-          print(sim)
+          invisible(capture.output(print(sim)))
           plot(sim)
           plot(sim, type = "formation")
           if (tergmLite == FALSE) {
@@ -124,7 +124,7 @@ test_that("netsim runs with multiple networks, with open or closed population", 
           }
 
           for (network in seq_len(nnets)) {
-            print(sim, network = network)
+            invisible(capture.output(print(sim, network = network)))
             plot(sim, network = network)
             plot(sim, type = "formation", network = network)
             if (tergmLite == FALSE) {
@@ -173,8 +173,6 @@ test_that("netsim runs with multiple networks, with open or closed population", 
                                sim$run[[simno]]$num)
                 }
               } else {
-                expect_equal(network.size(network.collapse(sim$network[[simno]][[network]], at = nsteps - 1)),
-                               sim$run[[simno]]$num)
                 expect_equal(network.size(network.collapse(sim$network[[simno]][[network]], at = nsteps - 1)),
                                sim$run[[simno]]$num)
               }

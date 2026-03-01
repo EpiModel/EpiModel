@@ -315,13 +315,13 @@ crosscheck.icm <- function(param, init, control) {
 
   ## Main class check
   if (!inherits(param, "param.icm")) {
-    stop("param must an object of class param.icm", call. = FALSE)
+    stop("param must be an object of class param.icm", call. = FALSE)
   }
   if (!inherits(init, "init.icm")) {
-    stop("init must an object of class init.icm", call. = FALSE)
+    stop("init must be an object of class init.icm", call. = FALSE)
   }
   if (!inherits(control, "control.icm")) {
-    stop("control must an object of class control.icm", call. = FALSE)
+    stop("control must be an object of class control.icm", call. = FALSE)
   }
 
   if (control$skip.check == FALSE) {
@@ -337,7 +337,7 @@ crosscheck.icm <- function(param, init, control) {
     }
 
 
-    ## Check that paramets and init are supplied for SIR models
+    ## Check that parameters and init are supplied for SIR models
     if (control$type == "SIR") {
       if (is.null(init$r.num)) {
         stop("Specify r.num in init.icm", call. = FALSE)
@@ -354,11 +354,11 @@ crosscheck.icm <- function(param, init, control) {
       init.groups <- 1
     }
     if (param$groups == 2 && init.groups == 1) {
-      stop("Group 2 parameters specified in param.dcm, but missing group 2, ",
+      stop("Group 2 parameters specified in param.icm, but missing group 2, ",
            "initial states in init.icm", call. = FALSE)
     }
     if (param$groups == 1 && init.groups == 2) {
-      stop("Group 2 initial stats specified in init.dcm, but missing group 2 ",
+      stop("Group 2 initial stats specified in init.icm, but missing group 2 ",
            "parameters in param.icm", call. = FALSE)
     }
 

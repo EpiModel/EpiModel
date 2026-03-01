@@ -250,7 +250,7 @@ init.dcm <- function(s.num, i.num, r.num, s.num.g2, i.num.g2, r.num.g2,
 #'        length greater than 1 as sensitivity analyses, with one model run per
 #'        value of the parameter. If `FALSE`, one model will be run with
 #'        parameters of arbitrary length (the model may error unless the model
-#'        function is designed to accomodate parameter vectors).
+#'        function is designed to accommodate parameter vectors).
 #' @param print.mod If `TRUE`, print the model form to the console.
 #' @param verbose If `TRUE`, print model progress to the console.
 #' @param ... additional control settings passed to model.
@@ -355,13 +355,13 @@ crosscheck.dcm <- function(param, init, control) {
 
   # Main class check --------------------------------------------------------
   if (!inherits(param, "param.dcm")) {
-    stop("param must an object of class param.dcm", call. = FALSE)
+    stop("param must be an object of class param.dcm", call. = FALSE)
   }
   if (!inherits(init, "init.dcm")) {
-    stop("init must an object of class init.dcm", call. = FALSE)
+    stop("init must be an object of class init.dcm", call. = FALSE)
   }
   if (!inherits(control, "control.dcm")) {
-    stop("control must an object of class control.dcm", call. = FALSE)
+    stop("control must be an object of class control.dcm", call. = FALSE)
   }
 
   # Parameter checks for base models ----------------------------------

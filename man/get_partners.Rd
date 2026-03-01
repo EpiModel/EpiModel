@@ -48,6 +48,6 @@ Note that \code{get_partners} takes as input the positional IDs of the indexes o
 the unique IDs. That is by design, because while \code{get_partners} would be expected to be called
 for active nodes, some partners (contacts) of nodes may be inactive in the network history.
 Therefore, both index and partner IDs are returned as unique IDs for consistency. To convert
-between a positional to a unique ID, you may use \code{\link{get_posit_ids}}; to convert between a
-unique ID to a positional ID, you may use \code{\link{get_unique_ids}}.
+between a positional to a unique ID, you may use \code{\link{get_unique_ids}}; to convert between a
+unique ID to a positional ID, you may use \code{\link{get_posit_ids}}.
 }

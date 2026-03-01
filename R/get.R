@@ -2,7 +2,6 @@
 #' @title Extract Network Objects from Network Simulations
 #'
 #' @description Extracts the network object from either a network epidemic model
-
 #'              object generated with `netsim`, a network diagnostic
 #'              simulation generated with `netdx`, or a `netsim_dat`
 #'              object used internally in `netsim`. For `netdx` or
@@ -239,7 +238,7 @@ set_network.netsim_dat <- function(x, network = 1L, nw, ...) {
 #' @param x An `EpiModel` object of class [netsim()].
 #' @param sim Simulation number of extracted network.
 #' @param deduplicate If `TRUE`, randomly select one transmission event in
-#'        the case that multiple events current per newly infected agent within
+#'        the case that multiple events occur per newly infected agent within
 #'        a time step.
 #'
 #' @return
@@ -499,7 +498,7 @@ get_sims <- function(x, sims = NULL, var = NULL) {
   }
   if (length(sims) == 1 && sims ==
         "mean" && (is.null(var) || length(var) > 1)) {
-    stop("If sims == 'mean' then var must be a single varible name",
+    stop("If sims == 'mean' then var must be a single variable name",
          call. = FALSE)
   }
 

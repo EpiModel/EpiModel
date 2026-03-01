@@ -1,4 +1,4 @@
-context("Network diagnostics (All SOC)")
+context("Network Diagnostics (All SOC)")
 
 for (trim in c(FALSE, TRUE)) {
 

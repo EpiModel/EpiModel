@@ -3,26 +3,48 @@
 #'
 #' @description Estimates statistical network models using the exponential
 #'              random graph modeling (ERGM) framework with extensions for
-#'              dynamic/temporal models (STERGM).
+#'              dynamic/temporal models (STERGM). This is typically the first
+#'              step in the network modeling pipeline, followed by [`netdx`]
+#'              for model diagnostics and [`netsim`] for epidemic simulation.
 #'
 #' @param nw An object of class `network` or `egor`, with the latter
 #'        indicating an `ergm.ego` fit.
 #' @param formation Right-hand sided STERGM formation formula in the form
-#'        `~edges + ...`, where `...` are additional network statistics.
+#'        `~edges + ...`, where `...` are additional network statistics
+#'        (ERGM terms). This formula specifies which structural features of
+#'        the network should be reproduced by the model. Common terms include
+#'        `edges` (overall connectivity), `nodematch` (homophily by attribute),
+#'        `concurrent` (overlapping partnerships), and `degree` (degree
+#'        distribution constraints). See [`ergm::ergm-terms`] for the full
+#'        list of available terms.
 #' @param target.stats Vector of target statistics for the formation model, with
-#'        one number for each network statistic in the model. Ignored if
-#'        fitting via `ergm.ego`.
+#'        one number for each network statistic in the model. These are the
+#'        observed (or desired) values for each term in the formation formula.
+#'        For example, if `formation = ~edges + concurrent`, then
+#'        `target.stats = c(175, 40)` means the model should produce
+#'        approximately 175 edges and 40 nodes with 2 or more partners. For
+#'        an `edges`-only model, a useful starting value is
+#'        `mean_degree * network_size / 2`. Ignored if fitting via `ergm.ego`.
 #' @param coef.diss An object of class `disscoef` output from the
-#'        [`dissolution_coefs`] function.
+#'        [`dissolution_coefs`] function. This encodes the average partnership
+#'        duration(s) and the corresponding dissolution model coefficients.
+#'        For models with vital dynamics (arrivals and departures), the
+#'        `d.rate` argument in [`dissolution_coefs`] should be set to adjust
+#'        for the competing risk of node departure.
 #' @param constraints Right-hand sided formula specifying constraints for the
 #'        modeled network, in the form `~...`, where `...` are
 #'        constraint terms. By default, no constraints are set.
 #' @param coef.form Vector of coefficients for the offset terms in the formation
 #'        formula.
 #' @param edapprox If `TRUE`, use the indirect edges dissolution
-#'        approximation  method for the dynamic model fit, otherwise use the
-#'        more time-intensive full STERGM estimation (see details).  For
-#'        `nw` of class `egor`, only `edapprox = TRUE` is supported.
+#'        approximation method for the dynamic model fit, otherwise use the
+#'        more time-intensive full STERGM estimation (see details). The
+#'        approximation is recommended for most use cases, especially when
+#'        average partnership durations are moderate to long (> 25 time steps).
+#'        Direct STERGM estimation (`edapprox = FALSE`) is slower but may be
+#'        preferred for very short durations or when inferential quantities
+#'        (standard errors, p-values) on formation coefficients are needed.
+#'        For `nw` of class `egor`, only `edapprox = TRUE` is supported.
 #' @param set.control.ergm Control arguments passed to `ergm` (see details).
 #' @param set.control.ergm.ego Control arguments passed to `ergm.ego` (see
 #'        details).
@@ -100,7 +122,24 @@
 #' [`ergm.ego::control.ergm.ego`] help page in the `ergm.ego`
 #' package. An example is below.
 #'
-#' @return A fitted network model object of class `netest`.
+#' @section Typical Workflow:
+#' The network modeling pipeline in EpiModel typically follows these steps:
+#'
+#'  1. Initialize a network: [`network_initialize`]
+#'  2. Specify formation and dissolution: a formation formula (e.g.,
+#'     `~edges + concurrent`) with target statistics, and dissolution
+#'     coefficients via [`dissolution_coefs`]
+#'  3. Estimate the network model: `netest()`
+#'  4. Diagnose model fit: [`netdx`]
+#'  5. Simulate the epidemic: [`netsim`] with [`param.net`], [`init.net`],
+#'     and [`control.net`]
+#'
+#' @return A fitted network model object of class `netest`. This object is
+#' passed to [`netdx`] for diagnostics and to [`netsim`] for epidemic
+#' simulation. Use `print()` to view the model form, including the
+#' formation formula, target statistics, and dissolution model. Use
+#' `summary()` to view the estimated model coefficients and goodness-of-fit
+#' statistics from the underlying ERGM or STERGM fit.
 #'
 #' @references
 #' Krivitsky PN, Handcock MS. "A Separable Model for Dynamic Networks." JRSS(B).
@@ -115,9 +154,12 @@
 #' Software. 2018; 84(8): 1-47.
 #'
 #' @keywords model
-#' @seealso Use [`netdx`] to diagnose the fitted network model, and [`netsim`]
-#'          to simulate epidemic spread over a simulated dynamic network
-#'          consistent with the model fit.
+#' @seealso Use [`dissolution_coefs`] to compute dissolution coefficients
+#'          before estimation. Use [`netdx`] to diagnose the fitted network
+#'          model, and [`netsim`] to simulate epidemic spread over a simulated
+#'          dynamic network consistent with the model fit. Parameterize the
+#'          epidemic simulation with [`param.net`], [`init.net`], and
+#'          [`control.net`].
 #'
 #' @export
 #'
@@ -138,10 +180,25 @@
 #' est <- netest(nw, formation, target.stats, coef.diss,
 #'               set.control.ergm = control.ergm(MCMC.burnin = 1e5,
 #'                                               MCMC.interval = 1000))
+#' # View the model form (formation, targets, dissolution)
 #' est
 #'
-#' # To estimate the STERGM directly, use edapprox = FALSE
-#' # est2 <- netest(nw, formation, target.stats, coef.diss, edapprox = FALSE)
+#' # View the estimated coefficients
+#' summary(est)
+#'
+#' \dontrun{
+#' # Model with homophily on a nodal attribute
+#' nw2 <- network_initialize(n = 500)
+#' nw2 <- set_vertex_attribute(nw2, "risk", rep(0:1, each = 250))
+#' formation2 <- ~edges + nodematch("risk")
+#' target.stats2 <- c(175, 110)
+#' coef.diss2 <- dissolution_coefs(dissolution = ~offset(edges), duration = 50)
+#' est2 <- netest(nw2, formation2, target.stats2, coef.diss2)
+#' est2
+#'
+#' # Direct STERGM estimation (slower, for short durations or inference)
+#' est3 <- netest(nw, formation, target.stats, coef.diss, edapprox = FALSE)
+#' }
 #'
 netest <- function(nw, formation, target.stats, coef.diss, constraints = NULL,
                    coef.form = NULL, edapprox = TRUE,
@@ -155,7 +212,7 @@ netest <- function(nw, formation, target.stats, coef.diss, constraints = NULL,
   }
 
   if (!inherits(coef.diss, "disscoef")) {
-    stop("dissolution must be of input through dissolution_coefs function",
+    stop("dissolution must be input through the dissolution_coefs function",
          call. = FALSE)
   }
   dissolution <- coef.diss$dissolution

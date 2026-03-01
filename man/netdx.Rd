@@ -24,17 +24,31 @@ netdx(
 \arguments{
 \item{x}{An \code{EpiModel} object of class \code{netest}.}
 
-\item{nsims}{Number of simulations to run.}
+\item{nsims}{Number of simulations to run. For dynamic diagnostics, 5--10
+simulations are usually sufficient to assess model fit. For static
+diagnostics, use 10,000+ draws to obtain stable estimates.}
 
-\item{dynamic}{If \code{TRUE}, runs dynamic diagnostics. If \code{FALSE} and
-the \code{netest} object was fit with the Edges Dissolution
-approximation method, simulates from the static ERGM fit.}
+\item{dynamic}{If \code{TRUE}, runs dynamic diagnostics that simulate the
+temporal network forward in time, checking both formation targets
+and partnership duration/dissolution. If \code{FALSE}, draws from the
+static ERGM fit to check cross-sectional network structure only
+(faster, but does not verify dissolution dynamics). Static
+diagnostics are only available when the model was fit with the
+edges dissolution approximation (\code{edapprox = TRUE} in \code{\link{netest}}).}
 
-\item{nsteps}{Number of time steps per simulation (dynamic simulations only).}
+\item{nsteps}{Number of time steps per simulation (dynamic simulations
+only). Should be at least several multiples of the longest target
+partnership duration to allow the duration and dissolution statistics
+to stabilize. For example, if the target duration is 50, running for
+500 time steps is a reasonable starting point.}
 
 \item{nwstats.formula}{A right-hand sided ERGM formula with the network
 statistics of interest. The default is the formation formula of the
-network model contained in \code{x}.}
+network model contained in \code{x}. You may track additional network
+statistics beyond the formation terms by specifying them here, such
+as \code{~ edges + meandeg + concurrent + degree(0:4)}. This is useful
+for verifying that the model produces reasonable values for network
+features that were not directly targeted in the formation model.}
 
 \item{set.control.ergm}{Control arguments passed to \code{ergm}'s
 \code{simulate_formula.network} (see details).}
@@ -64,11 +78,20 @@ on, using the \code{foreach} and \code{doParallel} implementations.}
 duration and dissolution stats in \code{netdx}.}
 }
 \value{
-A list of class \code{netdx}.
+A list of class \code{netdx}. Use \code{print()} to view summary tables of
+formation statistics, duration, and dissolution diagnostics. Use
+\code{\link{plot.netdx}} to visualize these diagnostics over time. Use
+\code{\link[=as.data.frame.netdx]{as.data.frame.netdx()}} to extract timed edgelists (if
+\code{keep.tedgelist = TRUE}).
 }
 \description{
-Runs dynamic diagnostics on an ERGM/STERGM estimated with
-\code{\link{netest}}.
+Runs diagnostic simulations on an ERGM/STERGM estimated with
+\code{\link{netest}} to assess whether the fitted model reproduces the
+intended network features. Both static (cross-sectional) and
+dynamic (temporal) diagnostics are supported. This is the
+recommended second step in the network modeling pipeline, after
+estimation with \code{\link{netest}} and before epidemic simulation with
+\code{\link{netsim}}.
 }
 \details{
 The \code{netdx} function handles dynamic network diagnostics for network
@@ -107,18 +130,53 @@ available parameters listed in the \code{\link[tergm:control.simulate.tergm]{ter
 help page in the \code{tergm} package. An example is shown below.
 }
 
+\section{Static vs. Dynamic Diagnostics}{
+
+Static diagnostics (\code{dynamic = FALSE}) draw many independent networks from
+the fitted ERGM and compare the resulting statistics to the target values.
+This is fast and checks whether the cross-sectional structure is correct,
+but it does not verify partnership durations or dissolution rates. Dynamic
+diagnostics (\code{dynamic = TRUE}) simulate the full temporal network forward
+in time, checking both formation targets and dissolution/duration dynamics.
+Dynamic diagnostics are slower but more comprehensive, and are required to
+verify models that will be used with vital dynamics (arrivals/departures).
+}
+
+\section{Interpreting Diagnostics}{
+
+After running \code{netdx}, use \code{print()} and \code{\link{plot.netdx}} to inspect the
+results. Key indicators of a good model fit include:
+\itemize{
+\item \strong{Formation statistics:} The "Sim Mean" should be close to the
+"Target" value. A small "Pct Diff" (< 5\\%) and a "Z Score" near 0
+indicate good fit.
+\item \strong{Duration statistics} (dynamic only): The simulated mean edge
+durations should match the values passed to \code{\link{dissolution_coefs}}.
+\item \strong{Dissolution statistics} (dynamic only): The simulated dissolution
+rates should be approximately \code{1 / duration}.
+}
+
+Common problems: If formation statistics are off, the ERGM may need
+increased burn-in (via \code{set.control.ergm}), or the target statistics
+may be incompatible (e.g., specifying more edges than the network can
+support). If durations are off but formation is correct, verify that
+\code{d.rate} was correctly specified in \code{\link{dissolution_coefs}} for models
+with vital dynamics.
+}
+
 \examples{
-\dontrun{
-# Network initialization and model parameterization
+# Static diagnostics on a simple model
 nw <- network_initialize(n = 100)
 formation <- ~edges
 target.stats <- 50
-coef.diss <- dissolution_coefs(dissolution = ~ offset(edges), duration = 25)
-
-# Estimate the model
+coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 25)
 est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
+dx <- netdx(est, nsims = 1e4, dynamic = FALSE, verbose = FALSE)
+dx
+plot(dx)
 
-# Static diagnostics on the ERGM fit
+\dontrun{
+# Static diagnostics with additional network statistics
 dx1 <- netdx(est,
   nsims = 1e4, dynamic = FALSE,
   nwstats.formula = ~ edges + meandeg + concurrent
@@ -156,5 +214,8 @@ plot(dx3, type = "dissolution", mean.smooth = FALSE, mean.col = "red")
 
 }
 \seealso{
-Plot these model diagnostics with \code{\link{plot.netdx}}.
+Estimate the network model with \code{\link{netest}} before running diagnostics.
+Plot diagnostics with \code{\link{plot.netdx}} and print summary tables with
+\code{\link{print.netdx}}. After diagnostics confirm a good fit, simulate the
+epidemic with \code{\link{netsim}}.
 }

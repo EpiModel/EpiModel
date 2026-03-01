@@ -15,6 +15,6 @@ padded_vector(orig, size)
 A vector of size \code{size} padded with \code{NULL}s or \code{NA}s at the end.
 }
 \description{
-Grow a vector to a given size, padding it with  \code{NULL} if \code{orig} is a \code{list}
+Grow a vector to a given size, padding it with \code{NULL} if \code{orig} is a \code{list}
 and with \code{NA} otherwise
 }

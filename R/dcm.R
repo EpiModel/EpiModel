@@ -16,7 +16,7 @@
 #' in `EpiModel`, with epidemic parameters, initial conditions, and control
 #' settings.
 #'
-#' The `dcm` function performs  modeling of both base model types and
+#' The `dcm` function performs modeling of both base model types and
 #' original models with new structures. Base model types include one-group
 #' and two-group models with disease types for Susceptible-Infected (SI),
 #' Susceptible-Infected-Recovered (SIR), and Susceptible-Infected-Susceptible

@@ -38,7 +38,7 @@ system. The parameterization for these models follows the standard approach
 in \code{EpiModel}, with epidemic parameters, initial conditions, and control
 settings.
 
-The \code{dcm} function performs  modeling of both base model types and
+The \code{dcm} function performs modeling of both base model types and
 original models with new structures. Base model types include one-group
 and two-group models with disease types for Susceptible-Infected (SI),
 Susceptible-Infected-Recovered (SIR), and Susceptible-Infected-Susceptible
