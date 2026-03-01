@@ -92,6 +92,14 @@
 #' mod4
 #' plot(mod4)
 #'
+#' ## Example 5: SI Model with Varying Initial Conditions
+#' param <- param.dcm(inf.prob = 0.2, act.rate = 0.25)
+#' init <- init.dcm(s.num = 500, i.num = c(1, 5, 25))
+#' control <- control.dcm(type = "SI", nsteps = 500)
+#' mod5 <- dcm(param, init, control)
+#' mod5
+#' plot(mod5)
+#'
 dcm <- function(param, init, control) {
   check.control.class("dcm", "EpiModel dcm")
 
@@ -183,20 +191,29 @@ dcm <- function(param, init, control) {
   }
 
 
-  # Initial conditions ------------------------------------------------------
-  t0 <- setNames(as.numeric(init), names(init))
-
-
-  # Sensitivity parameters --------------------------------------------------
+  # Sensitivity parameters and initial conditions ----------------------------
   if (control$sens.param == FALSE) {
     control$nruns <- 1
   } else {
-    control$nruns <- max(sapply(param, length))
+    control$nruns <- max(sapply(param, length), sapply(init, length))
   }
+
+  # Validate that all varying vectors have the same length
   if (control$nruns > 1) {
-    longv <- which(sapply(param, length) == max(sapply(param, length)))
+    all.lengths <- c(sapply(param, length), sapply(init, length))
+    long.lengths <- all.lengths[all.lengths > 1]
+    if (length(unique(long.lengths)) > 1) {
+      stop("All varying parameters and initial conditions must have the ",
+           "same length", call. = FALSE)
+    }
+
+    longv <- which(sapply(param, length) == control$nruns)
     longvn <- names(longv)
     lim.p <- param[!(names(param) %in% longvn)]
+
+    longi <- which(sapply(init, length) == control$nruns)
+    longin <- names(longi)
+    lim.i <- init[!(names(init) %in% longin)]
   }
 
 
@@ -208,12 +225,22 @@ dcm <- function(param, init, control) {
     if (control$nruns > 1) {
       all.p <- as.list(lim.p)
       for (j in seq_along(longvn)) {
-        sens.p <- param[[longvn[j]]][s]
-        all.p[[longvn[j]]] <- sens.p
+        all.p[[longvn[j]]] <- param[[longvn[j]]][s]
       }
     } else {
       all.p <- param
     }
+
+    ## Per-run initial conditions
+    if (control$nruns > 1 && length(longin) > 0) {
+      all.i <- lim.i
+      for (j in seq_along(longin)) {
+        all.i[[longin[j]]] <- init[[longin[j]]][s]
+      }
+    } else {
+      all.i <- init
+    }
+    t0 <- setNames(as.numeric(all.i), names(all.i))
 
     ## Timesteps
     if (length(control$nsteps) == 1) {
@@ -259,6 +286,8 @@ dcm <- function(param, init, control) {
     verbose.dcm(control, type = "progress", s)
 
   }
+
+  out$init <- init
 
   class(out) <- "dcm"
   invisible(out)

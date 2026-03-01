@@ -87,6 +87,14 @@ mod4 <- dcm(param, init, control)
 mod4
 plot(mod4)
 
+## Example 5: SI Model with Varying Initial Conditions
+param <- param.dcm(inf.prob = 0.2, act.rate = 0.25)
+init <- init.dcm(s.num = 500, i.num = c(1, 5, 25))
+control <- control.dcm(type = "SI", nsteps = 500)
+mod5 <- dcm(param, init, control)
+mod5
+plot(mod5)
+
 }
 \references{
 Soetaert K, Petzoldt T, Setzer W. Solving Differential Equations in

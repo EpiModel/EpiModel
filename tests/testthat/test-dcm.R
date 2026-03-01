@@ -310,3 +310,80 @@ test_that("control checks", {
 # dcm extension check -----------------------------------------------------
 
 
+# Init sensitivity analysis ------------------------------------------------
+
+test_that("SI, 1G, CL: varying i.num in init", {
+  param <- param.dcm(inf.prob = 0.2, act.rate = 0.25)
+  init <- init.dcm(s.num = 500, i.num = c(1, 5, 10))
+  control <- control.dcm(type = "SI", nsteps = 10, verbose = FALSE)
+  x <- dcm(param, init, control)
+  expect_is(x, "dcm")
+  expect_equal(x$control$nruns, 3)
+  expect_equal(x$epi$i.num[1, 1], 1)
+  expect_equal(x$epi$i.num[1, 2], 5)
+  expect_equal(x$epi$i.num[1, 3], 10)
+})
+
+test_that("SIR, 1G, CL: varying init and param together", {
+  param <- param.dcm(inf.prob = c(0.1, 0.2, 0.3),
+                     act.rate = 0.25, rec.rate = 1 / 50)
+  init <- init.dcm(s.num = c(500, 400, 300), i.num = c(1, 5, 10), r.num = 0)
+  control <- control.dcm(type = "SIR", nsteps = 10, verbose = FALSE)
+  x <- dcm(param, init, control)
+  expect_is(x, "dcm")
+  expect_equal(x$control$nruns, 3)
+  expect_equal(x$epi$s.num[1, 1], 500)
+  expect_equal(x$epi$s.num[1, 3], 300)
+})
+
+test_that("DCM init sensitivity: mismatched init vector lengths error", {
+  param <- param.dcm(inf.prob = 0.2, act.rate = 0.25)
+  init <- init.dcm(s.num = c(500, 400), i.num = c(1, 5, 10))
+  control <- control.dcm(type = "SI", nsteps = 10, verbose = FALSE)
+  expect_error(dcm(param, init, control), "same length")
+})
+
+test_that("DCM init sensitivity: mismatched param and init vector lengths error", {
+  param <- param.dcm(inf.prob = c(0.1, 0.2), act.rate = 0.25)
+  init <- init.dcm(s.num = 500, i.num = c(1, 5, 10))
+  control <- control.dcm(type = "SI", nsteps = 10, verbose = FALSE)
+  expect_error(dcm(param, init, control), "same length")
+})
+
+test_that("DCM init sensitivity: as.data.frame works", {
+  param <- param.dcm(inf.prob = 0.2, act.rate = 0.25)
+  init <- init.dcm(s.num = 500, i.num = c(1, 5, 10))
+  control <- control.dcm(type = "SI", nsteps = 10, verbose = FALSE)
+  x <- dcm(param, init, control)
+  df <- as.data.frame(x)
+  expect_true("run" %in% names(df))
+  expect_equal(length(unique(df$run)), 3)
+})
+
+test_that("DCM init sensitivity: custom model with varying init", {
+  my_mod <- function(t, t0, parms) {
+    with(as.list(c(t0, parms)), {
+      num <- s.num + i.num
+      lambda <- inf.prob * act.rate * i.num / num
+      dS <- -lambda * s.num
+      dI <- lambda * s.num
+      list(c(dS, dI))
+    })
+  }
+  param <- param.dcm(inf.prob = 0.2, act.rate = 0.25)
+  init <- init.dcm(s.num = 500, i.num = c(1, 5, 10))
+  control <- control.dcm(nsteps = 10, new.mod = my_mod, verbose = FALSE)
+  x <- dcm(param, init, control)
+  expect_is(x, "dcm")
+  expect_equal(x$control$nruns, 3)
+})
+
+test_that("DCM init sensitivity: print method shows init", {
+  param <- param.dcm(inf.prob = 0.2, act.rate = 0.25)
+  init <- init.dcm(s.num = 500, i.num = c(1, 5, 10))
+  control <- control.dcm(type = "SI", nsteps = 10, verbose = FALSE)
+  x <- dcm(param, init, control)
+  out <- capture.output(print(x))
+  expect_true(any(grepl("Initial Conditions", out)))
+  expect_true(any(grepl("i.num", out)))
+})
