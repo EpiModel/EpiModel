@@ -107,6 +107,14 @@
 #'
 #' @keywords parameterization
 #'
+#' @examples
+#' # SI model parameters
+#' param <- param.dcm(inf.prob = 0.2, act.rate = 0.25)
+#'
+#' # SIS model with sensitivity analysis over act.rate
+#' param <- param.dcm(inf.prob = 0.2, act.rate = seq(0.1, 0.5, 0.1),
+#'                    rec.rate = 1/50)
+#'
 #' @export
 #'
 param.dcm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
@@ -195,6 +203,13 @@ param.dcm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
 #'          parameterized model with [dcm()].
 #'
 #' @keywords parameterization
+#'
+#' @examples
+#' # SI model initial conditions
+#' init <- init.dcm(s.num = 500, i.num = 1)
+#'
+#' # Sensitivity analysis over initial infected count
+#' init <- init.dcm(s.num = 500, i.num = c(1, 5, 25))
 #'
 #' @export
 #'

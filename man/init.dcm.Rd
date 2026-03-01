@@ -54,6 +54,14 @@ vector produces a separate model run. If both parameters and initial
 conditions have vector values, all vectors must have the same length.
 }
 
+\examples{
+# SI model initial conditions
+init <- init.dcm(s.num = 500, i.num = 1)
+
+# Sensitivity analysis over initial infected count
+init <- init.dcm(s.num = 500, i.num = c(1, 5, 25))
+
+}
 \seealso{
 Use \code{\link[=param.dcm]{param.dcm()}} to specify model parameters and
 \code{\link[=control.dcm]{control.dcm()}} to specify the control settings. Run the
