@@ -16,7 +16,7 @@
 #' stochastic variation. The stochasticity is inherent in all transition
 #' processes: infection, recovery, and demographics.
 #'
-#' The `icm` function performs  modeling of both the base model types
+#' The `icm` function performs modeling of both the base model types
 #' and original models. Base model types include one-group and two-group
 #' models with disease types for Susceptible-Infected (SI),
 #' Susceptible-Infected-Recovered (SIR), and Susceptible-Infected-Susceptible

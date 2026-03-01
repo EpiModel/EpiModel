@@ -1,4 +1,4 @@
-context("Get functions for network models")
+context("Get Functions")
 
 
 # Model simulation --------------------------------------------------------

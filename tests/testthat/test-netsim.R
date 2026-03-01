@@ -1,4 +1,4 @@
-context("Standard network models")
+context("Standard Network Models")
 
 nw <- network_initialize(n = 50)
 nw <- set_vertex_attribute(nw, "race", rbinom(50, 1, 0.5))
@@ -453,4 +453,202 @@ test_that("networkLites produced by netsim match those produced by simulate when
   }
   expect_equal(as.edgelist(sim), as.edgelist(mod2$network$sim1[[1]]), check.attributes = FALSE)
   expect_equal(sim %n% "lasttoggle", mod2$network$sim1[[1]] %n% "lasttoggle")
+})
+
+context("Netsim Checkpoint")
+
+test_that("netsim with checkpoint", {
+  nw <- network_initialize(n = 50)
+  est <- netest(
+    nw,
+    formation = ~edges,
+    target.stats = 24,
+    coef.diss = dissolution_coefs(~ offset(edges), 10, 0),
+    verbose = FALSE
+  )
+
+  param <- param.net(inf.prob = 0.3, act.rate = 0.5)
+  init <- init.net(i.num = 10)
+  control <- control.net(
+    type = "SI", nsims = 3, nsteps = 10, ncores = 2, verbose = FALSE,
+    .checkpoint.dir = "cp", .checkpoint.steps = 3, .checkpoint.keep = TRUE
+  )
+
+  mod <- netsim(est, param, init, control)
+
+  # check that the "checkpoint dir" contains 3 files (.checkpoint.keep = TRUE)
+  expect_length(list.files("cp"), 3)
+
+  control <- control.net(
+    type = "SI", nsims = 3, nsteps = 10, ncores = 2, verbose = FALSE,
+    .checkpoint.dir = "cp", .checkpoint.steps = 3, .checkpoint.keep = FALSE
+  )
+
+  mod <- netsim(est, param, init, control)
+  # check that the "checkpoint dir" has been removed (.checkpoint.keep = FALSE)
+  expect_false(dir.exists("cp"))
+
+  control <- control.net(
+    type = "SI", nsims = 1, nsteps = 5, ncores = 1, verbose = FALSE,
+    .checkpoint.dir = "cp", .checkpoint.steps = -3
+  )
+  mod <- netsim(est, param, init, control)
+
+  # .checkpoint.steps cannot be negative, thus the ".checkpointed" flag is
+  # set to FALSE
+  expect_false(mod$control[[".checkpointed"]])
+})
+
+context("Netsim End Horizon")
+
+test_that("netsim with checkpoint", {
+  nw <- network_initialize(n = 50)
+  est <- netest(
+    nw,
+    formation = ~edges,
+    target.stats = 24,
+    coef.diss = dissolution_coefs(~ offset(edges), 10, 0),
+    verbose = FALSE
+  )
+
+  param <- param.net(inf.prob = 0.3, act.rate = 0.5)
+  init <- init.net(i.num = 10)
+
+  end_horizon <- list(at = 5, modules = c("resim_nets.FUN", "recovery.FUN"))
+
+  control <- control.net(
+    type = "SI", nsims = 1, nsteps = 10, ncores = 1, verbose = FALSE,
+    end.horizon = end_horizon
+  )
+
+  netsim(est, param, init, control)
+
+  end_horizon_err_at <- list(at = 0, modules = "resim_nets.FUN")
+  control$end.horizon <- end_horizon_err_at
+  expect_error(netsim(est, param, init, control))
+
+  end_horizon_err_at <- list(at = "a", modules = "resim_nets.FUN")
+  control$end.horizon <- end_horizon_err_at
+  expect_error(netsim(est, param, init, control))
+
+  end_horizon_err_mod <- list(at = "a", modules = "not_there.FUN")
+  control$end.horizon <- end_horizon_err_mod
+  expect_error(netsim(est, param, init, control))
+
+  # test for actual removal of 2 modules at once
+  #   - summary module (nwstats will stop being produced)
+  #   - infection module (prevalence will stay constant; see notes)
+  end_horizon <- list(at = 5, modules = c("summary_nets.FUN", "infection.FUN"))
+  control <- control.net(
+    type = "SI", nsims = 1, nsteps = 20, ncores = 1, resimulate.network = TRUE,
+    verbose = FALSE, end.horizon = end_horizon
+  )
+  sim <- netsim(est, param, init, control)
+  expect_true(nrow(get_nwstats(sim)) == 4)
+
+  # SI module without arrival or departure
+  # prevalence stays constant if the infection module is disabled
+  expect_length(unique(sim$epi$i.num[5:20, 1]), 1)
+})
+
+context("Network Models with Formation Offsets")
+
+test_that("netsim works with standard offset models", {
+  nw <- network_initialize(n = 50)
+  nw <- set_vertex_attribute(nw, "race", rbinom(50, 1, 0.5))
+  est <- netest(nw, formation = ~edges + offset(nodematch("race")),
+                target.stats = 25, coef.form = -Inf,
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                verbose = FALSE)
+  param <- param.net(inf.prob = 0.3, act.rate = 0.5)
+  init <- init.net(i.num = 10)
+  control <- control.net(type = "SI", nsims = 2, nsteps = 5, verbose = FALSE)
+  mod <- netsim(est, param, init, control)
+  expect_is(mod, "netsim")
+  plot(mod)
+  plot(mod, type = "formation")
+  plot(mod, type = "network")
+  test_net(mod)
+})
+
+test_that("netsim works with faux offset models", {
+  nw <- network_initialize(n = 50)
+  nw <- set_vertex_attribute(nw, "race", rbinom(50, 1, 0.5))
+  est <- netest(nw, formation = ~edges + nodematch("race"),
+                target.stats = c(25, 0),
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                verbose = FALSE)
+  param <- param.net(inf.prob = 0.3, act.rate = 0.5)
+  init <- init.net(i.num = 10)
+  control <- control.net(type = "SI", nsims = 2, nsteps = 5, verbose = FALSE)
+  mod <- netsim(est, param, init, control)
+  expect_is(mod, "netsim")
+  plot(mod)
+  plot(mod, type = "formation")
+  plot(mod, type = "network")
+  test_net(mod)
+})
+
+context("Time-Varying Network Parameters")
+
+test_that("time varying parameters for one-mode", {
+  nw <- network_initialize(n = 100)
+  formation <- ~edges
+  target.stats <- 50
+  coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration  = 20)
+
+  est1 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
+
+  probs <- c(0.25, 0.02)
+  durs <- c(10, 1)
+  inf.probs <- rep(probs, durs)
+
+  acts <- c(0.5, 2)
+  act.rates <- rep(acts, durs)
+
+  rec.rates <- rep(0:1, c(20, 1))
+
+  # Parameters, initial conditions, and controls for model
+  param <- param.net(inf.prob = inf.probs, act.rate = act.rates,
+                     rec.rate = rec.rates)
+  init <- init.net(i.num = 50)
+  control <- control.net(type = "SIS", nsteps = 10, nsims = 1,
+                         tergmLite = FALSE, verbose = FALSE)
+  mod <- netsim(est1, param, init, control)
+  expect_is(mod, "netsim")
+})
+
+
+test_that("time varying parameters for two-group models", {
+  nw <- network_initialize(n = 100)
+  nw <- set_vertex_attribute(nw, "group", rep(c(1, 2), each = 50))
+  formation <- ~edges
+  target.stats <- 50
+  coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration  = 20)
+
+  est1 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
+
+  probs <- c(0.25, 0.01)
+  durs <- c(10, 1)
+  inf.probs <- rep(probs, durs)
+  inf.probs.g2 <- inf.probs * 2
+
+  acts <- c(1, 2)
+  act.rates <- rep(acts, durs)
+
+  rec.rates <- rep(0:1, c(20, 1))
+  rec.rates.g2 <- rep(0:1, c(10, 1))
+
+  param <- param.net(inf.prob = inf.probs,
+                     inf.prob.g2 = inf.probs.g2,
+                     act.rate = act.rates,
+                     rec.rate = rec.rates,
+                     rec.rate.g2 = rec.rates.g2)
+  init <- init.net(i.num = 10, i.num.g2 = 10,
+                   r.num = 0, r.num.g2 = 0)
+  control <- control.net(type = "SIR", nsteps = 10, nsims = 1,
+                         tergmLite = FALSE, verbose = FALSE)
+
+  mod <- netsim(est1, param, init, control)
+  expect_is(mod, "netsim")
 })

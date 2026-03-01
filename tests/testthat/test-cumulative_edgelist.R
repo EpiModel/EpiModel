@@ -1,4 +1,4 @@
-context("Cumulative edgelist (All SOC)")
+context("Cumulative Edgelist (All SOC)")
 
 nw <- network_initialize(n = 100)
 est <- netest(

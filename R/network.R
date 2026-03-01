@@ -39,7 +39,7 @@ network_initialize <- function(n) {
 #'
 #' @details
 #' This function is used in `EpiModel` workflows to set vertex attributes
-#' on an initialized empty network object (see [network_initialize()].
+#' on an initialized empty network object (see [network_initialize()]).
 #'
 #' @return
 #' Returns an object of class `network`.
@@ -62,7 +62,7 @@ set_vertex_attribute <- function(x, attrname, value, v = NULL) {
 #' @title Get Vertex Attribute on Network Object
 #'
 #' @description Gets a vertex attribute from an object of class `network`.
-#'              This functions simplifies the related function in the
+#'              This function simplifies the related function in the
 #'              `network` package.
 #'
 #' @param x An object of class network.
@@ -74,7 +74,8 @@ set_vertex_attribute <- function(x, attrname, value, v = NULL) {
 #' [network_initialize()]).
 #'
 #' @return
-#' Returns an object of class `network`.
+#' Returns a vector of vertex attribute values for the attribute specified
+#' by `attrname`.
 #'
 #' @export
 #'

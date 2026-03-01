@@ -362,13 +362,13 @@ crosscheck.dcm <- function(param, init, control) {
 
   # Main class check --------------------------------------------------------
   if (!inherits(param, "param.dcm")) {
-    stop("param must an object of class param.dcm", call. = FALSE)
+    stop("param must be an object of class param.dcm", call. = FALSE)
   }
   if (!inherits(init, "init.dcm")) {
-    stop("init must an object of class init.dcm", call. = FALSE)
+    stop("init must be an object of class init.dcm", call. = FALSE)
   }
   if (!inherits(control, "control.dcm")) {
-    stop("control must an object of class control.dcm", call. = FALSE)
+    stop("control must be an object of class control.dcm", call. = FALSE)
   }
 
   # Parameter checks for base models ----------------------------------

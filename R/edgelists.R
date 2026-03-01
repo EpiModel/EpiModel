@@ -2,7 +2,6 @@
 #'
 #' @description This function outputs an edgelist from the specified network,
 #'              selecting the method depending on the stored network type.
-
 #' @inheritParams recovery.net
 #' @param network Numerical index of the network from which the edgelist should
 #'                be extracted. (May be > 1 for models with multiple overlapping
@@ -322,8 +321,8 @@ get_cumulative_edgelists_df <- function(dat, networks = NULL) {
 #' the unique IDs. That is by design, because while `get_partners` would be expected to be called
 #' for active nodes, some partners (contacts) of nodes may be inactive in the network history.
 #' Therefore, both index and partner IDs are returned as unique IDs for consistency. To convert
-#' between a positional to a unique ID, you may use [`get_posit_ids`]; to convert between a
-#' unique ID to a positional ID, you may use [`get_unique_ids`].
+#' between a positional to a unique ID, you may use [`get_unique_ids`]; to convert between a
+#' unique ID to a positional ID, you may use [`get_posit_ids`].
 #'
 #' @export
 #'

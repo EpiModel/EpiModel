@@ -1,4 +1,4 @@
-context("transmat functions")
+context("Transmat Functions")
 
 # test that transmat output has right class
 require(EpiModel)

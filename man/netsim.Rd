@@ -10,15 +10,28 @@ netsim(x, param, init, control)
 \item{x}{If \code{control$start == 1}, either a fitted network model object
 of class \code{netest} or a list of such objects. If
 \code{control$start > 1}, an object of class \code{netsim}. When
-multiple networks are used, the node sets (including network size
-and nodal attributes) are assumed to be the same for all networks.}
+multiple networks are used (multi-layer models), pass a list of
+\code{netest} objects, one per network layer; the node sets (including
+network size and nodal attributes) are assumed to be the same for
+all networks.}
 
-\item{param}{Model parameters, as an object of class \code{param.net}.}
+\item{param}{Model parameters, as an object of class \code{\link{param.net}}.
+Includes transmission probability (\code{inf.prob}), act rate
+(\code{act.rate}), recovery rate (\code{rec.rate}), and demographic rates
+for models with vital dynamics. Custom parameters for extended
+models may also be passed through \code{param.net}.}
 
-\item{init}{Initial conditions, as an object of class \code{init.net}.}
+\item{init}{Initial conditions, as an object of class \code{\link{init.net}}.
+Specifies the initial number of infected nodes (\code{i.num}) and,
+for SIR models, recovered nodes (\code{r.num}). For two-group models,
+the corresponding \code{.g2} parameters are also required.}
 
-\item{control}{Control settings, as an object of class
-\code{control.net}.}
+\item{control}{Control settings, as an object of class \code{\link{control.net}}.
+Key settings include \code{type} (disease model: \code{"SI"}, \code{"SIR"}, or
+\code{"SIS"}), \code{nsteps} (number of time steps), \code{nsims} (number of
+simulations), \code{tergmLite} (lightweight mode for performance), and
+\code{resimulate.network} (required for models with vital dynamics).
+For extended models, custom module functions are also passed here.}
 }
 \value{
 A list of class \code{netsim} with the following elements:
@@ -43,10 +56,17 @@ simulation.
 
 If \code{control$raw.output == TRUE}: A list of the raw (pre-processed)
 \code{netsim_dat} objects, for use in simulation continuation.
+
+The \code{epi} data can be extracted as a data frame with
+\code{\link[=as.data.frame.netsim]{as.data.frame.netsim()}}, with options for per-simulation values
+(\code{out = "vals"}), means (\code{out = "mean"}), standard deviations
+(\code{out = "sd"}), or quantiles (\code{out = "qnt"}).
 }
 \description{
 Simulates stochastic network epidemic models for infectious
-disease.
+disease. This is typically the final step in the network
+modeling pipeline, after network estimation with \code{\link{netest}}
+and model diagnostics with \code{\link{netdx}}.
 }
 \details{
 Stochastic network models explicitly represent phenomena within and across
@@ -72,20 +92,76 @@ section of the \href{https://epimodel.github.io/sismid/}{Network Modeling for Ep
 course materials. The list of modules within \code{netsim} available for
 modification is listed in \code{\link[=modules.net]{modules.net()}}.
 }
+\section{Module Pipeline}{
+
+At each time step, \code{netsim} executes a series of modules in sequence.
+For base models, the default pipeline is:
+\enumerate{
+\item \strong{Network resimulation} (\code{\link{resim_nets}}): updates the network
+structure (if \code{resimulate.network = TRUE}).
+\item \strong{Infection} (\code{\link{infection.net}}): simulates disease transmission
+across discordant edges (where one partner is susceptible and the
+other is infected).
+\item \strong{Recovery} (\code{\link{recovery.net}}): simulates recovery from infection
+(SIR and SIS models only).
+\item \strong{Departures} (\code{\link{departures.net}}): simulates node exits from the
+network (if vital dynamics are enabled).
+\item \strong{Arrivals} (\code{\link{arrivals.net}}): simulates new node entries into the
+network (if vital dynamics are enabled).
+\item \strong{Prevalence} (\code{\link{prevalence.net}}): calculates summary statistics.
+}
+
+See \code{\link[=modules.net]{modules.net()}} for full details on each module.
+}
+
+\section{Performance and tergmLite}{
+
+Setting \code{tergmLite = TRUE} in \code{\link{control.net}} uses a lightweight network
+representation (\code{networkLite}) that is substantially faster than the full
+\code{networkDynamic} representation, often by a factor of 20--50x. This is
+recommended for large networks or when running many simulations. The
+trade-off is that full \code{networkDynamic} objects are not available for
+post-hoc analysis; use the cumulative edgelist
+(\code{cumulative.edgelist = TRUE}) instead to track partnership histories.
+
+The \code{resimulate.network} control must be set to \code{TRUE} when demographic
+processes (arrivals and departures) change the network composition over
+time. Without it, the network structure evolves independently of the
+epidemic and demographic dynamics.
+}
+
+\section{Multi-Network Models}{
+
+For models with multiple overlapping network layers (e.g., sexual and
+needle-sharing networks), pass a list of \code{\link{netest}} objects to the \code{x}
+argument, one per network layer. Each layer has its own
+formation/dissolution dynamics but shares the same node set. See the
+\code{multilayer} documentation and \code{test-multinets.R} for examples.
+}
+
+\section{Restarting and Checkpointing}{
+
+Simulations can be checkpointed and restarted if interrupted. Set
+\code{.checkpoint.steps} and \code{.checkpoint.dir} in \code{\link{control.net}} to enable
+automatic checkpointing. To restart a simulation from a prior \code{netsim}
+output, pass the \code{netsim} object as \code{x} and set \code{control$start} to one
+greater than the final time step of the prior simulation. See the
+Checkpointing Simulations section of \code{\link{control.net}} for full details.
+}
+
 \examples{
 \dontrun{
 ## Example 1: SI Model without Network Feedback
 # Network model estimation
 nw <- network_initialize(n = 100)
-nw <- set_vertex_attribute(nw, "group", rep(1:2, each = 50))
 formation <- ~edges
 target.stats <- 50
 coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20)
 est1 <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 
 # Epidemic model
-param <- param.net(inf.prob = 0.3, inf.prob.g2 = 0.15)
-init <- init.net(i.num = 10, i.num.g2 = 10)
+param <- param.net(inf.prob = 0.3)
+init <- init.net(i.num = 10)
 control <- control.net(type = "SI", nsteps = 100, nsims = 5, verbose.int = 0)
 mod1 <- netsim(est1, param, init, control)
 
@@ -94,7 +170,12 @@ mod1
 plot(mod1)
 summary(mod1, at = 50)
 
-## Example 2: SIR Model with Network Feedback
+## Example 2: SIR Model with Network Feedback (Two-Group)
+nw <- network_initialize(n = 100)
+nw <- set_vertex_attribute(nw, "group", rep(1:2, each = 50))
+formation <- ~edges
+target.stats <- 50
+
 # Recalculate dissolution coefficient with departure rate
 coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20,
                                d.rate = 0.0021)
@@ -102,7 +183,7 @@ coef.diss <- dissolution_coefs(dissolution = ~offset(edges), duration = 20,
 # Reestimate the model with new coefficient
 est2 <- netest(nw, formation, target.stats, coef.diss)
 
-# Reset parameters to include demographic rates
+# Set parameters to include demographic rates
 param <- param.net(inf.prob = 0.3, inf.prob.g2 = 0.15,
                    rec.rate = 0.02, rec.rate.g2 = 0.02,
                    a.rate = 0.002, a.rate.g2 = NA,
@@ -121,6 +202,18 @@ mod2 <- netsim(est2, param, init, control)
 mod2
 plot(mod2)
 summary(mod2, at = 40)
+
+## Example 3: Post-Simulation Analysis
+# Extract epi data as a data frame
+as.data.frame(mod1)
+as.data.frame(mod1, out = "mean")
+
+# Extract the transmission matrix from simulation 1
+get_transmat(mod1, sim = 1)
+
+# Derive new epi statistics and plot them
+mod1 <- mutate_epi(mod1, prev = i.num / num)
+plot(mod1, y = "prev")
 }
 
 }
@@ -130,9 +223,12 @@ Modeling of Infectious Disease over Networks. Journal of Statistical
 Software. 2018; 84(8): 1-47.
 }
 \seealso{
-Extract the model results with \code{\link[=as.data.frame.netsim]{as.data.frame.netsim()}}.
-Summarize the time-specific model results with
-\code{\link[=summary.netsim]{summary.netsim()}}. Plot the model results with
-\code{\link[=plot.netsim]{plot.netsim()}}.
+Estimate the network model with \code{\link{netest}} and diagnose model
+fit with \code{\link{netdx}} before running simulations. Extract model
+results with \code{\link[=as.data.frame.netsim]{as.data.frame.netsim()}}. Summarize the
+time-specific model results with \code{\link[=summary.netsim]{summary.netsim()}}. Plot the
+model results with \code{\link[=plot.netsim]{plot.netsim()}}. Extract the network with
+\code{\link{get_network}}, the transmission matrix with \code{\link{get_transmat}},
+and derive new epi statistics with \code{\link{mutate_epi}}.
 }
 \keyword{model}

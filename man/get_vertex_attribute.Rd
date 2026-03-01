@@ -12,11 +12,12 @@ get_vertex_attribute(x, attrname)
 \item{attrname}{The name of the attribute to get.}
 }
 \value{
-Returns an object of class \code{network}.
+Returns a vector of vertex attribute values for the attribute specified
+by \code{attrname}.
 }
 \description{
 Gets a vertex attribute from an object of class \code{network}.
-This functions simplifies the related function in the
+This function simplifies the related function in the
 \code{network} package.
 }
 \details{

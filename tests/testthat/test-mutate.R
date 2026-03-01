@@ -1,4 +1,4 @@
-context("Mutate")
+context("Mutate Functions")
 
 test_that("mutate_epi.netsim", {
   nw <- network_initialize(n = 100)

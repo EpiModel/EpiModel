@@ -1036,13 +1036,13 @@ crosscheck.net <- function(x, param, init, control) {
              " of class netest when start == 1", call. = FALSE)
       }
       if (!inherits(param, "param.net")) {
-        stop("param must an object of class param.net", call. = FALSE)
+        stop("param must be an object of class param.net", call. = FALSE)
       }
       if (!inherits(init, "init.net")) {
-        stop("init must an object of class init.net", call. = FALSE)
+        stop("init must be an object of class init.net", call. = FALSE)
       }
       if (!inherits(control, "control.net")) {
-        stop("control must an object of class control.net", call. = FALSE)
+        stop("control must be an object of class control.net", call. = FALSE)
       }
 
       # Pull network object from netest object

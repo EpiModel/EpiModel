@@ -1,4 +1,4 @@
-context("Network extended models (All SOC)")
+context("Network Extended Models (All SOC)")
 
 test_that("edges models", {
   skip_on_cran()
