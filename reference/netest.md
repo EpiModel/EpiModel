@@ -16,7 +16,7 @@ netest(
   coef.form = NULL,
   edapprox = TRUE,
   set.control.ergm = control.ergm(),
-  set.control.tergm = control.tergm(MCMC.maxchanges = Inf),
+  set.control.tergm = control.tergm(MCMC.maxchanges = .Machine$integer.max),
   set.control.ergm.ego = NULL,
   verbose = FALSE,
   nested.edapprox = TRUE,
@@ -240,7 +240,7 @@ est
 #> Model Form
 #> -----------------------
 #> Formation: ~edges + concurrent
-#> <environment: 0x5622ec3c3390>
+#> <environment: 0x55988323f990>
 #> Target Statistics: 50 25
 #> Constraints: ~.
 #> 

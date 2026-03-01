@@ -63,9 +63,6 @@ est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 # Simulate the network with netdx
 dx <- netdx(est, nsims = 3, nsteps = 10, keep.tedgelist = TRUE,
             verbose = FALSE)
-#> Warning: NAs introduced by coercion to integer range
-#> Warning: NAs introduced by coercion to integer range
-#> Warning: NAs introduced by coercion to integer range
 
 # Extract data from the first simulation
 as.data.frame(dx, sim = 1)

@@ -13,7 +13,8 @@ netdx(
   nsteps = NULL,
   nwstats.formula = "formation",
   set.control.ergm = control.simulate.formula(),
-  set.control.tergm = control.simulate.formula.tergm(MCMC.maxchanges = Inf),
+  set.control.tergm = control.simulate.formula.tergm(MCMC.maxchanges =
+    .Machine$integer.max),
   sequential = TRUE,
   keep.tedgelist = FALSE,
   keep.tnetwork = FALSE,

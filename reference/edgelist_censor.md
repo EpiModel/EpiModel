@@ -54,7 +54,6 @@ est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 # Simulate the network and extract a timed edgelist
 dx <- netdx(est, nsims = 1, nsteps = 100, keep.tedgelist = TRUE,
       verbose = FALSE)
-#> Warning: NAs introduced by coercion to integer range
 el <- as.data.frame(dx)
 
 # Calculate censoring

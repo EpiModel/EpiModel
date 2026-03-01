@@ -58,9 +58,6 @@ est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 
 dx <- netdx(est, nsim = 3, nsteps = 10, verbose = FALSE,
             nwstats.formula = ~edges + isolates)
-#> Warning: NAs introduced by coercion to integer range
-#> Warning: NAs introduced by coercion to integer range
-#> Warning: NAs introduced by coercion to integer range
 get_nwstats(dx)
 #>    time sim edges isolates
 #> 1     1   1    38       50
