@@ -49,6 +49,15 @@
 
 ### BUG FIXES
 
+- Fix segfault in
+  [`netsim()`](http://epimodel.github.io/EpiModel/reference/netsim.md)
+  when running multi-core simulations on macOS after a single-core run
+  in the same R session. A recent Xcode update causes Apple’s Accelerate
+  BLAS to initialize multi-threaded Grand Central Dispatch state that is
+  incompatible with the process forking used by `mclapply`.
+  [`netsim()`](http://epimodel.github.io/EpiModel/reference/netsim.md)
+  now sets `VECLIB_MAXIMUM_THREADS=1` on macOS before any simulation run
+  to keep the process fork-safe.
 - Fixed a bug in the ICM Shiny app where Shiny’s `numericInput` returns
   integer-class values, which were silently excluded by `init.icm`’s
   internal `sapply(init, class) == "numeric"` filter, causing a

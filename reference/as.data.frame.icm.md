@@ -66,7 +66,7 @@ as.data.frame(
 - repair:
 
   What to do with epi trackers that are too short. "drop" will remove
-  theme from the output, "pad" will add `NA` rows to get to the right
+  them from the output, "pad" will add `NA` rows to get to the right
   size(Default = "drop").
 
 - ...:
@@ -84,8 +84,8 @@ These methods work for both `icm` and `netsim` class models. The
 available output includes time-specific means, standard deviations,
 quantiles, and simulation values (compartment and flow sizes) from these
 stochastic model classes. Means, standard deviations, and quantiles are
-calculated by taking the row summary (i.e., each row of data is
-corresponds to a time step) across all simulations in the model output.
+calculated by taking the row summary (i.e., each row of data corresponds
+to a time step) across all simulations in the model output.
 
 ## Examples
 

@@ -2,7 +2,12 @@
 
 Estimates statistical network models using the exponential random graph
 modeling (ERGM) framework with extensions for dynamic/temporal models
-(STERGM).
+(STERGM). This is typically the first step in the network modeling
+pipeline, followed by
+[`netdx`](http://epimodel.github.io/EpiModel/reference/netdx.md) for
+model diagnostics and
+[`netsim`](http://epimodel.github.io/EpiModel/reference/netsim.md) for
+epidemic simulation.
 
 ## Usage
 
@@ -34,19 +39,35 @@ netest(
 - formation:
 
   Right-hand sided STERGM formation formula in the form `~edges + ...`,
-  where `...` are additional network statistics.
+  where `...` are additional network statistics (ERGM terms). This
+  formula specifies which structural features of the network should be
+  reproduced by the model. Common terms include `edges` (overall
+  connectivity), `nodematch` (homophily by attribute), `concurrent`
+  (overlapping partnerships), and `degree` (degree distribution
+  constraints). See
+  [`ergm::ergm-terms`](https://rdrr.io/pkg/ergm/man/ergmTerm.html) for
+  the full list of available terms.
 
 - target.stats:
 
   Vector of target statistics for the formation model, with one number
-  for each network statistic in the model. Ignored if fitting via
+  for each network statistic in the model. These are the observed (or
+  desired) values for each term in the formation formula. For example,
+  if `formation = ~edges + concurrent`, then `target.stats = c(175, 40)`
+  means the model should produce approximately 175 edges and 40 nodes
+  with 2 or more partners. For an `edges`-only model, a useful starting
+  value is `mean_degree * network_size / 2`. Ignored if fitting via
   `ergm.ego`.
 
 - coef.diss:
 
   An object of class `disscoef` output from the
   [`dissolution_coefs`](http://epimodel.github.io/EpiModel/reference/dissolution_coefs.md)
-  function.
+  function. This encodes the average partnership duration(s) and the
+  corresponding dissolution model coefficients. For models with vital
+  dynamics (arrivals and departures), the `d.rate` argument in
+  [`dissolution_coefs`](http://epimodel.github.io/EpiModel/reference/dissolution_coefs.md)
+  should be set to adjust for the competing risk of node departure.
 
 - constraints:
 
@@ -62,7 +83,12 @@ netest(
 
   If `TRUE`, use the indirect edges dissolution approximation method for
   the dynamic model fit, otherwise use the more time-intensive full
-  STERGM estimation (see details). For `nw` of class `egor`, only
+  STERGM estimation (see details). The approximation is recommended for
+  most use cases, especially when average partnership durations are
+  moderate to long (\> 25 time steps). Direct STERGM estimation
+  (`edapprox = FALSE`) is slower but may be preferred for very short
+  durations or when inferential quantities (standard errors, p-values)
+  on formation coefficients are needed. For `nw` of class `egor`, only
   `edapprox = TRUE` is supported.
 
 - set.control.ergm:
@@ -92,7 +118,16 @@ netest(
 
 ## Value
 
-A fitted network model object of class `netest`.
+A fitted network model object of class `netest`. This object is passed
+to [`netdx`](http://epimodel.github.io/EpiModel/reference/netdx.md) for
+diagnostics and to
+[`netsim`](http://epimodel.github.io/EpiModel/reference/netsim.md) for
+epidemic simulation. Use [`print()`](https://rdrr.io/r/base/print.html)
+to view the model form, including the formation formula, target
+statistics, and dissolution model. Use
+[`summary()`](https://rdrr.io/r/base/summary.html) to view the estimated
+model coefficients and goodness-of-fit statistics from the underlying
+ERGM or STERGM fit.
 
 ## Details
 
@@ -172,6 +207,31 @@ help page in the `ergm` package and the
 [`ergm.ego::control.ergm.ego`](https://rdrr.io/pkg/ergm.ego/man/control.ergm.ego.html)
 help page in the `ergm.ego` package. An example is below.
 
+## Typical Workflow
+
+The network modeling pipeline in EpiModel typically follows these steps:
+
+1.  Initialize a network:
+    [`network_initialize`](http://epimodel.github.io/EpiModel/reference/network_initialize.md)
+
+2.  Specify formation and dissolution: a formation formula (e.g.,
+    `~edges + concurrent`) with target statistics, and dissolution
+    coefficients via
+    [`dissolution_coefs`](http://epimodel.github.io/EpiModel/reference/dissolution_coefs.md)
+
+3.  Estimate the network model: `netest()`
+
+4.  Diagnose model fit:
+    [`netdx`](http://epimodel.github.io/EpiModel/reference/netdx.md)
+
+5.  Simulate the epidemic:
+    [`netsim`](http://epimodel.github.io/EpiModel/reference/netsim.md)
+    with
+    [`param.net`](http://epimodel.github.io/EpiModel/reference/param.net.md),
+    [`init.net`](http://epimodel.github.io/EpiModel/reference/init.net.md),
+    and
+    [`control.net`](http://epimodel.github.io/EpiModel/reference/control.net.md)
+
 ## References
 
 Krivitsky PN, Handcock MS. "A Separable Model for Dynamic Networks."
@@ -187,11 +247,18 @@ Statistical Software. 2018; 84(8): 1-47.
 
 ## See also
 
-Use [`netdx`](http://epimodel.github.io/EpiModel/reference/netdx.md) to
+Use
+[`dissolution_coefs`](http://epimodel.github.io/EpiModel/reference/dissolution_coefs.md)
+to compute dissolution coefficients before estimation. Use
+[`netdx`](http://epimodel.github.io/EpiModel/reference/netdx.md) to
 diagnose the fitted network model, and
 [`netsim`](http://epimodel.github.io/EpiModel/reference/netsim.md) to
 simulate epidemic spread over a simulated dynamic network consistent
-with the model fit.
+with the model fit. Parameterize the epidemic simulation with
+[`param.net`](http://epimodel.github.io/EpiModel/reference/param.net.md),
+[`init.net`](http://epimodel.github.io/EpiModel/reference/init.net.md),
+and
+[`control.net`](http://epimodel.github.io/EpiModel/reference/control.net.md).
 
 ## Examples
 
@@ -225,12 +292,13 @@ est <- netest(nw, formation, target.stats, coef.diss,
 #> Warning: ‘glpk’ selected as the solver, but package ‘Rglpk’ is not available; falling back to ‘lpSolveAPI’. This should be fine unless the sample size and/or the number of parameters is very big.
 #> 1 
 #> Optimizing with step length 1.0000.
-#> The log-likelihood improved by 0.0835.
-#> Convergence test p-value: 0.0002. 
+#> The log-likelihood improved by 0.0355.
+#> Convergence test p-value: < 0.0001. 
 #> Converged with 99% confidence.
 #> Finished MCMLE.
 #> This model was fit using MCMC.  To examine model diagnostics and check
 #> for degeneracy, use the mcmc.diagnostics() function.
+# View the model form (formation, targets, dissolution)
 est
 #> EpiModel Network Estimation
 #> =======================
@@ -240,13 +308,49 @@ est
 #> Model Form
 #> -----------------------
 #> Formation: ~edges + concurrent
-#> <environment: 0x55ecccca70b0>
+#> <environment: 0x559845c58710>
 #> Target Statistics: 50 25
 #> Constraints: ~.
 #> 
 #> Dissolution: ~offset(edges)
 #> Target Statistics: 10
 
-# To estimate the STERGM directly, use edapprox = FALSE
-# est2 <- netest(nw, formation, target.stats, coef.diss, edapprox = FALSE)
+# View the estimated coefficients
+summary(est)
+#> Call:
+#> ergm(formula = formation, constraints = constraints, offset.coef = coef.form, 
+#>     target.stats = target.stats, eval.loglik = FALSE, control = set.control.ergm, 
+#>     verbose = verbose, basis = nw)
+#> 
+#> Monte Carlo Maximum Likelihood Results:
+#> 
+#>            Estimate Std. Error MCMC % z value Pr(>|z|)    
+#> edges       -4.3839     0.3501      0 -12.521   <1e-04 ***
+#> concurrent  -0.2701     0.4257      0  -0.634    0.526    
+#> ---
+#> Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+#> 
+#> Log-likelihood was not estimated for this fit. To get deviances, AIC, and/or BIC, use ‘*fit* <-logLik(*fit*, add=TRUE)’ to add it to the object or rerun this function with eval.loglik=TRUE.
+#> 
+#> Dissolution Coefficients
+#> =======================
+#> Dissolution Model: ~offset(edges)
+#> Target Statistics: 10
+#> Crude Coefficient: 2.197225
+#> Mortality/Exit Rate: 0
+#> Adjusted Coefficient: 2.197225
+
+if (FALSE) { # \dontrun{
+# Model with homophily on a nodal attribute
+nw2 <- network_initialize(n = 500)
+nw2 <- set_vertex_attribute(nw2, "risk", rep(0:1, each = 250))
+formation2 <- ~edges + nodematch("risk")
+target.stats2 <- c(175, 110)
+coef.diss2 <- dissolution_coefs(dissolution = ~offset(edges), duration = 50)
+est2 <- netest(nw2, formation2, target.stats2, coef.diss2)
+est2
+
+# Direct STERGM estimation (slower, for short durations or inference)
+est3 <- netest(nw, formation, target.stats, coef.diss, edapprox = FALSE)
+} # }
 ```

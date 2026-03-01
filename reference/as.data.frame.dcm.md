@@ -31,7 +31,6 @@ as.data.frame(x, row.names = NULL, optional = FALSE, run = NULL, ...)
 
   Run number for model; used for multiple-run sensitivity models. If
   `NULL` (default), will output data from all runs in a stacked data
-  frame. not specified, will output data from all runs in a stacked data
   frame.
 
 - ...:

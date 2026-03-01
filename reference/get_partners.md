@@ -71,6 +71,6 @@ nodes, some partners (contacts) of nodes may be inactive in the network
 history. Therefore, both index and partner IDs are returned as unique
 IDs for consistency. To convert between a positional to a unique ID, you
 may use
-[`get_posit_ids`](http://epimodel.github.io/EpiModel/reference/unique_id-tools.md);
+[`get_unique_ids`](http://epimodel.github.io/EpiModel/reference/unique_id-tools.md);
 to convert between a unique ID to a positional ID, you may use
-[`get_unique_ids`](http://epimodel.github.io/EpiModel/reference/unique_id-tools.md).
+[`get_posit_ids`](http://epimodel.github.io/EpiModel/reference/unique_id-tools.md).

@@ -39,10 +39,10 @@ and
 # Define function with equal sampling probability
 a <- param_random(1:5)
 a()
-#> [1] 5
+#> [1] 1
 
 # Define function with unequal sampling probability
 b <- param_random(1:5, prob = c(0.1, 0.1, 0.1, 0.1, 0.6))
 b()
-#> [1] 1
+#> [1] 3
 ```

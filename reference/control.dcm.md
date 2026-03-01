@@ -64,7 +64,7 @@ control.dcm(
   as sensitivity analyses, with one model run per value of the
   parameter. If `FALSE`, one model will be run with parameters of
   arbitrary length (the model may error unless the model function is
-  designed to accomodate parameter vectors).
+  designed to accommodate parameter vectors).
 
 - print.mod:
 

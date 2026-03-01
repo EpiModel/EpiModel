@@ -25,7 +25,7 @@ get_transmat(x, sim = 1, deduplicate = TRUE)
 - deduplicate:
 
   If `TRUE`, randomly select one transmission event in the case that
-  multiple events current per newly infected agent within a time step.
+  multiple events occur per newly infected agent within a time step.
 
 ## Value
 

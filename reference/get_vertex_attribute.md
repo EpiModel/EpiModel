@@ -1,7 +1,7 @@
 # Get Vertex Attribute on Network Object
 
-Gets a vertex attribute from an object of class `network`. This
-functions simplifies the related function in the `network` package.
+Gets a vertex attribute from an object of class `network`. This function
+simplifies the related function in the `network` package.
 
 ## Usage
 
@@ -21,7 +21,8 @@ get_vertex_attribute(x, attrname)
 
 ## Value
 
-Returns an object of class `network`.
+Returns a vector of vertex attribute values for the attribute specified
+by `attrname`.
 
 ## Details
 

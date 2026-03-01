@@ -56,7 +56,8 @@
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-2-6-0">BUG FIXES<a class="anchor" aria-label="anchor" href="#bug-fixes-2-6-0"></a></h3>
-<ul><li>Fixed a bug in the ICM Shiny app where Shiny’s <code>numericInput</code> returns integer-class values, which were silently excluded by <code>init.icm</code>’s internal <code>sapply(init, class) == "numeric"</code> filter, causing a population size of zero and an “invalid first argument” error in <code><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample()</a></code>.</li>
+<ul><li>Fix segfault in <code><a href="../reference/netsim.html">netsim()</a></code> when running multi-core simulations on macOS after a single-core run in the same R session. A recent Xcode update causes Apple’s Accelerate BLAS to initialize multi-threaded Grand Central Dispatch state that is incompatible with the process forking used by <code>mclapply</code>. <code><a href="../reference/netsim.html">netsim()</a></code> now sets <code>VECLIB_MAXIMUM_THREADS=1</code> on macOS before any simulation run to keep the process fork-safe.</li>
+<li>Fixed a bug in the ICM Shiny app where Shiny’s <code>numericInput</code> returns integer-class values, which were silently excluded by <code>init.icm</code>’s internal <code>sapply(init, class) == "numeric"</code> filter, causing a population size of zero and an “invalid first argument” error in <code><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample()</a></code>.</li>
 <li>Fix error with <code>get_sims</code> related to variable subsetting with the <code>var</code> argument.</li>
 <li>Fix <code>plot.dcm</code> ignoring custom legend names when <code>nruns = 1</code> and multiple compartments are plotted.</li>
 </ul></div>
