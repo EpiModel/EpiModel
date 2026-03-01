@@ -6,6 +6,7 @@
 
 ### NEW FEATURES
 
+-   Added support for sensitivity analysis on initial conditions in DCM models. Vector-valued arguments in `init.dcm()` (e.g., `i.num = c(1, 5, 10)`) now produce multiple model runs, one per element, just like vector-valued parameters in `param.dcm()`. Vectors may be used in both `param.dcm()` and `init.dcm()` simultaneously, provided all vectors have the same length. Plotting, `as.data.frame`, `summary`, and `print` methods all work with the multi-run output. Closes #408.
 -   Redesigned the `epiweb()` Shiny applications for both DCM and ICM model classes with a modern interface built on bslib (Bootstrap 5), the Atkinson Hyperlegible font, and interactive plotly visualizations.
 -   The DCM app (`epiweb("dcm")`) is now fully reactive with no run button, includes scenario presets (Flu-like, STI-like, Measles-like), intervention modeling with visual indicators, sensitivity analysis with blue-to-red color ramp, vital dynamics, a narrative Summary tab with R0 and epidemic timeline statistics, and a comprehensive Guide tab.
 -   The ICM app (`epiweb("icm")`) features a Run Model button for on-demand stochastic simulation, mean trajectory lines with IQR ribbons across multiple simulations, the same scenario presets adapted for smaller populations, intervention and vital dynamics support, a Summary tab with stochastic variation statistics, and a Data tab with switchable views (means, standard deviations, individual simulations).

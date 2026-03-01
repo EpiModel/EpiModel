@@ -47,6 +47,16 @@ print.dcm <- function(x, ...) {
     cat(names(x$param)[i], "=", x$param[[i]], fill = 60)
   }
 
+  if (!is.null(x$init)) {
+    cat("\nInitial Conditions")
+    cat("\n-----------------------\n")
+    flow.names <- grep("\\.flow", names(x$init), value = TRUE)
+    iToPrint <- which(!(names(x$init) %in% flow.names))
+    for (i in iToPrint) {
+      cat(names(x$init)[i], "=", x$init[[i]], fill = 60)
+    }
+  }
+
   cat("\nModel Output")
   cat("\n-----------------------")
   cat("\nVariables:", names(x$epi), fill = 60)

@@ -45,6 +45,23 @@ set of names, or a combination of both. With new models, initial conditions
 must be input in the same order that the solved derivatives from the model
 are output.
 }
+\section{Sensitivity Analyses}{
+
+Like \code{\link[=param.dcm]{param.dcm()}}, initial conditions may be specified as vectors of length
+greater than one to run sensitivity analyses over initial conditions. When
+\code{sens.param = TRUE} in \code{\link[=control.dcm]{control.dcm()}} (the default), each element of the
+vector produces a separate model run. If both parameters and initial
+conditions have vector values, all vectors must have the same length.
+}
+
+\examples{
+# SI model initial conditions
+init <- init.dcm(s.num = 500, i.num = 1)
+
+# Sensitivity analysis over initial infected count
+init <- init.dcm(s.num = 500, i.num = c(1, 5, 25))
+
+}
 \seealso{
 Use \code{\link[=param.dcm]{param.dcm()}} to specify model parameters and
 \code{\link[=control.dcm]{control.dcm()}} to specify the control settings. Run the

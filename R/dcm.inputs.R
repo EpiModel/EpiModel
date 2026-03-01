@@ -107,6 +107,14 @@
 #'
 #' @keywords parameterization
 #'
+#' @examples
+#' # SI model parameters
+#' param <- param.dcm(inf.prob = 0.2, act.rate = 0.25)
+#'
+#' # SIS model with sensitivity analysis over act.rate
+#' param <- param.dcm(inf.prob = 0.2, act.rate = seq(0.1, 0.5, 0.1),
+#'                    rec.rate = 1/50)
+#'
 #' @export
 #'
 param.dcm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
@@ -181,6 +189,13 @@ param.dcm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
 #' must be input in the same order that the solved derivatives from the model
 #' are output.
 #'
+#' @section Sensitivity Analyses:
+#' Like [param.dcm()], initial conditions may be specified as vectors of length
+#' greater than one to run sensitivity analyses over initial conditions. When
+#' `sens.param = TRUE` in [control.dcm()] (the default), each element of the
+#' vector produces a separate model run. If both parameters and initial
+#' conditions have vector values, all vectors must have the same length.
+#'
 #' @return An `EpiModel` object of class `init.dcm`.
 #'
 #' @seealso Use [param.dcm()] to specify model parameters and
@@ -188,6 +203,13 @@ param.dcm <- function(inf.prob, inter.eff, inter.start, act.rate, rec.rate,
 #'          parameterized model with [dcm()].
 #'
 #' @keywords parameterization
+#'
+#' @examples
+#' # SI model initial conditions
+#' init <- init.dcm(s.num = 500, i.num = 1)
+#'
+#' # Sensitivity analysis over initial infected count
+#' init <- init.dcm(s.num = 500, i.num = c(1, 5, 25))
 #'
 #' @export
 #'
@@ -246,11 +268,11 @@ init.dcm <- function(s.num, i.num, r.num, s.num.g2, i.num.g2, r.num.g2,
 #'        which allows for time-lagged variables.
 #' @param new.mod If not running a base model type, a function with a new
 #'        model to be simulated (see details).
-#' @param sens.param If `TRUE`, evaluate arguments in parameters with
-#'        length greater than 1 as sensitivity analyses, with one model run per
-#'        value of the parameter. If `FALSE`, one model will be run with
-#'        parameters of arbitrary length (the model may error unless the model
-#'        function is designed to accommodate parameter vectors).
+#' @param sens.param If `TRUE`, evaluate arguments in parameters or initial
+#'        conditions with length greater than 1 as sensitivity analyses, with
+#'        one model run per value. If `FALSE`, one model will be run with
+#'        parameters and initial conditions of arbitrary length (the model may
+#'        error unless the model function is designed to accommodate vectors).
 #' @param print.mod If `TRUE`, print the model form to the console.
 #' @param verbose If `TRUE`, print model progress to the console.
 #' @param ... additional control settings passed to model.

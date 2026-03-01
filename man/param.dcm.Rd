@@ -151,6 +151,15 @@ model parameters are valid, parameter validity is the user's responsibility
 with these original models.
 }
 
+\examples{
+# SI model parameters
+param <- param.dcm(inf.prob = 0.2, act.rate = 0.25)
+
+# SIS model with sensitivity analysis over act.rate
+param <- param.dcm(inf.prob = 0.2, act.rate = seq(0.1, 0.5, 0.1),
+                   rec.rate = 1/50)
+
+}
 \seealso{
 Use \code{\link[=init.dcm]{init.dcm()}} to specify the initial conditions and
 \code{\link[=control.dcm]{control.dcm()}} to specify the control settings. Run the
