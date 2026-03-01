@@ -99,16 +99,16 @@ summary(mod, at = 25, run = 3)
 #> Time: 25  Run: 3 
 #> ------------------------------ 
 #>                       n    pct
-#> Suscept.        224.736  0.229
-#> Infect.          79.014  0.081
-#> Recov.          677.357  0.690
-#> Total           981.106  1.000
-#> S -> I           13.102     NA
-#> I -> R           24.087     NA
+#> Suscept.        224.724  0.229
+#> Infect.          78.988  0.081
+#> Recov.          677.392  0.690
+#> Total           981.104  1.000
+#> S -> I           13.097     NA
+#> I -> R           24.079     NA
 #> Arrival ->       10.789     NA
 #> S Departure ->    2.222     NA
-#> I Departure ->    2.168     NA
-#> R Departure ->    6.863     NA
+#> I Departure ->    2.167     NA
+#> R Departure ->    6.864     NA
 #> ------------------------------ 
 summary(mod, at = 26, run = 3)
 #> EpiModel Summary
@@ -127,12 +127,12 @@ summary(mod, at = 26, run = 3)
 #> Time: 26  Run: 3 
 #> ------------------------------ 
 #>                       n    pct
-#> Suscept.        220.201  0.225
-#> Infect.          65.862  0.067
-#> Recov.          694.580  0.708
-#> Total           980.642  1.000
-#> S -> I           10.746     NA
-#> I -> R           20.049     NA
+#> Suscept.        220.194  0.225
+#> Infect.          65.840  0.067
+#> Recov.          694.606  0.708
+#> Total           980.640  1.000
+#> S -> I           10.742     NA
+#> I -> R           20.042     NA
 #> Arrival ->       10.786     NA
 #> S Departure ->    2.189     NA
 #> I Departure ->    1.804     NA

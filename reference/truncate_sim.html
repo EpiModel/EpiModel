@@ -9,7 +9,7 @@ and network statistics at a specified time step."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">EpiModel</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.5.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.6.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -107,12 +107,12 @@ steps <code>b</code> to <code>c</code> after a burn-in period from time <code>a<
 <span class="r-plt img"><img src="truncate_sim-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">mod2a</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   time     s.num    i.num  si.flow num</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1    1 112.84481 388.1552 4.311261 501</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2    2 108.53355 392.4664 4.190826 501</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3    3 104.34273 396.6573 4.070349 501</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4    4 100.27238 400.7276 3.950125 501</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5    5  96.32225 404.6777 3.830430 501</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6    6  92.49182 408.5082 3.711524 501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1    1 112.84477 388.1552 4.311259 501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2    2 108.53351 392.4665 4.190824 501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3    3 104.34268 396.6573 4.070347 501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4    4 100.27233 400.7277 3.950123 501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5    5  96.32221 404.6778 3.830429 501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6    6  92.49178 408.5082 3.711522 501</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Do not reset time</span></span></span>
 <span class="r-in"><span><span class="va">mod2b</span> <span class="op">&lt;-</span> <span class="fu">truncate_sim</span><span class="op">(</span><span class="va">mod1</span>, at <span class="op">=</span> <span class="fl">150</span>, reset.time <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
@@ -120,12 +120,12 @@ steps <code>b</code> to <code>c</code> after a burn-in period from time <code>a<
 <span class="r-plt img"><img src="truncate_sim-3.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">mod2b</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   time     s.num    i.num  si.flow num</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  150 112.84481 388.1552 4.311261 501</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  151 108.53355 392.4664 4.190826 501</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  152 104.34273 396.6573 4.070349 501</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  153 100.27238 400.7276 3.950125 501</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5  154  96.32225 404.6777 3.830430 501</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6  155  92.49182 408.5082 3.711524 501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  150 112.84477 388.1552 4.311259 501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  151 108.53351 392.4665 4.190824 501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  152 104.34268 396.6573 4.070347 501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  153 100.27233 400.7277 3.950123 501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  154  96.32221 404.6778 3.830429 501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  155  92.49178 408.5082 3.711522 501</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># ICM example</span></span></span>
 <span class="r-in"><span><span class="va">param</span> <span class="op">&lt;-</span> <span class="fu"><a href="param.icm.html">param.icm</a></span><span class="op">(</span>inf.prob <span class="op">=</span> <span class="fl">0.2</span>, act.rate <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span></span></span>

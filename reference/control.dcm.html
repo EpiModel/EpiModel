@@ -9,7 +9,7 @@ simulated with dcm()."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">EpiModel</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.5.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.6.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -53,7 +53,7 @@ simulated with <code><a href="dcm.html">dcm()</a></code>.</p>
 <span>  <span class="va">type</span>,</span>
 <span>  <span class="va">nsteps</span>,</span>
 <span>  dt <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  odemethod <span class="op">=</span> <span class="st">"rk4"</span>,</span>
+<span>  odemethod <span class="op">=</span> <span class="st">"lsoda"</span>,</span>
 <span>  dede <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  new.mod <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  sens.param <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -88,8 +88,8 @@ a number between 0 and 1.</p></dd>
 
 <dt id="arg-odemethod">odemethod<a class="anchor" aria-label="anchor" href="#arg-odemethod"></a></dt>
 <dd><p>Ordinary differential equation (ODE) integration method,
-with the default of the "Runge-Kutta 4" method (see <code><a href="https://rdrr.io/pkg/deSolve/man/ode.html" class="external-link">deSolve::ode</a></code>
-for other options).</p></dd>
+with the default of <code>"lsoda"</code> (see <code><a href="https://rdrr.io/pkg/deSolve/man/ode.html" class="external-link">deSolve::ode</a></code> for other
+options).</p></dd>
 
 
 <dt id="arg-dede">dede<a class="anchor" aria-label="anchor" href="#arg-dede"></a></dt>
@@ -132,6 +132,18 @@ function is designed to accomodate parameter vectors).</p></dd>
 compartmental models solved with the <code><a href="dcm.html">dcm()</a></code> function. Controls are
 required for both base model types and original models. For all base models,
 the <code>type</code> argument is a necessary parameter and it has no default.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="ode-solver">ODE Solver<a class="anchor" aria-label="anchor" href="#ode-solver"></a></h2>
+
+
+<p>As of EpiModel 2.5.5, the default ODE solver was changed from <code>"rk4"</code>
+(fixed-step Runge-Kutta 4) to <code>"lsoda"</code> (adaptive step-size). The <code>"lsoda"</code>
+method automatically adjusts its internal step size, providing numerical
+stability across a wide range of parameter values. The fixed-step <code>"rk4"</code>
+solver could produce numerical instability (negative compartment sizes, NaN
+values) for models with high transmission rates or stiff dynamics. Users who
+require the previous behavior can set <code>odemethod = "rk4"</code> explicitly.</p>
     </div>
     <div class="section level2">
     <h2 id="new-model-functions">New Model Functions<a class="anchor" aria-label="anchor" href="#new-model-functions"></a></h2>

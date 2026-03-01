@@ -10,7 +10,7 @@ control.dcm(
   type,
   nsteps,
   dt = 1,
-  odemethod = "rk4",
+  odemethod = "lsoda",
   dede = FALSE,
   new.mod = NULL,
   sens.param = TRUE,
@@ -44,7 +44,7 @@ control.dcm(
 - odemethod:
 
   Ordinary differential equation (ODE) integration method, with the
-  default of the "Runge-Kutta 4" method (see
+  default of `"lsoda"` (see
   [`deSolve::ode`](https://rdrr.io/pkg/deSolve/man/ode.html) for other
   options).
 
@@ -90,6 +90,17 @@ compartmental models solved with the
 Controls are required for both base model types and original models. For
 all base models, the `type` argument is a necessary parameter and it has
 no default.
+
+## ODE Solver
+
+As of EpiModel 2.5.5, the default ODE solver was changed from `"rk4"`
+(fixed-step Runge-Kutta 4) to `"lsoda"` (adaptive step-size). The
+`"lsoda"` method automatically adjusts its internal step size, providing
+numerical stability across a wide range of parameter values. The
+fixed-step `"rk4"` solver could produce numerical instability (negative
+compartment sizes, NaN values) for models with high transmission rates
+or stiff dynamics. Users who require the previous behavior can set
+`odemethod = "rk4"` explicitly.
 
 ## New Model Functions
 

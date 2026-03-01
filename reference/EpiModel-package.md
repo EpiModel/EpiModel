@@ -4,8 +4,8 @@
 |-----------|------------|
 | Package:  | EpiModel   |
 | Type:     | Package    |
-| Version:  | 2.5.5      |
-| Date:     | 2026-02-11 |
+| Version:  | 2.6.0      |
+| Date:     | 2026-02-26 |
 | License:  | GPL-3      |
 | LazyLoad: | yes        |
 
