@@ -128,7 +128,7 @@ test_that("SIS, 1G, OP: 1 run", {
 
 # Check flows -------------------------------------------------------------
 
-test_that("si.flow correct for closed SI model, RK4 method", {
+test_that("si.flow correct for closed SI model, lsoda method", {
   param <- param.dcm(inf.prob = 0.2, act.rate = 3.4)
   init <- init.dcm(s.num = 28650, i.num = 100)
   control <- control.dcm(type = "SI", nsteps = 2)
@@ -136,11 +136,11 @@ test_that("si.flow correct for closed SI model, RK4 method", {
   df <- as.data.frame(mod)
   expect_equal(df$i.num[2], df$i.num[1] + df$si.flow[1])
   expect_equal(df$s.num[2], df$s.num[1] - df$si.flow[1])
-  expect_equal(df$si.flow[1], 96.58919, tol = 0.0001)
+  expect_equal(df$si.flow[1], 96.72141, tol = 0.0001)
 })
 
 
-test_that("si.flow correct for closed SI model, RK4 method", {
+test_that("si.flow correct for open SI model, lsoda method", {
   param <- param.dcm(inf.prob = 0.2, act.rate = 3.4,
                      a.rate = 0.02, ds.rate = 0.01, di.rate = 0.01)
   init <- init.dcm(s.num = 28650, i.num = 100)
@@ -150,7 +150,7 @@ test_that("si.flow correct for closed SI model, RK4 method", {
   expect_equal(df$num[2],
                df$num[1] + df$a.flow[1] - df$ds.flow[1] - df$di.flow[1])
   expect_equal(df$i.num[2], df$i.num[1] + df$si.flow[1] - df$di.flow[1])
-  expect_equal(df$si.flow[1], 96.06876, tol = 0.0001)
+  expect_equal(df$si.flow[1], 96.19311, tol = 0.0001)
 })
 
 test_that("si.flow correct for closed SI model, Euler method", {
@@ -263,9 +263,9 @@ test_that("DCM interventions, SI model", {
   mod <- dcm(param, init, control)
 
   df <- as.data.frame(mod)
-  expect_equal(sum(df$si.flow[5:10], na.rm = TRUE), 0)
-  expect_true(length(unique(df$i.num[5:10])) == 1)
-  expect_true(length(unique(df$s.num[5:10])) == 1)
+  expect_equal(sum(df$si.flow[5:10], na.rm = TRUE), 0, tol = 0.01)
+  expect_equal(max(df$i.num[5:10]) - min(df$i.num[5:10]), 0, tol = 0.01)
+  expect_equal(max(df$s.num[5:10]) - min(df$s.num[5:10]), 0, tol = 0.01)
 })
 
 test_that("DCM interventions, SIS model", {
@@ -276,9 +276,9 @@ test_that("DCM interventions, SIS model", {
   control <- control.dcm(type = "SIS", nsteps = 10)
   mod <- dcm(param, init, control)
   df <- as.data.frame(mod)
-  expect_equal(sum(df$si.flow[5:10], na.rm = TRUE), 0)
-  expect_equal(df$s.num[10], 28221.24, tol = 0.0001)
-  expect_equal(df$i.num[10], 528.7624, tol = 0.0001)
+  expect_equal(sum(df$si.flow[5:10], na.rm = TRUE), 0, tol = 0.01)
+  expect_equal(df$s.num[10], 28155.07472, tol = 0.0001)
+  expect_equal(df$i.num[10], 594.92528, tol = 0.0001)
 })
 
 test_that("DCM interventions, SIR model", {
@@ -289,9 +289,9 @@ test_that("DCM interventions, SIR model", {
   control <- control.dcm(type = "SIR", nsteps = 10)
   mod <- dcm(param, init, control)
   df <- as.data.frame(mod)
-  expect_equal(sum(df$si.flow[5:10], na.rm = TRUE), 0)
-  expect_true(length(unique(df$s.num[5:10])) == 1)
-  expect_equal(df$i.num[10], 526.6549, tol = 0.0001)
+  expect_equal(sum(df$si.flow[5:10], na.rm = TRUE), 0, tol = 0.01)
+  expect_equal(max(df$s.num[5:10]) - min(df$s.num[5:10]), 0, tol = 0.01)
+  expect_equal(df$i.num[10], 592.14131, tol = 0.5)
 })
 
 

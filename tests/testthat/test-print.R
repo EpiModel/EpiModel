@@ -109,7 +109,7 @@ test_that("print.init", {
 test_that("print.control", {
   co <- control.dcm(type = "SI", nsteps = 10)
   expect_output(print(co), "DCM Control Settings")
-  expect_output(print(co), "odemethod = rk4")
+  expect_output(print(co), "odemethod = lsoda")
 
   co <- control.icm(type = "SI", nsteps = 10)
   expect_output(print(co), "ICM Control Settings")

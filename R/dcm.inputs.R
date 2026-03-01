@@ -240,8 +240,8 @@ init.dcm <- function(s.num, i.num, r.num, s.num.g2, i.num.g2, r.num.g2,
 #'        solutions for fractional time steps may be obtained by setting this to
 #'        a number between 0 and 1.
 #' @param odemethod Ordinary differential equation (ODE) integration method,
-#'        with the default of the "Runge-Kutta 4" method (see [`deSolve::ode`]
-#'        for other options).
+#'        with the default of `"lsoda"` (see [`deSolve::ode`] for other
+#'        options).
 #' @param dede If `TRUE`, use the delayed differential equation solver,
 #'        which allows for time-lagged variables.
 #' @param new.mod If not running a base model type, a function with a new
@@ -260,6 +260,15 @@ init.dcm <- function(s.num, i.num, r.num, s.num.g2, i.num.g2, r.num.g2,
 #' compartmental models solved with the [dcm()] function. Controls are
 #' required for both base model types and original models. For all base models,
 #' the `type` argument is a necessary parameter and it has no default.
+#'
+#' @section ODE Solver:
+#' As of EpiModel 2.5.5, the default ODE solver was changed from `"rk4"`
+#' (fixed-step Runge-Kutta 4) to `"lsoda"` (adaptive step-size). The `"lsoda"`
+#' method automatically adjusts its internal step size, providing numerical
+#' stability across a wide range of parameter values. The fixed-step `"rk4"`
+#' solver could produce numerical instability (negative compartment sizes, NaN
+#' values) for models with high transmission rates or stiff dynamics. Users who
+#' require the previous behavior can set `odemethod = "rk4"` explicitly.
 #'
 #' @section New Model Functions:
 #' The form of the model function for base models may be displayed with the
@@ -280,7 +289,7 @@ init.dcm <- function(s.num, i.num, r.num, s.num.g2, i.num.g2, r.num.g2,
 #'
 #' @export
 #'
-control.dcm <- function(type, nsteps, dt = 1, odemethod = "rk4",
+control.dcm <- function(type, nsteps, dt = 1, odemethod = "lsoda",
                         dede = FALSE, new.mod = NULL, sens.param = TRUE,
                         print.mod = FALSE, verbose = FALSE, ...) {
 
