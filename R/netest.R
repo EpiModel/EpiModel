@@ -146,7 +146,7 @@
 netest <- function(nw, formation, target.stats, coef.diss, constraints = NULL,
                    coef.form = NULL, edapprox = TRUE,
                    set.control.ergm = control.ergm(),
-                   set.control.tergm = control.tergm(MCMC.maxchanges = Inf),
+                   set.control.tergm = control.tergm(MCMC.maxchanges = .Machine$integer.max),
                    set.control.ergm.ego = NULL,
                    verbose = FALSE, nested.edapprox = TRUE, ...) {
 
