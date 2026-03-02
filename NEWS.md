@@ -13,10 +13,10 @@
 -   Both apps include PDF plot download and CSV data export.
 -   Export a `make_restart_point` function that takes in a `netsim` simulation object, truncate it to the smallest set of elements required to restart new simulations from. See `?make_restart_point`.
 -   Refactored `truncate_sim` into an S3 generic with class-specific methods for supported object classes. `truncate_sim` now supports the `dcm` model class, along with `icm` and `netsim` classes as previously supported. Additionally, there is a new `reset.time` argument to the function that allows flexibility in whether to reset the truncated model object to a new "time zero".
+-   Use `future` and `future.apply` instead of `foreach` and `doParallel` for parallelization. The default parallelization behavior being `multisession` (PSOCK cluster) but with the option to use the user custom `plan` for added flexibility.
 
 ### BUG FIXES
 
--   Fix segfault in `netsim()` when running multi-core simulations on macOS after a single-core run in the same R session. A recent Xcode update causes Apple's Accelerate BLAS to initialize multi-threaded Grand Central Dispatch state that is incompatible with the process forking used by `mclapply`. `netsim()` now sets `VECLIB_MAXIMUM_THREADS=1` on macOS before any simulation run to keep the process fork-safe.
 -   Fixed a bug in the ICM Shiny app where Shiny's `numericInput` returns integer-class values, which were silently excluded by `init.icm`'s internal `sapply(init, class) == "numeric"` filter, causing a population size of zero and an "invalid first argument" error in `sample()`.
 -   Fix error with `get_sims` related to variable subsetting with the `var` argument.
 -   Fix `plot.dcm` ignoring custom legend names when `nruns = 1` and multiple compartments are plotted.

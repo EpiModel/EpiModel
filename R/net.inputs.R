@@ -663,7 +663,7 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #'        that is equal to the final step of a simulation. If a simulation is restarted with `start`
 #'        argument, this number must be at least one greater than that argument's value.
 #' @param nsims The total number of disease simulations.
-#' @param ncores Number of processor cores to run multiple simulations on, using the `future` framework.
+#' @param ncores Number of processor cores to run multiple simulations on, using the `future` framework with `multisession`. See `future.use.plan` for other `future` backends.
 #' @param start For models with network resimulation, time point to start up the simulation. For
 #'        restarted simulations, this must be one greater than the final time step in the prior
 #'        simulation and must be less than the value in `nsteps`.
@@ -730,6 +730,7 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #'        modules specified.
 #' @param raw.output If `TRUE`, `netsim` will output a list of raw data (one per simulation) instead
 #'        of a cleaned and formatted `netsim` object.
+#' @param future.use.plan If `TRUE`, `netsim` will use the user define `future::plan` for its parallelization. Otherwise, `multisession` is used with `workers = ncores`.
 #' @param tergmLite.track.duration If `TRUE`, track duration information for models in `tergmLite`
 #'        simulations. Supports [`multilayer`] specification.
 #' @param set.control.ergm Control arguments passed to `ergm::simulate_formula.network`. In `netsim`,
@@ -879,6 +880,7 @@ control.net <- function(type,
                         verbose.int = 1,
                         skip.check = FALSE,
                         raw.output = FALSE,
+                        future.use.plan = FALSE,
                         tergmLite.track.duration = FALSE,
                         set.control.ergm = control.simulate.formula(MCMC.burnin = 2e5),
                         set.control.tergm = control.simulate.formula.tergm(MCMC.maxchanges = .Machine$integer.max),
