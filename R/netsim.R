@@ -213,23 +213,6 @@
 #' }
 #'
 netsim <- function(x, param, init, control) {
-  # On macOS, Apple's Accelerate framework uses Grand Central Dispatch (GCD)
-  # for multi-threaded BLAS operations. Once GCD initializes its thread pool
-  # (e.g., during a single-core predict.lm call), any subsequent fork via
-  # mclapply inherits the GCD state, which is invalid in child processes and
-
-  # causes segfaults. Setting VECLIB_MAXIMUM_THREADS=1 before ANY netsim run
-  # prevents GCD from spawning threads, keeping the process fork-safe for
-  # later multi-core calls in the same R session.
-  if (Sys.info()[["sysname"]] == "Darwin") {
-    old_veclib <- Sys.getenv("VECLIB_MAXIMUM_THREADS", unset = NA)
-    Sys.setenv(VECLIB_MAXIMUM_THREADS = "1")
-    on.exit({
-      if (is.na(old_veclib)) Sys.unsetenv("VECLIB_MAXIMUM_THREADS")
-      else Sys.setenv(VECLIB_MAXIMUM_THREADS = old_veclib)
-    }, add = TRUE)
-  }
-
   crosscheck.net(x, param, init, control)
   control <- netsim_validate_control(control)
   if (!is.null(control[["verbose.FUN"]]))
