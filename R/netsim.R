@@ -244,15 +244,23 @@ netsim <- function(x, param, init, control) {
     )
     dat_list <- Map(netsim_run, dat = dat_list, s = seq_along(dat_list))
   } else {
-    doParallel::registerDoParallel(control$ncores)
-    on.exit(doParallel::stopImplicitCluster(), add = TRUE)
-    # Prevents R CMD CHECK Note with variables declared in `foreach`
-    dat <- s <- NULL
-
-    dat_list <- foreach(s = seq_len(control$nsims)) %dopar% {
-      dat <- netsim_initialize(x, param, init, control, s)
-      netsim_run(dat, s)
+    if (control$future.use.plan) {
+      message(
+        "\n\nParallelization is using user defined `future::plan`\n",
+        "Run `future::futureSessionInfo()` for details."
+      )
+    } else {
+      with(future::plan("multisession", workers = control$ncores), local = TRUE)
     }
+
+    dat_list <- future.apply::future_lapply(
+      seq_len(control$nsims),
+      function(s) {
+        dat <- netsim_initialize(x, param, init, control, s)
+        netsim_run(dat, s)
+      },
+      future.seed = TRUE
+    )
   }
 
   out <- if (control$raw.output) dat_list else process_out.net(dat_list)
@@ -279,6 +287,7 @@ netsim_validate_control <- function(control) {
       ".traceback.on.error",
       ".dump.frame.on.error",
       "cumulative.edgelist",
+      "future.use.plan",
       "tergmLite",
       "save.network",
       "save.diss.stats",

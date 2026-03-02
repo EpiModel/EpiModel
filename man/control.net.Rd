@@ -62,8 +62,7 @@ simulation and must be less than the value in \code{nsteps}.}
 
 \item{nsims}{The total number of disease simulations.}
 
-\item{ncores}{Number of processor cores to run multiple simulations on, using the \code{foreach} and
-\code{doParallel} implementations.}
+\item{ncores}{Number of processor cores to run multiple simulations on, using the \code{future} framework.}
 
 \item{resimulate.network}{If \code{TRUE}, resimulate the network at each time step. This is required
 when the epidemic or demographic processes impact the network structure (e.g., vital

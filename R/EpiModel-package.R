@@ -130,8 +130,6 @@
 #' @aliases EpiModel
 #' @import ergm network networkLite networkDynamic tergm ggplot2
 #' @importFrom deSolve dede ode
-#' @importFrom doParallel registerDoParallel
-#' @importFrom foreach foreach "%dopar%"
 #' @importFrom RColorBrewer brewer.pal brewer.pal.info
 #' @importFrom graphics abline arrows boxplot legend lines mtext par plot points
 #'             polygon text title

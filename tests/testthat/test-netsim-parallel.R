@@ -29,12 +29,12 @@ test_that("netsim par, 2 sims, 2 cores", {
 
   param <- param.net(inf.prob = 0.3, act.rate = 0.5)
   init <- init.net(i.num = 10)
-  control <- control.net(type = "SI", nsims = 2, nsteps = 5, ncores = 2,
-                         verbose = FALSE)
+  control <- control.net(type = "SI", nsims = 2, nsteps = 5,
+                         verbose = FALSE, future.use.plan = TRUE)
+  with(future::plan("multicore", workers = 2), local = TRUE)
   mod <- netsim(est, param, init, control)
   expect_is(mod, "netsim")
   expect_true(mod$control$nsims == 2)
-  expect_true(mod$control$ncores == 2)
 
 })
 

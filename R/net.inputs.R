@@ -663,8 +663,7 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #'        that is equal to the final step of a simulation. If a simulation is restarted with `start`
 #'        argument, this number must be at least one greater than that argument's value.
 #' @param nsims The total number of disease simulations.
-#' @param ncores Number of processor cores to run multiple simulations on, using the `foreach` and
-#'        `doParallel` implementations.
+#' @param ncores Number of processor cores to run multiple simulations on, using the `future` framework.
 #' @param start For models with network resimulation, time point to start up the simulation. For
 #'        restarted simulations, this must be one greater than the final time step in the prior
 #'        simulation and must be less than the value in `nsteps`.

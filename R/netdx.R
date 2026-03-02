@@ -47,9 +47,11 @@
 #'        objects, with one entry per simulation. Accessible at `$network`.
 #' @param verbose If `TRUE`, print progress to the console.
 #' @param ncores Number of processor cores to run multiple simulations
-#'        on, using the `foreach` and `doParallel` implementations.
+#'        on, using the `future` framework.
 #' @param skip.dissolution If `TRUE`, skip over the calculations of
 #'        duration and dissolution stats in `netdx`.
+#' @param future.use.plan If `TRUE`, parallelize using the `future::plan`
+#'        defined by the user in `.GlobalEnv`.
 #'
 #' @details
 #' The `netdx` function handles dynamic network diagnostics for network
@@ -184,7 +186,7 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps = NULL,
                   set.control.tergm = control.simulate.formula.tergm(MCMC.maxchanges = .Machine$integer.max),
                   sequential = TRUE, keep.tedgelist = FALSE,
                   keep.tnetwork = FALSE, verbose = TRUE, ncores = 1,
-                  skip.dissolution = FALSE) {
+                  skip.dissolution = FALSE, future.use.plan = FALSE) {
 
   if (!inherits(x, "netest")) {
     stop("x must be an object of class netest", call. = FALSE)
@@ -322,10 +324,12 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps = NULL,
     if (verbose == TRUE) {
       cat("|")
     }
+  } else if (future.use.plan) {
+    diag.sim <- future.apply::future_lapply(seq_len(nsims), \(i) dosim(i))
   } else {
-    cluster.size <- min(nsims, ncores)
-    registerDoParallel(cluster.size)
-    diag.sim <- foreach(i = seq_len(nsims)) %dopar% dosim()
+    ncores_eff <- min(nsims, ncores)
+    with(future::plan("multisession", workers = ncores_eff), local = TRUE)
+    diag.sim <- future.apply::future_lapply(seq_len(nsims), \(i) dosim(i))
   }
 
   if (verbose == TRUE) {

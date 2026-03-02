@@ -18,7 +18,8 @@ netdx(
   keep.tnetwork = FALSE,
   verbose = TRUE,
   ncores = 1,
-  skip.dissolution = FALSE
+  skip.dissolution = FALSE,
+  future.use.plan = FALSE
 )
 }
 \arguments{
@@ -72,10 +73,13 @@ objects, with one entry per simulation. Accessible at \verb{$network}.}
 \item{verbose}{If \code{TRUE}, print progress to the console.}
 
 \item{ncores}{Number of processor cores to run multiple simulations
-on, using the \code{foreach} and \code{doParallel} implementations.}
+on, using the \code{future} framework.}
 
 \item{skip.dissolution}{If \code{TRUE}, skip over the calculations of
 duration and dissolution stats in \code{netdx}.}
+
+\item{future.use.plan}{If \code{TRUE}, parallelize using the \code{future::plan}
+defined by the user in \code{.GlobalEnv}.}
 }
 \value{
 A list of class \code{netdx}. Use \code{print()} to view summary tables of
