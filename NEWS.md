@@ -13,7 +13,7 @@
 -   Both apps include PDF plot download and CSV data export.
 -   Export a `make_restart_point` function that takes in a `netsim` simulation object, truncate it to the smallest set of elements required to restart new simulations from. See `?make_restart_point`.
 -   Refactored `truncate_sim` into an S3 generic with class-specific methods for supported object classes. `truncate_sim` now supports the `dcm` model class, along with `icm` and `netsim` classes as previously supported. Additionally, there is a new `reset.time` argument to the function that allows flexibility in whether to reset the truncated model object to a new "time zero".
--   Use `future` and `future.apply` instead of `foreach` and `doParallel` for parallelization. The default parallelization behavior being `multisession` (PSOCK cluster) but with the option to use the user custom `plan` for added flexibility.
+-   Use `future` and `future.apply` instead of `foreach` and `doParallel` for parallelization. The default parallelization behavior being `multisession` (PSOCK cluster) with a `future.use.plan` flag / control to use a user defined `future::plan`. This new default behavior gives a more robust default by avoiding `fork` based parallelization that can negatively impact many external libraries (e.g. BLAS/LAPACK).
 
 ### BUG FIXES
 

@@ -218,7 +218,16 @@ netsim <- function(x, param, init, control) {
   if (!is.null(control[["verbose.FUN"]]))
     control[["verbose.FUN"]](control, type = "startup")
 
-  if (control$ncores == 1) {
+  if (control$future.use.plan) {
+    dat_list <- future.apply::future_lapply(
+      seq_len(control$nsims),
+      function(s) {
+        dat <- netsim_initialize(x, param, init, control, s)
+        netsim_run(dat, s)
+      },
+      future.seed = TRUE
+    )
+  } else if (control$ncores == 1) {
     dat_list <- lapply(
       seq_len(control$nsims),
       function(s) {
@@ -227,15 +236,7 @@ netsim <- function(x, param, init, control) {
     )
     dat_list <- Map(netsim_run, dat = dat_list, s = seq_along(dat_list))
   } else {
-    if (control$future.use.plan) {
-      message(
-        "\n\nParallelization is using user defined `future::plan`\n",
-        "Run `future::futureSessionInfo()` for details."
-      )
-    } else {
-      with(future::plan("multisession", workers = control$ncores), local = TRUE)
-    }
-
+    with(future::plan("multisession", workers = control$ncores), local = TRUE)
     dat_list <- future.apply::future_lapply(
       seq_len(control$nsims),
       function(s) {

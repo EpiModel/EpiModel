@@ -310,6 +310,8 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps = NULL,
 
   if (dynamic == FALSE || nsims == 1) {
     diag.sim <- list(dosim())
+  } else if (future.use.plan) {
+    diag.sim <- future.apply::future_lapply(seq_len(nsims), \(i) dosim())
   } else if (ncores == 1) {
     diag.sim <- list()
     if (verbose == TRUE) {
@@ -324,12 +326,10 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps = NULL,
     if (verbose == TRUE) {
       cat("|")
     }
-  } else if (future.use.plan) {
-    diag.sim <- future.apply::future_lapply(seq_len(nsims), \(i) dosim(i))
   } else {
     ncores_eff <- min(nsims, ncores)
     with(future::plan("multisession", workers = ncores_eff), local = TRUE)
-    diag.sim <- future.apply::future_lapply(seq_len(nsims), \(i) dosim(i))
+    diag.sim <- future.apply::future_lapply(seq_len(nsims), \(i) dosim())
   }
 
   if (verbose == TRUE) {
