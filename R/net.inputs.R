@@ -732,7 +732,7 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #'        modules specified.
 #' @param raw.output If `TRUE`, `netsim` will output a list of raw data (one per simulation) instead
 #'        of a cleaned and formatted `netsim` object.
-#' @param future.use.plan If `TRUE`, `netsim` will use the user define `future::plan` for its parallelization.
+#' @param future.use.plan If `TRUE`, `netsim` will use the user-defined `future::plan` for its parallelization.
 #'        Otherwise, `multisession` is used with `workers = ncores`.
 #' @param tergmLite.track.duration If `TRUE`, track duration information for models in `tergmLite`
 #'        simulations. Supports [`multilayer`] specification.

@@ -63,7 +63,9 @@ simulation and must be less than the value in \code{nsteps}.}
 
 \item{nsims}{The total number of disease simulations.}
 
-\item{ncores}{Number of processor cores to run multiple simulations on, using the \code{future} framework with \code{multisession}. See \code{future.use.plan} for other \code{future} backends.}
+\item{ncores}{Number of processor cores to run multiple simulations on, using
+the \code{future} framework with \code{multisession}. See \code{future.use.plan} for
+other \code{future} backends.}
 
 \item{resimulate.network}{If \code{TRUE}, resimulate the network at each time step. This is required
 when the epidemic or demographic processes impact the network structure (e.g., vital
@@ -156,7 +158,8 @@ modules specified.}
 \item{raw.output}{If \code{TRUE}, \code{netsim} will output a list of raw data (one per simulation) instead
 of a cleaned and formatted \code{netsim} object.}
 
-\item{future.use.plan}{If \code{TRUE}, \code{netsim} will use the user define \code{future::plan} for its parallelization. Otherwise, \code{multisession} is used with \code{workers = ncores}.}
+\item{future.use.plan}{If \code{TRUE}, \code{netsim} will use the user-defined \code{future::plan} for its parallelization.
+Otherwise, \code{multisession} is used with \code{workers = ncores}.}
 
 \item{tergmLite.track.duration}{If \code{TRUE}, track duration information for models in \code{tergmLite}
 simulations. Supports \code{\link{multilayer}} specification.}

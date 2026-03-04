@@ -50,8 +50,8 @@
 #'        on, using the `future` framework.
 #' @param skip.dissolution If `TRUE`, skip over the calculations of
 #'        duration and dissolution stats in `netdx`.
-#' @param future.use.plan If `TRUE`, parallelize using the `future::plan`
-#'        defined by the user in `.GlobalEnv`.
+#' @param future.use.plan If `TRUE`, `netsim` will use the user-defined `future::plan`
+#'        for its parallelization. Otherwise, `multisession` is used with `workers = ncores`.
 #'
 #' @details
 #' The `netdx` function handles dynamic network diagnostics for network
@@ -311,7 +311,9 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps = NULL,
   if (dynamic == FALSE || nsims == 1) {
     diag.sim <- list(dosim())
   } else if (future.use.plan) {
-    diag.sim <- future.apply::future_lapply(seq_len(nsims), \(i) dosim())
+    diag.sim <- future.apply::future_replicate(
+      nsims, dosim(), simplify = FALSE, future.seed = TRUE
+    )
   } else if (ncores == 1) {
     diag.sim <- list()
     if (verbose == TRUE) {
@@ -329,7 +331,9 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps = NULL,
   } else {
     ncores_eff <- min(nsims, ncores)
     with(future::plan("multisession", workers = ncores_eff), local = TRUE)
-    diag.sim <- future.apply::future_lapply(seq_len(nsims), \(i) dosim())
+    diag.sim <- future.apply::future_replicate(
+      nsims, dosim(), simplify = FALSE, future.seed = TRUE
+    )
   }
 
   if (verbose == TRUE) {

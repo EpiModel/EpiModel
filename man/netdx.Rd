@@ -78,8 +78,8 @@ on, using the \code{future} framework.}
 \item{skip.dissolution}{If \code{TRUE}, skip over the calculations of
 duration and dissolution stats in \code{netdx}.}
 
-\item{future.use.plan}{If \code{TRUE}, parallelize using the \code{future::plan}
-defined by the user in \code{.GlobalEnv}.}
+\item{future.use.plan}{If \code{TRUE}, \code{netsim} will use the user-defined \code{future::plan}
+for its parallelization. Otherwise, \code{multisession} is used with \code{workers = ncores}.}
 }
 \value{
 A list of class \code{netdx}. Use \code{print()} to view summary tables of
