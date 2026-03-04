@@ -33,14 +33,14 @@ Depends:
     tergm (>= 4.2.1),
     statnet.common (>= 4.10.0)
 Imports:
+    future,
+    future.apply,
     graphics,
     grDevices,
     stats,
     utils,
     collections,
-    doParallel,
     ergm (>= 4.7.1),
-    foreach,
     network (>= 1.18.1),
     RColorBrewer,
     ape,

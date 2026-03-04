@@ -213,29 +213,21 @@
 #' }
 #'
 netsim <- function(x, param, init, control) {
-  # On macOS, Apple's Accelerate framework uses Grand Central Dispatch (GCD)
-  # for multi-threaded BLAS operations. Once GCD initializes its thread pool
-  # (e.g., during a single-core predict.lm call), any subsequent fork via
-  # mclapply inherits the GCD state, which is invalid in child processes and
-
-  # causes segfaults. Setting VECLIB_MAXIMUM_THREADS=1 before ANY netsim run
-  # prevents GCD from spawning threads, keeping the process fork-safe for
-  # later multi-core calls in the same R session.
-  if (Sys.info()[["sysname"]] == "Darwin") {
-    old_veclib <- Sys.getenv("VECLIB_MAXIMUM_THREADS", unset = NA)
-    Sys.setenv(VECLIB_MAXIMUM_THREADS = "1")
-    on.exit({
-      if (is.na(old_veclib)) Sys.unsetenv("VECLIB_MAXIMUM_THREADS")
-      else Sys.setenv(VECLIB_MAXIMUM_THREADS = old_veclib)
-    }, add = TRUE)
-  }
-
   crosscheck.net(x, param, init, control)
   control <- netsim_validate_control(control)
   if (!is.null(control[["verbose.FUN"]]))
     control[["verbose.FUN"]](control, type = "startup")
 
-  if (control$ncores == 1) {
+  if (control$future.use.plan) {
+    dat_list <- future.apply::future_lapply(
+      seq_len(control$nsims),
+      function(s) {
+        dat <- netsim_initialize(x, param, init, control, s)
+        netsim_run(dat, s)
+      },
+      future.seed = TRUE
+    )
+  } else if (control$ncores == 1) {
     dat_list <- lapply(
       seq_len(control$nsims),
       function(s) {
@@ -244,15 +236,15 @@ netsim <- function(x, param, init, control) {
     )
     dat_list <- Map(netsim_run, dat = dat_list, s = seq_along(dat_list))
   } else {
-    doParallel::registerDoParallel(control$ncores)
-    on.exit(doParallel::stopImplicitCluster(), add = TRUE)
-    # Prevents R CMD CHECK Note with variables declared in `foreach`
-    dat <- s <- NULL
-
-    dat_list <- foreach(s = seq_len(control$nsims)) %dopar% {
-      dat <- netsim_initialize(x, param, init, control, s)
-      netsim_run(dat, s)
-    }
+    with(future::plan("multisession", workers = control$ncores), local = TRUE)
+    dat_list <- future.apply::future_lapply(
+      seq_len(control$nsims),
+      function(s) {
+        dat <- netsim_initialize(x, param, init, control, s)
+        netsim_run(dat, s)
+      },
+      future.seed = TRUE
+    )
   }
 
   out <- if (control$raw.output) dat_list else process_out.net(dat_list)
@@ -279,6 +271,7 @@ netsim_validate_control <- function(control) {
       ".traceback.on.error",
       ".dump.frame.on.error",
       "cumulative.edgelist",
+      "future.use.plan",
       "tergmLite",
       "save.network",
       "save.diss.stats",

@@ -21,6 +21,24 @@ test_that("netsim par, 1 sim, 1 core", {
 
 test_that("netsim par, 2 sims, 2 cores", {
   skip_on_cran()
+  nw <- network_initialize(n = 50)
+  est <- netest(nw, formation = ~edges, target.stats = 24,
+                coef.diss = dissolution_coefs(~offset(edges), 10, 0),
+                verbose = FALSE)
+
+  param <- param.net(inf.prob = 0.3, act.rate = 0.5)
+  init <- init.net(i.num = 10)
+  control <- control.net(type = "SI", nsims = 2, ncores = 2, nsteps = 5,
+                         verbose = FALSE, future.use.plan = TRUE)
+  mod <- netsim(est, param, init, control)
+  expect_is(mod, "netsim")
+  expect_true(mod$control$nsims == 2)
+  expect_true(mod$control$ncores == 2)
+  expect_true(inherits(future::plan(), "sequential"))
+})
+
+test_that("netsim par, 2 sims, 2 cores - future.use.plan", {
+  skip_on_cran()
   skip_on_os("windows")
   nw <- network_initialize(n = 50)
   est <- netest(nw, formation = ~edges, target.stats = 24,
@@ -29,12 +47,12 @@ test_that("netsim par, 2 sims, 2 cores", {
 
   param <- param.net(inf.prob = 0.3, act.rate = 0.5)
   init <- init.net(i.num = 10)
-  control <- control.net(type = "SI", nsims = 2, nsteps = 5, ncores = 2,
-                         verbose = FALSE)
+  control <- control.net(type = "SI", nsims = 2, nsteps = 5,
+                         verbose = FALSE, future.use.plan = TRUE)
+  with(future::plan("multicore", workers = 2), local = TRUE)
   mod <- netsim(est, param, init, control)
   expect_is(mod, "netsim")
   expect_true(mod$control$nsims == 2)
-  expect_true(mod$control$ncores == 2)
 
 })
 

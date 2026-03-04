@@ -257,6 +257,7 @@ for (trim in c(FALSE, TRUE)) {
 
     dx1 <- netdx(est1, nsims = 2, nsteps = 25, ncores = 2, verbose = FALSE)
     expect_is(dx1, "netdx")
+    expect_true(inherits(future::plan(), "sequential"))
   })
 
   test_that("error checking", {
