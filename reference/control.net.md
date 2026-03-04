@@ -40,6 +40,7 @@ control.net(
   verbose.int = 1,
   skip.check = FALSE,
   raw.output = FALSE,
+  future.use.plan = FALSE,
   tergmLite.track.duration = FALSE,
   set.control.ergm = control.simulate.formula(MCMC.burnin = 2e+05),
   set.control.tergm = control.simulate.formula.tergm(MCMC.maxchanges =
@@ -80,7 +81,8 @@ control.net(
 - ncores:
 
   Number of processor cores to run multiple simulations on, using the
-  `foreach` and `doParallel` implementations.
+  `future` framework with `multisession`. See `future.use.plan` for
+  other `future` backends.
 
 - resimulate.network:
 
@@ -243,6 +245,13 @@ control.net(
 
   If `TRUE`, `netsim` will output a list of raw data (one per
   simulation) instead of a cleaned and formatted `netsim` object.
+
+- future.use.plan:
+
+  If `TRUE`, `netsim` will use the user-defined
+  [`future::plan`](https://future.futureverse.org/reference/plan.html)
+  for its parallelization. Otherwise, `multisession` is used with
+  `workers = ncores`.
 
 - tergmLite.track.duration:
 

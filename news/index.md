@@ -60,18 +60,17 @@
   supported. Additionally, there is a new `reset.time` argument to the
   function that allows flexibility in whether to reset the truncated
   model object to a new “time zero”.
+- Use `future` and `future.apply` instead of `foreach` and `doParallel`
+  for parallelization. The default parallelization behavior being
+  `multisession` (PSOCK cluster) with a `future.use.plan` flag / control
+  to use a user defined
+  [`future::plan`](https://future.futureverse.org/reference/plan.html).
+  This new default behavior gives a more robust default by avoiding
+  `fork` based parallelization that can negatively impact many external
+  libraries (e.g. BLAS/LAPACK).
 
 ### BUG FIXES
 
-- Fix segfault in
-  [`netsim()`](http://epimodel.github.io/EpiModel/reference/netsim.md)
-  when running multi-core simulations on macOS after a single-core run
-  in the same R session. A recent Xcode update causes Apple’s Accelerate
-  BLAS to initialize multi-threaded Grand Central Dispatch state that is
-  incompatible with the process forking used by `mclapply`.
-  [`netsim()`](http://epimodel.github.io/EpiModel/reference/netsim.md)
-  now sets `VECLIB_MAXIMUM_THREADS=1` on macOS before any simulation run
-  to keep the process fork-safe.
 - Fixed a bug in the ICM Shiny app where Shiny’s `numericInput` returns
   integer-class values, which were silently excluded by `init.icm`’s
   internal `sapply(init, class) == "numeric"` filter, causing a
@@ -166,6 +165,8 @@
 
 ## EpiModel 2.4.0
 
+CRAN release: 2023-06-20
+
 ### NEW FEATURES
 
 - Stochastic network models, simulated with `netsim`, now support
@@ -194,6 +195,8 @@
   backwards incompatible data structures for `ergm` package v4.5.0.
 
 ## EpiModel 2.3.2
+
+CRAN release: 2023-02-16
 
 ### NEW FEATURES
 
@@ -231,6 +234,8 @@
 
 ## EpiModel 2.3.1
 
+CRAN release: 2022-10-01
+
 ### NEW FEATURES
 
 - `netdx` now calculates additional summary statistics to quantify
@@ -267,6 +272,8 @@
 - Streamline unit tests for testing on CRAN.
 
 ## EpiModel 2.3.0
+
+CRAN release: 2022-07-19
 
 ### NEW FEATURES
 
@@ -338,6 +345,8 @@
 
 ## EpiModel 2.2.1
 
+CRAN release: 2022-02-02
+
 ### NEW FEATURES
 
 - Improved optional module `updater.net` allowing it to update the model
@@ -367,6 +376,8 @@
   *partnerships*.
 
 ## EpiModel 2.2.0
+
+CRAN release: 2021-11-09
 
 ### NEW FEATURES
 
@@ -435,6 +446,8 @@
 
 ## EpiModel 2.1.0
 
+CRAN release: 2021-06-25
+
 ### NEW FEATURES
 
 - Summary network statistics for `netsim` class objects (epidemic
@@ -458,6 +471,8 @@
   `dissolution_coefs`).
 
 ## EpiModel 2.0.5
+
+CRAN release: 2021-05-15
 
 - Minor updates for CRAN submission.
 
@@ -521,6 +536,8 @@
 
 ## EpiModel 2.0.3
 
+CRAN release: 2020-11-09
+
 ### NEW FEATURES
 
 - Implemented an error catching approach for `netsim` so that epidemic
@@ -551,6 +568,8 @@
 
 ## EpiModel 2.0.2
 
+CRAN release: 2020-08-05
+
 - Minor updates for CRAN submission.
 
 ## EpiModel 2.0.1
@@ -568,6 +587,8 @@
 
 ## EpiModel 1.8.0
 
+CRAN release: 2020-05-08
+
 ### BUG FIXES
 
 - Improve error handling for inputs to `dissolution_coefs`.
@@ -579,6 +600,8 @@
   to the package infrastructure and API to be released in EpiModel 2.0.
 
 ## EpiModel 1.7.5
+
+CRAN release: 2020-01-07
 
 ### NEW FEATURES
 
@@ -599,6 +622,8 @@
 
 ## EpiModel 1.7.3
 
+CRAN release: 2019-08-29
+
 ### NEW FEATURES
 
 - Add a `skip.dissolution` argument to `netdx` to skip dissolution
@@ -613,6 +638,8 @@
 - Enforce depend on ergm \>= 3.10 package.
 
 ## EpiModel 1.7.2
+
+CRAN release: 2018-12-18
 
 ### BUG FIXES
 
@@ -638,6 +665,8 @@
 - Fix bug in `as.data.frame.dcm` when `dt` control setting \< 1.
 
 ## EpiModel 1.7.0
+
+CRAN release: 2018-11-21
 
 ### NEW FEATURES
 
@@ -691,6 +720,8 @@
 
 ## EpiModel 1.6.5
 
+CRAN release: 2018-04-10
+
 ### NEW FEATURES
 
 - `netdx` now includes a new argument, `sequential`, for static
@@ -715,6 +746,8 @@
 
 ## EpiModel 1.6.1
 
+CRAN release: 2018-01-25
+
 ### OTHER
 
 - Fixed minor issue with unit tests using `identical` function causing
@@ -723,6 +756,8 @@
   
 
 ## EpiModel 1.6.0
+
+CRAN release: 2018-01-24
 
 ### NEW FEATURES
 
@@ -775,6 +810,8 @@
 
 ## EpiModel 1.5.0
 
+CRAN release: 2017-06-01
+
 ### NEW FEATURES
 
 - Add `grid` argument to plot functions to overlay a grid on line plots.
@@ -796,6 +833,8 @@
   
 
 ## EpiModel 1.3.0
+
+CRAN release: 2017-03-13
 
 ### NEW FEATURES
 
@@ -836,6 +875,8 @@
 
 ## EpiModel 1.2.8
 
+CRAN release: 2016-12-16
+
 ### NEW FEATURES
 
 - Print simulation number and prevalence value for static network plots
@@ -854,6 +895,8 @@
   
 
 ## EpiModel 1.2.7
+
+CRAN release: 2016-07-30
 
 ### NEW FEATURES
 
@@ -877,6 +920,8 @@
 
 ## EpiModel 1.2.6
 
+CRAN release: 2016-05-24
+
 ### NEW FEATURES
 
 - Updates to `as.phylo.transmat` to fix issues with vertex exit times
@@ -897,6 +942,8 @@
   
 
 ## EpiModel 1.2.5
+
+CRAN release: 2016-03-09
 
 ### NEW FEATURES
 
@@ -938,6 +985,8 @@
   
 
 ## EpiModel 1.2.2
+
+CRAN release: 2015-11-03
 
 ### NEW FEATURES
 
@@ -984,6 +1033,8 @@
 
 ## EpiModel 1.2.1
 
+CRAN release: 2015-07-24
+
 ### BUG FIXES
 
 - `check_bip_degdist` now uses more tolerant checks of equality when
@@ -1001,6 +1052,8 @@
   
 
 ## EpiModel 1.2.0
+
+CRAN release: 2015-07-08
 
 ### NEW FEATURES
 
@@ -1048,6 +1101,8 @@
 
 ## EpiModel 1.1.6
 
+CRAN release: 2015-05-16
+
 ### NEW FEATURES
 
 - Built-in parallelization of stochastic network model simulations
@@ -1091,6 +1146,8 @@
 
 ## EpiModel 1.1.4
 
+CRAN release: 2015-04-12
+
 ### NEW FEATURES
 
 - A limited set of heterogeneous dissolution models now allowed for
@@ -1131,6 +1188,8 @@
 
 ## EpiModel 1.1.3
 
+CRAN release: 2015-01-18
+
 ### NEW FEATURES
 
 - The `skip.check` argument for `control.net` is even more flexible, to
@@ -1159,6 +1218,8 @@
   
 
 ## EpiModel 1.1.2
+
+CRAN release: 2014-12-01
 
 ### NEW FEATURES
 
@@ -1208,6 +1269,8 @@
   
 
 ## EpiModel 1.1.1
+
+CRAN release: 2014-11-02
 
 ### NEW FEATURES
 
@@ -1265,6 +1328,8 @@
   
 
 ## EpiModel 1.1
+
+CRAN release: 2014-10-01
 
 ### NEW FEATURES
 
@@ -1392,6 +1457,8 @@
 
 ## EpiModel 1.0.2
 
+CRAN release: 2014-08-30
+
 ### INTERFACE CHANGES
 
 - The trans.rate and trans.rate.g2/m2 parameters have been renamed to
@@ -1439,6 +1506,8 @@
 
 ## EpiModel 1.0.1
 
+CRAN release: 2014-07-29
+
 ### NEW FEATURES
 
 - Added coef.form argument to netest for network model formation
@@ -1473,6 +1542,8 @@
   
 
 ## EpiModel 1.0
+
+CRAN release: 2014-06-09
 
 - Model parameterization for all model classes has been substantially
   revised to improve organization and ability for expansion. Whereas
@@ -1522,6 +1593,8 @@
   
 
 ## EpiModel 0.95
+
+CRAN release: 2014-01-23
 
 ### INITIAL RELEASE
 

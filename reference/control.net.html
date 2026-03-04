@@ -83,6 +83,7 @@ netsim."></head><body>
 <span>  verbose.int <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  skip.check <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  raw.output <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  future.use.plan <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  tergmLite.track.duration <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  set.control.ergm <span class="op">=</span> <span class="fu">control.simulate.formula</span><span class="op">(</span>MCMC.burnin <span class="op">=</span> <span class="fl">2e+05</span><span class="op">)</span>,</span>
 <span>  set.control.tergm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/tergm/man/control.simulate.tergm.html" class="external-link">control.simulate.formula.tergm</a></span><span class="op">(</span>MCMC.maxchanges <span class="op">=</span></span>
@@ -120,8 +121,9 @@ simulation and must be less than the value in <code>nsteps</code>.</p></dd>
 
 
 <dt id="arg-ncores">ncores<a class="anchor" aria-label="anchor" href="#arg-ncores"></a></dt>
-<dd><p>Number of processor cores to run multiple simulations on, using the <code>foreach</code> and
-<code>doParallel</code> implementations.</p></dd>
+<dd><p>Number of processor cores to run multiple simulations on, using
+the <code>future</code> framework with <code>multisession</code>. See <code>future.use.plan</code> for
+other <code>future</code> backends.</p></dd>
 
 
 <dt id="arg-resimulate-network">resimulate.network<a class="anchor" aria-label="anchor" href="#arg-resimulate-network"></a></dt>
@@ -269,6 +271,11 @@ modules specified.</p></dd>
 <dt id="arg-raw-output">raw.output<a class="anchor" aria-label="anchor" href="#arg-raw-output"></a></dt>
 <dd><p>If <code>TRUE</code>, <code>netsim</code> will output a list of raw data (one per simulation) instead
 of a cleaned and formatted <code>netsim</code> object.</p></dd>
+
+
+<dt id="arg-future-use-plan">future.use.plan<a class="anchor" aria-label="anchor" href="#arg-future-use-plan"></a></dt>
+<dd><p>If <code>TRUE</code>, <code>netsim</code> will use the user-defined <code><a href="https://future.futureverse.org/reference/plan.html" class="external-link">future::plan</a></code> for its parallelization.
+Otherwise, <code>multisession</code> is used with <code>workers = ncores</code>.</p></dd>
 
 
 <dt id="arg-tergmlite-track-duration">tergmLite.track.duration<a class="anchor" aria-label="anchor" href="#arg-tergmlite-track-duration"></a></dt>

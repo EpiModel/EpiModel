@@ -78,7 +78,8 @@ estimation with <code><a href="netest.html">netest</a></code> and before epidemi
 <span>  keep.tnetwork <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  ncores <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  skip.dissolution <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  skip.dissolution <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  future.use.plan <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -159,12 +160,17 @@ objects, with one entry per simulation. Accessible at <code>$network</code>.</p>
 
 <dt id="arg-ncores">ncores<a class="anchor" aria-label="anchor" href="#arg-ncores"></a></dt>
 <dd><p>Number of processor cores to run multiple simulations
-on, using the <code>foreach</code> and <code>doParallel</code> implementations.</p></dd>
+on, using the <code>future</code> framework.</p></dd>
 
 
 <dt id="arg-skip-dissolution">skip.dissolution<a class="anchor" aria-label="anchor" href="#arg-skip-dissolution"></a></dt>
 <dd><p>If <code>TRUE</code>, skip over the calculations of
 duration and dissolution stats in <code>netdx</code>.</p></dd>
+
+
+<dt id="arg-future-use-plan">future.use.plan<a class="anchor" aria-label="anchor" href="#arg-future-use-plan"></a></dt>
+<dd><p>If <code>TRUE</code>, <code>netsim</code> will use the user-defined <code><a href="https://future.futureverse.org/reference/plan.html" class="external-link">future::plan</a></code>
+for its parallelization. Otherwise, <code>multisession</code> is used with <code>workers = ncores</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -270,6 +276,7 @@ epidemic with <code><a href="netsim.html">netsim</a></code>.</p></div>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Maximizing the pseudolikelihood.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Finished MPLE.</span>
 <span class="r-in"><span><span class="va">dx</span> <span class="op">&lt;-</span> <span class="fu">netdx</span><span class="op">(</span><span class="va">est</span>, nsims <span class="op">=</span> <span class="fl">1e4</span>, dynamic <span class="op">=</span> <span class="cn">FALSE</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Sampling <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  </span>  96% |  ETA:  0s</span>
 <span class="r-in"><span><span class="va">dx</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> EpiModel Network Diagnostics</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> =======================</span>

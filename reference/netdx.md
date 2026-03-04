@@ -27,7 +27,8 @@ netdx(
   keep.tnetwork = FALSE,
   verbose = TRUE,
   ncores = 1,
-  skip.dissolution = FALSE
+  skip.dissolution = FALSE,
+  future.use.plan = FALSE
 )
 ```
 
@@ -107,12 +108,19 @@ netdx(
 - ncores:
 
   Number of processor cores to run multiple simulations on, using the
-  `foreach` and `doParallel` implementations.
+  `future` framework.
 
 - skip.dissolution:
 
   If `TRUE`, skip over the calculations of duration and dissolution
   stats in `netdx`.
+
+- future.use.plan:
+
+  If `TRUE`, `netsim` will use the user-defined
+  [`future::plan`](https://future.futureverse.org/reference/plan.html)
+  for its parallelization. Otherwise, `multisession` is used with
+  `workers = ncores`.
 
 ## Value
 
@@ -234,6 +242,7 @@ est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 #> Maximizing the pseudolikelihood.
 #> Finished MPLE.
 dx <- netdx(est, nsims = 1e4, dynamic = FALSE, verbose = FALSE)
+#> Sampling ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    96% |  ETA:  0s
 dx
 #> EpiModel Network Diagnostics
 #> =======================
