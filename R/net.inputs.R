@@ -732,8 +732,10 @@ init.net <- function(i.num, r.num, i.num.g2, r.num.g2,
 #'        modules specified.
 #' @param raw.output If `TRUE`, `netsim` will output a list of raw data (one per simulation) instead
 #'        of a cleaned and formatted `netsim` object.
-#' @param future.use.plan If `TRUE`, `netsim` will use the user-defined `future::plan` for its parallelization.
-#'        Otherwise, `multisession` is used with `workers = ncores`.
+#' @param future.use.plan If `FALSE`, `netsim` will use `multisession` is used with `workers = ncores for its
+#'        parallelization. If `TRUE`, `netsim` will use the user defined plan from `globalEnv`. Finally, it can
+#'        take the output of a `future::tweak()` call to setup a user defined temporary plan within `netsim`.
+#'        Which can be useful for distributed computation (HPC).
 #' @param tergmLite.track.duration If `TRUE`, track duration information for models in `tergmLite`
 #'        simulations. Supports [`multilayer`] specification.
 #' @param set.control.ergm Control arguments passed to `ergm::simulate_formula.network`. In `netsim`,
