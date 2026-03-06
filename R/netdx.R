@@ -329,10 +329,10 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps = NULL,
   } else {
     if (inherits(future.use.plan, c("tweaked", "future"))) {
       with(future::plan(future.use.plan), local = TRUE)
-    } else if (!isTRUE(future.use.plan)) { # ncores > 1
+    } else if (ncores > 1 && isFALSE(future.use.plan)) {
       ncores_eff <- min(nsims, ncores)
       with(future::plan("multisession", workers = ncores_eff), local = TRUE)
-    }
+    } # else if (isTRUE(future.use.plan)) - use plan defined by user
     diag.sim <- future.apply::future_replicate(
       nsims, dosim(), simplify = FALSE, future.seed = TRUE
     )
