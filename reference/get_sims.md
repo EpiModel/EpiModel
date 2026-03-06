@@ -56,11 +56,6 @@ param <- param.net(inf.prob = 0.3)
 init <- init.net(i.num = 10)
 control <- control.net(type = "SI", nsteps = 10, nsims = 3, verbose.int = 0)
 mod1 <- netsim(est1, param, init, control)
-#> 
-#> Starting Network Simulation...
-#> Sim = 1/3
-#> Sim = 2/3
-#> Sim = 3/3
 
 # Get sim 2
 s.g2 <- get_sims(mod1, sims = 2)

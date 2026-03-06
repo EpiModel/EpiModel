@@ -242,7 +242,7 @@ est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 #> Maximizing the pseudolikelihood.
 #> Finished MPLE.
 dx <- netdx(est, nsims = 1e4, dynamic = FALSE, verbose = FALSE)
-#> Sampling ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    96% |  ETA:  0s
+#> Sampling ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■   98% |  ETA:  0s
 dx
 #> EpiModel Network Diagnostics
 #> =======================
