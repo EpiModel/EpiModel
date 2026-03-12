@@ -1176,6 +1176,7 @@ trim_netest <- function(object, as.networkLite = TRUE, keep.fit = FALSE,
 
   if (keep.fit == FALSE) {
     object$fit <- NULL
+    object$summary <- NULL
   }
 
   if (as.networkLite == TRUE) {
