@@ -80,6 +80,8 @@
   `var` argument.
 - Fix `plot.dcm` ignoring custom legend names when `nruns = 1` and
   multiple compartments are plotted.
+- Fix `df2epi` and `plot.epi.data.frame` to work without warnings with
+  `epi.data.frame` from truncated simulations.
 
 ### OTHER
 
