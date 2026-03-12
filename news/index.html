@@ -75,6 +75,8 @@
 <li>Store <code>epi</code> trackers as integers by default for improved performance. Automatic <code>numeric</code> coercion occurs when necessary.</li>
 <li>Restore global <code><a href="https://rdrr.io/r/base/options.html" class="external-link">options()</a></code> state in plotting functions (<code>comp_plot</code>) to comply with CRAN policy.</li>
 <li>Address lintr checks across the package.</li>
+<li>
+<code>trim_netest</code> now also removes <code>$summary</code> from <code>netest</code>, massively reducing the final object size.</li>
 </ul></div>
 </div>
     <div class="section level2">

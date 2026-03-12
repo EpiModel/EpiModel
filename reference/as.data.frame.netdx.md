@@ -67,342 +67,312 @@ dx <- netdx(est, nsims = 3, nsteps = 10, keep.tedgelist = TRUE,
 # Extract data from the first simulation
 as.data.frame(dx, sim = 1)
 #>    onset terminus tail head onset.censored terminus.censored duration edge.id
-#> 1      0        6    1   46          FALSE             FALSE        6       1
-#> 2      0        7    1   86          FALSE             FALSE        7       2
-#> 3      0       10    2   97          FALSE             FALSE       10       3
-#> 4      0       11    3    8          FALSE              TRUE       11       4
-#> 5      0        3    6   79          FALSE             FALSE        3       5
-#> 6      0       11    7   86          FALSE              TRUE       11       6
-#> 7      0        1    8   67          FALSE             FALSE        1       7
-#> 8      0        7    9   14          FALSE             FALSE        7       8
-#> 9      0       11    9   64          FALSE              TRUE       11       9
-#> 10     0       11    9   82          FALSE              TRUE       11      10
-#> 11     0        6   10   25          FALSE             FALSE        6      11
-#> 12     0       11   11   15          FALSE              TRUE       11      12
-#> 13     0       11   11   90          FALSE              TRUE       11      13
-#> 14     0       11   12   81          FALSE              TRUE       11      14
-#> 15     0       11   13   44          FALSE              TRUE       11      15
-#> 16     0       11   14   16          FALSE              TRUE       11      16
-#> 17     0       11   15   43          FALSE              TRUE       11      17
-#> 18     0       11   15   76          FALSE              TRUE       11      18
-#> 19     0       11   18   79          FALSE              TRUE       11      19
-#> 20     0       11   19   98          FALSE              TRUE       11      20
-#> 21     0       11   20   55          FALSE              TRUE       11      21
-#> 22     0       11   22   73          FALSE              TRUE       11      22
-#> 23     0        8   22   86          FALSE             FALSE        8      23
-#> 24     0        9   23   54          FALSE             FALSE        9      24
-#> 25     0        3   23   59          FALSE             FALSE        3      25
-#> 26     0        2   24   57          FALSE             FALSE        2      26
-#> 27     0        4   24   79          FALSE             FALSE        4      27
-#> 28     0       11   25   40          FALSE              TRUE       11      28
-#> 29     0       11   26   60          FALSE              TRUE       11      29
-#> 30     0       11   30   50          FALSE              TRUE       11      30
-#> 31     0        9   30   75          FALSE             FALSE        9      31
-#> 32     0       11   31   67          FALSE              TRUE       11      32
-#> 33     0        5   31   95          FALSE             FALSE        5      33
-#> 34     0       11   34   54          FALSE              TRUE       11      34
-#> 35     0       11   34   80          FALSE              TRUE       11      35
-#> 36     0       11   38   39          FALSE              TRUE       11      36
-#> 37     0        5   38   56          FALSE             FALSE        5      37
-#> 38     0       11   39   85          FALSE              TRUE       11      38
-#> 39     0       10   41   69          FALSE             FALSE       10      39
-#> 40     0       11   42   76          FALSE              TRUE       11      40
-#> 41     0       11   43   97          FALSE              TRUE       11      41
-#> 42     0       11   45   50          FALSE              TRUE       11      42
-#> 43     0        7   46   82          FALSE             FALSE        7      43
-#> 44     0        1   51   67          FALSE             FALSE        1      44
-#> 45     0        4   53   75          FALSE             FALSE        4      45
-#> 46     0       11   55   83          FALSE              TRUE       11      46
-#> 47     0       11   56   68          FALSE              TRUE       11      47
-#> 48     0        6   56   73          FALSE             FALSE        6      48
-#> 49     0       11   58   61          FALSE              TRUE       11      49
-#> 50     0        5   61   73          FALSE             FALSE        5      50
-#> 51     0        7   62   72          FALSE             FALSE        7      51
-#> 52     0       11   62   84          FALSE              TRUE       11      52
-#> 53     0       11   64   67          FALSE              TRUE       11      53
-#> 54     0       11   64   93          FALSE              TRUE       11      54
-#> 55     0       11   65   77          FALSE              TRUE       11      55
-#> 56     0       11   67   72          FALSE              TRUE       11      56
-#> 57     0       11   68   85          FALSE              TRUE       11      57
-#> 58     0       11   68   96          FALSE              TRUE       11      58
-#> 59     0       11   69   99          FALSE              TRUE       11      59
-#> 60     0       11   70   79          FALSE              TRUE       11      60
-#> 61     0       10   77   98          FALSE             FALSE       10      61
-#> 62     0       11   79   84          FALSE              TRUE       11      62
-#> 63     1       11   41   65          FALSE              TRUE       10      63
-#> 64     1       11    8   46          FALSE              TRUE       10      64
-#> 65     2       10   70   89          FALSE             FALSE        8      65
-#> 66     2       11   68   92          FALSE              TRUE        9      66
-#> 67     3       11   54   63          FALSE              TRUE        8      67
-#> 68     5       11   24   40          FALSE              TRUE        6      68
-#> 69     5       11   26   77          FALSE              TRUE        6      69
-#> 70     5       11   11   30          FALSE              TRUE        6      70
-#> 71     5       11   53   89          FALSE              TRUE        6      71
-#> 72     6       11    8   27          FALSE              TRUE        5      72
-#> 73     7       11    3   63          FALSE              TRUE        4      73
-#> 74     8       11   44   45          FALSE              TRUE        3      74
-#> 75     8       11   17   75          FALSE              TRUE        3      75
-#> 76     8       11   21   47          FALSE              TRUE        3      76
-#> 77     9       11   12   54          FALSE              TRUE        2      77
-#> 78     9       11    5    7          FALSE              TRUE        2      78
-#> 79     9       11   28   87          FALSE              TRUE        2      79
-#> 80     9       10   48   98          FALSE             FALSE        1      80
-#> 81     9       11   40   87          FALSE              TRUE        2      81
-#> 82    10       11    6   78          FALSE              TRUE        1      82
-#> 83    10       11   72   95          FALSE              TRUE        1      83
+#> 1      0        7    1   18          FALSE             FALSE        7       1
+#> 2      0        5    1   62          FALSE             FALSE        5       2
+#> 3      0        2    2   58          FALSE             FALSE        2       3
+#> 4      0        1    2   88          FALSE             FALSE        1       4
+#> 5      0        6    3   24          FALSE             FALSE        6       5
+#> 6      0       11    3   90          FALSE              TRUE       11       6
+#> 7      0       11    4   98          FALSE              TRUE       11       7
+#> 8      0       11    5   13          FALSE              TRUE       11       8
+#> 9      0       10    7   76          FALSE             FALSE       10       9
+#> 10     0        4    8   51          FALSE             FALSE        4      10
+#> 11     0        4   10   69          FALSE             FALSE        4      11
+#> 12     0        6   10  100          FALSE             FALSE        6      12
+#> 13     0       11   11   29          FALSE              TRUE       11      13
+#> 14     0        3   11   66          FALSE             FALSE        3      14
+#> 15     0       11   12   67          FALSE              TRUE       11      15
+#> 16     0       11   16   44          FALSE              TRUE       11      16
+#> 17     0       11   17   63          FALSE              TRUE       11      17
+#> 18     0        4   18   48          FALSE             FALSE        4      18
+#> 19     0       11   18   90          FALSE              TRUE       11      19
+#> 20     0       11   18   94          FALSE              TRUE       11      20
+#> 21     0       11   20   96          FALSE              TRUE       11      21
+#> 22     0       11   21   63          FALSE              TRUE       11      22
+#> 23     0       11   21   84          FALSE              TRUE       11      23
+#> 24     0       11   22   23          FALSE              TRUE       11      24
+#> 25     0       11   24   32          FALSE              TRUE       11      25
+#> 26     0       11   27   89          FALSE              TRUE       11      26
+#> 27     0       11   28   45          FALSE              TRUE       11      27
+#> 28     0        1   29   68          FALSE             FALSE        1      28
+#> 29     0       11   30   57          FALSE              TRUE       11      29
+#> 30     0       11   30   73          FALSE              TRUE       11      30
+#> 31     0       11   32   41          FALSE              TRUE       11      31
+#> 32     0       11   32   46          FALSE              TRUE       11      32
+#> 33     0       11   32   53          FALSE              TRUE       11      33
+#> 34     0       11   32   66          FALSE              TRUE       11      34
+#> 35     0        9   35   40          FALSE             FALSE        9      35
+#> 36     0       11   35   88          FALSE              TRUE       11      36
+#> 37     0       11   37   38          FALSE              TRUE       11      37
+#> 38     0       11   37   62          FALSE              TRUE       11      38
+#> 39     0       10   37   93          FALSE             FALSE       10      39
+#> 40     0       11   38   41          FALSE              TRUE       11      40
+#> 41     0       11   38   49          FALSE              TRUE       11      41
+#> 42     0        2   38   62          FALSE             FALSE        2      42
+#> 43     0       11   41   99          FALSE              TRUE       11      43
+#> 44     0        6   42   78          FALSE             FALSE        6      44
+#> 45     0       11   43   93          FALSE              TRUE       11      45
+#> 46     0       11   44   69          FALSE              TRUE       11      46
+#> 47     0       11   49   88          FALSE              TRUE       11      47
+#> 48     0       11   52   78          FALSE              TRUE       11      48
+#> 49     0       11   57   83          FALSE              TRUE       11      49
+#> 50     0       10   68   97          FALSE             FALSE       10      50
+#> 51     0        7   74   83          FALSE             FALSE        7      51
+#> 52     0       11   74  100          FALSE              TRUE       11      52
+#> 53     0        1   89   93          FALSE             FALSE        1      53
+#> 54     0       11   90   91          FALSE              TRUE       11      54
+#> 55     0        2   91   99          FALSE             FALSE        2      55
+#> 56     0        5   93   97          FALSE             FALSE        5      56
+#> 57     1        6   41   93          FALSE             FALSE        5      57
+#> 58     1       10    9   86          FALSE             FALSE        9      58
+#> 59     2       11   38   99          FALSE              TRUE        9      59
+#> 60     2       11   39   99          FALSE              TRUE        9      60
+#> 61     2       10   29   36          FALSE             FALSE        8      61
+#> 62     3       11   38   94          FALSE              TRUE        8      62
+#> 63     4       11   21   82          FALSE              TRUE        7      63
+#> 64     4       11   75   90          FALSE              TRUE        7      64
+#> 65     4       11   42   89          FALSE              TRUE        7      65
+#> 66     4       11   12   28          FALSE              TRUE        7      66
+#> 67     5        8   60   73          FALSE             FALSE        3      67
+#> 68     6       11   12   83          FALSE              TRUE        5      68
+#> 69     6       11   26   81          FALSE              TRUE        5      69
+#> 70     7        8   58   62          FALSE             FALSE        1      70
+#> 71     7       11    1   61          FALSE              TRUE        4      71
+#> 72     7       11   32   69          FALSE              TRUE        4      72
+#> 73     7       11   57   97          FALSE              TRUE        4      73
+#> 74     7       11   54   75          FALSE              TRUE        4      74
+#> 75     8       11   74   96          FALSE              TRUE        3      75
+#> 76     8       11   33   97          FALSE              TRUE        3      76
+#> 77     8       11   10   21          FALSE              TRUE        3      77
+#> 78     8       11    6   79          FALSE              TRUE        3      78
+#> 79     9       11   88   94          FALSE              TRUE        2      79
+#> 80    10       11    5   92          FALSE              TRUE        1      80
 
 # Extract data from all simulations
 as.data.frame(dx)
 #>     sim onset terminus tail head onset.censored terminus.censored duration
-#> 1     1     0        6    1   46          FALSE             FALSE        6
-#> 2     1     0        7    1   86          FALSE             FALSE        7
-#> 3     1     0       10    2   97          FALSE             FALSE       10
-#> 4     1     0       11    3    8          FALSE              TRUE       11
-#> 5     1     0        3    6   79          FALSE             FALSE        3
-#> 6     1     0       11    7   86          FALSE              TRUE       11
-#> 7     1     0        1    8   67          FALSE             FALSE        1
-#> 8     1     0        7    9   14          FALSE             FALSE        7
-#> 9     1     0       11    9   64          FALSE              TRUE       11
-#> 10    1     0       11    9   82          FALSE              TRUE       11
-#> 11    1     0        6   10   25          FALSE             FALSE        6
-#> 12    1     0       11   11   15          FALSE              TRUE       11
-#> 13    1     0       11   11   90          FALSE              TRUE       11
-#> 14    1     0       11   12   81          FALSE              TRUE       11
-#> 15    1     0       11   13   44          FALSE              TRUE       11
-#> 16    1     0       11   14   16          FALSE              TRUE       11
-#> 17    1     0       11   15   43          FALSE              TRUE       11
-#> 18    1     0       11   15   76          FALSE              TRUE       11
-#> 19    1     0       11   18   79          FALSE              TRUE       11
-#> 20    1     0       11   19   98          FALSE              TRUE       11
-#> 21    1     0       11   20   55          FALSE              TRUE       11
-#> 22    1     0       11   22   73          FALSE              TRUE       11
-#> 23    1     0        8   22   86          FALSE             FALSE        8
-#> 24    1     0        9   23   54          FALSE             FALSE        9
-#> 25    1     0        3   23   59          FALSE             FALSE        3
-#> 26    1     0        2   24   57          FALSE             FALSE        2
-#> 27    1     0        4   24   79          FALSE             FALSE        4
-#> 28    1     0       11   25   40          FALSE              TRUE       11
-#> 29    1     0       11   26   60          FALSE              TRUE       11
-#> 30    1     0       11   30   50          FALSE              TRUE       11
-#> 31    1     0        9   30   75          FALSE             FALSE        9
-#> 32    1     0       11   31   67          FALSE              TRUE       11
-#> 33    1     0        5   31   95          FALSE             FALSE        5
-#> 34    1     0       11   34   54          FALSE              TRUE       11
-#> 35    1     0       11   34   80          FALSE              TRUE       11
-#> 36    1     0       11   38   39          FALSE              TRUE       11
-#> 37    1     0        5   38   56          FALSE             FALSE        5
-#> 38    1     0       11   39   85          FALSE              TRUE       11
-#> 39    1     0       10   41   69          FALSE             FALSE       10
-#> 40    1     0       11   42   76          FALSE              TRUE       11
-#> 41    1     0       11   43   97          FALSE              TRUE       11
-#> 42    1     0       11   45   50          FALSE              TRUE       11
-#> 43    1     0        7   46   82          FALSE             FALSE        7
-#> 44    1     0        1   51   67          FALSE             FALSE        1
-#> 45    1     0        4   53   75          FALSE             FALSE        4
-#> 46    1     0       11   55   83          FALSE              TRUE       11
-#> 47    1     0       11   56   68          FALSE              TRUE       11
-#> 48    1     0        6   56   73          FALSE             FALSE        6
-#> 49    1     0       11   58   61          FALSE              TRUE       11
-#> 50    1     0        5   61   73          FALSE             FALSE        5
-#> 51    1     0        7   62   72          FALSE             FALSE        7
-#> 52    1     0       11   62   84          FALSE              TRUE       11
-#> 53    1     0       11   64   67          FALSE              TRUE       11
-#> 54    1     0       11   64   93          FALSE              TRUE       11
-#> 55    1     0       11   65   77          FALSE              TRUE       11
-#> 56    1     0       11   67   72          FALSE              TRUE       11
-#> 57    1     0       11   68   85          FALSE              TRUE       11
-#> 58    1     0       11   68   96          FALSE              TRUE       11
-#> 59    1     0       11   69   99          FALSE              TRUE       11
-#> 60    1     0       11   70   79          FALSE              TRUE       11
-#> 61    1     0       10   77   98          FALSE             FALSE       10
-#> 62    1     0       11   79   84          FALSE              TRUE       11
-#> 63    1     1       11   41   65          FALSE              TRUE       10
-#> 64    1     1       11    8   46          FALSE              TRUE       10
-#> 65    1     2       10   70   89          FALSE             FALSE        8
-#> 66    1     2       11   68   92          FALSE              TRUE        9
-#> 67    1     3       11   54   63          FALSE              TRUE        8
-#> 68    1     5       11   24   40          FALSE              TRUE        6
-#> 69    1     5       11   26   77          FALSE              TRUE        6
-#> 70    1     5       11   11   30          FALSE              TRUE        6
-#> 71    1     5       11   53   89          FALSE              TRUE        6
-#> 72    1     6       11    8   27          FALSE              TRUE        5
-#> 73    1     7       11    3   63          FALSE              TRUE        4
-#> 74    1     8       11   44   45          FALSE              TRUE        3
-#> 75    1     8       11   17   75          FALSE              TRUE        3
-#> 76    1     8       11   21   47          FALSE              TRUE        3
-#> 77    1     9       11   12   54          FALSE              TRUE        2
-#> 78    1     9       11    5    7          FALSE              TRUE        2
-#> 79    1     9       11   28   87          FALSE              TRUE        2
-#> 80    1     9       10   48   98          FALSE             FALSE        1
-#> 81    1     9       11   40   87          FALSE              TRUE        2
-#> 82    1    10       11    6   78          FALSE              TRUE        1
-#> 83    1    10       11   72   95          FALSE              TRUE        1
-#> 84    2     0        6    2   62          FALSE             FALSE        6
-#> 85    2     0       11    4   74          FALSE              TRUE       11
-#> 86    2     0       11    5   37          FALSE              TRUE       11
-#> 87    2     0        3    6   66          FALSE             FALSE        3
-#> 88    2     0        6    7   62          FALSE             FALSE        6
-#> 89    2     0       11    7   72          FALSE              TRUE       11
-#> 90    2     0       11    9   71          FALSE              TRUE       11
-#> 91    2     0       11   11   28          FALSE              TRUE       11
-#> 92    2     0       11   12   29          FALSE              TRUE       11
-#> 93    2     0       11   12   68          FALSE              TRUE       11
-#> 94    2     0       11   12   91          FALSE              TRUE       11
-#> 95    2     0        3   13   37          FALSE             FALSE        3
-#> 96    2     0       11   13   78          FALSE              TRUE       11
-#> 97    2     0        7   13   89          FALSE             FALSE        7
-#> 98    2     0       11   14   19          FALSE              TRUE       11
-#> 99    2     0        8   14   24          FALSE             FALSE        8
-#> 100   2     0       11   16   82          FALSE              TRUE       11
-#> 101   2     0       11   19   51          FALSE              TRUE       11
-#> 102   2     0       11   22   64          FALSE              TRUE       11
-#> 103   2     0       11   24   61          FALSE              TRUE       11
-#> 104   2     0       11   25   42          FALSE              TRUE       11
-#> 105   2     0       11   26   40          FALSE              TRUE       11
-#> 106   2     0        2   26   79          FALSE             FALSE        2
-#> 107   2     0       11   29   40          FALSE              TRUE       11
-#> 108   2     0        8   29   58          FALSE             FALSE        8
-#> 109   2     0       11   33   80          FALSE              TRUE       11
-#> 110   2     0       11   34   51          FALSE              TRUE       11
-#> 111   2     0       11   35   75          FALSE              TRUE       11
-#> 112   2     0       11   36   81          FALSE              TRUE       11
-#> 113   2     0        3   36   89          FALSE             FALSE        3
-#> 114   2     0        5   37   80          FALSE             FALSE        5
-#> 115   2     0       11   38   74          FALSE              TRUE       11
-#> 116   2     0        1   38   80          FALSE             FALSE        1
-#> 117   2     0       11   39   67          FALSE              TRUE       11
-#> 118   2     0       11   41   90          FALSE              TRUE       11
-#> 119   2     0       11   45   51          FALSE              TRUE       11
-#> 120   2     0       11   49   70          FALSE              TRUE       11
-#> 121   2     0        1   55   68          FALSE             FALSE        1
-#> 122   2     0        5   62   63          FALSE             FALSE        5
-#> 123   2     0        1   64   75          FALSE             FALSE        1
-#> 124   2     0       11   64   97          FALSE              TRUE       11
-#> 125   2     0        1   66   88          FALSE             FALSE        1
-#> 126   2     0        5   74   89          FALSE             FALSE        5
-#> 127   2     0       11   78   86          FALSE              TRUE       11
-#> 128   2     0        8   82   94          FALSE             FALSE        8
-#> 129   2     1       11   11   61          FALSE              TRUE       10
-#> 130   2     1       11   72   91          FALSE              TRUE       10
-#> 131   2     1        6   10   33          FALSE             FALSE        5
-#> 132   2     1       11   57   78          FALSE              TRUE       10
-#> 133   2     2        5    4   47          FALSE             FALSE        3
-#> 134   2     2       11   48   91          FALSE              TRUE        9
-#> 135   2     2       11   68   92          FALSE              TRUE        9
-#> 136   2     2       11   63   91          FALSE              TRUE        9
-#> 137   2     3       11   13   60          FALSE              TRUE        8
-#> 138   2     3       11   25   36          FALSE              TRUE        8
-#> 139   2     4       11   21   37          FALSE              TRUE        7
-#> 140   2     5       11    5   73          FALSE              TRUE        6
-#> 141   2     5       11    7  100          FALSE              TRUE        6
-#> 142   2     5       11   12   39          FALSE              TRUE        6
-#> 143   2     5       11   23   32          FALSE              TRUE        6
-#> 144   2     6       10    1   27          FALSE             FALSE        4
-#> 145   2     6       11   90   92          FALSE              TRUE        5
-#> 146   2     6       11   75   83          FALSE              TRUE        5
-#> 147   2     6       11   21   69          FALSE              TRUE        5
-#> 148   2     6       11   41   70          FALSE              TRUE        5
-#> 149   2     7       10   10   43          FALSE             FALSE        3
-#> 150   2     7       11   27   64          FALSE              TRUE        4
-#> 151   2     7       11   15   35          FALSE              TRUE        4
-#> 152   2     8       11   61   87          FALSE              TRUE        3
-#> 153   2     8       11   35   90          FALSE              TRUE        3
-#> 154   2     8       11   79   92          FALSE              TRUE        3
-#> 155   2     9       10   39   49          FALSE             FALSE        1
-#> 156   2     9       11   69   94          FALSE              TRUE        2
-#> 157   2     9       11   40   82          FALSE              TRUE        2
-#> 158   2     9       11    9   66          FALSE              TRUE        2
-#> 159   2     9       11   36   47          FALSE              TRUE        2
-#> 160   2    10       11   26   33          FALSE              TRUE        1
-#> 161   2    10       11   18   32          FALSE              TRUE        1
-#> 162   3     0       11    3   92          FALSE              TRUE       11
-#> 163   3     0        3    5   30          FALSE             FALSE        3
-#> 164   3     0        5    5   65          FALSE             FALSE        5
-#> 165   3     0       11    6   40          FALSE              TRUE       11
-#> 166   3     0        1    7   18          FALSE             FALSE        1
-#> 167   3     0       11    7   71          FALSE              TRUE       11
-#> 168   3     0        8    7   96          FALSE             FALSE        8
-#> 169   3     0        8    8   55          FALSE             FALSE        8
-#> 170   3     0        1    9   33          FALSE             FALSE        1
-#> 171   3     0        2   10   41          FALSE             FALSE        2
-#> 172   3     0        7   11   48          FALSE             FALSE        7
-#> 173   3     0       11   12   76          FALSE              TRUE       11
-#> 174   3     0        8   12   77          FALSE             FALSE        8
-#> 175   3     0       11   12   80          FALSE              TRUE       11
-#> 176   3     0       11   14   32          FALSE              TRUE       11
-#> 177   3     0       11   14   35          FALSE              TRUE       11
-#> 178   3     0       11   15   53          FALSE              TRUE       11
-#> 179   3     0       11   16   94          FALSE              TRUE       11
-#> 180   3     0       11   17   27          FALSE              TRUE       11
-#> 181   3     0       11   17   39          FALSE              TRUE       11
-#> 182   3     0       11   17   74          FALSE              TRUE       11
-#> 183   3     0        6   18   27          FALSE             FALSE        6
-#> 184   3     0       11   18   83          FALSE              TRUE       11
-#> 185   3     0       11   19   58          FALSE              TRUE       11
-#> 186   3     0        8   20   48          FALSE             FALSE        8
-#> 187   3     0        7   21   44          FALSE             FALSE        7
-#> 188   3     0        1   21   79          FALSE             FALSE        1
-#> 189   3     0       10   25   95          FALSE             FALSE       10
-#> 190   3     0        6   28   67          FALSE             FALSE        6
-#> 191   3     0       11   31   46          FALSE              TRUE       11
-#> 192   3     0        7   32   53          FALSE             FALSE        7
-#> 193   3     0       11   32   74          FALSE              TRUE       11
-#> 194   3     0       11   34   37          FALSE              TRUE       11
-#> 195   3     0       11   34   73          FALSE              TRUE       11
-#> 196   3     0        4   36   56          FALSE             FALSE        4
-#> 197   3     0       11   37   90          FALSE              TRUE       11
-#> 198   3     0        2   40   69          FALSE             FALSE        2
-#> 199   3     0        3   41   50          FALSE             FALSE        3
-#> 200   3     0       11   42   98          FALSE              TRUE       11
-#> 201   3     0        6   43   50          FALSE             FALSE        6
-#> 202   3     0        4   47   80          FALSE             FALSE        4
-#> 203   3     0       11   50   94          FALSE              TRUE       11
-#> 204   3     0        1   53   99          FALSE             FALSE        1
-#> 205   3     0       11   55   63          FALSE              TRUE       11
-#> 206   3     0        2   58   96          FALSE             FALSE        2
-#> 207   3     0        3   61   87          FALSE             FALSE        3
-#> 208   3     0       11   61   99          FALSE              TRUE       11
-#> 209   3     0        2   63   83          FALSE             FALSE        2
-#> 210   3     0       11   63   90          FALSE              TRUE       11
-#> 211   3     0       11   65   81          FALSE              TRUE       11
-#> 212   3     0       11   65   82          FALSE              TRUE       11
-#> 213   3     0       11   67   81          FALSE              TRUE       11
-#> 214   3     0       11   70   85          FALSE              TRUE       11
-#> 215   3     0        2   72   73          FALSE             FALSE        2
-#> 216   3     0       11   89   94          FALSE              TRUE       11
-#> 217   3     1       11   83   98          FALSE              TRUE       10
-#> 218   3     1       11   37   71          FALSE              TRUE       10
-#> 219   3     1       11   10   66          FALSE              TRUE       10
-#> 220   3     1        7   53   60          FALSE             FALSE        6
-#> 221   3     2       11   10   77          FALSE              TRUE        9
-#> 222   3     2       11    7   67          FALSE              TRUE        9
-#> 223   3     3       11   67   90          FALSE              TRUE        8
-#> 224   3     3       11    5   50          FALSE              TRUE        8
-#> 225   3     4        7   26   74          FALSE             FALSE        3
-#> 226   3     4       11    8   59          FALSE              TRUE        7
-#> 227   3     5       11    3   14          FALSE              TRUE        6
-#> 228   3     6       10   15   57          FALSE             FALSE        4
-#> 229   3     6       11   65   97          FALSE              TRUE        5
-#> 230   3     6       11   28   64          FALSE              TRUE        5
-#> 231   3     7       11   21   68          FALSE              TRUE        4
-#> 232   3     7       11    2   83          FALSE              TRUE        4
-#> 233   3     7       11   21   26          FALSE              TRUE        4
-#> 234   3     7       11   89   91          FALSE              TRUE        4
-#> 235   3     7       11   55   92          FALSE              TRUE        4
-#> 236   3     7       11   10   99          FALSE              TRUE        4
-#> 237   3     8       11   81   90          FALSE              TRUE        3
-#> 238   3     8       10    5   89          FALSE             FALSE        2
-#> 239   3     8       11   18   55          FALSE              TRUE        3
-#> 240   3     8       11   17   64          FALSE              TRUE        3
-#> 241   3     8       11   33   53          FALSE              TRUE        3
-#> 242   3     9       11   27   62          FALSE              TRUE        2
-#> 243   3     9       11   34   42          FALSE              TRUE        2
-#> 244   3     9       11   13   60          FALSE              TRUE        2
-#> 245   3     9       11    6   29          FALSE              TRUE        2
-#> 246   3     9       11   31   77          FALSE              TRUE        2
-#> 247   3     9       11   11   45          FALSE              TRUE        2
-#> 248   3    10       11   27   45          FALSE              TRUE        1
-#> 249   3    10       11   29   58          FALSE              TRUE        1
+#> 1     1     0        7    1   18          FALSE             FALSE        7
+#> 2     1     0        5    1   62          FALSE             FALSE        5
+#> 3     1     0        2    2   58          FALSE             FALSE        2
+#> 4     1     0        1    2   88          FALSE             FALSE        1
+#> 5     1     0        6    3   24          FALSE             FALSE        6
+#> 6     1     0       11    3   90          FALSE              TRUE       11
+#> 7     1     0       11    4   98          FALSE              TRUE       11
+#> 8     1     0       11    5   13          FALSE              TRUE       11
+#> 9     1     0       10    7   76          FALSE             FALSE       10
+#> 10    1     0        4    8   51          FALSE             FALSE        4
+#> 11    1     0        4   10   69          FALSE             FALSE        4
+#> 12    1     0        6   10  100          FALSE             FALSE        6
+#> 13    1     0       11   11   29          FALSE              TRUE       11
+#> 14    1     0        3   11   66          FALSE             FALSE        3
+#> 15    1     0       11   12   67          FALSE              TRUE       11
+#> 16    1     0       11   16   44          FALSE              TRUE       11
+#> 17    1     0       11   17   63          FALSE              TRUE       11
+#> 18    1     0        4   18   48          FALSE             FALSE        4
+#> 19    1     0       11   18   90          FALSE              TRUE       11
+#> 20    1     0       11   18   94          FALSE              TRUE       11
+#> 21    1     0       11   20   96          FALSE              TRUE       11
+#> 22    1     0       11   21   63          FALSE              TRUE       11
+#> 23    1     0       11   21   84          FALSE              TRUE       11
+#> 24    1     0       11   22   23          FALSE              TRUE       11
+#> 25    1     0       11   24   32          FALSE              TRUE       11
+#> 26    1     0       11   27   89          FALSE              TRUE       11
+#> 27    1     0       11   28   45          FALSE              TRUE       11
+#> 28    1     0        1   29   68          FALSE             FALSE        1
+#> 29    1     0       11   30   57          FALSE              TRUE       11
+#> 30    1     0       11   30   73          FALSE              TRUE       11
+#> 31    1     0       11   32   41          FALSE              TRUE       11
+#> 32    1     0       11   32   46          FALSE              TRUE       11
+#> 33    1     0       11   32   53          FALSE              TRUE       11
+#> 34    1     0       11   32   66          FALSE              TRUE       11
+#> 35    1     0        9   35   40          FALSE             FALSE        9
+#> 36    1     0       11   35   88          FALSE              TRUE       11
+#> 37    1     0       11   37   38          FALSE              TRUE       11
+#> 38    1     0       11   37   62          FALSE              TRUE       11
+#> 39    1     0       10   37   93          FALSE             FALSE       10
+#> 40    1     0       11   38   41          FALSE              TRUE       11
+#> 41    1     0       11   38   49          FALSE              TRUE       11
+#> 42    1     0        2   38   62          FALSE             FALSE        2
+#> 43    1     0       11   41   99          FALSE              TRUE       11
+#> 44    1     0        6   42   78          FALSE             FALSE        6
+#> 45    1     0       11   43   93          FALSE              TRUE       11
+#> 46    1     0       11   44   69          FALSE              TRUE       11
+#> 47    1     0       11   49   88          FALSE              TRUE       11
+#> 48    1     0       11   52   78          FALSE              TRUE       11
+#> 49    1     0       11   57   83          FALSE              TRUE       11
+#> 50    1     0       10   68   97          FALSE             FALSE       10
+#> 51    1     0        7   74   83          FALSE             FALSE        7
+#> 52    1     0       11   74  100          FALSE              TRUE       11
+#> 53    1     0        1   89   93          FALSE             FALSE        1
+#> 54    1     0       11   90   91          FALSE              TRUE       11
+#> 55    1     0        2   91   99          FALSE             FALSE        2
+#> 56    1     0        5   93   97          FALSE             FALSE        5
+#> 57    1     1        6   41   93          FALSE             FALSE        5
+#> 58    1     1       10    9   86          FALSE             FALSE        9
+#> 59    1     2       11   38   99          FALSE              TRUE        9
+#> 60    1     2       11   39   99          FALSE              TRUE        9
+#> 61    1     2       10   29   36          FALSE             FALSE        8
+#> 62    1     3       11   38   94          FALSE              TRUE        8
+#> 63    1     4       11   21   82          FALSE              TRUE        7
+#> 64    1     4       11   75   90          FALSE              TRUE        7
+#> 65    1     4       11   42   89          FALSE              TRUE        7
+#> 66    1     4       11   12   28          FALSE              TRUE        7
+#> 67    1     5        8   60   73          FALSE             FALSE        3
+#> 68    1     6       11   12   83          FALSE              TRUE        5
+#> 69    1     6       11   26   81          FALSE              TRUE        5
+#> 70    1     7        8   58   62          FALSE             FALSE        1
+#> 71    1     7       11    1   61          FALSE              TRUE        4
+#> 72    1     7       11   32   69          FALSE              TRUE        4
+#> 73    1     7       11   57   97          FALSE              TRUE        4
+#> 74    1     7       11   54   75          FALSE              TRUE        4
+#> 75    1     8       11   74   96          FALSE              TRUE        3
+#> 76    1     8       11   33   97          FALSE              TRUE        3
+#> 77    1     8       11   10   21          FALSE              TRUE        3
+#> 78    1     8       11    6   79          FALSE              TRUE        3
+#> 79    1     9       11   88   94          FALSE              TRUE        2
+#> 80    1    10       11    5   92          FALSE              TRUE        1
+#> 81    2     0       11    1   10          FALSE              TRUE       11
+#> 82    2     0        2    2   97          FALSE             FALSE        2
+#> 83    2     0        5    4   18          FALSE             FALSE        5
+#> 84    2     0       11    4   41          FALSE              TRUE       11
+#> 85    2     0        2    5   36          FALSE             FALSE        2
+#> 86    2     0       11    5   45          FALSE              TRUE       11
+#> 87    2     0        3    6   13          FALSE             FALSE        3
+#> 88    2     0       11    6   63          FALSE              TRUE       11
+#> 89    2     0        3    7   45          FALSE             FALSE        3
+#> 90    2     0        4    8   29          FALSE             FALSE        4
+#> 91    2     0        2    9   38          FALSE             FALSE        2
+#> 92    2     0       11   11   75          FALSE              TRUE       11
+#> 93    2     0        3   13   41          FALSE             FALSE        3
+#> 94    2     0       11   16   88          FALSE              TRUE       11
+#> 95    2     0       11   16   91          FALSE              TRUE       11
+#> 96    2     0       11   22   55          FALSE              TRUE       11
+#> 97    2     0       11   23   49          FALSE              TRUE       11
+#> 98    2     0        2   25   51          FALSE             FALSE        2
+#> 99    2     0        8   27   57          FALSE             FALSE        8
+#> 100   2     0       11   28   77          FALSE              TRUE       11
+#> 101   2     0        6   32   57          FALSE             FALSE        6
+#> 102   2     0        7   34   52          FALSE             FALSE        7
+#> 103   2     0       11   36   55          FALSE              TRUE       11
+#> 104   2     0       11   37   87          FALSE              TRUE       11
+#> 105   2     0       11   38   52          FALSE              TRUE       11
+#> 106   2     0       11   39   87          FALSE              TRUE       11
+#> 107   2     0       11   44   49          FALSE              TRUE       11
+#> 108   2     0       11   47   93          FALSE              TRUE       11
+#> 109   2     0        3   51   99          FALSE             FALSE        3
+#> 110   2     0       11   52   69          FALSE              TRUE       11
+#> 111   2     0       11   54   97          FALSE              TRUE       11
+#> 112   2     0       11   63   96          FALSE              TRUE       11
+#> 113   2     0       11   64   75          FALSE              TRUE       11
+#> 114   2     0        2   67   68          FALSE             FALSE        2
+#> 115   2     0       11   73   89          FALSE              TRUE       11
+#> 116   2     0       11   73  100          FALSE              TRUE       11
+#> 117   2     0       11   74   91          FALSE              TRUE       11
+#> 118   2     0        6   76   77          FALSE             FALSE        6
+#> 119   2     0        3   79   99          FALSE             FALSE        3
+#> 120   2     0       10   81  100          FALSE             FALSE       10
+#> 121   2     0       11   83  100          FALSE              TRUE       11
+#> 122   2     0       11   87   98          FALSE              TRUE       11
+#> 123   2     0       11   92   96          FALSE              TRUE       11
+#> 124   2     0        3   92  100          FALSE             FALSE        3
+#> 125   2     0       11   97   98          FALSE              TRUE       11
+#> 126   2     1       11    1  100          FALSE              TRUE       10
+#> 127   2     1       11   62   93          FALSE              TRUE       10
+#> 128   2     1       11   58   62          FALSE              TRUE       10
+#> 129   2     2       10   61   97          FALSE             FALSE        8
+#> 130   2     2        7   52   65          FALSE             FALSE        5
+#> 131   2     2       11   48   95          FALSE              TRUE        9
+#> 132   2     3       11    8   53          FALSE              TRUE        8
+#> 133   2     3       11   63   99          FALSE              TRUE        8
+#> 134   2     3        7   54   61          FALSE             FALSE        4
+#> 135   2     3        5    1   31          FALSE             FALSE        2
+#> 136   2     4       11   15   17          FALSE              TRUE        7
+#> 137   2     4        9   57   99          FALSE             FALSE        5
+#> 138   2     5       11   24   53          FALSE              TRUE        6
+#> 139   2     5       11   19   72          FALSE              TRUE        6
+#> 140   2     6        7   24   85          FALSE             FALSE        1
+#> 141   2     6       11   65   97          FALSE              TRUE        5
+#> 142   2     6       11   44   65          FALSE              TRUE        5
+#> 143   2     6       11    3    5          FALSE              TRUE        5
+#> 144   2     7       11   26   66          FALSE              TRUE        4
+#> 145   2     8       11   16   83          FALSE              TRUE        3
+#> 146   2     8       11   22   73          FALSE              TRUE        3
+#> 147   2     8       11   14   79          FALSE              TRUE        3
+#> 148   2     9       10   27   50          FALSE             FALSE        1
+#> 149   2    10       11   55   71          FALSE              TRUE        1
+#> 150   3     0        8    4   12          FALSE             FALSE        8
+#> 151   3     0       10    5   51          FALSE             FALSE       10
+#> 152   3     0       11    6   49          FALSE              TRUE       11
+#> 153   3     0        8    7   94          FALSE             FALSE        8
+#> 154   3     0       11    8   18          FALSE              TRUE       11
+#> 155   3     0        2    8   39          FALSE             FALSE        2
+#> 156   3     0       11    9   86          FALSE              TRUE       11
+#> 157   3     0       11   10   71          FALSE              TRUE       11
+#> 158   3     0        8   10   78          FALSE             FALSE        8
+#> 159   3     0        5   11   55          FALSE             FALSE        5
+#> 160   3     0       11   11   88          FALSE              TRUE       11
+#> 161   3     0        1   13   66          FALSE             FALSE        1
+#> 162   3     0       11   14   41          FALSE              TRUE       11
+#> 163   3     0       11   15   38          FALSE              TRUE       11
+#> 164   3     0        8   16   99          FALSE             FALSE        8
+#> 165   3     0        8   17   80          FALSE             FALSE        8
+#> 166   3     0       11   18   79          FALSE              TRUE       11
+#> 167   3     0       11   20   32          FALSE              TRUE       11
+#> 168   3     0       10   21   92          FALSE             FALSE       10
+#> 169   3     0        1   22   27          FALSE             FALSE        1
+#> 170   3     0        9   22   37          FALSE             FALSE        9
+#> 171   3     0       11   23   33          FALSE              TRUE       11
+#> 172   3     0        1   24   43          FALSE             FALSE        1
+#> 173   3     0        5   24   56          FALSE             FALSE        5
+#> 174   3     0       11   25   42          FALSE              TRUE       11
+#> 175   3     0       11   25   78          FALSE              TRUE       11
+#> 176   3     0       11   27   59          FALSE              TRUE       11
+#> 177   3     0       11   27   67          FALSE              TRUE       11
+#> 178   3     0       11   32   73          FALSE              TRUE       11
+#> 179   3     0       11   33   69          FALSE              TRUE       11
+#> 180   3     0        7   34   85          FALSE             FALSE        7
+#> 181   3     0       11   36   56          FALSE              TRUE       11
+#> 182   3     0        1   38   39          FALSE             FALSE        1
+#> 183   3     0        5   44   54          FALSE             FALSE        5
+#> 184   3     0        2   45   48          FALSE             FALSE        2
+#> 185   3     0       11   45   69          FALSE              TRUE       11
+#> 186   3     0       10   47   74          FALSE             FALSE       10
+#> 187   3     0       11   49   58          FALSE              TRUE       11
+#> 188   3     0       11   49   88          FALSE              TRUE       11
+#> 189   3     0       11   50   81          FALSE              TRUE       11
+#> 190   3     0       11   53   80          FALSE              TRUE       11
+#> 191   3     0        8   57   64          FALSE             FALSE        8
+#> 192   3     0       11   59   75          FALSE              TRUE       11
+#> 193   3     0       11   63   83          FALSE              TRUE       11
+#> 194   3     0        4   65   68          FALSE             FALSE        4
+#> 195   3     0        6   69   75          FALSE             FALSE        6
+#> 196   3     0       11   70   88          FALSE              TRUE       11
+#> 197   3     0       11   76   86          FALSE              TRUE       11
+#> 198   3     0       11   83   95          FALSE              TRUE       11
+#> 199   3     0       11   90   99          FALSE              TRUE       11
+#> 200   3     1       10    3   16          FALSE             FALSE        9
+#> 201   3     2       11   59   67          FALSE              TRUE        9
+#> 202   3     2        7   38   97          FALSE             FALSE        5
+#> 203   3     2       11   39   86          FALSE              TRUE        9
+#> 204   3     2       11   70   91          FALSE              TRUE        9
+#> 205   3     4       11   48   71          FALSE              TRUE        7
+#> 206   3     4        7    7   75          FALSE             FALSE        3
+#> 207   3     5       11   27   43          FALSE              TRUE        6
+#> 208   3     5       11    5   55          FALSE              TRUE        6
+#> 209   3     5       11    6   44          FALSE              TRUE        6
+#> 210   3     5       11    2   16          FALSE              TRUE        6
+#> 211   3     5       11    6   16          FALSE              TRUE        6
+#> 212   3     6       11   23   91          FALSE              TRUE        5
+#> 213   3     6       11   26   41          FALSE              TRUE        5
+#> 214   3     6       11   45   81          FALSE              TRUE        5
+#> 215   3     7        9    6   77          FALSE             FALSE        2
+#> 216   3     7        9   69   87          FALSE             FALSE        2
+#> 217   3     7       11   39   65          FALSE              TRUE        4
+#> 218   3     7       11    9   27          FALSE              TRUE        4
+#> 219   3     8       11   14   18          FALSE              TRUE        3
+#> 220   3     8       11    2   25          FALSE              TRUE        3
+#> 221   3    10       11   23   49          FALSE              TRUE        1
+#> 222   3    10       11   44   87          FALSE              TRUE        1
 #>     edge.id
 #> 1         1
 #> 2         2
@@ -484,173 +454,146 @@ as.data.frame(dx)
 #> 78       78
 #> 79       79
 #> 80       80
-#> 81       81
-#> 82       82
-#> 83       83
-#> 84        1
-#> 85        2
-#> 86        3
-#> 87        4
-#> 88        5
-#> 89        6
-#> 90        7
-#> 91        8
-#> 92        9
-#> 93       10
-#> 94       11
-#> 95       12
-#> 96       13
-#> 97       14
-#> 98       15
-#> 99       16
-#> 100      17
-#> 101      18
-#> 102      19
-#> 103      20
-#> 104      21
-#> 105      22
-#> 106      23
-#> 107      24
-#> 108      25
-#> 109      26
-#> 110      27
-#> 111      28
-#> 112      29
-#> 113      30
-#> 114      31
-#> 115      32
-#> 116      33
-#> 117      34
-#> 118      35
-#> 119      36
-#> 120      37
-#> 121      38
-#> 122      39
-#> 123      40
-#> 124      41
-#> 125      42
-#> 126      43
-#> 127      44
-#> 128      45
-#> 129      46
-#> 130      47
-#> 131      48
-#> 132      49
-#> 133      50
-#> 134      51
-#> 135      52
-#> 136      53
-#> 137      54
-#> 138      55
-#> 139      56
-#> 140      57
-#> 141      58
-#> 142      59
-#> 143      60
-#> 144      61
-#> 145      62
-#> 146      63
-#> 147      64
-#> 148      65
-#> 149      66
-#> 150      67
-#> 151      68
-#> 152      69
-#> 153      70
-#> 154      71
-#> 155      72
-#> 156      73
-#> 157      74
-#> 158      75
-#> 159      76
-#> 160      77
-#> 161      78
-#> 162       1
-#> 163       2
-#> 164       3
-#> 165       4
-#> 166       5
-#> 167       6
-#> 168       7
-#> 169       8
-#> 170       9
-#> 171      10
-#> 172      11
-#> 173      12
-#> 174      13
-#> 175      14
-#> 176      15
-#> 177      16
-#> 178      17
-#> 179      18
-#> 180      19
-#> 181      20
-#> 182      21
-#> 183      22
-#> 184      23
-#> 185      24
-#> 186      25
-#> 187      26
-#> 188      27
-#> 189      28
-#> 190      29
-#> 191      30
-#> 192      31
-#> 193      32
-#> 194      33
-#> 195      34
-#> 196      35
-#> 197      36
-#> 198      37
-#> 199      38
-#> 200      39
-#> 201      40
-#> 202      41
-#> 203      42
-#> 204      43
-#> 205      44
-#> 206      45
-#> 207      46
-#> 208      47
-#> 209      48
-#> 210      49
-#> 211      50
-#> 212      51
-#> 213      52
-#> 214      53
-#> 215      54
-#> 216      55
-#> 217      56
-#> 218      57
-#> 219      58
-#> 220      59
-#> 221      60
-#> 222      61
-#> 223      62
-#> 224      63
-#> 225      64
-#> 226      65
-#> 227      66
-#> 228      67
-#> 229      68
-#> 230      69
-#> 231      70
-#> 232      71
-#> 233      72
-#> 234      73
-#> 235      74
-#> 236      75
-#> 237      76
-#> 238      77
-#> 239      78
-#> 240      79
-#> 241      80
-#> 242      81
-#> 243      82
-#> 244      83
-#> 245      84
-#> 246      85
-#> 247      86
-#> 248      87
-#> 249      88
+#> 81        1
+#> 82        2
+#> 83        3
+#> 84        4
+#> 85        5
+#> 86        6
+#> 87        7
+#> 88        8
+#> 89        9
+#> 90       10
+#> 91       11
+#> 92       12
+#> 93       13
+#> 94       14
+#> 95       15
+#> 96       16
+#> 97       17
+#> 98       18
+#> 99       19
+#> 100      20
+#> 101      21
+#> 102      22
+#> 103      23
+#> 104      24
+#> 105      25
+#> 106      26
+#> 107      27
+#> 108      28
+#> 109      29
+#> 110      30
+#> 111      31
+#> 112      32
+#> 113      33
+#> 114      34
+#> 115      35
+#> 116      36
+#> 117      37
+#> 118      38
+#> 119      39
+#> 120      40
+#> 121      41
+#> 122      42
+#> 123      43
+#> 124      44
+#> 125      45
+#> 126      46
+#> 127      47
+#> 128      48
+#> 129      49
+#> 130      50
+#> 131      51
+#> 132      52
+#> 133      53
+#> 134      54
+#> 135      55
+#> 136      56
+#> 137      57
+#> 138      58
+#> 139      59
+#> 140      60
+#> 141      61
+#> 142      62
+#> 143      63
+#> 144      64
+#> 145      65
+#> 146      66
+#> 147      67
+#> 148      68
+#> 149      69
+#> 150       1
+#> 151       2
+#> 152       3
+#> 153       4
+#> 154       5
+#> 155       6
+#> 156       7
+#> 157       8
+#> 158       9
+#> 159      10
+#> 160      11
+#> 161      12
+#> 162      13
+#> 163      14
+#> 164      15
+#> 165      16
+#> 166      17
+#> 167      18
+#> 168      19
+#> 169      20
+#> 170      21
+#> 171      22
+#> 172      23
+#> 173      24
+#> 174      25
+#> 175      26
+#> 176      27
+#> 177      28
+#> 178      29
+#> 179      30
+#> 180      31
+#> 181      32
+#> 182      33
+#> 183      34
+#> 184      35
+#> 185      36
+#> 186      37
+#> 187      38
+#> 188      39
+#> 189      40
+#> 190      41
+#> 191      42
+#> 192      43
+#> 193      44
+#> 194      45
+#> 195      46
+#> 196      47
+#> 197      48
+#> 198      49
+#> 199      50
+#> 200      51
+#> 201      52
+#> 202      53
+#> 203      54
+#> 204      55
+#> 205      56
+#> 206      57
+#> 207      58
+#> 208      59
+#> 209      60
+#> 210      61
+#> 211      62
+#> 212      63
+#> 213      64
+#> 214      65
+#> 215      66
+#> 216      67
+#> 217      68
+#> 218      69
+#> 219      70
+#> 220      71
+#> 221      72
+#> 222      73
 ```

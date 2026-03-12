@@ -102,21 +102,21 @@ est <- netest(nw, formation, target.stats, coef.diss,
 #> Iteration 1 of at most 60:
 #> 1 
 #> Optimizing with step length 1.0000.
-#> The log-likelihood improved by 0.1935.
+#> The log-likelihood improved by 0.3192.
 #> Estimating equations are not within tolerance region.
 #> Iteration 2 of at most 60:
 #> 1 
 #> Optimizing with step length 1.0000.
-#> The log-likelihood improved by 0.0039.
+#> The log-likelihood improved by 0.0023.
 #> Convergence test p-value: < 0.0001. 
 #> Converged with 99% confidence.
 #> Finished MCMLE.
 #> This model was fit using MCMC.  To examine model diagnostics and check
 #> for degeneracy, use the mcmc.diagnostics() function.
 print(object.size(est), units = "KB")
-#> 451.7 Kb
+#> 425.3 Kb
 
 est.small <- trim_netest(est)
 print(object.size(est.small), units = "KB")
-#> 59 Kb
+#> 12.1 Kb
 ```

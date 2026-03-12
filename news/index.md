@@ -108,6 +108,8 @@
 - Restore global [`options()`](https://rdrr.io/r/base/options.html)
   state in plotting functions (`comp_plot`) to comply with CRAN policy.
 - Address lintr checks across the package.
+- `trim_netest` now also removes `$summary` from `netest`, massively
+  reducing the final object size.
 
 ## EpiModel 2.5
 

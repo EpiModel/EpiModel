@@ -242,7 +242,6 @@ est <- netest(nw, formation, target.stats, coef.diss, verbose = FALSE)
 #> Maximizing the pseudolikelihood.
 #> Finished MPLE.
 dx <- netdx(est, nsims = 1e4, dynamic = FALSE, verbose = FALSE)
-#> Sampling ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■   98% |  ETA:  0s
 dx
 #> EpiModel Network Diagnostics
 #> =======================
@@ -252,7 +251,7 @@ dx
 #> Formation Diagnostics
 #> ----------------------- 
 #>       Target Sim Mean Pct Diff Sim SE Z Score SD(Sim Means) SD(Statistic)
-#> edges     50   50.009    0.019  0.072   0.131            NA         6.974
+#> edges     50   50.169    0.337   0.07   2.394            NA         7.039
 plot(dx)
 
 
