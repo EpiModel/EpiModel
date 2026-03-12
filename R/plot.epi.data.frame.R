@@ -1,7 +1,7 @@
 # Helper function to convert a `data.frame` obtained with
 # `as.data.frame(netsim)` back into an `epi` list format.
 df2epi <- function(x) {
-  n_steps <- max(x$time)
+  n_steps <- max(x$time) - min(x$time) + 1L
   sims <- unique(x$sim)
   n_sims <- length(sims)
   colnames <- paste0("sim", sims)
