@@ -82,6 +82,16 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "compsel", choices = choices)
   })
 
+  # Update death rate label based on differential checkbox
+  observeEvent(input$diff_death_rates, {
+    lbl <- if (isTRUE(input$diff_death_rates)) {
+      "Death Rate, Susceptible"
+    } else {
+      "Death Rate"
+    }
+    updateNumericInput(session, "ds.rate", label = lbl)
+  })
+
 
   # =========================================================================
   # Model state: reactiveValues to support both auto-run and button-run

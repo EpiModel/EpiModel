@@ -94,6 +94,15 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "sens_param", choices = choices)
   })
 
+  # Update death rate label based on differential checkbox
+  observeEvent(input$diff_death_rates, {
+    lbl <- if (isTRUE(input$diff_death_rates)) {
+      "Death Rate, Susceptible"
+    } else {
+      "Death Rate"
+    }
+    updateNumericInput(session, "ds.rate", label = lbl)
+  })
 
 
   # =========================================================================

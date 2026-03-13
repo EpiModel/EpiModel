@@ -120,15 +120,11 @@ page_sidebar(
           "input.enable_vital",
           numericInput("a.rate", "Birth Rate (per person per time step)",
                        value = 0.001, min = 0, step = 0.001),
-          numericInput("ds.rate", "Death Rate, Susceptible",
+          numericInput("ds.rate", "Death Rate",
                        value = 0.001, min = 0, step = 0.001),
           checkboxInput("diff_death_rates",
                         "Different death rates by compartment",
                         value = FALSE),
-          conditionalPanel(
-            "!input.diff_death_rates",
-            helpText("Death rate above applied uniformly to all compartments.")
-          ),
           conditionalPanel(
             "input.diff_death_rates",
             numericInput("di.rate", "Death Rate, Infected",
