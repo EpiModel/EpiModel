@@ -30,6 +30,7 @@ page_sidebar(
   # ===== Sidebar =====
   sidebar = sidebar(
     width = 320,
+    open = "always",
 
     # Run model button
     actionButton("runMod", "Run Model",
