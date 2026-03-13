@@ -12,12 +12,13 @@ shinyServer(function(input, output, session) {
   # =========================================================================
   # Presets
   # =========================================================================
-  preset_updating <- reactiveVal(FALSE)
+  # Track which modtype a preset expects, so we can distinguish
+  # preset-driven modtype changes from manual ones
+  preset_expected_modtype <- reactiveVal(NULL)
 
   observeEvent(input$preset, {
-    preset_updating(TRUE)
-    on.exit(preset_updating(FALSE))
     if (input$preset == "Flu-like (SIR)") {
+      preset_expected_modtype("SIR")
       updateSelectInput(session, "modtype", selected = "SIR")
       updateSliderInput(session, "inf.prob", value = 0.03)
       updateSliderInput(session, "act.rate", value = 10)
@@ -30,6 +31,7 @@ shinyServer(function(input, output, session) {
       updateCheckboxInput(session, "enable_vital", value = FALSE)
       updateCheckboxInput(session, "enable_intervention", value = FALSE)
     } else if (input$preset == "STI-like (SIS)") {
+      preset_expected_modtype("SIS")
       updateSelectInput(session, "modtype", selected = "SIS")
       updateSliderInput(session, "inf.prob", value = 0.2)
       updateSliderInput(session, "act.rate", value = 0.5)
@@ -41,6 +43,7 @@ shinyServer(function(input, output, session) {
       updateCheckboxInput(session, "enable_vital", value = FALSE)
       updateCheckboxInput(session, "enable_intervention", value = FALSE)
     } else if (input$preset == "Measles-like (SIR)") {
+      preset_expected_modtype("SIR")
       updateSelectInput(session, "modtype", selected = "SIR")
       updateSliderInput(session, "inf.prob", value = 0.5)
       updateSliderInput(session, "act.rate", value = 3)
@@ -55,9 +58,15 @@ shinyServer(function(input, output, session) {
     }
   })
 
-  # Reset preset to "Custom" when user manually changes disease type
+  # Reset preset to "Custom" when user manually changes disease type.
+  # If the modtype change matches what a preset just requested, consume
+  # the expectation and leave the preset alone.
   observeEvent(input$modtype, {
-    if (!preset_updating() && input$preset != "Custom") {
+    expected <- preset_expected_modtype()
+    if (!is.null(expected) && input$modtype == expected) {
+      preset_expected_modtype(NULL)
+    } else if (input$preset != "Custom") {
+      preset_expected_modtype(NULL)
       updateSelectInput(session, "preset", selected = "Custom")
     }
   })

@@ -31,6 +31,11 @@ page_sidebar(
   sidebar = sidebar(
     width = 320,
 
+    # Run model button
+    actionButton("runMod", "Run Model",
+                 class = "btn-primary w-100 mb-3",
+                 icon = icon("play")),
+
     # Disease type and presets
     selectInput("modtype", "Disease Type",
                 choices = c("SI", "SIR", "SIS")),
