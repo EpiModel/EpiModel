@@ -20,6 +20,7 @@
 -   Fixed a bug in the ICM Shiny app where Shiny's `numericInput` returns integer-class values, which were silently excluded by `init.icm`'s internal `sapply(init, class) == "numeric"` filter, causing a population size of zero and an "invalid first argument" error in `sample()`.
 -   Fix error with `get_sims` related to variable subsetting with the `var` argument.
 -   Fix `plot.dcm` ignoring custom legend names when `nruns = 1` and multiple compartments are plotted.
+-   Fix `df2epi` and `plot.epi.data.frame` to work without warnings with `epi.data.frame` from truncated simulations.
 
 ### OTHER
 
@@ -34,6 +35,7 @@
 -   Store `epi` trackers as integers by default for improved performance. Automatic `numeric` coercion occurs when necessary.
 -   Restore global `options()` state in plotting functions (`comp_plot`) to comply with CRAN policy.
 -   Address lintr checks across the package.
+-   `trim_netest` now also removes `$summary` from `netest`, massively reducing the final object size.
 
 ## EpiModel 2.5
 

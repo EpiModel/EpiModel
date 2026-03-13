@@ -50,8 +50,10 @@
 #'        on, using the `future` framework.
 #' @param skip.dissolution If `TRUE`, skip over the calculations of
 #'        duration and dissolution stats in `netdx`.
-#' @param future.use.plan If `TRUE`, `netsim` will use the user-defined `future::plan`
-#'        for its parallelization. Otherwise, `multisession` is used with `workers = ncores`.
+#' @param future.use.plan If `FALSE`, `netdx` will use `multisession` is used with `workers = ncores for its
+#'        parallelization. If `TRUE`, `netdx` will use the user defined plan from `globalEnv`. Finally, it can
+#'        take the output of a `future::tweak()` call to setup a user defined temporary plan within `netdx`.
+#'        Which can be useful for distributed computation (HPC).
 #'
 #' @details
 #' The `netdx` function handles dynamic network diagnostics for network
@@ -310,11 +312,7 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps = NULL,
 
   if (dynamic == FALSE || nsims == 1) {
     diag.sim <- list(dosim())
-  } else if (future.use.plan) {
-    diag.sim <- future.apply::future_replicate(
-      nsims, dosim(), simplify = FALSE, future.seed = TRUE
-    )
-  } else if (ncores == 1) {
+  } else if (ncores == 1 && isFALSE(future.use.plan)) {
     diag.sim <- list()
     if (verbose == TRUE) {
       cat("\n |")
@@ -329,8 +327,12 @@ netdx <- function(x, nsims = 1, dynamic = TRUE, nsteps = NULL,
       cat("|")
     }
   } else {
-    ncores_eff <- min(nsims, ncores)
-    with(future::plan("multisession", workers = ncores_eff), local = TRUE)
+    if (inherits(future.use.plan, c("tweaked", "future"))) {
+      with(future::plan(future.use.plan), local = TRUE)
+    } else if (ncores > 1 && isFALSE(future.use.plan)) {
+      ncores_eff <- min(nsims, ncores)
+      with(future::plan("multisession", workers = ncores_eff), local = TRUE)
+    } # else if (isTRUE(future.use.plan)) - use plan defined by user
     diag.sim <- future.apply::future_replicate(
       nsims, dosim(), simplify = FALSE, future.seed = TRUE
     )

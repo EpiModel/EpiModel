@@ -218,25 +218,18 @@ netsim <- function(x, param, init, control) {
   if (!is.null(control[["verbose.FUN"]]))
     control[["verbose.FUN"]](control, type = "startup")
 
-  if (control$future.use.plan) {
-    dat_list <- future.apply::future_lapply(
-      seq_len(control$nsims),
-      function(s) {
-        dat <- netsim_initialize(x, param, init, control, s)
-        netsim_run(dat, s)
-      },
-      future.seed = TRUE
-    )
-  } else if (control$ncores == 1) {
+  if (control$ncores == 1 && isFALSE(control$future.use.plan)) {
     dat_list <- lapply(
       seq_len(control$nsims),
-      function(s) {
-        netsim_initialize(x, param, init, control, s)
-      }
+      function(s) { netsim_initialize(x, param, init, control, s) }
     )
     dat_list <- Map(netsim_run, dat = dat_list, s = seq_along(dat_list))
   } else {
-    with(future::plan("multisession", workers = control$ncores), local = TRUE)
+    if (inherits(control$future.use.plan, c("tweaked", "future"))) {
+      with(future::plan(control$future.use.plan), local = TRUE)
+    } else if (control$ncores > 1 &&isFALSE(control$future.use.plan)) {
+      with(future::plan("multisession", workers = control$ncores), local = TRUE)
+    } # else if (isTRUE(control$future.use.plan)) - use plan defined by user
     dat_list <- future.apply::future_lapply(
       seq_len(control$nsims),
       function(s) {
@@ -302,6 +295,7 @@ netsim_validate_control <- function(control) {
     control$ncores <- 1
   } else {
     control$ncores <- min(parallel::detectCores(), control$ncores)
+    control$verbose <- FALSE
   }
 
   control[[".checkpointed"]] <- netsim_is_checkpointed(control)
