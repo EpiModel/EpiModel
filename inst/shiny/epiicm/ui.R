@@ -304,22 +304,25 @@ page_sidebar(
         hr(),
         h5("Scenario Presets"),
         p("Three built-in presets configure all parameters to reasonable
-          values for common infectious diseases:"),
+          values for common infectious diseases. In all presets, each time
+          step represents one day:"),
         tags$ul(
           tags$li(tags$strong("Flu-like (SIR):"),
                   "Low per-act transmission probability (0.03) with a high
-                  contact rate (10 acts/time step), reflecting airborne spread.
-                  Recovery in about 7 days. Population of 500."),
+                  contact rate (10 acts/day), reflecting airborne spread.
+                  Average duration of infection of about 7 days (recovery
+                  rate = 0.15). Population of 500."),
           tags$li(tags$strong("STI-like (SIS):"),
                   "Moderate transmission probability (0.2) with a low contact
-                  rate (0.5 acts/time step), reflecting sexual transmission.
-                  Slow recovery (rate = 0.01). Population of 500."),
+                  rate (0.5 acts/day), reflecting sexual transmission.
+                  Average duration of infection of about 100 days (recovery
+                  rate = 0.01). Population of 500."),
           tags$li(tags$strong("Measles-like (SIR):"),
                   "High transmission probability (0.5) and moderate contact
-                  rate (3 acts/time step), producing a high",
+                  rate (3 acts/day), producing a high",
                   HTML("R<sub>0</sub>"),
-                  "of 15. Rapid epidemic growth and quick resolution.
-                  Population of 500.")
+                  "of 15. Average duration of infection of about 10 days
+                  (recovery rate = 0.1). Population of 500.")
         ),
         p("Select", tags$em("Custom"), "to set parameters manually."),
 
