@@ -260,8 +260,10 @@ page_sidebar(
                   transmission."),
           tags$li(tags$strong("Recovery Rate:"),
                   "(SIR and SIS only.) The per-capita rate at which infected
-                  individuals recover per time step. The average duration of
-                  infection is 1 / recovery rate.")
+                  individuals recover per time step. In a closed population,
+                  the average duration of infection is 1 / recovery rate. With
+                  vital dynamics enabled, the average duration in the infected
+                  state is 1 / (recovery rate + departure rate for infecteds).")
         ),
         p("Together, these parameters determine the",
           tags$strong("basic reproduction number"),
@@ -272,8 +274,10 @@ page_sidebar(
           style = "font-size: 1.1rem;",
           HTML("R<sub>0</sub> = (transmission probability &times;
                 act rate) / recovery rate")),
-        p(HTML("When R<sub>0</sub> > 1, the epidemic will grow.
-          When R<sub>0</sub> < 1, the infection will die out.")),
+        p(HTML("When R<sub>0</sub> > 1, the epidemic is expected to grow.
+          When R<sub>0</sub> < 1, the infection is expected to die out.
+          Because ICMs are stochastic, individual simulations may deviate
+          from this expectation, especially with small populations.")),
 
         # --- Stochastic Variation ---
         hr(),

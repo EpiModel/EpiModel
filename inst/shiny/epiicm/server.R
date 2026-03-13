@@ -237,11 +237,11 @@ shinyServer(function(input, output, session) {
       if (!is.null(p$di.rate)) removal <- removal + p$di.rate
       r0 <- (p$inf.prob * p$act.rate) / removal
       if (r0 > 1) {
-        r0_interp <- "greater than 1, so the infection will spread."
+        r0_interp <- "greater than 1, so the infection is expected to spread."
       } else if (r0 == 1) {
         r0_interp <- "exactly 1, so the epidemic is at a tipping point."
       } else {
-        r0_interp <- "less than 1, so the infection will die out."
+        r0_interp <- "less than 1, so the infection is expected to die out."
       }
       r0_section <- tagList(
         tags$h6(class = "text-uppercase fw-semibold mb-2", "Transmission"),

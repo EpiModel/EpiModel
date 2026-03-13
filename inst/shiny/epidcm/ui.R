@@ -251,8 +251,10 @@ page_sidebar(
                   transmission."),
           tags$li(tags$strong("Recovery Rate:"),
                   "(SIR and SIS only.) The per-capita rate at which infected
-                  individuals recover per time step. The average duration of
-                  infection is 1 / recovery rate.")
+                  individuals recover per time step. In a closed population,
+                  the average duration of infection is 1 / recovery rate. With
+                  vital dynamics enabled, the average duration in the infected
+                  state is 1 / (recovery rate + departure rate for infecteds).")
         ),
         p("Together, these parameters determine the",
           tags$strong("basic reproduction number"),
