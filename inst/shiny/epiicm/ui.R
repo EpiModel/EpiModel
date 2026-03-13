@@ -24,34 +24,37 @@ app_theme <- bs_theme(
 
 # -- UI --
 page_sidebar(
-  title = "EpiModel: Stochastic Individual Contact Models",
+  title = div(
+    class = "d-flex justify-content-between align-items-center w-100",
+    span("EpiModel: Stochastic Individual Contact Models"),
+    actionButton("runMod", "Run Model",
+                 class = "btn-light btn-sm",
+                 icon = icon("play"))
+  ),
   theme = app_theme,
 
   # ===== Sidebar =====
   sidebar = sidebar(
     width = 320,
-
-    # Run model button
-    actionButton("runMod", "Run Model",
-                 class = "btn-primary w-100 mb-3",
-                 icon = icon("play")),
-
-    # Disease type and presets
-    selectInput("modtype", "Disease Type",
-                choices = c("SI", "SIR", "SIS")),
-
-    selectInput("preset", "Scenario Preset",
-                choices = c("Custom",
-                            "Flu-like (SIR)",
-                            "STI-like (SIS)",
-                            "Measles-like (SIR)")),
-
-    hr(),
+    open = "always",
 
     # Parameter accordion
     accordion(
       id = "params_accordion",
-      open = c("Population & Time", "Epidemic Parameters"),
+      open = c("Disease Type or Scenario", "Population & Time",
+               "Epidemic Parameters"),
+
+      # -- Disease Type or Scenario --
+      accordion_panel(
+        "Disease Type or Scenario",
+        selectInput("modtype", "Disease Type",
+                    choices = c("SI", "SIR", "SIS")),
+        selectInput("preset", "Scenario Preset",
+                    choices = c("Custom",
+                                "Flu-like (SIR)",
+                                "STI-like (SIS)",
+                                "Measles-like (SIR)"))
+      ),
 
       # -- Population & Time --
       accordion_panel(
@@ -111,8 +114,21 @@ page_sidebar(
           "input.enable_vital",
           numericInput("a.rate", "Birth Rate (per person per time step)",
                        value = 0.001, min = 0, step = 0.001),
-          numericInput("death_rate", "Death Rate (uniform, all compartments)",
-                       value = 0.001, min = 0, step = 0.001)
+          numericInput("ds.rate", "Death Rate",
+                       value = 0.001, min = 0, step = 0.001),
+          checkboxInput("diff_death_rates",
+                        "Different death rates by compartment",
+                        value = FALSE),
+          conditionalPanel(
+            "input.diff_death_rates",
+            numericInput("di.rate", "Death Rate, Infected",
+                         value = 0.001, min = 0, step = 0.001),
+            conditionalPanel(
+              "input.modtype == 'SIR'",
+              numericInput("dr.rate", "Death Rate, Recovered",
+                           value = 0.001, min = 0, step = 0.001)
+            )
+          )
         )
       )
     ) # end accordion
@@ -146,35 +162,39 @@ page_sidebar(
   # Bottom row: Summary / Data / Guide tabs
   navset_card_tab(
     id = "main_tabs",
+    height = "500px",
 
     nav_panel(
       "Summary",
-      div(class = "p-3", uiOutput("outSummary"))
+      div(class = "p-3", style = "overflow-y: auto; height: 100%;",
+          uiOutput("outSummary"))
     ),
 
     nav_panel(
       "Data",
-      div(
-        class = "mb-3",
-        fluidRow(
-          column(4,
-            selectInput("datasel", "Data View",
-                        choices = c("Means", "Standard Deviations",
-                                    "Individual Simulations"))
-          ),
-          column(4,
-            conditionalPanel(
-              "input.datasel == 'Individual Simulations'",
-              uiOutput("simnoControl")
+      div(style = "overflow-y: auto; height: 100%;",
+        div(
+          class = "mb-3",
+          fluidRow(
+            column(4,
+              selectInput("datasel", "Data View",
+                          choices = c("Means", "Standard Deviations",
+                                      "Individual Simulations"))
+            ),
+            column(4,
+              conditionalPanel(
+                "input.datasel == 'Individual Simulations'",
+                uiOutput("simnoControl")
+              )
             )
           )
+        ),
+        DTOutput("outData"),
+        div(
+          class = "mt-2",
+          downloadButton("dlData", "Download CSV",
+                         class = "btn-sm btn-outline-secondary")
         )
-      ),
-      DTOutput("outData"),
-      div(
-        class = "mt-2",
-        downloadButton("dlData", "Download CSV",
-                       class = "btn-sm btn-outline-secondary")
       )
     ),
 
@@ -182,7 +202,7 @@ page_sidebar(
       "Guide",
       div(
         class = "p-3",
-        style = "max-width: 900px;",
+        style = "max-width: 900px; overflow-y: auto; height: 100%;",
 
         # --- Overview ---
         h4("User Guide"),
@@ -211,8 +231,9 @@ page_sidebar(
         tags$ul(
           tags$li(tags$strong("SI (Susceptible-Infected):"),
                   "Individuals move from susceptible to infected and remain
-                  infected permanently. There is no recovery. This is appropriate
-                  for chronic infections like HIV (without treatment) or herpes."),
+                  infected and infectious permanently. There is no recovery.
+                  This is appropriate for chronic infections like HIV (without
+                  treatment) or herpes."),
           tags$li(tags$strong("SIR (Susceptible-Infected-Recovered):"),
                   "Infected individuals recover and gain lasting immunity.
                   Once recovered, they cannot be re-infected. This applies to
@@ -239,8 +260,10 @@ page_sidebar(
                   transmission."),
           tags$li(tags$strong("Recovery Rate:"),
                   "(SIR and SIS only.) The per-capita rate at which infected
-                  individuals recover per time step. The average duration of
-                  infection is 1 / recovery rate.")
+                  individuals recover per time step. In a closed population,
+                  the average duration of infection is 1 / recovery rate. With
+                  vital dynamics enabled, the average duration in the infected
+                  state is 1 / (recovery rate + departure rate for infecteds).")
         ),
         p("Together, these parameters determine the",
           tags$strong("basic reproduction number"),
@@ -251,8 +274,10 @@ page_sidebar(
           style = "font-size: 1.1rem;",
           HTML("R<sub>0</sub> = (transmission probability &times;
                 act rate) / recovery rate")),
-        p(HTML("When R<sub>0</sub> > 1, the epidemic will grow.
-          When R<sub>0</sub> < 1, the infection will die out.")),
+        p(HTML("When R<sub>0</sub> > 1, the epidemic is expected to grow.
+          When R<sub>0</sub> < 1, the infection is expected to die out.
+          Because ICMs are stochastic, individual simulations may deviate
+          from this expectation, especially with small populations.")),
 
         # --- Stochastic Variation ---
         hr(),
@@ -279,22 +304,25 @@ page_sidebar(
         hr(),
         h5("Scenario Presets"),
         p("Three built-in presets configure all parameters to reasonable
-          values for common infectious diseases:"),
+          values for common infectious diseases. In all presets, each time
+          step represents one day:"),
         tags$ul(
           tags$li(tags$strong("Flu-like (SIR):"),
                   "Low per-act transmission probability (0.03) with a high
-                  contact rate (10 acts/time step), reflecting airborne spread.
-                  Recovery in about 7 days. Population of 500."),
+                  contact rate (10 acts/day), reflecting airborne spread.
+                  Average duration of infection of about 7 days (recovery
+                  rate = 0.15). Population of 500."),
           tags$li(tags$strong("STI-like (SIS):"),
                   "Moderate transmission probability (0.2) with a low contact
-                  rate (0.5 acts/time step), reflecting sexual transmission.
-                  Slow recovery (rate = 0.01). Population of 500."),
+                  rate (0.5 acts/day), reflecting sexual transmission.
+                  Average duration of infection of about 100 days (recovery
+                  rate = 0.01). Population of 500."),
           tags$li(tags$strong("Measles-like (SIR):"),
                   "High transmission probability (0.5) and moderate contact
-                  rate (3 acts/time step), producing a high",
+                  rate (3 acts/day), producing a high",
                   HTML("R<sub>0</sub>"),
-                  "of 15. Rapid epidemic growth and quick resolution.
-                  Population of 500.")
+                  "of 15. Average duration of infection of about 10 days
+                  (recovery rate = 0.1). Population of 500.")
         ),
         p("Select", tags$em("Custom"), "to set parameters manually."),
 
@@ -316,10 +344,15 @@ page_sidebar(
         h5("Vital Dynamics"),
         p("By default, the population is closed (no births or deaths). Enabling
           vital dynamics adds a constant per-capita birth rate (new susceptibles
-          entering the population) and a constant per-capita death rate applied
-          equally across all compartments. This is important for modeling
-          endemic equilibria over longer time horizons, where demographic
-          turnover replenishes the susceptible pool."),
+          entering the population) and per-capita death rates. By default, a
+          single death rate is applied uniformly across all compartments.
+          Checking", tags$em("Different death rates by compartment"),
+          "allows setting separate death rates for susceptible, infected,
+          and (for SIR models) recovered individuals. This is useful when
+          disease-induced mortality differs from background mortality. Vital
+          dynamics are important for modeling endemic equilibria over longer
+          time horizons, where demographic turnover replenishes the susceptible
+          pool."),
 
         # --- Reading the Output ---
         hr(),
@@ -335,15 +368,37 @@ page_sidebar(
                   as a PNG."),
           tags$li(tags$strong("Summary:"),
                   HTML("Key epidemic metrics including R<sub>0</sub>, peak
-                  infected count and timing, cumulative infections, attack
-                  rate, and stochastic variation statistics. Additional
-                  sections appear when interventions or vital dynamics are
-                  enabled.")),
+                  infected count and timing, cumulative infections, incidence
+                  rate, and (when applicable) attack rate, plus stochastic
+                  variation statistics. Additional sections appear when
+                  interventions or vital dynamics are enabled.")),
           tags$li(tags$strong("Data:"),
                   "The full simulation output as a searchable, sortable table.
                   Choose to view means across simulations, standard deviations,
                   or individual simulation values. Download the raw data as a
                   CSV file for further analysis.")
+        ),
+
+        tags$h6(class = "fw-semibold mt-3", "Incidence Metrics"),
+        p("The summary tab reports two measures of disease incidence:"),
+        tags$ul(
+          tags$li(tags$strong("Incidence Rate:"),
+                  "Total new infections divided by total susceptible
+                  person-time (reported per 1,000 person-timesteps). This
+                  measure is always shown and is valid for all model types,
+                  including SIS models with re-infection and models with vital
+                  dynamics, because it accounts for the changing size of the
+                  susceptible population over time."),
+          tags$li(tags$strong("Attack Rate:"),
+                  "Total new infections divided by the initial number of
+                  susceptibles. This is a simple proportion representing the
+                  fraction of the original susceptible population that became
+                  infected. It is only displayed for SI and SIR models without
+                  vital dynamics, because it requires a closed population with
+                  no re-infection. In SIS models (where individuals can be
+                  re-infected) or models with births and deaths (where the
+                  susceptible pool changes), the attack rate is not
+                  well-defined and is therefore hidden.")
         ),
 
         # --- ICM vs DCM ---

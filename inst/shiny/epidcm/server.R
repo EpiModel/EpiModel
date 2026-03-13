@@ -12,12 +12,14 @@ shinyServer(function(input, output, session) {
   # =========================================================================
   # Presets
   # =========================================================================
-  preset_updating <- reactiveVal(FALSE)
+  # Track which modtype a preset expects, so we can distinguish
+
+  # preset-driven modtype changes from manual ones
+  preset_expected_modtype <- reactiveVal(NULL)
 
   observeEvent(input$preset, {
-    preset_updating(TRUE)
-    on.exit(preset_updating(FALSE))
     if (input$preset == "Flu-like (SIR)") {
+      preset_expected_modtype("SIR")
       updateSelectInput(session, "modtype", selected = "SIR")
       updateSliderInput(session, "inf.prob", value = 0.03)
       updateSliderInput(session, "act.rate", value = 10)
@@ -30,6 +32,7 @@ shinyServer(function(input, output, session) {
       updateCheckboxInput(session, "enable_intervention", value = FALSE)
       updateCheckboxInput(session, "enable_sensitivity", value = FALSE)
     } else if (input$preset == "STI-like (SIS)") {
+      preset_expected_modtype("SIS")
       updateSelectInput(session, "modtype", selected = "SIS")
       updateSliderInput(session, "inf.prob", value = 0.2)
       updateSliderInput(session, "act.rate", value = 0.5)
@@ -41,6 +44,7 @@ shinyServer(function(input, output, session) {
       updateCheckboxInput(session, "enable_intervention", value = FALSE)
       updateCheckboxInput(session, "enable_sensitivity", value = FALSE)
     } else if (input$preset == "Measles-like (SIR)") {
+      preset_expected_modtype("SIR")
       updateSelectInput(session, "modtype", selected = "SIR")
       updateSliderInput(session, "inf.prob", value = 0.5)
       updateSliderInput(session, "act.rate", value = 3)
@@ -55,9 +59,16 @@ shinyServer(function(input, output, session) {
     }
   })
 
-  # Reset preset to "Custom" when user manually changes disease type
+  # Reset preset to "Custom" when user manually changes disease type.
+  # If the modtype change matches what a preset just requested, consume
+
+  # the expectation and leave the preset alone.
   observeEvent(input$modtype, {
-    if (!preset_updating() && input$preset != "Custom") {
+    expected <- preset_expected_modtype()
+    if (!is.null(expected) && input$modtype == expected) {
+      preset_expected_modtype(NULL)
+    } else if (input$preset != "Custom") {
+      preset_expected_modtype(NULL)
       updateSelectInput(session, "preset", selected = "Custom")
     }
   })
@@ -94,12 +105,25 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "sens_param", choices = choices)
   })
 
+  # Update death rate label based on differential checkbox
+  observeEvent(input$diff_death_rates, {
+    lbl <- if (isTRUE(input$diff_death_rates)) {
+      "Death Rate, Susceptible"
+    } else {
+      "Death Rate"
+    }
+    updateNumericInput(session, "ds.rate", label = lbl)
+  })
 
 
   # =========================================================================
-  # Core model reactive
+  # Model state: reactiveValues to support button-triggered runs
   # =========================================================================
-  param <- reactive({
+  rv <- reactiveValues(mod = NULL)
+
+  # Shared function to build and run the model from current inputs
+  build_and_run <- function() {
+    # Build param
     p <- list(inf.prob = input$inf.prob,
               act.rate = input$act.rate)
 
@@ -117,10 +141,17 @@ shinyServer(function(input, output, session) {
     # Vital dynamics
     if (isTRUE(input$enable_vital)) {
       p$a.rate <- input$a.rate
-      p$ds.rate <- input$death_rate
-      p$di.rate <- input$death_rate
-      if (input$modtype == "SIR") {
-        p$dr.rate <- input$death_rate
+      p$ds.rate <- input$ds.rate
+      if (isTRUE(input$diff_death_rates)) {
+        p$di.rate <- input$di.rate
+        if (input$modtype == "SIR") {
+          p$dr.rate <- input$dr.rate
+        }
+      } else {
+        p$di.rate <- input$ds.rate
+        if (input$modtype == "SIR") {
+          p$dr.rate <- input$ds.rate
+        }
       }
     }
 
@@ -131,45 +162,46 @@ shinyServer(function(input, output, session) {
       p[[input$sens_param]] <- sens_vals
     }
 
-    do.call(param.dcm, p)
-  })
+    param <- do.call(param.dcm, p)
 
-  init <- reactive({
-    args <- list(s.num = input$s.num, i.num = input$i.num)
+    # Build init
+    i_args <- list(s.num = input$s.num, i.num = input$i.num)
     if (input$modtype == "SIR") {
-      args$r.num <- input$r.num
+      i_args$r.num <- input$r.num
     }
-    do.call(init.dcm, args)
+    init <- do.call(init.dcm, i_args)
+
+    # Build control
+    control <- control.dcm(type = input$modtype,
+                           nsteps = input$nsteps,
+                           dt = 1,
+                           odemethod = "lsoda",
+                           verbose = FALSE)
+
+    # Run model
+    tryCatch({
+      dcm(param, init, control)
+    }, error = function(e) {
+      showNotification(paste("Model error:", e$message),
+                       type = "error", duration = 8)
+      NULL
+    })
+  }
+
+  # Run on button click
+  observeEvent(input$runMod, {
+    rv$mod <- build_and_run()
   })
 
-  control <- reactive({
-    control.dcm(type = input$modtype,
-                nsteps = input$nsteps,
-                dt = 1,
-                odemethod = "lsoda",
-                verbose = FALSE)
-  })
-
-  mod <- reactive({
-    validate(
-      need(input$s.num > 0, "Number susceptible must be positive"),
-      need(input$i.num >= 0, "Number infected cannot be negative"),
-      need(input$nsteps >= 10, "Need at least 10 time steps"),
-      need(input$inf.prob > 0 && input$inf.prob <= 1,
-           "Transmission probability must be between 0 and 1"),
-      need(input$act.rate >= 0, "Act rate cannot be negative")
-    )
-    if (input$modtype != "SI") {
-      validate(need(input$rec.rate >= 0, "Recovery rate cannot be negative"))
-    }
-    tryCatch(
-      dcm(param(), init(), control()),
-      error = function(e) {
-        showNotification(paste("Model error:", e$message),
-                         type = "error", duration = 8)
-        NULL
+  # Auto-run once on startup after inputs are initialized
+  observe({
+    req(input$modtype, input$s.num, input$i.num,
+        input$inf.prob, input$act.rate)
+    isolate({
+      if (is.null(rv$mod)) {
+        rv$mod <- build_and_run()
       }
-    )
+    })
   })
 
 
@@ -177,16 +209,18 @@ shinyServer(function(input, output, session) {
   # Main Plot (plotly — directly in UI, no renderUI wrapper)
   # =========================================================================
   output$MainPlotly <- plotly::renderPlotly({
-    m <- mod()
+    m <- rv$mod
     req(m)
 
     df <- as.data.frame(m)
     nruns <- m$control$nruns
+    type <- m$control$type
 
     # Determine what to plot
     if (input$compsel == "Compartment Prevalence") {
       y_cols <- c("s.num", "i.num")
-      if (input$modtype == "SIR") y_cols <- c(y_cols, "r.num")
+      if (type == "SIR") y_cols <- c(y_cols, "r.num")
+      y_cols <- intersect(y_cols, names(df))
       for (col in y_cols) {
         df[[paste0(col, ".prev")]] <- df[[col]] / df$num
       }
@@ -194,7 +228,8 @@ shinyServer(function(input, output, session) {
       y_label <- "Prevalence"
     } else if (input$compsel == "Compartment Size") {
       plot_cols <- c("s.num", "i.num")
-      if (input$modtype == "SIR") plot_cols <- c(plot_cols, "r.num")
+      if (type == "SIR") plot_cols <- c(plot_cols, "r.num")
+      plot_cols <- intersect(plot_cols, names(df))
       y_label <- "Number"
     } else if (input$compsel == "Disease Incidence") {
       plot_cols <- "si.flow"
@@ -215,6 +250,10 @@ shinyServer(function(input, output, session) {
       plot_cols <- "i.num"
       y_label <- "Number"
     }
+
+    # Guard: ensure requested columns exist in the model output
+    plot_cols <- intersect(plot_cols, names(df))
+    req(length(plot_cols) > 0)
 
     # Color and label maps
     col_map <- c("s.num" = "#3498DB", "s.num.prev" = "#3498DB",
@@ -281,7 +320,7 @@ shinyServer(function(input, output, session) {
       }
 
       # Intervention line
-      if (isTRUE(input$enable_intervention) && !is.null(m$param$inter.eff)) {
+      if (!is.null(m$param$inter.eff) && !is.null(m$param$inter.start)) {
         p <- plotly::layout(
           p,
           shapes = list(
@@ -315,7 +354,7 @@ shinyServer(function(input, output, session) {
   output$dlMainPlot <- downloadHandler(
     filename = "EpiModel_DCM_Plot.pdf",
     content = function(file) {
-      m <- mod()
+      m <- rv$mod
       req(m)
       pdf(file = file, height = 8, width = 12)
       par(mar = c(3.5, 3.5, 1.2, 1), mgp = c(2.1, 1, 0))
@@ -341,7 +380,7 @@ shinyServer(function(input, output, session) {
   # Summary
   # =========================================================================
   output$outSummary <- renderUI({
-    m <- mod()
+    m <- rv$mod
     req(m)
 
     p <- m$param
@@ -389,9 +428,12 @@ shinyServer(function(input, output, session) {
                  if (r0 > 1) "#E74C3C" else "#18BC9C"),
         p(class = "text-muted", style = "font-size: 0.81rem;",
           HTML(paste0("R<sub>0</sub> is ", r0_interp,
-                      " Each infected person generates on average <strong>",
-                      round(r0, 2), "</strong> new infections",
-                      " before recovering.")))
+                      " In a fully susceptible population, the first infected",
+                      " person would generate on average <strong>",
+                      round(r0, 2), "</strong> new infections before",
+                      " recovering. As the epidemic progresses and the",
+                      " susceptible pool shrinks, the effective reproduction",
+                      " number declines.")))
       )
     }
 
@@ -401,13 +443,18 @@ shinyServer(function(input, output, session) {
     peak_prev <- peak_i / df$num[which.max(df$i.num)]
     final_prev <- df$i.num[nrow(df)] / df$num[nrow(df)]
 
-    # Cumulative infections
+    # Cumulative infections and incidence metrics
+    has_vital <- !is.null(p$a.rate)
+    attack_rate_valid <- type %in% c("SI", "SIR") && !has_vital
     if ("si.flow" %in% names(df)) {
       cum_inf <- sum(df$si.flow, na.rm = TRUE)
-      attack_rate <- cum_inf / df$s.num[1]
+      cum_inc_rate <- cum_inf / sum(df$s.num, na.rm = TRUE)
+      if (attack_rate_valid) {
+        attack_rate <- cum_inf / df$s.num[1]
+      }
     } else {
       cum_inf <- NA
-      attack_rate <- NA
+      cum_inc_rate <- NA
     }
 
     timeline_section <- tagList(
@@ -426,8 +473,13 @@ shinyServer(function(input, output, session) {
           class = "d-flex flex-wrap",
           stat_box("Cumulative Infections",
                    format(round(cum_inf), big.mark = ","), "#2C3E50"),
-          stat_box("Attack Rate", paste0(round(min(attack_rate, 1) * 100, 1), "%"),
-                   "#2C3E50")
+          stat_box("Incidence Rate",
+                   paste0(round(cum_inc_rate * 1000, 2), " per 1k pt"),
+                   "#2C3E50"),
+          if (attack_rate_valid) {
+            stat_box("Attack Rate",
+                     paste0(round(attack_rate * 100, 1), "%"), "#2C3E50")
+          }
         )
       },
       if (final_prev < 0.001 && type != "SI") {
@@ -463,12 +515,26 @@ shinyServer(function(input, output, session) {
 
     # --- Vital dynamics ---
     if (!is.null(p$a.rate) && p$vital) {
+      # Build death rate description
+      rates_same <- (p$ds.rate == p$di.rate) &&
+        (is.null(p$dr.rate) || p$ds.rate == p$dr.rate)
+      if (rates_same) {
+        death_desc <- paste0("Deaths occur at rate ", p$ds.rate,
+                             " across all compartments.")
+      } else {
+        death_parts <- paste0("S: ", p$ds.rate, ", I: ", p$di.rate)
+        if (!is.null(p$dr.rate)) {
+          death_parts <- paste0(death_parts, ", R: ", p$dr.rate)
+        }
+        death_desc <- paste0("Death rates per compartment: ", death_parts, ".")
+      }
       vital_section <- tagList(
         hr(),
         tags$h6(class = "text-uppercase fw-semibold mb-2", "Vital Dynamics"),
         p(class = "text-muted", style = "font-size: 0.81rem;",
-          paste0("Births enter at rate ", p$a.rate, " per person per time step. ",
-                 "Deaths occur at rate ", p$ds.rate, " across all compartments. ",
+          paste0("Births enter at rate ", p$a.rate,
+                 " per person per time step. ",
+                 death_desc, " ",
                  "Final population size: ",
                  format(round(df$num[nrow(df)]), big.mark = ","),
                  " (started at ",
@@ -504,7 +570,7 @@ shinyServer(function(input, output, session) {
                 tags$td(tags$strong("DCM (Deterministic)"))),
         tags$tr(tags$td(class = "text-muted", "Disease Type"),
                 tags$td(tags$strong(type))),
-        tags$tr(tags$td(class = "text-muted", "Population"),
+        tags$tr(tags$td(class = "text-muted", "Initial Population"),
                 tags$td(format(round(df$num[1]), big.mark = ","))),
         tags$tr(tags$td(class = "text-muted", "Time Steps"),
                 tags$td(nsteps)),
@@ -535,7 +601,7 @@ shinyServer(function(input, output, session) {
   # Data Table
   # =========================================================================
   output$outData <- DT::renderDT({
-    m <- mod()
+    m <- rv$mod
     req(m)
     round(as.data.frame(m), 2)
   }, options = list(lengthMenu = c(10, 25, 50, 100),
@@ -545,7 +611,7 @@ shinyServer(function(input, output, session) {
   output$dlData <- downloadHandler(
     filename = "EpiModel_DCM_Data.csv",
     content = function(file) {
-      write.csv(as.data.frame(mod()), file, row.names = FALSE)
+      write.csv(as.data.frame(rv$mod), file, row.names = FALSE)
     }
   )
 
