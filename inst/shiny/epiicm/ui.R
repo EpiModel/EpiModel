@@ -24,7 +24,13 @@ app_theme <- bs_theme(
 
 # -- UI --
 page_sidebar(
-  title = "EpiModel: Stochastic Individual Contact Models",
+  title = div(
+    class = "d-flex justify-content-between align-items-center w-100",
+    span("EpiModel: Stochastic Individual Contact Models"),
+    actionButton("runMod", "Run Model",
+                 class = "btn-light btn-sm",
+                 icon = icon("play"))
+  ),
   theme = app_theme,
 
   # ===== Sidebar =====
@@ -32,27 +38,23 @@ page_sidebar(
     width = 320,
     open = "always",
 
-    # Run model button
-    actionButton("runMod", "Run Model",
-                 class = "btn-primary w-100 mb-3",
-                 icon = icon("play")),
-
-    # Disease type and presets
-    selectInput("modtype", "Disease Type",
-                choices = c("SI", "SIR", "SIS")),
-
-    selectInput("preset", "Scenario Preset",
-                choices = c("Custom",
-                            "Flu-like (SIR)",
-                            "STI-like (SIS)",
-                            "Measles-like (SIR)")),
-
-    hr(),
-
     # Parameter accordion
     accordion(
       id = "params_accordion",
-      open = c("Population & Time", "Epidemic Parameters"),
+      open = c("Disease Type or Scenario", "Population & Time",
+               "Epidemic Parameters"),
+
+      # -- Disease Type or Scenario --
+      accordion_panel(
+        "Disease Type or Scenario",
+        selectInput("modtype", "Disease Type",
+                    choices = c("SI", "SIR", "SIS")),
+        selectInput("preset", "Scenario Preset",
+                    choices = c("Custom",
+                                "Flu-like (SIR)",
+                                "STI-like (SIS)",
+                                "Measles-like (SIR)"))
+      ),
 
       # -- Population & Time --
       accordion_panel(
