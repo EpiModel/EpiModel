@@ -570,7 +570,7 @@ shinyServer(function(input, output, session) {
                 tags$td(tags$strong("DCM (Deterministic)"))),
         tags$tr(tags$td(class = "text-muted", "Disease Type"),
                 tags$td(tags$strong(type))),
-        tags$tr(tags$td(class = "text-muted", "Population"),
+        tags$tr(tags$td(class = "text-muted", "Initial Population"),
                 tags$td(format(round(df$num[1]), big.mark = ","))),
         tags$tr(tags$td(class = "text-muted", "Time Steps"),
                 tags$td(nsteps)),
