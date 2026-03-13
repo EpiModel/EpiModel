@@ -115,7 +115,8 @@ page_sidebar(
           numericInput("sens_max", "Maximum Value",
                        value = 0.5, min = 0, step = 0.01),
           selectInput("sens_nruns", "Number of Values",
-                      choices = c(3, 5, 7), selected = 5)
+                      choices = c(3, 5, 7), selected = 5),
+          helpText("These values override the fixed parameter value set above.")
         )
       ),
 
@@ -309,6 +310,9 @@ page_sidebar(
           across evenly spaced values between a minimum and maximum that you
           specify. This reveals how sensitive the epidemic outcome is to
           uncertainty in that parameter."),
+        p("The range of values specified in the sensitivity analysis panel
+          overrides whatever fixed value is set for that parameter in the
+          Epidemic Parameters section above."),
         p("When sensitivity analysis is active, the plot shows one trajectory
           per run (colored from blue to red), with each line labeled by its
           parameter value. The Summary tab reports statistics for the first
