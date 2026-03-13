@@ -249,9 +249,12 @@ shinyServer(function(input, output, session) {
                  if (r0 > 1) "#E74C3C" else "#18BC9C"),
         p(class = "text-muted", style = "font-size: 0.81rem;",
           HTML(paste0("R<sub>0</sub> is ", r0_interp,
-                      " Each infected person generates on average <strong>",
-                      round(r0, 2), "</strong> new infections",
-                      " before recovering.")))
+                      " In a fully susceptible population, the first infected",
+                      " person is expected to generate on average <strong>",
+                      round(r0, 2), "</strong> new infections before",
+                      " recovering. As the epidemic progresses and the",
+                      " susceptible pool shrinks, the effective reproduction",
+                      " number declines.")))
       )
     }
 
