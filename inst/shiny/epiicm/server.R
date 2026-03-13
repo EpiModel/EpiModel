@@ -261,13 +261,18 @@ shinyServer(function(input, output, session) {
     peak_prev <- peak_i / df_mean$num[which.max(df_mean$i.num)]
     final_prev <- df_mean$i.num[nrow(df_mean)] / df_mean$num[nrow(df_mean)]
 
-    # Cumulative infections (from mean)
+    # Cumulative infections and incidence metrics (from mean)
+    has_vital <- !is.null(p$a.rate)
+    attack_rate_valid <- type %in% c("SI", "SIR") && !has_vital
     if ("si.flow" %in% names(df_mean)) {
       cum_inf <- sum(df_mean$si.flow, na.rm = TRUE)
-      attack_rate <- cum_inf / df_mean$s.num[1]
+      cum_inc_rate <- cum_inf / sum(df_mean$s.num, na.rm = TRUE)
+      if (attack_rate_valid) {
+        attack_rate <- cum_inf / df_mean$s.num[1]
+      }
     } else {
       cum_inf <- NA
-      attack_rate <- NA
+      cum_inc_rate <- NA
     }
 
     timeline_section <- tagList(
@@ -287,9 +292,13 @@ shinyServer(function(input, output, session) {
           class = "d-flex flex-wrap",
           stat_box("Cumulative Infections",
                    format(round(cum_inf), big.mark = ","), "#2C3E50"),
-          stat_box("Attack Rate",
-                   paste0(round(min(attack_rate, 1) * 100, 1), "%"),
-                   "#2C3E50")
+          stat_box("Incidence Rate",
+                   paste0(round(cum_inc_rate * 1000, 2), " per 1k pt"),
+                   "#2C3E50"),
+          if (attack_rate_valid) {
+            stat_box("Attack Rate",
+                     paste0(round(attack_rate * 100, 1), "%"), "#2C3E50")
+          }
         )
       },
       if (final_prev < 0.001 && type != "SI") {

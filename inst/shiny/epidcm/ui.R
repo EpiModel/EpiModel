@@ -341,12 +341,35 @@ page_sidebar(
                   as a PNG."),
           tags$li(tags$strong("Summary:"),
                   HTML("Key epidemic metrics including R<sub>0</sub>, peak
-                  infected count and timing, cumulative infections, and attack
-                  rate. Additional sections appear when interventions, vital
-                  dynamics, or sensitivity analysis are enabled.")),
+                  infected count and timing, cumulative infections, incidence
+                  rate, and (when applicable) attack rate. Additional sections
+                  appear when interventions, vital dynamics, or sensitivity
+                  analysis are enabled.")),
           tags$li(tags$strong("Data:"),
                   "The full simulation output as a searchable, sortable table.
                   Download the raw data as a CSV file for further analysis.")
+        ),
+
+        tags$h6(class = "fw-semibold mt-3", "Incidence Metrics"),
+        p("The summary tab reports two measures of disease incidence:"),
+        tags$ul(
+          tags$li(tags$strong("Incidence Rate:"),
+                  "Total new infections divided by total susceptible
+                  person-time (reported per 1,000 person-timesteps). This
+                  measure is always shown and is valid for all model types,
+                  including SIS models with re-infection and models with vital
+                  dynamics, because it accounts for the changing size of the
+                  susceptible population over time."),
+          tags$li(tags$strong("Attack Rate:"),
+                  "Total new infections divided by the initial number of
+                  susceptibles. This is a simple proportion representing the
+                  fraction of the original susceptible population that became
+                  infected. It is only displayed for SI and SIR models without
+                  vital dynamics, because it requires a closed population with
+                  no re-infection. In SIS models (where individuals can be
+                  re-infected) or models with births and deaths (where the
+                  susceptible pool changes), the attack rate is not
+                  well-defined and is therefore hidden.")
         ),
 
         # --- Further Resources ---
