@@ -117,10 +117,17 @@ shinyServer(function(input, output, session) {
     # Vital dynamics
     if (isTRUE(input$enable_vital)) {
       p$a.rate <- input$a.rate
-      p$ds.rate <- input$death_rate
-      p$di.rate <- input$death_rate
-      if (input$modtype == "SIR") {
-        p$dr.rate <- input$death_rate
+      p$ds.rate <- input$ds.rate
+      if (isTRUE(input$diff_death_rates)) {
+        p$di.rate <- input$di.rate
+        if (input$modtype == "SIR") {
+          p$dr.rate <- input$dr.rate
+        }
+      } else {
+        p$di.rate <- input$ds.rate
+        if (input$modtype == "SIR") {
+          p$dr.rate <- input$ds.rate
+        }
       }
     }
 
@@ -463,12 +470,26 @@ shinyServer(function(input, output, session) {
 
     # --- Vital dynamics ---
     if (!is.null(p$a.rate) && p$vital) {
+      # Build death rate description
+      rates_same <- (p$ds.rate == p$di.rate) &&
+        (is.null(p$dr.rate) || p$ds.rate == p$dr.rate)
+      if (rates_same) {
+        death_desc <- paste0("Deaths occur at rate ", p$ds.rate,
+                             " across all compartments.")
+      } else {
+        death_parts <- paste0("S: ", p$ds.rate, ", I: ", p$di.rate)
+        if (!is.null(p$dr.rate)) {
+          death_parts <- paste0(death_parts, ", R: ", p$dr.rate)
+        }
+        death_desc <- paste0("Death rates per compartment: ", death_parts, ".")
+      }
       vital_section <- tagList(
         hr(),
         tags$h6(class = "text-uppercase fw-semibold mb-2", "Vital Dynamics"),
         p(class = "text-muted", style = "font-size: 0.81rem;",
-          paste0("Births enter at rate ", p$a.rate, " per person per time step. ",
-                 "Deaths occur at rate ", p$ds.rate, " across all compartments. ",
+          paste0("Births enter at rate ", p$a.rate,
+                 " per person per time step. ",
+                 death_desc, " ",
                  "Final population size: ",
                  format(round(df$num[nrow(df)]), big.mark = ","),
                  " (started at ",

@@ -111,8 +111,25 @@ page_sidebar(
           "input.enable_vital",
           numericInput("a.rate", "Birth Rate (per person per time step)",
                        value = 0.001, min = 0, step = 0.001),
-          numericInput("death_rate", "Death Rate (uniform, all compartments)",
-                       value = 0.001, min = 0, step = 0.001)
+          numericInput("ds.rate", "Death Rate, Susceptible",
+                       value = 0.001, min = 0, step = 0.001),
+          checkboxInput("diff_death_rates",
+                        "Different death rates by compartment",
+                        value = FALSE),
+          conditionalPanel(
+            "!input.diff_death_rates",
+            helpText("Death rate above applied uniformly to all compartments.")
+          ),
+          conditionalPanel(
+            "input.diff_death_rates",
+            numericInput("di.rate", "Death Rate, Infected",
+                         value = 0.001, min = 0, step = 0.001),
+            conditionalPanel(
+              "input.modtype == 'SIR'",
+              numericInput("dr.rate", "Death Rate, Recovered",
+                           value = 0.001, min = 0, step = 0.001)
+            )
+          )
         )
       )
     ) # end accordion
@@ -316,10 +333,15 @@ page_sidebar(
         h5("Vital Dynamics"),
         p("By default, the population is closed (no births or deaths). Enabling
           vital dynamics adds a constant per-capita birth rate (new susceptibles
-          entering the population) and a constant per-capita death rate applied
-          equally across all compartments. This is important for modeling
-          endemic equilibria over longer time horizons, where demographic
-          turnover replenishes the susceptible pool."),
+          entering the population) and per-capita death rates. By default, a
+          single death rate is applied uniformly across all compartments.
+          Checking", tags$em("Different death rates by compartment"),
+          "allows setting separate death rates for susceptible, infected,
+          and (for SIR models) recovered individuals. This is useful when
+          disease-induced mortality differs from background mortality. Vital
+          dynamics are important for modeling endemic equilibria over longer
+          time horizons, where demographic turnover replenishes the susceptible
+          pool."),
 
         # --- Reading the Output ---
         hr(),
