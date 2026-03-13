@@ -221,8 +221,9 @@ page_sidebar(
         tags$ul(
           tags$li(tags$strong("SI (Susceptible-Infected):"),
                   "Individuals move from susceptible to infected and remain
-                  infected permanently. There is no recovery. This is appropriate
-                  for chronic infections like HIV (without treatment) or herpes."),
+                  infected and infectious permanently. There is no recovery.
+                  This is appropriate for chronic infections like HIV (without
+                  treatment) or herpes."),
           tags$li(tags$strong("SIR (Susceptible-Infected-Recovered):"),
                   "Infected individuals recover and gain lasting immunity.
                   Once recovered, they cannot be re-infected. This applies to
