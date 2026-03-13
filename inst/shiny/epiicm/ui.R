@@ -159,35 +159,39 @@ page_sidebar(
   # Bottom row: Summary / Data / Guide tabs
   navset_card_tab(
     id = "main_tabs",
+    height = "500px",
 
     nav_panel(
       "Summary",
-      div(class = "p-3", uiOutput("outSummary"))
+      div(class = "p-3", style = "overflow-y: auto; height: 100%;",
+          uiOutput("outSummary"))
     ),
 
     nav_panel(
       "Data",
-      div(
-        class = "mb-3",
-        fluidRow(
-          column(4,
-            selectInput("datasel", "Data View",
-                        choices = c("Means", "Standard Deviations",
-                                    "Individual Simulations"))
-          ),
-          column(4,
-            conditionalPanel(
-              "input.datasel == 'Individual Simulations'",
-              uiOutput("simnoControl")
+      div(style = "overflow-y: auto; height: 100%;",
+        div(
+          class = "mb-3",
+          fluidRow(
+            column(4,
+              selectInput("datasel", "Data View",
+                          choices = c("Means", "Standard Deviations",
+                                      "Individual Simulations"))
+            ),
+            column(4,
+              conditionalPanel(
+                "input.datasel == 'Individual Simulations'",
+                uiOutput("simnoControl")
+              )
             )
           )
+        ),
+        DTOutput("outData"),
+        div(
+          class = "mt-2",
+          downloadButton("dlData", "Download CSV",
+                         class = "btn-sm btn-outline-secondary")
         )
-      ),
-      DTOutput("outData"),
-      div(
-        class = "mt-2",
-        downloadButton("dlData", "Download CSV",
-                       class = "btn-sm btn-outline-secondary")
       )
     ),
 
@@ -195,7 +199,7 @@ page_sidebar(
       "Guide",
       div(
         class = "p-3",
-        style = "max-width: 900px;",
+        style = "max-width: 900px; overflow-y: auto; height: 100%;",
 
         # --- Overview ---
         h4("User Guide"),

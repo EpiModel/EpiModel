@@ -172,19 +172,23 @@ page_sidebar(
   # Bottom row: Summary / Data / About tabs
   navset_card_tab(
     id = "main_tabs",
+    height = "500px",
 
     nav_panel(
       "Summary",
-      div(class = "p-3", uiOutput("outSummary"))
+      div(class = "p-3", style = "overflow-y: auto; height: 100%;",
+          uiOutput("outSummary"))
     ),
 
     nav_panel(
       "Data",
-      DTOutput("outData"),
-      div(
-        class = "mt-2",
-        downloadButton("dlData", "Download CSV",
-                       class = "btn-sm btn-outline-secondary")
+      div(style = "overflow-y: auto; height: 100%;",
+        DTOutput("outData"),
+        div(
+          class = "mt-2",
+          downloadButton("dlData", "Download CSV",
+                         class = "btn-sm btn-outline-secondary")
+        )
       )
     ),
 
@@ -192,7 +196,7 @@ page_sidebar(
       "Guide",
       div(
         class = "p-3",
-        style = "max-width: 900px;",
+        style = "max-width: 900px; overflow-y: auto; height: 100%;",
 
         # --- Overview ---
         h4("User Guide"),
