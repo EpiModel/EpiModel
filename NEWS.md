@@ -36,6 +36,7 @@
 -   Restore global `options()` state in plotting functions (`comp_plot`) to comply with CRAN policy.
 -   Address lintr checks across the package.
 -   `trim_netest` now also removes `$summary` from `netest`, massively reducing the final object size.
+-   Add a `get_core_attributes` function to list the core attributes with their types.
 
 ## EpiModel 2.5
 
