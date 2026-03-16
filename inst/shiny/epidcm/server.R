@@ -401,15 +401,26 @@ shinyServer(function(input, output, session) {
     }
 
     # --- R0 / Force of Infection ---
+    has_vital <- !is.null(p$a.rate)
     if (type == "SI") {
       foi <- p$inf.prob[1] * p$act.rate[1]
+      foi_label <- formatC(foi, format = "g", digits = 2)
+      if (has_vital) {
+        foi_desc <- paste0(
+          "In SI models, all infections are permanent at the individual level.",
+          " The force of infection (inf.prob \u00D7 act.rate) drives transmission.",
+          " With vital dynamics, new susceptibles enter through arrivals,",
+          " so prevalence approaches an endemic equilibrium rather than 100%.")
+      } else {
+        foi_desc <- paste0(
+          "In SI models, all infections are permanent.",
+          " The force of infection (inf.prob \u00D7 act.rate) determines",
+          " how quickly the susceptible population is depleted.")
+      }
       r0_section <- tagList(
         tags$h6(class = "text-uppercase fw-semibold mb-2", "Transmission"),
-        stat_box("Force of Infection", round(foi, 2), "#E74C3C"),
-        p(class = "text-muted", style = "font-size: 0.81rem;",
-          "In SI models, all infections are permanent.",
-          "The force of infection (inf.prob \u00D7 act.rate) determines",
-          "how quickly the susceptible population is depleted.")
+        stat_box("Force of Infection", foi_label, "#E74C3C"),
+        p(class = "text-muted", style = "font-size: 0.81rem;", foi_desc)
       )
     } else {
       removal <- p$rec.rate[1]
@@ -422,6 +433,13 @@ shinyServer(function(input, output, session) {
       } else {
         r0_interp <- "less than 1, so the infection will die out."
       }
+      r0_qual <- if (has_vital || type == "SIS") {
+        paste0(" The effective reproduction number changes over time",
+               " as the susceptible pool changes due to infection",
+               if (has_vital) ", arrivals, and departures." else " and recovery.")
+      } else {
+        " As susceptibles are depleted, the effective reproduction number declines."
+      }
       r0_section <- tagList(
         tags$h6(class = "text-uppercase fw-semibold mb-2", "Transmission"),
         stat_box(HTML("R<sub>0</sub>"), round(r0, 2),
@@ -431,9 +449,7 @@ shinyServer(function(input, output, session) {
                       " In a fully susceptible population, the first infected",
                       " person would generate on average <strong>",
                       round(r0, 2), "</strong> new infections before",
-                      " recovering. As the epidemic progresses and the",
-                      " susceptible pool shrinks, the effective reproduction",
-                      " number declines.")))
+                      " recovering.", r0_qual)))
       )
     }
 
@@ -444,7 +460,6 @@ shinyServer(function(input, output, session) {
     final_prev <- df$i.num[nrow(df)] / df$num[nrow(df)]
 
     # Cumulative infections and incidence metrics
-    has_vital <- !is.null(p$a.rate)
     attack_rate_valid <- type %in% c("SI", "SIR") && !has_vital
     if ("si.flow" %in% names(df)) {
       cum_inf <- sum(df$si.flow, na.rm = TRUE)
@@ -474,7 +489,8 @@ shinyServer(function(input, output, session) {
           stat_box("Cumulative Infections",
                    format(round(cum_inf), big.mark = ","), "#2C3E50"),
           stat_box("Incidence Rate",
-                   paste0(round(cum_inc_rate * 1000, 2), " per 1k pt"),
+                   paste0(round(cum_inc_rate * 1000, 2),
+                          " per 1,000 person-timesteps"),
                    "#2C3E50"),
           if (attack_rate_valid) {
             stat_box("Attack Rate",
@@ -485,9 +501,12 @@ shinyServer(function(input, output, session) {
       if (final_prev < 0.001 && type != "SI") {
         p(class = "text-muted", style = "font-size: 0.81rem;",
           "The epidemic has largely resolved by the end of the simulation.")
-      } else if (type == "SI") {
+      } else if (type == "SI" && !has_vital) {
         p(class = "text-muted", style = "font-size: 0.81rem;",
-          "In SI models, prevalence increases monotonically toward 100%.")
+          "In SI models without vital dynamics, prevalence increases monotonically toward 100%.")
+      } else if (type == "SI" && has_vital) {
+        p(class = "text-muted", style = "font-size: 0.81rem;",
+          "In SI models with vital dynamics, prevalence approaches an endemic equilibrium.")
       } else {
         p(class = "text-muted", style = "font-size: 0.81rem;",
           paste0("At the end of the simulation (t = ", nsteps,

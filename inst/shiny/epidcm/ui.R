@@ -279,18 +279,18 @@ page_sidebar(
                   "Low per-act transmission probability (0.03) with a high
                   contact rate (10 acts/day), reflecting airborne spread.
                   Average duration of infection of about 7 days (recovery
-                  rate = 0.15). Population of 10,000."),
+                  rate = 0.15). Initial population of 10,001."),
           tags$li(tags$strong("STI-like (SIS):"),
                   "Moderate transmission probability (0.2) with a low contact
                   rate (0.5 acts/day), reflecting sexual transmission.
                   Average duration of infection of about 100 days (recovery
-                  rate = 0.01). Population of 1,000."),
+                  rate = 0.01). Initial population of 1,010."),
           tags$li(tags$strong("Measles-like (SIR):"),
                   "High transmission probability (0.5) and moderate contact
                   rate (3 acts/day), producing a high",
                   HTML("R<sub>0</sub>"),
                   "of 15. Average duration of infection of about 10 days
-                  (recovery rate = 0.1). Population of 10,000.")
+                  (recovery rate = 0.1). Initial population of 10,001.")
         ),
         p("Select", tags$em("Custom"), "to set parameters manually."),
 
