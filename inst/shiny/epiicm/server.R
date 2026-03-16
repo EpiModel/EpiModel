@@ -12,12 +12,13 @@ shinyServer(function(input, output, session) {
   # =========================================================================
   # Presets
   # =========================================================================
-  preset_updating <- reactiveVal(FALSE)
+  # Track which modtype a preset expects, so we can distinguish
+  # preset-driven modtype changes from manual ones
+  preset_expected_modtype <- reactiveVal(NULL)
 
   observeEvent(input$preset, {
-    preset_updating(TRUE)
-    on.exit(preset_updating(FALSE))
     if (input$preset == "Flu-like (SIR)") {
+      preset_expected_modtype("SIR")
       updateSelectInput(session, "modtype", selected = "SIR")
       updateSliderInput(session, "inf.prob", value = 0.03)
       updateSliderInput(session, "act.rate", value = 10)
@@ -30,6 +31,7 @@ shinyServer(function(input, output, session) {
       updateCheckboxInput(session, "enable_vital", value = FALSE)
       updateCheckboxInput(session, "enable_intervention", value = FALSE)
     } else if (input$preset == "STI-like (SIS)") {
+      preset_expected_modtype("SIS")
       updateSelectInput(session, "modtype", selected = "SIS")
       updateSliderInput(session, "inf.prob", value = 0.2)
       updateSliderInput(session, "act.rate", value = 0.5)
@@ -41,6 +43,7 @@ shinyServer(function(input, output, session) {
       updateCheckboxInput(session, "enable_vital", value = FALSE)
       updateCheckboxInput(session, "enable_intervention", value = FALSE)
     } else if (input$preset == "Measles-like (SIR)") {
+      preset_expected_modtype("SIR")
       updateSelectInput(session, "modtype", selected = "SIR")
       updateSliderInput(session, "inf.prob", value = 0.5)
       updateSliderInput(session, "act.rate", value = 3)
@@ -55,9 +58,15 @@ shinyServer(function(input, output, session) {
     }
   })
 
-  # Reset preset to "Custom" when user manually changes disease type
+  # Reset preset to "Custom" when user manually changes disease type.
+  # If the modtype change matches what a preset just requested, consume
+  # the expectation and leave the preset alone.
   observeEvent(input$modtype, {
-    if (!preset_updating() && input$preset != "Custom") {
+    expected <- preset_expected_modtype()
+    if (!is.null(expected) && input$modtype == expected) {
+      preset_expected_modtype(NULL)
+    } else if (input$preset != "Custom") {
+      preset_expected_modtype(NULL)
       updateSelectInput(session, "preset", selected = "Custom")
     }
   })
@@ -80,6 +89,16 @@ shinyServer(function(input, output, session) {
       choices <- c(choices, "Arrival Flow", "Departure Flows")
     }
     updateSelectInput(session, "compsel", choices = choices)
+  })
+
+  # Update death rate label based on differential checkbox
+  observeEvent(input$diff_death_rates, {
+    lbl <- if (isTRUE(input$diff_death_rates)) {
+      "Death Rate, Susceptible"
+    } else {
+      "Death Rate"
+    }
+    updateNumericInput(session, "ds.rate", label = lbl)
   })
 
 
@@ -115,10 +134,17 @@ shinyServer(function(input, output, session) {
     # Vital dynamics
     if (isTRUE(input$enable_vital)) {
       p_args$a.rate <- input$a.rate
-      p_args$ds.rate <- input$death_rate
-      p_args$di.rate <- input$death_rate
-      if (modtype == "SIR") {
-        p_args$dr.rate <- input$death_rate
+      p_args$ds.rate <- input$ds.rate
+      if (isTRUE(input$diff_death_rates)) {
+        p_args$di.rate <- input$di.rate
+        if (modtype == "SIR") {
+          p_args$dr.rate <- input$dr.rate
+        }
+      } else {
+        p_args$di.rate <- input$ds.rate
+        if (modtype == "SIR") {
+          p_args$dr.rate <- input$ds.rate
+        }
       }
     }
 
@@ -196,26 +222,44 @@ shinyServer(function(input, output, session) {
     }
 
     # --- R0 / Force of Infection ---
+    has_vital <- !is.null(p$a.rate)
     if (type == "SI") {
       foi <- p$inf.prob * p$act.rate
+      foi_label <- formatC(foi, format = "g", digits = 2)
+      if (has_vital) {
+        foi_desc <- paste0(
+          "In SI models, all infections are permanent at the individual level.",
+          " The force of infection (inf.prob \u00D7 act.rate) drives transmission.",
+          " With vital dynamics, new susceptibles enter through arrivals,",
+          " so prevalence approaches an endemic equilibrium rather than 100%.")
+      } else {
+        foi_desc <- paste0(
+          "In SI models, all infections are permanent.",
+          " The force of infection (inf.prob \u00D7 act.rate) determines",
+          " how quickly the susceptible population is depleted.")
+      }
       r0_section <- tagList(
         tags$h6(class = "text-uppercase fw-semibold mb-2", "Transmission"),
-        stat_box("Force of Infection", round(foi, 2), "#E74C3C"),
-        p(class = "text-muted", style = "font-size: 0.81rem;",
-          "In SI models, all infections are permanent.",
-          "The force of infection (inf.prob \u00D7 act.rate) determines",
-          "how quickly the susceptible population is depleted.")
+        stat_box("Force of Infection", foi_label, "#E74C3C"),
+        p(class = "text-muted", style = "font-size: 0.81rem;", foi_desc)
       )
     } else {
       removal <- p$rec.rate
       if (!is.null(p$di.rate)) removal <- removal + p$di.rate
       r0 <- (p$inf.prob * p$act.rate) / removal
       if (r0 > 1) {
-        r0_interp <- "greater than 1, so the infection will spread."
+        r0_interp <- "greater than 1, so the infection is expected to spread."
       } else if (r0 == 1) {
         r0_interp <- "exactly 1, so the epidemic is at a tipping point."
       } else {
-        r0_interp <- "less than 1, so the infection will die out."
+        r0_interp <- "less than 1, so the infection is expected to die out."
+      }
+      r0_qual <- if (has_vital || type == "SIS") {
+        paste0(" The effective reproduction number changes over time",
+               " as the susceptible pool changes due to infection",
+               if (has_vital) ", arrivals, and departures." else " and recovery.")
+      } else {
+        " As susceptibles are depleted, the effective reproduction number declines."
       }
       r0_section <- tagList(
         tags$h6(class = "text-uppercase fw-semibold mb-2", "Transmission"),
@@ -223,9 +267,10 @@ shinyServer(function(input, output, session) {
                  if (r0 > 1) "#E74C3C" else "#18BC9C"),
         p(class = "text-muted", style = "font-size: 0.81rem;",
           HTML(paste0("R<sub>0</sub> is ", r0_interp,
-                      " Each infected person generates on average <strong>",
-                      round(r0, 2), "</strong> new infections",
-                      " before recovering.")))
+                      " In a fully susceptible population, the first infected",
+                      " person is expected to generate on average <strong>",
+                      round(r0, 2), "</strong> new infections before",
+                      " recovering.", r0_qual)))
       )
     }
 
@@ -235,13 +280,17 @@ shinyServer(function(input, output, session) {
     peak_prev <- peak_i / df_mean$num[which.max(df_mean$i.num)]
     final_prev <- df_mean$i.num[nrow(df_mean)] / df_mean$num[nrow(df_mean)]
 
-    # Cumulative infections (from mean)
+    # Cumulative infections and incidence metrics (from mean)
+    attack_rate_valid <- type %in% c("SI", "SIR") && !has_vital
     if ("si.flow" %in% names(df_mean)) {
       cum_inf <- sum(df_mean$si.flow, na.rm = TRUE)
-      attack_rate <- cum_inf / df_mean$s.num[1]
+      cum_inc_rate <- cum_inf / sum(df_mean$s.num, na.rm = TRUE)
+      if (attack_rate_valid) {
+        attack_rate <- cum_inf / df_mean$s.num[1]
+      }
     } else {
       cum_inf <- NA
-      attack_rate <- NA
+      cum_inc_rate <- NA
     }
 
     timeline_section <- tagList(
@@ -261,17 +310,25 @@ shinyServer(function(input, output, session) {
           class = "d-flex flex-wrap",
           stat_box("Cumulative Infections",
                    format(round(cum_inf), big.mark = ","), "#2C3E50"),
-          stat_box("Attack Rate",
-                   paste0(round(min(attack_rate, 1) * 100, 1), "%"),
-                   "#2C3E50")
+          stat_box("Incidence Rate",
+                   paste0(round(cum_inc_rate * 1000, 2),
+                          " per 1,000 person-timesteps"),
+                   "#2C3E50"),
+          if (attack_rate_valid) {
+            stat_box("Attack Rate",
+                     paste0(round(attack_rate * 100, 1), "%"), "#2C3E50")
+          }
         )
       },
       if (final_prev < 0.001 && type != "SI") {
         p(class = "text-muted", style = "font-size: 0.81rem;",
           "The epidemic has largely resolved by the end of the simulation.")
-      } else if (type == "SI") {
+      } else if (type == "SI" && !has_vital) {
         p(class = "text-muted", style = "font-size: 0.81rem;",
-          "In SI models, prevalence increases monotonically toward 100%.")
+          "In SI models without vital dynamics, prevalence increases monotonically toward 100%.")
+      } else if (type == "SI" && has_vital) {
+        p(class = "text-muted", style = "font-size: 0.81rem;",
+          "In SI models with vital dynamics, prevalence approaches an endemic equilibrium.")
       } else {
         p(class = "text-muted", style = "font-size: 0.81rem;",
           paste0("At the end of the simulation (t = ", nsteps,
@@ -341,14 +398,26 @@ shinyServer(function(input, output, session) {
 
     # --- Vital dynamics ---
     if (!is.null(p$a.rate) && p$vital) {
+      # Build death rate description
+      rates_same <- (p$ds.rate == p$di.rate) &&
+        (is.null(p$dr.rate) || p$ds.rate == p$dr.rate)
+      if (rates_same) {
+        death_desc <- paste0("Deaths occur at rate ", p$ds.rate,
+                             " across all compartments.")
+      } else {
+        death_parts <- paste0("S: ", p$ds.rate, ", I: ", p$di.rate)
+        if (!is.null(p$dr.rate)) {
+          death_parts <- paste0(death_parts, ", R: ", p$dr.rate)
+        }
+        death_desc <- paste0("Death rates per compartment: ", death_parts, ".")
+      }
       vital_section <- tagList(
         hr(),
         tags$h6(class = "text-uppercase fw-semibold mb-2", "Vital Dynamics"),
         p(class = "text-muted", style = "font-size: 0.81rem;",
           paste0("Births enter at rate ", p$a.rate,
                  " per person per time step. ",
-                 "Deaths occur at rate ", p$ds.rate,
-                 " across all compartments. ",
+                 death_desc, " ",
                  "Final mean population size: ",
                  format(round(df_mean$num[nrow(df_mean)]), big.mark = ","),
                  " (started at ",
@@ -370,7 +439,7 @@ shinyServer(function(input, output, session) {
                 tags$td(tags$strong("ICM (Stochastic)"))),
         tags$tr(tags$td(class = "text-muted", "Disease Type"),
                 tags$td(tags$strong(type))),
-        tags$tr(tags$td(class = "text-muted", "Population"),
+        tags$tr(tags$td(class = "text-muted", "Initial Population"),
                 tags$td(format(round(df_mean$num[1]), big.mark = ","))),
         tags$tr(tags$td(class = "text-muted", "Time Steps"),
                 tags$td(nsteps)),
