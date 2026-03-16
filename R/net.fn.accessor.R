@@ -472,6 +472,23 @@ set_init <- function(dat, item, value) {
 
 # Core Attributes --------------------------------------------------------------
 
+#' Return the List of Core EpiModel Attributes with Correct Types
+#'
+#' This function returns an exhaustive named list of the attributes managed by
+#' EpiModel itself. It can be used to check the validity of an attributes list
+#' and of its types.
+#'
+#' @rdname net-accessor
+#' @export
+get_core_attributes <- function() {
+  list(
+    active = 1L,
+    entrTime = 1L,
+    exitTime =  NA_integer_,
+    unique_id = 1L
+  )
+}
+
 #' @rdname net-accessor
 #' @export
 append_core_attr <- function(dat, at, n.new) {
