@@ -221,13 +221,15 @@ netsim <- function(x, param, init, control) {
   if (control$ncores == 1 && isFALSE(control$future.use.plan)) {
     dat_list <- lapply(
       seq_len(control$nsims),
-      function(s) { netsim_initialize(x, param, init, control, s) }
+      function(s) {
+        netsim_initialize(x, param, init, control, s)
+      }
     )
     dat_list <- Map(netsim_run, dat = dat_list, s = seq_along(dat_list))
   } else {
     if (inherits(control$future.use.plan, c("tweaked", "future"))) {
       with(future::plan(control$future.use.plan), local = TRUE)
-    } else if (control$ncores > 1 &&isFALSE(control$future.use.plan)) {
+    } else if (control$ncores > 1 && isFALSE(control$future.use.plan)) {
       with(future::plan("multisession", workers = control$ncores), local = TRUE)
     } # else if (isTRUE(control$future.use.plan)) - use plan defined by user
     dat_list <- future.apply::future_lapply(
